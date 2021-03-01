@@ -2,346 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5EBB328268
-	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 16:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99CC33282B2
+	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 16:41:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237186AbhCAPZF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Mar 2021 10:25:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237189AbhCAPY7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Mar 2021 10:24:59 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE0AC061788
-        for <bpf@vger.kernel.org>; Mon,  1 Mar 2021 07:24:04 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id 18so17540236lff.6
-        for <bpf@vger.kernel.org>; Mon, 01 Mar 2021 07:24:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZYskYZzT8Mtp1aqVAhNLitpiaBzJZJjNc3PMfeChFeE=;
-        b=ifLEH7oiOTkSu6An7ABltZuywSSOqxKGKHH5PRknfo9xivsabHYTtxT7d5ApetSt4S
-         1TtgC9PmqYoz+mUcEIe+rlaOFcjxagjd7cKgdF/l4IVDj8YeFW1JUJ602wGR1plBiTZ0
-         A8nhJUu+Coow60UM//HqWRrFDKrEXa0XH5ytU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZYskYZzT8Mtp1aqVAhNLitpiaBzJZJjNc3PMfeChFeE=;
-        b=Yx3IbvSmylFlY+lCeJctpGZnII6zFPk8CbzVvSQOl3RG8jePqMvOoqt5xzjcU5uHVH
-         51xI4nkfCHwhMaRFh/wZbE2YL98TvCBb23Waa3oneeY5HApghQIrV9PiGjmSiJPVor49
-         WqDqnXw/kRNTIV5OGWkrBVqd9cU8UjMLImmIYPnroOOS7TGRWH3VSn5xaW+J5iHEzyFe
-         y4HTbbWf4J4V2nJTxa1wBIRwOTcL1ituLI3dmsEaiaWVvWjwra89QkmdhtzMPlTh4iPZ
-         4ok/rnjasu+7MJ7YRdD+YiNwk+lQMCswdiyedKp8zpSVR8FtZ7lXVRUG9p2tQW1OLrW1
-         nJnQ==
-X-Gm-Message-State: AOAM532h1+ziPWjnC1siCZ7XImLmxZbJKJp9mY8sucOXBse7W207z0aV
-        ebmAjREJ9JE3MRrvN4G6cYT2HWqLpLf0x0kZOsnhbQ==
-X-Google-Smtp-Source: ABdhPJztpfcXFeS6zHf6xtTyl9R2bWKxqC6hpb/6JmEaHoDCrUfnDyIeAHXfjQnahQtgagtjaEPBG4v0gt6ip/iU39A=
-X-Received: by 2002:a05:6512:33d1:: with SMTP id d17mr9862562lfg.13.1614612242464;
- Mon, 01 Mar 2021 07:24:02 -0800 (PST)
-MIME-Version: 1.0
-References: <20210223184934.6054-1-xiyou.wangcong@gmail.com> <20210223184934.6054-5-xiyou.wangcong@gmail.com>
-In-Reply-To: <20210223184934.6054-5-xiyou.wangcong@gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Mon, 1 Mar 2021 15:23:51 +0000
-Message-ID: <CACAyw9-L9b+muEm2uFkBi-yRNY1enFGN7zLVvF7kOH2bjSb5+g@mail.gmail.com>
-Subject: Re: [Patch bpf-next v7 4/9] skmsg: move sk_redir from TCP_SKB_CB to skb
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        duanxiongchun@bytedance.com, wangdongdong.6@bytedance.com,
-        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
+        id S237248AbhCAPl0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Mar 2021 10:41:26 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56762 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237347AbhCAPlZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 1 Mar 2021 10:41:25 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 121FbTFJ172538;
+        Mon, 1 Mar 2021 10:40:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=rqEItZcx3MG+sY+ivIs3sh1uFFSi/qK5tYq34fYft88=;
+ b=SgnCJPynSNiwoGyz7iTm1xc1m13RDQTumHFq5X1m4vp7HGuECSJnavm98TA/r+pDyFLA
+ ZarErkA+2cAWg6rhOuDrIxXtbZlT29tczR0zGApSKlR9VE/EmWEF4BfRZI5zMq2aG9LC
+ Vx+OLXGGb8Vp3LhOyo2S0kId1bPi8s/mkT+m9WXTB4iV5W8aus6+q+UYDRbBWIkf8zqv
+ SwMc0/S7LxzM5Mg33CrgtMG9ZAKDumyDpGERQ26NJh2kIqvXzUEGXUWlZWNjj+lEyRYG
+ SanFJoe56zGIIz2/qSYI7q0ibjFZB5jfl8F1Pz6VwP3Ttcm7UUvNFhYqcTa6UL+AyYkD Sw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37103q6jh6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Mar 2021 10:40:27 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 121FbiOH177275;
+        Mon, 1 Mar 2021 10:40:26 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37103q6jfu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Mar 2021 10:40:26 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 121FbJFC029750;
+        Mon, 1 Mar 2021 15:40:24 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 3712fmg0qv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Mar 2021 15:40:24 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 121FeLYw43909576
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Mar 2021 15:40:21 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BE13FA4053;
+        Mon,  1 Mar 2021 15:40:21 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4F629A4059;
+        Mon,  1 Mar 2021 15:40:21 +0000 (GMT)
+Received: from vm.lan (unknown [9.145.31.74])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  1 Mar 2021 15:40:21 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+        Brendan Jackman <jackmanb@google.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH v3 bpf] bpf: Account for BPF_FETCH in insn_has_def32()
+Date:   Mon,  1 Mar 2021 16:40:19 +0100
+Message-Id: <20210301154019.129110-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-01_11:2021-03-01,2021-03-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ mlxlogscore=999 spamscore=0 adultscore=0 clxscore=1015 suspectscore=0
+ phishscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103010130
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 23 Feb 2021 at 18:49, Cong Wang <xiyou.wangcong@gmail.com> wrote:
->
-> From: Cong Wang <cong.wang@bytedance.com>
->
-> Currently TCP_SKB_CB() is hard-coded in skmsg code, it certainly
-> does not work for any other non-TCP protocols. We can move them to
-> skb ext, but it introduces a memory allocation on fast path.
->
-> Fortunately, we only need to a word-size to store all the information,
-> because the flags actually only contains 1 bit so can be just packed
-> into the lowest bit of the "pointer", which is stored as unsigned
-> long.
->
-> Inside struct sk_buff, '_skb_refdst' can be reused because skb dst is
-> no longer needed after ->sk_data_ready() so we can just drop it.
+insn_has_def32() returns false for 32-bit BPF_FETCH insns. This makes
+adjust_insn_aux_data() incorrectly set zext_dst, as can be seen in [1].
+This happens because insn_no_def() does not know about the BPF_FETCH
+variants of BPF_STX.
 
-Hi Cong Wang,
+Fix in two steps.
 
-I saw this on patchwork:
+First, replace insn_no_def() with insn_def_regno(), which returns the
+register an insn defines. Normally insn_no_def() calls are followed by
+insn->dst_reg uses; replace those with the insn_def_regno() return
+value.
 
-include/linux/skbuff.h:932: warning: Function parameter or member
-'_sk_redir' not described in 'sk_buff'
-New warnings added
-0a1
-> include/linux/skbuff.h:932: warning: Function parameter or member '_sk_redir' not described in 'sk_buff'
-Per-file breakdown
+Second, adjust the BPF_STX special case in is_reg64() to deal with
+queries made from opt_subreg_zext_lo32_rnd_hi32(), where the state
+information is no longer available. Add a comment, since the purpose
+of this special case is not clear at first glance.
 
-Source: https://patchwork.kernel.org/project/netdevbpf/patch/20210223184934.6054-5-xiyou.wangcong@gmail.com/
+[1] https://lore.kernel.org/bpf/20210223150845.1857620-1-jackmanb@google.com/
 
-Maybe something to follow up on, I'm not sure what the conventions are here.
+Fixes: 5ffa25502b5a ("bpf: Add instructions for atomic_[cmp]xchg")
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+---
 
+v1: https://lore.kernel.org/bpf/20210224141837.104654-1-iii@linux.ibm.com/
+v1 -> v2: Per Martin's comments: rebase against the bpf branch, fix the
+          Fixes: tag, fix the comment style, replace ?: with the more
+          readable if-else, handle the internal verifier error using
+          WARN_ON_ONCE(), verbose() and -EFAULT.
 
->
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
-> Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
-> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> ---
->  include/linux/skbuff.h |  3 +++
->  include/linux/skmsg.h  | 38 ++++++++++++++++++++++++++++++++++++++
->  include/net/tcp.h      | 19 -------------------
->  net/core/skmsg.c       | 31 +++++++++++++++++++------------
->  net/core/sock_map.c    |  8 ++------
->  5 files changed, 62 insertions(+), 37 deletions(-)
->
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index 6d0a33d1c0db..bd84f799c952 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -755,6 +755,9 @@ struct sk_buff {
->                         void            (*destructor)(struct sk_buff *skb);
->                 };
->                 struct list_head        tcp_tsorted_anchor;
-> +#ifdef CONFIG_NET_SOCK_MSG
-> +               unsigned long           _sk_redir;
-> +#endif
->         };
->
->  #if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index 22e26f82de33..e0de45527bb6 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -455,4 +455,42 @@ static inline bool sk_psock_strp_enabled(struct sk_psock *psock)
->                 return false;
->         return !!psock->saved_data_ready;
->  }
-> +
-> +#if IS_ENABLED(CONFIG_NET_SOCK_MSG)
-> +
-> +/* We only have one bit so far. */
-> +#define BPF_F_PTR_MASK ~(BPF_F_INGRESS)
-> +
-> +static inline bool skb_bpf_ingress(const struct sk_buff *skb)
-> +{
-> +       unsigned long sk_redir = skb->_sk_redir;
-> +
-> +       return sk_redir & BPF_F_INGRESS;
-> +}
-> +
-> +static inline void skb_bpf_set_ingress(struct sk_buff *skb)
-> +{
-> +       skb->_sk_redir |= BPF_F_INGRESS;
-> +}
-> +
-> +static inline void skb_bpf_set_redir(struct sk_buff *skb, struct sock *sk_redir,
-> +                                    bool ingress)
-> +{
-> +       skb->_sk_redir = (unsigned long)sk_redir;
-> +       if (ingress)
-> +               skb->_sk_redir |= BPF_F_INGRESS;
-> +}
-> +
-> +static inline struct sock *skb_bpf_redirect_fetch(const struct sk_buff *skb)
-> +{
-> +       unsigned long sk_redir = skb->_sk_redir;
-> +
-> +       return (struct sock *)(sk_redir & BPF_F_PTR_MASK);
-> +}
-> +
-> +static inline void skb_bpf_redirect_clear(struct sk_buff *skb)
-> +{
-> +       skb->_sk_redir = 0;
-> +}
-> +#endif /* CONFIG_NET_SOCK_MSG */
->  #endif /* _LINUX_SKMSG_H */
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index 947ef5da6867..075de26f449d 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -883,30 +883,11 @@ struct tcp_skb_cb {
->                         struct inet6_skb_parm   h6;
->  #endif
->                 } header;       /* For incoming skbs */
-> -               struct {
-> -                       __u32 flags;
-> -                       struct sock *sk_redir;
-> -               } bpf;
->         };
->  };
->
->  #define TCP_SKB_CB(__skb)      ((struct tcp_skb_cb *)&((__skb)->cb[0]))
->
-> -static inline bool tcp_skb_bpf_ingress(const struct sk_buff *skb)
-> -{
-> -       return TCP_SKB_CB(skb)->bpf.flags & BPF_F_INGRESS;
-> -}
-> -
-> -static inline struct sock *tcp_skb_bpf_redirect_fetch(struct sk_buff *skb)
-> -{
-> -       return TCP_SKB_CB(skb)->bpf.sk_redir;
-> -}
-> -
-> -static inline void tcp_skb_bpf_redirect_clear(struct sk_buff *skb)
-> -{
-> -       TCP_SKB_CB(skb)->bpf.sk_redir = NULL;
-> -}
-> -
->  extern const struct inet_connection_sock_af_ops ipv4_specific;
->
->  #if IS_ENABLED(CONFIG_IPV6)
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index 8822001ab3dc..409258367bea 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -525,7 +525,8 @@ static void sk_psock_backlog(struct work_struct *work)
->                 len = skb->len;
->                 off = 0;
->  start:
-> -               ingress = tcp_skb_bpf_ingress(skb);
-> +               ingress = skb_bpf_ingress(skb);
-> +               skb_bpf_redirect_clear(skb);
->                 do {
->                         ret = -EIO;
->                         if (likely(psock->sk->sk_socket))
-> @@ -631,7 +632,12 @@ void __sk_psock_purge_ingress_msg(struct sk_psock *psock)
->
->  static void sk_psock_zap_ingress(struct sk_psock *psock)
->  {
-> -       __skb_queue_purge(&psock->ingress_skb);
-> +       struct sk_buff *skb;
-> +
-> +       while ((skb = __skb_dequeue(&psock->ingress_skb)) != NULL) {
-> +               skb_bpf_redirect_clear(skb);
-> +               kfree_skb(skb);
-> +       }
->         __sk_psock_purge_ingress_msg(psock);
->  }
->
-> @@ -754,7 +760,7 @@ static void sk_psock_skb_redirect(struct sk_buff *skb)
->         struct sk_psock *psock_other;
->         struct sock *sk_other;
->
-> -       sk_other = tcp_skb_bpf_redirect_fetch(skb);
-> +       sk_other = skb_bpf_redirect_fetch(skb);
->         /* This error is a buggy BPF program, it returned a redirect
->          * return code, but then didn't set a redirect interface.
->          */
-> @@ -804,9 +810,10 @@ int sk_psock_tls_strp_read(struct sk_psock *psock, struct sk_buff *skb)
->                  * TLS context.
->                  */
->                 skb->sk = psock->sk;
-> -               tcp_skb_bpf_redirect_clear(skb);
-> +               skb_dst_drop(skb);
-> +               skb_bpf_redirect_clear(skb);
->                 ret = sk_psock_bpf_run(psock, prog, skb);
-> -               ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
-> +               ret = sk_psock_map_verd(ret, skb_bpf_redirect_fetch(skb));
->                 skb->sk = NULL;
->         }
->         sk_psock_tls_verdict_apply(skb, psock->sk, ret);
-> @@ -818,7 +825,6 @@ EXPORT_SYMBOL_GPL(sk_psock_tls_strp_read);
->  static void sk_psock_verdict_apply(struct sk_psock *psock,
->                                    struct sk_buff *skb, int verdict)
->  {
-> -       struct tcp_skb_cb *tcp;
->         struct sock *sk_other;
->         int err = -EIO;
->
-> @@ -830,8 +836,7 @@ static void sk_psock_verdict_apply(struct sk_psock *psock,
->                         goto out_free;
->                 }
->
-> -               tcp = TCP_SKB_CB(skb);
-> -               tcp->bpf.flags |= BPF_F_INGRESS;
-> +               skb_bpf_set_ingress(skb);
->
->                 /* If the queue is empty then we can submit directly
->                  * into the msg queue. If its not empty we have to
-> @@ -892,9 +897,10 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
->         skb_set_owner_r(skb, sk);
->         prog = READ_ONCE(psock->progs.skb_verdict);
->         if (likely(prog)) {
-> -               tcp_skb_bpf_redirect_clear(skb);
-> +               skb_dst_drop(skb);
-> +               skb_bpf_redirect_clear(skb);
->                 ret = sk_psock_bpf_run(psock, prog, skb);
-> -               ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
-> +               ret = sk_psock_map_verd(ret, skb_bpf_redirect_fetch(skb));
->         }
->         sk_psock_verdict_apply(psock, skb, ret);
->  out:
-> @@ -1011,9 +1017,10 @@ static int sk_psock_verdict_recv(read_descriptor_t *desc, struct sk_buff *skb,
->         skb_set_owner_r(skb, sk);
->         prog = READ_ONCE(psock->progs.skb_verdict);
->         if (likely(prog)) {
-> -               tcp_skb_bpf_redirect_clear(skb);
-> +               skb_dst_drop(skb);
-> +               skb_bpf_redirect_clear(skb);
->                 ret = sk_psock_bpf_run(psock, prog, skb);
-> -               ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
-> +               ret = sk_psock_map_verd(ret, skb_bpf_redirect_fetch(skb));
->         }
->         sk_psock_verdict_apply(psock, skb, ret);
->  out:
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 1a28a5c2c61e..dbfcd7006338 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -657,7 +657,6 @@ const struct bpf_func_proto bpf_sock_map_update_proto = {
->  BPF_CALL_4(bpf_sk_redirect_map, struct sk_buff *, skb,
->            struct bpf_map *, map, u32, key, u64, flags)
->  {
-> -       struct tcp_skb_cb *tcb = TCP_SKB_CB(skb);
->         struct sock *sk;
->
->         if (unlikely(flags & ~(BPF_F_INGRESS)))
-> @@ -667,8 +666,7 @@ BPF_CALL_4(bpf_sk_redirect_map, struct sk_buff *, skb,
->         if (unlikely(!sk || !sock_map_redirect_allowed(sk)))
->                 return SK_DROP;
->
-> -       tcb->bpf.flags = flags;
-> -       tcb->bpf.sk_redir = sk;
-> +       skb_bpf_set_redir(skb, sk, flags & BPF_F_INGRESS);
->         return SK_PASS;
->  }
->
-> @@ -1250,7 +1248,6 @@ const struct bpf_func_proto bpf_sock_hash_update_proto = {
->  BPF_CALL_4(bpf_sk_redirect_hash, struct sk_buff *, skb,
->            struct bpf_map *, map, void *, key, u64, flags)
->  {
-> -       struct tcp_skb_cb *tcb = TCP_SKB_CB(skb);
->         struct sock *sk;
->
->         if (unlikely(flags & ~(BPF_F_INGRESS)))
-> @@ -1260,8 +1257,7 @@ BPF_CALL_4(bpf_sk_redirect_hash, struct sk_buff *, skb,
->         if (unlikely(!sk || !sock_map_redirect_allowed(sk)))
->                 return SK_DROP;
->
-> -       tcb->bpf.flags = flags;
-> -       tcb->bpf.sk_redir = sk;
-> +       skb_bpf_set_redir(skb, sk, flags & BPF_F_INGRESS);
->         return SK_PASS;
->  }
->
-> --
-> 2.25.1
->
+v2: https://lore.kernel.org/bpf/20210226213131.118173-1-iii@linux.ibm.com/
+v2 -> v3: Per Brendan's comment, add "verifier bug." to the error
+          message. Unfortunately, the load_reg assignment cannot be
+          moved, because this would also require moving the insn
+          assignment, and this would ruin the reverse xmas tree.
 
+ kernel/bpf/verifier.c | 70 ++++++++++++++++++++++++-------------------
+ 1 file changed, 39 insertions(+), 31 deletions(-)
 
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 3d34ba492d46..bb3eaab934f3 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1703,7 +1703,11 @@ static bool is_reg64(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 	}
+ 
+ 	if (class == BPF_STX) {
+-		if (reg->type != SCALAR_VALUE)
++		/* BPF_STX (including atomic variants) has multiple source
++		 * operands, one of which is a ptr. Check whether the caller is
++		 * asking about it.
++		 */
++		if (t == SRC_OP && reg->type != SCALAR_VALUE)
+ 			return true;
+ 		return BPF_SIZE(code) == BPF_DW;
+ 	}
+@@ -1735,22 +1739,38 @@ static bool is_reg64(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 	return true;
+ }
+ 
+-/* Return TRUE if INSN doesn't have explicit value define. */
+-static bool insn_no_def(struct bpf_insn *insn)
++/* Return the regno defined by the insn, or -1. */
++static int insn_def_regno(const struct bpf_insn *insn)
+ {
+-	u8 class = BPF_CLASS(insn->code);
+-
+-	return (class == BPF_JMP || class == BPF_JMP32 ||
+-		class == BPF_STX || class == BPF_ST);
++	switch (BPF_CLASS(insn->code)) {
++	case BPF_JMP:
++	case BPF_JMP32:
++	case BPF_ST:
++		return -1;
++	case BPF_STX:
++		if (BPF_MODE(insn->code) == BPF_ATOMIC &&
++		    (insn->imm & BPF_FETCH)) {
++			if (insn->imm == BPF_CMPXCHG)
++				return BPF_REG_0;
++			else
++				return insn->src_reg;
++		} else {
++			return -1;
++		}
++	default:
++		return insn->dst_reg;
++	}
+ }
+ 
+ /* Return TRUE if INSN has defined any 32-bit value explicitly. */
+ static bool insn_has_def32(struct bpf_verifier_env *env, struct bpf_insn *insn)
+ {
+-	if (insn_no_def(insn))
++	int dst_reg = insn_def_regno(insn);
++
++	if (dst_reg == -1)
+ 		return false;
+ 
+-	return !is_reg64(env, insn, insn->dst_reg, NULL, DST_OP);
++	return !is_reg64(env, insn, dst_reg, NULL, DST_OP);
+ }
+ 
+ static void mark_insn_zext(struct bpf_verifier_env *env,
+@@ -11006,9 +11026,10 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+ 	for (i = 0; i < len; i++) {
+ 		int adj_idx = i + delta;
+ 		struct bpf_insn insn;
+-		u8 load_reg;
++		int load_reg;
+ 
+ 		insn = insns[adj_idx];
++		load_reg = insn_def_regno(&insn);
+ 		if (!aux[adj_idx].zext_dst) {
+ 			u8 code, class;
+ 			u32 imm_rnd;
+@@ -11018,14 +11039,14 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+ 
+ 			code = insn.code;
+ 			class = BPF_CLASS(code);
+-			if (insn_no_def(&insn))
++			if (load_reg == -1)
+ 				continue;
+ 
+ 			/* NOTE: arg "reg" (the fourth one) is only used for
+-			 *       BPF_STX which has been ruled out in above
+-			 *       check, it is safe to pass NULL here.
++			 *       BPF_STX + SRC_OP, so it is safe to pass NULL
++			 *       here.
+ 			 */
+-			if (is_reg64(env, &insn, insn.dst_reg, NULL, DST_OP)) {
++			if (is_reg64(env, &insn, load_reg, NULL, DST_OP)) {
+ 				if (class == BPF_LD &&
+ 				    BPF_MODE(code) == BPF_IMM)
+ 					i++;
+@@ -11040,7 +11061,7 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+ 			imm_rnd = get_random_int();
+ 			rnd_hi32_patch[0] = insn;
+ 			rnd_hi32_patch[1].imm = imm_rnd;
+-			rnd_hi32_patch[3].dst_reg = insn.dst_reg;
++			rnd_hi32_patch[3].dst_reg = load_reg;
+ 			patch = rnd_hi32_patch;
+ 			patch_len = 4;
+ 			goto apply_patch_buffer;
+@@ -11049,22 +11070,9 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+ 		if (!bpf_jit_needs_zext())
+ 			continue;
+ 
+-		/* zext_dst means that we want to zero-extend whatever register
+-		 * the insn defines, which is dst_reg most of the time, with
+-		 * the notable exception of BPF_STX + BPF_ATOMIC + BPF_FETCH.
+-		 */
+-		if (BPF_CLASS(insn.code) == BPF_STX &&
+-		    BPF_MODE(insn.code) == BPF_ATOMIC) {
+-			/* BPF_STX + BPF_ATOMIC insns without BPF_FETCH do not
+-			 * define any registers, therefore zext_dst cannot be
+-			 * set.
+-			 */
+-			if (WARN_ON(!(insn.imm & BPF_FETCH)))
+-				return -EINVAL;
+-			load_reg = insn.imm == BPF_CMPXCHG ? BPF_REG_0
+-							   : insn.src_reg;
+-		} else {
+-			load_reg = insn.dst_reg;
++		if (WARN_ON(load_reg == -1)) {
++			verbose(env, "verifier bug. zext_dst is set, but no reg is defined\n");
++			return -EFAULT;
+ 		}
+ 
+ 		zext_patch[0] = insn;
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+2.29.2
 
-www.cloudflare.com
