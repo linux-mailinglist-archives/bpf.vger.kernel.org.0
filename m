@@ -2,24 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA6D328679
-	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 18:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0673288D0
+	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 18:46:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237258AbhCARKt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Mar 2021 12:10:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37668 "EHLO mail.kernel.org"
+        id S234712AbhCARpE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Mar 2021 12:45:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236276AbhCARIl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:08:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD9AD65012;
-        Mon,  1 Mar 2021 16:41:53 +0000 (UTC)
+        id S238120AbhCARh4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Mar 2021 12:37:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF69164E37;
+        Mon,  1 Mar 2021 16:55:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614616914;
-        bh=QL8u3tbTeb5HWu5g8dO0zy3HS3GMiT7FgTkAuBZrXwA=;
+        s=korg; t=1614617728;
+        bh=AMJNHFOU55Lr0ratCG7R4V8kA8uYLYXjAAALQ5qQZ3g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IvZy+9dAvl8dar9dIQwvRVDe0R3EaGCsN8sQyxT5RQSL0VElJB7c2BKtY7B1DYKYs
-         zstWaqwUWZIIDNmOwRcBcGrI4UC3d8gd4VEb2gievmv9DZI7qFQ2Dj1jolvUi2o9ln
-         4/EewerU2tesdPt2Xpdz5+aaTOZje8ItX1KLa+us=
+        b=kfs5QSBUAD+bz4kujG2EpMasFR3Cl0YjmvAEZvr0fLqrp3u41ZBrSbRItJFfJbBxR
+         8DHbWCXOKiKoyr7seL4HnM9rNBFcykeDSB4yVEteryfsFCVIB5Bw+uSoIi/d/W/6PT
+         Zl+ZBPsDaEGTGhEfmc/UwEb0+is/JEMKUCDXeD30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -43,12 +43,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Matt Mullins <mmullins@mmlx.us>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 139/247] tracepoint: Do not fail unregistering a probe due to memory failure
-Date:   Mon,  1 Mar 2021 17:12:39 +0100
-Message-Id: <20210301161038.475315715@linuxfoundation.org>
+Subject: [PATCH 5.4 176/340] tracepoint: Do not fail unregistering a probe due to memory failure
+Date:   Mon,  1 Mar 2021 17:12:00 +0100
+Message-Id: <20210301161056.968245888@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161031.684018251@linuxfoundation.org>
-References: <20210301161031.684018251@linuxfoundation.org>
+In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
+References: <20210301161048.294656001@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -123,10 +123,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 64 insertions(+), 16 deletions(-)
 
 diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index a3be42304485f..d5ce692319128 100644
+index 73956eaff8a9c..be51df4508cbe 100644
 --- a/kernel/tracepoint.c
 +++ b/kernel/tracepoint.c
-@@ -66,6 +66,12 @@ struct tp_probes {
+@@ -53,6 +53,12 @@ struct tp_probes {
  	struct tracepoint_func probes[0];
  };
  
@@ -138,8 +138,8 @@ index a3be42304485f..d5ce692319128 100644
 +
  static inline void *allocate_probes(int count)
  {
- 	struct tp_probes *p  = kmalloc(count * sizeof(struct tracepoint_func)
-@@ -144,6 +150,7 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
+ 	struct tp_probes *p  = kmalloc(struct_size(p, probes, count),
+@@ -131,6 +137,7 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
  {
  	struct tracepoint_func *old, *new;
  	int nr_probes = 0;
@@ -147,7 +147,7 @@ index a3be42304485f..d5ce692319128 100644
  	int pos = -1;
  
  	if (WARN_ON(!tp_func->func))
-@@ -160,14 +167,34 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
+@@ -147,14 +154,34 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
  			if (old[nr_probes].func == tp_func->func &&
  			    old[nr_probes].data == tp_func->data)
  				return ERR_PTR(-EEXIST);
@@ -185,7 +185,7 @@ index a3be42304485f..d5ce692319128 100644
  			pos = nr_probes;
  			memcpy(new, old, nr_probes * sizeof(struct tracepoint_func));
  		} else {
-@@ -201,8 +228,9 @@ static void *func_remove(struct tracepoint_func **funcs,
+@@ -188,8 +215,9 @@ static void *func_remove(struct tracepoint_func **funcs,
  	/* (N -> M), (N > 1, M >= 0) probes */
  	if (tp_func->func) {
  		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
@@ -197,7 +197,7 @@ index a3be42304485f..d5ce692319128 100644
  				nr_del++;
  		}
  	}
-@@ -221,14 +249,32 @@ static void *func_remove(struct tracepoint_func **funcs,
+@@ -208,14 +236,32 @@ static void *func_remove(struct tracepoint_func **funcs,
  		/* N -> M, (N > 1, M > 0) */
  		/* + 1 for NULL */
  		new = allocate_probes(nr_probes - nr_del + 1);
@@ -238,7 +238,7 @@ index a3be42304485f..d5ce692319128 100644
  	}
  	debug_print_probes(*funcs);
  	return old;
-@@ -284,10 +330,12 @@ static int tracepoint_remove_func(struct tracepoint *tp,
+@@ -271,10 +317,12 @@ static int tracepoint_remove_func(struct tracepoint *tp,
  	tp_funcs = rcu_dereference_protected(tp->funcs,
  			lockdep_is_held(&tracepoints_mutex));
  	old = func_remove(&tp_funcs, func);
