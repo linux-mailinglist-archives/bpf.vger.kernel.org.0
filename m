@@ -2,136 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F6E3276AD
-	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 05:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EFB3276B1
+	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 05:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbhCAE2K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Feb 2021 23:28:10 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:64786 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231549AbhCAE2F (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 28 Feb 2021 23:28:05 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 1214R0Ep018219;
-        Sun, 28 Feb 2021 20:27:20 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : references
- : from : message-id : date : in-reply-to : content-type :
+        id S231819AbhCAEdK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Feb 2021 23:33:10 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:45186 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231549AbhCAEdK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 28 Feb 2021 23:33:10 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1214UHP4026872;
+        Sun, 28 Feb 2021 20:30:44 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=PHskhB8mMTNNUI2TT/TWVuTgQUySaHULo9f5LIF7gfE=;
- b=K3RJD8q5NUihe2pyn9vduA5nJvmYKyT41zA76Ktg4JkhwxkAKxC+LNbV395baihBJ+0j
- cjQMk6wziZB6zOUa8y/wYPTzDhI9EoPwnlDYEZluPu6zC2s2iLFmI7K5nyv6siOMb1e0
- 4CuolefutoXK5W8F7tqTQhFLfeOYo9Ygvok= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 36yjmu61t1-1
+ bh=Vzxxv84QHtdwgEnWpeKihm0w/4EhATVjx4CbTfy9INc=;
+ b=al6ijzGlhIszdBAmqzY8CFBxpaAGKvsW3GBbTPnFQI0n6Va8/zGqdDc6wNuWdfni5j99
+ Qxwid1yRqakpuKQ/DPA6840aeLFEdmC0RRmPRiv41PDStqJi2SjW0QG+/6Da+OGENGwb
+ 3WP6OEY19wbdJ3Uf5Nx77imV9a06DNbss/4= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 36ymfwwtg3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 28 Feb 2021 20:27:20 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+        Sun, 28 Feb 2021 20:30:44 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sun, 28 Feb 2021 20:27:19 -0800
+ 15.1.1979.3; Sun, 28 Feb 2021 20:30:43 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IWAzUp4Yyg5aPgsShfpvWsclEm789Nh2GapM9mT13z+KjG3O4pUX6/M8DGD3MrC6Z06eiVuirT43qex+4SgV8bzqea6O17sybrcVPqwreyIMoOY+H8Gs8QfkEKTi2TGAVDRzV0skz2DcL8C8mo3xjxQYRP/lq1rp+rgu6XjMHwDn8XKIM2vUsyofCk0xj7SxcjsWUub2Lx9MhqhIY5+U4xWd3BCdK8rDvs2JdL/XSMq44++05B5XyMk0FM21p2MNc7xVhPRtQdTa4X6NHD0tzEhpoekCS+f3rhtoDRkX+65thk/leA1RAsQ94d2oOuhVEEYHPIVV2rk/XK3wnZgT1w==
+ b=elHOxucb6kOIINMJdp9pcyL5bbkUAqBR8/SZJ1QSnz3d9sADmJa+fP2B8MKBxLCktv+zLAAjRSAjVmZJTRmujejaNXAEHM9ESm5ngCgT3At6GL8LKwnS0to8ZlsBItgI/eL3n5MURIcPu9b3AQbu4D2KHj234aZpruNwlvNJbbwdvKsHzHZcu9Si3uanYkaOgxMUI7IozrBNSNzw/CeFvYFRkSBaEea4SWfm/1otuJHpTQKRvA96apH3fKHw2AiRS9IavWw/luLWjaIMJ479WbTOTl/GxWrCnK9KsQywLxe3xMbKOxSnAmAAvzSXB2ISEkVp4dEuAusgTka6KQRyNw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ab6k0Q60X/sEC4NHX0rmsk8OdTZX7wyQk2yw4O02jpE=;
- b=MbqMq35S46V2QAvERaIExfl2avqOAgCgNd4hWeXY3SuPgAoqE5wQOUEvbyRg8gPgpsWcXQgOFkTp7RrNClVk9JRussKTZSYTfM5JIJvcqXyVqYg6+blqEP/c6wYikrYIA5+SUXrarEW9BqPfve8jaL5A7cXPEzaM3xsJFsRv1gcUz1Eoa7WRzWO8Lyc+pC7jqUA1hRkIOUWl1bVgK10z204JaBb8quCZXJif4KMMzXJXn51DjQowQcrohObEJy7blESjgzYQCECQkYH9nx1vQ5cXre5hGwvnbMqGWPrg3IoUbh+AIGJ3HQ3SW/UNc36niQ2MQe7/AQwK3ioYzjXadQ==
+ bh=Vzxxv84QHtdwgEnWpeKihm0w/4EhATVjx4CbTfy9INc=;
+ b=OfcJpQoqRKQSifgffcQhB/U1MoU/cZ3qItdwNPlSpvrTVORNWnjvljBCbbkvfKp0FLkTMAWwwdp+Fbbe9l03nRQfzJvRFZEwmHM34PJmxjWaku+VPFJF9lx6wBS33YY0ut690/TBJs+GkAIw7i0AfjcdO4PXEtFqpf10AnrW8zCAXqvTZeiDGlHPDz9cehYXPj/qbKJQGR2nOG1+LNqDKgt3klO99pEvZkexvdCZuabS1SV/00c6xLE8jwfiVmTEpgeLbpgSEljFZ9DsDQotrzrLr6hF4iM5jTnqfL9+IoOSSsFwcVS9K5A9ZUyCfaxdlLymjR58Y+kBH+RymJ7klQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=fb.com;
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
  by SA0PR15MB3933.namprd15.prod.outlook.com (2603:10b6:806:83::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Mon, 1 Mar
- 2021 04:27:17 +0000
+ 2021 04:30:42 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3890.028; Mon, 1 Mar 2021
- 04:27:17 +0000
-Subject: Re: clang crash for target BPF
-To:     Andrei Matei <andreimatei1@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-References: <CABWLset0aqju=tkCVQJ3p8QyVwFUi21HkfxBS3rK7qC5oScyWw@mail.gmail.com>
- <747ea282-d158-f65f-65ac-c13dac694974@gmail.com>
+ 04:30:42 +0000
+Subject: Re: [PATCH v4 bpf-next] selftests/bpf: Use the last page in
+ test_snprintf_btf on s390
+To:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>
+CC:     <bpf@vger.kernel.org>, Vasily Gorbik <gor@linux.ibm.com>
+References: <20210227051726.121256-1-iii@linux.ibm.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <cc9defee-dcd8-5b06-7396-213599651752@fb.com>
-Date:   Sun, 28 Feb 2021 20:27:15 -0800
+Message-ID: <405c1624-955c-ecee-7557-be7a0d2488fd@fb.com>
+Date:   Sun, 28 Feb 2021 20:30:39 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.8.0
-In-Reply-To: <747ea282-d158-f65f-65ac-c13dac694974@gmail.com>
+In-Reply-To: <20210227051726.121256-1-iii@linux.ibm.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-Originating-IP: [2620:10d:c090:400::5:34a0]
-X-ClientProxiedBy: MWHPR20CA0043.namprd20.prod.outlook.com
- (2603:10b6:300:ed::29) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: MWHPR13CA0036.namprd13.prod.outlook.com
+ (2603:10b6:300:95::22) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
+MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::1008] (2620:10d:c090:400::5:34a0) by MWHPR20CA0043.namprd20.prod.outlook.com (2603:10b6:300:ed::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19 via Frontend Transport; Mon, 1 Mar 2021 04:27:17 +0000
+Received: from [IPv6:2620:10d:c085:21e8::1008] (2620:10d:c090:400::5:34a0) by MWHPR13CA0036.namprd13.prod.outlook.com (2603:10b6:300:95::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.9 via Frontend Transport; Mon, 1 Mar 2021 04:30:41 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8e2a1606-fd83-49a4-cfe2-08d8dc6a4c2d
+X-MS-Office365-Filtering-Correlation-Id: ff5f2124-56ce-4137-6ba5-08d8dc6ac62a
 X-MS-TrafficTypeDiagnostic: SA0PR15MB3933:
-X-MS-Exchange-MinimumUrlDomainAge: llvm.org#6197
-X-Microsoft-Antispam-PRVS: <SA0PR15MB39336E56141CC14AAFE9966FD39A9@SA0PR15MB3933.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <SA0PR15MB3933687716543BC96517608DD39A9@SA0PR15MB3933.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Oob-TLC-OOBClassifiers: OLM:1186;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sZM3NkPoCJv+Xk0Bos89sj/tEFRQ1uU2ANWt81Bk7kUvt1XjL/ic7BuEogldr5iN7oMjARhgXMfpq/JhYGTez976EDNojeqWhvskrUkdCpRtUd7smpNhvOWFyp8b3yuXlnCtDjx1eyd1wUnqGEr4+g1D3XyyTnjhH+SZRsJW58VLIbJho5Ugmyli4xXwIarHVBIc0oiMt+zsTcgZHRCDVDQ6qm8eM1kkoCLq63GdE8vJCiYzFFFNS+e/yUsd5UvY2pzGTgB3ce7LgO9n5gLgAzRvwe8hAirDuRFFZM6lqNlqXi1gob10Qxx/Jm+aFkAu1s6eFF/FW5JVKniKp9k5h8yzo/YVyoqGu7gIyDwqQauWnEI9eEn+Ml3KG1CACI38xEfl8stIsxIp8hCgVrzV0myJjl6Ob0djcRg4adGt/pZZeCi8cw7isBDE9qjK6zL0VY1v/FtjiDbAniCye0+zoqzwEmMEqYQtvSFbZ9rs+y52vXL06jQQ+1D4431lB4BcjP8Pz5eJ42nxSUlmjUEXe/sy4XeJIwIm9zx2p15e4htb66PilQqQ5xOLgayzVokN9Mo8mPdSFfpAzdT/J5RxZbtSBUETOvWm5EE8PmBco9r53jktxgFgULuasZo4V9JT65Keie/LADAIFXUXaJO/fI+kXjYoPqYFX7mk5SYL0nCg3f3i/uIXRP7RKP54AGbt
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(396003)(366004)(39860400002)(16526019)(2616005)(86362001)(53546011)(186003)(478600001)(966005)(6486002)(31696002)(31686004)(36756003)(83380400001)(5660300002)(8936002)(2906002)(8676002)(316002)(66476007)(66556008)(110136005)(52116002)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MVgwNzhFZ2xMc09uQUo0WW1DRlhEVTk4cUNNQS84NTNtdWhxWVVjZElDMTZw?=
- =?utf-8?B?R21lWkhxWGc5SDJFV2hEbFcvYzJoaTVjOExSbENoMFdqZHJkQWhReU4vdG5T?=
- =?utf-8?B?MzZhM3hhMHR4YmtBWWhDYVpXZmMxOXNiOWFtWUpTU0sraW5WbVBXQTdvTmdu?=
- =?utf-8?B?Q0tIaE0wdU9nZFVNQkhvd0krbWRRbm5VZ3hONEpZTkh1N1pVbFp1d1JWQmlv?=
- =?utf-8?B?Q0hqZEM0SGZNWFd3bUp2OFpHVG1Eenh1TEtCZ3JHa3ZkakxnSHFPSk5HYzM1?=
- =?utf-8?B?K1RSbVA5aUVHUVVuSTF1bWRxRGJvYkxFQnBoeFRMQWV2SEVDaUZyazFFRjZv?=
- =?utf-8?B?eU9NTFI2NGpMVENGN1RidXY2aXZxVnphelYzeVpxa0ordkw5dTNxZ3phek5j?=
- =?utf-8?B?N1h2NzdFUWh5SS9UZ0I5VEhvTVBvcG43MzF0cG5hZklVMjY0ZUg4aDArVmJI?=
- =?utf-8?B?WWx6WWgzaWdZcWlzeDgzOEF2ZU92Wk0xb2FKbHdHZm4vcUlFT0VOUkJ6NDdD?=
- =?utf-8?B?TGt2SGlpOGpKNElnRXNXZVBkL0hFOVBnaUVWbVY5K2xVMjh3a3FJa2JzSGZH?=
- =?utf-8?B?UXBnZlh1d3lXMEM4OUdzQVM3b2VZTUJFSU92bXo1YzRpUkVUQzM1S3FDOTNN?=
- =?utf-8?B?Nm9BcEQ4dU1HbndaLzBuNmpScitGQ3dPRSt4aEI2bVRxY251a3V2T0hUY3FF?=
- =?utf-8?B?bXJJQzFnQ2hxZTlER2dyVGhvalNWMWNMMHlRaHN5ZmZHQUFIQVFOamxySUJz?=
- =?utf-8?B?Z0tKOGp2bnZLVTI1Ukl1UGFjeDlndERUMDhqQjNnbVUvNUJzYXV1QXE3dlN3?=
- =?utf-8?B?bDRhbDRqYzRUV3IxODhzRlJUOUhFSnpZS3RDSmhhZzFDS0NiMCtSeVBSaWQ5?=
- =?utf-8?B?N1Q0U3NIL0kzMlRwU2VCdDdKTzIxWCtDVGFMNXZZU2NuQ2dQVzJqalRMTlBK?=
- =?utf-8?B?UG9MRW4wb1N1L3VRQUo0QVE1Nm4ydHZDZzBzUENiWDhtOUFmMm84Z0twZS8v?=
- =?utf-8?B?UGp6L0RmMytPNkFvQnRYM0ROL1JhREpHaTNYcHhuVHkxRkNOQk50b29mVnFo?=
- =?utf-8?B?RzFOZ1RIbXpLMUl6ZkNEbHJBbXZnRlZqRUFmQkVMcjZpQ2JsWU85VzBGVlc0?=
- =?utf-8?B?STdkZCtzalFoZUpjeDNwRUVlZDJJSFlkRktMNGdOSDc0Zi81T2d2aThsWml6?=
- =?utf-8?B?UFI0YlBieXh4TmpkaFN1Y0Z2ZmlsbXVmdjFRTUFnU29PdGJjYWR1ZG1NaXhV?=
- =?utf-8?B?T0syMzM3N1JYUnlUVUw5bWUwWDhiOXdtTUNWaXpaUVk5cVoxUUVtUEpZRHhP?=
- =?utf-8?B?Z1hDL3k3TlZiekJNZVkvaTRWbWxLSVhDNE16N3J1M2t4d2FzcG1aRzZzTzdM?=
- =?utf-8?B?ODNXRWF1MW9Cc2U3SFU3NFlLVG9OSjBxY3NmcWJXOEt5bERWZ1hCZ1dVTnN3?=
- =?utf-8?B?UFVBRmV3Um9HcVlQNzlCZTgrSXdaNkI5RmVKZUVnT0ovbXRJY2ZtaDQ0bWNz?=
- =?utf-8?B?WUJ6Q2dCdmlWRmVGMzNZTVNQa2dOOFI3NzNqR2l6UmVrMjZYYVV5b25aa0Ns?=
- =?utf-8?B?SnZaT3FxM1NUV3RVVFhqMkRyNjJXZlNpdThkc1hoTFpibTZpNFFTQ3IzSHFY?=
- =?utf-8?B?V2RqWFdvc25kNVJoR0oxTm5tNmREb3FoMldySkJxcklqNmZkdE16VWtaQ1BP?=
- =?utf-8?B?UmpJM0RLVHlhK3NZR3o3L1Z2SGNOdUE2VzBlY1BOVEhLKzE2aUdjYmVUU0M0?=
- =?utf-8?B?dGMyaUZHeE13VTRTM1YzNkpnbHR0MXplblZMeGtCNURnQVYrd2lkMFl4RGh3?=
- =?utf-8?B?RlVabVNTbGZrMi9tUHBIQT09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e2a1606-fd83-49a4-cfe2-08d8dc6a4c2d
+X-Microsoft-Antispam-Message-Info: NrCAzy0jTQgUt0g/sE8hEQLLZFu2lsjjp4kPXqsHj86vvew8WdHo6sHLhhl1Zi3XLYKax4hfLOhFFn50uu+fTCdaYyCzQgQKdU4xuaZW9FzvSmNch9WZNLgbSXtF/kuXQxSEh1ARDaC8UisIAIGfBr+L59firlOUhqgaJTUltsOBgRDJgzmktEOF9MrrX94L0uSB3I+XBnKetySfsBtoVWWqteHBAJt24AzNum/DB3791JU7VcmXBMbP8sK2mfk1sMIPiEgyJ9T44DYYVBv7WPTSp1m9eEx+9lHY/MF8YUXV11lQeW+ZB19yGjSBNJQEJDjBuUhDf4xeJNRLThi0Taux7mJwIepReOlrn20Sfz8ODYXT67HmBBb2hmxhk7MJZ03Zq0bvEgSEP3i50fqY9+lngjEgt60X+ZWq21QZRwtCCkdV2uZ6QpcJ6OPXXgVruOsRYJoXFLXSOJrBX88hiw1kkaXGxR3Hqb4m65AulbYiX2ZSfJxzJbmgmJkOKLnAvN929GCKkZ/F/p4j0/EyNN/tuhVjCSvUWZHkY54rejk4omutDaBXLff1XHRS2sob8o+QPO5yKqvEcvnwJcbgAbhAL8o/woLq2YIWwIqCzQE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(346002)(396003)(366004)(39860400002)(16526019)(2616005)(86362001)(53546011)(186003)(478600001)(4744005)(6486002)(31696002)(31686004)(36756003)(83380400001)(5660300002)(4326008)(8936002)(2906002)(8676002)(316002)(66476007)(66556008)(110136005)(52116002)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ek5PY1hvMzdubXBkVmtOc3laaEZoSFhkbjBXa2JYQ1VybHNtS1k3WXpjMjN6?=
+ =?utf-8?B?Ynl2eWdwbFR0V3gzQTJJTm80NmVSYlpKZ2pTR0VZWUE5UUFMVEhBeUJQOHBq?=
+ =?utf-8?B?aVIyL0RVUkgxZnpZdTVzNnhmSXJYV2hFalR0RWZjRHBWNExzcWdrVEo5NVJE?=
+ =?utf-8?B?dTBGMTlmSmQ5MDlHTmtwUUF0VjhkNlVBM04vS0VJMWcrRzdyY3NpREtKSnp2?=
+ =?utf-8?B?UzVGSUk3NkRyOXc5UE10OHVhR3lrT3JCditRTXVQdU0wWHRGRGk5dkxuQW5q?=
+ =?utf-8?B?NzJ2SnVDanRzUkVoYURPWUVscWhrN2FxUXl1US9UZVZpMEVONEtnTGpac29E?=
+ =?utf-8?B?REFrU25ROG5BQjZBWDZBOHY1amNicStoZUpQQS84WnZmK2JaU3pBS2plT2FQ?=
+ =?utf-8?B?ZnFobkRDZFRFWnZSS1pRandxeWJyZy90Q1hKSmVyek5LTDhwZENmakU2NjYy?=
+ =?utf-8?B?OGRhVkFuSU9BWHVyN0FOUGhZcFU5ME1JS010Ulc4ZkM4K1R0ek5ISi8xbjR6?=
+ =?utf-8?B?NzA1MjY2UXVPekluclpxaXpFRDVaQnROKy9ya01ybjdNSkpUYklJdjh6alJn?=
+ =?utf-8?B?a2RNRE8wUjErTXJxY1RXcDA5cjZPQUY5VmxxKzUzcEU1WFdka2Z0VW8relY5?=
+ =?utf-8?B?SldIRjdXbDBUVm9pcG9XckRlMXRUWnZRdkxNYTRzSzlWeHpkVThNclJ6eWE0?=
+ =?utf-8?B?alYvQkllMGdoaExjeXZ0Tjg4aFEyYlFZVDdUNUtObUtVVG5mblpyWEQzTGl2?=
+ =?utf-8?B?TTdGeENFaEtpV25CalA4VEl6enoxelNrcnYxNVVzK2M3c2lBU0NveWh4dEdi?=
+ =?utf-8?B?cno3Tzd2aFlzNjB1Z05tem9STzFBTzAzL0MxSDBneDVVaE1IUHZ6NktGTFNS?=
+ =?utf-8?B?TnJGbzI3U3hVbTZtbC9uTXJ1d1MyallvVjZjU2xDbTlTbGNtQXg5eUlNM0ps?=
+ =?utf-8?B?dGRpalRUNmF3SEd3c2dNaFNjNVBFYTk0NU8wZ3NIcHExWU8xWUpZOUNFMkJl?=
+ =?utf-8?B?RFRwQWFqTmgyL1hrVzBIaDdnV21LK1RidHlCMDdFMzIxS3JGMDNwdG1aZ3FY?=
+ =?utf-8?B?TlJyTHNseWhUWFJUSHJ0cXBoSElCc3c2SmpvSlc5M0pIanljRHJ0b0ZHQUlG?=
+ =?utf-8?B?OERoVHhPZVdyQVYyOG9haHovaklMaXlWcE5Ocm5YbHRXbWFBeXJzekVveGR3?=
+ =?utf-8?B?RUdSRzBRcUZRUGhUd3ZqVmxueXVZWm5UdE9hWjB3SjlSNkVTd3U1U0YxdFRQ?=
+ =?utf-8?B?blBaY3JWSHlWaVAvdkhKZ0NsNWFnMU1RcXA3Yi9QTkpmVnk1WXZTSm9pSVJC?=
+ =?utf-8?B?c3ZZcDZsaHFqOXNNbUdPSXBmc2FWQjY0aWJUdVBlQjl4TlpUMytjRkNjYjB0?=
+ =?utf-8?B?UFhNYVdpTHE3YXpFQ3RiTE9qMUtpSDArK0N2anVsaU5ocnZGT09uY0lleU54?=
+ =?utf-8?B?dXBYTFlScElwNDZqL2FiUVdzSlNqOExvbkpUelZMUXdVQTIvRDlwWEpYSFBp?=
+ =?utf-8?B?NnArQVh6M2NJMElLdDNJakR2elU4b05GaW92LzNCbklUWEZha1RMS2Y5a295?=
+ =?utf-8?B?dDdoajNwbW1ZVkRWVjVpeWw1anV4c0xzRFY5U3hLU2xRRTdWcEc4Y1BaLyty?=
+ =?utf-8?B?ell6VEJTZVFRN0lHLzV6c05Fd0YyZXlGczR4OXNTb21pRnBxVEZPSVpGM2pk?=
+ =?utf-8?B?WHJ2eEw4Rzloa2pwczluKy9ocHpvS1VxNi8rZmlGTFk0bi9mWEpzZXZKeGx4?=
+ =?utf-8?B?WWxmT2thQzYyZDRoa00waVpFYThaY3lURmJqdlpRR0lvaDZTTTdmUjl1aElF?=
+ =?utf-8?Q?wugnGz6cMeQzieFRMFArAUtRSQJkNTGtkAFxI=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff5f2124-56ce-4137-6ba5-08d8dc6ac62a
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2021 04:27:17.6909
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2021 04:30:42.3557
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sL2Gy7LJ/EVoyRfirCqwwKwnANYzVz56GTlc3umjIgSJS/LPUpNAfHUZHzwAznyB
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7ohX0l4JCxNHMlQ31SKO/4ofs8su9EmHrTGBgbkDwx9NvmIKv836pdCCdK5ZAANk
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3933
 X-OriginatorOrg: fb.com
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 2 URL's were un-rewritten
-MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-03-01_01:2021-02-26,2021-03-01 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 bulkscore=0
- lowpriorityscore=0 priorityscore=1501 clxscore=1011 spamscore=0
- impostorscore=0 adultscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103010035
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 spamscore=0
+ suspectscore=0 mlxlogscore=999 priorityscore=1501 impostorscore=0
+ mlxscore=0 adultscore=0 clxscore=1015 lowpriorityscore=0 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103010036
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -139,44 +140,14 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 2/28/21 2:14 PM, Andrei Matei wrote:
-> Hello,
+On 2/26/21 9:17 PM, Ilya Leoshkevich wrote:
+> test_snprintf_btf fails on s390, because NULL points to a readable
+> struct lowcore there. Fix by using the last page instead.
 > 
-> I've encountered an assertion failure / crash on clang master 
-> (5de09ef02e24) as well as the older version 11. Happens for "-target 
-> bpf", not otherwise.
-> I've reported it to clang but there's been no response so far. Alexei, I 
-> believe you've invited me to raise the issue here.
-> clang bugzilla: 
-> https://bugs.llvm.org/show_bug.cgi?id=48578 
+> Error message example:
 > 
+>      printing fffffffffffff000 should generate error, got (361)
 > 
-> The repro program and instructions are in the bug report above.
-> The assertion failure reads:
-> 
-> clang: 
-> /home/andrei/src/llvm-project/llvm/lib/CodeGen/LiveVariables.cpp:130: 
-> void llvm::LiveVariables::HandleVirtRegUse(llvm::Register, 
-> llvm::MachineBasicBlock*, llvm::MachineInstr&): Assertion 
-> `MRI->getVRegDef(Reg) && "Register use before def!"' failed.
-> PLEASE submit a bug report to 
-> https://bugs.llvm.org/  
-> and include the crash backtrace, preprocessed source, and associated run 
-> script.
-> Stack dump:
-> 0.      Program arguments: bin/clang -O2 -target bpf -c -o probe.bpf.o 
-> /home/andrei/Downloads/probe.bpf.preprocessed.c
-> 1.      <eof> parser at end of file
-> 2.      Code generation
-> 3.      Running pass 'Function Pass Manager' on module 
-> '/home/andrei/Downloads/probe.bpf.preprocessed.c'.
-> 4.      Running pass 'Live Variable Analysis' on function '@probe'
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-Andrei, Thanks for reporting. I can reproduce with latest llvm trunk.
-Will take a look and comment in the above bugzilla report whenever
-I find anything. Thanks again!
-
-> 
-> 
-> Thanks!
-> 
+Acked-by: Yonghong Song <yhs@fb.com>
