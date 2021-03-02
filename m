@@ -2,191 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31A032B352
-	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B10132B353
+	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:55:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352531AbhCCDuv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Mar 2021 22:50:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60586 "EHLO
+        id S1352532AbhCCDuy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Mar 2021 22:50:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236964AbhCBSYr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:24:47 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72925C0617A7;
-        Tue,  2 Mar 2021 10:23:40 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id o6so2572619pjf.5;
-        Tue, 02 Mar 2021 10:23:40 -0800 (PST)
+        with ESMTP id S1580980AbhCBScd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Mar 2021 13:32:33 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F7DC061788;
+        Tue,  2 Mar 2021 10:31:53 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id h82so7935504ybc.13;
+        Tue, 02 Mar 2021 10:31:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bnxJ87u4sbrwdk1LAB30YLXwHUgFDPCGUB44sFI7n1s=;
-        b=uI/i8gcpuYmFguZTeZ92j+H6EHouSCIOf1vxo0rFq4INLXiAhldffcUPKE31UyGoXb
-         rUieOrPz71RSIdEtfeXFKBHEcSdz3udJzOCuMb9SWQB7nPSl2Opu2gZWX2gWI2Csg43n
-         wOiPKKMTmOXkvx8UdE3ZwRVJ++bHYmNN8T7N+ZWZPPDhRkB5EwrJqAko4zd+BNnENLWZ
-         8eBPRcoP73a3SZ9es+bzRk6h1UfNzCN2riPte6TT8Pz/+GdHiUqBxmkxkL8ZGtVjkP8Y
-         iHUlCcs9AYc86qMy8pGiuCVjvGmoOXJJRnkRVcb/8xSYgBulx4082bpZUzN124KM+Cpr
-         nLjA==
+        bh=p5mQjzoE3xnTJG7PmrlFzhti+trlvTo1ic3oTokLMMc=;
+        b=Y0Ubm2IqkOgR4zN9cLivDAIzbZ8wOHHcMayKC/hM/QadVWehA+GemhY0JUtHmknVRP
+         P5qxmjvvlFInrnpkvhgz5nblA+JxhGj08gDDAAEf+lIJdyxnqGuU/uIP4S5VRAwtrDUT
+         kfTSKtx7Xd8w80NX+fKfmMYXr8kIIa3wM2eO0YkNLc2pvzO9EZiqO3gj4nRju61xDhfn
+         JlWE7hhdAhqMOmCIPKProsDfA5CBuY1/Ld7N6i02FJht5O164WylrME3yBVecxR6KlCm
+         UYltiOjb6YrG968ul1LANwtnfL9Yojbk+2/slh5LuIrFcr7nKGkyGLFwGGR02ceZou8x
+         Xnsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bnxJ87u4sbrwdk1LAB30YLXwHUgFDPCGUB44sFI7n1s=;
-        b=sLUOM0roNXK3MespzFIUJ3mHYz4H11cOjoo01SYqZGuFHxIoI4p0Xb6RAOysJ5tyIp
-         bgZraxAzvvZt4NZGr4coJcZzcodfI32qQKWcGzLnjKAipFn+kjRiGh+/3CnNv/MGispY
-         ydOWtiwb/4sqkHyYTKCxsoBr3J2YzsxtoxGFdppOaaOq+mpc4KRQ5FJVCOZxAuUEho1M
-         fNfrVsxQEU78d6dDSi6QDvIyBHnBHcxMVPY+FZv7gHca3/P9+2pbUTWcJepE9WXfQt7D
-         N4WeUR4Xke6Z2f620YQP5dYuAqf1ZlQo13zrh0z+xfSs5oqbyDHjFGE1llBeuCWnsc70
-         0dOA==
-X-Gm-Message-State: AOAM5317/mq4lhozH+GGkQ+PBhca7CpaEUNA9yDhooQZ/+tNgAoSTEfH
-        u2W9hPX/j5aABlM/pqmEumn7L7BgFSjfTpJzwHiAhm+bE1rWtw==
-X-Google-Smtp-Source: ABdhPJwKMmxE8PKMms10iLp+avFpm/jVT/64xFRltVsfI+uuHTglt6Su1krBT5kTb5KSxtJNLi3qMTCxgNaFQhOHS08=
-X-Received: by 2002:a17:90a:ce92:: with SMTP id g18mr5839612pju.52.1614709419796;
- Tue, 02 Mar 2021 10:23:39 -0800 (PST)
+        bh=p5mQjzoE3xnTJG7PmrlFzhti+trlvTo1ic3oTokLMMc=;
+        b=c0qkr8ozzeogxHlqxr0XeAGKh+cq4W5cgkgxET3SCUUJ8bOFlo+K+0rvQUrNaqg42+
+         omU68XF+S1riTKk+WxZVWOFkNTgdiEaicB4oAmc+p5T6XpDf4d89+BVwqaKEtvHDuzx/
+         cJWQxMMVQwH3a3/lpqRSLed4s4zFS6OUlUBJE4RlO3lXgQkF3qsrAMd6eykY8jHU5/GO
+         XI2HsSxGUaVFRxrKmQtrbKecNJXI5is0yZtRU3TnsxCz3j9s028qx/SIIkk/2wr+cg+F
+         5+mFbmjyCkt9fhVF9CEcUd8qj49oFsucZfqHkd86u1/h1fiqLdGt8K1zHo2THGlscHty
+         hs6A==
+X-Gm-Message-State: AOAM533697R9JPyMLBLIIcpb1a5mGLI2Q3euXU+iCHZcEC56564AVCS9
+        AKhq6ZjIi4rD3+XVYPGD18MJ0th1+UkzhamB+M/DfBmYA84=
+X-Google-Smtp-Source: ABdhPJyQwwgASrpAqh0D+gy2eaMl5TSk+tWWgM0z9Yq8pKwMSkIRx55hvjrAWYBTJUmIDgK1d+EgiI9R2qZlD4PSn2Y=
+X-Received: by 2002:a25:c6cb:: with SMTP id k194mr32076441ybf.27.1614709912374;
+ Tue, 02 Mar 2021 10:31:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20210302023743.24123-1-xiyou.wangcong@gmail.com>
- <20210302023743.24123-3-xiyou.wangcong@gmail.com> <CACAyw9-SjsNn4_J1KDXuFh1nd9Hr-Mo+=7S-kVtooJwdi1fodQ@mail.gmail.com>
-In-Reply-To: <CACAyw9-SjsNn4_J1KDXuFh1nd9Hr-Mo+=7S-kVtooJwdi1fodQ@mail.gmail.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Tue, 2 Mar 2021 10:23:28 -0800
-Message-ID: <CAM_iQpXqE9qJ=+zKA6H1Rq=KKgm8LZ=p=ZtvrrH+hfSrTg+zxw@mail.gmail.com>
-Subject: Re: [Patch bpf-next v2 2/9] sock: introduce sk_prot->update_proto()
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+References: <20210301190416.90694-1-jolsa@kernel.org> <CAEf4BzbBnR3M60HepC_CFDsdMQDBYoEWiWtREUaLxrrxyBce0Q@mail.gmail.com>
+ <YD4d+dmay+oKyiot@krava>
+In-Reply-To: <YD4d+dmay+oKyiot@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 2 Mar 2021 10:31:41 -0800
+Message-ID: <CAEf4Bzah8Au01NvtwSogpkr3etwQ3_bObj3GObG8Lb3N0DqZwA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix test_attach_probe for powerpc uprobes
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Yauheni Kaliuta <ykaliuta@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 8:22 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+On Tue, Mar 2, 2021 at 3:14 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> On Tue, 2 Mar 2021 at 02:37, Cong Wang <xiyou.wangcong@gmail.com> wrote:
->
-> ...
-> >  static inline void sk_psock_restore_proto(struct sock *sk,
-> >                                           struct sk_psock *psock)
-> >  {
-> >         sk->sk_prot->unhash = psock->saved_unhash;
->
-> Not related to your patch set, but why do an extra restore of
-> sk_prot->unhash here? At this point sk->sk_prot is one of our tcp_bpf
-> / udp_bpf protos, so overwriting that seems wrong?
-
-Good catch. It seems you are right, but I need a double check. And
-yes, it is completely unrelated to my patch, as the current code has
-the same problem.
-
->
-> > -       if (inet_csk_has_ulp(sk)) {
-> > -               tcp_update_ulp(sk, psock->sk_proto, psock->saved_write_space);
-> > -       } else {
-> > -               sk->sk_write_space = psock->saved_write_space;
-> > -               /* Pairs with lockless read in sk_clone_lock() */
-> > -               WRITE_ONCE(sk->sk_prot, psock->sk_proto);
-> > -       }
-> > +       if (psock->saved_update_proto)
-> > +               psock->saved_update_proto(sk, true);
-> >  }
+> On Mon, Mar 01, 2021 at 04:34:24PM -0800, Andrii Nakryiko wrote:
+> > On Mon, Mar 1, 2021 at 11:11 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > When testing uprobes we the test gets GEP (Global Entry Point)
+> > > address from kallsyms, but then the function is called locally
+> > > so the uprobe is not triggered.
+> > >
+> > > Fixing this by adjusting the address to LEP (Local Entry Point)
+> > > for powerpc arch.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  .../selftests/bpf/prog_tests/attach_probe.c    | 18 +++++++++++++++++-
+> > >  1 file changed, 17 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> > > index a0ee87c8e1ea..c3cfb48d3ed0 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> > > @@ -2,6 +2,22 @@
+> > >  #include <test_progs.h>
+> > >  #include "test_attach_probe.skel.h"
+> > >
+> > > +#if defined(__powerpc64__)
+> > > +/*
+> > > + * We get the GEP (Global Entry Point) address from kallsyms,
+> > > + * but then the function is called locally, so we need to adjust
+> > > + * the address to get LEP (Local Entry Point).
+> > > + */
+> > > +#define LEP_OFFSET 8
+> > > +
+> > > +static ssize_t get_offset(ssize_t offset)
 > >
-> >  static inline void sk_psock_set_state(struct sk_psock *psock,
-> > diff --git a/include/net/sock.h b/include/net/sock.h
-> > index 636810ddcd9b..0e8577c917e8 100644
-> > --- a/include/net/sock.h
-> > +++ b/include/net/sock.h
-> > @@ -1184,6 +1184,9 @@ struct proto {
-> >         void                    (*unhash)(struct sock *sk);
-> >         void                    (*rehash)(struct sock *sk);
-> >         int                     (*get_port)(struct sock *sk, unsigned short snum);
-> > +#ifdef CONFIG_BPF_SYSCALL
-> > +       int                     (*update_proto)(struct sock *sk, bool restore);
+> > if we mark this function __weak global, would it work as is? Would it
+> > get an address of a global entry point? I know nothing about this GEP
+> > vs LEP stuff, interesting :)
 >
-> Kind of a nit, but this name suggests that the callback is a lot more
-> generic than it really is. The only thing you can use it for is to
-> prep the socket to be sockmap ready since we hardwire sockmap_unhash,
-> etc. It's also not at all clear that this only works if sk has an
-> sk_psock associated with it. Calling it without one would crash the
-> kernel since the update_proto functions don't check for !sk_psock.
+> you mean get_base_addr? it's already global
 >
-> Might as well call it install_sockmap_hooks or something and have a
-> valid sk_psock be passed in to the callback. Additionally, I'd prefer
+> all the calls to get_base_addr within the object are made
+> to get_base_addr+0x8
+>
+> 00000000100350c0 <test_attach_probe>:
+>     ...
+>     100350e0:   59 fd ff 4b     bl      10034e38 <get_base_addr+0x8>
+>     ...
+>     100358a8:   91 f5 ff 4b     bl      10034e38 <get_base_addr+0x8>
+>
+>
+> I'm following perf fix we had for similar issue:
+>   7b6ff0bdbf4f perf probe ppc64le: Fixup function entry if using kallsyms lookup
+>
+> I'll get more info on that
 
-For the name, sure, I am always open to better names. Not sure if
-'install_sockmap_hooks' is a good name, I also want to express we
-are overriding sk_prot. How about 'psock_update_sk_prot'?
-
-
-> if the function returned a struct proto * like it does at the moment.
-> That way we keep sk->sk_prot manipulation confined to the sockmap code
-> and don't have to copy paste it into every proto.
-
-Well, TCP seems too special to do this, as it could call tcp_update_ulp()
-to update the proto.
+My thinking was that if you mark the function as __weak, then the
+compiler is not allowed to assume that the actual implementation of
+that function will come from the same object (because it might be
+replaced by the linker later), so it has to be pessimistic and use
+global entry, no? Totally theoritizing here, of course.
 
 >
-> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> > index 3bddd9dd2da2..13d2af5bb81c 100644
-> > --- a/net/core/sock_map.c
-> > +++ b/net/core/sock_map.c
-> > @@ -184,26 +184,10 @@ static void sock_map_unref(struct sock *sk, void *link_raw)
+> jirka
+>
 > >
-> >  static int sock_map_init_proto(struct sock *sk, struct sk_psock *psock)
-> >  {
-> > -       struct proto *prot;
-> > -
-> > -       switch (sk->sk_type) {
-> > -       case SOCK_STREAM:
-> > -               prot = tcp_bpf_get_proto(sk, psock);
-> > -               break;
-> > -
-> > -       case SOCK_DGRAM:
-> > -               prot = udp_bpf_get_proto(sk, psock);
-> > -               break;
-> > -
-> > -       default:
-> > +       if (!sk->sk_prot->update_proto)
-> >                 return -EINVAL;
-> > -       }
-> > -
-> > -       if (IS_ERR(prot))
-> > -               return PTR_ERR(prot);
-> > -
-> > -       sk_psock_update_proto(sk, psock, prot);
-> > -       return 0;
-> > +       psock->saved_update_proto = sk->sk_prot->update_proto;
-> > +       return sk->sk_prot->update_proto(sk, false);
+> > > +{
+> > > +       return offset + LEP_OFFSET;
+> > > +}
+> > > +#else
+> > > +#define get_offset(offset) (offset)
+> > > +#endif
+> > > +
+> > >  ssize_t get_base_addr() {
+> > >         size_t start, offset;
+> > >         char buf[256];
+> > > @@ -36,7 +52,7 @@ void test_attach_probe(void)
+> > >         if (CHECK(base_addr < 0, "get_base_addr",
+> > >                   "failed to find base addr: %zd", base_addr))
+> > >                 return;
+> > > -       uprobe_offset = (size_t)&get_base_addr - base_addr;
+> > > +       uprobe_offset = get_offset((size_t)&get_base_addr - base_addr);
+> > >
+> > >         skel = test_attach_probe__open_and_load();
+> > >         if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
+> > > --
+> > > 2.29.2
+> > >
+> >
 >
-> I think reads / writes from sk_prot need READ_ONCE / WRITE_ONCE. We've
-> not been diligent about this so far, but I think it makes sense to be
-> careful in new code.
-
-Hmm, there are many places not using READ_ONCE/WRITE_ONCE,
-for a quick example:
-
-void sock_map_unhash(struct sock *sk)
-{
-        void (*saved_unhash)(struct sock *sk);
-        struct sk_psock *psock;
-
-        rcu_read_lock();
-        psock = sk_psock(sk);
-        if (unlikely(!psock)) {
-                rcu_read_unlock();
-                if (sk->sk_prot->unhash)
-                        sk->sk_prot->unhash(sk);
-                return;
-        }
-
-        saved_unhash = psock->saved_unhash;
-        sock_map_remove_links(sk, psock);
-        rcu_read_unlock();
-        saved_unhash(sk);
-}
-
-Thanks.
