@@ -2,107 +2,263 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26DE132B32F
-	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D63232B333
+	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:54:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233016AbhCCDtD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Mar 2021 22:49:03 -0500
-Received: from www62.your-server.de ([213.133.104.62]:58404 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237250AbhCBLPw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Mar 2021 06:15:52 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lH2z9-0006Sz-FQ; Tue, 02 Mar 2021 12:14:39 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lH2z9-000BzG-B4; Tue, 02 Mar 2021 12:14:39 +0100
-Subject: Re: [PATCH] bpf: selftests: test_verifier: mask bpf_csum_diff()
- return value to 16 bits
-To:     Yonghong Song <yhs@fb.com>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        bpf@vger.kernel.org
-Cc:     toke@redhat.com
-References: <20210228103017.320240-1-yauheni.kaliuta@redhat.com>
- <acf00517-6129-869b-cd2a-03715de5fc61@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <db5684bf-3757-3fdf-2581-002191f7a899@iogearbox.net>
-Date:   Tue, 2 Mar 2021 12:14:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1352467AbhCCDt0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Mar 2021 22:49:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1378996AbhCBP3q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Mar 2021 10:29:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14B5C64F20;
+        Tue,  2 Mar 2021 15:28:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614698928;
+        bh=nWtbNd0LyPXCoQly4Fgl2Gsi9rtHOaKIPX4W5cz9HF0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=To78vVwsjm4aSQ5HEPEKC7AHtNRCb1QDlYDn6Om+u+SR5gLHE2udj31LJ8IFWwsyZ
+         xdzVnHrBROsA18h6JwpdKLZZgwcaldWbtHYVADxK82WE8uYdvKE5UoIM7ozZ6/4Bzm
+         O/BuB9V5XhEiCJslYyvD1Pq8EhuWKTt4vydBX8kwIPKSzXfkIC9IXui2xDLwllkLnm
+         J5wSe1RU+P6diTvkIuqMqKrO9OY2lCPHopZ3hUGuxVr/srv2PuB750/pLZm0srbdu7
+         g6yHyAu32+eGFNjccxtr4bms1NwdJ9E4ftnDHK1M/yksr1w3LGK5njhWdEwQ+LG01U
+         XeKUxLgXid0Hw==
+Date:   Tue, 2 Mar 2021 16:28:43 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Shay Agroskin <shayagr@amazon.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        toke@redhat.com, freysteinn.alfredsson@kau.se,
+        john.fastabend@gmail.com, jasowang@redhat.com, mst@redhat.com,
+        thomas.petazzoni@bootlin.com, mw@semihalf.com,
+        linux@armlinux.org.uk, ilias.apalodimas@linaro.org,
+        netanel@amazon.com, akiyano@amazon.com, michael.chan@broadcom.com,
+        madalin.bucur@nxp.com, ioana.ciornei@nxp.com,
+        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        saeedm@nvidia.com, grygorii.strashko@ti.com, ecree.xilinx@gmail.com
+Subject: Re: [PATCH v2 bpf-next] bpf: devmap: move drop error path to devmap
+ for XDP_REDIRECT
+Message-ID: <YD5ZqzIa5TymNdB4@lore-desk>
+References: <d0c326f95b2d0325f63e4040c1530bf6d09dc4d4.1614422144.git.lorenzo@kernel.org>
+ <pj41zly2f8wfq6.fsf@u68c7b5b1d2d758.ant.amazon.com>
+ <YDwYzYVIDQABINyy@lore-laptop-rh>
+ <20210301084847.5117a404@carbon>
+ <pj41zlpn0jcgms.fsf@u68c7b5b1d2d758.ant.amazon.com>
+ <20210301211837.4a755c44@carbon>
 MIME-Version: 1.0
-In-Reply-To: <acf00517-6129-869b-cd2a-03715de5fc61@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26095/Mon Mar  1 13:10:16 2021)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3l53p2Dttm0uRSJd"
+Content-Disposition: inline
+In-Reply-To: <20210301211837.4a755c44@carbon>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/1/21 6:18 AM, Yonghong Song wrote:
-> On 2/28/21 2:30 AM, Yauheni Kaliuta wrote:
->> The verifier test labelled "valid read map access into a read-only array
->> 2" calls the bpf_csum_diff() helper and checks its return value.
->> However, architecture implementations of csum_partial() (which is what
->> the helper uses) differ in whether they fold the return value to 16 bit
->> or not. For example, x86 version has:
->>
->>     if (unlikely(odd)) {
->>         result = from32to16(result);
->>         result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
->>     }
->>
->> while generic lib/checksum.c does:
->>
->>     result = from32to16(result);
->>     if (odd)
->>         result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
->>
->> This makes the helper return different values on different
->> architectures, breaking the test on non-x86. To fix this, add an
-> 
-> I remember there is a previous discussion for this issue, csum_diff()
-> returns different results for different architecture? Daniel?
-> Any conclusion how to deal with this?
 
-I took in the test case fix for now. After getting cascading work for !x86-64,
-we can always revert this one again. Plan of action to resume this work was
-to at least update the other 64-bit archs successively to a no-fold variant as
-well, so their arch specific implementations can mimic what x86-64 is doing.
+--3l53p2Dttm0uRSJd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->> additional instruction to always mask the return value to 16 bits, and
->> update the expected return value accordingly.
->>
->> Fixes: fb2abb73e575 ("bpf, selftest: test {rd, wr}only flags and direct value access")
->> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
->> ---
->>   tools/testing/selftests/bpf/verifier/array_access.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/testing/selftests/bpf/verifier/array_access.c b/tools/testing/selftests/bpf/verifier/array_access.c
->> index bed53b561e04..1b138cd2b187 100644
->> --- a/tools/testing/selftests/bpf/verifier/array_access.c
->> +++ b/tools/testing/selftests/bpf/verifier/array_access.c
->> @@ -250,12 +250,13 @@
->>       BPF_MOV64_IMM(BPF_REG_5, 0),
->>       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
->>                BPF_FUNC_csum_diff),
->> +    BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 0xffff),
->>       BPF_EXIT_INSN(),
->>       },
->>       .prog_type = BPF_PROG_TYPE_SCHED_CLS,
->>       .fixup_map_array_ro = { 3 },
->>       .result = ACCEPT,
->> -    .retval = -29,
->> +    .retval = 65507,
->>   },
->>   {
->>       "invalid write map access into a read-only array 1",
->>
+> On Mon, 1 Mar 2021 13:23:06 +0200
+> Shay Agroskin <shayagr@amazon.com> wrote:
+>=20
+> > Jesper Dangaard Brouer <brouer@redhat.com> writes:
+> >=20
+> > > On Sun, 28 Feb 2021 23:27:25 +0100
+> > > Lorenzo Bianconi <lorenzo.bianconi@redhat.com> wrote:
+> > > =20
+> > >> > >  	drops =3D bq->count - sent;
+> > >> > > -out:
+> > >> > > -	bq->count =3D 0;
+> > >> > > +	if (unlikely(drops > 0)) {
+> > >> > > +		/* If not all frames have been=20
+> > >> > > transmitted, it is our
+> > >> > > +		 * responsibility to free them
+> > >> > > +		 */
+> > >> > > +		for (i =3D sent; i < bq->count; i++)
+> > >> > > +=20
+> > >> > > xdp_return_frame_rx_napi(bq->q[i]);
+> > >> > > +	}   =20
+> > >> >=20
+> > >> > Wouldn't the logic above be the same even w/o the 'if'=20
+> > >> > condition ?   =20
+> > >>=20
+> > >> it is just an optimization to avoid the for loop instruction if=20
+> > >> sent =3D bq->count =20
+> > >
+> > > True, and I like this optimization.
+> > > It will affect how the code layout is (and thereby I-cache=20
+> > > usage). =20
+> >=20
+> > I'm not sure what I-cache optimization you mean here. Compiling=20
+> > the following C code:
+> >=20
+> > # define unlikely(x)	__builtin_expect(!!(x), 0)
+> >=20
+> > extern void xdp_return_frame_rx_napi(int q);
+> >=20
+> > struct bq_stuff {
+> >     int q[4];
+> >     int count;
+> > };
+> >=20
+> > int test(int sent, struct bq_stuff *bq) {
+> >     int i;
+> >     int drops;
+> >=20
+> >     drops =3D bq->count - sent;
+> >     if(unlikely(drops > 0))
+> >         for (i =3D sent; i < bq->count; i++)
+> >             xdp_return_frame_rx_napi(bq->q[i]);
+> >=20
+> >     return 2;
+> > }
+> >=20
+> > with x86_64 gcc 10.2 with -O3 flag in https://godbolt.org/ (which=20
+> > provides the assembly code for different compilers) yields the=20
+> > following assembly:
+> >=20
+> > test:
+> >         mov     eax, DWORD PTR [rsi+16]
+> >         mov     edx, eax
+> >         sub     edx, edi
+> >         test    edx, edx
+> >         jg      .L10
+> > .L6:
+> >         mov     eax, 2
+> >         ret
+>=20
+> This exactly shows my point.  Notice how 'ret' happens earlier in this
+> function.  This is the common case, thus the CPU don't have to load the
+> asm instruction below.
+>=20
+> > .L10:
+> >         cmp     eax, edi
+> >         jle     .L6
+> >         push    rbp
+> >         mov     rbp, rsi
+> >         push    rbx
+> >         movsx   rbx, edi
+> >         sub     rsp, 8
+> > .L3:
+> >         mov     edi, DWORD PTR [rbp+0+rbx*4]
+> >         add     rbx, 1
+> >         call    xdp_return_frame_rx_napi
+> >         cmp     DWORD PTR [rbp+16], ebx
+> >         jg      .L3
+> >         add     rsp, 8
+> >         mov     eax, 2
+> >         pop     rbx
+> >         pop     rbp
+> >         ret
+> >=20
+> >=20
+> > When dropping the 'if' completely I get the following assembly=20
+> > output
+> > test:
+> >         cmp     edi, DWORD PTR [rsi+16]
+> >         jge     .L6
+>=20
+> Jump to .L6 which is the common case.  The code in between is not used
+> in common case, but the CPU will likely load this into I-cache, and
+> then jumps over the code in common case.
+>=20
+> >         push    rbp
+> >         mov     rbp, rsi
+> >         push    rbx
+> >         movsx   rbx, edi
+> >         sub     rsp, 8
+> > .L3:
+> >         mov     edi, DWORD PTR [rbp+0+rbx*4]
+> >         add     rbx, 1
+> >         call    xdp_return_frame_rx_napi
+> >         cmp     DWORD PTR [rbp+16], ebx
+> >         jg      .L3
+> >         add     rsp, 8
+> >         mov     eax, 2
+> >         pop     rbx
+> >         pop     rbp
+> >         ret
+> > .L6:
+> >         mov     eax, 2
+> >         ret
+> >=20
+> > which exits earlier from the function if 'drops > 0' compared to=20
+> > the original code (the 'for' loop looks a little different, but=20
+> > this shouldn't affect icache).
+> >
+> > When removing the 'if' and surrounding the 'for' condition with=20
+> > 'unlikely' statement:
+> >=20
+> > for (i =3D sent; unlikely(i < bq->count); i++)
+> >=20
+> > I get the following assembly code:
+> >=20
+> > test:
+> >         cmp     edi, DWORD PTR [rsi+16]
+> >         jl      .L10
+> >         mov     eax, 2
+> >         ret
+> > .L10:
+> >         push    rbx
+> >         movsx   rbx, edi
+> >         sub     rsp, 16
+> > .L3:
+> >         mov     edi, DWORD PTR [rsi+rbx*4]
+> >         mov     QWORD PTR [rsp+8], rsi
+> >         add     rbx, 1
+> >         call    xdp_return_frame_rx_napi
+> >         mov     rsi, QWORD PTR [rsp+8]
+> >         cmp     DWORD PTR [rsi+16], ebx
+> >         jg      .L3
+> >         add     rsp, 16
+> >         mov     eax, 2
+> >         pop     rbx
+> >         ret
+> >=20
+> > which is shorter than the other two (one line compared to the=20
+> > second and 7 lines compared the original code) and seems as=20
+> > optimized as the second.
+>=20
+> You are also using unlikely() and get the earlier return, with less
+> instructions, which is great.  Perhaps we can use this type of
+> unlikely() in the for-statement?  WDYT Lorenzo?
 
+sure, we can do it..I will address it in v3. Thanks.
+
+Regards,
+Lorenzo
+
+> =20
+> =20
+> > I'm far from being an assembly expert, and I tested a code snippet=20
+> > I wrote myself rather than the kernel's code (for the sake of=20
+> > simplicity only).
+> > Can you please elaborate on what makes the original 'if' essential=20
+> > (I took the time to do the assembly tests, please take the time on=20
+> > your side to prove your point, I'm not trying to be grumpy here).
+> >=20
+> > Shay
+>=20
+> --=20
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>=20
+
+--3l53p2Dttm0uRSJd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYD5ZqQAKCRA6cBh0uS2t
+rEcnAP9LdyDn5J3yhUEVOWD48x9BxsJWiH4q7EkasprVPMhgOwEA7c8ykv3Xbnhb
+0o2HUVszNvC7BGRUlGKHhvyAW4/t2QA=
+=wyRl
+-----END PGP SIGNATURE-----
+
+--3l53p2Dttm0uRSJd--
