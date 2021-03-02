@@ -2,32 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133E032B35D
-	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:55:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C3932B360
+	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:55:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352546AbhCCDvJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Mar 2021 22:51:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1837232AbhCBUmi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Mar 2021 15:42:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EC4B60234;
-        Tue,  2 Mar 2021 20:41:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614717718;
-        bh=wJMln0/8S/r/7xCDmW9iZBDmp/NIg3AeCK78nY6Wc4I=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=fScgFUmL8qw85ni5YQNv5VJPj6aBA0hLKhJusz09Lt8h3FZ4yWCbRv9gZxcAfPNYN
-         1LnUm+efxhaD3sUcyRULdmgkIaoDwlLD11BJPGuISkOBvCrHnOZIVQYTSlQh1YvBNQ
-         kQFRW/6JuXIhTarhhrF9ldCuqMJ23DhlRPHw6wNsoYTjwNfzlzMNrQ7rhK/uJp3tF+
-         /42z4qGkxTfYgYsawg0Cxuz4afxPnoDtcdE25mZTYxM2qlxiy6g/1tiALwlvwM9hDW
-         6FWNnVxsTNvfsB54u5mmCrwMoQPbFz+UKFV9UYyHVg/6W6SIVKYx8+uHj2rv5wTp/W
-         FWtjvYEgFQ3Rg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C1262352259C; Tue,  2 Mar 2021 12:41:57 -0800 (PST)
-Date:   Tue, 2 Mar 2021 12:41:57 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
+        id S1352453AbhCCDvL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Mar 2021 22:51:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1381284AbhCBUwc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Mar 2021 15:52:32 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B170C061788;
+        Tue,  2 Mar 2021 12:51:42 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id l22so3364324wme.1;
+        Tue, 02 Mar 2021 12:51:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kIc2w7mujz9voVpN9IahMRlS32F3lOVKY+UoybD2UvI=;
+        b=eIAjkt4jHEWC8FH4kXMbpC7gl9BJawjb04aSeyj4ImQ8n3/6Os4Bri9R7+JG0t6uIr
+         q+zlATJwN9dbY1Wg5R3o8llP8cfaTu2Y89wOG028zy6jug9p+Z4KAezDAjfjRl0EnvBk
+         oIqp/4gTVQ7oiDLs/szViB6FAf5hWaxY2FeAptgjNoVoFoYbMEvX17T41d3ut2/qh8g8
+         RskyQtSculplpZOc1ytNHrxG44WF4FZDjBKrHiv26ZQ//TaLUOXM86QALcugbZzocTdV
+         9kC8C5msx0Rz/m2tzvFEEsvxiVMliGfwUzPh33LVVO3W/NIWQeAWDdB00NiBCVFizEtZ
+         BgKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kIc2w7mujz9voVpN9IahMRlS32F3lOVKY+UoybD2UvI=;
+        b=Pez7EN0h02sChFXRCt9AK57niuUWoTzEXGgvx9j0+u4hcru78UD5XDS5zvo4qdUH+f
+         dBg3InLam9ohcW9GAOkacapCQyBxqn+bx+TVtSSdB35TL1doFDIuN6wFRHND3plz48/J
+         ZxrslF7wNwx3XDRy8sGimYcdC9yKXRm72bPj4jia+8ZKUMs1ev9EVg2oOPx570VGO4J2
+         4rBpeu136liPq/Gx3MKzGnZ7EK0FSxsDrTkcb2X2qy9kwbh78eeNo/7Peb3nkQh7UR5P
+         GqsJIcaE/1d21fVhscXFBLA2/kDqp5405iaMNYbboZ6P6M/aCwwyiS+Ueieq9wefmsCD
+         pBjw==
+X-Gm-Message-State: AOAM533BNkeu6hNO6wnFuLqAqt5f4zgmorKihDbI8WO6Tc2+sSLgpDMD
+        nMnZkVOwNnPick3NBAFHyPKlPZlC3eytJn+t+mc=
+X-Google-Smtp-Source: ABdhPJwhCovvtZEQ/NjASG5VlLZs1XjkrAW5mZ8zj5yVbNcjcMEboTKboyYECTgE4/Yd0mDNhi7dQgW/VwHVQfL5Xkg=
+X-Received: by 2002:a1c:7714:: with SMTP id t20mr2751077wmi.107.1614718301146;
+ Tue, 02 Mar 2021 12:51:41 -0800 (PST)
+MIME-Version: 1.0
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302195758.GQ2696@paulmck-ThinkPad-P72> <CAJ+HfNj-_P=LpkrUjxcOR73ffMXwsJ+o+zMTfmkiuH2zZ5XCLQ@mail.gmail.com>
+ <20210302204157.GR2696@paulmck-ThinkPad-P72>
+In-Reply-To: <20210302204157.GR2696@paulmck-ThinkPad-P72>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Tue, 2 Mar 2021 21:51:29 +0100
+Message-ID: <CAJ+HfNhdgMTyfbeMsTsbhB_Pk6LW+2oB8=T0qWLgmM2q9_nkvQ@mail.gmail.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+To:     paulmck@kernel.org
 Cc:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
         stern@rowland.harvard.edu, parri.andrea@gmail.com,
         Will Deacon <will@kernel.org>,
@@ -35,96 +60,129 @@ Cc:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
         npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
         luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
         joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
         "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: XDP socket rings, and LKMM litmus tests
-Message-ID: <20210302204157.GR2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
- <20210302195758.GQ2696@paulmck-ThinkPad-P72>
- <CAJ+HfNj-_P=LpkrUjxcOR73ffMXwsJ+o+zMTfmkiuH2zZ5XCLQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJ+HfNj-_P=LpkrUjxcOR73ffMXwsJ+o+zMTfmkiuH2zZ5XCLQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 09:24:04PM +0100, Björn Töpel wrote:
-> On Tue, 2 Mar 2021 at 20:57, Paul E. McKenney <paulmck@kernel.org> wrote:
+On Tue, 2 Mar 2021 at 21:41, Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> On Tue, Mar 02, 2021 at 09:24:04PM +0100, Bj=C3=B6rn T=C3=B6pel wrote:
+> > On Tue, 2 Mar 2021 at 20:57, Paul E. McKenney <paulmck@kernel.org> wrot=
+e:
+> > >
+> > > On Tue, Mar 02, 2021 at 07:46:27PM +0100, Bj=C3=B6rn T=C3=B6pel wrote=
+:
 > >
-> > On Tue, Mar 02, 2021 at 07:46:27PM +0100, Björn Töpel wrote:
-> 
-> [...]
-> 
+> > [...]
 > >
-> > Before digging in too deeply, does the following simplification
-> > still capture your intent?
+> > >
+> > > Before digging in too deeply, does the following simplification
+> > > still capture your intent?
+> > >
 > >
-> 
-> Thanks for having a look, Paul!
-> 
-> > P0(int *prod, int *cons, int *data)
-> > {
-> >     int p;
-> >     int cond = 0;
+> > Thanks for having a look, Paul!
 > >
-> >     p = READ_ONCE(*prod);
-> >     if (p == READ_ONCE(*cons))
-> >             cond = 1;
-> 
-> With this, yes!
-> 
-> >     if (cond) {
-> >         smp_mb();
-> >         WRITE_ONCE(*data, 1);
-> >         smp_wmb();
-> >         WRITE_ONCE(*prod, p ^ 1);
-> >     }
-> > }
+> > > P0(int *prod, int *cons, int *data)
+> > > {
+> > >     int p;
+> > >     int cond =3D 0;
+> > >
+> > >     p =3D READ_ONCE(*prod);
+> > >     if (p =3D=3D READ_ONCE(*cons))
+> > >             cond =3D 1;
 > >
-> > P1(int *prod, int *cons, int *data)
-> > {
-> >     int c;
-> >     int d = -1;
-> >     int cond = 0;
+> > With this, yes!
 > >
-> >     c = READ_ONCE(*cons);
-> >     if (READ_ONCE(*prod) == c)
-> >             cond = 1;
-> 
-> Hmm, this would not be the correct state transition.
-> 
-> c==1 && p==1 would set cond to 1, right?
-> 
-> I would agree with:
->   c = READ_ONCE(*cons);
->   if (READ_ONCE(*prod) != c)
+> > >     if (cond) {
+> > >         smp_mb();
+> > >         WRITE_ONCE(*data, 1);
+> > >         smp_wmb();
+> > >         WRITE_ONCE(*prod, p ^ 1);
+> > >     }
+> > > }
+> > >
+> > > P1(int *prod, int *cons, int *data)
+> > > {
+> > >     int c;
+> > >     int d =3D -1;
+> > >     int cond =3D 0;
+> > >
+> > >     c =3D READ_ONCE(*cons);
+> > >     if (READ_ONCE(*prod) =3D=3D c)
+> > >             cond =3D 1;
+> >
+> > Hmm, this would not be the correct state transition.
+> >
+> > c=3D=3D1 && p=3D=3D1 would set cond to 1, right?
+> >
+> > I would agree with:
+> >   c =3D READ_ONCE(*cons);
+> >   if (READ_ONCE(*prod) !=3D c)
+>
+> Right you are!
+>
+> With that, it looks to me like LKMM is OK with removing the smp_mb().
+> My guess is that the issue is that LKMM confines the effect of control
+> dependencies to a single "if" statement, hence my reworking of your
+> original.
+>
 
-Right you are!
+Interesting!
 
-With that, it looks to me like LKMM is OK with removing the smp_mb().
-My guess is that the issue is that LKMM confines the effect of control
-dependencies to a single "if" statement, hence my reworking of your
-original.
+I tried the acquire/release version:
 
-							Thanx, Paul
+P0(int *prod, int *cons, int *data)
+{
+    int p;
+    int cond =3D 0;
 
+    p =3D READ_ONCE(*prod);
+    if (p =3D=3D READ_ONCE(*cons)) {
+        WRITE_ONCE(*data, 1);
+        smp_store_release(prod, p ^ 1);
+    }
+}
+
+P1(int *prod, int *cons, int *data)
+{
+    int c;
+    int d =3D -1;
+
+    c =3D READ_ONCE(*cons);
+    if (smp_load_acquire(prod) !=3D c) {
+        d =3D READ_ONCE(*data);
+        smp_store_release(cons, c ^ 1);
+    }
+}
+
+and as with the previous example, restructuring the if-statement makes
+"if (p =3D=3D READ_ONCE(*cons)) {" sufficient, instead of "if (p =3D=3D
+smp_load_acquire(cons)) {".
+
+Yay!
+
+
+Bj=C3=B6rn
+
+
+>                                                         Thanx, Paul
+>
+> > >
+> > >     if (cond =3D=3D 1) {
+> > >         smp_rmb();
+> > >         d =3D READ_ONCE(*data);
+> > >         smp_mb();
+> > >         WRITE_ONCE(*cons, c ^ 1);
+> > >     }
+> > > }
+> > >
+> > >                                                         Thanx, Paul
+> > >
 > >
-> >     if (cond == 1) {
-> >         smp_rmb();
-> >         d = READ_ONCE(*data);
-> >         smp_mb();
-> >         WRITE_ONCE(*cons, c ^ 1);
-> >     }
-> > }
+> > [...]
 > >
-> >                                                         Thanx, Paul
-> >
-> 
-> [...]
-> 
-> Björn
+> > Bj=C3=B6rn
