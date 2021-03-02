@@ -2,109 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D19B32A46B
+	by mail.lfdr.de (Postfix) with ESMTP id EF63532A46C
 	for <lists+bpf@lfdr.de>; Tue,  2 Mar 2021 16:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578092AbhCBKfe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Mar 2021 05:35:34 -0500
-Received: from www62.your-server.de ([213.133.104.62]:60536 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382421AbhCBJ0I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Mar 2021 04:26:08 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lH1HN-000DrF-S1; Tue, 02 Mar 2021 10:25:22 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lH1HN-000BUt-JV; Tue, 02 Mar 2021 10:25:21 +0100
-Subject: Re: [PATCH bpf-next 2/2] libbpf, xsk: add libbpf_smp_store_release
- libbpf_smp_load_acquire
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        maximmi@nvidia.com, andrii@kernel.org, will@kernel.org,
-        paulmck@kernel.org
-References: <20210301104318.263262-1-bjorn.topel@gmail.com>
- <20210301104318.263262-3-bjorn.topel@gmail.com> <87k0qqx3be.fsf@toke.dk>
- <e052a22a-4b7b-fe38-06ad-2ad04c83dda7@intel.com>
- <12f8969b-6780-f35f-62cd-ed67b1d8181a@iogearbox.net>
- <0121ca03-d806-8e50-aaac-0f97795d0fbe@intel.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <cb975a27-ade5-a638-af6e-2e4e1024649c@iogearbox.net>
-Date:   Tue, 2 Mar 2021 10:25:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1578096AbhCBKff (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Mar 2021 05:35:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1577605AbhCBJph (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Mar 2021 04:45:37 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E04CC061756
+        for <bpf@vger.kernel.org>; Tue,  2 Mar 2021 01:44:45 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id q23so23110395lji.8
+        for <bpf@vger.kernel.org>; Tue, 02 Mar 2021 01:44:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AHrxfmV9VqctHmCnIbkXHn8qNGwiob8Qpm1HTJJTCzE=;
+        b=juSybNDJO3bTlTow3bGeK0gH+W3PCiBmXGPi96XzJp3+b6j9B13FTZeHyKlAi9NmEg
+         BgFqCJ3kayWsop47Bo/5QSNqOZGUp0aDjFeI2qqaTy+11uYpk7+V47GtNvF21Rsm4DCs
+         mgE6nOel0fKUZRc1j1VrR8liZO9ZpPsd9O5aU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AHrxfmV9VqctHmCnIbkXHn8qNGwiob8Qpm1HTJJTCzE=;
+        b=GlAtUM2lj49OhZ0g9Tvm46tPi7FCiPJ/W/2P10Cwuqjc79ulIDcRtTKv450YThGKvn
+         zNfruGnKEeEE5uF65T21nVJEE+lFPf2IVVCiKxRWQUU07hny2mgOoGFVLlYqDQ/xSaxE
+         dDuTrQPQJDpGNM53HrW3Qkfawxp/z+7oLoEN0KE8g3skn5MBf+asooZUMYHK4CmRu2Jw
+         z3nChiJHjVdhl21PBgSzX1/yccRVoVDDEe7BDdwgpkdOcwA5nFvAnxX8KTv+ViXaHavv
+         TugcYAFuEVAF1bEwMzSDq5jwrJF3tBRm1+2WfeHwSi0KZGBxQ1bsOFqDFNAZL1aqQgjB
+         huQw==
+X-Gm-Message-State: AOAM533iu3y+LjjMt635sewlFVTq7BsC5Dd3lECq72ze6dFxrMoq7m/q
+        MGMT1GDHaY50PVM+DeO7gVCzn6hBwpd6xchH3bG1fw==
+X-Google-Smtp-Source: ABdhPJzTqebHkKvN0lljkDSYm953QyV+cMWBqCHz3J49dRqBnAtGo6LTTp0CACJMhLIp5MHuTi0pBc9WhsOO1Z0Lwy4=
+X-Received: by 2002:a05:651c:1318:: with SMTP id u24mr11833762lja.426.1614678283978;
+ Tue, 02 Mar 2021 01:44:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <0121ca03-d806-8e50-aaac-0f97795d0fbe@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26095/Mon Mar  1 13:10:16 2021)
+References: <20210301184805.8174-1-xiyou.wangcong@gmail.com>
+In-Reply-To: <20210301184805.8174-1-xiyou.wangcong@gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 2 Mar 2021 09:44:33 +0000
+Message-ID: <CACAyw9-sas9U_KKsRjtQUdd=iiBmLmWYup4KFGEmB470H-b4Xw@mail.gmail.com>
+Subject: Re: [Patch bpf-next] skmsg: add function doc for skb->_sk_redir
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/2/21 10:16 AM, Björn Töpel wrote:
-> On 2021-03-02 10:13, Daniel Borkmann wrote:
->> On 3/2/21 9:05 AM, Björn Töpel wrote:
->>> On 2021-03-01 17:10, Toke Høiland-Jørgensen wrote:
->>>> Björn Töpel <bjorn.topel@gmail.com> writes:
->>>>> From: Björn Töpel <bjorn.topel@intel.com>
->>>>>
->>>>> Now that the AF_XDP rings have load-acquire/store-release semantics,
->>>>> move libbpf to that as well.
->>>>>
->>>>> The library-internal libbpf_smp_{load_acquire,store_release} are only
->>>>> valid for 32-bit words on ARM64.
->>>>>
->>>>> Also, remove the barriers that are no longer in use.
->>>>
->>>> So what happens if an updated libbpf is paired with an older kernel (or
->>>> vice versa)?
->>>
->>> "This is fine." ;-) This was briefly discussed in [1], outlined by the
->>> previous commit!
->>>
->>> ...even on POWER.
->>
->> Could you put a summary or quote of that discussion on 'why it is okay and does not
->> cause /forward or backward/ compat issues with user space' directly into patch 1's
->> commit message?
->>
->> I feel just referring to a link is probably less suitable in this case as it should
->> rather be part of the commit message that contains the justification on why it is
->> waterproof - at least it feels that specific area may be a bit under-documented, so
->> having it as direct part certainly doesn't hurt.
-> 
-> I agree; It's enough in the weed as it is already.
-> 
-> I wonder if it's possible to cook a LKMM litmus test for this...?
+On Mon, 1 Mar 2021 at 18:48, Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> From: Cong Wang <cong.wang@bytedance.com>
+>
+> This should fix the following warning:
+>
+> include/linux/skbuff.h:932: warning: Function parameter or member
+> '_sk_redir' not described in 'sk_buff'
 
-That would be amazing! :-)
+Thanks!
 
-(Another option which can be done independently could be to update [0] with outlining a
-  pairing scenario as we have here describing the forward/backward compatibility on the
-  barriers used, I think that would be quite useful as well.)
+Acked-by: Lorenz Bauer <lmb@cloudflare.com>
 
-   [0] Documentation/memory-barriers.txt
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
->> Would also be great to get Will's ACK on that when you have a v2. :)
-> 
-> Yup! :-)
-> 
-> 
-> Björn
-> 
-> 
->> Thanks,
->> Daniel
->>
->>> [1] https://lore.kernel.org/bpf/20200316184423.GA14143@willie-the-truck/
-
+www.cloudflare.com
