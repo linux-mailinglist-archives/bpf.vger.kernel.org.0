@@ -2,141 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C02532B330
-	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26DE132B32F
+	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352450AbhCCDtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Mar 2021 22:49:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29195 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1383213AbhCBLPw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 2 Mar 2021 06:15:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614683652;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZjwZOlNFnMgEc5U9Vx9A266uXH2z9pjdV5QAx0QGYm4=;
-        b=CUg0Nz543gf06F58oZzINDxk3U5ILtJP8qsaEcY2HCPg2qBwCWEBWBi6lFCH3wuUMzhcS8
-        QmBplBkY6nhblokux/u8hLzO7MkFBxX/K964B7PZxg/J3CagPO0lc3Y1w1Ps30EafbTIzd
-        UoVxseZqBRg8PEwiP9ScL5By509AVt8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-188-pVWwIBewOAiSfhMSawriMA-1; Tue, 02 Mar 2021 06:14:10 -0500
-X-MC-Unique: pVWwIBewOAiSfhMSawriMA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1D0DFDF8A4;
-        Tue,  2 Mar 2021 11:14:09 +0000 (UTC)
-Received: from krava (unknown [10.40.195.211])
-        by smtp.corp.redhat.com (Postfix) with SMTP id DABAF5C8AB;
-        Tue,  2 Mar 2021 11:14:02 +0000 (UTC)
-Date:   Tue, 2 Mar 2021 12:14:01 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Yauheni Kaliuta <ykaliuta@redhat.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix test_attach_probe for
- powerpc uprobes
-Message-ID: <YD4d+dmay+oKyiot@krava>
-References: <20210301190416.90694-1-jolsa@kernel.org>
- <CAEf4BzbBnR3M60HepC_CFDsdMQDBYoEWiWtREUaLxrrxyBce0Q@mail.gmail.com>
+        id S233016AbhCCDtD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Mar 2021 22:49:03 -0500
+Received: from www62.your-server.de ([213.133.104.62]:58404 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237250AbhCBLPw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Mar 2021 06:15:52 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lH2z9-0006Sz-FQ; Tue, 02 Mar 2021 12:14:39 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lH2z9-000BzG-B4; Tue, 02 Mar 2021 12:14:39 +0100
+Subject: Re: [PATCH] bpf: selftests: test_verifier: mask bpf_csum_diff()
+ return value to 16 bits
+To:     Yonghong Song <yhs@fb.com>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        bpf@vger.kernel.org
+Cc:     toke@redhat.com
+References: <20210228103017.320240-1-yauheni.kaliuta@redhat.com>
+ <acf00517-6129-869b-cd2a-03715de5fc61@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <db5684bf-3757-3fdf-2581-002191f7a899@iogearbox.net>
+Date:   Tue, 2 Mar 2021 12:14:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbBnR3M60HepC_CFDsdMQDBYoEWiWtREUaLxrrxyBce0Q@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <acf00517-6129-869b-cd2a-03715de5fc61@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26095/Mon Mar  1 13:10:16 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 04:34:24PM -0800, Andrii Nakryiko wrote:
-> On Mon, Mar 1, 2021 at 11:11 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > When testing uprobes we the test gets GEP (Global Entry Point)
-> > address from kallsyms, but then the function is called locally
-> > so the uprobe is not triggered.
-> >
-> > Fixing this by adjusting the address to LEP (Local Entry Point)
-> > for powerpc arch.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  .../selftests/bpf/prog_tests/attach_probe.c    | 18 +++++++++++++++++-
-> >  1 file changed, 17 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > index a0ee87c8e1ea..c3cfb48d3ed0 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > @@ -2,6 +2,22 @@
-> >  #include <test_progs.h>
-> >  #include "test_attach_probe.skel.h"
-> >
-> > +#if defined(__powerpc64__)
-> > +/*
-> > + * We get the GEP (Global Entry Point) address from kallsyms,
-> > + * but then the function is called locally, so we need to adjust
-> > + * the address to get LEP (Local Entry Point).
-> > + */
-> > +#define LEP_OFFSET 8
-> > +
-> > +static ssize_t get_offset(ssize_t offset)
+On 3/1/21 6:18 AM, Yonghong Song wrote:
+> On 2/28/21 2:30 AM, Yauheni Kaliuta wrote:
+>> The verifier test labelled "valid read map access into a read-only array
+>> 2" calls the bpf_csum_diff() helper and checks its return value.
+>> However, architecture implementations of csum_partial() (which is what
+>> the helper uses) differ in whether they fold the return value to 16 bit
+>> or not. For example, x86 version has:
+>>
+>>     if (unlikely(odd)) {
+>>         result = from32to16(result);
+>>         result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+>>     }
+>>
+>> while generic lib/checksum.c does:
+>>
+>>     result = from32to16(result);
+>>     if (odd)
+>>         result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+>>
+>> This makes the helper return different values on different
+>> architectures, breaking the test on non-x86. To fix this, add an
 > 
-> if we mark this function __weak global, would it work as is? Would it
-> get an address of a global entry point? I know nothing about this GEP
-> vs LEP stuff, interesting :)
+> I remember there is a previous discussion for this issue, csum_diff()
+> returns different results for different architecture? Daniel?
+> Any conclusion how to deal with this?
 
-you mean get_base_addr? it's already global
+I took in the test case fix for now. After getting cascading work for !x86-64,
+we can always revert this one again. Plan of action to resume this work was
+to at least update the other 64-bit archs successively to a no-fold variant as
+well, so their arch specific implementations can mimic what x86-64 is doing.
 
-all the calls to get_base_addr within the object are made
-to get_base_addr+0x8
-
-00000000100350c0 <test_attach_probe>:
-    ...
-    100350e0:   59 fd ff 4b     bl      10034e38 <get_base_addr+0x8>
-    ...
-    100358a8:   91 f5 ff 4b     bl      10034e38 <get_base_addr+0x8>
-
-
-I'm following perf fix we had for similar issue:
-  7b6ff0bdbf4f perf probe ppc64le: Fixup function entry if using kallsyms lookup
-
-I'll get more info on that
-
-jirka
-
-> 
-> > +{
-> > +       return offset + LEP_OFFSET;
-> > +}
-> > +#else
-> > +#define get_offset(offset) (offset)
-> > +#endif
-> > +
-> >  ssize_t get_base_addr() {
-> >         size_t start, offset;
-> >         char buf[256];
-> > @@ -36,7 +52,7 @@ void test_attach_probe(void)
-> >         if (CHECK(base_addr < 0, "get_base_addr",
-> >                   "failed to find base addr: %zd", base_addr))
-> >                 return;
-> > -       uprobe_offset = (size_t)&get_base_addr - base_addr;
-> > +       uprobe_offset = get_offset((size_t)&get_base_addr - base_addr);
-> >
-> >         skel = test_attach_probe__open_and_load();
-> >         if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-> > --
-> > 2.29.2
-> >
-> 
+>> additional instruction to always mask the return value to 16 bits, and
+>> update the expected return value accordingly.
+>>
+>> Fixes: fb2abb73e575 ("bpf, selftest: test {rd, wr}only flags and direct value access")
+>> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+>> ---
+>>   tools/testing/selftests/bpf/verifier/array_access.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/verifier/array_access.c b/tools/testing/selftests/bpf/verifier/array_access.c
+>> index bed53b561e04..1b138cd2b187 100644
+>> --- a/tools/testing/selftests/bpf/verifier/array_access.c
+>> +++ b/tools/testing/selftests/bpf/verifier/array_access.c
+>> @@ -250,12 +250,13 @@
+>>       BPF_MOV64_IMM(BPF_REG_5, 0),
+>>       BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
+>>                BPF_FUNC_csum_diff),
+>> +    BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 0xffff),
+>>       BPF_EXIT_INSN(),
+>>       },
+>>       .prog_type = BPF_PROG_TYPE_SCHED_CLS,
+>>       .fixup_map_array_ro = { 3 },
+>>       .result = ACCEPT,
+>> -    .retval = -29,
+>> +    .retval = 65507,
+>>   },
+>>   {
+>>       "invalid write map access into a read-only array 1",
+>>
 
