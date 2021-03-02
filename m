@@ -2,51 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A125432B334
-	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:54:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9D732B335
+	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352481AbhCCDt4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Mar 2021 22:49:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37266 "EHLO
+        id S1352472AbhCCDtf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Mar 2021 22:49:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1839595AbhCBQhc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Mar 2021 11:37:32 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FC5C061222
-        for <bpf@vger.kernel.org>; Tue,  2 Mar 2021 08:22:30 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id h4so24495960ljl.0
-        for <bpf@vger.kernel.org>; Tue, 02 Mar 2021 08:22:30 -0800 (PST)
+        with ESMTP id S1839536AbhCBQhX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Mar 2021 11:37:23 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FF3C0611C1
+        for <bpf@vger.kernel.org>; Tue,  2 Mar 2021 08:23:52 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id b1so21421805lfb.7
+        for <bpf@vger.kernel.org>; Tue, 02 Mar 2021 08:23:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9F+lO983HafQm131zMNtA2M5vN7jjQ4sPO1miVVqoZQ=;
-        b=rkoJZCKrXUgso9jhDO9Ntv+yPsXPftMJkfH6Ln/fdlC3w6AAhsqvJddr6Pni8EEbHn
-         QbVxAjZqbarunY1iqfUi30tqCHf/6H3W19GSltFqHiKzrpEyJOb+CqW6LcXT8d+NZ6jR
-         2uIcIXtbl23HrnE0SKS48l+A0pZ17mOGYPU4M=
+        bh=LcVHR6+gABrqPot+5DAzhb8/k5TtG4mpDhY9zzDMCc0=;
+        b=Kq2QnaeT1nRM6DYPza7WQUqKQY42w28TJBUGBLao7XP2ciXqqvS8asIep60PPDPO5u
+         13NFkQQBHubCv2lA0oEpBvpb7OG5O6cmQDK6xugIvxhVxuBCFZrHE2RCcfEuQQQXFOhT
+         ahrsieoo1mV/PTysZOVhwIvpIDBDyzJf48qMo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9F+lO983HafQm131zMNtA2M5vN7jjQ4sPO1miVVqoZQ=;
-        b=RxFubHk1VpTT3nl52GMI+ns8RTUYwlORXATLmPy27ulRjO2Wvfb8JxWtqtekNi0ujv
-         eSaCh2X26ajKUzGWlF9VoHjaBO+zESM7d4JXMFUhM+tkL2B9Xirt2qI6fs8xOlzvs9pI
-         HI9HCVQ1u4SGkwJKjpEqcXnm8GLlLlw1oRrcReRm9TCtPWXYBxI3yg1jtEg7OaiXFn25
-         STSM6ZaXVJ0BaEk46ORP/q2TR4HMH4m0kDq+tpEJLhObMQFuM60YaFfRJkfzpX790uqZ
-         0WVACUa7ni/DptBa3y75EwG5Jjhg+c/K5LeQbYwFiKBDX+wh+rGQpkKgoI4j6ReaCf4q
-         GYOQ==
-X-Gm-Message-State: AOAM530z2ZbRlQfqMYCFjKqTAzW81Ac7k9FYdRFHExb54fumkT/YSsc1
-        qU6gVKyGFEHy0g2zNnGnuefXsTdYCtfp/rBrEwWYFw==
-X-Google-Smtp-Source: ABdhPJzvRrHUiMLHVor8XFBpxH5az13yVi5Sx+2gdr1u4tI1Nwtw0JQOP8iEFA9pA6sqBWUhl6nS0lFRyFoHz1j0aH4=
-X-Received: by 2002:a2e:9310:: with SMTP id e16mr12720926ljh.226.1614702148827;
- Tue, 02 Mar 2021 08:22:28 -0800 (PST)
+        bh=LcVHR6+gABrqPot+5DAzhb8/k5TtG4mpDhY9zzDMCc0=;
+        b=Cao604UI2k+CEG597feFaDDmdipuRByaFoGyNB6VbRfggv6idPuEtsbAfGtE4+YZ7/
+         C0f8Pgo3N3gnhR2fwixdC7jDL03VhZAUgmk8P9hIxWWOFJGRkaBknLguCskLSSU9mc4A
+         KbR/n/H2pufd57NALzXrH0jrVt9suIYfKDB58vvSwkizWc6WbdPDF8Iedt1LIYcxWYDo
+         +7GhMyDSlODHIh4T7hUc/0elH8izfo+2FwQvvRHHS9FkglGa5G+s38CaFVdffDSJw5Mi
+         tCTYHEvpzfMUnRw4TtRr7YcZHPfmutQCG392y/l+mrzdiRwxBzTjMTzcNKkpCjRNPiCv
+         xtnw==
+X-Gm-Message-State: AOAM5300hmMOROy6hnnnMB7kxnuBmOEI8hqsDY7oxl+KNNF3xge/w3JN
+        ptyNYr5kA0dgcpCX8nU15EuAGvhU2RiRyXbank6cBg==
+X-Google-Smtp-Source: ABdhPJw40UN64yFL1RnxO7mP7QwoGSxtkWRg9aDMbR4xEvelVYPQesFunWYeerPMi7Q9bZ2PgQ14Va2+VYO2KeM4Vpg=
+X-Received: by 2002:a05:6512:33d1:: with SMTP id d17mr12794743lfg.13.1614702230670;
+ Tue, 02 Mar 2021 08:23:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20210302023743.24123-1-xiyou.wangcong@gmail.com> <20210302023743.24123-3-xiyou.wangcong@gmail.com>
-In-Reply-To: <20210302023743.24123-3-xiyou.wangcong@gmail.com>
+References: <20210302023743.24123-1-xiyou.wangcong@gmail.com> <20210302023743.24123-6-xiyou.wangcong@gmail.com>
+In-Reply-To: <20210302023743.24123-6-xiyou.wangcong@gmail.com>
 From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 2 Mar 2021 16:22:17 +0000
-Message-ID: <CACAyw9-SjsNn4_J1KDXuFh1nd9Hr-Mo+=7S-kVtooJwdi1fodQ@mail.gmail.com>
-Subject: Re: [Patch bpf-next v2 2/9] sock: introduce sk_prot->update_proto()
+Date:   Tue, 2 Mar 2021 16:23:39 +0000
+Message-ID: <CACAyw98C99sjOompq59Aa-uuaeyJc0pXAEBiBCVJ+1Ds4_h=jA@mail.gmail.com>
+Subject: Re: [Patch bpf-next v2 5/9] udp: add ->read_sock() and
+ ->sendmsg_locked() to ipv6
 To:     Cong Wang <xiyou.wangcong@gmail.com>
 Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         duanxiongchun@bytedance.com, wangdongdong.6@bytedance.com,
@@ -59,102 +60,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2 Mar 2021 at 02:37, Cong Wang <xiyou.wangcong@gmail.com> wrote:
+On Tue, 2 Mar 2021 at 02:38, Cong Wang <xiyou.wangcong@gmail.com> wrote:
 
 ...
 
-> @@ -350,25 +351,12 @@ static inline void sk_psock_cork_free(struct sk_psock *psock)
->         }
+> diff --git a/include/net/ipv6.h b/include/net/ipv6.h
+> index bd1f396cc9c7..48b6850dae85 100644
+> --- a/include/net/ipv6.h
+> +++ b/include/net/ipv6.h
+> @@ -1119,6 +1119,7 @@ int inet6_hash_connect(struct inet_timewait_death_row *death_row,
+>  int inet6_sendmsg(struct socket *sock, struct msghdr *msg, size_t size);
+>  int inet6_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+>                   int flags);
+> +int udpv6_sendmsg_locked(struct sock *sk, struct msghdr *msg, size_t len);
+>
+>  /*
+>   * reassembly.c
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index 54f24b1d4f65..717c543aaec3 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -1831,6 +1831,7 @@ int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
+>
+>         return copied;
 >  }
->
-> -static inline void sk_psock_update_proto(struct sock *sk,
-> -                                        struct sk_psock *psock,
-> -                                        struct proto *ops)
-> -{
-> -       /* Pairs with lockless read in sk_clone_lock() */
-> -       WRITE_ONCE(sk->sk_prot, ops);
-> -}
-> -
->  static inline void sk_psock_restore_proto(struct sock *sk,
->                                           struct sk_psock *psock)
->  {
->         sk->sk_prot->unhash = psock->saved_unhash;
+> +EXPORT_SYMBOL(udp_read_sock);
 
-Not related to your patch set, but why do an extra restore of
-sk_prot->unhash here? At this point sk->sk_prot is one of our tcp_bpf
-/ udp_bpf protos, so overwriting that seems wrong?
-
-> -       if (inet_csk_has_ulp(sk)) {
-> -               tcp_update_ulp(sk, psock->sk_proto, psock->saved_write_space);
-> -       } else {
-> -               sk->sk_write_space = psock->saved_write_space;
-> -               /* Pairs with lockless read in sk_clone_lock() */
-> -               WRITE_ONCE(sk->sk_prot, psock->sk_proto);
-> -       }
-> +       if (psock->saved_update_proto)
-> +               psock->saved_update_proto(sk, true);
->  }
->
->  static inline void sk_psock_set_state(struct sk_psock *psock,
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 636810ddcd9b..0e8577c917e8 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1184,6 +1184,9 @@ struct proto {
->         void                    (*unhash)(struct sock *sk);
->         void                    (*rehash)(struct sock *sk);
->         int                     (*get_port)(struct sock *sk, unsigned short snum);
-> +#ifdef CONFIG_BPF_SYSCALL
-> +       int                     (*update_proto)(struct sock *sk, bool restore);
-
-Kind of a nit, but this name suggests that the callback is a lot more
-generic than it really is. The only thing you can use it for is to
-prep the socket to be sockmap ready since we hardwire sockmap_unhash,
-etc. It's also not at all clear that this only works if sk has an
-sk_psock associated with it. Calling it without one would crash the
-kernel since the update_proto functions don't check for !sk_psock.
-
-Might as well call it install_sockmap_hooks or something and have a
-valid sk_psock be passed in to the callback. Additionally, I'd prefer
-if the function returned a struct proto * like it does at the moment.
-That way we keep sk->sk_prot manipulation confined to the sockmap code
-and don't have to copy paste it into every proto.
-
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 3bddd9dd2da2..13d2af5bb81c 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -184,26 +184,10 @@ static void sock_map_unref(struct sock *sk, void *link_raw)
->
->  static int sock_map_init_proto(struct sock *sk, struct sk_psock *psock)
->  {
-> -       struct proto *prot;
-> -
-> -       switch (sk->sk_type) {
-> -       case SOCK_STREAM:
-> -               prot = tcp_bpf_get_proto(sk, psock);
-> -               break;
-> -
-> -       case SOCK_DGRAM:
-> -               prot = udp_bpf_get_proto(sk, psock);
-> -               break;
-> -
-> -       default:
-> +       if (!sk->sk_prot->update_proto)
->                 return -EINVAL;
-> -       }
-> -
-> -       if (IS_ERR(prot))
-> -               return PTR_ERR(prot);
-> -
-> -       sk_psock_update_proto(sk, psock, prot);
-> -       return 0;
-> +       psock->saved_update_proto = sk->sk_prot->update_proto;
-> +       return sk->sk_prot->update_proto(sk, false);
-
-I think reads / writes from sk_prot need READ_ONCE / WRITE_ONCE. We've
-not been diligent about this so far, but I think it makes sense to be
-careful in new code.
+Should this be in the previous commit?
 
 -- 
 Lorenz Bauer  |  Systems Engineer
