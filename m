@@ -2,229 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98E832B354
-	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:55:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8709D32B355
+	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:55:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352533AbhCCDuz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1352534AbhCCDuz (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Tue, 2 Mar 2021 22:50:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1577326AbhCBSug (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Mar 2021 13:50:36 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A3EC061B3F;
-        Tue,  2 Mar 2021 10:46:40 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id d11so20985760wrj.7;
-        Tue, 02 Mar 2021 10:46:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=ThaGPSpZZau2nMCUkolf5Z7vGgepqzdKOwfuY68ukvQ=;
-        b=t1GqZbcXhaj1YT+Garr+1EhoLnjxkgM+JUHpcyERacTSaMQMZjGLWIJooA/iAiDnun
-         ZGFoh0xbGMNxojP3GxvBw8XyYn6uQoRbwDbl8gmE/F2EyFGbeW5u4A1Fdu9lms+G1i26
-         RQVleTZyC7Yx4uS1vXbiot3RC/etO/OKtd6zHpyZar3AyKIncyAJeD4GRQvp67rI781n
-         7DGtVA7ZO2EvndAY430ZY9aGF4bj8BRAaOUJYR6fS6C2lqKgUVpEbUsAbaUA80k2sDLQ
-         TMUl9eHfyAWbEaTmkAWvoSw0rav2roc8zy7UWlWrvJWI6fdMQ5KWgXBHQFR1/nXlfc5y
-         Jv3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=ThaGPSpZZau2nMCUkolf5Z7vGgepqzdKOwfuY68ukvQ=;
-        b=YkYx/JA1wmjAb16knQzRfTVdQbkljsh5KkjyweGd71lfU1AmK5xluUJSADUJRCZV2P
-         O0EMTFBTaaUL73N2SoPmrZxPctESTJEEu6RIMgJZt2rhjy6HjK/Ve1kpMvEUx4906s7Y
-         S2eKSXLx+s86mdCD3sImXiFJX0v4bQbNRTGF1mL5kzN48mh5eJZbKMbJ4R50owkeMGcn
-         +TZSylS5hoFRPOn2kI+lH8uT3o7gmwk9gZQJmCS16uWGF9Q7MEScQJm7N4l9sUTd2nuq
-         cFzWDvZsNlw5+WV/V9S0bcIxEbTgEhJVEepTjoBL8tSGqYkBKO8P+zzBT812lGW+sUPB
-         4KiA==
-X-Gm-Message-State: AOAM533+V9V7TH/ZDaSukc/78axJtUhNYWPQ42ZchbKQdY4E8IpyK7cN
-        4O+Cx+/LHrOHfEiWiwRNo9hte0WDSfqIhEuvufleVKICZHbfGw==
-X-Google-Smtp-Source: ABdhPJxgfzFOSuV6fv4WQpW4rUzbYiF+W3o8crUDzd0upfW81o73O5QiQsqUQjnO5tR4YK/Le4vOU3Zi3r5T1Zc8Fxk=
-X-Received: by 2002:a5d:4ac6:: with SMTP id y6mr20718463wrs.160.1614710798680;
- Tue, 02 Mar 2021 10:46:38 -0800 (PST)
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21567 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1581620AbhCBTAR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 2 Mar 2021 14:00:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614711529;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=T21XN9MGnhH4cwAE4X6b7/PVEGlQuBJUKF8L3IcS/E4=;
+        b=eM6XHhcErsb2YYMRy4Z+vf8c96BNraHpyXKLH1ZjrxdFrgtiOaxtcWzM6kPulU2LtSR6Ju
+        waf/m7dCrvOy73K9i2EuoZQelUQ6Gxh0h2Mb5Z2c55uIpkOKzKZMwemhwgBV8P5jcMBDr/
+        ddSKmMXTsnzhigwzjRfZBlL6V8VuJNo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-239-9IMvX_1NNLC3Luf6vHIGCg-1; Tue, 02 Mar 2021 13:58:47 -0500
+X-MC-Unique: 9IMvX_1NNLC3Luf6vHIGCg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0125A835E2A;
+        Tue,  2 Mar 2021 18:58:46 +0000 (UTC)
+Received: from krava (unknown [10.40.195.211])
+        by smtp.corp.redhat.com (Postfix) with SMTP id ED01E61F20;
+        Tue,  2 Mar 2021 18:58:39 +0000 (UTC)
+Date:   Tue, 2 Mar 2021 19:58:38 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Yauheni Kaliuta <ykaliuta@redhat.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix test_attach_probe for
+ powerpc uprobes
+Message-ID: <YD6K3nex6MQ09u8U@krava>
+References: <20210301190416.90694-1-jolsa@kernel.org>
+ <CAEf4BzbBnR3M60HepC_CFDsdMQDBYoEWiWtREUaLxrrxyBce0Q@mail.gmail.com>
+ <YD4d+dmay+oKyiot@krava>
+ <CAEf4Bzah8Au01NvtwSogpkr3etwQ3_bObj3GObG8Lb3N0DqZwA@mail.gmail.com>
 MIME-Version: 1.0
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 2 Mar 2021 19:46:27 +0100
-Message-ID: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
-Subject: XDP socket rings, and LKMM litmus tests
-To:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, paulmck@kernel.org, akiyks@gmail.com,
-        dlustig@nvidia.com, joel@joelfernandes.org,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzah8Au01NvtwSogpkr3etwQ3_bObj3GObG8Lb3N0DqZwA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi!
+On Tue, Mar 02, 2021 at 10:31:41AM -0800, Andrii Nakryiko wrote:
+> On Tue, Mar 2, 2021 at 3:14 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Mon, Mar 01, 2021 at 04:34:24PM -0800, Andrii Nakryiko wrote:
+> > > On Mon, Mar 1, 2021 at 11:11 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > > >
+> > > > When testing uprobes we the test gets GEP (Global Entry Point)
+> > > > address from kallsyms, but then the function is called locally
+> > > > so the uprobe is not triggered.
+> > > >
+> > > > Fixing this by adjusting the address to LEP (Local Entry Point)
+> > > > for powerpc arch.
+> > > >
+> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > > ---
+> > > >  .../selftests/bpf/prog_tests/attach_probe.c    | 18 +++++++++++++++++-
+> > > >  1 file changed, 17 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> > > > index a0ee87c8e1ea..c3cfb48d3ed0 100644
+> > > > --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> > > > +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> > > > @@ -2,6 +2,22 @@
+> > > >  #include <test_progs.h>
+> > > >  #include "test_attach_probe.skel.h"
+> > > >
+> > > > +#if defined(__powerpc64__)
+> > > > +/*
+> > > > + * We get the GEP (Global Entry Point) address from kallsyms,
+> > > > + * but then the function is called locally, so we need to adjust
+> > > > + * the address to get LEP (Local Entry Point).
+> > > > + */
+> > > > +#define LEP_OFFSET 8
+> > > > +
+> > > > +static ssize_t get_offset(ssize_t offset)
+> > >
+> > > if we mark this function __weak global, would it work as is? Would it
+> > > get an address of a global entry point? I know nothing about this GEP
+> > > vs LEP stuff, interesting :)
+> >
+> > you mean get_base_addr? it's already global
+> >
+> > all the calls to get_base_addr within the object are made
+> > to get_base_addr+0x8
+> >
+> > 00000000100350c0 <test_attach_probe>:
+> >     ...
+> >     100350e0:   59 fd ff 4b     bl      10034e38 <get_base_addr+0x8>
+> >     ...
+> >     100358a8:   91 f5 ff 4b     bl      10034e38 <get_base_addr+0x8>
+> >
+> >
+> > I'm following perf fix we had for similar issue:
+> >   7b6ff0bdbf4f perf probe ppc64le: Fixup function entry if using kallsyms lookup
+> >
+> > I'll get more info on that
+> 
+> My thinking was that if you mark the function as __weak, then the
+> compiler is not allowed to assume that the actual implementation of
+> that function will come from the same object (because it might be
+> replaced by the linker later), so it has to be pessimistic and use
+> global entry, no? Totally theoritizing here, of course.
 
-Firstly; The long Cc-list is to reach the LKMM-folks.
+ah ok.. good idea, but it's still jumping to +8 in my test
 
-Some background; the XDP sockets use a ring-buffer to communicate
-between the kernel and userland. It's a
-single-consumer/single-producer ring, and described in
-net/xdp/xsk_queue.h.
+    # nm test_progs | grep get_base_addr
+    0000000010034e30 W get_base_addr
 
---8<---
-/* The structure of the shared state of the rings are the same as the
- * ring buffer in kernel/events/ring_buffer.c. For the Rx and completion
- * ring, the kernel is the producer and user space is the consumer. For
- * the Tx and fill rings, the kernel is the consumer and user space is
- * the producer.
- *
- * producer                         consumer
- *
- * if (LOAD ->consumer) {           LOAD ->producer
- *                    (A)           smp_rmb()       (C)
- *    STORE $data                   LOAD $data
- *    smp_wmb()       (B)           smp_mb()        (D)
- *    STORE ->producer              STORE ->consumer
- * }
- *
- * (A) pairs with (D), and (B) pairs with (C).
-...
--->8---
+    100350e0:   59 fd ff 4b     bl      10034e38 <get_base_addr+0x8>
 
-I'd like to replace the smp_{r,w,}mb() barriers with acquire-release
-semantics [1], without breaking existing userspace applications.
+looks like it's linker, because compiler leaves just jump to next instruction
 
-So, I figured I'd use herd7 and the LKMM model to build a litmus test
-for the barrier version, then for the acquire-release version, and
-finally permutations of both.
+jirka
 
-The idea is to use a one element ring, with a state machine outlined
-in the litmus test.
-
-The basic test for the existing smp_{r,w,}mb() barriers looks like:
-
-$ cat spsc-rb+1p1c.litmus
-C spsc-rb+1p1c
-
-// Stupid one entry ring:
-// prod cons     allowed action       prod cons
-//    0    0 =3D>       prod          =3D>   1    0
-//    0    1 =3D>       cons          =3D>   0    0
-//    1    0 =3D>       cons          =3D>   1    1
-//    1    1 =3D>       prod          =3D>   0    1
-
-{ prod =3D 1; }
-
-// Here, we start at prod=3D=3D1,cons=3D=3D0, data=3D=3D0, i.e. producer ha=
-s
-// written data=3D0, so from here only the consumer can start, and should
-// consume data=3D=3D0. Afterwards, producer can continue and write 1 to
-// data. Can we enter state prod=3D=3D0, cons=3D=3D1, but consumer observer=
-d
-// the write of 1?
-
-P0(int *prod, int *cons, int *data)
-{
-    int p;
-    int c;
-    int cond =3D 0;
-
-    p =3D READ_ONCE(*prod);
-    c =3D READ_ONCE(*cons);
-    if (p =3D=3D 0)
-        if (c =3D=3D 0)
-            cond =3D 1;
-    if (p =3D=3D 1)
-        if (c =3D=3D 1)
-            cond =3D 1;
-
-    if (cond) {
-        smp_mb();
-        WRITE_ONCE(*data, 1);
-        smp_wmb();
-        WRITE_ONCE(*prod, p ^ 1);
-    }
-}
-
-P1(int *prod, int *cons, int *data)
-{
-    int p;
-    int c;
-    int d =3D -1;
-    int cond =3D 0;
-
-    p =3D READ_ONCE(*prod);
-    c =3D READ_ONCE(*cons);
-    if (p =3D=3D 1)
-        if (c =3D=3D 0)
-            cond =3D 1;
-    if (p =3D=3D 0)
-        if (c =3D=3D 1)
-            cond =3D 1;
-
-    if (cond =3D=3D 1) {
-        smp_rmb();
-        d =3D READ_ONCE(*data);
-        smp_mb();
-        WRITE_ONCE(*cons, c ^ 1);
-    }
-}
-
-exists( 1:d=3D1 /\ prod=3D0 /\ cons=3D1 );
-
---
-
-The weird state changing if-statements is because that I didn't get
-'&&' and '||' to work with herd.
-
-When this is run:
-
-$ herd7 -conf linux-kernel.cfg litmus-tests/spsc-rb+1p1c.litmus
-Test spsc-rb+1p1c Allowed
-States 2
-1:d=3D0; cons=3D1; prod=3D0;
-1:d=3D0; cons=3D1; prod=3D1;
-No
-Witnesses
-Positive: 0 Negative: 2
-Condition exists (1:d=3D1 /\ prod=3D0 /\ cons=3D1)
-Observation spsc-rb+1p1c Never 0 2
-Time spsc-rb+1p1c 0.04
-Hash=3Db399756d6a1301ca5bda042f32130791
-
-Now to my question; In P0 there's an smp_mb(). Without that, the d=3D=3D1
-can be observed from P1 (consumer):
-
-$ herd7 -conf linux-kernel.cfg litmus-tests/spsc-rb+1p1c.litmus
-Test spsc-rb+1p1c Allowed
-States 3
-1:d=3D0; cons=3D1; prod=3D0;
-1:d=3D0; cons=3D1; prod=3D1;
-1:d=3D1; cons=3D1; prod=3D0;
-Ok
-Witnesses
-Positive: 1 Negative: 2
-Condition exists (1:d=3D1 /\ prod=3D0 /\ cons=3D1)
-Observation spsc-rb+1p1c Sometimes 1 2
-Time spsc-rb+1p1c 0.04
-Hash=3D0047fc21fa77da9a9aee15e35ec367ef
-
-In commit c7f2e3cd6c1f ("perf: Optimize ring-buffer write by depending
-on control dependencies") removes the corresponding smp_mb(), and also
-the circular buffer in circular-buffers.txt (pre commit 6c43c091bdc5
-("documentation: Update circular buffer for
-load-acquire/store-release")) is missing the smp_mb() at the
-producer-side.
-
-I'm trying to wrap my head around why it's OK to remove the smp_mb()
-in the cases above? I'm worried that the current XDP socket ring
-implementation (which is missing smp_mb()) might be broken.
-
-
-If you read this far, thanks! :-)
-Bj=C3=B6rn
-
-
-[1] https://lore.kernel.org/bpf/20210301104318.263262-2-bjorn.topel@gmail.c=
-om/
