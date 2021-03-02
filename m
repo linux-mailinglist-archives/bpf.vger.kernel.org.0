@@ -2,60 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C36332B33D
-	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8C932B338
+	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352501AbhCCDuX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Mar 2021 22:50:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
+        id S1352494AbhCCDuP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Mar 2021 22:50:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349773AbhCBRga (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:36:30 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D7EC061A86
-        for <bpf@vger.kernel.org>; Tue,  2 Mar 2021 09:20:38 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id o10so14272455pgg.4
-        for <bpf@vger.kernel.org>; Tue, 02 Mar 2021 09:20:38 -0800 (PST)
+        with ESMTP id S1347086AbhCBRgT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Mar 2021 12:36:19 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA64C061D73
+        for <bpf@vger.kernel.org>; Tue,  2 Mar 2021 09:20:39 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id x29so6015853pgk.6
+        for <bpf@vger.kernel.org>; Tue, 02 Mar 2021 09:20:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cilium-io.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PLtlvyaPh/9T56HasU+WSMU0kz49t2tHiOoZMMkTowk=;
-        b=KOb5TwQX9FBBkprFm/htpAAUQeFnhX03SiYO3cltYiXu02VFt63RgxKdA9dChGxLGX
-         qDVRO5bziB1NphRiYWyi3eMF/ZalwYDjRmsaH6hAGJ0rl3xFIsgYa/80AUz87nqvIpV/
-         01gOYgYOIRFJ6kl7Enk49pmHzXMuHoLOG1Un8ijL5vAQcgRIsDJ26DcXkAQA8NeU7GFy
-         DrlesMGqoPqYOrrfOexGmVun8Gaw2OAFkTyFABjQYYptNSuN8adrxa2gLG3BG/BTr5/k
-         jmLpgnI8NHNsvE3Xzy9rqdhhUshdief1DM9qMfW7tnq0AoGTwi5/x8/DLGHaEbHxhoXU
-         2D0g==
+        bh=F4TZNoz7ocIF56TKRbY3Vad3YXgKTVwOO2I7OPJ9bdI=;
+        b=Rq8g8G4z1aYt5VEo1BJL1lomrPLJDL8MogcsKXho9qnTQQsZjjcYppdO7Pgzg5rQ6p
+         Yv3KwyxgU1SCK009bDta+0kKTZ0BUumGgSC7wCyx+vUYFINpAQupYFbSL6p73A2fORuy
+         cYdiPm1jxd5z69yFQM+JbIA4fWaI47ocd3a+NlCBhfcGed8Yzs3nSMjoemCWHg4TZlgQ
+         pQQZWhm3lwDtOQy6Q3BGJWUh8vIcDK5cdD8jArYQwjhW0b4nI/wtSLAIaoKWD5p5DxbQ
+         yTOcJ6hyAuE2hLln6ldOtmK35PCndBIL7qUndNBnO7X3q22S14ihOneSfegT61NUPlrk
+         Ia6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PLtlvyaPh/9T56HasU+WSMU0kz49t2tHiOoZMMkTowk=;
-        b=SXRFKHQCcfrrymoGLvT+VyszlOqupE3V2BsbiS5XLUS+CKZQG0VY+cgfPpRGci1AgH
-         VXX+OTEhHOSgJ7iDeUQ3dmfkzvHRVIIXiSB5uNPrSrmLztygdcJR5tjRW6v+2RydzEZ4
-         ajInLFzCWPNXdDPMY1J4CRflwUeIoU0zZJrsXgDrn1yIeE2078MyNqzfKxI4XLfW/9+m
-         zalCEyFQXhtSNcD5AdweTimtBA305x01HTYtZ2Jjtm7tPfHAt4aYKgqp0X3dH2rqjCQN
-         +iX4HOZd7aWL05HxQ+SS6dT7z18L5PR128qYojgEH0V56TetTxa/jvihykeJ8MWyAhUe
-         5BwA==
-X-Gm-Message-State: AOAM532Ev+y0WMD+7ZrFY5KFJHFhFfRqIlQk+l1vPEDmz3Bv6ccFUN26
-        CYucVEkPe5H2QdzOXMBQS6qTFiFXWMzL+5wa
-X-Google-Smtp-Source: ABdhPJz3kypQd3bHxFkEeV/1MTPv662VAv9XKyEsN2c3ppcIx1ZRCI7lLCQahJF6lnqjjaciXNJYsg==
-X-Received: by 2002:aa7:8057:0:b029:1ee:6534:2a95 with SMTP id y23-20020aa780570000b02901ee65342a95mr4094571pfm.57.1614705637437;
-        Tue, 02 Mar 2021 09:20:37 -0800 (PST)
+        bh=F4TZNoz7ocIF56TKRbY3Vad3YXgKTVwOO2I7OPJ9bdI=;
+        b=euGGXEpaMfiI/fE0JMYsmjaRXG5Ich0QSgJWZbThsOOYnpTO7HkFqzWNGrzB2L+Lb1
+         IWhQHI294IjfKOhlh8loUKPf0bkwMRH9C8pQ48leqyVxRo+I+svk0Y4hWdypIsxvUxRt
+         +vMO+G1rPbH2WqIiaS0Yra19Wp7OiYKXURRPuXrRcfsZ/BNGfehn511nctMSIbMPY74H
+         /l787UrpomFbKUfvQzoweDIcBam5JGwW70lyNQtP8HeTFlTbzkoKhH5kiPNxMirEM8Ku
+         00yBINfEA/533JnBU0EwaCXfV3r8Ub8mJGy6oulc4XgNFiB0ZBnqWxhcQW4H313L++eb
+         YfiQ==
+X-Gm-Message-State: AOAM530x9L3YmHWXxLEEEV8WFtfJvtKezP1CUCnd+n/KKRsT5Yl5jFLe
+        +JQUh48oJq5dT6Ashx7g3EqQoBEBvTnendG8
+X-Google-Smtp-Source: ABdhPJzzrU4EnuhRv5vP5CvUvDAT9MZzHUjANL8z8fBWR9KhipnfIrGMov1YV2gpQAV0C3+I1u4/Ig==
+X-Received: by 2002:a05:6a00:1e:b029:1ed:b82c:bb64 with SMTP id h30-20020a056a00001eb02901edb82cbb64mr20018658pfk.78.1614705638819;
+        Tue, 02 Mar 2021 09:20:38 -0800 (PST)
 Received: from localhost.localdomain (c-73-93-5-123.hsd1.ca.comcast.net. [73.93.5.123])
-        by smtp.gmail.com with ESMTPSA id b15sm20073923pgg.85.2021.03.02.09.20.36
+        by smtp.gmail.com with ESMTPSA id b15sm20073923pgg.85.2021.03.02.09.20.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 09:20:37 -0800 (PST)
+        Tue, 02 Mar 2021 09:20:38 -0800 (PST)
 From:   Joe Stringer <joe@cilium.io>
 To:     bpf@vger.kernel.org
 Cc:     daniel@iogearbox.net, ast@kernel.org, linux-doc@vger.kernel.org,
         linux-man@vger.kernel.org,
         =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCHv2 bpf-next 04/15] bpf: Document BPF_PROG_PIN syscall command
-Date:   Tue,  2 Mar 2021 09:19:36 -0800
-Message-Id: <20210302171947.2268128-5-joe@cilium.io>
+        Quentin Monnet <quentin@isovalent.com>,
+        Daniel Mack <daniel@zonque.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Sean Young <sean@mess.org>, Petar Penkov <ppenkov@google.com>
+Subject: [PATCHv2 bpf-next 05/15] bpf: Document BPF_PROG_ATTACH syscall command
+Date:   Tue,  2 Mar 2021 09:19:37 -0800
+Message-Id: <20210302171947.2268128-6-joe@cilium.io>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210302171947.2268128-1-joe@cilium.io>
 References: <20210302171947.2268128-1-joe@cilium.io>
@@ -66,76 +69,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit b2197755b263 ("bpf: add support for persistent maps/progs")
-contains the original implementation and git logs, used as reference for
-this documentation.
-
-Also pull in the filename restriction as documented in commit 6d8cb045cde6
-("bpf: comment why dots in filenames under BPF virtual FS are not allowed")
+Document the prog attach command in more detail, based on git commits:
+* commit f4324551489e ("bpf: add BPF_PROG_ATTACH and BPF_PROG_DETACH
+  commands")
+* commit 4f738adba30a ("bpf: create tcp_bpf_ulp allowing BPF to monitor
+  socket TX/RX data")
+* commit f4364dcfc86d ("media: rc: introduce BPF_PROG_LIRC_MODE2")
+* commit d58e468b1112 ("flow_dissector: implements flow dissector BPF
+  hook")
 
 Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
 Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 Signed-off-by: Joe Stringer <joe@cilium.io>
 ---
-CC: Daniel Borkmann <daniel@iogearbox.net>
+CC: Daniel Mack <daniel@zonque.org>
+CC: John Fastabend <john.fastabend@gmail.com>
+CC: Sean Young <sean@mess.org>
+CC: Petar Penkov <ppenkov@google.com>
 ---
- include/uapi/linux/bpf.h | 36 +++++++++++++++++++++++++++++-------
- 1 file changed, 29 insertions(+), 7 deletions(-)
+ include/uapi/linux/bpf.h | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
 diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index eb9f059f0569..6946dde90c56 100644
+index 6946dde90c56..a8f2964ec885 100644
 --- a/include/uapi/linux/bpf.h
 +++ b/include/uapi/linux/bpf.h
-@@ -219,6 +219,22 @@ union bpf_iter_link_info {
-  *		Pin an eBPF program or map referred by the specified *bpf_fd*
-  *		to the provided *pathname* on the filesystem.
+@@ -253,6 +253,43 @@ union bpf_iter_link_info {
+  *		Attach an eBPF program to a *target_fd* at the specified
+  *		*attach_type* hook.
   *
-+ *		The *pathname* argument must not contain a dot (".").
++ *		The *attach_type* specifies the eBPF attachment point to
++ *		attach the program to, and must be one of *bpf_attach_type*
++ *		(see below).
 + *
-+ *		On success, *pathname* retains a reference to the eBPF object,
-+ *		preventing deallocation of the object when the original
-+ *		*bpf_fd* is closed. This allow the eBPF object to live beyond
-+ *		**close**\ (\ *bpf_fd*\ ), and hence the lifetime of the parent
-+ *		process.
++ *		The *attach_bpf_fd* must be a valid file descriptor for a
++ *		loaded eBPF program of a cgroup, flow dissector, LIRC, sockmap
++ *		or sock_ops type corresponding to the specified *attach_type*.
 + *
-+ *		Applying **unlink**\ (2) or similar calls to the *pathname*
-+ *		unpins the object from the filesystem, removing the reference.
-+ *		If no other file descriptors or filesystem nodes refer to the
-+ *		same object, it will be deallocated (see NOTES).
++ *		The *target_fd* must be a valid file descriptor for a kernel
++ *		object which depends on the attach type of *attach_bpf_fd*:
 + *
-+ *		The filesystem type for the parent directory of *pathname* must
-+ *		be **BPF_FS_MAGIC**.
++ *		**BPF_PROG_TYPE_CGROUP_DEVICE**,
++ *		**BPF_PROG_TYPE_CGROUP_SKB**,
++ *		**BPF_PROG_TYPE_CGROUP_SOCK**,
++ *		**BPF_PROG_TYPE_CGROUP_SOCK_ADDR**,
++ *		**BPF_PROG_TYPE_CGROUP_SOCKOPT**,
++ *		**BPF_PROG_TYPE_CGROUP_SYSCTL**,
++ *		**BPF_PROG_TYPE_SOCK_OPS**
++ *
++ *			Control Group v2 hierarchy with the eBPF controller
++ *			enabled. Requires the kernel to be compiled with
++ *			**CONFIG_CGROUP_BPF**.
++ *
++ *		**BPF_PROG_TYPE_FLOW_DISSECTOR**
++ *
++ *			Network namespace (eg /proc/self/ns/net).
++ *
++ *		**BPF_PROG_TYPE_LIRC_MODE2**
++ *
++ *			LIRC device path (eg /dev/lircN). Requires the kernel
++ *			to be compiled with **CONFIG_BPF_LIRC_MODE2**.
++ *
++ *		**BPF_PROG_TYPE_SK_SKB**,
++ *		**BPF_PROG_TYPE_SK_MSG**
++ *
++ *			eBPF map of socket type (eg **BPF_MAP_TYPE_SOCKHASH**).
 + *
   *	Return
   *		Returns zero on success. On error, -1 is returned and *errno*
   *		is set appropriately.
-@@ -584,13 +600,19 @@ union bpf_iter_link_info {
-  *
-  * NOTES
-  *	eBPF objects (maps and programs) can be shared between processes.
-- *	For example, after **fork**\ (2), the child inherits file descriptors
-- *	referring to the same eBPF objects. In addition, file descriptors
-- *	referring to eBPF objects can be transferred over UNIX domain sockets.
-- *	File descriptors referring to eBPF objects can be duplicated in the
-- *	usual way, using **dup**\ (2) and similar calls. An eBPF object is
-- *	deallocated only after all file descriptors referring to the object
-- *	have been closed.
-+ *
-+ *	* After **fork**\ (2), the child inherits file descriptors
-+ *	  referring to the same eBPF objects.
-+ *	* File descriptors referring to eBPF objects can be transferred over
-+ *	  **unix**\ (7) domain sockets.
-+ *	* File descriptors referring to eBPF objects can be duplicated in the
-+ *	  usual way, using **dup**\ (2) and similar calls.
-+ *	* File descriptors referring to eBPF objects can be pinned to the
-+ *	  filesystem using the **BPF_OBJ_PIN** command of **bpf**\ (2).
-+ *
-+ *	An eBPF object is deallocated only after all file descriptors referring
-+ *	to the object have been closed and no references remain pinned to the
-+ *	filesystem or attached (for example, bound to a program or device).
-  */
- enum bpf_cmd {
- 	BPF_MAP_CREATE,
 -- 
 2.27.0
 
