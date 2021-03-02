@@ -2,62 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B84532B33A
-	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B0232B348
+	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352496AbhCCDuQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Mar 2021 22:50:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
+        id S1352515AbhCCDui (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Mar 2021 22:50:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349781AbhCBRga (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Mar 2021 12:36:30 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315E2C061A27
-        for <bpf@vger.kernel.org>; Tue,  2 Mar 2021 09:20:33 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id o38so14246407pgm.9
-        for <bpf@vger.kernel.org>; Tue, 02 Mar 2021 09:20:33 -0800 (PST)
+        with ESMTP id S240792AbhCBRiu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Mar 2021 12:38:50 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1564C061A2B
+        for <bpf@vger.kernel.org>; Tue,  2 Mar 2021 09:20:34 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id jx13so2376154pjb.1
+        for <bpf@vger.kernel.org>; Tue, 02 Mar 2021 09:20:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cilium-io.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZSepNuTpShhqXcTO9o/+6YyXUqnmTGJsJycIq3qFJpo=;
-        b=iCWZupQqVkBwoPxoHcF5zAleItLX18zgYEvsPvPz1QBKeW4ggt81c3gfm62l9KBLYv
-         0ZQ5/4+e7WEVeILAU1QoVQSgSF9NuPuCV/IuzL04ylKWdGrGw+isusB09Py22T/03PCg
-         c3zTrTe6IClZMKWveUal+fOHVZ39cGEYQo7Jf+UYTg4D5IV7/L2JRK+sgAx11Di3SnG8
-         kPsPQAClb108dIOkpMeBlAW++rr+4zNrMD2UKsZmFOR9CLQKh4iJBQn/jKUjCYwpBMAp
-         8GN4iFygZb1OmR3+YI+ogrlz5On/VsVJ5aNi6wDpqJPfp6sBIUyB9bx1gPBDPCciVm/M
-         6mVg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=cZPyA9m3sp7GWzupY4xnewRoMydoMiMPf4WFOI3CF9w=;
+        b=sJ2OJLwmwqDDPUf35eKDe6NU8HZy6R5/C9TvVUeRumZ9EyXhSA8h8QolBQYVIGEN3+
+         sjISVk5hmKpVotMoC6UygTqdDwxXci49TMiDryrojQJTntTO6DIwRbfX2NFNfItree7x
+         C7BAyAFlxavkRwkLf7sxBHmaw3ED/rv53Y6tRW/1IhShcs2ltLS5YQ6FgsbBqIROgkYA
+         fM+Ix6srOLtyQ0/iwdookdICuoar/FA9pgawiIFa0X/QW/HYWNqQw5w9g+srowA9OM/V
+         YYbJprgQcsn0hJflHr828zG+XIi0BAjXSo/wbl8mQ1w9yYi50Sht7if7badDtS4JC388
+         2lSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZSepNuTpShhqXcTO9o/+6YyXUqnmTGJsJycIq3qFJpo=;
-        b=A25glCXqSh+l6CCNr8ZBXV5tQqmZUupidrlw6yfGseQwjqtv/BdbAnpQuos9WUnqda
-         Tai7doAhBcm2pI4/34v1W/ICp49wsYrGjlkf2rzEM57H850WqWu+Xnm9BJq3XxZQIdGa
-         dyAvCgvidcoXUWBTlj8yIaB8lgeR4nV3AKPDAsIZ5OPtOSkkex1HM7DsxEqcmbO3iQ3t
-         6u2eDSShCNzGgvwOtiib7V2d6HTEs1YDbDASLpKlBwofwC0/tCxk1JONb1Ualgnmx7lv
-         SUsQtPe3C6W4J6TZh6kyyV6LTRA+mLaoGVRhyhQKKkjJRzAszvijFxns3W1m85RAN49n
-         Y6rg==
-X-Gm-Message-State: AOAM5308A38IEPbqhshPNA3katUrO1QdCV6A9HrlfNWjSeymEslE0wFC
-        B4xh7s7oBLJRuQQ+Vrb0vhvJ0YdCzdXFzz9Q
-X-Google-Smtp-Source: ABdhPJwuIMK+ewRiaw33ZRBdLAvPTiWCttJuE4Y7QHyuLgDmoaprwrhcPx4OJfWs7oWlUXT/bYylqQ==
-X-Received: by 2002:aa7:9a86:0:b029:1ee:70dd:c44e with SMTP id w6-20020aa79a860000b02901ee70ddc44emr4136871pfi.56.1614705632486;
-        Tue, 02 Mar 2021 09:20:32 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=cZPyA9m3sp7GWzupY4xnewRoMydoMiMPf4WFOI3CF9w=;
+        b=S2Zqd0U81U6HsbnGSyBlpblwimeUcr/JFZDY2FcHIWB78S9qdpBz86wM0dIADsx1NP
+         6rizR1kWGjR9zoDPU+Zbwq4N/dgqnp7ryqpX95W40KFk07il8RPTeevJs8H16LWPZp7f
+         kO6Yxkq/Z6LToQ25+eKVLeHk5kgFem8CY0x9J1dJPKSn/4WNgDKFOzrBPzSwEQKPKsGg
+         OGuW3bRQiBITD2fEayjLDuOAiZ1QJjOW5T/alBeaboQjVgBJhLYmBz03/zCPlIcNJmhX
+         srMAF9BXrCxdRUyjeuOxsyEckLu0jIMsWx4ZBUyCleVgCXjJ3vT0/c2fe+S8GNVRkMga
+         GOWw==
+X-Gm-Message-State: AOAM531/wrmdH1yb70Av/iJ+NKXURU8E5a/8F/ZUObwahKG8EWhsqOtG
+        OIfIo/SIQH4N8+PwAJoJJkVXIHh6ExMYUakI
+X-Google-Smtp-Source: ABdhPJz+91huBG/Dlm8J0g83YpRM8aSMTTD4XhyVsTbpSADsoEBemrdz+CbGvbQH2oxc1uXLp/0Zpg==
+X-Received: by 2002:a17:90b:110c:: with SMTP id gi12mr5436954pjb.48.1614705633830;
+        Tue, 02 Mar 2021 09:20:33 -0800 (PST)
 Received: from localhost.localdomain (c-73-93-5-123.hsd1.ca.comcast.net. [73.93.5.123])
-        by smtp.gmail.com with ESMTPSA id b15sm20073923pgg.85.2021.03.02.09.20.31
+        by smtp.gmail.com with ESMTPSA id b15sm20073923pgg.85.2021.03.02.09.20.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Mar 2021 09:20:32 -0800 (PST)
+        Tue, 02 Mar 2021 09:20:33 -0800 (PST)
 From:   Joe Stringer <joe@cilium.io>
 To:     bpf@vger.kernel.org
-Cc:     linux-man@vger.kernel.org, linux-doc@vger.kernel.org,
-        mtk.manpages@gmail.com, ast@kernel.org, brianvv@google.com,
-        daniel@iogearbox.net, daniel@zonque.org, john.fastabend@gmail.com,
-        ppenkov@google.com, quentin@isovalent.com, sean@mess.org,
-        yhs@fb.com
-Subject: [PATCHv2 bpf-next 00/15] Improve BPF syscall command documentation
-Date:   Tue,  2 Mar 2021 09:19:32 -0800
-Message-Id: <20210302171947.2268128-1-joe@cilium.io>
+Cc:     daniel@iogearbox.net, ast@kernel.org, linux-doc@vger.kernel.org,
+        linux-man@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>
+Subject: [PATCHv2 bpf-next 01/15] bpf: Import syscall arg documentation
+Date:   Tue,  2 Mar 2021 09:19:33 -0800
+Message-Id: <20210302171947.2268128-2-joe@cilium.io>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210302171947.2268128-1-joe@cilium.io>
+References: <20210302171947.2268128-1-joe@cilium.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -65,127 +67,159 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The state of bpf(2) manual pages today is not exactly ideal. For the
-most part, it was written several years ago and has not kept up with the
-pace of development in the kernel tree. For instance, out of a total of
-~35 commands to the BPF syscall available today, when I pull the
-kernel-man-pages tree today I find just 6 documented commands: The very
-basics of map interaction and program load.
+These descriptions are present in the man-pages project from the
+original submissions around 2015-2016. Import them so that they can be
+kept up to date as developers extend the bpf syscall commands.
 
-In contrast, looking at bpf-helpers(7), I am able today to run one
-command[0] to fetch API documentation of the very latest eBPF helpers
-that have been added to the kernel. This documentation is up to date
-because kernel maintainers enforce documenting the APIs as part of
-the feature submission process. As far as I can tell, we rely on manual
-synchronization from the kernel tree to the kernel-man-pages tree to
-distribute these more widely, so all locations may not be completely up
-to date. That said, the documentation does in fact exist in the first
-place which is a major initial hurdle to overcome.
+These descriptions follow the pattern used by scripts/bpf_helpers_doc.py
+so that we can take advantage of the parser to generate more up-to-date
+man page writing based upon these headers.
 
-Given the relative success of the process around bpf-helpers(7) to
-encourage developers to document their user-facing changes, in this
-patch series I explore applying this technique to bpf(2) as well.
-Unfortunately, even with bpf(2) being so out-of-date, there is still a
-lot of content to convert over. In particular, the following aspects of
-the bpf syscall could also be individually be generated from separate
-documentation in the header:
-* BPF syscall commands
-* BPF map types
-* BPF program types
-* BPF program subtypes (aka expected_attach_type)
-* BPF attachment points
+Some minor wording adjustments were made to make the descriptions
+more consistent for the description / return format.
 
-Rather than tackle everything at once, I have focused in this series on
-the syscall commands, "enum bpf_cmd". This series is structured to first
-import what useful descriptions there are from the kernel-man-pages
-tree, then piece-by-piece document a few of the syscalls in more detail
-in cases where I could find useful documentation from the git tree or
-from a casual read of the code. Not all documentation is comprehensive
-at this point, but a basis is provided with examples that can be further
-enhanced with subsequent follow-up patches. Note, the series in its
-current state only includes documentation around the syscall commands
-themselves, so in the short term it doesn't allow us to automate bpf(2)
-generation; Only one section of the man page could be replaced. Though
-if there is appetite for this approach, this should be trivial to
-improve on, even if just by importing the remaining static text from the
-kernel-man-pages tree.
-
-Following that, the series enhances the python scripting around parsing
-the descriptions from the header files and generating dedicated
-ReStructured Text and troff output. Finally, to expose the new text and
-reduce the likelihood of having it get out of date or break the docs
-parser, it is added to the selftests and exposed through the kernel
-documentation web pages.
-
-The eventual goal of this effort would be to extend the kernel UAPI
-headers such that each of the categories I had listed above (commands,
-maps, progs, hooks) have dedicated documentation in the kernel tree, and
-that developers must update the comments in the headers to document the
-APIs prior to patch acceptance, and that we could auto-generate the
-latest version of the bpf(2) manual pages based on a few static
-description sections combined with the dynamically-generated output from
-the header.
-
-This patch series can also be found at the following location on GitHub:
-https://github.com/joestringer/linux/tree/submit/bpf-command-docs_v2
-
-Thanks also to Quentin Monnet for initial review.
-
-[0]: make -C tools/testing/selftests/bpf docs
-
+Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+Co-authored-by: Alexei Starovoitov <ast@kernel.org>
+Co-authored-by: Michael Kerrisk <mtk.manpages@gmail.com>
+Signed-off-by: Joe Stringer <joe@cilium.io>
 ---
+ include/uapi/linux/bpf.h | 122 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 121 insertions(+), 1 deletion(-)
 
-v2:
-* Remove build infrastructure in favor of kernel-doc directives
-* Shift userspace-api docs under Documentation/userspace-api/ebpf
-* Fix scripts/bpf_doc.py syscall --header (throw unsupported error)
-* Improve .gitignore handling of newly autogenerated files
-
----
-
-Joe Stringer (15):
-  bpf: Import syscall arg documentation
-  bpf: Add minimal bpf() command documentation
-  bpf: Document BPF_F_LOCK in syscall commands
-  bpf: Document BPF_PROG_PIN syscall command
-  bpf: Document BPF_PROG_ATTACH syscall command
-  bpf: Document BPF_PROG_TEST_RUN syscall command
-  bpf: Document BPF_PROG_QUERY syscall command
-  bpf: Document BPF_MAP_*_BATCH syscall commands
-  scripts/bpf: Abstract eBPF API target parameter
-  scripts/bpf: Add syscall commands printer
-  tools/bpf: Remove bpf-helpers from bpftool docs
-  selftests/bpf: Templatize man page generation
-  selftests/bpf: Test syscall command parsing
-  docs/bpf: Add bpf() syscall command reference
-  tools: Sync uapi bpf.h header with latest changes
-
- Documentation/bpf/index.rst                   |   9 +-
- Documentation/userspace-api/ebpf/index.rst    |  17 +
- Documentation/userspace-api/ebpf/syscall.rst  |  24 +
- Documentation/userspace-api/index.rst         |   1 +
- MAINTAINERS                                   |   2 +
- include/uapi/linux/bpf.h                      | 714 +++++++++++++++++-
- scripts/{bpf_helpers_doc.py => bpf_doc.py}    | 191 ++++-
- tools/bpf/Makefile.helpers                    |  60 --
- tools/bpf/bpftool/.gitignore                  |   1 -
- tools/bpf/bpftool/Documentation/Makefile      |  11 +-
- tools/include/uapi/linux/bpf.h                | 714 +++++++++++++++++-
- tools/lib/bpf/Makefile                        |   2 +-
- tools/perf/MANIFEST                           |   2 +-
- tools/testing/selftests/bpf/.gitignore        |   2 +
- tools/testing/selftests/bpf/Makefile          |  20 +-
- tools/testing/selftests/bpf/Makefile.docs     |  82 ++
- .../selftests/bpf/test_bpftool_build.sh       |  21 -
- tools/testing/selftests/bpf/test_doc_build.sh |  13 +
- 18 files changed, 1746 insertions(+), 140 deletions(-)
- create mode 100644 Documentation/userspace-api/ebpf/index.rst
- create mode 100644 Documentation/userspace-api/ebpf/syscall.rst
- rename scripts/{bpf_helpers_doc.py => bpf_doc.py} (82%)
- delete mode 100644 tools/bpf/Makefile.helpers
- create mode 100644 tools/testing/selftests/bpf/Makefile.docs
- create mode 100755 tools/testing/selftests/bpf/test_doc_build.sh
-
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index b89af20cfa19..fb16c590e6d9 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -93,7 +93,127 @@ union bpf_iter_link_info {
+ 	} map;
+ };
+ 
+-/* BPF syscall commands, see bpf(2) man-page for details. */
++/* BPF syscall commands, see bpf(2) man-page for more details. */
++/**
++ * DOC: eBPF Syscall Preamble
++ *
++ * The operation to be performed by the **bpf**\ () system call is determined
++ * by the *cmd* argument. Each operation takes an accompanying argument,
++ * provided via *attr*, which is a pointer to a union of type *bpf_attr* (see
++ * below). The size argument is the size of the union pointed to by *attr*.
++ */
++/**
++ * DOC: eBPF Syscall Commands
++ *
++ * BPF_MAP_CREATE
++ *	Description
++ *		Create a map and return a file descriptor that refers to the
++ *		map. The close-on-exec file descriptor flag (see **fcntl**\ (2))
++ *		is automatically enabled for the new file descriptor.
++ *
++ *		Applying **close**\ (2) to the file descriptor returned by
++ *		**BPF_MAP_CREATE** will delete the map (but see NOTES).
++ *
++ *	Return
++ *		A new file descriptor (a nonnegative integer), or -1 if an
++ *		error occurred (in which case, *errno* is set appropriately).
++ *
++ * BPF_MAP_LOOKUP_ELEM
++ *	Description
++ *		Look up an element with a given *key* in the map referred to
++ *		by the file descriptor *map_fd*.
++ *
++ *	Return
++ *		Returns zero on success. On error, -1 is returned and *errno*
++ *		is set appropriately.
++ *
++ * BPF_MAP_UPDATE_ELEM
++ *	Description
++ *		Create or update an element (key/value pair) in a specified map.
++ *
++ *		The *flags* argument should be specified as one of the
++ *		following:
++ *
++ *		**BPF_ANY**
++ *			Create a new element or update an existing element.
++ *		**BPF_NOEXIST**
++ *			Create a new element only if it did not exist.
++ *		**BPF_EXIST**
++ *			Update an existing element.
++ *
++ *	Return
++ *		Returns zero on success. On error, -1 is returned and *errno*
++ *		is set appropriately.
++ *
++ *		May set *errno* to **EINVAL**, **EPERM**, **ENOMEM**,
++ *		**E2BIG**, **EEXIST**, or **ENOENT**.
++ *
++ *		**E2BIG**
++ *			The number of elements in the map reached the
++ *			*max_entries* limit specified at map creation time.
++ *		**EEXIST**
++ *			If *flags* specifies **BPF_NOEXIST** and the element
++ *			with *key* already exists in the map.
++ *		**ENOENT**
++ *			If *flags* specifies **BPF_EXIST** and the element with
++ *			*key* does not exist in the map.
++ *
++ * BPF_MAP_DELETE_ELEM
++ *	Description
++ *		Look up and delete an element by key in a specified map.
++ *
++ *	Return
++ *		Returns zero on success. On error, -1 is returned and *errno*
++ *		is set appropriately.
++ *
++ * BPF_MAP_GET_NEXT_KEY
++ *	Description
++ *		Look up an element by key in a specified map and return the key
++ *		of the next element. Can be used to iterate over all elements
++ *		in the map.
++ *
++ *	Return
++ *		Returns zero on success. On error, -1 is returned and *errno*
++ *		is set appropriately.
++ *
++ *		The following cases can be used to iterate over all elements of
++ *		the map:
++ *
++ *		* If *key* is not found, the operation returns zero and sets
++ *		  the *next_key* pointer to the key of the first element.
++ *		* If *key* is found, the operation returns zero and sets the
++ *		  *next_key* pointer to the key of the next element.
++ *		* If *key* is the last element, returns -1 and *errno* is set
++ *		  to **ENOENT**.
++ *
++ *		May set *errno* to **ENOMEM**, **EFAULT**, **EPERM**, or
++ *		**EINVAL** on error.
++ *
++ * BPF_PROG_LOAD
++ *	Description
++ *		Verify and load an eBPF program, returning a new file
++ *		descriptor associated with the program.
++ *
++ *		Applying **close**\ (2) to the file descriptor returned by
++ *		**BPF_PROG_LOAD** will unload the eBPF program (but see NOTES).
++ *
++ *		The close-on-exec file descriptor flag (see **fcntl**\ (2)) is
++ *		automatically enabled for the new file descriptor.
++ *
++ *	Return
++ *		A new file descriptor (a nonnegative integer), or -1 if an
++ *		error occurred (in which case, *errno* is set appropriately).
++ *
++ * NOTES
++ *	eBPF objects (maps and programs) can be shared between processes.
++ *	For example, after **fork**\ (2), the child inherits file descriptors
++ *	referring to the same eBPF objects. In addition, file descriptors
++ *	referring to eBPF objects can be transferred over UNIX domain sockets.
++ *	File descriptors referring to eBPF objects can be duplicated in the
++ *	usual way, using **dup**\ (2) and similar calls. An eBPF object is
++ *	deallocated only after all file descriptors referring to the object
++ *	have been closed.
++ */
+ enum bpf_cmd {
+ 	BPF_MAP_CREATE,
+ 	BPF_MAP_LOOKUP_ELEM,
 -- 
 2.27.0
 
