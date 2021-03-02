@@ -2,161 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C463132A465
-	for <lists+bpf@lfdr.de>; Tue,  2 Mar 2021 16:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FA532A466
+	for <lists+bpf@lfdr.de>; Tue,  2 Mar 2021 16:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1578070AbhCBKfY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Mar 2021 05:35:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381336AbhCBFVD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Mar 2021 00:21:03 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA41DC061793
-        for <bpf@vger.kernel.org>; Mon,  1 Mar 2021 21:08:57 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id p186so19463676ybg.2
-        for <bpf@vger.kernel.org>; Mon, 01 Mar 2021 21:08:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tiqa2uk1rCVC87NmlpDfcyohmBIepsgQBQTP19VRNuE=;
-        b=mA2UuqyBPww7uEpqmeeoZ1akFVWxdfAWlSTgo7pnwSIyZzpLM7HhD45HH+7UhiuJcM
-         QSpTyU5zZAgB+uio69SLiT1kk4HUtpn6Ce4hNwmSbl9QP2AhKc+pOVTT0gaZwGWd4Gr/
-         dCqWRFB6te/xQJB4/aXl6OWTofDEfDpi0hHsaed/U+NDkjhUjSFUWey9U2fVkAWSy8iE
-         DEv8HkD/+ZOLD50qjd6Bf2NagARfccGy8iQfJvDv4RCMVaHpRUjK92wLuqbSoQEbWa5x
-         pWtymXpDnrA47QqWPJtvv3oUx55RQV3x5uO+OpKorihS0bSfJ1e7rkGz7uHtahJHNyIn
-         0Qiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tiqa2uk1rCVC87NmlpDfcyohmBIepsgQBQTP19VRNuE=;
-        b=UXOpXDQ/TFjMqq+/N749s3zLK7h1khN4cYiLZz+vdvh/5cvQ4O4Jyg1H28znyJZXfM
-         CFoFp4hb3+wAdyolo0dsd3pbNuwQQHF2CTi5OzwmAdqByeC2LgufVs/ZiBCCkl7y8nZ8
-         wXNxSvmdskJvnWXLfXQy3HcyJ9NFCC+S1X4Z4AyKIUdA2mOD9793l53cVTUzEHxjnweC
-         Tjn4MZ5y5phlzV+c56qExSrdDxp16Q2E4gLVoAt1XRFo8AuoZpU+hTjmGUZ0sHH/hQ+K
-         DxmntUmxPt9AYrzGNBV4MsZWWNuG8SCBjmShoRnHyHhMbf+Cmos49ct6Z7YxIIRryLpz
-         gyVw==
-X-Gm-Message-State: AOAM532SrGbVlOrXBYkghf/MTHh6Doo5OFVirV/firgJ40kicEyrm4Dh
-        vKyJERPOs010Hnk3CQhQ5nj/xHt53YWeBYyuRWzpdg4cR6M=
-X-Google-Smtp-Source: ABdhPJyuejvvH4huvo1vqdiLRsb3w1Jxn3IhJ8W5N0Pss1HRXuxD6Ha+J3MhH/Cav4sECBRuYElevwYg0KaD//CIVbY=
-X-Received: by 2002:a25:cc13:: with SMTP id l19mr28399746ybf.260.1614661736454;
- Mon, 01 Mar 2021 21:08:56 -0800 (PST)
+        id S1578073AbhCBKf0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Mar 2021 05:35:26 -0500
+Received: from mga06.intel.com ([134.134.136.31]:57818 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1381544AbhCBIFJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Mar 2021 03:05:09 -0500
+IronPort-SDR: hyhmsc4zGNJ+Fn6JkJR70aikt/B+udecgH643/wfA80JLtnJUPm7VodEleTOle3Us71ewMCR4k
+ VTMkEg0FmcDA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9910"; a="248133484"
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="248133484"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 00:04:24 -0800
+IronPort-SDR: 7/BMllbf0SeMqe4vEt4uKehpWuloRQC3+IJfz0KXBLYfrdR1YrQwMeewI3BV+QKj35YlT5CY0Z
+ 0fYwlKvZ+CKg==
+X-IronPort-AV: E=Sophos;i="5.81,216,1610438400"; 
+   d="scan'208";a="398268019"
+Received: from ilick-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.41.237])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 00:04:20 -0800
+Subject: Re: [PATCH bpf-next 1/2] xsk: update rings for
+ load-acquire/store-release semantics
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, paulmck@kernel.org
+Cc:     magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
+        maximmi@nvidia.com, andrii@kernel.org
+References: <20210301104318.263262-1-bjorn.topel@gmail.com>
+ <20210301104318.263262-2-bjorn.topel@gmail.com> <87mtvmx3ec.fsf@toke.dk>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <939aefb5-8f03-fc5a-9e8b-0b634aafd0a4@intel.com>
+Date:   Tue, 2 Mar 2021 09:04:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <CACAyw9-XZ4XqNP1MZxC1i7+zntVAivopkgRgc4yXaNtD8QcADw@mail.gmail.com>
- <05c0e4ff-3d93-00c8-b81b-9758c90deca8@fb.com> <CAEf4BzZVXtVnV9aSQLaQ=7qz-3E44gvMf-abHeHKLS3S4xjChg@mail.gmail.com>
- <3a6d2ee3-4ce0-0f8b-2ab4-dad77e6da42e@fb.com> <ffbd1904-ac22-7922-201d-a971c685d761@fb.com>
-In-Reply-To: <ffbd1904-ac22-7922-201d-a971c685d761@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 1 Mar 2021 21:08:45 -0800
-Message-ID: <CAEf4BzZ2LXc=5zT45VKgwbvc6VQ0XUU+J7_hKmqPaURKtYeJBQ@mail.gmail.com>
-Subject: Re: Enum relocations against zero values
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87mtvmx3ec.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 8:19 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 2/26/21 7:31 PM, Yonghong Song wrote:
-> >
-> >
-> > On 2/26/21 12:43 PM, Andrii Nakryiko wrote:
-> >> On Fri, Feb 26, 2021 at 10:08 AM Yonghong Song <yhs@fb.com> wrote:
-> >>>
-> >>>
-> >>>
-> >>> On 2/26/21 9:47 AM, Lorenz Bauer wrote:
-> >>>> Hi Andrii and Yonghong,
-> >>>>
-> >>>> I'm playing around with enum CO-RE relocations, and hit the
-> >>>> following snag:
-> >>>>
-> >>>>       enum e { TWO };
-> >>>>       bpf_core_enum_value_exists(enum e, TWO);
-> >>>>
-> >>>> Compiling this with clang-12
-> >>>> (12.0.0-++20210225092616+e0e6b1e39e7e-1~exp1~20210225083321.50) gives
-> >>>> me the following:
-> >>>>
-> >>>> internal/btf/testdata/relocs.c:66:2: error:
-> >>>> __builtin_preserve_enum_value argument 1 invalid
-> >>>>           enum_value_exists(enum e, TWO);
-> >>>>           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >>>> internal/btf/testdata/relocs.c:53:8: note: expanded from macro
-> >>>> 'enum_value_exists'
-> >>>>                   if (!bpf_core_enum_value_exists(t, v)) { \
-> >>>>                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >>>> internal/btf/testdata/bpf_core_read.h:168:32: note: expanded from
-> >>>> macro 'bpf_core_enum_value_exists'
-> >>>>           __builtin_preserve_enum_value(*(typeof(enum_type)
-> >>>> *)enum_value, BPF_ENUMVAL_EXISTS)
-> >>>>
-> >>>> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >>>
-> >>> Andrii can comment on MACRO failures.
-> >>
-> >> Yeah, I ran into this a long time ago as well...
-> >>
-> >> I don't actually know why this doesn't work for zeroes. I've tried to
-> >> write that macro in a bit different way, but Clang rejects it:
-> >>
-> >> __builtin_preserve_enum_value(({typeof(enum_type) ___xxx =
-> >> (enum_value); *(typeof(enum_type)*)&___xxx;}), BPF_ENUMVAL_EXISTS)
-> >>
-> >> And something as straightforward as
-> >>
-> >> __builtin_preserve_enum_value((typeof(enum_type))(enum_value),
-> >> BPF_ENUMVAL_EXISTS)
-> >>
-> >> doesn't work as well.
-> >>
-> >> Yonghong, any idea how to write such a macro to work in all cases? Or
-> >> why those alternatives don't work? I only get " error:
-> >> __builtin_preserve_enum_value argument 1 invalid" with no more
-> >> details, so hard to do anything about this.
-> >
-> > This is a clang BPF bug. In certain number classification system,
-> > clang considers 0 as NULL and non-0 as INTEGER. I only checked
-> > INTEGER and hence only non-0 works. All my tests has non-zero
-> > enum values :-(
-> >
-> > Will fix the issue soon. Thanks for reporting!
->
-> Just pushed the fix (https://reviews.llvm.org/D97659) to llvm trunk
-> this morning. Also filed a request
-> (https://bugs.llvm.org/show_bug.cgi?id=49391) to backport the fix to
-> 12.0.1 release.
-> it is too late to be included in 12.0.0 release.
-> Thanks!
+
+
+
+On 2021-03-01 17:08, Toke Høiland-Jørgensen wrote:
+> Björn Töpel <bjorn.topel@gmail.com> writes:
+> 
+>> From: Björn Töpel <bjorn.topel@intel.com>
+>>
+>> Currently, the AF_XDP rings uses smp_{r,w,}mb() fences on the
+>> kernel-side. By updating the rings for load-acquire/store-release
+>> semantics, the full barrier on the consumer side can be replaced with
+>> improved performance as a nice side-effect.
+>>
+>> Note that this change does *not* require similar changes on the
+>> libbpf/userland side, however it is recommended [1].
+>>
+>> On x86-64 systems, by removing the smp_mb() on the Rx and Tx side, the
+>> l2fwd AF_XDP xdpsock sample performance increases by
+>> 1%. Weakly-ordered platforms, such as ARM64 might benefit even more.
+>>
+>> [1] https://lore.kernel.org/bpf/20200316184423.GA14143@willie-the-truck/
+>>
+>> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+>> ---
+>>   net/xdp/xsk_queue.h | 27 +++++++++++----------------
+>>   1 file changed, 11 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+>> index 2823b7c3302d..e24279d8d845 100644
+>> --- a/net/xdp/xsk_queue.h
+>> +++ b/net/xdp/xsk_queue.h
+>> @@ -47,19 +47,18 @@ struct xsk_queue {
+>>   	u64 queue_empty_descs;
+>>   };
+>>   
+>> -/* The structure of the shared state of the rings are the same as the
+>> - * ring buffer in kernel/events/ring_buffer.c. For the Rx and completion
+>> - * ring, the kernel is the producer and user space is the consumer. For
+>> - * the Tx and fill rings, the kernel is the consumer and user space is
+>> - * the producer.
+>> +/* The structure of the shared state of the rings are a simple
+>> + * circular buffer, as outlined in
+>> + * Documentation/core-api/circular-buffers.rst. For the Rx and
+>> + * completion ring, the kernel is the producer and user space is the
+>> + * consumer. For the Tx and fill rings, the kernel is the consumer and
+>> + * user space is the producer.
+>>    *
+>>    * producer                         consumer
+>>    *
+>> - * if (LOAD ->consumer) {           LOAD ->producer
+>> - *                    (A)           smp_rmb()       (C)
+>> + * if (LOAD ->consumer) {  (A)      LOAD.acq ->producer  (C)
+> 
+> Why is LOAD.acq not needed on the consumer side?
 >
 
-Thanks, Yonghong!
+You mean why LOAD.acq is not needed on the *producer* side, i.e. the
+->consumer? The ->consumer is a control dependency for the store, so
+there is no ordering constraint for ->consumer at producer side. If
+there's no space, no data is written. So, no barrier is needed there --
+at least that has been my perspective.
 
-> >
-> >>
-> >>
-> >>>
-> >>>>
-> >>>> Changing the definition of the enum to
-> >>>>
-> >>>>       enum e { TWO = 1 }
-> >>>>
-> >>>> compiles successfully. I get the same result for any enum value that
-> >>>> is zero. Is this expected?
-> >>>
-> >>> IIRC, libbpf will try to do relocation against vmlinux BTF.
-> >>> So here, "enum e" probably does not exist in vmlinux BTF, so
-> >>> the builtin will return 0. You can try some enum type
-> >>> existing in vmlinux BTF to see what happens.
-> >>>
-> >>>>
-> >>>> Best
-> >>>> Lorenz
-> >>>>
+This is very similar to the buffer in
+Documentation/core-api/circular-buffers.rst. Roping in Paul for some
+guidance.
+
+
+Björn
+
+> -Toke
+> 
