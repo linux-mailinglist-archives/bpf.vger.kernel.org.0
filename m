@@ -2,263 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D63232B333
+	by mail.lfdr.de (Postfix) with ESMTP id A125432B334
 	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:54:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352467AbhCCDt0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Mar 2021 22:49:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378996AbhCBP3q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Mar 2021 10:29:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14B5C64F20;
-        Tue,  2 Mar 2021 15:28:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614698928;
-        bh=nWtbNd0LyPXCoQly4Fgl2Gsi9rtHOaKIPX4W5cz9HF0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=To78vVwsjm4aSQ5HEPEKC7AHtNRCb1QDlYDn6Om+u+SR5gLHE2udj31LJ8IFWwsyZ
-         xdzVnHrBROsA18h6JwpdKLZZgwcaldWbtHYVADxK82WE8uYdvKE5UoIM7ozZ6/4Bzm
-         O/BuB9V5XhEiCJslYyvD1Pq8EhuWKTt4vydBX8kwIPKSzXfkIC9IXui2xDLwllkLnm
-         J5wSe1RU+P6diTvkIuqMqKrO9OY2lCPHopZ3hUGuxVr/srv2PuB750/pLZm0srbdu7
-         g6yHyAu32+eGFNjccxtr4bms1NwdJ9E4ftnDHK1M/yksr1w3LGK5njhWdEwQ+LG01U
-         XeKUxLgXid0Hw==
-Date:   Tue, 2 Mar 2021 16:28:43 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Shay Agroskin <shayagr@amazon.com>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        toke@redhat.com, freysteinn.alfredsson@kau.se,
-        john.fastabend@gmail.com, jasowang@redhat.com, mst@redhat.com,
-        thomas.petazzoni@bootlin.com, mw@semihalf.com,
-        linux@armlinux.org.uk, ilias.apalodimas@linaro.org,
-        netanel@amazon.com, akiyano@amazon.com, michael.chan@broadcom.com,
-        madalin.bucur@nxp.com, ioana.ciornei@nxp.com,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        saeedm@nvidia.com, grygorii.strashko@ti.com, ecree.xilinx@gmail.com
-Subject: Re: [PATCH v2 bpf-next] bpf: devmap: move drop error path to devmap
- for XDP_REDIRECT
-Message-ID: <YD5ZqzIa5TymNdB4@lore-desk>
-References: <d0c326f95b2d0325f63e4040c1530bf6d09dc4d4.1614422144.git.lorenzo@kernel.org>
- <pj41zly2f8wfq6.fsf@u68c7b5b1d2d758.ant.amazon.com>
- <YDwYzYVIDQABINyy@lore-laptop-rh>
- <20210301084847.5117a404@carbon>
- <pj41zlpn0jcgms.fsf@u68c7b5b1d2d758.ant.amazon.com>
- <20210301211837.4a755c44@carbon>
+        id S1352481AbhCCDt4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Mar 2021 22:49:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1839595AbhCBQhc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Mar 2021 11:37:32 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FC5C061222
+        for <bpf@vger.kernel.org>; Tue,  2 Mar 2021 08:22:30 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id h4so24495960ljl.0
+        for <bpf@vger.kernel.org>; Tue, 02 Mar 2021 08:22:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9F+lO983HafQm131zMNtA2M5vN7jjQ4sPO1miVVqoZQ=;
+        b=rkoJZCKrXUgso9jhDO9Ntv+yPsXPftMJkfH6Ln/fdlC3w6AAhsqvJddr6Pni8EEbHn
+         QbVxAjZqbarunY1iqfUi30tqCHf/6H3W19GSltFqHiKzrpEyJOb+CqW6LcXT8d+NZ6jR
+         2uIcIXtbl23HrnE0SKS48l+A0pZ17mOGYPU4M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9F+lO983HafQm131zMNtA2M5vN7jjQ4sPO1miVVqoZQ=;
+        b=RxFubHk1VpTT3nl52GMI+ns8RTUYwlORXATLmPy27ulRjO2Wvfb8JxWtqtekNi0ujv
+         eSaCh2X26ajKUzGWlF9VoHjaBO+zESM7d4JXMFUhM+tkL2B9Xirt2qI6fs8xOlzvs9pI
+         HI9HCVQ1u4SGkwJKjpEqcXnm8GLlLlw1oRrcReRm9TCtPWXYBxI3yg1jtEg7OaiXFn25
+         STSM6ZaXVJ0BaEk46ORP/q2TR4HMH4m0kDq+tpEJLhObMQFuM60YaFfRJkfzpX790uqZ
+         0WVACUa7ni/DptBa3y75EwG5Jjhg+c/K5LeQbYwFiKBDX+wh+rGQpkKgoI4j6ReaCf4q
+         GYOQ==
+X-Gm-Message-State: AOAM530z2ZbRlQfqMYCFjKqTAzW81Ac7k9FYdRFHExb54fumkT/YSsc1
+        qU6gVKyGFEHy0g2zNnGnuefXsTdYCtfp/rBrEwWYFw==
+X-Google-Smtp-Source: ABdhPJzvRrHUiMLHVor8XFBpxH5az13yVi5Sx+2gdr1u4tI1Nwtw0JQOP8iEFA9pA6sqBWUhl6nS0lFRyFoHz1j0aH4=
+X-Received: by 2002:a2e:9310:: with SMTP id e16mr12720926ljh.226.1614702148827;
+ Tue, 02 Mar 2021 08:22:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3l53p2Dttm0uRSJd"
-Content-Disposition: inline
-In-Reply-To: <20210301211837.4a755c44@carbon>
+References: <20210302023743.24123-1-xiyou.wangcong@gmail.com> <20210302023743.24123-3-xiyou.wangcong@gmail.com>
+In-Reply-To: <20210302023743.24123-3-xiyou.wangcong@gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 2 Mar 2021 16:22:17 +0000
+Message-ID: <CACAyw9-SjsNn4_J1KDXuFh1nd9Hr-Mo+=7S-kVtooJwdi1fodQ@mail.gmail.com>
+Subject: Re: [Patch bpf-next v2 2/9] sock: introduce sk_prot->update_proto()
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        duanxiongchun@bytedance.com, wangdongdong.6@bytedance.com,
+        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, 2 Mar 2021 at 02:37, Cong Wang <xiyou.wangcong@gmail.com> wrote:
 
---3l53p2Dttm0uRSJd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+...
 
-> On Mon, 1 Mar 2021 13:23:06 +0200
-> Shay Agroskin <shayagr@amazon.com> wrote:
->=20
-> > Jesper Dangaard Brouer <brouer@redhat.com> writes:
-> >=20
-> > > On Sun, 28 Feb 2021 23:27:25 +0100
-> > > Lorenzo Bianconi <lorenzo.bianconi@redhat.com> wrote:
-> > > =20
-> > >> > >  	drops =3D bq->count - sent;
-> > >> > > -out:
-> > >> > > -	bq->count =3D 0;
-> > >> > > +	if (unlikely(drops > 0)) {
-> > >> > > +		/* If not all frames have been=20
-> > >> > > transmitted, it is our
-> > >> > > +		 * responsibility to free them
-> > >> > > +		 */
-> > >> > > +		for (i =3D sent; i < bq->count; i++)
-> > >> > > +=20
-> > >> > > xdp_return_frame_rx_napi(bq->q[i]);
-> > >> > > +	}   =20
-> > >> >=20
-> > >> > Wouldn't the logic above be the same even w/o the 'if'=20
-> > >> > condition ?   =20
-> > >>=20
-> > >> it is just an optimization to avoid the for loop instruction if=20
-> > >> sent =3D bq->count =20
-> > >
-> > > True, and I like this optimization.
-> > > It will affect how the code layout is (and thereby I-cache=20
-> > > usage). =20
-> >=20
-> > I'm not sure what I-cache optimization you mean here. Compiling=20
-> > the following C code:
-> >=20
-> > # define unlikely(x)	__builtin_expect(!!(x), 0)
-> >=20
-> > extern void xdp_return_frame_rx_napi(int q);
-> >=20
-> > struct bq_stuff {
-> >     int q[4];
-> >     int count;
-> > };
-> >=20
-> > int test(int sent, struct bq_stuff *bq) {
-> >     int i;
-> >     int drops;
-> >=20
-> >     drops =3D bq->count - sent;
-> >     if(unlikely(drops > 0))
-> >         for (i =3D sent; i < bq->count; i++)
-> >             xdp_return_frame_rx_napi(bq->q[i]);
-> >=20
-> >     return 2;
-> > }
-> >=20
-> > with x86_64 gcc 10.2 with -O3 flag in https://godbolt.org/ (which=20
-> > provides the assembly code for different compilers) yields the=20
-> > following assembly:
-> >=20
-> > test:
-> >         mov     eax, DWORD PTR [rsi+16]
-> >         mov     edx, eax
-> >         sub     edx, edi
-> >         test    edx, edx
-> >         jg      .L10
-> > .L6:
-> >         mov     eax, 2
-> >         ret
->=20
-> This exactly shows my point.  Notice how 'ret' happens earlier in this
-> function.  This is the common case, thus the CPU don't have to load the
-> asm instruction below.
->=20
-> > .L10:
-> >         cmp     eax, edi
-> >         jle     .L6
-> >         push    rbp
-> >         mov     rbp, rsi
-> >         push    rbx
-> >         movsx   rbx, edi
-> >         sub     rsp, 8
-> > .L3:
-> >         mov     edi, DWORD PTR [rbp+0+rbx*4]
-> >         add     rbx, 1
-> >         call    xdp_return_frame_rx_napi
-> >         cmp     DWORD PTR [rbp+16], ebx
-> >         jg      .L3
-> >         add     rsp, 8
-> >         mov     eax, 2
-> >         pop     rbx
-> >         pop     rbp
-> >         ret
-> >=20
-> >=20
-> > When dropping the 'if' completely I get the following assembly=20
-> > output
-> > test:
-> >         cmp     edi, DWORD PTR [rsi+16]
-> >         jge     .L6
->=20
-> Jump to .L6 which is the common case.  The code in between is not used
-> in common case, but the CPU will likely load this into I-cache, and
-> then jumps over the code in common case.
->=20
-> >         push    rbp
-> >         mov     rbp, rsi
-> >         push    rbx
-> >         movsx   rbx, edi
-> >         sub     rsp, 8
-> > .L3:
-> >         mov     edi, DWORD PTR [rbp+0+rbx*4]
-> >         add     rbx, 1
-> >         call    xdp_return_frame_rx_napi
-> >         cmp     DWORD PTR [rbp+16], ebx
-> >         jg      .L3
-> >         add     rsp, 8
-> >         mov     eax, 2
-> >         pop     rbx
-> >         pop     rbp
-> >         ret
-> > .L6:
-> >         mov     eax, 2
-> >         ret
-> >=20
-> > which exits earlier from the function if 'drops > 0' compared to=20
-> > the original code (the 'for' loop looks a little different, but=20
-> > this shouldn't affect icache).
-> >
-> > When removing the 'if' and surrounding the 'for' condition with=20
-> > 'unlikely' statement:
-> >=20
-> > for (i =3D sent; unlikely(i < bq->count); i++)
-> >=20
-> > I get the following assembly code:
-> >=20
-> > test:
-> >         cmp     edi, DWORD PTR [rsi+16]
-> >         jl      .L10
-> >         mov     eax, 2
-> >         ret
-> > .L10:
-> >         push    rbx
-> >         movsx   rbx, edi
-> >         sub     rsp, 16
-> > .L3:
-> >         mov     edi, DWORD PTR [rsi+rbx*4]
-> >         mov     QWORD PTR [rsp+8], rsi
-> >         add     rbx, 1
-> >         call    xdp_return_frame_rx_napi
-> >         mov     rsi, QWORD PTR [rsp+8]
-> >         cmp     DWORD PTR [rsi+16], ebx
-> >         jg      .L3
-> >         add     rsp, 16
-> >         mov     eax, 2
-> >         pop     rbx
-> >         ret
-> >=20
-> > which is shorter than the other two (one line compared to the=20
-> > second and 7 lines compared the original code) and seems as=20
-> > optimized as the second.
->=20
-> You are also using unlikely() and get the earlier return, with less
-> instructions, which is great.  Perhaps we can use this type of
-> unlikely() in the for-statement?  WDYT Lorenzo?
+> @@ -350,25 +351,12 @@ static inline void sk_psock_cork_free(struct sk_psock *psock)
+>         }
+>  }
+>
+> -static inline void sk_psock_update_proto(struct sock *sk,
+> -                                        struct sk_psock *psock,
+> -                                        struct proto *ops)
+> -{
+> -       /* Pairs with lockless read in sk_clone_lock() */
+> -       WRITE_ONCE(sk->sk_prot, ops);
+> -}
+> -
+>  static inline void sk_psock_restore_proto(struct sock *sk,
+>                                           struct sk_psock *psock)
+>  {
+>         sk->sk_prot->unhash = psock->saved_unhash;
 
-sure, we can do it..I will address it in v3. Thanks.
+Not related to your patch set, but why do an extra restore of
+sk_prot->unhash here? At this point sk->sk_prot is one of our tcp_bpf
+/ udp_bpf protos, so overwriting that seems wrong?
 
-Regards,
-Lorenzo
+> -       if (inet_csk_has_ulp(sk)) {
+> -               tcp_update_ulp(sk, psock->sk_proto, psock->saved_write_space);
+> -       } else {
+> -               sk->sk_write_space = psock->saved_write_space;
+> -               /* Pairs with lockless read in sk_clone_lock() */
+> -               WRITE_ONCE(sk->sk_prot, psock->sk_proto);
+> -       }
+> +       if (psock->saved_update_proto)
+> +               psock->saved_update_proto(sk, true);
+>  }
+>
+>  static inline void sk_psock_set_state(struct sk_psock *psock,
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index 636810ddcd9b..0e8577c917e8 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -1184,6 +1184,9 @@ struct proto {
+>         void                    (*unhash)(struct sock *sk);
+>         void                    (*rehash)(struct sock *sk);
+>         int                     (*get_port)(struct sock *sk, unsigned short snum);
+> +#ifdef CONFIG_BPF_SYSCALL
+> +       int                     (*update_proto)(struct sock *sk, bool restore);
 
-> =20
-> =20
-> > I'm far from being an assembly expert, and I tested a code snippet=20
-> > I wrote myself rather than the kernel's code (for the sake of=20
-> > simplicity only).
-> > Can you please elaborate on what makes the original 'if' essential=20
-> > (I took the time to do the assembly tests, please take the time on=20
-> > your side to prove your point, I'm not trying to be grumpy here).
-> >=20
-> > Shay
->=20
-> --=20
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
->=20
+Kind of a nit, but this name suggests that the callback is a lot more
+generic than it really is. The only thing you can use it for is to
+prep the socket to be sockmap ready since we hardwire sockmap_unhash,
+etc. It's also not at all clear that this only works if sk has an
+sk_psock associated with it. Calling it without one would crash the
+kernel since the update_proto functions don't check for !sk_psock.
 
---3l53p2Dttm0uRSJd
-Content-Type: application/pgp-signature; name="signature.asc"
+Might as well call it install_sockmap_hooks or something and have a
+valid sk_psock be passed in to the callback. Additionally, I'd prefer
+if the function returned a struct proto * like it does at the moment.
+That way we keep sk->sk_prot manipulation confined to the sockmap code
+and don't have to copy paste it into every proto.
 
------BEGIN PGP SIGNATURE-----
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index 3bddd9dd2da2..13d2af5bb81c 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -184,26 +184,10 @@ static void sock_map_unref(struct sock *sk, void *link_raw)
+>
+>  static int sock_map_init_proto(struct sock *sk, struct sk_psock *psock)
+>  {
+> -       struct proto *prot;
+> -
+> -       switch (sk->sk_type) {
+> -       case SOCK_STREAM:
+> -               prot = tcp_bpf_get_proto(sk, psock);
+> -               break;
+> -
+> -       case SOCK_DGRAM:
+> -               prot = udp_bpf_get_proto(sk, psock);
+> -               break;
+> -
+> -       default:
+> +       if (!sk->sk_prot->update_proto)
+>                 return -EINVAL;
+> -       }
+> -
+> -       if (IS_ERR(prot))
+> -               return PTR_ERR(prot);
+> -
+> -       sk_psock_update_proto(sk, psock, prot);
+> -       return 0;
+> +       psock->saved_update_proto = sk->sk_prot->update_proto;
+> +       return sk->sk_prot->update_proto(sk, false);
 
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYD5ZqQAKCRA6cBh0uS2t
-rEcnAP9LdyDn5J3yhUEVOWD48x9BxsJWiH4q7EkasprVPMhgOwEA7c8ykv3Xbnhb
-0o2HUVszNvC7BGRUlGKHhvyAW4/t2QA=
-=wyRl
------END PGP SIGNATURE-----
+I think reads / writes from sk_prot need READ_ONCE / WRITE_ONCE. We've
+not been diligent about this so far, but I think it makes sense to be
+careful in new code.
 
---3l53p2Dttm0uRSJd--
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
