@@ -2,92 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DC432C1B0
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E9832C1B6
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449562AbhCCWwf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 17:52:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376656AbhCCRb2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:31:28 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD339C061756
-        for <bpf@vger.kernel.org>; Wed,  3 Mar 2021 09:30:45 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id p186so25387883ybg.2
-        for <bpf@vger.kernel.org>; Wed, 03 Mar 2021 09:30:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WTCuCJYNVLMb10VSfKluphw42zSHU+qJgL/Nx6oGJyQ=;
-        b=ZW3fqEDo4/TTHS9Xane+2Oq4fxOMGL8kGG8DIkf5FXmvBWR/ASLbSQoVs4s3QucuTJ
-         VvrRZrgFPMPW/9U3L3465rPlYz0seUh80lbaC/KKAimDIiNueITmCJhmdKLC0gOZgjry
-         X52rXDzGF6dNIKYWPzh47jy+l9JVzPZtv6AwtsgkrBkCIQEHkaSSUXuByL59tfK/2iHl
-         yspEFreu2n6fCZXPM+PMPfZv2TTUXIMtA9TRCCZkl+vaFfnKXsIffQFP2I/C2tNRqJUy
-         vbPIHalQAjmaluOxpM+LFc/f0LROPJJglv0DNkpaRXWR8Njy7XYcU586IusauwBsS0bk
-         umYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WTCuCJYNVLMb10VSfKluphw42zSHU+qJgL/Nx6oGJyQ=;
-        b=Wjv9fgtJqy4v/I7qND3KJofskxjdbimhRAJh3DCQyXvzqEhCy8CF5/DEYPDL1AA4bf
-         sLQIdYHtHWPa6UD32Gay0JMTqcG0ApKCuKf/GOhY1Mbi91psZXjNFYs/e1EiLHsyzl73
-         q03yNPZK1JvgzSrjuZ3v0nKJjm9af0ttE6QcQkSdkVmCyoemA6bHomCdCsLf7cLvPGLF
-         ba0VsG4yHiX3IJELgfjP+L5pkzb+q0J2hCjTd4jO/jLYzX8cicA7xxXrkoXVIG+FaRpd
-         wT9bFl/Dbw1ZsAggeTWVB0dpYBIZ0HRGZstzrDH9IQGmKGY30ds6MzpGyinP8u0nc+z/
-         /JKg==
-X-Gm-Message-State: AOAM532EkmVI0S9QCm+BSoDsFwpEvM8+n0mf6GBc+ETfftlQdJdeA3gn
-        wM0SVpUPDMMzxzWzeCnFdB3aO6W0/BUn8Gbf8WU=
-X-Google-Smtp-Source: ABdhPJxKkrqI+cjLpRJt/Yae6ncLhYQMtzPuOkiyr6pLESqu4oUsPEc7SEjgNDIZ897qNqZMRwDrKupTyx36tZRoj+w=
-X-Received: by 2002:a25:3d46:: with SMTP id k67mr498588yba.510.1614792645045;
- Wed, 03 Mar 2021 09:30:45 -0800 (PST)
-MIME-Version: 1.0
-References: <xunyim6b5k1b.fsf@redhat.com> <CAEf4BzaAokQ0vgsQ4zA-yB80t2ZFcc3gWUo+p4nw=KWHmK_nsQ@mail.gmail.com>
- <CANoWswmg29OQw8472t-GYKtWXNsjFZ9AgNSPVgZvSdB566wxQw@mail.gmail.com>
-In-Reply-To: <CANoWswmg29OQw8472t-GYKtWXNsjFZ9AgNSPVgZvSdB566wxQw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 3 Mar 2021 09:30:34 -0800
-Message-ID: <CAEf4Bzav5yxQW2Co+mm=Ceahyym-38n79o6_qVXX0RRzEvXwJQ@mail.gmail.com>
-Subject: Re: bpf selftests and page size
-To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1449565AbhCCWwh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 3 Mar 2021 17:52:37 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:35025 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236532AbhCCRjp (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 3 Mar 2021 12:39:45 -0500
+X-IronPort-AV: E=Sophos;i="5.81,220,1610406000"; 
+   d="scan'208";a="495963342"
+Received: from lfbn-idf1-1-708-183.w86-245.abo.wanadoo.fr (HELO mp-66156.home) ([86.245.159.183])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 18:37:38 +0100
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: XDP socket rings, and LKMM litmus tests
+From:   maranget <luc.maranget@inria.fr>
+In-Reply-To: <20210303171221.GA1574518@rowland.harvard.edu>
+Date:   Wed, 3 Mar 2021 18:37:36 +0100
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
+        =?utf-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <29736B0B-9960-473C-85BB-5714F181198B@inria.fr>
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302211446.GA1541641@rowland.harvard.edu>
+ <20210302235019.GT2696@paulmck-ThinkPad-P72>
+ <20210303171221.GA1574518@rowland.harvard.edu>
+To:     Alan Stern <stern@rowland.harvard.edu>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 2:40 AM Yauheni Kaliuta
-<yauheni.kaliuta@redhat.com> wrote:
->
-> Hi!
->
-> On Tue, Mar 2, 2021 at 7:08 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Mon, Mar 1, 2021 at 1:02 AM Yauheni Kaliuta
-> > <yauheni.kaliuta@redhat.com> wrote:
-> >
-> > > Bunch of bpf selftests actually depends of page size and has it
-> > > hardcoded to 4K. That causes failures if page shift is configured
-> > > to values other than 12. It looks as a known issue since for the
-> > > userspace parts sysconf(_SC_PAGE_SIZE) is used, but what would be
-> > > the correct way to export it to bpf programs?
-> > >
-> >
-> > Given PAGE_SIZE and PAGE_SHIFT are just #defines, the only way seems
-> > to be to pass it from the user-space as a read-only variable.
->
-> Compile-time? Just to make sure we are on the same page, the tests may look like
-> https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/progs/map_ptr_kern.c#L638
->
 
-Oh, if it's about ringbuf, then why not just bump its size to 64KB or
-something even bigger. I thought that you were referring to some BPF
-code that needs to do some calculations based on PAGE_SIZE in runtime.
 
->
-> --
-> WBR, Yauheni
->
+> On 3 Mar 2021, at 18:12, Alan Stern <stern@rowland.harvard.edu> wrote:
+> 
+> On Tue, Mar 02, 2021 at 03:50:19PM -0800, Paul E. McKenney wrote:
+>> On Tue, Mar 02, 2021 at 04:14:46PM -0500, Alan Stern wrote:
+> 
+>>> This result is wrong, apparently because of a bug in herd7.  There 
+>>> should be control dependencies from each of the two loads in P0 to each 
+>>> of the two stores, but herd7 doesn't detect them.
+>>> 
+>>> Maybe Luc can find some time to check whether this really is a bug and 
+>>> if it is, fix it.
+>> 
+>> I agree that herd7's control dependency tracking could be improved.
+>> 
+>> But sadly, it is currently doing exactly what I asked Luc to make it do,
+>> which is to confine the control dependency to its "if" statement.  But as
+>> usual I wasn't thinking globally enough.  And I am not exactly sure what
+>> to ask for.  Here a store to a local was control-dependency ordered after
+>> a read, and so that should propagate to a read from that local variable.
+>> Maybe treat local variables as if they were registers, so that from
+>> herd7's viewpoint the READ_ONCE()s are able to head control-dependency
+>> chains in multiple "if" statements?
+>> 
+>> Thoughts?
+> 
+> Local variables absolutely should be treated just like CPU registers, if 
+> possible.  In fact, the compiler has the option of keeping local 
+> variables stored in registers.
+> 
+
+And indeed local variables are treated as registers by herd7.
+
+
+> (Of course, things may get complicated if anyone writes a litmus test 
+> that uses a pointer to a local variable,  Especially if the pointer 
+> could hold the address of a local variable in one execution and a 
+> shared variable in another!  Or if the pointer is itself a shared 
+> variable and is dereferenced in another thread!)
+> 
+> But even if local variables are treated as non-shared storage locations, 
+> we should still handle this correctly.  Part of the problem seems to lie 
+> in the definition of the to-r dependency relation; the relevant portion 
+> is:
+
+In fact, I’d rather change the computation of “dep” here control-dependency “ctrl”. Notice that “ctrl” is computed by herd7 and present in the initial environment of the Cat interpreter.
+
+I have made a PR to herd7 that performs the change. The commit message states the new definition.
+
+
+> 
+> 	(dep ; [Marked] ; rfi)
+> 
+> Here dep is the control dependency from the READ_ONCE to the 
+> local-variable store, and the rfi refers to the following load of the 
+> local variable.  The problem is that the store to the local variable 
+> doesn't go in the Marked class, because it is notated as a plain C 
+> assignment.  (And likewise for the following load.)
+> 
+This is a related issue, I am not sure, but perhaps it can be formulated as
+"should rfi and rf on registers behave the  same?”
+
+
+
+> Should we change the model to make loads from and stores to local 
+> variables always count as Marked?
+> 
+> What should have happened if the local variable were instead a shared 
+> variable which the other thread didn't access at all?  It seems like a 
+> weak point of the memory model that it treats these two things 
+> differently.
+> 
+> Alan
+
