@@ -2,119 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08DA32B315
-	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:53:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AC132B31C
+	for <lists+bpf@lfdr.de>; Wed,  3 Mar 2021 04:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352552AbhCCDvT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Mar 2021 22:51:19 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:43003 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242893AbhCCBQq (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 2 Mar 2021 20:16:46 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id A040C10F3;
-        Tue,  2 Mar 2021 20:15:34 -0500 (EST)
-Received: from imap35 ([10.202.2.85])
-  by compute3.internal (MEProxy); Tue, 02 Mar 2021 20:15:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        mime-version:message-id:date:from:to:cc:subject:content-type; s=
-        fm2; bh=9FD8F+TWKvse0buYqi4uiNdfXk0YrVryNe2+KxwJxE4=; b=gYD8pcVL
-        6TcQSIXYBfnJ61EoGimU174EVWiZy1rMp4FMx/vMfSwyy090/5AdSu9hZMAp/Zop
-        mnQJho+dwSlzjPQKxs2SkjTJDtKGE1YNo7RVb3n8QWq+Nkrb2EUk2GonUyWyZE8W
-        fHz+mh8S+1lOkNBTvDvH0y3Tg8v3INgBcyWi/wdxS1iOYHg89zCNKIR8fsBbolC/
-        RhEGFTPFO8AMqSk+G5ci7TYiqfTleYAyFtkxSd4hul41vwYogt/y4dNx06crs+82
-        LDBPiCDoycBU2YCV+dqpI7AXUC9XjQATJMHj0kQm94R4A8OjAJzTA5lxjMMSIfa4
-        wSN4Yrvy/dxV+Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:message-id
-        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; bh=9FD8F+TWKvse0buYqi4uiNdfXk0Yr
-        VryNe2+KxwJxE4=; b=oxJR9qtnr/ARq80jMHXCFWbFYqrhra5VL5ntorj/gq22i
-        bCY8v2ZSsNnI+dol38EmwEB6kYWPr7O+4BSuogilaXlA3YuG2xO1MKDEjfvUaTx2
-        cmTCzumVZLG9DnSQ107idEhhAH9zJNJiqtCBffrgAQjhN8CgtkdL3lavFMawtEz4
-        I9lTPMXdBBf8iiGgNri4mGUFXShs9KTqdbnp/xz2UJNOxkPui9RLcXLDk/RHKvBA
-        oUndCxYQ2mu2d2UB07nMSWoySgolH3+YjUpBC3gT7dmA/K6c+GNKh1OYKknxFtRH
-        ASP9lVzKccH6XNRfsAHXiHOCKX/M+Xm+HRMDdHynA==
-X-ME-Sender: <xms:NeM-YEXoZe7DX0SAAr4mNzM3p2KjSxTGoDsM7yYSfO97tvsy9YboXQ>
-    <xme:NeM-YIn_o00Nq95ajwoNSHKIWUPuU7G3CKBNO9CQ0uYu6LRIdx513zw412d9Xu8o9
-    19s5F0Jg_AIJbNyFQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtuddgvdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefofg
-    ggkfffhffvufgtsehttdertderredtnecuhfhrohhmpedfffgrnhhivghlucgiuhdfuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgedvvdeigfdthf
-    ettdfghedtleeuteefueetiefhledvhfelleeutedufedtnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:NuM-YIY7Fb6if0_XPGrmk9R13LPbWO3iTVKT27Fr1gixd5W0XsKOIA>
-    <xmx:NuM-YDUo8FqkYotLKhaYgRakmuDWSOQZMrenQtfN0TW1PKtqQNZwKA>
-    <xmx:NuM-YOmAgL-MC4DgK7ngcpT0qYlEiraixoSaf9jf-byxoVwDQgg4vA>
-    <xmx:NuM-YCsl7rfBUt8K524WUjp-wl-O9CNixx8eDQIxzZUJK0QN6iQehQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id C739015A005D; Tue,  2 Mar 2021 20:15:33 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-206-g078a48fda5-fm-20210226.001-g078a48fd
-Mime-Version: 1.0
-Message-Id: <1fed0793-391c-4c68-8d19-6dcd9017271d@www.fastmail.com>
-Date:   Tue, 02 Mar 2021 17:15:13 -0800
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     mhiramat@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>, kuba@kernel.org
-Subject: Broken kretprobe stack traces
-Content-Type: text/plain
+        id S1352554AbhCCDvW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Mar 2021 22:51:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233372AbhCCBXY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Mar 2021 20:23:24 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F17EC061794;
+        Tue,  2 Mar 2021 17:22:43 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id u4so26494759ljh.6;
+        Tue, 02 Mar 2021 17:22:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7vpxjdzLC35rO+JFayl4Y64pj7Iqa9C/mCMrzz7lHgk=;
+        b=sFWqjyHdBwGvkKfUQ5i/8pSgB5aexxVlxIXA1/VUFSEnCPAOF4wk9XWWU75j0MeloQ
+         ZsYVGBCEGmKNXG2VpVFMrflK9S4IQoGklTKmrznsrrXlzEZSY0OCe5xrR7bCH1ju8tiZ
+         K80hyQJmWtroAevAgItdUVYc3ZLwPfE6NqeWcktCkJ0hOrDSGpcVZzpQxOA/ZkvRain3
+         dnRIy7r1NcDxZ4DB69NWsR4QWxSjj9nrfeADfAqcc2MQ13UDkpEuGnfmf6/y/6VV06Vd
+         NwK4uutAqeq3JmlD/H6oD06hrl33ZMj1SkogoaLC03pAz4L2B9YLM1wvy+jKN8PMOUcI
+         Hj0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7vpxjdzLC35rO+JFayl4Y64pj7Iqa9C/mCMrzz7lHgk=;
+        b=g9xsDXSSAke0D9Hx0TS94hzqSL1MqAbBvXuvwXTSZyIPtnCgStqYVYU1QebwoOeor1
+         xwT+yf38GkxfIv4ZVhsLTe+ZF5KooZlnEPTr8N+pavrlECHcTwIIkKg04ny91qacfCY7
+         WiRazqCq4AZUYQq3BKfndVPigUnQ9M9ZjdbTwP4y8g0bqNCeus/TPOKMawv5ILxyeJad
+         rl6S4LiS/3rpbLa5w//WPDYr3/tlNWLZUOwwSdUB7IbE6rlNW1V1zdTWg/GAuPfQIdBZ
+         AJg21LSbJ8BqnxdPziYwnGDu0p7df/NdnbGPKXpQHCWVXfFzQLDt7zXVJBmJfrYaEvvz
+         HhiA==
+X-Gm-Message-State: AOAM530fMmwiassX51nKK45FlTVHUirogS+sFsKxNwsE8txdXBVOw2Lb
+        CtNAOOt50ZJ8j3xfzgGZMu141IhUhEYbz4nWJPs=
+X-Google-Smtp-Source: ABdhPJxrVUWH1j0C/T4fF8i6oqMI0C10dnbwznUUzx7+j4ufVOZ+cgRjqOKU0xGoatY6KXdfo78YHPlAe1AXdvoppT0=
+X-Received: by 2002:a2e:9704:: with SMTP id r4mr13232071lji.486.1614734561822;
+ Tue, 02 Mar 2021 17:22:41 -0800 (PST)
+MIME-Version: 1.0
+References: <CAADnVQ+czV6u4CM-A+o5U+WhApkocunZXiCMJBB_Zbs0mvNSwQ@mail.gmail.com>
+ <EECBE373-7CA1-4ED8-9F03-406BBED607FD@amacapital.net>
+In-Reply-To: <EECBE373-7CA1-4ED8-9F03-406BBED607FD@amacapital.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 2 Mar 2021 17:22:30 -0800
+Message-ID: <CAADnVQJtpvB8wDFv46O0GEaHkwmT1Ea70BJfgS36kDX0u4uZ-g@mail.gmail.com>
+Subject: Re: Why do kprobes and uprobes singlestep?
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Andy Lutomirski <luto@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Masami,
+On Tue, Mar 2, 2021 at 1:02 PM Andy Lutomirski <luto@amacapital.net> wrote:
+>
+>
+> > On Mar 2, 2021, at 12:24 PM, Alexei Starovoitov <alexei.starovoitov@gma=
+il.com> wrote:
+> >
+> > =EF=BB=BFOn Tue, Mar 2, 2021 at 10:38 AM Andy Lutomirski <luto@kernel.o=
+rg> wrote:
+> >>
+> >> Is there something like a uprobe test suite?  How maintained /
+> >> actively used is uprobe?
+> >
+> > uprobe+bpf is heavily used in production.
+> > selftests/bpf has only one test for it though.
+> >
+> > Why are you asking?
+>
+> Because the integration with the x86 entry code is a mess, and I want to =
+know whether to mark it BROKEN or how to make sure the any cleanups actuall=
+y work.
 
-Jakub reported a bug with kretprobe stack traces -- wondering if you've gotten
-any bug reports related to stack traces being broken for kretprobes.
-
-I think (can't prove) this used to work:
-
-    # bpftrace -e 'kretprobe:__tcp_retransmit_skb { @[kstack()] = count() }'
-    Attaching 1 probe...
-    ^C
-
-    @[
-        kretprobe_trampoline+0
-    ]: 1
-
-fentry/fexit probes seem to work:
-
-    # bpftrace -e 'kretfunc:__tcp_retransmit_skb { @[kstack()] = count() }'
-    Attaching 1 probe...
-    ^C
-    
-    @[
-        ftrace_trampoline+10799
-        bpf_get_stackid_raw_tp+121
-        ftrace_trampoline+10799
-        __tun_chr_ioctl.isra.0.cold+33312
-        __tcp_retransmit_skb+5
-        tcp_send_loss_probe+254
-        tcp_write_timer_handler+394
-        tcp_write_timer+149
-        call_timer_fn+41
-        __run_timers+493
-        run_timer_softirq+25
-        __softirqentry_text_start+207
-        asm_call_sysvec_on_stack+18
-        do_softirq_own_stack+55
-        irq_exit_rcu+158
-        sysvec_apic_timer_interrupt+54
-        asm_sysvec_apic_timer_interrupt+18
-    ]: 1
-    @[
-        ftrace_trampoline+10799
-        bpf_get_stackid_raw_tp+121
-        ftrace_trampoline+10799
-        __tun_chr_ioctl.isra.0.cold+33312
-        __tcp_retransmit_skb+5
-  <...>
-
-which makes me suspect it's a kprobe specific issue.
-
-Thanks,
-Daniel
+Any test case to repro the issue you found?
+Is it a bug or just messy code?
+Nowadays a good chunk of popular applications (python, mysql, etc) has
+USDTs in them.
+Issues reported with bcc:
+https://github.com/iovisor/bcc/issues?q=3Dis%3Aissue+USDT
+Similar thing with bpftrace.
+Both standard USDT and semaphore based are used in the wild.
+uprobe for containers has been a long standing feature request.
+If you can improve uprobe performance that would be awesome.
+That's another thing that people report often. We optimized it a bit.
+More can be done.
