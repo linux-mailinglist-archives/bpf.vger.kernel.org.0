@@ -2,125 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3531732C1DA
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C2532C1C3
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:03:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449650AbhCCWxM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 17:53:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234665AbhCCSxa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:53:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28EE660202;
-        Wed,  3 Mar 2021 17:40:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614793223;
-        bh=rDStRwmXAve0oQTG5k7PfaMiDSDFC27uP7nYrXqgo3o=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=b+JGlPDUkGXhKIeRKVvV2gFkS5Dk4zndAPHSXAQ9FXADV14ZIL3rhHpOAowpJfGvq
-         +iEIoe7MZ6/9iP7vmnJ3jCM2WOGoFHO0pkqMpQX3zj/e3JbBayZwfuCikZ6C6OiEEN
-         xMS7iBV9zv8021pav27dRLdFqcRzi2zZ6mMEMiogOPwfAoaDWaHkv1bZS2grQVi1M8
-         b8/fQzpFt50kKYDXt2C/zQSkN9o72kNBJm35FIlziHvNuzKj6HqqHjGgtd1QsenZTE
-         QfuYCGUgI81fu2plL0IGFT8J6KJp6PgNFxFidEGl3aRohVVaU55nXJZlRLUdBwl0AY
-         2JW9UKfL2zrYQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D930835237A1; Wed,  3 Mar 2021 09:40:22 -0800 (PST)
-Date:   Wed, 3 Mar 2021 09:40:22 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
-        joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: XDP socket rings, and LKMM litmus tests
-Message-ID: <20210303174022.GD2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
- <20210302211446.GA1541641@rowland.harvard.edu>
- <20210302235019.GT2696@paulmck-ThinkPad-P72>
- <20210303171221.GA1574518@rowland.harvard.edu>
+        id S1449612AbhCCWwp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Mar 2021 17:52:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1835364AbhCCSC4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:02:56 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A92C8C061761;
+        Wed,  3 Mar 2021 10:02:14 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id b15so4655955pjb.0;
+        Wed, 03 Mar 2021 10:02:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=riT8H9mkRmeNcLBWbSj2xaZmnz2sd8uAAZFerEUss6s=;
+        b=k1gnZmFqNvFY8zVbQ32Zn5q2brrM0eH8QoPKRenrLl2BH2BTZ8/1vKNyl684SUvKyg
+         YkPThbwsEuVfiYX5KPAXQPMqBTelBOICznZasCzaLPHV8kRXPL0rhEMESIG3pNhPTbJu
+         ITd7S1mppRDGjytyIwf4dPyn4m8H9Y5URMnxi5xI5NzzSkdxbNfTux8+UamyFtXskBYA
+         vD2VyK3NPkr0ohdgJjTxNtcG4IMrEGOjE8jagdf8CaDwkxrEwiD8atx5REm3QjZSqsFE
+         ANkzBvEOX6lcvYAcAJci17liTfwprAT+pW+NlyvvyDqamjPzaXlIl2186SuFw8wUTvla
+         13Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=riT8H9mkRmeNcLBWbSj2xaZmnz2sd8uAAZFerEUss6s=;
+        b=Q1PnQcs6+E2J/64ny0waF9nUYlqIkI/75/v6UBT5oIr9QzZg6YDbtCQnSEFdvTHlcT
+         c967P4QRH9wFsMZ5DxykEfbqMPkZ6zZHt/1dkdjMFdoutYq14xADPPwuT4zAXFktaHQv
+         osyreCuOP9QmXPlbbZ/uYSC2Gy7uupHTa54EQOR2Dd/6HBgpc2x5HuBFfdO73IDlMKw5
+         reO4X8w5I7l1A+wIVamjqdDbEAn33Xwm733yF9g9fBlDeotmnheYN8YtObkF+JoE8QBr
+         YjMEWmsccLHBoKm7DU5FNNLKvyfU38+txJSuO05aLkHq/nPSeTStjE4unZpmOGRSXspl
+         nBwQ==
+X-Gm-Message-State: AOAM533wl3s2fsHi2wofqMdEZ9HsX2F1B3t2MWB8Gctus8E50755LHLU
+        y7HCqd7/1Q19e8v9Ql/lbUqzAFyNrhGJslChXD4=
+X-Google-Smtp-Source: ABdhPJxChESi3gq2KT4ebgmcbnDgLAefshrcjnbzPI82IR+wLj0D4J+RABD8jY2B9Kz8OICufwN6k+adfr4qbtan3pQ=
+X-Received: by 2002:a17:90a:8594:: with SMTP id m20mr278590pjn.215.1614794534192;
+ Wed, 03 Mar 2021 10:02:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303171221.GA1574518@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210302023743.24123-1-xiyou.wangcong@gmail.com>
+ <20210302023743.24123-9-xiyou.wangcong@gmail.com> <258c3229-1e60-20d9-e93f-9655ae969b6e@fb.com>
+In-Reply-To: <258c3229-1e60-20d9-e93f-9655ae969b6e@fb.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Wed, 3 Mar 2021 10:02:02 -0800
+Message-ID: <CAM_iQpXM+kyi=LFe0YygYuVE7kcApVGJ9f2A-D=ST2nFPusttg@mail.gmail.com>
+Subject: Re: [Patch bpf-next v2 8/9] sock_map: update sock type checks for UDP
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 12:12:21PM -0500, Alan Stern wrote:
-> On Tue, Mar 02, 2021 at 03:50:19PM -0800, Paul E. McKenney wrote:
-> > On Tue, Mar 02, 2021 at 04:14:46PM -0500, Alan Stern wrote:
-> 
-> > > This result is wrong, apparently because of a bug in herd7.  There 
-> > > should be control dependencies from each of the two loads in P0 to each 
-> > > of the two stores, but herd7 doesn't detect them.
-> > > 
-> > > Maybe Luc can find some time to check whether this really is a bug and 
-> > > if it is, fix it.
-> > 
-> > I agree that herd7's control dependency tracking could be improved.
-> > 
-> > But sadly, it is currently doing exactly what I asked Luc to make it do,
-> > which is to confine the control dependency to its "if" statement.  But as
-> > usual I wasn't thinking globally enough.  And I am not exactly sure what
-> > to ask for.  Here a store to a local was control-dependency ordered after
-> > a read, and so that should propagate to a read from that local variable.
-> > Maybe treat local variables as if they were registers, so that from
-> > herd7's viewpoint the READ_ONCE()s are able to head control-dependency
-> > chains in multiple "if" statements?
-> > 
-> > Thoughts?
-> 
-> Local variables absolutely should be treated just like CPU registers, if 
-> possible.  In fact, the compiler has the option of keeping local 
-> variables stored in registers.
-> 
-> (Of course, things may get complicated if anyone writes a litmus test 
-> that uses a pointer to a local variable,  Especially if the pointer 
-> could hold the address of a local variable in one execution and a 
-> shared variable in another!  Or if the pointer is itself a shared 
-> variable and is dereferenced in another thread!)
+On Tue, Mar 2, 2021 at 10:37 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 3/1/21 6:37 PM, Cong Wang wrote:
+> > From: Cong Wang <cong.wang@bytedance.com>
+> >
+> > Now UDP supports sockmap and redirection, we can safely update
+> > the sock type checks for it accordingly.
+> >
+> > Cc: John Fastabend <john.fastabend@gmail.com>
+> > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> > Cc: Lorenz Bauer <lmb@cloudflare.com>
+> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > ---
+> >   net/core/sock_map.c | 5 ++++-
+> >   1 file changed, 4 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> > index 13d2af5bb81c..f7eee4b7b994 100644
+> > --- a/net/core/sock_map.c
+> > +++ b/net/core/sock_map.c
+> > @@ -549,7 +549,10 @@ static bool sk_is_udp(const struct sock *sk)
+> >
+> >   static bool sock_map_redirect_allowed(const struct sock *sk)
+> >   {
+> > -     return sk_is_tcp(sk) && sk->sk_state != TCP_LISTEN;
+> > +     if (sk_is_tcp(sk))
+> > +             return sk->sk_state != TCP_LISTEN;
+> > +     else
+> > +             return sk->sk_state == TCP_ESTABLISHED;
+>
+> Not a networking expert, a dump question. Here we tested
+> whether sk_is_tcp(sk) or not, if not we compare
+> sk->sk_state == TCP_ESTABLISHED, could this be
+> always false? Mostly I missed something, some comments
+> here will be good.
 
-Good point!  I did miss this complication.  ;-)
+No, dgram sockets also use TCP_ESTABLISHED as a valid
+state. I know its name looks confusing, but it is already widely
+used in networking:
 
-As you say, when its address is taken, the "local" variable needs to be
-treated as is it were shared.  There are exceptions where the pointed-to
-local is still used only by its process.  Are any of these exceptions
-problematic?
+net/appletalk/ddp.c:    sk->sk_state = TCP_ESTABLISHED;
+net/appletalk/ddp.c:            if (sk->sk_state != TCP_ESTABLISHED)
+net/appletalk/ddp.c:            if (sk->sk_state != TCP_ESTABLISHED)
+net/ax25/af_ax25.c:     sk->sk_state    = TCP_ESTABLISHED;
+net/ax25/af_ax25.c:             case TCP_ESTABLISHED: /* connection
+established */
+net/ax25/af_ax25.c:     if (sk->sk_state == TCP_ESTABLISHED &&
+sk->sk_type == SOCK_SEQPACKET) {
+net/ax25/af_ax25.c:             sk->sk_state   = TCP_ESTABLISHED;
+net/ax25/af_ax25.c:     if (sk->sk_state != TCP_ESTABLISHED && (flags
+& O_NONBLOCK)) {
+net/ax25/af_ax25.c:     if (sk->sk_state != TCP_ESTABLISHED) {
+net/ax25/af_ax25.c:             if (sk->sk_state != TCP_ESTABLISHED) {
+net/ax25/af_ax25.c:             if (sk->sk_state != TCP_ESTABLISHED) {
+net/ax25/af_ax25.c:             if (sk->sk_state != TCP_ESTABLISHED) {
+net/ax25/af_ax25.c:     if (sk->sk_type == SOCK_SEQPACKET &&
+sk->sk_state != TCP_ESTABLISHED) {
+net/ax25/ax25_ds_in.c:                  ax25->sk->sk_state = TCP_ESTABLISHED;
+net/ax25/ax25_in.c:             make->sk_state = TCP_ESTABLISHED;
+net/ax25/ax25_std_in.c:                         ax25->sk->sk_state =
+TCP_ESTABLISHED;
+net/caif/caif_socket.c: CAIF_CONNECTED          = TCP_ESTABLISHED,
+net/ceph/messenger.c:   case TCP_ESTABLISHED:
+net/ceph/messenger.c:           dout("%s TCP_ESTABLISHED\n", __func__);
+net/core/datagram.c:        !(sk->sk_state == TCP_ESTABLISHED ||
+sk->sk_state == TCP_LISTEN))
+...
 
-> But even if local variables are treated as non-shared storage locations, 
-> we should still handle this correctly.  Part of the problem seems to lie 
-> in the definition of the to-r dependency relation; the relevant portion 
-> is:
-> 
-> 	(dep ; [Marked] ; rfi)
-> 
-> Here dep is the control dependency from the READ_ONCE to the 
-> local-variable store, and the rfi refers to the following load of the 
-> local variable.  The problem is that the store to the local variable 
-> doesn't go in the Marked class, because it is notated as a plain C 
-> assignment.  (And likewise for the following load.)
-> 
-> Should we change the model to make loads from and stores to local 
-> variables always count as Marked?
+Hence, I believe it is okay to use it as it is, otherwise we would need
+to comment on every use of it. ;)
 
-As long as the initial (possibly unmarked) load would be properly
-complained about.  And I cannot immediately think of a situation where
-this approach would break that would not result in a data race being
-flagged.  Or is this yet another failure of my imagination?
-
-> What should have happened if the local variable were instead a shared 
-> variable which the other thread didn't access at all?  It seems like a 
-> weak point of the memory model that it treats these two things 
-> differently.
-
-But is this really any different than the situation where a global
-variable is only accessed by a single thread?
-
-							Thanx, Paul
+Thanks.
