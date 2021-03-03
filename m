@@ -2,130 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61E632C296
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 724E032C298
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354687AbhCCWcQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 17:32:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1572954AbhCCEjf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Mar 2021 23:39:35 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A87C061226;
-        Tue,  2 Mar 2021 20:39:00 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id b10so23160025ybn.3;
-        Tue, 02 Mar 2021 20:39:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SH4S7HU1hqEmrZXve0icwxIZwoSn9cxBI0arX0YS88o=;
-        b=Q5DyLVhXmkALqG0K6Wu2tSi7ROGwAKzt1TWi7yxcwdbw8srAEiMvVjw1SkM83xdA70
-         4rFpulZi+xQ9U0NqTeNTYmQqlZ8PQjSeAo9WOQFQLU1+VgZtpiijel6uFRVkrd9l4rUH
-         YSiaf0Cx4z3NHOBSv+N/xfMs+o/fQeGGzvv3QBSaEdKIpVvg0GV0nirZd0vbaZ6fdRiJ
-         5XQKwcJGj996tNX+WLNsiByvZtFikFicsByNcJwYYl3RMjTXSn799qic93GRFlguwx23
-         xiU2/zi8ofxOlUyMg4w/fssGeR0RyVg6B8g02koZsG2lz/+EjEUkn2g71dcpiiTwZLj+
-         5oEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SH4S7HU1hqEmrZXve0icwxIZwoSn9cxBI0arX0YS88o=;
-        b=kPbuDOaWmKvIF1Paa8iEbR0ru1dM4+5z+TuQX/l9v1+515AwTi3JH1RRgjIj0qoPAL
-         1yv8x0l/rXt/sy85fpNdjIabtY7y5A6+AWOj+WxvoAYkdtONTVlAE+s8XA2EgXk9VXAe
-         8zlGEZFE+p0Nuc732bxI6SJN5EGhitpxNU2B9m6xDiljw8GiCzRgv1eDiK++j2d8B8Oq
-         8FDZM2WBErwzQa0mCAJwCiMf1M0aLU/EPIF5WVX3zJKT1T5jcTKvUdadbcQ7zRyUc/nz
-         5DcqsqjQlQD/ZXaoiXaG8MquZSCsr7Lxoe+mmzQQPPm6yTIpbRxlOrMxhuidAkwJzQ9p
-         bPdg==
-X-Gm-Message-State: AOAM531Al6lbwFN6XSZmR/7NI7EhDh7hEEvblOqHlbwk2M3TaUHT8kKt
-        8oFhzFQ9GXf839X4aiEcrfD7nfxTK29Xmz3yPus=
-X-Google-Smtp-Source: ABdhPJw1s6sxFzCoEm/GGXp754eWkxStcR3tfRS3lSYTi8U9V0exCLjfJBMrqSGOfaQuj1HOGsd9KhQC3Y7BsEmnfLc=
-X-Received: by 2002:a25:3d46:: with SMTP id k67mr34265283yba.510.1614746339959;
- Tue, 02 Mar 2021 20:38:59 -0800 (PST)
-MIME-Version: 1.0
-References: <20210301104318.263262-1-bjorn.topel@gmail.com> <20210301104318.263262-3-bjorn.topel@gmail.com>
-In-Reply-To: <20210301104318.263262-3-bjorn.topel@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 2 Mar 2021 20:38:49 -0800
-Message-ID: <CAEf4BzZFDAcnaWU2JGL2GKmTTWQPDrcdgEn2NOM9cGFe16XheQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] libbpf, xsk: add libbpf_smp_store_release libbpf_smp_load_acquire
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>, maximmi@nvidia.com,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1391279AbhCCWd2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Mar 2021 17:33:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1578528AbhCCEtP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Mar 2021 23:49:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 996D464E86;
+        Wed,  3 Mar 2021 04:48:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614746912;
+        bh=2Xca8x9wbooaqbFV/0T0htnTgUXTo0FSs3BlsceoobY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=U8eO64NVL5Eoo7yZfv5TElRsz7ky182deE0coW76Z0tm7yI96MLzsd1O65tuYNiwv
+         TKTdYIBpxyRbeaEglZsuSwJ2IIAgFB5X52GacfYZveMtNfI7ZN+pmqjlraa0nnUgug
+         RdAk6s3wqAVJlgbNnj7a7MVFSi5wD5FbJBN4e0qGZhb9gB9JunUEpzXBeSHbuJf3vo
+         n9h9/u9IDfM8nlLaUza3nSpOSL66TUcmmenU5SwzVIN1OsnJwU5yY0Bmb/XP6iX2P9
+         H+FqqQ9VY19yFlR8nfVgDjbBEWRa3gIYnuVkD5DZBebdKZ45NXXqYglj6jf8k9Ba4p
+         ydqOJKE0YRNog==
+Date:   Wed, 3 Mar 2021 13:48:28 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     "Daniel Xu" <dxu@dxuuu.xyz>
+Cc:     linux-kernel@vger.kernel.org,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>, kuba@kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: Broken kretprobe stack traces
+Message-Id: <20210303134828.39922eb167524bc7206c7880@kernel.org>
+In-Reply-To: <1fed0793-391c-4c68-8d19-6dcd9017271d@www.fastmail.com>
+References: <1fed0793-391c-4c68-8d19-6dcd9017271d@www.fastmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 1, 2021 at 2:43 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com=
-> wrote:
->
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->
-> Now that the AF_XDP rings have load-acquire/store-release semantics,
-> move libbpf to that as well.
->
-> The library-internal libbpf_smp_{load_acquire,store_release} are only
-> valid for 32-bit words on ARM64.
->
-> Also, remove the barriers that are no longer in use.
->
-> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> ---
->  tools/lib/bpf/libbpf_util.h | 72 +++++++++++++++++++++++++------------
->  tools/lib/bpf/xsk.h         | 17 +++------
->  2 files changed, 55 insertions(+), 34 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf_util.h b/tools/lib/bpf/libbpf_util.h
-> index 59c779c5790c..94a0d7bb6f3c 100644
-> --- a/tools/lib/bpf/libbpf_util.h
-> +++ b/tools/lib/bpf/libbpf_util.h
-> @@ -5,6 +5,7 @@
->  #define __LIBBPF_LIBBPF_UTIL_H
->
->  #include <stdbool.h>
-> +#include <linux/compiler.h>
->
->  #ifdef __cplusplus
->  extern "C" {
-> @@ -15,29 +16,56 @@ extern "C" {
->   * application that uses libbpf.
->   */
->  #if defined(__i386__) || defined(__x86_64__)
-> -# define libbpf_smp_rmb() asm volatile("" : : : "memory")
-> -# define libbpf_smp_wmb() asm volatile("" : : : "memory")
-> -# define libbpf_smp_mb() \
-> -       asm volatile("lock; addl $0,-4(%%rsp)" : : : "memory", "cc")
-> -/* Hinders stores to be observed before older loads. */
-> -# define libbpf_smp_rwmb() asm volatile("" : : : "memory")
+Hi Daniel,
 
-So, technically, these four are part of libbpf's API, as libbpf_util.h
-is actually installed on target hosts. Seems like xsk.h is the only
-one that is using them, though.
+On Tue, 02 Mar 2021 17:15:13 -0800
+"Daniel Xu" <dxu@dxuuu.xyz> wrote:
 
-So the question is whether it's ok to remove them now?
+> Hi Masami,
+> 
+> Jakub reported a bug with kretprobe stack traces -- wondering if you've gotten
+> any bug reports related to stack traces being broken for kretprobes.
 
-And also, why wasn't this part of xsk.h in the first place?
+Yeah, stack dumper must check the stack entry is kretprobe'd and skip it.
+For example, ftrace checks it as below.
 
-> +# define libbpf_smp_store_release(p, v)                                 =
-       \
-> +       do {                                                            \
-> +               asm volatile("" : : : "memory");                        \
-> +               WRITE_ONCE(*p, v);                                      \
-> +       } while (0)
-> +# define libbpf_smp_load_acquire(p)                                    \
-> +       ({                                                              \
-> +               typeof(*p) ___p1 =3D READ_ONCE(*p);                      =
- \
-> +               asm volatile("" : : : "memory");                        \
-> +               ___p1;                                                  \
-> +       })
+/sys/kernel/debug/tracing # echo r vfs_read > kprobe_events 
+/sys/kernel/debug/tracing # echo stacktrace > events/kprobes/r_vfs_read_0/trigger 
+/sys/kernel/debug/tracing # echo 1 > events/kprobes/r_vfs_read_0/enable 
+/sys/kernel/debug/tracing # head -20 trace
+# tracer: nop
+#
+# entries-in-buffer/entries-written: 15685/336094   #P:8
+#
+#                                _-----=> irqs-off
+#                               / _----=> need-resched
+#                              | / _---=> hardirq/softirq
+#                              || / _--=> preempt-depth
+#                              ||| /     delay
+#           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+#              | |         |   ||||      |         |
+              sh-132     [006] ...1    38.920352: <stack trace>
+ => kretprobe_dispatcher
+ => __kretprobe_trampoline_handler
+ => trampoline_handler
+ => [unknown/kretprobe'd]
+ => [unknown/kretprobe'd]
+ => __x64_sys_read
+ => do_syscall_64
+ => entry_SYSCALL_64_after_hwframe
 
-[...]
+
+> 
+> I think (can't prove) this used to work:
+
+I'm not sure the bpftrace had correctly handled it or not.
+
+> 
+>     # bpftrace -e 'kretprobe:__tcp_retransmit_skb { @[kstack()] = count() }'
+>     Attaching 1 probe...
+>     ^C
+> 
+>     @[
+>         kretprobe_trampoline+0
+>     ]: 1
+
+Would you know how the bpftrace stacktracer rewinds the stack entries?
+FYI, ftrace does it in trace_seq_print_sym()@kernel/trace/trace_output.c
+
+Thank you,
+
+> 
+> fentry/fexit probes seem to work:
+> 
+>     # bpftrace -e 'kretfunc:__tcp_retransmit_skb { @[kstack()] = count() }'
+>     Attaching 1 probe...
+>     ^C
+>     
+>     @[
+>         ftrace_trampoline+10799
+>         bpf_get_stackid_raw_tp+121
+>         ftrace_trampoline+10799
+>         __tun_chr_ioctl.isra.0.cold+33312
+>         __tcp_retransmit_skb+5
+>         tcp_send_loss_probe+254
+>         tcp_write_timer_handler+394
+>         tcp_write_timer+149
+>         call_timer_fn+41
+>         __run_timers+493
+>         run_timer_softirq+25
+>         __softirqentry_text_start+207
+>         asm_call_sysvec_on_stack+18
+>         do_softirq_own_stack+55
+>         irq_exit_rcu+158
+>         sysvec_apic_timer_interrupt+54
+>         asm_sysvec_apic_timer_interrupt+18
+>     ]: 1
+>     @[
+>         ftrace_trampoline+10799
+>         bpf_get_stackid_raw_tp+121
+>         ftrace_trampoline+10799
+>         __tun_chr_ioctl.isra.0.cold+33312
+>         __tcp_retransmit_skb+5
+>   <...>
+> 
+> which makes me suspect it's a kprobe specific issue.
+> 
+> Thanks,
+> Daniel
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
