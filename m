@@ -2,182 +2,240 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E3832C2A6
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBFA32C2A9
 	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1391432AbhCCWfn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 17:35:43 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:61662 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1841818AbhCCGiN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 3 Mar 2021 01:38:13 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1236TFNS007277;
-        Tue, 2 Mar 2021 22:37:20 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=nmZ/QRKEopt2Vhi6TycDTvlQ+yCzAjGTHqv6bhmP1AE=;
- b=FVdYkxTXjpNjLFngnEA9aikfVH9ZbAVtY05aqXIZHifW92tN1ZoTo0ctRjTxR+8pMCJe
- pgGcfekLR6kFOArku6TiDAA1FIde/6dDpsr/4bv9h1n0DM+g7SW9fBKBVWEkt7g3q+b1
- ZmgGdFc5mLZQwimfEneTRsAjbxKPn+EZa8k= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 372107s1u0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 02 Mar 2021 22:37:19 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 2 Mar 2021 22:37:19 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HZApg8BOpUe1VnqcvYtT+A3ha4IP6Vp9iGyvbgB9U4GrDJgylGzERWNMDfqP/rDZngbwCn1SOZZ1yBiYaMICTP3pqgnRNpwXMyShDWan/r9N0j2qm3TXXc3kfy3AIPYLiVkp40lSeOdBU6bXTtWc1bm5SrW6bnohlhm5b5SLrownzym4+K+zYR7mYjud7Ny5O1Pd6OjWPeePYI1+aE1J/PR+GSr8XVucdkLTG6RFV8sa25H5wfA3tJS/JOwWooQs1EEiAy+S/h4SSAWPxrRR7Zx8riWS67PbBwdfPYn0APy5o4A27kKIpSlV4X62XM0ZMtpzhbSPBOp91b0LA1IBzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nmZ/QRKEopt2Vhi6TycDTvlQ+yCzAjGTHqv6bhmP1AE=;
- b=PChMhSJbRkmrlyPa9ki66JAaqegxm5v2JDWAVa9N7zIq02/TQkFe0IsLyWtAGQ61VWCuAM8lHBMqAI0pQpe8Cv2s206yO6I/Cexd1jETJ8FFSbxCJdGCkXABtetDivSRmvp5XCIA1LbLoSGEAjJe0zeVgz3fVzFCoRUWOG2UVBJ0I+HjUUTGvOWetDm5TEqVxyMnqSL/qFuSv0Nu5C1wQfZTmjh8Cq8NhGgQPpb8B66Ca3tVKDuvkqqdN4ZfrtB9MBiXkPkhtJPDvVjRBA1AsGGUYUsSNqskgZSgafUAg52Eue3xECh6QS1NdhCngIDPMgiinLdVII9WtskpydaOlg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: cloudflare.com; dkim=none (message not signed)
- header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (52.132.118.155) by
- SA1PR15MB4658.namprd15.prod.outlook.com (13.101.86.182) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3912.17; Wed, 3 Mar 2021 06:37:17 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3890.030; Wed, 3 Mar 2021
- 06:37:17 +0000
-Subject: Re: [Patch bpf-next v2 8/9] sock_map: update sock type checks for UDP
-To:     Cong Wang <xiyou.wangcong@gmail.com>, <netdev@vger.kernel.org>
-CC:     <bpf@vger.kernel.org>, <duanxiongchun@bytedance.com>,
-        <wangdongdong.6@bytedance.com>, <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-References: <20210302023743.24123-1-xiyou.wangcong@gmail.com>
- <20210302023743.24123-9-xiyou.wangcong@gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <258c3229-1e60-20d9-e93f-9655ae969b6e@fb.com>
-Date:   Tue, 2 Mar 2021 22:37:12 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
-In-Reply-To: <20210302023743.24123-9-xiyou.wangcong@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:e54b]
-X-ClientProxiedBy: MW4PR04CA0350.namprd04.prod.outlook.com
- (2603:10b6:303:8a::25) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e1::1a32] (2620:10d:c090:400::5:e54b) by MW4PR04CA0350.namprd04.prod.outlook.com (2603:10b6:303:8a::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Wed, 3 Mar 2021 06:37:16 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e7c59218-8c18-4d5c-44a9-08d8de0eca00
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4658:
-X-Microsoft-Antispam-PRVS: <SA1PR15MB4658A07BA3ED0E7EBE6B34E6D3989@SA1PR15MB4658.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5hDAk6xBmyLNMnb7PxXUOO2Xu2n5NR0NDu/ndWSwlbcZtw27cXslbUCHpanBdKB2YwBR1LTvjOGOJNIw7JH/XGeoTR2EOuJrXgfOHOFPQAOs8pQdb6J0FC3hnUYr66VK5u5zDPxW0zk+t7N/zKW5aE3dUrad2OIe/rjYdr3UdeFuqCsEVv3FXaCvlhoXnvyhlBAQ3pTlv1Jg2xNhyIRgqSDdBun8OEs+A7U60JMahLBLN4yGMzveh4+03a3w29BrrQrPW6W93OAwdY8uqTu/jxEOBS2GePenuX/PvBtslGAdzAfwoorluZIp1TA2hrL565/SufrSHLtY3r6z1/gYdUffZWFceN/c3ayuA7a/YBqdj30IrjU8DS30tRT+zsg0RdZ6EBK1L+5rdJ07mptWg76C71ZC0Xw9B5b5XHRgkZDgRrqeIiu7ZN6Aowysqr5BeuNYN4PNtagv3edlrKZQeCUbanOKJUeF3dnzW2c/TFpsSxY2xDk1gj3TRuuYg/cEgpNkcgeFR7NwSoF+dNUAjj6C/Q22viVO5mWauLEAlNuxQUQZ6KVAl7QAJS5TTTVTsI+BB8NWb184ml6ncf3BVfeSKP9pdgtNKUw1ccckx+o=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(39850400004)(366004)(346002)(396003)(8676002)(86362001)(53546011)(31686004)(316002)(52116002)(6666004)(8936002)(54906003)(31696002)(36756003)(83380400001)(15650500001)(7416002)(66556008)(66476007)(5660300002)(66946007)(2906002)(4326008)(186003)(16526019)(6486002)(2616005)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WjFaMTBNeVIyOTFQRHBYNk1xdytlbHVLRVpyZzVTZ09zcWpGeUgvdUowYkhG?=
- =?utf-8?B?eXlMWVpqQ0VTL2Z0a1NDUzkrZ2dMa2dQc0VaSUlJUXRteGgrV3FmNjd0Um5C?=
- =?utf-8?B?eWEvZExIZnltRk5MSFhTdm9icStucDRmZXI3c3lvd2QyMGNtbmJRR0pqeUx0?=
- =?utf-8?B?bVlqZWs4enphZjhGNmUvZFg3UkRaZm9pamtQRDBJYlE0S0gzVjVkS25ZbWQ1?=
- =?utf-8?B?bWg0VTd3OXA0VmVYS2JlYnNycVZ0dFBVNEEzSE9ySEtUdjlnTTR6V1ErcDNn?=
- =?utf-8?B?WHNtRGdaWmV2YkFPZUxQQ0IySE1CQmRUSys3UVVoZ1VjbHZwM2hRTm1DT3Vr?=
- =?utf-8?B?cWFzcnF5a1JvSDdJZ1FEVVIvbmgrYy9RRVh6MHUxZzBNN0tIdlJ2aTdYaHFO?=
- =?utf-8?B?bGRiSDZSa1V0RWh4c3lhYjhzNG8xZ2tvTmV4Q21tUU03T2NLTmRGUkU3aVo4?=
- =?utf-8?B?ZW5rN004YWVwNzZjYlNXY2dCVlo1eCtrTUlqRlVOSDgyYURHMm1sNFZXZEZW?=
- =?utf-8?B?azdGT291emp6aTlxeUxSNXBnbUVsMy9xbE5UQVprczZqcFh4bk5sV3IxY2pM?=
- =?utf-8?B?TXpIVC91cGVmZmhLNmQvN0hOTjlWS1p4dzNYS2NEOUhMMVo0aWI1T25NZjk4?=
- =?utf-8?B?S2xsbU5wU3BqSWFpOFV4dG43TUdhb2JFZ2oxeUYzL1RIY0xSQWIzUWcwc0xz?=
- =?utf-8?B?RTREK214WTdIUUl6eG9OL2ZzMnJLbWNCSjdFQU5RL1kzRlAvcXJCY2k0QzZE?=
- =?utf-8?B?WGRoTFdKSk9YTGJJVkgwcU1UT1ZpeWV4NWNpQlFWelI4MkcrWmM5RHI3YVc5?=
- =?utf-8?B?bC9MREZCMGVjbWpaNDBuM3NzQVk0K3VEb3g5TjhUam8xL0xiRzhVdi9ZMTFJ?=
- =?utf-8?B?enBRSU1iSFR1eHBzeXRtdmV0L21kOUdta0sxRWRKcjBQVk1tdEFxMi9ZSzY1?=
- =?utf-8?B?dExDVDNKYUJSTmxYT1dPT3lMOTgzRHl1OTVac05xN0duS0FmNnhsV0pOUGdN?=
- =?utf-8?B?UWI3bzVYU3UvL1dtd00rQk5CSnp4ZFRHVGlFcTdpR1RTZVYwN0xaYmpQZG9V?=
- =?utf-8?B?a1d6akxSY1A1amVGeDBxR3d0emV4ZVMydkJuMkNOYi9GdHNTaDJ6Vk9uMDhz?=
- =?utf-8?B?TjhLZU9FbCtGZk5ON0RWODNlZFNQdGl3Z2RCYnBlay9UeGdtQWRUN0pCbC9t?=
- =?utf-8?B?NHpDdjk4eHV2Z3FHZytvRFhGRmFoYVd1U1ZWbmsxRWR0RzZqbm0xOGIveDlS?=
- =?utf-8?B?NmF5cStVbzZLcGo3dFFGc0VZNVN0b1FLaDh6QXh5ZGVSYzQ1Z1QrYTNyTjU3?=
- =?utf-8?B?UVJpU1NQcHZ4a1JaamRRUm4rZHRuV25LR0d3MCtFOGZ1T0VCZmdvaUV6Lzgr?=
- =?utf-8?B?MlQ2S1ZWVWsxeEdjejZXd2hmdms3U0U2VzFzK3dyMEhoSlMzTHFWWUdUUGtr?=
- =?utf-8?B?cDY2aFVOVW1JUTJmS3hpbXpoc3VwUlZaTGRGODh2WGNtNXQ1TGV5SXllcEFx?=
- =?utf-8?B?SmJZWDZBUXhyNGVPb0o1VmRSLytnQVAzYjNIOE5zUUw3aG5YdlQ5alFIY0hr?=
- =?utf-8?B?bFNRTi8rQjhOSVd2dkE1d2JKZ1ZuRmVNb0YyVkZUdXRnWHA3ckxLajRNa0Ft?=
- =?utf-8?B?UVBxWElhbXMyRk5YcDVvaEdrcHdYSGxydzBPdnJLY1JROWh4TjVXUFdjNGZP?=
- =?utf-8?B?M3gvdElMVUFMZ29WcjlRdEsrQUFJcCswdU1KajN3RVpaYWZLUjl6S2hXK0hR?=
- =?utf-8?B?cmU4UndUTUY0V0Q0MFFYQlc5RXV4TGY0SHNaWnlzOHBlR3dEbnM3ZGNCUGRC?=
- =?utf-8?Q?7sCFzks56bjQ85bG3grR+nZkXy7hCejkIPD1k=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7c59218-8c18-4d5c-44a9-08d8de0eca00
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2021 06:37:17.3858
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GnQ4tPLurDOMmQlMzU7IpgTVI/uP1RrAaF7C/GUvCp0BQCK0nuP/xM78ZdJnunFs
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4658
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-02_08:2021-03-01,2021-03-02 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- spamscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999 phishscore=0
- impostorscore=0 adultscore=0 malwarescore=0 clxscore=1015 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103030049
-X-FB-Internal: deliver
+        id S1391440AbhCCWgP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 3 Mar 2021 17:36:15 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:20919 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1841822AbhCCGia (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 3 Mar 2021 01:38:30 -0500
+X-IronPort-AV: E=Sophos;i="5.81,219,1610406000"; 
+   d="scan'208";a="495810110"
+Received: from lfbn-idf1-1-708-183.w86-245.abo.wanadoo.fr (HELO mp-66156.home) ([86.245.159.183])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 07:37:45 +0100
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: XDP socket rings, and LKMM litmus tests
+From:   maranget <luc.maranget@inria.fr>
+In-Reply-To: <20210302235019.GT2696@paulmck-ThinkPad-P72>
+Date:   Wed, 3 Mar 2021 07:37:42 +0100
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
+        =?utf-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <F62FB75E-3E2C-4BFF-910F-6732099C3447@inria.fr>
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302211446.GA1541641@rowland.harvard.edu>
+ <20210302235019.GT2696@paulmck-ThinkPad-P72>
+To:     paulmck@kernel.org
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi all,
 
+I agree that herd7 computation of control dependencies is problematic here.
 
-On 3/1/21 6:37 PM, Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
-> 
-> Now UDP supports sockmap and redirection, we can safely update
-> the sock type checks for it accordingly.
-> 
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> ---
->   net/core/sock_map.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 13d2af5bb81c..f7eee4b7b994 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -549,7 +549,10 @@ static bool sk_is_udp(const struct sock *sk)
->   
->   static bool sock_map_redirect_allowed(const struct sock *sk)
->   {
-> -	return sk_is_tcp(sk) && sk->sk_state != TCP_LISTEN;
-> +	if (sk_is_tcp(sk))
-> +		return sk->sk_state != TCP_LISTEN;
-> +	else
-> +		return sk->sk_state == TCP_ESTABLISHED;
+Thanks for reporting the problem. Paul kindly takes the responsibility for the problem, but frankly do not remember having followed his recommendations here.
 
-Not a networking expert, a dump question. Here we tested
-whether sk_is_tcp(sk) or not, if not we compare
-sk->sk_state == TCP_ESTABLISHED, could this be
-always false? Mostly I missed something, some comments
-here will be good.
+I am quite busy today and canot really work on the issue. However my intuition is that control dependencies follow from chains  of control dependencies in if (say “direct” control dependencies, roughly from "if" condition to if statement)  and data dependencies, ending in control.
 
->   }
->   
->   static bool sock_map_sk_is_suitable(const struct sock *sk)
+—Luc
+
+> On 3 Mar 2021, at 00:50, Paul E. McKenney <paulmck@kernel.org> wrote:
 > 
+> On Tue, Mar 02, 2021 at 04:14:46PM -0500, Alan Stern wrote:
+>> On Tue, Mar 02, 2021 at 07:46:27PM +0100, Björn Töpel wrote:
+>>> Hi!
+>>> 
+>>> Firstly; The long Cc-list is to reach the LKMM-folks.
+>>> 
+>>> Some background; the XDP sockets use a ring-buffer to communicate
+>>> between the kernel and userland. It's a
+>>> single-consumer/single-producer ring, and described in
+>>> net/xdp/xsk_queue.h.
+>>> 
+>>> --8<---
+>>> /* The structure of the shared state of the rings are the same as the
+>>> * ring buffer in kernel/events/ring_buffer.c. For the Rx and completion
+>>> * ring, the kernel is the producer and user space is the consumer. For
+>>> * the Tx and fill rings, the kernel is the consumer and user space is
+>>> * the producer.
+>>> *
+>>> * producer                         consumer
+>>> *
+>>> * if (LOAD ->consumer) {           LOAD ->producer
+>>> *                    (A)           smp_rmb()       (C)
+>>> *    STORE $data                   LOAD $data
+>>> *    smp_wmb()       (B)           smp_mb()        (D)
+>>> *    STORE ->producer              STORE ->consumer
+>>> * }
+>>> *
+>>> * (A) pairs with (D), and (B) pairs with (C).
+>>> ...
+>>> -->8---
+>>> 
+>>> I'd like to replace the smp_{r,w,}mb() barriers with acquire-release
+>>> semantics [1], without breaking existing userspace applications.
+>>> 
+>>> So, I figured I'd use herd7 and the LKMM model to build a litmus test
+>>> for the barrier version, then for the acquire-release version, and
+>>> finally permutations of both.
+>>> 
+>>> The idea is to use a one element ring, with a state machine outlined
+>>> in the litmus test.
+>>> 
+>>> The basic test for the existing smp_{r,w,}mb() barriers looks like:
+>>> 
+>>> $ cat spsc-rb+1p1c.litmus
+>>> C spsc-rb+1p1c
+>>> 
+>>> // Stupid one entry ring:
+>>> // prod cons     allowed action       prod cons
+>>> //    0    0 =>       prod          =>   1    0
+>>> //    0    1 =>       cons          =>   0    0
+>>> //    1    0 =>       cons          =>   1    1
+>>> //    1    1 =>       prod          =>   0    1
+>>> 
+>>> { prod = 1; }
+>>> 
+>>> // Here, we start at prod==1,cons==0, data==0, i.e. producer has
+>>> // written data=0, so from here only the consumer can start, and should
+>>> // consume data==0. Afterwards, producer can continue and write 1 to
+>>> // data. Can we enter state prod==0, cons==1, but consumer observerd
+>>> // the write of 1?
+>>> 
+>>> P0(int *prod, int *cons, int *data)
+>>> {
+>>>    int p;
+>>>    int c;
+>>>    int cond = 0;
+>>> 
+>>>    p = READ_ONCE(*prod);
+>>>    c = READ_ONCE(*cons);
+>>>    if (p == 0)
+>>>        if (c == 0)
+>>>            cond = 1;
+>>>    if (p == 1)
+>>>        if (c == 1)
+>>>            cond = 1;
+>>> 
+>>>    if (cond) {
+>>>        smp_mb();
+>>>        WRITE_ONCE(*data, 1);
+>>>        smp_wmb();
+>>>        WRITE_ONCE(*prod, p ^ 1);
+>>>    }
+>>> }
+>>> 
+>>> P1(int *prod, int *cons, int *data)
+>>> {
+>>>    int p;
+>>>    int c;
+>>>    int d = -1;
+>>>    int cond = 0;
+>>> 
+>>>    p = READ_ONCE(*prod);
+>>>    c = READ_ONCE(*cons);
+>>>    if (p == 1)
+>>>        if (c == 0)
+>>>            cond = 1;
+>>>    if (p == 0)
+>>>        if (c == 1)
+>>>            cond = 1;
+>>> 
+>>>    if (cond == 1) {
+>>>        smp_rmb();
+>>>        d = READ_ONCE(*data);
+>>>        smp_mb();
+>>>        WRITE_ONCE(*cons, c ^ 1);
+>>>    }
+>>> }
+>>> 
+>>> exists( 1:d=1 /\ prod=0 /\ cons=1 );
+>>> 
+>>> --
+>>> 
+>>> The weird state changing if-statements is because that I didn't get
+>>> '&&' and '||' to work with herd.
+>>> 
+>>> When this is run:
+>>> 
+>>> $ herd7 -conf linux-kernel.cfg litmus-tests/spsc-rb+1p1c.litmus
+>>> Test spsc-rb+1p1c Allowed
+>>> States 2
+>>> 1:d=0; cons=1; prod=0;
+>>> 1:d=0; cons=1; prod=1;
+>>> No
+>>> Witnesses
+>>> Positive: 0 Negative: 2
+>>> Condition exists (1:d=1 /\ prod=0 /\ cons=1)
+>>> Observation spsc-rb+1p1c Never 0 2
+>>> Time spsc-rb+1p1c 0.04
+>>> Hash=b399756d6a1301ca5bda042f32130791
+>>> 
+>>> Now to my question; In P0 there's an smp_mb(). Without that, the d==1
+>>> can be observed from P1 (consumer):
+>>> 
+>>> $ herd7 -conf linux-kernel.cfg litmus-tests/spsc-rb+1p1c.litmus
+>>> Test spsc-rb+1p1c Allowed
+>>> States 3
+>>> 1:d=0; cons=1; prod=0;
+>>> 1:d=0; cons=1; prod=1;
+>>> 1:d=1; cons=1; prod=0;
+>>> Ok
+>>> Witnesses
+>>> Positive: 1 Negative: 2
+>>> Condition exists (1:d=1 /\ prod=0 /\ cons=1)
+>>> Observation spsc-rb+1p1c Sometimes 1 2
+>>> Time spsc-rb+1p1c 0.04
+>>> Hash=0047fc21fa77da9a9aee15e35ec367ef
+>> 
+>> This result is wrong, apparently because of a bug in herd7.  There 
+>> should be control dependencies from each of the two loads in P0 to each 
+>> of the two stores, but herd7 doesn't detect them.
+>> 
+>> Maybe Luc can find some time to check whether this really is a bug and 
+>> if it is, fix it.
+> 
+> I agree that herd7's control dependency tracking could be improved.
+> 
+> But sadly, it is currently doing exactly what I asked Luc to make it do,
+> which is to confine the control dependency to its "if" statement.  But as
+> usual I wasn't thinking globally enough.  And I am not exactly sure what
+> to ask for.  Here a store to a local was control-dependency ordered after
+> a read, and so that should propagate to a read from that local variable.
+> Maybe treat local variables as if they were registers, so that from
+> herd7's viewpoint the READ_ONCE()s are able to head control-dependency
+> chains in multiple "if" statements?
+> 
+> Thoughts?
+> 
+> 							Thanx, Paul
+> 
+>>> In commit c7f2e3cd6c1f ("perf: Optimize ring-buffer write by depending
+>>> on control dependencies") removes the corresponding smp_mb(), and also
+>>> the circular buffer in circular-buffers.txt (pre commit 6c43c091bdc5
+>>> ("documentation: Update circular buffer for
+>>> load-acquire/store-release")) is missing the smp_mb() at the
+>>> producer-side.
+>>> 
+>>> I'm trying to wrap my head around why it's OK to remove the smp_mb()
+>>> in the cases above? I'm worried that the current XDP socket ring
+>>> implementation (which is missing smp_mb()) might be broken.
+>> 
+>> Because of the control dependencies, the smp_mb isn't needed.  The 
+>> dependencies will order both of the stores after both of the loads.
+>> 
+>> Alan Stern
+
