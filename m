@@ -2,106 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDC832C162
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9AE32C165
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446882AbhCCWlb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 17:41:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843084AbhCCKZa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:25:30 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B25C08EDF6
-        for <bpf@vger.kernel.org>; Wed,  3 Mar 2021 02:20:40 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id e2so20733498ljo.7
-        for <bpf@vger.kernel.org>; Wed, 03 Mar 2021 02:20:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6ZzZe7TdfnaQkJ2BQSiLi0sfapl5wblvBplr2CPmG9Y=;
-        b=v4EFL5/5F0w0BU1IHEDrOcZpU6vfDxDtpwdoZSPKptbim5t51FovvKdDP5x7vZEptG
-         yLgJwoTmRenkjMg8xGakzSedbD7a0PhbrVW1PB+0VEfDupSe4vsX6JasQ88mgBLUqCED
-         JPGdq5odKCHbGWlQfh02EOUYHy/y8MBk/wkMY=
+        id S1446903AbhCCWlf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Mar 2021 17:41:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38901 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1351627AbhCCKrT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 3 Mar 2021 05:47:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614768301;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NA7daVAPhfIB0QUqSfvMss8ckTd4efh60z7i6wP4K08=;
+        b=esAuNvQV8Ku9wYw28253jSo46gtzPfnulCkuOJSuIWig3ij5zDNcysvilevyg2R/vyQoAC
+        aqcPsVZZEZQarnWvWDEWmlRwppPPXS5UZN1PWaJRK1sOC4V4zc64yl1TVTOGiADqstig3m
+        DdIMUaHv7Hvp8ocoZyajn5s1v7BXdAM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-sQB3pYX_PPWQ0mYa8H8diw-1; Wed, 03 Mar 2021 05:39:57 -0500
+X-MC-Unique: sQB3pYX_PPWQ0mYa8H8diw-1
+Received: by mail-wm1-f71.google.com with SMTP id a65so1619638wmh.1
+        for <bpf@vger.kernel.org>; Wed, 03 Mar 2021 02:39:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6ZzZe7TdfnaQkJ2BQSiLi0sfapl5wblvBplr2CPmG9Y=;
-        b=TZRGVNX6qAZKm/uOSDeuxBpXhcrCD9y2rtSXMuMG4jY18rD4s6GcrvB0g2QZLTSVHK
-         dRQKNRTrrtPMBnIK+LRCE1NGzXs9W4RGQq1nB0XlBVXpY7hlsTUFtswww/VEzSjSzOUR
-         pPA9fOPqLdTXaA/O7lB0roMnS9qWtB7W3WxqdPPJQ2WUj8aU75RTZUoJMw0Qo7a5/DFP
-         kOMlagkSX/5tpjTzAVi4/aE3nNyKjtoUoAir7TQa1cMKuRSNfv5R2e0AtHpGiiHT2uiQ
-         /riuzTilk7Gal9h5t2xuMbTGaaL56kYgGlrzYafK7DIOldj7RR47titZ6021wZqGexoY
-         T4qw==
-X-Gm-Message-State: AOAM531IObvvLu4SqmBndpj8MkW1pRgXbuwiga1Q25SX5Mt5SyajiiOs
-        aOWH8C4DkZwHT4yhDq0K0AdCBBVX1IRfSv1ZnCEjuQ==
-X-Google-Smtp-Source: ABdhPJw/uUxlUG2+FPowYgOmfK6n59mDvGvavLiin745XVUWwncbWfl3RTFwgilCdcB+7lsHNSpn+sYm5l2b29qj2gM=
-X-Received: by 2002:a2e:b172:: with SMTP id a18mr2770249ljm.223.1614766839387;
- Wed, 03 Mar 2021 02:20:39 -0800 (PST)
+        bh=NA7daVAPhfIB0QUqSfvMss8ckTd4efh60z7i6wP4K08=;
+        b=CEnVfbfUk3C11TA6+JwvR/ho+PDtcuY5awomUx2EeDl85sqkk6CrVjpowWhTJnhvnO
+         PVkXfKB4EGDR5tmhEZe5+kx964JEG2OsVpvpWiSLTrbQANxFB6g6QpcFGEVRYi5h7Gf0
+         2uEXKKFuB8y3i//srywEbq79slUngLLQBZo96qNh+LTMuOwEwWqGJaCs3D+bnHYYUIER
+         wnOQv4UQSzpEP5QQWKHLbdzyp4vbfB75CNdN0BoSNdhVZfdw1eK2jWDlKLhrG5fR4gCI
+         Ii4PjXSnBD1O57DZRSkDHpNE/UZTiCZ+PFCez1TOgvozQbbZ+/+Bwmpg1RkxfK4ha72d
+         uYqQ==
+X-Gm-Message-State: AOAM530456vK1RaTW+/VZeiIVrFEJC1JJrr8NKAJ1Xgz7ehO9UjIjzGp
+        AZbg2/Jd48s7z4bbarfFAFDmRrYvTsZZ7eWxAJK616rZ2jE2F713GZnkqVsDdEHssseZXYon1bS
+        Rd06745/mC2V/8qdpeDuBbKdILz88
+X-Received: by 2002:a5d:538d:: with SMTP id d13mr27046037wrv.92.1614767996095;
+        Wed, 03 Mar 2021 02:39:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzjHFp6WqyI60+a0MDNO5lIA0doGgi8Cc9Op/7/4NfY6ogSJWcHbcnupAbKsZ6MW8NNetd2swyZuCHKyyrddcQ=
+X-Received: by 2002:a5d:538d:: with SMTP id d13mr27046021wrv.92.1614767995971;
+ Wed, 03 Mar 2021 02:39:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20210302023743.24123-1-xiyou.wangcong@gmail.com>
- <20210302023743.24123-10-xiyou.wangcong@gmail.com> <CACAyw9-wmN-pGYPkk4Ey_bazoycWAn+1-ewccTKeo-ebpHqyPA@mail.gmail.com>
- <CAM_iQpX3qqpKyOW2ohYo0e-5GO_wpoBBqv1BnrLLRsufMwO2rg@mail.gmail.com>
-In-Reply-To: <CAM_iQpX3qqpKyOW2ohYo0e-5GO_wpoBBqv1BnrLLRsufMwO2rg@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 3 Mar 2021 10:20:28 +0000
-Message-ID: <CACAyw98WfDE5HKP8NDHa5V2JzzXUyuWHnfnXNRUgxGvktZ5VBA@mail.gmail.com>
-Subject: Re: [Patch bpf-next v2 9/9] selftests/bpf: add a test case for udp sockmap
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>
+References: <xunyim6b5k1b.fsf@redhat.com> <CAEf4BzaAokQ0vgsQ4zA-yB80t2ZFcc3gWUo+p4nw=KWHmK_nsQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzaAokQ0vgsQ4zA-yB80t2ZFcc3gWUo+p4nw=KWHmK_nsQ@mail.gmail.com>
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Date:   Wed, 3 Mar 2021 12:39:39 +0200
+Message-ID: <CANoWswmg29OQw8472t-GYKtWXNsjFZ9AgNSPVgZvSdB566wxQw@mail.gmail.com>
+Subject: Re: bpf selftests and page size
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2 Mar 2021 at 18:05, Cong Wang <xiyou.wangcong@gmail.com> wrote:
->
-> On Tue, Mar 2, 2021 at 8:32 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> >
-> > On Tue, 2 Mar 2021 at 02:38, Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> > >
-> > > From: Cong Wang <cong.wang@bytedance.com>
-> > >
-> > > Add a test case to ensure redirection between two UDP sockets work.
-> >
-> > I basically don't understand how splicing works, but watching from the
-> > sidelines makes me think it'd be good to have more thorough tests.
-> > tools/testing/selftests/bpf/test_sockmap.c has quite elaborate tests
-> > for the TCP part, it'd be nice to get similar tests going for UDP. For
->
-> Sure, TCP supports more than just BPF_SK_SKB_VERDICT, hence
-> why it must have more tests than UDP. ;)
->
-> > example:
-> >
-> > * sendfile?
-> > * sendmmsg
->
-> Does UDP support any of these? I don't think so, at least not in my
-> patchset.
+Hi!
 
-I have no idea, thanks for checking :)
-
+On Tue, Mar 2, 2021 at 7:08 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> > * Something Jakub mentioned: what happens when a connected, spliced
-> > socket is disconnected via connect(AF_UNSPEC)? Seems like we don't
-> > hook sk_prot->disconnect anywhere.
+> On Mon, Mar 1, 2021 at 1:02 AM Yauheni Kaliuta
+> <yauheni.kaliuta@redhat.com> wrote:
 >
-> But we hook ->unhash(), right?
+> > Bunch of bpf selftests actually depends of page size and has it
+> > hardcoded to 4K. That causes failures if page shift is configured
+> > to values other than 12. It looks as a known issue since for the
+> > userspace parts sysconf(_SC_PAGE_SIZE) is used, but what would be
+> > the correct way to export it to bpf programs?
+> >
+>
+> Given PAGE_SIZE and PAGE_SHIFT are just #defines, the only way seems
+> to be to pass it from the user-space as a read-only variable.
 
-I wasn't aware that ->disconnect calls unhash, thanks!
+Compile-time? Just to make sure we are on the same page, the tests may look like
+https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/progs/map_ptr_kern.c#L638
+
 
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+WBR, Yauheni
 
-www.cloudflare.com
