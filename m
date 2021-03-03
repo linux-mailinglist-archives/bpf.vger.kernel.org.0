@@ -2,72 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08E532C177
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA0D32C179
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238489AbhCCWtc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 17:49:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43754 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1380750AbhCCN3g (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 3 Mar 2021 08:29:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614778080;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PJFVk9Prwjkxdm586ACwDtBMKBVeZRi7IzKPe/DvaFI=;
-        b=hErmplPYcuy9JYr5U0+O+j+nsfeI2pSwip1oPv/fxbbFtYEvVx5V34nCqc1FB4+ulF5XlT
-        W7PWfZyohYcMDiU6Ee7TiJBtY7ZJABsj2vhWu5WQVjrCyusU2W0Us1V69ESKfkqzAioFbs
-        5ylvXPmpTvsIx61ZkPx+q1Yike357Vk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-298-YJ8FY7OuMBiHiY1HqX1Adg-1; Wed, 03 Mar 2021 08:27:56 -0500
-X-MC-Unique: YJ8FY7OuMBiHiY1HqX1Adg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1391827AbhCCWts (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Mar 2021 17:49:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242986AbhCCOhu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Mar 2021 09:37:50 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 795176D4E0;
-        Wed,  3 Mar 2021 13:27:54 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.81])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 614936F999;
-        Wed,  3 Mar 2021 13:27:51 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed,  3 Mar 2021 14:27:54 +0100 (CET)
-Date:   Wed, 3 Mar 2021 14:27:50 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: Re: Why do kprobes and uprobes singlestep?
-Message-ID: <20210303132749.GA28955@redhat.com>
-References: <CAADnVQJtpvB8wDFv46O0GEaHkwmT1Ea70BJfgS36kDX0u4uZ-g@mail.gmail.com>
- <968E85AE-75B8-42D7-844A-0D61B32063B3@amacapital.net>
- <CAADnVQJoTMqWK=kNFyTbjhoo22QD81KXnPxUjiCXhQaNhbK+8A@mail.gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E13964EE1;
+        Wed,  3 Mar 2021 14:26:07 +0000 (UTC)
+Date:   Wed, 3 Mar 2021 09:26:04 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     "Daniel Xu" <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>, kuba@kernel.org
+Subject: Re: Broken kretprobe stack traces
+Message-ID: <20210303092604.59aea82c@gandalf.local.home>
+In-Reply-To: <20210303134828.39922eb167524bc7206c7880@kernel.org>
+References: <1fed0793-391c-4c68-8d19-6dcd9017271d@www.fastmail.com>
+        <20210303134828.39922eb167524bc7206c7880@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJoTMqWK=kNFyTbjhoo22QD81KXnPxUjiCXhQaNhbK+8A@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 03/02, Alexei Starovoitov wrote:
->
-> Especially if such tightening will come with performance boost for
-> uprobe on a nop and unprobe at the start (which is typically push or
-> alu on %sp).
-> That would be a great step forward.
+On Wed, 3 Mar 2021 13:48:28 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-Just in case, nop and push are emulated without additional overhead.
+> 
+> > 
+> > I think (can't prove) this used to work:  
 
-Oleg.
+Would be good to find out if it did.
 
+> 
+> I'm not sure the bpftrace had correctly handled it or not.
+> 
+> > 
+> >     # bpftrace -e 'kretprobe:__tcp_retransmit_skb { @[kstack()] = count() }'
+> >     Attaching 1 probe...
+> >     ^C
+> > 
+> >     @[
+> >         kretprobe_trampoline+0
+> >     ]: 1  
+> 
+> Would you know how the bpftrace stacktracer rewinds the stack entries?
+> FYI, ftrace does it in trace_seq_print_sym()@kernel/trace/trace_output.c
+> 
+
+The difference between trace events and normal function tracing stack
+traces is that it keeps its original return address. But kretprobes (and
+function graph tracing, and some bpf trampolines too) modify the return
+pointer, and that could possibly cause havoc with the stack trace.
+
+-- Steve
