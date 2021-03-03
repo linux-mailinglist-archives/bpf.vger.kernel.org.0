@@ -2,168 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8EF32C14D
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC85432C15E
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:02:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1445400AbhCCWju (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 17:39:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42570 "EHLO
+        id S1446293AbhCCWlB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Mar 2021 17:41:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357186AbhCCIUH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Mar 2021 03:20:07 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1137FC0617A7;
-        Wed,  3 Mar 2021 00:19:26 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id d11so22628925wrj.7;
-        Wed, 03 Mar 2021 00:19:25 -0800 (PST)
+        with ESMTP id S1843076AbhCCKZT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:25:19 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10914C034622
+        for <bpf@vger.kernel.org>; Wed,  3 Mar 2021 01:35:26 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id 2so23234453ljr.5
+        for <bpf@vger.kernel.org>; Wed, 03 Mar 2021 01:35:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RxKeaJE+nu2TyOO2eKwM9sn1ONl4+NYDV2sw0WpA958=;
-        b=VRh7bHU7s5bPuJy9yo8sEiqZiA2nhS0iLkcG3DCQAA5MLKMnTficy1VU58xqt0ENp+
-         Q62ToJg8ZIyPsRIAyP1ScrMXcQS31Ohl6s+r8h06xO4sajS1taVF+B6pulNMT0vbMN+V
-         XuGdRWm0rNc3hubJAJpRnsvTFF2DgmFNgopZoHYjaXrmhG2BZiYES6k9/nf5uPzXqR/K
-         59f3M3/kcf+xE2sMgJxAQqyDgVUBqidfQXRBftg3L8XaWB4a4ELTml5khhbmv0Iadpms
-         tBt0RLxBrv9kJFgV8xJD2COxU93LvBWiwfz0+H8QLCC5shUbrjFHiemOnrkhsk99vRen
-         ZvKw==
+         :cc;
+        bh=GEKsNPFt5uW+bAYL4neLUuqC5v5C91j6xhAwFtQ4lRc=;
+        b=nPo5CmePDn0/ArVEDW37gxprx1SCAOIA8Dx8yHaCH7RtGD4/Wr26bY40lcNAvwrXdI
+         +IUMJmVCJLVMndm6zz+XB+5aDe2hLGinJdM6DIhsFovKhunXSeAcDcHOqYcoFb4vtNTV
+         vg/dAA47KCWS0r0GsKYk/53AUsAfqyuFt3KDE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RxKeaJE+nu2TyOO2eKwM9sn1ONl4+NYDV2sw0WpA958=;
-        b=rd6Xhlzp/fUiGFppCijRXw41C8UHf41/vFTZkcHlAgA1IhzCVK4ABDDRZacxMaRn6F
-         e7DsF04Vx6cPmDHgvpB7z49bhy8ve810eTDE0DqRuDJNGkV+qJNghLJAAJ8uDfbs/J2T
-         JpL2smEygIV6TekWd+9uKoPCp18nOsMNb87pi1a+nbpiVnZH472DNRP6Qi5/JZGk1OLG
-         fRurbMTOudb1o9V87pkINs25qYZm1SX+G8Hr6l4mfysEGJ+avtPnU1G0E5zbJwqNejD3
-         AU50xpFRrycm45Z667TNcRjwlg65J8CwcQqRoTVknvAktIbweebATYVdg/AxW0Ze3Goh
-         SHUA==
-X-Gm-Message-State: AOAM530DR0S8tQsSHl6Px6lsIjysIjjK0yQE+4+PdSRvRN8hpPD9/RDz
-        gBTHCewsV1dPpeqXuIHCx5bq3OI6wmwmAJ4mWJZ4JSJLpZsMJA==
-X-Google-Smtp-Source: ABdhPJySNiJOw35YC7QlRp1YSeG2rHrV1dxubFt9W0DlXcxJzzbaks61psVBOI7lW2kQyaqn6P74IyPcaxul+sduuPs=
-X-Received: by 2002:a5d:4ac6:: with SMTP id y6mr23211765wrs.160.1614759564854;
- Wed, 03 Mar 2021 00:19:24 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=GEKsNPFt5uW+bAYL4neLUuqC5v5C91j6xhAwFtQ4lRc=;
+        b=aHXUL3UWoIm+Q0zOa9puC3qEeeRd9ZVw3KMC/ftoEr+1zgp6wLbkWXyPKzyg8jxxRj
+         F5j47RnWWMBB0QpDGFsxqfpnOziVkjXF5kvf6St8467R68KlyERE25+RyU5gGLjhTGgU
+         StB+I3ei3yFxpS7QLlCs1K8OWXASECpLbyTQcu/5PXQtrPQsHfht/g9eQOuv/3UqbUvS
+         YAXSjA4Y8blRpLDjrTmIjaahkGH2NKChpkJQBfz0mRY6t7Bbm/cxr7HV2eTn9cC3k+97
+         qDsiQMLdgJmj8zzvRTgL28jmOzLoK89SQtKwxZIfIl/arKsG1n7hH3CvvIImvvQ4/I81
+         EMkw==
+X-Gm-Message-State: AOAM532HA84EcgogJqNz4C1K1kfLdGbpttCiPWouCJdIKA2VtyufVdH9
+        H2Xgv+r5L955ewYtYuGqHW69w2SqjwEDq959P7Z/TQ==
+X-Google-Smtp-Source: ABdhPJxX12DLFCNDWK1D3NDg/M9FChhkM1DPxBb4Jw2IveYs4lKzABCN01gR1vUX17clmbSsyqbaWnKIkZiyyN4h9po=
+X-Received: by 2002:a2e:8114:: with SMTP id d20mr11874975ljg.83.1614764124333;
+ Wed, 03 Mar 2021 01:35:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20210301104318.263262-1-bjorn.topel@gmail.com>
- <20210301104318.263262-3-bjorn.topel@gmail.com> <CAEf4BzZFDAcnaWU2JGL2GKmTTWQPDrcdgEn2NOM9cGFe16XheQ@mail.gmail.com>
- <a65075f7-b46c-9131-f969-a6458e6001b7@intel.com>
-In-Reply-To: <a65075f7-b46c-9131-f969-a6458e6001b7@intel.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Wed, 3 Mar 2021 09:19:13 +0100
-Message-ID: <CAJ+HfNiA7Pm8A_uwZxaUhRf4YMhq_pBExNcebpEwR4t7E12ANg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] libbpf, xsk: add libbpf_smp_store_release libbpf_smp_load_acquire
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20210302023743.24123-1-xiyou.wangcong@gmail.com>
+ <20210302023743.24123-3-xiyou.wangcong@gmail.com> <CACAyw9-SjsNn4_J1KDXuFh1nd9Hr-Mo+=7S-kVtooJwdi1fodQ@mail.gmail.com>
+ <CAM_iQpXqE9qJ=+zKA6H1Rq=KKgm8LZ=p=ZtvrrH+hfSrTg+zxw@mail.gmail.com>
+In-Reply-To: <CAM_iQpXqE9qJ=+zKA6H1Rq=KKgm8LZ=p=ZtvrrH+hfSrTg+zxw@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 3 Mar 2021 09:35:13 +0000
+Message-ID: <CACAyw99BweMk-82f270=Vb=jDuec0q0N-6E8Rr8enaOGuZEDNQ@mail.gmail.com>
+Subject: Re: [Patch bpf-next v2 2/9] sock: introduce sk_prot->update_proto()
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>, maximmi@nvidia.com,
-        Andrii Nakryiko <andrii@kernel.org>
+        Jakub Sitnicki <jakub@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 3 Mar 2021 at 08:14, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com> =
-wrote:
+On Tue, 2 Mar 2021 at 18:23, Cong Wang <xiyou.wangcong@gmail.com> wrote:
 >
-> On 2021-03-03 05:38, Andrii Nakryiko wrote:
-> > On Mon, Mar 1, 2021 at 2:43 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail=
-.com> wrote:
-> >>
-> >> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> >>
-> >> Now that the AF_XDP rings have load-acquire/store-release semantics,
-> >> move libbpf to that as well.
-> >>
-> >> The library-internal libbpf_smp_{load_acquire,store_release} are only
-> >> valid for 32-bit words on ARM64.
-> >>
-> >> Also, remove the barriers that are no longer in use.
-> >>
-> >> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> >> ---
-> >>   tools/lib/bpf/libbpf_util.h | 72 +++++++++++++++++++++++++----------=
---
-> >>   tools/lib/bpf/xsk.h         | 17 +++------
-> >>   2 files changed, 55 insertions(+), 34 deletions(-)
-> >>
-> >> diff --git a/tools/lib/bpf/libbpf_util.h b/tools/lib/bpf/libbpf_util.h
-> >> index 59c779c5790c..94a0d7bb6f3c 100644
-> >> --- a/tools/lib/bpf/libbpf_util.h
-> >> +++ b/tools/lib/bpf/libbpf_util.h
-> >> @@ -5,6 +5,7 @@
-> >>   #define __LIBBPF_LIBBPF_UTIL_H
-> >>
-> >>   #include <stdbool.h>
-> >> +#include <linux/compiler.h>
-> >>
-> >>   #ifdef __cplusplus
-> >>   extern "C" {
-> >> @@ -15,29 +16,56 @@ extern "C" {
-> >>    * application that uses libbpf.
-> >>    */
-> >>   #if defined(__i386__) || defined(__x86_64__)
-> >> -# define libbpf_smp_rmb() asm volatile("" : : : "memory")
-> >> -# define libbpf_smp_wmb() asm volatile("" : : : "memory")
-> >> -# define libbpf_smp_mb() \
-> >> -       asm volatile("lock; addl $0,-4(%%rsp)" : : : "memory", "cc")
-> >> -/* Hinders stores to be observed before older loads. */
-> >> -# define libbpf_smp_rwmb() asm volatile("" : : : "memory")
-> >
-> > So, technically, these four are part of libbpf's API, as libbpf_util.h
-> > is actually installed on target hosts. Seems like xsk.h is the only
-> > one that is using them, though.
-> >
-> > So the question is whether it's ok to remove them now?
-> >
+> > if the function returned a struct proto * like it does at the moment.
+> > That way we keep sk->sk_prot manipulation confined to the sockmap code
+> > and don't have to copy paste it into every proto.
 >
-> I would say that. Ideally, the barriers shouldn't be visible at all,
-> since they're only used as an implementation detail for the static
-> inline functions.
->
->
-> > And also, why wasn't this part of xsk.h in the first place?
-> >
->
-> I guess there was a "maybe it can be useful for more than the XDP socket
-> parts of libbpf"-idea. I'll move them to xsk.h for the v2, which will
-> make the migration easier.
->
+> Well, TCP seems too special to do this, as it could call tcp_update_ulp()
+> to update the proto.
 
-Clarification! The reason for not having them in xsk.h, was that the
-idea was that only the APIs allowed from the application should reside
-there. IOW, libbpf_utils.h is only "implementation details". Again,
-the static-inline function messes things up. Maybe moving to an
-LTO-only world would be better, so we can get rid of the inlining all
-together.
+I had a quick look, tcp_bpf_update_proto is the only caller of tcp_update_ulp,
+which in turn is the only caller of icsk_ulp_ops->update, which in turn is only
+implemented as tls_update in tls_main.c. Turns out that tls_update
+has another one of these calls:
+
+} else {
+    /* Pairs with lockless read in sk_clone_lock(). */
+    WRITE_ONCE(sk->sk_prot, p);
+    sk->sk_write_space = write_space;
+}
+
+Maybe it looks familiar? :o) I think it would be a worthwhile change.
 
 >
-> Bj=C3=B6rn
->
->
-> >> +# define libbpf_smp_store_release(p, v)                              =
-          \
-> >> +       do {                                                          =
-  \
-> >> +               asm volatile("" : : : "memory");                      =
-  \
-> >> +               WRITE_ONCE(*p, v);                                    =
-  \
-> >> +       } while (0)
-> >> +# define libbpf_smp_load_acquire(p)                                  =
-  \
-> >> +       ({                                                            =
-  \
-> >> +               typeof(*p) ___p1 =3D READ_ONCE(*p);                   =
-    \
-> >> +               asm volatile("" : : : "memory");                      =
-  \
-> >> +               ___p1;                                                =
-  \
-> >> +       })
 > >
-> > [...]
+> > > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> > > index 3bddd9dd2da2..13d2af5bb81c 100644
+> > > --- a/net/core/sock_map.c
+> > > +++ b/net/core/sock_map.c
+> > > @@ -184,26 +184,10 @@ static void sock_map_unref(struct sock *sk, void *link_raw)
+> > >
+> > >  static int sock_map_init_proto(struct sock *sk, struct sk_psock *psock)
+> > >  {
+> > > -       struct proto *prot;
+> > > -
+> > > -       switch (sk->sk_type) {
+> > > -       case SOCK_STREAM:
+> > > -               prot = tcp_bpf_get_proto(sk, psock);
+> > > -               break;
+> > > -
+> > > -       case SOCK_DGRAM:
+> > > -               prot = udp_bpf_get_proto(sk, psock);
+> > > -               break;
+> > > -
+> > > -       default:
+> > > +       if (!sk->sk_prot->update_proto)
+> > >                 return -EINVAL;
+> > > -       }
+> > > -
+> > > -       if (IS_ERR(prot))
+> > > -               return PTR_ERR(prot);
+> > > -
+> > > -       sk_psock_update_proto(sk, psock, prot);
+> > > -       return 0;
+> > > +       psock->saved_update_proto = sk->sk_prot->update_proto;
+> > > +       return sk->sk_prot->update_proto(sk, false);
 > >
+> > I think reads / writes from sk_prot need READ_ONCE / WRITE_ONCE. We've
+> > not been diligent about this so far, but I think it makes sense to be
+> > careful in new code.
+>
+> Hmm, there are many places not using READ_ONCE/WRITE_ONCE,
+> for a quick example:
+
+I know! I'll defer to John and Jakub.
+
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
