@@ -2,66 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA0D32C179
+	by mail.lfdr.de (Postfix) with ESMTP id AE81132C17C
 	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1391827AbhCCWts (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 17:49:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50620 "EHLO mail.kernel.org"
+        id S1391834AbhCCWuH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Mar 2021 17:50:07 -0500
+Received: from mga05.intel.com ([192.55.52.43]:12189 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242986AbhCCOhu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Mar 2021 09:37:50 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E13964EE1;
-        Wed,  3 Mar 2021 14:26:07 +0000 (UTC)
-Date:   Wed, 3 Mar 2021 09:26:04 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     "Daniel Xu" <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>, kuba@kernel.org
-Subject: Re: Broken kretprobe stack traces
-Message-ID: <20210303092604.59aea82c@gandalf.local.home>
-In-Reply-To: <20210303134828.39922eb167524bc7206c7880@kernel.org>
-References: <1fed0793-391c-4c68-8d19-6dcd9017271d@www.fastmail.com>
-        <20210303134828.39922eb167524bc7206c7880@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1442620AbhCCPmG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Mar 2021 10:42:06 -0500
+IronPort-SDR: D9OTeArAhYm1W5upTymbq7uXiNw5Xyxpp3yJ4w81IEcB5t7s7a0dhvCxAhGSbGTRhwvJBhjq0z
+ jil6U005Ceng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="272218012"
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="272218012"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 07:39:07 -0800
+IronPort-SDR: ATfSTsxIdKPFQ0MciTSQb9mrnUq+S5W/hYZwx2CnGa8K/W/D4vfVwTYL4Ig0dgyLvbvWw4IkKu
+ 5+tsY/FLAk5g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="367645044"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga003.jf.intel.com with ESMTP; 03 Mar 2021 07:39:04 -0800
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     makita.toshiaki@lab.ntt.co.jp, daniel@iogearbox.net,
+        ast@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH bpf] veth: store queue_mapping independently of XDP prog presence
+Date:   Wed,  3 Mar 2021 16:29:03 +0100
+Message-Id: <20210303152903.11172-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 3 Mar 2021 13:48:28 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Currently, veth_xmit() would call the skb_record_rx_queue() only when
+there is XDP program loaded on peer interface in native mode.
 
-> 
-> > 
-> > I think (can't prove) this used to work:  
+If peer has XDP prog in generic mode, then netif_receive_generic_xdp()
+has a call to netif_get_rxqueue(skb), so for multi-queue veth it will
+not be possible to grab a correct rxq.
 
-Would be good to find out if it did.
+To fix that, store queue_mapping independently of XDP prog presence on
+peer interface.
 
-> 
-> I'm not sure the bpftrace had correctly handled it or not.
-> 
-> > 
-> >     # bpftrace -e 'kretprobe:__tcp_retransmit_skb { @[kstack()] = count() }'
-> >     Attaching 1 probe...
-> >     ^C
-> > 
-> >     @[
-> >         kretprobe_trampoline+0
-> >     ]: 1  
-> 
-> Would you know how the bpftrace stacktracer rewinds the stack entries?
-> FYI, ftrace does it in trace_seq_print_sym()@kernel/trace/trace_output.c
-> 
+Fixes: 638264dc9022 ("veth: Support per queue XDP ring")
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+---
+ drivers/net/veth.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-The difference between trace events and normal function tracing stack
-traces is that it keeps its original return address. But kretprobes (and
-function graph tracing, and some bpf trampolines too) modify the return
-pointer, and that could possibly cause havoc with the stack trace.
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index aa1a66ad2ce5..34e49c75db42 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -302,8 +302,7 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	if (rxq < rcv->real_num_rx_queues) {
+ 		rq = &rcv_priv->rq[rxq];
+ 		rcv_xdp = rcu_access_pointer(rq->xdp_prog);
+-		if (rcv_xdp)
+-			skb_record_rx_queue(skb, rxq);
++		skb_record_rx_queue(skb, rxq);
+ 	}
+ 
+ 	skb_tx_timestamp(skb);
+-- 
+2.20.1
 
--- Steve
