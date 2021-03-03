@@ -2,142 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C2532C1C3
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:03:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3590632C1D1
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449612AbhCCWwp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 17:52:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1835364AbhCCSC4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:02:56 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A92C8C061761;
-        Wed,  3 Mar 2021 10:02:14 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id b15so4655955pjb.0;
-        Wed, 03 Mar 2021 10:02:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=riT8H9mkRmeNcLBWbSj2xaZmnz2sd8uAAZFerEUss6s=;
-        b=k1gnZmFqNvFY8zVbQ32Zn5q2brrM0eH8QoPKRenrLl2BH2BTZ8/1vKNyl684SUvKyg
-         YkPThbwsEuVfiYX5KPAXQPMqBTelBOICznZasCzaLPHV8kRXPL0rhEMESIG3pNhPTbJu
-         ITd7S1mppRDGjytyIwf4dPyn4m8H9Y5URMnxi5xI5NzzSkdxbNfTux8+UamyFtXskBYA
-         vD2VyK3NPkr0ohdgJjTxNtcG4IMrEGOjE8jagdf8CaDwkxrEwiD8atx5REm3QjZSqsFE
-         ANkzBvEOX6lcvYAcAJci17liTfwprAT+pW+NlyvvyDqamjPzaXlIl2186SuFw8wUTvla
-         13Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=riT8H9mkRmeNcLBWbSj2xaZmnz2sd8uAAZFerEUss6s=;
-        b=Q1PnQcs6+E2J/64ny0waF9nUYlqIkI/75/v6UBT5oIr9QzZg6YDbtCQnSEFdvTHlcT
-         c967P4QRH9wFsMZ5DxykEfbqMPkZ6zZHt/1dkdjMFdoutYq14xADPPwuT4zAXFktaHQv
-         osyreCuOP9QmXPlbbZ/uYSC2Gy7uupHTa54EQOR2Dd/6HBgpc2x5HuBFfdO73IDlMKw5
-         reO4X8w5I7l1A+wIVamjqdDbEAn33Xwm733yF9g9fBlDeotmnheYN8YtObkF+JoE8QBr
-         YjMEWmsccLHBoKm7DU5FNNLKvyfU38+txJSuO05aLkHq/nPSeTStjE4unZpmOGRSXspl
-         nBwQ==
-X-Gm-Message-State: AOAM533wl3s2fsHi2wofqMdEZ9HsX2F1B3t2MWB8Gctus8E50755LHLU
-        y7HCqd7/1Q19e8v9Ql/lbUqzAFyNrhGJslChXD4=
-X-Google-Smtp-Source: ABdhPJxChESi3gq2KT4ebgmcbnDgLAefshrcjnbzPI82IR+wLj0D4J+RABD8jY2B9Kz8OICufwN6k+adfr4qbtan3pQ=
-X-Received: by 2002:a17:90a:8594:: with SMTP id m20mr278590pjn.215.1614794534192;
- Wed, 03 Mar 2021 10:02:14 -0800 (PST)
+        id S1449647AbhCCWxG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Mar 2021 17:53:06 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:39057 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235508AbhCCSWC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 3 Mar 2021 13:22:02 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 4DF44580272;
+        Wed,  3 Mar 2021 13:11:15 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 03 Mar 2021 13:11:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm2; bh=R
+        G1V6+KyPgUrPQt1cGsfMCiGS9LQ7Gy572gXAWOD3F8=; b=FWLUkYNoPVnGT1uBS
+        Q3vfTpPFcjRBP0ItlmpKPA7FEh2gInJdu0TbIonUpyBtc64tirRusc7bv1XyQZFi
+        kNNvCKiKSTdyc3Y+baURuAFiNHUQxJZVnOSnDO1nuAkeHKkiOcWf4DnrkBkAdAiE
+        y3Wyroh1jJ94Mqnmu8baQbNnos+4xvv45z7oQmDipuFFKFPNjEoRGB6U2+O0q77P
+        n7Uth6nrgqKcUYpJg0Jxc+xFgxWdjC5Q4h0F+q4Pb1X48e0amgv4C5kfanxgv32H
+        WQMWMp8dUiKROFVJ6cv67skRILo3gs53OSofLwWccQ8PGPl+JAiVqYNoGOv+cGGA
+        zuObg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=RG1V6+KyPgUrPQt1cGsfMCiGS9LQ7Gy572gXAWOD3
+        F8=; b=TgJYGJRGC+y4SQqYI8rB5HkySq+ErerVbjcW5YoIuIC4fSewqtwiX2wxp
+        du6hCIMBgmUWjrxU1pogdcCSLvHRnPmCfSa6CiDSo962LNmhwi3GPqBBVFLSK9si
+        IPB3GdCHAg9Oxc0OzqDgbjguFzzzm1YeaiUu3RTqWVfUK1tfbdXsGVwkHtACkjmg
+        Y4ynUUOoyfgbhGEm/fbUdV+FEWF7USqpUflHaQxZKXzzK/1DlI8bGiZ525+4vrcf
+        h7l9Ccd83qEOzQV5KPTuFsyNK8+8Jc3e7k33qv198fuxPRGYG25FrddtUe0Y1evd
+        edV1V8f5z1wp+nQJ3u+iZGDger53Q==
+X-ME-Sender: <xms:QtE_YKD2F2vaegFiJAOXxwPurULnQx7zZdkM6G8VN_dtbkPzZEbpHw>
+    <xme:QtE_YEdDvaQ4UB-L-8e024WDyX2hCk_wthmECD_uOyf24o4kpxkSZ44SU_5HDMMIl
+    5B2ACDZheEJ1BrQbw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtvddguddtiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculddujedmnecujfgurhepfffhvffukfhfgggtugfgjgesthekredt
+    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
+    enucggtffrrghtthgvrhhnpedtjeefvefhgedutdfghfeiudfhvddvveegvdejhedvhfeg
+    tdelleeltdfgffeljeenucffohhmrghinhepghhithhhuhgsrdgtohhmnecukfhppeeile
+    drudekuddruddthedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:QtE_YKdkoGcM5AvREP5dWZGqRrUMtvTqrv0idJ6s2Weq6re9ZCq7bw>
+    <xmx:QtE_YAjSV5e5YC0yFpcGhvKmNB4pqu1GT5Z0zsV2jhBnreLjsBEiyA>
+    <xmx:QtE_YOSmdvX3q1LkRDQ-VK7Q34YSnOGz7uS8kI_SwEWEe-rC4rBHOA>
+    <xmx:Q9E_YKPj7fFWFASGS4YmdB3xiYjr6CCfuKnhP4SMRg_vFk_pfCVJfQ>
+Received: from maharaja.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id EB391240065;
+        Wed,  3 Mar 2021 13:11:12 -0500 (EST)
+Date:   Wed, 3 Mar 2021 10:11:11 -0800
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Andy Lutomirski <luto@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>, X86 ML <x86@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: Why do kprobes and uprobes singlestep?
+Message-ID: <20210303181111.th5ukrfzrmyuvk5x@maharaja.localdomain>
+References: <CAADnVQJtpvB8wDFv46O0GEaHkwmT1Ea70BJfgS36kDX0u4uZ-g@mail.gmail.com>
+ <968E85AE-75B8-42D7-844A-0D61B32063B3@amacapital.net>
+ <CAADnVQJoTMqWK=kNFyTbjhoo22QD81KXnPxUjiCXhQaNhbK+8A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210302023743.24123-1-xiyou.wangcong@gmail.com>
- <20210302023743.24123-9-xiyou.wangcong@gmail.com> <258c3229-1e60-20d9-e93f-9655ae969b6e@fb.com>
-In-Reply-To: <258c3229-1e60-20d9-e93f-9655ae969b6e@fb.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Wed, 3 Mar 2021 10:02:02 -0800
-Message-ID: <CAM_iQpXM+kyi=LFe0YygYuVE7kcApVGJ9f2A-D=ST2nFPusttg@mail.gmail.com>
-Subject: Re: [Patch bpf-next v2 8/9] sock_map: update sock type checks for UDP
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJoTMqWK=kNFyTbjhoo22QD81KXnPxUjiCXhQaNhbK+8A@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 10:37 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 3/1/21 6:37 PM, Cong Wang wrote:
-> > From: Cong Wang <cong.wang@bytedance.com>
+On Tue, Mar 02, 2021 at 06:18:23PM -0800, Alexei Starovoitov wrote:
+> On Tue, Mar 2, 2021 at 5:46 PM Andy Lutomirski <luto@amacapital.net> wrote:
 > >
-> > Now UDP supports sockmap and redirection, we can safely update
-> > the sock type checks for it accordingly.
 > >
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> > Cc: Lorenz Bauer <lmb@cloudflare.com>
-> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> > ---
-> >   net/core/sock_map.c | 5 ++++-
-> >   1 file changed, 4 insertions(+), 1 deletion(-)
+> > > On Mar 2, 2021, at 5:22 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > ﻿On Tue, Mar 2, 2021 at 1:02 PM Andy Lutomirski <luto@amacapital.net> wrote:
+> > >>
+> > >>
+> > >>>> On Mar 2, 2021, at 12:24 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > >>>
+> > >>> ﻿On Tue, Mar 2, 2021 at 10:38 AM Andy Lutomirski <luto@kernel.org> wrote:
+> > >>>>
+> > >>>> Is there something like a uprobe test suite?  How maintained /
+> > >>>> actively used is uprobe?
+> > >>>
+> > >>> uprobe+bpf is heavily used in production.
+> > >>> selftests/bpf has only one test for it though.
+> > >>>
+> > >>> Why are you asking?
+> > >>
+> > >> Because the integration with the x86 entry code is a mess, and I want to know whether to mark it BROKEN or how to make sure the any cleanups actually work.
+> > >
+> > > Any test case to repro the issue you found?
+> > > Is it a bug or just messy code?
 > >
-> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> > index 13d2af5bb81c..f7eee4b7b994 100644
-> > --- a/net/core/sock_map.c
-> > +++ b/net/core/sock_map.c
-> > @@ -549,7 +549,10 @@ static bool sk_is_udp(const struct sock *sk)
+> > Just messy code.
 > >
-> >   static bool sock_map_redirect_allowed(const struct sock *sk)
-> >   {
-> > -     return sk_is_tcp(sk) && sk->sk_state != TCP_LISTEN;
-> > +     if (sk_is_tcp(sk))
-> > +             return sk->sk_state != TCP_LISTEN;
-> > +     else
-> > +             return sk->sk_state == TCP_ESTABLISHED;
->
-> Not a networking expert, a dump question. Here we tested
-> whether sk_is_tcp(sk) or not, if not we compare
-> sk->sk_state == TCP_ESTABLISHED, could this be
-> always false? Mostly I missed something, some comments
-> here will be good.
+> > > Nowadays a good chunk of popular applications (python, mysql, etc) has
+> > > USDTs in them.
+> > > Issues reported with bcc:
+> > > https://github.com/iovisor/bcc/issues?q=is%3Aissue+USDT
+> > > Similar thing with bpftrace.
+> > > Both standard USDT and semaphore based are used in the wild.
+> > > uprobe for containers has been a long standing feature request.
+> > > If you can improve uprobe performance that would be awesome.
+> > > That's another thing that people report often. We optimized it a bit.
+> > > More can be done.
+> >
+> >
+> > Wait... USDT is much easier to implement well.  Are we talking just USDT or are we talking about general uprobes in which almost any instruction can get probed?  If the only users that care about uprobes are doing USDT, we could vastly simplify the implementation and probably make it faster, too.
+> 
+> USDTs are driving the majority of uprobe usage.
 
-No, dgram sockets also use TCP_ESTABLISHED as a valid
-state. I know its name looks confusing, but it is already widely
-used in networking:
+I'd say 50/50 in my experience. Larger userspace applications using bpf
+for production monitoring tend to use USDT for stability and ABI reasons
+(hard for bpf to read C++ classes). Bare uprobes (ie not USDT) are used
+quite often for ad-hoc production debugging.
 
-net/appletalk/ddp.c:    sk->sk_state = TCP_ESTABLISHED;
-net/appletalk/ddp.c:            if (sk->sk_state != TCP_ESTABLISHED)
-net/appletalk/ddp.c:            if (sk->sk_state != TCP_ESTABLISHED)
-net/ax25/af_ax25.c:     sk->sk_state    = TCP_ESTABLISHED;
-net/ax25/af_ax25.c:             case TCP_ESTABLISHED: /* connection
-established */
-net/ax25/af_ax25.c:     if (sk->sk_state == TCP_ESTABLISHED &&
-sk->sk_type == SOCK_SEQPACKET) {
-net/ax25/af_ax25.c:             sk->sk_state   = TCP_ESTABLISHED;
-net/ax25/af_ax25.c:     if (sk->sk_state != TCP_ESTABLISHED && (flags
-& O_NONBLOCK)) {
-net/ax25/af_ax25.c:     if (sk->sk_state != TCP_ESTABLISHED) {
-net/ax25/af_ax25.c:             if (sk->sk_state != TCP_ESTABLISHED) {
-net/ax25/af_ax25.c:             if (sk->sk_state != TCP_ESTABLISHED) {
-net/ax25/af_ax25.c:             if (sk->sk_state != TCP_ESTABLISHED) {
-net/ax25/af_ax25.c:     if (sk->sk_type == SOCK_SEQPACKET &&
-sk->sk_state != TCP_ESTABLISHED) {
-net/ax25/ax25_ds_in.c:                  ax25->sk->sk_state = TCP_ESTABLISHED;
-net/ax25/ax25_in.c:             make->sk_state = TCP_ESTABLISHED;
-net/ax25/ax25_std_in.c:                         ax25->sk->sk_state =
-TCP_ESTABLISHED;
-net/caif/caif_socket.c: CAIF_CONNECTED          = TCP_ESTABLISHED,
-net/ceph/messenger.c:   case TCP_ESTABLISHED:
-net/ceph/messenger.c:           dout("%s TCP_ESTABLISHED\n", __func__);
-net/core/datagram.c:        !(sk->sk_state == TCP_ESTABLISHED ||
-sk->sk_state == TCP_LISTEN))
-...
+> If they can get faster it will increase their adoption even more.
+> There are certainly cases of normal uprobes.
+> They are at the start of the function 99% of the time.
+> Like the following:
+> "uprobe:/lib64/libc.so:malloc(u64 size):size:size,_ret",
+> "uprobe:/lib64/libc.so:free(void *ptr)::ptr",
+> is common despite its overhead.
+> 
+> Here is the most interesting and practical usage of uprobes:
+> https://github.com/iovisor/bcc/blob/master/tools/sslsniff.py
+> and the manpage for the tool:
+> https://github.com/iovisor/bcc/blob/master/tools/sslsniff_example.txt
+> 
+> uprobe in the middle of the function is very rare.
+> If the kernel starts rejecting uprobes on some weird instructions
+> I suspect no one will complain.
 
-Hence, I believe it is okay to use it as it is, otherwise we would need
-to comment on every use of it. ;)
+I think it would be great if the kernel could reject mid-instruction
+uprobes. Unlike with kprobes, you can place uprobes on immediate
+operands which can cause silent data corruption. See
+https://github.com/iovisor/bpftrace/pull/803#issuecomment-507693933
+for a funny example.
 
-Thanks.
+To prevent accidental (and silent) data corruption, bpftrace uses a
+disassembler to ensure uprobes are placed on instruction boundaries.
+
+<...>
+
+Daniel
