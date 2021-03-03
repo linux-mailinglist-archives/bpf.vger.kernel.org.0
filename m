@@ -2,94 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAEBF32C1AB
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:03:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDBE32C1B3
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449554AbhCCWwa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 17:52:30 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:46101 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S237861AbhCCRN4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Mar 2021 12:13:56 -0500
-Received: (qmail 1576769 invoked by uid 1000); 3 Mar 2021 12:12:21 -0500
-Date:   Wed, 3 Mar 2021 12:12:21 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
-        joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: XDP socket rings, and LKMM litmus tests
-Message-ID: <20210303171221.GA1574518@rowland.harvard.edu>
-References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
- <20210302211446.GA1541641@rowland.harvard.edu>
- <20210302235019.GT2696@paulmck-ThinkPad-P72>
+        id S1449559AbhCCWwf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Mar 2021 17:52:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241168AbhCCR3q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Mar 2021 12:29:46 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A11C061756;
+        Wed,  3 Mar 2021 09:29:05 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id B41E52CD;
+        Wed,  3 Mar 2021 17:25:16 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net B41E52CD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1614792316; bh=stUJ13VskkGN0mdPm02DMITNl2re2BbdECPeoNTlQuY=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=dGirZviqdmXr1dYOksWyVIUnGlTy7Q9EP66d1x2lzljJOX6QSDiyUXGFXsRSUz3gi
+         BYTJTXvzfM2h9KK6F35HbwnzkizIk2gW3FLoO/MExhy9m+5rbdR/4c5lkE3Dz5XRDN
+         M5p8aDonI1ykkZVI6usnCGOTdLDuf+kCOBt3scdSg9Pdy6HhIoA0XHVlPO1M7fpj6m
+         g/0RKoaFCO3y49b3kjiqDRnslxn/iUpnCgvyDVV/qVXyyD5rClGofGJIn30AQ8DSmB
+         WvLFkh2pRo2ejN0ANSBvvZffq6tFMRPjeRqYGica/yNRJjCKrO92F8n7+8s77ikZZ6
+         0BQkZgi2FHMVw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Joe Stringer <joe@cilium.io>
+Cc:     bpf@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-doc@vger.kernel.org, mtk.manpages@gmail.com, ast@kernel.org,
+        brianvv@google.com, daniel@iogearbox.net, daniel@zonque.org,
+        john.fastabend@gmail.com, ppenkov@google.com,
+        quentin@isovalent.com, sean@mess.org, yhs@fb.com
+Subject: Re: [PATCHv2 bpf-next 00/15] Improve BPF syscall command documentation
+References: <20210302171947.2268128-1-joe@cilium.io>
+Date:   Wed, 03 Mar 2021 10:25:16 -0700
+In-Reply-To: <20210302171947.2268128-1-joe@cilium.io> (Joe Stringer's message
+        of "Tue, 2 Mar 2021 09:19:32 -0800")
+Message-ID: <87y2f4up37.fsf@meer.lwn.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210302235019.GT2696@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 02, 2021 at 03:50:19PM -0800, Paul E. McKenney wrote:
-> On Tue, Mar 02, 2021 at 04:14:46PM -0500, Alan Stern wrote:
+Joe Stringer <joe@cilium.io> writes:
 
-> > This result is wrong, apparently because of a bug in herd7.  There 
-> > should be control dependencies from each of the two loads in P0 to each 
-> > of the two stores, but herd7 doesn't detect them.
-> > 
-> > Maybe Luc can find some time to check whether this really is a bug and 
-> > if it is, fix it.
-> 
-> I agree that herd7's control dependency tracking could be improved.
-> 
-> But sadly, it is currently doing exactly what I asked Luc to make it do,
-> which is to confine the control dependency to its "if" statement.  But as
-> usual I wasn't thinking globally enough.  And I am not exactly sure what
-> to ask for.  Here a store to a local was control-dependency ordered after
-> a read, and so that should propagate to a read from that local variable.
-> Maybe treat local variables as if they were registers, so that from
-> herd7's viewpoint the READ_ONCE()s are able to head control-dependency
-> chains in multiple "if" statements?
-> 
-> Thoughts?
+> Following that, the series enhances the python scripting around parsing
+> the descriptions from the header files and generating dedicated
+> ReStructured Text and troff output. Finally, to expose the new text and
+> reduce the likelihood of having it get out of date or break the docs
+> parser, it is added to the selftests and exposed through the kernel
+> documentation web pages.
 
-Local variables absolutely should be treated just like CPU registers, if 
-possible.  In fact, the compiler has the option of keeping local 
-variables stored in registers.
+You can leave me off CC, but I have eyes everywhere :)
 
-(Of course, things may get complicated if anyone writes a litmus test 
-that uses a pointer to a local variable,  Especially if the pointer 
-could hold the address of a local variable in one execution and a 
-shared variable in another!  Or if the pointer is itself a shared 
-variable and is dereferenced in another thread!)
+Anyway, I like this version much better, thanks for making the
+adjustments.  Feel free to stick an
 
-But even if local variables are treated as non-shared storage locations, 
-we should still handle this correctly.  Part of the problem seems to lie 
-in the definition of the to-r dependency relation; the relevant portion 
-is:
+Acked-by: Jonathan Corbet <corbet@lwn.net>
 
-	(dep ; [Marked] ; rfi)
+on it if you feel so inclined.
 
-Here dep is the control dependency from the READ_ONCE to the 
-local-variable store, and the rfi refers to the following load of the 
-local variable.  The problem is that the store to the local variable 
-doesn't go in the Marked class, because it is notated as a plain C 
-assignment.  (And likewise for the following load.)
+Thanks,
 
-Should we change the model to make loads from and stores to local 
-variables always count as Marked?
-
-What should have happened if the local variable were instead a shared 
-variable which the other thread didn't access at all?  It seems like a 
-weak point of the memory model that it treats these two things 
-differently.
-
-Alan
+jon
