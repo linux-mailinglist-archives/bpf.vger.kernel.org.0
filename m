@@ -2,164 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB03532C1CA
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:03:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 527B532C2AE
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:05:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449635AbhCCWw4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 17:52:56 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12882 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243486AbhCCSNL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 3 Mar 2021 13:13:11 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 123I4hAG029853;
-        Wed, 3 Mar 2021 13:10:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=mEmRB0j8W52c3PpFWBUGKZMFICC3DxY/s7hE9M/toeg=;
- b=QT0aLA6TRqU3KmEf5W8ysrkdBSPYWd7ulRjYnj0Jd2eeyV1tjuo/yQQQSFobXSVlsybi
- xy92n1fTqQ2GHOIr+o0vfbhyEHyve9mV2IwKUsY76MRao/ULMse9dLmY7OryfPc5r23V
- mbYX/+eF6GQF83tuYZEfcSWTcZ2LxvL3C/jERsVn+HyO1Whe1Y0jPgkIJ7E0s44TsFfl
- pa144roxOWQ/CF66WrilG3FprOjfId3ewtTg1bXnxp1ShABkzV6sUpqSEp32hFs5lqDl
- Ih9C1BEkYvH2LFENLV4fQblunDnmmftP4/yFH+sYwv1BtS2bDWxX+PxZ0QK5hfCc7gtX Jg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 372f8y0fyd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Mar 2021 13:10:29 -0500
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 123I53tL031927;
-        Wed, 3 Mar 2021 13:10:29 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 372f8y0fwt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Mar 2021 13:10:29 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 123I3TqV025328;
-        Wed, 3 Mar 2021 18:05:26 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 3712fmj0vy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 03 Mar 2021 18:05:26 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 123I5NFn16908574
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 3 Mar 2021 18:05:24 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DE2BFA4053;
-        Wed,  3 Mar 2021 18:05:23 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 40DD8A404D;
-        Wed,  3 Mar 2021 18:05:23 +0000 (GMT)
-Received: from localhost (unknown [9.79.222.129])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  3 Mar 2021 18:05:23 +0000 (GMT)
-Date:   Wed, 3 Mar 2021 12:12:39 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1391450AbhCCWgl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Mar 2021 17:36:41 -0500
+Received: from mga02.intel.com ([134.134.136.20]:57261 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1377445AbhCCHRb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Mar 2021 02:17:31 -0500
+IronPort-SDR: DOyiL31QVEu6GSHhfTbmDFH/3I9QtSETiXuBPiobZrCYXY8+bsJMwTi1J2K+W6ml0i/fwvOm4Y
+ FHnJwVGcufGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9911"; a="174247774"
+X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
+   d="scan'208";a="174247774"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 23:14:31 -0800
+IronPort-SDR: Ugd5v/PI7dn/AdDkmtShX8ns1liL0/mdL2a741NulTMRboT/LJdZbhFnaTC2RUJvOfhRnGdCGb
+ b2XVrlyGe4XA==
+X-IronPort-AV: E=Sophos;i="5.81,219,1610438400"; 
+   d="scan'208";a="407113563"
+Received: from jdibley-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.61.121])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2021 23:14:22 -0800
+Subject: Re: [PATCH bpf-next 2/2] libbpf, xsk: add libbpf_smp_store_release
+ libbpf_smp_load_acquire
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Yauheni Kaliuta <ykaliuta@redhat.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix test_attach_probe for
- powerpc uprobes
-Message-ID: <20210303064239.GC1913@DESKTOP-TDPLP67.localdomain>
-References: <20210301190416.90694-1-jolsa@kernel.org>
- <CAEf4BzbBnR3M60HepC_CFDsdMQDBYoEWiWtREUaLxrrxyBce0Q@mail.gmail.com>
- <YD4d+dmay+oKyiot@krava>
- <c18d94d3-3e5d-08f7-a8ba-f13bfa7eec05@fb.com>
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>, maximmi@nvidia.com,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <20210301104318.263262-1-bjorn.topel@gmail.com>
+ <20210301104318.263262-3-bjorn.topel@gmail.com>
+ <CAEf4BzZFDAcnaWU2JGL2GKmTTWQPDrcdgEn2NOM9cGFe16XheQ@mail.gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <a65075f7-b46c-9131-f969-a6458e6001b7@intel.com>
+Date:   Wed, 3 Mar 2021 08:14:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c18d94d3-3e5d-08f7-a8ba-f13bfa7eec05@fb.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-03_05:2021-03-03,2021-03-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- mlxlogscore=999 lowpriorityscore=0 priorityscore=1501 impostorscore=0
- phishscore=0 bulkscore=0 mlxscore=0 adultscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103030127
+In-Reply-To: <CAEf4BzZFDAcnaWU2JGL2GKmTTWQPDrcdgEn2NOM9cGFe16XheQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/03/02 09:19AM, Yonghong Song wrote:
+On 2021-03-03 05:38, Andrii Nakryiko wrote:
+> On Mon, Mar 1, 2021 at 2:43 AM Björn Töpel <bjorn.topel@gmail.com> wrote:
+>>
+>> From: Björn Töpel <bjorn.topel@intel.com>
+>>
+>> Now that the AF_XDP rings have load-acquire/store-release semantics,
+>> move libbpf to that as well.
+>>
+>> The library-internal libbpf_smp_{load_acquire,store_release} are only
+>> valid for 32-bit words on ARM64.
+>>
+>> Also, remove the barriers that are no longer in use.
+>>
+>> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+>> ---
+>>   tools/lib/bpf/libbpf_util.h | 72 +++++++++++++++++++++++++------------
+>>   tools/lib/bpf/xsk.h         | 17 +++------
+>>   2 files changed, 55 insertions(+), 34 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf_util.h b/tools/lib/bpf/libbpf_util.h
+>> index 59c779c5790c..94a0d7bb6f3c 100644
+>> --- a/tools/lib/bpf/libbpf_util.h
+>> +++ b/tools/lib/bpf/libbpf_util.h
+>> @@ -5,6 +5,7 @@
+>>   #define __LIBBPF_LIBBPF_UTIL_H
+>>
+>>   #include <stdbool.h>
+>> +#include <linux/compiler.h>
+>>
+>>   #ifdef __cplusplus
+>>   extern "C" {
+>> @@ -15,29 +16,56 @@ extern "C" {
+>>    * application that uses libbpf.
+>>    */
+>>   #if defined(__i386__) || defined(__x86_64__)
+>> -# define libbpf_smp_rmb() asm volatile("" : : : "memory")
+>> -# define libbpf_smp_wmb() asm volatile("" : : : "memory")
+>> -# define libbpf_smp_mb() \
+>> -       asm volatile("lock; addl $0,-4(%%rsp)" : : : "memory", "cc")
+>> -/* Hinders stores to be observed before older loads. */
+>> -# define libbpf_smp_rwmb() asm volatile("" : : : "memory")
 > 
+> So, technically, these four are part of libbpf's API, as libbpf_util.h
+> is actually installed on target hosts. Seems like xsk.h is the only
+> one that is using them, though.
 > 
-> On 3/2/21 3:14 AM, Jiri Olsa wrote:
-> > On Mon, Mar 01, 2021 at 04:34:24PM -0800, Andrii Nakryiko wrote:
-> > > On Mon, Mar 1, 2021 at 11:11 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > > 
-> > > > When testing uprobes we the test gets GEP (Global Entry Point)
-> > > > address from kallsyms, but then the function is called locally
-> > > > so the uprobe is not triggered.
-> > > > 
-> > > > Fixing this by adjusting the address to LEP (Local Entry Point)
-> > > > for powerpc arch.
-> > > > 
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > ---
-> > > >   .../selftests/bpf/prog_tests/attach_probe.c    | 18 +++++++++++++++++-
-> > > >   1 file changed, 17 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > > > index a0ee87c8e1ea..c3cfb48d3ed0 100644
-> > > > --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > > > +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > > > @@ -2,6 +2,22 @@
-> > > >   #include <test_progs.h>
-> > > >   #include "test_attach_probe.skel.h"
-> > > > 
-> > > > +#if defined(__powerpc64__)
-> > > > +/*
-> > > > + * We get the GEP (Global Entry Point) address from kallsyms,
-> > > > + * but then the function is called locally, so we need to adjust
-> > > > + * the address to get LEP (Local Entry Point).
-> > > > + */
-> > > > +#define LEP_OFFSET 8
-> > > > +
-> > > > +static ssize_t get_offset(ssize_t offset)
-> > > 
-> > > if we mark this function __weak global, would it work as is? Would it
-> > > get an address of a global entry point? I know nothing about this GEP
-> > > vs LEP stuff, interesting :)
-> > 
-> > you mean get_base_addr? it's already global
-> > 
-> > all the calls to get_base_addr within the object are made
-> > to get_base_addr+0x8
-> > 
-> > 00000000100350c0 <test_attach_probe>:
-> >      ...
-> >      100350e0:   59 fd ff 4b     bl      10034e38 <get_base_addr+0x8>
-> >      ...
-> >      100358a8:   91 f5 ff 4b     bl      10034e38 <get_base_addr+0x8>
-> > 
-> > 
-> > I'm following perf fix we had for similar issue:
-> >    7b6ff0bdbf4f perf probe ppc64le: Fixup function entry if using kallsyms lookup
-> > 
-> > I'll get more info on that
+> So the question is whether it's ok to remove them now?
+>
+
+I would say that. Ideally, the barriers shouldn't be visible at all,
+since they're only used as an implementation detail for the static
+inline functions.
+
+
+> And also, why wasn't this part of xsk.h in the first place?
+>
+
+I guess there was a "maybe it can be useful for more than the XDP socket 
+parts of libbpf"-idea. I'll move them to xsk.h for the v2, which will 
+make the migration easier.
+
+
+Björn
+
+
+>> +# define libbpf_smp_store_release(p, v)                                        \
+>> +       do {                                                            \
+>> +               asm volatile("" : : : "memory");                        \
+>> +               WRITE_ONCE(*p, v);                                      \
+>> +       } while (0)
+>> +# define libbpf_smp_load_acquire(p)                                    \
+>> +       ({                                                              \
+>> +               typeof(*p) ___p1 = READ_ONCE(*p);                       \
+>> +               asm volatile("" : : : "memory");                        \
+>> +               ___p1;                                                  \
+>> +       })
 > 
-> Thanks. The patch
->    7b6ff0bdbf4f perf probe ppc64le: Fixup function entry if using kallsyms
-> lookup
-> talked about offset + 8 for kernel symbols.
-> I guess uprobe symbol might be in the same situation if using the
-> same compilation mechanism as kernel. But it would be good
-> to get confirmation from ppc people.
-
-Yes, this is part of the ELF V2 ABI, so it applies to both kernel and 
-userspace.
-
-- Naveen
-
+> [...]
+> 
