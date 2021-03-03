@@ -2,88 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 033A732C1CC
+	by mail.lfdr.de (Postfix) with ESMTP id DCE8A32C1CF
 	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:03:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449638AbhCCWw7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 17:52:59 -0500
-Received: from mail-qv1-f52.google.com ([209.85.219.52]:40397 "EHLO
-        mail-qv1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386462AbhCCSPn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Mar 2021 13:15:43 -0500
-Received: by mail-qv1-f52.google.com with SMTP id x13so6230620qvj.7
-        for <bpf@vger.kernel.org>; Wed, 03 Mar 2021 10:15:26 -0800 (PST)
+        id S1449645AbhCCWxC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Mar 2021 17:53:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235407AbhCCSVt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Mar 2021 13:21:49 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0F1C061756;
+        Wed,  3 Mar 2021 10:21:00 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id p5so14512171plo.4;
+        Wed, 03 Mar 2021 10:21:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4y/QfsQkpSYAAw3hafZnj/vlVNmoohVbhAhRflF0msE=;
+        b=Y2vi2+SsRGMrGqyRdtJVXtgo81th8sHAP2XUVa58pJ2xSSbnqcmNIQNWFikWe620hb
+         pqi/YZibfco/l8UQQqGmCdlUQzj2zlRp+0GQBaL0swQPAPjTZteVxOCprJqTHMGZzaxA
+         SrR1rOMbsgJFpgu+z4F6LKZJ4PZXhvAQyB2g1ugj/0M+wF4I2JK8N7tNNr0AruIQ6ImR
+         UAl7NctZ5Di/ahbaC+5mDlqboIBFB2DRZWUu9cq/5fSgqA0RDh5uO+vdWhs/96QIhOR0
+         se/VcXFunnVZw8/Nr36671XyEOz9ZvM3v+kWKe7P4S/ouoScJ3dFGHjWM5Daz4P9u5lw
+         bqyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XVI0NGqfR5lyDqvEF13m6jGa+LE885aN8fbIxk0px7w=;
-        b=BixcPMJrrk8yTSMsEL75fZzHhKtfmQROoqn4etNp6EzAh2H/50oieQbxCosl/xNN0V
-         Rn0LldHubCiO93LYYlKRvKMFLVneKly281ih44aISruQ8H77FkeqNly7SC+DNtkOKhaR
-         jfAA2o37henkRfo7W36WLD3+nVvwM2kJsLpzep4O0+GBBKiOKo8pzFPj7tPNhQORjTIT
-         gEoyufCO7suA2QiLziiA/Z4ojCnVjd9TINKfDnh5WUqIki3nnnUcCBIKPN0iiQ8HNZuq
-         CQDVhz0vzid5aclYbFkQdjY25bAhLsg8T0w7AsOCn0UvRtaYFpZUWIftvKzhd4W9n7wq
-         m5DQ==
-X-Gm-Message-State: AOAM533rQL8iWZ1dlCGHJV+M08I9mfQAtyhs12vwcjCXokVWUQ4MfUrh
-        hDHoVJ0a2VJTY9B6/Z4OWO+i5vuhNX+ayoc=
-X-Google-Smtp-Source: ABdhPJwgUh9PEvA9yn5sygKMruwkMx9Kyk8Ln8wm/hS4d2Of2RIMaU1vb88dhOi+Gg6iyUbrqEQTeg==
-X-Received: by 2002:a05:6214:18e5:: with SMTP id ep5mr453362qvb.32.1614795301301;
-        Wed, 03 Mar 2021 10:15:01 -0800 (PST)
-Received: from fujitsu.celeiro.cu ([191.96.15.91])
-        by smtp.gmail.com with ESMTPSA id z188sm14458424qke.85.2021.03.03.10.14.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 10:15:00 -0800 (PST)
-From:   Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
-To:     vamsi@araalinetworks.com
-Cc:     andrii.nakryiko@gmail.com, rafaeldtinoco@gmail.com,
-        bpf@vger.kernel.org
-Subject: Re: [BPF CO-RE clarification] Use CO-RE on older kernel versions.
-Date:   Wed,  3 Mar 2021 15:14:57 -0300
-Message-Id: <20210303181457.172434-1-rafaeldtinoco@ubuntu.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <CADmGQ+0dDjfs6UL63m3vLAfu+GHgSFdMO+Rmz_jk+0R9Wva2Tw@mail.gmail.com>
-References: <CADmGQ+0dDjfs6UL63m3vLAfu+GHgSFdMO+Rmz_jk+0R9Wva2Tw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4y/QfsQkpSYAAw3hafZnj/vlVNmoohVbhAhRflF0msE=;
+        b=HuWWmRCcSL+O8wz9GUd4pwuKmOELe3vfUvNW5jMFJ93thd8oyW0IuraJXxWTjfPNNJ
+         Yfhd5JVbcV7AWVSMWz2Xx8QP9WqcFV4789qQmciZx3FXrQBVi1CpRQpBTaEooIYnXn8f
+         MmfXLdw9VjpZUdJjXlhN6pMVfPLyQeGobSzFUlZCEINMlL+1VOE/7KgbXQVRZoQRM44z
+         opKwowGqh2pU9XY0o0aQL5T20QAOK4Ng5wMH4Yd1uUJmhT3W5MTal2pPpMT/Ha0MGrLr
+         3gWXdhL/2e90k0mEOPWcfqlT99K+7GotorxXZhUBkjo4NtlsTU955gDdsA4ak2X2Leag
+         q5yQ==
+X-Gm-Message-State: AOAM531723M1SrlwNea0Eeiut2mMGo79B0a0VpRIbvBbpRCanR/YV5Zy
+        mviN0rMxPzzAnT/y9ocF0S89N3Md7YiBjeKOrNF+72zoHydzVw==
+X-Google-Smtp-Source: ABdhPJwt7MsDgz3wz0vGvxGbaLE8IMd0EM9FVlHiqhcqXYfye8y0P6MXLs+oU/wiiRdwPqL2ETl7jHLHhRwoYy5ipr8=
+X-Received: by 2002:a17:902:f781:b029:e4:419b:e891 with SMTP id
+ q1-20020a170902f781b02900e4419be891mr464680pln.10.1614795660095; Wed, 03 Mar
+ 2021 10:21:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210302023743.24123-1-xiyou.wangcong@gmail.com>
+ <20210302023743.24123-3-xiyou.wangcong@gmail.com> <CACAyw9-SjsNn4_J1KDXuFh1nd9Hr-Mo+=7S-kVtooJwdi1fodQ@mail.gmail.com>
+ <CAM_iQpXqE9qJ=+zKA6H1Rq=KKgm8LZ=p=ZtvrrH+hfSrTg+zxw@mail.gmail.com> <CACAyw99BweMk-82f270=Vb=jDuec0q0N-6E8Rr8enaOGuZEDNQ@mail.gmail.com>
+In-Reply-To: <CACAyw99BweMk-82f270=Vb=jDuec0q0N-6E8Rr8enaOGuZEDNQ@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Wed, 3 Mar 2021 10:20:48 -0800
+Message-ID: <CAM_iQpWHTvFPifcPL-x64fWqY5k8yP9vu6Bnp8D-HdpUp6vs6g@mail.gmail.com>
+Subject: Re: [Patch bpf-next v2 2/9] sock: introduce sk_prot->update_proto()
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > From:   Vamsi Kodavanty <vamsi@araalinetworks.com>
-> > Date:   Thu, 7 Jan 2021 17:31:11 -0800
-> > To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > Cc:     bpf <bpf@vger.kernel.org>
+On Wed, Mar 3, 2021 at 1:35 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> On Tue, 2 Mar 2021 at 18:23, Cong Wang <xiyou.wangcong@gmail.com> wrote:
 > >
+> > > if the function returned a struct proto * like it does at the moment.
+> > > That way we keep sk->sk_prot manipulation confined to the sockmap code
+> > > and don't have to copy paste it into every proto.
 > >
-> > Right. Libbpf only supports a newer and safer way to attach to
-> > kprobes. For your experiments, try to stick to tracepoints and you'll
-> > have a better time.
-> >
-> > But it's another thing I've been meaning to add to libbpf for
-> > supporting older kernels. I even have code written to do legacy kprobe
-> > attachment, just need to find time to send a patch to add it as a
-> > fallback for kernels that don't support new kprobe interface.
+> > Well, TCP seems too special to do this, as it could call tcp_update_ulp()
+> > to update the proto.
+>
+> I had a quick look, tcp_bpf_update_proto is the only caller of tcp_update_ulp,
+> which in turn is the only caller of icsk_ulp_ops->update, which in turn is only
+> implemented as tls_update in tls_main.c. Turns out that tls_update
+> has another one of these calls:
+>
+> } else {
+>     /* Pairs with lockless read in sk_clone_lock(). */
+>     WRITE_ONCE(sk->sk_prot, p);
+>     sk->sk_write_space = write_space;
+> }
+>
+> Maybe it looks familiar? :o) I think it would be a worthwhile change.
 
-Initially I'd like to thank you *a lot* for this thread, it helped me
-creating:
+Yeah, I am not surprised we can change tcp_update_ulp() too, but
+why should I bother kTLS when I do not have to? What you suggest
+could at most save us a bit of code size, not a big gain. So, I'd keep
+its return value as it is, unless you see any other benefits.
 
-https://github.com/rafaeldtinoco/portablebpf
+BTW, I will rename it to 'psock_update_sk_prot', please let me know
+if you have any better names.
 
-showing up exactly what was discussed here AND I could run the same
-binary in v4.15 and v.5.8 kernels as long as BTF was generated with:
-
-https://github.com/rafaeldtinoco/portablebpf/blob/master/patches/link-vmlinux.sh.patch
-
-Specially the attach_kprobe_legacy() function:
-
-https://github.com/rafaeldtinoco/portablebpf/blob/master/mine.c#L31
-
-I wanted to reply here in case others also face this.
-
-Only bad thing was kernel v4.15 missed global data support as showed in:
-
-https://github.com/iovisor/bcc/blob/master/docs/kernel-versions.md
-
-But using perf event was good enough for an example.
-
-- rafaeldtinoco
+Thanks.
