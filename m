@@ -2,134 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC85432C15E
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BCB32C154
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 01:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1446293AbhCCWlB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 17:41:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
+        id S1445671AbhCCWkf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Mar 2021 17:40:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1843076AbhCCKZT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Mar 2021 05:25:19 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10914C034622
-        for <bpf@vger.kernel.org>; Wed,  3 Mar 2021 01:35:26 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 2so23234453ljr.5
-        for <bpf@vger.kernel.org>; Wed, 03 Mar 2021 01:35:25 -0800 (PST)
+        with ESMTP id S1843039AbhCCKYs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Mar 2021 05:24:48 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42A5C08ED88
+        for <bpf@vger.kernel.org>; Wed,  3 Mar 2021 02:18:27 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id f12so19222527wrx.8
+        for <bpf@vger.kernel.org>; Wed, 03 Mar 2021 02:18:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GEKsNPFt5uW+bAYL4neLUuqC5v5C91j6xhAwFtQ4lRc=;
-        b=nPo5CmePDn0/ArVEDW37gxprx1SCAOIA8Dx8yHaCH7RtGD4/Wr26bY40lcNAvwrXdI
-         +IUMJmVCJLVMndm6zz+XB+5aDe2hLGinJdM6DIhsFovKhunXSeAcDcHOqYcoFb4vtNTV
-         vg/dAA47KCWS0r0GsKYk/53AUsAfqyuFt3KDE=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MrjISZvwHbhwQBfRB9QHN6sF/EaAM40kAOYVP7EBVPk=;
+        b=yAr0OpU+J5TnBd2deL9/KG6DkLgp+D2rcjyU28XXNUmWYTepPnPJW0hmFRrV+ounO8
+         K7BNCcSH5Egh4MDcMIQCV+o782+A6OzDYSsgeD8/XjZsoZPeRZx4iHFZfcoDjnfsp/Wz
+         eh8DI2EhYpqJOjeOf5YfHkvlHqfcvH41nQJ0s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GEKsNPFt5uW+bAYL4neLUuqC5v5C91j6xhAwFtQ4lRc=;
-        b=aHXUL3UWoIm+Q0zOa9puC3qEeeRd9ZVw3KMC/ftoEr+1zgp6wLbkWXyPKzyg8jxxRj
-         F5j47RnWWMBB0QpDGFsxqfpnOziVkjXF5kvf6St8467R68KlyERE25+RyU5gGLjhTGgU
-         StB+I3ei3yFxpS7QLlCs1K8OWXASECpLbyTQcu/5PXQtrPQsHfht/g9eQOuv/3UqbUvS
-         YAXSjA4Y8blRpLDjrTmIjaahkGH2NKChpkJQBfz0mRY6t7Bbm/cxr7HV2eTn9cC3k+97
-         qDsiQMLdgJmj8zzvRTgL28jmOzLoK89SQtKwxZIfIl/arKsG1n7hH3CvvIImvvQ4/I81
-         EMkw==
-X-Gm-Message-State: AOAM532HA84EcgogJqNz4C1K1kfLdGbpttCiPWouCJdIKA2VtyufVdH9
-        H2Xgv+r5L955ewYtYuGqHW69w2SqjwEDq959P7Z/TQ==
-X-Google-Smtp-Source: ABdhPJxX12DLFCNDWK1D3NDg/M9FChhkM1DPxBb4Jw2IveYs4lKzABCN01gR1vUX17clmbSsyqbaWnKIkZiyyN4h9po=
-X-Received: by 2002:a2e:8114:: with SMTP id d20mr11874975ljg.83.1614764124333;
- Wed, 03 Mar 2021 01:35:24 -0800 (PST)
-MIME-Version: 1.0
-References: <20210302023743.24123-1-xiyou.wangcong@gmail.com>
- <20210302023743.24123-3-xiyou.wangcong@gmail.com> <CACAyw9-SjsNn4_J1KDXuFh1nd9Hr-Mo+=7S-kVtooJwdi1fodQ@mail.gmail.com>
- <CAM_iQpXqE9qJ=+zKA6H1Rq=KKgm8LZ=p=ZtvrrH+hfSrTg+zxw@mail.gmail.com>
-In-Reply-To: <CAM_iQpXqE9qJ=+zKA6H1Rq=KKgm8LZ=p=ZtvrrH+hfSrTg+zxw@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MrjISZvwHbhwQBfRB9QHN6sF/EaAM40kAOYVP7EBVPk=;
+        b=NuwDgbyvOvAEFchB/9t8Yvh8VqG3Dz20vgxxkhygCW5SiMRu2H9vKklnsO1tRhLHQo
+         /w9J6BSXI3eSg6+uJjjsq+Leh0JXkInNxrNDfJoSYJpC6WZQRMp9hrUSFWNLwqLG7Cht
+         2uEADcYB1UhqmK0tIzqv/jsy4WZHaVeOCfOvX4tl6EIxD4R/0iHhvsuSR+8ppdGpweej
+         /xxHLXQdB3OcS15XyrylEfYzXW7+RgWYThZ2gOpjK5hE1B6D15yRhTOy/aoQX9rfmXya
+         JhF6J6x/SO/aARI4vX0ue8ElXd/GUPuZy/kPbii59QOGBQCH+lgtZ9uoHG9EBRz6B9w1
+         VNdg==
+X-Gm-Message-State: AOAM531ftOLvUGQEXO+/l7H4VhzH0dgEfF+1Zr9tFrgNjSZfhubYQgKh
+        wl0i8h6k4WYsVdxJqjnA621XAw==
+X-Google-Smtp-Source: ABdhPJwouyFYuLRZj6bEB1+6XmR8zNP/itvznp79frNrqnTcU/VMSyPnF2hyfkLjUF7dp6+rDpI1+Q==
+X-Received: by 2002:adf:a2c7:: with SMTP id t7mr26641486wra.42.1614766706440;
+        Wed, 03 Mar 2021 02:18:26 -0800 (PST)
+Received: from localhost.localdomain (c.a.8.8.c.1.2.8.8.7.0.2.6.c.a.1.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:1ac6:2078:821c:88ac])
+        by smtp.gmail.com with ESMTPSA id r26sm1710761wmn.28.2021.03.03.02.18.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Mar 2021 02:18:25 -0800 (PST)
 From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 3 Mar 2021 09:35:13 +0000
-Message-ID: <CACAyw99BweMk-82f270=Vb=jDuec0q0N-6E8Rr8enaOGuZEDNQ@mail.gmail.com>
-Subject: Re: [Patch bpf-next v2 2/9] sock: introduce sk_prot->update_proto()
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Lorenz Bauer <lmb@cloudflare.com>
+Subject: [PATCH bpf-next v4 0/5] PROG_TEST_RUN support for sk_lookup programs
+Date:   Wed,  3 Mar 2021 10:18:11 +0000
+Message-Id: <20210303101816.36774-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2 Mar 2021 at 18:23, Cong Wang <xiyou.wangcong@gmail.com> wrote:
->
-> > if the function returned a struct proto * like it does at the moment.
-> > That way we keep sk->sk_prot manipulation confined to the sockmap code
-> > and don't have to copy paste it into every proto.
->
-> Well, TCP seems too special to do this, as it could call tcp_update_ulp()
-> to update the proto.
+We don't have PROG_TEST_RUN support for sk_lookup programs at the
+moment. So far this hasn't been a problem, since we can run our
+tests in a separate network namespace. For benchmarking it's nice
+to have PROG_TEST_RUN, so I've gone and implemented it.
 
-I had a quick look, tcp_bpf_update_proto is the only caller of tcp_update_ulp,
-which in turn is the only caller of icsk_ulp_ops->update, which in turn is only
-implemented as tls_update in tls_main.c. Turns out that tls_update
-has another one of these calls:
+Based on discussion on the v1 I've dropped support for testing multiple
+programs at once.
 
-} else {
-    /* Pairs with lockless read in sk_clone_lock(). */
-    WRITE_ONCE(sk->sk_prot, p);
-    sk->sk_write_space = write_space;
-}
+Changes since v3:
+- Use bpf_test_timer prefix (Andrii)
 
-Maybe it looks familiar? :o) I think it would be a worthwhile change.
+Changes since v2:
+- Fix test_verifier failure (Alexei)
 
->
-> >
-> > > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> > > index 3bddd9dd2da2..13d2af5bb81c 100644
-> > > --- a/net/core/sock_map.c
-> > > +++ b/net/core/sock_map.c
-> > > @@ -184,26 +184,10 @@ static void sock_map_unref(struct sock *sk, void *link_raw)
-> > >
-> > >  static int sock_map_init_proto(struct sock *sk, struct sk_psock *psock)
-> > >  {
-> > > -       struct proto *prot;
-> > > -
-> > > -       switch (sk->sk_type) {
-> > > -       case SOCK_STREAM:
-> > > -               prot = tcp_bpf_get_proto(sk, psock);
-> > > -               break;
-> > > -
-> > > -       case SOCK_DGRAM:
-> > > -               prot = udp_bpf_get_proto(sk, psock);
-> > > -               break;
-> > > -
-> > > -       default:
-> > > +       if (!sk->sk_prot->update_proto)
-> > >                 return -EINVAL;
-> > > -       }
-> > > -
-> > > -       if (IS_ERR(prot))
-> > > -               return PTR_ERR(prot);
-> > > -
-> > > -       sk_psock_update_proto(sk, psock, prot);
-> > > -       return 0;
-> > > +       psock->saved_update_proto = sk->sk_prot->update_proto;
-> > > +       return sk->sk_prot->update_proto(sk, false);
-> >
-> > I think reads / writes from sk_prot need READ_ONCE / WRITE_ONCE. We've
-> > not been diligent about this so far, but I think it makes sense to be
-> > careful in new code.
->
-> Hmm, there are many places not using READ_ONCE/WRITE_ONCE,
-> for a quick example:
+Changes since v1:
+- Add sparse annotations to the t_* functions
+- Add appropriate type casts in bpf_prog_test_run_sk_lookup
+- Drop running multiple programs
 
-I know! I'll defer to John and Jakub.
+Lorenz Bauer (5):
+  bpf: consolidate shared test timing code
+  bpf: add PROG_TEST_RUN support for sk_lookup programs
+  selftests: bpf: convert sk_lookup ctx access tests to PROG_TEST_RUN
+  selftests: bpf: check that PROG_TEST_RUN repeats as requested
+  selftests: bpf: don't run sk_lookup in verifier tests
+
+ include/linux/bpf.h                           |  10 +
+ include/uapi/linux/bpf.h                      |   5 +-
+ net/bpf/test_run.c                            | 246 +++++++++++++-----
+ net/core/filter.c                             |   1 +
+ tools/include/uapi/linux/bpf.h                |   5 +-
+ .../selftests/bpf/prog_tests/prog_run_xattr.c |  51 +++-
+ .../selftests/bpf/prog_tests/sk_lookup.c      |  83 ++++--
+ .../selftests/bpf/progs/test_sk_lookup.c      |  62 +++--
+ tools/testing/selftests/bpf/test_verifier.c   |   4 +-
+ .../selftests/bpf/verifier/ctx_sk_lookup.c    |   1 +
+ 10 files changed, 356 insertions(+), 112 deletions(-)
 
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+2.27.0
 
-www.cloudflare.com
