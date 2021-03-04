@@ -2,123 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B4F32CD52
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 08:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9058832CEF1
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 09:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235871AbhCDHGh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Mar 2021 02:06:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235934AbhCDHGg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Mar 2021 02:06:36 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD79C061574
-        for <bpf@vger.kernel.org>; Wed,  3 Mar 2021 23:05:56 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id p186so27420994ybg.2
-        for <bpf@vger.kernel.org>; Wed, 03 Mar 2021 23:05:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4UIpalyzZhY0VSQwJcf30AoOuabGWGzwllajlMZCdSs=;
-        b=HZzLKDQzMIOuYqGu2qN9cKyvG8+QjtCzp4GlS3Cezo6GJwCMl9bE4QyG1WzSbPP2tw
-         PCufhviZWLcZcDMWZoPeV+CtxDph9Gynd0CwLDC7o6mIY4bffvmFVRyphbAFqqJzKDBA
-         tamGaMotkxqV8p1cm9uTPSQBjEa9GHaqY+/Y5ViJpYSwbnmCrSaVnQVMqXJcUWgvuUHp
-         25t8JwxhdYFaVrS1EOfMUXCXBJLe4QyAHgXcpqRuFe0I0/xjLMP48btUtEswEXPs4epH
-         dsaBbCn9D7faFpIf9aiWMd2eAtwajhC7+hnujAnY5QyzAi0VcADz5LCjoyZ2ZhTDYhjT
-         CsbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4UIpalyzZhY0VSQwJcf30AoOuabGWGzwllajlMZCdSs=;
-        b=OhoZwTs4dNWflc093ZAveJihJ1+EJXr41Ela9TrZwbM8vzYbwTUYXxKHx6D/4EazPV
-         HZeODMvyoMnmbvYLOGN/y+tCHna27nDBlDbcZyaI6RLS2ztuExxfKL577OA3Amn9xCnL
-         ZlHqi/zExhYXbxKowD3eCpOellq6iCqRQ3UQQs0JnuxRdRzexc15h1np2+KggMm6uRPO
-         EttsooHZ6A5bMKY1os2jv2KvfDgpdf6ojUTtQSP+XUATKoi4hPDGOjqbD/BippS9aGtE
-         7MgGNcCZWfzmooCoMNYBIckOYHdVbO6iawbUNxOM1BEJhNeUFQVYNLq0sBO+NcFygGZJ
-         Ni9A==
-X-Gm-Message-State: AOAM5311xPzMtLF3smaesSAO26RhNmVWjngSHBWnFKgj0WMfJ0Upu53N
-        9nz9k+z+4N86XnY4npHNokY20py9x51zhyQDV2I7KQP5uKM=
-X-Google-Smtp-Source: ABdhPJzl9fE5ggxDJnEcNcGYgh6J0993kj9UZ7BQXN+BcFkWSUe3wFvIS63vYCuTBnNUOwG34wxydRBllg1o5r65iic=
-X-Received: by 2002:a25:7d07:: with SMTP id y7mr4383848ybc.425.1614841555127;
- Wed, 03 Mar 2021 23:05:55 -0800 (PST)
+        id S236974AbhCDIz5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Mar 2021 03:55:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41520 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236970AbhCDIzf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 4 Mar 2021 03:55:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614848050;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0ALBoN6GuLRnOc5Ing6JXs8nS20VaQ0+cVKOusK5494=;
+        b=DkjlGN6W96V9ejSrv1efkCOc8QumOnZIzEJ4RS/xu0Sn9xoW+qrlyrPKMi54MojltZbShD
+        iv4B1wjv3QrkSt35d9GvvhH1LA3bTDdrWYDJFvAVvncEIEGwN7pD4ZXa8Oi4Yz/YI7pfzj
+        6D8ExTJXtzLUjkfbWjMY5F7VSZzJwdU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-594-ag5dkR-hMJW0UvGJkkLgAA-1; Thu, 04 Mar 2021 03:54:06 -0500
+X-MC-Unique: ag5dkR-hMJW0UvGJkkLgAA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D712157;
+        Thu,  4 Mar 2021 08:54:04 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.37])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0A5F810023AB;
+        Thu,  4 Mar 2021 08:53:58 +0000 (UTC)
+Date:   Thu, 4 Mar 2021 09:53:56 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, anthony.l.nguyen@intel.com, kuba@kernel.org,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        brouer@redhat.com, Zhiqian Guan <zhguan@redhat.com>,
+        Jean Hsiao <jhsiao@redhat.com>
+Subject: Re: [PATCH intel-net 1/3] i40e: move headroom initialization to
+ i40e_configure_rx_ring
+Message-ID: <20210304095356.054a8778@carbon>
+In-Reply-To: <20210303153928.11764-2-maciej.fijalkowski@intel.com>
+References: <20210303153928.11764-1-maciej.fijalkowski@intel.com>
+        <20210303153928.11764-2-maciej.fijalkowski@intel.com>
 MIME-Version: 1.0
-References: <CADmGQ+0dDjfs6UL63m3vLAfu+GHgSFdMO+Rmz_jk+0R9Wva2Tw@mail.gmail.com>
- <20210303181457.172434-1-rafaeldtinoco@ubuntu.com>
-In-Reply-To: <20210303181457.172434-1-rafaeldtinoco@ubuntu.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 3 Mar 2021 23:05:44 -0800
-Message-ID: <CAEf4BzZE_Ss7-cNdVpKJbC57mr2V_-OMcC9fvHw7XTntn3K2jA@mail.gmail.com>
-Subject: Re: [BPF CO-RE clarification] Use CO-RE on older kernel versions.
-To:     Rafael David Tinoco <rafaeldtinoco@ubuntu.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc:     Vamsi Kodavanty <vamsi@araalinetworks.com>,
-        rafaeldtinoco@gmail.com, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 10:15 AM Rafael David Tinoco
-<rafaeldtinoco@ubuntu.com> wrote:
->
-> > > From:   Vamsi Kodavanty <vamsi@araalinetworks.com>
-> > > Date:   Thu, 7 Jan 2021 17:31:11 -0800
-> > > To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > Cc:     bpf <bpf@vger.kernel.org>
-> > >
-> > >
-> > > Right. Libbpf only supports a newer and safer way to attach to
-> > > kprobes. For your experiments, try to stick to tracepoints and you'll
-> > > have a better time.
-> > >
-> > > But it's another thing I've been meaning to add to libbpf for
-> > > supporting older kernels. I even have code written to do legacy kprobe
-> > > attachment, just need to find time to send a patch to add it as a
-> > > fallback for kernels that don't support new kprobe interface.
->
-> Initially I'd like to thank you *a lot* for this thread, it helped me
-> creating:
->
-> https://github.com/rafaeldtinoco/portablebpf
->
-> showing up exactly what was discussed here AND I could run the same
-> binary in v4.15 and v.5.8 kernels as long as BTF was generated with:
->
-> https://github.com/rafaeldtinoco/portablebpf/blob/master/patches/link-vmlinux.sh.patch
+On Wed,  3 Mar 2021 16:39:26 +0100
+Maciej Fijalkowski <maciej.fijalkowski@intel.com> wrote:
 
-I was wondering if it might be useful to have a script that would use
-pahole to do DWARF to BTF conversion for existing vmlinux image (e.g.,
-from /boot/vmlinux-$(uname -r)), assuming DWARF is in that vmlinux (or
-could be found somewhere nearby), and then would spit out only .BTF
-contents as a binary file, which can be passed to libbpf on
-bpf_object__open(). That seems useful and there have been at least a
-few cases where people tried to use CO-RE on old kernels
-pre-CONFIG_DEBUG_INFO_BTF, but were always confused by how to get that
-BTF data.
+> i40e_rx_offset(), that is supposed to initialize the Rx buffer headroom,
+> relies on I40E_RXR_FLAGS_BUILD_SKB_ENABLED flag.
+> 
+> Currently, the callsite of mentioned function is placed incorrectly
+> within i40e_setup_rx_descriptors() where Rx ring's build skb flag is not
+> set yet. This causes the XDP_REDIRECT to be partially broken due to
+> inability to create xdp_frame in the headroom space, as the headroom is
+> 0.
+> 
+> For the record, below is the call graph:
+> 
+> i40e_vsi_open
+>  i40e_vsi_setup_rx_resources
+>   i40e_setup_rx_descriptors
+>    i40e_rx_offset() <-- sets offset to 0 as build_skb flag is set below
+> 
+>  i40e_vsi_configure_rx
+>   i40e_configure_rx_ring
+>    set_ring_build_skb_enabled(ring) <-- set build_skb flag
+> 
+> Fix this by moving i40e_rx_offset() to i40e_configure_rx_ring() after
+> the flag setting.
+> 
+> Fixes: f7bb0d71d658 ("i40e: store the result of i40e_rx_offset() onto i40e_ring")
+> Reported-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  drivers/net/ethernet/intel/i40e/i40e_main.c | 13 +++++++++++++
+>  drivers/net/ethernet/intel/i40e/i40e_txrx.c | 12 ------------
+>  2 files changed, 13 insertions(+), 12 deletions(-)
 
-[cc Arnaldo]
-It would also simplify things a bunch if pahole had an option to emit
-.BTF into a separate non-ELF file, instead of modifying vmlinux
-in-place. WDYT?
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Tested-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
->
-> Specially the attach_kprobe_legacy() function:
->
-> https://github.com/rafaeldtinoco/portablebpf/blob/master/mine.c#L31
->
-> I wanted to reply here in case others also face this.
+I'm currently looking at extending samples/bpf/ xdp_redirect_map to
+detect the situation.  As with this bug the redirect tests/sample
+programs will just report really high performance numbers (because
+packets are dropped earlier due to err).   Knowing what performance
+numbers to expect, I could see that they were out-of-spec, and
+investigated the root-cause.
 
-Great, glad it worked out. It would be great if you could contribute
-legacy kprobe support for libbpf as a proper patch, since it probably
-would be useful for a bunch of other people stuck with old kernels.
+I assume Intel QA tested XDP-redirect and didn't find the bug due to
+this.  Red Hat QA also use samples/bpf/xdp* and based on the reports I
+get from them, I could not blame them if this bug would slip through,
+as the tool reports "good" results.
 
->
-> Only bad thing was kernel v4.15 missed global data support as showed in:
->
-> https://github.com/iovisor/bcc/blob/master/docs/kernel-versions.md
->
-> But using perf event was good enough for an example.
->
-> - rafaeldtinoco
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
