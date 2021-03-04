@@ -2,233 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0267032CCE2
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 07:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B26532CD02
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 07:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235222AbhCDGfo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Mar 2021 01:35:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
+        id S235487AbhCDGmI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Mar 2021 01:42:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235202AbhCDGfS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Mar 2021 01:35:18 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CABC061574;
-        Wed,  3 Mar 2021 22:34:38 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id l132so25547157qke.7;
-        Wed, 03 Mar 2021 22:34:38 -0800 (PST)
+        with ESMTP id S235483AbhCDGlk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Mar 2021 01:41:40 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB742C061574;
+        Wed,  3 Mar 2021 22:40:59 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id a24so15551072plm.11;
+        Wed, 03 Mar 2021 22:40:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Al7o8H/PAUlo6YV2XX1l+4Gn+Ta0Brzf54ZgHZB+/8Q=;
-        b=auDJDFWi4cCagSrTZvgDHiFzJdPnB++kGrDl13LMnxglmCm2+omDaboFCC1ZYl8kt+
-         zV738q+pzyQZPvfk+tD/oh9DIUZPs7HCBrgRZa56QEM2ZQbe6V6H+ZliPCmrgVantdTa
-         kuLxNdhd2ZOWlf42zh8YtOpZyJ/bSA2GvceW3YSqCnay3pQoXDCZ8GziCkltrsjVdznd
-         DlDLbrRXCtJUqFh6chwnNWI0vXJHFO2yWZbbkOgLyQNIclm8S8gZczmc9+2c/5QqgLyq
-         CB5XckqpfA/0B+d7gOjRjSntcRzSVrasx3AVUxKUoFrVsnTzv/DL70+i1SyeGkIwOU/h
-         WTiA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XCS1qy8ob7XsXX9kc+oSLC6Sq4kYNTiKKYp1XNnNPYo=;
+        b=MIrk1X/dYuDV1HYZaVsG13iy/qkH8SxReIQYTMCHRi1OKLtkdpmDvlkGFS0X2q9Amc
+         Dh/2qGLzT6dQfNcgsXIpqjXT6HsR63zslvuuIYffZvrGPpB/JrT6jogbWC0iTKn4DYwe
+         h5az6SUIo41VtDoUpgeKBewMX75G8EyZ6dZoXiooLMbiX8glHarLMHVxe1BqU/PftaMT
+         1N0H3Bt4v6oCwY99zaJcZ0H5EfuCqE8Nnt36xeJo08/6YEXbCbhCSWQ/091BYod6sFsV
+         n7Xjl0rmgwo2tbYIWka0N92+p8lmhQILasB4UB66csnoAVIM/mnNLcCa0x4lVBivFAZi
+         DUrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Al7o8H/PAUlo6YV2XX1l+4Gn+Ta0Brzf54ZgHZB+/8Q=;
-        b=ncgBHFqFo7WtkM3SeHtcr7qGhiAT5fOrHW3dwkZ0/sWdiO3y/QGm6Z8fJTQoieq4M7
-         hMEMx6W7MjYPS2K/ygM5KtH2kOvDT3Y+dyHhILZ1ltvMwLP76KFdgNH0k8ZqvKP3YvY+
-         Q2jSAm50/h7pohcEBOQ6F4uPO74VnlEf5tbpDRbVscfks/1l4VV7nrECgq0bPTEQiSAT
-         t4a1AQ/zGxKJR9jKunyp0i3/jUzrAb9dlanas7wNhc7pKkNqQNz1Fp3OxgSzj7KhYO9u
-         m1dtf4tfFlM4/9RR8yAb1SwOb+JZ99VXK1G173HIgs6mgUTvU074xbAdHV927C9JuCSY
-         Ql7g==
-X-Gm-Message-State: AOAM530yz7mHfU1au6sdMt19/V1sN2WWveqSf7bMYcF5SPueJ6JZ5GO1
-        gXrnDVK+VazwdgCEWLuAxbM=
-X-Google-Smtp-Source: ABdhPJxHC0+79l6R/rbhvn0GHkKlmnJvq95zstP/lKKmyBwfF5kKurBl57eZ3cTV0wDZMhz9nmNyuQ==
-X-Received: by 2002:a05:620a:444a:: with SMTP id w10mr2695885qkp.294.1614839677550;
-        Wed, 03 Mar 2021 22:34:37 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id z188sm15602997qke.85.2021.03.03.22.34.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 22:34:36 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id AD06427C0054;
-        Thu,  4 Mar 2021 01:34:35 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 04 Mar 2021 01:34:35 -0500
-X-ME-Sender: <xms:eX9AYLiKZOhluH1nLPYGJ980OfIwfU1v-1CiCw_-g0-dHiWFSoCreg>
-    <xme:eX9AYIB8BgEWGwN6yWcGk7d9_jmLDYP-s71s98r0pxCZb6bdxXzkqE7xHmQObSvBL
-    e0yXW-3wahyNpD-HQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtfedgkeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
-    geejnecukfhppedufedurddutdejrddugeejrdduvdeinecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
-    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
-    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:eX9AYLFa_gD9DE_ptsryZGodoUeg2TW12z6QwvxKOohQYP3pHhERFg>
-    <xmx:eX9AYIQP108cewylZfN_iYSU3nI_l1tcQCW_kXBe9oOaBg2g5wLWaA>
-    <xmx:eX9AYIz3dTiQG-u67W6RvAUgjxAahIjUG6rR_t59HkxDaemy8aRQfQ>
-    <xmx:en9AYEDOJaL89faftXGENOw5HviHmSVrk3qMwdCiHRDZnraVfvz8A3-uKm4>
-Received: from localhost (unknown [131.107.147.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 46930108005F;
-        Thu,  4 Mar 2021 01:34:33 -0500 (EST)
-Date:   Thu, 4 Mar 2021 14:33:32 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: XDP socket rings, and LKMM litmus tests
-Message-ID: <YEB/PGHs94W2l6hA@boqun-archlinux>
-References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
- <20210302211446.GA1541641@rowland.harvard.edu>
- <20210302235019.GT2696@paulmck-ThinkPad-P72>
- <20210303171221.GA1574518@rowland.harvard.edu>
- <20210303174022.GD2696@paulmck-ThinkPad-P72>
- <20210303202246.GC1582185@rowland.harvard.edu>
- <YEA3RwYixQPt6gul@boqun-archlinux>
- <20210304031322.GA1594980@rowland.harvard.edu>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XCS1qy8ob7XsXX9kc+oSLC6Sq4kYNTiKKYp1XNnNPYo=;
+        b=gkyQKa1MCePL3ZgbJRCLAHD5QUF9BIXYJSuVdqrlX5gbjJj6Db0nWNQ/BeSLdL+qAJ
+         yzFLqESW/q6ZnbZeQ/otfOnxA17E8wE9lHiSy6p7OQ6PsUqVhqrNK4nX0e35Jba4PYI+
+         epbrFqKhlNuMVeWu3DgQ5e6RuEc5pTQoPYVCI8v5cjevUxcJ8fIwLHhpkNr2U4PIedaq
+         47DJ4KITKWN0rajDEAAKGouWjPQjKEhe3V2TNNufQlVUZ1KOq8uuImT9ozL7OeUPO5a0
+         JvoZiQxat2s1ZF1aE8X+HYc79Uig6xLJPLmoRWFa6M3VaNDE9hLCWtGe10j2lbugwil1
+         9NRQ==
+X-Gm-Message-State: AOAM531OwqJWCGZ8+fkUEjRkUFqD6mqBkAOGlJ5w3yrSmzLmH6qcHHSM
+        rHtJ0LCC0OPG4CEbQFQv0iv2xxc6Ht8bakZy
+X-Google-Smtp-Source: ABdhPJwkzlb6j0JpXmV/DZa0PWIzkaAwY9COyMFlQEVvWQdkBjkA5pMBdkeZatO9RORIuW/ZCn8YXw==
+X-Received: by 2002:a17:902:344:b029:e4:a7ab:2e55 with SMTP id 62-20020a1709020344b02900e4a7ab2e55mr2781692pld.63.1614840059491;
+        Wed, 03 Mar 2021 22:40:59 -0800 (PST)
+Received: from localhost.localdomain ([103.112.79.202])
+        by smtp.gmail.com with ESMTPSA id t10sm8712550pjf.30.2021.03.03.22.40.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 03 Mar 2021 22:40:58 -0800 (PST)
+From:   Xuesen Huang <hxseverything@gmail.com>
+To:     daniel@iogearbox.net
+Cc:     davem@davemloft.net, bpf@vger.kernel.org,
+        willemdebruijn.kernel@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xiyou.wangcong@gmail.com,
+        Xuesen Huang <huangxuesen@kuaishou.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Zhiyong Cheng <chengzhiyong@kuaishou.com>,
+        Li Wang <wangli09@kuaishou.com>
+Subject: [PATCH/v5] bpf: add bpf_skb_adjust_room flag BPF_F_ADJ_ROOM_ENCAP_L2_ETH
+Date:   Thu,  4 Mar 2021 14:40:46 +0800
+Message-Id: <20210304064046.6232-1-hxseverything@gmail.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210304031322.GA1594980@rowland.harvard.edu>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 10:13:22PM -0500, Alan Stern wrote:
-> On Thu, Mar 04, 2021 at 09:26:31AM +0800, Boqun Feng wrote:
-> > On Wed, Mar 03, 2021 at 03:22:46PM -0500, Alan Stern wrote:
-> 
-> > > Which brings us back to the case of the
-> > > 
-> > > 	dep ; rfi
-> > > 
-> > > dependency relation, where the accesses in the middle are plain and 
-> > > non-racy.  Should the LKMM be changed to allow this?
-> > > 
-> > 
-> > For this particular question, do we need to consider code as the follow?
-> > 
-> > 	r1 = READ_ONCE(x);  // f
-> > 	if (r == 1) {
-> > 		local_v = &y; // g
-> > 		do_something_a();
-> > 	}
-> > 	else {
-> > 		local_v = &y;
-> > 		do_something_b();
-> > 	}
-> > 
-> > 	r2 = READ_ONCE(*local_v); // e
-> > 
-> > , do we have the guarantee that the first READ_ONCE() happens before the
-> > second one? Can compiler optimize the code as:
-> > 
-> > 	r2 = READ_ONCE(y);
-> > 	r1 = READ_ONCE(x);
-> 
-> Well, it can't do that because the compiler isn't allowed to reorder
-> volatile accesses (which includes READ_ONCE).  But the compiler could
-> do:
-> 
-> 	r1 = READ_ONCE(x);
-> 	r2 = READ_ONCE(y);
-> 
-> > 	if (r == 1) {
-> > 		do_something_a();
-> > 	}
-> > 	else {
-> > 		do_something_b();
-> > 	}
-> > 
-> > ? Although we have:
-> > 
-> > 	f ->dep g ->rfi ->addr e
-> 
-> This would be an example of a problem Paul has described on several
-> occasions, where both arms of an "if" statement store the same value
-> (in this case to local_v).  This problem arises even when local
-> variables are not involved.  For example:
-> 
-> 	if (READ_ONCE(x) == 0) {
-> 		WRITE_ONCE(y, 1);
-> 		do_a();
-> 	} else {
-> 		WRITE_ONCE(y, 1);
-> 		do_b();
-> 	}
-> 
-> The compiler can change this to:
-> 
-> 	r = READ_ONCE(x);
-> 	WRITE_ONCE(y, 1);
-> 	if (r == 0)
-> 		do_a();
-> 	else
-> 		do_b();
-> 
-> thus allowing the marked accesses to be reordered by the CPU and
-> breaking the apparent control dependency.
-> 
-> So the answer to your question is: No, we don't have this guarantee,
-> but the reason is because of doing the same store in both arms, not
-> because of the use of local variables.
-> 
+From: Xuesen Huang <huangxuesen@kuaishou.com>
 
-Right, I was thinking about something unrelated.. but how about the
-following case:
+bpf_skb_adjust_room sets the inner_protocol as skb->protocol for packets
+encapsulation. But that is not appropriate when pushing Ethernet header.
 
-	local_v = &y;
-	r1 = READ_ONCE(*x); // f
+Add an option to further specify encap L2 type and set the inner_protocol
+as ETH_P_TEB.
 
-	if (r1 == 1) {
-		local_v = &y; // e
-	} else {
-		local_v = &z; // d
-	}
+Suggested-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
+Signed-off-by: Zhiyong Cheng <chengzhiyong@kuaishou.com>
+Signed-off-by: Li Wang <wangli09@kuaishou.com>
+---
+ include/uapi/linux/bpf.h       |  5 +++++
+ net/core/filter.c              | 11 ++++++++++-
+ tools/include/uapi/linux/bpf.h |  5 +++++
+ 3 files changed, 20 insertions(+), 1 deletion(-)
 
-	p = READ_ONCE(local_v); // g
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 77d7c1b..d791596 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1751,6 +1751,10 @@ struct bpf_stack_build_id {
+  *		  Use with ENCAP_L3/L4 flags to further specify the tunnel
+  *		  type; *len* is the length of the inner MAC header.
+  *
++ *		* **BPF_F_ADJ_ROOM_ENCAP_L2_ETH**:
++ *		  Use with BPF_F_ADJ_ROOM_ENCAP_L2 flag to further specify the
++ *		  L2 type as Ethernet.
++ *
+  * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+@@ -4088,6 +4092,7 @@ enum {
+ 	BPF_F_ADJ_ROOM_ENCAP_L4_GRE	= (1ULL << 3),
+ 	BPF_F_ADJ_ROOM_ENCAP_L4_UDP	= (1ULL << 4),
+ 	BPF_F_ADJ_ROOM_NO_CSUM_RESET	= (1ULL << 5),
++	BPF_F_ADJ_ROOM_ENCAP_L2_ETH	= (1ULL << 6),
+ };
+ 
+ enum {
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 255aeee..8d1fb61 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3412,6 +3412,7 @@ static u32 bpf_skb_net_base_len(const struct sk_buff *skb)
+ 					 BPF_F_ADJ_ROOM_ENCAP_L3_MASK | \
+ 					 BPF_F_ADJ_ROOM_ENCAP_L4_GRE | \
+ 					 BPF_F_ADJ_ROOM_ENCAP_L4_UDP | \
++					 BPF_F_ADJ_ROOM_ENCAP_L2_ETH | \
+ 					 BPF_F_ADJ_ROOM_ENCAP_L2( \
+ 					  BPF_ADJ_ROOM_ENCAP_L2_MASK))
+ 
+@@ -3448,6 +3449,10 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+ 		    flags & BPF_F_ADJ_ROOM_ENCAP_L4_UDP)
+ 			return -EINVAL;
+ 
++		if (flags & BPF_F_ADJ_ROOM_ENCAP_L2_ETH &&
++		    inner_mac_len < ETH_HLEN)
++			return -EINVAL;
++
+ 		if (skb->encapsulation)
+ 			return -EALREADY;
+ 
+@@ -3466,7 +3471,11 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+ 		skb->inner_mac_header = inner_net - inner_mac_len;
+ 		skb->inner_network_header = inner_net;
+ 		skb->inner_transport_header = inner_trans;
+-		skb_set_inner_protocol(skb, skb->protocol);
++
++		if (flags & BPF_F_ADJ_ROOM_ENCAP_L2_ETH)
++			skb_set_inner_protocol(skb, htons(ETH_P_TEB));
++		else
++			skb_set_inner_protocol(skb, skb->protocol);
+ 
+ 		skb->encapsulation = 1;
+ 		skb_set_network_header(skb, mac_len);
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 77d7c1b..d791596 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1751,6 +1751,10 @@ struct bpf_stack_build_id {
+  *		  Use with ENCAP_L3/L4 flags to further specify the tunnel
+  *		  type; *len* is the length of the inner MAC header.
+  *
++ *		* **BPF_F_ADJ_ROOM_ENCAP_L2_ETH**:
++ *		  Use with BPF_F_ADJ_ROOM_ENCAP_L2 flag to further specify the
++ *		  L2 type as Ethernet.
++ *
+  * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+@@ -4088,6 +4092,7 @@ enum {
+ 	BPF_F_ADJ_ROOM_ENCAP_L4_GRE	= (1ULL << 3),
+ 	BPF_F_ADJ_ROOM_ENCAP_L4_UDP	= (1ULL << 4),
+ 	BPF_F_ADJ_ROOM_NO_CSUM_RESET	= (1ULL << 5),
++	BPF_F_ADJ_ROOM_ENCAP_L2_ETH	= (1ULL << 6),
+ };
+ 
+ enum {
+-- 
+1.8.3.1
 
-	r2 = READ_ONCE(*p);   // h
-
-if r1 == 1, we definitely think we have:
-
-	f ->ctrl e ->rfi g ->addr h
-
-, and if we treat ctrl;rfi as "to-r", then we have "f" happens before
-"h". However compile can optimze the above as:
-
-	local_v = &y;
-
-	r1 = READ_ONCE(*x); // f
-
-	if (r1 != 1) {
-		local_v = &z; // d
-	}
-
-	p = READ_ONCE(local_v); // g
-
-	r2 = READ_ONCE(*p);   // h
-
-, and when this gets executed, I don't think we have the guarantee we
-have "f" happens before "h", because CPU can do optimistic read for "g"
-and "h".
-
-Part of this is because when we take plain access into consideration, we
-won't guarantee a read-from or other relations exists if compiler
-optimization happens.
-
-Maybe I'm missing something subtle, but just try to think through the
-effect of making dep; rfi as "to-r".
-
-Regards,
-Boqun
-
-> Alan
