@@ -2,113 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9058832CEF1
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 09:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B340932CFB3
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 10:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236974AbhCDIz5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Mar 2021 03:55:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41520 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236970AbhCDIzf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 4 Mar 2021 03:55:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614848050;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0ALBoN6GuLRnOc5Ing6JXs8nS20VaQ0+cVKOusK5494=;
-        b=DkjlGN6W96V9ejSrv1efkCOc8QumOnZIzEJ4RS/xu0Sn9xoW+qrlyrPKMi54MojltZbShD
-        iv4B1wjv3QrkSt35d9GvvhH1LA3bTDdrWYDJFvAVvncEIEGwN7pD4ZXa8Oi4Yz/YI7pfzj
-        6D8ExTJXtzLUjkfbWjMY5F7VSZzJwdU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-ag5dkR-hMJW0UvGJkkLgAA-1; Thu, 04 Mar 2021 03:54:06 -0500
-X-MC-Unique: ag5dkR-hMJW0UvGJkkLgAA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D712157;
-        Thu,  4 Mar 2021 08:54:04 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.37])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0A5F810023AB;
-        Thu,  4 Mar 2021 08:53:58 +0000 (UTC)
-Date:   Thu, 4 Mar 2021 09:53:56 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, anthony.l.nguyen@intel.com, kuba@kernel.org,
-        bjorn.topel@intel.com, magnus.karlsson@intel.com,
-        brouer@redhat.com, Zhiqian Guan <zhguan@redhat.com>,
-        Jean Hsiao <jhsiao@redhat.com>
-Subject: Re: [PATCH intel-net 1/3] i40e: move headroom initialization to
- i40e_configure_rx_ring
-Message-ID: <20210304095356.054a8778@carbon>
-In-Reply-To: <20210303153928.11764-2-maciej.fijalkowski@intel.com>
-References: <20210303153928.11764-1-maciej.fijalkowski@intel.com>
-        <20210303153928.11764-2-maciej.fijalkowski@intel.com>
+        id S237528AbhCDJbm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Mar 2021 04:31:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237527AbhCDJbM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Mar 2021 04:31:12 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4DF1C06175F
+        for <bpf@vger.kernel.org>; Thu,  4 Mar 2021 01:30:16 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id q25so21826596lfc.8
+        for <bpf@vger.kernel.org>; Thu, 04 Mar 2021 01:30:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pu1CyogJ4KszgKg6MY278wInXSM0/2I0jFkvTWlawbU=;
+        b=N4YzgkI4XEJmywt0HKmr6CbpkRSyBojXjIAASYLn+1uN6BTtnJvl9O48X81O86BgE/
+         TVJbYdT81FrclKBHqrCrvf+ceN9SbBHQFF/P2XS+Yp2NnmDkpEhD8IWeou+Fm2cRcvhQ
+         6mCO0zvvSzRm74+q4LoccouiNLRWofrJ8QN88=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pu1CyogJ4KszgKg6MY278wInXSM0/2I0jFkvTWlawbU=;
+        b=tyARMFwmnSDVfmiwiv13Nh6ESzErCa5pM5Ohe9A2BX4H//KvphAeUaSB3kctuLN3d7
+         AKDHWvLu8P2EnUA6zOFum7kzClJRsBjEl7dbZdIjmKVNfvFn4ZrPoPm+1YX3tfKAOdtz
+         qw4Nn5gWtbF6fZTqxK45VlGOqNsu12bUCqit94TFdvMvKP20O9UqJ4dacx/giwVcjNBT
+         qefcH+d5Lunms7n+3rSNww91RRf8CSZB//dZQEgpEcUr8TPPh8eNetkNzQp7gIjWbl2B
+         4KCmNKWFcWDREJ5ifX/qQ8/amcTioAdoX4biUC8HPjLSmBjOfO/v9S7hlD1tzHrnM6bS
+         HDLQ==
+X-Gm-Message-State: AOAM531IArZmoKIeXRWeqW+HjnKJiK/w+rgPlmlxWgTSFaT9a55nmWyZ
+        8QUEuHgAadSjMl1Q9Szo2e8ttFmISy/d9KwFKSgO+g==
+X-Google-Smtp-Source: ABdhPJwlixlxCnqkgC1LrPgFWhjtNBffgD6PjHWqhLJTn/0O3QIki63zZdo2sZRaFSJmMf6Qq7PWsI3ypTNOwd8nPL4=
+X-Received: by 2002:a05:6512:12c3:: with SMTP id p3mr1724168lfg.97.1614850215201;
+ Thu, 04 Mar 2021 01:30:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20210302023743.24123-1-xiyou.wangcong@gmail.com>
+ <20210302023743.24123-3-xiyou.wangcong@gmail.com> <CACAyw9-SjsNn4_J1KDXuFh1nd9Hr-Mo+=7S-kVtooJwdi1fodQ@mail.gmail.com>
+ <CAM_iQpXqE9qJ=+zKA6H1Rq=KKgm8LZ=p=ZtvrrH+hfSrTg+zxw@mail.gmail.com>
+ <CACAyw99BweMk-82f270=Vb=jDuec0q0N-6E8Rr8enaOGuZEDNQ@mail.gmail.com> <CAM_iQpWHTvFPifcPL-x64fWqY5k8yP9vu6Bnp8D-HdpUp6vs6g@mail.gmail.com>
+In-Reply-To: <CAM_iQpWHTvFPifcPL-x64fWqY5k8yP9vu6Bnp8D-HdpUp6vs6g@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Thu, 4 Mar 2021 09:30:04 +0000
+Message-ID: <CACAyw98r+Srg3K89VAh6VEYG7NxUxF=HzyqPwkBEXKCe2omimQ@mail.gmail.com>
+Subject: Re: [Patch bpf-next v2 2/9] sock: introduce sk_prot->update_proto()
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed,  3 Mar 2021 16:39:26 +0100
-Maciej Fijalkowski <maciej.fijalkowski@intel.com> wrote:
+On Wed, 3 Mar 2021 at 18:21, Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> Yeah, I am not surprised we can change tcp_update_ulp() too, but
+> why should I bother kTLS when I do not have to? What you suggest
+> could at most save us a bit of code size, not a big gain. So, I'd keep
+> its return value as it is, unless you see any other benefits.
 
-> i40e_rx_offset(), that is supposed to initialize the Rx buffer headroom,
-> relies on I40E_RXR_FLAGS_BUILD_SKB_ENABLED flag.
-> 
-> Currently, the callsite of mentioned function is placed incorrectly
-> within i40e_setup_rx_descriptors() where Rx ring's build skb flag is not
-> set yet. This causes the XDP_REDIRECT to be partially broken due to
-> inability to create xdp_frame in the headroom space, as the headroom is
-> 0.
-> 
-> For the record, below is the call graph:
-> 
-> i40e_vsi_open
->  i40e_vsi_setup_rx_resources
->   i40e_setup_rx_descriptors
->    i40e_rx_offset() <-- sets offset to 0 as build_skb flag is set below
-> 
->  i40e_vsi_configure_rx
->   i40e_configure_rx_ring
->    set_ring_build_skb_enabled(ring) <-- set build_skb flag
-> 
-> Fix this by moving i40e_rx_offset() to i40e_configure_rx_ring() after
-> the flag setting.
-> 
-> Fixes: f7bb0d71d658 ("i40e: store the result of i40e_rx_offset() onto i40e_ring")
-> Reported-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> ---
->  drivers/net/ethernet/intel/i40e/i40e_main.c | 13 +++++++++++++
->  drivers/net/ethernet/intel/i40e/i40e_txrx.c | 12 ------------
->  2 files changed, 13 insertions(+), 12 deletions(-)
+I think the end result is code that is easier to understand and
+therefore maintain. Keep it as it is if you prefer.
 
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Tested-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> BTW, I will rename it to 'psock_update_sk_prot', please let me know
+> if you have any better names.
 
-I'm currently looking at extending samples/bpf/ xdp_redirect_map to
-detect the situation.  As with this bug the redirect tests/sample
-programs will just report really high performance numbers (because
-packets are dropped earlier due to err).   Knowing what performance
-numbers to expect, I could see that they were out-of-spec, and
-investigated the root-cause.
-
-I assume Intel QA tested XDP-redirect and didn't find the bug due to
-this.  Red Hat QA also use samples/bpf/xdp* and based on the reports I
-get from them, I could not blame them if this bug would slip through,
-as the tool reports "good" results.
+SGTM.
 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
