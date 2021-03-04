@@ -2,180 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C948C32D73A
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 16:58:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0B732D776
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 17:13:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235899AbhCDP5k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Mar 2021 10:57:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55400 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236086AbhCDP5I (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 4 Mar 2021 10:57:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614873342;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DuOB6duBWZGariFrKnkAhJfFFwD23vFUlv/jyNsccB8=;
-        b=VtO5OtE9SXj3G3DrSFeIchP2Sc2NlQdJ7mfsiFLnXSYOS8Jn4zm9EItEo+Ro6NmkF+KHSb
-        VD+FzYb9fRAudgONcHtp5+lcKaXFABbdhOoQKnui3PVHh/P9EkctpwrzheBzDuHwtvBpcA
-        UmumSi2n/mpE/NFRqLjNCB4ZxYrNWmo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-492-oM8AeszRNmOX6Q2hZ7KUpQ-1; Thu, 04 Mar 2021 10:55:40 -0500
-X-MC-Unique: oM8AeszRNmOX6Q2hZ7KUpQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C124E1018F77;
-        Thu,  4 Mar 2021 15:55:37 +0000 (UTC)
-Received: from krava (unknown [10.40.196.20])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 09A6A5D71B;
-        Thu,  4 Mar 2021 15:55:29 +0000 (UTC)
-Date:   Thu, 4 Mar 2021 16:55:28 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Yonghong Song <yhs@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
+        id S231506AbhCDQMg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Mar 2021 11:12:36 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:50879 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S236634AbhCDQMX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Mar 2021 11:12:23 -0500
+Received: (qmail 1614672 invoked by uid 1000); 4 Mar 2021 11:11:42 -0500
+Date:   Thu, 4 Mar 2021 11:11:42 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
         Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Yauheni Kaliuta <ykaliuta@redhat.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Paul Mackerras <paulus@samba.org>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix test_attach_probe for
- powerpc uprobes
-Message-ID: <YEEC8EiOiBaFhqxF@krava>
-References: <20210301190416.90694-1-jolsa@kernel.org>
- <309d8d05-4bbd-56b8-6c05-12a1aa98b843@fb.com>
- <YD4U1x2SbTlJF2QU@krava>
- <20210303064043.GB1913@DESKTOP-TDPLP67.localdomain>
- <87blbzsq3g.fsf@mpe.ellerman.id.au>
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+Message-ID: <20210304161142.GB1612307@rowland.harvard.edu>
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302211446.GA1541641@rowland.harvard.edu>
+ <20210302235019.GT2696@paulmck-ThinkPad-P72>
+ <20210303171221.GA1574518@rowland.harvard.edu>
+ <20210303174022.GD2696@paulmck-ThinkPad-P72>
+ <20210303202246.GC1582185@rowland.harvard.edu>
+ <YEA3RwYixQPt6gul@boqun-archlinux>
+ <20210304031322.GA1594980@rowland.harvard.edu>
+ <YEB/PGHs94W2l6hA@boqun-archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <87blbzsq3g.fsf@mpe.ellerman.id.au>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YEB/PGHs94W2l6hA@boqun-archlinux>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 11:46:27AM +1100, Michael Ellerman wrote:
-> "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> writes:
-> > On 2021/03/02 11:35AM, Jiri Olsa wrote:
-> >> On Mon, Mar 01, 2021 at 02:58:53PM -0800, Yonghong Song wrote:
-> >> > 
-> >> > 
-> >> > On 3/1/21 11:04 AM, Jiri Olsa wrote:
-> >> > > When testing uprobes we the test gets GEP (Global Entry Point)
-> >> > > address from kallsyms, but then the function is called locally
-> >> > > so the uprobe is not triggered.
-> >> > > 
-> >> > > Fixing this by adjusting the address to LEP (Local Entry Point)
-> >> > > for powerpc arch.
-> >> > > 
-> >> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> >> > > ---
-> >> > >   .../selftests/bpf/prog_tests/attach_probe.c    | 18 +++++++++++++++++-
-> >> > >   1 file changed, 17 insertions(+), 1 deletion(-)
-> >> > > 
-> >> > > diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> >> > > index a0ee87c8e1ea..c3cfb48d3ed0 100644
-> >> > > --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> >> > > +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> >> > > @@ -2,6 +2,22 @@
-> >> > >   #include <test_progs.h>
-> >> > >   #include "test_attach_probe.skel.h"
-> >> > > +#if defined(__powerpc64__)
-> >
-> > This needs to be specific to ELF v2 ABI, so you'll need to check 
-> > _CALL_ELF. See commit d5c2e2c17ae1d6 ("perf probe ppc64le: Prefer symbol 
-> > table lookup over DWARF") for an example.
-> >
-> >> > > +/*
-> >> > > + * We get the GEP (Global Entry Point) address from kallsyms,
-> >> > > + * but then the function is called locally, so we need to adjust
-> >> > > + * the address to get LEP (Local Entry Point).
-> >> > 
-> >> > Any documentation in the kernel about this behavior? This will
-> >> > help to validate the change without trying with powerpc64 qemu...
-> >
-> > I don't think we have documented this in the kernel anywhere, but this 
-> > is specific to the ELF v2 ABI and is described there:
-> > - 2.3.2.1.  Function Prologue: 
-> >   http://cdn.openpowerfoundation.org/wp-content/uploads/resources/leabi/content/dbdoclet.50655240___RefHeading___Toc377640597.html
-> > - 3.4.1.  Symbol Values:
-> >    http://cdn.openpowerfoundation.org/wp-content/uploads/resources/leabi/content/dbdoclet.50655241_95185.html
+On Thu, Mar 04, 2021 at 02:33:32PM +0800, Boqun Feng wrote:
+
+> Right, I was thinking about something unrelated.. but how about the
+> following case:
 > 
-> There's a comment in ppc_function_entry(), but I don't think we have any
-> actual "documentation".
+> 	local_v = &y;
+> 	r1 = READ_ONCE(*x); // f
 > 
-> static inline unsigned long ppc_function_entry(void *func)
-> {
-> #ifdef PPC64_ELF_ABI_v2
-> 	u32 *insn = func;
+> 	if (r1 == 1) {
+> 		local_v = &y; // e
+> 	} else {
+> 		local_v = &z; // d
+> 	}
 > 
-> 	/*
-> 	 * A PPC64 ABIv2 function may have a local and a global entry
-> 	 * point. We need to use the local entry point when patching
-> 	 * functions, so identify and step over the global entry point
-> 	 * sequence.
-
-hm, so I need to do the instructions check below as well
-
-> 	 *
-> 	 * The global entry point sequence is always of the form:
-> 	 *
-> 	 * addis r2,r12,XXXX
-> 	 * addi  r2,r2,XXXX
-> 	 *
-> 	 * A linker optimisation may convert the addis to lis:
-> 	 *
-> 	 * lis   r2,XXXX
-> 	 * addi  r2,r2,XXXX
-> 	 */
-> 	if ((((*insn & OP_RT_RA_MASK) == ADDIS_R2_R12) ||
-> 	     ((*insn & OP_RT_RA_MASK) == LIS_R2)) &&
-> 	    ((*(insn+1) & OP_RT_RA_MASK) == ADDI_R2_R2))
-
-is this check/instructions specific to kernel code?
-
-In the test prog I see following instructions:
-
-Dump of assembler code for function get_base_addr:
-   0x0000000010034cb0 <+0>:     lis     r2,4256
-   0x0000000010034cb4 <+4>:     addi    r2,r2,31488
-   ...
-
-but first instruction does not match the check in kernel code above:
-
-	1.insn value:	0x3c4010a0
-	2.insn value:	0x38427b00
-
-the used defines are:
-	#define OP_RT_RA_MASK   0xffff0000UL
-	#define LIS_R2          0x3c020000UL
-	#define ADDIS_R2_R12    0x3c4c0000UL
-	#define ADDI_R2_R2      0x38420000UL
-
-
-maybe we could skip the check, and run the test twice: first on
-kallsym address and if the uprobe is not hit we will run it again
-on address + 8
-
-thanks,
-jirka
-
-> 		return (unsigned long)(insn + 2);
-> 	else
-> 		return (unsigned long)func;
+> 	p = READ_ONCE(local_v); // g
 > 
+> 	r2 = READ_ONCE(*p);   // h
 > 
-> cheers
+> if r1 == 1, we definitely think we have:
 > 
+> 	f ->ctrl e ->rfi g ->addr h
+> 
+> , and if we treat ctrl;rfi as "to-r", then we have "f" happens before
+> "h". However compile can optimze the above as:
+> 
+> 	local_v = &y;
+> 
+> 	r1 = READ_ONCE(*x); // f
+> 
+> 	if (r1 != 1) {
+> 		local_v = &z; // d
+> 	}
+> 
+> 	p = READ_ONCE(local_v); // g
+> 
+> 	r2 = READ_ONCE(*p);   // h
+> 
+> , and when this gets executed, I don't think we have the guarantee we
+> have "f" happens before "h", because CPU can do optimistic read for "g"
+> and "h".
 
+In your example, which accesses are supposed to be to actual memory and 
+which to registers?  Also, remember that the memory model assumes the 
+hardware does not reorder loads if there is an address dependency 
+between them.
+
+> Part of this is because when we take plain access into consideration, we
+> won't guarantee a read-from or other relations exists if compiler
+> optimization happens.
+> 
+> Maybe I'm missing something subtle, but just try to think through the
+> effect of making dep; rfi as "to-r".
+
+Forget about local variables for the time being and just consider
+
+	dep ; [Plain] ; rfi
+
+For example:
+
+	A: r1 = READ_ONCE(x);
+	   y = r1;
+	B: r2 = READ_ONCE(y);
+
+Should B be ordered after A?  I don't see how any CPU could hope to 
+excute B before A, but maybe I'm missing something.
+
+There's another twist, connected with the fact that herd7 can't detect 
+control dependencies caused by unexecuted code.  If we have:
+
+	A: r1 = READ_ONCE(x);
+	if (r1)
+		WRITE_ONCE(y, 5);
+	r2 = READ_ONCE(y);
+	B: WRITE_ONCE(z, r2);
+
+then in executions where x == 0, herd7 doesn't see any control 
+dependency.  But CPUs do see control dependencies whenever there is a 
+conditional branch, whether the branch is taken or not, and so they will 
+never reorder B before A.
+
+One last thing to think about: My original assessment or Björn's problem 
+wasn't right, because the dep in (dep ; rfi) doesn't include control 
+dependencies.  Only data and address.  So I believe that the LKMM 
+wouldn't consider A to be ordered before B in this example even if x 
+was nonzero.
+
+Alan
