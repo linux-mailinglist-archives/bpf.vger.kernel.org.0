@@ -2,185 +2,260 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFF232CACA
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 04:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD7332CACD
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 04:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232248AbhCDDWF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 22:22:05 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:39777 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S232245AbhCDDVm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Mar 2021 22:21:42 -0500
-Received: (qmail 1595983 invoked by uid 1000); 3 Mar 2021 22:21:01 -0500
-Date:   Wed, 3 Mar 2021 22:21:01 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
-        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
-        joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: XDP socket rings, and LKMM litmus tests
-Message-ID: <20210304032101.GB1594980@rowland.harvard.edu>
-References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
- <20210302211446.GA1541641@rowland.harvard.edu>
- <20210302235019.GT2696@paulmck-ThinkPad-P72>
- <20210303171221.GA1574518@rowland.harvard.edu>
- <20210303174022.GD2696@paulmck-ThinkPad-P72>
- <20210303202246.GC1582185@rowland.harvard.edu>
- <20210303220348.GL2696@paulmck-ThinkPad-P72>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210303220348.GL2696@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S232280AbhCDDYN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Mar 2021 22:24:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232274AbhCDDXn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Mar 2021 22:23:43 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E00C061574;
+        Wed,  3 Mar 2021 19:23:03 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id u12so5889177pjr.2;
+        Wed, 03 Mar 2021 19:23:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=xdKiGIdwVXdTmOhV3INy054O4Zx9EPbcN+nl/sOK6d8=;
+        b=DjALegeUk07ZVMgGsF2BzyV8Z/ZHTVxfahnRdM3qrJvRVJsuMdHGC2lcnQlbkFOC0c
+         Z2g4XyDQ+kIcrPongySSTs1q/Sj0rpY+ZYDYceRTthp53mIJ76KvzBst5Wv2Sc6ASrEd
+         1xdzHEam2gQ+YB30HBBtWFdnu6da2/qQMt/c7DfF8scYjJvprSuV8cHcv3AvOD7eChdn
+         ZyMg4FiMkCmz4MNwaKB4julZP9jRmFh9e7JyMR5zeQ1guKJdB2AHfrBDQY2y357X9/ta
+         emf6HZ6ku0+rnuvT98evhAZXKYtachOd/KHe1krGxBfz7GqgDMQn5Wrk1D9SHwwQhmuO
+         AXLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=xdKiGIdwVXdTmOhV3INy054O4Zx9EPbcN+nl/sOK6d8=;
+        b=XYyrD2AMbp9VN+nr0t+wrvPI/H7PtnfTQ0EfeADqVVGZmli6iEs7gKAW9BJFSh6kRZ
+         6vQMFsavftxwpaDpuy8Rza5UAlsXuWfLzv2Oz2OwTbNjr+s+FB29AdvUvKYIntOX4fdy
+         E9JeLuReCjs92TBZQqlcQ21+jsUMYF5waBUi6fG4ZaTCoiaaknSc+JH9fIpbid7WZ7dK
+         w6JB3H9Ja2r8wkghbEIlj110iXqtb95LFeby6YWrT8Dwqi8f75enYi6CuvXH3QtChq6U
+         BrjHNQMW7zZwv3pI8EP9dZbCulO2elGI4/3aoa28TgrRpXTjuzrKmqWq/pHB7ouEUE8l
+         gRVg==
+X-Gm-Message-State: AOAM532ZUgvkKuFI4iM5E36euy+ebwzotuVm8lKB9y7txK/fALVffQ/d
+        GkjylsAitGULPKndfzNokxI=
+X-Google-Smtp-Source: ABdhPJzxC3hgQXpl9HDkSGZFAMu9aumkgns3FG+CIrcInCkKzKAwlvJSXR9qzkljxfjUySQ+StxfXQ==
+X-Received: by 2002:a17:902:e8cb:b029:e2:9906:45a6 with SMTP id v11-20020a170902e8cbb02900e2990645a6mr2085523plg.41.1614828183194;
+        Wed, 03 Mar 2021 19:23:03 -0800 (PST)
+Received: from [172.17.32.59] ([122.10.101.142])
+        by smtp.gmail.com with ESMTPSA id mp19sm8950493pjb.2.2021.03.03.19.22.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 03 Mar 2021 19:23:02 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH/v4] bpf: add bpf_skb_adjust_room flag
+ BPF_F_ADJ_ROOM_ENCAP_L2_ETH
+From:   Xuesen Huang <hxseverything@gmail.com>
+In-Reply-To: <CA+FuTSfY0y7Y2XSKO-rqPY5mX83NWgAWbQeVukFA94eJVu2B2g@mail.gmail.com>
+Date:   Thu, 4 Mar 2021 11:22:56 +0800
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Zhiyong Cheng <chengzhiyong@kuaishou.com>,
+        Li Wang <wangli09@kuaishou.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <5D5B444A-FE98-46CF-80D2-DEEBE9C1D74A@gmail.com>
+References: <20210303123338.99089-1-hxseverything@gmail.com>
+ <CA+FuTSfY0y7Y2XSKO-rqPY5mX83NWgAWbQeVukFA94eJVu2B2g@mail.gmail.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 02:03:48PM -0800, Paul E. McKenney wrote:
-> On Wed, Mar 03, 2021 at 03:22:46PM -0500, Alan Stern wrote:
-> > On Wed, Mar 03, 2021 at 09:40:22AM -0800, Paul E. McKenney wrote:
-> > > On Wed, Mar 03, 2021 at 12:12:21PM -0500, Alan Stern wrote:
-> > 
-> > > > Local variables absolutely should be treated just like CPU registers, if 
-> > > > possible.  In fact, the compiler has the option of keeping local 
-> > > > variables stored in registers.
-> > > > 
-> > > > (Of course, things may get complicated if anyone writes a litmus test 
-> > > > that uses a pointer to a local variable,  Especially if the pointer 
-> > > > could hold the address of a local variable in one execution and a 
-> > > > shared variable in another!  Or if the pointer is itself a shared 
-> > > > variable and is dereferenced in another thread!)
-> > > 
-> > > Good point!  I did miss this complication.  ;-)
-> > 
-> > I suspect it wouldn't be so bad if herd7 disallowed taking addresses of 
-> > local variables.
-> > 
-> > > As you say, when its address is taken, the "local" variable needs to be
-> > > treated as is it were shared.  There are exceptions where the pointed-to
-> > > local is still used only by its process.  Are any of these exceptions
-> > > problematic?
-> > 
-> > Easiest just to rule out the whole can of worms.
-> 
-> Good point, given that a global can be used instead of a local for
-> any case where an address must be taken.
 
-Another thing to consider: Almost all marked accesses involve using the 
-address of the storage location (for example, smp_load_acquire's first 
-argument must be a pointer).  As far as I can remember at the moment, 
-the only ones that don't are READ_ONCE and WRITE_ONCE.  So although we 
-might or might not want to allow READ_ONCE or WRITE_ONCE on a local 
-variable, we won't have to worry about any of the other kinds of marked 
-accesses.
 
-> > > > But even if local variables are treated as non-shared storage locations, 
-> > > > we should still handle this correctly.  Part of the problem seems to lie 
-> > > > in the definition of the to-r dependency relation; the relevant portion 
-> > > > is:
-> > > > 
-> > > > 	(dep ; [Marked] ; rfi)
-> > > > 
-> > > > Here dep is the control dependency from the READ_ONCE to the 
-> > > > local-variable store, and the rfi refers to the following load of the 
-> > > > local variable.  The problem is that the store to the local variable 
-> > > > doesn't go in the Marked class, because it is notated as a plain C 
-> > > > assignment.  (And likewise for the following load.)
-> > > > 
-> > > > Should we change the model to make loads from and stores to local 
-> > > > variables always count as Marked?
-> > > 
-> > > As long as the initial (possibly unmarked) load would be properly
-> > > complained about.
-> > 
-> > Sorry, I don't understand what you mean.
-> 
-> I was thinking in terms of something like this in one of the processes:
-> 
-> 	p = gp; // Unmarked!
-> 	r1 = p;
-> 	q = r1; // Implicitly marked now?
-> 	if (q)
-> 		WRITE_ONCE(x, 1); // ctrl dep from gp???
+> 2021=E5=B9=B43=E6=9C=884=E6=97=A5 =E4=B8=8A=E5=8D=882:53=EF=BC=8CWillem =
+de Bruijn <willemdebruijn.kernel@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> On Wed, Mar 3, 2021 at 7:33 AM Xuesen Huang <hxseverything@gmail.com> =
+wrote:
+>>=20
+>> From: Xuesen Huang <huangxuesen@kuaishou.com>
+>>=20
+>> bpf_skb_adjust_room sets the inner_protocol as skb->protocol for =
+packets
+>> encapsulation. But that is not appropriate when pushing Ethernet =
+header.
+>>=20
+>> Add an option to further specify encap L2 type and set the =
+inner_protocol
+>> as ETH_P_TEB.
+>>=20
+>> Update test_tc_tunnel to verify adding vxlan encapsulation works with
+>> this flag.
+>>=20
+>> Suggested-by: Willem de Bruijn <willemb@google.com>
+>> Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
+>> Signed-off-by: Zhiyong Cheng <chengzhiyong@kuaishou.com>
+>> Signed-off-by: Li Wang <wangli09@kuaishou.com>
+>=20
+> Thanks for adding the test. Perhaps that is better in a separate =
+patch?
+>=20
+> Overall looks great to me.
+>=20
+> The patch has not (yet?) arrived on patchwork.
+>=20
+Thanks Willem, I will separate it into two patch.
 
-I hope we won't have to worry about this!  :-)  Treating local variable 
-accesses as if they are always marked looks wrong.
+I will send patch/v5 with only that new flag addition, lol.
 
-> > >  And I cannot immediately think of a situation where
-> > > this approach would break that would not result in a data race being
-> > > flagged.  Or is this yet another failure of my imagination?
-> > 
-> > By definition, an access to a local variable cannot participate in a 
-> > data race because all such accesses are confined to a single thread.
-> 
-> True, but its value might have come from a load from a shared variable.
+>> enum {
+>> diff --git a/tools/testing/selftests/bpf/progs/test_tc_tunnel.c =
+b/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
+>> index 37bce7a..6e144db 100644
+>> --- a/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
+>> +++ b/tools/testing/selftests/bpf/progs/test_tc_tunnel.c
+>> @@ -20,6 +20,14 @@
+>> #include <bpf/bpf_endian.h>
+>> #include <bpf/bpf_helpers.h>
+>>=20
+>> +#define encap_ipv4(...) __encap_ipv4(__VA_ARGS__, 0)
+>> +
+>> +#define encap_ipv4_with_ext_proto(...) __encap_ipv4(__VA_ARGS__)
+>> +
+>> +#define encap_ipv6(...) __encap_ipv6(__VA_ARGS__, 0)
+>> +
+>> +#define encap_ipv6_with_ext_proto(...) __encap_ipv6(__VA_ARGS__)
+>> +
+>=20
+> Instead of untyped macros, I'd define encap_ipv4 as a function that
+> calls __encap_ipv4.
+>=20
+> And no need for encap_ipv4_with_ext_proto equivalent to __encap_ipv4.
+>=20
+I defined these macros to try to keep the existing  invocation for =
+encap_ipv4/6
+as the same, if we define this as a function all invocation should be =
+modified?
 
-Then that load could have participated in a data race.  But the store to 
-the local variable cannot.
+>> static const int cfg_port =3D 8000;
+>>=20
+>> static const int cfg_udp_src =3D 20000;
+>> @@ -27,11 +35,24 @@
+>> #define        UDP_PORT                5555
+>> #define        MPLS_OVER_UDP_PORT      6635
+>> #define        ETH_OVER_UDP_PORT       7777
+>> +#define        VXLAN_UDP_PORT          8472
+>> +
+>> +#define        EXTPROTO_VXLAN  0x1
+>> +
+>> +#define        VXLAN_N_VID     (1u << 24)
+>> +#define        VXLAN_VNI_MASK  bpf_htonl((VXLAN_N_VID - 1) << 8)
+>> +#define        VXLAN_FLAGS     0x8
+>> +#define        VXLAN_VNI       1
+>>=20
+>> /* MPLS label 1000 with S bit (last label) set and ttl of 255. */
+>> static const __u32 mpls_label =3D __bpf_constant_htonl(1000 << 12 |
+>>                                                     MPLS_LS_S_MASK | =
+0xff);
+>>=20
+>> +struct vxlanhdr {
+>> +       __be32 vx_flags;
+>> +       __be32 vx_vni;
+>> +} __attribute__((packed));
+>> +
+>> struct gre_hdr {
+>>        __be16 flags;
+>>        __be16 protocol;
+>> @@ -45,13 +66,13 @@ struct gre_hdr {
+>> struct v4hdr {
+>>        struct iphdr ip;
+>>        union l4hdr l4hdr;
+>> -       __u8 pad[16];                   /* enough space for L2 header =
+*/
+>> +       __u8 pad[24];                   /* space for L2 header / =
+vxlan header ... */
+>=20
+> could we use something like sizeof(..) instead of a constant?
+>=20
+Thanks, I will try to fix this.
 
-> > However, there are other aspects to consider, in particular, the 
-> > ordering relations on local-variable accesses.  But if, as Luc says, 
-> > local variables are treated just like registers then perhaps the issue 
-> > doesn't arise.
-> 
-> Here is hoping!
-> 
-> > > > What should have happened if the local variable were instead a shared 
-> > > > variable which the other thread didn't access at all?  It seems like a 
-> > > > weak point of the memory model that it treats these two things 
-> > > > differently.
-> > > 
-> > > But is this really any different than the situation where a global
-> > > variable is only accessed by a single thread?
-> > 
-> > Indeed; it is the _same_ situation.  Which leads to some interesting 
-> > questions, such as: What does READ_ONCE(r) mean when r is a local 
-> > variable?  Should it be allowed at all?  In what way is it different 
-> > from a plain read of r?
-> > 
-> > One difference is that the LKMM doesn't allow dependencies to originate 
-> > from a plain load.  Of course, when you're dealing with a local 
-> > variable, what matters is not the load from that variable but rather the 
-> > earlier loads which determined the value that had been stored there.  
-> > Which brings us back to the case of the
-> > 
-> > 	dep ; rfi
-> > 
-> > dependency relation, where the accesses in the middle are plain and 
-> > non-racy.  Should the LKMM be changed to allow this?
-> 
-> It would be nice, give or take the potential side effects.  ;-)
-> As in it would be nice, but might not be worthwhile.
+>> @@ -171,14 +197,26 @@ static __always_inline int encap_ipv4(struct =
+__sk_buff *skb, __u8 encap_proto,
+>>        }
+>>=20
+>>        /* add L2 encap (if specified) */
+>> +       l2_hdr =3D (__u8 *)&h_outer + olen;
+>>        switch (l2_proto) {
+>>        case ETH_P_MPLS_UC:
+>> -               *((__u32 *)((__u8 *)&h_outer + olen)) =3D mpls_label;
+>> +               *(__u32 *)l2_hdr =3D mpls_label;
+>>                break;
+>>        case ETH_P_TEB:
+>> -               if (bpf_skb_load_bytes(skb, 0, (__u8 *)&h_outer + =
+olen,
+>> -                                      ETH_HLEN))
+>=20
+> This is non-standard indentation? Here and elsewhere.
+I thinks it=E2=80=99s a previous issue.
 
-Treating local variables like registers will automatically bring this 
-behavior.  So I think we'll be good.
+>=20
+>> @@ -249,7 +288,11 @@ static __always_inline int encap_ipv6(struct =
+__sk_buff *skb, __u8 encap_proto,
+>>                break;
+>>        case ETH_P_TEB:
+>>                l2_len =3D ETH_HLEN;
+>> -               udp_dst =3D ETH_OVER_UDP_PORT;
+>> +               if (ext_proto & EXTPROTO_VXLAN) {
+>> +                       udp_dst =3D VXLAN_UDP_PORT;
+>> +                       l2_len +=3D sizeof(struct vxlanhdr);
+>> +               } else
+>> +                       udp_dst =3D ETH_OVER_UDP_PORT;
+>>                break;
+>>        }
+>>        flags |=3D BPF_F_ADJ_ROOM_ENCAP_L2(l2_len);
+>> @@ -267,7 +310,7 @@ static __always_inline int encap_ipv6(struct =
+__sk_buff *skb, __u8 encap_proto,
+>>                h_outer.l4hdr.udp.source =3D =
+__bpf_constant_htons(cfg_udp_src);
+>>                h_outer.l4hdr.udp.dest =3D bpf_htons(udp_dst);
+>>                tot_len =3D bpf_ntohs(iph_inner.payload_len) + =
+sizeof(iph_inner) +
+>> -                         sizeof(h_outer.l4hdr.udp);
+>> +                         sizeof(h_outer.l4hdr.udp) + l2_len;
+>=20
+> Was this a bug previously?
+>=20
+Yes, a tiny bug.
 
-> > There are other differences to consider.  For example:
-> > 
-> > 	r = READ_ONCE(x);
-> > 	smp_wmb();
-> > 	WRITE_ONCE(y, 1);
-> > 
-> > If the write to r were treated as a marked store, the smp_wmb would 
-> > order it (and consequently the READ_ONCE) before the WRITE_ONCE.  
-> > However we don't want to do this when r is a local variable.  Indeed, a 
-> > plain store wouldn't be ordered this way because the compiler might 
-> > optimize the store away entirely, leaving the smp_wmb nothing to act on.
-> 
-> Agreed, having smp_wmb() order things due to a write to a local variable
-> would not be what we want.
-> 
-> > So overall the situation is rather puzzling.  Treating local variables 
-> > as registers is probably the best answer.
-> 
-> That is sounding quite appealing at the moment.
+>>                h_outer.l4hdr.udp.check =3D 0;
+>>                h_outer.l4hdr.udp.len =3D bpf_htons(tot_len);
+>>                break;
+>> @@ -278,13 +321,24 @@ static __always_inline int encap_ipv6(struct =
+__sk_buff *skb, __u8 encap_proto,
+>>        }
+>>=20
+>>        /* add L2 encap (if specified) */
+>> +       l2_hdr =3D (__u8 *)&h_outer + olen;
+>>        switch (l2_proto) {
+>>        case ETH_P_MPLS_UC:
+>> -               *((__u32 *)((__u8 *)&h_outer + olen)) =3D mpls_label;
+>> +               *(__u32 *)l2_hdr =3D mpls_label;
+>>                break;
+>>        case ETH_P_TEB:
+>> -               if (bpf_skb_load_bytes(skb, 0, (__u8 *)&h_outer + =
+olen,
+>> -                                      ETH_HLEN))
+>> +               flags |=3D BPF_F_ADJ_ROOM_ENCAP_L2_ETH;
+>=20
+> This is a change also for the existing case. Correctly so, I imagine.
+> But the test used to pass with the wrong protocol?
+Yes all tests pass. I=E2=80=99m not sure should we add this flag for the =
+existing tests
+which encap eth as the l2 header or only for the Vxlan test? =20
 
-Agreed.
+Waiting for your suggestion.
+Thanks.
 
-Alan
+
