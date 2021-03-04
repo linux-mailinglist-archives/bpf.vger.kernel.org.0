@@ -2,139 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9B432D9FA
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 20:06:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C3532D9FE
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 20:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237104AbhCDTFX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Mar 2021 14:05:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41783 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237035AbhCDTFP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 4 Mar 2021 14:05:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614884630;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=OXdDzBc80btNZRQxO9G9vwAqzKclWBAcF6GgkGrm6Mc=;
-        b=MVbjb9zDM/k3450UCrRDZtfS6DVzF0lrUHNa+U4HmRSXfyQFnBxeC4c70vm8Z5Su9nYbUp
-        QqC3PHqBvGXqf5RGR2k2WacFJlPf+GuXu9QB9dMpPKHZ5F+qFHAuI/mxsRqLqKzMjOQLUU
-        8aZROPd8kzbSCQir/5ceswdHyfw21xw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-278-AGPTzdMTPP2cM2XvlODfdA-1; Thu, 04 Mar 2021 14:03:42 -0500
-X-MC-Unique: AGPTzdMTPP2cM2XvlODfdA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE815108BD06;
-        Thu,  4 Mar 2021 19:03:40 +0000 (UTC)
-Received: from krava (unknown [10.40.196.20])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4A4A55B4A9;
-        Thu,  4 Mar 2021 19:03:34 +0000 (UTC)
-Date:   Thu, 4 Mar 2021 20:03:33 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Roman Gushchin <guro@fb.com>, YiFei Zhu <zhuyifei@google.com>
-Cc:     Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Yauheni Kaliuta <ykaliuta@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>, Hangbin Liu <haliu@redhat.com>
-Subject: [BUG] hitting bug when running spinlock test
-Message-ID: <YEEvBUiJl2pJkxTd@krava>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        id S229611AbhCDTFz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Mar 2021 14:05:55 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:43361 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237046AbhCDTFX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 4 Mar 2021 14:05:23 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 12A815C00D3;
+        Thu,  4 Mar 2021 14:04:37 -0500 (EST)
+Received: from imap35 ([10.202.2.85])
+  by compute3.internal (MEProxy); Thu, 04 Mar 2021 14:04:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=Dor9fMbf1MJZCldygU8+8JrRN4OICPX
+        ihTNKjtxeqzE=; b=eu23mDg17L+PcgS+RRnxmmjK+Aij7q+yzaycbEeioaAQAtc
+        YqXCNKX0G90tNM2HdGuixC+m4Lexj0YrzqYSUmP8zYaSVrmcfesZMTJF7EgrvT+M
+        jwKXkOYaKZAa74lfbTAbLxzhC+g/5qnm6coyPbZWZAGYYUcMKMZQqrhy8iFaEeVe
+        +TRO7l49zNPoL981/tWu2SDCpqSIu8kYg/O5yxA7YhPLMJiVsb220kVfZ99pJYGF
+        zb2wIwdCUJA0SbEg9toqyPFSIWSOmW4+vuxBlgAR0AXMQywed/oeZO1UwSiSuTVT
+        VLInCSFIamoYr0BBogpMgg4Pwswfx6ONKfLPyuA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Dor9fM
+        bf1MJZCldygU8+8JrRN4OICPXihTNKjtxeqzE=; b=wl9mgobBtouOsjXWA7iPhN
+        gX2go4PuYQLKFE4HmSpKgCJnCYJevJP/8rTST67/2WiCeqyh2MwXUhll3IZF0nBA
+        nYfQ0QsOjJ2eZPBkobD01YWbzNRKLqWxiM460AE1XioIuxBa6rMXVy9yYQhir+9v
+        699Y6In7hXbLDZ7egPU244/WdK7FSoS2F0ap4a5vVBtizANFo6/lsl2VPJU/FoLq
+        ycRv+14mgGhkHfe+PR1hyeIPO3LMeLouM8wHDt3jv+BIreOHXwY/DXMc9nuPg+f6
+        Svw1MLhhQ0icTT4+z3ct5BarHD3nskBs/ptBQVmDhF4o4cTYEjz1jputZdcjbMyg
+        ==
+X-ME-Sender: <xms:RC9BYE2QubIdURspiogLbmV2rHZqC7AGtXNZY3g5-oKx0kfqPLLBOQ>
+    <xme:RC9BYPG6meVds8g_KkiwE189e00EgaPZEO2uX6QljhBmaMDhM6lcQFYG1lscl05RT
+    5gtQ5T7m8tK57Q3gg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtgedgudduvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculddvfedmnecujfgurhepofgfggfkjghffffhvffutgesthdtredt
+    reertdenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighi
+    iiqeenucggtffrrghtthgvrhhnpeejgfevtefhjeelgfefvddthffffeeutdffgeeihfek
+    teefheffgeeitdeifefhgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:RC9BYM529SszgTfBvrb86p3UHogu-YtAIydW-yVmM_W1QKMwCJOZdQ>
+    <xmx:RC9BYN0VDK_47bKNiuANKE4u3-a2KAGKxTiWvKzsv_P3YBc8TPmPsw>
+    <xmx:RC9BYHGhyW1kMPMYeao5eUm2uigS-oeXtTSgaJ3VNVMomj6kdkwZbA>
+    <xmx:RS9BYPAjbW0NCnBUBq_HRcHKI_f8HZDuW3hsXzWpPvPwRTFvgaNLTA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 0D8B615A005D; Thu,  4 Mar 2021 14:04:35 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-206-g078a48fda5-fm-20210226.001-g078a48fd
+Mime-Version: 1.0
+Message-Id: <cb71589f-f724-4e98-b9a7-39024a78f0b7@www.fastmail.com>
+In-Reply-To: <20210304021819.hgam3z3xurxcq3re@maharaja.localdomain>
+References: <1fed0793-391c-4c68-8d19-6dcd9017271d@www.fastmail.com>
+ <20210303134828.39922eb167524bc7206c7880@kernel.org>
+ <20210303092604.59aea82c@gandalf.local.home>
+ <20210303195812.scqvwddmi4vhgii5@maharaja.localdomain>
+ <4d68e8d9-38b0-4f32-90b6-1639558fce51@www.fastmail.com>
+ <20210303153740.4c0cc0c5@gandalf.local.home>
+ <20210304021819.hgam3z3xurxcq3re@maharaja.localdomain>
+Date:   Thu, 04 Mar 2021 11:04:15 -0800
+From:   "Daniel Xu" <dxu@dxuuu.xyz>
+To:     "Steven Rostedt" <rostedt@goodmis.org>, jpoimboe@redhat.com
+Cc:     "Masami Hiramatsu" <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>, kuba@kernel.org
+Subject: Re: Broken kretprobe stack traces
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-hi,
-I'm getting attached BUG/crash when running in parralel selftests, like:
+On Wed, Mar 3, 2021, at 6:18 PM, Daniel Xu wrote:
+> On Wed, Mar 03, 2021 at 03:37:40PM -0500, Steven Rostedt wrote:
+> > On Wed, 03 Mar 2021 12:13:08 -0800
+> > "Daniel Xu" <dxu@dxuuu.xyz> wrote:
+> > 
+> > > On Wed, Mar 3, 2021, at 11:58 AM, Daniel Xu wrote:
+> > > > On Wed, Mar 03, 2021 at 09:26:04AM -0500, Steven Rostedt wrote:  
+> > > > > On Wed, 3 Mar 2021 13:48:28 +0900
+> > > > > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > > > >   
+> > > > > >   
+> > > > > > > 
+> > > > > > > I think (can't prove) this used to work:    
+> > > > > 
+> > > > > Would be good to find out if it did.  
+> > > > 
+> > > > I'm installing some older kernels now to check. Will report back.  
+> > > 
+> > > Yep, works in 4.11. So there was a regression somewhere.
+> > 
+> > Care to bisect? ;-)
+> 
+> Took a while (I'll probably be typing "test_regression.sh" in my sleep
+> tonight) but I've bisected it down to f95b23a112f1 ("Merge branch
+> 'x86/urgent' into x86/asm, to pick up dependent fixes").
+> 
+> I think I saw the default option for stack unwinder change from frame
+> pointers -> ORC so that may be the root cause. Not sure, though. Need to
+> look more closely at the commits in the merge commit.
+> 
+> <...>
+> 
+> Daniel
+>
 
-  while :; do ./test_progs -t spinlock; done
-  while :; do ./test_progs ; done
+Compiling with:
 
-it's the latest bpf-next/master, I can send the .config if needed,
-but I don't think there's anything special about it, because I saw
-the bug on other servers with different generic configs
+    CONFIG_UNWINDER_ORC=n
+    CONFIG_UNWINDER_FRAME_POINTER=y
 
-it looks like it's related to cgroup local storage, for some reason
-the storage deref returns NULL
+fixes the issues and leads me to believe stacktraces on kretprobes
+never worked with ORC.
 
-I'm bit lost in this code, so any help would be great ;-)
+Josh, any chance you have an idea?
 
-thanks,
-jirka
-
-
----
-...
-[  382.324440] bpf_testmod: loading out-of-tree module taints kernel.
-[  382.330670] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
-[  480.391667] perf: interrupt took too long (2540 > 2500), lowering kernel.perf_event_max_sample_rate to 78000
-[  480.401730] perf: interrupt took too long (6860 > 6751), lowering kernel.perf_event_max_sample_rate to 29000
-[  480.416172] perf: interrupt took too long (8602 > 8575), lowering kernel.perf_event_max_sample_rate to 23000
-[  480.433053] BUG: kernel NULL pointer dereference, address: 0000000000000000
-[  480.440014] #PF: supervisor read access in kernel mode
-[  480.445153] #PF: error_code(0x0000) - not-present page
-[  480.450294] PGD 8000000133a18067 P4D 8000000133a18067 PUD 10c019067 PMD 0 
-[  480.457164] Oops: 0000 [#1] PREEMPT SMP PTI
-[  480.461350] CPU: 6 PID: 16689 Comm: test_progs Tainted: G          IOE     5.11.0+ #11
-[  480.469263] Hardware name: Dell Inc. PowerEdge R440/08CYF7, BIOS 1.7.0 12/14/2018
-[  480.476742] RIP: 0010:bpf_get_local_storage+0x13/0x50
-[  480.481797] Code: e8 92 c5 8e 00 5d 89 c0 c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 0f 1f 44 00 00 83 7f 18 15 74 10 65 48 8b 05 6d c6 e2 7e <48> 8b 00 48 83 c0 10 c3 55 48 89 e5 53 65 48 8b 05 60 c6 e2 7e8
-[  480.500540] RSP: 0018:ffffc90001bd3ce0 EFLAGS: 00010293
-[  480.505766] RAX: 0000000000000000 RBX: 982a259500000000 RCX: 0000000000000018
-[  480.512901] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff888149ccf000
-[  480.520034] RBP: ffffc90001bd3d20 R08: ffffc90001bd3d04 R09: ffff888105121600
-[  480.527164] R10: d3b9342000000000 R11: 000000000000025c R12: 0000000000000734
-[  480.534299] R13: ffff888149ccc710 R14: 0000000000000000 R15: ffffc90000379048
-[  480.541430] FS:  00007f8f2357b640(0000) GS:ffff8897e0980000(0000) knlGS:0000000000000000
-[  480.549515] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  480.555262] CR2: 0000000000000000 CR3: 000000014e826006 CR4: 00000000007706e0
-[  480.562395] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  480.569527] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  480.576660] PKRU: 55555554
-[  480.579372] Call Trace:
-[  480.581829]  ? bpf_prog_c48154a736e5c014_bpf_sping_lock_test+0x2ba/0x860
-[  480.588526]  bpf_test_run+0x127/0x2b0
-[  480.592192]  ? __build_skb_around+0xb0/0xc0
-[  480.596378]  bpf_prog_test_run_skb+0x32f/0x6b0
-[  480.600824]  __do_sys_bpf+0xa94/0x2240
-[  480.604577]  ? debug_smp_processor_id+0x17/0x20
-[  480.609107]  ? __perf_event_task_sched_in+0x32/0x340
-[  480.614077]  __x64_sys_bpf+0x1a/0x20
-[  480.617653]  do_syscall_64+0x38/0x50
-[  480.621233]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  480.626286] RIP: 0033:0x7f8f2467f55d
-[  480.629865] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d eb 78 0c 00 f7 d8 64 89 018
-[  480.648611] RSP: 002b:00007f8f2357ad58 EFLAGS: 00000206 ORIG_RAX: 0000000000000141
-[  480.656175] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f8f2467f55d
-[  480.663308] RDX: 0000000000000078 RSI: 00007f8f2357ad60 RDI: 000000000000000a
-[  480.670442] RBP: 00007f8f2357ae28 R08: 0000000000000000 R09: 0000000000000008
-[  480.677574] R10: 0000000000000000 R11: 0000000000000206 R12: 00007f8f2357ae2c
-[  480.684707] R13: 00000000022df420 R14: 0000000000000000 R15: 00007f8f2357b640
-[  480.691842] Modules linked in: bpf_testmod(OE) intel_rapl_msr intel_rapl_common x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm ipmi_ssif irqbypass rapl intel_cstate dell_smbios intel_uncore mei_]
-[  480.739134] CR2: 0000000000000000
-[  480.742452] ---[ end trace 807177cbb5e3b3da ]---
-[  480.752174] RIP: 0010:bpf_get_local_storage+0x13/0x50
-[  480.757230] Code: e8 92 c5 8e 00 5d 89 c0 c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 0f 1f 44 00 00 83 7f 18 15 74 10 65 48 8b 05 6d c6 e2 7e <48> 8b 00 48 83 c0 10 c3 55 48 89 e5 53 65 48 8b 05 60 c6 e2 7e8
-[  480.775976] RSP: 0018:ffffc90001bd3ce0 EFLAGS: 00010293
-[  480.781202] RAX: 0000000000000000 RBX: 982a259500000000 RCX: 0000000000000018
-[  480.788335] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff888149ccf000
-[  480.795466] RBP: ffffc90001bd3d20 R08: ffffc90001bd3d04 R09: ffff888105121600
-[  480.802598] R10: d3b9342000000000 R11: 000000000000025c R12: 0000000000000734
-[  480.809730] R13: ffff888149ccc710 R14: 0000000000000000 R15: ffffc90000379048
-[  480.816865] FS:  00007f8f2357b640(0000) GS:ffff8897e0980000(0000) knlGS:0000000000000000
-[  480.824951] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  480.830695] CR2: 0000000000000000 CR3: 000000014e826006 CR4: 00000000007706e0
-[  480.837829] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  480.844961] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  480.852093] PKRU: 55555554
-
+Thanks,
+Daniel
