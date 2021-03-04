@@ -2,125 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C3532D9FE
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 20:07:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 627FE32DA00
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 20:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhCDTFz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Mar 2021 14:05:55 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:43361 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237046AbhCDTFX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 4 Mar 2021 14:05:23 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 12A815C00D3;
-        Thu,  4 Mar 2021 14:04:37 -0500 (EST)
-Received: from imap35 ([10.202.2.85])
-  by compute3.internal (MEProxy); Thu, 04 Mar 2021 14:04:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=Dor9fMbf1MJZCldygU8+8JrRN4OICPX
-        ihTNKjtxeqzE=; b=eu23mDg17L+PcgS+RRnxmmjK+Aij7q+yzaycbEeioaAQAtc
-        YqXCNKX0G90tNM2HdGuixC+m4Lexj0YrzqYSUmP8zYaSVrmcfesZMTJF7EgrvT+M
-        jwKXkOYaKZAa74lfbTAbLxzhC+g/5qnm6coyPbZWZAGYYUcMKMZQqrhy8iFaEeVe
-        +TRO7l49zNPoL981/tWu2SDCpqSIu8kYg/O5yxA7YhPLMJiVsb220kVfZ99pJYGF
-        zb2wIwdCUJA0SbEg9toqyPFSIWSOmW4+vuxBlgAR0AXMQywed/oeZO1UwSiSuTVT
-        VLInCSFIamoYr0BBogpMgg4Pwswfx6ONKfLPyuA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Dor9fM
-        bf1MJZCldygU8+8JrRN4OICPXihTNKjtxeqzE=; b=wl9mgobBtouOsjXWA7iPhN
-        gX2go4PuYQLKFE4HmSpKgCJnCYJevJP/8rTST67/2WiCeqyh2MwXUhll3IZF0nBA
-        nYfQ0QsOjJ2eZPBkobD01YWbzNRKLqWxiM460AE1XioIuxBa6rMXVy9yYQhir+9v
-        699Y6In7hXbLDZ7egPU244/WdK7FSoS2F0ap4a5vVBtizANFo6/lsl2VPJU/FoLq
-        ycRv+14mgGhkHfe+PR1hyeIPO3LMeLouM8wHDt3jv+BIreOHXwY/DXMc9nuPg+f6
-        Svw1MLhhQ0icTT4+z3ct5BarHD3nskBs/ptBQVmDhF4o4cTYEjz1jputZdcjbMyg
-        ==
-X-ME-Sender: <xms:RC9BYE2QubIdURspiogLbmV2rHZqC7AGtXNZY3g5-oKx0kfqPLLBOQ>
-    <xme:RC9BYPG6meVds8g_KkiwE189e00EgaPZEO2uX6QljhBmaMDhM6lcQFYG1lscl05RT
-    5gtQ5T7m8tK57Q3gg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtgedgudduvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculddvfedmnecujfgurhepofgfggfkjghffffhvffutgesthdtredt
-    reertdenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighi
-    iiqeenucggtffrrghtthgvrhhnpeejgfevtefhjeelgfefvddthffffeeutdffgeeihfek
-    teefheffgeeitdeifefhgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:RC9BYM529SszgTfBvrb86p3UHogu-YtAIydW-yVmM_W1QKMwCJOZdQ>
-    <xmx:RC9BYN0VDK_47bKNiuANKE4u3-a2KAGKxTiWvKzsv_P3YBc8TPmPsw>
-    <xmx:RC9BYHGhyW1kMPMYeao5eUm2uigS-oeXtTSgaJ3VNVMomj6kdkwZbA>
-    <xmx:RS9BYPAjbW0NCnBUBq_HRcHKI_f8HZDuW3hsXzWpPvPwRTFvgaNLTA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 0D8B615A005D; Thu,  4 Mar 2021 14:04:35 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-206-g078a48fda5-fm-20210226.001-g078a48fd
-Mime-Version: 1.0
-Message-Id: <cb71589f-f724-4e98-b9a7-39024a78f0b7@www.fastmail.com>
-In-Reply-To: <20210304021819.hgam3z3xurxcq3re@maharaja.localdomain>
-References: <1fed0793-391c-4c68-8d19-6dcd9017271d@www.fastmail.com>
- <20210303134828.39922eb167524bc7206c7880@kernel.org>
- <20210303092604.59aea82c@gandalf.local.home>
- <20210303195812.scqvwddmi4vhgii5@maharaja.localdomain>
- <4d68e8d9-38b0-4f32-90b6-1639558fce51@www.fastmail.com>
- <20210303153740.4c0cc0c5@gandalf.local.home>
- <20210304021819.hgam3z3xurxcq3re@maharaja.localdomain>
-Date:   Thu, 04 Mar 2021 11:04:15 -0800
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     "Steven Rostedt" <rostedt@goodmis.org>, jpoimboe@redhat.com
-Cc:     "Masami Hiramatsu" <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>, kuba@kernel.org
-Subject: Re: Broken kretprobe stack traces
-Content-Type: text/plain
+        id S231966AbhCDTG1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Mar 2021 14:06:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhCDTF4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Mar 2021 14:05:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2626C64F62;
+        Thu,  4 Mar 2021 19:05:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614884716;
+        bh=JDlrgpDqWIhApydlb10ONN+UktROsuzfop0m6TWYfM4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=UGRIsbPaMRbi4/Oq4c/ZwjLvYOBsqY0kPPyxkAVhRpgQp/lrpZ0IQYXL0aBExBdse
+         vp4BhJq2Ph1a+C8OPami/aZctacVL22bF+CaHEKRaM7spN9qlafJf9g5TGYPyX+A1t
+         APblOpIiBTapm5iUd0J1rtNONfkvJxySZ0sMSyJu6tU3qy1GPPzuxenP8kxzhygXIU
+         oQI7xc4L2zYrQmeEQPOIVchfzmaKVAajyDZLzSkDW9jmb2phoEL9mNumzNfoccRtn1
+         TldeJxVFzHfpSdyI1d/+O8gYLMzOGlLR4lrlcMWsRhN05xCEzXqo1rSZ060qddQAbq
+         df7OnKEp5MZ2Q==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D0AF43520831; Thu,  4 Mar 2021 11:05:15 -0800 (PST)
+Date:   Thu, 4 Mar 2021 11:05:15 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com, dlustig@nvidia.com,
+        joel@joelfernandes.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Subject: Re: XDP socket rings, and LKMM litmus tests
+Message-ID: <20210304190515.GS2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302211446.GA1541641@rowland.harvard.edu>
+ <20210302235019.GT2696@paulmck-ThinkPad-P72>
+ <20210303171221.GA1574518@rowland.harvard.edu>
+ <20210303174022.GD2696@paulmck-ThinkPad-P72>
+ <20210303202246.GC1582185@rowland.harvard.edu>
+ <20210303220348.GL2696@paulmck-ThinkPad-P72>
+ <20210304032101.GB1594980@rowland.harvard.edu>
+ <20210304050407.GN2696@paulmck-ThinkPad-P72>
+ <20210304153524.GA1612307@rowland.harvard.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210304153524.GA1612307@rowland.harvard.edu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 3, 2021, at 6:18 PM, Daniel Xu wrote:
-> On Wed, Mar 03, 2021 at 03:37:40PM -0500, Steven Rostedt wrote:
-> > On Wed, 03 Mar 2021 12:13:08 -0800
-> > "Daniel Xu" <dxu@dxuuu.xyz> wrote:
-> > 
-> > > On Wed, Mar 3, 2021, at 11:58 AM, Daniel Xu wrote:
-> > > > On Wed, Mar 03, 2021 at 09:26:04AM -0500, Steven Rostedt wrote:  
-> > > > > On Wed, 3 Mar 2021 13:48:28 +0900
-> > > > > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > > >   
-> > > > > >   
-> > > > > > > 
-> > > > > > > I think (can't prove) this used to work:    
+On Thu, Mar 04, 2021 at 10:35:24AM -0500, Alan Stern wrote:
+> On Wed, Mar 03, 2021 at 09:04:07PM -0800, Paul E. McKenney wrote:
+> > On Wed, Mar 03, 2021 at 10:21:01PM -0500, Alan Stern wrote:
+> > > On Wed, Mar 03, 2021 at 02:03:48PM -0800, Paul E. McKenney wrote:
+> > > > On Wed, Mar 03, 2021 at 03:22:46PM -0500, Alan Stern wrote:
+> 
+> > > > > >  And I cannot immediately think of a situation where
+> > > > > > this approach would break that would not result in a data race being
+> > > > > > flagged.  Or is this yet another failure of my imagination?
 > > > > > 
-> > > > > Would be good to find out if it did.  
+> > > > > By definition, an access to a local variable cannot participate in a 
+> > > > > data race because all such accesses are confined to a single thread.
 > > > > 
-> > > > I'm installing some older kernels now to check. Will report back.  
+> > > > True, but its value might have come from a load from a shared variable.
 > > > 
-> > > Yep, works in 4.11. So there was a regression somewhere.
+> > > Then that load could have participated in a data race.  But the store to 
+> > > the local variable cannot.
 > > 
-> > Care to bisect? ;-)
+> > Agreed.  My thought was that if the ordering from the initial (non-local)
+> > load mattered, then that initial load must have participated in a
+> > data race.  Is that true, or am I failing to perceive some corner case?
 > 
-> Took a while (I'll probably be typing "test_regression.sh" in my sleep
-> tonight) but I've bisected it down to f95b23a112f1 ("Merge branch
-> 'x86/urgent' into x86/asm, to pick up dependent fixes").
-> 
-> I think I saw the default option for stack unwinder change from frame
-> pointers -> ORC so that may be the root cause. Not sure, though. Need to
-> look more closely at the commits in the merge commit.
-> 
-> <...>
-> 
-> Daniel
->
+> Ordering can matter even when no data race is involved.  Just think
+> about how much of the memory model is concerned with ordering of
+> marked accesses, which don't participate in data races unless there is
+> a conflicting plain access somewhere.
 
-Compiling with:
+Fair point.  Should I have instead said "then that initial load must
+have run concurrently with a store to that same variable"?
 
-    CONFIG_UNWINDER_ORC=n
-    CONFIG_UNWINDER_FRAME_POINTER=y
-
-fixes the issues and leads me to believe stacktraces on kretprobes
-never worked with ORC.
-
-Josh, any chance you have an idea?
-
-Thanks,
-Daniel
+							Thanx, Paul
