@@ -2,115 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8BA332C8FE
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 02:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC27E32C901
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 02:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238646AbhCDA7q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Mar 2021 19:59:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352661AbhCDADc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Mar 2021 19:03:32 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A22EBC0617AA
-        for <bpf@vger.kernel.org>; Wed,  3 Mar 2021 15:53:35 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id o3so28061520oic.8
-        for <bpf@vger.kernel.org>; Wed, 03 Mar 2021 15:53:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cilium-io.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sJfUpwC5Q0AujFJkQ3bJRLWkfqFnVs4ZYKg21LJVuHE=;
-        b=BFIWZ0u0+EF/YC1mA2Nchh2NeUUfh8mRSTWelXDcFLQm2vG0MPevPcPuTWmYwx4XeL
-         1Xk+DQKrHnBz+sIjKI+ng4AK1/SgOuS6H+lXZPHBmnv0SNp8K6ZxJhG3ujg2ZeAJ2wwP
-         d7F0hjQDdtCyevlcdjFr21rzFqYI/oWOvVzQ/mcUuAwV3ELOANllu1vNL2cwfRMCILdX
-         1NKZHPNvRopqcWZD+RWrXQ9cw22ho6Mwsbg1ilG7UEz+4/MGONLMrpFxX+kz0LwJeJj2
-         kZ7gUkarr8Usb0SLVN6UGeUgC2zXh+t4KgzmJD02xc4AwN5+e/9xJfZOFU7VpPwhA/Sk
-         eJQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sJfUpwC5Q0AujFJkQ3bJRLWkfqFnVs4ZYKg21LJVuHE=;
-        b=iMGDfehrrQUEWbn1o9uC0BNPTVj34sw07nkfWfo7cyktKo1iDkomklEFbgpZ1h1nPx
-         dq/Yi7jc/CHunKtyi5nabEA53ziQ+yq8fp+88OXnjqKAw0bSff9pCG2HFNu9zHevjlTr
-         aQpy/pawgPqznsDik5oJtg0WEmgQm90vHo1kGkRxJpFpJe4rNrcBK84Mtl+KOd4MhUx6
-         p6JuiNdhiNTZJFmlTP0kEFEWWbuocXm2xj39QAWZClT5tTz5uSHWir+VDIqc9BSrRKor
-         LE2DWI0H2bq1BugcO0lAnyNIHabrzBuFbcIP0qMaSnz3NGF1K22iuPIBd5VXEQ0yyfMU
-         zY4A==
-X-Gm-Message-State: AOAM530aQdsvg8MbKbtWtIvvJy/QJFhnQnamhQ+ZMMS8W44NgADRwqDs
-        5MeDxg87HVhwSfL2sVd59DIjfI2kaNalgLjyYQXE/A==
-X-Google-Smtp-Source: ABdhPJxVhvbmRStq/JhsuTAFe5elO14d19je73tPaRLSxCTShXmLatgreMOoyRO4L0xaC9DGZmlwi8aJuYsRDzPNKKo=
-X-Received: by 2002:aca:f50d:: with SMTP id t13mr1041539oih.89.1614815615117;
- Wed, 03 Mar 2021 15:53:35 -0800 (PST)
-MIME-Version: 1.0
-References: <20210302171947.2268128-1-joe@cilium.io> <20210302171947.2268128-7-joe@cilium.io>
- <79954d84-ad75-8f91-118c-0ce2150a1c96@fb.com>
-In-Reply-To: <79954d84-ad75-8f91-118c-0ce2150a1c96@fb.com>
-From:   Joe Stringer <joe@cilium.io>
-Date:   Wed, 3 Mar 2021 15:53:24 -0800
-Message-ID: <CADa=RyzgsEsRpED34Bi141216de9ecbSUw7M+349wtDDKVy2dw@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 06/15] bpf: Document BPF_PROG_TEST_RUN syscall command
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Joe Stringer <joe@cilium.io>, bpf <bpf@vger.kernel.org>,
+        id S238919AbhCDA7r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Mar 2021 19:59:47 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:46929 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1453119AbhCDArP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Mar 2021 19:47:15 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DrXHX3dp2z9sSC;
+        Thu,  4 Mar 2021 11:46:32 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1614818794;
+        bh=OH1sKh2gaP7xqDkoSA802zvVl40HMC4Ik/IUhwyjuvA=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=MK78aETaToPntuLGqvzzuER5nYs5PpfsVydxpsuYzwQB5rE41h7Atd5UUTMgT8dpm
+         kV2bt9yqbuJ/U8f2sAtwMnh5rJmHIRVGfF7YMD+n1NnaDPvTZF/2BCX2nvGxFysPUp
+         37zgJkXybHUr6H6JsRG4WnOO3bYGhqwxnBt5M8FJ5gndSCZU3OJA5dABo4BlacuIal
+         5VSsCDbuLGnnPQ3VUqnZ4wu1VRPLuk7BbOo9JDW1cUVZUvBbkO5y2tNobJzhIFrLdD
+         mIM/1tO1bwH0Gu4s/+hGBxJVnKrcq+VCKgitcJSkT2p1gYOWuuiKbjKhkSlwsWMCNT
+         7FnQUwJ+IYeng==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Yonghong Song <yhs@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, linux-doc@vger.kernel.org,
-        linux-man@vger.kernel.org,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Yauheni Kaliuta <ykaliuta@redhat.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Paul Mackerras <paulus@samba.org>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix test_attach_probe for
+ powerpc uprobes
+In-Reply-To: <20210303064043.GB1913@DESKTOP-TDPLP67.localdomain>
+References: <20210301190416.90694-1-jolsa@kernel.org>
+ <309d8d05-4bbd-56b8-6c05-12a1aa98b843@fb.com> <YD4U1x2SbTlJF2QU@krava>
+ <20210303064043.GB1913@DESKTOP-TDPLP67.localdomain>
+Date:   Thu, 04 Mar 2021 11:46:27 +1100
+Message-ID: <87blbzsq3g.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 12:29 PM Yonghong Song <yhs@fb.com> wrote:
+"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> writes:
+> On 2021/03/02 11:35AM, Jiri Olsa wrote:
+>> On Mon, Mar 01, 2021 at 02:58:53PM -0800, Yonghong Song wrote:
+>> > 
+>> > 
+>> > On 3/1/21 11:04 AM, Jiri Olsa wrote:
+>> > > When testing uprobes we the test gets GEP (Global Entry Point)
+>> > > address from kallsyms, but then the function is called locally
+>> > > so the uprobe is not triggered.
+>> > > 
+>> > > Fixing this by adjusting the address to LEP (Local Entry Point)
+>> > > for powerpc arch.
+>> > > 
+>> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+>> > > ---
+>> > >   .../selftests/bpf/prog_tests/attach_probe.c    | 18 +++++++++++++++++-
+>> > >   1 file changed, 17 insertions(+), 1 deletion(-)
+>> > > 
+>> > > diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+>> > > index a0ee87c8e1ea..c3cfb48d3ed0 100644
+>> > > --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+>> > > +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+>> > > @@ -2,6 +2,22 @@
+>> > >   #include <test_progs.h>
+>> > >   #include "test_attach_probe.skel.h"
+>> > > +#if defined(__powerpc64__)
 >
+> This needs to be specific to ELF v2 ABI, so you'll need to check 
+> _CALL_ELF. See commit d5c2e2c17ae1d6 ("perf probe ppc64le: Prefer symbol 
+> table lookup over DWARF") for an example.
 >
+>> > > +/*
+>> > > + * We get the GEP (Global Entry Point) address from kallsyms,
+>> > > + * but then the function is called locally, so we need to adjust
+>> > > + * the address to get LEP (Local Entry Point).
+>> > 
+>> > Any documentation in the kernel about this behavior? This will
+>> > help to validate the change without trying with powerpc64 qemu...
 >
-> On 3/2/21 9:19 AM, Joe Stringer wrote:
-> > Based on a brief read of the corresponding source code.
-> >
-> > Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> > Reviewed-by: Quentin Monnet <quentin@isovalent.com>
-> > Signed-off-by: Joe Stringer <joe@cilium.io>
->
-> Acked-by: Yonghong Song <yhs@fb.com>
->
-> > ---
-> >   include/uapi/linux/bpf.h | 14 +++++++++++---
-> >   1 file changed, 11 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index a8f2964ec885..a6cd6650e23d 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -306,14 +306,22 @@ union bpf_iter_link_info {
-> >    *
-> >    * BPF_PROG_TEST_RUN
-> >    *  Description
-> > - *           Run an eBPF program a number of times against a provided
-> > - *           program context and return the modified program context a=
-nd
-> > - *           duration of the test run.
-> > + *           Run the eBPF program associated with the *prog_fd* a *rep=
-eat*
-> > + *           number of times against a provided program context *ctx_i=
-n* and
-> > + *           data *data_in*, and return the modified program context
-> > + *           *ctx_out*, *data_out* (for example, packet data), result =
-of the
-> > + *           execution *retval*, and *duration* of the test run.
->
-> FYI, Lorenz's BPF_PROG_TEST_RUN support for sk_lookup program
-> requires data_in and data_out to be NULL. Not sure whether it is
-> worthwhile to specially mention here or not. The patch has not
-> been merged but close.
->
-> https://lore.kernel.org/bpf/20210301101859.46045-1-lmb@cloudflare.com/
+> I don't think we have documented this in the kernel anywhere, but this 
+> is specific to the ELF v2 ABI and is described there:
+> - 2.3.2.1.  Function Prologue: 
+>   http://cdn.openpowerfoundation.org/wp-content/uploads/resources/leabi/content/dbdoclet.50655240___RefHeading___Toc377640597.html
+> - 3.4.1.  Symbol Values:
+>    http://cdn.openpowerfoundation.org/wp-content/uploads/resources/leabi/content/dbdoclet.50655241_95185.html
 
-Not sure how close either series is but I'm sure between Lorenz & I we
-can figure out how to fix this up. If I need to respin the series and
-Lorenz's one is in by then, I'll fix it up but it's not the end of the
-world to send an extra dedicated patch for this.
+There's a comment in ppc_function_entry(), but I don't think we have any
+actual "documentation".
+
+static inline unsigned long ppc_function_entry(void *func)
+{
+#ifdef PPC64_ELF_ABI_v2
+	u32 *insn = func;
+
+	/*
+	 * A PPC64 ABIv2 function may have a local and a global entry
+	 * point. We need to use the local entry point when patching
+	 * functions, so identify and step over the global entry point
+	 * sequence.
+	 *
+	 * The global entry point sequence is always of the form:
+	 *
+	 * addis r2,r12,XXXX
+	 * addi  r2,r2,XXXX
+	 *
+	 * A linker optimisation may convert the addis to lis:
+	 *
+	 * lis   r2,XXXX
+	 * addi  r2,r2,XXXX
+	 */
+	if ((((*insn & OP_RT_RA_MASK) == ADDIS_R2_R12) ||
+	     ((*insn & OP_RT_RA_MASK) == LIS_R2)) &&
+	    ((*(insn+1) & OP_RT_RA_MASK) == ADDI_R2_R2))
+		return (unsigned long)(insn + 2);
+	else
+		return (unsigned long)func;
+
+
+cheers
