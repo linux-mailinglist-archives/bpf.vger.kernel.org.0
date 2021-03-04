@@ -2,340 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DAA32D40A
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 14:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A06D32D4B5
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 14:58:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236071AbhCDNUv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Mar 2021 08:20:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235987AbhCDNUa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Mar 2021 08:20:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7036561477;
-        Thu,  4 Mar 2021 13:19:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614863990;
-        bh=pldFeLYn3TA1UGG+fl8e7F9EFUFCrhkJ8aM6LzE6Z+o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mJ56Uo9zmg+dvtuyRyiNJ7/+dLbbdB9HZQGec0vPndUsWskW0NfMArIK2VLC43cPv
-         BHaUWpVmZwcmIfpkX4AHDmjpHDobam2Sm+JA5wu8RfYvT1P4z+lPnZhAUls9tqbkxl
-         KAdPFbjoMmAO+758yzZljlskaKXDuwAE2a91FdXntpSz8XwMsHZXNAl2nuq+t+vBzR
-         oQQpNScHCEiVXtNMn41uKoTzR934NH1sDlx7umiE8uV4XhhZ2m48sP5lhkdN4dMo5I
-         WK1INiRYnHHUe8StFMSOSFbst+yuI9gvvYCDpLru0pO9HSPnkcF9wdsIi7769gPXWF
-         Eehdv50fIHUoQ==
-Date:   Thu, 4 Mar 2021 22:19:47 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Daniel Xu" <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>, kuba@kernel.org
-Subject: Re: Broken kretprobe stack traces
-Message-Id: <20210304221947.5a177ce2e1e94314e57c38a4@kernel.org>
-In-Reply-To: <20210303092604.59aea82c@gandalf.local.home>
-References: <1fed0793-391c-4c68-8d19-6dcd9017271d@www.fastmail.com>
-        <20210303134828.39922eb167524bc7206c7880@kernel.org>
-        <20210303092604.59aea82c@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S240731AbhCDN5H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Mar 2021 08:57:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238660AbhCDN4s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Mar 2021 08:56:48 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2582C06175F
+        for <bpf@vger.kernel.org>; Thu,  4 Mar 2021 05:56:07 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id m9so6398710edd.5
+        for <bpf@vger.kernel.org>; Thu, 04 Mar 2021 05:56:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zNqt364yKc9AWMgU3gsE1glWEHnIX0hXdX9QnycDgAE=;
+        b=h2MDWr0x+l/RRdWo87aMtBHYHL/EZs/ptnrUUCflnO+hIHY6vAI41jyhBF0syGZn/p
+         Op3XhjCGwMm/0GobwqzZwPc69RXJUMVBpaN54DUECA4S9O2T7SxDqu9P5GR5Jr7JAbBi
+         3xonWuM81lIInxPJBH7AABQqrezhq0wiLKqZ3ZlAe+DGtoWj1MDjKFDuYmVNT7cnvCPF
+         T0rSDDmILzCUYwmNsoKGMDS9ZJL5wEpQlVfEbc3MQ7EJiBMu/tmUiZ8qVGTACDpnUggm
+         P3z4cHSInsJnZ/lId4G3SFSzObh7UJ/sVc/zw8IB+ofkt/INH7XSoSiqfsvpVZu6L36d
+         KfUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zNqt364yKc9AWMgU3gsE1glWEHnIX0hXdX9QnycDgAE=;
+        b=ByuPDVnx/C8wLxxumSD2YSWosOiINPK5LY/bDv8iJg2Qh1XYvHFOhssKmSeaSfeROj
+         e7HFRZnOXUFwf/9hpUQwPi192ESf5/aM6c9gRWhhoGqhx8FvdIKSJZFRen3SKV+ng4Lj
+         6iH3Oj6zUat+/nV0v0ecGQJktLguhAVZEKuzVluWyH9QfcszTadHvSnalOmrI5MkHnBj
+         sm7S60mBPnVH4FN7kVF/6XDC5sjZlY8tyxnqZ0GEv8ao5jao+1oonCRnW6qy0cGhPMRn
+         prCyIFqs0dD7iHmV06hatq7trGIsQ4G6wqKZS6l/c1zew2tZTIF1rBMHAjHfgxU237eG
+         XXuQ==
+X-Gm-Message-State: AOAM533EJLWOhpUAfhlsxcbm4trUsKlWz8BhsJoiUlvbgpT5tlXuZUvt
+        +sDKefLZfmtyBol8QHD1C3wiYHLlzGw=
+X-Google-Smtp-Source: ABdhPJwXTJWytIsyWSpwSKDWlZQfF1hqo+lwl/A9iGQNVcWc4EWtFXn7X9rDyujpn/GUznvwqmFrHg==
+X-Received: by 2002:a05:6402:cb8:: with SMTP id cn24mr4528528edb.105.1614866166173;
+        Thu, 04 Mar 2021 05:56:06 -0800 (PST)
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com. [209.85.221.41])
+        by smtp.gmail.com with ESMTPSA id cw14sm23509803edb.8.2021.03.04.05.56.04
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Mar 2021 05:56:04 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id f12so23948871wrx.8
+        for <bpf@vger.kernel.org>; Thu, 04 Mar 2021 05:56:04 -0800 (PST)
+X-Received: by 2002:adf:fa08:: with SMTP id m8mr4317031wrr.12.1614866163865;
+ Thu, 04 Mar 2021 05:56:03 -0800 (PST)
+MIME-Version: 1.0
+References: <20210304064046.6232-1-hxseverything@gmail.com>
+In-Reply-To: <20210304064046.6232-1-hxseverything@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Thu, 4 Mar 2021 08:55:26 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSc3W9jcL97OF+ctRWLhFoUdNxb3P0MyPm9k7W8nTvWX0Q@mail.gmail.com>
+Message-ID: <CA+FuTSc3W9jcL97OF+ctRWLhFoUdNxb3P0MyPm9k7W8nTvWX0Q@mail.gmail.com>
+Subject: Re: [PATCH/v5] bpf: add bpf_skb_adjust_room flag BPF_F_ADJ_ROOM_ENCAP_L2_ETH
+To:     Xuesen Huang <hxseverything@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Xuesen Huang <huangxuesen@kuaishou.com>,
+        Zhiyong Cheng <chengzhiyong@kuaishou.com>,
+        Li Wang <wangli09@kuaishou.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 3 Mar 2021 09:26:04 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Thu, Mar 4, 2021 at 1:41 AM Xuesen Huang <hxseverything@gmail.com> wrote:
+>
+> From: Xuesen Huang <huangxuesen@kuaishou.com>
+>
+> bpf_skb_adjust_room sets the inner_protocol as skb->protocol for packets
+> encapsulation. But that is not appropriate when pushing Ethernet header.
+>
+> Add an option to further specify encap L2 type and set the inner_protocol
+> as ETH_P_TEB.
+>
+> Suggested-by: Willem de Bruijn <willemb@google.com>
+> Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
+> Signed-off-by: Zhiyong Cheng <chengzhiyong@kuaishou.com>
+> Signed-off-by: Li Wang <wangli09@kuaishou.com>
 
-> On Wed, 3 Mar 2021 13:48:28 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > 
-> > > 
-> > > I think (can't prove) this used to work:  
-> 
-> Would be good to find out if it did.
-> 
-> > 
-> > I'm not sure the bpftrace had correctly handled it or not.
-> > 
-> > > 
-> > >     # bpftrace -e 'kretprobe:__tcp_retransmit_skb { @[kstack()] = count() }'
-> > >     Attaching 1 probe...
-> > >     ^C
-> > > 
-> > >     @[
-> > >         kretprobe_trampoline+0
-> > >     ]: 1  
-> > 
-> > Would you know how the bpftrace stacktracer rewinds the stack entries?
-> > FYI, ftrace does it in trace_seq_print_sym()@kernel/trace/trace_output.c
-> > 
-> 
-> The difference between trace events and normal function tracing stack
-> traces is that it keeps its original return address. But kretprobes (and
-> function graph tracing, and some bpf trampolines too) modify the return
-> pointer, and that could possibly cause havoc with the stack trace.
-
-BTW, I think if the stack tracer passes the nth of kretprobe_trampoline
-or a cursor, kretprobe can find the correct return address from given task.
-
-I've made a patch to do that only for the CONFIG_ARCH_STACKWALK=y
-
-Here is an example on x86. 
-
- # echo r vfs_read > kprobe_events 
- # echo stacktrace > events/kprobes/r_vfs_read_0/trigger 
- # echo 1 > events/kprobes/r_vfs_read_0/enable 
- # echo 1 > options/sym-offset 
- # less trace 
-...
-
-              sh-132     [007] ...1    22.524917: <stack trace>
- => kretprobe_dispatcher+0x7d/0xc0
- => __kretprobe_trampoline_handler+0xdb/0x1b0
- => trampoline_handler+0x48/0x60
- => kretprobe_trampoline+0x2a/0x50
- => ksys_read+0x70/0xf0
- => __x64_sys_read+0x1a/0x20
- => do_syscall_64+0x38/0x50
- => entry_SYSCALL_64_after_hwframe+0x44/0xae
- => 0
- => 0
-
-------
-
-From 77a785a3a0791171b570830d0b2f099f8a4ba337 Mon Sep 17 00:00:00 2001
-From: Masami Hiramatsu <mhiramat@kernel.org>
-Date: Thu, 4 Mar 2021 14:19:24 +0900
-Subject: [PATCH] kprobes: stacktrace: Recover the address changed by kretprobe
-
-Recover the return address on the stack which changed by the
-kretprobe.
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- include/linux/kprobes.h |  3 ++
- kernel/kprobes.c        | 81 +++++++++++++++++++++++++++--------------
- kernel/stacktrace.c     | 26 +++++++++++++
- 3 files changed, 82 insertions(+), 28 deletions(-)
-
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 1883a4a9f16a..a022e507d829 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -205,6 +205,9 @@ extern void arch_prepare_kretprobe(struct kretprobe_instance *ri,
- 				   struct pt_regs *regs);
- extern int arch_trampoline_kprobe(struct kprobe *p);
- 
-+unsigned long kretprobe_real_stack_tsk(struct task_struct *tsk,
-+				       unsigned long addr,
-+				       struct llist_node **cur);
- /* If the trampoline handler called from a kprobe, use this version */
- unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
- 				void *trampoline_address,
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 745f08fdd7a6..b3d9dbd6086f 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1863,46 +1863,56 @@ unsigned long __weak arch_deref_entry_point(void *entry)
- 
- #ifdef CONFIG_KRETPROBES
- 
--unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
--					     void *trampoline_address,
--					     void *frame_pointer)
-+/* This assumes the tsk is current or the task which is not running. */
-+unsigned long kretprobe_real_stack_tsk(struct task_struct *tsk,
-+				       unsigned long addr,
-+				       struct llist_node **cur)
- {
--	kprobe_opcode_t *correct_ret_addr = NULL;
- 	struct kretprobe_instance *ri = NULL;
--	struct llist_node *first, *node;
--	struct kretprobe *rp;
-+	struct llist_node *node = *cur;
- 
--	/* Find all nodes for this frame. */
--	first = node = current->kretprobe_instances.first;
--	while (node) {
--		ri = container_of(node, struct kretprobe_instance, llist);
-+	if (addr != (unsigned long)&kretprobe_trampoline)
-+		return addr;
- 
--		BUG_ON(ri->fp != frame_pointer);
-+	if (!node)
-+		node = tsk->kretprobe_instances.first;
-+	else
-+		node = node->next;
- 
--		if (ri->ret_addr != trampoline_address) {
--			correct_ret_addr = ri->ret_addr;
--			/*
--			 * This is the real return address. Any other
--			 * instances associated with this task are for
--			 * other calls deeper on the call stack
--			 */
--			goto found;
-+	while (node) {
-+		ri = container_of(node, struct kretprobe_instance, llist);
-+		if (ri->ret_addr != (void *)&kretprobe_trampoline) {
-+			*cur = node;
-+			return (unsigned long)ri->ret_addr;
- 		}
--
- 		node = node->next;
- 	}
--	pr_err("Oops! Kretprobe fails to find correct return address.\n");
--	BUG_ON(1);
-+	return 0;
-+}
- 
--found:
--	/* Unlink all nodes for this frame. */
--	current->kretprobe_instances.first = node->next;
--	node->next = NULL;
-+unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
-+					     void *trampoline_address,
-+					     void *frame_pointer)
-+{
-+	kprobe_opcode_t *correct_ret_addr = NULL;
-+	struct kretprobe_instance *ri = NULL;
-+	struct llist_node *first, *node = NULL;
-+	struct kretprobe *rp;
- 
--	/* Run them..  */
-+	/* Find correct address and all nodes for this frame. */
-+	correct_ret_addr = (void*)kretprobe_real_stack_tsk(current,
-+				(unsigned long)&kretprobe_trampoline, &node);
-+	if (!correct_ret_addr) {
-+		pr_err("Oops! Kretprobe fails to find correct return address.\n");
-+		BUG_ON(1);
-+	}
-+
-+	/* Run them. */
-+	first = current->kretprobe_instances.first;
- 	while (first) {
- 		ri = container_of(first, struct kretprobe_instance, llist);
--		first = first->next;
-+
-+		BUG_ON(ri->fp != frame_pointer);
- 
- 		rp = get_kretprobe(ri);
- 		if (rp && rp->handler) {
-@@ -1913,6 +1923,21 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
- 			rp->handler(ri, regs);
- 			__this_cpu_write(current_kprobe, prev);
- 		}
-+		if (first == node)
-+			break;
-+
-+		first = first->next;
-+	}
-+
-+	/* Unlink all nodes for this frame. */
-+	first = current->kretprobe_instances.first;
-+	current->kretprobe_instances.first = node->next;
-+	node->next = NULL;
-+
-+	/* Recycle them.  */
-+	while (first) {
-+		ri = container_of(first, struct kretprobe_instance, llist);
-+		first = first->next;
- 
- 		recycle_rp_inst(ri);
- 	}
-diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
-index 9f8117c7cfdd..416f357e64b8 100644
---- a/kernel/stacktrace.c
-+++ b/kernel/stacktrace.c
-@@ -13,6 +13,7 @@
- #include <linux/export.h>
- #include <linux/kallsyms.h>
- #include <linux/stacktrace.h>
-+#include <linux/kprobes.h>
- 
- /**
-  * stack_trace_print - Print the entries in the stack trace
-@@ -76,6 +77,10 @@ struct stacktrace_cookie {
- 	unsigned int	size;
- 	unsigned int	skip;
- 	unsigned int	len;
-+#ifdef CONFIG_KRETPROBES
-+	struct llist_node *cur;
-+	struct task_struct *tsk;
-+#endif
- };
- 
- static bool stack_trace_consume_entry(void *cookie, unsigned long addr)
-@@ -89,6 +94,7 @@ static bool stack_trace_consume_entry(void *cookie, unsigned long addr)
- 		c->skip--;
- 		return true;
- 	}
-+	addr = kretprobe_real_stack_tsk(c->tsk, addr, &c->cur);
- 	c->store[c->len++] = addr;
- 	return c->len < c->size;
- }
-@@ -116,6 +122,10 @@ unsigned int stack_trace_save(unsigned long *store, unsigned int size,
- 		.store	= store,
- 		.size	= size,
- 		.skip	= skipnr + 1,
-+#ifdef CONFIG_KRETPROBES
-+		.cur	= NULL,
-+		.tsk	= current,
-+#endif
- 	};
- 
- 	arch_stack_walk(consume_entry, &c, current, NULL);
-@@ -141,6 +151,10 @@ unsigned int stack_trace_save_tsk(struct task_struct *tsk, unsigned long *store,
- 		.size	= size,
- 		/* skip this function if they are tracing us */
- 		.skip	= skipnr + (current == tsk),
-+#ifdef CONFIG_KRETPROBES
-+		.cur	= NULL,
-+		.tsk	= tsk,
-+#endif
- 	};
- 
- 	if (!try_get_task_stack(tsk))
-@@ -168,6 +182,10 @@ unsigned int stack_trace_save_regs(struct pt_regs *regs, unsigned long *store,
- 		.store	= store,
- 		.size	= size,
- 		.skip	= skipnr,
-+#ifdef CONFIG_KRETPROBES
-+		.cur	= NULL,
-+		.tsk	= current,
-+#endif
- 	};
- 
- 	arch_stack_walk(consume_entry, &c, current, regs);
-@@ -194,6 +212,10 @@ int stack_trace_save_tsk_reliable(struct task_struct *tsk, unsigned long *store,
- 	struct stacktrace_cookie c = {
- 		.store	= store,
- 		.size	= size,
-+#ifdef CONFIG_KRETPROBES
-+		.cur	= NULL,
-+		.tsk	= tsk,
-+#endif
- 	};
- 	int ret;
- 
-@@ -224,6 +246,10 @@ unsigned int stack_trace_save_user(unsigned long *store, unsigned int size)
- 	struct stacktrace_cookie c = {
- 		.store	= store,
- 		.size	= size,
-+#ifdef CONFIG_KRETPROBES
-+		.cur	= NULL,
-+		.tsk	= current,
-+#endif
- 	};
- 	mm_segment_t fs;
- 
--- 
-2.25.1
-
-
-
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: Willem de Bruijn <willemb@google.com>
