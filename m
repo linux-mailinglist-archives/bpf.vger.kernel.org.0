@@ -2,68 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081DD32D6DC
-	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 16:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DA332D6FD
+	for <lists+bpf@lfdr.de>; Thu,  4 Mar 2021 16:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235100AbhCDPlI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Mar 2021 10:41:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235146AbhCDPkr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Mar 2021 10:40:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 330CC64F21;
-        Thu,  4 Mar 2021 15:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614872407;
-        bh=YVQGiVLkwRDio8qKf+8kEWRgIWC3o9vFWwkkMlaxeeQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=bVsag/6OKJFh0DW4E1G0NRLJ2rWuhU2N/nwRKrNznfWtb2lDrA2CpMJfo7kWG4WdK
-         w8eRIHSw8KOBzE6e/5DWxrBQUD6PttIVdjZvnVaD4RdZRGYkXg3rR1aGWOkdjTDbrx
-         LMWNJeD40PN5g2p7UlvE70HCldj7nzosM6Iien4698BUM0wDNK7f9WRJXR5/j8g805
-         OHCoc8SqWIGWPrmxEoVG48N+jW8yeyG+np8P5OuRLZMjq9r8cZ6J2mcsZTj2tkh/pR
-         sp+VqukkzQPfMYk2t0Je6XkNRuZVPV5cWZFOHrPJmJfmD508RK9G23RE1mVm4QqLpb
-         mBZHZ/hUjR4Kg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 26D21609EA;
-        Thu,  4 Mar 2021 15:40:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [Patch bpf-next] skmsg: add function doc for skb->_sk_redir
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161487240715.18962.12442494103235692735.git-patchwork-notify@kernel.org>
-Date:   Thu, 04 Mar 2021 15:40:07 +0000
-References: <20210301184805.8174-1-xiyou.wangcong@gmail.com>
-In-Reply-To: <20210301184805.8174-1-xiyou.wangcong@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        cong.wang@bytedance.com, lmb@cloudflare.com, daniel@iogearbox.net,
-        john.fastabend@gmail.com, jakub@cloudflare.com
+        id S235464AbhCDPpY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 4 Mar 2021 10:45:24 -0500
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:45887 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235493AbhCDPpS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 4 Mar 2021 10:45:18 -0500
+X-IronPort-AV: E=Sophos;i="5.81,222,1610406000"; 
+   d="scan'208";a="496144963"
+Received: from lfbn-idf1-1-708-183.w86-245.abo.wanadoo.fr (HELO mp-66156.home) ([86.245.159.183])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 16:44:35 +0100
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: XDP socket rings, and LKMM litmus tests
+From:   maranget <luc.maranget@inria.fr>
+In-Reply-To: <20210303202246.GC1582185@rowland.harvard.edu>
+Date:   Thu, 4 Mar 2021 16:44:34 +0100
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        "Alglave, Jade" <j.alglave@ucl.ac.uk>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>, joel@joelfernandes.org,
+        =?utf-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <EF3F87BF-2AA1-4F96-A2A0-EA8A9D6FC8F7@inria.fr>
+References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
+ <20210302211446.GA1541641@rowland.harvard.edu>
+ <20210302235019.GT2696@paulmck-ThinkPad-P72>
+ <20210303171221.GA1574518@rowland.harvard.edu>
+ <20210303174022.GD2696@paulmck-ThinkPad-P72>
+ <20210303202246.GC1582185@rowland.harvard.edu>
+To:     Alan Stern <stern@rowland.harvard.edu>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-On Mon,  1 Mar 2021 10:48:05 -0800 you wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
+> On 3 Mar 2021, at 21:22, Alan Stern <stern@rowland.harvard.edu> wrote:
 > 
-> This should fix the following warning:
+>>> 
+>>> Local variables absolutely should be treated just like CPU registers, if 
+>>> possible.  In fact, the compiler has the option of keeping local 
+>>> variables stored in registers.
+>>> 
+>>> (Of course, things may get complicated if anyone writes a litmus test 
+>>> that uses a pointer to a local variable,  Especially if the pointer 
+>>> could hold the address of a local variable in one execution and a 
+>>> shared variable in another!  Or if the pointer is itself a shared 
+>>> variable and is dereferenced in another thread!)
+>> 
+>> Good point!  I did miss this complication.  ;-)
 > 
-> include/linux/skbuff.h:932: warning: Function parameter or member
-> '_sk_redir' not described in 'sk_buff'
+> I suspect it wouldn't be so bad if herd7 disallowed taking addresses of 
+> local variables.
 > 
-> [...]
+> 
 
-Here is the summary with links:
-  - [bpf-next] skmsg: add function doc for skb->_sk_redir
-    https://git.kernel.org/bpf/bpf-next/c/6ed6e1c761f6
+Herd7 does disallow taking addresses of local variables.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+However, such  tests can still be run on machine, provided function bodies are accepted by the C compiler.
 
+—Luc
 
