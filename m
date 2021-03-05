@@ -2,88 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A26B432ED77
-	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 15:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E02B32EDE6
+	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 16:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbhCEOub (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Mar 2021 09:50:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38794 "EHLO
+        id S230217AbhCEPJR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Mar 2021 10:09:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhCEOu2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Mar 2021 09:50:28 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73BFC061574;
-        Fri,  5 Mar 2021 06:50:27 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id a24so1507983plm.11;
-        Fri, 05 Mar 2021 06:50:27 -0800 (PST)
+        with ESMTP id S230183AbhCEPI7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Mar 2021 10:08:59 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A169C061574
+        for <bpf@vger.kernel.org>; Fri,  5 Mar 2021 07:08:59 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id mj10so4106454ejb.5
+        for <bpf@vger.kernel.org>; Fri, 05 Mar 2021 07:08:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/CfVIAQFkmtf7QRx/0l0Cqj2uolvt+E+hBzw2tUvPKY=;
-        b=H3j3xqiLjFoFh9ELEi1SBVd2DnvtGRw+DOgGh+hRuLX0hQqTVLOwxMBe2kWvW+B5yj
-         xfblJZpXx9VcvVvEBC+bFkCMCkrnunebY8JQhSWUz9jkRc8Nnj41nQnVZen67QvZlkOd
-         Ecu2BPA+BJJu5TogdXQKR32A/HS4bL7g0xbHRn8oedyoRikx9NjNmfOW1vkW1KNeSmyi
-         pfBvvv61AXK4+xzs5oCFH7qE+07gNMTLcOq/O8hCnBDzv9pfSuahvWgtEuDEFK2fRqSa
-         qVGND2fawYr/A4QHG2HC27+TEqwLCUrIgilHOG2jjSjV9cyJo0u4821Jan4GGF1CBMAQ
-         S79w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JjTJfcQAXeOWcp9QkQJCNvSpKl1Ds2qR5zvC+5VzgvI=;
+        b=CpyWh+9m1kcl9bm6CS/WtsL7nEetdYXq/2VszRk50K4nPPdMtT736vpXI66iJE+BnP
+         t8M5VYEFLqkXwIEad8lE8fLWYnkJMGaBvSLvWwSvibSg8gdi+vB6cm6o3ema3ymJDQCr
+         eF5qaICjAyLicS6JRBJ5Q+SM4a9temU0s9hUkJtp/QsB3KWbgOJRQFC9XJr14GCTDkj8
+         MsijxkYsXAqGstSCZWDAn3d9H/XiLJICOFqB2MaG/DRPPjEHUTt7cfphfPT0TdG1PRnF
+         TFVOapdBPLFDGav+yFTXhp7qDZ/uuVWuH++U/k3g/b2dk2ztzQksQfKYu6AC3nr/AftS
+         zG1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/CfVIAQFkmtf7QRx/0l0Cqj2uolvt+E+hBzw2tUvPKY=;
-        b=CVcJfsf/iF/PVvap6Ien80P+wAtCIVp0suZRmqCpa5ezRiRuG2+C32SJRz0K1oW19A
-         cpNp5b0b97qIyxX0m8DUe1Aiagd2MD+la/P73Ow9LlBX53I4+ZYlxYDl9CIRc4DT1Wkr
-         PtcIZTrP4imqZKrhxPpWAbucmbz8MGctXSqVhr6Mr1LNxtrX5US6P1URIur8jpI8URDb
-         SVnqGPMaS+xHHb+jRB3ex/MIJSTLSHRXMzOoctT8P8ADIx7+00J0lo9o7AVGLjSyyz5v
-         zme5FqXazJ0y6fhoedS4mkzAXMpI0SPhfkAldSeTWL9Focv5TmlZV12shE789nxwIU9P
-         Fu6w==
-X-Gm-Message-State: AOAM533jCqcWYO0uhh4/R+sBTeNF4YfxiM2nUIxO/IUd/LdmUZ/X7e9/
-        /Vd8EyJlfLe915QZWIxiOGltdzOACxJhJw==
-X-Google-Smtp-Source: ABdhPJxNfosO+A/6cS3uqlac2/Hk0XHcvaWKnF2dtA4widlyoweiw8rZhtna7eBzdLHEQNN9CPmpZw==
-X-Received: by 2002:a17:90b:a04:: with SMTP id gg4mr10868747pjb.51.1614955827453;
-        Fri, 05 Mar 2021 06:50:27 -0800 (PST)
-Received: from [192.168.1.18] (i121-115-229-245.s42.a013.ap.plala.or.jp. [121.115.229.245])
-        by smtp.googlemail.com with ESMTPSA id y2sm2820124pgf.7.2021.03.05.06.50.25
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JjTJfcQAXeOWcp9QkQJCNvSpKl1Ds2qR5zvC+5VzgvI=;
+        b=eixfTL0A8S532d/SQIYGlLbrbHKfeH8CozBpeGmwRvx2OJiYxp8PIjF09kY0bXcdiy
+         ukcN4VBXYcKmMZ4Rv3N6QC3KMUQTngwR0RSIJmJ2Ye+4hLOTJ+O22nQ4GhjipHrBT6vi
+         TFqlax3idTQMJd1kYULoVZwTFjqe/oweqSJkGr6RnpWRNly+92973Nl5DsAvt3jOpeqh
+         YE6izsK4to9OHhu94V/pObREjjUbaZJHhv5W9q1X+IJyKH7InPomRofFBAgMKxsltGRF
+         GeY2Jkx4g2qXt8DUnHsg0s4vlVg+tUdUEnHWrqpFYQVF3ABcZZUtb5IcsisnZRF5Ut+y
+         xZlg==
+X-Gm-Message-State: AOAM530xcPMcZ4FDKfz/HxIceVQ+K7tfXwQWUQRklLxT7iatnt1viPu6
+        WV9NTKirBpiA5JkAeY0gkV+ySjwBlq4=
+X-Google-Smtp-Source: ABdhPJwEPsy6WKFZ3XmIBeFiCW0o1EWj/CVE35pGDzXuy5CGGlRxkBPLomSDHGnYYoXSdH0Wl6t9Ag==
+X-Received: by 2002:a17:906:c051:: with SMTP id bm17mr2523815ejb.21.1614956937501;
+        Fri, 05 Mar 2021 07:08:57 -0800 (PST)
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com. [209.85.221.50])
+        by smtp.gmail.com with ESMTPSA id gj13sm1580040ejb.118.2021.03.05.07.08.56
+        for <bpf@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Mar 2021 06:50:27 -0800 (PST)
-Subject: Re: [PATCH bpf] veth: store queue_mapping independently of XDP prog
- presence
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        makita.toshiaki@lab.ntt.co.jp, daniel@iogearbox.net,
-        ast@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     bjorn.topel@intel.com, magnus.karlsson@intel.com
-References: <20210303152903.11172-1-maciej.fijalkowski@intel.com>
-From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
-Message-ID: <3c05a530-633b-03ce-2362-8dc9d5a76d98@gmail.com>
-Date:   Fri, 5 Mar 2021 23:50:23 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 05 Mar 2021 07:08:56 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id d11so2452287wrj.7
+        for <bpf@vger.kernel.org>; Fri, 05 Mar 2021 07:08:56 -0800 (PST)
+X-Received: by 2002:a5d:640b:: with SMTP id z11mr9605831wru.327.1614956936586;
+ Fri, 05 Mar 2021 07:08:56 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210303152903.11172-1-maciej.fijalkowski@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210305123347.15311-1-hxseverything@gmail.com>
+In-Reply-To: <20210305123347.15311-1-hxseverything@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Fri, 5 Mar 2021 10:08:20 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSc_RDHb8dmMzfwatt89pXsX2AA1--X98pEGkmmfpVs-Vg@mail.gmail.com>
+Message-ID: <CA+FuTSc_RDHb8dmMzfwatt89pXsX2AA1--X98pEGkmmfpVs-Vg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests_bpf: extend test_tc_tunnel test with vxlan
+To:     Xuesen Huang <hxseverything@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Xuesen Huang <huangxuesen@kuaishou.com>,
+        Li Wang <wangli09@kuaishou.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/03/04 0:29, Maciej Fijalkowski wrote:
-> Currently, veth_xmit() would call the skb_record_rx_queue() only when
-> there is XDP program loaded on peer interface in native mode.
-> 
-> If peer has XDP prog in generic mode, then netif_receive_generic_xdp()
-> has a call to netif_get_rxqueue(skb), so for multi-queue veth it will
-> not be possible to grab a correct rxq.
-> 
-> To fix that, store queue_mapping independently of XDP prog presence on
-> peer interface.
-> 
-> Fixes: 638264dc9022 ("veth: Support per queue XDP ring")
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+On Fri, Mar 5, 2021 at 7:34 AM Xuesen Huang <hxseverything@gmail.com> wrote:
+>
+> From: Xuesen Huang <huangxuesen@kuaishou.com>
+>
+> Add BPF_F_ADJ_ROOM_ENCAP_L2_ETH flag to the existing tests which
+> encapsulates the ethernet as the inner l2 header.
+>
+> Update a vxlan encapsulation test case.
+>
+> Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
+> Signed-off-by: Li Wang <wangli09@kuaishou.com>
+> Signed-off-by: Willem de Bruijn <willemb@google.com>
 
-I did like this in order to keep the default behavior for non-xdp case,
-but generic XDP should behave the same as native XDP, so
 
-Acked-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
+Please don't add my signed off by without asking.
+
+That said,
+
+Acked-by: Willem de Bruijn <willemb@google.com>
