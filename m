@@ -2,235 +2,224 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86ACC32E517
-	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 10:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A6932E65D
+	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 11:29:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbhCEJlt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Mar 2021 04:41:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhCEJl3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:41:29 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4D3C061574;
-        Fri,  5 Mar 2021 01:41:28 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id q14so1947532ljp.4;
-        Fri, 05 Mar 2021 01:41:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jrR8mvyeezm9YVlR4aY3Pdm07zd5OUjsWfQdM4GMkIE=;
-        b=nG0obGZR/XiDgNQhnskTQscoRcTT9HNK4zziceHpgJJ3HFTmbCYeaJYCU+GbaspO/6
-         Nya5ckBW+95miwQ7SdA2M+OlD7RYJGxT8siIGrwSYJpK6iySyAYkwKmt4OAxb8dgbrtr
-         WkBPVsIzvenvIdDrWzt6sNyJDWDwYhhZwStFar1n5PjAryj7v4cX510WPnvY+NAqpb9o
-         R/xUwFP5z18zn1xjZbo2iOryqN1SRP869k3TYPGvEM7SFEHayBoeH08nhreSoAbShvl1
-         o5Ec/wli9BDrUyMmcyAjJ9f0EHNqhWnjtI/XKFMzUTbVIf+aAfP7a6S/bYvrXwC3yxnc
-         oEeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jrR8mvyeezm9YVlR4aY3Pdm07zd5OUjsWfQdM4GMkIE=;
-        b=sGmzg/wu8aOwoutw+uxsrQ27x2HDD4szv8sDVmN5zV9V9W3ilK7LfR9zSY6pAQAI4S
-         HaQmsZAt8S72V7aH/Jnp+c56uLnsn+TCkJLsEo9yL/pzaylXp4kfWSAff6ib4C+Gpka9
-         QHRTWXnHQIYm6aN9ZC7CcE2ETCxrzxDqUCX381lfLEPoL6QmbLTgbMgPOfsjo/Qybjd3
-         mRWiwX1roDS33+ReAqvo/bsRJs5+bJiuQ9irKhk8Tea9Z/P/OXV9GtL/oGZwI/ZixSG4
-         sJVLf/h87FjdEUCilJob7H+SRNqyyghjJ5RoOHRfI8S6jQOk5YVHqZR4b7lCVkfVgXSj
-         H6eA==
-X-Gm-Message-State: AOAM530VQm+zUiXxtZlMN8lWce6rpR2gdN+D98D7v58iORJgIDqY/aO+
-        I88D1s4diesHOe05owOMd4s=
-X-Google-Smtp-Source: ABdhPJyPiCLFge0DDKKY8JRZxeFnMrcaj2TjBDeAXNInOx+kPqE4YSNEaMRl9dhaurwsGP475q2cXQ==
-X-Received: by 2002:a2e:5747:: with SMTP id r7mr4858745ljd.70.1614937287494;
-        Fri, 05 Mar 2021 01:41:27 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
-        by smtp.gmail.com with ESMTPSA id v80sm235371lfa.229.2021.03.05.01.41.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Mar 2021 01:41:26 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        maximmi@nvidia.com, andrii@kernel.org, toke@redhat.com,
-        will@kernel.org, paulmck@kernel.org, stern@rowland.harvard.edu
-Subject: [PATCH bpf-next v2 2/2] libbpf, xsk: add libbpf_smp_store_release libbpf_smp_load_acquire
-Date:   Fri,  5 Mar 2021 10:41:13 +0100
-Message-Id: <20210305094113.413544-3-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210305094113.413544-1-bjorn.topel@gmail.com>
-References: <20210305094113.413544-1-bjorn.topel@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S229672AbhCEK3V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Mar 2021 05:29:21 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:56121 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229597AbhCEK3N (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 5 Mar 2021 05:29:13 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UQYffdz_1614940150;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UQYffdz_1614940150)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 05 Mar 2021 18:29:10 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     netdev@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: [PATCH v6 net-next] virtio-net: support XDP when not more queues
+Date:   Fri,  5 Mar 2021 18:29:10 +0800
+Message-Id: <1614940150-38458-1-git-send-email-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+The number of queues implemented by many virtio backends is limited,
+especially some machines have a large number of CPUs. In this case, it
+is often impossible to allocate a separate queue for
+XDP_TX/XDP_REDIRECT, then xdp cannot be loaded to work, even xdp does
+not use the XDP_TX/XDP_REDIRECT.
 
-Now that the AF_XDP rings have load-acquire/store-release semantics,
-move libbpf to that as well.
+This patch allows XDP_TX/XDP_REDIRECT to run by reuse the existing SQ
+with __netif_tx_lock() hold when there are not enough queues.
 
-The library-internal libbpf_smp_{load_acquire,store_release} are only
-valid for 32-bit words on ARM64.
-
-Also, remove the barriers that are no longer in use.
-
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
 ---
- tools/lib/bpf/libbpf_util.h | 72 +++++++++++++++++++++++++------------
- tools/lib/bpf/xsk.h         | 17 +++------
- 2 files changed, 55 insertions(+), 34 deletions(-)
+v6: 1. use __netif_tx_acquire()/__netif_tx_release(). (suggested by Jason Wang)
+    2. add note for why not lock. (suggested by Jason Wang)
+    3. Use variable 'flag' to record with or without locked.  It is not safe to
+       use curr_queue_pairs in "virtnet_put_xdp_sq", because it may changed after
+       "virtnet_get_xdp_sq".
 
-diff --git a/tools/lib/bpf/libbpf_util.h b/tools/lib/bpf/libbpf_util.h
-index 59c779c5790c..94a0d7bb6f3c 100644
---- a/tools/lib/bpf/libbpf_util.h
-+++ b/tools/lib/bpf/libbpf_util.h
-@@ -5,6 +5,7 @@
- #define __LIBBPF_LIBBPF_UTIL_H
- 
- #include <stdbool.h>
-+#include <linux/compiler.h>
- 
- #ifdef __cplusplus
- extern "C" {
-@@ -15,29 +16,56 @@ extern "C" {
-  * application that uses libbpf.
-  */
- #if defined(__i386__) || defined(__x86_64__)
--# define libbpf_smp_rmb() asm volatile("" : : : "memory")
--# define libbpf_smp_wmb() asm volatile("" : : : "memory")
--# define libbpf_smp_mb() \
--	asm volatile("lock; addl $0,-4(%%rsp)" : : : "memory", "cc")
--/* Hinders stores to be observed before older loads. */
--# define libbpf_smp_rwmb() asm volatile("" : : : "memory")
-+# define libbpf_smp_store_release(p, v)					\
-+	do {								\
-+		asm volatile("" : : : "memory");			\
-+		WRITE_ONCE(*p, v);					\
-+	} while (0)
-+# define libbpf_smp_load_acquire(p)					\
-+	({								\
-+		typeof(*p) ___p1 = READ_ONCE(*p);			\
-+		asm volatile("" : : : "memory");			\
-+		___p1;							\
-+	})
- #elif defined(__aarch64__)
--# define libbpf_smp_rmb() asm volatile("dmb ishld" : : : "memory")
--# define libbpf_smp_wmb() asm volatile("dmb ishst" : : : "memory")
--# define libbpf_smp_mb() asm volatile("dmb ish" : : : "memory")
--# define libbpf_smp_rwmb() libbpf_smp_mb()
--#elif defined(__arm__)
--/* These are only valid for armv7 and above */
--# define libbpf_smp_rmb() asm volatile("dmb ish" : : : "memory")
--# define libbpf_smp_wmb() asm volatile("dmb ishst" : : : "memory")
--# define libbpf_smp_mb() asm volatile("dmb ish" : : : "memory")
--# define libbpf_smp_rwmb() libbpf_smp_mb()
--#else
--/* Architecture missing native barrier functions. */
--# define libbpf_smp_rmb() __sync_synchronize()
--# define libbpf_smp_wmb() __sync_synchronize()
--# define libbpf_smp_mb() __sync_synchronize()
--# define libbpf_smp_rwmb() __sync_synchronize()
-+# define libbpf_smp_store_release(p, v)					\
-+		asm volatile ("stlr %w1, %0" : "=Q" (*p) : "r" (v) : "memory")
-+# define libbpf_smp_load_acquire(p)					\
-+	({								\
-+		typeof(*p) ___p1;					\
-+		asm volatile ("ldar %w0, %1"				\
-+			      : "=r" (___p1) : "Q" (*p) : "memory");	\
-+		__p1;							\
-+	})
-+#elif defined(__riscv)
-+# define libbpf_smp_store_release(p, v)					\
-+	do {								\
-+		asm volatile ("fence rw,w" : : : "memory");		\
-+		WRITE_ONCE(*p, v);					\
-+	} while (0)
-+# define libbpf_smp_load_acquire(p)					\
-+	({								\
-+		typeof(*p) ___p1 = READ_ONCE(*p);			\
-+		asm volatile ("fence r,rw" : : : "memory");		\
-+		___p1;							\
-+	})
-+#endif
+v5: change subject from 'support XDP_TX when not more queues'
+
+v4: make sparse happy
+    suggested by Jakub Kicinski
+
+v3: add warning when no more queues
+    suggested by Jesper Dangaard Brouer
+
+ drivers/net/virtio_net.c | 63 ++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 53 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index ba8e637..f9e024d 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -195,6 +195,9 @@ struct virtnet_info {
+ 	/* # of XDP queue pairs currently used by the driver */
+ 	u16 xdp_queue_pairs;
+
++	/* xdp_queue_pairs may be 0, when xdp is already loaded. So add this. */
++	bool xdp_enabled;
 +
-+#ifndef libbpf_smp_store_release
-+#define libbpf_smp_store_release(p, v)					\
-+	do {								\
-+		__sync_synchronize();					\
-+		WRITE_ONCE(*p, v);					\
-+	} while (0)
-+#endif
+ 	/* I like... big packets and I cannot lie! */
+ 	bool big_packets;
+
+@@ -481,14 +484,48 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
+ 	return 0;
+ }
+
+-static struct send_queue *virtnet_xdp_sq(struct virtnet_info *vi)
++static struct send_queue *virtnet_get_xdp_sq(struct virtnet_info *vi, int *flag)
++	__acquires(txq->_xmit_lock)
+ {
++	struct netdev_queue *txq;
+ 	unsigned int qp;
+
+-	qp = vi->curr_queue_pairs - vi->xdp_queue_pairs + smp_processor_id();
++	if (vi->curr_queue_pairs > nr_cpu_ids) {
++		qp = vi->curr_queue_pairs - vi->xdp_queue_pairs + smp_processor_id();
++		txq = netdev_get_tx_queue(vi->dev, qp);
 +
-+#ifndef libbpf_smp_load_acquire
-+#define libbpf_smp_load_acquire(p)					\
-+	({								\
-+		typeof(*p) ___p1 = READ_ONCE(*p);			\
-+		__sync_synchronize();					\
-+		___p1;							\
-+	})
- #endif
- 
- #ifdef __cplusplus
-diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
-index e9f121f5d129..a9fdea87b5cd 100644
---- a/tools/lib/bpf/xsk.h
-+++ b/tools/lib/bpf/xsk.h
-@@ -96,7 +96,8 @@ static inline __u32 xsk_prod_nb_free(struct xsk_ring_prod *r, __u32 nb)
- 	 * this function. Without this optimization it whould have been
- 	 * free_entries = r->cached_prod - r->cached_cons + r->size.
- 	 */
--	r->cached_cons = *r->consumer + r->size;
-+	r->cached_cons = libbpf_smp_load_acquire(r->consumer);
-+	r->cached_cons += r->size;
- 
- 	return r->cached_cons - r->cached_prod;
++		/* In this case, this txq is only used for xdp tx on the current
++		 * cpu, so it does not need to be locked.
++		 * __netif_tx_acquire is for sparse.
++		 */
++		__netif_tx_acquire(txq);
++		*flag = false;
++	} else {
++		qp = smp_processor_id() % vi->curr_queue_pairs;
++		txq = netdev_get_tx_queue(vi->dev, qp);
++		__netif_tx_lock(txq, raw_smp_processor_id());
++		*flag = true;
++	}
++
+ 	return &vi->sq[qp];
  }
-@@ -106,7 +107,7 @@ static inline __u32 xsk_cons_nb_avail(struct xsk_ring_cons *r, __u32 nb)
- 	__u32 entries = r->cached_prod - r->cached_cons;
- 
- 	if (entries == 0) {
--		r->cached_prod = *r->producer;
-+		r->cached_prod = libbpf_smp_load_acquire(r->producer);
- 		entries = r->cached_prod - r->cached_cons;
+
++static void virtnet_put_xdp_sq(struct virtnet_info *vi, struct send_queue *sq,
++			       int flag)
++	__releases(txq->_xmit_lock)
++{
++	struct netdev_queue *txq;
++	unsigned int qp;
++
++	qp = sq - vi->sq;
++	txq = netdev_get_tx_queue(vi->dev, qp);
++
++	if (flag)
++		__netif_tx_unlock(txq);
++	else
++		__netif_tx_release(txq);
++}
++
+ static int virtnet_xdp_xmit(struct net_device *dev,
+ 			    int n, struct xdp_frame **frames, u32 flags)
+ {
+@@ -496,12 +533,12 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+ 	struct receive_queue *rq = vi->rq;
+ 	struct bpf_prog *xdp_prog;
+ 	struct send_queue *sq;
++	int ret, err, sq_flag;
+ 	unsigned int len;
+ 	int packets = 0;
+ 	int bytes = 0;
+ 	int drops = 0;
+ 	int kicks = 0;
+-	int ret, err;
+ 	void *ptr;
+ 	int i;
+
+@@ -512,7 +549,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+ 	if (!xdp_prog)
+ 		return -ENXIO;
+
+-	sq = virtnet_xdp_sq(vi);
++	sq = virtnet_get_xdp_sq(vi, &sq_flag);
+
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK)) {
+ 		ret = -EINVAL;
+@@ -560,12 +597,13 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+ 	sq->stats.kicks += kicks;
+ 	u64_stats_update_end(&sq->stats.syncp);
+
++	virtnet_put_xdp_sq(vi, sq, sq_flag);
+ 	return ret;
+ }
+
+ static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
+ {
+-	return vi->xdp_queue_pairs ? VIRTIO_XDP_HEADROOM : 0;
++	return vi->xdp_enabled ? VIRTIO_XDP_HEADROOM : 0;
+ }
+
+ /* We copy the packet for XDP in the following cases:
+@@ -1457,12 +1495,15 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
+ 		xdp_do_flush();
+
+ 	if (xdp_xmit & VIRTIO_XDP_TX) {
+-		sq = virtnet_xdp_sq(vi);
++		int sq_flag;
++
++		sq = virtnet_get_xdp_sq(vi, &sq_flag);
+ 		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq)) {
+ 			u64_stats_update_begin(&sq->stats.syncp);
+ 			sq->stats.kicks++;
+ 			u64_stats_update_end(&sq->stats.syncp);
+ 		}
++		virtnet_put_xdp_sq(vi, sq, sq_flag);
  	}
- 
-@@ -129,9 +130,7 @@ static inline void xsk_ring_prod__submit(struct xsk_ring_prod *prod, __u32 nb)
- 	/* Make sure everything has been written to the ring before indicating
- 	 * this to the kernel by writing the producer pointer.
- 	 */
--	libbpf_smp_wmb();
--
--	*prod->producer += nb;
-+	libbpf_smp_store_release(prod->producer, *prod->producer + nb);
- }
- 
- static inline __u32 xsk_ring_cons__peek(struct xsk_ring_cons *cons, __u32 nb, __u32 *idx)
-@@ -139,11 +138,6 @@ static inline __u32 xsk_ring_cons__peek(struct xsk_ring_cons *cons, __u32 nb, __
- 	__u32 entries = xsk_cons_nb_avail(cons, nb);
- 
- 	if (entries > 0) {
--		/* Make sure we do not speculatively read the data before
--		 * we have received the packet buffers from the ring.
--		 */
--		libbpf_smp_rmb();
--
- 		*idx = cons->cached_cons;
- 		cons->cached_cons += entries;
+
+ 	return received;
+@@ -2417,10 +2458,9 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+
+ 	/* XDP requires extra queues for XDP_TX */
+ 	if (curr_qp + xdp_qp > vi->max_queue_pairs) {
+-		NL_SET_ERR_MSG_MOD(extack, "Too few free TX rings available");
+-		netdev_warn(dev, "request %i queues but max is %i\n",
++		netdev_warn(dev, "XDP request %i queues but max is %i. XDP_TX and XDP_REDIRECT will operate in a slower locked tx mode.\n",
+ 			    curr_qp + xdp_qp, vi->max_queue_pairs);
+-		return -ENOMEM;
++		xdp_qp = 0;
  	}
-@@ -161,9 +155,8 @@ static inline void xsk_ring_cons__release(struct xsk_ring_cons *cons, __u32 nb)
- 	/* Make sure data has been read before indicating we are done
- 	 * with the entries by updating the consumer pointer.
- 	 */
--	libbpf_smp_rwmb();
-+	libbpf_smp_store_release(cons->consumer, *cons->consumer + nb);
- 
--	*cons->consumer += nb;
- }
- 
- static inline void *xsk_umem__get_data(void *umem_area, __u64 addr)
--- 
-2.27.0
+
+ 	old_prog = rtnl_dereference(vi->rq[0].xdp_prog);
+@@ -2454,11 +2494,14 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+ 	vi->xdp_queue_pairs = xdp_qp;
+
+ 	if (prog) {
++		vi->xdp_enabled = true;
+ 		for (i = 0; i < vi->max_queue_pairs; i++) {
+ 			rcu_assign_pointer(vi->rq[i].xdp_prog, prog);
+ 			if (i == 0 && !old_prog)
+ 				virtnet_clear_guest_offloads(vi);
+ 		}
++	} else {
++		vi->xdp_enabled = false;
+ 	}
+
+ 	for (i = 0; i < vi->max_queue_pairs; i++) {
+@@ -2526,7 +2569,7 @@ static int virtnet_set_features(struct net_device *dev,
+ 	int err;
+
+ 	if ((dev->features ^ features) & NETIF_F_LRO) {
+-		if (vi->xdp_queue_pairs)
++		if (vi->xdp_enabled)
+ 			return -EBUSY;
+
+ 		if (features & NETIF_F_LRO)
+--
+1.8.3.1
 
