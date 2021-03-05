@@ -2,77 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9328432E006
-	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 04:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E2332E008
+	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 04:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbhCEDVj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Mar 2021 22:21:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
+        id S229478AbhCEDXk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Mar 2021 22:23:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbhCEDVj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Mar 2021 22:21:39 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE35C061574;
-        Thu,  4 Mar 2021 19:21:38 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id k12so970743ljg.9;
-        Thu, 04 Mar 2021 19:21:38 -0800 (PST)
+        with ESMTP id S229458AbhCEDXj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Mar 2021 22:23:39 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33142C061574
+        for <bpf@vger.kernel.org>; Thu,  4 Mar 2021 19:23:39 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id u4so1259491lfs.0
+        for <bpf@vger.kernel.org>; Thu, 04 Mar 2021 19:23:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=jHZGaSuRvWNRlYj1cD99LVUL2y+UfWrS85InZEE5Z8A=;
-        b=C+pSkIidJjZb58h3SXunX5BKmAHeQuWcdieRerGuyQndqJC57jnDWV0/9HVuOK94zu
-         Vfef7DiA/10MWIA09ATAkdDE/rHcdd6kzlT0RPVxL5nGI3HFDbJ3OQpiGTli0FQNbkjE
-         z5laSrGbcAsY0PKJ7fqCR89RecyG5EmNywoqcflxrxsxIsuJg4gjLUuri9imdndfhn8i
-         SQ/Q1mJ9PTZZpo4a9jzBiYdLbdERtPGVngCSqrPk9hvUJ+rVWfiMXgbOx/M+V1Qko6VU
-         j6+P014j7XoVzXHeYXZac1MCokxztDIzeimIa+sKCvWzyz/x0OrBvH/P+9rciMJ6M0Yj
-         eWNA==
+        bh=oYWN8pmjARA1N2Q8EtDl3vFktiw9p7M+PIdprvPshOk=;
+        b=PmMdO5jbYQfl7nYtktrauJBMWWn1ZFSdEZ+kEGu3+uzRZZkyLOG5ejZRuftUaOg4ov
+         FcXp2yqhWf8nnAdk0Fa26VcXqr97B1zGoaZN3tA+CbDPzl5JsZbGI5dBXPWD40FlG6+f
+         L2L9dcCRSV5xnW1FvKAZnYnjwmcC5ToKwTWLskRDLJ1sG8BkW687JCrij5sQhCz+Kf7N
+         et+5/1V2QzWYnxQ7FjaygoPKmylU1XUa13mRCUGT19VDZjsGr2xBCZYknKYgoWKPl5JZ
+         ro8E+iJplIwZWakg91cHgTTKAufr0b7QD804rZy07fGKgKYxT9YCDfORQhqKI+8pqXvV
+         ITjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jHZGaSuRvWNRlYj1cD99LVUL2y+UfWrS85InZEE5Z8A=;
-        b=oaxjnq/P4yi79/4beC2QIYjKGhv6NTK3Vc4pFND6Q+ve8M2FsibD5nUHnUICQ/E8HI
-         KqJCxWzNqeYKVk5hQ0ZbQXCAjmuXyRNKJqToxxH8JbBivvbEoJ/H0e9w9Y3kzC2/LK6T
-         VvGhsSxdywyJ12pU7grbOuc7Ddkgn8x1Hbm1Azo2jJEHREYf/Ks9glslhX0KPJi22lYN
-         S6vUKHbxEGkH+eXY+Z19F2DE1c88AsNteIFurlxL4tQuD+ET6Ii2YPtDdmoIjiXssjPZ
-         9oT5vbckr5gmN6AaOtfCc0CrnkfT2T+K+nTFpD6ZlOIIUPRfOGIcfJ60ucAw8zZRpZ6w
-         fGzg==
-X-Gm-Message-State: AOAM530fH44vbgcGW89ntOWv7T6iC0wZlMpHr4dFpGw5K9lY+2l55eee
-        fRIGJFNclGdXpNCm518MIO1spR4NSALgxi6X7RA=
-X-Google-Smtp-Source: ABdhPJweP6rB5Z510Tj76qkJMxl4XCGUw+I8aAhbyP/5PNbpqacBnA9VBtTamni+Ki047XZHrsGRaOdpsUwuhDDtNkQ=
-X-Received: by 2002:a2e:b817:: with SMTP id u23mr3839910ljo.44.1614914497552;
- Thu, 04 Mar 2021 19:21:37 -0800 (PST)
+        bh=oYWN8pmjARA1N2Q8EtDl3vFktiw9p7M+PIdprvPshOk=;
+        b=Tj4+KTQ9N1jWRwbxaR92NiK4KrqWB6P9MLeiZp8WQKSCOoO2+Q5zGGkx8ejqguWkr3
+         zXhPoBmgO6LgeeUGJeTLBBcnMj3zmd5IiImIAbnWAPkMeyzsbaM1F9yVqPG6gcZ/QERz
+         KT7FpylGZypbGyzLPh9qlceNQxRArEqvPnL3EDghmJzu0Zvn1XoE/byNk/6NECg+q+zS
+         tgAJgtJBVbiIm15GWl8pP6pdgDvnldMWUr/r+NLBeb9iBn+cO3jC6Asa2mMMZ/pXBavd
+         dZHl883Y0Kez9pPDIJPxSnliQDy1aTxqHO7SWLdMIHkZUwsTz55QXlSKegRp23DyBof1
+         GE4w==
+X-Gm-Message-State: AOAM533QC40i7dvsK++OEBUfRn+74jtRtwzvbi6LZWJi0NTgkdGTWb6B
+        meq6E18c1QngLTD3LWEdCm0X0/BxV48F/69vYPI=
+X-Google-Smtp-Source: ABdhPJxFX1iI4RvKuKqCW/mGHvNGdzev7CXQPyHL2g0EhpghdfFTMcDhf3m0MrDCAae2Rj4sBAyxjo0YVbJqovfxWEU=
+X-Received: by 2002:a05:6512:2254:: with SMTP id i20mr4239896lfu.534.1614914617650;
+ Thu, 04 Mar 2021 19:23:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20210303101816.36774-1-lmb@cloudflare.com>
-In-Reply-To: <20210303101816.36774-1-lmb@cloudflare.com>
+References: <20210304233002.149096-1-iii@linux.ibm.com>
+In-Reply-To: <20210304233002.149096-1-iii@linux.ibm.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 4 Mar 2021 19:21:26 -0800
-Message-ID: <CAADnVQ+7YM0LoOMG5nhmP_dj=6krgK5m4=Latqg9Yo03z2AxeQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 0/5] PROG_TEST_RUN support for sk_lookup programs
-To:     Lorenz Bauer <lmb@cloudflare.com>
+Date:   Thu, 4 Mar 2021 19:23:26 -0800
+Message-ID: <CAADnVQKierffrU3V0Yo65aTMb8g_TbwaXnJyvW9D=wK7=5msyQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] s390/bpf: Implement new atomic ops
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 2:18 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+On Thu, Mar 4, 2021 at 3:30 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> We don't have PROG_TEST_RUN support for sk_lookup programs at the
-> moment. So far this hasn't been a problem, since we can run our
-> tests in a separate network namespace. For benchmarking it's nice
-> to have PROG_TEST_RUN, so I've gone and implemented it.
+> Implement BPF_AND, BPF_OR and BPF_XOR as the existing BPF_ADD. Since
+> the corresponding machine instructions return the old value, BPF_FETCH
+> happens by itself, the only additional thing that is required is
+> zero-extension.
 >
-> Based on discussion on the v1 I've dropped support for testing multiple
-> programs at once.
+> There is no single instruction that implements BPF_XCHG on s390, so use
+> a COMPARE AND SWAP loop.
 >
-> Changes since v3:
-> - Use bpf_test_timer prefix (Andrii)
+> BPF_CMPXCHG, on the other hand, can be implemented by a single COMPARE
+> AND SWAP. Zero-extension is automatically inserted by the verifier.
+>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>
+> Note: this patch depends on [1]; posting now to get some feedback.
+>
+> [1] https://lore.kernel.org/bpf/20210303110402.3965626-1-jackmanb@google.com/
 
-Applied. Thanks
+lgtm.
+This patch will sit in patchwork until bpf is merged with bpf-next.
