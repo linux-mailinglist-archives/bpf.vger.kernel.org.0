@@ -2,137 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F7932F632
-	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 23:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD1632F669
+	for <lists+bpf@lfdr.de>; Sat,  6 Mar 2021 00:10:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229642AbhCEW4d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Mar 2021 17:56:33 -0500
-Received: from www62.your-server.de ([213.133.104.62]:39002 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhCEW4d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Mar 2021 17:56:33 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lIJMt-000AqI-1e; Fri, 05 Mar 2021 23:56:23 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lIJMs-000Hzo-Pn; Fri, 05 Mar 2021 23:56:22 +0100
-Subject: Re: [PATCH bpf-next v5 2/2] bpf, xdp: restructure redirect actions
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     maciej.fijalkowski@intel.com, hawk@kernel.org, toke@redhat.com,
-        magnus.karlsson@intel.com, john.fastabend@gmail.com,
-        kuba@kernel.org, davem@davemloft.net,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-References: <20210227122139.183284-1-bjorn.topel@gmail.com>
- <20210227122139.183284-3-bjorn.topel@gmail.com>
- <ddbbeadc-bead-904a-200a-b75cd995b254@iogearbox.net>
- <222735a9-0cbe-7131-7fd8-f638ddecbedc@intel.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f285c8c8-2640-8c34-804c-48928adbe0ff@iogearbox.net>
-Date:   Fri, 5 Mar 2021 23:56:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S230126AbhCEXKX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Mar 2021 18:10:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229992AbhCEXKK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Mar 2021 18:10:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 752736509F;
+        Fri,  5 Mar 2021 23:10:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614985810;
+        bh=XDm0a5+1icmFrZ0b+A18H2fhbQT9FNS1HotUDzDQcv4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=lHJsfkOLRDF5lAxiZeEHM3yfcv/9yrH/rbr27b1IaRvTRB2PFesex/4/c+0+RbsKm
+         gUNZt66/k2uNFyeUPlC0TtKhONrF8ep9cXhDf6QQm0x0mPlazL4CPoEGKHOsQ8/P03
+         LsHV1wzU5NGi1KevG7CRogMLuVaiYeP+kK3N55b7dmYjWNzDPP2hP8mEChyD8w6wRn
+         t2h4bBMy3Us8f9+qN9U7/PacR2lZbko6uYY5tXm6M2fSjWuPIbbTYn+uJmLjjvNRll
+         fDV5PgQ1m3UZLE6joDDXM2a62iGnsg4+xmKsPvQFxCe6hdDXqkwdPAQ9hQuVl2lS6q
+         pO/3QrAxRUHiw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6824260A12;
+        Fri,  5 Mar 2021 23:10:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <222735a9-0cbe-7131-7fd8-f638ddecbedc@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26099/Fri Mar  5 13:02:51 2021)
+Subject: Re: [PATCH bpf] veth: store queue_mapping independently of XDP prog
+ presence
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161498581042.14945.16904385350181859241.git-patchwork-notify@kernel.org>
+Date:   Fri, 05 Mar 2021 23:10:10 +0000
+References: <20210303152903.11172-1-maciej.fijalkowski@intel.com>
+In-Reply-To: <20210303152903.11172-1-maciej.fijalkowski@intel.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     makita.toshiaki@lab.ntt.co.jp, daniel@iogearbox.net,
+        ast@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/5/21 6:11 PM, Björn Töpel wrote:
-> On 2021-03-05 16:44, Daniel Borkmann wrote:
->> On 2/27/21 1:21 PM, Björn Töpel wrote:
->> [...]
->>> diff --git a/include/linux/filter.h b/include/linux/filter.h
->>> index 008691fd3b58..a7752badc2ec 100644
->>> --- a/include/linux/filter.h
->>> +++ b/include/linux/filter.h
->>> @@ -646,11 +646,20 @@ struct bpf_redirect_info {
->>>       u32 flags;
->>>       u32 tgt_index;
->>>       void *tgt_value;
->>> -    struct bpf_map *map;
->>> +    u32 map_id;
->>> +    u32 tgt_type;
->>>       u32 kern_flags;
->>>       struct bpf_nh_params nh;
->>>   };
->>> +enum xdp_redirect_type {
->>> +    XDP_REDIR_UNSET,
->>> +    XDP_REDIR_DEV_IFINDEX,
->>
->> [...]
->>
->>> +    XDP_REDIR_DEV_MAP,
->>> +    XDP_REDIR_CPU_MAP,
->>> +    XDP_REDIR_XSK_MAP,
->>
->> Did you eval whether for these maps we can avoid the redundant def above by just
->> passing in map->map_type as ri->tgt_type and inferring the XDP_REDIR_UNSET from
->> invalid map_id of 0 (given the idr will never allocate such)?
->>
-> 
-> I'll take a stab at it!
+Hello:
 
-Sounds good, thanks! If it doesn't simplify or gets worse, we can always stick to
-the one here.
+This patch was applied to bpf/bpf.git (refs/heads/master):
 
->> [...]
->>> @@ -4068,10 +4039,9 @@ BPF_CALL_2(bpf_xdp_redirect, u32, ifindex, u64, flags)
->>>       if (unlikely(flags))
->>>           return XDP_ABORTED;
->>> -    ri->flags = flags;
->>> -    ri->tgt_index = ifindex;
->>> -    ri->tgt_value = NULL;
->>> -    WRITE_ONCE(ri->map, NULL);
->>> +    ri->tgt_type = XDP_REDIR_DEV_IFINDEX;
->>> +    ri->tgt_index = 0;
->>> +    ri->tgt_value = (void *)(long)ifindex;
->>
->> nit: Bit ugly to pass this in /read out this way, maybe union if we cannot use
->> tgt_index?
->>
+On Wed,  3 Mar 2021 16:29:03 +0100 you wrote:
+> Currently, veth_xmit() would call the skb_record_rx_queue() only when
+> there is XDP program loaded on peer interface in native mode.
 > 
-> Dito!
+> If peer has XDP prog in generic mode, then netif_receive_generic_xdp()
+> has a call to netif_get_rxqueue(skb), so for multi-queue veth it will
+> not be possible to grab a correct rxq.
 > 
-> 
-> Thanks for the input! I'll get back with a v6!
-> 
-> 
-> Björn
-> 
-> 
->>>       return XDP_REDIRECT;
->>>   }
->>> diff --git a/net/xdp/xskmap.c b/net/xdp/xskmap.c
->>> index 711acb3636b3..2c58d88aa69d 100644
->>> --- a/net/xdp/xskmap.c
->>> +++ b/net/xdp/xskmap.c
->>> @@ -87,7 +87,6 @@ static void xsk_map_free(struct bpf_map *map)
->>>   {
->>>       struct xsk_map *m = container_of(map, struct xsk_map, map);
->>> -    bpf_clear_redirect_map(map);
->>>       synchronize_net();
->>>       bpf_map_area_free(m);
->>>   }
->>> @@ -229,7 +228,8 @@ static int xsk_map_delete_elem(struct bpf_map *map, void *key)
->>>   static int xsk_map_redirect(struct bpf_map *map, u32 ifindex, u64 flags)
->>>   {
->>> -    return __bpf_xdp_redirect_map(map, ifindex, flags, __xsk_map_lookup_elem);
->>> +    return __bpf_xdp_redirect_map(map, ifindex, flags, __xsk_map_lookup_elem,
->>> +                      XDP_REDIR_XSK_MAP);
->>>   }
->>>   void xsk_map_try_sock_delete(struct xsk_map *map, struct xdp_sock *xs,
->>>
->>
+> [...]
+
+Here is the summary with links:
+  - [bpf] veth: store queue_mapping independently of XDP prog presence
+    https://git.kernel.org/bpf/bpf/c/edbea9220251
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
