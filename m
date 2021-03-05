@@ -2,224 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB05432F537
-	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 22:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F4632F54E
+	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 22:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhCEVRd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Mar 2021 16:17:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhCEVRX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Mar 2021 16:17:23 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3494FC061760
-        for <bpf@vger.kernel.org>; Fri,  5 Mar 2021 13:17:23 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id t4so3505562qkp.1
-        for <bpf@vger.kernel.org>; Fri, 05 Mar 2021 13:17:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YS67vMflJW97a3c03YUjpjyl1DBxu/orOO1PCrzTovY=;
-        b=wJWdTjN9xc/aBqWWk4r/llFIBBLfNqf68/R9DQCdI/ygb6XaY7QQWoEYvnUcz8LmmS
-         Oi0+j/0h+pQ3KtgCxIGiwL8ldqm8zS3Pl2RYz0AAPqacMUuHus9d3rBpuuyS1UYolnhF
-         i8OMGmCn52Jxh5snx/21bjUFprJwDqKxQhU9bV7ZkDLN1QuI/0G0unLpfJrKaKKw2pOl
-         LcKnVJUWrTfTcLyOXGF4TYML5MGmC1TqXF1c1MY8/uBU4v0jbydpSDJgtWpzNL9hfqld
-         gzBvtixwzIgmEcEMHGmf+KnR3ZXD3Re7MbV0paYhNWDyfroHaDl29khkOhKCDo84YpPd
-         x1gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YS67vMflJW97a3c03YUjpjyl1DBxu/orOO1PCrzTovY=;
-        b=uMJhXuOnz6WSZM/46vRp2k/4+0vW7ibk5XdaDflA0Yg7I6ImqWmq4hblZP7Adj6rc9
-         YwTMhddi6NevS0HxMkoWQprbxz2iw8bcj/cX/Wn3xYuL/EfVFI/pokdO/7FZnZ8YCuE+
-         KJKD+/9C9zMlmj+MiCHJqniqVjYaeHbmVf6f72bRf2N9rBO/eDSm88J3haS3rEKTTLqd
-         /yVXBEpMzWbjSdQEPXgE/BbY4z2ytvKjEOihuEAJGVbCcyFo4Tu3gm+ThZtcl6HTWga2
-         vaHTd0Y4FJU96lRp5oDR0BjcSiNBySRP0A882WNbCzUDMo1RMlM67htkwihE/f9yEv3f
-         /l4Q==
-X-Gm-Message-State: AOAM532AsQTSaw+XHal/psdR37NJX9CxlqO04WP4lc2LL3za5pSNnogc
-        y6eQSUURJkc+8CkrEQF2KNKAoHPm6DtkYC9ahAKxQw==
-X-Google-Smtp-Source: ABdhPJyMIfK5NpYT50u8oiXSCZxf5EIy23Gd0E0junbugcJzCgpLOVvy9i3iRAMJPJ72xrBGbQ//BK50i7+OzXinmKY=
-X-Received: by 2002:a05:620a:819:: with SMTP id s25mr8953423qks.485.1614979041955;
- Fri, 05 Mar 2021 13:17:21 -0800 (PST)
-MIME-Version: 1.0
-References: <YEEvBUiJl2pJkxTd@krava> <YEKWyLG20OgpBMnt@carbon.DHCP.thefacebook.com>
- <14570a91-a793-3f56-047f-5c203cc44345@fb.com>
-In-Reply-To: <14570a91-a793-3f56-047f-5c203cc44345@fb.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 5 Mar 2021 13:17:11 -0800
-Message-ID: <CAKH8qBuXCfUz=w8L+Fj74OaUpbosO29niYwTki7e3Ag044_aww@mail.gmail.com>
-Subject: Re: [BUG] hitting bug when running spinlock test
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Roman Gushchin <guro@fb.com>, Jiri Olsa <jolsa@redhat.com>,
+        id S229642AbhCEVbX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Mar 2021 16:31:23 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46536 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229669AbhCEVbM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 5 Mar 2021 16:31:12 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125LPZdD021671;
+        Fri, 5 Mar 2021 13:30:54 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=9qITOsGv3PwWkM336HvxPqL4SHDc4CYeMqLPhDh97Do=;
+ b=f413u2XfrNlX59WFNaK10E6FbvhL4vLDk8AoOOGfgfoJ5Jjo0t74RhH+HnxYAtx4TYd1
+ XOu4GK9qlIZlhE9X1jqWFDbOITdVv12tCLYlrONcxtjhfWNs5tG+yCU+zd52eyASOf22
+ fgnt8XqsM5LNO5hNZazMwexLn2imlrYkizc= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 373ha4utv3-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 05 Mar 2021 13:30:54 -0800
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 5 Mar 2021 13:30:53 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iVANdV3CXIo9QVRxvBu+LuqRjwh1moAI7SF45S7+lN1OjcZnZImQS7+ho15sk8bP7rKD+LoD7xgCa2Uq4i8DMUHLYuz9oiV/z9o4HFcga9vlleHIj7cBkIDaIFViT5J2WZbR3DdsRw3Zzf4rcnNM1DYP4H2eB+tGUWtzN77S8VTveYYU+W1Znwg0I1ApjL9LKIiqxDP7bPDcabGnvO0q22yPCYfyGlE4K7WARne3hxfwafkEpB4QyBfNTvmJhokPR5g1WCiO59ZXUUT5Ho3x6KT+dGJn//T1ghigs/7ldVPLapukB+KiTmnKE7hEfiP4A2/n51RBSS/Ihy+ExbZxPg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9qITOsGv3PwWkM336HvxPqL4SHDc4CYeMqLPhDh97Do=;
+ b=Q0Tt2pNlldZwOM/2ZLg8XgVlyA1eCAlYv/H6QyMgPg/VEZV3pB5wyGDY8KxZE59pxjidaVdTVroLZ1GNroeZ7WSSm0CfRsi/0g6kCmxlu3v1Ov3HQSZksxT3ayXXfP7QQ1a7FrkFazIXxAnQULl7CgLcSgRiQv4CN+rvm2ZMXMpm9QxYjUrBlEX9vAxrX9ts5ynqVRW4BterhvofBWN5F49LAvK4BF7RXl6uN476CPhYEIG4IQSlesbq0uGv1NVtgTSx5DI89f7KMmPce0+rB5alrs4RPPWOXBRJ80xUEWNcTiBqXD9mACYBQXvfn80/VEUDmfeUCG59wPqrLndGUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR15MB2477.namprd15.prod.outlook.com (2603:10b6:805:28::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.32; Fri, 5 Mar
+ 2021 21:30:51 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3890.034; Fri, 5 Mar 2021
+ 21:30:51 +0000
+Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: Add BTF_KIND_FLOAT to
+ test_core_reloc_size
+To:     Ilya Leoshkevich <iii@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        YiFei Zhu <zhuyifei@google.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Yauheni Kaliuta <ykaliuta@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>, Hangbin Liu <haliu@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>
+CC:     <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        John Fastabend <john.fastabend@gmail.com>
+References: <20210305170844.151594-1-iii@linux.ibm.com>
+ <20210305170844.151594-2-iii@linux.ibm.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <f21cb62e-ca1d-223f-00b4-b13a165b943e@fb.com>
+Date:   Fri, 5 Mar 2021 13:30:47 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.0
+In-Reply-To: <20210305170844.151594-2-iii@linux.ibm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:81bc]
+X-ClientProxiedBy: MW4PR04CA0073.namprd04.prod.outlook.com
+ (2603:10b6:303:6b::18) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21cf::1105] (2620:10d:c090:400::5:81bc) by MW4PR04CA0073.namprd04.prod.outlook.com (2603:10b6:303:6b::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Fri, 5 Mar 2021 21:30:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b0d9e1f4-1240-453f-50b9-08d8e01df310
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2477:
+X-Microsoft-Antispam-PRVS: <SN6PR15MB247764664DE06D819A3BDD62D3969@SN6PR15MB2477.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:311;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +Rsquutd8sRIHtmnR1CKmj3mURW3KliTKs0h/trbmzKVBi/gxp1voeIsWQdyjISedN2f+U/B6+NvupmgLxvQY9o03+Gr4qU4fEjCp5rkxBJOYR2NbA9oRnvP++PtulRlkk7Q3SF7zRm7Wh7TP3FpSU16RXt5w8Z4OeQXuEpOepDlr8f/D5dw9XWhtHpySmnEteOJiRF+7KUiNc8XGqOTE6JYZshLgOZDgBNdb+C9FwAVxRd+YdYJDzTZOpf0Biye9KRXFNQHr3nai2M32uOu+6xabwUudcTy/jSnVqt5/lgUrg8y2yk/9VCTJf0NCEIX4ApL0AcAJYCnEL8RsMUf/vHyvJ89shnbeH9jUBONq8kntj3X8QaExwl/o2Uyue61O8w1dfDkJJ457Ts7x1e2eP9t3j8dbtPiy2UEiFIdrwkvdTjfBQyM+wi6N0xKPbshMO+34phu/u5G3r2nNXIr8PRJbWAu/ylXDX4YieDmrJr8hdTkSx4EkLmdx6A08fEF8S0Rsb5M66yqG9E+/XdjY/zzDEgYntqGRJIjw/rQDwedipdc1wU/jR8Not1UOZ0ew5uvJM8XeV3p/x5CHS1WOtepdAnpZub8Q4KdLmwOBHc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(396003)(39860400002)(376002)(346002)(36756003)(31696002)(52116002)(478600001)(6666004)(6486002)(83380400001)(86362001)(66476007)(66946007)(66556008)(54906003)(5660300002)(8676002)(316002)(186003)(8936002)(4744005)(2616005)(31686004)(110136005)(53546011)(2906002)(4326008)(16526019)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QU92M2hOOW12Mkw4QklSSVRVUHhtajlWd3M1ODhPSGlKa09BOWFDVmNKalhp?=
+ =?utf-8?B?aTUvZEVHRlRsRDR2cmdWa3gxUjEzeURGMGNHcGlEM1grSjJxallXOTZ5T0hj?=
+ =?utf-8?B?TktqTkl2aE1KdWR4aXpXakF6Q3hMM0R3bTVURWc4aUxyaUpJSktFK0Y1Rk1E?=
+ =?utf-8?B?cU9EMnVMYWV1U25BQzVmaHZHS0I2dmdYNlpDandSN3pCN3huMDVkajZURFBK?=
+ =?utf-8?B?S2JiOXdRd1pubkVGU09ZYUc1eFpCTnhTbnY3MDVxQ1pQQ3k5VUNRSEtzSzkx?=
+ =?utf-8?B?VVNYdUtuRlJPWmMyTDJOZTY2ZElUY2VzRyt1cFhKNHo3VFlsaGJHNzQxd2pK?=
+ =?utf-8?B?R1crV2lKNVJQRE1iQUl6NHVydDlqM1RkdEFWcDJLUGFsOGJrTDgxbEFWVVI5?=
+ =?utf-8?B?NHpkSHVKRUJ1WlJzUGh5WmROZXNGOU9VeEt0ZDFvVVRhUUF2YkdJVldrcTRu?=
+ =?utf-8?B?ZWRIaEVycUNpQzZlMUVaSlczTlRnM1JrQkYyaHdIdnV6TThQM2RibEpqWjJk?=
+ =?utf-8?B?VnBWa3lVQW1Zb0xVNEhFQk1maU9RT1pqaVV5RmNFZmo5a1BvanJ3MHVrcWJr?=
+ =?utf-8?B?c0lTcUl6OFJzR2cvM2xZcDBPcmlkei9xcU42VnBvaXJGZHQ4NE1KOUtBd0xF?=
+ =?utf-8?B?NjQvU2pqd3doVTFndkZ4U2ZiRzNHR2Z0LzJ3MDVMandTcW9aVzBtQmxmTjAr?=
+ =?utf-8?B?TUhDQkJCTDZiaHFhRHBIeGNhY0Q2anZtdWY4M1JoTTlKMEUzRUV1V0k2K0JS?=
+ =?utf-8?B?V3c2Q2dSZW0zR2NrSlExRDY4OFBxUlpMUlVyQUhMTHRzaGdCUndXYTFVTXda?=
+ =?utf-8?B?QkpKYXN0ckZjNW9CNGg0QmRUSWlpU2U1Z29hWHBQWWlycXVHL0poTkQvOHl0?=
+ =?utf-8?B?MzJ4anREYi9HTXpPRUw1Q3E5NThKTncxUTRyZVRybnJVbEZ4amp1NFBHWG1k?=
+ =?utf-8?B?enZ3U3ZrSkMzRFhuOWJJbzZ4OHdnN1RUeWh3L1pSaWlkSzhxZVlreDhpZ3py?=
+ =?utf-8?B?MnFSbWR0SUlYZ1V2TmdVeEc0alVXNzdnZ2hKTno5OEVVY0x2bExRMGJsRmx5?=
+ =?utf-8?B?UHNQcm1LaWkxQlZROGU4b0JqYVFVK050UUZLazV1b0NXZHg0eU12RFY0Z2RH?=
+ =?utf-8?B?Vm41a1IxNExtTzFmdE5EM1lHbHVpVGJBc3JxOEJrdmFMNGZwUUNIUDA3MVdU?=
+ =?utf-8?B?WHdkTCs4ckwxMHg0ZXBBVEh2aURyeGI0WDMvR3gwSnUyZjJEOHdrOXQ2clNY?=
+ =?utf-8?B?bHpOdXpvRW5ubDRYR1FXb3pWRUFkNExrWDFwSzhvVTRhY09RZ3JGam5ZMjEr?=
+ =?utf-8?B?Y1VSeFhjRER6Yk84WmIydEJsbThyNE9SMnJ2cFlDYVA0MmNlZlVkT1MwVnZl?=
+ =?utf-8?B?Qy8xODZIUDJObUpROUM3eXlSa040YkphOEY3Rm9Ga2JRVVRzLzVzbDRmcUlC?=
+ =?utf-8?B?S3VqYStWbVNLQXNsRko3WEl0dmxNZjhJQW1XamszRzZSM0FnSWh1Qkx5MFlW?=
+ =?utf-8?B?L3VhcExlaDllVlFXaGU2Sk5jZkpYWlQzYy9CbU1iQ2JzVWFDcnpraG9WZENr?=
+ =?utf-8?B?aE15bnhxVllaN2wreFNJVndXaDgyWXh2Q09mNUl2Qjg3cU5NczIzbjZUdzRm?=
+ =?utf-8?B?aDNhYk9VN3p3cWwvQVltaDFqNk0vbEhoVXZLUkU5MUNlRllyRTFaQkNLenBa?=
+ =?utf-8?B?RkxvSVo4RTVpZmJRUzMvQjBDV2hQWVZnMWNjVWFqK1JrKytJcE9IVjd6TGg5?=
+ =?utf-8?B?Ull6NlZrUm5WUzdubmFSQU4rWkNHNmJuQ1VMSFdnZmwxY0FwdVhVQWlQWTRR?=
+ =?utf-8?B?MEQxMDFiRmhRM0svRDFBQT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0d9e1f4-1240-453f-50b9-08d8e01df310
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2021 21:30:51.0790
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +zq189oD8WO7w6KyIXXQyZQysXQoCp2EI3bi99jmPCaJl5O8+3Y7toP3oTr2V33D
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2477
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-05_14:2021-03-03,2021-03-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ adultscore=0 spamscore=0 mlxscore=0 mlxlogscore=999 clxscore=1011
+ malwarescore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103050108
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 1:10 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 3/5/21 12:38 PM, Roman Gushchin wrote:
-> > On Thu, Mar 04, 2021 at 08:03:33PM +0100, Jiri Olsa wrote:
-> >> hi,
-> >> I'm getting attached BUG/crash when running in parralel selftests, like:
-> >>
-> >>    while :; do ./test_progs -t spinlock; done
-> >>    while :; do ./test_progs ; done
-> >>
-> >> it's the latest bpf-next/master, I can send the .config if needed,
-> >> but I don't think there's anything special about it, because I saw
-> >> the bug on other servers with different generic configs
-> >>
-> >> it looks like it's related to cgroup local storage, for some reason
-> >> the storage deref returns NULL
-> >>
-> >> I'm bit lost in this code, so any help would be great ;-)
-> >
-> > Hi!
-> >
-> > I think the patch to blame is df1a2cb7c74b ("bpf/test_run: fix unkillable BPF_PROG_TEST_RUN").
->
-> Thanks, Roman, I did some experiments and found the reason of NULL
-> storage deref is because a tracing program (mostly like a kprobe) is run
-> after bpf_cgroup_storage_set() is called but before bpf program calls
-> bpf_get_local_storage(). Note that trace_call_bpf() macro
-> BPF_PROG_RUN_ARRAY_CHECK does call bpf_cgroup_storage_set().
->
-> > Prior to it, we were running the test program in the preempt_disable() && rcu_read_lock()
-> > section:
-> >
-> > preempt_disable();
-> > rcu_read_lock();
-> > bpf_cgroup_storage_set(storage);
-> > ret = BPF_PROG_RUN(prog, ctx);
-> > rcu_read_unlock();
-> > preempt_enable();
-> >
-> > So, a percpu variable with a cgroup local storage pointer couldn't go away.
->
-> I think even with using preempt_disable(), if the bpf program calls map
-> lookup and there is a kprobe bpf on function htab_map_lookup_elem(), we
-> will have the issue as BPF_PROG_RUN_ARRAY_CHECK will call
-> bpf_cgroup_storage_set() too. I need to write a test case to confirm
-> this though.
->
-> >
-> > After df1a2cb7c74b we can temporarily enable the preemption, so nothing prevents
-> > another program to call into bpf_cgroup_storage_set() on the same cpu.
-> > I guess it's exactly what happens here.
->
-> It is. I confirmed.
->
-> >
-> > One option to fix it is to make bpf_cgroup_storage_set() to return the old value,
-> > save it on a local variable and restore after the execution of the program.
->
-> In this particular case, we are doing bpf_test_run, we explicitly
-> allocate storage and call bpf_cgroup_storage_set() right before
-> each BPF_PROG_RUN.
->
-> > But I didn't follow closely the development of sleepable bpf programs, so I could
-> > easily miss something.
->
-> Yes, sleepable bpf program is another complication. I think we need a
-> variable similar to bpf_prog_active, which should not nested bpf program
-> execution for those bpf programs having local_storage map.
-> Will try to craft some patch to facilitate the discussion.
-Can we add a new argument to bpf_cgroup_storage_set to save existing
-per-cpu values (on the stack) such that we can restore them later,
-after BPF_PROG_RUN finishes?
-Is it too much overhead?
 
 
->
-> >
-> > Thanks!
-> >
-> > Roman
-> >
-> >>
-> >> thanks,
-> >> jirka
-> >>
-> >>
-> >> ---
-> >> ...
-> >> [  382.324440] bpf_testmod: loading out-of-tree module taints kernel.
-> >> [  382.330670] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
-> >> [  480.391667] perf: interrupt took too long (2540 > 2500), lowering kernel.perf_event_max_sample_rate to 78000
-> >> [  480.401730] perf: interrupt took too long (6860 > 6751), lowering kernel.perf_event_max_sample_rate to 29000
-> >> [  480.416172] perf: interrupt took too long (8602 > 8575), lowering kernel.perf_event_max_sample_rate to 23000
-> >> [  480.433053] BUG: kernel NULL pointer dereference, address: 0000000000000000
-> >> [  480.440014] #PF: supervisor read access in kernel mode
-> >> [  480.445153] #PF: error_code(0x0000) - not-present page
-> >> [  480.450294] PGD 8000000133a18067 P4D 8000000133a18067 PUD 10c019067 PMD 0
-> >> [  480.457164] Oops: 0000 [#1] PREEMPT SMP PTI
-> >> [  480.461350] CPU: 6 PID: 16689 Comm: test_progs Tainted: G          IOE     5.11.0+ #11
-> >> [  480.469263] Hardware name: Dell Inc. PowerEdge R440/08CYF7, BIOS 1.7.0 12/14/2018
-> >> [  480.476742] RIP: 0010:bpf_get_local_storage+0x13/0x50
-> >> [  480.481797] Code: e8 92 c5 8e 00 5d 89 c0 c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 0f 1f 44 00 00 83 7f 18 15 74 10 65 48 8b 05 6d c6 e2 7e <48> 8b 00 48 83 c0 10 c3 55 48 89 e5 53 65 48 8b 05 60 c6 e2 7e8
-> >> [  480.500540] RSP: 0018:ffffc90001bd3ce0 EFLAGS: 00010293
-> >> [  480.505766] RAX: 0000000000000000 RBX: 982a259500000000 RCX: 0000000000000018
-> >> [  480.512901] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff888149ccf000
-> >> [  480.520034] RBP: ffffc90001bd3d20 R08: ffffc90001bd3d04 R09: ffff888105121600
-> >> [  480.527164] R10: d3b9342000000000 R11: 000000000000025c R12: 0000000000000734
-> >> [  480.534299] R13: ffff888149ccc710 R14: 0000000000000000 R15: ffffc90000379048
-> >> [  480.541430] FS:  00007f8f2357b640(0000) GS:ffff8897e0980000(0000) knlGS:0000000000000000
-> >> [  480.549515] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >> [  480.555262] CR2: 0000000000000000 CR3: 000000014e826006 CR4: 00000000007706e0
-> >> [  480.562395] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> >> [  480.569527] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> >> [  480.576660] PKRU: 55555554
-> >> [  480.579372] Call Trace:
-> >> [  480.581829]  ? bpf_prog_c48154a736e5c014_bpf_sping_lock_test+0x2ba/0x860
-> >> [  480.588526]  bpf_test_run+0x127/0x2b0
-> >> [  480.592192]  ? __build_skb_around+0xb0/0xc0
-> >> [  480.596378]  bpf_prog_test_run_skb+0x32f/0x6b0
-> >> [  480.600824]  __do_sys_bpf+0xa94/0x2240
-> >> [  480.604577]  ? debug_smp_processor_id+0x17/0x20
-> >> [  480.609107]  ? __perf_event_task_sched_in+0x32/0x340
-> >> [  480.614077]  __x64_sys_bpf+0x1a/0x20
-> >> [  480.617653]  do_syscall_64+0x38/0x50
-> >> [  480.621233]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >> [  480.626286] RIP: 0033:0x7f8f2467f55d
-> >> [  480.629865] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d eb 78 0c 00 f7 d8 64 89 018
-> >> [  480.648611] RSP: 002b:00007f8f2357ad58 EFLAGS: 00000206 ORIG_RAX: 0000000000000141
-> >> [  480.656175] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f8f2467f55d
-> >> [  480.663308] RDX: 0000000000000078 RSI: 00007f8f2357ad60 RDI: 000000000000000a
-> >> [  480.670442] RBP: 00007f8f2357ae28 R08: 0000000000000000 R09: 0000000000000008
-> >> [  480.677574] R10: 0000000000000000 R11: 0000000000000206 R12: 00007f8f2357ae2c
-> >> [  480.684707] R13: 00000000022df420 R14: 0000000000000000 R15: 00007f8f2357b640
-> >> [  480.691842] Modules linked in: bpf_testmod(OE) intel_rapl_msr intel_rapl_common x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm ipmi_ssif irqbypass rapl intel_cstate dell_smbios intel_uncore mei_]
-> >> [  480.739134] CR2: 0000000000000000
-> >> [  480.742452] ---[ end trace 807177cbb5e3b3da ]---
-> >> [  480.752174] RIP: 0010:bpf_get_local_storage+0x13/0x50
-> >> [  480.757230] Code: e8 92 c5 8e 00 5d 89 c0 c3 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 0f 1f 44 00 00 83 7f 18 15 74 10 65 48 8b 05 6d c6 e2 7e <48> 8b 00 48 83 c0 10 c3 55 48 89 e5 53 65 48 8b 05 60 c6 e2 7e8
-> >> [  480.775976] RSP: 0018:ffffc90001bd3ce0 EFLAGS: 00010293
-> >> [  480.781202] RAX: 0000000000000000 RBX: 982a259500000000 RCX: 0000000000000018
-> >> [  480.788335] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff888149ccf000
-> >> [  480.795466] RBP: ffffc90001bd3d20 R08: ffffc90001bd3d04 R09: ffff888105121600
-> >> [  480.802598] R10: d3b9342000000000 R11: 000000000000025c R12: 0000000000000734
-> >> [  480.809730] R13: ffff888149ccc710 R14: 0000000000000000 R15: ffffc90000379048
-> >> [  480.816865] FS:  00007f8f2357b640(0000) GS:ffff8897e0980000(0000) knlGS:0000000000000000
-> >> [  480.824951] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >> [  480.830695] CR2: 0000000000000000 CR3: 000000014e826006 CR4: 00000000007706e0
-> >> [  480.837829] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> >> [  480.844961] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> >> [  480.852093] PKRU: 55555554
-> >>
+On 3/5/21 9:08 AM, Ilya Leoshkevich wrote:
+> Verify that bpf_core_field_size() is working correctly with floats.
+> Also document the required clang version.
+> 
+> Suggested-by: John Fastabend <john.fastabend@gmail.com>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+
+Acked-by: Yonghong Song <yhs@fb.com>
