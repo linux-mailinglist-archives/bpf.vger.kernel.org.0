@@ -2,237 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF6F32DEF4
-	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 02:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D6132DF4C
+	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 02:57:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbhCEBNj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Mar 2021 20:13:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
+        id S229528AbhCEB5G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Mar 2021 20:57:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhCEBNj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Mar 2021 20:13:39 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEA5C061574;
-        Thu,  4 Mar 2021 17:13:38 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id l132so446087qke.7;
-        Thu, 04 Mar 2021 17:13:38 -0800 (PST)
+        with ESMTP id S229458AbhCEB5G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Mar 2021 20:57:06 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 241C8C061574;
+        Thu,  4 Mar 2021 17:57:06 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id t16so328595ott.3;
+        Thu, 04 Mar 2021 17:57:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Qe00CZ1GKlh2KWnLB4/ycE/nbE2qQyfqvmqcLnIU/C8=;
-        b=iit6gMzb0ia0QJiRoPIL2hh/VID83QVZYRBZkoXQQKAs3fDmOlPmACvQntO2Iki6+V
-         YBxLBfj4Ciceu/Iz4Nn9pQqRpYzZdB7iLI5HHgW33y8FMQx+MBE0p34TajcD3NXoV08s
-         xXJhlyvLkjSW5MKD7a96OaVdOW91pqgOHeUpwcFDpnSv9RoAFpa1bWzWEbOgnR2ld03q
-         HPNDeWiY7+iJ/Nzrv6wrK4R6C+shiw/1ZEcV3xrNiKUfWlAQ7AI+G1aXRashq8RU/FUM
-         wo4zG6F5xDF4GvrJkJelTb0dKa3b7d7n/NCtbFAKNvoo5RjmnpCsemCjE6oVPJ+TTFJa
-         OJ5A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vYSdfJ/C4li2o4E+JLnjsIQ0l/gOSKQKbq78ghA839g=;
+        b=KbzOjjFQIAjFLi1Q6NrL4J7UFI0doWmyauMSC52PgmPw8EZuFjMN7XSstJIhWHdBvu
+         2ZUQhdmmPnDjEF9joUMR8vvrdFsLiK/dS/rj8VgJleb0DJh5Aad7QKdL1KN64DbYDTpx
+         xbwFtI32UY0l7uXF9RlOAt4myHUr+3Fo/G/x9wCMpGkBzcBtW6iWflaaBDShDKGXA36O
+         D2LMCmqoN0G3KMdJEUdGEB0dMJYDhED6j90fnpQF4qNupDOyNqX9ws4f8eKCRFNMASPG
+         f6d1qnGBr3XQTQstnmVCY2jHKI8/1NyW0SwGk5HkNo/jsHEnnL+cnmJxWGFtIfjO+IKE
+         lcEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Qe00CZ1GKlh2KWnLB4/ycE/nbE2qQyfqvmqcLnIU/C8=;
-        b=Bw9EZgHVDunS5njFmc2W1sGvl5vYcTpQ5OYGvOoM9LCzOb4nYKH1MxFXJ50+9UwcGa
-         3MIIK92iupTD8Rjbp+ad6I3RBN+JRuZ48UxeD6rMqH8Vd8wuVXRKvXaCeobtSfPicSDd
-         8q32A9M1aZT5Bfg5qV7kKs0qY/lVfxetsrLLDns8IrLGQYeQWBxUJU6LEUauVJDBGFNI
-         eMMIzYkQLi646cQeWCdD+H/SWP3yPyfrPxiUxL4BBZeorWFXhcPDtqcVlF9vLf6mieR+
-         kYJJMUij7rc6Khgx6l4QUKfNugV4MrVlN3Fdg4dbblgrfXzE3ykjrZovAzJBNVi7t4aY
-         1vwQ==
-X-Gm-Message-State: AOAM532gW5KBlcOBnbThWQ+GOmYVV4iBsdPtfa4Nv23sRDYQqEmrnNKv
-        /eAZ8xhVlisaZo3/sX0gqcU=
-X-Google-Smtp-Source: ABdhPJzTaRLswC805bT1z9l0u65gc26l6BhZ8dkYl6j+D8wBJeOZrvp5cc/I93gUrDeppIJ0hut2OQ==
-X-Received: by 2002:ae9:e70d:: with SMTP id m13mr4848989qka.374.1614906817484;
-        Thu, 04 Mar 2021 17:13:37 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id h12sm744773qko.29.2021.03.04.17.13.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vYSdfJ/C4li2o4E+JLnjsIQ0l/gOSKQKbq78ghA839g=;
+        b=hkz1vytcPaWdV4GMhANJLMcyAJO3OtlT6P/WTBTl+M01UKp7w4XteVMIpqPdAizpV3
+         D0zLmL+VrnkZ7Eu1FA1ThA9h5oJJU+uKZI/L9K/zItrue7ikpnECwA/zUkFR8nLruleD
+         i4gX4gv/ZFgjtqx3Sazr3tbpv3b4ZWUw3kphyBhkJAFhgtry+8p3Cwm8xDHwkoWPII5t
+         1fiwIcBYDhTS1mD+W+/jxJfq1dR0miDDP4rRfpUo1Hn7YDPU/qKHrq1CnMOjw3k5er19
+         dF3kLl1pnDO5RqrMW3ICWRSEmKCOsXA9/andmPT50Q5U+HkBcFe/6ar+daSF9g+bAqmb
+         xocg==
+X-Gm-Message-State: AOAM530khLZwxIC3LdKFJQeptDXOXhf+qhajGQYhNBle/L4G7XLJUBqa
+        0O99ZjDrO0QIt3Pob3oDtdk2w50POD3TJw==
+X-Google-Smtp-Source: ABdhPJwgryOPJRVJjyMESUaZWocR4utgqqgKnxAsCIf0ohPHmvxZNEn4V8431wFhgJawwf3NjYgo3Q==
+X-Received: by 2002:a9d:63d1:: with SMTP id e17mr6066907otl.183.1614909425306;
+        Thu, 04 Mar 2021 17:57:05 -0800 (PST)
+Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:95de:1d5:1b36:946a])
+        by smtp.gmail.com with ESMTPSA id r3sm224126oif.5.2021.03.04.17.57.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Mar 2021 17:13:36 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id CAB8627C0054;
-        Thu,  4 Mar 2021 20:13:35 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Thu, 04 Mar 2021 20:13:35 -0500
-X-ME-Sender: <xms:vYVBYK-3hZdQOUzyo_8PEy1ktJOlsCDD1ldCHdVwpMeHi0X3RfT5OA>
-    <xme:vYVBYKuLQAb0QLm6WY0aCJinBDtIwsLnePSyUnlTW-xfY5wBuZn0FWWabVW-Q5f9A
-    ZUPwdnZfJDQduwa9g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddthedgfedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthekredttddtudenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpedtfefgfeeuleevvedtheejgeetueejkeeujeethfeiteekffehvdevveff
-    jefgteenucfkphepudeijedrvddvtddrvddruddvieenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
-    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
-    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:vYVBYABy-6lnWEEYneHTWhheIlVwx_3HEWwEeo3Nlkh1_yrjicW12w>
-    <xmx:vYVBYCf2XqU3mP--IWI5hgVtI6usiKUwecfNPtntglDh2fXcHZ1eKQ>
-    <xmx:vYVBYPOczbSytbKhjqF_VQ6kyncotUkaNQwdmOfHcOEmQKk6uw-Y1Q>
-    <xmx:v4VBYIvwPfzCuIOBs-rjpWSxYqMY_p3Xh02TF8DYuvN9U9l1KsmAWW2iLig>
-Received: from localhost (unknown [167.220.2.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 77A0824005A;
-        Thu,  4 Mar 2021 20:13:33 -0500 (EST)
-Date:   Fri, 5 Mar 2021 09:12:30 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: XDP socket rings, and LKMM litmus tests
-Message-ID: <YEGFfjmOYfbuir9o@boqun-archlinux>
-References: <CAJ+HfNhxWFeKnn1aZw-YJmzpBuCaoeGkXXKn058GhY-6ZBDtZA@mail.gmail.com>
- <20210302211446.GA1541641@rowland.harvard.edu>
- <20210302235019.GT2696@paulmck-ThinkPad-P72>
- <20210303171221.GA1574518@rowland.harvard.edu>
- <20210303174022.GD2696@paulmck-ThinkPad-P72>
- <20210303202246.GC1582185@rowland.harvard.edu>
- <YEA3RwYixQPt6gul@boqun-archlinux>
- <20210304031322.GA1594980@rowland.harvard.edu>
- <YEB/PGHs94W2l6hA@boqun-archlinux>
- <20210304161142.GB1612307@rowland.harvard.edu>
+        Thu, 04 Mar 2021 17:57:04 -0800 (PST)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
+        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
+        Cong Wang <cong.wang@bytedance.com>
+Subject: [Patch bpf-next v3 0/9] sockmap: introduce BPF_SK_SKB_VERDICT and support UDP
+Date:   Thu,  4 Mar 2021 17:56:46 -0800
+Message-Id: <20210305015655.14249-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210304161142.GB1612307@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 11:11:42AM -0500, Alan Stern wrote:
-> On Thu, Mar 04, 2021 at 02:33:32PM +0800, Boqun Feng wrote:
-> 
-> > Right, I was thinking about something unrelated.. but how about the
-> > following case:
-> > 
-> > 	local_v = &y;
-> > 	r1 = READ_ONCE(*x); // f
-> > 
-> > 	if (r1 == 1) {
-> > 		local_v = &y; // e
-> > 	} else {
-> > 		local_v = &z; // d
-> > 	}
-> > 
-> > 	p = READ_ONCE(local_v); // g
-> > 
-> > 	r2 = READ_ONCE(*p);   // h
-> > 
-> > if r1 == 1, we definitely think we have:
-> > 
-> > 	f ->ctrl e ->rfi g ->addr h
-> > 
-> > , and if we treat ctrl;rfi as "to-r", then we have "f" happens before
-> > "h". However compile can optimze the above as:
-> > 
-> > 	local_v = &y;
-> > 
-> > 	r1 = READ_ONCE(*x); // f
-> > 
-> > 	if (r1 != 1) {
-> > 		local_v = &z; // d
-> > 	}
-> > 
-> > 	p = READ_ONCE(local_v); // g
-> > 
-> > 	r2 = READ_ONCE(*p);   // h
-> > 
-> > , and when this gets executed, I don't think we have the guarantee we
-> > have "f" happens before "h", because CPU can do optimistic read for "g"
-> > and "h".
-> 
-> In your example, which accesses are supposed to be to actual memory and 
-> which to registers?  Also, remember that the memory model assumes the 
+From: Cong Wang <cong.wang@bytedance.com>
 
-Given that we use READ_ONCE() on local_v, local_v should be a memory
-location but only accessed by this thread.
+We have thousands of services connected to a daemon on every host
+via AF_UNIX dgram sockets, after they are moved into VM, we have to
+add a proxy to forward these communications from VM to host, because
+rewriting thousands of them is not practical. This proxy uses an
+AF_UNIX socket connected to services and a UDP socket to connect to
+the host. It is inefficient because data is copied between kernel
+space and user space twice, and we can not use splice() which only
+supports TCP. Therefore, we want to use sockmap to do the splicing
+without going to user-space at all (after the initial setup).
 
-> hardware does not reorder loads if there is an address dependency 
-> between them.
-> 
+Currently sockmap only fully supports TCP, UDP is partially supported
+as it is only allowed to add into sockmap. This patchset, as the second
+part of the original large patchset, extends sockmap with:
+1) cross-protocol support with BPF_SK_SKB_VERDICT; 2) full UDP support.
 
-Right, so "g" won't be reordered after "h".
+On the high level, ->sendmsg_locked() and ->read_sock() are required
+for each protocol to support sockmap redirection, and in order to do
+sock proto update, a new ops ->update_proto() is introduced, which is
+also required to implement. A BPF ->recvmsg() is also needed to replace
+the original ->recvmsg() to retrieve skmsg. Please see each patch for
+more details.
 
-> > Part of this is because when we take plain access into consideration, we
-> > won't guarantee a read-from or other relations exists if compiler
-> > optimization happens.
-> > 
-> > Maybe I'm missing something subtle, but just try to think through the
-> > effect of making dep; rfi as "to-r".
-> 
-> Forget about local variables for the time being and just consider
-> 
-> 	dep ; [Plain] ; rfi
-> 
-> For example:
-> 
-> 	A: r1 = READ_ONCE(x);
-> 	   y = r1;
-> 	B: r2 = READ_ONCE(y);
-> 
-> Should B be ordered after A?  I don't see how any CPU could hope to 
-> excute B before A, but maybe I'm missing something.
-> 
+To see the big picture, the original patchset is available here:
+https://github.com/congwang/linux/tree/sockmap
+this patchset is also available:
+https://github.com/congwang/linux/tree/sockmap2
 
-Agreed.
+---
+v3: export tcp/udp_update_proto()
+    rename sk->sk_prot->psock_update_sk_prot()
+    improve changelogs
 
-> There's another twist, connected with the fact that herd7 can't detect 
-> control dependencies caused by unexecuted code.  If we have:
-> 
-> 	A: r1 = READ_ONCE(x);
-> 	if (r1)
-> 		WRITE_ONCE(y, 5);
-> 	r2 = READ_ONCE(y);
-> 	B: WRITE_ONCE(z, r2);
-> 
-> then in executions where x == 0, herd7 doesn't see any control 
-> dependency.  But CPUs do see control dependencies whenever there is a 
-> conditional branch, whether the branch is taken or not, and so they will 
-> never reorder B before A.
-> 
+v2: separate from the original large patchset
+    rebase to the latest bpf-next
+    split UDP test case
+    move inet_csk_has_ulp() check to tcp_bpf.c
+    clean up udp_read_sock()
 
-Right, because B in this example is a write, what if B is a read that
-depends on r2, like in my example? Let y be a pointer to a memory
-location, and initialized as a valid value (pointing to a valid memory
-location) you example changed to:
+Cong Wang (9):
+  sock_map: introduce BPF_SK_SKB_VERDICT
+  sock: introduce sk->sk_prot->psock_update_sk_prot()
+  udp: implement ->sendmsg_locked()
+  udp: implement ->read_sock() for sockmap
+  udp: add ->read_sock() and ->sendmsg_locked() to ipv6
+  skmsg: extract __tcp_bpf_recvmsg() and tcp_bpf_wait_data()
+  udp: implement udp_bpf_recvmsg() for sockmap
+  sock_map: update sock type checks for UDP
+  selftests/bpf: add a test case for udp sockmap
 
-	A: r1 = READ_ONCE(x);
-	if (r1)
-		WRITE_ONCE(y, 5);
-	C: r2 = READ_ONCE(y);
-	B: r3 = READ_ONCE(*r2);
+ include/linux/skmsg.h                         |  25 ++--
+ include/net/ipv6.h                            |   1 +
+ include/net/sock.h                            |   3 +
+ include/net/tcp.h                             |   3 +-
+ include/net/udp.h                             |   4 +
+ include/uapi/linux/bpf.h                      |   1 +
+ kernel/bpf/syscall.c                          |   1 +
+ net/core/skmsg.c                              | 113 +++++++++++++-
+ net/core/sock_map.c                           |  52 ++++---
+ net/ipv4/af_inet.c                            |   2 +
+ net/ipv4/tcp_bpf.c                            | 130 +++-------------
+ net/ipv4/tcp_ipv4.c                           |   3 +
+ net/ipv4/udp.c                                |  68 ++++++++-
+ net/ipv4/udp_bpf.c                            |  79 +++++++++-
+ net/ipv6/af_inet6.c                           |   2 +
+ net/ipv6/tcp_ipv6.c                           |   3 +
+ net/ipv6/udp.c                                |  30 +++-
+ net/tls/tls_sw.c                              |   4 +-
+ tools/bpf/bpftool/common.c                    |   1 +
+ tools/bpf/bpftool/prog.c                      |   1 +
+ tools/include/uapi/linux/bpf.h                |   1 +
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 140 ++++++++++++++++++
+ .../selftests/bpf/progs/test_sockmap_listen.c |  22 +++
+ 23 files changed, 519 insertions(+), 170 deletions(-)
 
-, then A don't have the control dependency to B, because A and B is
-read+read. So B can be ordered before A, right?
+-- 
+2.25.1
 
-> One last thing to think about: My original assessment or Björn's problem 
-> wasn't right, because the dep in (dep ; rfi) doesn't include control 
-> dependencies.  Only data and address.  So I believe that the LKMM 
-
-Ah, right. I was mising that part (ctrl is not in dep). So I guess my
-example is pointless for the question we are discussing here ;-(
-
-> wouldn't consider A to be ordered before B in this example even if x 
-> was nonzero.
-
-Yes, and similar to my example (changing B to a read).
-
-I did try to run my example with herd, and got confused no matter I make
-dep; [Plain]; rfi as to-r (I got the same result telling me a reorder
-can happen). Now the reason is clear, because this is a ctrl; rfi not a
-dep; rfi.
-
-Thanks so much for walking with me on this ;-)
-
-Regards,
-Boqun
-
-> 
-> Alan
