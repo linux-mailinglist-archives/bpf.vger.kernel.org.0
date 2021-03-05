@@ -2,121 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC4532EFD2
-	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 17:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5458432F0C7
+	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 18:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbhCEQPa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Mar 2021 11:15:30 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:56353 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S231216AbhCEQPS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Mar 2021 11:15:18 -0500
-Received: (qmail 41907 invoked by uid 1000); 5 Mar 2021 11:15:17 -0500
-Date:   Fri, 5 Mar 2021 11:15:17 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        parri.andrea@gmail.com, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, dlustig@nvidia.com, joel@joelfernandes.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: Re: XDP socket rings, and LKMM litmus tests
-Message-ID: <20210305161517.GF38200@rowland.harvard.edu>
-References: <20210302211446.GA1541641@rowland.harvard.edu>
- <20210302235019.GT2696@paulmck-ThinkPad-P72>
- <20210303171221.GA1574518@rowland.harvard.edu>
- <20210303174022.GD2696@paulmck-ThinkPad-P72>
- <20210303202246.GC1582185@rowland.harvard.edu>
- <YEA3RwYixQPt6gul@boqun-archlinux>
- <20210304031322.GA1594980@rowland.harvard.edu>
- <YEB/PGHs94W2l6hA@boqun-archlinux>
- <20210304161142.GB1612307@rowland.harvard.edu>
- <YEGFfjmOYfbuir9o@boqun-archlinux>
+        id S229813AbhCERJb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Mar 2021 12:09:31 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:54502 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231373AbhCERJI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 5 Mar 2021 12:09:08 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 125H4Y6t077480;
+        Fri, 5 Mar 2021 12:08:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=5ld40VVUx76aagFHxZNPAx0PXlW8S5/XSil9SI+w8Ls=;
+ b=V1Ulo0Kg6CFUsTUE3gX3zcPJjEqUGB5rlPfGtCMO7i1YZE9y8cEToFfIg3Za8rL/RGgA
+ j3v/pnua/zlEcn5/4lCagn878lecK3BRAzhXaVj7Z8ps/b7/yXEQt28+alpfViymc0s0
+ PNONIjlHDzB8aUolpLbXVAQc5pENDb4pqiCBbNOBJXGqEwACZjyau1NuYkF5JziLETs0
+ Sqx4/3A2wei2wyRPm+nQH+VCvOfbIMCPpxgbBxLXew3+M/WAtc0jgqOCB0KCg/mwh9YT
+ 1lbX6z6dK5BRdzZhg0Qvtn/dboq+5EPQgWVweIS/z4bZb+JPvpNMViNwYUGRFSsuQPbQ +A== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 373rn80aky-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 12:08:56 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 125H8sWd009823;
+        Fri, 5 Mar 2021 17:08:54 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03fra.de.ibm.com with ESMTP id 371a8esweb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 05 Mar 2021 17:08:54 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 125H8p6218284808
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 5 Mar 2021 17:08:51 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B59DA4055;
+        Fri,  5 Mar 2021 17:08:51 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BE532A4057;
+        Fri,  5 Mar 2021 17:08:50 +0000 (GMT)
+Received: from vm.lan (unknown [9.145.31.74])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  5 Mar 2021 17:08:50 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next 0/2] selftests/bpf: Add clang-based BTF_KIND_FLOAT tests
+Date:   Fri,  5 Mar 2021 18:08:42 +0100
+Message-Id: <20210305170844.151594-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YEGFfjmOYfbuir9o@boqun-archlinux>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-05_10:2021-03-03,2021-03-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=899 bulkscore=0 adultscore=0 mlxscore=0 phishscore=0
+ clxscore=1015 lowpriorityscore=0 priorityscore=1501 suspectscore=0
+ impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103050086
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 09:12:30AM +0800, Boqun Feng wrote:
-> On Thu, Mar 04, 2021 at 11:11:42AM -0500, Alan Stern wrote:
+The two tests here did not make it into the main BTF_KIND_FLOAT series
+because of dependency on LLVM.
 
-> > Forget about local variables for the time being and just consider
-> > 
-> > 	dep ; [Plain] ; rfi
-> > 
-> > For example:
-> > 
-> > 	A: r1 = READ_ONCE(x);
-> > 	   y = r1;
-> > 	B: r2 = READ_ONCE(y);
-> > 
-> > Should B be ordered after A?  I don't see how any CPU could hope to 
-> > excute B before A, but maybe I'm missing something.
-> > 
-> 
-> Agreed.
-> 
-> > There's another twist, connected with the fact that herd7 can't detect 
-> > control dependencies caused by unexecuted code.  If we have:
-> > 
-> > 	A: r1 = READ_ONCE(x);
-> > 	if (r1)
-> > 		WRITE_ONCE(y, 5);
-> > 	r2 = READ_ONCE(y);
-> > 	B: WRITE_ONCE(z, r2);
-> > 
-> > then in executions where x == 0, herd7 doesn't see any control 
-> > dependency.  But CPUs do see control dependencies whenever there is a 
-> > conditional branch, whether the branch is taken or not, and so they will 
-> > never reorder B before A.
-> > 
-> 
-> Right, because B in this example is a write, what if B is a read that
-> depends on r2, like in my example? Let y be a pointer to a memory
-> location, and initialized as a valid value (pointing to a valid memory
-> location) you example changed to:
-> 
-> 	A: r1 = READ_ONCE(x);
-> 	if (r1)
-> 		WRITE_ONCE(y, 5);
-> 	C: r2 = READ_ONCE(y);
-> 	B: r3 = READ_ONCE(*r2);
-> 
-> , then A don't have the control dependency to B, because A and B is
-> read+read. So B can be ordered before A, right?
+Ilya Leoshkevich (2):
+  selftests/bpf: Add BTF_KIND_FLOAT to test_core_reloc_size
+  selftests/bpf: Add BTF_KIND_FLOAT to btf_dump_test_case_syntax
 
-Yes, I think that's right: Both C and B can be executed before A.
+ tools/testing/selftests/bpf/README.rst                   | 9 +++++++++
+ tools/testing/selftests/bpf/prog_tests/core_reloc.c      | 1 +
+ .../selftests/bpf/progs/btf_dump_test_case_syntax.c      | 7 +++++++
+ tools/testing/selftests/bpf/progs/core_reloc_types.h     | 5 +++++
+ tools/testing/selftests/bpf/progs/test_core_reloc_size.c | 3 +++
+ 5 files changed, 25 insertions(+)
 
-> > One last thing to think about: My original assessment or Björn's problem 
-> > wasn't right, because the dep in (dep ; rfi) doesn't include control 
-> > dependencies.  Only data and address.  So I believe that the LKMM 
-> 
-> Ah, right. I was mising that part (ctrl is not in dep). So I guess my
-> example is pointless for the question we are discussing here ;-(
-> 
-> > wouldn't consider A to be ordered before B in this example even if x 
-> > was nonzero.
-> 
-> Yes, and similar to my example (changing B to a read).
-> 
-> I did try to run my example with herd, and got confused no matter I make
-> dep; [Plain]; rfi as to-r (I got the same result telling me a reorder
-> can happen). Now the reason is clear, because this is a ctrl; rfi not a
-> dep; rfi.
-> 
-> Thanks so much for walking with me on this ;-)
+-- 
+2.29.2
 
-You're welcome.  At this point, it looks like the only remaining 
-question is whether to include (dep ; [Plain] ; rfi) in to-r.  This 
-doesn't seem to be an urgent question.
-
-Alan
