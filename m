@@ -2,132 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB9C32E7A5
-	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 13:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1252732E7CB
+	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 13:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbhCEMI2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Mar 2021 07:08:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60484 "EHLO
+        id S229597AbhCEMU5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Mar 2021 07:20:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhCEMH6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Mar 2021 07:07:58 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FE1C061574;
-        Fri,  5 Mar 2021 04:07:58 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id 18so1981995pfo.6;
-        Fri, 05 Mar 2021 04:07:58 -0800 (PST)
+        with ESMTP id S229737AbhCEMUr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Mar 2021 07:20:47 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16F3C061574;
+        Fri,  5 Mar 2021 04:20:46 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id t25so1253369pga.2;
+        Fri, 05 Mar 2021 04:20:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0T4sYjk3wRZzjG/QHAIvuP6rKIH4m6dqz5ONCAsok4U=;
-        b=X9aYOJ2QUP2xz10GjaNI2tVnTar2w3YTbJkB56nhZ43TCzh4a0g4Kb7e8XS9lECzRG
-         5BaePC2mMQk+/MQRKX0PGp2vpm3tkiA22y8AwJYIjs3X5Cb4tNKARktq6vkbAHcZpEGN
-         Yzk5DU2q50UwaF4xlEagNR7sQDl2vsDpaI8MGk1LmIkxSUhGnzkBfiJdIPSD9YjZnyNa
-         z1YfGjVkMVdCuwArFbDgpglD2TbV+2yMdfo6kvoEVGfKh5rKlrEnJMFxbOfCvicuiisY
-         RNMr4au0QQrZJcaf6eXQcZQnCjd/vxDr+cnEu0ELaz6rMPx2rCf8B1ya358Qg+QSuTmv
-         x0iQ==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=Uh9p0RSc8dHyDNEag591AlYjV9Zp1DnOW10nwM2LhJ0=;
+        b=hxape13oVsVoduHAonjoZ/cRTP7CQZFtT51ZBnzwH+vLcq2Mv9wnGjrT8hHN0tpQZx
+         EmiqW9KHjSyfu3pkZPNCnMXqugdzQKfmb/8vL3RTL64GTFhJQFYHogEPnol2CGrroobC
+         oqvMehLlls6U84btOyr8AYkGBLTkG3fZW+sZ2rpxY8/lE0eHkMOvgxsWvV4m7/oqzIEi
+         qX0np24yMVOUOdiawmF/3nOvRGbGTPzty2Kp5hZs7zfQQbCF49WlG1UPoRnRPDP+OPPe
+         rEOT8PVWSrpdWPXay1Yy6hjccah2cs/76psNdycG6ffbJ3tANzmmWtLLfef88HWse13U
+         qAGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0T4sYjk3wRZzjG/QHAIvuP6rKIH4m6dqz5ONCAsok4U=;
-        b=TCto31YS7EouOtTyaWmRb/iuEU2nWAU08BaO+DE+yXb0BRGAyn2CippMV51mMot/sO
-         kDEZvJONg/qwXLJZHCE4P/Cv95X8qIyyr0Aag8vHveDE4BdzqBn3Sq4RdUMAsXTTSS0j
-         64oM9NcP0s9BgPqi+RJPu6wmyPyLwZPiw2oX381zFoaxNoxa/AbyjvkFJKvRDqiNLQxc
-         YloSSxnECuVXcMtPReDHt92qByZCWwBZw7WjrZXMygX8/h46zqV4y6u3l4fW2Fj8+qVp
-         dGs0sWCIeOyu7dlG5h3FYkb81YDlIOasebj8LvrC21oTpmDuDuRnh78ypy//LAUqya1t
-         d6tQ==
-X-Gm-Message-State: AOAM530CDL6FJxKh+8Vk/FQNKaSZFbkf2pg2fXjtutmqUcNu/wIrDJCq
-        WkmzaJqI7eKHhFpF6Ix1R+9UGZ5e26nqxgmwk3I=
-X-Google-Smtp-Source: ABdhPJwjqsfLw9ru8YkR/RGYr2KWgaGsQwQO4QmzMmJdg8R1OETnAH+U7oEtzJZBjg7l8BXUO4IWnv00awnX5hCZTkU=
-X-Received: by 2002:a63:1906:: with SMTP id z6mr8464802pgl.292.1614946078278;
- Fri, 05 Mar 2021 04:07:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20210305092534.13121-1-baijiaju1990@gmail.com>
-In-Reply-To: <20210305092534.13121-1-baijiaju1990@gmail.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Fri, 5 Mar 2021 13:07:47 +0100
-Message-ID: <CAJ8uoz3dkGsnMQ5wnFmyyFVfkMrz8Z2pqPZ+frFXj=Sy72xpcw@mail.gmail.com>
-Subject: Re: [PATCH] net: xdp: fix error return code of xsk_generic_xmit()
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=Uh9p0RSc8dHyDNEag591AlYjV9Zp1DnOW10nwM2LhJ0=;
+        b=ltFCb1hffg3EbpsIt/m7qXgxvF2HrzCw+HjNqebXptHe5MBjhSju2j3BzzY+3blnSS
+         wXFsCtZoaU5ssUmRWMIEtlgVQw07dRZ1Q0sGu99gMPJ6lmVebSPpiUY3kJNhJpFYpblZ
+         /4ZfDIk1sJIQnlwknk2N9sRNGhcQFn2HjHBZu/SVEnSG69idgkSUEnbKZXXjHnCnglb2
+         yyYSG5Obgx+pvMDHu5cA1x6Pdv5fEhjPUF8esqcp1LpbcQLVVLyzyX2+TYqsGNPBfttn
+         +/uhniFEbZoTbHnH1FXR1mW+CNP8hTWHGDVCOgR4QDg4dHelFtFF9ZTQOyhRrLeV5jy7
+         gT6Q==
+X-Gm-Message-State: AOAM531rcrgx+QSfqHmK/ArD2Rj5TxVwzNrMiaXUwPhXnUmxESIgwLN/
+        JsCFufyNmeAzuz5WMMirENc=
+X-Google-Smtp-Source: ABdhPJx1eYs1tycuYxQCZmEXP6GtGAr1Gxvb8cn9wcCOGHHMkoQ4EQFDzIP9e0+fR9fZ3ddr5cKISw==
+X-Received: by 2002:a65:64ce:: with SMTP id t14mr8234255pgv.36.1614946846538;
+        Fri, 05 Mar 2021 04:20:46 -0800 (PST)
+Received: from [172.17.32.59] ([154.48.252.65])
+        by smtp.gmail.com with ESMTPSA id w4sm2233307pjk.55.2021.03.05.04.20.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Mar 2021 04:20:45 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH] selftests_bpf: extend test_tc_tunnel test with vxlan
+From:   Xuesen Huang <hxseverything@gmail.com>
+In-Reply-To: <CA+FuTSfj2u5pEbKJR_m0qCiPfdhCVS_BZVPPO=dNjAyL7HG7FQ@mail.gmail.com>
+Date:   Fri, 5 Mar 2021 20:20:41 +0800
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Li Wang <wangli09@kuaishou.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <9789D5AA-5B93-4045-9818-B1E84C01A16C@gmail.com>
+References: <20210304064212.6513-1-hxseverything@gmail.com>
+ <CA+FuTSfj2u5pEbKJR_m0qCiPfdhCVS_BZVPPO=dNjAyL7HG7FQ@mail.gmail.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 10:28 AM Jia-Ju Bai <baijiaju1990@gmail.com> wrote:
->
-> When err is zero but xskq_prod_reserve() fails, no error return code of
-> xsk_generic_xmit() is assigned.
-> To fix this bug, err is assigned with the return value of
-> xskq_prod_reserve(), and then err is checked.
 
-This error is ignored by design. This so that the zero-copy path and
-the copy/skb path will return the same value (success in this case)
-when the completion ring does not have a spare entry we can put the
-future completion in. The problem lies with the zero-copy path that is
-asynchronous, in contrast to the skb path that is synchronous. The
-zero-copy path cannot return an error when this happens as this
-reservation in the completion ring is performed by the driver that
-might concurrently run on another core without any way to feed this
-back to the syscall that does not wait for the driver to execute in
-any case. Introducing a return value for this condition right now for
-the skb case, might break existing applications.
 
-Though it would be really good if you could submit a small patch to
-bpf-next that adds a comment explaining this to avoid any future
-confusion. Something along the lines of: /* The error code of
-xskq_prod_reserve is ignored so that skb mode will mimic the same
-behavior as zero-copy mode that does not signal an error in this case
-as it cannot. */. You could put it right after the if statement.
+> 2021=E5=B9=B43=E6=9C=884=E6=97=A5 =E4=B8=8B=E5=8D=8810:02=EF=BC=8CWillem=
+ de Bruijn <willemdebruijn.kernel@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> On Thu, Mar 4, 2021 at 1:42 AM Xuesen Huang <hxseverything@gmail.com> =
+wrote:
+>>=20
+>> From: Xuesen Huang <huangxuesen@kuaishou.com>
+>>=20
+>> Add BPF_F_ADJ_ROOM_ENCAP_L2_ETH flag to the existing tests which
+>> encapsulates the ethernet as the inner l2 header.
+>>=20
+>> Update a vxlan encapsulation test case.
+>>=20
+>> Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
+>> Signed-off-by: Li Wang <wangli09@kuaishou.com>
+>> Signed-off-by: Willem de Bruijn <willemb@google.com>
+>=20
+> Please mark patch target: [PATCH bpf-next]
+>=20
+Thanks.
 
-Thank you: Magnus
+>> ---
+>> tools/testing/selftests/bpf/progs/test_tc_tunnel.c | 113 =
+++++++++++++++++++---
+>> tools/testing/selftests/bpf/test_tc_tunnel.sh      |  15 ++-
+>> 2 files changed, 111 insertions(+), 17 deletions(-)
+>=20
+>=20
+>> -static __always_inline int encap_ipv4(struct __sk_buff *skb, __u8 =
+encap_proto,
+>> -                                     __u16 l2_proto)
+>> +static __always_inline int __encap_ipv4(struct __sk_buff *skb, __u8 =
+encap_proto,
+>> +                                       __u16 l2_proto, __u16 =
+ext_proto)
+>> {
+>>        __u16 udp_dst =3D UDP_PORT;
+>>        struct iphdr iph_inner;
+>>        struct v4hdr h_outer;
+>>        struct tcphdr tcph;
+>>        int olen, l2_len;
+>> +       __u8 *l2_hdr =3D NULL;
+>>        int tcp_off;
+>>        __u64 flags;
+>>=20
+>> @@ -141,7 +157,11 @@ static __always_inline int encap_ipv4(struct =
+__sk_buff *skb, __u8 encap_proto,
+>>                break;
+>>        case ETH_P_TEB:
+>>                l2_len =3D ETH_HLEN;
+>> -               udp_dst =3D ETH_OVER_UDP_PORT;
+>> +               if (ext_proto & EXTPROTO_VXLAN) {
+>> +                       udp_dst =3D VXLAN_UDP_PORT;
+>> +                       l2_len +=3D sizeof(struct vxlanhdr);
+>> +               } else
+>> +                       udp_dst =3D ETH_OVER_UDP_PORT;
+>>                break;
+>>        }
+>>        flags |=3D BPF_F_ADJ_ROOM_ENCAP_L2(l2_len);
+>> @@ -171,14 +191,26 @@ static __always_inline int encap_ipv4(struct =
+__sk_buff *skb, __u8 encap_proto,
+>>        }
+>>=20
+>>        /* add L2 encap (if specified) */
+>> +       l2_hdr =3D (__u8 *)&h_outer + olen;
+>>        switch (l2_proto) {
+>>        case ETH_P_MPLS_UC:
+>> -               *((__u32 *)((__u8 *)&h_outer + olen)) =3D mpls_label;
+>> +               *(__u32 *)l2_hdr =3D mpls_label;
+>>                break;
+>>        case ETH_P_TEB:
+>> -               if (bpf_skb_load_bytes(skb, 0, (__u8 *)&h_outer + =
+olen,
+>> -                                      ETH_HLEN))
+>> +               flags |=3D BPF_F_ADJ_ROOM_ENCAP_L2_ETH;
+>> +
+>> +               if (ext_proto & EXTPROTO_VXLAN) {
+>> +                       struct vxlanhdr *vxlan_hdr =3D (struct =
+vxlanhdr *)l2_hdr;
+>> +
+>> +                       vxlan_hdr->vx_flags =3D VXLAN_FLAGS;
+>> +                       vxlan_hdr->vx_vni =3D bpf_htonl((VXLAN_VNI & =
+VXLAN_VNI_MASK) << 8);
+>> +
+>> +                       l2_hdr +=3D sizeof(struct vxlanhdr);
+>=20
+> should this be l2_len? (here and ipv6 below)
+>=20
+Should be l2_hdr.=20
 
-> The spinlock is only used to protect the call to xskq_prod_reserve().
->
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-> ---
->  net/xdp/xsk.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 4faabd1ecfd1..f1c1db07dd07 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -484,8 +484,14 @@ static int xsk_generic_xmit(struct sock *sk)
->                  * if there is space in it. This avoids having to implement
->                  * any buffering in the Tx path.
->                  */
-> +               if (unlikely(err)) {
-> +                       kfree_skb(skb);
-> +                       goto out;
-> +               }
-> +
->                 spin_lock_irqsave(&xs->pool->cq_lock, flags);
-> -               if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-> +               err = xskq_prod_reserve(xs->pool->cq);
-> +               if (unlikely(err)) {
->                         spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
->                         kfree_skb(skb);
->                         goto out;
-> --
-> 2.17.1
->
+It=E2=80=99s a little tricky. l2_len has already been modified above. We =
+use l2_hdr here=20
+to help us to find the address in h_outer to load original Ethernet =
+header which=20
+is different in (eth) and (vxlan + eth).
+
+>> +SEC("encap_vxlan_eth")
+>> +int __encap_vxlan_eth(struct __sk_buff *skb)
+>> +{
+>> +       if (skb->protocol =3D=3D __bpf_constant_htons(ETH_P_IP))
+>> +               return __encap_ipv4(skb, IPPROTO_UDP,
+>> +                               ETH_P_TEB,
+>> +                               EXTPROTO_VXLAN);
+>=20
+> non-standard indentation: align with the opening parenthesis. (here
+> and ipv6 below)
+Thanks.
+
