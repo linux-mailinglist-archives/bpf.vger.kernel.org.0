@@ -2,220 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F82132E4C9
-	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 10:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA1F32E514
+	for <lists+bpf@lfdr.de>; Fri,  5 Mar 2021 10:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbhCEJ2R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Mar 2021 04:28:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229464AbhCEJ2M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Mar 2021 04:28:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09E6664FDF;
-        Fri,  5 Mar 2021 09:28:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614936491;
-        bh=PtXjMmtZqUD+84/a3yNKxDwmP+HeI1eftjVgrgaTTbs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XGHeC5WbCnj/NdH+Hyr2fx/z0PWpqzfPypJVmFaRXDNNCOvKTJ13kAhDtXokcq+69
-         v+TG2O65ktvyFEpAyV3vmcXGtRdE4pclJ1qB3fwTKgug6eYgf5NBvzjM+sx7ZTEoBy
-         GOg7ky0gqVK7sYueXCKmzLGBRpqcgZ5DeBWf5U1s6MW86KEMJFfhkzj09cqH61msSX
-         7tX0rzDjVtcZlISM+y6rFIVRyd+kI0yNsqYIUPEXK4gJPf/gY6lifMKtlTyILMGuoV
-         04vfMSNkZjyxsUN3wI6YGAkXMQHf3XzKiLREqL+Xrn9lmSnmWYdHIkMDjr+oKhfhc7
-         wEh0Z68C90baA==
-Date:   Fri, 5 Mar 2021 18:28:06 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     rostedt@goodmis.org, jpoimboe@redhat.com, kuba@kernel.org,
-        ast@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com, yhs@fb.com
-Subject: Re: [PATCH] x86: kprobes: orc: Fix ORC walks in kretprobes
-Message-Id: <20210305182806.df403dec398875c2c1b2c62d@kernel.org>
-In-Reply-To: <d72c62498ea0514e7b81a3eab5e8c1671137b9a0.1614902828.git.dxu@dxuuu.xyz>
-References: <d72c62498ea0514e7b81a3eab5e8c1671137b9a0.1614902828.git.dxu@dxuuu.xyz>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229517AbhCEJls (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Mar 2021 04:41:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229648AbhCEJl0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Mar 2021 04:41:26 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 237E5C061574;
+        Fri,  5 Mar 2021 01:41:26 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id k9so2488966lfo.12;
+        Fri, 05 Mar 2021 01:41:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zUkMZUX9AyOx0RtPoMi/jAtGYWCFGXDYD+xdaqcngtQ=;
+        b=eqZ8UJN3OTqASemabvVVmOh2KjdlI4WkQjVVly016+a7BV3jd37QOXe1Eh5c91Mwc+
+         gnfY3KDaToxHg4FVK/xXzFPwzoL16vNxv81rIoKNluwcWFuO6CxYjbhUMFV7yzH4MdFH
+         od+N3rVR6Ne2lJs4CN7YNcmkOIgoMrZ18gPa603iO66b//uDct7QcfZd3Dk/J5KZQMVg
+         ra2Iaz0V3Ji2EQRJ66mgCaSCgE4X5WMnBR0JSM8Kp+ESfehuDM9imo//vJYRFiEHn/eX
+         oKbq6m2C5JAsUHSxCtStYPdgOvAdQuZSe0NMZD+HtZClEKC0KXbT5ArQpB55Ibf7qnvI
+         pgrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zUkMZUX9AyOx0RtPoMi/jAtGYWCFGXDYD+xdaqcngtQ=;
+        b=ZYOgnFtEz03bpvvLY3OU1GMWaRpcaaWkig+jvcHiwXmMZ5XGP6EeLyRKKkj3z58Iim
+         NiwV3CTpAmBUJzYSUAJ1S7Dl4C4KfenFMVd26pQqy6YblCFDTfkbkEKQMNhJ3a4OBbOC
+         QCbXxn5TSL/+IyT/zRPiNFhEj87f8ZvsFbl8wmY1OHt7B6OtdXYD+iBx8byVkXhwR2Yv
+         PKG8F86KnOUqLGKD/lI6vPfG1Ui0CykrCo5WM7TFu4e8PNp8ubaDcXjiGZLCLaQl3lUH
+         7QRfnBuRBOw4qfMG/pa2vW5Rxjb5qyfpQWtu8UGuthRjYUeKdRdOap5v0/C0ILm2TxlV
+         BLTA==
+X-Gm-Message-State: AOAM530P9mSyCjrjd5VdVpo0j+qALB7t2Q7wMZ5/HCbZUHHY/fCNPJNo
+        n33gRbUy6E9T9T9/AH7uKWU=
+X-Google-Smtp-Source: ABdhPJymyCDcf7UtdzoTdbTNIi1+0YyzQFzDZ8BOF7BQUGh/yXLVn2rsQAVh/CITsHG5up9YyyF7zg==
+X-Received: by 2002:a19:234b:: with SMTP id j72mr4778121lfj.293.1614937284660;
+        Fri, 05 Mar 2021 01:41:24 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
+        by smtp.gmail.com with ESMTPSA id v80sm235371lfa.229.2021.03.05.01.41.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 01:41:24 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com, maximmi@nvidia.com, andrii@kernel.org,
+        toke@redhat.com, will@kernel.org, paulmck@kernel.org,
+        stern@rowland.harvard.edu
+Subject: [PATCH bpf-next v2 0/2] load-acquire/store-release barriers for AF_XDP rings
+Date:   Fri,  5 Mar 2021 10:41:11 +0100
+Message-Id: <20210305094113.413544-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Daniel,
+This two-patch series introduces load-acquire/store-release barriers
+for the AF_XDP rings.
 
-On Thu,  4 Mar 2021 16:07:52 -0800
-Daniel Xu <dxu@dxuuu.xyz> wrote:
+For most contemporary architectures, this is more effective than a
+SPSC ring based on smp_{r,w,}mb() barriers. More importantly,
+load-acquire/store-release semantics make the ring code easier to
+follow.
 
-> Getting a stack trace from inside a kretprobe used to work with frame
-> pointer stack walks. After the default unwinder was switched to ORC,
-> stack traces broke because ORC did not know how to skip the
-> `kretprobe_trampoline` "frame".
-> 
-> Frame based stack walks used to work with kretprobes because
-> `kretprobe_trampoline` does not set up a new call frame. Thus, the frame
-> pointer based unwinder could walk directly to the kretprobe'd caller.
-> 
-> For example, this stack is walked incorrectly with ORC + kretprobe:
-> 
->     # bpftrace -e 'kretprobe:do_nanosleep { @[kstack] = count() }'
->     Attaching 1 probe...
->     ^C
-> 
->     @[
->         kretprobe_trampoline+0
->     ]: 1
-> 
-> After this patch, the stack is walked correctly:
-> 
->     # bpftrace -e 'kretprobe:do_nanosleep { @[kstack] = count() }'
->     Attaching 1 probe...
->     ^C
-> 
->     @[
->         kretprobe_trampoline+0
->         __x64_sys_nanosleep+150
->         do_syscall_64+51
->         entry_SYSCALL_64_after_hwframe+68
->     ]: 12
-> 
-> Fixes: fc72ae40e303 ("x86/unwind: Make CONFIG_UNWINDER_ORC=y the default in kconfig for 64-bit")
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+This is effectively the change done in commit 6c43c091bdc5
+("documentation: Update circular buffer for
+load-acquire/store-release"), but for the AF_XDP rings.
 
-OK, basically good, but this is messy, and doing much more than fixing issue.
+Both libbpf and the kernel-side are updated.
 
-> ---
->  arch/x86/kernel/unwind_orc.c | 53 +++++++++++++++++++++++++++++++++++-
->  kernel/kprobes.c             |  8 +++---
->  2 files changed, 56 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-> index 2a1d47f47eee..1b88d75e2e9e 100644
-> --- a/arch/x86/kernel/unwind_orc.c
-> +++ b/arch/x86/kernel/unwind_orc.c
-> @@ -1,7 +1,9 @@
->  // SPDX-License-Identifier: GPL-2.0-only
-> +#include <linux/kprobes.h>
->  #include <linux/objtool.h>
->  #include <linux/module.h>
->  #include <linux/sort.h>
-> +#include <asm/kprobes.h>
->  #include <asm/ptrace.h>
->  #include <asm/stacktrace.h>
->  #include <asm/unwind.h>
-> @@ -77,9 +79,11 @@ static struct orc_entry *orc_module_find(unsigned long ip)
->  }
->  #endif
->  
-> -#ifdef CONFIG_DYNAMIC_FTRACE
-> +#if defined(CONFIG_DYNAMIC_FTRACE) || defined(CONFIG_KRETPROBES)
->  static struct orc_entry *orc_find(unsigned long ip);
-> +#endif
->  
-> +#ifdef CONFIG_DYNAMIC_FTRACE
->  /*
->   * Ftrace dynamic trampolines do not have orc entries of their own.
->   * But they are copies of the ftrace entries that are static and
-> @@ -117,6 +121,43 @@ static struct orc_entry *orc_ftrace_find(unsigned long ip)
->  }
->  #endif
->  
-> +#ifdef CONFIG_KRETPROBES
-> +static struct orc_entry *orc_kretprobe_find(void)
-> +{
-> +	kprobe_opcode_t *correct_ret_addr = NULL;
-> +	struct kretprobe_instance *ri = NULL;
-> +	struct llist_node *node;
-> +
-> +	node = current->kretprobe_instances.first;
-> +	while (node) {
-> +		ri = container_of(node, struct kretprobe_instance, llist);
-> +
-> +		if ((void *)ri->ret_addr != &kretprobe_trampoline) {
-> +			/*
-> +			 * This is the real return address. Any other
-> +			 * instances associated with this task are for
-> +			 * other calls deeper on the call stack
-> +			 */
-> +			correct_ret_addr = ri->ret_addr;
-> +			break;
-> +		}
-> +
-> +
-> +		node = node->next;
-> +	}
-> +
-> +	if (!correct_ret_addr)
-> +		return NULL;
-> +
-> +	return orc_find((unsigned long)correct_ret_addr);
-> +}
-> +#else
-> +static struct orc_entry *orc_kretprobe_find(void)
-> +{
-> +	return NULL;
-> +}
-> +#endif
+Full details are outlined in the commits!
 
-This code is too much depending on kretprobe internal implementation.
-This should should be provided by kretprobe.
+Thanks to the LKMM-folks (Paul/Alan/Will) for helping me out in this
+complicated matter!
 
->  /*
->   * If we crash with IP==0, the last successfully executed instruction
->   * was probably an indirect function call with a NULL function pointer,
-> @@ -148,6 +189,16 @@ static struct orc_entry *orc_find(unsigned long ip)
->  	if (ip == 0)
->  		return &null_orc_entry;
->  
-> +	/*
-> +	 * Kretprobe lookup -- must occur before vmlinux addresses as
-> +	 * kretprobe_trampoline is in the symbol table.
-> +	 */
-> +	if (ip == (unsigned long) &kretprobe_trampoline) {
-> +		orc = orc_kretprobe_find();
-> +		if (orc)
-> +			return orc;
-> +	}
+@Andrii I kept the barriers in libbpf_util.h to separate userfacing
+        APIs (xsk.h) from internals.
 
-Here too. at least "ip == (unsigned long) &kretprobe_trampoline" should
-be hidden by an inline function...
+@Toke I kept "barriers" but reworded. Acquire/release are also
+      barriers.
 
-> +
->  	/* For non-init vmlinux addresses, use the fast lookup table: */
->  	if (ip >= LOOKUP_START_IP && ip < LOOKUP_STOP_IP) {
->  		unsigned int idx, start, stop;
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 745f08fdd7a6..334c23d33451 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1895,10 +1895,6 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
->  	BUG_ON(1);
->  
->  found:
-> -	/* Unlink all nodes for this frame. */
-> -	current->kretprobe_instances.first = node->next;
-> -	node->next = NULL;
-> -
->  	/* Run them..  */
->  	while (first) {
->  		ri = container_of(first, struct kretprobe_instance, llist);
-> @@ -1917,6 +1913,10 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
->  		recycle_rp_inst(ri);
->  	}
->  
-> +	/* Unlink all nodes for this frame. */
-> +	current->kretprobe_instances.first = node->next;
-> +	node->next = NULL;
+@Will I'd really appreciate if you could take a look this change.
 
-Nack, this is a bit dangerous. We should unlink the chunk of kretprobe instances and
-recycle it as I did in my patch, see below;
+Changelog
 
-https://lore.kernel.org/bpf/20210304221947.5a177ce2e1e94314e57c38a4@kernel.org/
+v1[1]->v2: 
+* Expanded the commit message for patch 1, and included the LKMM
+  litmus tests. Hopefully this clear things up. (Daniel)
 
-I would like to fix this issue in the generic part, not for x86 only.
-Let me refresh my series for fixing it.
+* Clarified why the smp_mb()/smp_load_acquire() is not needed in (A);
+  control dependency with load to store. (Toke)
 
-Thank you,
+[1] https://lore.kernel.org/bpf/20210301104318.263262-1-bjorn.topel@gmail.com/
 
+Thanks,
+Björn
+
+
+Björn Töpel (2):
+  xsk: update rings for load-acquire/store-release barriers
+  libbpf, xsk: add libbpf_smp_store_release libbpf_smp_load_acquire
+
+ net/xdp/xsk_queue.h         | 30 +++++++---------
+ tools/lib/bpf/libbpf_util.h | 72 +++++++++++++++++++++++++------------
+ tools/lib/bpf/xsk.h         | 17 +++------
+ 3 files changed, 68 insertions(+), 51 deletions(-)
+
+
+base-commit: bce8623135fbe54bd86797df72cb85bfe4118b6e
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.27.0
+
