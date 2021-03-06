@@ -2,108 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0FF32F766
-	for <lists+bpf@lfdr.de>; Sat,  6 Mar 2021 01:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A0232F772
+	for <lists+bpf@lfdr.de>; Sat,  6 Mar 2021 02:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbhCFA6U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Mar 2021 19:58:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229982AbhCFA6B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Mar 2021 19:58:01 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6383CC06175F;
-        Fri,  5 Mar 2021 16:58:01 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id t9so149972pjl.5;
-        Fri, 05 Mar 2021 16:58:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kEB+wkg0VXlo2zJ9VMKwJrG0JtlezJmZdygKl69AD+I=;
-        b=Doc9qVn0UogV3W56hb+iDnp3/OyBQwHdTQoy7LTDlplAxNfNnocU+qQ3IkdqnUXP5v
-         lkfNGz+Am9fJ8/hjJ8TLLgHZQDNusq+UjFzAPt/Eaq2Ut1y98WIu20C5AT3vXyTwRTlL
-         JMhSikGXh0djRA3q0N512fL30yaLx75QFbSMw967PrhFx/q08ZYJV+t+RWO5k/spW/RA
-         xqhJSvQ0lYBIfr7ibgnFoF+tXkQyCBIkupU+SA32QUnYMrmyfaJQoOe9ia8e3Optp+xE
-         +mjpqdYeLvTT6uv3E2Jl7J8svGQdkAfeKzqTrpr2Oyg7Id11PVFtJgGxl0vUTOIB6bZa
-         qesA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kEB+wkg0VXlo2zJ9VMKwJrG0JtlezJmZdygKl69AD+I=;
-        b=ZBfAoRgqdVg95tMY0MpwiINlYYd7qMqCUFjW9nAlM71Q3/y0H3Alfl2AIcU0LXM+cl
-         ORqSQDk00i0HZuNpk+pwvN4ioXWXAcBnOp7MtQOV3Pb6zZ3xBSptWox/oIp3C9Wu6akO
-         bQGrSZB4XP+dWwT80DRZtepoI7cY6yJYJpWcf76ky8t+/5QyQxfmRNkcMeaO0FySRJTG
-         fWyCxTAA40wr1sET55Eag65M7gLQpYM3g8n6vZgcNMekEtesRzOvrNHpq8AiXsBU4cE5
-         /VQzseW8dz0310pkdQM9zogpCQUNYeAwsc77RRRbxenwE+eVeWbXXdCZrQgXEd8+xSZI
-         bmbQ==
-X-Gm-Message-State: AOAM532Z9xxlbQn5cu+wmfx3KMpYfNM28DyrDwk1VjvamC42ROSV2NlN
-        lPI3qsQ/J9pyAzY7CNrhN51L17fFRmoyH1q90ZCF2rEpe1u0pw==
-X-Google-Smtp-Source: ABdhPJwbxFnpZfNws7VuiKzvxh4mG1T4EJ4x0sGRb61EkDmpZw5e4yJed6mgSIVWcC278lMexvUfahJHOrdUTC+QYFY=
-X-Received: by 2002:a17:90a:8594:: with SMTP id m20mr12810495pjn.215.1614992280821;
- Fri, 05 Mar 2021 16:58:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20210302023743.24123-1-xiyou.wangcong@gmail.com>
- <20210302023743.24123-3-xiyou.wangcong@gmail.com> <CACAyw9-SjsNn4_J1KDXuFh1nd9Hr-Mo+=7S-kVtooJwdi1fodQ@mail.gmail.com>
- <CAM_iQpXqE9qJ=+zKA6H1Rq=KKgm8LZ=p=ZtvrrH+hfSrTg+zxw@mail.gmail.com>
- <CAM_iQpXXUv1FV8DQ85a2fs08JCfKHHt-fAWYbV0TTWmwUZ-K5Q@mail.gmail.com> <6042cc5f4f65a_135da20824@john-XPS-13-9370.notmuch>
-In-Reply-To: <6042cc5f4f65a_135da20824@john-XPS-13-9370.notmuch>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Fri, 5 Mar 2021 16:57:49 -0800
-Message-ID: <CAM_iQpUr7cvuXXdtYN9_MQPYy_Tfi88fBGSo3c8RRpMFBr55Og@mail.gmail.com>
-Subject: Re: [Patch bpf-next v2 2/9] sock: introduce sk_prot->update_proto()
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S229631AbhCFBOM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Mar 2021 20:14:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42808 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229750AbhCFBOD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Mar 2021 20:14:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F39516508F;
+        Sat,  6 Mar 2021 01:13:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614993243;
+        bh=DXFT/1IT9LLTpgWizl+noTVE9yRNg2kxXJH5bWRANWA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=miRtcu1t21nub3ZEVqX0yb07yYvO7xQPXMXklm3NrVyb93jQ0prAC6n5+INgldwPt
+         D73Yrx6zGVmLbzpnyrGS+O/Qq577Aso5FXjEh2D/e1CPjA4Knn4qVjnzBjO2Gh5DZa
+         p/2rzQWXrYv3beRR6dhGWBX4i28IgmZVnAX9fFBLs2gptIMedHYdCgFjMXtaCN55nL
+         h7RfHpRMr0O9seADSUOg9vfd26gCdVeV1RzMTDjyTnIJblRpfrIYqix9bG+DIrWXdj
+         XLptg/mu1uqVvWF86l7IGsSX/yGflmZSEUV1oVCpQz0BRFG67YtUXwyJgombOxrYSj
+         +5efvXL7lETiQ==
+Date:   Sat, 6 Mar 2021 10:13:57 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
+        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
+        kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
+Message-Id: <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
+In-Reply-To: <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
+References: <161495873696.346821.10161501768906432924.stgit@devnote2>
+        <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 4:27 PM John Fastabend <john.fastabend@gmail.com> wrote:
->
-> Cong Wang wrote:
-> > On Tue, Mar 2, 2021 at 10:23 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> > >
-> > > On Tue, Mar 2, 2021 at 8:22 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
-> > > >
-> > > > On Tue, 2 Mar 2021 at 02:37, Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> > > >
-> > > > ...
-> > > > >  static inline void sk_psock_restore_proto(struct sock *sk,
-> > > > >                                           struct sk_psock *psock)
-> > > > >  {
-> > > > >         sk->sk_prot->unhash = psock->saved_unhash;
-> > > >
-> > > > Not related to your patch set, but why do an extra restore of
-> > > > sk_prot->unhash here? At this point sk->sk_prot is one of our tcp_bpf
-> > > > / udp_bpf protos, so overwriting that seems wrong?
->
-> "extra"? restore_proto should only be called when the psock ref count
-> is zero and we need to transition back to the original socks proto
-> handlers. To trigger this we can simply delete a sock from the map.
-> In the case where we are deleting the psock overwriting the tcp_bpf
-> protos is exactly what we want.?
+On Fri, 5 Mar 2021 11:16:45 -0800
+Daniel Xu <dxu@dxuuu.xyz> wrote:
 
-Why do you want to overwrite tcp_bpf_prots->unhash? Overwriting
-tcp_bpf_prots is correct, but overwriting tcp_bpf_prots->unhash is not.
-Because once you overwrite it, the next time you use it to replace
-sk->sk_prot, it would be a different one rather than sock_map_unhash():
+> Hi Masami,
+> 
+> On Sat, Mar 06, 2021 at 12:38:57AM +0900, Masami Hiramatsu wrote:
+> > Hello,
+> > 
+> > Here is a series of patches for kprobes and stacktracer to fix the kretprobe
+> > entries in the kernel stack. This was reported by Daniel Xu. I thought that
+> > was in the bpftrace, but it is actually more generic issue.
+> > So I decided to fix the issue in arch independent part.
+> > 
+> > While fixing the issue, I found a bug in ia64 related to kretprobe, which is
+> > fixed by [1/5]. [2/5] and [3/5] is a kind of cleanup before fixing the main
+> > issue. [4/5] is the patch to fix the stacktrace, which involves kretprobe
+> > internal change. And [5/5] removing the stacktrace kretprobe fixup code in
+> > ftrace. 
+> > 
+> > Daniel, can you also check that this fixes your issue too? I hope it is.
+> 
+> Unfortunately, this patch series does not fix the issue I reported.
 
-// tcp_bpf_prots->unhash == sock_map_unhash
-sk_psock_restore_proto();
-// Now  tcp_bpf_prots->unhash is inet_unhash
-...
-sk_psock_update_proto();
-// sk->sk_proto is now tcp_bpf_prots again,
-// so its ->unhash now is inet_unhash
-// but it should be sock_map_unhash here
+Ah, OK. This was my mistake I didn't choose ORC unwinder for test kernel.
 
-Thanks.
+> 
+> I think the reason your tests work is because you're using ftrace and
+> the ORC unwinder is aware of ftrace trampolines (see
+> arch/x86/kernel/unwind_orc.c:orc_ftrace_find).
+
+OK, so it has to be fixed in ORC unwinder.
+
+> 
+> bpftrace kprobes go through perf event subsystem (ie not ftrace) so
+> naturally orc_ftrace_find() does not find an associated trampoline. ORC
+> unwinding fails in this case because
+> arch/x86/kernel/kprobes/core.c:trampoline_handler sets
+> 
+>     regs->ip = (unsigned long)&kretprobe_trampoline;
+> 
+> and `kretprobe_trampoline` is marked
+> 
+>     STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
+> 
+> so it doesn't have a valid ORC entry. Thus, ORC immediately bails when
+> trying to unwind past the first frame.
+
+Hm, in ftrace case, it decode kretprobe's stackframe and stoped right
+after kretprobe_trampoline callsite.
+
+ => kretprobe_trace_func+0x21f/0x340
+ => kretprobe_dispatcher+0x73/0xb0
+ => __kretprobe_trampoline_handler+0xcd/0x1a0
+ => trampoline_handler+0x3d/0x50
+ => kretprobe_trampoline+0x25/0x50
+ => 0
+
+kretprobe replaces the real return address with kretprobe_trampoline
+and kretprobe_trampoline *calls* trampoline_handler (this part depends
+on architecture implementation).
+Thus, if kretprobe_trampoline has no stack frame information, ORC may
+fails at the first kretprobe_trampoline+0x25, that is different from
+the kretprobe_trampoline+0, so the hack doesn't work.
+
+Hmm, how the other inline-asm function makes its stackframe info?
+If I get the kretprobe_trampoline+0, I can fix it up.
+
+> The only way I can think of to fix this issue is to make the ORC
+> unwinder aware of kretprobe (ie the patch I sent earlier). I'm hoping
+> you have another idea if my patch isn't acceptable.
+
+OK, anyway, your patch doesn't care the case that the multiple functions
+are probed by kretprobes. In that case, you'll see several entries are
+replaced by the kretprobe_trampoline. To find it correctly, you have
+to pass a state-holder (@cur of the kretprobe_find_ret_addr())
+to the fixup entries.
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
