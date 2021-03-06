@@ -2,127 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A0232F772
-	for <lists+bpf@lfdr.de>; Sat,  6 Mar 2021 02:14:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FEF32F777
+	for <lists+bpf@lfdr.de>; Sat,  6 Mar 2021 02:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbhCFBOM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Mar 2021 20:14:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229750AbhCFBOD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Mar 2021 20:14:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F39516508F;
-        Sat,  6 Mar 2021 01:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614993243;
-        bh=DXFT/1IT9LLTpgWizl+noTVE9yRNg2kxXJH5bWRANWA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=miRtcu1t21nub3ZEVqX0yb07yYvO7xQPXMXklm3NrVyb93jQ0prAC6n5+INgldwPt
-         D73Yrx6zGVmLbzpnyrGS+O/Qq577Aso5FXjEh2D/e1CPjA4Knn4qVjnzBjO2Gh5DZa
-         p/2rzQWXrYv3beRR6dhGWBX4i28IgmZVnAX9fFBLs2gptIMedHYdCgFjMXtaCN55nL
-         h7RfHpRMr0O9seADSUOg9vfd26gCdVeV1RzMTDjyTnIJblRpfrIYqix9bG+DIrWXdj
-         XLptg/mu1uqVvWF86l7IGsSX/yGflmZSEUV1oVCpQz0BRFG67YtUXwyJgombOxrYSj
-         +5efvXL7lETiQ==
-Date:   Sat, 6 Mar 2021 10:13:57 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
-        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
-        kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
-Message-Id: <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
-In-Reply-To: <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
-References: <161495873696.346821.10161501768906432924.stgit@devnote2>
-        <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S229597AbhCFBVT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Mar 2021 20:21:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229493AbhCFBVG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Mar 2021 20:21:06 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87350C06175F;
+        Fri,  5 Mar 2021 17:21:06 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id e2so3752892ilu.0;
+        Fri, 05 Mar 2021 17:21:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=5lSJ3kjsDvPGbTIMzkdA7HrV3yg0LgzvSV7ZarmtD0c=;
+        b=mcJ7A0v5dgFe21u+S5ZFErKtmIJmTqW7vnPz8mk4Fn0X24nFGEZgSQD62qUdoTS3sA
+         B0cUGs/NPkS3H7hsYSIwRCuKjE/qlPeSbETr8sb1y/qi+8hsV3hvi5iZ9TTDdYsG1saF
+         r7mNy4fZadBE8DodE3cC13UxT1SQjNlLDmu8MnoqkxeOmSYW+gTOy03Ro3W9P+hmurZu
+         s/xc0Q45LtHxq+q3DDCbY2porEhSspyW5uh612ED1qJTWvZFgn/2JPWPHCiu8BgDFXPW
+         i9yV+AH7MUrH69aOeeMtNf/Gkq5qOZkYXxDPGBqdsIHMUcnxCinrum9SBSFqXAfJMLvt
+         fzCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=5lSJ3kjsDvPGbTIMzkdA7HrV3yg0LgzvSV7ZarmtD0c=;
+        b=N35VVJMrFiOB2EZAH7Q8LzealW0lf8b67ca2LWpFPe7hXobaT9UET2l71+XiQ9VAGQ
+         oAiJc5jiljyCW+TuerMJVffsJ3vV1qSpw7LBSe3Z9UqlDxRADkU7IEpCez7x+ujPX/5+
+         K70OE/heKixXyM/QeAmvV7vqOS/mUM/zjg5ngpOemYsYhk4/wGgXLNLJlTIXx/N1wwOx
+         R/EEtgJDxQggCtTzoaa4ZaFTXJPW1DosDNmU/itz1+KZ4xA7BgI+53FeAHNGyJELoqCO
+         1aOgvWhtJLMcqIKoKbjx856NC2L3wgYMUXHxEgsGIGRV5fetUEHrgkh8R1q/J8yfijb2
+         YEcA==
+X-Gm-Message-State: AOAM530ucIu+Rw1XBzsOuXXuPdIE4OVBPySf3/MeVcQq14RHQ773cEdT
+        mdlXBcTmlfmyWBPCnZPZZTU=
+X-Google-Smtp-Source: ABdhPJymyv6By5j/o0dMpugGv3oJy57cMVDl+Fs2ONVe8gVMfLjb0pZRswfsPx4eSyPKSOyd8OnFKA==
+X-Received: by 2002:a05:6e02:b4e:: with SMTP id f14mr10526242ilu.289.1614993665758;
+        Fri, 05 Mar 2021 17:21:05 -0800 (PST)
+Received: from localhost ([172.243.146.206])
+        by smtp.gmail.com with ESMTPSA id t9sm2101522ioi.27.2021.03.05.17.21.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 17:21:05 -0800 (PST)
+Date:   Fri, 05 Mar 2021 17:20:58 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
+        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Message-ID: <6042d8fa32b92_135da20871@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210305015655.14249-4-xiyou.wangcong@gmail.com>
+References: <20210305015655.14249-1-xiyou.wangcong@gmail.com>
+ <20210305015655.14249-4-xiyou.wangcong@gmail.com>
+Subject: RE: [Patch bpf-next v3 3/9] udp: implement ->sendmsg_locked()
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 5 Mar 2021 11:16:45 -0800
-Daniel Xu <dxu@dxuuu.xyz> wrote:
-
-> Hi Masami,
+Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
 > 
-> On Sat, Mar 06, 2021 at 12:38:57AM +0900, Masami Hiramatsu wrote:
-> > Hello,
-> > 
-> > Here is a series of patches for kprobes and stacktracer to fix the kretprobe
-> > entries in the kernel stack. This was reported by Daniel Xu. I thought that
-> > was in the bpftrace, but it is actually more generic issue.
-> > So I decided to fix the issue in arch independent part.
-> > 
-> > While fixing the issue, I found a bug in ia64 related to kretprobe, which is
-> > fixed by [1/5]. [2/5] and [3/5] is a kind of cleanup before fixing the main
-> > issue. [4/5] is the patch to fix the stacktrace, which involves kretprobe
-> > internal change. And [5/5] removing the stacktrace kretprobe fixup code in
-> > ftrace. 
-> > 
-> > Daniel, can you also check that this fixes your issue too? I hope it is.
+> UDP already has udp_sendmsg() which takes lock_sock() inside.
+> We have to build ->sendmsg_locked() on top of it, by adding
+> a new parameter for whether the sock has been locked.
 > 
-> Unfortunately, this patch series does not fix the issue I reported.
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+>  include/net/udp.h  |  1 +
+>  net/ipv4/af_inet.c |  1 +
+>  net/ipv4/udp.c     | 30 +++++++++++++++++++++++-------
+>  3 files changed, 25 insertions(+), 7 deletions(-)
 
-Ah, OK. This was my mistake I didn't choose ORC unwinder for test kernel.
+[...]
 
-> 
-> I think the reason your tests work is because you're using ftrace and
-> the ORC unwinder is aware of ftrace trampolines (see
-> arch/x86/kernel/unwind_orc.c:orc_ftrace_find).
+> -int udp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
+> +static int __udp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len, bool locked)
+>  {
 
-OK, so it has to be fixed in ORC unwinder.
+The lock_sock is also taken by BPF_CGROUP_RUN_PROG_UDP4_SENDMSG_LOCK() in
+udp_sendmsg(),
 
-> 
-> bpftrace kprobes go through perf event subsystem (ie not ftrace) so
-> naturally orc_ftrace_find() does not find an associated trampoline. ORC
-> unwinding fails in this case because
-> arch/x86/kernel/kprobes/core.c:trampoline_handler sets
-> 
->     regs->ip = (unsigned long)&kretprobe_trampoline;
-> 
-> and `kretprobe_trampoline` is marked
-> 
->     STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
-> 
-> so it doesn't have a valid ORC entry. Thus, ORC immediately bails when
-> trying to unwind past the first frame.
+ if (cgroup_bpf_enabled(BPF_CGROUP_UDP4_SENDMSG) && !connected) {
+    err = BPF_CGROUP_RUN_PROG_UDP4_SENDMSG_LOCK(sk,
+                                    (struct sockaddr *)usin, &ipc.addr);
 
-Hm, in ftrace case, it decode kretprobe's stackframe and stoped right
-after kretprobe_trampoline callsite.
+so that will also need to be handled.
 
- => kretprobe_trace_func+0x21f/0x340
- => kretprobe_dispatcher+0x73/0xb0
- => __kretprobe_trampoline_handler+0xcd/0x1a0
- => trampoline_handler+0x3d/0x50
- => kretprobe_trampoline+0x25/0x50
- => 0
+It also looks like sk_dst_set() wants the sock lock to be held, but I'm not
+seeing how its covered in the current code,
 
-kretprobe replaces the real return address with kretprobe_trampoline
-and kretprobe_trampoline *calls* trampoline_handler (this part depends
-on architecture implementation).
-Thus, if kretprobe_trampoline has no stack frame information, ORC may
-fails at the first kretprobe_trampoline+0x25, that is different from
-the kretprobe_trampoline+0, so the hack doesn't work.
+ static inline void
+ __sk_dst_set(struct sock *sk, struct dst_entry *dst)
+ {
+        struct dst_entry *old_dst;
 
-Hmm, how the other inline-asm function makes its stackframe info?
-If I get the kretprobe_trampoline+0, I can fix it up.
+        sk_tx_queue_clear(sk);
+        sk->sk_dst_pending_confirm = 0;
+        old_dst = rcu_dereference_protected(sk->sk_dst_cache,
+                                            lockdep_sock_is_held(sk));
+        rcu_assign_pointer(sk->sk_dst_cache, dst);
+        dst_release(old_dst);
+ }
 
-> The only way I can think of to fix this issue is to make the ORC
-> unwinder aware of kretprobe (ie the patch I sent earlier). I'm hoping
-> you have another idea if my patch isn't acceptable.
+I guess this could trip lockdep now, I'll dig a bit more Monday and see
+if its actually the case.
 
-OK, anyway, your patch doesn't care the case that the multiple functions
-are probed by kretprobes. In that case, you'll see several entries are
-replaced by the kretprobe_trampoline. To find it correctly, you have
-to pass a state-holder (@cur of the kretprobe_find_ret_addr())
-to the fixup entries.
+In general I don't really like code that wraps locks in 'if' branches
+like this. It seem fragile to me. I didn't walk every path in the code
+to see if a lock is taken in any of the called functions but it looks
+like ip_send_skb() can call into netfilter code and may try to take
+the sock lock.
 
-Thank you,
+Do we need this locked send at all? We use it in sk_psock_backlog
+but that routine needs an optimization rewrite for TCP anyways.
+Its dropping a lot of performance on the floor for no good reason.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+.John
