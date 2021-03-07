@@ -2,74 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A5732FE91
-	for <lists+bpf@lfdr.de>; Sun,  7 Mar 2021 04:41:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE8A33001F
+	for <lists+bpf@lfdr.de>; Sun,  7 Mar 2021 11:34:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbhCGDkV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Mar 2021 22:40:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229977AbhCGDkI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Mar 2021 22:40:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3F72064FC9;
-        Sun,  7 Mar 2021 03:40:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615088408;
-        bh=1olaKk93h+rMyxRE6Tcp8HfI6Hl5cZ4A9NXuI46lGQI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cgMkMpdV8W2FMzQbRE49e004XYJ/5nZeF1rwsH2tMmExN74srTUBHYWerZMBnsJF4
-         Jaex+g0wZI+vxYtkDNrgPlsK5C4lQc4/hRnvepTI01M1m9xiOKSe9CM06f3crYymh8
-         c2Cx4oix5G0y0e/GA9DGlEP3HbZkuPMRBi8q7N/G7GPP17lLR5tpZJFqLte5yfx2g1
-         ZkeTGXqeZ42GRdP7HFn+IlQHdY/6fM/F+mf4yLiBeIoR8foBbkHtTYCIddA2m3TjnK
-         dZGo6aPSNMzJz/cpBnPv9jxC7baGtIFj+qPH2p6rlfLK6aLSHGuKPwy1h7WnNA5CLt
-         23pVf+fOiiEVQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 30199609D4;
-        Sun,  7 Mar 2021 03:40:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230111AbhCGKda (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 7 Mar 2021 05:33:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230045AbhCGKd2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 7 Mar 2021 05:33:28 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D7CC06174A
+        for <bpf@vger.kernel.org>; Sun,  7 Mar 2021 02:33:27 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id u14so8220173wri.3
+        for <bpf@vger.kernel.org>; Sun, 07 Mar 2021 02:33:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kk4+yyzIS3gJC3x4AIFZbwm/LX1sung9S1/jftNT35I=;
+        b=fJsWF6RQa81gj7UzE6rmUEpysFkm1z1cfkGb2G8Jz9fyDMnGRKvkwUo6DCyLCPLIur
+         NrgVRK6qDTykcZt6/HQFd24oZyrM9lvLZs7q64ZLndJEjbEfv8YHLuZ/TUtDpx3IW5Kw
+         K6xk/OrweO8QrqdnVCxoaEKXKlQw78R6mpq3kj0OIAw+NHynaTWkANia16BtwPwlWRwL
+         c/ikwsiEmhjY+h5oJgKUSrrkpqhfgyX+2p9FNVw3KETNWa5mQNdXldTjFXKUubliGKeo
+         tVYJ0ryxwdL8YrBpHlQM6B7s2KGFPNyiqR63RlI0pcPPS0O//fxg6weNzylFa6kTCwp2
+         FPrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kk4+yyzIS3gJC3x4AIFZbwm/LX1sung9S1/jftNT35I=;
+        b=Ph7da3FpKSpsfpe38a+UsvovMJvd6yoB0M4dVI6FrnfayzN9qF2QkyznSrqHm3Lv39
+         qwI/h32Kiv3qCdVmYEDAjbwyp3k7WK/HOYr1BwpWMm/RIASbqmtBEZFoWleWPrPEoSFZ
+         q02XAUZ72kLB4/7CinXMbwPuqov8TTN9Y6NgvvLldgeDPZpLZHmLM9KUj9tucD6ZmK4W
+         DUVS+nQ1FXyLNlYGSJo6JZOn7W4jbkZkVBYDElfpMmsgkmHbuGW0RHiXecZMEEqLIl0b
+         xCtFbfApkJKgiFcr2KpHtVNdYoiY5HWEcczMZmih8tOBqxKRvDvN13IovFatb/G2QbDL
+         PlxA==
+X-Gm-Message-State: AOAM533EmRjhQ7AoTgDMpkiq+vYuBh/zXaRXOsodn3JFi4GR3AVNultE
+        Cbqu5r2e0uoKWCq445klByjPXEAyymyKYfQ=
+X-Google-Smtp-Source: ABdhPJxop+pXjx0Ch3rZ1z3SdhMecrwKW10GYFZxPzktSC3sQRidbHPXc46gJto/xwHG2cQHaS9FDw==
+X-Received: by 2002:a5d:6989:: with SMTP id g9mr816017wru.198.1615113206123;
+        Sun, 07 Mar 2021 02:33:26 -0800 (PST)
+Received: from localhost.localdomain ([192.116.60.117])
+        by smtp.gmail.com with ESMTPSA id c3sm12589964wrr.29.2021.03.07.02.33.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 02:33:25 -0800 (PST)
+From:   Tal Lossos <tallossos@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     yhs@fb.com, kpsingh@kernel.org, gilad.reti@gmail.com,
+        Tal Lossos <tallossos@gmail.com>
+Subject: [PATCH bpf-next] bpf: Change inode_storage's lookup_elem return value from NULL to -EBADF.
+Date:   Sun,  7 Mar 2021 12:32:24 +0200
+Message-Id: <20210307103224.60366-1-tallossos@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/2] load-acquire/store-release barriers for
- AF_XDP rings
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161508840819.30178.16120166038742511752.git-patchwork-notify@kernel.org>
-Date:   Sun, 07 Mar 2021 03:40:08 +0000
-References: <20210305094113.413544-1-bjorn.topel@gmail.com>
-In-Reply-To: <20210305094113.413544-1-bjorn.topel@gmail.com>
-To:     =?utf-8?b?QmrDtnJuIFTDtnBlbCA8Ympvcm4udG9wZWxAZ21haWwuY29tPg==?=@ci.codeaurora.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, bjorn.topel@intel.com,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        maximmi@nvidia.com, andrii@kernel.org, toke@redhat.com,
-        will@kernel.org, paulmck@kernel.org, stern@rowland.harvard.edu
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+bpf_fd_inode_storage_lookup_elem returned NULL when getting a bad FD which caused -ENOENT in bpf_map_copy_value.
+EBADF is better than ENOENT for a bad FD behaviour.
 
-This series was applied to bpf/bpf-next.git (refs/heads/master):
+The patch was partially contributed by CyberArk Software, Inc.
 
-On Fri,  5 Mar 2021 10:41:11 +0100 you wrote:
-> This two-patch series introduces load-acquire/store-release barriers
-> for the AF_XDP rings.
-> 
-> For most contemporary architectures, this is more effective than a
-> SPSC ring based on smp_{r,w,}mb() barriers. More importantly,
-> load-acquire/store-release semantics make the ring code easier to
-> follow.
-> 
-> [...]
+Signed-off-by: Tal Lossos <tallossos@gmail.com>
+---
+ kernel/bpf/bpf_inode_storage.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Here is the summary with links:
-  - [bpf-next,v2,1/2] xsk: update rings for load-acquire/store-release barriers
-    https://git.kernel.org/bpf/bpf-next/c/057e8fb782c1
-  - [bpf-next,v2,2/2] libbpf, xsk: add libbpf_smp_store_release libbpf_smp_load_acquire
-    https://git.kernel.org/bpf/bpf-next/c/60d0e5fdbdf6
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
+index da753721457c..0ca25e9549d8 100644
+--- a/kernel/bpf/bpf_inode_storage.c
++++ b/kernel/bpf/bpf_inode_storage.c
+@@ -109,7 +109,7 @@ static void *bpf_fd_inode_storage_lookup_elem(struct bpf_map *map, void *key)
+ 	fd = *(int *)key;
+ 	f = fget_raw(fd);
+ 	if (!f)
+-		return NULL;
++		return -EBADF;
+ 
+ 	sdata = inode_storage_lookup(f->f_inode, map, true);
+ 	fput(f);
+-- 
+2.27.0
 
