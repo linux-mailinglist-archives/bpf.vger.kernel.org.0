@@ -2,104 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB67B32FE8E
-	for <lists+bpf@lfdr.de>; Sun,  7 Mar 2021 04:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A5732FE91
+	for <lists+bpf@lfdr.de>; Sun,  7 Mar 2021 04:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbhCGDXY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Mar 2021 22:23:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbhCGDXS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Mar 2021 22:23:18 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD19AC06174A
-        for <bpf@vger.kernel.org>; Sat,  6 Mar 2021 19:23:17 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id b10so6463860ybn.3
-        for <bpf@vger.kernel.org>; Sat, 06 Mar 2021 19:23:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TRSSShO6D7Ou8Ikm85XSnRNta330or2s58QVGdeeo1s=;
-        b=BLfJg2BkJKwYvv569mcZwtmWnUsc34HK9zqVKCrYRsdol3wBpHVYzFLqkOpXQV7oEG
-         /D7RuZMOxelX1DpOoPrALz9bg4NtOUU1EFOdrIaSD4RIv7XkVf8QgkfRuEdhlDLJQFOj
-         uq/zUWRMHovIeA20N7NZhrZ00UL7mRE2vJipx5vW4n6Zxox2VyUz0g12l4eqa788oxfp
-         r3aOo8euruRlAEFwDaG8HMJP+oLN8LIVSUpjEaqsqAJpxorLq9gjcT8qGcyYuuZjREgQ
-         5zdoreE47zXDHNjwMEVhWrud2c4oLj0L2P4x2nWIJLm520GK3/wTjNROjZ3yGYYYrTor
-         1pgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TRSSShO6D7Ou8Ikm85XSnRNta330or2s58QVGdeeo1s=;
-        b=QLlD9Pg9CfL7+m4XaNJDe7XIkdd7ta6Xme9/HjkID+0P+mYPS8F8tNY9Au9YOp4ICb
-         UJN9eUdWAcwmyiCFz1wXkDCA20MIouf8iergSJxLvT2P2GtVMjcLGcfc/C+N4P30OKBu
-         qG8Mze0Q7j2askCFscaUvdpUZpY2Sfelxu41HWiyIzFoiTxCeSptQJ1U3MQbNhxXZbWD
-         ux07PmHuFDCH8n2dNNBLfPjM9gi+BHV3YrHqCWkddGJRAYIOc+9utq3w6BIRP773vIkW
-         7hnVG0aNOe5mSNZa6g1UyQs45O6bWSw13QBiB2wGAqPdkDi9rk604dll86kb7di+jEeP
-         Vw7g==
-X-Gm-Message-State: AOAM531KLY4ETxcib+RuEy1r5BG9rsupqO1Zs+H8hE+tr4zKLzSRX0Ww
-        9tAF0BS21fB3DQtwpTigHXWlXGgVX5ra0CKDUgw=
-X-Google-Smtp-Source: ABdhPJwf01qgnlXy4lU389jyD0fga9ZUzpsgYIRfF6uJIMXPULs47urQkrnKUlyl1jf2ib2uygvnVPkwoB6wVmzpWqY=
-X-Received: by 2002:a25:bd12:: with SMTP id f18mr24074318ybk.403.1615087397028;
- Sat, 06 Mar 2021 19:23:17 -0800 (PST)
+        id S230007AbhCGDkV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 6 Mar 2021 22:40:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229977AbhCGDkI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 6 Mar 2021 22:40:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3F72064FC9;
+        Sun,  7 Mar 2021 03:40:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615088408;
+        bh=1olaKk93h+rMyxRE6Tcp8HfI6Hl5cZ4A9NXuI46lGQI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=cgMkMpdV8W2FMzQbRE49e004XYJ/5nZeF1rwsH2tMmExN74srTUBHYWerZMBnsJF4
+         Jaex+g0wZI+vxYtkDNrgPlsK5C4lQc4/hRnvepTI01M1m9xiOKSe9CM06f3crYymh8
+         c2Cx4oix5G0y0e/GA9DGlEP3HbZkuPMRBi8q7N/G7GPP17lLR5tpZJFqLte5yfx2g1
+         ZkeTGXqeZ42GRdP7HFn+IlQHdY/6fM/F+mf4yLiBeIoR8foBbkHtTYCIddA2m3TjnK
+         dZGo6aPSNMzJz/cpBnPv9jxC7baGtIFj+qPH2p6rlfLK6aLSHGuKPwy1h7WnNA5CLt
+         23pVf+fOiiEVQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 30199609D4;
+        Sun,  7 Mar 2021 03:40:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210305170844.151594-1-iii@linux.ibm.com> <20210305170844.151594-3-iii@linux.ibm.com>
-In-Reply-To: <20210305170844.151594-3-iii@linux.ibm.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 6 Mar 2021 19:23:05 -0800
-Message-ID: <CAEf4BzayUW4-0mX6XCHeMif9mquqCbOGNMPJ_=VpV+YM6JzXyg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Add BTF_KIND_FLOAT to btf_dump_test_case_syntax
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 0/2] load-acquire/store-release barriers for
+ AF_XDP rings
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161508840819.30178.16120166038742511752.git-patchwork-notify@kernel.org>
+Date:   Sun, 07 Mar 2021 03:40:08 +0000
+References: <20210305094113.413544-1-bjorn.topel@gmail.com>
+In-Reply-To: <20210305094113.413544-1-bjorn.topel@gmail.com>
+To:     =?utf-8?b?QmrDtnJuIFTDtnBlbCA8Ympvcm4udG9wZWxAZ21haWwuY29tPg==?=@ci.codeaurora.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, bjorn.topel@intel.com,
+        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
+        maximmi@nvidia.com, andrii@kernel.org, toke@redhat.com,
+        will@kernel.org, paulmck@kernel.org, stern@rowland.harvard.edu
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 9:09 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->
-> Check that dumping various floating-point types produces a valid C
-> code.
->
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  .../selftests/bpf/progs/btf_dump_test_case_syntax.c        | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-> index 31975c96e2c9..09d8d1e01ed6 100644
-> --- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-> +++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
-> @@ -205,6 +205,12 @@ struct struct_with_embedded_stuff {
->         int t[11];
->  };
->
-> +struct float_struct {
-> +       float *f;
+Hello:
 
-just for a bit more diversity, try this one without a pointer?
+This series was applied to bpf/bpf-next.git (refs/heads/master):
 
-> +       const double *d;
-> +       volatile long double *ld;
-> +};
-> +
->  struct root_struct {
->         enum e1 _1;
->         enum e2 _2;
-> @@ -219,6 +225,7 @@ struct root_struct {
->         union_fwd_t *_12;
->         union_fwd_ptr_t _13;
->         struct struct_with_embedded_stuff _14;
-> +       struct float_struct _15;
->  };
->
->  /* ------ END-EXPECTED-OUTPUT ------ */
-> --
-> 2.29.2
->
+On Fri,  5 Mar 2021 10:41:11 +0100 you wrote:
+> This two-patch series introduces load-acquire/store-release barriers
+> for the AF_XDP rings.
+> 
+> For most contemporary architectures, this is more effective than a
+> SPSC ring based on smp_{r,w,}mb() barriers. More importantly,
+> load-acquire/store-release semantics make the ring code easier to
+> follow.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v2,1/2] xsk: update rings for load-acquire/store-release barriers
+    https://git.kernel.org/bpf/bpf-next/c/057e8fb782c1
+  - [bpf-next,v2,2/2] libbpf, xsk: add libbpf_smp_store_release libbpf_smp_load_acquire
+    https://git.kernel.org/bpf/bpf-next/c/60d0e5fdbdf6
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
