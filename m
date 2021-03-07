@@ -2,135 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AB4330044
-	for <lists+bpf@lfdr.de>; Sun,  7 Mar 2021 12:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2EF3300B2
+	for <lists+bpf@lfdr.de>; Sun,  7 Mar 2021 13:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230406AbhCGLMu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 7 Mar 2021 06:12:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30626 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231703AbhCGLMq (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 7 Mar 2021 06:12:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615115565;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r9PFTq8BUDKVO428yQixr9bwpENpUHQxDq5isnXpbB8=;
-        b=ONrBEVfVac1zBlRgXbKlbVUgic/mQZv+dgcMnPtpyiEQG9/l0MBMViR8qOsaavh3NFv5DU
-        RTYwohKUIEsQ8/eGozX7n/On/p5+H991PxJkDl/vdN3/axYt0bjbnfCIgJJmsjwQmzGjmL
-        eI0KN/RKfO2hHadyA9s0LjeOSx/VFCA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-117-i81ex38JNDyE8YSwE66DXw-1; Sun, 07 Mar 2021 06:12:41 -0500
-X-MC-Unique: i81ex38JNDyE8YSwE66DXw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1B95D81431C;
-        Sun,  7 Mar 2021 11:12:39 +0000 (UTC)
-Received: from krava (unknown [10.40.192.72])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 8604C19D9B;
-        Sun,  7 Mar 2021 11:12:32 +0000 (UTC)
-Date:   Sun, 7 Mar 2021 12:12:31 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Yauheni Kaliuta <ykaliuta@redhat.com>
-Subject: Re: [PATCHv2 bpf-next] selftests/bpf: Fix test_attach_probe for
- powerpc uprobes
-Message-ID: <YES1HwAheriyuT6w@krava>
-References: <20210305134050.139840-1-jolsa@kernel.org>
- <CAEf4BzanY2ogGDORCsOXrAivWii06vsUpJFT7rQy2nj0xarm+A@mail.gmail.com>
+        id S229922AbhCGMKO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 7 Mar 2021 07:10:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229662AbhCGMJ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 7 Mar 2021 07:09:58 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B07DC06174A
+        for <bpf@vger.kernel.org>; Sun,  7 Mar 2021 04:09:58 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id f22-20020a7bc8d60000b029010c024a1407so2106414wml.2
+        for <bpf@vger.kernel.org>; Sun, 07 Mar 2021 04:09:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9T16Nbpro9JN+rUYMwobVEmAKWWLwCRoIhHSkiXK6ps=;
+        b=BjmNce/ht7lc+58UcynqG54mfekKYJctBliUlReVkIZZ09iGZD8OKHjb9nf+UmkB0U
+         Z2ehsttT2V5nnOr91f+qOtROBsODvo7POx0zbyjJYdXCpZu7bYzUcvc4cyS/EsjJkTyO
+         ffcylDkB6WpF5bTq6FElpYCAJUxC900XHwup5cK91ZT5v4bQa1nTXqksag1YKKVPBOQN
+         mW49I3163rS0Y3RbH+bqiHdvC2G/qYgVSbqxVCQlGd+J/hxOKzJPcytgfYAgn56qj3ZZ
+         TXd1nqoL6u1HVktYbFtAYJC0yCAcixVTnVawgiw3DDlTVKXpDDSVwkNAtCfsiQk/a2WT
+         0aKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9T16Nbpro9JN+rUYMwobVEmAKWWLwCRoIhHSkiXK6ps=;
+        b=ILVsiv0fkRwYD4i9w5Kth1vZtl6KMN+411U4GuAoeDXLrtrE8RkyWF5xMiTnTmDdDt
+         Zeqyr1AJB6JtBocnqdIUtDId/cK7PzWn7d8gRFK9QYdMeE7ayHgIcAxgEqab0OWX5VJW
+         OL3PhBKBjYX2uCeUlxiesLIzwAHnBWRrVAZZSMtfI5r5HKUYdE9lFC8rxQuNxH6iNcOy
+         thcvX0tFxWQDiOMv1iDSqYOUE0L3wu4FdCquFBub+SRRq0wW6+Dr9FSkCaHOmBQKCe8R
+         ufUZogp542xua7IJwWdegODKM/k8UKB81G0jys5TIr3TyoTo6p+60Nf2+tTIPPcbiOwi
+         jw0Q==
+X-Gm-Message-State: AOAM532yXaa9D9mrD19cUYtkcohSfIcNGHnab9UJKuYiNnFCOKxsHMO1
+        wfnsFp03lJuDsRykd2PzMtKBrHKDPP6tggY=
+X-Google-Smtp-Source: ABdhPJz2bZHvka5StxeO7IrBzwlIS0ZpgHVpQ+ZdHg3FTRX9sPZgiyIvtgd8xnx5g6gLjpNvwbyvRA==
+X-Received: by 2002:a1c:a958:: with SMTP id s85mr17086466wme.138.1615118997131;
+        Sun, 07 Mar 2021 04:09:57 -0800 (PST)
+Received: from localhost.localdomain ([192.116.60.117])
+        by smtp.gmail.com with ESMTPSA id 3sm14737257wry.72.2021.03.07.04.09.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Mar 2021 04:09:56 -0800 (PST)
+From:   Tal Lossos <tallossos@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     yhs@fb.com, kpsingh@kernel.org, gilad.reti@gmail.com,
+        Tal Lossos <tallossos@gmail.com>
+Subject: [PATCH bpf-next v2] bpf: Change inode_storage's lookup_elem return value from NULL to -EBADF.
+Date:   Sun,  7 Mar 2021 14:09:48 +0200
+Message-Id: <20210307120948.61414-1-tallossos@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzanY2ogGDORCsOXrAivWii06vsUpJFT7rQy2nj0xarm+A@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Mar 06, 2021 at 07:13:17PM -0800, Andrii Nakryiko wrote:
-> On Fri, Mar 5, 2021 at 5:42 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > When testing uprobes we the test gets GEP (Global Entry Point)
-> > address from kallsyms, but then the function is called locally
-> > so the uprobe is not triggered.
-> >
-> > Fixing this by adjusting the address to LEP (Local Entry Point)
-> > for powerpc arch plus instruction check stolen from ppc_function_entry
-> > function pointed out and explained by Michael and Naveen.
-> >
-> > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  .../selftests/bpf/prog_tests/attach_probe.c   | 40 ++++++++++++++++++-
-> >  1 file changed, 39 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > index a0ee87c8e1ea..9dc4e3dfbcf3 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> > @@ -2,6 +2,44 @@
-> >  #include <test_progs.h>
-> >  #include "test_attach_probe.skel.h"
-> >
-> > +#if defined(__powerpc64__) && defined(_CALL_ELF) && _CALL_ELF == 2
-> > +
-> > +#define OP_RT_RA_MASK   0xffff0000UL
-> > +#define LIS_R2          0x3c400000UL
-> > +#define ADDIS_R2_R12    0x3c4c0000UL
-> > +#define ADDI_R2_R2      0x38420000UL
-> > +
-> > +static ssize_t get_offset(ssize_t addr, ssize_t base)
-> > +{
-> > +       u32 *insn = (u32 *) addr;
-> > +
-> > +       /*
-> > +        * A PPC64 ABIv2 function may have a local and a global entry
-> > +        * point. We need to use the local entry point when patching
-> > +        * functions, so identify and step over the global entry point
-> > +        * sequence.
-> > +        *
-> > +        * The global entry point sequence is always of the form:
-> > +        *
-> > +        * addis r2,r12,XXXX
-> > +        * addi  r2,r2,XXXX
-> > +        *
-> > +        * A linker optimisation may convert the addis to lis:
-> > +        *
-> > +        * lis   r2,XXXX
-> > +        * addi  r2,r2,XXXX
-> > +        */
-> > +       if ((((*insn & OP_RT_RA_MASK) == ADDIS_R2_R12) ||
-> > +            ((*insn & OP_RT_RA_MASK) == LIS_R2)) &&
-> > +           ((*(insn + 1) & OP_RT_RA_MASK) == ADDI_R2_R2))
-> > +               return (ssize_t)(insn + 2) - base;
-> > +       else
-> > +               return addr - base;
-> > +}
-> > +#else
-> > +#define get_offset(addr, base) (addr - base)
-> 
-> I turned this into a static function, not sure why you preferred
+bpf_fd_inode_storage_lookup_elem returned NULL when getting a bad FD,
+which caused -ENOENT in bpf_map_copy_value.
+EBADF is better than ENOENT for a bad FD behaviour.
 
-seemed simple enough to be dealt with in preprocessor,
-why bother compiler ;-)
+The patch was partially contributed by CyberArk Software, Inc.
 
-> #define here. Applied to bpf-next.
+Signed-off-by: Tal Lossos <tallossos@gmail.com>
+---
+ kernel/bpf/bpf_inode_storage.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
-jirka
+diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
+index da753721457c..2921ca39a93e 100644
+--- a/kernel/bpf/bpf_inode_storage.c
++++ b/kernel/bpf/bpf_inode_storage.c
+@@ -109,7 +109,7 @@ static void *bpf_fd_inode_storage_lookup_elem(struct bpf_map *map, void *key)
+ 	fd = *(int *)key;
+ 	f = fget_raw(fd);
+ 	if (!f)
+-		return NULL;
++		return ERR_PTR(-EBADF);
+ 
+ 	sdata = inode_storage_lookup(f->f_inode, map, true);
+ 	fput(f);
+-- 
+2.27.0
 
