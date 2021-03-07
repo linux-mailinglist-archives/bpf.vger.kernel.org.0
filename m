@@ -2,147 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF5F3303DC
-	for <lists+bpf@lfdr.de>; Sun,  7 Mar 2021 19:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 243493304CD
+	for <lists+bpf@lfdr.de>; Sun,  7 Mar 2021 22:20:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbhCGSSs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 7 Mar 2021 13:18:48 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:57794 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230416AbhCGSSS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 7 Mar 2021 13:18:18 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 127IBYlD020090;
-        Sun, 7 Mar 2021 10:18:15 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=GYrEYjFqsoFxsg787ezJKVIaCNPwIWMRrqUlR998o1c=;
- b=MIh+AGQFNoVexPGDwD/zh5bfcEthaolnpC5Rvs3H17D9Wd7MmBlygX9KRCiBBOqjpFuv
- LBVYnxwPRyo/5qZKNX36fyCw256bKIzW/3I1U7BbCXm0xu5DkfRmNLtP7W3fY1wBRwnL
- 7O4B5hV5Sj18ousUYixDp3pUB+UuMERGeNo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 374t97sb87-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 07 Mar 2021 10:18:15 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sun, 7 Mar 2021 10:18:15 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GoeesOrbhGZZyUCh3QVggKgUZJuNUlPRjhvDI3LdQFzxXVVSL1ks3eVtE2Tr900TOMBRxH/O5gLqqM909pmYKcJwEhyIsd0fcLwwmQYIrf7k69vocmo6rpbi5o+gnYirwR0Kh1LMNbGV7bvMNff5IWYJwjQTIbiX3toFTtaIXRRnuOWsi0NQTu6+bBzHhSjrt5H+fzATEOGpj5nFauZDDZmo/C4Tsu3utAKLACM6oF8Pq64MMvx8kor8jXgGkNRcZCoyr6W73Tn1lZIYOTNrv6yIKD5v1i0JBFJVbpnMTe6vrhyvWoxsaWaJIvViJAf3lkU7Tvb9lTzod5HWEo0mlQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GYrEYjFqsoFxsg787ezJKVIaCNPwIWMRrqUlR998o1c=;
- b=bRcFyU0Wuppd1T1jVfBAAfaz4LLRIDwv3g8zl36O7AhYs6BeEeCayofaWwDl/KvZDft9EOnSgzJXoMXR7ZNl3cs7qSDlzQOJ3TGzLgkkiXx2PHJe6EiIDju0wQNLuB7tvu4kboUnIWSyT0txWbrBx7pVCKwzDoRqLwQzMTKrFtsD2CjqoumbN86BxpgmOPc7INJpGZ/W5+qMt9PYK8K33kgV0jy5AHlqPrhxpLjCSks9dXb/Byx3bOz/mVfYbm0KNKVmzYeHfJocGuwb4YPR+25gm5MiJcpLR7FequnmNReH2pANeA4W9xH/9dnpjDJiFv9R8RdOzqnIRcCois5xtA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN6PR1501MB2029.namprd15.prod.outlook.com (2603:10b6:805:2::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.26; Sun, 7 Mar
- 2021 18:18:14 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3890.037; Sun, 7 Mar 2021
- 18:18:14 +0000
-Subject: Re: [PATCH bpf-next v2] bpf: Change inode_storage's lookup_elem
- return value from NULL to -EBADF.
-To:     Tal Lossos <tallossos@gmail.com>, <bpf@vger.kernel.org>
-CC:     <kpsingh@kernel.org>, <gilad.reti@gmail.com>
-References: <20210307120948.61414-1-tallossos@gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <e812c654-a5d2-847d-c378-2271e0bdef22@fb.com>
-Date:   Sun, 7 Mar 2021 10:18:10 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
-In-Reply-To: <20210307120948.61414-1-tallossos@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:a497]
-X-ClientProxiedBy: CO2PR04CA0146.namprd04.prod.outlook.com (2603:10b6:104::24)
- To SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+        id S233017AbhCGVTd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 7 Mar 2021 16:19:33 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:34922 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233015AbhCGVTQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 7 Mar 2021 16:19:16 -0500
+Received: by mail-io1-f71.google.com with SMTP id a1so6029117ios.2
+        for <bpf@vger.kernel.org>; Sun, 07 Mar 2021 13:19:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=b/8/TV2Ggjpg+ciG7XgCGRcOg8HJPj1kV6+Ap5MX/CY=;
+        b=CQ3j8IAujidXAnBBab5kcbCn9RZb8pAUwuJZqHl/1nE1fylKPCj8Z4pdxMibee1tTS
+         lkAD+olMG1YshK9jkC6sgYlTeAt687Xrp6rJ8kl8HMlOvPDhC9fh8j6Fv4a383EbFbr4
+         SntbxODWN1Xw4JzZm9CDrjLldmWZOJeENlYzqI9z334KSUwulQTBfV10Z4zIn58Z3Evm
+         WcbegCCQYWVReGuKliiRLlextW2X564rxLXCQ0/G9abJEHKtWT3rxF+9q606MNEmjzVc
+         uYuxYOQEQKyCKv76QOiJ7jeY5r/OAyUDFubzrZhjJnBPQaapNeyGXlmIQLRyJgDYJ+YF
+         Tbew==
+X-Gm-Message-State: AOAM5302Hm6A0d5zKxHsN7G1JNgABoTauxMq63t00OCLUrynMVXgY7zt
+        5p0VWP0NZp4KXZ7l9ozezadVBLAwBYfayJTqdohbz6Iiu2EZ
+X-Google-Smtp-Source: ABdhPJzVhPF7jKxv/Gv5CpH0beyGmos+xXQz4bdA1lIez7e9mXZ+ZdPvXbH+SB7jIW9HhFKClnjp9qGTs18I8A5WpZu9DoHsR/AR
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::1105] (2620:10d:c090:400::5:a497) by CO2PR04CA0146.namprd04.prod.outlook.com (2603:10b6:104::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Sun, 7 Mar 2021 18:18:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3fc204a3-5f25-4f14-a5d0-08d8e1955f67
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2029:
-X-Microsoft-Antispam-PRVS: <SN6PR1501MB20293E5666C8EBA766081AF2D3949@SN6PR1501MB2029.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:556;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SFVRBfpxCxbe/ByAAzjwMuTnfPU1JvEkaneTZFQLCF7Z9mpk83aeDJUA0XI3UrF4xCLVRBXvXXzNJw4yj7vqxU76AJO/nR4s1rAPEFNVhOBwhXFOZcOPkEYXV+eiWljdGxb+OpyrPai1dRrDM0ZrzUvv+kUaII4OwpCU/ZkKFOR2CEhYF1xzumYQcUD3MgGmLFZP/F6xM/UO+rlzLf1qI/Y68prX0mFU6bZ5PgrXAXjsSycbwiElmqwwVqaKMxJHb0PH9HJ5BcE269Z91G7+SRgmdQ22EH/7nNyMTqnAziqBQZQvHYsGbelyys9id5ftulKl7LS2cJvAzlSj0TWZ/OeAZaajiqYZup4qjSsx3P/iOGdXrANvwU3LwuAANqwsm9Fdx6vnW+2n4jZa2agf3mUtVkJj35S3MD0WbAUMRVLglxQPnDB10l54lGWEI1OD92vrQAEhcakkcx/61B7fY/NinmGjCegmYlcT1hv/thJh1wTPoXiZSVwVhdSQFXliYHxuL64I/Cb8YW4N6n8BgbLCSiXuGVe8zfn9XxDKq5aZRViO/tRQ5HL8plZz7FcEoeOchACTbrAss+hhiaWAY83yEf/vtymsAxe00TDNsmk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(39860400002)(376002)(366004)(396003)(4326008)(66556008)(316002)(36756003)(53546011)(31686004)(2616005)(5660300002)(8676002)(8936002)(66476007)(4744005)(478600001)(52116002)(31696002)(6486002)(66946007)(186003)(16526019)(2906002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?M0QwUUtGWHhGTnRNWVM2dThuclliMEpkaHNNZmdRaWRoVkFkTzhUazNqMmRC?=
- =?utf-8?B?ZGJ1aFJDVE44UkFLbWVQK3pkZmV2a2JYK3UxVFVCZnBwQ0VPRWo2bkVtRmEz?=
- =?utf-8?B?enVDZmhaeWVTU3BhNC93SjZZQmdiTXNnNXQ1aTdFZGtuc0RKQlM4QlUvbFhs?=
- =?utf-8?B?Z3lCRWg1dytBNWlSaVBKQTRZcXFaMUVhdExrbDNuZkd5MkFCNm95dDB0WGti?=
- =?utf-8?B?dHY1YjdqeDU2YUY5aFJuNitMY0R3SjZmVXlWQ1BBbkJuSXkyb3gzaG5CV3dp?=
- =?utf-8?B?OG9IZXZBblErV005eEYraE1ZeldZOXYzcHBhamZ1b25xK3I2WklzR09CZ05i?=
- =?utf-8?B?azJaeFBERUN3YUNZbUZZckFTQVMwZjB6Q1NjNElQc1J1VFhoekE0bEJMWDRk?=
- =?utf-8?B?S1p4dU96M1p2NVAyVUh6U0s2Z2ZNeEpTYVRZNUxJWmp3bXlZQzJneE1uNEJF?=
- =?utf-8?B?NzJqWjdlbnVhMWZXNU5HZ2pQTk95aXhGV1RXTVU1VGhlMzZJeWl0d0MwYnFP?=
- =?utf-8?B?YmZoRjFLK0ZpVVEzVk96MkNkblFIM1FPQlY0bVNqeW1CVDhGVVVieklBTVBX?=
- =?utf-8?B?OG9wdmYwUk1MSnNXWjYwakZ0Z01tTUNCTjRLd3ZiUGwzMVNKVVhGRVR6dEdS?=
- =?utf-8?B?UERTZzhuTEVWbm53MkhGeUZPZFJSNkVmTFc1cjlZUmE1QkE1TGxtQ1ZSdVNZ?=
- =?utf-8?B?MVcwOGNYMDJNTnQ3dVB2RHhWNU5GVjFJZ2hweVB1eW5zTXl1bWJtZW1OTkw0?=
- =?utf-8?B?QlNwRVQ3YkRFV0xhNDlnZWx4Y2VtbFFJeVNaalJYRzFoQzRqOXRyL0tVTXJT?=
- =?utf-8?B?NllTL0w1NUJta3kzTXZMMGp4cSt4dDYvM25wcGk3K0EwU2t3QnFEcHlWTVYw?=
- =?utf-8?B?cGNrZDFReFNXcTUzelA2RThUQ1FtcFFNa2hvRGtCdERTNHRqMWtqaVBrTmxk?=
- =?utf-8?B?aytBd0wvdnhyb2QrUXEyVFR6dzZ5Mk1hZlNHSndqK0VCZDFqbHBtRzhvdnZQ?=
- =?utf-8?B?MGVBRTJ5UkF1Y2dFWWQ2ZnpYd1NMczgvT1hQTkdSTjQybU9rMklLNG1HRWIy?=
- =?utf-8?B?ZVhrNHlNdFVuREJaVVFsak9ZWVhVQ3FNdmdJTHJUd0FidVVHUkx6a09aY2oy?=
- =?utf-8?B?bktsV0FBS3NTS0xjWTM2VVVGeHEyZXltbGV6NGJFOE54ZXNBRmtja1lsYllR?=
- =?utf-8?B?eHYyNE0wd2RWbnNySVpFcjhROUwraEd6NFBvbkpYNVZvbU52K09LUUlKWGN6?=
- =?utf-8?B?K051clNGWWxMaWpYMXFJdXM4a0FWaE5pb29jQVE4V1ZadWh0QTFXczhsMUIw?=
- =?utf-8?B?anByZVYwbm5nanlLaVA2TzZkN29Bbm9JZWpLeG9reEJuOU1PSGdmWUp4cC9x?=
- =?utf-8?B?bFpSYzZQVDR5RzFrRjRZVk5YR3JLWXY2RXE0dDZQYi8yN3N1ZmRac1JVSVJI?=
- =?utf-8?B?bE05aHQxTlVFQlNhQ1E2Q2lwOE0xTll6b3ZUcW84b2FERmtscTdTdXRMTkNX?=
- =?utf-8?B?T2ZvaUdXU1FJM2xsWmV2czhPVDFRazByYmhTamtLcms0UDZDR2VFblRIMFpj?=
- =?utf-8?B?dUt2VGVsWFFKUmlNMHhOZlg5K2pTajlwYXZET20rWmxUU0xtMXc2U0VxZlVM?=
- =?utf-8?B?d2lvc3hlZ1lrR3pYaTh4cHRUeUt0d1grelYvVEdtd25zTnVzQTg5a2ljVXBn?=
- =?utf-8?B?MGNtSlBuUFlYNEs5SGZuSjV1TVBHNFJTZmhQREhNN2REKys3TmZ5L1dNTDcx?=
- =?utf-8?B?WnJyQ2h6aHB3bFJUVklIS0M4eHdvVnQyRkpGVStWVk0ybWhBMG5uWldEWm1S?=
- =?utf-8?B?cGJiZzdHaVJiRVpTNXNtdz09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3fc204a3-5f25-4f14-a5d0-08d8e1955f67
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Mar 2021 18:18:14.1449
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KiTNPo1t9rLU2alIU/eDb/mEdyDuGhh7NW+rw1L6Lafrd8IEoeRYoS7zeAYUrZ6t
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2029
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-07_13:2021-03-03,2021-03-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- impostorscore=0 bulkscore=0 suspectscore=0 phishscore=0 clxscore=1015
- lowpriorityscore=0 spamscore=0 mlxlogscore=842 adultscore=0
- priorityscore=1501 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2103070101
-X-FB-Internal: deliver
+X-Received: by 2002:a5e:8610:: with SMTP id z16mr15515017ioj.57.1615151955861;
+ Sun, 07 Mar 2021 13:19:15 -0800 (PST)
+Date:   Sun, 07 Mar 2021 13:19:15 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000096659005bcf8de0c@google.com>
+Subject: [syzbot] general protection fault in btf_type_id_size
+From:   syzbot <syzbot+8bab8ed346746e7540e8@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, daniel@iogearbox.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    6185266c selftests/bpf: Mask bpf_csum_diff() return value ..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=14fd4ff2d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e2d5ba72abae4f14
+dashboard link: https://syzkaller.appspot.com/bug?extid=8bab8ed346746e7540e8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139778aed00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158426dad00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8bab8ed346746e7540e8@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
+CPU: 0 PID: 8380 Comm: syz-executor429 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:btf_resolved_type_id kernel/bpf/btf.c:1770 [inline]
+RIP: 0010:btf_type_id_size+0x40e/0x960 kernel/bpf/btf.c:1811
+Code: 48 c1 e9 03 80 3c 11 00 0f 85 17 05 00 00 49 8b 47 10 44 29 f3 48 8d 1c 98 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 ec
+RSP: 0018:ffffc90000fffd18 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: 0000000000000014 RCX: 1ffff11003a70482
+RDX: 0000000000000002 RSI: ffffffff818b12f3 RDI: ffff88801d382410
+RBP: ffff88801d382400 R08: 0000000000000005 R09: ffffffff818b114a
+R10: ffffffff818b128e R11: 000000000000000a R12: 0000000000000000
+R13: dffffc0000000000 R14: 0000000000000000 R15: ffff88801d382400
+FS:  0000000000ad5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004ae0f0 CR3: 0000000024fca000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ map_check_btf kernel/bpf/syscall.c:757 [inline]
+ map_create kernel/bpf/syscall.c:860 [inline]
+ __do_sys_bpf+0x4000/0x4f00 kernel/bpf/syscall.c:4370
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43ff09
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc5f435ef8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 000000000001053e RCX: 000000000043ff09
+RDX: 0000000000000040 RSI: 0000000020000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 00007ffc5f436098 R09: 00007ffc5f436098
+R10: 00007ffc5f436098 R11: 0000000000000246 R12: 00007ffc5f435f0c
+R13: 431bde82d7b634db R14: 00000000004ae018 R15: 0000000000400488
+Modules linked in:
+---[ end trace a4216c6ef2fa85f5 ]---
+RIP: 0010:btf_resolved_type_id kernel/bpf/btf.c:1770 [inline]
+RIP: 0010:btf_type_id_size+0x40e/0x960 kernel/bpf/btf.c:1811
+Code: 48 c1 e9 03 80 3c 11 00 0f 85 17 05 00 00 49 8b 47 10 44 29 f3 48 8d 1c 98 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 ec
+RSP: 0018:ffffc90000fffd18 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: 0000000000000014 RCX: 1ffff11003a70482
+RDX: 0000000000000002 RSI: ffffffff818b12f3 RDI: ffff88801d382410
+RBP: ffff88801d382400 R08: 0000000000000005 R09: ffffffff818b114a
+R10: ffffffff818b128e R11: 000000000000000a R12: 0000000000000000
+R13: dffffc0000000000 R14: 0000000000000000 R15: ffff88801d382400
+FS:  0000000000ad5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004ae0f0 CR3: 0000000024fca000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
-On 3/7/21 4:09 AM, Tal Lossos wrote:
-> bpf_fd_inode_storage_lookup_elem returned NULL when getting a bad FD,
-> which caused -ENOENT in bpf_map_copy_value.
-> EBADF is better than ENOENT for a bad FD behaviour.
-> 
-> The patch was partially contributed by CyberArk Software, Inc.
-> 
-> Signed-off-by: Tal Lossos <tallossos@gmail.com>
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Acked-by: Yonghong Song <yhs@fb.com>
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
