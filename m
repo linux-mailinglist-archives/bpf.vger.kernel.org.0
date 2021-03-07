@@ -2,121 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243493304CD
-	for <lists+bpf@lfdr.de>; Sun,  7 Mar 2021 22:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4C63304D4
+	for <lists+bpf@lfdr.de>; Sun,  7 Mar 2021 22:24:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbhCGVTd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 7 Mar 2021 16:19:33 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:34922 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233015AbhCGVTQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 7 Mar 2021 16:19:16 -0500
-Received: by mail-io1-f71.google.com with SMTP id a1so6029117ios.2
-        for <bpf@vger.kernel.org>; Sun, 07 Mar 2021 13:19:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=b/8/TV2Ggjpg+ciG7XgCGRcOg8HJPj1kV6+Ap5MX/CY=;
-        b=CQ3j8IAujidXAnBBab5kcbCn9RZb8pAUwuJZqHl/1nE1fylKPCj8Z4pdxMibee1tTS
-         lkAD+olMG1YshK9jkC6sgYlTeAt687Xrp6rJ8kl8HMlOvPDhC9fh8j6Fv4a383EbFbr4
-         SntbxODWN1Xw4JzZm9CDrjLldmWZOJeENlYzqI9z334KSUwulQTBfV10Z4zIn58Z3Evm
-         WcbegCCQYWVReGuKliiRLlextW2X564rxLXCQ0/G9abJEHKtWT3rxF+9q606MNEmjzVc
-         uYuxYOQEQKyCKv76QOiJ7jeY5r/OAyUDFubzrZhjJnBPQaapNeyGXlmIQLRyJgDYJ+YF
-         Tbew==
-X-Gm-Message-State: AOAM5302Hm6A0d5zKxHsN7G1JNgABoTauxMq63t00OCLUrynMVXgY7zt
-        5p0VWP0NZp4KXZ7l9ozezadVBLAwBYfayJTqdohbz6Iiu2EZ
-X-Google-Smtp-Source: ABdhPJzVhPF7jKxv/Gv5CpH0beyGmos+xXQz4bdA1lIez7e9mXZ+ZdPvXbH+SB7jIW9HhFKClnjp9qGTs18I8A5WpZu9DoHsR/AR
+        id S231389AbhCGVYG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 7 Mar 2021 16:24:06 -0500
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:33217 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233029AbhCGVXl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 7 Mar 2021 16:23:41 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id BD78E30DB;
+        Sun,  7 Mar 2021 16:23:39 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sun, 07 Mar 2021 16:23:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=nlxRFNzfOcigzTV3RuqFb68nzCJ
+        QMa4Zxw5zE3eY08k=; b=gR3q9OgbrI+yqTeMWxmOufzltR1UL1HqjTX3jlUqFFJ
+        uIETMjo5y6whF2u872Q4WTgY+hd9YLoQZKsGaMG/W05wOs62rdsopo/DKGP/el/j
+        CfjqHVDSHNjXjZzbE2Q0ztwrdFjeRLJxV4qivauPa0A3aA8uAnYPVmXlt7XhySNj
+        4aAE9Ier17Do+jJmcpp/rM7htYnrAAbaKWPo+KTGjFecM+arrWVLvOChnxciND6u
+        ucKbgYhWM3gg0jWpuNY/73a6BPgcVVO8jk6lkWTvMmaYcFfa6+/dAcIK5+PsqqjV
+        rOKLfyqA8fCH06zlAWfypDQgslLBfbtB800AAVoCDhQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=nlxRFN
+        zfOcigzTV3RuqFb68nzCJQMa4Zxw5zE3eY08k=; b=uetpmlVM7rsk0Co/mkB9bv
+        Oxp8LpBqyvo8TrJX+wIhzszSy8Gv1yEtKS1ctstPwTjaFRRiikyOycGQVaX3pJpw
+        glk6O+YS3cTiggXVhA02pOq4Y4UnkoWUkRgl2o6faePVGp6VRejIfIXeRF6jxZbC
+        +TPMHj9aVgLae9PXKnQnE4wN737gmVhk87TZk3t1fSXihefRpaDy0Oh3+HZ3gqO8
+        t7wgLAlGs6vL60fstE4WTxKXZDIVf3v0AzAGJuT+DQB91AJEFpzjAR0D8SObmUdm
+        06M2rBQTOovE5NNVvQHJPgTm+G8YY9QPr9NZ2m6l22xEXSCihBp0T5fivzYydgOg
+        ==
+X-ME-Sender: <xms:WkRFYHFiilkkFkq-x1IXbBtqo377Z0mxe0NlXEOyYjGTnBaaBfLJeQ>
+    <xme:WkRFYEWMf3qu90bwJIpv0B13L8SyRmZrg4z0D8JtxFqqIE-xomXoKMk20PoUe_QnZ
+    hVNOXsxptEfH5xDLw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddutddgudefhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvffukfhfgggtuggjsehttdertddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepueduvdejfefflefgueevheefgeefteefteeuudduhfduhfeh
+    veelteevudelheejnecukfhppeeiledrudekuddruddthedrieegnecuvehluhhsthgvrh
+    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiih
+    ii
+X-ME-Proxy: <xmx:WkRFYJIPUd37Mp3grELaPiBjX1gM71MTsZCaprfqwcjb8QC1yFV6aA>
+    <xmx:WkRFYFE5_EoekiJ9OX9n-Fto-THldacUNvYX8ICrtghiVcRdGSWmcQ>
+    <xmx:WkRFYNXx0tleXVEZ5-PbESzeuWRlqAitlj3WyZwQHPkNovyC0cy24w>
+    <xmx:W0RFYGOjXfn1IFWU9qI00JWT0P92-XjRtTx80wyiWKuLuO8eABZz43sblOs>
+Received: from maharaja.localdomain (c-69-181-105-64.hsd1.ca.comcast.net [69.181.105.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id EDAAC108005F;
+        Sun,  7 Mar 2021 16:23:36 -0500 (EST)
+Date:   Sun, 7 Mar 2021 13:23:33 -0800
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
+        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
+        kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
+Message-ID: <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
+References: <161495873696.346821.10161501768906432924.stgit@devnote2>
+ <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
+ <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a5e:8610:: with SMTP id z16mr15515017ioj.57.1615151955861;
- Sun, 07 Mar 2021 13:19:15 -0800 (PST)
-Date:   Sun, 07 Mar 2021 13:19:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000096659005bcf8de0c@google.com>
-Subject: [syzbot] general protection fault in btf_type_id_size
-From:   syzbot <syzbot+8bab8ed346746e7540e8@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, daniel@iogearbox.net,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, nathan@kernel.org,
-        ndesaulniers@google.com, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Sat, Mar 06, 2021 at 10:13:57AM +0900, Masami Hiramatsu wrote:
+> On Fri, 5 Mar 2021 11:16:45 -0800
+> Daniel Xu <dxu@dxuuu.xyz> wrote:
+> 
+> > Hi Masami,
+> > 
+> > On Sat, Mar 06, 2021 at 12:38:57AM +0900, Masami Hiramatsu wrote:
+> > > Hello,
+> > > 
+> > > Here is a series of patches for kprobes and stacktracer to fix the kretprobe
+> > > entries in the kernel stack. This was reported by Daniel Xu. I thought that
+> > > was in the bpftrace, but it is actually more generic issue.
+> > > So I decided to fix the issue in arch independent part.
+> > > 
+> > > While fixing the issue, I found a bug in ia64 related to kretprobe, which is
+> > > fixed by [1/5]. [2/5] and [3/5] is a kind of cleanup before fixing the main
+> > > issue. [4/5] is the patch to fix the stacktrace, which involves kretprobe
+> > > internal change. And [5/5] removing the stacktrace kretprobe fixup code in
+> > > ftrace. 
+> > > 
+> > > Daniel, can you also check that this fixes your issue too? I hope it is.
+> > 
+> > Unfortunately, this patch series does not fix the issue I reported.
+> 
+> Ah, OK. This was my mistake I didn't choose ORC unwinder for test kernel.
+> 
+> > 
+> > I think the reason your tests work is because you're using ftrace and
+> > the ORC unwinder is aware of ftrace trampolines (see
+> > arch/x86/kernel/unwind_orc.c:orc_ftrace_find).
+> 
+> OK, so it has to be fixed in ORC unwinder.
+> 
+> > 
+> > bpftrace kprobes go through perf event subsystem (ie not ftrace) so
+> > naturally orc_ftrace_find() does not find an associated trampoline. ORC
+> > unwinding fails in this case because
+> > arch/x86/kernel/kprobes/core.c:trampoline_handler sets
+> > 
+> >     regs->ip = (unsigned long)&kretprobe_trampoline;
+> > 
+> > and `kretprobe_trampoline` is marked
+> > 
+> >     STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
+> > 
+> > so it doesn't have a valid ORC entry. Thus, ORC immediately bails when
+> > trying to unwind past the first frame.
+> 
+> Hm, in ftrace case, it decode kretprobe's stackframe and stoped right
+> after kretprobe_trampoline callsite.
+> 
+>  => kretprobe_trace_func+0x21f/0x340
+>  => kretprobe_dispatcher+0x73/0xb0
+>  => __kretprobe_trampoline_handler+0xcd/0x1a0
+>  => trampoline_handler+0x3d/0x50
+>  => kretprobe_trampoline+0x25/0x50
+>  => 0
+> 
+> kretprobe replaces the real return address with kretprobe_trampoline
+> and kretprobe_trampoline *calls* trampoline_handler (this part depends
+> on architecture implementation).
+> Thus, if kretprobe_trampoline has no stack frame information, ORC may
+> fails at the first kretprobe_trampoline+0x25, that is different from
+> the kretprobe_trampoline+0, so the hack doesn't work.
 
-syzbot found the following issue on:
+I'm not sure I follow 100% what you're saying, but assuming you're
+asking why bpftrace fails at `kretprobe_trampoline+0` instead of
+`kretprobe_trampoline+0x25`:
 
-HEAD commit:    6185266c selftests/bpf: Mask bpf_csum_diff() return value ..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=14fd4ff2d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e2d5ba72abae4f14
-dashboard link: https://syzkaller.appspot.com/bug?extid=8bab8ed346746e7540e8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139778aed00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158426dad00000
+`regs` is set to &kretprobe_trampoline:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8bab8ed346746e7540e8@syzkaller.appspotmail.com
+    regs->ip = (unsigned long)&kretprobe_trampoline;
 
-general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
-CPU: 0 PID: 8380 Comm: syz-executor429 Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:btf_resolved_type_id kernel/bpf/btf.c:1770 [inline]
-RIP: 0010:btf_type_id_size+0x40e/0x960 kernel/bpf/btf.c:1811
-Code: 48 c1 e9 03 80 3c 11 00 0f 85 17 05 00 00 49 8b 47 10 44 29 f3 48 8d 1c 98 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 ec
-RSP: 0018:ffffc90000fffd18 EFLAGS: 00010203
-RAX: dffffc0000000000 RBX: 0000000000000014 RCX: 1ffff11003a70482
-RDX: 0000000000000002 RSI: ffffffff818b12f3 RDI: ffff88801d382410
-RBP: ffff88801d382400 R08: 0000000000000005 R09: ffffffff818b114a
-R10: ffffffff818b128e R11: 000000000000000a R12: 0000000000000000
-R13: dffffc0000000000 R14: 0000000000000000 R15: ffff88801d382400
-FS:  0000000000ad5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004ae0f0 CR3: 0000000024fca000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- map_check_btf kernel/bpf/syscall.c:757 [inline]
- map_create kernel/bpf/syscall.c:860 [inline]
- __do_sys_bpf+0x4000/0x4f00 kernel/bpf/syscall.c:4370
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ff09
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc5f435ef8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 000000000001053e RCX: 000000000043ff09
-RDX: 0000000000000040 RSI: 0000000020000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 00007ffc5f436098 R09: 00007ffc5f436098
-R10: 00007ffc5f436098 R11: 0000000000000246 R12: 00007ffc5f435f0c
-R13: 431bde82d7b634db R14: 00000000004ae018 R15: 0000000000400488
-Modules linked in:
----[ end trace a4216c6ef2fa85f5 ]---
-RIP: 0010:btf_resolved_type_id kernel/bpf/btf.c:1770 [inline]
-RIP: 0010:btf_type_id_size+0x40e/0x960 kernel/bpf/btf.c:1811
-Code: 48 c1 e9 03 80 3c 11 00 0f 85 17 05 00 00 49 8b 47 10 44 29 f3 48 8d 1c 98 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <0f> b6 14 02 48 89 d8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 ec
-RSP: 0018:ffffc90000fffd18 EFLAGS: 00010203
-RAX: dffffc0000000000 RBX: 0000000000000014 RCX: 1ffff11003a70482
-RDX: 0000000000000002 RSI: ffffffff818b12f3 RDI: ffff88801d382410
-RBP: ffff88801d382400 R08: 0000000000000005 R09: ffffffff818b114a
-R10: ffffffff818b128e R11: 000000000000000a R12: 0000000000000000
-R13: dffffc0000000000 R14: 0000000000000000 R15: ffff88801d382400
-FS:  0000000000ad5300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004ae0f0 CR3: 0000000024fca000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Then the kretprobe event is dispatched like this:
 
+    kretprobe_trampoline_handler
+      __kretprobe_trampoline_handler
+        rp->handler // ie kernel/trace/trace_kprobe.c:kretprobe_dispatcher
+          kretprobe_perf_func
+            trace_bpf_call(.., regs)
+              BPF_PROG_RUN_ARRAY_CHECK
+                bpf_get_stackid(regs, .., ..) // in bpftrace prog 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+And then `bpf_get_stackid` unwinds the stack via:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+    bpf_get_stackid
+      get_perf_callchain(regs, ...)
+        perf_callchain_kernel(.., regs)
+          perf_callchain_store(.., regs->ip) // !!! first unwound entry
+          unwind_start
+          unwind_next_frame
+
+In summary: unwinding via BPF begins at regs->ip, which
+`trampoline_handler` sets to `&kretprobe_trampoline+0x0`.
+
+> Hmm, how the other inline-asm function makes its stackframe info?
+> If I get the kretprobe_trampoline+0, I can fix it up.
+
+So I think I misunderstood the mechanics before. I think `call
+trampoline_handler` does set up a new frame. My current guess is that
+ftrace doesn't thread through `regs` like the bpf code path does. I'm
+not very familiar with ftrace internals so I haven't looked.
+
+> 
+> > The only way I can think of to fix this issue is to make the ORC
+> > unwinder aware of kretprobe (ie the patch I sent earlier). I'm hoping
+> > you have another idea if my patch isn't acceptable.
+> 
+> OK, anyway, your patch doesn't care the case that the multiple functions
+> are probed by kretprobes. In that case, you'll see several entries are
+> replaced by the kretprobe_trampoline. To find it correctly, you have
+> to pass a state-holder (@cur of the kretprobe_find_ret_addr())
+> to the fixup entries.
+
+I'll see if I can figure something out tomorrow.
+
+Thanks,
+Daniel
