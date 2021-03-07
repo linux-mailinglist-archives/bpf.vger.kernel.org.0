@@ -2,152 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BCF32FC82
-	for <lists+bpf@lfdr.de>; Sat,  6 Mar 2021 19:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D16332FE80
+	for <lists+bpf@lfdr.de>; Sun,  7 Mar 2021 04:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbhCFSfB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Mar 2021 13:35:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56436 "EHLO
+        id S230094AbhCGDOL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 6 Mar 2021 22:14:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbhCFSe0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Mar 2021 13:34:26 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F90C06174A;
-        Sat,  6 Mar 2021 10:34:26 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id q2-20020a17090a2e02b02900bee668844dso873006pjd.3;
-        Sat, 06 Mar 2021 10:34:26 -0800 (PST)
+        with ESMTP id S230045AbhCGDNm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 6 Mar 2021 22:13:42 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB68C06174A;
+        Sat,  6 Mar 2021 19:13:29 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id u75so6409116ybi.10;
+        Sat, 06 Mar 2021 19:13:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8gZd8NLDd/BP6NMzCF+ksvN+bAQFSRD3GtTbo2ubDkg=;
-        b=YeWCLxQFoijZ9u8cGLT1NZjFpwNsJnGojQR4kv800xuHYCef/xiPVsXaxP8rqBn4Gc
-         e+vEzXw4x0YRxy6ZGtqn9aEF8pVhrM627aMY3Z0HH9t/lZQhKga//Babob/DWucJTwvM
-         IAO1vpbg4wczKSNEykc0gbUPO2hY0+R1rIx/BNKPNZczWRk8m5BR8LEiIUaiQhlEm/nQ
-         YlGC8Q9+M9mvpKUhR5U4nMs+d08cUz1KrmGb3p6dqZKRJg2QJZ+D4b/blIL4XJJiQavv
-         G6Thk7AG2YgJIoeuS7uFPWj0bmF4TIGHtJSgh9ge088KOJD3kKNUeqwwNDgHwm1mE0D5
-         csOg==
+        bh=ukm4FF97j3LFYLEbomttgTdVBJw6RIlzQsc6gDhVDes=;
+        b=GFO2qxZtYot5ebaiZzSXNQGsJhiHt5OHmfZ54lTbZPGGRpJ6csNIUpXeeg2IrKFUkt
+         KNeBemeyvLUfuLcpTjUMdpNL8kyVaaO/ipuyV54MJkonIGVTqzXFScbKYn8H1LdjRGJ8
+         HftB5PYP/QapXTKV8E2I4gGWpXibF/rPp+/gfZUOl1H+XbPJ7mc3UXnbVIuFtA3ucuID
+         7dkukSLBW5vZ3W17nZi/2rX3WaPjjqmTm8K1IrUZBUPww8VrnsNyk7rwlMqSdC68K+uI
+         Yo/uY1tAsfzczj09D2g8E1KYmA2SxMiZksL69YBtki/rp3lQRVqw1MBG9XAcM+PqXW8V
+         sreg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8gZd8NLDd/BP6NMzCF+ksvN+bAQFSRD3GtTbo2ubDkg=;
-        b=i2NjWuA1g61EKh8sWgMTYjMMdgZekcMcsiywIQqnoWNk8NFYuvSRQbHhi8WO3751fZ
-         cuAhe1JtWqJGidDRLnK4Cn6zaHpEPWVEZcMgZe5QKQFpg5q5biB6F8vmOecN47unFP2t
-         x86T7sJf9+6t+qJPjf2phCOX7f+fGrXi+U58Tm1A83bG5B2maK7i5oGMDpTHzpnHJrTV
-         7uxTMO6mT3KJFYVUJw3rgknW0Myt2lRV4GQAPJ+OEhubvDhQUn1sP+LaoZ3wwlMI0FU2
-         MDkN3rGVW8a0N3t6J19gJrjfxTsZTOcH/YQeH6QiJ123vRTwn2CLUyVCh4VZjltSkjKu
-         IpeA==
-X-Gm-Message-State: AOAM533BTkykt2flZ4/sThEHnBTAB2pqkT/L3dVamyFo5dadJd0CwjCc
-        nn3vGUcqOvXfQtfM6ChuBCNGGpxSOftLm9jWHHSH9JGGye5s3Q==
-X-Google-Smtp-Source: ABdhPJwNm/lf4lFAKLxSBAqmBUgfgJ4j7uhweEd1iPsWxYLvM3HJlw+5dDBDVOqFGbldGdVEXu2MsJ5T+v2cnEmgbm8=
-X-Received: by 2002:a17:90a:ce92:: with SMTP id g18mr16960086pju.52.1615055665649;
- Sat, 06 Mar 2021 10:34:25 -0800 (PST)
+        bh=ukm4FF97j3LFYLEbomttgTdVBJw6RIlzQsc6gDhVDes=;
+        b=VRT0zTdAMoYl+RIsYjTuTqoM2IUxAaHGQ+1YfL+Hc7KcV+Ud89lVJr+6PdUX2lRzFO
+         STHcGHS+AZ3wk070TEKVRvxd1OSoKlkLuXd806nv7V4NiYbtyj08w9xV8zbMwasDSsQw
+         NzqZae63xKuHI+5XMFO++o8SgWWb1WxLSayK2jZnGyBGEaaC83/BkYWy7G5FsjkTt30L
+         7FwDuB1qkEBRSPHlY/5IL4n4w+b1zwa/867qwOPg6h0jaXjKpO+9EzYCAzzL6vjA/jEg
+         VJZ+gul/ZgeAhsX+YL+LGtL9XdVp6kBisehn5BWT0SMTn2OrZ/ubdDJYgHVvAim4ARkt
+         MJrA==
+X-Gm-Message-State: AOAM531r+qKoSR12TjLl0/ywpZlbzEFAsDnxpzaoV4GOym+m3LnCZW7Z
+        t9rmYE9HQYbC3w7dvwuZXIT/WyIJy/kirLZSbfQ=
+X-Google-Smtp-Source: ABdhPJyDqnIYvgu+uRfrS2rOAw3QEZQOF/3/yWxKMeyif1YHUO/irIwep364lu3o9SQ3vVenFt0tvlxmBj43YWbKpps=
+X-Received: by 2002:a25:bd12:: with SMTP id f18mr24038195ybk.403.1615086808614;
+ Sat, 06 Mar 2021 19:13:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20210305015655.14249-1-xiyou.wangcong@gmail.com>
- <20210305015655.14249-4-xiyou.wangcong@gmail.com> <6042d8fa32b92_135da20871@john-XPS-13-9370.notmuch>
-In-Reply-To: <6042d8fa32b92_135da20871@john-XPS-13-9370.notmuch>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Sat, 6 Mar 2021 10:34:14 -0800
-Message-ID: <CAM_iQpWbcrBCguHXh0NhyOrCfP3N2x7LzM=pYqKHT6=NCN_JAw@mail.gmail.com>
-Subject: Re: [Patch bpf-next v3 3/9] udp: implement ->sendmsg_locked()
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
+References: <20210305134050.139840-1-jolsa@kernel.org>
+In-Reply-To: <20210305134050.139840-1-jolsa@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 6 Mar 2021 19:13:17 -0800
+Message-ID: <CAEf4BzanY2ogGDORCsOXrAivWii06vsUpJFT7rQy2nj0xarm+A@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next] selftests/bpf: Fix test_attach_probe for
+ powerpc uprobes
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
+        Andrii Nakryiko <andriin@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Yauheni Kaliuta <ykaliuta@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 5, 2021 at 5:21 PM John Fastabend <john.fastabend@gmail.com> wrote:
+On Fri, Mar 5, 2021 at 5:42 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Cong Wang wrote:
-> > From: Cong Wang <cong.wang@bytedance.com>
-> >
-> > UDP already has udp_sendmsg() which takes lock_sock() inside.
-> > We have to build ->sendmsg_locked() on top of it, by adding
-> > a new parameter for whether the sock has been locked.
-> >
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> > Cc: Lorenz Bauer <lmb@cloudflare.com>
-> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> > ---
-> >  include/net/udp.h  |  1 +
-> >  net/ipv4/af_inet.c |  1 +
-> >  net/ipv4/udp.c     | 30 +++++++++++++++++++++++-------
-> >  3 files changed, 25 insertions(+), 7 deletions(-)
+> When testing uprobes we the test gets GEP (Global Entry Point)
+> address from kallsyms, but then the function is called locally
+> so the uprobe is not triggered.
 >
-> [...]
+> Fixing this by adjusting the address to LEP (Local Entry Point)
+> for powerpc arch plus instruction check stolen from ppc_function_entry
+> function pointed out and explained by Michael and Naveen.
 >
-> > -int udp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
-> > +static int __udp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len, bool locked)
-> >  {
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  .../selftests/bpf/prog_tests/attach_probe.c   | 40 ++++++++++++++++++-
+>  1 file changed, 39 insertions(+), 1 deletion(-)
 >
-> The lock_sock is also taken by BPF_CGROUP_RUN_PROG_UDP4_SENDMSG_LOCK() in
-> udp_sendmsg(),
+> diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> index a0ee87c8e1ea..9dc4e3dfbcf3 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> @@ -2,6 +2,44 @@
+>  #include <test_progs.h>
+>  #include "test_attach_probe.skel.h"
 >
->  if (cgroup_bpf_enabled(BPF_CGROUP_UDP4_SENDMSG) && !connected) {
->     err = BPF_CGROUP_RUN_PROG_UDP4_SENDMSG_LOCK(sk,
->                                     (struct sockaddr *)usin, &ipc.addr);
->
-> so that will also need to be handled.
+> +#if defined(__powerpc64__) && defined(_CALL_ELF) && _CALL_ELF == 2
+> +
+> +#define OP_RT_RA_MASK   0xffff0000UL
+> +#define LIS_R2          0x3c400000UL
+> +#define ADDIS_R2_R12    0x3c4c0000UL
+> +#define ADDI_R2_R2      0x38420000UL
+> +
+> +static ssize_t get_offset(ssize_t addr, ssize_t base)
+> +{
+> +       u32 *insn = (u32 *) addr;
+> +
+> +       /*
+> +        * A PPC64 ABIv2 function may have a local and a global entry
+> +        * point. We need to use the local entry point when patching
+> +        * functions, so identify and step over the global entry point
+> +        * sequence.
+> +        *
+> +        * The global entry point sequence is always of the form:
+> +        *
+> +        * addis r2,r12,XXXX
+> +        * addi  r2,r2,XXXX
+> +        *
+> +        * A linker optimisation may convert the addis to lis:
+> +        *
+> +        * lis   r2,XXXX
+> +        * addi  r2,r2,XXXX
+> +        */
+> +       if ((((*insn & OP_RT_RA_MASK) == ADDIS_R2_R12) ||
+> +            ((*insn & OP_RT_RA_MASK) == LIS_R2)) &&
+> +           ((*(insn + 1) & OP_RT_RA_MASK) == ADDI_R2_R2))
+> +               return (ssize_t)(insn + 2) - base;
+> +       else
+> +               return addr - base;
+> +}
+> +#else
+> +#define get_offset(addr, base) (addr - base)
 
-Indeed, good catch!
+I turned this into a static function, not sure why you preferred
+#define here. Applied to bpf-next.
 
+> +#endif
+> +
+>  ssize_t get_base_addr() {
+>         size_t start, offset;
+>         char buf[256];
+> @@ -36,7 +74,7 @@ void test_attach_probe(void)
+>         if (CHECK(base_addr < 0, "get_base_addr",
+>                   "failed to find base addr: %zd", base_addr))
+>                 return;
+> -       uprobe_offset = (size_t)&get_base_addr - base_addr;
+> +       uprobe_offset = get_offset((size_t)&get_base_addr, base_addr);
 >
-> It also looks like sk_dst_set() wants the sock lock to be held, but I'm not
-> seeing how its covered in the current code,
+>         skel = test_attach_probe__open_and_load();
+>         if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
+> --
+> 2.27.0
 >
->  static inline void
->  __sk_dst_set(struct sock *sk, struct dst_entry *dst)
->  {
->         struct dst_entry *old_dst;
->
->         sk_tx_queue_clear(sk);
->         sk->sk_dst_pending_confirm = 0;
->         old_dst = rcu_dereference_protected(sk->sk_dst_cache,
->                                             lockdep_sock_is_held(sk));
->         rcu_assign_pointer(sk->sk_dst_cache, dst);
->         dst_release(old_dst);
->  }
-
-I do not see how __sk_dst_set() is called in udp_sendmsg().
-
->
-> I guess this could trip lockdep now, I'll dig a bit more Monday and see
-> if its actually the case.
->
-> In general I don't really like code that wraps locks in 'if' branches
-> like this. It seem fragile to me. I didn't walk every path in the code
-
-I do not like it either, actually I spent quite some time trying to
-get rid of this lock_sock, it is definitely not easy. The comment in
-sk_psock_backlog() is clearly wrong, we do not lock_sock to keep
-sk_socket, we lock it to protect other structures like
-ingress_{skb,msg}.
-
-> to see if a lock is taken in any of the called functions but it looks
-> like ip_send_skb() can call into netfilter code and may try to take
-> the sock lock.
-
-Are you saying skb_send_sock_locked() is buggy? If so, clearly not
-my fault.
-
->
-> Do we need this locked send at all? We use it in sk_psock_backlog
-> but that routine needs an optimization rewrite for TCP anyways.
-> Its dropping a lot of performance on the floor for no good reason.
-
-At least for ingress_msg. It is not as easy as adding a queue lock here,
-because we probably want to retrieve atomically with the receive queue
-together.
-
-Thanks.
