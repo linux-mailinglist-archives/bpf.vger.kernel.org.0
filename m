@@ -2,153 +2,226 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC33B330589
-	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 02:04:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7821A3305FB
+	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 03:53:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbhCHBD6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 7 Mar 2021 20:03:58 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47406 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231387AbhCHBDh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 7 Mar 2021 20:03:37 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 1280mR6H023243;
-        Sun, 7 Mar 2021 17:03:22 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=5n1bQ+S/KjRNLx0WZazqebFk+CyZgDN0nNvKl0v6fns=;
- b=MnC7rSrN49ST3SZT6IF7/Mu53s6poncf8lAJDRFWZ0SJNKWFwhxuzglD9i8LhYEBbpR+
- Ua2KfnADGLWo0Lsa41MN6VHtzEI/h7wuAYPxN1rauWVM0SYyo4y/fZIJ2dG1qLjeC7Uq
- J+HnE08+oXtzCiHtjDrIyoXSOo2T6fWyvTo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 374thpt5vy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 07 Mar 2021 17:03:22 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sun, 7 Mar 2021 17:03:21 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mCaEDwcVCPkJzLW9xHDLXvN3z+wOw4uI1s4GSI5zxqqrgZ/QEvSnj+lCLYjs9lNGupq5G+h8Qtx5pkPdP4rPt04TXZY6+8GoeopwfPXI+aJ1Zq65cdmj2csERCtyaXTKcbgam0+vjb0sSeMRa7G+9tWUN8gjbgRZKMJfXzLg17ZipClbD4OolMrxiZookyqUzRv8Br9rcBpHdiAXCof/2ZSj0KmU/K4AduEJybdeAI5Tn0xsAVcIP3KW75bX+r6lTMezsfAnezYyVESZH+nWwptShaRE7pRYYL2bE7dS6cvbpmzmo12MFLV4H5zaJ5V8P8+6AwupSBdmDe/6WVwE+w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5n1bQ+S/KjRNLx0WZazqebFk+CyZgDN0nNvKl0v6fns=;
- b=HNd6wGn8QZmknukD01ubX78zwSofhnjfg1FWLtn8U4PdpGwefaLivIJWOVVabEbg4Is6jdymoCVyou7dLIVqKsGuAjGNxBbmx2VNOvumgGBTICQ4JLLYlZFHUOtkOO3JmfOS1pTLjHX8bE1iUKDPAPQ7sps5PVcYFq60l/+CCMMb0/9jK1Cgz9vbTNgnSG1R0ZUICr1jsmplcWvu5cH26VqiaxV2OezRecT0oER8h72//JrKDpFxueMiSJJv97f3/R1g/dSaxeRN4KKDkcSaaYB4pgFeSg5AP6GsFwE3ZsZtEq5VO767Iv5HVJ1pmrza+fG2x06eyR0n2iuJOzO+AQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4708.namprd15.prod.outlook.com (2603:10b6:806:19f::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.19; Mon, 8 Mar
- 2021 01:03:18 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3890.037; Mon, 8 Mar 2021
- 01:03:18 +0000
-Subject: Re: [PATCH bpf] bpf: Dont allow vmlinux BTF to be used in map_create
- and prog_load.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        <davem@davemloft.net>
-CC:     <daniel@iogearbox.net>, <andrii@kernel.org>, <kafai@fb.com>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>
-References: <20210307225248.79031-1-alexei.starovoitov@gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <a08d0d5a-6c36-2633-a19e-2a8cd662e8e6@fb.com>
-Date:   Sun, 7 Mar 2021 17:03:14 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
-In-Reply-To: <20210307225248.79031-1-alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+        id S232449AbhCHCwa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 7 Mar 2021 21:52:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232372AbhCHCwR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 7 Mar 2021 21:52:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5076865151;
+        Mon,  8 Mar 2021 02:52:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615171936;
+        bh=PIU2NM2uqbrD9ZZQVce4UkqzjWynuSfipiZx2rnbEsU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HcVCv6vUrPwue8g3aRb5KoiIoIB049s/Vda1M5OugAbHIsJVzfMm2J2Jznlb1i9pD
+         iQoY6Nr5kmgjncjyuM66l4Q61kfm3HJos98lCcGDnpNh9b28El2vEGQRo+HxQ2eTQQ
+         VlGG9G3N3n6q7ILZDmslTY8huR3DxNYTz5Q7ZllMJsgB3orsekIk1gb0GC/YCZVDgS
+         7IbPMeyzha22yWlosVJLPInCw7JZIqVZso6nfYkdUgPBfC770NSr1sz6k33m8W776y
+         zT07jBrJbck66j95/MFiSu4N4csFVEeNHu/KiN3b4aOcPG05qktABcIulnTxc6UL3v
+         LRDqsGxevCH4g==
+Date:   Mon, 8 Mar 2021 11:52:10 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
+        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
+        kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
+Message-Id: <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
+In-Reply-To: <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
+References: <161495873696.346821.10161501768906432924.stgit@devnote2>
+        <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
+        <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
+        <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:8b5a]
-X-ClientProxiedBy: MW4PR04CA0334.namprd04.prod.outlook.com
- (2603:10b6:303:8a::9) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::1105] (2620:10d:c090:400::5:8b5a) by MW4PR04CA0334.namprd04.prod.outlook.com (2603:10b6:303:8a::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Mon, 8 Mar 2021 01:03:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9d7998e0-a11e-40f0-cfa9-08d8e1cdf5d0
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4708:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA1PR15MB470866A56658EB357CBA7B51D3939@SA1PR15MB4708.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PKbqvVuXW0h1lWHFje4YDDv2b3yVjaDQQsd6xI12ya1xZsuI7/0SG3W9tACMexTTyn3Hbdx6SAB4Clp/ZMMeH/KdNbUVX/JiFm24FnDGZgUCv7UpX+UCBq6mENC6Emd/mksza5U1IkrwoQQs+h2LVK+I3DzEJ/tKyFY1lT7A7KreGh6prhc51ogtgsNYhXNH2XyXPFbJC7OAx7HE1+lSLUG7rifDCy/yzk5PKQFMERxgzfmrZxL/jK6zUBOf/9x+czANaph1mFKBC1ymJHC0Hb2THk9PG2XVEMr/7CY8sB0mzhNYjtaGjxRKLXM6d4Y925TaS/n45/ISe5VNmwDeobSy6S99/xK/olw0v1aiCb1qfkFP9nVNAEaaQGOPGNBdDe7NgI8GDJZwAw7tMbRqkpFgQBVJkRkcKKmfqadbE160pB7ScIdWBIafGG1XB7R7rIByNjmCYz1cNJXGUTUsWuyS4x2Do7IeQQbT9uhvHUSDOri9+3609K8OwETESX/Az7lZyldZOymwiRLigHC2pDxNSt4+sOxjaEtPomXn1FhgGxdeRsyhWSFOjHlSu2gGHEuYtyWgu882kxZPvebNTdp3jMv3gEX9ZCvf2eOrnRYtH2iZv3/pyt7ypH+3Vkmx
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(346002)(396003)(376002)(136003)(31696002)(8936002)(6666004)(5660300002)(86362001)(36756003)(478600001)(66946007)(52116002)(66476007)(83380400001)(8676002)(66556008)(6486002)(53546011)(2906002)(2616005)(186003)(31686004)(4326008)(16526019)(4744005)(316002)(192303002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QUVBR2E4NlI5VGttTkdZTXlZVkZSQ2o0cERGRjVXZ09kU0s4U1YwOWkrY2E1?=
- =?utf-8?B?enI1amFOcW1OZHduRmtrdFgrRFcyK3pFZW5XcVI4cE0rRWkyYndVOVdPVTVs?=
- =?utf-8?B?UnR3aGtnSUpVekZOQUtwcXdmVnBiQi9xNERlM3dVWjJYR0lDRU9CVStJMk5a?=
- =?utf-8?B?VEhDeTN0L21xNjRMWEEreG9kUGhNTVRUb295SWJjUDdVL1h6VHBjQkFPM05S?=
- =?utf-8?B?eldJSmprcW1PUlRpYXFwM1BlZ1Y4Y0NGdDRhbkVOc2hlY0M2a2tqaS91azRv?=
- =?utf-8?B?MGhaSHpZS244UlhhWmRoalZ3WG83VDA5Q2FPWktIL2podm1PRjFTTUxuMzlK?=
- =?utf-8?B?bVJsbGZ6bTgrZzF1cU5mVTUrTU9xK2cwc3hqcGEyT3BXa29mNGpkMW55T0Y0?=
- =?utf-8?B?Z0wyb2NQbmNyYVUyUlpFaFQ2RFdyZkkrNGlMV0MwWVZPUnFpWXoyQmZpR3JU?=
- =?utf-8?B?ME9YRTFWdjcyZHMxZlB1OHZnZFIvVkZkUEVFdW84NkxqSG9jMUpUTUtMSm8r?=
- =?utf-8?B?ODV6a0lUNDNZenM1bXZnWCtlcGRXN2RSUm1RMjI3TnFhNUlFUjBjRFVIdXZz?=
- =?utf-8?B?SnlNZjNxaGZTdzBiSENlZmhIVlQ0YzVPcWIxS25ScjhqZlBkTys2UFppeTJy?=
- =?utf-8?B?ZjZFVmp6NlkxVk42blM5SmFnaW5aYUJlTkx1UDBRN21seklUZVRWcFNSTmxH?=
- =?utf-8?B?Nmh5OG1ibGxxQlpQcUFlQWtWQnQwM2FUSE94TUp3Wm1HOGpNWFo3SzhLWjht?=
- =?utf-8?B?cHpwS01IMUtrMVNveklqRzJPRThxMTBYUjJTZHdxNG44NFhJcU0wZ2lHOWda?=
- =?utf-8?B?eXBhRGJvQ1JJWVdyWEhMNEl5STc0MmVHUU1weURnN2hueGJlOUYrcFhhdVhR?=
- =?utf-8?B?U3pzME5pOGpTcEZlVTdHSFNxWVpXbkNpN1FPV1NFYjNSRWhaRnp4UWtaT1J3?=
- =?utf-8?B?cDM2djY3ZElJdHh5QklFZTZoSzdrV2FCcVc2RlhSNEVzd045ZFEvcXN5TGl2?=
- =?utf-8?B?ZWhkNW5PT29MMkNjTzlIRURmSFErdnZXbG5weFBDaHc3V1hrOEFsWHFoM1kz?=
- =?utf-8?B?UllPbHp1WGlqNnNvSnBpY3Q3V2I4Q0NDaDFUd2N2TmNHUHVFSVVoU0wvVU1l?=
- =?utf-8?B?aWpEYmpMWVNoN2tickQyZ21qRzNIZmIySm9GSG44cEkvVTdNT0RUMjRpWWJ3?=
- =?utf-8?B?L3FqYWN5YUVTd2sza1MxM2ZDOUNaM21XUk03OEVwNWxNVTgxakRUK0pDeWZz?=
- =?utf-8?B?Z0pYQ3Q1RXFCcU5Cekdyc2pJVGR5dHBoNTF3WVh3djFtM3ZNbGZWR2xwUExu?=
- =?utf-8?B?ME4wUVR0bkdYUHY5OE8xbjgwNjdhbllqRVg3bnlRclZWRjFCcTZHb3IvZnJx?=
- =?utf-8?B?WmRYZkhaNitPQWRRV0M5d0VHSHFtR1VHZmNaU3hmRU8yaFBPTEF1YXZJd1JI?=
- =?utf-8?B?M3k2VHN2b1hDdVVHOVowWTBrNEtVZkI5YnhZNmhPZXRoMDBJY3JiTk9yYkFL?=
- =?utf-8?B?SmJQNU1LZzJab0paUnlXekducHVYcmJMMDhLTkMzeHM2NG5McDRnUmtxTGdl?=
- =?utf-8?B?bFk0TDhZcTQ0cjdnQjkxQ2tWRFpPbWJXTVNBR0Z4LzRSd1pqemxzemhKaUZ0?=
- =?utf-8?B?Y2VQWURGVVIrZEhLY0pYV015S29lNERZV0pMTXNjZUVETVFQRVM0eU44bkRM?=
- =?utf-8?B?Ykh0bFZpWXVVTDhXZE5iNzhScGFkSnZVd3JhcXRXR2c3Y2NDSEFJRFhTaXFK?=
- =?utf-8?B?eFMvY2R1b09vV2Zwazk3V1A3SHZhSnI1d0FWaE9pWk54YWtDbXNqZy9lZW9i?=
- =?utf-8?B?dzVkZDdjVFZuNE5ETkpaQT09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d7998e0-a11e-40f0-cfa9-08d8e1cdf5d0
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2021 01:03:18.7389
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UCOkIFOcliNq4ZUBfF/KzYkHQ1jbFXrk/w8AcKhriDj608vfwCkwjZ9pq0IgGktY
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4708
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-07_17:2021-03-03,2021-03-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- malwarescore=0 bulkscore=0 impostorscore=0 phishscore=0 suspectscore=0
- mlxlogscore=999 lowpriorityscore=0 spamscore=0 mlxscore=0
- priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2103080001
-X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sun, 7 Mar 2021 13:23:33 -0800
+Daniel Xu <dxu@dxuuu.xyz> wrote:
 
-
-On 3/7/21 2:52 PM, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
+> > kretprobe replaces the real return address with kretprobe_trampoline
+> > and kretprobe_trampoline *calls* trampoline_handler (this part depends
+> > on architecture implementation).
+> > Thus, if kretprobe_trampoline has no stack frame information, ORC may
+> > fails at the first kretprobe_trampoline+0x25, that is different from
+> > the kretprobe_trampoline+0, so the hack doesn't work.
 > 
-> The syzbot got FD of vmlinux BTF and passed it into map_create which caused
-> crash in btf_type_id_size() when it tried to access resolved_ids. The vmlinux
-> BTF doesn't have 'resolved_ids' and 'resolved_sizes' initialized to save
-> memory. To avoid such issues disallow using vmlinux BTF in prog_load and
-> map_create commands.
+> I'm not sure I follow 100% what you're saying, but assuming you're
+> asking why bpftrace fails at `kretprobe_trampoline+0` instead of
+> `kretprobe_trampoline+0x25`:
 > 
-> Reported-by: syzbot+8bab8ed346746e7540e8@syzkaller.appspotmail.com
-> Fixes: 5329722057d4 ("bpf: Assign ID to vmlinux BTF and return extra info for BTF in GET_OBJ_INFO")
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> `regs` is set to &kretprobe_trampoline:
+> 
+>     regs->ip = (unsigned long)&kretprobe_trampoline;
 
-Acked-by: Yonghong Song <yhs@fb.com>
+Ah, OK. bpftrace does the adjustment.
+
+> Then the kretprobe event is dispatched like this:
+> 
+>     kretprobe_trampoline_handler
+>       __kretprobe_trampoline_handler
+>         rp->handler // ie kernel/trace/trace_kprobe.c:kretprobe_dispatcher
+>           kretprobe_perf_func
+>             trace_bpf_call(.., regs)
+>               BPF_PROG_RUN_ARRAY_CHECK
+>                 bpf_get_stackid(regs, .., ..) // in bpftrace prog 
+> 
+> And then `bpf_get_stackid` unwinds the stack via:
+> 
+>     bpf_get_stackid
+>       get_perf_callchain(regs, ...)
+>         perf_callchain_kernel(.., regs)
+>           perf_callchain_store(.., regs->ip) // !!! first unwound entry
+>           unwind_start
+>           unwind_next_frame
+> 
+> In summary: unwinding via BPF begins at regs->ip, which
+> `trampoline_handler` sets to `&kretprobe_trampoline+0x0`.
+
+OK, maybe you are using stack_trace_save_regs() with pt_regs instead of
+stack_trace_save(). this means it started from regs at saved by
+kretprobe always.
+
+In the ftrace, we are using stack_trace_save() which is based on
+the current stack, this means stack unwinder tracks back the stack of
+kretprobe itself at first. So it saw the kretprobe_trampoline+0x25 
+(return address of the trampoline_handler) and stop unwinding because
+the call frame information (ORC information) and the return address
+are not there.
+
+This issue is not only the ftrace, but also backtrace in interrupt
+handler and kretprobe handler.
+
+> > Hmm, how the other inline-asm function makes its stackframe info?
+> > If I get the kretprobe_trampoline+0, I can fix it up.
+> 
+> So I think I misunderstood the mechanics before. I think `call
+> trampoline_handler` does set up a new frame. My current guess is that
+> ftrace doesn't thread through `regs` like the bpf code path does. I'm
+> not very familiar with ftrace internals so I haven't looked.
+
+Yes, that's right. Since I made a kretprobe event on top of the ftrace
+event framework, it doesn't pass the regs to the event trigger.
+
+
+> > > The only way I can think of to fix this issue is to make the ORC
+> > > unwinder aware of kretprobe (ie the patch I sent earlier). I'm hoping
+> > > you have another idea if my patch isn't acceptable.
+> > 
+> > OK, anyway, your patch doesn't care the case that the multiple functions
+> > are probed by kretprobes. In that case, you'll see several entries are
+> > replaced by the kretprobe_trampoline. To find it correctly, you have
+> > to pass a state-holder (@cur of the kretprobe_find_ret_addr())
+> > to the fixup entries.
+> 
+> I'll see if I can figure something out tomorrow.
+
+To help your understanding, let me explain.
+
+If we have a code here
+
+caller_func:
+0x00 add sp, 0x20	/* 0x20 bytes stack frame allocated */
+...
+0x10 call target_func
+0x15 ... /* return address */
+
+On the stack in the entry of target_func, we have
+
+[stack]
+0x0e0 caller_func+0x15
+... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
+0x100 /* caller_func return address */
+
+And when we put a kretprobe on the target_func, the stack will be
+
+[stack]
+0x0e0 kretprobe_trampoline
+... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
+0x100 /* caller_func return address */
+
+* "caller_func+0x15" is saved in current->kretprobe_instances.first.
+
+When returning from the target_func, call consumed the 0x0e0 and
+jump to kretprobe_trampoline. Let's see the assembler code.
+
+        ".text\n"
+        ".global kretprobe_trampoline\n"
+        ".type kretprobe_trampoline, @function\n"
+        "kretprobe_trampoline:\n"
+        /* We don't bother saving the ss register */
+        "       pushq %rsp\n"
+        "       pushfq\n"
+        SAVE_REGS_STRING
+        "       movq %rsp, %rdi\n"
+        "       call trampoline_handler\n"
+        /* Replace saved sp with true return address. */
+        "       movq %rax, 19*8(%rsp)\n"
+        RESTORE_REGS_STRING
+        "       popfq\n"
+        "       ret\n"
+
+When the entry of trampoline_handler, stack is like this;
+
+[stack]
+0x040 kretprobe_trampoline+0x25
+0x048 r15
+...     /* pt_regs */
+0x0d8 flags
+0x0e0 rsp (=0x0e0)
+... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
+0x100 /* caller_func return address */
+
+And after returned from trampoline_handler, "movq" changes the
+stack like this.
+
+[stack]
+0x040 kretprobe_trampoline+0x25
+0x048 r15
+...     /* pt_regs */
+0x0d8 flags
+0x0e0 caller_func+0x15
+... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
+0x100 /* caller_func return address */
+
+
+So at the kretprobe handler, we have 2 issues.
+1) the return address (caller_func+0x15) is not on the stack.
+   this can be solved by searching from current->kretprobe_instances.
+2) the stack frame size of kretprobe_trampoline is unknown
+   Since the stackframe is fixed, the fixed number (0x98) can be used.
+
+However, those solutions are only for the kretprobe handler. The stacktrace
+from interrupt handler hit in the kretprobe_trampoline still doesn't work.
+
+So, here is my idea;
+
+1) Change the trampline code to prepare stack frame at first and save
+   registers on it, instead of "push". This will makes ORC easy to setup
+   stackframe information for this code.
+2) change the return addres fixup timing. Instead of using return value
+   of trampoline handler, before removing the real return address from
+   current->kretprobe_instances.
+3) Then, if orc_find() finds the ip is in the kretprobe_trampoline, it
+   checks the contents of the end of stackframe (at the place of regs->sp)
+   is same as the address of it. If it is, it can find the correct address
+   from current->kretprobe_instances. If not, there is a correct address.
+
+I need to find how the ORC info is prepared for 1), maybe UNWIND_HINT macro
+may help?
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
