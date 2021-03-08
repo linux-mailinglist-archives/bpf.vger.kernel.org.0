@@ -2,201 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AD3331188
-	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 16:00:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3098E3311AB
+	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 16:09:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhCHO7z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Mar 2021 09:59:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34057 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231249AbhCHO7d (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 8 Mar 2021 09:59:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615215573;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mVoEg//dE/ObGdmvisFb7CVIqOdf79YQCTe0cmXuyRA=;
-        b=GR9vT3A8w6DvInkS8wQYgTokTLXb+9yp2Sk4jvlspwBMd101w533GofjKI/NvO9b9JRiDG
-        KWoBEWLGb9VC+Yk05MMoJpLJZatRc4PkTOsQcWLFCG/VngZsGh/Pcy2h0wxPoP/+Mh6kIJ
-        oREbypQkho5F5IqCrloilFnqsBegZHA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-127-wD4q3pUFNk6YTCmazTScTQ-1; Mon, 08 Mar 2021 09:59:29 -0500
-X-MC-Unique: wD4q3pUFNk6YTCmazTScTQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 306D810866A0;
-        Mon,  8 Mar 2021 14:59:28 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A6A7F5C27C;
-        Mon,  8 Mar 2021 14:59:24 +0000 (UTC)
-Received: from [10.1.1.1] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 9BBDE30736C74;
-        Mon,  8 Mar 2021 15:59:23 +0100 (CET)
-Subject: [PATCH bpf V3 2/2] selftests/bpf: Tests using bpf_check_mtu
- BPF-helper input mtu_len param
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 08 Mar 2021 15:59:23 +0100
-Message-ID: <161521556358.3515614.5915221479709358964.stgit@firesoul>
-In-Reply-To: <161521552920.3515614.3831682841593366034.stgit@firesoul>
-References: <161521552920.3515614.3831682841593366034.stgit@firesoul>
-User-Agent: StGit/0.19
+        id S230231AbhCHPIP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Mar 2021 10:08:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231512AbhCHPIA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Mar 2021 10:08:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EFF865226
+        for <bpf@vger.kernel.org>; Mon,  8 Mar 2021 15:08:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615216080;
+        bh=B2SN6dS0d3ZxUpftniIQxNdiS6RVkIDFFBhIgVMgdn8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sPM2gYQZ83cv8nxhGfiWEPqD2qqUrTf7q3Eawl7QeJhDce99ndrq4Ld9b3SBb2x1k
+         qy8rx7HlbVyD5miXRBwabHpuC1mqXbSSNrwBcHI1ZBB5eUCBZG26H7iJZnXCP2FqM0
+         a9LTlZ1Ph3eb2n7LK9lkc4Xr75pyYnj7Fc3lwDV4LjtlSfvuXXabaYF+8d9ZR3lauX
+         Q8+XVDjIGn8jv+5SMtLCxNaMo5Ij6Qh00Kwv8Y/pMLtgvQWecX63YMHtjDIqTS2VJz
+         IY5K9DZLndEOhra9logzM1mtvIZHmv922du/AG9H3/K0ogOvQCNF0ewoAbjOCZoabi
+         lbZPN+/BRqGfw==
+Received: by mail-lj1-f169.google.com with SMTP id 2so16504414ljr.5
+        for <bpf@vger.kernel.org>; Mon, 08 Mar 2021 07:07:59 -0800 (PST)
+X-Gm-Message-State: AOAM530TxM7FxPgQzQbj6jdn4foZWdv6+KDGSSPxqkvoCcg6nRB8dtkd
+        5DZvccRhzVd56BfLeqMvcEK54X8bMhQXUy9Zp28apA==
+X-Google-Smtp-Source: ABdhPJzjl1YoA9XJrc8L4I1XKpwzXfdjhFB5QjpC+E3GbcP5ra+7h5x8dvRbdmxai4qikV5NrEOBTT04a+UOb/pTDvA=
+X-Received: by 2002:a05:651c:387:: with SMTP id e7mr14334269ljp.425.1615216078427;
+ Mon, 08 Mar 2021 07:07:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210307120948.61414-1-tallossos@gmail.com> <e812c654-a5d2-847d-c378-2271e0bdef22@fb.com>
+In-Reply-To: <e812c654-a5d2-847d-c378-2271e0bdef22@fb.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Mon, 8 Mar 2021 16:07:47 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ7XGn6h5HtVazDHOWUZQH9kbz7T4M5PFOwsi9zeCZ3nzQ@mail.gmail.com>
+Message-ID: <CACYkzJ7XGn6h5HtVazDHOWUZQH9kbz7T4M5PFOwsi9zeCZ3nzQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Change inode_storage's lookup_elem
+ return value from NULL to -EBADF.
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Tal Lossos <tallossos@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Gilad Reti <gilad.reti@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tests that use mtu_len as input parameter in BPF-helper
-bpf_check_mtu().
+On Sun, Mar 7, 2021 at 7:18 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 3/7/21 4:09 AM, Tal Lossos wrote:
+> > bpf_fd_inode_storage_lookup_elem returned NULL when getting a bad FD,
+> > which caused -ENOENT in bpf_map_copy_value.
+> > EBADF is better than ENOENT for a bad FD behaviour.
+> >
+> > The patch was partially contributed by CyberArk Software, Inc.
+> >
+> > Signed-off-by: Tal Lossos <tallossos@gmail.com>
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
 
-The BPF-helper is avail from both XDP and TC context. Add two tests
-per context, one that tests below MTU and one that exceeds the MTU.
+Thanks this makes sense and is consistent with sk_storage (which
+uses sockfd_lookup) and task_storage (which uses pidfd_get_pid)
+which return an -EBADF as well.
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/check_mtu.c |    4 +
- tools/testing/selftests/bpf/progs/test_check_mtu.c |   92 ++++++++++++++++++++
- 2 files changed, 96 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/check_mtu.c b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-index 36af1c138faf..b62a39315336 100644
---- a/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-+++ b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-@@ -128,6 +128,8 @@ static void test_check_mtu_xdp(__u32 mtu, __u32 ifindex)
- 	test_check_mtu_run_xdp(skel, skel->progs.xdp_use_helper, mtu);
- 	test_check_mtu_run_xdp(skel, skel->progs.xdp_exceed_mtu, mtu);
- 	test_check_mtu_run_xdp(skel, skel->progs.xdp_minus_delta, mtu);
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_input_len, mtu);
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_input_len_exceed, mtu);
- 
- cleanup:
- 	test_check_mtu__destroy(skel);
-@@ -187,6 +189,8 @@ static void test_check_mtu_tc(__u32 mtu, __u32 ifindex)
- 	test_check_mtu_run_tc(skel, skel->progs.tc_exceed_mtu, mtu);
- 	test_check_mtu_run_tc(skel, skel->progs.tc_exceed_mtu_da, mtu);
- 	test_check_mtu_run_tc(skel, skel->progs.tc_minus_delta, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_input_len, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_input_len_exceed, mtu);
- cleanup:
- 	test_check_mtu__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_check_mtu.c b/tools/testing/selftests/bpf/progs/test_check_mtu.c
-index b7787b43f9db..c4a9bae96e75 100644
---- a/tools/testing/selftests/bpf/progs/test_check_mtu.c
-+++ b/tools/testing/selftests/bpf/progs/test_check_mtu.c
-@@ -105,6 +105,54 @@ int xdp_minus_delta(struct xdp_md *ctx)
- 	return retval;
- }
- 
-+SEC("xdp")
-+int xdp_input_len(struct xdp_md *ctx)
-+{
-+	int retval = XDP_PASS; /* Expected retval on successful test */
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 data_len = data_end - data;
-+
-+	/* API allow user give length to check as input via mtu_len param,
-+	 * resulting MTU value is still output in mtu_len param after call.
-+	 *
-+	 * Input len is L3, like MTU and iph->tot_len.
-+	 * Remember XDP data_len is L2.
-+	 */
-+	__u32 mtu_len = data_len - ETH_HLEN;
-+
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, 0, 0))
-+		retval = XDP_ABORTED;
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("xdp")
-+int xdp_input_len_exceed(struct xdp_md *ctx)
-+{
-+	int retval = XDP_ABORTED; /* Fail */
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	int err;
-+
-+	/* API allow user give length to check as input via mtu_len param,
-+	 * resulting MTU value is still output in mtu_len param after call.
-+	 *
-+	 * Input length value is L3 size like MTU.
-+	 */
-+	__u32 mtu_len = GLOBAL_USER_MTU;
-+
-+	mtu_len += 1; /* Exceed with 1 */
-+
-+	err = bpf_check_mtu(ctx, ifindex, &mtu_len, 0, 0);
-+	if (err == BPF_MTU_CHK_RET_FRAG_NEEDED)
-+		retval = XDP_PASS ; /* Success in exceeding MTU check */
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
- SEC("classifier")
- int tc_use_helper(struct __sk_buff *ctx)
- {
-@@ -196,3 +244,47 @@ int tc_minus_delta(struct __sk_buff *ctx)
- 	global_bpf_mtu_xdp = mtu_len;
- 	return retval;
- }
-+
-+SEC("classifier")
-+int tc_input_len(struct __sk_buff *ctx)
-+{
-+	int retval = BPF_OK; /* Expected retval on successful test */
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+
-+	/* API allow user give length to check as input via mtu_len param,
-+	 * resulting MTU value is still output in mtu_len param after call.
-+	 *
-+	 * Input length value is L3 size.
-+	 */
-+	__u32 mtu_len = GLOBAL_USER_MTU;
-+
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, 0, 0))
-+		retval = BPF_DROP;
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_input_len_exceed(struct __sk_buff *ctx)
-+{
-+	int retval = BPF_DROP; /* Fail */
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	int err;
-+
-+	/* API allow user give length to check as input via mtu_len param,
-+	 * resulting MTU value is still output in mtu_len param after call.
-+	 *
-+	 * Input length value is L3 size like MTU.
-+	 */
-+	__u32 mtu_len = GLOBAL_USER_MTU;
-+
-+	mtu_len += 1; /* Exceed with 1 */
-+
-+	err = bpf_check_mtu(ctx, ifindex, &mtu_len, 0, 0);
-+	if (err == BPF_MTU_CHK_RET_FRAG_NEEDED)
-+		retval = BPF_OK; /* Success in exceeding MTU check */
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-
-
+Acked-by: KP Singh <kpsingh@kernel.org>
