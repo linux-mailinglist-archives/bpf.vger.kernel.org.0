@@ -2,69 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9DA330EE5
-	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 14:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5637330F84
+	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 14:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbhCHNKa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Mar 2021 08:10:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229904AbhCHNKH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Mar 2021 08:10:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id C8A966518F;
-        Mon,  8 Mar 2021 13:10:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615209006;
-        bh=X6dboDfGc3Kwhg681NdLNUwjrwtCVBfB5c1R2LALe6U=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=frdGiA++ZviU0y7xtjp9eRbgPxZmX4Kuo2p2NyR1btSdlerTLhJd6GvQE7r2wVgeK
-         S/r7y3Zsy1m/s3Y19GJMsCitInvzl/VZKvVWQ2aDyDWNbUelT8rYpppWfRZfEG8sUi
-         GhbtO8uEPqb6wRn6dzCLn+00eE0JymO/NFvk6fgw01WBkJXECQcnYnqtdQ5S0z/kJ7
-         6YolMSRc5xmZ3GwH2oMTu5w8KjhD8435y66h/s7awU9BaeMBYm95b7uPDlGx4MScl3
-         LA2RL2hOkjSZDoF2f6vWQINwVvjejH1zf9RbO8E2bcet2zdEbpjNKOvRmFMT14LCJd
-         tXRyeRCfIwxGg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BBF6A609DB;
-        Mon,  8 Mar 2021 13:10:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229922AbhCHNiT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Mar 2021 08:38:19 -0500
+Received: from www62.your-server.de ([213.133.104.62]:41230 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229690AbhCHNh5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Mar 2021 08:37:57 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lJG4j-000AJy-RM; Mon, 08 Mar 2021 14:37:33 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lJG4j-0008T9-F6; Mon, 08 Mar 2021 14:37:33 +0100
+Subject: Re: [PATCH] tools include: Add __sum16 and __wsum definitions.
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>
+References: <20210307223024.4081067-1-irogers@google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <4aa2a66d-b8e4-adfe-8b61-615d98012a65@iogearbox.net>
+Date:   Mon, 8 Mar 2021 14:37:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] bpf: Dont allow vmlinux BTF to be used in map_create and
- prog_load.
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161520900676.23977.17829281573568193224.git-patchwork-notify@kernel.org>
-Date:   Mon, 08 Mar 2021 13:10:06 +0000
-References: <20210307225248.79031-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210307225248.79031-1-alexei.starovoitov@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, bpf@vger.kernel.org, kernel-team@fb.com
+In-Reply-To: <20210307223024.4081067-1-irogers@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26102/Mon Mar  8 13:03:13 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf.git (refs/heads/master):
-
-On Sun,  7 Mar 2021 14:52:48 -0800 you wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
+On 3/7/21 11:30 PM, Ian Rogers wrote:
+> This adds definitions available in the uapi version.
 > 
-> The syzbot got FD of vmlinux BTF and passed it into map_create which caused
-> crash in btf_type_id_size() when it tried to access resolved_ids. The vmlinux
-> BTF doesn't have 'resolved_ids' and 'resolved_sizes' initialized to save
-> memory. To avoid such issues disallow using vmlinux BTF in prog_load and
-> map_create commands.
+> Explanation:
+> In the kernel include of types.h the uapi version is included.
+> In tools the uapi/linux/types.h and linux/types.h are distinct.
+> For BPF programs a definition of __wsum is needed by the generated
+> bpf_helpers.h. The definition comes either from a generated vmlinux.h or
+> from <linux/types.h> that may be transitively included from bpf.h. The
+> perf build prefers linux/types.h over uapi/linux/types.h for
+> <linux/types.h>*. To allow tools/perf/util/bpf_skel/bpf_prog_profiler.bpf.c
+> to compile with the same include path used for perf then these
+> definitions are necessary.
 > 
-> [...]
+> There is likely a wider conversation about exactly how types.h should be
+> specified and the include order used by the perf build - it is somewhat
+> confusing that tools/include/uapi/linux/bpf.h is using the non-uapi
+> types.h.
+> 
+> *see tools/perf/Makefile.config:
+> ...
+> INC_FLAGS += -I$(srctree)/tools/include/
+> INC_FLAGS += -I$(srctree)/tools/arch/$(SRCARCH)/include/uapi
+> INC_FLAGS += -I$(srctree)/tools/include/uapi
+> ...
+> The include directories are scanned from left-to-right:
+> https://gcc.gnu.org/onlinedocs/gcc/Directory-Options.html
+> As tools/include/linux/types.h appears before
+> tools/include/uapi/linux/types.h then I say it is preferred.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-Here is the summary with links:
-  - [bpf] bpf: Dont allow vmlinux BTF to be used in map_create and prog_load.
-    https://git.kernel.org/bpf/bpf/c/350a5c4dd245
+Given more related to perf build infra, I presume Arnaldo would pick
+this one up?
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks,
+Daniel
