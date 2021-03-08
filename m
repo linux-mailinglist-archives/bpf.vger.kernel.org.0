@@ -2,67 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B5A331657
-	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 19:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E95B433169C
+	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 19:50:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbhCHSkO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Mar 2021 13:40:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56746 "EHLO mail.kernel.org"
+        id S230342AbhCHSuZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Mar 2021 13:50:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231224AbhCHSkH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:40:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7594965224;
-        Mon,  8 Mar 2021 18:40:07 +0000 (UTC)
+        id S230490AbhCHSuX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Mar 2021 13:50:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9BA2265194;
+        Mon,  8 Mar 2021 18:50:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615228807;
-        bh=wpz7hEpNPk43NbRCuI7ouiJoQTcvMYGFXJ7ylbWIdBM=;
+        s=k20201202; t=1615229422;
+        bh=rssix3XvXO4um6kczgo793VcQ3UozKJZ4MpeHy6RRAI=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=q/joHz0+0jjbmCciAXuRxJwRTBHrbawoEtZs4ocQ19X1KIDHTNZWZpKHYaviD1YCY
-         lKzgvU09fK1iJqMjmEGuNVQ+aysYRtUbapfPzdUao4dcHGxZMFsP34zTap970ZqscX
-         hFIUa7JpY4tbtslouQETB/GtDHw/WHoOS+2wX5T58m0PvohZZDwjwY7TUkjKf8Z1pA
-         kCrFaX+zXKXfgYR8pTKjqyEW2C2NSMAe3KuhTvxLD//hkfwFEKpmMMatXbD4wBtzkX
-         jYl/lUHxotY/fNe6z5hbLOIFk+jHFp87GAm83usylYBP438+WOt5U+rVuOaY3n+Hkb
-         FYnkaMgbxRPAw==
+        b=gg5CE6r51AqzRMjnTPPllENj6ehAe+zf6rh6V7o800VytPtQe3ec3hmG9ozxWBlY8
+         fsIU5U4R5TMqEy5an44T7vi4DD/FKDPkROBpt3WCV5dv/jCWKYOZVXI4duZs/g6E52
+         Otq3jX/T7/iHr4ChrP8ymNcmfgH6uonSx2w2JLJiEi83rrXRF+V053zhyI1FxHh4xP
+         IYdaru3WmpVkUsSlgQN73UwkDJE2p+y7SvIloRfPd1n8aub+XT79T95wZjWiAm+lqD
+         FJcFB/SqK18XlwsezpvhC3lRS0bw2RXlDzx5kEueQG5VUuh+kuNySa9qNqQwSrAneF
+         k6eUzRLgRjksw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6CEE6609DB;
-        Mon,  8 Mar 2021 18:40:07 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9751660952;
+        Mon,  8 Mar 2021 18:50:22 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix typo in Makefile
+Subject: Re: [PATCH bpf-next] libbpf: fix INSTALL flag order
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161522880744.17587.7644031579879031410.git-patchwork-notify@kernel.org>
-Date:   Mon, 08 Mar 2021 18:40:07 +0000
-References: <20210308182830.155784-1-jean-philippe@linaro.org>
-In-Reply-To: <20210308182830.155784-1-jean-philippe@linaro.org>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, linux-kselftest@vger.kernel.org,
-        bpf@vger.kernel.org, joe@cilium.io, toke@redhat.com,
-        quentin@isovalent.com
+Message-Id: <161522942261.22364.5755505303228120302.git-patchwork-notify@kernel.org>
+Date:   Mon, 08 Mar 2021 18:50:22 +0000
+References: <20210306014127.850411-1-andrii@kernel.org>
+In-Reply-To: <20210306014127.850411-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, kernel-team@fb.com, gvalkov@abv.bg
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+This patch was applied to bpf/bpf.git (refs/heads/master):
 
-On Mon,  8 Mar 2021 19:28:31 +0100 you wrote:
-> The selftest build fails when trying to install the scripts:
+On Fri, 5 Mar 2021 17:41:26 -0800 you wrote:
+> It was reported ([0]) that having optional -m flag between source and
+> destination arguments in install command breaks bpftools cross-build on MacOS.
+> Move -m to the front to fix this issue.
 > 
-> rsync: [sender] link_stat "tools/testing/selftests/bpf/test_docs_build.sh" failed: No such file or directory (2)
+>   [0] https://github.com/openwrt/openwrt/pull/3959
 > 
-> Fix the filename.
-> 
-> Fixes: a01d935b2e09 ("tools/bpf: Remove bpf-helpers from bpftool docs")
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Fixes: 7110d80d53f4 ("libbpf: Makefile set specified permission mode")
+> Reported-by: Georgi Valkov <gvalkov@abv.bg>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next] selftests/bpf: Fix typo in Makefile
-    https://git.kernel.org/bpf/bpf-next/c/a0d73acc1e4b
+  - [bpf-next] libbpf: fix INSTALL flag order
+    https://git.kernel.org/bpf/bpf/c/e7fb6465d4c8
 
 You are awesome, thank you!
 --
