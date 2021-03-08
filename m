@@ -2,201 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136ED3309C2
-	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 09:53:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 815C3330A57
+	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 10:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbhCHIwx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Mar 2021 03:52:53 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:56922 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229742AbhCHIwV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 8 Mar 2021 03:52:21 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UQtN.ZM_1615193536;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UQtN.ZM_1615193536)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 08 Mar 2021 16:52:17 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     netdev@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: [PATCH v7 net-next] virtio-net: support XDP when not more queues
-Date:   Mon,  8 Mar 2021 16:52:16 +0800
-Message-Id: <1615193536-112130-1-git-send-email-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S229458AbhCHJdv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Mar 2021 04:33:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhCHJdV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Mar 2021 04:33:21 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC01EC06174A
+        for <bpf@vger.kernel.org>; Mon,  8 Mar 2021 01:33:20 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id a17so15233441ljq.2
+        for <bpf@vger.kernel.org>; Mon, 08 Mar 2021 01:33:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XpqQYtNxI2EYftvKZqg0C0+CNDsRpVCG9S8FtJReEZ8=;
+        b=gpQo8KrxJ9chq2psqVfMBIu1zEiwm6C6jECWc1zW0oCnyUzaPU1x2UNEViPKJSOHtD
+         hum5iiUsFZFjBFYZ+FCnaAHAkEXx/gHcC4PP2+DPrNlDpYTcm6pv2XGgzJaB0L3dTUVq
+         X6t4NeqtZICV0Chi/Zig1y2aXJvUZDhTBzZ3s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XpqQYtNxI2EYftvKZqg0C0+CNDsRpVCG9S8FtJReEZ8=;
+        b=lekbr6iHYFOj6fbGyK41VRKcK4iYmtviaj28J9+8ipvtmgEmH3/HBHxgtUUhHPp3YK
+         iHAxgNeTpqCSonnBfLiBCiw6KupLhlxLyd5oT1JaOrJrNedTC5V8fRqC6ehyAUeQMLOc
+         yRIJMXhe3Mk3Orbo+xrF6pHGsIkaMA8aBr8IP0REIW2908tPY/XXL3VwZ2wDvBUNJa6D
+         0txLSVx+jfWEUnVuVHuUo5GQ3gOXzh0WTHHJ5jepMPnMk3NIzWnk/r+Loyx3+WmxBreT
+         QwUa6cY5W/2GHlJBr2hhCFbDTmWg+a50zYeciTwitADMk/NpGY66g8GhfjdjdUPbxgVl
+         FOWw==
+X-Gm-Message-State: AOAM531Tc3cqAlJBSsBYDb4yy73TMnnbqmJ4aiteKbSGAeiFdE8mv22j
+        x8jVg3ujUe8pdbkeGNbP8X7doLMRPXEEDSATDJV+zA==
+X-Google-Smtp-Source: ABdhPJx6WZuhqE5cGxqSRVRzdPW65PMeqDYs5Pwxqp0Z5jung+LiP/+SMjlbhRsPpVPu2kcl2pmqfnIENUVx4ZrzF/c=
+X-Received: by 2002:a2e:9244:: with SMTP id v4mr13822091ljg.196.1615195999403;
+ Mon, 08 Mar 2021 01:33:19 -0800 (PST)
+MIME-Version: 1.0
+References: <CACAyw9_P-Zk+hrOwgenLz4hCc7Cae9=qV86Td2CkGVUPAzWQ8A@mail.gmail.com>
+ <a3782f71-3f6b-1e75-17a9-1827822c2030@fb.com> <6c02f403-666f-2025-4a57-416feab147a5@fb.com>
+In-Reply-To: <6c02f403-666f-2025-4a57-416feab147a5@fb.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Mon, 8 Mar 2021 09:33:08 +0000
+Message-ID: <CACAyw9-Ow9=u8EGz5Fx2WYy_hThAGXRu=iWweWzKEps0qpDzmw@mail.gmail.com>
+Subject: Re: bpf_core_type_id_kernel with qualifier aborts clang compilation
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The number of queues implemented by many virtio backends is limited,
-especially some machines have a large number of CPUs. In this case, it
-is often impossible to allocate a separate queue for
-XDP_TX/XDP_REDIRECT, then xdp cannot be loaded to work, even xdp does
-not use the XDP_TX/XDP_REDIRECT.
+On Fri, 5 Mar 2021 at 21:36, Yonghong Song <yhs@fb.com> wrote:
+>
+> Lorenz, the issue has been fixed by llvm patch
+> https://reviews.llvm.org/D97986. It is in llvm13 trunk now.
+> I have also requested the fix to backport to 12.0.1 release.
+> Thanks!
+>
 
-This patch allows XDP_TX/XDP_REDIRECT to run by reuse the existing SQ
-with __netif_tx_lock() hold when there are not enough queues.
+Thanks again for the quick fix :)
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
----
-v7: 1. use macros to implement get/put
-    2. remove 'flag'. (suggested by Jason Wang)
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-v6: 1. use __netif_tx_acquire()/__netif_tx_release(). (suggested by Jason Wang)
-    2. add note for why not lock. (suggested by Jason Wang)
-    3. Use variable 'flag' to record with or without locked.  It is not safe to
-       use curr_queue_pairs in "virtnet_put_xdp_sq", because it may changed after
-       "virtnet_get_xdp_sq".
-
-v5: change subject from 'support XDP_TX when not more queues'
-
-v4: make sparse happy
-    suggested by Jakub Kicinski
-
-v3: add warning when no more queues
-    suggested by Jesper Dangaard Brouer
-
- drivers/net/virtio_net.c | 55 ++++++++++++++++++++++++++++++++++++------------
- 1 file changed, 42 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index ba8e637..5ce40ec 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -195,6 +195,9 @@ struct virtnet_info {
- 	/* # of XDP queue pairs currently used by the driver */
- 	u16 xdp_queue_pairs;
-
-+	/* xdp_queue_pairs may be 0, when xdp is already loaded. So add this. */
-+	bool xdp_enabled;
-+
- 	/* I like... big packets and I cannot lie! */
- 	bool big_packets;
-
-@@ -481,12 +484,34 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
- 	return 0;
- }
-
--static struct send_queue *virtnet_xdp_sq(struct virtnet_info *vi)
--{
--	unsigned int qp;
--
--	qp = vi->curr_queue_pairs - vi->xdp_queue_pairs + smp_processor_id();
--	return &vi->sq[qp];
-+/* when vi->curr_queue_pairs > nr_cpu_ids, the txq/sq is only used for xdp tx on
-+ * the current cpu, so it does not need to be locked.
-+ */
-+#define virtnet_xdp_get_sq(vi) ({                                         \
-+	struct netdev_queue *txq;                                         \
-+	typeof(vi) v = (vi);                                              \
-+	unsigned int qp;                                                  \
-+	if (v->curr_queue_pairs > nr_cpu_ids) {                           \
-+		qp = v->curr_queue_pairs - v->xdp_queue_pairs;            \
-+		qp += smp_processor_id();                                 \
-+		txq = netdev_get_tx_queue(v->dev, qp);                    \
-+		__netif_tx_acquire(txq);                                  \
-+	} else {                                                          \
-+		qp = smp_processor_id() % v->curr_queue_pairs;            \
-+		txq = netdev_get_tx_queue(v->dev, qp);                    \
-+		__netif_tx_lock(txq, raw_smp_processor_id());             \
-+	}                                                                 \
-+	v->sq + qp;                                                       \
-+})
-+
-+#define virtnet_xdp_put_sq(vi, q) {                                       \
-+	struct netdev_queue *txq;                                         \
-+	typeof(vi) v = (vi);                                              \
-+	txq = netdev_get_tx_queue(v->dev, (q) - v->sq);                   \
-+	if (v->curr_queue_pairs > nr_cpu_ids)                             \
-+		__netif_tx_release(txq);                                  \
-+	else                                                              \
-+		__netif_tx_unlock(txq);                                   \
- }
-
- static int virtnet_xdp_xmit(struct net_device *dev,
-@@ -512,7 +537,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
- 	if (!xdp_prog)
- 		return -ENXIO;
-
--	sq = virtnet_xdp_sq(vi);
-+	sq = virtnet_xdp_get_sq(vi);
-
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK)) {
- 		ret = -EINVAL;
-@@ -560,12 +585,13 @@ static int virtnet_xdp_xmit(struct net_device *dev,
- 	sq->stats.kicks += kicks;
- 	u64_stats_update_end(&sq->stats.syncp);
-
-+	virtnet_xdp_put_sq(vi, sq);
- 	return ret;
- }
-
- static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
- {
--	return vi->xdp_queue_pairs ? VIRTIO_XDP_HEADROOM : 0;
-+	return vi->xdp_enabled ? VIRTIO_XDP_HEADROOM : 0;
- }
-
- /* We copy the packet for XDP in the following cases:
-@@ -1457,12 +1483,13 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
- 		xdp_do_flush();
-
- 	if (xdp_xmit & VIRTIO_XDP_TX) {
--		sq = virtnet_xdp_sq(vi);
-+		sq = virtnet_xdp_get_sq(vi);
- 		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq)) {
- 			u64_stats_update_begin(&sq->stats.syncp);
- 			sq->stats.kicks++;
- 			u64_stats_update_end(&sq->stats.syncp);
- 		}
-+		virtnet_xdp_put_sq(vi, sq);
- 	}
-
- 	return received;
-@@ -2417,10 +2444,9 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
-
- 	/* XDP requires extra queues for XDP_TX */
- 	if (curr_qp + xdp_qp > vi->max_queue_pairs) {
--		NL_SET_ERR_MSG_MOD(extack, "Too few free TX rings available");
--		netdev_warn(dev, "request %i queues but max is %i\n",
-+		netdev_warn(dev, "XDP request %i queues but max is %i. XDP_TX and XDP_REDIRECT will operate in a slower locked tx mode.\n",
- 			    curr_qp + xdp_qp, vi->max_queue_pairs);
--		return -ENOMEM;
-+		xdp_qp = 0;
- 	}
-
- 	old_prog = rtnl_dereference(vi->rq[0].xdp_prog);
-@@ -2454,11 +2480,14 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 	vi->xdp_queue_pairs = xdp_qp;
-
- 	if (prog) {
-+		vi->xdp_enabled = true;
- 		for (i = 0; i < vi->max_queue_pairs; i++) {
- 			rcu_assign_pointer(vi->rq[i].xdp_prog, prog);
- 			if (i == 0 && !old_prog)
- 				virtnet_clear_guest_offloads(vi);
- 		}
-+	} else {
-+		vi->xdp_enabled = false;
- 	}
-
- 	for (i = 0; i < vi->max_queue_pairs; i++) {
-@@ -2526,7 +2555,7 @@ static int virtnet_set_features(struct net_device *dev,
- 	int err;
-
- 	if ((dev->features ^ features) & NETIF_F_LRO) {
--		if (vi->xdp_queue_pairs)
-+		if (vi->xdp_enabled)
- 			return -EBUSY;
-
- 		if (features & NETIF_F_LRO)
---
-1.8.3.1
-
+www.cloudflare.com
