@@ -2,81 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4B233161F
-	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 19:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4098A33163D
+	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 19:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbhCHSbE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 8 Mar 2021 13:31:04 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23000 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231303AbhCHSaz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 8 Mar 2021 13:30:55 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 128IDtbQ019534
-        for <bpf@vger.kernel.org>; Mon, 8 Mar 2021 10:30:54 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 374thpx0mn-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 08 Mar 2021 10:30:54 -0800
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 8 Mar 2021 10:30:51 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 851F42ED1A8F; Mon,  8 Mar 2021 10:30:49 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>, <gvalkov@abv.bg>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v2 bpf] libbpf: fix INSTALL flag order
-Date:   Mon, 8 Mar 2021 10:30:38 -0800
-Message-ID: <20210308183038.613432-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
-X-FB-Internal: Safe
-Content-Type: text/plain
-Content-Transfer-Encoding: 8BIT
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S230075AbhCHShf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Mar 2021 13:37:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231424AbhCHShX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Mar 2021 13:37:23 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F179C06174A
+        for <bpf@vger.kernel.org>; Mon,  8 Mar 2021 10:37:23 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id x19so11226771ybe.0
+        for <bpf@vger.kernel.org>; Mon, 08 Mar 2021 10:37:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uemaIjIKCehEfHbKiKkATbWIEaCoalEO2NkpqCf/Fzs=;
+        b=E1MtIUoEguxfuVCKYGkXfUKW49LqcI+hNDr6MfR89LpKu1D/zNhbwTuoZMUhKKcIhE
+         Pr0kUfTXI2F3TSioj0JnFlFXlIP3rXGoFRkeMK4LqFi45x+pZQTdUhLCaSxMAbYIJF6a
+         acyyrIGCrCoWJE0V19W2Ony6YzrR7SsBEhZK5COy2UvsFooU1ZIYTiZ4JuAfV30HGAog
+         5JnME/tiryEMvRjWf3O46lCFWO6WOIK1i4ogNKjO8eWEn0zsP0IGUdMKYLOg1fp9QANG
+         MQxNjMa8fkO7TBAyvK0qjHktP35fAE7LHYnCYGItH34N41vdR8hFRZDUoSyfVlhgIjSq
+         +vyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uemaIjIKCehEfHbKiKkATbWIEaCoalEO2NkpqCf/Fzs=;
+        b=WcaQgsnBn1ubmNic2PnIfGpbTS+eW148P7nUVx+Ldwuor8ywuuUwCFkCrpLugw1WE7
+         CCIQGuNIN5DKchYSYY187+CzMYGm9xrQwwAUgAoTQL3ZmZ2WjDC32qF5OhtoajECn8HA
+         e6aln+TVJFwh4bKse4fZY2RiXaEyTNtvFheEkUeNvlaspdEIcg/H2yAGN5tMThQZA5l7
+         w3DSSlpFoH1tA8jXx3SE0ppwivLJgb/0oqjcrJqZE/fmiMB4fq10yL1kaM4lSwMl2Wmr
+         pjWXKqVAfPOL8tctxptqW1S/7fZvDpupNTPHhHW3aW4VavfJ3NItt0KlpBwI0jcDFtJb
+         bGWg==
+X-Gm-Message-State: AOAM5339NgVJpDliZLMin0eO2FUKOhwm8pvRSZk34zf6aGYEs/jnTkBM
+        3bk7bTx1aDO0vXkedSZdPwIxyB340GduFS04AEd364Hpf/6/Og==
+X-Google-Smtp-Source: ABdhPJyBwxszQnJt6IG/+BJvYzPitUT+/fwt98ib4cqOQ5ZQNKF0U1PBOI8UXUZCv/8UTMtxOrP7EP26l7+PkBMz9ig=
+X-Received: by 2002:a25:bd12:: with SMTP id f18mr34740961ybk.403.1615228642288;
+ Mon, 08 Mar 2021 10:37:22 -0800 (PST)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-08_14:2021-03-08,2021-03-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- malwarescore=0 bulkscore=0 impostorscore=0 phishscore=0 suspectscore=0
- mlxlogscore=999 lowpriorityscore=0 spamscore=0 mlxscore=0
- priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2103080097
-X-FB-Internal: deliver
+References: <20210308182521.155536-1-jean-philippe@linaro.org>
+In-Reply-To: <20210308182521.155536-1-jean-philippe@linaro.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 8 Mar 2021 10:37:11 -0800
+Message-ID: <CAEf4BzbFDrGNP1oc7YX9YEkgOkFFy5S0u7WQY_=fJoZYMBpJeQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Fix arm64 build
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        bjorn@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Georgi Valkov <gvalkov@abv.bg>
+On Mon, Mar 8, 2021 at 10:26 AM Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
+>
+> The macro for libbpf_smp_store_release() doesn't build on arm64, fix it.
+>
+> Fixes: 60d0e5fdbdf6 ("libbpf, xsk: Add libbpf_smp_store_release libbpf_smp_load_acquire")
 
-It was reported ([0]) that having optional -m flag between source and
-destination arguments in install command breaks bpftools cross-build on MacOS.
-Move -m to the front to fix this issue.
+I had to force-push bpf-next meanwhile, so the hash is wrong now. I
+fixed it up (it's 291471dd1559 now) and pushed your fix to bpf-next.
+Please re-pull bpf-master to get the correct branch.
 
-  [0] https://github.com/openwrt/openwrt/pull/3959
+Thanks!
 
-Fixes: 7110d80d53f4 ("libbpf: Makefile set specified permission mode")
-Signed-off-by: Georgi Valkov <gvalkov@abv.bg>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index 887a494ad5fc..e9eb6a6e80d2 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -215,7 +215,7 @@ define do_install
- 	if [ ! -d '$(DESTDIR_SQ)$2' ]; then		\
- 		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$2';	\
- 	fi;						\
--	$(INSTALL) $1 $(if $3,-m $3,) '$(DESTDIR_SQ)$2'
-+	$(INSTALL) $(if $3,-m $3,) $1 '$(DESTDIR_SQ)$2'
- endef
- 
- install_lib: all_cmd
--- 
-2.24.1
-
+> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> ---
+>  tools/lib/bpf/libbpf_util.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/libbpf_util.h b/tools/lib/bpf/libbpf_util.h
+> index 94a0d7bb6f3c..cfbcfc063c81 100644
+> --- a/tools/lib/bpf/libbpf_util.h
+> +++ b/tools/lib/bpf/libbpf_util.h
+> @@ -35,7 +35,7 @@ extern "C" {
+>                 typeof(*p) ___p1;                                       \
+>                 asm volatile ("ldar %w0, %1"                            \
+>                               : "=r" (___p1) : "Q" (*p) : "memory");    \
+> -               __p1;                                                   \
+> +               ___p1;                                                  \
+>         })
+>  #elif defined(__riscv)
+>  # define libbpf_smp_store_release(p, v)                                        \
+> --
+> 2.30.1
+>
