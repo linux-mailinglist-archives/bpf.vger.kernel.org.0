@@ -2,152 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A69331A0E
-	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 23:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DC3331A15
+	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 23:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229471AbhCHWOl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Mar 2021 17:14:41 -0500
-Received: from www62.your-server.de ([213.133.104.62]:35552 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbhCHWOk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Mar 2021 17:14:40 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lJO99-0001bM-Dr; Mon, 08 Mar 2021 23:14:39 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lJO99-000SmB-6d; Mon, 08 Mar 2021 23:14:39 +0100
-Subject: Re: [PATCH bpf-next V2 1/2] bpf: BPF-helper for MTU checking add
- length input
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        john.fastabend@gmail.com,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Marek Majtyka <alardam@gmail.com>
-References: <161364896576.1250213.8059418482723660876.stgit@firesoul>
- <161364899856.1250213.17435782167100828617.stgit@firesoul>
- <e339303d-1d95-e8d4-565c-920eb1a3eca8@iogearbox.net>
- <20210227113741.5cd5a03d@carbon>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d4b9d966-6079-107e-de4e-f4405dd9404c@iogearbox.net>
-Date:   Mon, 8 Mar 2021 23:14:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S230039AbhCHWRX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Mar 2021 17:17:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230231AbhCHWQ7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Mar 2021 17:16:59 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC5AC06174A;
+        Mon,  8 Mar 2021 14:16:58 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id d9so11856968ybq.1;
+        Mon, 08 Mar 2021 14:16:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XCh1I6AC1DmtJTGL+YMoytBx05+lD8Vumw6Zy/Ybg0Q=;
+        b=KTNf2pwdJI2vrL6R7kl7l9XYHzlfeZRL5kv+ib6dAKX/im17iaRPmN70EltHNTczmS
+         JF3svyI9GJuXN5jsu+d6aFa6qXtqcFcNTYk8Oj3MT//OwmFlsMIRbSFf2VYkgFlV9ESH
+         GNPrmx+v3DVrCkdrjJ+0Hj/rAT3MowGoLHaT/pKfuKbOqF6bO0KJCl22TSmLd7ch+UYG
+         2ytWdUCtotelL0G1G7WfX8SQ/2EY6KS28gk6BLdBgB01Zj5AUW6c61XjLwFJRJS4qG+N
+         zrpeQBFK+t4hLdKEYep/6me0wdoSlBoW2WU4csyGwAmHT0i+fJYVt6xzEBE3hliyCuka
+         +fiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XCh1I6AC1DmtJTGL+YMoytBx05+lD8Vumw6Zy/Ybg0Q=;
+        b=CJs50Xj1GVl7wRIIg7Ek5cG+2Jdg9eOVfivcKkddOfzjDut86pwBjYIcnko18Jc39E
+         Tlg9e+uFPZB9ZXNo7H1GYRAQj/0PY9gZsF4tNfeXxPSO9WteR//PCEPHxgvpjEoZ9zBk
+         utAVKyzaIJJgdEBcy/h0Pr9PjpNmmXPXukek0ii2LOSfbbQjFNz59mQYAaRo86LYPJ1G
+         LPY7CjHAc6JQ/R+FszIBjgBibMemTFO5DeY2I0HDAzX5yx0/1rNYJvLADBJCOsg4eFCA
+         XEJI6Dxx+Bz+MYlg5fVA2I8Eo4F59uNsS2/gO+sTu4RGhsN34CAnFjLklvaCkIRZrOVs
+         +nVA==
+X-Gm-Message-State: AOAM531NcgsxO/0L7YpZyIKpzSprvhLJnNnOiW6uGhzMkHcEGu2MznsJ
+        33fQC6TeuFJpGw+uDvWFb/PTrt2wFRa8BL96Wziy2YjJKqY=
+X-Google-Smtp-Source: ABdhPJxZskMi7xp+KMV0+3PfsKeW+YCvli0A2xJ9VK2KdWw0AgB1u1Iv0GDmerXdStHxe9jWkwLCyeOQk2YEtB3ZMYI=
+X-Received: by 2002:a25:c6cb:: with SMTP id k194mr35570966ybf.27.1615241818127;
+ Mon, 08 Mar 2021 14:16:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210227113741.5cd5a03d@carbon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26102/Mon Mar  8 13:03:13 2021)
+References: <20210306022203.152930-1-iii@linux.ibm.com> <CAEf4BzYvawU4jTKwoUagY0Bn0SYNwcSohb-ZAPq_rLvF5qLamg@mail.gmail.com>
+ <YETSLwfibXxelBIN@kernel.org> <YETYtWwSFVMDAnCA@kernel.org>
+ <YETaG9CZbrzMNmbh@kernel.org> <YETejOpEPkaP3UU1@kernel.org>
+ <5042b6b4d47ac2a8bb919909d43b1fe826fd9441.camel@linux.ibm.com> <YEYgVmo0ryuM3SUY@kernel.org>
+In-Reply-To: <YEYgVmo0ryuM3SUY@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 8 Mar 2021 14:16:47 -0800
+Message-ID: <CAEf4BzbHyg6xndiw=gNhW79ofWACzb1mtDt0ghEhkRMpOd70GQ@mail.gmail.com>
+Subject: Re: [PATCH] btf: Add support for the floating-point types
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/27/21 11:37 AM, Jesper Dangaard Brouer wrote:
-> On Sat, 27 Feb 2021 00:36:02 +0100
-> Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 2/18/21 12:49 PM, Jesper Dangaard Brouer wrote:
->>> The FIB lookup example[1] show how the IP-header field tot_len
->>> (iph->tot_len) is used as input to perform the MTU check.
->>>
->>> This patch extend the BPF-helper bpf_check_mtu() with the same ability
->>> to provide the length as user parameter input, via mtu_len parameter.
->>>
->>> [1] samples/bpf/xdp_fwd_kern.c
->>>
->>> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
->>> Acked-by: John Fastabend <john.fastabend@gmail.com>
-[...]
->> Btw, one more note on the whole bpf_*_check_mtu() helper... Last week I implemented
->> PMTU discovery support for clients for Cilium's XDP stand-alone LB in DSR mode, so I
->> was briefly considering whether to use the bpf_xdp_check_mtu() helper for retrieving
->> the device MTU, but then I thought to myself why having an unnecessary per-packet cost
->> for an extra helper call if I could just pass it in via constant instead. So I went
->> with the latter instead of the helper with the tradeoff to restart the Cilium agent
->> if someone actually changes MTU in prod which is a rare event anyway.
->>
->> Looking at what bpf_xdp_check_mtu() for example really offers is retrieval of dev->mtu
->> as well as dev->hard_header_len and the rest can all be done inside the BPF prog itself
->> w/o the helper overhead. Why am I mentioning this.. because the above change is a similar
->> case of what could have been done /inside/ the BPF prog anyway (especially on XDP where
->> extra overhead should be cut where possible).
-> 
-> The XDP case looks super simple now, but I thinking ahead.  When
-> Lorenzo adds multi-buff support, then we can/must update this helper to
-> use another XDP length value, based on the multi-buff jumbo-frame len.
-> 
-> Maybe we need another helper or what you propose below. BUT we could
-> also allow this helper (via flag?) to ALSO check if dev support
-> multi-buff XDP transmit (besides MTU limit with multi-buff len).  Then
-> the BPF-programmer can know this packet cannot be redirected to the
-> device.
+On Mon, Mar 8, 2021 at 5:02 AM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
+>
+> Em Mon, Mar 08, 2021 at 04:02:58AM +0100, Ilya Leoshkevich escreveu:
+> > On Sun, 2021-03-07 at 11:09 -0300, Arnaldo Carvalho de Melo wrote:
+> > > Adding Jiri to the CC list.
+> > > Em Sun, Mar 07, 2021 at 10:50:19AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > > Em Sun, Mar 07, 2021 at 10:44:21AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > > Now will build a kernel with this new version, reboot, then push
+> > > > publicly.
+>
+> > > So now trying to build v5.12-rc2 with pahole supporting BTF_KIND_FLOAT:
+>
+> > >   AS      .tmp_vmlinux.kallsyms2.S
+> > >   LD      vmlinux
+> > >   BTFIDS  vmlinux
+> > > FAILED: load BTF from vmlinux: Invalid argument
+> > > make[1]: *** [/home/acme/git/linux/Makefile:1197: vmlinux] Error 255
+> > > make[1]: Leaving directory '/home/acme/git/build/v5.12.0-rc2'
+> > > make: *** [Makefile:215: __sub-make] Error 2
+> > > [acme@five linux]$
+>
+> > > [acme@five linux]$ egrep BTF\|DWARF  ../build/v5.12.0-rc2/.config
+> > > CONFIG_VIDEO_SONY_BTF_MPX=m
+> > > CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+> > > # CONFIG_DEBUG_INFO_DWARF4 is not set
+> > > CONFIG_DEBUG_INFO_BTF=y
+> > > CONFIG_PAHOLE_HAS_SPLIT_BTF=y
+> > > CONFIG_DEBUG_INFO_BTF_MODULES=y
+>
+> > > Ideas?
+>
+> > So v5.12-rc2 does not have this series yet:
+>
+> > https://lore.kernel.org/bpf/20210226202256.116518-1-iii@linux.ibm.com/
+>
+> > pahole generates a BTF_KIND_FLOAT, but libbpf from v5.12-rc2 doesn't
+> > know how to handle it and resolve_btfids fails.
+>
+> > I guess this is the first time a new BTF kind is added? I checked the
+> > history, and kernel v5.2, which introduced DEBUG_INFO_BTF, already had
+> > BTF_KIND_DATASEC.
+>
+> > So should I add a command-line option to pahole, which would tell it
+> > the desired libbpf compatibility level?
+>
+> Yes, that would be best, some sort of capability querying and then a
+> decision about using the new feature.
 
-Whether a XDP program is running on a device with multi-buff support or without
-it should be transparent to this helper, in other words, the helper would have
-to figure this out internally so that programs wouldn't have to be changed (in
-the ideal case).
+pahole could be used to add .BTF post-factum to vmlinux image of a
+very old kernel, even the one that doesn't support BTF at all. So
+whatever detection system is going to be added, we should make it easy
+to turn it off.
 
-Overall, I still think that especially for the XDP case where performance matters
-most, all this could have been done inside the program itself w/o the overhead of
-the helper call as outlined earlier with struct bpf_dev ; adding more flags like
-querying if a device supports multi-buff XDP transmit has not much to do with the
-original purpose of bpf_xdp_check_mtu() anymore (aka do one thing/do it well mantra),
-maybe the API should have been named bpf_xdp_check_forwardable() instead if it goes
-beyond MTU .. But similarly here, struct bpf_dev property could also solve this
-case if the prog developer needs more sanity checks when it is not clear whether
-both devs support it, which can then also be /compiled out/ for the situation when
-it /is/ known a-priori.
-
->> I think it got lost somewhere in the many versions of the original set where it was
->> mentioned before, but allowing to retrieve the dev object into BPF context and then
->> exposing it similarly to how we handle the case of struct bpf_tcp_sock would have been
->> much cleaner approach, e.g. the prog from XDP and tc context would be able to do:
->>
->>     struct bpf_dev *dev = ctx->dev;
->>
->> And we expose initially, for example:
->>
->>     struct bpf_dev {
->>       __u32 mtu;
->>       __u32 hard_header_len;
->>       __u32 ifindex;
->>       __u32 rx_queues;
->>       __u32 tx_queues;
->>     };
->>
->> And we could also have a BPF helper for XDP and tc that would fetch a /different/ dev
->> given we're under RCU context anyway, like ...
->>
->> BPF_CALL_2(bpf_get_dev, struct xdp_buff *, xdp, u32, ifindex)
->> {
->> 	return dev_get_by_index_rcu(dev_net(xdp->rxq->dev), index);
->> }
->>
->> ... returning a new dev_or_null type. With this flexibility everything else can be done
->> inside the prog, and later on it easily allows to expose more from dev side. Actually,
->> I'm inclined to code it up ...
-> 
-> I love the idea to retrieve the dev object into BPF context.  It is
-> orthogonal, and doesn't replace the MTU helpers as the packet ctx
-> objects (SKB and xdp_buff) are more complex, and the helper allows us
-> to extend them without users have to update their BPF-code (as desc
-> above).
-> 
-> I do think it makes a lot of sense to expose/retrieve dev object into
-> BPF context.  As I hinted about, when we implement XDP multi-buff, then
-> the bpf_redirect BPF-helper cannot check if the remote device support
-> multi-buff transmit (as it don't have packet ctx).  If we have the dev
-> object, the we could expose XDP features that allow us (BPF-programmer)
-> to check this prior to doing the redirect.
-
-Yep, that would be cleaner.
-
-Thanks,
-Daniel
+>
+> - Arnaldo
