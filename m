@@ -2,92 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE227331613
-	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 19:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4B233161F
+	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 19:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhCHSaA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Mar 2021 13:30:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbhCHS3j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Mar 2021 13:29:39 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA1EC06175F
-        for <bpf@vger.kernel.org>; Mon,  8 Mar 2021 10:29:39 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id e23so100205wmh.3
-        for <bpf@vger.kernel.org>; Mon, 08 Mar 2021 10:29:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bXejlMPueDZrsHR5nF/OLtofXE28kxk2lXgIivzYIs8=;
-        b=PmCdJyvL61o4wnr1YkHvY762hwwHrF4cqUCPoROGMl6DrWItiUG9nXK3Zg8Y4OSPfr
-         wBMWRVtZ/o6qdOOHYLsFq0blG6bCUUXtfoo/AGwOxx7pQP0XtZW1XkECFQrQkuLpPCaE
-         j99Xx+fY8i0LEmTtWOli+1MV+Pu7fEQFeNhKFvfn3E4C+YBXhr6IwlxFgHY8UbvQ9Hdt
-         T85QZcZUZl20ydCchBC/H5+0VFJF8fen62f/CaWvKYXH6J8zx9Dmu9rXS55yaGoCFTYz
-         NNcDfDAdhuQUiExnfgke7cHV42buNteDd/bencskxdSU0q9/vXyxVfNjdj5ysRqhYyGw
-         lS+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bXejlMPueDZrsHR5nF/OLtofXE28kxk2lXgIivzYIs8=;
-        b=Qc+58QzOCF1NG3h0W4k13JEqyBc0+stcQponywchjtnPSVmFtAPWEP8g56nvrYH8Q/
-         KMNHwNOE7y+2NYApzp+rZmpWWGDf/7lUK1W7LO8mQDYByh2c76GG0YRxlnewnxeaEcqU
-         S6FkR4Crfe8tqXgyr10zXSFDUoYkf7zaCY2d7+0MyFhEKlqsZiEnSwN4TNuwgdBA6yIu
-         d6sNiaFbCc0W+E7gFQEl4TIVtQQvLyFGyRnfv/zVpRKtNbmRz2oWWO+9zztKlUp9vR6T
-         VLUgSN27bed2bEoxwoFnmWPdYIdSvbYSgzLM4oHgvyWs6XJb9oqhb9xequSDtzm53Lmq
-         e29Q==
-X-Gm-Message-State: AOAM530J7GGFrvjfoD0IG7+tJrNc+Gg8ZjSevR54FGclN2pFanEmyITz
-        cThLzQgj0AhhKAns7v7EMeqJ4Q==
-X-Google-Smtp-Source: ABdhPJyNEpuPwQXGDg+2N8ACypfhdlc4ZALGpV36n2znkSaSj31hJPID7PEnpwvyiIlabGQ7VaFnFw==
-X-Received: by 2002:a7b:c308:: with SMTP id k8mr138354wmj.54.1615228178053;
-        Mon, 08 Mar 2021 10:29:38 -0800 (PST)
-Received: from localhost.localdomain ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id d204sm224425wmc.17.2021.03.08.10.29.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 10:29:37 -0800 (PST)
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        joe@cilium.io, toke@redhat.com, quentin@isovalent.com,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: [PATCH bpf-next] selftests/bpf: Fix typo in Makefile
-Date:   Mon,  8 Mar 2021 19:28:31 +0100
-Message-Id: <20210308182830.155784-1-jean-philippe@linaro.org>
-X-Mailer: git-send-email 2.30.1
+        id S231153AbhCHSbE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 8 Mar 2021 13:31:04 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23000 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231303AbhCHSaz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 8 Mar 2021 13:30:55 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 128IDtbQ019534
+        for <bpf@vger.kernel.org>; Mon, 8 Mar 2021 10:30:54 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 374thpx0mn-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 08 Mar 2021 10:30:54 -0800
+Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 8 Mar 2021 10:30:51 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 851F42ED1A8F; Mon,  8 Mar 2021 10:30:49 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>, <gvalkov@abv.bg>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH v2 bpf] libbpf: fix INSTALL flag order
+Date:   Mon, 8 Mar 2021 10:30:38 -0800
+Message-ID: <20210308183038.613432-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.24.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-08_14:2021-03-08,2021-03-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ malwarescore=0 bulkscore=0 impostorscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 lowpriorityscore=0 spamscore=0 mlxscore=0
+ priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103080097
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The selftest build fails when trying to install the scripts:
+From: Georgi Valkov <gvalkov@abv.bg>
 
-rsync: [sender] link_stat "tools/testing/selftests/bpf/test_docs_build.sh" failed: No such file or directory (2)
+It was reported ([0]) that having optional -m flag between source and
+destination arguments in install command breaks bpftools cross-build on MacOS.
+Move -m to the front to fix this issue.
 
-Fix the filename.
+  [0] https://github.com/openwrt/openwrt/pull/3959
 
-Fixes: a01d935b2e09 ("tools/bpf: Remove bpf-helpers from bpftool docs")
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Fixes: 7110d80d53f4 ("libbpf: Makefile set specified permission mode")
+Signed-off-by: Georgi Valkov <gvalkov@abv.bg>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/testing/selftests/bpf/Makefile | 2 +-
+ tools/lib/bpf/Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index b5827464c6b5..c3999587bc23 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -68,7 +68,7 @@ TEST_PROGS := test_kmod.sh \
- 	test_bpftool_build.sh \
- 	test_bpftool.sh \
- 	test_bpftool_metadata.sh \
--	test_docs_build.sh \
-+	test_doc_build.sh \
- 	test_xsk.sh
+diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+index 887a494ad5fc..e9eb6a6e80d2 100644
+--- a/tools/lib/bpf/Makefile
++++ b/tools/lib/bpf/Makefile
+@@ -215,7 +215,7 @@ define do_install
+ 	if [ ! -d '$(DESTDIR_SQ)$2' ]; then		\
+ 		$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$2';	\
+ 	fi;						\
+-	$(INSTALL) $1 $(if $3,-m $3,) '$(DESTDIR_SQ)$2'
++	$(INSTALL) $(if $3,-m $3,) $1 '$(DESTDIR_SQ)$2'
+ endef
  
- TEST_PROGS_EXTENDED := with_addr.sh \
+ install_lib: all_cmd
 -- 
-2.30.1
+2.24.1
 
