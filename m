@@ -2,71 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815C3330A57
-	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 10:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 745AB330B9A
+	for <lists+bpf@lfdr.de>; Mon,  8 Mar 2021 11:46:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229458AbhCHJdv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Mar 2021 04:33:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbhCHJdV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Mar 2021 04:33:21 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC01EC06174A
-        for <bpf@vger.kernel.org>; Mon,  8 Mar 2021 01:33:20 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id a17so15233441ljq.2
-        for <bpf@vger.kernel.org>; Mon, 08 Mar 2021 01:33:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XpqQYtNxI2EYftvKZqg0C0+CNDsRpVCG9S8FtJReEZ8=;
-        b=gpQo8KrxJ9chq2psqVfMBIu1zEiwm6C6jECWc1zW0oCnyUzaPU1x2UNEViPKJSOHtD
-         hum5iiUsFZFjBFYZ+FCnaAHAkEXx/gHcC4PP2+DPrNlDpYTcm6pv2XGgzJaB0L3dTUVq
-         X6t4NeqtZICV0Chi/Zig1y2aXJvUZDhTBzZ3s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XpqQYtNxI2EYftvKZqg0C0+CNDsRpVCG9S8FtJReEZ8=;
-        b=lekbr6iHYFOj6fbGyK41VRKcK4iYmtviaj28J9+8ipvtmgEmH3/HBHxgtUUhHPp3YK
-         iHAxgNeTpqCSonnBfLiBCiw6KupLhlxLyd5oT1JaOrJrNedTC5V8fRqC6ehyAUeQMLOc
-         yRIJMXhe3Mk3Orbo+xrF6pHGsIkaMA8aBr8IP0REIW2908tPY/XXL3VwZ2wDvBUNJa6D
-         0txLSVx+jfWEUnVuVHuUo5GQ3gOXzh0WTHHJ5jepMPnMk3NIzWnk/r+Loyx3+WmxBreT
-         QwUa6cY5W/2GHlJBr2hhCFbDTmWg+a50zYeciTwitADMk/NpGY66g8GhfjdjdUPbxgVl
-         FOWw==
-X-Gm-Message-State: AOAM531Tc3cqAlJBSsBYDb4yy73TMnnbqmJ4aiteKbSGAeiFdE8mv22j
-        x8jVg3ujUe8pdbkeGNbP8X7doLMRPXEEDSATDJV+zA==
-X-Google-Smtp-Source: ABdhPJx6WZuhqE5cGxqSRVRzdPW65PMeqDYs5Pwxqp0Z5jung+LiP/+SMjlbhRsPpVPu2kcl2pmqfnIENUVx4ZrzF/c=
-X-Received: by 2002:a2e:9244:: with SMTP id v4mr13822091ljg.196.1615195999403;
- Mon, 08 Mar 2021 01:33:19 -0800 (PST)
+        id S231573AbhCHKpc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Mar 2021 05:45:32 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52756 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231215AbhCHKpB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 8 Mar 2021 05:45:01 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 128AXrdL053515;
+        Mon, 8 Mar 2021 05:44:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=W8IkbW9YdPwCWWCFOFrFcZNiHAICGCXerfEee4vYc/4=;
+ b=QO8Gyq2jcnP3nS/keTpMkWZIHpY4GJDeotX/QeQfk3su6Xo74JDy4h8D7kfwFHPMkMR4
+ EJC0j+swNsMTqwMNbjYErOtkP5KaDP3lhL6JVK/zKBk/Z/RJB6J2H761E6iOLiUkqpjc
+ j5IN5k2pcRqAZRpwemGQaw8zQH1LXpzj2du6g/YhtysZ1XfzdiwY//ZPaL+1HcGE67iR
+ NCEy1myL6Jrw3izJ4zoluFBKMvBNmuj7caIKjJRQTA8KV6bvUXk1m0VIsWl+M+VvzkMq
+ 7fnobTQrjxpx7RL/aWG2ObMYw1CmAG4Z4ArqPpqZfIyk8it4X03ZqIZs7jiMZXdpO7Oz vg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3757wwe54w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Mar 2021 05:44:42 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 128AZxra063870;
+        Mon, 8 Mar 2021 05:44:42 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3757wwe549-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Mar 2021 05:44:41 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 128AggRl032206;
+        Mon, 8 Mar 2021 10:44:39 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 3741c8gw7w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 08 Mar 2021 10:44:39 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 128AibxI46793062
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 8 Mar 2021 10:44:37 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 402B4AE045;
+        Mon,  8 Mar 2021 10:44:37 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C86D2AE04D;
+        Mon,  8 Mar 2021 10:44:36 +0000 (GMT)
+Received: from localhost (unknown [9.77.201.1])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  8 Mar 2021 10:44:36 +0000 (GMT)
+Date:   Mon, 8 Mar 2021 16:14:33 +0530
+From:   "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Yauheni Kaliuta <ykaliuta@redhat.com>
+Subject: Re: [PATCHv2 bpf-next] selftests/bpf: Fix test_attach_probe for
+ powerpc uprobes
+Message-ID: <20210308104433.GC145@DESKTOP-TDPLP67.localdomain>
+References: <20210305134050.139840-1-jolsa@kernel.org>
 MIME-Version: 1.0
-References: <CACAyw9_P-Zk+hrOwgenLz4hCc7Cae9=qV86Td2CkGVUPAzWQ8A@mail.gmail.com>
- <a3782f71-3f6b-1e75-17a9-1827822c2030@fb.com> <6c02f403-666f-2025-4a57-416feab147a5@fb.com>
-In-Reply-To: <6c02f403-666f-2025-4a57-416feab147a5@fb.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Mon, 8 Mar 2021 09:33:08 +0000
-Message-ID: <CACAyw9-Ow9=u8EGz5Fx2WYy_hThAGXRu=iWweWzKEps0qpDzmw@mail.gmail.com>
-Subject: Re: bpf_core_type_id_kernel with qualifier aborts clang compilation
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210305134050.139840-1-jolsa@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-08_04:2021-03-08,2021-03-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
+ spamscore=0 clxscore=1015 priorityscore=1501 phishscore=0
+ lowpriorityscore=0 bulkscore=0 suspectscore=0 mlxscore=0 malwarescore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103080055
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 5 Mar 2021 at 21:36, Yonghong Song <yhs@fb.com> wrote:
->
-> Lorenz, the issue has been fixed by llvm patch
-> https://reviews.llvm.org/D97986. It is in llvm13 trunk now.
-> I have also requested the fix to backport to 12.0.1 release.
-> Thanks!
->
+On 2021/03/05 02:40PM, Jiri Olsa wrote:
+> When testing uprobes we the test gets GEP (Global Entry Point)
+> address from kallsyms, but then the function is called locally
+> so the uprobe is not triggered.
+> 
+> Fixing this by adjusting the address to LEP (Local Entry Point)
+> for powerpc arch plus instruction check stolen from ppc_function_entry
+> function pointed out and explained by Michael and Naveen.
+> 
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  .../selftests/bpf/prog_tests/attach_probe.c   | 40 ++++++++++++++++++-
+>  1 file changed, 39 insertions(+), 1 deletion(-)
 
-Thanks again for the quick fix :)
+LGTM. FWIW:
+Acked-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+Thanks,
+- Naveen
 
-www.cloudflare.com
