@@ -2,180 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A290332BFB
-	for <lists+bpf@lfdr.de>; Tue,  9 Mar 2021 17:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECE1332C77
+	for <lists+bpf@lfdr.de>; Tue,  9 Mar 2021 17:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229688AbhCIQ2K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Mar 2021 11:28:10 -0500
-Received: from mga03.intel.com ([134.134.136.65]:11822 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230495AbhCIQ17 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Mar 2021 11:27:59 -0500
-IronPort-SDR: 41z6RP9gaWkj0MlRFDb2Apa4YGIwqf5XJBngAuDYdmRwjz8FeYOR0DsBZqaGYtUrG/qezutEKU
- hfWtdF28vaSw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9917"; a="188314609"
-X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="188314609"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2021 08:27:58 -0800
-IronPort-SDR: c9SUnPNOMNuYlPTmE+9CrTABN2CV82VdDj8pxwzBdBCj1fIElbcH/GQkjbcp7S18+1mczLN2Rv
- zcjk/bz8Y4ag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,234,1610438400"; 
-   d="scan'208";a="437964531"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by FMSMGA003.fm.intel.com with ESMTP; 09 Mar 2021 08:27:57 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 9 Mar 2021 08:27:57 -0800
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 9 Mar 2021 08:27:56 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Tue, 9 Mar 2021 08:27:56 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.175)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Tue, 9 Mar 2021 08:27:54 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QUOEQ1DtGysMzxnulWkwNOAYkKTxSCfmNUqSUocvrAQQd8Jrpl2Mh3373mIDCh52oQfy9dDHLP44M0sn/XXmGtuqGGwZneVO6zFza2p65cOCnAU7shVgWElsqJ8GSObs3lEHOOhg0meNFHpA1J+28XZRSLqeYoMbAGSD7UOMD6Lgxq6f1zj85aoPIYwLxXNi4Ocr7+DCesSfcpJHOcw7nVopksKg6fENEj7T9+5GzsF+ll1IFUR1zHkwO/yI1D6aA4PwLnMN7xUwcQCXHFWOSfB67JYJOU1ljXwxxKsPGDfVEoG/eSK8u2PCFN2X1QK/lytPjRY9rlXDJWP9nG27NA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X7P6zxPoNVY3Lw1wRvBSkqxdyUqxL+n7cxWycbcrsU4=;
- b=Gt353SE5YHa0BsEu1Edfg5rGJJFXqXbGnAln3/ifkczngsLzknKpg/UG0+jIzSpLo7PtnAzZaDPM8VxkBH+HQakD6PciYeXfTOdeuqwdxJaLNLggqqNqU39fiEpZd8DtG3e/g3irGWpUmIUlZ+M7b732omgTAVOW9Zi+tmrU3Sh0Qcn5esE5+6OTw2bL2RSHogvlYXoQGXZHepzHFoIt1NBX/64DQOsvzAfYNDdUJYcj1SLQ9vcmsSrFoHp2pEBNKVoDcZbiW/PKEujeC8s84ujX1ezasTKx75v3Ri6dW7LHE1Fx9IKb2rBudoA8FhGiCStaB2TS3qQQ25256whk1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X7P6zxPoNVY3Lw1wRvBSkqxdyUqxL+n7cxWycbcrsU4=;
- b=bWZbfHsMc3ZT2wc54D3EpIkPZ6hjOOh0SV/53hXxMnzwBfxhDpHCYYNcoBrN8Y/jk6G30HsKAfnEUD6nvX5BwPRA+/5MeKwsIo6KnQ1j5MYfqEPLReMAlJCLh3fzRUy04HUWfr8lyT9JA5XV0NtaiSiLY6QbfvtuvbCFjXRd6Mk=
-Received: from SA2PR11MB4940.namprd11.prod.outlook.com (2603:10b6:806:fa::13)
- by SA2PR11MB4986.namprd11.prod.outlook.com (2603:10b6:806:114::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.19; Tue, 9 Mar
- 2021 16:27:50 +0000
-Received: from SA2PR11MB4940.namprd11.prod.outlook.com
- ([fe80::c5d3:e5b4:55f7:e4e7]) by SA2PR11MB4940.namprd11.prod.outlook.com
- ([fe80::c5d3:e5b4:55f7:e4e7%6]) with mapi id 15.20.3912.027; Tue, 9 Mar 2021
- 16:27:50 +0000
-From:   "Jambekar, Vishakha" <vishakha.jambekar@intel.com>
-To:     "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "brouer@redhat.com" <brouer@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "Topel, Bjorn" <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: RE: [Intel-wired-lan] [PATCH intel-net 3/3] ixgbe: move headroom
- initialization to ixgbe_configure_rx_ring
-Thread-Topic: [Intel-wired-lan] [PATCH intel-net 3/3] ixgbe: move headroom
- initialization to ixgbe_configure_rx_ring
-Thread-Index: AQHXEEUH8Nc9g3xIYU6gxcaam7uqB6p732Xw
-Date:   Tue, 9 Mar 2021 16:27:50 +0000
-Message-ID: <SA2PR11MB4940862C67B9242DB23C4B86FF929@SA2PR11MB4940.namprd11.prod.outlook.com>
-References: <20210303153928.11764-1-maciej.fijalkowski@intel.com>
- <20210303153928.11764-4-maciej.fijalkowski@intel.com>
-In-Reply-To: <20210303153928.11764-4-maciej.fijalkowski@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [103.228.147.111]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 215bbd74-21da-4cec-26de-08d8e3184843
-x-ms-traffictypediagnostic: SA2PR11MB4986:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA2PR11MB4986E3C767E2792287705D1FFF929@SA2PR11MB4986.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: QvoZAjQNzFazy1CyzwTrD1rwUw24n1e4hXb/kt+Vq9yZp9q8Zy+Xw/zaO3k2ZSUJka3lXx/BGRHhR6qZN+gI8QCvJwjes7zgSV4AM4ZEzw+bIinWVcwo4m9+ujH8rYt69Q3AMAmc/xlGOk8JZJ+Ll8s6MG8AajxyBCgvaW0dat+1dSeKazS6mYeKVGs1EWLM15HpeAyg8BOzpNP/58F+FXoTf3rPYY7S1CcGhZfI9dXeotqSSqX+0oVtPZ3sonrh44O1aQBKjvVXGEi/h41J82nlRC5Fud/TT7sZzIlCQwVOTO7NRcmYC0QTuvB3TYY7s9SAXKkwWtLwiCwV+OqXSgmC8kWmq8or2r5LNSzznLBp2wWRmuYDj+fRez1r8NK0e08HfYTGlYbPlA5iy22XaeZuDRZ8cs08wq1Ujmyw+tHkDEnOSdX/3k+06spHpZGazydBOW5BNCbNH2+uHVJ0DxqEnN3Hi7QGDBVQUoGFRHza3+klUlBhn0WMRkbZYKpNpbWXt2lNDjxfU1FjUAUXSQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4940.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(376002)(346002)(39860400002)(396003)(52536014)(26005)(316002)(66946007)(9686003)(107886003)(5660300002)(66476007)(83380400001)(186003)(478600001)(55016002)(110136005)(54906003)(8936002)(66556008)(66446008)(8676002)(33656002)(86362001)(7696005)(71200400001)(53546011)(6506007)(76116006)(4326008)(2906002)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?oXAt4FFEg8cjKdJfIOk2qlaFuI1KrfVPGAMFkwjFQQwqRlvRpROTs5YwnySf?=
- =?us-ascii?Q?jb33ROa7R3Hio5vHnii4z2Ym3iILwwpdzUEv2dv5YOVNXjb6QZHo2prnnwZb?=
- =?us-ascii?Q?f+46otzgitQ3v6NgTUszFIULtqsLY6q50NGKEPYe19+cCQ7wVAUgUvshN/ih?=
- =?us-ascii?Q?l9T0v7SPNXB1ehC1n1eXh5a6iMkER1i9S8VJpXaZHkPwydrriOQ+2aZ0r2Gb?=
- =?us-ascii?Q?zLaifhEgaV0/yX0Jk3yGzBGh87U3+4+u6Yzi7RXF1XXZxi3W3xhB56eZpsJu?=
- =?us-ascii?Q?95L3q/JvXZEDSYMsVwwUAG1EyHUDoRL176NwPyZLSHwNWBfXoacrabiN9Jc3?=
- =?us-ascii?Q?g3KH5SBUixTvZdVHC+XtOlW8s9dyjmoT00AKYdPBpCm3gn0zknGnqRvQIdKc?=
- =?us-ascii?Q?U0d+x3j5c9S/Iaut0NAf0T41OqV+y7oM4OdUM6WTYceSRTC+H8pr/2ZEleo7?=
- =?us-ascii?Q?Ecvt3618DZfbKegofxC1Ijbbvc2fdbpb9ZL5nmTzyQvnHkX0w2pIL0Dm/Zra?=
- =?us-ascii?Q?D8NITV/6KKq5v79dt4a6/rrdOirWD2ES99uDHXuYs3p61uUMsWGYFS0elV8w?=
- =?us-ascii?Q?a2+yfBvhiFVgCeQerstZ3QSs4fxpCIy32XkG4wivrjid98slwuX6sNI5OiIE?=
- =?us-ascii?Q?dIEr3BJUnd/qTrw7k7uJMEHwcF5ZqklA7laBoN88po+pXGI8KMm5oZr5AM7d?=
- =?us-ascii?Q?Ik6BpngocOlAAxeYs/Lp9/Z/B6rV+0WJh/R6uSr3lCTrs9hn3vg+E4gKVQ3R?=
- =?us-ascii?Q?8qrvQkBaJLIWIzyS4NQGtw6448t8aSD1c7HYcndDNDCVQk6RdqvYUvydNfxb?=
- =?us-ascii?Q?iZzFDRpcXD7zVGdD/C7teqUBIOUJKdipL8FB4Ape0eDgL1TEB0H400IVoLk2?=
- =?us-ascii?Q?r/fStmx2bz/LTdzR0NO4Eh4BWw5L07Tfk3lNtptYj79JmAHX7hkTsEoic2jr?=
- =?us-ascii?Q?iOsa7ZxmxBfzDIUsp7CMWy8tlN9Dmy4DjCUJ9SirMzsTdw5ZeBH8RGSTo+AL?=
- =?us-ascii?Q?ebBOMILbzpocraeeS2D8Q1ka8klhTC4+n7NtTLbPsNkstHCCVV93BKggQts9?=
- =?us-ascii?Q?YjoBV9OuUXMLzEEAQJhSu2X1fUqwuNkHB1+TAGXjSWuDQp24jZslqCbHyGuo?=
- =?us-ascii?Q?PA4D9Oko6iCGEp3Gr2NwAFpojQNffMwTWJdsU+z80qbjrMxeLvBH9IsYl/Ve?=
- =?us-ascii?Q?WtUo7sL0Qq0SoBFsBjzmawrkg9CGIAWltI120veKZyCrIcW22pT5jSDtDr6a?=
- =?us-ascii?Q?+NICh0gooDjCaf2n33Eu6P0NlUXYRzRv3pJ+rV2cJMRUaXmcovTjssbK1tdv?=
- =?us-ascii?Q?VQrSiy3pgelssqIpgm6YGQFm?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S229775AbhCIQpX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Mar 2021 11:45:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43903 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230495AbhCIQpB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 9 Mar 2021 11:45:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615308300;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0t5dSOlFZ6XJHB7xTjhGoaH0EPo/Mqai/3gxv2Ga2jc=;
+        b=cxOr21H8Vy40xBo4g3CQQekJlAaJ63OPWLSzTALX+EwvxM7X+EmKBD1pti6afXLWshHr2G
+        eUGae2TLv+De+UCXhMt9L+lSPKiu4TCXDzCV6EtWOENaHNP5wHZ09AIqp7Mwg6ARXG1rOk
+        T2gc8WsctiwZTxr15Jf7w28EdcLzyyE=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-398-5NFwCSv0M0uR73JTdwRb2w-1; Tue, 09 Mar 2021 11:44:58 -0500
+X-MC-Unique: 5NFwCSv0M0uR73JTdwRb2w-1
+Received: by mail-wr1-f69.google.com with SMTP id p15so6614570wre.13
+        for <bpf@vger.kernel.org>; Tue, 09 Mar 2021 08:44:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0t5dSOlFZ6XJHB7xTjhGoaH0EPo/Mqai/3gxv2Ga2jc=;
+        b=rhB1l8m8s8L2f7YF8IN7BusV1F7rcVRE/T7zYF/TTXekjYq1NWAYT1fCbQ0n7kBw1e
+         a+4ykUsRk7xHZbffK1hJWT5IbShELTHmPjaAOJhgyFFcUVi/nzdVBMIA6F6roW2Yvjos
+         +BHHxChHsgMWizPTrJ0xtcAvF9w6jrw8YKtqA6JcZAmSBdPZ4CoU6PBADtGL06Is2hTh
+         UIuDfyB3MVCAzIZNOK7RPDPZTgBcrrQgNbrbO4I32tSKqscbHivYgHYFS7Yg4dXQPclP
+         Qdy/AyNiGn2gVZ3IeEO+W+tqxnUc6HnBBGIod/ZCm2Fre0bkrM3zVgniiTin1xvkMxyp
+         aeCw==
+X-Gm-Message-State: AOAM531iSgFLNs2TqqcSFaB+rjBM6T6Lw8d4uYUUaXPwmXuGcSxzc+1i
+        ZQ5bw21mww+SxXZy88FN9K+cr5RGgMOmzhIclxiGLu0Ae7R+Vh5F5yCz8Bd9h6FNXXEXrlgk3Lj
+        l7ENfM9RXjMZX
+X-Received: by 2002:a7b:ce16:: with SMTP id m22mr5108446wmc.65.1615308297062;
+        Tue, 09 Mar 2021 08:44:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzaqBkJU5ukKyHbtDYPpJxO5IR9Tsn2DLBviTKoOgJV4g2zus/4Snqc/QDe8GnDpiZGk0yIQQ==
+X-Received: by 2002:a7b:ce16:: with SMTP id m22mr5108433wmc.65.1615308296873;
+        Tue, 09 Mar 2021 08:44:56 -0800 (PST)
+Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
+        by smtp.gmail.com with ESMTPSA id u3sm24780940wrt.82.2021.03.09.08.44.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Mar 2021 08:44:56 -0800 (PST)
+Date:   Tue, 9 Mar 2021 11:44:53 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v7 net-next] virtio-net: support XDP when not more queues
+Message-ID: <20210309114315-mutt-send-email-mst@kernel.org>
+References: <1615193536-112130-1-git-send-email-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4940.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 215bbd74-21da-4cec-26de-08d8e3184843
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Mar 2021 16:27:50.2452
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Fod1DguLw5x9jt6vBjyAA4PEi4JJdm11nYhnVHJm++09CYjcV6Yp9Kx6oOWmQPX/cbDNPksDjtJjqt8xPp3Stc6auBgu0hTaKcv+2+FlKEc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4986
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615193536-112130-1-git-send-email-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of
-> Maciej Fijalkowski
-> Sent: Wednesday, March 3, 2021 9:09 PM
-> To: intel-wired-lan@lists.osuosl.org
-> Cc: netdev@vger.kernel.org; brouer@redhat.com; kuba@kernel.org;
-> bpf@vger.kernel.org; Topel, Bjorn <bjorn.topel@intel.com>; Karlsson,
-> Magnus <magnus.karlsson@intel.com>
-> Subject: [Intel-wired-lan] [PATCH intel-net 3/3] ixgbe: move headroom
-> initialization to ixgbe_configure_rx_ring
->=20
-> ixgbe_rx_offset(), that is supposed to initialize the Rx buffer headroom,=
- relies
-> on __IXGBE_RX_BUILD_SKB_ENABLED flag.
->=20
-> Currently, the callsite of mentioned function is placed incorrectly withi=
-n
-> ixgbe_setup_rx_resources() where Rx ring's build skb flag is not set yet.=
- This
-> causes the XDP_REDIRECT to be partially broken due to inability to create
-> xdp_frame in the headroom space, as the headroom is 0.
->=20
-> Fix this by moving ixgbe_rx_offset() to ixgbe_configure_rx_ring() after t=
-he
-> flag setting, which happens to be set in ixgbe_set_rx_buffer_len.
->=20
-> Fixes: c0d4e9d223c5 ("ixgbe: store the result of ixgbe_rx_offset() onto
-> ixgbe_ring")
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+On Mon, Mar 08, 2021 at 04:52:16PM +0800, Xuan Zhuo wrote:
+> The number of queues implemented by many virtio backends is limited,
+> especially some machines have a large number of CPUs. In this case, it
+> is often impossible to allocate a separate queue for
+> XDP_TX/XDP_REDIRECT, then xdp cannot be loaded to work, even xdp does
+> not use the XDP_TX/XDP_REDIRECT.
+> 
+> This patch allows XDP_TX/XDP_REDIRECT to run by reuse the existing SQ
+> with __netif_tx_lock() hold when there are not enough queues.
+> 
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
 > ---
->  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-Tested-by: Vishakha Jambekar <vishakha.jambekar@intel.com>
+> v7: 1. use macros to implement get/put
+>     2. remove 'flag'. (suggested by Jason Wang)
+> 
+> v6: 1. use __netif_tx_acquire()/__netif_tx_release(). (suggested by Jason Wang)
+>     2. add note for why not lock. (suggested by Jason Wang)
+>     3. Use variable 'flag' to record with or without locked.  It is not safe to
+>        use curr_queue_pairs in "virtnet_put_xdp_sq", because it may changed after
+>        "virtnet_get_xdp_sq".
+> 
+> v5: change subject from 'support XDP_TX when not more queues'
+> 
+> v4: make sparse happy
+>     suggested by Jakub Kicinski
+> 
+> v3: add warning when no more queues
+>     suggested by Jesper Dangaard Brouer
+> 
+>  drivers/net/virtio_net.c | 55 ++++++++++++++++++++++++++++++++++++------------
+>  1 file changed, 42 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index ba8e637..5ce40ec 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -195,6 +195,9 @@ struct virtnet_info {
+>  	/* # of XDP queue pairs currently used by the driver */
+>  	u16 xdp_queue_pairs;
+> 
+> +	/* xdp_queue_pairs may be 0, when xdp is already loaded. So add this. */
+> +	bool xdp_enabled;
+> +
+>  	/* I like... big packets and I cannot lie! */
+>  	bool big_packets;
+> 
+> @@ -481,12 +484,34 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
+>  	return 0;
+>  }
+> 
+> -static struct send_queue *virtnet_xdp_sq(struct virtnet_info *vi)
+> -{
+> -	unsigned int qp;
+> -
+> -	qp = vi->curr_queue_pairs - vi->xdp_queue_pairs + smp_processor_id();
+> -	return &vi->sq[qp];
+> +/* when vi->curr_queue_pairs > nr_cpu_ids, the txq/sq is only used for xdp tx on
+> + * the current cpu, so it does not need to be locked.
+> + */
+
+pls also explain why these are macros not inline functions in the
+comment.
+
+
+
+> +#define virtnet_xdp_get_sq(vi) ({                                         \
+> +	struct netdev_queue *txq;                                         \
+> +	typeof(vi) v = (vi);                                              \
+> +	unsigned int qp;                                                  \
+
+
+empty line here after variable definitions.
+
+same elsewhere
+
+> +	if (v->curr_queue_pairs > nr_cpu_ids) {                           \
+> +		qp = v->curr_queue_pairs - v->xdp_queue_pairs;            \
+> +		qp += smp_processor_id();                                 \
+> +		txq = netdev_get_tx_queue(v->dev, qp);                    \
+> +		__netif_tx_acquire(txq);                                  \
+> +	} else {                                                          \
+> +		qp = smp_processor_id() % v->curr_queue_pairs;            \
+> +		txq = netdev_get_tx_queue(v->dev, qp);                    \
+> +		__netif_tx_lock(txq, raw_smp_processor_id());             \
+> +	}                                                                 \
+> +	v->sq + qp;                                                       \
+> +})
+> +
+> +#define virtnet_xdp_put_sq(vi, q) {                                       \
+> +	struct netdev_queue *txq;                                         \
+> +	typeof(vi) v = (vi);                                              \
+> +	txq = netdev_get_tx_queue(v->dev, (q) - v->sq);                   \
+> +	if (v->curr_queue_pairs > nr_cpu_ids)                             \
+> +		__netif_tx_release(txq);                                  \
+> +	else                                                              \
+> +		__netif_tx_unlock(txq);                                   \
+>  }
+
+
+>  static int virtnet_xdp_xmit(struct net_device *dev,
+> @@ -512,7 +537,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+>  	if (!xdp_prog)
+>  		return -ENXIO;
+> 
+> -	sq = virtnet_xdp_sq(vi);
+> +	sq = virtnet_xdp_get_sq(vi);
+> 
+>  	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK)) {
+>  		ret = -EINVAL;
+> @@ -560,12 +585,13 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+>  	sq->stats.kicks += kicks;
+>  	u64_stats_update_end(&sq->stats.syncp);
+> 
+> +	virtnet_xdp_put_sq(vi, sq);
+>  	return ret;
+>  }
+> 
+>  static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
+>  {
+> -	return vi->xdp_queue_pairs ? VIRTIO_XDP_HEADROOM : 0;
+> +	return vi->xdp_enabled ? VIRTIO_XDP_HEADROOM : 0;
+>  }
+> 
+>  /* We copy the packet for XDP in the following cases:
+> @@ -1457,12 +1483,13 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
+>  		xdp_do_flush();
+> 
+>  	if (xdp_xmit & VIRTIO_XDP_TX) {
+> -		sq = virtnet_xdp_sq(vi);
+> +		sq = virtnet_xdp_get_sq(vi);
+>  		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq)) {
+>  			u64_stats_update_begin(&sq->stats.syncp);
+>  			sq->stats.kicks++;
+>  			u64_stats_update_end(&sq->stats.syncp);
+>  		}
+> +		virtnet_xdp_put_sq(vi, sq);
+>  	}
+> 
+>  	return received;
+> @@ -2417,10 +2444,9 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+> 
+>  	/* XDP requires extra queues for XDP_TX */
+>  	if (curr_qp + xdp_qp > vi->max_queue_pairs) {
+> -		NL_SET_ERR_MSG_MOD(extack, "Too few free TX rings available");
+> -		netdev_warn(dev, "request %i queues but max is %i\n",
+> +		netdev_warn(dev, "XDP request %i queues but max is %i. XDP_TX and XDP_REDIRECT will operate in a slower locked tx mode.\n",
+>  			    curr_qp + xdp_qp, vi->max_queue_pairs);
+> -		return -ENOMEM;
+> +		xdp_qp = 0;
+>  	}
+> 
+>  	old_prog = rtnl_dereference(vi->rq[0].xdp_prog);
+> @@ -2454,11 +2480,14 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>  	vi->xdp_queue_pairs = xdp_qp;
+> 
+>  	if (prog) {
+> +		vi->xdp_enabled = true;
+>  		for (i = 0; i < vi->max_queue_pairs; i++) {
+>  			rcu_assign_pointer(vi->rq[i].xdp_prog, prog);
+>  			if (i == 0 && !old_prog)
+>  				virtnet_clear_guest_offloads(vi);
+>  		}
+> +	} else {
+> +		vi->xdp_enabled = false;
+>  	}
+> 
+>  	for (i = 0; i < vi->max_queue_pairs; i++) {
+> @@ -2526,7 +2555,7 @@ static int virtnet_set_features(struct net_device *dev,
+>  	int err;
+> 
+>  	if ((dev->features ^ features) & NETIF_F_LRO) {
+> -		if (vi->xdp_queue_pairs)
+> +		if (vi->xdp_enabled)
+>  			return -EBUSY;
+> 
+>  		if (features & NETIF_F_LRO)
+> --
+> 1.8.3.1
+
