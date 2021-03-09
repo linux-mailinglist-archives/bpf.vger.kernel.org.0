@@ -2,140 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC30332E88
-	for <lists+bpf@lfdr.de>; Tue,  9 Mar 2021 19:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2665332E92
+	for <lists+bpf@lfdr.de>; Tue,  9 Mar 2021 19:55:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhCISum (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Mar 2021 13:50:42 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48292 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230431AbhCISud (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 9 Mar 2021 13:50:33 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 129IPGHf013011
-        for <bpf@vger.kernel.org>; Tue, 9 Mar 2021 10:50:33 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=Bu37K8V0vJK/FoA1TdkuXDOnObsTkm2+L3vvR6XjXvI=;
- b=jf/fpmym0ksuC67qgY3zTeKrsOFMKB4lYkyNZ/cIHGxtAonwQx4L7M51did7ak6QEso0
- GMd6YD7Q3Bbnuh3ZQCakpycEMOdMnQUISowPiieTcsdGeooupHiRdl7ThB/UnSTiEMnw
- xQfuYdMR0FUdkAruvYNBX9ztNyybhdPyGzU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 376c07h3ww-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 09 Mar 2021 10:50:33 -0800
-Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 9 Mar 2021 10:50:32 -0800
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 7623E24D735; Tue,  9 Mar 2021 10:50:28 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH bpf v2] bpf: don't do bpf_cgroup_storage_set() for kuprobe/tp programs
-Date:   Tue, 9 Mar 2021 10:50:28 -0800
-Message-ID: <20210309185028.3763817-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
-X-FB-Internal: Safe
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S230084AbhCISy1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Mar 2021 13:54:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230035AbhCISyU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Mar 2021 13:54:20 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A3EC06174A;
+        Tue,  9 Mar 2021 10:54:19 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id e20so3019874ljn.6;
+        Tue, 09 Mar 2021 10:54:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xh3ApoclD7V/WByGDpuR9C/OkQWfw3kJt316u4qe2Ls=;
+        b=MWCkLT/CyytKUTWPdRnUOmx8fTSjAV4lMSAVCKtnFMZI76r8mKFY/BUCioBvi5tc6J
+         tY74k59BHl00aHRU6aSYCsa2OlqknL0uQYqBN0AkWcy49vQHdJh1Y5r/oWpKDcu+Vvf2
+         nkmEMGL9qXTarSbsvpXy9AfY/Ak+4ZmbJp+HsUSB78B0udj0qa/VuXBQ2j4syLpwuFpE
+         vaMnvoSyQUi1VA+ACHTBiLWZypI9sIYSVFkVbfVKZoaLlQoI8H2NSIkJfykkNZ7OZYPy
+         3ejhOXGRNU5tkGEz3hd2iWNW+es2biPvkkTSVaWhSOYnq3yHcAfw6CWqZfH9pPoaKkyC
+         jSEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xh3ApoclD7V/WByGDpuR9C/OkQWfw3kJt316u4qe2Ls=;
+        b=iBrV5IZeHejLh/scIBdvOThk7JAWT0TChEyGsncfHcRU7sNgja+xYQ5w//QT7KAYcJ
+         iD/vTooG2cksMJSIR9BftIshIsRZ1fLosFBOxCgyt7PskFpxfhGOpmzry//uDE4d7Xt1
+         jndXu657IvIBljJ1pASEZpHZQsKAdJDnyQPXLN9S50c8s1UrM2C81E5vlgSSooI5SUBx
+         m0LCYpkhjFMvt4n8hAueXfz79eH6JtTSMpFLqHIdR42BxoiyvKLudtLu+MSs23r89G+a
+         SwCswjieREtgTdxxViypabhaEBPuiuntoGhGggYwERre5Doht9n0u4AfOHH05z0OWwHH
+         1yNg==
+X-Gm-Message-State: AOAM5313uZHI56GgY5gIHPWEujdvKY4fZ7hmBVShGBkF9ZH2+BzjgFuK
+        c9CDKx8ErcXb4E9iK4+jFlTxqK+Idy22BFX3pGk=
+X-Google-Smtp-Source: ABdhPJyZRJwOUo9O0ktr4pYaRSqcRY5bi84dZTY2/rxSJvBDjNhanwh9dLd36LaF+9DO0wUVZUzdQN0o3gNbsp48cas=
+X-Received: by 2002:a2e:8193:: with SMTP id e19mr14260345ljg.445.1615316058308;
+ Tue, 09 Mar 2021 10:54:18 -0800 (PST)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-09_14:2021-03-09,2021-03-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=915
- mlxscore=0 clxscore=1015 lowpriorityscore=0 phishscore=0 suspectscore=0
- adultscore=0 bulkscore=0 malwarescore=0 spamscore=0 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103090088
-X-FB-Internal: deliver
+References: <20210309032214.2112438-1-liuhangbin@gmail.com>
+In-Reply-To: <20210309032214.2112438-1-liuhangbin@gmail.com>
+From:   William Tu <u9012063@gmail.com>
+Date:   Tue, 9 Mar 2021 10:53:41 -0800
+Message-ID: <CALDO+SZXB8f8zP3sZTHpEgS3xspXbzTVBW18ODSfKsYJna-2Ew@mail.gmail.com>
+Subject: Re: [PATCH net] selftests/bpf: set gopt opt_class to 0 if get tunnel
+ opt failed
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yi-Hung Wei <yihung.wei@gmail.com>,
+        David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For kuprobe and tracepoint bpf programs, kernel calls
-trace_call_bpf() which calls BPF_PROG_RUN_ARRAY_CHECK()
-to run the program array. Currently, BPF_PROG_RUN_ARRAY_CHECK()
-also calls bpf_cgroup_storage_set() to set percpu
-cgroup local storage with NULL value. This is
-due to Commit 394e40a29788 ("bpf: extend bpf_prog_array to store
-pointers to the cgroup storage") which modified
-__BPF_PROG_RUN_ARRAY() to call bpf_cgroup_storage_set()
-and this macro is also used by BPF_PROG_RUN_ARRAY_CHECK().
+On Mon, Mar 8, 2021 at 7:22 PM Hangbin Liu <liuhangbin@gmail.com> wrote:
+>
+> When fixing the bpf test_tunnel.sh genve failure. I only fixed
+> the IPv4 part but forgot the IPv6 issue. Similar with the IPv4
+> fixes 557c223b643a ("selftests/bpf: No need to drop the packet when
+> there is no geneve opt"), when there is no tunnel option and
+> bpf_skb_get_tunnel_opt() returns error, there is no need to drop the
+> packets and break all geneve rx traffic. Just set opt_class to 0 and
+> keep returning TC_ACT_OK at the end.
+>
+> Fixes: 933a741e3b82 ("selftests/bpf: bpf tunnel test.")
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
 
-kuprobe and tracepoint programs are not allowed to call
-bpf_get_local_storage() helper hence does not
-access percpu cgroup local storage. Let us
-change BPF_PROG_RUN_ARRAY_CHECK() not to
-modify percpu cgroup local storage.
-
-The issue is observed when I tried to debug [1] where
-percpu data is overwritten due to
-  preempt_disable -> migration_disable
-change. This patch does not completely fix the above issue,
-which will be addressed separately, e.g., multiple cgroup
-prog runs may preempt each other. But it does fix
-any potential issue caused by tracing program
-overwriting percpu cgroup storage:
- - in a busy system, a tracing program is to run between
-   bpf_cgroup_storage_set() and the cgroup prog run.
- - a kprobe program is triggered by a helper in cgroup prog
-   before bpf_get_local_storage() is called.
-
- [1] https://lore.kernel.org/bpf/CAKH8qBuXCfUz=3Dw8L+Fj74OaUpbosO29niYwTki7=
-e3Ag044_aww@mail.gmail.com/T
-
-Cc: Roman Gushchin <guro@fb.com>
-Fixes: 394e40a29788 ("bpf: extend bpf_prog_array to store pointers to the c=
-group storage")
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- include/linux/bpf.h | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index c931bc97019d..b037cb698fa6 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1110,7 +1110,7 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_ar=
-ray,
- 		_ret;							\
- 	 })
-=20
--#define __BPF_PROG_RUN_ARRAY(array, ctx, func, check_non_null)	\
-+#define __BPF_PROG_RUN_ARRAY(array, ctx, func, check_non_null, set_cg_stor=
-age)	\
- 	({						\
- 		struct bpf_prog_array_item *_item;	\
- 		struct bpf_prog *_prog;			\
-@@ -1123,7 +1123,9 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_ar=
-ray,
- 			goto _out;			\
- 		_item =3D &_array->items[0];		\
- 		while ((_prog =3D READ_ONCE(_item->prog))) {		\
--			bpf_cgroup_storage_set(_item->cgroup_storage);	\
-+			if (set_cg_storage) {		\
-+				bpf_cgroup_storage_set(_item->cgroup_storage);	\
-+			}				\
- 			_ret &=3D func(_prog, ctx);	\
- 			_item++;			\
- 		}					\
-@@ -1170,10 +1172,10 @@ _out:							\
- 	})
-=20
- #define BPF_PROG_RUN_ARRAY(array, ctx, func)		\
--	__BPF_PROG_RUN_ARRAY(array, ctx, func, false)
-+	__BPF_PROG_RUN_ARRAY(array, ctx, func, false, true)
-=20
- #define BPF_PROG_RUN_ARRAY_CHECK(array, ctx, func)	\
--	__BPF_PROG_RUN_ARRAY(array, ctx, func, true)
-+	__BPF_PROG_RUN_ARRAY(array, ctx, func, true, false)
-=20
- #ifdef CONFIG_BPF_SYSCALL
- DECLARE_PER_CPU(int, bpf_prog_active);
---=20
-2.24.1
-
+LGTM, thanks.
+Acked-by: William Tu <u9012063@gmail.com>
