@@ -2,238 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08388331CD6
-	for <lists+bpf@lfdr.de>; Tue,  9 Mar 2021 03:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90589331CC9
+	for <lists+bpf@lfdr.de>; Tue,  9 Mar 2021 03:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhCICRh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Mar 2021 21:17:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40155 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230266AbhCICRf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 8 Mar 2021 21:17:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615256254;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=u6QvpOOqO9cbXP+W1bJXr9pOCC9HryjydKAN8qiu7fM=;
-        b=IowWba3PfFifEAaA2kEfPlctVgELmxGEQUVu+dZxnaroGekvZL9nmWY9yW5cJ3oQjfFD/v
-        hwBvc9q8XKSxNklNPcuTkNOH55k1cyt2+LFmvY4n7Hjf1bLHtVwFtseHbkjc1PKP8dVP7d
-        1D93NjNFEaoMZSKaukrKm0f3xZbt2zU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-342-N_iDmVjbOsS9s8nzi82q4A-1; Mon, 08 Mar 2021 21:17:30 -0500
-X-MC-Unique: N_iDmVjbOsS9s8nzi82q4A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B2CE71084C97;
-        Tue,  9 Mar 2021 02:17:28 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-202.pek2.redhat.com [10.72.13.202])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CAEC260C04;
-        Tue,  9 Mar 2021 02:17:20 +0000 (UTC)
-Subject: Re: [PATCH v7 net-next] virtio-net: support XDP when not more queues
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-References: <1615193536-112130-1-git-send-email-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <184047a5-c26c-90ad-d2b0-bcab9889c9ce@redhat.com>
-Date:   Tue, 9 Mar 2021 10:17:16 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
+        id S229688AbhCICQd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Mar 2021 21:16:33 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12704 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhCICQT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Mar 2021 21:16:19 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dvf0C0TwJzlVXx;
+        Tue,  9 Mar 2021 10:14:03 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Tue, 9 Mar 2021
+ 10:16:06 +0800
+From:   wanghongzhe <wanghongzhe@huawei.com>
+To:     <keescook@chromium.org>, <luto@amacapital.net>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <john.fastabend@gmail.com>, <kafai@fb.com>,
+        <kpsingh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <songliubraving@fb.com>,
+        <wad@chromium.org>, <wanghongzhe@huawei.com>, <yhs@fb.com>
+Subject: [RESEND PATCH v3] seccomp: Improve performance by optimizing rmb()
+Date:   Tue, 9 Mar 2021 11:03:20 +0800
+Message-ID: <1615259000-29104-1-git-send-email-wanghongzhe@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-In-Reply-To: <1615193536-112130-1-git-send-email-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+As Kees haved accepted the v2 patch at a381b70a1 which just
+replaced rmb() with smp_rmb(), this patch will base on that and just adjust
+the smp_rmb() to the correct position.
 
-On 2021/3/8 4:52 下午, Xuan Zhuo wrote:
-> The number of queues implemented by many virtio backends is limited,
-> especially some machines have a large number of CPUs. In this case, it
-> is often impossible to allocate a separate queue for
-> XDP_TX/XDP_REDIRECT, then xdp cannot be loaded to work, even xdp does
-> not use the XDP_TX/XDP_REDIRECT.
->
-> This patch allows XDP_TX/XDP_REDIRECT to run by reuse the existing SQ
-> with __netif_tx_lock() hold when there are not enough queues.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-> ---
-> v7: 1. use macros to implement get/put
->      2. remove 'flag'. (suggested by Jason Wang)
->
-> v6: 1. use __netif_tx_acquire()/__netif_tx_release(). (suggested by Jason Wang)
->      2. add note for why not lock. (suggested by Jason Wang)
->      3. Use variable 'flag' to record with or without locked.  It is not safe to
->         use curr_queue_pairs in "virtnet_put_xdp_sq", because it may changed after
->         "virtnet_get_xdp_sq".
->
-> v5: change subject from 'support XDP_TX when not more queues'
->
-> v4: make sparse happy
->      suggested by Jakub Kicinski
->
-> v3: add warning when no more queues
->      suggested by Jesper Dangaard Brouer
->
->   drivers/net/virtio_net.c | 55 ++++++++++++++++++++++++++++++++++++------------
->   1 file changed, 42 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index ba8e637..5ce40ec 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -195,6 +195,9 @@ struct virtnet_info {
->   	/* # of XDP queue pairs currently used by the driver */
->   	u16 xdp_queue_pairs;
->
-> +	/* xdp_queue_pairs may be 0, when xdp is already loaded. So add this. */
-> +	bool xdp_enabled;
-> +
->   	/* I like... big packets and I cannot lie! */
->   	bool big_packets;
->
-> @@ -481,12 +484,34 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
->   	return 0;
->   }
->
-> -static struct send_queue *virtnet_xdp_sq(struct virtnet_info *vi)
-> -{
-> -	unsigned int qp;
-> -
-> -	qp = vi->curr_queue_pairs - vi->xdp_queue_pairs + smp_processor_id();
-> -	return &vi->sq[qp];
-> +/* when vi->curr_queue_pairs > nr_cpu_ids, the txq/sq is only used for xdp tx on
-> + * the current cpu, so it does not need to be locked.
-> + */
-> +#define virtnet_xdp_get_sq(vi) ({                                         \
-> +	struct netdev_queue *txq;                                         \
-> +	typeof(vi) v = (vi);                                              \
+As the original comment shown (and indeed it should be):
+   /*
+    * Make sure that any changes to mode from another thread have
+    * been seen after SYSCALL_WORK_SECCOMP was seen.
+    */
+the smp_rmb() should be put between reading SYSCALL_WORK_SECCOMP and reading
+seccomp.mode to make sure that any changes to mode from another thread have
+been seen after SYSCALL_WORK_SECCOMP was seen, for TSYNC situation. However,
+it is misplaced between reading seccomp.mode and seccomp->filter. This issue
+seems to be misintroduced at 13aa72f0fd0a9f98a41cefb662487269e2f1ad65 which
+aims to refactor the filter callback and the API. So let's just adjust the
+smp_rmb() to the correct position.
 
+A next optimization patch will be provided if this ajustment is appropriate.
 
-Any reason for not using vi directly?
+ref:https://lore.kernel.org/lkml/1614157085-18952-1-git-send-email-wanghongzhe@huawei.com/
 
-Other looks good.
+v2 -> v3:
+ - move the smp_rmb() to the correct position
 
-Thanks
+v1 -> v2:
+ - only replace rmb() with smp_rmb()
+ - provide the performance test number
 
+RFC -> v1:
+ - replace rmb() with smp_rmb()
+ - move the smp_rmb() logic to the middle between TIF_SECCOMP and mode
 
-> +	unsigned int qp;                                                  \
-> +	if (v->curr_queue_pairs > nr_cpu_ids) {                           \
-> +		qp = v->curr_queue_pairs - v->xdp_queue_pairs;            \
-> +		qp += smp_processor_id();                                 \
-> +		txq = netdev_get_tx_queue(v->dev, qp);                    \
-> +		__netif_tx_acquire(txq);                                  \
-> +	} else {                                                          \
-> +		qp = smp_processor_id() % v->curr_queue_pairs;            \
-> +		txq = netdev_get_tx_queue(v->dev, qp);                    \
-> +		__netif_tx_lock(txq, raw_smp_processor_id());             \
-> +	}                                                                 \
-> +	v->sq + qp;                                                       \
-> +})
-> +
-> +#define virtnet_xdp_put_sq(vi, q) {                                       \
-> +	struct netdev_queue *txq;                                         \
-> +	typeof(vi) v = (vi);                                              \
-> +	txq = netdev_get_tx_queue(v->dev, (q) - v->sq);                   \
-> +	if (v->curr_queue_pairs > nr_cpu_ids)                             \
-> +		__netif_tx_release(txq);                                  \
-> +	else                                                              \
-> +		__netif_tx_unlock(txq);                                   \
->   }
->
->   static int virtnet_xdp_xmit(struct net_device *dev,
-> @@ -512,7 +537,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
->   	if (!xdp_prog)
->   		return -ENXIO;
->
-> -	sq = virtnet_xdp_sq(vi);
-> +	sq = virtnet_xdp_get_sq(vi);
->
->   	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK)) {
->   		ret = -EINVAL;
-> @@ -560,12 +585,13 @@ static int virtnet_xdp_xmit(struct net_device *dev,
->   	sq->stats.kicks += kicks;
->   	u64_stats_update_end(&sq->stats.syncp);
->
-> +	virtnet_xdp_put_sq(vi, sq);
->   	return ret;
->   }
->
->   static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
->   {
-> -	return vi->xdp_queue_pairs ? VIRTIO_XDP_HEADROOM : 0;
-> +	return vi->xdp_enabled ? VIRTIO_XDP_HEADROOM : 0;
->   }
->
->   /* We copy the packet for XDP in the following cases:
-> @@ -1457,12 +1483,13 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
->   		xdp_do_flush();
->
->   	if (xdp_xmit & VIRTIO_XDP_TX) {
-> -		sq = virtnet_xdp_sq(vi);
-> +		sq = virtnet_xdp_get_sq(vi);
->   		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq)) {
->   			u64_stats_update_begin(&sq->stats.syncp);
->   			sq->stats.kicks++;
->   			u64_stats_update_end(&sq->stats.syncp);
->   		}
-> +		virtnet_xdp_put_sq(vi, sq);
->   	}
->
->   	return received;
-> @@ -2417,10 +2444,9 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
->
->   	/* XDP requires extra queues for XDP_TX */
->   	if (curr_qp + xdp_qp > vi->max_queue_pairs) {
-> -		NL_SET_ERR_MSG_MOD(extack, "Too few free TX rings available");
-> -		netdev_warn(dev, "request %i queues but max is %i\n",
-> +		netdev_warn(dev, "XDP request %i queues but max is %i. XDP_TX and XDP_REDIRECT will operate in a slower locked tx mode.\n",
->   			    curr_qp + xdp_qp, vi->max_queue_pairs);
-> -		return -ENOMEM;
-> +		xdp_qp = 0;
->   	}
->
->   	old_prog = rtnl_dereference(vi->rq[0].xdp_prog);
-> @@ -2454,11 +2480,14 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
->   	vi->xdp_queue_pairs = xdp_qp;
->
->   	if (prog) {
-> +		vi->xdp_enabled = true;
->   		for (i = 0; i < vi->max_queue_pairs; i++) {
->   			rcu_assign_pointer(vi->rq[i].xdp_prog, prog);
->   			if (i == 0 && !old_prog)
->   				virtnet_clear_guest_offloads(vi);
->   		}
-> +	} else {
-> +		vi->xdp_enabled = false;
->   	}
->
->   	for (i = 0; i < vi->max_queue_pairs; i++) {
-> @@ -2526,7 +2555,7 @@ static int virtnet_set_features(struct net_device *dev,
->   	int err;
->
->   	if ((dev->features ^ features) & NETIF_F_LRO) {
-> -		if (vi->xdp_queue_pairs)
-> +		if (vi->xdp_enabled)
->   			return -EBUSY;
->
->   		if (features & NETIF_F_LRO)
-> --
-> 1.8.3.1
->
+Signed-off-by: wanghongzhe <wanghongzhe@huawei.com>
+---
+ kernel/seccomp.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 1d60fc2c9987..64b236cb8a7f 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -1160,12 +1160,6 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+ 	int data;
+ 	struct seccomp_data sd_local;
+ 
+-	/*
+-	 * Make sure that any changes to mode from another thread have
+-	 * been seen after SYSCALL_WORK_SECCOMP was seen.
+-	 */
+-	smp_rmb();
+-
+ 	if (!sd) {
+ 		populate_seccomp_data(&sd_local);
+ 		sd = &sd_local;
+@@ -1291,7 +1285,6 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+ 
+ int __secure_computing(const struct seccomp_data *sd)
+ {
+-	int mode = current->seccomp.mode;
+ 	int this_syscall;
+ 
+ 	if (IS_ENABLED(CONFIG_CHECKPOINT_RESTORE) &&
+@@ -1301,7 +1294,13 @@ int __secure_computing(const struct seccomp_data *sd)
+ 	this_syscall = sd ? sd->nr :
+ 		syscall_get_nr(current, current_pt_regs());
+ 
+-	switch (mode) {
++	/* 
++	 * Make sure that any changes to mode from another thread have
++	 * been seen after SYSCALL_WORK_SECCOMP was seen.
++	 */
++	smp_rmb();
++
++	switch (current->seccomp.mode) {
+ 	case SECCOMP_MODE_STRICT:
+ 		__secure_computing_strict(this_syscall);  /* may call do_exit */
+ 		return 0;
+-- 
+2.19.1
 
