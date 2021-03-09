@@ -2,100 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7E4331D6E
-	for <lists+bpf@lfdr.de>; Tue,  9 Mar 2021 04:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5291331E04
+	for <lists+bpf@lfdr.de>; Tue,  9 Mar 2021 05:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhCIDWl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Mar 2021 22:22:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229694AbhCIDW2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Mar 2021 22:22:28 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98599C06174A;
-        Mon,  8 Mar 2021 19:22:28 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id s7so5873916plg.5;
-        Mon, 08 Mar 2021 19:22:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1BJUNb3lQRiC5sVIz839O78v77O5TxTS0w+wrputiFY=;
-        b=WlyrRFdNCBuAkvSvGNBRurvvROD6cJGfZ60F5dXXsmt4sw/m93x+hJnHDdN4dvXAyC
-         /4Sr4BsX0g4i6l77F2OMuiTSdx2I76koSmIc+UhZl6XQenxA0cv9PUHi8QHkxbVs9gey
-         i20zdLYqgd27vFmuKbjLgyMtrL6TW1GQxF+LucktLjhiHqprK7OwuDmyJpPwLWpzFb+Q
-         0xk46hGpZC28ACrWkaGb9q8PdWdR4KokYlHbMP4jGJ/Cl4ZMd3L+BIrVT2Ju/A7UQffO
-         RBIAt7UuhIUCbwf7i9kbATC1JWz3wQIrWgaOXQGyHzcUBiXYlZr6eXtjUOE8NRDBqquO
-         xO/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1BJUNb3lQRiC5sVIz839O78v77O5TxTS0w+wrputiFY=;
-        b=SQnJRhapKd8yMhSJaldEc4saPUzI1dmnER7Jxlv5TCg+mD/iTkBpVjTEApRlhfnfDs
-         yAWV2yxsOMaqbf3m4xf2H8whjo1lvltxR0f8/K7+fXiwOkshw2je5hfCdJ/OiOfZRxPB
-         3NgZXXyah6GnEVnDlE+6yb2BUGWmx17UZ0V03a9apagOjObSlU29ci4t6aRzEMrVA1t3
-         LcQftVAFZ+W/US6c01t6vGQ+IdxS0xc06fx5ZKclIZCrQ7y/gM6WUW/2Y1vdsGKPFUVl
-         yscszCv1bMHw451IuAwerWxWMLPeGyiIupQjnstsKcyY5kCsm8WFPJq9LgwtNIHOFBZP
-         SELA==
-X-Gm-Message-State: AOAM531jj7lu7Tk+ofXu43WkFvyWQSvU+RaFq1aS9QNS6p4nAbOXWYgE
-        Tn+3zt5iZOUAXeg0Hw07bnkbu3sk6Kc=
-X-Google-Smtp-Source: ABdhPJwyIG813QkkKmak7OLR0nfssCj+IIkArqQ8gFkvNu53wvrM6I1EI1E1fiGIsHpPBsCQyYI1SA==
-X-Received: by 2002:a17:902:7898:b029:e4:182f:e31d with SMTP id q24-20020a1709027898b02900e4182fe31dmr23177459pll.13.1615260147904;
-        Mon, 08 Mar 2021 19:22:27 -0800 (PST)
-Received: from Leo-laptop-t470s.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id l15sm739632pjq.9.2021.03.08.19.22.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Mar 2021 19:22:27 -0800 (PST)
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yi-Hung Wei <yihung.wei@gmail.com>,
-        David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
-        William Tu <u9012063@gmail.com>,
-        Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCH net] selftests/bpf: set gopt opt_class to 0 if get tunnel opt failed
-Date:   Tue,  9 Mar 2021 11:22:14 +0800
-Message-Id: <20210309032214.2112438-1-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S229829AbhCIEnl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 8 Mar 2021 23:43:41 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:48128 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229701AbhCIEn0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 8 Mar 2021 23:43:26 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 1294dfEt003339
+        for <bpf@vger.kernel.org>; Mon, 8 Mar 2021 20:43:25 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 374648urt5-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 08 Mar 2021 20:43:25 -0800
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 8 Mar 2021 20:43:24 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id A3A642ED1B43; Mon,  8 Mar 2021 20:43:23 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] selftests/bpf: fix compiler warning in BPF_KPROBE definition in loop6.c
+Date:   Mon, 8 Mar 2021 20:43:22 -0800
+Message-ID: <20210309044322.3487636-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-09_03:2021-03-08,2021-03-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 bulkscore=0
+ phishscore=0 lowpriorityscore=0 mlxlogscore=871 spamscore=0 malwarescore=0
+ adultscore=0 clxscore=1015 suspectscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103090021
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When fixing the bpf test_tunnel.sh genve failure. I only fixed
-the IPv4 part but forgot the IPv6 issue. Similar with the IPv4
-fixes 557c223b643a ("selftests/bpf: No need to drop the packet when
-there is no geneve opt"), when there is no tunnel option and
-bpf_skb_get_tunnel_opt() returns error, there is no need to drop the
-packets and break all geneve rx traffic. Just set opt_class to 0 and
-keep returning TC_ACT_OK at the end.
+Add missing return type to BPF_KPROBE definition. Without it, compiler
+generates the following warning:
 
-Fixes: 933a741e3b82 ("selftests/bpf: bpf tunnel test.")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+progs/loop6.c:68:12: warning: type specifier missing, defaults to 'int' [-Wimplicit-int]
+BPF_KPROBE(trace_virtqueue_add_sgs, void *unused, struct scatterlist **sgs,
+           ^
+1 warning generated.
+
+Fixes: 86a35af628e5 ("selftests/bpf: Add a verifier scale test with unknown bounded loop")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/testing/selftests/bpf/progs/test_tunnel_kern.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ tools/testing/selftests/bpf/progs/loop6.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index 9afe947cfae9..ba6eadfec565 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -508,10 +508,8 @@ int _ip6geneve_get_tunnel(struct __sk_buff *skb)
- 	}
+diff --git a/tools/testing/selftests/bpf/progs/loop6.c b/tools/testing/selftests/bpf/progs/loop6.c
+index 2a7141ac1656..38de0331e6b4 100644
+--- a/tools/testing/selftests/bpf/progs/loop6.c
++++ b/tools/testing/selftests/bpf/progs/loop6.c
+@@ -65,8 +65,8 @@ int config = 0;
+ int result = 0;
  
- 	ret = bpf_skb_get_tunnel_opt(skb, &gopt, sizeof(gopt));
--	if (ret < 0) {
--		ERROR(ret);
--		return TC_ACT_SHOT;
--	}
-+	if (ret < 0)
-+		gopt.opt_class = 0;
- 
- 	bpf_trace_printk(fmt, sizeof(fmt),
- 			key.tunnel_id, key.remote_ipv4, gopt.opt_class);
+ SEC("kprobe/virtqueue_add_sgs")
+-BPF_KPROBE(trace_virtqueue_add_sgs, void *unused, struct scatterlist **sgs,
+-	   unsigned int out_sgs, unsigned int in_sgs)
++int BPF_KPROBE(trace_virtqueue_add_sgs, void *unused, struct scatterlist **sgs,
++	       unsigned int out_sgs, unsigned int in_sgs)
+ {
+ 	struct scatterlist *sgp = NULL;
+ 	__u64 length1 = 0, length2 = 0;
 -- 
-2.26.2
+2.24.1
 
