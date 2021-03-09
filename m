@@ -2,208 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1B73330FB
-	for <lists+bpf@lfdr.de>; Tue,  9 Mar 2021 22:35:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00FAE333106
+	for <lists+bpf@lfdr.de>; Tue,  9 Mar 2021 22:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbhCIVfV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Mar 2021 16:35:21 -0500
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:40673 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231788AbhCIVet (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 9 Mar 2021 16:34:49 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 63BD71256;
-        Tue,  9 Mar 2021 16:34:48 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 09 Mar 2021 16:34:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=YlUIQR4L4LxoCFIMyODsPfmF0lh
-        BC4MLW4hVWAhi88g=; b=iA/1u3Ihxgx8Mg/qGYs4tPZy86yUg24LVmj2t7jdxQb
-        10uJfctsqQmGAsLMxqT0jPiOTIjzcEwE06e7Uomyc/5FCmr9/ThmX6hXgBuo2CMJ
-        z/Gzfpur9tuJ7sc0iF2hz0f25CUTA46OUbLomgyHx7AYQV/AifxE37WsKYgtetdV
-        Gih5pGfs10+YjRmV3Fp+Gj6iA339qYJ63jnnjSFeILYlqP/TSe2QdhClnvtDZi4l
-        evrHfhtTIwRz+FCxZPQNonv0cFDXDJbZO8WOTE/Ud1X1fbF7Ez6xBu4KVagbZHGU
-        lI/MUfqYkdQb7XyovFHGXZpC4rHogn5ynhw7GkYYZgg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=YlUIQR
-        4L4LxoCFIMyODsPfmF0lhBC4MLW4hVWAhi88g=; b=VzlSui7P0lMEGUnO4HVB+9
-        wC5RnjDi0+T7ISsbdVJSDKDz2XQkYy4Bv/4w5fBLWcrAHqVaTILKq4r9bz9SUlwA
-        n1qghuXa2ijM+ioHXSb8grUHGtsEqQwGaRsudlpj3TfnoV/mbPAs7vB2LIeqJ3Ei
-        2ca2jjJOiB54Pwr7R59sys90bN6FDES8Plud2paeOAcVlLSGbpW+ORuIUvuHfkU2
-        CYUxI4Q3p0JKwj3R+vgOrS1cBqXCYC3AhvkF6u6eTT6ZAE2qEXX5oBztr4J3WAlJ
-        6diVCDVZ92jj0p/YOFqufMpyZisEnh5IMykgThYBz+oefWBzjML6c8lntEKd25Qw
-        ==
-X-ME-Sender: <xms:9ulHYNrxdNne6LM-X18-Ju0wLN3Q1ifbbGQ42qp8BqYyRNJMoRSTmw>
-    <xme:9ulHYPrxAvGjjYjH1pviqUu78yNPeonX6gvOBsUFA5-5ZRqHFhQyddTF6OSJdrZBb
-    1cLAP0jLFeOiVjlFg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudduiedgudehudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvffukfhfgggtuggjsehttdertddt
-    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepueduvdejfefflefgueevheefgeefteefteeuudduhfduhfeh
-    veelteevudelheejnecukfhppeduieefrdduudegrddufedvrdegnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiih
-    ii
-X-ME-Proxy: <xmx:9ulHYKP7fxnW6wGiDZ8FWS3mLhN4FB5zl3iJ2SLjdyVgd3heOoOu3Q>
-    <xmx:9ulHYI4CunBgiW0T0tWi50O4eRt9X3YhBrs5LmMpR7fGlmeq0S2WLA>
-    <xmx:9ulHYM5uqtiQj0TkB4SlSLhVu2XkYJWatuzQvDHhxM_fyl_nSTFakQ>
-    <xmx:9-lHYJxQ4l2OzpC4bpcC8G7DrA_swqm-vmOoh_Q5NkaBHkUkc14qsV_znJU>
-Received: from dlxu-fedora-R90QNFJV (unknown [163.114.132.4])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A69A624005B;
-        Tue,  9 Mar 2021 16:34:44 -0500 (EST)
-Date:   Tue, 9 Mar 2021 13:34:42 -0800
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
-        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
-        kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
-Message-ID: <20210309213442.fyhxozdcyxfjljih@dlxu-fedora-R90QNFJV>
-References: <161495873696.346821.10161501768906432924.stgit@devnote2>
- <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
- <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
- <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
- <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
+        id S231594AbhCIViE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Mar 2021 16:38:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232047AbhCIVhm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Mar 2021 16:37:42 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48635C06174A;
+        Tue,  9 Mar 2021 13:37:42 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id c131so15514382ybf.7;
+        Tue, 09 Mar 2021 13:37:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YUTKFUkpxhc9e1+up74+YS6CfVctVBYX90u6KfCtM5Y=;
+        b=H1QbLrVehyAvXO2kDeit1FQie0gIOSHVUGNgNLMFT51frraARLHNpxgwWVKlOz6EBY
+         FxMGaYyNj539nfOnR2culcWv+XRPguKMTqzn6kid1Bwqt5WzdLaTurIL5GQaKL84O1hL
+         LH1e+ikewCBvXwLt5ghYM1mOdd9gDoCtjLYjNJ0dhEn4JROzOYRBClMFv2YBZqFjXtR9
+         EHQE5L32uMkg2xk8n4vFED8IdGLIEmiWivIy80P65Z8bTdxOKHk0ZReD9ENtxq7bB7hm
+         Z3EdOMosTveu16tW959FGzUiOnPncwvLQJejNVKq7jX6me1mS13sj1v1FpSAge9cc0KN
+         6o2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YUTKFUkpxhc9e1+up74+YS6CfVctVBYX90u6KfCtM5Y=;
+        b=qDHVcEaBRClaVca58mZkJgTy1jdBQLOnlgzvpe6xOk+hNS8stZNzq/0pPkeN4QNbDG
+         /T25/3j6FSWwqZDR4n4r1prLnO+YhUf0NeXR/G1iwy9GHUqW5AYZuY9Pw9Vtmj7A+krO
+         1fYwQBY2F4TpYtNFk1VH2CN0PeZ9RRZR5yUlEmAZTY3ISSUQa4n67YaJVOfxutnKCfii
+         f1kqLWW15bpP2wn9fdGsdAXETxYifoNkRaKQvewsJSOVKj4SpGsnJ58jawlpv+P5zoix
+         xhmeyVAFDOOPmrxSD0nl3A4orOAedMJvrNNc9vgOwB8Y2WXIn8CJ9F4EmiVdjccGXKZ7
+         7Rwg==
+X-Gm-Message-State: AOAM532JnRG7ku7ouBA85FbeGHoIpGlO/AZM7Gx/Jy9K5kKnch9XuRFK
+        kKVIjtVQ55WnT2qT4wZnqIHIlvwtYLGbgFox382gZ5r+wl0=
+X-Google-Smtp-Source: ABdhPJxyA5RGnVqGROakBdw+DE3Nu2Fv1IUM1YVmJIk921tLCMV1EoyDQ0VwGmeEuC3gP9b1MrLia/1zSsiiPk5oswo=
+X-Received: by 2002:a25:37c4:: with SMTP id e187mr45061967yba.347.1615325861536;
+ Tue, 09 Mar 2021 13:37:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
+References: <20210308235913.162038-1-iii@linux.ibm.com> <YEdglMDZvplD6ELk@kernel.org>
+In-Reply-To: <YEdglMDZvplD6ELk@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 9 Mar 2021 13:37:30 -0800
+Message-ID: <CAEf4BzaN0XwrAaTNe4TojT8UfStvGUfQSJuSQ8CcMtLAgOu9iw@mail.gmail.com>
+Subject: Re: [PATCH dwarves v2] btf: Add support for the floating-point types
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Masami,
+On Tue, Mar 9, 2021 at 3:48 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+>
+> Em Tue, Mar 09, 2021 at 12:59:13AM +0100, Ilya Leoshkevich escreveu:
+> > Some BPF programs compiled on s390 fail to load, because s390
+> > arch-specific linux headers contain float and double types.
+> >
+> > Fix as follows:
+> >
+> > - Make the DWARF loader fill base_type.float_type.
+> >
+> > - Introduce libbpf compatibility level command-line parameter, so that
+> >   pahole could be used to build both the older and the newer kernels.
+> >
+> > - libbpf introduced the support for the floating-point types in commit
+> >   986962fade5, so update the libbpf submodule to that version and use
+> >   the new btf__add_float() function in order to emit the floating-point
+> >   types when not in the compatibility mode and base_type.float_type is
+> >   set.
+> >
+> > - Make the BTF loader recognize the new BTF kind.
+> >
+> > Example of the resulting entry in the vmlinux BTF:
+> >
+> >     [7164] FLOAT 'double' size=8
+> >
+> > when building with:
+> >
+> >     LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1} --libbpf_compat=0.4.0
+>
+> I'm testing it now, and added as a followup patch the man page entry,
+> please check that the wording is appropriate.
+>
+> Thanks,
+>
+> - Arnaldo
+>
+> [acme@five pahole]$ vim man-pages/pahole.1
+> [acme@five pahole]$ git diff
+> diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
+> index 352bb5e45f319da4..787771753d1933b1 100644
+> --- a/man-pages/pahole.1
+> +++ b/man-pages/pahole.1
+> @@ -199,6 +199,12 @@ Path to the base BTF file, for instance: vmlinux when encoding kernel module BTF
+>  This may be inferred when asking for a /sys/kernel/btf/MODULE, when it will be autoconfigured
+>  to "/sys/kernel/btf/vmlinux".
+>
+> +.TP
+> +.B \-\-libbpf_compat=LIBBPF_VERSION
+> +Produce output compatible with this libbpf version. For instance, specifying 0.4.0 as
+> +the version would encode BTF_KIND_FLOAT entries in systems where the vmlinux DWARF
+> +information has float types.
 
-Just want to clarify a few points:
+TBH, I think it's not exactly right to call out libbpf version here.
+It's BTF "version" (if we had such a thing) that determines the set of
+supported BTF kinds. There could be other libraries that might want to
+parse BTF. So I don't know what this should be called, but
+libbpf_compat is probably a wrong name for it.
 
-On Mon, Mar 08, 2021 at 11:52:10AM +0900, Masami Hiramatsu wrote:
-> On Sun, 7 Mar 2021 13:23:33 -0800
-> Daniel Xu <dxu@dxuuu.xyz> wrote:
-> To help your understanding, let me explain.
-> 
-> If we have a code here
-> 
-> caller_func:
-> 0x00 add sp, 0x20	/* 0x20 bytes stack frame allocated */
-> ...
-> 0x10 call target_func
-> 0x15 ... /* return address */
-> 
-> On the stack in the entry of target_func, we have
-> 
-> [stack]
-> 0x0e0 caller_func+0x15
-> ... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
-> 0x100 /* caller_func return address */
-> 
-> And when we put a kretprobe on the target_func, the stack will be
-> 
-> [stack]
-> 0x0e0 kretprobe_trampoline
-> ... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
-> 0x100 /* caller_func return address */
-> 
-> * "caller_func+0x15" is saved in current->kretprobe_instances.first.
-> 
-> When returning from the target_func, call consumed the 0x0e0 and
-> jump to kretprobe_trampoline. Let's see the assembler code.
-> 
->         ".text\n"
->         ".global kretprobe_trampoline\n"
->         ".type kretprobe_trampoline, @function\n"
->         "kretprobe_trampoline:\n"
->         /* We don't bother saving the ss register */
->         "       pushq %rsp\n"
->         "       pushfq\n"
->         SAVE_REGS_STRING
->         "       movq %rsp, %rdi\n"
->         "       call trampoline_handler\n"
->         /* Replace saved sp with true return address. */
->         "       movq %rax, 19*8(%rsp)\n"
->         RESTORE_REGS_STRING
->         "       popfq\n"
->         "       ret\n"
-> 
-> When the entry of trampoline_handler, stack is like this;
-> 
-> [stack]
-> 0x040 kretprobe_trampoline+0x25
-> 0x048 r15
-> ...     /* pt_regs */
-> 0x0d8 flags
-> 0x0e0 rsp (=0x0e0)
-> ... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
-> 0x100 /* caller_func return address */
-> 
-> And after returned from trampoline_handler, "movq" changes the
-> stack like this.
-> 
-> [stack]
-> 0x040 kretprobe_trampoline+0x25
-> 0x048 r15
-> ...     /* pt_regs */
-> 0x0d8 flags
-> 0x0e0 caller_func+0x15
-> ... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
-> 0x100 /* caller_func return address */
+If we do want to teach pahole to not emit some parts of BTF, it should
+probably be a set of BPF features, not some arbitrary library
+versions.
 
-Thanks for the detailed explanation. I think I understand kretprobe
-mechanics from a somewhat high level (kprobe saves real return address
-on entry, overwrites return address to trampoline, then trampoline
-runs handler and finally resets return address to real return address).
 
-I don't usually write much assembly so the details escape me somewhat.
-
-> So at the kretprobe handler, we have 2 issues.
-> 1) the return address (caller_func+0x15) is not on the stack.
->    this can be solved by searching from current->kretprobe_instances.
-
-Yes, agreed.
-
-> 2) the stack frame size of kretprobe_trampoline is unknown
->    Since the stackframe is fixed, the fixed number (0x98) can be used.
-
-I'm confused why this is relevant. Is it so ORC knows where to find
-saved return address in the frame?
-
-> However, those solutions are only for the kretprobe handler. The stacktrace
-> from interrupt handler hit in the kretprobe_trampoline still doesn't work.
-> 
-> So, here is my idea;
-> 
-> 1) Change the trampline code to prepare stack frame at first and save
->    registers on it, instead of "push". This will makes ORC easy to setup
->    stackframe information for this code.
-
-I'm confused on the details here. But this is what Josh solves in his
-patch, right?
-
-> 2) change the return addres fixup timing. Instead of using return value
->    of trampoline handler, before removing the real return address from
->    current->kretprobe_instances.
-
-Is the idea to have `kretprobe_trampoline` place the real return address
-on the stack (while telling ORC where to find it) _before_ running `call
-trampoline_handler` ? So that an unwind from inside the user defined
-kretprobe handler simply unwinds correctly?
-
-And to be extra clear, this would only work for stack_trace_save() and
-not stack_trace_save_regs()?
-
-> 3) Then, if orc_find() finds the ip is in the kretprobe_trampoline, it
->    checks the contents of the end of stackframe (at the place of regs->sp)
->    is same as the address of it. If it is, it can find the correct address
->    from current->kretprobe_instances. If not, there is a correct address.
-
-What do you mean by "it" w.r.t. "is the same address of it"? I'm
-confused on this point.
-
-Thanks,
-Daniel
+> +
+>  .TP
+>  .B \-l, \-\-show_first_biggest_size_base_type_member
+>  Show first biggest size base_type member.
+> [acme@five pahole]$
