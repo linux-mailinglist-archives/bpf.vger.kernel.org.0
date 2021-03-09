@@ -2,129 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6178331C41
-	for <lists+bpf@lfdr.de>; Tue,  9 Mar 2021 02:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B42331CA3
+	for <lists+bpf@lfdr.de>; Tue,  9 Mar 2021 02:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbhCIBUY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Mar 2021 20:20:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47812 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230161AbhCIBT5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 8 Mar 2021 20:19:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615252797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SX0KsRiYuzC72l142vDNhmy20ZK9cAQv1r2439KRtVY=;
-        b=ARzULg5xtcJ+PxTvOmJXP3FzMaGmWR0ot48tqWlJ7n27BAMctsg8RHR2ZybTpMiwefag4m
-        GdirkbwncDeOTUQC4GRMWuUSjOW8lw8WyIZqtgQAFFw7Icu7XmGv3cST6x8N1jltBQGXiM
-        Bf7frsXiDoT0kkRZU3OfkL6pdvggbKo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-vD4eWFTcMfm0vawrnMTuYA-1; Mon, 08 Mar 2021 20:19:53 -0500
-X-MC-Unique: vD4eWFTcMfm0vawrnMTuYA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC1311005D4F;
-        Tue,  9 Mar 2021 01:19:50 +0000 (UTC)
-Received: from treble (ovpn-112-136.rdu2.redhat.com [10.10.112.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1A9AE5D9D3;
-        Tue,  9 Mar 2021 01:19:47 +0000 (UTC)
-Date:   Mon, 8 Mar 2021 19:19:45 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
-        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
-        kernel-team@fb.com, yhs@fb.com
-Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
-Message-ID: <20210309011945.ky7v3pnbdpxhmxkh@treble>
-References: <161495873696.346821.10161501768906432924.stgit@devnote2>
- <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
- <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
- <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
- <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
+        id S229718AbhCIB5V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Mar 2021 20:57:21 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:37196 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229793AbhCIB4z (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 8 Mar 2021 20:56:55 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1291rEg0030166
+        for <bpf@vger.kernel.org>; Mon, 8 Mar 2021 17:56:55 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=a0EAI5NhjvAvksfas9J7OEmKgoE0p49p3KBAOfmDLbY=;
+ b=O32DFlpTf2Ptkw8tzW3+NwS84oyzzLvnbQOrafW5ejAfiic1vP21tXgKBTCxPlqgIy4H
+ EMqPNC2llzmxb+xK6MBgsgM8VvtrYwFBTIFJZ6a2EtlTNi3tF7uwc6WatWJ/ZBXou0AE
+ tYBVoJczveXNfZM7mSXIRBKwlERwvdPpsoY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 374tamr94v-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 08 Mar 2021 17:56:55 -0800
+Received: from intmgw001.05.ash7.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 8 Mar 2021 17:56:54 -0800
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 8AF511E5BD4; Mon,  8 Mar 2021 17:56:47 -0800 (PST)
+From:   Yonghong Song <yhs@fb.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <bpf@vger.kernel.org>
+CC:     <kernel-team@fb.com>
+Subject: [PATCH bpf-next] bpf: x86: use kvmalloc_array instead kmalloc_array in bpf_jit_comp
+Date:   Mon, 8 Mar 2021 17:56:47 -0800
+Message-ID: <20210309015647.3657852-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-08_22:2021-03-08,2021-03-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ priorityscore=1501 adultscore=0 impostorscore=0 phishscore=0 spamscore=0
+ bulkscore=0 mlxscore=0 malwarescore=0 mlxlogscore=935 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103090006
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 08, 2021 at 11:52:10AM +0900, Masami Hiramatsu wrote:
-> So at the kretprobe handler, we have 2 issues.
-> 1) the return address (caller_func+0x15) is not on the stack.
->    this can be solved by searching from current->kretprobe_instances.
-> 2) the stack frame size of kretprobe_trampoline is unknown
->    Since the stackframe is fixed, the fixed number (0x98) can be used.
-> 
-> However, those solutions are only for the kretprobe handler. The stacktrace
-> from interrupt handler hit in the kretprobe_trampoline still doesn't work.
-> 
-> So, here is my idea;
-> 
-> 1) Change the trampline code to prepare stack frame at first and save
->    registers on it, instead of "push". This will makes ORC easy to setup
->    stackframe information for this code.
-> 2) change the return addres fixup timing. Instead of using return value
->    of trampoline handler, before removing the real return address from
->    current->kretprobe_instances.
-> 3) Then, if orc_find() finds the ip is in the kretprobe_trampoline, it
->    checks the contents of the end of stackframe (at the place of regs->sp)
->    is same as the address of it. If it is, it can find the correct address
->    from current->kretprobe_instances. If not, there is a correct address.
-> 
-> I need to find how the ORC info is prepared for 1), maybe UNWIND_HINT macro
-> may help?
+x86 bpf_jit_comp.c used kmalloc_array to store jited addresses
+for each bpf insn. With a large bpf program, we have see the
+following allocation failures in our production server:
+    page allocation failure: order:5, mode:0x40cc0(GFP_KERNEL|__GFP_COMP)=
+,
+                             nodemask=3D(null),cpuset=3D/,mems_allowed=3D=
+0"
+    Call Trace:
+    dump_stack+0x50/0x70
+    warn_alloc.cold.120+0x72/0xd2
+    ? __alloc_pages_direct_compact+0x157/0x160
+    __alloc_pages_slowpath+0xcdb/0xd00
+    ? get_page_from_freelist+0xe44/0x1600
+    ? vunmap_page_range+0x1ba/0x340
+    __alloc_pages_nodemask+0x2c9/0x320
+    kmalloc_order+0x18/0x80
+    kmalloc_order_trace+0x1d/0xa0
+    bpf_int_jit_compile+0x1e2/0x484
+    ? kmalloc_order_trace+0x1d/0xa0
+    bpf_prog_select_runtime+0xc3/0x150
+    bpf_prog_load+0x480/0x720
+    ? __mod_memcg_lruvec_state+0x21/0x100
+    __do_sys_bpf+0xc31/0x2040
+    ? close_pdeo+0x86/0xe0
+    do_syscall_64+0x42/0x110
+    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    RIP: 0033:0x7f2f300f7fa9
+    Code: Bad RIP value.
 
-Hi Masami,
+Dumped assembly:
+    ffffffff810b6d70 <bpf_int_jit_compile>:
+    ; {
+    ffffffff810b6d70: e8 eb a5 b4 00        callq   0xffffffff81c01360 <_=
+_fentry__>
+    ffffffff810b6d75: 41 57                 pushq   %r15
+    ...
+    ffffffff810b6f39: e9 72 fe ff ff        jmp     0xffffffff810b6db0 <b=
+pf_int_jit_compile+0x40>
+    ;       addrs =3D kmalloc_array(prog->len + 1, sizeof(*addrs), GFP_KE=
+RNEL);
+    ffffffff810b6f3e: 8b 45 0c              movl    12(%rbp), %eax
+    ;       return __kmalloc(bytes, flags);
+    ffffffff810b6f41: be c0 0c 00 00        movl    $3264, %esi
+    ;       addrs =3D kmalloc_array(prog->len + 1, sizeof(*addrs), GFP_KE=
+RNEL);
+    ffffffff810b6f46: 8d 78 01              leal    1(%rax), %edi
+    ;       if (unlikely(check_mul_overflow(n, size, &bytes)))
+    ffffffff810b6f49: 48 c1 e7 02           shlq    $2, %rdi
+    ;       return __kmalloc(bytes, flags);
+    ffffffff810b6f4d: e8 8e 0c 1d 00        callq   0xffffffff81287be0 <_=
+_kmalloc>
+    ;       if (!addrs) {
+    ffffffff810b6f52: 48 85 c0              testq   %rax, %rax
 
-If I understand correctly, for #1 you need an unwind hint which treats
-the instruction *after* the "pushq %rsp" as the beginning of the
-function.
+Change kmalloc_array() to kvmalloc_array() to avoid potential
+allocation error for big bpf programs.
 
-I'm thinking this should work:
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ arch/x86/net/bpf_jit_comp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+Note: I labelled this patch as bpf-next as I cannot find a proper
+      fix tag. The previous commit which touched the same code is
+        7c2e988f400e ("bpf: fix x64 JIT code generation for jmp to 1st in=
+sn")
+      which is not this patch intending to fix.
 
-diff --git a/arch/x86/include/asm/unwind_hints.h b/arch/x86/include/asm/unwind_hints.h
-index 8e574c0afef8..8b33674288ea 100644
---- a/arch/x86/include/asm/unwind_hints.h
-+++ b/arch/x86/include/asm/unwind_hints.h
-@@ -52,6 +52,11 @@
- 	UNWIND_HINT sp_reg=ORC_REG_SP sp_offset=8 type=UNWIND_HINT_TYPE_FUNC
- .endm
- 
-+#else
-+
-+#define UNWIND_HINT_FUNC \
-+	UNWIND_HINT(ORC_REG_SP, 8, UNWIND_HINT_TYPE_FUNC, 0)
-+
- #endif /* __ASSEMBLY__ */
- 
- #endif /* _ASM_X86_UNWIND_HINTS_H */
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index df776cdca327..38ff1387f95d 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -767,6 +767,7 @@ asm(
- 	/* We don't bother saving the ss register */
- #ifdef CONFIG_X86_64
- 	"	pushq %rsp\n"
-+	UNWIND_HINT_FUNC
- 	"	pushfq\n"
- 	SAVE_REGS_STRING
- 	"	movq %rsp, %rdi\n"
-@@ -790,7 +791,6 @@ asm(
- 	".size kretprobe_trampoline, .-kretprobe_trampoline\n"
- );
- NOKPROBE_SYMBOL(kretprobe_trampoline);
--STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
- 
- 
- /*
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 79e7a0ec1da5..487de2d5fdd9 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -2221,7 +2221,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_pro=
+g *prog)
+ 		padding =3D true;
+ 		goto skip_init_addrs;
+ 	}
+-	addrs =3D kmalloc_array(prog->len + 1, sizeof(*addrs), GFP_KERNEL);
++	addrs =3D kvmalloc_array(prog->len + 1, sizeof(*addrs), GFP_KERNEL);
+ 	if (!addrs) {
+ 		prog =3D orig_prog;
+ 		goto out_addrs;
+@@ -2313,7 +2313,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_pro=
+g *prog)
+ 		if (image)
+ 			bpf_prog_fill_jited_linfo(prog, addrs + 1);
+ out_addrs:
+-		kfree(addrs);
++		kvfree(addrs);
+ 		kfree(jit_data);
+ 		prog->aux->jit_data =3D NULL;
+ 	}
+--=20
+2.24.1
 
