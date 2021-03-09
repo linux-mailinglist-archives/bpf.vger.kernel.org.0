@@ -2,102 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A61A332462
-	for <lists+bpf@lfdr.de>; Tue,  9 Mar 2021 12:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A163324D4
+	for <lists+bpf@lfdr.de>; Tue,  9 Mar 2021 13:10:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229544AbhCILtA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Mar 2021 06:49:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53666 "EHLO mail.kernel.org"
+        id S231332AbhCIMKO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Mar 2021 07:10:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229599AbhCILsk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Mar 2021 06:48:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B29536523C;
-        Tue,  9 Mar 2021 11:48:39 +0000 (UTC)
+        id S230437AbhCIMKE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Mar 2021 07:10:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 979846522B;
+        Tue,  9 Mar 2021 12:10:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615290520;
-        bh=Rg4U517f0o635xHKAtTkB2QRMgJDxt+Ih7wt9Ualf1w=;
+        s=k20201202; t=1615291803;
+        bh=5H0ofGIXCbizaDWx7RqmfTZXx4TbcZuHEwJsCBpIim8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GdeHIJwEnCraWY3fOmycd+ks/zSxlVWSfiIE7M7i3kANljUsjv1so4GO6Wmzo63Uo
-         56nqhMx7o1m411xBKxKTfOQNlAMU2mEXKHNaItAvCj8JPGBA9k5LarQr9fP+xjQiOE
-         am6kxpk33GKM22NRYW+PUhu+ZKGu93DFG0MQD+xUvfqrGV9cvgpcy8+EtZ6q4/gwQ6
-         OJlFqHiee81ThEv0HdCogx4tk539SlZ6GK8GkGfH1Ha5NQFYbUEBXKW3maOtIjfB8H
-         kavbalVKve87rDUcjAd/B39BS+cXugZaMf7DOqIHm+JdIV9b2o+s4vNl17wunhf1c8
-         yd4TUcpZTJ+fg==
+        b=abIERcnMnkQoqYKMIf12tNCIn54cSlOsRY67TXg0yk+79rIH4FVQosWFBeNOVKNLn
+         421XThUOWngEP4y5B10BRFENBh9uuQnV1WRT424tG2+l6TPsCgeaczjRAK7BgGRhaW
+         Wy5MvpRNalMHpL/HTtjzf7P/TX9AoIT+ynlwZ5m4q6jPjoqkAo94mmM47ZLcC6/xeZ
+         ov/q+7j8URut00UWV2xUx5otcRdxhfEDagm9VHu80r/3FK5Ta6I5MXIVekJ+Oh8SFM
+         s5YSTqXbNfPCJhzONtoo7DlMF02dKMKJhzJGSa+R9ulXJWn5PYA8vWtS8UwKhHJdUB
+         XOOCiQTauQIxw==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id CB14040647; Tue,  9 Mar 2021 08:48:36 -0300 (-03)
-Date:   Tue, 9 Mar 2021 08:48:36 -0300
+        id 8786240647; Tue,  9 Mar 2021 09:10:01 -0300 (-03)
+Date:   Tue, 9 Mar 2021 09:10:01 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        dwarves@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH dwarves v2] btf: Add support for the floating-point types
-Message-ID: <YEdglMDZvplD6ELk@kernel.org>
-References: <20210308235913.162038-1-iii@linux.ibm.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] perf machine: Assign boolean values to a bool variable
+Message-ID: <YEdlmcl+lPxsPJzs@kernel.org>
+References: <1615284669-82139-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210308235913.162038-1-iii@linux.ibm.com>
+In-Reply-To: <1615284669-82139-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Mar 09, 2021 at 12:59:13AM +0100, Ilya Leoshkevich escreveu:
-> Some BPF programs compiled on s390 fail to load, because s390
-> arch-specific linux headers contain float and double types.
+Em Tue, Mar 09, 2021 at 06:11:09PM +0800, Jiapeng Chong escreveu:
+> Fix the following coccicheck warnings:
 > 
-> Fix as follows:
-> 
-> - Make the DWARF loader fill base_type.float_type.
-> 
-> - Introduce libbpf compatibility level command-line parameter, so that
->   pahole could be used to build both the older and the newer kernels.
-> 
-> - libbpf introduced the support for the floating-point types in commit
->   986962fade5, so update the libbpf submodule to that version and use
->   the new btf__add_float() function in order to emit the floating-point
->   types when not in the compatibility mode and base_type.float_type is
->   set.
-> 
-> - Make the BTF loader recognize the new BTF kind.
-> 
-> Example of the resulting entry in the vmlinux BTF:
-> 
->     [7164] FLOAT 'double' size=8
-> 
-> when building with:
-> 
->     LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1} --libbpf_compat=0.4.0
+> ./tools/perf/util/machine.c:2041:9-10: WARNING: return of 0/1 in
+> function 'symbol__match_regex' with return type bool.
 
-I'm testing it now, and added as a followup patch the man page entry,
-please check that the wording is appropriate.
-
-Thanks,
+Thanks, applied.
 
 - Arnaldo
 
-[acme@five pahole]$ vim man-pages/pahole.1
-[acme@five pahole]$ git diff
-diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
-index 352bb5e45f319da4..787771753d1933b1 100644
---- a/man-pages/pahole.1
-+++ b/man-pages/pahole.1
-@@ -199,6 +199,12 @@ Path to the base BTF file, for instance: vmlinux when encoding kernel module BTF
- This may be inferred when asking for a /sys/kernel/btf/MODULE, when it will be autoconfigured
- to "/sys/kernel/btf/vmlinux".
+ 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  tools/perf/util/machine.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index b5c2d8b..435771e 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -2038,8 +2038,8 @@ int machine__process_event(struct machine *machine, union perf_event *event,
+>  static bool symbol__match_regex(struct symbol *sym, regex_t *regex)
+>  {
+>  	if (!regexec(regex, sym->name, 0, NULL, 0))
+> -		return 1;
+> -	return 0;
+> +		return true;
+> +	return false;
+>  }
+>  
+>  static void ip__resolve_ams(struct thread *thread,
+> -- 
+> 1.8.3.1
+> 
 
-+.TP
-+.B \-\-libbpf_compat=LIBBPF_VERSION
-+Produce output compatible with this libbpf version. For instance, specifying 0.4.0 as
-+the version would encode BTF_KIND_FLOAT entries in systems where the vmlinux DWARF
-+information has float types.
-+
- .TP
- .B \-l, \-\-show_first_biggest_size_base_type_member
- Show first biggest size base_type member.
-[acme@five pahole]$
+-- 
+
+- Arnaldo
