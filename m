@@ -2,82 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE731333226
-	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 01:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E9233323C
+	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 01:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhCJADV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 9 Mar 2021 19:03:21 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:32990 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231424AbhCJADB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 9 Mar 2021 19:03:01 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 129Nrpab031922
-        for <bpf@vger.kernel.org>; Tue, 9 Mar 2021 16:03:01 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 376jvf03pe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 09 Mar 2021 16:03:01 -0800
-Received: from intmgw001.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 9 Mar 2021 16:02:59 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 43F012ED1C63; Tue,  9 Mar 2021 16:02:56 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 1/2] libbpf: add explicit padding to bpf_xdp_set_link_opts
-Date:   Tue, 9 Mar 2021 16:02:54 -0800
-Message-ID: <20210310000254.4140487-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        id S230341AbhCJATw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Mar 2021 19:19:52 -0500
+Received: from www62.your-server.de ([213.133.104.62]:41512 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230035AbhCJATZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Mar 2021 19:19:25 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lJmZL-0007q8-Te; Wed, 10 Mar 2021 01:19:19 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lJmZL-000UiR-Ku; Wed, 10 Mar 2021 01:19:19 +0100
+Subject: Re: [PATCH bpf-next v6 0/2] Optimize
+ bpf_redirect_map()/xdp_do_redirect()
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     bjorn.topel@intel.com, maciej.fijalkowski@intel.com,
+        hawk@kernel.org, toke@redhat.com, magnus.karlsson@intel.com,
+        john.fastabend@gmail.com, kuba@kernel.org, davem@davemloft.net
+References: <20210308112907.559576-1-bjorn.topel@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <8a094161-56fc-e6f6-3108-e5758f3bf977@iogearbox.net>
+Date:   Wed, 10 Mar 2021 01:19:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-09_20:2021-03-09,2021-03-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- bulkscore=0 phishscore=0 priorityscore=1501 spamscore=0 impostorscore=0
- mlxscore=0 lowpriorityscore=0 malwarescore=0 clxscore=1034 mlxlogscore=563
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103090118
-X-FB-Internal: deliver
+In-Reply-To: <20210308112907.559576-1-bjorn.topel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26103/Tue Mar  9 13:03:37 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding such anonymous padding fixes the issue with uninitialized portions of
-bpf_xdp_set_link_opts when using LIBBPF_DECLARE_OPTS macro with inline field
-initialization:
+On 3/8/21 12:29 PM, Björn Töpel wrote:
+> Hi XDP-folks,
+> 
+> This two patch series contain two optimizations for the
+> bpf_redirect_map() helper and the xdp_do_redirect() function.
+> 
+> The bpf_redirect_map() optimization is about avoiding the map lookup
+> dispatching. Instead of having a switch-statement and selecting the
+> correct lookup function, we let bpf_redirect_map() be a map operation,
+> where each map has its own bpf_redirect_map() implementation. This way
+> the run-time lookup is avoided.
+> 
+> The xdp_do_redirect() patch restructures the code, so that the map
+> pointer indirection can be avoided.
+> 
+> Performance-wise I got 4% improvement for XSKMAP
+> (sample:xdpsock/rx-drop), and 8% (sample:xdp_redirect_map) on my
+> machine.
+> 
+> @Jesper/@Toke I kept your Acked-by: for patch 2. Let me know, if you
+> don't agree with that decision.
+> 
+> More details in each commit.
+> 
+> Changelog:
+> v5->v6:  Removed REDIR enum, and instead use map_id and map_type. (Daniel)
+>           Applied Daniel's fixups on patch 1. (Daniel)
+> v4->v5:  Renamed map operation to map_redirect. (Daniel)
+> v3->v4:  Made bpf_redirect_map() a map operation. (Daniel)
+> v2->v3:  Fix build when CONFIG_NET is not set. (lkp)
+> v1->v2:  Removed warning when CONFIG_BPF_SYSCALL was not set. (lkp)
+>           Cleaned up case-clause in xdp_do_generic_redirect_map(). (Toke)
+>           Re-added comment. (Toke)
+> rfc->v1: Use map_id, and remove bpf_clear_redirect_map(). (Toke)
+>           Get rid of the macro and use __always_inline. (Jesper)
 
-DECLARE_LIBBPF_OPTS(bpf_xdp_set_link_opts, opts, .old_fd = -1);
-
-When such code is compiled in debug mode, compiler is generating code that
-leaves padding bytes uninitialized, which triggers error inside libbpf APIs
-that do strict zero initialization checks for OPTS structs.
-
-Adding anonymous padding field fixes the issue.
-
-Fixes: bd5ca3ef93cd ("libbpf: Add function to set link XDP fd while specifying old program")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 3c35eb401931..3d690d4e785c 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -507,6 +507,7 @@ struct xdp_link_info {
- struct bpf_xdp_set_link_opts {
- 	size_t sz;
- 	int old_fd;
-+	size_t :0;
- };
- #define bpf_xdp_set_link_opts__last_field old_fd
- 
--- 
-2.24.1
-
+Applied, thanks!
