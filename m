@@ -2,152 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B163346C0
-	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 19:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 184C8334738
+	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 19:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhCJSbc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Mar 2021 13:31:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60627 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232790AbhCJSb0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 10 Mar 2021 13:31:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615401085;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CPoRS9ORJYnVBCLNHbLzK3HURBgeQOuy6dE3PZ5/hXU=;
-        b=W8j5BucwCFr8w5GqjqceTXv54pRPD64l2IwOgo+d8dkClxc4LZuR9u5JkeSt/SCulmY7Fb
-        Jq2Vei08HYAmMWkxdM2CNTVBKk6GNk8JXV71XtAzdze60HxmXCvwNNfFILG01fQVVzrxyB
-        rk6JKcJ00meMTeTGzEsbEuP6Z6afZz4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-198-MAY54ix0P36TF9VY8dtaUw-1; Wed, 10 Mar 2021 13:31:21 -0500
-X-MC-Unique: MAY54ix0P36TF9VY8dtaUw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C50C557;
-        Wed, 10 Mar 2021 18:31:19 +0000 (UTC)
-Received: from treble (ovpn-118-249.rdu2.redhat.com [10.10.118.249])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2D2B762AF8;
-        Wed, 10 Mar 2021 18:31:15 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 12:31:13 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
-        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
-        kernel-team@fb.com, yhs@fb.com
-Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
-Message-ID: <20210310183113.xxverwh4qplr7xxb@treble>
-References: <161495873696.346821.10161501768906432924.stgit@devnote2>
- <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
- <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
- <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
- <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
- <20210309011945.ky7v3pnbdpxhmxkh@treble>
- <20210310185734.332d9d52a26780ba02d09197@kernel.org>
- <20210310150845.7kctaox34yrfyjxt@treble>
- <20210311005509.0a1a65df0d2d6c7da73a9288@kernel.org>
+        id S232840AbhCJSyj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Mar 2021 13:54:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231941AbhCJSyH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Mar 2021 13:54:07 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AC3C061761
+        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 10:54:07 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id h26so9487772qtm.5
+        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 10:54:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vLXAkAskiQcQ1LGOy8c4iMFazBShIBbsgNpMAGpqQ4c=;
+        b=ZuSIP/eNepj/rQzXVsX2ED06gVSKBiUOIYtuJZqyh6bBg/meWNhS3uDaqTxOhhOfp1
+         bu0ZN+1Y0NhncPI+mdAV92Z5lxeHf1uXQD4umfdqGUX9RYpKA58TSR+3HZvjjn8dXigB
+         B4vSKM1L7AojEUrjbKVX6KL0MBAqQ+uUpw/v1Cj/Nx//AMeFWuBOl7QLr54lmmuOujyd
+         qBSaxOUE0W+vcWp3K2qFFaoyn4hZjSNsVMf0x0IVXKUPhklrcUHAUlQdrAIl7Vx8WjRO
+         bq3bKqGL18LWzf4ANxQ4VljxaTw2rPzWEGjFgQaIiweVTc/iCHuC+nDSNJayJILLX/NN
+         P1TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vLXAkAskiQcQ1LGOy8c4iMFazBShIBbsgNpMAGpqQ4c=;
+        b=YA+3d/CNZ0UtG70ugXdklgNfkRPbpbdNWH4npfDr8sXJOUOwQEQq6D1NbFxO4HFZsp
+         Gg0z/a6E8twPlsB6k0h14zO/HH3zDpQhpB0K16lqJSk7wNeBSiqdGSZOmtLxC3nfjhFy
+         7xakoFXDuXXzFCohregT88xW0YEIB0Jbz8nKSaI7e0NrQRrbaX2yeO7DkMmzyVmSR/t3
+         MeDKKvJY3oakcd4ufcAGf2WoW44duBAJ3L5QPClhxanKr4k2M6ltlMrU4WNEF4w2vsD3
+         KIlacUA6q1+w012m+9H6XSS7u4OxnIt4j1O3HYiqxvVMcV4HywPjh67jjp0fd7fgy4uQ
+         FfEQ==
+X-Gm-Message-State: AOAM5322IJHgv73f1ZBo8V4BWuJlTj/aM7xDNtBGP4Updjt2w9AaSsMs
+        i/LSx0b34xqMyOAs9UB6Sc2IiPI7uNximLSQOKG/sA==
+X-Google-Smtp-Source: ABdhPJyM9qnpbKqhCRB40B0yeUnOBOcSPvPcrAs7e98U0YztJpyjwaEfa6Bmu6KrOPIe04vN06dWWBKZgCJLhO+r/tY=
+X-Received: by 2002:ac8:5847:: with SMTP id h7mr3945605qth.43.1615402446649;
+ Wed, 10 Mar 2021 10:54:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210311005509.0a1a65df0d2d6c7da73a9288@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <00000000000096cdaa05bd32d46f@google.com>
+In-Reply-To: <00000000000096cdaa05bd32d46f@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 10 Mar 2021 19:53:55 +0100
+Message-ID: <CACT4Y+ZjdOaX_X530p+vPbG4mbtUuFsJ1v-gD24T4DnFUqcudA@mail.gmail.com>
+Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in sock_ioctl
+To:     syzbot <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Cc:     andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 12:55:09AM +0900, Masami Hiramatsu wrote:
-> +#ifdef CONFIG_KRETPROBES
-> +static unsigned long orc_kretprobe_correct_ip(struct unwind_state *state)
-> +{
-> +	return kretprobe_find_ret_addr(
-> +			(unsigned long)kretprobe_trampoline_addr(),
-> +			state->task, &state->kr_iter);
-> +}
-> +
-> +static bool is_kretprobe_trampoline_address(unsigned long ip)
-> +{
-> +	return ip == (unsigned long)kretprobe_trampoline_addr();
-> +}
-> +#else
-> +static unsigned long orc_kretprobe_correct_ip(struct unwind_state *state)
-> +{
-> +	return state->ip;
-> +}
-> +
-> +static bool is_kretprobe_trampoline_address(unsigned long ip)
-> +{
-> +	return false;
-> +}
-> +#endif
-> +
+On Wed, Mar 10, 2021 at 7:28 PM syzbot
+<syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+> console output: https://syzkaller.appspot.com/x/log.txt?x=122c343ad00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c23c5421600e9b454849
+> userspace arch: riscv64
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com
 
-Can this code go in a kprobes file?  I'd rather not clutter ORC with it,
-and maybe it would be useful for other arches or unwinders.
++riscv maintainers
 
->  bool unwind_next_frame(struct unwind_state *state)
->  {
->  	unsigned long ip_p, sp, tmp, orig_ip = state->ip, prev_sp = state->sp;
-> @@ -536,6 +561,18 @@ bool unwind_next_frame(struct unwind_state *state)
->  
->  		state->ip = ftrace_graph_ret_addr(state->task, &state->graph_idx,
->  						  state->ip, (void *)ip_p);
-> +		/*
-> +		 * There are special cases when the stack unwinder is called
-> +		 * from the kretprobe handler or the interrupt handler which
-> +		 * occurs in the kretprobe trampoline code. In those cases,
-> +		 * %sp is shown on the stack instead of the return address.
-> +		 * Or, when the unwinder find the return address is replaced
-> +		 * by kretprobe_trampoline.
-> +		 * In those cases, correct address can be found in kretprobe.
-> +		 */
-> +		if (state->ip == sp ||
+Another case of put_user crashing.
 
-Why is the 'state->ip == sp' needed?
-
-> +		    is_kretprobe_trampoline_address(state->ip))
-> +			state->ip = orc_kretprobe_correct_ip(state);
-
-This is similar in concept to ftrace_graph_ret_addr(), right?  Would it
-be possible to have a similar API?  Like
-
-		state->ip = kretprobe_ret_addr(state->task, &state->kr_iter, state->ip);
-
-and without the conditional.
-
->  
->  		state->sp = sp;
->  		state->regs = NULL;
-> @@ -649,6 +686,12 @@ void __unwind_start(struct unwind_state *state, struct task_struct *task,
->  		state->full_regs = true;
->  		state->signal = true;
->  
-> +		/*
-> +		 * When the unwinder called with regs from kretprobe handler,
-> +		 * the regs->ip starts from kretprobe_trampoline address.
-> +		 */
-> +		if (is_kretprobe_trampoline_address(state->ip))
-> +			state->ip = orc_kretprobe_correct_ip(state);
-
-Shouldn't __kretprobe_trampoline_handler() just set regs->ip to
-'correct_ret_addr' before passing the regs to the handler?  I'd think
-that would be a less surprising value for regs->ip than
-'&kretprobe_trampoline'.
-
-And it would make the unwinder just work automatically when unwinding
-from the handler using the regs.
-
-It would also work when unwinding from the handler's stack, if we put an
-UNWIND_HINT_REGS after saving the regs.
-
-The only (rare) case it wouldn't work would be unwinding from an
-interrupt before regs->ip gets set properly.  In which case we'd still
-need the above call to orc_kretprobe_correct_ip() or so.
-
--- 
-Josh
-
+> Unable to handle kernel access to user memory without uaccess routines at virtual address 0000000020000300
+> Oops [#1]
+> Modules linked in:
+> CPU: 1 PID: 4488 Comm: syz-executor.0 Not tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
+> Hardware name: riscv-virtio,qemu (DT)
+> epc : sock_ioctl+0x424/0x6ac net/socket.c:1124
+>  ra : sock_ioctl+0x424/0x6ac net/socket.c:1124
+> epc : ffffffe002aeeb3e ra : ffffffe002aeeb3e sp : ffffffe023867da0
+>  gp : ffffffe005d25378 tp : ffffffe007e116c0 t0 : 0000000000000000
+>  t1 : 0000000000000001 t2 : 0000003fb8035e44 s0 : ffffffe023867e30
+>  s1 : 0000000000040000 a0 : 0000000000000000 a1 : 0000000000000007
+>  a2 : 1ffffffc00fc22d8 a3 : ffffffe003bc1d02 a4 : 0000000000000000
+>  a5 : 0000000000000000 a6 : 0000000000f00000 a7 : ffffffe000082eba
+>  s2 : 0000000000000000 s3 : 0000000000008902 s4 : 0000000020000300
+>  s5 : ffffffe005d2b0d0 s6 : ffffffe010facfc0 s7 : ffffffe008e00000
+>  s8 : 0000000000008903 s9 : ffffffe010fad080 s10: 0000000000000000
+>  s11: 0000000000020000 t3 : 982de389919f6300 t4 : ffffffc401175688
+>  t5 : ffffffc401175691 t6 : 0000000000000007
+> status: 0000000000000120 badaddr: 0000000020000300 cause: 000000000000000f
+> Call Trace:
+> [<ffffffe002aeeb3e>] sock_ioctl+0x424/0x6ac net/socket.c:1124
+> [<ffffffe0003fdb6a>] vfs_ioctl fs/ioctl.c:48 [inline]
+> [<ffffffe0003fdb6a>] __do_sys_ioctl fs/ioctl.c:753 [inline]
+> [<ffffffe0003fdb6a>] sys_ioctl+0x5c2/0xd56 fs/ioctl.c:739
+> [<ffffffe000005562>] ret_from_syscall+0x0/0x2
+> Dumping ftrace buffer:
+>    (ftrace buffer empty)
+> ---[ end trace a5f91e70f37b907b ]---
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000096cdaa05bd32d46f%40google.com.
