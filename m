@@ -2,105 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04173338C7
-	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 10:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40AC033394D
+	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 10:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232302AbhCJJcq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Mar 2021 04:32:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23120 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231738AbhCJJcQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 10 Mar 2021 04:32:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615368735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a/DGLUjr6IILhrnvlay+wj8znvny6CeX2t2rrG8Z35w=;
-        b=ciB9T3xq7P1SFhCuUiVy1do1gcAGm0YIDC38N7Z3jaKajpyyt91ZJxIqfO34q8RYrqhr8Z
-        BGsTsi+vH7EA2U7kiIRsIxpq7Av77NFaFUXrMBBSD93l2iXBBXCcIyvG+q3e4blabI5Aou
-        1SX4JPNXh64WyUpD4PMXdwCuxWtC61k=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-275-jDw7EIldMdCeGhxzB_qjUA-1; Wed, 10 Mar 2021 04:32:13 -0500
-X-MC-Unique: jDw7EIldMdCeGhxzB_qjUA-1
-Received: by mail-wr1-f71.google.com with SMTP id l10so7722334wry.16
-        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 01:32:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a/DGLUjr6IILhrnvlay+wj8znvny6CeX2t2rrG8Z35w=;
-        b=m3AWtSSKo/9MPhnYrRJfZivjO97gOYdl0aqcEgM8PuDQR6xLc2yaug4hKls+QQOHnW
-         l8tkD0+hiJiUxOljx5QBe9qOTI3m8GJ8GavbFwP9aJEFv8rn7Enu9Y05V3B7E/1FAlhP
-         7U7uUXFgTaN2RYAG4yLKB8wtd3zEWI6xuDcT0j01/kwtOr908ebm6LF7TbZ8scNTTWXT
-         7FZa15SRKDcbUy4+fNQ36D+NgXGqc/mq552KdxjxwKiK18oJsiikDeTAM5a1qLs3ScQx
-         p4OYCZbsqJPmLI9G1hs9xzKsar3dkPjRP8c4bxYpVgO0jgX2xizSklozDfp9Xf7pefJJ
-         eDMg==
-X-Gm-Message-State: AOAM531Vq2UHWyJV0cl06e+67XXy57pVFcEyoHf6uLvJWmM+MAnnvJwd
-        pHm6jeyK2Ox2G5t7mmd07p2XrLTcpTiw75BJd4roS0x/sx6l8ilMR/m0A427QlXu4lxr+fA8oOo
-        qS4GCh5LGXBXkm+XyCYbivaXv+Zim
-X-Received: by 2002:a1c:9a92:: with SMTP id c140mr2302122wme.167.1615368732286;
-        Wed, 10 Mar 2021 01:32:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz6CFSwlUzoJ4DXYOWb33EVxww5GlWKF+Jye6YtiyemSL6//yJ3H6N2hZHNqqPE7V+05jeDqd5YlGft8h3cH0w=
-X-Received: by 2002:a1c:9a92:: with SMTP id c140mr2302102wme.167.1615368732055;
- Wed, 10 Mar 2021 01:32:12 -0800 (PST)
+        id S229489AbhCJJ5M convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 10 Mar 2021 04:57:12 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:23523 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232471AbhCJJ5C (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 10 Mar 2021 04:57:02 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-196-icghlii5Ppe-aK3eY6X3oQ-1; Wed, 10 Mar 2021 09:55:39 +0000
+X-MC-Unique: icghlii5Ppe-aK3eY6X3oQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 10 Mar 2021 09:55:39 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 10 Mar 2021 09:55:39 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jiapeng Chong' <jiapeng.chong@linux.alibaba.com>,
+        "peterz@infradead.org" <peterz@infradead.org>
+CC:     "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH] perf machine: Assign boolean values to a bool variable
+Thread-Topic: [PATCH] perf machine: Assign boolean values to a bool variable
+Thread-Index: AQHXFMyuUkzqglnwCE+oJIwnabqrBap8/PsQ
+Date:   Wed, 10 Mar 2021 09:55:39 +0000
+Message-ID: <e28b0392ce4349989fdf03470ed8fd3e@AcuMS.aculab.com>
+References: <1615284669-82139-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1615284669-82139-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <1615357366-97612-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1615357366-97612-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Yauheni Kaliuta <ykaliuta@redhat.com>
-Date:   Wed, 10 Mar 2021 11:31:56 +0200
-Message-ID: <CANoWsw=ga1G6_XPhWmvE5QgUmmOVOEVzX_0HDYF9BZagvKD+Tw@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: fix warning comparing pointer to 0
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     shuah <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, netdev@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 8:23 AM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> Fix the following coccicheck warning:
->
-> ./tools/testing/selftests/bpf/progs/test_global_func10.c:17:12-13:
-> WARNING comparing pointer to 0.
-
-but it's ok from the C standard point of view
-
->
+From: Jiapeng Chong
+> Sent: 09 March 2021 10:11
+> 
+> Fix the following coccicheck warnings:
+> 
+> ./tools/perf/util/machine.c:2041:9-10: WARNING: return of 0/1 in
+> function 'symbol__match_regex' with return type bool.
+> 
 > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
 > Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 > ---
->  tools/testing/selftests/bpf/progs/test_global_func10.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/progs/test_global_func10.c b/tools/testing/selftests/bpf/progs/test_global_func10.c
-> index 61c2ae9..97b7031 100644
-> --- a/tools/testing/selftests/bpf/progs/test_global_func10.c
-> +++ b/tools/testing/selftests/bpf/progs/test_global_func10.c
-> @@ -14,7 +14,7 @@ struct Big {
->
->  __noinline int foo(const struct Big *big)
+>  tools/perf/util/machine.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index b5c2d8b..435771e 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -2038,8 +2038,8 @@ int machine__process_event(struct machine *machine, union perf_event *event,
+>  static bool symbol__match_regex(struct symbol *sym, regex_t *regex)
 >  {
-> -       if (big == 0)
-> +       if (!big)
->                 return 0;
->
->         return bpf_get_prandom_u32() < big->y;
-> --
-> 1.8.3.1
->
+>  	if (!regexec(regex, sym->name, 0, NULL, 0))
+> -		return 1;
+> -	return 0;
+> +		return true;
+> +	return false;
 
+What's wrong with:
+	return !regexec(regex, sym->name, 0, NULL, 0);
 
--- 
-WBR, Yauheni
+    David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
