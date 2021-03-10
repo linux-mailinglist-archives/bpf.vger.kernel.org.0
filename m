@@ -2,138 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184C8334738
-	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 19:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 336673347D0
+	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 20:20:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232840AbhCJSyj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Mar 2021 13:54:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60870 "EHLO
+        id S229526AbhCJTUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Mar 2021 14:20:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231941AbhCJSyH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Mar 2021 13:54:07 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AC3C061761
-        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 10:54:07 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id h26so9487772qtm.5
-        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 10:54:07 -0800 (PST)
+        with ESMTP id S233587AbhCJTTw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Mar 2021 14:19:52 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E73C061760
+        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 11:19:52 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id c131so19025783ybf.7
+        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 11:19:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vLXAkAskiQcQ1LGOy8c4iMFazBShIBbsgNpMAGpqQ4c=;
-        b=ZuSIP/eNepj/rQzXVsX2ED06gVSKBiUOIYtuJZqyh6bBg/meWNhS3uDaqTxOhhOfp1
-         bu0ZN+1Y0NhncPI+mdAV92Z5lxeHf1uXQD4umfdqGUX9RYpKA58TSR+3HZvjjn8dXigB
-         B4vSKM1L7AojEUrjbKVX6KL0MBAqQ+uUpw/v1Cj/Nx//AMeFWuBOl7QLr54lmmuOujyd
-         qBSaxOUE0W+vcWp3K2qFFaoyn4hZjSNsVMf0x0IVXKUPhklrcUHAUlQdrAIl7Vx8WjRO
-         bq3bKqGL18LWzf4ANxQ4VljxaTw2rPzWEGjFgQaIiweVTc/iCHuC+nDSNJayJILLX/NN
-         P1TA==
+         :cc:content-transfer-encoding;
+        bh=6+DonT4+YN4qNZ+1D8ZcSb/P3Lp+yMkYFiQdLi4vXAQ=;
+        b=a1WpytEdrs7N4H1cm+5D4FNgzwKpnhpIarWsYVrM2bTTJy6gFh7/0OdTw3AUfGrZYN
+         mL/1doMWieHPNOarZn2RBeKroj9QCMDL69TJpzAKNnmt+xvKf9bpUJpNVxRMRujomYWJ
+         Jwo+5D0h5tJZSRnIgSmNtDIhAG3uBNEQ1eOIySOPmTnoSjM7pQhqD90YmQm12okCO225
+         m7XfuMfRQ8GKYQu3yd/UM0lCvyDx77inLbCW9Zheg91Wbc1LHvfCf5lpIocKnv6GL/zl
+         XPyUoUZbiAXGyj/DwnDPpc0pyJutWjq0lwY13wHgzi1cBLMsrEKJEcIIH074l1Kvn7OT
+         KLJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vLXAkAskiQcQ1LGOy8c4iMFazBShIBbsgNpMAGpqQ4c=;
-        b=YA+3d/CNZ0UtG70ugXdklgNfkRPbpbdNWH4npfDr8sXJOUOwQEQq6D1NbFxO4HFZsp
-         Gg0z/a6E8twPlsB6k0h14zO/HH3zDpQhpB0K16lqJSk7wNeBSiqdGSZOmtLxC3nfjhFy
-         7xakoFXDuXXzFCohregT88xW0YEIB0Jbz8nKSaI7e0NrQRrbaX2yeO7DkMmzyVmSR/t3
-         MeDKKvJY3oakcd4ufcAGf2WoW44duBAJ3L5QPClhxanKr4k2M6ltlMrU4WNEF4w2vsD3
-         KIlacUA6q1+w012m+9H6XSS7u4OxnIt4j1O3HYiqxvVMcV4HywPjh67jjp0fd7fgy4uQ
-         FfEQ==
-X-Gm-Message-State: AOAM5322IJHgv73f1ZBo8V4BWuJlTj/aM7xDNtBGP4Updjt2w9AaSsMs
-        i/LSx0b34xqMyOAs9UB6Sc2IiPI7uNximLSQOKG/sA==
-X-Google-Smtp-Source: ABdhPJyM9qnpbKqhCRB40B0yeUnOBOcSPvPcrAs7e98U0YztJpyjwaEfa6Bmu6KrOPIe04vN06dWWBKZgCJLhO+r/tY=
-X-Received: by 2002:ac8:5847:: with SMTP id h7mr3945605qth.43.1615402446649;
- Wed, 10 Mar 2021 10:54:06 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6+DonT4+YN4qNZ+1D8ZcSb/P3Lp+yMkYFiQdLi4vXAQ=;
+        b=nGKQHp/NipKXHk8OYmfcgJB7H8Eh+T3v4PLpH4ZIcd8pedWfk0Abfi3LNk40X2CaUr
+         3bBRTDtjOUfvvTaMor3LvObnqBywsWNfPkHwTGhRfct32rxae8D8UE77+ll7c+z9Qlly
+         g9naugEDbt9aYdP7xq03u+U2NqaY5yNz7pLJ8ZfhAvsyNgQ0QNcovFlia1UclJRczS75
+         g5xewgx+1lVLrypma0HymopZAFjp+VnmlGLT9VjxHoOiy3xopJ6L4PkAh9Dbw9Pk4D6V
+         xFhKEofE8925c4b4mUeRGnSP5Wh17vILsQh1eo/RP7IQx1YO2e4QXp8P28CbxiFlSkm2
+         QArQ==
+X-Gm-Message-State: AOAM532XokysCH0Hy+UiAHhC9FarMGv4D8yuMKBmk9HkhuyjWq2nPSwK
+        R8ZatICSE5xP52L/d6igR2dXjhhNkqcVQZadgJM=
+X-Google-Smtp-Source: ABdhPJylXCp/j2lvzJ/vaaFEvLIt5cuG/+uK/XenUEQmqee5wPsVWWbMrloWGtdVoGqbzhxN/lwBHjQ84SsWURSOcaA=
+X-Received: by 2002:a25:40d8:: with SMTP id n207mr6230608yba.459.1615403991671;
+ Wed, 10 Mar 2021 11:19:51 -0800 (PST)
 MIME-Version: 1.0
-References: <00000000000096cdaa05bd32d46f@google.com>
-In-Reply-To: <00000000000096cdaa05bd32d46f@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 10 Mar 2021 19:53:55 +0100
-Message-ID: <CACT4Y+ZjdOaX_X530p+vPbG4mbtUuFsJ1v-gD24T4DnFUqcudA@mail.gmail.com>
-Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in sock_ioctl
-To:     syzbot <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Cc:     andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
+References: <CADmGQ+0dDjfs6UL63m3vLAfu+GHgSFdMO+Rmz_jk+0R9Wva2Tw@mail.gmail.com>
+ <20210303181457.172434-1-rafaeldtinoco@ubuntu.com> <CAEf4BzZE_Ss7-cNdVpKJbC57mr2V_-OMcC9fvHw7XTntn3K2jA@mail.gmail.com>
+ <043B1B9B-EEF7-49CD-88AF-29A2A3E97304@ubuntu.com> <67E3C788-2835-4793-8A9C-51C5D807C294@ubuntu.com>
+In-Reply-To: <67E3C788-2835-4793-8A9C-51C5D807C294@ubuntu.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 10 Mar 2021 11:19:40 -0800
+Message-ID: <CAEf4BzaPytBkMqDh15eLPskOj_+FQa0ta2G+BToEn1pSwMGpfA@mail.gmail.com>
+Subject: Re: [BPF CO-RE clarification] Use CO-RE on older kernel versions.
+To:     Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Vamsi Kodavanty <vamsi@araalinetworks.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 7:28 PM syzbot
-<syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com> wrote:
+On Tue, Mar 9, 2021 at 9:58 PM Rafael David Tinoco
+<rafaeldtinoco@ubuntu.com> wrote:
 >
-> Hello,
 >
-> syzbot found the following issue on:
 >
-> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-> console output: https://syzkaller.appspot.com/x/log.txt?x=122c343ad00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
-> dashboard link: https://syzkaller.appspot.com/bug?extid=c23c5421600e9b454849
-> userspace arch: riscv64
+> On 5 Mar 2021, at 03:32, Rafael David Tinoco <rafaeldtinoco@ubuntu.com> w=
+rote:
 >
-> Unfortunately, I don't have any reproducer for this issue yet.
 >
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com
+> Specially the attach_kprobe_legacy() function:
+>
+> https://github.com/rafaeldtinoco/portablebpf/blob/master/mine.c#L31
+>
+> I wanted to reply here in case others also face this.
+>
+>
+> Great, glad it worked out. It would be great if you could contribute
+> legacy kprobe support for libbpf as a proper patch, since it probably
+> would be useful for a bunch of other people stuck with old kernels.
+>
+>
+>
+> I=E2=80=99m sorry to come back to this but I=E2=80=99d like to clarify so=
+mething, if you allow me.
+>
+> If I recompile old kernels (4.x.y) with the =E2=80=9Cscripts/link-vmlinux=
+.sh" patch (setting $btf_vmlinux_bin_o and gen_btf()) I=E2=80=99m able to u=
+se "pahole -J" to generate the .BTF ELF section from a vmlinux file (out of=
+ the debugging package, for example) using its DWARF data.
+>
+> Using objcopy, I=E2=80=99m also able to extract only the .BTF ELF section=
+ from it and use the generated file (smaller) as a base BTF file for libbpf=
+ (since old kernels don=E2=80=99t have /sys/kernel/btf/vmlinux interface).
+>
+> So, in my case, with this, I can get an ~30MB ELF file (from a an almost =
+600MB vmlinux) with BTF data that can feed libbpf to do needed relocations =
+for my BPF object. Execution works perfectly and I can have the same libbpf=
+ based code to run in a 4.15 and a 5.8 kernel, smooth.
 
-+riscv maintainers
+Surprised that .BTF is so big at 30MB. It depends on kernel config you
+are using, but that's still few times bigger than what I normally see.
 
-Another case of put_user crashing.
+Otherwise, yeah, that's how it should work (except see the patch that
+adds core_btf_path and discussion around it).
 
-> Unable to handle kernel access to user memory without uaccess routines at virtual address 0000000020000300
-> Oops [#1]
-> Modules linked in:
-> CPU: 1 PID: 4488 Comm: syz-executor.0 Not tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
-> Hardware name: riscv-virtio,qemu (DT)
-> epc : sock_ioctl+0x424/0x6ac net/socket.c:1124
->  ra : sock_ioctl+0x424/0x6ac net/socket.c:1124
-> epc : ffffffe002aeeb3e ra : ffffffe002aeeb3e sp : ffffffe023867da0
->  gp : ffffffe005d25378 tp : ffffffe007e116c0 t0 : 0000000000000000
->  t1 : 0000000000000001 t2 : 0000003fb8035e44 s0 : ffffffe023867e30
->  s1 : 0000000000040000 a0 : 0000000000000000 a1 : 0000000000000007
->  a2 : 1ffffffc00fc22d8 a3 : ffffffe003bc1d02 a4 : 0000000000000000
->  a5 : 0000000000000000 a6 : 0000000000f00000 a7 : ffffffe000082eba
->  s2 : 0000000000000000 s3 : 0000000000008902 s4 : 0000000020000300
->  s5 : ffffffe005d2b0d0 s6 : ffffffe010facfc0 s7 : ffffffe008e00000
->  s8 : 0000000000008903 s9 : ffffffe010fad080 s10: 0000000000000000
->  s11: 0000000000020000 t3 : 982de389919f6300 t4 : ffffffc401175688
->  t5 : ffffffc401175691 t6 : 0000000000000007
-> status: 0000000000000120 badaddr: 0000000020000300 cause: 000000000000000f
-> Call Trace:
-> [<ffffffe002aeeb3e>] sock_ioctl+0x424/0x6ac net/socket.c:1124
-> [<ffffffe0003fdb6a>] vfs_ioctl fs/ioctl.c:48 [inline]
-> [<ffffffe0003fdb6a>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-> [<ffffffe0003fdb6a>] sys_ioctl+0x5c2/0xd56 fs/ioctl.c:739
-> [<ffffffe000005562>] ret_from_syscall+0x0/0x2
-> Dumping ftrace buffer:
->    (ftrace buffer empty)
-> ---[ end trace a5f91e70f37b907b ]---
 >
+> What is not entirely clear to me yet is =E2=80=A6 why can=E2=80=99t I use=
+ a =E2=80=9Cvmlinux=E2=80=9D file from a previous compiled kernel (that has=
+ not been compiled with a changed link-vmlinux.sh file) and do the same: ge=
+nerate the BTF section from its DWARF data with pahole and use generated fi=
+le (or the BTF section extract only) as input to libbpf.
 >
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> I mean, I can do, but it does not work=E2=80=A6 Assumption: it only works=
+ for the ones I build with patched link-vmlinux.sh (not the ones already bu=
+ilt and provided as packages). The code execution output (debug=3D1 on libb=
+pf) is at : https://pastebin.ubuntu.com/p/bx6tygY8p2/
 >
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+From what I see all the CO-RE relocations applied successfully (even
+though all the offsets stayed the same, so presumably you compiled
+your BPF program with vmlinux.h from the exact same kernel you are
+running it on?). Are you sure that vmlinux image you are providing
+corresponds to the actual kernel you are running on?
+
+I'd start by comparing libbpf logs for vmlinux you get with modified
+link-vmlinux.sh script and with just explicit pahole -J. If all the
+CO-RE parts are identical, the problem is somewhere else most
+probably.
+
+I see "libbpf: load bpf program failed: Invalid argument" in that log,
+which means that CO-RE was done and successful and only when trying to
+load your BPF program into the kernel it failed.
+
+
+> The difference for a new 4.x.y kernel and the existing ones (older packag=
+ed kernels) is the vmlinux_link() function linking the BTF object file in e=
+ach of the 3 tmp_kallsyms steps.
 >
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/00000000000096cdaa05bd32d46f%40google.com.
+> Is there a way I can get the already existing kernels to work with only p=
+ahole DWARF to BTF conversion data ?
+
+Yes and you've found it, I think. There is no difference to libbpf and
+.BTF itself whether it's run in link-vmlinux.sh or with explicit
+pahole -J. Look for the problem somewhere else.
+
+>
+> Thank you!
+>
+> -rafaeldtinoco
+>
