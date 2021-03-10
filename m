@@ -2,288 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE67333555
-	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 06:33:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E26FB3335A3
+	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 07:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231744AbhCJFdW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Mar 2021 00:33:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhCJFdD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Mar 2021 00:33:03 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5730CC0613DA;
-        Tue,  9 Mar 2021 21:32:50 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id f124so15694680qkj.5;
-        Tue, 09 Mar 2021 21:32:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=g3nptvPrG/Rja0vDg1eqjKadpsNbfe6SjFJEHfl1sz0=;
-        b=csfo5ny9vn031XTr0QE9HHX4i5g2UGrJhAVDLHHWHJt+orut2ZnSAqyUb23H2B02Zr
-         PFz69KIbPrEAxSk08Fs9OzG94dM3NwiFP9EW1bYZgU/6QA1e4Uk/K0gklG4Z645sRhVZ
-         JXyKIJlvtCWavocboX2xG0S5mblAgQqs1TGCq8+6BGidJKhK/RIU0X3VbRFQj1FMrdwi
-         GNQ4NPTJd5qqp5N+VEEY6oroXNoMXo8oIjiZwuGfzz2olZd4+XtYY+EZsjgPQiDfQxZW
-         nZ1WRrQjYNtSUV5VH+9eVP00XYw2wOjCRKZbb3igTW/se5pCCLx0NN3VvJjZMrQtYVaZ
-         0q1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=g3nptvPrG/Rja0vDg1eqjKadpsNbfe6SjFJEHfl1sz0=;
-        b=lmXi2Q/4+X2TGPEiw4F3xlJN4vC/opKM+iId/tcf0TpfKIwvnesnLW71FiXSE8+sWu
-         rXe5WekbSybHLViZu/u+KxZTOK8bUvcvVVI+ggNBw65IauhVRo/u7MPPdkSNYeZksEY2
-         CPT4a3WBVRpYw9akRSwHuX1pwhwfzga0kjw3OiRxxZIGQ7dGY6VLGNjzrr5OyB5f9oJ4
-         8WfCsGDnruPMvNhyoArybpR3byRl4XPtkuLfaCwk/HDtQe0TvwmCDn+VFVWlPgbsGQDN
-         mI/LN4U6YFxK0TpQ63SjB3IeE4hJwLAWgC637ynfxWPlBN5E4ATnVRQiHMNEc8j/W3Kc
-         pHGQ==
-X-Gm-Message-State: AOAM530nz/qI/as8QEFfhUrlmYO0DVGUuZFJ6CBzyRvzEroJW3Yt6DjL
-        ViJwMbAcvxgvOnn7d6n2CvsXphQw7S548w==
-X-Google-Smtp-Source: ABdhPJykyOB/de8QBgiE0zmwljU20PunVO/V01yp5Fp6+6Sc/jWqASB0xZdMiwrJa3GcfUl0LfUq9Q==
-X-Received: by 2002:ae9:eb57:: with SMTP id b84mr1109459qkg.271.1615354369428;
-        Tue, 09 Mar 2021 21:32:49 -0800 (PST)
-Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:91f3:e7ef:7f61:a131])
-        by smtp.gmail.com with ESMTPSA id g21sm12118739qkk.72.2021.03.09.21.32.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 21:32:48 -0800 (PST)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
-        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: [Patch bpf-next v4 11/11] selftests/bpf: add a test case for udp sockmap
-Date:   Tue,  9 Mar 2021 21:32:22 -0800
-Message-Id: <20210310053222.41371-12-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210310053222.41371-1-xiyou.wangcong@gmail.com>
-References: <20210310053222.41371-1-xiyou.wangcong@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229476AbhCJGCg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Mar 2021 01:02:36 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:57053 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229543AbhCJGBF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 10 Mar 2021 01:01:05 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id AF4C215E1;
+        Wed, 10 Mar 2021 01:00:59 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 10 Mar 2021 01:01:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:message-id
+        :mime-version:references:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Gmoc5jKVzAgBqiZ4f
+        WtHTwEusY8E0LLv6lYmG50fdZ8=; b=Jb2WWhfOpN1/p1749aTI+ZA88HTcahMmh
+        WAyy6kPOyo/IwVeb7jX9LQOblDpiEw8iK4+YeQ2HuHX8XL5+z0E545rktL6tkM0X
+        iUz71ertRuK9rx+VeVi7gh/Na3LHIt/1wR/gDbuaqcD9xDY0KeDf+lPVoXVwpLQl
+        IhmBwXskr3ZtPBVULHOfUSXDZMKq9/6NI7UElku31W/DIG7eKJFwpCBbLyFgaQ5a
+        oel0LPXqMrD1RBs0DV3MKwim6fI1f2s7R+ZqIrIa/NKtJuSp13JX+MRMqQeYpAcq
+        uUCrX2L8WmAuIcyZptngGxoEk2LEXA0BATiXXPG6z/x0EShEaS11A==
+X-ME-Sender: <xms:m2BIYElHL_6r8jGDowv-lJaecmnY5jmO0DaM35KenJZ8GVZYHlPw-Q>
+    <xme:m2BIYD0MbwH-NTuJzeO_AamGJqUmQLmQiA2DJv3obKr3P0jI9GfGrdmVX3Vl2Bexd
+    rKFPWxKkUyetRmGEFc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddujedgjeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephfgtggfuffhfvffkofesghdtmherhhdtjeenucfhrhhomheptfgrfhgrvghl
+    ucffrghvihguucfvihhnohgtohcuoehrrghfrggvlhguthhinhhotghosehusghunhhtuh
+    drtghomheqnecuggftrfgrthhtvghrnhepkeektdeukedvieehvdefieekkeejhfeuhfef
+    vdethffgheekiefhhfefteejtdffnecuffhomhgrihhnpehgihhthhhusgdrtghomhdpuh
+    gsuhhnthhurdgtohhmnecukfhppedujeejrddvvddtrddujedvrddvgeegnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrfhgrvghlughtih
+    hnohgtohesuhgsuhhnthhurdgtohhm
+X-ME-Proxy: <xmx:m2BIYCpc44YSKjCInR_eZLAo9PGsV8vq5uNiPPSRoAqdqBNLn8n9ng>
+    <xmx:m2BIYAlmN1tNBKu9g72ZaCEb5gr4KF7Dl9787Sl03slREpNkz39SUQ>
+    <xmx:m2BIYC1M0rbgYF8lp6XTnxQfoop3zQyNEDIXyUo6gL1TB20kH5f1Kw>
+    <xmx:m2BIYH8U7CnOgY9iJE2hi1Ce-atMZ5hpx9PY7da99f-dQVOCNDy1ig>
+Received: from [192.168.100.154] (unknown [177.220.172.244])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 08B3A240057;
+        Wed, 10 Mar 2021 01:00:57 -0500 (EST)
+From:   Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_D7EE16AE-FCD9-4A99-870E-70162760A937";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Fwd: [BPF CO-RE clarification] Use CO-RE on older kernel versions.
+Date:   Wed, 10 Mar 2021 03:00:55 -0300
+References: <67E3C788-2835-4793-8A9C-51C5D807C294@ubuntu.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Vamsi Kodavanty <vamsi@araalinetworks.com>,
+        bpf <bpf@vger.kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Message-Id: <A6A2EA65-A0EC-4E26-A1CA-E37A3E737F9F@ubuntu.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
 
-Add a test case to ensure redirection between two UDP sockets work.
+--Apple-Mail=_D7EE16AE-FCD9-4A99-870E-70162760A937
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
 
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- .../selftests/bpf/prog_tests/sockmap_listen.c | 140 ++++++++++++++++++
- .../selftests/bpf/progs/test_sockmap_listen.c |  22 +++
- 2 files changed, 162 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index c26e6bf05e49..a549ebd3b5a6 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -1563,6 +1563,142 @@ static void test_redir(struct test_sockmap_listen *skel, struct bpf_map *map,
- 	}
- }
- 
-+static void udp_redir_to_connected(int family, int sotype, int sock_mapfd,
-+				   int verd_mapfd, enum redir_mode mode)
-+{
-+	const char *log_prefix = redir_mode_str(mode);
-+	struct sockaddr_storage addr;
-+	int c0, c1, p0, p1;
-+	unsigned int pass;
-+	socklen_t len;
-+	int err, n;
-+	u64 value;
-+	u32 key;
-+	char b;
-+
-+	zero_verdict_count(verd_mapfd);
-+
-+	p0 = socket_loopback(family, sotype | SOCK_NONBLOCK);
-+	if (p0 < 0)
-+		return;
-+	len = sizeof(addr);
-+	err = xgetsockname(p0, sockaddr(&addr), &len);
-+	if (err)
-+		goto close_peer0;
-+
-+	c0 = xsocket(family, sotype | SOCK_NONBLOCK, 0);
-+	if (c0 < 0)
-+		goto close_peer0;
-+	err = xconnect(c0, sockaddr(&addr), len);
-+	if (err)
-+		goto close_cli0;
-+	err = xgetsockname(c0, sockaddr(&addr), &len);
-+	if (err)
-+		goto close_cli0;
-+	err = xconnect(p0, sockaddr(&addr), len);
-+	if (err)
-+		goto close_cli0;
-+
-+	p1 = socket_loopback(family, sotype | SOCK_NONBLOCK);
-+	if (p1 < 0)
-+		goto close_cli0;
-+	err = xgetsockname(p1, sockaddr(&addr), &len);
-+	if (err)
-+		goto close_cli0;
-+
-+	c1 = xsocket(family, sotype | SOCK_NONBLOCK, 0);
-+	if (c1 < 0)
-+		goto close_peer1;
-+	err = xconnect(c1, sockaddr(&addr), len);
-+	if (err)
-+		goto close_cli1;
-+	err = xgetsockname(c1, sockaddr(&addr), &len);
-+	if (err)
-+		goto close_cli1;
-+	err = xconnect(p1, sockaddr(&addr), len);
-+	if (err)
-+		goto close_cli1;
-+
-+	key = 0;
-+	value = p0;
-+	err = xbpf_map_update_elem(sock_mapfd, &key, &value, BPF_NOEXIST);
-+	if (err)
-+		goto close_cli1;
-+
-+	key = 1;
-+	value = p1;
-+	err = xbpf_map_update_elem(sock_mapfd, &key, &value, BPF_NOEXIST);
-+	if (err)
-+		goto close_cli1;
-+
-+	n = write(c1, "a", 1);
-+	if (n < 0)
-+		FAIL_ERRNO("%s: write", log_prefix);
-+	if (n == 0)
-+		FAIL("%s: incomplete write", log_prefix);
-+	if (n < 1)
-+		goto close_cli1;
-+
-+	key = SK_PASS;
-+	err = xbpf_map_lookup_elem(verd_mapfd, &key, &pass);
-+	if (err)
-+		goto close_cli1;
-+	if (pass != 1)
-+		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
-+
-+	n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
-+	if (n < 0)
-+		FAIL_ERRNO("%s: read", log_prefix);
-+	if (n == 0)
-+		FAIL("%s: incomplete read", log_prefix);
-+
-+close_cli1:
-+	xclose(c1);
-+close_peer1:
-+	xclose(p1);
-+close_cli0:
-+	xclose(c0);
-+close_peer0:
-+	xclose(p0);
-+}
-+
-+static void udp_skb_redir_to_connected(struct test_sockmap_listen *skel,
-+					   struct bpf_map *inner_map, int family,
-+					   int sotype)
-+{
-+	int verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-+	int verdict_map = bpf_map__fd(skel->maps.verdict_map);
-+	int sock_map = bpf_map__fd(inner_map);
-+	int err;
-+
-+	err = xbpf_prog_attach(verdict, sock_map, BPF_SK_SKB_VERDICT, 0);
-+	if (err)
-+		return;
-+
-+	skel->bss->test_ingress = false;
-+	udp_redir_to_connected(family, sotype, sock_map, verdict_map,
-+			       REDIR_EGRESS);
-+	skel->bss->test_ingress = true;
-+	udp_redir_to_connected(family, sotype, sock_map, verdict_map,
-+			       REDIR_INGRESS);
-+
-+	xbpf_prog_detach2(verdict, sock_map, BPF_SK_SKB_VERDICT);
-+}
-+
-+static void test_udp_redir(struct test_sockmap_listen *skel, struct bpf_map *map,
-+			   int family)
-+{
-+	const char *family_name, *map_name;
-+	char s[MAX_TEST_NAME];
-+
-+	family_name = family_str(family);
-+	map_name = map_type_str(map);
-+	snprintf(s, sizeof(s), "%s %s %s", map_name, family_name, __func__);
-+	if (!test__start_subtest(s))
-+		return;
-+	udp_skb_redir_to_connected(skel, map, family, SOCK_DGRAM);
-+}
-+
- static void test_reuseport(struct test_sockmap_listen *skel,
- 			   struct bpf_map *map, int family, int sotype)
- {
-@@ -1626,10 +1762,14 @@ void test_sockmap_listen(void)
- 	skel->bss->test_sockmap = true;
- 	run_tests(skel, skel->maps.sock_map, AF_INET);
- 	run_tests(skel, skel->maps.sock_map, AF_INET6);
-+	test_udp_redir(skel, skel->maps.sock_map, AF_INET);
-+	test_udp_redir(skel, skel->maps.sock_map, AF_INET6);
- 
- 	skel->bss->test_sockmap = false;
- 	run_tests(skel, skel->maps.sock_hash, AF_INET);
- 	run_tests(skel, skel->maps.sock_hash, AF_INET6);
-+	test_udp_redir(skel, skel->maps.sock_hash, AF_INET);
-+	test_udp_redir(skel, skel->maps.sock_hash, AF_INET6);
- 
- 	test_sockmap_listen__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_listen.c b/tools/testing/selftests/bpf/progs/test_sockmap_listen.c
-index fa221141e9c1..a39eba9f5201 100644
---- a/tools/testing/selftests/bpf/progs/test_sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_listen.c
-@@ -29,6 +29,7 @@ struct {
- } verdict_map SEC(".maps");
- 
- static volatile bool test_sockmap; /* toggled by user-space */
-+static volatile bool test_ingress; /* toggled by user-space */
- 
- SEC("sk_skb/stream_parser")
- int prog_stream_parser(struct __sk_buff *skb)
-@@ -55,6 +56,27 @@ int prog_stream_verdict(struct __sk_buff *skb)
- 	return verdict;
- }
- 
-+SEC("sk_skb/skb_verdict")
-+int prog_skb_verdict(struct __sk_buff *skb)
-+{
-+	unsigned int *count;
-+	__u32 zero = 0;
-+	int verdict;
-+
-+	if (test_sockmap)
-+		verdict = bpf_sk_redirect_map(skb, &sock_map, zero,
-+					      test_ingress ? BPF_F_INGRESS : 0);
-+	else
-+		verdict = bpf_sk_redirect_hash(skb, &sock_hash, &zero,
-+					       test_ingress ? BPF_F_INGRESS : 0);
-+
-+	count = bpf_map_lookup_elem(&verdict_map, &verdict);
-+	if (count)
-+		(*count)++;
-+
-+	return verdict;
-+}
-+
- SEC("sk_msg")
- int prog_msg_verdict(struct sk_msg_md *msg)
- {
--- 
-2.25.1
+> On 5 Mar 2021, at 03:32, Rafael David Tinoco =
+<rafaeldtinoco@ubuntu.com> wrote:
+>=20
+>=20
+>>> Specially the attach_kprobe_legacy() function:
+>>>=20
+>>> https://github.com/rafaeldtinoco/portablebpf/blob/master/mine.c#L31
+>>>=20
+>>> I wanted to reply here in case others also face this.
+>>=20
+>> Great, glad it worked out. It would be great if you could contribute
+>> legacy kprobe support for libbpf as a proper patch, since it probably
+>> would be useful for a bunch of other people stuck with old kernels.
+>=20
 
+(sending this again in proper format for the list)
+
+I=E2=80=99m sorry to come back to this but I=E2=80=99d like to clarify =
+something, if you allow me.
+
+If I recompile old kernels (4.x.y) with the =E2=80=9Cscripts/link-vmlinux.=
+sh" patch (setting $btf_vmlinux_bin_o and gen_btf()) I=E2=80=99m able to =
+use "pahole -J" to generate the .BTF ELF section from a vmlinux file =
+(out of the debugging package, for example) using its DWARF data.
+
+Using objcopy, I=E2=80=99m also able to extract only the .BTF ELF =
+section from it and use the generated file (smaller) as a base BTF file =
+for libbpf (since old kernels don=E2=80=99t have /sys/kernel/btf/vmlinux =
+interface).
+
+So, in my case, with this, I can get an ~30MB ELF file (from a an almost =
+600MB vmlinux) with BTF data that can feed libbpf to do needed =
+relocations for my BPF object. Execution works perfectly and I can have =
+the same libbpf based code to run in a 4.15 and a 5.8 kernel, smooth.
+
+What is not entirely clear to me yet is =E2=80=A6 why can=E2=80=99t I =
+use a =E2=80=9Cvmlinux=E2=80=9D file from a previous compiled kernel =
+(that has not been compiled with a changed link-vmlinux.sh file) and do =
+the same: generate the BTF section from its DWARF data with pahole and =
+use generated file (or the BTF section extract only) as input to libbpf.
+
+I mean, I can do, but it does not work=E2=80=A6 Assumption: it only =
+works for the ones I build with patched link-vmlinux.sh (not the ones =
+already built and provided as packages). The code execution output =
+(debug=3D1 on libbpf) is at : https://pastebin.ubuntu.com/p/bx6tygY8p2/
+
+The difference for a new 4.x.y kernel and the existing ones (older =
+packaged kernels) is the vmlinux_link() function linking the BTF object =
+file in each of the 3 tmp_kallsyms steps.
+
+Is there a way I can get the already existing kernels to work with only =
+pahole DWARF to BTF conversion data ?
+
+Thank you!
+
+-rafaeldtinoco
+>=20
+
+
+--Apple-Mail=_D7EE16AE-FCD9-4A99-870E-70162760A937
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE9/EO4QjRa7yS94ISqT4OCtg8DQ8FAmBIYJcACgkQqT4OCtg8
+DQ9T8RAAwhSK4cIxbhJDXwNMJUslVMYXxPOe/jjS65fWT8P+Ag6l1VyC8ScbckwA
+7SaQpgIpUxmes6KvgcRJCIJPa9dt2VY84cr4b6JWGg0wmfPa04Y0aixFEEH1CQp7
+XwgssPXTIMGUxuudq4XmBqjzVPpA+3L/do2NEFxh9FduQMGoCsJw8uo/THekNfYQ
+QhhsyyejWl9ygu/6zxczVcRcOVIbg1ueTiWFq0nQaCrnmcaIBgJD90RX53RmZkSi
+MG/PgOjCGEdtQS8v5/lOvJO0SP4klpG/cUzuPvZEZ7uljJhecC1wZCkzshc1fX1s
+rfxmzBrHA6tWXhq45MP4x/gjvoVPSYDrTb2mqzJtaIrQJxknMUzMgebYOXpVY8jx
+Cyj3HeZKIbebJE6MjupEVZiV6ycG8xYjO304MAPhlFfTaUWDbq+o6xlR03dMgv2B
+TbS67NYF6YHr8KfbO6uWTax5H9ihpQ7ULEFq45lMSr5IjMDvSGr6ozNiC9VCgv51
+yjECuPOXri0G4r/w7o0zxBfWnXFgPe+sApnCgx/rX1DKewZaAgylNhp8JTTsPOGF
+n3csM82f06NFn6MUR/Y69GHg4bbwVK8cvPuoRPZQs5SVNfj5kVVtSfAtZ/l2NzEX
+gTjjJsD8WTzuhv5AthS1Tce6nMAW8p9zKjKpP/zgfmPl0KuQOTk=
+=M8Fz
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_D7EE16AE-FCD9-4A99-870E-70162760A937--
