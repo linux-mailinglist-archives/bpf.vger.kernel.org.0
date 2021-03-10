@@ -2,113 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86347334A2E
-	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 22:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB27334A3E
+	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 23:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229505AbhCJVzo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Mar 2021 16:55:44 -0500
-Received: from www62.your-server.de ([213.133.104.62]:58102 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231221AbhCJVze (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:55:34 -0500
-Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lK6ni-000CCL-Q3; Wed, 10 Mar 2021 22:55:30 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2021-03-10
-Date:   Wed, 10 Mar 2021 22:55:30 +0100
-Message-Id: <20210310215530.26047-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S232130AbhCJV5y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Mar 2021 16:57:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232250AbhCJV5Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Mar 2021 16:57:25 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBC5C061574
+        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 13:57:25 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id f145so3100786ybg.11
+        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 13:57:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=0LLAvLEt4Q/flZodga2OrYjGrK/Uqk3nAiMer6vSAug=;
+        b=bcVpxEBUs64nD0dbp/HHMiiAth2SF4KK9MHLxBqadkNzlNoW0kiAEEdYh+LNXvDqai
+         dvH6MiTS+/pPlcu0OlYXT4yxX3fiYCTGFo/1qaQUR09TZo+bH62AkPKUQ2XOGlMGekDM
+         pyHnOiL1r3fnJLRKGLIldci3jwdNgogcv7+XnsWWBviT96c0wEQ9S7wswgwc6KZ5DCnP
+         n6hI9jhaOz9f6F1+pRLVvqgWfLynzT5nCUXbn6s2OIQ0rKo2wB3oCnEDsyqjh3AepVL8
+         qZPLKL2bRtBBSxqYWc2bvxtX48TAunERX1EG3fVxbSAGPX6TCEe55LBhczzD0fMRHICF
+         AVXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=0LLAvLEt4Q/flZodga2OrYjGrK/Uqk3nAiMer6vSAug=;
+        b=TfTIvIiP/Dv2+djrCH6diNFkRKFwcuvPaO7tHZwuNdt2bsb+G01I11h+KrGUPzI2GN
+         SgcaT/hy9W8tnMwzfUDCBF12C6U2kcdSkLC8f3UMC7Er0rFd2/8fblLXkGDu58vKTSRj
+         +2PEoTyzOYM1wiMUebR1PV9MTPa4i0OOzh5WBHGxONDlTzFSHSKzu9KE93zx9cNio9uv
+         f3EfurpFzNL5j6OZ5N3IUtZTUggYEoYvbMSwMx5/BZ50r6ROpKaKzRCqjTS6XPyCm8SA
+         akDFXpfa53JVPvC5iJqL1hkFs5pbDNCBudnBccboyAL4VIUAoBxbkiOKAnODUYQSbTgJ
+         VyfQ==
+X-Gm-Message-State: AOAM530qTQVTXswfjS/MWj98XIrSPrWon3ZmDYphcqvX4I5uoIFt8zm5
+        1M0E3QjxsXsc/DrZsQaGwLL+pLQ9LZcOPwOqBso=
+X-Google-Smtp-Source: ABdhPJzgCcBtG3wH7WcAWdcPRL8QZV22tzE/VLSG6nIFbb+lk7+0ohyC1/GKBcUXHIj5CDXBNgvw9mf9Fl3rAtuukRo=
+X-Received: by 2002:a25:7d07:: with SMTP id y7mr6985710ybc.425.1615413445101;
+ Wed, 10 Mar 2021 13:57:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26104/Wed Mar 10 13:08:51 2021)
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 10 Mar 2021 13:57:14 -0800
+Message-ID: <CAEf4BzZ2t_VbdtSde9uPEYNaggZLj3peyA8opHj1Ao_FO8AVrQ@mail.gmail.com>
+Subject: test_ima passing only first time
+To:     KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+Hey KP,
 
-The following pull-request contains BPF updates for your *net* tree.
+test_ima is passing only the very first time I run it in my VM. Alexei
+earlier reported similar issues. If you run it second time without
+restarting the VM, you get the following:
 
-We've added 8 non-merge commits during the last 5 day(s) which contain
-a total of 11 files changed, 136 insertions(+), 17 deletions(-).
+10+0 records in
+10+0 records out
+10485760 bytes (10 MB, 10 MiB) copied, 0.00425121 s, 2.5 GB/s
+mke2fs 1.45.0 (6-Mar-2019)
+Discarding device blocks: done
+Creating filesystem with 10240 1k blocks and 2560 inodes
+Filesystem UUID: b9927426-1d29-458f-b2a0-8fe56455d209
+Superblock backups stored on blocks:
+        8193
 
-The main changes are:
+Allocating group tables: done
+Writing inode tables: done
+Writing superblocks and filesystem accounting information: done
 
-1) Reject bogus use of vmlinux BTF as map/prog creation BTF, from Alexei Starovoitov.
+./ima_setup.sh: line 53: /sys/kernel/security/ima/policy: Permission denied
+test_test_ima:PASS:skel_load 0 nsec
+test_test_ima:PASS:ringbuf 0 nsec
+test_test_ima:PASS:attach 0 nsec
+test_test_ima:PASS:mkdtemp 0 nsec
+test_test_ima:FAIL:71
+#128 test_ima:FAIL
 
-2) Fix allocation failure splat in x86 JIT for large progs. Also fix overwriting
-   percpu cgroup storage from tracing programs when nested, from Yonghong Song.
+Do you see it on your side? Do you have any idea what's wrong?
 
-3) Fix rx queue retrieval in XDP for multi-queue veth, from Maciej Fijalkowski.
+Also, see that super-descriptive `test_test_ima:FAIL:71` line? That's
+the reason I'm always bitching about CHECK_FAIL() use. At least this
+one is not inside some loop.
 
-4) Fix bpf_check_mtu() helper API before freeze to have mtu_len as custom skb/xdp
-   L3 input length, from Jesper Dangaard Brouer.
-
-5) Fix inode_storage's lookup_elem return value upon having bad fd, from Tal Lossos.
-
-6) Fix bpftool and libbpf cross-build on MacOS, from Georgi Valkov.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-John Fastabend, KP Singh, Roman Gushchin, Toshiaki Makita, Yonghong Song
-
-----------------------------------------------------------------
-
-The following changes since commit d8861bab48b6c1fc3cdbcab8ff9d1eaea43afe7f:
-
-  gianfar: fix jumbo packets+napi+rx overrun crash (2021-03-05 13:13:32 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to de920fc64cbaa031f947e9be964bda05fd090380:
-
-  bpf, x86: Use kvmalloc_array instead kmalloc_array in bpf_jit_comp (2021-03-10 00:10:23 +0100)
-
-----------------------------------------------------------------
-Alexei Starovoitov (1):
-      bpf: Dont allow vmlinux BTF to be used in map_create and prog_load.
-
-Georgi Valkov (1):
-      libbpf: Fix INSTALL flag order
-
-Jesper Dangaard Brouer (2):
-      bpf: BPF-helper for MTU checking add length input
-      selftests/bpf: Tests using bpf_check_mtu BPF-helper input mtu_len param
-
-Maciej Fijalkowski (1):
-      veth: Store queue_mapping independently of XDP prog presence
-
-Tal Lossos (1):
-      bpf: Change inode_storage's lookup_elem return value from NULL to -EBADF
-
-Yonghong Song (2):
-      bpf: Don't do bpf_cgroup_storage_set() for kuprobe/tp programs
-      bpf, x86: Use kvmalloc_array instead kmalloc_array in bpf_jit_comp
-
- arch/x86/net/bpf_jit_comp.c                        |  4 +-
- drivers/net/veth.c                                 |  3 +-
- include/linux/bpf.h                                |  9 ++-
- include/uapi/linux/bpf.h                           | 16 ++--
- kernel/bpf/bpf_inode_storage.c                     |  2 +-
- kernel/bpf/syscall.c                               |  5 ++
- kernel/bpf/verifier.c                              |  4 +
- net/core/filter.c                                  | 12 ++-
- tools/lib/bpf/Makefile                             |  2 +-
- tools/testing/selftests/bpf/prog_tests/check_mtu.c |  4 +
- tools/testing/selftests/bpf/progs/test_check_mtu.c | 92 ++++++++++++++++++++++
- 11 files changed, 136 insertions(+), 17 deletions(-)
+-- Andrii
