@@ -2,278 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CCE333703
-	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 09:10:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C04173338C7
+	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 10:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbhCJIKH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Mar 2021 03:10:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232191AbhCJIJj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Mar 2021 03:09:39 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636E3C06174A;
-        Wed, 10 Mar 2021 00:09:39 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id v2so18952730lft.9;
-        Wed, 10 Mar 2021 00:09:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JiR6I/htM+GHb8OVEugimZJBXvb7g4WM9js2ohIQob0=;
-        b=mgpFuLz8d7IucolqowI/5A2xsdIKGX9/N/lCL3HnGYzDS20EzGEuAiTjaf0dkdwajY
-         Gp+GyRVk5QDEr4hTHqYll/Z2vxdeqmPfsaPCFy733sRU0zpzN+uXvI2fSZ/QmkvjoWD+
-         G4bnlp5bUPtRCY4JlFYj+krKT0OiGkr4Iwefbzyf9S69M+k1DQr84Z++/inXlJPGq6Ee
-         ququr/NmzESfpuHryG9KomgqbkqA91UO9N6Pwsl8OZ38j6surb6XZUlR5Oi16rRWwQCB
-         8MCjW3Fin6bhvqvh3SMOc4ayjFcRDIr5XSW5Q+xRWgAhHH2RbNeydwx87LhACx1l7Cr4
-         czQQ==
+        id S232302AbhCJJcq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Mar 2021 04:32:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23120 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231738AbhCJJcQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 10 Mar 2021 04:32:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1615368735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a/DGLUjr6IILhrnvlay+wj8znvny6CeX2t2rrG8Z35w=;
+        b=ciB9T3xq7P1SFhCuUiVy1do1gcAGm0YIDC38N7Z3jaKajpyyt91ZJxIqfO34q8RYrqhr8Z
+        BGsTsi+vH7EA2U7kiIRsIxpq7Av77NFaFUXrMBBSD93l2iXBBXCcIyvG+q3e4blabI5Aou
+        1SX4JPNXh64WyUpD4PMXdwCuxWtC61k=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-275-jDw7EIldMdCeGhxzB_qjUA-1; Wed, 10 Mar 2021 04:32:13 -0500
+X-MC-Unique: jDw7EIldMdCeGhxzB_qjUA-1
+Received: by mail-wr1-f71.google.com with SMTP id l10so7722334wry.16
+        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 01:32:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JiR6I/htM+GHb8OVEugimZJBXvb7g4WM9js2ohIQob0=;
-        b=TXn8zJNL47DWkPI2p5dldPha9Y2xeILFBvgcCOfEGDBo+HDwzvjHDjMcG3LO9F4yWx
-         FPQPSf/rHuV9lgQ8Eo15jY4X7HXbAkVo0uzAyM58fkMVUSm1UHIAtVwbUsXkqBfj9/17
-         DhmziWroMVUeYIJyIsB1y5L30nDGL1fyj7/EeBtexMaqFCT4UgLKsY6meuPHr1o4phNt
-         hlKoQrMo/TKmBxFRN9mFRiS9XTsgNmuTjKtTMr12zzke8LvR65+SW7va+HaHvTT8cKnw
-         wGJtoyd3VzDkgmbP31B5XSvc1gCHocq3+UTsa7AJoMy+pulEGFwBTxqDsaMHtm+1gZy5
-         TM/w==
-X-Gm-Message-State: AOAM530KzfD6phsHgn8bvr/ZIUvL+EUZCHrwRWlmgor/dE9ntUdTkF1y
-        q7Mv3qoDnhNZqS3YN+N8fAw=
-X-Google-Smtp-Source: ABdhPJxI0JPNZrQLgHgQWNusUPtpGaPOlVujNUb8Gwq8Q90v1WcxUa7eT1Q+IQr4PplFHuOzdK7dDw==
-X-Received: by 2002:ac2:5974:: with SMTP id h20mr1366024lfp.554.1615363777848;
-        Wed, 10 Mar 2021 00:09:37 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
-        by smtp.gmail.com with ESMTPSA id x1sm2812130ljh.62.2021.03.10.00.09.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Mar 2021 00:09:37 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, andrii@kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
-        maximmi@nvidia.com, ciara.loftus@intel.com
-Subject: [PATCH bpf-next 2/2] libbpf: xsk: move barriers from libbpf_util.h to xsk.h
-Date:   Wed, 10 Mar 2021 09:09:29 +0100
-Message-Id: <20210310080929.641212-3-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210310080929.641212-1-bjorn.topel@gmail.com>
-References: <20210310080929.641212-1-bjorn.topel@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a/DGLUjr6IILhrnvlay+wj8znvny6CeX2t2rrG8Z35w=;
+        b=m3AWtSSKo/9MPhnYrRJfZivjO97gOYdl0aqcEgM8PuDQR6xLc2yaug4hKls+QQOHnW
+         l8tkD0+hiJiUxOljx5QBe9qOTI3m8GJ8GavbFwP9aJEFv8rn7Enu9Y05V3B7E/1FAlhP
+         7U7uUXFgTaN2RYAG4yLKB8wtd3zEWI6xuDcT0j01/kwtOr908ebm6LF7TbZ8scNTTWXT
+         7FZa15SRKDcbUy4+fNQ36D+NgXGqc/mq552KdxjxwKiK18oJsiikDeTAM5a1qLs3ScQx
+         p4OYCZbsqJPmLI9G1hs9xzKsar3dkPjRP8c4bxYpVgO0jgX2xizSklozDfp9Xf7pefJJ
+         eDMg==
+X-Gm-Message-State: AOAM531Vq2UHWyJV0cl06e+67XXy57pVFcEyoHf6uLvJWmM+MAnnvJwd
+        pHm6jeyK2Ox2G5t7mmd07p2XrLTcpTiw75BJd4roS0x/sx6l8ilMR/m0A427QlXu4lxr+fA8oOo
+        qS4GCh5LGXBXkm+XyCYbivaXv+Zim
+X-Received: by 2002:a1c:9a92:: with SMTP id c140mr2302122wme.167.1615368732286;
+        Wed, 10 Mar 2021 01:32:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz6CFSwlUzoJ4DXYOWb33EVxww5GlWKF+Jye6YtiyemSL6//yJ3H6N2hZHNqqPE7V+05jeDqd5YlGft8h3cH0w=
+X-Received: by 2002:a1c:9a92:: with SMTP id c140mr2302102wme.167.1615368732055;
+ Wed, 10 Mar 2021 01:32:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <1615357366-97612-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1615357366-97612-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Yauheni Kaliuta <ykaliuta@redhat.com>
+Date:   Wed, 10 Mar 2021 11:31:56 +0200
+Message-ID: <CANoWsw=ga1G6_XPhWmvE5QgUmmOVOEVzX_0HDYF9BZagvKD+Tw@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: fix warning comparing pointer to 0
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     shuah <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, netdev@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+On Wed, Mar 10, 2021 at 8:23 AM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
+>
+> Fix the following coccicheck warning:
+>
+> ./tools/testing/selftests/bpf/progs/test_global_func10.c:17:12-13:
+> WARNING comparing pointer to 0.
 
-The only user of libbpf_util.h is xsk.h. Move the barriers to xsk.h,
-and remove libbpf_util.h. The barriers are used as an implementation
-detail, and should not be considered part of the stable API.
+but it's ok from the C standard point of view
 
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- tools/lib/bpf/Makefile      |  1 -
- tools/lib/bpf/libbpf_util.h | 82 -------------------------------------
- tools/lib/bpf/xsk.h         | 68 +++++++++++++++++++++++++++++-
- 3 files changed, 67 insertions(+), 84 deletions(-)
- delete mode 100644 tools/lib/bpf/libbpf_util.h
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  tools/testing/selftests/bpf/progs/test_global_func10.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/test_global_func10.c b/tools/testing/selftests/bpf/progs/test_global_func10.c
+> index 61c2ae9..97b7031 100644
+> --- a/tools/testing/selftests/bpf/progs/test_global_func10.c
+> +++ b/tools/testing/selftests/bpf/progs/test_global_func10.c
+> @@ -14,7 +14,7 @@ struct Big {
+>
+>  __noinline int foo(const struct Big *big)
+>  {
+> -       if (big == 0)
+> +       if (!big)
+>                 return 0;
+>
+>         return bpf_get_prandom_u32() < big->y;
+> --
+> 1.8.3.1
+>
 
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index 8170f88e8ea6..f45bacbaa3d5 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -228,7 +228,6 @@ install_headers: $(BPF_HELPER_DEFS)
- 		$(call do_install,bpf.h,$(prefix)/include/bpf,644); \
- 		$(call do_install,libbpf.h,$(prefix)/include/bpf,644); \
- 		$(call do_install,btf.h,$(prefix)/include/bpf,644); \
--		$(call do_install,libbpf_util.h,$(prefix)/include/bpf,644); \
- 		$(call do_install,libbpf_common.h,$(prefix)/include/bpf,644); \
- 		$(call do_install,xsk.h,$(prefix)/include/bpf,644); \
- 		$(call do_install,bpf_helpers.h,$(prefix)/include/bpf,644); \
-diff --git a/tools/lib/bpf/libbpf_util.h b/tools/lib/bpf/libbpf_util.h
-deleted file mode 100644
-index 954da9b34a34..000000000000
---- a/tools/lib/bpf/libbpf_util.h
-+++ /dev/null
-@@ -1,82 +0,0 @@
--/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
--/* Copyright (c) 2019 Facebook */
--
--#ifndef __LIBBPF_LIBBPF_UTIL_H
--#define __LIBBPF_LIBBPF_UTIL_H
--
--#include <stdbool.h>
--
--#ifdef __cplusplus
--extern "C" {
--#endif
--
--/* Load-Acquire Store-Release barriers used by the XDP socket
-- * library. The following macros should *NOT* be considered part of
-- * the xsk.h API, and is subject to change anytime.
-- *
-- * LIBRARY INTERNAL
-- */
--
--#define __XSK_READ_ONCE(x) (*(volatile typeof(x) *)&x)
--#define __XSK_WRITE_ONCE(x, v) (*(volatile typeof(x) *)&x) = (v)
--
--#if defined(__i386__) || defined(__x86_64__)
--# define libbpf_smp_store_release(p, v)					\
--	do {								\
--		asm volatile("" : : : "memory");			\
--		__XSK_WRITE_ONCE(*p, v);				\
--	} while (0)
--# define libbpf_smp_load_acquire(p)					\
--	({								\
--		typeof(*p) ___p1 = __XSK_READ_ONCE(*p);			\
--		asm volatile("" : : : "memory");			\
--		___p1;							\
--	})
--#elif defined(__aarch64__)
--# define libbpf_smp_store_release(p, v)					\
--		asm volatile ("stlr %w1, %0" : "=Q" (*p) : "r" (v) : "memory")
--# define libbpf_smp_load_acquire(p)					\
--	({								\
--		typeof(*p) ___p1;					\
--		asm volatile ("ldar %w0, %1"				\
--			      : "=r" (___p1) : "Q" (*p) : "memory");	\
--		___p1;							\
--	})
--#elif defined(__riscv)
--# define libbpf_smp_store_release(p, v)					\
--	do {								\
--		asm volatile ("fence rw,w" : : : "memory");		\
--		__XSK_WRITE_ONCE(*p, v);				\
--	} while (0)
--# define libbpf_smp_load_acquire(p)					\
--	({								\
--		typeof(*p) ___p1 = __XSK_READ_ONCE(*p);			\
--		asm volatile ("fence r,rw" : : : "memory");		\
--		___p1;							\
--	})
--#endif
--
--#ifndef libbpf_smp_store_release
--#define libbpf_smp_store_release(p, v)					\
--	do {								\
--		__sync_synchronize();					\
--		__XSK_WRITE_ONCE(*p, v);				\
--	} while (0)
--#endif
--
--#ifndef libbpf_smp_load_acquire
--#define libbpf_smp_load_acquire(p)					\
--	({								\
--		typeof(*p) ___p1 = __XSK_READ_ONCE(*p);			\
--		__sync_synchronize();					\
--		___p1;							\
--	})
--#endif
--
--/* LIBRARY INTERNAL -- END */
--
--#ifdef __cplusplus
--} /* extern "C" */
--#endif
--
--#endif
-diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
-index a9fdea87b5cd..1d846a419d21 100644
---- a/tools/lib/bpf/xsk.h
-+++ b/tools/lib/bpf/xsk.h
-@@ -4,6 +4,7 @@
-  * AF_XDP user-space access library.
-  *
-  * Copyright(c) 2018 - 2019 Intel Corporation.
-+ * Copyright (c) 2019 Facebook
-  *
-  * Author(s): Magnus Karlsson <magnus.karlsson@intel.com>
-  */
-@@ -13,15 +14,80 @@
- 
- #include <stdio.h>
- #include <stdint.h>
-+#include <stdbool.h>
- #include <linux/if_xdp.h>
- 
- #include "libbpf.h"
--#include "libbpf_util.h"
- 
- #ifdef __cplusplus
- extern "C" {
- #endif
- 
-+/* Load-Acquire Store-Release barriers used by the XDP socket
-+ * library. The following macros should *NOT* be considered part of
-+ * the xsk.h API, and is subject to change anytime.
-+ *
-+ * LIBRARY INTERNAL
-+ */
-+
-+#define __XSK_READ_ONCE(x) (*(volatile typeof(x) *)&x)
-+#define __XSK_WRITE_ONCE(x, v) (*(volatile typeof(x) *)&x) = (v)
-+
-+#if defined(__i386__) || defined(__x86_64__)
-+# define libbpf_smp_store_release(p, v)					\
-+	do {								\
-+		asm volatile("" : : : "memory");			\
-+		__XSK_WRITE_ONCE(*p, v);				\
-+	} while (0)
-+# define libbpf_smp_load_acquire(p)					\
-+	({								\
-+		typeof(*p) ___p1 = __XSK_READ_ONCE(*p);			\
-+		asm volatile("" : : : "memory");			\
-+		___p1;							\
-+	})
-+#elif defined(__aarch64__)
-+# define libbpf_smp_store_release(p, v)					\
-+		asm volatile ("stlr %w1, %0" : "=Q" (*p) : "r" (v) : "memory")
-+# define libbpf_smp_load_acquire(p)					\
-+	({								\
-+		typeof(*p) ___p1;					\
-+		asm volatile ("ldar %w0, %1"				\
-+			      : "=r" (___p1) : "Q" (*p) : "memory");	\
-+		___p1;							\
-+	})
-+#elif defined(__riscv)
-+# define libbpf_smp_store_release(p, v)					\
-+	do {								\
-+		asm volatile ("fence rw,w" : : : "memory");		\
-+		__XSK_WRITE_ONCE(*p, v);				\
-+	} while (0)
-+# define libbpf_smp_load_acquire(p)					\
-+	({								\
-+		typeof(*p) ___p1 = __XSK_READ_ONCE(*p);			\
-+		asm volatile ("fence r,rw" : : : "memory");		\
-+		___p1;							\
-+	})
-+#endif
-+
-+#ifndef libbpf_smp_store_release
-+#define libbpf_smp_store_release(p, v)					\
-+	do {								\
-+		__sync_synchronize();					\
-+		__XSK_WRITE_ONCE(*p, v);				\
-+	} while (0)
-+#endif
-+
-+#ifndef libbpf_smp_load_acquire
-+#define libbpf_smp_load_acquire(p)					\
-+	({								\
-+		typeof(*p) ___p1 = __XSK_READ_ONCE(*p);			\
-+		__sync_synchronize();					\
-+		___p1;							\
-+	})
-+#endif
-+
-+/* LIBRARY INTERNAL -- END */
-+
- /* Do not access these members directly. Use the functions below. */
- #define DEFINE_XSK_RING(name) \
- struct name { \
+
 -- 
-2.27.0
+WBR, Yauheni
 
