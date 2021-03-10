@@ -2,95 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F397D333620
-	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 08:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E2D33363F
+	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 08:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229499AbhCJHKB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Mar 2021 02:10:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhCJHKA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Mar 2021 02:10:00 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B3DC06174A;
-        Tue,  9 Mar 2021 23:10:00 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id u18so7998200plc.12;
-        Tue, 09 Mar 2021 23:10:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ERttXFOKAolL/dPLIXf43Bj2Hlxeg+cuDD7+vsvIM68=;
-        b=JLQQfsXD04FNo9SSEmsx1JO5dzwzhX0+9pIGoP7CmyG7wI+qpYH1352kOTyor1P0XN
-         JLkbQfCz/7Fn6zLmM3VTKKlnbrnv4QScnsWmM1pWZtjgxnqsG5l2X+lL8nmmGORmj75z
-         MI/MNMnPyXaYg+aJMS+olMUxGvl7irpgCDNBVHteDooRo5uKdsZPxeOjMJqwm9LmvklA
-         aeBfdgbfNk1gk1yEZl8jr9UzMm8paOdI9RpwS2f2+NFR1SI7szwQ9rlvEwjvpJJKlqqm
-         R6rjoicZiYJF7Rw1qDOt9iXe2z6sSkrrN3pJQEHh/3shj3BwdxPbgJLCWuS3jkQDOnaS
-         fZng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ERttXFOKAolL/dPLIXf43Bj2Hlxeg+cuDD7+vsvIM68=;
-        b=qR7IyrYANhmpxjA9VYebXy0HNDDsHspqNLbDG+D/KpREhUMn5jVmAHk2blWEyG53Ya
-         Y8+sSWU2hZjK9x/r4DTJtIr9tFsVGNWSrlMZTu5CYaUq3/XMZnCYN5I7cOQKjDDXRDMA
-         Bck7e9J2xQ1BYra/jpmv/8xq60TfZ93hCdzxowWVtTb/N5KcXJMwMmrCtaGJPyt22sxO
-         O3Wax8cD3ZxOZiFt3gcBrmS58LieStD94cD510TkjQaHRltgdn/bvPnWX/e7mjZWIO3n
-         cvcO3lr7v/JvwgBlN6+TnakAq2j0Nwr2SohmBSLYYIjKzKUp1Uyr4vWpMirfM2DpCzBS
-         NwgQ==
-X-Gm-Message-State: AOAM531ehB/I9VpRBOg/vjE3CQ9vJXXATuszfqduJsrFp76jVNHbQ2Fq
-        4kcOfFmhwvNmkQP0yQW3SZ0=
-X-Google-Smtp-Source: ABdhPJyGyZqnvJc5j15JxBGozTVm1V3WS8aIUO0bl7tFkZuTrjR8UPF28q6TYAF0vjQqwrdmJGzrKg==
-X-Received: by 2002:a17:902:6845:b029:e4:4d0f:c207 with SMTP id f5-20020a1709026845b02900e44d0fc207mr1610088pln.36.1615360200106;
-        Tue, 09 Mar 2021 23:10:00 -0800 (PST)
-Received: from Leo-laptop-t470s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id v23sm880523pfn.71.2021.03.09.23.09.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Mar 2021 23:09:59 -0800 (PST)
-Date:   Wed, 10 Mar 2021 15:09:49 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     patchwork-bot+netdevbpf@kernel.org
-Cc:     netdev@vger.kernel.org, kuba@kernel.org, daniel@iogearbox.net,
-        yihung.wei@gmail.com, davem@davemloft.net, bpf@vger.kernel.org,
-        u9012063@gmail.com
-Subject: Re: [PATCH net] selftests/bpf: set gopt opt_class to 0 if get tunnel
- opt failed
-Message-ID: <20210310070949.GY2900@Leo-laptop-t470s>
-References: <20210309032214.2112438-1-liuhangbin@gmail.com>
- <161534026864.31790.14467574294253275820.git-patchwork-notify@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161534026864.31790.14467574294253275820.git-patchwork-notify@kernel.org>
+        id S229851AbhCJHSv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Mar 2021 02:18:51 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:38560 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229574AbhCJHSo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 10 Mar 2021 02:18:44 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R981e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0URFMQEU_1615360715;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0URFMQEU_1615360715)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 10 Mar 2021 15:18:40 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     shuah@kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] bpf: fix warning comparing pointer to 0
+Date:   Wed, 10 Mar 2021 15:18:34 +0800
+Message-Id: <1615360714-30381-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 01:37:48AM +0000, patchwork-bot+netdevbpf@kernel.org wrote:
-> Hello:
-> 
-> This patch was applied to netdev/net-next.git (refs/heads/master):
-> 
-> On Tue,  9 Mar 2021 11:22:14 +0800 you wrote:
-> > When fixing the bpf test_tunnel.sh genve failure. I only fixed
-> > the IPv4 part but forgot the IPv6 issue. Similar with the IPv4
-> > fixes 557c223b643a ("selftests/bpf: No need to drop the packet when
-> > there is no geneve opt"), when there is no tunnel option and
-> > bpf_skb_get_tunnel_opt() returns error, there is no need to drop the
-> > packets and break all geneve rx traffic. Just set opt_class to 0 and
-> > keep returning TC_ACT_OK at the end.
-> > 
-> > [...]
-> 
-> Here is the summary with links:
->   - [net] selftests/bpf: set gopt opt_class to 0 if get tunnel opt failed
->     https://git.kernel.org/netdev/net-next/c/557c223b643a
+Fix the following coccicheck warning:
 
-Hi bot,
+./tools/testing/selftests/bpf/progs/fentry_test.c:67:12-13: WARNING
+comparing pointer to 0.
 
-I think you are mixing this patch with commit
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ tools/testing/selftests/bpf/progs/fentry_test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-557c223b643a ("selftests/bpf: No need to drop the packet when there is no geneve opt")
+diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c b/tools/testing/selftests/bpf/progs/fentry_test.c
+index 5f645fd..52a550d 100644
+--- a/tools/testing/selftests/bpf/progs/fentry_test.c
++++ b/tools/testing/selftests/bpf/progs/fentry_test.c
+@@ -64,7 +64,7 @@ struct bpf_fentry_test_t {
+ SEC("fentry/bpf_fentry_test7")
+ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+ {
+-	if (arg == 0)
++	if (!arg)
+ 		test7_result = 1;
+ 	return 0;
+ }
+-- 
+1.8.3.1
 
-Thanks
-Hangbin
