@@ -2,211 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25764333AB0
-	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 11:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC45333BC6
+	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 12:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhCJKuz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Mar 2021 05:50:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230450AbhCJKum (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:50:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75F8064FC4;
-        Wed, 10 Mar 2021 10:50:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615373441;
-        bh=+hwjUkc3aKzHKd1d/ppZeQNCLgMD1GbFQ/2v76DduBk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GH2/6emwcBNuGLikyTXbISk/7Cd7kztAzlwnaXTnIcjPRVMAkKdwUm7JJ3Dh/sHZV
-         fEuuVspeBBoC8BpKJoSZaUTIn2qY1ecDYK8aruPg6JT0tv732CJg5iqjNgB6xWRD/t
-         +qXJfdCE9F80pVsTIV10UsvpRNo0pyHKW4Um0FtJw5THmYbN1d5Qpv6oCPD9ZXocPj
-         6RzZvQ9P9yMu+jAxgzcOHw+ZWgh6kqGD/JsoNHplvKv9yAFYBUy+NbrHeG08r0PdT5
-         tgXQZS8x4W2onsdg7bR8uFvBDTimr9OvrLR9I8a3p+ohe3nf6kMsg8lGlxmI5PfRHu
-         XsEhQh6ficglQ==
-Date:   Wed, 10 Mar 2021 19:50:36 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
-        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
-        kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
-Message-Id: <20210310195036.9aefe44bda0418484886c3a9@kernel.org>
-In-Reply-To: <20210309213442.fyhxozdcyxfjljih@dlxu-fedora-R90QNFJV>
-References: <161495873696.346821.10161501768906432924.stgit@devnote2>
-        <20210305191645.njvrsni3ztvhhvqw@maharaja.localdomain>
-        <20210306101357.6f947b063a982da9c949f1ba@kernel.org>
-        <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
-        <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
-        <20210309213442.fyhxozdcyxfjljih@dlxu-fedora-R90QNFJV>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231880AbhCJLtZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Mar 2021 06:49:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230517AbhCJLs4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Mar 2021 06:48:56 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD3EC061760
+        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 03:48:56 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id v14so15242964ilj.11
+        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 03:48:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OUZP8m10BICXg+bVPGfgJD/AJgcaU4lrh7k/xffSUxE=;
+        b=mbtgLm0pM+7qiwMv60dRKDKZJqODnkpoqbEPoXqEqIaq5AD66TqKZs3XHEKiTdSPBd
+         E6J3u/bTHxuSW6PPuPCqsU3aDrPURWPqHsrbCWzVBicwhtV/KwmL3qrhpGDRfhjaaiDp
+         yiEtfTMyHG8ISa0s1zbE7YNeG/nMKcc0hSOlA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OUZP8m10BICXg+bVPGfgJD/AJgcaU4lrh7k/xffSUxE=;
+        b=iyQJCxzyeS81M6EoULIXm/xKpTgRZdwpjmQM/ht9TL0r1hmjf/dh2e9CT3833wKg94
+         xQmC3MSAanTQ5t/YLAf0Z2NRQ1iSB8D6dkenT8XA9Yp6HwAYaPXuG9t9v4OwW1SE2LM7
+         9f88Ax6mAea+MALSM5NUk6BP8ayNVC1g47BjopFBe65sybyqqMHQ0fy8KYRdXPiZJVU5
+         WslNiImvvK2CPIUTFbR1Yx3rxgoxOJg4WouBrk8AbSHb9h92JvLVBTvozHhtwLwTf5d0
+         St4X7dyrF6hOWhGAOkJE0ttWvVOKERewUADEGuAnkOu2lavN04MPyLsML2dl3aji2zfZ
+         jx8g==
+X-Gm-Message-State: AOAM531Zaxmue4fK85/v0XLNC6Epe8IDvQdpaJJlJqQVKVnWRbZeXX4p
+        CdrKpW75GClpQ6S1ivGjZnzqWqjC0Wq7Cz7gTNLEXg==
+X-Google-Smtp-Source: ABdhPJzKDZ2w84WPy4/Sc+NOCtoscv5Ymh7J7VojvKq29V559mzpfigpeAYOQvyHM6D72hvNfq6B4YY6wtu3RfIQZ+U=
+X-Received: by 2002:a05:6e02:12b4:: with SMTP id f20mr2231220ilr.220.1615376935917;
+ Wed, 10 Mar 2021 03:48:55 -0800 (PST)
+MIME-Version: 1.0
+References: <20210310015455.1095207-1-revest@chromium.org> <f5cfb3d0-fab4-ee07-70de-ad5589db1244@fb.com>
+ <eb0a8485-9624-1727-6913-e4520c9d8c04@fb.com>
+In-Reply-To: <eb0a8485-9624-1727-6913-e4520c9d8c04@fb.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Wed, 10 Mar 2021 12:48:45 +0100
+Message-ID: <CABRcYmK8m21sb8dHbr1wLT_oTCBpvr2Zg-8KHwKuJ2Ak0iTZ_A@mail.gmail.com>
+Subject: Re: [BUG] One-liner array initialization with two pointers in BPF
+ results in NULLs
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 9 Mar 2021 13:34:42 -0800
-Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Wed, Mar 10, 2021 at 6:16 AM Yonghong Song <yhs@fb.com> wrote:
+> On 3/9/21 7:43 PM, Yonghong Song wrote:
+> > On 3/9/21 5:54 PM, Florent Revest wrote:
+> >> I noticed that initializing an array of pointers using this syntax:
+> >> __u64 array[] = { (__u64)&var1, (__u64)&var2 };
+> >> (which is a fairly common operation with macros such as BPF_SEQ_PRINTF)
+> >> always results in array[0] and array[1] being NULL.
+> >>
+> >> Interestingly, if the array is only initialized with one pointer, ex:
+> >> __u64 array[] = { (__u64)&var1 };
+> >> Then array[0] will not be NULL.
+> >>
+> >> Or if the array is initialized field by field, ex:
+> >> __u64 array[2];
+> >> array[0] = (__u64)&var1;
+> >> array[1] = (__u64)&var2;
+> >> Then array[0] and array[1] will not be NULL either.
+> >>
+> >> I'm assuming that this should have something to do with relocations
+> >> and might be a bug in clang or in libbpf but because I don't know much
+> >> about these, I thought that reporting could be a good first step. :)
+> >
+> > Thanks for reporting. What you guess is correct, this is due to
+> > relocations :-(
+> >
+> > The compiler notoriously tend to put complex initial values into
+> > rodata section. For example, for
+> >     __u64 array[] = { (__u64)&var1, (__u64)&var2 };
+> > the compiler will put
+> >     { (__u64)&var1, (__u64)&var2 }
+> > into rodata section.
+> >
+> > But &var1 and &var2 themselves need relocation since they are
+> > address of static variables which will sit inside .data section.
+> >
+> > So in the elf file, you will see the following relocations:
+> >
+> > RELOCATION RECORDS FOR [.rodata]:
+> > OFFSET           TYPE                     VALUE
+> > 0000000000000018 R_BPF_64_64              .data
+> > 0000000000000020 R_BPF_64_64              .data
 
-> Hi Masami,
-> 
-> Just want to clarify a few points:
-> 
-> On Mon, Mar 08, 2021 at 11:52:10AM +0900, Masami Hiramatsu wrote:
-> > On Sun, 7 Mar 2021 13:23:33 -0800
-> > Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > To help your understanding, let me explain.
-> > 
-> > If we have a code here
-> > 
-> > caller_func:
-> > 0x00 add sp, 0x20	/* 0x20 bytes stack frame allocated */
-> > ...
-> > 0x10 call target_func
-> > 0x15 ... /* return address */
-> > 
-> > On the stack in the entry of target_func, we have
-> > 
-> > [stack]
-> > 0x0e0 caller_func+0x15
-> > ... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
-> > 0x100 /* caller_func return address */
-> > 
-> > And when we put a kretprobe on the target_func, the stack will be
-> > 
-> > [stack]
-> > 0x0e0 kretprobe_trampoline
-> > ... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
-> > 0x100 /* caller_func return address */
-> > 
-> > * "caller_func+0x15" is saved in current->kretprobe_instances.first.
-> > 
-> > When returning from the target_func, call consumed the 0x0e0 and
-> > jump to kretprobe_trampoline. Let's see the assembler code.
-> > 
-> >         ".text\n"
-> >         ".global kretprobe_trampoline\n"
-> >         ".type kretprobe_trampoline, @function\n"
-> >         "kretprobe_trampoline:\n"
-> >         /* We don't bother saving the ss register */
-> >         "       pushq %rsp\n"
-> >         "       pushfq\n"
-> >         SAVE_REGS_STRING
-> >         "       movq %rsp, %rdi\n"
-> >         "       call trampoline_handler\n"
-> >         /* Replace saved sp with true return address. */
-> >         "       movq %rax, 19*8(%rsp)\n"
-> >         RESTORE_REGS_STRING
-> >         "       popfq\n"
-> >         "       ret\n"
-> > 
-> > When the entry of trampoline_handler, stack is like this;
-> > 
-> > [stack]
-> > 0x040 kretprobe_trampoline+0x25
-> > 0x048 r15
-> > ...     /* pt_regs */
-> > 0x0d8 flags
-> > 0x0e0 rsp (=0x0e0)
-> > ... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
-> > 0x100 /* caller_func return address */
-> > 
-> > And after returned from trampoline_handler, "movq" changes the
-> > stack like this.
-> > 
-> > [stack]
-> > 0x040 kretprobe_trampoline+0x25
-> > 0x048 r15
-> > ...     /* pt_regs */
-> > 0x0d8 flags
-> > 0x0e0 caller_func+0x15
-> > ... /* 0x20 bytes = 4 entries  are stack frame of caller_func */
-> > 0x100 /* caller_func return address */
-> 
-> Thanks for the detailed explanation. I think I understand kretprobe
-> mechanics from a somewhat high level (kprobe saves real return address
-> on entry, overwrites return address to trampoline, then trampoline
-> runs handler and finally resets return address to real return address).
-> 
-> I don't usually write much assembly so the details escape me somewhat.
-> 
-> > So at the kretprobe handler, we have 2 issues.
-> > 1) the return address (caller_func+0x15) is not on the stack.
-> >    this can be solved by searching from current->kretprobe_instances.
-> 
-> Yes, agreed.
-> 
-> > 2) the stack frame size of kretprobe_trampoline is unknown
-> >    Since the stackframe is fixed, the fixed number (0x98) can be used.
-> 
-> I'm confused why this is relevant. Is it so ORC knows where to find
-> saved return address in the frame?
+Right :) Thank you for the explanations Yonghong!
 
-No, because the kretprobe_trampoline is somewhat special. Usually, at the
-function entry, there is a return address on the top of stack, but
-kretprobe_trampoline doesn't have it.
-So we have to put a hint at the function entry to mark there should be
-a next return address. (and ORC unwinder must find it)
+> > Currently, libbpf does not handle relocation inside .rodata
+> > section, so they content remains 0.
 
-> > However, those solutions are only for the kretprobe handler. The stacktrace
-> > from interrupt handler hit in the kretprobe_trampoline still doesn't work.
-> > 
-> > So, here is my idea;
-> > 
-> > 1) Change the trampline code to prepare stack frame at first and save
-> >    registers on it, instead of "push". This will makes ORC easy to setup
-> >    stackframe information for this code.
-> 
-> I'm confused on the details here. But this is what Josh solves in his
-> patch, right?
+Just for my own edification, why is .rodata relocation not yet handled
+in libbpf ? Is it because of a read-only mapping that makes it more
+difficult ?
 
-I'm not so sure how objtool makes the ORC information. If it can trace the
-push/pop correctly, yes, it is solved.
+> > That is why you see the issue with pointer as NULL.
+> >
+> > With array size of 1, compiler does not bother to put it into
+> > rodata section.
+> >
+> > I *guess* that it works in the macro due to some kind of heuristics,
+> > e.g., nested blocks, etc, and llvm did not promote the array init value
+> > to rodata. I will double check whether llvm can complete prevent
+> > such transformation.
+> >
+> > Maybe in the future libbpf is able to handle relocations for
+> > rodata section too. But for the time being, please just consider to use
+> > either macro, or the explicit array assignment.
+>
+> Digging into the compiler, the compiler tries to make *const* initial
+> value into rodata section if the initial value size > 64, so in
+> this case, macro does not work either. I think this is how you
+> discovered the issue.
 
-> > 2) change the return addres fixup timing. Instead of using return value
-> >    of trampoline handler, before removing the real return address from
-> >    current->kretprobe_instances.
-> 
-> Is the idea to have `kretprobe_trampoline` place the real return address
-> on the stack (while telling ORC where to find it) _before_ running `call
-> trampoline_handler` ? So that an unwind from inside the user defined
-> kretprobe handler simply unwinds correctly?
+Indeed, I was using a macro similar to BPF_SEQ_PRINTF and this is how
+I found the bug.
 
-No, unless calling the trampoline_handler, we can not get the real return
-address. Thus, the __kretprobe_trampoline_handler() will call return address
-fixup function right before unlink the current->kretprobe_instances.
+> The llvm does not provide target hooks to
+> influence this transformation.
 
-> And to be extra clear, this would only work for stack_trace_save() and
-> not stack_trace_save_regs()?
+Oh, that is unfortunate :) Thanks for looking into it! I feel that the
+real fix would be in libbpf anyway and the rest is just workarounds.
 
-Yes, for the stack_trace_save_regs() and the stack-tracing inside the
-kretprobe'd target function, we still need a hack as same as orc_ftrace_find().
+> So, there are two workarounds,
+> (1).    __u64 param_working[2];
+>          param_working[0] = (__u64)str1;
+>          param_working[1] = (__u64)str2;
+> (2). BPF_SEQ_PRINTF(seq, "%s ", str1);
+>       BPF_SEQ_PRINTF(seq, "%s", str2);
 
-> 
-> > 3) Then, if orc_find() finds the ip is in the kretprobe_trampoline, it
-> >    checks the contents of the end of stackframe (at the place of regs->sp)
-> >    is same as the address of it. If it is, it can find the correct address
-> >    from current->kretprobe_instances. If not, there is a correct address.
-> 
-> What do you mean by "it" w.r.t. "is the same address of it"? I'm
-> confused on this point.
+(2) is a bit impractical for my actual usecase. I am implementing a
+bpf_snprintf helper (patch series Coming Soon TM) and I wanted to keep
+the selftest short with a few BPF_SNPRINTF() calls that exercise most
+format specifiers.
 
-Oh I meant,
+> In practice, if you have at least one non-const format argument,
+> you should be fine. But if all format arguments are constant, then
+> none of them should be strings.
 
-3) Then, if orc_find() finds the ip is in the kretprobe_trampoline, orc_find()
-    checks the contents of the end of stackframe (at the place of regs->sp)
-   is same as the address of the stackframe (Note that kretprobe_trampoline
-   does "push %sp" at first). If so, orc_find() can find the correct address
-   from current->kretprobe_instances. If not, there is a correct address.
+Just for context, this does not only happen for strings but also for
+all sorts of pointers, for example, when I try to do address lookup of
+global __ksym variables, which is important for my selftest.
 
-I need to see the orc unwinder carefully, orc_find() only gets the ip but
-to find stackframe, I think this should be fixed in the caller of orc_find().
+> Maybe we could change marco
+>     unsigned long long ___param[] = { args };
+> to declare an array explicitly and then have a loop to
+> assign each array element?
 
-Thank you,
+I think this would be a good workaround for now, indeed. :) I'll look
+into it today and send it as part of my bpf_snprintf series.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Thanks!
