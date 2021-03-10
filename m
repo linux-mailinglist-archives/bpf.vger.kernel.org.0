@@ -2,88 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB27334A3E
-	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 23:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 755F0334A4F
+	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 23:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbhCJV5y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Mar 2021 16:57:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232250AbhCJV5Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Mar 2021 16:57:25 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCBC5C061574
-        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 13:57:25 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id f145so3100786ybg.11
-        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 13:57:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=0LLAvLEt4Q/flZodga2OrYjGrK/Uqk3nAiMer6vSAug=;
-        b=bcVpxEBUs64nD0dbp/HHMiiAth2SF4KK9MHLxBqadkNzlNoW0kiAEEdYh+LNXvDqai
-         dvH6MiTS+/pPlcu0OlYXT4yxX3fiYCTGFo/1qaQUR09TZo+bH62AkPKUQ2XOGlMGekDM
-         pyHnOiL1r3fnJLRKGLIldci3jwdNgogcv7+XnsWWBviT96c0wEQ9S7wswgwc6KZ5DCnP
-         n6hI9jhaOz9f6F1+pRLVvqgWfLynzT5nCUXbn6s2OIQ0rKo2wB3oCnEDsyqjh3AepVL8
-         qZPLKL2bRtBBSxqYWc2bvxtX48TAunERX1EG3fVxbSAGPX6TCEe55LBhczzD0fMRHICF
-         AVXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=0LLAvLEt4Q/flZodga2OrYjGrK/Uqk3nAiMer6vSAug=;
-        b=TfTIvIiP/Dv2+djrCH6diNFkRKFwcuvPaO7tHZwuNdt2bsb+G01I11h+KrGUPzI2GN
-         SgcaT/hy9W8tnMwzfUDCBF12C6U2kcdSkLC8f3UMC7Er0rFd2/8fblLXkGDu58vKTSRj
-         +2PEoTyzOYM1wiMUebR1PV9MTPa4i0OOzh5WBHGxONDlTzFSHSKzu9KE93zx9cNio9uv
-         f3EfurpFzNL5j6OZ5N3IUtZTUggYEoYvbMSwMx5/BZ50r6ROpKaKzRCqjTS6XPyCm8SA
-         akDFXpfa53JVPvC5iJqL1hkFs5pbDNCBudnBccboyAL4VIUAoBxbkiOKAnODUYQSbTgJ
-         VyfQ==
-X-Gm-Message-State: AOAM530qTQVTXswfjS/MWj98XIrSPrWon3ZmDYphcqvX4I5uoIFt8zm5
-        1M0E3QjxsXsc/DrZsQaGwLL+pLQ9LZcOPwOqBso=
-X-Google-Smtp-Source: ABdhPJzgCcBtG3wH7WcAWdcPRL8QZV22tzE/VLSG6nIFbb+lk7+0ohyC1/GKBcUXHIj5CDXBNgvw9mf9Fl3rAtuukRo=
-X-Received: by 2002:a25:7d07:: with SMTP id y7mr6985710ybc.425.1615413445101;
- Wed, 10 Mar 2021 13:57:25 -0800 (PST)
+        id S231760AbhCJWAd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Mar 2021 17:00:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232845AbhCJWAI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Mar 2021 17:00:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 880AE64E27;
+        Wed, 10 Mar 2021 22:00:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615413608;
+        bh=N9nIpb+7khXuC8q/4agRC1J0DvRtQshCBUqPToq27v0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=WGru9/D22ou9yzpolPUZJLgHlTM2VfqoKSvlW6lHmnUViKdv6TfBh6ED9U5+Igv1t
+         cYcVKox2UKg0e6PZz23WKuyDVURhlJ4szfBM18oCox/JqGAyAz878j5k4SrVzFlLSY
+         DnpCydAH3KY6ku/q2kjJPxJEaIiO31b9PT1aiOCCIrqx19tKPJ4JovBjFavh3KYJo6
+         rM1eIzT4+hwLtbtU+4yTacckO1FRBgMKyUP+vZKpJvD5Ws8BA5UT138sABLyJmI23Q
+         mLQbg5b8BHBH6wZeN73Et0LraUg2SeaRL0u0NB1zUJ2wXbcp7JV8H0zKKO5jXu+4yv
+         SAfukmk7iqkgg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7F635609D0;
+        Wed, 10 Mar 2021 22:00:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Mar 2021 13:57:14 -0800
-Message-ID: <CAEf4BzZ2t_VbdtSde9uPEYNaggZLj3peyA8opHj1Ao_FO8AVrQ@mail.gmail.com>
-Subject: test_ima passing only first time
-To:     KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] selftests/bpf: fix warning comparing pointer to 0
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161541360851.31690.1803072687405130309.git-patchwork-notify@kernel.org>
+Date:   Wed, 10 Mar 2021 22:00:08 +0000
+References: <1615357366-97612-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1615357366-97612-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hey KP,
+Hello:
 
-test_ima is passing only the very first time I run it in my VM. Alexei
-earlier reported similar issues. If you run it second time without
-restarting the VM, you get the following:
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-10+0 records in
-10+0 records out
-10485760 bytes (10 MB, 10 MiB) copied, 0.00425121 s, 2.5 GB/s
-mke2fs 1.45.0 (6-Mar-2019)
-Discarding device blocks: done
-Creating filesystem with 10240 1k blocks and 2560 inodes
-Filesystem UUID: b9927426-1d29-458f-b2a0-8fe56455d209
-Superblock backups stored on blocks:
-        8193
+On Wed, 10 Mar 2021 14:22:46 +0800 you wrote:
+> Fix the following coccicheck warning:
+> 
+> ./tools/testing/selftests/bpf/progs/test_global_func10.c:17:12-13:
+> WARNING comparing pointer to 0.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> 
+> [...]
 
-Allocating group tables: done
-Writing inode tables: done
-Writing superblocks and filesystem accounting information: done
+Here is the summary with links:
+  - selftests/bpf: fix warning comparing pointer to 0
+    https://git.kernel.org/bpf/bpf-next/c/04ea63e34a2e
 
-./ima_setup.sh: line 53: /sys/kernel/security/ima/policy: Permission denied
-test_test_ima:PASS:skel_load 0 nsec
-test_test_ima:PASS:ringbuf 0 nsec
-test_test_ima:PASS:attach 0 nsec
-test_test_ima:PASS:mkdtemp 0 nsec
-test_test_ima:FAIL:71
-#128 test_ima:FAIL
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Do you see it on your side? Do you have any idea what's wrong?
 
-Also, see that super-descriptive `test_test_ima:FAIL:71` line? That's
-the reason I'm always bitching about CHECK_FAIL() use. At least this
-one is not inside some loop.
-
--- Andrii
