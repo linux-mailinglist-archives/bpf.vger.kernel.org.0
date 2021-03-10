@@ -2,76 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A566C33323F
-	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 01:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A73B7333281
+	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 01:39:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhCJAU0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Mar 2021 19:20:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230372AbhCJAUI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Mar 2021 19:20:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6982C64FD2;
-        Wed, 10 Mar 2021 00:20:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615335608;
-        bh=LexbJovwWtLGbZmuJDjjQa+ZkyKN8g10bCy4WoOO6zM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=KvGhmx+D8Bfs3tDiXwHaTSPqvIbBHRj8n2YOFoChhcajwgfK9HFbF023dEBxg7mhI
-         BJxQTCri2+9CD/K3LsB3oghHhauBzYT6fwMS+HWCM3ix5W5AL8dYd+SuNFZvDtSFCQ
-         /bA4AZ5nHBF6dDtj7tnuTiQj0bqqvAZHh0CmECANLS+00pnX40s7xJFS0DGHllvjSK
-         Kja4KUWvExGKbeR0MV+U/umtCGP8ZT+abL2fbB0TX4W5ruUDLempQIFxDSRI+vsknr
-         UuLIL0gZBdlTNebhvpdqM/vwCOqByQbCJ04opBdCr6F1k34fRCMlFOoQyayq3ge7CS
-         CdwGhqkzwUUbg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 57C7E609EC;
-        Wed, 10 Mar 2021 00:20:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230183AbhCJAiy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Mar 2021 19:38:54 -0500
+Received: from www62.your-server.de ([213.133.104.62]:43776 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhCJAi3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Mar 2021 19:38:29 -0500
+Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lJmrs-0008uO-CS; Wed, 10 Mar 2021 01:38:28 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, john.fastabend@gmail.com, ast@kernel.org,
+        willemb@google.com, edumazet@google.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH net 0/2] Fix ip6ip6 crash for collect_md skbs
+Date:   Wed, 10 Mar 2021 01:38:08 +0100
+Message-Id: <cover.1615331093.git.daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v6 0/2] Optimize bpf_redirect_map()/xdp_do_redirect()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161533560835.32666.14006286141763345790.git-patchwork-notify@kernel.org>
-Date:   Wed, 10 Mar 2021 00:20:08 +0000
-References: <20210308112907.559576-1-bjorn.topel@gmail.com>
-In-Reply-To: <20210308112907.559576-1-bjorn.topel@gmail.com>
-To:     =?utf-8?b?QmrDtnJuIFTDtnBlbCA8Ympvcm4udG9wZWxAZ21haWwuY29tPg==?=@ci.codeaurora.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, bjorn.topel@intel.com,
-        maciej.fijalkowski@intel.com, hawk@kernel.org, toke@redhat.com,
-        magnus.karlsson@intel.com, john.fastabend@gmail.com,
-        kuba@kernel.org, davem@davemloft.net
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26103/Tue Mar  9 13:03:37 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Fix a NULL pointer deref panic I ran into for regular ip6ip6 tunnel devices
+when collect_md populated skbs were redirected to them for xmit. See patches
+for further details, thanks!
 
-This series was applied to bpf/bpf-next.git (refs/heads/master):
+Daniel Borkmann (2):
+  net: Consolidate common blackhole dst ops
+  net, bpf: Fix ip6ip6 crash with collect_md populated skbs
 
-On Mon,  8 Mar 2021 12:29:05 +0100 you wrote:
-> Hi XDP-folks,
-> 
-> This two patch series contain two optimizations for the
-> bpf_redirect_map() helper and the xdp_do_redirect() function.
-> 
-> The bpf_redirect_map() optimization is about avoiding the map lookup
-> dispatching. Instead of having a switch-statement and selecting the
-> correct lookup function, we let bpf_redirect_map() be a map operation,
-> where each map has its own bpf_redirect_map() implementation. This way
-> the run-time lookup is avoided.
-> 
-> [...]
+ include/net/dst.h | 11 +++++++++
+ net/core/dst.c    | 59 +++++++++++++++++++++++++++++++++--------------
+ net/ipv4/route.c  | 45 +++++++-----------------------------
+ net/ipv6/route.c  | 36 ++++++++---------------------
+ 4 files changed, 70 insertions(+), 81 deletions(-)
 
-Here is the summary with links:
-  - [bpf-next,v6,1/2] bpf, xdp: make bpf_redirect_map() a map operation
-    https://git.kernel.org/bpf/bpf-next/c/e6a4750ffe9d
-  - [bpf-next,v6,2/2] bpf, xdp: restructure redirect actions
-    https://git.kernel.org/bpf/bpf-next/c/ee75aef23afe
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+-- 
+2.21.0
 
