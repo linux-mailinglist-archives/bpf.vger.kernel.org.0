@@ -2,123 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2474B3348E1
-	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 21:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1C83348EE
+	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 21:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhCJU0e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Mar 2021 15:26:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52626 "EHLO
+        id S230525AbhCJUdi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Mar 2021 15:33:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbhCJU0B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Mar 2021 15:26:01 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F11AC061574;
-        Wed, 10 Mar 2021 12:26:01 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id p186so19281793ybg.2;
-        Wed, 10 Mar 2021 12:26:01 -0800 (PST)
+        with ESMTP id S229602AbhCJUdY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Mar 2021 15:33:24 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CABC061574;
+        Wed, 10 Mar 2021 12:33:23 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d8so9056766plg.10;
+        Wed, 10 Mar 2021 12:33:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ONufA5MfqwwxL6Ms/dM+N1X8h2zLIoC9I/XMghgTWzo=;
-        b=ooVsfrRNF0h2YbIH2/C3sE+h9AFoh1F6bcJU6wUL8jSPizyRtXAX3aPQn66g2xehA7
-         Q/GuV92CURL/Z9PBmxVMHtffev+uckrZ9L2bQt7QdY60x9DfZtktVEvUXKEHaiSIyvHY
-         p3e+D9dsL3TlOLm4Gn3kGmLEGmQseKniGTI0QEK0S0TSA04RNMHBm9hZrMiozYGhFpKl
-         TmMEPJREs+f2QSQrq/ZReMYF/a7U5hoKkrUUbX3UJMAqaLFFWnPh7IygTVYDkprU15ZP
-         h+vm9X7mTe5M/M7PUWu8syikuX5MWzD94vq6P2lH9kuZzWACTwF0bkZrvxZn3pOI533i
-         ruXg==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=pUa3+6lMCh9OsEEA0VH4ygBAOSBRoM3nA1zgeCu6wVI=;
+        b=rg8UwETO4XJrE9SHJd9evgunYIpfaPDNEAniCBv52ARsPQ0Pzg1lKcjrLGwv+SxEH8
+         60M8Ve4BU9oOkAnp8kCuggBZkJKVhOaV78OsEXGgyB7D8uI9xCq3s+Y7S+gR/dHzFYMu
+         JEBEZGlRY04LFg6qKN7x2Xt8U5mFQOmAho5a2vfxqeuOfoCk2FqPFp2RkscZri/ut/hl
+         o7MBcwMVDmzA5wubrdX99sP1TM4t0hBc1FYRFA4n14drvoHKApCGrWMbOFtxjEfobja9
+         QYoCjeyVutdcLMfhce5zMma0MlzJb6nbZRyJ8aZvnJlLGosUUsl4+hca66KXCSTNBk4C
+         0h4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ONufA5MfqwwxL6Ms/dM+N1X8h2zLIoC9I/XMghgTWzo=;
-        b=bvB/wADqiOx+4VLkls1CZwKocF6whRTctt9q2CIYiMkpcJDxXm2hS8tI60RPF/vu8K
-         Y6r3ImppK9Fn/eAt1vBHOEAz5d6ZxZzWp7JcLNNcs0pYIWa3Cmx+idRBuwjZ8GDvX0ES
-         TAnWkZKE1bTVAosUxChL6r9EBwl2NIFZv6xsm2eZyltgy+7Hy6FGZ3GnfKXkYEu6mlt9
-         OMOTM12dUR0tqZsFIkcAhFbtol8V0D/cVTK1omcdgujBZ3jlT7RalIDS/OfaEFfamcxP
-         OnsicbJzR9LOGiCamT0IJFdXxYkmzTY6iq5vg4T/9J4kYcd4ZBRFMVby2rED6MyOQ4gq
-         05Sw==
-X-Gm-Message-State: AOAM531GVwfFq/dE8igH5gTuOpHersD1SNG3fKRr6qBv26kvdOr0Rxp6
-        nV8ObrDTMUzKUp/VDaUR3uub4pgeQPqgyh8+HyY=
-X-Google-Smtp-Source: ABdhPJyH1L+L4u+pwy9n8pOOWvxtrNq+cx3ENraKN9zVzP4hvtIqplVA9t2cYKFTWnqsd68E4wZlU6TYcHF+mQ2sEGA=
-X-Received: by 2002:a25:7d07:: with SMTP id y7mr6509181ybc.425.1615407960310;
- Wed, 10 Mar 2021 12:26:00 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=pUa3+6lMCh9OsEEA0VH4ygBAOSBRoM3nA1zgeCu6wVI=;
+        b=NIZmy9CPWAt+1HLDHLjKcWFkqSV6r3Qf0nGUkmuPrMBU7aiy+RCadX/dZyvvYRuxMI
+         iq6pj4TdnKlfg25q+uvWn+cXVUaagCj8YViscJ6DW9LGuydcKiYmPya1L0XDAcExRoUL
+         lOXZCRYE7jNVlzF3L9GQBle4KpZw5cOg6hIVDA+CYeFikkCaflCoabobQK9rhI8ykN3R
+         rzI3AURSOt5vg/a7IoVvKqMAOEGmfslHxyCbSgSOnHJ3wCNaUBGJ7qqol16AyZEREAz7
+         3j2nn1B03HMUEgcSZbiiJhVg08Aw3JumG3xd6xUSVujenLqgz2wmXDcsOVlqEvXAyNpf
+         b0pA==
+X-Gm-Message-State: AOAM5314TmkulFG8EtR5FyvuVcIm2CBqOQB04LEReXMOX5rdbudH30Eg
+        xq0FiJ2YmOqlYipXhLNYAjg=
+X-Google-Smtp-Source: ABdhPJwg3mB5jAeRZERraMNPZDOvziwbLUWHkqXWMCPqlZ8Oy67Th3RiPoxnSvjqcY3v/DxVh5X/CA==
+X-Received: by 2002:a17:90a:ec15:: with SMTP id l21mr5184321pjy.164.1615408403205;
+        Wed, 10 Mar 2021 12:33:23 -0800 (PST)
+Received: from localhost ([122.179.55.249])
+        by smtp.gmail.com with ESMTPSA id o123sm376601pfb.16.2021.03.10.12.33.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 10 Mar 2021 12:33:22 -0800 (PST)
+Date:   Thu, 11 Mar 2021 02:03:14 +0530
+From:   Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+To:     davem@davemloft.net
+Cc:     yoshfuji@linux-ipv6.org, bpf@vger.kernel.org, dsahern@kernel.org,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        bkkarthik@pesu.pes.edu, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net: ipv6: route.c:fix indentation
+Message-ID: <20210310203314.wk6zjxyo6ax5chbd@kewl-virtual-machine>
 MIME-Version: 1.0
-References: <20210310201550.170599-1-iii@linux.ibm.com>
-In-Reply-To: <20210310201550.170599-1-iii@linux.ibm.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Mar 2021 12:25:49 -0800
-Message-ID: <CAEf4BzY0++YuU7+a3vSfWWZNLoov7mu7Q1ty4FqqH78gkqgqQw@mail.gmail.com>
-Subject: Re: [PATCH v4 dwarves] btf: Add support for the floating-point types
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 12:16 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->
-> Some BPF programs compiled on s390 fail to load, because s390
-> arch-specific linux headers contain float and double types.
->
-> Fix as follows:
->
-> - Make the DWARF loader fill base_type.float_type.
->
-> - Introduce the --btf_gen_floats command-line parameter, so that
->   pahole could be used to build both the older and the newer kernels.
->
-> - libbpf introduced the support for the floating-point types in commit
->   986962fade5, so update the libbpf submodule to that version and use
->   the new btf__add_float() function in order to emit the floating-point
->   types when not in the compatibility mode.
->
-> - Make the BTF loader recognize the new BTF kind.
->
-> Example of the resulting entry in the vmlinux BTF:
->
->     [7164] FLOAT 'double' size=8
->
-> when building with:
->
->     LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1} --btf_gen_floats
->
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
+The series of space has been replaced by tab space
+wherever required.
 
-So it looks good to me overall, but here's the question about using
-this --btf-gen-floats flag from link-vmlinux.sh script. If you specify
-that flag for an old pahole, it will probably error out, right? So
-that means we'll need to do feature detection for pahole supported
-features, right?..
+Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+---
+ net/ipv6/route.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
->
-> v1: https://lore.kernel.org/dwarves/20210306022203.152930-1-iii@linux.ibm.com/
-> v1 -> v2: Introduce libbpf compatibility level command-line parameter.
->           The code should now work for both bpf-next/master and
->           v5.12-rc2.
->
-> v2: https://lore.kernel.org/dwarves/20210308235913.162038-1-iii@linux.ibm.com/
-> v2 -> v3: Use the feature flag (--encode_btf_kind_float) instead of the
->           libbpf version flag.
->
-> v3: https://lore.kernel.org/dwarves/20210310141517.169698-1-iii@linux.ibm.com/
-> v3 -> v4: Rename the flag to --btf_gen_floats.
->
->  btf_loader.c       | 21 +++++++++++++++++++--
->  dwarf_loader.c     | 11 +++++++++++
->  lib/bpf            |  2 +-
->  libbtf.c           | 36 ++++++++++++++++++++++++++++++++++--
->  libbtf.h           |  1 +
->  man-pages/pahole.1 |  5 +++++
->  pahole.c           |  8 ++++++++
->  7 files changed, 79 insertions(+), 5 deletions(-)
->
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 1536f4948e86..60058f3dcc48 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -2378,7 +2378,7 @@ u32 rt6_multipath_hash(const struct net *net, const struct flowi6 *fl6,
+ 
+ 			memset(&hash_keys, 0, sizeof(hash_keys));
+ 
+-                        if (!flkeys) {
++			if (!flkeys) {
+ 				skb_flow_dissect_flow_keys(skb, &keys, flag);
+ 				flkeys = &keys;
+ 			}
+@@ -2518,20 +2518,20 @@ struct dst_entry *ip6_route_output_flags(struct net *net,
+ 					 struct flowi6 *fl6,
+ 					 int flags)
+ {
+-        struct dst_entry *dst;
+-        struct rt6_info *rt6;
++	struct dst_entry *dst;
++	struct rt6_info *rt6;
+ 
+-        rcu_read_lock();
+-        dst = ip6_route_output_flags_noref(net, sk, fl6, flags);
+-        rt6 = (struct rt6_info *)dst;
+-        /* For dst cached in uncached_list, refcnt is already taken. */
+-        if (list_empty(&rt6->rt6i_uncached) && !dst_hold_safe(dst)) {
+-                dst = &net->ipv6.ip6_null_entry->dst;
+-                dst_hold(dst);
+-        }
+-        rcu_read_unlock();
++	rcu_read_lock();
++	dst = ip6_route_output_flags_noref(net, sk, fl6, flags);
++	rt6 = (struct rt6_info *)dst;
++	/* For dst cached in uncached_list, refcnt is already taken. */
++	if (list_empty(&rt6->rt6i_uncached) && !dst_hold_safe(dst)) {
++		dst = &net->ipv6.ip6_null_entry->dst;
++		dst_hold(dst);
++	}
++	rcu_read_unlock();
+ 
+-        return dst;
++	return dst;
+ }
+ EXPORT_SYMBOL_GPL(ip6_route_output_flags);
+ 
+-- 
+2.17.1
 
-[...]
