@@ -2,153 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336673347D0
-	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 20:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C893347EA
+	for <lists+bpf@lfdr.de>; Wed, 10 Mar 2021 20:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229526AbhCJTUU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Mar 2021 14:20:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
+        id S233418AbhCJT2A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Mar 2021 14:28:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233587AbhCJTTw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Mar 2021 14:19:52 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93E73C061760
-        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 11:19:52 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id c131so19025783ybf.7
-        for <bpf@vger.kernel.org>; Wed, 10 Mar 2021 11:19:52 -0800 (PST)
+        with ESMTP id S232633AbhCJT1b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Mar 2021 14:27:31 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE3CC061760;
+        Wed, 10 Mar 2021 11:27:31 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id l8so19032593ybe.12;
+        Wed, 10 Mar 2021 11:27:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=6+DonT4+YN4qNZ+1D8ZcSb/P3Lp+yMkYFiQdLi4vXAQ=;
-        b=a1WpytEdrs7N4H1cm+5D4FNgzwKpnhpIarWsYVrM2bTTJy6gFh7/0OdTw3AUfGrZYN
-         mL/1doMWieHPNOarZn2RBeKroj9QCMDL69TJpzAKNnmt+xvKf9bpUJpNVxRMRujomYWJ
-         Jwo+5D0h5tJZSRnIgSmNtDIhAG3uBNEQ1eOIySOPmTnoSjM7pQhqD90YmQm12okCO225
-         m7XfuMfRQ8GKYQu3yd/UM0lCvyDx77inLbCW9Zheg91Wbc1LHvfCf5lpIocKnv6GL/zl
-         XPyUoUZbiAXGyj/DwnDPpc0pyJutWjq0lwY13wHgzi1cBLMsrEKJEcIIH074l1Kvn7OT
-         KLJQ==
+        bh=+afERrZACBSDM/epkPt76C1oUwcdWvQIXn6rl1uX6xE=;
+        b=meDgZjxzmUwSC3zLETkZNMT7Ybdo3bvmOhD77SiLuAs7Xonzl175nWPSkzjiTmPHTU
+         U1UPO/Lo+FPtSfAq3NTT1ZPnbZaLryKvhvSxI90eZ8Qnta7KU893tNT1uyI9wsmTOgBp
+         r+WZGQTX0Onb33p0f1ostgbk/Wa59p5wzEq/pcHUKrTjgm7WiiuM15gOsdbYjw4v1L9m
+         tgzdrKhg2xfuZHdvVlIetSibSE+i+OTjGsIcjecojtR9jowPajWayxVl7eh2CWQBgKke
+         mEO/yq7H5ETs/YJQ51tUWz8c7bPS85o3H/9U/VsVyt3IC/ZvCC5+ynkSGUfQYV32l0kX
+         77Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6+DonT4+YN4qNZ+1D8ZcSb/P3Lp+yMkYFiQdLi4vXAQ=;
-        b=nGKQHp/NipKXHk8OYmfcgJB7H8Eh+T3v4PLpH4ZIcd8pedWfk0Abfi3LNk40X2CaUr
-         3bBRTDtjOUfvvTaMor3LvObnqBywsWNfPkHwTGhRfct32rxae8D8UE77+ll7c+z9Qlly
-         g9naugEDbt9aYdP7xq03u+U2NqaY5yNz7pLJ8ZfhAvsyNgQ0QNcovFlia1UclJRczS75
-         g5xewgx+1lVLrypma0HymopZAFjp+VnmlGLT9VjxHoOiy3xopJ6L4PkAh9Dbw9Pk4D6V
-         xFhKEofE8925c4b4mUeRGnSP5Wh17vILsQh1eo/RP7IQx1YO2e4QXp8P28CbxiFlSkm2
-         QArQ==
-X-Gm-Message-State: AOAM532XokysCH0Hy+UiAHhC9FarMGv4D8yuMKBmk9HkhuyjWq2nPSwK
-        R8ZatICSE5xP52L/d6igR2dXjhhNkqcVQZadgJM=
-X-Google-Smtp-Source: ABdhPJylXCp/j2lvzJ/vaaFEvLIt5cuG/+uK/XenUEQmqee5wPsVWWbMrloWGtdVoGqbzhxN/lwBHjQ84SsWURSOcaA=
-X-Received: by 2002:a25:40d8:: with SMTP id n207mr6230608yba.459.1615403991671;
- Wed, 10 Mar 2021 11:19:51 -0800 (PST)
+        bh=+afERrZACBSDM/epkPt76C1oUwcdWvQIXn6rl1uX6xE=;
+        b=OPTrQMiQk6K0Tk043o4NKlwhbTLDB1RSTWw6QHiN3GW1XC2+gYkmaZv25AOSsl0pHR
+         QGWxBr1jNvcAQM6aKEcSjAa3g/26FYbiBTEorJGDMY9Pu0GaYXp37ZWjzsb6OCUSoDHz
+         9hSQu4NSLVUpgNorOT260ceMViekfPCiQEn4RxrCgwgw8z+tfGfeA5kuQ8ymH4prZgKL
+         N7+hSNhmgk4ueuZ8Py5OLXFrlutSR/qy3JY7qtkWg0upPjNFpIhsdkJK2WBiO3LiGYoo
+         0pVfAHXfJFcvkZZHjSCR59aopdeibhyq2WKP9QuXQj2oOaK6Uy+sTIgoAFTiIf/zHUu3
+         c8gQ==
+X-Gm-Message-State: AOAM533ZodqpJecMWJ+Y63r3FX6gDaU0x/vSYwwP+XPDpfaJfBD97rmm
+        FozbAqkE4OnATBsSELaxbIwjbp8oGMnGTc75MvE=
+X-Google-Smtp-Source: ABdhPJxjRRGLt4SjZNOyHVYpmZFX8W7chBMJkEM/yl7xRcCnjW+yG5Xnn4WUTfGvs/WTZ/MLjkt4tpkwFwA40Mqc004=
+X-Received: by 2002:a25:cc13:: with SMTP id l19mr6293249ybf.260.1615404450455;
+ Wed, 10 Mar 2021 11:27:30 -0800 (PST)
 MIME-Version: 1.0
-References: <CADmGQ+0dDjfs6UL63m3vLAfu+GHgSFdMO+Rmz_jk+0R9Wva2Tw@mail.gmail.com>
- <20210303181457.172434-1-rafaeldtinoco@ubuntu.com> <CAEf4BzZE_Ss7-cNdVpKJbC57mr2V_-OMcC9fvHw7XTntn3K2jA@mail.gmail.com>
- <043B1B9B-EEF7-49CD-88AF-29A2A3E97304@ubuntu.com> <67E3C788-2835-4793-8A9C-51C5D807C294@ubuntu.com>
-In-Reply-To: <67E3C788-2835-4793-8A9C-51C5D807C294@ubuntu.com>
+References: <20210205124020.683286-1-jolsa@kernel.org> <20210205124020.683286-2-jolsa@kernel.org>
+ <5a48579b-9aff-72a5-7b25-accb40c4dd52@freenet.de>
+In-Reply-To: <5a48579b-9aff-72a5-7b25-accb40c4dd52@freenet.de>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Mar 2021 11:19:40 -0800
-Message-ID: <CAEf4BzaPytBkMqDh15eLPskOj_+FQa0ta2G+BToEn1pSwMGpfA@mail.gmail.com>
-Subject: Re: [BPF CO-RE clarification] Use CO-RE on older kernel versions.
-To:     Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Vamsi Kodavanty <vamsi@araalinetworks.com>,
-        bpf <bpf@vger.kernel.org>
+Date:   Wed, 10 Mar 2021 11:27:19 -0800
+Message-ID: <CAEf4BzYYG=3ZEu70CV0t0+T583082=FcytCv=jg2b83QaqyQRA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/4] tools/resolve_btfids: Build libbpf and
+ libsubcmd in separate directories
+To:     =?UTF-8?B?VmlrdG9yIErDpGdlcnNrw7xwcGVy?= 
+        <viktor_jaegerskuepper@freenet.de>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 9, 2021 at 9:58 PM Rafael David Tinoco
-<rafaeldtinoco@ubuntu.com> wrote:
+On Wed, Mar 10, 2021 at 9:35 AM Viktor J=C3=A4gersk=C3=BCpper
+<viktor_jaegerskuepper@freenet.de> wrote:
 >
+> Hi,
 >
+> > Setting up separate build directories for libbpf and libpsubcmd,
+> > so it's separated from other objects and we don't get them mixed
+> > in the future.
+> >
+> > It also simplifies cleaning, which is now simple rm -rf.
+> >
+> > Also there's no need for FEATURE-DUMP.libbpf and bpf_helper_defs.h
+> > files in .gitignore anymore.
+> >
+> > Acked-by: Song Liu <songliubraving@fb.com>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
 >
-> On 5 Mar 2021, at 03:32, Rafael David Tinoco <rafaeldtinoco@ubuntu.com> w=
-rote:
+> when I invoke 'git status' on the master branch of my local git repositor=
+y
+> (cloned from stable/linux.git), which I have used to compile several kern=
+els,
+> it lists two untracked files:
 >
+>         tools/bpf/resolve_btfids/FEATURE-DUMP.libbpf
+>         tools/bpf/resolve_btfids/bpf_helper_defs.h
 >
-> Specially the attach_kprobe_legacy() function:
+> 'git status' doesn't complain about these files with v5.11, and I can't g=
+et rid
+> of them by 'make clean' with v5.11 or v5.12-rc1/rc2. So I used 'git bisec=
+t' and
+> found that this is caused by commit fc6b48f692f89cc48bfb7fd1aa65454dfe9b2=
+d77,
+> which links to this thread.
 >
-> https://github.com/rafaeldtinoco/portablebpf/blob/master/mine.c#L31
+> Looking at the diff it's obvious because of the change in the .gitignore =
+file,
+> but I don't know why these files are there and I have never touched anyth=
+ing in
+> the 'tools' directory.
 >
-> I wanted to reply here in case others also face this.
->
->
-> Great, glad it worked out. It would be great if you could contribute
-> legacy kprobe support for libbpf as a proper patch, since it probably
-> would be useful for a bunch of other people stuck with old kernels.
->
->
->
-> I=E2=80=99m sorry to come back to this but I=E2=80=99d like to clarify so=
-mething, if you allow me.
->
-> If I recompile old kernels (4.x.y) with the =E2=80=9Cscripts/link-vmlinux=
-.sh" patch (setting $btf_vmlinux_bin_o and gen_btf()) I=E2=80=99m able to u=
-se "pahole -J" to generate the .BTF ELF section from a vmlinux file (out of=
- the debugging package, for example) using its DWARF data.
->
-> Using objcopy, I=E2=80=99m also able to extract only the .BTF ELF section=
- from it and use the generated file (smaller) as a base BTF file for libbpf=
- (since old kernels don=E2=80=99t have /sys/kernel/btf/vmlinux interface).
->
-> So, in my case, with this, I can get an ~30MB ELF file (from a an almost =
-600MB vmlinux) with BTF data that can feed libbpf to do needed relocations =
-for my BPF object. Execution works perfectly and I can have the same libbpf=
- based code to run in a 4.15 and a 5.8 kernel, smooth.
+> Can I savely delete the files? Do I even have to delete them before I com=
+pile
+> v5.12-rcX?
 
-Surprised that .BTF is so big at 30MB. It depends on kernel config you
-are using, but that's still few times bigger than what I normally see.
-
-Otherwise, yeah, that's how it should work (except see the patch that
-adds core_btf_path and discussion around it).
-
->
-> What is not entirely clear to me yet is =E2=80=A6 why can=E2=80=99t I use=
- a =E2=80=9Cvmlinux=E2=80=9D file from a previous compiled kernel (that has=
- not been compiled with a changed link-vmlinux.sh file) and do the same: ge=
-nerate the BTF section from its DWARF data with pahole and use generated fi=
-le (or the BTF section extract only) as input to libbpf.
->
-> I mean, I can do, but it does not work=E2=80=A6 Assumption: it only works=
- for the ones I build with patched link-vmlinux.sh (not the ones already bu=
-ilt and provided as packages). The code execution output (debug=3D1 on libb=
-pf) is at : https://pastebin.ubuntu.com/p/bx6tygY8p2/
->
-
-From what I see all the CO-RE relocations applied successfully (even
-though all the offsets stayed the same, so presumably you compiled
-your BPF program with vmlinux.h from the exact same kernel you are
-running it on?). Are you sure that vmlinux image you are providing
-corresponds to the actual kernel you are running on?
-
-I'd start by comparing libbpf logs for vmlinux you get with modified
-link-vmlinux.sh script and with just explicit pahole -J. If all the
-CO-RE parts are identical, the problem is somewhere else most
-probably.
-
-I see "libbpf: load bpf program failed: Invalid argument" in that log,
-which means that CO-RE was done and successful and only when trying to
-load your BPF program into the kernel it failed.
-
-
-> The difference for a new 4.x.y kernel and the existing ones (older packag=
-ed kernels) is the vmlinux_link() function linking the BTF object file in e=
-ach of the 3 tmp_kallsyms steps.
->
-> Is there a way I can get the already existing kernels to work with only p=
-ahole DWARF to BTF conversion data ?
-
-Yes and you've found it, I think. There is no difference to libbpf and
-.BTF itself whether it's run in link-vmlinux.sh or with explicit
-pahole -J. Look for the problem somewhere else.
+yes, those were auto-generated files. You can safely remove them.
 
 >
-> Thank you!
+> Thanks,
+> Viktor
 >
-> -rafaeldtinoco
->
+
+[...]
