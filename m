@@ -2,119 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A2C337158
-	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 12:29:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1A2337167
+	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 12:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbhCKL2f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Mar 2021 06:28:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48596 "EHLO
+        id S232613AbhCKLbs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Mar 2021 06:31:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232519AbhCKL2F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Mar 2021 06:28:05 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647C7C061574
-        for <bpf@vger.kernel.org>; Thu, 11 Mar 2021 03:28:05 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id 15so1674590ljj.0
-        for <bpf@vger.kernel.org>; Thu, 11 Mar 2021 03:28:05 -0800 (PST)
+        with ESMTP id S232701AbhCKLbd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Mar 2021 06:31:33 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94AB0C061574
+        for <bpf@vger.kernel.org>; Thu, 11 Mar 2021 03:31:33 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id bm21so45500316ejb.4
+        for <bpf@vger.kernel.org>; Thu, 11 Mar 2021 03:31:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=/oLxJnVlYANLfBTeS5SgMp+EjHUs0oG6jcCk59XpyBE=;
-        b=nYw0bICQoa2ju573FKQi6+gOA/3HJL3MMnRlu60CrPcMtLIJV7R6b8KfIr4qPmORcc
-         fsewcNKzol30XBVVCpuhQ2sILQLWCzQwOjbjOt1PSp20mrmv9ydFMchCenXhN0V8I7w5
-         33uHpdUeaKXKnXUYUZuV5vimn71MQjvCCMK3o=
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=shReJa4AgIfLUWHCUqyNFfkucc6ll1o83cioDojSEyA=;
+        b=SJ91y3ZGCR0RFq8qvq85hLkFV4sjQqqRxEU5t5tG1dZnpQb+nlWYnss+cjWkDE3ZR8
+         z419v0HZmfWW5SIxUCi4m7Z4+vlvpCXUWARQQDMLQpsiwO0f8uJGg8x+g3Mur++BIADA
+         qPAaL5ZJ/T0Txr9PUJzEpZNL6j4hNQddtuYGS+XgCLmYNOTvNdERkYyrb6dm3WgxFN8x
+         FQu0mEN5D3WJSzM/qiaI6fMdY7IxLr6dvT5I0KJiYQiC2nEB/2uH34svn2U6KZ4YyHOD
+         jouGcrvY4muUxX/M7AYMtnDaMMoQyjt6Au/zACBH+zEeRkhq+4yTqZGCtMD1bdKEEL2V
+         K8VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=/oLxJnVlYANLfBTeS5SgMp+EjHUs0oG6jcCk59XpyBE=;
-        b=O7wQf1AiNC/LuQx3SgqSdCwP64pHXsH3ek1rum5FKxOd4aDr8lnoeixtbWDGqbU4GZ
-         3Lv/c/XhMCzxJaBpDkCc60OJX/z5DKheDNbgzoqQ/A1cFXA9catmxUvq6K+LVy9/IDRr
-         gFpzdyiQhrGlAeQwkTzpxl43ei+eK1p4liN2SpVS59kFm26UD9AwmrzuIdFclrtl/yCn
-         AyCAdFHx9YQyLXpnM1f+v/ihrfWWWXFpi6SNo093wc/QOABTSwYGNJYsgnB7qYhEB3cU
-         citeyK7i3IBD9+0pNuNoNSCa36u8Ah0pf0JRgC8wq9n0SSI3DnEoseRnvAsQAL0akvml
-         ygsg==
-X-Gm-Message-State: AOAM532ksVBSBWuk+Ndy+TXA52TTu4Q48QnRe++TjyZX5mByLAG7SZdw
-        ce+4Ph2VjtJWz79rHZfzb0hslilnVGQOG925
-X-Google-Smtp-Source: ABdhPJy9UbOPwrXwpUYHUNCaB1FoJcXO7Bjb2ZKgK8TGQUhPVR+FbJ2apRVxqHRFAOeA7S3TRBjkDg==
-X-Received: by 2002:a2e:9758:: with SMTP id f24mr4418422ljj.404.1615462083831;
-        Thu, 11 Mar 2021 03:28:03 -0800 (PST)
-Received: from cloudflare.com (79.184.34.53.ipv4.supernova.orange.pl. [79.184.34.53])
-        by smtp.gmail.com with ESMTPSA id n5sm749535lfl.245.2021.03.11.03.28.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 03:28:03 -0800 (PST)
-References: <20210310053222.41371-1-xiyou.wangcong@gmail.com>
- <20210310053222.41371-3-xiyou.wangcong@gmail.com>
-User-agent: mu4e 1.1.0; emacs 27.1
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        duanxiongchun@bytedance.com, wangdongdong.6@bytedance.com,
-        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: Re: [Patch bpf-next v4 02/11] skmsg: introduce a spinlock to
- protect ingress_msg
-In-reply-to: <20210310053222.41371-3-xiyou.wangcong@gmail.com>
-Date:   Thu, 11 Mar 2021 12:28:01 +0100
-Message-ID: <871rcm3p6m.fsf@cloudflare.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=shReJa4AgIfLUWHCUqyNFfkucc6ll1o83cioDojSEyA=;
+        b=o7jzZce3ngedvrvpFb+OvTPYCULwIBnIeEKByzNnSd621pNSzSjS4gBxr8rh8OKg/t
+         4DLwXblioQss/2924BDXzRr8YbnRjeyCwPzjDqpwyAlR/ibxI3OfMWhWl9OnwLu0BObi
+         8FGzAoNqtWktmcrV5ACLaVoyP47RVNJQkv3zQulyeCHITr97G23DGcNH1TjY25+LAS9S
+         zWCvhcsZ4ABVmFOA7rUpsvycl3nRomb6mpfVDhmLwc+hNXbMQRSGgNlaf0FY8uR4q8qB
+         cjRI3H2+dFy6zjOD2r/WMUfQSA9DUILnpWgcVx0Az5wpOm2jm9VkdPAyuwmz8xdSpdBG
+         DVQQ==
+X-Gm-Message-State: AOAM5304zhD5XHVK3DvvwvUrs5LS4aLCgLj6oUIOv6xscPo2JSuWubDI
+        Mzu43QSBB8dzHDwNouZqMGXPEw==
+X-Google-Smtp-Source: ABdhPJy9h2zVYQA3nuvS/DToLhBm7WYxTe7009GkSPpP34Jvb1tvjRR7hFIGd+yDMPlrhXb20m106g==
+X-Received: by 2002:a17:906:cb11:: with SMTP id lk17mr2511315ejb.405.1615462292335;
+        Thu, 11 Mar 2021 03:31:32 -0800 (PST)
+Received: from [192.168.1.8] ([194.35.119.86])
+        by smtp.gmail.com with ESMTPSA id i6sm1168932ejz.95.2021.03.11.03.31.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Mar 2021 03:31:31 -0800 (PST)
+Subject: Re: [PATCH bpf-next 07/10] bpftool: add `gen bpfo` command to perform
+ BPF static linking
+To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     kernel-team@fb.com
+References: <20210310040431.916483-1-andrii@kernel.org>
+ <20210310040431.916483-8-andrii@kernel.org>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <9f44eedf-79a3-0025-0f31-ee70f2f7d98b@isovalent.com>
+Date:   Thu, 11 Mar 2021 11:31:31 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210310040431.916483-8-andrii@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 06:32 AM CET, Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
->
-> Currently we rely on lock_sock to protect ingress_msg,
-> it is too big for this, we can actually just use a spinlock
-> to protect this list like protecting other skb queues.
->
-> __tcp_bpf_recvmsg() is still special because of peeking,
-> it still has to use lock_sock.
->
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+2021-03-09 20:04 UTC-0800 ~ Andrii Nakryiko <andrii@kernel.org>
+> Add `bpftool gen bpfo <output-file> <input_file>...` command to statically
+> link multiple BPF object files into a single output BPF object file.
+> 
+> Similarly to existing '*.o' convention, bpftool is establishing a '*.bpfo'
+> convention for statically-linked BPF object files. Both .o and .bpfo suffixes
+> will be stripped out during BPF skeleton generation to infer BPF object name.
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
+>  tools/bpf/bpftool/gen.c | 46 ++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 45 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index 4033c46d83e7..8b1ed6c0a62f 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> +static int do_bpfo(int argc, char **argv)
 
-One nit below.
+> +{
+> +	struct bpf_linker *linker;
+> +	const char *output_file, *file;
+> +	int err;
+> +
+> +	if (!REQ_ARGS(2)) {
+> +		usage();
+> +		return -1;
+> +	}
+> +
+> +	output_file = GET_ARG();
+> +
+> +	linker = bpf_linker__new(output_file, NULL);
+> +	if (!linker) {
+> +		p_err("failed to create BPF linker instance");
+> +		return -1;
+> +	}
+> +
+> +	while (argc) {
+> +		file = GET_ARG();
+> +
+> +		err = bpf_linker__add_file(linker, file);
+> +		if (err) {
+> +			p_err("failed to link '%s': %d", file, err);
 
-Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+I think you mentioned before that your preference was for having just
+the error code instead of using strerror(), but I think it would be more
+user-friendly for the majority of users who don't know the error codes
+if we had something more verbose? How about having both strerror()
+output and the error code?
 
->  include/linux/skmsg.h | 46 +++++++++++++++++++++++++++++++++++++++++++
->  net/core/skmsg.c      |  3 +++
->  net/ipv4/tcp_bpf.c    | 18 ++++++-----------
->  3 files changed, 55 insertions(+), 12 deletions(-)
->
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index 6c09d94be2e9..7333bf881b81 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -89,6 +89,7 @@ struct sk_psock {
->  #endif
->  	struct sk_buff_head		ingress_skb;
->  	struct list_head		ingress_msg;
-> +	spinlock_t			ingress_lock;
->  	unsigned long			state;
->  	struct list_head		link;
->  	spinlock_t			link_lock;
-> @@ -284,7 +285,45 @@ static inline struct sk_psock *sk_psock(const struct sock *sk)
->  static inline void sk_psock_queue_msg(struct sk_psock *psock,
->  				      struct sk_msg *msg)
->  {
-> +	spin_lock_bh(&psock->ingress_lock);
->  	list_add_tail(&msg->list, &psock->ingress_msg);
-> +	spin_unlock_bh(&psock->ingress_lock);
+> +			goto err_out;
+> +		}
+> +	}
+> +
+> +	err = bpf_linker__finalize(linker);
+> +	if (err) {
+> +		p_err("failed to finalize ELF file: %d", err);
+> +		goto err_out;
+> +	}
+> +
+> +	return 0;
+> +err_out:
+> +	bpf_linker__free(linker);
+> +	return -1;
+
+Should you call bpf_linker__free() even on success? I see that
+bpf_linker__finalize() frees some of the resources, but it seems that
+bpf_linker__free() does a more thorough job?
+
 > +}
 > +
-> +static inline struct sk_msg *sk_psock_deque_msg(struct sk_psock *psock)
+>  static int do_help(int argc, char **argv)
+>  {
+>  	if (json_output) {
+> @@ -611,6 +654,7 @@ static int do_help(int argc, char **argv)
+>  
+>  static const struct cmd cmds[] = {
+>  	{ "skeleton",	do_skeleton },
+> +	{ "bpfo",	do_bpfo },
+>  	{ "help",	do_help },
+>  	{ 0 }
+>  };
+> 
 
-Should be sk_psock_deque*ue*_msg()?
+Please update the usage help message, man page, and bash completion,
+thanks. Especially because what "bpftool gen bpfo" does is not intuitive
+(but I don't have a better name suggestion at the moment).
 
-[...]
+Great work!
+
+Quentin
