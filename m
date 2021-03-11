@@ -2,129 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2FC337B55
-	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 18:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5C3337CD9
+	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 19:46:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbhCKRrT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Mar 2021 12:47:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhCKRqv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Mar 2021 12:46:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E931764E77;
-        Thu, 11 Mar 2021 17:46:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615484811;
-        bh=k9aZEfwcMo7lmOg49WEreVY2aaFbpcrHQrJJuLNBukw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s+zvYqOiio5XXMyNE3sGp9SC58VFcFQetoZ9tdMsfcKrz/irLJDgoYeHVywrdXaZq
-         /9OyGkHYb1P+1GtPDJPlNYjOc5D2kidpI/OrhBfkzoH0su49qvapO4vXFKk9ATVDE9
-         +cQkTFFH00AoV0bU+lySNeUjbFUp39FQZ2DppCItNxKbs5N6rQreBwAlPZhoTwxHBm
-         7GaU7WcMvSPhRbnpUpuwb6wLaGsB8gJ4uIVXSRIAhuPblu1zv4oWwrmr+0U5UDzykl
-         4132MjmjbnmKAwD0rpo5YXXbUPLyxizrY+LEY6NijDHKbEmXCdMlQh8nHJ7qz7PllQ
-         4IIN/VFvfN+Wg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6D98940647; Thu, 11 Mar 2021 14:46:47 -0300 (-03)
-Date:   Thu, 11 Mar 2021 14:46:47 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH v4 dwarves] btf: Add support for the floating-point types
-Message-ID: <YEpXh4v79FHklsHx@kernel.org>
-References: <20210310201550.170599-1-iii@linux.ibm.com>
- <CAEf4BzY0++YuU7+a3vSfWWZNLoov7mu7Q1ty4FqqH78gkqgqQw@mail.gmail.com>
- <ff68a62e776ce9e459bece7ae87cc53573500a50.camel@linux.ibm.com>
- <CAEf4Bzbyugfb2RkBkRuxNGKwSk40Tbq4zAvhQT8W=fVMYWuaxA@mail.gmail.com>
+        id S229553AbhCKSqG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Mar 2021 13:46:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhCKSpx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Mar 2021 13:45:53 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF743C061574;
+        Thu, 11 Mar 2021 10:45:52 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id u75so22712991ybi.10;
+        Thu, 11 Mar 2021 10:45:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ogcTCYzPB9i0rOzycmKs7pdncHCMoqNAs75CsbaToP0=;
+        b=uwg/8WGJpy4NfYDrDXtkT+6u5ZEc9JmMQw6E5kdVihc3j6C/k2X3TPtj9TI+0+M+1/
+         FN5t8qOx2UOXY5X3i4SXYEcU8Va6rpTVYMiLxBQ16qo/Vks5v64c0ABp3lZd6N/QBbjF
+         +zP16kI9QbZ2Wfcn9rsgS9ULK7C34EEitnJsWEDOIHqdB8qaZ2a4tLsnPMAUEsunNbTW
+         +bJPJEgZWrcx5s0DhAK3Oy3nqooUj09VdpEr6tLzJycKOkM5VgAPG0Ue6gbHp8h5ZI61
+         qxKqrZKeLJB/Dq/Y5lMwEUJcPrashPhvKHHBz8qn5wWRES9FgwhwqBdEEjr2L9Q7v2zJ
+         mv1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ogcTCYzPB9i0rOzycmKs7pdncHCMoqNAs75CsbaToP0=;
+        b=lQU0ihVPCi3mujnMy9pH+q6XweDkJKiLbgNKlf2cseDsD54c/A3q4U/Dv30uDDhXGg
+         mDUjHmSK66TVcDWzLuSp+OknQ0SMwKAEDuq3gCPnBpz1NMb2X6xmGTibLdG2w4Guf5tr
+         gMkbyLXvet+Tlz/OG8DFmOEJO3YOqF2NLKEv25neqheSAMomoI9g1RbuyoS8+2uEguDV
+         9luoXB7DK6KpMmVIQM6umVGWQiB5EtnEdeNoWRzD/MvrWAzeGkegO9965pmD8LPVy10G
+         XqEjKycZrasb4oi5VLLhLsde+/D+5JQkWdD2VTQCOSXbL2g+tKAz+uFn2zL2cG389o4F
+         UPJA==
+X-Gm-Message-State: AOAM533kyHcjts2THRuTfW69mCA+PaWtxY0K1LAAX+Mu6VMpXLElSTi1
+        PoKlCry6aO+KQmD3DEgibU8C9+IBmSsKAtU4n0E=
+X-Google-Smtp-Source: ABdhPJwv4xEYQWTX+ZdaejejPHRZjF5qbSmro0JQ+rx8vgH6EzJjP/wmUvF/qCoEj5LVBl17OD1+HUFYjUCOvFtkINc=
+X-Received: by 2002:a25:cc13:: with SMTP id l19mr13391310ybf.260.1615488351781;
+ Thu, 11 Mar 2021 10:45:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzbyugfb2RkBkRuxNGKwSk40Tbq4zAvhQT8W=fVMYWuaxA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <20210310040431.916483-1-andrii@kernel.org> <20210310040431.916483-8-andrii@kernel.org>
+ <9f44eedf-79a3-0025-0f31-ee70f2f7d98b@isovalent.com>
+In-Reply-To: <9f44eedf-79a3-0025-0f31-ee70f2f7d98b@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 11 Mar 2021 10:45:40 -0800
+Message-ID: <CAEf4BzZKFKQQSQmNPkoSW8b3NEvRXirkqx-Hewt1cmRE9tPmHw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 07/10] bpftool: add `gen bpfo` command to perform
+ BPF static linking
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Mar 10, 2021 at 01:35:39PM -0800, Andrii Nakryiko escreveu:
-> On Wed, Mar 10, 2021 at 1:02 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+On Thu, Mar 11, 2021 at 3:31 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> 2021-03-09 20:04 UTC-0800 ~ Andrii Nakryiko <andrii@kernel.org>
+> > Add `bpftool gen bpfo <output-file> <input_file>...` command to statically
+> > link multiple BPF object files into a single output BPF object file.
 > >
-> > On Wed, 2021-03-10 at 12:25 -0800, Andrii Nakryiko wrote:
-> > > On Wed, Mar 10, 2021 at 12:16 PM Ilya Leoshkevich <iii@linux.ibm.com>
-> > > wrote:
-> > > >
-> > > > Some BPF programs compiled on s390 fail to load, because s390
-> > > > arch-specific linux headers contain float and double types.
-> > > >
-> > > > Fix as follows:
-> > > >
-> > > > - Make the DWARF loader fill base_type.float_type.
-> > > >
-> > > > - Introduce the --btf_gen_floats command-line parameter, so that
-> > > >   pahole could be used to build both the older and the newer
-> > > > kernels.
-> > > >
-> > > > - libbpf introduced the support for the floating-point types in
-> > > > commit
-> > > >   986962fade5, so update the libbpf submodule to that version and
-> > > > use
-> > > >   the new btf__add_float() function in order to emit the floating-
-> > > > point
-> > > >   types when not in the compatibility mode.
-> > > >
-> > > > - Make the BTF loader recognize the new BTF kind.
-> > > >
-> > > > Example of the resulting entry in the vmlinux BTF:
-> > > >
-> > > >     [7164] FLOAT 'double' size=8
-> > > >
-> > > > when building with:
-> > > >
-> > > >     LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1} --btf_gen_floats
-> > > >
-> > > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > > > ---
-> > >
-> > > So it looks good to me overall, but here's the question about using
-> > > this --btf-gen-floats flag from link-vmlinux.sh script. If you
-> > > specify
-> > > that flag for an old pahole, it will probably error out, right? So
-> > > that means we'll need to do feature detection for pahole supported
-> > > features, right?..
+> > Similarly to existing '*.o' convention, bpftool is establishing a '*.bpfo'
+> > convention for statically-linked BPF object files. Both .o and .bpfo suffixes
+> > will be stripped out during BPF skeleton generation to infer BPF object name.
 > >
-> > I was planning to just bump the version in this check:
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  tools/bpf/bpftool/gen.c | 46 ++++++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 45 insertions(+), 1 deletion(-)
 > >
-> >     if [ "${pahole_ver}" -lt "116" ]; then
-> 
-> No-no-no, we can't just arbitrarily say that the minimal pahole
-> version is now 1.21, while 1.16 would work just fine in almost all
-> cases on almost all architectures.
-> 
-> >
-> > But we could also keep allowing 1.16-1.20 and pass the new flag on
-> > 1.21+ only.
-> >
-> > What do you think?
-> 
-> I think we'll have to do the extra check. I'd also add something like
-> --btf-gen-all, that would turn on all the supported BTF features. So
-> that people that generate BTF for kernels externally (e.g., for old
-> kernels to support BPF CO-RE), could just do --btf-gen-all, instead of
-> potentially longer list of all the BTF optional subsets
-> (--btf-gen-floats --btf-gen-somemore --btf-gen-morecool etc). That
-> doesn't have to happen in this patch, of course.
-> 
-> So with what we have now:
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> > index 4033c46d83e7..8b1ed6c0a62f 100644
+> > --- a/tools/bpf/bpftool/gen.c
+> > +++ b/tools/bpf/bpftool/gen.c
+> > +static int do_bpfo(int argc, char **argv)
+>
+> > +{
+> > +     struct bpf_linker *linker;
+> > +     const char *output_file, *file;
+> > +     int err;
+> > +
+> > +     if (!REQ_ARGS(2)) {
+> > +             usage();
+> > +             return -1;
+> > +     }
+> > +
+> > +     output_file = GET_ARG();
+> > +
+> > +     linker = bpf_linker__new(output_file, NULL);
+> > +     if (!linker) {
+> > +             p_err("failed to create BPF linker instance");
+> > +             return -1;
+> > +     }
+> > +
+> > +     while (argc) {
+> > +             file = GET_ARG();
+> > +
+> > +             err = bpf_linker__add_file(linker, file);
+> > +             if (err) {
+> > +                     p_err("failed to link '%s': %d", file, err);
+>
+> I think you mentioned before that your preference was for having just
+> the error code instead of using strerror(), but I think it would be more
+> user-friendly for the majority of users who don't know the error codes
+> if we had something more verbose? How about having both strerror()
+> output and the error code?
 
-Ok, so I'm taking this v4, collecting Andrii's Acked-by and waiting for
-the --btf-gen-all patch as a followup,
+Sure, I'll add strerror(). My earlier point was that those messages
+are more often misleading (e.g., "file not found" for ENOENT or
+something similar) than helpful. I should check if bpftool is passing
+through warn-level messages from libbpf. Those are going to be very
+helpful, if anything goes wrong. --verbose should pass through all of
+libbpf messages, if it's not already the case.
 
-Thanks,
+>
+> > +                     goto err_out;
+> > +             }
+> > +     }
+> > +
+> > +     err = bpf_linker__finalize(linker);
+> > +     if (err) {
+> > +             p_err("failed to finalize ELF file: %d", err);
+> > +             goto err_out;
+> > +     }
+> > +
+> > +     return 0;
+> > +err_out:
+> > +     bpf_linker__free(linker);
+> > +     return -1;
+>
+> Should you call bpf_linker__free() even on success? I see that
+> bpf_linker__finalize() frees some of the resources, but it seems that
+> bpf_linker__free() does a more thorough job?
 
-- Arnaldo
+yep, it should really be just
+
+err_out:
+    bpf_linker__free(linker);
+    return err;
+
+
+>
+> > +}
+> > +
+> >  static int do_help(int argc, char **argv)
+> >  {
+> >       if (json_output) {
+> > @@ -611,6 +654,7 @@ static int do_help(int argc, char **argv)
+> >
+> >  static const struct cmd cmds[] = {
+> >       { "skeleton",   do_skeleton },
+> > +     { "bpfo",       do_bpfo },
+> >       { "help",       do_help },
+> >       { 0 }
+> >  };
+> >
+>
+> Please update the usage help message, man page, and bash completion,
+> thanks. Especially because what "bpftool gen bpfo" does is not intuitive
+> (but I don't have a better name suggestion at the moment).
+
+Yeah, forgot about manpage and bash completions, as usual.
+
+re: "gen bpfo". I don't have much better naming as well. `bpftool
+link` is already taken for bpf_link-related commands. It felt like
+keeping this under "gen" command makes sense. But maybe `bpftool
+linker link <out> <in1> <in2> ...` would be a bit less confusing
+convention?
+
+>
+> Great work!
+>
+> Quentin
