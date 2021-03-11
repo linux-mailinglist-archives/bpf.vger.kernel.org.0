@@ -2,95 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09FDA33729F
-	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 13:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35645337368
+	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 14:07:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232978AbhCKMbi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Mar 2021 07:31:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233166AbhCKMbR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Mar 2021 07:31:17 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61D2C061574;
-        Thu, 11 Mar 2021 04:31:16 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id a188so14411148pfb.4;
-        Thu, 11 Mar 2021 04:31:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NSzzai4vIMGBBt9pjkbuuhFEouWU7xEJcqdEzYQD0Go=;
-        b=Ei6zZRzVQLJsCoGDNlX4Tujcqz1+s3ayFCqj9VLBlqHXZ5zrPIU8+e4FQf2ZtUwGe8
-         EeJDVwjjCwD03wzJIh4sm03OGb/RDnbcDLlhXO4reEvJttx5nz13sNxUCFDp+ESDJPhK
-         TDPtxJTDGI2x/+UOsChd3XyaZW8tz4ZgOqytIu765nu4Lozt2ImWEP4sKMrWRexUbahE
-         hIDeiF9+ktDCFbG/3rGJhXz1HTEbdmvR3sFhIvfJiJRtFFQR140mrcQCKAhMUK84viva
-         tDMb79DoUq6GT61kGTBxu6zg36vO4r5BsLwLirL7Xls+dDX2iP6FwyvuetyCOO2a2w8J
-         ED4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NSzzai4vIMGBBt9pjkbuuhFEouWU7xEJcqdEzYQD0Go=;
-        b=eBqPItWoevmIOjjWGqk8eVudN0p2Ns34XSgKUSYVCS/zvFDUhluUxh2mV90T+pjiTt
-         kpIi5ZIB5zDir9UNpJxXP6ZKHNGDA1DUX+Kx6La5+BttY4uce6ZbNzVrv3gmDAFxNczd
-         7Q++usHpbauUPtgjc9fo4lKQqB/Gr82AyZm1DMYkSv0NGNqWpE68GvZgGBy49P2uHgug
-         gdqdARhxyhHXL5oUf/tKx+jMQsuG58Ge5gwBw5ZjGU6LdpfqwDmoxY6ZWDUCp9yOxIgX
-         2444WF8etO2Iwa5CXzjQ4Yl9T5vE76+qFXXeAeJVMZNnZ5uxMXMFIVEERBqvAqkj3WpL
-         9bAw==
-X-Gm-Message-State: AOAM5328HPNX+dKQWV51iCR8INBpUln+WV1YZT4imht/JpHEnyvfjOrR
-        0SjAXsQ9KKSxBNpaDIZpAvc=
-X-Google-Smtp-Source: ABdhPJzp7QrZxigNzO6cPOzvY3azF3YeWNAjNXTc8FUGi04Dc1tN5/b7vZvYOTJAtrtHERpE68bliQ==
-X-Received: by 2002:a63:1502:: with SMTP id v2mr7007804pgl.22.1615465876433;
-        Thu, 11 Mar 2021 04:31:16 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id s28sm2473608pfd.155.2021.03.11.04.31.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 04:31:15 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: liu.xuzhi@zte.com.cn
-To:     ast@kernel.org
-Cc:     daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Liu xuzhi <liu.xuzhi@zte.com.cn>
-Subject: [PATCH] kernel/bpf/: fix misspellings using codespell tool
-Date:   Thu, 11 Mar 2021 04:31:03 -0800
-Message-Id: <20210311123103.323589-1-liu.xuzhi@zte.com.cn>
+        id S233340AbhCKNGv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Mar 2021 08:06:51 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:13908 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233252AbhCKNGi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Mar 2021 08:06:38 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Dx8LP3y2PzkXdy;
+        Thu, 11 Mar 2021 21:05:01 +0800 (CST)
+Received: from localhost.localdomain (10.175.102.38) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 11 Mar 2021 21:06:20 +0800
+From:   'Wei Yongjun <weiyongjun1@huawei.com>
+To:     <weiyongjun1@huawei.com>, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Song Liu <songliubraving@fb.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH bpf-next] bpf: Make symbol 'bpf_task_storage_busy' static
+Date:   Thu, 11 Mar 2021 13:15:05 +0000
+Message-ID: <20210311131505.1901509-1-weiyongjun1@huawei.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.102.38]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Liu xuzhi <liu.xuzhi@zte.com.cn>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-A typo is found out by codespell tool in 34th lines of hashtab.c:
+The sparse tool complains as follows:
 
-$ codespell ./kernel/bpf/
-./hashtab.c:34 : differrent ==> different
+kernel/bpf/bpf_task_storage.c:23:1: warning:
+ symbol '__pcpu_scope_bpf_task_storage_busy' was not declared. Should it be static?
 
-Fix a typo found by codespell.
+This symbol is not used outside of bpf_task_storage.c, so this
+commit marks it static.
 
-Signed-off-by: Liu xuzhi <liu.xuzhi@zte.com.cn>
+Fixes: bc235cdb423a ("bpf: Prevent deadlock from recursive bpf_task_storage_[get|delete]")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 ---
- kernel/bpf/hashtab.c | 2 +-
+ kernel/bpf/bpf_task_storage.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index d63912e73ad9..46f076c0b3a2 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -31,7 +31,7 @@
- /*
-  * The bucket lock has two protection scopes:
-  *
-- * 1) Serializing concurrent operations from BPF programs on differrent
-+ * 1) Serializing concurrent operations from BPF programs on different
-  *    CPUs
-  *
-  * 2) Serializing concurrent operations from BPF programs and sys_bpf()
--- 
-2.25.1
+diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.c
+index fd3c74ef608e..3ce75758d394 100644
+--- a/kernel/bpf/bpf_task_storage.c
++++ b/kernel/bpf/bpf_task_storage.c
+@@ -20,7 +20,7 @@
+ 
+ DEFINE_BPF_STORAGE_CACHE(task_cache);
+ 
+-DEFINE_PER_CPU(int, bpf_task_storage_busy);
++static DEFINE_PER_CPU(int, bpf_task_storage_busy);
+ 
+ static void bpf_task_storage_lock(void)
+ {
 
