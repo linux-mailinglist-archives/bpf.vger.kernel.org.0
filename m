@@ -2,130 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05DD336DA2
-	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 09:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3F6F336EDD
+	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 10:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhCKITU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Mar 2021 03:19:20 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1650 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230526AbhCKITD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Mar 2021 03:19:03 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12B85AIM181152;
-        Thu, 11 Mar 2021 03:18:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Svjjfu6/Asgt3ngfd3jksUIX6H62v7zQz9Fj3zBsRTs=;
- b=oe1doOtj8tBau6DGp/fFO3kynQp0x8ZuezTPEl3sy6vPwsBYlwiWr/G87n/IqiRMj765
- Lxa1bRhuxFyX5xdjSTK4iEX0xJIpFbqPGzvNuSEvrLD6wColNUgrowkRubGSRMfQIacI
- WiXeOYxjcbtPkQCSdQ5mlweQZvlnR3LxfOUmdK4o2PF1zbxPpra+Wbe3b+rst56wL27Q
- cSVptzjuHlWw2OYEhsDCdILt2hysEYkWH+I95pted9FHOHcyEkzWdCVoCf22S29omb7f
- nDKQ9Lma37XZekXqLq4PWaqvE1DqsrruwNKnB7bojBSkO13yE4RjuR4Abohyger6wJmA mA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3774m3fcs4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Mar 2021 03:18:38 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12B85JRs182196;
-        Thu, 11 Mar 2021 03:18:37 -0500
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3774m3fcrb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Mar 2021 03:18:37 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12B8CTbM016108;
-        Thu, 11 Mar 2021 08:18:36 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma03wdc.us.ibm.com with ESMTP id 3768kx6bes-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Mar 2021 08:18:36 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12B8IYAM12386706
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 11 Mar 2021 08:18:35 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DBB0E13604F;
-        Thu, 11 Mar 2021 08:18:34 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 632F8136051;
-        Thu, 11 Mar 2021 08:18:28 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.44.141])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 11 Mar 2021 08:18:27 +0000 (GMT)
-Subject: Re: [PATCH] perf tools: Remove redundant code
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        peterz@infradead.org
-Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <1615346305-16428-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <36853ff4-70f0-a28b-7114-2423d7c11fad@linux.ibm.com>
-Date:   Thu, 11 Mar 2021 13:48:26 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S232024AbhCKJ3V convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 11 Mar 2021 04:29:21 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:38781 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232003AbhCKJ2u (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 11 Mar 2021 04:28:50 -0500
+X-Greylist: delayed 84786 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Mar 2021 04:28:50 EST
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-232-BZvBvr3pMjOf4Z7qPKK-tw-1; Thu, 11 Mar 2021 09:28:47 +0000
+X-MC-Unique: BZvBvr3pMjOf4Z7qPKK-tw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 11 Mar 2021 09:28:46 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 11 Mar 2021 09:28:46 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: RE: The killing of ideal_nops[]
+Thread-Topic: The killing of ideal_nops[]
+Thread-Index: AQHXFcc39lSrY3Kgm0WONtWbUmlAY6p+hE6A
+Date:   Thu, 11 Mar 2021 09:28:46 +0000
+Message-ID: <3913a992a9384fe083a5f24e4ef86fdc@AcuMS.aculab.com>
+References: <20210309120519.7c6bbb97@gandalf.local.home>
+ <YEfnnFUbizbJUQig@hirez.programming.kicks-ass.net>
+ <362BD2A4-016D-4F6B-8974-92C84DC0DDB4@zytor.com>
+ <YEiN+/Zp4uE/ISWD@hirez.programming.kicks-ass.net>
+ <YEiS8Xws0tTFmMJp@hirez.programming.kicks-ass.net>
+ <YEiZXtB74cnsLTx/@hirez.programming.kicks-ass.net>
+ <YEid+HQnqgnt3iyY@hirez.programming.kicks-ass.net>
+ <20210310091324.0c346d5f@oasis.local.home>
+ <YEjWryS/9uB2y62O@hirez.programming.kicks-ass.net>
+ <CAADnVQKMRWMuAJEJBPADactdKaGx4opg3y82m7fy59rRmA9Cog@mail.gmail.com>
+ <YEjuArPJsSYDaYeI@hirez.programming.kicks-ass.net>
+In-Reply-To: <YEjuArPJsSYDaYeI@hirez.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <1615346305-16428-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-11_02:2021-03-10,2021-03-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- clxscore=1011 lowpriorityscore=0 bulkscore=0 impostorscore=0
- priorityscore=1501 mlxlogscore=999 phishscore=0 spamscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103110044
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Peter Zijlstra <peterz@infradead.org>
+...
+> Below is the latest version which I just pushed out to my git tree so
+> that the robots can have a go at it.
 
+Why not delete the indirection table?
+So you end up with:
 
-On 3/10/21 8:48 AM, Jiapeng Chong wrote:
-> Fix the following coccicheck warnings:
-> 
-> ./tools/perf/util/evlist.c:1315:5-8: Unneeded variable: "err". Return "-
-> ENOMEM" on line 1340.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  tools/perf/util/evlist.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> index 882cd1f..6c2a271 100644
-> --- a/tools/perf/util/evlist.c
-> +++ b/tools/perf/util/evlist.c
-> @@ -1313,7 +1313,6 @@ static int evlist__create_syswide_maps(struct evlist *evlist)
->  {
->  	struct perf_cpu_map *cpus;
->  	struct perf_thread_map *threads;
-> -	int err = -ENOMEM;
->  
->  	/*
->  	 * Try reading /sys/devices/system/cpu/online to get
-> @@ -1338,7 +1337,7 @@ static int evlist__create_syswide_maps(struct evlist *evlist)
->  out_put:
->  	perf_cpu_map__put(cpus);
->  out:
-> -	return err;
-> +	return -ENOMEM;
->  }
+> +#ifndef CONFIG_64BIT
+> +
+> +/*
+> + * Generic 32bit nops from GAS:
+> + *
+> + * 1: nop
+> + * 2: movl %esi,%esi
+> + * 3: leal 0x00(%esi),%esi
+> + * 4: leal 0x00(,%esi,1),%esi
+> + * 5: leal %ds:0x00(,%esi,1),%esi
+> + * 6: leal 0x00000000(%esi),%esi
+> + * 7: leal 0x00000000(,%esi,1),%esi
+> + * 8: leal %ds:0x00000000(,%esi,1),%esi
+>   *
+> - * *_NOP5_ATOMIC must be a single instruction.
+> + * Except 5 and 8, which are DS prefixed 4 and 7 resp, where GAS would emit 2
+> + * nop instructions.
+>   */
+> +#define BYTES_NOP1	0x90
+> +#define BYTES_NOP2	0x89,0xf6
+> +#define BYTES_NOP3	0x8d,0x76,0x00
+> +#define BYTES_NOP4	0x8d,0x74,0x26,0x00
+> +#define BYTES_NOP5	0x3e,BYTES_NOP4
+> +#define BYTES_NOP6	0x8d,0xb6,0x00,0x00,0x00,0x00
+> +#define BYTES_NOP7	0x8d,0xb4,0x26,0x00,0x00,0x00,0x00
+> +#define BYTES_NOP8	0x3e,BYTES_NOP7
 
-Seems fine to me.
+const unsigned char const x86_nops[8][8] = {
+	{ BYTES_NOP1 },
+	{ BYTES_NOP2 },
+	{ BYTES_NOP3 },
+	{ BYTES_NOP4 },
+	{ BYTES_NOP5 },
+	{ BYTES_NOP6 },
+	{ BYTES_NOP7 },
+	{ BYTES_NOP8 }
+};
 
-Reviewed-By: Kajol Jain<kjain@linux.ibm.com>
-Thanks,
-Kajol Jain
->  
->  int evlist__open(struct evlist *evlist)
-> 
+The rest of the patch may not need changing.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
