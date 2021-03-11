@@ -2,130 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A28337515
-	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 15:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93DC6337811
+	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 16:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233771AbhCKOHu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Mar 2021 09:07:50 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:34653 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233827AbhCKOHY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Mar 2021 09:07:24 -0500
-Received: by mail-il1-f198.google.com with SMTP id c16so15568548ile.1
-        for <bpf@vger.kernel.org>; Thu, 11 Mar 2021 06:07:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=oSSMkoO2iwx+Y3QJBh7Yl6QGzvkcw+HW5CoIi/jlJDo=;
-        b=jaUWVimzu026vobj6K2u9VN+I31zogCy7x4OPT4FKT0yMDuZ+0Hau//HS4UARgsFRi
-         qQCTpz0T3tD+OWOnESAVip+Kdgj6d51yvpI9jKxHpFzcIgW4VxDli/jPWADMmaLE9P/m
-         NOKKNot5ozNdEsQBKWZow3/GqadFiFD9SUKEAcrJ9+rUgMtRwLgWB1cnyfYkHequjDbC
-         I+vsTVepgbSlWZXTP9uVsD12uNN6vuTBLmeIjyZk75IjOYY3L2ogzNyhIQj0pmEKX4Qi
-         EIr1DVBvp85EHUNMlimQlNvGqIEa1qqRLBjrtUb9NGpykJdgOA8JCdCsnCWEHgjH0LJM
-         3ZqQ==
-X-Gm-Message-State: AOAM531Ft3aZFH83sSjCQdxsyxKxTqM+mtm4740MkwyYZ1NivrTWcaWC
-        UdfhEm7jUhAzsKfxv0oycmkC9CE2vZzmT2DdeI67oDwCFIwA
-X-Google-Smtp-Source: ABdhPJzmXgC5fGa8aIKmKXOLrkYQF71/Mz+oI0aHPSljhvDhT5DRbaZ6sFa29XwCgH47zW5XIbrLZ3ouEQNF5ZhgCqeGnwvDZ3xm
+        id S234174AbhCKPlW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Mar 2021 10:41:22 -0500
+Received: from mga06.intel.com ([134.134.136.31]:60959 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234223AbhCKPlA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Mar 2021 10:41:00 -0500
+IronPort-SDR: sKsdBe5YeeA/e7q3thTMGxjcM4GlvJlK5VWswJDERXUGsMcLBziSBDHMxIDwxO/QxhT1d2Rcd9
+ LuT0wdclmHYQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9920"; a="250048414"
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="250048414"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2021 07:41:00 -0800
+IronPort-SDR: OGQBeM47BRtoqt5AjathkYZz4NgGdDbldEPTb5xEmuNh0i7Ln5OSsXOjUXWNzUcI/Zzr2iGMAp
+ 59Lk8yL2qaaQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,241,1610438400"; 
+   d="scan'208";a="589253400"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga005.jf.intel.com with ESMTP; 11 Mar 2021 07:40:57 -0800
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        ast@kernel.org
+Cc:     bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        ciara.loftus@intel.com, john.fastabend@gmail.com, toke@redhat.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH v2 bpf-next 00/17] AF_XDP selftests improvements & bpf_link
+Date:   Thu, 11 Mar 2021 16:28:53 +0100
+Message-Id: <20210311152910.56760-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Received: by 2002:a6b:590e:: with SMTP id n14mr6439081iob.107.1615471644420;
- Thu, 11 Mar 2021 06:07:24 -0800 (PST)
-Date:   Thu, 11 Mar 2021 06:07:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000082ae5a05bd434d67@google.com>
-Subject: [syzbot] WARNING in netlink_broadcast_filtered
-From:   syzbot <syzbot+e79c128f58297b9148dc@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+--------------------------------------------------
+v1 of xsk's bpf_link support can be found here:
+https://lore.kernel.org/bpf/20210215154638.4627-1-maciej.fijalkowski@intel.com/
 
-syzbot found the following issue on:
+Changes since v1:
+- selftests improvements and test case for bpf_link persistence itself
+- do not unload netlink-based prog when --force flag is set (John)
+- simplify return semantics in xsk_link_lookup (John)
+--------------------------------------------------
 
-HEAD commit:    a74e6a01 Merge tag 's390-5.12-3' of git://git.kernel.org/p..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f7c83ad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c7ac5ce2d1160e16
-dashboard link: https://syzkaller.appspot.com/bug?extid=e79c128f58297b9148dc
-userspace arch: arm
+This set is another approach towards addressing the below issue:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+// load xdp prog and xskmap and add entry to xskmap at idx 10
+$ sudo ./xdpsock -i ens801f0 -t -q 10
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e79c128f58297b9148dc@syzkaller.appspotmail.com
+// add entry to xskmap at idx 11
+$ sudo ./xdpsock -i ens801f0 -t -q 11
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 7650 at include/linux/seqlock.h:271 __seqprop_assert include/linux/seqlock.h:271 [inline]
-WARNING: CPU: 0 PID: 7650 at include/linux/seqlock.h:271 __seqprop_assert.constprop.0+0xf0/0x11c include/linux/seqlock.h:269
-Modules linked in:
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 7650 Comm: udevd Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: ARM-Versatile Express
-Backtrace: 
-[<82107738>] (dump_backtrace) from [<821079ac>] (show_stack+0x18/0x1c arch/arm/kernel/traps.c:252)
- r7:00000080 r6:60000093 r5:00000000 r4:83966184
-[<82107994>] (show_stack) from [<82110980>] (__dump_stack lib/dump_stack.c:79 [inline])
-[<82107994>] (show_stack) from [<82110980>] (dump_stack+0xb8/0xe8 lib/dump_stack.c:120)
-[<821108c8>] (dump_stack) from [<82108540>] (panic+0x130/0x378 kernel/panic.c:231)
- r7:8293262c r6:8383dd64 r5:00000000 r4:83b620d0
-[<82108410>] (panic) from [<80244924>] (__warn+0xb0/0x164 kernel/panic.c:605)
- r3:83822c8c r2:00000000 r1:00000000 r0:8293262c
- r7:0000010f
-[<80244874>] (__warn) from [<821087f0>] (warn_slowpath_fmt+0x68/0xd4 kernel/panic.c:628)
- r7:818c4fc8 r6:0000010f r5:8292aac0 r4:00000000
-[<8210878c>] (warn_slowpath_fmt) from [<818c4fc8>] (__seqprop_assert include/linux/seqlock.h:271 [inline])
-[<8210878c>] (warn_slowpath_fmt) from [<818c4fc8>] (__seqprop_assert.constprop.0+0xf0/0x11c include/linux/seqlock.h:269)
- r8:e85fc000 r7:819ab52c r6:00000001 r5:88799e40 r4:00000001
-[<818c4ed8>] (__seqprop_assert.constprop.0) from [<818c7524>] (u64_stats_update_begin include/linux/u64_stats_sync.h:128 [inline])
-[<818c4ed8>] (__seqprop_assert.constprop.0) from [<818c7524>] (__bpf_prog_run_save_cb include/linux/filter.h:727 [inline])
-[<818c4ed8>] (__seqprop_assert.constprop.0) from [<818c7524>] (bpf_prog_run_save_cb include/linux/filter.h:741 [inline])
-[<818c4ed8>] (__seqprop_assert.constprop.0) from [<818c7524>] (sk_filter_trim_cap+0x224/0x434 net/core/filter.c:149)
- r5:88799e40 r4:00000000
-[<818c7300>] (sk_filter_trim_cap) from [<819ab52c>] (sk_filter include/linux/filter.h:867 [inline])
-[<818c7300>] (sk_filter_trim_cap) from [<819ab52c>] (do_one_broadcast net/netlink/af_netlink.c:1468 [inline])
-[<818c7300>] (sk_filter_trim_cap) from [<819ab52c>] (netlink_broadcast_filtered+0x27c/0x4fc net/netlink/af_netlink.c:1520)
- r10:00000001 r9:8430585c r8:00000000 r7:86f24064 r6:88799e40 r5:88f45000
- r4:86f24000
-[<819ab2b0>] (netlink_broadcast_filtered) from [<819ae010>] (netlink_broadcast net/netlink/af_netlink.c:1544 [inline])
-[<819ab2b0>] (netlink_broadcast_filtered) from [<819ae010>] (netlink_sendmsg+0x3d0/0x478 net/netlink/af_netlink.c:1925)
- r10:00000000 r9:00000002 r8:88f45000 r7:000000ce r6:88799780 r5:88b8ff50
- r4:88e82800
-[<819adc40>] (netlink_sendmsg) from [<81867400>] (sock_sendmsg_nosec net/socket.c:654 [inline])
-[<819adc40>] (netlink_sendmsg) from [<81867400>] (sock_sendmsg+0x3c/0x4c net/socket.c:674)
- r10:00000000 r9:88b8fdd4 r8:00000000 r7:87dc4680 r6:00000000 r5:87dc4680
- r4:88b8ff50
-[<818673c4>] (sock_sendmsg) from [<8186897c>] (____sys_sendmsg+0x230/0x29c net/socket.c:2350)
- r5:00000040 r4:88b8ff50
-[<8186874c>] (____sys_sendmsg) from [<8186a968>] (___sys_sendmsg+0xac/0xe4 net/socket.c:2404)
- r10:00000128 r9:88b8e000 r8:00000000 r7:00000000 r6:87dc4680 r5:88b8ff50
- r4:00000000
-[<8186a8bc>] (___sys_sendmsg) from [<8186ab50>] (__sys_sendmsg net/socket.c:2433 [inline])
-[<8186a8bc>] (___sys_sendmsg) from [<8186ab50>] (__do_sys_sendmsg net/socket.c:2442 [inline])
-[<8186a8bc>] (___sys_sendmsg) from [<8186ab50>] (sys_sendmsg+0x58/0xa0 net/socket.c:2440)
- r8:80200224 r7:00000128 r6:00000000 r5:7e90c3dc r4:87dc4680
-[<8186aaf8>] (sys_sendmsg) from [<80200060>] (ret_fast_syscall+0x0/0x2c arch/arm/mm/proc-v7.S:64)
-Exception stack(0x88b8ffa8 to 0x88b8fff0)
-ffa0:                   00000000 00000000 0000000c 7e90c3dc 00000000 00000000
-ffc0: 00000000 00000000 76f1f840 00000128 00000000 000000a6 7e90c3dc 000563f8
-ffe0: 00056110 7e90c3a0 00036cec 76bfbf44
- r6:76f1f840 r5:00000000 r4:00000000
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-Rebooting in 1 seconds..
+terminate one of the processes and another one is unable to work due to
+the fact that the XDP prog was unloaded from interface.
 
+Previous attempt was, to put it mildly, a bit broken, as there was no
+synchronization between updates to additional map, as Bjorn pointed out.
+See https://lore.kernel.org/netdev/20190603131907.13395-5-maciej.fijalkowski@intel.com/
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+In the meantime bpf_link was introduced and it seems that it can address
+the issue of refcounting the XDP prog on interface.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Although the bpf_link is the meat of the set, selftests improvements are a
+bigger part of it. Overall, we've been able to reduce the complexity of xsk
+selftests by removing a bunch of synchronization resources and
+simplifying logic and structs.
+
+Last but not least, for multiqueue veth working with AF-XDP, ethtool's
+get_channels API needs to be implemented, so it's also included in that
+set.
+
+Note also that in order to make it work, a commit from bpf tree:
+veth: store queue_mapping independently of XDP prog presence
+https://lore.kernel.org/bpf/20210303152903.11172-1-maciej.fijalkowski@intel.com/
+
+is needed.
+
+Thanks,
+Maciej
+
+Björn Töpel (3):
+  selftests: xsk: remove thread attribute
+  selftest: xsk: Remove mutex and condition variable
+  selftests: xsk: Remove unused defines
+
+Maciej Fijalkowski (14):
+  selftests: xsk: don't call worker_pkt_dump() for stats test
+  selftests: xsk: remove struct ifaceconfigobj
+  selftests: xsk: remove unused function
+  selftests: xsk: remove inline keyword from source file
+  selftests: xsk: simplify frame traversal in dumping thread
+  libbpf: xsk: use bpf_link
+  samples: bpf: do not unload prog within xdpsock
+  selftests: xsk: remove thread for netns switch
+  selftests: xsk: split worker thread
+  selftests: xsk: remove Tx synchronization resources
+  selftests: xsk: refactor teardown/bidi test cases and testapp_validate
+  selftests: xsk: remove sync_mutex_tx and atomic var
+  veth: implement ethtool's get_channels() callback
+  selftests: xsk: implement bpf_link test
+
+ drivers/net/veth.c                       |  12 +
+ samples/bpf/xdpsock_user.c               |  55 +-
+ tools/lib/bpf/xsk.c                      | 139 ++++-
+ tools/testing/selftests/bpf/test_xsk.sh  |   2 +-
+ tools/testing/selftests/bpf/xdpxceiver.c | 699 ++++++++++-------------
+ tools/testing/selftests/bpf/xdpxceiver.h |  49 +-
+ 6 files changed, 479 insertions(+), 477 deletions(-)
+
+-- 
+2.20.1
+
