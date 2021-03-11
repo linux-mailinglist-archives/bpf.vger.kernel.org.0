@@ -2,71 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFCC336A74
-	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 04:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E91E336AB6
+	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 04:31:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbhCKDNA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Mar 2021 22:13:00 -0500
-Received: from mga05.intel.com ([192.55.52.43]:56308 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229928AbhCKDMz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Mar 2021 22:12:55 -0500
-IronPort-SDR: bKJfck3OeBzNcyWnAYvw/HqFlhL8yQcINSgv1yqkA7x2GFMrM3hhQAKnUZSTj0zSEDAIwKPR81
- gVz4vHRyIGaA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="273644018"
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="273644018"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 19:12:54 -0800
-IronPort-SDR: iFlauzI9h5teA1JCweoBaBhgDRVBZRI4vibUqvYC1q79X40D25E0esFofi1G61HDI7c3XiV547
- Tfshtg2Qr2tQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,238,1610438400"; 
-   d="scan'208";a="403927764"
-Received: from lkp-server02.sh.intel.com (HELO ce64c092ff93) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 10 Mar 2021 19:12:52 -0800
-Received: from kbuild by ce64c092ff93 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lKBkq-0000XB-4w; Thu, 11 Mar 2021 03:12:52 +0000
-Date:   Thu, 11 Mar 2021 11:12:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Florent Revest <revest@chromium.org>, bpf@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, yhs@fb.com, kpsingh@kernel.org,
-        jackmanb@chromium.org, linux-kernel@vger.kernel.org,
-        Florent Revest <revest@chromium.org>
-Subject: [RFC PATCH] bpf: check_bpf_snprintf_call() can be static
-Message-ID: <20210311031207.GA81254@8de2f37f21f5>
-References: <20210310220211.1454516-3-revest@chromium.org>
+        id S229803AbhCKDao (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Mar 2021 22:30:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhCKDaP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Mar 2021 22:30:15 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D9EC061574;
+        Wed, 10 Mar 2021 19:30:03 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id p186so20260403ybg.2;
+        Wed, 10 Mar 2021 19:30:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=877bemNFLjAoo8xqG5euoiL1YYZfVjc2/dpYZOJTzXk=;
+        b=pMbMS0WbKzJochM7MKmx3DLGAm2bx1GFbmAYyvtoICMBnnk0HunT0BkG5ZckZMJPgy
+         rrkXV0bc2el3jg8KpnVEy21v8OOng6qeWpLIqzodMHKSK6O8ZaEA1dVWLmQN7UbBmd1T
+         RxlVtHhCoBfsm2D848bHgkAAsftJJpC+SauTh06ANHudc6F8BoMteF3Wfa9ol2xMtL+0
+         HI0Wns/lpeDDWZWrlRWFLp4/vOP2W3XIqw6BMa/sMjz4w09Ij45mn9vNkEgHUOmmKNFy
+         kqM1rYQXXiCrWtyQEpv+hxkUxrfTKZazAkuV3W/ea/kBS4fHPBN8dR0TzWCGCDZGEfWQ
+         RJSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=877bemNFLjAoo8xqG5euoiL1YYZfVjc2/dpYZOJTzXk=;
+        b=WbuprLEc3xPDyrJw1ZlwlblpbDv6cnFhN5u+kO61xT9j9xQTquOBT8s4BJm9V4gHoy
+         WN2s1mx7HRycdRz5x1GqC1fQMc7iSTJqI5GVcJUezIO/NyIY+0+dZEeknN4QdgYqcrJf
+         s22ktLh/ym4iLLV/ewo2YjObLxxAuOIjZXXkLklO6U0AlQbILeQR6J7CYI44N0xgaEVY
+         8afsUB9yxC5NPyDF7myrTG2NphF8WYkq0G4zfey0puVgbnBIv6BR8Mt5fJOjChaoy5Ks
+         1dtGfEVo/45qxXibbDSmYUdEsDbY+/VbhSqxVtDF++8QzMeY2lHD4ZVEwxhrFIXuuZHk
+         WBrg==
+X-Gm-Message-State: AOAM532ewxY4D1JLcrB6JPMb6mrdtNeRbFDaadqQ3NgEjr/5v4O7YIID
+        36+ch6OskSPmJrdGC4f4WM1zyVw0ImwDOVLXfnw=
+X-Google-Smtp-Source: ABdhPJzy0OTKCOgwlOOvU/eRmCJDaE0OlNsVA2o5g9gtfUOPqfMXYleUdyUUElmo6vvOnEbKSHwFbyaAeF1QDQEBFFk=
+X-Received: by 2002:a25:d94:: with SMTP id 142mr8256354ybn.230.1615433403060;
+ Wed, 10 Mar 2021 19:30:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310220211.1454516-3-revest@chromium.org>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210310040431.916483-1-andrii@kernel.org> <20210310040431.916483-6-andrii@kernel.org>
+ <20210311023417.vhwe4avhvri7gcr5@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210311023417.vhwe4avhvri7gcr5@ast-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 10 Mar 2021 19:29:52 -0800
+Message-ID: <CAEf4BzY6RobSBMwLKFyJF-QoxwdJNZxoUStm=qViwy3eqtfUHw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 05/10] libbpf: add BPF static linker APIs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Mar 10, 2021 at 6:34 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Mar 09, 2021 at 08:04:26PM -0800, Andrii Nakryiko wrote:
+> > +
+> > +     struct btf *strtab_btf; /* we use struct btf to manage strings */
+> ...
+> > +     str_off = btf__add_str(linker->strtab_btf, sec->sec_name);
+> > +     sec->shdr->sh_name = str_off;
+>
+> That bit took me an hour to grok.
+> That single line comment above is far far from obvious.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- verifier.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Heh, I guess I've been working with BTF, ELF and pahole for too long
+to notice that it's so non-obvious. pahole wraps `struct btf` in a
+similar fashion for deduplicated string management.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3ab549df817b6..06c868989852d 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5732,8 +5732,8 @@ static int check_reference_leak(struct bpf_verifier_env *env)
- 	return state->acquired_refs ? -EINVAL : 0;
- }
- 
--int check_bpf_snprintf_call(struct bpf_verifier_env *env,
--			    struct bpf_reg_state *regs)
-+static int check_bpf_snprintf_call(struct bpf_verifier_env *env,
-+				   struct bpf_reg_state *regs)
- {
- 	struct bpf_reg_state *fmt_reg = &regs[BPF_REG_3];
- 	struct bpf_reg_state *data_len_reg = &regs[BPF_REG_5];
+> What the logic is relying on is that string section in BTF format
+> has the same zero terminated set of strings as ELF's .strtab section.
+> There is no BTF anywhere here in this 'strtab_btf'.
+> The naming choice made it double hard.
+
+Right. strtab_strs would probably be a slightly better choice.
+
+> My understanding that you're using that instead of renaming btf_add_mem()
+> into something generic to rely on string hashmap for string dedup?
+
+It's not about renaming btf_add_mem(). btf_add_mem() just implements
+memory re-allocation (with exponential increase). But here we want to
+not add a new string if it's already present. So it's much more
+complicated logic than btf_add_mem().
+
+>
+> The commit log in patch 2 that introduces btf_raw_strs() sort of talks about
+> this code puzzle, but I would never guessed that's what you meant based
+> on patch 2 alone.
+>
+> Did you consider some renaming/generalizing of string management to
+> avoid btf__add_str() through out the patch 5?
+> The "btf_" prefix makes things challenging to read.
+> Especially when patch 6 is using btf__add_str() to add to real BTF.
+
+Right. I guess we can extract the "set of strings" data structure out
+of `struct btf` into libbpf-internal data structure. Then use it from
+struct btf and separately (and directly) from struct bpf_linker. I'll
+see what that would involve in terms of refactoring.
+
+>
+> Mainly pointing it out for others who might be looking at the patches.
+
+That's a good point, I should have probably at least mentioned that
+bit more explicitly.
