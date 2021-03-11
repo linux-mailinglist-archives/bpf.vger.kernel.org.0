@@ -2,185 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E085337A02
-	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 17:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2FC337B55
+	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 18:47:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229441AbhCKQv0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Mar 2021 11:51:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21434 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229578AbhCKQvY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Mar 2021 11:51:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1615481483;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OO/tPG5G1RczqaGF/GiOfsdnXsSo9S9cqaZfFmpZNqM=;
-        b=L8w8Dd0ZHJZL7/PSiHjzB7zciuZgy3Q5cSorzqTVqt/cVD/c8UURNqo/V6W7ISTH/Tu9E/
-        MI6oGUppGft8qNPcfYKtLxuFrRBHefI8XknUdQxXyv2Mmth7uNg9PZB9TOTx1rM6yvBiJX
-        /nLkvjQb9uswXZzrx2lGEap7VsMAErM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-ATpMhlmYOjyp7FIOUtFhnQ-1; Thu, 11 Mar 2021 11:51:19 -0500
-X-MC-Unique: ATpMhlmYOjyp7FIOUtFhnQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA1EF1858F2D;
-        Thu, 11 Mar 2021 16:51:17 +0000 (UTC)
-Received: from treble (ovpn-116-225.rdu2.redhat.com [10.10.116.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EE0A9610AF;
-        Thu, 11 Mar 2021 16:51:13 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 10:51:10 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kuba@kernel.org,
-        mingo@redhat.com, ast@kernel.org, tglx@linutronix.de,
-        kernel-team@fb.com, yhs@fb.com
-Subject: Re: [PATCH -tip 0/5] kprobes: Fix stacktrace in kretprobes
-Message-ID: <20210311165110.y22uyne6ax4qgryf@treble>
-References: <20210307212333.7jqmdnahoohpxabn@maharaja.localdomain>
- <20210308115210.732f2c42bf347c15fbb2a828@kernel.org>
- <20210309011945.ky7v3pnbdpxhmxkh@treble>
- <20210310185734.332d9d52a26780ba02d09197@kernel.org>
- <20210310150845.7kctaox34yrfyjxt@treble>
- <20210311005509.0a1a65df0d2d6c7da73a9288@kernel.org>
- <20210310183113.xxverwh4qplr7xxb@treble>
- <20210311092018.2d0e54d2c891850e549d16fe@kernel.org>
- <20210311010615.7pemfngxx7cy42fe@treble>
- <20210311105438.cca15ed7645c454294dc3e1f@kernel.org>
+        id S229606AbhCKRrT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Mar 2021 12:47:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229490AbhCKRqv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Mar 2021 12:46:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E931764E77;
+        Thu, 11 Mar 2021 17:46:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615484811;
+        bh=k9aZEfwcMo7lmOg49WEreVY2aaFbpcrHQrJJuLNBukw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s+zvYqOiio5XXMyNE3sGp9SC58VFcFQetoZ9tdMsfcKrz/irLJDgoYeHVywrdXaZq
+         /9OyGkHYb1P+1GtPDJPlNYjOc5D2kidpI/OrhBfkzoH0su49qvapO4vXFKk9ATVDE9
+         +cQkTFFH00AoV0bU+lySNeUjbFUp39FQZ2DppCItNxKbs5N6rQreBwAlPZhoTwxHBm
+         7GaU7WcMvSPhRbnpUpuwb6wLaGsB8gJ4uIVXSRIAhuPblu1zv4oWwrmr+0U5UDzykl
+         4132MjmjbnmKAwD0rpo5YXXbUPLyxizrY+LEY6NijDHKbEmXCdMlQh8nHJ7qz7PllQ
+         4IIN/VFvfN+Wg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6D98940647; Thu, 11 Mar 2021 14:46:47 -0300 (-03)
+Date:   Thu, 11 Mar 2021 14:46:47 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH v4 dwarves] btf: Add support for the floating-point types
+Message-ID: <YEpXh4v79FHklsHx@kernel.org>
+References: <20210310201550.170599-1-iii@linux.ibm.com>
+ <CAEf4BzY0++YuU7+a3vSfWWZNLoov7mu7Q1ty4FqqH78gkqgqQw@mail.gmail.com>
+ <ff68a62e776ce9e459bece7ae87cc53573500a50.camel@linux.ibm.com>
+ <CAEf4Bzbyugfb2RkBkRuxNGKwSk40Tbq4zAvhQT8W=fVMYWuaxA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210311105438.cca15ed7645c454294dc3e1f@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <CAEf4Bzbyugfb2RkBkRuxNGKwSk40Tbq4zAvhQT8W=fVMYWuaxA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 10:54:38AM +0900, Masami Hiramatsu wrote:
-> On Wed, 10 Mar 2021 19:06:15 -0600
-> Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+Em Wed, Mar 10, 2021 at 01:35:39PM -0800, Andrii Nakryiko escreveu:
+> On Wed, Mar 10, 2021 at 1:02 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+> >
+> > On Wed, 2021-03-10 at 12:25 -0800, Andrii Nakryiko wrote:
+> > > On Wed, Mar 10, 2021 at 12:16 PM Ilya Leoshkevich <iii@linux.ibm.com>
+> > > wrote:
+> > > >
+> > > > Some BPF programs compiled on s390 fail to load, because s390
+> > > > arch-specific linux headers contain float and double types.
+> > > >
+> > > > Fix as follows:
+> > > >
+> > > > - Make the DWARF loader fill base_type.float_type.
+> > > >
+> > > > - Introduce the --btf_gen_floats command-line parameter, so that
+> > > >   pahole could be used to build both the older and the newer
+> > > > kernels.
+> > > >
+> > > > - libbpf introduced the support for the floating-point types in
+> > > > commit
+> > > >   986962fade5, so update the libbpf submodule to that version and
+> > > > use
+> > > >   the new btf__add_float() function in order to emit the floating-
+> > > > point
+> > > >   types when not in the compatibility mode.
+> > > >
+> > > > - Make the BTF loader recognize the new BTF kind.
+> > > >
+> > > > Example of the resulting entry in the vmlinux BTF:
+> > > >
+> > > >     [7164] FLOAT 'double' size=8
+> > > >
+> > > > when building with:
+> > > >
+> > > >     LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1} --btf_gen_floats
+> > > >
+> > > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > > > ---
+> > >
+> > > So it looks good to me overall, but here's the question about using
+> > > this --btf-gen-floats flag from link-vmlinux.sh script. If you
+> > > specify
+> > > that flag for an old pahole, it will probably error out, right? So
+> > > that means we'll need to do feature detection for pahole supported
+> > > features, right?..
+> >
+> > I was planning to just bump the version in this check:
+> >
+> >     if [ "${pahole_ver}" -lt "116" ]; then
 > 
-> > On Thu, Mar 11, 2021 at 09:20:18AM +0900, Masami Hiramatsu wrote:
-> > > > >  bool unwind_next_frame(struct unwind_state *state)
-> > > > >  {
-> > > > >  	unsigned long ip_p, sp, tmp, orig_ip = state->ip, prev_sp = state->sp;
-> > > > > @@ -536,6 +561,18 @@ bool unwind_next_frame(struct unwind_state *state)
-> > > > >  
-> > > > >  		state->ip = ftrace_graph_ret_addr(state->task, &state->graph_idx,
-> > > > >  						  state->ip, (void *)ip_p);
-> > > > > +		/*
-> > > > > +		 * There are special cases when the stack unwinder is called
-> > > > > +		 * from the kretprobe handler or the interrupt handler which
-> > > > > +		 * occurs in the kretprobe trampoline code. In those cases,
-> > > > > +		 * %sp is shown on the stack instead of the return address.
-> > > > > +		 * Or, when the unwinder find the return address is replaced
-> > > > > +		 * by kretprobe_trampoline.
-> > > > > +		 * In those cases, correct address can be found in kretprobe.
-> > > > > +		 */
-> > > > > +		if (state->ip == sp ||
-> > > > 
-> > > > Why is the 'state->ip == sp' needed?
-> > > 
-> > > As I commented above, until kretprobe_trampoline writes back the real
-> > > address to the stack, sp value is there (which has been pushed by the
-> > > 'pushq %rsp' at the entry of kretprobe_trampoline.)
-> > > 
-> > >         ".type kretprobe_trampoline, @function\n"
-> > >         "kretprobe_trampoline:\n"
-> > >         /* We don't bother saving the ss register */
-> > >         "       pushq %rsp\n"				// THIS
-> > >         "       pushfq\n"
-> > > 
-> > > Thus, from inside the kretprobe handler, like ftrace, you'll see
-> > > the sp value instead of the real return address.
-> > 
-> > I see.  If you change is_kretprobe_trampoline_address() to include the
-> > entire function, like:
-> > 
-> > static bool is_kretprobe_trampoline_address(unsigned long ip)
-> > {
-> > 	return (void *)ip >= kretprobe_trampoline &&
-> > 	       (void *)ip < kretprobe_trampoline_end;
-> > }
-> > 
-> > then the unwinder won't ever read the bogus %rsp value into state->ip,
-> > and the 'state->ip == sp' check can be removed.
+> No-no-no, we can't just arbitrarily say that the minimal pahole
+> version is now 1.21, while 1.16 would work just fine in almost all
+> cases on almost all architectures.
 > 
-> Hmm, I couldn't get your point. Since sp is the address of stack,
-> it always out of text address.
-
-When unwinding from trampoline_handler(), state->ip will point to the
-instruction after the call:
-
-	call trampoline_handler
-	movq %rax, 19*8(%rsp)   <-- state->ip points to this insn
-
-But then, the above version of is_kretprobe_trampoline_address() is
-true, so state->ip gets immediately replaced with the real return
-address:
-
-	if (is_kretprobe_trampoline_address(state->ip))
-		state->ip = orc_kretprobe_correct_ip(state);
-
-so the unwinder skips over the kretprobe_trampoline() frame and goes
-straight to the frame of the real return address.  Thus it never reads
-this bogus return value into state->ip:
-
-	pushq %rsp
-
-which is why the weird 'state->ip == sp' check is no longer needed.
-
-The only "downside" is that the unwinder skips the
-kretprobe_trampoline() frame.  (note that downside wouldn't exist in
-the case of UNWIND_HINT_REGS + valid regs->ip).
-
-> > > > And it would make the unwinder just work automatically when unwinding
-> > > > from the handler using the regs.
-> > > > 
-> > > > It would also work when unwinding from the handler's stack, if we put an
-> > > > UNWIND_HINT_REGS after saving the regs.
-> > > 
-> > > At that moment, the real return address is not identified. So we can not
-> > > put it.
-> > 
-> > True, at the time the regs are originally saved, the real return address
-> > isn't available.  But by the time the user handler is called, the return
-> > address *is* available.  So if the real return address were placed in
-> > regs->ip before calling the handler, the unwinder could find it there,
-> > when called from the handler.
+> >
+> > But we could also keep allowing 1.16-1.20 and pass the new flag on
+> > 1.21+ only.
+> >
+> > What do you think?
 > 
-> OK, but this is not arch independent specification. I can make a hack
-> only for x86, but that is not clean implementation, hmm.
+> I think we'll have to do the extra check. I'd also add something like
+> --btf-gen-all, that would turn on all the supported BTF features. So
+> that people that generate BTF for kernels externally (e.g., for old
+> kernels to support BPF CO-RE), could just do --btf-gen-all, instead of
+> potentially longer list of all the BTF optional subsets
+> (--btf-gen-floats --btf-gen-somemore --btf-gen-morecool etc). That
+> doesn't have to happen in this patch, of course.
 > 
-> > 
-> > Then we wouldn't need the call to orc_kretprobe_correct_ip() in
-> > __unwind_start().
+> So with what we have now:
 > 
-> What about the ORC implementation in other architecture? Is that for
-> x86 only?
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-ORC is x86 only.
+Ok, so I'm taking this v4, collecting Andrii's Acked-by and waiting for
+the --btf-gen-all patch as a followup,
 
-> > But maybe it's not possible due to the regs->ip expectations of legacy
-> > handlers?
-> 
-> Usually, the legacy handlers will ignore it, the official way to access
-> the correct return address is kretprobe_instance.ret_addr. Because it is
-> arch independent.
-> 
-> Nowadays there are instruction_pointer() and instruction_pointer_set() APIs
-> in many (not all) architecutre, so I can try to replace to use it instead
-> of the kretprobe_instance.ret_addr.
-> (and it will break the out-of-tree codes)
+Thanks,
 
-That sounds better to me, though I don't have an understanding of what
-it would break.
-
--- 
-Josh
-
+- Arnaldo
