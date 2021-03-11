@@ -2,74 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF70336CA1
-	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 08:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C05DD336DA2
+	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 09:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbhCKHAW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Mar 2021 02:00:22 -0500
-Received: from mga05.intel.com ([192.55.52.43]:27367 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229731AbhCKG7y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Mar 2021 01:59:54 -0500
-IronPort-SDR: zEntlNvJppVsZhHetCbT3/ecJMa9qbOYPC8rBONy8qKdadmLJ1Rt/ldEfdyVNxGaYNk+rURefp
- eq2Y6vdFoegg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9919"; a="273662898"
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="273662898"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 22:59:54 -0800
-IronPort-SDR: etC1/Qix5RDSZFoTajB90yb4CFzzecsx1G7yzSSOWXTlITDi7yEXly3N8mhF7SsKL8x0yc6CEx
- vAPpTUFpQw8A==
-X-IronPort-AV: E=Sophos;i="5.81,239,1610438400"; 
-   d="scan'208";a="410506705"
-Received: from eefimov-mobl.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.48.42])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2021 22:59:50 -0800
-Subject: Re: [PATCH bpf-next 2/2] libbpf: xsk: move barriers from
- libbpf_util.h to xsk.h
-To:     Jonathan Lemon <jonathan.lemon@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, andrii@kernel.org, magnus.karlsson@intel.com,
-        maximmi@nvidia.com, ciara.loftus@intel.com
-References: <20210310080929.641212-1-bjorn.topel@gmail.com>
- <20210310080929.641212-3-bjorn.topel@gmail.com>
- <20210311000605.tuo7rg4b7keo76iy@bsd-mbp.dhcp.thefacebook.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <0535ce9f-0db6-40f7-e512-e327f6f54c35@intel.com>
-Date:   Thu, 11 Mar 2021 07:59:46 +0100
+        id S231325AbhCKITU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Mar 2021 03:19:20 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1650 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230526AbhCKITD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 11 Mar 2021 03:19:03 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12B85AIM181152;
+        Thu, 11 Mar 2021 03:18:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Svjjfu6/Asgt3ngfd3jksUIX6H62v7zQz9Fj3zBsRTs=;
+ b=oe1doOtj8tBau6DGp/fFO3kynQp0x8ZuezTPEl3sy6vPwsBYlwiWr/G87n/IqiRMj765
+ Lxa1bRhuxFyX5xdjSTK4iEX0xJIpFbqPGzvNuSEvrLD6wColNUgrowkRubGSRMfQIacI
+ WiXeOYxjcbtPkQCSdQ5mlweQZvlnR3LxfOUmdK4o2PF1zbxPpra+Wbe3b+rst56wL27Q
+ cSVptzjuHlWw2OYEhsDCdILt2hysEYkWH+I95pted9FHOHcyEkzWdCVoCf22S29omb7f
+ nDKQ9Lma37XZekXqLq4PWaqvE1DqsrruwNKnB7bojBSkO13yE4RjuR4Abohyger6wJmA mA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3774m3fcs4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 03:18:38 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12B85JRs182196;
+        Thu, 11 Mar 2021 03:18:37 -0500
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3774m3fcrb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 03:18:37 -0500
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12B8CTbM016108;
+        Thu, 11 Mar 2021 08:18:36 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma03wdc.us.ibm.com with ESMTP id 3768kx6bes-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 08:18:36 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12B8IYAM12386706
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Mar 2021 08:18:35 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DBB0E13604F;
+        Thu, 11 Mar 2021 08:18:34 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 632F8136051;
+        Thu, 11 Mar 2021 08:18:28 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.44.141])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 11 Mar 2021 08:18:27 +0000 (GMT)
+Subject: Re: [PATCH] perf tools: Remove redundant code
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        peterz@infradead.org
+Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <1615346305-16428-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <36853ff4-70f0-a28b-7114-2423d7c11fad@linux.ibm.com>
+Date:   Thu, 11 Mar 2021 13:48:26 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20210311000605.tuo7rg4b7keo76iy@bsd-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1615346305-16428-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-11_02:2021-03-10,2021-03-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
+ clxscore=1011 lowpriorityscore=0 bulkscore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=999 phishscore=0 spamscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103110044
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021-03-11 01:06, Jonathan Lemon wrote:
-> On Wed, Mar 10, 2021 at 09:09:29AM +0100, Björn Töpel wrote:
->> From: Björn Töpel <bjorn.topel@intel.com>
->>
->> The only user of libbpf_util.h is xsk.h. Move the barriers to xsk.h,
->> and remove libbpf_util.h. The barriers are used as an implementation
->> detail, and should not be considered part of the stable API.
+
+
+On 3/10/21 8:48 AM, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
 > 
-> Does that mean that anything else which uses the same type of
-> shared rings (bpf ringbuffer, io_uring, zctap) have to implement
-> the same primitives that xsk.h has?
+> ./tools/perf/util/evlist.c:1315:5-8: Unneeded variable: "err". Return "-
+> ENOMEM" on line 1340.
 > 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  tools/perf/util/evlist.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index 882cd1f..6c2a271 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -1313,7 +1313,6 @@ static int evlist__create_syswide_maps(struct evlist *evlist)
+>  {
+>  	struct perf_cpu_map *cpus;
+>  	struct perf_thread_map *threads;
+> -	int err = -ENOMEM;
+>  
+>  	/*
+>  	 * Try reading /sys/devices/system/cpu/online to get
+> @@ -1338,7 +1337,7 @@ static int evlist__create_syswide_maps(struct evlist *evlist)
+>  out_put:
+>  	perf_cpu_map__put(cpus);
+>  out:
+> -	return err;
+> +	return -ENOMEM;
+>  }
 
-Jonathan, there's a longer explanation on back-/forward-compatibility in
-the commit message [1]. Again, this is for the XDP socket rings, so I
-wont comment on the other rings. I would not assume compatibility
-between different rings (e.g. the bpf ringbuffer and XDP sockets rings),
-not even prior the barrier change.
+Seems fine to me.
 
-
-Björn
-
-[1] 
-https://lore.kernel.org/bpf/20210305094113.413544-2-bjorn.topel@gmail.com/ 
-
+Reviewed-By: Kajol Jain<kjain@linux.ibm.com>
+Thanks,
+Kajol Jain
+>  
+>  int evlist__open(struct evlist *evlist)
+> 
