@@ -2,146 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A9533986D
-	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 21:29:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFCF8339933
+	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 22:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234757AbhCLU2o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Mar 2021 15:28:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234770AbhCLU2n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Mar 2021 15:28:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8FA564F43;
-        Fri, 12 Mar 2021 20:28:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615580923;
-        bh=GH0ez+6thAFHA0R/g6PB84gv2i0cqvUAgDElmnsXr8w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=VGaCV2AXrylOg6TdRiZrMPJOv7ON0cVJ59Gm/JCIHVTjgpVpTXKgz19cVR/N9d/2R
-         cl8ZNHLB7lA+97wDIrdUBRH+gftY/6UzlNfMGAyOC6BpTsXGtUAu1R+U90pCvEG3Vw
-         GvHnMVdIM9yzHj2XprFdXcYVlSCjbOvkGxNZSh7aMdxyS3TJrkPsPX+YQSLkOxk9cF
-         BWJRoAwI38Kq7gXjQHHwTTqKRz9l/F5fsktD6Um9w6f2FjlvZgqxJtXzBXMx9bBFJM
-         RNj5qICdALYiFE+JjspVs9n36AooGGZHEw7x216w0g65NhdOzwtSYiqO/sGbbaer2q
-         SpgY62ZqJZ5Hw==
-Date:   Fri, 12 Mar 2021 14:28:41 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        bpf@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kbuild@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/17] cfi: add __cficanonical
-Message-ID: <20210312202841.GA2286570@bjorn-Precision-5520>
+        id S234033AbhCLVoE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Mar 2021 16:44:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234219AbhCLVnx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Mar 2021 16:43:53 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70F6C061574;
+        Fri, 12 Mar 2021 13:43:52 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id t18so5784201pjs.3;
+        Fri, 12 Mar 2021 13:43:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=THf+Q27rCE5bAqT61RxqjUfzIMw5JhYn8NNtx0p14fg=;
+        b=WiHXeodK/wol85oDmp7yWl+34nzWFLLznfcL4ts+vBP6cg2Py3p4BieaEbNbDTe6om
+         xkRVMLslLYumR2uzSl78EdTI8MsgzfYtMNPrOXE/SWeFNA4zcrufbk5yk3ZK/uytmFfk
+         wq4sgh5mkTgrYox0bpP+WB3IvJKnTO+AzctCuG9GzUbfdrwBgd3K+wLtZ4sWMjvZssa6
+         /xsIvLMuWh9TUa4OGYX6GQJx4UB3I2NJ1Ksajt1xjKmPTSMcldIl7IDIz+ZkwoVqhXAn
+         2X0O6w79P2l3F5KxyrbWoZWrXcfpRYIz7RJFUIEcJXwdBoBi0g4ZaHeHowiy4re1GO8H
+         PvEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=THf+Q27rCE5bAqT61RxqjUfzIMw5JhYn8NNtx0p14fg=;
+        b=LxY92C9cir5N9cLtm+aNVVwOCG+BFmbq1BrtwxzWi6qKQJ/uPvhR2KfZmMS+rwNOKA
+         M+gfZ2b8sQotAz9padBDfrdF0Y8KW0VW+nAZl88xcMgRT/StMnkwUHMpeCvOG/g9GQFB
+         tTLZvcHrA6f4V9yahRGbQulf7/JRiaCO4NK+l5SJEEUYsfcpczHa0ndaJX5lZ9eEoH7N
+         uPE3Frq2sDXr+6Gbq5dDmrwb+nRtSZIm1tp9hkgwrYrba07RAlPzIZMQUTFiYPc5lX42
+         7H41s8/srGUD6JwJseb1QOHxf2qFthicU88LYHHNXl39xtpPsB2SeFnNXSMkTeZdbHGl
+         jfcA==
+X-Gm-Message-State: AOAM531mhg0c9fEJVWiMytH+YdVnoOcD+9NiKkl3EyQgxQtaRz9cUu3f
+        GQBXI4oUufJJ4czJeWPOseVT0XkJPWZLRw==
+X-Google-Smtp-Source: ABdhPJz6w93PgiD066C/BiK3t9o/2rLknMqYdxlQkTKKQWq+fqnlBPZd4bUmpUG9Ddoh9NsZbtsVvA==
+X-Received: by 2002:a17:902:bd96:b029:e6:3d73:f90e with SMTP id q22-20020a170902bd96b02900e63d73f90emr480048pls.63.1615585432536;
+        Fri, 12 Mar 2021 13:43:52 -0800 (PST)
+Received: from sultan-box.localdomain (static-198-54-131-119.cust.tzulo.com. [198.54.131.119])
+        by smtp.gmail.com with ESMTPSA id e63sm6276094pfe.208.2021.03.12.13.43.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 13:43:52 -0800 (PST)
+Sender: Sultan Alsawaf <sultan.kerneltoast@gmail.com>
+From:   Sultan Alsawaf <sultan@kerneltoast.com>
+X-Google-Original-From: Sultan Alsawaf
+Cc:     Sultan Alsawaf <sultan@kerneltoast.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] libbpf: Use the correct fd when attaching to perf events
+Date:   Fri, 12 Mar 2021 13:43:15 -0800
+Message-Id: <20210312214316.132993-1-sultan@kerneltoast.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312004919.669614-3-samitolvanen@google.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 04:49:04PM -0800, Sami Tolvanen wrote:
-> With CONFIG_CFI_CLANG, the compiler replaces a function address taken
-> in C code with the address of a local jump table entry, which passes
-> runtime indirect call checks. However, the compiler won't replace
-> addresses taken in assembly code, which will result in a CFI failure
-> if we later jump to such an address in instrumented C code. The code
-> generated for the non-canonical jump table looks this:
-> 
->   <noncanonical.cfi_jt>: /* In C, &noncanonical points here */
-> 	jmp noncanonical
->   ...
->   <noncanonical>:        /* function body */
-> 	...
-> 
-> This change adds the __cficanonical attribute, which tells the
-> compiler to use a canonical jump table for the function instead. This
-> means the compiler will rename the actual function to <function>.cfi
-> and points the original symbol to the jump table entry instead:
-> 
->   <canonical>:           /* jump table entry */
-> 	jmp canonical.cfi
->   ...
->   <canonical.cfi>:       /* function body */
-> 	...
-> 
-> As a result, the address taken in assembly, or other non-instrumented
-> code always points to the jump table and therefore, can be used for
-> indirect calls in instrumented code without tripping CFI checks.
-> 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+From: Sultan Alsawaf <sultan@kerneltoast.com>
 
-If you need it:
+We should be using the program fd here, not the perf event fd.
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>	# pci.h
+Fixes: 63f2f5ee856ba ("libbpf: add ability to attach/detach BPF program to perf event")
+Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  include/linux/compiler-clang.h | 1 +
->  include/linux/compiler_types.h | 4 ++++
->  include/linux/init.h           | 4 ++--
->  include/linux/pci.h            | 4 ++--
->  4 files changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-> index 1ff22bdad992..c275f23ce023 100644
-> --- a/include/linux/compiler-clang.h
-> +++ b/include/linux/compiler-clang.h
-> @@ -57,3 +57,4 @@
->  #endif
->  
->  #define __nocfi		__attribute__((__no_sanitize__("cfi")))
-> +#define __cficanonical	__attribute__((__cfi_canonical_jump_table__))
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index 796935a37e37..d29bda7f6ebd 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -246,6 +246,10 @@ struct ftrace_likely_data {
->  # define __nocfi
->  #endif
->  
-> +#ifndef __cficanonical
-> +# define __cficanonical
-> +#endif
-> +
->  #ifndef asm_volatile_goto
->  #define asm_volatile_goto(x...) asm goto(x)
->  #endif
-> diff --git a/include/linux/init.h b/include/linux/init.h
-> index b3ea15348fbd..045ad1650ed1 100644
-> --- a/include/linux/init.h
-> +++ b/include/linux/init.h
-> @@ -220,8 +220,8 @@ extern bool initcall_debug;
->  	__initcall_name(initstub, __iid, id)
->  
->  #define __define_initcall_stub(__stub, fn)			\
-> -	int __init __stub(void);				\
-> -	int __init __stub(void)					\
-> +	int __init __cficanonical __stub(void);			\
-> +	int __init __cficanonical __stub(void)			\
->  	{ 							\
->  		return fn();					\
->  	}							\
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 86c799c97b77..39684b72db91 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -1944,8 +1944,8 @@ enum pci_fixup_pass {
->  #ifdef CONFIG_LTO_CLANG
->  #define __DECLARE_PCI_FIXUP_SECTION(sec, name, vendor, device, class,	\
->  				  class_shift, hook, stub)		\
-> -	void stub(struct pci_dev *dev);					\
-> -	void stub(struct pci_dev *dev)					\
-> +	void __cficanonical stub(struct pci_dev *dev);			\
-> +	void __cficanonical stub(struct pci_dev *dev)			\
->  	{ 								\
->  		hook(dev); 						\
->  	}								\
-> -- 
-> 2.31.0.rc2.261.g7f71774620-goog
-> 
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index d43cc3f29dae..3d20d57d4af5 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9538,7 +9538,7 @@ struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog,
+ 	if (!link)
+ 		return ERR_PTR(-ENOMEM);
+ 	link->detach = &bpf_link__detach_perf_event;
+-	link->fd = pfd;
++	link->fd = prog_fd;
+ 
+ 	if (ioctl(pfd, PERF_EVENT_IOC_SET_BPF, prog_fd) < 0) {
+ 		err = -errno;
+-- 
+2.30.2
+
