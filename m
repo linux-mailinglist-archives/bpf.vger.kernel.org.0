@@ -2,70 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F266933848A
-	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 05:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E02B3385A6
+	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 07:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbhCLEFe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Mar 2021 23:05:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
+        id S230452AbhCLGN1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Mar 2021 01:13:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232046AbhCLEF0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Mar 2021 23:05:26 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341F7C061574;
-        Thu, 11 Mar 2021 20:05:26 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so10431551pjv.1;
-        Thu, 11 Mar 2021 20:05:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bhLsdKTKPsK8gXpEmj198G0NYLh6qAY7tBjV7BgQoSc=;
-        b=UKS49ZrM/eMONEw0OIbkqsxF8jig8YJvNrVgrcF5VIQqHKEJrXlHWBIso99ozodTA6
-         mkItFWPk38ujQ98P9iuswKEI96ReZw715CCWaIGF+ANIDB857/ERd6fL+wWtdhn6eajR
-         cV8INdr573EuVmRZEOj5UZClfKEB0LZVOFEA+Fp1k/+5qzx8UNalnQVYqwZ0RbeBtOn8
-         njBQh1zE2Nnwllg42HyENXdOlO2xlnkDNTseeLcnzpVMEgB4MnU5U77PIkoDkhQ73ymf
-         Y1luXUx2DTvgP93zYuGALD6wbT8Q20jNx8x7i41i0JdwDstekfMMFJO7w27MfYSMB/Cs
-         5xMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bhLsdKTKPsK8gXpEmj198G0NYLh6qAY7tBjV7BgQoSc=;
-        b=a7EN/kKtGaLnMc/CSXU1xsddvJ02GsrfnzzcbtIuEBF9QfDrtYPkHy2ZbobDhv6XE3
-         Z1wWiTfHfg2tq5WllqCN6ZSAah9JgYsnVjhlQMXZZHr44LLRgrxUL/pdtVVzu/Vb8sI8
-         tmo5wSQOZXgCjYh+TVzHJAZjFZBLeJS9tJ3/80oMdYOYcw+I14z06KtLFn6YWg7ijX34
-         Flj9O08fCeTu8Oh+pFBRiu1xhvXFqVYhf+DDql4Zt2P0KViueruAyvQfrwysF8vp9hjo
-         +nWCiAC9Ww6IZCEM0sqyM4QSYzHsVovzqdJ3e7ngRddKT7RJO2b9AR+1n4tY13LDvFRC
-         BVZw==
-X-Gm-Message-State: AOAM532HC9Gsx+YChEnsCwQR8dWWADQWbE89kbkL0SjAvRXjcIB+VjQK
-        yOkFnm7XRu5lAnnszAO/mTg=
-X-Google-Smtp-Source: ABdhPJxRWSSCKUdAbY2ziGUv6hLcADfCUBAk+M4+oMSB7B1aREaTlUcbkwVaqlD0qTmmxVKsEU8wFw==
-X-Received: by 2002:a17:90a:c249:: with SMTP id d9mr12275929pjx.104.1615521925628;
-        Thu, 11 Mar 2021 20:05:25 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:1292:bfb3:b910:e5ec])
-        by smtp.gmail.com with ESMTPSA id z68sm3664526pfz.39.2021.03.11.20.05.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 20:05:25 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Shubhankar Kuranagatti <shubhankarvk@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        bkkarthik@pesu.pes.edu
-Subject: Re: [PATCH] net: socket.c: Fix comparison issues
-Date:   Thu, 11 Mar 2021 20:05:20 -0800
-Message-Id: <20210312040520.12213-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210311044408.t6qut7taaagt4a63@kewl-virtual-machine>
-References: <20210311044408.t6qut7taaagt4a63@kewl-virtual-machine>
+        with ESMTP id S229667AbhCLGNR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Mar 2021 01:13:17 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD76DC061574;
+        Thu, 11 Mar 2021 22:13:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tuWZsMs6exFN5R6PkELmsSGZweW8Hs198xcKIgwMDDA=; b=lKgmtNx16rBafs3JaCtnDBNN9n
+        O6UTTPm8K5kiDBxz+uzhjX6F1WZt2hyW3UAnwhOvUrqVrnmF7hF+i8TPsB5DhA0o4luVKIdfpVhFR
+        bbuqXexPcd8BzIUJlU/DvHgi1/NLRyzh3xCmi2lbbwmHQoggTDF9+ywnL+oW68Jj/SyoI0hx/ETdA
+        VsnXK3dD9LZz1qYVvd8y/ukyPeeWJmLayh4EmttPXTgLOO9OHgThs/BEdmSq4lRPJ687QsTfelOfE
+        Lfw7lu0Nf96lvw/b0gosuhPWwhaeWc6mb4nFT/70JDWVr7DnqlC2w9+Bs4SHVw0U7v9agtc+l0/gi
+        +R2nkieQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lKb2m-009kSg-Af; Fri, 12 Mar 2021 06:13:05 +0000
+Date:   Fri, 12 Mar 2021 06:13:04 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        bpf@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kbuild@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/17] kthread: cfi: disable callback pointer check with
+ modules
+Message-ID: <20210312061304.GA2321497@infradead.org>
+References: <20210312004919.669614-1-samitolvanen@google.com>
+ <20210312004919.669614-7-samitolvanen@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312004919.669614-7-samitolvanen@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-What is the reason for this change? Why is the new way better than the
-old way?
+On Thu, Mar 11, 2021 at 04:49:08PM -0800, Sami Tolvanen wrote:
+> With CONFIG_CFI_CLANG, a callback function passed to
+> __kthread_queue_delayed_work from a module points to a jump table
+> entry defined in the module instead of the one used in the core
+> kernel, which breaks function address equality in this check:
+> 
+>   WARN_ON_ONCE(timer->function != kthread_delayed_work_timer_fn);
+> 
+> Disable the warning when CFI and modules are enabled.
+> 
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> ---
+>  kernel/kthread.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/kthread.c b/kernel/kthread.c
+> index 1578973c5740..af5fee350586 100644
+> --- a/kernel/kthread.c
+> +++ b/kernel/kthread.c
+> @@ -963,7 +963,13 @@ static void __kthread_queue_delayed_work(struct kthread_worker *worker,
+>  	struct timer_list *timer = &dwork->timer;
+>  	struct kthread_work *work = &dwork->work;
+>  
+> -	WARN_ON_ONCE(timer->function != kthread_delayed_work_timer_fn);
+> +	/*
+> +	 * With CFI, timer->function can point to a jump table entry in a module,
+
+you keep spewing this comment line that has exactly 81 characters and
+thus badly messes up read it with a normal termina everywhere.
+
+Maybe instead of fixing that in ever duplication hide the whole check in
+a well documented helper (which would have to be a macro due to the
+typing involved).
