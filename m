@@ -2,62 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C403386D2
-	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 08:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 854FA33895E
+	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 10:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbhCLHwB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Mar 2021 02:52:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231888AbhCLHvv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Mar 2021 02:51:51 -0500
-Received: from smtp.gentoo.org (mail.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E683C061574;
-        Thu, 11 Mar 2021 23:51:51 -0800 (PST)
-Received: by sf.home (Postfix, from userid 1000)
-        id 1F6DB5A22061; Fri, 12 Mar 2021 07:51:41 +0000 (GMT)
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Sergei Trofimovich <slyfox@gentoo.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH] ia64: tools: add generic errno.h definition
-Date:   Fri, 12 Mar 2021 07:51:35 +0000
-Message-Id: <20210312075136.2037915-1-slyfox@gentoo.org>
-X-Mailer: git-send-email 2.30.2
+        id S233559AbhCLJ5o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Mar 2021 04:57:44 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:60686 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233327AbhCLJ5X (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 12 Mar 2021 04:57:23 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R551e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0URdh6OY_1615543040;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0URdh6OY_1615543040)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 12 Mar 2021 17:57:20 +0800
+Date:   Fri, 12 Mar 2021 17:57:20 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     eric.dumazet@gmail.com, daniel@iogearbox.net, ast@kernel.org,
+        andrii@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com
+Subject: Re: [PATCH bpf-next v3 0/4] Expose network namespace cookies to user
+ space
+Message-ID: <YEs7AKXmuoMvt5Tf@TonyMac-Alibaba>
+Reply-To: Tony Lu <tonylu@linux.alibaba.com>
+References: <20210219154330.93615-1-lmb@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219154330.93615-1-lmb@cloudflare.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Noticed missing header when build bpfilter helper:
+On Fri, Feb 19, 2021 at 03:43:26PM +0000, Lorenz Bauer wrote:
+> We're working on a user space control plane for the BPF sk_lookup
+> hook [1]. The hook attaches to a network namespace and allows
+> control over which socket receives a new connection / packet.
 
-    CC [U]  net/bpfilter/main.o
-  In file included from /usr/include/linux/errno.h:1,
-                   from /usr/include/bits/errno.h:26,
-                   from /usr/include/errno.h:28,
-                   from net/bpfilter/main.c:4:
-  tools/include/uapi/asm/errno.h:13:10: fatal error:
-    ../../../arch/ia64/include/uapi/asm/errno.h: No such file or directory
-     13 | #include "../../../arch/ia64/include/uapi/asm/errno.h"
-        |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+We are developing a net stack latency tracing tool, which need
+net_cookie to distinguish different net namespace. Besides that, our
+container management system need to read net_cookie from userspace. 
 
-CC: linux-kernel@vger.kernel.org
-CC: netdev@vger.kernel.org
-CC: bpf@vger.kernel.org
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
----
- tools/arch/ia64/include/uapi/asm/errno.h | 1 +
- 1 file changed, 1 insertion(+)
- create mode 100644 tools/arch/ia64/include/uapi/asm/errno.h
+In [0], you said you would give up this patch set. Could you reconsider
+continuing with these patches? Because we also need them. 
 
-diff --git a/tools/arch/ia64/include/uapi/asm/errno.h b/tools/arch/ia64/include/uapi/asm/errno.h
-new file mode 100644
-index 000000000000..4c82b503d92f
---- /dev/null
-+++ b/tools/arch/ia64/include/uapi/asm/errno.h
-@@ -0,0 +1 @@
-+#include <asm-generic/errno.h>
--- 
-2.30.2
+net_cookie could be an unified net namespace ID to replace netns inode,
+but there are lots of work to do.
 
+[0]: https://lkml.org/lkml/2021/3/10/254
+
+
+Cheers,
+Tony Lu
+
+> 
+> I'm proposing to add a new getsockopt and a netns ioctl to retrieve
+> netns cookies, which allows identifying which netns a socket belongs
+> to.
+> 
+> 1: https://www.kernel.org/doc/html/latest/bpf/prog_sk_lookup.html
+> 
+> Changes in v3:
+> - Use sock_net unconditionally
+> - Fix unused variable in nsfs ioctl
+> - Be strict about getsockopt value size
+> 
+> Changes in v2:
+> - Rebase on top of Eric Dumazet's netns cookie simplification
+> 
+> Lorenz Bauer (4):
+>   net: add SO_NETNS_COOKIE socket option
+>   nsfs: add an ioctl to discover the network namespace cookie
+>   tools/testing: add test for NS_GET_COOKIE
+>   tools/testing: add a selftest for SO_NETNS_COOKIE
+> 
+>  arch/alpha/include/uapi/asm/socket.h          |  2 +
+>  arch/mips/include/uapi/asm/socket.h           |  2 +
+>  arch/parisc/include/uapi/asm/socket.h         |  2 +
+>  arch/sparc/include/uapi/asm/socket.h          |  2 +
+>  fs/nsfs.c                                     |  7 +++
+>  include/uapi/asm-generic/socket.h             |  2 +
+>  include/uapi/linux/nsfs.h                     |  2 +
+>  net/core/sock.c                               |  7 +++
+>  tools/testing/selftests/net/.gitignore        |  1 +
+>  tools/testing/selftests/net/Makefile          |  2 +-
+>  tools/testing/selftests/net/config            |  1 +
+>  tools/testing/selftests/net/so_netns_cookie.c | 61 +++++++++++++++++++
+>  tools/testing/selftests/nsfs/.gitignore       |  1 +
+>  tools/testing/selftests/nsfs/Makefile         |  2 +-
+>  tools/testing/selftests/nsfs/config           |  1 +
+>  tools/testing/selftests/nsfs/netns.c          | 57 +++++++++++++++++
+>  16 files changed, 150 insertions(+), 2 deletions(-)
+>  create mode 100644 tools/testing/selftests/net/so_netns_cookie.c
+>  create mode 100644 tools/testing/selftests/nsfs/netns.c
+> 
+> -- 
+> 2.27.0
