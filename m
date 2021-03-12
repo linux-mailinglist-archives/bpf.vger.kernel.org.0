@@ -2,128 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA26338EF8
-	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 14:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 619E53390F6
+	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 16:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbhCLNjv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Mar 2021 08:39:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231330AbhCLNju (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Mar 2021 08:39:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A035564FCE;
-        Fri, 12 Mar 2021 13:39:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615556389;
-        bh=nZfmjBUd/XLz0rLwPXsFG4Oi9D6W8pv68SGJVGeRlnw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ac63uhQ+DyWnr8HaowEwst0892bAZqp29LHVMHG6kkxAv8sk6r3qGvGHxU9mpvmdm
-         BZvpSZ21wVOV0wdpZWRE3X/+URLT4cInog3VJdrfj0UbEgB/m7+PUbKgorlbIlg0rs
-         H2nkxccEp7lHU6CENSgVDJ80pjhDtwKt/kBHKvfeNA5XZRJGYksUqILeiVTepNQvzK
-         Z7aG4SsDi+jluk+qgmm9cydwgGA7zb9OkHiBkK6n8ihp6b6OPDC0ZAGGhpAMMqR/Xa
-         TitNvN4tUxIfCrjqp1T8SkYg8D9xzkW3dtZN6M8EHrJFrvHHvk54aFfM0DFhHuIjOz
-         /wCUlGbYYW8Gw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 898DF40647; Fri, 12 Mar 2021 10:39:46 -0300 (-03)
-Date:   Fri, 12 Mar 2021 10:39:46 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH dwarves] btf: Add --btf_gen_all flag
-Message-ID: <YEtvIvODFEQHgt8m@kernel.org>
-References: <20210312000808.175262-1-iii@linux.ibm.com>
+        id S231346AbhCLPPt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Mar 2021 10:15:49 -0500
+Received: from www62.your-server.de ([213.133.104.62]:50942 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231786AbhCLPPa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Mar 2021 10:15:30 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lKjVg-000Ceb-KZ; Fri, 12 Mar 2021 16:15:28 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lKjVg-000UQ0-Dx; Fri, 12 Mar 2021 16:15:28 +0100
+Subject: Re: [PATCH net] selftests/bpf: set gopt opt_class to 0 if get tunnel
+ opt failed
+To:     Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Yi-Hung Wei <yihung.wei@gmail.com>,
+        David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
+        William Tu <u9012063@gmail.com>
+References: <20210309032214.2112438-1-liuhangbin@gmail.com>
+ <20210312015617.GZ2900@Leo-laptop-t470s>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <0b5c810b-5eec-c7b0-15fc-81c989494202@iogearbox.net>
+Date:   Fri, 12 Mar 2021 16:15:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312000808.175262-1-iii@linux.ibm.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210312015617.GZ2900@Leo-laptop-t470s>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26106/Fri Mar 12 13:03:16 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Mar 12, 2021 at 01:08:08AM +0100, Ilya Leoshkevich escreveu:
-> By default, pahole makes use only of BTF features introduced with
-> kernel v5.2. Features that are added later need to be turned on with
-> explicit feature flags, such as --btf_gen_floats. According to [1],
-> this will hinder the people who generate BTF for kernels externally
-> (e.g. for old kernels to support BPF CO-RE).
+On 3/12/21 2:56 AM, Hangbin Liu wrote:
+> Hi David,
 > 
-> Introduce --btf_gen_all that allows using all BTF features supported
-> by pahole.
+> May I ask what's the status of this patch? From patchwork[1] the state is
+> accepted. But I can't find the fix on net or net-next.
+
+I think there may have been two confusions, i) that $subject says that this goes
+via net tree instead of bpf tree, which might have caused auto-delegation to move
+this into 'netdev' patchwork reviewer bucket, and ii) the kernel patchwork bot then
+had a mismatch as you noticed when it checked net-next after tree merge and replied
+to the wrong patch of yours which then placed this one into 'accepted' state. I just
+delegated it to bpf and placed it back under review..
+
+> [1] https://patchwork.kernel.org/project/netdevbpf/patch/20210309032214.2112438-1-liuhangbin@gmail.com/
 > 
-> [1] https://lore.kernel.org/dwarves/CAEf4Bzbyugfb2RkBkRuxNGKwSk40Tbq4zAvhQT8W=fVMYWuaxA@mail.gmail.com/
+> Thanks
+> Hangbin
 
-Applied locally, testing ongoing.
+> On Tue, Mar 09, 2021 at 11:22:14AM +0800, Hangbin Liu wrote:
+>> When fixing the bpf test_tunnel.sh genve failure. I only fixed
+>> the IPv4 part but forgot the IPv6 issue. Similar with the IPv4
+>> fixes 557c223b643a ("selftests/bpf: No need to drop the packet when
+>> there is no geneve opt"), when there is no tunnel option and
+>> bpf_skb_get_tunnel_opt() returns error, there is no need to drop the
+>> packets and break all geneve rx traffic. Just set opt_class to 0 and
+>> keep returning TC_ACT_OK at the end.
+>>
+>> Fixes: 933a741e3b82 ("selftests/bpf: bpf tunnel test.")
+>> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+>> ---
+>>   tools/testing/selftests/bpf/progs/test_tunnel_kern.c | 6 ++----
+>>   1 file changed, 2 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+>> index 9afe947cfae9..ba6eadfec565 100644
+>> --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+>> +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+>> @@ -508,10 +508,8 @@ int _ip6geneve_get_tunnel(struct __sk_buff *skb)
+>>   	}
+>>   
+>>   	ret = bpf_skb_get_tunnel_opt(skb, &gopt, sizeof(gopt));
+>> -	if (ret < 0) {
+>> -		ERROR(ret);
+>> -		return TC_ACT_SHOT;
+>> -	}
+>> +	if (ret < 0)
+>> +		gopt.opt_class = 0;
+>>   
+>>   	bpf_trace_printk(fmt, sizeof(fmt),
+>>   			key.tunnel_id, key.remote_ipv4, gopt.opt_class);
+>> -- 
+>> 2.26.2
+>>
 
-Also added this:
-
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-
-- Arnaldo
- 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  man-pages/pahole.1 | 4 ++++
->  pahole.c           | 8 ++++++++
->  2 files changed, 12 insertions(+)
-> 
-> diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
-> index e292b2c..cbbefbf 100644
-> --- a/man-pages/pahole.1
-> +++ b/man-pages/pahole.1
-> @@ -204,6 +204,10 @@ to "/sys/kernel/btf/vmlinux".
->  Allow producing BTF_KIND_FLOAT entries in systems where the vmlinux DWARF
->  information has float types.
->  
-> +.TP
-> +.B \-\-btf_gen_all
-> +Allow using all the BTF features supported by pahole.
-> +
->  .TP
->  .B \-l, \-\-show_first_biggest_size_base_type_member
->  Show first biggest size base_type member.
-> diff --git a/pahole.c b/pahole.c
-> index c8d38f5..df6aa83 100644
-> --- a/pahole.c
-> +++ b/pahole.c
-> @@ -826,6 +826,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF = dwarves_print_version;
->  #define ARGP_numeric_version       320
->  #define ARGP_btf_base		   321
->  #define ARGP_btf_gen_floats	   322
-> +#define ARGP_btf_gen_all	   323
->  
->  static const struct argp_option pahole__options[] = {
->  	{
-> @@ -1125,6 +1126,11 @@ static const struct argp_option pahole__options[] = {
->  		.key  = ARGP_btf_gen_floats,
->  		.doc  = "Allow producing BTF_KIND_FLOAT entries."
->  	},
-> +	{
-> +		.name = "btf_gen_all",
-> +		.key  = ARGP_btf_gen_all,
-> +		.doc  = "Allow using all the BTF features supported by pahole."
-> +	},
->  	{
->  		.name = "structs",
->  		.key  = ARGP_just_structs,
-> @@ -1262,6 +1268,8 @@ static error_t pahole__options_parser(int key, char *arg,
->  		print_numeric_version = true;		break;
->  	case ARGP_btf_gen_floats:
->  		btf_gen_floats = true;			break;
-> +	case ARGP_btf_gen_all:
-> +		btf_gen_floats = true;			break;
->  	default:
->  		return ARGP_ERR_UNKNOWN;
->  	}
-> -- 
-> 2.29.2
-> 
-
--- 
-
-- Arnaldo
