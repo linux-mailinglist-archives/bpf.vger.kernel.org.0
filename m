@@ -2,25 +2,25 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56023397B5
-	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 20:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2C13397DB
+	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 21:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234536AbhCLTrk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Mar 2021 14:47:40 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:18155 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234485AbhCLTrN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Mar 2021 14:47:13 -0500
-Date:   Fri, 12 Mar 2021 19:47:10 +0000
+        id S233945AbhCLUA2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Mar 2021 15:00:28 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:62182 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234517AbhCLTrD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Mar 2021 14:47:03 -0500
+Date:   Fri, 12 Mar 2021 19:46:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1615578431; bh=0WXUDRS6l3uzo7FR/B86Gske9XTm/nKNi8/gZiVufio=;
+        t=1615578421; bh=OtoaEa4C9A8M8IjnX8ICb3j9vVq3aPxG0RyT+eIX9OU=;
         h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=W0fw0vAzGEdIe1NRTwFI0Zc+jgpfNGER5XVeToKKqjERriU/eabdNJjFcYaPzIYvR
-         sgsHppSchZl7I1AchfFUvTTIHfHiQn6wcnBeP+CKBgsdVAPF/raBbAKhLA0Rd/x3uU
-         TcM7ZMb+BjPva1FjJYCBHlK9NXuEl44vhYJ1GfasZIITzCKPNlW18uvDcvV5BsWGz2
-         R6FHupHuS4DYidzdmyScY9++8sttJFJWdffJ0skHDWhN1dgUfY7saizL7brVRZF0sP
-         oUQCymviXI5/PNSi+Crt42y1nYhSAccdY+hbPhzVKl3UzxAydlQ8qF2tk0XFRAq85H
-         8/P633Zz1TQtg==
+        b=V85xkCPVeVQhvYy7zZb5ATiY7ybI8IaO1ADBBYQH3uO/HtG021dPYP9SF81OIwtiQ
+         2oOyTTEEgpLjTxUzUcPpRzPPkLYBlRyrcTnF0d1gjg8uxa8TDdXL94S367o7aePwy2
+         svwpdW7jzhiFQTudYqjxyjEj4Z0DWrtuJIrZM0cdyGjVBIu120xJaq0pPwnBsU/l5X
+         lmHSCJHppAY6v4k0MkB60ShTWnTp+XbuIrw7nK18k6GZ91p0fSX1/qcLVqEfJ9Wrb0
+         kRUGz2BlJe9BZYsc/oVuQHtmoTJHsVl1KQ1yFp5EgDsftLl/Vc2M7o49F0VG/VFJFC
+         SA/RO78NuKUZA==
 To:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
 From:   Alexander Lobakin <alobakin@pm.me>
@@ -52,8 +52,8 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         bpf@vger.kernel.org
 Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH net-next 6/6] skbuff: micro-optimize {,__}skb_header_pointer()
-Message-ID: <20210312194538.337504-7-alobakin@pm.me>
+Subject: [PATCH net-next 5/6] ethernet: constify eth_get_headlen()'s @data argument
+Message-ID: <20210312194538.337504-6-alobakin@pm.me>
 In-Reply-To: <20210312194538.337504-1-alobakin@pm.me>
 References: <20210312194538.337504-1-alobakin@pm.me>
 MIME-Version: 1.0
@@ -68,43 +68,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-{,__}skb_header_pointer() helpers exist mainly for preventing
-accesses-beyond-end of the linear data.
-In the vast majorify of cases, they bail out on the first condition.
-All code going after is mostly a fallback.
-Mark the most common branch as 'likely' one to move it in-line.
-Also, skb_copy_bits() can return negative values only when the input
-arguments are invalid, e.g. offset is greater than skb->len. It can
-be safely marked as 'unlikely' branch, assuming that hotpath code
-provides sane input to not fail here.
-
-These two bump the throughput with a single Flow Dissector pass on
-every packet (e.g. with RPS or driver that uses eth_get_headlen())
-on 20 Mbps per flow/core.
+It's used only for flow dissection, which now takes constant data
+pointers.
 
 Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 ---
- include/linux/skbuff.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ include/linux/etherdevice.h | 2 +-
+ net/ethernet/eth.c          | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 7873f24c0ae5..71f4d609819e 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -3680,11 +3680,10 @@ static inline void * __must_check
- __skb_header_pointer(const struct sk_buff *skb, int offset, int len,
- =09=09     const void *data, int hlen, void *buffer)
+diff --git a/include/linux/etherdevice.h b/include/linux/etherdevice.h
+index bcb2f81baafb..330345b1be54 100644
+--- a/include/linux/etherdevice.h
++++ b/include/linux/etherdevice.h
+@@ -29,7 +29,7 @@ struct device;
+ int eth_platform_get_mac_address(struct device *dev, u8 *mac_addr);
+ unsigned char *arch_get_platform_mac_address(void);
+ int nvmem_get_mac_address(struct device *dev, void *addrbuf);
+-u32 eth_get_headlen(const struct net_device *dev, void *data, unsigned int=
+ len);
++u32 eth_get_headlen(const struct net_device *dev, const void *data, u32 le=
+n);
+ __be16 eth_type_trans(struct sk_buff *skb, struct net_device *dev);
+ extern const struct header_ops eth_header_ops;
+
+diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
+index 4106373180c6..e01cf766d2c5 100644
+--- a/net/ethernet/eth.c
++++ b/net/ethernet/eth.c
+@@ -122,7 +122,7 @@ EXPORT_SYMBOL(eth_header);
+  * Make a best effort attempt to pull the length for all of the headers fo=
+r
+  * a given frame in a linear buffer.
+  */
+-u32 eth_get_headlen(const struct net_device *dev, void *data, unsigned int=
+ len)
++u32 eth_get_headlen(const struct net_device *dev, const void *data, u32 le=
+n)
  {
--=09if (hlen - offset >=3D len)
-+=09if (likely(hlen - offset >=3D len))
- =09=09return (void *)data + offset;
-
--=09if (!skb ||
--=09    skb_copy_bits(skb, offset, buffer, len) < 0)
-+=09if (!skb || unlikely(skb_copy_bits(skb, offset, buffer, len) < 0))
- =09=09return NULL;
-
- =09return buffer;
+ =09const unsigned int flags =3D FLOW_DISSECTOR_F_PARSE_1ST_FRAG;
+ =09const struct ethhdr *eth =3D (const struct ethhdr *)data;
 --
 2.30.2
 
