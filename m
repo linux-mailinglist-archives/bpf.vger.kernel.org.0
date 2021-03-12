@@ -2,149 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1019C338210
-	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 01:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D068A338286
+	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 01:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbhCLAIr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Mar 2021 19:08:47 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18962 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230523AbhCLAIf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Mar 2021 19:08:35 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12C03wls150673;
-        Thu, 11 Mar 2021 19:08:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=PEinIIkK0AlmllevoPWCsFyWrim3Zppkk1Vjw8/5rGU=;
- b=N2uj4fZxef2RrzreV3/zFwGAYtPkki7COspXdhZQDRwZ6mg6kve2KckT7qGgAg+zK18n
- mN2qw75Hc+zyt7MXWlCzIBVtdx6fd9wfpeLaXJaeWGShBNv2pwyB4R6k1KzK3cCmnHTF
- r9KO00E5WHINQcIFhfCgpJ8688pW9MdGpQrYVnJUmqVYDyDge1ADwJo1t4719kl8Ds6H
- 7sSwMPimzh+gNoPjNAAYutqwO6yozZfYVApl+CWes6YFNXWLxPGL1/zSBAB64cSvT4B2
- cpCVKc8gXQei21xHIXYCWEzpuZvPzcRASy3cV2azZyc1IPQVFpdD3pMu41UfTakJPEB5 BA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3774m46qxg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Mar 2021 19:08:18 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12C041JX150896;
-        Thu, 11 Mar 2021 19:08:18 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3774m46qwg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Mar 2021 19:08:18 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12C07XPg004939;
-        Fri, 12 Mar 2021 00:08:16 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 3768urtbar-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 12 Mar 2021 00:08:15 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12C08Dpc19202350
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Mar 2021 00:08:13 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E7DD5A405B;
-        Fri, 12 Mar 2021 00:08:12 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 65A48A4054;
-        Fri, 12 Mar 2021 00:08:12 +0000 (GMT)
-Received: from vm.lan (unknown [9.145.31.74])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 12 Mar 2021 00:08:12 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH dwarves] btf: Add --btf_gen_all flag
-Date:   Fri, 12 Mar 2021 01:08:08 +0100
-Message-Id: <20210312000808.175262-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.29.2
+        id S229558AbhCLAp5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Mar 2021 19:45:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhCLApQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Mar 2021 19:45:16 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4BDC061574;
+        Thu, 11 Mar 2021 16:45:16 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id n9so13795496pgi.7;
+        Thu, 11 Mar 2021 16:45:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0VniSqsA256OUrkx3vcukcQM7jVhEtt/XxMhMo4uMl0=;
+        b=RmR4Bkn/IqjMTtbVn4ObCQigj380uoZ4GxTrebSbHhm9bT2hgdd95ZkDV3Geakr+RP
+         bIdNBkzshOF/xaU1VlUY1Rc72T8wuN1dXqtPAVopAvkT7gR5LcvwNLbVoHIB+vm4auUl
+         Axy4sHmxDO39YYR1pqdRtKoSMUR1GSLG01fXerbIVys6Es7LlIJREMMGTwN9tYcAKLZ3
+         uhXBAu5hzuM5AAlpECpRNB3xDtJHn9ougWHaUNDcogrc81frEoKB+YBnvMyN5bJADNSp
+         thFzNuDpVudMpLcZVfrjvHoDmsn2GwZWdquCsABqhMPTF9IHpWbTeN/rSoLTTzjJWeJn
+         CYjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0VniSqsA256OUrkx3vcukcQM7jVhEtt/XxMhMo4uMl0=;
+        b=DXj/jYz6qbnIkMj+0djU5qxjE7bGN3SGUOuVptjlwipBxaoNsy04kCxltHnBLZQ5wQ
+         1u8qYtODpyJw7YRI7GYWdXEWUF8h0x3JP9c6pX0jSlVWzTa3yGD3HrasX5+7DxmMvaka
+         SRRti8Y6Exh0t76eSgpgZCOlWnKys3lIib65s2+t99J5UWDq+ub7mXfbHhxmHwat5pAy
+         w71/FnozIkFbILFwbT05oJHW+UnpyE0QEdHZOyIhoxO3j2ts+sClzJAkUl4Gr1K+gauW
+         PNUQOgTt84jXXX8AuS8cRF7l4MqxEEkKY6GXwpqqrYA85qHj2NsPVn/pl5d3fRTXURJP
+         TMcw==
+X-Gm-Message-State: AOAM533cBSRqP9l0OJy2l21TSIeNVT7YEK7YJFgmZ3Dk5IkNTxuuwT5Q
+        vfPJ/YuOgKx4WtxJEVEClo0JOtIstO13Grkg8/k=
+X-Google-Smtp-Source: ABdhPJx4N2DdN0UaTnIMhQKrgyzCZ7iWwQWudBHHvzzG4Qlpg3rcc0qWHXO+zFDOiUXNvLvraZpAx6w14T7yE0N7+kI=
+X-Received: by 2002:a63:e109:: with SMTP id z9mr9329224pgh.5.1615509916055;
+ Thu, 11 Mar 2021 16:45:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-11_12:2021-03-10,2021-03-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
- clxscore=1015 lowpriorityscore=0 bulkscore=0 impostorscore=0
- priorityscore=1501 mlxlogscore=995 phishscore=0 spamscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103110132
+References: <20210310053222.41371-1-xiyou.wangcong@gmail.com>
+ <20210310053222.41371-3-xiyou.wangcong@gmail.com> <871rcm3p6m.fsf@cloudflare.com>
+In-Reply-To: <871rcm3p6m.fsf@cloudflare.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu, 11 Mar 2021 16:45:05 -0800
+Message-ID: <CAM_iQpUcZxsL7cKoSGFbHtei+ad6j2xWyJzviOoOcGH6jGxisw@mail.gmail.com>
+Subject: Re: [Patch bpf-next v4 02/11] skmsg: introduce a spinlock to protect ingress_msg
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-By default, pahole makes use only of BTF features introduced with
-kernel v5.2. Features that are added later need to be turned on with
-explicit feature flags, such as --btf_gen_floats. According to [1],
-this will hinder the people who generate BTF for kernels externally
-(e.g. for old kernels to support BPF CO-RE).
+On Thu, Mar 11, 2021 at 3:28 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+> > +
+> > +static inline struct sk_msg *sk_psock_deque_msg(struct sk_psock *psock)
+>
+> Should be sk_psock_deque*ue*_msg()?
 
-Introduce --btf_gen_all that allows using all BTF features supported
-by pahole.
+Right, it is better and less confusing to use "dequeue".
 
-[1] https://lore.kernel.org/dwarves/CAEf4Bzbyugfb2RkBkRuxNGKwSk40Tbq4zAvhQT8W=fVMYWuaxA@mail.gmail.com/
-
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- man-pages/pahole.1 | 4 ++++
- pahole.c           | 8 ++++++++
- 2 files changed, 12 insertions(+)
-
-diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
-index e292b2c..cbbefbf 100644
---- a/man-pages/pahole.1
-+++ b/man-pages/pahole.1
-@@ -204,6 +204,10 @@ to "/sys/kernel/btf/vmlinux".
- Allow producing BTF_KIND_FLOAT entries in systems where the vmlinux DWARF
- information has float types.
- 
-+.TP
-+.B \-\-btf_gen_all
-+Allow using all the BTF features supported by pahole.
-+
- .TP
- .B \-l, \-\-show_first_biggest_size_base_type_member
- Show first biggest size base_type member.
-diff --git a/pahole.c b/pahole.c
-index c8d38f5..df6aa83 100644
---- a/pahole.c
-+++ b/pahole.c
-@@ -826,6 +826,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF = dwarves_print_version;
- #define ARGP_numeric_version       320
- #define ARGP_btf_base		   321
- #define ARGP_btf_gen_floats	   322
-+#define ARGP_btf_gen_all	   323
- 
- static const struct argp_option pahole__options[] = {
- 	{
-@@ -1125,6 +1126,11 @@ static const struct argp_option pahole__options[] = {
- 		.key  = ARGP_btf_gen_floats,
- 		.doc  = "Allow producing BTF_KIND_FLOAT entries."
- 	},
-+	{
-+		.name = "btf_gen_all",
-+		.key  = ARGP_btf_gen_all,
-+		.doc  = "Allow using all the BTF features supported by pahole."
-+	},
- 	{
- 		.name = "structs",
- 		.key  = ARGP_just_structs,
-@@ -1262,6 +1268,8 @@ static error_t pahole__options_parser(int key, char *arg,
- 		print_numeric_version = true;		break;
- 	case ARGP_btf_gen_floats:
- 		btf_gen_floats = true;			break;
-+	case ARGP_btf_gen_all:
-+		btf_gen_floats = true;			break;
- 	default:
- 		return ARGP_ERR_UNKNOWN;
- 	}
--- 
-2.29.2
-
+Thanks.
