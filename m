@@ -2,49 +2,49 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3843383D2
-	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 03:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8ED3383D5
+	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 03:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231738AbhCLCqD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Mar 2021 21:46:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48748 "EHLO
+        id S231740AbhCLCqE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Mar 2021 21:46:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231630AbhCLCpa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Mar 2021 21:45:30 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1788C061763
-        for <bpf@vger.kernel.org>; Thu, 11 Mar 2021 18:45:29 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso10341987pjb.3
-        for <bpf@vger.kernel.org>; Thu, 11 Mar 2021 18:45:29 -0800 (PST)
+        with ESMTP id S231703AbhCLCpp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Mar 2021 21:45:45 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605D6C061763
+        for <bpf@vger.kernel.org>; Thu, 11 Mar 2021 18:45:45 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id l2so14914750pgb.1
+        for <bpf@vger.kernel.org>; Thu, 11 Mar 2021 18:45:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=4kwV+ZEKg/XUTXzjIOI98K3vszan57O9kTgEQIPUcyY=;
-        b=jjgy6DIlMrFWse7xf7SeVmNo6/eGcfxozbDUHSMQIaAkUvtKpYHpt1Nwc6YY8mktC0
-         QvA45UlbJ3LdLEcjQJRShs+Mi+w+YtXcAlxhMbLCprgTfdm3QxYC9CKRfKXx0lp5VKN/
-         0rig3eJkC3MeuhK1bHFBrPGYFC3oy4KEA3qQg=
+        bh=QU0VzfL9/lfvk4BOo6El/Igfm4hUidBDqCnte6ObskA=;
+        b=dCt656rf528kGz65pkdCCRwvvb6LHMDAt1mGWptf+qA1H+D1fqonFC8NIlOt/4mplW
+         SfLgdS9gaLGlL2B9nrZb48Pz4kn/Ry2TH/6Oafm8iapyD2b38tCNNwVi2kChy9sqiaHI
+         yYrFQdLV5XU/tYDIPz05PWQzC2cCC0g7WMHLs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=4kwV+ZEKg/XUTXzjIOI98K3vszan57O9kTgEQIPUcyY=;
-        b=O9IzAoate0y3zn3fWLWbqbNLEWe7YHZ5LRXIPVJhTJ/+11gJLMipMmYdEe/7qCgNiI
-         6xtmaOQD6CwXyUbQwXPPN9DkkPZebpUD/jN0DHjkqldI2vlioH3D/0gWhvEW+RQ9DwW5
-         PFzSWnWkkkpDfdUqDld66eplNnVOHfElR50Rm4KDfxP58qbrw1tisAbpxhB2fpox+u/l
-         jZrNYBjNtQI1mo4ToXhRLrH76OrSiNxt+lUt3igDB27koGniJyQ8E+1J/EN3Ercozhpf
-         nRd00ofi9jwSofCHAsBsdg3jWS+Ay1XD6Ok3yMKRW9eRuOMNagqNit5Q4qFgB9ELIr/y
-         70ew==
-X-Gm-Message-State: AOAM531kbn8FOkNWyE/GXWZ9UBaa+7FRN+7zkZQQ40+24QJe4AfTBexD
-        +FOmwXBXIR3AHP3vpOsu59qLpI8GbZ3IBA==
-X-Google-Smtp-Source: ABdhPJwDCBrjoyl24XQocrPBFT0JUae7XRtchBVIiOME05IAIHkeYXy2xsIRiO8vA4pM0qb+BqLZfg==
-X-Received: by 2002:a17:90a:d507:: with SMTP id t7mr12125260pju.54.1615517129325;
-        Thu, 11 Mar 2021 18:45:29 -0800 (PST)
+        bh=QU0VzfL9/lfvk4BOo6El/Igfm4hUidBDqCnte6ObskA=;
+        b=aTbFez2Pv53yatfpX0JQZGLRiBhh8fo/d0FLcCIhYpr+HPfPvQmaiT4yFZfLvotDc6
+         0Gx/LFyHpCadmLB5EknttYhNIHNjRR0SPxq5i4e5YPc8POdJWCGJFFjYIUqzgTP6IUQ/
+         nY/OtzR/tHTvQkh2GYnbcF3PLZp0k9g/8ArocL5X06iourSTpGB5WsOu/u6zPcE9b946
+         n1WJD2oP3SUVeh4xWd0exQQvI9pm1dyxcsgR1z78oA2sTP676w900Akx5dNA/5k0tuic
+         xfUivnSRKtmhv4cfcAAwURHNN4PcY2mbc+hkHwdYfMxErjINDlr+IVffGY6JZJaqR7Ue
+         q/DQ==
+X-Gm-Message-State: AOAM531hEUKYlPj7W8p/Mf3jT74ytOrfzMqEqsl4AELoh5wFUTcd03Xi
+        wkqsXV7jXysa9d/oxCtCfr65OQ==
+X-Google-Smtp-Source: ABdhPJyZjX0dDYfZgQFE6j3eol5QYVolHh+A3d7V2uX9uhucCEXJOChGVC9n8UJhMoVf/kiUBIdI6A==
+X-Received: by 2002:a05:6a00:22c6:b029:201:1166:fdad with SMTP id f6-20020a056a0022c6b02902011166fdadmr2389793pfj.58.1615517145009;
+        Thu, 11 Mar 2021 18:45:45 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h7sm3684714pfo.45.2021.03.11.18.45.28
+        by smtp.gmail.com with ESMTPSA id i7sm2934089pgq.16.2021.03.11.18.45.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Mar 2021 18:45:28 -0800 (PST)
-Date:   Thu, 11 Mar 2021 18:45:27 -0800
+        Thu, 11 Mar 2021 18:45:44 -0800 (PST)
+Date:   Thu, 11 Mar 2021 18:45:43 -0800
 From:   Kees Cook <keescook@chromium.org>
 To:     Sami Tolvanen <samitolvanen@google.com>
 Cc:     Nathan Chancellor <nathan@kernel.org>,
@@ -56,27 +56,27 @@ Cc:     Nathan Chancellor <nathan@kernel.org>,
         linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kbuild@vger.kernel.org, linux-pci@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/17] lib/list_sort: fix function type mismatches
-Message-ID: <202103111845.A61BBB44A5@keescook>
+Subject: Re: [PATCH 10/17] lkdtm: use __va_function
+Message-ID: <202103111845.1D52CBC1@keescook>
 References: <20210312004919.669614-1-samitolvanen@google.com>
- <20210312004919.669614-10-samitolvanen@google.com>
+ <20210312004919.669614-11-samitolvanen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210312004919.669614-10-samitolvanen@google.com>
+In-Reply-To: <20210312004919.669614-11-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 04:49:11PM -0800, Sami Tolvanen wrote:
-> Casting the comparison function to a different type trips indirect
-> call Control-Flow Integrity (CFI) checking. Remove the additional
-> consts from cmp_func, and the now unneeded casts.
+On Thu, Mar 11, 2021 at 04:49:12PM -0800, Sami Tolvanen wrote:
+> To ensure we take the actual address of a function in kernel text, use
+> __va_function. Otherwise, with CONFIG_CFI_CLANG, the compiler replaces
+> the address with a pointer to the CFI jump table, which is actually in
+> the module when compiled with CONFIG_LKDTM=m.
 > 
-> Fixes: 043b3f7b6388 ("lib/list_sort: simplify and remove MAX_LIST_LENGTH_BITS")
 > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Acked-by: Kees Cook <keescook@chromium.org>
 
 -- 
 Kees Cook
