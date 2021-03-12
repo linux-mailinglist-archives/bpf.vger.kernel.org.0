@@ -2,101 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 619E53390F6
-	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 16:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3143395D7
+	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 19:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhCLPPt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Mar 2021 10:15:49 -0500
-Received: from www62.your-server.de ([213.133.104.62]:50942 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231786AbhCLPPa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Mar 2021 10:15:30 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lKjVg-000Ceb-KZ; Fri, 12 Mar 2021 16:15:28 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lKjVg-000UQ0-Dx; Fri, 12 Mar 2021 16:15:28 +0100
-Subject: Re: [PATCH net] selftests/bpf: set gopt opt_class to 0 if get tunnel
- opt failed
-To:     Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Yi-Hung Wei <yihung.wei@gmail.com>,
-        David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
-        William Tu <u9012063@gmail.com>
-References: <20210309032214.2112438-1-liuhangbin@gmail.com>
- <20210312015617.GZ2900@Leo-laptop-t470s>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0b5c810b-5eec-c7b0-15fc-81c989494202@iogearbox.net>
-Date:   Fri, 12 Mar 2021 16:15:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S232288AbhCLSHh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Mar 2021 13:07:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231789AbhCLSHN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Mar 2021 13:07:13 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E28C061761
+        for <bpf@vger.kernel.org>; Fri, 12 Mar 2021 10:07:13 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id dx17so55073065ejb.2
+        for <bpf@vger.kernel.org>; Fri, 12 Mar 2021 10:07:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AOWDVraelT3q2iJa2o1XiejflpUA+riSmnoD1zMFlMA=;
+        b=yPluzX314PIS3cxGWuVurfUFLcsmNiSRPKx378NxBWHOYob2ugJbu45pwhCEMExt+4
+         z6cLhtr3jEH+wjJIlJSM/eOuU6/AxYw7sSFmonUGThSw6XCunbBZliX4l0P6nq4YOHlS
+         tS6Pjr1+33NGSxdP5gdlfojgsSxpw6JsBxTkJ/vNiupOy1Dd0fqmYSR1a05n6gApu4nS
+         yWM7czZf3jHS/oOEcwBQoJz5swOCqGAUxLAMlY/26HrsFapcZJMJYZgGK/tEuToHLnXQ
+         vtbxcnuLgnijVU9rgYtOTA7XlmZVZGFQgeBBwtghvVZIPbQ5LfwnvE0z60XSXyZ4Plp1
+         8Ziw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AOWDVraelT3q2iJa2o1XiejflpUA+riSmnoD1zMFlMA=;
+        b=t4rtEpiyLVfhQ+cooqJ3kmQ3bNyKS2S++7rvhVMNyjZh43KsORDAi15XrWyqaZM2lK
+         SOmnT7yW+2f6LNSdX7SNIY5RFHcQPoL9bUOAZPTij3wTsTBvwxW7XnFykNugDreXLKtp
+         cZkX3ZtZL30zmxJBEoReoSI/GNxrOy/XXZa6x+v9Yms+QGAdg9t4ID+k+EigYfFYEy2s
+         IIlYoVT/4LJPcYoxx3KHLM85R+T4G3crUm2fNw4Emm3o9GOhkxSFD3zXNmg+w9FxzCcp
+         p0YUG9WIEwK0Po5c3gvuzXa+ChOkn+QtDZg8CE8pL3bQZlEg4Wr8AAh+M3TFEh1O6sdg
+         OneQ==
+X-Gm-Message-State: AOAM532pKoCRf8GwMy5h9mddPRKHPA3TkBxdQbsrPPbe1r5JXPgdlWj3
+        qFNGjGiRDX+5MwgbzKKRFdW1rA==
+X-Google-Smtp-Source: ABdhPJxljWO20JrlmCvTaWaOt3XIObOTPxfArQVQhLoUvfNNmkXrUgWKJRx5k9xRlPLeM0KUq1vuGQ==
+X-Received: by 2002:a17:906:da0e:: with SMTP id fi14mr10278257ejb.188.1615572432194;
+        Fri, 12 Mar 2021 10:07:12 -0800 (PST)
+Received: from [192.168.1.8] ([194.35.119.67])
+        by smtp.gmail.com with ESMTPSA id s18sm3038742ejc.79.2021.03.12.10.07.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Mar 2021 10:07:11 -0800 (PST)
+Subject: Re: [PATCH bpf-next 07/10] bpftool: add `gen bpfo` command to perform
+ BPF static linking
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+References: <20210310040431.916483-1-andrii@kernel.org>
+ <20210310040431.916483-8-andrii@kernel.org>
+ <9f44eedf-79a3-0025-0f31-ee70f2f7d98b@isovalent.com>
+ <CAEf4BzZKFKQQSQmNPkoSW8b3NEvRXirkqx-Hewt1cmRE9tPmHw@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <7c78ba67-03ff-fd84-339e-08628716abdf@isovalent.com>
+Date:   Fri, 12 Mar 2021 18:07:10 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210312015617.GZ2900@Leo-laptop-t470s>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <CAEf4BzZKFKQQSQmNPkoSW8b3NEvRXirkqx-Hewt1cmRE9tPmHw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26106/Fri Mar 12 13:03:16 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/12/21 2:56 AM, Hangbin Liu wrote:
-> Hi David,
+2021-03-11 10:45 UTC-0800 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> On Thu, Mar 11, 2021 at 3:31 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>>
+>> 2021-03-09 20:04 UTC-0800 ~ Andrii Nakryiko <andrii@kernel.org>
+>>> Add `bpftool gen bpfo <output-file> <input_file>...` command to statically
+>>> link multiple BPF object files into a single output BPF object file.
+>>>
+>>> Similarly to existing '*.o' convention, bpftool is establishing a '*.bpfo'
+>>> convention for statically-linked BPF object files. Both .o and .bpfo suffixes
+>>> will be stripped out during BPF skeleton generation to infer BPF object name.
+>>>
+>>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>>> ---
+>>>  tools/bpf/bpftool/gen.c | 46 ++++++++++++++++++++++++++++++++++++++++-
+>>>  1 file changed, 45 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+>>> index 4033c46d83e7..8b1ed6c0a62f 100644
+>>> --- a/tools/bpf/bpftool/gen.c
+>>> +++ b/tools/bpf/bpftool/gen.c
+>>> +static int do_bpfo(int argc, char **argv)
+>>
+>>> +{
+>>> +     struct bpf_linker *linker;
+>>> +     const char *output_file, *file;
+>>> +     int err;
+>>> +
+>>> +     if (!REQ_ARGS(2)) {
+>>> +             usage();
+>>> +             return -1;
+>>> +     }
+>>> +
+>>> +     output_file = GET_ARG();
+>>> +
+>>> +     linker = bpf_linker__new(output_file, NULL);
+>>> +     if (!linker) {
+>>> +             p_err("failed to create BPF linker instance");
+>>> +             return -1;
+>>> +     }
+>>> +
+>>> +     while (argc) {
+>>> +             file = GET_ARG();
+>>> +
+>>> +             err = bpf_linker__add_file(linker, file);
+>>> +             if (err) {
+>>> +                     p_err("failed to link '%s': %d", file, err);
+>>
+>> I think you mentioned before that your preference was for having just
+>> the error code instead of using strerror(), but I think it would be more
+>> user-friendly for the majority of users who don't know the error codes
+>> if we had something more verbose? How about having both strerror()
+>> output and the error code?
 > 
-> May I ask what's the status of this patch? From patchwork[1] the state is
-> accepted. But I can't find the fix on net or net-next.
+> Sure, I'll add strerror(). My earlier point was that those messages
+> are more often misleading (e.g., "file not found" for ENOENT or
+> something similar) than helpful. I should check if bpftool is passing
+> through warn-level messages from libbpf. Those are going to be very
+> helpful, if anything goes wrong. --verbose should pass through all of
+> libbpf messages, if it's not already the case.
 
-I think there may have been two confusions, i) that $subject says that this goes
-via net tree instead of bpf tree, which might have caused auto-delegation to move
-this into 'netdev' patchwork reviewer bucket, and ii) the kernel patchwork bot then
-had a mismatch as you noticed when it checked net-next after tree merge and replied
-to the wrong patch of yours which then placed this one into 'accepted' state. I just
-delegated it to bpf and placed it back under review..
+Thanks. Yes, --verbose should do it, but it's worth a double-check.
 
-> [1] https://patchwork.kernel.org/project/netdevbpf/patch/20210309032214.2112438-1-liuhangbin@gmail.com/
+>>> +                     goto err_out;
+>>> +             }
+>>> +     }
+>>> +
+>>> +     err = bpf_linker__finalize(linker);
+>>> +     if (err) {
+>>> +             p_err("failed to finalize ELF file: %d", err);
+>>> +             goto err_out;
+>>> +     }
+>>> +
+>>> +     return 0;
+>>> +err_out:
+>>> +     bpf_linker__free(linker);
+>>> +     return -1;
+>>
+>> Should you call bpf_linker__free() even on success? I see that
+>> bpf_linker__finalize() frees some of the resources, but it seems that
+>> bpf_linker__free() does a more thorough job?
 > 
-> Thanks
-> Hangbin
+> yep, it should really be just
+> 
+> err_out:
+>     bpf_linker__free(linker);
+>     return err;
+> 
+> 
+>>
+>>> +}
+>>> +
+>>>  static int do_help(int argc, char **argv)
+>>>  {
+>>>       if (json_output) {
+>>> @@ -611,6 +654,7 @@ static int do_help(int argc, char **argv)
+>>>
+>>>  static const struct cmd cmds[] = {
+>>>       { "skeleton",   do_skeleton },
+>>> +     { "bpfo",       do_bpfo },
+>>>       { "help",       do_help },
+>>>       { 0 }
+>>>  };
+>>>
+>>
+>> Please update the usage help message, man page, and bash completion,
+>> thanks. Especially because what "bpftool gen bpfo" does is not intuitive
+>> (but I don't have a better name suggestion at the moment).
+> 
+> Yeah, forgot about manpage and bash completions, as usual.
+> 
+> re: "gen bpfo". I don't have much better naming as well. `bpftool
+> link` is already taken for bpf_link-related commands. It felt like
+> keeping this under "gen" command makes sense. But maybe `bpftool
+> linker link <out> <in1> <in2> ...` would be a bit less confusing
+> convention?
 
-> On Tue, Mar 09, 2021 at 11:22:14AM +0800, Hangbin Liu wrote:
->> When fixing the bpf test_tunnel.sh genve failure. I only fixed
->> the IPv4 part but forgot the IPv6 issue. Similar with the IPv4
->> fixes 557c223b643a ("selftests/bpf: No need to drop the packet when
->> there is no geneve opt"), when there is no tunnel option and
->> bpf_skb_get_tunnel_opt() returns error, there is no need to drop the
->> packets and break all geneve rx traffic. Just set opt_class to 0 and
->> keep returning TC_ACT_OK at the end.
->>
->> Fixes: 933a741e3b82 ("selftests/bpf: bpf tunnel test.")
->> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
->> ---
->>   tools/testing/selftests/bpf/progs/test_tunnel_kern.c | 6 ++----
->>   1 file changed, 2 insertions(+), 4 deletions(-)
->>
->> diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
->> index 9afe947cfae9..ba6eadfec565 100644
->> --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
->> +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
->> @@ -508,10 +508,8 @@ int _ip6geneve_get_tunnel(struct __sk_buff *skb)
->>   	}
->>   
->>   	ret = bpf_skb_get_tunnel_opt(skb, &gopt, sizeof(gopt));
->> -	if (ret < 0) {
->> -		ERROR(ret);
->> -		return TC_ACT_SHOT;
->> -	}
->> +	if (ret < 0)
->> +		gopt.opt_class = 0;
->>   
->>   	bpf_trace_printk(fmt, sizeof(fmt),
->>   			key.tunnel_id, key.remote_ipv4, gopt.opt_class);
->> -- 
->> 2.26.2
->>
+"bpftool linker" would have been nice, but having "bpftool link", I
+think it would be even more confusing. We can pass commands by their
+prefixes, so is "bpftool link" the command "link" or a prefix for
+"linker"? (I know it would be easy to sort out from our point of view,
+but for regular users I'm sure that would be confusing).
 
+I don't mind leaving it under "bpftool gen", it's probably the most
+relevant command we have. As for replacing the "bpfo" keyword, I've
+thought of "combined", "static_linked", "archive", "concat". I write
+them in case it's any inspiration, but I find none of them ideal :/.
+
+Quentin
