@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82FE338625
+	by mail.lfdr.de (Postfix) with ESMTP id 859AE338624
 	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 07:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbhCLGoD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S232005AbhCLGoD (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 12 Mar 2021 01:44:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44634 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:44768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231455AbhCLGn3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Mar 2021 01:43:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC47464EB6;
-        Fri, 12 Mar 2021 06:43:25 +0000 (UTC)
+        id S232135AbhCLGnj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Mar 2021 01:43:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6428364F7E;
+        Fri, 12 Mar 2021 06:43:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615531408;
-        bh=mpvxBHYBzRcmD/WHhPgUBtQsJ0SZN+lEfVNGaJSdsC4=;
+        s=k20201202; t=1615531419;
+        bh=HNiMwqo1C1xuNs1I168/w0oQXwOxZBUoPxMzUr3M3P4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=opD0oKMoenMnstmi+aFhU1o4daS4YOaELLEXNbtYLDQg8S9yRH4Mgd0d4k96XszVO
-         aqyB8j0Dd8jUGJnaJ6QKcAVBYdiEfaxwzs79+F7SYIHhGTqrpAK55YZRF5/fti9FEw
-         7aDT83k7/ScNEbLxuRXWRXtBvXWfHUkgGBHCw91P8brHCGi4Hs6omP2dPyc6enrfH7
-         rrmnT+v0pHn9Ig44TAD2dTFfEoM8oA+c886g1VxFz8VmccUodmtct8Msf1vXNO7oPs
-         ezUkSLA9A+xLMWqX1gTUnI82I/t2foaE3+bEdtcv8tVS4UodonkQ7tnn2cU8HETWg8
-         CW9q+v5bzPYxQ==
+        b=XiwRXEOVZMmXWF1jP+OsWNohVWFozGUrKKgMfuVkfQw8bJViTBi5KI57P5ABbnL0E
+         P6pOjoV+wLQElTBNUp+c6aLvhLFUwTVuNnK6uwtIQvuwo20ohAd0C0hbiB7bniaqMY
+         aMr+7hqINZH79GBycp8/wlE7LFPnsdLkTfo7e3Q9LfmYGCNxS4wKwC/VBSiigSzlES
+         VfJqR52qI8TwTlW6irLoiHO4BZC6Uo+VkDejKcd+O/sEupUrojOvtQYg6Ze5oTr4s8
+         IYmFf9MCYuABzdVVDfPXcyD3FU6BYeYVYiW3JfvCTasdgRyWxixQM2sfAYCFslruy7
+         OOoEu4wxFt7iw==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@kernel.org>
@@ -31,9 +31,9 @@ Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
         bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
         ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
         Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH -tip v2 09/10] x86/unwind/orc: Fixup kretprobe trampoline entry
-Date:   Fri, 12 Mar 2021 15:43:23 +0900
-Message-Id: <161553140351.1038734.4282308401106671492.stgit@devnote2>
+Subject: [PATCH -tip v2 10/10] tracing: Remove kretprobe unknown indicator from stacktrace
+Date:   Fri, 12 Mar 2021 15:43:34 +0900
+Message-Id: <161553141415.1038734.16331033149026826592.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <161553130371.1038734.7661319550287837734.stgit@devnote2>
 References: <161553130371.1038734.7661319550287837734.stgit@devnote2>
@@ -45,78 +45,60 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since the kretprobe replaces the function return address with
-the kretprobe_trampoline on the stack, the ORC unwinder can not
-continue the stack unwinding at that point.
-
-To fix this issue, correct state->ip as like as function-graph
-tracer in the unwind_next_frame().
+Since the stacktrace API fixup the kretprobed address correctly,
+there is no need to convert the "kretprobe_trampoline" to
+ "[unknown/kretprobe'd]" anymore. Remove it.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
-  Changes in v2:
-   - Remove kretprobe wrapper functions from unwind_orc.c
-   - Do not fixup state->ip when unwinding with regs because
-     kretprobe fixup instruction pointer before calling handler.
----
- arch/x86/include/asm/unwind.h |    4 ++++
- arch/x86/kernel/unwind_orc.c  |   16 ++++++++++++++++
- 2 files changed, 20 insertions(+)
+ kernel/trace/trace_output.c |   27 ++++-----------------------
+ 1 file changed, 4 insertions(+), 23 deletions(-)
 
-diff --git a/arch/x86/include/asm/unwind.h b/arch/x86/include/asm/unwind.h
-index 70fc159ebe69..ab5e45b848d5 100644
---- a/arch/x86/include/asm/unwind.h
-+++ b/arch/x86/include/asm/unwind.h
-@@ -4,6 +4,7 @@
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index 61255bad7e01..f5f8b081b668 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -346,37 +346,18 @@ int trace_output_call(struct trace_iterator *iter, char *name, char *fmt, ...)
+ }
+ EXPORT_SYMBOL_GPL(trace_output_call);
  
- #include <linux/sched.h>
- #include <linux/ftrace.h>
-+#include <linux/llist.h>
- #include <asm/ptrace.h>
- #include <asm/stacktrace.h>
+-#ifdef CONFIG_KRETPROBES
+-static inline const char *kretprobed(const char *name)
+-{
+-	static const char tramp_name[] = "kretprobe_trampoline";
+-	int size = sizeof(tramp_name);
+-
+-	if (strncmp(tramp_name, name, size) == 0)
+-		return "[unknown/kretprobe'd]";
+-	return name;
+-}
+-#else
+-static inline const char *kretprobed(const char *name)
+-{
+-	return name;
+-}
+-#endif /* CONFIG_KRETPROBES */
+-
+ void
+ trace_seq_print_sym(struct trace_seq *s, unsigned long address, bool offset)
+ {
+ #ifdef CONFIG_KALLSYMS
+-	char str[KSYM_SYMBOL_LEN];
+-	const char *name;
++	char name[KSYM_SYMBOL_LEN];
  
-@@ -20,6 +21,9 @@ struct unwind_state {
- 	bool signal, full_regs;
- 	unsigned long sp, bp, ip;
- 	struct pt_regs *regs, *prev_regs;
-+#if defined(CONFIG_KRETPROBES)
-+	struct llist_node *kr_iter;
-+#endif
- #elif defined(CONFIG_UNWINDER_FRAME_POINTER)
- 	bool got_irq;
- 	unsigned long *bp, *orig_sp, ip;
-diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-index 2a1d47f47eee..1d1b9388a1b1 100644
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -2,6 +2,7 @@
- #include <linux/objtool.h>
- #include <linux/module.h>
- #include <linux/sort.h>
-+#include <linux/kprobes.h>
- #include <asm/ptrace.h>
- #include <asm/stacktrace.h>
- #include <asm/unwind.h>
-@@ -536,6 +537,21 @@ bool unwind_next_frame(struct unwind_state *state)
+ 	if (offset)
+-		sprint_symbol(str, address);
++		sprint_symbol(name, address);
+ 	else
+-		kallsyms_lookup(address, NULL, NULL, NULL, str);
+-	name = kretprobed(str);
++		kallsyms_lookup(address, NULL, NULL, NULL, name);
  
- 		state->ip = ftrace_graph_ret_addr(state->task, &state->graph_idx,
- 						  state->ip, (void *)ip_p);
-+		/*
-+		 * When the stack unwinder is called from the kretprobe handler
-+		 * or the interrupt handler which occurs in the kretprobe
-+		 * trampoline code, %sp is shown on the stack instead of the
-+		 * return address because kretprobe_trampoline() does
-+		 * "push %sp" at first.
-+		 * And also the unwinder may find the kretprobe_trampoline
-+		 * instead of the real return address on stack.
-+		 * In those cases, find the correct return address from
-+		 * task->kretprobe_instances list.
-+		 */
-+		if (state->ip == sp ||
-+		    is_kretprobe_trampoline(state->ip))
-+			state->ip = kretprobe_find_ret_addr(state->task,
-+							    &state->kr_iter);
- 
- 		state->sp = sp;
- 		state->regs = NULL;
+-	if (name && strlen(name)) {
++	if (strlen(name)) {
+ 		trace_seq_puts(s, name);
+ 		return;
+ 	}
 
