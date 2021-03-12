@@ -2,104 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A024F337D07
-	for <lists+bpf@lfdr.de>; Thu, 11 Mar 2021 19:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1019C338210
+	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 01:09:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhCKS6V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Mar 2021 13:58:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhCKS4y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Mar 2021 13:56:54 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BD6C061760;
-        Thu, 11 Mar 2021 10:56:27 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id n195so22762282ybg.9;
-        Thu, 11 Mar 2021 10:56:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=th5U7zFe0FU/O5O7Dd2Akwz7VzPCvkDhXRqRT58M53c=;
-        b=DKlbjlr2WrjsMJ8TrWRPW/vmdQIB+AEpsChvJPDmxna4dBvvlbWBnB0c6v5KYG4iT9
-         QZxJKxtHIQ3kvHFl2CiS/uIJWVnRvJR767xT9B5440kX8sQzPzndMOviSIxzQoTpokwc
-         LLRtG5NeClKq/T2balBQdLEO35WyeXvBIG26dU+1uwE+DZPVWtkHhFocLcO3EtnVLMIq
-         WgNjFVoGSCzDxc4HqIJ/CWg09hX3S5KhobUT0BDxe/yRwEjqaCLwcEHCI9/Ke7JPvaP1
-         HZTdoBpMVh3VgsrWbovsCSL1O485eF3VaQ9zUAD9VSq9puXy7Wb6j+hG6w7c+S8TbGxB
-         M58g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=th5U7zFe0FU/O5O7Dd2Akwz7VzPCvkDhXRqRT58M53c=;
-        b=XmVSZOBayq5u2+t7LEejsD8fFytVgCmewvsiBtV7b4JVkejOBXhEB91CLlk2KCGOz0
-         st3zl4GKO8hbTWORBkVyLbb8LniX1JoMba0Pgt0khMlpVqY+d9mlmSVqSEBhDs2sloE+
-         knVCaqS+ybB9A5cakaIQZdeqJKpWGRiU+IsoHuVS9huWODXnmqjUuSVxB8abSfUym/se
-         D656CLE2knK5bO9IjNl6uwgHK5ctJY7Al7z8AuitIhWnNLVovR5zjTyaJN8TFakUVFkV
-         Zy3fGkFrCZofDaF4n4RZvwBS7f+8To5dgSUrmMyb8uJ7qWToWPwe2P7ry4NW4z3lk8Lk
-         pVyA==
-X-Gm-Message-State: AOAM530WENt5BPib44q5eeUMAvVaiD+hM0lWRFQ6NNsy1qO0LdnHu/Us
-        jaEjQmg/cvD6zpCGnaWUmBoGgTga36UIoTt0H6o=
-X-Google-Smtp-Source: ABdhPJwj7WfnvuR3BlKipoL1l1LfQDGM7kVlljXj8cg9yovU3lrDzmTwRWs78ggavLNNBhiphPMcWpQXTFsadNPtj6g=
-X-Received: by 2002:a25:874c:: with SMTP id e12mr12699919ybn.403.1615488987293;
- Thu, 11 Mar 2021 10:56:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20210310080929.641212-1-bjorn.topel@gmail.com>
- <20210310080929.641212-3-bjorn.topel@gmail.com> <20210311000605.tuo7rg4b7keo76iy@bsd-mbp.dhcp.thefacebook.com>
- <0535ce9f-0db6-40f7-e512-e327f6f54c35@intel.com>
-In-Reply-To: <0535ce9f-0db6-40f7-e512-e327f6f54c35@intel.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 11 Mar 2021 10:56:16 -0800
-Message-ID: <CAEf4BzbuFzQKF2DBCUmGnLyP4WTPR7CLBxoT8W0_DRSrn_g4ww@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] libbpf: xsk: move barriers from
- libbpf_util.h to xsk.h
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        id S230386AbhCLAIr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Mar 2021 19:08:47 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18962 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230523AbhCLAIf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 11 Mar 2021 19:08:35 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12C03wls150673;
+        Thu, 11 Mar 2021 19:08:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=PEinIIkK0AlmllevoPWCsFyWrim3Zppkk1Vjw8/5rGU=;
+ b=N2uj4fZxef2RrzreV3/zFwGAYtPkki7COspXdhZQDRwZ6mg6kve2KckT7qGgAg+zK18n
+ mN2qw75Hc+zyt7MXWlCzIBVtdx6fd9wfpeLaXJaeWGShBNv2pwyB4R6k1KzK3cCmnHTF
+ r9KO00E5WHINQcIFhfCgpJ8688pW9MdGpQrYVnJUmqVYDyDge1ADwJo1t4719kl8Ds6H
+ 7sSwMPimzh+gNoPjNAAYutqwO6yozZfYVApl+CWes6YFNXWLxPGL1/zSBAB64cSvT4B2
+ cpCVKc8gXQei21xHIXYCWEzpuZvPzcRASy3cV2azZyc1IPQVFpdD3pMu41UfTakJPEB5 BA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3774m46qxg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 19:08:18 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12C041JX150896;
+        Thu, 11 Mar 2021 19:08:18 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3774m46qwg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Mar 2021 19:08:18 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12C07XPg004939;
+        Fri, 12 Mar 2021 00:08:16 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 3768urtbar-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 12 Mar 2021 00:08:15 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12C08Dpc19202350
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Mar 2021 00:08:13 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E7DD5A405B;
+        Fri, 12 Mar 2021 00:08:12 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 65A48A4054;
+        Fri, 12 Mar 2021 00:08:12 +0000 (GMT)
+Received: from vm.lan (unknown [9.145.31.74])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 12 Mar 2021 00:08:12 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        maximmi@nvidia.com, ciara.loftus@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Yonghong Song <yhs@fb.com>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH dwarves] btf: Add --btf_gen_all flag
+Date:   Fri, 12 Mar 2021 01:08:08 +0100
+Message-Id: <20210312000808.175262-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-11_12:2021-03-10,2021-03-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 malwarescore=0
+ clxscore=1015 lowpriorityscore=0 bulkscore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=995 phishscore=0 spamscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103110132
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 10:59 PM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.c=
-om> wrote:
->
-> On 2021-03-11 01:06, Jonathan Lemon wrote:
-> > On Wed, Mar 10, 2021 at 09:09:29AM +0100, Bj=C3=B6rn T=C3=B6pel wrote:
-> >> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> >>
-> >> The only user of libbpf_util.h is xsk.h. Move the barriers to xsk.h,
-> >> and remove libbpf_util.h. The barriers are used as an implementation
-> >> detail, and should not be considered part of the stable API.
-> >
-> > Does that mean that anything else which uses the same type of
-> > shared rings (bpf ringbuffer, io_uring, zctap) have to implement
-> > the same primitives that xsk.h has?
-> >
->
-> Jonathan, there's a longer explanation on back-/forward-compatibility in
-> the commit message [1]. Again, this is for the XDP socket rings, so I
-> wont comment on the other rings. I would not assume compatibility
-> between different rings (e.g. the bpf ringbuffer and XDP sockets rings),
-> not even prior the barrier change.
->
->
+By default, pahole makes use only of BTF features introduced with
+kernel v5.2. Features that are added later need to be turned on with
+explicit feature flags, such as --btf_gen_floats. According to [1],
+this will hinder the people who generate BTF for kernels externally
+(e.g. for old kernels to support BPF CO-RE).
 
-BPF ringbuf is using smp_store_release()/smp_load_acquire(), which are
-coming from asm/barrier.h. But libbpf abstracts all the low-level
-details, so users don't have to use such low-level primitives
-directly.
+Introduce --btf_gen_all that allows using all BTF features supported
+by pahole.
 
-> Bj=C3=B6rn
->
-> [1]
-> https://lore.kernel.org/bpf/20210305094113.413544-2-bjorn.topel@gmail.com=
-/
->
+[1] https://lore.kernel.org/dwarves/CAEf4Bzbyugfb2RkBkRuxNGKwSk40Tbq4zAvhQT8W=fVMYWuaxA@mail.gmail.com/
+
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+---
+ man-pages/pahole.1 | 4 ++++
+ pahole.c           | 8 ++++++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
+index e292b2c..cbbefbf 100644
+--- a/man-pages/pahole.1
++++ b/man-pages/pahole.1
+@@ -204,6 +204,10 @@ to "/sys/kernel/btf/vmlinux".
+ Allow producing BTF_KIND_FLOAT entries in systems where the vmlinux DWARF
+ information has float types.
+ 
++.TP
++.B \-\-btf_gen_all
++Allow using all the BTF features supported by pahole.
++
+ .TP
+ .B \-l, \-\-show_first_biggest_size_base_type_member
+ Show first biggest size base_type member.
+diff --git a/pahole.c b/pahole.c
+index c8d38f5..df6aa83 100644
+--- a/pahole.c
++++ b/pahole.c
+@@ -826,6 +826,7 @@ ARGP_PROGRAM_VERSION_HOOK_DEF = dwarves_print_version;
+ #define ARGP_numeric_version       320
+ #define ARGP_btf_base		   321
+ #define ARGP_btf_gen_floats	   322
++#define ARGP_btf_gen_all	   323
+ 
+ static const struct argp_option pahole__options[] = {
+ 	{
+@@ -1125,6 +1126,11 @@ static const struct argp_option pahole__options[] = {
+ 		.key  = ARGP_btf_gen_floats,
+ 		.doc  = "Allow producing BTF_KIND_FLOAT entries."
+ 	},
++	{
++		.name = "btf_gen_all",
++		.key  = ARGP_btf_gen_all,
++		.doc  = "Allow using all the BTF features supported by pahole."
++	},
+ 	{
+ 		.name = "structs",
+ 		.key  = ARGP_just_structs,
+@@ -1262,6 +1268,8 @@ static error_t pahole__options_parser(int key, char *arg,
+ 		print_numeric_version = true;		break;
+ 	case ARGP_btf_gen_floats:
+ 		btf_gen_floats = true;			break;
++	case ARGP_btf_gen_all:
++		btf_gen_floats = true;			break;
+ 	default:
+ 		return ARGP_ERR_UNKNOWN;
+ 	}
+-- 
+2.29.2
+
