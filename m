@@ -2,29 +2,30 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F6A339DEA
-	for <lists+bpf@lfdr.de>; Sat, 13 Mar 2021 12:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF474339E46
+	for <lists+bpf@lfdr.de>; Sat, 13 Mar 2021 14:31:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbhCMLih (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 13 Mar 2021 06:38:37 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:60278 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbhCMLiU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 13 Mar 2021 06:38:20 -0500
-Date:   Sat, 13 Mar 2021 11:38:10 +0000
+        id S230309AbhCMNax (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 13 Mar 2021 08:30:53 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:17620 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233529AbhCMNaj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 13 Mar 2021 08:30:39 -0500
+Date:   Sat, 13 Mar 2021 13:30:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1615635498; bh=5MpWKAjO4E1TpGup0jNHoJh4fKp9mBQ4WRLVO089bHE=;
+        t=1615642236; bh=6r1N5OSEeyM3HNy+jVrlMhPyXWgVSnlITt0tT5FGaWU=;
         h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=lJosGFsIHUoNJ7eKfmhWt2Fru4UoM5jFXEAsiNn5NDRGwCJGYg4NvdQ38WsnfNHj2
-         a1r70/D7C1YtcSVIuzNOJqzHw2CcebtcZ/mVXMqrDTcRiyh4XDpd3xtIbqXr/lc2EE
-         oiaC5h0TeGNlcFzcr7UPVZJcjpRNhA3O9n/sFsTuMBwtjVuHam9CmkQ+aWmpYaYhWs
-         /DXzzRntt/lyDy0E2koNv5SroShb81BlO6uctaqRp+OQhmegZ8ky/xFIkVWotQyHby
-         lYnBuBni7bVaa8J6VQopc7g3htNmt1C3RBCMOaay4d7veR6qVPr2Pb+1jixjUFFQrS
-         R9gITd9sNnnbQ==
+        b=CTgpkDnM5DFkOhsoutj5H+n+LLd0lnuqmRm9fsR3jKhJfiCVKfBcS0G5U3xihok23
+         PRk8Ygz0XEKq4fu+OZrbyVk8G8/di1dlGIdBUkYF2hbJN5SOjnkFgBGB6nOUsCuUgC
+         8Mr2IkI9xqrbSeISjIm93HXg6Oy3UVx39hWWPOdmYqwf2q1Zj1K384wYhIxRZVH4AX
+         IOsMfRCmlVjWbkmD81MSQzDOZGGd1CtbilKOpRTvpGZk4KcjLL2gG/pPA/BZQbCmDL
+         zJ+BNWXHd3qDYMPQ1Am1ybNWR0S3JXXgjy7wB5NICMMByVD6YDp75ioNHrHuI4FWy0
+         p9Uf3yMsS8JnA==
 To:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
 From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -32,7 +33,6 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
         Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
         Eric Dumazet <edumazet@google.com>,
         Willem de Bruijn <willemb@google.com>,
         Kevin Hao <haokexin@gmail.com>,
@@ -52,8 +52,8 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         bpf@vger.kernel.org
 Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v2 net-next 6/6] skbuff: micro-optimize {,__}skb_header_pointer()
-Message-ID: <20210313113645.5949-7-alobakin@pm.me>
+Subject: Re: [PATCH v2 net-next 0/6] skbuff: micro-optimize flow dissection
+Message-ID: <20210313132956.647745-1-alobakin@pm.me>
 In-Reply-To: <20210313113645.5949-1-alobakin@pm.me>
 References: <20210313113645.5949-1-alobakin@pm.me>
 MIME-Version: 1.0
@@ -68,44 +68,50 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-{,__}skb_header_pointer() helpers exist mainly for preventing
-accesses-beyond-end of the linear data.
-In the vast majorify of cases, they bail out on the first condition.
-All code going after is mostly a fallback.
-Mark the most common branch as 'likely' one to move it in-line.
-Also, skb_copy_bits() can return negative values only when the input
-arguments are invalid, e.g. offset is greater than skb->len. It can
-be safely marked as 'unlikely' branch, assuming that hotpath code
-provides sane input to not fail here.
+From: Alexander Lobakin <alobakin@pm.me>
+Date: Sat, 13 Mar 2021 11:37:03 +0000
 
-These two bump the throughput with a single Flow Dissector pass on
-every packet (e.g. with RPS or driver that uses eth_get_headlen())
-on 20 Mbps per flow/core.
+> This little number makes all of the flow dissection functions take
+> raw input data pointer as const (1-5) and shuffles the branches in
+> __skb_header_pointer() according to their hit probability.
+>
+> The result is +20 Mbps per flow/core with one Flow Dissector pass
+> per packet. This affects RPS (with software hashing), drivers that
+> use eth_get_headlen() on their Rx path and so on.
+>
+> Since v1 [0]:
+>  - rebase on top of the latest net-next. This was super-weird, but
+>    I double-checked that the series applies with no conflicts, and
+>    then on Patchwork it didn't;
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- include/linux/skbuff.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Still failing on Patchwork. I rebased it ten thousand times, rebuilt
+the patches manually, tried previous stable Git version and the
+latest CVS snapshot, and always got the same series that successfully
+applies to next-next.
+Can you please take a look?
 
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 46c61e127e9f..ecc029674ae4 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -3680,11 +3680,10 @@ static inline void * __must_check
- __skb_header_pointer(const struct sk_buff *skb, int offset, int len,
- =09=09     const void *data, int hlen, void *buffer)
- {
--=09if (hlen - offset >=3D len)
-+=09if (likely(hlen - offset >=3D len))
- =09=09return (void *)data + offset;
+>  - no other changes.
+>
+> [0] https://lore.kernel.org/netdev/20210312194538.337504-1-alobakin@pm.me
+>
+> Alexander Lobakin (6):
+>   flow_dissector: constify bpf_flow_dissector's data pointers
+>   skbuff: make __skb_header_pointer()'s data argument const
+>   flow_dissector: constify raw input @data argument
+>   linux/etherdevice.h: misc trailing whitespace cleanup
+>   ethernet: constify eth_get_headlen()'s @data argument
+>   skbuff: micro-optimize {,__}skb_header_pointer()
+>
+>  include/linux/etherdevice.h  |  4 ++--
+>  include/linux/skbuff.h       | 26 +++++++++++------------
+>  include/net/flow_dissector.h |  6 +++---
+>  net/core/flow_dissector.c    | 41 +++++++++++++++++++-----------------
+>  net/ethernet/eth.c           |  2 +-
+>  5 files changed, 40 insertions(+), 39 deletions(-)
+>
+> --
+> 2.30.2
 
--=09if (!skb ||
--=09    skb_copy_bits(skb, offset, buffer, len) < 0)
-+=09if (!skb || unlikely(skb_copy_bits(skb, offset, buffer, len) < 0))
- =09=09return NULL;
-
- =09return buffer;
---
-2.30.2
-
+Thanks,
+Al
 
