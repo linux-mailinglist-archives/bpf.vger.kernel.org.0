@@ -2,40 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F919339B5C
-	for <lists+bpf@lfdr.de>; Sat, 13 Mar 2021 03:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A9F339B65
+	for <lists+bpf@lfdr.de>; Sat, 13 Mar 2021 03:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231392AbhCMCoI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Mar 2021 21:44:08 -0500
-Received: from mail-pl1-f179.google.com ([209.85.214.179]:38487 "EHLO
-        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbhCMCnp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Mar 2021 21:43:45 -0500
-Received: by mail-pl1-f179.google.com with SMTP id s7so12771094plg.5;
-        Fri, 12 Mar 2021 18:43:45 -0800 (PST)
+        id S232487AbhCMCun (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Mar 2021 21:50:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232880AbhCMCua (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Mar 2021 21:50:30 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB9DCC061574;
+        Fri, 12 Mar 2021 18:50:28 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id m9so27409938ybk.8;
+        Fri, 12 Mar 2021 18:50:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rhyPMcnHQIQmhjUZbuPpathGLF1C0v/EujW0DiDZzMY=;
+        b=l6j6Yc4RE6ZuIFQpPUxzSj/6wAmMPZhY9i1m2KkEN3J14pduSSylfBRZ5hNb7sH2Q9
+         BpRn2KU8KnN+IX/nPS6sJbrRLmn6lgCDVlAZO+TxsYqKnV+jZx4JPSjRuVng8WF4SAAq
+         2tXsGLkPdQ3/76rWCRIQEaC5V9xz905IOdEv7keShMivQ4Hv8hypfqUl7zGqf0F1rIwC
+         Kr4mUpwdJL1zwZ2AI2RzpYleCDmpwXzZtmryy7BOJfmPQ/9hHzbt4EHyY//uBy4dZcxd
+         bli6h6POmsjX9tE4G5blDxTKxWsh2X39J3WCGIfJGmx3bOX9jcI/+SGhfNev9h4Xuj0s
+         JKJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ddi16htNtqOVPERhFZV9h+5Vm1yddIZafWsjYwQ4QM4=;
-        b=trff/vW/J42lPpUxH9A2YlsRqcJBTfQTBCfcr/cgM4h8PepgiltC/LgrVr8EgPfV1y
-         8cN45r8iiJQw+kUIwEdz5ScgMJlHdLbeqZDhKP/iMC82l4A4Ij7XFZLS/UoUC79EK15H
-         FsJQKhwx8XN8IYMPwS3VUx3/ghxFYxsSfVBgiObkdeZ9dORj73RHjDSmPV4oZ+juYg5L
-         RyDK9w0OU/hu8pRdFjmnuIdw/otV4+fPGVVbVUjr4Vn/feT1EBmG4D6MjPCF+qtEVw+5
-         qBQr1vXgKN3MJR5So4yE0GJFO/GR7KVMLKbf4LJOzqyCiWutrawXPTlEY+ozFcwRNJWW
-         WV+g==
-X-Gm-Message-State: AOAM530WrWsjlVI/OAbgcOAwIcspHCO2BP4NAqJZkmHPPSqldWb4/9AL
-        LtfASv3tmr1fUWemPwigT3wv385TCBAo6w==
-X-Google-Smtp-Source: ABdhPJy8Us35uKVSedhNlEFC/oMJR3vYGIIIqkl9j4petZyoRqXbRrAjqiLmN1A956gawH0Dxytp3g==
-X-Received: by 2002:a17:903:4112:b029:e5:f79d:3eb1 with SMTP id r18-20020a1709034112b02900e5f79d3eb1mr1449476pld.48.1615603424761;
-        Fri, 12 Mar 2021 18:43:44 -0800 (PST)
-Received: from sultan-box.localdomain (static-198-54-131-119.cust.tzulo.com. [198.54.131.119])
-        by smtp.gmail.com with ESMTPSA id r4sm3207207pjl.15.2021.03.12.18.43.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 18:43:44 -0800 (PST)
-Date:   Fri, 12 Mar 2021 18:43:42 -0800
-From:   Sultan Alsawaf <sultan@kerneltoast.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rhyPMcnHQIQmhjUZbuPpathGLF1C0v/EujW0DiDZzMY=;
+        b=boESUJYaT1vJ9Cp1Kewpt8sifyGIlJEx+hmXQcMFsoNpRTRzZc2C7jNkuOlyjv5xay
+         9ghi2AedaTv3fI/1AXI8X2IZNfEbYnvE9qP+vfRL30EJ8dib2uLZcchlYLQpbsEoI8E9
+         fhIrZUFR55ffc95UnIF3MGGXFOI6kgvc+REFU10CYLD3gE8BtiHv2xsoJarHvLW8AIOA
+         7f+HfZmQJj1iTrCx1FcbxZh8Xx88wa+6hoIUo73998C7tE0IiCs/yNaV5OiEa3Ky2JUm
+         m66SS/3m4wUnC9Xa+y89SU7wGzrHKzi0rgqwbTeXJhkJfkB5F2JuLfudBU6r60fLsUog
+         gUcg==
+X-Gm-Message-State: AOAM5304epAOGM0OShB55i6v9q+6EH1HAhlFm+MUWNp83hU8LpCHUY94
+        EIZMXS9rJALF0gZg3ZJnf9I/UvYH8gbRMG9EnGxFm6tCV8g=
+X-Google-Smtp-Source: ABdhPJy5983T76dF04EQX438ihV7W/6Ebm8MtFH5oyxF7sQDuFmUdLTOqyrrjxohw5uqKwNfHphZODm1ifbUwT2o3s0=
+X-Received: by 2002:a25:d94:: with SMTP id 142mr21883722ybn.230.1615603827962;
+ Fri, 12 Mar 2021 18:50:27 -0800 (PST)
+MIME-Version: 1.0
+References: <20210312214316.132993-1-sultan@kerneltoast.com>
+ <CAEf4BzYBj254AtZxjMKdJ_yoP9Exvjuyotc8XZ7AUCLFG9iHLQ@mail.gmail.com>
+ <YEwh2S3n8Ufgyovr@sultan-box.localdomain> <CAEf4BzaSyg8XjT2SrwW+b+b+r571FuseziV6PniMv+b7pwgW5A@mail.gmail.com>
+ <YEwm3ikmNMB3Vlzq@sultan-box.localdomain>
+In-Reply-To: <YEwm3ikmNMB3Vlzq@sultan-box.localdomain>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 12 Mar 2021 18:50:17 -0800
+Message-ID: <CAEf4BzZkuW94jSNfEdp0VR7Z=6tfEH_wo05wyunuO+D9VXmmtA@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: Use the correct fd when attaching to perf events
+To:     Sultan Alsawaf <sultan@kerneltoast.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -46,65 +64,64 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Stanislav Fomichev <sdf@google.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] libbpf: Use the correct fd when attaching to perf events
-Message-ID: <YEwm3ikmNMB3Vlzq@sultan-box.localdomain>
-References: <20210312214316.132993-1-sultan@kerneltoast.com>
- <CAEf4BzYBj254AtZxjMKdJ_yoP9Exvjuyotc8XZ7AUCLFG9iHLQ@mail.gmail.com>
- <YEwh2S3n8Ufgyovr@sultan-box.localdomain>
- <CAEf4BzaSyg8XjT2SrwW+b+b+r571FuseziV6PniMv+b7pwgW5A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzaSyg8XjT2SrwW+b+b+r571FuseziV6PniMv+b7pwgW5A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 06:33:01PM -0800, Andrii Nakryiko wrote:
-> On Fri, Mar 12, 2021 at 6:22 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
-> >
-> > On Fri, Mar 12, 2021 at 05:31:14PM -0800, Andrii Nakryiko wrote:
-> > > On Fri, Mar 12, 2021 at 1:43 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
-> > > >
-> > > > From: Sultan Alsawaf <sultan@kerneltoast.com>
-> > > >
-> > > > We should be using the program fd here, not the perf event fd.
+On Fri, Mar 12, 2021 at 6:43 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
+>
+> On Fri, Mar 12, 2021 at 06:33:01PM -0800, Andrii Nakryiko wrote:
+> > On Fri, Mar 12, 2021 at 6:22 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
 > > >
-> > > Why? Can you elaborate on what issue you ran into with the current code?
+> > > On Fri, Mar 12, 2021 at 05:31:14PM -0800, Andrii Nakryiko wrote:
+> > > > On Fri, Mar 12, 2021 at 1:43 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
+> > > > >
+> > > > > From: Sultan Alsawaf <sultan@kerneltoast.com>
+> > > > >
+> > > > > We should be using the program fd here, not the perf event fd.
+> > > >
+> > > > Why? Can you elaborate on what issue you ran into with the current code?
+> > >
+> > > bpf_link__pin() would fail with -EINVAL when using tracepoints, kprobes, or
+> > > uprobes. The failure would happen inside the kernel, in bpf_link_get_from_fd()
+> > > right here:
+> > >         if (f.file->f_op != &bpf_link_fops) {
+> > >                 fdput(f);
+> > >                 return ERR_PTR(-EINVAL);
+> > >         }
 > >
-> > bpf_link__pin() would fail with -EINVAL when using tracepoints, kprobes, or
-> > uprobes. The failure would happen inside the kernel, in bpf_link_get_from_fd()
-> > right here:
-> >         if (f.file->f_op != &bpf_link_fops) {
-> >                 fdput(f);
-> >                 return ERR_PTR(-EINVAL);
-> >         }
-> 
-> kprobe/tracepoint/perf_event attachments behave like bpf_link (so
-> libbpf uses user-space high-level bpf_link APIs for it), but they are
-> not bpf_link-based in the kernel. So bpf_link__pin() won't work for
-> such types of programs until we actually have bpf_link-backed
-> attachment support in the kernel itself. I never got to implementing
-> this because we already had auto-detachment properties from perf_event
-> FD itself. But it would be nice to have that done as a real bpf_link
-> in the kernel (with all the observability, program update,
-> force-detach support).
-> 
-> Looking for volunteers to make this happen ;)
-> 
-> 
+> > kprobe/tracepoint/perf_event attachments behave like bpf_link (so
+> > libbpf uses user-space high-level bpf_link APIs for it), but they are
+> > not bpf_link-based in the kernel. So bpf_link__pin() won't work for
+> > such types of programs until we actually have bpf_link-backed
+> > attachment support in the kernel itself. I never got to implementing
+> > this because we already had auto-detachment properties from perf_event
+> > FD itself. But it would be nice to have that done as a real bpf_link
+> > in the kernel (with all the observability, program update,
+> > force-detach support).
 > >
-> > Since bpf wasn't looking for the perf event fd, I swapped it for the program fd
-> > and bpf_link__pin() worked.
-> 
-> But you were pinning the BPF program, not a BPF link. Which is not
-> what should have happen.
+> > Looking for volunteers to make this happen ;)
+> >
+> >
+> > >
+> > > Since bpf wasn't looking for the perf event fd, I swapped it for the program fd
+> > > and bpf_link__pin() worked.
+> >
+> > But you were pinning the BPF program, not a BPF link. Which is not
+> > what should have happen.
+>
+> This is the code in question:
+>         link = bpf_program__attach(prog);
+>         // make sure `link` is valid, blah blah...
+>         bpf_link__pin(link, some_path);
+>
+> Are you saying that this usage is incorrect?
 
-This is the code in question:
-	link = bpf_program__attach(prog);
-	// make sure `link` is valid, blah blah...
-	bpf_link__pin(link, some_path);
+Right, for kprobe/tracepoint/perf_event attachments it's not
+supported. cgroup, xdp, raw_tracepoint and
+fentry/fexit/fmod_ret/freplace (and a few more) attachments are
+bpf_links in the kernel, so it works for them.
 
-Are you saying that this usage is incorrect?
-
-Sultan
+>
+> Sultan
