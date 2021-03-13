@@ -2,118 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC683399C6
-	for <lists+bpf@lfdr.de>; Fri, 12 Mar 2021 23:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3BE339ADC
+	for <lists+bpf@lfdr.de>; Sat, 13 Mar 2021 02:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235624AbhCLWmr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Mar 2021 17:42:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
+        id S232468AbhCMBcH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Mar 2021 20:32:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235602AbhCLWmk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Mar 2021 17:42:40 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1E5C061574
-        for <bpf@vger.kernel.org>; Fri, 12 Mar 2021 14:42:40 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id y67so2848044pfb.2
-        for <bpf@vger.kernel.org>; Fri, 12 Mar 2021 14:42:40 -0800 (PST)
+        with ESMTP id S231679AbhCMBb0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Mar 2021 20:31:26 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 426A3C061574;
+        Fri, 12 Mar 2021 17:31:26 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id x19so27298338ybe.0;
+        Fri, 12 Mar 2021 17:31:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=lWfyTO/59MNhBwzc3gIbG6SmbDAxdW3Xe9nUt0QBcRA=;
-        b=cUUsS5vPm2OPlHkhrz9LWTuGDcIqQCJLqEmsPXBROXnwib/yr0xoVbFU5CAemi3AjN
-         52Bsr8JbXweQBpgKyinb2KXVICdi0mGfW+D4gawFVp/vjoismWuGqfAobIoVxVPGne8+
-         jZK5nnM4GM1PV2CCrTY4LxJMf1yLl2Ux4MDnkbtFeoG4bLdTN/wjg1GI1IKzxRwlSKas
-         khZU7BuWMW2jvjM0jLOgGNkHzn04vouCwk2x4yilWqrWoSlbejdN1b2DElyZh4EeKmpy
-         q5aoO+9T4LaneOQRLCTBYEb3s+cJURaNCMcJXtecVX1X+/KISeGulzOGN3Tw1/NgxP/j
-         t/Ow==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DbE3xDkQ8HktwIoRcbeaiX7gfulPHK+RCelzbpG3B1Q=;
+        b=ercgs/VoGb+1NneYMOPK67RWCyGd9m3SluCwWbruOrP1Tj+l9ZP9SXWDSnxu9GlwZF
+         E//861xmFlN9+hM4D75juWHdYqvfkDr/aInUfIVZ3/7xzk94fGrXoMwvOxU7nh2Iu3fx
+         wP8Nvv5u6b5S/wPi9N/HpvsQF5QSRhWYdI0uFhBVelkstJQnRdFOMVTy7cHxGQ5cEUAE
+         sT6kg93RUuc3c/dsda4eM2i+xOGaXW9ErpWqxHDksPGF2Q2eHpqQodA4NNkwm99JkL6i
+         9aw4KkIFfUwaXxvkyWnxdaZcYtGG4A2KA1vzK2EGVDQMaApjWXGrKs7TqgEJTeBeE/iy
+         cz1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=lWfyTO/59MNhBwzc3gIbG6SmbDAxdW3Xe9nUt0QBcRA=;
-        b=LMs8+7i3wqL2v3uZDgVUCgeOSLVYvl17VN216X7Oiz6WVTrcHU3GWr6nTga1GAbUj3
-         wLKpIoS8Vqly1HFJoJxuWhm3kU4agpgECLeDu+5x3Tpz+QDhJUMflvVBedrObZyaZU4v
-         J9yRqNFhusRo2DfIJHZF8CF2JIfoT16277cbJ80L51+5vghRFn5umUKiuqteL1ZYZJ8x
-         FzSzmxNWRiK77Px/F0BSKxrY6kP0+GZCiedOPMYc9JHJRIY5ULOH2GUp34mNNEwuk4Da
-         p7eE37JTm9YJG06MefxVEppi7BBTdmJi2ltSvoMh4Emt1ve5rR2c7QRIwoxDCi4oNpqU
-         9A7Q==
-X-Gm-Message-State: AOAM532yRCGCEl8ZdaCEy+RdClr3AlVDCOkjU33ZjZorT7SZsbSydXz3
-        sm+6ivNoaSHDuKyX7rlb9Nk=
-X-Google-Smtp-Source: ABdhPJwP40Nq5RMzRJ8Opz4NNRJnD+5KZyEckmGXlPGgTcVXjoXKlnX5S8+VEn4pCQJkMp/Cs0Ig/w==
-X-Received: by 2002:a62:8103:0:b029:1ef:26e4:494f with SMTP id t3-20020a6281030000b02901ef26e4494fmr343200pfd.41.1615588960122;
-        Fri, 12 Mar 2021 14:42:40 -0800 (PST)
-Received: from ast-mbp.thefacebook.com ([163.114.132.7])
-        by smtp.gmail.com with ESMTPSA id 132sm6449076pfu.158.2021.03.12.14.42.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 12 Mar 2021 14:42:39 -0800 (PST)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, rostedt@goodmis.org, andrii@kernel.org,
-        paulmck@kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH bpf] ftrace: Fix modify_ftrace_direct.
-Date:   Fri, 12 Mar 2021 14:42:37 -0800
-Message-Id: <20210312224237.75061-1-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.13.5
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DbE3xDkQ8HktwIoRcbeaiX7gfulPHK+RCelzbpG3B1Q=;
+        b=bNMVJK+0+57vliMqT0dlV4FhMsOTJ3HpM9H2EPNMnJSDmhWl8FP2/31kZkk561UiFe
+         IqIZmSgorFQdoZeT++eIltkB1TlpOr7lw42qOFArRXMosnZr5gwm/8HwMNEdQsTHx+Vr
+         Oas9dkNSBy1KF4I7kB3Gnj6w0FEkPruWAYRqtO3EKm/NyS0D6lEEZGOR7Qmo/w0ts5gX
+         vxhCidGme6ia9hskjYCY5V0GZ0lr1RmACv9MGSFlxZICKDz16QO7L08bp2ATjSmt6NlG
+         IMDiOj6N854J96rGa2dWi0ljtfUYR9Kp/fllv0TbSsgzw03fKzNTJkqoPferLGRWtaSW
+         dxeA==
+X-Gm-Message-State: AOAM533mos0nAvQrKV+jFcK74Fmmbsxn1x0bW4yAU/2wYdHOW2ev4t4w
+        mtOaXy+kEGxrTBrMfL0yxGhfocUTGYmicok3j2M=
+X-Google-Smtp-Source: ABdhPJyXeoVxAmgzYIpZodsgYP9/ZjqK8xFD9rRV3LVPrn4FRaPBV/Kq2OLW+gE0m57vvPFM4MOLCcghwuBjcn32Tbo=
+X-Received: by 2002:a25:cc13:: with SMTP id l19mr22707860ybf.260.1615599085306;
+ Fri, 12 Mar 2021 17:31:25 -0800 (PST)
+MIME-Version: 1.0
+References: <20210312214316.132993-1-sultan@kerneltoast.com>
+In-Reply-To: <20210312214316.132993-1-sultan@kerneltoast.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 12 Mar 2021 17:31:14 -0800
+Message-ID: <CAEf4BzYBj254AtZxjMKdJ_yoP9Exvjuyotc8XZ7AUCLFG9iHLQ@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: Use the correct fd when attaching to perf events
+To:     Sultan Alsawaf <sultan@kerneltoast.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+On Fri, Mar 12, 2021 at 1:43 PM Sultan Alsawaf <sultan@kerneltoast.com> wrote:
+>
+> From: Sultan Alsawaf <sultan@kerneltoast.com>
+>
+> We should be using the program fd here, not the perf event fd.
 
-The following sequence of commands:
-  register_ftrace_direct(ip, addr1);
-  modify_ftrace_direct(ip, addr1, addr2);
-  unregister_ftrace_direct(ip, addr2);
-will cause the kernel to warn:
-[   30.179191] WARNING: CPU: 2 PID: 1961 at kernel/trace/ftrace.c:5223 unregister_ftrace_direct+0x130/0x150
-[   30.180556] CPU: 2 PID: 1961 Comm: test_progs    W  O      5.12.0-rc2-00378-g86bc10a0a711-dirty #3246
-[   30.182453] RIP: 0010:unregister_ftrace_direct+0x130/0x150
+Why? Can you elaborate on what issue you ran into with the current code?
 
-When modify_ftrace_direct() changes the addr from old to new it should update
-the addr stored in ftrace_direct_funcs. Otherwise the final
-unregister_ftrace_direct() won't find the address and will cause the splat.
-
-Fixes: 0567d6809182 ("ftrace: Add modify_ftrace_direct()")
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
-Steven,
-
-I was fixing bpf trampoline and realized that modify_ftrace_direct() was
-broken from the beginning. bpf trampoline was lucky that it was
-reusing the same page and the final unregister_ftrace_direct() always
-happened with original addr.
-Pls ack if the fix looks good to you.
-I'd like to cary this patch through bpf tree with the other fixes
-I'm working on.
-
-Thanks!
-
- kernel/trace/ftrace.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 4d8e35575549..510e1c1050a1 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -5329,6 +5329,7 @@ int __weak ftrace_modify_direct_caller(struct ftrace_func_entry *entry,
- int modify_ftrace_direct(unsigned long ip,
- 			 unsigned long old_addr, unsigned long new_addr)
- {
-+	struct ftrace_direct_func *direct;
- 	struct ftrace_func_entry *entry;
- 	struct dyn_ftrace *rec;
- 	int ret = -ENODEV;
-@@ -5344,6 +5345,11 @@ int modify_ftrace_direct(unsigned long ip,
- 	if (entry->direct != old_addr)
- 		goto out_unlock;
- 
-+	direct = ftrace_find_direct_func(old_addr);
-+	if (WARN_ON(!direct))
-+		goto out_unlock;
-+	direct->addr = new_addr;
-+
- 	/*
- 	 * If there's no other ftrace callback on the rec->ip location,
- 	 * then it can be changed directly by the architecture.
--- 
-2.24.1
-
+>
+> Fixes: 63f2f5ee856ba ("libbpf: add ability to attach/detach BPF program to perf event")
+> Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index d43cc3f29dae..3d20d57d4af5 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -9538,7 +9538,7 @@ struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog,
+>         if (!link)
+>                 return ERR_PTR(-ENOMEM);
+>         link->detach = &bpf_link__detach_perf_event;
+> -       link->fd = pfd;
+> +       link->fd = prog_fd;
+>
+>         if (ioctl(pfd, PERF_EVENT_IOC_SET_BPF, prog_fd) < 0) {
+>                 err = -errno;
+> --
+> 2.30.2
+>
