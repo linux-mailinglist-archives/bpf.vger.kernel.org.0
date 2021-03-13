@@ -2,111 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E96339EB2
-	for <lists+bpf@lfdr.de>; Sat, 13 Mar 2021 15:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B37339F86
+	for <lists+bpf@lfdr.de>; Sat, 13 Mar 2021 18:33:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233188AbhCMOzP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sat, 13 Mar 2021 09:55:15 -0500
-Received: from smtp.econet.co.zw ([77.246.51.158]:33385 "EHLO
-        ironportDMZ.econet.co.zw" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229615AbhCMOyp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 13 Mar 2021 09:54:45 -0500
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Sat, 13 Mar 2021 09:54:44 EST
-IronPort-SDR: NBQQ5BghtcA1pBnRz+Czfj3Cii53KW6pamiuu7b8i9MRUQfEpSkRczWlltocwGxpqhQuc4ba8S
- Mlaw7pUp6pYk+U8mLVM8Bg6F3xO+1ln6AZoU058ZYifsGmstmeNpnJF9/hvtQPDGxvX/5O4CYT
- 5oGO7wgG1qqoYNXpfQyuBeL180sEcqO5uEu2XVQ9vy3vcnUMIcJKZPTdap9Y5ks0NlV+o1j678
- R2iawysHlGtQOEDR69Gc0h9ng9KtRybphca4HTQvezX88t5kHAsJdoGRZFFkRdeYnbpPwTP0nd
- spw=
-IronPort-HdrOrdr: A9a23:KNtGHKFnsq3nnjI5pLqERseALOonbusQ8zAX/mp2TgFYddHdqt
- unm+4V2QSxpDEaXnwhnt7oAtjifVr385lp7Y4NeYqzRQWOgguVBaxr8IeK+VPdMgLk8Oo178
- tdWoxfLPG1MlRgl8b952CDcuoI5NWc6qiniaP/4h5WPGdXQppt5Qt4FQqXe3ceLGItObMDGI
- OY9o57oVObFEg/VcinGmIDG9HKutyjruOfXTc9GxUl5AOS5AnG1JfGFXGjr24jegIK5Y0H+W
- jB1zXj5qO5s+yqoyWsslP73tBzkNvlxsArPr3ptuElbhHtjgqPQagJYczkgBkF5Ni16FAwkM
- Tdyi1QXfhO1w==
-X-IronPort-AV: E=Sophos;i="5.81,245,1610402400"; 
-   d="scan'208";a="3346181"
-Received: from unknown (HELO WVALE-MB-SVR-05.econetzw.local) ([192.168.101.173])
-  by ironportLAN.econet.co.zw with ESMTP; 13 Mar 2021 16:47:20 +0200
-Received: from WVALE-CAS-SVR-9.econetzw.local (192.168.101.184) by
- WVALE-MB-SVR-05.econetzw.local (192.168.101.173) with Microsoft SMTP Server
- (TLS) id 15.0.1473.3; Sat, 13 Mar 2021 16:47:17 +0200
-Received: from User (165.231.148.189) by WVALE-CAS-SVR-9.econetzw.local
- (10.10.11.230) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Sat, 13 Mar 2021 16:47:28 +0200
-Reply-To: <r19772744@daum.net>
-From:   "Reem E. A" <chawora@econet.co.zw>
-Subject: Re:
-Date:   Sat, 13 Mar 2021 14:47:16 -0800
+        id S234203AbhCMRca (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 13 Mar 2021 12:32:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234140AbhCMRc3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 13 Mar 2021 12:32:29 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 099FBC061574;
+        Sat, 13 Mar 2021 09:32:29 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id e2so8114244pld.9;
+        Sat, 13 Mar 2021 09:32:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+U3v67ZcAJvdEJUggEAgpmcaOAsRI2kJ9FS0FPxtlAE=;
+        b=ps+P2/Pynal3tUPeUkjTQxrLiNycs7ufr6o02gudwuVnu8I2MOG5BihBN35HKzLmls
+         VZmgx2Dy70DfNYGmSQBzg4NM4S7XCqIqzxPwDWSQqDMo7atlNVO1ypzOuKNy1TNwwM/f
+         o4/H58+udyDaAtDHSld7AKPOw0ZknXOvKQb1ab6EKxGMrrGBNzwiVJdeVjqwsVIZkeVT
+         sLaaNx7+PAJizWxI7k65vlYGyF3uuexN4RDvdFJALdihVsEbkbh9XtyVuLfDp72w7JxJ
+         6gV7WJh1uE4KoPW5sDikYDvxfT88YJJ4hhvohctXlS1h/EH3lj3LQDP6UEfrBI29ytVA
+         c0xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+U3v67ZcAJvdEJUggEAgpmcaOAsRI2kJ9FS0FPxtlAE=;
+        b=AEyTrC84PVMfSveQpUZHRW7b5OiNIm49UHhlKLGMwTyp7L7LLlS7fHKUGoZPi2+bYY
+         xTQP6WUuKnctnsjxglXunjuCea879KDKPZT4crFPTwCxYRmZ6qxJFRDomfj9Bxcs9aEA
+         3Gtk53soNlgyrTyUCV+sd/tvjmK4EM/g0RCeJ8buGBqicoiMeOmSy33+PG+ZDxxfFQSX
+         2FJWa9UzmWIUCyTJbcoqMRsDfwkwQBTQgr8kMtzZWiFdmYqx1OhT8aDbLCJq2Vv5AR3+
+         pPdmzzFApMHs2QN6zV9FYQYoFB8J6B/wfbw4CZ5AaBiBIsMSiNhBpZEkUwxTP9OVvh0P
+         olCg==
+X-Gm-Message-State: AOAM5330K0cNyA/JCQrVzAvfHGb9ZJe+5OpbvEYeeJfe/lyS8ZxMYAnV
+        ur2g4oMaExHCZHweENHGHgZ11JWLRjTwF27MSJRp5CpXCSDj1A==
+X-Google-Smtp-Source: ABdhPJyMRUD342QPg9Kn2MbF/oXsQ4fGcSnyoQSx5PIrAgky0lwVtNSRwd/AY47oBJKnImoBimjc/dsAPUXtuvTciBU=
+X-Received: by 2002:a17:90a:9f8c:: with SMTP id o12mr4489047pjp.215.1615656748545;
+ Sat, 13 Mar 2021 09:32:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 8BIT
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <a10c13ebda754280bf2607c3f07aa645@WVALE-CAS-SVR-9.econetzw.local>
-To:     Undisclosed recipients:;
+References: <20210310053222.41371-1-xiyou.wangcong@gmail.com>
+ <20210310053222.41371-5-xiyou.wangcong@gmail.com> <87y2es37i3.fsf@cloudflare.com>
+In-Reply-To: <87y2es37i3.fsf@cloudflare.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Sat, 13 Mar 2021 09:32:17 -0800
+Message-ID: <CAM_iQpVmtHPqzGHEUPhtVroxCeWSBvahKMrbLrEq4gNNVGq2zg@mail.gmail.com>
+Subject: Re: [Patch bpf-next v4 04/11] skmsg: avoid lock_sock() in sk_psock_backlog()
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Fri, Mar 12, 2021 at 4:02 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>
+> On Wed, Mar 10, 2021 at 06:32 AM CET, Cong Wang wrote:
+> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> > index dd53a7771d7e..26ba47b099f1 100644
+> > --- a/net/core/sock_map.c
+> > +++ b/net/core/sock_map.c
+> > @@ -1540,6 +1540,7 @@ void sock_map_close(struct sock *sk, long timeout)
+> >       saved_close = psock->saved_close;
+> >       sock_map_remove_links(sk, psock);
+> >       rcu_read_unlock();
+> > +     sk_psock_purge(psock);
+> >       release_sock(sk);
+> >       saved_close(sk, timeout);
+> >  }
+>
+> Nothing stops sk_psock_backlog from running after sk_psock_purge:
+>
+>
+> CPU 1                                                   CPU 2
+>
+> sk_psock_skb_redirect()
+>   sk_psock(sk_other)
+>   sock_flag(sk_other, SOCK_DEAD)
+>   sk_psock_test_state(psock_other,
+>                       SK_PSOCK_TX_ENABLED)
+>                                                         sk_psock_purge()
+>   skb_queue_tail(&psock_other->ingress_skb, skb)
+>   schedule_work(&psock_other->work)
+>
+>
+> And sock_orphan can run while we're in sendmsg/sendpage_unlocked:
+>
+>
+> CPU 1                                                   CPU 2
+>
+> sk_psock_backlog
+>   ...
+>   sendmsg_unlocked
+>     sock = sk->sk_socket
+>                                                         tcp_close
+>                                                           __tcp_close
+>                                                             sock_orphan
+>     kernel_sendmsg(sock, msg, vec, num, size)
+>
+>
+> So, after this change, without lock_sock in sk_psock_backlog, we will
+> not block tcp_close from running.
+>
+> This makes me think that the process socket can get released from under
+> us, before kernel_sendmsg/sendpage runs.
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (2) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home on their behalf and
-for our "Mutual Benefits".
+I think you are right, I thought socket is orphaned in inet_release(), clearly
+I was wrong. But, I'd argue in the above scenario, the packet should not
+be even queued in the first place, as SK_PSOCK_TX_ENABLED is going
+to be cleared, so I think the right fix is probably to make clearing psock
+state and queuing the packet under a spinlock.
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Turkish Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
-
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-reem.alhashimi@yandex.com
-
-Regards,
-Ms. Reem.
-This mail was sent through Econet Wireless, a Global telecoms leader.
-
-DISCLAIMER
-
-The information in this message is confidential and is legally privileged. It is intended solely for the addressee. Access to this message by anyone else is unauthorized. If received in error please accept our apologies and notify the sender immediately. You must also delete the original message from your machine. If you are not the intended recipient, any use, disclosure, copying, distribution or action taken in reliance of it, is prohibited and may be unlawful. The information, attachments, opinions or advice contained in this email are not the views or opinions of Econet Wireless, its subsidiaries or affiliates. Econet Wireless therefore accepts no liability for claims, losses, or damages arising from the inaccuracy, incorrectness, or lack of integrity of such information.
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/AgileBanner.png]
-WORK ISN'T A PLACE
-IT'S WHAT WE DO
-________________________________
-
-
-
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/telephone.png]
-
-
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/email.png]
-
-<mailto:>
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/location.png]
-
-
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/website.png]
-
-www.econet.co.zw<https://www.econet.co.zw>
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/inspired.jpg]
+Thanks.
