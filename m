@@ -2,142 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882F733A414
-	for <lists+bpf@lfdr.de>; Sun, 14 Mar 2021 11:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA3833A41C
+	for <lists+bpf@lfdr.de>; Sun, 14 Mar 2021 11:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235147AbhCNKCS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 14 Mar 2021 06:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235100AbhCNKBx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 14 Mar 2021 06:01:53 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA756C061574
-        for <bpf@vger.kernel.org>; Sun, 14 Mar 2021 03:01:51 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id t5so6428398qvs.5
-        for <bpf@vger.kernel.org>; Sun, 14 Mar 2021 03:01:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V9sT2+1xGWWst4bttpxK8qQ+hu8YuKQN51ohN8OT3c8=;
-        b=V0E9YrVrqNrmHyaGGS2inR5EG2jdyBufEWpDo1J7GHy2CDxubNlpcs2qDjK8muao68
-         vJ/fBpCplKi9jzNcEsBT+NeZ5ZcU6wbjacQMfVTiCoXeodLZFL+3j9O+EmwgDRcgyqku
-         WnLMo7j7BOPADrmvQn5Hf7D/mz9sCpNVKfglfFUsK+aYPBorVNl99DLBSw7mATQJKrm1
-         FViIjGdN5yZe1/RNfm4H6Kd592Q1I6cgrIYSYtiRMbY8NbsZtK6RCbnL1ew3GpJ16idM
-         8X9VNTXyQeyfLwUac+y1LdoA+rZ/Py48RhmKQL2E/tgLxh7LzN5p/sqB/6qs8KEMFfwp
-         vhHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V9sT2+1xGWWst4bttpxK8qQ+hu8YuKQN51ohN8OT3c8=;
-        b=dzRZOBH9j5TV36w7SDGnj8ZUmS5xG2nuhEg3t6wcDf8+NDEeKgDMSc/J+ZTrSDDJ4D
-         k7ZHztDt9hJTLmnrK+H3RLDY3odcbGYR9S7XJ0fDNjMLzS+5JA/ffdF+fOtlC2Vq+VfV
-         B+pQRownLS1xtQrwlHy+jnzC5XQLab/+j9ah51DODXgxdDTkduLelNdH/IsOuWkwzZ/2
-         EvbM5sIaetWWW1Ev0aQhIdTcefiqlTh/Bvh8SGYrog6hzsnak9BkGekapZEv62nUdt2x
-         waLtNfVLCVNcuLE6vuO3QTykjEfD8f2/8EtSjIJY9GBMfFgp5tpl9kyw89fB/8CopBaG
-         W/Pg==
-X-Gm-Message-State: AOAM533sAxlE6EoupjDtjANHjyOK8fyVmQ6N9d7OejgOODq7mMjUH3Yv
-        O6oHOXHk7/mdJLI6D06VD0/79VR+TEi9FsEnBaikJQ==
-X-Google-Smtp-Source: ABdhPJy+VvF0EiHA6nUvKNqWlrBetdvLNPW+AK/wZIPRYlo9k7aSKbqQa7OoPlVK+wlWobmQl0SijN7Ooh4s/FNr5eA=
-X-Received: by 2002:a05:6214:326:: with SMTP id j6mr5856707qvu.13.1615716110661;
- Sun, 14 Mar 2021 03:01:50 -0700 (PDT)
+        id S235167AbhCNKPk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 14 Mar 2021 06:15:40 -0400
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:42922 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235134AbhCNKPR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 14 Mar 2021 06:15:17 -0400
+Date:   Sun, 14 Mar 2021 10:15:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1615716915; bh=bM7cn3Afzu5HwMEmA8LHq+iVZuDxZxEEQbnZuhdZvEg=;
+        h=Date:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=jpFMl4hp7PYW0YfoBbb27jcEpamNRG53Kbe0U4P2zNXtu+ZXg4SYVY5cMuyC+d0Hn
+         V28lFAHmNlil0dmG4Z1dDYZggrLQpnNsWqRSRCBKEFBdDMVfIrEDaT79OzsUEUyHNd
+         RVZ6sE83S0YPfPROa9KrfykjYGmNqzQIS6FstZTSYR9ufeNuJcPKk//7GfNDWbBmSl
+         7nNb9EOCDNOCpfI+HiVZglkkQOAylsmb//HzrFHW/aTb2mcIoEa+XOYenZH/w3+YFJ
+         8hiSEYw7zShjXaIgNe4u7UipqQ4QT/Y1UNl0s+//0XNgxY+1weKsbVWeeqNLqXR2YO
+         fHCM1UpjZ+8SQ==
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        jonathan.lemon@gmail.com, edumazet@google.com, willemb@google.com,
+        haokexin@gmail.com, pablo@netfilter.org, jakub@cloudflare.com,
+        elver@google.com, decui@microsoft.com, vladimir.oltean@nxp.com,
+        lariel@mellanox.com, wangqing@vivo.com, dcaratti@redhat.com,
+        gnault@redhat.com, eranbe@nvidia.com, mchehab+huawei@kernel.org,
+        ktkhai@virtuozzo.com, bgolaszewski@baylibre.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH v2 net-next 0/6] skbuff: micro-optimize flow dissection
+Message-ID: <20210314101452.2482-1-alobakin@pm.me>
+In-Reply-To: <20210313.181000.1671061556553245861.davem@davemloft.net>
+References: <20210313113645.5949-1-alobakin@pm.me> <20210313.181000.1671061556553245861.davem@davemloft.net>
 MIME-Version: 1.0
-References: <00000000000096cdaa05bd32d46f@google.com> <CACT4Y+ZjdOaX_X530p+vPbG4mbtUuFsJ1v-gD24T4DnFUqcudA@mail.gmail.com>
-In-Reply-To: <CACT4Y+ZjdOaX_X530p+vPbG4mbtUuFsJ1v-gD24T4DnFUqcudA@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sun, 14 Mar 2021 11:01:39 +0100
-Message-ID: <CACT4Y+ZjVS+nOxtEByF5-djuhbCYLSDdZ7V04qJ0edpQR0514A@mail.gmail.com>
-Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in sock_ioctl
-To:     syzbot <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Cc:     andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.0 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MISSING_HEADERS shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 7:53 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Wed, Mar 10, 2021 at 7:28 PM syzbot
-> <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
-> > git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=122c343ad00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=c23c5421600e9b454849
-> > userspace arch: riscv64
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com
->
-> +riscv maintainers
->
-> Another case of put_user crashing.
+From: David Miller <davem@davemloft.net>
+Date: Sat, 13 Mar 2021 18:10:00 -0800 (PST)
 
-There are 58 crashes in sock_ioctl already. Somehow there is a very
-significant skew towards crashing with this "user memory without
-uaccess routines" in schedule_tail and sock_ioctl of all places in the
-kernel that use put_user... This looks very strange... Any ideas
-what's special about these 2 locations?
+> None of these apply to net-next as per the patchwork automated checks.  A=
+ny idea why?
 
+No unfortunately. That'why I sent a follow-up mail. All of them
+successfully apply to pure net-next on my machine.
+Can it be a Git version conflict? I use 2.30.2, but also tried 2.30.1
+and the latest development snapshot, and in either case they got
+applied with no problems.
 
-> > Unable to handle kernel access to user memory without uaccess routines at virtual address 0000000020000300
-> > Oops [#1]
-> > Modules linked in:
-> > CPU: 1 PID: 4488 Comm: syz-executor.0 Not tainted 5.12.0-rc2-syzkaller-00467-g0d7588ab9ef9 #0
-> > Hardware name: riscv-virtio,qemu (DT)
-> > epc : sock_ioctl+0x424/0x6ac net/socket.c:1124
-> >  ra : sock_ioctl+0x424/0x6ac net/socket.c:1124
-> > epc : ffffffe002aeeb3e ra : ffffffe002aeeb3e sp : ffffffe023867da0
-> >  gp : ffffffe005d25378 tp : ffffffe007e116c0 t0 : 0000000000000000
-> >  t1 : 0000000000000001 t2 : 0000003fb8035e44 s0 : ffffffe023867e30
-> >  s1 : 0000000000040000 a0 : 0000000000000000 a1 : 0000000000000007
-> >  a2 : 1ffffffc00fc22d8 a3 : ffffffe003bc1d02 a4 : 0000000000000000
-> >  a5 : 0000000000000000 a6 : 0000000000f00000 a7 : ffffffe000082eba
-> >  s2 : 0000000000000000 s3 : 0000000000008902 s4 : 0000000020000300
-> >  s5 : ffffffe005d2b0d0 s6 : ffffffe010facfc0 s7 : ffffffe008e00000
-> >  s8 : 0000000000008903 s9 : ffffffe010fad080 s10: 0000000000000000
-> >  s11: 0000000000020000 t3 : 982de389919f6300 t4 : ffffffc401175688
-> >  t5 : ffffffc401175691 t6 : 0000000000000007
-> > status: 0000000000000120 badaddr: 0000000020000300 cause: 000000000000000f
-> > Call Trace:
-> > [<ffffffe002aeeb3e>] sock_ioctl+0x424/0x6ac net/socket.c:1124
-> > [<ffffffe0003fdb6a>] vfs_ioctl fs/ioctl.c:48 [inline]
-> > [<ffffffe0003fdb6a>] __do_sys_ioctl fs/ioctl.c:753 [inline]
-> > [<ffffffe0003fdb6a>] sys_ioctl+0x5c2/0xd56 fs/ioctl.c:739
-> > [<ffffffe000005562>] ret_from_syscall+0x0/0x2
-> > Dumping ftrace buffer:
-> >    (ftrace buffer empty)
-> > ---[ end trace a5f91e70f37b907b ]---
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+I could have more clue if NIPA provided more detailed log, but didn't
+find any. And apply_patches stage doesn't seem to be present on NIPA
+GitHub repo, so I couldn't reproduce it 1:1.
+
+I can try again on Monday, not sure if it will help.
+I also sent another series yesterday, and it has 15 green lights on
+Patchwork, so this problem seems to take place only with this
+particular series.
+
+> Thanks.
+
+Thanks,
+Al
+
