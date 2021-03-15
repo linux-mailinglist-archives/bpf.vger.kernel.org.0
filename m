@@ -2,137 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D388433A8D6
-	for <lists+bpf@lfdr.de>; Mon, 15 Mar 2021 00:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CC233A905
+	for <lists+bpf@lfdr.de>; Mon, 15 Mar 2021 01:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229476AbhCNXee (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 14 Mar 2021 19:34:34 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11890 "EHLO
+        id S229473AbhCOAJN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 14 Mar 2021 20:09:13 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34130 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229636AbhCNXeJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 14 Mar 2021 19:34:09 -0400
+        by vger.kernel.org with ESMTP id S229476AbhCOAIu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 14 Mar 2021 20:08:50 -0400
 Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12ENV0KB011165;
-        Sun, 14 Mar 2021 16:34:06 -0700
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12F04ZBR001583;
+        Sun, 14 Mar 2021 17:08:48 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=B3hgHzeE6jh3tvO9AwbbqPKnrlUAyoAcKJPF7J6CanQ=;
- b=kXUYo/6+D7o38y6mka9wkz3vznyFGwcZf0aWpVqjnW/Ecs+PfzGYK7Rwn2ljeevSte0r
- UVvDYlCOn3GBGBHG094oUCRlYw8cB93luT9CF7qTnoMQLdXsywGE2pDeBVg1PM0hj0HA
- dblbC/hWvWH4gjB4H5TKiecA7I/n2EK58G4= 
+ bh=OUR7KY3VZRyAgqKRFVgeQwm4pr1zgKoDA7zRCQmxH5Y=;
+ b=NVJy6H5ix3O01CO3fLg2XUE9njXyu80oE8LSzD3WDvv5VMO8Vu+tJ8oqF2JZd7yigoLr
+ 5Tx4Hfs9btzUiavUn58Msn8lltwthKj9ahhaM8TQ8+QowzeNPq3chHPUcQiTu8K9exhi
+ Yw9UxSWWtzCfgCeQBdGpwF6iih/NOL5n9jQ= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 379e11267g-1
+        by mx0a-00082601.pphosted.com with ESMTP id 379e1128q1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 14 Mar 2021 16:34:06 -0700
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+        Sun, 14 Mar 2021 17:08:48 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 14 Mar 2021 16:34:05 -0700
+ 15.1.2176.2; Sun, 14 Mar 2021 17:08:47 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FFGmOf8TVQc/wi5Vj3/X0B6zK9dT5FrAmBrFiSlD3kIBRLLZk23scxmx1zt4DL8unSr8CAJT61YRisBZk707RnSbz8RkIX7yq9tF51BN6s1KnJaAif6SVY+PiHv5oPjWkIGwBF/DiZ555aXke/nCEyV+u9Xszr7uN1AQSCfhvW2QtiGZxWGPWDh1RRYv6w3yfI64qc6D5tKIbvPNmLtCZQ0xLaWQ0Y5MUTNgLYTqCIlVbrbs6CorJ8eU6PRIHdn6VSd0FQI2mjkXzppxA6FOGA/lSoQNYdyx+YBQiK1HvEIdCq2TThWPGtbKp01dwIZoId2ObZzpWZbgtjt4IUQwZw==
+ b=Qfoff2EEjlzexFPSaOtOBd14IbR/ucj2ktrRJb1BtZGlypxU9BKF2cY02EyeRM0BzdSGE2DmGsA6tB3Am9jmaB07fPh8wIO7Pyb1RrR5jey89F6mrqXqOVBL2e1kr9FzO1BtPYT7DDbJSUYM4jdwv6cy8Gbn03M4O82yzdiNasdTiOnTUWu2E/lWoh4nzqXveefuV1jrn//0nQIn2CEr0cNW/2GjwBDhgzp6duQfltKv0SCY+vsCQqOPPxrEdup5vuu9dZSN/sLt5YnvHUXrxbSTh7QQBls3zXeYiDtoPgr0TuckGHp35rdz2cxt+X0ixAduRAisw7RPh1GWcCeaoA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B3hgHzeE6jh3tvO9AwbbqPKnrlUAyoAcKJPF7J6CanQ=;
- b=C1DGT7t7T1ieAPwDSeA96odGliyQ6+XLTNeTQu10poSpsPrJYG9TsnunDPExgdibRsZwcPC0Tft6GHuYK9WlXV3MYg0ofq0TDa0yzmpBSbcnnisxSo6bgfqyZm3m0toU+utqnMp2VIvn552RJ5nBdyX7+6qMmMKBFeVdvF5y4c8nj09jI3TFP5GR6a4r/4+BaMt30Lc6KL0RjrjOn97RAMJajLPq7BNIYkG5NvCegBR8xsrOaAgiA9YaDT1Wu+aWzBBimwyrRs5G+a9BO4jf3aAZ+4rHn33BUPj/mAsw6RLxJr5vU/zfUDAb7KCNW371UpGwL0pKR3vumSGeF//pDw==
+ bh=OUR7KY3VZRyAgqKRFVgeQwm4pr1zgKoDA7zRCQmxH5Y=;
+ b=SuZTJVQS+T318JQ7lkz7o90lFx6rpzsobt5NAoNORnO+qGo9JnV8MDoRwXImet9wjyjK+tQzZAPcaQhWz0kbRAOhxw/C7keYxSw4ruevZ5Wm9RZZYYlDjrRlAbH6M7MzmQE41nuipcnJcQ0jHA6MqAFaUmVuL2cWv/BAnCWKdW1I9GUgyp2dFMOaBw9COiKBQQdGYPOVRJKR1roko3KFQS1pOwvi61yb0jjLZs9/lcWFPFkhMyxjpthu0vDrM/VBmVxvHqFGhiekeJrfH8BXOfKkBgXpKKiMoH8uRS3P08PU8I60T3hSqzgX9juZrkj6qqmUeSriskBlESOlxPbUAA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Authentication-Results: sartura.hr; dkim=none (message not signed)
+ header.d=none;sartura.hr; dmarc=none action=none header.from=fb.com;
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4644.namprd15.prod.outlook.com (2603:10b6:806:19f::16) with
+ by SA1PR15MB4740.namprd15.prod.outlook.com (2603:10b6:806:19f::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Sun, 14 Mar
- 2021 23:34:02 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Mon, 15 Mar
+ 2021 00:08:46 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3933.032; Sun, 14 Mar 2021
- 23:34:02 +0000
-Subject: Re: [RFC 0/1] Combining CUs into a single hash table
-To:     Bill Wendling <morbo@google.com>
-CC:     <dwarves@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-References: <20210212211607.2890660-1-morbo@google.com>
- <CAGG=3QWuxzwKGuYhVu+EfXPFZMNsO7-=NtHbdXAyvcVjvKF3hA@mail.gmail.com>
- <86bcb5c4-b3c8-e41f-96ec-800caf57f585@fb.com>
- <CAGG=3QUYzMNBwoOY9q739wKDVzuevZSjC=KPBdrQW9fXRCnvjQ@mail.gmail.com>
+ ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3933.032; Mon, 15 Mar 2021
+ 00:08:46 +0000
+Subject: Re: [PATCH v2 bpf-next] bpf: add lookup_and_delete_elem support to
+ hashtab
+To:     Denis Salopek <denis.salopek@sartura.hr>
+CC:     <bpf@vger.kernel.org>, <juraj.vijtiuk@sartura.hr>,
+        <luka.oreskovic@sartura.hr>, <luka.perkov@sartura.hr>
+References: <YDtk/vr/lk62L4KP@gmail.com>
+ <d8104f41-4302-7b68-5bc1-fb014a261e42@fb.com> <YEx9qYVBWWdH0LPM@gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <f742fd34-27ee-bb48-907b-1d12cb6ff25c@fb.com>
-Date:   Sun, 14 Mar 2021 16:33:58 -0700
+Message-ID: <0eb074ab-907c-dedb-4e71-d38546a64418@fb.com>
+Date:   Sun, 14 Mar 2021 17:08:21 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.8.1
-In-Reply-To: <CAGG=3QUYzMNBwoOY9q739wKDVzuevZSjC=KPBdrQW9fXRCnvjQ@mail.gmail.com>
+In-Reply-To: <YEx9qYVBWWdH0LPM@gmail.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [2620:10d:c090:400::5:896c]
-X-ClientProxiedBy: MWHPR04CA0027.namprd04.prod.outlook.com
- (2603:10b6:300:ee::13) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: MWHPR08CA0060.namprd08.prod.outlook.com
+ (2603:10b6:300:c0::34) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::104e] (2620:10d:c090:400::5:896c) by MWHPR04CA0027.namprd04.prod.outlook.com (2603:10b6:300:ee::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31 via Frontend Transport; Sun, 14 Mar 2021 23:34:01 +0000
+Received: from [IPv6:2620:10d:c085:21e8::104e] (2620:10d:c090:400::5:896c) by MWHPR08CA0060.namprd08.prod.outlook.com (2603:10b6:300:c0::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32 via Frontend Transport; Mon, 15 Mar 2021 00:08:45 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 19b5458f-d507-47ba-6bf0-08d8e741a611
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4644:
-X-Microsoft-Antispam-PRVS: <SA1PR15MB46444E0E788610B3E2F12A04D36D9@SA1PR15MB4644.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: a87eb4a2-5ca0-4f31-6588-08d8e746804d
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4740:
+X-Microsoft-Antispam-PRVS: <SA1PR15MB4740199FF6539484F6914770D36C9@SA1PR15MB4740.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DDhq3+EolZwRwbE7M1OXSC243ydyiqxVyxH5unMuJW6p/a3kR/JAZplu+bmN5O3/MFdHn9raYY889asvaiEMKpfh3zJpdKBF1bX0KUb5dEEcltchBpjZXahis8kAznaB0U1ByIPCnMg/F6hiZ4UpZoFHHW7sYUnVVStPcjcFqrqYUgNgzmFEKp1vABfYkbQ/me5SYPUSPovM9aryZ9OTf49oD7sJwQr9jsAY8N1m8EAm9bju+LIGKwjYrpqbNj/HwzOWgI3B3Eui3gyg6muamuG/lqnLq0llnvIG/62P3P/JYRt90hIAR7atpOYrHfMkmdLuONPpMBFmK2g3nfyQe773uOqR+8KsfSD3nQhdfovCEhtXcPNS7edhUW80m3jFDTN3W0z9DqgLW9rlPCNJJecK2rYJbFs5JuHt3f31LY9/tNCleCKJw57ZhJtFUVvAeY65xDW+vg62936o3xxSv4gwvOyeQNLn6Bgptv5pVn91a+EJC+kXYvgw1+Ho0E4bfOhSzZYJqTjTTkgUWnz2YbCcuL/+f+4PoyNFBhUxyFtoBneU68CxG6YrLc8p4G1UT1P+02fEJirAQlwEL9pJdAKVT159W6p/5aBvTgwcZQWtVrt+5G84zTivDtO7oogtm0P9mHkWXJSb+dmnizBHWg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(376002)(346002)(39860400002)(396003)(186003)(2616005)(16526019)(6666004)(31686004)(83380400001)(36756003)(2906002)(54906003)(316002)(53546011)(478600001)(5660300002)(6486002)(8936002)(8676002)(66476007)(6916009)(66556008)(86362001)(31696002)(66946007)(4326008)(52116002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eWp4WVQ2Z2VsNkNreTdnUG52ZGpDaUJCbGlhMnBENFJvOXRkMm1HS3VTZXJZ?=
- =?utf-8?B?UVppNFNNckNhTEI4T05aM3U3bVpkUkhzeUtOWTFwYWljaDErc2pCckU5cXZD?=
- =?utf-8?B?YVNDd3J4QTMzR1d1YUttTmxmcWtJZU1XQWt5c0hjSzB5eTk5SlFVc1BJNGl4?=
- =?utf-8?B?VVg1QjU0NVUxNmthbUVzL2JPOEIzVlRJL1lVZ2VKeTBQcmNPT3k3Z3o4RjJB?=
- =?utf-8?B?MWZSVlQ2VVVaZm5nYTMvV3lhUTNUNDRhNHVEVXBYc2x1dFBpZkozZWFhNmg4?=
- =?utf-8?B?K1gzaUExN3Z3RFUrUmVXNTV4TXhrVUNrUzR5MURSM2d2N2xkN0VNb1Q4eEYx?=
- =?utf-8?B?c1pEemN6UzBPZ1REUndJc1VsVnB5NnJmTXFYUnFDc1JQNm91NmRTZkpBN1VI?=
- =?utf-8?B?ZGlYS1dTbWtVeU9wYVk1bE11c054blVjcjFHemUzN3RjTUNQbjdOblRlaTdm?=
- =?utf-8?B?U2NBeHJSRllXenlaQk93R1oxYjMyd21UOXd6ZXU1OUJyTGxXd1Z3Ym1OeFBk?=
- =?utf-8?B?Vi8raUNQQlhKZ0FXbHdDclJUd25RSHZsNVI1VkRrbS9Ccm9HeDZ0enZIM2Nr?=
- =?utf-8?B?U3NPWWdTUmlDczlLM3lSV3kycjRuMHJ2WFNKWUY0MzZwWVVCK2NnS2Foa3p0?=
- =?utf-8?B?dlBQM3RzN0pOUm1nK21hejB3dFZNMUJIODRoK0pMZnozakw1c040b3BFcEdN?=
- =?utf-8?B?ZUhMSE8wUWx0eHErZjUxZE4rVHNyOXJvNDRCTXBkdDFXTFMxRkxKcHdHaGpL?=
- =?utf-8?B?Z3plUHBrdVcvNHpENytjak5JbEJ0OExLeFNiL0hJT29WZTMrYmtudk90OGlV?=
- =?utf-8?B?SWlQWDhtWTRMcnVMaWFiTDlrMkdhV3pLZjNncW1reEJXc0ROSitRWXZlSlg5?=
- =?utf-8?B?bldrWlhhZ0VHekcxbm13L2hiWlRlNnpYck84N09RSCswK1FCT0lLQUVVc2Ns?=
- =?utf-8?B?ZE9FU0t5Z1JmS2V4SHg5KzhXd0FDYVcvR1E3YnlKS0YzU0RUN0NQY2pKMFZY?=
- =?utf-8?B?Z3ZkMkU0UjU2SE5RcDA3NXE2WHdmSmUvSndLSzBoZnBSUmZESDZkakdCMWxJ?=
- =?utf-8?B?dWhNTmo3b3V5TU5ReDF6NlBtZXY3U3RRb3hpUXB2bEV6OXZSUWQ4SU8vZ3cy?=
- =?utf-8?B?Z1UwSEVhWUkxcUVTeEhmNDhwMnl4WUtvZVp4QzdXMS9uUFdzclhCVDFZSXpQ?=
- =?utf-8?B?bUdOcTlzaGRwNmNRL3lCdWMwcEhhcG44Vjdzemc3Y2VrOXhreXRaUVJ3VEYy?=
- =?utf-8?B?Vkx3VG5PSExLaWRjZ1ltY3RjRmlvQzV4VWFDa3lMOHhiMXJWZzRWOFlwcnpM?=
- =?utf-8?B?emhrbVdjSW1Ddm9IS3JkZ01vc0RZZFlZaDE3MWxuM2ZkT005cCtJMncyNTBU?=
- =?utf-8?B?NXFERzZyYVhvMW9Rbis3L0FjZzF5ekFpdllDaVlXZ0lycTNWWUtSZExubVFQ?=
- =?utf-8?B?N2hyWGV4TFM1L0dWdXNLY1VGY2lxc1ZnZnpqTTlWR1JNa25RNXF2SXplOWlz?=
- =?utf-8?B?aCt3bnAxUitWMEt4S0N3ZFl3MXR4aWtpdXpCWDJnS2ZiMWtiUDVUQ2lLL1l3?=
- =?utf-8?B?aFpudFFvcVo1a2luekMwaE5sdjQzNUcrbWxSVGJHZWFDOWtKUU9wS0FKcDBH?=
- =?utf-8?B?bTloYWp0T3owbVFkU2JabmNhSk8vZWJRUGdUTndUYi8zdUs1UE9UaUR4dE1F?=
- =?utf-8?B?WTdTc3g1Y3pzRHlSdE1UNUc2Q2JSOWNVQkdtWERTWFNpdW1wMEtwYVNlRlRw?=
- =?utf-8?B?SFN0UC9nSTNNUVEzenRPOG5SZ0ljL2N2am9JZ1VxYmQ5ZVNBUzhrWmJlbzhv?=
- =?utf-8?B?UzZodFNtUHJLcHoyT3diQT09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 19b5458f-d507-47ba-6bf0-08d8e741a611
+X-Microsoft-Antispam-Message-Info: 8ud3MQ3yiTmWp9VgxTnLivqQ0Xf51fAhSQDIX/vnMKyqjLd9kg36IRTuzT3C+bVEfjaRYb6CwYawbAZ1WSsR/3QCp79rBXpQhMqXVfeYQdzogymYIjrtR8Nz0AMaH2VPX/traBLMcvEuh8jCnBURerbntpWn6FHayplE4vFdLuRFNPPzvJQ3iTomfVoGLz4JojyEN0P7cXUageszDMDqPIYvTxXIkR2Eml/+RR0CzfcA7xuwl3klpRCzSLMJoOcCJOrQTKvg/2wjpthenGNEtlXdIwjQeq2CvTzuioGf2z3yXGt0miF7aY9eUVn4ws6MrjDFLuIKck8YdM41N3kgpVrf+T7nrpfBwhmYb0/KuBfgP5wR4gWVk5yp0oZzByzH6EvXhX/i674GaXv1vSRBxoj26hb0HLR8Wg1waVAPXPftH0WDhhD79tB1QP9262Iu7qPrfWhVufjop9bJpK+Q9/ezwo+E8UA8vSe4LG11luorT9SEdhaX0Fwe++a7EnPnY0TR6jssxbqXRIcS1Xt3PS6PyAYdlSJch9dReCVE5E7Z5bajoU3MWTHh6Ks78VMqwbWgkQ8iVfzrV/Zeg4x/++y37nTxNx6GvZ6lCSTjGYIZi0NTz58pJu1So+pBMVhHwALtNUl61O+vXU9MwnipUw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(396003)(346002)(366004)(39860400002)(16526019)(83380400001)(186003)(2906002)(478600001)(31696002)(53546011)(66476007)(36756003)(2616005)(8936002)(8676002)(30864003)(4326008)(66556008)(6916009)(86362001)(6486002)(5660300002)(52116002)(6666004)(316002)(31686004)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?V1ZSdC91cEkvL05xSmEwZ3R2eVpvRjdHNmNyY0UyeGU5RWlqU1dGZGJ3K3po?=
+ =?utf-8?B?ZFcrWm1GOEdCQ1lPMXRiZG1BOXh1dG8yQ1dacHkwMEJkUHhtYzhKelZKM3dR?=
+ =?utf-8?B?MDg2WGFHb3lJVXgvSDNQcGdjWGJoVVdkSWhJSzhObUU0NGdOU2xneUZSeWpV?=
+ =?utf-8?B?TUc3R1RFa2tHcmI0RWpQelJzU200RHF3R2ZVUkV5amkxOXhzTmF0aC9PT21q?=
+ =?utf-8?B?OEJjZnQyWmNhZU9adm8zTzhUZEJTVkEzc21ONk5Ja3JJNDdHS2xPVzVyMmpZ?=
+ =?utf-8?B?ZWdwZkhOVTFqY3lvSjQ4MkJUTTZPbkNsNmNvSnJLWnN0d09MTTVQUkpXUnU2?=
+ =?utf-8?B?aFBaNVBqV3lqd2tyWVMwWVljYjhEUStOcTQ3a3BCcDBmZFZ3OHhrTHFHRW5n?=
+ =?utf-8?B?dEpUTnk1aU52dlByN2xhUmNSaVhKa1U4b2tCRnV1ZUtXMEVONVhuWUhJQ05j?=
+ =?utf-8?B?SjR4cU5GWWpoK3Faem1NMG9mVTBiMnltdzVZUGxuZldheXI1VXp4WG1aSHBk?=
+ =?utf-8?B?VDZFVFFTTjFhUFlVWGgvMkF6M3FoK1FlVXVxMlVZdW51T1B3akR4MFZVUjFy?=
+ =?utf-8?B?SUVNM0NPSnQxa21YeDFNTklnQjZPSmZqZldFUmt6a1Z2RmdHZHhBZEc2YzBh?=
+ =?utf-8?B?cUNhOTBIc2MwRVo4ZWZIOGtld3BTVUd6eDdyYkZzOGNXR3Q2YTREZmtKMHJi?=
+ =?utf-8?B?bEtRM3VKTmUzbXJIbFpJbkg4MDRxVm10enQ0WUZYMDQ3WWxleDViazhONFhS?=
+ =?utf-8?B?UUV1NUNoR21HL0pwdWk0RlVza0U2N3g5bTJjV1dKR3YrMjNPSnBZNG4vRnBi?=
+ =?utf-8?B?UVhFTzE4bnl3K0g4VHZXR29WVnl2N09MdVVKYTRBYWh4MEVjRThlckJuYk9B?=
+ =?utf-8?B?aFdOcUlSaC82RnFvU0lQYTZQMUI2ZmswaEM3NHJpaGU4dVJoNmF4NEJGaHZa?=
+ =?utf-8?B?SFlWZVlHR1pQZ0JjT2U2MWhCc1A3eHJoYzg0UDNnbjZveUVxRHZCNjRoeWY1?=
+ =?utf-8?B?NUpMczBPanNNcm1jdy9PN2EyajBCU0o0L09mR2ZzME1Bd3VMMVhJWldDaVVq?=
+ =?utf-8?B?RmxFSXUzMUZoTlUwZlR5OGMzeFN5VWg1aDdIb3BVV0ZZSmhQSExGU3BnRmVz?=
+ =?utf-8?B?MTNJbEZNc1JEc0lkRkE1L0ZkM3ZWYmIrekhaZkZLWTNqS0hTcnRKY0V0ZnIr?=
+ =?utf-8?B?UUMyMjkwQllCUFgwOVZjU0NnaThkVUJjQkFGR2hxOU9NNU43NXptNmQ4bnpt?=
+ =?utf-8?B?alB2ci93Z0ZVSlZ3dS8xQlZ4VUd1Z1daejFYaFlTYzNwWi9ZRzFxUGUzaHhr?=
+ =?utf-8?B?TjdHcGRpODc1VFp6bVZPZ09RN0tySkxpWGdJUGZaZFp4MlVnei96VGp1U01I?=
+ =?utf-8?B?VGsrUDc4VE1sTmIvblppNHliVmc2N29vMlFlc1p5WXdIdm1tNElGZnVUdmNC?=
+ =?utf-8?B?djRHZGllNk1yQ0VyRVY2TTRJWFFHclNZcjJEUUg4bkFCZDJXUkU5WmNPOXg3?=
+ =?utf-8?B?Z2doMmZQeTJNZVVaMlF5bnRUUkdBemQyU0hWT0F4N0RXNGRvU2Fsdzc5cXVq?=
+ =?utf-8?B?Vzl1dnhmNmJueE0yVThnRWI1bzZlQnJYUU9wc25UdG80SngvNytzQTRvaGhh?=
+ =?utf-8?B?ay92VUwxYUJGZWhOR1JrelQwNkRMSjY2eVA0QnZnQkVVV2JVWVB5R0VqVTAw?=
+ =?utf-8?B?anRJUHZodCsyNUQ4MmQrejdQME1DcGhrNnZDbFVORjRqckhFY2srS1BZSGdo?=
+ =?utf-8?B?QWdOSjAvbmQ3SkpVM3F6cHM4Y3N1ZE1BSHNHN3ZMT25JT3NjaTEwZkF4Sy9o?=
+ =?utf-8?Q?vr9ffXCl7W8TEltyRFK9ls1JuknWa3tatC+Bk=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a87eb4a2-5ca0-4f31-6588-08d8e746804d
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2021 23:34:02.2862
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2021 00:08:46.0067
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UakUCptyGPHY5lR6wAlr9SjetL4JV7QKa8LveQ/NfG9u75zVY5X8CPjQZ1ckx7Eg
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4644
+X-MS-Exchange-CrossTenant-UserPrincipalName: liIhMaO4DMOwYH8FrA7Bsgf+QgUFaLdqnnAv/bbkBXoudC2bxaD4wFhX2PDCHvqr
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4740
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-14_13:2021-03-12,2021-03-14 signatures=0
+ definitions=2021-03-14_16:2021-03-12,2021-03-14 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
  malwarescore=0 adultscore=0 impostorscore=0 suspectscore=0 bulkscore=0
  mlxlogscore=999 lowpriorityscore=0 spamscore=0 mlxscore=0 phishscore=0
  clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103140183
+ engine=8.12.0-2009150000 definitions=main-2103140188
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -140,103 +139,385 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 3/14/21 12:28 AM, Bill Wendling wrote:
-> On Sat, Mar 13, 2021 at 11:05 PM Yonghong Song <yhs@fb.com> wrote:
->> On 2/23/21 12:44 PM, Bill Wendling wrote:
->>> Bump for exposure.
+On 3/13/21 12:54 AM, Denis Salopek wrote:
+> Hello,
+> 
+> Thank you for your feedback and comments.
+> 
+> On Mon, Mar 01, 2021 at 06:02:37PM -0800, Yonghong Song wrote:
+>>
+>>
+>> On 2/28/21 1:40 AM, Denis Salopek wrote:
+>>> Extend the existing bpf_map_lookup_and_delete_elem() functionality to
+>>> hashtab maps, in addition to stacks and queues.
+>>> Create a new hashtab bpf_map_ops function that does lookup and deletion
+>>> of the element under the same bucket lock and add the created map_ops to
+>>> bpf.h.
+>>> Add the appropriate test cases to 'maps' and 'lru_map' selftests
+>>> accompanied with new test_progs.
 >>>
->>> On Fri, Feb 12, 2021 at 1:16 PM Bill Wendling <morbo@google.com> wrote:
->>>>
->>>> Hey gang,
->>>>
->>>> I would like your feedback on this patch.
->>>>
->>>> This patch creates one hash table that all CUs share. The impetus for this
->>>> patch is to support clang's LTO (Link-Time Optimizations). Currently, pahole
->>>> can't handle the DWARF data that clang produces, because the CUs may refer to
->>>> tags in other CUs (all of the code having been squozen together).
+>>> Cc: Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+>>> Cc: Luka Oreskovic <luka.oreskovic@sartura.hr>
+>>> Cc: Luka Perkov <luka.perkov@sartura.hr>
+>>> Signed-off-by: Denis Salopek <denis.salopek@sartura.hr>
+>>> ---
+>>> v2: Add functionality for LRU/per-CPU, add test_progs tests.
+>>> ---
+>>>    include/linux/bpf.h                           |   2 +
+>>>    kernel/bpf/hashtab.c                          |  80 +++++
+>>>    kernel/bpf/syscall.c                          |  14 +-
+>>>    .../bpf/prog_tests/lookup_and_delete.c        | 283 ++++++++++++++++++
+>>>    .../bpf/progs/test_lookup_and_delete.c        |  26 ++
+>>>    tools/testing/selftests/bpf/test_lru_map.c    |   8 +
+>>>    tools/testing/selftests/bpf/test_maps.c       |  19 +-
+>>>    7 files changed, 430 insertions(+), 2 deletions(-)
+>>>    create mode 100644 tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
+>>>    create mode 100644 tools/testing/selftests/bpf/progs/test_lookup_and_delete.c
+>>>
+>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>>> index 4c730863fa77..0bcc4f89af40 100644
+>>> --- a/include/linux/bpf.h
+>>> +++ b/include/linux/bpf.h
+>>> @@ -67,6 +67,8 @@ struct bpf_map_ops {
+>>>    	void *(*map_lookup_elem_sys_only)(struct bpf_map *map, void *key);
+>>>    	int (*map_lookup_batch)(struct bpf_map *map, const union bpf_attr *attr,
+>>>    				union bpf_attr __user *uattr);
+>>> +	int (*map_lookup_and_delete_elem)(struct bpf_map *map, void *key,
+>>> +					  void *value);
+>>>    	int (*map_lookup_and_delete_batch)(struct bpf_map *map,
+>>>    					   const union bpf_attr *attr,
+>>>    					   union bpf_attr __user *uattr);
+>>> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+>>> index 330d721dd2af..8c3334d1b6b3 100644
+>>> --- a/kernel/bpf/hashtab.c
+>>> +++ b/kernel/bpf/hashtab.c
+>>> @@ -1401,6 +1401,82 @@ static void htab_map_seq_show_elem(struct bpf_map *map, void *key,
+>>>    	rcu_read_unlock();
+>>>    }
+>>>    
+>>> +static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
+>>> +					     void *value, bool is_lru_map,
+>>> +					     bool is_percpu)
+>>> +{
+>>> +	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
+>>> +	u32 hash, key_size, value_size;
+>>> +	struct hlist_nulls_head *head;
+>>> +	int cpu, off = 0, ret;
+>>> +	struct htab_elem *l;
+>>> +	unsigned long flags;
+>>> +	void __percpu *pptr;
+>>> +	struct bucket *b;
+>>> +
+>>> +	key_size = map->key_size;
+>>> +	value_size = round_up(map->value_size, 8);
+>>> +
+>>> +	hash = htab_map_hash(key, key_size, htab->hashrnd);
+>>> +	b = __select_bucket(htab, hash);
+>>> +	head = &b->head;
+>>> +
+>>> +	ret = htab_lock_bucket(htab, b, hash, &flags);
+>>> +	if (ret)
+>>> +		return ret;
+>>> +
+>>> +	l = lookup_elem_raw(head, hash, key, key_size);
+>>> +	if (l) {
+>>> +		if (is_percpu) {
+>>> +			pptr = htab_elem_get_ptr(l, key_size);
+>>> +			for_each_possible_cpu(cpu) {
+>>> +				bpf_long_memcpy(value + off,
+>>> +						per_cpu_ptr(pptr, cpu),
+>>> +						value_size);
+>>> +				off += value_size;
+>>> +			}
+>>> +		} else {
+>>> +			copy_map_value(map, value, l->key + round_up(key_size, 8));
 >>
->> Hi, Bill,
+>> For hashtab lookup elem, BPF_F_LOCK flag may be set by user, I think
+>> hashtab lookup_and_delete_elem should also support this flag, so user
+>> can ensure they always get a lock protected sane value.
 >>
->> LTO build support is now in linus tree 5.12 rc2 and also merged in
->> latest bpf-next. I tried thin-LTO build and it is fine with latest
->> trunk llvm (llvm13) until it hits pahole and it stuck there (pahole
->> 1.20) probably some kind of infinite loop in pahole as pahole is
->> not ready to handle lto dwarf yet.
+>> We have the following libbpf APIs.
 >>
->> I then applied this patch on top of master pahole (1.20) and pahole
->> seg faulted. I did not debug. Have you hit the same issue?
->> How did you make pahole work with LTO built kernel?
+>> LIBBPF_API int bpf_map_lookup_elem(int fd, const void *key, void *value);
+>> LIBBPF_API int bpf_map_lookup_elem_flags(int fd, const void *key, void
+>> *value,
+>>                                            __u64 flags);
+>> LIBBPF_API int bpf_map_lookup_and_delete_elem(int fd, const void *key,
+>>                                                 void *value);
 >>
-> Hi Yonghong,
+>> Previously, bpf_map_lookup_and_delete_elem only supports queue/stack,
+>> which does not need flags as it does not support BPF_F_LOCK so we
+>> are fine.
+>>
+>> Maybe similar to bpf_map_lookup_elem_flags() we add a
+>> bpf_map_lookup_and_delete_elem_flags()? Maybe libbpf v1.0
+>> can consolidate into a better uniform api.
+>>
 > 
-> I haven't tried this very much with top-of-tree Linux, but it's quite
-> possible that there's a segfaulting issue I haven't come across yet.
-> Make sure that you're using pahole v1.20, because it supports clang's
-> penchant for assigning some objects "null" names.
-> 
-> This patch is the first step in my attempt to get pahole working with
-> LTO. There's a follow-up patch that I'll attach to this email that
-> gets me through the compilation. It's not been heavily tested or
-> reviewed (it's in my local tree), so caveat emptor. I would love to
-> have people test it to see if it helps or just makes things worse.
+> If I understood correctly, there shouldn't be much changes for this
+> addition:
+> - add LIBBPF_API prototype and function in bpf.[hc] - those are
+>    practically the same as bpf_map_lookup_elem_flags() but we call
+>    BPF_LOOKUP_AND_DELETE_ELEM syscall,
 
-I applied you "Combining CUs into a single hash table" patch and
-the attach patch, now pahole does not segfault any more, but I still
-get the following pahole errors:
+yes.
 
-...
-<ERROR(tag__size:1040): 1622 not found!>
-<ERROR(tag__size:1040): 1617 not found!>
-<ERROR(tag__size:1040): 1615 not found!>
-error: found variable 'loaded_vmcss_on_cpu' in CU 
-'/home/yhs/work/bpf-next/arch/x86/kvm/vmx/vmx.c' that has void type
-Encountered error while encoding BTF.
+> - add global declaration for bpf_map_lookup_elem_flags() in libbpf.map,
 
-FYI, I compiled latest bpf-next with the following command:
-    make LLVM=1 LLVM_IAS=1 -j60
-the compiler is locally built with latest upstream llvm-project.
-I am using thin-lto in kernel config.
+bpf_map_lookup_and_delete_elem_flags()
 
-I will take a look at your patch and the issue next week,
-hopefully we can resolve the issue soon. Thanks!
+> - make the necessary checks for flags and the lock in the functions,
+
+yes.
+
+> - call copy_map_value_locked() if BPF_F_LOCK is set,
+
+yes.
+
+> - mask lock with check_and_init_map_lock().
+
+not sure about, current implementation is supposed to already
+take care of this, but please double check.
 
 > 
-> Cheers!
-> -bw
+> Is this right or is there anything else I've missed?
+
+yes, almost right except some minor comments above.
+
 > 
->> Thanks!
+>>> +		}
+>>> +
+>>> +		hlist_nulls_del_rcu(&l->hash_node);
+>>> +		if (!is_lru_map)
+>>> +			free_htab_elem(htab, l);
+>>> +	} else
+>>> +		ret = -ENOENT;
+>>> +
+>>> +	htab_unlock_bucket(htab, b, hash, flags);
+>>> +
+>>> +	if (is_lru_map && l)
+>>> +		bpf_lru_push_free(&htab->lru, &l->lru_node);
+>>> +
+>>> +	return ret;
+>>> +}
+>>> +
+>>> +static int htab_map_lookup_and_delete_elem(struct bpf_map *map,
+>>> +					   void *key, void *value)
+>>> +{
+>>> +	return __htab_map_lookup_and_delete_elem(map, key, value, false, false);
+>>> +}
+>>> +
+>>> +static int htab_percpu_map_lookup_and_delete_elem(struct bpf_map *map,
+>>> +						  void *key, void *value)
+>>> +{
+>>> +	return __htab_map_lookup_and_delete_elem(map, key, value, false, true);
+>>> +}
+>>> +
+>>> +static int htab_lru_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
+>>> +					       void *value)
+>>> +{
+>>> +	return __htab_map_lookup_and_delete_elem(map, key, value, true, false);
+>>> +}
+>>> +
+>>> +static int htab_lru_percpu_map_lookup_and_delete_elem(struct bpf_map *map,
+>>> +						      void *key, void *value)
+>>> +{
+>>> +	return __htab_map_lookup_and_delete_elem(map, key, value, true, true);
+>>> +}
+>>> +
+>>>    static int
+>>>    __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+>>>    				   const union bpf_attr *attr,
+>>> @@ -1934,6 +2010,7 @@ const struct bpf_map_ops htab_map_ops = {
+>>>    	.map_free = htab_map_free,
+>>>    	.map_get_next_key = htab_map_get_next_key,
+>>>    	.map_lookup_elem = htab_map_lookup_elem,
+>>> +	.map_lookup_and_delete_elem = htab_map_lookup_and_delete_elem,
+>>>    	.map_update_elem = htab_map_update_elem,
+>>>    	.map_delete_elem = htab_map_delete_elem,
+>>>    	.map_gen_lookup = htab_map_gen_lookup,
+>>> @@ -1954,6 +2031,7 @@ const struct bpf_map_ops htab_lru_map_ops = {
+>>>    	.map_free = htab_map_free,
+>>>    	.map_get_next_key = htab_map_get_next_key,
+>>>    	.map_lookup_elem = htab_lru_map_lookup_elem,
+>>> +	.map_lookup_and_delete_elem = htab_lru_map_lookup_and_delete_elem,
+>>>    	.map_lookup_elem_sys_only = htab_lru_map_lookup_elem_sys,
+>>>    	.map_update_elem = htab_lru_map_update_elem,
+>>>    	.map_delete_elem = htab_lru_map_delete_elem,
+>>> @@ -2077,6 +2155,7 @@ const struct bpf_map_ops htab_percpu_map_ops = {
+>>>    	.map_free = htab_map_free,
+>>>    	.map_get_next_key = htab_map_get_next_key,
+>>>    	.map_lookup_elem = htab_percpu_map_lookup_elem,
+>>> +	.map_lookup_and_delete_elem = htab_percpu_map_lookup_and_delete_elem,
+>>>    	.map_update_elem = htab_percpu_map_update_elem,
+>>>    	.map_delete_elem = htab_map_delete_elem,
+>>>    	.map_seq_show_elem = htab_percpu_map_seq_show_elem,
+>>> @@ -2096,6 +2175,7 @@ const struct bpf_map_ops htab_lru_percpu_map_ops = {
+>>>    	.map_free = htab_map_free,
+>>>    	.map_get_next_key = htab_map_get_next_key,
+>>>    	.map_lookup_elem = htab_lru_percpu_map_lookup_elem,
+>>> +	.map_lookup_and_delete_elem = htab_lru_percpu_map_lookup_and_delete_elem,
+>>>    	.map_update_elem = htab_lru_percpu_map_update_elem,
+>>>    	.map_delete_elem = htab_lru_map_delete_elem,
+>>>    	.map_seq_show_elem = htab_percpu_map_seq_show_elem,
+>>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>>> index c859bc46d06c..2634aa4a2f37 100644
+>>> --- a/kernel/bpf/syscall.c
+>>> +++ b/kernel/bpf/syscall.c
+>>> @@ -1495,7 +1495,7 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+>>>    		goto err_put;
+>>>    	}
+>>>    
+>>> -	value_size = map->value_size;
+>>> +	value_size = bpf_map_value_size(map);
+>>>    
+>>>    	err = -ENOMEM;
+>>>    	value = kmalloc(value_size, GFP_USER | __GFP_NOWARN);
+>>> @@ -1505,6 +1505,18 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+>>>    	if (map->map_type == BPF_MAP_TYPE_QUEUE ||
+>>>    	    map->map_type == BPF_MAP_TYPE_STACK) {
+>>>    		err = map->ops->map_pop_elem(map, value);
+>>> +	} else if (map->map_type == BPF_MAP_TYPE_HASH ||
+>>> +		   map->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
+>>> +		   map->map_type == BPF_MAP_TYPE_LRU_HASH ||
+>>> +		   map->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH) {
+>>> +		if (!bpf_map_is_dev_bound(map)) {
+>>> +			bpf_disable_instrumentation();
+>>> +			rcu_read_lock();
+>>> +			err = map->ops->map_lookup_and_delete_elem(map, key, value);
+>>> +			rcu_read_unlock();
+>>> +			bpf_enable_instrumentation();
+>>> +			maybe_wait_bpf_programs(map);
 >>
->> Yonghong
+>> maybe_wait_bpf_programs(map) is mostly for map-in-map.
+>> but I think it is okay to put it here in case in the future
+>> we will support map-in-map here. If maybe_wait_bpf_programs()
+>> get inlined which mostly likely is the case, the compiler
+>> should be able to optimize it away.
 >>
->>>>
->>>> One solution I found is to process the CUs in two steps:
->>>>
->>>>     1. add the CUs into a single hash table, and
->>>>     2. perform the recoding and finalization steps in a a separate step.
->>>>
->>>> The issue I'm facing with this patch is that it balloons the runtime from
->>>> ~11.11s to ~14.27s. It looks like the underlying cause is that some (but not
->>>> all) hash buckets have thousands of entries each. I've bumped up the
->>>> HASHTAGS__BITS from 15 to 16, which helped a little. Bumping it up to 17 or
->>>> above causes a failure.
->>>>
->>>> A couple of things I thought of may help. We could increase the number of
->>>> buckets, which would help with distribution. As I mentioned though, that seemed
->>>> to cause a failure. Another option is to store the bucket entries in a
->>>> non-list, e.g. binary search tree.
->>>>
->>>> I wanted to get your opinions before I trod down one of these roads.
->>>>
->>>> Share and enjoy!
->>>> -bw
->>>>
->>>> Bill Wendling (1):
->>>>     dwarf_loader: have all CUs use a single hash table
->>>>
->>>>    dwarf_loader.c | 45 +++++++++++++++++++++++++++++++++------------
->>>>    1 file changed, 33 insertions(+), 12 deletions(-)
->>>>
->>>> --
->>>> 2.30.0.478.g8a0d178c01-goog
->>>>
+> 
+> I didn't realise at first it's only for map-in-map and forgot to remove
+> it later, so I can remove this if you think it's better?
+
+Originally I thought to keep it as the compiler should
+be able to optimize it away. But since there is no immediate
+use case yet for lookup-and-delete for hash of map-in-maps,
+so let us remove maybe_wait_bpf_programs() to avoid confusion.
+We can add it later if BPF_MAP_TYPE_HASH_OF_MAPS is added.
+
+> 
+>>> +		}
+>>>    	} else {
+>>>    		err = -ENOTSUPP;
+>>>    	}
+>>> diff --git a/tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c b/tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
+>>> new file mode 100644
+>>> index 000000000000..05123bbcdc1c
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
+>>> @@ -0,0 +1,283 @@
+>>> +// SPDX-License-Identifier: GPL-2.0-only
+>>> +
+>>> +#include <test_progs.h>
+>>> +#include "test_lookup_and_delete.skel.h"
+>>> +
+>>> +#define START_VALUE 1234
+>>> +#define NEW_VALUE 4321
+>>> +#define MAX_ENTRIES 2
+>>> +
+>>> +static int duration;
+>>> +static int nr_cpus;
+>>> +
+>>> +static int fill_values(int map_fd)
+>>> +{
+>>> +	__u64 key, value = START_VALUE;
+>>> +	int err;
+>>> +
+>>> +	for (key = 1; key < MAX_ENTRIES + 1; key++) {
+>>> +		err = bpf_map_update_elem(map_fd, &key, &value, BPF_NOEXIST);
+>>> +		if (CHECK(err, "bpf_map_update_elem", "failed\n"))
+>>
+>> You can use
+>> 	if (!ASSERT_OK(err, "bpf_map_update_elem"))
+>> to save you from explicit "failed" string.
+>> The same for some later other CHECK usages.
+>>
+> 
+> Ok.
+> 
+>>> +			return -1;
+>>> +	}
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static int fill_values_percpu(int map_fd)
+>>> +{
+>>> +	BPF_DECLARE_PERCPU(__u64, value);
+>>> +	int i, err;
+>>> +	u64 key;
+>>> +
+>>> +	for (i = 0; i < nr_cpus; i++)
+>>> +		bpf_percpu(value, i) = START_VALUE;
+>>> +
+>>> +	for (key = 1; key < MAX_ENTRIES + 1; key++) {
+>>> +		err = bpf_map_update_elem(map_fd, &key, value, BPF_NOEXIST);
+>>> +		if (CHECK(err, "bpf_map_update_elem", "failed\n"))
+>>> +			return -1;
+>>> +	}
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>> [...]
+>>> diff --git a/tools/testing/selftests/bpf/progs/test_lookup_and_delete.c b/tools/testing/selftests/bpf/progs/test_lookup_and_delete.c
+>>> new file mode 100644
+>>> index 000000000000..eb19de8bb415
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/bpf/progs/test_lookup_and_delete.c
+>>> @@ -0,0 +1,26 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +
+>>> +#include "vmlinux.h"
+>>> +#include <bpf/bpf_helpers.h>
+>>> +
+>>> +__u32 set_pid;
+>>> +__u64 set_key;
+>>> +__u64 set_value;
+>>
+>> Please add "= 0" to the above declaration to make
+>> it llvm10 friendly.
+>>
+> 
+> Ok, I'll add this. Sorry, checkpatch.pl gave me an error with it, that's
+> why I removed it.
+
+Song Liu recently added a patch to suppress the warning:
+   commit 5b8f82e1a17695c9e5fec5842b234967782d7e5b
+   Author: Song Liu <songliubraving@fb.com>
+   Date:   Thu Feb 25 17:22:08 2021 -0800
+
+     checkpatch: do not apply "initialise globals to 0" check to BPF progs
+
+You should be good now.
+
+> 
+>>> +
+>>> +struct {
+>>> +	__uint(type, BPF_MAP_TYPE_HASH);
+>>> +	__uint(max_entries, 2);
+>>> +	__type(key, __u64);
+>>> +	__type(value, __u64);
+>>> +} hash_map SEC(".maps");
+>>> +
+>>> +SEC("tp/syscalls/sys_enter_getpgid")
+>>> +int bpf_lookup_and_delete_test(const void *ctx)
+>>> +{
+>>> +	if (set_pid == bpf_get_current_pid_tgid() >> 32)
+>>> +		bpf_map_update_elem(&hash_map, &set_key, &set_value, BPF_NOEXIST);
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +char _license[] SEC("license") = "GPL";
+>> [...]
