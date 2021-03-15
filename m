@@ -2,186 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B3533AE9F
-	for <lists+bpf@lfdr.de>; Mon, 15 Mar 2021 10:25:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0325733AEF2
+	for <lists+bpf@lfdr.de>; Mon, 15 Mar 2021 10:40:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbhCOJYv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Mar 2021 05:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhCOJYW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Mar 2021 05:24:22 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FA2C06175F
-        for <bpf@vger.kernel.org>; Mon, 15 Mar 2021 02:24:21 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id ci14so64770778ejc.7
-        for <bpf@vger.kernel.org>; Mon, 15 Mar 2021 02:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UDrvpL3Clc7HH5Rd2kY9nbHs/9D7B75ztyk400CQFNU=;
-        b=t+t6m1MVq0U2ew9743tWpLI1BSdUDJNGfntFQrczl6hBy4Mwdv6esYa+N377FUHmOj
-         DDxgA/whe2RjlDHYyN/TuuIObrZNoR9MeTWMhdcgmXvLnQvXsMXxEID09v9/aNGjeU5e
-         W79ZoFKJtKCN30F4LSmUCIr0f/eWQIBG51Bw53ViuD678X4qbBxS+/KokqodgBiKSslr
-         vBk4BUxMOIDom8P/1QY5yqP1LLoeOSb5hla1ntWHANEEFJ2bToVcFCTxCFN8BpIXvvNR
-         W7u8Ogd9+iPk5jqn4omAtypPlzipscecGANAbOGpFsFt4gH+MSXxmrlC2v9CbaMTjY80
-         vj/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UDrvpL3Clc7HH5Rd2kY9nbHs/9D7B75ztyk400CQFNU=;
-        b=S9QEXtnqn20YdQk8L8ZWMPFwwnxNUjZJY0iGOsbpEexibMR9yRImvMziQNLM2Ii+oZ
-         laaviXpVx1+n6NY+kNSnApMst1zSCp73SiKET7gaxZ2B8jwg1bT6EiIl68vqGeucunDO
-         FK68Dg3vAakV2Hezkv8V9MPzNos/p/Ym4NE/qF+v177+U7YD0VNLZrJbAW7JVhbr4zvU
-         pC06L0vP8mGtl58OLay9jDvf+FosEj2bcz2JyI+TyzMzMOw1tpetk2LrnTw248ecS0iu
-         5wi+I0vILxwM/jBPJK5Z95rmnoq03cZ2RKIp6ab4o/rVz7i4B5jkdVFeT19bBXwLrlaj
-         gd+Q==
-X-Gm-Message-State: AOAM530f4n5/wrZhBoM3l/ZwOVL7XdS/iD1s6njewjaeGOdQgY+O6qlk
-        U2KGZXjzP5SnWUM3x0Xovc9qWQ==
-X-Google-Smtp-Source: ABdhPJx/6Q0IBjRNygpcd54E5muTxxpkMWkch05Ktvl/mCb29O8q4VJ+3Xn+29RXsTNKskXgE9NJmQ==
-X-Received: by 2002:a17:906:d9d1:: with SMTP id qk17mr22283463ejb.52.1615800260406;
-        Mon, 15 Mar 2021 02:24:20 -0700 (PDT)
-Received: from [192.168.1.8] ([194.35.119.239])
-        by smtp.gmail.com with ESMTPSA id mc2sm6754929ejb.115.2021.03.15.02.24.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 02:24:19 -0700 (PDT)
-Subject: Re: [PATCH v2 bpf-next 08/11] bpftool: add `gen object` command to
- perform BPF static linking
-To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     kernel-team@fb.com
-References: <20210313193537.1548766-1-andrii@kernel.org>
- <20210313193537.1548766-9-andrii@kernel.org>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <af200ca7-5946-9df6-71ec-98042aecfa27@isovalent.com>
-Date:   Mon, 15 Mar 2021 09:24:19 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229574AbhCOJj3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Mar 2021 05:39:29 -0400
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:58020 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229607AbhCOJjI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Mar 2021 05:39:08 -0400
+Date:   Mon, 15 Mar 2021 09:38:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1615801146; bh=SnqNhZ8jhCbnZf+6aCb/UARYY/AXz744p1JflVY958M=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=YLTddrgfp3S/VtQaasYCODof0lpCpeNFQPdQa2SI1JBR1V7jSR+KBggIMkU2jg3Lj
+         qfKcR5F9eA28y13jfcXt2vc5usvS0isFQmvO6aCFGnhwaqfDyHLmPav5LmM/weEUWA
+         gMMKjA0lSyztoTFmhcH+cbAOac1b2X6oe4RZbS6fW5g/v9jxLd4Ay3WChxk+EgAX03
+         bCQSqG4dO3aEOas+mqgKX9mhDK8oHz8LdS+YorQwe55aekoKPhsaTvLrvapaV0EEVI
+         1+ncNzIKWnI6Z4g/G6xLmRQNxO6rljTi35eyxuA16aU2mYsOBRFx2ynNQ95QZO8iyP
+         UCcQiWjXaKnnA==
+To:     Vladimir Oltean <olteanv@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Kevin Hao <haokexin@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Ariel Levkovich <lariel@mellanox.com>,
+        Wang Qing <wangqing@vivo.com>,
+        Davide Caratti <dcaratti@redhat.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH v3 net-next 4/6] linux/etherdevice.h: misc trailing whitespace cleanup
+Message-ID: <20210315093839.6510-1-alobakin@pm.me>
+In-Reply-To: <20210314210453.o2dmnud45w7rabcw@skbuf>
+References: <20210314111027.7657-1-alobakin@pm.me> <20210314111027.7657-5-alobakin@pm.me> <20210314210453.o2dmnud45w7rabcw@skbuf>
 MIME-Version: 1.0
-In-Reply-To: <20210313193537.1548766-9-andrii@kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2021-03-13 11:35 UTC-0800 ~ Andrii Nakryiko <andrii@kernel.org>
-> Add `bpftool gen object <output-file> <input_file>...` command to statically
-> link multiple BPF ELF object files into a single output BPF ELF object file.
-> 
-> Similarly to existing '*.o' convention, bpftool is establishing a '*.bpfo'
-> convention for statically-linked BPF object files. Both .o and .bpfo suffixes
-> will be stripped out during BPF skeleton generation to infer BPF object name.
-> 
-> This patch also updates bash completions and man page. Man page gets a short
-> section on `gen object` command, but also updates the skeleton example to show
-> off workflow for BPF application with two .bpf.c files, compiled individually
-> with Clang, then resulting object files are linked together with `gen object`,
-> and then final object file is used to generate usable BPF skeleton. This
-> should help new users understand realistic workflow w.r.t. compiling
-> mutli-file BPF application.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  .../bpf/bpftool/Documentation/bpftool-gen.rst | 65 +++++++++++++++----
->  tools/bpf/bpftool/bash-completion/bpftool     |  2 +-
->  tools/bpf/bpftool/gen.c                       | 49 +++++++++++++-
->  3 files changed, 99 insertions(+), 17 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-> index 84cf0639696f..4cdce187c393 100644
-> --- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-> +++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
-> @@ -14,16 +14,37 @@ SYNOPSIS
->  
->  	*OPTIONS* := { { **-j** | **--json** } [{ **-p** | **--pretty** }] }
->  
-> -	*COMMAND* := { **skeleton** | **help** }
-> +	*COMMAND* := { **object** | **skeleton** | **help** }
->  
->  GEN COMMANDS
->  =============
->  
-> +|	**bpftool** **gen object** *OUTPUT_FILE* *INPUT_FILE* [*INPUT_FILE*...]
->  |	**bpftool** **gen skeleton** *FILE*
->  |	**bpftool** **gen help**
->  
->  DESCRIPTION
->  ===========
-> +	**bpftool gen object** *OUTPUT_FILE* *INPUT_FILE* [*INPUT_FILE*...]
-> +		  Statically link (combine) together one or more *INPUT_FILE*'s
-> +		  into a single resulting *OUTPUT_FILE*. All the files involed
+From: Vladimir Oltean <olteanv@gmail.com>
+Date: Sun, 14 Mar 2021 23:04:53 +0200
 
-Typo: "involed"
+> On Sun, Mar 14, 2021 at 11:11:32AM +0000, Alexander Lobakin wrote:
+> > Caught by the text editor. Fix it separately from the actual changes.
+> >
+> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> > ---
+> >  include/linux/etherdevice.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/etherdevice.h b/include/linux/etherdevice.h
+> > index 2e5debc0373c..bcb2f81baafb 100644
+> > --- a/include/linux/etherdevice.h
+> > +++ b/include/linux/etherdevice.h
+> > @@ -11,7 +11,7 @@
+> >   * Authors:=09Ross Biro
+> >   *=09=09Fred N. van Kempen, <waltje@uWalt.NL.Mugnet.ORG>
+> >   *
+> > - *=09=09Relocated to include/linux where it belongs by Alan Cox
+> > + *=09=09Relocated to include/linux where it belongs by Alan Cox
+> >   *=09=09=09=09=09=09=09<gw4pts@gw4pts.ampr.org>
+> >   */
+> >  #ifndef _LINUX_ETHERDEVICE_H
+> > --
+> > 2.30.2
+> >
+> >
+>
+> Your mailer did something weird here, it trimmed the trailing whitespace
+> from the "-" line. The patch doesn't apply.
 
-> +		  are BPF ELF object files.
-> +
-> +		  The rules of BPF static linking are mostly the same as for
-> +		  user-space object files, but in addition to combining data
-> +		  and instruction sections, .BTF and .BTF.ext (if present in
-> +		  any of the input files) data are combined together. .BTF
-> +		  data is deduplicated, so all the common types across
-> +		  *INPUT_FILE*'s will only be represented once in the resulting
-> +		  BTF information.
-> +
-> +		  BPF static linking allows to partition BPF source code into
-> +		  individually compiled files that are then linked into
-> +		  a single resulting BPF object file, which can be used to
-> +		  generated BPF skeleton (with **gen skeleton** command) or
-> +		  passed directly into **libbpf** (using **bpf_object__open()**
-> +		  family of APIs).
-> +
->  	**bpftool gen skeleton** *FILE*
->  		  Generate BPF skeleton C header file for a given *FILE*.
->  
+It's git-send-email + ProtonMail Bridge... Seems like that's the
+reason why only this series of mine was failing Patchwork
+everytime.
 
-> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-> index fdffbc64c65c..7ca23c58f2c0 100644
-> --- a/tools/bpf/bpftool/bash-completion/bpftool
-> +++ b/tools/bpf/bpftool/bash-completion/bpftool
-> @@ -981,7 +981,7 @@ _bpftool()
->              ;;
->          gen)
->              case $command in
-> -                skeleton)
-> +                object|skeleton)
->                      _filedir
->                      ;;
->                  *)
+Much thanks for finding this out!
+Al
 
-Suggesting the "object" keyword for completing "bpftool gen [tab]"
-is missing. It is just a few lines below:
-
-------
-diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
-index fdffbc64c65c..223438e86932 100644
---- a/tools/bpf/bpftool/bash-completion/bpftool
-+++ b/tools/bpf/bpftool/bash-completion/bpftool
-@@ -981,12 +981,12 @@ _bpftool()
-             ;;
-         gen)
-             case $command in
--                skeleton)
-+                object|skeleton)
-                     _filedir
-                     ;;
-                 *)
-                     [[ $prev == $object ]] && \
--                        COMPREPLY=( $( compgen -W 'skeleton help' -- "$cur" ) )
-+                        COMPREPLY=( $( compgen -W 'object skeleton help' -- "$cur" ) )
-                     ;;
-             esac
-             ;;
-------
-
-Looks good otherwise. Thanks for the documentation, it's great to
-have the example in the man page.
-
-Pending the two nits above are fixed:
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
-
-Quentin
