@@ -2,105 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E8A33B202
-	for <lists+bpf@lfdr.de>; Mon, 15 Mar 2021 13:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A532C33B30A
+	for <lists+bpf@lfdr.de>; Mon, 15 Mar 2021 13:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhCOMDn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Mar 2021 08:03:43 -0400
-Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:54494 "EHLO
-        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhCOMD2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Mar 2021 08:03:28 -0400
-X-Greylist: delayed 1969 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Mar 2021 08:03:27 EDT
-Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.18])
-        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1lLlQc-00010L-7F; Mon, 15 Mar 2021 11:30:30 +0000
-Subject: Re: [syzbot] BUG: unable to handle kernel access to user memory in
- sock_ioctl
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Cc:     andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
-References: <00000000000096cdaa05bd32d46f@google.com>
- <CACT4Y+ZjdOaX_X530p+vPbG4mbtUuFsJ1v-gD24T4DnFUqcudA@mail.gmail.com>
- <CACT4Y+ZjVS+nOxtEByF5-djuhbCYLSDdZ7V04qJ0edpQR0514A@mail.gmail.com>
- <CACT4Y+YXifnCtEvLu3ps8JLCK9CBLzEuUAozfNR9v1hsGWspOg@mail.gmail.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <ed89390a-91e1-320a-fae5-27b7f3a20424@codethink.co.uk>
-Date:   Mon, 15 Mar 2021 11:30:28 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229956AbhCOMp0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Mar 2021 08:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhCOMpK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Mar 2021 08:45:10 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F739C061574;
+        Mon, 15 Mar 2021 05:45:10 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so14305005pjq.5;
+        Mon, 15 Mar 2021 05:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OYxUeg1IdQxQnxwvNs7fJX3FexyIcbE7FDVXyh5OdEM=;
+        b=nI9YuUb80LbZ4aMJ4gAdGs/DVPvxa/+Iht0lFG4mE1wiv3LVrfpnzodFVINjFGBw//
+         0OShEOCpoUWrk/mcpQcwZaqSahKjfrTl0yZFpQ8DoZj07FSqKSbcb1eNbmeELqOgLmrD
+         0Y7L23jQdaDVEZHzfCTc9j0q+XMFt8kl8R5YH1tSCPcfFxQyHs+90E4ZeC6NsT076kB+
+         2IC4qdTCwjvu+0iTpDqHxSM3STNh43b6lJHjgGr8fi+fDLu98+KjS6C/Zsgss8ZgZ5Pg
+         r4mNixLJFXoaseF4EwVzaKdGWxJWRzapLMxhK5BEOTO+FU5NH40BogP71aieCysM+tTX
+         NDBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OYxUeg1IdQxQnxwvNs7fJX3FexyIcbE7FDVXyh5OdEM=;
+        b=X8bg0kD8IominaBsTAgiyQNAXMSIH5/ON24hbFEV8XlL89g9Sv5fI67jpZUPcDHFjO
+         /RhhaZPLZTsj96ggixpcG23t7/Y7FNlGOFmIQ3/MgLJ3HI4qNvblGa1PLDCD2bwrI0rX
+         ZXPNYk1dW4Nd2GWJ64ibgvj0m23gK/zLC6pXLyCXxaomIVWbP9MyLg9YVZNrP9BlxnxC
+         S+Dgy1ZJwA12BaGJhsEiVqoek/mgxsaHC+JVXPj4d2Lmn1gSQFunnROCyiCIqfllq1wx
+         P5OqKdXffRlNLL/+sRTsIBYbW+r6NtxAvxPMV8uhLUVIjjKaoBQsv7j2bU6aWolnI03l
+         tEBQ==
+X-Gm-Message-State: AOAM530IoVOtZxzMLb0CS6klYtdfDNrPWqTPMROiqRXSFRZbw5ubsIop
+        EXrRxdHOt3FsSd/KUCZDx6F7XalOtePVMw==
+X-Google-Smtp-Source: ABdhPJwLwV4QPZ0DpOvzSJcznbEsVxi6UL35OHvQuLLdazbvan1dz6j18iCP0y6lpNCzSb87XI5oIg==
+X-Received: by 2002:a17:902:a707:b029:e6:52fd:a14d with SMTP id w7-20020a170902a707b02900e652fda14dmr12075311plq.34.1615812309795;
+        Mon, 15 Mar 2021 05:45:09 -0700 (PDT)
+Received: from masabert ([202.12.244.3])
+        by smtp.gmail.com with ESMTPSA id a19sm13523055pfc.65.2021.03.15.05.45.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 05:45:09 -0700 (PDT)
+Received: by masabert (Postfix, from userid 1000)
+        id 763E723603DE; Mon, 15 Mar 2021 21:45:07 +0900 (JST)
+From:   Masanari Iida <standby24x7@gmail.com>
+To:     linux-kernel@vger.kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, ast@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, bpf@vger.kernel.org
+Cc:     Masanari Iida <standby24x7@gmail.com>
+Subject: [PATCH] samples: bpf: Fix a spelling typo in do_hbm_test.sh
+Date:   Mon, 15 Mar 2021 21:44:54 +0900
+Message-Id: <20210315124454.1744594-1-standby24x7@gmail.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+YXifnCtEvLu3ps8JLCK9CBLzEuUAozfNR9v1hsGWspOg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 14/03/2021 11:03, Dmitry Vyukov wrote:
-> On Sun, Mar 14, 2021 at 11:01 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->>> On Wed, Mar 10, 2021 at 7:28 PM syzbot
->>> <syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com> wrote:
->>>>
->>>> Hello,
->>>>
->>>> syzbot found the following issue on:
->>>>
->>>> HEAD commit:    0d7588ab riscv: process: Fix no prototype for arch_dup_tas..
->>>> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
->>>> console output: https://syzkaller.appspot.com/x/log.txt?x=122c343ad00000
->>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3c595255fb2d136
->>>> dashboard link: https://syzkaller.appspot.com/bug?extid=c23c5421600e9b454849
->>>> userspace arch: riscv64
->>>>
->>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>>
->>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>> Reported-by: syzbot+c23c5421600e9b454849@syzkaller.appspotmail.com
->>>
->>> +riscv maintainers
->>>
->>> Another case of put_user crashing.
->>
->> There are 58 crashes in sock_ioctl already. Somehow there is a very
->> significant skew towards crashing with this "user memory without
->> uaccess routines" in schedule_tail and sock_ioctl of all places in the
->> kernel that use put_user... This looks very strange... Any ideas
->> what's special about these 2 locations?
-> 
-> I could imagine if such a crash happens after a previous stack
-> overflow and now task data structures are corrupted. But f_getown does
-> not look like a function that consumes way more than other kernel
-> syscalls...
+This patch fixes a spelling typo in do_hbm_test.sh
 
-The last crash I looked at suggested somehow put_user got re-entered
-with the user protection turned back on. Either there is a path through
-one of the kernel handlers where this happens or there's something
-weird going on with qemu.
+Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+---
+ samples/bpf/do_hbm_test.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'll be trying to get this run up on real hardware this week, the nvme
-with my debian install died last week so I have to go and re-install
-the machine to get development work done on it.
-
+diff --git a/samples/bpf/do_hbm_test.sh b/samples/bpf/do_hbm_test.sh
+index 21790ea5c460..38e4599350db 100755
+--- a/samples/bpf/do_hbm_test.sh
++++ b/samples/bpf/do_hbm_test.sh
+@@ -10,7 +10,7 @@
+ Usage() {
+   echo "Script for testing HBM (Host Bandwidth Manager) framework."
+   echo "It creates a cgroup to use for testing and load a BPF program to limit"
+-  echo "egress or ingress bandwidht. It then uses iperf3 or netperf to create"
++  echo "egress or ingress bandwidth. It then uses iperf3 or netperf to create"
+   echo "loads. The output is the goodput in Mbps (unless -D was used)."
+   echo ""
+   echo "USAGE: $name [out] [-b=<prog>|--bpf=<prog>] [-c=<cc>|--cc=<cc>]"
 -- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+2.25.0
 
-https://www.codethink.co.uk/privacy.html
