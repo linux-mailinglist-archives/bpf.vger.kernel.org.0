@@ -2,210 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5CF33ADF7
-	for <lists+bpf@lfdr.de>; Mon, 15 Mar 2021 09:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B3533AE9F
+	for <lists+bpf@lfdr.de>; Mon, 15 Mar 2021 10:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbhCOIxu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Mar 2021 04:53:50 -0400
-Received: from mail-bn8nam08on2050.outbound.protection.outlook.com ([40.107.100.50]:38976
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229548AbhCOIxe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Mar 2021 04:53:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b6UwW/1Li8JyRzLs+TFan9KbwPLUhtDVJpCGylrBc5B3jCkWf6KCDwmh0eJYwA+K+Ya/z5E/GMXApx6BEdAWkIR00KQZs9uPPc2Ly56ztACw/tAf+6D/Gh2H26JJTpgwM9AqLxO8AADB0glMPaZS2wVY9Iryk/UgzoT4PmAW1knjWL+M24+54N9cPBGV36MCmeyonOTakhv6ifq4imkD8CevKhxNBFtLBnhSAmxT0vKjIpl4ewJcxY56JbZynb9OV2TVxEf7t/05aYtI7FhitWJ7wRtqzw82TE69EiGLSoYj+617gd5UT1dLZLUiRyx/3W3bhL/TrDlmluzQv0hBwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Din1U4ynDawHHcQ+RnHhwjtg3VbBEI8S68X36DwxLac=;
- b=dicbwQ03PcM5VzOGGC8qtAmR+aUIE+nZZiDdybOtyutMD1avFEmU8wT/SLGQnWtIsvE6izq1ObIZLrb21AgmtSgD4itMtyn/kP+BRVeZQZ1+agz8NF1vKCT92tGbYqQhLMIcvbbeuXMvbeDG5QUyz0EbL/hqurnJr4Hf9w/tb5yO48LyXP16afu/QIk9vQJgeHJp6Fr+2KS18hVHScX8lOUhgl23f6zKkjLIIcLaNbDY0AatEK8MOqqSOKFJqh5pV/vcW7GZwhoPw8L7c4U75qHm+lVZl7jiStwdUgSdvrsig+kqT/k0EG27/dL/OvF1KFqVVLEFxLIbY7SC7rNTLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S229524AbhCOJYv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Mar 2021 05:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhCOJYW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Mar 2021 05:24:22 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FA2C06175F
+        for <bpf@vger.kernel.org>; Mon, 15 Mar 2021 02:24:21 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id ci14so64770778ejc.7
+        for <bpf@vger.kernel.org>; Mon, 15 Mar 2021 02:24:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Din1U4ynDawHHcQ+RnHhwjtg3VbBEI8S68X36DwxLac=;
- b=e7FrHzj+3fpInijlmOX3nltPiOIrbbABH/9Q8pCTAwWcfZ5P57LrnOSM6p59kz0i2mn6DvpAUIa1zce/wf+eUuc2S6QY0QrdW1BfXAjmQBH06kSMHVgeBME9Gn5wICNxQUJw6o25XGBXOEV02y64vYRHECeP1GWcRUwdo4n4KvU=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by SJ0PR11MB5200.namprd11.prod.outlook.com (2603:10b6:a03:2df::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Mon, 15 Mar
- 2021 08:53:31 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::89a3:42c3:6509:4acd]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::89a3:42c3:6509:4acd%4]) with mapi id 15.20.3890.042; Mon, 15 Mar 2021
- 08:53:30 +0000
-From:   qiang.zhang@windriver.com
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     dvyukov@google.com, linux-kernel@vger.kernel.org,
-        syzbot+44908bb56d2bfe56b28e@syzkaller.appspotmail.com,
-        bpf@vger.kernel.org, qiang.zhang@windriver.com
-Subject: [PATCH v2] bpf: Fix memory leak in copy_process()
-Date:   Mon, 15 Mar 2021 16:58:16 +0800
-Message-Id: <20210315085816.21413-1-qiang.zhang@windriver.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2PR04CA0080.apcprd04.prod.outlook.com
- (2603:1096:202:15::24) To BYAPR11MB2632.namprd11.prod.outlook.com
- (2603:10b6:a02:c4::17)
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UDrvpL3Clc7HH5Rd2kY9nbHs/9D7B75ztyk400CQFNU=;
+        b=t+t6m1MVq0U2ew9743tWpLI1BSdUDJNGfntFQrczl6hBy4Mwdv6esYa+N377FUHmOj
+         DDxgA/whe2RjlDHYyN/TuuIObrZNoR9MeTWMhdcgmXvLnQvXsMXxEID09v9/aNGjeU5e
+         W79ZoFKJtKCN30F4LSmUCIr0f/eWQIBG51Bw53ViuD678X4qbBxS+/KokqodgBiKSslr
+         vBk4BUxMOIDom8P/1QY5yqP1LLoeOSb5hla1ntWHANEEFJ2bToVcFCTxCFN8BpIXvvNR
+         W7u8Ogd9+iPk5jqn4omAtypPlzipscecGANAbOGpFsFt4gH+MSXxmrlC2v9CbaMTjY80
+         vj/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UDrvpL3Clc7HH5Rd2kY9nbHs/9D7B75ztyk400CQFNU=;
+        b=S9QEXtnqn20YdQk8L8ZWMPFwwnxNUjZJY0iGOsbpEexibMR9yRImvMziQNLM2Ii+oZ
+         laaviXpVx1+n6NY+kNSnApMst1zSCp73SiKET7gaxZ2B8jwg1bT6EiIl68vqGeucunDO
+         FK68Dg3vAakV2Hezkv8V9MPzNos/p/Ym4NE/qF+v177+U7YD0VNLZrJbAW7JVhbr4zvU
+         pC06L0vP8mGtl58OLay9jDvf+FosEj2bcz2JyI+TyzMzMOw1tpetk2LrnTw248ecS0iu
+         5wi+I0vILxwM/jBPJK5Z95rmnoq03cZ2RKIp6ab4o/rVz7i4B5jkdVFeT19bBXwLrlaj
+         gd+Q==
+X-Gm-Message-State: AOAM530f4n5/wrZhBoM3l/ZwOVL7XdS/iD1s6njewjaeGOdQgY+O6qlk
+        U2KGZXjzP5SnWUM3x0Xovc9qWQ==
+X-Google-Smtp-Source: ABdhPJx/6Q0IBjRNygpcd54E5muTxxpkMWkch05Ktvl/mCb29O8q4VJ+3Xn+29RXsTNKskXgE9NJmQ==
+X-Received: by 2002:a17:906:d9d1:: with SMTP id qk17mr22283463ejb.52.1615800260406;
+        Mon, 15 Mar 2021 02:24:20 -0700 (PDT)
+Received: from [192.168.1.8] ([194.35.119.239])
+        by smtp.gmail.com with ESMTPSA id mc2sm6754929ejb.115.2021.03.15.02.24.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 15 Mar 2021 02:24:19 -0700 (PDT)
+Subject: Re: [PATCH v2 bpf-next 08/11] bpftool: add `gen object` command to
+ perform BPF static linking
+To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
+Cc:     kernel-team@fb.com
+References: <20210313193537.1548766-1-andrii@kernel.org>
+ <20210313193537.1548766-9-andrii@kernel.org>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <af200ca7-5946-9df6-71ec-98042aecfa27@isovalent.com>
+Date:   Mon, 15 Mar 2021 09:24:19 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-lpg-core1-vm1.wrs.com (60.247.85.82) by HK2PR04CA0080.apcprd04.prod.outlook.com (2603:1096:202:15::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31 via Frontend Transport; Mon, 15 Mar 2021 08:53:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8081d913-a781-4e8d-84d3-08d8e78fce63
-X-MS-TrafficTypeDiagnostic: SJ0PR11MB5200:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR11MB520087BEA6E1ABCB36360E44FF6C9@SJ0PR11MB5200.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TQLL2BGXeFl6olIvdlVy++4SQ0f4IEPshnV+vUOOgDMX0WmUIkLvpYCka9xv1ZpSlvZIhDvez0mUwOk6Ar1DAQMfZKEJqIPRyY3SGIyAV/tGXGUQSCLi11HrrIV7WI+VNx60MdTNNmPyRFuWgN5o4fX11T1x4bbo1JJnp5Zsahgv1BIa2v7vzGHgpsNlF4QgvFRfsv5c9i4cNZlC3JVgUsFMNZP7/w8I2E2GwtGc38H1jT3Jg7cOKZOk/PNsP7zb403BrKSyp5FT6RFCRgCWiS2lRIqDL6IAuM9bXWqSXAe96BCATtxAbK7lZTt6yiyY5CB9YFhzio2DRwQ3gigq3O7gH1BXL/p9Bg/jwJ2RHzTD5MRzATRU7mTIGKhNGHAcsBrgn46s1deksOBMTrPrLhajFAywYvlm1IShYzL712Qs2gS+9lXfBLCMOyIxloiigxIUQO0qEgonttiAAlCTVU+dth5RC0goe5ybQ3k31ulK7M4PS7v/wnmhC2l7sTFB9wTeopnqfRmcDqoxYcLK8LCzhq0NJ6xz31Xg69ik37lBpRKtDpFGKeSft4UPVhYF
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(376002)(136003)(396003)(39840400004)(26005)(16526019)(956004)(8676002)(8936002)(2906002)(4326008)(107886003)(6486002)(478600001)(186003)(2616005)(52116002)(9686003)(6506007)(86362001)(316002)(66476007)(6512007)(66946007)(83380400001)(66556008)(6666004)(1076003)(36756003)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Q4E6ZUI8n9GI6J08/tREJEMcW+gLiPQ7DQ5SDXF8jxkHaVZkm7P0zjGCpC2J?=
- =?us-ascii?Q?N/q1KGNlcF/rrN3guLQt8DxQmnXZJru/vL8AKURNFiI8jAdCVOI3yVrmpkGI?=
- =?us-ascii?Q?+NFJw40pl49K5hLo6cBvrcgxhmHwIcGOZEtIdDXB3K7LG1GD1hATmga8nWhO?=
- =?us-ascii?Q?3x73XPmGzO0xo6JGmcjkR3+03D4Cte9oJM9QsOdwUdx9PTxOecyjKWfpJmGB?=
- =?us-ascii?Q?l+YN8GVhlI9obTzw4eQzRy3n+NRHVc0B/i+5/9aVpwvPq+8bD8U7Boak1Ri/?=
- =?us-ascii?Q?GL8RQHQdekPu30IQeG6eKW2QR4yJFDY83Ncg1aEkklFQJDmfTxwvXY+CJ8u0?=
- =?us-ascii?Q?JsDM36XENU/LIQCUqo2Q42WV0NLN+mQ9sw6Sd4cFpUmQsQsW1KDpCpsH5QPt?=
- =?us-ascii?Q?OenTELpenTFb6A5pAAZZnBgUbIZp9UUDmexKtMjYCdUQH1Umi0Eon0DEPHEI?=
- =?us-ascii?Q?Cyf2Wvl4ZzW2H/RUTWl6EM/bJ2+979sDkCNpnvX1wTdmU0ZQfmT3U2kRv+bo?=
- =?us-ascii?Q?kwm9DxEUFm++yC4xTGNkt5q1vLv6jyyMxsH+3e1STRfjmVY/938xrp3VLJ+Z?=
- =?us-ascii?Q?YeD3GIh7bx/0zOrXnsw9s5Qn0baGer/aNoCpTSVkOMeJEnSKNloS7YosY7Xp?=
- =?us-ascii?Q?INzRlTc62yjmJpeBnE05bxaOD9ohQKSJVdyAuo2Ire7P9TbYosLBGy1HFvP9?=
- =?us-ascii?Q?VRCowve75OTXylF6HjEOtCbHbvHps0aU1FmQzCOOKD7+93KOCQGEn5p/pQgo?=
- =?us-ascii?Q?pm4FKMK9RvI48XbYZCyMe6nIiw9khJJKtDMsZARjPW/nW0YJuvQxh8jhiD+l?=
- =?us-ascii?Q?kRlkbypbZlf/rDUifw6kTEqcUtKjgTlTuzAWKhQjaBHlndRo88NaqT0u/pzi?=
- =?us-ascii?Q?cN+r+fcejE2qKt5Wk0Suj2VJER8zTPSzBGjcc49EVt0qlwcg7iJfF+K76+bF?=
- =?us-ascii?Q?Hn6vfo6Q7dW9vCbQi/2ihjsZ9yb+SXdbV8znFFsj7PjIUatWJziTB2vlGq2v?=
- =?us-ascii?Q?9WCjNX6wjjbw7JAmzlSzIezdcc9kQRTbaBuZZEomR24J5QVDsLSuci4LecQK?=
- =?us-ascii?Q?UPy2QaP1Ae2x5AjOuBz5kvcaR4fwyMhmIIvTjMRg9K6gbWjOeFjQofNTfyFF?=
- =?us-ascii?Q?uiMRGQvhfKuMiqmIQgZ3JP/BIOgOySNPRxlzam1XxPeVYIjoL3YLnULaXeyl?=
- =?us-ascii?Q?SCH3u+M55XcNA9I81GBV4JnGyOWxycNqMySssYXniWnx6z8nFPvQTkxhUZpm?=
- =?us-ascii?Q?mIoLvoaMNeQLKM9JACmuZ0LQy3anpVkd2GDUf64YcJTiNIG3nJQureftdsgc?=
- =?us-ascii?Q?tvB19H6ZBXBEUUjfO4EEl41g?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8081d913-a781-4e8d-84d3-08d8e78fce63
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2021 08:53:30.4801
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wp1ArDxdXUcrzao0T6ysxInCxoXTQF7KEU1az/pzGlEhgUadKbw1AIIFlrNsQR4bo61OGhPtDrXW+Lx7IH+/PySTiQnmzxQ6n9UzETw8jKo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5200
+In-Reply-To: <20210313193537.1548766-9-andrii@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+2021-03-13 11:35 UTC-0800 ~ Andrii Nakryiko <andrii@kernel.org>
+> Add `bpftool gen object <output-file> <input_file>...` command to statically
+> link multiple BPF ELF object files into a single output BPF ELF object file.
+> 
+> Similarly to existing '*.o' convention, bpftool is establishing a '*.bpfo'
+> convention for statically-linked BPF object files. Both .o and .bpfo suffixes
+> will be stripped out during BPF skeleton generation to infer BPF object name.
+> 
+> This patch also updates bash completions and man page. Man page gets a short
+> section on `gen object` command, but also updates the skeleton example to show
+> off workflow for BPF application with two .bpf.c files, compiled individually
+> with Clang, then resulting object files are linked together with `gen object`,
+> and then final object file is used to generate usable BPF skeleton. This
+> should help new users understand realistic workflow w.r.t. compiling
+> mutli-file BPF application.
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  .../bpf/bpftool/Documentation/bpftool-gen.rst | 65 +++++++++++++++----
+>  tools/bpf/bpftool/bash-completion/bpftool     |  2 +-
+>  tools/bpf/bpftool/gen.c                       | 49 +++++++++++++-
+>  3 files changed, 99 insertions(+), 17 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+> index 84cf0639696f..4cdce187c393 100644
+> --- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+> @@ -14,16 +14,37 @@ SYNOPSIS
+>  
+>  	*OPTIONS* := { { **-j** | **--json** } [{ **-p** | **--pretty** }] }
+>  
+> -	*COMMAND* := { **skeleton** | **help** }
+> +	*COMMAND* := { **object** | **skeleton** | **help** }
+>  
+>  GEN COMMANDS
+>  =============
+>  
+> +|	**bpftool** **gen object** *OUTPUT_FILE* *INPUT_FILE* [*INPUT_FILE*...]
+>  |	**bpftool** **gen skeleton** *FILE*
+>  |	**bpftool** **gen help**
+>  
+>  DESCRIPTION
+>  ===========
+> +	**bpftool gen object** *OUTPUT_FILE* *INPUT_FILE* [*INPUT_FILE*...]
+> +		  Statically link (combine) together one or more *INPUT_FILE*'s
+> +		  into a single resulting *OUTPUT_FILE*. All the files involed
 
-The syzbot report a memleak follow:
-BUG: memory leak
-unreferenced object 0xffff888101b41d00 (size 120):
-  comm "kworker/u4:0", pid 8, jiffies 4294944270 (age 12.780s)
-  backtrace:
-    [<ffffffff8125dc56>] alloc_pid+0x66/0x560
-    [<ffffffff81226405>] copy_process+0x1465/0x25e0
-    [<ffffffff81227943>] kernel_clone+0xf3/0x670
-    [<ffffffff812281a1>] kernel_thread+0x61/0x80
-    [<ffffffff81253464>] call_usermodehelper_exec_work
-    [<ffffffff81253464>] call_usermodehelper_exec_work+0xc4/0x120
-    [<ffffffff812591c9>] process_one_work+0x2c9/0x600
-    [<ffffffff81259ab9>] worker_thread+0x59/0x5d0
-    [<ffffffff812611c8>] kthread+0x178/0x1b0
-    [<ffffffff8100227f>] ret_from_fork+0x1f/0x30
+Typo: "involed"
 
-unreferenced object 0xffff888110ef5c00 (size 232):
-  comm "kworker/u4:0", pid 8414, jiffies 4294944270 (age 12.780s)
-  backtrace:
-    [<ffffffff8154a0cf>] kmem_cache_zalloc
-    [<ffffffff8154a0cf>] __alloc_file+0x1f/0xf0
-    [<ffffffff8154a809>] alloc_empty_file+0x69/0x120
-    [<ffffffff8154a8f3>] alloc_file+0x33/0x1b0
-    [<ffffffff8154ab22>] alloc_file_pseudo+0xb2/0x140
-    [<ffffffff81559218>] create_pipe_files+0x138/0x2e0
-    [<ffffffff8126c793>] umd_setup+0x33/0x220
-    [<ffffffff81253574>] call_usermodehelper_exec_async+0xb4/0x1b0
-    [<ffffffff8100227f>] ret_from_fork+0x1f/0x30
+> +		  are BPF ELF object files.
+> +
+> +		  The rules of BPF static linking are mostly the same as for
+> +		  user-space object files, but in addition to combining data
+> +		  and instruction sections, .BTF and .BTF.ext (if present in
+> +		  any of the input files) data are combined together. .BTF
+> +		  data is deduplicated, so all the common types across
+> +		  *INPUT_FILE*'s will only be represented once in the resulting
+> +		  BTF information.
+> +
+> +		  BPF static linking allows to partition BPF source code into
+> +		  individually compiled files that are then linked into
+> +		  a single resulting BPF object file, which can be used to
+> +		  generated BPF skeleton (with **gen skeleton** command) or
+> +		  passed directly into **libbpf** (using **bpf_object__open()**
+> +		  family of APIs).
+> +
+>  	**bpftool gen skeleton** *FILE*
+>  		  Generate BPF skeleton C header file for a given *FILE*.
+>  
 
-after the UMD process exits, the pipe_to_umh/pipe_from_umh and tgid
-need to be release.
+> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+> index fdffbc64c65c..7ca23c58f2c0 100644
+> --- a/tools/bpf/bpftool/bash-completion/bpftool
+> +++ b/tools/bpf/bpftool/bash-completion/bpftool
+> @@ -981,7 +981,7 @@ _bpftool()
+>              ;;
+>          gen)
+>              case $command in
+> -                skeleton)
+> +                object|skeleton)
+>                      _filedir
+>                      ;;
+>                  *)
 
-Fixes: d71fa5c9763c ("bpf: Add kernel module with user mode driver that populates bpffs.")
-Reported-by: syzbot+44908bb56d2bfe56b28e@syzkaller.appspotmail.com
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
----
- v1->v2:
- Judge whether the pointer variable tgid is valid.
+Suggesting the "object" keyword for completing "bpftool gen [tab]"
+is missing. It is just a few lines below:
 
- kernel/bpf/preload/bpf_preload_kern.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+------
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index fdffbc64c65c..223438e86932 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -981,12 +981,12 @@ _bpftool()
+             ;;
+         gen)
+             case $command in
+-                skeleton)
++                object|skeleton)
+                     _filedir
+                     ;;
+                 *)
+                     [[ $prev == $object ]] && \
+-                        COMPREPLY=( $( compgen -W 'skeleton help' -- "$cur" ) )
++                        COMPREPLY=( $( compgen -W 'object skeleton help' -- "$cur" ) )
+                     ;;
+             esac
+             ;;
+------
 
-diff --git a/kernel/bpf/preload/bpf_preload_kern.c b/kernel/bpf/preload/bpf_preload_kern.c
-index 79c5772465f1..5009875f01d3 100644
---- a/kernel/bpf/preload/bpf_preload_kern.c
-+++ b/kernel/bpf/preload/bpf_preload_kern.c
-@@ -4,6 +4,7 @@
- #include <linux/module.h>
- #include <linux/pid.h>
- #include <linux/fs.h>
-+#include <linux/file.h>
- #include <linux/sched/signal.h>
- #include "bpf_preload.h"
- 
-@@ -20,6 +21,14 @@ static struct bpf_preload_ops umd_ops = {
- 	.owner = THIS_MODULE,
- };
- 
-+static void bpf_preload_umh_cleanup(struct umd_info *info)
-+{
-+	fput(info->pipe_to_umh);
-+	fput(info->pipe_from_umh);
-+	put_pid(info->tgid);
-+	info->tgid = NULL;
-+}
-+
- static int preload(struct bpf_preload_info *obj)
- {
- 	int magic = BPF_PRELOAD_START;
-@@ -61,8 +70,10 @@ static int finish(void)
- 	if (n != sizeof(magic))
- 		return -EPIPE;
- 	tgid = umd_ops.info.tgid;
--	wait_event(tgid->wait_pidfd, thread_group_exited(tgid));
--	umd_ops.info.tgid = NULL;
-+	if (tgid) {
-+		wait_event(tgid->wait_pidfd, thread_group_exited(tgid));
-+		bpf_preload_umh_cleanup(&umd_ops.info);
-+	}
- 	return 0;
- }
- 
-@@ -80,10 +91,15 @@ static int __init load_umd(void)
- 
- static void __exit fini_umd(void)
- {
-+	struct pid *tgid;
- 	bpf_preload_ops = NULL;
- 	/* kill UMD in case it's still there due to earlier error */
--	kill_pid(umd_ops.info.tgid, SIGKILL, 1);
--	umd_ops.info.tgid = NULL;
-+	tgid = umd_ops.info.tgid;
-+	if (tgid) {
-+		kill_pid(tgid, SIGKILL, 1);
-+		wait_event(tgid->wait_pidfd, thread_group_exited(tgid));
-+		bpf_preload_umh_cleanup(&umd_ops.info);
-+	}
- 	umd_unload_blob(&umd_ops.info);
- }
- late_initcall(load_umd);
--- 
-2.17.1
+Looks good otherwise. Thanks for the documentation, it's great to
+have the example in the man page.
 
+Pending the two nits above are fixed:
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+
+Quentin
