@@ -2,109 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0325733AEF2
-	for <lists+bpf@lfdr.de>; Mon, 15 Mar 2021 10:40:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA0533B142
+	for <lists+bpf@lfdr.de>; Mon, 15 Mar 2021 12:40:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbhCOJj3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Mar 2021 05:39:29 -0400
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:58020 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbhCOJjI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Mar 2021 05:39:08 -0400
-Date:   Mon, 15 Mar 2021 09:38:57 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1615801146; bh=SnqNhZ8jhCbnZf+6aCb/UARYY/AXz744p1JflVY958M=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=YLTddrgfp3S/VtQaasYCODof0lpCpeNFQPdQa2SI1JBR1V7jSR+KBggIMkU2jg3Lj
-         qfKcR5F9eA28y13jfcXt2vc5usvS0isFQmvO6aCFGnhwaqfDyHLmPav5LmM/weEUWA
-         gMMKjA0lSyztoTFmhcH+cbAOac1b2X6oe4RZbS6fW5g/v9jxLd4Ay3WChxk+EgAX03
-         bCQSqG4dO3aEOas+mqgKX9mhDK8oHz8LdS+YorQwe55aekoKPhsaTvLrvapaV0EEVI
-         1+ncNzIKWnI6Z4g/G6xLmRQNxO6rljTi35eyxuA16aU2mYsOBRFx2ynNQ95QZO8iyP
-         UCcQiWjXaKnnA==
-To:     Vladimir Oltean <olteanv@gmail.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kevin Hao <haokexin@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        Wang Qing <wangqing@vivo.com>,
-        Davide Caratti <dcaratti@redhat.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v3 net-next 4/6] linux/etherdevice.h: misc trailing whitespace cleanup
-Message-ID: <20210315093839.6510-1-alobakin@pm.me>
-In-Reply-To: <20210314210453.o2dmnud45w7rabcw@skbuf>
-References: <20210314111027.7657-1-alobakin@pm.me> <20210314111027.7657-5-alobakin@pm.me> <20210314210453.o2dmnud45w7rabcw@skbuf>
+        id S229518AbhCOLje (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Mar 2021 07:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229901AbhCOLjO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Mar 2021 07:39:14 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C7CC061574
+        for <bpf@vger.kernel.org>; Mon, 15 Mar 2021 04:39:14 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id h18so9013753ils.2
+        for <bpf@vger.kernel.org>; Mon, 15 Mar 2021 04:39:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=BzdX8iEs6iv4DaujuoxammLMAtdPpYJubxtFKD54Y6Ebov/SRmuA8dnAWe/7+nUj2Q
+         PtsLWB/eldjn9vkjVxo45DVjKFl2kTqYMbfJymFIZPqVOuVSbSBuLE4chFsUm7FphrUo
+         PavXrDhkxxnoiLxStkgaC3oC4ooQBlQFWngD/Ksp7yofcFyaSO+m1lZz77+gabRO5KXI
+         mpXboD4VSOBZzCw7zT2B/vnbl9yvMGQz8RrRw9TflSNIbwtvat+ecBgAjes9j/2HuGP+
+         huzpIFCRf/CZNtei4Os5mJjwxKHhG1tiqAz6/RlecgH99R8a/n386EyGr4TzboDUwP/d
+         2lzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=AsWt0SF2ZqW5WOazffsczCX7K3bfCqFU1YxfGBln6uXpQD4E4jO1hsnLC7sKwMm39r
+         iiq9ELWFjMxOcTYg5nZBUrHy2ProMMdjQ0ywu6RNv3tSf8KOObEmbBvuU0bMbe0PmBVQ
+         6lxAb6IWQKUXTaldS5fV/tbJIdwQ3y6tlOtkRRjCBjwHwewBYh19p18SYG2+iYifNtOC
+         96HcAN5XNvLGq184lPL9m7G9lJj7snxCPXYw9NAyQ1p9M7VQKGQ57Iqsswdog2dxNAAr
+         nTpUXcwvHqCuTYGVGaIGvx5Fq3hiu4X9lS6IxKrlJltzaWzXPzTvE9S5EDbRCDP3ArKB
+         XbcQ==
+X-Gm-Message-State: AOAM532pnLdZM3qsvn9V19XNolDuyNxQFfA3rUBSCvZ49FsCuexTGnct
+        ePWR+WywyvRE4UXSMg/Ofvs6cy7fzn24+y/pY3I=
+X-Google-Smtp-Source: ABdhPJws6x+T38qLH05KHQjRVSP4avX/tKi644kxtBXGLHUzv50B4nsmH0UXPENM5v5lNa/AblmG98zKb2/lpknjk3A=
+X-Received: by 2002:a92:6511:: with SMTP id z17mr11116829ilb.232.1615808353529;
+ Mon, 15 Mar 2021 04:39:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Received: by 2002:a92:8706:0:0:0:0:0 with HTTP; Mon, 15 Mar 2021 04:39:13
+ -0700 (PDT)
+Reply-To: robertskevin391@gmail.com
+From:   Kevin Roberts <hummelrich03@gmail.com>
+Date:   Mon, 15 Mar 2021 11:39:13 +0000
+Message-ID: <CACAS2rQG49urPDXt2sLoa2dfqEaFJDwKi72L1MS2114Zoz8=rw@mail.gmail.com>
+Subject: I sent you a mail earlier but not sure if you received it, kindly
+ check your email and get back to me for I have very urgent information to
+ pass to you.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Vladimir Oltean <olteanv@gmail.com>
-Date: Sun, 14 Mar 2021 23:04:53 +0200
-
-> On Sun, Mar 14, 2021 at 11:11:32AM +0000, Alexander Lobakin wrote:
-> > Caught by the text editor. Fix it separately from the actual changes.
-> >
-> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> > ---
-> >  include/linux/etherdevice.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/etherdevice.h b/include/linux/etherdevice.h
-> > index 2e5debc0373c..bcb2f81baafb 100644
-> > --- a/include/linux/etherdevice.h
-> > +++ b/include/linux/etherdevice.h
-> > @@ -11,7 +11,7 @@
-> >   * Authors:=09Ross Biro
-> >   *=09=09Fred N. van Kempen, <waltje@uWalt.NL.Mugnet.ORG>
-> >   *
-> > - *=09=09Relocated to include/linux where it belongs by Alan Cox
-> > + *=09=09Relocated to include/linux where it belongs by Alan Cox
-> >   *=09=09=09=09=09=09=09<gw4pts@gw4pts.ampr.org>
-> >   */
-> >  #ifndef _LINUX_ETHERDEVICE_H
-> > --
-> > 2.30.2
-> >
-> >
->
-> Your mailer did something weird here, it trimmed the trailing whitespace
-> from the "-" line. The patch doesn't apply.
-
-It's git-send-email + ProtonMail Bridge... Seems like that's the
-reason why only this series of mine was failing Patchwork
-everytime.
-
-Much thanks for finding this out!
-Al
 
