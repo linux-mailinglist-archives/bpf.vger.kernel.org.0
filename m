@@ -2,39 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E4533C1A9
-	for <lists+bpf@lfdr.de>; Mon, 15 Mar 2021 17:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EF133C1F4
+	for <lists+bpf@lfdr.de>; Mon, 15 Mar 2021 17:33:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbhCOQZi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Mar 2021 12:25:38 -0400
-Received: from www62.your-server.de ([213.133.104.62]:38776 "EHLO
+        id S232631AbhCOQdI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Mar 2021 12:33:08 -0400
+Received: from www62.your-server.de ([213.133.104.62]:40128 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232766AbhCOQZI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Mar 2021 12:25:08 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
+        with ESMTP id S233724AbhCOQck (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Mar 2021 12:32:40 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1lLq1f-000CwE-8m; Mon, 15 Mar 2021 17:25:03 +0100
+        id 1lLq8z-000DTs-1U; Mon, 15 Mar 2021 17:32:37 +0100
 Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1lLq1f-000MKF-3T; Mon, 15 Mar 2021 17:25:03 +0100
-Subject: Re: [PATCH] bpf: Add getter and setter for SO_REUSEPORT through
- bpf_{g,s}etsockopt
-To:     Manu Bretelle <chantra@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org
-References: <20210310182305.1910312-1-chantra@fb.com>
+        id 1lLq8y-000L5P-SG; Mon, 15 Mar 2021 17:32:36 +0100
+Subject: Re: [PATCH net] selftests/bpf: set gopt opt_class to 0 if get tunnel
+ opt failed
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Yi-Hung Wei <yihung.wei@gmail.com>,
+        David Miller <davem@davemloft.net>, bpf@vger.kernel.org,
+        William Tu <u9012063@gmail.com>
+References: <20210309032214.2112438-1-liuhangbin@gmail.com>
+ <20210312015617.GZ2900@Leo-laptop-t470s>
+ <0b5c810b-5eec-c7b0-15fc-81c989494202@iogearbox.net>
+ <20210315065734.GA2900@Leo-laptop-t470s>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <13a467ce-7ca4-9a87-6a1d-b66948b9d01d@iogearbox.net>
-Date:   Mon, 15 Mar 2021 17:25:02 +0100
+Message-ID: <8900191d-fa04-6aaa-f214-92e4cad338a9@iogearbox.net>
+Date:   Mon, 15 Mar 2021 17:32:36 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20210310182305.1910312-1-chantra@fb.com>
+In-Reply-To: <20210315065734.GA2900@Leo-laptop-t470s>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -44,91 +48,25 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/10/21 7:23 PM, Manu Bretelle wrote:
-> Augment the current set of options that are accessible via
-> bpf_{g,s}etsockopt to also support SO_REUSEPORT.
+On 3/15/21 7:57 AM, Hangbin Liu wrote:
+> On Fri, Mar 12, 2021 at 04:15:27PM +0100, Daniel Borkmann wrote:
+>> On 3/12/21 2:56 AM, Hangbin Liu wrote:
+>>> Hi David,
+>>>
+>>> May I ask what's the status of this patch? From patchwork[1] the state is
+>>> accepted. But I can't find the fix on net or net-next.
+>>
+>> I think there may have been two confusions, i) that $subject says that this goes
+>> via net tree instead of bpf tree, which might have caused auto-delegation to move
+>> this into 'netdev' patchwork reviewer bucket, and ii) the kernel patchwork bot then
+>> had a mismatch as you noticed when it checked net-next after tree merge and replied
+>> to the wrong patch of yours which then placed this one into 'accepted' state. I just
+>> delegated it to bpf and placed it back under review..
+>>
+>>> [1] https://patchwork.kernel.org/project/netdevbpf/patch/20210309032214.2112438-1-liuhangbin@gmail.com/
 > 
-> Signed-off-by: Manu Bretelle <chantra@fb.com>
+> Thanks Daniel, I thought the issue also exists on net tree and is a fixup. So
+> I set the target to 'net'.
 
-Applied, thanks! I fixed up the 4 extra newlines:
-
-> diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
-> index 115a3b0ad984..b65a5e2481e6 100644
-> --- a/tools/testing/selftests/bpf/progs/bind4_prog.c
-> +++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
-> @@ -57,6 +57,29 @@ static __inline int bind_to_device(struct bpf_sock_addr *ctx)
->   	return 0;
->   }
->   
-> +static __inline int bind_reuseport(struct bpf_sock_addr *ctx)
-> +{
-> +
-
-^^^ here
-
-> +	int val = 1;
-> +
-> +	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_REUSEPORT,
-> +			   &val, sizeof(val)))
-> +		return 1;
-> +	if (bpf_getsockopt(ctx, SOL_SOCKET, SO_REUSEPORT,
-> +			   &val, sizeof(val)) || !val)
-> +		return 1;
-> +	val = 0;
-> +	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_REUSEPORT,
-> +			   &val, sizeof(val)))
-> +		return 1;
-> +	if (bpf_getsockopt(ctx, SOL_SOCKET, SO_REUSEPORT,
-> +			   &val, sizeof(val)) || val)
-> +		return 1;
-> +
-> +
-
-^^^ here
-
-> +	return 0;
-> +}
-> +
->   static __inline int misc_opts(struct bpf_sock_addr *ctx, int opt)
->   {
-[...]
-> diff --git a/tools/testing/selftests/bpf/progs/bind6_prog.c b/tools/testing/selftests/bpf/progs/bind6_prog.c
-> index 4c0d348034b9..68e7ede67b6d 100644
-> --- a/tools/testing/selftests/bpf/progs/bind6_prog.c
-> +++ b/tools/testing/selftests/bpf/progs/bind6_prog.c
-> @@ -63,6 +63,29 @@ static __inline int bind_to_device(struct bpf_sock_addr *ctx)
->   	return 0;
->   }
->   
-> +static __inline int bind_reuseport(struct bpf_sock_addr *ctx)
-> +{
-> +
-
-^^^ here
-
-> +	int val = 1;
-> +
-> +	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_REUSEPORT,
-> +			   &val, sizeof(val)))
-> +		return 1;
-> +	if (bpf_getsockopt(ctx, SOL_SOCKET, SO_REUSEPORT,
-> +			   &val, sizeof(val)) || !val)
-> +		return 1;
-> +	val = 0;
-> +	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_REUSEPORT,
-> +			   &val, sizeof(val)))
-> +		return 1;
-> +	if (bpf_getsockopt(ctx, SOL_SOCKET, SO_REUSEPORT,
-> +			   &val, sizeof(val)) || val)
-> +		return 1;
-> +
-> +
-
-^^^ here
-
-> +	return 0;
-> +}
-> +
->   static __inline int misc_opts(struct bpf_sock_addr *ctx, int opt)
->   {
->   	int old, tmp, new = 0xeb9f;
+Sure; in the end this gets routed via bpf to net tree given it's bpf selftests, so
+$subj should target bpf. Anyway, applied now, thanks!
