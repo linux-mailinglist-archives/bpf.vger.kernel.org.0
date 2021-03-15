@@ -2,136 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A939133C80C
-	for <lists+bpf@lfdr.de>; Mon, 15 Mar 2021 21:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C5E33C9E9
+	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 00:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232093AbhCOUz7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Mar 2021 16:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232240AbhCOUzm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Mar 2021 16:55:42 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA5EC06174A
-        for <bpf@vger.kernel.org>; Mon, 15 Mar 2021 13:55:41 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id r20so17936893ljk.4
-        for <bpf@vger.kernel.org>; Mon, 15 Mar 2021 13:55:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=/SNE60mYRVXIP2k5tkIo6vUZ3UuFytnbu0QAv8b7r1I=;
-        b=YDH6+dQ6z0cyr/awfNDOGSZuLJCLEWCPrxEPJKIMNDy2ZAeNmRPMWKVk6cdz6jJuWO
-         G7NZDA0+KnOK9XhZZAaj5YzDmIZTY3OG5x/9CwnfnrtgomvC5kfa9/FmiHL6FqKx6K5a
-         1uZ8wYBdqUz0VLraJOeOBWCqMrE1xb+hkjoCM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=/SNE60mYRVXIP2k5tkIo6vUZ3UuFytnbu0QAv8b7r1I=;
-        b=sbXCKiBm604kr5c85t8EuvVL6PyWtWVTR6y2f6+lxkGOOd7UP/SpnZjifaXJ+I8yac
-         27nbTGpDb+YioAf+bIzYCO+lHC/kcrq19nu1L/OTQljiSy9Awt1+LaScP33agsVUpzOX
-         ughds+37MxDpzVryAMSuNqhBSJlhW46CZD0KsYrR96EMmru9k2DHftKw9emZTzQPdYci
-         BVN/4XpenwgY9WDdFuB8R14Ac6kXIZVyji8hIpB1jvuq/GuKsRa79vD6a6h7z5PfOqe/
-         3lL0VKVLdLlGFfyPywPL/q2i/rG9VKTZZdmx5rAI0zIRtes9aSGpwTzCR3ofRi5bydDr
-         qISg==
-X-Gm-Message-State: AOAM531GN/WLGKzu3EFLvuZx+M6HJgIsOt4eE9jyeU6yN774kf0KGQvD
-        cRcD9cZQNv6bnzvTAJ7FlULAQg==
-X-Google-Smtp-Source: ABdhPJwCBSrzS2qfzHSrnTXn5Y9DeD4/xuXWPEZRvbgEP+BOYlgYAbx/m9oShSW0/dY8szlr8h2cMg==
-X-Received: by 2002:a2e:302:: with SMTP id 2mr546896ljd.159.1615841740199;
-        Mon, 15 Mar 2021 13:55:40 -0700 (PDT)
-Received: from cloudflare.com (83.31.58.229.ipv4.supernova.orange.pl. [83.31.58.229])
-        by smtp.gmail.com with ESMTPSA id q7sm2852305lfc.260.2021.03.15.13.55.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Mar 2021 13:55:39 -0700 (PDT)
-References: <20210310053222.41371-1-xiyou.wangcong@gmail.com>
- <20210310053222.41371-5-xiyou.wangcong@gmail.com>
- <87y2es37i3.fsf@cloudflare.com>
- <CAM_iQpVmtHPqzGHEUPhtVroxCeWSBvahKMrbLrEq4gNNVGq2zg@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 27.1
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: Re: [Patch bpf-next v4 04/11] skmsg: avoid lock_sock() in
- sk_psock_backlog()
-In-reply-to: <CAM_iQpVmtHPqzGHEUPhtVroxCeWSBvahKMrbLrEq4gNNVGq2zg@mail.gmail.com>
-Date:   Mon, 15 Mar 2021 21:55:38 +0100
-Message-ID: <87v99s2l2t.fsf@cloudflare.com>
+        id S231252AbhCOXd6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Mar 2021 19:33:58 -0400
+Received: from www62.your-server.de ([213.133.104.62]:52342 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229712AbhCOXdv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Mar 2021 19:33:51 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lLwib-0001k3-IW; Tue, 16 Mar 2021 00:33:49 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lLwib-000AY0-EW; Tue, 16 Mar 2021 00:33:49 +0100
+Subject: Re: [PATCH bpf-next] bpf: net: emit anonymous enum with BPF_TCP_CLOSE
+ value explicitly
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, kernel-team@fb.com
+References: <20210314035812.1958641-1-yhs@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2b98276d-62d4-721d-a956-80ed1d71987a@iogearbox.net>
+Date:   Tue, 16 Mar 2021 00:33:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210314035812.1958641-1-yhs@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26109/Mon Mar 15 12:06:12 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 06:32 PM CET, Cong Wang wrote:
-> On Fri, Mar 12, 2021 at 4:02 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->>
->> On Wed, Mar 10, 2021 at 06:32 AM CET, Cong Wang wrote:
->> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
->> > index dd53a7771d7e..26ba47b099f1 100644
->> > --- a/net/core/sock_map.c
->> > +++ b/net/core/sock_map.c
->> > @@ -1540,6 +1540,7 @@ void sock_map_close(struct sock *sk, long timeout)
->> >       saved_close = psock->saved_close;
->> >       sock_map_remove_links(sk, psock);
->> >       rcu_read_unlock();
->> > +     sk_psock_purge(psock);
->> >       release_sock(sk);
->> >       saved_close(sk, timeout);
->> >  }
->>
->> Nothing stops sk_psock_backlog from running after sk_psock_purge:
->>
->>
->> CPU 1                                                   CPU 2
->>
->> sk_psock_skb_redirect()
->>   sk_psock(sk_other)
->>   sock_flag(sk_other, SOCK_DEAD)
->>   sk_psock_test_state(psock_other,
->>                       SK_PSOCK_TX_ENABLED)
->>                                                         sk_psock_purge()
->>   skb_queue_tail(&psock_other->ingress_skb, skb)
->>   schedule_work(&psock_other->work)
->>
->>
->> And sock_orphan can run while we're in sendmsg/sendpage_unlocked:
->>
->>
->> CPU 1                                                   CPU 2
->>
->> sk_psock_backlog
->>   ...
->>   sendmsg_unlocked
->>     sock = sk->sk_socket
->>                                                         tcp_close
->>                                                           __tcp_close
->>                                                             sock_orphan
->>     kernel_sendmsg(sock, msg, vec, num, size)
->>
->>
->> So, after this change, without lock_sock in sk_psock_backlog, we will
->> not block tcp_close from running.
->>
->> This makes me think that the process socket can get released from under
->> us, before kernel_sendmsg/sendpage runs.
->
-> I think you are right, I thought socket is orphaned in inet_release(), clearly
-> I was wrong. But, I'd argue in the above scenario, the packet should not
-> be even queued in the first place, as SK_PSOCK_TX_ENABLED is going
-> to be cleared, so I think the right fix is probably to make clearing psock
-> state and queuing the packet under a spinlock.
+On 3/14/21 4:58 AM, Yonghong Song wrote:
+[...]
+> This patch explicited add an expression like
+>    (void)BPF_TCP_ESTABLISHED
+> to enable generation of debuginfo for the anonymous
+> enum which also includes BPF_TCP_CLOSE. I put
+> this explicit type generation in kernel/bpf/core.c
+> to (1) avoid polute net/ipv4/tcp.c and more importantly
+> (2) provide a central place to add other types (e.g. in
+> bpf/btf uapi header) if they are not referenced in the kernel
+> or generated in vmlinux dwarf.
+> 
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>   include/linux/btf.h |  1 +
+>   kernel/bpf/core.c   | 19 +++++++++++++++++++
+>   2 files changed, 20 insertions(+)
+> 
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index 7fabf1428093..9c1b52738bbe 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -9,6 +9,7 @@
+>   #include <uapi/linux/bpf.h>
+>   
+>   #define BTF_TYPE_EMIT(type) ((void)(type *)0)
+> +#define BTF_TYPE_EMIT_ENUM(enum_val) ((void)enum_val)
+>   
+>   struct btf;
+>   struct btf_member;
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 3a283bf97f2f..60551bf68ece 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -2378,3 +2378,22 @@ EXPORT_SYMBOL(bpf_stats_enabled_key);
+>   
+>   EXPORT_TRACEPOINT_SYMBOL_GPL(xdp_exception);
+>   EXPORT_TRACEPOINT_SYMBOL_GPL(xdp_bulk_tx);
+> +
+> +static int __init bpf_emit_btf_type(void)
+> +{
+> +	/* bpf uapi header bpf.h defines an anonymous enum with values
+> +	 * BPF_TCP_* used by bpf programs. Currently gcc built vmlinux
+> +	 * is able to emit this enum in dwarf due to the following
+> +	 * BUILD_BUG_ON test in net/ipv4/tcp.c:
+> +	 *   BUILD_BUG_ON((int)BPF_TCP_ESTABLISHED != (int)TCP_ESTABLISHED);
+> +	 * clang built vmlinux does not have this enum in dwarf
+> +	 * since clang removes the above code before generating IR/debuginfo.
+> +	 * Let us explicitly emit the type debuginfo to ensure the
+> +	 * above-mentioned anonymous enum in the vmlinux dwarf and hence BTF
+> +	 * regardless of which compiler is used.
+> +	 */
+> +	BTF_TYPE_EMIT_ENUM(BPF_TCP_ESTABLISHED);
+> +
+> +	return 0;
+> +}
+> +late_initcall(bpf_emit_btf_type);
 
-Sounds like a good idea. The goal, I understand, is to guarantee that
-psock holds a ref count on proces socket for the duration of
-sk_psock_backlog() run.
+Does this have to be late_initcall() given this adds minor init call
+overhead, what if this would be exported as symbol for modules instead?
 
-That would not only let us get rid of lock_sock(), with finer grained
-queue locks, but also the sock_flag(psock->sk, SOCK_DEAD) check.
+Thanks,
+Daniel
