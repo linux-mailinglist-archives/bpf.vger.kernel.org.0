@@ -2,197 +2,370 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF5333D30F
-	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 12:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9578433D4B8
+	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 14:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232956AbhCPL36 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Mar 2021 07:29:58 -0400
-Received: from mail-dm6nam11on2054.outbound.protection.outlook.com ([40.107.223.54]:6113
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234605AbhCPL3i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Mar 2021 07:29:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LhJ0oiHMQl3y3b13JPEX7two1DlL1IkA9E8CBdtKbaZbbTqIKz1eNrat8yt0F9fjWKuNGDbuS4o68EX+vQrRFtDOkIEabd56ghdbyvWNiDhMp8P6pTJPW5p0jepKpiozTayRY4+DIStNYbnj1h2tLKZmGva8MiZ8QdVrFm6V/f4zlBrFo6ZvfZ/SXNcUdcSE4asKY4nPLl72sAXfHtKqfW5EYyOb6EX1/6+J+vtke+HyxSc4fELRRnsGPz73ObaqxweK6Ugr9d5R3VJzMEMPr1wJseJc3cPDiKw3kkmHig/uuwbKm3JkCd7do+Znqi96LgOm8JDynI8LTytqvk2lOA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nzlIiO70faCxmLwDITEOrOpFlW4JMqAjmPx2pkRtSBE=;
- b=BRB+SCJ0i+V3BgUEIofmKJad5s67kI4eKNEpRK0HN4V4/qmpATubH3J9Ft8Ahck/iuTeBfropoP5h1wVAP5W+hEhyvH0K0hY4Ds+0WPfNuK+G99/znJ8SRqBDffoZfACGTKowiAQYgiYoZWvLMQ1fWD3bd+fOcNkxry6NWEktFx+yu9K49YGp4X21oFaXIduuZTLNHhzk2BIuMOhsJLxn6fVZZR2jBiopALexL7onQsJo5g1rBl3RO/MDmbMUhTBPDRXqx/rnwz+tFjZPy61UfbKBlHGS64AWXfwUtDyTiPBS8ZICWFD1pPGM/IADMNpuRIqd3VHwTzXmcUn7eYQIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S229831AbhCPNS4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Mar 2021 09:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhCPNSa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Mar 2021 09:18:30 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6D8C061756
+        for <bpf@vger.kernel.org>; Tue, 16 Mar 2021 06:18:29 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id n14so37104675iog.3
+        for <bpf@vger.kernel.org>; Tue, 16 Mar 2021 06:18:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nzlIiO70faCxmLwDITEOrOpFlW4JMqAjmPx2pkRtSBE=;
- b=XMvIgfKI6GyTEvKTN1TUFa8Ox8OMAsn3p4F955X5uTSIN3eAps5fjSkaiAd/9et2r3TCsEmxXvJuw48JOZGunabt9I7WczcwSG9j/sQcA9uUR0/x5153jRvbYc7avseL9ZV54KfZoT2g9PJKUoMg20tzgSLbwUttlCzIRhDBN9U=
-Received: from DM6PR11MB4202.namprd11.prod.outlook.com (2603:10b6:5:1df::16)
- by DM5PR1101MB2268.namprd11.prod.outlook.com (2603:10b6:4:53::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Tue, 16 Mar
- 2021 11:29:36 +0000
-Received: from DM6PR11MB4202.namprd11.prod.outlook.com
- ([fe80::f19f:b31:c427:730e]) by DM6PR11MB4202.namprd11.prod.outlook.com
- ([fe80::f19f:b31:c427:730e%4]) with mapi id 15.20.3933.032; Tue, 16 Mar 2021
- 11:29:36 +0000
-From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-To:     "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>
-CC:     "dvyukov@google.com" <dvyukov@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzbot+44908bb56d2bfe56b28e@syzkaller.appspotmail.com" 
-        <syzbot+44908bb56d2bfe56b28e@syzkaller.appspotmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: =?gb2312?B?u9i4tDogW1BBVENIIHYyXSBicGY6IEZpeCBtZW1vcnkgbGVhayBpbiBjb3B5?=
- =?gb2312?Q?=5Fprocess()?=
-Thread-Topic: [PATCH v2] bpf: Fix memory leak in copy_process()
-Thread-Index: AQHXGXisamgV0cMrEEG9Ytn4tLDnhqqGekcZ
-Date:   Tue, 16 Mar 2021 11:29:36 +0000
-Message-ID: <DM6PR11MB4202D95C3B579C7A6F381A97FF6B9@DM6PR11MB4202.namprd11.prod.outlook.com>
-References: <20210315085816.21413-1-qiang.zhang@windriver.com>
-In-Reply-To: <20210315085816.21413-1-qiang.zhang@windriver.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
-x-originating-ip: [106.39.150.203]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 44f65fcf-5e6d-4ce4-dee6-08d8e86ec7b9
-x-ms-traffictypediagnostic: DM5PR1101MB2268:
-x-microsoft-antispam-prvs: <DM5PR1101MB2268C95B2702DBC19EF5D853FF6B9@DM5PR1101MB2268.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8/ygk8zU18xUdgwZpdeiiYKHxZDwmEIYXF1FYIe81oEEdqF85vF1YHw0Zm0zhrc6cRU29LeIV4225T5yubAGHz6u8AX19nk3yAIh9n7Bt5d2gX3VVb53hZHCejT96gb1f/We/WbZTQ89f8r12pBH8A/O2RUEBmFlstjrl8XvoQqD4zbUg8VrE4N/k9M35gTryIdyoIZPLwyw3umZ+MJW5jLr5uIUDxja3DlKa3Xw8OLn3SUOmN+EqQov6Sjj4Jg1pR9wwQ2i08dT5+7q6/zjoxO4eRr9u6VzZFElZW++c6IghLv758CpxFqg6CjBdsTeUONZS1kzydnkA5e+VpKhURJhk1CIskSJsmZYhvIZMz6l5Jhj9T9Ckv8UqTlWmSx28lBhWyxYqHhBKivGCewHK3eD8KpkogFy6qQ0JStRtjYdeZ5REqsbzhjGaEyRrOWjFxFDRfaLFwNd0mpSQemvcj+jXft7R3yrDdpDD5oJd4mgAkXyYhLbuYmz10/drVclpMicVvHtJvX/k8HLSQfOjOaztQgQiJAtmOdJnKbAvFQ+Ac91ztbcIIq8/KFPa9RG
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4202.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(136003)(346002)(366004)(396003)(376002)(66556008)(91956017)(110136005)(6506007)(4326008)(66476007)(64756008)(54906003)(76116006)(8936002)(33656002)(26005)(7416002)(5660300002)(52536014)(316002)(83380400001)(7696005)(66946007)(66446008)(9686003)(224303003)(86362001)(71200400001)(186003)(2906002)(55016002)(478600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?gb2312?B?aEsyakJjb1hHNEhKVDAvbGl5azNLY3lMNGxzcHYzaEVHUkIwRy9RUHlBWVZR?=
- =?gb2312?B?WGdTb1c4ZkpRenRlMWQ0MW5Mc05QdUlGYi9IbUs5YWYvTUd1QVZ1aVBPU2Vv?=
- =?gb2312?B?T1ZzTHhIc3BTU1I3UVk1blNQbXF3cGxKd00wR3dHaitzTGZyakpiWUc5Snlo?=
- =?gb2312?B?QytsUWd3QVIyc2RuOGh3dUk5dmFYVGo2V0FTbXlicHZpeEJFZ2ViWlhEc2hL?=
- =?gb2312?B?dHdxMDBDd2VzaGNlYndhVmRpTEZMUUZyZXY2WEZEc0NFZk9ubVFmWnFyKytp?=
- =?gb2312?B?dXBBMWtFVVZ0aEF4ME8xU3c3UWJDdlVHQXozdGthbGh6Q1FLMk1ia0tsUEg5?=
- =?gb2312?B?dmwvTWF3OHc3Y3lmTzhHTkx6VHpkU2ZLNURIbnJWaGJvZURrV0M3bmdHREJI?=
- =?gb2312?B?Ky9HUXhWaHNXUlNjVnUrY3NQMUw1cmlwdzFLZDF6UVo3WVU0a3NHRjJGRHM3?=
- =?gb2312?B?WndvY1dOOTFHNUpiNGtZZmFmclRpTVpDYkt4MXpVa1cyRFVuYmw5dUNSY0xQ?=
- =?gb2312?B?TUhIK2tOS2tqQjkzdEIyb1orMC9Eb2MyUmdKVDNhSURXTjAvbFc1ZW5qc3dT?=
- =?gb2312?B?aWJ3dmpBNVB2OWRtRThCTEd1VTRPSU90b05Id0VjNm9Yc01xck1JcVpPRWt0?=
- =?gb2312?B?Ri9sNExXS0tod2RuazZyZGNST2dNR2UrOThaWmZ0bjMycjdWeDJSdDUvcE5o?=
- =?gb2312?B?dy91K0pTWDVSbklXV2RCMXJNVXZ6U09talc5WExXZ0dOSFZueXp1RVU2NXVm?=
- =?gb2312?B?alFndm5VQjF4R0R0QVMvWlg0T0p3eFM3c2JNb3BEcGtxcjNLajVseVdYZmZJ?=
- =?gb2312?B?MlVwSlBsaCtKMzZkR1MzaTBqWC9idHhGMlNneThTWW1JVE1oRE1HZkU1NVJs?=
- =?gb2312?B?djdHVWEwd0FiZ2VEdDViWHJqU1I4ZjNoTUx4WThsQno1M05ML0NuN08xOHEy?=
- =?gb2312?B?bjh4TjA5ZExOS04yMXljSDJLbnRkb0JtNnA4YzE2N1Era21FYlA5TElaZUtt?=
- =?gb2312?B?UGkyOGh5SElYd25vMU9DV1pUeHZxbGZ4ajhyVk14K3k2RXdleWpHaG1XaHRR?=
- =?gb2312?B?N2ZYNFYrdzdvUS9rRWloY3UzTDNqcnF5TEh3SEJjQkF0dC83cGg3T2xoNFVn?=
- =?gb2312?B?OW10akpwb2FDYTJnM0VXVFU4WStsNkF5OFdJS0dSV1JuWHpHbVEwd0pWV2VK?=
- =?gb2312?B?dlNKSTkrQWx6TWFsQk51ZDAramhIcmsrS1FieXJacG5zNmpta1Z6a0twR3Zv?=
- =?gb2312?B?L09jc2R3WEZiRC80ekJXVWFiUy9Ob2o0VWI2anMwMnhCN1hEakRuNDFNR0N0?=
- =?gb2312?B?Q1pkdUJlWmlkVVpHYk5YL2thQWZVVTVHWjhWN0JwUWY0ZURiWXp2QWc3Z0VT?=
- =?gb2312?B?RnRidTJ5a3kvV0gzL0hDM2gyR3FWMUwvWlhDZ0NyR0J4MVlEMDNPL1pJdmVE?=
- =?gb2312?B?eUp5N3RGMHdockRZc1pPQmU1eTlKc3pkRk02SHFuZEpDTmw1T0Jjais1MnZ6?=
- =?gb2312?B?eGZBc0w3Q0MweVRsaWNQcFN3SkJiQ3duR05DNUZGRmpJQWxDS3BjQkt6c2wz?=
- =?gb2312?B?elJhR3o1ak1BWitPaDY1SDNPSWFKQzJZNzVHK0hDNTY1bi9MZEtGL2xrZWxS?=
- =?gb2312?B?NnlobjJsTVJNYVdrRkpLWXhLb2V4enI1R2M1TFpCTFp1WGVqV0xVSXNaOUtJ?=
- =?gb2312?B?VWtncWJ2dW9TQzBpWFZlcHNRRTU4WHowcmJBMk90RGdINldDenNQa1o3eVpw?=
- =?gb2312?Q?HfFIrhOAVuDI2X6bak=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nq/YXeDMQzjYRDwyU4aw5HetphWHUiqNcVSl9vs9s7I=;
+        b=JS8/G1DoX8Ji0DmVqUtmgzwdWPUVYyXrGxetZvwqIQaTQ3+j82u9/66F559BT3P/+6
+         04VXvk6GnY3JC6H2W2pwa4ps0PV4RdOBquiPxCrKmgNnRuzZaK9pU18/RVu4zCt9WdbY
+         jOdRWGz2NwICFUxZh09emszO7X9nfIkmKeUBE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nq/YXeDMQzjYRDwyU4aw5HetphWHUiqNcVSl9vs9s7I=;
+        b=PG3fC/5fqBgA8iyNRLbDk0yQERhI7QNn+g6pfSr9XFogP67AKOAxEDn68kF7CKe0D2
+         FTcNR9yYeaU7oAAPQitUxmozd+t7JQZg06BEhnCSzaMRUmXjbiLpxTvcYLiQo5eQjxrC
+         IcaZiqRgp+ItxMpHKbQ9otBs0ToaXO3Wo0gcJYLgwoBGfCrc64P7uPpKXO+38I8YlKJf
+         cOEkmd6X6WlQYx717HdDCiTePxF8t72J+DawD33brr6OO0aPUvDHlnG2Szb92sk1aSde
+         ckhz60g5pkvzpH50xmvKEa5uiXQ5mrat84V/RPi1qKcCyuKjfShmy6gqd8Gu6rVbYvOJ
+         9B5A==
+X-Gm-Message-State: AOAM532BqFTJGx21QEqcEiyxTPxQMwxDzLbgTCIsAS2mcymb0mQ0Dw6g
+        7BLVnBw7LJwZlHoEQrT9RvCvr3H4w0BNmICx9uqVZQ==
+X-Google-Smtp-Source: ABdhPJzNFYHM3R0JKFKOWQ3OVQc0CGrsmnHshue3a72FycqeRFuCUDIEyilvEMoEVnaKCvH/DjrauvkRBtv8bO5/Tc8=
+X-Received: by 2002:a02:662b:: with SMTP id k43mr10311013jac.139.1615900708605;
+ Tue, 16 Mar 2021 06:18:28 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4202.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 44f65fcf-5e6d-4ce4-dee6-08d8e86ec7b9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2021 11:29:36.7229
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: n1qNhN1TuDF4SVopwCr+ohVQsJwLPCtcYaydLvaVVPfhsHun/ZO2vdrIQ6m3ZS8x4vmoMGPeXiAXMSYhK5TYFRYMm8SAvRpjJcjtWVm8QPU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2268
+References: <20210310220211.1454516-1-revest@chromium.org> <20210310220211.1454516-3-revest@chromium.org>
+ <CAEf4BzZ+vxVA4ed8xEfHdt=XVn7h8tuHy2czABskG0pgiAjooQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ+vxVA4ed8xEfHdt=XVn7h8tuHy2czABskG0pgiAjooQ@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Tue, 16 Mar 2021 14:18:17 +0100
+Message-ID: <CABRcYmKznSNZCqVhVZ8qGJsLySNKOFC7-d7s_=eD+=w_Q03dgw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/5] bpf: Add a bpf_snprintf helper
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-SGVsbG8gQWxleGVpIFN0YXJvdm9pdG92IERhbmllbCBCb3JrbWFubgpQbGVhc2UgIHJldmlldyB0
-aGlzIHBhdGNoLgoKVGhhbmtzClFpYW5nCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCreivP7IyzogWmhhbmcsIFFpYW5nIDxxaWFuZy56aGFuZ0B3aW5kcml2ZXIuY29t
-Pgq3osvNyrG85DogMjAyMcTqM9TCMTXI1SAxNjo1MwrK1bz+yMs6IGFzdEBrZXJuZWwub3JnOyBk
-YW5pZWxAaW9nZWFyYm94Lm5ldDsgYW5kcmlpQGtlcm5lbC5vcmcKs63LzTogZHZ5dWtvdkBnb29n
-bGUuY29tOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBzeXpib3QrNDQ5MDhiYjU2ZDJi
-ZmU1NmIyOGVAc3l6a2FsbGVyLmFwcHNwb3RtYWlsLmNvbTsgYnBmQHZnZXIua2VybmVsLm9yZzsg
-WmhhbmcsIFFpYW5nCtb3zOI6IFtQQVRDSCB2Ml0gYnBmOiBGaXggbWVtb3J5IGxlYWsgaW4gY29w
-eV9wcm9jZXNzKCkKCkZyb206IFpxaWFuZyA8cWlhbmcuemhhbmdAd2luZHJpdmVyLmNvbT4KClRo
-ZSBzeXpib3QgcmVwb3J0IGEgbWVtbGVhayBmb2xsb3c6CkJVRzogbWVtb3J5IGxlYWsKdW5yZWZl
-cmVuY2VkIG9iamVjdCAweGZmZmY4ODgxMDFiNDFkMDAgKHNpemUgMTIwKToKICBjb21tICJrd29y
-a2VyL3U0OjAiLCBwaWQgOCwgamlmZmllcyA0Mjk0OTQ0MjcwIChhZ2UgMTIuNzgwcykKICBiYWNr
-dHJhY2U6CiAgICBbPGZmZmZmZmZmODEyNWRjNTY+XSBhbGxvY19waWQrMHg2Ni8weDU2MAogICAg
-WzxmZmZmZmZmZjgxMjI2NDA1Pl0gY29weV9wcm9jZXNzKzB4MTQ2NS8weDI1ZTAKICAgIFs8ZmZm
-ZmZmZmY4MTIyNzk0Mz5dIGtlcm5lbF9jbG9uZSsweGYzLzB4NjcwCiAgICBbPGZmZmZmZmZmODEy
-MjgxYTE+XSBrZXJuZWxfdGhyZWFkKzB4NjEvMHg4MAogICAgWzxmZmZmZmZmZjgxMjUzNDY0Pl0g
-Y2FsbF91c2VybW9kZWhlbHBlcl9leGVjX3dvcmsKICAgIFs8ZmZmZmZmZmY4MTI1MzQ2ND5dIGNh
-bGxfdXNlcm1vZGVoZWxwZXJfZXhlY193b3JrKzB4YzQvMHgxMjAKICAgIFs8ZmZmZmZmZmY4MTI1
-OTFjOT5dIHByb2Nlc3Nfb25lX3dvcmsrMHgyYzkvMHg2MDAKICAgIFs8ZmZmZmZmZmY4MTI1OWFi
-OT5dIHdvcmtlcl90aHJlYWQrMHg1OS8weDVkMAogICAgWzxmZmZmZmZmZjgxMjYxMWM4Pl0ga3Ro
-cmVhZCsweDE3OC8weDFiMAogICAgWzxmZmZmZmZmZjgxMDAyMjdmPl0gcmV0X2Zyb21fZm9yaysw
-eDFmLzB4MzAKCnVucmVmZXJlbmNlZCBvYmplY3QgMHhmZmZmODg4MTEwZWY1YzAwIChzaXplIDIz
-Mik6CiAgY29tbSAia3dvcmtlci91NDowIiwgcGlkIDg0MTQsIGppZmZpZXMgNDI5NDk0NDI3MCAo
-YWdlIDEyLjc4MHMpCiAgYmFja3RyYWNlOgogICAgWzxmZmZmZmZmZjgxNTRhMGNmPl0ga21lbV9j
-YWNoZV96YWxsb2MKICAgIFs8ZmZmZmZmZmY4MTU0YTBjZj5dIF9fYWxsb2NfZmlsZSsweDFmLzB4
-ZjAKICAgIFs8ZmZmZmZmZmY4MTU0YTgwOT5dIGFsbG9jX2VtcHR5X2ZpbGUrMHg2OS8weDEyMAog
-ICAgWzxmZmZmZmZmZjgxNTRhOGYzPl0gYWxsb2NfZmlsZSsweDMzLzB4MWIwCiAgICBbPGZmZmZm
-ZmZmODE1NGFiMjI+XSBhbGxvY19maWxlX3BzZXVkbysweGIyLzB4MTQwCiAgICBbPGZmZmZmZmZm
-ODE1NTkyMTg+XSBjcmVhdGVfcGlwZV9maWxlcysweDEzOC8weDJlMAogICAgWzxmZmZmZmZmZjgx
-MjZjNzkzPl0gdW1kX3NldHVwKzB4MzMvMHgyMjAKICAgIFs8ZmZmZmZmZmY4MTI1MzU3ND5dIGNh
-bGxfdXNlcm1vZGVoZWxwZXJfZXhlY19hc3luYysweGI0LzB4MWIwCiAgICBbPGZmZmZmZmZmODEw
-MDIyN2Y+XSByZXRfZnJvbV9mb3JrKzB4MWYvMHgzMAoKYWZ0ZXIgdGhlIFVNRCBwcm9jZXNzIGV4
-aXRzLCB0aGUgcGlwZV90b191bWgvcGlwZV9mcm9tX3VtaCBhbmQgdGdpZApuZWVkIHRvIGJlIHJl
-bGVhc2UuCgpGaXhlczogZDcxZmE1Yzk3NjNjICgiYnBmOiBBZGQga2VybmVsIG1vZHVsZSB3aXRo
-IHVzZXIgbW9kZSBkcml2ZXIgdGhhdCBwb3B1bGF0ZXMgYnBmZnMuIikKUmVwb3J0ZWQtYnk6IHN5
-emJvdCs0NDkwOGJiNTZkMmJmZTU2YjI4ZUBzeXprYWxsZXIuYXBwc3BvdG1haWwuY29tClNpZ25l
-ZC1vZmYtYnk6IFpxaWFuZyA8cWlhbmcuemhhbmdAd2luZHJpdmVyLmNvbT4KLS0tCiB2MS0+djI6
-CiBKdWRnZSB3aGV0aGVyIHRoZSBwb2ludGVyIHZhcmlhYmxlIHRnaWQgaXMgdmFsaWQuCgoga2Vy
-bmVsL2JwZi9wcmVsb2FkL2JwZl9wcmVsb2FkX2tlcm4uYyB8IDI0ICsrKysrKysrKysrKysrKysr
-KysrLS0tLQogMSBmaWxlIGNoYW5nZWQsIDIwIGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0p
-CgpkaWZmIC0tZ2l0IGEva2VybmVsL2JwZi9wcmVsb2FkL2JwZl9wcmVsb2FkX2tlcm4uYyBiL2tl
-cm5lbC9icGYvcHJlbG9hZC9icGZfcHJlbG9hZF9rZXJuLmMKaW5kZXggNzljNTc3MjQ2NWYxLi41
-MDA5ODc1ZjAxZDMgMTAwNjQ0Ci0tLSBhL2tlcm5lbC9icGYvcHJlbG9hZC9icGZfcHJlbG9hZF9r
-ZXJuLmMKKysrIGIva2VybmVsL2JwZi9wcmVsb2FkL2JwZl9wcmVsb2FkX2tlcm4uYwpAQCAtNCw2
-ICs0LDcgQEAKICNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4KICNpbmNsdWRlIDxsaW51eC9waWQu
-aD4KICNpbmNsdWRlIDxsaW51eC9mcy5oPgorI2luY2x1ZGUgPGxpbnV4L2ZpbGUuaD4KICNpbmNs
-dWRlIDxsaW51eC9zY2hlZC9zaWduYWwuaD4KICNpbmNsdWRlICJicGZfcHJlbG9hZC5oIgoKQEAg
-LTIwLDYgKzIxLDE0IEBAIHN0YXRpYyBzdHJ1Y3QgYnBmX3ByZWxvYWRfb3BzIHVtZF9vcHMgPSB7
-CiAgICAgICAgLm93bmVyID0gVEhJU19NT0RVTEUsCiB9OwoKK3N0YXRpYyB2b2lkIGJwZl9wcmVs
-b2FkX3VtaF9jbGVhbnVwKHN0cnVjdCB1bWRfaW5mbyAqaW5mbykKK3sKKyAgICAgICBmcHV0KGlu
-Zm8tPnBpcGVfdG9fdW1oKTsKKyAgICAgICBmcHV0KGluZm8tPnBpcGVfZnJvbV91bWgpOworICAg
-ICAgIHB1dF9waWQoaW5mby0+dGdpZCk7CisgICAgICAgaW5mby0+dGdpZCA9IE5VTEw7Cit9CisK
-IHN0YXRpYyBpbnQgcHJlbG9hZChzdHJ1Y3QgYnBmX3ByZWxvYWRfaW5mbyAqb2JqKQogewogICAg
-ICAgIGludCBtYWdpYyA9IEJQRl9QUkVMT0FEX1NUQVJUOwpAQCAtNjEsOCArNzAsMTAgQEAgc3Rh
-dGljIGludCBmaW5pc2godm9pZCkKICAgICAgICBpZiAobiAhPSBzaXplb2YobWFnaWMpKQogICAg
-ICAgICAgICAgICAgcmV0dXJuIC1FUElQRTsKICAgICAgICB0Z2lkID0gdW1kX29wcy5pbmZvLnRn
-aWQ7Ci0gICAgICAgd2FpdF9ldmVudCh0Z2lkLT53YWl0X3BpZGZkLCB0aHJlYWRfZ3JvdXBfZXhp
-dGVkKHRnaWQpKTsKLSAgICAgICB1bWRfb3BzLmluZm8udGdpZCA9IE5VTEw7CisgICAgICAgaWYg
-KHRnaWQpIHsKKyAgICAgICAgICAgICAgIHdhaXRfZXZlbnQodGdpZC0+d2FpdF9waWRmZCwgdGhy
-ZWFkX2dyb3VwX2V4aXRlZCh0Z2lkKSk7CisgICAgICAgICAgICAgICBicGZfcHJlbG9hZF91bWhf
-Y2xlYW51cCgmdW1kX29wcy5pbmZvKTsKKyAgICAgICB9CiAgICAgICAgcmV0dXJuIDA7CiB9CgpA
-QCAtODAsMTAgKzkxLDE1IEBAIHN0YXRpYyBpbnQgX19pbml0IGxvYWRfdW1kKHZvaWQpCgogc3Rh
-dGljIHZvaWQgX19leGl0IGZpbmlfdW1kKHZvaWQpCiB7CisgICAgICAgc3RydWN0IHBpZCAqdGdp
-ZDsKICAgICAgICBicGZfcHJlbG9hZF9vcHMgPSBOVUxMOwogICAgICAgIC8qIGtpbGwgVU1EIGlu
-IGNhc2UgaXQncyBzdGlsbCB0aGVyZSBkdWUgdG8gZWFybGllciBlcnJvciAqLwotICAgICAgIGtp
-bGxfcGlkKHVtZF9vcHMuaW5mby50Z2lkLCBTSUdLSUxMLCAxKTsKLSAgICAgICB1bWRfb3BzLmlu
-Zm8udGdpZCA9IE5VTEw7CisgICAgICAgdGdpZCA9IHVtZF9vcHMuaW5mby50Z2lkOworICAgICAg
-IGlmICh0Z2lkKSB7CisgICAgICAgICAgICAgICBraWxsX3BpZCh0Z2lkLCBTSUdLSUxMLCAxKTsK
-KyAgICAgICAgICAgICAgIHdhaXRfZXZlbnQodGdpZC0+d2FpdF9waWRmZCwgdGhyZWFkX2dyb3Vw
-X2V4aXRlZCh0Z2lkKSk7CisgICAgICAgICAgICAgICBicGZfcHJlbG9hZF91bWhfY2xlYW51cCgm
-dW1kX29wcy5pbmZvKTsKKyAgICAgICB9CiAgICAgICAgdW1kX3VubG9hZF9ibG9iKCZ1bWRfb3Bz
-LmluZm8pOwogfQogbGF0ZV9pbml0Y2FsbChsb2FkX3VtZCk7Ci0tCjIuMTcuMQoK
+On Tue, Mar 16, 2021 at 2:25 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Mar 10, 2021 at 2:02 PM Florent Revest <revest@chromium.org> wrote:
+> >
+> > The implementation takes inspiration from the existing bpf_trace_printk
+> > helper but there are a few differences:
+> >
+> > To allow for a large number of format-specifiers, parameters are
+> > provided in an array, like in bpf_seq_printf.
+> >
+> > Because the output string takes two arguments and the array of
+> > parameters also takes two arguments, the format string needs to fit in
+> > one argument. But because ARG_PTR_TO_CONST_STR guarantees to point to a
+> > NULL-terminated read-only map, we don't need a format string length arg.
+> >
+> > Because the format-string is known at verification time, we also move
+> > most of the format string validation, currently done in formatting
+> > helper calls, into the verifier logic. This makes debugging easier and
+> > also slightly improves the runtime performance.
+> >
+> > Signed-off-by: Florent Revest <revest@chromium.org>
+> > ---
+> >  include/linux/bpf.h            |   4 +
+> >  include/uapi/linux/bpf.h       |  28 +++++++
+> >  kernel/bpf/verifier.c          | 137 +++++++++++++++++++++++++++++++++
+> >  kernel/trace/bpf_trace.c       | 110 ++++++++++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h |  28 +++++++
+> >  5 files changed, 307 insertions(+)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 7b5319d75b3e..d78175c9a887 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -1902,6 +1902,10 @@ extern const struct bpf_func_proto bpf_task_storage_get_proto;
+> >  extern const struct bpf_func_proto bpf_task_storage_delete_proto;
+> >  extern const struct bpf_func_proto bpf_for_each_map_elem_proto;
+> >
+> > +#define MAX_SNPRINTF_VARARGS           12
+> > +#define MAX_SNPRINTF_MEMCPY            6
+> > +#define MAX_SNPRINTF_STR_LEN           128
+> > +
+> >  const struct bpf_func_proto *bpf_tracing_func_proto(
+> >         enum bpf_func_id func_id, const struct bpf_prog *prog);
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 2d3036e292a9..3cbdc8ae00e7 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -4660,6 +4660,33 @@ union bpf_attr {
+> >   *     Return
+> >   *             The number of traversed map elements for success, **-EINVAL** for
+> >   *             invalid **flags**.
+> > + *
+> > + * long bpf_snprintf(char *out, u32 out_size, const char *fmt, u64 *data, u32 data_len)
+>
+> bpf_snprintf_btf calls out and out_size str and str_size, let's be consistent?
+>
+> > + *     Description
+> > + *             Outputs a string into the **out** buffer of size **out_size**
+> > + *             based on a format string stored in a read-only map pointed by
+> > + *             **fmt**.
+> > + *
+> > + *             Each format specifier in **fmt** corresponds to one u64 element
+> > + *             in the **data** array. For strings and pointers where pointees
+> > + *             are accessed, only the pointer values are stored in the *data*
+> > + *             array. The *data_len* is the size of *data* in bytes.
+> > + *
+> > + *             Formats **%s** and **%p{i,I}{4,6}** require to read kernel
+> > + *             memory. Reading kernel memory may fail due to either invalid
+> > + *             address or valid address but requiring a major memory fault. If
+> > + *             reading kernel memory fails, the string for **%s** will be an
+> > + *             empty string, and the ip address for **%p{i,I}{4,6}** will be 0.
+> > + *             Not returning error to bpf program is consistent with what
+> > + *             **bpf_trace_printk**\ () does for now.
+> > + *
+> > + *     Return
+> > + *             The strictly positive length of the printed string, including
+> > + *             the trailing NUL character. If the return value is greater than
+> > + *             **out_size**, **out** contains a truncated string, without a
+> > + *             trailing NULL character.
+>
+> this deviates from the behavior in other BPF helpers dealing with
+> strings. and it's extremely inconvenient for users to get
+> non-zero-terminated string. I think we should always zero-terminate.
+>
+> > + *
+> > + *             Or **-EBUSY** if the per-CPU memory copy buffer is busy.
+> >   */
+> >  #define __BPF_FUNC_MAPPER(FN)          \
+> >         FN(unspec),                     \
+> > @@ -4827,6 +4854,7 @@ union bpf_attr {
+> >         FN(sock_from_file),             \
+> >         FN(check_mtu),                  \
+> >         FN(for_each_map_elem),          \
+> > +       FN(snprintf),                   \
+> >         /* */
+> >
+> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index c99b2b67dc8d..3ab549df817b 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -5732,6 +5732,137 @@ static int check_reference_leak(struct bpf_verifier_env *env)
+> >         return state->acquired_refs ? -EINVAL : 0;
+> >  }
+> >
+> > +int check_bpf_snprintf_call(struct bpf_verifier_env *env,
+> > +                           struct bpf_reg_state *regs)
+> > +{
+>
+> can we please extra the printf format string parsing/checking logic
+> and re-use them across all functions? We now have at least 4 variants
+> of it, it's not great to say the least. I hope it's possible to
+> generalize it in such a way that the same function will parse the
+> string, and will record each expected argument and it's type, with
+> whatever extra flags we need to. That should make the printing part
+> simpler as well, as it will just follow "directions" from the parsing
+> part? Devil is in the details, of course :) But it's worthwhile to try
+> at least.
+
+Eheh this is gonna be fun, I'll try it out and see if I can come up
+with something ~decent. :)
+
+Thanks for the thorough review! I agree with all your points and will
+address them in v2.
+
+> > +       struct bpf_reg_state *fmt_reg = &regs[BPF_REG_3];
+> > +       struct bpf_reg_state *data_len_reg = &regs[BPF_REG_5];
+> > +       struct bpf_map *fmt_map = fmt_reg->map_ptr;
+> > +       int err, fmt_map_off, i, fmt_cnt = 0, memcpy_cnt = 0, num_args;
+> > +       u64 fmt_addr;
+> > +       char *fmt;
+> > +
+> > +       /* data must be an array of u64 so data_len must be a multiple of 8 */
+> > +       if (data_len_reg->var_off.value & 7)
+> > +               return -EINVAL;
+> > +       num_args = data_len_reg->var_off.value / 8;
+> > +
+> > +       /* fmt being ARG_PTR_TO_CONST_STR guarantees that var_off is const
+> > +        * and map_direct_value_addr is set.
+> > +        */
+> > +       fmt_map_off = fmt_reg->off + fmt_reg->var_off.value;
+> > +       err = fmt_map->ops->map_direct_value_addr(fmt_map, &fmt_addr,
+> > +                                                 fmt_map_off);
+> > +       if (err)
+> > +               return err;
+> > +       fmt = (char *)fmt_addr;
+> > +
+>
+> [...] not fun to read this part over and over :)
+>
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +
+> >  static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+> >                              int *insn_idx_p)
+> >  {
+> > @@ -5846,6 +5977,12 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+> >                         return -EINVAL;
+> >         }
+> >
+> > +       if (func_id == BPF_FUNC_snprintf) {
+> > +               err = check_bpf_snprintf_call(env, regs);
+> > +               if (err < 0)
+> > +                       return err;
+> > +       }
+> > +
+> >         /* reset caller saved regs */
+> >         for (i = 0; i < CALLER_SAVED_REGS; i++) {
+> >                 mark_reg_not_init(env, regs, caller_saved[i]);
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 0d23755c2747..7b80759c10a9 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -1271,6 +1271,114 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
+> >         .arg5_type      = ARG_ANYTHING,
+> >  };
+> >
+> > +struct bpf_snprintf_buf {
+> > +       char buf[MAX_SNPRINTF_MEMCPY][MAX_SNPRINTF_STR_LEN];
+> > +};
+> > +static DEFINE_PER_CPU(struct bpf_snprintf_buf, bpf_snprintf_buf);
+> > +static DEFINE_PER_CPU(int, bpf_snprintf_buf_used);
+> > +
+> > +BPF_CALL_5(bpf_snprintf, char *, out, u32, out_size, char *, fmt, u64 *, args,
+> > +          u32, args_len)
+> > +{
+> > +       int err, i, buf_used, copy_size, fmt_cnt = 0, memcpy_cnt = 0;
+> > +       u64 params[MAX_SNPRINTF_VARARGS];
+> > +       struct bpf_snprintf_buf *bufs;
+> > +
+> > +       buf_used = this_cpu_inc_return(bpf_snprintf_buf_used);
+> > +       if (WARN_ON_ONCE(buf_used > 1)) {
+> > +               err = -EBUSY;
+> > +               goto out;
+> > +       }
+> > +
+> > +       bufs = this_cpu_ptr(&bpf_snprintf_buf);
+> > +
+> > +       /*
+> > +        * The verifier has already done most of the heavy-work for us in
+> > +        * check_bpf_snprintf_call. We know that fmt is well formatted and that
+> > +        * args_len is valid. The only task left is to convert some of the
+> > +        * arguments. For the %s and %pi* specifiers, we need to read buffers
+> > +        * from a kernel address during the helper call.
+> > +        */
+> > +       for (i = 0; fmt[i] != '\0'; i++) {
+>
+> same function should hopefully be reused here
+>
+> > +       }
+> > +
+> > +       /* Maximumly we can have MAX_SNPRINTF_VARARGS parameters, just give
+> > +        * all of them to snprintf().
+> > +        */
+> > +       err = snprintf(out, out_size, fmt, params[0], params[1], params[2],
+> > +                      params[3], params[4], params[5], params[6], params[7],
+> > +                      params[8], params[9], params[10], params[11]) + 1;
+> > +
+> > +out:
+> > +       this_cpu_dec(bpf_snprintf_buf_used);
+> > +       return err;
+> > +}
+> > +
+> > +static const struct bpf_func_proto bpf_snprintf_proto = {
+> > +       .func           = bpf_snprintf,
+> > +       .gpl_only       = true,
+> > +       .ret_type       = RET_INTEGER,
+> > +       .arg1_type      = ARG_PTR_TO_MEM,
+> > +       .arg2_type      = ARG_CONST_SIZE,
+>
+> can we mark is CONST_SIZE_OR_ZERO and just do nothing on zero at
+> runtime? I still have scars from having to deal (prove, actually) with
+> ARG_CONST_SIZE (> 0) limitations in perf_event_output. No need to make
+> anyone's life harder, if it's easy to just do something sensible on
+> zero (i.e., do nothing, but emit desired amount of bytes).
+>
+> > +       .arg3_type      = ARG_PTR_TO_CONST_STR,
+> > +       .arg4_type      = ARG_PTR_TO_MEM,
+> > +       .arg5_type      = ARG_CONST_SIZE_OR_ZERO,
+> > +};
+> > +
+> >  const struct bpf_func_proto *
+> >  bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> >  {
+> > @@ -1373,6 +1481,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> >                 return &bpf_task_storage_delete_proto;
+> >         case BPF_FUNC_for_each_map_elem:
+> >                 return &bpf_for_each_map_elem_proto;
+> > +       case BPF_FUNC_snprintf:
+> > +               return &bpf_snprintf_proto;
+>
+> why just tracing? can't all BPF programs use this functionality?
+>
+> >         default:
+> >                 return NULL;
+> >         }
+> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> > index 2d3036e292a9..3cbdc8ae00e7 100644
+> > --- a/tools/include/uapi/linux/bpf.h
+> > +++ b/tools/include/uapi/linux/bpf.h
+> > @@ -4660,6 +4660,33 @@ union bpf_attr {
+> >   *     Return
+> >   *             The number of traversed map elements for success, **-EINVAL** for
+> >   *             invalid **flags**.
+> > + *
+> > + * long bpf_snprintf(char *out, u32 out_size, const char *fmt, u64 *data, u32 data_len)
+> > + *     Description
+> > + *             Outputs a string into the **out** buffer of size **out_size**
+> > + *             based on a format string stored in a read-only map pointed by
+> > + *             **fmt**.
+> > + *
+> > + *             Each format specifier in **fmt** corresponds to one u64 element
+> > + *             in the **data** array. For strings and pointers where pointees
+> > + *             are accessed, only the pointer values are stored in the *data*
+> > + *             array. The *data_len* is the size of *data* in bytes.
+> > + *
+> > + *             Formats **%s** and **%p{i,I}{4,6}** require to read kernel
+> > + *             memory. Reading kernel memory may fail due to either invalid
+> > + *             address or valid address but requiring a major memory fault. If
+> > + *             reading kernel memory fails, the string for **%s** will be an
+> > + *             empty string, and the ip address for **%p{i,I}{4,6}** will be 0.
+> > + *             Not returning error to bpf program is consistent with what
+> > + *             **bpf_trace_printk**\ () does for now.
+> > + *
+> > + *     Return
+> > + *             The strictly positive length of the printed string, including
+> > + *             the trailing NUL character. If the return value is greater than
+> > + *             **out_size**, **out** contains a truncated string, without a
+> > + *             trailing NULL character.
+> > + *
+> > + *             Or **-EBUSY** if the per-CPU memory copy buffer is busy.
+> >   */
+> >  #define __BPF_FUNC_MAPPER(FN)          \
+> >         FN(unspec),                     \
+> > @@ -4827,6 +4854,7 @@ union bpf_attr {
+> >         FN(sock_from_file),             \
+> >         FN(check_mtu),                  \
+> >         FN(for_each_map_elem),          \
+> > +       FN(snprintf),                   \
+> >         /* */
+> >
+> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > --
+> > 2.30.1.766.gb4fecdf3b7-goog
+> >
