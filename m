@@ -2,143 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B88D33DE5E
-	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 21:04:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C4F33DE73
+	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 21:15:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240772AbhCPUEZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Mar 2021 16:04:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
+        id S229743AbhCPUOv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Mar 2021 16:14:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240766AbhCPUEB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Mar 2021 16:04:01 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BEBC061762
-        for <bpf@vger.kernel.org>; Tue, 16 Mar 2021 13:03:59 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id e21so16918784vsh.5
-        for <bpf@vger.kernel.org>; Tue, 16 Mar 2021 13:03:59 -0700 (PDT)
+        with ESMTP id S229549AbhCPUO0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Mar 2021 16:14:26 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E1AC06174A
+        for <bpf@vger.kernel.org>; Tue, 16 Mar 2021 13:14:25 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id p24so18894975vsj.13
+        for <bpf@vger.kernel.org>; Tue, 16 Mar 2021 13:14:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TPipVrGjrQxxmOVNuIBzPVnIBTu28PmDlzKg2GNjQ4w=;
-        b=jLKEmdBUcOmVx8BH5FH0Ob7hA8LYXzgzXgnZMFC8OWxGFK5gLNFUvYq5UBkcaV/n41
-         CSl9uXuZ7eDzrE2Fbe0XkoiYcR4AJrhOccfdB9QfenGbjAk0C9jdHjDf9BCcATIjVYYg
-         owlni7aiSYTIvNMMwzfTN9SnEW+uBh/c1uegSZD6E9XDNabL1D08DeDVknFjQIudReZw
-         C8dYJ63NTGSs0myOcXqDM3Y4Jfv73XY4JW683l+9vzY3GBTBtHxd1eG46i28rLBGgtdU
-         pBOZB91O8b9qyb+3Glvu8Usyw/QlArRStp0AN1ymV9JeSR2HCQ23dAeQdVkjzQCDqhMF
-         7org==
+        bh=nxM4Rakpj1tpDuvsqlthouTzebEqmRLf1OH+eh/uE4I=;
+        b=kD5FzStN94dS4ziEBvOIAYbgfqc2PMS/A9tGta8oXjc1wy6FLnSAmaHgzyPyzjkxNc
+         OTtLvNYLaT9HzFMN0xycGNKU0XBcbNaYMfy5pNo3KJ55G4UrJi/r51fZWrAe82WG0psN
+         D2DYy/3ELOeESOtdw0iKGuPRmCnk50hVc7ZT2S87g1NVyddwoEhuxQWplBi3/Ac4P7Dq
+         Bba3rBttfxVyhhvUoUG3RSUOqwZ8S7hG0rsOrcSpAEvqbPKZgxeXK9PqZCOEs9zb4GKd
+         TJiBnq5YYpZRNH2ODG4QyP2EUil9xvgJuOxwbRYcckRaUVaEnwECwPIxfwfPndL/yg6Q
+         IWhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TPipVrGjrQxxmOVNuIBzPVnIBTu28PmDlzKg2GNjQ4w=;
-        b=MnbeFx1mp4XWXCp8c2Goj4c4sa6BpNf232UGIB7NQDJE+/AbTQbntc3ihiZIEH8aqh
-         b9s2hwjEFMYJ0o9Dcv4b9WDusKx7+Y+JFw99QuyKRI9vem4S7PDy09LuFqQRZk1yrD20
-         n95/W5bLR0URvc8CFK/QUmkJtiL0PRKkA/yJtX81yplkCQ+vw2UgI6OXYXc5ywK2Ob/R
-         /E+sGQcwzK+ZdQaNUIRtLaFV0HxZMSXkEe87l3mSegf42payrO5OwdCBzNFUlMpEjYmQ
-         w30c4Wr+fPKgoSnDOrmk/nexZR7yTnZwQCYrfvw9AzI+vqVDNVoyEmfIdan3wZJPkiHf
-         /h+Q==
-X-Gm-Message-State: AOAM530AUMsy5KYtiEKYC0czurKrPgQtFMVGX3f2jK+d9uOat2aEcD0p
-        BBVBWHOEyBFCrDo8dC0xMf5C693mmiBpq2W05rMLiw==
-X-Google-Smtp-Source: ABdhPJw6NBRUZ2FvsaUUCbc1zBpRsZS9KPX4N/MlU3I48neHaroJmlDX4wAt9eD3uv9HshZ02/cu3wPksGKViLa1RVs=
-X-Received: by 2002:a67:db98:: with SMTP id f24mr1041028vsk.13.1615925037456;
- Tue, 16 Mar 2021 13:03:57 -0700 (PDT)
+        bh=nxM4Rakpj1tpDuvsqlthouTzebEqmRLf1OH+eh/uE4I=;
+        b=FR2ukKrP+HnvSeUZ/ks2FH2RaqceNxVObqwFG9J8SPSIezpvMuE3iBK7R87IXxOK5O
+         b9QUoqXVUCwiGV/kg/19s4FsEkMXzhSWrVJQ8oEB50vG2UCM/Xv3EO0L0wblx2vJkv+i
+         hmDpTI6hAh/bNQGVFkgmSrpNtbU4YeblwYovEpvhoQflmHNCr2b1P+l/fcoyVPjZh7N8
+         EUPZl/MBOMblYJRmwbxd35hAjO6QP/D4IPs1tt+MujzpmMGw7RucoS2xeNmvMfv0dKh1
+         vG2H5+r4y4YY+KP4/YOMxZxvfhVyh5VlNrYRMqT7/upKnX3oYPFtXwsF5NzPUJbEl5F0
+         70Cg==
+X-Gm-Message-State: AOAM533t+koTl6UP4J9opnZxVxZ35ycFsEn2bVtSXVdkr10+Sigseqba
+        b2UjxrHfKyJ+/SCeD3SpdZH/6/3uQYetLUO+UUI=
+X-Google-Smtp-Source: ABdhPJz068FgHL7OLrS3Gnb9EJsCCZUOSyBbJE9+fN3N1Faqye8tpNn+OA0ix8CbQyrhHVfjCFGjYNB7D/3waqa4qGs=
+X-Received: by 2002:a67:e043:: with SMTP id n3mr1060772vsl.22.1615925664943;
+ Tue, 16 Mar 2021 13:14:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210312004919.669614-1-samitolvanen@google.com>
- <20210312004919.669614-5-samitolvanen@google.com> <202103111837.813997B4@keescook>
-In-Reply-To: <202103111837.813997B4@keescook>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 16 Mar 2021 13:03:45 -0700
-Message-ID: <CABCJKucW8dwXzEK-NZEHyQzN1wu-sGOiOqXFfR=C-PHvsn1+Dg@mail.gmail.com>
-Subject: Re: [PATCH 04/17] module: cfi: ensure __cfi_check alignment
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        bpf@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <CAO658oXG4HEm0rGEW-==0kaTmqenDUC_GM-qi7CEjwSakbnJRw@mail.gmail.com>
+ <CAEf4BzZy0XDYcchPkarUw5AusO7LZfOnswuOyUqakkVJ-ksCDQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZy0XDYcchPkarUw5AusO7LZfOnswuOyUqakkVJ-ksCDQ@mail.gmail.com>
+From:   Grant Seltzer Richman <grantseltzer@gmail.com>
+Date:   Tue, 16 Mar 2021 16:14:13 -0400
+Message-ID: <CAO658oUJApo-1RMmkkj=y7oH-LAHLd48E0aqobTiTRSuYm617w@mail.gmail.com>
+Subject: Re: Generating libbpf API documentation
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 6:39 PM Kees Cook <keescook@chromium.org> wrote:
+On Mon, Mar 15, 2021 at 8:47 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Thu, Mar 11, 2021 at 04:49:06PM -0800, Sami Tolvanen wrote:
-> > CONFIG_CFI_CLANG_SHADOW assumes the __cfi_check() function is page
-> > aligned and at the beginning of the .text section. While Clang would
-> > normally align the function correctly, it fails to do so for modules
-> > with no executable code.
+> On Mon, Mar 15, 2021 at 9:51 AM Grant Seltzer Richman
+> <grantseltzer@gmail.com> wrote:
 > >
-> > This change ensures the correct __cfi_check() location and
-> > alignment. It also discards the .eh_frame section, which Clang can
-> > generate with certain sanitizers, such as CFI.
+> > Hi all,
 > >
-> > Link: https://bugs.llvm.org/show_bug.cgi?id=46293
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > ---
-> >  scripts/module.lds.S | 14 +++++++++++++-
-> >  1 file changed, 13 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/scripts/module.lds.S b/scripts/module.lds.S
-> > index 168cd27e6122..552ddb084f76 100644
-> > --- a/scripts/module.lds.S
-> > +++ b/scripts/module.lds.S
-> > @@ -3,10 +3,13 @@
-> >   * Archs are free to supply their own linker scripts.  ld will
-> >   * combine them automatically.
-> >   */
-> > +#include <asm/page.h>
-> > +
-> >  SECTIONS {
-> >       /DISCARD/ : {
-> >               *(.discard)
-> >               *(.discard.*)
-> > +             *(.eh_frame)
-> >       }
-> >
-> >       __ksymtab               0 : { *(SORT(___ksymtab+*)) }
-> > @@ -40,7 +43,16 @@ SECTIONS {
-> >               *(.rodata..L*)
-> >       }
-> >
-> > -     .text : { *(.text .text.[0-9a-zA-Z_]*) }
-> > +#ifdef CONFIG_CFI_CLANG
-> > +     /*
-> > +      * With CFI_CLANG, ensure __cfi_check is at the beginning of the
-> > +      * .text section, and that the section is aligned to page size.
-> > +      */
-> > +     .text : ALIGN(PAGE_SIZE) {
-> > +             *(.text.__cfi_check)
-> > +             *(.text .text.[0-9a-zA-Z_]* .text..L.cfi*)
-> > +     }
-> > +#endif
+> > I have been experimenting with ways to contribute documentation to
+> > libbpf to make it easier for developers of bpf projects to use it.
+> > With the goal of making a documentation site that is easy to
+> > maintain/generate I found Doxygen (many of you may have experience
+> > with it, I did not). I set up a CI/CD workflow using github actions
+> > that runs doxygen on the libbpf mirror hosted there, and hosts the
+> > produced HTML using netlify. You can find the currently hosted version
+> > of it at https://libbpf-docs.netlify.app (I would gladly donate a real
+> > domain name for this purpose). The docs generation workflow is in my
+> > github repo here: https://github.com/grantseltzer/libbpf-docs
 >
-> Whoops, I think this reverts to the default .text declaration when
-> CONFIG_CFI_CLANG is unset.
-
-Oops, thanks for pointing this out. I'll fix it in v2.
-
-> I think the only thing that needs the ifdef is the ALIGN, yes? Perhaps
-> something like this?
+> Thanks for investigating this! I've look at libbpf-docs.netlify.app,
+> and it seems like it just contains a list of structs and their fields
+> (both those that are part of libbpf API, as well as internal). Out of
+> all functions only two are listed there (libbpf_nla_parse_nested and
+> libbpf_nla_parse) and both are not part of libbpf API as well. So I
+> understand that I don't see any comments due to the '/**' format
+> (though it would be easy to run sed script adding it everywhere, just
+> as part of an experiment), but I'm not sure why none of API functions
+> are present there?
 >
-> #ifdef CONFIG_CFI_CLANG
-> # define ALIGN_CFI ALIGN(PAGE_SIZE)
-> #else
-> # define ALIGN_CFI
-> #endif
+> I think kernel docs used to be hosted on readthedocs.org, seems like
+> they are also providing hosting for open-source projects, so that
+> would solve the problem of the hosting. Have you looked at that
+> solution? It definitely has a bit more modern UI that
+> Doxygen-generated one :) but I don't know what are the real
+> differences between Sphinx and Doxygen and which one we should choose.
 >
->         .text : ALIGN_CFI {
->                 *(.text.__cfi_check)
->                 *(.text .text.[0-9a-zA-Z_]* .text..L.cfi*)
->         }
+> >
+> > In order to make this work all we would need is to format comments
+> > above functions we want to document. Doxygen requires that the comment
+> > just be in a block that starts with `/**`. I don't think doxygen
+> > specific directives should be committed to code but I think this is a
+> > fine convention to follow. Other doxygen directives (i.e. having
+> > `@file` in every file) can be faked using a step I have in the github
+> > actions.
+> >
+> > What does everyone think? Can we agree on this convention and start
+> > contributing documentation in this way? Any pitfalls to doxygen I'm
+> > not familiar with?
+> >
+> > Thanks!
 
-Agreed, that looks better.
+As far as I understand Doxygen's only criteria for generating
+documentation for functions is if the correctly formatted comment is
+present. I've changed the repo that the libbpf-docs.netlify.app
+website uses to track a fork libbpf I have on my personal account. I
+added comments above some ringbuffer functions to demonstrate this.
 
-Sami
+Interestingly the two functions that already show up
+(libbpf_nla_parse/parse_nested) have comments which are specifically
+formatted for doxygen, even including directives for arguments and
+related functions.
+
+I have heard of Sphinx/read-the-docs but didn't look too deeply into
+it, I'll check it out and report back with my findings!
