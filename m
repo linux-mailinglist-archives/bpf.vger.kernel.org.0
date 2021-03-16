@@ -2,75 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9DB633D650
-	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 16:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0945133D7A5
+	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 16:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237651AbhCPPB2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Mar 2021 11:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230227AbhCPPBN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:01:13 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2192C06174A;
-        Tue, 16 Mar 2021 08:01:12 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 15so20873537ljj.0;
-        Tue, 16 Mar 2021 08:01:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NNvjVz1vaYlHJshO7OABYsYjC9M/PbANTgTBjitjTL4=;
-        b=sTr2THG5sRsL6Ywlm61WFLumBxXwk1mAoSr1oOk5jccLunuf//Jcwm65OF4gE61h3a
-         ZDO84SV2qOAw9kvZUcWq21efOrWAEcJAyyl3sBUHrQM2OORex+5tiV8OeV4jBoEO7iPU
-         ugJGUsHKJOlghl5t+FxUfz0YopgLDMkRtjHRyjXNZYkc1MU6boQQCRMLxzmyzr0CIovv
-         z84DR+clKjigHbEjmiTfJzWqIrAfdCybba99+TJLyg7KTenrO2kHyYExh1idq0eMO+mb
-         4NySouhStDVWNVK1S7VwWCI9tgpcM7p03BIHdHtcXiTPLm5l0mQksUIYrx/FlThC9tEn
-         teZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NNvjVz1vaYlHJshO7OABYsYjC9M/PbANTgTBjitjTL4=;
-        b=o9jyAhXt748PLBT73yW7iVSjneX0Aw1gpCsJPVtYqf8eSlBxstQCtPvYGR5T1WBbdN
-         j2SyUbh1YkZWNaEH7JdkDgwUDT/kTxCX7xw1hy4HYi/7NUYeR8NbeCHqWBsp+OerAty5
-         IRMsVuLA1CwtcKLqeEcuFUQ/AqaUvhKhuAzml3BEYYDHNTdz9AP31d7q4/S7OuozCuiG
-         uWlzb0kFdwCZfElTme/lDu+yzxYtqBnvrnig54i2BTsBN6geosr2HfnKJOcaTiqvSWy7
-         sRlxzJ1AHlJXkhe/OSw10DmkxV1ESD94ZqxZPod3T6EoNGbmkXB7+kJAHpl6EMleGni3
-         Vj3w==
-X-Gm-Message-State: AOAM532N4Wf8Zf9NVP40jwfHZH61A+Ac92uZ2k/g+0yO49CJ04ewDqqb
-        4V3/zx47O5eVxiUaGRhzj0Opg6VGUo9ywhNnrs4=
-X-Google-Smtp-Source: ABdhPJxPqaGNyiwjULN2DKgfnb4h1VL+o5r2Ai3b5TQE/Q+Z2mYX5ge5RX0uAM50vxiqtToFhzBdlsB4i43aki//iB4=
-X-Received: by 2002:a2e:3608:: with SMTP id d8mr2980276lja.21.1615906870926;
- Tue, 16 Mar 2021 08:01:10 -0700 (PDT)
+        id S230045AbhCPPeW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Mar 2021 11:34:22 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39188 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237018AbhCPPdi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 16 Mar 2021 11:33:38 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12GFWU6o028602;
+        Tue, 16 Mar 2021 11:33:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=wvx0A17d10zrF1mcTCQau1RHRzJqamyX8Hub+5TYDsg=;
+ b=jcB8jayUDWXcLDs8vv/3dlHCZ6kG/mXfNtzU52j1DlCh2TVRuv4IzWHSdULLYfSVaDN6
+ Pocc6gDD8AjHeAXEdo2X1K0rsIA9+2ZXrKwNqB691CnyAJZoxqe/zduxA2T33zz2t9qR
+ DoU9zGwXDMNjRW3IfbCDc05AdUxndf8Srm/tSt7ARzswypWmpLKlgi4ZNo/wMBTC9Jrj
+ 4qVmwEBvo6CleNmJntgUdxQzteHYLqoo3elFFEfDbyG47FoaELSu+HCvvBmb/+PCnNPR
+ Kd8OS9X/lzmZs0LKujf2VKYzkTy1Q6bPFkW8/xBbE6KiyQMoH5ePVMIGFfGX345JiuRx kQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37ap2tj1ns-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Mar 2021 11:33:19 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12GFWnQA031997;
+        Tue, 16 Mar 2021 11:33:19 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37ap2tj1n0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Mar 2021 11:33:18 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12GFKemN006178;
+        Tue, 16 Mar 2021 15:33:17 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06fra.de.ibm.com with ESMTP id 378mnh9jrt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 16 Mar 2021 15:33:16 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12GFXEAU44630412
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 16 Mar 2021 15:33:14 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9E2AE52051;
+        Tue, 16 Mar 2021 15:33:14 +0000 (GMT)
+Received: from bangoria.ibmuc.com (unknown [9.199.38.113])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 05C825205A;
+        Tue, 16 Mar 2021 15:33:10 +0000 (GMT)
+From:   Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+To:     ast@kernel.org, shuah@kernel.org
+Cc:     ravi.bangoria@linux.ibm.com, daniel@iogearbox.net, yhs@fb.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com,
+        john.fastabend@gmail.com, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH] selftests/bpf/get_cgroup_id: Use nanosleep() syscall instead of sleep()
+Date:   Tue, 16 Mar 2021 21:00:48 +0530
+Message-Id: <20210316153048.136447-1-ravi.bangoria@linux.ibm.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210315085816.21413-1-qiang.zhang@windriver.com> <DM6PR11MB4202D95C3B579C7A6F381A97FF6B9@DM6PR11MB4202.namprd11.prod.outlook.com>
-In-Reply-To: <DM6PR11MB4202D95C3B579C7A6F381A97FF6B9@DM6PR11MB4202.namprd11.prod.outlook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 16 Mar 2021 08:00:59 -0700
-Message-ID: <CAADnVQ+r=8xRjsjFq0Kq0EV-s10AqCsuTjwmP1JDA3NnyiuOKw@mail.gmail.com>
-Subject: Re: [PATCH v2] bpf: Fix memory leak in copy_process()
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzbot+44908bb56d2bfe56b28e@syzkaller.appspotmail.com" 
-        <syzbot+44908bb56d2bfe56b28e@syzkaller.appspotmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-16_05:2021-03-16,2021-03-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 lowpriorityscore=0 adultscore=0 suspectscore=0
+ priorityscore=1501 spamscore=0 mlxscore=0 phishscore=0 clxscore=1011
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2103160104
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 4:29 AM Zhang, Qiang <Qiang.Zhang@windriver.com> wrote:
->
-> Hello Alexei Starovoitov Daniel Borkmann
-> Please  review this patch.
+Glibc sleep() switched to clock_nanosleep() from nanosleep(),
+thus syscalls:sys_enter_nanosleep tracepoint is not hitting
+which is causing testcase failure. Instead of depending on
+glibc sleep(), call nanosleep() systemcall directly.
 
-Please don't top post.
+Before:
+  # ./get_cgroup_id_user
+  ...
+  main:FAIL:compare_cgroup_id kern cgid 0 user cgid 483
+
+After:
+  # ./get_cgroup_id_user
+  ...
+  main:PASS:compare_cgroup_id
+
+Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+---
+ tools/testing/selftests/bpf/get_cgroup_id_user.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/get_cgroup_id_user.c b/tools/testing/selftests/bpf/get_cgroup_id_user.c
+index b8d6aef99db4..99628e1a1e58 100644
+--- a/tools/testing/selftests/bpf/get_cgroup_id_user.c
++++ b/tools/testing/selftests/bpf/get_cgroup_id_user.c
+@@ -57,6 +57,10 @@ int main(int argc, char **argv)
+ 	__u32 key = 0, pid;
+ 	int exit_code = 1;
+ 	char buf[256];
++	const struct timespec req = {
++		.tv_sec = 1,
++		.tv_nsec = 0,
++	};
+ 
+ 	cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
+ 	if (CHECK(cgroup_fd < 0, "cgroup_setup_and_join", "err %d errno %d\n", cgroup_fd, errno))
+@@ -115,7 +119,7 @@ int main(int argc, char **argv)
+ 		goto close_pmu;
+ 
+ 	/* trigger some syscalls */
+-	sleep(1);
++	syscall(__NR_nanosleep, &req, NULL);
+ 
+ 	err = bpf_map_lookup_elem(cgidmap_fd, &key, &kcgid);
+ 	if (CHECK(err, "bpf_map_lookup_elem", "err %d errno %d\n", err, errno))
+-- 
+2.29.2
+
