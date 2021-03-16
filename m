@@ -2,174 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6743533CDF7
-	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 07:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F348D33CF13
+	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 09:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231760AbhCPGad (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Mar 2021 02:30:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230478AbhCPGa1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Mar 2021 02:30:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 948EB65169;
-        Tue, 16 Mar 2021 06:30:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1615876227;
-        bh=9V0KUrLMiXL6VT/H+rjc7n2huomnlDIWLOvYHtisMtE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TpfY2jKZtLeiOYq1Du+xi8AJXy35Cfcxz2F1Q6RvKH/uA1WO2mt8SFIClfFrloM7T
-         a90+TLD7l+lQIK24FVJ05nzEy9Z6qOU04fpWbAUg7KDtToKoLmJEDcANoyzbd7CsEc
-         6kEUScSjytuShT4qq8cyPmMeU3jgAHr8/8JaUPU2CkTKHmTfHYvSFX4NFxZDKVeLtY
-         +RaS9hH/FYjb4+s282y2kwNb/72SksBWIrIDY3V+7WZ26kJgQHVgTmmZ9msmJJyyEm
-         nBa6+uSqF6FU0wxlGZOAfFqq3/AZEYdPX665rfPfoTE/rnShwiqNFMZO2shPxbryd6
-         8BJFs84TZjt+A==
-Date:   Tue, 16 Mar 2021 15:30:22 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com
-Subject: Re: [PATCH -tip v2 00/10] kprobes: Fix stacktrace with kretprobes
-Message-Id: <20210316153022.70cc181a2b3e0f73923e54da@kernel.org>
-In-Reply-To: <20210316023003.xbmgce3ndkouu65e@treble>
-References: <161553130371.1038734.7661319550287837734.stgit@devnote2>
-        <20210316023003.xbmgce3ndkouu65e@treble>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232306AbhCPIAJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Mar 2021 04:00:09 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:58570 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231848AbhCPH7s (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 16 Mar 2021 03:59:48 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0US7E8df_1615881579;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0US7E8df_1615881579)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 16 Mar 2021 15:59:44 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     shuah@kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] selftests/bpf: fix warning comparing pointer to 0
+Date:   Tue, 16 Mar 2021 15:59:37 +0800
+Message-Id: <1615881577-3493-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 15 Mar 2021 21:30:03 -0500
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+Fix the following coccicheck warning:
 
-> On Fri, Mar 12, 2021 at 03:41:44PM +0900, Masami Hiramatsu wrote:
-> > Hello,
-> > 
-> > Here is the 2nd version of the series to fix the stacktrace with kretprobe.
-> > 
-> > The 1st series is here;
-> > 
-> > https://lore.kernel.org/bpf/161495873696.346821.10161501768906432924.stgit@devnote2/
-> > 
-> > In this version I merged the ORC unwinder fix for kretprobe which discussed in the
-> > previous thread. [3/10] is updated according to the Miroslav's comment. [4/10] is
-> > updated for simplify the code. [5/10]-[9/10] are discussed in the previsous tread
-> > and are introduced to the series.
-> > 
-> > Daniel, can you also test this again? I and Josh discussed a bit different
-> > method and I've implemented it on this version.
-> > 
-> > This actually changes the kretprobe behavisor a bit, now the instraction pointer in
-> > the pt_regs passed to kretprobe user handler is correctly set the real return
-> > address. So user handlers can get it via instruction_pointer() API.
-> 
-> When I add WARN_ON(1) to a test kretprobe, it doesn't unwind properly.
-> 
-> show_trace_log_lvl() reads the entire stack in lockstep with calls to
-> the unwinder so that it can decide which addresses get prefixed with
-> '?'.  So it expects to find an actual return address on the stack.
-> Instead it finds %rsp.  So it never syncs up with unwind_next_frame()
-> and shows all remaining addresses as unreliable.
-> 
->   Call Trace:
->    __kretprobe_trampoline_handler+0xca/0x1a0
->    trampoline_handler+0x3d/0x50
->    kretprobe_trampoline+0x25/0x50
->    ? init_test_probes.cold+0x323/0x387
->    ? init_kprobes+0x144/0x14c
->    ? init_optprobes+0x15/0x15
->    ? do_one_initcall+0x5b/0x300
->    ? lock_is_held_type+0xe8/0x140
->    ? kernel_init_freeable+0x174/0x2cd
->    ? rest_init+0x233/0x233
->    ? kernel_init+0xa/0x11d
->    ? ret_from_fork+0x22/0x30
-> 
-> How about pushing 'kretprobe_trampoline' instead of %rsp for the return
-> address placeholder.  That fixes the above test, and removes the need
-> for the weird 'state->ip == sp' check:
-> 
->   Call Trace:
->    __kretprobe_trampoline_handler+0xca/0x150
->    trampoline_handler+0x3d/0x50
->    kretprobe_trampoline+0x29/0x50
->    ? init_test_probes.cold+0x323/0x387
->    elfcorehdr_read+0x10/0x10
->    init_kprobes+0x144/0x14c
->    ? init_optprobes+0x15/0x15
->    do_one_initcall+0x72/0x280
->    kernel_init_freeable+0x174/0x2cd
->    ? rest_init+0x122/0x122
->    kernel_init+0xa/0x10e
->    ret_from_fork+0x22/0x30
-> 
-> Though, init_test_probes.cold() (the real return address) is still
-> listed as unreliable.  Maybe we need a call to kretprobe_find_ret_addr()
-> in show_trace_log_lvl(), similar to the ftrace_graph_ret_addr() call
-> there.
+./tools/testing/selftests/bpf/progs/fexit_test.c:77:15-16: WARNING
+comparing pointer to 0.
 
-Thanks for the test!
-OK, that could be acceptable. However, push %sp still needed for accessing
-stack address from kretprobe handler via pt_regs. (regs->sp must point
-the stack address)
-Anyway, with int3, it pushes one more entry for emulating call, so I think
-it is OK.
-Let me update the series!
+./tools/testing/selftests/bpf/progs/fexit_test.c:68:12-13: WARNING
+comparing pointer to 0.
 
-Thank you!
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ tools/testing/selftests/bpf/progs/fexit_test.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
-> 
-> 
-> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-> index 06f33bfebc50..70188fdd288e 100644
-> --- a/arch/x86/kernel/kprobes/core.c
-> +++ b/arch/x86/kernel/kprobes/core.c
-> @@ -766,19 +766,19 @@ asm(
->  	"kretprobe_trampoline:\n"
->  	/* We don't bother saving the ss register */
->  #ifdef CONFIG_X86_64
-> -	"	pushq %rsp\n"
-> +	/* Push fake return address to tell the unwinder it's a kretprobe */
-> +	"	pushq $kretprobe_trampoline\n"
->  	UNWIND_HINT_FUNC
->  	"	pushfq\n"
->  	SAVE_REGS_STRING
->  	"	movq %rsp, %rdi\n"
->  	"	call trampoline_handler\n"
-> -	/* Replace saved sp with true return address. */
-> +	/* Replace the fake return address with the real one. */
->  	"	movq %rax, 19*8(%rsp)\n"
->  	RESTORE_REGS_STRING
->  	"	popfq\n"
->  #else
->  	"	pushl %esp\n"
-> -	UNWIND_HINT_FUNC
->  	"	pushfl\n"
->  	SAVE_REGS_STRING
->  	"	movl %esp, %eax\n"
-> diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-> index 1d1b9388a1b1..1d3de84d2410 100644
-> --- a/arch/x86/kernel/unwind_orc.c
-> +++ b/arch/x86/kernel/unwind_orc.c
-> @@ -548,8 +548,7 @@ bool unwind_next_frame(struct unwind_state *state)
->  		 * In those cases, find the correct return address from
->  		 * task->kretprobe_instances list.
->  		 */
-> -		if (state->ip == sp ||
-> -		    is_kretprobe_trampoline(state->ip))
-> +		if (is_kretprobe_trampoline(state->ip))
->  			state->ip = kretprobe_find_ret_addr(state->task,
->  							    &state->kr_iter);
->  
-> 
-> 
-
-
+diff --git a/tools/testing/selftests/bpf/progs/fexit_test.c b/tools/testing/selftests/bpf/progs/fexit_test.c
+index 0952aff..8f1ccb7 100644
+--- a/tools/testing/selftests/bpf/progs/fexit_test.c
++++ b/tools/testing/selftests/bpf/progs/fexit_test.c
+@@ -65,7 +65,7 @@ struct bpf_fentry_test_t {
+ SEC("fexit/bpf_fentry_test7")
+ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+ {
+-	if (arg == 0)
++	if (!arg)
+ 		test7_result = 1;
+ 	return 0;
+ }
+@@ -74,7 +74,7 @@ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+ SEC("fexit/bpf_fentry_test8")
+ int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
+ {
+-	if (arg->a == 0)
++	if (!arg->a)
+ 		test8_result = 1;
+ 	return 0;
+ }
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+1.8.3.1
+
