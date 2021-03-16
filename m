@@ -2,172 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CF433CDA6
-	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 06:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6743533CDF7
+	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 07:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbhCPFzw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Mar 2021 01:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhCPFzs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Mar 2021 01:55:48 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78022C06174A
-        for <bpf@vger.kernel.org>; Mon, 15 Mar 2021 22:55:48 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id u3so35640088ybk.6
-        for <bpf@vger.kernel.org>; Mon, 15 Mar 2021 22:55:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1i4tYu9mMeEof39nSIiL+YXFviVhBkiA1+sY09eWRUw=;
-        b=VjSL1NgX9wYrfyEbjskBZiFQmlDEl1Z7AyL+ppHet7+gezza+5Ok/oO4VvjQC9wv+d
-         WwP99LsSQIzcoQvzJSDTcPfUmiQsNdQu3Nh0T7FTVzlNWYsizrHkk8b9ibL2vEHEESxb
-         OXk7ldpxuluW10FUvcA4PT/kU0Mux840kYI+nWvKrqOTyWpwI4IvRfQSg8PNr5jVG8H9
-         rSLNXS2p5JeIQM7I+KuxA9Sibzjb6B1kcFFXibQlO3UZMK8oeRd8GXmS6mA/xtM43mPN
-         5oQegTTG1x3ECUlLvScepCucbx9QUYf5N+MMY6dTfYfnIENR2wPMGaUhZMhfeQFkJYs5
-         BKbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1i4tYu9mMeEof39nSIiL+YXFviVhBkiA1+sY09eWRUw=;
-        b=QHRdk3/hRX01E8WY4pk0/3FIEar9E5z2V1EUUarvW3ZHd4FRyG9yRJ4trQUUjLF0zS
-         G0RthdyCqWTSWhAJLYCfGOndBBRmkRWlBfjY/YsJm2eTb3V1sbcP4OSJhR8szu74AibU
-         A743j2ykC0sPeP8u3dZuRLM2W4vfRvfSICPX1Yj3WFoEYk6mCH4gyFahacZqCWUxb/AW
-         e90LzEVOcASRwVPQ8xcO3oVfE9S/t5jrh4lKWCXjfbAYZEq+EeXO/Yzhj2fHUnJvAhJo
-         fwXvIq0SOEjijjES+7JEmXjXBV5p1VWXsKlqS9sx1C+BghiY0+oTfAzO1UHCrP6C7dUg
-         ySLQ==
-X-Gm-Message-State: AOAM531q2Tn/NW/47oe4nYzAKTYeDv+08lyGznjI2EFTfdQ+fI/op0D3
-        Svvjhfd1TqNoSknpdvGNvHubrLo7+1RdmCkeXnk=
-X-Google-Smtp-Source: ABdhPJwyY3YJ/L/5ALH4VdFyPvWSjAXfu1cu4jIuFZfuJ2UVl3LIQQqiTJBEY5KJHLrjJVPTfZW9fja+PlV50lzy7LM=
-X-Received: by 2002:a25:40d8:: with SMTP id n207mr4590906yba.459.1615874147782;
- Mon, 15 Mar 2021 22:55:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <CANaYP3GTwpRMNrLNLLvOyaVzU6UiV-h2Ji=JwWeOJq4NBiJ_Bg@mail.gmail.com>
-In-Reply-To: <CANaYP3GTwpRMNrLNLLvOyaVzU6UiV-h2Ji=JwWeOJq4NBiJ_Bg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 15 Mar 2021 22:55:37 -0700
-Message-ID: <CAEf4BzaFMhCrDSHuQH1uc9cBNuvuTKeXPam0Ux2LmuUM9anJJg@mail.gmail.com>
-Subject: Re: libbpf pinning strategies - towards v1
-To:     Gilad Reti <gilad.reti@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S231760AbhCPGad (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Mar 2021 02:30:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230478AbhCPGa1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Mar 2021 02:30:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 948EB65169;
+        Tue, 16 Mar 2021 06:30:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1615876227;
+        bh=9V0KUrLMiXL6VT/H+rjc7n2huomnlDIWLOvYHtisMtE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TpfY2jKZtLeiOYq1Du+xi8AJXy35Cfcxz2F1Q6RvKH/uA1WO2mt8SFIClfFrloM7T
+         a90+TLD7l+lQIK24FVJ05nzEy9Z6qOU04fpWbAUg7KDtToKoLmJEDcANoyzbd7CsEc
+         6kEUScSjytuShT4qq8cyPmMeU3jgAHr8/8JaUPU2CkTKHmTfHYvSFX4NFxZDKVeLtY
+         +RaS9hH/FYjb4+s282y2kwNb/72SksBWIrIDY3V+7WZ26kJgQHVgTmmZ9msmJJyyEm
+         nBa6+uSqF6FU0wxlGZOAfFqq3/AZEYdPX665rfPfoTE/rnShwiqNFMZO2shPxbryd6
+         8BJFs84TZjt+A==
+Date:   Tue, 16 Mar 2021 15:30:22 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com
+Subject: Re: [PATCH -tip v2 00/10] kprobes: Fix stacktrace with kretprobes
+Message-Id: <20210316153022.70cc181a2b3e0f73923e54da@kernel.org>
+In-Reply-To: <20210316023003.xbmgce3ndkouu65e@treble>
+References: <161553130371.1038734.7661319550287837734.stgit@devnote2>
+        <20210316023003.xbmgce3ndkouu65e@treble>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 8:40 AM Gilad Reti <gilad.reti@gmail.com> wrote:
->
-> As libbpf is heading towards a first major release, we wanted to
-> discuss libbpf's object pinning strategy.
->
-> bpf object pinning has a couple of use cases (feel free to add, there
-> are more for sure):
-> 1. Sharing specific bpf objects between different processes (for
-> example, one process loads a bpf skeleton, another one interacts with
-> it using various bpf maps (for example, for changing configurations
-> (i.e. dynamic networking rules etc))
-> 2. Preventing bpf objects from destruction upon owning process exit
-> (i.e. to prevent bpf progs detach upon userspace program crash)
->
-> Regarding the first use case, for most cases manually setting the pin
-> path (both in the loading process and in other processes) will
-> probably be the best. In such cases, no redesign is required here.
->
-> For the second one, something like the bpf_object__pin will be more
-> appropriate (to allow a complete reuse of the bpf objects). For that
-> use case, some sensible requirements we can consider are:
->
-> 1. Paths should be unique:
->     a. at the bpf_object level (that is, same pinnable objects that
-> belong to different bpf_object s should be pinned at different paths).
->     b. in the same bpf_object, between different pinnable object types
-> (i.e. a map and a prog) should always be pinned at different paths.
->     c. different objects, belonging to the same bpf_object and of the
-> same type should be pinned at different paths.
-> 2. Paths should be predictable, given enough information on the
-> originating bpf_object (that is, adding random UID to ensure
-> uniqueness is not an option).
->
-> All the above should be applied to auto-pinned maps and the
-> bpf_object__pin function. I am not sure if the
-> bpf_object__pin_{maps,programs} should conform to those requirements
-> too. Of course, all paths should be overridable similarly to the
-> current implementation.
+On Mon, 15 Mar 2021 21:30:03 -0500
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 
-I actually think that bpf_object__pin_maps and
-bpf_object__pin_programs should be removed.
-bpf_object__pin()/bpf_object__unpin() and then per-map and per-program
-API to control their pinning parameters should be enough to handle all
-the cases.
+> On Fri, Mar 12, 2021 at 03:41:44PM +0900, Masami Hiramatsu wrote:
+> > Hello,
+> > 
+> > Here is the 2nd version of the series to fix the stacktrace with kretprobe.
+> > 
+> > The 1st series is here;
+> > 
+> > https://lore.kernel.org/bpf/161495873696.346821.10161501768906432924.stgit@devnote2/
+> > 
+> > In this version I merged the ORC unwinder fix for kretprobe which discussed in the
+> > previous thread. [3/10] is updated according to the Miroslav's comment. [4/10] is
+> > updated for simplify the code. [5/10]-[9/10] are discussed in the previsous tread
+> > and are introduced to the series.
+> > 
+> > Daniel, can you also test this again? I and Josh discussed a bit different
+> > method and I've implemented it on this version.
+> > 
+> > This actually changes the kretprobe behavisor a bit, now the instraction pointer in
+> > the pt_regs passed to kretprobe user handler is correctly set the real return
+> > address. So user handlers can get it via instruction_pointer() API.
+> 
+> When I add WARN_ON(1) to a test kretprobe, it doesn't unwind properly.
+> 
+> show_trace_log_lvl() reads the entire stack in lockstep with calls to
+> the unwinder so that it can decide which addresses get prefixed with
+> '?'.  So it expects to find an actual return address on the stack.
+> Instead it finds %rsp.  So it never syncs up with unwind_next_frame()
+> and shows all remaining addresses as unreliable.
+> 
+>   Call Trace:
+>    __kretprobe_trampoline_handler+0xca/0x1a0
+>    trampoline_handler+0x3d/0x50
+>    kretprobe_trampoline+0x25/0x50
+>    ? init_test_probes.cold+0x323/0x387
+>    ? init_kprobes+0x144/0x14c
+>    ? init_optprobes+0x15/0x15
+>    ? do_one_initcall+0x5b/0x300
+>    ? lock_is_held_type+0xe8/0x140
+>    ? kernel_init_freeable+0x174/0x2cd
+>    ? rest_init+0x233/0x233
+>    ? kernel_init+0xa/0x11d
+>    ? ret_from_fork+0x22/0x30
+> 
+> How about pushing 'kretprobe_trampoline' instead of %rsp for the return
+> address placeholder.  That fixes the above test, and removes the need
+> for the weird 'state->ip == sp' check:
+> 
+>   Call Trace:
+>    __kretprobe_trampoline_handler+0xca/0x150
+>    trampoline_handler+0x3d/0x50
+>    kretprobe_trampoline+0x29/0x50
+>    ? init_test_probes.cold+0x323/0x387
+>    elfcorehdr_read+0x10/0x10
+>    init_kprobes+0x144/0x14c
+>    ? init_optprobes+0x15/0x15
+>    do_one_initcall+0x72/0x280
+>    kernel_init_freeable+0x174/0x2cd
+>    ? rest_init+0x122/0x122
+>    kernel_init+0xa/0x10e
+>    ret_from_fork+0x22/0x30
+> 
+> Though, init_test_probes.cold() (the real return address) is still
+> listed as unreliable.  Maybe we need a call to kretprobe_find_ret_addr()
+> in show_trace_log_lvl(), similar to the ftrace_graph_ret_addr() call
+> there.
 
->
-> Regarding implementation, 1.c. will already be satisfied by the
-> current implementation (after the program name pinning path will be
-> changed, since both map names and function names are unique inside a
-> single object).
+Thanks for the test!
+OK, that could be acceptable. However, push %sp still needed for accessing
+stack address from kretprobe handler via pt_regs. (regs->sp must point
+the stack address)
+Anyway, with int3, it pushes one more entry for emulating call, so I think
+it is OK.
+Let me update the series!
 
-That's going to change with BPF static linking. I'm thinking about
-supporting static maps, i.e., maps visible within a single BPF .o
-file, but still visible to outside world. At that point, each .o file
-should be able to have conflicting map name, just as you'd expect to
-have conflicting static variables and static functions. I haven't
-thought yet all that is going to be expose  to user-space, though.
+Thank you!
 
-> For 1.a and 1.b, I think that bpf_object__pin should produce the
-> following directory layout:
->
-> <obj_name>
-> =E2=94=9C=E2=94=80=E2=94=80 maps
-> =E2=94=82      =E2=94=94=E2=94=80=E2=94=80 <map_name>
-> =E2=94=94=E2=94=80=E2=94=80 programs
->         =E2=94=94=E2=94=80=E2=94=80 <program_name>
->
-> If we decide that the requirements should apply to the specific
-> bpf_object__pin_<type>s variants, then each will produce
->
-> <obj_name>
-> =E2=94=94=E2=94=80=E2=94=80 <type>s (i.e. maps, programs)
->         =E2=94=94=E2=94=80=E2=94=80 <name>
->
-> It may be better to put all pinned objects under a objects/ directory
-> too, I am not sure about that.
+> 
+> 
+> 
+> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+> index 06f33bfebc50..70188fdd288e 100644
+> --- a/arch/x86/kernel/kprobes/core.c
+> +++ b/arch/x86/kernel/kprobes/core.c
+> @@ -766,19 +766,19 @@ asm(
+>  	"kretprobe_trampoline:\n"
+>  	/* We don't bother saving the ss register */
+>  #ifdef CONFIG_X86_64
+> -	"	pushq %rsp\n"
+> +	/* Push fake return address to tell the unwinder it's a kretprobe */
+> +	"	pushq $kretprobe_trampoline\n"
+>  	UNWIND_HINT_FUNC
+>  	"	pushfq\n"
+>  	SAVE_REGS_STRING
+>  	"	movq %rsp, %rdi\n"
+>  	"	call trampoline_handler\n"
+> -	/* Replace saved sp with true return address. */
+> +	/* Replace the fake return address with the real one. */
+>  	"	movq %rax, 19*8(%rsp)\n"
+>  	RESTORE_REGS_STRING
+>  	"	popfq\n"
+>  #else
+>  	"	pushl %esp\n"
+> -	UNWIND_HINT_FUNC
+>  	"	pushfl\n"
+>  	SAVE_REGS_STRING
+>  	"	movl %esp, %eax\n"
+> diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+> index 1d1b9388a1b1..1d3de84d2410 100644
+> --- a/arch/x86/kernel/unwind_orc.c
+> +++ b/arch/x86/kernel/unwind_orc.c
+> @@ -548,8 +548,7 @@ bool unwind_next_frame(struct unwind_state *state)
+>  		 * In those cases, find the correct return address from
+>  		 * task->kretprobe_instances list.
+>  		 */
+> -		if (state->ip == sp ||
+> -		    is_kretprobe_trampoline(state->ip))
+> +		if (is_kretprobe_trampoline(state->ip))
+>  			state->ip = kretprobe_find_ret_addr(state->task,
+>  							    &state->kr_iter);
+>  
+> 
+> 
 
-seems a bit of an overkill, first-level directory for an object seems nice
 
->
-> As a last point, I think that it will be nice to have a way to pin a
-> bpf_object_skeleton. This will be an improvement over the current
-> bpf_object__pin since skeletons keep track of attached links.
-
-Hm.. that's the first time this comes up. You mean that all the
-created bpf_links (stored inside skel->links) will be pinned in such a
-case? Those links would probably go under <obj_name/links/ directory,
-right? Would we then need to generate something like
-my_skeleton__load_pinned(), which would be called instead of
-my_skeleton__load()?
-
->
-> There are more use cases I am not familiar with for sure, so I would
-> like to hear other's opinions and comments.
-
-Yes, absolutely, I'd like to hear some more use cases as well.
-
-I think we need to discuss more on how to manage pinning settings for
-maps (including .data, .rodata, etc) and programs. Another aspect that
-is rarely discussed but is important is compatibility and
-upgradeability. I.e., what if pinned map is not exactly the same as
-the one you expect in your BPF code (e.g., map value size increased,
-etc). This is especially important for .data, .rodata special maps, as
-BPF program code will reference variables through compiled-in offsets.
-For such cases we'd need to validate that all expected/used variables
-are still at the same place and have the same (or compatible?) sizes.
-
-In short, there is a lot more subtlety to pinning that meets the eye,
-which is why I hope that more people will get involved in the
-discussion. I personally never had a use for pinning, so for me it's
-hard to judge what's important in practice. But I do see a lot of
-ambiguity and potential problems with re-using BPF maps and BPF
-programs :)
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
