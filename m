@@ -2,255 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23A433CCB7
-	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 05:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E388733CCD5
+	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 06:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhCPEtY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Mar 2021 00:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
+        id S234188AbhCPFCa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Mar 2021 01:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbhCPEtT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Mar 2021 00:49:19 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51770C06174A;
-        Mon, 15 Mar 2021 21:49:19 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id n195so35500077ybg.9;
-        Mon, 15 Mar 2021 21:49:19 -0700 (PDT)
+        with ESMTP id S234119AbhCPFCI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Mar 2021 01:02:08 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194AEC06174A
+        for <bpf@vger.kernel.org>; Mon, 15 Mar 2021 22:02:08 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id p186so35576099ybg.2
+        for <bpf@vger.kernel.org>; Mon, 15 Mar 2021 22:02:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CfinjcOP/WltgE7VDVEoULBPntit2uuL70TjgkQqusg=;
-        b=s6H6WZuM6/QOl8zJvXnGtqo7FVK6KeDBFpeA0nPhkYQr+qDQ0nVAS1h4716qxiVwia
-         Tmu7fFGKZgIaImdnDnvTmI5VApq7OpYDJGKy/98OVqL7Bj6GusYlWP/UsxP6B4G6Vgw7
-         wP4Yxq7Nr9BfMsM7eeaBGDDE1ZqH8GzXAgyexBHiEXtZgckrqcDtSZn85gOpzch2ku9f
-         00vZCo/x2Y+SoRcUak6MNgvgHiuWIkAMqj7nWuNPjoTLD6PSyH6HpUpCy0JphDCarszV
-         HNhnZ7q5E+dNY9AghKvLSXKbLrtT6Na0rZuOZPm9lVMYMq/f0AThOQ5l0NJJ7pDOdaq4
-         WANg==
+        bh=xmk8G674Tvz1ywom1Bf/Rk/GM7DtFhEi5Hpsi1JmMG8=;
+        b=bqI/vmNauSUOABJFyPNlJAm7KDDelKvb6sG7GDwyWg3aCHb4nnyTdWq32PQGfY/iyP
+         V8LQ+rzgifQi2PBBfuqtooX1yApI4/U3u9dYVFO1+uZmYS8PKq7mCIDaSmVkHVfuhgVI
+         OjnsyWV+tR6WHGwvJotrNLAig4RCgUTWoeqxmNYH6h5g4f4pVpbh57B/PblzadXAkvtt
+         xVfh20HfJ/52wZ5nGGQ75fCj5rHgrLcu4mdiDWppfl0VDBeXFY/XymmduFkAasICkjYL
+         6N/eiP/WbzvN8gOQMm7d3JKYD73/a2gGD3oaqt9qMG3xyKumStOhcIIfcsR1+WfmxK3P
+         qL9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CfinjcOP/WltgE7VDVEoULBPntit2uuL70TjgkQqusg=;
-        b=MQOaGRwYabMtIE6mXieUtIUKht6tjNcuEMgvJZEMQSUphXcmV+3fgKDFsSS5Wqy7ai
-         sfOkusKlklk0oKGvIgbf88xaizLFEAbsX+oucyviBE8+ofcupBve7c0Ysa5V3G1Pk9nn
-         yo29ZvbfcHpSPjFW/vyb3bj/hGbC1RBNziv7blfiGBZZ7gAI6dr8Tq2zePVGAsTui96h
-         d884XNbSnexH4Pv5wuKdemDT+1jFisshzUIqR/6MV5GqJ6EfXzaeMX2YV38LZ/MvVd5f
-         /V/tJ2dIhykb1qTIWSE7ckjFgOv6OhtG0REThAXnhii7wBrjb4jwJ2VkZuqjGrBuAZcH
-         ylfg==
-X-Gm-Message-State: AOAM532Pp+lV4B5tTZ8yP6dOdJOLdlTJm6xuZl1VOG5I+kS8rYefOPf2
-        2WuIFvjdiVaJEsdWAlBlZrxfc+7ocK7VftWc+xU=
-X-Google-Smtp-Source: ABdhPJxa12hMvy3oFM2qB6rCWJbQDjbOhBNDHFyl1vwMhuVgzbmPGx4gB+Op10dlGs9KQlkh/0kdFdgkqH6qNprMkiw=
-X-Received: by 2002:a25:3d46:: with SMTP id k67mr4174800yba.510.1615870158661;
- Mon, 15 Mar 2021 21:49:18 -0700 (PDT)
+        bh=xmk8G674Tvz1ywom1Bf/Rk/GM7DtFhEi5Hpsi1JmMG8=;
+        b=J49FUnHIB2/5oRMtUWXc3Sslja5sDJL1fl977/ebKc4RMkM9L1WibruF3q4bNpihbh
+         pGcIh5Sj4egDZZmQh6DdAorT/6S7zorXah8A7kJs9VjNbxryLfcWD6zVL3S9hUZsBki7
+         w6yljwsfI0aLgTnNhS+2n8c1TzVVLH7pdP3APHt7AlNFDvmFt/D7lbvfDVS4adn80vWs
+         2HQpTZn32MHGSdfUvrfrUEsV2Ot10SnGyzcWwA4T4fTneLMzGXlLlJdID4WaKGAA3ryO
+         QzYr96PD6IMhurcu+e83RbRH2Ej7F8n7DQ13PyUPPRiNjtUqMepfXlPtHsexC4UX3SXD
+         u3tA==
+X-Gm-Message-State: AOAM533CGPPgboHK92aXeHeDvnbccF1BMutEx1XZPQTjBIu4c6J9KaFH
+        XgP2k5o+Uyiu8f+HWvzOKGu5uEdRbVcww63QANU=
+X-Google-Smtp-Source: ABdhPJzaeh+FApGViDnLcHcQoPk71NWhd6HakPH6N+tISMfU5+aTVaLQyXuzAcxRNPPj7VHZLnVbBevdSIpIZ9Td3Cc=
+X-Received: by 2002:a25:874c:: with SMTP id e12mr4304682ybn.403.1615870927313;
+ Mon, 15 Mar 2021 22:02:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210310220211.1454516-1-revest@chromium.org> <20210310220211.1454516-6-revest@chromium.org>
-In-Reply-To: <20210310220211.1454516-6-revest@chromium.org>
+References: <20210314035812.1958641-1-yhs@fb.com>
+In-Reply-To: <20210314035812.1958641-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 15 Mar 2021 21:49:07 -0700
-Message-ID: <CAEf4BzYTMjWWVS8ZLXNs8W89_koAdo2-4ir++He=tXA11VU0xA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: Add a series of tests for bpf_snprintf
-To:     Florent Revest <revest@chromium.org>
+Date:   Mon, 15 Mar 2021 22:01:56 -0700
+Message-ID: <CAEf4BzZcFGmvmXS18CBq5obxAtJSeqJyHmMgL2r5g4iZpE3-Tw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: net: emit anonymous enum with BPF_TCP_CLOSE
+ value explicitly
+To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 2:02 PM Florent Revest <revest@chromium.org> wrote:
+On Sat, Mar 13, 2021 at 8:15 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> This exercices most of the format specifiers when things go well.
-
-typo: exercises
-
+> The selftest failed to compile with clang-built bpf-next.
+> Adding LLVM=1 to your vmlinux and selftest build will use clang.
+> The error message is:
+>   progs/test_sk_storage_tracing.c:38:18: error: use of undeclared identifier 'BPF_TCP_CLOSE'
+>           if (newstate == BPF_TCP_CLOSE)
+>                           ^
+>   1 error generated.
+>   make: *** [Makefile:423: /bpf-next/tools/testing/selftests/bpf/test_sk_storage_tracing.o] Error 1
 >
-> Signed-off-by: Florent Revest <revest@chromium.org>
+> The reason for the failure is that BPF_TCP_CLOSE, a value of
+> an anonymous enum defined in uapi bpf.h, is not defined in
+> vmlinux.h. gcc does not have this problem. Since vmlinux.h
+> is derived from BTF which is derived from vmlinux dwarf,
+> that means gcc-produced vmlinux dwarf has BPF_TCP_CLOSE
+> while llvm-produced vmlinux dwarf does not have.
+>
+> BPF_TCP_CLOSE is referenced in net/ipv4/tcp.c as
+>   BUILD_BUG_ON((int)BPF_TCP_CLOSE != (int)TCP_CLOSE);
+> The following test mimics the above BUILD_BUG_ON, preprocessed
+> with clang compiler, and shows gcc dwarf contains BPF_TCP_CLOSE while
+> llvm dwarf does not.
+>
+>   $ cat t.c
+>   enum {
+>     BPF_TCP_ESTABLISHED = 1,
+>     BPF_TCP_CLOSE = 7,
+>   };
+>   enum {
+>     TCP_ESTABLISHED = 1,
+>     TCP_CLOSE = 7,
+>   };
+>
+>   int test() {
+>     do {
+>       extern void __compiletime_assert_767(void) ;
+>       if ((int)BPF_TCP_CLOSE != (int)TCP_CLOSE) __compiletime_assert_767();
+>     } while (0);
+>     return 0;
+>   }
+>   $ clang t.c -O2 -c -g && llvm-dwarfdump t.o | grep BPF_TCP_CLOSE
+>   $ gcc t.c -O2 -c -g && llvm-dwarfdump t.o | grep BPF_TCP_CLOSE
+>                     DW_AT_name    ("BPF_TCP_CLOSE")
+>
+> Further checking clang code find clang actually tried to
+> evaluate condition at compile time. If it is definitely
+> true/false, it will perform optimization and the whole if condition
+> will be removed before generating IR/debuginfo.
+>
+> This patch explicited add an expression like
+>   (void)BPF_TCP_ESTABLISHED
+> to enable generation of debuginfo for the anonymous
+> enum which also includes BPF_TCP_CLOSE. I put
+> this explicit type generation in kernel/bpf/core.c
+> to (1) avoid polute net/ipv4/tcp.c and more importantly
+> (2) provide a central place to add other types (e.g. in
+> bpf/btf uapi header) if they are not referenced in the kernel
+> or generated in vmlinux dwarf.
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  .../selftests/bpf/prog_tests/snprintf.c       | 71 +++++++++++++++++++
->  .../selftests/bpf/progs/test_snprintf.c       | 71 +++++++++++++++++++
->  2 files changed, 142 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+But given
+
+$ rg '\sdwarf\s' | wc -l
+33
+$ rg '\sDWARF\s' | wc -l
+151
+
+we should probably stick to using "DWARF", not "dwarf", everywhere.
+
+
+>  include/linux/btf.h |  1 +
+>  kernel/bpf/core.c   | 19 +++++++++++++++++++
+>  2 files changed, 20 insertions(+)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> new file mode 100644
-> index 000000000000..23af1dbd1eeb
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> @@ -0,0 +1,71 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2021 Google LLC. */
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index 7fabf1428093..9c1b52738bbe 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -9,6 +9,7 @@
+>  #include <uapi/linux/bpf.h>
+>
+>  #define BTF_TYPE_EMIT(type) ((void)(type *)0)
+> +#define BTF_TYPE_EMIT_ENUM(enum_val) ((void)enum_val)
+>
+>  struct btf;
+>  struct btf_member;
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 3a283bf97f2f..60551bf68ece 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -2378,3 +2378,22 @@ EXPORT_SYMBOL(bpf_stats_enabled_key);
+>
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(xdp_exception);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(xdp_bulk_tx);
 > +
-> +#include <test_progs.h>
-> +#include "test_snprintf.skel.h"
-> +
-> +static int duration;
-
-if you drop CHECK() below, you won't need duration here at all
-
-> +
-> +#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
-> +#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
-> +
-> +#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
-> +#define EXP_IP_RET   sizeof(EXP_IP_OUT)
-> +
-> +/* The third specifier, %pB, depends on compiler inlining so don't check it */
-> +#define EXP_SYM_OUT  "schedule schedule+0x0/"
-> +#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
-> +
-> +/* The third specifier, %p, is a hashed pointer which changes on every reboot */
-> +#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
-> +#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
-> +
-> +#define EXP_STR_OUT  "str1 longstr"
-> +#define EXP_STR_RET  sizeof(EXP_STR_OUT)
-> +
-> +#define EXP_OVER_OUT {'%', 'o', 'v', 'e', 'r'}
-> +#define EXP_OVER_RET 10
-> +
-> +void test_snprintf(void)
+> +static int __init bpf_emit_btf_type(void)
 > +{
-> +       char exp_addr_out[] = EXP_ADDR_OUT;
-> +       char exp_over_out[] = EXP_OVER_OUT;
-> +       char exp_sym_out[]  = EXP_SYM_OUT;
-> +       struct test_snprintf *skel;
-> +       int err;
-> +
-> +       skel = test_snprintf__open_and_load();
-> +       if (CHECK(!skel, "skel_open", "failed to open and load skeleton\n"))
-
-ASSERT_OK_PTR
-> +               return;
-> +
-> +       err = test_snprintf__attach(skel);
-> +       if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-
-ASSERT_OK
-> +               goto cleanup;
-> +
-> +       /* trigger tracepoint */
-> +       usleep(1);
-> +
-> +       ASSERT_STREQ(skel->bss->num_out, EXP_NUM_OUT, "num_out");
-> +       ASSERT_EQ(skel->bss->num_ret, EXP_NUM_RET, "num_ret");
-> +
-> +       ASSERT_STREQ(skel->bss->ip_out, EXP_IP_OUT, "ip_out");
-> +       ASSERT_EQ(skel->bss->ip_ret, EXP_IP_RET, "ip_ret");
-> +
-> +       ASSERT_OK(memcmp(skel->bss->sym_out, exp_sym_out,
-> +                        sizeof(exp_sym_out) - 1), "sym_out");
-> +       ASSERT_LT(MIN_SYM_RET, skel->bss->sym_ret, "sym_ret");
-> +
-> +       ASSERT_OK(memcmp(skel->bss->addr_out, exp_addr_out,
-> +                        sizeof(exp_addr_out) - 1), "addr_out");
-> +       ASSERT_EQ(skel->bss->addr_ret, EXP_ADDR_RET, "addr_ret");
-> +
-> +       ASSERT_STREQ(skel->bss->str_out, EXP_STR_OUT, "str_out");
-> +       ASSERT_EQ(skel->bss->str_ret, EXP_STR_RET, "str_ret");
-> +
-> +       ASSERT_OK(memcmp(skel->bss->over_out, exp_over_out,
-> +                        sizeof(exp_over_out)), "over_out");
-> +       ASSERT_EQ(skel->bss->over_ret, EXP_OVER_RET, "over_ret");
-> +
-> +cleanup:
-> +       test_snprintf__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
-> new file mode 100644
-> index 000000000000..6c8aa4988e69
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
-> @@ -0,0 +1,71 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2021 Google LLC. */
-> +
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_endian.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +#define OUT_LEN 64
-> +
-> +/* Integer types */
-> +static const char num_fmt[] = "%d %u %x %li %llu %lX";
-> +#define NUMBERS -8, 9, 150, -424242, 1337, 0xDABBAD00
-
-here I actually don't get the point of #define, can you please just
-inline them at the invocation place? I think that will be nicer and
-simpler (and will match common usage pattern)
-
-> +
-> +char num_out[OUT_LEN] = {};
-> +long num_ret = 0;
-> +
-> +/* IP addresses */
-> +static const char ip_fmt[] = "%pi4 %pI6";
-> +static const __u8 dummy_ipv4[] = {127, 0, 0, 1}; /* 127.0.0.1 */
-> +static const __u32 dummy_ipv6[] = {0, 0, 0, bpf_htonl(1)}; /* ::1/128 */
-> +#define IPS &dummy_ipv4, &dummy_ipv6
-> +
-> +char ip_out[OUT_LEN] = {};
-> +long ip_ret = 0;
-> +
-> +/* Symbol lookup formatting */
-> +static const char sym_fmt[] = "%ps %pS %pB";
-> +extern const void schedule __ksym;
-> +#define SYMBOLS &schedule, &schedule, &schedule
-> +
-> +char sym_out[OUT_LEN] = {};
-> +long sym_ret = 0;
-> +
-> +/* Kernel pointers */
-> +static const char addr_fmt[] = "%pK %px %p";
-> +#define ADDRESSES 0, 0xFFFF00000ADD4E55, 0xFFFF00000ADD4E55
-> +
-> +char addr_out[OUT_LEN] = {};
-> +long addr_ret = 0;
-> +
-> +/* Strings embedding */
-> +static const char str_fmt[] = "%s %+05s";
-> +static const char str1[] = "str1";
-> +static const char longstr[] = "longstr";
-> +#define STRINGS str1, longstr
-> +
-> +char str_out[OUT_LEN] = {};
-> +long str_ret = 0;
-> +
-> +/* Overflow */
-> +static const char over_fmt[] = "%%overflow";
-> +
-> +#define OVER_OUT_LEN 6
-> +char over_out[OVER_OUT_LEN] = {};
-> +long over_ret = 0;
-> +
-
-same for all the above #defines, tests will be easier to follow if you
-just use value in BPF_SNPRINTF below
-
-> +SEC("raw_tp/sys_enter")
-> +int handler(const void *ctx)
-> +{
-> +       num_ret  = BPF_SNPRINTF(num_out,  OUT_LEN, num_fmt,  NUMBERS);
-> +       ip_ret   = BPF_SNPRINTF(ip_out,   OUT_LEN, ip_fmt,   IPS);
-> +       sym_ret  = BPF_SNPRINTF(sym_out,  OUT_LEN, sym_fmt,  SYMBOLS);
-> +       addr_ret = BPF_SNPRINTF(addr_out, OUT_LEN, addr_fmt, ADDRESSES);
-> +       str_ret  = BPF_SNPRINTF(str_out,  OUT_LEN, str_fmt,  STRINGS);
-> +       over_ret = BPF_SNPRINTF(over_out, OVER_OUT_LEN, over_fmt);
-
-in practice you'd do BPF_SNPRINTF(num_out, sizeof(num_out), ...). So
-use that in test code as well please.
-
+> +       /* bpf uapi header bpf.h defines an anonymous enum with values
+> +        * BPF_TCP_* used by bpf programs. Currently gcc built vmlinux
+> +        * is able to emit this enum in dwarf due to the following
+> +        * BUILD_BUG_ON test in net/ipv4/tcp.c:
+> +        *   BUILD_BUG_ON((int)BPF_TCP_ESTABLISHED != (int)TCP_ESTABLISHED);
+> +        * clang built vmlinux does not have this enum in dwarf
+> +        * since clang removes the above code before generating IR/debuginfo.
+> +        * Let us explicitly emit the type debuginfo to ensure the
+> +        * above-mentioned anonymous enum in the vmlinux dwarf and hence BTF
+> +        * regardless of which compiler is used.
+> +        */
+> +       BTF_TYPE_EMIT_ENUM(BPF_TCP_ESTABLISHED);
 > +
 > +       return 0;
 > +}
-> +
-> +char _license[] SEC("license") = "GPL";
+> +late_initcall(bpf_emit_btf_type);
 > --
-> 2.30.1.766.gb4fecdf3b7-goog
+> 2.24.1
 >
