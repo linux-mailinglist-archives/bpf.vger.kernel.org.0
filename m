@@ -2,105 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3555C33CA7B
-	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 01:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 234D933CA88
+	for <lists+bpf@lfdr.de>; Tue, 16 Mar 2021 02:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbhCPArn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Mar 2021 20:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43950 "EHLO
+        id S232862AbhCPBDn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Mar 2021 21:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhCPArg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Mar 2021 20:47:36 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DAD1C06174A
-        for <bpf@vger.kernel.org>; Mon, 15 Mar 2021 17:47:36 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id n195so35084592ybg.9
-        for <bpf@vger.kernel.org>; Mon, 15 Mar 2021 17:47:36 -0700 (PDT)
+        with ESMTP id S234106AbhCPBDY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Mar 2021 21:03:24 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3571C06174A;
+        Mon, 15 Mar 2021 18:03:23 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id p186so35166299ybg.2;
+        Mon, 15 Mar 2021 18:03:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7y9W973XNEprtm/UExLk1MQ1zUsByybQiN3TeElX3C0=;
-        b=AXDzdkI8vMhLXdj737mTfk40nqB2KA2OOTtuxAfZ9UtjgJc9pXNg3dZDNpJ1CdRrRd
-         +MJzZ9Bplqx6WirX2n58yvdMQdpXmoy6+AnGFa6W4GLlshwZhigEml7A7gmXBVCGsnPH
-         3qwuiz9w2ZYdy9TkEXF1HGIG9VUlU9KlJrlRe8Rr+9QMJcMgYA82DGWQUm7IdNF7UaVm
-         0WjqYjoN+h1z7Zs2JwYB7J0KNqlUsNP3OPZwyaxpmMeThZsBI/Eo/VM9JxllOOkeu9E7
-         FMqGzoS4O/2pMEppr8czglDYqE7Gxqwo4ErGclxsFuRbIjMygBVRzc80k03PeuwDyo0F
-         1gdw==
+        bh=h66x3teGCQcy0fRIINxGcNQq5LSVOptp2d7+sCGalPg=;
+        b=P/UYwD2MMOhepD71tPUDRUTJXkwNAxW5vxdOozDx10DaEu3WRWAlDVReo3PMd/T04x
+         4EhkJb0fNYwgu/Dhf/jZ4TTN9dv1rec6DMnpnUAHAOEv9JpkZbyAThXVS+pUwHWVHl/8
+         ZD2kZ/qbP+HrfaNkxfg2BqsK5ukIE0Y+HzGK0KH9Q4yKbmE7Vusm0I9+jp+baUMrmK5P
+         qOxDIDnHMNc/lAjFuridXl7dmHDpNkNymLnavQj/CKMQpEltuGcgWJ3enX6/jQ42YjPh
+         3VEuX4OmRPTVXjmXdQ9oboBo/Umhb4ajR1G2y37NIpaWBTLbkBkHMWadQv9+O4DuVtZY
+         KuEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7y9W973XNEprtm/UExLk1MQ1zUsByybQiN3TeElX3C0=;
-        b=XCc02jbtEfDTQ6erWpqtJuajsKBdHYxEfWJg8Ni1pGgD/9BkGfpzlke+ktvN3MPya8
-         sIYJi10wTwHUA4P64ETVDsiRWfNqmqIsokRRHBOJzF5Zj/6pjHjIxM3XvCJHXAVdE69B
-         QXZZk6emO5XFNJw+bgep1RQeygtpWf90MIVtIr5QbgNZdpofx8B4GYqrEsvKgOvVP/b6
-         7ZPhwXiQA2gV/OoKcGlpqTyMqSoWH8dyYxB/Wfz39Cqf91S/B1jraHs4qFR8xZAYXoOK
-         wJm4QV6X9rPVtxZ85FIa3tvU+G6yL6hmND3Yoavyj+67QXIv/nTBtulVap0YFPmTrWeT
-         rJTw==
-X-Gm-Message-State: AOAM531BlPAy1qpHmo87zmsGrprNm8Y9ZpcVkI/k2dQcvJ+1xjIIdaqE
-        7hd/OQylMIjh5b9e6ri78j0AFWFV6WDExyt9MO8=
-X-Google-Smtp-Source: ABdhPJzNDNpuykhKyUuk2nLJyKzY1StCqruIPX854c1di0IqtYx5E5Llp7x0e4RnxaV8mgomrnUv9KGEj0WsOPEhH5k=
-X-Received: by 2002:a25:40d8:: with SMTP id n207mr3325928yba.459.1615855655671;
- Mon, 15 Mar 2021 17:47:35 -0700 (PDT)
+        bh=h66x3teGCQcy0fRIINxGcNQq5LSVOptp2d7+sCGalPg=;
+        b=KE/klCOepJSlNdIxltUkE7BvOOsFzseorxyLGphkdhT46eGAoGQs++KF6vQ7HNaqrC
+         /ixBZxXLhin1lZegQZBT7YdOyC1HTvhw7FH01DBolSo8b5FCukN5u+Fri+J8wmblLMT2
+         cIlJGYVwjC4u+YcL1fSSf9pPqjV5UfBvc/yYjFZIJ/o09ATJwy+jP013l53dnN0+7+vD
+         LFLVD/KmtdYn4SIJvyM6LKRfpCD7O019ZK88GfhXt3j1nGFptpHywvAKiWIFIxBik7cH
+         Eid8HtnYcO0KEOXhkP/gyC6gZEPkjan+W/Iy6/Y9uTDnejDFvvkXHYnPedX9cmrtlxzd
+         qtrw==
+X-Gm-Message-State: AOAM531ARhtNwO/BGPpJn7Avajee2OvOVhqEbwmsJzbKvLyNWt5mt/Pq
+        vo7JT93JpLyx2nVgRldaLHwXlzdD5EQ9RJ/W53k=
+X-Google-Smtp-Source: ABdhPJx4ejUHcvIuxH2o66c6VqYPSfRhRg/7UXQzqOp41JiOSWvXHGFUkK77jkzGuOjsVEBUII5ctSxD57h9UdUFcLc=
+X-Received: by 2002:a25:3d46:: with SMTP id k67mr3298354yba.510.1615856603198;
+ Mon, 15 Mar 2021 18:03:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAO658oXG4HEm0rGEW-==0kaTmqenDUC_GM-qi7CEjwSakbnJRw@mail.gmail.com>
-In-Reply-To: <CAO658oXG4HEm0rGEW-==0kaTmqenDUC_GM-qi7CEjwSakbnJRw@mail.gmail.com>
+References: <20210310220211.1454516-1-revest@chromium.org> <20210310220211.1454516-2-revest@chromium.org>
+In-Reply-To: <20210310220211.1454516-2-revest@chromium.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 15 Mar 2021 17:47:24 -0700
-Message-ID: <CAEf4BzZy0XDYcchPkarUw5AusO7LZfOnswuOyUqakkVJ-ksCDQ@mail.gmail.com>
-Subject: Re: Generating libbpf API documentation
-To:     Grant Seltzer Richman <grantseltzer@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
+Date:   Mon, 15 Mar 2021 18:03:11 -0700
+Message-ID: <CAEf4BzZ6Lfmn9pEJSLVhROjkPGJO_mT4nHot8AOjZ_9HTC1rEQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/5] bpf: Add a ARG_PTR_TO_CONST_STR argument type
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 9:51 AM Grant Seltzer Richman
-<grantseltzer@gmail.com> wrote:
+On Wed, Mar 10, 2021 at 2:02 PM Florent Revest <revest@chromium.org> wrote:
 >
-> Hi all,
+> This type provides the guarantee that an argument is going to be a const
+> pointer to somewhere in a read-only map value. It also checks that this
+> pointer is followed by a NULL character before the end of the map value.
 >
-> I have been experimenting with ways to contribute documentation to
-> libbpf to make it easier for developers of bpf projects to use it.
-> With the goal of making a documentation site that is easy to
-> maintain/generate I found Doxygen (many of you may have experience
-> with it, I did not). I set up a CI/CD workflow using github actions
-> that runs doxygen on the libbpf mirror hosted there, and hosts the
-> produced HTML using netlify. You can find the currently hosted version
-> of it at https://libbpf-docs.netlify.app (I would gladly donate a real
-> domain name for this purpose). The docs generation workflow is in my
-> github repo here: https://github.com/grantseltzer/libbpf-docs
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> ---
+>  include/linux/bpf.h   |  1 +
+>  kernel/bpf/verifier.c | 41 +++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 42 insertions(+)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index a25730eaa148..7b5319d75b3e 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -308,6 +308,7 @@ enum bpf_arg_type {
+>         ARG_PTR_TO_PERCPU_BTF_ID,       /* pointer to in-kernel percpu type */
+>         ARG_PTR_TO_FUNC,        /* pointer to a bpf program function */
+>         ARG_PTR_TO_STACK_OR_NULL,       /* pointer to stack or NULL */
+> +       ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
+>         __BPF_ARG_TYPE_MAX,
+>  };
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index f9096b049cd6..c99b2b67dc8d 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -4601,6 +4601,7 @@ static const struct bpf_reg_types spin_lock_types = { .types = { PTR_TO_MAP_VALU
+>  static const struct bpf_reg_types percpu_btf_ptr_types = { .types = { PTR_TO_PERCPU_BTF_ID } };
+>  static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
+>  static const struct bpf_reg_types stack_ptr_types = { .types = { PTR_TO_STACK } };
+> +static const struct bpf_reg_types const_str_ptr_types = { .types = { PTR_TO_MAP_VALUE } };
+>
+>  static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
+>         [ARG_PTR_TO_MAP_KEY]            = &map_key_value_types,
+> @@ -4631,6 +4632,7 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
+>         [ARG_PTR_TO_PERCPU_BTF_ID]      = &percpu_btf_ptr_types,
+>         [ARG_PTR_TO_FUNC]               = &func_ptr_types,
+>         [ARG_PTR_TO_STACK_OR_NULL]      = &stack_ptr_types,
+> +       [ARG_PTR_TO_CONST_STR]          = &const_str_ptr_types,
+>  };
+>
+>  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+> @@ -4881,6 +4883,45 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>                 if (err)
+>                         return err;
+>                 err = check_ptr_alignment(env, reg, 0, size, true);
+> +       } else if (arg_type == ARG_PTR_TO_CONST_STR) {
+> +               struct bpf_map *map = reg->map_ptr;
+> +               int map_off, i;
+> +               u64 map_addr;
+> +               char *map_ptr;
+> +
+> +               if (!map || !bpf_map_is_rdonly(map)) {
+> +                       verbose(env, "R%d does not point to a readonly map'\n", regno);
+> +                       return -EACCES;
+> +               }
+> +
+> +               if (!tnum_is_const(reg->var_off)) {
+> +                       verbose(env, "R%d is not a constant address'\n", regno);
+> +                       return -EACCES;
+> +               }
+> +
+> +               if (!map->ops->map_direct_value_addr) {
+> +                       verbose(env, "no direct value access support for this map type\n");
+> +                       return -EACCES;
+> +               }
+> +
+> +               err = check_helper_mem_access(env, regno,
+> +                                             map->value_size - reg->off,
+> +                                             false, meta);
 
-Thanks for investigating this! I've look at libbpf-docs.netlify.app,
-and it seems like it just contains a list of structs and their fields
-(both those that are part of libbpf API, as well as internal). Out of
-all functions only two are listed there (libbpf_nla_parse_nested and
-libbpf_nla_parse) and both are not part of libbpf API as well. So I
-understand that I don't see any comments due to the '/**' format
-(though it would be easy to run sed script adding it everywhere, just
-as part of an experiment), but I'm not sure why none of API functions
-are present there?
+you expect reg to be PTR_TO_MAP_VALUE, so probably better to directly
+use check_map_access(). And double-check that register is of expected
+type. just the presence of ref->map_ptr might not be sufficient?
 
-I think kernel docs used to be hosted on readthedocs.org, seems like
-they are also providing hosting for open-source projects, so that
-would solve the problem of the hosting. Have you looked at that
-solution? It definitely has a bit more modern UI that
-Doxygen-generated one :) but I don't know what are the real
-differences between Sphinx and Doxygen and which one we should choose.
+> +               if (err)
+> +                       return err;
+> +
+> +               map_off = reg->off + reg->var_off.value;
+> +               err = map->ops->map_direct_value_addr(map, &map_addr, map_off);
+> +               if (err)
+> +                       return err;
+> +
+> +               map_ptr = (char *)(map_addr);
 
+map_ptr is a very confusing name. str_ptr or value ptr?
+
+> +               for (i = map_off; map_ptr[i] != '\0'; i++) {
+> +                       if (i == map->value_size - 1) {
+
+use strnchr()?
+
+> +                               verbose(env, "map does not contain a NULL-terminated string\n");
+
+map in the user-visible message is quite confusing, given that users
+will probably use this through static variables, so maybe just "string
+is not zero-terminated?" And it's not really a NULL, it's zero
+character.
+
+> +                               return -EACCES;
+> +                       }
+> +               }
+>         }
 >
-> In order to make this work all we would need is to format comments
-> above functions we want to document. Doxygen requires that the comment
-> just be in a block that starts with `/**`. I don't think doxygen
-> specific directives should be committed to code but I think this is a
-> fine convention to follow. Other doxygen directives (i.e. having
-> `@file` in every file) can be faked using a step I have in the github
-> actions.
+>         return err;
+> --
+> 2.30.1.766.gb4fecdf3b7-goog
 >
-> What does everyone think? Can we agree on this convention and start
-> contributing documentation in this way? Any pitfalls to doxygen I'm
-> not familiar with?
->
-> Thanks!
