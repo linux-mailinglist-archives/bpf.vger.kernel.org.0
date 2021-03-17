@@ -2,76 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A639633EF98
-	for <lists+bpf@lfdr.de>; Wed, 17 Mar 2021 12:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5C733EFE9
+	for <lists+bpf@lfdr.de>; Wed, 17 Mar 2021 13:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhCQLab (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Mar 2021 07:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44548 "EHLO
+        id S231500AbhCQMA2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Mar 2021 08:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbhCQLaC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Mar 2021 07:30:02 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C9AC06174A
-        for <bpf@vger.kernel.org>; Wed, 17 Mar 2021 04:29:50 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id v192so33847952oia.5
-        for <bpf@vger.kernel.org>; Wed, 17 Mar 2021 04:29:50 -0700 (PDT)
+        with ESMTP id S231450AbhCQMAG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Mar 2021 08:00:06 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC0AC06175F;
+        Wed, 17 Mar 2021 05:00:06 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id mz6-20020a17090b3786b02900c16cb41d63so1218917pjb.2;
+        Wed, 17 Mar 2021 05:00:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=T+yfoiKirACOFePrDhMk6aYorx+MUMEYXexIYS6ltN0=;
-        b=fw25e0sktxU3L87x7F+T07wt9bn14HMWAVt+coacEBQzx9CfbZTr7J9/pVDqZXdvnx
-         SukKXhHyAhm9tyNXgGsmjlspNikPylCImCaloGS4EYXHayybLd6finb6hUuDUGvOeDLQ
-         jAUtvPgraheKIqHI0wfb/eMT739J9tfI+B2FxrUi5rTHxMvBJpWXFySnaogWgEBM7xNu
-         C8bR6sDpgtYFS8VCHhyGRJW+fiMZVO4xmzQGvwhu1Dofgvgkvqmvu9Ip7gUa5oLl4GLV
-         eymCilIih05QVDvwCZXta+LkfdOyDLiwvnuPR1ge3ja57tUhY3WZHnGxr+B/S+hnKGMI
-         hlag==
+        bh=vJf2xWBFK1v4BuhbkRcyp/Yvw0Lr/H5oTB+llhaRm9I=;
+        b=Amd7fp4SxY6XK/ENYQMRVlEL7AUA6uXdxoW7gbm1nfJKLdKLr9d3ml1Kzx3wNsvY/a
+         mll6ZQQ6/rBOHrPmdNn1/mIO5GFfO4COxVGsEqHHMHeYgMA/jXxCW/DwQQ9v7tcMGpX1
+         Zz21+SRTXMZSWqTA4OLHj9XsFNbMysAPPjPaIxBg9WJRH0YZKMVnqg70uL4y4P0MKQhh
+         tApQ4tG4ETyBJBHIk5qPI9dGgzXYl4b7cTcg0bIa4IwghUrlOdAQfml4y0EGWysgBaNL
+         jv+zdO+qRd54vi5tqWm6q9ARXsvyMqcY1Dm9KKk8fx4uY4kmCs/BAsmr0Zlr/g4H7Ou3
+         1alA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=T+yfoiKirACOFePrDhMk6aYorx+MUMEYXexIYS6ltN0=;
-        b=QBO2dTDrhRADC7oLwDcx8HyM3Y098SK5cmJrr0G7eQqEzYnLVbXY2DSQ1I8P+wniu1
-         uF/nVzEChGrP8kNYzlqTKVPcwoqzdl94OMQxeKxIxEAAFy3v1bOWqYoCTyOouppgrFTe
-         FNVV9H11R8N5O6b00Y60DBIqS2uSccHEIQNO9SWyUVc3eTkOARV2ovhkTS34SvZ285PE
-         rfKssn/rcG36QtRZk3zABhfAWD4rRZnWJUl37x+dkDg89KUmgFX+6o8ykecpRPSu4AAl
-         sBz1ginvol15S3bLWXM/geov+RaW9Sue5XtHdrVRJE06Cnx4L0e0U45ktpi3qwobtzQb
-         /IFw==
-X-Gm-Message-State: AOAM530//kJlbl1WezmCg5+YzmWHbmIXM/kFsZkskWSIdNk3rUI5Aizs
-        2XfR+QxbqWTbtYe6RW2ue+ii5KVAs0Is/CBZv2U=
-X-Google-Smtp-Source: ABdhPJyaGMy2T2w5txN+ORL3S8Mia7ckLqZ1FF/OOhTV7yUDjhfl8vWsvZVrhGcdfZzJinZU8pfaJUg7+cRAHw//Ogk=
-X-Received: by 2002:a05:6808:904:: with SMTP id w4mr2374598oih.1.1615980590496;
- Wed, 17 Mar 2021 04:29:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vJf2xWBFK1v4BuhbkRcyp/Yvw0Lr/H5oTB+llhaRm9I=;
+        b=LFjadu4JQJXDLuc7Yt8A2dInl+Iy1uogyUGz0unlMye7k6HMzOGukOgS2f9hFDKQ2B
+         1d2O8XjGM2vKm92RY1zBx9Kng5KEbEA2KEoZLoXLoJejinY1x3MoSiHw6nKUwsgaZBqY
+         43KYK7WH/NQQFdE9t9mxzKLA4z9RGHOI4+5Gd/1j9kC1IJaS7c7WtXoIGZ4vdBMkzSBk
+         +jme7JUkyukKslJn2gk+eUI/0Gw4QGlK4IOnQfJnB0rt2ipiVf0l6yFCcvCb/6L7wOYC
+         BIBvA9mtuCBRTICk2d0eiRI7sWp1G+z0NzE7ToeW8W3Gf5rcEnXf4++ltYQ9/GFge0u6
+         s98A==
+X-Gm-Message-State: AOAM532jDErcwEkfi65WVTwNleSZLfEu0GYchpNQAavVPolG/Wpg7uA/
+        UvQn7CQVr/B90NHdGIukKZo=
+X-Google-Smtp-Source: ABdhPJyQmeDd6BsE9YEAGN0BUtj4GvpwRxvaZRO+UINdE1Oqef51QcrBE7vphlF6VCqwV98J3BMfkw==
+X-Received: by 2002:a17:90b:4017:: with SMTP id ie23mr4436991pjb.118.1615982405777;
+        Wed, 17 Mar 2021 05:00:05 -0700 (PDT)
+Received: from localhost ([47.8.26.8])
+        by smtp.gmail.com with ESMTPSA id 132sm19471687pfu.158.2021.03.17.05.00.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 05:00:05 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     ast@kernel.org
+Cc:     toke@redhat.com, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2] libbpf: use SOCK_CLOEXEC when opening the netlink socket
+Date:   Wed, 17 Mar 2021 17:28:58 +0530
+Message-Id: <20210317115857.6536-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: by 2002:a4a:a5c6:0:0:0:0:0 with HTTP; Wed, 17 Mar 2021 04:29:50
- -0700 (PDT)
-Reply-To: georgemike7031@gmail.com
-From:   george mike <fiacregnansa@gmail.com>
-Date:   Wed, 17 Mar 2021 12:29:50 +0100
-Message-ID: <CANUG119J9ThdLq6kUGUDKMY8+krrscUb4LuhM_Uu2JYV2qJE0w@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-0JfQtNGA0LDQstC+DQoNCtCX0L7QstC10Lwg0YHQtSDQk9C10L7RgNCz0LUg0JzQuNC60LUsINC/
-0L4g0LfQsNC90LjQvNCw0ZrRgyDRgdCw0Lwg0L/RgNCw0LLQvdC40LouINCW0LXQu9C40Lwg0LTQ
-sCDQstCw0Lwg0L/QvtC90YPQtNC40LwNCtC90LDRmNCx0LvQuNC20Lgg0YHRgNC+0LTQvdC40Log
-0LzQvtCzINC60LvQuNGY0LXQvdGC0LAuINCd0LDRgdC70LXQtNC40ZvQtdGC0LUg0YHRg9C80YMg
-0L7QtCAoOCw1INC80LjQu9C40L7QvdCwINC00L7Qu9Cw0YDQsCkNCtC00L7Qu9Cw0YDQsCDQutC+
-0ZjQtSDRmNC1INC80L7RmCDQutC70LjRmNC10L3RgiDQvtGB0YLQsNCy0LjQviDRgyDQsdCw0L3R
-htC4INC/0YDQtSDRgdCy0L7RmNC1INGB0LzRgNGC0LguDQoNCtCc0L7RmCDQutC70LjRmNC10L3R
-giDRmNC1INC00YDQttCw0LLRmdCw0L3QuNC9INCy0LDRiNC1INC30LXQvNGZ0LUg0LrQvtGY0Lgg
-0ZjQtSDQv9C+0LPQuNC90YPQviDRgyDQsNGD0YLQvtC80L7QsdC40LvRgdC60L7RmA0K0L3QtdGB
-0YDQtdGb0Lgg0YHQsCDRgdGD0L/RgNGD0LPQvtC8DQrQuCDRmNC10LTQuNC90Lgg0YHQuNC9LiDQ
-iNCwINGb0YMg0LjQvNCw0YLQuCDQv9GA0LDQstC+INGB0LAgNTAlINGD0LrRg9C/0L3QvtCzINGE
-0L7QvdC00LAsINC00L7QuiDRm9C1IDUwJSDQuNC80LDRgtC4DQrQsdGD0LTQuCDQt9CwINGC0LXQ
-sdC1Lg0K0JzQvtC70LjQvNC+INCy0LDRgSDQtNCwINC60L7QvdGC0LDQutGC0LjRgNCw0YLQtSDQ
-vNC+0Zgg0L/RgNC40LLQsNGC0L3QuCDQuNC80LXRmNC7INC+0LLQtNC1INC30LAg0LLQuNGI0LUg
-0LTQtdGC0LDRmdCwOg0K0LPQtdC+0YDQs9C10LzQuNC60LU3MDMxQNCz0LzQsNC40Lsu0YbQvtC8
-DQoNCtCc0L3QvtCz0L4g0YXQstCw0LvQsCDRg9C90LDQv9GA0LXQtCwNCtCT0L7RgdC/0L7QtNC4
-0L0g0JPQtdC+0YDQs9C1INCc0LjQutC1LA0K
+Otherwise, there exists a small window between the opening and closing
+of the socket fd where it may leak into processes launched by some other
+thread.
+
+Fixes: 949abbe88436 ("libbpf: add function to setup XDP")
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+Changelog:
+
+v1 -> v2
+Tag the bpf-next tree (Toke)
+Add a Fixes: tag (Toke)
+---
+ tools/lib/bpf/netlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
+index 4dd73de00..d2cb28e9e 100644
+--- a/tools/lib/bpf/netlink.c
++++ b/tools/lib/bpf/netlink.c
+@@ -40,7 +40,7 @@ static int libbpf_netlink_open(__u32 *nl_pid)
+ 	memset(&sa, 0, sizeof(sa));
+ 	sa.nl_family = AF_NETLINK;
+ 
+-	sock = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
++	sock = socket(AF_NETLINK, SOCK_RAW | SOCK_CLOEXEC, NETLINK_ROUTE);
+ 	if (sock < 0)
+ 		return -errno;
+ 
+-- 
+2.30.2
+
