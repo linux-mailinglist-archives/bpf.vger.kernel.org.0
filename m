@@ -2,69 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F29B033FBAC
-	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 00:09:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8045533FBD4
+	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 00:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbhCQXJA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Mar 2021 19:09:00 -0400
-Received: from elvis.franken.de ([193.175.24.41]:38983 "EHLO elvis.franken.de"
+        id S229829AbhCQXaZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Mar 2021 19:30:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229472AbhCQXI3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Mar 2021 19:08:29 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lMfHA-0002xB-00; Thu, 18 Mar 2021 00:08:28 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 491F7C0CF7; Thu, 18 Mar 2021 00:08:08 +0100 (CET)
-Date:   Thu, 18 Mar 2021 00:08:08 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
-Message-ID: <20210317230808.GA22680@alpha.franken.de>
-References: <1615965307-6926-1-git-send-email-yangtiezhu@loongson.cn>
- <6b239565-8fbb-d183-6a4d-13fc90af3e27@iogearbox.net>
+        id S229658AbhCQXaI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Mar 2021 19:30:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8339364DAF;
+        Wed, 17 Mar 2021 23:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616023808;
+        bh=Idvl73Ee3SM1SiaMKgxHHU5cQCVvwRDqZ1X4DyCFbZ0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=t0EUwttTR68pO73fzTQPH+5u8yjwdkBmmpK2k8Zl/fi+c2vZd1sIiPr4c1Z5IY+xp
+         x6taC+V14j0tYfZy0rH4JfpwxkX3lLHq08BMSMpDZ8QBFqeBwZu9Xva25t8ghMB+pi
+         16UYMYw2YzudWysXNzZOXprusV7ZPfqfStVA01beznIPW5Pn6QNAKNO1K3Bh7rNAZY
+         F6SqyOpWYNAVF9xDqGx+acUQC/Kd/sKmgLC2KQy7nMrN6f67wtrA2kryVWVjJ8Qy9w
+         809NiXWPW8w/jVSy31Ucw8hY+LqmBn/GZ4Xm+qeUCpe5NrW6f7pAsRg0GnOKiIEIoL
+         4Cv4msXnGUHVg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7317260A45;
+        Wed, 17 Mar 2021 23:30:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6b239565-8fbb-d183-6a4d-13fc90af3e27@iogearbox.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] bpf: Fix fexit trampoline.
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161602380846.17175.8769309724238970461.git-patchwork-notify@kernel.org>
+Date:   Wed, 17 Mar 2021 23:30:08 +0000
+References: <20210316210007.38949-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210316210007.38949-1-alexei.starovoitov@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        paulmck@kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 11:18:48PM +0100, Daniel Borkmann wrote:
-> On 3/17/21 8:15 AM, Tiezhu Yang wrote:
-> > After commit 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to
-> > archs where they work"), bpf_probe_read{, str}() functions were not longer
-> > available on MIPS, so there exists some errors when running bpf program:
-> > 
-> > root@linux:/home/loongson/bcc# python examples/tracing/task_switch.py
-> > bpf: Failed to load program: Invalid argument
-> > [...]
-> > 11: (85) call bpf_probe_read#4
-> > unknown func bpf_probe_read#4
-> > [...]
-> > Exception: Failed to load BPF program count_sched: Invalid argument
-> > 
-> > So select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE in arch/mips/Kconfig,
-> > otherwise the bpf old helper bpf_probe_read() will not be available.
-> > 
-> > This is similar with the commit d195b1d1d1196 ("powerpc/bpf: Enable
-> > bpf_probe_read{, str}() on powerpc again").
-> > 
-> > Fixes: 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
-> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Hello:
+
+This patch was applied to bpf/bpf.git (refs/heads/master):
+
+On Tue, 16 Mar 2021 14:00:07 -0700 you wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> Thomas, I presume you pick this up via mips tree (with typos fixed)? Or do you
-> want us to route the fix via bpf with your ACK? (I'm fine either way.)
+> The fexit/fmod_ret programs can be attached to kernel functions that can sleep.
+> The synchronize_rcu_tasks() will not wait for such tasks to complete.
+> In such case the trampoline image will be freed and when the task
+> wakes up the return IP will point to freed memory causing the crash.
+> Solve this by adding percpu_ref_get/put for the duration of trampoline
+> and separate trampoline vs its image life times.
+> The "half page" optimization has to be removed, since
+> first_half->second_half->first_half transition cannot be guaranteed to
+> complete in deterministic time. Every trampoline update becomes a new image.
+> The image with fmod_ret or fexit progs will be freed via percpu_ref_kill and
+> call_rcu_tasks. Together they will wait for the original function and
+> trampoline asm to complete. The trampoline is patched from nop to jmp to skip
+> fexit progs. They are freed independently from the trampoline. The image with
+> fentry progs only will be freed via call_rcu_tasks_trace+call_rcu_tasks which
+> will wait for both sleepable and non-sleepable progs to complete.
+> 
+> [...]
 
-I'll take it via mips tree.
+Here is the summary with links:
+  - [bpf] bpf: Fix fexit trampoline.
+    https://git.kernel.org/bpf/bpf/c/e21aa341785c
 
-Thomas.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+
