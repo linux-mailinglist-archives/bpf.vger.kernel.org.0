@@ -2,119 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FC333EC59
-	for <lists+bpf@lfdr.de>; Wed, 17 Mar 2021 10:12:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF92833EDD9
+	for <lists+bpf@lfdr.de>; Wed, 17 Mar 2021 11:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhCQJMX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Mar 2021 05:12:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42502 "EHLO
+        id S229636AbhCQKAO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Mar 2021 06:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbhCQJMJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Mar 2021 05:12:09 -0400
-X-Greylist: delayed 462 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 17 Mar 2021 02:12:08 PDT
-Received: from ellomb.netlib.re (unknown [IPv6:2001:912:1480:10::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282F2C06174A;
-        Wed, 17 Mar 2021 02:12:08 -0700 (PDT)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by ellomb.netlib.re (Postfix) with ESMTPA id 97BAC5339E9E;
-        Wed, 17 Mar 2021 09:04:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mildred.fr; s=dkim;
-        t=1615971860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=UDa0V4BMdmF12UM5cFG8Qs2U8MRsw1yqXPlMZldWCMM=;
-        b=IU/76do0dZc4zirdLHgU4diZj16mFsfS700C4UhA+Q0zvyu4DL4GKkJvtLKckomeJWLWdl
-        x+7Up6PH0HjjSOgM1wth3WmcbGzeHSEf/GU21qGq4gU8XjRGW4wQqdZtD3QnvCt98B4Ust
-        bXXSqhCZMwy18oHnOv1WyDosTSYMc1A=
-To:     bpf <bpf@vger.kernel.org>
-From:   =?UTF-8?Q?Shanti_Lombard_n=c3=a9e_Bouchez-Mongard=c3=a9?= 
-        <shanti@mildred.fr>
-Subject: Design for sk_lookup helper function in context of sk_lookup hook
-Cc:     netdev@vger.kernel.org, alexei.starovoitov@gmail.com, kafai@fb.com
-Message-ID: <0eba7cd7-aa87-26a0-9431-686365d515f2@mildred.fr>
-Date:   Wed, 17 Mar 2021 10:04:18 +0100
+        with ESMTP id S229919AbhCQJ7p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Mar 2021 05:59:45 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B029C06174A;
+        Wed, 17 Mar 2021 02:59:45 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id l1so1449567lfk.10;
+        Wed, 17 Mar 2021 02:59:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rZK0dXYfoMYNDjd/41SCLvGPVE+8I38D7HzSVC6cTLM=;
+        b=QYVSALsh00hkRSyvxsjbDM1i8MQGFVnPhEFggreS4IYaFAXmDnZjMBD3Pkh4ZAG7WO
+         H8ebsaiQO7GaasX4xTUU0LQlmDXUGy7FLKJYlOEWmcaZbACtTNMPN81geZWjEkdBhiH4
+         VBU5vmK0eS9G+RAe/V/dOWZsgII7rfnYjk6xnqKR+N7907riryVuEDbLirX6vRuIVvYy
+         xBcwhY2YlrCzanRs4ThXgvYBMB2PxZws+3RLwxLXlG7AT/fOLU3ppkLBoZuJcgnxDKmU
+         PeaU7OtoNs5cV0G4nxIKmjr4ucvEsNqzU+N/QuFUdbxTmx6tZbBIDrk/S8wMd1Qc8AS4
+         j91g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=rZK0dXYfoMYNDjd/41SCLvGPVE+8I38D7HzSVC6cTLM=;
+        b=evz2wCn6MN4JCxNhdymKiYw5x8NxoWsiLOjKk7NTWpWEzKjX0ujAd2Oj3/lSs44vOZ
+         SYdo0HZTEzmnF2zBND0RVkl9PRWYeJu767DgANuoavcCHOoihTMxhMa0QSyZUgngUiDo
+         yYXVpywSKm+Ht3vXNyrw1yv+7Aaf4WlnxddTelFCkZkGzMe3HKRVHFPHvq70FYkQRYEm
+         xDcJhiigCFCtMavafG4ynmUNXpMhUKNmGs4vdXWSiRrZpxzs72SHJI+fS3HZXAb4kMwJ
+         eeIvzPIlw04JHgMq5wPmdAZVa70AM/CHAtzipuKMcgvTde+uZHSI2+qn863y4IpB7Yvq
+         v50w==
+X-Gm-Message-State: AOAM530oIR028Acgq48EEwhkMaAMhjqt/u5GR1ec4VRMTD3GEBJPhfz8
+        91ezBA1cJuRwpLdQo5y04nMpN7dm4B8=
+X-Google-Smtp-Source: ABdhPJx7Ea5AuUcM5hFjpJHkKsufHlUd0yIDy/hPh8/HLWBqwPSdY1J5ZrMRTv25O8j4D2dKzAKvfQ==
+X-Received: by 2002:ac2:5382:: with SMTP id g2mr1894717lfh.60.1615975183939;
+        Wed, 17 Mar 2021 02:59:43 -0700 (PDT)
+Received: from [192.168.1.100] ([178.176.79.25])
+        by smtp.gmail.com with ESMTPSA id m1sm3461555ljg.111.2021.03.17.02.59.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Mar 2021 02:59:43 -0700 (PDT)
+Subject: Re: [PATCH] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+References: <1615965307-6926-1-git-send-email-yangtiezhu@loongson.cn>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <af0fec67-d858-f555-7728-7a083127b57b@gmail.com>
+Date:   Wed, 17 Mar 2021 12:59:38 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <1615965307-6926-1-git-send-email-yangtiezhu@loongson.cn>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=mildred.fr;
-        s=dkim; t=1615971860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=UDa0V4BMdmF12UM5cFG8Qs2U8MRsw1yqXPlMZldWCMM=;
-        b=K221AylZvjQd+yyDvBOhJr+h3H8sziYb7IOfKgdHYCrZZOpCOT84cHvck8j7xO7RLP/19I
-        xYmeCs80FSElT7HXwePIi35wN/ZS9BaBZSjqVZVGQUYVl7/wbUk832msOWZpd32tkpo/HO
-        6qoRshq67SaqdGobYt/g/SZtmtzLztg=
-ARC-Seal: i=1; s=dkim; d=mildred.fr; t=1615971860; a=rsa-sha256; cv=none;
-        b=ebxdQgE4EVouwWLSs8M0MI9sAGL+z9pgX1TZXRlkC9x5fHOihkm/A8/uzpLRYbmE3bzIIt
-        vz2IoXy/EcGtTB/2mZf1CmVhBJ4cb1Z7vHWSgcvUU17H4oIFLh+VCQXsL/1+07KVIxvY83
-        IYci4wdnxv3IDbr1PtT7uOrGd0OUY+I=
-ARC-Authentication-Results: i=1;
-        ellomb.netlib.re;
-        auth=pass smtp.auth=mildred@mildred.fr smtp.mailfrom=shanti@mildred.fr
-Authentication-Results: ellomb.netlib.re;
-        auth=pass smtp.auth=mildred@mildred.fr smtp.mailfrom=shanti@mildred.fr
-X-Spamd-Bar: /
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello everyone,
+On 17.03.2021 10:15, Tiezhu Yang wrote:
 
-Background discussion: 
-https://lore.kernel.org/bpf/CAADnVQJnX-+9u--px_VnhrMTPB=O9Y0LH9T7RJbqzfLchbUFvg@mail.gmail.com/
+> After commit 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to
+> archs where they work"), bpf_probe_read{, str}() functions were not longer
 
-In a previous e-mail I was explaining that sk_lookup BPF programs had no 
-way to lookup existing sockets in kernel space. The sockets have to be 
-provided by userspace, and the userspace has to find a way to get them 
-and update them, which in some circumstances can be difficult. I'm 
-working on a patch to make socket lookup available to BPF programs in 
-the context of the sk_lookup hook.
+    No longer.
 
-There is also two helper function bpf_sk_lokup_tcp and bpf_sk_lookup_udp 
-which exists but are not available in the context of sk_lookup hooks. 
-Making them available in this context is not very difficult (just 
-configure it in net/core/filter.c) but those helpers will call back BPF 
-code as part of the socket lookup potentially causing an infinite loop. 
-We need to find a way to perform socket lookup but disable the BPF hook 
-while doing so.
+> available on MIPS, so there exists some errors when running bpf program:
 
-Around all this, I have a few design questions :
+     Exist.
 
-Q1: How do we prevent socket lookup from triggering BPF sk_lookup 
-causing a loop?
+> root@linux:/home/loongson/bcc# python examples/tracing/task_switch.py
+> bpf: Failed to load program: Invalid argument
+> [...]
+> 11: (85) call bpf_probe_read#4
+> unknown func bpf_probe_read#4
+> [...]
+> Exception: Failed to load BPF program count_sched: Invalid argument
+> 
+> So select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE in arch/mips/Kconfig,
+> otherwise the bpf old helper bpf_probe_read() will not be available.
+> 
+> This is similar with the commit d195b1d1d1196 ("powerpc/bpf: Enable
+> bpf_probe_read{, str}() on powerpc again").
+> 
+> Fixes: 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+[...]
 
-- Solution A: We add a flag to the existing inet_lookup exported 
-function (and similarly for inet6, udp4 and udp6). The 
-INET_LOOKUP_SKIP_BPF_SK_LOOKUP flag, when set, would prevent BPF 
-sk_lookup from happening. It also requires modifying every location 
-making use of those functions.
-
-- Solution B: We export a new symbol in inet_hashtables, a wrapper 
-around static function inet_lhash2_lookup for inet4 and similar 
-functions for inet6 and udp4/6. Looking up specific IP/port and if not 
-found looking up for INADDR_ANY could be done in the helper function in 
-net/core/filters.c or in the BPF program.
-
-Q2: Should we reuse the bpf_sk_lokup_tcp and bpf_sk_lookup_udp helper 
-functions or create new ones?
-
-For solution A above, the helper functions can be reused almose 
-identically, just adding a flag or boolean argument to tell if we are in 
-a sk_lookup program or not. In solution B is preferred, them perhaps it 
-would make sense to expose the new raw lookup function created, and the 
-BPF program would be responsible for falling back to INADDR_ANY if the 
-specific socket is not found. It adds more power to the BPF program in 
-this case but requires to create a new helper function.
-
-I was going with Solution A abd identical function names, but as I am 
-touching the code it seems that maybe solution B with a new helper 
-function could be better. I'm open to ideas.
-
-Thank you.
-
-PS: please include me in replies if you are responding only to the 
-netdev mailing list as I'm not part of it. I'm subscribed to bpf.
-
+MBR, Sergei
