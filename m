@@ -2,109 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7D433F506
-	for <lists+bpf@lfdr.de>; Wed, 17 Mar 2021 17:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE5A33F5FC
+	for <lists+bpf@lfdr.de>; Wed, 17 Mar 2021 17:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbhCQQG2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Mar 2021 12:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47724 "EHLO
+        id S232670AbhCQQqG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Mar 2021 12:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232231AbhCQQF5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Mar 2021 12:05:57 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC59CC061763
-        for <bpf@vger.kernel.org>; Wed, 17 Mar 2021 09:05:56 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id e21so1345142vsh.5
-        for <bpf@vger.kernel.org>; Wed, 17 Mar 2021 09:05:56 -0700 (PDT)
+        with ESMTP id S232836AbhCQQpz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Mar 2021 12:45:55 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A49C06174A
+        for <bpf@vger.kernel.org>; Wed, 17 Mar 2021 09:45:54 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id y1so3979331ljm.10
+        for <bpf@vger.kernel.org>; Wed, 17 Mar 2021 09:45:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=v2KL8kozO5erdsP6tss56cJzIGTvQeUixy1fwBfyf9E=;
-        b=L+sKGzrqRGkayjrIbx3UhJgUwtMmmzJiP7xVkweSApuxYoYxI4LeRgqnM7E2cVNFT2
-         L45AC/pwNU1fz3kkRnhcRp5Khlan5/Osp695ao4Zeq1DMR4U7/JYz+4t7MEdHv1+9qwG
-         zwxXB5v4s7x+iSvmDyAA8j6J5F/LEkxHHfS2qwphtbLFYhEDWUv95/kvZL3Trdu79AyT
-         NNZbI9fnUQcz8+iyHBFSLC3Wa55Q+r5QDMMipTfIOHdnYaK4LSCdSwlrvXeW0lhZ4AF5
-         WXtzd1I3zdoC7C//HbblJCanoQNzLOyg1wur/OGHsKtTZ3gw78PQ17RnksLC/ossk+fU
-         fcmg==
+        bh=7Z/CsV2ufS440gwkb9MRs8lU8pRQgByiiPLU8x4xbLs=;
+        b=uhGuTDyhqfjeK0/NtWCNePOvfeC+9ziAQ0J1ixkrnhEo2vDxTEEyul+qMX0PwCubE3
+         Ot95rVLHp2Rl8+Cs5DvD04LpAg5uBYENpYxqVfIDvAxc1yoihNKsG3ZbAo/5T7tTEMUv
+         u+i470ux4F7dIa3d6tPDEYbQotapR8mW1ZrBeQfCifXW2dH8vwkWAIifP1ZMOPQqUmtz
+         ZR7do+uFnMEoNuZ09j8Mr4n4hy3uDnSMcJsePc63tZyivspvMP6kE8GJTtgx2ID0gwz6
+         4NLIedvWTrgqgYV5KQOsTMpP73XwdUXLYQQzgtSoJlv7MQINFkaOsPlB+bo77poeu8kK
+         LOtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=v2KL8kozO5erdsP6tss56cJzIGTvQeUixy1fwBfyf9E=;
-        b=j5qwKn0sLiSrRb+Hq9llMEskfAuqeTy6q+rSn0DWGLZpGfot71YScXxqpJALd9G2dA
-         9KVHm0vVIAScTvKVTKyH/vhwoTnCJHWe37W79fv486FjjrN2l5JBU7kie5yKafp/IpaM
-         pLkqyGzVi3QeP5pkhbAWSNKLJckxD+JyByf6EJX4lGGKEd6o0d2fYZKQWrrAsRLxr4my
-         bAZGzk0gbn4Wp+Lh1k0I1Qqv+ZDkXRmwN/hw7p4lS0/Hx5OVGTRoEvzcYadnoBXxjBvS
-         2sBzfTBZ5ripsOvNRyotrVIT0IfOrQau6k2fKHbhvfHtH1pidJr/XJMUeUDfcHntkkID
-         co1w==
-X-Gm-Message-State: AOAM5326FYBFjnjAL63B/2O76p4mZmx9iC2FaYEFBuwl5eZ0lD8ZxuwQ
-        ksbsTzC795v8CW/GQ4Ooq74EXMGRPHteRLrMspt7Sw==
-X-Google-Smtp-Source: ABdhPJxaHsoJ+bz7hvftL5zgwqX9DbDHuTiz3ir8dA5jWQPZop9wwdoJTujQjPIzJwP11rynhQBtRWijCPDqibIFRy4=
-X-Received: by 2002:a67:db98:: with SMTP id f24mr4264884vsk.13.1615997155510;
- Wed, 17 Mar 2021 09:05:55 -0700 (PDT)
+        bh=7Z/CsV2ufS440gwkb9MRs8lU8pRQgByiiPLU8x4xbLs=;
+        b=qTW3U2tH8gDmHxEuujHF+zSxLoknjI2AP9NCNCpDa9cUhjgtQ3guY1Y8CPgMRljEcY
+         dudJ+Al9m+65qvsA76uXxSAYCqns4kwp1ac7I19a3fkS4UL1QoXAt1c4ZK7wjmG4OUUs
+         AJR+ULv7AFZgkTr+yc2EtvJOy9urHj2ROy6H4lzK71tZv5gVYFrNkb/oHU/Pw10iYMqE
+         ZDoUSeZENH1yGI/KCU6i2rX5JR2mRzZ1TJPPK1px9wqffqsv1k5U1Sja/ITXCAbt71PO
+         6U0IBFw0pd8o8sm84/VztVP3uBO4JwDmz4BfO7jsTGASM99uIfi5nhWskC9uSUqZkUkf
+         DarA==
+X-Gm-Message-State: AOAM533Opdi87cqwLs9TbXf73t050NqmtAzzSGVbQuBLyT9uJWMm1KR6
+        s6gJZc+GbNOKkEkeBbcV1e+LIJR2wFI+i79Grvc=
+X-Google-Smtp-Source: ABdhPJzxx8A1H9DvQ1CUhJoKRvCpkKU2GT9foFoTtIQV2KBV2W+QxkJ0KZwLisAzeHEznXTAU4md26hFunaqBCV/Itk=
+X-Received: by 2002:a2e:b817:: with SMTP id u23mr2865106ljo.44.1615999553317;
+ Wed, 17 Mar 2021 09:45:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210312004919.669614-1-samitolvanen@google.com>
- <20210312004919.669614-7-samitolvanen@google.com> <20210312061304.GA2321497@infradead.org>
-In-Reply-To: <20210312061304.GA2321497@infradead.org>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Wed, 17 Mar 2021 09:05:44 -0700
-Message-ID: <CABCJKud-wRfmRLFv71QQ6etUMFX6KXsErmL6u0dPH4SU8HS-BQ@mail.gmail.com>
-Subject: Re: [PATCH 06/17] kthread: cfi: disable callback pointer check with modules
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        bpf@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210317042906.1011232-1-yhs@fb.com> <CAADnVQLY1ftbZxFqAMSN4amWoYZN0ka3DyVLXAWhgsTO7V9V+Q@mail.gmail.com>
+ <58a10cec-180b-d8d5-e1d3-de9b695a8878@fb.com>
+In-Reply-To: <58a10cec-180b-d8d5-e1d3-de9b695a8878@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 17 Mar 2021 09:45:42 -0700
+Message-ID: <CAADnVQ+hUjX-Hk9=9X+=ii1SusfsZJrsxXUn4krH1bUvNjuVRg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: net: emit anonymous enum with
+ BPF_TCP_CLOSE value explicitly
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 10:13 PM Christoph Hellwig <hch@infradead.org> wrote:
+On Tue, Mar 16, 2021 at 10:58 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> On Thu, Mar 11, 2021 at 04:49:08PM -0800, Sami Tolvanen wrote:
-> > With CONFIG_CFI_CLANG, a callback function passed to
-> > __kthread_queue_delayed_work from a module points to a jump table
-> > entry defined in the module instead of the one used in the core
-> > kernel, which breaks function address equality in this check:
-> >
-> >   WARN_ON_ONCE(timer->function != kthread_delayed_work_timer_fn);
-> >
-> > Disable the warning when CFI and modules are enabled.
-> >
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > ---
-> >  kernel/kthread.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/kthread.c b/kernel/kthread.c
-> > index 1578973c5740..af5fee350586 100644
-> > --- a/kernel/kthread.c
-> > +++ b/kernel/kthread.c
-> > @@ -963,7 +963,13 @@ static void __kthread_queue_delayed_work(struct kthread_worker *worker,
-> >       struct timer_list *timer = &dwork->timer;
-> >       struct kthread_work *work = &dwork->work;
-> >
-> > -     WARN_ON_ONCE(timer->function != kthread_delayed_work_timer_fn);
-> > +     /*
-> > +      * With CFI, timer->function can point to a jump table entry in a module,
 >
-> you keep spewing this comment line that has exactly 81 characters and
-> thus badly messes up read it with a normal termina everywhere.
 >
-> Maybe instead of fixing that in ever duplication hide the whole check in
-> a well documented helper (which would have to be a macro due to the
-> typing involved).
+> On 3/16/21 10:44 PM, Alexei Starovoitov wrote:
+> > On Tue, Mar 16, 2021 at 9:29 PM Yonghong Song <yhs@fb.com> wrote:
+> >> +       BTF_TYPE_EMIT_ENUM(BPF_TCP_ESTABLISHED);
+> >> +
+> >> +       return 0;
+> >> +}
+> >> +late_initcall(bpf_emit_btf_type);
+> >
+> > I think if we burn a dummy function on this it would be a wrong
+> > pattern to follow.
+>
+> Maybe we can pick another initcall to piggyback?
+>
+> > This is just a nop C statement.
+> > Typically we add BUILD_BUG_ON near the places that rely on that constraint.
+> > There is such a function already. It's tcp_set_state() as you pointed out.
+> > It's not using BTF of course, but I would move above BTF_TYPE_EMIT_ENUM there.
+> > I'm not sure why you're calling it "pollute net/ipv4/tcp.c".
+>
+> This is the minor reason. I first coded in that place and feel awkward
+> where we have macro referenced above and we still emit a BTF_TYPE_EMIT
+> below although with some comments.
+>
+> The major reason is I think we may have some uapi type/enum's (e.g., in
+> uapi/linux/bpf.h) which will be used in bpf program but not in kernel
+> itself. So we cannot generate types in vmlinux btf because of this. So I
+> used this case to find a place to generate these btf types.
+> BPF_TCP_CLOSE is actually such an example, it happens we have a
+> BUILD_BUG_ON in kernel to access it.
+> Maybe I am too forward looking?
 
-Sure, that sounds cleaner. I'll add a helper macro in v2.
-
-Sami
+It's great to be forward looking :)
+I'm just having a hard time justifying an empty function with single 'ret' insn
+that actually will be called at init time and it will stay empty like this for
+foreseeable future. Static analysis tools and whatnot will start sending
+patches to remove that empty function.
