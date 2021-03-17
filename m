@@ -2,171 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5441333F747
-	for <lists+bpf@lfdr.de>; Wed, 17 Mar 2021 18:42:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 248BD33F801
+	for <lists+bpf@lfdr.de>; Wed, 17 Mar 2021 19:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbhCQRlj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Mar 2021 13:41:39 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63400 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230456AbhCQRli (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 17 Mar 2021 13:41:38 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12HHcIcd011002
-        for <bpf@vger.kernel.org>; Wed, 17 Mar 2021 10:41:38 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=wFeGd+fuy1Gte48wA+jH49JN0p04WmRyaBweThTf2Cs=;
- b=ZCPoaEAl0e6gkCUxsVjcF9WMmIzcQd7qHT53FkFiPlc2PJksD0tABMwPAD09bPt7lqGb
- UvBmIT+phQKDNlSQkvS9RMr/yu5RfuWnsDUb17A4v5InMOntOHAty+Elh4JAVOwogpf1
- vGtyZyLNtYEQRlRt4z+5an8ac/qK7S4edCA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37a6bs7my4-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 17 Mar 2021 10:41:38 -0700
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 17 Mar 2021 10:41:35 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id E3B926D0BB2; Wed, 17 Mar 2021 10:41:32 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v3] bpf: net: emit anonymous enum with BPF_TCP_CLOSE value explicitly
-Date:   Wed, 17 Mar 2021 10:41:32 -0700
-Message-ID: <20210317174132.589276-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S232762AbhCQSQb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Mar 2021 14:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232137AbhCQSQG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Mar 2021 14:16:06 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41AAC06174A;
+        Wed, 17 Mar 2021 11:16:05 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id z7so343385lfd.5;
+        Wed, 17 Mar 2021 11:16:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RnRKNpQgUsNpaNv3dsr453+uGBMHftMBsGXsYkGT7rE=;
+        b=KMYWWZ9xdJ794AYGtt+jrqZ1WOEUPreEYwTDM5S5UPYRNJm2B4yjNYGkJpcGSEboIU
+         JQmRCmMenOQR9fI9TlQMImVZygZvas7RQqs+YYCEF5dsSLtwpu2ggtCjP0d2URBYjErg
+         T0dpwe06zeqUs0s0myEAn6zbPUeIKY9fnfiGcmFroffJNCQAegbzvMvh8gOq0A9v7a/m
+         rAGKOeTZJjmQnARguRLjOJu8pdPAu+QFiXoPzqD8EjuToZgevfwxHCarRSjdlq8V04OU
+         4V0aRpy+GI1VtvX7wdRECj1Ym7SpFQaTyWaPoJEfp7zTdJgK6fVnDKKDUdr0s62xAjKK
+         iBeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RnRKNpQgUsNpaNv3dsr453+uGBMHftMBsGXsYkGT7rE=;
+        b=b17996BC9YKIhHFVLhZenwrPxYWWzF1aiMCwsA8Fh1SooAPHyYyPtRYnTQDLPJzqCz
+         T29KV+McQg45hhH7VfabNJQQbJM0t2TUaxcebvWZcqbyZ2ZthPQx+QlryzkDygygWjwh
+         2G4JA0IFnUb7xitTWPPpFycTaqEVsfNWdBq96IYHLBfTbWjEkmiI7xR2ovadXComXHTR
+         EOEJWCRW2Gt5HoIWGiE/rBYXzmSHE0/ZA7y/E51VRSbW2JprulM+Q62lq2sjt98bDcwh
+         g8fdkmjorXtMIXrh7To0jmYyokNKQWndZV5uNx+EkhM0Q/cZWbMCfaZhTGvqc6yiFygg
+         dGag==
+X-Gm-Message-State: AOAM532c0xlP9vfdzHHVvDV3nr6ZfjmylPU5wLotH0muCpY0IKkxAzZt
+        59YoPxqDNqjjzp8NRMHZvaumzsnnvH0uwNQtBBY=
+X-Google-Smtp-Source: ABdhPJwjxBiUafEVHyuGWn52BbQJ0CqM03RZxe6x+nPFht8IsWTxeJtB50Hqe7SlhdXwLRQr60FBUsOLgpi2U/OtPIQ=
+X-Received: by 2002:ac2:5b5a:: with SMTP id i26mr2986484lfp.182.1616004964394;
+ Wed, 17 Mar 2021 11:16:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-17_11:2021-03-17,2021-03-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- adultscore=0 suspectscore=0 phishscore=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 clxscore=1015
- spamscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2103170121
-X-FB-Internal: deliver
+References: <20210317031257.846314-1-andrii@kernel.org> <20210317031257.846314-2-andrii@kernel.org>
+ <CAEf4BzYYkJqdvamkgoCqGF23Av44n322FMz+-HWO9YxXBNLqVw@mail.gmail.com>
+In-Reply-To: <CAEf4BzYYkJqdvamkgoCqGF23Av44n322FMz+-HWO9YxXBNLqVw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 17 Mar 2021 11:15:53 -0700
+Message-ID: <CAADnVQJ2+m4DVGpBQ_0a+vGDSodRqfpFhWzw1umEf_ytyY7kVw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/4] bpftool: generate NULL definition in vmlinux.h
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The selftest failed to compile with clang-built bpf-next.
-Adding LLVM=3D1 to your vmlinux and selftest build will use clang.
-The error message is:
-  progs/test_sk_storage_tracing.c:38:18: error: use of undeclared identif=
-ier 'BPF_TCP_CLOSE'
-          if (newstate =3D=3D BPF_TCP_CLOSE)
-                          ^
-  1 error generated.
-  make: *** [Makefile:423: /bpf-next/tools/testing/selftests/bpf/test_sk_=
-storage_tracing.o] Error 1
+On Wed, Mar 17, 2021 at 10:38 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> > diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> > index 62953bbf68b4..ff6a76632873 100644
+> > --- a/tools/bpf/bpftool/btf.c
+> > +++ b/tools/bpf/bpftool/btf.c
+> > @@ -405,6 +405,8 @@ static int dump_btf_c(const struct btf *btf,
+> >         printf("#ifndef __VMLINUX_H__\n");
+> >         printf("#define __VMLINUX_H__\n");
+> >         printf("\n");
+> > +       printf("#define NULL ((void *)0)\n");
+>
+>
+> On second thought, this could also be done in bpf_helpers.h, which is
+> pretty much always included in BPF programs. I think that's a bit more
+> maintainable and less magical to users, so I'll go with that in v3.
 
-The reason for the failure is that BPF_TCP_CLOSE, a value of
-an anonymous enum defined in uapi bpf.h, is not defined in
-vmlinux.h. gcc does not have this problem. Since vmlinux.h
-is derived from BTF which is derived from vmlinux DWARF,
-that means gcc-produced vmlinux DWARF has BPF_TCP_CLOSE
-while llvm-produced vmlinux DWARF does not have.
-
-BPF_TCP_CLOSE is referenced in net/ipv4/tcp.c as
-  BUILD_BUG_ON((int)BPF_TCP_CLOSE !=3D (int)TCP_CLOSE);
-The following test mimics the above BUILD_BUG_ON, preprocessed
-with clang compiler, and shows gcc DWARF contains BPF_TCP_CLOSE while
-llvm DWARF does not.
-
-  $ cat t.c
-  enum {
-    BPF_TCP_ESTABLISHED =3D 1,
-    BPF_TCP_CLOSE =3D 7,
-  };
-  enum {
-    TCP_ESTABLISHED =3D 1,
-    TCP_CLOSE =3D 7,
-  };
-
-  int test() {
-    do {
-      extern void __compiletime_assert_767(void) ;
-      if ((int)BPF_TCP_CLOSE !=3D (int)TCP_CLOSE) __compiletime_assert_76=
-7();
-    } while (0);
-    return 0;
-  }
-  $ clang t.c -O2 -c -g && llvm-dwarfdump t.o | grep BPF_TCP_CLOSE
-  $ gcc t.c -O2 -c -g && llvm-dwarfdump t.o | grep BPF_TCP_CLOSE
-                    DW_AT_name    ("BPF_TCP_CLOSE")
-
-Further checking clang code find clang actually tried to
-evaluate condition at compile time. If it is definitely
-true/false, it will perform optimization and the whole if condition
-will be removed before generating IR/debuginfo.
-
-This patch explicited add an expression after the
-above mentioned BUILD_BUG_ON in net/ipv4/tcp.c like
-  (void)BPF_TCP_ESTABLISHED
-to enable generation of debuginfo for the anonymous
-enum which also includes BPF_TCP_CLOSE.
-
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- include/linux/btf.h |  1 +
- net/ipv4/tcp.c      | 12 ++++++++++++
- 2 files changed, 13 insertions(+)
-
-Changelog:
-  v2 -> v3:
-    emit type in net/ipv4/tcp.c near where BPF_TCP_CLOSE is used
-    instead in kernel/bpf/core.c.
-  v1 -> v2:
-    use DWARF instead of dwarf for better consistency with
-    other usages. (Andrii)
-
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index 7fabf1428093..9c1b52738bbe 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -9,6 +9,7 @@
- #include <uapi/linux/bpf.h>
-=20
- #define BTF_TYPE_EMIT(type) ((void)(type *)0)
-+#define BTF_TYPE_EMIT_ENUM(enum_val) ((void)enum_val)
-=20
- struct btf;
- struct btf_member;
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index de7cc8445ac0..e14fd0c50c10 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -267,6 +267,7 @@
- #include <linux/slab.h>
- #include <linux/errqueue.h>
- #include <linux/static_key.h>
-+#include <linux/btf.h>
-=20
- #include <net/icmp.h>
- #include <net/inet_common.h>
-@@ -2587,6 +2588,17 @@ void tcp_set_state(struct sock *sk, int state)
- 	BUILD_BUG_ON((int)BPF_TCP_NEW_SYN_RECV !=3D (int)TCP_NEW_SYN_RECV);
- 	BUILD_BUG_ON((int)BPF_TCP_MAX_STATES !=3D (int)TCP_MAX_STATES);
-=20
-+	/* bpf uapi header bpf.h defines an anonymous enum with values
-+	 * BPF_TCP_* used by bpf programs. Currently gcc built vmlinux
-+	 * is able to emit this enum in DWARF due to the above BUILD_BUG_ON.
-+	 * But clang built vmlinux does not have this enum in DWARF
-+	 * since clang removes the above code before generating IR/debuginfo.
-+	 * Let us explicitly emit the type debuginfo to ensure the
-+	 * above-mentioned anonymous enum in the vmlinux DWARF and hence BTF
-+	 * regardless of which compiler is used.
-+	 */
-+	BTF_TYPE_EMIT_ENUM(BPF_TCP_ESTABLISHED);
-+
- 	if (BPF_SOCK_OPS_TEST_FLAG(tcp_sk(sk), BPF_SOCK_OPS_STATE_CB_FLAG))
- 		tcp_call_bpf_2arg(sk, BPF_SOCK_OPS_STATE_CB, oldstate, state);
-=20
---=20
-2.30.2
-
+yep. good idea.
