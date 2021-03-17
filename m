@@ -2,163 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76AE933F2AE
-	for <lists+bpf@lfdr.de>; Wed, 17 Mar 2021 15:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2F633F49F
+	for <lists+bpf@lfdr.de>; Wed, 17 Mar 2021 16:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231913AbhCQOcH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Mar 2021 10:32:07 -0400
-Received: from wforward1-smtp.messagingengine.com ([64.147.123.30]:34095 "EHLO
-        wforward1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231877AbhCQObp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 17 Mar 2021 10:31:45 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailforward.west.internal (Postfix) with ESMTP id 8F5B8243F;
-        Wed, 17 Mar 2021 10:31:44 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 17 Mar 2021 10:31:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=h8YsvWm8QT/uQ/zWAAzHRUTIUcphQ2EzHqQ3tsheD
-        zQ=; b=LXzgE8CxsZIn6a2D1qjQU5Ub8OGDNbrJqpgZaIKfvJFqaSURUiURR1cbu
-        qMy/PiTZAjOn3XeCYCCoqQie5nQrferxBARy7Ik0UqOlcU16Ja1uit0BMx8PnF+d
-        6qym/G/wusSbL7musK/0biVV20dOaytS1ge9BgvNHnoB15rcdX2ZlPKLnkEgv8Wl
-        +y9g3WLlDUjx7t/GMzQ/L0g3S9NwxR706OIPEDayjY3OlONC2LOibo+ny+PHFNZv
-        M2AJJUiGEdYsRyPQNOaYumXWZpTpKCgBD13/1nwbLgogbPLtlWBPQLZHkTw5w+1U
-        jeQ4kNgWXz2HSsjuBBzUIEkvYsSWg==
-X-ME-Sender: <xms:zhJSYALItS0wt1Zq5mXR52No2J6uWySYKFZWGGXka5OjR9V5J9Aa4w>
-    <xme:zhJSYITG7hBWoT_SKiaA9xOllUenCEnmmhP6OFkki8kOlWcztsdEIKHk-2ss1JONe
-    mwkQTWHJuJ4ej82dGk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudefgedgieeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurheptggguffhjgffgffkfhfvofesthekmhdthhdtjeenucfhrhhomheptfgrfhgr
-    vghlucffrghvihguucfvihhnohgtohcuoehrrghfrggvlhguthhinhhotghosehusghunh
-    htuhdrtghomheqnecuggftrfgrthhtvghrnhepiefhtedugeetueevveekffejffffhedt
-    keekfeejteefgfefudelkeetfffgleeunecukfhppeduledurdeliedrjeefrddvvdelne
-    cuufhprghmkfhppfgvthifohhrkhepudeluddrleeirdejfedrvddvleenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghfrggvlhguthhinh
-    hotghosehusghunhhtuhdrtghomh
-X-ME-Proxy: <xmx:zhJSYAMsTv9JG29yHRfnN7xsY3b9zVMCFGSUy-HKN-YKH6OGzchoHA>
-    <xmx:zhJSYNXtAW8lEsLCII4IoydE88plM7ZfdkiZB-UQ93lH2sxq7G9zwA>
-    <xmx:zhJSYDjDy3JxGBa-PUTBrSqPXT2IVO98r5CTs4fGixnvGBnH3joxAg>
-    <xmx:zxJSYLN3n8Ya_BntOfwDRGGVrOmvL-TJEkPnC71u0iUYJbGRSEX2nZWc7zY>
-Received: from [10.6.3.96] (unknown [191.96.73.229])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9006924005D;
-        Wed, 17 Mar 2021 10:31:41 -0400 (EDT)
-Content-Type: text/plain;
-        charset=utf-8;
-        delsp=yes;
-        format=flowed
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [BPF CO-RE clarification] Use CO-RE on older kernel versions.
-From:   Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
-In-Reply-To: <CFD47A17-D20D-49FB-A357-5476C8EE02AF@ubuntu.com>
-Date:   Wed, 17 Mar 2021 11:31:38 -0300
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Vamsi Kodavanty <vamsi@araalinetworks.com>,
-        bpf <bpf@vger.kernel.org>
-X-Mao-Original-Outgoing-Id: 637684238.052054-6b45b567c1d5b3360dfa095b133282b9
+        id S231866AbhCQPw2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Mar 2021 11:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232601AbhCQPwB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Mar 2021 11:52:01 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B911AC061760;
+        Wed, 17 Mar 2021 07:54:20 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id g15so1281897pfq.3;
+        Wed, 17 Mar 2021 07:54:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VX8xHL+87BW1KLwBi9gunx33qho2YZRZxASXIV7grFw=;
+        b=O9LTjZNCsR9gSSAS+S8FvfugaFJ75IngmN7wDk/aTR6vvVj+58f7H+crABZO9DV+d2
+         v7rUGLBY0T42bTYQvj+u1nUuKW15KVOzOAaeyembU52SXZMktL1TDX+ShLFSUgdy7ebD
+         Buebn2I0ry8Et/OCCHpxEj6stBlHCeTVGI8iVq+le09+iCFBrB3PDH86FYmnmxtVmAYV
+         rqQGHsFH5epsVYZ/jIOOdb4ws+0holHCI0SsdAx2HpyFGBSHP1weEUflFlNYmvuAgAGZ
+         t7JvgoerfGrf4kuQhySJwtRtxzaQinU70aNmPckqAnsGu301M1K36ZJU8Q8dOOXWrtm1
+         UdAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=VX8xHL+87BW1KLwBi9gunx33qho2YZRZxASXIV7grFw=;
+        b=kjJze3HqKgJ1jDoSXs2rB1aiuxtqtM9kYjjE1jGsLayGAw+HPwJmXp26oIIf9OlUbF
+         tb9Yix0kfQ3cFdJVWcwIxjl+y6aoEYC1VyEsTxf054jvNTuzaON9a+E7YzMgib76Fbkh
+         9RWnlkoslEzLOAhy8ttDdJADgKj1jVHqVONws1CLvRDBwJCTGW5nt4oAhX/EdDEPZmNG
+         V/WnOTaPRfjFM0evj8N0QOLkRmPtwchl4Yz8Hn5HBNnD6H4o6Ug92V2Hh1k5BUTpkhmK
+         pgekBXM0TJbd4sOzPemUNgb51yUinN8Tyod6AaGxLqXpFqx5Mtv1qYtT7BKWLLUQJ8Ny
+         VlMg==
+X-Gm-Message-State: AOAM531K2t4gKtCfBMP1gF6ONFywzXKHf5AGMa6Fh19IGn80EP8VHeFw
+        cGURw1LQ2m4YMZKs4/hWYnQ=
+X-Google-Smtp-Source: ABdhPJwbAGPp4ws0MaZtGJkBqm1DZmMs5QuR3yhHECr1wnRYWABNXQoGOhIDe/BozfrUnBjzWKgEbg==
+X-Received: by 2002:a65:6a48:: with SMTP id o8mr2937671pgu.424.1615992860178;
+        Wed, 17 Mar 2021 07:54:20 -0700 (PDT)
+Received: from balhae.roam.corp.google.com ([101.235.31.111])
+        by smtp.gmail.com with ESMTPSA id a19sm19926273pfn.181.2021.03.17.07.54.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Mar 2021 07:54:19 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] libbpf: Fix error path in bpf_object__elf_init()
+Date:   Wed, 17 Mar 2021 23:54:14 +0900
+Message-Id: <20210317145414.884817-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-Id: <B4B873B5-464D-46D7-A0DC-841B08FA34AD@ubuntu.com>
-References: <CADmGQ+0dDjfs6UL63m3vLAfu+GHgSFdMO+Rmz_jk+0R9Wva2Tw@mail.gmail.com>
- <20210303181457.172434-1-rafaeldtinoco@ubuntu.com>
- <CAEf4BzZE_Ss7-cNdVpKJbC57mr2V_-OMcC9fvHw7XTntn3K2jA@mail.gmail.com>
- <043B1B9B-EEF7-49CD-88AF-29A2A3E97304@ubuntu.com>
- <67E3C788-2835-4793-8A9C-51C5D807C294@ubuntu.com>
- <CAEf4BzaPytBkMqDh15eLPskOj_+FQa0ta2G+BToEn1pSwMGpfA@mail.gmail.com>
- <7BEF1010-5D4A-4C6F-8059-BD18A4A9EA6F@ubuntu.com>
- <CAEf4BzYDNQwTBmd_gG5isqfy0JPrW+ticu=NUvqhvbYmLOWC-g@mail.gmail.com>
- <CFD47A17-D20D-49FB-A357-5476C8EE02AF@ubuntu.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+When it failed to get section names, it should call
+bpf_object__elf_finish() like others.
 
->>
->>>> From what I see all the CO-RE relocations applied successfully (even
->>>> though all the offsets stayed the same, so presumably you compiled
->>>> your BPF program with vmlinux.h from the exact same kernel you are
->>>> running it on?). Are you sure that vmlinux image you are providing
->>>> corresponds to the actual kernel you are running on?
->
-> FOUND the cause of the issue…
->
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/lib/bpf/libbpf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-...
-
->
-> bpf_check():
->
-> if (log->len_total < 128 || log->len_total > UINT_MAX >> 8 || !log->level  
-> || !log->ubuf)
->
-> and a simple change in libbpf (mitigation of course):
->
->   attr.log_buf = 0;
->   attr.log_level = 0;
->   attr.log_size = 0;
->
-> before
->
-> fd = sys_bpf_prog_load(&attr, sizeof(attr));
-
-With instrumented kernel… no changes to libbpf or code:
-
-attr.log_buf = (nil)
-attr.log_level = 0
-attr.log_size = 0
-load_attr.log_buf = 0x7fd1c0a92010
-load_attr.log_level = 0
-load_attr.log_size = 16777215
-libbpf: load bpf program failed: Invalid argument
-libbpf: failed to load program 'ip_set_create'
-libbpf: failed to load object 'mine_bpf'
-libbpf: failed to load BPF skeleton 'mine_bpf': -22
-failed to load BPF object: -22
-
-[   27.857858] MINE: BPF_PROG_TYPE_KPROBE KERNEL VERSION ISSUE
-[   27.857993] MINE: LINUX_VERSION_CODE: 266002
-[   27.858131] MINE: YOUR VERSION: 265984
-
-2 problems here:
-
-0) attr.kern_version
-
-- looks like for some reason attr.kern_version is different from
-the one running
-
-- bypassing kernel BPF_KPROBE version check, I get:
-
-1) load_attr has log_buf and log_size but not log_level for some reason.
-
-- this triggers an issue in bpf_check() within kernel IF I bypass
-the BPF_KPROBE version check (kerne 4.15).
-
-NOW, If I hard-code attr.kern_version in bpf.c to:
-
-attr.kern_version = 266002;
-fd = sys_bpf_prog_load(&attr, sizeof(attr));
-
-then
-
-attr.log_buf = (nil)
-attr.log_level = 0
-attr.log_size = 0
-load_attr.log_buf = (nil)
-load_attr.log_level = 0
-load_attr.log_size = 0
-Tracing... Hit Ctrl-C to end.
-
-I don’t have the 2 problems, as log_level is zeroed, together with
-log_buf and log_size.
-
-Any clue on why this happens ?
-
-Thank you!
-
--rafaeldtinoco
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 2f351d3ad3e7..8d610259f4be 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1194,7 +1194,8 @@ static int bpf_object__elf_init(struct bpf_object *obj)
+ 	if (!elf_rawdata(elf_getscn(obj->efile.elf, obj->efile.shstrndx), NULL)) {
+ 		pr_warn("elf: failed to get section names strings from %s: %s\n",
+ 			obj->path, elf_errmsg(-1));
+-		return -LIBBPF_ERRNO__FORMAT;
++		err = -LIBBPF_ERRNO__FORMAT;
++		goto errout;
+ 	}
+ 
+ 	/* Old LLVM set e_machine to EM_NONE */
+-- 
+2.31.0.rc2.261.g7f71774620-goog
 
