@@ -2,96 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0E833F80C
-	for <lists+bpf@lfdr.de>; Wed, 17 Mar 2021 19:20:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B01E33F98F
+	for <lists+bpf@lfdr.de>; Wed, 17 Mar 2021 20:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232916AbhCQSUS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Mar 2021 14:20:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48674 "EHLO
+        id S232592AbhCQTvw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Mar 2021 15:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232988AbhCQSUQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Mar 2021 14:20:16 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5897EC06174A
-        for <bpf@vger.kernel.org>; Wed, 17 Mar 2021 11:20:16 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 15so4463668ljj.0
-        for <bpf@vger.kernel.org>; Wed, 17 Mar 2021 11:20:16 -0700 (PDT)
+        with ESMTP id S231398AbhCQTvk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Mar 2021 15:51:40 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAE7C06174A;
+        Wed, 17 Mar 2021 12:51:40 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 15so4781826ljj.0;
+        Wed, 17 Mar 2021 12:51:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hXBtxa2949+5hCtAmQNzADPKHhEJmzh3z7qttX3zS2U=;
-        b=gGckk5xJHYxaxY3s/OIeNWXuHNsJnI3mR5365oqw55YmeMjRQrbpH5NsPFiNrIv1TG
-         SHsooqdPVsFT9tEYhCPL4p3cFNBsUDvgXglGBU2m2CUxYcafPh4MI/8SbEvxKOGCYggo
-         38OXwcIOjM4nWdWCWaAZPq8s1pzckJorlyi3bw3aZHEzA316Pv8bf4X+GZhf9dPmMIjV
-         OpL5IgsYXn7DvnmC2bEE8pZgV6jYCYV/RUX1XWI+HTlwWWhteKSE7ktGq8wtmn796Xxp
-         rCLD+ZapQo46iwjgndXh4ANjNhK5nlW/rmIZGEi6tXpSgtbBdy0IoR4URq4ZJK6M/PhL
-         nPUg==
+        bh=VzQBD837Zk1zEE5Iz7CRU5SLWREGhnXHICCVYkscOfc=;
+        b=No5LWjJXssMUs0UXhpwbVW0DuHSXGjX1P2/w7D3hj4mYl3VvTG3P5VAmH0SM62x/dT
+         PqrG00moq/L7hqU6fXua3oramWcVCzElc/GzyDOJ9e7udlSeaStUw5CHq6fSGBJaza4p
+         TohikbLMye+bT7zmNfG+PVUvnKXDt/wquXD969rer5t3QB+NFex0DD64oshMyLHfAYtM
+         n1g3axMAGsi6NbsB7wc6N87VW2Pu6wjhaobYZ2puA20/0me5dy9Q6VK/86Om1cU/5hJP
+         cHHvnb/P/dkOZ6KYzIlihzhLvmT96jUg5QskD6XvOxYajvr2ZUe8mzuZgyMeHFf7fqfX
+         Ma3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hXBtxa2949+5hCtAmQNzADPKHhEJmzh3z7qttX3zS2U=;
-        b=G/R2wN+hEHSFvFgFqh0AWmNsUDoFTTivjG+lMHjbDe6Vp3HYlrij7Ab1GSvmKiiElX
-         zSIlv2JlFRZlF0Ayz/negQD+Zbz22XzK/6UxgeGaFLjYYqWAHxUDFSGg9FnBnOVLFuW1
-         z9+yGgxfOp5kOowruXOy/dvorqVpSaLitHIrWUNU0oORKGn6C9leNVE14o7ZGURCY2da
-         PrxH9fsYal8JvHM1HR4YM3CAg/KsVIO9lHuUUv/mpPonLwqCCo342Bwjj1zh3a7Y0Sap
-         U6Vt2q3AugDSTh/Q1lTAFVHbzg5XgwODdAbOci3KmFYmNsvW22g9w2ad1Zr5pLT9r6wa
-         a+MA==
-X-Gm-Message-State: AOAM531tNzVdedf/RmC47Zesjo5LhNUwPlyCzqttu5v4wF4iAax+UOdY
-        MTzkBpHHFUtL/8qDnXxGM5voqpwVi8vfkz180WxFlYix
-X-Google-Smtp-Source: ABdhPJx4Pfza4L1j3sn4vZg2Upl0bw5lldPYSf3vu5N/N/VJn6EiqGvxF+jZ4VDUsHiRJ6hMHcbaEV7JdpcJTDtiRXA=
-X-Received: by 2002:a2e:b817:: with SMTP id u23mr3050740ljo.44.1616005214838;
- Wed, 17 Mar 2021 11:20:14 -0700 (PDT)
+        bh=VzQBD837Zk1zEE5Iz7CRU5SLWREGhnXHICCVYkscOfc=;
+        b=hrVQonJGX7KmVFuyRceNeZdisnjZJaDRzPxpvmyH3LuS1w5h7A3QzUPWl66aQ4vnYV
+         W6WvVrEm4QPSvYlf0ZSo2EKv8sJesVKVzI50CxXvCFoz0aWylvhASuCmZiwKz+KC2N1q
+         SMLXzesEeOhGetzxS9j9ijE21UoFbKxIETa6v+L9jZY/ER5sPuEal6M58jBoVKJ4a+Bi
+         ykZJ8c0RBRNLOSiPECAQqJoY8+Mj6ND9zzRvmmNgJUiCUS5nR97U3dFdwcVsFAvQT+MK
+         ttfVA8DHl/l5/FdRYmdqldWlXEquGEQ73hpbSczTp2mImuIVC+pdMT/h7OKDQfwYwzOU
+         l1hQ==
+X-Gm-Message-State: AOAM531W7Qu2scdPlQvKDchVG6jbdkhK5JWJx6GnK+jYgpK0meTe4tuj
+        q+7STHn27r8oCC9bR3nO+IJGTUoQ1ifY4CRIo5Y=
+X-Google-Smtp-Source: ABdhPJyDl038EMrMS8D0eUwFstC4lVMlO1PBhSPXP5inoBsNmAyT40HGMm8TW7qZ156bRzt7NxGocN1usLMO4lmkz7Y=
+X-Received: by 2002:a2e:900b:: with SMTP id h11mr3340022ljg.258.1616010698713;
+ Wed, 17 Mar 2021 12:51:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAM_iQpXJ4MWUhk-j+mC4ScsX12afcuUHT-64CpVj97QdQaNZZg@mail.gmail.com>
- <20210310011905.ozz4xahpkqbfkkvd@ast-mbp.dhcp.thefacebook.com>
- <CAM_iQpXP-m03auwF_Ote=oSev3ZVmJ5Pj_5-8aJOTMz+Nmhhgw@mail.gmail.com>
- <CAM_iQpUvU3PQ9-i1n+YW7GU_FNSzURe1v61AkJw=QutxEZhakw@mail.gmail.com> <CAM_iQpU+9e5op7ZEgX1ThSfBxqOemw6Dy_hZFaBR0mHk1XePSQ@mail.gmail.com>
-In-Reply-To: <CAM_iQpU+9e5op7ZEgX1ThSfBxqOemw6Dy_hZFaBR0mHk1XePSQ@mail.gmail.com>
+References: <20210317125147.2159512-1-Jianlin.Lv@arm.com>
+In-Reply-To: <20210317125147.2159512-1-Jianlin.Lv@arm.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 17 Mar 2021 11:20:02 -0700
-Message-ID: <CAADnVQLRSYr4AYZoNh589v0eBqw+f72iXmzhAqmzTK7kfVYmKA@mail.gmail.com>
-Subject: Re: bpf timer design
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        duanxiongchun@bytedance.com, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
+Date:   Wed, 17 Mar 2021 12:51:27 -0700
+Message-ID: <CAADnVQLB1MoqHekQa1FrjybqmA9gBHcBcaezULb=v5PgthRB6A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Simplify expression for identify bpf mem type
+To:     Jianlin Lv <Jianlin.Lv@arm.com>
+Cc:     bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Simon Horman <simon.horman@netronome.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        OSS Drivers <oss-drivers@netronome.com>,
+        Linux API <linux-api@vger.kernel.org>, iecedge@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 10:26 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
->
-> On Tue, Mar 16, 2021 at 9:21 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> > We still need a timer map:
-> >
-> > struct {
-> >      __uint(type, BPF_MAP_TYPE_TIMER);
-> > } map SEC(".maps");
-> >
-> > However, its key is not a pointer to timer, it is a timer ID allocated with
-> >
-> > u32 bpf_timer_create(void *callback, void *arg, u64 flags);
->
-> Hmm, we do not need a map at all, because the verifier could check
-> whether create() and delete() are paired correctly, so we can just
-> have the following API's:
->
-> u32 bpf_timer_create(void *callback, void *arg, u32 flags);
-> void bpf_timer_settime(u32 id, u64 expires);
-> u64 bpf_timer_gettime(u32 id);
-> int bpf_timer_delete(u32 id);
->
-> Pretty much similar to Linux user-space timer API's. I will probably
-> go this direction, unless there is any objection.
+On Wed, Mar 17, 2021 at 5:52 AM Jianlin Lv <Jianlin.Lv@arm.com> wrote:
+>         return BPF_CLASS(meta->insn.code);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 2d3036e292a9..5d77675e7112 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -21,6 +21,7 @@
+>  #define BPF_DW         0x18    /* double word (64-bit) */
+>  #define BPF_ATOMIC     0xc0    /* atomic memory ops - op type in immediate */
+>  #define BPF_XADD       0xc0    /* exclusive add - legacy name */
+> +#define BPF_SIZE_MASK  0x18    /* mask of size modifier */
 
-I think a specialized map or hidden map that returns id like above
-has plenty of downsides.
-Please reconsider what I was proposing.
-In the previous email I outlined the reasons why 'struct bpf_timer'
-embedded in any normal map is more user friendly and more flexible.
-I'd like to discuss those points first. It sounds to me that you disagreed,
-but I couldn't find an articulation on why you disagreed.
+Pls don't add kernel internal defines to uapi.
