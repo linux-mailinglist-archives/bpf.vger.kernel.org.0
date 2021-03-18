@@ -2,147 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31488340963
-	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 16:58:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52172340997
+	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 17:05:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhCRP6O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Mar 2021 11:58:14 -0400
-Received: from www62.your-server.de ([213.133.104.62]:51900 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230260AbhCRP6G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Mar 2021 11:58:06 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lMv2B-0009xy-Qk; Thu, 18 Mar 2021 16:58:03 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lMv2B-000GJ0-DL; Thu, 18 Mar 2021 16:58:03 +0100
-Subject: Re: [PATCH bpf-next v2] bpf: Simplify expression for identify bpf mem
- type
-To:     Jianlin Lv <Jianlin.Lv@arm.com>, bpf@vger.kernel.org
-Cc:     kuba@kernel.org, simon.horman@netronome.com, davem@davemloft.net,
-        ast@kernel.org, alexei.starovoitov@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@netronome.com, linux-api@vger.kernel.org,
-        iecedge@gmail.com
-References: <20210318063626.216024-1-Jianlin.Lv@arm.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <939f6d78-b6f8-b9fc-35b7-e8560a8b020c@iogearbox.net>
-Date:   Thu, 18 Mar 2021 16:58:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S230338AbhCRQFQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Mar 2021 12:05:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231835AbhCRQFC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Mar 2021 12:05:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF05564E37
+        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 16:05:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616083501;
+        bh=1JE/AbYPEBgdvboIFCWbKHaSN5mZtVvY2ZXvL8qGmGg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IMVd56OvJM1OrQxhXsFFfVEqgxwCyNc0xx03ZYWz1OJX23zL2duduA37qdZPMcr88
+         Ma62o8jvUgVIqOhqg64oEu47OTuHVgx/hGVqADGZC8PQWugtTmCOdY+lmdkbLXsBr5
+         +l3ZfxQMMUvk0HH0rWptKXTTHltzmScP20b/IOql/mY/WRLTE4C3XBSAnBnFANtRlU
+         vAw50afK3olr4PY6exs0xU+TydR1LBDWJzzmch3liOVZ8v8COreWZc9nrTzD2fE9Nh
+         O/epFqCvFwySNWY4ui+szKn3Mr6p6ks9g69qxuoLGu7KedHkBaPiOToRn3uO0det9U
+         aXdlNO8/F9Sjg==
+Received: by mail-lf1-f42.google.com with SMTP id z7so5411981lfd.5
+        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 09:05:00 -0700 (PDT)
+X-Gm-Message-State: AOAM533A4o1HuBVLAfP+c0qKFpxNfBXtukexxBWNsp21w5i1fCfrQnQU
+        Y74b1XM3shLWUo9zr9CeWOclHM4klOg6WZ5yj756Yg==
+X-Google-Smtp-Source: ABdhPJxm8BLHUnngptvtR9B67BXGQaLuZyg9n5+1UvVHJFmJ+MGUVAcGFey6xEJJ6lCrv85csCunM11iSwq/jzi/2jM=
+X-Received: by 2002:a05:6512:398e:: with SMTP id j14mr6229802lfu.9.1616083499203;
+ Thu, 18 Mar 2021 09:04:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210318063626.216024-1-Jianlin.Lv@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26112/Thu Mar 18 12:08:11 2021)
+References: <CAEf4BzZ2t_VbdtSde9uPEYNaggZLj3peyA8opHj1Ao_FO8AVrQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ2t_VbdtSde9uPEYNaggZLj3peyA8opHj1Ao_FO8AVrQ@mail.gmail.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Thu, 18 Mar 2021 17:04:48 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ5eynv81uQ9_PA9uA=FUqva_j8MmpCgM1Pv=urVkXZsWA@mail.gmail.com>
+Message-ID: <CACYkzJ5eynv81uQ9_PA9uA=FUqva_j8MmpCgM1Pv=urVkXZsWA@mail.gmail.com>
+Subject: Re: test_ima passing only first time
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/18/21 7:36 AM, Jianlin Lv wrote:
-> Added BPF_LD_ST_SIZE_MASK macro as mask of size modifier that help to
-> reduce the evaluation of expressions in if statements,
-> and remove BPF_SIZE_MASK in netronome driver.
-> 
-> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
-> ---
-> v2: Move the bpf_LD_ST_SIZE_MASK macro definition to include/linux/bpf.h
-> ---
->   drivers/net/ethernet/netronome/nfp/bpf/main.h |  8 +++-----
->   include/linux/bpf.h                           |  1 +
->   kernel/bpf/verifier.c                         | 12 ++++--------
->   3 files changed, 8 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/netronome/nfp/bpf/main.h b/drivers/net/ethernet/netronome/nfp/bpf/main.h
-> index d0e17eebddd9..e90981e69763 100644
-> --- a/drivers/net/ethernet/netronome/nfp/bpf/main.h
-> +++ b/drivers/net/ethernet/netronome/nfp/bpf/main.h
-> @@ -346,8 +346,6 @@ struct nfp_insn_meta {
->   	struct list_head l;
->   };
->   
-> -#define BPF_SIZE_MASK	0x18
-> -
->   static inline u8 mbpf_class(const struct nfp_insn_meta *meta)
->   {
->   	return BPF_CLASS(meta->insn.code);
-> @@ -375,7 +373,7 @@ static inline bool is_mbpf_alu(const struct nfp_insn_meta *meta)
->   
->   static inline bool is_mbpf_load(const struct nfp_insn_meta *meta)
->   {
-> -	return (meta->insn.code & ~BPF_SIZE_MASK) == (BPF_LDX | BPF_MEM);
-> +	return (meta->insn.code & ~BPF_LD_ST_SIZE_MASK) == (BPF_LDX | BPF_MEM);
->   }
->   
->   static inline bool is_mbpf_jmp32(const struct nfp_insn_meta *meta)
-> @@ -395,7 +393,7 @@ static inline bool is_mbpf_jmp(const struct nfp_insn_meta *meta)
->   
->   static inline bool is_mbpf_store(const struct nfp_insn_meta *meta)
->   {
-> -	return (meta->insn.code & ~BPF_SIZE_MASK) == (BPF_STX | BPF_MEM);
-> +	return (meta->insn.code & ~BPF_LD_ST_SIZE_MASK) == (BPF_STX | BPF_MEM);
->   }
->   
->   static inline bool is_mbpf_load_pkt(const struct nfp_insn_meta *meta)
-> @@ -430,7 +428,7 @@ static inline bool is_mbpf_classic_store_pkt(const struct nfp_insn_meta *meta)
->   
->   static inline bool is_mbpf_atomic(const struct nfp_insn_meta *meta)
->   {
-> -	return (meta->insn.code & ~BPF_SIZE_MASK) == (BPF_STX | BPF_ATOMIC);
-> +	return (meta->insn.code & ~BPF_LD_ST_SIZE_MASK) == (BPF_STX | BPF_ATOMIC);
->   }
->   
->   static inline bool is_mbpf_mul(const struct nfp_insn_meta *meta)
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index a25730eaa148..e85924719c65 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -995,6 +995,7 @@ struct bpf_array {
->   				 BPF_F_RDONLY_PROG |	\
->   				 BPF_F_WRONLY |		\
->   				 BPF_F_WRONLY_PROG)
-> +#define BPF_LD_ST_SIZE_MASK	0x18	/* mask of size modifier */
->   
->   #define BPF_MAP_CAN_READ	BIT(0)
->   #define BPF_MAP_CAN_WRITE	BIT(1)
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index f9096b049cd6..29fdfdb8abfa 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -11384,15 +11384,11 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
->   	for (i = 0; i < insn_cnt; i++, insn++) {
->   		bpf_convert_ctx_access_t convert_ctx_access;
->   
-> -		if (insn->code == (BPF_LDX | BPF_MEM | BPF_B) ||
-> -		    insn->code == (BPF_LDX | BPF_MEM | BPF_H) ||
-> -		    insn->code == (BPF_LDX | BPF_MEM | BPF_W) ||
-> -		    insn->code == (BPF_LDX | BPF_MEM | BPF_DW))
-> +		/* opcode: BPF_MEM | <size> | BPF_LDX */
-> +		if ((insn->code & ~BPF_LD_ST_SIZE_MASK) == (BPF_LDX | BPF_MEM))
->   			type = BPF_READ;
-> -		else if (insn->code == (BPF_STX | BPF_MEM | BPF_B) ||
-> -			 insn->code == (BPF_STX | BPF_MEM | BPF_H) ||
-> -			 insn->code == (BPF_STX | BPF_MEM | BPF_W) ||
-> -			 insn->code == (BPF_STX | BPF_MEM | BPF_DW))
-> +		/* opcode: BPF_MEM | <size> | BPF_STX */
-> +		else if ((insn->code & ~BPF_LD_ST_SIZE_MASK) == (BPF_STX | BPF_MEM))
->   			type = BPF_WRITE;
->   		else
->   			continue;
-> 
+Sorry I totally missed this email. Taking a look now.
 
-To me this cleanup makes the code harder to read, in particular on verfier side,
-I don't think it's worth it, especially given it's not in (highly) performance
-critical code.
-
-Thanks,
-Daniel
+On Wed, Mar 10, 2021 at 10:57 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> Hey KP,
+>
+> test_ima is passing only the very first time I run it in my VM. Alexei
+> earlier reported similar issues. If you run it second time without
+> restarting the VM, you get the following:
+>
+> 10+0 records in
+> 10+0 records out
+> 10485760 bytes (10 MB, 10 MiB) copied, 0.00425121 s, 2.5 GB/s
+> mke2fs 1.45.0 (6-Mar-2019)
+> Discarding device blocks: done
+> Creating filesystem with 10240 1k blocks and 2560 inodes
+> Filesystem UUID: b9927426-1d29-458f-b2a0-8fe56455d209
+> Superblock backups stored on blocks:
+>         8193
+>
+> Allocating group tables: done
+> Writing inode tables: done
+> Writing superblocks and filesystem accounting information: done
+>
+> ./ima_setup.sh: line 53: /sys/kernel/security/ima/policy: Permission denied
+> test_test_ima:PASS:skel_load 0 nsec
+> test_test_ima:PASS:ringbuf 0 nsec
+> test_test_ima:PASS:attach 0 nsec
+> test_test_ima:PASS:mkdtemp 0 nsec
+> test_test_ima:FAIL:71
+> #128 test_ima:FAIL
+>
+> Do you see it on your side? Do you have any idea what's wrong?
+>
+> Also, see that super-descriptive `test_test_ima:FAIL:71` line? That's
+> the reason I'm always bitching about CHECK_FAIL() use. At least this
+> one is not inside some loop.
+>
+> -- Andrii
