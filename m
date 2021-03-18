@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D995340B34
-	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 18:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8DD340B37
+	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 18:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232371AbhCRRLo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S232281AbhCRRLo (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Thu, 18 Mar 2021 13:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33210 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231920AbhCRRL1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:11:27 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7080DC06174A
-        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 10:11:27 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id t18so30239968qva.6
-        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 10:11:27 -0700 (PDT)
+        with ESMTP id S232310AbhCRRL3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:11:29 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717DCC06174A
+        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 10:11:29 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id j26so9759500pgj.19
+        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 10:11:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=EKy6eSpRty5bSmZbwR30NkKAGzsTESRLoXrAS0NLKzs=;
-        b=eNY2GRuACJ4olOGkjStJnYo4+tvS1eI09T9df2gayih2kTUfZntYqA2LC07oyFHHKx
-         LoRKGFl7PNJPDMcGsA8HHxwkyKD6TQ3Wyj2RgmLIE+s/HvtuXPx+5I6hrckpZS+oErY5
-         ogDFVfGdaqDnTuF18CVV+DDQ8LdUflseecN9bGTeT6a8+SxjHM098eZm7PBLmXf4op3n
-         1t24cup0GDg+RjbPgKZcdfUEVEtSdq/swYay65YLQskI16wdRli58LFrBk46rbgMuGYq
-         R1K0+s+6Qx3mqwk/4Tw3ukG0C8TFEkEBMu8Kfwp5nFQHghNI828VgANtKDjrPt40E0UW
-         Zliw==
+        bh=kAxWBGQQ6gb1U0MwyH2aGrnOUTzFGjVGvgXGkxVH/cc=;
+        b=liAOU1cNxrOdNR8Mq2wdteZcuX/4GGjEvmX6VRt8SJpT8g5c/zhTtCrqOcNoXot7R8
+         p1HymEJCx3U3MjDN37R8LlebJ9vtc4QS37r5hp/DGkgrykkjdb6C0qRALyJRp89Eas+i
+         1jen8r3xd9zt0zZr9UzvlAfpmAxoBZYbpK/OgNk6ZT++341DfmQovKhP11YgxnbvZlFr
+         X2tspDFVyGouwBpmAV27otQ74JTSYb7fKQKADR7cZWYj2chJWJ1DBwJw5EPogGOtdPZa
+         AwlGuQfVzacKapISpv2yS7Uq+JqnRv+I7YVKuASx+mIC9EZrru5DgEP2qNx7a2dWt6C4
+         aL+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=EKy6eSpRty5bSmZbwR30NkKAGzsTESRLoXrAS0NLKzs=;
-        b=pDZE1Z/j4uX+X6IJVyCfskhu0Q+WwFIYNImttwdc+lnvj2Bt+uUHzRf90188IqioaU
-         aYgz9bJGROhwscXqkFK7mfvLVqo+OhEzEHT7QI085nlZJDJYckSG2Et1XRpxWn0iRANs
-         zz1rGGxyjMOUyywMX/sMxtqb7Z01zHjC1AGuigUjc/e5PfFiL43DQWgnFM5Gq6GEZhqn
-         7kxnYPDUsID+JNNzzEA1ku16hikgs2ahrzqWJVGh7grZ0iHIk2ie8qT+n/7Sdzp9KjO2
-         OdJE2r5mVDjO0inj56imzTitVsFTBG0fVjf4jp0vjwBEeE3iH/yI6838NSIL4zHsAYm+
-         b62Q==
-X-Gm-Message-State: AOAM533f9/sbTuk5WX5KefaXZHLms4wqVDhA1sR4Y118vZgdR3i3FlMs
-        XICFasg12NQOB571yk4JBIEmoMGwEFvP7onhdFM=
-X-Google-Smtp-Source: ABdhPJwiIw/nT2sORQEJv0I4VRlDkF+rVz6Bmu3Ni9Zp0LOjbRn8BFtuq/bsl/qFKL5zfw7XxQ6J44Hw6n3oVZm4Gio=
+        bh=kAxWBGQQ6gb1U0MwyH2aGrnOUTzFGjVGvgXGkxVH/cc=;
+        b=UVrQ5HQIcnL+dH9ow/NI8wiM7uzbnf6wkwlrRGpP5meOVu4qJLtyPhCizY+TipuM7h
+         BJ6PYJkYY6ZRsD+M+9CvQt1oroU7TBJmQBbVGAyv5OOxUVulfRrn+KfWj91pfm5JzbmD
+         jqbPjqNYnVHE74oKVvrB6+Zzui6KmZhMef/gBSQmt8cBsVcOo9I2y0oHsg1Sdtd3q+3P
+         9eWSi+qYMDfAR1jfAADxixVgKa42KbGeei1/7XMEwoYzWFsrM2Y99hL8qsncsyqWTrdA
+         huNTxIVYaz5l558jkI1vHipUfAqLJn4yiFx1/Ob2W8jFNDoB65P3K8kBnHzTKC192G2O
+         TduQ==
+X-Gm-Message-State: AOAM530u99tRf+6gx7NoPpcAGuMYl7wlxit4kZMPHvPS65L4n3UGYAoK
+        kvDwf4Osdms5Khi8LA7nr9GBL+WUpht+kq2jV2A=
+X-Google-Smtp-Source: ABdhPJxKWbdiJmcD8GxmltL5n/GfUdjB9vzaW7o7vy1vsfJ4+SqraPewncqhBQztkA9cts228yKyAQm40viIg6HomOI=
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:c0d7:a7ba:fb41:a35a])
- (user=samitolvanen job=sendgmr) by 2002:ad4:4ae9:: with SMTP id
- cp9mr5359453qvb.20.1616087486617; Thu, 18 Mar 2021 10:11:26 -0700 (PDT)
-Date:   Thu, 18 Mar 2021 10:10:59 -0700
+ (user=samitolvanen job=sendgmr) by 2002:a17:90a:b311:: with SMTP id
+ d17mr5522830pjr.228.1616087488845; Thu, 18 Mar 2021 10:11:28 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 10:11:00 -0700
 In-Reply-To: <20210318171111.706303-1-samitolvanen@google.com>
-Message-Id: <20210318171111.706303-6-samitolvanen@google.com>
+Message-Id: <20210318171111.706303-7-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20210318171111.706303-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH v2 05/17] workqueue: use WARN_ON_FUNCTION_MISMATCH
+Subject: [PATCH v2 06/17] kthread: use WARN_ON_FUNCTION_MISMATCH
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     Kees Cook <keescook@chromium.org>
 Cc:     Nathan Chancellor <nathan@kernel.org>,
@@ -70,33 +70,34 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 With CONFIG_CFI_CLANG, a callback function passed to
-__queue_delayed_work from a module points to a jump table entry
-defined in the module instead of the one used in the core kernel,
-which breaks function address equality in this check:
+__kthread_queue_delayed_work from a module points to a jump table
+entry defined in the module instead of the one used in the core
+kernel, which breaks function address equality in this check:
 
-  WARN_ON_ONCE(timer->function != delayed_work_timer_fn);
+  WARN_ON_ONCE(timer->function != ktead_delayed_work_timer_fn);
 
 Use WARN_ON_FUNCTION_MISMATCH() instead to disable the warning
 when CFI and modules are both enabled.
 
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 ---
- kernel/workqueue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/kthread.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 0d150da252e8..03fe07d2f39f 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1630,7 +1630,7 @@ static void __queue_delayed_work(int cpu, struct workqueue_struct *wq,
- 	struct work_struct *work = &dwork->work;
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index 1578973c5740..a1972eba2917 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -963,7 +963,8 @@ static void __kthread_queue_delayed_work(struct kthread_worker *worker,
+ 	struct timer_list *timer = &dwork->timer;
+ 	struct kthread_work *work = &dwork->work;
  
- 	WARN_ON_ONCE(!wq);
--	WARN_ON_ONCE(timer->function != delayed_work_timer_fn);
-+	WARN_ON_FUNCTION_MISMATCH(timer->function, delayed_work_timer_fn);
- 	WARN_ON_ONCE(timer_pending(timer));
- 	WARN_ON_ONCE(!list_empty(&work->entry));
+-	WARN_ON_ONCE(timer->function != kthread_delayed_work_timer_fn);
++	WARN_ON_FUNCTION_MISMATCH(timer->function,
++				  kthread_delayed_work_timer_fn);
  
+ 	/*
+ 	 * If @delay is 0, queue @dwork->work immediately.  This is for
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 
