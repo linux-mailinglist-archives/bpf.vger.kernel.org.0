@@ -2,123 +2,280 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37537340CC9
-	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 19:20:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 846D1340D07
+	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 19:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbhCRST1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Mar 2021 14:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48552 "EHLO
+        id S232530AbhCRSb5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Mar 2021 14:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231590AbhCRSTT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Mar 2021 14:19:19 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE72C06174A
-        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 11:19:19 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id u5so5447662ejn.8
-        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 11:19:19 -0700 (PDT)
+        with ESMTP id S230442AbhCRSbb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Mar 2021 14:31:31 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FF51C06174A
+        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 11:31:30 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 15so8825614ljj.0
+        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 11:31:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7sse64bqIOWwkx9kqYUy4ajU7Bzc2Pb4HNGntqpA0mM=;
-        b=1WNUJrDfvEhcj70yijsJeUt9Yq8eCTCc2Xlu19qqYJiwqfU18DiPMLx1LVkoxxkDhh
-         NtJMzw/0gCG2gAfazKZktFJTCyOZaj4gV1+R5WiMhF4ggQG3NDbwQ9th9mqNHmam56nw
-         6TC5HQcry7vhch0Nh1tXa70Z7QLJ7XJ+ocYeTLhspTTOBtKz+3tmyky/BcAhO9OL1RVD
-         qP4VrSOyIP/wnSHzeA4o8TJjFinF6WSvyr5qON1JKvWpLGq9FqZwM2kQJa8dkTcrDxpD
-         xtQsKpv1xgFbGdfYwjJ0aHt/y+T6Gs8gul6AVt+5t7yu/mEbXWCUTqknt6NZPSP5VBRZ
-         ko4g==
+        bh=dIq1u4ifgyugV1ACzu3RDx53gglMvtefOsgSWU4C8lM=;
+        b=snpnSGrQTZXRRsNjmoqbl9JHu/I7UN8FEcOkqpvGjCwRpvZjL0M9XIK5ymYGrbOTJL
+         y74RZpTikwDnkxWYzrkBcIJfSMHUlS/Q7E0etZrTjj9c+OrIRFf2J6QtI9N6h0DGhTVd
+         kv2tbLJx43Bn8dua4d7zrxsSeJ/9kHWIKT+FZB8BfJ2WpDQISl13YpRaq8ogfdUObui4
+         ANf799SetNqMPPGE+ICKB+5jTCYwfCTQIFeaFeMtyAAT3Ox44i6CXsrz+bDS6C45uBmS
+         XnLsSm+mloV7/aQwPuSe6LfG3NmCZdWVErqJF4RhLhWhMabPsrnY7EhRG+X86sMwPNm0
+         h96Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7sse64bqIOWwkx9kqYUy4ajU7Bzc2Pb4HNGntqpA0mM=;
-        b=cPCED03UX7HCQJmeS4ybeFkR2/HAJNw9rYY9ajNypmHnOWIO775xlO0deSIN7f8o0z
-         dmWOheIKUO9KsvwHL5/xu76ieAeoMwGFR9V1GpluLlLBexxEeTZ5a9rGbfjT2L+qgu9V
-         VZvAHAzIDPcSn/Ml0B3q/EBDGdRp1qbGlLdDoC5wGkHJZ/D7ticjlwmSA68UnWwY6Q3m
-         Rvz56KakgTRXZtHe/nCa7fxCyQDSzu7cS2Mcl/ScNbajuYFgVT7cO7BjUSrPMyb4CyU3
-         gNLwrw6Eg+MZW4qBT+MARtJ/7p7Kfp19qg003Ur7mXd1ydTfZqyMjG3CIWjXArD2TWU1
-         y0kw==
-X-Gm-Message-State: AOAM530D97nd0U2RAp4JfMqENRDuBiaPQGtyJN0J5rkLiXoYzZFHKYpW
-        cDPmqkNlWKnRcc1e5QGxYincBySccT6flyO6Ty6K
-X-Google-Smtp-Source: ABdhPJz3ZhyPn56X7wMia/HfV+uHSUf5OdJlPqCXRQwY+sZNLIXnrBAWLfGC9myUp3XOXqFIONy9n0/+0d2i9slNCo0=
-X-Received: by 2002:a17:906:3d62:: with SMTP id r2mr41708535ejf.488.1616091557890;
- Thu, 18 Mar 2021 11:19:17 -0700 (PDT)
+        bh=dIq1u4ifgyugV1ACzu3RDx53gglMvtefOsgSWU4C8lM=;
+        b=KVgtjkjBMuH9wPBWFBCkfvi/XchVKCCeb0mMxktc712VnTKtvb+TR0yLRQ5TTKXymq
+         s8OKtuj8lIefFPtaH1OpdYw943HDmfkGfm+yeB0+sZEkprZXEmGy7uP/sQMaLCizYo8y
+         vzjEtLLG4O6pGLYUZgEtwZwU4ToUfB+0ffd65IC0vrjxprzu3AEfiaeyHCqk9SUo9UKF
+         puYK3mSEhV7NLGnedt8MeTFI7nIQa4I3fRvPnzmGNOvoQAEzE6RwWTkhSpNcibaGhoZK
+         SQIyn2QbiX6l8X4zVJQTA82ZvQ7Eo9v+fatkPrPFhc54vRDDRGMI8V41HQwGlIo/5++u
+         QSTg==
+X-Gm-Message-State: AOAM530A7ewXhSnB3CopbgVTURWs1CmtsI4Nvr9ci+dO1odVYHQo4rGI
+        O4QXXRMXFdZuxtRfcPCqukCeXk+EMOewLGJHilSVgQ==
+X-Google-Smtp-Source: ABdhPJxYI4Ni5EeKFZJ4EUZUt0SbxaXz+OFmajEMvrj1cKw0K3kwb/rWVM/Z9Oi8E17uksIN9MDcE9zE/SN+K0kwRow=
+X-Received: by 2002:a2e:b008:: with SMTP id y8mr5765845ljk.233.1616092288700;
+ Thu, 18 Mar 2021 11:31:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <2ed7a55e-7def-7faf-fc47-991b867bff9e@iogearbox.net>
- <CANYvDQOfygmqv0V-1PuzXV8ZFzk0uD566oEF3v9uX21G4fSFKg@mail.gmail.com>
- <1e410caf-019a-ade7-465d-3d936d2f7dc6@iogearbox.net> <5845cef9-5aaf-f85e-8280-472f61ddaeed@iogearbox.net>
- <CANYvDQNCKmEy9ZzPRvhNYvK0=TKk1pRS=seUuAkby92ic8tVqw@mail.gmail.com>
- <f97bd923-bf12-69a0-f0a8-c9a764abbed2@iogearbox.net> <YFIwzhE00OpU1zro@krava>
- <ff0db44e-aa55-da94-785f-ba10792a5ae1@iogearbox.net> <YFKOeGqUwBPTkPzT@krava>
- <61494cfb-1ceb-4886-3023-1ac0b35697d6@iogearbox.net> <YFM+Ijeu4bN4IzH1@krava>
- <CANYvDQN7H5tVp47fbYcRasv4XF07eUbsDwT_eDCHXJUj43J7jQ@mail.gmail.com>
- <CANYvDQOH5ZDpQBAHtz13YNiJ2Bhd56wnoas71UdYco62g-xBDg@mail.gmail.com>
- <CAHC9VhRMsWJmRr=OZ7FSj2sBmNRJHKNGMPv5nLY6RGX_dxroPA@mail.gmail.com> <CAHC9VhQQ48yDLWObTjO0Su6mQ2R0QgAWqnuWCb2cZC5qUp_Fqg@mail.gmail.com>
-In-Reply-To: <CAHC9VhQQ48yDLWObTjO0Su6mQ2R0QgAWqnuWCb2cZC5qUp_Fqg@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 18 Mar 2021 14:19:05 -0400
-Message-ID: <CAHC9VhTD3+-tvC2Nxj0bpmcK2SaS50wUQmKtqQ1FSPcO1a-P3A@mail.gmail.com>
-Subject: Re: deadlock bug related to bpf,audit subsystems
-To:     Serhei Makarov <smakarov@redhat.com>
-Cc:     linux-audit@redhat.com, bpf@vger.kernel.org,
-        Jerome Marchand <jmarchan@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
-        Frank Eigler <fche@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        guro@fb.com, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org
+References: <20210318171111.706303-1-samitolvanen@google.com> <20210318171111.706303-10-samitolvanen@google.com>
+In-Reply-To: <20210318171111.706303-10-samitolvanen@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 18 Mar 2021 11:31:16 -0700
+Message-ID: <CAKwvOdn1mkq1GL0nobyvpiAHMzA6rmvmdd_UfauO9YLs5rUAVw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/17] lib/list_sort: fix function type mismatches
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 1:45 PM Paul Moore <paul@paul-moore.com> wrote:
-> On Thu, Mar 18, 2021 at 1:44 PM Paul Moore <paul@paul-moore.com> wrote:
-> > On Thu, Mar 18, 2021 at 12:57 PM Serhei Makarov <smakarov@redhat.com> wrote:
-> > > On Thu, Mar 18, 2021 at 10:43 AM Serhei Makarov <smakarov@redhat.com> wrote:
-> > > > Jiri Olsa also reports seeing a similar deadlock at v5.10. I'm in the
-> > > > middle of double-checking my bisection which ended up at a
-> > > > seemingly-unrelated commit [2]
-> > > >
-> > > > [1] https://bugzilla.redhat.com/show_bug.cgi?id=1938312
-> > > > [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.11-rc7&id=2dcb3964544177c51853a210b6ad400de78ef17d
-> > >
-> > > I've confirmed that my first bisection was incorrect by testing
-> > > @1c2f67308af4 mm: thp: fix MADV_REMOVE deadlock on shmem THP
-> > > and reproducing the deadlock. Previously this commit was marked as
-> > > good, so it seems a kernel with the bug can sometimes pass the test.
-> > >
-> > > I'll double check rc6 next since I have the kernel handy. If
-> > > 5.11.0-rc6 can also be made to fail, with Jiri Olsa's report it'd be
-> > > necessary to do a wider search.
-> > > There may be commits with intent similar to
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8d92db5c04d103
-> > > which tightened some of the behaviour of kernel reads, but affecting
-> > > the audit subsystem?
-> > > The actual stack trace that leads to deadlock goes through
-> > > security_locked_down() which was present since the original patch
-> > > reworking probe_read into separate probe_read_{user,kernel} helpers
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.11-rc7&id=6ae08ae3dea2
-> >
-> > Added thee SELinux list to the To/CC line; they should really be
-> > involved.  I'm also CC'ing the LSM list for good measure as there may
-> > be other people that care about this.
+On Thu, Mar 18, 2021 at 10:11 AM Sami Tolvanen <samitolvanen@google.com> wrote:
 >
-> Argh, hit send a bit too quickly :/
+> Casting the comparison function to a different type trips indirect
+> call Control-Flow Integrity (CFI) checking. Remove the additional
+> consts from cmp_func, and the now unneeded casts.
 >
-> > FYI, the first instance of this thread that I saw can be found here
-> > via the linux-audit list:
-> >
-> > https://lore.kernel.org/linux-audit/CANYvDQN7H5tVp47fbYcRasv4XF07eUbsDwT_eDCHXJUj43J7jQ@mail.gmail.com/
+> Fixes: 043b3f7b6388 ("lib/list_sort: simplify and remove MAX_LIST_LENGTH_BITS")
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> ---
+>  lib/list_sort.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/lib/list_sort.c b/lib/list_sort.c
+> index 52f0c258c895..b14accf4ef83 100644
+> --- a/lib/list_sort.c
+> +++ b/lib/list_sort.c
+> @@ -8,7 +8,7 @@
+>  #include <linux/list.h>
+>
+>  typedef int __attribute__((nonnull(2,3))) (*cmp_func)(void *,
+> -               struct list_head const *, struct list_head const *);
+> +               struct list_head *, struct list_head *);
+>
+>  /*
+>   * Returns a list organized in an intermediate format suited
+> @@ -227,7 +227,7 @@ void list_sort(void *priv, struct list_head *head,
 
-Previously in the thread there was a question about why audit events
-are being generated inside bpf_probe_read_compat(); the answer is
-pretty simple, we do an access check in the security_locked_down()
-hook, inside the call to bpf_probe_read_kernel_common(), and that can
-result in an audit event depending on the LSM and it's policy.
-Skipping the audit event in the case of a LSM access denial, e.g. a
-SELinux AVC denial, could result in a silent access denial which can
-be maddening both to users and admins.
+There's definitely some const confusion going on around here.
+Comparison functions that modify their in/out parameters are a code
+smell, and I wonder if any exist in tree?
+
+I think it would be better to enforce one signature for cmp_func
+throughout lib/list_sort.c and the tree, either const or not, but not
+a mix of both.  I know `const` is messy because it tends to propagate
+everywhere, so I don't care which is preferred (making cmp_func have
+const qualified params or not, though if we're already being pedantic
+about which params are non-null...), but something like this might be
+nicer:
+
+```
+diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+index 5132f64a5cee..d475b3cfd06f 100644
+--- a/block/blk-mq-sched.c
++++ b/block/blk-mq-sched.c
+@@ -75,7 +75,8 @@ void blk_mq_sched_restart(struct blk_mq_hw_ctx *hctx)
+        blk_mq_run_hw_queue(hctx, true);
+ }
+
+-static int sched_rq_cmp(void *priv, struct list_head *a, struct list_head *b)
++static int sched_rq_cmp(void *priv, const struct list_head *a,
++               const struct list_head *b)
+ {
+        struct request *rqa = container_of(a, struct request, queuelist);
+        struct request *rqb = container_of(b, struct request, queuelist);
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 2e825a7a3606..9ed063ffdb27 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -1905,7 +1905,8 @@ void blk_mq_insert_requests(struct blk_mq_hw_ctx
+*hctx, struct blk_mq_ctx *ctx,
+        spin_unlock(&ctx->lock);
+ }
+
+-static int plug_rq_cmp(void *priv, struct list_head *a, struct list_head *b)
++static int plug_rq_cmp(void *priv, const struct list_head *a,
++               const struct list_head *b)
+ {
+        struct request *rqa = container_of(a, struct request, queuelist);
+        struct request *rqb = container_of(b, struct request, queuelist);
+diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
+index 1ac67d4505e0..5a3a343499f6 100644
+--- a/drivers/gpu/drm/drm_modes.c
++++ b/drivers/gpu/drm/drm_modes.c
+@@ -1290,7 +1290,8 @@ EXPORT_SYMBOL(drm_mode_prune_invalid);
+  * Negative if @lh_a is better than @lh_b, zero if they're equivalent, or
+  * positive if @lh_b is better than @lh_a.
+  */
+-static int drm_mode_compare(void *priv, struct list_head *lh_a,
+struct list_head *lh_b)
++static int drm_mode_compare(void *priv, const struct list_head *lh_a,
++               const struct list_head *lh_b)
+ {
+        struct drm_display_mode *a = list_entry(lh_a, struct
+drm_display_mode, head);
+        struct drm_display_mode *b = list_entry(lh_b, struct
+drm_display_mode, head);
+diff --git a/drivers/gpu/drm/i915/gt/intel_engine_user.c
+b/drivers/gpu/drm/i915/gt/intel_engine_user.c
+index 34e6096f196e..7586dffd27d3 100644
+--- a/drivers/gpu/drm/i915/gt/intel_engine_user.c
++++ b/drivers/gpu/drm/i915/gt/intel_engine_user.c
+@@ -49,7 +49,8 @@ static const u8 uabi_classes[] = {
+        [VIDEO_ENHANCEMENT_CLASS] = I915_ENGINE_CLASS_VIDEO_ENHANCE,
+ };
+
+-static int engine_cmp(void *priv, struct list_head *A, struct list_head *B)
++static int engine_cmp(void *priv, const struct list_head *A,
++               const struct list_head *B)
+ {
+        const struct intel_engine_cs *a =
+                container_of((struct rb_node *)A, typeof(*a), uabi_node);
+diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
+index 4c2a9fe30067..4493ef0c715e 100644
+--- a/fs/ext4/fsmap.c
++++ b/fs/ext4/fsmap.c
+@@ -354,8 +354,8 @@ static unsigned int ext4_getfsmap_find_sb(struct
+super_block *sb,
+
+ /* Compare two fsmap items. */
+ static int ext4_getfsmap_compare(void *priv,
+-                                struct list_head *a,
+-                                struct list_head *b)
++                                const struct list_head *a,
++                                const struct list_head *b)
+ {
+        struct ext4_fsmap *fa;
+        struct ext4_fsmap *fb;
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 414769a6ad11..0129e6bab985 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -1155,7 +1155,8 @@ iomap_ioend_try_merge(struct iomap_ioend *ioend,
+struct list_head *more_ioends,
+ EXPORT_SYMBOL_GPL(iomap_ioend_try_merge);
+
+ static int
+-iomap_ioend_compare(void *priv, struct list_head *a, struct list_head *b)
++iomap_ioend_compare(void *priv, const struct list_head *a,
++               const struct list_head *b)
+ {
+        struct iomap_ioend *ia = container_of(a, struct iomap_ioend, io_list);
+        struct iomap_ioend *ib = container_of(b, struct iomap_ioend, io_list);
+diff --git a/include/linux/list_sort.h b/include/linux/list_sort.h
+index 20f178c24e9d..4fe9cb94d0d1 100644
+--- a/include/linux/list_sort.h
++++ b/include/linux/list_sort.h
+@@ -6,8 +6,9 @@
+
+ struct list_head;
+
++typedef int __attribute__((nonnull(2,3))) (*cmp_func)(void *,
++               struct list_head const *, struct list_head const *);
++
+ __attribute__((nonnull(2,3)))
+-void list_sort(void *priv, struct list_head *head,
+-              int (*cmp)(void *priv, struct list_head *a,
+-                         struct list_head *b));
++void list_sort(void *priv, struct list_head *head, cmp_func cmp);
+ #endif
+diff --git a/lib/list_sort.c b/lib/list_sort.c
+index 52f0c258c895..6cfac649c4a6 100644
+--- a/lib/list_sort.c
++++ b/lib/list_sort.c
+@@ -7,9 +7,6 @@
+ #include <linux/list_sort.h>
+ #include <linux/list.h>
+
+-typedef int __attribute__((nonnull(2,3))) (*cmp_func)(void *,
+-               struct list_head const *, struct list_head const *);
+-
+ /*
+  * Returns a list organized in an intermediate format suited
+  * to chaining of merge() calls: null-terminated, no reserved or
+@@ -185,9 +182,7 @@ static void merge_final(void *priv, cmp_func cmp,
+struct list_head *head,
+  * 2^(k+1) - 1 (second merge of case 5 when x == 2^(k-1) - 1).
+  */
+ __attribute__((nonnull(2,3)))
+-void list_sort(void *priv, struct list_head *head,
+-               int (*cmp)(void *priv, struct list_head *a,
+-                       struct list_head *b))
++void list_sort(void *priv, struct list_head *head, cmp_func cmp)
+ {
+        struct list_head *list = head->next, *pending = NULL;
+        size_t count = 0;       /* Count of pending */
+```
+There are probably more instances in the tree to clean up, but that
+compiles with x86_64 defconfig, and I'm sure it doesn't suffer the CFI
+issue from the cast.
+
+>                 if (likely(bits)) {
+>                         struct list_head *a = *tail, *b = a->prev;
+>
+> -                       a = merge(priv, (cmp_func)cmp, b, a);
+> +                       a = merge(priv, cmp, b, a);
+>                         /* Install the merged result in place of the inputs */
+>                         a->prev = b->prev;
+>                         *tail = a;
+> @@ -249,10 +249,10 @@ void list_sort(void *priv, struct list_head *head,
+>
+>                 if (!next)
+>                         break;
+> -               list = merge(priv, (cmp_func)cmp, pending, list);
+> +               list = merge(priv, cmp, pending, list);
+>                 pending = next;
+>         }
+>         /* The final merge, rebuilding prev links */
+> -       merge_final(priv, (cmp_func)cmp, head, pending, list);
+> +       merge_final(priv, cmp, head, pending, list);
+>  }
+>  EXPORT_SYMBOL(list_sort);
+> --
+> 2.31.0.291.g576ba9dcdaf-goog
+>
+
 
 -- 
-paul moore
-www.paul-moore.com
+Thanks,
+~Nick Desaulniers
