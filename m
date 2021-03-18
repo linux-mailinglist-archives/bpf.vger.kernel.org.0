@@ -2,116 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DDA933FC46
-	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 01:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B3C33FC5F
+	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 01:46:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhCRAhS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Mar 2021 20:37:18 -0400
-Received: from www62.your-server.de ([213.133.104.62]:55264 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhCRAgi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Mar 2021 20:36:38 -0400
-Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lMgeR-0001Cj-KS; Thu, 18 Mar 2021 01:36:35 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
+        id S229918AbhCRApg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Mar 2021 20:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230099AbhCRApZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Mar 2021 20:45:25 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C1AC06174A
+        for <bpf@vger.kernel.org>; Wed, 17 Mar 2021 17:45:25 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so6049411pjb.0
+        for <bpf@vger.kernel.org>; Wed, 17 Mar 2021 17:45:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=xNKAxLiv56VMx5hUUy/0ykFGK1+FbITlQeQlud3BAfg=;
+        b=mhGwUCd2G64Dy/QPfAXjLMPEkfJtFeLgGkaRl0E23PPL1lDr3xa75+kF1kdWWZvIvm
+         4sqW5CBNIC4EqkGdoDxH/x/lyXO0pBBbKe7SYKpcKtp+prMkMt9oxFxmkaupzDPMl6+x
+         Jc6NWHKig995rKNJn4XE4PXI85RsfTVnlRYPxX4URz1tMmTQ68xPC3EwmxXdtPGQZPlF
+         1RZFxIzSHrGdaOcBsVVd8epUt9r9k3kO5KhGGOhm97B6w6++YcBoWbSq9RfjeSRKdQBk
+         OqjJC117oTl3D7rsU1nKENeEehXclf+CA9zom5+AyEfYDXSa9mcBoYMFC6pPp+GYKt35
+         DYsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xNKAxLiv56VMx5hUUy/0ykFGK1+FbITlQeQlud3BAfg=;
+        b=Plg6ruH4MXOTazoxeEizgBHQRvEOxHSEFABqgKVKa7eGn/6jYWlSovfOrqb9X/0Sqt
+         3E1DvJqmpaXZzreUGqnENnkIuZdA/vCSS97+uaRSoU2y5wRlQioSrFJ9WSJpedvMYyHA
+         3P8KMsGTT5HTbjligzS9/WiJFUJBhjSkqCo/a0d8CE+5jVpqTiEE2f58LH5i4dwwg4+d
+         jCej4Rhem+CAcP6ZwUW2xlkjXncSGtr40rYtUH5LkaWiLia/W2Qn6vWKLuTDw1Pqmnww
+         YjRerWF0jXiXB1Mt1dMzE/qWp8ZWg8fulbk54hMQzqsP+RoirI8yR4L6JTkrN46zWp1f
+         Fvew==
+X-Gm-Message-State: AOAM5316j/3Vengo+KZ8qTwx6Eop3itl/BxmGHc3dV41Hh0GC1t/h+gt
+        6u76x+jFFD2g1O3hELhqPH4=
+X-Google-Smtp-Source: ABdhPJxIniWhyZkVm7NIHWSa/0sMxpROdUVF1mkDMmEplDMFggrV5YZViJ5mvtqkb4MwKabBNtZbVA==
+X-Received: by 2002:a17:902:c14c:b029:e5:cd82:a0b with SMTP id 12-20020a170902c14cb02900e5cd820a0bmr6979844plj.34.1616028324760;
+        Wed, 17 Mar 2021 17:45:24 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id u24sm237539pfm.214.2021.03.17.17.45.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 17 Mar 2021 17:45:24 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2021-03-18
-Date:   Thu, 18 Mar 2021 01:36:35 +0100
-Message-Id: <20210318003635.18127-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26111/Wed Mar 17 12:08:39 2021)
+Cc:     daniel@iogearbox.net, andrii@kernel.org, paulmck@kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH bpf] selftest/bpf: Add a test to check trampoline freeing logic.
+Date:   Wed, 17 Mar 2021 17:45:23 -0700
+Message-Id: <20210318004523.55908-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+From: Alexei Starovoitov <ast@kernel.org>
 
-The following pull-request contains BPF updates for your *net* tree.
+Add a selfttest for commit e21aa341785c ("bpf: Fix fexit trampoline.")
+to make sure that attaching fexit prog to a sleeping kernel function
+will trigger appropriate trampoline and program destruction.
 
-We've added 10 non-merge commits during the last 4 day(s) which contain
-a total of 14 files changed, 336 insertions(+), 94 deletions(-).
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ .../selftests/bpf/prog_tests/fexit_sleep.c    | 82 +++++++++++++++++++
+ .../testing/selftests/bpf/progs/fexit_sleep.c | 31 +++++++
+ 2 files changed, 113 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fexit_sleep.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fexit_sleep.c
 
-The main changes are:
+diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_sleep.c b/tools/testing/selftests/bpf/prog_tests/fexit_sleep.c
+new file mode 100644
+index 000000000000..6c4d42a2386f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/fexit_sleep.c
+@@ -0,0 +1,82 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2021 Facebook */
++#define _GNU_SOURCE
++#include <sched.h>
++#include <test_progs.h>
++#include <time.h>
++#include <sys/mman.h>
++#include <sys/syscall.h>
++#include "fexit_sleep.skel.h"
++
++static int do_sleep(void *skel)
++{
++	struct fexit_sleep *fexit_skel = skel;
++	struct timespec ts1 = { .tv_nsec = 1 };
++	struct timespec ts2 = { .tv_sec = 10 };
++
++	fexit_skel->bss->pid = getpid();
++	(void)syscall(__NR_nanosleep, &ts1, NULL);
++	(void)syscall(__NR_nanosleep, &ts2, NULL);
++	return 0;
++}
++
++#define STACK_SIZE (1024 * 1024)
++static char child_stack[STACK_SIZE];
++
++void test_fexit_sleep(void)
++{
++	struct fexit_sleep *fexit_skel = NULL;
++	int wstatus, duration = 0;
++	pid_t cpid;
++	int err, fexit_cnt;
++
++	fexit_skel = fexit_sleep__open_and_load();
++	if (CHECK(!fexit_skel, "fexit_skel_load", "fexit skeleton failed\n"))
++		goto cleanup;
++
++	err = fexit_sleep__attach(fexit_skel);
++	if (CHECK(err, "fexit_attach", "fexit attach failed: %d\n", err))
++		goto cleanup;
++
++	cpid = clone(do_sleep, child_stack + STACK_SIZE, CLONE_FILES | SIGCHLD, fexit_skel);
++	if (CHECK(cpid == -1, "clone", strerror(errno)))
++		goto cleanup;
++
++	/* wait until first sys_nanosleep ends and second sys_nanosleep starts */
++	while (READ_ONCE(fexit_skel->bss->fentry_cnt) != 2);
++	fexit_cnt = READ_ONCE(fexit_skel->bss->fexit_cnt);
++	if (CHECK(fexit_cnt != 1, "fexit_cnt", "%d", fexit_cnt))
++		goto cleanup;
++
++	/* close progs and detach them. That will trigger two nop5->jmp5 rewrites
++	 * in the trampolines to skip nanosleep_fexit prog.
++	 * The nanosleep_fentry prog will get detached first.
++	 * The nanosleep_fexit prog will get detached second.
++	 * Detaching will trigger freeing of both progs JITed images.
++	 * There will be two dying bpf_tramp_image-s, but only the initial
++	 * bpf_tramp_image (with both _fentry and _fexit progs will be stuck
++	 * waiting for percpu_ref_kill to confirm). The other one
++	 * will be freed quickly.
++	 */
++	close(bpf_program__fd(fexit_skel->progs.nanosleep_fentry));
++	close(bpf_program__fd(fexit_skel->progs.nanosleep_fexit));
++	fexit_sleep__detach(fexit_skel);
++
++	/* kill the thread to unwind sys_nanosleep stack through the trampoline */
++	kill(cpid, 9);
++
++	if (CHECK(waitpid(cpid, &wstatus, 0) == -1, "waitpid", strerror(errno)))
++		goto cleanup;
++	if (CHECK(WEXITSTATUS(wstatus) != 0, "exitstatus", "failed"))
++		goto cleanup;
++
++	/* The bypassed nanosleep_fexit prog shouldn't have executed.
++	 * Unlike progs the maps were not freed and directly accessible.
++	 */
++	fexit_cnt = READ_ONCE(fexit_skel->bss->fexit_cnt);
++	if (CHECK(fexit_cnt != 1, "fexit_cnt", "%d", fexit_cnt))
++		goto cleanup;
++
++cleanup:
++	fexit_sleep__destroy(fexit_skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/fexit_sleep.c b/tools/testing/selftests/bpf/progs/fexit_sleep.c
+new file mode 100644
+index 000000000000..03a672d76353
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/fexit_sleep.c
+@@ -0,0 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2021 Facebook */
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char LICENSE[] SEC("license") = "GPL";
++
++int pid = 0;
++int fentry_cnt = 0;
++int fexit_cnt = 0;
++
++SEC("fentry/__x64_sys_nanosleep")
++int BPF_PROG(nanosleep_fentry, const struct pt_regs *regs)
++{
++	if ((int)bpf_get_current_pid_tgid() != pid)
++		return 0;
++
++	fentry_cnt++;
++	return 0;
++}
++
++SEC("fexit/__x64_sys_nanosleep")
++int BPF_PROG(nanosleep_fexit, const struct pt_regs *regs, int ret)
++{
++	if ((int)bpf_get_current_pid_tgid() != pid)
++		return 0;
++
++	fexit_cnt++;
++	return 0;
++}
+-- 
+2.30.2
 
-1) Fix fexit/fmod_ret trampoline for sleepable programs, and also fix a ftrace
-   splat in modify_ftrace_direct() on address change, from Alexei Starovoitov.
-
-2) Fix two oob speculation possibilities that allows unprivileged to leak mem
-   via side-channel, from Piotr Krysiuk and Daniel Borkmann.
-
-3) Fix libbpf's netlink handling wrt SOCK_CLOEXEC, from Kumar Kartikeya Dwivedi.
-
-4) Fix libbpf's error handling on failure in getting section names, from Namhyung Kim.
-
-5) Fix tunnel collect_md BPF selftest wrt Geneve option handling, from Hangbin Liu.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Alexei Starovoitov, Andrii Nakryiko, Paul E. McKenney, Steven Rostedt 
-(VMware), Toke Høiland-Jørgensen, William Tu
-
-----------------------------------------------------------------
-
-The following changes since commit a25f822285420486f5da434efc8d940d42a83bce:
-
-  flow_dissector: fix byteorder of dissected ICMP ID (2021-03-14 14:30:20 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 58bfd95b554f1a23d01228672f86bb489bdbf4ba:
-
-  libbpf: Use SOCK_CLOEXEC when opening the netlink socket (2021-03-18 00:50:21 +0100)
-
-----------------------------------------------------------------
-Alexei Starovoitov (2):
-      ftrace: Fix modify_ftrace_direct.
-      bpf: Fix fexit trampoline.
-
-Hangbin Liu (1):
-      selftests/bpf: Set gopt opt_class to 0 if get tunnel opt failed
-
-Kumar Kartikeya Dwivedi (1):
-      libbpf: Use SOCK_CLOEXEC when opening the netlink socket
-
-Namhyung Kim (1):
-      libbpf: Fix error path in bpf_object__elf_init()
-
-Piotr Krysiuk (5):
-      bpf: Prohibit alu ops for pointer types not defining ptr_limit
-      bpf: Fix off-by-one for area size in creating mask to left
-      bpf: Simplify alu_limit masking for pointer arithmetic
-      bpf: Add sanity check for upper ptr_limit
-      bpf, selftests: Fix up some test_verifier cases for unprivileged
-
- arch/x86/net/bpf_jit_comp.c                        |  26 ++-
- include/linux/bpf.h                                |  24 ++-
- kernel/bpf/bpf_struct_ops.c                        |   2 +-
- kernel/bpf/core.c                                  |   4 +-
- kernel/bpf/trampoline.c                            | 218 ++++++++++++++++-----
- kernel/bpf/verifier.c                              |  33 ++--
- kernel/trace/ftrace.c                              |  43 +++-
- tools/lib/bpf/libbpf.c                             |   3 +-
- tools/lib/bpf/netlink.c                            |   2 +-
- .../testing/selftests/bpf/progs/test_tunnel_kern.c |   6 +-
- .../selftests/bpf/verifier/bounds_deduction.c      |  27 ++-
- tools/testing/selftests/bpf/verifier/map_ptr.c     |   4 +
- tools/testing/selftests/bpf/verifier/unpriv.c      |  15 +-
- .../selftests/bpf/verifier/value_ptr_arith.c       |  23 ++-
- 14 files changed, 336 insertions(+), 94 deletions(-)
