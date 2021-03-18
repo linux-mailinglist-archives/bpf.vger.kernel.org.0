@@ -2,84 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10F1340A16
-	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 17:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF31340A63
+	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 17:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbhCRQXc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Mar 2021 12:23:32 -0400
-Received: from www62.your-server.de ([213.133.104.62]:49652 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232172AbhCRQXS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Mar 2021 12:23:18 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lMvQT-000Cni-EI; Thu, 18 Mar 2021 17:23:09 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lMvQT-0006Yq-4f; Thu, 18 Mar 2021 17:23:09 +0100
-Subject: Re: [PATCH] selftests/bpf: fix warning comparing pointer to 0
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, shuah@kernel.org
-Cc:     ast@kernel.org, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1616032552-39866-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <4983305a-3119-bb4b-bb51-520ed5bd28ac@iogearbox.net>
-Date:   Thu, 18 Mar 2021 17:23:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S232009AbhCRQky (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Mar 2021 12:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232186AbhCRQkw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Mar 2021 12:40:52 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2DCEC06174A;
+        Thu, 18 Mar 2021 09:40:52 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id k24so1802859pgl.6;
+        Thu, 18 Mar 2021 09:40:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2sQ7sphuRAvIZYwnemV5l2KNTUGdlBlXVyGrSJ4rSYE=;
+        b=Xwvboc7wCM2hjrRhYvjCeLseIGmXiG4wE0hxw+OnyDK+AvDUuRBB63KLU2ecvj2SH/
+         jNYTEfzH6C6+8PNyhHpiN4YDi6VMUbJedgy9PuUZQ3ToAjghsQUuymHv1ipoMEOww0Xo
+         xMm6viN2QXKWIp0+1jDvxWIOY/6s0M2u2r0FkUmSLd12t5m1HVxP/shFPyH9+Z+by6Fk
+         bb4xyCsMAfldaYm1Q4WyUewpV8hcO4uHG4t2ci+Iqvhj2QPFXeFgIcVQ41r9jXNThE5O
+         NdoEko4YmaM//u1uP7oa1X19sr+4fboR0Q1aYcnrzUpaDegs2xUKaJ9idCuLyPGRcTBb
+         6jyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2sQ7sphuRAvIZYwnemV5l2KNTUGdlBlXVyGrSJ4rSYE=;
+        b=DTijcTbHiO1uNTAl8xA+GoLEDvbrS4GJv7TRdHXam22UoZIfg2rqflgShcXin/EUj0
+         ILbNw6u+QGB5ZqxgnzJofQUbWppnkRIsNwcEr8YJVpS+t75+RLqBUOFbLq1vg/HFFdd0
+         xTGAR3bq8PABKKCfPjDMTzm3luN2tvk9EkjDplFDJaZsQg9GnjNUmO4ZIhMJm4YPDFdA
+         dEGDRAagKNAptEQ0II/JY943qtHM3xoJBeaE2DZeUJHxPGtnT/V0KpYj53XCSF8F444T
+         lnmpZ0r/9bzUGd+E9Edc+QZL4yzgW2AFJfFGXuuivmBO0jwZeeK9ipnjpiHR7bFoVoRS
+         SYsw==
+X-Gm-Message-State: AOAM533OKPSWOyZNJ3Yo2DKy5X6vV/7IDYQIhA1G4kDyRDwEilYIORVS
+        fuOwc5JKafsDZJZ4CpjqwX+X35YuQ6d30DpCg0M=
+X-Google-Smtp-Source: ABdhPJwEWbRTUilMRjZR1Asb7ihoM4D9bJX/mqW8uHl2ADek3puOX7sm38P+ugGNE6PNxQ2vKITlPa/91pQZDHa+gjE=
+X-Received: by 2002:a62:8485:0:b029:1fc:d912:67d6 with SMTP id
+ k127-20020a6284850000b02901fcd91267d6mr4906112pfd.80.1616085652002; Thu, 18
+ Mar 2021 09:40:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1616032552-39866-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26112/Thu Mar 18 12:08:11 2021)
+References: <20210317022219.24934-1-xiyou.wangcong@gmail.com>
+ <20210317022219.24934-7-xiyou.wangcong@gmail.com> <20210318120930.5723-1-alobakin@pm.me>
+In-Reply-To: <20210318120930.5723-1-alobakin@pm.me>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu, 18 Mar 2021 09:40:40 -0700
+Message-ID: <CAM_iQpVYqcYCA97KTx6bRAEkkO4gpy_t8YCGTUQ2XRDnJ=-sFw@mail.gmail.com>
+Subject: Re: [Patch bpf-next v5 06/11] sock: introduce sk->sk_prot->psock_update_sk_prot()
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/18/21 2:55 AM, Jiapeng Chong wrote:
-> Fix the following coccicheck warning:
-> 
-> ./tools/testing/selftests/bpf/progs/fentry_test.c:76:15-16: WARNING
-> comparing pointer to 0.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->   tools/testing/selftests/bpf/progs/fentry_test.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c b/tools/testing/selftests/bpf/progs/fentry_test.c
-> index 5f645fd..d4247d6 100644
-> --- a/tools/testing/selftests/bpf/progs/fentry_test.c
-> +++ b/tools/testing/selftests/bpf/progs/fentry_test.c
-> @@ -64,7 +64,7 @@ struct bpf_fentry_test_t {
->   SEC("fentry/bpf_fentry_test7")
->   int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
->   {
-> -	if (arg == 0)
-> +	if (!arg)
->   		test7_result = 1;
->   	return 0;
->   }
-> @@ -73,7 +73,7 @@ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
->   SEC("fentry/bpf_fentry_test8")
->   int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
->   {
-> -	if (arg->a == 0)
-> +	if (!arg->a)
->   		test8_result = 1;
->   	return 0;
->   }
-> 
+On Thu, Mar 18, 2021 at 5:09 AM Alexander Lobakin <alobakin@pm.me> wrote:
+> Regarding that both {tcp,udp}_bpf_update_proto() is global and
+> for now they are the only two implemented callbacks, wouldn't it
+> be worthy to straighten the calls here? Like
+>
+>         return INDIRECT_CALL_2(sk->sk_prot->psock_update_sk_prot,
+>                                tcp_bpf_update_proto,
+>                                udp_bpf_update_proto,
+>                                sk, false);
 
-This doesn't apply. Please rebase against bpf-next tree, and also make sure to
-squash any other such patches into a single one.
+I get your point, but AF_UNIX will implement this in the next patchset,
+and my colleague is working on vsock support too, so it will go beyond
+INET very soon.
+
+>
+> (the same in sk_psock_restore_proto() then)
+>
+> Or this code path is not performance-critical?
+
+It is not on the hot path, updating proto happens when we insert
+the socket to the map or remove it from there.
+
+Thanks.
