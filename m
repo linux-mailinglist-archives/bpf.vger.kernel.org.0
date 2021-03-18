@@ -2,96 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBE7340A6F
-	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 17:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F887340B0C
+	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 18:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbhCRQnf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Mar 2021 12:43:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27343 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232187AbhCRQnS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 18 Mar 2021 12:43:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616085797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xMH16K1Vk3sQr9cJFMbSFsVVc6ukC0diu3TY4hvT3V8=;
-        b=BleXR+onDitSRp7W3y4aYv4eKtThH0a9ejIPGiSKSD9cDzLyxUNcSkAWyP4TWg1hEtEVtY
-        rOMy/HCuX8hH20vauuGmr2tsY5dNBYr+lrBppgEor5Oz/ncHXZ0y+4g6jEt44CHoXRYFlv
-        nmK3fX4DTlhH4sQDnx1mytzwEen2lgU=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-561--ST7-ivaMmCqUVH1qgEvOg-1; Thu, 18 Mar 2021 12:43:15 -0400
-X-MC-Unique: -ST7-ivaMmCqUVH1qgEvOg-1
-Received: by mail-wm1-f72.google.com with SMTP id a65so4243841wmh.1
-        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 09:43:15 -0700 (PDT)
+        id S232009AbhCRRIz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Mar 2021 13:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231998AbhCRRIr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:08:47 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B576BC06174A
+        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 10:08:47 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id v107so2528228ybi.0
+        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 10:08:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ULfobQRcVBzVb52stkvQMARqlGFp+R2V6KtAMJJusI8=;
+        b=dBXTgeN+IZiAjPifZC1gwzjMkykTcxhF/3I6ifJ/OJZQaQnfe7pmUscdD6sM70/KGC
+         Xisqp8hNU8/R2CaosXknDqrQEV8djuuckpalgYSQuNrGjzj64j21IxGgan1Vbppf8JYZ
+         2Twmr5pWuz/eLMJSjSLDbWN+gyhhroFJfkatUDhchPqfxhna9bbET1jktVqK/Ru/Ti8M
+         Lpxvk2SW4A8vJSAW6iLgQxjZ/+1G+vdXCwIj/i2UsNbn/G0sgO1e/Nu7V0j735UVMgsR
+         XFKPo2UFJC0jILmEmojDOgJmvYkThmcM9CuP/V0bcQxcPd1iSoH6zmptDb1u9AZpzQxF
+         S87g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xMH16K1Vk3sQr9cJFMbSFsVVc6ukC0diu3TY4hvT3V8=;
-        b=Dx7Mw12tunqWPdrxXbOz58ImebK7XFpfQwzDKb7hmceSzcySuJFsfEF5ySMskUvg15
-         +4O6Jv4Pk3HXfpNFIeg1ZidIgp8D98D6TS37Yb9zFsluNqbyAstYkA94bHmkTsxmsGTC
-         inFPqsyJrJE/cYVk8PWiujNgFbWibQ/WfTlfKJ9azvviV3tBFZ3Nu/EDw1wvvTp46yA2
-         QoBC/0rdLm77FSGzRnvbr0pxXypJqUz/D2raSwTDjCY8y3cSPCdywrypifmKpu2hR9c7
-         X63Vnuf+gziS89n0iDKsJu8XIESg1UipzOuSA3jOpN57+Mfvz5MDmzaDzXVL9DyHWZSx
-         aXPQ==
-X-Gm-Message-State: AOAM5307ns8yf5Ck8pwZARuu+RZ21EJTeAaHGKOuEXGuaUTx7uNFRAyc
-        YO/vspCrb7OuuM0bRui2iq/hcJ/SBLvtxHJ7Z4Q2kZkAIVDcDoJKfrkAJ7xhLCFidU2rgxx6pbG
-        j7SQ9f5yIRg5v4LlZ7H2wxhPb0Knh
-X-Received: by 2002:a5d:4ecf:: with SMTP id s15mr201583wrv.222.1616085794527;
-        Thu, 18 Mar 2021 09:43:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxNeNypcp+XHyJTGZ8spn3LHjP3NH4oxZpMKd2THyQxn7pG5dxPB2k0bkCYChYIhaq3pgrGoGCwOWHOyS3DRRM=
-X-Received: by 2002:a5d:4ecf:: with SMTP id s15mr201567wrv.222.1616085794358;
- Thu, 18 Mar 2021 09:43:14 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ULfobQRcVBzVb52stkvQMARqlGFp+R2V6KtAMJJusI8=;
+        b=GHhky+DJsRolIz9yGIf8Ffz19JRogwJ8kTz7uhJ/RDl/xoQelHGjkad0FEeaF+nWoY
+         LM8QIR/NCsskMDb6VmU6SQPqNVzlXma8MkF7mpShHT7U0/QQbSH5c3k9VLcVYvdu+82d
+         rO/nkCmtX9lzvApPqu4N1ChWeur1YrmSKuLVdODAD2qVN9H1MDe4A6q/MSgOiFt1n+Oh
+         r3LU+LQpG6ke3PZu+yQNlb73cBPqKpic2Z0iVZTktemQSWBV2JUybeNSHoO9au11dXpD
+         MtHOyggHyl7gM0sFCyys+JEIECMZEee+WTZ6ktLS+/SrRm96W9+jvFLDPK9KWyAlVBl5
+         s5AQ==
+X-Gm-Message-State: AOAM5339pqUsyZ84NIv3wcMo5hrkHMN0Bqa8sXhxKdbPRucIdPwDdOg4
+        CEAA0OfHR3ohiuquEFNCG+m68h4kSZh/dgnGjqyj01+dV96bPA==
+X-Google-Smtp-Source: ABdhPJy9trKq4tJj5FCXkS7LAg4ZcTaTs6vpaiyBmMjU7oR3vP5aqGQMuaoD+U7kpeyO3qPhdNpWxBxqsGxhs1Y/xU8=
+X-Received: by 2002:a25:874c:: with SMTP id e12mr350616ybn.403.1616087326940;
+ Thu, 18 Mar 2021 10:08:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <2ed7a55e-7def-7faf-fc47-991b867bff9e@iogearbox.net>
- <CANYvDQOfygmqv0V-1PuzXV8ZFzk0uD566oEF3v9uX21G4fSFKg@mail.gmail.com>
- <1e410caf-019a-ade7-465d-3d936d2f7dc6@iogearbox.net> <5845cef9-5aaf-f85e-8280-472f61ddaeed@iogearbox.net>
- <CANYvDQNCKmEy9ZzPRvhNYvK0=TKk1pRS=seUuAkby92ic8tVqw@mail.gmail.com>
- <f97bd923-bf12-69a0-f0a8-c9a764abbed2@iogearbox.net> <YFIwzhE00OpU1zro@krava>
- <ff0db44e-aa55-da94-785f-ba10792a5ae1@iogearbox.net> <YFKOeGqUwBPTkPzT@krava>
- <61494cfb-1ceb-4886-3023-1ac0b35697d6@iogearbox.net> <YFM+Ijeu4bN4IzH1@krava> <CANYvDQN7H5tVp47fbYcRasv4XF07eUbsDwT_eDCHXJUj43J7jQ@mail.gmail.com>
-In-Reply-To: <CANYvDQN7H5tVp47fbYcRasv4XF07eUbsDwT_eDCHXJUj43J7jQ@mail.gmail.com>
-From:   Serhei Makarov <smakarov@redhat.com>
-Date:   Thu, 18 Mar 2021 12:43:03 -0400
-Message-ID: <CANYvDQOH5ZDpQBAHtz13YNiJ2Bhd56wnoas71UdYco62g-xBDg@mail.gmail.com>
-Subject: Re: deadlock bug related to bpf,audit subsystems
-To:     linux-audit@redhat.com, bpf@vger.kernel.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
-        Frank Eigler <fche@redhat.com>, guro@fb.com,
-        Jerome Marchand <jmarchan@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>
+References: <20210318122700.396574-1-jean-philippe@linaro.org>
+In-Reply-To: <20210318122700.396574-1-jean-philippe@linaro.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 18 Mar 2021 10:08:36 -0700
+Message-ID: <CAEf4BzZzXxYxjzH86VYh0TvpW8u2+4qgAD1wMkRncYiiJ+2-0g@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: Fix BTF dump of pointer-to-array-of-struct
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 10:43 AM Serhei Makarov <smakarov@redhat.com> wrote:
-> Jiri Olsa also reports seeing a similar deadlock at v5.10. I'm in the
-> middle of double-checking my bisection which ended up at a
-> seemingly-unrelated commit [2]
+On Thu, Mar 18, 2021 at 5:31 AM Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
 >
-> [1] https://bugzilla.redhat.com/show_bug.cgi?id=1938312
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.11-rc7&id=2dcb3964544177c51853a210b6ad400de78ef17d
+> The vmlinux.h generated from BTF is invalid when building
+> drivers/phy/ti/phy-gmii-sel.c with clang:
+>
+> vmlinux.h:61702:27: error: array type has incomplete element type =E2=80=
+=98struct reg_field=E2=80=99
+> 61702 |  const struct reg_field (*regfields)[3];
+>       |                           ^~~~~~~~~
+>
+> bpftool generates a forward declaration for this struct regfield, which
+> compilers aren't happy about. Here's a simplified reproducer:
+>
+>         struct inner {
+>                 int val;
+>         };
+>         struct outer {
+>                 struct inner (*ptr_to_array)[2];
+>         };
+>
+>         static struct inner a[2];
+>         struct outer b =3D {
+>                 .ptr_to_array =3D &a,
+>         };
+>
+> After build with clang -> bpftool btf dump c -> clang/gcc:
+> ./def-clang.h:11:23: error: array has incomplete element type 'struct inn=
+er'
+>         struct inner (*ptr_to_array)[2];
+>
+> Member ptr_to_array of struct outer is a pointer to an array of struct
+> inner. In the DWARF generated by clang, struct outer appears before
+> struct inner, so when converting BTF of struct outer into C, bpftool
+> issues a forward declaration of struct inner. With GCC the DWARF info is
+> reversed so struct inner gets fully defined.
+>
+> That forward declaration is not sufficient when compilers handle an
+> array of the struct, even when it's only used through a pointer. Note
+> that we can trigger the same issue with an intermediate typedef:
+>
+>         struct inner {
+>                 int val;
+>         };
+>         typedef struct inner inner2_t[2];
+>         struct outer {
+>                 inner2_t *ptr_to_array;
+>         };
+>
+>         static inner2_t a;
+>         struct outer b =3D {
+>                 .ptr_to_array =3D &a,
+>         };
+>
+> Becomes:
+>
+>         struct inner;
+>         typedef struct inner inner2_t[2];
+>
+> And causes:
+>
+> ./def-clang.h:10:30: error: array has incomplete element type 'struct inn=
+er'
+>         typedef struct inner inner2_t[2];
+>
+> To fix this, clear through_ptr whenever we encounter an intermediate
+> array, to make the inner struct part of a strong link and force full
+> declaration.
+>
 
-I've confirmed that my first bisection was incorrect by testing
-@1c2f67308af4 mm: thp: fix MADV_REMOVE deadlock on shmem THP
-and reproducing the deadlock. Previously this commit was marked as
-good, so it seems a kernel with the bug can sometimes pass the test.
+Yeah, makes total sense. I missed that array forces a strong link
+between types. The fix looks good, but can you please add those two
+cases to selftests? There is progs/btf_dump_test_case_syntax.c that
+probably can be extended. Please think about a way to specify types
+such that the order of BTF types doesn't matter and the issue has to
+be handled always.
 
-I'll double check rc6 next since I have the kernel handy. If
-5.11.0-rc6 can also be made to fail, with Jiri Olsa's report it'd be
-necessary to do a wider search.
-There may be commits with intent similar to
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=8d92db5c04d103
-which tightened some of the behaviour of kernel reads, but affecting
-the audit subsystem?
-The actual stack trace that leads to deadlock goes through
-security_locked_down() which was present since the original patch
-reworking probe_read into separate probe_read_{user,kernel} helpers
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.11-rc7&id=6ae08ae3dea2
-
--- Serhei
-
+> Fixes: 351131b51c7a ("libbpf: add btf_dump API for BTF-to-C conversion")
+> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> ---
+>  tools/lib/bpf/btf_dump.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> index 2f9d685bd522..0911aea4cdbe 100644
+> --- a/tools/lib/bpf/btf_dump.c
+> +++ b/tools/lib/bpf/btf_dump.c
+> @@ -462,7 +462,7 @@ static int btf_dump_order_type(struct btf_dump *d, __=
+u32 id, bool through_ptr)
+>                 return err;
+>
+>         case BTF_KIND_ARRAY:
+> -               return btf_dump_order_type(d, btf_array(t)->type, through=
+_ptr);
+> +               return btf_dump_order_type(d, btf_array(t)->type, false);
+>
+>         case BTF_KIND_STRUCT:
+>         case BTF_KIND_UNION: {
+> --
+> 2.30.2
+>
