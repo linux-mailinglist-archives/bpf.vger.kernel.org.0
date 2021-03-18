@@ -2,165 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F887340B0C
-	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 18:09:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E43340B2C
+	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 18:12:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhCRRIz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Mar 2021 13:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
+        id S232326AbhCRRLl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Mar 2021 13:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231998AbhCRRIr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Mar 2021 13:08:47 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B576BC06174A
-        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 10:08:47 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id v107so2528228ybi.0
-        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 10:08:47 -0700 (PDT)
+        with ESMTP id S232250AbhCRRLQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:11:16 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F079C06174A
+        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 10:11:15 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id l83so2869473ybf.22
+        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 10:11:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ULfobQRcVBzVb52stkvQMARqlGFp+R2V6KtAMJJusI8=;
-        b=dBXTgeN+IZiAjPifZC1gwzjMkykTcxhF/3I6ifJ/OJZQaQnfe7pmUscdD6sM70/KGC
-         Xisqp8hNU8/R2CaosXknDqrQEV8djuuckpalgYSQuNrGjzj64j21IxGgan1Vbppf8JYZ
-         2Twmr5pWuz/eLMJSjSLDbWN+gyhhroFJfkatUDhchPqfxhna9bbET1jktVqK/Ru/Ti8M
-         Lpxvk2SW4A8vJSAW6iLgQxjZ/+1G+vdXCwIj/i2UsNbn/G0sgO1e/Nu7V0j735UVMgsR
-         XFKPo2UFJC0jILmEmojDOgJmvYkThmcM9CuP/V0bcQxcPd1iSoH6zmptDb1u9AZpzQxF
-         S87g==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=SCzz0vkCTXCJ+hl1sGhlu0aynSHOxUfyv4GiVUi2UT8=;
+        b=Qn2g5lLRvdKJvgzF43+LCRfbhyf/1XwO7VexN9MTAJ/y7/GXos2MZ6DPQ5+40SXSdr
+         3WUM1haHcbmP9fvJ5H0GP0vnMIfZYFYJ3/skq+V4JOBLmlhGlPExy6gqYwMz2uSJ1gR3
+         Kgl24aisbJ27zFi0E+w0DAM6qtK+mORJD0REsBOc+I74Jm51pwyVzGpvxB7NjD1JArlW
+         Z1Nw3IJcwTpFcPc/OM/mDZYHlik6/X5+hBBgaF+RBWA6lCnTc9Su31yLYk3E+KZP8/w7
+         k1BrfTKfIXXZ46LHA5pZpwKRNzhgz58PNc7YyUV/9wiANk3u5qYBZVv8t0PgePg8ENXo
+         Bcrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ULfobQRcVBzVb52stkvQMARqlGFp+R2V6KtAMJJusI8=;
-        b=GHhky+DJsRolIz9yGIf8Ffz19JRogwJ8kTz7uhJ/RDl/xoQelHGjkad0FEeaF+nWoY
-         LM8QIR/NCsskMDb6VmU6SQPqNVzlXma8MkF7mpShHT7U0/QQbSH5c3k9VLcVYvdu+82d
-         rO/nkCmtX9lzvApPqu4N1ChWeur1YrmSKuLVdODAD2qVN9H1MDe4A6q/MSgOiFt1n+Oh
-         r3LU+LQpG6ke3PZu+yQNlb73cBPqKpic2Z0iVZTktemQSWBV2JUybeNSHoO9au11dXpD
-         MtHOyggHyl7gM0sFCyys+JEIECMZEee+WTZ6ktLS+/SrRm96W9+jvFLDPK9KWyAlVBl5
-         s5AQ==
-X-Gm-Message-State: AOAM5339pqUsyZ84NIv3wcMo5hrkHMN0Bqa8sXhxKdbPRucIdPwDdOg4
-        CEAA0OfHR3ohiuquEFNCG+m68h4kSZh/dgnGjqyj01+dV96bPA==
-X-Google-Smtp-Source: ABdhPJy9trKq4tJj5FCXkS7LAg4ZcTaTs6vpaiyBmMjU7oR3vP5aqGQMuaoD+U7kpeyO3qPhdNpWxBxqsGxhs1Y/xU8=
-X-Received: by 2002:a25:874c:: with SMTP id e12mr350616ybn.403.1616087326940;
- Thu, 18 Mar 2021 10:08:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210318122700.396574-1-jean-philippe@linaro.org>
-In-Reply-To: <20210318122700.396574-1-jean-philippe@linaro.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 18 Mar 2021 10:08:36 -0700
-Message-ID: <CAEf4BzZzXxYxjzH86VYh0TvpW8u2+4qgAD1wMkRncYiiJ+2-0g@mail.gmail.com>
-Subject: Re: [PATCH bpf] libbpf: Fix BTF dump of pointer-to-array-of-struct
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=SCzz0vkCTXCJ+hl1sGhlu0aynSHOxUfyv4GiVUi2UT8=;
+        b=Y5zBcpW6V4jPCfl5QfWp4GdKa8NiQpMivZbZ+/DEEjZgGd021HltZGmQKlETegEIcT
+         AoPeKiOt+0xWvxYpDMdM+pKOJevQJ/Pd1GK3Qlix5FUzYDK+SvO2SCkJfSEvyFCkAq8L
+         FVWalv+9m5c1v/fWC5AJ6B1fb678V90UuqF73vSJaGBDQ+I2kQDKIlzikvwHhaWsZ8cQ
+         duLeuLp3b++Ht6X8nRNmYJEQ5VzK0U6AqB0qhpbNshmLWr9osXZwubLGpCDkVyolppWY
+         Oj6w3vhaqxhGUl1L/k07iJRSqptj1Yrgrd33zpJsob7/AFRYjflmFlKCIEDppD0czye6
+         zFOQ==
+X-Gm-Message-State: AOAM530qY6FuXdK0cEl6jNdJVIDNy7tzNtavP/OTEDlQ+RWlibVWDR+B
+        R5RxgJy7nc8YEP14fUYAAXNCj32PgjSG/AUSzM8=
+X-Google-Smtp-Source: ABdhPJwBMd/Hg8Inw/d+QCjcsX4aY1KphAmvmly7frqYXPa28oCDMQoPY4+7I2PpXYAYog1pvPg18bYfcaeLUFSg7M0=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:c0d7:a7ba:fb41:a35a])
+ (user=samitolvanen job=sendgmr) by 2002:a25:4ce:: with SMTP id
+ 197mr429022ybe.462.1616087474808; Thu, 18 Mar 2021 10:11:14 -0700 (PDT)
+Date:   Thu, 18 Mar 2021 10:10:54 -0700
+Message-Id: <20210318171111.706303-1-samitolvanen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH v2 00/17] Add support for Clang CFI
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 5:31 AM Jean-Philippe Brucker
-<jean-philippe@linaro.org> wrote:
->
-> The vmlinux.h generated from BTF is invalid when building
-> drivers/phy/ti/phy-gmii-sel.c with clang:
->
-> vmlinux.h:61702:27: error: array type has incomplete element type =E2=80=
-=98struct reg_field=E2=80=99
-> 61702 |  const struct reg_field (*regfields)[3];
->       |                           ^~~~~~~~~
->
-> bpftool generates a forward declaration for this struct regfield, which
-> compilers aren't happy about. Here's a simplified reproducer:
->
->         struct inner {
->                 int val;
->         };
->         struct outer {
->                 struct inner (*ptr_to_array)[2];
->         };
->
->         static struct inner a[2];
->         struct outer b =3D {
->                 .ptr_to_array =3D &a,
->         };
->
-> After build with clang -> bpftool btf dump c -> clang/gcc:
-> ./def-clang.h:11:23: error: array has incomplete element type 'struct inn=
-er'
->         struct inner (*ptr_to_array)[2];
->
-> Member ptr_to_array of struct outer is a pointer to an array of struct
-> inner. In the DWARF generated by clang, struct outer appears before
-> struct inner, so when converting BTF of struct outer into C, bpftool
-> issues a forward declaration of struct inner. With GCC the DWARF info is
-> reversed so struct inner gets fully defined.
->
-> That forward declaration is not sufficient when compilers handle an
-> array of the struct, even when it's only used through a pointer. Note
-> that we can trigger the same issue with an intermediate typedef:
->
->         struct inner {
->                 int val;
->         };
->         typedef struct inner inner2_t[2];
->         struct outer {
->                 inner2_t *ptr_to_array;
->         };
->
->         static inner2_t a;
->         struct outer b =3D {
->                 .ptr_to_array =3D &a,
->         };
->
-> Becomes:
->
->         struct inner;
->         typedef struct inner inner2_t[2];
->
-> And causes:
->
-> ./def-clang.h:10:30: error: array has incomplete element type 'struct inn=
-er'
->         typedef struct inner inner2_t[2];
->
-> To fix this, clear through_ptr whenever we encounter an intermediate
-> array, to make the inner struct part of a strong link and force full
-> declaration.
->
+This series adds support for Clang's Control-Flow Integrity (CFI)
+checking. With CFI, the compiler injects a runtime check before each
+indirect function call to ensure the target is a valid function with
+the correct static type. This restricts possible call targets and
+makes it more difficult for an attacker to exploit bugs that allow the
+modification of stored function pointers. For more details, see:
 
-Yeah, makes total sense. I missed that array forces a strong link
-between types. The fix looks good, but can you please add those two
-cases to selftests? There is progs/btf_dump_test_case_syntax.c that
-probably can be extended. Please think about a way to specify types
-such that the order of BTF types doesn't matter and the issue has to
-be handled always.
+  https://clang.llvm.org/docs/ControlFlowIntegrity.html
 
-> Fixes: 351131b51c7a ("libbpf: add btf_dump API for BTF-to-C conversion")
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> ---
->  tools/lib/bpf/btf_dump.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> index 2f9d685bd522..0911aea4cdbe 100644
-> --- a/tools/lib/bpf/btf_dump.c
-> +++ b/tools/lib/bpf/btf_dump.c
-> @@ -462,7 +462,7 @@ static int btf_dump_order_type(struct btf_dump *d, __=
-u32 id, bool through_ptr)
->                 return err;
->
->         case BTF_KIND_ARRAY:
-> -               return btf_dump_order_type(d, btf_array(t)->type, through=
-_ptr);
-> +               return btf_dump_order_type(d, btf_array(t)->type, false);
->
->         case BTF_KIND_STRUCT:
->         case BTF_KIND_UNION: {
-> --
-> 2.30.2
->
+The first patch contains build system changes and error handling,
+and implements support for cross-module indirect call checking. The
+remaining patches address issues caused by the compiler
+instrumentation. These include fixing known type mismatches, as well
+as issues with address space confusion and cross-module function
+address equality.
+
+These patches add support only for arm64, but I'll post patches also
+for x86_64 after we address the remaining issues there, including
+objtool support.
+
+You can also pull this series from
+
+  https://github.com/samitolvanen/linux.git cfi-v2
+
+---
+Changes in v2:
+ - Fixed .text merging in module.lds.S.
+ - Added WARN_ON_FUNCTION_MISMATCH() and changed kernel/thread.c
+   and kernel/workqueue.c to use the macro instead.
+
+
+Sami Tolvanen (17):
+  add support for Clang CFI
+  cfi: add __cficanonical
+  mm: add generic __va_function and __pa_function macros
+  module: ensure __cfi_check alignment
+  workqueue: use WARN_ON_FUNCTION_MISMATCH
+  kthread: use WARN_ON_FUNCTION_MISMATCH
+  kallsyms: strip ThinLTO hashes from static functions
+  bpf: disable CFI in dispatcher functions
+  lib/list_sort: fix function type mismatches
+  lkdtm: use __va_function
+  psci: use __pa_function for cpu_resume
+  arm64: implement __va_function
+  arm64: use __pa_function
+  arm64: add __nocfi to functions that jump to a physical address
+  arm64: add __nocfi to __apply_alternatives
+  KVM: arm64: Disable CFI for nVHE
+  arm64: allow CONFIG_CFI_CLANG to be selected
+
+ Makefile                                  |  17 ++
+ arch/Kconfig                              |  45 +++
+ arch/arm64/Kconfig                        |   1 +
+ arch/arm64/include/asm/memory.h           |  15 +
+ arch/arm64/include/asm/mmu_context.h      |   4 +-
+ arch/arm64/kernel/acpi_parking_protocol.c |   2 +-
+ arch/arm64/kernel/alternative.c           |   4 +-
+ arch/arm64/kernel/cpu-reset.h             |  10 +-
+ arch/arm64/kernel/cpufeature.c            |   4 +-
+ arch/arm64/kernel/psci.c                  |   3 +-
+ arch/arm64/kernel/smp_spin_table.c        |   2 +-
+ arch/arm64/kvm/hyp/nvhe/Makefile          |   6 +-
+ drivers/firmware/psci/psci.c              |   4 +-
+ drivers/misc/lkdtm/usercopy.c             |   2 +-
+ include/asm-generic/bug.h                 |  16 ++
+ include/asm-generic/vmlinux.lds.h         |  20 +-
+ include/linux/bpf.h                       |   4 +-
+ include/linux/cfi.h                       |  41 +++
+ include/linux/compiler-clang.h            |   3 +
+ include/linux/compiler_types.h            |   8 +
+ include/linux/init.h                      |   6 +-
+ include/linux/mm.h                        |   8 +
+ include/linux/module.h                    |  13 +-
+ include/linux/pci.h                       |   4 +-
+ init/Kconfig                              |   2 +-
+ kernel/Makefile                           |   4 +
+ kernel/cfi.c                              | 329 ++++++++++++++++++++++
+ kernel/kallsyms.c                         |  54 +++-
+ kernel/kthread.c                          |   3 +-
+ kernel/module.c                           |  43 +++
+ kernel/workqueue.c                        |   2 +-
+ lib/list_sort.c                           |   8 +-
+ scripts/Makefile.modfinal                 |   2 +-
+ scripts/module.lds.S                      |  18 +-
+ 34 files changed, 663 insertions(+), 44 deletions(-)
+ create mode 100644 include/linux/cfi.h
+ create mode 100644 kernel/cfi.c
+
+
+base-commit: 6417f03132a6952cd17ddd8eaddbac92b61b17e0
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
