@@ -2,216 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AE7341086
-	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 23:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB13F3410F4
+	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 00:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232602AbhCRWyR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Mar 2021 18:54:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhCRWxu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Mar 2021 18:53:50 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D18D6C06174A;
-        Thu, 18 Mar 2021 15:53:49 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id l14so3726512ybe.2;
-        Thu, 18 Mar 2021 15:53:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=anRum5mOt5i2VLc6m203uyVxxtKSdeNIEcBgmDlniVQ=;
-        b=RQlV2ieHQo1Y5Ck7/52sQifTXlw9uj22m312+iXhKuOcbVSxFGXujrlKslQzhrtp/K
-         4DWSG8k3nT6LzTPn10Q5ggO6pQ9f+TUaOV32UEI23WHlNYiEqr/phq67YzFqwjJ1KKBe
-         hFRWUVZsoBv4K/sJzSJJzJ/qluWNJCZRgGKa3gHqdc1BXxiSoeMJec4fw1/EZvc+aAgC
-         1n+rUj7/GclrFxNb6u4zfLZCX4nN7C4Y/7Pl3vb5MGzMXTpdAjCJfkJF/xARYjW/HMpd
-         bA6FOPl7NfvAvTmVMnUDIokOF2Ts+1X4QslxkK4JcH7iNTVuvXuHm/9pVgKjhjOJYT6+
-         ZbGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=anRum5mOt5i2VLc6m203uyVxxtKSdeNIEcBgmDlniVQ=;
-        b=IyTrPNZmj9bDm1QJzB8Vo7IzwtaiDpNsQZCln2oSWkFnAeNff2jda1eSVhoVamDoAm
-         gxX8xBV2BHtpFpKh6eOhp1CKmj1orzJejldAQK9pPv3BKNizsQic6trYOWsCtmga/xM1
-         pbEqfM2PUW4Ultk6wQ/I2yZIvmfnTkz7w0i+iZc9WqpKo2Op7VaLgNjwWVim7FRAWmlK
-         VIU0dw1qC10xnc01MUqwz4vvx7kPxskVe+GcrV9uiI6khH3QXRvvU2x9gUuky2X1wxOx
-         Sp+sqsgXdM1rrTWNyfnG8ssPCfAM2n4BaWEb5Sj08L2WJ5JJ7TIndI4UQq4ZDydDkTRt
-         Ukig==
-X-Gm-Message-State: AOAM531SCvvt5LOKY8y7dwRp44d4+hk1AD6IjjC6qEnOybVPZ0Y+f/lQ
-        oCOl4OWYeiF2Divs0O9HRzpA5HewobPUew1Rv4U=
-X-Google-Smtp-Source: ABdhPJyOxYYdyjPyXsvQzu+dA9zE3mCR+nDJSeR4lstPfZvI55OYKqkvk6BYalKKGrISUvGGctfV1+GYCm9YhneYM/E=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr2292895ybo.230.1616108029085;
- Thu, 18 Mar 2021 15:53:49 -0700 (PDT)
+        id S230061AbhCRXXl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Mar 2021 19:23:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229681AbhCRXXJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Mar 2021 19:23:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1426364ED2
+        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 23:23:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616109789;
+        bh=BsOo9FyjesicP0uLuqTXCXNGSxpfVFqtWrQPRADs64E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VswDPbfv+LcSVbefFd4rRNfXgrCbTv/sWoYwRQ9ackv+LomW2IUI4yRJ0LLNRYxJ8
+         pEojPY/qZ3tRWABaWVtds3Fpftg+yvqcgxB2vEUeOHGpxs8SM/wOkXcdsFx55CoACm
+         jODymT+RQj1kKmy4T8Z+KY1ObjVk5wOr1CmENjhfM6SVDzq7SZPeM5hdZJ8JuS/Cmc
+         VjSWL7hOCN3iGIoO2oUvPLUeQWgOKboRrYHcqkvwjgjGK8sqYl10eqAjBrtXjmc/HJ
+         54qRW6d8BJFtF95twyhCS5xIoUl6gJFNfIH32lGbEaiNGp7Z46dnMsu9TmtDwC8Dbn
+         ys9nUDoLVlnKw==
+Received: by mail-lf1-f51.google.com with SMTP id o10so7186984lfb.9
+        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 16:23:08 -0700 (PDT)
+X-Gm-Message-State: AOAM5322S8UA/GA9Bqmsrkjvmjt3Nv2Ky/MflYbCva1mPeVvvvCARdiy
+        CA+JK/kJB4IkcgJ9hFdd3aUc1zb5xIh6/tpuHIQThQ==
+X-Google-Smtp-Source: ABdhPJyPnHj6ZDJQUS+vCGpIZfqBnV3Qw55eILEKnTGtx7FwsanNGGGsfKJZBgmKkaPscsNM/gboMw0xVOaUY8B6KCI=
+X-Received: by 2002:a19:dc0b:: with SMTP id t11mr6808690lfg.233.1616109787394;
+ Thu, 18 Mar 2021 16:23:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210316011336.4173585-1-kafai@fb.com> <20210316011348.4175708-1-kafai@fb.com>
-In-Reply-To: <20210316011348.4175708-1-kafai@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 18 Mar 2021 15:53:38 -0700
-Message-ID: <CAEf4Bzb57BrVOHRzikejK1ubWrZ_cd2FCS6BW6_E-2KuzJGrPg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 02/15] bpf: btf: Support parsing extern func
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
+References: <CAEf4BzZ2t_VbdtSde9uPEYNaggZLj3peyA8opHj1Ao_FO8AVrQ@mail.gmail.com>
+ <CACYkzJ5eynv81uQ9_PA9uA=FUqva_j8MmpCgM1Pv=urVkXZsWA@mail.gmail.com>
+In-Reply-To: <CACYkzJ5eynv81uQ9_PA9uA=FUqva_j8MmpCgM1Pv=urVkXZsWA@mail.gmail.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Fri, 19 Mar 2021 00:22:56 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ75+ie6H5rsd467TgaznpNkEuEYa9+Ux9Wv9zUXF01KwQ@mail.gmail.com>
+Message-ID: <CACYkzJ75+ie6H5rsd467TgaznpNkEuEYa9+Ux9Wv9zUXF01KwQ@mail.gmail.com>
+Subject: Re: test_ima passing only first time
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 12:01 AM Martin KaFai Lau <kafai@fb.com> wrote:
+On Thu, Mar 18, 2021 at 5:04 PM KP Singh <kpsingh@kernel.org> wrote:
 >
-> This patch makes BTF verifier to accept extern func. It is used for
-> allowing bpf program to call a limited set of kernel functions
-> in a later patch.
->
-> When writing bpf prog, the extern kernel function needs
-> to be declared under a ELF section (".ksyms") which is
-> the same as the current extern kernel variables and that should
-> keep its usage consistent without requiring to remember another
-> section name.
->
-> For example, in a bpf_prog.c:
->
-> extern int foo(struct sock *) __attribute__((section(".ksyms")))
->
-> [24] FUNC_PROTO '(anon)' ret_type_id=15 vlen=1
->         '(anon)' type_id=18
-> [25] FUNC 'foo' type_id=24 linkage=extern
-> [ ... ]
-> [33] DATASEC '.ksyms' size=0 vlen=1
->         type_id=25 offset=0 size=0
->
-> LLVM will put the "func" type into the BTF datasec ".ksyms".
-> The current "btf_datasec_check_meta()" assumes everything under
-> it is a "var" and ensures it has non-zero size ("!vsi->size" test).
-> The non-zero size check is not true for "func".  This patch postpones the
-> "!vsi-size" test from "btf_datasec_check_meta()" to
-> "btf_datasec_resolve()" which has all types collected to decide
-> if a vsi is a "var" or a "func" and then enforce the "vsi->size"
-> differently.
->
-> If the datasec only has "func", its "t->size" could be zero.
-> Thus, the current "!t->size" test is no longer valid.  The
-> invalid "t->size" will still be caught by the later
-> "last_vsi_end_off > t->size" check.   This patch also takes this
-> chance to consolidate other "t->size" tests ("vsi->offset >= t->size"
-> "vsi->size > t->size", and "t->size < sum") into the existing
-> "last_vsi_end_off > t->size" test.
->
-> The LLVM will also put those extern kernel function as an extern
-> linkage func in the BTF:
->
-> [24] FUNC_PROTO '(anon)' ret_type_id=15 vlen=1
->         '(anon)' type_id=18
-> [25] FUNC 'foo' type_id=24 linkage=extern
->
-> This patch allows BTF_FUNC_EXTERN in btf_func_check_meta().
-> Also extern kernel function declaration does not
-> necessary have arg name. Another change in btf_func_check() is
-> to allow extern function having no arg name.
->
-> The btf selftest is adjusted accordingly.  New tests are also added.
->
-> The required LLVM patch: https://reviews.llvm.org/D93563
->
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> ---
+> Sorry I totally missed this email. Taking a look now.
 
-High-level question about EXTERN functions in DATASEC. Does kernel
-need to see them under DATASEC? What if libbpf just removed all EXTERN
-funcs from under DATASEC and leave them as "free-floating" EXTERN
-FUNCs in BTF.
+KP, You top posted in a hurry.
 
-We need to tag EXTERNs with DATASECs mainly for libbpf to know whether
-it's .kconfig or .ksym or other type of externs. Does kernel need to
-care?
-
->  kernel/bpf/btf.c                             |  52 ++++---
->  tools/testing/selftests/bpf/prog_tests/btf.c | 154 ++++++++++++++++++-
->  2 files changed, 178 insertions(+), 28 deletions(-)
 >
+> On Wed, Mar 10, 2021 at 10:57 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > Hey KP,
+> >
+> > test_ima is passing only the very first time I run it in my VM. Alexei
+> > earlier reported similar issues. If you run it second time without
+> > restarting the VM, you get the following:
+> >
+> > 10+0 records in
+> > 10+0 records out
+> > 10485760 bytes (10 MB, 10 MiB) copied, 0.00425121 s, 2.5 GB/s
+> > mke2fs 1.45.0 (6-Mar-2019)
+> > Discarding device blocks: done
+> > Creating filesystem with 10240 1k blocks and 2560 inodes
+> > Filesystem UUID: b9927426-1d29-458f-b2a0-8fe56455d209
+> > Superblock backups stored on blocks:
+> >         8193
+> >
+> > Allocating group tables: done
+> > Writing inode tables: done
+> > Writing superblocks and filesystem accounting information: done
+> >
+> > ./ima_setup.sh: line 53: /sys/kernel/security/ima/policy: Permission denied
+> > test_test_ima:PASS:skel_load 0 nsec
+> > test_test_ima:PASS:ringbuf 0 nsec
+> > test_test_ima:PASS:attach 0 nsec
+> > test_test_ima:PASS:mkdtemp 0 nsec
+> > test_test_ima:FAIL:71
+> > #128 test_ima:FAIL
+> >
+> > Do you see it on your side? Do you have any idea what's wrong?
+
+Works for me :) Well, works on the CI image and config I mean.
+
+I did the following local change to get a bash prompt from vmtest.sh
+
+I will send a patch that adds a flag so that one can get a shell to
+debug instead of
+powering the VM off.
+
+diff --git a/tools/testing/selftests/bpf/vmtest.sh
+b/tools/testing/selftests/bpf/vmtest.sh
+index 22554894db99..710c73fe1b77 100755
+--- a/tools/testing/selftests/bpf/vmtest.sh
++++ b/tools/testing/selftests/bpf/vmtest.sh
+@@ -175,7 +175,8 @@ echo "130" > "/root/${EXIT_STATUS_FILE}"
+        stdbuf -oL -eL ${command}
+        echo "\$?" > "/root/${EXIT_STATUS_FILE}"
+ } 2>&1 | tee "/root/${LOG_FILE}"
+-poweroff -f
++# poweroff -f
++bash
+ EOF
+
+        sudo chmod a+x "${init_script}"
+
+ ./vmtest.sh -- "./test_progs -t test_ima"
 
 [...]
 
-> @@ -3611,9 +3594,28 @@ static int btf_datasec_resolve(struct btf_verifier_env *env,
->                 u32 var_type_id = vsi->type, type_id, type_size = 0;
->                 const struct btf_type *var_type = btf_type_by_id(env->btf,
->                                                                  var_type_id);
-> -               if (!var_type || !btf_type_is_var(var_type)) {
-> +               if (!var_type) {
-> +                       btf_verifier_log_vsi(env, v->t, vsi,
-> +                                            "type not found");
-> +                       return -EINVAL;
-> +               }
-> +
-> +               if (btf_type_is_func(var_type)) {
-> +                       if (vsi->size || vsi->offset) {
-> +                               btf_verifier_log_vsi(env, v->t, vsi,
-> +                                                    "Invalid size/offset");
-> +                               return -EINVAL;
-> +                       }
-> +                       continue;
-> +               } else if (btf_type_is_var(var_type)) {
-> +                       if (!vsi->size) {
-> +                               btf_verifier_log_vsi(env, v->t, vsi,
-> +                                                    "Invalid size");
-> +                               return -EINVAL;
-> +                       }
-> +               } else {
->                         btf_verifier_log_vsi(env, v->t, vsi,
-> -                                            "Not a VAR kind member");
-> +                                            "Neither a VAR nor a FUNC");
->                         return -EINVAL;
-
-can you please structure it as follow (I think it is bit easier to
-follow the logic then):
-
-if (btf_type_is_func()) {
-   ...
-   continue; /* no extra checks */
-}
-
-if (!btf_type_is_var()) {
-   /* bad, complain, exit */
-   return -EINVAL;
-}
-
-/* now we deal with extra checks for variables */
-
-That way variable checks are kept all in one place.
-
-Also a question: is that ok to enable non-extern functions under
-DATASEC? Maybe, but that wasn't explicitly mentioned.
-
->                 }
->
-> @@ -3849,9 +3851,11 @@ static int btf_func_check(struct btf_verifier_env *env,
->         const struct btf_param *args;
->         const struct btf *btf;
->         u16 nr_args, i;
-> +       bool is_extern;
->
->         btf = env->btf;
->         proto_type = btf_type_by_id(btf, t->type);
-> +       is_extern = btf_type_vlen(t) == BTF_FUNC_EXTERN;
-
-using btf_type_vlen(t) for getting func linkage is becoming more and
-more confusing. Would it be terrible to have btf_func_linkage(t)
-helper instead?
-
->
->         if (!proto_type || !btf_type_is_func_proto(proto_type)) {
->                 btf_verifier_log_type(env, t, "Invalid type_id");
-> @@ -3861,7 +3865,7 @@ static int btf_func_check(struct btf_verifier_env *env,
->         args = (const struct btf_param *)(proto_type + 1);
->         nr_args = btf_type_vlen(proto_type);
->         for (i = 0; i < nr_args; i++) {
-> -               if (!args[i].name_off && args[i].type) {
-> +               if (!is_extern && !args[i].name_off && args[i].type) {
->                         btf_verifier_log_type(env, t, "Invalid arg#%u", i + 1);
->                         return -EINVAL;
->                 }
-
+[root@(none) bpf]# ./test_progs -t test_ima
+#128 test_ima:OK
+Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+[root@(none) bpf]# ./test_progs -t test_ima
 [...]
+#128 test_ima:OK
+Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+[root@(none) bpf]# ./test_progs -t test_ima
+[...]
+#128 test_ima:OK
+
+Here's the kernel config that the BPF CI uses:
+
+cat ~/.bpf_selftests/latest.config | grep IMA | grep -v "^#"
+CONFIG_FB_CFB_IMAGEBLIT=y
+CONFIG_FRAMEBUFFER_CONSOLE_DETECT_PRIMARY=y
+CONFIG_IMA=y
+CONFIG_IMA_MEASURE_PCR_IDX=10
+CONFIG_IMA_LSM_RULES=y
+CONFIG_IMA_NG_TEMPLATE=y
+CONFIG_IMA_DEFAULT_TEMPLATE="ima-ng"
+CONFIG_IMA_DEFAULT_HASH_SHA1=y
+CONFIG_IMA_DEFAULT_HASH="sha1"
+CONFIG_IMA_WRITE_POLICY=y
+CONFIG_IMA_READ_POLICY=y
+CONFIG_IMA_MEASURE_ASYMMETRIC_KEYS=y
+CONFIG_IMA_QUEUE_EARLY_BOOT_KEYS=y
+
+The important bit is having CONFIG_IMA_WRITE_POLICY and CONFIG_IMA_READ_POLICY
+which allows reading and overriding the IMA policy.
+
+> >
+> > Also, see that super-descriptive `test_test_ima:FAIL:71` line? That's
+> > the reason I'm always bitching about CHECK_FAIL() use. At least this
+
+I will send a patch to add more descriptive error messages, in these
+it will be something
+like
+
+"error while running command ..."
+
+- KP
+
+> > one is not inside some loop.
+> >
+> > -- Andrii
