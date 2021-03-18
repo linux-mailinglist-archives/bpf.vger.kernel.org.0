@@ -2,68 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD8D33FCEE
-	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 02:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5871333FD37
+	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 03:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhCRB4f (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Mar 2021 21:56:35 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:45414 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230221AbhCRB4J (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 17 Mar 2021 21:56:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0USLDzcs_1616032554;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0USLDzcs_1616032554)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 18 Mar 2021 09:56:05 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     shuah@kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] selftests/bpf: fix warning comparing pointer to 0
-Date:   Thu, 18 Mar 2021 09:55:52 +0800
-Message-Id: <1616032552-39866-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S230330AbhCRC3j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Mar 2021 22:29:39 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:59686 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230245AbhCRC3X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Mar 2021 22:29:23 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxY+X9ulJggeUBAA--.6154S2;
+        Thu, 18 Mar 2021 10:29:17 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v2] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
+Date:   Thu, 18 Mar 2021 10:29:17 +0800
+Message-Id: <1616034557-5844-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9BxY+X9ulJggeUBAA--.6154S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw4rWFy3KF4xJF13Zw17GFg_yoW8WF47pa
+        nYyasxKr4UWrWDGF1vy3yxuryrJrs7GrWagF4rtF4Fva98ur98Xr4fta13tryUZr4DJ3W3
+        W34xua47KaykCrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
+        WxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+        Yx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK
+        6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUatC7UUU
+        UU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix the following coccicheck warning:
+After commit 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to
+archs where they work"), bpf_probe_read{, str}() functions were no longer
+available on MIPS, so there exist some errors when running bpf program:
 
-./tools/testing/selftests/bpf/progs/fentry_test.c:76:15-16: WARNING
-comparing pointer to 0.
+root@linux:/home/loongson/bcc# python examples/tracing/task_switch.py
+bpf: Failed to load program: Invalid argument
+[...]
+11: (85) call bpf_probe_read#4
+unknown func bpf_probe_read#4
+[...]
+Exception: Failed to load BPF program count_sched: Invalid argument
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+So select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE in arch/mips/Kconfig,
+otherwise the bpf old helper bpf_probe_read() will not be available.
+
+This is similar with the commit d195b1d1d119 ("powerpc/bpf: Enable
+bpf_probe_read{, str}() on powerpc again").
+
+Fixes: 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- tools/testing/selftests/bpf/progs/fentry_test.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c b/tools/testing/selftests/bpf/progs/fentry_test.c
-index 5f645fd..d4247d6 100644
---- a/tools/testing/selftests/bpf/progs/fentry_test.c
-+++ b/tools/testing/selftests/bpf/progs/fentry_test.c
-@@ -64,7 +64,7 @@ struct bpf_fentry_test_t {
- SEC("fentry/bpf_fentry_test7")
- int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
- {
--	if (arg == 0)
-+	if (!arg)
- 		test7_result = 1;
- 	return 0;
- }
-@@ -73,7 +73,7 @@ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
- SEC("fentry/bpf_fentry_test8")
- int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
- {
--	if (arg->a == 0)
-+	if (!arg->a)
- 		test8_result = 1;
- 	return 0;
- }
+v2: update the commit message to fix typos found by
+    Sergei Shtylyov, thank you!
+
+    not longer --> no longer
+    there exists --> there exist
+
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 160b3a8..4b94ec7 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -6,6 +6,7 @@ config MIPS
+ 	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_KCOV
++	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+ 	select ARCH_HAS_PTE_SPECIAL if !(32BIT && CPU_HAS_RIXI)
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
 -- 
-1.8.3.1
+2.1.0
 
