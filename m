@@ -2,192 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C990033FFEE
-	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 07:53:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEC03400BA
+	for <lists+bpf@lfdr.de>; Thu, 18 Mar 2021 09:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbhCRGxH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Mar 2021 02:53:07 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:14372 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhCRGwu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Mar 2021 02:52:50 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F1HjV335mz8yLk;
-        Thu, 18 Mar 2021 14:50:54 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 18 Mar 2021 14:52:42 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>
-Subject: [PATCH net] net: sched: fix packet stuck problem for lockless qdisc
-Date:   Thu, 18 Mar 2021 14:53:22 +0800
-Message-ID: <1616050402-37023-1-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        id S229624AbhCRISY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Mar 2021 04:18:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229564AbhCRISR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Mar 2021 04:18:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D6C264EF6;
+        Thu, 18 Mar 2021 08:18:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616055497;
+        bh=3E9H2zpeiDX6zhLzzRcdnJAvRLq5r0LmDVSbVqSH5PY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=toPoZYi70tiuUwSJYqo92mplFfSeGWj2ik1yhufFzen5C/HeF0MbGYzDQYB46llDj
+         4LCHbAPmBGvIeD6di0GoC+M5803q0r4t7a7AE4k06k3wJYsPf12qD0V3/NrP0ohEZm
+         eJB7ZjL4cshxkdRAVtC3mAxMcouDKNP+n9nw1TSU3iTHu6Jx0ODcDbE74ihKmGvwyU
+         ahbCDNPeQopboh+9SPM75PGBUTCqAPHat9pW3Q1ZooeY/I/nPHkOs4v5EPkWdOIm8V
+         H9L4QuAASoDvtS7+nghvIORXU5tfBT0k/6VE5/7x3T0i/n8IsFmbQkAh/kkDeqLgxU
+         qzRWQ90DG0mKA==
+Date:   Thu, 18 Mar 2021 10:18:13 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] virtio_net: replace if (cond) BUG() with BUG_ON()
+Message-ID: <YFMMxSHGNxjw29iA@unreal>
+References: <1615960635-29735-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1615960635-29735-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lockless qdisc has below concurrent problem:
-        cpu0                  cpu1
-          .                     .
-     q->enqueue                 .
-          .                     .
-   qdisc_run_begin()            .
-          .                     .
-     dequeue_skb()              .
-          .                     .
-   sch_direct_xmit()            .
-          .                     .
-          .                q->enqueue
-          .             qdisc_run_begin()
-          .            return and do nothing
-          .                     .
-qdisc_run_end()                 .
+On Wed, Mar 17, 2021 at 01:57:15PM +0800, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+>
+> ./drivers/net/virtio_net.c:1551:2-5: WARNING: Use BUG_ON instead of if
+> condition followed by BUG.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/net/virtio_net.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 82e520d..093530b 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -1545,10 +1545,8 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
+>  	else
+>  		hdr = skb_vnet_hdr(skb);
+>
+> -	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
+> -				    virtio_is_little_endian(vi->vdev), false,
+> -				    0))
+> -		BUG();
+> +	BUG_ON(virtio_net_hdr_from_skb(skb, &hdr->hdr,  virtio_is_little_endian(vi->vdev),
+> +				       false, 0));
 
-cpu1 enqueue a skb without calling __qdisc_run() because cpu0
-has not released the lock yet and spin_trylock() return false
-for cpu1 in qdisc_run_begin(), and cpu0 do not see the skb
-enqueued by cpu1 when calling dequeue_skb() because cpu1 may
-enqueue the skb after cpu0 calling dequeue_skb() and before
-cpu0 calling qdisc_run_end().
+This BUG() in virtio isn't supposed to be in the first place.
+You should return -EINVAL instead of crashing system.
 
-Lockless qdisc has another concurrent problem when tx_action
-is involved:
+Thanks
 
-cpu0(serving tx_action)     cpu1             cpu2
-          .                   .                .
-          .              q->enqueue            .
-          .            qdisc_run_begin()       .
-          .              dequeue_skb()         .
-          .                   .            q->enqueue
-          .                   .                .
-          .             sch_direct_xmit()      .
-          .                   .         qdisc_run_begin()
-          .                   .       return and do nothing
-          .                   .                .
-clear __QDISC_STATE_SCHED     .                .
-    qdisc_run_begin()         .                .
-return and do nothing         .                .
-          .                   .                .
-          .          qdisc_run_begin()         .
-
-This patch fixes the above data race by:
-1. Set a flag after spin_trylock() return false.
-2. Retry a spin_trylock() in case other CPU may not see the
-   new flag after it releases the lock.
-3. reschedule if the flag is set after the lock is released
-   at the end of qdisc_run_end().
-
-For tx_action case, the flags is also set when cpu1 is at the
-end if qdisc_run_begin(), so tx_action will be rescheduled
-again to dequeue the skb enqueued by cpu2.
-
-Also clear the flag before dequeuing in order to reduce the
-overhead of the above process, and aviod doing the heavy
-test_and_clear_bit() at the end of qdisc_run_end().
-
-Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
-For those who has not been following the qdsic scheduling
-discussion, there is packet stuck problem for lockless qdisc,
-see [1], and I has done some cleanup and added some enhanced
-features too, see [2] [3].
-While I was doing the optimization for lockless qdisc, it
-accurred to me that these optimization is useless if there is
-still basic bug in lockless qdisc, even the bug is not easily
-reproducible. So look through [1] again, I found that the data
-race for tx action mentioned by Michael, and thought deep about
-it and came up with this patch trying to fix it.
-
-So I am really appreciated some who still has the reproducer
-can try this patch and report back.
-
-1. https://lore.kernel.org/netdev/d102074f-7489-e35a-98cf-e2cad7efd8a2@netrounds.com/t/#ma7013a79b8c4d8e7c49015c724e481e6d5325b32
-2. https://patchwork.kernel.org/project/netdevbpf/patch/1615777818-13969-1-git-send-email-linyunsheng@huawei.com/
-3. https://patchwork.kernel.org/project/netdevbpf/patch/1615800610-34700-1-git-send-email-linyunsheng@huawei.com/
----
- include/net/sch_generic.h | 23 ++++++++++++++++++++---
- net/sched/sch_generic.c   |  1 +
- 2 files changed, 21 insertions(+), 3 deletions(-)
-
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index f7a6e14..4220eab 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -36,6 +36,7 @@ struct qdisc_rate_table {
- enum qdisc_state_t {
- 	__QDISC_STATE_SCHED,
- 	__QDISC_STATE_DEACTIVATED,
-+	__QDISC_STATE_NEED_RESCHEDULE,
- };
- 
- struct qdisc_size_table {
-@@ -159,8 +160,17 @@ static inline bool qdisc_is_empty(const struct Qdisc *qdisc)
- static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- {
- 	if (qdisc->flags & TCQ_F_NOLOCK) {
--		if (!spin_trylock(&qdisc->seqlock))
--			return false;
-+		if (!spin_trylock(&qdisc->seqlock)) {
-+			set_bit(__QDISC_STATE_NEED_RESCHEDULE,
-+				&qdisc->state);
-+
-+			/* Retry again in case other CPU may not see the
-+			 * new flags after it releases the lock at the
-+			 * end of qdisc_run_end().
-+			 */
-+			if (!spin_trylock(&qdisc->seqlock))
-+				return false;
-+		}
- 		WRITE_ONCE(qdisc->empty, false);
- 	} else if (qdisc_is_running(qdisc)) {
- 		return false;
-@@ -176,8 +186,15 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- static inline void qdisc_run_end(struct Qdisc *qdisc)
- {
- 	write_seqcount_end(&qdisc->running);
--	if (qdisc->flags & TCQ_F_NOLOCK)
-+	if (qdisc->flags & TCQ_F_NOLOCK) {
- 		spin_unlock(&qdisc->seqlock);
-+
-+		if (unlikely(test_bit(__QDISC_STATE_NEED_RESCHEDULE,
-+				      &qdisc->state) &&
-+			     !test_bit(__QDISC_STATE_DEACTIVATED,
-+				       &qdisc->state)))
-+			__netif_schedule(qdisc);
-+	}
- }
- 
- static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index 44991ea..25d75d8 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -205,6 +205,7 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
- 	const struct netdev_queue *txq = q->dev_queue;
- 	struct sk_buff *skb = NULL;
- 
-+	clear_bit(__QDISC_STATE_NEED_RESCHEDULE, &q->state);
- 	*packets = 1;
- 	if (unlikely(!skb_queue_empty(&q->gso_skb))) {
- 		spinlock_t *lock = NULL;
--- 
-2.7.4
-
+>
+>  	if (vi->mergeable_rx_bufs)
+>  		hdr->num_buffers = 0;
+> --
+> 1.8.3.1
+>
