@@ -2,103 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1692341CD1
-	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 13:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0C0341CEA
+	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 13:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhCSMX4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Mar 2021 08:23:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230169AbhCSMXu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:23:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87A7864F11;
-        Fri, 19 Mar 2021 12:23:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616156630;
-        bh=oFlPu06uz5j9auNWsJ3R0Ish/3if57XYi76+/Eh3Oqs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kTY/Mk7Flul+ihiE8xxw+9ZtCqF9YcC8SqyaRpBLfFLhCkYrDSHucz2JaqpkH4eZ4
-         bcyyZH37nZYy9VKdq6niAnK9R2NCKBbqVY5igUa6IFcCTCCU/v+lmPtLkmw4TyaMYs
-         f3sj4oxRqSyaVs5YCKJY/jAy0QecJbBMsXUBXIHyJb/Wx1sGuhF5zNmxO99pJ0HsoW
-         3tFOMlih/clCGylf6NAtA81lNA7bBJjVwhmcBfE9Jzyovr/kw9uK/7eoBBIcLyL7sx
-         lv/9aWHqN1yF5z1eToNAuZ5yDPfpimuvYtqiOWiNwTspTkAtrxKo1/QLwIArmQrysl
-         zS0MqdxDsrmqA==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org
-Subject: [PATCH -tip v3 11/11] tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
-Date:   Fri, 19 Mar 2021 21:23:45 +0900
-Message-Id: <161615662521.306069.3578204343927212072.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <161615650355.306069.17260992641363840330.stgit@devnote2>
-References: <161615650355.306069.17260992641363840330.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S229954AbhCSM1o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Mar 2021 08:27:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229847AbhCSM12 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:27:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CCAC06175F;
+        Fri, 19 Mar 2021 05:27:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HGGyfd8GrXRUYl8t/lIrcBczKW5EZl0r2vGbtH69BjM=; b=adFFxpGZQzg62xh/9Ba4l9lwfu
+        F6vR/ZaT6jVOK8XBdN443zktlYfZQFE6KzBnW5MwH3eVqjWSvBEUOKrp/4w94gPSdWAWxhHJ3V1wM
+        JHocPFEFyKktLVXuAuzwFOWOp/KNeXMoG9xD4e0pSSw5guUU6iX3zwS+9iJaXvGVtoak9cQUiKXdk
+        aaTRO8gzVbVR2DUv+LCZp6q/nOcMAZFn5oDnxPol2/x260iyr/gFYohOT8wUIn7bWOGSaBBFsHhXM
+        5W9vjiPOxO3G/F43MluX4VccPO0R+IdphdHCQCiZ5xy5MJJ3Wg5a8xTujshBLU4gCmsDllD60Lvyz
+        4nI6ItgA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lNEDU-004Ogd-1x; Fri, 19 Mar 2021 12:27:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8E33C307975;
+        Fri, 19 Mar 2021 13:26:59 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7709D21244621; Fri, 19 Mar 2021 13:26:59 +0100 (CET)
+Date:   Fri, 19 Mar 2021 13:26:59 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 01/17] add support for Clang CFI
+Message-ID: <YFSYkyNFb34N8Ile@hirez.programming.kicks-ass.net>
+References: <20210318171111.706303-1-samitolvanen@google.com>
+ <20210318171111.706303-2-samitolvanen@google.com>
+ <YFPUNlOomp173o5B@hirez.programming.kicks-ass.net>
+ <CABCJKufkQay5Fk5mZspn4PY2+mBC0CqC5t9QGkKafX4vUQv6Lg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABCJKufkQay5Fk5mZspn4PY2+mBC0CqC5t9QGkKafX4vUQv6Lg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-ftrace shows "[unknown/kretprobe'd]" indicator all addresses in the
-kretprobe_trampoline, but the modified address by kretprobe should
-be only kretprobe_trampoline+0.
+On Thu, Mar 18, 2021 at 04:48:43PM -0700, Sami Tolvanen wrote:
+> On Thu, Mar 18, 2021 at 3:29 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Thu, Mar 18, 2021 at 10:10:55AM -0700, Sami Tolvanen wrote:
+> > > +static void update_shadow(struct module *mod, unsigned long base_addr,
+> > > +             update_shadow_fn fn)
+> > > +{
+> > > +     struct cfi_shadow *prev;
+> > > +     struct cfi_shadow *next;
+> > > +     unsigned long min_addr, max_addr;
+> > > +
+> > > +     next = vmalloc(SHADOW_SIZE);
+> > > +
+> > > +     mutex_lock(&shadow_update_lock);
+> > > +     prev = rcu_dereference_protected(cfi_shadow,
+> > > +                                      mutex_is_locked(&shadow_update_lock));
+> > > +
+> > > +     if (next) {
+> > > +             next->base = base_addr >> PAGE_SHIFT;
+> > > +             prepare_next_shadow(prev, next);
+> > > +
+> > > +             min_addr = (unsigned long)mod->core_layout.base;
+> > > +             max_addr = min_addr + mod->core_layout.text_size;
+> > > +             fn(next, mod, min_addr & PAGE_MASK, max_addr & PAGE_MASK);
+> > > +
+> > > +             set_memory_ro((unsigned long)next, SHADOW_PAGES);
+> > > +     }
+> > > +
+> > > +     rcu_assign_pointer(cfi_shadow, next);
+> > > +     mutex_unlock(&shadow_update_lock);
+> > > +     synchronize_rcu_expedited();
+> >
+> > expedited is BAD(tm), why is it required and why doesn't it have a
+> > comment?
+> 
+> Ah, this uses synchronize_rcu_expedited() because we have a case where
+> synchronize_rcu() hangs here with a specific SoC family after the
+> vendor's cpu_pm driver powers down CPU cores.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- kernel/trace/trace_output.c |   17 ++++-------------
- 1 file changed, 4 insertions(+), 13 deletions(-)
+Broken vendor drivers seem like an exceedingly poor reason for this.
 
-diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-index 61255bad7e01..e12437388686 100644
---- a/kernel/trace/trace_output.c
-+++ b/kernel/trace/trace_output.c
-@@ -8,6 +8,7 @@
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/ftrace.h>
-+#include <linux/kprobes.h>
- #include <linux/sched/clock.h>
- #include <linux/sched/mm.h>
- 
-@@ -346,22 +347,12 @@ int trace_output_call(struct trace_iterator *iter, char *name, char *fmt, ...)
- }
- EXPORT_SYMBOL_GPL(trace_output_call);
- 
--#ifdef CONFIG_KRETPROBES
--static inline const char *kretprobed(const char *name)
-+static inline const char *kretprobed(const char *name, unsigned long addr)
- {
--	static const char tramp_name[] = "kretprobe_trampoline";
--	int size = sizeof(tramp_name);
--
--	if (strncmp(tramp_name, name, size) == 0)
-+	if (is_kretprobe_trampoline(addr))
- 		return "[unknown/kretprobe'd]";
- 	return name;
- }
--#else
--static inline const char *kretprobed(const char *name)
--{
--	return name;
--}
--#endif /* CONFIG_KRETPROBES */
- 
- void
- trace_seq_print_sym(struct trace_seq *s, unsigned long address, bool offset)
-@@ -374,7 +365,7 @@ trace_seq_print_sym(struct trace_seq *s, unsigned long address, bool offset)
- 		sprint_symbol(str, address);
- 	else
- 		kallsyms_lookup(address, NULL, NULL, NULL, str);
--	name = kretprobed(str);
-+	name = kretprobed(str, address);
- 
- 	if (name && strlen(name)) {
- 		trace_seq_puts(s, name);
+> Would you say expedited is bad enough that we should avoid it here?
+> The function is called only when kernel modules are loaded or
+> unloaded, so not very frequently.
 
+Module unload is pretty crap (it has stop_machine), so an expedited
+would not really be noticable, but module load isn't nearly as bad.
+
+Also, getting the vendor to fix their driver seems like a good thing :-)
+
+So please consider using regular synchronize_rcu() here.
