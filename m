@@ -2,181 +2,356 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537363413E7
-	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 04:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F20341406
+	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 05:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233582AbhCSD51 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Mar 2021 23:57:27 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34234 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233704AbhCSD5H (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 18 Mar 2021 23:57:07 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12J3t6rt003868;
-        Thu, 18 Mar 2021 20:56:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=GHP9kzDxwdbtbJj/l89XK/fVZlKvhsjyxqEHq0Nvuwc=;
- b=W8/VWnSkLIRGO3d1xW6AU4jaqmU5DNi1H3NclOPm/sGuhaQu2SxePMmuHQ+XC1ouWhYU
- xQDFGrssh7U11zr7Uy7RehLzcjqYt4ngaV9RhLnSSxTfopkI1nIubSPBasSGUcbmjU9g
- Hn4pT2h2IsW04eUn9/FVkh/ZpvxbjWQTJvQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 37bek0vg8f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 18 Mar 2021 20:56:51 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 18 Mar 2021 20:56:50 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VYGiqKQQvtqwdpeGRkPyVz4Kz9E7zCg3oQ9XqnX+y/CX7dt9L0QrjU1Q85eGgndq1c/sKaHyrjR2GjBuu1WMNfLJB+77bSeLq9KiKZ/0Db6LcTIivQebXQ8VWhJ1Ds9MXwvy7FrFnLlhJK3+eYZSSkxk+cJU2g90KL2XuTHGumHijacQWrkDbiecNEffdRxNmXCLoS7C57/1LkYn6o35raR3snK2xrxpCJ882lIHKrSabcyaNibndHBwnLo4jjjt6aEz6mhy10uiEzshwHI3JaZs/fWmn83NsYR7+cFnV4u1W6Z+BKS3yHRQ/b5DHN88X4zknst0Z9IWLQXlDW3fUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GHP9kzDxwdbtbJj/l89XK/fVZlKvhsjyxqEHq0Nvuwc=;
- b=IE0IZBfF2St2Wl9ODCj40aDqmQuxwg7zKKsl99fN4/HaTZWimTMSc+fySwyrUeWKmfekPEONXuMb1KeCxJDHzVqF4aa+zhHh6QDPsXzW0GmyhAY4GY+62hhPobN2oDJ6hWO5BFQyTqofMu/32WnWuV3RGqu3EBbGjax69fC1cXYAvRrCacT6tMR+IseaMlPcxkGJnOuA/rGX+V9wDDe953FPpGEZTBOrCU3UUl+Dg4EmphsVaPdgm5Vm19wGlEv6z3qcWgX60pTfZcpNGc7gNR9sp8mJQowMXIEcpTKF5OuYlFPNmpjZmbgV1tFaj5ZbWRZvzRzlEV0rax/6sG2j+w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN6PR15MB2336.namprd15.prod.outlook.com (2603:10b6:805:26::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Fri, 19 Mar
- 2021 03:56:49 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3933.033; Fri, 19 Mar 2021
- 03:56:49 +0000
-Subject: Re: CLANG LTO compatibility issue with DEBUG_INFO_BTF
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <bpf@vger.kernel.org>
-References: <20210319113730.7ad6a609@xhacker.debian>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <4e1d1504-55e5-db8b-112b-921d86ef7d5b@fb.com>
-Date:   Thu, 18 Mar 2021 20:56:46 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
-In-Reply-To: <20210319113730.7ad6a609@xhacker.debian>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:939]
-X-ClientProxiedBy: BYAPR08CA0022.namprd08.prod.outlook.com
- (2603:10b6:a03:100::35) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        id S233620AbhCSEMR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Mar 2021 00:12:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229447AbhCSELv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Mar 2021 00:11:51 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50F6C06174A;
+        Thu, 18 Mar 2021 21:11:50 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id c131so4879267ybf.7;
+        Thu, 18 Mar 2021 21:11:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kbDRo/f+OBS8hFUhF0BveBeVvGFa8u4LPYYwqTrHmck=;
+        b=uEqYJbfAxCfaDUnNtGDW9rRbWYcAcbS7az6DZvgzCB0wI+9UqyS0S/7A+35nW5jasE
+         +THTsgNhuy3f9XkNoYPIJNgizCVd/Z1j8urXvjtcq59+coImmoWlIjTRRYlcGuFnR49b
+         PT6kMtuL0qRhbeDfWt5A4nFE3mrU5wiD+zxSRhRnO+/meEkgL31/26TBJNutYyrE5WyD
+         uqC55blHnsgdggzOt9oNqrBYk/R2yqfasTiPAmxLo6P8I7dbEHJYW33OxLgr/9v0ILV8
+         FcTbGowDlGjslnAlc1vAqQOUoPeZ+wvHZrmlWznCBCD2A991DcAmmT95jQleW6JTK3/p
+         40qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kbDRo/f+OBS8hFUhF0BveBeVvGFa8u4LPYYwqTrHmck=;
+        b=VCcx3/Uw5HI31RxfmjDdZCoKzHKT30UKJlAzrSdHlkEnsHe2kqqpyEKZXbaiRRJEtM
+         ocs//4jj3sC2EgfDCaY5f6VMAU6qyerT1OtPEhXXkv7aoW2MyzFuTqooJsU4U6XqzMnn
+         2QZOFcdowuJN834n9uofKwfFakssLcT4xJ7uWoICYPGT3PFHNPI/LKlGo1zgxF3x0rd8
+         Q3FQhm2HCJa/CsCcWs6D8pTEa05VGQWg6AdWYDfxQveOK1pQsomy/cFxV106x0UBrLRO
+         7HUVexRbMNPi/CFHhJ0SGEACVedhfDeJ42M76qkvlEIuEwALdp7AXIYKkYrjiJjx9QOn
+         AjJA==
+X-Gm-Message-State: AOAM5318Dr9UM2kenCRi5HMKZUNY9R/M1HQgaFg/tqJJW+fQUgJ75WOV
+        P0LGBo2a4RaKwRRYQWA3RLTmjvs3DIOCrpg9NoQ=
+X-Google-Smtp-Source: ABdhPJxJtsLCMjOZWLqdgyJ+Kg01kqGDJAodmqLI+5wtU/paf44Eo0c89gP+didwPkSuqcJI3HpOcOU2oqFf2KuNrVs=
+X-Received: by 2002:a25:4982:: with SMTP id w124mr3681567yba.27.1616127110109;
+ Thu, 18 Mar 2021 21:11:50 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::193b] (2620:10d:c090:400::5:939) by BYAPR08CA0022.namprd08.prod.outlook.com (2603:10b6:a03:100::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 03:56:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3bc1be0c-28d6-4c38-5675-08d8ea8b058b
-X-MS-TrafficTypeDiagnostic: SN6PR15MB2336:
-X-Microsoft-Antispam-PRVS: <SN6PR15MB233604CB59EFD7DE74C48B2FD3689@SN6PR15MB2336.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NwdliZ4ZOtF5mC5OqQPpxmQFLx9XQ4kygLFYakln+X/Pq68YPWVIJma3IsrEO5tCi7KW4Cnks7U9TOt+y60hdI4CIKBpfYvjsJujEMRl8oTNCHZ285rU+lB54ezixfB3GxSYsd6D1AU5yFpudWFSPTWhnYhiyOpVvSrTMXQXnAwSeqebkYDFh3wt1hUakO7UmsRwqAYstDSk6a2pHt0VMMagZftLysb5GcCMrqpnk1DtaIR9FVHsrdEiKLkHqoeLTgUoavVicR22kBUdd2ynRiSuc1bHxR2Xp+Ha+JP+QNeTBl1JeWCETe8S+1eSpiWA+cHYvyu8ITF/HbHMV2hpjEFidbPApAsvUrwh0Iu9IRTujgGFXxuAccKf9LMK7GVr58J61IKXpH1dm+rDYRBLHvxZRxHZUNsSlcjkSFFCGLadwtHluz8WaMkFp9ArJjo3SDA9tt5QR4Su1uv7t84CcS/x9FIrloqKViqM5eEJoleYsX2RWNOsJ+ZHVO1pARX32pYLOSrkzONAFfZYfDnSB0DTtahwF7XNzt0t5mMcEXGSKnFe/e/PObTJ0Px91YxgeXdRh67wOYIuXYOpSKsILnjGdXlulWOzHoQTW0bFQu3Vveoqd1eOi9yOvRlPcY//GW1ND69oog9DvZ8YBnTmag8hepEVwZ3+I6QaqT5vU+/XjX9Bsz1rSKp6BiLALWNkc4P8d99b+NPK8S/FFXdejw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(136003)(376002)(396003)(346002)(2616005)(478600001)(8676002)(316002)(16526019)(31686004)(83380400001)(110136005)(66476007)(66556008)(66946007)(38100700001)(186003)(8936002)(6486002)(2906002)(5660300002)(36756003)(86362001)(53546011)(52116002)(31696002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QkYzY3h2bFNjcTYrem13QjB4SnFRZnBmWVcyQXVDZ256TmhhM2dRT0RsWnBz?=
- =?utf-8?B?M2REOEpUaFRkVzVWcjV4OGdmQlNkeENaQVNNeWVnN2N4K244REtVUGl3Z2Jl?=
- =?utf-8?B?ZTRNNEpGTHdzZ2NsZTRmRzJ4aHNWSjlUcUIwMnllUGFCTm44dzk1YkIxWlMx?=
- =?utf-8?B?aFpwenJacmNBM1dXRFl1MXAyVDVlQ3MvMmtFZ1p3V2tvV010Y2RNZG01UnEr?=
- =?utf-8?B?SWtaaTh1VWxQZG5oN3JPb21yYWVxRjVsQUgwZGg3dGpmNHNuTGxrZ2pOc25Z?=
- =?utf-8?B?cjQ1cldLYWJ3OTBpV2dadVRaTFZCNDlWVHJXa3I2bHZOR0xYS2tRMlNjQ1Bx?=
- =?utf-8?B?RmFOMGRCaVNQTExQY1QyOVBNRENlYVh5alU3Tm9UTStFTm50V2Nsck9jWHRJ?=
- =?utf-8?B?d0crdTRkTGpYQjB6NDUwc2JrdXY1NXJUalQxOTNuS08xU3dqOFg4R2UyY016?=
- =?utf-8?B?QmljVXgvOXJPNGNrV1ROeitjNzFxM0RNUUorM09PSnNJdkQ5NjFFWEZZcjBE?=
- =?utf-8?B?S3dSZENjVWY2U3VvRlNkMDFzRnZ5NHd1eGZGY1lybkhvMEpsWGc0aTQveXow?=
- =?utf-8?B?OUpHYXVxYlQ2bkd6SmtFV2o3Q0tMbEVVck5ZaEZFQ2dvSWsraUlJdkx3RU5O?=
- =?utf-8?B?QlFFYllOM0JVd0o2RVRQVjF3OTNzUDBWQUF1cEVGUTFiWm1KclZVdUxnSGhk?=
- =?utf-8?B?Q2RGYVBQejczOHM4QW1mVGFVcW01cEhPOFExUVNjR0YwbVV6K2p6SVl1Z3dp?=
- =?utf-8?B?cWVZSWVNVVA0UDFrUzJyQzhVZDBkZkxmdkJHYTVSNkY4WUFkTlF5eVNqYVZm?=
- =?utf-8?B?UXlyWVlnam9kV3c0OTAvajhmNWZvLzRiY1ZRM2lZSFI3dVRLQkxEMnRuZW9M?=
- =?utf-8?B?NGJGekNsM1lXditjbWp2a0N6dmdVa1IxbXU0eVBUZUtwcGRib29ra3FkYlh1?=
- =?utf-8?B?TUJobE1Ybk0yYUkrdlJUeXJrODI4dGtTMmJFaUpTckhhUlJWSmZtMkNnWU9o?=
- =?utf-8?B?THNHRTluOHV0N0RUeWlkaTQrVnU0TnhPRFlUa0plMkFQeTJ0ZkFVdWVPclJR?=
- =?utf-8?B?SGdidXpYOU9sMmdhdjc4dWdLMStaQkFJVXo1YW9VblRXL09xL3MweGdlenlU?=
- =?utf-8?B?eWxBaW54ZnN6ZVY2TUJhNUNFblZKWDRydlo5WXpqOWptU2hpLzFkSXJtRHJC?=
- =?utf-8?B?UGtSVnQwZDFKSkhxTlR2eldGVkJ0NGNqTXV6K01yMGxJV0FvZlptdVFDTUVE?=
- =?utf-8?B?Zk5lSWNKcnZrcnBzTmRBeGh3QlVTVk1OUUpWR0dNTUMyaTVxbURjTzJlQ0xD?=
- =?utf-8?B?b1ZYMWFsSlNiMW1GeEE4MTA4ckd4cmpCY0RHak1RMk5NVS9aL2xQOEVZejlK?=
- =?utf-8?B?UjVtcHVOYjNHWTl1Uy9QWWdUQTltRWFycUdmRmp1cE5kQ1pNL3YrSjFFSVpR?=
- =?utf-8?B?c3dSaWFXSWhtVXlQY0w5blloYTk3ZW5ubFFSeDh2WHpZV1NidGJBakJhUHhs?=
- =?utf-8?B?OWRsdG16K3lFbFFlZUYzOGRjOG9kMExjajI5QXVLc21UK0VPOWZVS2p0K0NQ?=
- =?utf-8?B?clFjS1F0RDFoZGJWOWNIanZpOUVQbkxRYzdFb0ErSkh5elRtWEdCNlhEUUJR?=
- =?utf-8?B?bGRUcmNZNUFuM0lrdWVEMm9ONTBmb3JUd2tsV0R6TVlBN1NKQk4yV0xUcjQ4?=
- =?utf-8?B?c1J5aFpLZ0oreEdmYTJaaTRvL2ZvUmR3WC80MjdLK0xMR3dFdHROcFBYYlRV?=
- =?utf-8?B?TmNYN0UzNTgzUnEzeXI0R0J1SW5OUXpsK29Pa004SVZnclM1Z2VHMThuUldS?=
- =?utf-8?Q?F2R4h2FL/a4bhth5ECuW1uaYQe/FRzqp8ak60=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bc1be0c-28d6-4c38-5675-08d8ea8b058b
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 03:56:49.0334
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4Lvkv9/zhSIIFgUyTqGozCjKn+EkAMteOK6cnRmsEWV1h6iEuDj3PLSJsg3py/VG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2336
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-19_01:2021-03-17,2021-03-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 bulkscore=0
- impostorscore=0 malwarescore=0 mlxscore=0 suspectscore=0 clxscore=1011
- lowpriorityscore=0 mlxlogscore=999 phishscore=0 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103190025
-X-FB-Internal: deliver
+References: <20210316011336.4173585-1-kafai@fb.com> <20210316011451.4180026-1-kafai@fb.com>
+In-Reply-To: <20210316011451.4180026-1-kafai@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 18 Mar 2021 21:11:39 -0700
+Message-ID: <CAEf4BzZVROg4Ygas2q-FFmc4o=yk+oHtx6KV_b=93OZbsjK0Bw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 12/15] libbpf: Support extern kernel function
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Mar 16, 2021 at 12:02 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> This patch is to make libbpf able to handle the following extern
+> kernel function declaration and do the needed relocations before
+> loading the bpf program to the kernel.
+>
+> extern int foo(struct sock *) __attribute__((section(".ksyms")))
+>
+> In the collect extern phase, needed changes is made to
+> bpf_object__collect_externs() and find_extern_btf_id() to collect
+> function.
+>
+> In the collect relo phase, it will record the kernel function
+> call as RELO_EXTERN_FUNC.
+>
+> bpf_object__resolve_ksym_func_btf_id() is added to find the func
+> btf_id of the running kernel.
+>
+> During actual relocation, it will patch the BPF_CALL instruction with
+> src_reg = BPF_PSEUDO_FUNC_CALL and insn->imm set to the running
+> kernel func's btf_id.
+>
+> btf_fixup_datasec() is changed also because a datasec may
+> only have func and its size will be 0.  The "!size" test
+> is postponed till it is confirmed there are vars.
+> It also takes this chance to remove the
+> "if (... || (t->size && t->size != size)) { return -ENOENT; }" test
+> because t->size is zero at the point.
+>
+> The required LLVM patch: https://reviews.llvm.org/D93563
+>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> ---
+>  tools/lib/bpf/btf.c    |  32 ++++++++----
+>  tools/lib/bpf/btf.h    |   5 ++
+>  tools/lib/bpf/libbpf.c | 113 +++++++++++++++++++++++++++++++++++++----
+>  3 files changed, 129 insertions(+), 21 deletions(-)
+>
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index 3aa58f2ac183..bb09b577c154 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -1108,7 +1108,7 @@ static int btf_fixup_datasec(struct bpf_object *obj, struct btf *btf,
+>         const struct btf_type *t_var;
+>         struct btf_var_secinfo *vsi;
+>         const struct btf_var *var;
+> -       int ret;
+> +       int ret, nr_vars = 0;
+>
+>         if (!name) {
+>                 pr_debug("No name found in string section for DATASEC kind.\n");
+> @@ -1117,27 +1117,27 @@ static int btf_fixup_datasec(struct bpf_object *obj, struct btf *btf,
+>
+>         /* .extern datasec size and var offsets were set correctly during
+>          * extern collection step, so just skip straight to sorting variables
+> +        * One exception is the datasec may only have extern funcs,
+> +        * t->size is 0 in this case.  This will be handled
+> +        * with !nr_vars later.
+>          */
+>         if (t->size)
+>                 goto sort_vars;
+>
+> -       ret = bpf_object__section_size(obj, name, &size);
+> -       if (ret || !size || (t->size && t->size != size)) {
+> -               pr_debug("Invalid size for section %s: %u bytes\n", name, size);
+> -               return -ENOENT;
+> -       }
+> -
+> -       t->size = size;
+> +       bpf_object__section_size(obj, name, &size);
 
+So it's not great that we just ignore any errors here. ".ksyms" is a
+special section, so it should be fine to just ignore it by name and
+leave the rest of error handling intact.
 
-On 3/18/21 8:45 PM, Jisheng Zhang wrote:
-> Hi,
-> 
-> When trying the latest 5.12-rc3 with both LTO_CLANG_THIN and DEBUG_INFO_BTF
-> enabled, I met lots of warnings such as:
-> 
-> ...
-> tag__recode_dwarf_type: couldn't find 0x4a7ade5 type for 0x4ab9f88 (subroutine_type)!
-> ftype__recode_dwarf_types: couldn't find 0x4a7ade5 type for 0x4ab9fa4 (formal_parameter)!
-> ...
-> namespace__recode_dwarf_types: couldn't find 0x4a8ff4a type for 0x4aba05c (member)!
-> namespace__recode_dwarf_types: couldn't find 0x4a7ae9b type for 0x4aba084 (member)!
-> ...
-> WARN: multiple IDs found for 'path': 281, 729994 - using 281
-> WARN: multiple IDs found for 'task_struct': 421, 730101 - using 421
-> ...
-> 
-> 
-> then finally get build error:
-> FAILED unresolved symbol vfs_truncate
-> 
-> 
-> Is this a known issue? Do we need to make DEBUG_INFO_BTF depend on !LTO?
+>
+>         for (i = 0, vsi = btf_var_secinfos(t); i < vars; i++, vsi++) {
+>                 t_var = btf__type_by_id(btf, vsi->type);
+> -               var = btf_var(t_var);
+>
+> -               if (!btf_is_var(t_var)) {
+> -                       pr_debug("Non-VAR type seen in section %s\n", name);
+> +               if (btf_is_func(t_var)) {
+> +                       continue;
 
-This is a known issue for pahole. pahole does not handle dwarf well 
-generated with LTO. Bill Wendling from google is looking at the issue 
-and I will help look at the issue as well. Since bpf heavily depends
-on BTF, at this point, I suggest if you are using bpf, please do not
-turn on LTO. Or if you build with LTO, just turn off DEBUG_INFO_BTF
-in your config. Thanks!
+just
 
-> 
-> pahole version: v1.20
-> clang version: 11.0
-> 
-> 
-> Thanks
-> 
+if (btf_is_func(t_var))
+    continue;
+
+no need for "else if" below
+
+> +               } else if (!btf_is_var(t_var)) {
+> +                       pr_debug("Non-VAR and Non-FUNC type seen in section %s\n", name);
+
+nit: Non-FUNC -> non-FUNC
+
+>                         return -EINVAL;
+>                 }
+>
+> +               nr_vars++;
+> +               var = btf_var(t_var);
+>                 if (var->linkage == BTF_VAR_STATIC)
+>                         continue;
+>
+> @@ -1157,6 +1157,16 @@ static int btf_fixup_datasec(struct bpf_object *obj, struct btf *btf,
+>                 vsi->offset = off;
+>         }
+>
+> +       if (!nr_vars)
+> +               return 0;
+> +
+> +       if (!size) {
+> +               pr_debug("Invalid size for section %s: %u bytes\n", name, size);
+> +               return -ENOENT;
+> +       }
+> +
+> +       t->size = size;
+> +
+>  sort_vars:
+>         qsort(btf_var_secinfos(t), vars, sizeof(*vsi), compare_vsi_off);
+>         return 0;
+> diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> index 029a9cfc8c2d..07d508b70497 100644
+> --- a/tools/lib/bpf/btf.h
+> +++ b/tools/lib/bpf/btf.h
+> @@ -368,6 +368,11 @@ btf_var_secinfos(const struct btf_type *t)
+>         return (struct btf_var_secinfo *)(t + 1);
+>  }
+>
+> +static inline enum btf_func_linkage btf_func_linkage(const struct btf_type *t)
+> +{
+> +       return (enum btf_func_linkage)BTF_INFO_VLEN(t->info);
+> +}
+
+exposing `enum btf_func_linkage` in libbpf API headers will cause
+compilation errors for users on older systems. We went through a bunch
+of pain with `enum bpf_stats_type` (and it is still causing pain for
+C++), I'd rather avoid some more here. Can you please move it into
+libbpf.c for now. It doesn't seem like a very popular function that
+needs to be exposed to users.
+
+> +
+>  #ifdef __cplusplus
+>  } /* extern "C" */
+>  #endif
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 0a60fcb2fba2..49bda179bd93 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -190,6 +190,7 @@ enum reloc_type {
+>         RELO_CALL,
+>         RELO_DATA,
+>         RELO_EXTERN_VAR,
+> +       RELO_EXTERN_FUNC,
+>         RELO_SUBPROG_ADDR,
+>  };
+>
+> @@ -384,6 +385,7 @@ struct extern_desc {
+>         int btf_id;
+>         int sec_btf_id;
+>         const char *name;
+> +       const struct btf_type *btf_type;
+>         bool is_set;
+>         bool is_weak;
+>         union {
+> @@ -3022,7 +3024,7 @@ static bool sym_is_subprog(const GElf_Sym *sym, int text_shndx)
+>  static int find_extern_btf_id(const struct btf *btf, const char *ext_name)
+>  {
+>         const struct btf_type *t;
+> -       const char *var_name;
+> +       const char *tname;
+>         int i, n;
+>
+>         if (!btf)
+> @@ -3032,14 +3034,18 @@ static int find_extern_btf_id(const struct btf *btf, const char *ext_name)
+>         for (i = 1; i <= n; i++) {
+>                 t = btf__type_by_id(btf, i);
+>
+> -               if (!btf_is_var(t))
+> +               if (!btf_is_var(t) && !btf_is_func(t))
+>                         continue;
+>
+> -               var_name = btf__name_by_offset(btf, t->name_off);
+> -               if (strcmp(var_name, ext_name))
+> +               tname = btf__name_by_offset(btf, t->name_off);
+> +               if (strcmp(tname, ext_name))
+>                         continue;
+>
+> -               if (btf_var(t)->linkage != BTF_VAR_GLOBAL_EXTERN)
+> +               if (btf_is_var(t) &&
+> +                   btf_var(t)->linkage != BTF_VAR_GLOBAL_EXTERN)
+> +                       return -EINVAL;
+> +
+> +               if (btf_is_func(t) && btf_func_linkage(t) != BTF_FUNC_EXTERN)
+>                         return -EINVAL;
+>
+>                 return i;
+> @@ -3199,10 +3205,10 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
+>                         return ext->btf_id;
+>                 }
+>                 t = btf__type_by_id(obj->btf, ext->btf_id);
+> +               ext->btf_type = t;
+
+ext->btf_type is derived from ext->btf_id and obj->btf (always), so
+there is no need for it
+
+>                 ext->name = btf__name_by_offset(obj->btf, t->name_off);
+>                 ext->sym_idx = i;
+>                 ext->is_weak = GELF_ST_BIND(sym.st_info) == STB_WEAK;
+> -
+>                 ext->sec_btf_id = find_extern_sec_btf_id(obj->btf, ext->btf_id);
+>                 if (ext->sec_btf_id <= 0) {
+>                         pr_warn("failed to find BTF for extern '%s' [%d] section: %d\n",
+> @@ -3212,6 +3218,34 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
+>                 sec = (void *)btf__type_by_id(obj->btf, ext->sec_btf_id);
+>                 sec_name = btf__name_by_offset(obj->btf, sec->name_off);
+>
+> +               if (btf_is_func(t)) {
+
+there is a KSYMS_SEC handling logic below, let's keep both func and
+variables handling together there?
+
+> +                       const struct btf_type *func_proto;
+> +
+> +                       func_proto = btf__type_by_id(obj->btf, t->type);
+> +                       if (!func_proto || !btf_is_func_proto(func_proto)) {
+
+this is implied by BTF format itself, seems a bit redundant
+
+> +                               pr_warn("extern function %s does not have a valid func_proto\n",
+> +                                       ext->name);
+> +                               return -EINVAL;
+> +                       }
+> +
+> +                       if (ext->is_weak) {
+> +                               pr_warn("extern weak function %s is unsupported\n",
+> +                                       ext->name);
+> +                               return -ENOTSUP;
+> +                       }
+> +
+> +                       if (strcmp(sec_name, KSYMS_SEC)) {
+> +                               pr_warn("extern function %s is only supported under %s section\n",
+> +                                       ext->name, KSYMS_SEC);
+> +                               return -ENOTSUP;
+> +                       }
+> +
+> +                       ksym_sec = sec;
+> +                       ext->type = EXT_KSYM;
+> +                       ext->ksym.type_id = ext->btf_id;
+
+there is skip_mods_and_typedefs in KSYMS_SEC section below, but it
+won't have any effect on FUNC_PROTO, so existing logic can be used
+as-is
+
+> +                       continue;
+> +               }
+> +
+>                 if (strcmp(sec_name, KCONFIG_SEC) == 0) {
+>                         kcfg_sec = sec;
+>                         ext->type = EXT_KCFG;
+
+[...]
+
+> +static int bpf_object__resolve_ksym_func_btf_id(struct bpf_object *obj,
+> +                                               struct extern_desc *ext)
+> +{
+> +       int local_func_proto_id, kern_func_proto_id, kern_func_id;
+> +       const struct btf_type *kern_func;
+> +       struct btf *kern_btf = NULL;
+> +       int ret, kern_btf_fd = 0;
+> +
+> +       local_func_proto_id = ext->btf_type->type;
+
+yeah, so this ext->btf_type can be retrieved with
+btf__type_by_id(obj->btf, ext->btf_id) here, no need to pollute
+extern_desc with extra field
+
+> +
+> +       kern_func_id = find_ksym_btf_id(obj, ext->name, BTF_KIND_FUNC,
+> +                                       &kern_btf, &kern_btf_fd);
+> +       if (kern_func_id < 0) {
+> +               pr_warn("extern (func ksym) '%s': not found in kernel BTF\n",
+> +                       ext->name);
+> +               return kern_func_id;
+> +       }
+> +
+> +       if (kern_btf != obj->btf_vmlinux) {
+> +               pr_warn("extern (func ksym) '%s': function in kernel module is not supported\n",
+> +                       ext->name);
+> +               return -ENOTSUP;
+> +       }
+> +
+
+[...]
