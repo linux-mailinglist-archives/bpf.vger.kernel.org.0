@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DD53411DF
-	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 02:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AC6341208
+	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 02:20:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhCSBEV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Mar 2021 21:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51492 "EHLO
+        id S231431AbhCSBUJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Mar 2021 21:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhCSBEB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Mar 2021 21:04:01 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A358C06174A;
-        Thu, 18 Mar 2021 18:04:01 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id h82so4472996ybc.13;
-        Thu, 18 Mar 2021 18:04:01 -0700 (PDT)
+        with ESMTP id S231349AbhCSBT7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Mar 2021 21:19:59 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C10C06174A;
+        Thu, 18 Mar 2021 18:19:58 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id l14so4011270ybe.2;
+        Thu, 18 Mar 2021 18:19:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZGOncK1f2mtt4j4HI6UYzil414+B32QC7q3uvm91mbo=;
-        b=bEpJKfs9tuBh9lkKR+edb6GTo7wc5sCOSB2iDDb8i4Wh/evwumdvAMOB2TQARLagM1
-         PCgJgH2bPwg3XpVKKc/iWHggUyd5UdYKNxYOnbYLn9UAJV1B3YRDKRY51C+MAlXIbflW
-         /Q5g5MmUKJAQBsc5CUWK9ov1CXOKARcxbSJ3+e5fCq4mGf+rA1pd+J1STDIuYX9OjrJf
-         TXEJuuj3MGMigwGwpRcCBnT3hsrdyR3/VP9wmZBQUD34Xfx7ypLXx/v0ZUp0HnZ1OceM
-         gyoDuZ4+XgNCBS2BwFku4BEL1kk841rVtMWZ11zCg7N449ayKLUjNgXZVioXXBzlCVCT
-         RkAw==
+        bh=KwuOSitFmuGAmLlwJyNwkvkzt1PGw2wf2gc/nofwkNo=;
+        b=PeXMvvo7EiPlcTZmQL04YE8al5Co7GTw9pm2chpouzDElCkFkzUJpBsj3VypafM+p1
+         4UYUWe09QuVpJtqiagF0XgHyMkHSQoU1M/wDQ+cUn0yZ3epyC7hPz6h2UICz/TenOjHr
+         wYnJjB4YmqFoJgyZyrbn437382pwz1I4t8PTUQ00peaXmXoIeQabgqWH7NmBkHhuGg7i
+         vBf07MbJODWLF1leUPV0wlrY8GUehQ2zOpaBQ8kCce9JKuyKuZZRxCuIzPawDHW5cJWk
+         7VFd2ZW9Y8ApZQOo1kiCDxo4C/4BBBAYjbBaDF7sP7N5+5HFiTY3GmZdwkexRdFMpM1l
+         UzzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZGOncK1f2mtt4j4HI6UYzil414+B32QC7q3uvm91mbo=;
-        b=tfNHxMq4F0H8I7U4uZxC5DqTTE+EHKmGigKCmDqhLkdoB1a+YH2mYwZbJcLQGsPNO+
-         5Rn2rrxAEtPh8E1csj4a/UYv68rLRdPcibBebN+0AqKIoNTOCdl2v99dFpUPPo4OKM7d
-         B6yiCREJSflgPuGxibTbjizVWc3NmZflr0KQnSXexV4KUbNPZ5c/YFAZfofgRf6c9QEU
-         9d2I5+UU9hSIPSuJR1mgRuJnRanzf8UfhTvRVmhPYP3T42o8TGHFqTdRI+ACsct8EQvi
-         uNJExaWCHAf0ipvzyisenoZGtC53eJgtqqzfp5ctITFsBPfzcFndYJ4RoBZ2Dl3R+8mq
-         mkRQ==
-X-Gm-Message-State: AOAM531LzYcn8KDVqZFwGAq1aaMuPTZqOcTMT9xnUAbvOkuGHT1LbeL7
-        mDYCTAVywJss0etAPZwk57OAJiwPLvvL9SXZojw=
-X-Google-Smtp-Source: ABdhPJwINHrat3UHSHnwVnfbB0hX1ojCZenuLmbRWY0o3XNZHDBGASR6KYqgHHlfOgXS0bMbTi9g1dEolTXBb3FY9J4=
-X-Received: by 2002:a25:40d8:: with SMTP id n207mr2933401yba.459.1616115840390;
- Thu, 18 Mar 2021 18:04:00 -0700 (PDT)
+        bh=KwuOSitFmuGAmLlwJyNwkvkzt1PGw2wf2gc/nofwkNo=;
+        b=sz/enxaT6mCQbNBJ4ACiYhLwS2oGpimQyIbaSB+W+QCmnF7KBEUEBoV5Ai0uV17n5R
+         nbTMRa48luxBJ73L33IwdLLqm+Ti8yJqzL6VSPP1LnsKrJOi/8rvdxaJ/KuIIr3KGPJF
+         0PVZrpVstqRe3Zd9SU+J2i+MpypC/o69i94IawfMi8YCdk3PQHqEcWHMCHFNID/raf3m
+         s5hMy41yBTqIfAFqZePa5M1hf4LA1d7U3x0ey6wx0sI3CP3v+6b6PWj/SPD0c1Ya79cP
+         NBEwWOg4tO5yQgtw/Y3R7Y+XaQHjmX6ri7Xe7z7rBaQZNwa1ms/SopR1LT7CWfSHJcaQ
+         9VAw==
+X-Gm-Message-State: AOAM5322XN1smR5oLZkMnXiFWq2xXrVUmw6oc0DlUckW+CHN1puwlBFB
+        LoERiUaXINe/kNKFsVF8MUYdWrzgILJ5ny9CfGs=
+X-Google-Smtp-Source: ABdhPJzmM54rKwtEOgI4YH+zBYK2D0uKQ+prgOcifBNkX1USIbDnxP1HOun0V7CFbjwXe5NOONJ4HAIKz2rpVF2NqCw=
+X-Received: by 2002:a25:4982:: with SMTP id w124mr2999119yba.27.1616116798156;
+ Thu, 18 Mar 2021 18:19:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210316011336.4173585-1-kafai@fb.com> <20210316011401.4176793-1-kafai@fb.com>
-In-Reply-To: <20210316011401.4176793-1-kafai@fb.com>
+References: <20210316011336.4173585-1-kafai@fb.com> <20210316011420.4177709-1-kafai@fb.com>
+In-Reply-To: <20210316011420.4177709-1-kafai@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 18 Mar 2021 18:03:49 -0700
-Message-ID: <CAEf4Bzb-AmXvV+v-ByGH7iUUG7iLdFxWeY1CJGB7xKHxuABWUg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 04/15] bpf: Support bpf program calling kernel function
+Date:   Thu, 18 Mar 2021 18:19:46 -0700
+Message-ID: <CAEf4BzYQrudAibsR8zp22dEuBF_iXgziAm46sVCO=98ATeqAqg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 07/15] bpf: tcp: White list some tcp cong
+ functions to be called by bpf-tcp-cc
 To:     Martin KaFai Lau <kafai@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -60,151 +61,107 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 12:01 AM Martin KaFai Lau <kafai@fb.com> wrote:
+On Tue, Mar 16, 2021 at 12:02 AM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> This patch adds support to BPF verifier to allow bpf program calling
-> kernel function directly.
+> This patch white list some tcp cong helper functions, tcp_slow_start()
+> and tcp_cong_avoid_ai().  They are allowed to be directly called by
+> the bpf-tcp-cc program.
 >
-> The use case included in this set is to allow bpf-tcp-cc to directly
-> call some tcp-cc helper functions (e.g. "tcp_cong_avoid_ai()").  Those
-> functions have already been used by some kernel tcp-cc implementations.
+> A few tcp cc implementation functions are also white listed.
+> A potential use case is the bpf-tcp-cc implementation may only
+> want to override a subset of a tcp_congestion_ops.  For others,
+> the bpf-tcp-cc can directly call the kernel counter parts instead of
+> re-implementing (or copy-and-pasting) them to the bpf program.
 >
-> This set will also allow the bpf-tcp-cc program to directly call the
-> kernel tcp-cc implementation,  For example, a bpf_dctcp may only want to
-> implement its own dctcp_cwnd_event() and reuse other dctcp_*() directly
-> from the kernel tcp_dctcp.c instead of reimplementing (or
-> copy-and-pasting) them.
->
-> The tcp-cc kernel functions mentioned above will be white listed
-> for the struct_ops bpf-tcp-cc programs to use in a later patch.
+> They will only be available to the bpf-tcp-cc typed program.
 > The white listed functions are not bounded to a fixed ABI contract.
-> Those functions have already been used by the existing kernel tcp-cc.
-> If any of them has changed, both in-tree and out-of-tree kernel tcp-cc
-> implementations have to be changed.  The same goes for the struct_ops
-> bpf-tcp-cc programs which have to be adjusted accordingly.
->
-> This patch is to make the required changes in the bpf verifier.
->
-> First change is in btf.c, it adds a case in "do_btf_check_func_arg_match()".
-> When the passed in "btf->kernel_btf == true", it means matching the
-> verifier regs' states with a kernel function.  This will handle the
-> PTR_TO_BTF_ID reg.  It also maps PTR_TO_SOCK_COMMON, PTR_TO_SOCKET,
-> and PTR_TO_TCP_SOCK to its kernel's btf_id.
->
-> In the later libbpf patch, the insn calling a kernel function will
-> look like:
->
-> insn->code == (BPF_JMP | BPF_CALL)
-> insn->src_reg == BPF_PSEUDO_KFUNC_CALL /* <- new in this patch */
-> insn->imm == func_btf_id /* btf_id of the running kernel */
->
-> [ For the future calling function-in-kernel-module support, an array
->   of module btf_fds can be passed at the load time and insn->off
->   can be used to index into this array. ]
->
-> At the early stage of verifier, the verifier will collect all kernel
-> function calls into "struct bpf_kern_func_descriptor".  Those
-> descriptors are stored in "prog->aux->kfunc_tab" and will
-> be available to the JIT.  Since this "add" operation is similar
-> to the current "add_subprog()" and looking for the same insn->code,
-> they are done together in the new "add_subprog_and_kern_func()".
->
-> In the "do_check()" stage, the new "check_kern_func_call()" is added
-> to verify the kernel function call instruction:
-> 1. Ensure the kernel function can be used by a particular BPF_PROG_TYPE.
->    A new bpf_verifier_ops "check_kern_func_call" is added to do that.
->    The bpf-tcp-cc struct_ops program will implement this function in
->    a later patch.
-> 2. Call "btf_check_kern_func_args_match()" to ensure the regs can be
->    used as the args of a kernel function.
-> 3. Mark the regs' type, subreg_def, and zext_dst.
->
-> At the later do_misc_fixups() stage, the new fixup_kern_func_call()
-> will replace the insn->imm with the function address (relative
-> to __bpf_call_base).  If needed, the jit can find the btf_func_model
-> by calling the new bpf_jit_find_kern_func_model(prog, insn->imm).
-> With the imm set to the function address, "bpftool prog dump xlated"
-> will be able to display the kernel function calls the same way as
-> it displays other bpf helper calls.
->
-> gpl_compatible program is required to call kernel function.
->
-> This feature currently requires JIT.
+> When any of them has changed, the bpf-tcp-cc program has to be changed
+> like any in-tree/out-of-tree kernel tcp-cc implementations do also.
 >
 > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 > ---
 
-After the initial pass it all makes sense so far. I am a bit concerned
-about s32 and kernel function offset, though. See below.
+Just nits, of course :)
 
-Also "kern_func" and "descriptor" are quite mouthful, it seems to me
-that using kfunc consistently wouldn't hurt readability at all. You
-also already use desc in place of "descriptor" for variables, so I'd
-do that in type names as well.
+Whitelist is a single word, but see also 49decddd39e5 ("Merge tag
+'inclusive-terminology' of
+git://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux"),
+allowlist/denylist is recommended for new code.
 
->  arch/x86/net/bpf_jit_comp.c       |   5 +
->  include/linux/bpf.h               |  24 ++
->  include/linux/btf.h               |   1 +
->  include/linux/filter.h            |   1 +
->  include/uapi/linux/bpf.h          |   4 +
->  kernel/bpf/btf.c                  |  65 +++++-
->  kernel/bpf/core.c                 |  18 +-
->  kernel/bpf/disasm.c               |  32 +--
->  kernel/bpf/disasm.h               |   3 +-
->  kernel/bpf/syscall.c              |   1 +
->  kernel/bpf/verifier.c             | 376 ++++++++++++++++++++++++++++--
->  tools/bpf/bpftool/xlated_dumper.c |   3 +-
->  tools/include/uapi/linux/bpf.h    |   4 +
->  13 files changed, 488 insertions(+), 49 deletions(-)
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  net/ipv4/bpf_tcp_ca.c | 41 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
 >
+> diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
+> index d520e61649c8..ed6e6b5b762b 100644
+> --- a/net/ipv4/bpf_tcp_ca.c
+> +++ b/net/ipv4/bpf_tcp_ca.c
+> @@ -5,6 +5,7 @@
+>  #include <linux/bpf_verifier.h>
+>  #include <linux/bpf.h>
+>  #include <linux/btf.h>
+> +#include <linux/btf_ids.h>
+>  #include <linux/filter.h>
+>  #include <net/tcp.h>
+>  #include <net/bpf_sk_storage.h>
+> @@ -178,10 +179,50 @@ bpf_tcp_ca_get_func_proto(enum bpf_func_id func_id,
+>         }
+>  }
+>
+> +BTF_SET_START(bpf_tcp_ca_kfunc_ids)
+> +BTF_ID(func, tcp_reno_ssthresh)
+> +BTF_ID(func, tcp_reno_cong_avoid)
+> +BTF_ID(func, tcp_reno_undo_cwnd)
+> +BTF_ID(func, tcp_slow_start)
+> +BTF_ID(func, tcp_cong_avoid_ai)
+> +#if IS_BUILTIN(CONFIG_TCP_CONG_CUBIC)
+> +BTF_ID(func, cubictcp_init)
+> +BTF_ID(func, cubictcp_recalc_ssthresh)
+> +BTF_ID(func, cubictcp_cong_avoid)
+> +BTF_ID(func, cubictcp_state)
+> +BTF_ID(func, cubictcp_cwnd_event)
+> +BTF_ID(func, cubictcp_acked)
+> +#endif
+> +#if IS_BUILTIN(CONFIG_TCP_CONG_DCTCP)
+> +BTF_ID(func, dctcp_init)
+> +BTF_ID(func, dctcp_update_alpha)
+> +BTF_ID(func, dctcp_cwnd_event)
+> +BTF_ID(func, dctcp_ssthresh)
+> +BTF_ID(func, dctcp_cwnd_undo)
+> +BTF_ID(func, dctcp_state)
+> +#endif
+> +#if IS_BUILTIN(CONFIG_TCP_CONG_BBR)
+> +BTF_ID(func, bbr_init)
+> +BTF_ID(func, bbr_main)
+> +BTF_ID(func, bbr_sndbuf_expand)
+> +BTF_ID(func, bbr_undo_cwnd)
+> +BTF_ID(func, bbr_cwnd_even),
+> +BTF_ID(func, bbr_ssthresh)
+> +BTF_ID(func, bbr_min_tso_segs)
+> +BTF_ID(func, bbr_set_state)
+> +#endif
+> +BTF_SET_END(bpf_tcp_ca_kfunc_ids)
 
-[...]
+see, kfunc here...
 
 > +
-> +       func_name = btf_name_by_offset(btf_vmlinux, func->name_off);
-> +       addr = kallsyms_lookup_name(func_name);
-> +       if (!addr) {
-> +               verbose(env, "cannot find address for kernel function %s\n",
-> +                       func_name);
-> +               return -EINVAL;
-> +       }
-> +
-> +       desc = &tab->descs[tab->nr_descs++];
-> +       desc->func_id = func_id;
-> +       desc->imm = BPF_CAST_CALL(addr) - __bpf_call_base;
+> +static bool bpf_tcp_ca_check_kern_func_call(u32 kfunc_btf_id)
 
-Is this difference guaranteed to always fit within s32?
+...but more verbose kern_func here. I like kfunc everywhere ;)
 
-> +       sort(tab->descs, tab->nr_descs, sizeof(tab->descs[0]),
-> +            kern_func_desc_cmp_by_id, NULL);
-> +
-> +       return btf_distill_func_proto(&env->log, btf_vmlinux,
-> +                                     func_proto, func_name,
-> +                                     &desc->func_model);
-> +}
-> +
-> +static int kern_func_desc_cmp_by_imm(const void *a, const void *b)
 > +{
-> +       const struct bpf_kern_func_descriptor *d0 = a;
-> +       const struct bpf_kern_func_descriptor *d1 = b;
-> +
-> +       return d0->imm - d1->imm;
-
-this is not safe, assuming any possible s32 values, no?
-
+> +       return btf_id_set_contains(&bpf_tcp_ca_kfunc_ids, kfunc_btf_id);
 > +}
 > +
-> +static void sort_kern_func_descs_by_imm(struct bpf_prog *prog)
-> +{
-> +       struct bpf_kern_func_desc_tab *tab;
-> +
-> +       tab = prog->aux->kfunc_tab;
-> +       if (!tab)
-> +               return;
-> +
-> +       sort(tab->descs, tab->nr_descs, sizeof(tab->descs[0]),
-> +            kern_func_desc_cmp_by_imm, NULL);
-> +}
-> +
-
-[...]
+>  static const struct bpf_verifier_ops bpf_tcp_ca_verifier_ops = {
+>         .get_func_proto         = bpf_tcp_ca_get_func_proto,
+>         .is_valid_access        = bpf_tcp_ca_is_valid_access,
+>         .btf_struct_access      = bpf_tcp_ca_btf_struct_access,
+> +       .check_kern_func_call   = bpf_tcp_ca_check_kern_func_call,
+>  };
+>
+>  static int bpf_tcp_ca_init_member(const struct btf_type *t,
+> --
+> 2.30.2
+>
