@@ -2,264 +2,451 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B14341462
-	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 05:52:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D6E34147E
+	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 06:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhCSEvu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Mar 2021 00:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230459AbhCSEvg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Mar 2021 00:51:36 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B89C06174A
-        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 21:51:36 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id b10so4967810ybn.3
-        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 21:51:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ts9f0AgFK+wXxAOREkfbOJMBC8eA1EqKSeocw9pgy4Y=;
-        b=i6oNoqa5BAriaj5GaARg/t/a4AjMy9SZtxqS61Pqp+6LhXKZ7A/hZQWMwxDWmLl1nx
-         CXbRCJr3T672RjaApNyu/ZMbGE7/GOy16RjpoP4l6Rf2TVqmSdxIzj+hkS4Z74AaL+Li
-         jpq1RozQOBrSMzI8pLgL78V185oZ+yDGstEVQFonvhmb3WrlBZsYgU/jVRN/4QzEZS9G
-         M/PbhXlyS+/4B66Ty8o8L6ipgafcaMrjm2z1w3B3QdcSudxUFiAUGSIe+RHf3xftiWre
-         UDwJ58sL60H2hmWiSynF2Fy3D41rKG6GYm4Y1/fIj0HykloSks+eviOVv2JlIPcqq/4R
-         OIVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ts9f0AgFK+wXxAOREkfbOJMBC8eA1EqKSeocw9pgy4Y=;
-        b=prfAlmktVx7Nij9CNj1X0138UvHweRAfU7FAw3nkGQ5EtCOj+4RhyEwS0kTeg+9zc2
-         Iml+hlDEReLwDfLqzzOu/U3xTqxqMC4BDmfwWzm+nXW+ag9w5JFhXIFbUunj548w1zP5
-         U7SSulK/k5K4PCQTOh+RoasoNTDjoLIhrQVEkDCYHYDdjuEpU5XmDUeSnI0guSY6fMry
-         qSZTZWM6Ot7/Q07giRXBzf4fXa2+iq38oEAPnfsW07+rnKCAAL0S21QjTm18IM/wi4ic
-         jaYH2S//kYkBBaC3/U/hQMNBbNZx5/Y/hA9ZORzod4l6oCpw4rjyUQCUt9PTQYtvDMDh
-         wmlA==
-X-Gm-Message-State: AOAM533YAFbqSMnvddSrkOFgmw2/IArr63Oiz7J43Fn5z1H693aoUwzH
-        G9oeon0e3RK+j2rvhLtEMfOPWAxEads40KOVTogBLnNPe2RrYQ==
-X-Google-Smtp-Source: ABdhPJzjkJpDYiOAtCFqxHqAXDNw4n24csdlN/wMVpTn30tJYAAQjfXF+H/q7QHaiVEmixM2xGycKmtPJ/UZNCj6ogE=
-X-Received: by 2002:a25:3d46:: with SMTP id k67mr3755309yba.510.1616129495878;
- Thu, 18 Mar 2021 21:51:35 -0700 (PDT)
+        id S233788AbhCSFHT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Mar 2021 01:07:19 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62922 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233568AbhCSFHK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 19 Mar 2021 01:07:10 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12J55vUm013217;
+        Thu, 18 Mar 2021 22:06:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=y9Klw24MTxvkDWRn88Kl5h8SZGluDwh2YWshnLRvNF4=;
+ b=BKO1SOJo4bFChgBz4Ir8sSPJc+NgCqCPjatoQFiH2lsi1bryeXZKeYQ559vyxhnQmA+a
+ o7uEzD7xc2lW8raIxEyIGfqXm6ktI7CrprTGC1GC2qJlOfi8/O9q3mHKXX9v2iYvp+Wy
+ Fdc0+JpGidKDcMnn6FMQqVUAdyrU16tSrKg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 37bs1w8ra4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 18 Mar 2021 22:06:54 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 18 Mar 2021 22:06:53 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dBmo9Sbe+taAMjBwwort3eoIrI5SDXe7NVcnM7Zie78A7FyTuIh6RpUfwVzJmTVCzgviuns0PkRtYvZDjY5IJ1K202CGTQskXMH9Zh9ENdMIgfPzktggIErI5SHUUj+meTJoMGJksX0E9DMhYzARckSfSFvlHzXTdX2toK4NVGyTd9eZ0FnB++bqYDfzO5GQdgL3bCqSfA5DGmAjoLBwa0Fox6/p5J+lyh+dmVw7//BuzFX/9rnolzMk9ZKoGsSdrssKTOwBUSduTP2++AcjTGWnR2y4e3IqZSODy8kv/brb9gc9kuNlhB0nbI4x7MzXdGkhDdCzifA+TeXsnWd1zg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sF7oVkiPpL7oXXGAgdrqExwXMBMubMCNhCLStOkwRac=;
+ b=KEbZKOuQ9dIMFIZ2DFcci8eVUKS5HTssTiaJZ6ARQS6gnKCBmvnafMEB9uVBgIXgrsnQ1x9Dv6wlcO9eCvadCdgz6W75qXr++wnpLfmmWHNU3SHKuBX5BTtWoJVmng0HbPwPqCScY4SKFgY0KxqL7bXgv5+Gv2KD02/FonFaVLXOnuwPoXROHQda9vEwIduTK+9ey2cB54JzprcBdy1r0kzzei7fIvvNvUYy+wOPZTNybFdi9kKaSVF2ODv6suHxu7rfOM9w9Jjn+i6dHehMwFO7orSxl3f8SWltmktw7ILyl4t2RloVVY76vfQfLyhe2YHvpMcB4EKA0xLR3VUB1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2837.namprd15.prod.outlook.com (2603:10b6:a03:f9::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Fri, 19 Mar
+ 2021 05:06:50 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::2975:c9d8:3f7f:dbd0]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::2975:c9d8:3f7f:dbd0%5]) with mapi id 15.20.3955.018; Fri, 19 Mar 2021
+ 05:06:50 +0000
+Date:   Thu, 18 Mar 2021 22:06:49 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 12/15] libbpf: Support extern kernel function
+Message-ID: <20210319050649.ytoy4kpw6pvap4ky@kafai-mbp.dhcp.thefacebook.com>
+References: <20210316011336.4173585-1-kafai@fb.com>
+ <20210316011451.4180026-1-kafai@fb.com>
+ <CAEf4BzZVROg4Ygas2q-FFmc4o=yk+oHtx6KV_b=93OZbsjK0Bw@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZVROg4Ygas2q-FFmc4o=yk+oHtx6KV_b=93OZbsjK0Bw@mail.gmail.com>
+X-Originating-IP: [2620:10d:c090:400::5:2c43]
+X-ClientProxiedBy: SJ0PR03CA0080.namprd03.prod.outlook.com
+ (2603:10b6:a03:331::25) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:2c43) by SJ0PR03CA0080.namprd03.prod.outlook.com (2603:10b6:a03:331::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Fri, 19 Mar 2021 05:06:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a8ef3656-986f-4d94-0f88-08d8ea94cdd0
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2837:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB28374A3A46877ED8F16BC117D5689@BYAPR15MB2837.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1247;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mDp+DNuo8TMMHhUPqOvIyelpK4VZXdlE/sT1WxCv4Hz65Y/Ip09Cf0hDGNCPwhZfvoddSBwugtlz/uq5EMutXKGWnqvTIDZUfevLJg0zslK9xSomQg/YomlQpv+pFK/ldoSdk9ux3HEbYT0nX4HBctFj+bOWcNVFVzLXGmhDRF01SXvGTE82tSEUYX2mMKCHeIJW5L+6MUaGNTpf/CMWSGl6lRPbywAerIIFcm8hrlKV8fvYAhgMPbTAbPbCtbw91v+hg2Pqf/eKsNxhae1bCtRhoen0zu8Ra9fBL3R4TvODAhb1x5vnZxCTmZOHZVNgsfihnOzVjncbZjXFrv9CDYUvf16Yf8KgQRARGFydSVcusDn0f1WazMUDbaJm6TI+uvvGXo3oxAndHwozS8gc1XiogN0YUTEurryadQHZCg7R9AaDL39+OF/+/5Z83En7UKGMEreQ/A1+LjPELVj5SF7NDcRiYieGYICMfKxqZfghV+c+upY44nZt8OSXYKkcNF+aTHR13iUHaUTqsYng0c2RMdFK7hF0GyvbFY2DsjIsOI6JtARtvdcup34d4Ra+53jtsX3+klz+Kp80d+iGe0EUsVcDL1wxjXt07KPIAohZFrZXGAV6NM5jQwYKkMzx70amDOaJKAaVoaZ21k9iDI7xBYrOBYdAqcASenfy/3JvEOA/Wn0+MQYoTTnmgaLN1g0E3Kcj05KmGH3E0/pze04rF2AabiX+NjJHsXv0VdM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(39860400002)(136003)(346002)(396003)(66946007)(478600001)(53546011)(54906003)(52116002)(7696005)(6506007)(9686003)(55016002)(966005)(66556008)(66476007)(4326008)(186003)(8936002)(5660300002)(2906002)(86362001)(30864003)(6916009)(316002)(8676002)(83380400001)(16526019)(1076003)(38100700001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?3026KYYJIryXMDtsbNBobm0KmN/Ku8AZDDE0JNuAFlcyJgrwLwGp8UFT1dZ4?=
+ =?us-ascii?Q?d/9VZmmat7oPLW01aX+Hn3jThV6sI7bWA95Mb/Pjrb+wYQamps98rPoU1PBU?=
+ =?us-ascii?Q?79sHpEYaKw0KzZn1EUeTmzkBbcEuechazVfyZOE35s3KqHHWtrWoZ9nYJ6W6?=
+ =?us-ascii?Q?gXwv7/3wB84gjXGt/sTiF98FOk/WQsmd3Rp/vMuC4ZWGCO0tF/Qay3MSoniF?=
+ =?us-ascii?Q?Bl11n520QETCt8k3Zlc/Q9jiUtn+KT+v2dvj7XHVeKCWmTN3nQyXRHbZgKGG?=
+ =?us-ascii?Q?gEVQPQcxYQ6ulnKZAbbwMzMgI/O1Mkyq7Q60SJ0fXO5cx/eJkh1Dc0mKQOtm?=
+ =?us-ascii?Q?pLhkwJBmd3cqntNpDyabWizFMIe49PLJ4Mc//KffY+/n6Z1a5+A6CWewc3F7?=
+ =?us-ascii?Q?PA6xu+yMuMznqNNk5SDD1qVgXF8APU9q3nWZy9TmPy7j/Y89KdCks21PXyuH?=
+ =?us-ascii?Q?eTP0c9fZdXmf+38JMM3kKsiByGAeAQ9+8YaQLoh0WDN2tdJnXl4mh8Hr3/AZ?=
+ =?us-ascii?Q?PR/z2NFTUhc9FhE6SalrELSsy43ZlVBIyNqPpJerV7dJ/NRu/YRuEgLo7IwT?=
+ =?us-ascii?Q?llR/PeWamxBSEzSvb93Tijzagsk2QvWDreCgMFacrGWMZL7kFr06q2FgTb10?=
+ =?us-ascii?Q?insOtZcvims/YMpoavZsiyI3AQjyDfBc6E/+pGRoCdBd1LgSFIknJLFp+zMY?=
+ =?us-ascii?Q?PrmwWpRCooFD3CVTzEDBoe88EkjAtM0JRZiurvseFIaqQlyTmoVc1S9I8NKQ?=
+ =?us-ascii?Q?fYFhgXu9XFELzAI2zcVAJB1tFyHt6El9GzOleQXz/xI7wuNvnBar9kdt0El+?=
+ =?us-ascii?Q?HyMFkKSkShOfS1eGsMrD5EAdECbfhlngbveyGtGUVjFJLaf9lw01YoeIDYRN?=
+ =?us-ascii?Q?Xh5Pk/lvqENZbFYh8OF4g5NuhBNyFPd8TzKHfvJlQlunQwCsuJ9yb4nTl1de?=
+ =?us-ascii?Q?SAY1PYf537I7lg8jJUDMBxO8F45zhtqvs7D1hdBAADm/TpVG7ZgeocMkCJZ4?=
+ =?us-ascii?Q?uXy2N3Ni4WYhejaRxQ6nQfi1Tfma6UCLu/Wg2n3zPeA+iS0rscNwmvjnIpdp?=
+ =?us-ascii?Q?OPsNbcYIJAuzhgBg5OYzVwYai4QmHY2mnozrR3vKCBflnW6UcaGR+9TmkArs?=
+ =?us-ascii?Q?HYx9BVCzFmpJYJGtTTa3HhDcsEe9HAeIv0to4eREf8yCFd+YphzcLrCy1OaD?=
+ =?us-ascii?Q?INDWKEtUHKjpbrn4CF9z+Cn+co+z/VXQmM8OYh78NUPb+ChxYK43eCyfjmjB?=
+ =?us-ascii?Q?kGIeWA5ZnTfSy0BWG30rSr3m/KV4WIawqoWZlxki/UuF4zArSDuRVMZ4wmY+?=
+ =?us-ascii?Q?6UQNu3aQL09rE0vvA/V7u8irMurR/dbkOEZL2fNIB+qkFg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8ef3656-986f-4d94-0f88-08d8ea94cdd0
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2021 05:06:50.5967
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: drO91ecJiS+AEWnOoprZ/0hcyPev77+DI1+EtujuXd7oXobY/8OQQ5FFLaNHPyMy
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2837
+X-OriginatorOrg: fb.com
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210318062520.3838605-1-rafaeldtinoco@ubuntu.com>
-In-Reply-To: <20210318062520.3838605-1-rafaeldtinoco@ubuntu.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 18 Mar 2021 21:51:25 -0700
-Message-ID: <CAEf4Bzap6qS9_HQZTHJsM-X2VZso+N5xMwa3HNG9ycMW4WXtQg@mail.gmail.com>
-Subject: Re: [RFC][PATCH] libbpf: support kprobe/kretprobe events in legacy environments
-To:     Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-19_01:2021-03-17,2021-03-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 priorityscore=1501 adultscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103190036
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 11:25 PM Rafael David Tinoco
-<rafaeldtinoco@ubuntu.com> wrote:
->
->  * Request for comments version (still needs polishing).
->  * Based on Andrii Nakryiko's suggestion.
->  * Using bpf_program__set_priv in attach_kprobe() for kprobe cleanup.
+On Thu, Mar 18, 2021 at 09:11:39PM -0700, Andrii Nakryiko wrote:
+> On Tue, Mar 16, 2021 at 12:02 AM Martin KaFai Lau <kafai@fb.com> wrote:
+> >
+> > This patch is to make libbpf able to handle the following extern
+> > kernel function declaration and do the needed relocations before
+> > loading the bpf program to the kernel.
+> >
+> > extern int foo(struct sock *) __attribute__((section(".ksyms")))
+> >
+> > In the collect extern phase, needed changes is made to
+> > bpf_object__collect_externs() and find_extern_btf_id() to collect
+> > function.
+> >
+> > In the collect relo phase, it will record the kernel function
+> > call as RELO_EXTERN_FUNC.
+> >
+> > bpf_object__resolve_ksym_func_btf_id() is added to find the func
+> > btf_id of the running kernel.
+> >
+> > During actual relocation, it will patch the BPF_CALL instruction with
+> > src_reg = BPF_PSEUDO_FUNC_CALL and insn->imm set to the running
+> > kernel func's btf_id.
+> >
+> > btf_fixup_datasec() is changed also because a datasec may
+> > only have func and its size will be 0.  The "!size" test
+> > is postponed till it is confirmed there are vars.
+> > It also takes this chance to remove the
+> > "if (... || (t->size && t->size != size)) { return -ENOENT; }" test
+> > because t->size is zero at the point.
+> >
+> > The required LLVM patch: https://reviews.llvm.org/D93563 
+> >
+> > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> > ---
+> >  tools/lib/bpf/btf.c    |  32 ++++++++----
+> >  tools/lib/bpf/btf.h    |   5 ++
+> >  tools/lib/bpf/libbpf.c | 113 +++++++++++++++++++++++++++++++++++++----
+> >  3 files changed, 129 insertions(+), 21 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > index 3aa58f2ac183..bb09b577c154 100644
+> > --- a/tools/lib/bpf/btf.c
+> > +++ b/tools/lib/bpf/btf.c
+> > @@ -1108,7 +1108,7 @@ static int btf_fixup_datasec(struct bpf_object *obj, struct btf *btf,
+> >         const struct btf_type *t_var;
+> >         struct btf_var_secinfo *vsi;
+> >         const struct btf_var *var;
+> > -       int ret;
+> > +       int ret, nr_vars = 0;
+> >
+> >         if (!name) {
+> >                 pr_debug("No name found in string section for DATASEC kind.\n");
+> > @@ -1117,27 +1117,27 @@ static int btf_fixup_datasec(struct bpf_object *obj, struct btf *btf,
+> >
+> >         /* .extern datasec size and var offsets were set correctly during
+> >          * extern collection step, so just skip straight to sorting variables
+> > +        * One exception is the datasec may only have extern funcs,
+> > +        * t->size is 0 in this case.  This will be handled
+> > +        * with !nr_vars later.
+> >          */
+> >         if (t->size)
+> >                 goto sort_vars;
+> >
+> > -       ret = bpf_object__section_size(obj, name, &size);
+> > -       if (ret || !size || (t->size && t->size != size)) {
+> > -               pr_debug("Invalid size for section %s: %u bytes\n", name, size);
+> > -               return -ENOENT;
+> > -       }
+> > -
+> > -       t->size = size;
+> > +       bpf_object__section_size(obj, name, &size);
+> 
+> So it's not great that we just ignore any errors here. ".ksyms" is a
+> special section, so it should be fine to just ignore it by name and
+> leave the rest of error handling intact.
+The ret < 0 case? In that case, size is 0.
 
-no-no-no, set_priv() is going to be deprecated and removed (see [0]),
-and is not the right mechanism here. Detachment should happen in
-bpf_link__destroy().
+or there are cases that a section has no vars but the size should not be 0?
 
-  [0] https://docs.google.com/document/d/1UyjTZuPFWiPFyKk1tV5an11_iaRuec6U-ZESZ54nNTY
+> 
+> >
+> >         for (i = 0, vsi = btf_var_secinfos(t); i < vars; i++, vsi++) {
+> >                 t_var = btf__type_by_id(btf, vsi->type);
+> > -               var = btf_var(t_var);
+> >
+> > -               if (!btf_is_var(t_var)) {
+> > -                       pr_debug("Non-VAR type seen in section %s\n", name);
+> > +               if (btf_is_func(t_var)) {
+> > +                       continue;
+> 
+> just
+> 
+> if (btf_is_func(t_var))
+>     continue;
+> 
+> no need for "else if" below
+> 
+> > +               } else if (!btf_is_var(t_var)) {
+> > +                       pr_debug("Non-VAR and Non-FUNC type seen in section %s\n", name);
+> 
+> nit: Non-FUNC -> non-FUNC
+> 
+> >                         return -EINVAL;
+> >                 }
+> >
+> > +               nr_vars++;
+> > +               var = btf_var(t_var);
+> >                 if (var->linkage == BTF_VAR_STATIC)
+> >                         continue;
+> >
+> > @@ -1157,6 +1157,16 @@ static int btf_fixup_datasec(struct bpf_object *obj, struct btf *btf,
+> >                 vsi->offset = off;
+> >         }
+> >
+> > +       if (!nr_vars)
+> > +               return 0;
+> > +
+> > +       if (!size) {
+> > +               pr_debug("Invalid size for section %s: %u bytes\n", name, size);
+> > +               return -ENOENT;
+> > +       }
+> > +
+> > +       t->size = size;
+> > +
+> >  sort_vars:
+> >         qsort(btf_var_secinfos(t), vars, sizeof(*vsi), compare_vsi_off);
+> >         return 0;
+> > diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+> > index 029a9cfc8c2d..07d508b70497 100644
+> > --- a/tools/lib/bpf/btf.h
+> > +++ b/tools/lib/bpf/btf.h
+> > @@ -368,6 +368,11 @@ btf_var_secinfos(const struct btf_type *t)
+> >         return (struct btf_var_secinfo *)(t + 1);
+> >  }
+> >
+> > +static inline enum btf_func_linkage btf_func_linkage(const struct btf_type *t)
+> > +{
+> > +       return (enum btf_func_linkage)BTF_INFO_VLEN(t->info);
+> > +}
+> 
+> exposing `enum btf_func_linkage` in libbpf API headers will cause
+> compilation errors for users on older systems. We went through a bunch
+> of pain with `enum bpf_stats_type` (and it is still causing pain for
+> C++), I'd rather avoid some more here. Can you please move it into
+> libbpf.c for now. It doesn't seem like a very popular function that
+> needs to be exposed to users.
+will do.
 
->
-> Signed-off-by: Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
-> ---
->  src/libbpf.c | 100 +++++++++++++++++++++++++++++++++++++++++++++------
->  1 file changed, 90 insertions(+), 10 deletions(-)
->
-> diff --git a/src/libbpf.c b/src/libbpf.c
-> index 2f351d3..4dc09d3 100644
-> --- a/src/libbpf.c
-> +++ b/src/libbpf.c
-> @@ -9677,8 +9677,14 @@ static int parse_uint_from_file(const char *file, const char *fmt)
->
->  static int determine_kprobe_perf_type(void)
->  {
-> +       int ret = 0;
-> +       struct stat s;
->         const char *file = "/sys/bus/event_source/devices/kprobe/type";
->
-> +       ret = stat(file, &s);
-> +       if (ret < 0)
-> +               return -errno;
-> +
->         return parse_uint_from_file(file, "%d\n");
->  }
->
-> @@ -9703,25 +9709,87 @@ static int determine_uprobe_retprobe_bit(void)
->         return parse_uint_from_file(file, "config:%d\n");
->  }
->
-> +static int determine_kprobe_perf_type_legacy(const char *func_name)
-> +{
-> +       char file[256];
+> 
+> > +
+> >  #ifdef __cplusplus
+> >  } /* extern "C" */
+> >  #endif
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 0a60fcb2fba2..49bda179bd93 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -190,6 +190,7 @@ enum reloc_type {
+> >         RELO_CALL,
+> >         RELO_DATA,
+> >         RELO_EXTERN_VAR,
+> > +       RELO_EXTERN_FUNC,
+> >         RELO_SUBPROG_ADDR,
+> >  };
+> >
+> > @@ -384,6 +385,7 @@ struct extern_desc {
+> >         int btf_id;
+> >         int sec_btf_id;
+> >         const char *name;
+> > +       const struct btf_type *btf_type;
+> >         bool is_set;
+> >         bool is_weak;
+> >         union {
+> > @@ -3022,7 +3024,7 @@ static bool sym_is_subprog(const GElf_Sym *sym, int text_shndx)
+> >  static int find_extern_btf_id(const struct btf *btf, const char *ext_name)
+> >  {
+> >         const struct btf_type *t;
+> > -       const char *var_name;
+> > +       const char *tname;
+> >         int i, n;
+> >
+> >         if (!btf)
+> > @@ -3032,14 +3034,18 @@ static int find_extern_btf_id(const struct btf *btf, const char *ext_name)
+> >         for (i = 1; i <= n; i++) {
+> >                 t = btf__type_by_id(btf, i);
+> >
+> > -               if (!btf_is_var(t))
+> > +               if (!btf_is_var(t) && !btf_is_func(t))
+> >                         continue;
+> >
+> > -               var_name = btf__name_by_offset(btf, t->name_off);
+> > -               if (strcmp(var_name, ext_name))
+> > +               tname = btf__name_by_offset(btf, t->name_off);
+> > +               if (strcmp(tname, ext_name))
+> >                         continue;
+> >
+> > -               if (btf_var(t)->linkage != BTF_VAR_GLOBAL_EXTERN)
+> > +               if (btf_is_var(t) &&
+> > +                   btf_var(t)->linkage != BTF_VAR_GLOBAL_EXTERN)
+> > +                       return -EINVAL;
+> > +
+> > +               if (btf_is_func(t) && btf_func_linkage(t) != BTF_FUNC_EXTERN)
+> >                         return -EINVAL;
+> >
+> >                 return i;
+> > @@ -3199,10 +3205,10 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
+> >                         return ext->btf_id;
+> >                 }
+> >                 t = btf__type_by_id(obj->btf, ext->btf_id);
+> > +               ext->btf_type = t;
+> 
+> ext->btf_type is derived from ext->btf_id and obj->btf (always), so
+> there is no need for it
+It is for easier btf_is_var() check later instead of going through
+another btf__type_by_id().
 
-nit: I suspect 256 is much longer than necessary :)
+yeah, I will make a few btf__type_by_id() calls in v2.
 
+> 
+> >                 ext->name = btf__name_by_offset(obj->btf, t->name_off);
+> >                 ext->sym_idx = i;
+> >                 ext->is_weak = GELF_ST_BIND(sym.st_info) == STB_WEAK;
+> > -
+> >                 ext->sec_btf_id = find_extern_sec_btf_id(obj->btf, ext->btf_id);
+> >                 if (ext->sec_btf_id <= 0) {
+> >                         pr_warn("failed to find BTF for extern '%s' [%d] section: %d\n",
+> > @@ -3212,6 +3218,34 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
+> >                 sec = (void *)btf__type_by_id(obj->btf, ext->sec_btf_id);
+> >                 sec_name = btf__name_by_offset(obj->btf, sec->name_off);
+> >
+> > +               if (btf_is_func(t)) {
+> 
+> there is a KSYMS_SEC handling logic below, let's keep both func and
+> variables handling together there?
+It is to keep the indentation manageable
+and also most of the things doing here is not
+sharable with variables.
 
-> +       const char *fname = "/sys/kernel/debug/tracing/events/kprobes/%s/id";
-> +
-> +       snprintf(file, sizeof(file), fname, func_name);
-> +
-> +       return parse_uint_from_file(file, "%d\n");
-> +}
-> +
-> +static int poke_kprobe_events(bool add, const char *name, bool kretprobe)
+Sure. I can move it there.
 
-it's probably a good idea to put a link to [0] somewhere here
+> 
+> > +                       const struct btf_type *func_proto;
+> > +
+> > +                       func_proto = btf__type_by_id(obj->btf, t->type);
+> > +                       if (!func_proto || !btf_is_func_proto(func_proto)) {
+> 
+> this is implied by BTF format itself, seems a bit redundant
+It has already been checked?
 
-  [0] https://www.kernel.org/doc/html/latest/trace/kprobetrace.html
+> 
+> > +                               pr_warn("extern function %s does not have a valid func_proto\n",
+> > +                                       ext->name);
+> > +                               return -EINVAL;
+> > +                       }
+> > +
+> > +                       if (ext->is_weak) {
+> > +                               pr_warn("extern weak function %s is unsupported\n",
+> > +                                       ext->name);
+> > +                               return -ENOTSUP;
+> > +                       }
+> > +
+> > +                       if (strcmp(sec_name, KSYMS_SEC)) {
+> > +                               pr_warn("extern function %s is only supported under %s section\n",
+> > +                                       ext->name, KSYMS_SEC);
+> > +                               return -ENOTSUP;
+> > +                       }
+> > +
+> > +                       ksym_sec = sec;
+> > +                       ext->type = EXT_KSYM;
+> > +                       ext->ksym.type_id = ext->btf_id;
+> 
+> there is skip_mods_and_typedefs in KSYMS_SEC section below, but it
+> won't have any effect on FUNC_PROTO, so existing logic can be used
+> as-is
+func id is used here to keep what ksyms.type_id means:
+/* local btf_id of the ksym extern's type. */
 
-> +{
-> +       int fd, ret = 0;
-> +       char given[256], buf[256];
+The kernel extern type here should be func instead of func_proto.
+func_proto cannot be extern.
 
-nit: given -> event_name, to follow official documentation terminology ?
-
-> +       const char *file = "/sys/kernel/debug/tracing/kprobe_events";
-> +
-> +       if (kretprobe && add)
-
-what if it's kretprobe removal? shouldn't you generate the same name
-
-
-> +               snprintf(given, sizeof(given), "kprobes/%s_ret", name);
-> +       else
-> +               snprintf(given, sizeof(given), "kprobes/%s", name);
-
-BCC includes PID in the name of the probe and "bcc", maybe we should
-do something similar?
-
-> +       if (add)
-> +               snprintf(buf, sizeof(buf),"%c:%s %s\n", kretprobe ? 'r' : 'p', given, name);
-> +       else
-> +               snprintf(buf, sizeof(buf), "-:%s\n", given);
-> +
-> +       fd = open(file, O_WRONLY|O_APPEND, 0);
-> +       if (!fd)
-> +               return -errno;
-> +       ret = write(fd, buf, strlen(buf));
-> +       if (ret < 0) {
-> +               ret = -errno;
-> +       }
-> +       close(fd);
-> +
-> +       return ret;
-> +}
-> +
-> +static inline int add_kprobe_event_legacy(const char* func_name, bool kretprobe)
-> +{
-> +       return poke_kprobe_events(true /*add*/, func_name, kretprobe);
-> +}
-> +
-> +static inline int remove_kprobe_event_legacy(const char* func_name, bool kretprobe)
-> +{
-> +       return poke_kprobe_events(false /*remove*/, func_name, kretprobe);
-> +}
-> +
->  static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
->                                  uint64_t offset, int pid)
->  {
->         struct perf_event_attr attr = {};
->         char errmsg[STRERR_BUFSIZE];
->         int type, pfd, err;
-> +       bool legacy = false;
->
->         type = uprobe ? determine_uprobe_perf_type()
->                       : determine_kprobe_perf_type();
->         if (type < 0) {
-
-I think we should do "feature probing" to decide whether we should go
-with legacy or modern kprobes. And just stick to that, reporting any
-errors. I'm not a big fan of this generic "let's try X, if it fails
-for *whatever* reason, let's try Y", because you 1) can ignore some
-serious problem 2) you'll be getting unnecessary warnings in your log
-
-> -               pr_warn("failed to determine %s perf type: %s\n",
-> -                       uprobe ? "uprobe" : "kprobe",
-> -                       libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
-> -               return type;
-> +               if (uprobe) {
-> +                       pr_warn("failed to determine %s perf type: %s\n",
-> +                               uprobe ? "uprobe" : "kprobe",
-> +                               libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
-> +                       return type;
-> +               }
-> +               err = add_kprobe_event_legacy(name, retprobe);
-> +               if (err < 0) {
-> +                       pr_warn("failed to add legacy kprobe events: %s\n",
-> +                               libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-> +                       return err;
-> +               }
-> +               type = uprobe ? type : determine_kprobe_perf_type_legacy(name);
-> +               if (type < 0) {
-> +                       remove_kprobe_event_legacy(name, retprobe);
-> +                       pr_warn("failed to determine kprobe perf type: %s\n",
-> +                               libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
-> +               }
-> +               legacy = true;
->         }
-> -       if (retprobe) {
-> +       if (retprobe && !legacy) {
->                 int bit = uprobe ? determine_uprobe_retprobe_bit()
->                                  : determine_kprobe_retprobe_bit();
-> -
->                 if (bit < 0) {
->                         pr_warn("failed to determine %s retprobe bit: %s\n",
->                                 uprobe ? "uprobe" : "kprobe",
-> @@ -9731,10 +9799,14 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
->                 attr.config |= 1 << bit;
->         }
->         attr.size = sizeof(attr);
-> -       attr.type = type;
-> -       attr.config1 = ptr_to_u64(name); /* kprobe_func or uprobe_path */
-> -       attr.config2 = offset;           /* kprobe_addr or probe_offset */
-> -
-> +       if (!legacy) {
-> +               attr.type = type;
-> +               attr.config1 = ptr_to_u64(name); /* kprobe_func or uprobe_path */
-> +               attr.config2 = offset;           /* kprobe_addr or probe_offset */
-> +       } else {
-> +               attr.config = type;
-> +               attr.type = PERF_TYPE_TRACEPOINT;
-> +       }
->         /* pid filter is meaningful only for uprobes */
->         pfd = syscall(__NR_perf_event_open, &attr,
->                       pid < 0 ? -1 : pid /* pid */,
-> @@ -9750,6 +9822,11 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
->         return pfd;
->  }
->
-> +void bpf_program__detach_kprobe_legacy(struct bpf_program *prog, void *retprobe)
-> +{
-> +       remove_kprobe_event_legacy(prog->name, (bool) retprobe);
-> +}
-
-as I mentioned, this should be done by bpf_link__destroy()
-
-> +
->  struct bpf_link *bpf_program__attach_kprobe(struct bpf_program *prog,
->                                             bool retprobe,
->                                             const char *func_name)
-> @@ -9766,6 +9843,9 @@ struct bpf_link *bpf_program__attach_kprobe(struct bpf_program *prog,
->                         libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
->                 return ERR_PTR(pfd);
->         }
-> +
-> +       bpf_program__set_priv(prog, (void *) retprobe, bpf_program__detach_kprobe_legacy);
-> +
->         link = bpf_program__attach_perf_event(prog, pfd);
->         if (IS_ERR(link)) {
->                 close(pfd);
-> --
-> 2.27.0
->
+> 
+> > +                       continue;
+> > +               }
+> > +
+> >                 if (strcmp(sec_name, KCONFIG_SEC) == 0) {
+> >                         kcfg_sec = sec;
+> >                         ext->type = EXT_KCFG;
+> 
+> [...]
+> 
+> > +static int bpf_object__resolve_ksym_func_btf_id(struct bpf_object *obj,
+> > +                                               struct extern_desc *ext)
+> > +{
+> > +       int local_func_proto_id, kern_func_proto_id, kern_func_id;
+> > +       const struct btf_type *kern_func;
+> > +       struct btf *kern_btf = NULL;
+> > +       int ret, kern_btf_fd = 0;
+> > +
+> > +       local_func_proto_id = ext->btf_type->type;
+> 
+> yeah, so this ext->btf_type can be retrieved with
+> btf__type_by_id(obj->btf, ext->btf_id) here, no need to pollute
+> extern_desc with extra field
+> 
+> > +
+> > +       kern_func_id = find_ksym_btf_id(obj, ext->name, BTF_KIND_FUNC,
+> > +                                       &kern_btf, &kern_btf_fd);
+> > +       if (kern_func_id < 0) {
+> > +               pr_warn("extern (func ksym) '%s': not found in kernel BTF\n",
+> > +                       ext->name);
+> > +               return kern_func_id;
+> > +       }
+> > +
+> > +       if (kern_btf != obj->btf_vmlinux) {
+> > +               pr_warn("extern (func ksym) '%s': function in kernel module is not supported\n",
+> > +                       ext->name);
+> > +               return -ENOTSUP;
+> > +       }
+> > +
+> 
+> [...]
