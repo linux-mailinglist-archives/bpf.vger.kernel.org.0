@@ -2,111 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9353634133D
-	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 03:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56EE7341361
+	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 04:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhCSCx4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Mar 2021 22:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbhCSCxr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Mar 2021 22:53:47 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10403C06174A;
-        Thu, 18 Mar 2021 19:53:47 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id c131so4730242ybf.7;
-        Thu, 18 Mar 2021 19:53:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sOnC4Ddk3iPilsDjgEGlh3GrkI/ytLhXl41wJKRSlhM=;
-        b=kKb8gtICy33NBgsopdIcC421ERTAy5UI8WI54u0hIijoCctVvQro5fr06AK4LgRYaP
-         /FIEYQeabqYE4UU98N46xeoi33hHfxncURD8ZDMhkocOlV+SOGp3gkJ+QVNhu3Iqnxzw
-         /JVHcIA7ccom8+Kd5pa9mzg4TyC2cpAggbPMTPR5KI8C1DP0N2o6F8F/wPXp2LuUOoVu
-         qXRlAbeVcz9dnWOZ+79ZzF89nVCYK9VQD8xO5lpHtrzAsNqteoMzLZwq8ePkSHZEkRpv
-         nTrx6or4n/A7DciaIdEFqvwFn+0xLbrUNjojf/QlDxNLB5bxVgvJkfaYtZ9f++Zp8T+M
-         emAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sOnC4Ddk3iPilsDjgEGlh3GrkI/ytLhXl41wJKRSlhM=;
-        b=dKJGzojFFa1wv9x+6eH9irZNFtOVhNl8zyrhK2ttGIfwKmg1G3LM3EogW8QpRXGblm
-         XBc9kh1cOkBAFNHZ4v9SCEF3M3Uz5zxsSxuYO0qQ3SoVRFDrZMxeGkoEr/u9osPlZBmg
-         mHzaCAmOvlPnggYxBZjwG6vyCSdzWn5n2rxvCY/jkNsfEQrMA/p2GssEFXba+S/8veLv
-         qDlV3rqgela4NjCRR/HEdQtecUBeCv1KOvASHrTAeyBYEWfI3GAHIMEVHm6KztxKSzyC
-         8Dho8ROxSE2I5EaSnZ64XVtxxjY5cyS8y3GZbQJQt/MT9OwWg+xG4nLioeubc94CyWSD
-         RsvQ==
-X-Gm-Message-State: AOAM533C8rXoK0J2JaRm2JppVvE81CYdMdly1rxZao1U3TowNeu84CgL
-        LH17mpaK9h8lYbZI+efmlnvgo7awVThHUhaoGyI=
-X-Google-Smtp-Source: ABdhPJwJk3+lUr1K23Ar7aKvLmkJoeBFvEgrfzYLHL3j60bwbeXjefeAKqmRc+H+M3rFuF5yUUMsoPpwsgPJVZUfBko=
-X-Received: by 2002:a25:7d07:: with SMTP id y7mr3307260ybc.425.1616122426069;
- Thu, 18 Mar 2021 19:53:46 -0700 (PDT)
+        id S233466AbhCSDMz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Mar 2021 23:12:55 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23750 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231297AbhCSDMj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 18 Mar 2021 23:12:39 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 12J3AXN8006759
+        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 20:12:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=ThR/y2rsSmVT1jVbDSe6H/o1lThx3vDWph2btY+dqGs=;
+ b=OaXCBx5GF9tJus6AWOTlixEfsC6bjR+46K005F3Q3Xp+rNQ1uLPSRD7eO24EHXx7GXaD
+ EeGXXxiVtFMSxMTO3w9rHZNWHja9w3nxpBVqbr0Mmp/jJIVulolm2uVcXpW3hFB4188U
+ AK+Sft08hSFZdNHsk7NF4JULWKx7Lq75sUU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 37bs1h8d5g-14
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 18 Mar 2021 20:12:38 -0700
+Received: from intmgw002.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 18 Mar 2021 20:12:38 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 7B95E7A9D3B; Thu, 18 Mar 2021 20:12:31 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next v2 0/2] bpf: fix NULL pointer dereference in
+Date:   Thu, 18 Mar 2021 20:12:31 -0700
+Message-ID: <20210319031231.3707705-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210316011336.4173585-1-kafai@fb.com> <20210316011426.4178537-1-kafai@fb.com>
-In-Reply-To: <20210316011426.4178537-1-kafai@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 18 Mar 2021 19:53:35 -0700
-Message-ID: <CAEf4BzbYDKf6ahjV1HfH-ZoaWeLQb7me83AnjhF9rZ=uOzhnSQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 08/15] libbpf: Refactor bpf_object__resolve_ksyms_btf_id
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-18_19:2021-03-17,2021-03-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ mlxscore=0 mlxlogscore=421 bulkscore=0 priorityscore=1501 clxscore=1015
+ phishscore=0 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103190022
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 12:02 AM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> This patch refactors most of the logic from
-> bpf_object__resolve_ksyms_btf_id() into a new function
-> bpf_object__resolve_ksym_var_btf_id().
-> It is to get ready for a later patch adding
-> bpf_object__resolve_ksym_func_btf_id() which resolves
-> a kernel function to the running kernel btf_id.
->
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> ---
+Jiri Olsa reported a bug in
+  https://lore.kernel.org/bpf/CAKH8qBuXCfUz=3Dw8L+Fj74OaUpbosO29niYwTki7e3A=
+g044_aww@mail.gmail.com/T
+where cgroup local storage pointer may be NULL in
+bpf_get_local_storage()
+helper. There are two issues uncovered by this bug:
+    (1). kprobe or tracepoint prog incorrectly sets cgroup local storage
+         before prog run,
+    (2). due to change from preempt_disable to migrate_disable,
+         preemption is possible and percpu storage might be overwritten
+         by other tasks.=20=20=20=20
+Issue (1) has been fixed and this patch set fixed issue (2).
+Please see details of Patch #1 for detailed fix.
+Patch #2 fixed bpf_prog_test_run to use new signature for
+bpf_cgroup_storage_set().
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Patch #1 can be backported to bpf tree and Patch #2 cannot due to
+refactoring done in bpf-next only.
+I did not put a Fix tag as I am not able to find a proper one.
+The original commit which changed from preempt_disable to
+migrate_disable in bpf.h is just a wrapper where migrate_disable
+still calls preempt_disable. The real migrate_disable change happens
+later in kernel/sched/*.
 
->  tools/lib/bpf/libbpf.c | 125 ++++++++++++++++++++++-------------------
->  1 file changed, 68 insertions(+), 57 deletions(-)
->
+Changelogs:
+  v1 -> v2:
+    . fix compilation issues when CONFIG_CGROUPS is off or
+      CONFIG_CGROUP_BPF is off.
 
-[...]
+Yonghong Song (2):
+  bpf: fix NULL pointer dereference in bpf_get_local_storage() helper
+  bpf: fix bpf_cgroup_storage_set() usage in test_run
 
-> +static int bpf_object__resolve_ksyms_btf_id(struct bpf_object *obj)
-> +{
-> +       struct extern_desc *ext;
-> +       int i, err;
-> +
-> +       for (i = 0; i < obj->nr_extern; i++) {
-> +               ext = &obj->externs[i];
-> +               if (ext->type != EXT_KSYM || !ext->ksym.type_id)
-> +                       continue;
-> +
-> +               err = bpf_object__resolve_ksym_var_btf_id(obj, ext);
->
+ include/linux/bpf-cgroup.h | 58 ++++++++++++++++++++++++++++++++------
+ include/linux/bpf.h        | 22 ++++++++++++---
+ kernel/bpf/helpers.c       | 15 +++++++---
+ kernel/bpf/local_storage.c |  5 ++--
+ net/bpf/test_run.c         |  6 +++-
+ 5 files changed, 87 insertions(+), 19 deletions(-)
 
-we usually put error checking right on the next line without empty
-lines, please remove this distracting empty line
+--=20
+2.30.2
 
-
-> -               ext->is_set = true;
-> -               ext->ksym.kernel_btf_obj_fd = btf_fd;
-> -               ext->ksym.kernel_btf_id = id;
-> -               pr_debug("extern (ksym) '%s': resolved to [%d] %s %s\n",
-> -                        ext->name, id, btf_kind_str(targ_var), targ_var_name);
-> +               if (err)
-> +                       return err;
->         }
->         return 0;
->  }
-> --
-> 2.30.2
->
