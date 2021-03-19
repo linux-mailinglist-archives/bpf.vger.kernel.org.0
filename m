@@ -2,194 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFA7342740
-	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 21:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A72C342790
+	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 22:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbhCSU7W convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 19 Mar 2021 16:59:22 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:34144 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230240AbhCSU7V (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 19 Mar 2021 16:59:21 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12JKwkXc004259
-        for <bpf@vger.kernel.org>; Fri, 19 Mar 2021 13:59:21 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37bs1ew1rs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 19 Mar 2021 13:59:21 -0700
-Received: from intmgw006.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 19 Mar 2021 13:59:20 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 6C6AA2ED268B; Fri, 19 Mar 2021 13:59:17 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: allow compiling BPF objects without BTF
-Date:   Fri, 19 Mar 2021 13:59:09 -0700
-Message-ID: <20210319205909.1748642-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210319205909.1748642-1-andrii@kernel.org>
-References: <20210319205909.1748642-1-andrii@kernel.org>
+        id S230218AbhCSVTr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Mar 2021 17:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230370AbhCSVTb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Mar 2021 17:19:31 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E91C06175F
+        for <bpf@vger.kernel.org>; Fri, 19 Mar 2021 14:19:31 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id e193so2872277ybc.6
+        for <bpf@vger.kernel.org>; Fri, 19 Mar 2021 14:19:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VzDNEsJZ9vi5ZA+3LPPt2bkm+WmI5zkVuzvnJyktsTw=;
+        b=ZblVrey5cmJXAHHaIYCfI1YyXlxtRua9UdyQzA6/0OWwlqVfACC8SvayrUd+8FPt0Y
+         4bCoX3VNRvAPrJd19/xEZvyBLDX+5MTIEuDJN11vJjxtSuKINXM/fG30kH9oUYiwUrty
+         g9vHqBhFXTqSQOq09HQdE6yxLP8TypwaddX00F+nhQAEIfK9OAzxr2q+tI4YSEp6gksY
+         eEJhjJpjojO12oWL9Za/GpKL7z4TBdzJvz64x6+Q/io4IQLSQR+Xy8gYu2ebcM3jdYYI
+         HN7BKPNdec2f1HsCa7xuCqFBxk4RDNV60h+kfl1kLWDVoDSOBmi+IAADZXiUQ+aH08GE
+         xsXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VzDNEsJZ9vi5ZA+3LPPt2bkm+WmI5zkVuzvnJyktsTw=;
+        b=KJa0tnz1qHcCr5Jy5YLHUOnSnkdwm5Cc6AYIOsrXzjfKReQOWBQiqjWuHVp8Nm3dNo
+         p8BLSARZfuP/ubSxBM37+2lW1mWDn8C0fy5UujGXdrcqeouNpeh5ki0BhP0JLMkHIV+A
+         jQ5IPdDMR35B10sOt/JWXkunBrREKxXsqF711GG2BR8IJGyF4msUTnRri2u6Y9wT3E2h
+         oTz64Fqh7tQeV0N4S1O9w29itg8+RYWC4YTuUByfpHLbmSmTpC9H6vdvcXvCu4igWgAJ
+         Il9LyIa4D1gKrkuU8sKSzgsjr0VAAN4sOGFQW7BHAFFDqmitT6o/ObQSMXgNx5C6jW20
+         DB9Q==
+X-Gm-Message-State: AOAM530zKQF54bsq5iW0PZZsh9zXmxD0JilWIDKRXmXes6+lwv8HtxFV
+        c1O8MhV+cyAKrmNJG5UuQX/cefRO7t+MSw9n0x8=
+X-Google-Smtp-Source: ABdhPJxV/5p9AS5/u8RPEh0M7SxfLUVIt9y9BJWChSNed3naY9SR8oOF2qDrnKvm0wO90vQOW+EPxrnZSWlJDUFrMmo=
+X-Received: by 2002:a25:40d8:: with SMTP id n207mr8909831yba.459.1616188770385;
+ Fri, 19 Mar 2021 14:19:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-19_12:2021-03-19,2021-03-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 lowpriorityscore=0
- priorityscore=1501 mlxscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103190144
-X-FB-Internal: deliver
+References: <20210318122700.396574-1-jean-philippe@linaro.org>
+ <CAEf4BzZzXxYxjzH86VYh0TvpW8u2+4qgAD1wMkRncYiiJ+2-0g@mail.gmail.com> <YFR7cOIV+kyHYzgJ@myrica>
+In-Reply-To: <YFR7cOIV+kyHYzgJ@myrica>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 19 Mar 2021 14:19:19 -0700
+Message-ID: <CAEf4BzafQRMVGFkLtHzbbDvwZYjymzAkR0urzNk8y-RRon++Mw@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: Fix BTF dump of pointer-to-array-of-struct
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add ability to skip BTF generation for some BPF object files. This is done
-through using a convention of .nobtf.c file name suffix.
+On Fri, Mar 19, 2021 at 3:22 AM Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
+>
+> On Thu, Mar 18, 2021 at 10:08:36AM -0700, Andrii Nakryiko wrote:
+> > Yeah, makes total sense. I missed that array forces a strong link
+> > between types. The fix looks good, but can you please add those two
+> > cases to selftests? There is progs/btf_dump_test_case_syntax.c that
+> > probably can be extended. Please think about a way to specify types
+> > such that the order of BTF types doesn't matter and the issue has to
+> > be handled always.
+>
+> Sure, I'll add those selftests. I didn't figure out a way to trigger the
+> error unconditionally, but given that the selftest is always built with
+> clang it's still a good regression test.
 
-Also add third statically linked file to static_linked selftest. This file has
-no BTF, causing resulting object file to have only some of DATASEC BTF types.
-It also is using (from BPF code) global variables. This tests both libbpf's
-static linking logic and bpftool's skeleton generation logic.
+Yes, that's fine. Thanks for the fix and tests, applied to the bpf tree.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/Makefile          | 21 +++++++----
- .../selftests/bpf/prog_tests/static_linked.c  |  6 +++-
- .../bpf/progs/test_static_linked3.nobtf.c     | 36 +++++++++++++++++++
- 3 files changed, 56 insertions(+), 7 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_static_linked3.nobtf.c
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 6448c626498f..0a481a75a416 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -270,7 +270,7 @@ IS_LITTLE_ENDIAN = $(shell $(CC) -dM -E - </dev/null | \
- MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
- 
- CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
--BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) 			\
-+BPF_CFLAGS = -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) 			\
- 	     -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)			\
- 	     -I$(abspath $(OUTPUT)/../usr/include)
- 
-@@ -282,30 +282,39 @@ $(OUTPUT)/test_xdp_noinline.o: BPF_CFLAGS += -fno-inline
- 
- $(OUTPUT)/flow_dissector_load.o: flow_dissector_load.h
- 
--# Build BPF object using Clang
-+# Build BPF object using Clang.
-+# Source files with .nobtf.c suffix are built without BTF
- # $1 - input .c file
- # $2 - output .o file
- # $3 - CFLAGS
- define CLANG_BPF_BUILD_RULE
- 	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
--	$(Q)$(CLANG) $3 -O2 -target bpf -c $1 -o $2 -mcpu=v3
-+	$(Q)$(CLANG) $3 -O2 -target bpf -mcpu=v3			\
-+		     $(if $(filter %.nobtf.c,$1),,-g)			\
-+		     -c $1 -o $2
- endef
- # Similar to CLANG_BPF_BUILD_RULE, but with disabled alu32
- define CLANG_NOALU32_BPF_BUILD_RULE
- 	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
--	$(Q)$(CLANG) $3 -O2 -target bpf -c $1 -o $2 -mcpu=v2
-+	$(Q)$(CLANG) $3 -O2 -target bpf -mcpu=v2			\
-+		     $(if $(filter %.nobtf.c,$1),,-g)			\
-+		     -c $1 -o $2
- endef
- # Build BPF object using GCC
- define GCC_BPF_BUILD_RULE
- 	$(call msg,GCC-BPF,$(TRUNNER_BINARY),$2)
--	$(Q)$(BPF_GCC) $3 -O2 -c $1 -o $2
-+	$(Q)$(BPF_GCC) $3 -O2 						\
-+		       $(if $(filter %.nobtf.c,$1),,-g)			\
-+		       -c $1 -o $2
- endef
- 
- SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
- 
- LINKED_SKELS := test_static_linked.skel.h
- 
--test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
-+test_static_linked.skel.h-deps := test_static_linked1.o \
-+				  test_static_linked2.o \
-+				  test_static_linked3.nobtf.o
- 
- # Set up extra TRUNNER_XXX "temporary" variables in the environment (relies on
- # $eval()) and pass control to DEFINE_TEST_RUNNER_RULES.
-diff --git a/tools/testing/selftests/bpf/prog_tests/static_linked.c b/tools/testing/selftests/bpf/prog_tests/static_linked.c
-index 46556976dccc..1e6701483d27 100644
---- a/tools/testing/selftests/bpf/prog_tests/static_linked.c
-+++ b/tools/testing/selftests/bpf/prog_tests/static_linked.c
-@@ -6,7 +6,7 @@
- 
- void test_static_linked(void)
- {
--	int err;
-+	int err, key = 0, value = 0;
- 	struct test_static_linked* skel;
- 
- 	skel = test_static_linked__open();
-@@ -35,6 +35,10 @@ void test_static_linked(void)
- 	ASSERT_EQ(skel->bss->var1, 1 * 2 + 2 + 3, "var1");
- 	ASSERT_EQ(skel->bss->var2, 4 * 3 + 5 + 6, "var2");
- 
-+	err = bpf_map_lookup_elem(bpf_map__fd(skel->maps.legacy_map), &key, &value);
-+	ASSERT_OK(err, "legacy_map_lookup");
-+	ASSERT_EQ(value, 1 * 3 + 3,  "legacy_map_value");
-+
- cleanup:
- 	test_static_linked__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_static_linked3.nobtf.c b/tools/testing/selftests/bpf/progs/test_static_linked3.nobtf.c
-new file mode 100644
-index 000000000000..e5fbde21381c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_static_linked3.nobtf.c
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+/* global variables don't need BTF to be used, but are extremely unconvenient
-+ * to be consumed from user-space without BPF skeleton, that uses BTF
-+ */
-+
-+static volatile int mul3 = 3;
-+static volatile int add3 = 3;
-+
-+/* same "subprog" name in all files */
-+static __noinline int subprog(int x)
-+{
-+	/* but different formula */
-+	return x * mul3 + add3;
-+}
-+
-+struct bpf_map_def SEC("maps") legacy_map = {
-+	.type = BPF_MAP_TYPE_ARRAY,
-+	.key_size = sizeof(int),
-+	.value_size = sizeof(int),
-+	.max_entries = 1,
-+};
-+
-+SEC("raw_tp/sys_enter")
-+int handler3(const void *ctx)
-+{
-+	int key = 0, value = subprog(1);
-+
-+	bpf_map_update_elem(&legacy_map, &key, &value, BPF_ANY);
-+
-+	return 0;
-+}
--- 
-2.30.2
-
+>
+> Thanks,
+> Jean
+>
