@@ -2,141 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF67341B73
-	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 12:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 220CF341B75
+	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 12:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhCSL2K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S229638AbhCSL2K (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 19 Mar 2021 07:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44370 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbhCSL16 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S229942AbhCSL16 (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 19 Mar 2021 07:27:58 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BE9C06174A
-        for <bpf@vger.kernel.org>; Fri, 19 Mar 2021 04:27:57 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id v4so8726691wrp.13
-        for <bpf@vger.kernel.org>; Fri, 19 Mar 2021 04:27:57 -0700 (PDT)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F7D2C06174A
+        for <bpf@vger.kernel.org>; Fri, 19 Mar 2021 04:27:58 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id k8so8731412wrc.3
+        for <bpf@vger.kernel.org>; Fri, 19 Mar 2021 04:27:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xt5rnvE2uLtELVVXsmrpJRExmlI+mScRUKmf9hHAMPk=;
-        b=zcc3qTUZ9qq52OCxhJa6EFzQtxyzwkqVevKcczeo1SvBsnNp61XMDsZ7plGX0XizZ/
-         PhVD19JEKDPTeOlxsCSHAUFqms8Tz9m/RcaosldtLafVvllaqLrU0X4Pb1Rzw/HrZF0p
-         JXT48ABOhGkzWs0GC/yQVrSHcOIVot0+MCS8kwW1c/4k3FWbUDJ2S7KKEadoURMLNrDy
-         QNd3L6XI4ZEGeoaO0jpKjOjWVshxAkuS4YMDeDO2Y/N4vwNldRK5OcXfoFe77XQAx2+I
-         qeQK3/Xsgl4y3pDCgWYryWURgjraY4hJW91uoTz5r3bGtJxCuBspIX9DZdItaJXNIEV8
-         LuVA==
+        bh=fVEtoBjUKWgyagwIZBW4zKQyHixrgqvat+jrds6fQhg=;
+        b=SCAKR+nSIGMTx2zhqY+p+lLgdmIuWNTDLuIcqbzjbxnxEmeLyglC3umGxsNRTNGkoD
+         K/xUK0FxGRonT/9OCtAEHLYAjhO3ayqQwaef5L4HepFJGeeBTIpiVKRqu63ww0Zei6z1
+         UKVyJjqaDYNekyu2gmIc+RC8f4Ee6YrYIBW6tGrPS/GCpodIO0NDbWi3bLWJeaV0yhRm
+         +/0UxWdUk8Kw4tQqcDiTeC33yfIxvvbwury7Jpqa08ze0gUcCcQf10dU+IDzD/yrEBmM
+         T/cfudvio6dKMEgf4APSrN3zT3LuDrsu5B3jrdTUjMqRpwZ1+Vmf3Ba4KXyhmL1j6uaZ
+         zkeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xt5rnvE2uLtELVVXsmrpJRExmlI+mScRUKmf9hHAMPk=;
-        b=bnuSiBehdH9oVNd+2oWOVxtv7fRfTKoIahEXg2SNCcl1s/OD+GvI523yi5IQ7LN3Yr
-         B1JOkXnsS9VPEFA6jxSsmnYPzuh66jVrz8J1g+FdXgvtXsQIk5Wdo2NhgJO3m6vZOnAI
-         ffKhJE542srI72qa8w7hsQXVd/b9Jyn0zo9xRPDCG8vjs+O8+pbBWfclALcOXcNAzFbj
-         U7mu3ldeXdIyKkC2Lehjrub2DNygr9cutP7UM8j8IimGsGE+PwIX2SoxvbRu5YxNS3q5
-         lWBkic79p+DUkxVLNX00MH0SBnvAIFvvPYcWv1ibYZJfuoj+F7t7ELfOhrgNR8M6UTbq
-         mK0A==
-X-Gm-Message-State: AOAM532AKh+pmI4Iin76y5WQQ3ounq80MoU2M1DdtiI82oC5VgfGuAWC
-        iyHFKnujr5A4r4ZMpXW5auVOJA==
-X-Google-Smtp-Source: ABdhPJytPoxBaBYD697Fm8WuWmyfOz5ROCxrxaNQ27cxteQY0C9euVCsPo6o6qs6Oni+RjSz9tNFAA==
-X-Received: by 2002:adf:a1d8:: with SMTP id v24mr3950083wrv.378.1616153276320;
-        Fri, 19 Mar 2021 04:27:56 -0700 (PDT)
+        bh=fVEtoBjUKWgyagwIZBW4zKQyHixrgqvat+jrds6fQhg=;
+        b=CMnsezZIw8Kc6s0OTHE0fWb+Nyv8AVzt14fIx+GEQo5SFt92sc5eiV7ekJIIE1ZDX7
+         KAkCSixwlzChQd38cEgv75fGIdnWPV7Vhocyrh9lDkMshJ+TVfpHgD9BTHtQY5EwB7sA
+         x9HuqqjcTC6FpCds5yrCQ3SpQw8VhiAEDlIj39mimRj5R2//pXG6kA0Q7niN0qSU8+gO
+         7IoES03HgVWyAurM1TDEkVKULuOlutqfT+8dLgP/wYJxsx9SjGHXxqeauN25sUYBkqPS
+         u9MvMCb4O4XRtSxB21uD/eB+pCbiWlmuU3QsveitgY3mDzY1XS0PXQK2LXm1Kjlz+Q+6
+         55KQ==
+X-Gm-Message-State: AOAM532PMjx5RRzO2tBUHFiwaMk1sH52k6HKcytn54zwbpRWgOwPVip1
+        fi+NBUug0dgr5N5mLl4XenlCNg==
+X-Google-Smtp-Source: ABdhPJwTCMRxB7597LoBGEliAQ/Fez2WJCK/faW6nH54X5cYJbry9yN0f895KKR1aa+C2wVwV8gkTA==
+X-Received: by 2002:a5d:570b:: with SMTP id a11mr3977583wrv.281.1616153277117;
+        Fri, 19 Mar 2021 04:27:57 -0700 (PDT)
 Received: from localhost.localdomain ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id c2sm5969706wmr.22.2021.03.19.04.27.55
+        by smtp.gmail.com with ESMTPSA id c2sm5969706wmr.22.2021.03.19.04.27.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Mar 2021 04:27:55 -0700 (PDT)
+        Fri, 19 Mar 2021 04:27:56 -0700 (PDT)
 From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
 To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
 Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
         john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: [PATCH bpf v2 1/2] libbpf: Fix BTF dump of pointer-to-array-of-struct
-Date:   Fri, 19 Mar 2021 12:25:54 +0100
-Message-Id: <20210319112554.794552-2-jean-philippe@linaro.org>
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [PATCH bpf v2 2/2] selftests/bpf: Add selftest for pointer-to-array-of-struct BTF dump
+Date:   Fri, 19 Mar 2021 12:25:55 +0100
+Message-Id: <20210319112554.794552-3-jean-philippe@linaro.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210319112554.794552-1-jean-philippe@linaro.org>
 References: <20210319112554.794552-1-jean-philippe@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The vmlinux.h generated from BTF is invalid when building
-drivers/phy/ti/phy-gmii-sel.c with clang:
+Bpftool used to issue forward declarations for a struct used as part of
+a pointer to array, which is invalid. Add a test to check that the
+struct is fully defined in this case:
 
-vmlinux.h:61702:27: error: array type has incomplete element type ‘struct reg_field’
-61702 |  const struct reg_field (*regfields)[3];
-      |                           ^~~~~~~~~
+	@@ -134,9 +134,9 @@
+	 	};
+	 };
 
-bpftool generates a forward declaration for this struct regfield, which
-compilers aren't happy about. Here's a simplified reproducer:
+	-struct struct_in_array {};
+	+struct struct_in_array;
 
-	struct inner {
-		int val;
-	};
-	struct outer {
-		struct inner (*ptr_to_array)[2];
-	} A;
+	-struct struct_in_array_typed {};
+	+struct struct_in_array_typed;
 
-After build with clang -> bpftool btf dump c -> clang/gcc:
-./def-clang.h:11:23: error: array has incomplete element type 'struct inner'
-        struct inner (*ptr_to_array)[2];
+	 typedef struct struct_in_array_typed struct_in_array_t[2];
 
-Member ptr_to_array of struct outer is a pointer to an array of struct
-inner. In the DWARF generated by clang, struct outer appears before
-struct inner, so when converting BTF of struct outer into C, bpftool
-issues a forward declaration to struct inner. With GCC the DWARF info is
-reversed so struct inner gets fully defined.
+	@@ -189,3 +189,7 @@
+	 	struct struct_with_embedded_stuff _14;
+	 };
 
-That forward declaration is not sufficient when compilers handle an
-array of the struct, even when it's only used through a pointer. Note
-that we can trigger the same issue with an intermediate typedef:
+	+struct struct_in_array {};
+	+
+	+struct struct_in_array_typed {};
+	+
+	...
+	#13/1 btf_dump: syntax:FAIL
 
-	struct inner {
-	        int val;
-	};
-	typedef struct inner inner2_t[2];
-	struct outer {
-	        inner2_t *ptr_to_array;
-	} A;
-
-Becomes:
-
-	struct inner;
-	typedef struct inner inner2_t[2];
-
-And causes:
-
-./def-clang.h:10:30: error: array has incomplete element type 'struct inner'
-	typedef struct inner inner2_t[2];
-
-To fix this, clear through_ptr whenever we encounter an intermediate
-array, to make the inner struct part of a strong link and force full
-declaration.
-
-Fixes: 351131b51c7a ("libbpf: add btf_dump API for BTF-to-C conversion")
+Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
 ---
- tools/lib/bpf/btf_dump.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../selftests/bpf/progs/btf_dump_test_case_syntax.c       | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index 2f9d685bd522..0911aea4cdbe 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -462,7 +462,7 @@ static int btf_dump_order_type(struct btf_dump *d, __u32 id, bool through_ptr)
- 		return err;
+diff --git a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+index 31975c96e2c9..3ac0c9afc35a 100644
+--- a/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
++++ b/tools/testing/selftests/bpf/progs/btf_dump_test_case_syntax.c
+@@ -174,6 +174,12 @@ struct struct_in_struct {
+ 	};
+ };
  
- 	case BTF_KIND_ARRAY:
--		return btf_dump_order_type(d, btf_array(t)->type, through_ptr);
-+		return btf_dump_order_type(d, btf_array(t)->type, false);
++struct struct_in_array {};
++
++struct struct_in_array_typed {};
++
++typedef struct struct_in_array_typed struct_in_array_t[2];
++
+ struct struct_with_embedded_stuff {
+ 	int a;
+ 	struct {
+@@ -203,6 +209,8 @@ struct struct_with_embedded_stuff {
+ 	} r[5];
+ 	struct struct_in_struct s[10];
+ 	int t[11];
++	struct struct_in_array (*u)[2];
++	struct_in_array_t *v;
+ };
  
- 	case BTF_KIND_STRUCT:
- 	case BTF_KIND_UNION: {
+ struct root_struct {
 -- 
 2.30.2
 
