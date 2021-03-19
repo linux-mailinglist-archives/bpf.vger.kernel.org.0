@@ -2,113 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96CB4342702
-	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 21:36:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A095F342741
+	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 21:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhCSUgI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Mar 2021 16:36:08 -0400
-Received: from www62.your-server.de ([213.133.104.62]:45492 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbhCSUgG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Mar 2021 16:36:06 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lNLqi-0005Kx-GZ; Fri, 19 Mar 2021 21:36:00 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lNLqi-00088c-9y; Fri, 19 Mar 2021 21:36:00 +0100
-Subject: Re: [PATCH v3 bpf-next] bpf: add lookup_and_delete_elem support to
- hashtab
-To:     Denis Salopek <denis.salopek@sartura.hr>, bpf@vger.kernel.org
-Cc:     juraj.vijtiuk@sartura.hr, luka.oreskovic@sartura.hr,
-        luka.perkov@sartura.hr, yhs@fb.com
-References: <YFDudWFj9zydyo/P@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2f5f29ed-354b-b88d-f5cb-535d61aaaf0e@iogearbox.net>
-Date:   Fri, 19 Mar 2021 21:35:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S230281AbhCSU7V convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 19 Mar 2021 16:59:21 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46680 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230226AbhCSU7O (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 19 Mar 2021 16:59:14 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12JKuEoa005018
+        for <bpf@vger.kernel.org>; Fri, 19 Mar 2021 13:59:13 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 37bs1wd1ua-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 19 Mar 2021 13:59:13 -0700
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 19 Mar 2021 13:59:12 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id E28F52ED268B; Fri, 19 Mar 2021 13:59:10 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 0/3] Handle no-BTF object files better
+Date:   Fri, 19 Mar 2021 13:59:06 -0700
+Message-ID: <20210319205909.1748642-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YFDudWFj9zydyo/P@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26113/Fri Mar 19 12:14:45 2021)
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-19_12:2021-03-19,2021-03-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 priorityscore=1501 adultscore=0 clxscore=1034
+ malwarescore=0 impostorscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103190143
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/16/21 6:44 PM, Denis Salopek wrote:
-[...]
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index c859bc46d06c..36f65b589b82 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -1463,7 +1463,7 @@ int generic_map_lookup_batch(struct bpf_map *map,
->   	return err;
->   }
->   
-> -#define BPF_MAP_LOOKUP_AND_DELETE_ELEM_LAST_FIELD value
-> +#define BPF_MAP_LOOKUP_AND_DELETE_ELEM_LAST_FIELD flags
->   
->   static int map_lookup_and_delete_elem(union bpf_attr *attr)
->   {
-> @@ -1479,6 +1479,9 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
->   	if (CHECK_ATTR(BPF_MAP_LOOKUP_AND_DELETE_ELEM))
->   		return -EINVAL;
->   
-> +	if (attr->flags & ~BPF_F_LOCK)
-> +		return -EINVAL;
-> +
->   	f = fdget(ufd);
->   	map = __bpf_map_get(f);
->   	if (IS_ERR(map))
-> @@ -1489,13 +1492,19 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
->   		goto err_put;
->   	}
->   
-> +	if ((attr->flags & BPF_F_LOCK) &&
-> +	    !map_value_has_spin_lock(map)) {
-> +		err = -EINVAL;
-> +		goto err_put;
-> +	}
-> +
->   	key = __bpf_copy_key(ukey, map->key_size);
->   	if (IS_ERR(key)) {
->   		err = PTR_ERR(key);
->   		goto err_put;
->   	}
->   
-> -	value_size = map->value_size;
-> +	value_size = bpf_map_value_size(map);
->   
->   	err = -ENOMEM;
->   	value = kmalloc(value_size, GFP_USER | __GFP_NOWARN);
-> @@ -1505,6 +1514,17 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
->   	if (map->map_type == BPF_MAP_TYPE_QUEUE ||
->   	    map->map_type == BPF_MAP_TYPE_STACK) {
->   		err = map->ops->map_pop_elem(map, value);
-> +	} else if (map->map_type == BPF_MAP_TYPE_HASH ||
-> +		   map->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
-> +		   map->map_type == BPF_MAP_TYPE_LRU_HASH ||
-> +		   map->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH) {
-> +		if (!bpf_map_is_dev_bound(map)) {
+Fix two issues caused by BPF object files with missing BTF type information:
+  1. BPF skeleton generated for BPF object files that use global variables but
+     are compiled without BTF won't compile.
+  2. BPF static linker will crash attempting to fix up BTF for input object
+     file with no BTF.
 
-I think you probably rather meant to fold the above !bpf_map_is_dev_bound(map)
-condition into the higher level 'else if', right? Otherwise for dev bound maps
-you'll always end up with -ENOMEM error rather than -ENOTSUPP.
+This patch set also extends static linking selftest to validate correct
+handling of both conditions now. For that, selftests Makefile is enhanced to
+allow selecting whether a given BPF object file should be compiled with BTF or
+not, based on naming convention (.nobtf.c suffix).
 
-> +			bpf_disable_instrumentation();
-> +			rcu_read_lock();
-> +			err = map->ops->map_lookup_and_delete_elem(map, key, value, attr->flags);
-> +			rcu_read_unlock();
-> +			bpf_enable_instrumentation();
-> +		}
->   	} else {
->   		err = -ENOTSUPP;
->   	}
+Andrii Nakryiko (3):
+  bpftool: improve skeleton generation for objects without BTF
+  libbpf: skip BTF fixup if object file has no BTF
+  selftests/bpf: allow compiling BPF objects without BTF
+
+ tools/bpf/bpftool/gen.c                       | 81 +++++++++++++++----
+ tools/lib/bpf/linker.c                        |  3 +
+ tools/testing/selftests/bpf/Makefile          | 21 +++--
+ .../selftests/bpf/prog_tests/static_linked.c  |  6 +-
+ .../bpf/progs/test_static_linked3.nobtf.c     | 36 +++++++++
+ 5 files changed, 123 insertions(+), 24 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_static_linked3.nobtf.c
+
+-- 
+2.30.2
+
