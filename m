@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA84341CBF
+	by mail.lfdr.de (Postfix) with ESMTP id BF077341CC0
 	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 13:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhCSMWu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S230092AbhCSMWu (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 19 Mar 2021 08:22:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33718 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:33780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231583AbhCSMWe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:22:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85A8364F77;
-        Fri, 19 Mar 2021 12:22:30 +0000 (UTC)
+        id S230134AbhCSMWo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Mar 2021 08:22:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD0D56146D;
+        Fri, 19 Mar 2021 12:22:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616156554;
-        bh=BmKp/FA0g7ZOg1oLsp7e01PpVXipfwCQdHRKfNzoDDM=;
+        s=k20201202; t=1616156564;
+        bh=ukedJXvpQTbwD5ndIACI9Ikh1mH7iQqGENUZObVcIwU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VHydWS/gxndxS4SVlDM4TQ6N9SyKuRC65/D3U4fmIsWWQBqe/VzqOPgq1MFimtm70
-         7htJWG3A3uC8YgHjqTd4cn7PadqAVp87GWm2tyfPculEOJStvi4vDxVH/QOcYY3LAI
-         csOO++eji+POL2QNeLlS3g40QCdGnurNN2tI4/CS6gXv1eUu2LMDEnPef+yQFzwiGA
-         Rw4RS3rHiZ9Ke20MO+8WrRRBf6bh6Wd89ch4MOU80BlUBSxvJcua+5tP2jopeunzx0
-         wm0+GjC4TZFi9D8acHUccLPEgdX3qG94yb5379ih/6h1Dj/CoENipvQuUo00nceNlQ
-         Y4ZUVY7A4DLtw==
+        b=gQXlPgdGSdAwo/qrfXPCoR+3vURgm8A00MpzX042Oe1kgE4C1KtRI9DjAOTXpVqgM
+         Ih3jwfoF6KheL/9Yf0aOVO5R3NgekjdZXSKntZmAKXcKL09fsVboSILwYo0hfVTvzT
+         BSgzwB1Co8Xhki8hc0e2o3uNfOu/VpqQx64P0Guzx+rU1Izm4yUBm3lsOykOUvEgOl
+         iBNNl4q3d0n3KjgBVZFhCzfeqgnv4xG7NBMG/IyYNV2zyWV5ZyEYWUAXLzvXuc5edA
+         gsyar+YXWUZCuNhfnBPJ+WrRdGj/sm/m9MjfMIVFyUdJpA15lvUGkFrmQErSma4v7O
+         xEA0SbYZdiRlQ==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@kernel.org>
@@ -32,9 +32,9 @@ Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
         ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
         Josh Poimboeuf <jpoimboe@redhat.com>,
         linux-ia64@vger.kernel.org
-Subject: [PATCH -tip v3 04/11] kprobes: Add kretprobe_find_ret_addr() for searching return address
-Date:   Fri, 19 Mar 2021 21:22:28 +0900
-Message-Id: <161615654801.306069.1595034827570242102.stgit@devnote2>
+Subject: [PATCH -tip v3 05/11] x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
+Date:   Fri, 19 Mar 2021 21:22:39 +0900
+Message-Id: <161615655969.306069.4545805781593088526.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <161615650355.306069.17260992641363840330.stgit@devnote2>
 References: <161615650355.306069.17260992641363840330.stgit@devnote2>
@@ -46,183 +46,61 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add kretprobe_find_ret_addr() for searching correct return address
-from kretprobe instance list.
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- Changes in v3:
-  - Remove generic stacktrace fixup. Instead, it should be solved in
-    each unwinder. This just provide the generic interface.
- Changes in v2:
-  - Add is_kretprobe_trampoline() for checking address outside of
-    kretprobe_find_ret_addr()
-  - Remove unneeded addr from kretprobe_find_ret_addr()
-  - Rename fixup_kretprobe_tramp_addr() to fixup_kretprobe_trampoline()
----
- include/linux/kprobes.h |   22 +++++++++++
- kernel/kprobes.c        |   90 +++++++++++++++++++++++++++++++++--------------
- 2 files changed, 86 insertions(+), 26 deletions(-)
+Add UNWIND_HINT_FUNC on kretporbe_trampoline code so that ORC
+information is generated on the kretprobe_trampoline correctly.
 
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 65dadd4238a2..f530f82a046d 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -215,6 +215,14 @@ static nokprobe_inline void *kretprobe_trampoline_addr(void)
- 	return dereference_function_descriptor(kretprobe_trampoline);
- }
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ [MH] Add patch description.
+---
+ arch/x86/include/asm/unwind_hints.h |    5 +++++
+ arch/x86/kernel/kprobes/core.c      |    3 ++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/unwind_hints.h b/arch/x86/include/asm/unwind_hints.h
+index 8e574c0afef8..8b33674288ea 100644
+--- a/arch/x86/include/asm/unwind_hints.h
++++ b/arch/x86/include/asm/unwind_hints.h
+@@ -52,6 +52,11 @@
+ 	UNWIND_HINT sp_reg=ORC_REG_SP sp_offset=8 type=UNWIND_HINT_TYPE_FUNC
+ .endm
  
-+static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
-+{
-+	return (void *)addr == kretprobe_trampoline_addr();
-+}
++#else
 +
-+unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
-+				      struct llist_node **cur);
++#define UNWIND_HINT_FUNC \
++	UNWIND_HINT(ORC_REG_SP, 8, UNWIND_HINT_TYPE_FUNC, 0)
 +
- /* If the trampoline handler called from a kprobe, use this version */
- unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
- 					     void *frame_pointer);
-@@ -514,6 +522,20 @@ static inline bool is_kprobe_optinsn_slot(unsigned long addr)
- }
- #endif
+ #endif /* __ASSEMBLY__ */
  
-+#if !defined(CONFIG_KRETPROBES)
-+static nokprobe_inline bool is_kretprobe_trampoline(unsigned long addr)
-+{
-+	return false;
-+}
-+
-+static nokprobe_inline
-+unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
-+				      struct llist_node **cur)
-+{
-+	return 0;
-+}
-+#endif
-+
- /* Returns true if kprobes handled the fault */
- static nokprobe_inline bool kprobe_page_fault(struct pt_regs *regs,
- 					      unsigned int trap)
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 75c0a58c19c2..cf19edc038e4 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1858,45 +1858,68 @@ static struct notifier_block kprobe_exceptions_nb = {
+ #endif /* _ASM_X86_UNWIND_HINTS_H */
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 427d648fffcd..b31058a152b6 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -772,6 +772,7 @@ asm(
+ 	/* We don't bother saving the ss register */
+ #ifdef CONFIG_X86_64
+ 	"	pushq %rsp\n"
++	UNWIND_HINT_FUNC
+ 	"	pushfq\n"
+ 	SAVE_REGS_STRING
+ 	"	movq %rsp, %rdi\n"
+@@ -782,6 +783,7 @@ asm(
+ 	"	popfq\n"
+ #else
+ 	"	pushl %esp\n"
++	UNWIND_HINT_FUNC
+ 	"	pushfl\n"
+ 	SAVE_REGS_STRING
+ 	"	movl %esp, %eax\n"
+@@ -795,7 +797,6 @@ asm(
+ 	".size kretprobe_trampoline, .-kretprobe_trampoline\n"
+ );
+ NOKPROBE_SYMBOL(kretprobe_trampoline);
+-STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
  
- #ifdef CONFIG_KRETPROBES
  
--unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
--					     void *frame_pointer)
-+/* This assumes the tsk is current or the task which is not running. */
-+static unsigned long __kretprobe_find_ret_addr(struct task_struct *tsk,
-+					       struct llist_node **cur)
- {
--	kprobe_opcode_t *correct_ret_addr = NULL;
- 	struct kretprobe_instance *ri = NULL;
--	struct llist_node *first, *node;
--	struct kretprobe *rp;
-+	struct llist_node *node = *cur;
-+
-+	if (!node)
-+		node = tsk->kretprobe_instances.first;
-+	else
-+		node = node->next;
- 
--	/* Find all nodes for this frame. */
--	first = node = current->kretprobe_instances.first;
- 	while (node) {
- 		ri = container_of(node, struct kretprobe_instance, llist);
--
--		BUG_ON(ri->fp != frame_pointer);
--
- 		if (ri->ret_addr != kretprobe_trampoline_addr()) {
--			correct_ret_addr = ri->ret_addr;
--			/*
--			 * This is the real return address. Any other
--			 * instances associated with this task are for
--			 * other calls deeper on the call stack
--			 */
--			goto found;
-+			*cur = node;
-+			return (unsigned long)ri->ret_addr;
- 		}
--
- 		node = node->next;
- 	}
--	pr_err("Oops! Kretprobe fails to find correct return address.\n");
--	BUG_ON(1);
-+	return 0;
-+}
-+NOKPROBE_SYMBOL(__kretprobe_find_ret_addr);
- 
--found:
--	/* Unlink all nodes for this frame. */
--	current->kretprobe_instances.first = node->next;
--	node->next = NULL;
-+unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
-+				      struct llist_node **cur)
-+{
-+	struct kretprobe_instance *ri = NULL;
-+	unsigned long ret;
-+
-+	do {
-+		ret = __kretprobe_find_ret_addr(tsk, cur);
-+		if (!ret)
-+			return ret;
-+		ri = container_of(*cur, struct kretprobe_instance, llist);
-+	} while (ri->fp != fp);
-+
-+	return ret;
-+}
-+NOKPROBE_SYMBOL(kretprobe_find_ret_addr);
- 
--	/* Run them..  */
-+unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
-+					     void *frame_pointer)
-+{
-+	kprobe_opcode_t *correct_ret_addr = NULL;
-+	struct kretprobe_instance *ri = NULL;
-+	struct llist_node *first, *node = NULL;
-+	struct kretprobe *rp;
-+
-+	/* Find correct address and all nodes for this frame. */
-+	correct_ret_addr = (void *)__kretprobe_find_ret_addr(current, &node);
-+	if (!correct_ret_addr) {
-+		pr_err("Oops! Kretprobe fails to find correct return address.\n");
-+		BUG_ON(1);
-+	}
-+
-+	/* Run them. */
-+	first = current->kretprobe_instances.first;
- 	while (first) {
- 		ri = container_of(first, struct kretprobe_instance, llist);
--		first = first->next;
-+
-+		BUG_ON(ri->fp != frame_pointer);
- 
- 		rp = get_kretprobe(ri);
- 		if (rp && rp->handler) {
-@@ -1907,6 +1930,21 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
- 			rp->handler(ri, regs);
- 			__this_cpu_write(current_kprobe, prev);
- 		}
-+		if (first == node)
-+			break;
-+
-+		first = first->next;
-+	}
-+
-+	/* Unlink all nodes for this frame. */
-+	first = current->kretprobe_instances.first;
-+	current->kretprobe_instances.first = node->next;
-+	node->next = NULL;
-+
-+	/* Recycle them.  */
-+	while (first) {
-+		ri = container_of(first, struct kretprobe_instance, llist);
-+		first = first->next;
- 
- 		recycle_rp_inst(ri);
- 	}
+ /*
 
