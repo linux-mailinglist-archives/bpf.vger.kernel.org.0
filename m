@@ -2,89 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A7934258B
-	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 19:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2825E34261B
+	for <lists+bpf@lfdr.de>; Fri, 19 Mar 2021 20:22:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhCSS6X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Mar 2021 14:58:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44544 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230523AbhCSS6S (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 19 Mar 2021 14:58:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616180297;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pDVcUSuxN+AGx4nzch+V6p1eawpIf3wS5PvMlDH1DPI=;
-        b=XXggucJPAT1NDPdgFflNzzzvjykcHuaO9PIQhOtc0EaEo6y8Iz0cjw9C07Fi693fHvTspf
-        75AyJa4wnUTSeED4qvb0DUfjD/li5Gt65Ifhkr1xI9gdhsMEncWQgtW+EEya6hGDAP6iYE
-        AQraD4P6ntw7BSbk3XE9ceQoojg8+es=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-225-36S8nsVTMcqeiOWzlWQ6zw-1; Fri, 19 Mar 2021 14:58:15 -0400
-X-MC-Unique: 36S8nsVTMcqeiOWzlWQ6zw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DCBE29CC00;
-        Fri, 19 Mar 2021 18:58:13 +0000 (UTC)
-Received: from krava (unknown [10.40.195.94])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 2BD2110016FD;
-        Fri, 19 Mar 2021 18:58:12 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 19:58:11 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S230348AbhCSTVy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Mar 2021 15:21:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231152AbhCSTV0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Mar 2021 15:21:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBE7361962;
+        Fri, 19 Mar 2021 19:21:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616181686;
+        bh=DColqhi4bJMbEWnOeMyhyGFQdglgX+BH1SDZZ6XcyI0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ep+LmIFAPlsBCd+rkb06kARKKPfAOOU4LGjOZhElgxJmrL64QCnGQ85nGNkAdiHma
+         CKEqZ4QT0LXSlD+Sc9rAJSw09Bg/elLTArkTWLj9rIxtWjLnFfG341ebXfMAGEd2XN
+         8dLY0knpo1lDbwaKIggjH0PfI4PgVzMuNlXsR/5zDGg5HSShyT7muoU29VulZiLvN4
+         uDKb2N9bNoR5WZXhWK76ARy0RBRJx2rEl+JejWMPi0fN8Ygjh4XoIF9bwD9DaPPcgp
+         LelwAwwCfkCQkZ21fz72bZ679ZHOyOpthPL0C0iGsTKsQ0rWoBz9Ra3iHMHqQtIm0d
+         6VLj7Kr10Temw==
+From:   KP Singh <kpsingh@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v4 bpf-next 07/12] libbpf: add BPF static linker BTF and
- BTF.ext support
-Message-ID: <YFT0Q+mVbTEI1rem@krava>
-References: <20210318194036.3521577-1-andrii@kernel.org>
- <20210318194036.3521577-8-andrii@kernel.org>
- <YFTQExmhNhMcmNOb@krava>
- <CAEf4BzYKassG0AP372Q=Qsd+qqy7=YGe2XTXR4zG0c5oQ7Nkeg@mail.gmail.com>
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: [PATCH bpf-next] libbpf: Add explicit padding to btf_dump_emit_type_decl_opts
+Date:   Fri, 19 Mar 2021 19:21:17 +0000
+Message-Id: <20210319192117.2310658-1-kpsingh@kernel.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYKassG0AP372Q=Qsd+qqy7=YGe2XTXR4zG0c5oQ7Nkeg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 11:39:01AM -0700, Andrii Nakryiko wrote:
-> On Fri, Mar 19, 2021 at 9:23 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Thu, Mar 18, 2021 at 12:40:31PM -0700, Andrii Nakryiko wrote:
-> >
-> > SNIP
-> >
-> > > +
-> > > +     return NULL;
-> > > +}
-> > > +
-> > > +static int linker_fixup_btf(struct src_obj *obj)
-> > > +{
-> > > +     const char *sec_name;
-> > > +     struct src_sec *sec;
-> > > +     int i, j, n, m;
-> > > +
-> > > +     n = btf__get_nr_types(obj->btf);
-> >
-> > hi,
-> > I'm getting bpftool crash when building tests,
-> >
-> > looks like above obj->btf can be NULL:
-> 
-> I lost if (!obj->btf) return 0; somewhere along the rebases. I'll send
-> a fix shortly. But how did you end up with selftests BPF objects built
-> without BTF?
+Similar to
+https://lore.kernel.org/bpf/20210313210920.1959628-2-andrii@kernel.org/
 
-no idea.. I haven't even updated llvm for almost 3 days now ;-)
+When DECLARE_LIBBPF_OPTS is used with inline field initialization, e.g:
 
-jirka
+  DCLARE_LIBBPF_OPTS(btf_dump_emit_type_decl_opts, opts,
+    .field_name = var_ident,
+    .indent_level = 2,
+    .strip_mods = strip_mods,
+  );
+
+and compiled in debug mode, the compiler generates code which
+leaves the padding uninitialized and triggers errors within libbpf APIs
+which require strict zero initialization of OPTS structs.
+
+Adding anonymous padding field fixes the issue.
+
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Fixes: 9f81654eebe8 ("libbpf: Expose BTF-to-C type declaration emitting API")
+Signed-off-by: KP Singh <kpsingh@kernel.org>
+---
+ tools/lib/bpf/btf.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+index 3b0b17ba94a1..b54f1c3ebd57 100644
+--- a/tools/lib/bpf/btf.h
++++ b/tools/lib/bpf/btf.h
+@@ -176,6 +176,7 @@ struct btf_dump_emit_type_decl_opts {
+ 	int indent_level;
+ 	/* strip all the const/volatile/restrict mods */
+ 	bool strip_mods;
++	size_t :0;
+ };
+ #define btf_dump_emit_type_decl_opts__last_field strip_mods
+ 
+-- 
+2.31.0.rc2.261.g7f71774620-goog
 
