@@ -2,90 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73178342F23
-	for <lists+bpf@lfdr.de>; Sat, 20 Mar 2021 20:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF67A342F84
+	for <lists+bpf@lfdr.de>; Sat, 20 Mar 2021 21:29:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhCTTHd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Mar 2021 15:07:33 -0400
-Received: from wforward1-smtp.messagingengine.com ([64.147.123.30]:47849 "EHLO
-        wforward1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229920AbhCTTHX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 20 Mar 2021 15:07:23 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailforward.west.internal (Postfix) with ESMTP id 78AB910D1;
-        Sat, 20 Mar 2021 15:07:22 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sat, 20 Mar 2021 15:07:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=65SJSfwlPLdBSTATDTczUb8ZLLUVsy/Z/UCcypFoR
-        bg=; b=cUimlmF5LE/H3xeEfqrrZbL1u3apZqABw8hcMp+qc6+SHmjz+j/8/ijRW
-        haYJowW3km7JswAXmG/PZA464qrQ3FBMPA3QNPj+QiZxvkzj2ZLhhidFSaIiP+nx
-        YaNDZ3Is1eG5km0FlMkNh12RFPty/W4lZSHaIkk4CWce5RsqUIF2YI8X8QAv72xq
-        OlZY2LS+bc6QDcVH5ktgDTc3RwpWk7Qty7y74oVCg7cWEKeZRy7o477G4ikobDsQ
-        S3uMnKu2nPrpPidl5AAAKsbyjgEUO/bM28s+cuDEK52PyBGzDDrcW5ED7BLsCWMI
-        Uy+dJWkFgJgik0I4RTyYYpYANrUTA==
-X-ME-Sender: <xms:6UdWYNLPzpkIfPT37RXI5tRUrZbpVwR05Wu1tS6HTuzyW1hRRJassg>
-    <xme:6UdWYJJEU0V0gtDVd28A89Yh6X9UMQkroIAhmnxr1r59RfhGzFYnefQ6nn3ZvVgnH
-    vCH1Oye_-eIBtG0NH4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudegtddgudduhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpegtggfuhfgjfffgkfhfvffosehtjehmtdhhtddvnecuhfhrohhmpeftrghf
-    rggvlhcuffgrvhhiugcuvfhinhhotghouceorhgrfhgrvghlughtihhnohgtohesuhgsuh
-    hnthhurdgtohhmqeenucggtffrrghtthgvrhhnpeeugfffudffkeeggeeffeegkefgkefg
-    udduudejleekfeehvdeikeetheejjeeijeenucfkphepudefkedrvddtgedrvdeirdduie
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghf
-    rggvlhguthhinhhotghosehusghunhhtuhdrtghomh
-X-ME-Proxy: <xmx:6UdWYFu2Bx5xHyO3AtbuWC5b1iRVIOUfudTGcDTtlURK1zAUJhZV8g>
-    <xmx:6UdWYObS5QFu2JSx98Ma_8v03xw9ZMnIBYC3Rt89cE5HFwiEDMEl6w>
-    <xmx:6UdWYEY0oWZE-DE9i5DR4FDJZzjFhtu82S5D_J8JYa0LMl0FN8e0Ag>
-    <xmx:6kdWYK23MK6a5p0r37dvkyH5GTiK5axv-u-QW5oFwKlkZC_TCIr5RMH3vl4>
-Received: from [192.168.100.154] (unknown [138.204.26.16])
-        by mail.messagingengine.com (Postfix) with ESMTPA id AF1F01080054;
-        Sat, 20 Mar 2021 15:07:20 -0400 (EDT)
-Content-Type: text/plain;
-        charset=us-ascii;
-        delsp=yes;
-        format=flowed
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH] libbpf: add bpf object kern_version attribute setter
+        id S229780AbhCTU2k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Mar 2021 16:28:40 -0400
+Received: from mail-qk1-f171.google.com ([209.85.222.171]:35524 "EHLO
+        mail-qk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhCTU20 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Mar 2021 16:28:26 -0400
+Received: by mail-qk1-f171.google.com with SMTP id i9so6643996qka.2
+        for <bpf@vger.kernel.org>; Sat, 20 Mar 2021 13:28:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P9DDMbJINT3gpciaWjJ6aXUjz+8PArxXPMNONo4sVgo=;
+        b=rD6e8xCGWBs48w7R3Fw/p1Aod9l2AUrPqj3HWCWxiZRAedNz9pRS2bpjc4jKkxcLnx
+         iuVlG5qRQT1KIESc8pj7nzGZv3Xj86+XrUIGQYZ6yEO+6df/vKFoMQw17LboYG9UrjNw
+         edW/8iU4rBJISDO4Wvnsdk1W3wsMvGtKVhIKR9NIFr0k/OFqRsNWFyFdcAHe2enStHtp
+         PneHM7I8Vi+OENW3IlKq7ezukh0gD46qO5D3jnE8CnvNPgBiHyAqo/OhiJZOPHIIX/w4
+         bpRTYc3uHqYEeQqTo3mvKRVqOzMncvsGfa5R3YF6oNj11pHmKmtr5SucDvhvrZ5DvCkn
+         myxg==
+X-Gm-Message-State: AOAM533gKCWL04sAoBAPXsOY0MU0uO+e2t9IV81SNRr1FOIes254T108
+        GPBiBIz4xqHkMXb/HfR0Fdx1PQivL5Ka
+X-Google-Smtp-Source: ABdhPJyEO1iwaO6xq10aK5slzQfixTeSogY72ONC4Y1/cB8yAa/mUx4mtaZnHOHpAiSdVtt2Rj7wZg==
+X-Received: by 2002:a37:bd7:: with SMTP id 206mr4554612qkl.284.1616272105355;
+        Sat, 20 Mar 2021 13:28:25 -0700 (PDT)
+Received: from fujitsu.celeiro.cu ([138.204.26.16])
+        by smtp.gmail.com with ESMTPSA id 46sm6248019qte.7.2021.03.20.13.28.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Mar 2021 13:28:24 -0700 (PDT)
 From:   Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
-In-Reply-To: <CAEf4BzZ-gwnMGrKQJk1eeF_GmM703h13oXe1NXJhrXpF1Vw-Mg@mail.gmail.com>
-Date:   Sat, 20 Mar 2021 16:07:16 -0300
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
-X-Mao-Original-Outgoing-Id: 637960036.139249-ecd43e0f288532b24ec5079de235d418
-Content-Transfer-Encoding: 7bit
-Message-Id: <757481A6-503F-4637-A017-0834E68FFCCC@ubuntu.com>
-References: <20210320041623.2241647-1-rafaeldtinoco@ubuntu.com>
- <CAEf4Bzah-xFhO-hDzsZZoynsR_BuihAHVQ4jUMPYqyPstdJ9_Q@mail.gmail.com>
- <CAEf4BzZ-gwnMGrKQJk1eeF_GmM703h13oXe1NXJhrXpF1Vw-Mg@mail.gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+To:     bpf@vger.kernel.org, rafaeldtinoco@ubuntu.com
+Cc:     andrii.nakryiko@gmail.com, daniel@iogearbox.net
+Subject: [PATCH v2 bpf-next] libbpf: add bpf object kern_version attribute setter
+Date:   Sat, 20 Mar 2021 17:28:21 -0300
+Message-Id: <20210320202821.3165030-1-rafaeldtinoco@ubuntu.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
->>> +int bpf_object__set_kversion(struct bpf_object *obj, char *kern_version)
->>> +{
->>> +       __u32 major, minor, patch;
->>> +
->>> +       if (!kern_version) {
->>> +               obj->kern_version = 0;
->>> +               return 0;
->>> +       }
->>> +       if (sscanf(kern_version, "%u.%u.%u", &major, &minor, &patch) !=  
->>> 3)
->>
->> given SEC("version") expects `int` and bpf_object__kversion() returns
->> int, I think it's appropriate for bpf_object__set_kversion() to accept
->> just opaque int as well. Please also check that obj is not loaded and
->> return error if it is. Thanks!
->
-> Oh, and please use [PATCH bpf-next] subject prefix to specify that
-> this is destined to the bpf-next tree. You'll also add v2 in between
-> PATCH and bpf-next for the next version, of course.
+Unfortunately some distros don't have their kernel version defined
+accurately in <linux/version.h> due to different long term support
+reasons.
 
-will do, and sorry for the initial burden, getting used to libbpf devel.
+It is important to have a way to override the bpf kern_version
+attribute during runtime: some old kernels might still check for
+kern_version attribute during bpf_prog_load().
+
+Signed-off-by: Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
+---
+ src/libbpf.c | 10 ++++++++++
+ src/libbpf.h |  1 +
+ 2 files changed, 11 insertions(+)
+
+diff --git a/src/libbpf.c b/src/libbpf.c
+index 2f351d3..3b1c79f 100644
+--- a/src/libbpf.c
++++ b/src/libbpf.c
+@@ -8278,6 +8278,16 @@ int bpf_object__btf_fd(const struct bpf_object *obj)
+ 	return obj->btf ? btf__fd(obj->btf) : -1;
+ }
+ 
++int bpf_object__set_kversion(struct bpf_object *obj, __u32 kern_version)
++{
++	if (obj->loaded)
++		return -1;
++
++	obj->kern_version = kern_version;
++
++	return 0;
++}
++
+ int bpf_object__set_priv(struct bpf_object *obj, void *priv,
+ 			 bpf_object_clear_priv_t clear_priv)
+ {
+diff --git a/src/libbpf.h b/src/libbpf.h
+index 3c35eb4..f73ec5b 100644
+--- a/src/libbpf.h
++++ b/src/libbpf.h
+@@ -143,6 +143,7 @@ LIBBPF_API int bpf_object__unload(struct bpf_object *obj);
+ 
+ LIBBPF_API const char *bpf_object__name(const struct bpf_object *obj);
+ LIBBPF_API unsigned int bpf_object__kversion(const struct bpf_object *obj);
++LIBBPF_API int bpf_object__set_kversion(struct bpf_object *obj, __u32 kern_version);
+ 
+ struct btf;
+ LIBBPF_API struct btf *bpf_object__btf(const struct bpf_object *obj);
+-- 
+2.27.0
+
