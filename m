@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4222D34306D
-	for <lists+bpf@lfdr.de>; Sun, 21 Mar 2021 02:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A5E343078
+	for <lists+bpf@lfdr.de>; Sun, 21 Mar 2021 02:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbhCUA7C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Mar 2021 20:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46358 "EHLO
+        id S229815AbhCUBKK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Mar 2021 21:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbhCUA6e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Mar 2021 20:58:34 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8E1C061574;
-        Sat, 20 Mar 2021 17:58:34 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id f12so9808310qtq.4;
-        Sat, 20 Mar 2021 17:58:34 -0700 (PDT)
+        with ESMTP id S229787AbhCUBJ6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Mar 2021 21:09:58 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4E07C061574;
+        Sat, 20 Mar 2021 18:09:58 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id c4so7056519qkg.3;
+        Sat, 20 Mar 2021 18:09:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=j7g00KvxUaXEkg8CodXOQ9q9GuklDT0w1/LZTLeravI=;
-        b=JMw3ewJMtAVd4yTjqh7ux/RxZgrXnd8KPkfnLkFLrrZULV0hUGPQJmw+bI15dVx3qf
-         CQno9uPhunkDAmloEPQWGpmAVwrDS4kDVv2JqMU7bSmgofRFGHhA5lV6rIcGyPGh/BQg
-         eHlKQE3K1eBpGAj/4bWabWdAAZaqQd5j9xFklJD/11rfk3ogIgbPfXdd9lW/EXOx4aJ2
-         KutK1KefTuxZwW7ozYcwSNMCRT44AQIksSDtEZ+T+3DiQq89Ub5OCEgPcuRa2bqSZMOH
-         VbcsGplWvXC4W9sUXE3ynGNVCXn/+IUd5dBCrULp+QgDlrxVUsj7E1wmUgTH16unBRRP
-         +AIg==
+        bh=LLjFApal9gMK0Vx1mZd/SlRCzWigv0Q0T5Vb350wjfY=;
+        b=Lix9A6KbGtt46lOUgEVcJ8iZ4szAIjbq1m4AObtr6mgHNDLgO70SiiMQf4c9QOIHkA
+         cqnlKCWfD7T7aV1JKgJMNJjS+pw7xRT/Y/5c/j23HH+LUIJCUYD2lIC9OeNXrimgQ9U/
+         wd5rcBpE7SYyYgZJx2tULoEpgOQ1JsjA/DsHd4Qy7JgGY4ZF0slL+Ugn5cih/MFATBlS
+         byEtZItmDiMhwQkWswqR251Css1JlM2mAz0iOXsE1xlWVLp6d1ISX3Rj/Z8x/13pKbs1
+         QjjqGwTN5RUqygW/LKhskhJ9JOee5OqVj0yeXEW6XDZ31rdjwv3WveOUJjSISpj1aIxd
+         oWoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=j7g00KvxUaXEkg8CodXOQ9q9GuklDT0w1/LZTLeravI=;
-        b=HYYzNgtqbT8rB1YLmuzRkSNWcF+Ut9Q3XH8i3kNFI/ClSRuW6iF0+SyIq+uUxgYZoU
-         o3FFdwtzj5PFAHaFNyNY6VJHDiCqRBDH4ycP4BibEPwO23wmyYPqMqlbniVKW6ABAUHA
-         k0q5/5ugdLxQyWiVBkc+hDDiQDg/7nnm5DF2CuWRBSRWc3ZzGresj5MKVC3BJCKRsBzl
-         92zCxn4CsdOFE4M+9vO3SshdBuP0HXzQkie49gYhctd/ApY52P23sXvvzWXrIzgbndvC
-         6nDJSjq0o0VJ3mq3GDwUR/X4bTwoIjrMBzdXZXD7ALI1iIoV2m1IiAU3gnDecWjyjXPu
-         gGQQ==
-X-Gm-Message-State: AOAM532SCrGFcG+yjHDqIzVtL4pXNQPj5hR0i4jgnpypzakzeuqJyJN1
-        Kw41FJb/ask74ZzvYSQMPqg=
-X-Google-Smtp-Source: ABdhPJy96ZtyLWHigXJWo1rfi/ZX7PIoXySFPza2l2ON1lbJNeob/30XoVBuzhl4NZuqS5e9rNh8cw==
-X-Received: by 2002:ac8:4d95:: with SMTP id a21mr4515515qtw.304.1616288313236;
-        Sat, 20 Mar 2021 17:58:33 -0700 (PDT)
+        bh=LLjFApal9gMK0Vx1mZd/SlRCzWigv0Q0T5Vb350wjfY=;
+        b=rXgEP1Intm4XmE/mGIEAW0VIpJbTEUtGotfjkk4ltq76XX4oeK4bql0wCBikTkOSaz
+         LWfKg0XSLuOgziN+cUUUZSSxAnmpXet7+3Sl5wUamNATgc44LHiHBLCbqD6wIEo9NfU9
+         L1dndjyBZ3g49YWcOmIt+8UmqGwtRf4bg8VW1olFD1ehWUkxQ9GX+2ute5tM3Hvi68aD
+         BfPEhOWu1/hNhVjK33x6CKCh6PgHmgCh494r3blwnK+H2UmuaX9OTHmTRfIjD0bsWJLT
+         8TtrKPA4oh492Qu74tJMj8qD4yjgnScQg1WikW9VlekbgqvkZeM0kXd69vZTYKBcEh89
+         nj4Q==
+X-Gm-Message-State: AOAM533q2s4mWttUR2dt+MxKEEoBqEezK4ABEx+4VTOIusytV8OwiFNr
+        K7JfJb+F6AbVbu3ZnXsn82s=
+X-Google-Smtp-Source: ABdhPJx3zZaiRjkaCybT6CcSThfX623bMOcePVOKmOGP9s36WJ7j5xF0KPA3P/7eoyTF6e3+MQcLNQ==
+X-Received: by 2002:a37:8cd:: with SMTP id 196mr5028109qki.434.1616288997831;
+        Sat, 20 Mar 2021 18:09:57 -0700 (PDT)
 Received: from localhost.localdomain ([156.146.55.187])
-        by smtp.gmail.com with ESMTPSA id e14sm7748588qka.56.2021.03.20.17.58.26
+        by smtp.gmail.com with ESMTPSA id 73sm7816448qkk.131.2021.03.20.18.09.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 17:58:32 -0700 (PDT)
+        Sat, 20 Mar 2021 18:09:57 -0700 (PDT)
 From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
 To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
         mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
@@ -56,9 +56,9 @@ To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
         kpsingh@kernel.org, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] perf tools: Rudimentary typo fix
-Date:   Sun, 21 Mar 2021 06:27:55 +0530
-Message-Id: <20210321005755.26660-1-unixbhaskar@gmail.com>
+Subject: [PATCH] perf evlist: Mundane typo fix
+Date:   Sun, 21 Mar 2021 06:39:30 +0530
+Message-Id: <20210321010930.12489-1-unixbhaskar@gmail.com>
 X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -67,26 +67,26 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-s/archictures/architectures/
+s/explicitely/explicitly/
 
 Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- tools/perf/builtin-stat.c | 2 +-
+ tools/perf/builtin-top.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 2e2e4a8345ea..5cc5eeae6ade 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -1705,7 +1705,7 @@ static int add_default_attributes(void)
- 	bzero(&errinfo, sizeof(errinfo));
- 	if (transaction_run) {
- 		/* Handle -T as -M transaction. Once platform specific metrics
--		 * support has been added to the json files, all archictures
-+		 * support has been added to the json files, all architectures
- 		 * will use this approach. To determine transaction support
- 		 * on an architecture test for such a metric name.
+diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
+index 3673c04d16b6..173ace43f845 100644
+--- a/tools/perf/builtin-top.c
++++ b/tools/perf/builtin-top.c
+@@ -1607,7 +1607,7 @@ int cmd_top(int argc, const char **argv)
+ 	if (status) {
+ 		/*
+ 		 * Some arches do not provide a get_cpuid(), so just use pr_debug, otherwise
+-		 * warn the user explicitely.
++		 * warn the user explicitly.
  		 */
+ 		eprintf(status == ENOSYS ? 1 : 0, verbose,
+ 			"Couldn't read the cpuid for this machine: %s\n",
 --
 2.30.1
 
