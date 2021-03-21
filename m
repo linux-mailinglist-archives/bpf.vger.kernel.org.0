@@ -2,97 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF67A342F84
-	for <lists+bpf@lfdr.de>; Sat, 20 Mar 2021 21:29:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4222D34306D
+	for <lists+bpf@lfdr.de>; Sun, 21 Mar 2021 02:04:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbhCTU2k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Mar 2021 16:28:40 -0400
-Received: from mail-qk1-f171.google.com ([209.85.222.171]:35524 "EHLO
-        mail-qk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbhCTU20 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Mar 2021 16:28:26 -0400
-Received: by mail-qk1-f171.google.com with SMTP id i9so6643996qka.2
-        for <bpf@vger.kernel.org>; Sat, 20 Mar 2021 13:28:26 -0700 (PDT)
+        id S229791AbhCUA7C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Mar 2021 20:59:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229772AbhCUA6e (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Mar 2021 20:58:34 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8E1C061574;
+        Sat, 20 Mar 2021 17:58:34 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id f12so9808310qtq.4;
+        Sat, 20 Mar 2021 17:58:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j7g00KvxUaXEkg8CodXOQ9q9GuklDT0w1/LZTLeravI=;
+        b=JMw3ewJMtAVd4yTjqh7ux/RxZgrXnd8KPkfnLkFLrrZULV0hUGPQJmw+bI15dVx3qf
+         CQno9uPhunkDAmloEPQWGpmAVwrDS4kDVv2JqMU7bSmgofRFGHhA5lV6rIcGyPGh/BQg
+         eHlKQE3K1eBpGAj/4bWabWdAAZaqQd5j9xFklJD/11rfk3ogIgbPfXdd9lW/EXOx4aJ2
+         KutK1KefTuxZwW7ozYcwSNMCRT44AQIksSDtEZ+T+3DiQq89Ub5OCEgPcuRa2bqSZMOH
+         VbcsGplWvXC4W9sUXE3ynGNVCXn/+IUd5dBCrULp+QgDlrxVUsj7E1wmUgTH16unBRRP
+         +AIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=P9DDMbJINT3gpciaWjJ6aXUjz+8PArxXPMNONo4sVgo=;
-        b=rD6e8xCGWBs48w7R3Fw/p1Aod9l2AUrPqj3HWCWxiZRAedNz9pRS2bpjc4jKkxcLnx
-         iuVlG5qRQT1KIESc8pj7nzGZv3Xj86+XrUIGQYZ6yEO+6df/vKFoMQw17LboYG9UrjNw
-         edW/8iU4rBJISDO4Wvnsdk1W3wsMvGtKVhIKR9NIFr0k/OFqRsNWFyFdcAHe2enStHtp
-         PneHM7I8Vi+OENW3IlKq7ezukh0gD46qO5D3jnE8CnvNPgBiHyAqo/OhiJZOPHIIX/w4
-         bpRTYc3uHqYEeQqTo3mvKRVqOzMncvsGfa5R3YF6oNj11pHmKmtr5SucDvhvrZ5DvCkn
-         myxg==
-X-Gm-Message-State: AOAM533gKCWL04sAoBAPXsOY0MU0uO+e2t9IV81SNRr1FOIes254T108
-        GPBiBIz4xqHkMXb/HfR0Fdx1PQivL5Ka
-X-Google-Smtp-Source: ABdhPJyEO1iwaO6xq10aK5slzQfixTeSogY72ONC4Y1/cB8yAa/mUx4mtaZnHOHpAiSdVtt2Rj7wZg==
-X-Received: by 2002:a37:bd7:: with SMTP id 206mr4554612qkl.284.1616272105355;
-        Sat, 20 Mar 2021 13:28:25 -0700 (PDT)
-Received: from fujitsu.celeiro.cu ([138.204.26.16])
-        by smtp.gmail.com with ESMTPSA id 46sm6248019qte.7.2021.03.20.13.28.23
+        bh=j7g00KvxUaXEkg8CodXOQ9q9GuklDT0w1/LZTLeravI=;
+        b=HYYzNgtqbT8rB1YLmuzRkSNWcF+Ut9Q3XH8i3kNFI/ClSRuW6iF0+SyIq+uUxgYZoU
+         o3FFdwtzj5PFAHaFNyNY6VJHDiCqRBDH4ycP4BibEPwO23wmyYPqMqlbniVKW6ABAUHA
+         k0q5/5ugdLxQyWiVBkc+hDDiQDg/7nnm5DF2CuWRBSRWc3ZzGresj5MKVC3BJCKRsBzl
+         92zCxn4CsdOFE4M+9vO3SshdBuP0HXzQkie49gYhctd/ApY52P23sXvvzWXrIzgbndvC
+         6nDJSjq0o0VJ3mq3GDwUR/X4bTwoIjrMBzdXZXD7ALI1iIoV2m1IiAU3gnDecWjyjXPu
+         gGQQ==
+X-Gm-Message-State: AOAM532SCrGFcG+yjHDqIzVtL4pXNQPj5hR0i4jgnpypzakzeuqJyJN1
+        Kw41FJb/ask74ZzvYSQMPqg=
+X-Google-Smtp-Source: ABdhPJy96ZtyLWHigXJWo1rfi/ZX7PIoXySFPza2l2ON1lbJNeob/30XoVBuzhl4NZuqS5e9rNh8cw==
+X-Received: by 2002:ac8:4d95:: with SMTP id a21mr4515515qtw.304.1616288313236;
+        Sat, 20 Mar 2021 17:58:33 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.55.187])
+        by smtp.gmail.com with ESMTPSA id e14sm7748588qka.56.2021.03.20.17.58.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Mar 2021 13:28:24 -0700 (PDT)
-From:   Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
-To:     bpf@vger.kernel.org, rafaeldtinoco@ubuntu.com
-Cc:     andrii.nakryiko@gmail.com, daniel@iogearbox.net
-Subject: [PATCH v2 bpf-next] libbpf: add bpf object kern_version attribute setter
-Date:   Sat, 20 Mar 2021 17:28:21 -0300
-Message-Id: <20210320202821.3165030-1-rafaeldtinoco@ubuntu.com>
-X-Mailer: git-send-email 2.27.0
+        Sat, 20 Mar 2021 17:58:32 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] perf tools: Rudimentary typo fix
+Date:   Sun, 21 Mar 2021 06:27:55 +0530
+Message-Id: <20210321005755.26660-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Unfortunately some distros don't have their kernel version defined
-accurately in <linux/version.h> due to different long term support
-reasons.
 
-It is important to have a way to override the bpf kern_version
-attribute during runtime: some old kernels might still check for
-kern_version attribute during bpf_prog_load().
+s/archictures/architectures/
 
-Signed-off-by: Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- src/libbpf.c | 10 ++++++++++
- src/libbpf.h |  1 +
- 2 files changed, 11 insertions(+)
+ tools/perf/builtin-stat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/libbpf.c b/src/libbpf.c
-index 2f351d3..3b1c79f 100644
---- a/src/libbpf.c
-+++ b/src/libbpf.c
-@@ -8278,6 +8278,16 @@ int bpf_object__btf_fd(const struct bpf_object *obj)
- 	return obj->btf ? btf__fd(obj->btf) : -1;
- }
- 
-+int bpf_object__set_kversion(struct bpf_object *obj, __u32 kern_version)
-+{
-+	if (obj->loaded)
-+		return -1;
-+
-+	obj->kern_version = kern_version;
-+
-+	return 0;
-+}
-+
- int bpf_object__set_priv(struct bpf_object *obj, void *priv,
- 			 bpf_object_clear_priv_t clear_priv)
- {
-diff --git a/src/libbpf.h b/src/libbpf.h
-index 3c35eb4..f73ec5b 100644
---- a/src/libbpf.h
-+++ b/src/libbpf.h
-@@ -143,6 +143,7 @@ LIBBPF_API int bpf_object__unload(struct bpf_object *obj);
- 
- LIBBPF_API const char *bpf_object__name(const struct bpf_object *obj);
- LIBBPF_API unsigned int bpf_object__kversion(const struct bpf_object *obj);
-+LIBBPF_API int bpf_object__set_kversion(struct bpf_object *obj, __u32 kern_version);
- 
- struct btf;
- LIBBPF_API struct btf *bpf_object__btf(const struct bpf_object *obj);
--- 
-2.27.0
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index 2e2e4a8345ea..5cc5eeae6ade 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -1705,7 +1705,7 @@ static int add_default_attributes(void)
+ 	bzero(&errinfo, sizeof(errinfo));
+ 	if (transaction_run) {
+ 		/* Handle -T as -M transaction. Once platform specific metrics
+-		 * support has been added to the json files, all archictures
++		 * support has been added to the json files, all architectures
+ 		 * will use this approach. To determine transaction support
+ 		 * on an architecture test for such a metric name.
+ 		 */
+--
+2.30.1
 
