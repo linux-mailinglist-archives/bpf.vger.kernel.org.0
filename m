@@ -2,98 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 413E834308E
-	for <lists+bpf@lfdr.de>; Sun, 21 Mar 2021 02:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3AA34329D
+	for <lists+bpf@lfdr.de>; Sun, 21 Mar 2021 13:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhCUBrp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Mar 2021 21:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhCUBrN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Mar 2021 21:47:13 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A36C061574;
-        Sat, 20 Mar 2021 18:47:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Type:MIME-Version:
-        References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uYDZvvaNGmPpkVhQLZEx2KCIag/oP+2xFHKcxdlqhQo=; b=qqQNtG+JY/kxtaf/R2TzOhWWOH
-        J+1eb530ifNxarbBJoAvv3VGjBZNZ0f07MMVeQ0LZZpZvLPuNsHweJHuTHcyYe6MmA88hm0R/JHOW
-        vzzWOkQZNVHmLBYqJ4cLPuj1ntihVdYyeSwLZ5n/N6+xjFTDuxwUrOs+TQ8/M5+Im6ggoSg7F19q6
-        V27GNuNZIq2I5qmsQGQSNDgc3SwA/pYD+Uz1PLZpn9tS2WJKKW+pQyS7E+4Qva+ia7nbZTLxk0bcq
-        o5CnCpv4q2P/NFDbeJp3pIgI8xaeynXakohEDv5F+1OMIuZS4X6fcyCJU/3cptvhI4JlaqskrmRYO
-        HH1P4EwA==;
-Received: from rdunlap (helo=localhost)
-        by bombadil.infradead.org with local-esmtp (Exim 4.94 #2 (Red Hat Linux))
-        id 1lNnB6-0028L0-UY; Sun, 21 Mar 2021 01:46:54 +0000
-Date:   Sat, 20 Mar 2021 18:46:52 -0700 (PDT)
-From:   Randy Dunlap <rdunlap@bombadil.infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] perf evlist: Mundane typo fix
-In-Reply-To: <20210321010930.12489-1-unixbhaskar@gmail.com>
-Message-ID: <525238d-54ba-a2f7-710-7abb9b42aacc@bombadil.infradead.org>
-References: <20210321010930.12489-1-unixbhaskar@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Sender: Randy Dunlap <rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20210320_184653_004486_F5A1524E 
-X-CRM114-Status: GOOD (  11.25  )
-X-Spam-Score: -0.0 (/)
-X-Spam-Report: Spam detection software, running on the system "bombadil.infradead.org",
- has NOT identified this incoming email as spam.  The original
- message has been attached to this so you can view it or label
- similar future email.  If you have any questions, see
- the administrator of that system for details.
- Content preview:  On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote: > > s/explicitely/explicitly/
-    > > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com> Acked-by: Randy
-    Dunlap <rdunlap@infradead.org> 
- Content analysis details:   (-0.0 points, 5.0 required)
-  pts rule name              description
- ---- ---------------------- --------------------------------------------------
- -0.0 NO_RELAYS              Informational: message was not relayed via SMTP
+        id S229894AbhCUMzM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 21 Mar 2021 08:55:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229865AbhCUMyp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 21 Mar 2021 08:54:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 440916192C;
+        Sun, 21 Mar 2021 12:54:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616331282;
+        bh=gxSLgsHjpoXlEVp0yZV3Q1ElINUeZsnQ2yc4m407QA0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JNDOfNv3iRm7ZTNQzS9VSKStMvvU9YgG0X7VImdilLRbUkhraI2BYJpqJ2ewd8YSD
+         RoadP0vYLncdibdS16voc3ysthzr1csAkU9s5avgayc9FXd0HpRC20KRELTTFaM7ku
+         tfzq4f6h4yrlglAgo1HjZ0nJkzEJS/CkDHoiY04GdjyZ3NmuSf4yfcVgkhJ8/19Rlx
+         ZQ1YIdKOo7NpIiSEuj/+28k0XaARVwPuLu9MngqhDmOrDXu2jLBOdnWtyXycsiePpA
+         B2qzhk0kQhSpzzbw65/9ddrq5a/u4UhbkswGppa68XTT9ntaBR9sjPvoAjeujBJSBW
+         QsMwUfNZxpdEw==
+Date:   Sun, 21 Mar 2021 21:54:36 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org
+Subject: Re: [PATCH -tip v3 08/11] kprobes: Setup instruction pointer in
+ __kretprobe_trampoline_handler
+Message-Id: <20210321215436.2e0447bf4fc43471bcecc243@kernel.org>
+In-Reply-To: <161615659174.306069.12736134222759644948.stgit@devnote2>
+References: <161615650355.306069.17260992641363840330.stgit@devnote2>
+        <161615659174.306069.12736134222759644948.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, 19 Mar 2021 21:23:12 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
+> To simplify the stacktrace with pt_regs from kretprobe handler,
+> set the correct return address to the instruction pointer in
+> the pt_regs before calling kretprobe handlers.
+> 
 
-On Sun, 21 Mar 2021, Bhaskar Chowdhury wrote:
+Oops, now I also find this breaks kretprobe for arm. It seems
+not enough registers stores. I need to fix the arm kprobe code
+too.
 
->
-> s/explicitely/explicitly/
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+In arch/arm/include/uapi/asm/ptrace.h,
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+---
+#define ARM_pc          uregs[15]
+---
 
+And in arch/arm/probes/kprobes/core.c,
 
+---
+/*
+ * When a retprobed function returns, trampoline_handler() is called,
+ * calling the kretprobe's handler. We construct a struct pt_regs to
+ * give a view of registers r0-r11 to the user return-handler.  This is
+ * not a complete pt_regs structure, but that should be plenty sufficient
+ * for kretprobe handlers which should normally be interested in r0 only
+ * anyway.
+ */
+void __naked __kprobes kretprobe_trampoline(void)
+{
+        __asm__ __volatile__ (
+                "stmdb  sp!, {r0 - r11}         \n\t"
+---
+
+So, changing regs->ARM_pc will break a stack entry. I need to expand
+it to r15.
+
+Thanks,
+
+> Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 > ---
-> tools/perf/builtin-top.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
-> index 3673c04d16b6..173ace43f845 100644
-> --- a/tools/perf/builtin-top.c
-> +++ b/tools/perf/builtin-top.c
-> @@ -1607,7 +1607,7 @@ int cmd_top(int argc, const char **argv)
-> 	if (status) {
-> 		/*
-> 		 * Some arches do not provide a get_cpuid(), so just use pr_debug, otherwise
-> -		 * warn the user explicitely.
-> +		 * warn the user explicitly.
-> 		 */
-> 		eprintf(status == ENOSYS ? 1 : 0, verbose,
-> 			"Couldn't read the cpuid for this machine: %s\n",
-> --
-> 2.30.1
->
->
+>  Changes in v3:
+>   - Cast the correct_ret_addr to unsigned long.
+> ---
+>  kernel/kprobes.c |    3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index cf19edc038e4..4ce3e6f5d28d 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -1914,6 +1914,9 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+>  		BUG_ON(1);
+>  	}
+>  
+> +	/* Set the instruction pointer to the correct address */
+> +	instruction_pointer_set(regs, (unsigned long)correct_ret_addr);
+> +
+>  	/* Run them. */
+>  	first = current->kretprobe_instances.first;
+>  	while (first) {
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
