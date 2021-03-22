@@ -2,123 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5AA7344BA9
-	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 17:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 701FE344BB0
+	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 17:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230330AbhCVQh2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Mar 2021 12:37:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33380 "EHLO mail.kernel.org"
+        id S229472AbhCVQh7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Mar 2021 12:37:59 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:11802 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231851AbhCVQhD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:37:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C56961974;
-        Mon, 22 Mar 2021 16:37:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616431023;
-        bh=x2BUkSXOpgvtXio7p9AVNFbXcJAfDsJjt4jn1G7ZYow=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KOLnYNxPZafa7KTNbwsuBahV4Yf/NkK6IpRUeVx7h4ncSEGYQwLm6oP5qY4I46BiQ
-         bMlm10M4TPscfns/7qoN05aBuMRN/YqED6klUcFdfEODBTR7aDUIi6nU8THUcSN9s7
-         Pcaibozj+KDam4pKvTUcKt6B2Dz0WXzq6H63xoYs4sdXyI2lNtGWxK6kWn0/oZXYDK
-         GLUGpNB3lbpR1P54U6SJutvlWgsJHQKvsyDHF4pMvM1Hmk4kjBikIzaOn2Q8/58WBv
-         qDOTbyk6FHfL12oO+Fh/Roj4FxsUuq/tH/7mU/3acTTUIBXtPhVXg8iBei7sTEELch
-         NaNCVH8TTF8kw==
-From:   KP Singh <kpsingh@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: [PATCH bpf-next] selftests/bpf: Add an option for a debug shell in vmtest.sh
-Date:   Mon, 22 Mar 2021 16:36:59 +0000
-Message-Id: <20210322163659.2873534-1-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230306AbhCVQhs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Mar 2021 12:37:48 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F40Xh2qlVz9txkM;
+        Mon, 22 Mar 2021 17:37:40 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 0xxz-9rq0dT4; Mon, 22 Mar 2021 17:37:40 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F40Xh1qmSz9txkL;
+        Mon, 22 Mar 2021 17:37:40 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E57D08B7A3;
+        Mon, 22 Mar 2021 17:37:45 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id hGhPYlNpQroi; Mon, 22 Mar 2021 17:37:45 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9F83C8B79C;
+        Mon, 22 Mar 2021 17:37:45 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 730F3675F4; Mon, 22 Mar 2021 16:37:45 +0000 (UTC)
+Message-Id: <cover.1616430991.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 0/8] Implement EBPF on powerpc32
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, naveen.n.rao@linux.ibm.com,
+        sandipan@linux.ibm.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Date:   Mon, 22 Mar 2021 16:37:45 +0000 (UTC)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The newly introduced -s command line option starts an interactive shell
-after running the intended command in instead of powering off the VM.
-It's useful to have a shell especially when debugging failing
-tests or developing new tests.
+This series implements extended BPF on powerpc32. For the implementation
+details, see the patch before the last.
 
-Signed-off-by: KP Singh <kpsingh@kernel.org>
----
- tools/testing/selftests/bpf/vmtest.sh | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+The following operations are not implemented:
 
-diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
-index 22554894db99..3f248e755755 100755
---- a/tools/testing/selftests/bpf/vmtest.sh
-+++ b/tools/testing/selftests/bpf/vmtest.sh
-@@ -24,7 +24,7 @@ EXIT_STATUS_FILE="${LOG_FILE_BASE}.exit_status"
- usage()
- {
- 	cat <<EOF
--Usage: $0 [-i] [-d <output_dir>] -- [<command>]
-+Usage: $0 [-i] [-s] [-d <output_dir>] -- [<command>]
- 
- <command> is the command you would normally run when you are in
- tools/testing/selftests/bpf. e.g:
-@@ -49,6 +49,8 @@ Options:
- 	-d)		Update the output directory (default: ${OUTPUT_DIR})
- 	-j)		Number of jobs for compilation, similar to -j in make
- 			(default: ${NUM_COMPILE_JOBS})
-+	-s)		Instead of powering off the VM, run an interactive debug
-+			shell after <command> finishes.
- EOF
- }
- 
-@@ -149,6 +151,7 @@ update_init_script()
- 	local init_script_dir="${OUTPUT_DIR}/${MOUNT_DIR}/etc/rcS.d"
- 	local init_script="${init_script_dir}/S50-startup"
- 	local command="$1"
-+	local exit_command="$2"
- 
- 	mount_image
- 
-@@ -175,7 +178,7 @@ echo "130" > "/root/${EXIT_STATUS_FILE}"
- 	stdbuf -oL -eL ${command}
- 	echo "\$?" > "/root/${EXIT_STATUS_FILE}"
- } 2>&1 | tee "/root/${LOG_FILE}"
--poweroff -f
-+${exit_command}
- EOF
- 
- 	sudo chmod a+x "${init_script}"
-@@ -277,8 +280,9 @@ main()
- 	local kernel_bzimage="${kernel_checkout}/${X86_BZIMAGE}"
- 	local command="${DEFAULT_COMMAND}"
- 	local update_image="no"
-+	local exit_command="poweroff -f"
- 
--	while getopts 'hkid:j:' opt; do
-+	while getopts 'hskid:j:' opt; do
- 		case ${opt} in
- 		i)
- 			update_image="yes"
-@@ -289,6 +293,9 @@ main()
- 		j)
- 			NUM_COMPILE_JOBS="$OPTARG"
- 			;;
-+		s)
-+			exit_command="bash"
-+			;;
- 		h)
- 			usage
- 			exit 0
-@@ -355,7 +362,7 @@ main()
- 	fi
- 
- 	update_selftests "${kernel_checkout}" "${make_command}"
--	update_init_script "${command}"
-+	update_init_script "${command}" "${exit_command}"
- 	run_vm "${kernel_bzimage}"
- 	copy_logs
- 	echo "Logs saved in ${OUTPUT_DIR}/${LOG_FILE}"
+		case BPF_ALU64 | BPF_DIV | BPF_X: /* dst /= src */
+		case BPF_ALU64 | BPF_MOD | BPF_X: /* dst %= src */
+		case BPF_STX | BPF_XADD | BPF_DW: /* *(u64 *)(dst + off) += src */
+
+The following operations are only implemented for power of two constants:
+
+		case BPF_ALU64 | BPF_MOD | BPF_K: /* dst %= imm */
+		case BPF_ALU64 | BPF_DIV | BPF_K: /* dst /= imm */
+
+Below are the results on a powerpc 885:
+- with the patch, with and without bpf_jit_enable
+- without the patch, with bpf_jit_enable (ie with CBPF)
+
+With the patch, with bpf_jit_enable = 1 :
+
+[   60.826529] test_bpf: Summary: 378 PASSED, 0 FAILED, [354/366 JIT'ed]
+[   60.832505] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+
+With the patch, with bpf_jit_enable = 0 :
+
+[   75.186337] test_bpf: Summary: 378 PASSED, 0 FAILED, [0/366 JIT'ed]
+[   75.192325] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+
+Without the patch, with bpf_jit_enable = 1 :
+
+[  186.112429] test_bpf: Summary: 371 PASSED, 7 FAILED, [119/366 JIT'ed]
+
+Couldn't run test_progs because it doesn't build (clang 11 crashes during the build).
+
+Changes in v2:
+- Simplify 16 bits swap
+- Rework tailcall, use stack for tailcall counter
+- Fix handling of BPF_REG_FP:
+  - must be handler like any other register allthough only the lower 32 bits part is used as a pointer.
+  - r18 was TMP_REG, r17/r18 become de BPF_REG_FP
+  - r31 was BPF_REG_FP, it is now TMP_REG
+- removed bpf_jit32.h
+- Reorder register allocation dynamically to use the volatile registers as much as possible when not doing function calls (last patch - new)
+
+Christophe Leroy (8):
+  powerpc/bpf: Remove classical BPF support for PPC32
+  powerpc/bpf: Change register numbering for bpf_set/is_seen_register()
+  powerpc/bpf: Move common helpers into bpf_jit.h
+  powerpc/bpf: Move common functions into bpf_jit_comp.c
+  powerpc/bpf: Change values of SEEN_ flags
+  powerpc/asm: Add some opcodes in asm/ppc-opcode.h for PPC32 eBPF
+  powerpc/bpf: Implement extended BPF on PPC32
+  powerpc/bpf: Reallocate BPF registers to volatile registers when
+    possible on PPC32
+
+ Documentation/admin-guide/sysctl/net.rst |    2 +-
+ arch/powerpc/Kconfig                     |    3 +-
+ arch/powerpc/include/asm/ppc-opcode.h    |   12 +
+ arch/powerpc/net/Makefile                |    6 +-
+ arch/powerpc/net/bpf_jit.h               |   61 ++
+ arch/powerpc/net/bpf_jit32.h             |  139 ---
+ arch/powerpc/net/bpf_jit64.h             |   21 +-
+ arch/powerpc/net/bpf_jit_asm.S           |  226 -----
+ arch/powerpc/net/bpf_jit_comp.c          |  782 ++++-----------
+ arch/powerpc/net/bpf_jit_comp32.c        | 1095 ++++++++++++++++++++++
+ arch/powerpc/net/bpf_jit_comp64.c        |  295 +-----
+ 11 files changed, 1372 insertions(+), 1270 deletions(-)
+ delete mode 100644 arch/powerpc/net/bpf_jit32.h
+ delete mode 100644 arch/powerpc/net/bpf_jit_asm.S
+ create mode 100644 arch/powerpc/net/bpf_jit_comp32.c
+
 -- 
-2.31.0.rc2.261.g7f71774620-goog
+2.25.0
 
