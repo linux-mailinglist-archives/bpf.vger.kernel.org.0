@@ -2,161 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1187934398B
-	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 07:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1CE34399A
+	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 07:40:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhCVGhH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Mar 2021 02:37:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54834 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229696AbhCVGgx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Mar 2021 02:36:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA30F6196D;
-        Mon, 22 Mar 2021 06:36:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616395013;
-        bh=JxJZI/WgXn+DiTShLLAcZpSNE+5iTUiuX1IRlxYsma0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=F1A6lhoIBcuGy2LKdwa1g5zUDNv+MeaHJZX4kdEeHpYPH9sFP1irx3x5QaNJKIev9
-         NJcU4/kET6tp9KLdJAyPFh5LHpAy+TQir3QwHwgsb//MUeX+HPPNF9C7dyhRWZUi01
-         7uAzCBIi/PXvfkzifJWXfUfpPSwqXlB/cBBeYZs7uWhq/x4kK2TpJi7hJ+P6ipiJjH
-         rl6ys1N4k2e3NNX4xJBLfo3Ew2aZY875/miNfMyC/LRGMvWx4MBb/Yzthnw4oa8HB9
-         jX1yol6mL/T6b2mwJQbW75AN+cxfhkR+GhY1l1nW7TvmbuObSAedB0577cF+rUflf5
-         +5ZECpCj9zb9w==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org
-Subject: [PATCH -tip v3 00/12] kprobes: Fix stacktrace with kretprobes on x86
-Date:   Mon, 22 Mar 2021 15:36:46 +0900
-Message-Id: <161639500599.894584.799900058200543646.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-User-Agent: StGit/0.19
+        id S229883AbhCVGkD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Mar 2021 02:40:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26714 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229613AbhCVGjy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 22 Mar 2021 02:39:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616395193;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+8IdJoevmZWZkG/xLGUFXkRYS+Hb9spepADHELKX9Y4=;
+        b=AMDxt6rl7jncpO0Z2t5j8cTg8JXGdJ6UdVyH8McHP4wi/bBi4wavi6PAjeaZIQaHk1fLxu
+        zjXejB5fe7l6Tts9pxqGOcTZy6YwWclKTBWnYKNFQCQjZONBESEqRr7En9sC9zY7ajWZWj
+        2fxRTZy2ZKA3/dK4uIFsy6kr7NZnQv0=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-548-xTgY-9tOOiS_dvN7WEO70Q-1; Mon, 22 Mar 2021 02:39:51 -0400
+X-MC-Unique: xTgY-9tOOiS_dvN7WEO70Q-1
+Received: by mail-wr1-f71.google.com with SMTP id y5so25500644wrp.2
+        for <bpf@vger.kernel.org>; Sun, 21 Mar 2021 23:39:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+8IdJoevmZWZkG/xLGUFXkRYS+Hb9spepADHELKX9Y4=;
+        b=FEXWSjE3Ge0txHdniBV9pJ+voNiKBbsj9GRlJDjMdW2ei064VdtLSbAL+yL+FMw5Uu
+         JrG1e2vPA1+TjL1eHbiMGLG7G80QNSAiatMkA1JwPPi7rLX4algrrA8qDCYRSZps8xzB
+         641B3SVtlynKdYJ90y+PT759CLFGDeqHHY6ML5R/thzXmyfQuest8B3hnJLjU4ro9++j
+         AJ344SUEAI4c5uTNbcm9oPBdZ0PCXd1yEMilXH8Y6Kw7cdkP3gS1RxYAOyOOxi2DjYzH
+         nXnFOuohmz6xczm1hGpqmjoF+zTHrF4KHdXyDpri1jceJYOzY/esFfPGi6mMnjphrNz1
+         x98Q==
+X-Gm-Message-State: AOAM532Wsu3d0lQZH8k99bIGYeW1M8X9BU+l3sb+Ed7QGlJF1nDd5b3o
+        oNpDWYBwvv7OX07KgGHhHjOUWmIFFk/kZbP20c1FTIsSlLDmPUbYZJzsqoSXiNXGL9Gdc4JR/Or
+        L5JJaEg/0rpuA9CKY9IGkYcwksAaS
+X-Received: by 2002:a5d:538d:: with SMTP id d13mr16678121wrv.92.1616395190093;
+        Sun, 21 Mar 2021 23:39:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJygnULs6gPuCcPzqFMrRaHkwnKJYoC4WCJjzIHHRivv+fBRfyqKdQqeRbqjfG1Slpanjds7JbTo4EdRD3Sw55o=
+X-Received: by 2002:a5d:538d:: with SMTP id d13mr16678113wrv.92.1616395189972;
+ Sun, 21 Mar 2021 23:39:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210320000001.915366-1-sdf@google.com>
+In-Reply-To: <20210320000001.915366-1-sdf@google.com>
+From:   Yauheni Kaliuta <ykaliuta@redhat.com>
+Date:   Mon, 22 Mar 2021 08:39:34 +0200
+Message-ID: <CANoWswkz33qw4_QOcdbVg4=DjM9SHQwgvj5ef+UGdMUxt4MgNg@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: use NOP_ATOMIC5 instead of emit_nops(&prog, 5)
+ for BPF_TRAMP_F_CALL_ORIG
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     netdev@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Sat, Mar 20, 2021 at 2:01 AM Stanislav Fomichev <sdf@google.com> wrote:
+>
+> __bpf_arch_text_poke does rewrite only for atomic nop5, emit_nops(xxx, 5)
+> emits non-atomic one which breaks fentry/fexit with k8 atomics:
+>
+> P6_NOP5 == P6_NOP5_ATOMIC (0f1f440000 == 0f1f440000)
+> K8_NOP5 != K8_NOP5_ATOMIC (6666906690 != 6666666690)
+>
+> Can be reproduced by doing "ideal_nops = k8_nops" in "arch_init_ideal_nops()
+> and running fexit_bpf2bpf selftest.
+>
+> Fixes: e21aa341785c ("bpf: Fix fexit trampoline.")
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 
-Here is the 4th version of the series to fix the stacktrace with kretprobe
-on x86. After merging this, I'll fix other architectures.
+Could you mention x86 in the subject?
 
-The previous version is;
-
-https://lore.kernel.org/bpf/161615650355.306069.17260992641363840330.stgit@devnote2/
-
-This version fixes some build warnings/errors and a bug on arm. (I think
-arm's kretprobe implementation is a bit odd. anyway, that is off topic.)
-[5/12] fixes objtool warning when CONFIG_FRAME_POINTER=y. [7/12] fixes a
-build error on ia64. And add [8/12] for avoiding stack corruption by
-instruction_pointer_set() in kretprobe_trampoline_handler on arm.
-
-With this series, unwinder can unwind stack correctly from ftrace as below;
-
-  # cd /sys/kernel/debug/tracing
-  # echo > trace
-  # echo r vfs_read >> kprobe_events
-  # echo r full_proxy_read >> kprobe_events
-  # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
-  # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
-  # echo 1 > events/kprobes/enable
-  # echo 1 > options/sym-offset
-  # cat /sys/kernel/debug/kprobes/list
-ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
-ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
-  # echo 0 > events/kprobes/enable
-  # cat trace
-# tracer: nop
-#
-# entries-in-buffer/entries-written: 3/3   #P:8
-#
-#                                _-----=> irqs-off
-#                               / _----=> need-resched
-#                              | / _---=> hardirq/softirq
-#                              || / _--=> preempt-depth
-#                              ||| /     delay
-#           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
-#              | |         |   ||||      |         |
-           <...>-135     [005] ...1     9.422114: r_full_proxy_read_0: (vfs_read+0xab/0x1a0 <- full_proxy_read)
-           <...>-135     [005] ...1     9.422158: <stack trace>
- => kretprobe_trace_func+0x209/0x2f0
- => kretprobe_dispatcher+0x4a/0x70
- => __kretprobe_trampoline_handler+0xca/0x150
- => trampoline_handler+0x44/0x70
- => kretprobe_trampoline+0x2a/0x50
- => vfs_read+0xab/0x1a0
- => ksys_read+0x5f/0xe0
- => do_syscall_64+0x33/0x40
- => entry_SYSCALL_64_after_hwframe+0x44/0xae
- => 0
-
-This shows the double return probes (vfs_read and full_proxy_read) on the stack
-correctly unwinded. (vfs_read was called from ksys_read+0x5f and full_proxy_read
-was called from vfs_read+0xab)
-
-This actually changes the kretprobe behavisor a bit, now the instraction pointer in
-the pt_regs passed to kretprobe user handler is correctly set the real return
-address. So user handlers can get it via instruction_pointer() API.
-
-You can also get this series from 
- git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v4
+> ---
+>  arch/x86/net/bpf_jit_comp.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 72b5a57e9e31..b35fc8023884 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -2012,7 +2012,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+>                 /* remember return value in a stack for bpf prog to access */
+>                 emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
+>                 im->ip_after_call = prog;
+> -               emit_nops(&prog, 5);
+> +               memcpy(prog, ideal_nops[NOP_ATOMIC5], X86_PATCH_SIZE);
+> +               prog += X86_PATCH_SIZE;
+>         }
+>
+>         if (fmod_ret->nr_progs) {
+> --
+> 2.31.0.rc2.261.g7f71774620-goog
+>
 
 
-Thank you,
+-- 
+WBR, Yauheni
 
----
-
-Josh Poimboeuf (1):
-      x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
-
-Masami Hiramatsu (11):
-      ia64: kprobes: Fix to pass correct trampoline address to the handler
-      kprobes: treewide: Replace arch_deref_entry_point() with dereference_function_descriptor()
-      kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
-      kprobes: Add kretprobe_find_ret_addr() for searching return address
-      ARC: Add instruction_pointer_set() API
-      ia64: Add instruction_pointer_set() API
-      arm: kprobes: Make a space for regs->ARM_pc at kretprobe_trampoline
-      kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
-      x86/kprobes: Push a fake return address at kretprobe_trampoline
-      x86/unwind: Recover kretprobe trampoline entry
-      tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
-
-
- arch/arc/include/asm/ptrace.h       |    5 ++
- arch/arc/kernel/kprobes.c           |    2 -
- arch/arm/probes/kprobes/core.c      |    5 +-
- arch/arm64/kernel/probes/kprobes.c  |    3 -
- arch/csky/kernel/probes/kprobes.c   |    2 -
- arch/ia64/include/asm/ptrace.h      |    5 ++
- arch/ia64/kernel/kprobes.c          |   15 ++---
- arch/mips/kernel/kprobes.c          |    3 -
- arch/parisc/kernel/kprobes.c        |    4 +
- arch/powerpc/kernel/kprobes.c       |   13 -----
- arch/riscv/kernel/probes/kprobes.c  |    2 -
- arch/s390/kernel/kprobes.c          |    2 -
- arch/sh/kernel/kprobes.c            |    2 -
- arch/sparc/kernel/kprobes.c         |    2 -
- arch/x86/include/asm/kprobes.h      |    1 
- arch/x86/include/asm/unwind.h       |   17 ++++++
- arch/x86/include/asm/unwind_hints.h |    5 ++
- arch/x86/kernel/kprobes/core.c      |   44 ++++++++++++----
- arch/x86/kernel/unwind_frame.c      |    4 +
- arch/x86/kernel/unwind_guess.c      |    3 -
- arch/x86/kernel/unwind_orc.c        |    6 +-
- include/linux/kprobes.h             |   41 ++++++++++++--
- kernel/kprobes.c                    |   99 ++++++++++++++++++++++++-----------
- kernel/trace/trace_output.c         |   17 +-----
- lib/error-inject.c                  |    3 +
- 25 files changed, 200 insertions(+), 105 deletions(-)
-
---
-Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
