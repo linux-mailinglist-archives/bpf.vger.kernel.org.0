@@ -2,90 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F84345211
-	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 22:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A37DA345369
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 00:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbhCVVwL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Mar 2021 17:52:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42476 "EHLO mail.kernel.org"
+        id S230487AbhCVX5D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Mar 2021 19:57:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230203AbhCVVwG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Mar 2021 17:52:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8077B6191D;
-        Mon, 22 Mar 2021 21:52:03 +0000 (UTC)
+        id S230368AbhCVX4b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Mar 2021 19:56:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CFD0619A3;
+        Mon, 22 Mar 2021 23:56:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616449926;
-        bh=cynxWr4EIlyILN7JP7FRcyb1BaVwBjk2hMRHLfYM1x4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=knQg1MTNIgrJ8FsQd53FmeWH1omD0zye6GeyRCGMavRNlOUYuAdhq3s7v5aNhcFYa
-         LvdmT4vQ0Y4nRUgGlSbX3kT0744onMLv0ciZU9IUhPUAVVLaF2ZCnUXNXp976PNmWO
-         /gvnbBAFvR9aQ0qGQKg03Cucq3YIAgOAJERJ1QAjedMGZGTbY7Anoy7syocsubSdwB
-         mdMw+0vrLV1xLv8FrB41IFfHnqEliVwvyVt5oxP6gR0iDPmu2dBXheyRnhX1BNju/o
-         5fqM/U0RAuMeaYt28HrP9yFoy1rXuInmzhVkHzVq7cshq+ZfxkoSylOYabrZsNPVe8
-         1Lijx8ljY7BLA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     KP Singh <kpsingh@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Mikko Ylinen <mikko.ylinen@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: avoid old-style declaration warnings
-Date:   Mon, 22 Mar 2021 22:51:51 +0100
-Message-Id: <20210322215201.1097281-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1616457391;
+        bh=soSkArAMiHCjRrnwH6krgASp/2Xva6v9HjBY9VQ+krI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JjylmhYSMLaSWmGhNoFlvnf5gkMo/7e3QuDrEw0Hq5jpB8C+PovK2WPZAMqpIZHBm
+         TroGrZcZP0vGW6R8d2D0/yNrqAwAKuvi/A1l52iRdGOAP52Ya5yFEG5yUlHZkqR0Zf
+         5RIU/lzMehYnjlAHRk1ss3+NNhN6/5VODUpDt/oCBImTzIc5R0viVaEfsUFDbESa3y
+         np2vCcm8rPFgjYgF3utsi9lF0yjA7iCevKVGJeOMeqbNG2zEcx01QhKpW8tcuZT1Bi
+         MH2q7tlX+Q8/dvn2nXAdEYo1EOKVxozd6k7PEnkind0fgSD1R3GHoTahkQWCPXIcFX
+         IfgM+aHcEUD2w==
+Date:   Tue, 23 Mar 2021 08:56:26 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Subject: Re: [PATCH -tip v4 12/12] tracing: Show kretprobe unknown indicator
+ only for kretprobe_trampoline
+Message-Id: <20210323085626.111af4e087b4f8e35fff2e8d@kernel.org>
+In-Reply-To: <20210322111142.748e90da@gandalf.local.home>
+References: <161639518354.895304.15627519393073806809.stgit@devnote2>
+        <161639532235.895304.18329540036405219298.stgit@devnote2>
+        <20210322111142.748e90da@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hi Steve,
 
-gcc -Wextra wants type modifiers in the normal order:
+On Mon, 22 Mar 2021 11:11:42 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-kernel/bpf/bpf_lsm.c:70:1: error: 'static' is not at beginning of declaration [-Werror=old-style-declaration]
-   70 | const static struct bpf_func_proto bpf_bprm_opts_set_proto = {
-      | ^~~~~
-kernel/bpf/bpf_lsm.c:91:1: error: 'static' is not at beginning of declaration [-Werror=old-style-declaration]
-   91 | const static struct bpf_func_proto bpf_ima_inode_hash_proto = {
-      | ^~~~~
+> On Mon, 22 Mar 2021 15:42:02 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > ftrace shows "[unknown/kretprobe'd]" indicator all addresses in the
+> > kretprobe_trampoline, but the modified address by kretprobe should
+> > be only kretprobe_trampoline+0.
+> > 
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> 
+> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Fixes: 3f6719c7b62f ("bpf: Add bpf_bprm_opts_set helper")
-Fixes: 27672f0d280a ("bpf: Add a BPF helper for getting the IMA hash of an inode")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- kernel/bpf/bpf_lsm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thank you for the Ack!
 
-diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index 1622a44d1617..75b1c678d558 100644
---- a/kernel/bpf/bpf_lsm.c
-+++ b/kernel/bpf/bpf_lsm.c
-@@ -67,7 +67,7 @@ BPF_CALL_2(bpf_bprm_opts_set, struct linux_binprm *, bprm, u64, flags)
- 
- BTF_ID_LIST_SINGLE(bpf_bprm_opts_set_btf_ids, struct, linux_binprm)
- 
--const static struct bpf_func_proto bpf_bprm_opts_set_proto = {
-+static const struct bpf_func_proto bpf_bprm_opts_set_proto = {
- 	.func		= bpf_bprm_opts_set,
- 	.gpl_only	= false,
- 	.ret_type	= RET_INTEGER,
-@@ -88,7 +88,7 @@ static bool bpf_ima_inode_hash_allowed(const struct bpf_prog *prog)
- 
- BTF_ID_LIST_SINGLE(bpf_ima_inode_hash_btf_ids, struct, inode)
- 
--const static struct bpf_func_proto bpf_ima_inode_hash_proto = {
-+static const struct bpf_func_proto bpf_ima_inode_hash_proto = {
- 	.func		= bpf_ima_inode_hash,
- 	.gpl_only	= false,
- 	.ret_type	= RET_INTEGER,
+> 
+> -- Steve
+> 
+
+
 -- 
-2.29.2
-
+Masami Hiramatsu <mhiramat@kernel.org>
