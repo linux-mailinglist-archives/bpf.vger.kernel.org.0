@@ -2,100 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF35345035
-	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 20:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 660D034505D
+	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 21:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhCVTqm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Mar 2021 15:46:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33392 "EHLO
+        id S230370AbhCVUAn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Mar 2021 16:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbhCVTqk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Mar 2021 15:46:40 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 107E5C061574
-        for <bpf@vger.kernel.org>; Mon, 22 Mar 2021 12:46:40 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id g12so7839910ybh.9
-        for <bpf@vger.kernel.org>; Mon, 22 Mar 2021 12:46:39 -0700 (PDT)
+        with ESMTP id S229771AbhCVUAh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Mar 2021 16:00:37 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562BFC061574;
+        Mon, 22 Mar 2021 13:00:37 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id l18so12680495edc.9;
+        Mon, 22 Mar 2021 13:00:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Qyo9S2X1/2ZdWKCbVr/KY2C485/elPMNmIdbH+9Qfyc=;
-        b=FpGIj2PMKEgq6AWjdskWktMVV026k+B9Cuv0GtgUXgNbs2+ot+lRcAwdsCq5WtYhu9
-         eL1O1PDAw3pH266UdDe9Vv87gaop17r4MqWwS8ADcueu/yJm+cBzUso/QjEngCSxdsTt
-         CgYc2rdrTgwRG3jsKIZXwCFUR5M0W9vGiNVrquFhe9JC46J5p95lqXSDIcAYyW4xvztS
-         xYbP/hlgrn4PFA1ZkCk3ybav2ufTGhO50XbyZXHmPzcqiv+aRHqpcpjJFaLLfwA3Nfzc
-         yWrbXxLF/6gp6BFWPB9oqr56CChew3JAa2E/6SsS8BIxlQfqrNfz5EKjc/JCm4VpDV5M
-         k/0Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kJgeZ3KJMI6EGBVI9mka8hL+bYKbeA4W1uqhZJmB1Sg=;
+        b=guOGuGv2a439sFNoLo25xREFKxJf4tWlTAGfF/Cp51m+nDzN5NxmzPV/Ju6XPo4wpe
+         2iXXbVFoZLKu9yuCu5rxcJyUEBbgU4v/KYH01eSKph+0XiEleK4o9LmpRMjsTXFo1+dU
+         dOyVWf7qhh8oMY6cRQHAYySBY1cMFAbMb+PvyCTm+FN9Ro4aeOLyb1NQ7oghLpr60VU9
+         9I3xDPqHPYcqEXRaZU4rsxXyINtonGPQV8hx9hEUIy+PAz88q/pAF7ivLjEgSF2syWIT
+         AL6qGk0n3iHg7FlXAQJTbaFVsJO85W0P0Xn0QjBiw4yW6CikXIbMSOHydQ7FltGqKFyR
+         IJcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Qyo9S2X1/2ZdWKCbVr/KY2C485/elPMNmIdbH+9Qfyc=;
-        b=q2FBNjRKwIyHUGnh0rrEa7JVAnoC1B9xNwcnCpjCs8ZTuem10CVrYogg4ZUMW36L4b
-         C5GACKykAaXzM0SiW29AXRzXP+NCGO0Wu/DwtPfedfLK9lAbxuJxBqAqtdwdi+AOkkFc
-         aSqHIziz+nqMgmhoRKxh7HwFrDlHI337UCr+VYbh8viEiflXlYc2v3Kf1ZNfWvtYeBot
-         Kev5FoTbNxnejfoZUkJo2FwzRc6qp0wKj9ecaYHlsunzOhD2U4z4cFEdvFfce+ebhSH4
-         ANhkiauhMvdaxZ6YRWaUswgfBTEM+vibjQHOIYzw6KAMP6XOTRNXlJVRScT3l9TK8l5W
-         kZtA==
-X-Gm-Message-State: AOAM532CvoGo65kdHSjqOy7sIgew5W7HKuQlrLKzKdEjGCBTERzuiH2c
-        elqj+T3nvDJcOKTyEZbRGutZ3GaFb9DKNsjFE6I=
-X-Google-Smtp-Source: ABdhPJxwY576oEsCrG42qbmJwaWk6hU6qcNwSBy/fap/l/fsbHkd0PsA8HETeePZm26ee2pRKK5vWg5LiaM8b3YlcWo=
-X-Received: by 2002:a25:874c:: with SMTP id e12mr214344ybn.403.1616442399207;
- Mon, 22 Mar 2021 12:46:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kJgeZ3KJMI6EGBVI9mka8hL+bYKbeA4W1uqhZJmB1Sg=;
+        b=ZfTKos9SG2+1muTYFTunNGpsViiPbJFnPUXSbYnyoVvreuLdT3XmQR7W/u+LPHxAeI
+         kSuIXJByZnzLXWaAxqBnHA6Vl0DnzHyd6Lh0+QmKc0ZIJVaEtE90YKU6oKn9tuAR+RsS
+         xKXCKBD8eUUmFjEDVyU+pcZf16qQBWYTdB3wPl10/jEsU2tEOx191BAReJCJvh2w8p4T
+         KIAbQ/t25pCGhnstiGdlV+9pdffTOFBDGltHgTnclDRkfTDEDDGcxBErpEx+daW7aSgq
+         2Y7UzgWuKeTUTdzS8B3RFP3Wsrq5BxX6dnAUdF11/vpXLjFIrQA283/IIHDWRkLIOWRC
+         o45w==
+X-Gm-Message-State: AOAM532oneT/mlHLOV9qgWqssexqYJqQzcyL/3pMF21b+zXU/xcBzEIt
+        56W7RBzVhtye4QlWnnCF/QA=
+X-Google-Smtp-Source: ABdhPJy+C7VuSJCRfrFWwPe0gMdRPDewaq2T+4NZX0BYUVH6P8iaZK2n3S/VrpKsUhN0apLvfxyaqQ==
+X-Received: by 2002:a05:6402:95b:: with SMTP id h27mr1292903edz.93.1616443235936;
+        Mon, 22 Mar 2021 13:00:35 -0700 (PDT)
+Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
+        by smtp.gmail.com with ESMTPSA id bx24sm10335188ejc.88.2021.03.22.13.00.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 13:00:35 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 22:00:33 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andriin@fb.com, edumazet@google.com,
+        weiwan@google.com, cong.wang@bytedance.com, ap420073@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@openeuler.org, mkl@pengutronix.de,
+        linux-can@vger.kernel.org, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
+        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
+        a.fatoum@pengutronix.de
+Subject: Re: [RFC v3] net: sched: implement TCQ_F_CAN_BYPASS for lockless
+ qdisc
+Message-ID: <20210322200033.uphemtsunfqsvjej@skbuf>
+References: <1616050402-37023-1-git-send-email-linyunsheng@huawei.com>
+ <1616404156-11772-1-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
-References: <20210320202821.3165030-1-rafaeldtinoco@ubuntu.com>
- <CAEf4BzbUaDbhd4zzfpzpHS007hT+uyQyifdzCdD8_Rwp6ydhfQ@mail.gmail.com> <4867B26C-E650-451B-9103-2FFB99DD03C4@ubuntu.com>
-In-Reply-To: <4867B26C-E650-451B-9103-2FFB99DD03C4@ubuntu.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 22 Mar 2021 12:46:28 -0700
-Message-ID: <CAEf4BzasP1GGccfBT9UFdC+AU775T+_vLAB4dv2cvE3Yb3SEfA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] libbpf: add bpf object kern_version attribute setter
-To:     Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1616404156-11772-1-git-send-email-linyunsheng@huawei.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 12:36 PM Rafael David Tinoco
-<rafaeldtinoco@ubuntu.com> wrote:
->
->
-> >> +LIBBPF_API int bpf_object__set_kversion(struct bpf_object *obj, __u32
-> >> kern_version);
-> >
-> > have you run libbpf's Makefile? It should have complained about
-> > bpf_object__set_kversion symbol mismatches/etc. That means that this
-> > API needs to be listed in libbpf.map file, please add it there (to
-> > latest version, 0.4, and also preserve alphabetical order). Thanks.
->
-> Alright, sending a v3 with changes. I had only static builds on
-> my side and it didn=E2=80=99t run assigned linker version-script. Will
-> include in my tests before further submissions.
->
->
+Hi Yunsheng,
 
-Oh, I just noticed that you based your patch on top of Github
-repository. libbpf sources actually live and are developed against
-bpf-next kernel tree. Github repository is periodically synced from
-kernel trees with a special script. Please do the development against
-libbpf sources in the kernel tree (in tools/lib/bpf). You should also
-try running selftests from tools/testing/selftests/bpf, especially
-`sudo ./test_progs`. You'll need very recent Clang built from sources
-to build and run everything. But at least you won't have to spend
-efforts setting up your VM for testing, see vmtest.sh script in
-selftests, added recently by KP Singh. It will build latest kernel and
-will spin up qemu VM to run tests.
+On Mon, Mar 22, 2021 at 05:09:16PM +0800, Yunsheng Lin wrote:
+> Currently pfifo_fast has both TCQ_F_CAN_BYPASS and TCQ_F_NOLOCK
+> flag set, but queue discipline by-pass does not work for lockless
+> qdisc because skb is always enqueued to qdisc even when the qdisc
+> is empty, see __dev_xmit_skb().
+> 
+> This patch calls sch_direct_xmit() to transmit the skb directly
+> to the driver for empty lockless qdisc too, which aviod enqueuing
+> and dequeuing operation. qdisc->empty is set to false whenever a
+> skb is enqueued, see pfifo_fast_enqueue(), and is set to true when
+> skb dequeuing return NULL, see pfifo_fast_dequeue().
+> 
+> There is a data race between enqueue/dequeue and qdisc->empty
+> setting, qdisc->empty is only used as a hint, so we need to call
+> sch_may_need_requeuing() to see if the queue is really empty and if
+> there is requeued skb, which has higher priority than the current
+> skb.
+> 
+> The performance for ip_forward test increases about 10% with this
+> patch.
+> 
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> ---
+> Hi, Vladimir and Ahmad
+> 	Please give it a test to see if there is any out of order
+> packet for this patch, which has removed the priv->lock added in
+> RFC v2.
+> 
+> There is a data race as below:
+> 
+>       CPU1                                   CPU2
+> qdisc_run_begin(q)                            .
+>         .                                q->enqueue()
+> sch_may_need_requeuing()                      .
+>     return true                               .
+>         .                                     .
+>         .                                     .
+>     q->enqueue()                              .
+> 
+> When above happen, the skb enqueued by CPU1 is dequeued after the
+> skb enqueued by CPU2 because sch_may_need_requeuing() return true.
+> If there is not qdisc bypass, the CPU1 has better chance to queue
+> the skb quicker than CPU2.
+> 
+> This patch does not take care of the above data race, because I
+> view this as similar as below:
+> 
+> Even at the same time CPU1 and CPU2 write the skb to two socket
+> which both heading to the same qdisc, there is no guarantee that
+> which skb will hit the qdisc first, becuase there is a lot of
+> factor like interrupt/softirq/cache miss/scheduling afffecting
+> that.
+> 
+> So I hope the above data race will not cause problem for Vladimir
+> and Ahmad.
+> ---
 
-It's a bit of an upfront setup, but if you are intending to keep
-contributing to libbpf and kernel, it's worth it :)
-
-Also we have CI that would automatically test submitted patch sets
-(see [0]). See also [1] for the build for your v2.
-
-  [0] https://github.com/kernel-patches/bpf/pulls
-  [1] https://travis-ci.com/github/kernel-patches/bpf/builds/220716720
-
->
+Preliminary results on my test setup look fine, but please allow me to
+run the canfdtest overnight, since as you say, races are still
+theoretically possible.
