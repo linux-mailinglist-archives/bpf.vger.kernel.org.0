@@ -2,99 +2,273 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D30034361F
-	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 02:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D51D343648
+	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 02:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhCVBHj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 21 Mar 2021 21:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229771AbhCVBHh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 21 Mar 2021 21:07:37 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78B9C061574;
-        Sun, 21 Mar 2021 18:07:37 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so9535954pjq.5;
-        Sun, 21 Mar 2021 18:07:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zLg3jQuxJTAirwbCGsamIpmUx/Vcu8RiU7hZ/RJZnVk=;
-        b=tw018bGtPS10fpxPs8hjt1us4jCIaG7zFJGW4H8hZFGsvTcBYfOMYDUKfy4+lJqVqR
-         foZrxXy30mF0UyD7PEErJ01j1HH3cQvBluGT7bztMV7VTTQcdQkEhRj+SGzWLA2DHWuT
-         BG+Xf46DDFqgheOwHR5Ls9W7eQHv8zO+rsbXTs/DRRLMafc2uoewNFCNBE0F5NDfYjq+
-         XK1d1GTmed0sG91/q/SqimMId5VOgz/XBzNZvEjKL3HhYDtc8Sg62Vw9ADAbi/GUV83u
-         SMnp3v6rU4t4pT3cNVdlaERqVwkMvgdaZ6mpjMrI10swfsYv27RTl7ONHmfsc9bSI45e
-         HybQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zLg3jQuxJTAirwbCGsamIpmUx/Vcu8RiU7hZ/RJZnVk=;
-        b=qLOUgP3PAba5nF+2WTcUv8BzzhNMof0LGm3AW19i9hnV85Q0z2WtmQqs5Ug5kuUjux
-         nuGgfCrBCxY90mv2nHVcSQSuDJQO0GHW5avIIdZ+uCovBj2KRd8L4+B/sSqTZJJs7eBR
-         oKl9cngIfbcVtNakGv3N6Do3VJSzHKIo7qn1nqQaa0uHi76gjNPBeu6RCk0DNGBiAHgU
-         tNh6fGfSuH+XlPTFvc1qns807POkUY9iSGcK5W3d1rHo033mMSazXGZNDaPd2l1YFu5/
-         WTPJD/CpHIe4+LlUA9tkrasoQmgubJCAeUYjx/16VexpOYugxf3qbxs9pyNfHveMVOrd
-         WCnA==
-X-Gm-Message-State: AOAM53216O4OJBy/qNbEjyMTABfkIzJipOIAr74S12NWjUzj0lJ9AMf3
-        zQzGfDgzG/ELcaV0eyR3fA8=
-X-Google-Smtp-Source: ABdhPJyXZQMVSdHxj/wL96Br+8qDc9UO+TYqGVLihDysV1/LBI8XztQBU5C6YSh8s4N0rcTsk+ElBQ==
-X-Received: by 2002:a17:902:343:b029:e6:bc94:48c7 with SMTP id 61-20020a1709020343b02900e6bc9448c7mr24744836pld.72.1616375257034;
-        Sun, 21 Mar 2021 18:07:37 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:8b22])
-        by smtp.gmail.com with ESMTPSA id h6sm11104267pfb.157.2021.03.21.18.07.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Mar 2021 18:07:36 -0700 (PDT)
-Date:   Sun, 21 Mar 2021 18:07:34 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S229913AbhCVBcL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 21 Mar 2021 21:32:11 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3911 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229949AbhCVBbq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 21 Mar 2021 21:31:46 -0400
+Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F3cP11wfDz5gf4;
+        Mon, 22 Mar 2021 09:29:41 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ DGGEML403-HUB.china.huawei.com (10.3.17.33) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 22 Mar 2021 09:31:38 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Mon, 22 Mar
+ 2021 09:31:38 +0800
+Subject: Re: [PATCH net] net: sched: fix packet stuck problem for lockless
+ qdisc
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+CC:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: allow compiling BPF objects
- without BTF
-Message-ID: <20210322010734.tw2rigbr3dyk3iot@ast-mbp>
-References: <20210319205909.1748642-1-andrii@kernel.org>
- <20210319205909.1748642-4-andrii@kernel.org>
- <20210320022156.eqtmldxpzxkh45a7@ast-mbp>
- <CAEf4Bzarx33ENLBRyqxDz7k9t0YmTRNs5wf_xCqL2jNXvs+0Sg@mail.gmail.com>
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        "Cong Wang ." <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        "Linux Kernel Network Developers" <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jonas Bonn <jonas.bonn@netrounds.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Michael Zhivich <mzhivich@akamai.com>,
+        Josh Hunt <johunt@akamai.com>,
+        "Jike Song" <albcamus@gmail.com>,
+        Kehuan Feng <kehuan.feng@gmail.com>
+References: <1616050402-37023-1-git-send-email-linyunsheng@huawei.com>
+ <CAM_iQpXU_jAbE4TC3ezZbfbYmYeViVgea+xyqPAxc5XTL9+cVw@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <13898fcd-3480-7dbc-3747-09c5ad725195@huawei.com>
+Date:   Mon, 22 Mar 2021 09:31:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzarx33ENLBRyqxDz7k9t0YmTRNs5wf_xCqL2jNXvs+0Sg@mail.gmail.com>
+In-Reply-To: <CAM_iQpXU_jAbE4TC3ezZbfbYmYeViVgea+xyqPAxc5XTL9+cVw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 10:00:57AM -0700, Andrii Nakryiko wrote:
-> On Fri, Mar 19, 2021 at 7:22 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Fri, Mar 19, 2021 at 01:59:09PM -0700, Andrii Nakryiko wrote:
-> > > Add ability to skip BTF generation for some BPF object files. This is done
-> > > through using a convention of .nobtf.c file name suffix.
-> > >
-> > > Also add third statically linked file to static_linked selftest. This file has
-> > > no BTF, causing resulting object file to have only some of DATASEC BTF types.
-> > > It also is using (from BPF code) global variables. This tests both libbpf's
-> > > static linking logic and bpftool's skeleton generation logic.
-> >
-> > I don't like the long term direction of patch 1 and 3.
-> > BTF is mandatory for the most bpf kernel features added in the last couple years.
-> > Making user space do quirks for object files without BTF is not something
-> > we should support or maintain. If there is no BTF the linker and skeleton
-> > generation shouldn't crash, of course, but they should reject such object.
+On 2021/3/20 3:40, Cong Wang wrote:
+> On Wed, Mar 17, 2021 at 11:52 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> Lockless qdisc has below concurrent problem:
+>>         cpu0                  cpu1
+>>           .                     .
+>>      q->enqueue                 .
+>>           .                     .
+>>    qdisc_run_begin()            .
+>>           .                     .
+>>      dequeue_skb()              .
+>>           .                     .
+>>    sch_direct_xmit()            .
+>>           .                     .
+>>           .                q->enqueue
+>>           .             qdisc_run_begin()
+>>           .            return and do nothing
+>>           .                     .
+>> qdisc_run_end()                 .
+>>
+>> cpu1 enqueue a skb without calling __qdisc_run() because cpu0
+>> has not released the lock yet and spin_trylock() return false
+>> for cpu1 in qdisc_run_begin(), and cpu0 do not see the skb
+>> enqueued by cpu1 when calling dequeue_skb() because cpu1 may
+>> enqueue the skb after cpu0 calling dequeue_skb() and before
+>> cpu0 calling qdisc_run_end().
+>>
+>> Lockless qdisc has another concurrent problem when tx_action
+>> is involved:
+>>
+>> cpu0(serving tx_action)     cpu1             cpu2
+>>           .                   .                .
+>>           .              q->enqueue            .
+>>           .            qdisc_run_begin()       .
+>>           .              dequeue_skb()         .
+>>           .                   .            q->enqueue
+>>           .                   .                .
+>>           .             sch_direct_xmit()      .
+>>           .                   .         qdisc_run_begin()
+>>           .                   .       return and do nothing
+>>           .                   .                .
+>> clear __QDISC_STATE_SCHED     .                .
+>>     qdisc_run_begin()         .                .
+>> return and do nothing         .                .
+>>           .                   .                .
+>>           .          qdisc_run_begin()         .
+>>
+>> This patch fixes the above data race by:
+>> 1. Set a flag after spin_trylock() return false.
+>> 2. Retry a spin_trylock() in case other CPU may not see the
+>>    new flag after it releases the lock.
+>> 3. reschedule if the flag is set after the lock is released
+>>    at the end of qdisc_run_end().
+>>
+>> For tx_action case, the flags is also set when cpu1 is at the
+>> end if qdisc_run_begin(), so tx_action will be rescheduled
+>> again to dequeue the skb enqueued by cpu2.
+>>
+>> Also clear the flag before dequeuing in order to reduce the
+>> overhead of the above process, and aviod doing the heavy
+>> test_and_clear_bit() at the end of qdisc_run_end().
+>>
+>> Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> ---
+>> For those who has not been following the qdsic scheduling
+>> discussion, there is packet stuck problem for lockless qdisc,
+>> see [1], and I has done some cleanup and added some enhanced
+>> features too, see [2] [3].
+>> While I was doing the optimization for lockless qdisc, it
+>> accurred to me that these optimization is useless if there is
+>> still basic bug in lockless qdisc, even the bug is not easily
+>> reproducible. So look through [1] again, I found that the data
+>> race for tx action mentioned by Michael, and thought deep about
+>> it and came up with this patch trying to fix it.
+>>
+>> So I am really appreciated some who still has the reproducer
+>> can try this patch and report back.
+>>
+>> 1. https://lore.kernel.org/netdev/d102074f-7489-e35a-98cf-e2cad7efd8a2@netrounds.com/t/#ma7013a79b8c4d8e7c49015c724e481e6d5325b32
+>> 2. https://patchwork.kernel.org/project/netdevbpf/patch/1615777818-13969-1-git-send-email-linyunsheng@huawei.com/
+>> 3. https://patchwork.kernel.org/project/netdevbpf/patch/1615800610-34700-1-git-send-email-linyunsheng@huawei.com/
+>> ---
+>>  include/net/sch_generic.h | 23 ++++++++++++++++++++---
+>>  net/sched/sch_generic.c   |  1 +
+>>  2 files changed, 21 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+>> index f7a6e14..4220eab 100644
+>> --- a/include/net/sch_generic.h
+>> +++ b/include/net/sch_generic.h
+>> @@ -36,6 +36,7 @@ struct qdisc_rate_table {
+>>  enum qdisc_state_t {
+>>         __QDISC_STATE_SCHED,
+>>         __QDISC_STATE_DEACTIVATED,
+>> +       __QDISC_STATE_NEED_RESCHEDULE,
+>>  };
+>>
+>>  struct qdisc_size_table {
+>> @@ -159,8 +160,17 @@ static inline bool qdisc_is_empty(const struct Qdisc *qdisc)
+>>  static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+>>  {
+>>         if (qdisc->flags & TCQ_F_NOLOCK) {
+>> -               if (!spin_trylock(&qdisc->seqlock))
+>> -                       return false;
+>> +               if (!spin_trylock(&qdisc->seqlock)) {
+>> +                       set_bit(__QDISC_STATE_NEED_RESCHEDULE,
+>> +                               &qdisc->state);
 > 
-> I don't think tools need to enforce any policies like that. They are
-> tools and should be unassuming about the way they are going to be used
-> to the extent possible.
+> Why do we need another bit? I mean why not just call __netif_schedule()?
 
-Right and bpftool/skeleton was used with BTF since day one.
-Without BTF the skeleton core ideas are lost. The skeleton api
-gives no benefit. So what's the point of adding support for skeleton without BTF?
-Is there a user that would benefit? If so, what will they gain from
-such BTF-less skeleton?
+I think that was your proposal in [1], the only difference is that
+it also handle the tx_action case when __netif_schedule() is called
+here.
+
+So yes, it can also fix the two data race described in this patch, but
+with a bigger performance degradation, quoting performance data in the
+[1]:
+
+pktgen threads	vanilla		patched		delta
+nr		kpps		kpps		%
+
+1		3240		3240		0
+2		3910		2710		-30.5
+4		5140		4920		-4
+
+
+performance data with this patch:
+
+threads  vanilla       vanilla+this_patch       delta
+   1     2.6Mpps            2.5Mpps              -3%
+   2     3.9Mpps            3.6Mpps              -7%
+   4     5.6Mpps            4.7Mpps             -16%
+
+
+So the performance is why I does not call __netif_schedule() directly
+here.
+
+1. https://lore.kernel.org/netdev/d102074f-7489-e35a-98cf-e2cad7efd8a2@netrounds.com/t/#md927651488ce4d226f6279aad6699b4bee4674a3
+
+> 
+>> +
+>> +                       /* Retry again in case other CPU may not see the
+>> +                        * new flags after it releases the lock at the
+>> +                        * end of qdisc_run_end().
+>> +                        */
+>> +                       if (!spin_trylock(&qdisc->seqlock))
+>> +                               return false;
+>> +               }
+>>                 WRITE_ONCE(qdisc->empty, false);
+>>         } else if (qdisc_is_running(qdisc)) {
+>>                 return false;
+>> @@ -176,8 +186,15 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+>>  static inline void qdisc_run_end(struct Qdisc *qdisc)
+>>  {
+>>         write_seqcount_end(&qdisc->running);
+>> -       if (qdisc->flags & TCQ_F_NOLOCK)
+>> +       if (qdisc->flags & TCQ_F_NOLOCK) {
+>>                 spin_unlock(&qdisc->seqlock);
+>> +
+>> +               if (unlikely(test_bit(__QDISC_STATE_NEED_RESCHEDULE,
+>> +                                     &qdisc->state) &&
+>> +                            !test_bit(__QDISC_STATE_DEACTIVATED,
+>> +                                      &qdisc->state)))
+> 
+> Testing two bits one by one is not atomic...
+
+For non-tx_action case, actually it is atomic because the above
+two bits testing is within the rcu protection, and qdisc reset
+will do a synchronize_net() after setting __QDISC_STATE_DEACTIVATED.
+
+For tx_action case, I think we need a rcu protection explicitly in
+net_tx_action() too, at least for PREEMPT_RCU:
+
+https://stackoverflow.com/questions/21287932/is-it-necessary-invoke-rcu-read-lock-in-softirq-context
+
+> 
+> 
+>> +                       __netif_schedule(qdisc);
+>> +       }
+>>  }
+>>
+>>  static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
+>> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+>> index 44991ea..25d75d8 100644
+>> --- a/net/sched/sch_generic.c
+>> +++ b/net/sched/sch_generic.c
+>> @@ -205,6 +205,7 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
+>>         const struct netdev_queue *txq = q->dev_queue;
+>>         struct sk_buff *skb = NULL;
+>>
+>> +       clear_bit(__QDISC_STATE_NEED_RESCHEDULE, &q->state);
+>>         *packets = 1;
+>>         if (unlikely(!skb_queue_empty(&q->gso_skb))) {
+>>                 spinlock_t *lock = NULL;
+>> --
+>> 2.7.4
+>>
+> 
+> .
+> 
+
