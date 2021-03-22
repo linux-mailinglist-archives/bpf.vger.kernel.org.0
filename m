@@ -2,267 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1496344BB9
-	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 17:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B1E344C6E
+	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 17:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231977AbhCVQiI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Mar 2021 12:38:08 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:40420 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231934AbhCVQhz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Mar 2021 12:37:55 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F40Xr5Fx9z9txkW;
-        Mon, 22 Mar 2021 17:37:48 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id zWvLbAnzNoRO; Mon, 22 Mar 2021 17:37:48 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F40Xr4CyTz9txkT;
-        Mon, 22 Mar 2021 17:37:48 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 47B1F8B7A3;
-        Mon, 22 Mar 2021 17:37:54 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id V1A9prPKdHQN; Mon, 22 Mar 2021 17:37:54 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E5C4A8B79C;
-        Mon, 22 Mar 2021 17:37:53 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id C8C3D675F4; Mon, 22 Mar 2021 16:37:53 +0000 (UTC)
-Message-Id: <b94562d7d2bb21aec89de0c40bb3cd91054b65a2.1616430991.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1616430991.git.christophe.leroy@csgroup.eu>
-References: <cover.1616430991.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 8/8] powerpc/bpf: Reallocate BPF registers to volatile
- registers when possible on PPC32
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Date:   Mon, 22 Mar 2021 16:37:53 +0000 (UTC)
+        id S229467AbhCVQ44 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Mar 2021 12:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231387AbhCVQ4b (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Mar 2021 12:56:31 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2459C061574;
+        Mon, 22 Mar 2021 09:56:30 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id m3so7314484ybt.0;
+        Mon, 22 Mar 2021 09:56:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O8a1/KMRD2gZlRZYI2i+SlO+VhWKrwDB0WvdEpBaVbE=;
+        b=t5Um+QAdxVORPIeyt/dcD/BvreZIWg82Edi10Gou+E/9cYzuB2K3D0xF18Usg+EHV5
+         kM/a4eZZvcx14jvUGVB65NzTPTmz7uaP6N6hR41MqPuccZ4xcoQJC+qOGup4wz0+yFuD
+         M5T/hkei/wR/0bedell5Nk8URyUabim6SQDR00j2NMSARTorCG/RUV2dHfl40rmdKTsF
+         lLk3qq7Q1a6splKo6HMcePRpJznaHgwE+5EaFmpz8gaWPH8yO2ZswTSk5WdACg/gpS/E
+         fFzglId0NSSNJ6r9mkDymQcUv2GaoVFmBsfUtcLAWTXBuda0pr+quUCy5jip6/qWHpLO
+         ncng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O8a1/KMRD2gZlRZYI2i+SlO+VhWKrwDB0WvdEpBaVbE=;
+        b=TYwx8K/yPecNjvAP6DTWH6IZk/S6FtgpG1aZzA+drsId8QolJQyM7NKRTJffoCynIY
+         MbRKjqgVJS4clAbAHnixmGXMLoZYhmMGuJKVtpt9czUK7YZuWHhKWNQUn1jr+eduuc2Y
+         VZXH1lE+pFQY5L2xQVLOBN2WBD1VmeyZKlUsSPmsTfXjGDe/b4fZloyHBDn+c2a5Jqb0
+         3mx1UD0TvDgpIrVUtGZSqC3C0mK2PPB389ODI8TL1zBUOgm5vWBUXiLPEDZ0iPUIQ5Gn
+         AWmUr3pkC9Dtv3f1d7t52SnZ9lj3dnOE27KxmD6JDoQ0Hh4dVNp9Owx9jOnyO7KPPVJm
+         lCjQ==
+X-Gm-Message-State: AOAM532bDjekV5RCwwuZaAeIztmR8fWJDCiOAPInJ4lfJuw0+cqiREmR
+        NLcUOKZXEggV9oYDd10z2iUe4qM8oWl5d6N1QcE=
+X-Google-Smtp-Source: ABdhPJynFSu7SS+LXJeOFDSKUSk2+lgJrWGC2LWRfVF9fLj80uzqBt9QyF6f3qHQZafgqUqlX7kLBjGtGuSgbgkM0l8=
+X-Received: by 2002:a25:874c:: with SMTP id e12mr517350ybn.403.1616432190180;
+ Mon, 22 Mar 2021 09:56:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210319205909.1748642-1-andrii@kernel.org> <20210319205909.1748642-4-andrii@kernel.org>
+ <20210320022156.eqtmldxpzxkh45a7@ast-mbp> <CAEf4Bzarx33ENLBRyqxDz7k9t0YmTRNs5wf_xCqL2jNXvs+0Sg@mail.gmail.com>
+ <20210322010734.tw2rigbr3dyk3iot@ast-mbp>
+In-Reply-To: <20210322010734.tw2rigbr3dyk3iot@ast-mbp>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 22 Mar 2021 09:56:19 -0700
+Message-ID: <CAEf4BzbdgPnw81+diwcvAokv+S6osqvAAzSQYt_BoYbga9t-qQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: allow compiling BPF objects
+ without BTF
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When the BPF routine doesn't call any function, the non volatile
-registers can be reallocated to volatile registers in order to
-avoid having to save them/restore on the stack.
+On Sun, Mar 21, 2021 at 6:07 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sat, Mar 20, 2021 at 10:00:57AM -0700, Andrii Nakryiko wrote:
+> > On Fri, Mar 19, 2021 at 7:22 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Fri, Mar 19, 2021 at 01:59:09PM -0700, Andrii Nakryiko wrote:
+> > > > Add ability to skip BTF generation for some BPF object files. This is done
+> > > > through using a convention of .nobtf.c file name suffix.
+> > > >
+> > > > Also add third statically linked file to static_linked selftest. This file has
+> > > > no BTF, causing resulting object file to have only some of DATASEC BTF types.
+> > > > It also is using (from BPF code) global variables. This tests both libbpf's
+> > > > static linking logic and bpftool's skeleton generation logic.
+> > >
+> > > I don't like the long term direction of patch 1 and 3.
+> > > BTF is mandatory for the most bpf kernel features added in the last couple years.
+> > > Making user space do quirks for object files without BTF is not something
+> > > we should support or maintain. If there is no BTF the linker and skeleton
+> > > generation shouldn't crash, of course, but they should reject such object.
+> >
+> > I don't think tools need to enforce any policies like that. They are
+> > tools and should be unassuming about the way they are going to be used
+> > to the extent possible.
+>
+> Right and bpftool/skeleton was used with BTF since day one.
+> Without BTF the skeleton core ideas are lost. The skeleton api
+> gives no benefit. So what's the point of adding support for skeleton without BTF?
+> Is there a user that would benefit? If so, what will they gain from
+> such BTF-less skeleton?
 
-Before this patch, the test #359 ADD default X is:
+The only part of skeleton API that's not available is convenient
+user-space access to global variables. If you don't use global
+variables you don't use BTF at all with skeleton. So all features but
+one work without BTF just fine: compile-time maps and progs (and
+links) references, embedding object file in .skel.h, and even
+automatic memory-mapping of .data/.rodata/.bss (just unknown struct
+layout).
 
-   0:	7c 64 1b 78 	mr      r4,r3
-   4:	38 60 00 00 	li      r3,0
-   8:	94 21 ff b0 	stwu    r1,-80(r1)
-   c:	60 00 00 00 	nop
-  10:	92 e1 00 2c 	stw     r23,44(r1)
-  14:	93 01 00 30 	stw     r24,48(r1)
-  18:	93 21 00 34 	stw     r25,52(r1)
-  1c:	93 41 00 38 	stw     r26,56(r1)
-  20:	39 80 00 00 	li      r12,0
-  24:	39 60 00 00 	li      r11,0
-  28:	3b 40 00 00 	li      r26,0
-  2c:	3b 20 00 00 	li      r25,0
-  30:	7c 98 23 78 	mr      r24,r4
-  34:	7c 77 1b 78 	mr      r23,r3
-  38:	39 80 00 42 	li      r12,66
-  3c:	39 60 00 00 	li      r11,0
-  40:	7d 8c d2 14 	add     r12,r12,r26
-  44:	39 60 00 00 	li      r11,0
-  48:	7d 83 63 78 	mr      r3,r12
-  4c:	82 e1 00 2c 	lwz     r23,44(r1)
-  50:	83 01 00 30 	lwz     r24,48(r1)
-  54:	83 21 00 34 	lwz     r25,52(r1)
-  58:	83 41 00 38 	lwz     r26,56(r1)
-  5c:	38 21 00 50 	addi    r1,r1,80
-  60:	4e 80 00 20 	blr
+Compile-time maps and progs and separately object file embedding in C
+header are useful in their own rights, even individually. There is no
+single "core idea" of the BPF skeleton in my mind. What is it for you?
 
-After this patch, the same test has become:
-
-   0:	7c 64 1b 78 	mr      r4,r3
-   4:	38 60 00 00 	li      r3,0
-   8:	94 21 ff b0 	stwu    r1,-80(r1)
-   c:	60 00 00 00 	nop
-  10:	39 80 00 00 	li      r12,0
-  14:	39 60 00 00 	li      r11,0
-  18:	39 00 00 00 	li      r8,0
-  1c:	38 e0 00 00 	li      r7,0
-  20:	7c 86 23 78 	mr      r6,r4
-  24:	7c 65 1b 78 	mr      r5,r3
-  28:	39 80 00 42 	li      r12,66
-  2c:	39 60 00 00 	li      r11,0
-  30:	7d 8c 42 14 	add     r12,r12,r8
-  34:	39 60 00 00 	li      r11,0
-  38:	7d 83 63 78 	mr      r3,r12
-  3c:	38 21 00 50 	addi    r1,r1,80
-  40:	4e 80 00 20 	blr
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/net/bpf_jit.h        | 16 ++++++++++++++++
- arch/powerpc/net/bpf_jit64.h      |  2 +-
- arch/powerpc/net/bpf_jit_comp.c   |  2 ++
- arch/powerpc/net/bpf_jit_comp32.c | 30 ++++++++++++++++++++++++++++--
- arch/powerpc/net/bpf_jit_comp64.c |  4 ++++
- 5 files changed, 51 insertions(+), 3 deletions(-)
-
-diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
-index a45b8266355d..776abef4d2a0 100644
---- a/arch/powerpc/net/bpf_jit.h
-+++ b/arch/powerpc/net/bpf_jit.h
-@@ -116,6 +116,15 @@ static inline bool is_nearbranch(int offset)
- #define SEEN_STACK	0x40000000 /* uses BPF stack */
- #define SEEN_TAILCALL	0x80000000 /* uses tail calls */
- 
-+#define SEEN_VREG_MASK	0x1ff80000 /* Volatile registers r3-r12 */
-+#define SEEN_NVREG_MASK	0x0003ffff /* Non volatile registers r14-r31 */
-+
-+#ifdef CONFIG_PPC64
-+extern const int b2p[MAX_BPF_JIT_REG + 2];
-+#else
-+extern const int b2p[MAX_BPF_JIT_REG + 1];
-+#endif
-+
- struct codegen_context {
- 	/*
- 	 * This is used to track register usage as well
-@@ -129,6 +138,7 @@ struct codegen_context {
- 	unsigned int seen;
- 	unsigned int idx;
- 	unsigned int stack_size;
-+	int b2p[ARRAY_SIZE(b2p)];
- };
- 
- static inline void bpf_flush_icache(void *start, void *end)
-@@ -147,11 +157,17 @@ static inline void bpf_set_seen_register(struct codegen_context *ctx, int i)
- 	ctx->seen |= 1 << (31 - i);
- }
- 
-+static inline void bpf_clear_seen_register(struct codegen_context *ctx, int i)
-+{
-+	ctx->seen &= ~(1 << (31 - i));
-+}
-+
- void bpf_jit_emit_func_call_rel(u32 *image, struct codegen_context *ctx, u64 func);
- int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *ctx,
- 		       u32 *addrs, bool extra_pass);
- void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx);
- void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx);
-+void bpf_jit_realloc_regs(struct codegen_context *ctx);
- 
- #endif
- 
-diff --git a/arch/powerpc/net/bpf_jit64.h b/arch/powerpc/net/bpf_jit64.h
-index b05f2e67bba1..7b713edfa7e2 100644
---- a/arch/powerpc/net/bpf_jit64.h
-+++ b/arch/powerpc/net/bpf_jit64.h
-@@ -39,7 +39,7 @@
- #define TMP_REG_2	(MAX_BPF_JIT_REG + 1)
- 
- /* BPF to ppc register mappings */
--static const int b2p[] = {
-+const int b2p[MAX_BPF_JIT_REG + 2] = {
- 	/* function return value */
- 	[BPF_REG_0] = 8,
- 	/* function arguments */
-diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
-index efac89964873..798ac4350a82 100644
---- a/arch/powerpc/net/bpf_jit_comp.c
-+++ b/arch/powerpc/net/bpf_jit_comp.c
-@@ -143,6 +143,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 	}
- 
- 	memset(&cgctx, 0, sizeof(struct codegen_context));
-+	memcpy(cgctx.b2p, b2p, sizeof(cgctx.b2p));
- 
- 	/* Make sure that the stack is quadword aligned. */
- 	cgctx.stack_size = round_up(fp->aux->stack_depth, 16);
-@@ -167,6 +168,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
- 		}
- 	}
- 
-+	bpf_jit_realloc_regs(&cgctx);
- 	/*
- 	 * Pretend to build prologue, given the features we've seen.  This will
- 	 * update ctgtx.idx as it pretends to output instructions, then we can
-diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-index 29ce802d7534..003843273b43 100644
---- a/arch/powerpc/net/bpf_jit_comp32.c
-+++ b/arch/powerpc/net/bpf_jit_comp32.c
-@@ -37,7 +37,7 @@
- #define TMP_REG	(MAX_BPF_JIT_REG + 0)
- 
- /* BPF to ppc register mappings */
--static const int b2p[] = {
-+const int b2p[MAX_BPF_JIT_REG + 1] = {
- 	/* function return value */
- 	[BPF_REG_0] = 12,
- 	/* function arguments */
-@@ -60,7 +60,7 @@ static const int b2p[] = {
- 
- static int bpf_to_ppc(struct codegen_context *ctx, int reg)
- {
--	return b2p[reg];
-+	return ctx->b2p[reg];
- }
- 
- /* PPC NVR range -- update this if we ever use NVRs below r17 */
-@@ -77,6 +77,32 @@ static int bpf_jit_stack_offsetof(struct codegen_context *ctx, int reg)
- 	return BPF_PPC_STACKFRAME(ctx) - 4;
- }
- 
-+void bpf_jit_realloc_regs(struct codegen_context *ctx)
-+{
-+	if (ctx->seen & SEEN_FUNC)
-+		return;
-+
-+	while (ctx->seen & SEEN_NVREG_MASK &&
-+	      (ctx->seen & SEEN_VREG_MASK) != SEEN_VREG_MASK) {
-+		int old = 32 - fls(ctx->seen & (SEEN_NVREG_MASK & 0xaaaaaaab));
-+		int new = 32 - fls(~ctx->seen & (SEEN_VREG_MASK & 0xaaaaaaaa));
-+		int i;
-+
-+		for (i = BPF_REG_0; i <= TMP_REG; i++) {
-+			if (ctx->b2p[i] != old)
-+				continue;
-+			ctx->b2p[i] = new;
-+			bpf_set_seen_register(ctx, new);
-+			bpf_clear_seen_register(ctx, old);
-+			if (i != TMP_REG) {
-+				bpf_set_seen_register(ctx, new - 1);
-+				bpf_clear_seen_register(ctx, old - 1);
-+			}
-+			break;
-+		}
-+	}
-+}
-+
- void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx)
- {
- 	int i;
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index 8a1f9fb00e78..57a8c1153851 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -64,6 +64,10 @@ static int bpf_jit_stack_offsetof(struct codegen_context *ctx, int reg)
- 	BUG();
- }
- 
-+void bpf_jit_realloc_regs(struct codegen_context *ctx)
-+{
-+}
-+
- void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx)
- {
- 	int i;
--- 
-2.25.0
-
+So given none of the fixes are horrible hacks and won't incur
+additional maintenance costs, what's the problem with accepting them?
