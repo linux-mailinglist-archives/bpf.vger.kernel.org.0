@@ -2,100 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E362345182
-	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 22:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90948345201
+	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 22:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhCVVKH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Mar 2021 17:10:07 -0400
-Received: from mga01.intel.com ([192.55.52.88]:4992 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231179AbhCVVJf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Mar 2021 17:09:35 -0400
-IronPort-SDR: v3fvxF5OEMuLfyUDviOefUKwfoNZPe764NgCtEzj4Tg+uCFhz1CVPwJe3XKFJotDsWqiVlzDEE
- OXi4j4q/o+RQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9931"; a="210423777"
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="210423777"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Mar 2021 14:09:35 -0700
-IronPort-SDR: JLh01sEw3vyw4Ur3m1KiqpMWghaoL+SJTZpkkVFzsBbWvWHGx6bedf1h15FlUyxCpuR7naSHAS
- 1adTckBPkapg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,269,1610438400"; 
-   d="scan'208";a="513448934"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga001.fm.intel.com with ESMTP; 22 Mar 2021 14:09:33 -0700
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        id S229673AbhCVVry (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Mar 2021 17:47:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54648 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230063AbhCVVrR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 22 Mar 2021 17:47:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616449635;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BYH+ALHHuUp2nY1Tf4LO1X9cBqJmh5q5ergCiNTIsFA=;
+        b=KDVlCIAfj0N8aEIc/y2xqgs8a/AfbZ8C1gW7ZvJwgFdk/dR1e4t6/lPauidTDsUcp1jqRj
+        XZvA7F/2q/KJz7UtCPDxQA9CvW9V5/lSXedsrz4UQ8I0iyzCHNFSWlcb7vjLq7+UZzmKms
+        6nCFfC37vQJJGSk6UCRekiKMT7gUizM=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-409-OBGOVWTePqGGeBAlHl9WzQ-1; Mon, 22 Mar 2021 17:47:12 -0400
+X-MC-Unique: OBGOVWTePqGGeBAlHl9WzQ-1
+Received: by mail-ej1-f69.google.com with SMTP id t21so59577ejf.14
+        for <bpf@vger.kernel.org>; Mon, 22 Mar 2021 14:47:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=BYH+ALHHuUp2nY1Tf4LO1X9cBqJmh5q5ergCiNTIsFA=;
+        b=bfmbcpwWJDkDp/Mvc0Du4oWSwL39SRIRqKQ/hmJH5OedVRrmethzpMfHE//CzLmE+d
+         UFFYvBPPaJTMpAgBdZWiNjaFecISM5rSX15dwnZU86QyXMpE0r767Fml4XzGFuroiZsQ
+         flyxrA4HNNnHb6ynupjdBqqq36n8EzRMe5a5RV/z6oVxx2UlZTTk/OsYEQnS3BQWEdII
+         N6YhhQnO/huyTDaud15qB5VLHhugOykEiHR5rLkXFmj1pITExO2gw8/6mvKGXCSQ1OmC
+         zE0VmR1uLRN7uGgOuSczoXRM6O9Hg1mPt9d6n5nimOcQrHIokwZfH1CU4cSlBlFXJzkP
+         ztcg==
+X-Gm-Message-State: AOAM5323xJWfzpgVJ1VaPVflp5inhUM9V/3yZtz9g5EYo06KoA8K3Iz1
+        bsE+l32H/pcgjSQiWrfVUIpCwcziFMCVq3WxtyJ7FTLS/vU5T7UJq66l+Ee4Z1/Mzpi7C1b8yT5
+        dLnq7qxT1zSGA
+X-Received: by 2002:aa7:cf95:: with SMTP id z21mr1668640edx.76.1616449631759;
+        Mon, 22 Mar 2021 14:47:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzGx0BGOGgfTXiKJV8s2OrCDJkou1EZOucbXM2fC8InHZfQ99sRZLaQtAxxQHygPvmUBl4/1g==
+X-Received: by 2002:aa7:cf95:: with SMTP id z21mr1668630edx.76.1616449631619;
+        Mon, 22 Mar 2021 14:47:11 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id f19sm12129383edu.12.2021.03.22.14.47.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 14:47:11 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 8FA5C180281; Mon, 22 Mar 2021 22:47:09 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
         ast@kernel.org
 Cc:     bjorn.topel@intel.com, magnus.karlsson@intel.com,
-        ciara.loftus@intel.com, john.fastabend@gmail.com, toke@redhat.com
-Subject: [PATCH v3 bpf-next 17/17] selftests: xsk: Remove unused defines
-Date:   Mon, 22 Mar 2021 21:58:16 +0100
-Message-Id: <20210322205816.65159-18-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210322205816.65159-1-maciej.fijalkowski@intel.com>
+        ciara.loftus@intel.com, john.fastabend@gmail.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCH v3 bpf-next 06/17] libbpf: xsk: use bpf_link
+In-Reply-To: <20210322205816.65159-7-maciej.fijalkowski@intel.com>
 References: <20210322205816.65159-1-maciej.fijalkowski@intel.com>
+ <20210322205816.65159-7-maciej.fijalkowski@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 22 Mar 2021 22:47:09 +0100
+Message-ID: <87wnty7teq.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
 
-Remove two unused defines.
+> Currently, if there are multiple xdpsock instances running on a single
+> interface and in case one of the instances is terminated, the rest of
+> them are left in an inoperable state due to the fact of unloaded XDP
+> prog from interface.
+>
+> Consider the scenario below:
+>
+> // load xdp prog and xskmap and add entry to xskmap at idx 10
+> $ sudo ./xdpsock -i ens801f0 -t -q 10
+>
+> // add entry to xskmap at idx 11
+> $ sudo ./xdpsock -i ens801f0 -t -q 11
+>
+> terminate one of the processes and another one is unable to work due to
+> the fact that the XDP prog was unloaded from interface.
+>
+> To address that, step away from setting bpf prog in favour of bpf_link.
+> This means that refcounting of BPF resources will be done automatically
+> by bpf_link itself.
+>
+> Provide backward compatibility by checking if underlying system is
+> bpf_link capable. Do this by looking up/creating bpf_link on loopback
+> device. If it failed in any way, stick with netlink-based XDP prog.
+> Otherwise, use bpf_link-based logic.
 
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- tools/testing/selftests/bpf/xdpxceiver.c | 7 +++----
- tools/testing/selftests/bpf/xdpxceiver.h | 2 --
- 2 files changed, 3 insertions(+), 6 deletions(-)
+So how is the caller supposed to know which of the cases happened?
+Presumably they need to do their own cleanup in that case? AFAICT you're
+changing the code to always clobber the existing XDP program on detach
+in the fallback case, which seems like a bit of an aggressive change? :)
 
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index 084ba052fa89..0a7c5a8ca585 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.c
-+++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -456,7 +456,7 @@ static void complete_tx_only(struct xsk_socket_info *xsk, int batch_size)
- 	if (!xsk->outstanding_tx)
- 		return;
- 
--	if (!NEED_WAKEUP || xsk_ring_prod__needs_wakeup(&xsk->tx))
-+	if (xsk_ring_prod__needs_wakeup(&xsk->tx))
- 		kick_tx(xsk);
- 
- 	rcvd = xsk_ring_cons__peek(&xsk->umem->cq, batch_size, &idx);
-@@ -544,9 +544,8 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frameptr, int batch_size)
- 	xsk_ring_prod__submit(&xsk->tx, batch_size);
- 	if (!tx_invalid_test) {
- 		xsk->outstanding_tx += batch_size;
--	} else {
--		if (!NEED_WAKEUP || xsk_ring_prod__needs_wakeup(&xsk->tx))
--			kick_tx(xsk);
-+	} else if (xsk_ring_prod__needs_wakeup(&xsk->tx)) {
-+		kick_tx(xsk);
- 	}
- 	*frameptr += batch_size;
- 	*frameptr %= num_frames;
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.h b/tools/testing/selftests/bpf/xdpxceiver.h
-index ef219c0785eb..6c428b276ab6 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.h
-+++ b/tools/testing/selftests/bpf/xdpxceiver.h
-@@ -34,13 +34,11 @@
- #define IP_PKT_TOS 0x9
- #define UDP_PKT_SIZE (IP_PKT_SIZE - sizeof(struct iphdr))
- #define UDP_PKT_DATA_SIZE (UDP_PKT_SIZE - sizeof(struct udphdr))
--#define TMOUT_SEC (3)
- #define EOT (-1)
- #define USLEEP_MAX 200000
- #define SOCK_RECONF_CTR 10
- #define BATCH_SIZE 64
- #define POLL_TMOUT 1000
--#define NEED_WAKEUP true
- #define DEFAULT_PKT_CNT 10000
- #define RX_FULL_RXQSIZE 32
- 
--- 
-2.20.1
+-Toke
 
