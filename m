@@ -2,135 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7BA3435D7
-	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 01:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D30034361F
+	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 02:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229613AbhCVAJU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 21 Mar 2021 20:09:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229579AbhCVAIw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 21 Mar 2021 20:08:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B906461879;
-        Mon, 22 Mar 2021 00:08:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616371732;
-        bh=7Qx5MsoTC6ImroO/sjbGWUAvLaBCYw51hxNZtjI6Zn0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MGLcQtaJahXilneNPq4nlwnA+t+6aNfckiauwVrR3l3k0at5sNqzJc2eLQ3EFKk6N
-         S1A6oNoIpO1VNb/r8EkVkZmCqv5X3dL7YPltgwQWurvf91puylGDUYXdOqgzH8mbGt
-         mHzMd9FmnVe93u7PiURp2v5ww7C9u7J3efgjPSbq3L6qxRNImP23HMaqFs0dJMKCXX
-         P5Ric8L8DRtXEb0QCfqXMNMzf/D3mrh9LYIaMYYV64wfesHTal2k8UYkOcQmpNAR+d
-         NMwjohw3kfgExFu0sDT2ontAjgN6OmVzPj+TawsEFMwJL6O8T6tSEwovZfbG3LlgSq
-         1aZLhnBumTj1g==
-Date:   Mon, 22 Mar 2021 09:08:46 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        linux-ia64@vger.kernel.org
-Subject: Re: [PATCH -tip v3 05/11] x86/kprobes: Add UNWIND_HINT_FUNC on
- kretprobe_trampoline code
-Message-Id: <20210322090846.515f8c0a9b71acadfc186b7f@kernel.org>
-In-Reply-To: <20210321175203.4kcptzgs6pwxh5oh@treble>
-References: <161615650355.306069.17260992641363840330.stgit@devnote2>
-        <161615655969.306069.4545805781593088526.stgit@devnote2>
-        <20210320211616.a976fc66d0c51e13d3121e2f@kernel.org>
-        <20210320220543.e1558ce3a351554c6be3ea26@kernel.org>
-        <20210321175203.4kcptzgs6pwxh5oh@treble>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229761AbhCVBHj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 21 Mar 2021 21:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229771AbhCVBHh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 21 Mar 2021 21:07:37 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78B9C061574;
+        Sun, 21 Mar 2021 18:07:37 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so9535954pjq.5;
+        Sun, 21 Mar 2021 18:07:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zLg3jQuxJTAirwbCGsamIpmUx/Vcu8RiU7hZ/RJZnVk=;
+        b=tw018bGtPS10fpxPs8hjt1us4jCIaG7zFJGW4H8hZFGsvTcBYfOMYDUKfy4+lJqVqR
+         foZrxXy30mF0UyD7PEErJ01j1HH3cQvBluGT7bztMV7VTTQcdQkEhRj+SGzWLA2DHWuT
+         BG+Xf46DDFqgheOwHR5Ls9W7eQHv8zO+rsbXTs/DRRLMafc2uoewNFCNBE0F5NDfYjq+
+         XK1d1GTmed0sG91/q/SqimMId5VOgz/XBzNZvEjKL3HhYDtc8Sg62Vw9ADAbi/GUV83u
+         SMnp3v6rU4t4pT3cNVdlaERqVwkMvgdaZ6mpjMrI10swfsYv27RTl7ONHmfsc9bSI45e
+         HybQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zLg3jQuxJTAirwbCGsamIpmUx/Vcu8RiU7hZ/RJZnVk=;
+        b=qLOUgP3PAba5nF+2WTcUv8BzzhNMof0LGm3AW19i9hnV85Q0z2WtmQqs5Ug5kuUjux
+         nuGgfCrBCxY90mv2nHVcSQSuDJQO0GHW5avIIdZ+uCovBj2KRd8L4+B/sSqTZJJs7eBR
+         oKl9cngIfbcVtNakGv3N6Do3VJSzHKIo7qn1nqQaa0uHi76gjNPBeu6RCk0DNGBiAHgU
+         tNh6fGfSuH+XlPTFvc1qns807POkUY9iSGcK5W3d1rHo033mMSazXGZNDaPd2l1YFu5/
+         WTPJD/CpHIe4+LlUA9tkrasoQmgubJCAeUYjx/16VexpOYugxf3qbxs9pyNfHveMVOrd
+         WCnA==
+X-Gm-Message-State: AOAM53216O4OJBy/qNbEjyMTABfkIzJipOIAr74S12NWjUzj0lJ9AMf3
+        zQzGfDgzG/ELcaV0eyR3fA8=
+X-Google-Smtp-Source: ABdhPJyXZQMVSdHxj/wL96Br+8qDc9UO+TYqGVLihDysV1/LBI8XztQBU5C6YSh8s4N0rcTsk+ElBQ==
+X-Received: by 2002:a17:902:343:b029:e6:bc94:48c7 with SMTP id 61-20020a1709020343b02900e6bc9448c7mr24744836pld.72.1616375257034;
+        Sun, 21 Mar 2021 18:07:37 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:8b22])
+        by smtp.gmail.com with ESMTPSA id h6sm11104267pfb.157.2021.03.21.18.07.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Mar 2021 18:07:36 -0700 (PDT)
+Date:   Sun, 21 Mar 2021 18:07:34 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: allow compiling BPF objects
+ without BTF
+Message-ID: <20210322010734.tw2rigbr3dyk3iot@ast-mbp>
+References: <20210319205909.1748642-1-andrii@kernel.org>
+ <20210319205909.1748642-4-andrii@kernel.org>
+ <20210320022156.eqtmldxpzxkh45a7@ast-mbp>
+ <CAEf4Bzarx33ENLBRyqxDz7k9t0YmTRNs5wf_xCqL2jNXvs+0Sg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzarx33ENLBRyqxDz7k9t0YmTRNs5wf_xCqL2jNXvs+0Sg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 21 Mar 2021 12:52:03 -0500
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-
-> On Sat, Mar 20, 2021 at 10:05:43PM +0900, Masami Hiramatsu wrote:
-> > On Sat, 20 Mar 2021 21:16:16 +0900
-> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > 
-> > > On Fri, 19 Mar 2021 21:22:39 +0900
-> > > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > 
-> > > > From: Josh Poimboeuf <jpoimboe@redhat.com>
-> > > > 
-> > > > Add UNWIND_HINT_FUNC on kretporbe_trampoline code so that ORC
-> > > > information is generated on the kretprobe_trampoline correctly.
-> > > > 
-> > > 
-> > > Test bot also found a new warning for this.
-> > > 
-> > > > >> arch/x86/kernel/kprobes/core.o: warning: objtool: kretprobe_trampoline()+0x25: call without frame pointer save/setup
-> > > 
-> > > With CONFIG_FRAME_POINTER=y.
-> > > 
-> > > Of course this can be fixed with additional "push %bp; mov %sp, %bp" before calling
-> > > trampoline_handler. But actually we know that this function has a bit special
-> > > stack frame too. 
-> > > 
-> > > Can I recover STACK_FRAME_NON_STANDARD(kretprobe_trampoline) when CONFIG_FRAME_POINTER=y ?
-> > 
-> > So something like this. Does it work?
-> > 
-> > diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-> > index b31058a152b6..651f337dc880 100644
-> > --- a/arch/x86/kernel/kprobes/core.c
-> > +++ b/arch/x86/kernel/kprobes/core.c
-> > @@ -760,6 +760,10 @@ int kprobe_int3_handler(struct pt_regs *regs)
-> >  }
-> >  NOKPROBE_SYMBOL(kprobe_int3_handler);
-> >  
-> > +#ifdef CONFIG_FRAME_POINTER
-> > +#undef UNWIND_HINT_FUNC
-> > +#define UNWIND_HINT_FUNC
-> > +#endif
+On Sat, Mar 20, 2021 at 10:00:57AM -0700, Andrii Nakryiko wrote:
+> On Fri, Mar 19, 2021 at 7:22 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Fri, Mar 19, 2021 at 01:59:09PM -0700, Andrii Nakryiko wrote:
+> > > Add ability to skip BTF generation for some BPF object files. This is done
+> > > through using a convention of .nobtf.c file name suffix.
+> > >
+> > > Also add third statically linked file to static_linked selftest. This file has
+> > > no BTF, causing resulting object file to have only some of DATASEC BTF types.
+> > > It also is using (from BPF code) global variables. This tests both libbpf's
+> > > static linking logic and bpftool's skeleton generation logic.
+> >
+> > I don't like the long term direction of patch 1 and 3.
+> > BTF is mandatory for the most bpf kernel features added in the last couple years.
+> > Making user space do quirks for object files without BTF is not something
+> > we should support or maintain. If there is no BTF the linker and skeleton
+> > generation shouldn't crash, of course, but they should reject such object.
 > 
-> This hunk isn't necessary.  The unwind hints don't actually have an
-> effect with frame pointers.
+> I don't think tools need to enforce any policies like that. They are
+> tools and should be unassuming about the way they are going to be used
+> to the extent possible.
 
-Without this, objtool shows the following warning with CONFIG_FRAME_POINTER=y.
-
-arch/x86/kernel/kprobes/core.o: warning: objtool: kretprobe_trampoline()+0x1: BUG: why am I validating an ignored function?
-
-It seems to complain about putting UNWIND_HINT on STACK_FRAME_NON_STANDARD function.
-
-> 
-> >  /*
-> >   * When a retprobed function returns, this code saves registers and
-> >   * calls trampoline_handler() runs, which calls the kretprobe's handler.
-> > @@ -797,7 +801,14 @@ asm(
-> >  	".size kretprobe_trampoline, .-kretprobe_trampoline\n"
-> >  );
-> >  NOKPROBE_SYMBOL(kretprobe_trampoline);
-> > -
-> > +#ifdef CONFIG_FRAME_POINTER
-> > +/*
-> > + * kretprobe_trampoline skips updating frame pointer. The frame pointer
-> > + * saved in trampoline_handler points to the real caller function's
-> > + * frame pointer.
-> > + */
-> > +STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
-> > +#endif
-> >  
-> >  /*
-> >   * Called from kretprobe_trampoline
-> 
-> Ack.
-
-Thank you!
-
-> 
-> -- 
-> Josh
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Right and bpftool/skeleton was used with BTF since day one.
+Without BTF the skeleton core ideas are lost. The skeleton api
+gives no benefit. So what's the point of adding support for skeleton without BTF?
+Is there a user that would benefit? If so, what will they gain from
+such BTF-less skeleton?
