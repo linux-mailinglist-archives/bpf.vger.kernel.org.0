@@ -2,186 +2,517 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 487BB344DF3
-	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 19:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A98DA344E17
+	for <lists+bpf@lfdr.de>; Mon, 22 Mar 2021 19:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbhCVR7x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Mar 2021 13:59:53 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:42798 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229840AbhCVR7i (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 22 Mar 2021 13:59:38 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12MHxRbs026355;
-        Mon, 22 Mar 2021 10:59:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=facebook;
- bh=DRzSr5CgmuCew7f1uaRwc29Ez358PewDqqmqh5bt9qI=;
- b=Ep1JvT5kTBDnKJtteNzM2gcHl2mVpHSdyNN+7M8tjI3//1HEsD8xeNAw+pCBqMcWFlPy
- IqlxFtm0Pqdz00l284HFJs7VcmMqF+4+vl7WxFhoc+MeiPauenVJXC0AxW+zjXsO/Sg8
- P88bZxHJ54ZCzjKdOpMNMUrvLEC/v5ccAtw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37e0sxpybh-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 22 Mar 2021 10:59:28 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 22 Mar 2021 10:59:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y9hABFTETuufzjYccs7rO8y846hIulu46/dNkNsIrzP5HosWCbIFeQifHIJcc6c635VRePTJBEoHpmbhX2Upr4wOgRdWZdMS1N8ebhkALeZCVuHi1A13Yi4+GI2iVsfEZT6nfzxTrBD+tOb12bgEoBJuHFC6ahjqR+UyYsxxUS4zW8U05VErDTfB+Vvd6OQAOryOIuwz+/j4zvsbQa/HNE61yLruyJszjDxW5LSo5AdTWCEV6429vbImDkg3RxmqWm50oqCcXMFP53aIH0W/+e3ld1TJbevpiFDB+X23+ReZFtQ6yWBX/rPahUAG+gLj6HScWOdpwOcR2vVrPxwOiw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VPRWgbP4wyBoi3EhujCtEsDoKUwTTo6NrY8+DLYejMo=;
- b=UcL4DM0+xLkoD3XfF6JxSl7Sm0Do2IePD8MF7hvTympUStg1vzgKyclYnmWE6uol5H6lld7uuG2qIrOQOs06Bw6WSKEY3QFcbFSg2zKYQzPn9SuJ0tGw+OSM+z9X0kuFPHRbOPMf5X+NuPaIAmSMeKx788jQ91s2uqg/F3pECuXC8j5SzXdVnAdxqzh/RcdrEq5KmC27WCTcfxu5tipm+B+hQ9PSD9sL0PoOqGEWBwh5uUyMceVgmkNE4HvPif8tGri4Hex8K3Y0T86+ia727EkvFXUsBDw7D1E//COT8tt2+WBtzg9VEgOmsHM/XUMJo3qskT0BNkRFoo9GiIOqpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: mildred.fr; dkim=none (message not signed)
- header.d=none;mildred.fr; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB3191.namprd15.prod.outlook.com (2603:10b6:a03:107::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Mon, 22 Mar
- 2021 17:59:26 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::2975:c9d8:3f7f:dbd0]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::2975:c9d8:3f7f:dbd0%5]) with mapi id 15.20.3955.027; Mon, 22 Mar 2021
- 17:59:26 +0000
-Date:   Mon, 22 Mar 2021 10:59:22 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Shanti Lombard =?utf-8?Q?n=C3=A9e_Bouchez-Mongard=C3=A9?= 
-        <mildred@mildred.fr>
-CC:     bpf <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <alexei.starovoitov@gmail.com>
-Subject: Re: Design for sk_lookup helper function in context of sk_lookup hook
-Message-ID: <20210322175922.wu5igribakuc7pl6@kafai-mbp.dhcp.thefacebook.com>
-References: <0eba7cd7-aa87-26a0-9431-686365d515f2@mildred.fr>
- <20210319165546.6dbiki7es7uhdayw@kafai-mbp.dhcp.thefacebook.com>
- <a707be4e-9101-78dd-4ed0-5556c5fa143e@mildred.fr>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a707be4e-9101-78dd-4ed0-5556c5fa143e@mildred.fr>
-X-Originating-IP: [2620:10d:c090:400::5:1cda]
-X-ClientProxiedBy: MWHPR19CA0050.namprd19.prod.outlook.com
- (2603:10b6:300:94::12) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        id S229804AbhCVSFM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Mar 2021 14:05:12 -0400
+Received: from mail-qt1-f175.google.com ([209.85.160.175]:42954 "EHLO
+        mail-qt1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231229AbhCVSEq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Mar 2021 14:04:46 -0400
+Received: by mail-qt1-f175.google.com with SMTP id l13so13008737qtu.9
+        for <bpf@vger.kernel.org>; Mon, 22 Mar 2021 11:04:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=olQWIMUZG9qgET1dHBLA9f3bnTpqRuTjzf8QHH4eIFU=;
+        b=mWF6x8FwMmfFVWEgos7p3KE+T6evbQPyqy/Q3ObklIaYug6X/TE4Vzwc/bSI5OxQrp
+         6iyYTgAp3qokicSdPhaBwBa1B909c2TwXX+87IW7sMzHz7v9n3FE3qhIKtfqLKkbwfu5
+         OecAVwuqJek5IMAt4Wz0+cXPUWhNIOb2Rk2d8lc+wWpHBxxdZ0zeBF7bHDRbo60yyWHa
+         l/tvqGhw1O4RgGnNeS9rb5S91JmhTEVRE/KUTeppjxV543MKP34rIaAn06nVWLXVi/SM
+         NFfNSIWbLjXvkGZ4RTgkFWXLEmPYw+vqZnUA9pMO7bzT6F7MLmxTexX6VJRGrkYgYMvY
+         jatg==
+X-Gm-Message-State: AOAM533d9Mwbuyc9JJeuN6pPo8M4z7wyFsRirH01Xf0MFniITNS7aZoJ
+        wRUByL+HB9xqtEOHFxvYxO/SNy03pr8BHqI=
+X-Google-Smtp-Source: ABdhPJyw897UtjYquWixQpAj/aya9p13Yups/w1qbBUyJZmBl/P1tjzRHVkKNkp9nrKsjZ0Fn6foZg==
+X-Received: by 2002:ac8:6ede:: with SMTP id f30mr1020278qtv.275.1616436285968;
+        Mon, 22 Mar 2021 11:04:45 -0700 (PDT)
+Received: from fujitsu.celeiro.cu ([138.204.26.16])
+        by smtp.gmail.com with ESMTPSA id l186sm11318867qke.92.2021.03.22.11.04.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 11:04:45 -0700 (PDT)
+From:   Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
+To:     andrii.nakryiko@gmail.com
+Cc:     bpf@vger.kernel.org, rafaeldtinoco@ubuntu.com
+Subject: [PATCH v2 bpf-next][RFC] libbpf: introduce legacy kprobe events support
+Date:   Mon, 22 Mar 2021 15:04:41 -0300
+Message-Id: <20210322180441.1364511-1-rafaeldtinoco@ubuntu.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <CAEf4Bzap6qS9_HQZTHJsM-X2VZso+N5xMwa3HNG9ycMW4WXtQg@mail.gmail.com>
+References: <CAEf4Bzap6qS9_HQZTHJsM-X2VZso+N5xMwa3HNG9ycMW4WXtQg@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:1cda) by MWHPR19CA0050.namprd19.prod.outlook.com (2603:10b6:300:94::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Mon, 22 Mar 2021 17:59:25 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6907af70-8710-40ea-e40c-08d8ed5c3b31
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3191:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3191D88AEC0779B477AB02A4D5659@BYAPR15MB3191.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XeCZDEXO1i1CMWeo1vncSfWiJ+uMPAWIUBisg9gj/jkxj+egC86MmIRn3VMTR4WDoV89kw7jRMlG6r4WvnWtmJMNWFznDQoMqYrdnfUaG59wkixViQkl0kAWPuAd9325rhlRFrLthMILDeJk3YX5Ytd0ofoegYy2dedcXmjCm9AgcumzBCSZ8xXykevj7xS6tTqFe/4wENB733WGkJUxLISj0VtlOU0YsR9eZNMmWNT6tPZaZgZO2T9JDDXf0QSNq8v5SuUv606Lt/HZ5YHsXpqyx/q9Et0cxZmsKq9ON5pOB8hqsr5obKQbbbcGVzZl9uhCDrPu1I5aHmTBdL27TkVG4g8vFkcY30rgTB3+ahc3Z5vsVbJO+BR8OHEmLDzYypKIyE8yhPyM6859kqkADm7RzV0xy6A3JGckan9GxNGENrunSpTFMje+/+ac3T1dGO4JFKlwyyRc2pi9rsfI9iqeChkzxHETdyXBcaxUrjc9Dw96Ud4SbsWxkNyk17KIiv43bExMopb1nUORkIqut8BQXXT1gfAjZwVHDv+cjee1/ywAYxjkUOdsVc92zF/jQ5PyjkqNFWPaLmrbWJMM7gqg+00alkmisO5q1kK5LkDKe58uQEmHGRY0ylidF4vQVWFqp+91HBO2YjIntfgnZQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(39860400002)(136003)(366004)(376002)(2906002)(8676002)(66946007)(6916009)(66476007)(66556008)(1076003)(9686003)(55016002)(4326008)(66574015)(6666004)(8936002)(5660300002)(83380400001)(478600001)(86362001)(6506007)(186003)(38100700001)(7696005)(16526019)(316002)(52116002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-1?Q?128MDRwSLc+1zt83e//USGS9zp7vDiUfg4AaGfZ5sFEIGCIUIwd+IMZSX+?=
- =?iso-8859-1?Q?9xmxvXUEdIC0OrFzL9OmXF0g2dxl6Sr96ry0c5C6jLCGno4xtunxkj0F7T?=
- =?iso-8859-1?Q?x6R/uffvcWwQj7Y6/TNFzKIHX6Six32h+aQPkdoZBuTJdJJ3qZveY+1yQn?=
- =?iso-8859-1?Q?+mmzuJ2JDqNSaInJ9ZJNvPy/p/+A+SW6DWMPXbRcErewUt2Eo6by7GmRfM?=
- =?iso-8859-1?Q?GHJuCgfg19TAraO+rRv2/cd/I7VTb9kvsLvybLN6lkzp/gm0bGkzhyP2oY?=
- =?iso-8859-1?Q?ggRt8P35pHO9Xs66TaCotabmCYNSM69Tr2oMpE+/A42pnhAfScv7MfMOcl?=
- =?iso-8859-1?Q?cVftMHspdGFy8pRxkhmSp61Mr77GLkn26tugIntcahZa9JUy9Jwz9rhZDB?=
- =?iso-8859-1?Q?B9xC83xVed6ySqYutiST0E0wCB5u5A84DrB5VU5FQXEfgWMhspGMNgTwrS?=
- =?iso-8859-1?Q?zbAm/AhX/A+d0QDz5mcE7/GOnDxJTqAM7CcglTEU7TTJkoirdwtXj6rTAB?=
- =?iso-8859-1?Q?4MxTg933z0XX2Gc/can1P4LF6PhEYx/10fVa1fnql+WEZM75e/1Nv2eGZF?=
- =?iso-8859-1?Q?2nSOJDFwRilS2CmEo0kWzhvqNMkzERqg8ezfqkpzN9QvJ3Hfq9MHbnLwlY?=
- =?iso-8859-1?Q?vn1tpGqNHwRDO/AnNNHEbLCxe69Eqc/NdIVKJEMVZxWsRelJaTiQ+7PVvg?=
- =?iso-8859-1?Q?8aGjZ7IVgNktKcG3SmlTcfZrOWrSeqJDJnXN4a+GHuGMbAKPGsBM/b8H1x?=
- =?iso-8859-1?Q?5e1Ygqyt4tqCqeaNbcwXd2XfFeJ7HspcqkQj0kfvo3anFGz/I9Wo5ynarT?=
- =?iso-8859-1?Q?OmIBGQtuIBLQw6mN3duR58bvfUBVUgv+prjPDuOfmz+z2IfMzhPQBroHrD?=
- =?iso-8859-1?Q?ZbEtUz2tcDlv8IV48lEskASfta3tGb80qwpTZjomhKxBkHirOZ2VABbH0A?=
- =?iso-8859-1?Q?cIfGnXEbzMQjTY2pVshlIqYsVoZpa4IuxTnwsC9NwRoOfCb7eqZWWDgiPn?=
- =?iso-8859-1?Q?d7PqMI4HS17BwPHevWKHFeW1zuSaqHIskDOO9Bzvx6OQC5lqiPluATG8Xe?=
- =?iso-8859-1?Q?zpASk6kLTsaNJ1AgNw3A5/IR6XbM3UtwGYVM8axGxaIjGXV+g9FvNpaBlt?=
- =?iso-8859-1?Q?LKnTfnR8Pr78QofcvxtDNfXUP1XnoJgo08j5bvU6Lijh1KsK1pNbT3QHj1?=
- =?iso-8859-1?Q?1ZAl6UNet1j5+eokcrE7lod2DkDH5zq5W+Rtf73sfUunr0oG4QtWDvjdQv?=
- =?iso-8859-1?Q?dS0uKMeoMaxkXIGS/H0gmyOLRQfBP2jl5TlKh58inTF1X9IdRRrxClSFMe?=
- =?iso-8859-1?Q?xA3AdAjrS/z++XVRQeWWORQdaIdHfH/DwA5BOSnCzhs+q/Jr4qw2Lt5ts8?=
- =?iso-8859-1?Q?Kqp+xLGEADD7y/Cxz8VjJuWUD/TWa2Kw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6907af70-8710-40ea-e40c-08d8ed5c3b31
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Mar 2021 17:59:26.3452
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Q7K2VUus1EwbI0ZkF8mmSKGxqUple4ezzFix+JBTJg92QgBVNB35F+7QwtIYMFU2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3191
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-22_10:2021-03-22,2021-03-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- impostorscore=0 clxscore=1011 lowpriorityscore=0 mlxlogscore=999
- mlxscore=0 bulkscore=0 suspectscore=0 priorityscore=1501 malwarescore=0
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103220132
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 06:05:20PM +0100, Shanti Lombard née Bouchez-Mongardé wrote:
-> Le 19/03/2021 à 17:55, Martin KaFai Lau a écrit :
-> > On Wed, Mar 17, 2021 at 10:04:18AM +0100, Shanti Lombard née Bouchez-Mongardé wrote:
-> > > Q1: How do we prevent socket lookup from triggering BPF sk_lookup causing a
-> > > loop?
-> > The bpf_sk_lookup_(tcp|udp) will be called from the BPF_PROG_TYPE_SK_LOOKUP program?
-> 
-> Yes, the idea is to allow the BPF program to redirect incoming connections
-> for 0.0.0.0:1234 to a specific IP address such as 127.0.12.34:1234 or any
-> other combinaison with a binding not done based on a predefined socket file
-> descriptor but based on a listening IP address for a socket.
-> 
-> See linked discussion in the original message
-> 
-> > > - Solution A: We add a flag to the existing inet_lookup exported function
-> > > (and similarly for inet6, udp4 and udp6). The INET_LOOKUP_SKIP_BPF_SK_LOOKUP
-> > > flag, when set, would prevent BPF sk_lookup from happening. It also requires
-> > > modifying every location making use of those functions.
-> > > 
-> > > - Solution B: We export a new symbol in inet_hashtables, a wrapper around
-> > > static function inet_lhash2_lookup for inet4 and similar functions for inet6
-> > > and udp4/6. Looking up specific IP/port and if not found looking up for
-> > > INADDR_ANY could be done in the helper function in net/core/filters.c or in
-> > > the BPF program.
-For TCP, it is only for lhash lookup, right?
+- This is a RFC (v2).
+- Please check my reply with inline comments.
+---
+ src/libbpf.c | 362 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 357 insertions(+), 5 deletions(-)
 
-> > > 
-> > > Q2: Should we reuse the bpf_sk_lokup_tcp and bpf_sk_lookup_udp helper
-> > > functions or create new ones?
-> > If the args passing to the bpf_sk_lookup_(tcp|udp) is the same,
-> > it makes sense to reuse the same BPF_FUNC_sk_lookup_*.
-> > The actual helper implementation could be different though.
-> > Look at bpf_xdp_sk_lookup_tcp_proto and bpf_sk_lookup_tcp_proto.
-> 
-> I was thinking that perhaps a different helper method which would take
-> IPPROTO_TCP or IPPROTO_UDP parameter would be better suited. it would avoid
-> BPF code such as :
-> 
->     switch(ctx->protocol){
->         case IPPROTO_TCP:
->             sk = bpf_sk_lookup_tcp(ctx, &tuple, tuple_size, -1, 0);
->             break;
->         case IPPROTO_UDP:
->             sk = bpf_sk_lookup_udp(ctx, &tuple, tuple_size, -1, 0);
->             break;
->         default:
->             return SK_PASS;
->     }
-> 
-> But then there is the limit of 5 arguments, isn't it, so perhaps the
-> _tcp/_udp functions are not such a bad idea after all.
-> 
-> I saw already that the same helper functions could be given different
-> implementations. And if there is no way to have more than 5 arguments then
-> this is probably better to reuse the same helper function name and
-> signature.
+diff --git a/src/libbpf.c b/src/libbpf.c
+index 3b1c79f..e9c6025 100644
+--- a/src/libbpf.c
++++ b/src/libbpf.c
+@@ -9465,6 +9465,10 @@ struct bpf_link {
+ 	char *pin_path;		/* NULL, if not pinned */
+ 	int fd;			/* hook FD, -1 if not applicable */
+ 	bool disconnected;
++	struct {
++		const char *name;
++		bool retprobe;
++	} legacy;
+ };
+ 
+ /* Replace link's underlying BPF program with the new one */
+@@ -9501,6 +9505,7 @@ int bpf_link__destroy(struct bpf_link *link)
+ 		link->destroy(link);
+ 	if (link->pin_path)
+ 		free(link->pin_path);
++
+ 	free(link);
+ 
+ 	return err;
+@@ -9598,6 +9603,8 @@ int bpf_link__unpin(struct bpf_link *link)
+ 	return 0;
+ }
+ 
++static inline int remove_kprobe_event_legacy(const char*, bool);
++
+ static int bpf_link__detach_perf_event(struct bpf_link *link)
+ {
+ 	int err;
+@@ -9605,8 +9612,25 @@ static int bpf_link__detach_perf_event(struct bpf_link *link)
+ 	err = ioctl(link->fd, PERF_EVENT_IOC_DISABLE, 0);
+ 	if (err)
+ 		err = -errno;
+-
+ 	close(link->fd);
++
++	return err;
++}
++
++static int bpf_link__detach_perf_event_legacy(struct bpf_link *link)
++{
++	int err;
++
++	err = bpf_link__detach_perf_event(link);
++	if (err)
++		err = -errno; // improve this
++
++	/*
++	err = remove_kprobe_event_legacy(link->legacy.name, link->legacy.retprobe);
++	if (err)
++		err = -errno;
++	 */
++
+ 	return err;
+ }
+ 
+@@ -9655,6 +9679,48 @@ struct bpf_link *bpf_program__attach_perf_event(struct bpf_program *prog,
+ 	return link;
+ }
+ 
++struct bpf_link *bpf_program__attach_perf_event_legacy(struct bpf_program *prog,
++						       int pfd)
++{
++	char errmsg[STRERR_BUFSIZE];
++	struct bpf_link *link;
++	int prog_fd, err;
++
++	if (pfd < 0) {
++		pr_warn("prog '%s': invalid perf event FD %d\n", prog->name, pfd);
++		return ERR_PTR(-EINVAL);
++	}
++	prog_fd = bpf_program__fd(prog);
++	if (prog_fd < 0) {
++		pr_warn("prog '%s': can't attach BPF program w/o FD (did you load it?)\n", prog->name);
++		return ERR_PTR(-EINVAL);
++	}
++
++	link = calloc(1, sizeof(*link));
++	if (!link)
++		return ERR_PTR(-ENOMEM);
++
++	link->detach = &bpf_link__detach_perf_event_legacy;
++	link->fd = pfd;
++
++	if (ioctl(pfd, PERF_EVENT_IOC_SET_BPF, prog_fd) < 0) {
++		err = -errno;
++		free(link);
++		pr_warn("prog '%s': failed to attach to pfd %d: %s\n", prog->name, pfd, libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
++		if (err == -EPROTO)
++			pr_warn("prog '%s': try add PERF_SAMPLE_CALLCHAIN to or remove exclude_callchain_[kernel|user] from pfd %d\n", prog->name, pfd);
++		return ERR_PTR(err);
++	}
++	if (ioctl(pfd, PERF_EVENT_IOC_ENABLE, 0) < 0) {
++		err = -errno;
++		free(link);
++		pr_warn("prog '%s': failed to enable pfd %d: %s\n", prog->name, pfd, libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
++		return ERR_PTR(err);
++	}
++
++	return link;
++}
++
+ /*
+  * this function is expected to parse integer in the range of [0, 2^31-1] from
+  * given file using scanf format string fmt. If actual parsed value is
+@@ -9685,34 +9751,242 @@ static int parse_uint_from_file(const char *file, const char *fmt)
+ 	return ret;
+ }
+ 
++static int write_uint_to_file(const char *file, unsigned int val)
++{
++	char buf[STRERR_BUFSIZE];
++	int err;
++	FILE *f;
++
++	f = fopen(file, "w");
++	if (!f) {
++		err = -errno;
++		pr_debug("failed to open '%s': %s\n", file,
++			 libbpf_strerror_r(err, buf, sizeof(buf)));
++		return err;
++	}
++	err = fprintf(f, "%u", val);
++	if (err != 1) {
++		err = -errno;
++		pr_debug("failed to write '%u' to '%s': %s\n", val, file,
++			libbpf_strerror_r(err, buf, sizeof(buf)));
++		fclose(f);
++		return err;
++	}
++	fclose(f);
++	return 0;
++}
++
++#define KPROBE_PERF_TYPE	"/sys/bus/event_source/devices/kprobe/type"
++#define UPROBE_PERF_TYPE	"/sys/bus/event_source/devices/uprobe/type"
++#define KPROBERET_FORMAT	"/sys/bus/event_source/devices/kprobe/format/retprobe"
++#define UPROBERET_FORMAT	"/sys/bus/event_source/devices/uprobe/format/retprobe"
++/* legacy kprobe events related files */
++#define KPROBE_EVENTS		"/sys/kernel/debug/tracing/kprobe_events"
++#define KPROBE_LEG_TOGGLE	"/sys/kernel/debug/kprobes/enabled"
++#define KPROBE_LEG_ALL_TOGGLE	"/sys/kernel/debug/tracing/events/kprobes/enable";
++#define KPROBE_SINGLE_TOGGLE	"/sys/kernel/debug/tracing/events/kprobes/%s/enable";
++#define KPROBE_EVENT_ID		"/sys/kernel/debug/tracing/events/kprobes/%s/id";
++
++static bool determine_kprobe_legacy(void)
++{
++	struct stat s;
++
++	return stat(KPROBE_PERF_TYPE, &s) == 0 ? false : true;
++}
++
+ static int determine_kprobe_perf_type(void)
+ {
+-	const char *file = "/sys/bus/event_source/devices/kprobe/type";
++	const char *file = KPROBE_PERF_TYPE;
+ 
+ 	return parse_uint_from_file(file, "%d\n");
+ }
+ 
+ static int determine_uprobe_perf_type(void)
+ {
+-	const char *file = "/sys/bus/event_source/devices/uprobe/type";
++	const char *file = UPROBE_PERF_TYPE;
+ 
+ 	return parse_uint_from_file(file, "%d\n");
+ }
+ 
+ static int determine_kprobe_retprobe_bit(void)
+ {
+-	const char *file = "/sys/bus/event_source/devices/kprobe/format/retprobe";
++	const char *file = KPROBERET_FORMAT;
+ 
+ 	return parse_uint_from_file(file, "config:%d\n");
+ }
+ 
+ static int determine_uprobe_retprobe_bit(void)
+ {
+-	const char *file = "/sys/bus/event_source/devices/uprobe/format/retprobe";
++	const char *file = UPROBERET_FORMAT;
+ 
+ 	return parse_uint_from_file(file, "config:%d\n");
+ }
+ 
++static int toggle_kprobe_legacy(bool on)
++{
++	static int refcount;
++	static bool initial, veryfirst;
++	const char *file = KPROBE_LEG_TOGGLE;
++
++	if (on) {
++		refcount++;
++		if (veryfirst)
++			return 0;
++		veryfirst = true;
++		/* initial value for KPROB_LEG_TOGGLE */
++		initial = (bool) parse_uint_from_file(file, "%d\n");
++		return write_uint_to_file(file, 1); /* enable kprobes */
++	}
++	refcount--;
++	printf("DEBUG: kprobe_legacy refcount=%d\n", refcount);
++	if (refcount == 0) {
++		/* off ret value back to initial value if last consumer */
++		return write_uint_to_file(file, initial);
++	}
++	return 0;
++}
++
++static int toggle_kprobe_event_legacy_all(bool on)
++{
++	static int refcount;
++	static bool initial, veryfirst;
++	const char *file = KPROBE_LEG_ALL_TOGGLE;
++
++	if (on) {
++		refcount++;
++		if (veryfirst)
++			return 0;
++		veryfirst = true;
++		// initial value for KPROB_LEG_ALL_TOGGLE
++		initial = (bool) parse_uint_from_file(file, "%d\n");
++		return write_uint_to_file(file, 1); // enable kprobes
++	}
++	refcount--;
++	printf("DEBUG: legacy_all refcount=%d\n", refcount);
++	if (refcount == 0) {
++		// off ret value back to initial value if last consumer
++		return write_uint_to_file(file, initial);
++	}
++	return 0;
++}
++
++static int kprobe_event_normalize(char *newname, size_t size, const char *name, bool retprobe)
++{
++	int ret = 0;
++
++	if (IS_ERR(name))
++		return -1;
++
++	if (retprobe)
++		ret = snprintf(newname, size, "kprobes/%s_ret", name);
++	else
++		ret = snprintf(newname, size, "kprobes/%s", name);
++
++	if (ret <= strlen("kprobes/"))
++		ret = -errno;
++
++	return ret;
++}
++
++static int toggle_single_kprobe_event_legacy(bool on, const char *name, bool retprobe)
++{
++	char probename[32], f[96];
++	const char *file = KPROBE_SINGLE_TOGGLE;
++	int ret;
++
++	ret = kprobe_event_normalize(probename, sizeof(probename), name, retprobe);
++	if (ret < 0)
++		return ret;
++
++	snprintf(f, sizeof(f), file, probename + strlen("kprobes/"));
++
++	printf("DEBUG: writing %u to %s\n", (unsigned int) on, f);
++
++	ret = write_uint_to_file(f, (unsigned int) on);
++
++	return ret;
++}
++
++static int poke_kprobe_events(bool add, const char *name, bool retprobe)
++{
++	int fd, ret = 0;
++	char probename[32], cmd[96];
++	const char *file = KPROBE_EVENTS;
++
++	ret = kprobe_event_normalize(probename, sizeof(probename), name, retprobe);
++	if (ret < 0)
++		return ret;
++
++	if (add)
++		snprintf(cmd, sizeof(cmd),"%c:%s %s", retprobe ? 'r' : 'p', probename, name);
++	else
++		snprintf(cmd, sizeof(cmd), "-:%s", probename);
++
++	printf("DEBUG: %s\n", cmd);
++
++	fd = open(file, O_WRONLY|O_APPEND, 0);
++	if (!fd)
++		return -errno;
++	ret = write(fd, cmd, strlen(cmd));
++	if (ret < 0)
++		ret = -errno;
++	close(fd);
++
++	return ret;
++}
++
++static inline int add_kprobe_event_legacy(const char* func_name, bool retprobe)
++{
++	int ret = 0;
++
++	ret = poke_kprobe_events(true, func_name, retprobe);
++	if (ret < 0)
++		printf("DEBUG: poke_kprobe_events (on) error\n");
++
++	ret = toggle_kprobe_event_legacy_all(true);
++	if (ret < 0)
++		printf("DEBUG: toggle_kprobe_event_legacy_all (on) error\n");
++
++	ret = toggle_single_kprobe_event_legacy(true, func_name, retprobe);
++	if (ret < 0)
++		printf("DEBUG: toggle_single_kprobe_event_legacy (on) error\n");
++
++	return ret;
++}
++
++static inline int remove_kprobe_event_legacy(const char* func_name, bool retprobe)
++{
++	int ret = 0;
++
++	ret = toggle_kprobe_event_legacy_all(true);
++	if (ret < 0)
++		printf("DEBUG: toggle_kprobe_event_legacy_all (off) error\n");
++
++	ret = toggle_single_kprobe_event_legacy(true, func_name, retprobe);
++	if (ret < 0)
++		printf("DEBUG: toggle_single_kprobe_event_legacy (off) error\n");
++
++	ret = toggle_single_kprobe_event_legacy(false, func_name, retprobe);
++	if (ret < 0)
++		printf("DEBUG: toggle_single_kprobe_event_legacy (off) error\n");
++
++	ret = poke_kprobe_events(false, func_name, retprobe);
++	if (ret < 0)
++		printf("DEBUG: poke_kprobe_events (off) error\n");
++
++	return ret;
++}
++
++static int determine_kprobe_perf_type_legacy(const char *func_name)
++{
++	char file[96];
++	const char *fname = KPROBE_EVENT_ID;
++
++	snprintf(file, sizeof(file), fname, func_name);
++
++	return parse_uint_from_file(file, "%d\n");
++}
++
+ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+ 				 uint64_t offset, int pid)
+ {
+@@ -9760,6 +10034,51 @@ static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
+ 	return pfd;
+ }
+ 
++static int perf_event_open_probe_legacy(bool uprobe, bool retprobe, const char *name,
++					uint64_t offset, int pid)
++{
++	struct perf_event_attr attr = {};
++	char errmsg[STRERR_BUFSIZE];
++	int type, pfd, err;
++
++	if (uprobe) // legacy uprobe not supported yet
++		return -1;
++
++	err = toggle_kprobe_legacy(true);
++	if (err < 0) {
++		pr_warn("failed to toggle kprobe legacy support: %s\n", libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
++		return err;
++	}
++	err = add_kprobe_event_legacy(name, retprobe);
++	if (err < 0) {
++		pr_warn("failed to add legacy kprobe event: %s\n", libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
++		return err;
++	}
++	type = determine_kprobe_perf_type_legacy(name);
++	if (err < 0) {
++		pr_warn("failed to determine legacy kprobe event id: %s\n", libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
++		return type;
++	}
++
++	attr.size = sizeof(attr);
++	attr.config = type;
++	attr.type = PERF_TYPE_TRACEPOINT;
++
++	pfd = syscall(__NR_perf_event_open,
++		      &attr,
++		      pid < 0 ? -1 : pid,
++		      pid == -1 ? 0 : -1,
++		      -1,
++		      PERF_FLAG_FD_CLOEXEC);
++
++	if (pfd < 0) {
++		err = -errno;
++		pr_warn("legacy kprobe perf_event_open() failed: %s\n", libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
++		return err;
++	}
++	return pfd;
++}
++
+ struct bpf_link *bpf_program__attach_kprobe(struct bpf_program *prog,
+ 					    bool retprobe,
+ 					    const char *func_name)
+@@ -9788,6 +10107,33 @@ struct bpf_link *bpf_program__attach_kprobe(struct bpf_program *prog,
+ 	return link;
+ }
+ 
++struct bpf_link *bpf_program__attach_kprobe_legacy(struct bpf_program *prog,
++						   bool retprobe,
++						   const char *func_name)
++{
++	char errmsg[STRERR_BUFSIZE];
++	struct bpf_link *link;
++	int pfd, err;
++
++	pfd = perf_event_open_probe_legacy(false, retprobe, func_name, 0, -1);
++	if (pfd < 0) {
++		pr_warn("prog '%s': failed to create %s '%s' legacy perf event: %s\n", prog->name, retprobe ? "kretprobe" : "kprobe", func_name, libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
++		return ERR_PTR(pfd);
++	}
++	link = bpf_program__attach_perf_event_legacy(prog, pfd);
++	if (IS_ERR(link)) {
++		close(pfd);
++		err = PTR_ERR(link);
++		pr_warn("prog '%s': failed to attach to %s '%s': %s\n", prog->name, retprobe ? "kretprobe" : "kprobe", func_name, libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
++		return link;
++	}
++	/* needed history for the legacy probe cleanup */
++	link->legacy.name = func_name;
++	link->legacy.retprobe = retprobe;
++
++	return link;
++}
++
+ static struct bpf_link *attach_kprobe(const struct bpf_sec_def *sec,
+ 				      struct bpf_program *prog)
+ {
+@@ -9797,6 +10143,9 @@ static struct bpf_link *attach_kprobe(const struct bpf_sec_def *sec,
+ 	func_name = prog->sec_name + sec->len;
+ 	retprobe = strcmp(sec->sec, "kretprobe/") == 0;
+ 
++	if(determine_kprobe_legacy())
++		return bpf_program__attach_kprobe_legacy(prog, retprobe, func_name);
++
+ 	return bpf_program__attach_kprobe(prog, retprobe, func_name);
+ }
+ 
+@@ -11280,4 +11629,7 @@ void bpf_object__destroy_skeleton(struct bpf_object_skeleton *s)
+ 	free(s->maps);
+ 	free(s->progs);
+ 	free(s);
++
++	remove_kprobe_event_legacy("ip_set_create", false);
++	remove_kprobe_event_legacy("ip_set_create", true);
+ }
+-- 
+2.17.1
+
