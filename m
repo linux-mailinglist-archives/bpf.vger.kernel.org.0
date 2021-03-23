@@ -2,117 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB017345BC2
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 11:16:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A4D345CFE
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 12:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhCWKPe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 06:15:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53093 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229639AbhCWKP2 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Mar 2021 06:15:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616494527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=33TioYNXdkIK41LK1fNmqaU/cASsOPpzjkwj2vLLbAI=;
-        b=bWsbWUKxxWeT4GfES/Ai65rdGMv8Xa9WJUGtL5g8JG3D7Rqv7Y1VtjttUhYHJZmlZ2eg7O
-        w7cwfNqAZ9U0ilI6lYHHA9Tuw7SZZgvbkuf2EYQeE1NlORTtgnGJz9VwQzPghRUdImYG70
-        dWBO5d3JTzSyrDRFhEjG9TsyCDr/n5s=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281-s-A5MFBDPZOrASkMzPVsyA-1; Tue, 23 Mar 2021 06:15:25 -0400
-X-MC-Unique: s-A5MFBDPZOrASkMzPVsyA-1
-Received: by mail-ej1-f72.google.com with SMTP id sa29so841126ejb.4
-        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 03:15:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=33TioYNXdkIK41LK1fNmqaU/cASsOPpzjkwj2vLLbAI=;
-        b=XPuCnXYnKCUcNuASB2C+YblDdsrg44ZN+oxFH2oU7WwTYAregehwSDGcmhZWnHjf4W
-         AfuHfhlqOQ/zkmN2mSJZur0u86fjL69LIXLQYTzAvXcHhhFL4eGqcmxebJ6yC6vP8yXk
-         XBdgBdeZb5yE5pVSTHV3UvVuDijS61E5IfUKZOyjgZwySLWT0CzA/1+Sr1VuNQA2mJFG
-         EuXYSw83LWiBILfyrl5NT0sKs6F4qS4of2seDjgZ5w1n/GztegnbhwwYHgeo26EOugFO
-         f88jbcvi7bGHrHiCovhLUr+dAzwIalCI9BzBgFUDkimMEOidb4gq831oCJdZbKoUOObN
-         UibQ==
-X-Gm-Message-State: AOAM5332EFPENnR4KSa23hp29ypDGWotFtxm4eUqhnhZMSfBU0QRVkHN
-        fPczxX2T+UKfbY2WHf3l6tvkCiEOzY+JdbBgDi7bybrBq4aEPx5cNBYb/sk1D67MO0fn4nz1eaN
-        iWksbrdvN16Vl
-X-Received: by 2002:a17:907:f97:: with SMTP id kb23mr4109453ejc.33.1616494524397;
-        Tue, 23 Mar 2021 03:15:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx0ymyHSvddRqzkPHV01ILJ3coO7Gvl87MnOKtrp41zFNmRBCiHAagyP6FAX/LMp5E2mVhBQg==
-X-Received: by 2002:a17:907:f97:: with SMTP id kb23mr4109443ejc.33.1616494524249;
-        Tue, 23 Mar 2021 03:15:24 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id wr20sm6751072ejb.111.2021.03.23.03.15.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 03:15:23 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 0CF0E180281; Tue, 23 Mar 2021 11:15:23 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        bjorn@kernel.org
-Subject: Re: [PATCHv2 bpf-next 2/4] xdp: extend xdp_redirect_map with
- broadcast support
-In-Reply-To: <20210323024923.GD2900@Leo-laptop-t470s>
-References: <20210309101321.2138655-1-liuhangbin@gmail.com>
- <20210309101321.2138655-3-liuhangbin@gmail.com> <87r1kec7ih.fsf@toke.dk>
- <20210318035200.GB2900@Leo-laptop-t470s> <875z1oczng.fsf@toke.dk>
- <20210323024923.GD2900@Leo-laptop-t470s>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 23 Mar 2021 11:15:22 +0100
-Message-ID: <87lfae6urp.fsf@toke.dk>
+        id S229760AbhCWLfG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 07:35:06 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3919 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229836AbhCWLfB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Mar 2021 07:35:01 -0400
+Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F4Tkf6Ktbz5hBl;
+        Tue, 23 Mar 2021 19:32:58 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ DGGEML403-HUB.china.huawei.com (10.3.17.33) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 23 Mar 2021 19:34:56 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Tue, 23 Mar
+ 2021 19:34:56 +0800
+Subject: Re: [RFC v3] net: sched: implement TCQ_F_CAN_BYPASS for lockless
+ qdisc
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
+        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>
+References: <1616050402-37023-1-git-send-email-linyunsheng@huawei.com>
+ <1616404156-11772-1-git-send-email-linyunsheng@huawei.com>
+ <5bef912e-aa7d-8a27-4d18-ac8cf4f7afdf@pengutronix.de>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <774fadf5-6383-f9e0-bbc6-e5862482a7d1@huawei.com>
+Date:   Tue, 23 Mar 2021 19:34:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <5bef912e-aa7d-8a27-4d18-ac8cf4f7afdf@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme710-chm.china.huawei.com (10.1.199.106) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hangbin Liu <liuhangbin@gmail.com> writes:
+On 2021/3/23 14:37, Ahmad Fatoum wrote:
+> Hi,
+> 
+> On 22.03.21 10:09, Yunsheng Lin wrote:
+>> Currently pfifo_fast has both TCQ_F_CAN_BYPASS and TCQ_F_NOLOCK
+>> flag set, but queue discipline by-pass does not work for lockless
+>> qdisc because skb is always enqueued to qdisc even when the qdisc
+>> is empty, see __dev_xmit_skb().
+>>
+>> This patch calls sch_direct_xmit() to transmit the skb directly
+>> to the driver for empty lockless qdisc too, which aviod enqueuing
+>> and dequeuing operation. qdisc->empty is set to false whenever a
+>> skb is enqueued, see pfifo_fast_enqueue(), and is set to true when
+>> skb dequeuing return NULL, see pfifo_fast_dequeue().
+>>
+>> There is a data race between enqueue/dequeue and qdisc->empty
+>> setting, qdisc->empty is only used as a hint, so we need to call
+>> sch_may_need_requeuing() to see if the queue is really empty and if
+>> there is requeued skb, which has higher priority than the current
+>> skb.
+>>
+>> The performance for ip_forward test increases about 10% with this
+>> patch.
+>>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>> ---
+>> Hi, Vladimir and Ahmad
+>> 	Please give it a test to see if there is any out of order
+>> packet for this patch, which has removed the priv->lock added in
+>> RFC v2.
+> 
+> Overnight test (10h, 64 mil frames) didn't see any out-of-order frames
+> between 2 FlexCANs on a dual core machine:
+> 
+> Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> 
+> No performance measurements taken.
 
-> On Thu, Mar 18, 2021 at 03:19:47PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> Hangbin Liu <liuhangbin@gmail.com> writes:
->>=20
->> > On Wed, Mar 17, 2021 at 01:03:02PM +0100, Toke H=C3=B8iland-J=C3=B8rge=
-nsen wrote:
->> >> FYI, this no longer applies to bpf-next due to Bj=C3=B6rn's refactor =
-in
->> >> commit: ee75aef23afe ("bpf, xdp: Restructure redirect actions")
->> >
->> > Thanks Toke, I need to see how to get the map via map_id, does
->> > bpf_map_get_curr_or_next() works? Should I call bpf_map_put() after
->> > using?
->>=20
->> I would expect that to be terrible for performance; I think it would be
->> better to just add back the map pointer into struct bpf_redirect_info.
->> If you only set the map pointer when the multicast flag is set, you can
->> just check that pointer to disambiguate between when you need to call
->> dev_map_enqueue() and dev_map_enqueue_multi(), in which case you don't
->> need to add back the flags member...
->
-> There are 2 flags, BROADCAST and EXCLUDE_INGRESS. There is no way
-> to only check the map pointer and ignore flags..
+Thanks for the testing.
+And I has done the performance measurement.
 
-Ah, right, of course, my bad :)
+L3 forward testing improves from 1.09Mpps to 1.21Mpps, still about
+10% improvement.
 
-Well, in that case adding both members back is probably the right thing
-to do...
+pktgen + dummy netdev:
 
--Toke
+ threads  without+this_patch   with+this_patch      delta
+    1       2.56Mpps            3.11Mpps             +21%
+    2       3.76Mpps            4.31Mpps             +14%
+    4       5.51Mpps            5.53Mpps             +0.3%
+    8       2.81Mpps            2.72Mpps             -3%
+   16       2.24Mpps            2.22Mpps             -0.8%
+
+> 
+>>
+
 
