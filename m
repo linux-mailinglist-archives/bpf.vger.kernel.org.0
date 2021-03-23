@@ -2,139 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EAC3346B12
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 22:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7B9346B66
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 22:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233578AbhCWV2x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 17:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233504AbhCWV21 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Mar 2021 17:28:27 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CAEC061765
-        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 14:28:27 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id i26so12914588lfl.1
-        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 14:28:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oE8Re7U2eiRTAh9p3PAj7D06IDZ16XlxhTmOYb89s/8=;
-        b=FJMeWXH+SaUw1EE94VwNSxeUROOX72sUs1KyGDlEqEifmVqm6Nm3+EZZBosnRVkNGA
-         DwxLHCyqmfawP6Noi2RmaV7umcSzUA11e/grp81xPwUhI1/iUNw/31OWqPVezUi91wPY
-         utRanRrza0bGC2bDni7GFzhhO8qr0A+tJ0WoLmYS03HJlVuW9rKonI4L+EpSvQFYjHz9
-         bx+e6/Rti7mbXHAHS4ixI/leP99NIwuDcxTcvOG3aXffNhVOM7g7cM+FEvnwPm4H6KYn
-         FURJXnuQWRaVS4qInf/SKXxXGqlhptU8V21fgmbumrv01osdiuNJB+olA1xskDVq/+2Q
-         LP1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oE8Re7U2eiRTAh9p3PAj7D06IDZ16XlxhTmOYb89s/8=;
-        b=n12FUPshxfqBeVMcMrplgP6e50ZG79wlrVZcNAeNHq3khHjiwanSSsg+PrUBakBgJe
-         jAgi3U+erqA2qSPkCHxKg4wiM2R66kPPnOMp7jdMF4Zn1ZLF1URAnf+L1RWHXmHMTGXl
-         bvcMYiCWs+oufeUqzn5X2iV5X+o/QNc60KWiFHuELpM3jvIl+weOJubR5cpYAMl1O306
-         U7xHC6UaCXIjJPyAHT7aD4XtLfKsHn8fEKc+T3+HmL1EeOQU5u4nSF7RZ6HlL33Ij8CT
-         kKasdecJCXZZ9vXIxVoZW4NVT4u0voIKqufejcYThhGcbDuwB+0aZ9s9yCrODs9mScLl
-         gzog==
-X-Gm-Message-State: AOAM530efB9QL0dGvjEfvMNMsHQXbcSu9nABakWhjZZbuRbJRL2Tz6F+
-        lLgA30F28nw1qt4CKIn17Ed9HJNen1Uyv7YDqePAqg==
-X-Google-Smtp-Source: ABdhPJyQ7qsEvILqWPc3g5iRiytFJpTt4UTAmMg5r+eaD3LvYwwXBwdUjRC4U6ywX5x/yBprcY72YeaBiQ3jH5EanL4=
-X-Received: by 2002:a19:8c19:: with SMTP id o25mr1333lfd.547.1616534904876;
- Tue, 23 Mar 2021 14:28:24 -0700 (PDT)
+        id S233782AbhCWVxv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 17:53:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233737AbhCWVws (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Mar 2021 17:52:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B264861920;
+        Tue, 23 Mar 2021 21:52:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616536367;
+        bh=sGL6H7BaKKa6GB2voH0+PlgIlvV+M5vkX/KUhUNTsBM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dwHjQz41ErdhxQh0tHbvJ2xH28rc3pi+1osaoVkdKatxxK0x6yYSeyWgndEd+65O1
+         dtgXJQqcCdqhVAwT6Un7RU7sRQugfxih4/ts9dnQ0/yaJK7jS0to3tB2Pks6xYqeZc
+         hO1G64mpStTbNVhnV2EMZBAK75Ok+YeOyVLvPre58YE8CxVZI6hDa7Bgpzz5unXygJ
+         nRDTzjs6jjhsbSZoADiOA1iqaHq+LR7ZlrL3Q6klFl8JACmq6vPPQzDcnjb4HDYFH5
+         cxXgNyWbswz5akSiEJNeNAd/TdXONgMuzUwamUxkRPYPVzfF+ONHLjg5E1UOgaxYal
+         HNf3Ol2ZwqVsw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 7564635239D9; Tue, 23 Mar 2021 14:52:47 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 14:52:47 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>
+Subject: Re: BPF trampolines break because of hang in synchronize_rcu_tasks()
+ on PREEMPT kernels
+Message-ID: <20210323215247.GD2696@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <877dly6ooz.fsf@toke.dk>
+ <20210323164315.GY2696@paulmck-ThinkPad-P72>
+ <871rc57p8g.fsf@toke.dk>
+ <20210323175716.GB2696@paulmck-ThinkPad-P72>
+ <87y2ed645n.fsf@toke.dk>
+ <CAEf4Bzap-8uTFS=dJjq7o+g=e=5PvyD3_1TpnhmmoVuP0SUjjQ@mail.gmail.com>
+ <87r1k560p9.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20210323203946.2159693-1-samitolvanen@google.com> <20210323203946.2159693-10-samitolvanen@google.com>
-In-Reply-To: <20210323203946.2159693-10-samitolvanen@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 23 Mar 2021 14:28:13 -0700
-Message-ID: <CAKwvOdnZwMKjJKd5Fbx5hH1Ute1ZkMZGP=Kn0tJq=rxF2P3eNw@mail.gmail.com>
-Subject: Re: [PATCH v3 09/17] treewide: Change list_sort to use const pointers
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87r1k560p9.fsf@toke.dk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 1:40 PM Sami Tolvanen <samitolvanen@google.com> wrote:
->
-> list_sort() internally casts the comparison function passed to it
-> to a different type with constant struct list_head pointers, and
-> uses this pointer to call the functions, which trips indirect call
-> Control-Flow Integrity (CFI) checking.
->
-> Instead of removing the consts, this change defines the
-> list_cmp_func_t type and changes the comparison function types of
-> all list_sort() callers to use const pointers, thus avoiding type
-> mismatches.
->
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> ---
->  arch/arm64/kvm/vgic/vgic-its.c                  |  8 ++++----
->  arch/arm64/kvm/vgic/vgic.c                      |  3 ++-
->  block/blk-mq-sched.c                            |  3 ++-
->  block/blk-mq.c                                  |  3 ++-
->  drivers/acpi/nfit/core.c                        |  3 ++-
->  drivers/acpi/numa/hmat.c                        |  3 ++-
->  drivers/clk/keystone/sci-clk.c                  |  4 ++--
->  drivers/gpu/drm/drm_modes.c                     |  3 ++-
->  drivers/gpu/drm/i915/gt/intel_engine_user.c     |  3 ++-
->  drivers/gpu/drm/i915/gvt/debugfs.c              |  2 +-
->  drivers/gpu/drm/i915/selftests/i915_gem_gtt.c   |  3 ++-
->  drivers/gpu/drm/radeon/radeon_cs.c              |  4 ++--
->  .../hw/usnic/usnic_uiom_interval_tree.c         |  3 ++-
->  drivers/interconnect/qcom/bcm-voter.c           |  2 +-
->  drivers/md/raid5.c                              |  3 ++-
->  drivers/misc/sram.c                             |  4 ++--
->  drivers/nvme/host/core.c                        |  3 ++-
->  .../pci/controller/cadence/pcie-cadence-host.c  |  3 ++-
->  drivers/spi/spi-loopback-test.c                 |  3 ++-
->  fs/btrfs/raid56.c                               |  3 ++-
->  fs/btrfs/tree-log.c                             |  3 ++-
->  fs/btrfs/volumes.c                              |  3 ++-
->  fs/ext4/fsmap.c                                 |  4 ++--
->  fs/gfs2/glock.c                                 |  3 ++-
->  fs/gfs2/log.c                                   |  2 +-
->  fs/gfs2/lops.c                                  |  3 ++-
->  fs/iomap/buffered-io.c                          |  3 ++-
->  fs/ubifs/gc.c                                   |  7 ++++---
->  fs/ubifs/replay.c                               |  4 ++--
->  fs/xfs/scrub/bitmap.c                           |  4 ++--
->  fs/xfs/xfs_bmap_item.c                          |  4 ++--
->  fs/xfs/xfs_buf.c                                |  6 +++---
->  fs/xfs/xfs_extent_busy.c                        |  4 ++--
->  fs/xfs/xfs_extent_busy.h                        |  3 ++-
->  fs/xfs/xfs_extfree_item.c                       |  4 ++--
->  fs/xfs/xfs_refcount_item.c                      |  4 ++--
->  fs/xfs/xfs_rmap_item.c                          |  4 ++--
->  include/linux/list_sort.h                       |  7 ++++---
->  lib/list_sort.c                                 | 17 ++++++-----------
->  lib/test_list_sort.c                            |  3 ++-
->  net/tipc/name_table.c                           |  4 ++--
->  41 files changed, 90 insertions(+), 72 deletions(-)
+On Tue, Mar 23, 2021 at 10:04:50PM +0100, Toke Høiland-Jørgensen wrote:
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> 
+> > On Tue, Mar 23, 2021 at 12:52 PM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+> >>
+> >> "Paul E. McKenney" <paulmck@kernel.org> writes:
+> >>
+> >> > On Tue, Mar 23, 2021 at 06:29:35PM +0100, Toke Høiland-Jørgensen wrote:
+> >> >> "Paul E. McKenney" <paulmck@kernel.org> writes:
+> >> >>
+> >> >> > On Tue, Mar 23, 2021 at 01:26:36PM +0100, Toke Høiland-Jørgensen wrote:
+> >> >> >> Hi Paul
+> >> >> >>
+> >> >> >> Magnus and I have been debugging an issue where close() on a bpf_link
+> >> >> >> file descriptor would hang indefinitely when the system was under load
+> >> >> >> on a kernel compiled with CONFIG_PREEMPT=y, and it seems to be related
+> >> >> >> to synchronize_rcu_tasks(), so I'm hoping you can help us with it.
+> >> >> >>
+> >> >> >> The issue is triggered reliably by loading up a system with network
+> >> >> >> traffic (causing 100% softirq CPU load on one or more cores), and then
+> >> >> >> attaching an freplace bpf_link and closing it again. The close() will
+> >> >> >> hang until the network traffic load is lowered.
+> >> >> >>
+> >> >> >> Digging further, it appears that the hang happens in
+> >> >> >> synchronize_rcu_tasks(), as seen by running a bpftrace script like:
+> >> >> >>
+> >> >> >> bpftrace -e 'kprobe:synchronize_rcu_tasks { @start = nsecs; printf("enter\n"); } kretprobe:synchronize_rcu_tasks { printf("exit after %d ms\n", (nsecs - @start) / 1000000); }'
+> >> >> >> Attaching 2 probes...
+> >> >> >> enter
+> >> >> >> exit after 54 ms
+> >> >> >> enter
+> >> >> >> exit after 3249 ms
+> >> >> >>
+> >> >> >> (the two enter/exit pairs are, respectively, from an unloaded system,
+> >> >> >> and from a loaded system where I stopped the network traffic after a
+> >> >> >> couple of seconds).
+> >> >> >>
+> >> >> >> The call to synchronize_rcu_tasks() happens in bpf_trampoline_put():
+> >> >> >>
+> >> >> >> https://elixir.bootlin.com/linux/latest/source/kernel/bpf/trampoline.c#L376
+> >> >> >>
+> >> >> >> And because it does this while holding trampoline_mutex, even deferring
+> >> >> >> the put to a worker (as a previously applied-then-reverted patch did[0])
+> >> >> >> doesn't help: that'll fix the initial hang on close(), but any
+> >> >> >> subsequent use of BPF trampolines will then be blocked because of the
+> >> >> >> mutex.
+> >> >> >>
+> >> >> >> Also, if I just keep the network traffic running I will eventually get a
+> >> >> >> kernel panic with:
+> >> >> >>
+> >> >> >> kernel:[44348.426312] Kernel panic - not syncing: hung_task: blocked tasks
+> >> >> >>
+> >> >> >> I've created a reproducer for the issue here:
+> >> >> >> https://github.com/xdp-project/bpf-examples/tree/master/bpf-link-hang
+> >> >> >>
+> >> >> >> To compile simply do this (needs a recent llvm/clang for compiling the BPF program):
+> >> >> >>
+> >> >> >> $ git clone --recurse-submodules https://github.com/xdp-project/bpf-examples
+> >> >> >> $ cd bpf-examples/bpf-link-hang
+> >> >> >> $ make
+> >> >> >> $ ./sudo bpf-link-hang
+> >> >> >>
+> >> >> >> you'll need to load up the system to trigger the hang; I'm using pktgen
+> >> >> >> from a separate machine to do this.
+> >> >> >>
+> >> >> >> My question is, of course, as ever, What Is To Be Done? Is it expected
+> >> >> >> that synchronize_rcu_tasks() can hang indefinitely on a PREEMPT system,
+> >> >> >> or can this be fixed? And if it is expected, how can the BPF code be
+> >> >> >> fixed so it doesn't deadlock because of this?
+> >> >> >>
+> >> >> >> Hoping you can help us with this - many thanks in advance! :)
+> >> >> >
+> >> >> > Let me start with the usual question...  Is the network traffic intense
+> >> >> > enough that one of the CPUs might remain in a loop handling softirqs
+> >> >> > indefinitely?
+> >> >>
+> >> >> Yup, I'm pegging all CPUs in softirq:
+> >> >>
+> >> >> $ mpstat -P ALL 1
+> >> >> [...]
+> >> >> 18:26:52     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+> >> >> 18:26:53     all    0.00    0.00    0.00    0.00    0.00  100.00    0.00    0.00    0.00    0.00
+> >> >> 18:26:53       0    0.00    0.00    0.00    0.00    0.00  100.00    0.00    0.00    0.00    0.00
+> >> >> 18:26:53       1    0.00    0.00    0.00    0.00    0.00  100.00    0.00    0.00    0.00    0.00
+> >> >> 18:26:53       2    0.00    0.00    0.00    0.00    0.00  100.00    0.00    0.00    0.00    0.00
+> >> >> 18:26:53       3    0.00    0.00    0.00    0.00    0.00  100.00    0.00    0.00    0.00    0.00
+> >> >> 18:26:53       4    0.00    0.00    0.00    0.00    0.00  100.00    0.00    0.00    0.00    0.00
+> >> >> 18:26:53       5    0.00    0.00    0.00    0.00    0.00  100.00    0.00    0.00    0.00    0.00
+> >> >>
+> >> >> > If so, does the (untested, probably does not build) patch below help?
+> >> >>
+> >> >> Doesn't appear to, no. It builds fine, but I still get:
+> >> >>
+> >> >> Attaching 2 probes...
+> >> >> enter
+> >> >> exit after 8480 ms
+> >> >>
+> >> >> (that was me interrupting the network traffic again)
+> >> >
+> >> > Is your kernel properly shifting from back-of-interrupt softirq processing
+> >> > to ksoftirqd under heavy load?  If not, my patch will not have any
+> >> > effect.
+> >>
+> >> Seems to be - this is from top:
+> >>
+> >>      12 root      20   0       0      0      0 R  99.3   0.0   0:43.64 ksoftirqd/0
+> >>      24 root      20   0       0      0      0 R  99.3   0.0   0:43.62 ksoftirqd/2
+> >>      34 root      20   0       0      0      0 R  99.3   0.0   0:43.64 ksoftirqd/4
+> >>      39 root      20   0       0      0      0 R  99.3   0.0   0:43.65 ksoftirqd/5
+> >>      19 root      20   0       0      0      0 R  99.0   0.0   0:43.63 ksoftirqd/1
+> >>      29 root      20   0       0      0      0 R  99.0   0.0   0:43.63 ksoftirqd/3
+> >>
+> >> Any other ideas? :)
+> >
+> > bpf_trampoline_put() got significantly changed by e21aa341785c ("bpf:
+> > Fix fexit trampoline. "), it doesn't do synchronize_rcu_tasks()
+> > anymore. Please give it a try. It's in bpf tree.
+> 
+> Ah! I had missed that patch, and only tested this on bpf-next. Yes, that
+> indeed works better; awesome!
+> 
+> And sorry for bothering you with this, Paul; guess I should have looked
+> harder for fixes first... :/
 
-This looks like all of the call sites I could find.  Yes, this looks
-much better, thank you for taking the time to fix all of these. I ran
-this through some build tests of ARCH=arm64 defconfig, allyesconfig,
-and same for my host (x86_64). All LGTM.
+Glad it is now working!
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
--- 
-Thanks,
-~Nick Desaulniers
+And in any case, my patch needed an s/true/false/.  :-/
+
+Hey, I did say "untested"!  ;-)
+
+							Thanx, Paul
