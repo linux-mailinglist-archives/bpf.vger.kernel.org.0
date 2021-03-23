@@ -2,222 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AD23457E1
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 07:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB017345BC2
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 11:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbhCWGi3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 02:38:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhCWGiQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Mar 2021 02:38:16 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6B0C061574
-        for <bpf@vger.kernel.org>; Mon, 22 Mar 2021 23:38:15 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1lOag2-0007ur-BO; Tue, 23 Mar 2021 07:38:06 +0100
-Subject: Re: [RFC v3] net: sched: implement TCQ_F_CAN_BYPASS for lockless
- qdisc
-To:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     olteanv@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        andriin@fb.com, edumazet@google.com, weiwan@google.com,
-        cong.wang@bytedance.com, ap420073@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@openeuler.org, mkl@pengutronix.de,
-        linux-can@vger.kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
-        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com
-References: <1616050402-37023-1-git-send-email-linyunsheng@huawei.com>
- <1616404156-11772-1-git-send-email-linyunsheng@huawei.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <5bef912e-aa7d-8a27-4d18-ac8cf4f7afdf@pengutronix.de>
-Date:   Tue, 23 Mar 2021 07:37:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229986AbhCWKPe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 06:15:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53093 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229639AbhCWKP2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Mar 2021 06:15:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616494527;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=33TioYNXdkIK41LK1fNmqaU/cASsOPpzjkwj2vLLbAI=;
+        b=bWsbWUKxxWeT4GfES/Ai65rdGMv8Xa9WJUGtL5g8JG3D7Rqv7Y1VtjttUhYHJZmlZ2eg7O
+        w7cwfNqAZ9U0ilI6lYHHA9Tuw7SZZgvbkuf2EYQeE1NlORTtgnGJz9VwQzPghRUdImYG70
+        dWBO5d3JTzSyrDRFhEjG9TsyCDr/n5s=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-281-s-A5MFBDPZOrASkMzPVsyA-1; Tue, 23 Mar 2021 06:15:25 -0400
+X-MC-Unique: s-A5MFBDPZOrASkMzPVsyA-1
+Received: by mail-ej1-f72.google.com with SMTP id sa29so841126ejb.4
+        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 03:15:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=33TioYNXdkIK41LK1fNmqaU/cASsOPpzjkwj2vLLbAI=;
+        b=XPuCnXYnKCUcNuASB2C+YblDdsrg44ZN+oxFH2oU7WwTYAregehwSDGcmhZWnHjf4W
+         AfuHfhlqOQ/zkmN2mSJZur0u86fjL69LIXLQYTzAvXcHhhFL4eGqcmxebJ6yC6vP8yXk
+         XBdgBdeZb5yE5pVSTHV3UvVuDijS61E5IfUKZOyjgZwySLWT0CzA/1+Sr1VuNQA2mJFG
+         EuXYSw83LWiBILfyrl5NT0sKs6F4qS4of2seDjgZ5w1n/GztegnbhwwYHgeo26EOugFO
+         f88jbcvi7bGHrHiCovhLUr+dAzwIalCI9BzBgFUDkimMEOidb4gq831oCJdZbKoUOObN
+         UibQ==
+X-Gm-Message-State: AOAM5332EFPENnR4KSa23hp29ypDGWotFtxm4eUqhnhZMSfBU0QRVkHN
+        fPczxX2T+UKfbY2WHf3l6tvkCiEOzY+JdbBgDi7bybrBq4aEPx5cNBYb/sk1D67MO0fn4nz1eaN
+        iWksbrdvN16Vl
+X-Received: by 2002:a17:907:f97:: with SMTP id kb23mr4109453ejc.33.1616494524397;
+        Tue, 23 Mar 2021 03:15:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx0ymyHSvddRqzkPHV01ILJ3coO7Gvl87MnOKtrp41zFNmRBCiHAagyP6FAX/LMp5E2mVhBQg==
+X-Received: by 2002:a17:907:f97:: with SMTP id kb23mr4109443ejc.33.1616494524249;
+        Tue, 23 Mar 2021 03:15:24 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id wr20sm6751072ejb.111.2021.03.23.03.15.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 03:15:23 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 0CF0E180281; Tue, 23 Mar 2021 11:15:23 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        bjorn@kernel.org
+Subject: Re: [PATCHv2 bpf-next 2/4] xdp: extend xdp_redirect_map with
+ broadcast support
+In-Reply-To: <20210323024923.GD2900@Leo-laptop-t470s>
+References: <20210309101321.2138655-1-liuhangbin@gmail.com>
+ <20210309101321.2138655-3-liuhangbin@gmail.com> <87r1kec7ih.fsf@toke.dk>
+ <20210318035200.GB2900@Leo-laptop-t470s> <875z1oczng.fsf@toke.dk>
+ <20210323024923.GD2900@Leo-laptop-t470s>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 23 Mar 2021 11:15:22 +0100
+Message-ID: <87lfae6urp.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <1616404156-11772-1-git-send-email-linyunsheng@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: bpf@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Hangbin Liu <liuhangbin@gmail.com> writes:
 
-On 22.03.21 10:09, Yunsheng Lin wrote:
-> Currently pfifo_fast has both TCQ_F_CAN_BYPASS and TCQ_F_NOLOCK
-> flag set, but queue discipline by-pass does not work for lockless
-> qdisc because skb is always enqueued to qdisc even when the qdisc
-> is empty, see __dev_xmit_skb().
-> 
-> This patch calls sch_direct_xmit() to transmit the skb directly
-> to the driver for empty lockless qdisc too, which aviod enqueuing
-> and dequeuing operation. qdisc->empty is set to false whenever a
-> skb is enqueued, see pfifo_fast_enqueue(), and is set to true when
-> skb dequeuing return NULL, see pfifo_fast_dequeue().
-> 
-> There is a data race between enqueue/dequeue and qdisc->empty
-> setting, qdisc->empty is only used as a hint, so we need to call
-> sch_may_need_requeuing() to see if the queue is really empty and if
-> there is requeued skb, which has higher priority than the current
-> skb.
-> 
-> The performance for ip_forward test increases about 10% with this
-> patch.
-> 
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
-> Hi, Vladimir and Ahmad
-> 	Please give it a test to see if there is any out of order
-> packet for this patch, which has removed the priv->lock added in
-> RFC v2.
+> On Thu, Mar 18, 2021 at 03:19:47PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> Hangbin Liu <liuhangbin@gmail.com> writes:
+>>=20
+>> > On Wed, Mar 17, 2021 at 01:03:02PM +0100, Toke H=C3=B8iland-J=C3=B8rge=
+nsen wrote:
+>> >> FYI, this no longer applies to bpf-next due to Bj=C3=B6rn's refactor =
+in
+>> >> commit: ee75aef23afe ("bpf, xdp: Restructure redirect actions")
+>> >
+>> > Thanks Toke, I need to see how to get the map via map_id, does
+>> > bpf_map_get_curr_or_next() works? Should I call bpf_map_put() after
+>> > using?
+>>=20
+>> I would expect that to be terrible for performance; I think it would be
+>> better to just add back the map pointer into struct bpf_redirect_info.
+>> If you only set the map pointer when the multicast flag is set, you can
+>> just check that pointer to disambiguate between when you need to call
+>> dev_map_enqueue() and dev_map_enqueue_multi(), in which case you don't
+>> need to add back the flags member...
+>
+> There are 2 flags, BROADCAST and EXCLUDE_INGRESS. There is no way
+> to only check the map pointer and ignore flags..
 
-Overnight test (10h, 64 mil frames) didn't see any out-of-order frames
-between 2 FlexCANs on a dual core machine:
+Ah, right, of course, my bad :)
 
-Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Well, in that case adding both members back is probably the right thing
+to do...
 
-No performance measurements taken.
+-Toke
 
-> 
-> There is a data race as below:
-> 
->       CPU1                                   CPU2
-> qdisc_run_begin(q)                            .
->         .                                q->enqueue()
-> sch_may_need_requeuing()                      .
->     return true                               .
->         .                                     .
->         .                                     .
->     q->enqueue()                              .
-> 
-> When above happen, the skb enqueued by CPU1 is dequeued after the
-> skb enqueued by CPU2 because sch_may_need_requeuing() return true.
-> If there is not qdisc bypass, the CPU1 has better chance to queue
-> the skb quicker than CPU2.
-> 
-> This patch does not take care of the above data race, because I
-> view this as similar as below:
-> 
-> Even at the same time CPU1 and CPU2 write the skb to two socket
-> which both heading to the same qdisc, there is no guarantee that
-> which skb will hit the qdisc first, becuase there is a lot of
-> factor like interrupt/softirq/cache miss/scheduling afffecting
-> that.
-> 
-> So I hope the above data race will not cause problem for Vladimir
-> and Ahmad.
-> ---
->  include/net/pkt_sched.h   |  1 +
->  include/net/sch_generic.h |  1 -
->  net/core/dev.c            | 22 ++++++++++++++++++++++
->  net/sched/sch_generic.c   | 11 +++++++++++
->  4 files changed, 34 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/net/pkt_sched.h b/include/net/pkt_sched.h
-> index f5c1bee..5715ddf 100644
-> --- a/include/net/pkt_sched.h
-> +++ b/include/net/pkt_sched.h
-> @@ -122,6 +122,7 @@ void qdisc_warn_nonwc(const char *txt, struct Qdisc *qdisc);
->  bool sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
->  		     struct net_device *dev, struct netdev_queue *txq,
->  		     spinlock_t *root_lock, bool validate);
-> +bool sch_may_need_requeuing(struct Qdisc *q);
->  
->  void __qdisc_run(struct Qdisc *q);
->  
-> diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-> index f7a6e14..e08cc77 100644
-> --- a/include/net/sch_generic.h
-> +++ b/include/net/sch_generic.h
-> @@ -161,7 +161,6 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
->  	if (qdisc->flags & TCQ_F_NOLOCK) {
->  		if (!spin_trylock(&qdisc->seqlock))
->  			return false;
-> -		WRITE_ONCE(qdisc->empty, false);
->  	} else if (qdisc_is_running(qdisc)) {
->  		return false;
->  	}
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index be941ed..317180a 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -3796,9 +3796,31 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
->  	qdisc_calculate_pkt_len(skb, q);
->  
->  	if (q->flags & TCQ_F_NOLOCK) {
-> +		if (q->flags & TCQ_F_CAN_BYPASS && READ_ONCE(q->empty) &&
-> +		    qdisc_run_begin(q)) {
-> +			if (sch_may_need_requeuing(q)) {
-> +				rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
-> +				__qdisc_run(q);
-> +				qdisc_run_end(q);
-> +
-> +				goto no_lock_out;
-> +			}
-> +
-> +			qdisc_bstats_cpu_update(q, skb);
-> +
-> +			if (sch_direct_xmit(skb, q, dev, txq, NULL, true) &&
-> +			    !READ_ONCE(q->empty))
-> +				__qdisc_run(q);
-> +
-> +			qdisc_run_end(q);
-> +			return NET_XMIT_SUCCESS;
-> +		}
-> +
->  		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
-> +		WRITE_ONCE(q->empty, false);
->  		qdisc_run(q);
->  
-> +no_lock_out:
->  		if (unlikely(to_free))
->  			kfree_skb_list(to_free);
->  		return rc;
-> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-> index 44991ea..2145fdad 100644
-> --- a/net/sched/sch_generic.c
-> +++ b/net/sched/sch_generic.c
-> @@ -146,6 +146,8 @@ static inline void dev_requeue_skb(struct sk_buff *skb, struct Qdisc *q)
->  	}
->  	if (lock)
->  		spin_unlock(lock);
-> +
-> +	WRITE_ONCE(q->empty, false);
->  	__netif_schedule(q);
->  }
->  
-> @@ -273,6 +275,15 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
->  	return skb;
->  }
->  
-> +bool sch_may_need_requeuing(struct Qdisc *q)
-> +{
-> +	if (likely(skb_queue_empty(&q->gso_skb) &&
-> +		   !q->ops->peek(q)))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
->  /*
->   * Transmit possibly several skbs, and handle the return status as
->   * required. Owning running seqcount bit guarantees that
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
