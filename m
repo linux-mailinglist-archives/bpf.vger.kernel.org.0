@@ -2,134 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A933A346595
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 17:43:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E411F34665C
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 18:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233258AbhCWQn1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 12:43:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233267AbhCWQnQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Mar 2021 12:43:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BC3161993;
-        Tue, 23 Mar 2021 16:43:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616517796;
-        bh=jmAUvBk81ral0mGgYjLPmNzTObzrf93U3y6qs2IPbPY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Gg35vmLCvc7fbrYmvEKfelCC2cpG759YXCxiyyA7gfBdfUpwacEpTa7itS26Yys4/
-         DNvKXPY6tyNVAe+8qbcX37cxuxAPhhSmsmYrN3sQaUqPY7G6hTCzDDhugMNfn64rWv
-         Xvep6jtvbooviJcB4agWvJnpHmAmG+kxR0XRUT2LxO6S48gUIIFDf3mDBr1jw7lFg7
-         UI6yRrVYeGmmG0E5/Rdu9Z0Wa7S6SyHyYuXyRJN/sbMmUOtGTz1YO2NT/Cx+H08x88
-         Ztvpkv7IgCDSSQ+dhclmHGK4yzVujdJY+UUGmJwNK0MxXNnFVtq6rHrPcGjE+exaFR
-         xU6G8dQ8X6HAg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id C573D352261C; Tue, 23 Mar 2021 09:43:15 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 09:43:15 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+        id S230269AbhCWR36 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 13:29:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28771 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230262AbhCWR3o (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Mar 2021 13:29:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616520583;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ffYIDrEd85aYEnoqVMK/ec3UfpS+EL/PInrdg2QSDwI=;
+        b=Hohi5oUj+xk3jKA3gzRKKZRBpzNj56eEDRwdgcAmaUvvezpIHd01E24FmSdgPpvTagBTFk
+        LK3lcdhUzqSIJaOaX5ukB3ERTOfIoncUHBiAUqil9T9KujKj7sP9SfL7tE3CwD7C+O2eU/
+        kyfBLm8Korg6Rxxcpo5C4q6QgHTqmYM=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-MUuTVomtNzaBqZgFRMdNnw-1; Tue, 23 Mar 2021 13:29:40 -0400
+X-MC-Unique: MUuTVomtNzaBqZgFRMdNnw-1
+Received: by mail-ej1-f71.google.com with SMTP id kx22so1382417ejc.17
+        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 10:29:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=ffYIDrEd85aYEnoqVMK/ec3UfpS+EL/PInrdg2QSDwI=;
+        b=KDdAqdYnqBrrmWQWj79vuFPFL6KnML3MNf8PF6KIuVoGNon0b4svAkpnBVbeCpqZ0D
+         cD5hXbWaD0st3eVCwCSIwhpYYiAFUnjnD5LY6dXst4h2ZmACQwdmHZi8OD/v17O02+n0
+         KVkBMQybhqQTxvmsG/loyNf1Qg9PW3XmhH3kl4vgxawo27X3v3xuAiiuwJzbizQR82OL
+         IfB+bKEm3128C2OauK++PMe6EEZDrhqfd8JiDquqCgCkEM2djhQWnGREzxQ663OSjNff
+         paTM3WmZue2we6OSRY5fTXUvrVgFZYfecbbE6+bNFaFwmyo2ifjerQ78vEOziEi7svH+
+         +sCQ==
+X-Gm-Message-State: AOAM533Ngh2RMedO20OxpVyWUhNubD3HoRdUazkVHvlGtSYBP1RlRntN
+        IdRHNTkWuMeOshc/Fz10yFFz1S+3tdaEqhtz5/124MIGzHIMknfUomKR9kWHtUg6FonOGasAPbS
+        HSYmGYr6Iscbv
+X-Received: by 2002:aa7:c386:: with SMTP id k6mr5580959edq.224.1616520577640;
+        Tue, 23 Mar 2021 10:29:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwxMZjwAYPPZufePXn5rfXAA9KtaRYTFzWwB3sfagGY7oyF65JZmJ0Gv5woOckMBI/kpk2/zg==
+X-Received: by 2002:aa7:c386:: with SMTP id k6mr5580916edq.224.1616520577039;
+        Tue, 23 Mar 2021 10:29:37 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id c19sm13458843edu.20.2021.03.23.10.29.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 10:29:36 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id B5E0C180281; Tue, 23 Mar 2021 18:29:35 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     paulmck@kernel.org
 Cc:     bpf@vger.kernel.org, Magnus Karlsson <magnus.karlsson@intel.com>
-Subject: Re: BPF trampolines break because of hang in synchronize_rcu_tasks()
- on PREEMPT kernels
-Message-ID: <20210323164315.GY2696@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+Subject: Re: BPF trampolines break because of hang in
+ synchronize_rcu_tasks() on PREEMPT kernels
+In-Reply-To: <20210323164315.GY2696@paulmck-ThinkPad-P72>
 References: <877dly6ooz.fsf@toke.dk>
+ <20210323164315.GY2696@paulmck-ThinkPad-P72>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 23 Mar 2021 18:29:35 +0100
+Message-ID: <871rc57p8g.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <877dly6ooz.fsf@toke.dk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 01:26:36PM +0100, Toke Høiland-Jørgensen wrote:
-> Hi Paul
-> 
-> Magnus and I have been debugging an issue where close() on a bpf_link
-> file descriptor would hang indefinitely when the system was under load
-> on a kernel compiled with CONFIG_PREEMPT=y, and it seems to be related
-> to synchronize_rcu_tasks(), so I'm hoping you can help us with it.
-> 
-> The issue is triggered reliably by loading up a system with network
-> traffic (causing 100% softirq CPU load on one or more cores), and then
-> attaching an freplace bpf_link and closing it again. The close() will
-> hang until the network traffic load is lowered.
-> 
-> Digging further, it appears that the hang happens in
-> synchronize_rcu_tasks(), as seen by running a bpftrace script like:
-> 
-> bpftrace -e 'kprobe:synchronize_rcu_tasks { @start = nsecs; printf("enter\n"); } kretprobe:synchronize_rcu_tasks { printf("exit after %d ms\n", (nsecs - @start) / 1000000); }'
-> Attaching 2 probes...
-> enter
-> exit after 54 ms
-> enter
-> exit after 3249 ms
-> 
-> (the two enter/exit pairs are, respectively, from an unloaded system,
-> and from a loaded system where I stopped the network traffic after a
-> couple of seconds).
-> 
-> The call to synchronize_rcu_tasks() happens in bpf_trampoline_put():
-> 
-> https://elixir.bootlin.com/linux/latest/source/kernel/bpf/trampoline.c#L376
-> 
-> And because it does this while holding trampoline_mutex, even deferring
-> the put to a worker (as a previously applied-then-reverted patch did[0])
-> doesn't help: that'll fix the initial hang on close(), but any
-> subsequent use of BPF trampolines will then be blocked because of the
-> mutex.
-> 
-> Also, if I just keep the network traffic running I will eventually get a
-> kernel panic with:
-> 
-> kernel:[44348.426312] Kernel panic - not syncing: hung_task: blocked tasks
-> 
-> I've created a reproducer for the issue here:
-> https://github.com/xdp-project/bpf-examples/tree/master/bpf-link-hang
-> 
-> To compile simply do this (needs a recent llvm/clang for compiling the BPF program):
-> 
-> $ git clone --recurse-submodules https://github.com/xdp-project/bpf-examples
-> $ cd bpf-examples/bpf-link-hang
-> $ make
-> $ ./sudo bpf-link-hang
-> 
-> you'll need to load up the system to trigger the hang; I'm using pktgen
-> from a separate machine to do this.
-> 
-> My question is, of course, as ever, What Is To Be Done? Is it expected
-> that synchronize_rcu_tasks() can hang indefinitely on a PREEMPT system,
-> or can this be fixed? And if it is expected, how can the BPF code be
-> fixed so it doesn't deadlock because of this?
-> 
-> Hoping you can help us with this - many thanks in advance! :)
+"Paul E. McKenney" <paulmck@kernel.org> writes:
 
-Let me start with the usual question...  Is the network traffic intense
-enough that one of the CPUs might remain in a loop handling softirqs
-indefinitely?
+> On Tue, Mar 23, 2021 at 01:26:36PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> Hi Paul
+>>=20
+>> Magnus and I have been debugging an issue where close() on a bpf_link
+>> file descriptor would hang indefinitely when the system was under load
+>> on a kernel compiled with CONFIG_PREEMPT=3Dy, and it seems to be related
+>> to synchronize_rcu_tasks(), so I'm hoping you can help us with it.
+>>=20
+>> The issue is triggered reliably by loading up a system with network
+>> traffic (causing 100% softirq CPU load on one or more cores), and then
+>> attaching an freplace bpf_link and closing it again. The close() will
+>> hang until the network traffic load is lowered.
+>>=20
+>> Digging further, it appears that the hang happens in
+>> synchronize_rcu_tasks(), as seen by running a bpftrace script like:
+>>=20
+>> bpftrace -e 'kprobe:synchronize_rcu_tasks { @start =3D nsecs; printf("en=
+ter\n"); } kretprobe:synchronize_rcu_tasks { printf("exit after %d ms\n", (=
+nsecs - @start) / 1000000); }'
+>> Attaching 2 probes...
+>> enter
+>> exit after 54 ms
+>> enter
+>> exit after 3249 ms
+>>=20
+>> (the two enter/exit pairs are, respectively, from an unloaded system,
+>> and from a loaded system where I stopped the network traffic after a
+>> couple of seconds).
+>>=20
+>> The call to synchronize_rcu_tasks() happens in bpf_trampoline_put():
+>>=20
+>> https://elixir.bootlin.com/linux/latest/source/kernel/bpf/trampoline.c#L=
+376
+>>=20
+>> And because it does this while holding trampoline_mutex, even deferring
+>> the put to a worker (as a previously applied-then-reverted patch did[0])
+>> doesn't help: that'll fix the initial hang on close(), but any
+>> subsequent use of BPF trampolines will then be blocked because of the
+>> mutex.
+>>=20
+>> Also, if I just keep the network traffic running I will eventually get a
+>> kernel panic with:
+>>=20
+>> kernel:[44348.426312] Kernel panic - not syncing: hung_task: blocked tas=
+ks
+>>=20
+>> I've created a reproducer for the issue here:
+>> https://github.com/xdp-project/bpf-examples/tree/master/bpf-link-hang
+>>=20
+>> To compile simply do this (needs a recent llvm/clang for compiling the B=
+PF program):
+>>=20
+>> $ git clone --recurse-submodules https://github.com/xdp-project/bpf-exam=
+ples
+>> $ cd bpf-examples/bpf-link-hang
+>> $ make
+>> $ ./sudo bpf-link-hang
+>>=20
+>> you'll need to load up the system to trigger the hang; I'm using pktgen
+>> from a separate machine to do this.
+>>=20
+>> My question is, of course, as ever, What Is To Be Done? Is it expected
+>> that synchronize_rcu_tasks() can hang indefinitely on a PREEMPT system,
+>> or can this be fixed? And if it is expected, how can the BPF code be
+>> fixed so it doesn't deadlock because of this?
+>>=20
+>> Hoping you can help us with this - many thanks in advance! :)
+>
+> Let me start with the usual question...  Is the network traffic intense
+> enough that one of the CPUs might remain in a loop handling softirqs
+> indefinitely?
 
-If so, does the (untested, probably does not build) patch below help?
+Yup, I'm pegging all CPUs in softirq:
 
-Please note that this is only a diagnostic patch.  It has the serious
-side effect of making __do_softirq() and anything that calls it implicitly
-noinstr.  But it might at least be a decent starting point for a real fix.
-Or might be part of the real fix, who knows?
+$ mpstat -P ALL 1
+[...]
+18:26:52     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %=
+guest  %gnice   %idle
+18:26:53     all    0.00    0.00    0.00    0.00    0.00  100.00    0.00   =
+ 0.00    0.00    0.00
+18:26:53       0    0.00    0.00    0.00    0.00    0.00  100.00    0.00   =
+ 0.00    0.00    0.00
+18:26:53       1    0.00    0.00    0.00    0.00    0.00  100.00    0.00   =
+ 0.00    0.00    0.00
+18:26:53       2    0.00    0.00    0.00    0.00    0.00  100.00    0.00   =
+ 0.00    0.00    0.00
+18:26:53       3    0.00    0.00    0.00    0.00    0.00  100.00    0.00   =
+ 0.00    0.00    0.00
+18:26:53       4    0.00    0.00    0.00    0.00    0.00  100.00    0.00   =
+ 0.00    0.00    0.00
+18:26:53       5    0.00    0.00    0.00    0.00    0.00  100.00    0.00   =
+ 0.00    0.00    0.00
 
-							Thanx, Paul
+> If so, does the (untested, probably does not build) patch below help?
 
-------------------------------------------------------------------------
+Doesn't appear to, no. It builds fine, but I still get:
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 0b06be5..e21e7b0 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -242,6 +242,7 @@ void rcu_softirq_qs(void)
- {
- 	rcu_qs();
- 	rcu_preempt_deferred_qs(current);
-+	rcu_tasks_qs(current, true);
- }
- 
- /*
+Attaching 2 probes...
+enter
+exit after 8480 ms
+
+(that was me interrupting the network traffic again)
+
+-Toke
+
