@@ -2,98 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2302D34672C
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 19:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B79A5346732
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 19:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbhCWSH1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 14:07:27 -0400
-Received: from outpost19.zedat.fu-berlin.de ([130.133.4.112]:44627 "EHLO
-        outpost19.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231372AbhCWSHO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Mar 2021 14:07:14 -0400
-Received: from relay1.zedat.fu-berlin.de ([130.133.4.67])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lOlQj-0024FS-LY; Tue, 23 Mar 2021 19:07:01 +0100
-Received: from mx.physik.fu-berlin.de ([160.45.64.218])
-          by relay1.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_DHE_RSA_WITH_AES_128_CBC_SHA
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lOlQj-003wmA-IR; Tue, 23 Mar 2021 19:07:01 +0100
-Received: from epyc.physik.fu-berlin.de ([160.45.64.180])
-        by mx.physik.fu-berlin.de with esmtps (TLS1.2:RSA_AES_256_CBC_SHA1:256)
-        (Exim 4.80)
-        (envelope-from <glaubitz@physik.fu-berlin.de>)
-        id 1lOlQW-0000VE-3G; Tue, 23 Mar 2021 19:06:48 +0100
-Received: from glaubitz by epyc.physik.fu-berlin.de with local (Exim 4.94 #2 (Debian))
-        id 1lOlQV-003aeH-QQ; Tue, 23 Mar 2021 19:06:47 +0100
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S231279AbhCWSH5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 14:07:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231380AbhCWSH0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Mar 2021 14:07:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FA206192B;
+        Tue, 23 Mar 2021 18:07:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616522845;
+        bh=W+whf0yJ5mHA5L3YEDhDIDgBeKosoxqWVmeQTKORvWE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XF0QBxGmv9lZwnLiIMAzKxsHht7j5q39KJtRY87XSBDEV5P10T7pNvAlNCwEbNM0w
+         FZUSv1Souz9sXXPXTyC6Qyc1ShA8KEjJ/aH4v9dTL9Z4jxaqNHVg0oFEev3KDAviUQ
+         ITXw7kf7TGmnYU6jxK55S1P89heyRtxhcTcP43eCty9atE0D/H9BT5D837NttKmMuc
+         V3Cm93Ixf/DPTz5H8NS9Npsf3Hw51L+/bCdtCpApz7wvcjzqBrehUegcaLr2GICElj
+         eps+CNDOYV0LJgA59s/RMjtuUye5NpHs4hMT0MDFX6UmqPaS0ci/XnnCaUqrzsLkxv
+         IPRgceapLTZ5g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3F7DF40647; Tue, 23 Mar 2021 15:07:23 -0300 (-03)
+Date:   Tue, 23 Mar 2021 15:07:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH, v2] tools: Remove inclusion of ia64-specific version of errno.h header
-Date:   Tue, 23 Mar 2021 19:04:28 +0100
-Message-Id: <20210323180428.855488-1-glaubitz@physik.fu-berlin.de>
-X-Mailer: git-send-email 2.31.0
+        Yonghong Song <yhs@fb.com>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH PING dwarves] btf: Add --btf_gen_all flag
+Message-ID: <YFouW2D2Y1XpcjKA@kernel.org>
+References: <20210312000808.175262-1-iii@linux.ibm.com>
+ <YEtvIvODFEQHgt8m@kernel.org>
+ <41d244ba53881fa99dda3d0a65c4a8cfb557a755.camel@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-X-Originating-IP: 160.45.64.218
-X-ZEDAT-Hint: RV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41d244ba53881fa99dda3d0a65c4a8cfb557a755.camel@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There is no longer an ia64-specific version of the errno.h header
-below arch/ia64/include/uapi/asm/, so trying to build tools/bpf
-fails with:
+Em Tue, Mar 23, 2021 at 02:36:48PM +0100, Ilya Leoshkevich escreveu:
+> On Fri, 2021-03-12 at 10:39 -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Fri, Mar 12, 2021 at 01:08:08AM +0100, Ilya Leoshkevich escreveu:
+> > > By default, pahole makes use only of BTF features introduced with
+> > > kernel v5.2. Features that are added later need to be turned on with
+> > > explicit feature flags, such as --btf_gen_floats. According to [1],
+> > > this will hinder the people who generate BTF for kernels externally
+> > > (e.g. for old kernels to support BPF CO-RE).
+> > > 
+> > > Introduce --btf_gen_all that allows using all BTF features supported
+> > > by pahole.
+> > > 
+> > > [1] 
+> > > https://lore.kernel.org/dwarves/CAEf4Bzbyugfb2RkBkRuxNGKwSk40Tbq4zAvhQT8W=fVMYWuaxA@mail.gmail.com/
+> > 
+> > Applied locally, testing ongoing.
+> > 
+> > Also added this:
+> > 
+> > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> > 
+> > - Arnaldo
+> 
+> [...]
+> 
+> Hi Arnaldo,
+> 
+> I'd like to ping this patch (and
+> https://lore.kernel.org/dwarves/20210310201550.170599-1-iii@linux.ibm.com/
+> too).
 
-  CC       /usr/src/linux/tools/bpf/bpftool/btf_dumper.o
-In file included from /usr/src/linux/tools/include/linux/err.h:8,
-                 from btf_dumper.c:11:
-/usr/src/linux/tools/include/uapi/asm/errno.h:13:10: fatal error: ../../../arch/ia64/include/uapi/asm/errno.h: No such file or directory
-   13 | #include "../../../arch/ia64/include/uapi/asm/errno.h"
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
+So I finally finished testing, pushing out now.
 
-Thus, just remove the inclusion of the ia64-specific errno.h so that
-the build will use the generic errno.h header on this target which was
-used there anyway as the ia64-specific errno.h was just a wrapper for
-the generic header.
-
-Fixes: c25f867ddd00 ("ia64: remove unneeded uapi asm-generic wrappers")
-Signed-off-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
----
- tools/include/uapi/asm/errno.h | 2 --
- 1 file changed, 2 deletions(-)
-
- v2:
- - Rephrase summary
-
-diff --git a/tools/include/uapi/asm/errno.h b/tools/include/uapi/asm/errno.h
-index 637189ec1ab9..d30439b4b8ab 100644
---- a/tools/include/uapi/asm/errno.h
-+++ b/tools/include/uapi/asm/errno.h
-@@ -9,8 +9,6 @@
- #include "../../../arch/alpha/include/uapi/asm/errno.h"
- #elif defined(__mips__)
- #include "../../../arch/mips/include/uapi/asm/errno.h"
--#elif defined(__ia64__)
--#include "../../../arch/ia64/include/uapi/asm/errno.h"
- #elif defined(__xtensa__)
- #include "../../../arch/xtensa/include/uapi/asm/errno.h"
- #else
--- 
-2.31.0
-
+- Arnaldo
