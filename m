@@ -2,136 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292A53454F7
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 02:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C41F034551B
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 02:48:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhCWBZ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Mar 2021 21:25:28 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5108 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbhCWBZE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Mar 2021 21:25:04 -0400
-Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F4DC31PgWzYN8w;
-        Tue, 23 Mar 2021 09:23:11 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- DGGEML404-HUB.china.huawei.com (10.3.17.39) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 23 Mar 2021 09:24:59 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Tue, 23 Mar
- 2021 09:24:59 +0800
-Subject: Re: [Patch bpf-next v6 02/12] skmsg: introduce a spinlock to protect
- ingress_msg
-To:     Cong Wang <xiyou.wangcong@gmail.com>, <netdev@vger.kernel.org>
-CC:     <bpf@vger.kernel.org>, <duanxiongchun@bytedance.com>,
-        <wangdongdong.6@bytedance.com>, <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        "Jakub Sitnicki" <jakub@cloudflare.com>
-References: <20210323003808.16074-1-xiyou.wangcong@gmail.com>
- <20210323003808.16074-3-xiyou.wangcong@gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <93f9be88-2803-93cd-df6b-43f494c0f67d@huawei.com>
-Date:   Tue, 23 Mar 2021 09:24:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S231389AbhCWBsW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Mar 2021 21:48:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231152AbhCWBr7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Mar 2021 21:47:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A74A619A9;
+        Tue, 23 Mar 2021 01:47:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616464077;
+        bh=w2XzDLfdA1U+ze7ABxuhGs5tGvh3m52+UeeDQh1GyNM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DcPkUmKKB9U3rqKlN0Mgy5hVCPSSSQM4ka5fhESvaJW0dtbeZq3fH4tMAIlJCi0if
+         wXFIsSGzMjWzjCRItHkvZvUVP3aaa7lltYCPIyR9+p/c+vfnsCy0s5CZTW+QB5UAMD
+         ik/6q60DURpQ3ar9Nd7FfFPQowD98e3+LCj87iQtDNGx+J0WZ+GEORIJsv1J514XA2
+         +9yy+qWpnz2fPtIY5kE9aOKjV23UE7cBEquR38liQJmh/bNnlNk7tx6tnwaqWs5qJQ
+         vuz60YLy+Q2fzBj5t22K77qoLdPm5/uhZUu/zGnJoqeyxgxTKhjWY20Lks2Mn2Z6Cz
+         +EJAgG3jpdk/Q==
+From:   KP Singh <kpsingh@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: [PATCH v2 bpf-next] selftests/bpf: Add an option for a debug shell in vmtest.sh
+Date:   Tue, 23 Mar 2021 01:47:52 +0000
+Message-Id: <20210323014752.3198283-1-kpsingh@kernel.org>
+X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
 MIME-Version: 1.0
-In-Reply-To: <20210323003808.16074-3-xiyou.wangcong@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/3/23 8:37, Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
-> 
-> Currently we rely on lock_sock to protect ingress_msg,
-> it is too big for this, we can actually just use a spinlock
-> to protect this list like protecting other skb queues.
-> 
-> __tcp_bpf_recvmsg() is still special because of peeking,
-> it still has to use lock_sock.
-> 
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
-> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> ---
->  include/linux/skmsg.h | 46 +++++++++++++++++++++++++++++++++++++++++++
->  net/core/skmsg.c      |  3 +++
->  net/ipv4/tcp_bpf.c    | 18 ++++++-----------
->  3 files changed, 55 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index 6c09d94be2e9..f2d45a73b2b2 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -89,6 +89,7 @@ struct sk_psock {
->  #endif
->  	struct sk_buff_head		ingress_skb;
->  	struct list_head		ingress_msg;
-> +	spinlock_t			ingress_lock;
->  	unsigned long			state;
->  	struct list_head		link;
->  	spinlock_t			link_lock;
-> @@ -284,7 +285,45 @@ static inline struct sk_psock *sk_psock(const struct sock *sk)
->  static inline void sk_psock_queue_msg(struct sk_psock *psock,
->  				      struct sk_msg *msg)
->  {
-> +	spin_lock_bh(&psock->ingress_lock);
->  	list_add_tail(&msg->list, &psock->ingress_msg);
-> +	spin_unlock_bh(&psock->ingress_lock);
-> +}
-> +
-> +static inline struct sk_msg *sk_psock_dequeue_msg(struct sk_psock *psock)
-> +{
-> +	struct sk_msg *msg;
-> +
-> +	spin_lock_bh(&psock->ingress_lock);
-> +	msg = list_first_entry_or_null(&psock->ingress_msg, struct sk_msg, list);
-> +	if (msg)
-> +		list_del(&msg->list);
-> +	spin_unlock_bh(&psock->ingress_lock);
-> +	return msg;
-> +}
-> +
-> +static inline struct sk_msg *sk_psock_peek_msg(struct sk_psock *psock)
-> +{
-> +	struct sk_msg *msg;
-> +
-> +	spin_lock_bh(&psock->ingress_lock);
-> +	msg = list_first_entry_or_null(&psock->ingress_msg, struct sk_msg, list);
-> +	spin_unlock_bh(&psock->ingress_lock);
-> +	return msg;
-> +}
-> +
-> +static inline struct sk_msg *sk_psock_next_msg(struct sk_psock *psock,
-> +					       struct sk_msg *msg)
-> +{
-> +	struct sk_msg *ret;
+The newly introduced -s command line option starts an interactive shell.
+If a command is specified, the shell is started after the command
+finishes executing. It's useful to have a shell especially when
+debugging failing tests or developing new tests.
 
-Nit:
-Use msg instead of ret to be consistently with sk_psock_dequeue_msg()
-and sk_psock_next_msg().
+Since the user may terminate the VM forcefully, an extra "sync" is added
+after the execution of the command to persist any logs from the command
+into the log file.
 
-> +
-> +	spin_lock_bh(&psock->ingress_lock);
-> +	if (list_is_last(&msg->list, &psock->ingress_msg))
-> +		ret = NULL;
-> +	else
-> +		ret = list_next_entry(msg, list);
-> +	spin_unlock_bh(&psock->ingress_lock);
-> +	return ret;
->  }
+Signed-off-by: KP Singh <kpsingh@kernel.org>
+---
+ tools/testing/selftests/bpf/vmtest.sh | 39 +++++++++++++++++++--------
+ 1 file changed, 28 insertions(+), 11 deletions(-)
 
+diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
+index 22554894db99..8889b3f55236 100755
+--- a/tools/testing/selftests/bpf/vmtest.sh
++++ b/tools/testing/selftests/bpf/vmtest.sh
+@@ -24,15 +24,15 @@ EXIT_STATUS_FILE="${LOG_FILE_BASE}.exit_status"
+ usage()
+ {
+ 	cat <<EOF
+-Usage: $0 [-i] [-d <output_dir>] -- [<command>]
++Usage: $0 [-i] [-s] [-d <output_dir>] -- [<command>]
+ 
+ <command> is the command you would normally run when you are in
+ tools/testing/selftests/bpf. e.g:
+ 
+ 	$0 -- ./test_progs -t test_lsm
+ 
+-If no command is specified, "${DEFAULT_COMMAND}" will be run by
+-default.
++If no command is specified and a debug shell (-s) is not requested,
++"${DEFAULT_COMMAND}" will be run by default.
+ 
+ If you build your kernel using KBUILD_OUTPUT= or O= options, these
+ can be passed as environment variables to the script:
+@@ -49,6 +49,9 @@ Options:
+ 	-d)		Update the output directory (default: ${OUTPUT_DIR})
+ 	-j)		Number of jobs for compilation, similar to -j in make
+ 			(default: ${NUM_COMPILE_JOBS})
++	-s)		Instead of powering off the VM, start an interactive
++			shell. If <command> is specified, the shell runs after
++			the command finishes executing
+ EOF
+ }
+ 
+@@ -149,6 +152,7 @@ update_init_script()
+ 	local init_script_dir="${OUTPUT_DIR}/${MOUNT_DIR}/etc/rcS.d"
+ 	local init_script="${init_script_dir}/S50-startup"
+ 	local command="$1"
++	local exit_command="$2"
+ 
+ 	mount_image
+ 
+@@ -162,9 +166,10 @@ EOF
+ 
+ 	fi
+ 
+-	sudo bash -c "cat >${init_script}" <<EOF
+-#!/bin/bash
++	sudo bash -c "echo '#!/bin/bash' > ${init_script}"
+ 
++	if [[ "${command}" != "" ]]; then
++		sudo bash -c "cat >>${init_script}" <<EOF
+ # Have a default value in the exit status file
+ # incase the VM is forcefully stopped.
+ echo "130" > "/root/${EXIT_STATUS_FILE}"
+@@ -175,9 +180,12 @@ echo "130" > "/root/${EXIT_STATUS_FILE}"
+ 	stdbuf -oL -eL ${command}
+ 	echo "\$?" > "/root/${EXIT_STATUS_FILE}"
+ } 2>&1 | tee "/root/${LOG_FILE}"
+-poweroff -f
++# Ensure that the logs are written to disk
++sync
+ EOF
++	fi
+ 
++	sudo bash -c "echo ${exit_command} >> ${init_script}"
+ 	sudo chmod a+x "${init_script}"
+ 	unmount_image
+ }
+@@ -277,8 +285,10 @@ main()
+ 	local kernel_bzimage="${kernel_checkout}/${X86_BZIMAGE}"
+ 	local command="${DEFAULT_COMMAND}"
+ 	local update_image="no"
++	local exit_command="poweroff -f"
++	local debug_shell="no"
+ 
+-	while getopts 'hkid:j:' opt; do
++	while getopts 'hskid:j:' opt; do
+ 		case ${opt} in
+ 		i)
+ 			update_image="yes"
+@@ -289,6 +299,11 @@ main()
+ 		j)
+ 			NUM_COMPILE_JOBS="$OPTARG"
+ 			;;
++		s)
++			command=""
++			debug_shell="yes"
++			exit_command="bash"
++			;;
+ 		h)
+ 			usage
+ 			exit 0
+@@ -307,7 +322,7 @@ main()
+ 	done
+ 	shift $((OPTIND -1))
+ 
+-	if [[ $# -eq 0 ]]; then
++	if [[ $# -eq 0  && "${debug_shell}" == "no" ]]; then
+ 		echo "No command specified, will run ${DEFAULT_COMMAND} in the vm"
+ 	else
+ 		command="$@"
+@@ -355,10 +370,12 @@ main()
+ 	fi
+ 
+ 	update_selftests "${kernel_checkout}" "${make_command}"
+-	update_init_script "${command}"
++	update_init_script "${command}" "${exit_command}"
+ 	run_vm "${kernel_bzimage}"
+-	copy_logs
+-	echo "Logs saved in ${OUTPUT_DIR}/${LOG_FILE}"
++	if [[ "${command}" != "" ]]; then
++		copy_logs
++		echo "Logs saved in ${OUTPUT_DIR}/${LOG_FILE}"
++	fi
+ }
+ 
+ catch()
+-- 
+2.31.0.rc2.261.g7f71774620-goog
 
