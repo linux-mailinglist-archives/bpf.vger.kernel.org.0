@@ -2,94 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDABD346A48
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 21:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B403346A7E
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 21:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233574AbhCWUkq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 16:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233582AbhCWUkX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Mar 2021 16:40:23 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56477C0613E8
-        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 13:40:21 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id dz17so8564qvb.14
-        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 13:40:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=WZ2fsTX5FLJhX01BulIdj9aVU+u+1SaaqVDcWrlk7vo=;
-        b=ec/02RNqMxC3NtjfEqCKWLv4qwmQTmHrkXsCeNO2KBn8qSqKzTE24FKGqfuKH+TVkK
-         X/VKFkbL4vsRYCrPeFIrZP8DeiwqKS96n7WGnqpK5r2/VAz0Iab+2cnLr9ixgbVx3i2+
-         bJO7ki2MVhZqoAWHQEzmE5B7oTVS3IIOSVMH6lZh48SF/0j7bgW6jHNwPIk8gKuBLJqR
-         4qQ5N4v6mKVofR2cSUqiTSphpJlczKzRN+vOPaGMsYJ3GFsS6r9eXFPtqA3WSVhoq05F
-         zPIbSYNFmagSwu4VxL+cE8EfslHOGZyTYBOn5X3fzMMM4mw38aQ1r1FrLS9fBfhCQ2tj
-         1law==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=WZ2fsTX5FLJhX01BulIdj9aVU+u+1SaaqVDcWrlk7vo=;
-        b=e71rwiEZ9iMTsRW0UjZCI9yocHF5YslkqEBMIU8vuWKT4ZAkZQkpsN5JoLaY/DNQjj
-         VqiusoyzFzUyTgiJDQMH8P22uWMUZXkoZzMEu/0mI+Kktuqf9l/CCm1mAlp2AGw9+uEn
-         GM9eK8E/p6e2jX4eipxztN1zrF7cawC+8uRCw/OITS3HlkizIBd9do2JNgKvQKxbwjrv
-         LPSuLEqcGcZzdhQy8jj268R6oO1kReRCY/yWZ59B+M9Tt1dBhIhQShsA/6wLHoriYNbU
-         38+QTIpKbxss2ehkxmIseHvMJ9eSNAk3BSp42oeqs1CdtMMhE+MQaWjowJ3wSCvUMcPD
-         m1UA==
-X-Gm-Message-State: AOAM533SGVADKlVXii3ULqhOZw3GI2nDOB20sMNc6KUV07rshHwYDihk
-        s/i7g7mJGFGVspF3/TQPDwetqvPOpwercDRD6/k=
-X-Google-Smtp-Source: ABdhPJyxpPvs3kGL5X0rhxaceHJDwoHelX5/WOAlmnNB1fMlzzx1j3iwVr8PFhB1zHKJQ3nkMRVGiRyWH5xdyb6dFU8=
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:e9a3:260d:763b:67dc])
- (user=samitolvanen job=sendgmr) by 2002:a0c:bec3:: with SMTP id
- f3mr6577376qvj.49.1616532020445; Tue, 23 Mar 2021 13:40:20 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 13:39:46 -0700
-In-Reply-To: <20210323203946.2159693-1-samitolvanen@google.com>
-Message-Id: <20210323203946.2159693-18-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20210323203946.2159693-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH v3 17/17] arm64: allow CONFIG_CFI_CLANG to be selected
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
+        id S233374AbhCWUyw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 16:54:52 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51232 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232529AbhCWUyX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Mar 2021 16:54:23 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NKXIju142178;
+        Tue, 23 Mar 2021 16:54:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=SOEqAZp+3fcJccg3kJnCN/LP4wqUy7k5JxCDZZU/hnQ=;
+ b=KdKVxxOAF3qjH81L2Qo6rn+u3PGIB7IE7762jsWQtPI1rnAADuTGeU4nr8/PcffEXf5o
+ E0brW4sl0WJ4OA6JaWnZzuTem/xhYw8+hfvm65KnffmWxhGwOMrZWesmsSoS3wQT9hEv
+ bAzN+9in6YqKBIz3yu0WNysOk9x2/WdQ0q1BuUrL2/epYWkE6BroplPBUUvnIJlhH1T6
+ mmrs7WfMSHsWoVU8oKh2o4AcieeFbQcs2FaBmz5rtk0OTZFM5VNIQZxHji1ES+zSrk1j
+ DUMipVe80JCQLQNUntDLl1ufOM8Zx5oblaqJ8L5J5Gx1fywXXcgUR7pHarpAaIHv7EUE sg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37fpumsc2f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 16:54:08 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12NKYRFj151477;
+        Tue, 23 Mar 2021 16:54:08 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37fpumsc1y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 16:54:08 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12NKs6Ga006400;
+        Tue, 23 Mar 2021 20:54:06 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 37d9bmkpt3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 20:54:06 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12NKrjWk36962710
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Mar 2021 20:53:45 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9BB1DAE051;
+        Tue, 23 Mar 2021 20:54:03 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1E475AE045;
+        Tue, 23 Mar 2021 20:54:03 +0000 (GMT)
+Received: from sig-9-145-31-74.uk.ibm.com (unknown [9.145.31.74])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 23 Mar 2021 20:54:03 +0000 (GMT)
+Message-ID: <ff65b4733191b836e9738256178434b89a526767.camel@linux.ibm.com>
+Subject: Re: [PATCH PING dwarves] btf: Add --btf_gen_all flag
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Date:   Tue, 23 Mar 2021 21:54:02 +0100
+In-Reply-To: <YFox4XQ611jHo7Wj@kernel.org>
+References: <20210312000808.175262-1-iii@linux.ibm.com>
+         <YEtvIvODFEQHgt8m@kernel.org>
+         <41d244ba53881fa99dda3d0a65c4a8cfb557a755.camel@linux.ibm.com>
+         <YFouW2D2Y1XpcjKA@kernel.org> <YFox4XQ611jHo7Wj@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+X-TM-AS-GCONF: 00
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-23_09:2021-03-23,2021-03-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ adultscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
+ suspectscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103230152
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Select ARCH_SUPPORTS_CFI_CLANG to allow CFI to be enabled.
+On Tue, 2021-03-23 at 15:22 -0300, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Mar 23, 2021 at 03:07:23PM -0300, Arnaldo Carvalho de Melo
+> escreveu:
+> > Em Tue, Mar 23, 2021 at 02:36:48PM +0100, Ilya Leoshkevich
+> > escreveu:
+> > > On Fri, 2021-03-12 at 10:39 -0300, Arnaldo Carvalho de Melo
+> > > wrote:
+> > > > Em Fri, Mar 12, 2021 at 01:08:08AM +0100, Ilya Leoshkevich
+> > > > escreveu:
+> > > > > By default, pahole makes use only of BTF features introduced
+> > > > > with
+> > > > > kernel v5.2. Features that are added later need to be turned
+> > > > > on with
+> > > > > explicit feature flags, such as --btf_gen_floats. According
+> > > > > to [1],
+> > > > > this will hinder the people who generate BTF for kernels
+> > > > > externally
+> > > > > (e.g. for old kernels to support BPF CO-RE).
+> > > > > 
+> > > > > Introduce --btf_gen_all that allows using all BTF features
+> > > > > supported
+> > > > > by pahole.
+> > > > > 
+> > > > > [1] 
+> > > > > https://lore.kernel.org/dwarves/CAEf4Bzbyugfb2RkBkRuxNGKwSk40Tbq4zAvhQT8W=fVMYWuaxA@mail.gmail.com/
+> > > > 
+> > > > Applied locally, testing ongoing.
+> > > > 
+> > > > Also added this:
+> > > > 
+> > > > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> > > > 
+> > > > - Arnaldo
+> > > 
+> > > [...]
+> > > 
+> > > Hi Arnaldo,
+> > > 
+> > > I'd like to ping this patch (and
+> > > https://lore.kernel.org/dwarves/20210310201550.170599-1-iii@linux.ibm.com/
+> > > too).
+> > 
+> > So I finally finished testing, pushing out now.
+> 
+> Please check what is in
+> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/, I'm having
+> some
+> problems with 2FA on github, will fix soon.
+> 
+> - Arnaldo
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- arch/arm64/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+That looks good, thanks!
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 5656e7aacd69..2eefdbc3e3c9 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -75,6 +75,7 @@ config ARM64
- 	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
- 	select ARCH_SUPPORTS_LTO_CLANG if CPU_LITTLE_ENDIAN
- 	select ARCH_SUPPORTS_LTO_CLANG_THIN
-+	select ARCH_SUPPORTS_CFI_CLANG
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && (GCC_VERSION >= 50000 || CC_IS_CLANG)
- 	select ARCH_SUPPORTS_NUMA_BALANCING
--- 
-2.31.0.291.g576ba9dcdaf-goog
+s390 seems to run fine again with the latest bpf-next / llvm / pahole.
+Now I can finally give adding s390 to the libbpf CI another try :-)
 
