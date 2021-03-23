@@ -2,95 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7804A345398
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 01:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2113453AA
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 01:13:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbhCWAFJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Mar 2021 20:05:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59114 "EHLO mail.kernel.org"
+        id S230478AbhCWANR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Mar 2021 20:13:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231193AbhCWAEf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:04:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68F11619A3;
-        Tue, 23 Mar 2021 00:04:31 +0000 (UTC)
+        id S230467AbhCWAMv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Mar 2021 20:12:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2ACE619B4
+        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 00:12:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616457873;
-        bh=OHo+vflUXrll9v/rTKEgd/KJdrtb/YspGpJNGL7VLQE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NBgaXuGQo7HTAuPy5mjlDYjF33dYGEWYE+IGtP41/3SJJL1o+OlCzwquSv08024K2
-         Uj568H3nV42Rm/zpaGxRWk7qrwUNzl/wFr7x6hAio2NAv3pQt2SiNGI7OVPYclBiXP
-         hwCszuVvEupNYZAGMCYIIg3p940tSU0BkGXfzK/X5Tf7pFprFiDZX25GatbgHEnYzx
-         U2f4OG3z/XUqWVhayFE1ahAAbagNETfbdcXdWQrK/UwKKi9quQO1KfSKMrsO1uxE7z
-         MMXtMG4/yDjV4bYHW1V+OIN7TTfWUnG5NU8FPZrGk8ZlmtoLnR7yirYgQoSummOBLP
-         gQfZNwEr9RcNQ==
-Date:   Tue, 23 Mar 2021 09:04:29 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Subject: Re: [PATCH -tip v4 08/12] arm: kprobes: Make a space for
- regs->ARM_pc at kretprobe_trampoline
-Message-Id: <20210323090429.da18461654ef9907581dab95@kernel.org>
-In-Reply-To: <161639527851.895304.14313883616251450754.stgit@devnote2>
-References: <161639518354.895304.15627519393073806809.stgit@devnote2>
-        <161639527851.895304.14313883616251450754.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=k20201202; t=1616458371;
+        bh=ibxP5zDfP0TkJs2Ee1icHqmU6VKbjo5/lQBVOUSDdT4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=J/iCtVhZ9ZNXoD3jRx5Uxe4n/uiKeuLrlLEMpk58g2M/HIjEPMJ001yfM+VpViskX
+         +XNLY41Jkbp06QSq4F/dWEqOhVBAvSnSEm6yY1zFBOto7ceeX2zjOrGjZM8TxKZMm4
+         JMWen4oDQwltTfxKm8lUn8fcC0cS3lkUGsk9+lq8Dp1J90RD2xTJtu3aPSyOCB9sSm
+         DqI6BX3VClOVa490KIxfg80M09EeijbhhcT3hJhVOBGkkhhvh875huYBGyydYrkvS1
+         pUFvbEFfcPs857yeF0k8mhKuZiBYARlrfMNErC6Q+Fv0jHFVo0IjWrM0tng+ae61Ig
+         JrATbp7sf9myw==
+Received: by mail-lj1-f182.google.com with SMTP id f16so23376935ljm.1
+        for <bpf@vger.kernel.org>; Mon, 22 Mar 2021 17:12:50 -0700 (PDT)
+X-Gm-Message-State: AOAM532ocvQXjk3bukSCagosQsOg13MrBEEBqxfsinbnGBSLNoZpHBRa
+        +Msyt24V3rIjvKVCM7TxXdK2+E1pVo+n8tc05Zn4kQ==
+X-Google-Smtp-Source: ABdhPJyTWQjBsJRBm75XW+kB699yiYvgjrWxto3SuRfdIVITfc5vc7vvVcU/+ycxvrzp4T6ZflDs0HL16finwKKwnsE=
+X-Received: by 2002:a2e:9b99:: with SMTP id z25mr1295319lji.103.1616458368851;
+ Mon, 22 Mar 2021 17:12:48 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210322215201.1097281-1-arnd@kernel.org>
+In-Reply-To: <20210322215201.1097281-1-arnd@kernel.org>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Tue, 23 Mar 2021 01:12:38 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ4KzWbBmCp-ar-amezqUngaoszNLUnPYDc=dXD9VtQBsg@mail.gmail.com>
+Message-ID: <CACYkzJ4KzWbBmCp-ar-amezqUngaoszNLUnPYDc=dXD9VtQBsg@mail.gmail.com>
+Subject: Re: [PATCH] bpf: avoid old-style declaration warnings
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Mikko Ylinen <mikko.ylinen@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 22 Mar 2021 15:41:18 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Mon, Mar 22, 2021 at 10:52 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> gcc -Wextra wants type modifiers in the normal order:
+>
+> kernel/bpf/bpf_lsm.c:70:1: error: 'static' is not at beginning of declaration [-Werror=old-style-declaration]
+>    70 | const static struct bpf_func_proto bpf_bprm_opts_set_proto = {
+>       | ^~~~~
+> kernel/bpf/bpf_lsm.c:91:1: error: 'static' is not at beginning of declaration [-Werror=old-style-declaration]
+>    91 | const static struct bpf_func_proto bpf_ima_inode_hash_proto = {
+>       | ^~~~~
+>
+> Fixes: 3f6719c7b62f ("bpf: Add bpf_bprm_opts_set helper")
+> Fixes: 27672f0d280a ("bpf: Add a BPF helper for getting the IMA hash of an inode")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-> Change kretprobe_trampoline to make a space for regs->ARM_pc so that
-> kretprobe_trampoline_handler can call instruction_pointer_set()
-> safely.
+Thanks for fixing!
 
-BTW, if kretprobe_trampoline is replaced with the assembly code,
-I think it should fill all the regs as much as possible, because
-originally it is written by a software break.
-Thus the regs->sp should point the stack address at the entry of 
-kretprobe_trampoline, and also regs->lr and regs->pc will be
-kretprobe_trampoline, so that user handler can access caller stack.
-
-
-Thanks, 
-
-> 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->  arch/arm/probes/kprobes/core.c |    2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
-> index 1782b41df095..5f3c2b42787f 100644
-> --- a/arch/arm/probes/kprobes/core.c
-> +++ b/arch/arm/probes/kprobes/core.c
-> @@ -397,11 +397,13 @@ int __kprobes kprobe_exceptions_notify(struct notifier_block *self,
->  void __naked __kprobes kretprobe_trampoline(void)
->  {
->  	__asm__ __volatile__ (
-> +		"sub	sp, sp, #16		\n\t"
->  		"stmdb	sp!, {r0 - r11}		\n\t"
->  		"mov	r0, sp			\n\t"
->  		"bl	trampoline_handler	\n\t"
->  		"mov	lr, r0			\n\t"
->  		"ldmia	sp!, {r0 - r11}		\n\t"
-> +		"add	sp, sp, #16		\n\t"
->  #ifdef CONFIG_THUMB2_KERNEL
->  		"bx	lr			\n\t"
->  #else
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: KP Singh <kpsingh@kernel.org>
