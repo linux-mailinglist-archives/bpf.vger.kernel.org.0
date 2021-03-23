@@ -2,89 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0CC34677C
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 19:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3C8346792
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 19:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhCWSWq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 14:22:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231672AbhCWSW3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Mar 2021 14:22:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB0E8619C0;
-        Tue, 23 Mar 2021 18:22:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616523748;
-        bh=f4wFTVCoRTVeuLMzFxkYBGsqBPGxi/DZT9+X3D4zjeA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fu0+Qh2JSi61SSfyClIFo9nPizBp2SbLNHu2f+1f9B9aULqYLivS+cDo9GHZNU/sI
-         BZfsAUd9/oaLCzujOdA4V4bkLHhZZCNW1wStXCZykGfNAPqke22fy+4LenXzcmD6Bi
-         i5BxS/4sqK+bxBXIZwqMLrSEt6Xiaoc7LATzdB/B7gFVSmMN+a1uM8NbZZMLLkvVX7
-         sFtTHHGYGaCr3fI8jGBH3M84ry17hthfz36bKbvj795Vvjnxx3tf5aLgFAf4AFsNe4
-         01Ypj5NqwpA9IKnfN1+4ltNzEzG58YddaaG+PwA2SGyYxjvgM+K9S4XPQr83XWS+SX
-         gQW3Jx5+zXRMg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 105A340647; Tue, 23 Mar 2021 15:22:26 -0300 (-03)
-Date:   Tue, 23 Mar 2021 15:22:25 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        id S231862AbhCWS0d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 14:26:33 -0400
+Received: from outpost19.zedat.fu-berlin.de ([130.133.4.112]:49339 "EHLO
+        outpost19.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231672AbhCWS0B (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Mar 2021 14:26:01 -0400
+Received: from relay1.zedat.fu-berlin.de ([130.133.4.67])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lOliw-0029Ar-GN; Tue, 23 Mar 2021 19:25:50 +0100
+Received: from mx.physik.fu-berlin.de ([160.45.64.218])
+          by relay1.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_DHE_RSA_WITH_AES_128_CBC_SHA
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1lOliw-0041zB-Dd; Tue, 23 Mar 2021 19:25:50 +0100
+Received: from epyc.physik.fu-berlin.de ([160.45.64.180])
+        by mx.physik.fu-berlin.de with esmtps (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.80)
+        (envelope-from <glaubitz@physik.fu-berlin.de>)
+        id 1lOlik-0000xE-0j; Tue, 23 Mar 2021 19:25:38 +0100
+Received: from glaubitz by epyc.physik.fu-berlin.de with local (Exim 4.94 #2 (Debian))
+        id 1lOlij-003bOF-O9; Tue, 23 Mar 2021 19:25:37 +0100
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH PING dwarves] btf: Add --btf_gen_all flag
-Message-ID: <YFox4XQ611jHo7Wj@kernel.org>
-References: <20210312000808.175262-1-iii@linux.ibm.com>
- <YEtvIvODFEQHgt8m@kernel.org>
- <41d244ba53881fa99dda3d0a65c4a8cfb557a755.camel@linux.ibm.com>
- <YFouW2D2Y1XpcjKA@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH] tools: Remove duplicate definition of ia64_mf() on ia64
+Date:   Tue, 23 Mar 2021 19:25:19 +0100
+Message-Id: <20210323182520.858611-1-glaubitz@physik.fu-berlin.de>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFouW2D2Y1XpcjKA@kernel.org>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+Sender: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+X-Originating-IP: 160.45.64.218
+X-ZEDAT-Hint: RV
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Mar 23, 2021 at 03:07:23PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Tue, Mar 23, 2021 at 02:36:48PM +0100, Ilya Leoshkevich escreveu:
-> > On Fri, 2021-03-12 at 10:39 -0300, Arnaldo Carvalho de Melo wrote:
-> > > Em Fri, Mar 12, 2021 at 01:08:08AM +0100, Ilya Leoshkevich escreveu:
-> > > > By default, pahole makes use only of BTF features introduced with
-> > > > kernel v5.2. Features that are added later need to be turned on with
-> > > > explicit feature flags, such as --btf_gen_floats. According to [1],
-> > > > this will hinder the people who generate BTF for kernels externally
-> > > > (e.g. for old kernels to support BPF CO-RE).
-> > > > 
-> > > > Introduce --btf_gen_all that allows using all BTF features supported
-> > > > by pahole.
-> > > > 
-> > > > [1] 
-> > > > https://lore.kernel.org/dwarves/CAEf4Bzbyugfb2RkBkRuxNGKwSk40Tbq4zAvhQT8W=fVMYWuaxA@mail.gmail.com/
-> > > 
-> > > Applied locally, testing ongoing.
-> > > 
-> > > Also added this:
-> > > 
-> > > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> > > 
-> > > - Arnaldo
-> > 
-> > [...]
-> > 
-> > Hi Arnaldo,
-> > 
-> > I'd like to ping this patch (and
-> > https://lore.kernel.org/dwarves/20210310201550.170599-1-iii@linux.ibm.com/
-> > too).
-> 
-> So I finally finished testing, pushing out now.
+The ia64_mf() macro defined in tools/arch/ia64/include/asm/barrier.h
+is already defined in <asm/gcc_intrin.h> on ia64 which causes libbpf
+failing to build:
 
-Please check what is in
-https://git.kernel.org/pub/scm/devel/pahole/pahole.git/, I'm having some
-problems with 2FA on github, will fix soon.
+  CC       /usr/src/linux/tools/bpf/bpftool//libbpf/staticobjs/libbpf.o
+In file included from /usr/src/linux/tools/include/asm/barrier.h:24,
+                 from /usr/src/linux/tools/include/linux/ring_buffer.h:4,
+                 from libbpf.c:37:
+/usr/src/linux/tools/include/asm/../../arch/ia64/include/asm/barrier.h:43: error: "ia64_mf" redefined [-Werror]
+   43 | #define ia64_mf()       asm volatile ("mf" ::: "memory")
+      |
+In file included from /usr/include/ia64-linux-gnu/asm/intrinsics.h:20,
+                 from /usr/include/ia64-linux-gnu/asm/swab.h:11,
+                 from /usr/include/linux/swab.h:8,
+                 from /usr/include/linux/byteorder/little_endian.h:13,
+                 from /usr/include/ia64-linux-gnu/asm/byteorder.h:5,
+                 from /usr/src/linux/tools/include/uapi/linux/perf_event.h:20,
+                 from libbpf.c:36:
+/usr/include/ia64-linux-gnu/asm/gcc_intrin.h:382: note: this is the location of the previous definition
+  382 | #define ia64_mf() __asm__ volatile ("mf" ::: "memory")
+      |
+cc1: all warnings being treated as errors
 
-- Arnaldo
+Thus, remove the definition from tools/arch/ia64/include/asm/barrier.h.
+
+Signed-off-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+---
+ tools/arch/ia64/include/asm/barrier.h | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/tools/arch/ia64/include/asm/barrier.h b/tools/arch/ia64/include/asm/barrier.h
+index 4d471d9511a5..6fffe5682713 100644
+--- a/tools/arch/ia64/include/asm/barrier.h
++++ b/tools/arch/ia64/include/asm/barrier.h
+@@ -39,9 +39,6 @@
+  * sequential memory pages only.
+  */
+ 
+-/* XXX From arch/ia64/include/uapi/asm/gcc_intrin.h */
+-#define ia64_mf()       asm volatile ("mf" ::: "memory")
+-
+ #define mb()		ia64_mf()
+ #define rmb()		mb()
+ #define wmb()		mb()
+-- 
+2.31.0
+
