@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0780346717
+	by mail.lfdr.de (Postfix) with ESMTP id D00DB346716
 	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 19:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230480AbhCWSBb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 14:01:31 -0400
+        id S231217AbhCWSBe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 14:01:34 -0400
 Received: from outpost19.zedat.fu-berlin.de ([130.133.4.112]:45571 "EHLO
         outpost19.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231217AbhCWSBD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Mar 2021 14:01:03 -0400
+        by vger.kernel.org with ESMTP id S231210AbhCWSBC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Mar 2021 14:01:02 -0400
 Received: from relay1.zedat.fu-berlin.de ([130.133.4.67])
           by outpost.zedat.fu-berlin.de (Exim 4.94)
           with esmtps (TLS1.2)
           tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lOlFf-00217c-3X; Tue, 23 Mar 2021 18:55:35 +0100
+          id 1lOlHZ-0021Z4-9t; Tue, 23 Mar 2021 18:57:33 +0100
 Received: from mx.physik.fu-berlin.de ([160.45.64.218])
           by relay1.zedat.fu-berlin.de (Exim 4.94)
           with esmtps (TLS1.2)
           tls TLS_DHE_RSA_WITH_AES_128_CBC_SHA
           (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1lOlFf-003u4O-0G; Tue, 23 Mar 2021 18:55:35 +0100
+          id 1lOlHZ-003uVz-71; Tue, 23 Mar 2021 18:57:33 +0100
 Received: from epyc.physik.fu-berlin.de ([160.45.64.180])
         by mx.physik.fu-berlin.de with esmtps (TLS1.2:RSA_AES_256_CBC_SHA1:256)
         (Exim 4.80)
         (envelope-from <glaubitz@physik.fu-berlin.de>)
-        id 1lOlFQ-0000GW-Vz; Tue, 23 Mar 2021 18:55:20 +0100
+        id 1lOlHL-0000Im-PI; Tue, 23 Mar 2021 18:57:19 +0100
 Received: from glaubitz by epyc.physik.fu-berlin.de with local (Exim 4.94 #2 (Debian))
-        id 1lOlFQ-003aAf-Mz; Tue, 23 Mar 2021 18:55:20 +0100
+        id 1lOlHL-003aHA-GE; Tue, 23 Mar 2021 18:57:19 +0100
 From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Alexei Starovoitov <ast@kernel.org>,
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         Masahiro Yamada <yamada.masahiro@socionext.com>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org
 Subject: [PATCH] tools: Remove ia64-specific errno.h inclusion from errno.h header
-Date:   Tue, 23 Mar 2021 18:55:11 +0100
-Message-Id: <20210323175513.853947-1-glaubitz@physik.fu-berlin.de>
+Date:   Tue, 23 Mar 2021 18:57:08 +0100
+Message-Id: <20210323175710.854352-1-glaubitz@physik.fu-berlin.de>
 X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 X-Originating-IP: 160.45.64.218
-X-ZEDAT-Hint: VR
-To:     unlisted-recipients:; (no To-header on input)
+X-ZEDAT-Hint: RV
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
