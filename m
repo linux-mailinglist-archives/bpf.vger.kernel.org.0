@@ -2,74 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A9A3454C1
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 02:15:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 292A53454F7
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 02:25:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbhCWBOd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Mar 2021 21:14:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbhCWBOA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Mar 2021 21:14:00 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA43AC061574
-        for <bpf@vger.kernel.org>; Mon, 22 Mar 2021 18:13:59 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id d12so15241822oiw.12
-        for <bpf@vger.kernel.org>; Mon, 22 Mar 2021 18:13:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=A29CwwqUKHL76Wx+CRIrbXSzmgWCuFaZdlpD/Ff3P1s=;
-        b=iOfs470Ha71nGGuW70QQennU76bARfLmfqQDQovfIq9v+Yy1p+JGqDyamXKeR7e04e
-         s+R954xH76pe0e9XmZ2wGKOoMsmpmaG+ZxwLzU7UIcLqyKhsEitYj0dfdLpcIy614Hkg
-         DDjjmk3JqwqGCxPEBcBshmjTmlUjvsur2BoVgBXhUzC3l39z+HUvUH2g+C0/QwjpnVa6
-         93tozAeydv8XUpUkB5KUjqalrtKteFX+bWUvFk18EwalJWidd4ljJGYb1r9XKYmUDEhP
-         mEtS+zjQ0m8W7koeA7ppRAYV9oVUiUP/PcJp4R5A9fpQ10lYh8jGFB5/wNzDuF8/l0Ah
-         +t1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=A29CwwqUKHL76Wx+CRIrbXSzmgWCuFaZdlpD/Ff3P1s=;
-        b=giZhjoTGsrqFZ/3xctWUf27OZrk/0luY1yT0jLThALt+kqWQYwf3qyQBfH+GOLovNX
-         hLhlunWvHAKw+pEWSihonBLLGSPpmOjvZb+Ahy8AZDSqQM5kjxh8nhEpVXUnFxXr7S4F
-         DaBS48kuxEvg6/N4v2jEyNu7wyD5OWHSRt0u4gcnJq2rZ+XSmVM1f4xKGbpflzOv4EbT
-         Sed463sP6uMyiDnRIX2H9rVmCKKhCI5IvkehkJh7w3xHh+aQ8k8DQr3Upgb0rB22yy1N
-         /Yf9XLGqT5TWxu+eYzekftcDpX/8EMFIllJDukdB+Bs48U3XF8SReHJJIcQ3seeqCwgI
-         Irew==
-X-Gm-Message-State: AOAM530+JwsiLkgpe7Jeslxoa/0FMiRluoh/nOSDA5J132vVdPsut2IU
-        JCQ3aZF4ZxT5hfb4ojl0wY7yoIqrBlyfE2D7OCw=
-X-Google-Smtp-Source: ABdhPJzY/ksmLJDxr32HUIAec6oidTliLblDhLeNHIApUFp/i5/P/8XdoWx5Vu3nQcdBRovyqKn1/6tP6s0AOBXX4VI=
-X-Received: by 2002:aca:d442:: with SMTP id l63mr1411344oig.49.1616462039043;
- Mon, 22 Mar 2021 18:13:59 -0700 (PDT)
+        id S231289AbhCWBZ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Mar 2021 21:25:28 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5108 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231351AbhCWBZE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Mar 2021 21:25:04 -0400
+Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4F4DC31PgWzYN8w;
+        Tue, 23 Mar 2021 09:23:11 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ DGGEML404-HUB.china.huawei.com (10.3.17.39) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 23 Mar 2021 09:24:59 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Tue, 23 Mar
+ 2021 09:24:59 +0800
+Subject: Re: [Patch bpf-next v6 02/12] skmsg: introduce a spinlock to protect
+ ingress_msg
+To:     Cong Wang <xiyou.wangcong@gmail.com>, <netdev@vger.kernel.org>
+CC:     <bpf@vger.kernel.org>, <duanxiongchun@bytedance.com>,
+        <wangdongdong.6@bytedance.com>, <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        "Jakub Sitnicki" <jakub@cloudflare.com>
+References: <20210323003808.16074-1-xiyou.wangcong@gmail.com>
+ <20210323003808.16074-3-xiyou.wangcong@gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <93f9be88-2803-93cd-df6b-43f494c0f67d@huawei.com>
+Date:   Tue, 23 Mar 2021 09:24:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Reply-To: kanerichmonn01@gmail.com
-Sender: modibosidibe1@gmail.com
-Received: by 2002:a05:6839:19d0:0:0:0:0 with HTTP; Mon, 22 Mar 2021 18:13:58
- -0700 (PDT)
-From:   Kane Richmond <kanerichmonn01@gmail.com>
-Date:   Tue, 23 Mar 2021 01:13:58 +0000
-X-Google-Sender-Auth: 4NiiHwbS-CEi-sPtWkp_MBiCQaU
-Message-ID: <CAPGs3KC5hu48uZWQnD5ibsZUkGKi=XmMMbtvVamhk+R=4=VSbQ@mail.gmail.com>
-Subject: Greetings
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210323003808.16074-3-xiyou.wangcong@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I am Mr.Kane, I work as an accountant in a bank, i need your urgent
-assistance, from my section in the bank i discovered an abandoned sum
-of $11.6million dollars that belongs to one of our foreign customer
-who died along with his supposed next of kin since July 22, 2003. I
-need your co-operation in transferring the fund into your private bank
-account.
+On 2021/3/23 8:37, Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+> 
+> Currently we rely on lock_sock to protect ingress_msg,
+> it is too big for this, we can actually just use a spinlock
+> to protect this list like protecting other skb queues.
+> 
+> __tcp_bpf_recvmsg() is still special because of peeking,
+> it still has to use lock_sock.
+> 
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+>  include/linux/skmsg.h | 46 +++++++++++++++++++++++++++++++++++++++++++
+>  net/core/skmsg.c      |  3 +++
+>  net/ipv4/tcp_bpf.c    | 18 ++++++-----------
+>  3 files changed, 55 insertions(+), 12 deletions(-)
+> 
+> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+> index 6c09d94be2e9..f2d45a73b2b2 100644
+> --- a/include/linux/skmsg.h
+> +++ b/include/linux/skmsg.h
+> @@ -89,6 +89,7 @@ struct sk_psock {
+>  #endif
+>  	struct sk_buff_head		ingress_skb;
+>  	struct list_head		ingress_msg;
+> +	spinlock_t			ingress_lock;
+>  	unsigned long			state;
+>  	struct list_head		link;
+>  	spinlock_t			link_lock;
+> @@ -284,7 +285,45 @@ static inline struct sk_psock *sk_psock(const struct sock *sk)
+>  static inline void sk_psock_queue_msg(struct sk_psock *psock,
+>  				      struct sk_msg *msg)
+>  {
+> +	spin_lock_bh(&psock->ingress_lock);
+>  	list_add_tail(&msg->list, &psock->ingress_msg);
+> +	spin_unlock_bh(&psock->ingress_lock);
+> +}
+> +
+> +static inline struct sk_msg *sk_psock_dequeue_msg(struct sk_psock *psock)
+> +{
+> +	struct sk_msg *msg;
+> +
+> +	spin_lock_bh(&psock->ingress_lock);
+> +	msg = list_first_entry_or_null(&psock->ingress_msg, struct sk_msg, list);
+> +	if (msg)
+> +		list_del(&msg->list);
+> +	spin_unlock_bh(&psock->ingress_lock);
+> +	return msg;
+> +}
+> +
+> +static inline struct sk_msg *sk_psock_peek_msg(struct sk_psock *psock)
+> +{
+> +	struct sk_msg *msg;
+> +
+> +	spin_lock_bh(&psock->ingress_lock);
+> +	msg = list_first_entry_or_null(&psock->ingress_msg, struct sk_msg, list);
+> +	spin_unlock_bh(&psock->ingress_lock);
+> +	return msg;
+> +}
+> +
+> +static inline struct sk_msg *sk_psock_next_msg(struct sk_psock *psock,
+> +					       struct sk_msg *msg)
+> +{
+> +	struct sk_msg *ret;
 
-I want the bank to release the money to you as the relative and the
-next of kin to our deceased customer, the Banking laws here does not
-allow such money to stay more than 20years,because the money will be
-recalled to the Bank treasury account as unclaimed fund.Once the funds
-have been transferred to your nominated bank account we shall then
-share in the ratio of 60% for me and 40% for you by indicating your
-interest i will send you the full details on how the transaction will
-be executed.
+Nit:
+Use msg instead of ret to be consistently with sk_psock_dequeue_msg()
+and sk_psock_next_msg().
+
+> +
+> +	spin_lock_bh(&psock->ingress_lock);
+> +	if (list_is_last(&msg->list, &psock->ingress_msg))
+> +		ret = NULL;
+> +	else
+> +		ret = list_next_entry(msg, list);
+> +	spin_unlock_bh(&psock->ingress_lock);
+> +	return ret;
+>  }
+
+
