@@ -2,78 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2113453AA
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 01:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A80B3453EF
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 01:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhCWANR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Mar 2021 20:13:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230467AbhCWAMv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Mar 2021 20:12:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2ACE619B4
-        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 00:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616458371;
-        bh=ibxP5zDfP0TkJs2Ee1icHqmU6VKbjo5/lQBVOUSDdT4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=J/iCtVhZ9ZNXoD3jRx5Uxe4n/uiKeuLrlLEMpk58g2M/HIjEPMJ001yfM+VpViskX
-         +XNLY41Jkbp06QSq4F/dWEqOhVBAvSnSEm6yY1zFBOto7ceeX2zjOrGjZM8TxKZMm4
-         JMWen4oDQwltTfxKm8lUn8fcC0cS3lkUGsk9+lq8Dp1J90RD2xTJtu3aPSyOCB9sSm
-         DqI6BX3VClOVa490KIxfg80M09EeijbhhcT3hJhVOBGkkhhvh875huYBGyydYrkvS1
-         pUFvbEFfcPs857yeF0k8mhKuZiBYARlrfMNErC6Q+Fv0jHFVo0IjWrM0tng+ae61Ig
-         JrATbp7sf9myw==
-Received: by mail-lj1-f182.google.com with SMTP id f16so23376935ljm.1
-        for <bpf@vger.kernel.org>; Mon, 22 Mar 2021 17:12:50 -0700 (PDT)
-X-Gm-Message-State: AOAM532ocvQXjk3bukSCagosQsOg13MrBEEBqxfsinbnGBSLNoZpHBRa
-        +Msyt24V3rIjvKVCM7TxXdK2+E1pVo+n8tc05Zn4kQ==
-X-Google-Smtp-Source: ABdhPJyTWQjBsJRBm75XW+kB699yiYvgjrWxto3SuRfdIVITfc5vc7vvVcU/+ycxvrzp4T6ZflDs0HL16finwKKwnsE=
-X-Received: by 2002:a2e:9b99:: with SMTP id z25mr1295319lji.103.1616458368851;
- Mon, 22 Mar 2021 17:12:48 -0700 (PDT)
+        id S231134AbhCWAiq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Mar 2021 20:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230370AbhCWAiR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Mar 2021 20:38:17 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09FDC061574;
+        Mon, 22 Mar 2021 17:38:16 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id g15so12735351qkl.4;
+        Mon, 22 Mar 2021 17:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j0l3UDDtGFHNkD6IYRkDjJ0krZ8dRBWc03AIt+HCrGg=;
+        b=Z2UT0Nlb713SEneo0E52pmZ+CwiL+dgyhxEKvdnI1mvfPNEz1499mwWv9yz4APBCj/
+         0daGzLxgdCGZV2XL2N8P+JK9j7ML1BhYLmrr2JQLm4S+3YzGeYkQmT8vX0jhwyGymvQZ
+         63B24pOrxvN7CWeJz0pLiJAp74ToNhbipwaczOs929qyldLeYn1j7h/EE3dET1HcQ7e3
+         1gqFrfmQaIzLZxuosIHOW7T/TEFmtcWDzgOyQw6l5nzPTHcd9ivB/Jt+04El/LXFBx1V
+         VCcI/E9lOc4Z1ATqyykwJm2r9xUzxhKArWOiDMbGK8Qdinidy0liS+rfiRB1UhKqM4Ze
+         Ez5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j0l3UDDtGFHNkD6IYRkDjJ0krZ8dRBWc03AIt+HCrGg=;
+        b=kNyTlX7fc3fLih65grJ5y96JpAoqUZiSO8Xa+MNGCENu11oH8AQoChA+GFwboCVKaL
+         sUuJZGneDKla//7sKIceKnKk1wrAYrA1WAi9gFc4hbfI9ghayfnonNLuK8JJP5OCTl2k
+         eFUFZ1TLxDkvuqYwPPYKCBEikSsESXKr1meewR60BIZBp/Dyk++1l8nguBpZhF9tbGyP
+         5FfpA8e2/VWWMTuFCpKNRLQQheS7ef0bvUJMop6kbrNa/bob6LPnoYTgJHbhN0HKBX+3
+         g3x/U+ukKavZBcv/4+1DDV8qyVxI6IGvLTl8+uD15aeOm/Lejw4Zd9tFqqxDY79//Xdp
+         5a8w==
+X-Gm-Message-State: AOAM530XbeXiKaKH93J1RX8ONZAwvOXnvS5dqJC8vSgVu2Oowz7+CKMY
+        uJ9b1gUaSD6ZV75OSKan/9lX/hVMImBgkQ==
+X-Google-Smtp-Source: ABdhPJxiI6BquXuD+S9HX4QGMaRg7b3keb3+x+i2eyWzrswRsL/lsKFUiLH+VeTvu+5w82YFPLENgA==
+X-Received: by 2002:a05:620a:22b5:: with SMTP id p21mr3026178qkh.196.1616459895730;
+        Mon, 22 Mar 2021 17:38:15 -0700 (PDT)
+Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:fda6:6522:f108:7bd8])
+        by smtp.gmail.com with ESMTPSA id 184sm12356403qki.97.2021.03.22.17.38.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 17:38:15 -0700 (PDT)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
+        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
+        Cong Wang <cong.wang@bytedance.com>
+Subject: [Patch bpf-next v6 00/12] sockmap: introduce BPF_SK_SKB_VERDICT and support UDP
+Date:   Mon, 22 Mar 2021 17:37:56 -0700
+Message-Id: <20210323003808.16074-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210322215201.1097281-1-arnd@kernel.org>
-In-Reply-To: <20210322215201.1097281-1-arnd@kernel.org>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 23 Mar 2021 01:12:38 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ4KzWbBmCp-ar-amezqUngaoszNLUnPYDc=dXD9VtQBsg@mail.gmail.com>
-Message-ID: <CACYkzJ4KzWbBmCp-ar-amezqUngaoszNLUnPYDc=dXD9VtQBsg@mail.gmail.com>
-Subject: Re: [PATCH] bpf: avoid old-style declaration warnings
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Mikko Ylinen <mikko.ylinen@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 10:52 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> gcc -Wextra wants type modifiers in the normal order:
->
-> kernel/bpf/bpf_lsm.c:70:1: error: 'static' is not at beginning of declaration [-Werror=old-style-declaration]
->    70 | const static struct bpf_func_proto bpf_bprm_opts_set_proto = {
->       | ^~~~~
-> kernel/bpf/bpf_lsm.c:91:1: error: 'static' is not at beginning of declaration [-Werror=old-style-declaration]
->    91 | const static struct bpf_func_proto bpf_ima_inode_hash_proto = {
->       | ^~~~~
->
-> Fixes: 3f6719c7b62f ("bpf: Add bpf_bprm_opts_set helper")
-> Fixes: 27672f0d280a ("bpf: Add a BPF helper for getting the IMA hash of an inode")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+From: Cong Wang <cong.wang@bytedance.com>
 
-Thanks for fixing!
+We have thousands of services connected to a daemon on every host
+via AF_UNIX dgram sockets, after they are moved into VM, we have to
+add a proxy to forward these communications from VM to host, because
+rewriting thousands of them is not practical. This proxy uses an
+AF_UNIX socket connected to services and a UDP socket to connect to
+the host. It is inefficient because data is copied between kernel
+space and user space twice, and we can not use splice() which only
+supports TCP. Therefore, we want to use sockmap to do the splicing
+without going to user-space at all (after the initial setup).
 
-Acked-by: KP Singh <kpsingh@kernel.org>
+Currently sockmap only fully supports TCP, UDP is partially supported
+as it is only allowed to add into sockmap. This patchset, as the second
+part of the original large patchset, extends sockmap with:
+1) cross-protocol support with BPF_SK_SKB_VERDICT; 2) full UDP support.
+
+On the high level, ->read_sock() is required for each protocol to support
+sockmap redirection, and in order to do sock proto update, a new ops
+->psock_update_sk_prot() is introduced, which is also required. And the
+BPF ->recvmsg() is also needed to replace the original ->recvmsg() to
+retrieve skmsg. To make life easier, we have to get rid of lock_sock()
+in sk_psock_handle_skb(), otherwise we would have to implement
+->sendmsg_locked() on top of ->sendmsg(), which is ugly.
+
+Please see each patch for more details.
+
+To see the big picture, the original patchset is available here:
+https://github.com/congwang/linux/tree/sockmap
+this patchset is also available:
+https://github.com/congwang/linux/tree/sockmap2
+
+---
+v6: get rid of sk_psock_zap_ingress()
+    add rcu work patch
+
+v5: use INDIRECT_CALL_2() for function pointers
+    use ingress_lock to fix a race condition found by Jacub
+    rename two helper functions
+
+v4: get rid of lock_sock() in sk_psock_handle_skb()
+    get rid of udp_sendmsg_locked()
+    remove an empty line
+    update cover letter
+
+v3: export tcp/udp_update_proto()
+    rename sk->sk_prot->psock_update_sk_prot()
+    improve changelogs
+
+v2: separate from the original large patchset
+    rebase to the latest bpf-next
+    split UDP test case
+    move inet_csk_has_ulp() check to tcp_bpf.c
+    clean up udp_read_sock()
+
+Cong Wang (12):
+  skmsg: lock ingress_skb when purging
+  skmsg: introduce a spinlock to protect ingress_msg
+  skmsg: introduce skb_send_sock() for sock_map
+  skmsg: avoid lock_sock() in sk_psock_backlog()
+  skmsg: use rcu work for destroying psock
+  sock_map: introduce BPF_SK_SKB_VERDICT
+  sock: introduce sk->sk_prot->psock_update_sk_prot()
+  udp: implement ->read_sock() for sockmap
+  skmsg: extract __tcp_bpf_recvmsg() and tcp_bpf_wait_data()
+  udp: implement udp_bpf_recvmsg() for sockmap
+  sock_map: update sock type checks for UDP
+  selftests/bpf: add a test case for udp sockmap
+
+ include/linux/skbuff.h                        |   1 +
+ include/linux/skmsg.h                         |  76 ++++++--
+ include/net/sock.h                            |   3 +
+ include/net/tcp.h                             |   3 +-
+ include/net/udp.h                             |   3 +
+ include/uapi/linux/bpf.h                      |   1 +
+ kernel/bpf/syscall.c                          |   1 +
+ net/core/skbuff.c                             |  55 +++++-
+ net/core/skmsg.c                              | 176 ++++++++++++++----
+ net/core/sock_map.c                           |  53 +++---
+ net/ipv4/af_inet.c                            |   1 +
+ net/ipv4/tcp_bpf.c                            | 130 +++----------
+ net/ipv4/tcp_ipv4.c                           |   3 +
+ net/ipv4/udp.c                                |  38 ++++
+ net/ipv4/udp_bpf.c                            |  79 +++++++-
+ net/ipv6/af_inet6.c                           |   1 +
+ net/ipv6/tcp_ipv6.c                           |   3 +
+ net/ipv6/udp.c                                |   3 +
+ net/tls/tls_sw.c                              |   4 +-
+ tools/bpf/bpftool/common.c                    |   1 +
+ tools/bpf/bpftool/prog.c                      |   1 +
+ tools/include/uapi/linux/bpf.h                |   1 +
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 140 ++++++++++++++
+ .../selftests/bpf/progs/test_sockmap_listen.c |  22 +++
+ 24 files changed, 601 insertions(+), 198 deletions(-)
+
+-- 
+2.25.1
+
