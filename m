@@ -2,175 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41F034551B
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 02:48:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3873455B4
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 03:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbhCWBsW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Mar 2021 21:48:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231152AbhCWBr7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Mar 2021 21:47:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A74A619A9;
-        Tue, 23 Mar 2021 01:47:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616464077;
-        bh=w2XzDLfdA1U+ze7ABxuhGs5tGvh3m52+UeeDQh1GyNM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DcPkUmKKB9U3rqKlN0Mgy5hVCPSSSQM4ka5fhESvaJW0dtbeZq3fH4tMAIlJCi0if
-         wXFIsSGzMjWzjCRItHkvZvUVP3aaa7lltYCPIyR9+p/c+vfnsCy0s5CZTW+QB5UAMD
-         ik/6q60DURpQ3ar9Nd7FfFPQowD98e3+LCj87iQtDNGx+J0WZ+GEORIJsv1J514XA2
-         +9yy+qWpnz2fPtIY5kE9aOKjV23UE7cBEquR38liQJmh/bNnlNk7tx6tnwaqWs5qJQ
-         vuz60YLy+Q2fzBj5t22K77qoLdPm5/uhZUu/zGnJoqeyxgxTKhjWY20Lks2Mn2Z6Cz
-         +EJAgG3jpdk/Q==
-From:   KP Singh <kpsingh@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S229866AbhCWCuC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Mar 2021 22:50:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229494AbhCWCti (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Mar 2021 22:49:38 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C70A8C061574;
+        Mon, 22 Mar 2021 19:49:36 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id g15so12756841pfq.3;
+        Mon, 22 Mar 2021 19:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=qLL8u5RSXlub/wH8MDjMwEUdn29GdY6zDkOzgBhcmM8=;
+        b=e6eJITmSA7f+krGA6GYWV+FebWY2FScfRNz2CdKLYScWisVUw5CtpkC0gPCYyv33R4
+         06rwpmtMSCUw4Ixj9x6NngBxk2s8CTFs+w/ABMXSbWpajG7Rkr/uiyqifrxc/aF7hJg6
+         1ksaqWn9f+/p3t70QhohHvY5T5JYRL/Af2XXhOKWysk/BdBosIh28pk+zfd0am8lXR9V
+         MCQmMQs/Di37wlQPRbcK9aKDoG46ErNIV+FViUr0M4leOSjL9h2re1TFLfUO+ixjYDiL
+         dbo41F8pAen1ytzok1xtsmFDvkvryZ5X4ZQLJzKbCFVjfNsJciltgXnWD7bugTVanECb
+         orMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=qLL8u5RSXlub/wH8MDjMwEUdn29GdY6zDkOzgBhcmM8=;
+        b=kDbb5rhBmvP3lwoGpVrNuVDb/N+IkWduW/JlH/E6xotukiKcMiJMOek0l5fUSKwahR
+         hDSA8UnCJqUf7fe3M7uqet48moe8MBKmAjOuLbbSx46J4iWLpgONF0nJHP4GpMT4zyEm
+         m2IUGkCFuG3JmGHkm6XeDvRwrDlF6Zu3GO31tN1mTh34pcO1S2NyL2BcA4t7kc7Q0qOX
+         khLLu7R8jDhZ+Shu4GoUVN5sLHOrg5zqtxE7XgQI3J3fnHBkkGMWJMT2gRQmVfrYCI+9
+         R1oYX0NiJd/lUZ2lAxNNnPsJDkRaTYoPUOmQLFpzl2IQlANc2B8sRsWy9VMxwMU17SQZ
+         v+jw==
+X-Gm-Message-State: AOAM530PxIzzbQoVYK64ZlR+YZU7fodyxv2me7gIMETDTyuZ0McMS2GB
+        FbVzL7HxpUwMnIERzMZIMlo=
+X-Google-Smtp-Source: ABdhPJxZnXmNSgKqUTdnPPFB0+aT9tb/9hccz1qSl82B4/gydZYPw99Jh9P0fbkwK54g7WUGMGf3VA==
+X-Received: by 2002:a63:1026:: with SMTP id f38mr2185821pgl.142.1616467776370;
+        Mon, 22 Mar 2021 19:49:36 -0700 (PDT)
+Received: from Leo-laptop-t470s ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 144sm5483383pfy.75.2021.03.22.19.49.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Mar 2021 19:49:35 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 10:49:23 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: [PATCH v2 bpf-next] selftests/bpf: Add an option for a debug shell in vmtest.sh
-Date:   Tue, 23 Mar 2021 01:47:52 +0000
-Message-Id: <20210323014752.3198283-1-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.31.0.rc2.261.g7f71774620-goog
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        bjorn@kernel.org
+Subject: Re: [PATCHv2 bpf-next 2/4] xdp: extend xdp_redirect_map with
+ broadcast support
+Message-ID: <20210323024923.GD2900@Leo-laptop-t470s>
+References: <20210309101321.2138655-1-liuhangbin@gmail.com>
+ <20210309101321.2138655-3-liuhangbin@gmail.com>
+ <87r1kec7ih.fsf@toke.dk>
+ <20210318035200.GB2900@Leo-laptop-t470s>
+ <875z1oczng.fsf@toke.dk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <875z1oczng.fsf@toke.dk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The newly introduced -s command line option starts an interactive shell.
-If a command is specified, the shell is started after the command
-finishes executing. It's useful to have a shell especially when
-debugging failing tests or developing new tests.
+On Thu, Mar 18, 2021 at 03:19:47PM +0100, Toke Høiland-Jørgensen wrote:
+> Hangbin Liu <liuhangbin@gmail.com> writes:
+> 
+> > On Wed, Mar 17, 2021 at 01:03:02PM +0100, Toke Høiland-Jørgensen wrote:
+> >> FYI, this no longer applies to bpf-next due to Björn's refactor in
+> >> commit: ee75aef23afe ("bpf, xdp: Restructure redirect actions")
+> >
+> > Thanks Toke, I need to see how to get the map via map_id, does
+> > bpf_map_get_curr_or_next() works? Should I call bpf_map_put() after
+> > using?
+> 
+> I would expect that to be terrible for performance; I think it would be
+> better to just add back the map pointer into struct bpf_redirect_info.
+> If you only set the map pointer when the multicast flag is set, you can
+> just check that pointer to disambiguate between when you need to call
+> dev_map_enqueue() and dev_map_enqueue_multi(), in which case you don't
+> need to add back the flags member...
 
-Since the user may terminate the VM forcefully, an extra "sync" is added
-after the execution of the command to persist any logs from the command
-into the log file.
+There are 2 flags, BROADCAST and EXCLUDE_INGRESS. There is no way
+to only check the map pointer and ignore flags..
 
-Signed-off-by: KP Singh <kpsingh@kernel.org>
----
- tools/testing/selftests/bpf/vmtest.sh | 39 +++++++++++++++++++--------
- 1 file changed, 28 insertions(+), 11 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
-index 22554894db99..8889b3f55236 100755
---- a/tools/testing/selftests/bpf/vmtest.sh
-+++ b/tools/testing/selftests/bpf/vmtest.sh
-@@ -24,15 +24,15 @@ EXIT_STATUS_FILE="${LOG_FILE_BASE}.exit_status"
- usage()
- {
- 	cat <<EOF
--Usage: $0 [-i] [-d <output_dir>] -- [<command>]
-+Usage: $0 [-i] [-s] [-d <output_dir>] -- [<command>]
- 
- <command> is the command you would normally run when you are in
- tools/testing/selftests/bpf. e.g:
- 
- 	$0 -- ./test_progs -t test_lsm
- 
--If no command is specified, "${DEFAULT_COMMAND}" will be run by
--default.
-+If no command is specified and a debug shell (-s) is not requested,
-+"${DEFAULT_COMMAND}" will be run by default.
- 
- If you build your kernel using KBUILD_OUTPUT= or O= options, these
- can be passed as environment variables to the script:
-@@ -49,6 +49,9 @@ Options:
- 	-d)		Update the output directory (default: ${OUTPUT_DIR})
- 	-j)		Number of jobs for compilation, similar to -j in make
- 			(default: ${NUM_COMPILE_JOBS})
-+	-s)		Instead of powering off the VM, start an interactive
-+			shell. If <command> is specified, the shell runs after
-+			the command finishes executing
- EOF
- }
- 
-@@ -149,6 +152,7 @@ update_init_script()
- 	local init_script_dir="${OUTPUT_DIR}/${MOUNT_DIR}/etc/rcS.d"
- 	local init_script="${init_script_dir}/S50-startup"
- 	local command="$1"
-+	local exit_command="$2"
- 
- 	mount_image
- 
-@@ -162,9 +166,10 @@ EOF
- 
- 	fi
- 
--	sudo bash -c "cat >${init_script}" <<EOF
--#!/bin/bash
-+	sudo bash -c "echo '#!/bin/bash' > ${init_script}"
- 
-+	if [[ "${command}" != "" ]]; then
-+		sudo bash -c "cat >>${init_script}" <<EOF
- # Have a default value in the exit status file
- # incase the VM is forcefully stopped.
- echo "130" > "/root/${EXIT_STATUS_FILE}"
-@@ -175,9 +180,12 @@ echo "130" > "/root/${EXIT_STATUS_FILE}"
- 	stdbuf -oL -eL ${command}
- 	echo "\$?" > "/root/${EXIT_STATUS_FILE}"
- } 2>&1 | tee "/root/${LOG_FILE}"
--poweroff -f
-+# Ensure that the logs are written to disk
-+sync
- EOF
-+	fi
- 
-+	sudo bash -c "echo ${exit_command} >> ${init_script}"
- 	sudo chmod a+x "${init_script}"
- 	unmount_image
- }
-@@ -277,8 +285,10 @@ main()
- 	local kernel_bzimage="${kernel_checkout}/${X86_BZIMAGE}"
- 	local command="${DEFAULT_COMMAND}"
- 	local update_image="no"
-+	local exit_command="poweroff -f"
-+	local debug_shell="no"
- 
--	while getopts 'hkid:j:' opt; do
-+	while getopts 'hskid:j:' opt; do
- 		case ${opt} in
- 		i)
- 			update_image="yes"
-@@ -289,6 +299,11 @@ main()
- 		j)
- 			NUM_COMPILE_JOBS="$OPTARG"
- 			;;
-+		s)
-+			command=""
-+			debug_shell="yes"
-+			exit_command="bash"
-+			;;
- 		h)
- 			usage
- 			exit 0
-@@ -307,7 +322,7 @@ main()
- 	done
- 	shift $((OPTIND -1))
- 
--	if [[ $# -eq 0 ]]; then
-+	if [[ $# -eq 0  && "${debug_shell}" == "no" ]]; then
- 		echo "No command specified, will run ${DEFAULT_COMMAND} in the vm"
- 	else
- 		command="$@"
-@@ -355,10 +370,12 @@ main()
- 	fi
- 
- 	update_selftests "${kernel_checkout}" "${make_command}"
--	update_init_script "${command}"
-+	update_init_script "${command}" "${exit_command}"
- 	run_vm "${kernel_bzimage}"
--	copy_logs
--	echo "Logs saved in ${OUTPUT_DIR}/${LOG_FILE}"
-+	if [[ "${command}" != "" ]]; then
-+		copy_logs
-+		echo "Logs saved in ${OUTPUT_DIR}/${LOG_FILE}"
-+	fi
- }
- 
- catch()
--- 
-2.31.0.rc2.261.g7f71774620-goog
-
+Thanks
+Hangbin
