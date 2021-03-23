@@ -2,187 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE425345ECA
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 13:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D0C345FCB
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 14:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhCWM7Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 08:59:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231553AbhCWM7D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Mar 2021 08:59:03 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD62D619A9;
-        Tue, 23 Mar 2021 12:59:01 +0000 (UTC)
-Date:   Tue, 23 Mar 2021 08:59:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
-        paulmck@kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf] bpf: Fix fexit trampoline.
-Message-ID: <20210323085900.3bdc0002@gandalf.local.home>
-In-Reply-To: <YFjnlqeqbkST7oPb@krava>
-References: <20210316210007.38949-1-alexei.starovoitov@gmail.com>
-        <YFfXcqnksPsSe0Bv@krava>
-        <YFjEt42mrWejbzgJ@krava>
-        <YFjnlqeqbkST7oPb@krava>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231660AbhCWNhV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 09:37:21 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18270 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231630AbhCWNhK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Mar 2021 09:37:10 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NDXpMb103740;
+        Tue, 23 Mar 2021 09:36:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=2nCsYZl6MwFH575/1enaeYLLx6w+XoCcdYARCfc7zXE=;
+ b=c/owor4YoboOSDpCIO3xWXCepEXQtT/zb2Q3iIigTdu+GZQ0xwtLTFjdRvIKikUZkDmC
+ gX3Qvwzp4ZyqehHDO3ocTmLm/Za+aG8c/UaA3CLHqB89gak8OJTuIbuWk1AoESwh6jmq
+ uU71dUhAxornMBY1U2nI7JHCh5RrodZZBtRV0Szlh5Qzc0GkNP1q5eDL4RBXc6o/u964
+ duxIt/WEbMKp0bhwKtAmKalr8GOErs63A5v3n6wkbjBWrLJDTfq6vUKgZkR5mvqMj4m/
+ F9P+Qjs7lMS0V1KPnshkvtGiI7U5KF3INdxTaV33YdcoigE7PiYWBC6w6rRHj0MeDqgP Zw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37dx4b249w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 09:36:54 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12NDXquX103751;
+        Tue, 23 Mar 2021 09:36:54 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37dx4b248j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 09:36:54 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12NDWpF5010711;
+        Tue, 23 Mar 2021 13:36:51 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 37d9a6hred-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Mar 2021 13:36:51 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12NDaVG034865648
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Mar 2021 13:36:31 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C66D95205A;
+        Tue, 23 Mar 2021 13:36:48 +0000 (GMT)
+Received: from sig-9-145-31-74.uk.ibm.com (unknown [9.145.31.74])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 54F5D52059;
+        Tue, 23 Mar 2021 13:36:48 +0000 (GMT)
+Message-ID: <41d244ba53881fa99dda3d0a65c4a8cfb557a755.camel@linux.ibm.com>
+Subject: Re: [PATCH PING dwarves] btf: Add --btf_gen_all flag
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Date:   Tue, 23 Mar 2021 14:36:48 +0100
+In-Reply-To: <YEtvIvODFEQHgt8m@kernel.org>
+References: <20210312000808.175262-1-iii@linux.ibm.com>
+         <YEtvIvODFEQHgt8m@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-23_06:2021-03-22,2021-03-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ spamscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103230100
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 22 Mar 2021 19:53:10 +0100
-Jiri Olsa <jolsa@redhat.com> wrote:
-
-> On Mon, Mar 22, 2021 at 05:24:26PM +0100, Jiri Olsa wrote:
-> > On Mon, Mar 22, 2021 at 12:32:05AM +0100, Jiri Olsa wrote:  
-> > > On Tue, Mar 16, 2021 at 02:00:07PM -0700, Alexei Starovoitov wrote:  
-> > > > From: Alexei Starovoitov <ast@kernel.org>
-> > > > 
-> > > > The fexit/fmod_ret programs can be attached to kernel functions that can sleep.
-> > > > The synchronize_rcu_tasks() will not wait for such tasks to complete.
-> > > > In such case the trampoline image will be freed and when the task
-> > > > wakes up the return IP will point to freed memory causing the crash.
-> > > > Solve this by adding percpu_ref_get/put for the duration of trampoline
-> > > > and separate trampoline vs its image life times.
-> > > > The "half page" optimization has to be removed, since
-> > > > first_half->second_half->first_half transition cannot be guaranteed to
-> > > > complete in deterministic time. Every trampoline update becomes a new image.
-> > > > The image with fmod_ret or fexit progs will be freed via percpu_ref_kill and
-> > > > call_rcu_tasks. Together they will wait for the original function and
-> > > > trampoline asm to complete. The trampoline is patched from nop to jmp to skip
-> > > > fexit progs. They are freed independently from the trampoline. The image with
-> > > > fentry progs only will be freed via call_rcu_tasks_trace+call_rcu_tasks which
-> > > > will wait for both sleepable and non-sleepable progs to complete.
-> > > > 
-> > > > Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > Fixes: fec56f5890d9 ("bpf: Introduce BPF trampoline")
-> > > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > > > Acked-by: Paul E. McKenney <paulmck@kernel.org>  # for RCU
-> > > > ---
-> > > > Without ftrace fix:
-> > > > https://patchwork.kernel.org/project/netdevbpf/patch/20210316195815.34714-1-alexei.starovoitov@gmail.com/
-> > > > this patch will trigger warn in ftrace.
-> > > > 
-> > > >  arch/x86/net/bpf_jit_comp.c |  26 ++++-
-> > > >  include/linux/bpf.h         |  24 +++-
-> > > >  kernel/bpf/bpf_struct_ops.c |   2 +-
-> > > >  kernel/bpf/core.c           |   4 +-
-> > > >  kernel/bpf/trampoline.c     | 218 +++++++++++++++++++++++++++---------
-> > > >  5 files changed, 213 insertions(+), 61 deletions(-)
-> > > >   
-> > > 
-> > > hi,
-> > > I'm on bpf/master and I'm triggering warnings below when running together:
-> > > 
-> > >   # while :; do ./test_progs -t fentry_test ; done
-> > >   # while :; do ./test_progs -t module_attach ; done  
+On Fri, 2021-03-12 at 10:39 -0300, Arnaldo Carvalho de Melo wrote:
+> Em Fri, Mar 12, 2021 at 01:08:08AM +0100, Ilya Leoshkevich escreveu:
+> > By default, pahole makes use only of BTF features introduced with
+> > kernel v5.2. Features that are added later need to be turned on with
+> > explicit feature flags, such as --btf_gen_floats. According to [1],
+> > this will hinder the people who generate BTF for kernels externally
+> > (e.g. for old kernels to support BPF CO-RE).
 > > 
-> > hum, is it possible that we don't take module ref and it can get
-> > unloaded even if there's trampoline attach to it..? I can't see
-> > that in the code.. ftrace_release_mod can't fail ;-)  
+> > Introduce --btf_gen_all that allows using all BTF features supported
+> > by pahole.
+> > 
+> > [1] 
+> > https://lore.kernel.org/dwarves/CAEf4Bzbyugfb2RkBkRuxNGKwSk40Tbq4zAvhQT8W=fVMYWuaxA@mail.gmail.com/
 > 
-> when I get the module for each module trampoline,
-> I can no longer see those warnings (link for Steven):
->   https://lore.kernel.org/bpf/YFfXcqnksPsSe0Bv@krava/
+> Applied locally, testing ongoing.
 > 
-> Steven,
-> I might be missing something, but it looks like module
-> can be unloaded even if the trampoline (direct function)
-> is registered in it.. is that right?
+> Also added this:
 > 
-
-Not with your patch below ;-)
-
-But yes, ftrace does not currently manage module text for direct calls,
-it's assumed that whoever attaches to the module text would do that. But
-I'm not adverse to the patch below.
-
--- Steve
-
-
-> thanks,
-> jirka
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 > 
+> - Arnaldo
+
+[...]
+
+Hi Arnaldo,
+
+I'd like to ping this patch (and
+https://lore.kernel.org/dwarves/20210310201550.170599-1-iii@linux.ibm.com/
+too).
+
+Best regards,
+Ilya
 > 
-> ---
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index b7e29db127fa..ab0b2c8df283 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -5059,6 +5059,28 @@ static struct ftrace_direct_func *ftrace_alloc_direct_func(unsigned long addr)
->  	return direct;
->  }
->  
-> +static struct module *ftrace_direct_module_get(unsigned long ip)
-> +{
-> +	struct module *mod;
-> +	int err = 0;
-> +
-> +	preempt_disable();
-> +	mod = __module_text_address(ip);
-> +	if (mod && !try_module_get(mod))
-> +		err = -ENOENT;
-> +	preempt_enable();
-> +	return err ? ERR_PTR(err) : mod;
-> +}
-> +
-> +static void ftrace_direct_module_put(unsigned long ip)
-> +{
-> +	struct module *mod;
-> +
-> +	mod = __module_text_address(ip);
-> +	if (mod)
-> +		module_put(mod);
-> +}
-> +
->  /**
->   * register_ftrace_direct - Call a custom trampoline directly
->   * @ip: The address of the nop at the beginning of a function
-> @@ -5081,6 +5103,7 @@ int register_ftrace_direct(unsigned long ip, unsigned long addr)
->  	struct ftrace_direct_func *direct;
->  	struct ftrace_func_entry *entry;
->  	struct ftrace_hash *free_hash = NULL;
-> +	struct module *mod = NULL;
->  	struct dyn_ftrace *rec;
->  	int ret = -EBUSY;
->  
-> @@ -5095,6 +5118,13 @@ int register_ftrace_direct(unsigned long ip, unsigned long addr)
->  	if (!rec)
->  		goto out_unlock;
->  
-> +	mod = ftrace_direct_module_get(ip);
-> +	if (IS_ERR(mod)) {
-> +		ret = -ENOENT;
-> +		mod = NULL;
-> +		goto out_unlock;
-> +	}
-> +
->  	/*
->  	 * Check if the rec says it has a direct call but we didn't
->  	 * find one earlier?
-> @@ -5172,6 +5202,8 @@ int register_ftrace_direct(unsigned long ip, unsigned long addr)
->   out_unlock:
->  	mutex_unlock(&direct_mutex);
->  
-> +	if (ret)
-> +		module_put(mod);
->  	if (free_hash) {
->  		synchronize_rcu_tasks();
->  		free_ftrace_hash(free_hash);
-> @@ -5242,6 +5274,8 @@ int unregister_ftrace_direct(unsigned long ip, unsigned long addr)
->  			ftrace_direct_func_count--;
->  		}
->  	}
-> +	ftrace_direct_module_put(ip);
-> +
->   out_unlock:
->  	mutex_unlock(&direct_mutex);
->  
 
