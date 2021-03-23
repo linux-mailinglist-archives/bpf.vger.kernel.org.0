@@ -2,252 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484C43455C2
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 03:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8EC34562A
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 04:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhCWCwN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Mar 2021 22:52:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39844 "EHLO
+        id S229508AbhCWDVr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Mar 2021 23:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229993AbhCWCv4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Mar 2021 22:51:56 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5BEC061574;
-        Mon, 22 Mar 2021 19:51:45 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id g20so12966959qkk.1;
-        Mon, 22 Mar 2021 19:51:45 -0700 (PDT)
+        with ESMTP id S229590AbhCWDVl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Mar 2021 23:21:41 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A76EC061574;
+        Mon, 22 Mar 2021 20:21:41 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id 11so12834439pfn.9;
+        Mon, 22 Mar 2021 20:21:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aXRkbPr5evH4vo/g8h5sz3BYjvs8YssE9s0+neI0mfM=;
-        b=sLoellt9v8ugioZgjloCW57uqmvQpkX5N68fYMQBim1adkY8rp52LO9FrxuZjxc/GF
-         MOSVOcFeJC9T8ounFkOCRklJhx5mTPT05AhWwNEH4HNDWzPXaOFwXoId+AcmjKyC8U35
-         aH+8aVwJS4T6VzUp1KZbyilfGxX3LZyFAIOMfo3JAqGbcu3obxTNQ5sKPcfEuZOZlVeV
-         mWLGCssRcItCK6AbZQSr5ZR98OA/WOCHivERRPzoSG6MWUFkCfbifHYkOJcxXALrchm2
-         u/gqyKt0APyFN16HGTnijfaI1FA1AxRuaAtNP6LHffinOIIAP3KUC3YjYgGbn+/pGGCb
-         AgZg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yZbUyZ8Yb8abcybiz2dwsAdjG3gi9bXidHbGwFp7ee0=;
+        b=YP6DJbYkpiW9kBZL14gufR7AraNfzEGpOS0hzAsddy5CvnNg5n6Tq9dw5lDtwsKi9+
+         c0F03hJzr75Pp96G78jx7njqnd6j5/LLyRXQTkCGS0sP+DcArcg8s/ekLTSphd58KJU2
+         7REAMokiOxwzbMT1v0aVdVOwe0xRh+H1s02ONu0MuFx7oklv/f9fv93IMGjcpqG7KrPf
+         l6Lj5LjWfxJKwVTPrfz4xEfqNPMK9JTTIqZcoJg5fxMlbALeq6DHj4ffDEcGlQrLOim5
+         Bedwhq4zV/Fi1X6pOyUajXWTZZcbWPDzkyRXO2xN4Bnh11hsTQD7jGGMln20QgXScPAL
+         UhmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aXRkbPr5evH4vo/g8h5sz3BYjvs8YssE9s0+neI0mfM=;
-        b=iPKr/dkjHKXBFYhCMtkXQXWiPb76iVvJh49nFQO0MyrOpgmJ8ddWVAWmjDxiW3m+XZ
-         u6YjcFwTSJtkL/oPm7sZcDoXmOZ4UUPQ6ZAlogGRWs6g8qgMicmNjoJlAvgZpg+y+ZUq
-         im2dJXEimo6A47KdiXyzo7ByKPYqlO+4LVeAyVscB+fp+Ic1SE7v7StCaadAMfSuR4De
-         TsnxTddYgRHzI8OQuH5QTqCyp9byFodmLIiP39Ps64gIbunSifEeOlkBIfKQHNIFGttL
-         8RMbEE2jOS8XlNhv1P0o7XkaBHTHex2dmC8V3CHzreTJcyprC49spqc9iRboqG/KtE4z
-         hA1g==
-X-Gm-Message-State: AOAM530pM/OiiDt5t1rrwJdYEa/JkZ2f+a3smlpmEXJOUUWFd7wyNvdF
-        rkcwjizJy69MrnvELm2zYZA=
-X-Google-Smtp-Source: ABdhPJxG99u8YAT+7kA3y9w1Ww1RgiU3DlfrhRnyw1CNtbCpSenq+mSDO/hV6O2RF13QPCS15+sSBA==
-X-Received: by 2002:a05:620a:791:: with SMTP id 17mr3443873qka.170.1616467904835;
-        Mon, 22 Mar 2021 19:51:44 -0700 (PDT)
-Received: from localhost.localdomain ([179.218.4.27])
-        by smtp.gmail.com with ESMTPSA id h13sm292265qtn.26.2021.03.22.19.51.40
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yZbUyZ8Yb8abcybiz2dwsAdjG3gi9bXidHbGwFp7ee0=;
+        b=TaGq8ZMOZnTuzO3X7sp3xzqvcw6wDE69TiLvtJsIZ7KxMQ0dXfNiyhlOVWuHTfkvTd
+         v4/6/P72gwfurjt9CECJo59JeSv6oeHIZonb2J+fUkCHkc5GJdpPOA7o0hLr6mphlIAD
+         bdfCs63YKe7mBTUrl1gRbXqkOEZSLVVbWNSpLR0EH8W1Tn/KZtqGxen49q7L59l6EEEp
+         54Dw56VqYd6z6z8EgoReI6gWdbzPMp4uaXoXJW5oOkZh2YJV/bUMM8mBlYOwtTMZR1bI
+         4PeX6shycE1t2jufr9Nh2tZQe4HT/DkgaazUXNTF9iJIL3lOmuzhw5barCvCPQ85DO8F
+         akUA==
+X-Gm-Message-State: AOAM5329EglmxXP/foe6sWpQgz7Ecwma1xNc9wBMcYdkXNJX8uTkXuLy
+        Or2/J3k3nwZA2Y32adi97hw=
+X-Google-Smtp-Source: ABdhPJyPHPoFPYpl4ko4gK0fPQmWpt/JCUXPQ8cNUcwL7QJTrYESQJvgfbw0oAIs+W3l3olhKlh3nw==
+X-Received: by 2002:a05:6a00:b47:b029:20d:1c65:75f0 with SMTP id p7-20020a056a000b47b029020d1c6575f0mr2751887pfo.9.1616469700761;
+        Mon, 22 Mar 2021 20:21:40 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:6970])
+        by smtp.gmail.com with ESMTPSA id 81sm8480960pfu.164.2021.03.22.20.21.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Mar 2021 19:51:44 -0700 (PDT)
-From:   Pedro Tammela <pctammela@gmail.com>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        Pedro Tammela <pctammela@mojatatu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v2 2/2] bpf: selftests: add tests for batched ops in LPM trie maps
-Date:   Mon, 22 Mar 2021 23:50:54 -0300
-Message-Id: <20210323025058.315763-3-pctammela@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210323025058.315763-1-pctammela@gmail.com>
-References: <20210323025058.315763-1-pctammela@gmail.com>
+        Mon, 22 Mar 2021 20:21:39 -0700 (PDT)
+Date:   Mon, 22 Mar 2021 20:21:37 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, yhs@fb.com, kpsingh@kernel.org,
+        jackmanb@chromium.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 2/5] bpf: Add a bpf_snprintf helper
+Message-ID: <20210323032137.yv23z25zjz45prvy@ast-mbp>
+References: <20210310220211.1454516-1-revest@chromium.org>
+ <20210310220211.1454516-3-revest@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210310220211.1454516-3-revest@chromium.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Pedro Tammela <pctammela@mojatatu.com>
+On Wed, Mar 10, 2021 at 11:02:08PM +0100, Florent Revest wrote:
+>  
+> +struct bpf_snprintf_buf {
+> +	char buf[MAX_SNPRINTF_MEMCPY][MAX_SNPRINTF_STR_LEN];
+> +};
+> +static DEFINE_PER_CPU(struct bpf_snprintf_buf, bpf_snprintf_buf);
+> +static DEFINE_PER_CPU(int, bpf_snprintf_buf_used);
+> +
+> +BPF_CALL_5(bpf_snprintf, char *, out, u32, out_size, char *, fmt, u64 *, args,
+> +	   u32, args_len)
+> +{
+> +	int err, i, buf_used, copy_size, fmt_cnt = 0, memcpy_cnt = 0;
+> +	u64 params[MAX_SNPRINTF_VARARGS];
+> +	struct bpf_snprintf_buf *bufs;
+> +
+> +	buf_used = this_cpu_inc_return(bpf_snprintf_buf_used);
+> +	if (WARN_ON_ONCE(buf_used > 1)) {
 
-Uses the already existing infrastructure for testing batched ops.
-The testing code is essentially the same, with minor tweaks for this use
-case.
+this can trigger only if the helper itself gets preempted and
+another bpf prog will run on the same cpu and will call into this helper
+again, right?
+If so, how about adding preempt_disable here to avoid this case?
+It won't prevent the case where kprobe is inside snprintf core,
+so the counter is still needed, but it wouldn't trigger by accident.
+Also since bufs are not used always, how about grabbing the
+buffers only when %p or %s are seen in fmt?
+After snprintf() is done it would conditionally do:
+if (bufs_were_used) {
+   this_cpu_dec(bpf_snprintf_buf_used);
+   preempt_enable();
+}
+This way simple bpf_snprintf won't ever hit EBUSY.
 
-Suggested-by: Jamal Hadi Salim <jhs@mojatatu.com>
-Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
----
- .../map_tests/lpm_trie_map_batch_ops.c (new)  | 158 ++++++++++++++++++
- 1 file changed, 158 insertions(+)
+> +		err = -EBUSY;
+> +		goto out;
+> +	}
+> +
+> +	bufs = this_cpu_ptr(&bpf_snprintf_buf);
+> +
+> +	/*
+> +	 * The verifier has already done most of the heavy-work for us in
+> +	 * check_bpf_snprintf_call. We know that fmt is well formatted and that
+> +	 * args_len is valid. The only task left is to convert some of the
+> +	 * arguments. For the %s and %pi* specifiers, we need to read buffers
+> +	 * from a kernel address during the helper call.
+> +	 */
+> +	for (i = 0; fmt[i] != '\0'; i++) {
+> +		if (fmt[i] != '%')
+> +			continue;
+> +
+> +		if (fmt[i + 1] == '%') {
+> +			i++;
+> +			continue;
+> +		}
+> +
+> +		/* fmt[i] != 0 && fmt[last] == 0, so we can access fmt[i + 1] */
+> +		i++;
+> +
+> +		/* skip optional "[0 +-][num]" width formating field */
+> +		while (fmt[i] == '0' || fmt[i] == '+'  || fmt[i] == '-' ||
+> +		       fmt[i] == ' ')
+> +			i++;
+> +		if (fmt[i] >= '1' && fmt[i] <= '9') {
+> +			i++;
+> +			while (fmt[i] >= '0' && fmt[i] <= '9')
+> +				i++;
+> +		}
+> +
+> +		if (fmt[i] == 's') {
+> +			void *unsafe_ptr = (void *)(long)args[fmt_cnt];
+> +
+> +			err = strncpy_from_kernel_nofault(bufs->buf[memcpy_cnt],
+> +							  unsafe_ptr,
+> +							  MAX_SNPRINTF_STR_LEN);
+> +			if (err < 0)
+> +				bufs->buf[memcpy_cnt][0] = '\0';
+> +			params[fmt_cnt] = (u64)(long)bufs->buf[memcpy_cnt];
 
-diff --git a/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c
-new file mode 100644
-index 000000000000..2e986e5e4cac
---- /dev/null
-+++ b/tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c
-@@ -0,0 +1,158 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <arpa/inet.h>
-+#include <linux/bpf.h>
-+#include <netinet/in.h>
-+#include <stdio.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <stdlib.h>
-+
-+#include <bpf/bpf.h>
-+#include <bpf/libbpf.h>
-+
-+#include <test_maps.h>
-+
-+struct test_lpm_key {
-+	__u32 prefix;
-+	struct in_addr ipv4;
-+};
-+
-+static void map_batch_update(int map_fd, __u32 max_entries,
-+			     struct test_lpm_key *keys, int *values)
-+{
-+	__u32 i;
-+	int err;
-+	char buff[16] = { 0 };
-+	DECLARE_LIBBPF_OPTS(bpf_map_batch_opts, opts,
-+		.elem_flags = 0,
-+		.flags = 0,
-+	);
-+
-+	for (i = 0; i < max_entries; i++) {
-+		keys[i].prefix = 32;
-+		snprintf(buff, 16, "192.168.1.%d", i + 1);
-+		inet_pton(AF_INET, buff, &keys[i].ipv4);
-+		values[i] = i + 1;
-+	}
-+
-+	err = bpf_map_update_batch(map_fd, keys, values, &max_entries, &opts);
-+	CHECK(err, "bpf_map_update_batch()", "error:%s\n", strerror(errno));
-+}
-+
-+static void map_batch_verify(int *visited, __u32 max_entries,
-+			     struct test_lpm_key *keys, int *values)
-+{
-+	char buff[16] = { 0 };
-+	int lower_byte = 0;
-+	__u32 i;
-+
-+	memset(visited, 0, max_entries * sizeof(*visited));
-+	for (i = 0; i < max_entries; i++) {
-+		inet_ntop(AF_INET, &keys[i].ipv4, buff, 32);
-+		CHECK(sscanf(buff, "192.168.1.%d", &lower_byte) == EOF,
-+		      "sscanf()", "error: i %d\n", i);
-+		CHECK(lower_byte != values[i], "key/value checking",
-+		      "error: i %d key %s value %d\n", i, buff, values[i]);
-+		visited[i] = 1;
-+	}
-+	for (i = 0; i < max_entries; i++) {
-+		CHECK(visited[i] != 1, "visited checking",
-+		      "error: keys array at index %d missing\n", i);
-+	}
-+}
-+
-+void test_lpm_trie_map_batch_ops(void)
-+{
-+	struct bpf_create_map_attr xattr = {
-+		.name = "lpm_trie_map",
-+		.map_type = BPF_MAP_TYPE_LPM_TRIE,
-+		.key_size = sizeof(struct test_lpm_key),
-+		.value_size = sizeof(int),
-+		.map_flags = BPF_F_NO_PREALLOC,
-+	};
-+	struct test_lpm_key *keys, key;
-+	int map_fd, *values, *visited;
-+	__u32 step, count, total, total_success;
-+	const __u32 max_entries = 10;
-+	__u64 batch = 0;
-+	int err;
-+	DECLARE_LIBBPF_OPTS(bpf_map_batch_opts, opts,
-+		.elem_flags = 0,
-+		.flags = 0,
-+	);
-+
-+	xattr.max_entries = max_entries;
-+	map_fd = bpf_create_map_xattr(&xattr);
-+	CHECK(map_fd == -1, "bpf_create_map_xattr()", "error:%s\n",
-+	      strerror(errno));
-+
-+	keys = malloc(max_entries * sizeof(struct test_lpm_key));
-+	values = malloc(max_entries * sizeof(int));
-+	visited = malloc(max_entries * sizeof(int));
-+	CHECK(!keys || !values || !visited, "malloc()", "error:%s\n",
-+	      strerror(errno));
-+
-+	total_success = 0;
-+	for (step = 1; step < max_entries; step++) {
-+		map_batch_update(map_fd, max_entries, keys, values);
-+		map_batch_verify(visited, max_entries, keys, values);
-+		memset(keys, 0, max_entries * sizeof(*keys));
-+		memset(values, 0, max_entries * sizeof(*values));
-+		batch = 0;
-+		total = 0;
-+		/* iteratively lookup/delete elements with 'step'
-+		 * elements each.
-+		 */
-+		count = step;
-+		while (true) {
-+			err = bpf_map_lookup_batch(map_fd,
-+				total ? &batch : NULL, &batch,
-+				keys + total, values + total, &count, &opts);
-+
-+			CHECK((err && errno != ENOENT), "lookup with steps",
-+			      "error: %s\n", strerror(errno));
-+
-+			total += count;
-+			if (err)
-+				break;
-+		}
-+
-+		CHECK(total != max_entries, "lookup with steps",
-+		      "total = %u, max_entries = %u\n", total, max_entries);
-+
-+		map_batch_verify(visited, max_entries, keys, values);
-+
-+		total = 0;
-+		count = step;
-+		while (total < max_entries) {
-+			if (max_entries - total < step)
-+				count = max_entries - total;
-+			err = bpf_map_delete_batch(map_fd, keys + total, &count,
-+						   &opts);
-+			CHECK((err && errno != ENOENT), "delete batch",
-+			      "error: %s\n", strerror(errno));
-+			total += count;
-+			if (err)
-+				break;
-+		}
-+		CHECK(total != max_entries, "delete with steps",
-+		      "total = %u, max_entries = %u\n", total, max_entries);
-+
-+		/* check map is empty, errono == ENOENT */
-+		err = bpf_map_get_next_key(map_fd, NULL, &key);
-+		CHECK(!err || errno != ENOENT, "bpf_map_get_next_key()",
-+		      "error: %s\n", strerror(errno));
-+
-+		total_success++;
-+	}
-+
-+	CHECK(total_success == 0, "check total_success",
-+	      "unexpected failure\n");
-+
-+	printf("%s:PASS\n", __func__);
-+
-+	free(keys);
-+	free(values);
-+	free(visited);
-+}
--- 
-2.25.1
+how about:
+char buf[512]; instead?
+instead of memcpy_cnt++ remember how many bytes of the buf were used and
+copy next arg after that.
+The scratch space would be used more efficiently.
+The helper would potentially return ENOSPC if the first string printed via %s
+consumed most of the 512 space and the second string doesn't fit.
+But the verifier-time if (memcpy_cnt >= MAX_SNPRINTF_MEMCPY) can be removed.
+Ten small %s will work fine.
 
+We can allocate a page per-cpu when this helper is used by prog and free
+that page when all progs with bpf_snprintf are unloaded.
+But extra complexity is probably not worth it. I would start with 512 per-cpu.
+It's going to be enough for most users.
+
+Overall looks great. Cannot wait for v2 :)
