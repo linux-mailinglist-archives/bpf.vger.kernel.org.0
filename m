@@ -2,116 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D0C345FCB
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 14:37:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C543460F0
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 15:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbhCWNhV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 09:37:21 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18270 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231630AbhCWNhK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Mar 2021 09:37:10 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NDXpMb103740;
-        Tue, 23 Mar 2021 09:36:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=2nCsYZl6MwFH575/1enaeYLLx6w+XoCcdYARCfc7zXE=;
- b=c/owor4YoboOSDpCIO3xWXCepEXQtT/zb2Q3iIigTdu+GZQ0xwtLTFjdRvIKikUZkDmC
- gX3Qvwzp4ZyqehHDO3ocTmLm/Za+aG8c/UaA3CLHqB89gak8OJTuIbuWk1AoESwh6jmq
- uU71dUhAxornMBY1U2nI7JHCh5RrodZZBtRV0Szlh5Qzc0GkNP1q5eDL4RBXc6o/u964
- duxIt/WEbMKp0bhwKtAmKalr8GOErs63A5v3n6wkbjBWrLJDTfq6vUKgZkR5mvqMj4m/
- F9P+Qjs7lMS0V1KPnshkvtGiI7U5KF3INdxTaV33YdcoigE7PiYWBC6w6rRHj0MeDqgP Zw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37dx4b249w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 09:36:54 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12NDXquX103751;
-        Tue, 23 Mar 2021 09:36:54 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37dx4b248j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 09:36:54 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12NDWpF5010711;
-        Tue, 23 Mar 2021 13:36:51 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma05fra.de.ibm.com with ESMTP id 37d9a6hred-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Mar 2021 13:36:51 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12NDaVG034865648
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Mar 2021 13:36:31 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C66D95205A;
-        Tue, 23 Mar 2021 13:36:48 +0000 (GMT)
-Received: from sig-9-145-31-74.uk.ibm.com (unknown [9.145.31.74])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 54F5D52059;
-        Tue, 23 Mar 2021 13:36:48 +0000 (GMT)
-Message-ID: <41d244ba53881fa99dda3d0a65c4a8cfb557a755.camel@linux.ibm.com>
-Subject: Re: [PATCH PING dwarves] btf: Add --btf_gen_all flag
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Date:   Tue, 23 Mar 2021 14:36:48 +0100
-In-Reply-To: <YEtvIvODFEQHgt8m@kernel.org>
-References: <20210312000808.175262-1-iii@linux.ibm.com>
-         <YEtvIvODFEQHgt8m@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S231847AbhCWOFO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 10:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231876AbhCWOEo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Mar 2021 10:04:44 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82711C061763
+        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 07:04:43 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id x16so17776471iob.1
+        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 07:04:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L613jJK9Y9MQSdkmRsnN4WosDeNaUdNOetkIDZY3lwI=;
+        b=TiXZSfZU+6IfreDxKNDluvs38HvdeLiu1w7Rt9B0Ei66N4AcTqmKNTO3CZPl2MdWiB
+         HDFa5JomF9wLQMqxFaCoKpWzcVzrWgKE9nFd8r+7soWhjK9q3Xk5b8QJI9z2cD8jtpul
+         8pXir6584gdCxBTDwe8wACMwUGT/lN46pnBY0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L613jJK9Y9MQSdkmRsnN4WosDeNaUdNOetkIDZY3lwI=;
+        b=jEPxdYFJNnrosMZQ3uSYSXjhOL3tHBtcbWyIB5ysyZPWH5ILQgwWw6lvJRyW1cl4vQ
+         2s3kVG7tCm6X5dYtZQubbFTkghP1lf+4fhSyLFcIIdV4I1iI5WGZCAEk/Zo34tAC4dUJ
+         sXyw6Y7Kc9W/Bj8buKK7J7R5RFN8u/FSzHwmBW1a64AopRJLpVcMHnc/f8Gzt8wq4EFq
+         CvH3SFeQ7EkLbhSHkcomE4QlmPL+12aBqdDGl2k9b37PsV8SGKp/hTJo3240bX2UPnKc
+         bKz7jsNHgxc8SVo0NeFAwFzB/zkKufanuuvDOa8p1KKpTxuiBdjnBRZIRvwutVoToovs
+         Fq2g==
+X-Gm-Message-State: AOAM531dX52ilKP7+YSqlzz2CqFHFOQZJiFjQ3JBzK+mR9DPkZS2Ox51
+        pFslB5A3VxhKrtfsVwGLVY9k0natr1lvPcGNE6U0/w==
+X-Google-Smtp-Source: ABdhPJyHTz7xVPnY35PY5HzF/5/wSWhn1Yy5a8g5gQc/37Oy5qWnOzDyDGJ05pemYSkLGXafDr2TTl9PIp9txA4jfMw=
+X-Received: by 2002:a02:cb48:: with SMTP id k8mr4656643jap.52.1616508282929;
+ Tue, 23 Mar 2021 07:04:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-23_06:2021-03-22,2021-03-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- spamscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0
- adultscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103230100
+References: <20210310220211.1454516-1-revest@chromium.org> <20210310220211.1454516-3-revest@chromium.org>
+ <20210323032137.yv23z25zjz45prvy@ast-mbp>
+In-Reply-To: <20210323032137.yv23z25zjz45prvy@ast-mbp>
+From:   Florent Revest <revest@chromium.org>
+Date:   Tue, 23 Mar 2021 15:04:31 +0100
+Message-ID: <CABRcYmLPCVxuC7fYSygMQfNj5L5Ji=k3b8o88fxLxgOV_uYoNQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/5] bpf: Add a bpf_snprintf helper
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 2021-03-12 at 10:39 -0300, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Mar 12, 2021 at 01:08:08AM +0100, Ilya Leoshkevich escreveu:
-> > By default, pahole makes use only of BTF features introduced with
-> > kernel v5.2. Features that are added later need to be turned on with
-> > explicit feature flags, such as --btf_gen_floats. According to [1],
-> > this will hinder the people who generate BTF for kernels externally
-> > (e.g. for old kernels to support BPF CO-RE).
-> > 
-> > Introduce --btf_gen_all that allows using all BTF features supported
-> > by pahole.
-> > 
-> > [1] 
-> > https://lore.kernel.org/dwarves/CAEf4Bzbyugfb2RkBkRuxNGKwSk40Tbq4zAvhQT8W=fVMYWuaxA@mail.gmail.com/
-> 
-> Applied locally, testing ongoing.
-> 
-> Also added this:
-> 
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> 
-> - Arnaldo
+On Tue, Mar 23, 2021 at 4:21 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Mar 10, 2021 at 11:02:08PM +0100, Florent Revest wrote:
+> >
+> > +struct bpf_snprintf_buf {
+> > +     char buf[MAX_SNPRINTF_MEMCPY][MAX_SNPRINTF_STR_LEN];
+> > +};
+> > +static DEFINE_PER_CPU(struct bpf_snprintf_buf, bpf_snprintf_buf);
+> > +static DEFINE_PER_CPU(int, bpf_snprintf_buf_used);
+> > +
+> > +BPF_CALL_5(bpf_snprintf, char *, out, u32, out_size, char *, fmt, u64 *, args,
+> > +        u32, args_len)
+> > +{
+> > +     int err, i, buf_used, copy_size, fmt_cnt = 0, memcpy_cnt = 0;
+> > +     u64 params[MAX_SNPRINTF_VARARGS];
+> > +     struct bpf_snprintf_buf *bufs;
+> > +
+> > +     buf_used = this_cpu_inc_return(bpf_snprintf_buf_used);
+> > +     if (WARN_ON_ONCE(buf_used > 1)) {
+>
+> this can trigger only if the helper itself gets preempted and
+> another bpf prog will run on the same cpu and will call into this helper
+> again, right?
+> If so, how about adding preempt_disable here to avoid this case?
 
-[...]
+Ah, neat, that sounds like a good idea indeed. This was really just
+cargo-culted from bpf_seq_printf but as part of my grand unification
+attempt for the various printf-like helpers, I can try to make it use
+preempt_disable as well yes.
 
-Hi Arnaldo,
+> It won't prevent the case where kprobe is inside snprintf core,
+> so the counter is still needed, but it wouldn't trigger by accident.
 
-I'd like to ping this patch (and
-https://lore.kernel.org/dwarves/20210310201550.170599-1-iii@linux.ibm.com/
-too).
+Good point, I will keep it around then.
 
-Best regards,
-Ilya
-> 
+> Also since bufs are not used always, how about grabbing the
+> buffers only when %p or %s are seen in fmt?
+> After snprintf() is done it would conditionally do:
+> if (bufs_were_used) {
+>    this_cpu_dec(bpf_snprintf_buf_used);
+>    preempt_enable();
+> }
+> This way simple bpf_snprintf won't ever hit EBUSY.
 
+Absolutely, it would be nice. :)
+
+> > +             err = -EBUSY;
+> > +             goto out;
+> > +     }
+> > +
+> > +     bufs = this_cpu_ptr(&bpf_snprintf_buf);
+> > +
+> > +     /*
+> > +      * The verifier has already done most of the heavy-work for us in
+> > +      * check_bpf_snprintf_call. We know that fmt is well formatted and that
+> > +      * args_len is valid. The only task left is to convert some of the
+> > +      * arguments. For the %s and %pi* specifiers, we need to read buffers
+> > +      * from a kernel address during the helper call.
+> > +      */
+> > +     for (i = 0; fmt[i] != '\0'; i++) {
+> > +             if (fmt[i] != '%')
+> > +                     continue;
+> > +
+> > +             if (fmt[i + 1] == '%') {
+> > +                     i++;
+> > +                     continue;
+> > +             }
+> > +
+> > +             /* fmt[i] != 0 && fmt[last] == 0, so we can access fmt[i + 1] */
+> > +             i++;
+> > +
+> > +             /* skip optional "[0 +-][num]" width formating field */
+> > +             while (fmt[i] == '0' || fmt[i] == '+'  || fmt[i] == '-' ||
+> > +                    fmt[i] == ' ')
+> > +                     i++;
+> > +             if (fmt[i] >= '1' && fmt[i] <= '9') {
+> > +                     i++;
+> > +                     while (fmt[i] >= '0' && fmt[i] <= '9')
+> > +                             i++;
+> > +             }
+> > +
+> > +             if (fmt[i] == 's') {
+> > +                     void *unsafe_ptr = (void *)(long)args[fmt_cnt];
+> > +
+> > +                     err = strncpy_from_kernel_nofault(bufs->buf[memcpy_cnt],
+> > +                                                       unsafe_ptr,
+> > +                                                       MAX_SNPRINTF_STR_LEN);
+> > +                     if (err < 0)
+> > +                             bufs->buf[memcpy_cnt][0] = '\0';
+> > +                     params[fmt_cnt] = (u64)(long)bufs->buf[memcpy_cnt];
+>
+> how about:
+> char buf[512]; instead?
+> instead of memcpy_cnt++ remember how many bytes of the buf were used and
+> copy next arg after that.
+> The scratch space would be used more efficiently.
+> The helper would potentially return ENOSPC if the first string printed via %s
+> consumed most of the 512 space and the second string doesn't fit.
+> But the verifier-time if (memcpy_cnt >= MAX_SNPRINTF_MEMCPY) can be removed.
+> Ten small %s will work fine.
+
+Cool! That is also a good idea :)
+
+> We can allocate a page per-cpu when this helper is used by prog and free
+> that page when all progs with bpf_snprintf are unloaded.
+> But extra complexity is probably not worth it. I would start with 512 per-cpu.
+> It's going to be enough for most users.
+
+Yes, let's maybe keep that for later. I think there is already enough
+complexity going into the printf-like helpers unification patch.
+
+> Overall looks great. Cannot wait for v2 :)
+
+Ahah wait until you see that patch! :D
