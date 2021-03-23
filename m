@@ -2,350 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845F5345788
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 06:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F7A3457D3
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 07:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229437AbhCWFw0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 01:52:26 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:20014 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229452AbhCWFvw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Mar 2021 01:51:52 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 12N5ned6008800
-        for <bpf@vger.kernel.org>; Mon, 22 Mar 2021 22:51:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=Hka6YDGF7/tGicMX6KGaxm5yUgxisFD3DhJzfJHwPyY=;
- b=TmWxbwnMkTBnaz3v18Giufc4xs5+rzLM8lYNF9nhX7Jb3mhomqO+pZxROnWTR0cioN1g
- FrhaCEDFSdatLZ78Glnxb94ZOVnrwCQ7+7JyMG0bmnDxLi28eI88afJmSXiaN/5u73Mp
- hI11j38cwewDnbHZ5CRVBXPnPaN51EI9lhc= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 37dcj1n32u-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 22 Mar 2021 22:51:51 -0700
-Received: from intmgw001.05.ash9.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 22 Mar 2021 22:51:49 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 4FA159D875F; Mon, 22 Mar 2021 22:51:46 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>, Roman Gushchin <guro@fb.com>
-Subject: [PATCH bpf-next v4] bpf: fix NULL pointer dereference in bpf_get_local_storage() helper
-Date:   Mon, 22 Mar 2021 22:51:46 -0700
-Message-ID: <20210323055146.3334476-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S229933AbhCWGcY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 02:32:24 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:3377 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbhCWGb5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Mar 2021 02:31:57 -0400
+Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4F4M0N19v3z5gRJ;
+        Tue, 23 Mar 2021 14:29:24 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ DGGEML404-HUB.china.huawei.com (10.3.17.39) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 23 Mar 2021 14:31:53 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Tue, 23 Mar
+ 2021 14:31:53 +0800
+Subject: Re: [Patch bpf-next v6 08/12] udp: implement ->read_sock() for
+ sockmap
+To:     Cong Wang <xiyou.wangcong@gmail.com>, <netdev@vger.kernel.org>
+CC:     <bpf@vger.kernel.org>, <duanxiongchun@bytedance.com>,
+        <wangdongdong.6@bytedance.com>, <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+References: <20210323003808.16074-1-xiyou.wangcong@gmail.com>
+ <20210323003808.16074-9-xiyou.wangcong@gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <b510f1da-1442-5297-db95-e21ac8b71042@huawei.com>
+Date:   Tue, 23 Mar 2021 14:31:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-23_01:2021-03-22,2021-03-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 phishscore=0
- suspectscore=0 mlxlogscore=999 malwarescore=0 impostorscore=0 mlxscore=0
- spamscore=0 bulkscore=0 lowpriorityscore=0 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103230040
-X-FB-Internal: deliver
+In-Reply-To: <20210323003808.16074-9-xiyou.wangcong@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Jiri Olsa reported a bug ([1]) in kernel where cgroup local
-storage pointer may be NULL in bpf_get_local_storage() helper.
-There are two issues uncovered by this bug:
-  (1). kprobe or tracepoint prog incorrectly sets cgroup local storage
-       before prog run,
-  (2). due to change from preempt_disable to migrate_disable,
-       preemption is possible and percpu storage might be overwritten
-       by other tasks.
+On 2021/3/23 8:38, Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+> 
+> This is similar to tcp_read_sock(), except we do not need
+> to worry about connections, we just need to retrieve skb
+> from UDP receive queue.
+> 
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+>  include/net/udp.h   |  2 ++
+>  net/ipv4/af_inet.c  |  1 +
+>  net/ipv4/udp.c      | 35 +++++++++++++++++++++++++++++++++++
+>  net/ipv6/af_inet6.c |  1 +
+>  4 files changed, 39 insertions(+)
+> 
+> diff --git a/include/net/udp.h b/include/net/udp.h
+> index df7cc1edc200..347b62a753c3 100644
+> --- a/include/net/udp.h
+> +++ b/include/net/udp.h
+> @@ -329,6 +329,8 @@ struct sock *__udp6_lib_lookup(struct net *net,
+>  			       struct sk_buff *skb);
+>  struct sock *udp6_lib_lookup_skb(const struct sk_buff *skb,
+>  				 __be16 sport, __be16 dport);
+> +int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
+> +		  sk_read_actor_t recv_actor);
+>  
+>  /* UDP uses skb->dev_scratch to cache as much information as possible and avoid
+>   * possibly multiple cache miss on dequeue()
+> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+> index 1355e6c0d567..f17870ee558b 100644
+> --- a/net/ipv4/af_inet.c
+> +++ b/net/ipv4/af_inet.c
+> @@ -1070,6 +1070,7 @@ const struct proto_ops inet_dgram_ops = {
+>  	.setsockopt	   = sock_common_setsockopt,
+>  	.getsockopt	   = sock_common_getsockopt,
+>  	.sendmsg	   = inet_sendmsg,
+> +	.read_sock	   = udp_read_sock,
+>  	.recvmsg	   = inet_recvmsg,
+>  	.mmap		   = sock_no_mmap,
+>  	.sendpage	   = inet_sendpage,
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index 38952aaee3a1..a0adee3b1af4 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -1782,6 +1782,41 @@ struct sk_buff *__skb_recv_udp(struct sock *sk, unsigned int flags,
+>  }
+>  EXPORT_SYMBOL(__skb_recv_udp);
+>  
+> +int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
+> +		  sk_read_actor_t recv_actor)
+> +{
+> +	int copied = 0;
+> +
+> +	while (1) {
+> +		int offset = 0, err;
+> +		struct sk_buff *skb;
+> +
+> +		skb = __skb_recv_udp(sk, 0, 1, &offset, &err);
+> +		if (!skb)
+> +			break;
 
-This issue (1) is fixed in [2]. This patch tried to address issue (2).
-The following shows how things can go wrong:
-  task 1:   bpf_cgroup_storage_set() for percpu local storage
-         preemption happens
-  task 2:   bpf_cgroup_storage_set() for percpu local storage
-         preemption happens
-  task 1:   run bpf program
+Does above error handling need the below additional handling?
+It seems __skb_recv_udp() will return the error by parameter "err",
+if "copied == 0", does it need to return the error?
 
-task 1 will effectively use the percpu local storage setting by task 2
-which will be either NULL or incorrect ones.
+if (!skb) {
+	if (!copied)
+		copied = err;
 
-Instead of just one common local storage per cpu, this patch fixed
-the issue by permitting 8 local storages per cpu and each local
-storage is identified by a task_struct pointer. This way, we
-allow at most 8 nested preemption between bpf_cgroup_storage_set()
-and bpf_cgroup_storage_unset(). The percpu local storage slot
-is released (calling bpf_cgroup_storage_unset()) by the same task
-after bpf program finished running.
-bpf_test_run() is also fixed to use the new bpf_cgroup_storage_set()
-interface.
+	break;
+}
 
-The patch is tested on top of [2] with reproducer in [1].
-Without this patch, kernel will emit error in 2-3 minutes.
-With this patch, after one hour, still no error.
+> +		if (offset < skb->len) {
+> +			int used;
+> +			size_t len;
+> +
+> +			len = skb->len - offset;
+> +			used = recv_actor(desc, skb, offset, len);
+> +			if (used <= 0) {
+> +				if (!copied)
+> +					copied = used;
+> +				break;
 
- [1] https://lore.kernel.org/bpf/CAKH8qBuXCfUz=3Dw8L+Fj74OaUpbosO29niYwTki7=
-e3Ag044_aww@mail.gmail.com/T
- [2] https://lore.kernel.org/bpf/20210309185028.3763817-1-yhs@fb.com
+As here it seems handling the "copied == 0" error case.
 
-Cc: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Roman Gushchin <guro@fb.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- include/linux/bpf-cgroup.h | 57 ++++++++++++++++++++++++++++++++------
- include/linux/bpf.h        | 22 ++++++++++++---
- kernel/bpf/helpers.c       | 15 +++++++---
- kernel/bpf/local_storage.c |  5 ++--
- net/bpf/test_run.c         |  6 +++-
- 5 files changed, 86 insertions(+), 19 deletions(-)
-
-Changelogs:
-  v3 -> v4:
-    . fixed incorrect link [2] and added Roman's Ack.
-  v2 -> v3:
-    . merge two patches as bpf_test_run() will have compilation error
-      and may fail with other changes.
-    . rewrite bpf_cgroup_storage_set() to be more inline with kernel
-      coding style.
-  v1 -> v2:
-    . fix compilation issues when CONFIG_CGROUPS is off or
-      CONFIG_CGROUP_BPF is off.
-
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index c42e02b4d84b..6a29fe11485d 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -20,14 +20,25 @@ struct bpf_sock_ops_kern;
- struct bpf_cgroup_storage;
- struct ctl_table;
- struct ctl_table_header;
-+struct task_struct;
-=20
- #ifdef CONFIG_CGROUP_BPF
-=20
- extern struct static_key_false cgroup_bpf_enabled_key[MAX_BPF_ATTACH_TYPE];
- #define cgroup_bpf_enabled(type) static_branch_unlikely(&cgroup_bpf_enable=
-d_key[type])
-=20
--DECLARE_PER_CPU(struct bpf_cgroup_storage*,
--		bpf_cgroup_storage[MAX_BPF_CGROUP_STORAGE_TYPE]);
-+#define BPF_CGROUP_STORAGE_NEST_MAX	8
-+
-+struct bpf_cgroup_storage_info {
-+	struct task_struct *task;
-+	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE];
-+};
-+
-+/* For each cpu, permit maximum BPF_CGROUP_STORAGE_NEST_MAX number of tasks
-+ * to use bpf cgroup storage simultaneously.
-+ */
-+DECLARE_PER_CPU(struct bpf_cgroup_storage_info,
-+		bpf_cgroup_storage_info[BPF_CGROUP_STORAGE_NEST_MAX]);
-=20
- #define for_each_cgroup_storage_type(stype) \
- 	for (stype =3D 0; stype < MAX_BPF_CGROUP_STORAGE_TYPE; stype++)
-@@ -161,13 +172,42 @@ static inline enum bpf_cgroup_storage_type cgroup_sto=
-rage_type(
- 	return BPF_CGROUP_STORAGE_SHARED;
- }
-=20
--static inline void bpf_cgroup_storage_set(struct bpf_cgroup_storage
--					  *storage[MAX_BPF_CGROUP_STORAGE_TYPE])
-+static inline int bpf_cgroup_storage_set(struct bpf_cgroup_storage
-+					 *storage[MAX_BPF_CGROUP_STORAGE_TYPE])
- {
- 	enum bpf_cgroup_storage_type stype;
-+	int i, err =3D 0;
-+
-+	preempt_disable();
-+	for (i =3D 0; i < BPF_CGROUP_STORAGE_NEST_MAX; i++) {
-+		if (unlikely(this_cpu_read(bpf_cgroup_storage_info[i].task) !=3D NULL))
-+			continue;
-+
-+		this_cpu_write(bpf_cgroup_storage_info[i].task, current);
-+		for_each_cgroup_storage_type(stype)
-+			this_cpu_write(bpf_cgroup_storage_info[i].storage[stype],
-+				       storage[stype]);
-+		goto out;
-+	}
-+	err =3D -EBUSY;
-+	WARN_ON_ONCE(1);
-+
-+out:
-+	preempt_enable();
-+	return err;
-+}
-+
-+static inline void bpf_cgroup_storage_unset(void)
-+{
-+	int i;
-+
-+	for (i =3D 0; i < BPF_CGROUP_STORAGE_NEST_MAX; i++) {
-+		if (unlikely(this_cpu_read(bpf_cgroup_storage_info[i].task) !=3D current=
-))
-+			continue;
-=20
--	for_each_cgroup_storage_type(stype)
--		this_cpu_write(bpf_cgroup_storage[stype], storage[stype]);
-+		this_cpu_write(bpf_cgroup_storage_info[i].task, NULL);
-+		return;
-+	}
- }
-=20
- struct bpf_cgroup_storage *
-@@ -448,8 +488,9 @@ static inline int cgroup_bpf_prog_query(const union bpf=
-_attr *attr,
- 	return -EINVAL;
- }
-=20
--static inline void bpf_cgroup_storage_set(
--	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE]) {}
-+static inline int bpf_cgroup_storage_set(
-+	struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE]) { return=
- 0; }
-+static inline void bpf_cgroup_storage_unset(void) {}
- static inline int bpf_cgroup_storage_assign(struct bpf_prog_aux *aux,
- 					    struct bpf_map *map) { return 0; }
- static inline struct bpf_cgroup_storage *bpf_cgroup_storage_alloc(
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index a47285cd39c2..3a6ae69743ff 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1090,6 +1090,13 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_a=
-rray,
- /* BPF program asks to set CN on the packet. */
- #define BPF_RET_SET_CN						(1 << 0)
-=20
-+/* For BPF_PROG_RUN_ARRAY_FLAGS and __BPF_PROG_RUN_ARRAY,
-+ * if bpf_cgroup_storage_set() failed, the rest of programs
-+ * will not execute. This should be a really rare scenario
-+ * as it requires BPF_CGROUP_STORAGE_NEST_MAX number of
-+ * preemptions all between bpf_cgroup_storage_set() and
-+ * bpf_cgroup_storage_unset() on the same cpu.
-+ */
- #define BPF_PROG_RUN_ARRAY_FLAGS(array, ctx, func, ret_flags)		\
- 	({								\
- 		struct bpf_prog_array_item *_item;			\
-@@ -1102,10 +1109,12 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_=
-array,
- 		_array =3D rcu_dereference(array);			\
- 		_item =3D &_array->items[0];				\
- 		while ((_prog =3D READ_ONCE(_item->prog))) {		\
--			bpf_cgroup_storage_set(_item->cgroup_storage);	\
-+			if (unlikely(bpf_cgroup_storage_set(_item->cgroup_storage)))	\
-+				break;					\
- 			func_ret =3D func(_prog, ctx);			\
- 			_ret &=3D (func_ret & 1);				\
- 			*(ret_flags) |=3D (func_ret >> 1);			\
-+			bpf_cgroup_storage_unset();			\
- 			_item++;					\
- 		}							\
- 		rcu_read_unlock();					\
-@@ -1126,9 +1135,14 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_a=
-rray,
- 			goto _out;			\
- 		_item =3D &_array->items[0];		\
- 		while ((_prog =3D READ_ONCE(_item->prog))) {		\
--			if (set_cg_storage)		\
--				bpf_cgroup_storage_set(_item->cgroup_storage);	\
--			_ret &=3D func(_prog, ctx);	\
-+			if (!set_cg_storage) {			\
-+				_ret &=3D func(_prog, ctx);	\
-+			} else {				\
-+				if (unlikely(bpf_cgroup_storage_set(_item->cgroup_storage)))	\
-+					break;			\
-+				_ret &=3D func(_prog, ctx);	\
-+				bpf_cgroup_storage_unset();	\
-+			}				\
- 			_item++;			\
- 		}					\
- _out:							\
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 074800226327..f306611c4ddf 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -382,8 +382,8 @@ const struct bpf_func_proto bpf_get_current_ancestor_cg=
-roup_id_proto =3D {
- };
-=20
- #ifdef CONFIG_CGROUP_BPF
--DECLARE_PER_CPU(struct bpf_cgroup_storage*,
--		bpf_cgroup_storage[MAX_BPF_CGROUP_STORAGE_TYPE]);
-+DECLARE_PER_CPU(struct bpf_cgroup_storage_info,
-+		bpf_cgroup_storage_info[BPF_CGROUP_STORAGE_NEST_MAX]);
-=20
- BPF_CALL_2(bpf_get_local_storage, struct bpf_map *, map, u64, flags)
- {
-@@ -392,10 +392,17 @@ BPF_CALL_2(bpf_get_local_storage, struct bpf_map *, m=
-ap, u64, flags)
- 	 * verifier checks that its value is correct.
- 	 */
- 	enum bpf_cgroup_storage_type stype =3D cgroup_storage_type(map);
--	struct bpf_cgroup_storage *storage;
-+	struct bpf_cgroup_storage *storage =3D NULL;
- 	void *ptr;
-+	int i;
-=20
--	storage =3D this_cpu_read(bpf_cgroup_storage[stype]);
-+	for (i =3D 0; i < BPF_CGROUP_STORAGE_NEST_MAX; i++) {
-+		if (unlikely(this_cpu_read(bpf_cgroup_storage_info[i].task) !=3D current=
-))
-+			continue;
-+
-+		storage =3D this_cpu_read(bpf_cgroup_storage_info[i].storage[stype]);
-+		break;
-+	}
-=20
- 	if (stype =3D=3D BPF_CGROUP_STORAGE_SHARED)
- 		ptr =3D &READ_ONCE(storage->buf)->data[0];
-diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-index 2d4f9ac12377..bd11db9774c3 100644
---- a/kernel/bpf/local_storage.c
-+++ b/kernel/bpf/local_storage.c
-@@ -9,10 +9,11 @@
- #include <linux/slab.h>
- #include <uapi/linux/btf.h>
-=20
--DEFINE_PER_CPU(struct bpf_cgroup_storage*, bpf_cgroup_storage[MAX_BPF_CGRO=
-UP_STORAGE_TYPE]);
--
- #ifdef CONFIG_CGROUP_BPF
-=20
-+DEFINE_PER_CPU(struct bpf_cgroup_storage_info,
-+	       bpf_cgroup_storage_info[BPF_CGROUP_STORAGE_NEST_MAX]);
-+
- #include "../cgroup/cgroup-internal.h"
-=20
- #define LOCAL_STORAGE_CREATE_FLAG_MASK					\
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 0abdd67f44b1..4aabf71cd95d 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -106,12 +106,16 @@ static int bpf_test_run(struct bpf_prog *prog, void *=
-ctx, u32 repeat,
-=20
- 	bpf_test_timer_enter(&t);
- 	do {
--		bpf_cgroup_storage_set(storage);
-+		ret =3D bpf_cgroup_storage_set(storage);
-+		if (ret)
-+			break;
-=20
- 		if (xdp)
- 			*retval =3D bpf_prog_run_xdp(prog, ctx);
- 		else
- 			*retval =3D BPF_PROG_RUN(prog, ctx);
-+
-+		bpf_cgroup_storage_unset();
- 	} while (bpf_test_timer_continue(&t, repeat, &ret, time));
- 	bpf_test_timer_leave(&t);
-=20
---=20
-2.30.2
+> +			} else if (used <= len) {
+> +				copied += used;
+> +				offset += used;
+> +			}
+> +		}
+> +		if (!desc->count)
+> +			break;
+> +	}
+> +
+> +	return copied;
+> +}
+> +EXPORT_SYMBOL(udp_read_sock);
+> +
+>  /*
+>   * 	This should be easy, if there is something there we
+>   * 	return it, otherwise we block.
+> diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
+> index 802f5111805a..71de739b4a9e 100644
+> --- a/net/ipv6/af_inet6.c
+> +++ b/net/ipv6/af_inet6.c
+> @@ -714,6 +714,7 @@ const struct proto_ops inet6_dgram_ops = {
+>  	.getsockopt	   = sock_common_getsockopt,	/* ok		*/
+>  	.sendmsg	   = inet6_sendmsg,		/* retpoline's sake */
+>  	.recvmsg	   = inet6_recvmsg,		/* retpoline's sake */
+> +	.read_sock	   = udp_read_sock,
+>  	.mmap		   = sock_no_mmap,
+>  	.sendpage	   = sock_no_sendpage,
+>  	.set_peek_off	   = sk_set_peek_off,
+> 
 
