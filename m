@@ -2,176 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C543460F0
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 15:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E41673461E2
+	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 15:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231847AbhCWOFO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 10:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbhCWOEo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Mar 2021 10:04:44 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82711C061763
-        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 07:04:43 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id x16so17776471iob.1
-        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 07:04:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L613jJK9Y9MQSdkmRsnN4WosDeNaUdNOetkIDZY3lwI=;
-        b=TiXZSfZU+6IfreDxKNDluvs38HvdeLiu1w7Rt9B0Ei66N4AcTqmKNTO3CZPl2MdWiB
-         HDFa5JomF9wLQMqxFaCoKpWzcVzrWgKE9nFd8r+7soWhjK9q3Xk5b8QJI9z2cD8jtpul
-         8pXir6584gdCxBTDwe8wACMwUGT/lN46pnBY0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L613jJK9Y9MQSdkmRsnN4WosDeNaUdNOetkIDZY3lwI=;
-        b=jEPxdYFJNnrosMZQ3uSYSXjhOL3tHBtcbWyIB5ysyZPWH5ILQgwWw6lvJRyW1cl4vQ
-         2s3kVG7tCm6X5dYtZQubbFTkghP1lf+4fhSyLFcIIdV4I1iI5WGZCAEk/Zo34tAC4dUJ
-         sXyw6Y7Kc9W/Bj8buKK7J7R5RFN8u/FSzHwmBW1a64AopRJLpVcMHnc/f8Gzt8wq4EFq
-         CvH3SFeQ7EkLbhSHkcomE4QlmPL+12aBqdDGl2k9b37PsV8SGKp/hTJo3240bX2UPnKc
-         bKz7jsNHgxc8SVo0NeFAwFzB/zkKufanuuvDOa8p1KKpTxuiBdjnBRZIRvwutVoToovs
-         Fq2g==
-X-Gm-Message-State: AOAM531dX52ilKP7+YSqlzz2CqFHFOQZJiFjQ3JBzK+mR9DPkZS2Ox51
-        pFslB5A3VxhKrtfsVwGLVY9k0natr1lvPcGNE6U0/w==
-X-Google-Smtp-Source: ABdhPJyHTz7xVPnY35PY5HzF/5/wSWhn1Yy5a8g5gQc/37Oy5qWnOzDyDGJ05pemYSkLGXafDr2TTl9PIp9txA4jfMw=
-X-Received: by 2002:a02:cb48:: with SMTP id k8mr4656643jap.52.1616508282929;
- Tue, 23 Mar 2021 07:04:42 -0700 (PDT)
+        id S232314AbhCWOwO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 10:52:14 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:47846 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232394AbhCWOvv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Mar 2021 10:51:51 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12NEmvwb005305;
+        Tue, 23 Mar 2021 07:51:04 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=1eEB4VxhlfdMvPpZQF/AaFLvlmuJYDj+qE4SitByHuc=;
+ b=dTydPGG1F/6B4D1cVPAWcY5L3JsW0sFLOU5iYkjPEfmUNN7cNrnQXEFXE1YuiejyhP/1
+ +XtitsEDG2Ksa4YWKRRbgV2i6b/g75e5ls6rxiNgREc6OhNK5NlUUH2GGc0xRN0naDrD
+ xxqIXwc9RyrsPdSZB0huUtzCetBBZ8i34rc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 37e0rhm3c4-10
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 23 Mar 2021 07:51:04 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 23 Mar 2021 07:51:02 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UnKOd/9C1TmdQEeftawYXnQBU/8ACzkAP8SI36bs5SMKKB0Mqa8q9qZSRCP5+C72MupN4ieZLi4rqMRDepyHDr5Ncf2wly10S/6f7iYvtCEpfS0rkted+PJ4DyhuOWsDvQj8QvCJdQ4DNIOgYe8QdLEV0B3UHlmlQeoEg3E5BTk8r6iLIf0RRnDuRD6PKVF16PXqhEHBDCGuKrzfhQ3galLaJvpBZ2RjFPjr0MpIpG5KdyiNmDOWUwOUJn3QnaP18bv8xcC3pIyYBvRrmSP4qyCFTKb5rBeCWZ2//ddP/KJyoUMJcg+ttFfyATBnf4BOonDp12nXxUD5iGnPqSGuyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1eEB4VxhlfdMvPpZQF/AaFLvlmuJYDj+qE4SitByHuc=;
+ b=Vw1d+8KdhBWHZtCZ5Wn9jT+EyS3u9h6KwhlhPl1Ko0XWo1bw2ULYGSFV8vwBNjBhusw8ToHMC4GZWtlwz2kk4F4IUX42aMKnBuMieRWy1IC5PTjySNeyPcXLYL84mdB9tWzvHpL3MUawCsCZjKdJ9oa+CTu7NYtMdGACRwwH1jnwkEpQUSEu/9Kz32EAk0Cs29j23pvRsOqD1t2OuxpWnbFWcoc6zlE26MhQKBTOYwcIzoFoTtoh5w34TeIsVyjsKmgJXnuGCoQMBGzYdGtkaK75RJNHA1mluOiB4RBCp/5IUyLi+HHo4Um7fkeDLcSw+vyTFkmp35EsoIWiWZNFxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from DM6PR15MB3289.namprd15.prod.outlook.com (2603:10b6:5:165::25)
+ by DM6PR15MB3051.namprd15.prod.outlook.com (2603:10b6:5:141::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Tue, 23 Mar
+ 2021 14:51:00 +0000
+Received: from DM6PR15MB3289.namprd15.prod.outlook.com
+ ([fe80::f5c5:b681:9d22:70e8]) by DM6PR15MB3289.namprd15.prod.outlook.com
+ ([fe80::f5c5:b681:9d22:70e8%4]) with mapi id 15.20.3955.025; Tue, 23 Mar 2021
+ 14:51:00 +0000
+Subject: Re: [PATCH bpf] bpf: Fix fexit trampoline.
+To:     Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@redhat.com>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        <davem@davemloft.net>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <paulmck@kernel.org>, <bpf@vger.kernel.org>, <kernel-team@fb.com>
+References: <20210316210007.38949-1-alexei.starovoitov@gmail.com>
+ <YFfXcqnksPsSe0Bv@krava> <YFjEt42mrWejbzgJ@krava> <YFjnlqeqbkST7oPb@krava>
+ <20210323085900.3bdc0002@gandalf.local.home>
+From:   Alexei Starovoitov <ast@fb.com>
+Message-ID: <6d8ad633-b464-0a72-a310-2dda27dfeb99@fb.com>
+Date:   Tue, 23 Mar 2021 07:50:55 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
+In-Reply-To: <20210323085900.3bdc0002@gandalf.local.home>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+X-Originating-IP: [2620:10d:c090:400::5:7d9f]
+X-ClientProxiedBy: MW4PR03CA0193.namprd03.prod.outlook.com
+ (2603:10b6:303:b8::18) To DM6PR15MB3289.namprd15.prod.outlook.com
+ (2603:10b6:5:165::25)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:2103:c99:e09d:8a8f:94f0] (2620:10d:c090:400::5:7d9f) by MW4PR03CA0193.namprd03.prod.outlook.com (2603:10b6:303:b8::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18 via Frontend Transport; Tue, 23 Mar 2021 14:50:58 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4a590e90-1621-4db9-b8bb-08d8ee0b12c0
+X-MS-TrafficTypeDiagnostic: DM6PR15MB3051:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR15MB30512FC37056B9EAEEA49FCED7649@DM6PR15MB3051.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CEJxrJOhzJc4JZ9jE03MB2op3iaaASaB9JhvYSClxwxAYBAun+UBuVd2/b2VjdBs15KJq1ZTC4du1fUACcFbKO0kkEEyiB49508EWBwo0nm6cWCG/yP0Rhu9JW7eQeAit++B6NmM7WaEpucVe98u2ftAtB6qwqeMrUup4K9mu31HWB9NIo3vKtDREG4zka4XG5evVHgStPvOXlPd6P7K50XG/vUcHMNAvbX72sQpFf3QoYgT6PVtOxOQeK1uVqdSJWe+6Y8zxJSnrS5qr0wGmxipG7e3e1Oz8JGg3MUONf4hq81NpFutsNhpr12Gm2iH8/89xw6IF5H/rgWlxOnb1jN97rpgiCkhEQIyvam86rkdl65VlrvGmRMPQfIGKgsJrHp3S3tlhAKi23BYW8zjaNRKMxDblR7XPhw9WOLcQHPld/sQRCnjWt9R8XEHsyw3DFkk+oD6hE/qgl/DPbRxgz0KV4Rdbt80qeX9sDYYMQK7eSIylT51tSMDUDiPn5gFcW17GJcRzsgQWfUovbr/cIVP7l2FPkfHgSAseiG9RMyF4MK7mNIZ9b4vPPDb3/xRrSJJkmCqWElWOxjNUurf60PKgn7h/F6FNZFdSLR1I3yj1r8cvSuR8Usb/gLrfUv6/UbEp5nNoO4e/RTc1jyv2m5KUzD0BYz2U4rMOU/4IujTTc64KNxnNoRzcKrzYXbS2BMuZvkSjVxZLLKDwwJLl9TncHI60Zw5aSXdM5skQdSTJA1URwDqFvMCX5K9FiLNFFgMOXtpWsJB9L2V14tmDR5lDF1S3t9c9xGEpxFPO4k=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR15MB3289.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(136003)(346002)(376002)(366004)(53546011)(966005)(478600001)(5660300002)(6486002)(52116002)(36756003)(16526019)(186003)(6666004)(38100700001)(4326008)(31686004)(110136005)(66946007)(66556008)(86362001)(31696002)(2616005)(8676002)(2906002)(66476007)(316002)(83380400001)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?S3dpdlJqeERYRlhSM2piQktpdTNRYnBqeHowcitaZFBuMUJ4enQwZE1Dd2xl?=
+ =?utf-8?B?RUwxdnk1UEFtTjFaMjNkcEROTmZFNk56UHphUDJydTRHWW9iYjZhQU9GTG5h?=
+ =?utf-8?B?b3JhZ3BzcDY0bmZkLy95dVdQWmFYbTloRmtyd2NPQUVnSnRLb2czLzBUWmhr?=
+ =?utf-8?B?bVVCNmhBaTBJVFh3TUxqR2xHMGZRK2x3Ry9uTnRLMXNUZ2lUUWswRm81bXBm?=
+ =?utf-8?B?OTZQWnNMbU5EM0N2czNValR0MHlaRjRCMXFVaXROVktmNUtPc1pvK1l6bG02?=
+ =?utf-8?B?RTE3QWdoYTVoV1MrVkhiczBxN0xkZ1RXaHNvanBka05ldjRSbmFSN2oxMnBU?=
+ =?utf-8?B?eEIxdExFaFpjQ0k3VkNpb0Q3eUhmVFVpNURHclBZeTJUQU1SVHI1VXQ5cVU4?=
+ =?utf-8?B?bXhYS3FlWGN6Y04yZ1hWeXJBbWhLRFNQUzZRclZvZFpmT2Yyd2EvdVZwQ3dK?=
+ =?utf-8?B?TW90K2RBNkFzRmEzVW1RbVAzMjkxbWIrTW9MR3Iya2Q3VmRFbGVSQUFQWjRj?=
+ =?utf-8?B?clJ3ODAvNEduaWtYWTZ5Y2YxL3pFN0o2LzFYMFovUkNCcDROQU0zc3l6dDZr?=
+ =?utf-8?B?OFVha2ZyOXUrLzJQOGVoa1N0dWU1czVQWWd4R1ZndWlPUW54R2FCZ2dtbFRK?=
+ =?utf-8?B?eG4vblYvVGJabGNrN1FhZWw0Vzd0amhmTmdQa1V6MFVscjlWSGhFSnpCYUho?=
+ =?utf-8?B?Y3U4RlJieGdSMkR0cEhPL1NiSk0xdnFHKzUwVG1nWkpINXc1Znc3T3Y4MjA1?=
+ =?utf-8?B?dFhyc1hPV2tEbDZQckRGTFZiM1VHdVFKT2JydmR2V1Fad1pielBLK2RZUnBq?=
+ =?utf-8?B?YytaSDNaQWFmTzRPZitJWjR5eFRZWnV5UmoxRUx0eUZRajdjUTFMSy9TREow?=
+ =?utf-8?B?M3p3SGJESDMzSmo0THhkWEhGRUVxS0wwR2NWeGZpSG1mSmZvY2xxU00xVzc0?=
+ =?utf-8?B?K1gwRm9CZkV0U1VzWWgzRzNPL2h6ekhmemNSMEhIK2sxYXVja2QwRkJadnZO?=
+ =?utf-8?B?bU85R1pmTmEzSkh6Q3hpRmdNYkR5Nk9rT2htV25jS1U3UHgxcXVITndGMTdT?=
+ =?utf-8?B?d20xZG5uV2hrb2k1WmJQcmc5NVVSNWRIUTlOdDRnb0FITDZyTmJtSlV4aktY?=
+ =?utf-8?B?TCttS3Y0d3MrWDZXZTVMM3c2K0ZpSE41di9uZjZoZ1VFNUc2MnU4Y3hLem9o?=
+ =?utf-8?B?bEN5Qy9ZNm56ZUpmUS9CbVZtRkR4RDBNemJRamRUb090UkNzOHhtRElXaEhR?=
+ =?utf-8?B?V2RQbnlVNDdlSUlVNXdrWUtnMytESmM3a25GdXRETWV0WDFzdVhMREJ0TDUz?=
+ =?utf-8?B?WFM2QUhQSUtrazNCOVBhWjZ0TmxsZU5ValdXT1pnU2xaKyt6V2NFUEorbGdk?=
+ =?utf-8?B?WXpGY3R1ekNPUm1ybjdaR2d3VXlESktuRUtuVmZsaEtQekFCd0RERVpkV3Zv?=
+ =?utf-8?B?OWJyR0Z1SkJETHhzNlpYZk8wdTdiRDY2R21seUpzOTFuNEZMYlp1TjlNQVJW?=
+ =?utf-8?B?Smgzb0xGTnlkN2p3Nmd5ZGxJc3FIOUN1NjJ2VHRHWVpMWjI2a01uWVh5bGFV?=
+ =?utf-8?B?VHlvNkZDd21NRUNmMVhjc296bHZYRitvMUVua1dXeDNFcks1UEYvcE56QmxR?=
+ =?utf-8?B?MjcvNFBuVG1tcVljMWx3U21pUjBvdG9UM0ZTcVAvZ3FjMHpXTmVMU0dGdzMv?=
+ =?utf-8?B?Qm8rVTlnNFVsZG81Tkh5clNrbWlWQ0k3ZWI2bHZIRzJGMEErQWdaMTk1QjNY?=
+ =?utf-8?B?ZHZDSis2VXpJRS9qZDNrMmNCUXVLTE5zbWNaL0pvUndsQ3lvbktMMmRnZzFL?=
+ =?utf-8?B?UmRwemVwY0lkOHphdU8rUT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a590e90-1621-4db9-b8bb-08d8ee0b12c0
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR15MB3289.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Mar 2021 14:51:00.3084
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZGhM/OOi+hBRyFbPzExQzrKtDmIIUcKewDF89CB12n2Oz6l5/CbxK8yDkV6LG3MR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3051
+X-OriginatorOrg: fb.com
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210310220211.1454516-1-revest@chromium.org> <20210310220211.1454516-3-revest@chromium.org>
- <20210323032137.yv23z25zjz45prvy@ast-mbp>
-In-Reply-To: <20210323032137.yv23z25zjz45prvy@ast-mbp>
-From:   Florent Revest <revest@chromium.org>
-Date:   Tue, 23 Mar 2021 15:04:31 +0100
-Message-ID: <CABRcYmLPCVxuC7fYSygMQfNj5L5Ji=k3b8o88fxLxgOV_uYoNQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/5] bpf: Add a bpf_snprintf helper
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-23_07:2021-03-22,2021-03-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 spamscore=0
+ impostorscore=0 lowpriorityscore=0 phishscore=0 priorityscore=1501
+ clxscore=1011 mlxlogscore=999 suspectscore=0 adultscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103230110
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 4:21 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Mar 10, 2021 at 11:02:08PM +0100, Florent Revest wrote:
-> >
-> > +struct bpf_snprintf_buf {
-> > +     char buf[MAX_SNPRINTF_MEMCPY][MAX_SNPRINTF_STR_LEN];
-> > +};
-> > +static DEFINE_PER_CPU(struct bpf_snprintf_buf, bpf_snprintf_buf);
-> > +static DEFINE_PER_CPU(int, bpf_snprintf_buf_used);
-> > +
-> > +BPF_CALL_5(bpf_snprintf, char *, out, u32, out_size, char *, fmt, u64 *, args,
-> > +        u32, args_len)
-> > +{
-> > +     int err, i, buf_used, copy_size, fmt_cnt = 0, memcpy_cnt = 0;
-> > +     u64 params[MAX_SNPRINTF_VARARGS];
-> > +     struct bpf_snprintf_buf *bufs;
-> > +
-> > +     buf_used = this_cpu_inc_return(bpf_snprintf_buf_used);
-> > +     if (WARN_ON_ONCE(buf_used > 1)) {
->
-> this can trigger only if the helper itself gets preempted and
-> another bpf prog will run on the same cpu and will call into this helper
-> again, right?
-> If so, how about adding preempt_disable here to avoid this case?
+On 3/23/21 5:59 AM, Steven Rostedt wrote:
+> On Mon, 22 Mar 2021 19:53:10 +0100
+> Jiri Olsa <jolsa@redhat.com> wrote:
+> 
+>> On Mon, Mar 22, 2021 at 05:24:26PM +0100, Jiri Olsa wrote:
+>>> On Mon, Mar 22, 2021 at 12:32:05AM +0100, Jiri Olsa wrote:
+>>>> On Tue, Mar 16, 2021 at 02:00:07PM -0700, Alexei Starovoitov wrote:
+>>>>> From: Alexei Starovoitov <ast@kernel.org>
+>>>>>
+>>>>> The fexit/fmod_ret programs can be attached to kernel functions that can sleep.
+>>>>> The synchronize_rcu_tasks() will not wait for such tasks to complete.
+>>>>> In such case the trampoline image will be freed and when the task
+>>>>> wakes up the return IP will point to freed memory causing the crash.
+>>>>> Solve this by adding percpu_ref_get/put for the duration of trampoline
+>>>>> and separate trampoline vs its image life times.
+>>>>> The "half page" optimization has to be removed, since
+>>>>> first_half->second_half->first_half transition cannot be guaranteed to
+>>>>> complete in deterministic time. Every trampoline update becomes a new image.
+>>>>> The image with fmod_ret or fexit progs will be freed via percpu_ref_kill and
+>>>>> call_rcu_tasks. Together they will wait for the original function and
+>>>>> trampoline asm to complete. The trampoline is patched from nop to jmp to skip
+>>>>> fexit progs. They are freed independently from the trampoline. The image with
+>>>>> fentry progs only will be freed via call_rcu_tasks_trace+call_rcu_tasks which
+>>>>> will wait for both sleepable and non-sleepable progs to complete.
+>>>>>
+>>>>> Reported-by: Andrii Nakryiko <andrii@kernel.org>
+>>>>> Fixes: fec56f5890d9 ("bpf: Introduce BPF trampoline")
+>>>>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+>>>>> Acked-by: Paul E. McKenney <paulmck@kernel.org>  # for RCU
+>>>>> ---
+>>>>> Without ftrace fix:
+>>>>> https://patchwork.kernel.org/project/netdevbpf/patch/20210316195815.34714-1-alexei.starovoitov@gmail.com/
+>>>>> this patch will trigger warn in ftrace.
+>>>>>
+>>>>>   arch/x86/net/bpf_jit_comp.c |  26 ++++-
+>>>>>   include/linux/bpf.h         |  24 +++-
+>>>>>   kernel/bpf/bpf_struct_ops.c |   2 +-
+>>>>>   kernel/bpf/core.c           |   4 +-
+>>>>>   kernel/bpf/trampoline.c     | 218 +++++++++++++++++++++++++++---------
+>>>>>   5 files changed, 213 insertions(+), 61 deletions(-)
+>>>>>    
+>>>>
+>>>> hi,
+>>>> I'm on bpf/master and I'm triggering warnings below when running together:
+>>>>
+>>>>    # while :; do ./test_progs -t fentry_test ; done
+>>>>    # while :; do ./test_progs -t module_attach ; done
+>>>
+>>> hum, is it possible that we don't take module ref and it can get
+>>> unloaded even if there's trampoline attach to it..? I can't see
+>>> that in the code.. ftrace_release_mod can't fail ;-)
+>>
+>> when I get the module for each module trampoline,
+>> I can no longer see those warnings (link for Steven):
+>>    https://lore.kernel.org/bpf/YFfXcqnksPsSe0Bv@krava/
+>>
+>> Steven,
+>> I might be missing something, but it looks like module
+>> can be unloaded even if the trampoline (direct function)
+>> is registered in it.. is that right?
+>>
+> 
+> Not with your patch below ;-)
+> 
+> But yes, ftrace does not currently manage module text for direct calls,
+> it's assumed that whoever attaches to the module text would do that. But
+> I'm not adverse to the patch below.
 
-Ah, neat, that sounds like a good idea indeed. This was really just
-cargo-culted from bpf_seq_printf but as part of my grand unification
-attempt for the various printf-like helpers, I can try to make it use
-preempt_disable as well yes.
+Jiri,
 
-> It won't prevent the case where kprobe is inside snprintf core,
-> so the counter is still needed, but it wouldn't trigger by accident.
-
-Good point, I will keep it around then.
-
-> Also since bufs are not used always, how about grabbing the
-> buffers only when %p or %s are seen in fmt?
-> After snprintf() is done it would conditionally do:
-> if (bufs_were_used) {
->    this_cpu_dec(bpf_snprintf_buf_used);
->    preempt_enable();
-> }
-> This way simple bpf_snprintf won't ever hit EBUSY.
-
-Absolutely, it would be nice. :)
-
-> > +             err = -EBUSY;
-> > +             goto out;
-> > +     }
-> > +
-> > +     bufs = this_cpu_ptr(&bpf_snprintf_buf);
-> > +
-> > +     /*
-> > +      * The verifier has already done most of the heavy-work for us in
-> > +      * check_bpf_snprintf_call. We know that fmt is well formatted and that
-> > +      * args_len is valid. The only task left is to convert some of the
-> > +      * arguments. For the %s and %pi* specifiers, we need to read buffers
-> > +      * from a kernel address during the helper call.
-> > +      */
-> > +     for (i = 0; fmt[i] != '\0'; i++) {
-> > +             if (fmt[i] != '%')
-> > +                     continue;
-> > +
-> > +             if (fmt[i + 1] == '%') {
-> > +                     i++;
-> > +                     continue;
-> > +             }
-> > +
-> > +             /* fmt[i] != 0 && fmt[last] == 0, so we can access fmt[i + 1] */
-> > +             i++;
-> > +
-> > +             /* skip optional "[0 +-][num]" width formating field */
-> > +             while (fmt[i] == '0' || fmt[i] == '+'  || fmt[i] == '-' ||
-> > +                    fmt[i] == ' ')
-> > +                     i++;
-> > +             if (fmt[i] >= '1' && fmt[i] <= '9') {
-> > +                     i++;
-> > +                     while (fmt[i] >= '0' && fmt[i] <= '9')
-> > +                             i++;
-> > +             }
-> > +
-> > +             if (fmt[i] == 's') {
-> > +                     void *unsafe_ptr = (void *)(long)args[fmt_cnt];
-> > +
-> > +                     err = strncpy_from_kernel_nofault(bufs->buf[memcpy_cnt],
-> > +                                                       unsafe_ptr,
-> > +                                                       MAX_SNPRINTF_STR_LEN);
-> > +                     if (err < 0)
-> > +                             bufs->buf[memcpy_cnt][0] = '\0';
-> > +                     params[fmt_cnt] = (u64)(long)bufs->buf[memcpy_cnt];
->
-> how about:
-> char buf[512]; instead?
-> instead of memcpy_cnt++ remember how many bytes of the buf were used and
-> copy next arg after that.
-> The scratch space would be used more efficiently.
-> The helper would potentially return ENOSPC if the first string printed via %s
-> consumed most of the 512 space and the second string doesn't fit.
-> But the verifier-time if (memcpy_cnt >= MAX_SNPRINTF_MEMCPY) can be removed.
-> Ten small %s will work fine.
-
-Cool! That is also a good idea :)
-
-> We can allocate a page per-cpu when this helper is used by prog and free
-> that page when all progs with bpf_snprintf are unloaded.
-> But extra complexity is probably not worth it. I would start with 512 per-cpu.
-> It's going to be enough for most users.
-
-Yes, let's maybe keep that for later. I think there is already enough
-complexity going into the printf-like helpers unification patch.
-
-> Overall looks great. Cannot wait for v2 :)
-
-Ahah wait until you see that patch! :D
+could you please refactor your patch to do the same in bpf trampoline?
+The selftest/bpf would be great as well. It can come as a follow up.
+Let's fix the issue for bpf tree first.
