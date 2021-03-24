@@ -2,135 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B31347FAA
-	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 18:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDEFD3480DE
+	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 19:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237126AbhCXRlB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 24 Mar 2021 13:41:01 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:32900 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237209AbhCXRkk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 24 Mar 2021 13:40:40 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-322-BiaTXAiaOfG_77Pga_j6EA-1; Wed, 24 Mar 2021 13:40:35 -0400
-X-MC-Unique: BiaTXAiaOfG_77Pga_j6EA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BC40881283;
-        Wed, 24 Mar 2021 17:40:34 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.196.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 677145D9D0;
-        Wed, 24 Mar 2021 17:40:31 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCHv2] bpf: Take module reference for trampoline in module
-Date:   Wed, 24 Mar 2021 18:40:30 +0100
-Message-Id: <20210324174030.2053353-1-jolsa@kernel.org>
+        id S237606AbhCXSp4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Mar 2021 14:45:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237603AbhCXSpj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Mar 2021 14:45:39 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F14C061763
+        for <bpf@vger.kernel.org>; Wed, 24 Mar 2021 11:45:38 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id y1so31511141ljm.10
+        for <bpf@vger.kernel.org>; Wed, 24 Mar 2021 11:45:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=uo7bWqb6Mq96Y11z0ABxfzds/LHcU3KNRjRUUkDEn3o=;
+        b=Gu52pz+ORTgtAGQBjvTYndLVFa3qsgdyn1gWUNMoVAf3srRzs/y2EgDtmc6ZV0hFPo
+         UdU16kka/QtDqcT3ry8WlAe99AWy5ng6TCYFZCFQ+FjQl4FVRz4CMlC3RF5AJMLl6qJq
+         Ea4slDNt8NxB/uuKMrCa93DWoeHXUjpMSvlN8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=uo7bWqb6Mq96Y11z0ABxfzds/LHcU3KNRjRUUkDEn3o=;
+        b=rAlsNgo1JoHHWZnvxTqrYli3b7t+i/PRp6SAAt5v78Q1TVnlo/LE2r92wcLtRR42qN
+         MbuVwiJH5G4EDbwV3s+YicJ2tRudjOYCcYCVqdc67LGpmLg+2Zm6jsfixRBXM4dlEaCM
+         thTrWk4JoTqJ5WCnJZGEj0uosWxxHLrxiVC1NBikiwGzneOow3nwjVWG/5wuUz/ttYB/
+         NN/QLFqVXhWFDb4JpaLLF9duVRHyZJ3idLRdG/pd8ROSqkzrp9aUjj7Y8ErpPX28gZ+h
+         1EYb5CXUfClw5Jttl6wvP7WEfrGeVl/n0/kkeDOWj3gIYIfup8sAOF6tNNJpjHybqLDn
+         BeKg==
+X-Gm-Message-State: AOAM5335XrOQnG6SrBJTKy2gR7AaGsAjOBiErzlWcW/b1AH+oBXol6Dw
+        aBWEwRiNCsxwmTfmDWMLCnDLNs0paFZc1PtsNUO7tg==
+X-Google-Smtp-Source: ABdhPJxbw+LKlrpdkZNt3gLK4Qdkm3NRfB3wimiy7sFh60oz2HC4kgmT3GAcUBa22/PBGyEzCUK6bApjDe8JgLrt/UY=
+X-Received: by 2002:a2e:9899:: with SMTP id b25mr2958047ljj.376.1616611537127;
+ Wed, 24 Mar 2021 11:45:37 -0700 (PDT)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 24 Mar 2021 18:45:26 +0000
+Message-ID: <CACAyw99e288cPoBuxTjt17YfMy8AHT72AmS1W83EexxvWKaP3w@mail.gmail.com>
+Subject: Pinned link access mode troubles
+To:     Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently module can be unloaded even if there's a trampoline
-register in it. It's easily reproduced by running in parallel:
+Hi list,
 
-  # while :; do ./test_progs -t module_attach; done
-  # while :; do rmmod bpf_testmod; sleep 0.5; done
+BPF_OBJ_GET allows specifying BPF_F_RDONLY or BPF_F_WRONLY for
+file_flags. They are used to check that the current user has the
+necessary permissions in bpf_obj_do_get:
 
-Taking the module reference in case the trampoline's ip is
-within the module code. Releasing it when the trampoline's
-ip is unregistered.
+    ret = path_permission(&path, ACC_MODE(flags));
+    if (ret)
+        goto out;
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
-v2 changes:
-  - fixed ip_module_put to do preempt_disable/preempt_enable
+The map code additionally uses the flags in bpf_map_new_fd to attach
+the permissions to the fd. Programs and links ignore flags (from
+bpf_obj_get_user):
 
- kernel/bpf/trampoline.c | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+    if (type == BPF_TYPE_PROG)
+        ret = bpf_prog_new_fd(raw);
+    else if (type == BPF_TYPE_MAP)
+        ret = bpf_map_new_fd(raw, f_flags);
+    else if (type == BPF_TYPE_LINK)
+        ret = bpf_link_new_fd(raw);
+    else
+        return -ENOENT;
 
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 1f3a4be4b175..39e4280f94e4 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -87,6 +87,26 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
- 	return tr;
- }
- 
-+static struct module *ip_module_get(unsigned long ip)
-+{
-+	struct module *mod;
-+	int err = 0;
-+
-+	preempt_disable();
-+	mod = __module_text_address(ip);
-+	if (mod && !try_module_get(mod))
-+		err = -ENOENT;
-+	preempt_enable();
-+	return err ? ERR_PTR(err) : mod;
-+}
-+
-+static void ip_module_put(unsigned long ip)
-+{
-+	preempt_disable();
-+	module_put(__module_text_address(ip));
-+	preempt_enable();
-+}
-+
- static int is_ftrace_location(void *ip)
- {
- 	long addr;
-@@ -108,6 +128,9 @@ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
- 		ret = unregister_ftrace_direct((long)ip, (long)old_addr);
- 	else
- 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, NULL);
-+
-+	if (!ret)
-+		ip_module_put((unsigned long) ip);
- 	return ret;
- }
- 
-@@ -126,6 +149,7 @@ static int modify_fentry(struct bpf_trampoline *tr, void *old_addr, void *new_ad
- /* first time registering */
- static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
- {
-+	struct module *mod;
- 	void *ip = tr->func.addr;
- 	int ret;
- 
-@@ -134,10 +158,17 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
- 		return ret;
- 	tr->func.ftrace_managed = ret;
- 
-+	mod = ip_module_get((unsigned long) ip);
-+	if (IS_ERR(mod))
-+		return -ENOENT;
-+
- 	if (tr->func.ftrace_managed)
- 		ret = register_ftrace_direct((long)ip, (long)new_addr);
- 	else
- 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_addr);
-+
-+	if (ret)
-+		module_put(mod);
- 	return ret;
- }
- 
+For programs this probably isn't too exciting, since AFAIK they are
+immutable from the user space. The same isn't true for links. Given a
+link that is pinned to a bpffs for which my user only has read access,
+I can call BPF_LINK_UPDATE and BPF_LINK_DETACH. To me this seems to
+break the privilege model. This is a real issue in our code base since
+we pin a link with 0664, which means that anybody on the system can
+detach our link. I can work around this by using 0660 mode for links,
+but I think there are several issues that need fixing:
+
+1. BPF_OBJ_GET doesn't return an error when flags aren't useful, like
+in the program case.
+2. BPF_OBJ_GET returns an fd that allows destructive actions even if
+BPF_F_RDONLY is passed.
+
+Based on some git archaeology I think we are in luck: the code in
+question was introduced in commit 70ed506c3bbc ("bpf: Introduce
+pinnable bpf_link abstraction") and has changed very little from what
+I can see, so backporting should be doable. Additionally, it seems
+like libbpf doesn't provide a way to specify file_flags when loading
+pinned objects. So the likelihood of breaking users is very low.
+
+I'd like to propose the following changes:
+
+1. Return an error from BPF_OBJ_GET If file_flags is not 0 for
+programs and links. This we can backport.
+2. (optional) Add code to respect BPF_F_RDONLY, etc. for links. This
+requires adding a new interface to libbpf.
+
+Opinions?
+
 -- 
-2.30.2
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
