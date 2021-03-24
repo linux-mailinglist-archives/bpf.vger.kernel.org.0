@@ -2,259 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AF8347997
-	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 14:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E90F3479E7
+	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 14:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235140AbhCXN2w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Mar 2021 09:28:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56963 "EHLO
+        id S235564AbhCXNs2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Mar 2021 09:48:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47892 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233395AbhCXN21 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 24 Mar 2021 09:28:27 -0400
+        by vger.kernel.org with ESMTP id S235436AbhCXNsS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 24 Mar 2021 09:48:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616592506;
+        s=mimecast20190719; t=1616593698;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=OFLJJHqiTZbB4vPnTVk+0D9ylmzqlcoz2MkXRaTJcPs=;
-        b=YYXhYB/BU8odxY1jHDAVHLeL4v5REBPhPpObnFUVUUUj7f0nNqSCJ6C1Us/fT1m3+JpoaN
-        N3fpgLxpDSOyoNueoelWvF+bFnKLWtUeDjohuWZRorhjHxs++0Qyb+rAN4ELdj+JUTlrc0
-        RB21msU4lUDRAvrQ2ZN11C4kFsRaSlo=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-601-EbzlQuyAM3OpcI5VTrN7ig-1; Wed, 24 Mar 2021 09:28:24 -0400
-X-MC-Unique: EbzlQuyAM3OpcI5VTrN7ig-1
-Received: by mail-wr1-f72.google.com with SMTP id x9so1074374wro.9
-        for <bpf@vger.kernel.org>; Wed, 24 Mar 2021 06:28:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OFLJJHqiTZbB4vPnTVk+0D9ylmzqlcoz2MkXRaTJcPs=;
-        b=LumLWQZmx4ylYUw/MHGuQ22G5swEdaqJawRHKLBaAIxVWphQA3fMR98y2ocZNdvxPt
-         +Vxv3vFZYxRlXqetqJxNeGIctjaJmlzeeOwRKBBeeDUYqoT1OxkvHZmfds6mBveKP+AG
-         KO7ZSr6CBP9L+pjV4wPdOkt0YOtpdMuljCk5fEs8kF2nsxCNgBx71ryn77tu+CugM9AA
-         Gt3qWJHpuaaboiu/dVxyNHogKYQYFlquyucQgO7ARxC+f3+tMvOp9VIEMjQoX1Q61ENZ
-         tjrXyH14QW5VbGBnwF1RNfccgq6H0wNbnaz0s6Sq1FevRPI/2s/iG0nLjj2In2ImvoqZ
-         8mpg==
-X-Gm-Message-State: AOAM531Xl69MgQHfmallGzhqVg3fI4B3Tj+42aXK6ZxdBtHfdAUmjfA9
-        9EvqJhlHwf8aUV81zuNg+A4pjxQ0fEx9NV4rYcl/g+wDxPXcOLNxARrf+88T28j9F2BH+di836K
-        BZYbTWBwiYD2oFgqa3ZxQq38fmvNO
-X-Received: by 2002:a05:600c:4a22:: with SMTP id c34mr2994711wmp.79.1616592502646;
-        Wed, 24 Mar 2021 06:28:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyVPXtLC0JmRl+ngRimo21UCo1fHv0wN/M5SW9CyHmHP3ASf/zcbRdOA7rtXpU0S4y5DtbVlDuLk4e9ufsqJD4=
-X-Received: by 2002:a05:600c:4a22:: with SMTP id c34mr2994692wmp.79.1616592502457;
- Wed, 24 Mar 2021 06:28:22 -0700 (PDT)
+        bh=QHQRvsM7dTA+mGVVFFUUQLQlWpIhbOfd5Hm9ljWiRQs=;
+        b=PjSaQrtSa+EbclITbYNRbr71r/Y7VUaR1EpIMUdyanq7jDfPnZHKl1E7K/USeQI82CP7Q7
+        CzT9vspl8foTJWGBFG0slRV6peYSI8rYreZI6+lFKx/BagoxkDRXWNhgGWpxrD8mMKVIJ4
+        GEn3GOK/MySX+vuvMie075EvxWXvXJE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-257-VvCc3_a7Mh2f1hyAmOYYAA-1; Wed, 24 Mar 2021 09:48:14 -0400
+X-MC-Unique: VvCc3_a7Mh2f1hyAmOYYAA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C383BFF97;
+        Wed, 24 Mar 2021 13:47:44 +0000 (UTC)
+Received: from krava (unknown [10.40.196.25])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4E1EE843E8;
+        Wed, 24 Mar 2021 13:47:41 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 14:47:40 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH bpf] bpf: Take module reference for ip in module code
+Message-ID: <YFtC/O399QhHZtpb@krava>
+References: <20210323211533.1931242-1-jolsa@kernel.org>
+ <20210324012237.65pf4s52oqlicea3@ast-mbp>
+ <YFsjGkIwpXm5IYdR@krava>
 MIME-Version: 1.0
-References: <xunyim6b5k1b.fsf@redhat.com> <CAEf4BzaAokQ0vgsQ4zA-yB80t2ZFcc3gWUo+p4nw=KWHmK_nsQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzaAokQ0vgsQ4zA-yB80t2ZFcc3gWUo+p4nw=KWHmK_nsQ@mail.gmail.com>
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Date:   Wed, 24 Mar 2021 15:28:06 +0200
-Message-ID: <CANoWswkYXaFzuxCDF02=yDp2Fdk6RYb9OdiVNiwp97v-XLV0rQ@mail.gmail.com>
-Subject: Re: bpf selftests and page size
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFsjGkIwpXm5IYdR@krava>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Andrii!
+On Wed, Mar 24, 2021 at 12:31:42PM +0100, Jiri Olsa wrote:
+> On Tue, Mar 23, 2021 at 06:22:37PM -0700, Alexei Starovoitov wrote:
+> > On Tue, Mar 23, 2021 at 10:15:33PM +0100, Jiri Olsa wrote:
+> > > Currently module can be unloaded even if there's a trampoline
+> > > register in it. It's easily reproduced by running in parallel:
+> > > 
+> > >   # while :; do ./test_progs -t module_attach; done
+> > >   # while :; do ./test_progs -t fentry_test; done
+> > > 
+> > > Taking the module reference in case the trampoline's ip is
+> > > within the module code. Releasing it when the trampoline's
+> > > ip is unregistered.
+> > > 
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  kernel/bpf/trampoline.c | 32 ++++++++++++++++++++++++++++++++
+> > >  1 file changed, 32 insertions(+)
+> > > 
+> > > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> > > index 1f3a4be4b175..f6cb179842b2 100644
+> > > --- a/kernel/bpf/trampoline.c
+> > > +++ b/kernel/bpf/trampoline.c
+> > > @@ -87,6 +87,27 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+> > >  	return tr;
+> > >  }
+> > >  
+> > > +static struct module *ip_module_get(unsigned long ip)
+> > > +{
+> > > +	struct module *mod;
+> > > +	int err = 0;
+> > > +
+> > > +	preempt_disable();
+> > > +	mod = __module_text_address(ip);
+> > > +	if (mod && !try_module_get(mod))
+> > > +		err = -ENOENT;
+> > > +	preempt_enable();
+> > > +	return err ? ERR_PTR(err) : mod;
+> > > +}
+> > > +
+> > > +static void ip_module_put(unsigned long ip)
+> > > +{
+> > > +	struct module *mod = __module_text_address(ip);
+> > 
+> > Conceptually looks correct, but how did you test it?!
+> > Just doing your reproducer:
+> > while :; do ./test_progs -t module_attach; done & while :; do ./test_progs -t fentry_test; done
+> > 
+> > I immediately hit:
+> > [   19.461162] WARNING: CPU: 1 PID: 232 at kernel/module.c:264 module_assert_mutex_or_preempt+0x2e/0x40
+> > [   19.477126] Call Trace:
+> > [   19.477464]  __module_address+0x28/0xf0
+> > [   19.477865]  ? __bpf_trace_bpf_testmod_test_write_bare+0x10/0x10 [bpf_testmod]
+> > [   19.478711]  __module_text_address+0xe/0x60
+> > [   19.479156]  bpf_trampoline_update+0x2ff/0x470
+> 
+> I don't have lockdep enabled.. ah the module_mutex is held
+> during module init, that's why all the code I was using as
+> a reference did not take it.. sorry, will fix
 
-On Tue, Mar 2, 2021 at 7:08 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Mar 1, 2021 at 1:02 AM Yauheni Kaliuta
-> <yauheni.kaliuta@redhat.com> wrote:
-> >
-> > Hi!
-> >
-> > Bunch of bpf selftests actually depends of page size and has it
-> > hardcoded to 4K. That causes failures if page shift is configured
-> > to values other than 12. It looks as a known issue since for the
-> > userspace parts sysconf(_SC_PAGE_SIZE) is used, but what would be
-> > the correct way to export it to bpf programs?
-> >
->
-> Given PAGE_SIZE and PAGE_SHIFT are just #defines, the only way seems
-> to be to pass it from the user-space as a read-only variable.
->
+ah it's the missing preempt_disable ;-) ok
 
-I could not find a good example to attach to cgroup. Here is the
-draft, could you point me to right direction?
+jirka
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-index d5b44b135c00..7932236a021e 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-@@ -1,8 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
- #include "cgroup_helpers.h"
--
- #include <linux/tcp.h>
-+#include "sockopt_sk.skel.h"
-
- #ifndef SOL_TCP
- #define SOL_TCP IPPROTO_TCP
-@@ -191,60 +191,33 @@ static int getsetsockopt(void)
-     return -1;
- }
-
--static int prog_attach(struct bpf_object *obj, int cgroup_fd, const
-char *title)
--{
--    enum bpf_attach_type attach_type;
--    enum bpf_prog_type prog_type;
--    struct bpf_program *prog;
--    int err;
--
--    err = libbpf_prog_type_by_name(title, &prog_type, &attach_type);
--    if (err) {
--        log_err("Failed to deduct types for %s BPF program", title);
--        return -1;
--    }
--
--    prog = bpf_object__find_program_by_title(obj, title);
--    if (!prog) {
--        log_err("Failed to find %s BPF program", title);
--        return -1;
--    }
--
--    err = bpf_prog_attach(bpf_program__fd(prog), cgroup_fd,
--                  attach_type, 0);
--    if (err) {
--        log_err("Failed to attach %s BPF program", title);
--        return -1;
--    }
--
--    return 0;
--}
--
- static void run_test(int cgroup_fd)
- {
--    struct bpf_prog_load_attr attr = {
--        .file = "./sockopt_sk.o",
--    };
--    struct bpf_object *obj;
--    int ignored;
-+    struct sockopt_sk *skel;
-+    int prog_fd;
-+    int duration = 0;
-     int err;
-
--    err = bpf_prog_load_xattr(&attr, &obj, &ignored);
--    if (CHECK_FAIL(err))
--        return;
-+    skel = sockopt_sk__open_and_load();
-+    if (CHECK(!skel, "skel_load", "sockopt_sk skeleton failed\n"))
-+        goto cleanup;
-+
-+    skel->bss->page_size = getpagesize();
-
--    err = prog_attach(obj, cgroup_fd, "cgroup/getsockopt");
--    if (CHECK_FAIL(err))
--        goto close_bpf_object;
-+    prog_fd = bpf_program__fd(skel->progs._getsockopt);
-+    err = bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_GETSOCKOPT, 0);
-+    if (CHECK(err, "attach", "getsockopt attach failed: %d\n", err))
-+        goto cleanup;
-
--    err = prog_attach(obj, cgroup_fd, "cgroup/setsockopt");
--    if (CHECK_FAIL(err))
--        goto close_bpf_object;
-+    prog_fd = bpf_program__fd(skel->progs._setsockopt);
-+    err = bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_SETSOCKOPT, 0);
-+    if (CHECK(err, "attach", "setsockopt attach failed: %d\n", err))
-+        goto cleanup;
-
-     CHECK_FAIL(getsetsockopt());
-
--close_bpf_object:
--    bpf_object__close(obj);
-+cleanup:
-+    sockopt_sk__destroy(skel);
- }
-
- void test_sockopt_sk(void)
-diff --git a/tools/testing/selftests/bpf/progs/sockopt_sk.c
-b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-index d3597f81e6e9..f8b051589681 100644
---- a/tools/testing/selftests/bpf/progs/sockopt_sk.c
-+++ b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-@@ -8,9 +8,7 @@
- char _license[] SEC("license") = "GPL";
- __u32 _version SEC("version") = 1;
-
--#ifndef PAGE_SIZE
--#define PAGE_SIZE 4096
--#endif
-+int page_size; /* userspace should set it */
-
- #ifndef SOL_TCP
- #define SOL_TCP IPPROTO_TCP
-@@ -41,7 +39,7 @@ int _getsockopt(struct bpf_sockopt *ctx)
-          * let next BPF program in the cgroup chain or kernel
-          * handle it.
-          */
--        ctx->optlen = 0; /* bypass optval>PAGE_SIZE */
-+        ctx->optlen = 0; /* bypass optval>page_size */
-         return 1;
-     }
-
-@@ -86,11 +84,11 @@ int _getsockopt(struct bpf_sockopt *ctx)
-         optval[0] = 0x55;
-         ctx->optlen = 1;
-
--        /* Userspace buffer is PAGE_SIZE * 2, but BPF
--         * program can only see the first PAGE_SIZE
-+        /* Userspace buffer is page_size * 2, but BPF
-+         * program can only see the first page_size
-          * bytes of data.
-          */
--        if (optval_end - optval != PAGE_SIZE)
-+        if (optval_end - optval != page_size)
-             return 0; /* EPERM, unexpected data size */
-
-         return 1;
-@@ -131,7 +129,7 @@ int _setsockopt(struct bpf_sockopt *ctx)
-          * let next BPF program in the cgroup chain or kernel
-          * handle it.
-          */
--        ctx->optlen = 0; /* bypass optval>PAGE_SIZE */
-+        ctx->optlen = 0; /* bypass optval>page_size */
-         return 1;
-     }
-
-@@ -160,8 +158,8 @@ int _setsockopt(struct bpf_sockopt *ctx)
-     }
-
-     if (ctx->level == SOL_IP && ctx->optname == IP_FREEBIND) {
--        /* Original optlen is larger than PAGE_SIZE. */
--        if (ctx->optlen != PAGE_SIZE * 2)
-+        /* Original optlen is larger than page_size. */
-+        if (ctx->optlen != page_size * 2)
-             return 0; /* EPERM, unexpected data size */
-
-         if (optval + 1 > optval_end)
-@@ -171,11 +169,11 @@ int _setsockopt(struct bpf_sockopt *ctx)
-         optval[0] = 0;
-         ctx->optlen = 1;
-
--        /* Usepace buffer is PAGE_SIZE * 2, but BPF
--         * program can only see the first PAGE_SIZE
-+        /* Usepace buffer is page_size * 2, but BPF
-+         * program can only see the first page_size
-          * bytes of data.
-          */
--        if (optval_end - optval != PAGE_SIZE)
-+        if (optval_end - optval != page_size)
-             return 0; /* EPERM, unexpected data size */
-
-         return 1;
-
-
--- 
-WBR, Yauheni
+> 
+> > 
+> > Which points to an obvious bug above.
+> > 
+> > How did you debug it to this module going away issue?
+> > Why does test_progs -t fentry_test help to repro?
+> > Or does it?
+> > It doesn't touch anything in modules.
+> 
+> test_prog also loads/unloads that module, but it could be
+> just insmod/rmmod instead, will change
+> 
+> jirka
 
