@@ -2,135 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E90F3479E7
-	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 14:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2E5347B04
+	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 15:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235564AbhCXNs2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Mar 2021 09:48:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47892 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235436AbhCXNsS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 24 Mar 2021 09:48:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616593698;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QHQRvsM7dTA+mGVVFFUUQLQlWpIhbOfd5Hm9ljWiRQs=;
-        b=PjSaQrtSa+EbclITbYNRbr71r/Y7VUaR1EpIMUdyanq7jDfPnZHKl1E7K/USeQI82CP7Q7
-        CzT9vspl8foTJWGBFG0slRV6peYSI8rYreZI6+lFKx/BagoxkDRXWNhgGWpxrD8mMKVIJ4
-        GEn3GOK/MySX+vuvMie075EvxWXvXJE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-257-VvCc3_a7Mh2f1hyAmOYYAA-1; Wed, 24 Mar 2021 09:48:14 -0400
-X-MC-Unique: VvCc3_a7Mh2f1hyAmOYYAA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C383BFF97;
-        Wed, 24 Mar 2021 13:47:44 +0000 (UTC)
-Received: from krava (unknown [10.40.196.25])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4E1EE843E8;
-        Wed, 24 Mar 2021 13:47:41 +0000 (UTC)
-Date:   Wed, 24 Mar 2021 14:47:40 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH bpf] bpf: Take module reference for ip in module code
-Message-ID: <YFtC/O399QhHZtpb@krava>
-References: <20210323211533.1931242-1-jolsa@kernel.org>
- <20210324012237.65pf4s52oqlicea3@ast-mbp>
- <YFsjGkIwpXm5IYdR@krava>
+        id S236302AbhCXOpN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Mar 2021 10:45:13 -0400
+Received: from mga02.intel.com ([134.134.136.20]:2051 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236115AbhCXOoy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Mar 2021 10:44:54 -0400
+IronPort-SDR: 4aTwv4cOjWo/gWVVwjT3GY0JA2Jdbr4MNjnmZ3/MhJChFsm0ruuQipd3qFvvK0E87cwcWxb/0k
+ FpSpQNmNqQtg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="177834544"
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="177834544"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 07:44:53 -0700
+IronPort-SDR: VqEXriFJELnQHGfVhrVX6LmbZ772bw+318tdkoElJrkNyul8GHHSkx9AY4IWIEU2+XUzgmWTec
+ bLOSJvKLuTCw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="608127963"
+Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Mar 2021 07:44:52 -0700
+From:   Ciara Loftus <ciara.loftus@intel.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, bjorn@kernel.org
+Cc:     Ciara Loftus <ciara.loftus@intel.com>
+Subject: [PATCH bpf 0/3] AF_XDP Socket Creation Fixes
+Date:   Wed, 24 Mar 2021 14:13:34 +0000
+Message-Id: <20210324141337.29269-1-ciara.loftus@intel.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFsjGkIwpXm5IYdR@krava>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 12:31:42PM +0100, Jiri Olsa wrote:
-> On Tue, Mar 23, 2021 at 06:22:37PM -0700, Alexei Starovoitov wrote:
-> > On Tue, Mar 23, 2021 at 10:15:33PM +0100, Jiri Olsa wrote:
-> > > Currently module can be unloaded even if there's a trampoline
-> > > register in it. It's easily reproduced by running in parallel:
-> > > 
-> > >   # while :; do ./test_progs -t module_attach; done
-> > >   # while :; do ./test_progs -t fentry_test; done
-> > > 
-> > > Taking the module reference in case the trampoline's ip is
-> > > within the module code. Releasing it when the trampoline's
-> > > ip is unregistered.
-> > > 
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  kernel/bpf/trampoline.c | 32 ++++++++++++++++++++++++++++++++
-> > >  1 file changed, 32 insertions(+)
-> > > 
-> > > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> > > index 1f3a4be4b175..f6cb179842b2 100644
-> > > --- a/kernel/bpf/trampoline.c
-> > > +++ b/kernel/bpf/trampoline.c
-> > > @@ -87,6 +87,27 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
-> > >  	return tr;
-> > >  }
-> > >  
-> > > +static struct module *ip_module_get(unsigned long ip)
-> > > +{
-> > > +	struct module *mod;
-> > > +	int err = 0;
-> > > +
-> > > +	preempt_disable();
-> > > +	mod = __module_text_address(ip);
-> > > +	if (mod && !try_module_get(mod))
-> > > +		err = -ENOENT;
-> > > +	preempt_enable();
-> > > +	return err ? ERR_PTR(err) : mod;
-> > > +}
-> > > +
-> > > +static void ip_module_put(unsigned long ip)
-> > > +{
-> > > +	struct module *mod = __module_text_address(ip);
-> > 
-> > Conceptually looks correct, but how did you test it?!
-> > Just doing your reproducer:
-> > while :; do ./test_progs -t module_attach; done & while :; do ./test_progs -t fentry_test; done
-> > 
-> > I immediately hit:
-> > [   19.461162] WARNING: CPU: 1 PID: 232 at kernel/module.c:264 module_assert_mutex_or_preempt+0x2e/0x40
-> > [   19.477126] Call Trace:
-> > [   19.477464]  __module_address+0x28/0xf0
-> > [   19.477865]  ? __bpf_trace_bpf_testmod_test_write_bare+0x10/0x10 [bpf_testmod]
-> > [   19.478711]  __module_text_address+0xe/0x60
-> > [   19.479156]  bpf_trampoline_update+0x2ff/0x470
-> 
-> I don't have lockdep enabled.. ah the module_mutex is held
-> during module init, that's why all the code I was using as
-> a reference did not take it.. sorry, will fix
+This series fixes some issues around socket creation for AF_XDP.
 
-ah it's the missing preempt_disable ;-) ok
+Patch 1 fixes a potential NULL pointer dereference in
+xsk_socket__create_shared.
 
-jirka
+Patch 2 ensures that the umem passed to xsk_socket__create(_shared)
+remains unchanged in event of failure.
 
-> 
-> > 
-> > Which points to an obvious bug above.
-> > 
-> > How did you debug it to this module going away issue?
-> > Why does test_progs -t fentry_test help to repro?
-> > Or does it?
-> > It doesn't touch anything in modules.
-> 
-> test_prog also loads/unloads that module, but it could be
-> just insmod/rmmod instead, will change
-> 
-> jirka
+Patch 3 makes it possible for xsk_socket__create(_shared) to
+succeed even if the rx and tx XDP rings have already been set up, by
+ignoring the return value of the XDP_RX_RING/XDP_TX_RING setsockopt.
+This removes a limitation which existed whereby a user could not retry
+socket creation after a previous failed attempt.
+
+It was chosen to solve the problem by ignoring the return values in
+libbpf instead of modifying the setsockopt handling code in the kernel
+in order to make it possible for the solution to be available across
+all kernels, provided a new enough libbpf is available.
+
+This series applies on commit 87d77e59d1ebc31850697341ab15ca013004b81b
+
+Ciara Loftus (3):
+  libbpf: ensure umem pointer is non-NULL before dereferencing
+  libbpf: restore umem state after socket create failure
+  libbpf: ignore return values of setsockopt for XDP rings.
+
+ tools/lib/bpf/xsk.c | 66 +++++++++++++++++++++++++--------------------
+ 1 file changed, 37 insertions(+), 29 deletions(-)
+
+-- 
+2.17.1
 
