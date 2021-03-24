@@ -2,211 +2,242 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F71346F71
-	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 03:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B19E346F78
+	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 03:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234856AbhCXCXY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 22:23:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234875AbhCXCXL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Mar 2021 22:23:11 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A837C061765
-        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 19:23:11 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id c8so9925191wrq.11
-        for <bpf@vger.kernel.org>; Tue, 23 Mar 2021 19:23:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ypwDPCx98zAc5CG/YcMRqXN6R3Vb91xHH9Cz6NHtnOI=;
-        b=iDLjn7gTZTY+s7TP/pEr3EPixNk+TQ3wGwOFwHpqrk5nekqmtCPYCBpxYsRfGewwny
-         2uOS4rRvPCsg3OlAmIYKWgC2dgFYulA9soxfsjQ7BZ4lywo1dzFakVEwfqtXbMnR8Nym
-         dhWJkFEME69UNizkUI9FZTdGqDNiWX+2bOdMg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ypwDPCx98zAc5CG/YcMRqXN6R3Vb91xHH9Cz6NHtnOI=;
-        b=C1k9zfNgJubWCGNoIMU8xCy6bwPs3E9M+oKcQPZqYS5XUwtNVRzrobOyLnkAvLs5fj
-         JX0PahOwnwRnDySijOJuU4NXhXfB9yLWyE823VONwbhPx3h2rIUSNW588hdNnqAOixtJ
-         +m0z5gBeHrqtCDguaO3EhD5OwL0+8wlMQqnTFO+gVzWbHiDRLVC+FVPYXUhKfw+k/dTZ
-         GJq6ex2ak7O/YBjHw85pAwZy63CrmclWvmaqi+fnAj8BqSVPXvQGYX7zv6LLJxKEhrLm
-         rGeCebBDLtD51Dbml14XAem2NR3wGMLdU3FpgPycMI2LTy5lqcyUudRtWF1bKG/5WVUy
-         PinQ==
-X-Gm-Message-State: AOAM533y760nmOaPsPa2t2Wwtk8eQv609ijgEXTWmA+VDtMUUhf9M1uF
-        /Qg9cPoIC4FdN0XbPbuM/Rtql8PokhLKGg==
-X-Google-Smtp-Source: ABdhPJydB+SkgWEXBQtVbBCDvs1Ah9fF+eIjKuI3a+Zqp1zcXFRq5HVQMcq67xzJGJS9jKk+wNASAw==
-X-Received: by 2002:adf:fec5:: with SMTP id q5mr810257wrs.43.1616552589900;
-        Tue, 23 Mar 2021 19:23:09 -0700 (PDT)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:ccba:9601:929c:dbcb])
-        by smtp.gmail.com with ESMTPSA id n9sm74219wrx.46.2021.03.23.19.23.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 19:23:09 -0700 (PDT)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, jackmanb@chromium.org,
-        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v2 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
-Date:   Wed, 24 Mar 2021 03:22:11 +0100
-Message-Id: <20210324022211.1718762-7-revest@chromium.org>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-In-Reply-To: <20210324022211.1718762-1-revest@chromium.org>
-References: <20210324022211.1718762-1-revest@chromium.org>
+        id S234746AbhCXCY3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 22:24:29 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:14857 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234920AbhCXCYL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Mar 2021 22:24:11 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F4sSd0Fyyz93BL;
+        Wed, 24 Mar 2021 10:22:09 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 24 Mar 2021 10:24:02 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
+        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>
+Subject: [PATCH net v2] net: sched: fix packet stuck problem for lockless qdisc
+Date:   Wed, 24 Mar 2021 10:24:37 +0800
+Message-ID: <1616552677-39016-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This exercises most of the format specifiers when things go well.
+Lockless qdisc has below concurrent problem:
+    cpu0                 cpu1
+     .                     .
+q->enqueue                 .
+     .                     .
+qdisc_run_begin()          .
+     .                     .
+dequeue_skb()              .
+     .                     .
+sch_direct_xmit()          .
+     .                     .
+     .                q->enqueue
+     .             qdisc_run_begin()
+     .            return and do nothing
+     .                     .
+qdisc_run_end()            .
 
-Signed-off-by: Florent Revest <revest@chromium.org>
+cpu1 enqueue a skb without calling __qdisc_run() because cpu0
+has not released the lock yet and spin_trylock() return false
+for cpu1 in qdisc_run_begin(), and cpu0 do not see the skb
+enqueued by cpu1 when calling dequeue_skb() because cpu1 may
+enqueue the skb after cpu0 calling dequeue_skb() and before
+cpu0 calling qdisc_run_end().
+
+Lockless qdisc has below another concurrent problem when
+tx_action is involved:
+
+cpu0(serving tx_action)     cpu1             cpu2
+          .                   .                .
+          .              q->enqueue            .
+          .            qdisc_run_begin()       .
+          .              dequeue_skb()         .
+          .                   .            q->enqueue
+          .                   .                .
+          .             sch_direct_xmit()      .
+          .                   .         qdisc_run_begin()
+          .                   .       return and do nothing
+          .                   .                .
+ clear __QDISC_STATE_SCHED    .                .
+ qdisc_run_begin()            .                .
+ return and do nothing        .                .
+          .                   .                .
+          .            qdisc_run_end()         .
+
+This patch fixes the above data race by:
+1. Get the flag before doing spin_trylock().
+2. If the first spin_trylock() return false and the flag is not
+   set before the first spin_trylock(), Set the flag and retry
+   another spin_trylock() in case other CPU may not see the new
+   flag after it releases the lock.
+3. reschedule if the flags is set after the lock is released
+   at the end of qdisc_run_end().
+
+For tx_action case, the flags is also set when cpu1 is at the
+end if qdisc_run_end(), so tx_action will be rescheduled
+again to dequeue the skb enqueued by cpu2.
+
+Only clear the flag before retrying a dequeuing when dequeuing
+returns NULL in order to reduce the overhead of the above double
+spin_trylock() and __netif_schedule() calling.
+
+The performance impact of this patch, tested using pktgen and
+dummy netdev with pfifo_fast qdisc attached:
+
+ threads  without+this_patch   with+this_patch      delta
+    1        2.6Mpps            2.6Mpps             +0.0%
+    2        3.9Mpps            3.8Mpps             -2.5%
+    4        5.6Mpps            5.6Mpps             -0.0%
+    8        2.7Mpps            2.8Mpps             +3.7%
+   16        2.2Mpps            2.2Mpps             +0.0%
+
+Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 ---
- .../selftests/bpf/prog_tests/snprintf.c       | 65 +++++++++++++++++++
- .../selftests/bpf/progs/test_snprintf.c       | 59 +++++++++++++++++
- 2 files changed, 124 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
+V2: Avoid the overhead of fixing the data race as much as
+    possible.
+---
+ include/net/sch_generic.h | 48 ++++++++++++++++++++++++++++++++++++++++++++++-
+ net/sched/sch_generic.c   | 12 ++++++++++++
+ 2 files changed, 59 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-new file mode 100644
-index 000000000000..948a05e6b2cb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Google LLC. */
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index f7a6e14..09a755d 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -36,6 +36,7 @@ struct qdisc_rate_table {
+ enum qdisc_state_t {
+ 	__QDISC_STATE_SCHED,
+ 	__QDISC_STATE_DEACTIVATED,
++	__QDISC_STATE_NEED_RESCHEDULE,
+ };
+ 
+ struct qdisc_size_table {
+@@ -159,12 +160,42 @@ static inline bool qdisc_is_empty(const struct Qdisc *qdisc)
+ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ {
+ 	if (qdisc->flags & TCQ_F_NOLOCK) {
++		bool dont_retry = test_bit(__QDISC_STATE_NEED_RESCHEDULE,
++					   &qdisc->state);
 +
-+#include <test_progs.h>
-+#include "test_snprintf.skel.h"
++		if (spin_trylock(&qdisc->seqlock))
++			goto out;
 +
-+#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
-+#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
++		/* If the flag is set before doing the spin_trylock() and
++		 * the above spin_trylock() return false, it means other cpu
++		 * holding the lock will do dequeuing for us, or it wil see
++		 * the flag set after releasing lock and reschedule the
++		 * net_tx_action() to do the dequeuing.
++		 */
++		if (dont_retry)
++			return false;
 +
-+#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
-+#define EXP_IP_RET   sizeof(EXP_IP_OUT)
++		/* We could do set_bit() before the first spin_trylock(),
++		 * and avoid doing secord spin_trylock() completely, then
++		 * we could have multi cpus doing the test_bit(). Here use
++		 * dont_retry to avoiding the test_bit() and the second
++		 * spin_trylock(), which has 5% performance improvement than
++		 * doing the set_bit() before the first spin_trylock().
++		 */
++		set_bit(__QDISC_STATE_NEED_RESCHEDULE,
++			&qdisc->state);
 +
-+/* The third specifier, %pB, depends on compiler inlining so don't check it */
-+#define EXP_SYM_OUT  "schedule schedule+0x0/"
-+#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
++		/* Retry again in case other CPU may not see the new flag
++		 * after it releases the lock at the end of qdisc_run_end().
++		 */
+ 		if (!spin_trylock(&qdisc->seqlock))
+ 			return false;
+ 		WRITE_ONCE(qdisc->empty, false);
+ 	} else if (qdisc_is_running(qdisc)) {
+ 		return false;
+ 	}
 +
-+/* The third specifier, %p, is a hashed pointer which changes on every reboot */
-+#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
-+#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
++out:
+ 	/* Variant of write_seqcount_begin() telling lockdep a trylock
+ 	 * was attempted.
+ 	 */
+@@ -176,8 +207,23 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ static inline void qdisc_run_end(struct Qdisc *qdisc)
+ {
+ 	write_seqcount_end(&qdisc->running);
+-	if (qdisc->flags & TCQ_F_NOLOCK)
++	if (qdisc->flags & TCQ_F_NOLOCK) {
+ 		spin_unlock(&qdisc->seqlock);
 +
-+#define EXP_STR_OUT  "str1 longstr"
-+#define EXP_STR_RET  sizeof(EXP_STR_OUT)
++		/* qdisc_run_end() is protected by RCU lock, and
++		 * qdisc reset will do a synchronize_net() after
++		 * setting __QDISC_STATE_DEACTIVATED, so testing
++		 * the below two bits separately should be fine.
++		 * For qdisc_run() in net_tx_action() case, we
++		 * really should provide rcu protection explicitly
++		 * for document purposes or PREEMPT_RCU.
++		 */
++		if (unlikely(test_bit(__QDISC_STATE_NEED_RESCHEDULE,
++				      &qdisc->state) &&
++			     !test_bit(__QDISC_STATE_DEACTIVATED,
++				       &qdisc->state)))
++			__netif_schedule(qdisc);
++	}
+ }
+ 
+ static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index 44991ea..7e3426b 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -640,8 +640,10 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+ {
+ 	struct pfifo_fast_priv *priv = qdisc_priv(qdisc);
+ 	struct sk_buff *skb = NULL;
++	bool need_retry = true;
+ 	int band;
+ 
++retry:
+ 	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
+ 		struct skb_array *q = band2list(priv, band);
+ 
+@@ -652,6 +654,16 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+ 	}
+ 	if (likely(skb)) {
+ 		qdisc_update_stats_at_dequeue(qdisc, skb);
++	} else if (need_retry &&
++		   test_and_clear_bit(__QDISC_STATE_NEED_RESCHEDULE,
++				      &qdisc->stat)) {
++		/* do another enqueuing after clearing the flag to
++		 * avoid calling __netif_schedule().
++		 */
++		smp_mb__after_atomic();
++		need_retry = false;
 +
-+#define EXP_OVER_OUT "%over"
-+#define EXP_OVER_RET 10
-+
-+void test_snprintf(void)
-+{
-+	char exp_addr_out[] = EXP_ADDR_OUT;
-+	char exp_sym_out[]  = EXP_SYM_OUT;
-+	struct test_snprintf *skel;
-+
-+	skel = test_snprintf__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	if (!ASSERT_OK(test_snprintf__attach(skel), "skel_attach"))
-+		goto cleanup;
-+
-+	/* trigger tracepoint */
-+	usleep(1);
-+
-+	ASSERT_STREQ(skel->bss->num_out, EXP_NUM_OUT, "num_out");
-+	ASSERT_EQ(skel->bss->num_ret, EXP_NUM_RET, "num_ret");
-+
-+	ASSERT_STREQ(skel->bss->ip_out, EXP_IP_OUT, "ip_out");
-+	ASSERT_EQ(skel->bss->ip_ret, EXP_IP_RET, "ip_ret");
-+
-+	ASSERT_OK(memcmp(skel->bss->sym_out, exp_sym_out,
-+			 sizeof(exp_sym_out) - 1), "sym_out");
-+	ASSERT_LT(MIN_SYM_RET, skel->bss->sym_ret, "sym_ret");
-+
-+	ASSERT_OK(memcmp(skel->bss->addr_out, exp_addr_out,
-+			 sizeof(exp_addr_out) - 1), "addr_out");
-+	ASSERT_EQ(skel->bss->addr_ret, EXP_ADDR_RET, "addr_ret");
-+
-+	ASSERT_STREQ(skel->bss->str_out, EXP_STR_OUT, "str_out");
-+	ASSERT_EQ(skel->bss->str_ret, EXP_STR_RET, "str_ret");
-+
-+	ASSERT_STREQ(skel->bss->over_out, EXP_OVER_OUT, "over_out");
-+	ASSERT_EQ(skel->bss->over_ret, EXP_OVER_RET, "over_ret");
-+
-+cleanup:
-+	test_snprintf__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
-new file mode 100644
-index 000000000000..e18709055fad
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
-@@ -0,0 +1,59 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Google LLC. */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char num_out[64] = {};
-+long num_ret = 0;
-+
-+char ip_out[64] = {};
-+long ip_ret = 0;
-+
-+char sym_out[64] = {};
-+long sym_ret = 0;
-+
-+char addr_out[64] = {};
-+long addr_ret = 0;
-+
-+char str_out[64] = {};
-+long str_ret = 0;
-+
-+char over_out[6] = {};
-+long over_ret = 0;
-+
-+SEC("raw_tp/sys_enter")
-+int handler(const void *ctx)
-+{
-+	/* Convenient values to pretty-print */
-+	const __u8 ex_ipv4[] = {127, 0, 0, 1};
-+	const __u8 ex_ipv6[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-+	const char str1[] = "str1";
-+	const char longstr[] = "longstr";
-+	extern const void schedule __ksym;
-+
-+	/* Integer types */
-+	num_ret  = BPF_SNPRINTF(num_out, sizeof(num_out),
-+				"%d %u %x %li %llu %lX",
-+				-8, 9, 150, -424242, 1337, 0xDABBAD00);
-+	/* IP addresses */
-+	ip_ret   = BPF_SNPRINTF(ip_out, sizeof(ip_out), "%pi4 %pI6",
-+				&ex_ipv4, &ex_ipv6);
-+	/* Symbol lookup formatting */
-+	sym_ret  = BPF_SNPRINTF(sym_out,  sizeof(sym_out), "%ps %pS %pB",
-+				&schedule, &schedule, &schedule);
-+	/* Kernel pointers */
-+	addr_ret = BPF_SNPRINTF(addr_out, sizeof(addr_out), "%pK %px %p",
-+				0, 0xFFFF00000ADD4E55, 0xFFFF00000ADD4E55);
-+	/* Strings embedding */
-+	str_ret  = BPF_SNPRINTF(str_out, sizeof(str_out), "%s %+05s",
-+				str1, longstr);
-+	/* Overflow */
-+	over_ret = BPF_SNPRINTF(over_out, sizeof(over_out), "%%overflow");
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
++		goto retry;
+ 	} else {
+ 		WRITE_ONCE(qdisc->empty, true);
+ 	}
 -- 
-2.31.0.291.g576ba9dcdaf-goog
+2.7.4
 
