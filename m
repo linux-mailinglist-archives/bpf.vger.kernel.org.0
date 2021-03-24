@@ -2,76 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E22346D2F
-	for <lists+bpf@lfdr.de>; Tue, 23 Mar 2021 23:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B44346E9C
+	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 02:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233652AbhCWWdr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 18:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40716 "EHLO
+        id S234204AbhCXBWs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 21:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233680AbhCWWaw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Mar 2021 18:30:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61313C061763;
-        Tue, 23 Mar 2021 15:30:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GxysH/sfU1TRUv+WvnZiMSjg/sA1NBgFdqQhe6AYykM=; b=fRUKQx2x/zx7PmmwJts4MHI/NR
-        95iESrw7QXBgCBBbHUerY5stBfvIU3FFM5LEb8AY63U0y+k2XQLC487fqYIxQeLMf5C71vLiuof8p
-        shoIy+C57BF0nF2GLWWI+NhGOHK0s53vggCD3M+K6G9Ie2FZJFp7AxqHSJWnixj7CRIZX9xPkgwOY
-        D1qwNz2tlvwp2eSKrF6FSOTXBf8X+dzktmiH/UMa0JqxgW+xDIiFHybb57zN0sV/421FR6+nVXUEL
-        x13slsZ7B6edcstfJ3f17yNst264htMW9mtI4m3TWUbNHGAO9SmuP/UAfvdF+pmuT1Zl/AUczJWTZ
-        gxTrZZbg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lOpXM-00Abyu-Hv; Tue, 23 Mar 2021 22:30:10 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AF73A9864F6; Tue, 23 Mar 2021 23:30:07 +0100 (CET)
-Date:   Tue, 23 Mar 2021 23:30:07 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Subject: Re: [PATCH -tip v4 10/12] x86/kprobes: Push a fake return address at
- kretprobe_trampoline
-Message-ID: <20210323223007.GG4746@worktop.programming.kicks-ass.net>
-References: <161639518354.895304.15627519393073806809.stgit@devnote2>
- <161639530062.895304.16962383429668412873.stgit@devnote2>
+        with ESMTP id S234325AbhCXBWk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Mar 2021 21:22:40 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A763DC061763;
+        Tue, 23 Mar 2021 18:22:40 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id l1so13524487pgb.5;
+        Tue, 23 Mar 2021 18:22:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ADszsJaW4d0lhPtJTdxVvedwy5zTVymuRYgLJjqUZYs=;
+        b=sNpJYd+vI5TDLCjPigF1d04oHMmyaRf5MORj9VcyYMFLmVZs0i/5Y+JIbP9rvprNFf
+         tbj+BX0Qq2YJoZ4HPf8eeyT9+hRGInQZyUFilGygIr30kg6hqqDlFXxTr0lCj42KJtd7
+         /gHPb/J5zDP4EsSLpEuk95VtG0q3IdIN4AXV0XlXKycwJk1sjP+rjwwqmVx+9TI0SkaF
+         ylYMCz9maoias7TQvUr/MtldcxnMHmsHilxrJg555nF78qRWlpGsVoDCgcpRESGi9khu
+         s4qlksVY7G6UcetrHWf5ZwD7iJZc0eeYv7Ew2uVPLJ29Hx+KOYvITBWODUG4IH8faf33
+         QbIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ADszsJaW4d0lhPtJTdxVvedwy5zTVymuRYgLJjqUZYs=;
+        b=r+La5UkU8mKs22DZsGBIAozQmqikLPZXFPYy4BBX+0dwKAXOQN3YLwjom1DZeCshIy
+         CwTebGi0Y+Scv5ymBtORH0dU769ANgEwjjEThuve9D2hJ/JQyz3v3LQ6N9rPQkydlP2q
+         dk8iqIs4CAx+I1tZvJ64pekxu6w3yBeN4mtY7/oeoljl9cl1d0x5wt/T9+ZBMywaLKR/
+         oTnNn9hrMM/0U4tqjVQwo6WBUuUq409jsU446zRgFGakcpxBH4cNEjFlNOssCQXM2NbE
+         IHQ8rmoWiJnVVrsrC85qMYtO1+vl72Wmb6qEuirRGGLGkUzQnHPzTHBZcxU/1qbUou9Y
+         T3Tg==
+X-Gm-Message-State: AOAM533PAOYMVu1LLpyq/q8XHaZgsfyr+o5ylKQUHAvsC54YwBZkvVjV
+        KBLzUzTkRrWhxa9Zvs27GS8=
+X-Google-Smtp-Source: ABdhPJz6NsxW1Ed0pTj3gqatCldwJ6Zts1dE8DTzvjPPAfghQYbQ7fpJHt0DQ7GRLTmDSqdIu/wyeA==
+X-Received: by 2002:a65:6559:: with SMTP id a25mr880957pgw.106.1616548960119;
+        Tue, 23 Mar 2021 18:22:40 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:7d9f])
+        by smtp.gmail.com with ESMTPSA id f15sm366495pgg.84.2021.03.23.18.22.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Mar 2021 18:22:39 -0700 (PDT)
+Date:   Tue, 23 Mar 2021 18:22:37 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH bpf] bpf: Take module reference for ip in module code
+Message-ID: <20210324012237.65pf4s52oqlicea3@ast-mbp>
+References: <20210323211533.1931242-1-jolsa@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <161639530062.895304.16962383429668412873.stgit@devnote2>
+In-Reply-To: <20210323211533.1931242-1-jolsa@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 03:41:40PM +0900, Masami Hiramatsu wrote:
->  	".global kretprobe_trampoline\n"
->  	".type kretprobe_trampoline, @function\n"
->  	"kretprobe_trampoline:\n"
->  #ifdef CONFIG_X86_64
+On Tue, Mar 23, 2021 at 10:15:33PM +0100, Jiri Olsa wrote:
+> Currently module can be unloaded even if there's a trampoline
+> register in it. It's easily reproduced by running in parallel:
+> 
+>   # while :; do ./test_progs -t module_attach; done
+>   # while :; do ./test_progs -t fentry_test; done
+> 
+> Taking the module reference in case the trampoline's ip is
+> within the module code. Releasing it when the trampoline's
+> ip is unregistered.
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  kernel/bpf/trampoline.c | 32 ++++++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+> 
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index 1f3a4be4b175..f6cb179842b2 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -87,6 +87,27 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+>  	return tr;
+>  }
+>  
+> +static struct module *ip_module_get(unsigned long ip)
+> +{
+> +	struct module *mod;
+> +	int err = 0;
+> +
+> +	preempt_disable();
+> +	mod = __module_text_address(ip);
+> +	if (mod && !try_module_get(mod))
+> +		err = -ENOENT;
+> +	preempt_enable();
+> +	return err ? ERR_PTR(err) : mod;
+> +}
+> +
+> +static void ip_module_put(unsigned long ip)
+> +{
+> +	struct module *mod = __module_text_address(ip);
 
-So what happens if we get an NMI here? That is, after the RET but before
-the push? Then our IP points into the trampoline but we've not done that
-push yet.
+Conceptually looks correct, but how did you test it?!
+Just doing your reproducer:
+while :; do ./test_progs -t module_attach; done & while :; do ./test_progs -t fentry_test; done
 
-> +	/* Push fake return address to tell the unwinder it's a kretprobe */
-> +	"	pushq $kretprobe_trampoline\n"
->  	UNWIND_HINT_FUNC
-> +	/* Save the sp-8, this will be fixed later */
-> +	"	pushq %rsp\n"
->  	"	pushfq\n"
->  	SAVE_REGS_STRING
->  	"	movq %rsp, %rdi\n"
->  	"	call trampoline_handler\n"
->  	RESTORE_REGS_STRING
-> +	"	addq $8, %rsp\n"
->  	"	popfq\n"
+I immediately hit:
+[   19.461162] WARNING: CPU: 1 PID: 232 at kernel/module.c:264 module_assert_mutex_or_preempt+0x2e/0x40
+[   19.477126] Call Trace:
+[   19.477464]  __module_address+0x28/0xf0
+[   19.477865]  ? __bpf_trace_bpf_testmod_test_write_bare+0x10/0x10 [bpf_testmod]
+[   19.478711]  __module_text_address+0xe/0x60
+[   19.479156]  bpf_trampoline_update+0x2ff/0x470
+
+Which points to an obvious bug above.
+
+How did you debug it to this module going away issue?
+Why does test_progs -t fentry_test help to repro?
+Or does it?
+It doesn't touch anything in modules.
+
+> +
+> +	if (mod)
+> +		module_put(mod);
