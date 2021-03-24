@@ -2,133 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B44346E9C
-	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 02:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E05B346EF6
+	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 02:41:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbhCXBWs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Mar 2021 21:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234325AbhCXBWk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Mar 2021 21:22:40 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A763DC061763;
-        Tue, 23 Mar 2021 18:22:40 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id l1so13524487pgb.5;
-        Tue, 23 Mar 2021 18:22:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ADszsJaW4d0lhPtJTdxVvedwy5zTVymuRYgLJjqUZYs=;
-        b=sNpJYd+vI5TDLCjPigF1d04oHMmyaRf5MORj9VcyYMFLmVZs0i/5Y+JIbP9rvprNFf
-         tbj+BX0Qq2YJoZ4HPf8eeyT9+hRGInQZyUFilGygIr30kg6hqqDlFXxTr0lCj42KJtd7
-         /gHPb/J5zDP4EsSLpEuk95VtG0q3IdIN4AXV0XlXKycwJk1sjP+rjwwqmVx+9TI0SkaF
-         ylYMCz9maoias7TQvUr/MtldcxnMHmsHilxrJg555nF78qRWlpGsVoDCgcpRESGi9khu
-         s4qlksVY7G6UcetrHWf5ZwD7iJZc0eeYv7Ew2uVPLJ29Hx+KOYvITBWODUG4IH8faf33
-         QbIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ADszsJaW4d0lhPtJTdxVvedwy5zTVymuRYgLJjqUZYs=;
-        b=r+La5UkU8mKs22DZsGBIAozQmqikLPZXFPYy4BBX+0dwKAXOQN3YLwjom1DZeCshIy
-         CwTebGi0Y+Scv5ymBtORH0dU769ANgEwjjEThuve9D2hJ/JQyz3v3LQ6N9rPQkydlP2q
-         dk8iqIs4CAx+I1tZvJ64pekxu6w3yBeN4mtY7/oeoljl9cl1d0x5wt/T9+ZBMywaLKR/
-         oTnNn9hrMM/0U4tqjVQwo6WBUuUq409jsU446zRgFGakcpxBH4cNEjFlNOssCQXM2NbE
-         IHQ8rmoWiJnVVrsrC85qMYtO1+vl72Wmb6qEuirRGGLGkUzQnHPzTHBZcxU/1qbUou9Y
-         T3Tg==
-X-Gm-Message-State: AOAM533PAOYMVu1LLpyq/q8XHaZgsfyr+o5ylKQUHAvsC54YwBZkvVjV
-        KBLzUzTkRrWhxa9Zvs27GS8=
-X-Google-Smtp-Source: ABdhPJz6NsxW1Ed0pTj3gqatCldwJ6Zts1dE8DTzvjPPAfghQYbQ7fpJHt0DQ7GRLTmDSqdIu/wyeA==
-X-Received: by 2002:a65:6559:: with SMTP id a25mr880957pgw.106.1616548960119;
-        Tue, 23 Mar 2021 18:22:40 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:7d9f])
-        by smtp.gmail.com with ESMTPSA id f15sm366495pgg.84.2021.03.23.18.22.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Mar 2021 18:22:39 -0700 (PDT)
-Date:   Tue, 23 Mar 2021 18:22:37 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH bpf] bpf: Take module reference for ip in module code
-Message-ID: <20210324012237.65pf4s52oqlicea3@ast-mbp>
-References: <20210323211533.1931242-1-jolsa@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323211533.1931242-1-jolsa@kernel.org>
+        id S231355AbhCXBlL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Mar 2021 21:41:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231533AbhCXBlE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Mar 2021 21:41:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C5DB61924;
+        Wed, 24 Mar 2021 01:41:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616550064;
+        bh=7qdFAip3g0QPQnuuZWhxuGHkLs3MS3jK3ZpCgzjAhdo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ObkzGBgeRRpSZtnyjrrgUHn2yLhmWsu2MR/K8xVpcRzslS1I9FfIMfnLKJUdM3iq7
+         NihPrwLWnWQENzQYrzSD7ZPji6cMYAq5qtL9Oo/to3TQ2D93+8hgp/AseE7Ck+7k06
+         wWFfYTua5EkLtZNUcoZle6Y85B0CGhUFJAeHpGFQZd+dt1kkB7GAOc6ahY806OK9Gy
+         69CyPKwqmBMG6KNFRzZNbcHWgM5EsrjdvPuNVE+QhAeghgdtzT9D8QMFDc5EngeFTE
+         kIzlMRpSEfGhXrxmLbpNjo0OD/NJ4XPz6uhlTcz1Ve+q3cwAF5CiygK18GjodKLP/e
+         GBJOIdFCKEA0A==
+Date:   Wed, 24 Mar 2021 10:40:58 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Subject: Re: [PATCH -tip v4 10/12] x86/kprobes: Push a fake return address
+ at kretprobe_trampoline
+Message-Id: <20210324104058.7c06aaeb0408e24db6ba46f8@kernel.org>
+In-Reply-To: <20210323223007.GG4746@worktop.programming.kicks-ass.net>
+References: <161639518354.895304.15627519393073806809.stgit@devnote2>
+        <161639530062.895304.16962383429668412873.stgit@devnote2>
+        <20210323223007.GG4746@worktop.programming.kicks-ass.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 10:15:33PM +0100, Jiri Olsa wrote:
-> Currently module can be unloaded even if there's a trampoline
-> register in it. It's easily reproduced by running in parallel:
+On Tue, 23 Mar 2021 23:30:07 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
+
+> On Mon, Mar 22, 2021 at 03:41:40PM +0900, Masami Hiramatsu wrote:
+> >  	".global kretprobe_trampoline\n"
+> >  	".type kretprobe_trampoline, @function\n"
+> >  	"kretprobe_trampoline:\n"
+> >  #ifdef CONFIG_X86_64
 > 
->   # while :; do ./test_progs -t module_attach; done
->   # while :; do ./test_progs -t fentry_test; done
-> 
-> Taking the module reference in case the trampoline's ip is
-> within the module code. Releasing it when the trampoline's
-> ip is unregistered.
-> 
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  kernel/bpf/trampoline.c | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
-> 
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index 1f3a4be4b175..f6cb179842b2 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -87,6 +87,27 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
->  	return tr;
->  }
->  
-> +static struct module *ip_module_get(unsigned long ip)
-> +{
-> +	struct module *mod;
-> +	int err = 0;
-> +
-> +	preempt_disable();
-> +	mod = __module_text_address(ip);
-> +	if (mod && !try_module_get(mod))
-> +		err = -ENOENT;
-> +	preempt_enable();
-> +	return err ? ERR_PTR(err) : mod;
-> +}
-> +
-> +static void ip_module_put(unsigned long ip)
-> +{
-> +	struct module *mod = __module_text_address(ip);
+> So what happens if we get an NMI here? That is, after the RET but before
+> the push? Then our IP points into the trampoline but we've not done that
+> push yet.
 
-Conceptually looks correct, but how did you test it?!
-Just doing your reproducer:
-while :; do ./test_progs -t module_attach; done & while :; do ./test_progs -t fentry_test; done
+Not only NMI, but also interrupts can happen. There is no cli/sti here.
 
-I immediately hit:
-[   19.461162] WARNING: CPU: 1 PID: 232 at kernel/module.c:264 module_assert_mutex_or_preempt+0x2e/0x40
-[   19.477126] Call Trace:
-[   19.477464]  __module_address+0x28/0xf0
-[   19.477865]  ? __bpf_trace_bpf_testmod_test_write_bare+0x10/0x10 [bpf_testmod]
-[   19.478711]  __module_text_address+0xe/0x60
-[   19.479156]  bpf_trampoline_update+0x2ff/0x470
+Anyway, thanks for pointing!
+I think in UNWIND_HINT_TYPE_REGS and UNWIND_HINT_TYPE_REGS_PARTIAL cases
+ORC unwinder also has to check the state->ip and if it is kretprobe_trampoline,
+it should be recovered.
+What about this?
 
-Which points to an obvious bug above.
+diff --git a/arch/x86/include/asm/unwind.h b/arch/x86/include/asm/unwind.h
+index 332aa6174b10..36d3971c0a2c 100644
+--- a/arch/x86/include/asm/unwind.h
++++ b/arch/x86/include/asm/unwind.h
+@@ -101,6 +101,15 @@ void unwind_module_init(struct module *mod, void *orc_ip, size_t orc_ip_size,
+ 			void *orc, size_t orc_size) {}
+ #endif
+ 
++static inline
++unsigned long unwind_recover_kretprobe(struct unwind_state *state,
++				       unsigned long addr, unsigned long *addr_p)
++{
++	return is_kretprobe_trampoline(addr) ?
++		kretprobe_find_ret_addr(state->task, addr_p, &state->kr_cur) :
++		addr;
++}
++
+ /* Recover the return address modified by instrumentation (e.g. kretprobe) */
+ static inline
+ unsigned long unwind_recover_ret_addr(struct unwind_state *state,
+@@ -110,10 +119,7 @@ unsigned long unwind_recover_ret_addr(struct unwind_state *state,
+ 
+ 	ret = ftrace_graph_ret_addr(state->task, &state->graph_idx,
+ 				    addr, addr_p);
+-	if (is_kretprobe_trampoline(ret))
+-		ret = kretprobe_find_ret_addr(state->task, addr_p,
+-					      &state->kr_cur);
+-	return ret;
++	return unwind_recover_kretprobe(state, ret, addr_p);
+ }
+ 
+ /*
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index 839a0698342a..cb59aeca6a4a 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -549,7 +549,15 @@ bool unwind_next_frame(struct unwind_state *state)
+ 					 (void *)orig_ip);
+ 			goto err;
+ 		}
+-
++		/*
++		 * There is a small chance to interrupt at the entry of
++		 * kretprobe_trampoline where the ORC info doesn't exist.
++		 * That point is right after the RET to kretprobe_trampoline
++		 * which was modified return address. So the @addr_p must
++		 * be right before the regs->sp.
++		 */
++		state->ip = unwind_recover_kretprobe(state, state->ip,
++					state->sp - sizeof(unsigned long));
+ 		state->regs = (struct pt_regs *)sp;
+ 		state->prev_regs = NULL;
+ 		state->full_regs = true;
+@@ -562,6 +570,9 @@ bool unwind_next_frame(struct unwind_state *state)
+ 					 (void *)orig_ip);
+ 			goto err;
+ 		}
++		/* See UNWIND_HINT_TYPE_REGS case comment. */
++		state->ip = unwind_recover_kretprobe(state, state->ip,
++					state->sp - sizeof(unsigned long));
+ 
+ 		if (state->full_regs)
+ 			state->prev_regs = state->regs;
 
-How did you debug it to this module going away issue?
-Why does test_progs -t fentry_test help to repro?
-Or does it?
-It doesn't touch anything in modules.
 
-> +
-> +	if (mod)
-> +		module_put(mod);
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
