@@ -2,156 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB05E34828D
-	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 21:05:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9CC34834D
+	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 22:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238115AbhCXUF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Mar 2021 16:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
+        id S238209AbhCXU7x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Mar 2021 16:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237906AbhCXUFK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Mar 2021 16:05:10 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECE8C061763;
-        Wed, 24 Mar 2021 13:05:10 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id c204so18218937pfc.4;
-        Wed, 24 Mar 2021 13:05:10 -0700 (PDT)
+        with ESMTP id S238188AbhCXU7Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Mar 2021 16:59:24 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7359C06174A;
+        Wed, 24 Mar 2021 13:59:23 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id 19so303495ilj.2;
+        Wed, 24 Mar 2021 13:59:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=415I9Q2//om44EgT/R1VG6ftwnvfeEx2NhKqDCrMBY0=;
-        b=ciGvS1x1y6xOeCjj+2Ncn8VcoYbqJVT6DugMnr55mcZphcLFEHc6N//CHcKaYyOGly
-         k6YYd/3rLEYmfJpPHGaafug+3zX8a/yOIPayLa96YX7jVhQ/gzY8/4Rof9gBKZYhJQOq
-         QMLhxv2A93R+ZTeejIvsCHN09lnNBv2McbPxCPYms83yTbaB6W14HB1oDMJhHPMgxKWQ
-         whmvTZ3OzJqojwcgMcOGeGIt7RpXCis67jZ+PoPaAXwANujZ3Kz9S48HLCeYSjlT4MZk
-         GtkKSWTxlR1ztIEmYhjG6pSwn5xRJPNnIWmOREQ4e7jmQkXSX1xHIYulLg9X9sQ7V4qa
-         wJcg==
+        h=subject:from:to:cc:date:message-id:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=NESGUyPvHL7cCoVnbsS2gymQUCnVSgr6wRyH7bS6EFQ=;
+        b=S+BLe/cT5ZlLK94ci/pFtEACTd3Pq/k3Y8J6rLZ2FwYP0HptAdHmNPN8/LASu3grfw
+         hii1c9YKX3kuA7OBxONq2PzssbtlCIFBq4TEoADxm/Xh1jWVdYikuZRxikUx7isy1KHT
+         EPv2Crsr98o1ZlPnBDKfe2GkQZy2QkcYP15hD8Glc5FqSKcFEVJ+vpAJY+L0pgTbh/ii
+         TQ6wwVYfN1+W3HOGs8DffGZrWxzVVFRSRT2fuB1KivwsFcFiHzCGYVQdWBJMDqIQHdqv
+         qUqqxfY1GgKeHbaiQoFiFm7zj1EBUY2GwCmQ0PaQvzGxNk7BVR4RaWfZrhyMOpPbfEUW
+         KvHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=415I9Q2//om44EgT/R1VG6ftwnvfeEx2NhKqDCrMBY0=;
-        b=WA2UvzJR+w6rlMaQeRkVdgxQprtFyKdy+bpBN0CEmYSpv1CjWiqjGGZVjwZuai+d7L
-         UWevao1zaUJfhQe/cJ4hByhK/fRxru4gzolO3/CyZZv7enG7Ob6h5I72bruRsV4MQ0UM
-         Y2UAhwsW0/JOJLBRSngRCGhgE0dNX7hQBDakxixWk/17xIoddGxrSOC6MGjNpKm9sX1+
-         4lwfR4evA9vDuKxDSUuJ33JzBhiwwpnzVOJCHnvzmCtjaRwHyVbukpoORwjXqYu8zKrM
-         M0nHjCg5n+VS62kjXDFfU0iY8fK3gInapyz6KZFfjBuHTcQrkCR4Pr+Gf0POUIfHC8wr
-         3NGw==
-X-Gm-Message-State: AOAM532wugJEMzSdsA2wN5wYlaWAgDunK0wySA5g7KCP3XR6W0kqeymf
-        Pp5T00xSNWcQJ+u2TvGs0gWfPVwS2+kVk0PkfLHgfq65K+nu4LQD
-X-Google-Smtp-Source: ABdhPJwFoIGJg28JMPE1MXdmMMFGCM5OZA9rj4c+gGqQYMO74aTwWtcMX8O5EBzXS2GctbrCjmTwP35V0r44EW4wC5w=
-X-Received: by 2002:a63:d842:: with SMTP id k2mr4342566pgj.428.1616616309778;
- Wed, 24 Mar 2021 13:05:09 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=NESGUyPvHL7cCoVnbsS2gymQUCnVSgr6wRyH7bS6EFQ=;
+        b=eZZ4Sd1dKIcZ2bBbujLEyJ1GJs4UGg2GElfV62HWgt8uehane7vIjhDLIM5FXFPSXS
+         27wS7jBwd4su1nTUL4JQM1mUM8cJVwqj1BrZO+K87cc7ZssrVNrbJnJEJsvW/z3fyHuu
+         wnlOwpzaz8PpAoODeK+MKWaBL72fRAL4aaeqmSI4r2uiSD8lx6naZhVdHxJsy7N1e6h/
+         Xh1CNhM1hJAAHZRtejPC+mJK6Efv3C+NliIc95fhupaDelQ/5/4v7IrwjRpscqKTd7y2
+         HQWaxAKDdBeaqsEO8xuNntbA906ztIJZVd89n/R9Jh5ltOS9k+c/KIpw+Zd11Xz4XUed
+         YQWg==
+X-Gm-Message-State: AOAM533kHuXjQswUagr9OAbjhcJMTyURbzS6ITLeUW3Nx0Cs6hjNR6eA
+        t0X8qUEN+zMGuhKwDr4mWRU=
+X-Google-Smtp-Source: ABdhPJxmLxcgn41PV9qTp+HG9HlZoDocxzhEeL6RPFP7ANZwg98VbqPkMBiUQqAR/iKLCM76iGhsMw==
+X-Received: by 2002:a05:6e02:13ad:: with SMTP id h13mr4227115ilo.32.1616619563227;
+        Wed, 24 Mar 2021 13:59:23 -0700 (PDT)
+Received: from [127.0.1.1] ([172.242.244.146])
+        by smtp.gmail.com with ESMTPSA id m1sm1363105ilh.69.2021.03.24.13.59.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 13:59:22 -0700 (PDT)
+Subject: [bpf PATCH 0/2] bpf, sockmap fixes
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     john.fastabend@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
+        ast@fb.com
+Cc:     xiyou.wangcong@gmail.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, lmb@cloudflare.com
+Date:   Wed, 24 Mar 2021 13:59:10 -0700
+Message-ID: <161661943080.28508.5809575518293376322.stgit@john-Precision-5820-Tower>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-References: <20210323003808.16074-1-xiyou.wangcong@gmail.com>
- <20210323003808.16074-9-xiyou.wangcong@gmail.com> <b510f1da-1442-5297-db95-e21ac8b71042@huawei.com>
-In-Reply-To: <b510f1da-1442-5297-db95-e21ac8b71042@huawei.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Wed, 24 Mar 2021 13:04:58 -0700
-Message-ID: <CAM_iQpU4WTegg2eJRBvEcUHs=qGNKMzGswiH14LeLtEbVLMkkg@mail.gmail.com>
-Subject: Re: [Patch bpf-next v6 08/12] udp: implement ->read_sock() for sockmap
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:31 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> On 2021/3/23 8:38, Cong Wang wrote:
-> > From: Cong Wang <cong.wang@bytedance.com>
-> >
-> > This is similar to tcp_read_sock(), except we do not need
-> > to worry about connections, we just need to retrieve skb
-> > from UDP receive queue.
-> >
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> > Cc: Lorenz Bauer <lmb@cloudflare.com>
-> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> > ---
-> >  include/net/udp.h   |  2 ++
-> >  net/ipv4/af_inet.c  |  1 +
-> >  net/ipv4/udp.c      | 35 +++++++++++++++++++++++++++++++++++
-> >  net/ipv6/af_inet6.c |  1 +
-> >  4 files changed, 39 insertions(+)
-> >
-> > diff --git a/include/net/udp.h b/include/net/udp.h
-> > index df7cc1edc200..347b62a753c3 100644
-> > --- a/include/net/udp.h
-> > +++ b/include/net/udp.h
-> > @@ -329,6 +329,8 @@ struct sock *__udp6_lib_lookup(struct net *net,
-> >                              struct sk_buff *skb);
-> >  struct sock *udp6_lib_lookup_skb(const struct sk_buff *skb,
-> >                                __be16 sport, __be16 dport);
-> > +int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
-> > +               sk_read_actor_t recv_actor);
-> >
-> >  /* UDP uses skb->dev_scratch to cache as much information as possible and avoid
-> >   * possibly multiple cache miss on dequeue()
-> > diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-> > index 1355e6c0d567..f17870ee558b 100644
-> > --- a/net/ipv4/af_inet.c
-> > +++ b/net/ipv4/af_inet.c
-> > @@ -1070,6 +1070,7 @@ const struct proto_ops inet_dgram_ops = {
-> >       .setsockopt        = sock_common_setsockopt,
-> >       .getsockopt        = sock_common_getsockopt,
-> >       .sendmsg           = inet_sendmsg,
-> > +     .read_sock         = udp_read_sock,
-> >       .recvmsg           = inet_recvmsg,
-> >       .mmap              = sock_no_mmap,
-> >       .sendpage          = inet_sendpage,
-> > diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> > index 38952aaee3a1..a0adee3b1af4 100644
-> > --- a/net/ipv4/udp.c
-> > +++ b/net/ipv4/udp.c
-> > @@ -1782,6 +1782,41 @@ struct sk_buff *__skb_recv_udp(struct sock *sk, unsigned int flags,
-> >  }
-> >  EXPORT_SYMBOL(__skb_recv_udp);
-> >
-> > +int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
-> > +               sk_read_actor_t recv_actor)
-> > +{
-> > +     int copied = 0;
-> > +
-> > +     while (1) {
-> > +             int offset = 0, err;
-> > +             struct sk_buff *skb;
-> > +
-> > +             skb = __skb_recv_udp(sk, 0, 1, &offset, &err);
-> > +             if (!skb)
-> > +                     break;
->
-> Does above error handling need the below additional handling?
-> It seems __skb_recv_udp() will return the error by parameter "err",
-> if "copied == 0", does it need to return the error?
+This addresses an issue found while reviewing latest round of sock
+map patches and an issue reported from CI via Andrii.
 
-Not for skmsg case, because the return value is just unused:
+The CI discovered issue was introduced by over correcting our
+previously broken memory accounting. After the fix, "bpf, sockmap:
+Avoid returning unneeded EAGAIN when redirecting to self" we fixed
+a dropped packet and a missing fwd_alloc calculations, but pushed
+it too far back into the packet pipeline creating an issue in the
+unlikely case socket tear down happens with an enqueued skb. See
+patch for details.
 
-static void sk_psock_verdict_data_ready(struct sock *sk)
-{
-        struct socket *sock = sk->sk_socket;
-        read_descriptor_t desc;
+Tested with usual suspects: test_sockmap, test_maps, test_progs
+and test_progs-no_alu32.
 
-        if (unlikely(!sock || !sock->ops || !sock->ops->read_sock))
-                return;
+---
 
-        desc.arg.data = sk;
-        desc.error = 0;
-        desc.count = 1;
+John Fastabend (2):
+      bpf, sockmap: fix sk->prot unhash op reset
+      bpf, sockmap: fix incorrect fwd_alloc accounting
 
-        sock->ops->read_sock(sk, &desc, sk_psock_verdict_recv);
-}
 
-Thanks.
+ include/linux/skmsg.h |    1 -
+ net/core/skmsg.c      |   13 ++++++-------
+ net/tls/tls_main.c    |    6 ++++++
+ 3 files changed, 12 insertions(+), 8 deletions(-)
+
+--
+Signature
