@@ -2,104 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087FA347F59
-	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 18:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B31347FAA
+	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 18:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237102AbhCXRaM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 24 Mar 2021 13:30:12 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23530 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237037AbhCXRaD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 24 Mar 2021 13:30:03 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12OHOd3v022494
-        for <bpf@vger.kernel.org>; Wed, 24 Mar 2021 10:30:02 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 37g1wjawxu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 24 Mar 2021 10:30:02 -0700
-Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 24 Mar 2021 10:30:01 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 503682ED2BAA; Wed, 24 Mar 2021 10:29:57 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] libbpf: constify few bpf_program getters
-Date:   Wed, 24 Mar 2021 10:29:41 -0700
-Message-ID: <20210324172941.2609884-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S237126AbhCXRlB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 24 Mar 2021 13:41:01 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:32900 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237209AbhCXRkk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 24 Mar 2021 13:40:40 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-322-BiaTXAiaOfG_77Pga_j6EA-1; Wed, 24 Mar 2021 13:40:35 -0400
+X-MC-Unique: BiaTXAiaOfG_77Pga_j6EA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BC40881283;
+        Wed, 24 Mar 2021 17:40:34 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.196.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 677145D9D0;
+        Wed, 24 Mar 2021 17:40:31 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCHv2] bpf: Take module reference for trampoline in module
+Date:   Wed, 24 Mar 2021 18:40:30 +0100
+Message-Id: <20210324174030.2053353-1-jolsa@kernel.org>
 MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
 Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-24_13:2021-03-24,2021-03-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 spamscore=0
- clxscore=1015 adultscore=0 suspectscore=0 malwarescore=0 mlxlogscore=920
- bulkscore=0 mlxscore=0 impostorscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103240127
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_program__get_type() and bpf_program__get_expected_attach_type() shouldn't
-modify given bpf_program, so mark input parameter as const struct bpf_program.
-This eliminates unnecessary compilation warnings or explicit casts in user
-programs.
+Currently module can be unloaded even if there's a trampoline
+register in it. It's easily reproduced by running in parallel:
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+  # while :; do ./test_progs -t module_attach; done
+  # while :; do rmmod bpf_testmod; sleep 0.5; done
+
+Taking the module reference in case the trampoline's ip is
+within the module code. Releasing it when the trampoline's
+ip is unregistered.
+
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 4 ++--
- tools/lib/bpf/libbpf.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+v2 changes:
+  - fixed ip_module_put to do preempt_disable/preempt_enable
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 058b643cbcb1..cac56381ee59 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8457,7 +8457,7 @@ int bpf_program__nth_fd(const struct bpf_program *prog, int n)
- 	return fd;
+ kernel/bpf/trampoline.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+index 1f3a4be4b175..39e4280f94e4 100644
+--- a/kernel/bpf/trampoline.c
++++ b/kernel/bpf/trampoline.c
+@@ -87,6 +87,26 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+ 	return tr;
  }
  
--enum bpf_prog_type bpf_program__get_type(struct bpf_program *prog)
-+enum bpf_prog_type bpf_program__get_type(const struct bpf_program *prog)
++static struct module *ip_module_get(unsigned long ip)
++{
++	struct module *mod;
++	int err = 0;
++
++	preempt_disable();
++	mod = __module_text_address(ip);
++	if (mod && !try_module_get(mod))
++		err = -ENOENT;
++	preempt_enable();
++	return err ? ERR_PTR(err) : mod;
++}
++
++static void ip_module_put(unsigned long ip)
++{
++	preempt_disable();
++	module_put(__module_text_address(ip));
++	preempt_enable();
++}
++
+ static int is_ftrace_location(void *ip)
  {
- 	return prog->type;
+ 	long addr;
+@@ -108,6 +128,9 @@ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
+ 		ret = unregister_ftrace_direct((long)ip, (long)old_addr);
+ 	else
+ 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, NULL);
++
++	if (!ret)
++		ip_module_put((unsigned long) ip);
+ 	return ret;
  }
-@@ -8502,7 +8502,7 @@ BPF_PROG_TYPE_FNS(extension, BPF_PROG_TYPE_EXT);
- BPF_PROG_TYPE_FNS(sk_lookup, BPF_PROG_TYPE_SK_LOOKUP);
  
- enum bpf_attach_type
--bpf_program__get_expected_attach_type(struct bpf_program *prog)
-+bpf_program__get_expected_attach_type(const struct bpf_program *prog)
+@@ -126,6 +149,7 @@ static int modify_fentry(struct bpf_trampoline *tr, void *old_addr, void *new_ad
+ /* first time registering */
+ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
  {
- 	return prog->expected_attach_type;
++	struct module *mod;
+ 	void *ip = tr->func.addr;
+ 	int ret;
+ 
+@@ -134,10 +158,17 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
+ 		return ret;
+ 	tr->func.ftrace_managed = ret;
+ 
++	mod = ip_module_get((unsigned long) ip);
++	if (IS_ERR(mod))
++		return -ENOENT;
++
+ 	if (tr->func.ftrace_managed)
+ 		ret = register_ftrace_direct((long)ip, (long)new_addr);
+ 	else
+ 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_addr);
++
++	if (ret)
++		module_put(mod);
+ 	return ret;
  }
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index a1a424b9b8ff..89ade7d7b31c 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -361,12 +361,12 @@ LIBBPF_API int bpf_program__set_struct_ops(struct bpf_program *prog);
- LIBBPF_API int bpf_program__set_extension(struct bpf_program *prog);
- LIBBPF_API int bpf_program__set_sk_lookup(struct bpf_program *prog);
  
--LIBBPF_API enum bpf_prog_type bpf_program__get_type(struct bpf_program *prog);
-+LIBBPF_API enum bpf_prog_type bpf_program__get_type(const struct bpf_program *prog);
- LIBBPF_API void bpf_program__set_type(struct bpf_program *prog,
- 				      enum bpf_prog_type type);
- 
- LIBBPF_API enum bpf_attach_type
--bpf_program__get_expected_attach_type(struct bpf_program *prog);
-+bpf_program__get_expected_attach_type(const struct bpf_program *prog);
- LIBBPF_API void
- bpf_program__set_expected_attach_type(struct bpf_program *prog,
- 				      enum bpf_attach_type type);
 -- 
 2.30.2
 
