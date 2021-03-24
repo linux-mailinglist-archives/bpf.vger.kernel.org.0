@@ -2,71 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DFD93473AA
-	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 09:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E9E34776C
+	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 12:32:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233644AbhCXIae (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Mar 2021 04:30:34 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14457 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233722AbhCXIaV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Mar 2021 04:30:21 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F51b80dtZzwPWP;
-        Wed, 24 Mar 2021 16:28:20 +0800 (CST)
-Received: from huawei.com (10.175.101.6) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Wed, 24 Mar 2021
- 16:30:18 +0800
-From:   Lu Wei <luwei32@huawei.com>
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: [PATCH] bpf: Remove unused headers
-Date:   Wed, 24 Mar 2021 16:31:47 +0800
-Message-ID: <20210324083147.149278-1-luwei32@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S231389AbhCXLb6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Mar 2021 07:31:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51260 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230119AbhCXLbr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 24 Mar 2021 07:31:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616585507;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=osAVL8fG7IneP33aiY4VrrfHvzLWEWC/Z/+HBmNuouc=;
+        b=X8ozfDJJE7aIUnvYxBFbCReSQILEyaasR5zke9qM+zHfKkT3d+EBO6aw5Rn6oOCMqfIcc1
+        r6dPbd9JmF+gTaK0PRoj0wNOs0ZgZvFWOd5Cbo8GB+3uMjOJsNBMeFaxM43P9RUegnPTCG
+        73mkDpH6o+VvM/D0ZleS/9UjQhHOJlM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-9-hRGzPux_OuqRr-A5_XbuQA-1; Wed, 24 Mar 2021 07:31:45 -0400
+X-MC-Unique: hRGzPux_OuqRr-A5_XbuQA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CDC7F801817;
+        Wed, 24 Mar 2021 11:31:42 +0000 (UTC)
+Received: from krava (unknown [10.40.196.25])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7138910023AF;
+        Wed, 24 Mar 2021 11:31:39 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 12:31:38 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH bpf] bpf: Take module reference for ip in module code
+Message-ID: <YFsjGkIwpXm5IYdR@krava>
+References: <20210323211533.1931242-1-jolsa@kernel.org>
+ <20210324012237.65pf4s52oqlicea3@ast-mbp>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324012237.65pf4s52oqlicea3@ast-mbp>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The header <linux/version.h> is useless in sampleip_kern.c
-and trace_event_kern.c, remove it.
+On Tue, Mar 23, 2021 at 06:22:37PM -0700, Alexei Starovoitov wrote:
+> On Tue, Mar 23, 2021 at 10:15:33PM +0100, Jiri Olsa wrote:
+> > Currently module can be unloaded even if there's a trampoline
+> > register in it. It's easily reproduced by running in parallel:
+> > 
+> >   # while :; do ./test_progs -t module_attach; done
+> >   # while :; do ./test_progs -t fentry_test; done
+> > 
+> > Taking the module reference in case the trampoline's ip is
+> > within the module code. Releasing it when the trampoline's
+> > ip is unregistered.
+> > 
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  kernel/bpf/trampoline.c | 32 ++++++++++++++++++++++++++++++++
+> >  1 file changed, 32 insertions(+)
+> > 
+> > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> > index 1f3a4be4b175..f6cb179842b2 100644
+> > --- a/kernel/bpf/trampoline.c
+> > +++ b/kernel/bpf/trampoline.c
+> > @@ -87,6 +87,27 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
+> >  	return tr;
+> >  }
+> >  
+> > +static struct module *ip_module_get(unsigned long ip)
+> > +{
+> > +	struct module *mod;
+> > +	int err = 0;
+> > +
+> > +	preempt_disable();
+> > +	mod = __module_text_address(ip);
+> > +	if (mod && !try_module_get(mod))
+> > +		err = -ENOENT;
+> > +	preempt_enable();
+> > +	return err ? ERR_PTR(err) : mod;
+> > +}
+> > +
+> > +static void ip_module_put(unsigned long ip)
+> > +{
+> > +	struct module *mod = __module_text_address(ip);
+> 
+> Conceptually looks correct, but how did you test it?!
+> Just doing your reproducer:
+> while :; do ./test_progs -t module_attach; done & while :; do ./test_progs -t fentry_test; done
+> 
+> I immediately hit:
+> [   19.461162] WARNING: CPU: 1 PID: 232 at kernel/module.c:264 module_assert_mutex_or_preempt+0x2e/0x40
+> [   19.477126] Call Trace:
+> [   19.477464]  __module_address+0x28/0xf0
+> [   19.477865]  ? __bpf_trace_bpf_testmod_test_write_bare+0x10/0x10 [bpf_testmod]
+> [   19.478711]  __module_text_address+0xe/0x60
+> [   19.479156]  bpf_trampoline_update+0x2ff/0x470
 
-Signed-off-by: Lu Wei <luwei32@huawei.com>
----
- samples/bpf/sampleip_kern.c    | 1 -
- samples/bpf/trace_event_kern.c | 1 -
- 2 files changed, 2 deletions(-)
+I don't have lockdep enabled.. ah the module_mutex is held
+during module init, that's why all the code I was using as
+a reference did not take it.. sorry, will fix
 
-diff --git a/samples/bpf/sampleip_kern.c b/samples/bpf/sampleip_kern.c
-index f24806ac24e7..a3f8a3998e0a 100644
---- a/samples/bpf/sampleip_kern.c
-+++ b/samples/bpf/sampleip_kern.c
-@@ -4,7 +4,6 @@
-  * modify it under the terms of version 2 of the GNU General Public
-  * License as published by the Free Software Foundation.
-  */
--#include <linux/version.h>
- #include <linux/ptrace.h>
- #include <uapi/linux/bpf.h>
- #include <uapi/linux/bpf_perf_event.h>
-diff --git a/samples/bpf/trace_event_kern.c b/samples/bpf/trace_event_kern.c
-index 7d3c66fb3f88..0bba5fcd7d24 100644
---- a/samples/bpf/trace_event_kern.c
-+++ b/samples/bpf/trace_event_kern.c
-@@ -5,7 +5,6 @@
-  * License as published by the Free Software Foundation.
-  */
- #include <linux/ptrace.h>
--#include <linux/version.h>
- #include <uapi/linux/bpf.h>
- #include <uapi/linux/bpf_perf_event.h>
- #include <uapi/linux/perf_event.h>
--- 
-2.17.1
+> 
+> Which points to an obvious bug above.
+> 
+> How did you debug it to this module going away issue?
+> Why does test_progs -t fentry_test help to repro?
+> Or does it?
+> It doesn't touch anything in modules.
+
+test_prog also loads/unloads that module, but it could be
+just insmod/rmmod instead, will change
+
+jirka
 
