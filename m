@@ -2,115 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BAF3481CC
-	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 20:21:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB05E34828D
+	for <lists+bpf@lfdr.de>; Wed, 24 Mar 2021 21:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237624AbhCXTVD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Mar 2021 15:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
+        id S238115AbhCXUF0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Mar 2021 16:05:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237858AbhCXTUj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Mar 2021 15:20:39 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF71CC061763;
-        Wed, 24 Mar 2021 12:20:38 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id r17so15353145pgi.0;
-        Wed, 24 Mar 2021 12:20:38 -0700 (PDT)
+        with ESMTP id S237906AbhCXUFK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Mar 2021 16:05:10 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECE8C061763;
+        Wed, 24 Mar 2021 13:05:10 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id c204so18218937pfc.4;
+        Wed, 24 Mar 2021 13:05:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BZVkLp1A4sxw0q9/qAve7LfdBGr1kHFGkqnNYCMOOvY=;
-        b=IqJtHOh/7Wok2sdGsGQyexiCwo2LiPzH8njBJBvmOzEuJFkmtJfPoI1bXyuM9sjjDI
-         j9H8FVxb52RnDc+nRNykq0KVAZveUuGVhcmNdUAzfkVSpAQbp7LuGpfJXhivhnb9bc4I
-         FcJUiQ7/n62IsnEkR4eFwMHpqueZO5AWm9P2S3rScnGiOnoilAX+P3fh2bbp5UJnx8sl
-         jp553cgCcdGREbdb767Htg6zaPJS2wzoHXF0XhKo6VgEQIjMRcj+kyiFGgdsvai2W/PA
-         gA4r3V2rWIt0msFH6BvGLnISctZQK4aAUFln3FGPKglOfY6VMnOOv62htzWSgMS7UFuT
-         wV3Q==
+        bh=415I9Q2//om44EgT/R1VG6ftwnvfeEx2NhKqDCrMBY0=;
+        b=ciGvS1x1y6xOeCjj+2Ncn8VcoYbqJVT6DugMnr55mcZphcLFEHc6N//CHcKaYyOGly
+         k6YYd/3rLEYmfJpPHGaafug+3zX8a/yOIPayLa96YX7jVhQ/gzY8/4Rof9gBKZYhJQOq
+         QMLhxv2A93R+ZTeejIvsCHN09lnNBv2McbPxCPYms83yTbaB6W14HB1oDMJhHPMgxKWQ
+         whmvTZ3OzJqojwcgMcOGeGIt7RpXCis67jZ+PoPaAXwANujZ3Kz9S48HLCeYSjlT4MZk
+         GtkKSWTxlR1ztIEmYhjG6pSwn5xRJPNnIWmOREQ4e7jmQkXSX1xHIYulLg9X9sQ7V4qa
+         wJcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BZVkLp1A4sxw0q9/qAve7LfdBGr1kHFGkqnNYCMOOvY=;
-        b=FENA1OcrLLo6jPjzpkrJ4oaiuU/28KeA01owNPrOnd/Tk/vBHQUxb87jbhe2NEZqzr
-         udBOQdJN6MitnGZ+Yd94dghy0H+q4dFprHUyHQ9JJLB4AUsMH40Em4Wq1sZrnGOz9eCa
-         ZUgI/jZ/uJNh9Dl/IBSEZOU7RHft+brBrhAZlN2maxMxhIXcCfdkQ9gpoha6yrdV2F6J
-         DvwVWzNpC/5ICG8zJ8dIfy+Il0aHJmPTXybNZPIXnlYCOg4UoVd29ZPxga+fsd1XJNz2
-         YOoJR7f/ZclH5hM1zSxy6UEEJj1+eExFo4gHedPGsk3gWhEwXdXP7PUV8/Rdbx4HTcYU
-         pDog==
-X-Gm-Message-State: AOAM532PxWs8p30dFu7NQs/viDqV7KqUO+NdOcfZtcsTmp2L24L6Acqm
-        dkT9qxUn1ZUfG7eCxdQaBEuYjHo1kYLtrSVPVck=
-X-Google-Smtp-Source: ABdhPJzydEFxkIR8JwBYP+8K4cByS8+eH3m+v6+qcSZGQC6tzkKIj6dIANhuknpLazlZvg2yQf9Ay+lNpH5cyTLhRzg=
-X-Received: by 2002:a63:db02:: with SMTP id e2mr4359862pgg.18.1616613638397;
- Wed, 24 Mar 2021 12:20:38 -0700 (PDT)
+        bh=415I9Q2//om44EgT/R1VG6ftwnvfeEx2NhKqDCrMBY0=;
+        b=WA2UvzJR+w6rlMaQeRkVdgxQprtFyKdy+bpBN0CEmYSpv1CjWiqjGGZVjwZuai+d7L
+         UWevao1zaUJfhQe/cJ4hByhK/fRxru4gzolO3/CyZZv7enG7Ob6h5I72bruRsV4MQ0UM
+         Y2UAhwsW0/JOJLBRSngRCGhgE0dNX7hQBDakxixWk/17xIoddGxrSOC6MGjNpKm9sX1+
+         4lwfR4evA9vDuKxDSUuJ33JzBhiwwpnzVOJCHnvzmCtjaRwHyVbukpoORwjXqYu8zKrM
+         M0nHjCg5n+VS62kjXDFfU0iY8fK3gInapyz6KZFfjBuHTcQrkCR4Pr+Gf0POUIfHC8wr
+         3NGw==
+X-Gm-Message-State: AOAM532wugJEMzSdsA2wN5wYlaWAgDunK0wySA5g7KCP3XR6W0kqeymf
+        Pp5T00xSNWcQJ+u2TvGs0gWfPVwS2+kVk0PkfLHgfq65K+nu4LQD
+X-Google-Smtp-Source: ABdhPJwFoIGJg28JMPE1MXdmMMFGCM5OZA9rj4c+gGqQYMO74aTwWtcMX8O5EBzXS2GctbrCjmTwP35V0r44EW4wC5w=
+X-Received: by 2002:a63:d842:: with SMTP id k2mr4342566pgj.428.1616616309778;
+ Wed, 24 Mar 2021 13:05:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <1616552677-39016-1-git-send-email-linyunsheng@huawei.com>
-In-Reply-To: <1616552677-39016-1-git-send-email-linyunsheng@huawei.com>
+References: <20210323003808.16074-1-xiyou.wangcong@gmail.com>
+ <20210323003808.16074-9-xiyou.wangcong@gmail.com> <b510f1da-1442-5297-db95-e21ac8b71042@huawei.com>
+In-Reply-To: <b510f1da-1442-5297-db95-e21ac8b71042@huawei.com>
 From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Wed, 24 Mar 2021 12:20:27 -0700
-Message-ID: <CAM_iQpXAedg31hPx674u4Q4fj0DweADPSn0n_KghgRBWDoOOfw@mail.gmail.com>
-Subject: Re: [PATCH net v2] net: sched: fix packet stuck problem for lockless qdisc
+Date:   Wed, 24 Mar 2021 13:04:58 -0700
+Message-ID: <CAM_iQpU4WTegg2eJRBvEcUHs=qGNKMzGswiH14LeLtEbVLMkkg@mail.gmail.com>
+Subject: Re: [Patch bpf-next v6 08/12] udp: implement ->read_sock() for sockmap
 To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        "Cong Wang ." <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linuxarm@openeuler.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can@vger.kernel.org, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        bpf <bpf@vger.kernel.org>, Jonas Bonn <jonas.bonn@netrounds.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Michael Zhivich <mzhivich@akamai.com>,
-        Josh Hunt <johunt@akamai.com>, Jike Song <albcamus@gmail.com>,
-        Kehuan Feng <kehuan.feng@gmail.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>, atenart@kernel.org,
-        Alexander Duyck <alexander.duyck@gmail.com>
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 7:24 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> @@ -176,8 +207,23 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
->  static inline void qdisc_run_end(struct Qdisc *qdisc)
->  {
->         write_seqcount_end(&qdisc->running);
-> -       if (qdisc->flags & TCQ_F_NOLOCK)
-> +       if (qdisc->flags & TCQ_F_NOLOCK) {
->                 spin_unlock(&qdisc->seqlock);
-> +
-> +               /* qdisc_run_end() is protected by RCU lock, and
-> +                * qdisc reset will do a synchronize_net() after
-> +                * setting __QDISC_STATE_DEACTIVATED, so testing
-> +                * the below two bits separately should be fine.
+On Mon, Mar 22, 2021 at 11:31 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>
+> On 2021/3/23 8:38, Cong Wang wrote:
+> > From: Cong Wang <cong.wang@bytedance.com>
+> >
+> > This is similar to tcp_read_sock(), except we do not need
+> > to worry about connections, we just need to retrieve skb
+> > from UDP receive queue.
+> >
+> > Cc: John Fastabend <john.fastabend@gmail.com>
+> > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> > Cc: Lorenz Bauer <lmb@cloudflare.com>
+> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > ---
+> >  include/net/udp.h   |  2 ++
+> >  net/ipv4/af_inet.c  |  1 +
+> >  net/ipv4/udp.c      | 35 +++++++++++++++++++++++++++++++++++
+> >  net/ipv6/af_inet6.c |  1 +
+> >  4 files changed, 39 insertions(+)
+> >
+> > diff --git a/include/net/udp.h b/include/net/udp.h
+> > index df7cc1edc200..347b62a753c3 100644
+> > --- a/include/net/udp.h
+> > +++ b/include/net/udp.h
+> > @@ -329,6 +329,8 @@ struct sock *__udp6_lib_lookup(struct net *net,
+> >                              struct sk_buff *skb);
+> >  struct sock *udp6_lib_lookup_skb(const struct sk_buff *skb,
+> >                                __be16 sport, __be16 dport);
+> > +int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
+> > +               sk_read_actor_t recv_actor);
+> >
+> >  /* UDP uses skb->dev_scratch to cache as much information as possible and avoid
+> >   * possibly multiple cache miss on dequeue()
+> > diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+> > index 1355e6c0d567..f17870ee558b 100644
+> > --- a/net/ipv4/af_inet.c
+> > +++ b/net/ipv4/af_inet.c
+> > @@ -1070,6 +1070,7 @@ const struct proto_ops inet_dgram_ops = {
+> >       .setsockopt        = sock_common_setsockopt,
+> >       .getsockopt        = sock_common_getsockopt,
+> >       .sendmsg           = inet_sendmsg,
+> > +     .read_sock         = udp_read_sock,
+> >       .recvmsg           = inet_recvmsg,
+> >       .mmap              = sock_no_mmap,
+> >       .sendpage          = inet_sendpage,
+> > diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> > index 38952aaee3a1..a0adee3b1af4 100644
+> > --- a/net/ipv4/udp.c
+> > +++ b/net/ipv4/udp.c
+> > @@ -1782,6 +1782,41 @@ struct sk_buff *__skb_recv_udp(struct sock *sk, unsigned int flags,
+> >  }
+> >  EXPORT_SYMBOL(__skb_recv_udp);
+> >
+> > +int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
+> > +               sk_read_actor_t recv_actor)
+> > +{
+> > +     int copied = 0;
+> > +
+> > +     while (1) {
+> > +             int offset = 0, err;
+> > +             struct sk_buff *skb;
+> > +
+> > +             skb = __skb_recv_udp(sk, 0, 1, &offset, &err);
+> > +             if (!skb)
+> > +                     break;
+>
+> Does above error handling need the below additional handling?
+> It seems __skb_recv_udp() will return the error by parameter "err",
+> if "copied == 0", does it need to return the error?
 
-Hmm, why synchronize_net() after setting this bit is fine? It could
-still be flipped right after you test RESCHEDULE bit.
+Not for skmsg case, because the return value is just unused:
 
+static void sk_psock_verdict_data_ready(struct sock *sk)
+{
+        struct socket *sock = sk->sk_socket;
+        read_descriptor_t desc;
 
-> +                * For qdisc_run() in net_tx_action() case, we
-> +                * really should provide rcu protection explicitly
-> +                * for document purposes or PREEMPT_RCU.
-> +                */
-> +               if (unlikely(test_bit(__QDISC_STATE_NEED_RESCHEDULE,
-> +                                     &qdisc->state) &&
-> +                            !test_bit(__QDISC_STATE_DEACTIVATED,
-> +                                      &qdisc->state)))
+        if (unlikely(!sock || !sock->ops || !sock->ops->read_sock))
+                return;
 
-Why do you want to test __QDISC_STATE_DEACTIVATED bit at all?
-dev_deactivate_many() will wait for those scheduled but being
-deactivated, so what's the problem of scheduling it even with this bit?
+        desc.arg.data = sk;
+        desc.error = 0;
+        desc.count = 1;
+
+        sock->ops->read_sock(sk, &desc, sk_psock_verdict_recv);
+}
 
 Thanks.
