@@ -2,133 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA805348561
-	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 00:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4C0348580
+	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 00:48:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbhCXXit (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Mar 2021 19:38:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20757 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234684AbhCXXiR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 24 Mar 2021 19:38:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616629096;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bWsKgQX5RpEXJF2XwJsRHZ+bqYW+lEMQdkiI+AqWIgk=;
-        b=CGESaNp+RD+qxbPlJajDsyM8n07hzwu6fJGzLA/y81yRmMyYgPvk+gndmhg8K9ma1azh3C
-        2VvNdFBjI8G7tOegSl9DCObuH9h3iaJL16bFbC9jUYBY7i4CEnqBrxMWH9FRKZOFGV55Gq
-        A+c1NHsCj27FL6yeytlpTltxHHWd9gc=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-320-dO5d42HKNhyqkTeaGusI6g-1; Wed, 24 Mar 2021 19:38:11 -0400
-X-MC-Unique: dO5d42HKNhyqkTeaGusI6g-1
-Received: by mail-ed1-f69.google.com with SMTP id h5so1780927edf.17
-        for <bpf@vger.kernel.org>; Wed, 24 Mar 2021 16:38:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=bWsKgQX5RpEXJF2XwJsRHZ+bqYW+lEMQdkiI+AqWIgk=;
-        b=UpNrD/fzw++59e0qo7/OwPYvZngIbjWU04gy1wu9HdPa1WCIobzdieAavh6vCC7GRW
-         Xlljrcy4c8kMF+RkM2y/xT7skrU2mWnqvATqOI6rXdSZryGERQxS9RhHTbcNL57ZJhPE
-         rCvwiCi/Wwqe6V8ZHeKuumJeHOdnNatIGrho8Nen451hpzWGQVbds+3OQhX/rwg4rKRs
-         /Koa4ugO1mVJkwb9TEIwDukSLC0VS6SL2B9LDPsDgSQ9UHa0nZXCSRRfTZg3Tip2nk1V
-         woR2w7TbsTCg4UUIeW2z6VDxQIH8/wgOTcGj3IkVbQLlcfdd8K2NSHBahlZPtMsHoNU7
-         Y8Kw==
-X-Gm-Message-State: AOAM530ihqNM0JXkfQ+Y14QfpIv9aKXOXJ2TKsnf/3ydTKKdaQXUjgOL
-        t7Q6mepphCasSWtaWF0c3qOvOIq1R0de5M4F3z+OT60ZHMeQ5q+t0+jnh/+ZUyNEGwtk5Jst7wE
-        R+hL8j3caRLUn
-X-Received: by 2002:a17:906:3b48:: with SMTP id h8mr6259202ejf.261.1616629090186;
-        Wed, 24 Mar 2021 16:38:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx28324KlNDmlRF3zjuIjq/8k55ugSp4N17Mr3QyQ8ePbq2WK6hLHFgrzuk6zcL/arOOxIU8A==
-X-Received: by 2002:a17:906:3b48:: with SMTP id h8mr6259183ejf.261.1616629089974;
-        Wed, 24 Mar 2021 16:38:09 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id w24sm1844647edt.44.2021.03.24.16.38.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 16:38:09 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 9C99A1801A3; Thu, 25 Mar 2021 00:38:07 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
-        ast@kernel.org, bjorn.topel@intel.com, magnus.karlsson@intel.com,
-        ciara.loftus@intel.com, john.fastabend@gmail.com
-Subject: Re: [PATCH v3 bpf-next 06/17] libbpf: xsk: use bpf_link
-In-Reply-To: <20210324130918.GA6932@ranger.igk.intel.com>
-References: <20210322205816.65159-1-maciej.fijalkowski@intel.com>
- <20210322205816.65159-7-maciej.fijalkowski@intel.com>
- <87wnty7teq.fsf@toke.dk> <20210324130918.GA6932@ranger.igk.intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 25 Mar 2021 00:38:07 +0100
-Message-ID: <87a6qsf7hc.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S234942AbhCXXr7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Mar 2021 19:47:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234936AbhCXXrr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Mar 2021 19:47:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F74761A1B;
+        Wed, 24 Mar 2021 23:47:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616629666;
+        bh=v59vByxGJgHUIeCgl6iQF3cvCpnYou0eQu+z4+VM78o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=G3A+zkz7210ziOxm83lOvNFO21FhzdWgPtySMCeO5Znex2w/S9GHonLO68eUSzrQW
+         uXVpt5KN14vzJKKFXz3GfLEdwJvwiewrLLitdmzMoVQQ2KaDxu6v1pk+3a0NMrk7ez
+         s9dKbiCW+ymshljVk9mb8fK9EwlPsrxfZWtA+ZheNOzdWK1k8hEdPImL4yqLnU9xYH
+         W08x9sjlXtVgRcuTiCYTrBwStFF2Hn/KrauXRx05NjClqEK/ERWGKbeY27LIS6yUbU
+         5SbQsVfUedJhfbGxtwEZZwTiLaFfjHecbPw4CUBo7xs0Reb6/WG97W1p+TuG9xDXUz
+         NApD42hpZMSww==
+Date:   Thu, 25 Mar 2021 08:47:41 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Subject: Re: [PATCH -tip v4 10/12] x86/kprobes: Push a fake return address
+ at kretprobe_trampoline
+Message-Id: <20210325084741.74bdb2b1d2ed00fe68840cea@kernel.org>
+In-Reply-To: <20210324160143.wd43zribpeop2czn@treble>
+References: <161639518354.895304.15627519393073806809.stgit@devnote2>
+        <161639530062.895304.16962383429668412873.stgit@devnote2>
+        <20210323223007.GG4746@worktop.programming.kicks-ass.net>
+        <20210324104058.7c06aaeb0408e24db6ba46f8@kernel.org>
+        <20210324160143.wd43zribpeop2czn@treble>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+On Wed, 24 Mar 2021 11:01:43 -0500
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 
-> On Mon, Mar 22, 2021 at 10:47:09PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
->>=20
->> > Currently, if there are multiple xdpsock instances running on a single
->> > interface and in case one of the instances is terminated, the rest of
->> > them are left in an inoperable state due to the fact of unloaded XDP
->> > prog from interface.
->> >
->> > Consider the scenario below:
->> >
->> > // load xdp prog and xskmap and add entry to xskmap at idx 10
->> > $ sudo ./xdpsock -i ens801f0 -t -q 10
->> >
->> > // add entry to xskmap at idx 11
->> > $ sudo ./xdpsock -i ens801f0 -t -q 11
->> >
->> > terminate one of the processes and another one is unable to work due to
->> > the fact that the XDP prog was unloaded from interface.
->> >
->> > To address that, step away from setting bpf prog in favour of bpf_link.
->> > This means that refcounting of BPF resources will be done automatically
->> > by bpf_link itself.
->> >
->> > Provide backward compatibility by checking if underlying system is
->> > bpf_link capable. Do this by looking up/creating bpf_link on loopback
->> > device. If it failed in any way, stick with netlink-based XDP prog.
->> > Otherwise, use bpf_link-based logic.
->>=20
->> So how is the caller supposed to know which of the cases happened?
->> Presumably they need to do their own cleanup in that case? AFAICT you're
->> changing the code to always clobber the existing XDP program on detach
->> in the fallback case, which seems like a bit of an aggressive change? :)
->
-> Sorry Toke, I was offline yesterday.
-> Yeah once again I went too far and we shouldn't do:
->
-> bpf_set_link_xdp_fd(xsk->ctx->ifindex, -1, 0);
->
-> if xsk_lookup_bpf_maps(xsk) returned non-zero value which implies that the
-> underlying prog is not AF_XDP related.
->
-> closing prog_fd (and link_fd under the condition that system is bpf_link
-> capable) is enough for that case.
+> On Wed, Mar 24, 2021 at 10:40:58AM +0900, Masami Hiramatsu wrote:
+> > On Tue, 23 Mar 2021 23:30:07 +0100
+> > Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > > On Mon, Mar 22, 2021 at 03:41:40PM +0900, Masami Hiramatsu wrote:
+> > > >  	".global kretprobe_trampoline\n"
+> > > >  	".type kretprobe_trampoline, @function\n"
+> > > >  	"kretprobe_trampoline:\n"
+> > > >  #ifdef CONFIG_X86_64
+> > > 
+> > > So what happens if we get an NMI here? That is, after the RET but before
+> > > the push? Then our IP points into the trampoline but we've not done that
+> > > push yet.
+> > 
+> > Not only NMI, but also interrupts can happen. There is no cli/sti here.
+> > 
+> > Anyway, thanks for pointing!
+> > I think in UNWIND_HINT_TYPE_REGS and UNWIND_HINT_TYPE_REGS_PARTIAL cases
+> > ORC unwinder also has to check the state->ip and if it is kretprobe_trampoline,
+> > it should be recovered.
+> > What about this?
+> 
+> I think the REGS and REGS_PARTIAL cases can also be affected by function
+> graph tracing.  So should they use the generic unwind_recover_ret_addr()
+> instead of unwind_recover_kretprobe()?
 
-I think the same thing goes for further down? With your patch, if the
-code takes the else branch (after checking prog_id), and then ends up
-going to err_set_bpf_maps, it'll now also do an unconditional
-bpf_set_link_xdp_fd(), where before it was checking prog_id again and
-only unloading if it previously loaded the program...
+Yes, but I'm not sure this parameter can be applied.
+For example, it passed "state->sp - sizeof(unsigned long)" as where the
+return address stored address. Is that same on ftrace graph too?
 
-> If we agree on that and there's nothing else that I missed, I'll send
-> a v4.
+Thank you,
 
-Apart from the above, sure!
-
--Toke
-
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
