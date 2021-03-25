@@ -2,136 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD44349A28
-	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 20:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C770B349ADD
+	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 21:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbhCYT1s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Mar 2021 15:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhCYT13 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:27:29 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5C1C06174A;
-        Thu, 25 Mar 2021 12:27:28 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 32so2838116pgm.1;
-        Thu, 25 Mar 2021 12:27:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OYrivqIJMJkbkKIsLLmp5Sa6lUlSfN4t+1tq93chnBU=;
-        b=rXDTZyx5IHZjDIF1PBSMWbdVUKXYXreRSphnTlmUx1rSyu1a5iqahOshFc3ttbJvFj
-         69uKbTXCEUCYnoIgWmBvp/XEjzXqYroE6K4NoKpfkd1h9xQKkwRh6Skgz++GRJG9foIW
-         toiwMimCDBM9QPMRJCO+ai+Riwp+GDYSpnmBkPQMklfjXjr4Cg9xanyFgayP9rN9GJey
-         c1HUPCVccoZXN3tFe/pD4KmKXCxZl+fujLo8UXEorAiyPgLmXKVegmGwar4lqotbK59X
-         jVLlzCLBoNM//0adD/O0lD8Z2obitNBvg6weJ6IXUHrTuApizWN0oavOKLMdFTvQebU1
-         6BgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OYrivqIJMJkbkKIsLLmp5Sa6lUlSfN4t+1tq93chnBU=;
-        b=XaY+uZ7NhrGykX+JuUWFt8Idox7uOtOtyiQBoWQjaN+/wyPWCKXBg7fuhxaNzItoSv
-         NExg23OMtiykcV5TI3lVSCQceuvXFnDjWimSXRyLI11+bUyMKqids7x8bvu2ra/0kywx
-         AVW6f6eFUiaqedYzVkrRyBvqSWrALzRJdniW3uNoslhhZCVsRqdwkcc3sIBRvfwijp2K
-         asRaBKez0gOHUz5Z4Y52gjP7dJW9td6v86pUskPXOw4JEC+oQjtUW6F/MY3o/4gCvTHq
-         n6OSKN28NPn4lcZn1oK4UPu/qAbfIJ2KnhOpmvw/W3iXhXSQf7bCXyP8hC9gySG344Ql
-         /G6w==
-X-Gm-Message-State: AOAM533WRF7FyxK469XcT3fBYKTRMNhidas30ewaYskmsP6INbc0yGVQ
-        Hx+v47yj1IsrgB2mun2cW3ATGRrB9vusfhQPdpo=
-X-Google-Smtp-Source: ABdhPJwxPRXYrMgPc3HUi4Z5O1MxJj2fPU876/C8TYGiFdjA36tg+fZtoZS92kFCw71BnRQsOQhNK9YGinSiPK+DJXs=
-X-Received: by 2002:a63:1c4c:: with SMTP id c12mr8752180pgm.179.1616700448425;
- Thu, 25 Mar 2021 12:27:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <161661943080.28508.5809575518293376322.stgit@john-Precision-5820-Tower>
- <161661958954.28508.16923012330549206770.stgit@john-Precision-5820-Tower>
- <CAM_iQpVShCqWx1CYUOO9SrgWw7ztVP6j=v=W9dAd9FbChGZauQ@mail.gmail.com> <605bf9718f2fc_64fde2082b@john-XPS-13-9370.notmuch>
-In-Reply-To: <605bf9718f2fc_64fde2082b@john-XPS-13-9370.notmuch>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Thu, 25 Mar 2021 12:27:17 -0700
-Message-ID: <CAM_iQpWzoP9SOQcMPB--jp6C_xnUVAmVtS4yMCN43kL248y4QA@mail.gmail.com>
-Subject: Re: [bpf PATCH 2/2] bpf, sockmap: fix incorrect fwd_alloc accounting
+        id S230153AbhCYULM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Mar 2021 16:11:12 -0400
+Received: from forward2-smtp.messagingengine.com ([66.111.4.226]:37729 "EHLO
+        forward2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230357AbhCYUK6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 25 Mar 2021 16:10:58 -0400
+X-Greylist: delayed 561 seconds by postgrey-1.27 at vger.kernel.org; Thu, 25 Mar 2021 16:10:58 EDT
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailforward.nyi.internal (Postfix) with ESMTP id 33F851940C8A;
+        Thu, 25 Mar 2021 16:01:36 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 25 Mar 2021 16:01:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=xUY8JMHE5Bq0HoQzfWchmt1/xTlcguEpCokZz3eSh
+        QQ=; b=ETjj/GCiTmzgHNL4JccjZ0HHr3WcJkKzFq6YR3IOSkDkOtKqHdiEuuIz1
+        xUb/cN355pRpsyKZOWqFLbNN6cymeGgWDw7jOqA99yaItLelgjAeA8XFg7apaH7I
+        XNw9rrOHrUT2CO70zdJo6f5lOJo5OgU1ij7s34VEBfZEaezkA36VYutX2Ffhc6fN
+        GEW+1N0+tBY0/dCZDbUanYb+Frkt1/DtWlLhnIRFxSn6OwFNkbKToIeS17WrNb3i
+        Cu06DhYJcMDm+Ibi4vgGrhfaVKLK6JZz9lDB7/o3iYh1/81EB9hzSLzrmpuQ17w+
+        BxFdrUVuEk8GbvDyiSWuc+8Sgwrww==
+X-ME-Sender: <xms:H-xcYI20W63G45N9fnrt5nW95usWaifuTs5UbI8WcV1S-Bg2Jdew7w>
+    <xme:H-xcYMtA08cEeRyhq4o9RYMJp5XMKvLS1P9aHo_cA90j2tYEsjNuF0NTHB-uvFZTO
+    4SKGUK7xWwqDP9SWd4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehtddgudefgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefuvfhfhffkffgfgggjtgfgsehtjeertddtfeejnecuhfhrohhmpeftrghf
+    rggvlhcuffgrvhhiugcuvfhinhhotghouceorhgrfhgrvghlughtihhnohgtohesuhgsuh
+    hnthhurdgtohhmqeenucggtffrrghtthgvrhhnpeevjeekudeijefhfeehuefhgeeiueei
+    ffeiieehgfdvvdethfffffeuueehhfegveenucffohhmrghinhepghhithhhuhgsrdgtoh
+    hmnecukfhppedukeelrddurdduieekrddugeejnecuvehluhhsthgvrhfuihiivgeptden
+    ucfrrghrrghmpehmrghilhhfrhhomheprhgrfhgrvghlughtihhnohgtohesuhgsuhhnth
+    hurdgtohhm
+X-ME-Proxy: <xmx:H-xcYA7wHlg_-WYbXSdvn8QVOkc-6y7866XwMaKU1xTBxwHbsydnww>
+    <xmx:H-xcYFLSPvasYvewoTokK970H3wNt5dMr2abOPNNKyemS03oapTvng>
+    <xmx:H-xcYI68FzLjrpsZdqAefmfCRFuy7aDJZ8wZj0b6xWlaa47Avur74Q>
+    <xmx:IOxcYE6V4Fe7nTsY53qP8W2mIG53s49rh2c6vKRoxHqjvoeWpcbwZw>
+Received: from ibmmac.local (unknown [189.1.168.147])
+        by mail.messagingengine.com (Postfix) with ESMTPA id DA7C7240065;
+        Thu, 25 Mar 2021 16:01:34 -0400 (EDT)
+Subject: Re: [PATCH v3 bpf-next] libbpf: add bpf object kern_version attribute
+ setter
 To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     andrii.nakryiko@gmail.com,
+        Rafael David Tinoco <rafaeldtinoco@ubuntu.com>,
+        bpf@vger.kernel.org
+References: <20210323040952.2118241-1-rafaeldtinoco@ubuntu.com>
+ <60597d21d7eed_45ba42086@john-XPS-13-9370.notmuch>
+From:   Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
+Message-ID: <a286bddf-8217-57e3-30bf-a09f3de2592e@ubuntu.com>
+Date:   Thu, 25 Mar 2021 17:01:32 -0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <60597d21d7eed_45ba42086@john-XPS-13-9370.notmuch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 7:46 PM John Fastabend <john.fastabend@gmail.com> wrote:
->
-> Cong Wang wrote:
-> > On Wed, Mar 24, 2021 at 2:00 PM John Fastabend <john.fastabend@gmail.com> wrote:
-> > >
-> > > Incorrect accounting fwd_alloc can result in a warning when the socket
-> > > is torn down,
-> > >
->
-> [...]
->
-> > > To resolve lets only account for sockets on the ingress queue that are
-> > > still associated with the current socket. On the redirect case we will
-> > > check memory limits per 6fa9201a89898, but will omit fwd_alloc accounting
-> > > until skb is actually enqueued. When the skb is sent via skb_send_sock_locked
-> > > or received with sk_psock_skb_ingress memory will be claimed on psock_other.
->                      ^^^^^^^^^^^^^^^^^^^^
-> >
-> > You mean sk_psock_skb_ingress(), right?
->
-> Yes.
+>> Unfortunately some distros don't have their kernel version defined
+>> accurately in <linux/version.h> due to different long term support
+>> reasons.
+>>
+>> It is important to have a way to override the bpf kern_version
+>> attribute during runtime: some old kernels might still check for
+>> kern_version attribute during bpf_prog_load().
+>>
+>> Signed-off-by: Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
+>> ---
+>>   tools/lib/bpf/libbpf.c   | 10 ++++++++++
+>>   tools/lib/bpf/libbpf.h   |  1 +
+>>   tools/lib/bpf/libbpf.map |  1 +
+>>   3 files changed, 12 insertions(+)
+>>
+> 
+> Hi Andrii and Rafael,
+> 
+> Did you consider making kernel version an attribute of the load
+> API, bpf_prog_load_xattr()? This feels slightly more natural
+> to me, to tell the API the kernel you need at load time.
 
-skb_send_sock_locked() actually allocates its own skb when sending, hence
-it uses a different skb for memory accounting.
+Hi John,
 
->
-> [...]
->
-> > > @@ -880,12 +876,13 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
-> > >                 kfree_skb(skb);
-> > >                 goto out;
-> > >         }
-> > > -       skb_set_owner_r(skb, sk);
-> > >         prog = READ_ONCE(psock->progs.skb_verdict);
-> > >         if (likely(prog)) {
-> > > +               skb->sk = psock->sk;
-> >
-> > Why is skb_orphan() not needed here?
->
-> These come from strparser which do not have skb->sk set.
+This is how I'm using:
+https://github.com/rafaeldtinoco/portablebpf/blob/master/mine.c#L285
 
-Hmm, but sk_psock_verdict_recv() passes a clone too, like
-strparser, so either we need it for both, or not at all. Clones
-do not have skb->sk, so I think you can remove the one in
-sk_psock_verdict_recv() too.
+> Although, I don't use the skeleton pieces so maybe it would be
+> awkward for that usage.
 
+having a xxx_bpf object:
 
->
-> >
-> > Nit: You can just use 'sk' here, so "skb->sk = sk".
->
-> Sure that is a bit nicer, will respin with this.
->
-> >
-> >
-> > >                 tcp_skb_bpf_redirect_clear(skb);
-> > >                 ret = sk_psock_bpf_run(psock, prog, skb);
-> > >                 ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
-> > > +               skb->sk = NULL;
-> >
-> > Why do you want to set it to NULL here?
->
-> So we don't cause the stack to throw other errors later if we
-> were to call skb_orphan for example. Various places in the skb
-> helpers expect both skb->sk and skb->destructor to be set together
-> and here we are just using it as a mechanism to feed the sk into
-> the BPF program side. The above skb_set_owner_r for example
-> would likely BUG().
+xxx_bpf__open_and_load() -> xxx_bpf__load() -> 
+bpf_object__load_skeleton() -> bpf_object_load() -> bpf_object__loadxattr()
 
-Sounds reasonable.
+We would have to add kern_version to 'bpf_object_skeleton' struct, to be 
+passed to 'bpf_object__load_skeleton()' to have it passed on.
 
-Thanks.
+I'll let Andrii to see what he prefers.
+
+Note:
+
+Reason for all this (including the legacy kprobe logic, in other commit) 
+is to continue the 
+https://github.com/rafaeldtinoco/conntracker/tree/poc-cmd project, 
+making sure it supports 4.x kernels. Still adding bpf support to it 
+(identify task/pid per flow) and will replace the libnf* usage with bpf 
+after that.
+
+Thanks
+-rafaeldtinoco
