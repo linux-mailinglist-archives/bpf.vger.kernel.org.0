@@ -2,46 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7068D349311
-	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 14:31:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35AF7349333
+	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 14:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhCYNaq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 25 Mar 2021 09:30:46 -0400
-Received: from [103.70.136.130] ([103.70.136.130]:52233 "EHLO
-        botanic-construction.com" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229731AbhCYNae (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 25 Mar 2021 09:30:34 -0400
-Reply-To: Gray Selman <grayselman46@gmail.com>
-From:   Gray Selman <gray.selman@botanic-construction.com>
-To:     bpf@vger.kernel.org
-Subject: BUSINESS RELATIONSHIP
-Date:   25 Mar 2021 06:30:32 -0700
-Message-ID: <20210325063032.9A9B164F04AA60DC@botanic-construction.com>
+        id S229533AbhCYNle (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Mar 2021 09:41:34 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14544 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230095AbhCYNlF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Mar 2021 09:41:05 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F5mQZ6q5BzPkxm;
+        Thu, 25 Mar 2021 21:38:30 +0800 (CST)
+Received: from t01.huawei.com (10.67.174.119) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 25 Mar 2021 21:41:00 +0800
+From:   Xu Kuohai <xukuohai@huawei.com>
+To:     <bpf@vger.kernel.org>
+CC:     <netdev@vger.kernel.org>, <ast@kernel.org>, <jackmanb@google.com>,
+        <kpsingh@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <john.fastabend@gmail.com>, <songliubraving@fb.com>
+Subject: [PATCH bpf-next v3] bpf: Fix a spelling typo in kernel/bpf/disasm.c
+Date:   Thu, 25 Mar 2021 13:41:41 +0000
+Message-ID: <20210325134141.8533-1-xukuohai@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.119]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+The name string for BPF_XOR is "xor", not "or", fix it.
 
-My name is Selman Gray, I am an International Business 
-Facilitator. I have a business proposal for  you. My client, who 
-is a political personel would love to invest with you. Do you 
-have any existing business or new business idea that is 
-lucrative? Before, we would proceed to all that, it is very, very 
-important to me and my client we first build a good business 
-relationship with you, where we all get to know each other 
-properly and be certain that we can have sealed trust between us. 
-THIS EXTREMELY IMPORTANT. 
+Fixes: 981f94c3e92146705b ("bpf: Add bitwise atomic instructions")
+Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+Acked-by: Brendan Jackman <jackmanb@google.com>
+---
+ kernel/bpf/disasm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I will tell you more when i hear from you. 
-
-ATTENTION: Reply to grayselman46@gmail.com
-
-Your's Sincerly,
-Selman Gray
-International Business Facilitator.
+diff --git a/kernel/bpf/disasm.c b/kernel/bpf/disasm.c
+index 3acc7e0b6916..faa54d58972c 100644
+--- a/kernel/bpf/disasm.c
++++ b/kernel/bpf/disasm.c
+@@ -84,7 +84,7 @@ static const char *const bpf_atomic_alu_string[16] = {
+ 	[BPF_ADD >> 4]  = "add",
+ 	[BPF_AND >> 4]  = "and",
+ 	[BPF_OR >> 4]  = "or",
+-	[BPF_XOR >> 4]  = "or",
++	[BPF_XOR >> 4]  = "xor",
+ };
+ 
+ static const char *const bpf_ldst_string[] = {
+-- 
+2.27.0
 
