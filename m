@@ -2,95 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E14348DC2
-	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 11:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B16348DCB
+	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 11:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229898AbhCYKPD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Mar 2021 06:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhCYKOw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:14:52 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E414C06174A
-        for <bpf@vger.kernel.org>; Thu, 25 Mar 2021 03:14:52 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id j11so1610787ilu.13
-        for <bpf@vger.kernel.org>; Thu, 25 Mar 2021 03:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MLBLoljkQQcfTkhWG5CdGfXFMwGR6QEdjyAM8Zg777A=;
-        b=fyeK7jhjoIe0dOBYNQQ4K4TizMRG8CN7Ztzao1QWHaj7U+ApyQ1y25tNz3nscazyu1
-         DzSxtmsEZqsjF6n7LPU67A/VLcCoh5gYVWvJDIq+wUj9Qp9Pwyz2U0hCxV9XAunthMU4
-         uVp2G6RsNIzjvB5H6nm7KuNdbXvgcp74LJ1ZcRo5MFWdnFUfgbeTwSa7laeyBO5QXBus
-         /2KuHUwYIQtaHNnQ9ZsITfRfHo5v38iz3C5SMg/gkabbLZlMWLtRaSBOzMNzmg5ARLkg
-         pQ1zmfQ2EL8AwIe/7zYT/PVxkl8PDbcTZD78h7VPeKdpxvuPPhPOOk05VtAG0M99WaqC
-         Oc9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MLBLoljkQQcfTkhWG5CdGfXFMwGR6QEdjyAM8Zg777A=;
-        b=Zkee4dz0xheapjc7/EFr1nF0sGlo/M1dyz64QY6DXo5YZ964XKwF3425GMCu6Gt/yL
-         oDR6amh5/J0OUkbUJhcxbPYWSWszFG61pyIt9kze+sw8bF8qHmQxA2DF5xYDi1aPEhsX
-         VErzNKa2ZG7gwBWjjgUYiicoknU9yvy92W1r3HMHeiVtWPGP8GmjrYk+LMQKhTBgt8i7
-         nDAdgiiFSFvafbNZlxuuRby7O/gyJBnl4l7EGvGtB2SawZlubkpLPGuu5UeyZfGPqkHA
-         Rl8/lfQVVQQN19h3s57WWjIhMRPGtXJnECWuja3EiY8q+OwEz2Wi0sJv0zaf1TKM9SG2
-         8BrA==
-X-Gm-Message-State: AOAM531mi/hMrn8UcV2wNN/G21uym1yacQ1Quv3ToyRM0cL7zwPOudTs
-        L11RPSnMT0sjCAY5Hun1d1nSskZGIKYFnCT0R8lpVA==
-X-Google-Smtp-Source: ABdhPJxNFYxcimcuG1bDWG6oOKa/CADJFo/uAUPbB/r3P9pJ4kwOmKPjINqoZCK1ueaz4ihIo/sOPHOJhWLxO0DEm9E=
-X-Received: by 2002:a05:6e02:1d95:: with SMTP id h21mr6184226ila.276.1616667291741;
- Thu, 25 Mar 2021 03:14:51 -0700 (PDT)
+        id S229854AbhCYKRN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Mar 2021 06:17:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:45880 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230007AbhCYKRD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Mar 2021 06:17:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6609613A1;
+        Thu, 25 Mar 2021 03:17:02 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2EB263F718;
+        Thu, 25 Mar 2021 03:16:57 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 10:16:55 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 03/17] mm: add generic __va_function and __pa_function
+ macros
+Message-ID: <20210325101655.GB36570@C02TD0UTHF1T.local>
+References: <20210323203946.2159693-1-samitolvanen@google.com>
+ <20210323203946.2159693-4-samitolvanen@google.com>
+ <20210324071357.GB2639075@infradead.org>
+ <CABCJKufRHCb0sjr1tMGCoVMzV-5dKPPn-t8=+ihNFAgTr2k0DA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210325020511.5891-1-xukuohai@huawei.com>
-In-Reply-To: <20210325020511.5891-1-xukuohai@huawei.com>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Thu, 25 Mar 2021 11:14:40 +0100
-Message-ID: <CA+i-1C1hA16BAKQEBP91EJ3WP5ocSo1+DqA+M4ZyWTicYXrxgA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Fix a spelling typo in kernel/bpf/disasm.c
-To:     Xu Kuohai <xukuohai@huawei.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABCJKufRHCb0sjr1tMGCoVMzV-5dKPPn-t8=+ihNFAgTr2k0DA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[Sorry if you get this duplicated - I forgot to switch off HTML mode
-the first time]
+On Wed, Mar 24, 2021 at 08:54:18AM -0700, Sami Tolvanen wrote:
+> On Wed, Mar 24, 2021 at 12:14 AM Christoph Hellwig <hch@infradead.org> wrote:
+> >
+> > On Tue, Mar 23, 2021 at 01:39:32PM -0700, Sami Tolvanen wrote:
+> > > With CONFIG_CFI_CLANG, the compiler replaces function addresses
+> > > in instrumented C code with jump table addresses. This means that
+> > > __pa_symbol(function) returns the physical address of the jump table
+> > > entry instead of the actual function, which may not work as the jump
+> > > table code will immediately jump to a virtual address that may not be
+> > > mapped.
+> > >
+> > > To avoid this address space confusion, this change adds generic
+> > > definitions for __va_function and __pa_function, which architectures
+> > > that support CFI can override. The typical implementation of the
+> > > __va_function macro would use inline assembly to take the function
+> > > address, which avoids compiler instrumentation.
+> >
+> > I think these helper are sensible, but shouldn't they have somewhat
+> > less arcane names and proper documentation?
+> 
+> Good point, I'll add comments in the next version. I thought
+> __pa_function would be a fairly straightforward replacement for
+> __pa_symbol, but I'm fine with renaming these. Any suggestions for
+> less arcane names?
 
-Oops, thanks.
+I think dropping 'nocfi' into the name would be clear enough. I think
+that given the usual fun with {symbol,module,virt}->phys conversions
+it's not worth having the __pa_* form, and we can leave the phys
+conversion to the caller that knows where the function lives.
 
-On Thu, 25 Mar 2021 at 03:04, Xu Kuohai <xukuohai@huawei.com> wrote:
->
-> The name string for BPF_XOR is "xor", not "or", fix it.
->
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+How about we just add `function_nocfi()` ?
 
-Please add:
-Fixes: 981f94c3e92146705b ("bpf: Add bitwise atomic instructions")
+Callers can then do `__pa_symbol(function_nocfi(foo))` and similar.
 
-Except for that:
-Acked-by: Brendan Jackman <jackmanb@google.com>
-
-> ---
->  kernel/bpf/disasm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/disasm.c b/kernel/bpf/disasm.c
-> index 3acc7e0b6916..faa54d58972c 100644
-> --- a/kernel/bpf/disasm.c
-> +++ b/kernel/bpf/disasm.c
-> @@ -84,7 +84,7 @@ static const char *const bpf_atomic_alu_string[16] = {
->         [BPF_ADD >> 4]  = "add",
->         [BPF_AND >> 4]  = "and",
->         [BPF_OR >> 4]  = "or",
-> -       [BPF_XOR >> 4]  = "or",
-> +       [BPF_XOR >> 4]  = "xor",
->  };
->
->  static const char *const bpf_ldst_string[] = {
-> --
-> 2.27.0
->
+Thanks,
+Mark.
