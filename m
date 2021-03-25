@@ -2,131 +2,231 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB58A34870E
-	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 03:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0E5234875F
+	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 04:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229504AbhCYCq1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Mar 2021 22:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhCYCqS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Mar 2021 22:46:18 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27DCC06174A;
-        Wed, 24 Mar 2021 19:46:17 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id j11so858246ilu.13;
-        Wed, 24 Mar 2021 19:46:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=by2Wfmj5o/U0bNeUiqbM06edFn5/IV35knV2eyk/CgI=;
-        b=Z+0YIDdKk2k0B/jzcyuv5quKziiJRhi2GqAPhkOE7XbkoXuo8HAt0HNVjcNqNAo2Jy
-         mTbBxDFfC9jjdoGXDD3baNhYK3uR0PbeZTgo4ATaD10uc9EhUBrSR3IS1mzw+dQ2Ws4+
-         qimVwTwEdSZV5uaOKg7Kcy51PJcC4fyCHSKUhrnovRNz0t+/2NzE5HWFatHhzJBZE2nh
-         ZxAy9o4G2FLCJMD3Jw03dZUl99phSvYctrkwrXZgOWCqQL0CrGO9dqC34aUwlroKs6th
-         zDIf7/nvOvPCGjR6CmtDYdrjVFZ2TdHTp4LiQfsCqfwkP+pgU5sFnhzbRD1jEL0o8nKM
-         mv4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=by2Wfmj5o/U0bNeUiqbM06edFn5/IV35knV2eyk/CgI=;
-        b=aDmPSNI2X9ATAHXSt9Ga6pfZ28qM4+8MvoVSmge4ktZDKLy3T4Ff5NpcZ4+3H26z6k
-         vB0fR1AhlGoQZY2sM1UPBjH13E1wcp/vN9ADXtsg3g5/MPHEo68gSN9C8KGoEPYr3nM/
-         X+TtHHlOyfMhsXR/zIq/QoWWUH3HWukH1T2Qz97VmWn8khsLHLdClIgSToXyO2uznAPw
-         zqqIfNFY84pwi1ZyurQroCSq8EBk60iWgzt0OAHbmVfo3QriUZpMgfRCohfkgjSuj7px
-         8NUmdOhKa2Ac/VxSrE/T+gGGSdO+mY63hpjupa8RVFBAvkbiqXMfgoAfbUXMru0YpY2N
-         otag==
-X-Gm-Message-State: AOAM531WWMULt4D28AEftwtEqBUVPLkyKkhaaaO9Tzn03SS5Q81hgsj+
-        1iCr9fT/DMwkR4g39pVWsfw=
-X-Google-Smtp-Source: ABdhPJyWfqatJfjRXK+XmtnfurZgzbz0IDs6bumVmrIP0b6g1xK3Oja8h9+iLk3Q3EpmEV5BA+0ZJQ==
-X-Received: by 2002:a05:6e02:12c6:: with SMTP id i6mr4846404ilm.235.1616640377482;
-        Wed, 24 Mar 2021 19:46:17 -0700 (PDT)
-Received: from localhost ([172.242.244.146])
-        by smtp.gmail.com with ESMTPSA id i67sm1981718ioa.3.2021.03.24.19.46.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 19:46:17 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 19:46:09 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Message-ID: <605bf9718f2fc_64fde2082b@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAM_iQpVShCqWx1CYUOO9SrgWw7ztVP6j=v=W9dAd9FbChGZauQ@mail.gmail.com>
-References: <161661943080.28508.5809575518293376322.stgit@john-Precision-5820-Tower>
- <161661958954.28508.16923012330549206770.stgit@john-Precision-5820-Tower>
- <CAM_iQpVShCqWx1CYUOO9SrgWw7ztVP6j=v=W9dAd9FbChGZauQ@mail.gmail.com>
-Subject: Re: [bpf PATCH 2/2] bpf, sockmap: fix incorrect fwd_alloc accounting
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S231272AbhCYDNI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Mar 2021 23:13:08 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13689 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229908AbhCYDMp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Mar 2021 23:12:45 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F5VTY6f4jznVHq;
+        Thu, 25 Mar 2021 11:10:09 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 25 Mar 2021 11:12:37 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
+        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>
+Subject: [PATCH net v3] net: sched: fix packet stuck problem for lockless qdisc
+Date:   Thu, 25 Mar 2021 11:13:11 +0800
+Message-ID: <1616641991-14847-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cong Wang wrote:
-> On Wed, Mar 24, 2021 at 2:00 PM John Fastabend <john.fastabend@gmail.com> wrote:
-> >
-> > Incorrect accounting fwd_alloc can result in a warning when the socket
-> > is torn down,
-> >
+Lockless qdisc has below concurrent problem:
+    cpu0                 cpu1
+     .                     .
+q->enqueue                 .
+     .                     .
+qdisc_run_begin()          .
+     .                     .
+dequeue_skb()              .
+     .                     .
+sch_direct_xmit()          .
+     .                     .
+     .                q->enqueue
+     .             qdisc_run_begin()
+     .            return and do nothing
+     .                     .
+qdisc_run_end()            .
 
-[...]
+cpu1 enqueue a skb without calling __qdisc_run() because cpu0
+has not released the lock yet and spin_trylock() return false
+for cpu1 in qdisc_run_begin(), and cpu0 do not see the skb
+enqueued by cpu1 when calling dequeue_skb() because cpu1 may
+enqueue the skb after cpu0 calling dequeue_skb() and before
+cpu0 calling qdisc_run_end().
 
-> > To resolve lets only account for sockets on the ingress queue that are
-> > still associated with the current socket. On the redirect case we will
-> > check memory limits per 6fa9201a89898, but will omit fwd_alloc accounting
-> > until skb is actually enqueued. When the skb is sent via skb_send_sock_locked
-> > or received with sk_psock_skb_ingress memory will be claimed on psock_other.
-                     ^^^^^^^^^^^^^^^^^^^^
-> 
-> You mean sk_psock_skb_ingress(), right?
+Lockless qdisc has below another concurrent problem when
+tx_action is involved:
 
-Yes.
+cpu0(serving tx_action)     cpu1             cpu2
+          .                   .                .
+          .              q->enqueue            .
+          .            qdisc_run_begin()       .
+          .              dequeue_skb()         .
+          .                   .            q->enqueue
+          .                   .                .
+          .             sch_direct_xmit()      .
+          .                   .         qdisc_run_begin()
+          .                   .       return and do nothing
+          .                   .                .
+ clear __QDISC_STATE_SCHED    .                .
+ qdisc_run_begin()            .                .
+ return and do nothing        .                .
+          .                   .                .
+          .            qdisc_run_end()         .
 
-[...]
+This patch fixes the above data race by:
+1. Get the flag before doing spin_trylock().
+2. If the first spin_trylock() return false and the flag is not
+   set before the first spin_trylock(), Set the flag and retry
+   another spin_trylock() in case other CPU may not see the new
+   flag after it releases the lock.
+3. reschedule if the flags is set after the lock is released
+   at the end of qdisc_run_end().
 
-> > @@ -880,12 +876,13 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
-> >                 kfree_skb(skb);
-> >                 goto out;
-> >         }
-> > -       skb_set_owner_r(skb, sk);
-> >         prog = READ_ONCE(psock->progs.skb_verdict);
-> >         if (likely(prog)) {
-> > +               skb->sk = psock->sk;
-> 
-> Why is skb_orphan() not needed here?
+For tx_action case, the flags is also set when cpu1 is at the
+end if qdisc_run_end(), so tx_action will be rescheduled
+again to dequeue the skb enqueued by cpu2.
 
-These come from strparser which do not have skb->sk set.
+Only clear the flag before retrying a dequeuing when dequeuing
+returns NULL in order to reduce the overhead of the above double
+spin_trylock() and __netif_schedule() calling.
 
-> 
-> Nit: You can just use 'sk' here, so "skb->sk = sk".
+The performance impact of this patch, tested using pktgen and
+dummy netdev with pfifo_fast qdisc attached:
 
-Sure that is a bit nicer, will respin with this.
+ threads  without+this_patch   with+this_patch      delta
+    1        2.61Mpps            2.60Mpps           -0.3%
+    2        3.97Mpps            3.82Mpps           -3.7%
+    4        5.62Mpps            5.59Mpps           -0.5%
+    8        2.78Mpps            2.77Mpps           -0.3%
+   16        2.22Mpps            2.22Mpps           -0.0%
 
-> 
-> 
-> >                 tcp_skb_bpf_redirect_clear(skb);
-> >                 ret = sk_psock_bpf_run(psock, prog, skb);
-> >                 ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
-> > +               skb->sk = NULL;
-> 
-> Why do you want to set it to NULL here?
+Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+---
+V3: fix a compile error and a few comment typo, remove the
+    __QDISC_STATE_DEACTIVATED checking, and update the
+    performance data.
+V2: Avoid the overhead of fixing the data race as much as
+    possible.
+---
+ include/net/sch_generic.h | 38 +++++++++++++++++++++++++++++++++++++-
+ net/sched/sch_generic.c   | 12 ++++++++++++
+ 2 files changed, 49 insertions(+), 1 deletion(-)
 
-So we don't cause the stack to throw other errors later if we
-were to call skb_orphan for example. Various places in the skb
-helpers expect both skb->sk and skb->destructor to be set together
-and here we are just using it as a mechanism to feed the sk into
-the BPF program side. The above skb_set_owner_r for example
-would likely BUG().
-
-> 
-> Thanks.
-
+diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
+index f7a6e14..e3f46eb 100644
+--- a/include/net/sch_generic.h
++++ b/include/net/sch_generic.h
+@@ -36,6 +36,7 @@ struct qdisc_rate_table {
+ enum qdisc_state_t {
+ 	__QDISC_STATE_SCHED,
+ 	__QDISC_STATE_DEACTIVATED,
++	__QDISC_STATE_NEED_RESCHEDULE,
+ };
+ 
+ struct qdisc_size_table {
+@@ -159,8 +160,38 @@ static inline bool qdisc_is_empty(const struct Qdisc *qdisc)
+ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ {
+ 	if (qdisc->flags & TCQ_F_NOLOCK) {
++		bool dont_retry = test_bit(__QDISC_STATE_NEED_RESCHEDULE,
++					   &qdisc->state);
++
++		if (spin_trylock(&qdisc->seqlock))
++			goto nolock_empty;
++
++		/* If the flag is set before doing the spin_trylock() and
++		 * the above spin_trylock() return false, it means other cpu
++		 * holding the lock will do dequeuing for us, or it wil see
++		 * the flag set after releasing lock and reschedule the
++		 * net_tx_action() to do the dequeuing.
++		 */
++		if (dont_retry)
++			return false;
++
++		/* We could do set_bit() before the first spin_trylock(),
++		 * and avoid doing second spin_trylock() completely, then
++		 * we could have multi cpus doing the set_bit(). Here use
++		 * dont_retry to avoid doing the set_bit() and the second
++		 * spin_trylock(), which has 5% performance improvement than
++		 * doing the set_bit() before the first spin_trylock().
++		 */
++		set_bit(__QDISC_STATE_NEED_RESCHEDULE,
++			&qdisc->state);
++
++		/* Retry again in case other CPU may not see the new flag
++		 * after it releases the lock at the end of qdisc_run_end().
++		 */
+ 		if (!spin_trylock(&qdisc->seqlock))
+ 			return false;
++
++nolock_empty:
+ 		WRITE_ONCE(qdisc->empty, false);
+ 	} else if (qdisc_is_running(qdisc)) {
+ 		return false;
+@@ -176,8 +207,13 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+ static inline void qdisc_run_end(struct Qdisc *qdisc)
+ {
+ 	write_seqcount_end(&qdisc->running);
+-	if (qdisc->flags & TCQ_F_NOLOCK)
++	if (qdisc->flags & TCQ_F_NOLOCK) {
+ 		spin_unlock(&qdisc->seqlock);
++
++		if (unlikely(test_bit(__QDISC_STATE_NEED_RESCHEDULE,
++				      &qdisc->state)))
++			__netif_schedule(qdisc);
++	}
+ }
+ 
+ static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index 44991ea..4953430 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -640,8 +640,10 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+ {
+ 	struct pfifo_fast_priv *priv = qdisc_priv(qdisc);
+ 	struct sk_buff *skb = NULL;
++	bool need_retry = true;
+ 	int band;
+ 
++retry:
+ 	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
+ 		struct skb_array *q = band2list(priv, band);
+ 
+@@ -652,6 +654,16 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+ 	}
+ 	if (likely(skb)) {
+ 		qdisc_update_stats_at_dequeue(qdisc, skb);
++	} else if (need_retry &&
++		   test_and_clear_bit(__QDISC_STATE_NEED_RESCHEDULE,
++				      &qdisc->state)) {
++		/* do another enqueuing after clearing the flag to
++		 * avoid calling __netif_schedule().
++		 */
++		smp_mb__after_atomic();
++		need_retry = false;
++
++		goto retry;
+ 	} else {
+ 		WRITE_ONCE(qdisc->empty, true);
+ 	}
+-- 
+2.7.4
 
