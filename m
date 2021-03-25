@@ -2,57 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4D43499D2
-	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 19:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD44349A28
+	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 20:28:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhCYS5q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Mar 2021 14:57:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
+        id S229669AbhCYT1s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Mar 2021 15:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhCYS5R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Mar 2021 14:57:17 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC78EC06174A;
-        Thu, 25 Mar 2021 11:57:16 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id c204so3016839pfc.4;
-        Thu, 25 Mar 2021 11:57:16 -0700 (PDT)
+        with ESMTP id S229616AbhCYT13 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Mar 2021 15:27:29 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5C1C06174A;
+        Thu, 25 Mar 2021 12:27:28 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 32so2838116pgm.1;
+        Thu, 25 Mar 2021 12:27:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Cb4rdnuLp99nvgBCEc1MpzgC638yA5gEtV6ZjkDqsso=;
-        b=WBLfKdFXmOOAXB5FIUqh+8rXQAsHO8BV2718zQWe6JbhcmQVhkSHmBsQV7Ms8vTcY8
-         FhFAPnMZHQA6u+djJxsldvouSYFJhPUs/51OUEbGLaALt8KFE0NlxYnGlxwkVhQnjYxo
-         gyQmPb7EA+S00Cs5xUcRnBR/peEgjVqonHdPcPYorFMVhqtSUErZvaLitqkiuhfuqETP
-         vEUZyvIP7WIGn0HanB5RZH5ZTfPI1kW4Pv+9tCL1IpD1n9RwSWgUHRjnIrGy6jgs2y6G
-         7JDHIpyxnObZ4EVxBzmI54oHWSY7h1b4D93SwHyXJvBxkupTsfgK54Mm91JbRMiEIvqD
-         o48w==
+        bh=OYrivqIJMJkbkKIsLLmp5Sa6lUlSfN4t+1tq93chnBU=;
+        b=rXDTZyx5IHZjDIF1PBSMWbdVUKXYXreRSphnTlmUx1rSyu1a5iqahOshFc3ttbJvFj
+         69uKbTXCEUCYnoIgWmBvp/XEjzXqYroE6K4NoKpfkd1h9xQKkwRh6Skgz++GRJG9foIW
+         toiwMimCDBM9QPMRJCO+ai+Riwp+GDYSpnmBkPQMklfjXjr4Cg9xanyFgayP9rN9GJey
+         c1HUPCVccoZXN3tFe/pD4KmKXCxZl+fujLo8UXEorAiyPgLmXKVegmGwar4lqotbK59X
+         jVLlzCLBoNM//0adD/O0lD8Z2obitNBvg6weJ6IXUHrTuApizWN0oavOKLMdFTvQebU1
+         6BgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Cb4rdnuLp99nvgBCEc1MpzgC638yA5gEtV6ZjkDqsso=;
-        b=SwMdOw2VQufQd9CIjI0KGULEG2FdJS2p4aEUV7eP2F3zHrRQ/cYkZDdUBoW0Ewq5dl
-         X9ps7SLlCcAYUA6kpXeeuoEMl0wAO3MsV1lD1f4Nc0Uue7Jsp0SnE/RcMeYEV7JLg9mF
-         kJzAZOF3/Zi/hteKr/3vO2DfA5xEnodQUJ1j3XDdIUcgsKGVisytBZHH/3zJalB5p1J1
-         Xq/vtVuzXcwpJ6C6exbyKB5yYMtUNg0yy71kjY+SQF3N5cPqVRpxtXWOLYaTaGMDs3Ga
-         0JaTZ572DxYwDKV60rasQO0NTu4soDpIUC2yNc9u13G8VQ5GqYWE9+Q14zCCsmee6vcP
-         3TuA==
-X-Gm-Message-State: AOAM531xCh78FrAYZJTNKkrKYjNDg0N2J6Jb9VG7ABMblMKwhjJtVhKW
-        RXhcNSnmjgwPiqDCtjhXjoT3rEBRrB4asni91hw=
-X-Google-Smtp-Source: ABdhPJwExiMjzWa63UeE7o2Y+uS8sDRz6b6WBKjy17XfLlHfnz+kQum8nwU0FPtjhdifs1vcGlMevGmnb9HOGjy2KDc=
-X-Received: by 2002:a62:92cc:0:b029:1fa:515d:808f with SMTP id
- o195-20020a6292cc0000b02901fa515d808fmr9125198pfd.43.1616698636133; Thu, 25
- Mar 2021 11:57:16 -0700 (PDT)
+        bh=OYrivqIJMJkbkKIsLLmp5Sa6lUlSfN4t+1tq93chnBU=;
+        b=XaY+uZ7NhrGykX+JuUWFt8Idox7uOtOtyiQBoWQjaN+/wyPWCKXBg7fuhxaNzItoSv
+         NExg23OMtiykcV5TI3lVSCQceuvXFnDjWimSXRyLI11+bUyMKqids7x8bvu2ra/0kywx
+         AVW6f6eFUiaqedYzVkrRyBvqSWrALzRJdniW3uNoslhhZCVsRqdwkcc3sIBRvfwijp2K
+         asRaBKez0gOHUz5Z4Y52gjP7dJW9td6v86pUskPXOw4JEC+oQjtUW6F/MY3o/4gCvTHq
+         n6OSKN28NPn4lcZn1oK4UPu/qAbfIJ2KnhOpmvw/W3iXhXSQf7bCXyP8hC9gySG344Ql
+         /G6w==
+X-Gm-Message-State: AOAM533WRF7FyxK469XcT3fBYKTRMNhidas30ewaYskmsP6INbc0yGVQ
+        Hx+v47yj1IsrgB2mun2cW3ATGRrB9vusfhQPdpo=
+X-Google-Smtp-Source: ABdhPJwxPRXYrMgPc3HUi4Z5O1MxJj2fPU876/C8TYGiFdjA36tg+fZtoZS92kFCw71BnRQsOQhNK9YGinSiPK+DJXs=
+X-Received: by 2002:a63:1c4c:: with SMTP id c12mr8752180pgm.179.1616700448425;
+ Thu, 25 Mar 2021 12:27:28 -0700 (PDT)
 MIME-Version: 1.0
 References: <161661943080.28508.5809575518293376322.stgit@john-Precision-5820-Tower>
- <161661956953.28508.2297266338306692603.stgit@john-Precision-5820-Tower>
- <CAM_iQpUNUE8cmyNaALG1dZtCfJGah2pggDNk-eVbyxexnA4o_g@mail.gmail.com> <605bf553d16f_64fde2081@john-XPS-13-9370.notmuch>
-In-Reply-To: <605bf553d16f_64fde2081@john-XPS-13-9370.notmuch>
+ <161661958954.28508.16923012330549206770.stgit@john-Precision-5820-Tower>
+ <CAM_iQpVShCqWx1CYUOO9SrgWw7ztVP6j=v=W9dAd9FbChGZauQ@mail.gmail.com> <605bf9718f2fc_64fde2082b@john-XPS-13-9370.notmuch>
+In-Reply-To: <605bf9718f2fc_64fde2082b@john-XPS-13-9370.notmuch>
 From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Thu, 25 Mar 2021 11:57:05 -0700
-Message-ID: <CAM_iQpUdOkbs5MPcfTqNcPV3f0EXU7CQhuV9y2UDrOZ4SawvvA@mail.gmail.com>
-Subject: Re: [bpf PATCH 1/2] bpf, sockmap: fix sk->prot unhash op reset
+Date:   Thu, 25 Mar 2021 12:27:17 -0700
+Message-ID: <CAM_iQpWzoP9SOQcMPB--jp6C_xnUVAmVtS4yMCN43kL248y4QA@mail.gmail.com>
+Subject: Re: [bpf PATCH 2/2] bpf, sockmap: fix incorrect fwd_alloc accounting
 To:     John Fastabend <john.fastabend@gmail.com>
 Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -64,34 +63,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 7:28 PM John Fastabend <john.fastabend@gmail.com> wrote:
+On Wed, Mar 24, 2021 at 7:46 PM John Fastabend <john.fastabend@gmail.com> wrote:
 >
 > Cong Wang wrote:
-> > On Wed, Mar 24, 2021 at 1:59 PM John Fastabend <john.fastabend@gmail.com> wrote:
-> > > diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
-> > > index 47b7c5334c34..ecb5634b4c4a 100644
-> > > --- a/net/tls/tls_main.c
-> > > +++ b/net/tls/tls_main.c
-> > > @@ -754,6 +754,12 @@ static void tls_update(struct sock *sk, struct proto *p,
+> > On Wed, Mar 24, 2021 at 2:00 PM John Fastabend <john.fastabend@gmail.com> wrote:
 > > >
-> > >         ctx = tls_get_ctx(sk);
-> > >         if (likely(ctx)) {
-> > > +               /* TLS does not have an unhash proto in SW cases, but we need
-> > > +                * to ensure we stop using the sock_map unhash routine because
-> > > +                * the associated psock is being removed. So use the original
-> > > +                * unhash handler.
-> > > +                */
-> > > +               WRITE_ONCE(sk->sk_prot->unhash, p->unhash);
-> > >                 ctx->sk_write_space = write_space;
-> > >                 ctx->sk_proto = p;
-> >
-> > It looks awkward to update sk->sk_proto inside tls_update(),
-> > at least when ctx!=NULL.
+> > > Incorrect accounting fwd_alloc can result in a warning when the socket
+> > > is torn down,
+> > >
 >
-> hmm. It doesn't strike me as paticularly awkward but OK.
+> [...]
+>
+> > > To resolve lets only account for sockets on the ingress queue that are
+> > > still associated with the current socket. On the redirect case we will
+> > > check memory limits per 6fa9201a89898, but will omit fwd_alloc accounting
+> > > until skb is actually enqueued. When the skb is sent via skb_send_sock_locked
+> > > or received with sk_psock_skb_ingress memory will be claimed on psock_other.
+>                      ^^^^^^^^^^^^^^^^^^^^
+> >
+> > You mean sk_psock_skb_ingress(), right?
+>
+> Yes.
 
-I read tls_update() as "updating ctx when it is initialized", with your
-patch, we are updating sk->sk_prot->unhash too when updating ctx,
-pretty much like a piggyback, hence it reads odd to me.
+skb_send_sock_locked() actually allocates its own skb when sending, hence
+it uses a different skb for memory accounting.
+
+>
+> [...]
+>
+> > > @@ -880,12 +876,13 @@ static void sk_psock_strp_read(struct strparser *strp, struct sk_buff *skb)
+> > >                 kfree_skb(skb);
+> > >                 goto out;
+> > >         }
+> > > -       skb_set_owner_r(skb, sk);
+> > >         prog = READ_ONCE(psock->progs.skb_verdict);
+> > >         if (likely(prog)) {
+> > > +               skb->sk = psock->sk;
+> >
+> > Why is skb_orphan() not needed here?
+>
+> These come from strparser which do not have skb->sk set.
+
+Hmm, but sk_psock_verdict_recv() passes a clone too, like
+strparser, so either we need it for both, or not at all. Clones
+do not have skb->sk, so I think you can remove the one in
+sk_psock_verdict_recv() too.
+
+
+>
+> >
+> > Nit: You can just use 'sk' here, so "skb->sk = sk".
+>
+> Sure that is a bit nicer, will respin with this.
+>
+> >
+> >
+> > >                 tcp_skb_bpf_redirect_clear(skb);
+> > >                 ret = sk_psock_bpf_run(psock, prog, skb);
+> > >                 ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
+> > > +               skb->sk = NULL;
+> >
+> > Why do you want to set it to NULL here?
+>
+> So we don't cause the stack to throw other errors later if we
+> were to call skb_orphan for example. Various places in the skb
+> helpers expect both skb->sk and skb->destructor to be set together
+> and here we are just using it as a mechanism to feed the sk into
+> the BPF program side. The above skb_set_owner_r for example
+> would likely BUG().
+
+Sounds reasonable.
 
 Thanks.
