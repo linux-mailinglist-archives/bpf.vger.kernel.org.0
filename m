@@ -2,98 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56983494DB
-	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 16:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F4E34954C
+	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 16:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbhCYPC0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Mar 2021 11:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57970 "EHLO
+        id S230182AbhCYPWw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Mar 2021 11:22:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbhCYPCB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:02:01 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF50C06174A;
-        Thu, 25 Mar 2021 08:02:01 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id x14so2019609qki.10;
-        Thu, 25 Mar 2021 08:02:01 -0700 (PDT)
+        with ESMTP id S231184AbhCYPWe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Mar 2021 11:22:34 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36AFEC06175F
+        for <bpf@vger.kernel.org>; Thu, 25 Mar 2021 08:22:34 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id v4so2648732wrp.13
+        for <bpf@vger.kernel.org>; Thu, 25 Mar 2021 08:22:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cloudflare.com; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=D6lqBkmqDi36o04hy81nixhjopIa3qv0i9AAEd/fUWA=;
-        b=QjNiajmB8gVa1mycAekPlCc88I7cNIkFrq1JW4JZPgh1nb9NQ+NvVOA5X9tVtkqwaQ
-         0tEj4Zr1igynSalGkTsxc5QMi6/DuPBUBzuu7tchXbMgLj00Mv6e/2IgblTY3GzuGvGk
-         MkmONWAcnjYZ9G2tjitB2Zk7oeaRewtFB+p+xR0+jUUxGPfmX7jDuSkVS3dajFc6gFRR
-         hRwmJdSgxakAVPgkj+UwXAglqqbjZVcUSt2J3LI9IwmymGOMzXm+9nidW8v86aXpSRrA
-         GTTnLK+XX0ofgrMfQ0UtZQ/Kre9X7gF1gDtYBABIVy/mOo4cV5jpJzO+cgG7lp/J1Qx3
-         E3Ew==
+        bh=5ijnZ7UHj2HrGdWORqKGVBo/w2HVLEGIEyGldZdaNcc=;
+        b=ohCl3mcgx9MJD83BZNCDXICb17bkmYPA4J6WXFpObzECY0l+4fBGN8NJLRohXRzKQy
+         6Tr4OoS6Od7Pynjui91t92UKlZmTp1jttEy2O0+v0lA02XFpelHq6nqof3fS6g3WOV2A
+         NhVeYNyQoz7XEc1LeBej7MAUZU866l4kdWjwc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=D6lqBkmqDi36o04hy81nixhjopIa3qv0i9AAEd/fUWA=;
-        b=AgCMc7NGvaM/aDlY608nauW4xLhp3lgACs5lUfR+4/N7thgAOi7qQCpyqhe8TJHEKW
-         z60DTwwkhaYLYF7ZqCBkRLsHYyHliEn8vfM3gYAvSYkH/3UHBdBbhVNX3x0eUUJkuhQI
-         8fSeJfD5APDWc+MX/wjNhGD/DflNaF9XVhD5MGNk8RKBqdqFfAdDxoL3moV4r1/y4tXJ
-         hiulYexFlkT+a4gHkZSGnhrO99T8q6WHXxHrDmARHgm+KYLpD1RUySnaptXTXHSVOFPy
-         cQtvmx2VKNzSgM8Xq/UcG2dxz694pRkjNJbn3njd8piFhhjj7hBP6NwVwkTo8vHPbzpn
-         7vfA==
-X-Gm-Message-State: AOAM530qcfFPE2vsFCldCS/h3nN+yd2Y44DJ2Zgj0C7l+Y5s7wITXW8+
-        PS33PQrmDex6a5hHIk9p92A=
-X-Google-Smtp-Source: ABdhPJyfq2qXFDWvIbGbYdWsuxBVQZT7cmtz7Mh3rfp4HUM45O97U1d5wQivOPeOLXkRRQOsN4ko1Q==
-X-Received: by 2002:a05:620a:11ad:: with SMTP id c13mr8570692qkk.282.1616684520625;
-        Thu, 25 Mar 2021 08:02:00 -0700 (PDT)
-Received: from localhost.localdomain ([179.218.4.27])
-        by smtp.gmail.com with ESMTPSA id c19sm4006766qkl.78.2021.03.25.08.01.57
+        bh=5ijnZ7UHj2HrGdWORqKGVBo/w2HVLEGIEyGldZdaNcc=;
+        b=eKAhN2JQym68iLfbX8vC5v+Vw2/gZyErQFFnTcndfjWx5m5tP8js6s6bGgckNMyK4+
+         TrrQkYzIkv70A6amUh1oJJCkaIjWGI2JP2tyXP/5dJt2fYEHewewWY+uqF3uXeTSwOna
+         BZcOSN6dlbT45Tb9Vp4WAy7hIh6EmsnBlTnOMFceB4RF9UI3CKn6YMajKMy/qU9V5hEy
+         rnaa/L7Z2BzFH8wHrZu9LPpjKayOitbZTkFAI8j91vzxtvXpHt49JwpGvcgyLTIvY8zu
+         pWVKO5J1VrMej5eHueJmuH700lxNwPau0S6e4NgJbslUA+/clJCjeDXkJry9C2WgfYeE
+         nbHA==
+X-Gm-Message-State: AOAM531HwzGUctfcfoijeAGRbBohTIel4haot0nMOmKvmkzISSoIfneP
+        zpur9xJuHgEU8bWPU2Xdd7F9hglZrRVbiQ==
+X-Google-Smtp-Source: ABdhPJyvlBy5lSgL81rUOvbztdfWbEzKoftUxGhFnfW8XJCVt4d6WNQLPjN0Xb1ZKZfYoEAnd6RYQQ==
+X-Received: by 2002:adf:e485:: with SMTP id i5mr9653697wrm.26.1616685752802;
+        Thu, 25 Mar 2021 08:22:32 -0700 (PDT)
+Received: from localhost.localdomain (9.8.d.9.4.e.4.3.c.b.8.8.6.1.c.9.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:9c16:88bc:34e4:9d89])
+        by smtp.gmail.com with ESMTPSA id a6sm7183120wmm.0.2021.03.25.08.22.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 08:02:00 -0700 (PDT)
-From:   Pedro Tammela <pctammela@gmail.com>
-X-Google-Original-From: Pedro Tammela <pctammela@mojatatu.com>
-Cc:     Pedro Tammela <pctammela@mojatatu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Thu, 25 Mar 2021 08:22:32 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] libbpf: fix bail out from 'ringbuf_process_ring()' on error
-Date:   Thu, 25 Mar 2021 12:01:15 -0300
-Message-Id: <20210325150115.138750-1-pctammela@mojatatu.com>
-X-Mailer: git-send-email 2.25.1
+Subject: [PATCH bpf] bpf: link: refuse non-zero file_flags in BPF_OBJ_GET
+Date:   Thu, 25 Mar 2021 15:21:46 +0000
+Message-Id: <20210325152146.188654-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The current code bails out with negative and positive returns.
-If the callback returns a positive return code, 'ring_buffer__consume()'
-and 'ring_buffer__poll()' will return a spurious number of records
-consumed, but mostly important will continue the processing loop.
+Invoking BPF_OBJ_GET on a pinned bpf_link checks the path access
+permissions based on file_flags, but the returned fd ignores flags.
+This means that any user can acquire a "read-write" fd for a pinned
+link with mode 0664 by invoking BPF_OBJ_GET with BPF_F_RDONLY in
+file_flags. The fd can be used to invoke BPF_LINK_DETACH, etc.
 
-This patch makes positive returns from the callback a no-op.
+Fix this by refusing non-zero flags in BPF_OBJ_GET. Since zero flags
+imply O_RDWR this requires users to have read-write access to the
+pinned file, which matches the behaviour of the link primitive.
 
-Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+libbpf doesn't expose a way to set file_flags for links, so this
+change is unlikely to break users.
+
+Fixes: 70ed506c3bbc ("bpf: Introduce pinnable bpf_link abstraction")
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
 ---
- tools/lib/bpf/ringbuf.c | 2 +-
+ kernel/bpf/inode.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-index 8caaafe7e312..e7a8d847161f 100644
---- a/tools/lib/bpf/ringbuf.c
-+++ b/tools/lib/bpf/ringbuf.c
-@@ -227,7 +227,7 @@ static int ringbuf_process_ring(struct ring* r)
- 			if ((len & BPF_RINGBUF_DISCARD_BIT) == 0) {
- 				sample = (void *)len_ptr + BPF_RINGBUF_HDR_SZ;
- 				err = r->sample_cb(r->ctx, sample, len);
--				if (err) {
-+				if (err < 0) {
- 					/* update consumer pos and bail out */
- 					smp_store_release(r->consumer_pos,
- 							  cons_pos);
+diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+index 1576ff331ee4..2f9e8115ad58 100644
+--- a/kernel/bpf/inode.c
++++ b/kernel/bpf/inode.c
+@@ -547,7 +547,7 @@ int bpf_obj_get_user(const char __user *pathname, int flags)
+ 	else if (type == BPF_TYPE_MAP)
+ 		ret = bpf_map_new_fd(raw, f_flags);
+ 	else if (type == BPF_TYPE_LINK)
+-		ret = bpf_link_new_fd(raw);
++		ret = (flags) ? -EINVAL : bpf_link_new_fd(raw);
+ 	else
+ 		return -ENOENT;
+ 
 -- 
-2.25.1
+2.27.0
 
