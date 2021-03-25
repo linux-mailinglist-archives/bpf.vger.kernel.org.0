@@ -2,59 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2147349282
-	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 13:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BFA13492C4
+	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 14:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhCYM6Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Mar 2021 08:58:24 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14541 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbhCYM6J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:58:09 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F5lSx6BZBzPlMg;
-        Thu, 25 Mar 2021 20:55:29 +0800 (CST)
-Received: from t01.huawei.com (10.67.174.119) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 25 Mar 2021 20:57:58 +0800
-From:   Xu Kuohai <xukuohai@huawei.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>
-CC:     <jackmanb@google.com>
-Subject: [PATCH bpf-next v2] bpf: Fix a spelling typo in kernel/bpf/disasm.c
-Date:   Thu, 25 Mar 2021 12:58:39 +0000
-Message-ID: <20210325125839.8228-1-xukuohai@huawei.com>
-X-Mailer: git-send-email 2.27.0
+        id S230229AbhCYNKz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Mar 2021 09:10:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230134AbhCYNKf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Mar 2021 09:10:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C96A619FE;
+        Thu, 25 Mar 2021 13:10:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616677835;
+        bh=x9/ctOmiqTX8TL2wHhSwa5SQdVJHH/h9JvqLxMcArdk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tBnV0Cvr6kaR+sZL+iRbZ25iDZcuPu4t/L9RoOUnUfMHgN3VOt4KdEn2MWavixedc
+         5gFchWIo+iB0EAMDKeGqz1Jt7Fv9Ip8Yq5oclxrrRk7Z95gmR1zaUhwhdQUeE+7rOf
+         nFskFlUq62D2m3KKRSHaC/as6YulEGucti4do+sNeNB/qZud8X1uQrhlae31iDeAay
+         OnisTZSdupHm3prIjRf9nomSdc68iKxWKAuHej+WUQbfJvj+GhM8Vjtxx1dkvgMEw6
+         DFpBU/YKtZgQH/Wp75ZhVrRr8OAHkZwCo1D3hIMUO4N6w8FmKfQrrNOSlBLTBKog15
+         FWNfOUsXRRLKQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7375740647; Thu, 25 Mar 2021 10:10:33 -0300 (-03)
+Date:   Thu, 25 Mar 2021 10:10:33 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Bill Wendling <morbo@google.com>, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH dwarves 0/3] add option to merge more dwarf cu's into
+Message-ID: <YFyLyfYCD131ZM5k@kernel.org>
+References: <20210325065316.3121287-1-yhs@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.119]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325065316.3121287-1-yhs@fb.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The name string for BPF_XOR is "xor", not "or", fix it.
+Em Wed, Mar 24, 2021 at 11:53:16PM -0700, Yonghong Song escreveu:
+> For vmlinux built with clang thin-lto or lto for latest bpf-next,
+> there exist cross cu debuginfo type references. For example,
+>       compile unit 1:
+>          tag 10:  type A
+>       compile unit 2:
+>          ...
+>            refer to type A (tag 10 in compile unit 1)
+> I only checked a few but have seen type A may be a simple type
+> like "unsigned char" or a complex type like an array of base types.
+> I am using latest llvm trunk and bpf-next. I suspect llvm12 or
+> linus tree >= 5.12 rc2 should be able to exhibit the issue as well.
+> Both thin-lto and lto have the same issues.
+> 
+> Current pahole cannot handle this. It will report types cannot
+> be found error. Bill Wendling has attempted to fix the issue
+> with [1] by permitting all tags/types are hashed to the same
+> hash table and then process cu's one by one. This does not
+> really work. The reason is that each cu resolves types locally
+> so for the above example we may have
+>   compile unit 1:
+>     type A : type_id = 10
+>   compile unit 2:
+>     refer to type A : type A will be resolved as type id = 10
+> But id 10 refers to compile unit 1, we will get either out
+> of bound type id or incorrect one.
+> 
+> This patch set is a continuation of Bill's work. We still
+> increase the hashtable size and traverse all cu's before
+> recoding and finalization. But instead of creating one-to-one
+> mapping between debuginfo cu and pahole cu, we just create
+> one pahole cu, which should solve the above incorrect type
+> id issue.
+> 
+> Patches #1 and #2 are refactoring the existing code
+> and Patch #3 added an option "merge_cus" to permit
+> merging all debuginfo cu's into one pahole cu.
+> For vmlinux built, it can be detected that if LTO or Thin-LTO
+> is enabled, "merge_cus" can be added into pahole
+> command line.
+> 
+>   [1] https://www.spinics.net/lists/dwarves/msg00999.html
 
-Fixes: 981f94c3e92146705b ("bpf: Add bitwise atomic instructions")
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-Acked-by: Brendan Jackman <jackmanb@google.com>
----
- kernel/bpf/disasm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for working on this, I'll look at it today.
 
-diff --git a/kernel/bpf/disasm.c b/kernel/bpf/disasm.c
-index 3acc7e0b6916..faa54d58972c 100644
---- a/kernel/bpf/disasm.c
-+++ b/kernel/bpf/disasm.c
-@@ -84,7 +84,7 @@ static const char *const bpf_atomic_alu_string[16] = {
- 	[BPF_ADD >> 4]  = "add",
- 	[BPF_AND >> 4]  = "and",
- 	[BPF_OR >> 4]  = "or",
--	[BPF_XOR >> 4]  = "or",
-+	[BPF_XOR >> 4]  = "xor",
- };
- 
- static const char *const bpf_ldst_string[] = {
--- 
-2.27.0
-
+- Arnaldo
