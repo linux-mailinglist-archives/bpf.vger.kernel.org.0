@@ -2,123 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FE0349B1A
-	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 21:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FDB349B69
+	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 22:08:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbhCYUj2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Mar 2021 16:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230378AbhCYUjV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Mar 2021 16:39:21 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49460C06174A
-        for <bpf@vger.kernel.org>; Thu, 25 Mar 2021 13:39:21 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 8so3597181ybc.13
-        for <bpf@vger.kernel.org>; Thu, 25 Mar 2021 13:39:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UVU5LIJYCDhojSVhBk+mTM70PPq6E7JHswt+DlmLO7E=;
-        b=ZUBOAC4Z/6qi55ywLvgQMM82vL8LZ7TOrvmcQXt5UnxkL6cRM0jRRr8SWd5FPYUjrc
-         tb4VlOMDsBZ61I91gCIQCjFC5jtqVgE0kLH6Hu7hmhIIa32dyTlVpsH1o1egWxEPS04t
-         d+bIFICe8bMIgnSzpHsSA2fsrTIKASJOmDvQ9FRpAzYdHr8DRD6cNDadUhJAMm8A+fN1
-         WTwhTxocFypJNUnhu34nFg0bu6nKlDxWofA034sEaOJPkLl3SA+msTjxfiTNEctsb0T/
-         xxNjMXj+wWPJS02RWdEmuE3wXfK3zXBGrFpifO3MKZDQE0IwBSJZ9yaeSC4aoZMckQgS
-         1tyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UVU5LIJYCDhojSVhBk+mTM70PPq6E7JHswt+DlmLO7E=;
-        b=CgEOFDpgQZU4VZ8y5g8nMMaw0UDYZXOwm6yf047PY+G6akw8lwiLJsiPnLrKN6rXXb
-         qRMcnNMaFX9RgB8OM1gCzzR3AJuf/fan+wTaRcL8ssPNecod1q9JsJjMmVQ14owo+i5Q
-         rTCUfIFf22SaY5nqt6Mh0rbT/dJrsHtv/y7+19af7kh0eCxdIqZauxp5V/qm9DViY6O+
-         Bv/4FC20ZKDHOrPX8ZCakuVxu0BFBHsqpEaRkidRs8M09sG4kT7DA3yaHZbj9QcjW/lD
-         NCXdSdbSB0xmAU5nwA2uoUToBP5MsA7J0786+T0tb8qyJd89BG8WZ7X7OtTdh3iSaziT
-         3ofA==
-X-Gm-Message-State: AOAM533EW3YN9XibRWYTv671GTtsFcTl9GApHJWFyp1v8J3luAMsxhVO
-        soCCdP548npg35uI7xmxiEKIVEiTTBetEOaU5zk=
-X-Google-Smtp-Source: ABdhPJwsO0h0VdYvwNV59a1tmqFwLAEl404G93NMe2Vz4oJhQXoqCampLnF7ZwPonP4C0LDPzS6a/Ht0tSPjeci2NHc=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr14467044ybo.230.1616704760541;
- Thu, 25 Mar 2021 13:39:20 -0700 (PDT)
+        id S230296AbhCYVHo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Mar 2021 17:07:44 -0400
+Received: from www62.your-server.de ([213.133.104.62]:36552 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230357AbhCYVHP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Mar 2021 17:07:15 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lPXCB-0007ix-HM; Thu, 25 Mar 2021 22:07:11 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lPXCB-000GzT-Cx; Thu, 25 Mar 2021 22:07:11 +0100
+Subject: Re: [bpf PATCH] bpf, selftests: test_maps generating unrecognized
+ data section
+To:     John Fastabend <john.fastabend@gmail.com>, andrii@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@fb.com
+References: <161661993201.29133.10763175125024005438.stgit@john-Precision-5820-Tower>
+ <161662006586.29133.187705917710998342.stgit@john-Precision-5820-Tower>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <013bbba5-ae52-f472-02ad-8530cc8b665a@iogearbox.net>
+Date:   Thu, 25 Mar 2021 22:07:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20210323040952.2118241-1-rafaeldtinoco@ubuntu.com>
- <60597d21d7eed_45ba42086@john-XPS-13-9370.notmuch> <a286bddf-8217-57e3-30bf-a09f3de2592e@ubuntu.com>
-In-Reply-To: <a286bddf-8217-57e3-30bf-a09f3de2592e@ubuntu.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 25 Mar 2021 13:39:09 -0700
-Message-ID: <CAEf4BzYjyppFCS02n-+VyNbj8-FHMyFMtV7-+_ttkroceEjLbg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next] libbpf: add bpf object kern_version attribute setter
-To:     Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <161662006586.29133.187705917710998342.stgit@john-Precision-5820-Tower>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26120/Thu Mar 25 12:15:49 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 1:01 PM Rafael David Tinoco
-<rafaeldtinoco@ubuntu.com> wrote:
->
-> >> Unfortunately some distros don't have their kernel version defined
-> >> accurately in <linux/version.h> due to different long term support
-> >> reasons.
-> >>
-> >> It is important to have a way to override the bpf kern_version
-> >> attribute during runtime: some old kernels might still check for
-> >> kern_version attribute during bpf_prog_load().
-> >>
-> >> Signed-off-by: Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
-> >> ---
-> >>   tools/lib/bpf/libbpf.c   | 10 ++++++++++
-> >>   tools/lib/bpf/libbpf.h   |  1 +
-> >>   tools/lib/bpf/libbpf.map |  1 +
-> >>   3 files changed, 12 insertions(+)
-> >>
-> >
-> > Hi Andrii and Rafael,
-> >
-> > Did you consider making kernel version an attribute of the load
-> > API, bpf_prog_load_xattr()? This feels slightly more natural
-> > to me, to tell the API the kernel you need at load time.
->
-> Hi John,
->
-> This is how I'm using:
-> https://github.com/rafaeldtinoco/portablebpf/blob/master/mine.c#L285
->
-> > Although, I don't use the skeleton pieces so maybe it would be
-> > awkward for that usage.
->
-> having a xxx_bpf object:
->
-> xxx_bpf__open_and_load() -> xxx_bpf__load() ->
-> bpf_object__load_skeleton() -> bpf_object_load() -> bpf_object__loadxattr()
->
-> We would have to add kern_version to 'bpf_object_skeleton' struct, to be
-> passed to 'bpf_object__load_skeleton()' to have it passed on.
->
-> I'll let Andrii to see what he prefers.
+On 3/24/21 10:07 PM, John Fastabend wrote:
+> With a relatively recent clang master branch test_map skips a section,
+> 
+>   libbpf: elf: skipping unrecognized data section(5) .rodata.str1.1
+> 
+> the cause is some pointless strings from bpf_printks in the BPF program
+> loaded during testing. Remove them so we stop tripping our test bots.
+> 
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
+>   .../selftests/bpf/progs/sockmap_tcp_msg_prog.c     |    3 ---
+>   1 file changed, 3 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/progs/sockmap_tcp_msg_prog.c b/tools/testing/selftests/bpf/progs/sockmap_tcp_msg_prog.c
+> index fdb4bf4408fa..0f603253f4ed 100644
+> --- a/tools/testing/selftests/bpf/progs/sockmap_tcp_msg_prog.c
+> +++ b/tools/testing/selftests/bpf/progs/sockmap_tcp_msg_prog.c
+> @@ -16,10 +16,7 @@ int bpf_prog1(struct sk_msg_md *msg)
+>   	if (data + 8 > data_end)
+>   		return SK_DROP;
+>   
+> -	bpf_printk("data length %i\n", (__u64)msg->data_end - (__u64)msg->data);
+>   	d = (char *)data;
 
-See my reply to John. What he asked for already exists. Having a test
-would be nice, but selftests/bpf don't have an infrastructure to even
-perform this test, so I don't think it's worth it.
+Do we still need 'd' as well in that case, or the data + 8 > data_end test if we don't
+read any of the data? I'm not sure what was the original purpose of the prog, perhaps
+just to test that we can attach /something/ in general? Maybe in that case empty prog
+is sufficient if we don't do anything useful with the rest?
 
-So in summary, LGTM. I'll apply it once bpf-next is ready to accept new patches.
+> -	bpf_printk("hello sendmsg hook %i %i\n", d[0], d[1]);
+> -
+>   	return SK_PASS;
+>   }
+>   
+> 
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->
-> Note:
->
-> Reason for all this (including the legacy kprobe logic, in other commit)
-> is to continue the
-> https://github.com/rafaeldtinoco/conntracker/tree/poc-cmd project,
-> making sure it supports 4.x kernels. Still adding bpf support to it
-> (identify task/pid per flow) and will replace the libnf* usage with bpf
-> after that.
->
-> Thanks
-> -rafaeldtinoco
