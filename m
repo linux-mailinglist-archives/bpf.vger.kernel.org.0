@@ -2,87 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B16348DCB
-	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 11:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B49348E01
+	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 11:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCYKRN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Mar 2021 06:17:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:45880 "EHLO foss.arm.com"
+        id S229581AbhCYK3D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Mar 2021 06:29:03 -0400
+Received: from elvis.franken.de ([193.175.24.41]:58945 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230007AbhCYKRD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:17:03 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6609613A1;
-        Thu, 25 Mar 2021 03:17:02 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2EB263F718;
-        Thu, 25 Mar 2021 03:16:57 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 10:16:55 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 03/17] mm: add generic __va_function and __pa_function
- macros
-Message-ID: <20210325101655.GB36570@C02TD0UTHF1T.local>
-References: <20210323203946.2159693-1-samitolvanen@google.com>
- <20210323203946.2159693-4-samitolvanen@google.com>
- <20210324071357.GB2639075@infradead.org>
- <CABCJKufRHCb0sjr1tMGCoVMzV-5dKPPn-t8=+ihNFAgTr2k0DA@mail.gmail.com>
+        id S229716AbhCYK2s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Mar 2021 06:28:48 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lPNEM-0007Ug-00; Thu, 25 Mar 2021 11:28:46 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id CCBECC1C81; Thu, 25 Mar 2021 11:17:12 +0100 (CET)
+Date:   Thu, 25 Mar 2021 11:17:12 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        linux-mips@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
+Message-ID: <20210325101712.GA6893@alpha.franken.de>
+References: <1616034557-5844-1-git-send-email-yangtiezhu@loongson.cn>
+ <alpine.DEB.2.21.2103220540591.21463@angie.orcam.me.uk>
+ <f36f4ca6-a3bb-8db9-01e6-65fec0916b58@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABCJKufRHCb0sjr1tMGCoVMzV-5dKPPn-t8=+ihNFAgTr2k0DA@mail.gmail.com>
+In-Reply-To: <f36f4ca6-a3bb-8db9-01e6-65fec0916b58@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 08:54:18AM -0700, Sami Tolvanen wrote:
-> On Wed, Mar 24, 2021 at 12:14 AM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > On Tue, Mar 23, 2021 at 01:39:32PM -0700, Sami Tolvanen wrote:
-> > > With CONFIG_CFI_CLANG, the compiler replaces function addresses
-> > > in instrumented C code with jump table addresses. This means that
-> > > __pa_symbol(function) returns the physical address of the jump table
-> > > entry instead of the actual function, which may not work as the jump
-> > > table code will immediately jump to a virtual address that may not be
-> > > mapped.
-> > >
-> > > To avoid this address space confusion, this change adds generic
-> > > definitions for __va_function and __pa_function, which architectures
-> > > that support CFI can override. The typical implementation of the
-> > > __va_function macro would use inline assembly to take the function
-> > > address, which avoids compiler instrumentation.
-> >
-> > I think these helper are sensible, but shouldn't they have somewhat
-> > less arcane names and proper documentation?
+On Mon, Mar 22, 2021 at 03:12:59PM +0800, Tiezhu Yang wrote:
+> On 03/22/2021 12:46 PM, Maciej W. Rozycki wrote:
+> > On Thu, 18 Mar 2021, Tiezhu Yang wrote:
+> > 
+> > > diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> > > index 160b3a8..4b94ec7 100644
+> > > --- a/arch/mips/Kconfig
+> > > +++ b/arch/mips/Kconfig
+> > > @@ -6,6 +6,7 @@ config MIPS
+> > >   	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
+> > >   	select ARCH_HAS_FORTIFY_SOURCE
+> > >   	select ARCH_HAS_KCOV
+> > > +	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+> >   Hmm, documentation on ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE seems rather
+> > scarce, but based on my guess shouldn't this be "if !EVA"?
+> > 
+> >    Maciej
 > 
-> Good point, I'll add comments in the next version. I thought
-> __pa_function would be a fairly straightforward replacement for
-> __pa_symbol, but I'm fine with renaming these. Any suggestions for
-> less arcane names?
+> I do not quite know what the effect if MIPS EVA (Enhanced Virtual
+> Addressing)
+> is set, I saw that ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should be
+> restricted
+> to archs with non-overlapping address ranges.
+> 
+> I wonder whether MIPS EVA will generate overlapping address ranges?
 
-I think dropping 'nocfi' into the name would be clear enough. I think
-that given the usual fun with {symbol,module,virt}->phys conversions
-it's not worth having the __pa_* form, and we can leave the phys
-conversion to the caller that knows where the function lives.
+they can overlap in EVA mode.
 
-How about we just add `function_nocfi()` ?
+> If yes, it is better to make ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE depend
+> on !EVA on MIPS.
 
-Callers can then do `__pa_symbol(function_nocfi(foo))` and similar.
+Could please add the change ?
 
-Thanks,
-Mark.
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
