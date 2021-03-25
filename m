@@ -2,61 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35AF7349333
-	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 14:42:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E56983494DB
+	for <lists+bpf@lfdr.de>; Thu, 25 Mar 2021 16:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbhCYNle (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Mar 2021 09:41:34 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14544 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbhCYNlF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:41:05 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F5mQZ6q5BzPkxm;
-        Thu, 25 Mar 2021 21:38:30 +0800 (CST)
-Received: from t01.huawei.com (10.67.174.119) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 25 Mar 2021 21:41:00 +0800
-From:   Xu Kuohai <xukuohai@huawei.com>
-To:     <bpf@vger.kernel.org>
-CC:     <netdev@vger.kernel.org>, <ast@kernel.org>, <jackmanb@google.com>,
-        <kpsingh@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kafai@fb.com>, <john.fastabend@gmail.com>, <songliubraving@fb.com>
-Subject: [PATCH bpf-next v3] bpf: Fix a spelling typo in kernel/bpf/disasm.c
-Date:   Thu, 25 Mar 2021 13:41:41 +0000
-Message-ID: <20210325134141.8533-1-xukuohai@huawei.com>
-X-Mailer: git-send-email 2.27.0
+        id S230260AbhCYPC0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Mar 2021 11:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230494AbhCYPCB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Mar 2021 11:02:01 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF50C06174A;
+        Thu, 25 Mar 2021 08:02:01 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id x14so2019609qki.10;
+        Thu, 25 Mar 2021 08:02:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D6lqBkmqDi36o04hy81nixhjopIa3qv0i9AAEd/fUWA=;
+        b=QjNiajmB8gVa1mycAekPlCc88I7cNIkFrq1JW4JZPgh1nb9NQ+NvVOA5X9tVtkqwaQ
+         0tEj4Zr1igynSalGkTsxc5QMi6/DuPBUBzuu7tchXbMgLj00Mv6e/2IgblTY3GzuGvGk
+         MkmONWAcnjYZ9G2tjitB2Zk7oeaRewtFB+p+xR0+jUUxGPfmX7jDuSkVS3dajFc6gFRR
+         hRwmJdSgxakAVPgkj+UwXAglqqbjZVcUSt2J3LI9IwmymGOMzXm+9nidW8v86aXpSRrA
+         GTTnLK+XX0ofgrMfQ0UtZQ/Kre9X7gF1gDtYBABIVy/mOo4cV5jpJzO+cgG7lp/J1Qx3
+         E3Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D6lqBkmqDi36o04hy81nixhjopIa3qv0i9AAEd/fUWA=;
+        b=AgCMc7NGvaM/aDlY608nauW4xLhp3lgACs5lUfR+4/N7thgAOi7qQCpyqhe8TJHEKW
+         z60DTwwkhaYLYF7ZqCBkRLsHYyHliEn8vfM3gYAvSYkH/3UHBdBbhVNX3x0eUUJkuhQI
+         8fSeJfD5APDWc+MX/wjNhGD/DflNaF9XVhD5MGNk8RKBqdqFfAdDxoL3moV4r1/y4tXJ
+         hiulYexFlkT+a4gHkZSGnhrO99T8q6WHXxHrDmARHgm+KYLpD1RUySnaptXTXHSVOFPy
+         cQtvmx2VKNzSgM8Xq/UcG2dxz694pRkjNJbn3njd8piFhhjj7hBP6NwVwkTo8vHPbzpn
+         7vfA==
+X-Gm-Message-State: AOAM530qcfFPE2vsFCldCS/h3nN+yd2Y44DJ2Zgj0C7l+Y5s7wITXW8+
+        PS33PQrmDex6a5hHIk9p92A=
+X-Google-Smtp-Source: ABdhPJyfq2qXFDWvIbGbYdWsuxBVQZT7cmtz7Mh3rfp4HUM45O97U1d5wQivOPeOLXkRRQOsN4ko1Q==
+X-Received: by 2002:a05:620a:11ad:: with SMTP id c13mr8570692qkk.282.1616684520625;
+        Thu, 25 Mar 2021 08:02:00 -0700 (PDT)
+Received: from localhost.localdomain ([179.218.4.27])
+        by smtp.gmail.com with ESMTPSA id c19sm4006766qkl.78.2021.03.25.08.01.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 08:02:00 -0700 (PDT)
+From:   Pedro Tammela <pctammela@gmail.com>
+X-Google-Original-From: Pedro Tammela <pctammela@mojatatu.com>
+Cc:     Pedro Tammela <pctammela@mojatatu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] libbpf: fix bail out from 'ringbuf_process_ring()' on error
+Date:   Thu, 25 Mar 2021 12:01:15 -0300
+Message-Id: <20210325150115.138750-1-pctammela@mojatatu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.119]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The name string for BPF_XOR is "xor", not "or", fix it.
+The current code bails out with negative and positive returns.
+If the callback returns a positive return code, 'ring_buffer__consume()'
+and 'ring_buffer__poll()' will return a spurious number of records
+consumed, but mostly important will continue the processing loop.
 
-Fixes: 981f94c3e92146705b ("bpf: Add bitwise atomic instructions")
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-Acked-by: Brendan Jackman <jackmanb@google.com>
+This patch makes positive returns from the callback a no-op.
+
+Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
 ---
- kernel/bpf/disasm.c | 2 +-
+ tools/lib/bpf/ringbuf.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/disasm.c b/kernel/bpf/disasm.c
-index 3acc7e0b6916..faa54d58972c 100644
---- a/kernel/bpf/disasm.c
-+++ b/kernel/bpf/disasm.c
-@@ -84,7 +84,7 @@ static const char *const bpf_atomic_alu_string[16] = {
- 	[BPF_ADD >> 4]  = "add",
- 	[BPF_AND >> 4]  = "and",
- 	[BPF_OR >> 4]  = "or",
--	[BPF_XOR >> 4]  = "or",
-+	[BPF_XOR >> 4]  = "xor",
- };
- 
- static const char *const bpf_ldst_string[] = {
+diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+index 8caaafe7e312..e7a8d847161f 100644
+--- a/tools/lib/bpf/ringbuf.c
++++ b/tools/lib/bpf/ringbuf.c
+@@ -227,7 +227,7 @@ static int ringbuf_process_ring(struct ring* r)
+ 			if ((len & BPF_RINGBUF_DISCARD_BIT) == 0) {
+ 				sample = (void *)len_ptr + BPF_RINGBUF_HDR_SZ;
+ 				err = r->sample_cb(r->ctx, sample, len);
+-				if (err) {
++				if (err < 0) {
+ 					/* update consumer pos and bail out */
+ 					smp_store_release(r->consumer_pos,
+ 							  cons_pos);
 -- 
-2.27.0
+2.25.1
 
