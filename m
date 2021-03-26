@@ -2,101 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A546534A9A5
-	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 15:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8B934AAC8
+	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 16:02:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhCZOZH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Mar 2021 10:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhCZOYr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:24:47 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416E4C0613AA;
-        Fri, 26 Mar 2021 07:24:47 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id b14so7934241lfv.8;
-        Fri, 26 Mar 2021 07:24:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nQ6cDueETr7R6JsMSrZJLtQswKIsE5Z44q0mYxtA07E=;
-        b=c0KQ+/G7knKwgFFKEJGZkHPCPChjWm5irh8qKkb+fqsbU2Uy7ubwscqo6K8f02RMmO
-         Tq00A+6w6l97RswUB5r1hOstDxzUnkl6Ru6CypQ1RmiRuIo/eNgWyJ7FXULiZ94x5Vab
-         vjGSFPrerHA8yOi9ZwvTeivz3Q+UWvGw16cDoRLdZAb/6dOZ5+PiAII2AmsGoCsga6aK
-         0pJyzxMrV9G/DEzAzknlrRhiC7kzHwg8tsEAzl2LCFdDhqm1TJxYEhi4ryURrknN+jRp
-         cLxWYfzcWOA23TlI/cMPYxHYJV7E0zgs851HNuuhZO5UQjtkIess3sbVWbEVys8gdf1Z
-         cNOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nQ6cDueETr7R6JsMSrZJLtQswKIsE5Z44q0mYxtA07E=;
-        b=lRxFavbr2uBgmbn8uvPEnAj7ROhjnWb2RyQ8X/vehhe6x/P1mnHha3aqWdI8ebrCcj
-         3eQiy3hjPQhoqknmZUohHwuCmx3r9Umt5Tam92U5s38SKGslyWCUj7XAih/nLO+ToYLL
-         K7E6lE7Re8ocDjZQ7lBLaliDqsLXtVURbICOUSpLwo31XuGPFm68yDdJpqUcAFHTTRI4
-         0PKG9a4f0Wi48Bmm8G8tRwMTJk1P7nw+2gupUrxbVjT0yoAwjRmhh6j99y5wZRvxLNxN
-         U4TrAOFRdpZMakD3zR+Ej4ZEfNlrDHwXq0gccegbnTrAehp58ZC01yrJxJ2ZHCcHyIDR
-         EZ7Q==
-X-Gm-Message-State: AOAM5313px9e5YKRa3upoYs5HMAacwiGpSTQohSRswtIqZccQpOTvjw8
-        otIdOHKwQ9NcxCrRv/5G9/kUqrFr4M6ZCRmfHNE=
-X-Google-Smtp-Source: ABdhPJwcgpqv/t3Un/FbFhFtnv9tetg9zdfhUs6xUd/qg+/tj9XMUh5G134bNYItwQGzjO8dwP1O1b3UZ7+KNVnt+98=
-X-Received: by 2002:ac2:5ec2:: with SMTP id d2mr8621766lfq.214.1616768685772;
- Fri, 26 Mar 2021 07:24:45 -0700 (PDT)
+        id S230051AbhCZPCR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Mar 2021 11:02:17 -0400
+Received: from mga14.intel.com ([192.55.52.115]:38760 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229871AbhCZPBp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Mar 2021 11:01:45 -0400
+IronPort-SDR: GpNRukFeWwIq3xziefinuJiHRwPJxk4HsVRcTSzljUfRk2t6T/wP4tbcPh3EO/0QktMKQQqik4
+ yShAlKXMLJAQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="190602879"
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
+   d="scan'208";a="190602879"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 08:01:16 -0700
+IronPort-SDR: JTrU6yK2TrvtqcKrjegulx+hmrWVgIkBmj8DX5Q7Nexn6zbp4M73c4yHEkiKchkVcaGn6WtP+C
+ rxCh2yuaGfYw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
+   d="scan'208";a="382668256"
+Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
+  by fmsmga007.fm.intel.com with ESMTP; 26 Mar 2021 08:01:14 -0700
+From:   Ciara Loftus <ciara.loftus@intel.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, bjorn@kernel.org,
+        magnus.karlsson@gmail.com
+Cc:     Ciara Loftus <ciara.loftus@intel.com>
+Subject: [PATCH v2 bpf 0/3] AF_XDP Socket Creation Fixes
+Date:   Fri, 26 Mar 2021 14:29:43 +0000
+Message-Id: <20210326142946.5263-1-ciara.loftus@intel.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210326124030.1138964-1-Jianlin.Lv@arm.com>
-In-Reply-To: <20210326124030.1138964-1-Jianlin.Lv@arm.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 26 Mar 2021 07:24:33 -0700
-Message-ID: <CAADnVQ+W79=L=jb0hcOa4E067_PnWbnWHdxqyw-9+Nz9wKkOCA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: trace jit code when enable BPF_JIT_ALWAYS_ON
-To:     Jianlin Lv <Jianlin.Lv@arm.com>
-Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrey Ignatov <rdna@fb.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mahesh Bandewar <maheshb@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        iecedge@gmail.com, nd <nd@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 5:40 AM Jianlin Lv <Jianlin.Lv@arm.com> wrote:
->
-> When CONFIG_BPF_JIT_ALWAYS_ON is enabled, the value of bpf_jit_enable in
-> /proc/sys is limited to SYSCTL_ONE. This is not convenient for debugging.
-> This patch modifies the value of extra2 (max) to 2 that support developers
-> to emit traces on kernel log.
->
-> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
-> ---
->  net/core/sysctl_net_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-> index d84c8a1b280e..aa16883ac445 100644
-> --- a/net/core/sysctl_net_core.c
-> +++ b/net/core/sysctl_net_core.c
-> @@ -386,7 +386,7 @@ static struct ctl_table net_core_table[] = {
->                 .proc_handler   = proc_dointvec_minmax_bpf_enable,
->  # ifdef CONFIG_BPF_JIT_ALWAYS_ON
->                 .extra1         = SYSCTL_ONE,
-> -               .extra2         = SYSCTL_ONE,
-> +               .extra2         = &two,
+This series fixes some issues around socket creation for AF_XDP.
 
-"bpftool prog dump jited" is much better way to examine JITed dumps.
-I'd rather remove bpf_jit_enable=2 altogether.
+Patch 1 fixes a potential NULL pointer dereference in
+xsk_socket__create_shared.
+
+Patch 2 ensures that the umem passed to xsk_socket__create(_shared)
+remains unchanged in event of failure.
+
+Patch 3 makes it possible for xsk_socket__create(_shared) to
+succeed even if the rx and tx XDP rings have already been set up, by
+ignoring the return value of the XDP_RX_RING/XDP_TX_RING setsockopt.
+This removes a limitation which existed whereby a user could not retry
+socket creation after a previous failed attempt.
+
+It was chosen to solve the problem by ignoring the return values in
+libbpf instead of modifying the setsockopt handling code in the kernel
+in order to make it possible for the solution to be available across
+all kernels, provided a new enough libbpf is available.
+
+v1->v2:
+* Simplified restoring the _save pointers as suggested by Magnus
+  Karlsson.
+* Fixed the condition which determines whether to unmap umem rings
+  when socket create fails.
+
+This series applies on commit 6032ebb54c60cae24329f6aba3ce0c1ca8ad6abe
+
+
+Ciara Loftus (3):
+  libbpf: ensure umem pointer is non-NULL before dereferencing
+  libbpf: restore umem state after socket create failure
+  libbpf: ignore return values of setsockopt for XDP rings.
+
+ tools/lib/bpf/xsk.c | 66 ++++++++++++++++++++++++---------------------
+ 1 file changed, 35 insertions(+), 31 deletions(-)
+
+-- 
+2.17.1
+
