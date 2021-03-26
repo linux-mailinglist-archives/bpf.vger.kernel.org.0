@@ -2,108 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF83234AE85
-	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 19:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6989334AECD
+	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 19:53:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhCZS0O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Mar 2021 14:26:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38817 "EHLO
+        id S230195AbhCZSw4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Mar 2021 14:52:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49778 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230098AbhCZS0G (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Mar 2021 14:26:06 -0400
+        by vger.kernel.org with ESMTP id S230152AbhCZSwr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Mar 2021 14:52:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616783165;
+        s=mimecast20190719; t=1616784766;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VHBvQNlInr7uhqwohEYYJ6fIrcun/FjuvH6xJlp8s4Y=;
-        b=aRQY3cN8s/nh7EVZjxn7wFLQ1DAM+qm2MhWXbAZH9PW30TopBVswJh9sIFKiFloLSlKHwI
-        jptKF4nTcLQfGHTCBKg7JcgLlBd76DqE82Ew1yMXB5fJOuoMPlxWVO9mlmj/O5C6iy8hjW
-        LFmTyy1jxNI3xDBu9joILMRM72Y7ZNw=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-196-3zNsXP_WMS6gaJDOWYjFGg-1; Fri, 26 Mar 2021 14:25:55 -0400
-X-MC-Unique: 3zNsXP_WMS6gaJDOWYjFGg-1
-Received: by mail-ed1-f70.google.com with SMTP id q25so4832588eds.16
-        for <bpf@vger.kernel.org>; Fri, 26 Mar 2021 11:25:55 -0700 (PDT)
+        bh=0mStmjSgV2Rr2281g0XQu9mK+0OcAxFBRItFc2NT/t4=;
+        b=OZm6VMc2kteJ3xJEPf3apZ4yEBsiDKuuU/xSY1CxVqaUXiyedXuSMovswj5rGIyIuKG+pn
+        yAe0cdmRNcxjmk8p8/FS+i1Aw8A94lA1PhIioYyk35wu98IGGJH2cub8o2edVwgMH2eXiA
+        bFrl1B1Uup8smXSkEDh4XMRH4H780UA=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-378-ppfVPygtMdeH8Wmufexxow-1; Fri, 26 Mar 2021 14:52:44 -0400
+X-MC-Unique: ppfVPygtMdeH8Wmufexxow-1
+Received: by mail-ed1-f72.google.com with SMTP id v27so4894132edx.1
+        for <bpf@vger.kernel.org>; Fri, 26 Mar 2021 11:52:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=VHBvQNlInr7uhqwohEYYJ6fIrcun/FjuvH6xJlp8s4Y=;
-        b=EBH+m4CjlnFq6Q0tzJghHZ1cLmLetShjjd1gqB8JF8KfJ6oKx6Vueilg8knnwgebPI
-         7o8dYGSlb9AiiAdJIFITGERLLvfm5Pd5HT+hesOvD+LJtI920WSz62ANLdh00SeOLf6T
-         AAeyCT31B5SuA9THU5TIRL3fOinhP9LpGh+giqBr7WvtqDUAK/NKi1D1JVxgYz+Cg1jW
-         XBUOXNpg0Sw9OJZAkX46wf93ISB9TpUYPjpBnuhCDB4KkarkUSzptO6k6gAU8aRWzbVg
-         8WsKfmybrD7HBtpej2DX5QW3Sk0Wbzuv9FazRRvXHnvJZVT8EYXqp3OOao6MX9I+r7LR
-         lHvg==
-X-Gm-Message-State: AOAM531Ay5/RRnsdP8UyQRSPiXYQllzG8p5SLD8hlRESy73cbq6cy7vf
-        3a5LwME8Ym1t59h9HE+ZwmOVf3q8mv7Iz14I5sqhKQbT4ZA603y9Tw9Zv9HUesszjN/FEV4aDCp
-        oTEOLT3Ty/zqi
-X-Received: by 2002:a50:ee10:: with SMTP id g16mr16193143eds.215.1616783154409;
-        Fri, 26 Mar 2021 11:25:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwo9q1onPVZDjx15tDzJWa1xccA2pTrcCh71KUTRxb9IqNa6T+h3JwEblXu5DFP0NGTrT/j0w==
-X-Received: by 2002:a50:ee10:: with SMTP id g16mr16193124eds.215.1616783154277;
-        Fri, 26 Mar 2021 11:25:54 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id gn19sm3987476ejc.4.2021.03.26.11.25.53
+         :message-id:mime-version:content-transfer-encoding;
+        bh=0mStmjSgV2Rr2281g0XQu9mK+0OcAxFBRItFc2NT/t4=;
+        b=VIVsNd6AlEaEwTHx0/Dyr4jfJqYey6kqkxS6BQ25WVBbqkAhCbQ1zJDszVHTsmagdA
+         Yt5SjT++Hpwyf6cPB0sBMijR7kVxI2MwwrLN9+DgD8uacAwandk2wK7qr3kJWGLBcly/
+         Zcjp0i0/E/dD2cYOVxnONVVSJIPPMSn3oEMoDka5xYpBZnqVKtgPSNbBvm+jZR1R7RBc
+         ypDdL/YkbCcQQ4L78xmYVTTNSxQNiN2l2uLtA0bwsO4E5BdJSCRVOk/0JZDrUC0KAcTE
+         vCF/EbUZO6QVEDF4S6B4QWTGcV0pdpy2MBmRG9Wp55znA1rL3o9uH4RkB8y8UzQoBcWc
+         ZvnA==
+X-Gm-Message-State: AOAM530nqnimv8dRpWADKU8Tj9mONL6/ojvleZUmmVDqOzsCA7nb31jT
+        yBg00I9qMng0IQxp6TobWjj8TnpOAyEwCHe815uatUvKQTOFHlLTZN8w6qEkfs3RNrHGrXnds/G
+        STZjmZTQXKWnZ
+X-Received: by 2002:a17:907:1c05:: with SMTP id nc5mr8329676ejc.320.1616784763327;
+        Fri, 26 Mar 2021 11:52:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw1Xo71TlF/EvM5nrC/rIt2Xq6lfE+fWs1V8BvgOSw+mvIghSEqoTO376l6Z/6b7LOg1slmMw==
+X-Received: by 2002:a17:907:1c05:: with SMTP id nc5mr8329651ejc.320.1616784762967;
+        Fri, 26 Mar 2021 11:52:42 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id t6sm4543368edq.48.2021.03.26.11.52.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 11:25:53 -0700 (PDT)
+        Fri, 26 Mar 2021 11:52:42 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 0B61D1801A3; Fri, 26 Mar 2021 19:25:53 +0100 (CET)
+        id 8B58D1801A3; Fri, 26 Mar 2021 19:52:41 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf v2 2/2] bpf/selftests: test that kernel rejects a
- TCP CC with an invalid license
-In-Reply-To: <CAEf4BzaucswGy+LiXQC0q_zgQEOTtRJ3GQtaeq7CwJJW9EzGig@mail.gmail.com>
-References: <20210325211122.98620-1-toke@redhat.com>
- <20210325211122.98620-2-toke@redhat.com>
- <CAEf4BzaxmrWFBJ1mzzWzu0yb_iFX528cAFVbXrncPEaJBXrd2A@mail.gmail.com>
- <87lfaacks9.fsf@toke.dk>
- <CAEf4BzaucswGy+LiXQC0q_zgQEOTtRJ3GQtaeq7CwJJW9EzGig@mail.gmail.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        ciara.loftus@intel.com, john.fastabend@gmail.com
+Subject: Re: [PATCH v3 bpf-next 06/17] libbpf: xsk: use bpf_link
+In-Reply-To: <20210326152318.GA43356@ranger.igk.intel.com>
+References: <20210322205816.65159-1-maciej.fijalkowski@intel.com>
+ <20210322205816.65159-7-maciej.fijalkowski@intel.com>
+ <87wnty7teq.fsf@toke.dk> <20210324130918.GA6932@ranger.igk.intel.com>
+ <87a6qsf7hc.fsf@toke.dk> <20210326152318.GA43356@ranger.igk.intel.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 26 Mar 2021 19:25:53 +0100
-Message-ID: <874kgxbwlq.fsf@toke.dk>
+Date:   Fri, 26 Mar 2021 19:52:41 +0100
+Message-ID: <87v99dagsm.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
 
-
->> Ah, thanks! I always get confused about CHECK() as well! Maybe it should
->> be renamed to ASSERT()? But that would require flipping all the if()
->> statements around them as well :/
+> On Thu, Mar 25, 2021 at 12:38:07AM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+>>=20
+>> > On Mon, Mar 22, 2021 at 10:47:09PM +0100, Toke H=C3=B8iland-J=C3=B8rge=
+nsen wrote:
+>> >> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+>> >>=20
+>> >> > Currently, if there are multiple xdpsock instances running on a sin=
+gle
+>> >> > interface and in case one of the instances is terminated, the rest =
+of
+>> >> > them are left in an inoperable state due to the fact of unloaded XDP
+>> >> > prog from interface.
+>> >> >
+>> >> > Consider the scenario below:
+>> >> >
+>> >> > // load xdp prog and xskmap and add entry to xskmap at idx 10
+>> >> > $ sudo ./xdpsock -i ens801f0 -t -q 10
+>> >> >
+>> >> > // add entry to xskmap at idx 11
+>> >> > $ sudo ./xdpsock -i ens801f0 -t -q 11
+>> >> >
+>> >> > terminate one of the processes and another one is unable to work du=
+e to
+>> >> > the fact that the XDP prog was unloaded from interface.
+>> >> >
+>> >> > To address that, step away from setting bpf prog in favour of bpf_l=
+ink.
+>> >> > This means that refcounting of BPF resources will be done automatic=
+ally
+>> >> > by bpf_link itself.
+>> >> >
+>> >> > Provide backward compatibility by checking if underlying system is
+>> >> > bpf_link capable. Do this by looking up/creating bpf_link on loopba=
+ck
+>> >> > device. If it failed in any way, stick with netlink-based XDP prog.
+>> >> > Otherwise, use bpf_link-based logic.
+>> >>=20
+>> >> So how is the caller supposed to know which of the cases happened?
+>> >> Presumably they need to do their own cleanup in that case? AFAICT you=
+'re
+>> >> changing the code to always clobber the existing XDP program on detach
+>> >> in the fallback case, which seems like a bit of an aggressive change?=
+ :)
+>> >
+>> > Sorry Toke, I was offline yesterday.
+>> > Yeah once again I went too far and we shouldn't do:
+>> >
+>> > bpf_set_link_xdp_fd(xsk->ctx->ifindex, -1, 0);
+>> >
+>> > if xsk_lookup_bpf_maps(xsk) returned non-zero value which implies that=
+ the
+>> > underlying prog is not AF_XDP related.
+>> >
+>> > closing prog_fd (and link_fd under the condition that system is bpf_li=
+nk
+>> > capable) is enough for that case.
+>>=20
+>> I think the same thing goes for further down? With your patch, if the
+>> code takes the else branch (after checking prog_id), and then ends up
+>> going to err_set_bpf_maps, it'll now also do an unconditional
+>> bpf_set_link_xdp_fd(), where before it was checking prog_id again and
+>> only unloading if it previously loaded the program...
 >
-> Exactly, it's the opposite of assert (ASSERT_NOT %-), that
-> CHECK(!found) is "assert not not found", right?) and it throws me off
-> every. single. time.
+> Hmm it's messy, I think we need a bit of refactoring here. Note that old
+> code was missing a close on ctx->xsks_map_fd if there was an error on
+> xsk_set_bpf_maps(xsk) and prog_id !=3D 0 - given that
+> xsk_lookup_bpf_maps(xsk) succeeded, we therefore have a valid map fd that
+> we need to take care of on error path, for !prog_id case it was taken care
+> of within xsk_delete_bpf_maps(xsk).
+>
+> So how about a diff below (on top of this patch), where we separate paths
+> based on prog_id value retrieved earlier? xsk_set_bpf_maps(xsk) is
+> repeated but this way I feel like it's more clear with cleanup/error
+> paths.
+>
+> Wdyt?
 
-Yup, me too, I have to basically infer the right meaning from the
-surrounding if statements (i.e., whether it triggers an error path or
-not).
-
-> Ideally we complete the set of ASSERT_XXX() macros and convert as much
-> as possible to that. We can also have just generic ASSERT() for all
-> other complicated cases.
-
-Totally on board with that! I'll try to remember to fix any selftests I
-fiddle with (and not introduce any new uses of CHECK() of course).
+Yeah, that's much easier to follow! Nice :)
 
 -Toke
 
