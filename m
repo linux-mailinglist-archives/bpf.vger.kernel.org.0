@@ -2,104 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA697349CE2
-	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 00:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49897349D16
+	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 01:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhCYX2c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Mar 2021 19:28:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231272AbhCYX2F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Mar 2021 19:28:05 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FB1C061763
-        for <bpf@vger.kernel.org>; Thu, 25 Mar 2021 16:28:04 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id e5so1818625vse.4
-        for <bpf@vger.kernel.org>; Thu, 25 Mar 2021 16:28:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sMIbLViyZj8/HlFK24+Kb6qHIJjqUM2GzqLOFEtB9oc=;
-        b=L88zRiGVrc72dQhmDgR/gl8qiK4rX7wM+JKPd8gbrtbUdlgOq2qWt3hK/quHaVP65Z
-         bO4L3tHQpHfPaRVNRTTnhWNEDjMxu1A8FIfWK6N3BgKWI7s/X8tWJ8JR/RN2kkJVQhtS
-         s0kCqEIXJIfEpxWuw2lb+ancWufqeGs6cNlvu5zr1OPdoN77VELBfuVwv2098G1gVR1W
-         qLssJpMKWs+sQI35oQtwqkRZkSmOqgSPEwWfmGUGgOs/3NzBSWZ7JE5XtmxzVrvSmrTS
-         gbGr91kGamtH5beo2ZAoGW55Z6UpbyOfe0e7CVs3RKgb/23UoHpUO9eD2rAPuR6LB0Lr
-         b6JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sMIbLViyZj8/HlFK24+Kb6qHIJjqUM2GzqLOFEtB9oc=;
-        b=ILFK6HtbXI3GAxTJ7sHw0LJvK/GYM3KOH97NOyNrZ9m8XLhmuoLuThhJXTPJJ19QVR
-         xxsnwu0ojhK5GvRZsToU+3jbsUHmhdKIWWo9c9uroE6waHlaM+ic4kQ8EfPLNnDgkg98
-         2uCoTKLJIEwKCoROAn5LQvZkcgGa+WDmTPO+BJuAH4GdttZ6HQmpGezDFtYGRyhtomNz
-         HF1wBvNXgJWw1rva92NT5DwAQUZTpY89mQf1IIMc/u7S24tEoy3noVOz6mYn9nrZnJRG
-         hVCnpfdISscZF2FLJEW4sbNthxSKxb/YBIx/pLIHrPPKD59D6cqdzpkwOMEkVho/5mgu
-         Zi/A==
-X-Gm-Message-State: AOAM530NciLMIQdmkOiGrZrSFwHU7H0qOvV6o4TMDp2RbYB6w1wRy/PX
-        klqdh5LEmUUy3fNgtsckfHwrEQWfM7J2fci039Zkgg==
-X-Google-Smtp-Source: ABdhPJzXZpIDBEM17dpJFRhj46QNwU1LqTcjFes5q+MSMb/XfPVQl0PcMMMDnIa0KNr2ybRRsJDqEF2yBb4XZozL71I=
-X-Received: by 2002:a05:6102:a49:: with SMTP id i9mr6830290vss.14.1616714882733;
- Thu, 25 Mar 2021 16:28:02 -0700 (PDT)
+        id S229779AbhCZAAn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Mar 2021 20:00:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229651AbhCZAAK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Mar 2021 20:00:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5F15C61A33;
+        Fri, 26 Mar 2021 00:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616716809;
+        bh=EkqLeuQdPkxljGq82YuYNyQBCQ3nUbqAe8em7BFCV78=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=j8wFoC5QJ8Zma0+8RPVSnC10PZ/FW7QsPUu8WsnMANKqfPBmywmM8hOLm/IdDloNB
+         RiEiyMMsY30Ev9KjsP2xjLg1ghFON0YOWOBxpew4f2bC/tDdXrM/AYMstYHXZHeWgh
+         Wkr1wF+YVqLJ/AS1O48rVUMo/BIRuQjN6dGfOH4RS6hyap1hHSgwhUoj2SVLheuQ21
+         Cuxg8mcQZSByqHzyKBlGbI5WiOIjGPnqmutH99WdkSboMfdQYh16jBBeXC28Slou6E
+         A1rYm5EYGuLQe47W8VfAIqSxCnwNynndoZMfI2rRMZ8vNCH38L774ltPIEnVgdYqI0
+         MN2Vpt39gpF7A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 50D41625C0;
+        Fri, 26 Mar 2021 00:00:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210323203946.2159693-1-samitolvanen@google.com>
- <20210323203946.2159693-13-samitolvanen@google.com> <20210325103757.GD36570@C02TD0UTHF1T.local>
-In-Reply-To: <20210325103757.GD36570@C02TD0UTHF1T.local>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Thu, 25 Mar 2021 16:27:51 -0700
-Message-ID: <CABCJKud_VC_vAn_7PdZzDja0gpk5ych0CBJpBw45pvivFoePgQ@mail.gmail.com>
-Subject: Re: [PATCH v3 12/17] arm64: implement __va_function
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Peter Collingbourne <pcc@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] qede: remove unused including <linux/version.h>
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161671680932.21425.5550356374583894306.git-patchwork-notify@kernel.org>
+Date:   Fri, 26 Mar 2021 00:00:09 +0000
+References: <20210325032928.1550157-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20210325032928.1550157-1-zhengyongjun3@huawei.com>
+To:     'Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     aelior@marvell.com, GR-everest-linux-l2@marvell.com,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, hulkci@huawei.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 3:38 AM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Tue, Mar 23, 2021 at 01:39:41PM -0700, Sami Tolvanen wrote:
-> > With CONFIG_CFI_CLANG, the compiler replaces function addresses in
-> > instrumented C code with jump table addresses. This change implements
-> > the __va_function() macro, which returns the actual function address
-> > instead.
-> >
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
->
-> Is there really no attribute or builtin that can be used to do this
-> without assembly?
+Hello:
 
-I don't think the compiler currently offers anything that could help
-us here. Peter, can you think of another way to avoid the function
-address to jump table address conversion with
--fno-sanitize-cfi-canonical-jump-tables?
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-> IIUC from other patches the symbol tables will contain the "real"
-> non-cfi entry points (unless we explciitly asked to make the jump table
-> address canonical), so AFAICT here the compiler should have all the
-> necessary information to generate either the CFI or non-CFI entry point
-> addresses, even if it doesn't expose an interface for that today.
->
-> It'd be a lot nicer if we could get the compiler to do this for us.
+On Thu, 25 Mar 2021 11:29:28 +0800 you wrote:
+> From: Zheng Yongjun <zhengyongjun3@huawei.com>
+> 
+> Remove including <linux/version.h> that don't need it.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> 
+> [...]
 
-I agree, that would be quite useful in the kernel.
+Here is the summary with links:
+  - [net-next] qede: remove unused including <linux/version.h>
+    https://git.kernel.org/netdev/net-next/c/711550a0b97e
 
-Sami
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
