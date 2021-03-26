@@ -2,45 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1C034ACD7
-	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 17:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3A134ACD9
+	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 17:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbhCZQuk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S230250AbhCZQuk (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 26 Mar 2021 12:50:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42012 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:42018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230076AbhCZQuK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S230159AbhCZQuK (ORCPT <rfc822;bpf@vger.kernel.org>);
         Fri, 26 Mar 2021 12:50:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B7CC861A2A;
+Received: by mail.kernel.org (Postfix) with ESMTPS id C1D2861A1A;
         Fri, 26 Mar 2021 16:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1616777409;
-        bh=bPvnKB1bqYHAOC0vfdChI5XA7D+a8Ut3c68V91H9DwQ=;
+        bh=dC8qNfBquoDe5YssBmbRMDxrHbMPHBJWi6Rq0fv2cAI=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=aBY+gXeo2zGOyH/ncBBMIJHHEuugSwt0/cZu5W/ubzevaz67KUWZrC1ZVcxj8JEP9
-         7xx4L5JlQMHCFUwW5sujGXJ8Fsxh5YZPUrSYgEWTA41l9cpraOogC/tFDJ+chE5amK
-         GcKFPzD+NNV3tSgo4OBskIQB1z12sPy8XtQcPYt3X8ZwBx7e9KQ5VN47zs7Pl17p1D
-         W/KPghhYBSMHSjkz/xYUDSLx4056h+H0C39Gzk7pl0Cke5oVz1w0XK4uFXGWdwzxSB
-         DtZ67jLv6fgglk6LcEPiwDTUhsokveRQTFNWHPPFTbiXf/RKSnizGQI+D7eJ3FaAwn
-         GXLNiEXmrrV/w==
+        b=XXOv+S8e/EoDZnPtJhO9hkrpWcQ2bybOIyoXkLgsJVfs4FncBmZH9AF2QFIR5O/Gk
+         qmwSdwleV5/WkMCAJ2zRKdRlr3tGQ+eXpe4gefEPsfSxQeF8GSoOnpWbVWhiEYLNfl
+         laiQuVteRgqa+Am6L5zjIDwixRYhycJV5dlR0coaIL9Bwh61E0zi0q1+z/NmEtQPHo
+         zZzINysGlzrYLDa2EwvA9VV/2872n/JcVSxeNBLWAfPPy84nNt7s1Z9g8Ih0m90FJr
+         5BKeP6o4kNbp5LY0+KchcLwz8yGlYhtuB1AgO8WJsOyX4VG/In+39zbSqekDH2P5UM
+         d9ANglKtOqATw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 98F4860970;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A483460192;
         Fri, 26 Mar 2021 16:50:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] include: net: struct sock is declared twice
+Subject: Re: [PATCH v2 bpf-next] libbpf: preserve empty DATASEC BTFs during static
+ linking
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161677740962.24745.2082571652347835274.git-patchwork-notify@kernel.org>
+Message-Id: <161677740966.24745.8034280482813674858.git-patchwork-notify@kernel.org>
 Date:   Fri, 26 Mar 2021 16:50:09 +0000
-References: <20210325070602.858024-1-wanjiabing@vivo.com>
-In-Reply-To: <20210325070602.858024-1-wanjiabing@vivo.com>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kael_w@yeah.net
+References: <20210326043036.3081011-1-andrii@kernel.org>
+In-Reply-To: <20210326043036.3081011-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
+        ast@kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
@@ -49,17 +48,19 @@ Hello:
 
 This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-On Thu, 25 Mar 2021 15:06:02 +0800 you wrote:
-> struct sock has been declared. Remove the duplicate.
+On Thu, 25 Mar 2021 21:30:36 -0700 you wrote:
+> Ensure that BPF static linker preserves all DATASEC BTF types, even if some of
+> them might not have any variable information at all. This may happen if the
+> compiler promotes local initialized variable contents into .rodata section and
+> there are no global or static functions in the program.
 > 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  include/net/bpf_sk_storage.h | 1 -
->  1 file changed, 1 deletion(-)
+> For example,
+> 
+> [...]
 
 Here is the summary with links:
-  - include: net: struct sock is declared twice
-    https://git.kernel.org/bpf/bpf-next/c/fcb8d0d7587e
+  - [v2,bpf-next] libbpf: preserve empty DATASEC BTFs during static linking
+    https://git.kernel.org/bpf/bpf-next/c/36e798516078
 
 You are awesome, thank you!
 --
