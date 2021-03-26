@@ -2,217 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF4234A71C
-	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 13:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 345BF34A725
+	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 13:29:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhCZMZN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Mar 2021 08:25:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51551 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230054AbhCZMYt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Mar 2021 08:24:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616761488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IJVWMxceisDQsF9m4+VnneiUiqpvYHl9MaEFmAKL1r8=;
-        b=gr0gkhPN0cdQYIEuFasfrDn2tBoVCwS9u9KGxHKND2Es/5Kmp/QQcCs9PoT3OzfCddcs2n
-        /mc6imwZFfdQ9QLN4u0lFwF1sVji4Y3JQFolQnFa0tR5Tw0WfA7qifV/v5xb8jqI7EdXeF
-        8gYFJ/bMiyNiZi41a+DlrgJIazAQqDM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547-gj9A2EbcNRqMyO_heVsVQQ-1; Fri, 26 Mar 2021 08:24:47 -0400
-X-MC-Unique: gj9A2EbcNRqMyO_heVsVQQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 42AA683DD20;
-        Fri, 26 Mar 2021 12:24:46 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-114-130.ams2.redhat.com [10.36.114.130])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BACCA5D9E3;
-        Fri, 26 Mar 2021 12:24:44 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     andrii@kernel.org, jolsa@redhat.com,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Subject: [PATCH v2 4/4] selftests/bpf: ringbuf, mmap: bump up page size to 64K
-Date:   Fri, 26 Mar 2021 14:24:38 +0200
-Message-Id: <20210326122438.211242-4-yauheni.kaliuta@redhat.com>
-In-Reply-To: <20210326122438.211242-1-yauheni.kaliuta@redhat.com>
-References: <20210326114658.210034-1-yauheni.kaliuta@redhat.com>
- <20210326122438.211242-1-yauheni.kaliuta@redhat.com>
+        id S230100AbhCZM3C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Mar 2021 08:29:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52410 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230041AbhCZM2d (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Mar 2021 08:28:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53A8C61920;
+        Fri, 26 Mar 2021 12:28:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616761712;
+        bh=wUUC8pEeP4V7UAsOofwKsFGMImJKY7E3/PEs/FpV2h0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ojJfOCUHz7uD80C+j5lfjVGrqYKAuprKLPa/4da6vh0GPZkEx0AdU3WemXIKY1SSL
+         0S/5lvdUuWk14cztcmpkditlGe1FRt7u9JaFzRzYhpupaytOirVjlrApvVmy9bsb0W
+         rx1oIHmAg339A3Noi5KuvlWPO5L20adT3bfA9BBeAzAL3KvPIKj5UfxPP+tRHeGJO/
+         tpQCe5Kyqqw+r2km7O/WsPKihKpW6VB0jr4dSfAjo9+hVjlH/1zO1Iz/l4e0TyV0GZ
+         TVx0goXA7SJ0ioLQIHA7wjdw7vC1u8nEpRKe5P2PPEN+Ngel6NQUuf2Uh/jV9nbQd3
+         +Oj0YakG/AKWg==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Subject: [PATCH -tip v5 00/12] kprobes: Fix stacktrace with kretprobes on x86
+Date:   Fri, 26 Mar 2021 21:28:26 +0900
+Message-Id: <161676170650.330141.6214727134265514123.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Both ringbuf and mmap need PAGE_SIZE, but it's not available during
-bpf program compile time. 4K size was hardcoded (page shift 12 bits)
-which makes the tests fail on systems, configured for larger pages.
+Hello,
 
-Bump it up to 64K which at the first glance look reasonable at the
-moment for most of the systems.
+Here is the 5th version of the series to fix the stacktrace with kretprobe
+on x86. After merging this, I'll fix other architectures.
 
-Use define to make it clear.
+The previous version is;
 
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+https://lore.kernel.org/bpf/161639518354.895304.15627519393073806809.stgit@devnote2/
+
+This version fixes a build error from a typo in [1/12] and the
+case of interrupt happens on kretprobe_trampoline+0 in [11/12].
+
+With this series, unwinder can unwind stack correctly from ftrace as below;
+
+  # cd /sys/kernel/debug/tracing
+  # echo > trace
+  # echo r vfs_read >> kprobe_events
+  # echo r full_proxy_read >> kprobe_events
+  # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+  # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+  # echo 1 > events/kprobes/enable
+  # echo 1 > options/sym-offset
+  # cat /sys/kernel/debug/kprobes/list
+ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
+ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
+  # echo 0 > events/kprobes/enable
+  # cat trace
+# tracer: nop
+#
+# entries-in-buffer/entries-written: 3/3   #P:8
+#
+#                                _-----=> irqs-off
+#                               / _----=> need-resched
+#                              | / _---=> hardirq/softirq
+#                              || / _--=> preempt-depth
+#                              ||| /     delay
+#           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+#              | |         |   ||||      |         |
+           <...>-135     [005] ...1     9.422114: r_full_proxy_read_0: (vfs_read+0xab/0x1a0 <- full_proxy_read)
+           <...>-135     [005] ...1     9.422158: <stack trace>
+ => kretprobe_trace_func+0x209/0x2f0
+ => kretprobe_dispatcher+0x4a/0x70
+ => __kretprobe_trampoline_handler+0xca/0x150
+ => trampoline_handler+0x44/0x70
+ => kretprobe_trampoline+0x2a/0x50
+ => vfs_read+0xab/0x1a0
+ => ksys_read+0x5f/0xe0
+ => do_syscall_64+0x33/0x40
+ => entry_SYSCALL_64_after_hwframe+0x44/0xae
+ => 0
+
+This shows the double return probes (vfs_read and full_proxy_read) on the stack
+correctly unwinded. (vfs_read was called from ksys_read+0x5f and full_proxy_read
+was called from vfs_read+0xab)
+
+This actually changes the kretprobe behavisor a bit, now the instraction pointer in
+the pt_regs passed to kretprobe user handler is correctly set the real return
+address. So user handlers can get it via instruction_pointer() API.
+
+You can also get this series from 
+ git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v5
+
+
+Thank you,
+
 ---
- tools/testing/selftests/bpf/prog_tests/ringbuf.c       |  9 +++++++--
- tools/testing/selftests/bpf/progs/map_ptr_kern.c       |  9 +++++++--
- tools/testing/selftests/bpf/progs/test_mmap.c          | 10 ++++++++--
- tools/testing/selftests/bpf/progs/test_ringbuf.c       |  8 +++++++-
- tools/testing/selftests/bpf/progs/test_ringbuf_multi.c |  7 ++++++-
- 5 files changed, 35 insertions(+), 8 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-index fddbc5db5d6a..9057654da957 100644
---- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-@@ -15,6 +15,11 @@
- #include "test_ringbuf.skel.h"
- 
- #define EDONE 7777
-+#ifdef PAGE_SIZE
-+#undef PAGE_SIZE
-+#endif
-+/* this is not actual page size, but the value used for ringbuf */
-+#define PAGE_SIZE 65536
- 
- static int duration = 0;
- 
-@@ -110,9 +115,9 @@ void test_ringbuf(void)
- 	CHECK(skel->bss->avail_data != 3 * rec_sz,
- 	      "err_avail_size", "exp %ld, got %ld\n",
- 	      3L * rec_sz, skel->bss->avail_data);
--	CHECK(skel->bss->ring_size != 4096,
-+	CHECK(skel->bss->ring_size != PAGE_SIZE,
- 	      "err_ring_size", "exp %ld, got %ld\n",
--	      4096L, skel->bss->ring_size);
-+	      (long)PAGE_SIZE, skel->bss->ring_size);
- 	CHECK(skel->bss->cons_pos != 0,
- 	      "err_cons_pos", "exp %ld, got %ld\n",
- 	      0L, skel->bss->cons_pos);
-diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-index d8850bc6a9f1..c1460f27af78 100644
---- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-+++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-@@ -8,6 +8,11 @@
- #define MAX_ENTRIES 8
- #define HALF_ENTRIES (MAX_ENTRIES >> 1)
- 
-+#ifndef PAGE_SIZE
-+/* use reasonable value for various configurations */
-+#define PAGE_SIZE 65536
-+#endif
-+
- _Static_assert(MAX_ENTRIES < LOOP_BOUND, "MAX_ENTRIES must be < LOOP_BOUND");
- 
- enum bpf_map_type g_map_type = BPF_MAP_TYPE_UNSPEC;
-@@ -635,7 +640,7 @@ struct bpf_ringbuf_map {
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_RINGBUF);
--	__uint(max_entries, 1 << 12);
-+	__uint(max_entries, PAGE_SIZE);
- } m_ringbuf SEC(".maps");
- 
- static inline int check_ringbuf(void)
-@@ -643,7 +648,7 @@ static inline int check_ringbuf(void)
- 	struct bpf_ringbuf_map *ringbuf = (struct bpf_ringbuf_map *)&m_ringbuf;
- 	struct bpf_map *map = (struct bpf_map *)&m_ringbuf;
- 
--	VERIFY(check(&ringbuf->map, map, 0, 0, 1 << 12));
-+	VERIFY(check(&ringbuf->map, map, 0, 0, PAGE_SIZE));
- 
- 	return 1;
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_mmap.c b/tools/testing/selftests/bpf/progs/test_mmap.c
-index 4eb42cff5fe9..c22fcfea0767 100644
---- a/tools/testing/selftests/bpf/progs/test_mmap.c
-+++ b/tools/testing/selftests/bpf/progs/test_mmap.c
-@@ -5,11 +5,16 @@
- #include <stdint.h>
- #include <bpf/bpf_helpers.h>
- 
-+#ifndef PAGE_SIZE
-+/* use reasonable value for various configurations */
-+#define PAGE_SIZE 65536
-+#endif
-+
- char _license[] SEC("license") = "GPL";
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
--	__uint(max_entries, 4096);
-+	__uint(max_entries, PAGE_SIZE);
- 	__uint(map_flags, BPF_F_MMAPABLE | BPF_F_RDONLY_PROG);
- 	__type(key, __u32);
- 	__type(value, char);
-@@ -17,7 +22,8 @@ struct {
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
--	__uint(max_entries, 512 * 4); /* at least 4 pages of data */
-+	/* at least 4 pages of data */
-+	__uint(max_entries, 4 * (PAGE_SIZE / sizeof (__u64)));
- 	__uint(map_flags, BPF_F_MMAPABLE);
- 	__type(key, __u32);
- 	__type(value, __u64);
-diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf.c b/tools/testing/selftests/bpf/progs/test_ringbuf.c
-index 8ba9959b036b..6e645babdc18 100644
---- a/tools/testing/selftests/bpf/progs/test_ringbuf.c
-+++ b/tools/testing/selftests/bpf/progs/test_ringbuf.c
-@@ -4,6 +4,12 @@
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
- 
-+#ifndef PAGE_SIZE
-+/* use reasonable value for various configurations */
-+#define PAGE_SIZE 65536
-+#endif
-+
-+
- char _license[] SEC("license") = "GPL";
- 
- struct sample {
-@@ -15,7 +21,7 @@ struct sample {
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_RINGBUF);
--	__uint(max_entries, 1 << 12);
-+	__uint(max_entries, PAGE_SIZE);
- } ringbuf SEC(".maps");
- 
- /* inputs */
-diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-index edf3b6953533..13bcf095e06c 100644
---- a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-+++ b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-@@ -4,6 +4,11 @@
- #include <linux/bpf.h>
- #include <bpf/bpf_helpers.h>
- 
-+#ifndef PAGE_SIZE
-+/* use reasonable value for various configurations */
-+#define PAGE_SIZE 65536
-+#endif
-+
- char _license[] SEC("license") = "GPL";
- 
- struct sample {
-@@ -15,7 +20,7 @@ struct sample {
- 
- struct ringbuf_map {
- 	__uint(type, BPF_MAP_TYPE_RINGBUF);
--	__uint(max_entries, 1 << 12);
-+	__uint(max_entries, PAGE_SIZE);
- } ringbuf1 SEC(".maps"),
-   ringbuf2 SEC(".maps");
- 
--- 
-2.29.2
+Josh Poimboeuf (1):
+      x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
 
+Masami Hiramatsu (11):
+      ia64: kprobes: Fix to pass correct trampoline address to the handler
+      kprobes: treewide: Replace arch_deref_entry_point() with dereference_function_descriptor()
+      kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
+      kprobes: Add kretprobe_find_ret_addr() for searching return address
+      ARC: Add instruction_pointer_set() API
+      ia64: Add instruction_pointer_set() API
+      arm: kprobes: Make a space for regs->ARM_pc at kretprobe_trampoline
+      kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
+      x86/kprobes: Push a fake return address at kretprobe_trampoline
+      x86/unwind: Recover kretprobe trampoline entry
+      tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
+
+
+ arch/arc/include/asm/ptrace.h       |    5 ++
+ arch/arc/kernel/kprobes.c           |    2 -
+ arch/arm/probes/kprobes/core.c      |    5 +-
+ arch/arm64/kernel/probes/kprobes.c  |    3 -
+ arch/csky/kernel/probes/kprobes.c   |    2 -
+ arch/ia64/include/asm/ptrace.h      |    5 ++
+ arch/ia64/kernel/kprobes.c          |   15 ++---
+ arch/mips/kernel/kprobes.c          |    3 -
+ arch/parisc/kernel/kprobes.c        |    4 +
+ arch/powerpc/kernel/kprobes.c       |   13 -----
+ arch/riscv/kernel/probes/kprobes.c  |    2 -
+ arch/s390/kernel/kprobes.c          |    2 -
+ arch/sh/kernel/kprobes.c            |    2 -
+ arch/sparc/kernel/kprobes.c         |    2 -
+ arch/x86/include/asm/kprobes.h      |    1 
+ arch/x86/include/asm/unwind.h       |   23 ++++++++
+ arch/x86/include/asm/unwind_hints.h |    5 ++
+ arch/x86/kernel/kprobes/core.c      |   44 ++++++++++++----
+ arch/x86/kernel/unwind_frame.c      |    4 +
+ arch/x86/kernel/unwind_guess.c      |    3 -
+ arch/x86/kernel/unwind_orc.c        |   19 +++++--
+ include/linux/kprobes.h             |   41 ++++++++++++--
+ kernel/kprobes.c                    |   99 ++++++++++++++++++++++++-----------
+ kernel/trace/trace_output.c         |   17 +-----
+ lib/error-inject.c                  |    3 +
+ 25 files changed, 218 insertions(+), 106 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
