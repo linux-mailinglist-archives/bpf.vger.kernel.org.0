@@ -2,105 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3128834A6A2
-	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 12:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C2F34A6CB
+	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 13:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbhCZLux (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Mar 2021 07:50:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60715 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229604AbhCZLue (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Mar 2021 07:50:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616759433;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TYXpnr6q5SVVBqz2jz7zk7foKLG3DhehiVbSaUBTtAM=;
-        b=Vk4s2XN4MmG9N1X/hbMQ5XYSjqs9gby+Bm/wVxq1pwQr+7JnfSyGar6et4z6hRwiI9aRqS
-        mQbfq9hRaKvMZt1X17G/BIQo+DZhKUcS36qdnG9jBW9FaL/fF6CvQsof1j0RpWQac7kElx
-        6fEBtQ7cSJcJegCaIRktxFCYVQJRZS0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-297-ZhVAA6DhOS-740lzfMgWpQ-1; Fri, 26 Mar 2021 07:50:29 -0400
-X-MC-Unique: ZhVAA6DhOS-740lzfMgWpQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3784C87A826;
-        Fri, 26 Mar 2021 11:50:28 +0000 (UTC)
-Received: from krava (unknown [10.40.195.133])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 609D619D7C;
-        Fri, 26 Mar 2021 11:50:26 +0000 (UTC)
-Date:   Fri, 26 Mar 2021 12:50:25 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <ast@fb.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        Jiri Olsa <jolsa@kernel.org>, Roman Gushchin <guro@fb.com>
-Subject: Re: [PATCH bpf-next v4] bpf: fix NULL pointer dereference in
- bpf_get_local_storage() helper
-Message-ID: <YF3KgXsWjqOpM/dA@krava>
-References: <20210323055146.3334476-1-yhs@fb.com>
- <3a2052e8-eb4b-fefc-4a0c-ad051b5609d0@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3a2052e8-eb4b-fefc-4a0c-ad051b5609d0@fb.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S229671AbhCZMEF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Mar 2021 08:04:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46160 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229589AbhCZMD7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Mar 2021 08:03:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32CB86194B;
+        Fri, 26 Mar 2021 12:03:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616760235;
+        bh=8h2SmvYpT1Z+mdnymZzkHoSxcblXfBcLpq9cNLD9rvs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ObS/o1ezjBhN/DEEwQln2MbNFK4SOzdHFtjOJ2U4m0ifBg/eG82nnPdTE0yvcjAn3
+         bK/SrDDp9NR4r41k1GAQZf/mqGjvdAB/q5PfcgAp071A4D9aPAHzWe2MCprLzrAR2Q
+         nPyfXYjjiIV7gRV3gusZ0/aTgs3TUK4wykQlTS6DwytSmJC4xKZd1PLDy1CcvMb2yR
+         1cjS8X+Yg4Etai6JqJgd/aoluN/LgejHniApTOwqgOZPGAY93J+BtBLHL7B9O5PUIP
+         6hhauGKjRDTvx5UKHQc7iFQ3ij73kQYEO4DV2X36pvk6I9JXTLvlst/GooNcMzEvha
+         hsYWukRXt1NuQ==
+Date:   Fri, 26 Mar 2021 21:03:49 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Subject: Re: [PATCH -tip v4 10/12] x86/kprobes: Push a fake return address
+ at kretprobe_trampoline
+Message-Id: <20210326210349.22f6d34b229dd3a139a53686@kernel.org>
+In-Reply-To: <20210326030503.7fa72da34e25ad35cf5ed3de@kernel.org>
+References: <161639518354.895304.15627519393073806809.stgit@devnote2>
+        <161639530062.895304.16962383429668412873.stgit@devnote2>
+        <20210323223007.GG4746@worktop.programming.kicks-ass.net>
+        <20210324104058.7c06aaeb0408e24db6ba46f8@kernel.org>
+        <20210326030503.7fa72da34e25ad35cf5ed3de@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 06:38:54PM -0700, Alexei Starovoitov wrote:
-> On 3/22/21 10:51 PM, Yonghong Song wrote:
-> > Jiri Olsa reported a bug ([1]) in kernel where cgroup local
-> > storage pointer may be NULL in bpf_get_local_storage() helper.
-> > There are two issues uncovered by this bug:
-> >    (1). kprobe or tracepoint prog incorrectly sets cgroup local storage
-> >         before prog run,
-> >    (2). due to change from preempt_disable to migrate_disable,
-> >         preemption is possible and percpu storage might be overwritten
-> >         by other tasks.
-> > 
-> > This issue (1) is fixed in [2]. This patch tried to address issue (2).
-> > The following shows how things can go wrong:
-> >    task 1:   bpf_cgroup_storage_set() for percpu local storage
-> >           preemption happens
-> >    task 2:   bpf_cgroup_storage_set() for percpu local storage
-> >           preemption happens
-> >    task 1:   run bpf program
-> > 
-> > task 1 will effectively use the percpu local storage setting by task 2
-> > which will be either NULL or incorrect ones.
-> > 
-> > Instead of just one common local storage per cpu, this patch fixed
-> > the issue by permitting 8 local storages per cpu and each local
-> > storage is identified by a task_struct pointer. This way, we
-> > allow at most 8 nested preemption between bpf_cgroup_storage_set()
-> > and bpf_cgroup_storage_unset(). The percpu local storage slot
-> > is released (calling bpf_cgroup_storage_unset()) by the same task
-> > after bpf program finished running.
-> > bpf_test_run() is also fixed to use the new bpf_cgroup_storage_set()
-> > interface.
-> > 
-> > The patch is tested on top of [2] with reproducer in [1].
-> > Without this patch, kernel will emit error in 2-3 minutes.
-> > With this patch, after one hour, still no error.
-> > 
-> >   [1] https://lore.kernel.org/bpf/CAKH8qBuXCfUz=w8L+Fj74OaUpbosO29niYwTki7e3Ag044_aww@mail.gmail.com/T
-> >   [2] https://lore.kernel.org/bpf/20210309185028.3763817-1-yhs@fb.com
-> > 
-> > Cc: Jiri Olsa <jolsa@kernel.org>
-> > Acked-by: Roman Gushchin <guro@fb.com>
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
+On Fri, 26 Mar 2021 03:05:03 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> On Wed, 24 Mar 2021 10:40:58 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
 > 
-> Applied to bpf-next. Thanks
+> > On Tue, 23 Mar 2021 23:30:07 +0100
+> > Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > > On Mon, Mar 22, 2021 at 03:41:40PM +0900, Masami Hiramatsu wrote:
+> > > >  	".global kretprobe_trampoline\n"
+> > > >  	".type kretprobe_trampoline, @function\n"
+> > > >  	"kretprobe_trampoline:\n"
+> > > >  #ifdef CONFIG_X86_64
+> > > 
+> > > So what happens if we get an NMI here? That is, after the RET but before
+> > > the push? Then our IP points into the trampoline but we've not done that
+> > > push yet.
+> > 
+> > Not only NMI, but also interrupts can happen. There is no cli/sti here.
+> > 
+> > Anyway, thanks for pointing!
+> > I think in UNWIND_HINT_TYPE_REGS and UNWIND_HINT_TYPE_REGS_PARTIAL cases
+> > ORC unwinder also has to check the state->ip and if it is kretprobe_trampoline,
+> > it should be recovered.
+> > What about this?
 > 
+> Hmm, this seems to intoduce another issue on stacktrace from kprobes.
+> 
+>            <...>-137     [003] d.Z.    17.250714: p_full_proxy_read_5: (full_proxy_read+0x5/0x80)
+>            <...>-137     [003] d.Z.    17.250737: <stack trace>
+>  => kprobe_trace_func+0x1d0/0x2c0
+>  => kprobe_dispatcher+0x39/0x60
+>  => aggr_pre_handler+0x4f/0x90
+>  => kprobe_int3_handler+0x152/0x1a0
+>  => exc_int3+0x47/0x140
+>  => asm_exc_int3+0x31/0x40
+>  => 0
+>  => 0
+>  => 0
+>  => 0
+>  => 0
+>  => 0
+>  => 0
+> 
+> Let me check...
 
-sorry for late reply, FWIW I dont see the issue anymore with the patch
+I confirmed this is not related to this series, but occurs when I build kernels with different
+configs without cleanup.
 
-thanks,
-jirka
+Once I build kernel with CONFIG_UNWIND_GUESS=y (for testing), and after that,
+I build kernel again with CONFIG_UNWIND_ORC=y (but without make clean), this
+happened. In this case, I guess ORC data might be corrupted?
+When I cleanup and rebuild, the stacktrace seems correct.
 
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
