@@ -2,65 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3A134ACD9
-	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 17:51:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2EC334ACFF
+	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 18:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhCZQuk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Mar 2021 12:50:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42018 "EHLO mail.kernel.org"
+        id S230076AbhCZRAS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Mar 2021 13:00:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230159AbhCZQuK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Mar 2021 12:50:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C1D2861A1A;
-        Fri, 26 Mar 2021 16:50:09 +0000 (UTC)
+        id S230202AbhCZRAK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Mar 2021 13:00:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9E21A61A28;
+        Fri, 26 Mar 2021 17:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616777409;
-        bh=dC8qNfBquoDe5YssBmbRMDxrHbMPHBJWi6Rq0fv2cAI=;
+        s=k20201202; t=1616778009;
+        bh=BC6xlKkZRp3xCjGVPtCYhAmd9tLNCaYcfVyP0X8ymGA=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=XXOv+S8e/EoDZnPtJhO9hkrpWcQ2bybOIyoXkLgsJVfs4FncBmZH9AF2QFIR5O/Gk
-         qmwSdwleV5/WkMCAJ2zRKdRlr3tGQ+eXpe4gefEPsfSxQeF8GSoOnpWbVWhiEYLNfl
-         laiQuVteRgqa+Am6L5zjIDwixRYhycJV5dlR0coaIL9Bwh61E0zi0q1+z/NmEtQPHo
-         zZzINysGlzrYLDa2EwvA9VV/2872n/JcVSxeNBLWAfPPy84nNt7s1Z9g8Ih0m90FJr
-         5BKeP6o4kNbp5LY0+KchcLwz8yGlYhtuB1AgO8WJsOyX4VG/In+39zbSqekDH2P5UM
-         d9ANglKtOqATw==
+        b=FvRacEmcoThK6vTHIQ0a7ugE/HimheoSNNNeXdnWBZQzJFkAhKmENi7Ki4zmzOyoV
+         XjEIrKd2NW01Mpv577Aq+eeZkCu3GpqZqibPGuoun5avfiI2v5gjrm6WJiDX9ivH48
+         lJEAs+p90t4ewFdFOups5Nma4yZni0lZ1F+m7RgZUAFUfyl+yhQGVFx7v1/yLLjurP
+         9M3mjmTlR2f4G90rOqt1sba5R2arv7t9xXQijEEzZNg7His+a7ony3ff79BDA9qEWr
+         gF3etFJXMSEp7samNLyWjtFMHZpD7hPbqlzbtZPQVdjoAzO3flmje+Tvp5G9WRvfES
+         mQtkSgXS+Fnjg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A483460192;
-        Fri, 26 Mar 2021 16:50:09 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 77E5F6096E;
+        Fri, 26 Mar 2021 17:00:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next] libbpf: preserve empty DATASEC BTFs during static
- linking
+Subject: Re: [PATCH bpf v3 1/2] bpf: enforce that struct_ops programs be GPL-only
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161677740966.24745.8034280482813674858.git-patchwork-notify@kernel.org>
-Date:   Fri, 26 Mar 2021 16:50:09 +0000
-References: <20210326043036.3081011-1-andrii@kernel.org>
-In-Reply-To: <20210326043036.3081011-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, kernel-team@fb.com, yhs@fb.com,
-        ast@kernel.org
+Message-Id: <161677800948.29837.17125226736651176276.git-patchwork-notify@kernel.org>
+Date:   Fri, 26 Mar 2021 17:00:09 +0000
+References: <20210326100314.121853-1-toke@redhat.com>
+In-Reply-To: <20210326100314.121853-1-toke@redhat.com>
+To:     =?utf-8?b?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+?=@ci.codeaurora.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        davem@davemloft.net, brouer@redhat.com, aarcange@redhat.com,
+        williams@redhat.com, bpf@vger.kernel.org, netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+This series was applied to bpf/bpf.git (refs/heads/master):
 
-On Thu, 25 Mar 2021 21:30:36 -0700 you wrote:
-> Ensure that BPF static linker preserves all DATASEC BTF types, even if some of
-> them might not have any variable information at all. This may happen if the
-> compiler promotes local initialized variable contents into .rodata section and
-> there are no global or static functions in the program.
+On Fri, 26 Mar 2021 11:03:13 +0100 you wrote:
+> With the introduction of the struct_ops program type, it became possible to
+> implement kernel functionality in BPF, making it viable to use BPF in place
+> of a regular kernel module for these particular operations.
 > 
-> For example,
+> Thus far, the only user of this mechanism is for implementing TCP
+> congestion control algorithms. These are clearly marked as GPL-only when
+> implemented as modules (as seen by the use of EXPORT_SYMBOL_GPL for
+> tcp_register_congestion_control()), so it seems like an oversight that this
+> was not carried over to BPF implementations. Since this is the only user
+> of the struct_ops mechanism, just enforcing GPL-only for the struct_ops
+> program type seems like the simplest way to fix this.
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2,bpf-next] libbpf: preserve empty DATASEC BTFs during static linking
-    https://git.kernel.org/bpf/bpf-next/c/36e798516078
+  - [bpf,v3,1/2] bpf: enforce that struct_ops programs be GPL-only
+    https://git.kernel.org/bpf/bpf/c/12aa8a9467b3
+  - [bpf,v3,2/2] bpf/selftests: test that kernel rejects a TCP CC with an invalid license
+    https://git.kernel.org/bpf/bpf/c/d8e8052e42d0
 
 You are awesome, thank you!
 --
