@@ -2,157 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F262B34A60A
-	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 11:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B2A34A696
+	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 12:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbhCZK71 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 26 Mar 2021 06:59:27 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:44373 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230012AbhCZK7Q (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Mar 2021 06:59:16 -0400
+        id S229848AbhCZLri (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Mar 2021 07:47:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56467 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229758AbhCZLrH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Mar 2021 07:47:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616759227;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oUB0RU5sK3ul/waYv49PqF/y3+eKcmTRQ8v7puUMiWg=;
+        b=cZnkTZr12tQ00oEl8/5ifEnCrAYmx6iAQJFrRjX04gnwUjgMsRjnNXeYQuXOB0Q1Q8VfLO
+        ej1W8SWmIMH3EXVaZF37sd6Kkto2HZr/8BzNdzDWC7FtfsO/zc3hEeHIXiPW3SS6/De4IR
+        Yrg0/jTKavv2eTfkUR4mAyRIpRNWe9g=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-583-pG2p-HekMX2mhPBHgeop6A-1; Fri, 26 Mar 2021 06:59:06 -0400
-X-MC-Unique: pG2p-HekMX2mhPBHgeop6A-1
+ us-mta-151-P2EDZRGKMam3AZaU0M9bag-1; Fri, 26 Mar 2021 07:47:04 -0400
+X-MC-Unique: P2EDZRGKMam3AZaU0M9bag-1
 Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F5371906813;
-        Fri, 26 Mar 2021 10:59:04 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.195.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 70D3B1972B;
-        Fri, 26 Mar 2021 10:59:01 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCHv3 bpf] bpf: Take module reference for trampoline in module
-Date:   Fri, 26 Mar 2021 11:59:00 +0100
-Message-Id: <20210326105900.151466-1-jolsa@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 62C8C107ACCA;
+        Fri, 26 Mar 2021 11:47:03 +0000 (UTC)
+Received: from astarta.redhat.com (ovpn-114-130.ams2.redhat.com [10.36.114.130])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6E73419727;
+        Fri, 26 Mar 2021 11:46:59 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, jolsa@redhat.com,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Subject: [PATCH 0/3] bpf/selftests: page size fixes
+Date:   Fri, 26 Mar 2021 13:46:58 +0200
+Message-Id: <20210326114658.210034-1-yauheni.kaliuta@redhat.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently module can be unloaded even if there's a trampoline
-register in it. It's easily reproduced by running in parallel:
+A set of fixes for selftests to make them working on systems with PAGE_SIZE > 4K
 
-  # while :; do ./test_progs -t module_attach; done
-  # while :; do rmmod bpf_testmod; sleep 0.5; done
+2 questions left:
 
-Taking the module reference in case the trampoline's ip is
-within the module code. Releasing it when the trampoline's
-ip is unregistered.
+- about `nit: if (!ASSERT_OK(err, "setsockopt_attach"))`. I left
+  CHECK() for now since otherwise it has too many negations. But
+  should I anyway use ASSERT?
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- v3 changes:
-   - store module pointer under bpf_trampoline struct
+- https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/prog_tests/mmap.c#L41
+  and below -- it works now as is, but should be switched also to page_size?
 
- include/linux/bpf.h     |  2 ++
- kernel/bpf/trampoline.c | 30 ++++++++++++++++++++++++++++++
- 2 files changed, 32 insertions(+)
+Yauheni Kaliuta (3):
+  selftests/bpf: test_progs/sockopt_sk: pass page size from userspace
+  bpf: selftests: test_progs/sockopt_sk: remove version
+  selftests/bpf: ringbuf, mmap: bump up page size to 64K
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 3625f019767d..fdac0534ce79 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -40,6 +40,7 @@ struct bpf_local_storage;
- struct bpf_local_storage_map;
- struct kobject;
- struct mem_cgroup;
-+struct module;
- 
- extern struct idr btf_idr;
- extern spinlock_t btf_idr_lock;
-@@ -623,6 +624,7 @@ struct bpf_trampoline {
- 	/* Executable image of trampoline */
- 	struct bpf_tramp_image *cur_image;
- 	u64 selector;
-+	struct module *mod;
- };
- 
- struct bpf_attach_target_info {
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 1f3a4be4b175..4aa8b52adf25 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -9,6 +9,7 @@
- #include <linux/btf.h>
- #include <linux/rcupdate_trace.h>
- #include <linux/rcupdate_wait.h>
-+#include <linux/module.h>
- 
- /* dummy _ops. The verifier will operate on target program's ops. */
- const struct bpf_verifier_ops bpf_extension_verifier_ops = {
-@@ -87,6 +88,26 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
- 	return tr;
- }
- 
-+static int bpf_trampoline_module_get(struct bpf_trampoline *tr)
-+{
-+	struct module *mod;
-+	int err = 0;
-+
-+	preempt_disable();
-+	mod = __module_text_address((unsigned long) tr->func.addr);
-+	if (mod && !try_module_get(mod))
-+		err = -ENOENT;
-+	preempt_enable();
-+	tr->mod = mod;
-+	return err;
-+}
-+
-+static void bpf_trampoline_module_put(struct bpf_trampoline *tr)
-+{
-+	module_put(tr->mod);
-+	tr->mod = NULL;
-+}
-+
- static int is_ftrace_location(void *ip)
- {
- 	long addr;
-@@ -108,6 +129,9 @@ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
- 		ret = unregister_ftrace_direct((long)ip, (long)old_addr);
- 	else
- 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, NULL);
-+
-+	if (!ret)
-+		bpf_trampoline_module_put(tr);
- 	return ret;
- }
- 
-@@ -134,10 +158,16 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
- 		return ret;
- 	tr->func.ftrace_managed = ret;
- 
-+	if (bpf_trampoline_module_get(tr))
-+		return -ENOENT;
-+
- 	if (tr->func.ftrace_managed)
- 		ret = register_ftrace_direct((long)ip, (long)new_addr);
- 	else
- 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_addr);
-+
-+	if (ret)
-+		bpf_trampoline_module_put(tr);
- 	return ret;
- }
- 
+ tools/testing/selftests/bpf/prog_tests/ringbuf.c      |  9 +++++++--
+ tools/testing/selftests/bpf/prog_tests/sockopt_sk.c   |  2 ++
+ tools/testing/selftests/bpf/progs/map_ptr_kern.c      |  9 +++++++--
+ tools/testing/selftests/bpf/progs/sockopt_sk.c        | 11 ++++-------
+ tools/testing/selftests/bpf/progs/test_mmap.c         | 10 ++++++++--
+ tools/testing/selftests/bpf/progs/test_ringbuf.c      |  8 +++++++-
+ .../testing/selftests/bpf/progs/test_ringbuf_multi.c  |  7 ++++++-
+ 7 files changed, 41 insertions(+), 15 deletions(-)
+
 -- 
-2.30.2
+2.29.2
 
