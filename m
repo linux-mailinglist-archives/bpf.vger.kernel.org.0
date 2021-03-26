@@ -2,126 +2,280 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7450234A0C5
-	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 06:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDE134A0CB
+	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 06:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229478AbhCZFCA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Mar 2021 01:02:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42012 "EHLO
+        id S229463AbhCZFMy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Mar 2021 01:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhCZFBw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Mar 2021 01:01:52 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC6CC0613AA
-        for <bpf@vger.kernel.org>; Thu, 25 Mar 2021 22:01:52 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id z1so4645265ybf.6
-        for <bpf@vger.kernel.org>; Thu, 25 Mar 2021 22:01:52 -0700 (PDT)
+        with ESMTP id S229446AbhCZFMd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Mar 2021 01:12:33 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D21C0613AA
+        for <bpf@vger.kernel.org>; Thu, 25 Mar 2021 22:12:33 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id i144so4697824ybg.1
+        for <bpf@vger.kernel.org>; Thu, 25 Mar 2021 22:12:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=l3GuMw/N47oO3awzZred6Mmf0yHdw1TEnmD9BC45CAI=;
-        b=CLHuLS76jOUsSnBSXCzocpQJSKJS9kbqnBkOyyZA6CCPkE1bve3HaYrdIg1qcasDw+
-         UJhp/RyLDwzrwT652d+d8y3hfeq10hshFdvFfuS1kxPxoCl5WMm7t5BStn7d9cStrw/5
-         greRnSdUZ1wv7QiLmOY+Zhzji3hAWSUI1BJs7SsK2ugjgLQV7G9HUb6Xp/w4U55kdDjt
-         klRhOAYzfsH6CF69gKfInHu8IvF58K772667LUGgoL6H++P5Pj0xI0axeaUwEPI9MIgr
-         Bc2S1NBN9/LWCNS7AyTJSXg+GW2FjI5CdnLEepeQ6Uly3CiJA0RuRbaWZUkp1OrD7xwQ
-         HAng==
+        bh=lI/4zGLHwbZ54+or7NjaEET4kRfB9sWT2kfBC8GTreY=;
+        b=ueO0k2AGfSh00ADeQyq/ybhBICmyJLCmpDbPSBjrcZ64h4tmuSQfF2Q2gKbtagsmQC
+         //t3A+0lTnjCXfkfVhv6vK2zwse8WAu900j4SV7V7GqpKK3WB9ZVQ1UiV3IJWtmAw74k
+         c0NP/kMl1cbXisJgHnu0dhUN2/AgwzD6y5xYRmXWKSQAVCPouOwosFZtcwKxhM9jFDx5
+         lQDbH6OeLhKfzlFAdYdqcdHQisjrf+Y7Ctokhc/P+k7bCxudzUIVd6flTDkVopsvzwng
+         fOGa/cnoCwc2hjxMvps3wRC2frqiM7EsjdoIDIia1keeeWrhnvwaHygPYfo5om8Jnx4m
+         RtUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=l3GuMw/N47oO3awzZred6Mmf0yHdw1TEnmD9BC45CAI=;
-        b=hOytXAQMz6EaAq0+nXbd4bevKauAjiP786ExAQoz6/I5SVXWpA6zxZZgjKMf6nKhud
-         YMvKAOmmroTPav3yeNg+IhfdWrgZrhOvM5KOfqo9kXt5NViTmqcY01uyp9vpMlMOQcg8
-         9A01MejOtrcWSGzba0jz/UUJHcRd3U1Zv4+gpo1bmW+iFgYLR7x2ElqQ8BPHswyi3SKO
-         NW605jDnHPR7deFQJ9Lq9SRWOrKx7pPqaTKA7qKv/8SQhczVcS5aJZHDFoRPCeIuLb31
-         9zXTRzddveluNLg5+VfVqTTEs76D98w46267oHp8wNbm1OQJc0LdXK6ehmthAZLvXsJp
-         GqLA==
-X-Gm-Message-State: AOAM532latiqokOL9H/PYd0xPvB9DNy5U7OWfv4Ov5k0mmaRcX1wKAO5
-        Fgkg1KhII/3fAhFB/+cq7qwJmtSFS6H7tydEYtI=
-X-Google-Smtp-Source: ABdhPJwUKfOg1e4qkufVaL8QyUainv+4kg/ZeaUieXzorf+iDiXsmFrS6NIyW7j1d33cBJ6AN5KNCYA8B8uq2Z4tTXc=
-X-Received: by 2002:a25:874c:: with SMTP id e12mr16163650ybn.403.1616734911608;
- Thu, 25 Mar 2021 22:01:51 -0700 (PDT)
+        bh=lI/4zGLHwbZ54+or7NjaEET4kRfB9sWT2kfBC8GTreY=;
+        b=BeibyLACZIrSLP1cT6TxHKL0aAW7/Ka2alzDB4n3eDv9gFbY9QVLn1xHgT74i8NzSY
+         lEOmhjgc03V+QRy4V4XzYkj9hJ92lgBTx9dI2ixwXeKj5J3mHTGhfqlMsyqCIX310ami
+         QEKFjHh5l4MZRpJr+bsoeqAI+1YTJOFogmZX7xmFhP7JiIzxS/2A1Tow690kOm/XkE3n
+         VkH3aTCvEvVyeDTe1CUt7Bl/waXpjZE6TP6Dqr4/7vPZjwKSGGrV2Jm5bAj91ZQ5Hn1+
+         c7K+rTshFMj8Y+6g9yJyEizPfi/segsNvmQWV8ujZlDeTDamH8myElYvoQJYIM0rTUtB
+         nxtw==
+X-Gm-Message-State: AOAM531WkS8p+pnbLLzD0FoKBY0DEkANi6yzf4ZITVho5USrZImAIJnu
+        K9kfy8514PN4K+WHxO9UiTKmSwRBi8wzkGCCZBU=
+X-Google-Smtp-Source: ABdhPJw0X4sCt4Xgn/GOnoPMSryrNqHJcBVz86ujhJyavJBHAmWua7VRqEhoxzbL10HoMwBOs+rM7GFMZNFBnjGvUgo=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr16664373ybo.230.1616735552570;
+ Thu, 25 Mar 2021 22:12:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <CACAyw99e288cPoBuxTjt17YfMy8AHT72AmS1W83EexxvWKaP3w@mail.gmail.com>
-In-Reply-To: <CACAyw99e288cPoBuxTjt17YfMy8AHT72AmS1W83EexxvWKaP3w@mail.gmail.com>
+References: <xunyim6b5k1b.fsf@redhat.com> <CAEf4BzaAokQ0vgsQ4zA-yB80t2ZFcc3gWUo+p4nw=KWHmK_nsQ@mail.gmail.com>
+ <CANoWswkYXaFzuxCDF02=yDp2Fdk6RYb9OdiVNiwp97v-XLV0rQ@mail.gmail.com>
+In-Reply-To: <CANoWswkYXaFzuxCDF02=yDp2Fdk6RYb9OdiVNiwp97v-XLV0rQ@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 25 Mar 2021 22:01:40 -0700
-Message-ID: <CAEf4BzbQjBK+DSoYRnsW0_NrkQ2qZum4hUGxYkkNHJ9MEe+yrA@mail.gmail.com>
-Subject: Re: Pinned link access mode troubles
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>
+Date:   Thu, 25 Mar 2021 22:12:21 -0700
+Message-ID: <CAEf4BzY2YFKV+GTUS7QQKSJy2-6ZD88MbeQngUB8TOAzZEubdg@mail.gmail.com>
+Subject: Re: bpf selftests and page size
+To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 11:45 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+On Wed, Mar 24, 2021 at 6:28 AM Yauheni Kaliuta
+<yauheni.kaliuta@redhat.com> wrote:
 >
-> Hi list,
+> Hi, Andrii!
 >
-> BPF_OBJ_GET allows specifying BPF_F_RDONLY or BPF_F_WRONLY for
-> file_flags. They are used to check that the current user has the
-> necessary permissions in bpf_obj_do_get:
+> On Tue, Mar 2, 2021 at 7:08 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Mar 1, 2021 at 1:02 AM Yauheni Kaliuta
+> > <yauheni.kaliuta@redhat.com> wrote:
+> > >
+> > > Hi!
+> > >
+> > > Bunch of bpf selftests actually depends of page size and has it
+> > > hardcoded to 4K. That causes failures if page shift is configured
+> > > to values other than 12. It looks as a known issue since for the
+> > > userspace parts sysconf(_SC_PAGE_SIZE) is used, but what would be
+> > > the correct way to export it to bpf programs?
+> > >
+> >
+> > Given PAGE_SIZE and PAGE_SHIFT are just #defines, the only way seems
+> > to be to pass it from the user-space as a read-only variable.
+> >
 >
->     ret = path_permission(&path, ACC_MODE(flags));
->     if (ret)
->         goto out;
->
-> The map code additionally uses the flags in bpf_map_new_fd to attach
-> the permissions to the fd. Programs and links ignore flags (from
-> bpf_obj_get_user):
->
->     if (type == BPF_TYPE_PROG)
->         ret = bpf_prog_new_fd(raw);
->     else if (type == BPF_TYPE_MAP)
->         ret = bpf_map_new_fd(raw, f_flags);
->     else if (type == BPF_TYPE_LINK)
->         ret = bpf_link_new_fd(raw);
->     else
->         return -ENOENT;
->
-> For programs this probably isn't too exciting, since AFAIK they are
+> I could not find a good example to attach to cgroup. Here is the
+> draft, could you point me to right direction?
 
-Oops, reviewed your patch before I got to this email. I think for BPF
-programs it might be good to reject non-O_RDWR flags as well, at least
-until we will have more nuanced read/write permissions checks.
+Yes. See prog_tests/cgroup_link.c, but I showed an example below.
 
-> immutable from the user space. The same isn't true for links. Given a
-> link that is pinned to a bpffs for which my user only has read access,
-> I can call BPF_LINK_UPDATE and BPF_LINK_DETACH. To me this seems to
-> break the privilege model. This is a real issue in our code base since
-> we pin a link with 0664, which means that anybody on the system can
-> detach our link. I can work around this by using 0660 mode for links,
-> but I think there are several issues that need fixing:
 >
-> 1. BPF_OBJ_GET doesn't return an error when flags aren't useful, like
-> in the program case.
-> 2. BPF_OBJ_GET returns an fd that allows destructive actions even if
-> BPF_F_RDONLY is passed.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
+> b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
+> index d5b44b135c00..7932236a021e 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
+> @@ -1,8 +1,8 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  #include <test_progs.h>
+>  #include "cgroup_helpers.h"
+> -
+>  #include <linux/tcp.h>
+> +#include "sockopt_sk.skel.h"
 >
-> Based on some git archaeology I think we are in luck: the code in
-> question was introduced in commit 70ed506c3bbc ("bpf: Introduce
-> pinnable bpf_link abstraction") and has changed very little from what
-> I can see, so backporting should be doable. Additionally, it seems
-> like libbpf doesn't provide a way to specify file_flags when loading
-> pinned objects. So the likelihood of breaking users is very low.
+>  #ifndef SOL_TCP
+>  #define SOL_TCP IPPROTO_TCP
+> @@ -191,60 +191,33 @@ static int getsetsockopt(void)
+>      return -1;
+>  }
 >
-> I'd like to propose the following changes:
+> -static int prog_attach(struct bpf_object *obj, int cgroup_fd, const
+> char *title)
+> -{
+> -    enum bpf_attach_type attach_type;
+> -    enum bpf_prog_type prog_type;
+> -    struct bpf_program *prog;
+> -    int err;
+> -
+> -    err = libbpf_prog_type_by_name(title, &prog_type, &attach_type);
+> -    if (err) {
+> -        log_err("Failed to deduct types for %s BPF program", title);
+> -        return -1;
+> -    }
+> -
+> -    prog = bpf_object__find_program_by_title(obj, title);
+> -    if (!prog) {
+> -        log_err("Failed to find %s BPF program", title);
+> -        return -1;
+> -    }
+> -
+> -    err = bpf_prog_attach(bpf_program__fd(prog), cgroup_fd,
+> -                  attach_type, 0);
+> -    if (err) {
+> -        log_err("Failed to attach %s BPF program", title);
+> -        return -1;
+> -    }
+> -
+> -    return 0;
+> -}
+> -
+>  static void run_test(int cgroup_fd)
+>  {
+> -    struct bpf_prog_load_attr attr = {
+> -        .file = "./sockopt_sk.o",
+> -    };
+> -    struct bpf_object *obj;
+> -    int ignored;
+> +    struct sockopt_sk *skel;
+> +    int prog_fd;
+> +    int duration = 0;
+>      int err;
 >
-> 1. Return an error from BPF_OBJ_GET If file_flags is not 0 for
-> programs and links. This we can backport.
-> 2. (optional) Add code to respect BPF_F_RDONLY, etc. for links. This
-> requires adding a new interface to libbpf.
+> -    err = bpf_prog_load_xattr(&attr, &obj, &ignored);
+> -    if (CHECK_FAIL(err))
+> -        return;
+> +    skel = sockopt_sk__open_and_load();
+> +    if (CHECK(!skel, "skel_load", "sockopt_sk skeleton failed\n"))
+> +        goto cleanup;
+> +
+> +    skel->bss->page_size = getpagesize();
 >
-> Opinions?
+> -    err = prog_attach(obj, cgroup_fd, "cgroup/getsockopt");
+> -    if (CHECK_FAIL(err))
+> -        goto close_bpf_object;
+> +    prog_fd = bpf_program__fd(skel->progs._getsockopt);
+> +    err = bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_GETSOCKOPT, 0);
+> +    if (CHECK(err, "attach", "getsockopt attach failed: %d\n", err))
+> +        goto cleanup;
+>
+> -    err = prog_attach(obj, cgroup_fd, "cgroup/setsockopt");
+> -    if (CHECK_FAIL(err))
+> -        goto close_bpf_object;
+> +    prog_fd = bpf_program__fd(skel->progs._setsockopt);
+> +    err = bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_SETSOCKOPT, 0);
+
+skel->links._setsockopt =
+bpf_program__attach_cgroup(skel->progs._setsockopt, cgroup_fd);
+
+same above for getsockopt
+
+> +    if (CHECK(err, "attach", "setsockopt attach failed: %d\n", err))
+
+nit: if (!ASSERT_OK(err, "setsockopt_attach"))
+
+> +        goto cleanup;
+>
+>      CHECK_FAIL(getsetsockopt());
+>
+> -close_bpf_object:
+> -    bpf_object__close(obj);
+> +cleanup:
+> +    sockopt_sk__destroy(skel);
+>  }
+>
+>  void test_sockopt_sk(void)
+> diff --git a/tools/testing/selftests/bpf/progs/sockopt_sk.c
+> b/tools/testing/selftests/bpf/progs/sockopt_sk.c
+> index d3597f81e6e9..f8b051589681 100644
+> --- a/tools/testing/selftests/bpf/progs/sockopt_sk.c
+> +++ b/tools/testing/selftests/bpf/progs/sockopt_sk.c
+> @@ -8,9 +8,7 @@
+>  char _license[] SEC("license") = "GPL";
+>  __u32 _version SEC("version") = 1;
+
+while you are at it, please remove _version, it's useless now
+
+>
+> -#ifndef PAGE_SIZE
+> -#define PAGE_SIZE 4096
+> -#endif
+> +int page_size; /* userspace should set it */
+>
+>  #ifndef SOL_TCP
+>  #define SOL_TCP IPPROTO_TCP
+> @@ -41,7 +39,7 @@ int _getsockopt(struct bpf_sockopt *ctx)
+>           * let next BPF program in the cgroup chain or kernel
+>           * handle it.
+>           */
+> -        ctx->optlen = 0; /* bypass optval>PAGE_SIZE */
+> +        ctx->optlen = 0; /* bypass optval>page_size */
+
+you don't need to update all those comments, conceptually it's all
+PAGE_SIZE. It's just distracting from the actual change in the patch.
+
+>          return 1;
+>      }
+>
+> @@ -86,11 +84,11 @@ int _getsockopt(struct bpf_sockopt *ctx)
+>          optval[0] = 0x55;
+>          ctx->optlen = 1;
+>
+> -        /* Userspace buffer is PAGE_SIZE * 2, but BPF
+> -         * program can only see the first PAGE_SIZE
+> +        /* Userspace buffer is page_size * 2, but BPF
+> +         * program can only see the first page_size
+>           * bytes of data.
+>           */
+> -        if (optval_end - optval != PAGE_SIZE)
+> +        if (optval_end - optval != page_size)
+>              return 0; /* EPERM, unexpected data size */
+>
+>          return 1;
+> @@ -131,7 +129,7 @@ int _setsockopt(struct bpf_sockopt *ctx)
+>           * let next BPF program in the cgroup chain or kernel
+>           * handle it.
+>           */
+> -        ctx->optlen = 0; /* bypass optval>PAGE_SIZE */
+> +        ctx->optlen = 0; /* bypass optval>page_size */
+>          return 1;
+>      }
+>
+> @@ -160,8 +158,8 @@ int _setsockopt(struct bpf_sockopt *ctx)
+>      }
+>
+>      if (ctx->level == SOL_IP && ctx->optname == IP_FREEBIND) {
+> -        /* Original optlen is larger than PAGE_SIZE. */
+> -        if (ctx->optlen != PAGE_SIZE * 2)
+> +        /* Original optlen is larger than page_size. */
+> +        if (ctx->optlen != page_size * 2)
+>              return 0; /* EPERM, unexpected data size */
+>
+>          if (optval + 1 > optval_end)
+> @@ -171,11 +169,11 @@ int _setsockopt(struct bpf_sockopt *ctx)
+>          optval[0] = 0;
+>          ctx->optlen = 1;
+>
+> -        /* Usepace buffer is PAGE_SIZE * 2, but BPF
+> -         * program can only see the first PAGE_SIZE
+> +        /* Usepace buffer is page_size * 2, but BPF
+> +         * program can only see the first page_size
+>           * bytes of data.
+>           */
+> -        if (optval_end - optval != PAGE_SIZE)
+> +        if (optval_end - optval != page_size)
+>              return 0; /* EPERM, unexpected data size */
+>
+>          return 1;
+>
 >
 > --
-> Lorenz Bauer  |  Systems Engineer
-> 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+> WBR, Yauheni
 >
-> www.cloudflare.com
