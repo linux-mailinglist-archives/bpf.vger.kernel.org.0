@@ -2,149 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA5734AA9A
-	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 15:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CEA34AB3E
+	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 16:16:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhCZO4w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Mar 2021 10:56:52 -0400
-Received: from mga03.intel.com ([134.134.136.65]:7103 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230107AbhCZO4e (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:56:34 -0400
-IronPort-SDR: iyvF05gvgaxzBtQ1BbiFdZnxvmJbfvUjDyFWj4bBBWwUWCK8diISiv3aUDcDt4UDaH8nS0dCl4
- 6FBr5Kcfg4Iw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="191190186"
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="191190186"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 07:56:32 -0700
-IronPort-SDR: y5xzsowtxRPpCx5Ebncn0Rq0WdahODTCTS+cN9vRGCjcbw7H5J9eG2/0Kk53p2RMA9N6VbejfG
- D+hM+XxyDMHg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="409931622"
-Received: from irsmsx603.ger.corp.intel.com ([163.33.146.9])
-  by fmsmga008.fm.intel.com with ESMTP; 26 Mar 2021 07:56:31 -0700
-Received: from irsmsx604.ger.corp.intel.com (163.33.146.137) by
- irsmsx603.ger.corp.intel.com (163.33.146.9) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 26 Mar 2021 14:56:30 +0000
-Received: from irsmsx604.ger.corp.intel.com ([163.33.146.137]) by
- IRSMSX604.ger.corp.intel.com ([163.33.146.137]) with mapi id 15.01.2106.013;
- Fri, 26 Mar 2021 14:56:30 +0000
-From:   "Loftus, Ciara" <ciara.loftus@intel.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-CC:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Subject: RE: [PATCH bpf 2/3] libbpf: restore umem state after socket create
- failure
-Thread-Topic: [PATCH bpf 2/3] libbpf: restore umem state after socket create
- failure
-Thread-Index: AQHXILxCnHStPP+HDEC7SfbsYlrgKKqV/SSAgABLrpA=
-Date:   Fri, 26 Mar 2021 14:56:30 +0000
-Message-ID: <57b4dcd5cc4544e380442dad0588a84d@intel.com>
-References: <20210324141337.29269-1-ciara.loftus@intel.com>
- <20210324141337.29269-3-ciara.loftus@intel.com>
- <CAJ8uoz2Om5HdaWSN6UG5Os2GMQCtJ8dRqB_QN4Lw=kbm6fEe1g@mail.gmail.com>
-In-Reply-To: <CAJ8uoz2Om5HdaWSN6UG5Os2GMQCtJ8dRqB_QN4Lw=kbm6fEe1g@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [163.33.253.164]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S230308AbhCZPPp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Mar 2021 11:15:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23207 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231129AbhCZPPG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Mar 2021 11:15:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616771703;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4v95rX3kYO1IVqQdy9Phz6DaDgdigU99BqQjGC1b0N0=;
+        b=bpt+O8CJIkWrA9pZw7aZtMvmc+2oCDuB8iDHTppkKkmPwh2jb5w1/NtaEY6ZiGcVWFtLgF
+        wnQMxc/cvlkcGB+WXlvTEitXs8AteIC1Kfz4GFs1hvvYI1uXbGwvZJPZnNGhXVOYE0tnX0
+        3xcCGMMflb67KIfUGNuP5ZkcVFCpE3w=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-YLCAqPJfO96kAOc3qYJFtg-1; Fri, 26 Mar 2021 11:14:41 -0400
+X-MC-Unique: YLCAqPJfO96kAOc3qYJFtg-1
+Received: by mail-ed1-f70.google.com with SMTP id w16so4582678edc.22
+        for <bpf@vger.kernel.org>; Fri, 26 Mar 2021 08:14:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=4v95rX3kYO1IVqQdy9Phz6DaDgdigU99BqQjGC1b0N0=;
+        b=dDODkpAMB2H0cM3o7qTGEM/MbUVt3yILDXsRVXEhBZ9OLuCwlBUdS0Y/MS1XYcoyIg
+         IDqlcNPTvoymWHpU6tIaTGMu3AzKwmZfV6v5e8/ENS0LX8Ps9epPP9xoz9jLofXlzZaj
+         nYBBqKzJANcPZDwl35O/STB6ZDODPrT0cHqAtxOv6v40b2MfnxAYozi5tL7LPPFpwdpl
+         oey5EPP6YR+UDwguiio7AFFW4zihQSsfWv9a+KV12+4zL6D80E69mw0XESVEy72IBy7v
+         qFn37KE8gyNtENlzXqBuvSBC+GcRwyzZI4HQ6thzDefXbPE0ot7UyXKWmR4uJfT/B5r8
+         sIGg==
+X-Gm-Message-State: AOAM533wgO0Y8bjpIrFsbz8ALQ36RYrRfLI6Y5NspwFStCsEDZwkmcuC
+        u7DcnSTdD5ssdbfv66pwVOvgC3WLx+2eZkSZWmKRhTpAwLzxtauHwHWIISipjQh2xQu81wsQemL
+        jbZ+lzdf2uUqn
+X-Received: by 2002:a05:6402:1d92:: with SMTP id dk18mr15486244edb.161.1616771679733;
+        Fri, 26 Mar 2021 08:14:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyrkXa5nFOq0SwV4oG09lvBVwVp7oTNme95X134MZ7AUrfy3NhoAommku4Afk7qZZBsmAvwgg==
+X-Received: by 2002:a05:6402:1d92:: with SMTP id dk18mr15486192edb.161.1616771679404;
+        Fri, 26 Mar 2021 08:14:39 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id q10sm4349651eds.67.2021.03.26.08.14.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 08:14:38 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id ECE321801A3; Fri, 26 Mar 2021 16:14:37 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@fb.com>, Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v2 bpf-next 03/14] bpf: Support bpf program calling
+ kernel function
+In-Reply-To: <22ef1556-cebf-e1c9-8a83-251c08a1b465@fb.com>
+References: <20210325015124.1543397-1-kafai@fb.com>
+ <20210325015142.1544736-1-kafai@fb.com> <87wntudh8w.fsf@toke.dk>
+ <20210325230940.2pequmyzwzv65sub@kafai-mbp.dhcp.thefacebook.com>
+ <87ft0icjhe.fsf@toke.dk> <22ef1556-cebf-e1c9-8a83-251c08a1b465@fb.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 26 Mar 2021 16:14:37 +0100
+Message-ID: <877dluc5gi.fsf@toke.dk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PiANCj4gT24gV2VkLCBNYXIgMjQsIDIwMjEgYXQgMzo0NiBQTSBDaWFyYSBMb2Z0dXMgPGNpYXJh
-LmxvZnR1c0BpbnRlbC5jb20+DQo+IHdyb3RlOg0KPiA+DQo+ID4gSWYgdGhlIGNhbGwgdG8gc29j
-a2V0X2NyZWF0ZSBmYWlscywgdGhlIHVzZXIgbWF5IHdhbnQgdG8gcmV0cnkgdGhlDQo+ID4gc29j
-a2V0IGNyZWF0aW9uIHVzaW5nIHRoZSBzYW1lIHVtZW0uIEVuc3VyZSB0aGF0IHRoZSB1bWVtIGlz
-IGluIHRoZQ0KPiA+IHNhbWUgc3RhdGUgb24gZXhpdCBpZiB0aGUgY2FsbCBmYWlsZWQgYnkgcmVz
-dG9yaW5nIHRoZSBfc2F2ZSBwb2ludGVycw0KPiA+IGFuZCBub3QgdW5tYXBwaW5nIHRoZSBzZXQg
-b2YgdW1lbSByaW5ncyBpZiB0aG9zZSBwb2ludGVycyBhcmUgbm9uIE5VTEwuDQo+ID4NCj4gPiBG
-aXhlczogMmY2MzI0YTM5MzdmICgibGliYnBmOiBTdXBwb3J0IHNoYXJlZCB1bWVtcyBiZXR3ZWVu
-IHF1ZXVlcyBhbmQNCj4gZGV2aWNlcyIpDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBDaWFyYSBM
-b2Z0dXMgPGNpYXJhLmxvZnR1c0BpbnRlbC5jb20+DQo+ID4gLS0tDQo+ID4gIHRvb2xzL2xpYi9i
-cGYveHNrLmMgfCAyOSArKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLQ0KPiA+ICAxIGZpbGUg
-Y2hhbmdlZCwgMTggaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZm
-IC0tZ2l0IGEvdG9vbHMvbGliL2JwZi94c2suYyBiL3Rvb2xzL2xpYi9icGYveHNrLmMNCj4gPiBp
-bmRleCA0NDNiMGNmYjQ1ZTguLmVjM2MyMzI5OTMyOSAxMDA2NDQNCj4gPiAtLS0gYS90b29scy9s
-aWIvYnBmL3hzay5jDQo+ID4gKysrIGIvdG9vbHMvbGliL2JwZi94c2suYw0KPiA+IEBAIC03NDMs
-MjEgKzc0MywyMyBAQCBzdGF0aWMgc3RydWN0IHhza19jdHggKnhza19nZXRfY3R4KHN0cnVjdA0K
-PiB4c2tfdW1lbSAqdW1lbSwgaW50IGlmaW5kZXgsDQo+ID4gICAgICAgICByZXR1cm4gTlVMTDsN
-Cj4gPiAgfQ0KPiA+DQo+ID4gLXN0YXRpYyB2b2lkIHhza19wdXRfY3R4KHN0cnVjdCB4c2tfY3R4
-ICpjdHgpDQo+ID4gK3N0YXRpYyB2b2lkIHhza19wdXRfY3R4KHN0cnVjdCB4c2tfY3R4ICpjdHgs
-IGJvb2wgdW5tYXApDQo+ID4gIHsNCj4gPiAgICAgICAgIHN0cnVjdCB4c2tfdW1lbSAqdW1lbSA9
-IGN0eC0+dW1lbTsNCj4gPiAgICAgICAgIHN0cnVjdCB4ZHBfbW1hcF9vZmZzZXRzIG9mZjsNCj4g
-PiAgICAgICAgIGludCBlcnI7DQo+ID4NCj4gPiAgICAgICAgIGlmICgtLWN0eC0+cmVmY291bnQg
-PT0gMCkgew0KPiA+IC0gICAgICAgICAgICAgICBlcnIgPSB4c2tfZ2V0X21tYXBfb2Zmc2V0cyh1
-bWVtLT5mZCwgJm9mZik7DQo+ID4gLSAgICAgICAgICAgICAgIGlmICghZXJyKSB7DQo+ID4gLSAg
-ICAgICAgICAgICAgICAgICAgICAgbXVubWFwKGN0eC0+ZmlsbC0+cmluZyAtIG9mZi5mci5kZXNj
-LA0KPiA+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBvZmYuZnIuZGVzYyArIHVtZW0t
-PmNvbmZpZy5maWxsX3NpemUgKg0KPiA+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICBz
-aXplb2YoX191NjQpKTsNCj4gPiAtICAgICAgICAgICAgICAgICAgICAgICBtdW5tYXAoY3R4LT5j
-b21wLT5yaW5nIC0gb2ZmLmNyLmRlc2MsDQo+ID4gLSAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIG9mZi5jci5kZXNjICsgdW1lbS0+Y29uZmlnLmNvbXBfc2l6ZSAqDQo+ID4gLSAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHNpemVvZihfX3U2NCkpOw0KPiA+ICsgICAgICAgICAgICAg
-ICBpZiAodW5tYXApIHsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBlcnIgPSB4c2tfZ2V0
-X21tYXBfb2Zmc2V0cyh1bWVtLT5mZCwgJm9mZik7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgaWYgKCFlcnIpIHsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG11bm1h
-cChjdHgtPmZpbGwtPnJpbmcgLSBvZmYuZnIuZGVzYywNCj4gPiArICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICBvZmYuZnIuZGVzYyArIHVtZW0tPmNvbmZpZy5maWxsX3NpemUg
-Kg0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZW9mKF9fdTY0KSk7DQo+
-ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBtdW5tYXAoY3R4LT5jb21wLT5yaW5n
-IC0gb2ZmLmNyLmRlc2MsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgb2ZmLmNyLmRlc2MgKyB1bWVtLT5jb25maWcuY29tcF9zaXplICoNCj4gPiArICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHNpemVvZihfX3U2NCkpOw0KPiA+ICsgICAgICAgICAgICAg
-ICAgICAgICAgIH0NCj4gPiAgICAgICAgICAgICAgICAgfQ0KPiANCj4gQnkgbm90IHVubWFwcGlu
-ZyB0aGVzZSByaW5ncyB3ZSBhY3R1YWxseSBsZWF2ZSBtb3JlIHN0YXRlIGFmdGVyIGENCj4gZmFp
-bGVkIHNvY2tldCBjcmVhdGlvbi4gU28gaG93IGFib3V0IHNraXBwaW5nIHRoaXMgbG9naWMgKGFu
-ZA0KDQpJbiB0aGUgY2FzZSBvZiB0aGUgX3NhdmUgcmluZ3MsIHRoZSBtYXBzIGV4aXN0ZWQgYmVm
-b3JlIHRoZSBjYWxsIHRvDQp4c2tfc29ja2V0X19jcmVhdGUuIFRoZXkgd2VyZSBjcmVhdGVkIGR1
-cmluZyB4c2tfdW1lbV9fY3JlYXRlLg0KU28gd2Ugc2hvdWxkIHByZXNlcnZlIHRoZXNlIG1hcHMg
-aW4gZXZlbnQgb2YgZmFpbHVyZS4NCkkgd2FzIHVzaW5nIHRoZSB3cm9uZyBjb25kaXRpb24gdG8g
-dHJpZ2dlciB0aGUgdW5tYXAgaW4gdjEgaG93ZXZlci4NCldlIHNob3VsZCB1bm1hcCAnZmlsbCcg
-b25seSBpZg0KICAgICAgICB1bWVtLT5maWxsX3NhdmUgIT0gZmlsbA0KSSB3aWxsIHVwZGF0ZSB0
-aGlzIGluIGEgdjIuDQoNCj4gZXZlcnl0aGluZyBiZWxvdykgYW5kIGFsd2F5cyB1bm1hcCB0aGUg
-cmluZ3MgYXQgZmFpbHVyZSBhcyBiZWZvcmUsIGJ1dA0KPiB3ZSBtb3ZlIHRoZSBmaWxsX3NhdmUg
-PSBOVUxMIGFuZCBjb21wX3NhdmUgPSBOVUxMIGZyb20geHNrX2NyZWF0ZV9jdHgNCj4gdG8gdGhl
-IGVuZCBvZiB4c2tfc29ja2V0X19jcmVhdGVfc2hhcmVkIGp1c3QgYmVmb3JlIHRoZSAicmV0dXJu
-IDAiDQo+IHdoZXJlIHdlIGtub3cgdGhhdCB0aGUgd2hvbGUgb3BlcmF0aW9uIGhhcyBzdWNjZWVk
-ZWQuIFRoaXMgd2F5IHRoZQ0KDQpJIHRoaW5rIG1vdmluZyB0aGVzZSBzdGlsbCBtYWtlcyBzZW5z
-ZSBhbmQgd2lsbCBhZGQgdGhpcyBpbiB0aGUgbmV4dCByZXYuDQoNClRoYW5rcyBmb3IgdGhlIGZl
-ZWRiYWNrIGFuZCBzdWdnZXN0aW9ucyENCg0KQ2lhcmENCg0KPiBtYXBwaW5ncyB3b3VsZCBiZSBy
-ZWRvbmUgZHVyaW5nIHRoZSBuZXh0IHhza19zb2NrZXRfX2NyZWF0ZSBhbmQgaWYNCj4gc29tZW9u
-ZSBkZWNpZGVzIG5vdCB0byByZXRyeSAoZm9yIHNvbWUgcmVhc29uKSB3ZSBkbyBub3QgbGVhdmUg
-dHdvDQo+IG1hcHBpbmdzIGJlaGluZC4gV291bGQgc2ltcGxpZnkgdGhpbmdzLiBXaGF0IGRvIHlv
-dSB0aGluaz8NCg0KPiANCj4gPg0KPiA+ICAgICAgICAgICAgICAgICBsaXN0X2RlbCgmY3R4LT5s
-aXN0KTsNCj4gPiBAQCAtODU0LDYgKzg1Niw5IEBAIGludCB4c2tfc29ja2V0X19jcmVhdGVfc2hh
-cmVkKHN0cnVjdCB4c2tfc29ja2V0DQo+ICoqeHNrX3B0ciwNCj4gPiAgICAgICAgIHN0cnVjdCB4
-c2tfc29ja2V0ICp4c2s7DQo+ID4gICAgICAgICBzdHJ1Y3QgeHNrX2N0eCAqY3R4Ow0KPiA+ICAg
-ICAgICAgaW50IGVyciwgaWZpbmRleDsNCj4gPiArICAgICAgIHN0cnVjdCB4c2tfcmluZ19wcm9k
-ICpmc2F2ZSA9IHVtZW0tPmZpbGxfc2F2ZTsNCj4gPiArICAgICAgIHN0cnVjdCB4c2tfcmluZ19j
-b25zICpjc2F2ZSA9IHVtZW0tPmNvbXBfc2F2ZTsNCj4gPiArICAgICAgIGJvb2wgdW5tYXAgPSAh
-ZnNhdmU7DQo+ID4NCj4gPiAgICAgICAgIGlmICghdW1lbSB8fCAheHNrX3B0ciB8fCAhKHJ4IHx8
-IHR4KSkNCj4gPiAgICAgICAgICAgICAgICAgcmV0dXJuIC1FRkFVTFQ7DQo+ID4gQEAgLTEwMDUs
-NyArMTAxMCw5IEBAIGludCB4c2tfc29ja2V0X19jcmVhdGVfc2hhcmVkKHN0cnVjdCB4c2tfc29j
-a2V0DQo+ICoqeHNrX3B0ciwNCj4gPiAgICAgICAgICAgICAgICAgbXVubWFwKHJ4X21hcCwgb2Zm
-LnJ4LmRlc2MgKw0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgeHNrLT5jb25maWcucnhfc2l6
-ZSAqIHNpemVvZihzdHJ1Y3QgeGRwX2Rlc2MpKTsNCj4gPiAgb3V0X3B1dF9jdHg6DQo+ID4gLSAg
-ICAgICB4c2tfcHV0X2N0eChjdHgpOw0KPiA+ICsgICAgICAgdW1lbS0+ZmlsbF9zYXZlID0gZnNh
-dmU7DQo+ID4gKyAgICAgICB1bWVtLT5jb21wX3NhdmUgPSBjc2F2ZTsNCj4gPiArICAgICAgIHhz
-a19wdXRfY3R4KGN0eCwgdW5tYXApOw0KPiA+ICBvdXRfc29ja2V0Og0KPiA+ICAgICAgICAgaWYg
-KC0tdW1lbS0+cmVmY291bnQpDQo+ID4gICAgICAgICAgICAgICAgIGNsb3NlKHhzay0+ZmQpOw0K
-PiA+IEBAIC0xMDcxLDcgKzEwNzgsNyBAQCB2b2lkIHhza19zb2NrZXRfX2RlbGV0ZShzdHJ1Y3Qg
-eHNrX3NvY2tldCAqeHNrKQ0KPiA+ICAgICAgICAgICAgICAgICB9DQo+ID4gICAgICAgICB9DQo+
-ID4NCj4gPiAtICAgICAgIHhza19wdXRfY3R4KGN0eCk7DQo+ID4gKyAgICAgICB4c2tfcHV0X2N0
-eChjdHgsIHRydWUpOw0KPiA+DQo+ID4gICAgICAgICB1bWVtLT5yZWZjb3VudC0tOw0KPiA+ICAg
-ICAgICAgLyogRG8gbm90IGNsb3NlIGFuIGZkIHRoYXQgYWxzbyBoYXMgYW4gYXNzb2NpYXRlZCB1
-bWVtIGNvbm5lY3RlZA0KPiA+IC0tDQo+ID4gMi4xNy4xDQo+ID4NCg==
+Alexei Starovoitov <ast@fb.com> writes:
+
+> On 3/26/21 3:11 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Martin KaFai Lau <kafai@fb.com> writes:
+>>=20
+>>> On Thu, Mar 25, 2021 at 11:02:23PM +0100, Toke H=C3=B8iland-J=C3=B8rgen=
+sen wrote:
+>>>> Martin KaFai Lau <kafai@fb.com> writes:
+>>>>
+>>>>> This patch adds support to BPF verifier to allow bpf program calling
+>>>>> kernel function directly.
+>>>>
+>>>> Hi Martin
+>>>>
+>>>> This is exciting stuff! :)
+>>>>
+>>>> Just one quick question about this:
+>>>>
+>>>>> [ For the future calling function-in-kernel-module support, an array
+>>>>>    of module btf_fds can be passed at the load time and insn->off
+>>>>>    can be used to index into this array. ]
+>>>>
+>>>> Is adding the support for extending this to modules also on your radar,
+>>>> or is this more of an "in case someone needs it" comment? :)
+>>>
+>>> It is in my list.  I don't mind someone beats me to it though
+>>> if he/she has an immediate use case. ;)
+>>=20
+>> Noted ;)
+>> No promises though, and at the rate you're going you may just get there
+>> first. I'll be sure to ping you if I do start on this so we avoid
+>> duplicating effort!
+>
+> That's great!
+> Curious what use cases you have in mind?
+
+Accessing conntrack data from XDP. Needed for OVS, and for building an
+XDP-based forwarding fast-path that shares state with the regular kernel
+stack. Details TBD, obviously, but we've been blocked on not having
+access to anything in modules from BPF, so seeing that there's now a
+path to that is delightful! :)
+
+-Toke
+
