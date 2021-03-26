@@ -2,758 +2,585 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA5A34B0CB
-	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 21:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A04E34B190
+	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 22:55:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhCZUvX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Mar 2021 16:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49506 "EHLO
+        id S230076AbhCZVya (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Mar 2021 17:54:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbhCZUvL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Mar 2021 16:51:11 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD77C0613AA
-        for <bpf@vger.kernel.org>; Fri, 26 Mar 2021 13:51:11 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id g38so7112569ybi.12
-        for <bpf@vger.kernel.org>; Fri, 26 Mar 2021 13:51:11 -0700 (PDT)
+        with ESMTP id S229957AbhCZVyC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Mar 2021 17:54:02 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663CCC0613AA;
+        Fri, 26 Mar 2021 14:54:02 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id i144so7313935ybg.1;
+        Fri, 26 Mar 2021 14:54:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=IHcDlLyo/IX4PONrz5cM4XXlDkcUzTDxXRMu4cwFUR0=;
-        b=Y9ZUEMYhzuIJTDLldYliHaxhqiVSuN/f7Rhf3CdEFsIlHa4XAotFp3eE+nZC8Gynah
-         GUCvzTXBOGF3aB9RbXafAIdn5CDMRVv1WVy10RwsYqRARvDZC3yXlrw/32tai+iif0et
-         fUUtXiM+XBOsuFAcZz5GcNkrYwO9dvdbdr2FAIWcKr5KmI73uei4x8OGd7AXpv17dwIw
-         yIjtsO9UK1IRZjOTyp9nEmAe1f/X3mPPEictz1XLXfAs50/GSvSc1htxJ4LO5GsSDvyt
-         w7gbRnJr6WlG8Ml18bl6ZDRbiAPTkgs1SD/tgXg4oJR7hFTbriunBWooRWVIBC6w7kmt
-         K2hg==
+         :cc;
+        bh=ThGJXqSBVtGk6KIhRrFIKcUMK7/vpKeq9ueUBtv72FU=;
+        b=GfDHokUT05JveQjRoJwweQjrGtp/L4xsAw95tHDw1yKy7ByzIGP4re+OvHF9eRFdGd
+         5E8DDetHcS0H3mZccik/tB33V6nkozaI3MCZ8fZlG+WHboBwhy+lUt3VLlrAFZQDdeFM
+         QV7Ow/4c4OQ+1pF/IeoJ9BKIo1SYS0cpKJgdONDdILUhDK2mS/TF0dBL1ton+OVitIXD
+         P+PohQkgit9K6uWjoBBZPhnK6X05+EM14BCE7gKYSelDFITzIqQikU5FufimTmPgXw0Q
+         QjVt+BYEjwi/tFCElADxB/NDtSXUVRzssMmvVytA8g9p8m7Ain9ND7lsiAfzTJJQsbov
+         BXcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IHcDlLyo/IX4PONrz5cM4XXlDkcUzTDxXRMu4cwFUR0=;
-        b=CLPVQy6Ae19Pr8yoEe0sRRsoO5lVRFpYLovuCCoF5HbRV4KsZQyve7fQi9MPgy1ytK
-         FZU3KHPhqKZD0aANyQ33VazKJ6VerZQ6xp+ubx3S1eJz4JCeNFM8wo+WYyY4cJ/KJD+4
-         tTY6BtL+svO8sF9NOaDdrvHCIAb3YeIEi5EH5Y1Bct/gFOlVVaKWp9ukLMYfewlig72h
-         IDhigIW6b4/nqEYilATnIek9ZIpqFr8EhDwCnFF6GOjOGAGrV1sn4QEJTWuLHYYofQh5
-         mRJN9poaVzoNPymUqj+Psjgi0y/aGz/K3bZclMdU5NuFnUoekeTrgzWQgfN66Q6++kw0
-         r/Gg==
-X-Gm-Message-State: AOAM531fIa4Fyj6E2G2RsJfU0FiXyKK7D7x0Wa8X7j6jLzVGkaGUWj19
-        W0n3IBDjPurNK4+xHOq3ec0FKfGW+rDUFksF94SewYV/e4DdWw==
-X-Google-Smtp-Source: ABdhPJzUkQ4QK4TIiJ/j6+CvrqhGCnqozEUqxRVBvORusIvvfcVb9e9Mio5IoAz4H4nWNVumdemO+2eknJnxdhAr5sE=
-X-Received: by 2002:a25:4982:: with SMTP id w124mr21120883yba.27.1616791870374;
- Fri, 26 Mar 2021 13:51:10 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=ThGJXqSBVtGk6KIhRrFIKcUMK7/vpKeq9ueUBtv72FU=;
+        b=KIiei5qyQvbYHmp741IqFetHN3cqrf8gGujnw7TDlqYkVeRXuJ3RfCaljPn9954vj9
+         tcp9Rr3yTRZnp5Qa4R+b/DMH5ZO9jJL2pXfCy66/vvMQ+l+wYJOnFPJyQUEiCuYf7Vi4
+         Fi4Fxc4k+Mc1hy35+qf0escwBGlwgnAc9EN9Pq7dgbVQA30qeH6z+7Ntj1tnRgnW90M4
+         3G4FX6AHqD4cMu0HknxULntR40Lj8lhG/bG2WeC9MnpEhEwQ1PH40EsIhdn7fLFbx4VL
+         xKAmZBKL+5b2Q6+okzZKsFU1AqBR6UmsoFw7pjfTvyUox2Z0K1JXhDO/HZ+6k+ztHLQm
+         o3Mw==
+X-Gm-Message-State: AOAM531aPICpDRuBZX6a9mSTSNHoT7yJxfbsGeNQk/2MlAFLfETpilJ3
+        9Et1FH8O85liPETtnLaY7B4lQtxkjL7A+D6E/Lu7lElVq7WtFA==
+X-Google-Smtp-Source: ABdhPJyRzadXGLkzDYkubw1g45UmcIZQMVLmREy4QGONvHNnjb5k6+dGE/FoMuRvwYDMx09xOmZURnshCs2QsFwRVGo=
+X-Received: by 2002:a25:874c:: with SMTP id e12mr21367498ybn.403.1616795641562;
+ Fri, 26 Mar 2021 14:54:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEf4Bzap6qS9_HQZTHJsM-X2VZso+N5xMwa3HNG9ycMW4WXtQg@mail.gmail.com>
- <20210322180441.1364511-1-rafaeldtinoco@ubuntu.com> <4BB60234-7970-405C-9447-D19CA6564BC2@ubuntu.com>
-In-Reply-To: <4BB60234-7970-405C-9447-D19CA6564BC2@ubuntu.com>
+References: <20210324022211.1718762-1-revest@chromium.org> <20210324022211.1718762-2-revest@chromium.org>
+In-Reply-To: <20210324022211.1718762-2-revest@chromium.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 26 Mar 2021 13:50:59 -0700
-Message-ID: <CAEf4BzaimrGXFrfFVHvV53ta7NwDWsN0YHcDiVJELEnbdjmKdg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next][RFC] libbpf: introduce legacy kprobe events support
-To:     Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
-Cc:     bpf <bpf@vger.kernel.org>
+Date:   Fri, 26 Mar 2021 14:53:50 -0700
+Message-ID: <CAEf4BzZP6uK_ZcKJZsESWrMHG5kEG_swRYJwqsaiD95CEOdJ5g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/6] bpf: Factorize bpf_trace_printk and bpf_seq_printf
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:25 AM Rafael David Tinoco
-<rafaeldtinoco@ubuntu.com> wrote:
+On Tue, Mar 23, 2021 at 7:23 PM Florent Revest <revest@chromium.org> wrote:
 >
-> > - This is a RFC (v2).
-> > - Please check my reply with inline comments.
+> Two helpers (trace_printk and seq_printf) have very similar
+> implementations of format string parsing and a third one is coming
+> (snprintf). To avoid code duplication and make the code easier to
+> maintain, this moves the operations associated with format string
+> parsing (validation and argument sanitization) into one generic
+> function.
 >
-> Comments bellow=E2=80=A6 (no correct formatting for now):
->
-> > ---
-> >  src/libbpf.c | 362 ++++++++++++++++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 357 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/src/libbpf.c b/src/libbpf.c
-> > index 3b1c79f..e9c6025 100644
-> > --- a/src/libbpf.c
-> > +++ b/src/libbpf.c
-> > @@ -9465,6 +9465,10 @@ struct bpf_link {
-> >       char *pin_path;         /* NULL, if not pinned */
-> >       int fd;                 /* hook FD, -1 if not applicable */
-> >       bool disconnected;
-> > +     struct {
-> > +             const char *name;
-> > +             bool retprobe;
-> > +     } legacy;
-> >  };
->
-> For bpf_link->detach() I needed func_name somewhere.
+> Unfortunately, the implementation of the two existing helpers already
+> drifted quite a bit and unifying them entailed a lot of changes:
 
-Right, though it's not func_name that you need, but "event_name".
-Let's add link ([0]) to poke_kprobe_events somewhere, and probably
-event have example full syntax of all the commands:
-
- p[:[GRP/]EVENT] [MOD:]SYM[+offs]|MEMADDR [FETCHARGS]  : Set a probe
- r[MAXACTIVE][:[GRP/]EVENT] [MOD:]SYM[+0] [FETCHARGS]  : Set a return probe
- p:[GRP/]EVENT] [MOD:]SYM[+0]%return [FETCHARGS]       : Set a return probe
- -:[GRP/]EVENT                                         : Clear a probe
-
-  [0] https://www.kernel.org/doc/html/latest/trace/kprobetrace.html
-
-
-Now, you should not extend bpf_link itself. Create bpf_link_kprobe,
-that will have those two extra fields. Put struct bpf_link as a first
-field of bpf_link_kprobe. We used to have bpf_link_fd, you can try to
-find it in Git history to see how it was done.
-
-And another problem -- you should allocate memory for this event_name,
-not rely on the user to keep that memory for you.
-
+"Unfortunately" as in a lot of extra work for you? I think overall
+though it was very fortunate that you ended up doing it, all
+implementations are more feature-complete and saner now, no? Thanks a
+lot for your hard work!
 
 >
-> >
-> > +static inline int remove_kprobe_event_legacy(const char*, bool);
-> > +
-> >  static int bpf_link__detach_perf_event(struct bpf_link *link)
-> >  {
-> >       int err;
-> > @@ -9605,8 +9612,25 @@ static int bpf_link__detach_perf_event(struct
-> > bpf_link *link)
-> >       err =3D ioctl(link->fd, PERF_EVENT_IOC_DISABLE, 0);
-> >       if (err)
-> >               err =3D -errno;
-> > -
-> >       close(link->fd);
-> > +
-> > +     return err;
-> > +}
-> > +
-> > +static int bpf_link__detach_perf_event_legacy(struct bpf_link *link)
-> > +{
-> > +     int err;
-> > +
-> > +     err =3D bpf_link__detach_perf_event(link);
-> > +     if (err)
-> > +             err =3D -errno; // improve this
-> > +
-> > +     /*
-> > +     err =3D remove_kprobe_event_legacy(link->legacy.name,
-> > link->legacy.retprobe);
-> > +     if (err)
-> > +             err =3D -errno;
-> > +      */
-> > +
-> >       return err;
-> >  }
+> - bpf_trace_printk always expected fmt[fmt_size] to be the terminating
+>   NULL character, this is no longer true, the first 0 is terminating.
+
+You mean if you had bpf_trace_printk("bla bla\0some more bla\0", 24)
+it would emit that zero character? If yes, I don't think it was a sane
+behavior anyways.
+
+> - bpf_trace_printk now supports %% (which produces the percentage char).
+> - bpf_trace_printk now skips width formating fields.
+> - bpf_trace_printk now supports the X modifier (capital hexadecimal).
+> - bpf_trace_printk now supports %pK, %px, %pB, %pi4, %pI4, %pi6 and %pI6
+> - argument casting on 32 bit has been simplified into one macro and
+>   using an enum instead of obscure int increments.
 >
-> Unfortunately I can=E2=80=99t remove kprobe event name from kprobe_events=
-,
-> even if I unload it (0 >> enabled) before. It won=E2=80=99t work until th=
-e
-> object is fully unloaded. This is why previous version using
-> bpf_program__set_priv() used to work. I=E2=80=99m showing this bellow=E2=
-=80=A6
+> - bpf_seq_printf now uses bpf_trace_copy_string instead of
+>   strncpy_from_kernel_nofault and handles the %pks %pus specifiers.
+> - bpf_seq_printf now prints longs correctly on 32 bit architectures.
 >
-> Check the last lines of this to understand better.
+> - both were changed to use a global per-cpu tmp buffer instead of one
+>   stack buffer for trace_printk and 6 small buffers for seq_printf.
+> - to avoid per-cpu buffer usage conflict, these helpers disable
+>   preemption while the per-cpu buffer is in use.
+> - both helpers now support the %ps and %pS specifiers to print symbols.
 >
-> >
-> > @@ -9655,6 +9679,48 @@ struct bpf_link
-> > *bpf_program__attach_perf_event(struct bpf_program *prog,
-> >       return link;
-> >  }
-> >
-> > +struct bpf_link *bpf_program__attach_perf_event_legacy(struct
-> > bpf_program *prog,
-> > +                                                    int pfd)
-> > +{
-> > +     char errmsg[STRERR_BUFSIZE];
-> > +     struct bpf_link *link;
-> > +     int prog_fd, err;
-> > +
-> > +     if (pfd < 0) {
-> > +             pr_warn("prog '%s': invalid perf event FD %d\n", prog->na=
-me, pfd);
-> > +             return ERR_PTR(-EINVAL);
-> > +     }
-> > +     prog_fd =3D bpf_program__fd(prog);
-> > +     if (prog_fd < 0) {
-> > +             pr_warn("prog '%s': can't attach BPF program w/o FD (did
-> > you load it?)\n", prog->name);
-> > +             return ERR_PTR(-EINVAL);
-> > +     }
-> > +
-> > +     link =3D calloc(1, sizeof(*link));
-> > +     if (!link)
-> > +             return ERR_PTR(-ENOMEM);
-> > +
-> > +     link->detach =3D &bpf_link__detach_perf_event_legacy;
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> ---
+
+This is great, you already saved some lines of code! I suspect I'll
+have some complaints about mods (it feels like this preample should
+provide extra information about which arguments have to be read from
+kernel/user memory, but I'll see next patches first.
+
+See my comments below (I deliberately didn't trim most of the code for
+easier jumping around), but it's great overall, thanks!
+
+>  kernel/trace/bpf_trace.c | 529 ++++++++++++++++++---------------------
+>  1 file changed, 244 insertions(+), 285 deletions(-)
 >
-> I created another function for all existing ones using _legacy at the end=
-.
-> This one in particular could have a callback function as argument that wo=
-uld
-> be passed to link->detach().. this way I could avoid having 2 functions
-> alike.
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 0d23755c2747..0fdca94a3c9c 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -372,7 +372,7 @@ static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
+>         return &bpf_probe_write_user_proto;
+>  }
 >
-> > +     link->fd =3D pfd;
-> > +
-> > +     if (ioctl(pfd, PERF_EVENT_IOC_SET_BPF, prog_fd) < 0) {
-> > +             err =3D -errno;
-> > +             free(link);
-> > +             pr_warn("prog '%s': failed to attach to pfd %d: %s\n",
-> > prog->name, pfd, libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-> > +             if (err =3D=3D -EPROTO)
-> > +                     pr_warn("prog '%s': try add PERF_SAMPLE_CALLCHAIN
-> > to or remove exclude_callchain_[kernel|user] from pfd %d\n", prog->name=
-,
-> > pfd);
-> > +             return ERR_PTR(err);
-> > +     }
-> > +     if (ioctl(pfd, PERF_EVENT_IOC_ENABLE, 0) < 0) {
-> > +             err =3D -errno;
-> > +             free(link);
-> > +             pr_warn("prog '%s': failed to enable pfd %d: %s\n",
-> > prog->name, pfd, libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-> > +             return ERR_PTR(err);
-> > +     }
-> > +
-> > +     return link;
-> > +}
-> > +
-> >  /*
-> >   * this function is expected to parse integer in the range of [0, 2^31=
--1] from
-> >   * given file using scanf format string fmt. If actual parsed value is
-> > @@ -9685,34 +9751,242 @@ static int parse_uint_from_file(const char
-> > *file, const char *fmt)
-> >       return ret;
-> >  }
-> >
-> > +static int write_uint_to_file(const char *file, unsigned int val)
-> > +{
-> > +     char buf[STRERR_BUFSIZE];
-> > +     int err;
-> > +     FILE *f;
-> > +
-> > +     f =3D fopen(file, "w");
-> > +     if (!f) {
-> > +             err =3D -errno;
-> > +             pr_debug("failed to open '%s': %s\n", file,
-> > +                      libbpf_strerror_r(err, buf, sizeof(buf)));
-> > +             return err;
-> > +     }
-> > +     err =3D fprintf(f, "%u", val);
-> > +     if (err !=3D 1) {
-> > +             err =3D -errno;
-> > +             pr_debug("failed to write '%u' to '%s': %s\n", val, file,
-> > +                     libbpf_strerror_r(err, buf, sizeof(buf)));
-> > +             fclose(f);
-> > +             return err;
-> > +     }
-> > +     fclose(f);
-> > +     return 0;
-> > +}
-> > +
-> > +#define KPROBE_PERF_TYPE     "/sys/bus/event_source/devices/kprobe/typ=
-e"
-> > +#define UPROBE_PERF_TYPE     "/sys/bus/event_source/devices/uprobe/typ=
-e"
-> > +#define KPROBERET_FORMAT
-> > "/sys/bus/event_source/devices/kprobe/format/retprobe"
-> > +#define UPROBERET_FORMAT
-> > "/sys/bus/event_source/devices/uprobe/format/retprobe"
-> > +/* legacy kprobe events related files */
-> > +#define KPROBE_EVENTS                "/sys/kernel/debug/tracing/kprobe=
-_events"
-> > +#define KPROBE_LEG_TOGGLE    "/sys/kernel/debug/kprobes/enabled"
-
-Not LEG, please, LEGACY
-
-> > +#define KPROBE_LEG_ALL_TOGGLE
-> > "/sys/kernel/debug/tracing/events/kprobes/enable";
-> > +#define KPROBE_SINGLE_TOGGLE
-> > "/sys/kernel/debug/tracing/events/kprobes/%s/enable";
-> > +#define KPROBE_EVENT_ID      "/sys/kernel/debug/tracing/events/kprobes=
-/%s/id";
-> > +
+> -static void bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
+> +static int bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
+>                 size_t bufsz)
+>  {
+>         void __user *user_ptr = (__force void __user *)unsafe_ptr;
+> @@ -382,178 +382,284 @@ static void bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
+>         switch (fmt_ptype) {
+>         case 's':
+>  #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+> -               if ((unsigned long)unsafe_ptr < TASK_SIZE) {
+> -                       strncpy_from_user_nofault(buf, user_ptr, bufsz);
+> -                       break;
+> -               }
+> +               if ((unsigned long)unsafe_ptr < TASK_SIZE)
+> +                       return strncpy_from_user_nofault(buf, user_ptr, bufsz);
+>                 fallthrough;
+>  #endif
+>         case 'k':
+> -               strncpy_from_kernel_nofault(buf, unsafe_ptr, bufsz);
+> -               break;
+> +               return strncpy_from_kernel_nofault(buf, unsafe_ptr, bufsz);
+>         case 'u':
+> -               strncpy_from_user_nofault(buf, user_ptr, bufsz);
+> -               break;
+> +               return strncpy_from_user_nofault(buf, user_ptr, bufsz);
+>         }
+> +
+> +       return -EINVAL;
+>  }
 >
-> This made the life easier: to understand which files were related to what
-
-Ok, sure, just not legs, please :)
-
+>  static DEFINE_RAW_SPINLOCK(trace_printk_lock);
 >
-> > +static bool determine_kprobe_legacy(void)
-> > +{
-> > +     struct stat s;
-> > +
-> > +     return stat(KPROBE_PERF_TYPE, &s) =3D=3D 0 ? false : true;
-
-there is access(file, F_OK) which is nicer to use for checking file existen=
-ce
-
-> > +}
-> > +
-> >  static int determine_kprobe_perf_type(void)
-> >  {
-> > -     const char *file =3D "/sys/bus/event_source/devices/kprobe/type";
-> > +     const char *file =3D KPROBE_PERF_TYPE;
-
-just inline then, what's the point of this variable?
-
-> >
-> >       return parse_uint_from_file(file, "%d\n");
-> >  }
-> >
-> >  static int determine_uprobe_perf_type(void)
-> >  {
-> > -     const char *file =3D "/sys/bus/event_source/devices/uprobe/type";
-> > +     const char *file =3D UPROBE_PERF_TYPE;
-> >
-> >       return parse_uint_from_file(file, "%d\n");
-> >  }
-> >
-> >  static int determine_kprobe_retprobe_bit(void)
-> >  {
-> > -     const char *file =3D
-> > "/sys/bus/event_source/devices/kprobe/format/retprobe";
-> > +     const char *file =3D KPROBERET_FORMAT;
-> >
-> >       return parse_uint_from_file(file, "config:%d\n");
-> >  }
-> >
-> >  static int determine_uprobe_retprobe_bit(void)
-> >  {
-> > -     const char *file =3D
-> > "/sys/bus/event_source/devices/uprobe/format/retprobe";
-> > +     const char *file =3D UPROBERET_FORMAT;
-> >
-> >       return parse_uint_from_file(file, "config:%d\n");
-> >  }
-> >
-> > +static int toggle_kprobe_legacy(bool on)
-> > +{
-> > +     static int refcount;
-> > +     static bool initial, veryfirst;
-> > +     const char *file =3D KPROBE_LEG_TOGGLE;
-> > +
-> > +     if (on) {
-> > +             refcount++;
-> > +             if (veryfirst)
-> > +                     return 0;
-> > +             veryfirst =3D true;
-> > +             /* initial value for KPROB_LEG_TOGGLE */
-> > +             initial =3D (bool) parse_uint_from_file(file, "%d\n");
-> > +             return write_uint_to_file(file, 1); /* enable kprobes */
-> > +     }
-> > +     refcount--;
-> > +     printf("DEBUG: kprobe_legacy refcount=3D%d\n", refcount);
-> > +     if (refcount =3D=3D 0) {
-> > +             /* off ret value back to initial value if last consumer *=
-/
-> > +             return write_uint_to_file(file, initial);
-> > +     }
-> > +     return 0;
-> > +}
-> > +
-> > +static int toggle_kprobe_event_legacy_all(bool on)
-> > +{
-> > +     static int refcount;
-> > +     static bool initial, veryfirst;
-> > +     const char *file =3D KPROBE_LEG_ALL_TOGGLE;
-> > +
-> > +     if (on) {
-> > +             refcount++;
-> > +             if (veryfirst)
-> > +                     return 0;
-> > +             veryfirst =3D true;
-> > +             // initial value for KPROB_LEG_ALL_TOGGLE
-> > +             initial =3D (bool) parse_uint_from_file(file, "%d\n");
-> > +             return write_uint_to_file(file, 1); // enable kprobes
-> > +     }
-> > +     refcount--;
-> > +     printf("DEBUG: legacy_all refcount=3D%d\n", refcount);
-> > +     if (refcount =3D=3D 0) {
-> > +             // off ret value back to initial value if last consumer
-> > +             return write_uint_to_file(file, initial);
-> > +     }
-> > +     return 0;
-> > +}
+> -#define BPF_TRACE_PRINTK_SIZE   1024
+> +enum bpf_printf_mod_type {
+> +       BPF_PRINTF_INT,
+> +       BPF_PRINTF_LONG,
+> +       BPF_PRINTF_LONG_LONG,
+> +};
 >
-> Same thing here: 2 functions that could be reduced to one with an
-> argument to KPROB_LEG_TOGGLE or KPROB_LEG_ALL_TOGGLE.
+> -static __printf(1, 0) int bpf_do_trace_printk(const char *fmt, ...)
+> -{
+> -       static char buf[BPF_TRACE_PRINTK_SIZE];
+> -       unsigned long flags;
+> -       va_list ap;
+> -       int ret;
+> +/* Horrid workaround for getting va_list handling working with different
+> + * argument type combinations generically for 32 and 64 bit archs.
+> + */
+> +#define BPF_CAST_FMT_ARG(arg_nb, args, mod)                            \
+> +       ((mod[arg_nb] == BPF_PRINTF_LONG_LONG ||                        \
+> +        (mod[arg_nb] == BPF_PRINTF_LONG && __BITS_PER_LONG == 64))     \
+> +         ? args[arg_nb]                                                \
+> +         : ((mod[arg_nb] == BPF_PRINTF_LONG ||                         \
+> +            (mod[arg_nb] == BPF_PRINTF_INT && __BITS_PER_LONG == 32))  \
+
+is this right? INT is always 32-bit, it's only LONG that differs.
+Shouldn't the rule be
+
+(LONG_LONG || LONG && __BITS_PER_LONG) -> (__u64)args[args_nb]
+(INT || LONG && __BITS_PER_LONG == 32) -> (__u32)args[args_nb]
+
+Does (long) cast do anything fancy when casting from u64? Sorry, maybe
+I'm confused.
+
+
+> +             ? (long)args[arg_nb]                                      \
+> +             : (u32)args[arg_nb]))
+> +
+> +/* Per-cpu temp buffers which can be used by printf-like helpers for %s or %p
+> + */
+> +#define MAX_PRINTF_BUF_LEN     512
 >
-> I=E2=80=99m using static initial so I can recover the original status of
-> the =E2=80=9Cenable=E2=80=9D files after the program is unloaded. Unfortu=
-nately
-> this is not multi-task friendly as another process would
-> step into this logic but I did not want to leave =E2=80=9Cenabled=E2=80=
-=9D
-> after we unload if it wasn=E2=80=99t before.
+> -       raw_spin_lock_irqsave(&trace_printk_lock, flags);
+> -       va_start(ap, fmt);
+> -       ret = vsnprintf(buf, sizeof(buf), fmt, ap);
+> -       va_end(ap);
+> -       /* vsnprintf() will not append null for zero-length strings */
+> -       if (ret == 0)
+> -               buf[0] = '\0';
+> -       trace_bpf_trace_printk(buf);
+> -       raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
+> +struct bpf_printf_buf {
+> +       char tmp_buf[MAX_PRINTF_BUF_LEN];
+> +};
+> +static DEFINE_PER_CPU(struct bpf_printf_buf, bpf_printf_buf);
+> +static DEFINE_PER_CPU(int, bpf_printf_buf_used);
 >
-> I=E2=80=99m saying this because of your idea of having PID as the kprobe
-> event names=E2=80=A6 it would have the same problem=E2=80=A6 We could, in=
- theory
-> leave all =E2=80=9Cenabled=E2=80=9D files enabled (1) at the end, use PID=
- in the
-> kprobe event names and unload only our events=E2=80=A6 but then I would
-> leave /sys/kernel/debug/kprobes/enabled enabled even if it was
-> not.. because we could be concurrent to other tasks using libbpf.
-
-So I don't get at all why you have these toggles, especially
-ALL_TOGGLE? You shouldn't try to determine the state of another probe.
-You always know whether you want to enable or disable your specific
-toggle. I'm very confused by all this.
-
+> -       return ret;
+> +static void bpf_printf_postamble(void)
+> +{
+> +       if (this_cpu_read(bpf_printf_buf_used)) {
+> +               this_cpu_dec(bpf_printf_buf_used);
+> +               preempt_enable();
+> +       }
+>  }
 >
-> > +static int kprobe_event_normalize(char *newname, size_t size, const ch=
-ar
-> > *name, bool retprobe)
-> > +{
-> > +     int ret =3D 0;
-> > +
-> > +     if (IS_ERR(name))
-> > +             return -1;
-> > +
-> > +     if (retprobe)
-> > +             ret =3D snprintf(newname, size, "kprobes/%s_ret", name);
-> > +     else
-> > +             ret =3D snprintf(newname, size, "kprobes/%s", name);
-> > +
-> > +     if (ret <=3D strlen("kprobes/"))
-> > +             ret =3D -errno;
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static int toggle_single_kprobe_event_legacy(bool on, const char *name=
-,
-> > bool retprobe)
+>  /*
+> - * Only limited trace_printk() conversion specifiers allowed:
+> - * %d %i %u %x %ld %li %lu %lx %lld %lli %llu %llx %p %pB %pks %pus %s
+> + * bpf_parse_fmt_str - Generic pass on format strings for printf-like helpers
+> + *
+> + * Returns a negative value if fmt is an invalid format string or 0 otherwise.
+> + *
+> + * This can be used in two ways:
+> + * - Format string verification only: when final_args and mod are NULL
+> + * - Arguments preparation: in addition to the above verification, it writes in
+> + *   final_args a copy of raw_args where pointers from BPF have been sanitized
+> + *   into pointers safe to use by snprintf. This also writes in the mod array
+> + *   the size requirement of each argument, usable by BPF_CAST_FMT_ARG for ex.
+> + *
+> + * In argument preparation mode, if 0 is returned, safe temporary buffers are
+> + * allocated and bpf_printf_postamble should be called to free them after use.
+>   */
+> -BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
+> -          u64, arg2, u64, arg3)
+> -{
+> -       int i, mod[3] = {}, fmt_cnt = 0;
+> -       char buf[64], fmt_ptype;
+> -       void *unsafe_ptr = NULL;
+> -       bool str_seen = false;
+> -
+> -       /*
+> -        * bpf_check()->check_func_arg()->check_stack_boundary()
+> -        * guarantees that fmt points to bpf program stack,
+> -        * fmt_size bytes of it were initialized and fmt_size > 0
+> -        */
+> -       if (fmt[--fmt_size] != 0)
+> -               return -EINVAL;
+> -
+> -       /* check format string for allowed specifiers */
+> -       for (i = 0; i < fmt_size; i++) {
+> -               if ((!isprint(fmt[i]) && !isspace(fmt[i])) || !isascii(fmt[i]))
+> -                       return -EINVAL;
+> +int bpf_printf_preamble(char *fmt, u32 fmt_size, const u64 *raw_args,
+> +                       u64 *final_args, enum bpf_printf_mod_type *mod,
+> +                       u32 num_args)
+> +{
+> +       struct bpf_printf_buf *bufs = this_cpu_ptr(&bpf_printf_buf);
+> +       int err, i, fmt_cnt = 0, copy_size, used;
+> +       char *unsafe_ptr = NULL, *tmp_buf = NULL;
+> +       bool prepare_args = final_args && mod;
 
-don't get why you need this function either...
+probably better to enforce that both or none are specified, otherwise
+return error
 
-> > +{
-> > +     char probename[32], f[96];
-> > +     const char *file =3D KPROBE_SINGLE_TOGGLE;
-> > +     int ret;
-> > +
-> > +     ret =3D kprobe_event_normalize(probename, sizeof(probename), name=
-,
-> > retprobe);
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     snprintf(f, sizeof(f), file, probename + strlen("kprobes/"));
-> > +
-> > +     printf("DEBUG: writing %u to %s\n", (unsigned int) on, f);
-> > +
-> > +     ret =3D write_uint_to_file(f, (unsigned int) on);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static int poke_kprobe_events(bool add, const char *name, bool retprob=
-e)
-> > +{
-> > +     int fd, ret =3D 0;
-> > +     char probename[32], cmd[96];
-> > +     const char *file =3D KPROBE_EVENTS;
-> > +
-> > +     ret =3D kprobe_event_normalize(probename, sizeof(probename), name=
-,
-> > retprobe);
+> +       enum bpf_printf_mod_type current_mod;
+> +       size_t tmp_buf_len;
+> +       u64 current_arg;
+> +       char fmt_ptype;
+> +
+> +       for (i = 0; i < fmt_size && fmt[i] != '\0'; i++) {
 
-just have that if/else + snprintf right here, no need to jump through hoops
+Can we say that if the last character is not '\0' then it's a bad
+format string and return -EINVAL? And if \0 is inside the format
+string, then it's also a bad format string? I wonder what others think
+about this?... I think sanity should prevail.
 
-> > +     if (ret < 0)
-> > +             return ret;
-> > +
-> > +     if (add)
-> > +             snprintf(cmd, sizeof(cmd),"%c:%s %s", retprobe ? 'r' : 'p=
-',
-> > probename, name);
-> > +     else
-> > +             snprintf(cmd, sizeof(cmd), "-:%s", probename);
-> > +
-> > +     printf("DEBUG: %s\n", cmd);
-> > +
-> > +     fd =3D open(file, O_WRONLY|O_APPEND, 0);
-> > +     if (!fd)
-> > +             return -errno;
-> > +     ret =3D write(fd, cmd, strlen(cmd));
-> > +     if (ret < 0)
-> > +             ret =3D -errno;
-> > +     close(fd);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static inline int add_kprobe_event_legacy(const char* func_name, bool
-> > retprobe)
-> > +{
-> > +     int ret =3D 0;
-> > +
-> > +     ret =3D poke_kprobe_events(true, func_name, retprobe);
-> > +     if (ret < 0)
-> > +             printf("DEBUG: poke_kprobe_events (on) error\n");
-> > +
-> > +     ret =3D toggle_kprobe_event_legacy_all(true);
+> +               if ((!isprint(fmt[i]) && !isspace(fmt[i])) ||
+> +                   !isascii(fmt[i])) {
 
-why?... why do you need to touch the state of other probes. This will
-never work reliable but also should not be required
+&& always binds tighter than ||, so you can omit extra (). I'd put
+this on a single line as well, but that's a total nit.
 
-> > +     if (ret < 0)
-> > +             printf("DEBUG: toggle_kprobe_event_legacy_all (on) error\=
-n");
-> > +
-> > +     ret =3D toggle_single_kprobe_event_legacy(true, func_name, retpro=
-be);
-> > +     if (ret < 0)
-> > +             printf("DEBUG: toggle_single_kprobe_event_legacy (on) err=
-or\n");
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static inline int remove_kprobe_event_legacy(const char* func_name, bo=
-ol
-> > retprobe)
-> > +{
-> > +     int ret =3D 0;
-> > +
-> > +     ret =3D toggle_kprobe_event_legacy_all(true);
-> > +     if (ret < 0)
-> > +             printf("DEBUG: toggle_kprobe_event_legacy_all (off) error=
-\n");
-> > +
-> > +     ret =3D toggle_single_kprobe_event_legacy(true, func_name, retpro=
-be);
-> > +     if (ret < 0)
-> > +             printf("DEBUG: toggle_single_kprobe_event_legacy (off) er=
-ror\n");
-> > +
-> > +     ret =3D toggle_single_kprobe_event_legacy(false, func_name, retpr=
-obe);
-> > +     if (ret < 0)
-> > +             printf("DEBUG: toggle_single_kprobe_event_legacy (off) er=
-ror\n");
-> > +
-> > +     ret =3D poke_kprobe_events(false, func_name, retprobe);
-> > +     if (ret < 0)
-> > +             printf("DEBUG: poke_kprobe_events (off) error\n");
-> > +
-> > +     return ret;
-> > +}
+> +                       err = -EINVAL;
+> +                       goto out;
+> +               }
 >
-> I=E2=80=99m doing a =E2=80=9Cmake sure what has to be enabled to be enabl=
-ed=E2=80=9D approach here.
-> Please ignore all the DEBUGs, etc, I=E2=80=99ll deal with errors after it=
-s good.
-
-again, you haven't explained why. Don't touch probes you haven't created.
-
+>                 if (fmt[i] != '%')
+>                         continue;
 >
-> > +
-> > +static int determine_kprobe_perf_type_legacy(const char *func_name)
-> > +{
-> > +     char file[96];
-> > +     const char *fname =3D KPROBE_EVENT_ID;
-
-again, what's the point of this variable, just inline
-
-and this is a problem with those #defines. I need to now jump back and
-forth to see what KPROBE_EVENT_ID is. So unless we have to use them in
-multiple places, I'd keep those constants where they were, honestly.
-
-> > +
-> > +     snprintf(file, sizeof(file), fname, func_name);
-> > +
-> > +     return parse_uint_from_file(file, "%d\n");
-> > +}
-> > +
-> >  static int perf_event_open_probe(bool uprobe, bool retprobe, const cha=
-r *name,
-> >                                uint64_t offset, int pid)
-> >  {
-> > @@ -9760,6 +10034,51 @@ static int perf_event_open_probe(bool uprobe,
-> > bool retprobe, const char *name,
-> >       return pfd;
-> >  }
-> >
-> > +static int perf_event_open_probe_legacy(bool uprobe, bool retprobe,
-> > const char *name,
-> > +                                     uint64_t offset, int pid)
-> > +{
-> > +     struct perf_event_attr attr =3D {};
-> > +     char errmsg[STRERR_BUFSIZE];
-> > +     int type, pfd, err;
-> > +
-> > +     if (uprobe) // legacy uprobe not supported yet
-> > +             return -1;
+> -               if (fmt_cnt >= 3)
+> -                       return -EINVAL;
+> +               if (fmt[i + 1] == '%') {
+> +                       i++;
+> +                       continue;
+> +               }
+> +
+> +               if (fmt_cnt >= num_args) {
+> +                       err = -EINVAL;
+> +                       goto out;
+> +               }
 >
-> Would that be ok for now ? Until we are sure kprobe legacy interface is
-> good ?
+>                 /* fmt[i] != 0 && fmt[last] == 0, so we can access fmt[i + 1] */
+>                 i++;
+> -               if (fmt[i] == 'l') {
+> -                       mod[fmt_cnt]++;
+> +
+> +               /* skip optional "[0 +-][num]" width formating field */
+
+typo: formatting
+
+> +               while (fmt[i] == '0' || fmt[i] == '+'  || fmt[i] == '-' ||
+> +                      fmt[i] == ' ')
+> +                       i++;
+> +               if (fmt[i] >= '1' && fmt[i] <= '9') {
+>                         i++;
+
+Are we worried about integer overflow here? %123123123123123d
+hopefully won't crash anything, right?
+
+> -               } else if (fmt[i] == 'p') {
+> -                       mod[fmt_cnt]++;
+> -                       if ((fmt[i + 1] == 'k' ||
+> -                            fmt[i + 1] == 'u') &&
+> +                       while (fmt[i] >= '0' && fmt[i] <= '9')
+> +                               i++;
+
+whoa, fmt_size shouldn't be ignored
+
+> +               }
+> +
+
+and here if we exhausted all format string but haven't gotten to
+format specified, we should -EINVAL
+
+if (i >= fmt_size) return -EINVAL?
+
+> +               if (fmt[i] == 'p') {
+> +                       current_mod = BPF_PRINTF_LONG;
+> +
+> +                       if ((fmt[i + 1] == 'k' || fmt[i + 1] == 'u') &&
+>                             fmt[i + 2] == 's') {
+
+right, if i + 2 is ok to access? always be remembering about fmt_size
+
+>                                 fmt_ptype = fmt[i + 1];
+>                                 i += 2;
+>                                 goto fmt_str;
+>                         }
 >
+> -                       if (fmt[i + 1] == 'B') {
+> -                               i++;
+> +                       if (fmt[i + 1] == 0 || isspace(fmt[i + 1]) ||
+> +                           ispunct(fmt[i + 1]) || fmt[i + 1] == 'K' ||
+> +                           fmt[i + 1] == 'x' || fmt[i + 1] == 'B' ||
+> +                           fmt[i + 1] == 's' || fmt[i + 1] == 'S') {
+> +                               /* just kernel pointers */
+> +                               if (prepare_args)
+> +                                       current_arg = raw_args[fmt_cnt];
 
-it's ok, but return -EOPNOTSUPP instead
+fmt_cnt is not the best name, imo. arg_cnt makes more sense
 
-
-> > +
-> > +     err =3D toggle_kprobe_legacy(true);
-> > +     if (err < 0) {
-> > +             pr_warn("failed to toggle kprobe legacy support: %s\n",
-> > libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-> > +             return err;
-> > +     }
-> > +     err =3D add_kprobe_event_legacy(name, retprobe);
-> > +     if (err < 0) {
-> > +             pr_warn("failed to add legacy kprobe event: %s\n",
-> > libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-> > +             return err;
-> > +     }
-> > +     type =3D determine_kprobe_perf_type_legacy(name);
-> > +     if (err < 0) {
-> > +             pr_warn("failed to determine legacy kprobe event id: %s\n=
-",
-> > libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
-> > +             return type;
-> > +     }
-> > +
-> > +     attr.size =3D sizeof(attr);
-> > +     attr.config =3D type;
-> > +     attr.type =3D PERF_TYPE_TRACEPOINT;
-> > +
-> > +     pfd =3D syscall(__NR_perf_event_open,
-> > +                   &attr,
-> > +                   pid < 0 ? -1 : pid,
-> > +                   pid =3D=3D -1 ? 0 : -1,
-> > +                   -1,
-> > +                   PERF_FLAG_FD_CLOEXEC);
-
-btw, a question. Is there similar legacy interface to tracepoints? It
-would be good to support those as well. Doesn't have to happen at the
-same time, but let's just keep it in mind as we implement this.
-
-> > +
-> > +     if (pfd < 0) {
-> > +             err =3D -errno;
-> > +             pr_warn("legacy kprobe perf_event_open() failed: %s\n",
-> > libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-> > +             return err;
-> > +     }
-> > +     return pfd;
-> > +}
-> > +
-> >  struct bpf_link *bpf_program__attach_kprobe(struct bpf_program *prog,
-> >                                           bool retprobe,
-> >                                           const char *func_name)
-> > @@ -9788,6 +10107,33 @@ struct bpf_link
-> > *bpf_program__attach_kprobe(struct bpf_program *prog,
-> >       return link;
-> >  }
-> >
-> > +struct bpf_link *bpf_program__attach_kprobe_legacy(struct bpf_program
-
-this is wrong from the API perspective. The goal is to not make users
-decide whether they want legacy or non-legacy interfaces. With all
-your work there shouldn't be any new APIs.
-bpf_program__attach_kprobe() should detect which interface to use and
-just use it.
-
-> > *prog,
-> > +                                                bool retprobe,
-> > +                                                const char *func_name)
-> > +{
-> > +     char errmsg[STRERR_BUFSIZE];
-> > +     struct bpf_link *link;
-> > +     int pfd, err;
-> > +
-> > +     pfd =3D perf_event_open_probe_legacy(false, retprobe, func_name, =
-0, -1);
-> > +     if (pfd < 0) {
-> > +             pr_warn("prog '%s': failed to create %s '%s' legacy perf
-> > event: %s\n", prog->name, retprobe ? "kretprobe" : "kprobe", func_name,
-> > libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
-> > +             return ERR_PTR(pfd);
-> > +     }
-> > +     link =3D bpf_program__attach_perf_event_legacy(prog, pfd);
-> > +     if (IS_ERR(link)) {
-> > +             close(pfd);
-> > +             err =3D PTR_ERR(link);
-> > +             pr_warn("prog '%s': failed to attach to %s '%s': %s\n",
-> > prog->name, retprobe ? "kretprobe" : "kprobe", func_name,
-> > libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-> > +             return link;
-> > +     }
-> > +     /* needed history for the legacy probe cleanup */
-> > +     link->legacy.name =3D func_name;
-> > +     link->legacy.retprobe =3D retprobe;
+>                                 goto fmt_next;
+>                         }
 >
-> Note I=E2=80=99m not setting those variables inside
-> bpf_program__atach_perf_event_legacy(). They=E2=80=99re not available
-> there and I did not want to make them to be (through arguments).
+> -                       /* disallow any further format extensions */
+> -                       if (fmt[i + 1] != 0 &&
+> -                           !isspace(fmt[i + 1]) &&
+> -                           !ispunct(fmt[i + 1]))
+> -                               return -EINVAL;
+> +                       /* only support "%pI4", "%pi4", "%pI6" and "%pi6". */
+> +                       if ((fmt[i + 1] != 'i' && fmt[i + 1] != 'I') ||
+> +                           (fmt[i + 2] != '4' && fmt[i + 2] != '6')) {
+> +                               err = -EINVAL;
+> +                               goto out;
+> +                       }
+> +
+> +                       i += 2;
+> +                       if (!prepare_args)
+> +                               goto fmt_next;
+> +
+> +                       if (!tmp_buf) {
+> +                               used = this_cpu_inc_return(bpf_printf_buf_used);
+> +                               if (WARN_ON_ONCE(used > 1)) {
+> +                                       this_cpu_dec(bpf_printf_buf_used);
+> +                                       return -EBUSY;
+> +                               }
+> +                               preempt_disable();
 
-as I said above, you shouldn't assume that func_name will still be
-allocated by the time you get to detaching kprobe. You should strdup()
-or do whatever is necessary to own necessary memory.
+shouldn't we preempt_disable before we got bpf_printf_buf_used? if we
+get preempted after incrementing counter, buffer will be unusable for
+a while, potentially, right?
+
+> +                               tmp_buf = bufs->tmp_buf;
+> +                               tmp_buf_len = MAX_PRINTF_BUF_LEN;
+> +                       }
+> +
+> +                       copy_size = (fmt[i + 2] == '4') ? 4 : 16;
+> +                       if (tmp_buf_len < copy_size) {
+> +                               err = -ENOSPC;
+> +                               goto out;
+> +                       }
+> +
+> +                       unsafe_ptr = (char *)(long)raw_args[fmt_cnt];
+> +                       err = copy_from_kernel_nofault(tmp_buf, unsafe_ptr,
+> +                                                      copy_size);
+> +                       if (err < 0)
+> +                               memset(tmp_buf, 0, copy_size);
+> +                       current_arg = (u64)(long)tmp_buf;
+> +                       tmp_buf += copy_size;
+> +                       tmp_buf_len -= copy_size;
+>
+>                         goto fmt_next;
+>                 } else if (fmt[i] == 's') {
+> -                       mod[fmt_cnt]++;
+> +                       current_mod = BPF_PRINTF_LONG;
+>                         fmt_ptype = fmt[i];
+>  fmt_str:
+> -                       if (str_seen)
+> -                               /* allow only one '%s' per fmt string */
+> -                               return -EINVAL;
+> -                       str_seen = true;
+> -
+>                         if (fmt[i + 1] != 0 &&
+>                             !isspace(fmt[i + 1]) &&
+> -                           !ispunct(fmt[i + 1]))
+> -                               return -EINVAL;
+> +                           !ispunct(fmt[i + 1])) {
+> +                               err = -EINVAL;
+> +                               goto out;
+> +                       }
+>
+> -                       switch (fmt_cnt) {
+> -                       case 0:
+> -                               unsafe_ptr = (void *)(long)arg1;
+> -                               arg1 = (long)buf;
+> -                               break;
+> -                       case 1:
+> -                               unsafe_ptr = (void *)(long)arg2;
+> -                               arg2 = (long)buf;
+> -                               break;
+> -                       case 2:
+> -                               unsafe_ptr = (void *)(long)arg3;
+> -                               arg3 = (long)buf;
+> -                               break;
+> +                       if (!prepare_args)
+> +                               goto fmt_next;
+> +
+> +                       if (!tmp_buf) {
+> +                               used = this_cpu_inc_return(bpf_printf_buf_used);
+> +                               if (WARN_ON_ONCE(used > 1)) {
+> +                                       this_cpu_dec(bpf_printf_buf_used);
+> +                                       return -EBUSY;
+> +                               }
+> +                               preempt_disable();
+> +                               tmp_buf = bufs->tmp_buf;
+> +                               tmp_buf_len = MAX_PRINTF_BUF_LEN;
+> +                       }
+
+how about helper used like this:
+
+if (try_get_fmt_tmp_buf(&tmp_buf, &tmp_buf_len))
+    return -EBUSY;
+
+which will do nothing if tmp_buf != NULL?
+
+> +
+> +                       if (!tmp_buf_len) {
+> +                               err = -ENOSPC;
+> +                               goto out;
+>                         }
+>
+> -                       bpf_trace_copy_string(buf, unsafe_ptr, fmt_ptype,
+> -                                       sizeof(buf));
+> +                       unsafe_ptr = (char *)(long)raw_args[fmt_cnt];
+> +                       err = bpf_trace_copy_string(tmp_buf, unsafe_ptr,
+> +                                                   fmt_ptype, tmp_buf_len);
+> +                       if (err < 0) {
+> +                               tmp_buf[0] = '\0';
+> +                               err = 1;
+> +                       }
+> +
+> +                       current_arg = (u64)(long)tmp_buf;
+> +                       tmp_buf += err;
+> +                       tmp_buf_len -= err;
+> +
+>                         goto fmt_next;
+>                 }
+>
+> +               current_mod = BPF_PRINTF_INT;
+> +
+>                 if (fmt[i] == 'l') {
+> -                       mod[fmt_cnt]++;
+> +                       current_mod = BPF_PRINTF_LONG;
+> +                       i++;
+> +               }
+> +               if (fmt[i] == 'l') {
+> +                       current_mod = BPF_PRINTF_LONG_LONG;
+>                         i++;
+>                 }
+>
+> -               if (fmt[i] != 'i' && fmt[i] != 'd' &&
+> -                   fmt[i] != 'u' && fmt[i] != 'x')
+> -                       return -EINVAL;
+> +               if (fmt[i] != 'i' && fmt[i] != 'd' && fmt[i] != 'u' &&
+> +                   fmt[i] != 'x' && fmt[i] != 'X') {
+> +                       err = -EINVAL;
+> +                       goto out;
+> +               }
+> +
+> +               if (prepare_args)
+> +                       current_arg = raw_args[fmt_cnt];
+>  fmt_next:
+> +               if (prepare_args) {
+
+I'd ditch prepare_args variable and just check final_args (and that
+check to ensure both mods and final_args are specified I suggested
+above)
+
+> +                       mod[fmt_cnt] = current_mod;
+> +                       final_args[fmt_cnt] = current_arg;
+> +               }
+>                 fmt_cnt++;
+>         }
+
+[...]
+
+> -
+> -       return __BPF_TP_EMIT();
+> +       err = 0;
+> +out:
+> +       bpf_printf_postamble();
+
+naming is hard, but preamble and postamble reads way too fancy :)
+bpf_printf_prepare() and bpf_printf_cleanup() or something like that
+is a bit more to the point, no?
+
+
+> +       return err;
+> +}
+> +
+
+[...]
 
 >
-> > +
-> > +     return link;
-> > +}
-> > +
-> >  static struct bpf_link *attach_kprobe(const struct bpf_sec_def *sec,
-> >                                     struct bpf_program *prog)
-> >  {
-> > @@ -9797,6 +10143,9 @@ static struct bpf_link *attach_kprobe(const stru=
-ct
-> > bpf_sec_def *sec,
-> >       func_name =3D prog->sec_name + sec->len;
-> >       retprobe =3D strcmp(sec->sec, "kretprobe/") =3D=3D 0;
-> >
-> > +     if(determine_kprobe_legacy())
-> > +             return bpf_program__attach_kprobe_legacy(prog, retprobe, =
-func_name);
-> > +
-
-the other way around, attach_kprobe should just delegate to
-bpf_program__attach_kprobe, but bpf_program__attach_kprobe should be
-smart enough
-
-> >       return bpf_program__attach_kprobe(prog, retprobe, func_name);
-> >  }
+>  static const struct bpf_func_proto bpf_trace_printk_proto = {
+> @@ -581,184 +687,37 @@ const struct bpf_func_proto *bpf_get_trace_printk_proto(void)
+>  }
 >
-> I=E2=80=99m assuming this is okay based on your saying of detecting a fea=
-ture
-> instead of using the if(x) if(y) approach.
+>  #define MAX_SEQ_PRINTF_VARARGS         12
+> -#define MAX_SEQ_PRINTF_MAX_MEMCPY      6
+> -#define MAX_SEQ_PRINTF_STR_LEN         128
+> -
+> -struct bpf_seq_printf_buf {
+> -       char buf[MAX_SEQ_PRINTF_MAX_MEMCPY][MAX_SEQ_PRINTF_STR_LEN];
+> -};
+> -static DEFINE_PER_CPU(struct bpf_seq_printf_buf, bpf_seq_printf_buf);
+> -static DEFINE_PER_CPU(int, bpf_seq_printf_buf_used);
 >
-> >
-> > @@ -11280,4 +11629,7 @@ void bpf_object__destroy_skeleton(struct
-> > bpf_object_skeleton *s)
-> >       free(s->maps);
-> >       free(s->progs);(),
-> >       free(s);
-> > +
-> > +     remove_kprobe_event_legacy("ip_set_create", false);
-> > +     remove_kprobe_event_legacy("ip_set_create", true);
+>  BPF_CALL_5(bpf_seq_printf, struct seq_file *, m, char *, fmt, u32, fmt_size,
+>            const void *, data, u32, data_len)
+
+[...]
+
+> +       enum bpf_printf_mod_type mod[MAX_SEQ_PRINTF_VARARGS];
+> +       u64 args[MAX_SEQ_PRINTF_VARARGS];
+> +       int err, num_args;
 >
-> This is the main issue I wanted to show you before continuing.
-> I cannot remove the kprobe event unless the obj is unloaded.
-> That is why I have this hard coded here, just because I was
-> testing. Any thoughts how to cleanup the kprobes without
-> jeopardising the API too much ?
+> +       if (data_len & 7 || data_len > MAX_SEQ_PRINTF_VARARGS * 8 ||
+> +           (data_len && !data))
 
+data && !data_len is also an error, no?
 
-cannot as in it doesn't work for whatever reason? Or what do you mean?
-
-I see that you had bpf_link__detach_perf_event_legacy calling
-remove_kprobe_event_legacy, what didn't work?
-
-You somehow ended up with 3 times more code and I have more questions
-now then before. When you say "it doesn't work", please make sure to
-explain what exactly doesn't work, what you did, what you expected to
-happen/see.
-
+> +               return -EINVAL;
+>         num_args = data_len / 8;
 >
-> >  }
-> > =E2=80=94
-> > 2.17.1
->
->
+
+[...]
