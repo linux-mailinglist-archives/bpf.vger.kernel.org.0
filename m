@@ -2,54 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590F834A3A6
-	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 10:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D4234A3EB
+	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 10:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhCZJGq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Mar 2021 05:06:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38228 "EHLO
+        id S229622AbhCZJOp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Mar 2021 05:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbhCZJGl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:06:41 -0400
+        with ESMTP id S229915AbhCZJOX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Mar 2021 05:14:23 -0400
 Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE73C0613AA;
-        Fri, 26 Mar 2021 02:06:41 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id e33so4150762pgm.13;
-        Fri, 26 Mar 2021 02:06:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41EFFC0613AA;
+        Fri, 26 Mar 2021 02:14:23 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id i22so4192044pgl.4;
+        Fri, 26 Mar 2021 02:14:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CG4MBxk/8UQdAMJ1ResB6Dc1p7f11By6rlIZT5iTQq4=;
-        b=UFfyz9GDhcOdF7oIxtieNdW1b6TnZwQO9fXABayJUUBIWEZq+XOXD3mEnkO3A+djXa
-         pXpu7p3YOEV4BexUbU2kMdVZFDyKtCsTF6czyXlEKUQtCJuk48t+hBAGqNsnN2gcq2iY
-         mtsoJ0UkjBN6YN9f5duYnWei7R+vne3WfBJop8219m0PAnriyvhXjJedGPD3+9EoYWBq
-         VuyNFPM8zwoW2QkytgQNqX31RDFwccl1xJ3iiBbd1+B8omUsU6BVcJXNJXZ+LGid9rjr
-         sUhGEspNexMp4PEztDsHXBC9C7PfykgUpWcmjCPA4GfQonxEYK3wugxZPR7rEkQMMkN6
-         41CA==
+        bh=5ISFXlhhQ0K2lxAEBKCoI272OB+TykgqUPhYBrA3KA8=;
+        b=m1qEggRFqWDvOl+yhyvk0BfXY37Sgio5zozy4HFAVBugp1SWfm8knXkLCTDVc9qhcv
+         Uqwc5OkNa3JGuuzQLjdeFqO8+ciDeeLc1MKrC3+nacRdKZ2nGd7/+/3HHArr5nwKtyCC
+         ricbihpjoDp+JIUnUIFBFSPM43VTlUnOQGYS62yZxFT4Wd77Pqu6d5NhyDwBVNzQ3naf
+         7cxD8/Z2my4A1EKckthr3r5EuAovjmGGJKUTx1s1zPjcJiqFZTq+L4n3wgEFFyaPlacs
+         QUvBUlKql95y3GJQBtiAVcimLcnna6ilmLnsDzGRV0SBEUx/g7FRPg5M0YJ6s0i7nMZe
+         +lTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CG4MBxk/8UQdAMJ1ResB6Dc1p7f11By6rlIZT5iTQq4=;
-        b=F61gx1uzvXSaQ0uqZFZw6dLs49sa1SegBb2c5R+9Ojgli2n/0pfwKTTWhp0BzKprcY
-         RuMLf5IRDCQ7V9Z+Iq4I6L6pjFKKMXWeciJdGXgMnZC6I22zd4yN5VMz4XOxt16w6t5d
-         lb6Zsno5ZHoZVm+CjjtJuowXkX7MSgOimEu08hqlcjERsr1KHlZGJAKM7dAmZHFK7iL6
-         KJZQO4KQKH5zJ0GRzyZ/cLbTiiyfhSCbCrnXkLWrX2y2yF1oJ+HiTpqRN9nixBsNCqYy
-         JB/u8I38k90tw0ovaLIqTvfAe/rQYPbMBA+qudrIDgSh8It/mfWa7GcteeYuPBpLG02y
-         O7vg==
-X-Gm-Message-State: AOAM531DKrBHpjoR03f0Lajr+55FFaMhxH7a4M5OnwE4Nmw5D0xRv6Sr
-        5+Pvoj5L3bBUEtWjW9nPXZqYDOsOVuKicRdLBOg=
-X-Google-Smtp-Source: ABdhPJyBYVXroVhv0jnZdkT+55Q0v4lvKb7YTBMPNCtizHf+TnHv0RzDbiO9ifz+VvW4+AI3P+j5Y+FYU+2VkwpvRtg=
-X-Received: by 2002:a65:6483:: with SMTP id e3mr983638pgv.208.1616749600733;
- Fri, 26 Mar 2021 02:06:40 -0700 (PDT)
+        bh=5ISFXlhhQ0K2lxAEBKCoI272OB+TykgqUPhYBrA3KA8=;
+        b=BWBsBjKXe0PEPpjjpNz+C8Y/Aj058qrd2RO54ySRF0GGbNObka3Lmpyj0rFCM43Orm
+         e43NjEkXG409h4qOiVLyOgzKiQnz5JHMQ2E4d8AXDsolw2WdYXwJ3Q0ONM6XdbJNOCbs
+         UtDzyhRe3yrXkeAI6CyGSWNaY6uyN/khQgh7L29WD6m4P7+Rh/wOmpRjgKyXROclhjNd
+         AuN45Og6NL8K1Z+ye17FohmJ/9seriYmQhg2TkZtEbyPSwtV809lW1qr2rmy6bp+kEHd
+         GhycYJzhdXrdCk67HBG5b3nvKlN7zzHkJPaldTC+eRX4gjvo7vx/VC/opx9/udVFBJkt
+         ASRg==
+X-Gm-Message-State: AOAM5329SniPqqlB8raVvWEAPiXpPkkp4N7FL/ave7CC61T0c2AbqIZb
+        iCjCnyGZrVGDac4qcFbeZAh/b3M18cyW7UPONbD7zZErmMPVl2FX
+X-Google-Smtp-Source: ABdhPJzNsyRIaf5H/Ny0Sg1v3GuB5jtlP8/SMEnbq5x90JRaZ/U5GA8olQ4gwL3/zZ6FZJCpHXAUHbjE46//VoASCrQ=
+X-Received: by 2002:aa7:9852:0:b029:211:6824:6c7d with SMTP id
+ n18-20020aa798520000b029021168246c7dmr12289840pfq.19.1616750062703; Fri, 26
+ Mar 2021 02:14:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210324141337.29269-1-ciara.loftus@intel.com> <20210324141337.29269-3-ciara.loftus@intel.com>
-In-Reply-To: <20210324141337.29269-3-ciara.loftus@intel.com>
+References: <20210324141337.29269-1-ciara.loftus@intel.com> <20210324141337.29269-4-ciara.loftus@intel.com>
+In-Reply-To: <20210324141337.29269-4-ciara.loftus@intel.com>
 From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Fri, 26 Mar 2021 10:06:29 +0100
-Message-ID: <CAJ8uoz2Om5HdaWSN6UG5Os2GMQCtJ8dRqB_QN4Lw=kbm6fEe1g@mail.gmail.com>
-Subject: Re: [PATCH bpf 2/3] libbpf: restore umem state after socket create failure
+Date:   Fri, 26 Mar 2021 10:14:11 +0100
+Message-ID: <CAJ8uoz1ebJd9mj7rMmBfOot102Lrtj4TBo7vZhxK0=dEK3oFCg@mail.gmail.com>
+Subject: Re: [PATCH bpf 3/3] libbpf: ignore return values of setsockopt for
+ XDP rings.
 To:     Ciara Loftus <ciara.loftus@intel.com>
 Cc:     Network Development <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>,
@@ -62,96 +64,81 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Mar 24, 2021 at 3:46 PM Ciara Loftus <ciara.loftus@intel.com> wrote:
 >
-> If the call to socket_create fails, the user may want to retry the
-> socket creation using the same umem. Ensure that the umem is in the
-> same state on exit if the call failed by restoring the _save pointers
-> and not unmapping the set of umem rings if those pointers are non NULL.
+> During xsk_socket__create the XDP_RX_RING and XDP_TX_RING setsockopts
+> are called to create the rx and tx rings for the AF_XDP socket. If the ring
+> has already been set up, the setsockopt will return an error. However,
+> in the event of a failure during xsk_socket__create(_shared) after the
+> rings have been set up, the user may wish to retry the socket creation
+> using these pre-existing rings. In this case we can ignore the error
+> returned by the setsockopts. If there is a true error, the subsequent
+> call to mmap() will catch it.
 >
-> Fixes: 2f6324a3937f ("libbpf: Support shared umems between queues and devices")
+> Fixes: 1cad07884239 ("libbpf: add support for using AF_XDP sockets")
 >
 > Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
 > ---
->  tools/lib/bpf/xsk.c | 29 ++++++++++++++++++-----------
->  1 file changed, 18 insertions(+), 11 deletions(-)
+>  tools/lib/bpf/xsk.c | 34 ++++++++++++++++------------------
+>  1 file changed, 16 insertions(+), 18 deletions(-)
 >
 > diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> index 443b0cfb45e8..ec3c23299329 100644
+> index ec3c23299329..1f1c4c11c292 100644
 > --- a/tools/lib/bpf/xsk.c
 > +++ b/tools/lib/bpf/xsk.c
-> @@ -743,21 +743,23 @@ static struct xsk_ctx *xsk_get_ctx(struct xsk_umem *umem, int ifindex,
->         return NULL;
->  }
->
-> -static void xsk_put_ctx(struct xsk_ctx *ctx)
-> +static void xsk_put_ctx(struct xsk_ctx *ctx, bool unmap)
->  {
->         struct xsk_umem *umem = ctx->umem;
->         struct xdp_mmap_offsets off;
->         int err;
->
->         if (--ctx->refcount == 0) {
-> -               err = xsk_get_mmap_offsets(umem->fd, &off);
-> -               if (!err) {
-> -                       munmap(ctx->fill->ring - off.fr.desc,
-> -                              off.fr.desc + umem->config.fill_size *
-> -                              sizeof(__u64));
-> -                       munmap(ctx->comp->ring - off.cr.desc,
-> -                              off.cr.desc + umem->config.comp_size *
-> -                              sizeof(__u64));
-> +               if (unmap) {
-> +                       err = xsk_get_mmap_offsets(umem->fd, &off);
-> +                       if (!err) {
-> +                               munmap(ctx->fill->ring - off.fr.desc,
-> +                                      off.fr.desc + umem->config.fill_size *
-> +                               sizeof(__u64));
-> +                               munmap(ctx->comp->ring - off.cr.desc,
-> +                                      off.cr.desc + umem->config.comp_size *
-> +                               sizeof(__u64));
-> +                       }
->                 }
-
-By not unmapping these rings we actually leave more state after a
-failed socket creation. So how about skipping this logic (and
-everything below) and always unmap the rings at failure as before, but
-we move the fill_save = NULL and comp_save = NULL from xsk_create_ctx
-to the end of xsk_socket__create_shared just before the "return 0"
-where we know that the whole operation has succeeded. This way the
-mappings would be redone during the next xsk_socket__create and if
-someone decides not to retry (for some reason) we do not leave two
-mappings behind. Would simplify things. What do you think?
-
->
->                 list_del(&ctx->list);
-> @@ -854,6 +856,9 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
->         struct xsk_socket *xsk;
->         struct xsk_ctx *ctx;
->         int err, ifindex;
-> +       struct xsk_ring_prod *fsave = umem->fill_save;
-> +       struct xsk_ring_cons *csave = umem->comp_save;
-> +       bool unmap = !fsave;
->
->         if (!umem || !xsk_ptr || !(rx || tx))
->                 return -EFAULT;
-> @@ -1005,7 +1010,9 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
->                 munmap(rx_map, off.rx.desc +
->                        xsk->config.rx_size * sizeof(struct xdp_desc));
->  out_put_ctx:
-> -       xsk_put_ctx(ctx);
-> +       umem->fill_save = fsave;
-> +       umem->comp_save = csave;
-> +       xsk_put_ctx(ctx, unmap);
->  out_socket:
->         if (--umem->refcount)
->                 close(xsk->fd);
-> @@ -1071,7 +1078,7 @@ void xsk_socket__delete(struct xsk_socket *xsk)
->                 }
+> @@ -904,24 +904,22 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
 >         }
+>         xsk->ctx = ctx;
 >
-> -       xsk_put_ctx(ctx);
-> +       xsk_put_ctx(ctx, true);
+> -       if (rx) {
+> -               err = setsockopt(xsk->fd, SOL_XDP, XDP_RX_RING,
+> -                                &xsk->config.rx_size,
+> -                                sizeof(xsk->config.rx_size));
+> -               if (err) {
+> -                       err = -errno;
+> -                       goto out_put_ctx;
+> -               }
+> -       }
+> -       if (tx) {
+> -               err = setsockopt(xsk->fd, SOL_XDP, XDP_TX_RING,
+> -                                &xsk->config.tx_size,
+> -                                sizeof(xsk->config.tx_size));
+> -               if (err) {
+> -                       err = -errno;
+> -                       goto out_put_ctx;
+> -               }
+> -       }
+> +       /* The return values of these setsockopt calls are intentionally not checked.
+> +        * If the ring has already been set up setsockopt will return an error. However,
+> +        * this scenario is acceptable as the user may be retrying the socket creation
+> +        * with rings which were set up in a previous but ultimately unsuccessful call
+> +        * to xsk_socket__create(_shared). The call later to mmap() will fail if there
+> +        * is a real issue and we handle that return value appropriately there.
+> +        */
+> +       if (rx)
+> +               setsockopt(xsk->fd, SOL_XDP, XDP_RX_RING,
+> +                          &xsk->config.rx_size,
+> +                          sizeof(xsk->config.rx_size));
+> +
+> +       if (tx)
+> +               setsockopt(xsk->fd, SOL_XDP, XDP_TX_RING,
+> +                          &xsk->config.tx_size,
+> +                          sizeof(xsk->config.tx_size));
+
+Thanks Ciara!
+
+This is a pragmatic solution, but I do not see any better way around
+it since these operations are irreversible. And it works without any
+fix to the kernel which is good and you have a comment explaining
+things clearly. With that said, it would be nice as a follow up to
+bpf-next to actually return a unique error value (among the ones that
+this function can return) when the rings have already been mapped.
+This way the user can react to this in a more informed way in the
+future.
+
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+
 >
->         umem->refcount--;
->         /* Do not close an fd that also has an associated umem connected
+>         err = xsk_get_mmap_offsets(xsk->fd, &off);
+>         if (err) {
 > --
 > 2.17.1
 >
