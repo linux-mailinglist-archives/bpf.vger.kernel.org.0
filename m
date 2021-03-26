@@ -2,195 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07FF134A53D
-	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 11:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8748034A559
+	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 11:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229573AbhCZKDv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Mar 2021 06:03:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38416 "EHLO
+        id S230018AbhCZKL6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Mar 2021 06:11:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49054 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229744AbhCZKDc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Mar 2021 06:03:32 -0400
+        by vger.kernel.org with ESMTP id S230100AbhCZKLq (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Mar 2021 06:11:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616753011;
+        s=mimecast20190719; t=1616753506;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1aHJVxe6uoiZMEQjmNfP9XIXtXVFqt+4EqtqxEvdyy8=;
-        b=TkT1IvVPcgYHJlTHpcZ8W4F63ilV8VU7W672ocOblJPCfWZrumH/CndlDj8adBPdD6TfhP
-        r/6Q8rLc+npFAF911WmLoINl3DjsfFm+jPWJW1tjUsXUwpdwzU27QEajMX1N6tRFzbjsa7
-        Ku5jMEKcPhHdNt1BDh7JmFMZ9zQj3hQ=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-240-ZP91R_PEPLaMbj04m1qjcA-1; Fri, 26 Mar 2021 06:03:29 -0400
-X-MC-Unique: ZP91R_PEPLaMbj04m1qjcA-1
-Received: by mail-ej1-f72.google.com with SMTP id h14so3878023ejg.7
-        for <bpf@vger.kernel.org>; Fri, 26 Mar 2021 03:03:29 -0700 (PDT)
+        bh=QRPmV37hKOtWKvN7ZDrppJeIqphV5UqLCnAOHgP7RWE=;
+        b=HozYGIA5vlx+PpGxd6oxqEWl6U3blPllYrrro5vyScaBRiTAXIxNHhmAo395ybhuWqKYYS
+        432KznYFa+Igfp8AbAseyUIFUo56+19bitjs3TMPN+LM257roZzwkJ4ZAk7o8nTYdMfCJU
+        Nwi+ERk866lDNuyNgehPH9298/rehzY=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-412-uxd1usZeOsiCfbSO4Fq91g-1; Fri, 26 Mar 2021 06:11:44 -0400
+X-MC-Unique: uxd1usZeOsiCfbSO4Fq91g-1
+Received: by mail-ed1-f71.google.com with SMTP id h5so4150405edf.17
+        for <bpf@vger.kernel.org>; Fri, 26 Mar 2021 03:11:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1aHJVxe6uoiZMEQjmNfP9XIXtXVFqt+4EqtqxEvdyy8=;
-        b=XnI6VSJwUY9EA0xCWi+R/qTZ2YexY632PAW/BUzZh27pAy2r0qUIybW+UgqtICniTI
-         NdFz80NJmJv5h/qmhIWhf+YQptM0md5AbZlZkVReQNZrdMQcNIX5kbMLUe4e5kvryozB
-         dcttoc6jOxAIss+KyuvBlf1KLI02PQX4T4yUcCb6XhLtXgfPMh9RkMPIJxUe+ek1667Z
-         2fft7L1/fS6P85Ds3lS/8H1rkrXerNiKgc7E32wb+/IFgOqqPKnENOIq7OwWAK2XIuNn
-         sVnB7sd1RCijpLvivj0r0MurA+52hhaSqY1mWjNtyXrg82FfCP+iYILUFBxznvUj4JX4
-         Utjw==
-X-Gm-Message-State: AOAM531LUwv4PN+qRq/eJ2R0udo/kIw2HN7btMnKV8pFrY8ZLZ1mebov
-        0ClKrGkuKwtetL5XFj9PRhdWBtHUi++tloJWti2D39yDBFliH1Z7yNAONIdZIWOje8CRQu4K1Pf
-        ZRUwUOGtGIW6O
-X-Received: by 2002:a05:6402:30a2:: with SMTP id df2mr13726751edb.29.1616753008829;
-        Fri, 26 Mar 2021 03:03:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzb5MKbcXT1DxlGqWXsp03h4Wp2942dAkC02B5NcAWh+ValK3Ii7qW6U4P+GYnG/0O2VD3F8A==
-X-Received: by 2002:a05:6402:30a2:: with SMTP id df2mr13726723edb.29.1616753008628;
-        Fri, 26 Mar 2021 03:03:28 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id v22sm3629988ejj.103.2021.03.26.03.03.28
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=QRPmV37hKOtWKvN7ZDrppJeIqphV5UqLCnAOHgP7RWE=;
+        b=mPBHF1GNt3cz0DCVO+X56rVlElzzMVf98Z0646qBow+YbWL2TIFKisLqINecJ2DD5W
+         fmu+k9lJjUh7Wx6qtg10i/8qS0SgSzT5GXyQyromt+WO1YItNS+ruuOAfkpkilx6UIwe
+         wIMD5UPqoGNzVfqNxImt5bYwOueYWQMqwJQZL3Nwzp0eUyHw39Pk1Al0xg0d4rdhy3N0
+         58R6TvIQ7Nll8r1CMTKAmH6QpdoOoRLRls7PmglVlSCk3rzOAfwbLmTk0VSehY9VzgiN
+         HJ4lQj53FAMtvthORHyhYIAZSiKFbwNDmjko4yXk7oNz3aKMdrMDlATVuFTY6RjSDy68
+         aUFQ==
+X-Gm-Message-State: AOAM533Csivi3dIXJwT4PASbs6NIcgUztA4WXXfzdXFqtxUjClfELapb
+        bOx60JmeLiKmxihIY1+pzaiJLbEaLqflgeQDfKJjmymz5RwWgdD3tWLbmTvFyeCvXO8bIXu2iIy
+        9XZjqXnwJ1wdn
+X-Received: by 2002:a17:907:7699:: with SMTP id jv25mr13899683ejc.363.1616753502857;
+        Fri, 26 Mar 2021 03:11:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyBBvYh/8qPf0D5bWSxDuRIl04pHyOhhyzPiTCbTiADUGIA3wLU9bL8fOA7aaXHlyFmiXPNMw==
+X-Received: by 2002:a17:907:7699:: with SMTP id jv25mr13899660ejc.363.1616753502430;
+        Fri, 26 Mar 2021 03:11:42 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id g20sm3904652edb.7.2021.03.26.03.11.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 03:03:28 -0700 (PDT)
+        Fri, 26 Mar 2021 03:11:41 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id AA4CE1801A3; Fri, 26 Mar 2021 11:03:27 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Clark Williams <williams@redhat.com>, bpf@vger.kernel.org,
+        id 0F12E1801A3; Fri, 26 Mar 2021 11:11:41 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
         netdev@vger.kernel.org
-Subject: [PATCH bpf v3 2/2] bpf/selftests: test that kernel rejects a TCP CC with an invalid license
-Date:   Fri, 26 Mar 2021 11:03:14 +0100
-Message-Id: <20210326100314.121853-2-toke@redhat.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210326100314.121853-1-toke@redhat.com>
-References: <20210326100314.121853-1-toke@redhat.com>
+Subject: Re: [PATCH v2 bpf-next 03/14] bpf: Support bpf program calling
+ kernel function
+In-Reply-To: <20210325230940.2pequmyzwzv65sub@kafai-mbp.dhcp.thefacebook.com>
+References: <20210325015124.1543397-1-kafai@fb.com>
+ <20210325015142.1544736-1-kafai@fb.com> <87wntudh8w.fsf@toke.dk>
+ <20210325230940.2pequmyzwzv65sub@kafai-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 26 Mar 2021 11:11:41 +0100
+Message-ID: <87ft0icjhe.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds a selftest to check that the verifier rejects a TCP CC struct_ops
-with a non-GPL license.
+Martin KaFai Lau <kafai@fb.com> writes:
 
-v3:
-- Rename prog to bpf_tcp_nogpl
-- Use ASSERT macros instead of CHECK
-- Skip unneeded initialisation, unconditionally close skeleton
-v2:
-- Use a minimal struct_ops BPF program instead of rewriting bpf_dctcp's
-  license in memory.
-- Check for the verifier reject message instead of just the return code.
+> On Thu, Mar 25, 2021 at 11:02:23PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> Martin KaFai Lau <kafai@fb.com> writes:
+>>=20
+>> > This patch adds support to BPF verifier to allow bpf program calling
+>> > kernel function directly.
+>>=20
+>> Hi Martin
+>>=20
+>> This is exciting stuff! :)
+>>=20
+>> Just one quick question about this:
+>>=20
+>> > [ For the future calling function-in-kernel-module support, an array
+>> >   of module btf_fds can be passed at the load time and insn->off
+>> >   can be used to index into this array. ]
+>>=20
+>> Is adding the support for extending this to modules also on your radar,
+>> or is this more of an "in case someone needs it" comment? :)
+>
+> It is in my list.  I don't mind someone beats me to it though
+> if he/she has an immediate use case. ;)
 
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 44 +++++++++++++++++++
- .../selftests/bpf/progs/bpf_tcp_nogpl.c       | 19 ++++++++
- 2 files changed, 63 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_tcp_nogpl.c
+Noted ;)
+No promises though, and at the rate you're going you may just get there
+first. I'll be sure to ping you if I do start on this so we avoid
+duplicating effort!
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-index 37c5494a0381..e25917f04602 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-@@ -6,6 +6,7 @@
- #include <test_progs.h>
- #include "bpf_dctcp.skel.h"
- #include "bpf_cubic.skel.h"
-+#include "bpf_tcp_nogpl.skel.h"
- 
- #define min(a, b) ((a) < (b) ? (a) : (b))
- 
-@@ -227,10 +228,53 @@ static void test_dctcp(void)
- 	bpf_dctcp__destroy(dctcp_skel);
- }
- 
-+static char *err_str;
-+static bool found;
-+
-+static int libbpf_debug_print(enum libbpf_print_level level,
-+			      const char *format, va_list args)
-+{
-+	char *log_buf;
-+
-+	if (level != LIBBPF_WARN ||
-+	    strcmp(format, "libbpf: \n%s\n")) {
-+		vprintf(format, args);
-+		return 0;
-+	}
-+
-+	log_buf = va_arg(args, char *);
-+	if (!log_buf)
-+		goto out;
-+	if (err_str && strstr(log_buf, err_str) != NULL)
-+		found = true;
-+out:
-+	printf(format, log_buf);
-+	return 0;
-+}
-+
-+static void test_invalid_license(void)
-+{
-+	libbpf_print_fn_t old_print_fn;
-+	struct bpf_tcp_nogpl *skel;
-+
-+	err_str = "struct ops programs must have a GPL compatible license";
-+	found = false;
-+	old_print_fn = libbpf_set_print(libbpf_debug_print);
-+
-+	skel = bpf_tcp_nogpl__open_and_load();
-+	ASSERT_NULL(skel, "bpf_tcp_nogpl");
-+	ASSERT_EQ(found, true, "expected_err_msg");
-+
-+	bpf_tcp_nogpl__destroy(skel);
-+	libbpf_set_print(old_print_fn);
-+}
-+
- void test_bpf_tcp_ca(void)
- {
- 	if (test__start_subtest("dctcp"))
- 		test_dctcp();
- 	if (test__start_subtest("cubic"))
- 		test_cubic();
-+	if (test__start_subtest("invalid_license"))
-+		test_invalid_license();
- }
-diff --git a/tools/testing/selftests/bpf/progs/bpf_tcp_nogpl.c b/tools/testing/selftests/bpf/progs/bpf_tcp_nogpl.c
-new file mode 100644
-index 000000000000..2ecd833dcd41
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_tcp_nogpl.c
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <linux/types.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_tcp_helpers.h"
-+
-+char _license[] SEC("license") = "X";
-+
-+void BPF_STRUCT_OPS(nogpltcp_init, struct sock *sk)
-+{
-+}
-+
-+SEC(".struct_ops")
-+struct tcp_congestion_ops bpf_nogpltcp = {
-+	.init           = (void *)nogpltcp_init,
-+	.name           = "bpf_nogpltcp",
-+};
--- 
-2.31.0
+-Toke
 
