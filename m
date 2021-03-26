@@ -2,279 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BAE434AB95
-	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 16:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 231CD34AC42
+	for <lists+bpf@lfdr.de>; Fri, 26 Mar 2021 17:06:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhCZPes (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Mar 2021 11:34:48 -0400
-Received: from mga05.intel.com ([192.55.52.43]:63158 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230179AbhCZPe0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:34:26 -0400
-IronPort-SDR: b5eb3OeI3/oduOWojKXJTzYm5rY9uMF/MKC3WV3Mk3KB4mjTnxGeB2P6KUVHZSYfk6aqANytlb
- YNsMCDcOQUlQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="276311450"
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="276311450"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 08:34:25 -0700
-IronPort-SDR: 9FuX4P+ozhHWe8juokGZpwJapgIN14l+RlN3nLklMjFmd3OayWlhDyNtcBPA9LNQQLo9fSi77n
- d2DTSTpTLRdQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="526074930"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga004.jf.intel.com with ESMTP; 26 Mar 2021 08:34:23 -0700
-Date:   Fri, 26 Mar 2021 16:23:18 +0100
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
-        ast@kernel.org, bjorn.topel@intel.com, magnus.karlsson@intel.com,
-        ciara.loftus@intel.com, john.fastabend@gmail.com
-Subject: Re: [PATCH v3 bpf-next 06/17] libbpf: xsk: use bpf_link
-Message-ID: <20210326152318.GA43356@ranger.igk.intel.com>
-References: <20210322205816.65159-1-maciej.fijalkowski@intel.com>
- <20210322205816.65159-7-maciej.fijalkowski@intel.com>
- <87wnty7teq.fsf@toke.dk>
- <20210324130918.GA6932@ranger.igk.intel.com>
- <87a6qsf7hc.fsf@toke.dk>
+        id S230459AbhCZQGH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Mar 2021 12:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230273AbhCZQFm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Mar 2021 12:05:42 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F0F5C0613B1
+        for <bpf@vger.kernel.org>; Fri, 26 Mar 2021 09:05:42 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id z2so6156643wrl.5
+        for <bpf@vger.kernel.org>; Fri, 26 Mar 2021 09:05:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zQoMkVCtgJGZXmdu3KME93w0y7DWMF1NiaK0WZ/Njao=;
+        b=c+9PKPHPQWy3wo5EWypLaXKArM+ciNIfHE9FYOFvc0BOz5q9EWn7yxqrFQQCXvrx7L
+         TRTWIsmNz/YnqEJpjoTDkww998W9jGgrXntAcm0BwD/WFpYONRR0yox8H0w3KCM8pkbX
+         aTDw/tcCgAq/eDw9tVYDqEp0GY1JInboUh670=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zQoMkVCtgJGZXmdu3KME93w0y7DWMF1NiaK0WZ/Njao=;
+        b=p5fkom2sPQuq41/QFReY7CniRWyGenQ6m7XIAmuX2sLQFrOkgvI//2QrXtkvuGJ1lX
+         fjpJC4gGOcCp6aqwLdTIlFQuMqsN1x/9zU2WDQN177DPR/V0Tc+S3ovscSpU48Jl/w3T
+         jFsa5wsd6Yz+17WH0oFjMwgq1mUTcvond+9mhTNsnz8kgKCqsKt0ipIdGVrEgYa7iAyi
+         +tlJ46xFmE+9m/jwjQiX4yWeIIBRXb3sIByuEYjhZ1/vnMLdGlzIUFF5z32T44cPXgPq
+         knZ2+wO3+nMA+dQ0GrEKNaRZebHPbXL/IIFA0Nh0zmdSI348UdnoxAlUhxfH+XWb4ahD
+         J/hA==
+X-Gm-Message-State: AOAM532Bc9ye7JwGKkHEgyQq5WVB+0MHxsAZCDjJVCOVhnQoAnGdQPtt
+        RhxZKryywkE+8McX/NzUho+oGw==
+X-Google-Smtp-Source: ABdhPJxcmgrtuRv8romzbSyTFqTQSEJa4We5oSZ52yZtkB8W2HhNmi/u9IhtgCmLrgu5W1J+ucGIvQ==
+X-Received: by 2002:a5d:4582:: with SMTP id p2mr14928666wrq.34.1616774740745;
+        Fri, 26 Mar 2021 09:05:40 -0700 (PDT)
+Received: from localhost.localdomain (5.0.8.c.b.e.d.6.4.e.c.a.1.e.f.4.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:4fe1:ace4:6deb:c805])
+        by smtp.gmail.com with ESMTPSA id s20sm11692879wmj.36.2021.03.26.09.05.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 09:05:40 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Lorenz Bauer <lmb@cloudflare.com>
+Subject: [PATCH bpf v2 1/2] bpf: link: refuse non-O_RDWR flags in BPF_OBJ_GET
+Date:   Fri, 26 Mar 2021 16:05:00 +0000
+Message-Id: <20210326160501.46234-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87a6qsf7hc.fsf@toke.dk>
-User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 12:38:07AM +0100, Toke Høiland-Jørgensen wrote:
-> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
-> 
-> > On Mon, Mar 22, 2021 at 10:47:09PM +0100, Toke Høiland-Jørgensen wrote:
-> >> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
-> >> 
-> >> > Currently, if there are multiple xdpsock instances running on a single
-> >> > interface and in case one of the instances is terminated, the rest of
-> >> > them are left in an inoperable state due to the fact of unloaded XDP
-> >> > prog from interface.
-> >> >
-> >> > Consider the scenario below:
-> >> >
-> >> > // load xdp prog and xskmap and add entry to xskmap at idx 10
-> >> > $ sudo ./xdpsock -i ens801f0 -t -q 10
-> >> >
-> >> > // add entry to xskmap at idx 11
-> >> > $ sudo ./xdpsock -i ens801f0 -t -q 11
-> >> >
-> >> > terminate one of the processes and another one is unable to work due to
-> >> > the fact that the XDP prog was unloaded from interface.
-> >> >
-> >> > To address that, step away from setting bpf prog in favour of bpf_link.
-> >> > This means that refcounting of BPF resources will be done automatically
-> >> > by bpf_link itself.
-> >> >
-> >> > Provide backward compatibility by checking if underlying system is
-> >> > bpf_link capable. Do this by looking up/creating bpf_link on loopback
-> >> > device. If it failed in any way, stick with netlink-based XDP prog.
-> >> > Otherwise, use bpf_link-based logic.
-> >> 
-> >> So how is the caller supposed to know which of the cases happened?
-> >> Presumably they need to do their own cleanup in that case? AFAICT you're
-> >> changing the code to always clobber the existing XDP program on detach
-> >> in the fallback case, which seems like a bit of an aggressive change? :)
-> >
-> > Sorry Toke, I was offline yesterday.
-> > Yeah once again I went too far and we shouldn't do:
-> >
-> > bpf_set_link_xdp_fd(xsk->ctx->ifindex, -1, 0);
-> >
-> > if xsk_lookup_bpf_maps(xsk) returned non-zero value which implies that the
-> > underlying prog is not AF_XDP related.
-> >
-> > closing prog_fd (and link_fd under the condition that system is bpf_link
-> > capable) is enough for that case.
-> 
-> I think the same thing goes for further down? With your patch, if the
-> code takes the else branch (after checking prog_id), and then ends up
-> going to err_set_bpf_maps, it'll now also do an unconditional
-> bpf_set_link_xdp_fd(), where before it was checking prog_id again and
-> only unloading if it previously loaded the program...
+Invoking BPF_OBJ_GET on a pinned bpf_link checks the path access
+permissions based on file_flags, but the returned fd ignores flags.
+This means that any user can acquire a "read-write" fd for a pinned
+link with mode 0664 by invoking BPF_OBJ_GET with BPF_F_RDONLY in
+file_flags. The fd can be used to invoke BPF_LINK_DETACH, etc.
 
-Hmm it's messy, I think we need a bit of refactoring here. Note that old
-code was missing a close on ctx->xsks_map_fd if there was an error on
-xsk_set_bpf_maps(xsk) and prog_id != 0 - given that
-xsk_lookup_bpf_maps(xsk) succeeded, we therefore have a valid map fd that
-we need to take care of on error path, for !prog_id case it was taken care
-of within xsk_delete_bpf_maps(xsk).
+Fix this by refusing non-O_RDWR flags in BPF_OBJ_GET. This works
+because OBJ_GET by default returns a read write mapping and libbpf
+doesn't expose a way to override this behaviour for programs
+and links.
 
-So how about a diff below (on top of this patch), where we separate paths
-based on prog_id value retrieved earlier? xsk_set_bpf_maps(xsk) is
-repeated but this way I feel like it's more clear with cleanup/error
-paths.
+Fixes: 70ed506c3bbc ("bpf: Introduce pinnable bpf_link abstraction")
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+---
+ kernel/bpf/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Wdyt?
-
-
-diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-index 15812e4b93ca..c75067f0035f 100644
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/lib/bpf/xsk.c
-@@ -790,71 +790,103 @@ static int xsk_create_xsk_struct(int ifindex, struct xsk_socket *xsk)
- 	return 0;
- }
- 
--static int __xsk_setup_xdp_prog(struct xsk_socket *_xdp,
--				int *xsks_map_fd)
-+static int xsk_init_xdp_res(struct xsk_socket *xsk,
-+			    int *xsks_map_fd)
- {
--	struct xsk_socket *xsk = _xdp;
- 	struct xsk_ctx *ctx = xsk->ctx;
--	__u32 prog_id = 0;
- 	int err;
- 
--	if (ctx->has_bpf_link)
--		err = xsk_link_lookup(ctx->ifindex, &prog_id, &ctx->link_fd);
--	else
--		err = bpf_get_link_xdp_id(ctx->ifindex, &prog_id, xsk->config.xdp_flags);
-+	err = xsk_create_bpf_maps(xsk);
- 	if (err)
- 		return err;
- 
--	if (!prog_id) {
--		err = xsk_create_bpf_maps(xsk);
--		if (err)
--			return err;
-+	err = xsk_load_xdp_prog(xsk);
-+	if (err)
-+		goto err_load_xdp_prog;
- 
--		err = xsk_load_xdp_prog(xsk);
--		if (err)
--			goto err_load_xdp_prog;
-+	if (ctx->has_bpf_link)
-+		err = xsk_create_bpf_link(xsk);
-+	else
-+		err = bpf_set_link_xdp_fd(xsk->ctx->ifindex, ctx->prog_fd,
-+					  xsk->config.xdp_flags);
- 
--		if (ctx->has_bpf_link)
--			err = xsk_create_bpf_link(xsk);
--		else
--			err = bpf_set_link_xdp_fd(xsk->ctx->ifindex, ctx->prog_fd,
--						  xsk->config.xdp_flags);
--		if (err)
--			goto err_attach_prog;
--	} else {
--		ctx->prog_fd = bpf_prog_get_fd_by_id(prog_id);
--		if (ctx->prog_fd < 0)
--			return -errno;
--		err = xsk_lookup_bpf_maps(xsk);
--		if (err) {
--			close(ctx->prog_fd);
--			if (ctx->has_bpf_link)
--				close(ctx->link_fd);
--			else
--				bpf_set_link_xdp_fd(xsk->ctx->ifindex, -1, 0);
--			return err;
--		}
--	}
-+	if (err)
-+		goto err_atach_xdp_prog;
- 
--	if (xsk->rx) {
--		err = xsk_set_bpf_maps(xsk);
--		if (err)
--			goto err_set_bpf_maps;
--	}
--	if (xsks_map_fd)
--		*xsks_map_fd = ctx->xsks_map_fd;
-+	if (!xsk->rx)
-+		return err;
- 
--	return 0;
-+	err = xsk_set_bpf_maps(xsk);
-+	if (err)
-+		goto err_set_bpf_maps;
-+
-+	return err;
- 
- err_set_bpf_maps:
- 	if (ctx->has_bpf_link)
- 		close(ctx->link_fd);
+diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+index 1576ff331ee4..dc56237d6960 100644
+--- a/kernel/bpf/inode.c
++++ b/kernel/bpf/inode.c
+@@ -547,7 +547,7 @@ int bpf_obj_get_user(const char __user *pathname, int flags)
+ 	else if (type == BPF_TYPE_MAP)
+ 		ret = bpf_map_new_fd(raw, f_flags);
+ 	else if (type == BPF_TYPE_LINK)
+-		ret = bpf_link_new_fd(raw);
++		ret = (f_flags != O_RDWR) ? -EINVAL : bpf_link_new_fd(raw);
  	else
--		bpf_set_link_xdp_fd(xsk->ctx->ifindex, -1, 0);
--err_attach_prog:
-+		bpf_set_link_xdp_fd(ctx->ifindex, -1, 0);
-+err_atach_xdp_prog:
- 	close(ctx->prog_fd);
- err_load_xdp_prog:
- 	xsk_delete_bpf_maps(xsk);
-+	return err;
-+}
-+
-+static int xsk_lookup_xdp_res(struct xsk_socket *xsk, int *xsks_map_fd, int prog_id)
-+{
-+	struct xsk_ctx *ctx = xsk->ctx;
-+	int err;
-+
-+	ctx->prog_fd = bpf_prog_get_fd_by_id(prog_id);
-+	if (ctx->prog_fd < 0) {
-+		err = -errno;
-+		goto err_prog_fd;
-+	}
-+	err = xsk_lookup_bpf_maps(xsk);
-+	if (err)
-+		goto err_lookup_maps;
-+
-+	if (!xsk->rx)
-+		return err;
-+
-+	err = xsk_set_bpf_maps(xsk);
-+	if (err)
-+		goto err_set_maps;
-+
-+	return err;
-+
-+err_set_maps:
-+	close(ctx->xsks_map_fd);
-+err_lookup_maps:
-+	close(ctx->prog_fd);
-+err_prog_fd:
-+	if (ctx->has_bpf_link)
-+		close(ctx->link_fd);
-+	return err;
-+}
-+
-+static int __xsk_setup_xdp_prog(struct xsk_socket *_xdp, int *xsks_map_fd)
-+{
-+	struct xsk_socket *xsk = _xdp;
-+	struct xsk_ctx *ctx = xsk->ctx;
-+	__u32 prog_id = 0;
-+	int err;
-+
-+	if (ctx->has_bpf_link)
-+		err = xsk_link_lookup(ctx->ifindex, &prog_id, &ctx->link_fd);
-+	else
-+		err = bpf_get_link_xdp_id(ctx->ifindex, &prog_id, xsk->config.xdp_flags);
-+
-+	if (err)
-+		return err;
-+
-+	err = !prog_id ? xsk_init_xdp_res(xsk, xsks_map_fd) :
-+			 xsk_lookup_xdp_res(xsk, xsks_map_fd, prog_id);
-+
-+	if (!err && xsks_map_fd)
-+		*xsks_map_fd = ctx->xsks_map_fd;
+ 		return -ENOENT;
  
- 	return err;
- }
-> 
-> > If we agree on that and there's nothing else that I missed, I'll send
-> > a v4.
-> 
-> Apart from the above, sure!
-> 
-> -Toke
-> 
+-- 
+2.27.0
+
