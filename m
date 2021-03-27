@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C90834B97E
-	for <lists+bpf@lfdr.de>; Sat, 27 Mar 2021 22:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4722334B987
+	for <lists+bpf@lfdr.de>; Sat, 27 Mar 2021 22:29:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhC0VZX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Mar 2021 17:25:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
+        id S230403AbhC0V2p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Mar 2021 17:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230499AbhC0VZQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 27 Mar 2021 17:25:16 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC28C0613B1;
-        Sat, 27 Mar 2021 14:25:16 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so5891474pjh.1;
-        Sat, 27 Mar 2021 14:25:16 -0700 (PDT)
+        with ESMTP id S230372AbhC0V2S (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Mar 2021 17:28:18 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FB9C0613B1;
+        Sat, 27 Mar 2021 14:28:18 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 15so11531618ljj.0;
+        Sat, 27 Mar 2021 14:28:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bCeAT8h/DoX+EbZUsej2NunQqIkNP84lRZ/jaCTjPZs=;
-        b=MbXl6+xaA0zCy6L+sc1vtmTZuh1PsNPj91m769ph7oSSkX2LS+gmk1VzB62EiIWty7
-         4k/ldj8lOUp2NFUmQSYZC17Na9tn9hcOqjrDrk0CCXDHOkEt7RBuAVKWVOTmlQQdu1NQ
-         7+wXQWnQ9pwHPbgL8i+60nKuS0LqCQIJLpmZsdeOxlhw/S8OtWhdogcDsHqSUm/GgMQN
-         FQhM8CI7X0ZNCsCTxM16rNeuc/yvh8sm2/0yv0BN1Q2HGO1PXDI709f6sJBeBgXV8kBo
-         vFpWTk8l1LvOsFesUXL7RbH8/YIYlMuUEkrx7ezN/oY182EJSSqhMu23Uktylvt2RV9q
-         YQ+g==
+        bh=VbwjNu2FkrJEP3d0O7KcMEasRB5V0VGOjN0+MS4lkVg=;
+        b=ZlTRsxbP2YvzUM6TeTgSHLx/joOHuY6AaS9S0RfdOOTrasgAateAF38el0/LvQDpcB
+         77d78UbKUZztlg3rQmjngpTh6WjzTvTW0p3e4hMKraxm3fo+9wYVP1x8MZ/ezSJYs8WK
+         yHwlTh3N64eAJc1qGlVR9pJ1LXhOHnJahZ0XK3QlpjpPTKRMjcliVqYCzpXHaX1D/ECk
+         KfhKNxi7EGfyAJkcp8KQhj3u4slrNskgr1dT370ExVq+ygK8jNYNfu8AutIKjYk2JW80
+         eYXBRbmVcs5AAnQJkOJPAAd/kOPvlbR3CzO/MuM3l7ehSyLw12+ceRcHbehHytw+C5FO
+         gCfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bCeAT8h/DoX+EbZUsej2NunQqIkNP84lRZ/jaCTjPZs=;
-        b=cpo8g2NXnUzvjqGFNhHd1Yrtkj59IGCW7a8vD6gH1fLcbNoYLVyke5HdmUCYA8QSOO
-         YPL0tNvJTTcQ531QGyINmnDR2NACMgjuoVffL1ccbW/fYn0T6sPjjrEIMm/wrQhDqOpt
-         ySN+YWnNJadfmyQyLPsGTzn0hQUO/ZJ+i1Pw+rM50D/Iddl/NCjXnbS062v2g9JzTINQ
-         1GEbcpaT7RX7BKVGMBTPqwx19sRThDvm9s/wFEM7mB9mCrilvUlfnAF3NMrq1pT3owZg
-         vB/V3HbPciq3FdewdIwNd2a3rjNrybVS+4IoBVuwdYqkcMFGbzyVf5ylAHD1WMCe/rUK
-         BDVg==
-X-Gm-Message-State: AOAM531rvvvsTTJmaCmJ2RK3YCBslXb5LViAnWepl5tOjBEjbCfKG7u/
-        pZCkhLqhaUZ1REX7NMzbliLLkoxs4gjpdLNPEP8=
-X-Google-Smtp-Source: ABdhPJzmZO5x0com3T7dinIG9Omdc1lNU/hr1X+91F2Zignwy4Ma2ljYh1x7ZLBjody5ggONBsQ3eIIpaDJGJjjTiZQ=
-X-Received: by 2002:a17:90b:514:: with SMTP id r20mr19799477pjz.145.1616880315648;
- Sat, 27 Mar 2021 14:25:15 -0700 (PDT)
+        bh=VbwjNu2FkrJEP3d0O7KcMEasRB5V0VGOjN0+MS4lkVg=;
+        b=f+qRBsTzb/knsy0KI5/dp/qz5hpc/snjI67gdS3+HlE11stgtdEIRhqXc/Ptg44aDK
+         wK8EWiDXc/y4ZPhKCmCvnC8RM062hW1yTGaRxZ3bv8MgQctHAkNHsQbVFDAsyWX9J9Fv
+         TcydYcsMv96Y1WrQo9+xGgLUM8Y1cJRPyzuKB2JJ1uXKc4i6u6WJDHaI8aSxQPH5V2JC
+         I28SJIQ4q4n79dhemCMtJIdCETIx2p90AT4HIFe9Rro6BZ2d6ihOOK0WS0rCPoHi9oOa
+         UGKOQUfeQEaKc2s5cfp6MWIJDk7fs9FJ1yucCz4caxn7xvu1dTPzL5GgXIR2tbTBs39P
+         Ip9A==
+X-Gm-Message-State: AOAM532Mth8YGGO+/jCpgnfz5Groueav7wgWkRGCfr4eouFP+RfZcKjb
+        rhTZ7Nj/OXGjYKC9cLHnSRCiDhiHnbWvSPmFfVCliowQ
+X-Google-Smtp-Source: ABdhPJwjRZ1Dn5/1HEfq3g7v7vEtCIxW31I40BtdlGYOKkDB/2oOXWMehXV1Xrd6ZbJiGOOXKz2lw0WrE7mmP7lT+TI=
+X-Received: by 2002:a2e:9198:: with SMTP id f24mr12647337ljg.32.1616880497030;
+ Sat, 27 Mar 2021 14:28:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210325015124.1543397-1-kafai@fb.com>
-In-Reply-To: <20210325015124.1543397-1-kafai@fb.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Sat, 27 Mar 2021 14:25:04 -0700
-Message-ID: <CAM_iQpWGn000YOmF2x6Cm0FqCOSq0yUjc_+Up+Ek3r6NrBW3mw@mail.gmail.com>
+References: <20210325015124.1543397-1-kafai@fb.com> <CAM_iQpWGn000YOmF2x6Cm0FqCOSq0yUjc_+Up+Ek3r6NrBW3mw@mail.gmail.com>
+In-Reply-To: <CAM_iQpWGn000YOmF2x6Cm0FqCOSq0yUjc_+Up+Ek3r6NrBW3mw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 27 Mar 2021 14:28:05 -0700
+Message-ID: <CAADnVQKAXsEzsEkxhUG=79V+gAJbv=-Wuh_oJngjs54g1xGW7Q@mail.gmail.com>
 Subject: Re: [PATCH v2 bpf-next 00/14] bpf: Support calling kernel function
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         kernel-team <kernel-team@fb.com>,
         Linux Kernel Network Developers <netdev@vger.kernel.org>
@@ -60,22 +61,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Sat, Mar 27, 2021 at 2:25 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> Hi,
+>
+> On Wed, Mar 24, 2021 at 8:40 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > Martin KaFai Lau (14):
+> >   bpf: Simplify freeing logic in linfo and jited_linfo
+> >   bpf: Refactor btf_check_func_arg_match
+> >   bpf: Support bpf program calling kernel function
+> >   bpf: Support kernel function call in x86-32
+> >   tcp: Rename bictcp function prefix to cubictcp
+> >   bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc
+>
+> I got the following link error which is likely caused by one of your
+> patches in this series.
+>
+> FAILED unresolved symbol cubictcp_state
+> make: *** [Makefile:1199: vmlinux] Error 255
 
-On Wed, Mar 24, 2021 at 8:40 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> Martin KaFai Lau (14):
->   bpf: Simplify freeing logic in linfo and jited_linfo
->   bpf: Refactor btf_check_func_arg_match
->   bpf: Support bpf program calling kernel function
->   bpf: Support kernel function call in x86-32
->   tcp: Rename bictcp function prefix to cubictcp
->   bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc
-
-I got the following link error which is likely caused by one of your
-patches in this series.
-
-FAILED unresolved symbol cubictcp_state
-make: *** [Makefile:1199: vmlinux] Error 255
-
-
-Thanks.
+I don't see it and bpf CI doesn't see it either.
+Without steps to reproduce your observation isn't helpful.
