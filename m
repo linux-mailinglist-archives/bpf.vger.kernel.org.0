@@ -2,119 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79A834B43B
-	for <lists+bpf@lfdr.de>; Sat, 27 Mar 2021 05:26:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E673234B48F
+	for <lists+bpf@lfdr.de>; Sat, 27 Mar 2021 06:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbhC0EZk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sat, 27 Mar 2021 00:25:40 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:41074 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229527AbhC0EZd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 27 Mar 2021 00:25:33 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12R4OsMQ014060
-        for <bpf@vger.kernel.org>; Fri, 26 Mar 2021 21:25:10 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 37hj0kbg15-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 26 Mar 2021 21:25:10 -0700
-Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 26 Mar 2021 21:25:09 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 53B432ED2F0C; Fri, 26 Mar 2021 21:25:03 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] libbpf: fix memory leak when emitting final btf_ext
-Date:   Fri, 26 Mar 2021 21:25:02 -0700
-Message-ID: <20210327042502.969745-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S230164AbhC0Fv1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Mar 2021 01:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229880AbhC0Fuq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Mar 2021 01:50:46 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1713C0613AA;
+        Fri, 26 Mar 2021 22:50:46 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso3456632pjb.3;
+        Fri, 26 Mar 2021 22:50:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j1YVF0L/sT8C7kUir3CTd5LEHGyeZEH5Pw39tlq7L5c=;
+        b=pEI0qqIc1+rcyYKmCl+0Rb3Mm6GVFy3j4RW1h3oyKMht+DgRHtVcWEz3Xq0UkrjbVR
+         FfNfHti48J046ucks+xjh9OeYTBRhhiz64f+MpbHgs2dZkzueH/HZbLthHTXrbav0yOe
+         R3000vNQTH89cIn4BS3s5gUAGAfRYl9eRBkUh6FxQpeYwbeWxCqXD6foripu6ckKc+Qa
+         UIA9cxz7kPdhIbh5GTSV4wy3RySmPjFBqMu6y8xRyXOvMrB92U28gWiUspq3OP3PoYB5
+         Tpuq4Iocbl/PvJkW7OPGF0oztvBY8w7wBeHUJv7pEAOXYb9uGQm6NHUez8SkwBIN3BRe
+         vyyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j1YVF0L/sT8C7kUir3CTd5LEHGyeZEH5Pw39tlq7L5c=;
+        b=HnKqEDqf50wXoE7GCHoDqoK/mjGrp7R+XfuEyBqo14BQg9CndRwkDJbyko6w+sAvVW
+         XsoLkdw+k77e2fhG4HAOxKRCE6PrtHrQ8WhBLKQFz7/IN1L8zBpcgfZ5q8/iNCtgRq5u
+         7cxm6G34jauDOigXpZrnEDBM7qjkpl4UooGh9732OHqxm4lLQp1f5z3n5OC0n4Jjjrda
+         /StJ4FL4JuNHItGlQnmvOsV+xA+1XXsPQMAdtrYeqe4FQEYpAOkS70MPfIs2IIgsc3xo
+         tOwE1L0NcRo/eAmXgdHox66BsOr93kAC5P+6sgKFvpKhjuE+28YHp6ugY7Fc30V7rvoj
+         4xEA==
+X-Gm-Message-State: AOAM532bioQ9UTKkn8VxNC4ycmg749ArVVaORS2/AtvfVycarPTsUuaN
+        ysYmboUK6VLj8E5Ah+X1Bp2Tlokt/AtMV9TJU88=
+X-Google-Smtp-Source: ABdhPJyAezjKUF6WKiomtHCEOmRPTYoFAlB5aai9DXbohU0o66MJXqbDlYUnlw1B9Ioj9nVrVWL9dZqVOptBHE7qXCw=
+X-Received: by 2002:a17:902:c407:b029:e7:3568:9604 with SMTP id
+ k7-20020a170902c407b02900e735689604mr3424013plk.31.1616824246123; Fri, 26 Mar
+ 2021 22:50:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: 1ZBfLuO77-nfmF2qr3YDUoGVLg1YEXaW
-X-Proofpoint-ORIG-GUID: 1ZBfLuO77-nfmF2qr3YDUoGVLg1YEXaW
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-27_01:2021-03-26,2021-03-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- mlxlogscore=846 suspectscore=0 clxscore=1015 mlxscore=0 bulkscore=0
- malwarescore=0 priorityscore=1501 adultscore=0 spamscore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103250000 definitions=main-2103270032
-X-FB-Internal: deliver
+References: <20210323003808.16074-1-xiyou.wangcong@gmail.com>
+ <20210323003808.16074-5-xiyou.wangcong@gmail.com> <605d428fa91cd_9529c20842@john-XPS-13-9370.notmuch>
+In-Reply-To: <605d428fa91cd_9529c20842@john-XPS-13-9370.notmuch>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Fri, 26 Mar 2021 22:50:35 -0700
+Message-ID: <CAM_iQpUGxpmJFJGh-OXugZ6gXdvNxH8m9wUNvWLD4FCDrL-eJA@mail.gmail.com>
+Subject: Re: [Patch bpf-next v6 04/12] skmsg: avoid lock_sock() in sk_psock_backlog()
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Free temporary allocated memory used to construct finalized .BTF.ext data.
-Found by Coverity static analysis on libbpf's Github repo.
+On Thu, Mar 25, 2021 at 7:10 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> Hi Cong,
+>
+> I'm trying to understand if the workqueue logic will somehow prevent the
+> following,
+>
+>   CPU0                         CPU1
+>
+>  work dequeue
+>  sk_psock_backlog()
+>     ... do backlog
+>     ... also maybe sleep
+>
+>                                schedule_work()
+>                                work_dequeue
+>                                sk_psock_backlog()
+>
+>           <----- multiple runners -------->
+>
+>  work_complete
+>
+> It seems we could get multiple instances of sk_psock_backlog(), unless
+> the max_active is set to 1 in __queue_work() which would push us through
+> the WORK_STRUCT_DELAYED state. At least thats my initial read. Before
+> it didn't matter because we had the sock_lock to ensure we have only a
+> single runner here.
+>
+> I need to study the workqueue code here to be sure, but I'm thinking
+> this might a problem unless we set up the workqueue correctly.
+>
+> Do you have any extra details on why above can't happen thanks.
 
-Fixes: 8fd27bf69b86 ("libbpf: Add BPF static linker BTF and BTF.ext support")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/linker.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+Very good question!
 
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index a29d62ff8041..46b16cbdcda3 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -1906,8 +1906,10 @@ static int finalize_btf_ext(struct bpf_linker *linker)
- 			struct dst_sec *sec = &linker->secs[i];
- 
- 			sz = emit_btf_ext_data(linker, cur, sec->sec_name, &sec->func_info);
--			if (sz < 0)
--				return sz;
-+			if (sz < 0) {
-+				err = sz;
-+				goto out;
-+			}
- 
- 			cur += sz;
- 		}
-@@ -1921,8 +1923,10 @@ static int finalize_btf_ext(struct bpf_linker *linker)
- 			struct dst_sec *sec = &linker->secs[i];
- 
- 			sz = emit_btf_ext_data(linker, cur, sec->sec_name, &sec->line_info);
--			if (sz < 0)
--				return sz;
-+			if (sz < 0) {
-+				err = sz;
-+				goto out;
-+			}
- 
- 			cur += sz;
- 		}
-@@ -1936,8 +1940,10 @@ static int finalize_btf_ext(struct bpf_linker *linker)
- 			struct dst_sec *sec = &linker->secs[i];
- 
- 			sz = emit_btf_ext_data(linker, cur, sec->sec_name, &sec->core_relo_info);
--			if (sz < 0)
--				return sz;
-+			if (sz < 0) {
-+				err = sz;
-+				goto out;
-+			}
- 
- 			cur += sz;
- 		}
-@@ -1948,8 +1954,10 @@ static int finalize_btf_ext(struct bpf_linker *linker)
- 	if (err) {
- 		linker->btf_ext = NULL;
- 		pr_warn("failed to parse final .BTF.ext data: %d\n", err);
--		return err;
-+		goto out;
- 	}
- 
--	return 0;
-+out:
-+	free(data);
-+	return err;
- }
--- 
-2.30.2
+I thought a same work callback is never executed concurrently, but
+after reading the workqueue code, actually I agree with you on this, that
+is, a same work callback can be executed concurrently on different CPU's.
 
+Limiting max_active to 1 is not a solution here, as we still want to keep
+different items running concurrently. Therefore, we still need a mutex here,
+just to protect this scenario. I will add a psock->work_mutex inside
+sk_psock_backlog().
+
+Thanks!
