@@ -2,270 +2,223 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B1134B32B
-	for <lists+bpf@lfdr.de>; Sat, 27 Mar 2021 00:52:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7DD334B351
+	for <lists+bpf@lfdr.de>; Sat, 27 Mar 2021 01:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbhCZXwT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Mar 2021 19:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhCZXwN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Mar 2021 19:52:13 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F3FC0613AA;
-        Fri, 26 Mar 2021 16:52:12 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id g38so7471355ybi.12;
-        Fri, 26 Mar 2021 16:52:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=A/DxK0IqPOowuaWf/XWHVxZ1o9ERXvrsfkywPdSZpZI=;
-        b=SQMokkogfL6zf18KuVeWZ/w6WWNyN3qAM8F6QaU0lA2rJiDaeck1+Z56LazQox5uBb
-         hbm6WRF0HedpivWO1xVvr1Mvahjx5LQLDiS3VOZxOJF5k7k8XKsvFbXcqOVvnq9eY13R
-         VlfqzuPuf5BVwnzJArwyy06r2pxvyZuCV/hYNcApoo8xEL1IQlVm/24tglRcV2Xv+FkP
-         ae48HwTrO4DQx7MUN+3mPGKWaRAvFHy45WafMlxBY9adR5yG5hRtxrT9p7MYFlTMs184
-         bsFKLA7zd71xWkDPHoqkz+MkbJk4Os7sftLmr36CJ5e5yfunBu+CmLh7g4Muo8zEfH30
-         RGLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=A/DxK0IqPOowuaWf/XWHVxZ1o9ERXvrsfkywPdSZpZI=;
-        b=A4Egdx1Y5Qo0GSPdNUWdWrA/62EUUB35PeckNewfHwwnRRgWtZkQelddx+CYbuPGlY
-         mlerKDv1nmodU+HiW2SMe9wdSIRFywjvNV4cxRnNB/5igeeXDznDtXs5QUqmsXUjK8Ag
-         ZkATVjTNaGTnI/77rMqCKVV4+veuNEBkxX4c8dfOcmEHa9VZVwUez4KqyLlFNJvQnjoD
-         r8ei89k109zsLeXU+4P7wKk+SNAneIEsmGZxxBLNvcsyk47RGCq5+bKgF6jG7PVXU6jk
-         JEA/FGdQMpxrUgWkya3xyaghLtO7gIirxFrUy8ip4J9HrEMtEQy3gX1QWDmnegWkO8Qu
-         VhOg==
-X-Gm-Message-State: AOAM531Sxea9VheM50Vc0lrrCsz8V5OjE9VCWbxmmsxlhb34GCDl376V
-        g4TH4aQKfItq2M0OYIH/JIxEQHL4zUaH80qSf9A=
-X-Google-Smtp-Source: ABdhPJxT/E9ty0hI8D3AL/6I4EEjG0n8PBCxXMHCbgs8nmn25pXsNd/iffjBH9r7n6rkUUTZwmPyp8LIYA3Sjt4v0RM=
-X-Received: by 2002:a25:7d07:: with SMTP id y7mr22663291ybc.425.1616802731751;
- Fri, 26 Mar 2021 16:52:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210325120020.236504-1-memxor@gmail.com> <20210325120020.236504-3-memxor@gmail.com>
-In-Reply-To: <20210325120020.236504-3-memxor@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 26 Mar 2021 16:52:01 -0700
-Message-ID: <CAEf4BzZXVB5KG6P1DQLDs-2qMkWgKY7WcFdJd0c_ULF7xzZxiQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/5] libbpf: add helpers for preparing netlink attributes
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S231202AbhC0AUC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Mar 2021 20:20:02 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51060 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230299AbhC0ATw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Mar 2021 20:19:52 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12R0A1K4028233;
+        Fri, 26 Mar 2021 17:19:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=op+YHn4nkhSJ2cUuNHKXYRH1rANp/bW97SLUTB+yD+A=;
+ b=FLLMf6031ZUc4o64Kuk3A7Ooirc//9G4anEAEgGd4auuctkbpX/yzlrZk7cRE+Grz/hQ
+ 95jIjnlvK8umpS7L+3vto9Pyp1NhoUOQ+EQDWFJXk3TCmuyDYhMP3IgfwsfGK2yN5GZ8
+ VGpb3sHcApE7q5RYtzU+30E8Q9qVDbq+MGI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 37hmbphv3g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 26 Mar 2021 17:19:48 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 26 Mar 2021 17:19:47 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k4zqrWlsfzq3Zn2lXbR737buQbTDJE8qzRS1LnyBVjFYQihcbAIGCMcbKrBcoKW5yuivJc78zOI9ENv9PQij1pzeW70vUApQARbX+kzwb/msJDUxvPsDl9eXr4VYNE2KlaqZwLMpE9Qc2VpDABqNS3IYkS8guM5T57PtQ2nf0vedLyWW33MzDBTilVH/IappqcZYtaRIkdPI40Kb4R7918doVHoC/1opHn7TB4iNJLynjUYcTB20rG64Gg7UqGrjDiVHDrfwfic2Jo51aGaoXPXFgCh74Jfp3wSE6UA75fX7P3hDirtU/glhoI3e9l0piz1m9G2tTC4SjpT6rbRm/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=op+YHn4nkhSJ2cUuNHKXYRH1rANp/bW97SLUTB+yD+A=;
+ b=JeOufQC7x2ozmtqVZgiymCouT39OSCqzvx4JdKxftupdtJqyBQrbKG5Av6GSuqpxu5K1OAbL+Z/83nkqG9QhNNbFHImo4AeXG51YtNNDWn/GSgzEeGLLZAsZu/ai5G0t/piN7I0/Toijc+Gqk0fg0TQtEAY7eLH3ArrSeX4e1I44ktE3f0/yCmDhtLzK8/nFTtzBMociBl6DxUmU1iXSJ7B/nTrY/vCTKeWHTCoKS/Ug7fIv1EqB3+mc8vcMcJB3Y7RvNjvPwkfTDlPDKdCBoG50NyoYW+00zbH2taNMyjLkSsluBEpF8tENH1YsT4sJL6WYefMIy1EQV0Zh0iItDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA1PR15MB4644.namprd15.prod.outlook.com (2603:10b6:806:19f::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26; Sat, 27 Mar
+ 2021 00:19:46 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3977.025; Sat, 27 Mar 2021
+ 00:19:46 +0000
+Subject: Re: [PATCH dwarves 3/3] dwarf_loader: add option to merge more dwarf
+ cu's into one pahole cu
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        <dwarves@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Bill Wendling <morbo@google.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+References: <20210325065316.3121287-1-yhs@fb.com>
+ <20210325065332.3122473-1-yhs@fb.com>
+ <CAEf4BzZ=jWb7KuR6yX+3A4zZUbrgHm=AdxcYVoQ358N5zLGFqw@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <508dd920-3604-5b42-83cb-ea99aac42f7a@fb.com>
+Date:   Fri, 26 Mar 2021 17:19:42 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
+In-Reply-To: <CAEf4BzZ=jWb7KuR6yX+3A4zZUbrgHm=AdxcYVoQ358N5zLGFqw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:2920]
+X-ClientProxiedBy: MW4PR03CA0057.namprd03.prod.outlook.com
+ (2603:10b6:303:8e::32) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c8::1777] (2620:10d:c090:400::5:2920) by MW4PR03CA0057.namprd03.prod.outlook.com (2603:10b6:303:8e::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.28 via Frontend Transport; Sat, 27 Mar 2021 00:19:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 50e846e7-00b9-467a-6264-08d8f0b60653
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4644:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA1PR15MB4644ADF9988A042CE74B24FBD3609@SA1PR15MB4644.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qy95Lm338slsl/srurn/Z3RDqoaoWNbfKypXpxpv9Mcp205VLxwKk/9oB7Sc6cdDA7aGzGOqwUZ3SlDHnuaImWUWr1EHtaqJMbKSvdOEHEpAAl01Q32o72e0fVsqZPL+H7NTjSORQ/3SqIiPQXGOZiEbKygF0OXSvw/1zxact6UzZVWRjySRk/L6PnaAlmxwc9qFUyLD6iu0fSQsue3x26c/EYiEmbyINUcxpKCUck4qQvqRHZOOWo3AzwybEUCFmIXBQUH/3byrXZZ71mi30k9+18NmwTw79UbIuri6De9n25ld1XcT3LfiQII6gEYQYTFfXaid2S5fof9qod5YidsNe0Et6tnolsd4maUd0Ja26NrF4p0PEYX5gXl1501NnfpUCPmCAO2l6H4GzJs9QM5CuySpM+kcjp8pCUEKAIzzmchkem+ZEJimCM71XBs+AG7ApIUk0HjmAZITnDhTc54QOveuLjTLA5R8+5Ay14i/j7EbrfyKsz8wfF8NKrKyYsDWbTVruSCFoNgv48ZXNWu4cvHPeaFMdaeVhUaUkX9qmxZk02IRXlglGx3lFlM8mGjNgYJqn19IEKY1WYE+B51GdJKsm5S6wUlo+nuAsLvzdz1XBlYC7GCG607MC9w6IDRHNeUY1845ZqgIX/mIHDOytN86mg3YAGnPe3y5DU6Fdi7Zz+5LZSuq1qwIijULOg64q4wT60HPf7eZFhWCBeyD4TxwKasCeMIFrp8wAvY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(396003)(376002)(346002)(366004)(54906003)(478600001)(8936002)(5660300002)(4326008)(186003)(316002)(2616005)(2906002)(6916009)(38100700001)(31686004)(8676002)(6486002)(52116002)(66476007)(66556008)(31696002)(86362001)(83380400001)(66946007)(36756003)(53546011)(16526019)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?R2l0ZHBXaE5EZDIzNWZRclJHcUpyZmw0cTk3YzU1TjlRbmhDZGFneVN6K0I5?=
+ =?utf-8?B?YzRMbWtqOFRjNVAzbThuRTJ5NEIxdWZKVTAvakNIUDNra0xiNnZDOUtZUWYy?=
+ =?utf-8?B?L0NVQW1xdVNIUUl3a0dkeUtQWWdNaWtEUnR6NGxhTm9NOEhhMkJkemVuQXFJ?=
+ =?utf-8?B?SElPK1ZzbG9idHNJayt6cWdNWnVZOFpLQ1Ayd2YxYUV2T1VHbDYwOGFsV3I0?=
+ =?utf-8?B?UnN2WWZOZ2VOUzltM3k5TUlrWWNxS1hueWZDZnAzeGpVQ2p4bHJZYkxHVEhQ?=
+ =?utf-8?B?MFQ4R25sTUFwcnFaNkhvWGF5ekdjYmpxT3dkbEdkeWxpdHFULzlnWnVVZnp0?=
+ =?utf-8?B?dEM2REFFWmhBcmFxQ2pXaEk4N1FtYnJUK1F1ZUlEaG9QVEdyNXJnY3ljUmZS?=
+ =?utf-8?B?RHhRM3VvSkx1VUZHYkRCUkFUbXMydFFzZGl2cTcrbHBmZlM4eUZCVDMrNkMy?=
+ =?utf-8?B?OTdpWlN1a0pWb1VsM2NGakdXZTBTcXVlVU5BSFFXWDZzOVlNMHo5THVOMXkx?=
+ =?utf-8?B?bGx6WGJjaEtZWlV4RDlMQlBiNFZzUm9uSlpoRlZ5L1RXWUtYaS9BampOb2M1?=
+ =?utf-8?B?WEozdXhZcmUvK055NVd5c09hVUp6bWJJbFFHTHNqZDhxb3I1dm4zUFRqRUZN?=
+ =?utf-8?B?Tzh6TmhScG9TZE9KOE5KdzgxUm5iL1FNTWJUamY4cm95WHdWZVBJUmVhc0xt?=
+ =?utf-8?B?NUQ2c1ZtS1BnZWtmd3YyTFpJN3IxdXBDU2lXNnc4N0d5c21GRkNJMUxZMVZi?=
+ =?utf-8?B?aGw5VDBtVk9sWWtGRjVSQlQ0T0lodkdiaHBSRnRpL2g0K0Z0Z0d2RVJIUVNl?=
+ =?utf-8?B?U3g2akxsZngvSEs1eGNGd2FlK0FMNGFUQjI3TDlYYlRMYzJjdm9La3poUTJv?=
+ =?utf-8?B?cjhUakpCR2s0NzQ1NG1QSjdHUlhSZWlvQ2VHbERXVlZhSFA2NGJyOTZ4Ky9h?=
+ =?utf-8?B?YzJJbFlrSEJTR2tra2dYb2oyN1doaUVudGtqV2xNQ0Q3MmxPNGNMK09FRnpO?=
+ =?utf-8?B?NjRDZlhaeTAzZGhmRTc2YUZUMVVWQTJ3bE1NakMzSktEcGJPTHprbW1md3dp?=
+ =?utf-8?B?dmJmeFh1SGtreXljVUpUWnpoSUszZkZVRW1ISHcrSGlWeGR4YlVWN3o1a3J5?=
+ =?utf-8?B?YW9LUDlGU1FXbVE5UktTL0NuTmhLdytveVFKemx1aDBtUTJCT084ZFV1V3Vx?=
+ =?utf-8?B?SUFwYlZaTW05VzVUakFyZFJvZmsvVTZYZFE5SkYxMkx0c3JmNm9sSXNJUWZn?=
+ =?utf-8?B?SHc0UG1nSWJ1aGVlc0V0NnlxV25JZTRXSy9LMXQ0TU9aR1o0akdYSGxsb254?=
+ =?utf-8?B?SFZ0MzB3V0lmSHBuVDhMZ1cyZjNKbVFQQzZkOGlrb2Fvc2ZUZU9wYzJlVElm?=
+ =?utf-8?B?dHRXRnp3NDNmQzRlUGFyRVorNU1yNXJ6UDNLdUJoWWpHSWFNcmZCd2pRUG9K?=
+ =?utf-8?B?bEpGZVRMQTc0NmlBbDVLNlR0cEx4djlsanI4MFZXVWdlUUppaE1tbkJUdk40?=
+ =?utf-8?B?VFVVZVdqZFc1V0l2OWp4cy96VnhHRDl4V1pIR25jazVVQjc3cnJsUXNkK2dC?=
+ =?utf-8?B?NXpuZW5wQk5QVjY1R2s4Tm5HTXJabUg3SjBEYkZPNmFsdExhY0U5TGdqVUN1?=
+ =?utf-8?B?Rk1VTFRjN2JDMFFoN1IzbnZRRlROYUNKaGtHWU82eFRZK0hodEFZTVRRWlFN?=
+ =?utf-8?B?VER1SEp2cU1OSW54Z05yS3ppYkxCVUNiWlBBS2hZMFFyMUt3YzN4NU8wa1dk?=
+ =?utf-8?B?ZFdYMmM2YjNJOUZjVTltQ1grTDNhRXN6YXVjaVFRMUVLU3N5UlRBMTUvUkpq?=
+ =?utf-8?Q?CRPL+8bhRnLX2XfUebzUNDy9ytMbTyl0Y2bVQ=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 50e846e7-00b9-467a-6264-08d8f0b60653
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Mar 2021 00:19:46.0463
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: X+wEMEWeYJng3N57sHNSIqodJOa8/G3C6UafUbyMuprf3slVw8oIsgr+QuaATRZ+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4644
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: J17_8X1cH4-d3PNIw58FwrnBd-D27gHU
+X-Proofpoint-ORIG-GUID: J17_8X1cH4-d3PNIw58FwrnBd-D27gHU
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-26_16:2021-03-26,2021-03-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 clxscore=1015
+ bulkscore=0 priorityscore=1501 lowpriorityscore=0 impostorscore=0
+ mlxlogscore=848 adultscore=0 phishscore=0 suspectscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103250000 definitions=main-2103270000
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 5:01 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> This change introduces a few helpers to wrap open coded attribute
-> preparation in netlink.c.
->
-> Every nested attribute's closure must happen using the helper
-> end_nlattr_nested, which sets its length properly. NLA_F_NESTED is
-> enforeced using begin_nlattr_nested helper. Other simple attributes
-> can be added directly.
->
-> The maxsz parameter corresponds to the size of the request structure
-> which is being filled in, so for instance with req being:
->
-> struct {
->         struct nlmsghdr nh;
->         struct tcmsg t;
->         char buf[4096];
-> } req;
->
-> Then, maxsz should be sizeof(req).
->
-> This change also converts the open coded attribute preparation with the
-> helpers. Note that the only failure the internal call to add_nlattr
-> could result in the nested helper would be -EMSGSIZE, hence that is what
-> we return to our caller.
->
-> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  tools/lib/bpf/netlink.c | 37 +++++++++++++++--------------------
->  tools/lib/bpf/nlattr.h  | 43 +++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 59 insertions(+), 21 deletions(-)
->
-> diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
-> index 4dd73de00b6f..f448c29de76d 100644
-> --- a/tools/lib/bpf/netlink.c
-> +++ b/tools/lib/bpf/netlink.c
-> @@ -135,7 +135,7 @@ static int __bpf_set_link_xdp_fd_replace(int ifindex,=
- int fd, int old_fd,
->                                          __u32 flags)
->  {
->         int sock, seq =3D 0, ret;
-> -       struct nlattr *nla, *nla_xdp;
-> +       struct nlattr *nla;
->         struct {
->                 struct nlmsghdr  nh;
->                 struct ifinfomsg ifinfo;
-> @@ -157,36 +157,31 @@ static int __bpf_set_link_xdp_fd_replace(int ifinde=
-x, int fd, int old_fd,
->         req.ifinfo.ifi_index =3D ifindex;
->
->         /* started nested attribute for XDP */
-> -       nla =3D (struct nlattr *)(((char *)&req)
-> -                               + NLMSG_ALIGN(req.nh.nlmsg_len));
-> -       nla->nla_type =3D NLA_F_NESTED | IFLA_XDP;
-> -       nla->nla_len =3D NLA_HDRLEN;
-> +       nla =3D begin_nlattr_nested(&req.nh, sizeof(req), IFLA_XDP);
-> +       if (!nla) {
-> +               ret =3D -EMSGSIZE;
-> +               goto cleanup;
-> +       }
->
->         /* add XDP fd */
-> -       nla_xdp =3D (struct nlattr *)((char *)nla + nla->nla_len);
-> -       nla_xdp->nla_type =3D IFLA_XDP_FD;
-> -       nla_xdp->nla_len =3D NLA_HDRLEN + sizeof(int);
-> -       memcpy((char *)nla_xdp + NLA_HDRLEN, &fd, sizeof(fd));
-> -       nla->nla_len +=3D nla_xdp->nla_len;
-> +       ret =3D add_nlattr(&req.nh, sizeof(req), IFLA_XDP_FD, &fd, sizeof=
-(fd));
-> +       if (ret < 0)
-> +               goto cleanup;
->
->         /* if user passed in any flags, add those too */
->         if (flags) {
-> -               nla_xdp =3D (struct nlattr *)((char *)nla + nla->nla_len)=
-;
-> -               nla_xdp->nla_type =3D IFLA_XDP_FLAGS;
-> -               nla_xdp->nla_len =3D NLA_HDRLEN + sizeof(flags);
-> -               memcpy((char *)nla_xdp + NLA_HDRLEN, &flags, sizeof(flags=
-));
-> -               nla->nla_len +=3D nla_xdp->nla_len;
-> +               ret =3D add_nlattr(&req.nh, sizeof(req), IFLA_XDP_FLAGS, =
-&flags, sizeof(flags));
-> +               if (ret < 0)
-> +                       goto cleanup;
->         }
->
->         if (flags & XDP_FLAGS_REPLACE) {
-> -               nla_xdp =3D (struct nlattr *)((char *)nla + nla->nla_len)=
-;
-> -               nla_xdp->nla_type =3D IFLA_XDP_EXPECTED_FD;
-> -               nla_xdp->nla_len =3D NLA_HDRLEN + sizeof(old_fd);
-> -               memcpy((char *)nla_xdp + NLA_HDRLEN, &old_fd, sizeof(old_=
-fd));
-> -               nla->nla_len +=3D nla_xdp->nla_len;
-> +               ret =3D add_nlattr(&req.nh, sizeof(req), IFLA_XDP_EXPECTE=
-D_FD, &flags, sizeof(flags));
-> +               if (ret < 0)
-> +                       goto cleanup;
->         }
->
-> -       req.nh.nlmsg_len +=3D NLA_ALIGN(nla->nla_len);
-> +       end_nlattr_nested(&req.nh, nla);
->
->         if (send(sock, &req, req.nh.nlmsg_len, 0) < 0) {
->                 ret =3D -errno;
-> diff --git a/tools/lib/bpf/nlattr.h b/tools/lib/bpf/nlattr.h
-> index 6cc3ac91690f..463a53bf3022 100644
-> --- a/tools/lib/bpf/nlattr.h
-> +++ b/tools/lib/bpf/nlattr.h
-> @@ -10,7 +10,10 @@
->  #define __LIBBPF_NLATTR_H
->
->  #include <stdint.h>
-> +#include <string.h>
-> +#include <errno.h>
->  #include <linux/netlink.h>
-> +
->  /* avoid multiple definition of netlink features */
->  #define __LINUX_NETLINK_H
->
-> @@ -103,4 +106,44 @@ int libbpf_nla_parse_nested(struct nlattr *tb[], int=
- maxtype,
->
->  int libbpf_nla_dump_errormsg(struct nlmsghdr *nlh);
->
-> +
-> +/* Helpers for preparing/consuming attributes */
-> +
-> +#define NLA_DATA(nla) ((struct nlattr *)((char *)(nla) + NLA_HDRLEN))
 
-`((char *)nh + NLMSG_ALIGN(nh->nlmsg_len))` seems to be another
-popular one (three occurrences in this file), maybe extract that one
-as well?
 
-And can you please use functions, not macros? This way you can specify
-what types you expect, as one of the benefits.
+On 3/26/21 4:21 PM, Andrii Nakryiko wrote:
+> On Wed, Mar 24, 2021 at 11:53 PM Yonghong Song <yhs@fb.com> wrote:
+>>
+>> This patch added an option "merge_cus", which will permit
+>> to merge all debug info cu's into one pahole cu.
+>> For vmlinux built with clang thin-lto or lto, there exist
+>> cross cu type references. For example, you could have
+>>    compile unit 1:
+>>       tag 10:  type A
+>>    compile unit 2:
+>>       ...
+>>         refer to type A (tag 10 in compile unit 1)
+>> I only checked a few but have seen type A may be a simple type
+>> like "unsigned char" or a complex type like an array of base types.
+>>
+>> There are two different ways to resolve this issue:
+>> (1). merge all compile units as one pahole cu so tags/types
+>>       can be resolved easily, or
+>> (2). try to do on-demand type traversal in other debuginfo cu's
+>>       when we do die_process().
+>> The method (2) is much more complicated so I picked method (1).
+>> An option "merge_cus" is added to permit such an operation.
+>>
+>> Merging cu's will create a single cu with lots of types, tags
+>> and functions. For example with clang thin-lto built vmlinux,
+>> I saw 9M entries in types table, 5.2M in tags table. The
+>> below are pahole wallclock time for different hashbits:
+>> command line: time pahole -J --merge_cus vmlinux
+>>        # of hashbits            wallclock time in seconds
+>>            15                       460
+>>            16                       255
+>>            17                       131
+>>            18                       97
+>>            19                       75
+>>            20                       69
+>>            21                       64
+>>            22                       62
+>>            23                       58
+>>            24                       64
+> 
+> What were the numbers for different hashbits without --merge_cus?
 
-> +
-> +static inline int add_nlattr(struct nlmsghdr *nh, size_t maxsz, int type=
-,
-> +                            const void *data, int len)
-> +{
-> +       struct nlattr *nla;
-> +
-> +       if (NLMSG_ALIGN(nh->nlmsg_len) + NLA_ALIGN(NLA_HDRLEN + len) > ma=
-xsz)
-> +               return -EMSGSIZE;
-> +       if ((!data && len) || (data && !len))
-> +               return -EINVAL;
-> +
-> +       nla =3D (struct nlattr *)((char *)nh + NLMSG_ALIGN(nh->nlmsg_len)=
-);
-> +       nla->nla_type =3D type;
-> +       nla->nla_len =3D NLA_HDRLEN + len;
-> +       if (data)
-> +               memcpy((char *)nla + NLA_HDRLEN, data, len);
-> +       nh->nlmsg_len =3D NLMSG_ALIGN(nh->nlmsg_len) + NLA_ALIGN(nla->nla=
-_len);
-> +       return 0;
-> +}
-> +
-> +static inline struct nlattr *begin_nlattr_nested(struct nlmsghdr *nh, si=
-ze_t maxsz,
-> +                                              int type)
-> +{
-> +       struct nlattr *tail;
-> +
-> +       tail =3D (struct nlattr *)((char *)nh + NLMSG_ALIGN(nh->nlmsg_len=
-));
-> +       if (add_nlattr(nh, maxsz, type | NLA_F_NESTED, NULL, 0))
-> +               return NULL;
-> +       return tail;
-> +}
-> +
-> +static inline void end_nlattr_nested(struct nlmsghdr *nh, struct nlattr =
-*tail)
+Without --merge_cus means non-lto vmlinux.
+Just did quick measurement, for hashbits 10 - 18,
+all ranges from 37s - 39s for "pahole -J vmlinux" run
+with 10 - 15 between 37 - 38 and the rest 38 - 39.
 
-I don't know much about their use (yet, I feel like I'm about to learn
-:( ), but would nlattr_add, nlattr_begin_nested/nlattr_start_nested,
-nlattr_end_nested make sense and be a bit more in line with overall
-object_action naming pattern?
+The number of cus for my particular vmlinux is 2915.
+The total number of types among all cus is roughly 8M based
+on a rough regex matching, so each cu roughly 2K.
 
-> +{
-> +       tail->nla_len =3D ((char *)nh + NLMSG_ALIGN(nh->nlmsg_len)) - (ch=
-ar *)(tail);
-> +}
-> +
->  #endif /* __LIBBPF_NLATTR_H */
-> --
-> 2.30.2
->
+So the current default setting is okay for
+non-lto vmlinux.
+
+> 
+>>
+>> Note that the number of hashbits 24 makes performance worse
+>> than 23. The reason could be that 23 hashbits can cover 8M
+>> buckets (close to 9M for the number of entries in types table).
+>> Higher number of hash bits allocates more memory and becomes
+>> less cache efficient compared to 23 hashbits.
+>>
+>> This patch picks # of hashbits 21 as the starting value
+>> and will try to allocate memory based on that, if memory
+>> allocation fails, we will go with less hashbits until
+>> we reach hashbits 15 which is the default for
+>> non merge-cu case.
+>>
+>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>> ---
+>>   dwarf_loader.c | 90 ++++++++++++++++++++++++++++++++++++++++++++++++++
+>>   dwarves.h      |  2 ++
+>>   pahole.c       |  8 +++++
+>>   3 files changed, 100 insertions(+)
+>>
+> 
+> [...]
+> 
