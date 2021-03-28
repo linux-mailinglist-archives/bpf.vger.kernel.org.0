@@ -2,133 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E75D434BD70
-	for <lists+bpf@lfdr.de>; Sun, 28 Mar 2021 19:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE8734BE3E
+	for <lists+bpf@lfdr.de>; Sun, 28 Mar 2021 20:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbhC1RHV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Mar 2021 13:07:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47845 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229538AbhC1RG5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 28 Mar 2021 13:06:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616951214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AAFFIJF5EE+ljst+wWAnw99+NJhhKLg2AX6qjsqxfOc=;
-        b=cS7mdOkwk3vzSYT/xHxk81tjzpZaTd0cKZg0tZjXA3Et5hFnepE/hWUYbCLsRFy6HtfUqc
-        GW21+kiLVyBdm+MpKbXCY/CDmrEZSVraeptyqIsAR9O3TEH8ODLE8n4tnMiHW0ezyqZwDY
-        Qa7qahmy8yNvxVEzwxPmVfA+Q0eFulo=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-533-rkrcNWbSMB6btyEVZLjzfA-1; Sun, 28 Mar 2021 13:06:51 -0400
-X-MC-Unique: rkrcNWbSMB6btyEVZLjzfA-1
-Received: by mail-wr1-f69.google.com with SMTP id v13so7377321wrs.21
-        for <bpf@vger.kernel.org>; Sun, 28 Mar 2021 10:06:51 -0700 (PDT)
+        id S229950AbhC1S3w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Mar 2021 14:29:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhC1S3l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 28 Mar 2021 14:29:41 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AF95C061756;
+        Sun, 28 Mar 2021 11:29:39 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id a143so11453094ybg.7;
+        Sun, 28 Mar 2021 11:29:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2SEim9L76qB4slGy1DZ0qon+JPi0q47C05XROFWg+cs=;
+        b=S3NSFY+EtOn+7dAdEZSgKc5tMiq4Kc6cGkQdw5s3cmBEKQRBRIeuuv7kUAmlNygwRZ
+         QtYSExPMgeSXuazlmVd0hARjX8gNaMr3ou2OYX9ZtsRZqq8My3rj/P/+1ioMd4Ozb93J
+         iyWBx/VvJqPlCguBYTWXTXrYloS7b8vzdvL+rOqh9fWXEE7jwi+ah6XnKprmSHSgTKrI
+         dsiyhlJ4D0KOmPuWlS5P9K2qvWHnDZRM7Y7Qm+T/eS5qIA7z4/ca4yWUOKV2eeNlkSuz
+         VpBCRNTg54KIUUgDmZbag9/mFvEHQs9mSfGVnqVxEP3Vlk4zZV9d2TN/PyDQDSug5p6J
+         brDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AAFFIJF5EE+ljst+wWAnw99+NJhhKLg2AX6qjsqxfOc=;
-        b=lKbbGpdsku9Q52vQMCFpph9ad89SKSvNNbKZbnHD1RrZY8HIKe3moU5U2FajIYWNxh
-         2gReuWrCa7DiEzN7ZesHrbCYSAc97F+rZm//Oqdtm5sGgeAIXmd7Y7xOUSIK6b3vtyzh
-         H2TM3FwgET2JB30YyLP/P/eX8QtEQhvXyAFYUOkEl+vOTDRcSjsjklYGXbCTMoGuhPkI
-         OatINVHT4PDbR52k0jnNZWXKxADDYkJMRx1f6suMX0AHBglVvaXg1bWVX7CfDhfGiGwl
-         fiiiyE0q+dpgPhAIu72E+RvkfvXiH0bzhWlzJDcu/zK0A6E/Pvjc6Ew8OyY/FNMWEHK0
-         /6JQ==
-X-Gm-Message-State: AOAM532BmY95QXy6+s9uiHWKXiBCgp6q2c9tZbFCOUWP/1/1FFEr+SGJ
-        2MDVvQiw3lYcH1g7J7g9RRpbSn17MYpPyRRrkj1Usf3lvor2QeMf7nb7+BPhhmuelXoSquUfoON
-        CsHB11huZxJn98W6B8YULiUCL3rTy
-X-Received: by 2002:a05:600c:acf:: with SMTP id c15mr21729342wmr.124.1616951210144;
-        Sun, 28 Mar 2021 10:06:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz2EJHLeazCXRH3PS8eXIsqplhnRI1jmBi6fTonX3qqMv7pDtPETErkq7ys8bkIeYy6AMPd0g+BUX7pR8tT7YI=
-X-Received: by 2002:a05:600c:acf:: with SMTP id c15mr21729332wmr.124.1616951209991;
- Sun, 28 Mar 2021 10:06:49 -0700 (PDT)
+        bh=2SEim9L76qB4slGy1DZ0qon+JPi0q47C05XROFWg+cs=;
+        b=LYrbRZRefmxcLLs8cSiRqGlfn76DuYMRGysc9X/aGvc3bGHav96eMElyCHoAm2A7ef
+         gaZuFalcluN5O97nvtT6ARb6QKSokV42g+uSEP7ld0mhixnwHewGH057ZcT+qRfs77H0
+         vvJmtmeQz5Jp2Pn9P+KLTvLiTrPvf3yoNMrMgq5cv/5BiYhmVDLIucrYO0AdruVmSZjj
+         1fb7eqMuKXFZ/pNRloBRqQdCC9YHTU0IdFk64MqQJStaGb2ugIZGJjfeA6b6qREcSaS2
+         V1FAkBihsEfXTkzKZ053hSIMeQ3VLaDDXhmeZ2uV7VBt4g1JiTScbxrWR19JvVK26zOb
+         tUNw==
+X-Gm-Message-State: AOAM530JnjkQ+bln9GQ3R+6+HzJ7tgTwdV+bXIUb+rk3IdIKcFpFXrVo
+        SIq6g1KiN8jfaK44EcxuxkaOgrcs+S7n/EqA2qE=
+X-Google-Smtp-Source: ABdhPJwiv3sLvUZTSAGtL6zbGbFxJ43psRL2irbOpeey5P9JDraX5z/wTTWXqTUERrOB01w7PGfe0DntAbPEmkCBNaM=
+X-Received: by 2002:a25:ab03:: with SMTP id u3mr27617987ybi.347.1616956178370;
+ Sun, 28 Mar 2021 11:29:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210326114658.210034-1-yauheni.kaliuta@redhat.com>
- <20210326122407.211174-1-yauheni.kaliuta@redhat.com> <CAEf4BzY_=Fj4+TetwHatiid=XM7rtjuZwfCA3fe9n7mhEhmwcg@mail.gmail.com>
-In-Reply-To: <CAEf4BzY_=Fj4+TetwHatiid=XM7rtjuZwfCA3fe9n7mhEhmwcg@mail.gmail.com>
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Date:   Sun, 28 Mar 2021 20:06:34 +0300
-Message-ID: <CANoWswn7f+Byx=yCZRP+bhL7RjsLZF+puL4OgVudPB9QMPW1nw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] bpf/selftests: page size fixes
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
+References: <20210318194036.3521577-1-andrii@kernel.org> <20210318194036.3521577-8-andrii@kernel.org>
+ <YFTQExmhNhMcmNOb@krava> <CAEf4BzYKassG0AP372Q=Qsd+qqy7=YGe2XTXR4zG0c5oQ7Nkeg@mail.gmail.com>
+ <YFT0Q+mVbTEI1rem@krava> <YGBwmlQTDUodxM0J@krava>
+In-Reply-To: <YGBwmlQTDUodxM0J@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sun, 28 Mar 2021 11:29:27 -0700
+Message-ID: <CAEf4BzbeCOU+ScbycxUGwbmKhqjU5EWBj=dry-GXVOwOXe86ag@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 07/12] libbpf: add BPF static linker BTF and
+ BTF.ext support
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Andrii,
-
-On Sun, Mar 28, 2021 at 8:05 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Sun, Mar 28, 2021 at 5:03 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> On Fri, Mar 26, 2021 at 5:24 AM Yauheni Kaliuta
-> <yauheni.kaliuta@redhat.com> wrote:
+> On Fri, Mar 19, 2021 at 07:58:13PM +0100, Jiri Olsa wrote:
+> > On Fri, Mar 19, 2021 at 11:39:01AM -0700, Andrii Nakryiko wrote:
+> > > On Fri, Mar 19, 2021 at 9:23 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > On Thu, Mar 18, 2021 at 12:40:31PM -0700, Andrii Nakryiko wrote:
+> > > >
+> > > > SNIP
+> > > >
+> > > > > +
+> > > > > +     return NULL;
+> > > > > +}
+> > > > > +
+> > > > > +static int linker_fixup_btf(struct src_obj *obj)
+> > > > > +{
+> > > > > +     const char *sec_name;
+> > > > > +     struct src_sec *sec;
+> > > > > +     int i, j, n, m;
+> > > > > +
+> > > > > +     n = btf__get_nr_types(obj->btf);
+> > > >
+> > > > hi,
+> > > > I'm getting bpftool crash when building tests,
+> > > >
+> > > > looks like above obj->btf can be NULL:
+> > >
+> > > I lost if (!obj->btf) return 0; somewhere along the rebases. I'll send
+> > > a fix shortly. But how did you end up with selftests BPF objects built
+> > > without BTF?
 > >
-> > A set of fixes for selftests to make them working on systems with PAGE_SIZE > 4K
-> >
-> > 2 questions left:
-> >
-> > - about `nit: if (!ASSERT_OK(err, "setsockopt_attach"))`. I left
-> >   CHECK() for now since otherwise it has too many negations. But
-> >   should I anyway use ASSERT?
+> > no idea.. I haven't even updated llvm for almost 3 days now ;-)
 >
-> CHECK itself is a negation as much more confusing, IMO. if
-> (!ASSERT_OK(err)) is pretty clear, as for me.
+> sorry for late follow up on this, and it's actually forgotten empty
+> object in progs directory that was causing this
 >
-> >
-> > - https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/prog_tests/mmap.c#L41
-> >   and below -- it works now as is, but should be switched also to page_size?
+> I wonder we should add empty object like below to catch these cases,
+
+well, feel free to chime in on [0] then
+
+  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20210319205909.1748642-4-andrii@kernel.org/
+
+> because there's another place that bpftool is crashing on with it
 >
-> replied on another patch, it is possible to set all that at runtime
-> with bpf_map__set_max_entries().
+> I can send full patch for that if you think it's worth having
 
-For both mmap and ringbuf or only for mmap?
-
-But the question is about the mmap userspace part. In the test for
-some reason both hardcoded 4096 and runtime page_size are used. I'm a
-bit confused, should I replace that 4096 with page size.
-
->
->
-> Overall, please specify the [PATCH bpf-next] prefix to denote that it
-> targets bpf-next.
-
-thanks for the review, I'll prepare v3 then.
+sure, but see my comment below
 
 >
+> jirka
 >
-> >
-> > --
-> > v1->v2:
-> >
-> > - add missed 'selftests/bpf: test_progs/sockopt_sk: Convert to use BPF skeleton'
-> >
-> > Yauheni Kaliuta (4):
-> >
-> >   selftests/bpf: test_progs/sockopt_sk: pass page size from userspace
-> >   bpf: selftests: test_progs/sockopt_sk: remove version
-> >   selftests/bpf: ringbuf, mmap: bump up page size to 64K
-> >
-> >  .../selftests/bpf/prog_tests/ringbuf.c        |  9 ++-
-> >  .../selftests/bpf/prog_tests/sockopt_sk.c     | 68 ++++++-------------
-> >  .../selftests/bpf/progs/map_ptr_kern.c        |  9 ++-
-> >  .../testing/selftests/bpf/progs/sockopt_sk.c  | 11 ++-
-> >  tools/testing/selftests/bpf/progs/test_mmap.c | 10 ++-
-> >  .../selftests/bpf/progs/test_ringbuf.c        |  8 ++-
-> >  .../selftests/bpf/progs/test_ringbuf_multi.c  |  7 +-
-> >  7 files changed, 61 insertions(+), 61 deletions(-)
-> >
-> > --
-> > 2.29.2
-> >
 >
+> ---
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 7aad78dbb4b4..aecb6ca52bce 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -3165,6 +3165,9 @@ static int add_dummy_ksym_var(struct btf *btf)
+>         const struct btf_var_secinfo *vs;
+>         const struct btf_type *sec;
+>
+> +       if (!btf)
+> +               return 0;
+> +
 
+add_dummy_ksym_var() shouldn't be called, if there is no btf, so the
+fix should be outside of this fix.
 
--- 
-WBR, Yauheni
-
+>         sec_btf_id = btf__find_by_name_kind(btf, KSYMS_SEC,
+>                                             BTF_KIND_DATASEC);
+>         if (sec_btf_id < 0)
+> diff --git a/tools/testing/selftests/bpf/progs/empty.c b/tools/testing/selftests/bpf/progs/empty.c
+> new file mode 100644
+> index 000000000000..e69de29bb2d1
+>
