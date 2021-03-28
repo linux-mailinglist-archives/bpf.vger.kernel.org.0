@@ -2,222 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6551134BE5B
-	for <lists+bpf@lfdr.de>; Sun, 28 Mar 2021 20:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2243334BEBA
+	for <lists+bpf@lfdr.de>; Sun, 28 Mar 2021 22:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhC1Sqj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Mar 2021 14:46:39 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:40509 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231489AbhC1SqR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 28 Mar 2021 14:46:17 -0400
-Received: by mail-il1-f200.google.com with SMTP id s10so10418625ilo.7
-        for <bpf@vger.kernel.org>; Sun, 28 Mar 2021 11:46:16 -0700 (PDT)
+        id S229655AbhC1UN7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Mar 2021 16:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229595AbhC1UNs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 28 Mar 2021 16:13:48 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3081BC061756;
+        Sun, 28 Mar 2021 13:13:47 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id y2so3396161plg.5;
+        Sun, 28 Mar 2021 13:13:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9CgTLBy83XAQ5YGxolLtMAOYutMwr/tnArHMqUuCN68=;
+        b=qWT6BfyiVn82t3R06mstmgq5KU2HDaNOtQ8muPU7tmLPzRqD1wcalGfGUpwgg/K6C6
+         L1TpC5l23ztXacaNZxYFqgAh3Zw2imSJEjxZ/Yt/EckJM061SSnosy9I96bfj18gktq5
+         AeVAkg+3mCbhlDCh7b1xER0ZzgxrqOE3iril1g1FxAxN//vSdq0+5lJolfQogGyJeUGX
+         SjWYY0YBG5NJtiTHkCwJ04RWgVHiZNqZSf/WdeD/z9UrUcC6FNnqhXwnYAm72MV1hSJl
+         bgfcJQZPHDKcOafgPR7RopnuuIYq3ipbIdnyvQlHUZthyzN9JkqyUcNIzjlSoCo9ntAS
+         9uFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=pt0NAS2OYaIKRaLA3YT9CDMyqSgP+XpAyCaYfthX11E=;
-        b=PcsmvJcg14+Meu7C7cPsi4uPHSapicO77bL2Rqmntp7aic6GmQtPbs+4VoirMrM15R
-         goeum3g/sGVrz+urkk1/Ke9eIMRhJ4dlSE9PImMdaICk36erN51XpmQyh8OcD7LdJ8Mv
-         bZrq15jaYwlTucvs77H7EF7e7FcuzXLcXCrlwEoKyTZhbOBOfnHjAKFhzVLCQI2iUJ7a
-         OEbDFha1fCLcjIUEk0/QEUTsn7j05rj13R9XKBhVmF4mtMNgBN6FtAQxzFt587CaCMkb
-         zB1vYc/MTPK8LVeZ/1x4KhRhxsVJWRT4U+YZfzyQaYCwkXYIx2JfXnx6EAduMwvZbTj9
-         j5hw==
-X-Gm-Message-State: AOAM533wLegxCr5170dgMKYXjwGCsLeTJXI2h0uYsW85kkZhGyN22TdO
-        goA1xAXB41aI/ytaycFIwYnfoHQWA6hYobrfkaaC1Mh1UgMj
-X-Google-Smtp-Source: ABdhPJwjlI1DMEks5zQ+8E8AA+QQbfTDh8qAAXkD9SPeWg/merKgtVEG9bkcm2v8bc3ynoc1VnvI8A2tPKT7aEg5eHpN9NrLBpHS
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9CgTLBy83XAQ5YGxolLtMAOYutMwr/tnArHMqUuCN68=;
+        b=VpfJ0cBLH40V1ea2ktGRGsoBXa3NbxJwOVCWd4ZHSfQWxKQGroAZBbOYWg+Kos0XmJ
+         e9lWaHO3ojMxVFlPQ4ZFvHFmfp79X/zWtfagiDxQRi/Cs0QH3JQlXSetd1XQX8LbsA6X
+         qdQMUFvk05JG8ASB9UNg3BQ1U4gB49gosLSNnX69G//1xLevEN1rS3x6rhVDT8v4kZMU
+         qQPRRTwzVDlztZCbM8YzN7eXkSMTFMfjhbXO2dbRgzqfoK2zVRcWtgJbmaU2IpXJNEIC
+         2N+NayClVwOLHS8v5w2TTfRiEz6zDLDHfADZ5gl5vhrZ8pSxplSLId6YQLVz9R/8qlmi
+         5oVA==
+X-Gm-Message-State: AOAM532gPeh+lkg5wIWCdV16VcD70vsw/YRfm7YWrI0zy4jw/XCVUGkz
+        peSW7FA05pZ1gqQ9fDG0WCRjA/oIt4MvB8SRtIZ7MXrkw3A=
+X-Google-Smtp-Source: ABdhPJwLgAPgQuLyNK7LLBX1uRS/TTCYG2e6+21C7FmyQ3KbY2wLphTVmoRC6YD3OK50n9cc90i0mrDdLRfNSXgRhRw=
+X-Received: by 2002:a17:90b:514:: with SMTP id r20mr23525928pjz.145.1616962426810;
+ Sun, 28 Mar 2021 13:13:46 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:12a9:: with SMTP id f9mr12789312ilr.12.1616957176566;
- Sun, 28 Mar 2021 11:46:16 -0700 (PDT)
-Date:   Sun, 28 Mar 2021 11:46:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000020595705be9d2e49@google.com>
-Subject: [syzbot] KASAN: slab-out-of-bounds Read in fib6_nh_get_excptn_bucket (3)
-From:   syzbot <syzbot+f7687113afaeee05b412@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
+References: <20210325015124.1543397-1-kafai@fb.com> <CAM_iQpWGn000YOmF2x6Cm0FqCOSq0yUjc_+Up+Ek3r6NrBW3mw@mail.gmail.com>
+ <CAADnVQKAXsEzsEkxhUG=79V+gAJbv=-Wuh_oJngjs54g1xGW7Q@mail.gmail.com>
+ <CAM_iQpU7y+YE9wbqFZK30o4A+Gmm9jMLgqPqOw6SCDP8mHibTQ@mail.gmail.com> <CAADnVQJoeEqZK8eWfCi-BkHY4rSzaPuXYVEFvR75Ecdbt+oGgA@mail.gmail.com>
+In-Reply-To: <CAADnVQJoeEqZK8eWfCi-BkHY4rSzaPuXYVEFvR75Ecdbt+oGgA@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Sun, 28 Mar 2021 13:13:35 -0700
+Message-ID: <CAM_iQpUTFs_60vkS6LTRr5VBt8yTHiSgaHoKrtt4GGDe4tCcew@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 00/14] bpf: Support calling kernel function
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        kernel-team <kernel-team@fb.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Sat, Mar 27, 2021 at 3:54 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sat, Mar 27, 2021 at 3:08 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> >   BTFIDS  vmlinux
+> > FAILED unresolved symbol cubictcp_state
+> > make: *** [Makefile:1199: vmlinux] Error 255
+> >
+> > I suspect it is related to the kernel config or linker version.
+> >
+> > # grep TCP_CONG .config
+> > CONFIG_TCP_CONG_ADVANCED=y
+> > CONFIG_TCP_CONG_BIC=m
+> > CONFIG_TCP_CONG_CUBIC=y
+> ..
+> >
+> > # pahole --version
+> > v1.17
+>
+> That is the most likely reason.
+> In lib/Kconfig.debug
+> we have pahole >= 1.19 requirement for BTF in modules.
+> Though your config has CUBIC=y I suspect something odd goes on.
+> Could you please try the latest pahole 1.20 ?
 
-syzbot found the following issue on:
+Sure, I will give it a try tomorrow, I am not in control of the CI I ran.
 
-HEAD commit:    7acac4b3 Merge tag 'linux-kselftest-kunit-fixes-5.12-rc5.1..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=102449f6d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5adab0bdee099d7a
-dashboard link: https://syzkaller.appspot.com/bug?extid=f7687113afaeee05b412
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f7687113afaeee05b412@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-out-of-bounds in fib6_nh_get_excptn_bucket+0x18b/0x1a0 net/ipv6/route.c:1622
-Read of size 8 at addr ffff88801f5f22f8 by task syz-executor.1/20604
-
-CPU: 0 PID: 20604 Comm: syz-executor.1 Not tainted 5.12.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
- __kasan_report mm/kasan/report.c:399 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
- fib6_nh_get_excptn_bucket+0x18b/0x1a0 net/ipv6/route.c:1622
- fib6_nh_flush_exceptions+0x34/0x2d0 net/ipv6/route.c:1750
- fib6_nh_release+0x81/0x3c0 net/ipv6/route.c:3554
- fib6_info_destroy_rcu+0x187/0x210 net/ipv6/ip6_fib.c:174
- rcu_do_batch kernel/rcu/tree.c:2559 [inline]
- rcu_core+0x74a/0x12f0 kernel/rcu/tree.c:2794
- __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
- invoke_softirq kernel/softirq.c:221 [inline]
- __irq_exit_rcu kernel/softirq.c:422 [inline]
- irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
-RIP: 0010:preempt_count arch/x86/include/asm/preempt.h:27 [inline]
-RIP: 0010:check_kcov_mode kernel/kcov.c:163 [inline]
-RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x60 kernel/kcov.c:197
-Code: f0 4d 89 03 e9 f2 fc ff ff b9 ff ff ff ff ba 08 00 00 00 4d 8b 03 48 0f bd ca 49 8b 45 00 48 63 c9 e9 64 ff ff ff 0f 1f 40 00 <65> 8b 05 89 01 8e 7e 89 c1 48 8b 34 24 81 e1 00 01 00 00 65 48 8b
-RSP: 0018:ffffc90008dc7948 EFLAGS: 00000216
-RAX: 000000000000b35d RBX: 0000000000000000 RCX: ffffc9000aea7000
-RDX: 0000000000040000 RSI: ffffffff815c086f RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff8fab38a7
-R10: ffffffff815c0865 R11: 0000000000000000 R12: ffffffff84b26d10
-R13: 0000000000000200 R14: dffffc0000000000 R15: ffffc90008dc79a8
- console_unlock+0x805/0xc80 kernel/printk/printk.c:2586
- vprintk_emit+0x1ca/0x560 kernel/printk/printk.c:2098
- vprintk_func+0x8d/0x1e0 kernel/printk/printk_safe.c:401
- printk+0xba/0xed kernel/printk/printk.c:2146
- jfs_mount.cold+0x95/0x136 fs/jfs/jfs_mount.c:217
- jfs_fill_super+0x5bd/0xc80 fs/jfs/super.c:561
- mount_bdev+0x34d/0x410 fs/super.c:1367
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1497
- do_new_mount fs/namespace.c:2903 [inline]
- path_mount+0x132a/0x1f90 fs/namespace.c:3233
- do_mount fs/namespace.c:3246 [inline]
- __do_sys_mount fs/namespace.c:3454 [inline]
- __se_sys_mount fs/namespace.c:3431 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3431
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46797a
-Code: 48 c7 c2 bc ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 b8 04 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f0603554fa8 EFLAGS: 00000206 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 0000000020000200 RCX: 000000000046797a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f0603555000
-RBP: 00007f0603555040 R08: 00007f0603555040 R09: 0000000020000000
-R10: 0000000000000000 R11: 0000000000000206 R12: 0000000020000000
-R13: 0000000020000100 R14: 00007f0603555000 R15: 0000000020061000
-
-Allocated by task 20613:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:427 [inline]
- ____kasan_kmalloc mm/kasan/common.c:506 [inline]
- ____kasan_kmalloc mm/kasan/common.c:465 [inline]
- __kasan_kmalloc+0x99/0xc0 mm/kasan/common.c:515
- kmalloc include/linux/slab.h:554 [inline]
- kzalloc include/linux/slab.h:684 [inline]
- fib6_info_alloc+0xbe/0x1d0 net/ipv6/ip6_fib.c:154
- ip6_route_info_create+0x33e/0x19d0 net/ipv6/route.c:3656
- ip6_route_add+0x24/0x150 net/ipv6/route.c:3746
- inet6_rtm_newroute+0x152/0x160 net/ipv6/route.c:5368
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
- __call_rcu kernel/rcu/tree.c:3039 [inline]
- call_rcu+0xb1/0x740 kernel/rcu/tree.c:3114
- fib6_info_release include/net/ip6_fib.h:337 [inline]
- fib6_info_release include/net/ip6_fib.h:334 [inline]
- ip6_route_info_create+0x125f/0x19d0 net/ipv6/route.c:3736
- ip6_route_add+0x24/0x150 net/ipv6/route.c:3746
- inet6_rtm_newroute+0x152/0x160 net/ipv6/route.c:5368
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Second to last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
- insert_work+0x48/0x370 kernel/workqueue.c:1331
- __queue_work+0x5c1/0xf00 kernel/workqueue.c:1497
- queue_work_on+0xee/0x110 kernel/workqueue.c:1524
- queue_work include/linux/workqueue.h:507 [inline]
- call_usermodehelper_exec+0x1f0/0x4c0 kernel/umh.c:433
- kobject_uevent_env+0xf9f/0x1680 lib/kobject_uevent.c:617
- loop_configure+0x10cb/0x13a0 drivers/block/loop.c:255
- lo_ioctl+0x3f7/0x1620 drivers/block/loop.c:1681
- blkdev_ioctl+0x2a1/0x6d0 block/ioctl.c:583
- block_ioctl+0xf9/0x140 fs/block_dev.c:1667
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff88801f5f2200
- which belongs to the cache kmalloc-192 of size 192
-The buggy address is located 56 bytes to the right of
- 192-byte region [ffff88801f5f2200, ffff88801f5f22c0)
-The buggy address belongs to the page:
-page:ffffea00007d7c80 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1f5f2
-flags: 0xfff00000000200(slab)
-raw: 00fff00000000200 ffffea00004e9980 0000000500000005 ffff888010841a00
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff88801f5f2180: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
- ffff88801f5f2200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff88801f5f2280: 00 00 00 00 fc fc fc fc fc fc fc fc fc fc fc fc
-                                                                ^
- ffff88801f5f2300: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88801f5f2380: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks.
