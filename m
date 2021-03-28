@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D34734BB2B
-	for <lists+bpf@lfdr.de>; Sun, 28 Mar 2021 07:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5EE34BB2C
+	for <lists+bpf@lfdr.de>; Sun, 28 Mar 2021 07:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229538AbhC1FBN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Mar 2021 01:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37020 "EHLO
+        id S229531AbhC1FDq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Mar 2021 01:03:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhC1FAj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 28 Mar 2021 01:00:39 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86157C061762
-        for <bpf@vger.kernel.org>; Sat, 27 Mar 2021 22:00:39 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id i9so10233222ybp.4
-        for <bpf@vger.kernel.org>; Sat, 27 Mar 2021 22:00:39 -0700 (PDT)
+        with ESMTP id S229516AbhC1FDQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 28 Mar 2021 01:03:16 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B94DC061762
+        for <bpf@vger.kernel.org>; Sat, 27 Mar 2021 22:03:16 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id x189so10223709ybg.5
+        for <bpf@vger.kernel.org>; Sat, 27 Mar 2021 22:03:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=22QCKzkgkR/qnDV3Aknf2ohQDnwAkjhTjgnKKcFnrWU=;
-        b=e8YbZ9mT9x33BADua9QuDFqp773QW+748CDETcZMvLH9A6OTgFDgdq2pGV81gyvms+
-         eX9NNWeqyLHff1QjyB5HEM5cvY1C7t/yWgk7p39ghM4Qp4wsbJn8mjV7cfHKL4cwzTnZ
-         pGZ/dr62ohUp1QiRq9HhzNEpSumNIkYglKogg0M+3sL3Oxl3pi4EEXlehhYpfUEVj88l
-         mzZry0pIBUQlodgxoRHTzSFgfJVrdJktp0miFwHIK9XwUzTOW6Uok8ZdXRH8ji6PtBo/
-         LuS9eFovZW5u+0alImpEuxGJ4FGR/SMMZWcgfGx9bQf06iw2bL9ihTmOeSbJ2Xt5nff+
-         G1Gw==
+        bh=DyGIoOplvfBoVTOrbQuq9jHOoDMfbYc4NfcNs4jK2+c=;
+        b=fIukJvgrK3vC1WdFU+tvEAswTB8TNfao/WsqsqNiwgnpyOgMNiUgxGUCc1q74tv6Kn
+         mF5b2f0aUZWysCNzsMT6jIX/jxOOm0FcV990TWD1cSzZZKTg9pBG41JG4b3IRINXZ4EL
+         WfwKzw0EJYkJZuNPEfm8oJKCvFz4fGBv6/ErO8SGLqwtqtmGGVLlsGLowCcMHTwNLFus
+         9tNBi8tzGrUHLd3qsZgiM8F8dfTioxFfjAk7TBaVPdvMMPBBnE32gimz0c2gTxTtiKsV
+         O6NDTRE/ooIRrvOFb+pJXDL+6AwGdVLVLOJTvqfS+G51DK4Yl2XtDBgTg8RG1v3dMS6q
+         8Hlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=22QCKzkgkR/qnDV3Aknf2ohQDnwAkjhTjgnKKcFnrWU=;
-        b=bbkt//+BOF/zSBOYdPF8e7DMRn5LCZGiThaoG4ZnNpI+WSiRsEprO00TcPU+jKB98q
-         FAEJ7d5NhXv6Bk/pj2FRkxF22FyFCravplFDCmPmHxmU6ZmX3BtgEwNeasIeK3Nbj8tR
-         SQoHxgtmpp22cgJ0V1YLIS02DpWpu+VdOqh/3ed4mylVzMcxtj5jH4VRzlV7XicnmLSy
-         R1zWLZihabiA40Fw6wQFP/hpQdtF88Chm4gclxxK9t4uxPgmDnBTVRrmE0Gey+qD5X09
-         qeHbC8flaQtHQS/qcQoA85Vk21wjCpn1xM6rB7TXg8pc3RIZgRoIzfFa82c3HLxvD8O5
-         texA==
-X-Gm-Message-State: AOAM533Tg3uelbPO1VPd9BEbK9fqJs0eeZNkGFE1Hya3fv/YYe4DqXF8
-        WPeD2naTuaktvyUYZCDSH3XOuctYkAFMVfhI4SQ=
-X-Google-Smtp-Source: ABdhPJzYm/+Eb1j6kHYNyxaYzn7tHfTaa+zuHln7h4r1chrpQM9G8qjEm6V8oiNgxvoq9urS/jSUw3IGuTnIZdcm7CU=
-X-Received: by 2002:a25:874c:: with SMTP id e12mr29130625ybn.403.1616907638896;
- Sat, 27 Mar 2021 22:00:38 -0700 (PDT)
+        bh=DyGIoOplvfBoVTOrbQuq9jHOoDMfbYc4NfcNs4jK2+c=;
+        b=NCOu2nOgO5+QFv1p4GGLrqq0A4nkRG0mxJL3hVPCeOB5uUSULPHwU/6Q0VjIDFEzB1
+         d1NI1zmKDejvubmnxWuBOsFHyQwHAxcbML2/6+sazFhv9rEafT1i0zrjIBe/eTNCJUSJ
+         J6SPt0gaaNFVsqdrmwRqrHM7dEKSh8wMavj+mUbdYcXEP9iwjYRFH2KwfTW0kWwuw1KQ
+         GMq6G07UtaZGFyo90STutVB+mWZSfGUOIk49a6OsrgZfTJc2vNtdha6JGkWyI6DFPW+w
+         UjEa85va/zUuZ0Hrmxcp6vz1k+xNg3G4nXr+FkqM6ZjyyivXCRyGFjO7KfzQ812E1p44
+         dwaA==
+X-Gm-Message-State: AOAM531pRCYT0ec10pEXhRc3SRvx/TCja7mDFrzf/ClRCVvRoDGPf5nj
+        8v7F5RiduEOEZGsHEI44yTupP5iC0dcDq/HH+jk=
+X-Google-Smtp-Source: ABdhPJxSm7EdnvkH7wHmWGVI0eHizwhi3LQrfQtYZBOCsLURXRLYM+aSYDEL/Pjf9Z8fmlDMklnfbakAfIcWW/44GJI=
+X-Received: by 2002:a25:4982:: with SMTP id w124mr28894770yba.27.1616907795284;
+ Sat, 27 Mar 2021 22:03:15 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210326114658.210034-1-yauheni.kaliuta@redhat.com>
- <20210326122438.211242-1-yauheni.kaliuta@redhat.com> <20210326122438.211242-2-yauheni.kaliuta@redhat.com>
-In-Reply-To: <20210326122438.211242-2-yauheni.kaliuta@redhat.com>
+ <20210326122438.211242-1-yauheni.kaliuta@redhat.com> <20210326122438.211242-4-yauheni.kaliuta@redhat.com>
+In-Reply-To: <20210326122438.211242-4-yauheni.kaliuta@redhat.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 27 Mar 2021 22:00:28 -0700
-Message-ID: <CAEf4BzafSuz9Mf63bxKLuEVvy_Wdk5-r7xot0LBf-vN1h+8RfQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] selftests/bpf: test_progs/sockopt_sk: pass page
- size from userspace
+Date:   Sat, 27 Mar 2021 22:03:04 -0700
+Message-ID: <CAEf4BzZowiRKeLGw7JikKuMs+dy-=OTMbUb3eFJCq03Br7P30g@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] selftests/bpf: ringbuf, mmap: bump up page size to 64K
 To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>
@@ -63,80 +62,176 @@ X-Mailing-List: bpf@vger.kernel.org
 On Fri, Mar 26, 2021 at 5:24 AM Yauheni Kaliuta
 <yauheni.kaliuta@redhat.com> wrote:
 >
-> Since there is no convenient way for bpf program to get PAGE_SIZE
-> from inside of the kernel, pass the value from userspace.
+> Both ringbuf and mmap need PAGE_SIZE, but it's not available during
+> bpf program compile time. 4K size was hardcoded (page shift 12 bits)
+> which makes the tests fail on systems, configured for larger pages.
+>
+> Bump it up to 64K which at the first glance look reasonable at the
+> moment for most of the systems.
+>
+> Use define to make it clear.
 >
 > Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 > ---
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-But I'd also shorten the subject to:
-
-selftests/bpf: pass page size from userspace in sockopt_sk
-
-It's just as clear and doesn't include unnecessary prog_tests/ path.
-
-
->  tools/testing/selftests/bpf/prog_tests/sockopt_sk.c |  2 ++
->  tools/testing/selftests/bpf/progs/sockopt_sk.c      | 10 ++++------
->  2 files changed, 6 insertions(+), 6 deletions(-)
+>  tools/testing/selftests/bpf/prog_tests/ringbuf.c       |  9 +++++++--
+>  tools/testing/selftests/bpf/progs/map_ptr_kern.c       |  9 +++++++--
+>  tools/testing/selftests/bpf/progs/test_mmap.c          | 10 ++++++++--
+>  tools/testing/selftests/bpf/progs/test_ringbuf.c       |  8 +++++++-
+>  tools/testing/selftests/bpf/progs/test_ringbuf_multi.c |  7 ++++++-
+>  5 files changed, 35 insertions(+), 8 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-> index 114c1a622ffa..6a7cb5f23db2 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-> @@ -201,6 +201,8 @@ static void run_test(int cgroup_fd)
->         if (CHECK(!skel, "skel_load", "sockopt_sk skeleton failed\n"))
->                 goto cleanup;
+> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> index fddbc5db5d6a..9057654da957 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> @@ -15,6 +15,11 @@
+>  #include "test_ringbuf.skel.h"
 >
-> +       skel->bss->page_size = getpagesize();
+>  #define EDONE 7777
+> +#ifdef PAGE_SIZE
+> +#undef PAGE_SIZE
+> +#endif
+> +/* this is not actual page size, but the value used for ringbuf */
+> +#define PAGE_SIZE 65536
+>
+>  static int duration = 0;
+>
+> @@ -110,9 +115,9 @@ void test_ringbuf(void)
+>         CHECK(skel->bss->avail_data != 3 * rec_sz,
+>               "err_avail_size", "exp %ld, got %ld\n",
+>               3L * rec_sz, skel->bss->avail_data);
+> -       CHECK(skel->bss->ring_size != 4096,
+> +       CHECK(skel->bss->ring_size != PAGE_SIZE,
+>               "err_ring_size", "exp %ld, got %ld\n",
+> -             4096L, skel->bss->ring_size);
+> +             (long)PAGE_SIZE, skel->bss->ring_size);
+>         CHECK(skel->bss->cons_pos != 0,
+>               "err_cons_pos", "exp %ld, got %ld\n",
+>               0L, skel->bss->cons_pos);
+> diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
+> index d8850bc6a9f1..c1460f27af78 100644
+> --- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
+> +++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
+> @@ -8,6 +8,11 @@
+>  #define MAX_ENTRIES 8
+>  #define HALF_ENTRIES (MAX_ENTRIES >> 1)
+>
+> +#ifndef PAGE_SIZE
+> +/* use reasonable value for various configurations */
+> +#define PAGE_SIZE 65536
+> +#endif
 > +
->         skel->links._setsockopt =
->                 bpf_program__attach_cgroup(skel->progs._setsockopt, cgroup_fd);
->         if (CHECK(IS_ERR(skel->links._setsockopt),
-> diff --git a/tools/testing/selftests/bpf/progs/sockopt_sk.c b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-> index d3597f81e6e9..55dfbe53c24e 100644
-> --- a/tools/testing/selftests/bpf/progs/sockopt_sk.c
-> +++ b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-> @@ -8,9 +8,7 @@
+>  _Static_assert(MAX_ENTRIES < LOOP_BOUND, "MAX_ENTRIES must be < LOOP_BOUND");
+>
+>  enum bpf_map_type g_map_type = BPF_MAP_TYPE_UNSPEC;
+> @@ -635,7 +640,7 @@ struct bpf_ringbuf_map {
+>
+>  struct {
+>         __uint(type, BPF_MAP_TYPE_RINGBUF);
+> -       __uint(max_entries, 1 << 12);
+> +       __uint(max_entries, PAGE_SIZE);
+>  } m_ringbuf SEC(".maps");
+>
+>  static inline int check_ringbuf(void)
+> @@ -643,7 +648,7 @@ static inline int check_ringbuf(void)
+>         struct bpf_ringbuf_map *ringbuf = (struct bpf_ringbuf_map *)&m_ringbuf;
+>         struct bpf_map *map = (struct bpf_map *)&m_ringbuf;
+>
+> -       VERIFY(check(&ringbuf->map, map, 0, 0, 1 << 12));
+> +       VERIFY(check(&ringbuf->map, map, 0, 0, PAGE_SIZE));
+>
+>         return 1;
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/test_mmap.c b/tools/testing/selftests/bpf/progs/test_mmap.c
+> index 4eb42cff5fe9..c22fcfea0767 100644
+> --- a/tools/testing/selftests/bpf/progs/test_mmap.c
+> +++ b/tools/testing/selftests/bpf/progs/test_mmap.c
+> @@ -5,11 +5,16 @@
+>  #include <stdint.h>
+>  #include <bpf/bpf_helpers.h>
+>
+> +#ifndef PAGE_SIZE
+> +/* use reasonable value for various configurations */
+> +#define PAGE_SIZE 65536
+> +#endif
+> +
 >  char _license[] SEC("license") = "GPL";
->  __u32 _version SEC("version") = 1;
 >
-> -#ifndef PAGE_SIZE
-> -#define PAGE_SIZE 4096
-> -#endif
-> +int page_size; /* userspace should set it */
+>  struct {
+>         __uint(type, BPF_MAP_TYPE_ARRAY);
+> -       __uint(max_entries, 4096);
+> +       __uint(max_entries, PAGE_SIZE);
+
+
+so you can set map size at runtime before bpf_object__load (or
+skeleton's load) with bpf_map__set_max_entries. That way you don't
+have to do any assumptions. Just omit max_entries in BPF source code,
+and always set it in userspace.
+
+>         __uint(map_flags, BPF_F_MMAPABLE | BPF_F_RDONLY_PROG);
+>         __type(key, __u32);
+>         __type(value, char);
+> @@ -17,7 +22,8 @@ struct {
 >
->  #ifndef SOL_TCP
->  #define SOL_TCP IPPROTO_TCP
-> @@ -90,7 +88,7 @@ int _getsockopt(struct bpf_sockopt *ctx)
->                  * program can only see the first PAGE_SIZE
->                  * bytes of data.
->                  */
-> -               if (optval_end - optval != PAGE_SIZE)
-> +               if (optval_end - optval != page_size)
->                         return 0; /* EPERM, unexpected data size */
+>  struct {
+>         __uint(type, BPF_MAP_TYPE_ARRAY);
+> -       __uint(max_entries, 512 * 4); /* at least 4 pages of data */
+> +       /* at least 4 pages of data */
+> +       __uint(max_entries, 4 * (PAGE_SIZE / sizeof (__u64)));
+>         __uint(map_flags, BPF_F_MMAPABLE);
+>         __type(key, __u32);
+>         __type(value, __u64);
+> diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf.c b/tools/testing/selftests/bpf/progs/test_ringbuf.c
+> index 8ba9959b036b..6e645babdc18 100644
+> --- a/tools/testing/selftests/bpf/progs/test_ringbuf.c
+> +++ b/tools/testing/selftests/bpf/progs/test_ringbuf.c
+> @@ -4,6 +4,12 @@
+>  #include <linux/bpf.h>
+>  #include <bpf/bpf_helpers.h>
 >
->                 return 1;
-> @@ -161,7 +159,7 @@ int _setsockopt(struct bpf_sockopt *ctx)
+> +#ifndef PAGE_SIZE
+> +/* use reasonable value for various configurations */
+> +#define PAGE_SIZE 65536
+> +#endif
+> +
+> +
+>  char _license[] SEC("license") = "GPL";
 >
->         if (ctx->level == SOL_IP && ctx->optname == IP_FREEBIND) {
->                 /* Original optlen is larger than PAGE_SIZE. */
-> -               if (ctx->optlen != PAGE_SIZE * 2)
-> +               if (ctx->optlen != page_size * 2)
->                         return 0; /* EPERM, unexpected data size */
+>  struct sample {
+> @@ -15,7 +21,7 @@ struct sample {
 >
->                 if (optval + 1 > optval_end)
-> @@ -175,7 +173,7 @@ int _setsockopt(struct bpf_sockopt *ctx)
->                  * program can only see the first PAGE_SIZE
->                  * bytes of data.
->                  */
-> -               if (optval_end - optval != PAGE_SIZE)
-> +               if (optval_end - optval != page_size)
->                         return 0; /* EPERM, unexpected data size */
+>  struct {
+>         __uint(type, BPF_MAP_TYPE_RINGBUF);
+> -       __uint(max_entries, 1 << 12);
+> +       __uint(max_entries, PAGE_SIZE);
+>  } ringbuf SEC(".maps");
 >
->                 return 1;
+>  /* inputs */
+> diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
+> index edf3b6953533..13bcf095e06c 100644
+> --- a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
+> +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
+> @@ -4,6 +4,11 @@
+>  #include <linux/bpf.h>
+>  #include <bpf/bpf_helpers.h>
+>
+> +#ifndef PAGE_SIZE
+> +/* use reasonable value for various configurations */
+> +#define PAGE_SIZE 65536
+> +#endif
+> +
+>  char _license[] SEC("license") = "GPL";
+>
+>  struct sample {
+> @@ -15,7 +20,7 @@ struct sample {
+>
+>  struct ringbuf_map {
+>         __uint(type, BPF_MAP_TYPE_RINGBUF);
+> -       __uint(max_entries, 1 << 12);
+> +       __uint(max_entries, PAGE_SIZE);
+>  } ringbuf1 SEC(".maps"),
+>    ringbuf2 SEC(".maps");
+>
 > --
 > 2.29.2
 >
