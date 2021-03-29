@@ -2,83 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255A434C55F
-	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 09:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C9B34C824
+	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 10:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhC2H47 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 03:56:59 -0400
-Received: from mga12.intel.com ([192.55.52.136]:45546 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229873AbhC2H4i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 03:56:38 -0400
-IronPort-SDR: 204H9fM/sa1Hx08e6eWxIN5rufE+umgHijetPnNxs4aNCHaboqvKbXIcLFNFl4lxIeXsXB1R5f
- 4BvciCCMiHLQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="170902063"
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="170902063"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 00:56:37 -0700
-IronPort-SDR: ZFyBHCYC06SwwoqQpsRe3C6SngPxBjApGKfIFwyAVOUAppYzUZaUydiczd9LUIYqCg84kg2TnR
- DQ4VenUd49eg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="410960207"
-Received: from glass.png.intel.com ([10.158.65.59])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Mar 2021 00:56:34 -0700
-From:   Ong Boon Leong <boon.leong.ong@intel.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Subject: [PATCH net 1/1] xdp: fix xdp_return_frame() kernel BUG throw for page_pool memory model
-Date:   Mon, 29 Mar 2021 16:00:39 +0800
-Message-Id: <20210329080039.32753-1-boon.leong.ong@intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S233089AbhC2IUF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 04:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233080AbhC2ITc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:19:32 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2798C061756
+        for <bpf@vger.kernel.org>; Mon, 29 Mar 2021 01:19:25 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id a198so17147382lfd.7
+        for <bpf@vger.kernel.org>; Mon, 29 Mar 2021 01:19:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T17UPyB49fQi81p3RjN5h9re4h1c9rcNiJmp3cH67jg=;
+        b=q1LkIVeN1CSY5hosJXtoBv+Ux0JhJ27lW+Gm+sBS9dvD4Sw2R4apI4P5/0lR/NLEQR
+         VIZ+gt088HzjytzKLP0IMIDXvGVjshPrKXBV/YdRScfYB9kBop09xAfYf0Mc/qm5RqMG
+         ovmY11JV78D5bCh5lGmZc69wxuCOT1iyewBBI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T17UPyB49fQi81p3RjN5h9re4h1c9rcNiJmp3cH67jg=;
+        b=hrXdjq8JZp+TTrC2ZCW1MEEIPsZRcAVPNUXYsQtww4OwsZ50ldlFq18pHQdqSIEx4K
+         UBl/JKmNDGkkmTch71GgdbbkPy4E5r0/8aDZM8NB2a6uDSSl4Frgi2uD3J7/AWys0tnj
+         xJCu8FIXo86IJG8Nc9Wp7aSlPDnZJE8WL3RGjveEetLczzpFF+nkpaod0DZpvbTlbdpp
+         VCYXr/aZ4FIu59HyKUYCtjVggINJJRnOvfkQOhM9y9sBwG7PaU2jolp4uq8Fl1xN+2dT
+         tGl5EghW6IHRuU2eS6ONcJ/FZyAXwSc/9ZTumMS0fq+j/CYXuVxxlD3r31Igw7kPaOfk
+         4E7w==
+X-Gm-Message-State: AOAM531ddjND50Oj9JlUzAzV4M7tXd3xwcb2vHo+SqiZ3QyvujyyqOy0
+        Ard2DDXK1qTJbLBZz8XjN5Hg7WNTf18yCAs1nyc+H36SMyA=
+X-Google-Smtp-Source: ABdhPJxFOiDf3HdUzgGwB1o9orQWHoh/OXEAOPDSOIowsXvtXJ80dRVlkz8qGZfuEAA4/DB8oCyHi6o9BNhhc5MaJTY=
+X-Received: by 2002:a19:521a:: with SMTP id m26mr16066250lfb.56.1617005964467;
+ Mon, 29 Mar 2021 01:19:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210326160501.46234-1-lmb@cloudflare.com> <20210326160501.46234-2-lmb@cloudflare.com>
+ <CAPhsuW7E4bhEGcboKQ5O=1o0iVNPLpJB1nrAgxweiZqGhZm-JQ@mail.gmail.com>
+In-Reply-To: <CAPhsuW7E4bhEGcboKQ5O=1o0iVNPLpJB1nrAgxweiZqGhZm-JQ@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Mon, 29 Mar 2021 09:19:13 +0100
+Message-ID: <CACAyw99NVbu0q-wh=r7ifoVUnny6gxXwf6LPGf0HUhg1CCQkUQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 2/2] bpf: program: refuse non-O_RDWR flags in BPF_OBJ_GET
+To:     Song Liu <song@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-xdp_return_frame() may be called outside of NAPI context to return
-xdpf back to page_pool. xdp_return_frame() calls __xdp_return() with
-napi_direct = false. For page_pool memory model, __xdp_return() calls
-xdp_return_frame_no_direct() unconditionally and below false negative
-kernel BUG throw happened under preempt-rt build:
+On Fri, 26 Mar 2021 at 20:14, Song Liu <song@kernel.org> wrote:
+>
+> On Fri, Mar 26, 2021 at 9:07 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >
+> > As for bpf_link, refuse creating a non-O_RDWR fd. Since program fds
+> > currently don't allow modifications this is a precaution, not a
+> > straight up bug fix.
+> >
+> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > ---
+> >  kernel/bpf/inode.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+> > index dc56237d6960..d2de2abec35b 100644
+> > --- a/kernel/bpf/inode.c
+> > +++ b/kernel/bpf/inode.c
+> > @@ -543,7 +543,7 @@ int bpf_obj_get_user(const char __user *pathname, int flags)
+> >                 return PTR_ERR(raw);
+>
+> For both patches, shall we do the check before bpf_obj_do_get(), which is a few
+> lines above?
 
-[  430.450355] BUG: using smp_processor_id() in preemptible [00000000] code: modprobe/3884
-[  430.451678] caller is __xdp_return+0x1ff/0x2e0
-[  430.452111] CPU: 0 PID: 3884 Comm: modprobe Tainted: G     U      E     5.12.0-rc2+ #45
+type is filled in by bpf_obj_do_get, so we can't avoid calling it. As
+Andrii mentions we need to allow flags for map.
 
-So, this patch fixes the issue by adding "if (napi_direct)" condition
-to skip calling xdp_return_frame_no_direct() if napi_direct = false.
+>
+> Thanks,
+> Song
+>
+> >
+> >         if (type == BPF_TYPE_PROG)
+> > -               ret = bpf_prog_new_fd(raw);
+> > +               ret = (f_flags != O_RDWR) ? -EINVAL : bpf_prog_new_fd(raw);
+> >         else if (type == BPF_TYPE_MAP)
+> >                 ret = bpf_map_new_fd(raw, f_flags);
+> >         else if (type == BPF_TYPE_LINK)
+> > --
+> > 2.27.0
+> >
 
-Fixes: 2539650fadbf ("xdp: Helpers for disabling napi_direct of xdp_return_frame")
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
----
- net/core/xdp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 05354976c1fc..4eaa28972af2 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -350,7 +350,8 @@ static void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
- 		/* mem->id is valid, checked in xdp_rxq_info_reg_mem_model() */
- 		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
- 		page = virt_to_head_page(data);
--		napi_direct &= !xdp_return_frame_no_direct();
-+		if (napi_direct)
-+			napi_direct &= !xdp_return_frame_no_direct();
- 		page_pool_put_full_page(xa->page_pool, page, napi_direct);
- 		rcu_read_unlock();
- 		break;
+
 -- 
-2.25.1
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
