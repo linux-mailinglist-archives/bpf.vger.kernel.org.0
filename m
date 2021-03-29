@@ -2,85 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7DB334D928
-	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 22:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D737134D956
+	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 22:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhC2Uli (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 16:41:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
+        id S230362AbhC2Uyg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 16:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231310AbhC2Ul0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 16:41:26 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386A9C061574;
-        Mon, 29 Mar 2021 13:41:26 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id kt15so21450671ejb.12;
-        Mon, 29 Mar 2021 13:41:26 -0700 (PDT)
+        with ESMTP id S231272AbhC2UyR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 16:54:17 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA50C061574;
+        Mon, 29 Mar 2021 13:54:17 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id f19so14188300ion.3;
+        Mon, 29 Mar 2021 13:54:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IOY00wZMw7iQ/C8A6RUq3HCwcrBzQhlsaRdSeoRLwXs=;
-        b=oWb6o1aHOSF0DXx/yX1KkO7igNt5jO2+W5TfD710HCbj6l6risPCncqXOwLHFW7VO8
-         n2WqBzfjhpbiAq9xr5ewQLs6CPp7Q8JD5j46qyEd0ryBtEmnUxAZ4pz+1sCID0ewC8ux
-         c+kDA6hixWaNdB3u91M8vSO/Rm6ab7D5cg6vvwEqrFt6JQRCTqRZ9lKp+iyrXKg1lOzD
-         EUimB0/jrdsRXR3RobVvOwNQtAEB3wOBlRKbEWGe1h4MUnTVdVYcpmrl64UXSU/F4xU7
-         2UQ47VDwAE3NgXqOvtbgiNZ6wJdOIC5qg0CPJ/OAWvtEQ51hikQWiK0OlgG0pn+IzHNH
-         OpbQ==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=Vf66eL15U8njDI0wUbJwhopv7ffMWFCFjk1XaltSbtY=;
+        b=m2zcF2/pc7LqNVitm4jzgxiWhPeMWbIAh1GgKn1wlziE+WqhReX5IuZNTNnmNgZPOo
+         m4NxR7Q7o+MkVZvd9DORmcyNzU3e9bJ75yLLJNrfsaxOh3QV9BQxrZIU7Dhskyj535tu
+         0D6M/NQSxSHlEOVirEH9A8WsZDqMnme6beZVCjGhWV48GLQaSC+NVnVqRWp40JZY/iC4
+         rFpF2eJQOJadn83UTuwcHLMmKIHqzqX4+2sIxgV5/fzAFIcFqZlQwTxAwaA3Lp95Wlrk
+         9hFw0bBvUXU453LLSnCXAk9joTsbprkd0Xr0epfrY16XNcja6NtJGe3LJN4YdjOYMBfA
+         /UDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IOY00wZMw7iQ/C8A6RUq3HCwcrBzQhlsaRdSeoRLwXs=;
-        b=cwrst70ex3yiyLbL6fuAQy2BkTaVKrv9ZBh3pBpIhrW3TLNravKg5huzSvIGNCMSyw
-         At+iHLVM9uVPnbWvAGVvoZLhINpZebTjd2PpRmQQXgSzJiunR9yTs/6drqMwjnFUwZp1
-         xllOChxDF690hL361oKPNpjwz7mHgtG5CJR79KPIe7SoFFq4lCh/6eoFYaKy/WHQ/YqR
-         J1wIixpU3eFPSSdb61ghpz0Li9pBXdGLNyfpCKnaj3zX+OLoWmHjN+jMmQzpUlylXEWJ
-         440/LS3amD7FIraAPNwcpuf/dD1GTr7ccarlCgIExp5MSjv8Xe39Ud13UlHy9ByjQt24
-         2M8w==
-X-Gm-Message-State: AOAM531VE8hLMYVGqoqvDC1yDXgkZT6Fu0jw8igG+K1iIGBQCki30aYE
-        +PhivCD5KGcf/e69T33WJHeqfAOuUVOniCRmQB4=
-X-Google-Smtp-Source: ABdhPJxcjn88m4H97qxfK72HhcS5ov53I7up+0loT8VWTFlglQcHijm0szjlpAvoCk9P+6FVl226+HzoXj3NFKnjmh8=
-X-Received: by 2002:a17:906:73cd:: with SMTP id n13mr29275638ejl.535.1617050484980;
- Mon, 29 Mar 2021 13:41:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210330022144.150edc6e@xhacker> <20210330022454.3d0feda2@xhacker>
-In-Reply-To: <20210330022454.3d0feda2@xhacker>
-From:   Luke Nelson <luke.r.nels@gmail.com>
-Date:   Mon, 29 Mar 2021 13:41:13 -0700
-Message-ID: <CAB-e3NQ11Gnoa716nnZ2tTgjb02_eZOf1gWn3YMmueEAp92c1g@mail.gmail.com>
-Subject: Re: [PATCH 6/9] riscv: bpf: Move bpf_jit_alloc_exec() and
- bpf_jit_free_exec() to core
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=Vf66eL15U8njDI0wUbJwhopv7ffMWFCFjk1XaltSbtY=;
+        b=Y6Xp2DsD+cgWjvr0+KI3BwgXabEFNFHrjgCbkJCfvwZ6RH03IUh0mab3WmJLgjL7lF
+         33LPhXBEbqcL9DQ+GuV/c13y1EXaH7nNglqlvOmK40iR2Wyy64wAyrQRjegXLHnNVNVM
+         cDbfsYkOEWBP2qKO4NFNtHdDmAlVMbf3yDy5Fi71CZQ6aZzJYVjxTd9IoUkjyOtBKa/g
+         X0qse4aGz1JtbJk3o97fMUJjCKZIUdDZxyM5SGf4plibcadxvZmCUeYlfQa8XtEtvtaj
+         UXvo0Mm5Ok5kXnihZktEHiVcBITGdh4cysvEhyj90fId8XUON2v03Axs3g2WkgoQF0Qr
+         Bl1w==
+X-Gm-Message-State: AOAM530ubHP1Bortdxf1XPIpfkV+xM6oTYuJ0HvRFZK4oAkibg0OZYAt
+        Sy/3tL3w798e6Uh5ii2aqCM=
+X-Google-Smtp-Source: ABdhPJwQMH5lghuDTbTORLJjfXZvLn0N8U56iu2fOChIIcXb2ASnF1Yia7Gf6MJ2eu4c2vCDn521KA==
+X-Received: by 2002:a05:6602:1da:: with SMTP id w26mr1930846iot.170.1617051256978;
+        Mon, 29 Mar 2021 13:54:16 -0700 (PDT)
+Received: from localhost ([172.242.244.146])
+        by smtp.gmail.com with ESMTPSA id b9sm10203942iof.54.2021.03.29.13.54.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 13:54:16 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 13:54:07 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
+        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
+        Cong Wang <cong.wang@bytedance.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Xi Wang <xi.wang@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kasan-dev@googlegroups.com, Networking <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Message-ID: <60623e6fdd870_401fb20818@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210328202013.29223-10-xiyou.wangcong@gmail.com>
+References: <20210328202013.29223-1-xiyou.wangcong@gmail.com>
+ <20210328202013.29223-10-xiyou.wangcong@gmail.com>
+Subject: RE: [Patch bpf-next v7 09/13] udp: implement ->read_sock() for
+ sockmap
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> We will drop the executable permissions of the code pages from the
-> mapping at allocation time soon. Move bpf_jit_alloc_exec() and
-> bpf_jit_free_exec() to bpf_jit_core.c so that they can be shared by
-> both RV64I and RV32I.
+Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+> 
+> This is similar to tcp_read_sock(), except we do not need
+> to worry about connections, we just need to retrieve skb
+> from UDP receive queue.
+> 
+> Note, the return value of ->read_sock() is unused in
+> sk_psock_verdict_data_ready().
+> 
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+>  include/net/udp.h   |  2 ++
+>  net/ipv4/af_inet.c  |  1 +
+>  net/ipv4/udp.c      | 35 +++++++++++++++++++++++++++++++++++
+>  net/ipv6/af_inet6.c |  1 +
+>  4 files changed, 39 insertions(+)
+> 
+> diff --git a/include/net/udp.h b/include/net/udp.h
+> index df7cc1edc200..347b62a753c3 100644
+> --- a/include/net/udp.h
+> +++ b/include/net/udp.h
+> @@ -329,6 +329,8 @@ struct sock *__udp6_lib_lookup(struct net *net,
+>  			       struct sk_buff *skb);
+>  struct sock *udp6_lib_lookup_skb(const struct sk_buff *skb,
+>  				 __be16 sport, __be16 dport);
+> +int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
+> +		  sk_read_actor_t recv_actor);
+>  
+>  /* UDP uses skb->dev_scratch to cache as much information as possible and avoid
+>   * possibly multiple cache miss on dequeue()
+> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+> index 1355e6c0d567..f17870ee558b 100644
+> --- a/net/ipv4/af_inet.c
+> +++ b/net/ipv4/af_inet.c
+> @@ -1070,6 +1070,7 @@ const struct proto_ops inet_dgram_ops = {
+>  	.setsockopt	   = sock_common_setsockopt,
+>  	.getsockopt	   = sock_common_getsockopt,
+>  	.sendmsg	   = inet_sendmsg,
+> +	.read_sock	   = udp_read_sock,
+>  	.recvmsg	   = inet_recvmsg,
+>  	.mmap		   = sock_no_mmap,
+>  	.sendpage	   = inet_sendpage,
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index 38952aaee3a1..04620e4d64ab 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -1782,6 +1782,41 @@ struct sk_buff *__skb_recv_udp(struct sock *sk, unsigned int flags,
+>  }
+>  EXPORT_SYMBOL(__skb_recv_udp);
+>  
+> +int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
+> +		  sk_read_actor_t recv_actor)
+> +{
+> +	int copied = 0;
+> +
+> +	while (1) {
+> +		int offset = 0, err;
 
-Looks good to me.
+Should this be
 
-Acked-by: Luke Nelson <luke.r.nels@gmail.com>
+ int offset = sk_peek_offset()?
+
+MSG_PEEK should work from recv side, at least it does on TCP side. If
+its handled in some following patch a comment would be nice. I was
+just reading udp_recvmsg() so maybe its not needed.
+
+> +		struct sk_buff *skb;
+> +
+> +		skb = __skb_recv_udp(sk, 0, 1, &offset, &err);
+> +		if (!skb)
+> +			return err;
+> +		if (offset < skb->len) {
+> +			size_t len;
+> +			int used;
+> +
+> +			len = skb->len - offset;
+> +			used = recv_actor(desc, skb, offset, len);
+> +			if (used <= 0) {
+> +				if (!copied)
+> +					copied = used;
+> +				break;
+> +			} else if (used <= len) {
+> +				copied += used;
+> +				offset += used;
+
+The while loop is going to zero this? What are we trying to do
+here with offset?
+
+> +			}
+> +		}
+> +		if (!desc->count)
+> +			break;
+> +	}
+> +
+> +	return copied;
+> +}
+> +EXPORT_SYMBOL(udp_read_sock);
+> +
+>  /*
+>   * 	This should be easy, if there is something there we
+>   * 	return it, otherwise we block.
+> diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
+> index 802f5111805a..71de739b4a9e 100644
+> --- a/net/ipv6/af_inet6.c
+> +++ b/net/ipv6/af_inet6.c
+> @@ -714,6 +714,7 @@ const struct proto_ops inet6_dgram_ops = {
+>  	.getsockopt	   = sock_common_getsockopt,	/* ok		*/
+>  	.sendmsg	   = inet6_sendmsg,		/* retpoline's sake */
+>  	.recvmsg	   = inet6_recvmsg,		/* retpoline's sake */
+> +	.read_sock	   = udp_read_sock,
+>  	.mmap		   = sock_no_mmap,
+>  	.sendpage	   = sock_no_sendpage,
+>  	.set_peek_off	   = sk_set_peek_off,
+> -- 
+> 2.25.1
+> 
+
+
