@@ -2,89 +2,245 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AA834CF60
-	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 13:51:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEEF34D01C
+	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 14:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbhC2Luh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 07:50:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231464AbhC2Lua (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:50:30 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ABBE3C061574;
-        Mon, 29 Mar 2021 04:50:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=vP+XJ1pyvg
-        bdFg3L0Y9Fk0jxHhZt3M1r+adOKJxCnW4=; b=iI+Uv9H9d+uCCQWblbJ9h/lP54
-        Qc4700Q4+ZOPuSlLa3lMcyxX6DTjy7lMtZGv7leFnccy6Uhgjt/fnmxyMYDdStt4
-        iRKo7G0mSCRzSeRkaIBQ8J3+jcOlWFGnjWBgS+m3pmLYNXGuXS89G/3Sf9CVAVp+
-        ZHNZIDT67SYNa0a80=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnb3_uvmFg_lBnAA--.904S4;
-        Mon, 29 Mar 2021 19:50:06 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     kuba@kernel.org, simon.horman@netronome.com, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        oss-drivers@netronome.com, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] ethernet/netronome/nfp: Fix a use after free in nfp_bpf_ctrl_msg_rx
-Date:   Mon, 29 Mar 2021 04:50:02 -0700
-Message-Id: <20210329115002.8557-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        id S230435AbhC2Mcu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 08:32:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27672 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231133AbhC2McV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 29 Mar 2021 08:32:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617021140;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GD9jR8caEzP+19c9pN1aTSDBAL/jQfepjFuZgZ5AJQg=;
+        b=gjKcIRSlVba2ID5zQO+zobbMmWftiOBcRTz1P0DhFwm/jureTQkNU/UOnwZvTvXcnVeYgF
+        H5XmCqXgG1sGkYogd4m4JgX/MUIcv5ifVXBuWqFS49ctEX2uEMwOdB+qEzVEuGbJ66EjXo
+        5z3yjTYwMFpTD2vsKqkmz9GONjgM/6Y=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-189-Mwhtw1FEMIq0-RkoEZkXMQ-1; Mon, 29 Mar 2021 08:32:18 -0400
+X-MC-Unique: Mwhtw1FEMIq0-RkoEZkXMQ-1
+Received: by mail-ej1-f71.google.com with SMTP id sa29so5707562ejb.4
+        for <bpf@vger.kernel.org>; Mon, 29 Mar 2021 05:32:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=GD9jR8caEzP+19c9pN1aTSDBAL/jQfepjFuZgZ5AJQg=;
+        b=KXQ8rM0Nvd+LFs7zZSduaRSbW8iPzMzJY+YeuaV5GRej4uOud392eQU6ZfntQgqAf3
+         DI8D/VB7Mwp+Hj1oQu5QDIItVsSNutQWHxGT2cFuHhncKcqwFrdA8+neVsrzQLme2pY1
+         dofQoMKeMNZ29FHPVVU0d4YjfzwqMpxz1OEN8ZrpFJkO52I1dsDqmuTV0xsgfRKrOxSL
+         zmjXNUAdcoBxMojHZGYqZeviJ3+hQA1mvebzB3eBQsKf9sp5RSmGpnp1UYPR4na0E3dA
+         8Up0IHNnHKd2R2+qEYN7catJBIfgJ1PTXF5092x2aIl8e0aJplpIi17WhwXdwUuKfoDE
+         Qgpg==
+X-Gm-Message-State: AOAM533+KwUrI9xBhV8rI6oXfwAf3rrmJOkkCZDR0MDS2imdjlNq6jf4
+        I1NV32VVzi6qmp7pMfk/+fx3W//p01A2QBfy9eT++2YBYE+hQDW/V9c/g6VSuznw4SCPODNSW2Q
+        0UM1eROEIHl0k
+X-Received: by 2002:aa7:c7c5:: with SMTP id o5mr27815380eds.31.1617021137529;
+        Mon, 29 Mar 2021 05:32:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxB6FtmWkTT1pDy9lNZ/oJD/8n2X2GcodTMfUAO+YgTpSdBjEi/lflWuIuFFQOFO79csJA6Eg==
+X-Received: by 2002:aa7:c7c5:: with SMTP id o5mr27815365eds.31.1617021137301;
+        Mon, 29 Mar 2021 05:32:17 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id w24sm8791315edt.44.2021.03.29.05.32.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 05:32:16 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 2925B180293; Mon, 29 Mar 2021 14:32:16 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Vlad Buslov <vladbu@nvidia.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, brouer@redhat.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
+In-Reply-To: <ygnhh7kugp1t.fsf@nvidia.com>
+References: <20210325120020.236504-1-memxor@gmail.com>
+ <20210325120020.236504-4-memxor@gmail.com> <ygnhh7kugp1t.fsf@nvidia.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 29 Mar 2021 14:32:16 +0200
+Message-ID: <87ft0eta27.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygBnb3_uvmFg_lBnAA--.904S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7XryxKw17AF1ftrWrKF4DArb_yoWftFXEkr
-        1jgFWfG3yUGw15KwsF9r4a93sYkr1qv3s5CFZxKrWSv3y5CF17XrZY9rykZa47Ww4xAa9r
-        Xr9IqryUAa48tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbfxFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAG
-        YxC7M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVAFwVW8KwCF04k20xvY0x0EwIxGrw
-        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-        14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-        IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxK
-        x2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUS_M-UUUUU=
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In nfp_bpf_ctrl_msg_rx, if
-nfp_ccm_get_type(skb) == NFP_CCM_TYPE_BPF_BPF_EVENT is true, the skb
-will be freed. But the skb is still used by nfp_ccm_rx(&bpf->ccm, skb).
+Vlad Buslov <vladbu@nvidia.com> writes:
 
-My patch adds a return when the skb was freed.
+> On Thu 25 Mar 2021 at 14:00, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>> This adds functions that wrap the netlink API used for adding,
+>> manipulating, and removing filters and actions. These functions operate
+>> directly on the loaded prog's fd, and return a handle to the filter and
+>> action using an out parameter (id for tc_cls, and index for tc_act).
+>>
+>> The basic featureset is covered to allow for attaching, manipulation of
+>> properties, and removal of filters and actions. Some additional features
+>> like TCA_BPF_POLICE and TCA_RATE for tc_cls have been omitted. These can
+>> added on top later by extending the bpf_tc_cls_opts struct.
+>>
+>> Support for binding actions directly to a classifier by passing them in
+>> during filter creation has also been omitted for now. These actions
+>> have an auto clean up property because their lifetime is bound to the
+>> filter they are attached to. This can be added later, but was omitted
+>> for now as direct action mode is a better alternative to it.
+>>
+>> An API summary:
+>>
+>> The BPF TC-CLS API
+>>
+>> bpf_tc_act_{attach, change, replace}_{dev, block} may be used to attach,
+>> change, and replace SCHED_CLS bpf classifiers. Separate set of functions
+>> are provided for network interfaces and shared filter blocks.
+>>
+>> bpf_tc_cls_detach_{dev, block} may be used to detach existing SCHED_CLS
+>> filter. The bpf_tc_cls_attach_id object filled in during attach,
+>> change, or replace must be passed in to the detach functions for them to
+>> remove the filter and its attached classififer correctly.
+>>
+>> bpf_tc_cls_get_info is a helper that can be used to obtain attributes
+>> for the filter and classififer. The opts structure may be used to
+>> choose the granularity of search, such that info for a specific filter
+>> corresponding to the same loaded bpf program can be obtained. By
+>> default, the first match is returned to the user.
+>>
+>> Examples:
+>>
+>> 	struct bpf_tc_cls_attach_id id = {};
+>> 	struct bpf_object *obj;
+>> 	struct bpf_program *p;
+>> 	int fd, r;
+>>
+>> 	obj = bpf_object_open("foo.o");
+>> 	if (IS_ERR_OR_NULL(obj))
+>> 		return PTR_ERR(obj);
+>>
+>> 	p = bpf_object__find_program_by_title(obj, "classifier");
+>> 	if (IS_ERR_OR_NULL(p))
+>> 		return PTR_ERR(p);
+>>
+>> 	if (bpf_object__load(obj) < 0)
+>> 		return -1;
+>>
+>> 	fd = bpf_program__fd(p);
+>>
+>> 	r = bpf_tc_cls_attach_dev(fd, if_nametoindex("lo"),
+>> 				  BPF_TC_CLSACT_INGRESS, ETH_P_IP,
+>> 				  NULL, &id);
+>> 	if (r < 0)
+>> 		return r;
+>>
+>> ... which is roughly equivalent to (after clsact qdisc setup):
+>>   # tc filter add dev lo ingress bpf obj /home/kkd/foo.o sec classifier
+>>
+>> If a user wishes to modify existing options on an attached filter, the
+>> bpf_tc_cls_change_{dev, block} API may be used. Parameters like
+>> chain_index, priority, and handle are ignored in the bpf_tc_cls_opts
+>> struct as they cannot be modified after attaching a filter.
+>>
+>> Example:
+>>
+>> 	/* Optional parameters necessary to select the right filter */
+>> 	DECLARE_LIBBPF_OPTS(bpf_tc_cls_opts, opts,
+>> 			    .handle = id.handle,
+>> 			    .priority = id.priority,
+>> 			    .chain_index = id.chain_index)
+>> 	/* Turn on direct action mode */
+>> 	opts.direct_action = true;
+>> 	r = bpf_tc_cls_change_dev(fd, id.ifindex, id.parent_id,
+>> 			          id.protocol, &opts, &id);
+>> 	if (r < 0)
+>> 		return r;
+>>
+>> 	/* Verify that the direct action mode has been set */
+>> 	struct bpf_tc_cls_info info = {};
+>> 	r = bpf_tc_cls_get_info_dev(fd, id.ifindex, id.parent_id,
+>> 			            id.protocol, &opts, &info);
+>> 	if (r < 0)
+>> 		return r;
+>>
+>> 	assert(info.bpf_flags & TCA_BPF_FLAG_ACT_DIRECT);
+>>
+>> This would be roughly equivalent to doing:
+>>   # tc filter change dev lo egress prio <p> handle <h> bpf obj /home/kkd/foo.o section classifier da
+>>
+>> ... except a new bpf program will be loaded and replace existing one.
+>>
+>> If a user wishes to either replace an existing filter, or create a new
+>> one with the same properties, they can use bpf_tc_cls_replace_dev. The
+>> benefit of bpf_tc_cls_change is that it fails if no matching filter
+>> exists.
+>>
+>> The BPF TC-ACT API
+>>
+>> bpf_tc_act_{attach, replace} may be used to attach and replace already
+>> attached SCHED_ACT actions. Passing an index of 0 has special meaning,
+>> in that an index will be automatically chosen by the kernel. The index
+>> chosen by the kernel is the return value of these functions in case of
+>> success.
+>>
+>> bpf_tc_act_detach may be used to detach a SCHED_ACT action prog
+>> identified by the index parameter. The index 0 again has a special
+>> meaning, in that passing it will flush all existing SCHED_ACT actions
+>> loaded using the ACT API.
+>>
+>> bpf_tc_act_get_info is a helper to get the required attributes of a
+>> loaded program to be able to manipulate it futher, by passing them
+>> into the aforementioned functions.
+>>
+>> Example:
+>>
+>> 	struct bpf_object *obj;
+>> 	struct bpf_program *p;
+>> 	__u32 index;
+>> 	int fd, r;
+>>
+>> 	obj = bpf_object_open("foo.o");
+>> 	if (IS_ERR_OR_NULL(obj))
+>> 		return PTR_ERR(obj);
+>>
+>> 	p = bpf_object__find_program_by_title(obj, "action");
+>> 	if (IS_ERR_OR_NULL(p))
+>> 		return PTR_ERR(p);
+>>
+>> 	if (bpf_object__load(obj) < 0)
+>> 		return -1;
+>>
+>> 	fd = bpf_program__fd(p);
+>>
+>> 	r = bpf_tc_act_attach(fd, NULL, &index);
+>> 	if (r < 0)
+>> 		return r;
+>>
+>> 	if (bpf_tc_act_detach(index))
+>> 		return -1;
+>>
+>> ... which is equivalent to the following sequence:
+>> 	tc action add action bpf obj /home/kkd/foo.o sec action
+>> 	tc action del action bpf index <idx>
+>
+> How do you handle the locking here? Please note that while
+> RTM_{NEW|GET|DEL}FILTER API has been refactored to handle its own
+> locking internally (and registered with RTNL_FLAG_DOIT_UNLOCKED flag),
+> RTM_{NEW|GET|DEL}ACTION API still expects to be called with rtnl lock
+> taken.
 
-Fixes: bcf0cafab44fd ("nfp: split out common control message handling code")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/net/ethernet/netronome/nfp/bpf/cmsg.c | 1 +
- 1 file changed, 1 insertion(+)
+Huh, locking? This is all userspace code that uses the netlink API...
 
-diff --git a/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c b/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
-index 0e2db6ea79e9..2ec62c8d86e1 100644
---- a/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
-+++ b/drivers/net/ethernet/netronome/nfp/bpf/cmsg.c
-@@ -454,6 +454,7 @@ void nfp_bpf_ctrl_msg_rx(struct nfp_app *app, struct sk_buff *skb)
- 			dev_consume_skb_any(skb);
- 		else
- 			dev_kfree_skb_any(skb);
-+		return;
- 	}
- 
- 	nfp_ccm_rx(&bpf->ccm, skb);
--- 
-2.25.1
-
+-Toke
 
