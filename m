@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B488034DA35
-	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 00:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED00534DABC
+	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 00:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231969AbhC2WWM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 18:22:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45730 "EHLO mail.kernel.org"
+        id S232514AbhC2WX2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 18:23:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231589AbhC2WVl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:21:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE10661976;
-        Mon, 29 Mar 2021 22:21:39 +0000 (UTC)
+        id S232087AbhC2WW1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 18:22:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 848656198A;
+        Mon, 29 Mar 2021 22:22:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617056500;
+        s=k20201202; t=1617056547;
         bh=ALZntVy1v1vL5fjHnSHVJHDyzRcy059K9dkGBMFzF44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YKnPYFB1LVHiablOKooLlgLTtUHTy3GJgopaFELQzq6CXOtQOMO0p/S8vITJ2FMAO
-         sJyc88BEoNZ8IgKR7x2aN0iGw0+62w8XYYRckIVJYW01aQLbiMvBwizViSy8R98Y4s
-         oO3trWvdfpKWRqZf2ytciCFRfX2b69pwLnzld7pF9vYoQ+xSpmxoU4+JVUTozPXY6Y
-         bOrePrv+97dj9Gx5iO0Rb2D1jvTgykJ7hvIUybt1WY1frQkRKwbkh10ABXu4JQvoo0
-         ZSG1/VECVT09L0bUBLnx7r8UrrTAhK+NZzzuWm9AkOsGHhhE68oIQlnUnntYSf7gNC
-         yOzFdegdYHqtQ==
+        b=l6ZIgKuMGe2CUovWA03+Xx5MWtP958L/gwgG3BX6d9hwKOlNfJSwPJUi5Zf/GrdQ9
+         7JuBeO4MkxTeoys+GC6rJtXN+oL1gM/wHx+xqNizQl4Y7BL+q+axHxPtrwA9VgOxYe
+         wvkU/jMUnwipp+hhMbEoXmP4gpuBcQ/w7/tL/9XA5wphApIw8O6fpcniafDdn0r5gu
+         zSM64r1W6imJZ0azd70kT6GY0PyMWAGDm5VIlEvOoDVEDAuIodrk6gOUiaZfRwlDrd
+         9O29FLC27ajIElafpcqjL2tP2C4dyGKIxv5wJcgWkOqoU4tXNMQ8eVq/Qv7c1OOgpn
+         nIRDZdNKE6NyA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 05/38] bpf, x86: Use kvmalloc_array instead kmalloc_array in bpf_jit_comp
-Date:   Mon, 29 Mar 2021 18:21:00 -0400
-Message-Id: <20210329222133.2382393-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 04/33] bpf, x86: Use kvmalloc_array instead kmalloc_array in bpf_jit_comp
+Date:   Mon, 29 Mar 2021 18:21:52 -0400
+Message-Id: <20210329222222.2382987-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210329222133.2382393-1-sashal@kernel.org>
-References: <20210329222133.2382393-1-sashal@kernel.org>
+In-Reply-To: <20210329222222.2382987-1-sashal@kernel.org>
+References: <20210329222222.2382987-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
