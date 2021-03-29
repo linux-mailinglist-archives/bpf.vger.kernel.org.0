@@ -2,79 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E040B34CD15
-	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 11:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D8034CD00
+	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 11:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbhC2Jap (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 05:30:45 -0400
-Received: from elvis.franken.de ([193.175.24.41]:33835 "EHLO elvis.franken.de"
+        id S231603AbhC2J02 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 05:26:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231853AbhC2JaX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:30:23 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lQoE1-0003qb-01; Mon, 29 Mar 2021 11:30:21 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 9A93BC1D90; Mon, 29 Mar 2021 11:24:49 +0200 (CEST)
-Date:   Mon, 29 Mar 2021 11:24:49 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v3] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
-Message-ID: <20210329092449.GA8484@alpha.franken.de>
-References: <1616676601-14478-1-git-send-email-yangtiezhu@loongson.cn>
+        id S231659AbhC2J0T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 05:26:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B45876193C;
+        Mon, 29 Mar 2021 09:26:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617009979;
+        bh=2m63iLs4WAe9lYjvi0CAGkdEF4a/0HxPdd40RsaZgHE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YDnyZC5YOgX7yXRUjz9IGEO0C6G0nFmFS/eHflmgry96kPs8l5LfKHOfjeOx1269E
+         9AKlzXbO73/J3hgxgOJ3WYU8xLgMtAhEyA/YTdmezdrEGiYR1Fre1yP8TTftBagrNC
+         wv3RmU15M+bgWdIZUnlXbkpLQVt1BkWh1L3AI4zr5NW//9NVSaS2METzlmPoClL74i
+         AehOpRfLKdbxWuSRWc036zO/qqoOyDZ9y25rnaJCDrzPrUmzQzv1Kko/WdUBeMJZgk
+         Cci7SrTHk1S6Jj+IJPSSAgN+6ISiauwjudqnn+snE9Psh1UV2z4bwsdwYP57+VxxFj
+         sjSV9H1gLbeMQ==
+Date:   Mon, 29 Mar 2021 11:26:12 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 04/17] module: ensure __cfi_check alignment
+Message-ID: <YGGdNAygysK8MfnZ@gunter>
+References: <20210323203946.2159693-1-samitolvanen@google.com>
+ <20210323203946.2159693-5-samitolvanen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <1616676601-14478-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210323203946.2159693-5-samitolvanen@google.com>
+X-OS:   Linux gunter 5.11.6-1-default x86_64
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 08:50:01PM +0800, Tiezhu Yang wrote:
-> After commit 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to
-> archs where they work"), bpf_probe_read{, str}() functions were no longer
-> available on MIPS, so there exist some errors when running bpf program:
-> 
-> root@linux:/home/loongson/bcc# python examples/tracing/task_switch.py
-> bpf: Failed to load program: Invalid argument
-> [...]
-> 11: (85) call bpf_probe_read#4
-> unknown func bpf_probe_read#4
-> [...]
-> Exception: Failed to load BPF program count_sched: Invalid argument
-> 
-> ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should be restricted to archs
-> with non-overlapping address ranges, but they can overlap in EVA mode
-> on MIPS, so select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE if !EVA in
-> arch/mips/Kconfig, otherwise the bpf old helper bpf_probe_read() will
-> not be available.
-> 
-> This is similar with the commit d195b1d1d119 ("powerpc/bpf: Enable
-> bpf_probe_read{, str}() on powerpc again").
-> 
-> Fixes: 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
-> 
-> v3: Select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE if !EVA
->     on MIPS.
-> 
-> v2: update the commit message to fix typos found by
->     Sergei Shtylyov, thank you!
-> 
->     not longer --> no longer
->     there exists --> there exist
-> 
->  arch/mips/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
++++ Sami Tolvanen [23/03/21 13:39 -0700]:
+>CONFIG_CFI_CLANG_SHADOW assumes the __cfi_check() function is page
+>aligned and at the beginning of the .text section. While Clang would
+>normally align the function correctly, it fails to do so for modules
+>with no executable code.
+>
+>This change ensures the correct __cfi_check() location and
+>alignment. It also discards the .eh_frame section, which Clang can
+>generate with certain sanitizers, such as CFI.
+>
+>Link: https://bugs.llvm.org/show_bug.cgi?id=46293
+>Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-applied to mips-next.
+Acked-by: Jessica Yu <jeyu@kernel.org>
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Thanks!
