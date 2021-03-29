@@ -2,139 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728C834CB5F
-	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 10:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E040B34CD15
+	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 11:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235556AbhC2Iqd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 29 Mar 2021 04:46:33 -0400
-Received: from mga03.intel.com ([134.134.136.65]:35073 "EHLO mga03.intel.com"
+        id S231933AbhC2Jap (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 05:30:45 -0400
+Received: from elvis.franken.de ([193.175.24.41]:33835 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235248AbhC2Ime (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:42:34 -0400
-IronPort-SDR: vk5IvlhRwNLCqsurIeioaZOJkI/hyBjFg1XUaqo/zECSfpRNUIT4ViLDVOd0OflJ1sMVMoOwi3
- 2ZxpXcyCvufA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="191534952"
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="191534952"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 01:41:32 -0700
-IronPort-SDR: qCpEOheK42IdvbwkINi1ISulfr7bopDHfnNL1fBKxsUq6onFujJu9h0pWsr/+KlD6KxLbgGEW5
- Ka5BUxiKysfA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="415338588"
-Received: from irsmsx602.ger.corp.intel.com ([163.33.146.8])
-  by orsmga007.jf.intel.com with ESMTP; 29 Mar 2021 01:41:30 -0700
-Received: from irsmsx604.ger.corp.intel.com (163.33.146.137) by
- irsmsx602.ger.corp.intel.com (163.33.146.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 29 Mar 2021 09:41:29 +0100
-Received: from irsmsx604.ger.corp.intel.com ([163.33.146.137]) by
- IRSMSX604.ger.corp.intel.com ([163.33.146.137]) with mapi id 15.01.2106.013;
- Mon, 29 Mar 2021 09:41:29 +0100
-From:   "Loftus, Ciara" <ciara.loftus@intel.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "bjorn@kernel.org" <bjorn@kernel.org>,
-        "magnus.karlsson@gmail.com" <magnus.karlsson@gmail.com>
-Subject: RE: [PATCH v2 bpf 3/3] libbpf: ignore return values of setsockopt for
- XDP rings.
-Thread-Topic: [PATCH v2 bpf 3/3] libbpf: ignore return values of setsockopt
- for XDP rings.
-Thread-Index: AQHXIlDjJrZQMtFJm0i7O3jDxgJtSaqXHNWAgAOK00A=
-Date:   Mon, 29 Mar 2021 08:41:29 +0000
-Message-ID: <bc1d9e861d27499da5f5a84bc6d22177@intel.com>
-References: <20210326142946.5263-1-ciara.loftus@intel.com>
- <20210326142946.5263-4-ciara.loftus@intel.com>
- <20210327022729.cgizt5xnhkerbrmy@ast-mbp>
-In-Reply-To: <20210327022729.cgizt5xnhkerbrmy@ast-mbp>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [163.33.253.164]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S231853AbhC2JaX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 05:30:23 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lQoE1-0003qb-01; Mon, 29 Mar 2021 11:30:21 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 9A93BC1D90; Mon, 29 Mar 2021 11:24:49 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 11:24:49 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v3] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
+Message-ID: <20210329092449.GA8484@alpha.franken.de>
+References: <1616676601-14478-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1616676601-14478-1-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Mar 25, 2021 at 08:50:01PM +0800, Tiezhu Yang wrote:
+> After commit 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to
+> archs where they work"), bpf_probe_read{, str}() functions were no longer
+> available on MIPS, so there exist some errors when running bpf program:
 > 
-> On Fri, Mar 26, 2021 at 02:29:46PM +0000, Ciara Loftus wrote:
-> > During xsk_socket__create the XDP_RX_RING and XDP_TX_RING
-> setsockopts
-> > are called to create the rx and tx rings for the AF_XDP socket. If the ring
-> > has already been set up, the setsockopt will return an error. However,
-> > in the event of a failure during xsk_socket__create(_shared) after the
-> > rings have been set up, the user may wish to retry the socket creation
-> > using these pre-existing rings. In this case we can ignore the error
-> > returned by the setsockopts. If there is a true error, the subsequent
-> > call to mmap() will catch it.
-> >
-> > Fixes: 1cad07884239 ("libbpf: add support for using AF_XDP sockets")
-> >
-> > Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
-> > ---
-> >  tools/lib/bpf/xsk.c | 34 ++++++++++++++++------------------
-> >  1 file changed, 16 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> > index d4991ddff05a..cfc4abf505c3 100644
-> > --- a/tools/lib/bpf/xsk.c
-> > +++ b/tools/lib/bpf/xsk.c
-> > @@ -900,24 +900,22 @@ int xsk_socket__create_shared(struct xsk_socket
-> **xsk_ptr,
-> >  	}
-> >  	xsk->ctx = ctx;
-> >
-> > -	if (rx) {
-> > -		err = setsockopt(xsk->fd, SOL_XDP, XDP_RX_RING,
-> > -				 &xsk->config.rx_size,
-> > -				 sizeof(xsk->config.rx_size));
-> > -		if (err) {
-> > -			err = -errno;
-> > -			goto out_put_ctx;
-> > -		}
-> > -	}
-> > -	if (tx) {
-> > -		err = setsockopt(xsk->fd, SOL_XDP, XDP_TX_RING,
-> > -				 &xsk->config.tx_size,
-> > -				 sizeof(xsk->config.tx_size));
-> > -		if (err) {
-> > -			err = -errno;
-> > -			goto out_put_ctx;
-> > -		}
-> > -	}
-> > +	/* The return values of these setsockopt calls are intentionally not
-> checked.
-> > +	 * If the ring has already been set up setsockopt will return an error.
-> However,
-> > +	 * this scenario is acceptable as the user may be retrying the socket
-> creation
-> > +	 * with rings which were set up in a previous but ultimately
-> unsuccessful call
-> > +	 * to xsk_socket__create(_shared). The call later to mmap() will fail if
-> there
-> > +	 * is a real issue and we handle that return value appropriately there.
-> > +	 */
-> > +	if (rx)
-> > +		setsockopt(xsk->fd, SOL_XDP, XDP_RX_RING,
-> > +			   &xsk->config.rx_size,
-> > +			   sizeof(xsk->config.rx_size));
-> > +
-> > +	if (tx)
-> > +		setsockopt(xsk->fd, SOL_XDP, XDP_TX_RING,
-> > +			   &xsk->config.tx_size,
-> > +			   sizeof(xsk->config.tx_size));
+> root@linux:/home/loongson/bcc# python examples/tracing/task_switch.py
+> bpf: Failed to load program: Invalid argument
+> [...]
+> 11: (85) call bpf_probe_read#4
+> unknown func bpf_probe_read#4
+> [...]
+> Exception: Failed to load BPF program count_sched: Invalid argument
 > 
-> Instead of ignoring the error can you remember that setsockopt was done
-> in struct xsk_socket and don't do it the second time?
+> ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should be restricted to archs
+> with non-overlapping address ranges, but they can overlap in EVA mode
+> on MIPS, so select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE if !EVA in
+> arch/mips/Kconfig, otherwise the bpf old helper bpf_probe_read() will
+> not be available.
+> 
+> This is similar with the commit d195b1d1d119 ("powerpc/bpf: Enable
+> bpf_probe_read{, str}() on powerpc again").
+> 
+> Fixes: 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+> 
+> v3: Select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE if !EVA
+>     on MIPS.
+> 
+> v2: update the commit message to fix typos found by
+>     Sergei Shtylyov, thank you!
+> 
+>     not longer --> no longer
+>     there exists --> there exist
+> 
+>  arch/mips/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-Ideally we don't have to ignore the error. However in the event of failure struct xsk_socket is freed at the end of xsk_socket__create so we can't use it to remember state between subsequent calls to __create(). 
+applied to mips-next.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
