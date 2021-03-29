@@ -2,100 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA92A34DC41
-	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 00:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5011934DC19
+	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 00:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232257AbhC2W4U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 18:56:20 -0400
-Received: from mga04.intel.com ([192.55.52.120]:2470 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232039AbhC2Wzu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:55:50 -0400
-IronPort-SDR: UHseqLH2RW/QRBs73HHkCdnXP2Ex5KoHF31IjQxmZpZrOFfTIX3NbkJeKdSlp46/Ct8dXL9l7k
- xcmiJAiO9JXA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="189393053"
-X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
-   d="scan'208";a="189393053"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 15:55:50 -0700
-IronPort-SDR: aSLgjpQIMNxBDFG1bT4M7+2mk+b5XrY38ojoqQ7+xN+h69sVVl3yiXJaoZI+pb3fpJXb10UE/x
- CmMqaK+RM8xQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
-   d="scan'208";a="417884373"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga008.jf.intel.com with ESMTP; 29 Mar 2021 15:55:47 -0700
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
-        ast@kernel.org, andrii@kernel.org
-Cc:     bjorn.topel@intel.com, magnus.karlsson@intel.com,
-        ciara.loftus@intel.com, john.fastabend@gmail.com, toke@redhat.com
-Subject: [PATCH v5 bpf-next 17/17] selftests: xsk: Remove unused defines
-Date:   Tue, 30 Mar 2021 00:43:16 +0200
-Message-Id: <20210329224316.17793-18-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210329224316.17793-1-maciej.fijalkowski@intel.com>
-References: <20210329224316.17793-1-maciej.fijalkowski@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S231135AbhC2WxG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 18:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230161AbhC2Wwi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 18:52:38 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659B9C061762
+        for <bpf@vger.kernel.org>; Mon, 29 Mar 2021 15:52:38 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id da16so11943087qvb.2
+        for <bpf@vger.kernel.org>; Mon, 29 Mar 2021 15:52:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=q+pONZ+c5gzLHZlc8vklxdpHbUYpIrWC8EjxE4Qzlnc=;
+        b=i2KpWGdI/+ml8LNXX0aSU7N82qqTntdTDZjcHo8J2MMruG576SgALMQkjAX6KOXceW
+         IrOVZ+cozFtEm6yTSStYwgQWftf2uFZcl/rgv2EGbcV3zTZxg/iLBHymUt/sQAx1kMYu
+         viD7uqt2Mp4iqZsQWvx6T6WiIZHhpe6YkpdeUIPXwRZWKTcZU36ciArP6/nQp96X0QRX
+         lhSB7s6xq/ddvkbqhYHYvvAE3bkN9L5MQ6BUhWL7Q9Ys0eUDQObZlFK1jHsbRlJRcgcv
+         7F9SysQBjk9MQ9/LDhz/vAMJTZItQ/ppdSVI14TrjXvtGM9v8QyzL/Kz6Evt5CWBdB20
+         cVyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=q+pONZ+c5gzLHZlc8vklxdpHbUYpIrWC8EjxE4Qzlnc=;
+        b=m9gFqZMG+QeBeXG0657zBHRnRmmI4i27/aR8xIn3t1SN7FWJ8Nr6hiNA6R5yIbDqAk
+         0NQuoj0eiHixDB14hCdTvudacD64cSkFW8Dn2xwvF6bHdcyEoyv/YfDiV/WjrcmxpBfZ
+         vpqL/aPsvVUksUgMhEU1EjKbOkoNjQP0QRp8NPSndrwkNvBu5cgvfwpiL5blsOXz6jsq
+         1DEbTL3VU7/8H7i6uMHy8LQaE+16165PJ8PVp9LQaDzH32YCusYkOWJVpoxlGeWp1+e4
+         JwNq9ZjO/dbR+GNGhkOowhwGpBhg0pRlEId3BbQZGBW3Ql3kjka6bBXPRmYhDuDJTsBI
+         g/oQ==
+X-Gm-Message-State: AOAM530E643gXJ1zgVI46FYpoNH0+Rld/akPZATo1h3K5gP2j5sFblZL
+        kweprDtjEHc4OVbdFwFM7Hzi8pZDk9H9NgcsVyM=
+X-Google-Smtp-Source: ABdhPJz7NMMYH+EO7jPPhn+82vEbQx/l4SdUF0/BAZVldxnLPfgrSAWzVrLnKVkVhoFUEptinOdh+noYxp2C71l/FFY=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:c959:2751:3fb4:47b1])
+ (user=ndesaulniers job=sendgmr) by 2002:ad4:4431:: with SMTP id
+ e17mr27689931qvt.37.1617058357412; Mon, 29 Mar 2021 15:52:37 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 15:52:35 -0700
+In-Reply-To: <20210328064121.2062927-1-yhs@fb.com>
+Message-Id: <20210329225235.1845295-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <20210328064121.2062927-1-yhs@fb.com>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: Re: [PATCH kbuild] kbuild: add -grecord-gcc-switches to clang build
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     yhs@fb.com
+Cc:     arnaldo.melo@gmail.com, ast@kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com, linux-kbuild@vger.kernel.org,
+        masahiroy@kernel.org, michal.lkml@markovi.net,
+        clang-built-linux@googlegroups.com, sedat.dilek@gmail.com,
+        morbo@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+(replying to https://lore.kernel.org/bpf/20210328064121.2062927-1-yhs@fb.com/)
 
-Remove two unused defines.
+Thanks for the patch!
 
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- tools/testing/selftests/bpf/xdpxceiver.c | 7 +++----
- tools/testing/selftests/bpf/xdpxceiver.h | 2 --
- 2 files changed, 3 insertions(+), 6 deletions(-)
+> +# gcc emits compilation flags in dwarf DW_AT_producer by default
+> +# while clang needs explicit flag. Add this flag explicitly.
+> +ifdef CONFIG_CC_IS_CLANG
+> +DEBUG_CFLAGS	+= -grecord-gcc-switches
+> +endif
+> +
 
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index 084ba052fa89..0a7c5a8ca585 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.c
-+++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -456,7 +456,7 @@ static void complete_tx_only(struct xsk_socket_info *xsk, int batch_size)
- 	if (!xsk->outstanding_tx)
- 		return;
- 
--	if (!NEED_WAKEUP || xsk_ring_prod__needs_wakeup(&xsk->tx))
-+	if (xsk_ring_prod__needs_wakeup(&xsk->tx))
- 		kick_tx(xsk);
- 
- 	rcvd = xsk_ring_cons__peek(&xsk->umem->cq, batch_size, &idx);
-@@ -544,9 +544,8 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frameptr, int batch_size)
- 	xsk_ring_prod__submit(&xsk->tx, batch_size);
- 	if (!tx_invalid_test) {
- 		xsk->outstanding_tx += batch_size;
--	} else {
--		if (!NEED_WAKEUP || xsk_ring_prod__needs_wakeup(&xsk->tx))
--			kick_tx(xsk);
-+	} else if (xsk_ring_prod__needs_wakeup(&xsk->tx)) {
-+		kick_tx(xsk);
- 	}
- 	*frameptr += batch_size;
- 	*frameptr %= num_frames;
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.h b/tools/testing/selftests/bpf/xdpxceiver.h
-index ef219c0785eb..6c428b276ab6 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.h
-+++ b/tools/testing/selftests/bpf/xdpxceiver.h
-@@ -34,13 +34,11 @@
- #define IP_PKT_TOS 0x9
- #define UDP_PKT_SIZE (IP_PKT_SIZE - sizeof(struct iphdr))
- #define UDP_PKT_DATA_SIZE (UDP_PKT_SIZE - sizeof(struct udphdr))
--#define TMOUT_SEC (3)
- #define EOT (-1)
- #define USLEEP_MAX 200000
- #define SOCK_RECONF_CTR 10
- #define BATCH_SIZE 64
- #define POLL_TMOUT 1000
--#define NEED_WAKEUP true
- #define DEFAULT_PKT_CNT 10000
- #define RX_FULL_RXQSIZE 32
- 
--- 
-2.20.1
-
+This adds ~5MB/1% to vmlinux of an x86_64 defconfig built with clang. Do we
+want to add additional guards for CONFIG_DEBUG_INFO_BTF, so that we don't have
+to pay that cost if that config is not set?
