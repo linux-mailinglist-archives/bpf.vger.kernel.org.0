@@ -2,141 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D4234D3ED
-	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 17:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C44AA34D457
+	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 17:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbhC2P3V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 11:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbhC2P3N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:29:13 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D23C061574;
-        Mon, 29 Mar 2021 08:29:10 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id i26so19004342lfl.1;
-        Mon, 29 Mar 2021 08:29:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YNSI6utIdzEkVaZ1ObCL91nCSNDK1rRdMbCcqeZDoUw=;
-        b=eBwN6Y938TNH+phkVteIoYlBZa8P9+bKNWWvxBIQr6+5DFLf22PpWLsOfDLqW1ag+K
-         g5jGAKZD4jLZ0x+93Xo0MuQl9Qb/qQa9wKk/Ytxj0ASrHBUc4b+qIWI/zJxEGEFs5YtE
-         Qia7SWWbMWeYzgenrbf8Um7onj5EfCIZH5IWtaDWw33YRdy3WyZNcrzodv/TJ6I5kA41
-         rbPiqdZroTnGGHvKsDheYAUnjE8bLk1P+hLlYvLmHPHqIVXBzsmTWM1uwBq1JkkG7z0s
-         urX4bZ7U4e+uqaFiL3Mp0aA71xv/yLzL1VFjQm9abMCYG8zwh3uhf5y+RdecF8HDiQ73
-         I3zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YNSI6utIdzEkVaZ1ObCL91nCSNDK1rRdMbCcqeZDoUw=;
-        b=cGFeyCg7p+qhP8TrJ4fg9ZssQTsyFZeQDMR7NQVRETvMNiV9gBO8cqOq9rISSBLUPI
-         128ggxpAt4PF92QOp/McgIXO4UOKQFLttenCQEQSgCfqkNtnPysmZ5tWD8ip2r4i/CoF
-         i+6s2go/Un++Jaruwdny3KN4u62tFLMQVRKSd+TGEKbvZMBw0Hh4qtutULcOWoD2t8u1
-         qwc86FprYV0r96+UiYrFGVLfuqpMnjurmtcEdAk8QX3EkPHVyUEPzSYH/CbUlhwRbtSK
-         tpBzhqm89nbTIEKYrDjlGp1wiCoyWzJfyyDQGEVmyqZbBdM2qIXvss4ECIMPuYhNPXIR
-         naFQ==
-X-Gm-Message-State: AOAM531uePsl2JfXXyqAU0M7rGSa8wS/H1D+0d20Nq3QjY9AF0pX2pZA
-        +MeYelxQKY3R6H2VYj6V81pJKVwvDgUS7Cx/FfFI0oDo
-X-Google-Smtp-Source: ABdhPJzYVnTFrHNHuc5lV4/F6PFEGFHVERsQO8gxiDIDEmGYZ2V8sM++InCjT7bB3aRiLy56zUDjhjAoxzznuY+O85I=
-X-Received: by 2002:ac2:5ec2:: with SMTP id d2mr17368504lfq.214.1617031748535;
- Mon, 29 Mar 2021 08:29:08 -0700 (PDT)
+        id S229628AbhC2Pzf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 11:55:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229656AbhC2PzI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 11:55:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25E6E61964;
+        Mon, 29 Mar 2021 15:55:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617033307;
+        bh=hmHqbv+llNzlagTGta3DJ3KAOzAkq24tcXAj08RT9X4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=B4Et25Q+QX+OM6bJqPepKritJqvf3uyM5FGgX92Vp1wpCJuTymGGVmvNgzbwynb/I
+         Vb2agxhulbxN9lyctBZLd7akbq2WLDPWCgIqgO+4sZ1j8jEWwbzJX14hCRnfNFFhOm
+         ZsaGrpk/TOTS374UQs+wWkWIZinp4wgLB2KXkpQGHJYc5sMDtMkdeVfooQjU61oq8n
+         iWusrgFdZkCFjdi0ZCdFJ9iKeulkS/MKsC7Hz8xrDthpNuMGgZkqQTAKmjeesIhJ1D
+         3KJmMDOkOJWoSWnNQKobOB38BWg3QW3w1T7XPHYew6WZ11Sh693TtDN8gUtsOURe7e
+         rIk5yyOJcesyQ==
+Received: by mail-lj1-f170.google.com with SMTP id s17so16506964ljc.5;
+        Mon, 29 Mar 2021 08:55:07 -0700 (PDT)
+X-Gm-Message-State: AOAM532zqLPiAKU6bvs8gyED0jCnSBRKYO9R4VoIXHfMGUgaxRTrQHvJ
+        OxxINxlAcONap8WOfx/BLNydJQDQw3L+iUQ+J44=
+X-Google-Smtp-Source: ABdhPJyoC9STmM1iez5K+mffwYO83yJgTsqFCSPTLgSw0YFfQ8Zf9zALJJj8uwXyx/B1/6bN66nkZS0Lqxqlwc6/3jE=
+X-Received: by 2002:a05:651c:200b:: with SMTP id s11mr17522929ljo.177.1617033305398;
+ Mon, 29 Mar 2021 08:55:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210326142946.5263-1-ciara.loftus@intel.com> <20210326142946.5263-4-ciara.loftus@intel.com>
- <20210327022729.cgizt5xnhkerbrmy@ast-mbp> <bc1d9e861d27499da5f5a84bc6d22177@intel.com>
-In-Reply-To: <bc1d9e861d27499da5f5a84bc6d22177@intel.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 29 Mar 2021 08:28:57 -0700
-Message-ID: <CAADnVQLt9Wa-Ue85HRzRe0HO_Cyqo9Cd4MyvXRgqSC_dmVe=DQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf 3/3] libbpf: ignore return values of setsockopt for
- XDP rings.
-To:     "Loftus, Ciara" <ciara.loftus@intel.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "bjorn@kernel.org" <bjorn@kernel.org>,
-        "magnus.karlsson@gmail.com" <magnus.karlsson@gmail.com>
+References: <20210327042502.969745-1-andrii@kernel.org>
+In-Reply-To: <20210327042502.969745-1-andrii@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 29 Mar 2021 08:54:54 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5eczpW=-oVz+3aM_5PL29eW-px_GqaS80diyQddbt93A@mail.gmail.com>
+Message-ID: <CAPhsuW5eczpW=-oVz+3aM_5PL29eW-px_GqaS80diyQddbt93A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: fix memory leak when emitting final btf_ext
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 1:41 AM Loftus, Ciara <ciara.loftus@intel.com> wrote:
+On Fri, Mar 26, 2021 at 9:35 PM Andrii Nakryiko <andrii@kernel.org> wrote:
 >
-> >
-> > On Fri, Mar 26, 2021 at 02:29:46PM +0000, Ciara Loftus wrote:
-> > > During xsk_socket__create the XDP_RX_RING and XDP_TX_RING
-> > setsockopts
-> > > are called to create the rx and tx rings for the AF_XDP socket. If the ring
-> > > has already been set up, the setsockopt will return an error. However,
-> > > in the event of a failure during xsk_socket__create(_shared) after the
-> > > rings have been set up, the user may wish to retry the socket creation
-> > > using these pre-existing rings. In this case we can ignore the error
-> > > returned by the setsockopts. If there is a true error, the subsequent
-> > > call to mmap() will catch it.
-> > >
-> > > Fixes: 1cad07884239 ("libbpf: add support for using AF_XDP sockets")
-> > >
-> > > Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > > Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
-> > > ---
-> > >  tools/lib/bpf/xsk.c | 34 ++++++++++++++++------------------
-> > >  1 file changed, 16 insertions(+), 18 deletions(-)
-> > >
-> > > diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> > > index d4991ddff05a..cfc4abf505c3 100644
-> > > --- a/tools/lib/bpf/xsk.c
-> > > +++ b/tools/lib/bpf/xsk.c
-> > > @@ -900,24 +900,22 @@ int xsk_socket__create_shared(struct xsk_socket
-> > **xsk_ptr,
-> > >     }
-> > >     xsk->ctx = ctx;
-> > >
-> > > -   if (rx) {
-> > > -           err = setsockopt(xsk->fd, SOL_XDP, XDP_RX_RING,
-> > > -                            &xsk->config.rx_size,
-> > > -                            sizeof(xsk->config.rx_size));
-> > > -           if (err) {
-> > > -                   err = -errno;
-> > > -                   goto out_put_ctx;
-> > > -           }
-> > > -   }
-> > > -   if (tx) {
-> > > -           err = setsockopt(xsk->fd, SOL_XDP, XDP_TX_RING,
-> > > -                            &xsk->config.tx_size,
-> > > -                            sizeof(xsk->config.tx_size));
-> > > -           if (err) {
-> > > -                   err = -errno;
-> > > -                   goto out_put_ctx;
-> > > -           }
-> > > -   }
-> > > +   /* The return values of these setsockopt calls are intentionally not
-> > checked.
-> > > +    * If the ring has already been set up setsockopt will return an error.
-> > However,
-> > > +    * this scenario is acceptable as the user may be retrying the socket
-> > creation
-> > > +    * with rings which were set up in a previous but ultimately
-> > unsuccessful call
-> > > +    * to xsk_socket__create(_shared). The call later to mmap() will fail if
-> > there
-> > > +    * is a real issue and we handle that return value appropriately there.
-> > > +    */
-> > > +   if (rx)
-> > > +           setsockopt(xsk->fd, SOL_XDP, XDP_RX_RING,
-> > > +                      &xsk->config.rx_size,
-> > > +                      sizeof(xsk->config.rx_size));
-> > > +
-> > > +   if (tx)
-> > > +           setsockopt(xsk->fd, SOL_XDP, XDP_TX_RING,
-> > > +                      &xsk->config.tx_size,
-> > > +                      sizeof(xsk->config.tx_size));
-> >
-> > Instead of ignoring the error can you remember that setsockopt was done
-> > in struct xsk_socket and don't do it the second time?
+> Free temporary allocated memory used to construct finalized .BTF.ext data.
+> Found by Coverity static analysis on libbpf's Github repo.
 >
-> Ideally we don't have to ignore the error. However in the event of failure struct xsk_socket is freed at the end of xsk_socket__create so we can't use it to remember state between subsequent calls to __create().
+> Fixes: 8fd27bf69b86 ("libbpf: Add BPF static linker BTF and BTF.ext support")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-but umem is not, right? and fd is taken from there.
+Acked-by: Song Liu <songliubraving@fb.com>
+
+
+> ---
+>  tools/lib/bpf/linker.c | 24 ++++++++++++++++--------
+>  1 file changed, 16 insertions(+), 8 deletions(-)
+>
+> diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+> index a29d62ff8041..46b16cbdcda3 100644
+> --- a/tools/lib/bpf/linker.c
+> +++ b/tools/lib/bpf/linker.c
+> @@ -1906,8 +1906,10 @@ static int finalize_btf_ext(struct bpf_linker *linker)
+>                         struct dst_sec *sec = &linker->secs[i];
+>
+>                         sz = emit_btf_ext_data(linker, cur, sec->sec_name, &sec->func_info);
+> -                       if (sz < 0)
+> -                               return sz;
+> +                       if (sz < 0) {
+> +                               err = sz;
+> +                               goto out;
+> +                       }
+>
+>                         cur += sz;
+>                 }
+> @@ -1921,8 +1923,10 @@ static int finalize_btf_ext(struct bpf_linker *linker)
+>                         struct dst_sec *sec = &linker->secs[i];
+>
+>                         sz = emit_btf_ext_data(linker, cur, sec->sec_name, &sec->line_info);
+> -                       if (sz < 0)
+> -                               return sz;
+> +                       if (sz < 0) {
+> +                               err = sz;
+> +                               goto out;
+> +                       }
+>
+>                         cur += sz;
+>                 }
+> @@ -1936,8 +1940,10 @@ static int finalize_btf_ext(struct bpf_linker *linker)
+>                         struct dst_sec *sec = &linker->secs[i];
+>
+>                         sz = emit_btf_ext_data(linker, cur, sec->sec_name, &sec->core_relo_info);
+> -                       if (sz < 0)
+> -                               return sz;
+> +                       if (sz < 0) {
+> +                               err = sz;
+> +                               goto out;
+> +                       }
+>
+>                         cur += sz;
+>                 }
+> @@ -1948,8 +1954,10 @@ static int finalize_btf_ext(struct bpf_linker *linker)
+>         if (err) {
+>                 linker->btf_ext = NULL;
+>                 pr_warn("failed to parse final .BTF.ext data: %d\n", err);
+> -               return err;
+> +               goto out;
+>         }
+>
+> -       return 0;
+> +out:
+> +       free(data);
+> +       return err;
+>  }
+> --
+> 2.30.2
+>
