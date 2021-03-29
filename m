@@ -2,278 +2,740 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21A4B34D061
-	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 14:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEFBD34D0A6
+	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 14:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbhC2Mu1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 08:50:27 -0400
-Received: from mail-mw2nam10on2086.outbound.protection.outlook.com ([40.107.94.86]:36929
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231438AbhC2MuI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:50:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Kgg0u0PiSnL5LDsBcxXrUkR18VqPUwXS+dC6ZKFUbu41IcGUz47ByT4LStCI3igqNa3ChlUHWxhKeSjMenOXj/B4UnGDpIkTFQAj7w4LMz8gKsblPmnQtmj8UY2R1YN3dhAGrF8PZ7joHFdI/Un7cHcUhxiJ5Cb2vcJ/8OTttaRN4jfph4ubYOycX67x5U0G+G21s2ONJWjFr2B7Uc5waxPhEaQLBSrowJH2KK46OFeF3wH6KJ93gYAEYkrCeagJlVGHiHpFXfCWa+aTXbBLWK/cuiTnSJBet1gMEXceUNxr1IjqZyCXOAaZGVQlaXjp9r8qY0UT7o/Ijzl6CTqmuA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gguL7jtAyMBl1bDpM+w45gO2/9qUjwNlV203I561+v0=;
- b=gXL3zsAqAX+ZwdGLYcy71rVyfvyhI9fLCpIOQGQ8AksYreIVol+P9Xq+DHAmKRO/t+QS3854v9rmeesylpNc18d1QRUIofZxPICMA9oRzYv9cYo6D7svzYfDWOwwKRTCt9DNmetgn48PlHDasosckBkOWpbffR6XZaMUXANF27mpw08aKnNKqvmsTsn7DYOAVKoOACYAuT20ON0Psa8uyKsUfRAEh8JvCN94RLAUi+Wx9YHBajdvqAF3phGsAeXKXXVe6UJ0IZRgSYNXDEW0+P1e0rGiGB7NmV/m4lSxt4yUIxeDIuFEr4hAvYP9i+JdhaaaQKUsdlfCEXny++HNdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gguL7jtAyMBl1bDpM+w45gO2/9qUjwNlV203I561+v0=;
- b=da9KBP5pjt3GQvCItBf2vy7Ftcllegd9nGVuADCHUxcWSDnP8rDa3Qk3hYzX/M6xuSPnHZ51SaPMYCwUFq86F4SoYx9xrSQU+UYcmDW7pz0SqtR4JPgWmHlA9w/OLQpMxmdtJcFoX9lETlApoH64W4Pw6XWGg8q7Tg9se7gZRGuVthA6epCyRSXPloU1dibCppuoMWsqkoto92BrYIp2o8HzEuqeVXtOsYXjxq5pjpcAjvG35AptJgBwNNO1EQRLujqL11DrL9ztgk42gwUiTHi4sJKiBe1euVsmkoNuyjlW209OeisvN1M8N5VGt4XrNTHRZduI3N7NuhB+PWEv3g==
-Received: from MW4PR04CA0247.namprd04.prod.outlook.com (2603:10b6:303:88::12)
- by BYAPR12MB2680.namprd12.prod.outlook.com (2603:10b6:a03:63::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Mon, 29 Mar
- 2021 12:50:07 +0000
-Received: from CO1NAM11FT044.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:88:cafe::40) by MW4PR04CA0247.outlook.office365.com
- (2603:10b6:303:88::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26 via Frontend
- Transport; Mon, 29 Mar 2021 12:50:07 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT044.mail.protection.outlook.com (10.13.175.188) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3955.18 via Frontend Transport; Mon, 29 Mar 2021 12:50:06 +0000
-Received: from reg-r-vrt-018-180.nvidia.com (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 29 Mar 2021 12:50:01 +0000
-References: <20210325120020.236504-1-memxor@gmail.com>
- <20210325120020.236504-4-memxor@gmail.com> <ygnhh7kugp1t.fsf@nvidia.com>
- <87ft0eta27.fsf@toke.dk>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Vlad Buslov <vladbu@nvidia.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-CC:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, <bpf@vger.kernel.org>,
-        <brouer@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Martin KaFai Lau" <kafai@fb.com>,
-        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-In-Reply-To: <87ft0eta27.fsf@toke.dk>
-Date:   Mon, 29 Mar 2021 15:49:58 +0300
-Message-ID: <ygnheefygm4p.fsf@nvidia.com>
+        id S229674AbhC2M5z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 08:57:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230454AbhC2M5p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 08:57:45 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C58C061574
+        for <bpf@vger.kernel.org>; Mon, 29 Mar 2021 05:57:45 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id h10so14064636edt.13
+        for <bpf@vger.kernel.org>; Mon, 29 Mar 2021 05:57:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=OIfOcNu5oxHJbcAc7u67mGvG7/XVrtAtT0DjT281GpA=;
+        b=elXmjyFqeaq4BK0TwUCF2sbOA+2XINf3QdlmvLFLq0O3jRTyQONBeolr6nAB0z8TiL
+         v9C2nFP2IjXst4yu8FXzrLGSyuIgKg868TbFnC2uGUd2Y8UZNntTOFDYac7nDS6CapXy
+         fI7r1vrTm3e38Mmg9V8YyQuW+h3h9TT61Fb57x/INl8ptpmWkUgualj3vYgIqkTwaINI
+         Tn/uU2+rZXEoiXp/mkwmTu1n4bBrI7twjNjQPDWQqmsCNOxiqmWAvVD4F7ng5qx3EXEQ
+         1DCrYDyQ5eLzxSjCrjNkJvRb/eoPp7ZBIPB878K6ma8eDGmkRqYmT+tQRHStvjrwQiHc
+         otAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=OIfOcNu5oxHJbcAc7u67mGvG7/XVrtAtT0DjT281GpA=;
+        b=IInstXuq9F7UQ53RHXX0ZQ5ZdaODGidag4j1rDUOwc1efk5lIOfp1clmtD9e6HGgIT
+         65gZ1aZb8i3JfJtgjfLfqZK5iZc6TIfiaa/TpXQnJqZWxzVhBcspVzsgiyqhw8Vvk6ue
+         n+TOho1yXz/MWtcPwENmsd7QEIV6CPQrC2Laf75WsX4cZeX8/cwDakbMY1MSqaJZs7OJ
+         O3awAwI+nPiPNKdSiTKULAvMrNWdeRTAbpZuWPwNiQedLMapL7o77HtWTwj3yHpSDZdj
+         MrYnbgs0iflQ3BFxYz0hQRdPcE8VN1NmUtsUokXxwsIrEAZ0PqVH8lXjt+hotqcJ0tlP
+         4WPw==
+X-Gm-Message-State: AOAM532pm9UrybkE+dqdWVtr/F0Twf5YiNf7UdmAuNrSpmdif1UraNFM
+        gJ4ykcxGqnhvs+GJKfZV2aqY5TWwf3VywdSAGkg8OPDRzrlS8i9D3XeiPlPKfmhBS6A7wUKs0Jl
+        3iVgZqpark3GMWyBQRoIFyttXvIVwfB6Bp/C3Tk2evV2PY4bll4Ek5fUjjQWNuJRIe7gaWrdz
+X-Google-Smtp-Source: ABdhPJzs6jjknIklnwSu5wCjFNSyt167kij9WwkJqPd+/JaQVN0jyVMVTkaSDFm1jyoJ9oHCLo1DAg==
+X-Received: by 2002:a05:6402:1853:: with SMTP id v19mr28152003edy.179.1617022663647;
+        Mon, 29 Mar 2021 05:57:43 -0700 (PDT)
+Received: from gmail.com (89-172-121-178.adsl.net.t-com.hr. [89.172.121.178])
+        by smtp.gmail.com with ESMTPSA id da17sm9146757edb.83.2021.03.29.05.57.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 05:57:42 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 14:57:40 +0200
+From:   Denis Salopek <denis.salopek@sartura.hr>
+To:     bpf@vger.kernel.org
+Cc:     juraj.vijtiuk@sartura.hr, luka.oreskovic@sartura.hr,
+        luka.perkov@sartura.hr, yhs@fb.com, daniel@iogearbox.net,
+        andrii.nakryiko@gmail.com
+Subject: [PATCH v4 bpf-next] bpf: add lookup_and_delete_elem support to
+ hashtab
+Message-ID: <YGHOxEIA/k5vG/s5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ca5ee514-ba30-4a8e-0bc5-08d8f2b12de9
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2680:
-X-Microsoft-Antispam-PRVS: <BYAPR12MB2680E0BCBF184AF6A5ED70C8A07E9@BYAPR12MB2680.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6z21zZ+VQ8jPu3NkWwpIlS9QDeWTaCIdEQKyUfQ16QACF1hFixmI3Fzd2kCvDk1t3WblxNZ3ckx3BTG8QgMN1TY7OmGW+FPl6Nm/GAcD/m99UmqtpooP2c9ScAj28ueimQXBXCTIk+2h/RnTgcjlHW0E1hMeDBIBOm21xSs9f3JDdkGlhIoXaPjmkUSNCI6HG06c4ffstzBrpz6KWqDV3iLibSPUUYllq+xvGOGtJBffVOvDsUBS/HJIXApHeAnosxz6vUr4tDp/OI+mYM1Jljg1NW+YSw+WjVe0i/6/0ln2DaUWSiaGeP4b30ATzE9UtsEPiFjFSXZKRm2Qaz0jLxafEcwJ0BkAsJUeGCfu0lqOIwMfc+lNdAdrDFHCwmzy0qRWthOslwHEWPTKcvl+SrRd1UqmOLMr0QJ2MT+ftqBivnICyYLx0wuPq1qir/kOpEe6ahx6jr+uqhFxun3lxtEj3p+wOpCTxaW9w5zoLTmyxuOhRC+Wstu20staKtjzcOGXNTPs5FPr/yBnbjudiFUhOJdjEv3HLJOQUSvj5GQtf5eyUXoDz0hQw+ZYMWj9F0dRuaYxmBMhvHpUhA4FF5mOFU4lsL8fRZGDS+1tz1odeL79XG4ejO7Ps7WaMYLE1/Sj1eGcw2ss1MZDoZjWSFFg+bbT00pr60eXpnJ+BRw=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(39860400002)(346002)(46966006)(36840700001)(316002)(426003)(4326008)(83380400001)(36906005)(6916009)(54906003)(70586007)(336012)(7696005)(2906002)(8936002)(7416002)(8676002)(6666004)(7636003)(70206006)(16526019)(36756003)(66574015)(478600001)(82740400003)(86362001)(186003)(36860700001)(26005)(356005)(5660300002)(82310400003)(2616005)(47076005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 12:50:06.5266
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ca5ee514-ba30-4a8e-0bc5-08d8f2b12de9
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT044.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2680
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Extend the existing bpf_map_lookup_and_delete_elem() functionality to
+hashtab maps, in addition to stacks and queues.
+Add bpf_map_lookup_and_delete_elem_flags() libbpf API in order to use
+the BPF_F_LOCK flag.
+Create a new hashtab bpf_map_ops function that does lookup and deletion
+of the element under the same bucket lock and add the created map_ops to
+bpf.h.
+Add the appropriate test cases to 'maps' and 'lru_map' selftests
+accompanied with new test_progs.
 
-On Mon 29 Mar 2021 at 15:32, Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.=
-com> wrote:
-> Vlad Buslov <vladbu@nvidia.com> writes:
->
->> On Thu 25 Mar 2021 at 14:00, Kumar Kartikeya Dwivedi <memxor@gmail.com> =
-wrote:
->>> This adds functions that wrap the netlink API used for adding,
->>> manipulating, and removing filters and actions. These functions operate
->>> directly on the loaded prog's fd, and return a handle to the filter and
->>> action using an out parameter (id for tc_cls, and index for tc_act).
->>>
->>> The basic featureset is covered to allow for attaching, manipulation of
->>> properties, and removal of filters and actions. Some additional features
->>> like TCA_BPF_POLICE and TCA_RATE for tc_cls have been omitted. These can
->>> added on top later by extending the bpf_tc_cls_opts struct.
->>>
->>> Support for binding actions directly to a classifier by passing them in
->>> during filter creation has also been omitted for now. These actions
->>> have an auto clean up property because their lifetime is bound to the
->>> filter they are attached to. This can be added later, but was omitted
->>> for now as direct action mode is a better alternative to it.
->>>
->>> An API summary:
->>>
->>> The BPF TC-CLS API
->>>
->>> bpf_tc_act_{attach, change, replace}_{dev, block} may be used to attach,
->>> change, and replace SCHED_CLS bpf classifiers. Separate set of functions
->>> are provided for network interfaces and shared filter blocks.
->>>
->>> bpf_tc_cls_detach_{dev, block} may be used to detach existing SCHED_CLS
->>> filter. The bpf_tc_cls_attach_id object filled in during attach,
->>> change, or replace must be passed in to the detach functions for them to
->>> remove the filter and its attached classififer correctly.
->>>
->>> bpf_tc_cls_get_info is a helper that can be used to obtain attributes
->>> for the filter and classififer. The opts structure may be used to
->>> choose the granularity of search, such that info for a specific filter
->>> corresponding to the same loaded bpf program can be obtained. By
->>> default, the first match is returned to the user.
->>>
->>> Examples:
->>>
->>> 	struct bpf_tc_cls_attach_id id =3D {};
->>> 	struct bpf_object *obj;
->>> 	struct bpf_program *p;
->>> 	int fd, r;
->>>
->>> 	obj =3D bpf_object_open("foo.o");
->>> 	if (IS_ERR_OR_NULL(obj))
->>> 		return PTR_ERR(obj);
->>>
->>> 	p =3D bpf_object__find_program_by_title(obj, "classifier");
->>> 	if (IS_ERR_OR_NULL(p))
->>> 		return PTR_ERR(p);
->>>
->>> 	if (bpf_object__load(obj) < 0)
->>> 		return -1;
->>>
->>> 	fd =3D bpf_program__fd(p);
->>>
->>> 	r =3D bpf_tc_cls_attach_dev(fd, if_nametoindex("lo"),
->>> 				  BPF_TC_CLSACT_INGRESS, ETH_P_IP,
->>> 				  NULL, &id);
->>> 	if (r < 0)
->>> 		return r;
->>>
->>> ... which is roughly equivalent to (after clsact qdisc setup):
->>>   # tc filter add dev lo ingress bpf obj /home/kkd/foo.o sec classifier
->>>
->>> If a user wishes to modify existing options on an attached filter, the
->>> bpf_tc_cls_change_{dev, block} API may be used. Parameters like
->>> chain_index, priority, and handle are ignored in the bpf_tc_cls_opts
->>> struct as they cannot be modified after attaching a filter.
->>>
->>> Example:
->>>
->>> 	/* Optional parameters necessary to select the right filter */
->>> 	DECLARE_LIBBPF_OPTS(bpf_tc_cls_opts, opts,
->>> 			    .handle =3D id.handle,
->>> 			    .priority =3D id.priority,
->>> 			    .chain_index =3D id.chain_index)
->>> 	/* Turn on direct action mode */
->>> 	opts.direct_action =3D true;
->>> 	r =3D bpf_tc_cls_change_dev(fd, id.ifindex, id.parent_id,
->>> 			          id.protocol, &opts, &id);
->>> 	if (r < 0)
->>> 		return r;
->>>
->>> 	/* Verify that the direct action mode has been set */
->>> 	struct bpf_tc_cls_info info =3D {};
->>> 	r =3D bpf_tc_cls_get_info_dev(fd, id.ifindex, id.parent_id,
->>> 			            id.protocol, &opts, &info);
->>> 	if (r < 0)
->>> 		return r;
->>>
->>> 	assert(info.bpf_flags & TCA_BPF_FLAG_ACT_DIRECT);
->>>
->>> This would be roughly equivalent to doing:
->>>   # tc filter change dev lo egress prio <p> handle <h> bpf obj /home/kk=
-d/foo.o section classifier da
->>>
->>> ... except a new bpf program will be loaded and replace existing one.
->>>
->>> If a user wishes to either replace an existing filter, or create a new
->>> one with the same properties, they can use bpf_tc_cls_replace_dev. The
->>> benefit of bpf_tc_cls_change is that it fails if no matching filter
->>> exists.
->>>
->>> The BPF TC-ACT API
->>>
->>> bpf_tc_act_{attach, replace} may be used to attach and replace already
->>> attached SCHED_ACT actions. Passing an index of 0 has special meaning,
->>> in that an index will be automatically chosen by the kernel. The index
->>> chosen by the kernel is the return value of these functions in case of
->>> success.
->>>
->>> bpf_tc_act_detach may be used to detach a SCHED_ACT action prog
->>> identified by the index parameter. The index 0 again has a special
->>> meaning, in that passing it will flush all existing SCHED_ACT actions
->>> loaded using the ACT API.
->>>
->>> bpf_tc_act_get_info is a helper to get the required attributes of a
->>> loaded program to be able to manipulate it futher, by passing them
->>> into the aforementioned functions.
->>>
->>> Example:
->>>
->>> 	struct bpf_object *obj;
->>> 	struct bpf_program *p;
->>> 	__u32 index;
->>> 	int fd, r;
->>>
->>> 	obj =3D bpf_object_open("foo.o");
->>> 	if (IS_ERR_OR_NULL(obj))
->>> 		return PTR_ERR(obj);
->>>
->>> 	p =3D bpf_object__find_program_by_title(obj, "action");
->>> 	if (IS_ERR_OR_NULL(p))
->>> 		return PTR_ERR(p);
->>>
->>> 	if (bpf_object__load(obj) < 0)
->>> 		return -1;
->>>
->>> 	fd =3D bpf_program__fd(p);
->>>
->>> 	r =3D bpf_tc_act_attach(fd, NULL, &index);
->>> 	if (r < 0)
->>> 		return r;
->>>
->>> 	if (bpf_tc_act_detach(index))
->>> 		return -1;
->>>
->>> ... which is equivalent to the following sequence:
->>> 	tc action add action bpf obj /home/kkd/foo.o sec action
->>> 	tc action del action bpf index <idx>
->>
->> How do you handle the locking here? Please note that while
->> RTM_{NEW|GET|DEL}FILTER API has been refactored to handle its own
->> locking internally (and registered with RTNL_FLAG_DOIT_UNLOCKED flag),
->> RTM_{NEW|GET|DEL}ACTION API still expects to be called with rtnl lock
->> taken.
->
-> Huh, locking? This is all userspace code that uses the netlink API...
->
-> -Toke
+Cc: Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+Cc: Luka Oreskovic <luka.oreskovic@sartura.hr>
+Cc: Luka Perkov <luka.perkov@sartura.hr>
+Signed-off-by: Denis Salopek <denis.salopek@sartura.hr>
+---
+v2: Add functionality for LRU/per-CPU, add test_progs tests.
+v3: Add bpf_map_lookup_and_delete_elem_flags() and enable BPF_F_LOCK
+flag, change CHECKs to ASSERT_OKs, initialize variables to 0.
+v4: Fix the return value for unsupported map types.
+---
+ include/linux/bpf.h                           |   2 +
+ kernel/bpf/hashtab.c                          |  97 ++++++
+ kernel/bpf/syscall.c                          |  27 +-
+ tools/lib/bpf/bpf.c                           |  13 +
+ tools/lib/bpf/bpf.h                           |   2 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../bpf/prog_tests/lookup_and_delete.c        | 279 ++++++++++++++++++
+ .../bpf/progs/test_lookup_and_delete.c        |  26 ++
+ tools/testing/selftests/bpf/test_lru_map.c    |   8 +
+ tools/testing/selftests/bpf/test_maps.c       |  19 +-
+ 10 files changed, 469 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_lookup_and_delete.c
 
-Thanks for the clarification. I'm not familiar with libbpf internals and
-it wasn't obvious to me that this functionality is not for creating
-classifiers/actions from BPF program executing in kernel-space.
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 9fdd839b418c..8af4bd7c7229 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -68,6 +68,8 @@ struct bpf_map_ops {
+ 	void *(*map_lookup_elem_sys_only)(struct bpf_map *map, void *key);
+ 	int (*map_lookup_batch)(struct bpf_map *map, const union bpf_attr *attr,
+ 				union bpf_attr __user *uattr);
++	int (*map_lookup_and_delete_elem)(struct bpf_map *map, void *key,
++					  void *value, u64 flags);
+ 	int (*map_lookup_and_delete_batch)(struct bpf_map *map,
+ 					   const union bpf_attr *attr,
+ 					   union bpf_attr __user *uattr);
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index d7ebb12ffffc..0d2085ce9a38 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -1401,6 +1401,99 @@ static void htab_map_seq_show_elem(struct bpf_map *map, void *key,
+ 	rcu_read_unlock();
+ }
+ 
++static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
++					     void *value, bool is_lru_map,
++					     bool is_percpu, u64 flags)
++{
++	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
++	u32 hash, key_size, value_size;
++	struct hlist_nulls_head *head;
++	int cpu, off = 0, ret;
++	struct htab_elem *l;
++	unsigned long bflags;
++	void __percpu *pptr;
++	struct bucket *b;
++
++	if ((flags & ~BPF_F_LOCK) ||
++	    ((flags & BPF_F_LOCK) && !map_value_has_spin_lock(map)))
++		return -EINVAL;
++
++	key_size = map->key_size;
++	value_size = round_up(map->value_size, 8);
++
++	hash = htab_map_hash(key, key_size, htab->hashrnd);
++	b = __select_bucket(htab, hash);
++	head = &b->head;
++
++	ret = htab_lock_bucket(htab, b, hash, &bflags);
++	if (ret)
++		return ret;
++
++	l = lookup_elem_raw(head, hash, key, key_size);
++	if (l) {
++		if (is_percpu) {
++			pptr = htab_elem_get_ptr(l, key_size);
++			for_each_possible_cpu(cpu) {
++				bpf_long_memcpy(value + off,
++						per_cpu_ptr(pptr, cpu),
++						value_size);
++				off += value_size;
++			}
++		} else {
++			if (flags & BPF_F_LOCK)
++				copy_map_value_locked(map, value, l->key +
++						      round_up(key_size, 8),
++						      true);
++			else
++				copy_map_value(map, value, l->key +
++					       round_up(key_size, 8));
++			check_and_init_map_lock(map, value);
++		}
++
++		hlist_nulls_del_rcu(&l->hash_node);
++		if (!is_lru_map)
++			free_htab_elem(htab, l);
++	} else
++		ret = -ENOENT;
++
++	htab_unlock_bucket(htab, b, hash, bflags);
++
++	if (is_lru_map && l)
++		bpf_lru_push_free(&htab->lru, &l->lru_node);
++
++	return ret;
++}
++
++static int htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
++					   void *value, u64 flags)
++{
++	return __htab_map_lookup_and_delete_elem(map, key, value, false, false,
++						 flags);
++}
++
++static int htab_percpu_map_lookup_and_delete_elem(struct bpf_map *map,
++						  void *key, void *value,
++						  u64 flags)
++{
++	return __htab_map_lookup_and_delete_elem(map, key, value, false, true,
++						 flags);
++}
++
++static int htab_lru_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
++					       void *value, u64 flags)
++{
++	return __htab_map_lookup_and_delete_elem(map, key, value, true, false,
++						 flags);
++}
++
++static int htab_lru_percpu_map_lookup_and_delete_elem(struct bpf_map *map,
++						      void *key, void *value,
++						      u64 flags)
++{
++	return __htab_map_lookup_and_delete_elem(map, key, value, true, true,
++						 flags);
++}
++
+ static int
+ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 				   const union bpf_attr *attr,
+@@ -1934,6 +2027,7 @@ const struct bpf_map_ops htab_map_ops = {
+ 	.map_free = htab_map_free,
+ 	.map_get_next_key = htab_map_get_next_key,
+ 	.map_lookup_elem = htab_map_lookup_elem,
++	.map_lookup_and_delete_elem = htab_map_lookup_and_delete_elem,
+ 	.map_update_elem = htab_map_update_elem,
+ 	.map_delete_elem = htab_map_delete_elem,
+ 	.map_gen_lookup = htab_map_gen_lookup,
+@@ -1954,6 +2048,7 @@ const struct bpf_map_ops htab_lru_map_ops = {
+ 	.map_free = htab_map_free,
+ 	.map_get_next_key = htab_map_get_next_key,
+ 	.map_lookup_elem = htab_lru_map_lookup_elem,
++	.map_lookup_and_delete_elem = htab_lru_map_lookup_and_delete_elem,
+ 	.map_lookup_elem_sys_only = htab_lru_map_lookup_elem_sys,
+ 	.map_update_elem = htab_lru_map_update_elem,
+ 	.map_delete_elem = htab_lru_map_delete_elem,
+@@ -2077,6 +2172,7 @@ const struct bpf_map_ops htab_percpu_map_ops = {
+ 	.map_free = htab_map_free,
+ 	.map_get_next_key = htab_map_get_next_key,
+ 	.map_lookup_elem = htab_percpu_map_lookup_elem,
++	.map_lookup_and_delete_elem = htab_percpu_map_lookup_and_delete_elem,
+ 	.map_update_elem = htab_percpu_map_update_elem,
+ 	.map_delete_elem = htab_map_delete_elem,
+ 	.map_seq_show_elem = htab_percpu_map_seq_show_elem,
+@@ -2096,6 +2192,7 @@ const struct bpf_map_ops htab_lru_percpu_map_ops = {
+ 	.map_free = htab_map_free,
+ 	.map_get_next_key = htab_map_get_next_key,
+ 	.map_lookup_elem = htab_lru_percpu_map_lookup_elem,
++	.map_lookup_and_delete_elem = htab_lru_percpu_map_lookup_and_delete_elem,
+ 	.map_update_elem = htab_lru_percpu_map_update_elem,
+ 	.map_delete_elem = htab_lru_map_delete_elem,
+ 	.map_seq_show_elem = htab_percpu_map_seq_show_elem,
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 9603de81811a..e3851bafb603 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1468,7 +1468,7 @@ int generic_map_lookup_batch(struct bpf_map *map,
+ 	return err;
+ }
+ 
+-#define BPF_MAP_LOOKUP_AND_DELETE_ELEM_LAST_FIELD value
++#define BPF_MAP_LOOKUP_AND_DELETE_ELEM_LAST_FIELD flags
+ 
+ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+ {
+@@ -1484,6 +1484,9 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+ 	if (CHECK_ATTR(BPF_MAP_LOOKUP_AND_DELETE_ELEM))
+ 		return -EINVAL;
+ 
++	if (attr->flags & ~BPF_F_LOCK)
++		return -EINVAL;
++
+ 	f = fdget(ufd);
+ 	map = __bpf_map_get(f);
+ 	if (IS_ERR(map))
+@@ -1494,24 +1497,40 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+ 		goto err_put;
+ 	}
+ 
++	if ((attr->flags & BPF_F_LOCK) &&
++	    !map_value_has_spin_lock(map)) {
++		err = -EINVAL;
++		goto err_put;
++	}
++
+ 	key = __bpf_copy_key(ukey, map->key_size);
+ 	if (IS_ERR(key)) {
+ 		err = PTR_ERR(key);
+ 		goto err_put;
+ 	}
+ 
+-	value_size = map->value_size;
++	value_size = bpf_map_value_size(map);
+ 
+ 	err = -ENOMEM;
+ 	value = kmalloc(value_size, GFP_USER | __GFP_NOWARN);
+ 	if (!value)
+ 		goto free_key;
+ 
++	err = -ENOTSUPP;
+ 	if (map->map_type == BPF_MAP_TYPE_QUEUE ||
+ 	    map->map_type == BPF_MAP_TYPE_STACK) {
+ 		err = map->ops->map_pop_elem(map, value);
+-	} else {
+-		err = -ENOTSUPP;
++	} else if (map->map_type == BPF_MAP_TYPE_HASH ||
++		   map->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
++		   map->map_type == BPF_MAP_TYPE_LRU_HASH ||
++		   map->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH) {
++		if (!bpf_map_is_dev_bound(map)) {
++			bpf_disable_instrumentation();
++			rcu_read_lock();
++			err = map->ops->map_lookup_and_delete_elem(map, key, value, attr->flags);
++			rcu_read_unlock();
++			bpf_enable_instrumentation();
++		}
+ 	}
+ 
+ 	if (err)
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index bba48ff4c5c0..b7c2cc12034c 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -458,6 +458,19 @@ int bpf_map_lookup_and_delete_elem(int fd, const void *key, void *value)
+ 	return sys_bpf(BPF_MAP_LOOKUP_AND_DELETE_ELEM, &attr, sizeof(attr));
+ }
+ 
++int bpf_map_lookup_and_delete_elem_flags(int fd, const void *key, void *value, __u64 flags)
++{
++	union bpf_attr attr;
++
++	memset(&attr, 0, sizeof(attr));
++	attr.map_fd = fd;
++	attr.key = ptr_to_u64(key);
++	attr.value = ptr_to_u64(value);
++	attr.flags = flags;
++
++	return sys_bpf(BPF_MAP_LOOKUP_AND_DELETE_ELEM, &attr, sizeof(attr));
++}
++
+ int bpf_map_delete_elem(int fd, const void *key)
+ {
+ 	union bpf_attr attr;
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 875dde20d56e..4f758f8f50cd 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -124,6 +124,8 @@ LIBBPF_API int bpf_map_lookup_elem_flags(int fd, const void *key, void *value,
+ 					 __u64 flags);
+ LIBBPF_API int bpf_map_lookup_and_delete_elem(int fd, const void *key,
+ 					      void *value);
++LIBBPF_API int bpf_map_lookup_and_delete_elem_flags(int fd, const void *key,
++						    void *value, __u64 flags);
+ LIBBPF_API int bpf_map_delete_elem(int fd, const void *key);
+ LIBBPF_API int bpf_map_get_next_key(int fd, const void *key, void *next_key);
+ LIBBPF_API int bpf_map_freeze(int fd);
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index f5990f7208ce..589dde8311e1 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -132,6 +132,7 @@ LIBBPF_0.0.2 {
+ 		bpf_probe_prog_type;
+ 		bpf_map__resize;
+ 		bpf_map_lookup_elem_flags;
++		bpf_map_lookup_and_delete_elem_flags;
+ 		bpf_object__btf;
+ 		bpf_object__find_map_fd_by_name;
+ 		bpf_get_link_xdp_id;
+diff --git a/tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c b/tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
+new file mode 100644
+index 000000000000..8ace0e4a2349
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
+@@ -0,0 +1,279 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <test_progs.h>
++#include "test_lookup_and_delete.skel.h"
++
++#define START_VALUE 1234
++#define NEW_VALUE 4321
++#define MAX_ENTRIES 2
++
++static int duration;
++static int nr_cpus;
++
++static int fill_values(int map_fd)
++{
++	__u64 key, value = START_VALUE;
++	int err;
++
++	for (key = 1; key < MAX_ENTRIES + 1; key++) {
++		err = bpf_map_update_elem(map_fd, &key, &value, BPF_NOEXIST);
++		if (!ASSERT_OK(err, "bpf_map_update_elem"))
++			return -1;
++	}
++
++	return 0;
++}
++
++static int fill_values_percpu(int map_fd)
++{
++	BPF_DECLARE_PERCPU(__u64, value);
++	int i, err;
++	u64 key;
++
++	for (i = 0; i < nr_cpus; i++)
++		bpf_percpu(value, i) = START_VALUE;
++
++	for (key = 1; key < MAX_ENTRIES + 1; key++) {
++		err = bpf_map_update_elem(map_fd, &key, value, BPF_NOEXIST);
++		if (!ASSERT_OK(err, "bpf_map_update_elem"))
++			return -1;
++	}
++
++	return 0;
++}
++
++static struct test_lookup_and_delete *setup_prog(enum bpf_map_type map_type,
++						 int *map_fd)
++{
++	struct test_lookup_and_delete *skel;
++	int err;
++
++	skel = test_lookup_and_delete__open();
++	if (!ASSERT_OK(!skel, "test_lookup_and_delete__open"))
++		return NULL;
++
++	err = bpf_map__set_type(skel->maps.hash_map, map_type);
++	if (!ASSERT_OK(err, "bpf_map__set_type"))
++		goto error;
++
++	err = test_lookup_and_delete__load(skel);
++	if (!ASSERT_OK(err, "test_lookup_and_delete__load"))
++		goto error;
++
++	*map_fd = bpf_map__fd(skel->maps.hash_map);
++	if (CHECK(*map_fd < 0, "bpf_map__fd", "failed\n"))
++		goto error;
++
++	return skel;
++
++error:
++	test_lookup_and_delete__destroy(skel);
++	return NULL;
++}
++
++/* Triggers BPF program that updates map with given key and value */
++static int trigger_tp(struct test_lookup_and_delete *skel, __u64 key,
++		      __u64 value)
++{
++	int err;
++
++	skel->bss->set_pid = getpid();
++	skel->bss->set_key = key;
++	skel->bss->set_value = value;
++
++	err = test_lookup_and_delete__attach(skel);
++	if (!ASSERT_OK(err, "test_lookup_and_delete__attach"))
++		return -1;
++
++	syscall(__NR_getpgid);
++
++	test_lookup_and_delete__detach(skel);
++
++	return 0;
++}
++
++static void test_lookup_and_delete_hash(void)
++{
++	struct test_lookup_and_delete *skel;
++	__u64 key, value;
++	int map_fd, err;
++
++	/* Setup program and fill the map. */
++	skel = setup_prog(BPF_MAP_TYPE_HASH, &map_fd);
++	if (!ASSERT_OK_PTR(skel, "setup_prog"))
++		return;
++
++	err = fill_values(map_fd);
++	if (!ASSERT_OK(err, "fill_values"))
++		goto cleanup;
++
++	/* Lookup and delete element. */
++	key = 1;
++	err = bpf_map_lookup_and_delete_elem(map_fd, &key, &value);
++	if (!ASSERT_OK(err, "bpf_map_lookup_and_delete_elem"))
++		goto cleanup;
++
++	/* Fetched value should match the initially set value. */
++	if (CHECK(value != START_VALUE, "bpf_map_lookup_and_delete_elem",
++		  "unexpected value=%lld\n", value))
++		goto cleanup;
++
++	/* Check that the entry is non existent. */
++	err = bpf_map_lookup_elem(map_fd, &key, &value);
++	if (!ASSERT_OK(!err, "bpf_map_lookup_elem"))
++		goto cleanup;
++
++cleanup:
++	test_lookup_and_delete__destroy(skel);
++}
++
++static void test_lookup_and_delete_percpu_hash(void)
++{
++	struct test_lookup_and_delete *skel;
++	BPF_DECLARE_PERCPU(__u64, value);
++	int map_fd, err, i;
++	__u64 key, val;
++
++	/* Setup program and fill the map. */
++	skel = setup_prog(BPF_MAP_TYPE_PERCPU_HASH, &map_fd);
++	if (!ASSERT_OK_PTR(skel, "setup_prog"))
++		return;
++
++	err = fill_values_percpu(map_fd);
++	if (!ASSERT_OK(err, "fill_values_percpu"))
++		goto cleanup;
++
++	/* Lookup and delete element. */
++	key = 1;
++	err = bpf_map_lookup_and_delete_elem(map_fd, &key, value);
++	if (!ASSERT_OK(err, "bpf_map_lookup_and_delete_elem"))
++		goto cleanup;
++
++	for (i = 0; i < nr_cpus; i++) {
++		if (bpf_percpu(value, i))
++			val = bpf_percpu(value, i);
++	}
++
++	/* Fetched value should match the initially set value. */
++	if (CHECK(val != START_VALUE, "bpf_map_lookup_and_delete_elem",
++		  "unexpected value=%lld\n", val))
++		goto cleanup;
++
++	/* Check that the entry is non existent. */
++	err = bpf_map_lookup_elem(map_fd, &key, value);
++	if (!ASSERT_OK(!err, "bpf_map_lookup_elem"))
++		goto cleanup;
++
++cleanup:
++	test_lookup_and_delete__destroy(skel);
++}
++
++static void test_lookup_and_delete_lru_hash(void)
++{
++	struct test_lookup_and_delete *skel;
++	__u64 key, value;
++	int map_fd, err;
++
++	/* Setup program and fill the LRU map. */
++	skel = setup_prog(BPF_MAP_TYPE_LRU_HASH, &map_fd);
++	if (!ASSERT_OK_PTR(skel, "setup_prog"))
++		return;
++
++	err = fill_values(map_fd);
++	if (!ASSERT_OK(err, "fill_values"))
++		goto cleanup;
++
++	/* Insert new element at key=3, should reuse LRU element. */
++	key = 3;
++	err = trigger_tp(skel, key, NEW_VALUE);
++	if (!ASSERT_OK(err, "trigger_tp"))
++		goto cleanup;
++
++	/* Lookup and delete element 3. */
++	err = bpf_map_lookup_and_delete_elem(map_fd, &key, &value);
++	if (!ASSERT_OK(err, "bpf_map_lookup_and_delete_elem"))
++		goto cleanup;
++
++	/* Value should match the new value. */
++	if (CHECK(value != NEW_VALUE, "bpf_map_lookup_and_delete_elem",
++		  "unexpected value=%lld\n", value))
++		goto cleanup;
++
++	/* Check that entries 3 and 1 are non existent. */
++	err = bpf_map_lookup_elem(map_fd, &key, &value);
++	if (!ASSERT_OK(!err, "bpf_map_lookup_elem"))
++		goto cleanup;
++
++	key = 1;
++	err = bpf_map_lookup_elem(map_fd, &key, &value);
++	if (!ASSERT_OK(!err, "bpf_map_lookup_elem"))
++		goto cleanup;
++
++cleanup:
++	test_lookup_and_delete__destroy(skel);
++}
++
++static void test_lookup_and_delete_lru_percpu_hash(void)
++{
++	struct test_lookup_and_delete *skel;
++	BPF_DECLARE_PERCPU(__u64, value);
++	int map_fd, err, i;
++	__u64 key, val;
++
++	/* Setup program and fill the LRU map. */
++	skel = setup_prog(BPF_MAP_TYPE_LRU_PERCPU_HASH, &map_fd);
++	if (!ASSERT_OK_PTR(skel, "setup_prog"))
++		return;
++
++	err = fill_values_percpu(map_fd);
++	if (!ASSERT_OK(err, "fill_values_percpu"))
++		goto cleanup;
++
++	/* Insert new element at key=3, should reuse LRU element. */
++	key = 3;
++	err = trigger_tp(skel, key, NEW_VALUE);
++	if (!ASSERT_OK(err, "trigger_tp"))
++		goto cleanup;
++
++	/* Lookup and delete element 3. */
++	err = bpf_map_lookup_and_delete_elem(map_fd, &key, &value);
++	if (!ASSERT_OK(err, "bpf_map_lookup_and_delete_elem"))
++		goto cleanup;
++
++	for (i = 0; i < nr_cpus; i++) {
++		if (bpf_percpu(value, i))
++			val = bpf_percpu(value, i);
++	}
++
++	/* Value should match the new value. */
++	if (CHECK(val != NEW_VALUE, "bpf_map_lookup_and_delete_elem",
++		  "unexpected value=%lld\n", val))
++		goto cleanup;
++
++	/* Check that entries 3 and 1 are non existent. */
++	err = bpf_map_lookup_elem(map_fd, &key, &value);
++	if (!ASSERT_OK(!err, "bpf_map_lookup_elem"))
++		goto cleanup;
++
++	key = 1;
++	err = bpf_map_lookup_elem(map_fd, &key, &value);
++	if (!ASSERT_OK(!err, "bpf_map_lookup_elem"))
++		goto cleanup;
++
++cleanup:
++	test_lookup_and_delete__destroy(skel);
++}
++
++void test_lookup_and_delete(void)
++{
++	nr_cpus = bpf_num_possible_cpus();
++
++	if (test__start_subtest("lookup_and_delete"))
++		test_lookup_and_delete_hash();
++	if (test__start_subtest("lookup_and_delete_percpu"))
++		test_lookup_and_delete_percpu_hash();
++	if (test__start_subtest("lookup_and_delete_lru"))
++		test_lookup_and_delete_lru_hash();
++	if (test__start_subtest("lookup_and_delete_lru_percpu"))
++		test_lookup_and_delete_lru_percpu_hash();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_lookup_and_delete.c b/tools/testing/selftests/bpf/progs/test_lookup_and_delete.c
+new file mode 100644
+index 000000000000..3a193f42c7e7
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_lookup_and_delete.c
+@@ -0,0 +1,26 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++
++__u32 set_pid = 0;
++__u64 set_key = 0;
++__u64 set_value = 0;
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 2);
++	__type(key, __u64);
++	__type(value, __u64);
++} hash_map SEC(".maps");
++
++SEC("tp/syscalls/sys_enter_getpgid")
++int bpf_lookup_and_delete_test(const void *ctx)
++{
++	if (set_pid == bpf_get_current_pid_tgid() >> 32)
++		bpf_map_update_elem(&hash_map, &set_key, &set_value, BPF_NOEXIST);
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/test_lru_map.c b/tools/testing/selftests/bpf/test_lru_map.c
+index 6a5349f9eb14..f33fb6de76bc 100644
+--- a/tools/testing/selftests/bpf/test_lru_map.c
++++ b/tools/testing/selftests/bpf/test_lru_map.c
+@@ -231,6 +231,14 @@ static void test_lru_sanity0(int map_type, int map_flags)
+ 	assert(bpf_map_lookup_elem(lru_map_fd, &key, value) == -1 &&
+ 	       errno == ENOENT);
+ 
++	/* lookup elem key=3 and delete it, than check it doesn't exist */
++	key = 1;
++	assert(!bpf_map_lookup_and_delete_elem(lru_map_fd, &key, &value));
++	assert(value[0] == 1234);
++
++	/* remove the same element from the expected map */
++	assert(!bpf_map_delete_elem(expected_map_fd, &key));
++
+ 	assert(map_equal(lru_map_fd, expected_map_fd));
+ 
+ 	close(expected_map_fd);
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 51adc42b2b40..dbd5f95e8bde 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -65,6 +65,13 @@ static void test_hashmap(unsigned int task, void *data)
+ 	assert(bpf_map_lookup_elem(fd, &key, &value) == 0 && value == 1234);
+ 
+ 	key = 2;
++	value = 1234;
++	/* Insert key=2 element. */
++	assert(bpf_map_update_elem(fd, &key, &value, BPF_ANY) == 0);
++
++	/* Check that key=2 matches the value and delete it */
++	assert(bpf_map_lookup_and_delete_elem(fd, &key, &value) == 0 && value == 1234);
++
+ 	/* Check that key=2 is not found. */
+ 	assert(bpf_map_lookup_elem(fd, &key, &value) == -1 && errno == ENOENT);
+ 
+@@ -164,8 +171,18 @@ static void test_hashmap_percpu(unsigned int task, void *data)
+ 
+ 	key = 1;
+ 	/* Insert key=1 element. */
+-	assert(!(expected_key_mask & key));
+ 	assert(bpf_map_update_elem(fd, &key, value, BPF_ANY) == 0);
++
++	/* Lookup and delete elem key=1 and check value. */
++	assert(bpf_map_lookup_and_delete_elem(fd, &key, value) == 0 &&
++	       bpf_percpu(value, 0) == 100);
++
++	for (i = 0; i < nr_cpus; i++)
++		bpf_percpu(value, i) = i + 100;
++
++	/* Insert key=1 element which should not exist. */
++	assert(!(expected_key_mask & key));
++	assert(bpf_map_update_elem(fd, &key, value, BPF_NOEXIST) == 0);
+ 	expected_key_mask |= key;
+ 
+ 	/* BPF_NOEXIST means add new element if it doesn't exist. */
+-- 
+2.26.2
 
