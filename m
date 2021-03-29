@@ -2,195 +2,282 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D737134D956
-	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 22:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E9234D9B2
+	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 23:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230362AbhC2Uyg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 16:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231272AbhC2UyR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 16:54:17 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA50C061574;
-        Mon, 29 Mar 2021 13:54:17 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id f19so14188300ion.3;
-        Mon, 29 Mar 2021 13:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=Vf66eL15U8njDI0wUbJwhopv7ffMWFCFjk1XaltSbtY=;
-        b=m2zcF2/pc7LqNVitm4jzgxiWhPeMWbIAh1GgKn1wlziE+WqhReX5IuZNTNnmNgZPOo
-         m4NxR7Q7o+MkVZvd9DORmcyNzU3e9bJ75yLLJNrfsaxOh3QV9BQxrZIU7Dhskyj535tu
-         0D6M/NQSxSHlEOVirEH9A8WsZDqMnme6beZVCjGhWV48GLQaSC+NVnVqRWp40JZY/iC4
-         rFpF2eJQOJadn83UTuwcHLMmKIHqzqX4+2sIxgV5/fzAFIcFqZlQwTxAwaA3Lp95Wlrk
-         9hFw0bBvUXU453LLSnCXAk9joTsbprkd0Xr0epfrY16XNcja6NtJGe3LJN4YdjOYMBfA
-         /UDA==
+        id S230420AbhC2VrR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 17:47:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39625 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230329AbhC2Vqq (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 29 Mar 2021 17:46:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617054406;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4IQn1Iq4DKxtPfzHamU7ytxyjqtyzllBqT9fYE0lGXU=;
+        b=jScHiE0JC9eq8aLdYPAB9vCdbFbgjK4M8kqiAfNpx+39+ylO4cEuzEWk0/S9mBp5HzXKyD
+        ECCX+5WRxzfIalApQIwMJXUXi8E20Se/pML67GYTpP0C/EKaKSmDXJZlER1vNVFx1bv9Q5
+        Iutrd+ktDYoXBQ1SLDThXIGdokmgcHU=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-375-dAUFxOO9PMC0d-n8ZBW1KA-1; Mon, 29 Mar 2021 17:46:44 -0400
+X-MC-Unique: dAUFxOO9PMC0d-n8ZBW1KA-1
+Received: by mail-ed1-f71.google.com with SMTP id y10so9186617edr.20
+        for <bpf@vger.kernel.org>; Mon, 29 Mar 2021 14:46:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=Vf66eL15U8njDI0wUbJwhopv7ffMWFCFjk1XaltSbtY=;
-        b=Y6Xp2DsD+cgWjvr0+KI3BwgXabEFNFHrjgCbkJCfvwZ6RH03IUh0mab3WmJLgjL7lF
-         33LPhXBEbqcL9DQ+GuV/c13y1EXaH7nNglqlvOmK40iR2Wyy64wAyrQRjegXLHnNVNVM
-         cDbfsYkOEWBP2qKO4NFNtHdDmAlVMbf3yDy5Fi71CZQ6aZzJYVjxTd9IoUkjyOtBKa/g
-         X0qse4aGz1JtbJk3o97fMUJjCKZIUdDZxyM5SGf4plibcadxvZmCUeYlfQa8XtEtvtaj
-         UXvo0Mm5Ok5kXnihZktEHiVcBITGdh4cysvEhyj90fId8XUON2v03Axs3g2WkgoQF0Qr
-         Bl1w==
-X-Gm-Message-State: AOAM530ubHP1Bortdxf1XPIpfkV+xM6oTYuJ0HvRFZK4oAkibg0OZYAt
-        Sy/3tL3w798e6Uh5ii2aqCM=
-X-Google-Smtp-Source: ABdhPJwQMH5lghuDTbTORLJjfXZvLn0N8U56iu2fOChIIcXb2ASnF1Yia7Gf6MJ2eu4c2vCDn521KA==
-X-Received: by 2002:a05:6602:1da:: with SMTP id w26mr1930846iot.170.1617051256978;
-        Mon, 29 Mar 2021 13:54:16 -0700 (PDT)
-Received: from localhost ([172.242.244.146])
-        by smtp.gmail.com with ESMTPSA id b9sm10203942iof.54.2021.03.29.13.54.14
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=4IQn1Iq4DKxtPfzHamU7ytxyjqtyzllBqT9fYE0lGXU=;
+        b=ncddb0SqfI17VHhkDWfpJkgK4oTr78SypJ562FxNwYNeT8He3xb/KyqKp5Oe4K6UCR
+         wGHm3s46uAep0Dkxx5WAD0GXLmaQzCez2ac0f1ceAT3m3QF7elkMFlkZdEdJoyBg8+ch
+         3UUckr8vP08BNR+EwAESIpPvu1Ro1jIr8J5xgttRs77fGaFuMess64evUtaLYrBproB3
+         ZxgeI0TqTl6NcPvBdrTvm7+qpZHrsEd0om5OIYfpiiXeZjD5bGrkpRma/SrMesc4KksU
+         +kb7JyFEa4BU9OhYQ+F+Y9DvhXktxmCnPXx1Fk4Z1NMkuwahAQEHUwrOWhsiXcxDJh8Q
+         AKEQ==
+X-Gm-Message-State: AOAM53325cxQp0gof2DAYJiaf2Tuv7RGmDHKOq5i102bJfIGt/21If9F
+        bWacgVn3fYyfgdVX4AUmmPKKoXKnvUO6Xy0sqfZZWkcqmL6shg0hoaqzVXtz35LJZM1Ra1BKQB5
+        N2LxvA/Pb06cP
+X-Received: by 2002:a17:906:b202:: with SMTP id p2mr12080074ejz.244.1617054402909;
+        Mon, 29 Mar 2021 14:46:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz/LqmchSiNU/Ln+iuJM+UJX0D0DWIaUvQD29/+n7GhQo7X5r+b7NYV23u09ftMITAeRWQiBQ==
+X-Received: by 2002:a17:906:b202:: with SMTP id p2mr12080042ejz.244.1617054402489;
+        Mon, 29 Mar 2021 14:46:42 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id bm10sm9904054edb.2.2021.03.29.14.46.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 13:54:16 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 13:54:07 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
-        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Message-ID: <60623e6fdd870_401fb20818@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210328202013.29223-10-xiyou.wangcong@gmail.com>
-References: <20210328202013.29223-1-xiyou.wangcong@gmail.com>
- <20210328202013.29223-10-xiyou.wangcong@gmail.com>
-Subject: RE: [Patch bpf-next v7 09/13] udp: implement ->read_sock() for
- sockmap
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Mon, 29 Mar 2021 14:46:42 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 592F9180293; Mon, 29 Mar 2021 23:46:41 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, andrii@kernel.org, bjorn.topel@intel.com,
+        magnus.karlsson@intel.com, ciara.loftus@intel.com,
+        john.fastabend@gmail.com
+Subject: Re: [PATCH v4 bpf-next 06/17] libbpf: xsk: use bpf_link
+In-Reply-To: <20210329193234.GA9506@ranger.igk.intel.com>
+References: <20210326230938.49998-1-maciej.fijalkowski@intel.com>
+ <20210326230938.49998-7-maciej.fijalkowski@intel.com>
+ <87o8f2te2f.fsf@toke.dk> <20210329131401.GA9069@ranger.igk.intel.com>
+ <87zgymrqzm.fsf@toke.dk> <20210329193234.GA9506@ranger.igk.intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 29 Mar 2021 23:46:41 +0200
+Message-ID: <87zgylr5tq.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
-> 
-> This is similar to tcp_read_sock(), except we do not need
-> to worry about connections, we just need to retrieve skb
-> from UDP receive queue.
-> 
-> Note, the return value of ->read_sock() is unused in
-> sk_psock_verdict_data_ready().
-> 
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> ---
->  include/net/udp.h   |  2 ++
->  net/ipv4/af_inet.c  |  1 +
->  net/ipv4/udp.c      | 35 +++++++++++++++++++++++++++++++++++
->  net/ipv6/af_inet6.c |  1 +
->  4 files changed, 39 insertions(+)
-> 
-> diff --git a/include/net/udp.h b/include/net/udp.h
-> index df7cc1edc200..347b62a753c3 100644
-> --- a/include/net/udp.h
-> +++ b/include/net/udp.h
-> @@ -329,6 +329,8 @@ struct sock *__udp6_lib_lookup(struct net *net,
->  			       struct sk_buff *skb);
->  struct sock *udp6_lib_lookup_skb(const struct sk_buff *skb,
->  				 __be16 sport, __be16 dport);
-> +int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
-> +		  sk_read_actor_t recv_actor);
->  
->  /* UDP uses skb->dev_scratch to cache as much information as possible and avoid
->   * possibly multiple cache miss on dequeue()
-> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-> index 1355e6c0d567..f17870ee558b 100644
-> --- a/net/ipv4/af_inet.c
-> +++ b/net/ipv4/af_inet.c
-> @@ -1070,6 +1070,7 @@ const struct proto_ops inet_dgram_ops = {
->  	.setsockopt	   = sock_common_setsockopt,
->  	.getsockopt	   = sock_common_getsockopt,
->  	.sendmsg	   = inet_sendmsg,
-> +	.read_sock	   = udp_read_sock,
->  	.recvmsg	   = inet_recvmsg,
->  	.mmap		   = sock_no_mmap,
->  	.sendpage	   = inet_sendpage,
-> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> index 38952aaee3a1..04620e4d64ab 100644
-> --- a/net/ipv4/udp.c
-> +++ b/net/ipv4/udp.c
-> @@ -1782,6 +1782,41 @@ struct sk_buff *__skb_recv_udp(struct sock *sk, unsigned int flags,
->  }
->  EXPORT_SYMBOL(__skb_recv_udp);
->  
-> +int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
-> +		  sk_read_actor_t recv_actor)
-> +{
-> +	int copied = 0;
+Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+
+> On Mon, Mar 29, 2021 at 04:09:33PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+>>=20
+>> > On Mon, Mar 29, 2021 at 01:05:44PM +0200, Toke H=C3=B8iland-J=C3=B8rge=
+nsen wrote:
+>> >> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+>> >>=20
+>> >> > Currently, if there are multiple xdpsock instances running on a sin=
+gle
+>> >> > interface and in case one of the instances is terminated, the rest =
+of
+>> >> > them are left in an inoperable state due to the fact of unloaded XDP
+>> >> > prog from interface.
+>> >> >
+>> >> > Consider the scenario below:
+>> >> >
+>> >> > // load xdp prog and xskmap and add entry to xskmap at idx 10
+>> >> > $ sudo ./xdpsock -i ens801f0 -t -q 10
+>> >> >
+>> >> > // add entry to xskmap at idx 11
+>> >> > $ sudo ./xdpsock -i ens801f0 -t -q 11
+>> >> >
+>> >> > terminate one of the processes and another one is unable to work du=
+e to
+>> >> > the fact that the XDP prog was unloaded from interface.
+>> >> >
+>> >> > To address that, step away from setting bpf prog in favour of bpf_l=
+ink.
+>> >> > This means that refcounting of BPF resources will be done automatic=
+ally
+>> >> > by bpf_link itself.
+>> >> >
+>> >> > Provide backward compatibility by checking if underlying system is
+>> >> > bpf_link capable. Do this by looking up/creating bpf_link on loopba=
+ck
+>> >> > device. If it failed in any way, stick with netlink-based XDP prog.
+>> >> > therwise, use bpf_link-based logic.
+>> >> >
+>> >> > When setting up BPF resources during xsk socket creation, check whe=
+ther
+>> >> > bpf_link for a given ifindex already exists via set of calls to
+>> >> > bpf_link_get_next_id -> bpf_link_get_fd_by_id -> bpf_obj_get_info_b=
+y_fd
+>> >> > and comparing the ifindexes from bpf_link and xsk socket.
+>> >> >
+>> >> > For case where resources exist but they are not AF_XDP related, bai=
+l out
+>> >> > and ask user to remove existing prog and then retry.
+>> >> >
+>> >> > Lastly, do a bit of refactoring within __xsk_setup_xdp_prog and pul=
+l out
+>> >> > existing code branches based on prog_id value onto separate functio=
+ns
+>> >> > that are responsible for resource initialization if prog_id was 0 a=
+nd
+>> >> > for lookup existing resources for non-zero prog_id as that implies =
+that
+>> >> > XDP program is present on the underlying net device. This in turn m=
+akes
+>> >> > it easier to follow, especially the teardown part of both branches.
+>> >> >
+>> >> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+>> >>=20
+>> >> The logic is much improved in this version! A few smallish issues bel=
+ow:
+>> >
+>> > Glad to hear that!
+>> >
+>> >>=20
+>> >> > ---
+>> >> >  tools/lib/bpf/xsk.c | 259 ++++++++++++++++++++++++++++++++++++----=
+----
+>> >> >  1 file changed, 214 insertions(+), 45 deletions(-)
+>> >> >
+>> >> > diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+>> >> > index 526fc35c0b23..c75067f0035f 100644
+>> >> > --- a/tools/lib/bpf/xsk.c
+>> >> > +++ b/tools/lib/bpf/xsk.c
+>> >> > @@ -28,6 +28,7 @@
+>> >> >  #include <sys/mman.h>
+>> >> >  #include <sys/socket.h>
+>> >> >  #include <sys/types.h>
+>> >> > +#include <linux/if_link.h>
+>> >> >=20=20
+>> >> >  #include "bpf.h"
+>> >> >  #include "libbpf.h"
+>> >> > @@ -70,8 +71,10 @@ struct xsk_ctx {
+>> >> >  	int ifindex;
+>> >> >  	struct list_head list;
+>> >> >  	int prog_fd;
+>> >> > +	int link_fd;
+>> >> >  	int xsks_map_fd;
+>> >> >  	char ifname[IFNAMSIZ];
+>> >> > +	bool has_bpf_link;
+>> >> >  };
+>> >> >=20=20
+>> >> >  struct xsk_socket {
+>> >> > @@ -409,7 +412,7 @@ static int xsk_load_xdp_prog(struct xsk_socket =
+*xsk)
+>> >> >  	static const int log_buf_size =3D 16 * 1024;
+>> >> >  	struct xsk_ctx *ctx =3D xsk->ctx;
+>> >> >  	char log_buf[log_buf_size];
+>> >> > -	int err, prog_fd;
+>> >> > +	int prog_fd;
+>> >> >=20=20
+>> >> >  	/* This is the fallback C-program:
+>> >> >  	 * SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
+>> >> > @@ -499,14 +502,43 @@ static int xsk_load_xdp_prog(struct xsk_socke=
+t *xsk)
+>> >> >  		return prog_fd;
+>> >> >  	}
+>> >> >=20=20
+>> >> > -	err =3D bpf_set_link_xdp_fd(xsk->ctx->ifindex, prog_fd,
+>> >> > -				  xsk->config.xdp_flags);
+>> >> > +	ctx->prog_fd =3D prog_fd;
+>> >> > +	return 0;
+>> >> > +}
+>> >> > +
+>> >> > +static int xsk_create_bpf_link(struct xsk_socket *xsk)
+>> >> > +{
+>> >> > +	/* bpf_link only accepts XDP_FLAGS_MODES, but xsk->config.xdp_fla=
+gs
+>> >> > +	 * might have set XDP_FLAGS_UPDATE_IF_NOEXIST
+>> >> > +	 */
+>> >> > +	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts,
+>> >> > +			    .flags =3D (xsk->config.xdp_flags & XDP_FLAGS_MODES));
+>> >>=20
+>> >> This will silently suppress any new flags as well; that's not a good
+>> >> idea. Rather mask out the particular flag (UPDATE_IF_NOEXIST) and pass
+>> >> everything else through so the kernel can reject invalid ones.
+>> >
+>> > I'd say it's fine as it matches the check:
+>> >
+>> > 	/* link supports only XDP mode flags */
+>> > 	if (link && (flags & ~XDP_FLAGS_MODES)) {
+>> > 		NL_SET_ERR_MSG(extack, "Invalid XDP flags for BPF link attachment");
+>> > 		return -EINVAL;
+>> > 	}
+>> >
+>> > from dev_xdp_attach() in net/core/dev.c ?
+>>=20
+>> Yeah, it does today. But what happens when the kernel learns to accept a
+>> new flag?
+>>=20
+>> Also, you're masking the error on an invalid flag. If, in the future,
+>> the kernel learns to handle a new flag, that check in the kernel will
+>> change to accept that new flag. But if userspace tries to pass that to
+>> and old kernel, they'll get back an EINVAL. This can be used to detect
+>> whether the kernel doesn't support the flag, and can if not, userspace
+>> can fall back and do something different.
+>>=20
+>> Whereas with your code, you're just silently zeroing out the invalid
+>> flag, so the caller will have no way to detect whether the flag works
+>> or not...
+>
+> I'd rather worry about such feature detection once a new flag is in place
+> and this code would actually care about :) but that's me.
+>
+> I feel like stick has two ends in this case - if we introduce a new flag
+> that would be out of the bpf_link's interest (the kernel part), then we
+> will have to come back here and explicitly mask it out, just like you
+> propose to do so with UPDATE_IF_NOEXIST right now.
+
+Well I'd rather err on the side of throwing errors for new flags than on
+silently suppressing them :)
+
+(The partial sharing of flags between netlink and bpf_link is a bit odd
+in any case, but that's another discussion)
+
+> What I'm saying is that we need to mask out the FLAGS_REPLACE as well.
+> Current code took care of that. So, to move this forward, I can do:
+>
+> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> index c75067f0035f..95da0e19f4a5 100644
+> --- a/tools/lib/bpf/xsk.c
+> +++ b/tools/lib/bpf/xsk.c
+> @@ -508,11 +508,7 @@ static int xsk_load_xdp_prog(struct xsk_socket *xsk)
+>=20=20
+>  static int xsk_create_bpf_link(struct xsk_socket *xsk)
+>  {
+> -	/* bpf_link only accepts XDP_FLAGS_MODES, but xsk->config.xdp_flags
+> -	 * might have set XDP_FLAGS_UPDATE_IF_NOEXIST
+> -	 */
+> -	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts,
+> -			    .flags =3D (xsk->config.xdp_flags & XDP_FLAGS_MODES));
+> +	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts);
+>  	struct xsk_ctx *ctx =3D xsk->ctx;
+>  	__u32 prog_id =3D 0;
+>  	int link_fd;
+> @@ -532,6 +528,8 @@ static int xsk_create_bpf_link(struct xsk_socket *xsk)
+>  		return -EINVAL;
+>  	}
+>=20=20
+> +	opts.flags =3D xsk->config.xdp_flags & ~(XDP_FLAGS_UPDATE_IF_NOEXIST | =
+XDP_FLAGS_REPLACE);
 > +
-> +	while (1) {
-> +		int offset = 0, err;
+>  	link_fd =3D bpf_link_create(ctx->prog_fd, ctx->ifindex, BPF_XDP, &opts);
+>  	if (link_fd < 0) {
+>  		pr_warn("bpf_link_create failed: %s\n", strerror(errno));
 
-Should this be
+Yup, this works for me! :)
 
- int offset = sk_peek_offset()?
-
-MSG_PEEK should work from recv side, at least it does on TCP side. If
-its handled in some following patch a comment would be nice. I was
-just reading udp_recvmsg() so maybe its not needed.
-
-> +		struct sk_buff *skb;
-> +
-> +		skb = __skb_recv_udp(sk, 0, 1, &offset, &err);
-> +		if (!skb)
-> +			return err;
-> +		if (offset < skb->len) {
-> +			size_t len;
-> +			int used;
-> +
-> +			len = skb->len - offset;
-> +			used = recv_actor(desc, skb, offset, len);
-> +			if (used <= 0) {
-> +				if (!copied)
-> +					copied = used;
-> +				break;
-> +			} else if (used <= len) {
-> +				copied += used;
-> +				offset += used;
-
-The while loop is going to zero this? What are we trying to do
-here with offset?
-
-> +			}
-> +		}
-> +		if (!desc->count)
-> +			break;
-> +	}
-> +
-> +	return copied;
-> +}
-> +EXPORT_SYMBOL(udp_read_sock);
-> +
->  /*
->   * 	This should be easy, if there is something there we
->   * 	return it, otherwise we block.
-> diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
-> index 802f5111805a..71de739b4a9e 100644
-> --- a/net/ipv6/af_inet6.c
-> +++ b/net/ipv6/af_inet6.c
-> @@ -714,6 +714,7 @@ const struct proto_ops inet6_dgram_ops = {
->  	.getsockopt	   = sock_common_getsockopt,	/* ok		*/
->  	.sendmsg	   = inet6_sendmsg,		/* retpoline's sake */
->  	.recvmsg	   = inet6_recvmsg,		/* retpoline's sake */
-> +	.read_sock	   = udp_read_sock,
->  	.mmap		   = sock_no_mmap,
->  	.sendpage	   = sock_no_sendpage,
->  	.set_peek_off	   = sk_set_peek_off,
-> -- 
-> 2.25.1
-> 
-
+-Toke
 
