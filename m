@@ -2,108 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C9B34C824
-	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 10:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728C834CB5F
+	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 10:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233089AbhC2IUF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 04:20:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233080AbhC2ITc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:19:32 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2798C061756
-        for <bpf@vger.kernel.org>; Mon, 29 Mar 2021 01:19:25 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id a198so17147382lfd.7
-        for <bpf@vger.kernel.org>; Mon, 29 Mar 2021 01:19:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T17UPyB49fQi81p3RjN5h9re4h1c9rcNiJmp3cH67jg=;
-        b=q1LkIVeN1CSY5hosJXtoBv+Ux0JhJ27lW+Gm+sBS9dvD4Sw2R4apI4P5/0lR/NLEQR
-         VIZ+gt088HzjytzKLP0IMIDXvGVjshPrKXBV/YdRScfYB9kBop09xAfYf0Mc/qm5RqMG
-         ovmY11JV78D5bCh5lGmZc69wxuCOT1iyewBBI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T17UPyB49fQi81p3RjN5h9re4h1c9rcNiJmp3cH67jg=;
-        b=hrXdjq8JZp+TTrC2ZCW1MEEIPsZRcAVPNUXYsQtww4OwsZ50ldlFq18pHQdqSIEx4K
-         UBl/JKmNDGkkmTch71GgdbbkPy4E5r0/8aDZM8NB2a6uDSSl4Frgi2uD3J7/AWys0tnj
-         xJCu8FIXo86IJG8Nc9Wp7aSlPDnZJE8WL3RGjveEetLczzpFF+nkpaod0DZpvbTlbdpp
-         VCYXr/aZ4FIu59HyKUYCtjVggINJJRnOvfkQOhM9y9sBwG7PaU2jolp4uq8Fl1xN+2dT
-         tGl5EghW6IHRuU2eS6ONcJ/FZyAXwSc/9ZTumMS0fq+j/CYXuVxxlD3r31Igw7kPaOfk
-         4E7w==
-X-Gm-Message-State: AOAM531ddjND50Oj9JlUzAzV4M7tXd3xwcb2vHo+SqiZ3QyvujyyqOy0
-        Ard2DDXK1qTJbLBZz8XjN5Hg7WNTf18yCAs1nyc+H36SMyA=
-X-Google-Smtp-Source: ABdhPJxFOiDf3HdUzgGwB1o9orQWHoh/OXEAOPDSOIowsXvtXJ80dRVlkz8qGZfuEAA4/DB8oCyHi6o9BNhhc5MaJTY=
-X-Received: by 2002:a19:521a:: with SMTP id m26mr16066250lfb.56.1617005964467;
- Mon, 29 Mar 2021 01:19:24 -0700 (PDT)
+        id S235556AbhC2Iqd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 29 Mar 2021 04:46:33 -0400
+Received: from mga03.intel.com ([134.134.136.65]:35073 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235248AbhC2Ime (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:42:34 -0400
+IronPort-SDR: vk5IvlhRwNLCqsurIeioaZOJkI/hyBjFg1XUaqo/zECSfpRNUIT4ViLDVOd0OflJ1sMVMoOwi3
+ 2ZxpXcyCvufA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="191534952"
+X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
+   d="scan'208";a="191534952"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 01:41:32 -0700
+IronPort-SDR: qCpEOheK42IdvbwkINi1ISulfr7bopDHfnNL1fBKxsUq6onFujJu9h0pWsr/+KlD6KxLbgGEW5
+ Ka5BUxiKysfA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
+   d="scan'208";a="415338588"
+Received: from irsmsx602.ger.corp.intel.com ([163.33.146.8])
+  by orsmga007.jf.intel.com with ESMTP; 29 Mar 2021 01:41:30 -0700
+Received: from irsmsx604.ger.corp.intel.com (163.33.146.137) by
+ irsmsx602.ger.corp.intel.com (163.33.146.8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 29 Mar 2021 09:41:29 +0100
+Received: from irsmsx604.ger.corp.intel.com ([163.33.146.137]) by
+ IRSMSX604.ger.corp.intel.com ([163.33.146.137]) with mapi id 15.01.2106.013;
+ Mon, 29 Mar 2021 09:41:29 +0100
+From:   "Loftus, Ciara" <ciara.loftus@intel.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "bjorn@kernel.org" <bjorn@kernel.org>,
+        "magnus.karlsson@gmail.com" <magnus.karlsson@gmail.com>
+Subject: RE: [PATCH v2 bpf 3/3] libbpf: ignore return values of setsockopt for
+ XDP rings.
+Thread-Topic: [PATCH v2 bpf 3/3] libbpf: ignore return values of setsockopt
+ for XDP rings.
+Thread-Index: AQHXIlDjJrZQMtFJm0i7O3jDxgJtSaqXHNWAgAOK00A=
+Date:   Mon, 29 Mar 2021 08:41:29 +0000
+Message-ID: <bc1d9e861d27499da5f5a84bc6d22177@intel.com>
+References: <20210326142946.5263-1-ciara.loftus@intel.com>
+ <20210326142946.5263-4-ciara.loftus@intel.com>
+ <20210327022729.cgizt5xnhkerbrmy@ast-mbp>
+In-Reply-To: <20210327022729.cgizt5xnhkerbrmy@ast-mbp>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20210326160501.46234-1-lmb@cloudflare.com> <20210326160501.46234-2-lmb@cloudflare.com>
- <CAPhsuW7E4bhEGcboKQ5O=1o0iVNPLpJB1nrAgxweiZqGhZm-JQ@mail.gmail.com>
-In-Reply-To: <CAPhsuW7E4bhEGcboKQ5O=1o0iVNPLpJB1nrAgxweiZqGhZm-JQ@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Mon, 29 Mar 2021 09:19:13 +0100
-Message-ID: <CACAyw99NVbu0q-wh=r7ifoVUnny6gxXwf6LPGf0HUhg1CCQkUQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 2/2] bpf: program: refuse non-O_RDWR flags in BPF_OBJ_GET
-To:     Song Liu <song@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 26 Mar 2021 at 20:14, Song Liu <song@kernel.org> wrote:
->
-> On Fri, Mar 26, 2021 at 9:07 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> 
+> On Fri, Mar 26, 2021 at 02:29:46PM +0000, Ciara Loftus wrote:
+> > During xsk_socket__create the XDP_RX_RING and XDP_TX_RING
+> setsockopts
+> > are called to create the rx and tx rings for the AF_XDP socket. If the ring
+> > has already been set up, the setsockopt will return an error. However,
+> > in the event of a failure during xsk_socket__create(_shared) after the
+> > rings have been set up, the user may wish to retry the socket creation
+> > using these pre-existing rings. In this case we can ignore the error
+> > returned by the setsockopts. If there is a true error, the subsequent
+> > call to mmap() will catch it.
 > >
-> > As for bpf_link, refuse creating a non-O_RDWR fd. Since program fds
-> > currently don't allow modifications this is a precaution, not a
-> > straight up bug fix.
+> > Fixes: 1cad07884239 ("libbpf: add support for using AF_XDP sockets")
 > >
-> > Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+> > Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> > Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
 > > ---
-> >  kernel/bpf/inode.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >  tools/lib/bpf/xsk.c | 34 ++++++++++++++++------------------
+> >  1 file changed, 16 insertions(+), 18 deletions(-)
 > >
-> > diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-> > index dc56237d6960..d2de2abec35b 100644
-> > --- a/kernel/bpf/inode.c
-> > +++ b/kernel/bpf/inode.c
-> > @@ -543,7 +543,7 @@ int bpf_obj_get_user(const char __user *pathname, int flags)
-> >                 return PTR_ERR(raw);
->
-> For both patches, shall we do the check before bpf_obj_do_get(), which is a few
-> lines above?
-
-type is filled in by bpf_obj_do_get, so we can't avoid calling it. As
-Andrii mentions we need to allow flags for map.
-
->
-> Thanks,
-> Song
->
+> > diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> > index d4991ddff05a..cfc4abf505c3 100644
+> > --- a/tools/lib/bpf/xsk.c
+> > +++ b/tools/lib/bpf/xsk.c
+> > @@ -900,24 +900,22 @@ int xsk_socket__create_shared(struct xsk_socket
+> **xsk_ptr,
+> >  	}
+> >  	xsk->ctx = ctx;
 > >
-> >         if (type == BPF_TYPE_PROG)
-> > -               ret = bpf_prog_new_fd(raw);
-> > +               ret = (f_flags != O_RDWR) ? -EINVAL : bpf_prog_new_fd(raw);
-> >         else if (type == BPF_TYPE_MAP)
-> >                 ret = bpf_map_new_fd(raw, f_flags);
-> >         else if (type == BPF_TYPE_LINK)
-> > --
-> > 2.27.0
-> >
+> > -	if (rx) {
+> > -		err = setsockopt(xsk->fd, SOL_XDP, XDP_RX_RING,
+> > -				 &xsk->config.rx_size,
+> > -				 sizeof(xsk->config.rx_size));
+> > -		if (err) {
+> > -			err = -errno;
+> > -			goto out_put_ctx;
+> > -		}
+> > -	}
+> > -	if (tx) {
+> > -		err = setsockopt(xsk->fd, SOL_XDP, XDP_TX_RING,
+> > -				 &xsk->config.tx_size,
+> > -				 sizeof(xsk->config.tx_size));
+> > -		if (err) {
+> > -			err = -errno;
+> > -			goto out_put_ctx;
+> > -		}
+> > -	}
+> > +	/* The return values of these setsockopt calls are intentionally not
+> checked.
+> > +	 * If the ring has already been set up setsockopt will return an error.
+> However,
+> > +	 * this scenario is acceptable as the user may be retrying the socket
+> creation
+> > +	 * with rings which were set up in a previous but ultimately
+> unsuccessful call
+> > +	 * to xsk_socket__create(_shared). The call later to mmap() will fail if
+> there
+> > +	 * is a real issue and we handle that return value appropriately there.
+> > +	 */
+> > +	if (rx)
+> > +		setsockopt(xsk->fd, SOL_XDP, XDP_RX_RING,
+> > +			   &xsk->config.rx_size,
+> > +			   sizeof(xsk->config.rx_size));
+> > +
+> > +	if (tx)
+> > +		setsockopt(xsk->fd, SOL_XDP, XDP_TX_RING,
+> > +			   &xsk->config.tx_size,
+> > +			   sizeof(xsk->config.tx_size));
+> 
+> Instead of ignoring the error can you remember that setsockopt was done
+> in struct xsk_socket and don't do it the second time?
 
-
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+Ideally we don't have to ignore the error. However in the event of failure struct xsk_socket is freed at the end of xsk_socket__create so we can't use it to remember state between subsequent calls to __create(). 
