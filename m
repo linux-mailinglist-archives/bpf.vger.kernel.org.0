@@ -2,39 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED00534DABC
-	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 00:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4486034DAFD
+	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 00:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232514AbhC2WX2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 18:23:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46596 "EHLO mail.kernel.org"
+        id S231966AbhC2WYb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 18:24:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232087AbhC2WW1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:22:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 848656198A;
-        Mon, 29 Mar 2021 22:22:26 +0000 (UTC)
+        id S232417AbhC2WXI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 18:23:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D13C61996;
+        Mon, 29 Mar 2021 22:23:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617056547;
-        bh=ALZntVy1v1vL5fjHnSHVJHDyzRcy059K9dkGBMFzF44=;
+        s=k20201202; t=1617056588;
+        bh=OYdz818lQJpsq8kb/tPoLAow/SILd1O1PyqK6C2h4Qo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l6ZIgKuMGe2CUovWA03+Xx5MWtP958L/gwgG3BX6d9hwKOlNfJSwPJUi5Zf/GrdQ9
-         7JuBeO4MkxTeoys+GC6rJtXN+oL1gM/wHx+xqNizQl4Y7BL+q+axHxPtrwA9VgOxYe
-         wvkU/jMUnwipp+hhMbEoXmP4gpuBcQ/w7/tL/9XA5wphApIw8O6fpcniafDdn0r5gu
-         zSM64r1W6imJZ0azd70kT6GY0PyMWAGDm5VIlEvOoDVEDAuIodrk6gOUiaZfRwlDrd
-         9O29FLC27ajIElafpcqjL2tP2C4dyGKIxv5wJcgWkOqoU4tXNMQ8eVq/Qv7c1OOgpn
-         nIRDZdNKE6NyA==
+        b=Rxp5iPzcflWnICDVVD4egVY9sa3p/aAZoHWYKFEqyhn3NpflLal5spI4GdAReWx/i
+         YLiZVAdc+NdqTH4b8UWwLlm5GyPpq2NS6vSZKxQo5vZslZQaejQAeHMLWVsXXGjuBg
+         dzdA1DZb53XKANQcVafSQujKXTwkHJkJFe+mjkRZzegbTpKzBmwen1Dwj++xIhMVjb
+         iql6tYdtCks051KtTKk/ju6pcKnFzZu/gN3351sGdc1l92P+SCdfFxAGq4ixqp60UH
+         v98SSHUa/CeIG3JAAzPkP3bFco55wiKLRA0N4DQWWIQ+LUC7xM4yY/fvXc8lro9cwH
+         Ailwz6Tyf1Waw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 04/33] bpf, x86: Use kvmalloc_array instead kmalloc_array in bpf_jit_comp
-Date:   Mon, 29 Mar 2021 18:21:52 -0400
-Message-Id: <20210329222222.2382987-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 04/19] bpf, x86: Use kvmalloc_array instead kmalloc_array in bpf_jit_comp
+Date:   Mon, 29 Mar 2021 18:22:47 -0400
+Message-Id: <20210329222303.2383319-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210329222222.2382987-1-sashal@kernel.org>
-References: <20210329222222.2382987-1-sashal@kernel.org>
+In-Reply-To: <20210329222303.2383319-1-sashal@kernel.org>
+References: <20210329222303.2383319-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -109,10 +109,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 796506dcfc42..49a506583e0c 100644
+index 18936533666e..44c7d7aef8c1 100644
 --- a/arch/x86/net/bpf_jit_comp.c
 +++ b/arch/x86/net/bpf_jit_comp.c
-@@ -2019,7 +2019,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+@@ -1118,7 +1118,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
  		extra_pass = true;
  		goto skip_init_addrs;
  	}
@@ -121,7 +121,7 @@ index 796506dcfc42..49a506583e0c 100644
  	if (!addrs) {
  		prog = orig_prog;
  		goto out_addrs;
-@@ -2109,7 +2109,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+@@ -1195,7 +1195,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
  		if (image)
  			bpf_prog_fill_jited_linfo(prog, addrs + 1);
  out_addrs:
