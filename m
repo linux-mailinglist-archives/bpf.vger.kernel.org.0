@@ -2,76 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 254A234D8F6
-	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 22:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DB334D928
+	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 22:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbhC2UTC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 16:19:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
+        id S230495AbhC2Uli (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 16:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230395AbhC2USc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 16:18:32 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E201CC061574;
-        Mon, 29 Mar 2021 13:18:31 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id j25so10622884pfe.2;
-        Mon, 29 Mar 2021 13:18:31 -0700 (PDT)
+        with ESMTP id S231310AbhC2Ul0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 16:41:26 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386A9C061574;
+        Mon, 29 Mar 2021 13:41:26 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id kt15so21450671ejb.12;
+        Mon, 29 Mar 2021 13:41:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wWbAtqchcbLb5oDUoEL+XwBoKafnvSXklPKlf/DyzV0=;
-        b=MCJ2tQF+Q7xaPMi3yGBMb53Mz+Uk4YvobS6WbLycmk5x8wwhodKC9mQi/fNoXjg5SJ
-         fTY51z5Rbv6DYK24kYMPNQeRprw8SqoxPqUQIS6mQo2D55PfRd48aOwvKWu4G4l1nFCT
-         QLWgBXk6utF1oOqylx6JnifLQu0uVIrNhShe6gyLBbMJF2EXDlBFjeOOurPTlKAHQTJP
-         3ekE/i/3Ih8ZEP+JBSAAkUcwliTikgymRfQrGRrRBqUDlEETJUaH+gQAXTo/AYwqhEJF
-         GkLTt0NiOVz7PrR+8J+O9Ua/GcFe/faIN/zxF+XnyBI4AGbGM0TlgnhV4ztzJdL8mYA3
-         ww9A==
+        bh=IOY00wZMw7iQ/C8A6RUq3HCwcrBzQhlsaRdSeoRLwXs=;
+        b=oWb6o1aHOSF0DXx/yX1KkO7igNt5jO2+W5TfD710HCbj6l6risPCncqXOwLHFW7VO8
+         n2WqBzfjhpbiAq9xr5ewQLs6CPp7Q8JD5j46qyEd0ryBtEmnUxAZ4pz+1sCID0ewC8ux
+         c+kDA6hixWaNdB3u91M8vSO/Rm6ab7D5cg6vvwEqrFt6JQRCTqRZ9lKp+iyrXKg1lOzD
+         EUimB0/jrdsRXR3RobVvOwNQtAEB3wOBlRKbEWGe1h4MUnTVdVYcpmrl64UXSU/F4xU7
+         2UQ47VDwAE3NgXqOvtbgiNZ6wJdOIC5qg0CPJ/OAWvtEQ51hikQWiK0OlgG0pn+IzHNH
+         OpbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wWbAtqchcbLb5oDUoEL+XwBoKafnvSXklPKlf/DyzV0=;
-        b=ueLXKZGjjN5thcygq1GpC9BHajnhNHut/LpgT3+hLqLddZNpN3hy29MGlLCPybN8V2
-         SEF7qbqGtdbpyhwCY5zhp/DXDew4YWO1NUnaZJMqyLTacqf0268KmuwVmy5yF5I3KZbv
-         G3M+X58FpAAc+x4ldawgQy9TbxvN7+vJy/xx7RZN+1mQ4wR0QhYvxQxx7rLzzMhz33f4
-         rNSVFParvStBjJpJ6Os5cDyqi7EI7PvqagQpTUXciVlie7KNvwRv+bwGVUUZ7Fmg72Y/
-         xEOK8m9IS7fnEXq8/YhTk83GZpA9y72eMuZPfzcRfmbD9I3T7pEcyFPgglqgshX15OXk
-         szPQ==
-X-Gm-Message-State: AOAM5302Q33xuFJYTZ/R3bv9Ao2wVrGae5pBh/vdHdF1oxiVrUTMTDAg
-        8BZRAgU3mncDQv3kh1DUNa9q18FJ76wDYU9hKXMSnA9+OLm+DQ==
-X-Google-Smtp-Source: ABdhPJx6FsEr7dHz8sVsJ+GO+sqdgq0Rc3aDSKYuDQ9mwcECzzpHmJIN1r9PzU2LEOiCtDwxr+lqGxr39VilLdQwcS8=
-X-Received: by 2002:aa7:99c6:0:b029:1f5:c49d:dce7 with SMTP id
- v6-20020aa799c60000b02901f5c49ddce7mr26182634pfi.78.1617049111326; Mon, 29
- Mar 2021 13:18:31 -0700 (PDT)
+        bh=IOY00wZMw7iQ/C8A6RUq3HCwcrBzQhlsaRdSeoRLwXs=;
+        b=cwrst70ex3yiyLbL6fuAQy2BkTaVKrv9ZBh3pBpIhrW3TLNravKg5huzSvIGNCMSyw
+         At+iHLVM9uVPnbWvAGVvoZLhINpZebTjd2PpRmQQXgSzJiunR9yTs/6drqMwjnFUwZp1
+         xllOChxDF690hL361oKPNpjwz7mHgtG5CJR79KPIe7SoFFq4lCh/6eoFYaKy/WHQ/YqR
+         J1wIixpU3eFPSSdb61ghpz0Li9pBXdGLNyfpCKnaj3zX+OLoWmHjN+jMmQzpUlylXEWJ
+         440/LS3amD7FIraAPNwcpuf/dD1GTr7ccarlCgIExp5MSjv8Xe39Ud13UlHy9ByjQt24
+         2M8w==
+X-Gm-Message-State: AOAM531VE8hLMYVGqoqvDC1yDXgkZT6Fu0jw8igG+K1iIGBQCki30aYE
+        +PhivCD5KGcf/e69T33WJHeqfAOuUVOniCRmQB4=
+X-Google-Smtp-Source: ABdhPJxcjn88m4H97qxfK72HhcS5ov53I7up+0loT8VWTFlglQcHijm0szjlpAvoCk9P+6FVl226+HzoXj3NFKnjmh8=
+X-Received: by 2002:a17:906:73cd:: with SMTP id n13mr29275638ejl.535.1617050484980;
+ Mon, 29 Mar 2021 13:41:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210325015124.1543397-1-kafai@fb.com> <CAM_iQpWGn000YOmF2x6Cm0FqCOSq0yUjc_+Up+Ek3r6NrBW3mw@mail.gmail.com>
- <CAADnVQKAXsEzsEkxhUG=79V+gAJbv=-Wuh_oJngjs54g1xGW7Q@mail.gmail.com>
- <CAM_iQpU7y+YE9wbqFZK30o4A+Gmm9jMLgqPqOw6SCDP8mHibTQ@mail.gmail.com>
- <CAADnVQJoeEqZK8eWfCi-BkHY4rSzaPuXYVEFvR75Ecdbt+oGgA@mail.gmail.com>
- <CAM_iQpUTFs_60vkS6LTRr5VBt8yTHiSgaHoKrtt4GGDe4tCcew@mail.gmail.com> <20210329012437.somtubekt2dqzz3x@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210329012437.somtubekt2dqzz3x@kafai-mbp.dhcp.thefacebook.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 29 Mar 2021 13:18:20 -0700
-Message-ID: <CAM_iQpUmkb9cbyWKcerQcJJAyGLzgtDus643FL1cyQL3FzTrfg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 00/14] bpf: Support calling kernel function
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <20210330022144.150edc6e@xhacker> <20210330022454.3d0feda2@xhacker>
+In-Reply-To: <20210330022454.3d0feda2@xhacker>
+From:   Luke Nelson <luke.r.nels@gmail.com>
+Date:   Mon, 29 Mar 2021 13:41:13 -0700
+Message-ID: <CAB-e3NQ11Gnoa716nnZ2tTgjb02_eZOf1gWn3YMmueEAp92c1g@mail.gmail.com>
+Subject: Re: [PATCH 6/9] riscv: bpf: Move bpf_jit_alloc_exec() and
+ bpf_jit_free_exec() to core
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        kernel-team <kernel-team@fb.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Xi Wang <xi.wang@gmail.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kasan-dev@googlegroups.com, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 6:24 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> Could you also check the CONFIG_DYNAMIC_FTRACE and also try 'y' if it
-> is not set?
+> We will drop the executable permissions of the code pages from the
+> mapping at allocation time soon. Move bpf_jit_alloc_exec() and
+> bpf_jit_free_exec() to bpf_jit_core.c so that they can be shared by
+> both RV64I and RV32I.
 
-On my side, with pahole==1.17, changing CONFIG_DYNAMIC_FTRACE
-makes no difference. With pahole==1.20, CONFIG_DYNAMIC_FTRACE=y
-makes it gone, but CONFIG_DYNAMIC_FTRACE=n not.
+Looks good to me.
 
-Thanks.
+Acked-by: Luke Nelson <luke.r.nels@gmail.com>
