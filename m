@@ -2,102 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9700D34D73D
-	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 20:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2EF34D7A1
+	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 20:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbhC2Sbu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 14:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41460 "EHLO
+        id S231468AbhC2S4M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 14:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231524AbhC2Sba (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:31:30 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E6327C061574;
-        Mon, 29 Mar 2021 11:31:28 -0700 (PDT)
+        with ESMTP id S231426AbhC2S4C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 14:56:02 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE94C061574;
+        Mon, 29 Mar 2021 11:56:02 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so8162631pjb.4;
+        Mon, 29 Mar 2021 11:56:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
-        Content-Transfer-Encoding; bh=9CYVVSdbdIN1CqoSzahmxkYgo2mgL2GjKI
-        5zP4cVXEs=; b=KJWdSb/TJcKR5yNesAvzq5MBEond1rkkI7McqDa7koDle4b1SC
-        akS/DCnzY9OQ6K7j58zz8D+PrTcm56+GgQGVtpJwwDBH/9DjFLl/crGebyHlwXFO
-        ACxxwNl+/TSZa7C6DPttQ2jeas3KWDgYxcJrQ6EHjpxWpxGK28Id9Bwl8=
-Received: from xhacker (unknown [101.86.19.180])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBnuJrxHGJgRPhpAA--.5621S2;
-        Tue, 30 Mar 2021 02:31:14 +0800 (CST)
-Date:   Tue, 30 Mar 2021 02:26:17 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        " =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=" <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GqbdPTNTHOeEC54VEtG1smzLQCaqJlKPEaEE81/oHuc=;
+        b=YP67GC6ZGZPkaGdAoeWYNiACydqSU+Nk1eCct6eyV12rPlRRvqUBchIZjYVon12kf8
+         DaSHBniU++ZKHyAm9J+NniR/godHBVx8gTbNLq0VFyTnOCxXy6XRtGVWKwJhKiBQUM9E
+         pZ2unajrLyAq2tNB9AFjQV7/8fycqFSDlhdgdlGdPYW4BghvFmR6UPw+8dmLWuPVaU0x
+         01+e2GDMiC1ymJOffPyBwEfi3+Vxm7Rb8NZIjNnQl37tyiJe5bqbk+/9Rhl6G5minAS7
+         JVvOw02tbXCw2bqbTrHLnYchW7Gj84xXNSifiH0huCBaFKEtIuM4LjSjAdVRD9bMYZXu
+         EBzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GqbdPTNTHOeEC54VEtG1smzLQCaqJlKPEaEE81/oHuc=;
+        b=E0BMr776I5jIyJW252OdW1qA4FqwfYOBGoavGhjG1OZk0ktj0APnlHZWNabsN58LBC
+         wknQWrYxxEcAp5C+av5t5pfklNrvxErdx+Bj4dQ4aXv4WIThxlzuiUVH7FUstgaQuZ0e
+         8DWl+A45PCR3U87OgznYa8VOR7tSOFfC9Z9rIh45Br9+FY0AbT8D6HcdIa+cVJjlYLCR
+         sd+nuPbZpJ9UCbCFvIywThuZZ7HbQkT2h8UnBFFpd7PljlxBtjLGW/FeT2Yki4JKZBgg
+         LsQQRwFGBZnMHSOmg34kDl3aMNkVsN7dKSDvEU2x61EgW26pEkCytk9RaqdSDU+qfvZl
+         zM4Q==
+X-Gm-Message-State: AOAM5339H5CAN52fP4SE6dsCL+vs19Q2vWn284Ws+99fnbLDt7ugUCha
+        1HYs23O0oaCXp8b1ntPjE+Q=
+X-Google-Smtp-Source: ABdhPJw1aUIsNxy01AKe08w4M3vdAXHhxpcndYqc+PliJSFV1HYfhYFcnA8tgqVPZ6Yg5Xe9Nsj4vg==
+X-Received: by 2002:a17:902:b908:b029:e6:3e0a:b3cc with SMTP id bf8-20020a170902b908b02900e63e0ab3ccmr29985505plb.68.1617044161629;
+        Mon, 29 Mar 2021 11:56:01 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:e922])
+        by smtp.gmail.com with ESMTPSA id o197sm18300776pfd.42.2021.03.29.11.56.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 11:56:00 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 11:55:58 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH 9/9] riscv: Set ARCH_HAS_STRICT_MODULE_RWX if MMU
-Message-ID: <20210330022617.525104ce@xhacker>
-In-Reply-To: <20210330022144.150edc6e@xhacker>
-References: <20210330022144.150edc6e@xhacker>
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: allow compiling BPF objects
+ without BTF
+Message-ID: <20210329185558.mjoikgfdp53lq2it@ast-mbp>
+References: <20210319205909.1748642-1-andrii@kernel.org>
+ <20210319205909.1748642-4-andrii@kernel.org>
+ <20210320022156.eqtmldxpzxkh45a7@ast-mbp>
+ <CAEf4Bzarx33ENLBRyqxDz7k9t0YmTRNs5wf_xCqL2jNXvs+0Sg@mail.gmail.com>
+ <20210322010734.tw2rigbr3dyk3iot@ast-mbp>
+ <CAEf4BzbdgPnw81+diwcvAokv+S6osqvAAzSQYt_BoYbga9t-qQ@mail.gmail.com>
+ <20210322175443.zflwaf7dstpg4y2b@ast-mbp>
+ <CAEf4BzYHP00_iav1Y_vhMXBmAO3AnqqBz+uK-Yu=NGYUMEUyxw@mail.gmail.com>
+ <CAADnVQKDOWz7fW0kxGEeLtMJLf7J5v9Un=uDXKmwhkweoVQ3Lw@mail.gmail.com>
+ <CAEf4Bza-uieOvR6AQkC-suD=_mjs5KC_1Ra3xo9kvdSxAMmeRg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygBnuJrxHGJgRPhpAA--.5621S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFy3Cw48Cr4DZw4DKF13CFg_yoW3ZrX_Ja
-        yxJF9xur1rJaykCFZ2gr4fZr1jv3y8WF18uF1Y9ryUZa42gw13X3Zxt3Z5ZF15Zw13WF4x
-        Z3yIqF4UGr1UWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb4kYjsxI4VWxJwAYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv67AKxVW8JV
-        WxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
-        wI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r4j6F4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUcyCGUU
-        UUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bza-uieOvR6AQkC-suD=_mjs5KC_1Ra3xo9kvdSxAMmeRg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+On Sun, Mar 28, 2021 at 11:09:23PM -0700, Andrii Nakryiko wrote:
+> 
+> BPF skeleton works just fine without BTF, if BPF programs don't use
+> global data. I have no way of knowing how BPF skeleton is used in the
+> wild, and specifically whether it is used without BTF and
+> .data/.rodata.
 
-Now we can set ARCH_HAS_STRICT_MODULE_RWX for MMU riscv platforms, this
-is good from security perspective.
+No way of knowing?
+The skel gen even for the most basic progs fails when there is no BTF in .o
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+$ bpftool gen skeleton prog_compiled_without_dash_g.o
+libbpf: BTF is required, but is missing or corrupted.
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 87d7b52f278f..9716be3674a2 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -28,6 +28,7 @@ config RISCV
- 	select ARCH_HAS_SET_DIRECT_MAP
- 	select ARCH_HAS_SET_MEMORY
- 	select ARCH_HAS_STRICT_KERNEL_RWX if MMU
-+	select ARCH_HAS_STRICT_MODULE_RWX if MMU
- 	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
- 	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
--- 
-2.31.0
+libbpf_needs_btf() check is preventing all but the most primitive progs.
+Any prog with new style of map definition:
+struct {
+        __uint(type, BPF_MAP_TYPE_ARRAY);
+        __uint(max_entries, 1);
+        __type(key, __u32);
+        __type(value, __u64);
+} array SEC(".maps");
+would fail skel gen.
 
+bpftool is capable of skel gen for progs with old style maps only:
+struct bpf_map_def SEC("maps")
 
+I think it's a safe bet that if folks didn't adopt new map definition
+they didn't use skeleton either.
+
+I think making skel gen reject such case is a good thing for the users,
+since it prevents them from creating maps that look like blob of bytes.
+It's good for admins too that more progs will get BTF described map key/value
+and systems are easier to debug.
+
+Ideally the kernel should reject loading progs and maps without BTF
+to guarantee introspection.
+Unfortunately the kernel backward compatibility prevents doing such
+drastic things.
+We might add a sysctl knob though.
+
+The bpftool can certainly add a message and reject .o-s without BTF.
+The chance of upsetting anyone is tiny.
+Keep supporting old style 'bpf_map_def' is a maintenance burden.
+Sooner or later it needs to be removed not only from skel gen,
+but from libbpf as well.
+
+> No one is asking for that, but they might be already using BTF-less
+> skeleton. So I'm fixing a bug in bpftool. In a way that doesn't cause
+> long term maintenance burden. And see above about my stance on tools'
+> assumptions.
+
+The patch and long term direction I'm arguing against is this one:
+https://patchwork.kernel.org/project/netdevbpf/patch/20210319205909.1748642-2-andrii@kernel.org/
+How is this a bug fix?
+From commit log:
+"If BPF object file is using global variables, but is compiled without BTF or
+ends up having only some of DATASEC types due to static linking"
+
+global vars without BTF were always rejected by bpftool
+and should continue being rejected.
+I see no reason for adding such feature.
+
+> we both know this very well. But just as a fun exercise, I just
+> double-checked by compiling fentry demo from libbpf-bootstrap ([0]).
+> It works just fine without `-g` and BTF.
+> 
+>   [0] https://github.com/libbpf/libbpf-bootstrap/blob/master/src/fentry.bpf.c
+
+yes. the skel gen will work for such demo prog, but the user should
+be making them introspectable.
+
+Try llvm-strip prog.o
+Old and new bpftool-s will simply crash, because there are no symbols.
+Should skel gen support such .o as well?
+I don't think so. imo it's the same category of non-introspectable progs
+that shouldn't be allowed.
+
+> Yeah, that's fine and we do require BTF for new features (where it
+> makes sense, of course, not just arbitrarily).
+
+I'm saying the kernel should enforce introspection.
+sysctl btf_enforced=1 might be the answer.
