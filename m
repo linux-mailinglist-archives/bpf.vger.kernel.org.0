@@ -2,134 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4486034DAFD
-	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 00:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA14334DBF1
+	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 00:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbhC2WYb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 18:24:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232417AbhC2WXI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:23:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D13C61996;
-        Mon, 29 Mar 2021 22:23:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617056588;
-        bh=OYdz818lQJpsq8kb/tPoLAow/SILd1O1PyqK6C2h4Qo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rxp5iPzcflWnICDVVD4egVY9sa3p/aAZoHWYKFEqyhn3NpflLal5spI4GdAReWx/i
-         YLiZVAdc+NdqTH4b8UWwLlm5GyPpq2NS6vSZKxQo5vZslZQaejQAeHMLWVsXXGjuBg
-         dzdA1DZb53XKANQcVafSQujKXTwkHJkJFe+mjkRZzegbTpKzBmwen1Dwj++xIhMVjb
-         iql6tYdtCks051KtTKk/ju6pcKnFzZu/gN3351sGdc1l92P+SCdfFxAGq4ixqp60UH
-         v98SSHUa/CeIG3JAAzPkP3bFco55wiKLRA0N4DQWWIQ+LUC7xM4yY/fvXc8lro9cwH
-         Ailwz6Tyf1Waw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 04/19] bpf, x86: Use kvmalloc_array instead kmalloc_array in bpf_jit_comp
-Date:   Mon, 29 Mar 2021 18:22:47 -0400
-Message-Id: <20210329222303.2383319-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210329222303.2383319-1-sashal@kernel.org>
-References: <20210329222303.2383319-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S232077AbhC2WeQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 18:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233279AbhC2Wbq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 18:31:46 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDA6C061765
+        for <bpf@vger.kernel.org>; Mon, 29 Mar 2021 15:31:46 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id w8so6322251qtk.3
+        for <bpf@vger.kernel.org>; Mon, 29 Mar 2021 15:31:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Q8YC7QsT68djr+5X1MBcYOtPJh4z8UQj3GHMhPlwj6U=;
+        b=iah82HS24X7ki+RXgfuxNHUXLmyc+TuCsp9oZHppVxCwiTZnDhUBZvV82m5R8LDrTh
+         oc9rvXzlZtdHnFStzAOssn2oB6yl2X8ZYXvJFmdYtKAR1a0e9gHoyOLT2Y+JmNhakoRE
+         0K+LXFMC1GrSW3H1CqTR80vUhNA4o/qhu4gkc7QbxBhO0PvwJbwkz5YEZSUrxu7jHtVm
+         tDOjMbKK4BRQGMYHwocZqL/6IKiiKo2vVDYrBR/oQUwXaLIhHLMHD4Nm0sKjtcatmZ88
+         1zRMItQTI1SLDks07kEolUpPgqB9yXFhEOeHqNTQ6aBWFsrz0QBgXgaxCQ9fLC1zK7/e
+         UDLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Q8YC7QsT68djr+5X1MBcYOtPJh4z8UQj3GHMhPlwj6U=;
+        b=MSIDXXxUanX0FM+OYmA5TG3d+mdPyj7XT/IUAKbuUREXKxepAzOlmChuldhjL8TErm
+         6vBz3GXTsx5ObnOIx92WHm15CUpgOijNgh1CImpqOgbNDvX5VAUg8dJNl+2Cdukqkry5
+         lM3MrIRqwlffmD2zp11HJvnfw/V2DQd4q1SfQSoyLmAc0w2TCANBU8UGDTHiLiZMtbCQ
+         zKXPBtDSdNJqXkwkIbcGNLu0xC/p/O6mJHWfeSgYFPxaqcDeMNESAQhbY14GGLKlrXHh
+         EBYSoqi2Tw4k+1WRYEkkHE6eNUws6k7UhTOowdNJc/fHDadKM5uZ+Hzm83jY0DUofdef
+         WWbA==
+X-Gm-Message-State: AOAM530UyMtKQU0haEfuLXMsJT9TIEZ0XEuIts+bCL/owaV4AHPqq0XE
+        hPo3KvZPhUNEHG2sLhE3s1GIaTc=
+X-Google-Smtp-Source: ABdhPJwJYPovPdrVaVUoTstb8My5EfnOOkvSEnX/CQNx4ThkDPXrKKpBt/wwD1tyG0oYyTojvcv8v6A=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:ede7:5698:2814:57c])
+ (user=sdf job=sendgmr) by 2002:ad4:528c:: with SMTP id v12mr27335404qvr.54.1617057105299;
+ Mon, 29 Mar 2021 15:31:45 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 15:31:43 -0700
+Message-Id: <20210329223143.3659983-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH v3 bpf-next] tools/resolve_btfids: Fix warnings
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>, Song Liu <song@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+* make eprintf static, used only in main.c
+* initialize ret in eprintf
+* remove unused *tmp
 
-[ Upstream commit de920fc64cbaa031f947e9be964bda05fd090380 ]
+v3:
+* remove another err (Song Liu)
 
-x86 bpf_jit_comp.c used kmalloc_array to store jited addresses
-for each bpf insn. With a large bpf program, we have see the
-following allocation failures in our production server:
+v2:
+* remove unused 'int err = -1'
 
-    page allocation failure: order:5, mode:0x40cc0(GFP_KERNEL|__GFP_COMP),
-                             nodemask=(null),cpuset=/,mems_allowed=0"
-    Call Trace:
-    dump_stack+0x50/0x70
-    warn_alloc.cold.120+0x72/0xd2
-    ? __alloc_pages_direct_compact+0x157/0x160
-    __alloc_pages_slowpath+0xcdb/0xd00
-    ? get_page_from_freelist+0xe44/0x1600
-    ? vunmap_page_range+0x1ba/0x340
-    __alloc_pages_nodemask+0x2c9/0x320
-    kmalloc_order+0x18/0x80
-    kmalloc_order_trace+0x1d/0xa0
-    bpf_int_jit_compile+0x1e2/0x484
-    ? kmalloc_order_trace+0x1d/0xa0
-    bpf_prog_select_runtime+0xc3/0x150
-    bpf_prog_load+0x480/0x720
-    ? __mod_memcg_lruvec_state+0x21/0x100
-    __do_sys_bpf+0xc31/0x2040
-    ? close_pdeo+0x86/0xe0
-    do_syscall_64+0x42/0x110
-    entry_SYSCALL_64_after_hwframe+0x44/0xa9
-    RIP: 0033:0x7f2f300f7fa9
-    Code: Bad RIP value.
-
-Dumped assembly:
-
-    ffffffff810b6d70 <bpf_int_jit_compile>:
-    ; {
-    ffffffff810b6d70: e8 eb a5 b4 00        callq   0xffffffff81c01360 <__fentry__>
-    ffffffff810b6d75: 41 57                 pushq   %r15
-    ...
-    ffffffff810b6f39: e9 72 fe ff ff        jmp     0xffffffff810b6db0 <bpf_int_jit_compile+0x40>
-    ;       addrs = kmalloc_array(prog->len + 1, sizeof(*addrs), GFP_KERNEL);
-    ffffffff810b6f3e: 8b 45 0c              movl    12(%rbp), %eax
-    ;       return __kmalloc(bytes, flags);
-    ffffffff810b6f41: be c0 0c 00 00        movl    $3264, %esi
-    ;       addrs = kmalloc_array(prog->len + 1, sizeof(*addrs), GFP_KERNEL);
-    ffffffff810b6f46: 8d 78 01              leal    1(%rax), %edi
-    ;       if (unlikely(check_mul_overflow(n, size, &bytes)))
-    ffffffff810b6f49: 48 c1 e7 02           shlq    $2, %rdi
-    ;       return __kmalloc(bytes, flags);
-    ffffffff810b6f4d: e8 8e 0c 1d 00        callq   0xffffffff81287be0 <__kmalloc>
-    ;       if (!addrs) {
-    ffffffff810b6f52: 48 85 c0              testq   %rax, %rax
-
-Change kmalloc_array() to kvmalloc_array() to avoid potential
-allocation error for big bpf programs.
-
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20210309015647.3657852-1-yhs@fb.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: Song Liu <song@kernel.org>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- arch/x86/net/bpf_jit_comp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/bpf/resolve_btfids/main.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 18936533666e..44c7d7aef8c1 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1118,7 +1118,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		extra_pass = true;
- 		goto skip_init_addrs;
- 	}
--	addrs = kmalloc_array(prog->len + 1, sizeof(*addrs), GFP_KERNEL);
-+	addrs = kvmalloc_array(prog->len + 1, sizeof(*addrs), GFP_KERNEL);
- 	if (!addrs) {
- 		prog = orig_prog;
- 		goto out_addrs;
-@@ -1195,7 +1195,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		if (image)
- 			bpf_prog_fill_jited_linfo(prog, addrs + 1);
- out_addrs:
--		kfree(addrs);
-+		kvfree(addrs);
- 		kfree(jit_data);
- 		prog->aux->jit_data = NULL;
- 	}
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index 80d966cfcaa1..7550fd9c3188 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -115,10 +115,10 @@ struct object {
+ 
+ static int verbose;
+ 
+-int eprintf(int level, int var, const char *fmt, ...)
++static int eprintf(int level, int var, const char *fmt, ...)
+ {
+ 	va_list args;
+-	int ret;
++	int ret = 0;
+ 
+ 	if (var >= level) {
+ 		va_start(args, fmt);
+@@ -385,7 +385,7 @@ static int elf_collect(struct object *obj)
+ static int symbols_collect(struct object *obj)
+ {
+ 	Elf_Scn *scn = NULL;
+-	int n, i, err = 0;
++	int n, i;
+ 	GElf_Shdr sh;
+ 	char *name;
+ 
+@@ -402,11 +402,10 @@ static int symbols_collect(struct object *obj)
+ 	 * Scan symbols and look for the ones starting with
+ 	 * __BTF_ID__* over .BTF_ids section.
+ 	 */
+-	for (i = 0; !err && i < n; i++) {
+-		char *tmp, *prefix;
++	for (i = 0; i < n; i++) {
++		char *prefix;
+ 		struct btf_id *id;
+ 		GElf_Sym sym;
+-		int err = -1;
+ 
+ 		if (!gelf_getsym(obj->efile.symbols, i, &sym))
+ 			return -1;
 -- 
-2.30.1
+2.31.0.291.g576ba9dcdaf-goog
 
