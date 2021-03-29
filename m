@@ -2,60 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D8134D6A9
-	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 20:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1592434D70B
+	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 20:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhC2SL6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 14:11:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37172 "EHLO
+        id S230506AbhC2S1c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 14:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbhC2SL4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:11:56 -0400
+        with ESMTP id S231555AbhC2S1D (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 14:27:03 -0400
 Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3CE66C061574;
-        Mon, 29 Mar 2021 11:11:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9DFEEC061574;
+        Mon, 29 Mar 2021 11:27:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
         Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=3zf6/U9A8M8ip1VYXjzMP1VvO4uVgW0hwuc+66hNGZs=; b=QhDsZUgxI0khZ
-        oeP8jtXHs4bsfIJnOGNA8iWOgHAOJXo4KrXDF5fc+k/BQhyWAHmP+0bqOHYf48H/
-        j8sIeFj00NtYRYaWG7iQwZD7LViJ+EGMZtGLfHkZlBe00C4RUg0VLu7sDSxYIoZV
-        /HQQN43QCD+PBMtHSSFpPor+xdHsFU=
+        bh=TtLVGU3fdGFUnspw6rWTgvkrU7WnO/Si+O2feWCXEJ0=; b=PzuqL32U8LFDO
+        BDoLS9X6KUhf/FnGgOT84hR9gjiMXS62xNjlTlMAbCCVAzspdbC39z5WYHRgl8qF
+        eGFEU+04M0WG98v6Xhu5epUnPsANchst09f0TdMqxe/ppET33slA01s86jxWht8s
+        PHxpwEl0CoAHCyBOl0hTSWIlQM9WHA=
 Received: from xhacker (unknown [101.86.19.180])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDn70toGGJgbN9pAA--.4606S2;
-        Tue, 30 Mar 2021 02:11:52 +0800 (CST)
-Date:   Tue, 30 Mar 2021 02:06:56 +0800
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDX3EjgG2JgN_FpAA--.35355S2;
+        Tue, 30 Mar 2021 02:26:40 +0800 (CST)
+Date:   Tue, 30 Mar 2021 02:21:44 +0800
 From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        " =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=" <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests/bpf: add LDFLAGS when building test_verifier
-Message-ID: <20210330020656.26bb2dfd@xhacker>
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH 0/9] riscv: improve self-protection
+Message-ID: <20210330022144.150edc6e@xhacker>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygDn70toGGJgbN9pAA--.4606S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFyfGryxXr18JrWxXF13Jwb_yoWDCwbEyF
-        ZFkwn3urWkAFs5Aa1fWrnxur4v9345Kr1DuFn8Jry7CryUWwn8WF1kXr1fta4vg398ta42
-        qFs5XFyqyr4SgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbckYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JV
-        WxJwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jUfHUUUUUU=
+X-CM-TRANSID: LkAmygDX3EjgG2JgN_FpAA--.35355S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFyxKrykur15Xw4rZrW5Jrb_yoW8Xr4Dpr
+        s0kry5ZrWrCrn3CF1ayrykur1fXwsYg3yagrsrC34rJw4avFWUZwn5Xwn3tr98XFy0gF9a
+        kF45u34Ykr18Z37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkKb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
+        wI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F
+        4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU84KZJ
+        UUUUU==
 X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -63,27 +75,44 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Jisheng Zhang <jszhang@kernel.org>
 
-This is useful for cross compile process to point linker to the
-correct libelf, libcap, libz path.
+patch1 is a trivial improvement patch to move some functions to .init
+section
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- tools/testing/selftests/bpf/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Then following patches improve self-protection by:
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 044bfdcf5b74..dac1c5094e28 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -447,7 +447,7 @@ verifier/tests.h: verifier/*.c
- 		) > verifier/tests.h)
- $(OUTPUT)/test_verifier: test_verifier.c verifier/tests.h $(BPFOBJ) | $(OUTPUT)
- 	$(call msg,BINARY,,$@)
--	$(Q)$(CC) $(CFLAGS) $(filter %.a %.o %.c,$^) $(LDLIBS) -o $@
-+	$(Q)$(CC) $(CFLAGS) $(LDFLAGS) $(filter %.a %.o %.c,$^) $(LDLIBS) -o $@
- 
- # Make sure we are able to include and link libbpf against c++.
- $(OUTPUT)/test_cpp: test_cpp.cpp $(OUTPUT)/test_core_extern.skel.h $(BPFOBJ)
+Marking some variables __ro_after_init
+Constifing some variables
+Enabling ARCH_HAS_STRICT_MODULE_RWX
+
+Jisheng Zhang (9):
+  riscv: add __init section marker to some functions
+  riscv: Mark some global variables __ro_after_init
+  riscv: Constify sys_call_table
+  riscv: Constify sbi_ipi_ops
+  riscv: kprobes: Implement alloc_insn_page()
+  riscv: bpf: Move bpf_jit_alloc_exec() and bpf_jit_free_exec() to core
+  riscv: bpf: Avoid breaking W^X
+  riscv: module: Create module allocations without exec permissions
+  riscv: Set ARCH_HAS_STRICT_MODULE_RWX if MMU
+
+ arch/riscv/Kconfig                 |  1 +
+ arch/riscv/include/asm/smp.h       |  4 ++--
+ arch/riscv/include/asm/syscall.h   |  2 +-
+ arch/riscv/kernel/module.c         |  2 +-
+ arch/riscv/kernel/probes/kprobes.c |  8 ++++++++
+ arch/riscv/kernel/sbi.c            | 10 +++++-----
+ arch/riscv/kernel/smp.c            |  6 +++---
+ arch/riscv/kernel/syscall_table.c  |  2 +-
+ arch/riscv/kernel/time.c           |  2 +-
+ arch/riscv/kernel/traps.c          |  2 +-
+ arch/riscv/kernel/vdso.c           |  4 ++--
+ arch/riscv/mm/init.c               | 12 ++++++------
+ arch/riscv/mm/kasan_init.c         |  6 +++---
+ arch/riscv/mm/ptdump.c             |  2 +-
+ arch/riscv/net/bpf_jit_comp64.c    | 13 -------------
+ arch/riscv/net/bpf_jit_core.c      | 14 ++++++++++++++
+ 16 files changed, 50 insertions(+), 40 deletions(-)
+
 -- 
 2.31.0
 
