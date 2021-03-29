@@ -2,172 +2,389 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C095634CD6D
-	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 11:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F0C34CE78
+	for <lists+bpf@lfdr.de>; Mon, 29 Mar 2021 13:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbhC2J50 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 05:57:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41898 "EHLO
+        id S231716AbhC2LGM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 07:06:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57707 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232085AbhC2J5D (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 29 Mar 2021 05:57:03 -0400
+        by vger.kernel.org with ESMTP id S231700AbhC2LFu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 29 Mar 2021 07:05:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617011821;
+        s=mimecast20190719; t=1617015949;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=xiWJV3ko1190mDpLoLQdBpnnHOr0EFaCU4Guy+26tGU=;
-        b=AdWR3App76xedyVwMaWtX3fRx5lJ4G9gsjlR3g9YaKWFTBh2EzOxEq8PyvFcYsY3wPvjUb
-        Ug3HRNK5L8rkBLEo8zyTEqgeto4ZyVw1VvQmHhJaTfyXrp9eUfEJTmG2mZDtmh8Qv9HgFd
-        Hjt/RnauqKF5EgT2/WDh8udSPhzKCOo=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-567-isx2BlyWPVu-Qa6BfqxhIQ-1; Mon, 29 Mar 2021 05:56:58 -0400
-X-MC-Unique: isx2BlyWPVu-Qa6BfqxhIQ-1
-Received: by mail-ed1-f72.google.com with SMTP id r6so4864306edh.7
-        for <bpf@vger.kernel.org>; Mon, 29 Mar 2021 02:56:58 -0700 (PDT)
+        bh=cIK6Uy/IpJMWTnmvxCyOF3ik68NwjXvdHg2BspOlc/o=;
+        b=G1yIfKmHhT6Rl1naboLGtrypqDsJEUdmq35jcIx7IbGjM1FfBIfZfV2SoccX1AtJdr7HGK
+        KMRwwFdhvA5bnZF1spY+LNTTap4UUp3tM7OxHNA7XYcC5H9VD9KhvK98XVAXn+DTjXIuqn
+        BOnHw3FSKjBDaPieXS89Nw+lYJX+ikQ=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-TEoouGhtNI2GcAm8tNEBeQ-1; Mon, 29 Mar 2021 07:05:47 -0400
+X-MC-Unique: TEoouGhtNI2GcAm8tNEBeQ-1
+Received: by mail-ej1-f71.google.com with SMTP id e7so5618713ejx.5
+        for <bpf@vger.kernel.org>; Mon, 29 Mar 2021 04:05:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version;
-        bh=xiWJV3ko1190mDpLoLQdBpnnHOr0EFaCU4Guy+26tGU=;
-        b=R46dKWf1rxTaKEvTdKUqunpWUAD/ZKXeKEqYQDPRXTK9rJ2PnwYDJ9wd7ri/0tPqRb
-         8tNXmqQEagXl5HdTrkYtetCU7GeEmNl3zi/fjEi4Jss4HEf3QvgLiYuRg1N1sQ71dUd/
-         2mcAHvsok42BBubIbu/uEem8weOSHh8vt0eL1qu8LILNaF0SJtDgbPwQ7Llr3MNXK+n1
-         E/aguGPiRkZsFl1ngc7CVqF6GdVcxWrhg/STr53O+GnKch3FKdhYCBlpxeuFFsd4AHMP
-         pmTJIwBRKv59PnhIRnIPWQ1x1KrKRkaXaxJdG05B0DUfVz8nVZe3gLz7+pi+/NNBvsyN
-         e76g==
-X-Gm-Message-State: AOAM53044KteNcuu1LBn4jfOkGMn2AAMoIiXZagHth5jIaRYdSu4t1Jt
-        psygbqSgjltLhW+gZJcaPz7nm3VRNOTkBZ7UsN9AITVkn3IRO3Q0uAp3GJubmVgq3Rz1q4K0v5d
-        UsXy0HseJXUQQ
-X-Received: by 2002:a50:ed83:: with SMTP id h3mr28469765edr.140.1617011817508;
-        Mon, 29 Mar 2021 02:56:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyDlRH4ZFa+9wQzQgxfAWLizNcm57g67QjLhEohcKPFUr4Hm2YCdzaKDDcmOWBKfZRfKGZWFQ==
-X-Received: by 2002:a50:ed83:: with SMTP id h3mr28469745edr.140.1617011817342;
-        Mon, 29 Mar 2021 02:56:57 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id de17sm7894616ejc.16.2021.03.29.02.56.56
+        bh=cIK6Uy/IpJMWTnmvxCyOF3ik68NwjXvdHg2BspOlc/o=;
+        b=sjyGqO4TwlpqCKK7zjDyiBPWTHN9g1QVTPDcIJ0ughXhjvA+89LHnwcmLrH91XnwuR
+         5zqNW5u0I6ffoeqLIXWmbClEKKjwAihEaC0gQCoWs0nCk+SHC76xHlSDJXhs7m0JvEBI
+         zcJ/+/qNBS7KlCkYU6cxqmBPnD8LqZzoCtS8Tvfsk3IU4xzbyfF33GqokWXfj7TbkBKt
+         lThLMgPyvCWgZ0fBZE1pgRFmsSq75/liyaRL5CSWTz3o8MB9ddKAVPKXSZeXV1sd4QgH
+         Cj9P0VuUKyvDesM9VE+n8x3nf5BlGDvSBIcOFWd0CucLQpVFExC158Yz085jjxImWZS4
+         m/GQ==
+X-Gm-Message-State: AOAM530SUZKOx3Gz35+T4RyP2XlEuPa17Tez6+1z21cwP+nl/petm5ZV
+        8ZvFlU0WEvReKcEX0tlvPHfne0FyfWnaF6g16bcalErAc3tedAkquRnMQ/BSHP9GA9eODorDwTF
+        BRswfHSc+Itjw
+X-Received: by 2002:a50:e607:: with SMTP id y7mr28324454edm.18.1617015946311;
+        Mon, 29 Mar 2021 04:05:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxXGdO++fM5m5eP02946W1eVrae8OJgLqwG4ixlxcqZsxEQKFSYqUqdijC0LGb5mF/3/oz6FQ==
+X-Received: by 2002:a50:e607:: with SMTP id y7mr28324407edm.18.1617015945891;
+        Mon, 29 Mar 2021 04:05:45 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id r25sm8853652edv.78.2021.03.29.04.05.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 02:56:56 -0700 (PDT)
+        Mon, 29 Mar 2021 04:05:45 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3E766180293; Mon, 29 Mar 2021 11:56:55 +0200 (CEST)
+        id 6DB2E180293; Mon, 29 Mar 2021 13:05:44 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 5/5] libbpf: add selftests for TC-BPF API
-In-Reply-To: <20210329014044.fkmusoeaqs2hjiek@ast-mbp>
-References: <20210325120020.236504-1-memxor@gmail.com>
- <20210325120020.236504-6-memxor@gmail.com>
- <20210327021534.pjfjctcdczj7facs@ast-mbp>
- <CAEf4Bzba_gdTvak_UHqi96-w6GLF5JQcpQRcG7zxnx=kY8Sd5w@mail.gmail.com>
- <20210329014044.fkmusoeaqs2hjiek@ast-mbp>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, andrii@kernel.org
+Cc:     bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        ciara.loftus@intel.com, john.fastabend@gmail.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCH v4 bpf-next 06/17] libbpf: xsk: use bpf_link
+In-Reply-To: <20210326230938.49998-7-maciej.fijalkowski@intel.com>
+References: <20210326230938.49998-1-maciej.fijalkowski@intel.com>
+ <20210326230938.49998-7-maciej.fijalkowski@intel.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 29 Mar 2021 11:56:55 +0200
-Message-ID: <87r1jyth94.fsf@toke.dk>
+Date:   Mon, 29 Mar 2021 13:05:44 +0200
+Message-ID: <87o8f2te2f.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
 
-> On Sat, Mar 27, 2021 at 09:32:58PM -0700, Andrii Nakryiko wrote:
->> > I think it's better to start with new library for tc/xdp and have
->> > libbpf as a dependency on that new lib.
->> > For example we can add it as subdir in tools/lib/bpf/.
->> >
->> > Similarly I think integerating static linking into libbpf was a mistake.
->> > It should be a sub library as well.
->> >
->> > If we end up with core libbpf and ten sublibs for tc, xdp, af_xdp, linking,
->> > whatever else the users would appreciate that we don't shove single libbpf
->> > to them with a ton of features that they might never use.
->> 
->> What's the concern exactly? The size of the library? Having 10
->> micro-libraries has its own set of downsides, 
+> Currently, if there are multiple xdpsock instances running on a single
+> interface and in case one of the instances is terminated, the rest of
+> them are left in an inoperable state due to the fact of unloaded XDP
+> prog from interface.
 >
-> specifically?
+> Consider the scenario below:
 >
->> I'm not convinced that's
->> a better situation for end users. And would certainly cause more
->> hassle for libbpf developers and packagers.
+> // load xdp prog and xskmap and add entry to xskmap at idx 10
+> $ sudo ./xdpsock -i ens801f0 -t -q 10
 >
-> For developers and packagers.. yes.
-> For users.. quite the opposite.
-> The skel gen and static linking must be split out before the next libbpf release.
-> Not a single application linked with libbpf is going to use those pieces.
-
-I'd tend to agree about the skeleton generation, but I have one use case
-in mind where having the linker in library form would be handy:
-dynamically building an XDP program at load time from pre-compiled
-pieces.
-
-Consider xdp-filter[0]: it's a simplistic packet filter that can filter
-on different bits of the packet header, mostly meant as a demonstration
-of XDP packet filtering performance. It's also using conditional
-compilation so that it can be loaded in a mode that skips parsing L4
-headers entirely if port-based filtering is not enabled. Right now we do
-that by pre-compiling five different variants of the XDP program and
-loading based on the selected feature set, but with linking in libbpf,
-we could instead have a single BPF program with granular filtering
-functions and just assemble the final program from those bits at load
-time.
-
-The actual xdp-filter program may be too simplistic to gain any
-performance for this, but I believe the general approach could be a way
-to realise the "improved performance through skipping code" promise of
-an XDP-based data path. Having linking be part of libbpf will make this
-straight-forward to integrate into applications.
-
-[0] https://github.com/xdp-project/xdp-tools/tree/master/xdp-filter
-
-> bpftool is one and only that needs them. Hence forcing libbpf users
-> to increase their .text with a dead code is a selfish call of libbpf
-> developers and packagers. The user's priorities must come first.
+> // add entry to xskmap at idx 11
+> $ sudo ./xdpsock -i ens801f0 -t -q 11
 >
->> And what did you include in "core libbpf"?
+> terminate one of the processes and another one is unable to work due to
+> the fact that the XDP prog was unloaded from interface.
 >
-> I would take this opportunity to split libbpf into maintainable pieces:
-> - libsysbpf - sys_bpf wrappers (pretty much tools/lib/bpf/bpf.c)
-> - libbpfutil - hash, strset
-> - libbtf - BTF read/write
-> - libbpfelf - ELF parsing, CORE, ksym, kconfig
-> - libbpfskel - skeleton gen used by bpftool only
-> - libbpflink - linker used by bpftool only
-> - libbpfnet - networking attachment via netlink including TC and XDP
-> - libbpftrace - perfbuf, ringbuf
-> - libxdp - Toke's xdp chaining
-> - libxsk - af_xdp logic
+> To address that, step away from setting bpf prog in favour of bpf_link.
+> This means that refcounting of BPF resources will be done automatically
+> by bpf_link itself.
+>
+> Provide backward compatibility by checking if underlying system is
+> bpf_link capable. Do this by looking up/creating bpf_link on loopback
+> device. If it failed in any way, stick with netlink-based XDP prog.
+> therwise, use bpf_link-based logic.
+>
+> When setting up BPF resources during xsk socket creation, check whether
+> bpf_link for a given ifindex already exists via set of calls to
+> bpf_link_get_next_id -> bpf_link_get_fd_by_id -> bpf_obj_get_info_by_fd
+> and comparing the ifindexes from bpf_link and xsk socket.
+>
+> For case where resources exist but they are not AF_XDP related, bail out
+> and ask user to remove existing prog and then retry.
+>
+> Lastly, do a bit of refactoring within __xsk_setup_xdp_prog and pull out
+> existing code branches based on prog_id value onto separate functions
+> that are responsible for resource initialization if prog_id was 0 and
+> for lookup existing resources for non-zero prog_id as that implies that
+> XDP program is present on the underlying net device. This in turn makes
+> it easier to follow, especially the teardown part of both branches.
+>
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-Huh? You've got to be joking? How is that going to improve things for
-users? Just the cognitive load of figuring out which linker flags to use
-is going to be prohibitive. Not to mention the hassle of keeping
-multiple library versions in sync etc.
+The logic is much improved in this version! A few smallish issues below:
 
-If the concern is .text size, surely there are better ways to fix that?
-LTO is the obvious "automagic" solution, but even without that, just
-supporting conditional compilation via defines in the existing libbpf
-ought to achieve the same thing without exposing the gory details to the
-users?
+> ---
+>  tools/lib/bpf/xsk.c | 259 ++++++++++++++++++++++++++++++++++++--------
+>  1 file changed, 214 insertions(+), 45 deletions(-)
+>
+> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> index 526fc35c0b23..c75067f0035f 100644
+> --- a/tools/lib/bpf/xsk.c
+> +++ b/tools/lib/bpf/xsk.c
+> @@ -28,6 +28,7 @@
+>  #include <sys/mman.h>
+>  #include <sys/socket.h>
+>  #include <sys/types.h>
+> +#include <linux/if_link.h>
+>  
+>  #include "bpf.h"
+>  #include "libbpf.h"
+> @@ -70,8 +71,10 @@ struct xsk_ctx {
+>  	int ifindex;
+>  	struct list_head list;
+>  	int prog_fd;
+> +	int link_fd;
+>  	int xsks_map_fd;
+>  	char ifname[IFNAMSIZ];
+> +	bool has_bpf_link;
+>  };
+>  
+>  struct xsk_socket {
+> @@ -409,7 +412,7 @@ static int xsk_load_xdp_prog(struct xsk_socket *xsk)
+>  	static const int log_buf_size = 16 * 1024;
+>  	struct xsk_ctx *ctx = xsk->ctx;
+>  	char log_buf[log_buf_size];
+> -	int err, prog_fd;
+> +	int prog_fd;
+>  
+>  	/* This is the fallback C-program:
+>  	 * SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
+> @@ -499,14 +502,43 @@ static int xsk_load_xdp_prog(struct xsk_socket *xsk)
+>  		return prog_fd;
+>  	}
+>  
+> -	err = bpf_set_link_xdp_fd(xsk->ctx->ifindex, prog_fd,
+> -				  xsk->config.xdp_flags);
+> +	ctx->prog_fd = prog_fd;
+> +	return 0;
+> +}
+> +
+> +static int xsk_create_bpf_link(struct xsk_socket *xsk)
+> +{
+> +	/* bpf_link only accepts XDP_FLAGS_MODES, but xsk->config.xdp_flags
+> +	 * might have set XDP_FLAGS_UPDATE_IF_NOEXIST
+> +	 */
+> +	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts,
+> +			    .flags = (xsk->config.xdp_flags & XDP_FLAGS_MODES));
+
+This will silently suppress any new flags as well; that's not a good
+idea. Rather mask out the particular flag (UPDATE_IF_NOEXIST) and pass
+everything else through so the kernel can reject invalid ones.
+
+> +	struct xsk_ctx *ctx = xsk->ctx;
+> +	__u32 prog_id = 0;
+> +	int link_fd;
+> +	int err;
+> +
+> +	err = bpf_get_link_xdp_id(ctx->ifindex, &prog_id, xsk->config.xdp_flags);
+>  	if (err) {
+> -		close(prog_fd);
+> +		pr_warn("getting XDP prog id failed\n");
+>  		return err;
+>  	}
+>  
+> -	ctx->prog_fd = prog_fd;
+> +	/* if there's a netlink-based XDP prog loaded on interface, bail out
+> +	 * and ask user to do the removal by himself
+> +	 */
+> +	if (prog_id) {
+> +		pr_warn("Netlink-based XDP prog detected, please unload it in order to launch AF_XDP prog\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	link_fd = bpf_link_create(ctx->prog_fd, ctx->ifindex, BPF_XDP, &opts);
+> +	if (link_fd < 0) {
+> +		pr_warn("bpf_link_create failed: %s\n", strerror(errno));
+> +		return link_fd;
+> +	}
+> +
+> +	ctx->link_fd = link_fd;
+>  	return 0;
+>  }
+>  
+> @@ -625,7 +657,6 @@ static int xsk_lookup_bpf_maps(struct xsk_socket *xsk)
+>  		close(fd);
+>  	}
+>  
+> -	err = 0;
+>  	if (ctx->xsks_map_fd == -1)
+>  		err = -ENOENT;
+>  
+> @@ -642,6 +673,97 @@ static int xsk_set_bpf_maps(struct xsk_socket *xsk)
+>  				   &xsk->fd, 0);
+>  }
+>  
+> +static int xsk_link_lookup(int ifindex, __u32 *prog_id, int *link_fd)
+> +{
+> +	struct bpf_link_info link_info;
+> +	__u32 link_len;
+> +	__u32 id = 0;
+> +	int err;
+> +	int fd;
+> +
+> +	while (true) {
+> +		err = bpf_link_get_next_id(id, &id);
+> +		if (err) {
+> +			if (errno == ENOENT) {
+> +				err = 0;
+> +				break;
+> +			}
+> +			pr_warn("can't get next link: %s\n", strerror(errno));
+> +			break;
+> +		}
+> +
+> +		fd = bpf_link_get_fd_by_id(id);
+> +		if (fd < 0) {
+> +			if (errno == ENOENT)
+> +				continue;
+> +			pr_warn("can't get link by id (%u): %s\n", id, strerror(errno));
+> +			err = -errno;
+> +			break;
+> +		}
+> +
+> +		link_len = sizeof(struct bpf_link_info);
+> +		memset(&link_info, 0, link_len);
+> +		err = bpf_obj_get_info_by_fd(fd, &link_info, &link_len);
+> +		if (err) {
+> +			pr_warn("can't get link info: %s\n", strerror(errno));
+> +			close(fd);
+> +			break;
+> +		}
+> +		if (link_info.type == BPF_LINK_TYPE_XDP) {
+> +			if (link_info.xdp.ifindex == ifindex) {
+> +				*link_fd = fd;
+> +				if (prog_id)
+> +					*prog_id = link_info.prog_id;
+> +				break;
+> +			}
+> +		}
+> +		close(fd);
+> +	}
+> +
+> +	return err;
+> +}
+> +
+> +static bool xsk_probe_bpf_link(void)
+> +{
+> +	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts,
+> +			    .flags = XDP_FLAGS_SKB_MODE);
+> +	struct bpf_load_program_attr prog_attr;
+> +	struct bpf_insn insns[2] = {
+> +		BPF_MOV64_IMM(BPF_REG_0, XDP_PASS),
+> +		BPF_EXIT_INSN()
+> +	};
+> +	int prog_fd, link_fd = -1;
+> +	int ifindex_lo = 1;
+> +	bool ret = false;
+> +	int err;
+> +
+> +	err = xsk_link_lookup(ifindex_lo, NULL, &link_fd);
+> +	if (err)
+> +		return ret;
+> +
+> +	if (link_fd >= 0)
+> +		return true;
+> +
+> +	memset(&prog_attr, 0, sizeof(prog_attr));
+> +	prog_attr.prog_type = BPF_PROG_TYPE_XDP;
+> +	prog_attr.insns = insns;
+> +	prog_attr.insns_cnt = ARRAY_SIZE(insns);
+> +	prog_attr.license = "GPL";
+> +
+> +	prog_fd = bpf_load_program_xattr(&prog_attr, NULL, 0);
+> +	if (prog_fd < 0)
+> +		return ret;
+> +
+> +	link_fd = bpf_link_create(prog_fd, ifindex_lo, BPF_XDP, &opts);
+> +	if (link_fd >= 0)
+> +		ret = true;
+> +
+> +	close(prog_fd);
+> +	close(link_fd);
+
+This potentially calls close() on an invalid link_fd...
+
+> +
+> +	return ret;
+> +}
+> +
+>  static int xsk_create_xsk_struct(int ifindex, struct xsk_socket *xsk)
+>  {
+>  	char ifname[IFNAMSIZ];
+> @@ -663,64 +785,108 @@ static int xsk_create_xsk_struct(int ifindex, struct xsk_socket *xsk)
+>  	ctx->ifname[IFNAMSIZ - 1] = 0;
+>  
+>  	xsk->ctx = ctx;
+> +	xsk->ctx->has_bpf_link = xsk_probe_bpf_link();
+>  
+>  	return 0;
+>  }
+>  
+> -static int __xsk_setup_xdp_prog(struct xsk_socket *_xdp,
+> -				int *xsks_map_fd)
+> +static int xsk_init_xdp_res(struct xsk_socket *xsk,
+> +			    int *xsks_map_fd)
+>  {
+> -	struct xsk_socket *xsk = _xdp;
+>  	struct xsk_ctx *ctx = xsk->ctx;
+> -	__u32 prog_id = 0;
+>  	int err;
+>  
+> -	err = bpf_get_link_xdp_id(ctx->ifindex, &prog_id,
+> -				  xsk->config.xdp_flags);
+> +	err = xsk_create_bpf_maps(xsk);
+>  	if (err)
+>  		return err;
+>  
+> -	if (!prog_id) {
+> -		err = xsk_create_bpf_maps(xsk);
+> -		if (err)
+> -			return err;
+> +	err = xsk_load_xdp_prog(xsk);
+> +	if (err)
+> +		goto err_load_xdp_prog;
+>  
+> -		err = xsk_load_xdp_prog(xsk);
+> -		if (err) {
+> -			goto err_load_xdp_prog;
+> -		}
+> -	} else {
+> -		ctx->prog_fd = bpf_prog_get_fd_by_id(prog_id);
+> -		if (ctx->prog_fd < 0)
+> -			return -errno;
+> -		err = xsk_lookup_bpf_maps(xsk);
+> -		if (err) {
+> -			close(ctx->prog_fd);
+> -			return err;
+> -		}
+> -	}
+> +	if (ctx->has_bpf_link)
+> +		err = xsk_create_bpf_link(xsk);
+> +	else
+> +		err = bpf_set_link_xdp_fd(xsk->ctx->ifindex, ctx->prog_fd,
+> +					  xsk->config.xdp_flags);
+>  
+> -	if (xsk->rx) {
+> -		err = xsk_set_bpf_maps(xsk);
+> -		if (err) {
+> -			if (!prog_id) {
+> -				goto err_set_bpf_maps;
+> -			} else {
+> -				close(ctx->prog_fd);
+> -				return err;
+> -			}
+> -		}
+> -	}
+> -	if (xsks_map_fd)
+> -		*xsks_map_fd = ctx->xsks_map_fd;
+> +	if (err)
+> +		goto err_atach_xdp_prog;
+
+s/atach/attach/
 
 -Toke
 
