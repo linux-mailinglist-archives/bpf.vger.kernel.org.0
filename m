@@ -2,72 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C68734DDE7
-	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 04:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4B834DDFC
+	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 04:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhC3CAJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 29 Mar 2021 22:00:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229763AbhC3CAI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 29 Mar 2021 22:00:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 719F36193A;
-        Tue, 30 Mar 2021 02:00:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617069608;
-        bh=KX1+8e1VgM1HYQn7FeFYykjFkEttjZcu+KtPlmCTql0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=q+mdB8AApydzdXepaq0BglHBhAexLvYoQhFw6n3k7NFTpDS/dui05MzdBiHVd6JBc
-         ZAMCT/nB+rShOhGvZgO88nrXXligRHUMMNGOY9icklz+8i1MFQEfb4/Pd4wGcNG8lI
-         TPOkEkFH9HrU6hXj+2Ajg++Kq5G8B0WUIl06trlwyGH4f8RddvmYnLLpKhFMz/OSWw
-         JbyFaNl8hNhpHcG6LkXEgnJFy2M/WlcDkXMTYx6SkqJvP+7wB4RcWUQPegdMia4+MT
-         XVzv7bIKCnsxzzviamRYnW0Q63yhtOCQLkc5RphoXF+Z1uUlqnvIFAy/j+kyISdoUG
-         iyz45QIYtTczQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 622FF60A49;
-        Tue, 30 Mar 2021 02:00:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230220AbhC3CKX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 29 Mar 2021 22:10:23 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15096 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230143AbhC3CKT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 29 Mar 2021 22:10:19 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F8Xsk5lm1z17P9j;
+        Tue, 30 Mar 2021 10:08:10 +0800 (CST)
+Received: from k03.huawei.com (10.67.174.111) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 30 Mar 2021 10:10:09 +0800
+From:   He Fengqing <hefengqing@huawei.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <ongliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>
+Subject: [Patch bpf-next] net: filter: Remove unused bpf_load_pointer
+Date:   Tue, 30 Mar 2021 02:48:43 +0000
+Message-ID: <20210330024843.3479844-1-hefengqing@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: tcp: Limit calling some tcp cc functions to
- CONFIG_DYNAMIC_FTRACE
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161706960839.12105.10125740091884845374.git-patchwork-notify@kernel.org>
-Date:   Tue, 30 Mar 2021 02:00:08 +0000
-References: <20210329221357.834438-1-kafai@fb.com>
-In-Reply-To: <20210329221357.834438-1-kafai@fb.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, netdev@vger.kernel.org,
-        xiyou.wangcong@gmail.com, lmb@cloudflare.com
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.111]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Remove unused bpf_load_pointer function in filter.h
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+Signed-off-by: He Fengqing <hefengqing@huawei.com>
+---
+ include/linux/filter.h | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-On Mon, 29 Mar 2021 15:13:57 -0700 you wrote:
-> pahole currently only generates the btf_id for external function and
-> ftrace-able function.  Some functions in the bpf_tcp_ca_kfunc_ids
-> are static (e.g. cubictcp_init).  Thus, unless CONFIG_DYNAMIC_FTRACE
-> is set, btf_ids for those functions will not be generated and the
-> compilation fails during resolve_btfids.
-> 
-> This patch limits those functions to CONFIG_DYNAMIC_FTRACE.  I will
-> address the pahole generation in a followup and then remove the
-> CONFIG_DYNAMIC_FTRACE limitation.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next] bpf: tcp: Limit calling some tcp cc functions to CONFIG_DYNAMIC_FTRACE
-    https://git.kernel.org/bpf/bpf-next/c/7aae231ac93b
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index eecfd82db648..9a09547bc7ba 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1246,15 +1246,6 @@ static inline u16 bpf_anc_helper(const struct sock_filter *ftest)
+ void *bpf_internal_load_pointer_neg_helper(const struct sk_buff *skb,
+ 					   int k, unsigned int size);
+ 
+-static inline void *bpf_load_pointer(const struct sk_buff *skb, int k,
+-				     unsigned int size, void *buffer)
+-{
+-	if (k >= 0)
+-		return skb_header_pointer(skb, k, size, buffer);
+-
+-	return bpf_internal_load_pointer_neg_helper(skb, k, size);
+-}
+-
+ static inline int bpf_tell_extensions(void)
+ {
+ 	return SKF_AD_MAX;
+-- 
+2.25.1
 
