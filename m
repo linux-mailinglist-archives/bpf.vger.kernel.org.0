@@ -2,130 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C355734EB99
-	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 17:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5462634EDEF
+	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 18:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231967AbhC3PKq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Mar 2021 11:10:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231829AbhC3PKN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Mar 2021 11:10:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17674619CA;
-        Tue, 30 Mar 2021 15:10:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617117013;
-        bh=Ync+P2be63pYubOvM95WOXfKjIPEjUfSlXjmzMMjvyg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iZvQJAXgD2Km+7tCTVYtTobEsPu+KzLLeVvMJ7pBFaOufLKO3gVbjPKSkkRlt63wr
-         3ouz4Cd5D9DvS9b0D8yUuX+LrXX5cZFWfishVQU4c8axzuNUkVeHkSw/CSc/qPAt94
-         uGFsGkxgnslkD/AVx5SjoKcByseIql2fSPBx1IoQvYQ5NWF0T1CKXVFuxH9mNEQ7go
-         DPZ0pEWcqAMdX4/6hclFJXWuMXsiN9oH34Ddem9W1dczQWvBewDlkaZq/gm60ry6Jm
-         hJuI6Jef0gDhupiQganaZ+pM/DT4goCSpv9OqqraTak8Njh+gfiG0rpnqYcaKMMWTW
-         MB1zUpuJDHi2A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BA5CA40647; Tue, 30 Mar 2021 12:10:10 -0300 (-03)
-Date:   Tue, 30 Mar 2021 12:10:10 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, dwarves@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Bill Wendling <morbo@google.com>, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH dwarves v3 0/3] permit merging all dwarf cu's for clang
- lto built binary
-Message-ID: <YGM/Uh61RVExWnTU@kernel.org>
-References: <20210328201400.1426437-1-yhs@fb.com>
- <YGIQ9c3Qk+DMa+C7@kernel.org>
+        id S232118AbhC3QdL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Mar 2021 12:33:11 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:42474 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232236AbhC3Qcz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 30 Mar 2021 12:32:55 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 12UGUal9009641;
+        Tue, 30 Mar 2021 09:32:42 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=BwR+yue0cpHIhl7tVhKwHpwzycNpOYjcn24t9sYh8HU=;
+ b=d8Gh4mib+m1FOIZHzsrN7CdYbhVGoOzQBUFGvBLB2/LYuVh2l356tpMDhE+PrAb5MaDR
+ 5XXTQFHXVYepEVBZ5ynGOIs8+7Wnp5SDMRHzeSu/nexUwj8EnQVYHJ4hx4A5kEwU52k0
+ /BQXQxQCaeZsNNxK2ecP++fTTlxO5RzvS/U= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 37kuvm3qw9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 30 Mar 2021 09:32:41 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 30 Mar 2021 09:32:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O8ZtzVrzj38Wyjex2DOt7zJxGkSd03XodqVOdWKdp0J98CShV3aI6DWbjUEOO0pIvogxEnmoMb+hMkya/AzCVssYzQ7CiowJLc74AHq+LGjC/f9U2lBgmfYQexDiZLFogQQnISRQwitmNfHTkdGqxEsulhah3BQ6ML81nntg6Q91YOFnKbf4ueKoT2s1jO85+x/PIVCd9ANxb+BjzhIMtILuiIrcbbe578NmZngyR1HCZWtInEl7BtFLgXPg0MLbPuDeriCouQmNi6HFuIWEfigObTUK4MjZ2dcv/4VNhsBT/fIoim7JQI+UiSBDd2hJNgY6SiWS5oLX0VTGBIxD4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BwR+yue0cpHIhl7tVhKwHpwzycNpOYjcn24t9sYh8HU=;
+ b=F+n34qGNoktf8Nw//eTsjosF2+fXP0AyAy12iqLwxGqbOraJ4qNMv0hlCv+sTQOFWrF61mxVQOcZZfBoqaXERZ2GPK26arnMZn68NxfaGu1kZ1M5J1OfSZDmsgmyNnAtOdxuabzyU2PUMOPGMpyJXCWQaFq+2hfAvJ/TrDbxnHuxEtKnAXs6Whjoc6S7OZYlCxtIKVa0DARbCZOQ/yVc+q6GKWx0EMm2RJXUo3GTzJD27fO20uD6DzrV53tL3Y2B/CoQ+3/KE0Q16llFrR6akhbxzZWGOrLlc9yDnhk7KUpLLEi+EQ+3czXYeTSMwldRptZa/pVY95n9xgAOi1rgzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from BN8PR15MB3282.namprd15.prod.outlook.com (2603:10b6:408:a8::32)
+ by BN6PR15MB1779.namprd15.prod.outlook.com (2603:10b6:405:4d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.31; Tue, 30 Mar
+ 2021 16:32:37 +0000
+Received: from BN8PR15MB3282.namprd15.prod.outlook.com
+ ([fe80::315e:e061:c785:e40]) by BN8PR15MB3282.namprd15.prod.outlook.com
+ ([fe80::315e:e061:c785:e40%3]) with mapi id 15.20.3933.039; Tue, 30 Mar 2021
+ 16:32:37 +0000
+Subject: Re: [PATCH bpf-next] libbpf: fix memory leak when emitting final
+ btf_ext
+To:     Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <daniel@iogearbox.net>
+CC:     <kernel-team@fb.com>
+References: <20210327042502.969745-1-andrii@kernel.org>
+From:   Alexei Starovoitov <ast@fb.com>
+Message-ID: <b0032ec1-973f-d7e4-74cc-bae24126808a@fb.com>
+Date:   Tue, 30 Mar 2021 09:32:32 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
+In-Reply-To: <20210327042502.969745-1-andrii@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:2845]
+X-ClientProxiedBy: MWHPR04CA0031.namprd04.prod.outlook.com
+ (2603:10b6:300:ee::17) To BN8PR15MB3282.namprd15.prod.outlook.com
+ (2603:10b6:408:a8::32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGIQ9c3Qk+DMa+C7@kernel.org>
-X-Url:  http://acmel.wordpress.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:2103::3b8] (2620:10d:c090:400::5:2845) by MWHPR04CA0031.namprd04.prod.outlook.com (2603:10b6:300:ee::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Tue, 30 Mar 2021 16:32:35 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 774faa56-6971-4740-fe49-08d8f3996db2
+X-MS-TrafficTypeDiagnostic: BN6PR15MB1779:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN6PR15MB1779D23952A930F4297D6D67D77D9@BN6PR15MB1779.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:561;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: f2zGhieawvRXqpVbss8KEjZzXZTdAZygFFkQMTSmsE0Keta6qHqRV7/v5SNU4XK7PWdfOgPjlA9nnTNhEOfSXNOxlRXC75X/HSHSmtrvHbycHfyfyBePg4p0CIQImLUo47Yw2/lE7kFcOWbgTYyxAoONJkylmN0CrSpOEOBCTA1L9T367mjQl+GkHRyTxvE+ao067xZRK/kxqeDojhBwLzpdtq2mQKV15DMgF338EdC/Knid2yBQiaUAAgXSxZw0agyjfyEUydoxjyctrJwkIqiHjutVMcEg1Hm5pyPyEhJZDTazpDUJUqr3+2XW5qq6trz/Q8OShBjPbe5y56qKaZddpn/wKXzVucpDiNfFlRuw+k+MvxxMLe83EpasbNrY0hZeUE9fjnGOefwIlYbrfT1KFAMGE0QisGVArI6aQrQpGzj6QOMig45bEXehZqY8v2q7UPrFMto28D3819XUW0DWOTlkWpSYNyPzGtr6rzSwqRXDqGxKWVSbxMvvoiUO5NkTGiGV3PqDkf+ZvB2e5Lmd7v0o/4s8n+HweeVAZRf1hcq/R5f6TBJQM9CbiLHcMZ5MmB5IYYQNvklcKk0huydra1Ddo+Y9tvb+4HP7TI4oWc6ck0i7OKylKdzSUJkp7p/UtlhzdGcxBt3KtR4tBEhTlZgyJNwzjeOBFeZefiIZ5ar/CVxGSYN8siiHCdfLLVCxez4RAomEjB/bp/TUi8GpZSP8/S7X6XMrRopzh14=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR15MB3282.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(346002)(136003)(366004)(39860400002)(8936002)(2906002)(31686004)(66476007)(66946007)(86362001)(16526019)(316002)(66556008)(31696002)(6486002)(38100700001)(4326008)(6666004)(52116002)(2616005)(5660300002)(478600001)(8676002)(4744005)(186003)(53546011)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cmt0WXluVVVwa0Ixc0RCcnhKQnVNenArUGxhWXlwL01zZmx3N21JbE10SjBv?=
+ =?utf-8?B?aVIxbE1OL0xQM2F5VHZTaStaVUo0cVF5RGFVNlhzZWZFODl2NEZOd094WkRC?=
+ =?utf-8?B?RVNBdG1LTHJkaWtIQTZ1L1g1OTJOL0pzZmZWTFp0cFUyYThNQjhJSmhKZmpa?=
+ =?utf-8?B?b21Kd05XSWVTYWlRTm13ZHEzS0oyRGhPckZyZ2tQVEJVSWhYbDVDcFJZZjNE?=
+ =?utf-8?B?SEd4aS9WdkZZcjVDRUF5S2xRRHI5cElQL200cHpBcGVoYklkbmE1OVhEOW5x?=
+ =?utf-8?B?R1BDK3piYVhWZlZCWE82bGlHS21qbnl3NUNZdDRSSzZuU2ZjZ3dLbkQvZUFR?=
+ =?utf-8?B?bFhGQXdNSUhLbzByWmlwWkRGQmhVaFNDK09ZRVlPY1Uya2ZFZDZrMjBYSkFF?=
+ =?utf-8?B?eHU3ZEdhcDlNVmU0Szg0Wmt1SC8rYkxZelVJSkdaaEIzTlNhZllYZm8zcXcr?=
+ =?utf-8?B?QzRBOVpzYzBONzhJUW1xNVlOSDRTTnh4THp5eFExanVSN0RCcWtoSDR3Rito?=
+ =?utf-8?B?M3MzOFBIdEp2VkZuN0pyTWtKUFRwN3FzWkNiUkVucVFJcWdpUldkMW10U3pS?=
+ =?utf-8?B?d1pzVmpWQ0R6c3dnT1NBZHpmOGNHMDV0UEE1ek5tQ294OGk2aHV4WkIvRXF0?=
+ =?utf-8?B?WnNxZzBwQWNJdXZydGlRS2NROXFNQ3NGK2dYd1lOeElSYzhVd1VEdlQ1R1BC?=
+ =?utf-8?B?V0ExaU5sZ3hkNFVCVHRpNng1cU5QYysrUGpoQlc1eHAwdWRpUW1FeTAwMzFB?=
+ =?utf-8?B?L05lSTd4NW84bUV1cnJjQjdQQ3VRVmhScVd5OGZGeFE0eFU5d0ZJMW5KaVNF?=
+ =?utf-8?B?VzByK3U4OWVGanloVDRVbHkrUk1pMy9FUzVYK1lZTUFEMXh2am1JN3dqM0c0?=
+ =?utf-8?B?R2EzZmxMSlV1R0JWN0FKbEtmT2lxaGxoU1RYM05mYmFFeUJTeEFWOXRFbHZ5?=
+ =?utf-8?B?L3hCRHowV0JkUDkyaldKM1k3Q0k1SnhYZmovb0g5Y2plQlVDWFJpT3ZKWnV0?=
+ =?utf-8?B?TGpndU1vcmxvS3QramlVNGI5Y05NMWdNR3hLV2o3U3hOVit0akk5dHZCRzUx?=
+ =?utf-8?B?VEhzQnJYYUtoS2pvSTVaaVBwVVU4dCt4RXNXcUxwZkErMnhTZXZIWWk2Rkc2?=
+ =?utf-8?B?VXM1L2VrQWRkVk9mTmhHNjVOM253N2tuKzBMUmFTWTR5eWMxUlJWelhXZ3NL?=
+ =?utf-8?B?VGh6bVZ6STNNb01sWGtTWWluQVhtdGJYK2FQOGJXNkZXVFdCcGVsU2hsZ0Fn?=
+ =?utf-8?B?eWVIck80NUFVT1Jzd2svMXNlYk1sczUxZlM0ZFNEVW1iYW5XMlFSemNHUkxO?=
+ =?utf-8?B?OTFUTUllSVQ1UTV2YUcvMCt0VmU2R08wc2l2d29xYVBNUXB1SnA2Z2RhejhU?=
+ =?utf-8?B?WWZFdUZjVEtuaWV0YitvMERPT3A1aTRxYS9xSXZkMXFWY3pCNWU0MFZJbTBV?=
+ =?utf-8?B?cENiM3luUXVSL1Z3ZzI5aldaOUVnMER5RU50MzBiemVLMEFlRkp0bk1lM3VT?=
+ =?utf-8?B?ZFYrVHR5QmpjNzc3QUs3ZE9YR0MvQVhPQ3MvMVNPd21mSXFaU2kwdkgyMU5B?=
+ =?utf-8?B?dTl1VGMzeDkvYURzU1FzSkVGcTZtU2x6M1dtRjJHeFh0SDhWWmJKNFlVbHNp?=
+ =?utf-8?B?K0lHNXl1OHpSMkh0SnVWOHZxdHEySEo1SFB3d0VrVlpFSkZhMkFGaitMV3F3?=
+ =?utf-8?B?ZGpUaG9uUEwvRm52T3F4cWlHc3daN1VheFFPTDR3TGhqMlRmN2h0YVNKcm1w?=
+ =?utf-8?B?aWdUYWNQN1FkMCthV1Y1WEJEb1pKMkFOU0RVOFE2eExBdXVUbEtqWkRUK1Jt?=
+ =?utf-8?B?ZXNTOGVDRzRTaUtXenk2Zz09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 774faa56-6971-4740-fe49-08d8f3996db2
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR15MB3282.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 16:32:37.2456
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Qfc5xYWXUVTcDcPnkGQFveHpdY+absnsDUx97Ea5pQ68HTRorNuoXnP9ldjOATM6
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR15MB1779
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: wON7dPyHmwLb2AnC6CyXM-SY5yEEahmo
+X-Proofpoint-ORIG-GUID: wON7dPyHmwLb2AnC6CyXM-SY5yEEahmo
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-30_06:2021-03-30,2021-03-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ lowpriorityscore=0 phishscore=0 impostorscore=0 mlxscore=0 mlxlogscore=920
+ bulkscore=0 adultscore=0 spamscore=0 suspectscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103250000 definitions=main-2103300119
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Mar 29, 2021 at 02:40:05PM -0300, Arnaldo Carvalho de Melo escreveu:
-> [acme@five pahole]$ ulimit -c 10000000
-> [acme@five pahole]$
-> [acme@five pahole]$ file tcp_bbr.o
-> tcp_bbr.o: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), with debug_info, not stripped
-> [acme@five pahole]$ readelf -wi tcp_bbr.o | grep DW_AT_producer
->     <d>   DW_AT_producer    : (indirect string, offset: 0x4a97): GNU C89 10.2.1 20200723 (Red Hat 10.2.1-1) -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -m64 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -mindirect-branch=thunk-extern -mindirect-branch-register -mrecord-mcount -mfentry -march=x86-64 -g -O2 -std=gnu90 -p -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -falign-jumps=1 -falign-loops=1 -fno-asynchronous-unwind-tables -fno-jump-tables -fno-delete-null-pointer-checks -fno-allow-store-data-races -fstack-protector-strong -fno-var-tracking-assignments -fno-strict-overflow -fno-merge-all-constants -fmerge-constants -fstack-check=no -fconserve-stack -fcf-protection=none
-> [acme@five pahole]$ fullcircle tcp_bbr.o
-> /home/acme/bin/fullcircle: line 38: 3969006 Segmentation fault      (core dumped) ${pfunct_bin} --compile $file > $c_output
-> /tmp/fullcircle.4XujnI.c:1435:2: error: unterminated comment
->  1435 |  /* si
->       |  ^
-> /tmp/fullcircle.4XujnI.c:1433:2: error: expected specifier-qualifier-list at end of input
->  1433 |  u32 *                      saved_syn;            /*  2184     8 */
->       |  ^~~
-> codiff: couldn't load debugging info from /tmp/fullcircle.ZOVXGv.o
-> /home/acme/bin/fullcircle: line 40: 3969019 Segmentation fault      (core dumped) ${codiff_bin} -q -s $file $o_output
-> [acme@five pahole]$
+On 3/26/21 9:25 PM, Andrii Nakryiko wrote:
+> Free temporary allocated memory used to construct finalized .BTF.ext data.
+> Found by Coverity static analysis on libbpf's Github repo.
 > 
-> Both seem unrelated to what you've done here, I'm investigating it now.
+> Fixes: 8fd27bf69b86 ("libbpf: Add BPF static linker BTF and BTF.ext support")
+> Signed-off-by: Andrii Nakryiko<andrii@kernel.org>
 
-The fullcircle one, that crashes at the 'codiff' utility is related to
-the patch that makes dwarf_cu to allocate space for the hash tables, as
-you introduced a destructor for the dwarf_cu hashtables and the dwarf_cu
-that was assigned to cu->priv was a local variable, which wasn't much of
-a problem because we were not freeing it, as it went away at each loop
-iteration, the following patch to that first patch in the series seems
-to cure it, I'm folding it into your patch + a commiter note.
-
-- Arnaldo
-
-diff --git a/dwarf_loader.c b/dwarf_loader.c
-index 5a1e860da079e04c..3e7875d4ab577f1b 100644
---- a/dwarf_loader.c
-+++ b/dwarf_loader.c
-@@ -150,6 +150,18 @@ static int dwarf_cu__init(struct dwarf_cu *dcu)
- 	return 0;
- }
- 
-+static struct dwarf_cu *dwarf_cu__new(void)
-+{
-+	struct dwarf_cu *dwarf_cu = zalloc(sizeof(*dwarf_cu));
-+
-+	if (dwarf_cu != NULL && dwarf_cu__init(dwarf_cu) != 0) {
-+		free(dwarf_cu);
-+		dwarf_cu = NULL;
-+	}
-+
-+	return dwarf_cu;
-+}
-+
- static void dwarf_cu__delete(struct cu *cu)
- {
- 	struct dwarf_cu *dcu = cu->priv;
-@@ -2542,21 +2554,20 @@ static int cus__load_module(struct cus *cus, struct conf_load *conf,
- 		}
- 		cu->little_endian = ehdr.e_ident[EI_DATA] == ELFDATA2LSB;
- 
--		struct dwarf_cu dcu;
-+		struct dwarf_cu *dcu = dwarf_cu__new();
- 
--		if (dwarf_cu__init(&dcu) != 0)
-+		if (dcu == NULL)
- 			return DWARF_CB_ABORT;
- 
--		dcu.cu = cu;
--		dcu.type_unit = type_cu ? &type_dcu : NULL;
--		cu->priv = &dcu;
-+		dcu->cu = cu;
-+		dcu->type_unit = type_cu ? &type_dcu : NULL;
-+		cu->priv = dcu;
- 		cu->dfops = &dwarf__ops;
- 
- 		if (die__process_and_recode(cu_die, cu) != 0)
- 			return DWARF_CB_ABORT;
- 
--		if (finalize_cu_immediately(cus, cu, &dcu, conf)
--		    == LSK__STOP_LOADING)
-+		if (finalize_cu_immediately(cus, cu, dcu, conf) == LSK__STOP_LOADING)
- 			return DWARF_CB_ABORT;
- 
- 		off = noff;
+Applied.
