@@ -2,77 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B498B34EDFF
-	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 18:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B2234EF4B
+	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 19:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbhC3QfT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Mar 2021 12:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232225AbhC3QfA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Mar 2021 12:35:00 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D36C061574;
-        Tue, 30 Mar 2021 09:34:59 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id y1so20554208ljm.10;
-        Tue, 30 Mar 2021 09:34:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qhg1AGLQpb57c6vcsn+mcC5e19hueOeeExZeb0/kg4Q=;
-        b=Bk+3PDB3A4G8BvrNJ40dSC7WPDwA9IsS/6swjjaOe1XQ6ldBbi2tfWZbFqOetoSd55
-         yImkLKh6UuV58u4lYh9H590ToKslO5IdMxcAVfEc/4gN5Ujvxdv29D5gvZcUwRSYE9Js
-         wWjnyo1b2EQAMAAWIqpY/5fOOMtlgKPDLqJnryL3iiV2uEyXMfl0Yro+suDK6ZQdvOjU
-         F7OcRM69pvfeK8btymnEawNC7hmuwMIgI1dEs8uurwDy8bOSVdEWVS1S46gZOP7hRDV9
-         T2Cc4Sms+/rYji2Q0De20/f3U2+r/IJRLiIQdnqt5md+iX0qtBsTiESLGg/x6uUmEBXQ
-         NbQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qhg1AGLQpb57c6vcsn+mcC5e19hueOeeExZeb0/kg4Q=;
-        b=X7y8Y3puJx1FKFuTvrw+DaP2Jppu4oU56nPhBIUzC0ecSHilQaA/zzfWgO8/4UCjWq
-         cEvozQXOpRY47dbcgHu5hFX92ZiO8HaxXPuhGLEYX23CAjrDWdFrGltSj0Bg7b+vCL1Z
-         /HfzDRfEkKrSZ8u8EShz3M9/cTjQfmlHPlwYQa+ALVPqA+oFQwMIstQ84H54pxUZyyvI
-         dfQk8lWsQxTd+Do+rYjPUe1OVSx1l0399OS48337xS3IUBBxBq4bk1pjZLft0GF6xT0n
-         R5brzrTjk4M0wqWynPnv7p8ao8FDC2VU6NGQiAtwRWYfIFQ5HmlhSZ8kDASzx7m1slxK
-         0vxA==
-X-Gm-Message-State: AOAM532psnK/SVV4LO/a18FxH1fnMDOndNM7ce2d/oj6zXrl3hDIoKfP
-        iW+9ygKROpDJNDOq4Sf9qQvx9xf6TBuLdRCQte4=
-X-Google-Smtp-Source: ABdhPJystCBx/9HrK7PnXEfX7hMHU/eYHqSyimzZXjg+gJkIP+LhyGP5dmlL19+eki35NMA/EPiTEXJ5f94uT52MFPI=
-X-Received: by 2002:a2e:3608:: with SMTP id d8mr21914928lja.21.1617122098335;
- Tue, 30 Mar 2021 09:34:58 -0700 (PDT)
+        id S232287AbhC3RWV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Mar 2021 13:22:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232118AbhC3RVy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Mar 2021 13:21:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAF92619D1;
+        Tue, 30 Mar 2021 17:21:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617124914;
+        bh=nSaGH7C9DUjUEnfkusf81FHqtFMRbAkQ/UgYZAa6Ppo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=j0a38Q2k1qEt78uJy13CZJDOL0woTB+7TTJqOJ6soPlTMPruKK/fojdsqAvfGc0vA
+         nfKhsQ7EKtE+WU+eBxG9qu/zi2ZGOGeOKXF8xISl1QJQnJ2a/z44dnPSeAWYMdGU/8
+         PSAoJKK5+VrShSPMwJsLOS3IpC8OsGx/wdSqev1gjVvNM3Qf5eM0Zar0Ck/2CeIRyF
+         tRQPb2NkZZ8Fk9kSJjJrJSqHY98+EazrEnATpIt/WwJl1iesHdAsCJ4PmyT39ynONC
+         rmSkyKrADZbZNi2m2ZfZnQtLD9qcjoRDeY7bXKtWvyxDsXROFfnu11Mt62J0WyXR61
+         35uYb0atbVw/Q==
+Received: by mail-wr1-f52.google.com with SMTP id j7so17028096wrd.1;
+        Tue, 30 Mar 2021 10:21:53 -0700 (PDT)
+X-Gm-Message-State: AOAM533ufFS91Go2iHboFrtdwmOlFg7CWol345WjnddNP6wvUEQORpxB
+        XIzYQtZIeOthfPAcssVT1uvzlqeUjN+N74zhBSQ=
+X-Google-Smtp-Source: ABdhPJwn4UhqepnyMOcLeTKmfHMiYbPExjGA1cUOw+nU37Rv5ms4Cueb/m7qtnZJAE4aNKmjKbFqK+bD6XPdrbqlX60=
+X-Received: by 2002:a5d:6b86:: with SMTP id n6mr7671314wrx.52.1617124912552;
+ Tue, 30 Mar 2021 10:21:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210329224316.17793-1-maciej.fijalkowski@intel.com>
-In-Reply-To: <20210329224316.17793-1-maciej.fijalkowski@intel.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 30 Mar 2021 09:34:47 -0700
-Message-ID: <CAADnVQJtRaGwmL7Y-Ai8PQr96ABFPqheiGsY8bz7=YYGa24cHQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 00/17] AF_XDP selftests improvements & bpf_link
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     bpf <bpf@vger.kernel.org>,
+References: <20210330113419.4616-1-ciara.loftus@intel.com> <20210330113419.4616-3-ciara.loftus@intel.com>
+ <CAADnVQ+jr2WG4FF3GoPt==tOkOb72bd7Zhkk5iy4omCJ3=qLJQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+jr2WG4FF3GoPt==tOkOb72bd7Zhkk5iy4omCJ3=qLJQ@mail.gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Date:   Tue, 30 Mar 2021 19:21:41 +0200
+X-Gmail-Original-Message-ID: <CAJ+HfNh_brhM5C1jModyUPibps2ouPcfGfYscavoqBFCLmWj7Q@mail.gmail.com>
+Message-ID: <CAJ+HfNh_brhM5C1jModyUPibps2ouPcfGfYscavoqBFCLmWj7Q@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf 2/3] libbpf: restore umem state after socket create failure
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Ciara Loftus <ciara.loftus@intel.com>,
         Network Development <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Ciara Loftus <ciara.loftus@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+        bpf <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 3:54 PM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
+On Tue, 30 Mar 2021 at 17:08, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Changes since v4 (all in patch 6):
-> - do not close potentially invalid bpf_link fd (Toke)
-> - fix misspelling in label (Toke)
-> - mask out XDP_FLAGS_UPDATE_IF_NOEXIST and XDP_FLAGS_REPLACE explicitly when
->   creating bpf_link (Toke)
+> On Tue, Mar 30, 2021 at 5:06 AM Ciara Loftus <ciara.loftus@intel.com> wro=
+te:
+> >
 
-Applied. Thanks
+[...]
+
+> >         if (--ctx->refcount =3D=3D 0) {
+> > -               err =3D xsk_get_mmap_offsets(umem->fd, &off);
+> > -               if (!err) {
+> > -                       munmap(ctx->fill->ring - off.fr.desc,
+> > -                              off.fr.desc + umem->config.fill_size *
+> > -                              sizeof(__u64));
+> > -                       munmap(ctx->comp->ring - off.cr.desc,
+> > -                              off.cr.desc + umem->config.comp_size *
+> > -                              sizeof(__u64));
+> > +               if (unmap) {
+> > +                       err =3D xsk_get_mmap_offsets(umem->fd, &off);
+> > +                       if (!err) {
+> > +                               munmap(ctx->fill->ring - off.fr.desc,
+> > +                                      off.fr.desc + umem->config.fill_=
+size *
+> > +                               sizeof(__u64));
+> > +                               munmap(ctx->comp->ring - off.cr.desc,
+> > +                                      off.cr.desc + umem->config.comp_=
+size *
+> > +                               sizeof(__u64));
+> > +                       }
+>
+> The whole function increases indent, since it changes anyway
+> could you write it as:
+> {
+> if (--ctx->refcount)
+>   return;
+> if (!unmap)
+>   goto out_free;
+> err =3D xsk_get
+> if (err)
+>  goto out_free;
+> munmap();
+> out_free:
+> list_del
+> free
+> }
+>
+
+Yes, please try to reduce the nesting, and while at it try to expand
+the as much as possible of the munmap arguments to the full 100 chars.
+
+
+Bj=C3=B6rn
