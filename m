@@ -2,160 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B20DF34EA4F
-	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 16:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF9C34EA7B
+	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 16:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232145AbhC3OXG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Mar 2021 10:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44020 "EHLO
+        id S232082AbhC3Ofc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Mar 2021 10:35:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231829AbhC3OWt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:22:49 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F59C061574;
-        Tue, 30 Mar 2021 07:22:49 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id x17so16623243iog.2;
-        Tue, 30 Mar 2021 07:22:48 -0700 (PDT)
+        with ESMTP id S231998AbhC3OfN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Mar 2021 10:35:13 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3BFC061574;
+        Tue, 30 Mar 2021 07:35:13 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id f26so20128494ljp.8;
+        Tue, 30 Mar 2021 07:35:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GNHMCs6x+dR2Cqz7tLELzE1plonqANp2Czvp+h/1Vf8=;
-        b=ty8xpi5ikc4QUeUv6hKR+/9N2zPEnBot4pcKeNOEaZaJ44qTR3VEiVODng1iQmgRis
-         jjDDk0eoIYssFwk+wJ7B2s3kfT/R71pLJvJ4B8H9CkvjWNxm9rkTWoptZwy4XcpzblxL
-         eF3VXHAgsG1Jde5rlCkEaJOnfCBN2//1pESFyMe/88dC7rdge6niEiSGBQ2MRoPFRshu
-         7/YP80DZn1AIJbsg9H8y7vKl4xf5MJVRneUpqFIwiqe610OfoNX/OTInXF4Id9YfqD52
-         0/HQBm1VpzoF88NyXDbEuttpi/eEWGTH/tLwoyodHYgEZagn3+p7yM4R3wh4l2srhDEz
-         wtUw==
+         :cc;
+        bh=EFhs2tIDZibWzrJh59IOvN0bJfFhpwIvqS6V+K23EGA=;
+        b=qnTFvoKXQoWNENte4Gv8Xi3mcBX4Nk7i6lThG5ZXALGCZckmWlv1Gv/+g2/LkDVnrc
+         5mTpFgC7RPvORSgn6yoHGsvDaFRpfGW2+bHBhNq69JW0jDFCOcTeLfJFhJnqnN9j9Mu0
+         XWXoemkmBmX5h4mko8OHsk7MM5l1lSsqoKtxS5zmTHfSgaENeqXQHw5YbLok46z4TCCT
+         qToCPTw+IJ7D6XQVQ6iF6Es3t7HenmhMRwFfI+kbcWT9pw5tCoo4aaD/d/Qtzcts+QIf
+         vErEOYszC3ZZI4dgHDJkbe/RRNOGWxVT02i2pCfNC3hgQZIKELIR5iWgRWqn9BphQhhv
+         rPuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GNHMCs6x+dR2Cqz7tLELzE1plonqANp2Czvp+h/1Vf8=;
-        b=aDL1b5g7zT+TX/69iK8bs8G9UjC/zt/26/eDiVKWgzCc73NwGg5CkIXwmEJMfKAIFc
-         Wx0DRhaUZfYu2Pr5e3ksq+mz2ZGio73ldot3GOZHyS3qo2QGa0EUMXUW0HGaRzutzFOc
-         mpvbzZ0iVxebY8KERYwmwU6ZpO7cGUPbcEypPG3t1Q57CBAvKqvtTV5XcwXog3RfB8Yy
-         4AET2WMnfJTHDO6jG4mbHJMI7wG8gi8UA+ZkSLtIbXelpnI1w3ftkfYOHqiDs48AmggJ
-         eQks6PVVClzLIXlXgVzbVnefF0JrWSwEbP26otwZtlvnzXKT1CD7bR5o+EYbkBLTOlr/
-         epzA==
-X-Gm-Message-State: AOAM532PZkfxhr4Dn3yKtiU1K9zu/cchBBIIYAO/++1IVtSvUdeAIkkE
-        MOkqZBdDC5BKXf/D1oPkm7nkbdVBjaiEoZZk6j8lNujdZVWfmg==
-X-Google-Smtp-Source: ABdhPJx2lAQsZaWZav6RqWh2dIxFsrQ79CV0iN3oKmXwGO+ztVj2DfiDBZEwagnQYov43RlS7Ml7o3bDQLfX0pI1IoM=
-X-Received: by 2002:a02:c908:: with SMTP id t8mr10461264jao.78.1617114168349;
- Tue, 30 Mar 2021 07:22:48 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=EFhs2tIDZibWzrJh59IOvN0bJfFhpwIvqS6V+K23EGA=;
+        b=g6d0Ifl8LXtQF3qmqen4B5keJuETPbPOr5ip6RoNZcEzGQfgx+VRKASzrQicmM9dEn
+         qpdG+WT45481YPffZjZ2jDvdjblC3N9aP/EG5jWNJBSXvUyPKkWOL8aLwr2vtAZN7d2X
+         e4Cs/F+jbIMRzwNiPAZPF9Fks5qSZWH6iEwbTTmdXJNT5qOasV6QQ5SxzI0SNtvcrPZr
+         STA7KvrcFRU/wxTlco+CcgtfwY8G4PJHLnfAcYLD+ce87mA4IH/D2YmFDIzfx00FB3Gl
+         uPQuI9FL4YOFzmT3gSYMAE4iB3vX1vjdV9MNAH5ZiFAtXNKuf9bJ1e1lG7nYnKt2uJhm
+         TTdg==
+X-Gm-Message-State: AOAM53286IjEFdF5vLgK+0MTV7KR8bSqNOJTS7RdGqq79UohXhlSf7Rs
+        D29S50Ti53NivwNPab230kSXKo/0nbK7Jhc7SrM+GgMffEY=
+X-Google-Smtp-Source: ABdhPJxVHLziL4cXahjty2X+Gj5pT44WVdD84yxRNN1+udjd/FJMOnE+PZ8iT9ThWWdLr5NrbPXVUIadeByTHSh4KmM=
+X-Received: by 2002:a2e:9704:: with SMTP id r4mr20654715lji.486.1617114911657;
+ Tue, 30 Mar 2021 07:35:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210328161055.257504-1-pctammela@mojatatu.com>
- <20210328161055.257504-2-pctammela@mojatatu.com> <A175BAAD-39B2-4ECE-9BA0-D070E84484FF@fb.com>
-In-Reply-To: <A175BAAD-39B2-4ECE-9BA0-D070E84484FF@fb.com>
-From:   Pedro Tammela <pctammela@gmail.com>
-Date:   Tue, 30 Mar 2021 11:22:37 -0300
-Message-ID: <CAKY_9u0J8gurpOhR9YZceH3N2jJFm=v5VLw3atjo==gTp_-RQg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: check flags in 'bpf_ringbuf_discard()' and 'bpf_ringbuf_submit()'
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Pedro Tammela <pctammela@mojatatu.com>,
+References: <20210325015124.1543397-1-kafai@fb.com> <CACAyw9-N6FO67JVJsO=XTohf=4-uMwsSi+Ym2Nxj0+GpofJJHQ@mail.gmail.com>
+In-Reply-To: <CACAyw9-N6FO67JVJsO=XTohf=4-uMwsSi+Ym2Nxj0+GpofJJHQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 30 Mar 2021 07:35:00 -0700
+Message-ID: <CAADnVQ+H1bHMeUtxNbes_-fUQTBP5Pdaqq7F5aVfW5QY+gi1bw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 00/14] bpf: Support calling kernel function
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Joe Stringer <joe@cilium.io>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+        Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em seg., 29 de mar. de 2021 =C3=A0s 13:10, Song Liu <songliubraving@fb.com>=
- escreveu:
+On Tue, Mar 30, 2021 at 2:43 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
 >
->
->
-> > On Mar 28, 2021, at 9:10 AM, Pedro Tammela <pctammela@gmail.com> wrote:
+> On Thu, 25 Mar 2021 at 01:52, Martin KaFai Lau <kafai@fb.com> wrote:
 > >
-> > The current code only checks flags in 'bpf_ringbuf_output()'.
-> >
-> > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
-> > ---
-> > include/uapi/linux/bpf.h       |  8 ++++----
-> > kernel/bpf/ringbuf.c           | 13 +++++++++++--
-> > tools/include/uapi/linux/bpf.h |  8 ++++----
-> > 3 files changed, 19 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 100cb2e4c104..232b5e5dd045 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -4073,7 +4073,7 @@ union bpf_attr {
-> >  *            Valid pointer with *size* bytes of memory available; NULL=
-,
-> >  *            otherwise.
-> >  *
-> > - * void bpf_ringbuf_submit(void *data, u64 flags)
-> > + * int bpf_ringbuf_submit(void *data, u64 flags)
+> > This series adds support to allow bpf program calling kernel function.
 >
-> This should be "long" instead of "int".
+> I think there are more build problems with this. Has anyone hit this before?
 >
-> >  *    Description
-> >  *            Submit reserved ring buffer sample, pointed to by *data*.
-> >  *            If **BPF_RB_NO_WAKEUP** is specified in *flags*, no notif=
-ication
-> > @@ -4083,9 +4083,9 @@ union bpf_attr {
-> >  *            If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notif=
-ication
-> >  *            of new data availability is sent unconditionally.
-> >  *    Return
-> > - *           Nothing. Always succeeds.
-> > + *           0 on success, or a negative error in case of failure.
-> >  *
-> > - * void bpf_ringbuf_discard(void *data, u64 flags)
-> > + * int bpf_ringbuf_discard(void *data, u64 flags)
+> $ CLANG=clang-12 O=../kbuild/vm ./tools/testing/selftests/bpf/vmtest.sh -j 7
 >
-> Ditto. And same for tools/include/uapi/linux/bpf.h
->
-> >  *    Description
-> >  *            Discard reserved ring buffer sample, pointed to by *data*=
-.
-> >  *            If **BPF_RB_NO_WAKEUP** is specified in *flags*, no notif=
-ication
-> > @@ -4095,7 +4095,7 @@ union bpf_attr {
-> >  *            If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notif=
-ication
-> >  *            of new data availability is sent unconditionally.
-> >  *    Return
-> > - *           Nothing. Always succeeds.
-> > + *           0 on success, or a negative error in case of failure.
-> >  *
-> >  * u64 bpf_ringbuf_query(void *ringbuf, u64 flags)
-> >  *    Description
-> > diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> > index f25b719ac786..f76dafe2427e 100644
-> > --- a/kernel/bpf/ringbuf.c
-> > +++ b/kernel/bpf/ringbuf.c
-> > @@ -397,26 +397,35 @@ static void bpf_ringbuf_commit(void *sample, u64 =
-flags, bool discard)
-> >
-> > BPF_CALL_2(bpf_ringbuf_submit, void *, sample, u64, flags)
-> > {
-> > +     if (unlikely(flags & ~(BPF_RB_NO_WAKEUP | BPF_RB_FORCE_WAKEUP)))
-> > +             return -EINVAL;
->
-> We can move this check to bpf_ringbuf_commit().
+>   GEN-SKEL [test_progs-no_alu32] bind6_prog.skel.h
+> libbpf: elf: skipping unrecognized data section(5) .rodata.str1.1
+>   GEN-SKEL [test_progs-no_alu32] bind_perm.skel.h
+> libbpf: elf: skipping unrecognized data section(5) .rodata.str1.1
+>   GEN-SKEL [test_progs-no_alu32] bpf_cubic.skel.h
+>   GEN-SKEL [test_progs-no_alu32] bpf_dctcp.skel.h
+>   GEN-SKEL [test_progs-no_alu32] bpf_flow.skel.h
+> libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
+> Error: failed to open BPF object file: No such file or directory
 
-I don't believe we can because in 'bpf_ringbuf_output()' the flag
-checking in 'bpf_ringbuf_commit()' is already
-too late.
-
->
-> Thanks,
-> Song
->
-> [...]
-
-Pedro
+The doc update is on its way:
+https://patchwork.kernel.org/project/netdevbpf/patch/20210330054156.2933804-1-kafai@fb.com/
