@@ -2,84 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF9C34EA7B
-	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 16:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2C234EB8C
+	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 17:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232082AbhC3Ofc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Mar 2021 10:35:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46672 "EHLO
+        id S231655AbhC3PIf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Mar 2021 11:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231998AbhC3OfN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Mar 2021 10:35:13 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3BFC061574;
-        Tue, 30 Mar 2021 07:35:13 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id f26so20128494ljp.8;
-        Tue, 30 Mar 2021 07:35:13 -0700 (PDT)
+        with ESMTP id S231229AbhC3PIN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Mar 2021 11:08:13 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6CBC061574;
+        Tue, 30 Mar 2021 08:08:13 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id m12so24283286lfq.10;
+        Tue, 30 Mar 2021 08:08:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EFhs2tIDZibWzrJh59IOvN0bJfFhpwIvqS6V+K23EGA=;
-        b=qnTFvoKXQoWNENte4Gv8Xi3mcBX4Nk7i6lThG5ZXALGCZckmWlv1Gv/+g2/LkDVnrc
-         5mTpFgC7RPvORSgn6yoHGsvDaFRpfGW2+bHBhNq69JW0jDFCOcTeLfJFhJnqnN9j9Mu0
-         XWXoemkmBmX5h4mko8OHsk7MM5l1lSsqoKtxS5zmTHfSgaENeqXQHw5YbLok46z4TCCT
-         qToCPTw+IJ7D6XQVQ6iF6Es3t7HenmhMRwFfI+kbcWT9pw5tCoo4aaD/d/Qtzcts+QIf
-         vErEOYszC3ZZI4dgHDJkbe/RRNOGWxVT02i2pCfNC3hgQZIKELIR5iWgRWqn9BphQhhv
-         rPuQ==
+        bh=kizS2arIJixY618Db2OznQ3jK6lFDcDTI8/S3Ak8qoo=;
+        b=PLv7bzr0G973AHLoGvHXBDLeN7ud8eOF3bXnY+1bX1sy5hfkrBGD06wKOGd+gAtdlI
+         +qtlRKKZuCsWZP0Pp2bQj4D/s1kWVc7+91qIoBNK63nAw5QYY+ah5TOVq9MT/uy0yK54
+         /v4HVkrBf2XlCUIXtWKT6NmVa8wiHANYNaeWbvXUw+b/KX4aWL0bGQjJi7ipqiSJ1LgB
+         WhrSpg246KHJoUgkG5m6GrSyx++3luUuk5Av7iv17uvsxkdGvbbgDEOMxdMYx4SrTgwK
+         xmdlpZZ6QvydguxSV2kd083YLiMj97sjpS3WggA44D/eIZapUqez42pE6J+0jPOUBP1K
+         jL8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EFhs2tIDZibWzrJh59IOvN0bJfFhpwIvqS6V+K23EGA=;
-        b=g6d0Ifl8LXtQF3qmqen4B5keJuETPbPOr5ip6RoNZcEzGQfgx+VRKASzrQicmM9dEn
-         qpdG+WT45481YPffZjZ2jDvdjblC3N9aP/EG5jWNJBSXvUyPKkWOL8aLwr2vtAZN7d2X
-         e4Cs/F+jbIMRzwNiPAZPF9Fks5qSZWH6iEwbTTmdXJNT5qOasV6QQ5SxzI0SNtvcrPZr
-         STA7KvrcFRU/wxTlco+CcgtfwY8G4PJHLnfAcYLD+ce87mA4IH/D2YmFDIzfx00FB3Gl
-         uPQuI9FL4YOFzmT3gSYMAE4iB3vX1vjdV9MNAH5ZiFAtXNKuf9bJ1e1lG7nYnKt2uJhm
-         TTdg==
-X-Gm-Message-State: AOAM53286IjEFdF5vLgK+0MTV7KR8bSqNOJTS7RdGqq79UohXhlSf7Rs
-        D29S50Ti53NivwNPab230kSXKo/0nbK7Jhc7SrM+GgMffEY=
-X-Google-Smtp-Source: ABdhPJxVHLziL4cXahjty2X+Gj5pT44WVdD84yxRNN1+udjd/FJMOnE+PZ8iT9ThWWdLr5NrbPXVUIadeByTHSh4KmM=
-X-Received: by 2002:a2e:9704:: with SMTP id r4mr20654715lji.486.1617114911657;
- Tue, 30 Mar 2021 07:35:11 -0700 (PDT)
+        bh=kizS2arIJixY618Db2OznQ3jK6lFDcDTI8/S3Ak8qoo=;
+        b=lNJUAZ7/JNBMCxtuSQFT1CEscbZYqKN86J2lG6H3KW+2Vg1P6UgxE1id+/JN8/zcDD
+         laGdOSuBSjf8kqJB22qpNbPlELMMbWsygWUoTQWn2065avfEj1r9uCSBlnpwlAWtow3c
+         6PFeL34VgukmtPkikISo1ydonQ6uC/LLJpAcuCP1zsk14Ve8A0Ji2ZlGIuCgUVq5l9z2
+         4+iq2hgceIbTMvmmzIazs4H4acb8ZsWYx6ugIglZeQ75JG7ZaozSnZ1C8WfbAXlEMTva
+         v2pWwa7bwhrPTX15UPki7DwLDqxYpQLcQMl/df9CMiUgaMnzKJYYqoWDa590e+AiclJN
+         EG0Q==
+X-Gm-Message-State: AOAM532kkf8uRB/g6PprziyZeXRQ+z6QcDgk+m3aQN3T5CoIpSHVVA6I
+        b4JU1BsoCfRboVhg2BOqx30X8xQ37QtiqnZJDGg=
+X-Google-Smtp-Source: ABdhPJzCBNmPRHrSV1/tGsfzdA98s5V0/b97UrVajZBZuXtsyOZM493IcravlBiChxJaVQKjmH+wAqgkFQV70FxISZM=
+X-Received: by 2002:ac2:5ec2:: with SMTP id d2mr20815237lfq.214.1617116891953;
+ Tue, 30 Mar 2021 08:08:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210325015124.1543397-1-kafai@fb.com> <CACAyw9-N6FO67JVJsO=XTohf=4-uMwsSi+Ym2Nxj0+GpofJJHQ@mail.gmail.com>
-In-Reply-To: <CACAyw9-N6FO67JVJsO=XTohf=4-uMwsSi+Ym2Nxj0+GpofJJHQ@mail.gmail.com>
+References: <20210330113419.4616-1-ciara.loftus@intel.com> <20210330113419.4616-3-ciara.loftus@intel.com>
+In-Reply-To: <20210330113419.4616-3-ciara.loftus@intel.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 30 Mar 2021 07:35:00 -0700
-Message-ID: <CAADnVQ+H1bHMeUtxNbes_-fUQTBP5Pdaqq7F5aVfW5QY+gi1bw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 00/14] bpf: Support calling kernel function
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
+Date:   Tue, 30 Mar 2021 08:08:00 -0700
+Message-ID: <CAADnVQ+jr2WG4FF3GoPt==tOkOb72bd7Zhkk5iy4omCJ3=qLJQ@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf 2/3] libbpf: restore umem state after socket create failure
+To:     Ciara Loftus <ciara.loftus@intel.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>, bjorn@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 2:43 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+On Tue, Mar 30, 2021 at 5:06 AM Ciara Loftus <ciara.loftus@intel.com> wrote:
 >
-> On Thu, 25 Mar 2021 at 01:52, Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > This series adds support to allow bpf program calling kernel function.
+> If the call to xsk_socket__create fails, the user may want to retry the
+> socket creation using the same umem. Ensure that the umem is in the
+> same state on exit if the call fails by:
+> 1. ensuring the umem _save pointers are unmodified.
+> 2. not unmapping the set of umem rings that were set up with the umem
+> during xsk_umem__create, since those maps existed before the call to
+> xsk_socket__create and should remain in tact even in the event of
+> failure.
 >
-> I think there are more build problems with this. Has anyone hit this before?
+> Fixes: 2f6324a3937f ("libbpf: Support shared umems between queues and devices")
 >
-> $ CLANG=clang-12 O=../kbuild/vm ./tools/testing/selftests/bpf/vmtest.sh -j 7
+> Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
+> ---
+>  tools/lib/bpf/xsk.c | 29 ++++++++++++++++-------------
+>  1 file changed, 16 insertions(+), 13 deletions(-)
 >
->   GEN-SKEL [test_progs-no_alu32] bind6_prog.skel.h
-> libbpf: elf: skipping unrecognized data section(5) .rodata.str1.1
->   GEN-SKEL [test_progs-no_alu32] bind_perm.skel.h
-> libbpf: elf: skipping unrecognized data section(5) .rodata.str1.1
->   GEN-SKEL [test_progs-no_alu32] bpf_cubic.skel.h
->   GEN-SKEL [test_progs-no_alu32] bpf_dctcp.skel.h
->   GEN-SKEL [test_progs-no_alu32] bpf_flow.skel.h
-> libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
-> Error: failed to open BPF object file: No such file or directory
+> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> index 443b0cfb45e8..d4991ddff05a 100644
+> --- a/tools/lib/bpf/xsk.c
+> +++ b/tools/lib/bpf/xsk.c
+> @@ -743,21 +743,23 @@ static struct xsk_ctx *xsk_get_ctx(struct xsk_umem *umem, int ifindex,
+>         return NULL;
+>  }
+>
+> -static void xsk_put_ctx(struct xsk_ctx *ctx)
+> +static void xsk_put_ctx(struct xsk_ctx *ctx, bool unmap)
+>  {
+>         struct xsk_umem *umem = ctx->umem;
+>         struct xdp_mmap_offsets off;
+>         int err;
+>
+>         if (--ctx->refcount == 0) {
+> -               err = xsk_get_mmap_offsets(umem->fd, &off);
+> -               if (!err) {
+> -                       munmap(ctx->fill->ring - off.fr.desc,
+> -                              off.fr.desc + umem->config.fill_size *
+> -                              sizeof(__u64));
+> -                       munmap(ctx->comp->ring - off.cr.desc,
+> -                              off.cr.desc + umem->config.comp_size *
+> -                              sizeof(__u64));
+> +               if (unmap) {
+> +                       err = xsk_get_mmap_offsets(umem->fd, &off);
+> +                       if (!err) {
+> +                               munmap(ctx->fill->ring - off.fr.desc,
+> +                                      off.fr.desc + umem->config.fill_size *
+> +                               sizeof(__u64));
+> +                               munmap(ctx->comp->ring - off.cr.desc,
+> +                                      off.cr.desc + umem->config.comp_size *
+> +                               sizeof(__u64));
+> +                       }
 
-The doc update is on its way:
-https://patchwork.kernel.org/project/netdevbpf/patch/20210330054156.2933804-1-kafai@fb.com/
+The whole function increases indent, since it changes anyway
+could you write it as:
+{
+if (--ctx->refcount)
+  return;
+if (!unmap)
+  goto out_free;
+err = xsk_get
+if (err)
+ goto out_free;
+munmap();
+out_free:
+list_del
+free
+}
+
+other than this it looks fine to me.
+Bjorn, Magnus,
+please review.
+
+>                 }
+>
+>                 list_del(&ctx->list);
+> @@ -797,8 +799,6 @@ static struct xsk_ctx *xsk_create_ctx(struct xsk_socket *xsk,
+>         memcpy(ctx->ifname, ifname, IFNAMSIZ - 1);
+>         ctx->ifname[IFNAMSIZ - 1] = '\0';
+>
+> -       umem->fill_save = NULL;
+> -       umem->comp_save = NULL;
+>         ctx->fill = fill;
+>         ctx->comp = comp;
+>         list_add(&ctx->list, &umem->ctx_list);
+> @@ -854,6 +854,7 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
+>         struct xsk_socket *xsk;
+>         struct xsk_ctx *ctx;
+>         int err, ifindex;
+> +       bool unmap = umem->fill_save != fill;
+>
+>         if (!umem || !xsk_ptr || !(rx || tx))
+>                 return -EFAULT;
+> @@ -994,6 +995,8 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
+>         }
+>
+>         *xsk_ptr = xsk;
+> +       umem->fill_save = NULL;
+> +       umem->comp_save = NULL;
+>         return 0;
+>
+>  out_mmap_tx:
+> @@ -1005,7 +1008,7 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
+>                 munmap(rx_map, off.rx.desc +
+>                        xsk->config.rx_size * sizeof(struct xdp_desc));
+>  out_put_ctx:
+> -       xsk_put_ctx(ctx);
+> +       xsk_put_ctx(ctx, unmap);
+>  out_socket:
+>         if (--umem->refcount)
+>                 close(xsk->fd);
+> @@ -1071,7 +1074,7 @@ void xsk_socket__delete(struct xsk_socket *xsk)
+>                 }
+>         }
+>
+> -       xsk_put_ctx(ctx);
+> +       xsk_put_ctx(ctx, true);
+>
+>         umem->refcount--;
+>         /* Do not close an fd that also has an associated umem connected
+> --
+> 2.17.1
+>
