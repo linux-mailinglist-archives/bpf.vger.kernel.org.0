@@ -2,205 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC0E34F065
-	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 20:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B597334F086
+	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 20:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232236AbhC3SBS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Mar 2021 14:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232439AbhC3SAz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Mar 2021 14:00:55 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8A4C061574;
-        Tue, 30 Mar 2021 11:00:54 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id x189so18330166ybg.5;
-        Tue, 30 Mar 2021 11:00:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JPCVgHC06KGxZ8d0B9PzGmGGDLqoKdjmyAG5QpX9hX0=;
-        b=odLcWm6v025rOqkb028ZTg4+B+I2Pxvq55kLnNkRKyEEV5ILbbA3X0ZTpMCtZVfImM
-         psrNtF1Wj+EXZeiKHM4+XsELHtdSxbrofYuSd7vSp6nHZECKq2a+GnUKH4tBlCEmq3ms
-         hZyw8aAI1RFOYySioWthKwMtW+I6f7Yo46/OK3BcwX+Yi5Q8ruCdTuxNsHqmreEMel9c
-         U5jCZyJ1cNw1ZxtijJ+wfsxJFIy/j9PYdzOdm+GdmEoQH8FRsWhGLWf5FdLPLr83ft25
-         Gxbbnql3pilkPLRlr9US4flryCSlV5dGv7CSndCTMa3uSU12VBzwknnk+eMfb0mO2pcC
-         +SLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JPCVgHC06KGxZ8d0B9PzGmGGDLqoKdjmyAG5QpX9hX0=;
-        b=YdFdTNIhwY+Y2FXb+8/GNLBMIRO28v2GpibD6TlYRSFvxs2I+9GJwYMtajwRMD56st
-         5DITVYKisrb62FR3n8Sb0GeTLhfGBbH0FyGNUHWkxK4VoDeK+tbEjeiDSPlWJb9/2QV3
-         V+7hG6+4GEb7x3akLyDcTlhlG0J2NWqvQdqOyv9UmPBgn43QlBcBpUjp1nmzvZQpUmpD
-         rcEHIuFzl/oF6rYrF6Pary7pm1G9Gev4zPLGcdfUNQkfw/R3DZ5Chd6JzzH8dd82kPhI
-         h8KBKW2vZYcDSgneUFy7nniLpel6BfkbzIrOd3T0sRapAQNZoC9x2GmY5sFdhHilUPok
-         pkvg==
-X-Gm-Message-State: AOAM5316l/r7ceHb9LrJR0Tza/BmxpxeoG2L9VBS8f6AWPfOI5SzaPsz
-        8od0zhNSVM3Fmj4J0s8A6Wy42BO5HVQwHGWvhIU=
-X-Google-Smtp-Source: ABdhPJy97zq99yz43eQFJwipVPHazYHtngdKQuW20Aka0q5rhEKf8eSQf1KhtTwcYzF41kPrK01Sm0rROFPrGJR+jXw=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr45449290ybo.230.1617127254136;
- Tue, 30 Mar 2021 11:00:54 -0700 (PDT)
+        id S232502AbhC3SIU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Mar 2021 14:08:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39436 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232644AbhC3SIK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Mar 2021 14:08:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C98F3619D1;
+        Tue, 30 Mar 2021 18:08:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617127690;
+        bh=cqkXbHqdsx6UIjRhqnZpaCNAhR38l/zNsT05pOfRbzI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UDMrW/n4zM0h9ObcZoRI3CjUd2gUO8p9TZbLXD5x4FnatPlFOnjRpVru/ntX8TU2Z
+         C9HKKxfclYM+IVHtx6s5k+3iKlC0h0LGYLSema0MZjp0hU6BgCILCVW21sof7eqCuv
+         9Z0Yth1xvJ9DrkAPW87YJGVEBmPchf0F9pkg7aZ/kvDYZicjezZSXCNw/pHA+cXHWB
+         BaSycA6smKgkaZnDVXEwjVfd3za73ptb/79glB/+gHwYUWBQSHsFXflVil60yji2+q
+         l9BQs4Lv1M8JSh3UMT38v8+QMNCZcz71dh6WrHcIv9adXqtgDWZ+G/+fNgDwgJXkKt
+         UXT9Ny1dlRO5w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E8F6340647; Tue, 30 Mar 2021 15:08:06 -0300 (-03)
+Date:   Tue, 30 Mar 2021 15:08:06 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, dwarves@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Bill Wendling <morbo@google.com>, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH dwarves v3 0/3] permit merging all dwarf cu's for clang
+ lto built binary
+Message-ID: <YGNpBlf7sLalcFWB@kernel.org>
+References: <20210328201400.1426437-1-yhs@fb.com>
+ <YGIQ9c3Qk+DMa+C7@kernel.org>
+ <YGM/Uh61RVExWnTU@kernel.org>
 MIME-Version: 1.0
-References: <20210319205909.1748642-1-andrii@kernel.org> <20210319205909.1748642-4-andrii@kernel.org>
- <20210320022156.eqtmldxpzxkh45a7@ast-mbp> <CAEf4Bzarx33ENLBRyqxDz7k9t0YmTRNs5wf_xCqL2jNXvs+0Sg@mail.gmail.com>
- <20210322010734.tw2rigbr3dyk3iot@ast-mbp> <CAEf4BzbdgPnw81+diwcvAokv+S6osqvAAzSQYt_BoYbga9t-qQ@mail.gmail.com>
- <20210322175443.zflwaf7dstpg4y2b@ast-mbp> <CAEf4BzYHP00_iav1Y_vhMXBmAO3AnqqBz+uK-Yu=NGYUMEUyxw@mail.gmail.com>
- <CAADnVQKDOWz7fW0kxGEeLtMJLf7J5v9Un=uDXKmwhkweoVQ3Lw@mail.gmail.com>
- <CAEf4Bza-uieOvR6AQkC-suD=_mjs5KC_1Ra3xo9kvdSxAMmeRg@mail.gmail.com> <20210329185558.mjoikgfdp53lq2it@ast-mbp>
-In-Reply-To: <20210329185558.mjoikgfdp53lq2it@ast-mbp>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 30 Mar 2021 11:00:43 -0700
-Message-ID: <CAEf4BzYQFbngzELvyySd_f-otYOe74rH4ESNMDCEo5+PJw=umQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: allow compiling BPF objects
- without BTF
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGM/Uh61RVExWnTU@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 11:56 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sun, Mar 28, 2021 at 11:09:23PM -0700, Andrii Nakryiko wrote:
-> >
-> > BPF skeleton works just fine without BTF, if BPF programs don't use
-> > global data. I have no way of knowing how BPF skeleton is used in the
-> > wild, and specifically whether it is used without BTF and
-> > .data/.rodata.
->
-> No way of knowing?
+Em Tue, Mar 30, 2021 at 12:10:10PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Mon, Mar 29, 2021 at 02:40:05PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > [acme@five pahole]$ ulimit -c 10000000
+> > [acme@five pahole]$
+> > [acme@five pahole]$ file tcp_bbr.o
+> > tcp_bbr.o: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), with debug_info, not stripped
+> > [acme@five pahole]$ readelf -wi tcp_bbr.o | grep DW_AT_producer
+> >     <d>   DW_AT_producer    : (indirect string, offset: 0x4a97): GNU C89 10.2.1 20200723 (Red Hat 10.2.1-1) -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -m64 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -mindirect-branch=thunk-extern -mindirect-branch-register -mrecord-mcount -mfentry -march=x86-64 -g -O2 -std=gnu90 -p -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -falign-jumps=1 -falign-loops=1 -fno-asynchronous-unwind-tables -fno-jump-tables -fno-delete-null-pointer-checks -fno-allow-store-data-races -fstack-protector-strong -fno-var-tracking-assignments -fno-strict-overflow -fno-merge-all-constants -fmerge-constants -fstack-check=no -fconserve-stack -fcf-protection=none
+> > [acme@five pahole]$ fullcircle tcp_bbr.o
+> > /home/acme/bin/fullcircle: line 38: 3969006 Segmentation fault      (core dumped) ${pfunct_bin} --compile $file > $c_output
+> > /tmp/fullcircle.4XujnI.c:1435:2: error: unterminated comment
+> >  1435 |  /* si
+> >       |  ^
+> > /tmp/fullcircle.4XujnI.c:1433:2: error: expected specifier-qualifier-list at end of input
+> >  1433 |  u32 *                      saved_syn;            /*  2184     8 */
+> >       |  ^~~
+> > codiff: couldn't load debugging info from /tmp/fullcircle.ZOVXGv.o
+> > /home/acme/bin/fullcircle: line 40: 3969019 Segmentation fault      (core dumped) ${codiff_bin} -q -s $file $o_output
+> > [acme@five pahole]$
+> > 
+> > Both seem unrelated to what you've done here, I'm investigating it now.
+> 
+> The fullcircle one, that crashes at the 'codiff' utility is related to
+> the patch that makes dwarf_cu to allocate space for the hash tables, as
+> you introduced a destructor for the dwarf_cu hashtables and the dwarf_cu
+> that was assigned to cu->priv was a local variable, which wasn't much of
+> a problem because we were not freeing it, as it went away at each loop
+> iteration, the following patch to that first patch in the series seems
+> to cure it, I'm folding it into your patch + a commiter note.
 
-Yes, of course I don't know all the ways that people use bpftool and
-how they write applications. We can speculate about probability of
-breaking someone's flow and how low chances are, but ultimately we are
-guessing and hoping.
+[acme@five pahole]$ codiff tcp_bbr.o /tmp/fullcircle.ceBLyj.o
+/home/acme/git/linux/net/ipv4/tcp_bbr.c:
+  bbr_unregister                    |   -6
+  __compiletime_assert_691          |   +0
+  bbr_register                      |  -11
+  bbr_ssthresh                      |  -76
+  bbr_undo_cwnd                     | -101
+  bbr_sndbuf_expand                 |  -11
+  bbr_init                          | -385
+  bbr_main                          | -2640
+  bbr_lt_bw_sampling                | -803
+  bbr_packets_in_net_at_edt         | -212
+  bbr_inflight                      | -172
+  __compiletime_assert_655          |   +0
+  bbr_set_pacing_rate               | -182
+  kcsan_check_access                |   +6
+  kasan_check_write                 |  +14
+  tcp_unregister_congestion_control |   +0
+  tcp_register_congestion_control   |   +0
+  minmax_running_max                |   +0
+  prandom_u32                       |   +0
+  __warn_printk                     |   +0
+  __stack_chk_fail                  |   +0
+ 21 functions changed, 20 bytes added, 4599 bytes removed, diff: -4579
+[acme@five pahole]$
+[acme@five pahole]$
+[acme@five pahole]$ fullcircle tcp_bbr.o
+[acme@five pahole]$
 
-> The skel gen even for the most basic progs fails when there is no BTF in .o
->
-> $ bpftool gen skeleton prog_compiled_without_dash_g.o
-> libbpf: BTF is required, but is missing or corrupted.
->
-> libbpf_needs_btf() check is preventing all but the most primitive progs.
+This one is dealt with, doing some more tests and looking at that
+array[] versus array[0].
 
-Up until less than two years ago those were the only programs you
-could write with libbpf. It's up to everyone's opinion to qualify them
-as primitive or not. We even still have few selftests (which we should
-convert, of course) that use bpf_map_def.
-
-> Any prog with new style of map definition:
-> struct {
->         __uint(type, BPF_MAP_TYPE_ARRAY);
->         __uint(max_entries, 1);
->         __type(key, __u32);
->         __type(value, __u64);
-> } array SEC(".maps");
-> would fail skel gen.
->
-> bpftool is capable of skel gen for progs with old style maps only:
-> struct bpf_map_def SEC("maps")
->
-
-Yes, that's why my test is using a legacy-style map definition (which
-for better or worse is still supported by libbpf). One can still write
-full-fledged BPF applications without any BTF whatsoever.
-
-> I think it's a safe bet that if folks didn't adopt new map definition
-> they didn't use skeleton either.
-
-I'm not going to argue, because I don't know. If I knew about BPF
-skeleton but couldn't upgrade Clang, for instance, I'd still use BPF
-skeleton to get nice access to maps/progs and get BPF object file
-embedding in user-space without the hassle of distributing additional
-.o.
-
->
-> I think making skel gen reject such case is a good thing for the users,
-> since it prevents them from creating maps that look like blob of bytes.
-> It's good for admins too that more progs will get BTF described map key/value
-> and systems are easier to debug.
-
-I agree it's good, I added BTF-defined maps myself for that very reason.
-
->
-> Ideally the kernel should reject loading progs and maps without BTF
-> to guarantee introspection.
-> Unfortunately the kernel backward compatibility prevents doing such
-> drastic things.
-> We might add a sysctl knob though.
->
-> The bpftool can certainly add a message and reject .o-s without BTF.
-> The chance of upsetting anyone is tiny.
-
-Ok.
-
-> Keep supporting old style 'bpf_map_def' is a maintenance burden.
-> Sooner or later it needs to be removed not only from skel gen,
-> but from libbpf as well.
-
-I've already proposed to remove that in libbpf v1.0. See [0] for
-discussion in the doc around that.
-
-   [0] https://docs.google.com/document/d/1UyjTZuPFWiPFyKk1tV5an11_iaRuec6U-ZESZ54nNTY?disco=AAAALj68dg8
-
->
-> > No one is asking for that, but they might be already using BTF-less
-> > skeleton. So I'm fixing a bug in bpftool. In a way that doesn't cause
-> > long term maintenance burden. And see above about my stance on tools'
-> > assumptions.
->
-> The patch and long term direction I'm arguing against is this one:
-> https://patchwork.kernel.org/project/netdevbpf/patch/20210319205909.1748642-2-andrii@kernel.org/
-> How is this a bug fix?
-> From commit log:
-> "If BPF object file is using global variables, but is compiled without BTF or
-> ends up having only some of DATASEC types due to static linking"
->
-> global vars without BTF were always rejected by bpftool
-
-That's exactly what I consider a bug, because it wasn't intentional on my part.
-
-> and should continue being rejected.
-> I see no reason for adding such feature.
->
-> > we both know this very well. But just as a fun exercise, I just
-> > double-checked by compiling fentry demo from libbpf-bootstrap ([0]).
-> > It works just fine without `-g` and BTF.
-> >
-> >   [0] https://github.com/libbpf/libbpf-bootstrap/blob/master/src/fentry.bpf.c
->
-> yes. the skel gen will work for such demo prog, but the user should
-> be making them introspectable.
->
-> Try llvm-strip prog.o
-> Old and new bpftool-s will simply crash, because there are no symbols.
-> Should skel gen support such .o as well?
-
-No, because libbpf doesn't support loading such BPF object files.
-While my proposed patch was fixing the case in which libbpf would load
-BPF object file.
-
-> I don't think so. imo it's the same category of non-introspectable progs
-> that shouldn't be allowed.
->
-
-I understand. I just hope there was an opportunity to not always agree
-100% with your opinions and have discussion without exaggerated
-claims, like BPF skeleton not usable without BTF and others I tried to
-address in this thread.
-
-So, in summary, let's drop the patch.
-
-> > Yeah, that's fine and we do require BTF for new features (where it
-> > makes sense, of course, not just arbitrarily).
->
-> I'm saying the kernel should enforce introspection.
-> sysctl btf_enforced=1 might be the answer.
+- Arnaldo
