@@ -2,126 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC00534F255
-	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 22:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DF3034F2B3
+	for <lists+bpf@lfdr.de>; Tue, 30 Mar 2021 23:01:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbhC3UkG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Mar 2021 16:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbhC3Ujj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Mar 2021 16:39:39 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED4DC061574;
-        Tue, 30 Mar 2021 13:39:39 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 8so18733728ybc.13;
-        Tue, 30 Mar 2021 13:39:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fHFETPlCm5ghAjLH5TwVdNy5XrA3VED7pKjEr1FvnQI=;
-        b=uycPTR+xErTW6WvImIxkYRVwhbADeQEdOUjkK+Cd8k+Ghk3NESFWsx7hbg3zNl8rYM
-         7VNLB7aZ7I0kJYeDVcVM4JFggeZ+camx28CbuWthp2jsl9CoBCUakkMM6hB7JHUBtThM
-         K29405u0YpRbegkCbU77RQw46UMVXMRGZTZHw/iQFE5J8Cbdwrtxr3KbrKezeMppOczX
-         jZA0mRitWHQrR089DUeIZUAC7KPgM8SC3bzEYKDiRG2Ix5Uyhpve3jOL7kFlqeCUtvn3
-         eLuFI7m2RSBmw+FSP9HR0ULXJTrErSxujmKH82/lMIKbV//MYauYzTC3LmIocY9yWJ6p
-         JP1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fHFETPlCm5ghAjLH5TwVdNy5XrA3VED7pKjEr1FvnQI=;
-        b=SteT7Vvj8tCkMzJ2L5spLt1BswEdh38pwNGEMBf9mM7AuMX0189sWUwtviTkJOv5Lj
-         /iwr70CqefQ1RoP88gXtmiE6GsXk7i+f+CZKHqwjE2qV7qSQk+4KPHF5m7HrNPNqR9fW
-         5C3NHlcTEbVtyx7hVu0hFfsKMvnMjZWha4ACbyVCsj5hCtGzuE+dygFdVIQjMpG7twS1
-         nR4aEXuwh8C9RsgyaZJ3FFAdEa7utfeefHOh3PY5/1NkjN5Sd8vD+UOir1zwo7zNB9io
-         UCMlx8PtzU/QJFDfO1E4qJ8IqLTEWSE0HV2QPMmPyn520rUd4yroYAecydQ/ZoPHY3uV
-         6cjg==
-X-Gm-Message-State: AOAM5332ZJvbn9zMEY/XyZ/JCCRsVJSkFlsHnfSaurGCBBFLGcXWE0p5
-        WfFNUZxkOsABmUov+qC0Lp0iVs8rvMKSo1+oEZM=
-X-Google-Smtp-Source: ABdhPJz/C/OKlDXnUKi7UwL7ca2OiUVAIYqhZ8kErBU1p7eHbesrmmeSL53C+RjbeCXCtosZxEgAXzmiIdAoCy8sfH8=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr92030ybo.230.1617136778404;
- Tue, 30 Mar 2021 13:39:38 -0700 (PDT)
+        id S231874AbhC3VAk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Mar 2021 17:00:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232558AbhC3VAJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Mar 2021 17:00:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2C2A5619B1;
+        Tue, 30 Mar 2021 21:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617138009;
+        bh=qMO9D6IAsZ8HpnlE5kwlJX+n4a65d0ouLpNCluVbleM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=fSJzekK+RYclYECoPTYhgM26AHIblQoG0GZ4VXoeGDpIMcfJZAW8LmbT5lr/VdeOF
+         dfH+V8I+KGj4kOK3GZ73aORMeaqLRsOll9kWBy90VNKo0mxWtdXNR7+6Li0E9sLyS7
+         fEOx1hMUAO9w2TQEy+2gRUAe5bl3UOqQJfKWGPMX8YKP16J5kiQEg4raibXykxgsVZ
+         m9nQXteNxoIj1zEWipEj1aT2r+URkCWqwYl76BkkaDV5kE6OHzK/YwYnTuwMHp8gkC
+         Etdxzdc8bu1PPiDZmHexVwEDD81CdsV8tcZ0nril+kPip4n/s6It63OzFpvzvd9Nzd
+         i0wPm/34jZFkA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1A8D460A3B;
+        Tue, 30 Mar 2021 21:00:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210325120020.236504-1-memxor@gmail.com> <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com> <20210328080648.oorx2no2j6zslejk@apollo>
-In-Reply-To: <20210328080648.oorx2no2j6zslejk@apollo>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 30 Mar 2021 13:39:27 -0700
-Message-ID: <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [Patch bpf-next] net: filter: Remove unused bpf_load_pointer
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161713800910.19867.3798831652691518137.git-patchwork-notify@kernel.org>
+Date:   Tue, 30 Mar 2021 21:00:09 +0000
+References: <20210330024843.3479844-1-hefengqing@huawei.com>
+In-Reply-To: <20210330024843.3479844-1-hefengqing@huawei.com>
+To:     He Fengqing <hefengqing@huawei.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, ongliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 1:11 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Sun, Mar 28, 2021 at 10:12:40AM IST, Andrii Nakryiko wrote:
-> > Is there some succinct but complete enough documentation/tutorial/etc
-> > that I can reasonably read to understand kernel APIs provided by TC
-> > (w.r.t. BPF, of course). I'm trying to wrap my head around this and
-> > whether API makes sense or not. Please share links, if you have some.
-> >
->
-> Hi Andrii,
->
-> Unfortunately for the kernel API part, I couldn't find any when I was working
-> on this. So I had to read the iproute2 tc code (tc_filter.c, f_bpf.c,
-> m_action.c, m_bpf.c) and the kernel side bits (cls_api.c, cls_bpf.c, act_api.c,
-> act_bpf.c) to grok anything I didn't understand. There's also similar code in
-> libnl (lib/route/{act,cls}.c).
->
-> Other than that, these resources were useful (perhaps you already went through
-> some/all of them):
->
-> https://docs.cilium.io/en/latest/bpf/#tc-traffic-control
-> https://qmonnet.github.io/whirl-offload/2020/04/11/tc-bpf-direct-action/
-> tc(8), and tc-bpf(8) man pages
->
-> I hope this is helpful!
+Hello:
 
-Thanks! I'll take a look. Sorry, I'm a bit behind with all the stuff,
-trying to catch up.
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-I was just wondering if it would be more natural instead of having
-_dev _block variants and having to specify __u32 ifindex, __u32
-parent_id, __u32 protocol, to have some struct specifying TC
-"destination"? Maybe not, but I thought I'd bring this up early. So
-you'd have just bpf_tc_cls_attach(), and you'd so something like
+On Tue, 30 Mar 2021 02:48:43 +0000 you wrote:
+> Remove unused bpf_load_pointer function in filter.h
+> 
+> Signed-off-by: He Fengqing <hefengqing@huawei.com>
+> ---
+>  include/linux/filter.h | 9 ---------
+>  1 file changed, 9 deletions(-)
 
-bpf_tc_cls_attach(prog_fd, TC_DEV(ifindex, parent_id, protocol))
+Here is the summary with links:
+  - [bpf-next] net: filter: Remove unused bpf_load_pointer
+    https://git.kernel.org/bpf/bpf-next/c/913d55037616
 
-or
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-bpf_tc_cls_attach(prog_fd, TC_BLOCK(block_idx, protocol))
 
-? Or it's taking it too far?
-
-But even if not, I think detaching can be unified between _dev and
-_block, can't it?
-
->
-> --
-> Kartikeya
