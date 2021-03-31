@@ -2,116 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D60C3504F1
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 18:46:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2749B3506A4
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 20:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234217AbhCaQps (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 12:45:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56859 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230160AbhCaQpe (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 31 Mar 2021 12:45:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617209133;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nwj7au0bVAHGitRo2xZXQfk6qVnKwbNoNpFW+kN8KBM=;
-        b=KbwmTe9fiFFo17h+DcKd1F3ljm9ufQ7PeZe5Y3RPXjM89sJpcmDXJ90LIdlG2cHybwamXG
-        5JXQ3dSdBmhy0+W1aUO3cckgZSuXVPqAF6YvWUWI2PZAa3KC28B3CFvSKo6YJ9WDMtYIWL
-        IPzxTmHEuT6ErUsO9ITxPoieAKlG94k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-SzsGfUP8Ppelr8wVbp-twQ-1; Wed, 31 Mar 2021 12:45:29 -0400
-X-MC-Unique: SzsGfUP8Ppelr8wVbp-twQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 674BE1084C95;
-        Wed, 31 Mar 2021 16:45:28 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-114-48.ams2.redhat.com [10.36.114.48])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3210316922;
-        Wed, 31 Mar 2021 16:45:26 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     andrii@kernel.org, jolsa@redhat.com,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Subject: [PATCH bpf-next v3 8/8] selftests/bpf: ringbuf_multi: use runtime page size
-Date:   Wed, 31 Mar 2021 19:45:04 +0300
-Message-Id: <20210331164504.320614-8-yauheni.kaliuta@redhat.com>
-In-Reply-To: <20210331164504.320614-1-yauheni.kaliuta@redhat.com>
-References: <20210331164433.320534-1-yauheni.kaliuta@redhat.com>
- <20210331164504.320614-1-yauheni.kaliuta@redhat.com>
+        id S235265AbhCaSo6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 14:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235563AbhCaSof (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 14:44:35 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FB0C061574
+        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 11:44:34 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id j198so22173040ybj.11
+        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 11:44:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FXb+H1/Dhvp+wNJ1MOIaOzTK5Y+X23D6KRqbrsd/MNc=;
+        b=AHnfL49W+VoddFvqbaYLd541UfKNLRIEPsSgY6dK9cmJ/H3naY4QjVtayKe0V0VGRg
+         kDeyyBvyps7fq4YN3RLun8yTT188mRi5yiKfitHfF3p+SEGnAzmOoBqJe6mqYFurIx5F
+         QDmG9obprUuGI046nIzhREnfLEgte6u6ZQ3plsMo1Rg8V1kXKd+tv28zWHvWKj7J3kgV
+         q+VERfHQER1yBn9FIEMhFPHOcfR9djbJbF/rOCwSPsSUENDdf5psld/R6HJPS3SmMg2X
+         eJra0mQ6uUs5fuMzu2i+l2dLwDp85R4d6EayK9E0joiFqn0VElYP7e6TKbBsXrq/4mcz
+         +/Kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FXb+H1/Dhvp+wNJ1MOIaOzTK5Y+X23D6KRqbrsd/MNc=;
+        b=rrdmXNoSriGFAI+R/i3oDhhitYz1ZrZbIn2GNJCEDTEE0ZLQqZJ41txSvTI8DULBjJ
+         xX1yfWsqAjxUdzbAvM7gcrEu1+RzDfOeRb33jY1AOpLAJFwN+TIeRXebyUthwkIlEv1C
+         dD3mxR3Xsd1gjMgzPSOMCkNeqikcSR8RUdSkxPFtAnqDDhqVDpLiRI+0aVI+3Qhi7Kva
+         +nB6vhhe/HH23n0qVqa/ZF5xapb1SEjepEmVc3qR8KOaFZS6Y+KJ2VwdgjvS8+nfJ6ok
+         i7Ed0G1ifNtGHrZvb5vtRBVHVNAjmexsdfOMQM2CuXnIWm7k+lQHoqfK/s42dXiJKVPo
+         Trxw==
+X-Gm-Message-State: AOAM531ykhiK05xaqUYlNphXSfxYMJ2Es8Kx9cR0oCDcNiU27zXpuCjZ
+        AcmMLExEKMsYbqlWgRnkz+eGAlZuYZSajhwyQGc=
+X-Google-Smtp-Source: ABdhPJyVq+A7ZzfUhUIkoRJEr6s15QZqLRJlT6l8VlyRhhonnWJlKiKHVLB2UoyhAAYbFPIMAwewjqNdcL2myhPg+wQ=
+X-Received: by 2002:a25:37c1:: with SMTP id e184mr6378660yba.260.1617216274214;
+ Wed, 31 Mar 2021 11:44:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210331164433.320534-1-yauheni.kaliuta@redhat.com>
+ <20210331164504.320614-1-yauheni.kaliuta@redhat.com> <20210331164504.320614-3-yauheni.kaliuta@redhat.com>
+In-Reply-To: <20210331164504.320614-3-yauheni.kaliuta@redhat.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 31 Mar 2021 11:44:23 -0700
+Message-ID: <CAEf4BzZYhqzYgxdgGUZtPoU5Lkq4vVLSF7Vu=9QXKCBEp+rh-Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/8] selftests/bpf: pass page size from
+ userspace in sockopt_sk
+To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Set bpf table sizes dynamically according to the runtime page size
-value.
+On Wed, Mar 31, 2021 at 9:45 AM Yauheni Kaliuta
+<yauheni.kaliuta@redhat.com> wrote:
+>
+> Since there is no convenient way for bpf program to get PAGE_SIZE
+> from inside of the kernel, pass the value from userspace.
+>
+> Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/sockopt_sk.c |  2 ++
+>  tools/testing/selftests/bpf/progs/sockopt_sk.c      | 10 ++++------
+>  2 files changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
+> index 7274b12abe17..4b937e5dbaca 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
+> @@ -200,6 +200,8 @@ static void run_test(int cgroup_fd)
+>         if (!ASSERT_OK_PTR(skel, "skel_load"))
+>                 goto cleanup;
+>
+> +       skel->bss->page_size = getpagesize();
+> +
+>         skel->links._setsockopt =
+>                 bpf_program__attach_cgroup(skel->progs._setsockopt, cgroup_fd);
+>         if (!ASSERT_OK_PTR(skel->links._setsockopt, "setsockopt_link"))
+> diff --git a/tools/testing/selftests/bpf/progs/sockopt_sk.c b/tools/testing/selftests/bpf/progs/sockopt_sk.c
+> index 978a68005966..d6d03f64e2e4 100644
+> --- a/tools/testing/selftests/bpf/progs/sockopt_sk.c
+> +++ b/tools/testing/selftests/bpf/progs/sockopt_sk.c
+> @@ -7,9 +7,7 @@
+>
+>  char _license[] SEC("license") = "GPL";
+>
+> -#ifndef PAGE_SIZE
+> -#define PAGE_SIZE 4096
+> -#endif
+> +int page_size; /* userspace should set it */
 
-Do not switch to ASSERT macros, keep CHECK, for consistency with the
-rest of the test. Can be a separate cleanup patch.
+please zero-initialize this, otherwise it will cause problems on some
+versions of Clang
 
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
----
- .../selftests/bpf/prog_tests/ringbuf_multi.c  | 23 ++++++++++++++++---
- .../selftests/bpf/progs/test_ringbuf_multi.c  |  1 -
- 2 files changed, 20 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-index d37161e59bb2..159de99621c7 100644
---- a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-@@ -41,13 +41,30 @@ static int process_sample(void *ctx, void *data, size_t len)
- void test_ringbuf_multi(void)
- {
- 	struct test_ringbuf_multi *skel;
--	struct ring_buffer *ringbuf;
-+	struct ring_buffer *ringbuf = NULL;
- 	int err;
-+	int page_size = getpagesize();
- 
--	skel = test_ringbuf_multi__open_and_load();
--	if (CHECK(!skel, "skel_open_load", "skeleton open&load failed\n"))
-+	skel = test_ringbuf_multi__open();
-+	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
- 		return;
- 
-+	err = bpf_map__set_max_entries(skel->maps.ringbuf1, page_size);
-+	if (CHECK(err != 0, "bpf_map__set_max_entries", "bpf_map__set_max_entries failed\n"))
-+		goto cleanup;
-+
-+	err = bpf_map__set_max_entries(skel->maps.ringbuf2, page_size);
-+	if (CHECK(err != 0, "bpf_map__set_max_entries", "bpf_map__set_max_entries failed\n"))
-+		goto cleanup;
-+
-+	err = bpf_map__set_max_entries(bpf_map__inner_map(skel->maps.ringbuf_arr), page_size);
-+	if (CHECK(err != 0, "bpf_map__set_max_entries", "bpf_map__set_max_entries failed\n"))
-+		goto cleanup;
-+
-+	err = test_ringbuf_multi__load(skel);
-+	if (CHECK(err != 0, "skel_load", "skeleton load failed\n"))
-+		goto cleanup;
-+
- 	/* only trigger BPF program for current process */
- 	skel->bss->pid = getpid();
- 
-diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-index edf3b6953533..055c10b2ff80 100644
---- a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-+++ b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-@@ -15,7 +15,6 @@ struct sample {
- 
- struct ringbuf_map {
- 	__uint(type, BPF_MAP_TYPE_RINGBUF);
--	__uint(max_entries, 1 << 12);
- } ringbuf1 SEC(".maps"),
-   ringbuf2 SEC(".maps");
- 
--- 
-2.31.1
-
+>
+>  #ifndef SOL_TCP
+>  #define SOL_TCP IPPROTO_TCP
+> @@ -89,7 +87,7 @@ int _getsockopt(struct bpf_sockopt *ctx)
+>                  * program can only see the first PAGE_SIZE
+>                  * bytes of data.
+>                  */
+> -               if (optval_end - optval != PAGE_SIZE)
+> +               if (optval_end - optval != page_size)
+>                         return 0; /* EPERM, unexpected data size */
+>
+>                 return 1;
+> @@ -160,7 +158,7 @@ int _setsockopt(struct bpf_sockopt *ctx)
+>
+>         if (ctx->level == SOL_IP && ctx->optname == IP_FREEBIND) {
+>                 /* Original optlen is larger than PAGE_SIZE. */
+> -               if (ctx->optlen != PAGE_SIZE * 2)
+> +               if (ctx->optlen != page_size * 2)
+>                         return 0; /* EPERM, unexpected data size */
+>
+>                 if (optval + 1 > optval_end)
+> @@ -174,7 +172,7 @@ int _setsockopt(struct bpf_sockopt *ctx)
+>                  * program can only see the first PAGE_SIZE
+>                  * bytes of data.
+>                  */
+> -               if (optval_end - optval != PAGE_SIZE)
+> +               if (optval_end - optval != page_size)
+>                         return 0; /* EPERM, unexpected data size */
+>
+>                 return 1;
+> --
+> 2.31.1
+>
