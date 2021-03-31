@@ -2,176 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E746334F530
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 01:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4417C34F560
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 02:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231650AbhC3Xzu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Mar 2021 19:55:50 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54708 "EHLO
+        id S232580AbhCaAQp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Mar 2021 20:16:45 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:35620 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231701AbhC3XzR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 30 Mar 2021 19:55:17 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12UNhV4O019669;
-        Tue, 30 Mar 2021 16:55:08 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=1X/D1it+bvEvk3zXTowvhM+INI90n7vytvhJWQTPdic=;
- b=o4YfxHEWdK38f6DkyuQBVvqK3dPIBEn+04Vp/k62RV7FtZWyv2ycOnXQRCoZLr/LeuKC
- gK3m8AZvSPEYcnwuzwYCsLe00dQwgeYuZO3NhBziGJ4iWFoFxtHyZkrgTxK7UuKh3Vna
- NudGFXJda5mTM7rH1IH99LhHSoCrWWzSC7k= 
+        by vger.kernel.org with ESMTP id S232467AbhCaAQg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 30 Mar 2021 20:16:36 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12V05BUe008121
+        for <bpf@vger.kernel.org>; Tue, 30 Mar 2021 17:16:36 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=DP/oAbaLKJ61xhmWTYPxD7SAy/6hMsxribzBfBRmUtM=;
+ b=pnp/Ouq60xlkNISgbm/KgZw6E6OqhUDglybUbeuR2EpD8/VUCMdYcAXMWQ80+Wzg+f1D
+ VbCf5pcqC1IXjvr+FNWTy1V0zVjfsDySV3mZFGiJeiEuVo2IVl92zjL3WWPj5td/3323
+ VdrwOuwNgbDk+yCGuVatKTkwNSASnkow3fQ= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37mac1s563-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 30 Mar 2021 16:55:08 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+        by mx0a-00082601.pphosted.com with ESMTP id 37maa2s8fb-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 30 Mar 2021 17:16:36 -0700
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 30 Mar 2021 16:55:07 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IVU6a/y0sIouWcCgc3Yt5GstH++eBeTtwC7II69anoKaWtLhn3MYAfxMJRHOKRwoUAfQLFza9X+Ohlp0zV+1E5JMp1QrIXOp+ulez49yLvqgFPdzUmLp2mriUhqcCRJBGqQdHwkdjRqr+htGUEskZSEhOL8mpwuTkbmTAMkg38ifUVGgSm1YUHctQANtBAGfEkHLqGGenardqLPwd+TvWv9xS1a6t6fudhPz9SGV6eEojXnrGMyfmnZsNY/ugvX2pd+mQJDC7Ke/4sRIKKB6DILMaRmQnVC8YzruNU7LvEnDtiwXDGRfBybHGUzOTJ+NJLjsuUtL57monBEp1tgjHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1X/D1it+bvEvk3zXTowvhM+INI90n7vytvhJWQTPdic=;
- b=JWrDzkqop4DhHT+TS4evT+QaZFNkBNNazEOb4m40CBUQuAhE3P28nlWndG1rkfu6BvmAoZiCs/S1ub71efEFCrGpvXgE/jA4SPfWGhNJDVJViGp4XcTf+tG7nbEH9cYlsQqM+F37IFml7ahNIHhEDdYGBBr+yEpsd2OlzyEJAkAh5JhU3xXQiJ9FBpBDBY5si9vh4oWnLvMAI05hG8geEPHJjUtj/ijEfrUz31p+MPO09Rg2rGMWdNJvkmYMcLaTTPR1dfkOLV1VPwt/GzrqUUkCeknPeFKg11a08giFB5NHLe41CWJwmH7No0HBy36vKp4xuIapIVsIoLGrFsrnkg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN6PR15MB2335.namprd15.prod.outlook.com (2603:10b6:805:24::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26; Tue, 30 Mar
- 2021 23:55:02 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3977.033; Tue, 30 Mar 2021
- 23:55:02 +0000
-Subject: Re: [PATCH kbuild] kbuild: add -grecord-gcc-switches to clang build
-To:     Nick Desaulniers <ndesaulniers@google.com>
-CC:     <arnaldo.melo@gmail.com>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-        <kernel-team@fb.com>, <linux-kbuild@vger.kernel.org>,
-        <masahiroy@kernel.org>, <michal.lkml@markovi.net>,
-        <clang-built-linux@googlegroups.com>, <sedat.dilek@gmail.com>,
-        <morbo@google.com>
-References: <20210328064121.2062927-1-yhs@fb.com>
- <20210329225235.1845295-1-ndesaulniers@google.com>
+ 15.1.2176.2; Tue, 30 Mar 2021 17:16:34 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 6018DE148D2; Tue, 30 Mar 2021 17:16:23 -0700 (PDT)
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <0b8d17be-e015-83c3-88d8-7c218cd01536@fb.com>
-Date:   Tue, 30 Mar 2021 16:54:57 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
-In-Reply-To: <20210329225235.1845295-1-ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-X-Originating-IP: [2620:10d:c090:400::5:52b2]
-X-ClientProxiedBy: MWHPR2201CA0049.namprd22.prod.outlook.com
- (2603:10b6:301:16::23) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e1::1120] (2620:10d:c090:400::5:52b2) by MWHPR2201CA0049.namprd22.prod.outlook.com (2603:10b6:301:16::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Tue, 30 Mar 2021 23:55:00 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: eb562e4f-5a4a-4364-09a5-08d8f3d73bca
-X-MS-TrafficTypeDiagnostic: SN6PR15MB2335:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR15MB2335EA0BFAF75B2759A43234D37D9@SN6PR15MB2335.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1IYwi/JRblQNiuubeNVKwmE8+37qsb8bxP9UuWpowxbe+y/ZrGG6xi7QsHXxM0C+6ekHp5fCK6VZW7vLAmrwoDx75FNQkeajbjX1C80yi2tBhoV4m4xKdrDrih1NSmKrtKSBZqvZ9s2eslkcLbQc8MuvXdPgOy8J82FzUhaJ8+ybXXamzREnXiTiB27TEy9o1BFLmxvBbOcyPITAQpvXM/1NBhqFvQGxNq6oxkX79moiQE3+lF9qA3rV8YfheFxAr+jFV1dK1PEjupbx+HFGIqVPVrhC2VNU5PjuqX+3DgboCblhG7kFyRB0+UFVi+pApXL8xAPiQrObLRjUIe8SPUNsRQ3Q7myvfR8Dsd0JND/u9lY3CGlOnsHGB5G85+wAQYbcK2rpQIgstEMehKKE+ntvuls1Pgmj6LaH8DpZSta5OeWLK+mJVuZwoKTtny4oHCROmA5vbct6t5nJA0BhsM6DHmM7nxPHxazRUTC/U9NItJl6F0davSdxdHLZMFU0l/YUShhftqGqT9rwJvBfTNVGOQ3VtjlxiquTDwlzp3ETFCVKA4M+R/+Qyb+XCmgAbQvBR3vN783K0T8GVGxqKrzOSzMWBsvLlNOfk3t6GzLp6C78zm3Cru61KFWcNcJrz6oyhOcZKkCXS/UyKbiJNwzcP3KJ3owD7d/7p+hTGeBV246AcStx37YFDvf6rNsIQhz9FWVcFEkAirRi6WHepaMM2z9x0jZgCNg+8QANirU7BzbkwmzPE1aNgw9iMqv3UmMU3OTk8YUQNHQvEhpaVjuA1jef5tnTZ9mGkR1XL7WmfVuVoUME20xajcTxMALg
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(346002)(39850400004)(396003)(66556008)(8936002)(66476007)(8676002)(36756003)(2906002)(186003)(6916009)(478600001)(2616005)(966005)(5660300002)(53546011)(6486002)(52116002)(38100700001)(6666004)(86362001)(31696002)(83380400001)(16526019)(31686004)(4326008)(66946007)(7416002)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MnlDUWd5SS9LS2VOYTlsb1l0UHdvQk9sa2RtSWxlZ1RKTzRITFpLVlMwMUU4?=
- =?utf-8?B?bHEvdllmTEVpTllQVm85Z3F2dFprZ0o5SUptZEVwWU5tY0xBVjRhVnVFd1Zl?=
- =?utf-8?B?UmpaejVXOEpGSURhbjl3K0dteDlWRGNSaVpMR2NMbFZSS20zeEF4aGZDTkIr?=
- =?utf-8?B?S3dUVHhpYytYc1IwWUxWZHlCdUI3TkEvVlphQlAwaW8xbVRZUVJ2MU9McGE3?=
- =?utf-8?B?Tm9uRTc0Umtmd2ZWVGJRVFhJNnhNNXBJSWVoVVFlc3k2c2l5dmFxRm10b3d5?=
- =?utf-8?B?dnBNckJTOVNLVTdOc3FZVjhxSFFMaUNla0hpRm1BOVBJY3Irek5VM3N2M3lG?=
- =?utf-8?B?VUdmcUlGQXB0dTVnS3BoMk5zcE1jTnZpNHdVYXB0MkJidkFNbXV4Tk5hVDJM?=
- =?utf-8?B?Y1A1em1CeDcyckphZno2UUFhYXBTVWh5b29QY1RGeUxZRFE3Z2Iza2tDV3JQ?=
- =?utf-8?B?emZjOHNYVlVwT0FRQTNOQVZYSFljZ1orQXEzVkEwbDFaOUNFT2gwVnd1NDhJ?=
- =?utf-8?B?V0IvdDd0L1F4LzQvdmlvRlRxTHNUMkVNTDQxMWJKeUUvN1JVU3hsRXR6ODU1?=
- =?utf-8?B?OG1oMWJBUWZFdWx4Ykw0OUZZOE5Qd294MUVrRnZ3cVA1WFlqTXlMYkdiSysz?=
- =?utf-8?B?NUpFSjRiSHdTSVhKdmk3bEYwQnZDQ0tDZXJYODhNUFhMa2ZSd0FGT1Nlc09q?=
- =?utf-8?B?bHM4WFZHdVZUaDdQMm8zdm5UcDdtUlpFbWY0M0swc1d0cTUzdWxJWjB3YUty?=
- =?utf-8?B?TGppM05EVHpZL0RIeTVXVWtwSlhOK2I4am5OdGQzeENMR0FLRjNqQWFQb3Q3?=
- =?utf-8?B?K0xjMjFYbHc0RUpUVDBzSTl4MG1jVE1XRkNTd08yNVB5RDF1ejZZN2hSMXBh?=
- =?utf-8?B?NFlDSjRQaUFVRjV1UnNkanJTRFBBajlmZUpObUJLNUplNWhwNE5BdnJNOERn?=
- =?utf-8?B?d2oyWVRpaFBFWG42RUZGU1JsMmtBMEF2VUZHTm9TZE1CZk9NK3dwRTlBemJs?=
- =?utf-8?B?MTNxQmhDd2xEWCs0M2hmclhVMTdkbVNCRncyekhlYS9yQkVITEErMWdrVlRo?=
- =?utf-8?B?a0xKaXlXK21OQm5UMFAwSWVmdEozR0hJSkJRV09mQUZScWQvYUpVUHVuTjhK?=
- =?utf-8?B?WVpjVFR0RXUxMHFjcUlRaHNjS2VhR2tVVDJNL29Bb25NdXJsdW4xMmF4V2ls?=
- =?utf-8?B?aHJoOUYyN09ZWnhHYTNFZ1dYVDB1Nzk3VlFsenNTcEw0RFJpeWdtc25YK0VN?=
- =?utf-8?B?eFNuTEdIZ0NoSW1paDdFT3R3b05yODhSb2RVNDlwbnFyUi9tQmNSV0RZR043?=
- =?utf-8?B?OENaYVAyWkFlQStxMCtQWThQaFhsdjk2TjM1SEVlajdMcFdQZjNrT3RBb1hP?=
- =?utf-8?B?OGxPWlZ0THVGWmdqUysxUEtFK0dqWFBySlUzS3lCcng0WmlsRTRVM1NqRjhj?=
- =?utf-8?B?Qkl2eDViQkt6ZDhaRDh5R01IdUt1VVdLNzJ6MkxNay9kMVhOc2hyRDBYcEZQ?=
- =?utf-8?B?N0dHTmFsS0ZqbHY3MmtpOVErM01YNEdTZ3RjQ3VyR1VRR0xUUDdTNHo3QzNB?=
- =?utf-8?B?UTg1WVFkUWg4MHRPZTg1djRQYjVGWnM5b213WWdDTVRkckpLMHhiMTQ4c1dw?=
- =?utf-8?B?ZWloOE41OGdTemd3VHV5RUlDVWZNNzkyZ2dtUFBmZm9iY0tUUThuUW5VUFRi?=
- =?utf-8?B?UHgyTExtVmdEd0tZTkU4cjR2NjMrYVhNaEdoMFVUTHp6MFZIOGxzMzJvTHgw?=
- =?utf-8?B?YzR4eXVjRHVWNHloNSswMW5SLzZvZHRScmZDN0owOTBhT2h0cW1GbDc3cTFJ?=
- =?utf-8?Q?ZqWPJPBZafzT8bdfXLqWMgCaXrR/Yqr1At06c=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb562e4f-5a4a-4364-09a5-08d8f3d73bca
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2021 23:55:02.2348
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uoV7ahWyJrAX2ulqUNfCJrraO6DRc7xNyDqnXjEE3MdIt1E9Ol1gI1kOwMzwYCbS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2335
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: MDl1rRi49FqGfuZ2-ROGJnPIQWEOFKif
-X-Proofpoint-ORIG-GUID: MDl1rRi49FqGfuZ2-ROGJnPIQWEOFKif
-Content-Transfer-Encoding: 7bit
+To:     <linux-kbuild@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: [PATCH kbuild v2] kbuild: add -grecord-gcc-switches to clang build
+Date:   Tue, 30 Mar 2021 17:16:23 -0700
+Message-ID: <20210331001623.2778934-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: jfIwuOph2F_78WrgTl1YMqecrc-Kqz1r
+X-Proofpoint-GUID: jfIwuOph2F_78WrgTl1YMqecrc-Kqz1r
+Content-Transfer-Encoding: quoted-printable
 X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-03-30_13:2021-03-30,2021-03-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=427 spamscore=0 adultscore=0
- phishscore=0 clxscore=1011 lowpriorityscore=0 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103300000 definitions=main-2103300173
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ spamscore=0 clxscore=1015 adultscore=0 bulkscore=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=999 suspectscore=0 priorityscore=1501
+ malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103300000 definitions=main-2103300175
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Putting compilation flags in dwarf is helpful in that
+it tells what potential transformations may have
+happened to generate the final binary. Furthermore,
+we have a particular usecase in [1] where pahole wants
+to detect whether vmlinux is compiled with clang lto
+or not, and if vmlinux is compiled with clang lto,
+pahole will merge all debuginfo cu's into one pahole cu.
 
+If there is no easy indicator for whether the vmlinux
+is compiled with lto or not, pahole will need to
+go to each cu to iterates all die's to find out
+whether there is a cross-cu reference, for example,
+for one vmlinux I built locally with clang lto,
+5 cu's need to be visited before finding there is
+a cross-cu reference. To visit all cu's just proving
+there is no cross-cu reference is a heavy penalty
+for most pahole users whose codes may not be compiled
+with lto.
 
-On 3/29/21 3:52 PM, Nick Desaulniers wrote:
-> (replying to https://lore.kernel.org/bpf/20210328064121.2062927-1-yhs@fb.com/)
-> 
-> Thanks for the patch!
-> 
->> +# gcc emits compilation flags in dwarf DW_AT_producer by default
->> +# while clang needs explicit flag. Add this flag explicitly.
->> +ifdef CONFIG_CC_IS_CLANG
->> +DEBUG_CFLAGS	+= -grecord-gcc-switches
->> +endif
->> +
-> 
-> This adds ~5MB/1% to vmlinux of an x86_64 defconfig built with clang. Do we
-> want to add additional guards for CONFIG_DEBUG_INFO_BTF, so that we don't have
-> to pay that cost if that config is not set?
+One way to get whether vmlinux is built with lto or not
+is through compilation flags. Currently gcc seems putting
+compilation flags into dwarf DW_AT_producer tag if -g
+is specified, while clang needs explicit flag
+-grecord-gcc-switches.
+For example,
+ build with gcc 8.4.1 (make -j60):
+   ...
+   DW_AT_producer    ("GNU C89 8.4.1 20200928 (Red Hat 8.4.1-1) -mno-sse -m=
+no-mmx -mno-sse2 ...")
+   DW_AT_language    (DW_LANG_C89)
+   DW_AT_name        ("/home/yhs/work/bpf-next/arch/x86/kernel/ebda.c")
 
-Since this patch is mostly motivated to detect whether the kernel is
-built with clang lto or not. Let me add the flag only if lto is
-enabled. My measurement shows 0.5% increase to thinlto-vmlinux.
-The smaller percentage is due to larger .debug_info section
-(almost double) for thinlto vs. no lto.
+ build with clang 13 trunk (make -j60 LLVM=3D1):
+   ...
+   DW_AT_producer    ("clang version 13.0.0 (https://github.com/llvm/llvm-p=
+roject.git
+                       11bf268864afbe35ad317e6354c51440d5184911)")
+   DW_AT_language    (DW_LANG_C89)
+   DW_AT_name        ("/home/yhs/work/bpf-next/arch/x86/kernel/ebda.c")
 
-  ifdef CONFIG_LTO_CLANG
-  DEBUG_CFLAGS   += -grecord-gcc-switches
-  endif
+To solve out use case, the flag is added when clang lto
+(thin-lto or full-lto) is enabled. With this patch, build
+with clang 13 trunk (make -j60 LLVM=3D1 LLVM_IAS=3D1):
+   ...
+   DW_AT_producer    ("clang version 13.0.0 (https://github.com/llvm/llvm-p=
+roject.git
+                       11bf268864afbe35ad317e6354c51440d5184911)
+                       /home/yhs/work/llvm-project/llvm/build.cur/install/b=
+in/clang-13 -MMD
+                       -MF arch/x86/kernel/.ebda.o.d -nostdinc ...")
+   DW_AT_language    (DW_LANG_C89)
+   DW_AT_name        ("/home/yhs/work/bpf-next/arch/x86/kernel/ebda.c")
 
-This will make pahole with any clang built kernels, lto or non-lto.
+pahole can just check top die of the dwarf cu to find the compilation flags.
+With detailed compilation flags, in [1], pahole is able to quickly
+decide whether merging cu's is a right choice or not.
 
-If the maintainer wants further restriction with CONFIG_DEBUG_INFO_BTF,
-I can do that in another revision.
+ [1] https://lore.kernel.org/bpf/20210325065316.3121287-1-yhs@fb.com/
+
+I tested with latest bpf-next, but the patch is also applied cleanly on
+top of latest linus tree.
+
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ Makefile | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+Changelogs:
+ v1 -> v2:
+   . guard with CONFIG_LTO_CLANG instead of CONFIG_CC_IS_CLANG
+
+diff --git a/Makefile b/Makefile
+index d4784d181123..74001f2ccf23 100644
+--- a/Makefile
++++ b/Makefile
+@@ -839,6 +839,14 @@ dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) :=3D 5
+ DEBUG_CFLAGS	+=3D -gdwarf-$(dwarf-version-y)
+ endif
+=20
++# gcc emits compilation flags in dwarf DW_AT_producer by default
++# while clang needs explicit flag. Let us enable compilation
++# flags emission if compiled with clang lto which helps
++# application distinguish lto vs. non-lto build.
++ifdef CONFIG_LTO_CLANG
++DEBUG_CFLAGS	+=3D -grecord-gcc-switches
++endif
++
+ ifdef CONFIG_DEBUG_INFO_REDUCED
+ DEBUG_CFLAGS	+=3D $(call cc-option, -femit-struct-debug-baseonly) \
+ 		   $(call cc-option,-fno-var-tracking)
+--=20
+2.30.2
+
