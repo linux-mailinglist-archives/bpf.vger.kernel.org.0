@@ -2,123 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E2234F851
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 07:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2474434F854
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 07:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233653AbhCaFoR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 01:44:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43668 "EHLO mail.kernel.org"
+        id S233683AbhCaFow (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 01:44:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233595AbhCaFoI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Mar 2021 01:44:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 545C06024A;
-        Wed, 31 Mar 2021 05:44:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1617169447;
-        bh=Xhc7zQfL4bF/OHNK1HpEfoIAv4vWvUPs8jQIpfTLYIE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OXDwaqr5QvEDOc9RMY6XwR+lv1+jUCOhFLEavt/HREAXlF7KvJraHMSNFiwkcYa0G
-         Pge5v+dcMHAuJHF1HZSnLDmsmb/L8xYOpn3mPxog3+kaNVjpqQPLelzIE9/jv/YzSU
-         iGI3uaLXguWFaPHmJnTG/QJqrNUN/3owSCpkkNZ4=
-Date:   Tue, 30 Mar 2021 22:44:06 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     qianjun.kernel@gmail.com
-Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH V2 1/1] mm:improve the performance during fork
-Message-Id: <20210330224406.5e195f3b8b971ff2a56c657d@linux-foundation.org>
-In-Reply-To: <20210329123635.56915-1-qianjun.kernel@gmail.com>
-References: <20210329123635.56915-1-qianjun.kernel@gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233469AbhCaFo3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 01:44:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D92C161584;
+        Wed, 31 Mar 2021 05:44:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617169469;
+        bh=CS7Gh8VB0IiwZuCqcwMMK4GpVGupLfHsBHD/GtPj8Nk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=f0kouHdRL6xTvol+aHtzraYXHbgUGQ4CkJeAQ+iOalBDFYwQlfhlc/CkRb4s8XsoJ
+         uY02Uc9PsusMJ2rmKcdUuYww7GDJgcNh4lF5aLMA2TuPRkimX8C0v6is5PZI6ia8cY
+         dUo4qygbHqj35ligO0hfSJBoYOCoNz5uriS45krVQtFjA5tU9aioxwpyD4VDRJMSZA
+         GjVifDzW5i9kbqdRzHEkcOYmz/jmcFiefsEy6n7pSR5Hx47cG0JZnfGUck365JDtLO
+         uJez54jQerQlLwpxGwkGbAWVL9O/QhrkRBzudo4gBVovwzFtGgPtGeFdK/2kYwMKXJ
+         hrFjxKneMXc2g==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [RFC PATCH -tip 0/3] x86/kprobes,orc: Fix ORC unwinder to unwind stack with optimized probe
+Date:   Wed, 31 Mar 2021 14:44:24 +0900
+Message-Id: <161716946413.721514.4057380464113663840.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 29 Mar 2021 20:36:35 +0800 qianjun.kernel@gmail.com wrote:
+Hello,
 
-> From: jun qian <qianjun.kernel@gmail.com>
-> 
-> In our project, Many business delays come from fork, so
-> we started looking for the reason why fork is time-consuming.
-> I used the ftrace with function_graph to trace the fork, found
-> that the vm_normal_page will be called tens of thousands and
-> the execution time of this vm_normal_page function is only a
-> few nanoseconds. And the vm_normal_page is not a inline function.
-> So I think if the function is inline style, it maybe reduce the
-> call time overhead.
-> 
-> I did the following experiment:
-> 
-> use the bpftrace tool to trace the fork time :
-> 
-> bpftrace -e 'kprobe:_do_fork/comm=="redis-server"/ {@st=nsecs;} \
-> kretprobe:_do_fork /comm=="redis-server"/{printf("the fork time \
-> is %d us\n", (nsecs-@st)/1000)}'
-> 
-> no inline vm_normal_page:
-> result:
-> the fork time is 40743 us
-> the fork time is 41746 us
-> the fork time is 41336 us
-> the fork time is 42417 us
-> the fork time is 40612 us
-> the fork time is 40930 us
-> the fork time is 41910 us
-> 
-> inline vm_normal_page:
-> result:
-> the fork time is 39276 us
-> the fork time is 38974 us
-> the fork time is 39436 us
-> the fork time is 38815 us
-> the fork time is 39878 us
-> the fork time is 39176 us
-> 
-> In the same test environment, we can get 3% to 4% of
-> performance improvement.
-> 
-> note:the test data is from the 4.18.0-193.6.3.el8_2.v1.1.x86_64,
-> because my product use this version kernel to test the redis
-> server, If you need to compare the latest version of the kernel
-> test data, you can refer to the version 1 Patch.
-> 
-> We need to compare the changes in the size of vmlinux:
->                   inline           non-inline       diff
-> vmlinux size      9709248 bytes    9709824 bytes    -576 bytes
-> 
+These patches fixes the ORC unwinder to unwind optprobe trampoline
+code on the stack correctly.
+This patchset is based on the kretporbe and stacktrace fix series v5
+which I sent last week.
 
-I get very different results with gcc-7.2.0:
+https://lore.kernel.org/bpf/161676170650.330141.6214727134265514123.stgit@devnote2/
 
-q:/usr/src/25> size mm/memory.o
-   text    data     bss     dec     hex filename
-  74898    3375      64   78337   13201 mm/memory.o-before
-  75119    3363      64   78546   132d2 mm/memory.o-after
+Note that I just confirmed the it fixes the case where the 
+stacktrace called from the optprobe handler. So this should be
+carefully reviewed.
 
-That's a somewhat significant increase in code size, and larger code
-size has a worsened cache footprint.
 
-Not that this is necessarily a bad thing for a function which is
-tightly called many times in succession as is vm__normal_page()
+Here is the test code;
 
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -592,7 +592,7 @@ static void print_bad_pte(struct vm_area_struct *vma, unsigned long addr,
->   * PFNMAP mappings in order to support COWable mappings.
->   *
->   */
-> -struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
-> +inline struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
->  			    pte_t pte)
->  {
->  	unsigned long pfn = pte_pfn(pte);
+cd /sys/kernel/debug/tracing
+echo > trace
+echo p full_proxy_read+5 >> kprobe_events
+echo 1 > events/kprobes/enable
+sleep 1 # wait for optimization
+echo stacktrace:1 > events/kprobes/p_full_proxy_read_5/trigger
+echo 1 > options/sym-offset
+cat /sys/kernel/debug/kprobes/list
 
-I'm a bit surprised this made any difference - rumour has it that
-modern gcc just ignores `inline' and makes up its own mind.  Which is
-why we added __always_inline.
 
+Without this,
+
+             cat-138     [001] ...1     6.567662: p_full_proxy_read_5: (full_proxy_read+0x5/0x80)
+             cat-138     [001] ...1     6.567711: <stack trace>
+ => kprobe_trace_func+0x1d0/0x2c0
+ => kprobe_dispatcher+0x39/0x60
+ => opt_pre_handler+0x4f/0x80
+ => optimized_callback+0xc3/0xf0
+ => 0xffffffffa0006032
+ => 0
+ => 0
+
+
+With this patch,
+
+             cat-137     [007] ...1    17.542848: p_full_proxy_read_5: (full_proxy_read+0x5/0x80)
+             cat-137     [007] ...1    17.542963: <stack trace>
+ => kprobe_trace_func+0x1d0/0x2c0
+ => kprobe_dispatcher+0x39/0x60
+ => opt_pre_handler+0x4f/0x80
+ => optimized_callback+0xc3/0xf0
+ => full_proxy_read+0x5/0x80
+ => vfs_read+0xab/0x1a0
+ => ksys_read+0x5f/0xe0
+ => do_syscall_64+0x33/0x40
+ => entry_SYSCALL_64_after_hwframe+0x44/0xae
+ => 0
+ => 0
+
+
+Thank you,
+
+---
+
+Masami Hiramatsu (3):
+      x86/kprobes: Add ORC information to optprobe template
+      kprobes: Add functions to find instruction buffer entry address
+      x86/kprobes,orc: Unwind optprobe trampoline correctly
+
+
+ arch/x86/include/asm/kprobes.h |    6 +++
+ arch/x86/kernel/kprobes/opt.c  |   72 +++++++++++++++++++++++++++++++++++++---
+ arch/x86/kernel/unwind_orc.c   |   15 +++++++-
+ include/linux/kprobes.h        |    8 ++++
+ kernel/kprobes.c               |   25 ++++++++++----
+ 5 files changed, 111 insertions(+), 15 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
