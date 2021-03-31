@@ -2,44 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67273504F0
+	by mail.lfdr.de (Postfix) with ESMTP id 84C3D3504EC
 	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 18:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234003AbhCaQpr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S234119AbhCaQpr (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Wed, 31 Mar 2021 12:45:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52963 "EHLO
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58832 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234119AbhCaQp2 (ORCPT
+        by vger.kernel.org with ESMTP id S234182AbhCaQp2 (ORCPT
         <rfc822;bpf@vger.kernel.org>); Wed, 31 Mar 2021 12:45:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617209126;
+        s=mimecast20190719; t=1617209128;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vu4HpU4JCTvWj881JzDXxJ0KAgPaUxPS8xJ1LdP5hJ8=;
-        b=KoHz6ZAHZGICcURB82FnvyYACfRJf9eAihGkb9vpv32r3VgSA4I8CUqD562v2Cimj2SMDX
-        FARPWoi3cB11xBj8fsMmkE+72TAkadEjNEE/FQLX9UpSog2QvH8mH1NFDrcev4wl5pwkqD
-        oMwP+z6s3JyoXHq8TrySCELQ22cnk0M=
+        bh=bMdkdegJVqh4WRz92PW5PUU8JBi58ZeBVxY5/fxVB8E=;
+        b=CsX9CNYgYRnDpk/ConukTmeHVvZLHM0WP9TE0kiVSn0zCmld4qiva3RdccKcA2UW16LAmy
+        4ZD2c+WdI65P7J8eHJxnx9jtpuW9WmDZgcMXpaMCHgUemhRdCwZpER+JK4OM3Azu3jaCaB
+        SlDpKGUeKjKrcMBJpdgfxQtg2GhkfFI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-363-Ek7yM-2-MNWGMapokeofLg-1; Wed, 31 Mar 2021 12:45:24 -0400
-X-MC-Unique: Ek7yM-2-MNWGMapokeofLg-1
+ us-mta-36-qtmhY2S_OIC0OBu7Y7Le-A-1; Wed, 31 Mar 2021 12:45:26 -0400
+X-MC-Unique: qtmhY2S_OIC0OBu7Y7Le-A-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B92E81B2C985;
-        Wed, 31 Mar 2021 16:45:23 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3BDFC50201;
+        Wed, 31 Mar 2021 16:45:25 +0000 (UTC)
 Received: from astarta.redhat.com (ovpn-114-48.ams2.redhat.com [10.36.114.48])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7B31316922;
-        Wed, 31 Mar 2021 16:45:22 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1DF1816922;
+        Wed, 31 Mar 2021 16:45:23 +0000 (UTC)
 From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 To:     bpf@vger.kernel.org
 Cc:     andrii@kernel.org, jolsa@redhat.com,
         Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Subject: [PATCH bpf-next v3 5/8] selftests/bpf: mmap: use runtime page size
-Date:   Wed, 31 Mar 2021 19:45:01 +0300
-Message-Id: <20210331164504.320614-5-yauheni.kaliuta@redhat.com>
+Subject: [PATCH bpf-next v3 6/8] selftests/bpf: ringbuf: use runtime page size
+Date:   Wed, 31 Mar 2021 19:45:02 +0300
+Message-Id: <20210331164504.320614-6-yauheni.kaliuta@redhat.com>
 In-Reply-To: <20210331164504.320614-1-yauheni.kaliuta@redhat.com>
 References: <20210331164433.320534-1-yauheni.kaliuta@redhat.com>
  <20210331164504.320614-1-yauheni.kaliuta@redhat.com>
@@ -58,76 +58,61 @@ rest of the test. Can be a separate cleanup patch.
 
 Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 ---
- tools/testing/selftests/bpf/prog_tests/mmap.c | 24 +++++++++++++++----
- tools/testing/selftests/bpf/progs/test_mmap.c |  2 --
- 2 files changed, 19 insertions(+), 7 deletions(-)
+ .../testing/selftests/bpf/prog_tests/ringbuf.c  | 17 +++++++++++++----
+ .../testing/selftests/bpf/progs/test_ringbuf.c  |  1 -
+ 2 files changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/mmap.c b/tools/testing/selftests/bpf/prog_tests/mmap.c
-index 9c3c5c0f068f..691b54b1c7cd 100644
---- a/tools/testing/selftests/bpf/prog_tests/mmap.c
-+++ b/tools/testing/selftests/bpf/prog_tests/mmap.c
-@@ -29,22 +29,36 @@ void test_mmap(void)
- 	struct test_mmap *skel;
- 	__u64 val = 0;
+diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+index fddbc5db5d6a..8c9f71a816f6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
++++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+@@ -87,11 +87,20 @@ void test_ringbuf(void)
+ 	pthread_t thread;
+ 	long bg_ret = -1;
+ 	int err, cnt;
++	int page_size = getpagesize();
  
--	skel = test_mmap__open_and_load();
--	if (CHECK(!skel, "skel_open_and_load", "skeleton open/load failed\n"))
-+	skel = test_mmap__open();
+-	skel = test_ringbuf__open_and_load();
+-	if (CHECK(!skel, "skel_open_load", "skeleton open&load failed\n"))
++	skel = test_ringbuf__open();
 +	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
  		return;
  
-+	err = bpf_map__set_max_entries(skel->maps.rdonly_map, page_size);
++	err = bpf_map__set_max_entries(skel->maps.ringbuf, page_size);
 +	if (CHECK(err != 0, "bpf_map__set_max_entries", "bpf_map__set_max_entries failed\n"))
-+		goto cleanup;
++               goto cleanup;
 +
-+	/* at least 4 pages of data */
-+	err = bpf_map__set_max_entries(skel->maps.data_map,
-+				       4 * (page_size / sizeof (u64)));
-+	if (CHECK(err != 0, "bpf_map__set_max_entries", "bpf_map__set_max_entries failed\n"))
-+		goto cleanup;
-+
-+	err = test_mmap__load(skel);
++	err = test_ringbuf__load(skel);
 +	if (CHECK(err != 0, "skel_load", "skeleton load failed\n"))
 +		goto cleanup;
 +
- 	bss_map = skel->maps.bss;
- 	data_map = skel->maps.data_map;
- 	data_map_fd = bpf_map__fd(data_map);
+ 	/* only trigger BPF program for current process */
+ 	skel->bss->pid = getpid();
  
- 	rdmap_fd = bpf_map__fd(skel->maps.rdonly_map);
--	tmp1 = mmap(NULL, 4096, PROT_READ | PROT_WRITE, MAP_SHARED, rdmap_fd, 0);
-+	tmp1 = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, rdmap_fd, 0);
- 	if (CHECK(tmp1 != MAP_FAILED, "rdonly_write_mmap", "unexpected success\n")) {
--		munmap(tmp1, 4096);
-+		munmap(tmp1, page_size);
- 		goto cleanup;
- 	}
- 	/* now double-check if it's mmap()'able at all */
--	tmp1 = mmap(NULL, 4096, PROT_READ, MAP_SHARED, rdmap_fd, 0);
-+	tmp1 = mmap(NULL, page_size, PROT_READ, MAP_SHARED, rdmap_fd, 0);
- 	if (CHECK(tmp1 == MAP_FAILED, "rdonly_read_mmap", "failed: %d\n", errno))
- 		goto cleanup;
- 
-diff --git a/tools/testing/selftests/bpf/progs/test_mmap.c b/tools/testing/selftests/bpf/progs/test_mmap.c
-index 4eb42cff5fe9..5a5cc19a15bf 100644
---- a/tools/testing/selftests/bpf/progs/test_mmap.c
-+++ b/tools/testing/selftests/bpf/progs/test_mmap.c
-@@ -9,7 +9,6 @@ char _license[] SEC("license") = "GPL";
+@@ -110,9 +119,9 @@ void test_ringbuf(void)
+ 	CHECK(skel->bss->avail_data != 3 * rec_sz,
+ 	      "err_avail_size", "exp %ld, got %ld\n",
+ 	      3L * rec_sz, skel->bss->avail_data);
+-	CHECK(skel->bss->ring_size != 4096,
++	CHECK(skel->bss->ring_size != page_size,
+ 	      "err_ring_size", "exp %ld, got %ld\n",
+-	      4096L, skel->bss->ring_size);
++	      (long)page_size, skel->bss->ring_size);
+ 	CHECK(skel->bss->cons_pos != 0,
+ 	      "err_cons_pos", "exp %ld, got %ld\n",
+ 	      0L, skel->bss->cons_pos);
+diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf.c b/tools/testing/selftests/bpf/progs/test_ringbuf.c
+index 8ba9959b036b..6b3f288b7c63 100644
+--- a/tools/testing/selftests/bpf/progs/test_ringbuf.c
++++ b/tools/testing/selftests/bpf/progs/test_ringbuf.c
+@@ -15,7 +15,6 @@ struct sample {
  
  struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
--	__uint(max_entries, 4096);
- 	__uint(map_flags, BPF_F_MMAPABLE | BPF_F_RDONLY_PROG);
- 	__type(key, __u32);
- 	__type(value, char);
-@@ -17,7 +16,6 @@ struct {
+ 	__uint(type, BPF_MAP_TYPE_RINGBUF);
+-	__uint(max_entries, 1 << 12);
+ } ringbuf SEC(".maps");
  
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
--	__uint(max_entries, 512 * 4); /* at least 4 pages of data */
- 	__uint(map_flags, BPF_F_MMAPABLE);
- 	__type(key, __u32);
- 	__type(value, __u64);
+ /* inputs */
 -- 
 2.31.1
 
