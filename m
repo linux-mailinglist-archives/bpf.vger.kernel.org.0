@@ -2,163 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F1B34F83A
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 07:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E2234F851
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 07:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhCaFR5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 01:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbhCaFRm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Mar 2021 01:17:42 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F2EFC061574
-        for <bpf@vger.kernel.org>; Tue, 30 Mar 2021 22:17:42 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id w8so19899055ybt.3
-        for <bpf@vger.kernel.org>; Tue, 30 Mar 2021 22:17:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xelc11Uk2IAiqnBRCAFq2uTzl15mBEHXDgI9wYRVX4M=;
-        b=nnNA0fkz0+hr1R11EgK5iM7+e0p+k8r2wstpw3togc8wcBm+0+dcKMNRa4TvjgNMIO
-         1yAnXa3caX8IkpzS4+lf5LmxxvWEGRDE38nrF4qJe4ire4Oev4pgHNwICKcivYdxbx0c
-         pTvVv5H2uJlMf9w2mHtTHpchoTPMYG4oPe1Nnv6Ui6jPWOEgcctD53cbGZ+yL0dOlq0s
-         wwlI/76TUYAzOKoV9TOCNMFMB6YMK+uXtNzfDXPjVz1KBNKHRAHxqukaiu1Eg0ukSmUs
-         JbYPxn7jkqQJOrPYMwWlAike1qkuQHP+w3wAdNB9gSiFDGk/GunCb0CoQXD0xSq6BWfH
-         vVxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xelc11Uk2IAiqnBRCAFq2uTzl15mBEHXDgI9wYRVX4M=;
-        b=ZunfH/2Fq5fZVL9taUEzE+Gk+9zBYSuL7e9nS+LpdXULWgh/9sO4Y+xc2IiLBjGQ/z
-         l5AfNPXhMGw29+zt56nyucJUWgfEsi3QtqZMcuM3g3XqJUhThC3HqWXfHY+8lyXSfkyK
-         hmytUFiaFox4P9aVsFvY4GZrxpVwRGg2+Rc2xxcXUlZjweAdnVXODzFzMk404B2hUIjo
-         VPLWusNGwxsHnXnjHuQ2hfaNuF0pdoOIxF5BaoRv2zTeqyLk4/bxoqM4tOWVmAz8rObD
-         /pA7I4XxGTs5r7ZH/GoYo/OqeqAePpliQWFiQdEVHDo2yH6KR9jPdtdg/nukhJI630c9
-         /Ldg==
-X-Gm-Message-State: AOAM530eXp/cRxN/qy0tKm6uZdqxRjdvxWtN/EetZJcTk2Ku76u8A5K1
-        Llu+Wc3IEA1nlz1bZ8F0mM+gLQb066tJ5/xPtvI=
-X-Google-Smtp-Source: ABdhPJyixFMbbH1kZkmvayd+yOmM6JhUso6/wIeRwWcgyNjKoYdWOnbOVF2a01S1RPIENSTen3URQgOiR5WGzfjljS0=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr2271987ybo.230.1617167861126;
- Tue, 30 Mar 2021 22:17:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210323014752.3198283-1-kpsingh@kernel.org> <CAEf4BzY=VR4MbYiG4fPwNPVB3hKw4MckRv2sftk160H6TapMaQ@mail.gmail.com>
- <CACYkzJ4p-vMg_3Nom-NB781J3ELsZi=N1FK5RA=3=FZQaZaknA@mail.gmail.com>
-In-Reply-To: <CACYkzJ4p-vMg_3Nom-NB781J3ELsZi=N1FK5RA=3=FZQaZaknA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 30 Mar 2021 22:17:30 -0700
-Message-ID: <CAEf4BzaVMMYAYqKc3rt02tfS=wXbcxc-jnSKYhcfhB1qHHxjNw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] selftests/bpf: Add an option for a debug
- shell in vmtest.sh
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S233653AbhCaFoR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 01:44:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233595AbhCaFoI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 01:44:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 545C06024A;
+        Wed, 31 Mar 2021 05:44:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1617169447;
+        bh=Xhc7zQfL4bF/OHNK1HpEfoIAv4vWvUPs8jQIpfTLYIE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OXDwaqr5QvEDOc9RMY6XwR+lv1+jUCOhFLEavt/HREAXlF7KvJraHMSNFiwkcYa0G
+         Pge5v+dcMHAuJHF1HZSnLDmsmb/L8xYOpn3mPxog3+kaNVjpqQPLelzIE9/jv/YzSU
+         iGI3uaLXguWFaPHmJnTG/QJqrNUN/3owSCpkkNZ4=
+Date:   Tue, 30 Mar 2021 22:44:06 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     qianjun.kernel@gmail.com
+Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH V2 1/1] mm:improve the performance during fork
+Message-Id: <20210330224406.5e195f3b8b971ff2a56c657d@linux-foundation.org>
+In-Reply-To: <20210329123635.56915-1-qianjun.kernel@gmail.com>
+References: <20210329123635.56915-1-qianjun.kernel@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 6:46 AM KP Singh <kpsingh@kernel.org> wrote:
->
-> On Fri, Mar 26, 2021 at 5:48 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Mon, Mar 22, 2021 at 6:47 PM KP Singh <kpsingh@kernel.org> wrote:
-> > >
-> > > The newly introduced -s command line option starts an interactive shell.
-> > > If a command is specified, the shell is started after the command
-> > > finishes executing. It's useful to have a shell especially when
-> > > debugging failing tests or developing new tests.
-> > >
-> > > Since the user may terminate the VM forcefully, an extra "sync" is added
-> > > after the execution of the command to persist any logs from the command
-> > > into the log file.
-> > >
-> > > Signed-off-by: KP Singh <kpsingh@kernel.org>
-> > > ---
-> >
-> > I run:
-> >
-> > ./vmtest.sh -s
-> >
-> > And I get test_progs executed, not bash. What do I do wrong?...
->
-> It does not seem to happen for me [classic, works on my machine :P]
->
-> tools/testing/selftests/bpf$ ./vmtest.sh -s
-> [...]
-> + /etc/rcS.d/S50-startup
-> bash: cannot set terminal process group (84): Inappropriate ioctl for device
-> bash: no job control in this shell
-> [root@(none) /]#
->
-> To help debug this:
->
-> Can you check the contents of /etc/rcS.d/S50-startup on the image,
-> here's what mine looks like:
->
-> [root@(none) /]# cat /etc/rcS.d/S50-startup
-> #!/bin/bash
-> bash
+On Mon, 29 Mar 2021 20:36:35 +0800 qianjun.kernel@gmail.com wrote:
 
-Couldn't do it, because it would only run test_progs, no matter which
-command I specified (that didn't happen before, strange). E.g.,
-running `./vmtest.sh -- cat /etc/rcS.d/S50-startup` gives this:
+> From: jun qian <qianjun.kernel@gmail.com>
+> 
+> In our project, Many business delays come from fork, so
+> we started looking for the reason why fork is time-consuming.
+> I used the ftrace with function_graph to trace the fork, found
+> that the vm_normal_page will be called tens of thousands and
+> the execution time of this vm_normal_page function is only a
+> few nanoseconds. And the vm_normal_page is not a inline function.
+> So I think if the function is inline style, it maybe reduce the
+> call time overhead.
+> 
+> I did the following experiment:
+> 
+> use the bpftrace tool to trace the fork time :
+> 
+> bpftrace -e 'kprobe:_do_fork/comm=="redis-server"/ {@st=nsecs;} \
+> kretprobe:_do_fork /comm=="redis-server"/{printf("the fork time \
+> is %d us\n", (nsecs-@st)/1000)}'
+> 
+> no inline vm_normal_page:
+> result:
+> the fork time is 40743 us
+> the fork time is 41746 us
+> the fork time is 41336 us
+> the fork time is 42417 us
+> the fork time is 40612 us
+> the fork time is 40930 us
+> the fork time is 41910 us
+> 
+> inline vm_normal_page:
+> result:
+> the fork time is 39276 us
+> the fork time is 38974 us
+> the fork time is 39436 us
+> the fork time is 38815 us
+> the fork time is 39878 us
+> the fork time is 39176 us
+> 
+> In the same test environment, we can get 3% to 4% of
+> performance improvement.
+> 
+> note:the test data is from the 4.18.0-193.6.3.el8_2.v1.1.x86_64,
+> because my product use this version kernel to test the redis
+> server, If you need to compare the latest version of the kernel
+> test data, you can refer to the version 1 Patch.
+> 
+> We need to compare the changes in the size of vmlinux:
+>                   inline           non-inline       diff
+> vmlinux size      9709248 bytes    9709824 bytes    -576 bytes
+> 
 
-starting pid 83, tty '': '/etc/init.d/rcS'
-[    1.070838] random: fast init done
-+ for path in /etc/rcS.d/S*
-+ '[' -x /etc/rcS.d/S10-mount ']'
-+ /etc/rcS.d/S10-mount
-+ /bin/mount proc /proc -t proc
-+ /bin/mount devtmpfs /dev -t devtmpfs
-mount: mounting devtmpfs on /dev failed: Resource busy
-+ true
-+ /bin/mount sysfs /sys -t sysfs
-+ /bin/mount bpffs /sys/fs/bpf -t bpf
-+ /bin/mount debugfs /sys/kernel/debug -t debugfs
-+ echo 'Listing currently mounted file systems'
-Listing currently mounted file systems
-+ /bin/mount
-/dev/root on / type ext4 (rw,relatime)
-devtmpfs on /dev type devtmpfs
-(rw,relatime,size=1004288k,nr_inodes=251072,mode=755)
-proc on /proc type proc (rw,relatime)
-sysfs on /sys type sysfs (rw,relatime)
-none on /sys/fs/bpf type bpf (rw,relatime)
-debugfs on /sys/kernel/debug type debugfs (rw,relatime)
-+ for path in /etc/rcS.d/S*
-+ '[' -x /etc/rcS.d/S40-network ']'
-+ /etc/rcS.d/S40-network
-+ ip link set lo up
-+ for path in /etc/rcS.d/S*
-+ '[' -x /etc/rcS.d/S50-startup ']'
-+ /etc/rcS.d/S50-startup
-./test_progs
+I get very different results with gcc-7.2.0:
 
-And there was a bunch of messages like this before kernel started:
+q:/usr/src/25> size mm/memory.o
+   text    data     bss     dec     hex filename
+  74898    3375      64   78337   13201 mm/memory.o-before
+  75119    3363      64   78546   132d2 mm/memory.o-after
 
-error: Macro %global is a built-in (%define)
-error: Macro %global is a built-in (%define)
-warning: file /etc/rpm/macros.perl: 2 invalid macro definitions
+That's a somewhat significant increase in code size, and larger code
+size has a worsened cache footprint.
 
-Don't know if related.
+Not that this is necessarily a bad thing for a function which is
+tightly called many times in succession as is vm__normal_page()
 
->
-> 2. Also, can you delete the cache in the home directory
-> (~/.bpf_selftests by default) and try again?
->
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -592,7 +592,7 @@ static void print_bad_pte(struct vm_area_struct *vma, unsigned long addr,
+>   * PFNMAP mappings in order to support COWable mappings.
+>   *
+>   */
+> -struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
+> +inline struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
+>  			    pte_t pte)
+>  {
+>  	unsigned long pfn = pte_pfn(pte);
 
-But this solved the issue. So must be something in cached data.
+I'm a bit surprised this made any difference - rumour has it that
+modern gcc just ignores `inline' and makes up its own mind.  Which is
+why we added __always_inline.
 
-> >
-> > >  tools/testing/selftests/bpf/vmtest.sh | 39 +++++++++++++++++++--------
-> > >  1 file changed, 28 insertions(+), 11 deletions(-)
-> > >
-> >
-> > [...]
