@@ -2,136 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9BE34FBF6
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 10:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0697A34FC93
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 11:23:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234517AbhCaIxt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 04:53:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53445 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234524AbhCaIxW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 31 Mar 2021 04:53:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617180801;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uQ2n3EyanSF3qXDhAsFkDmrzVT/a6o5xFDgb/T/cMsM=;
-        b=IckUOL6SYkNPOnsjVcRSCwDfttTFQkR6jxgcxQhPln80Zlbt/KT/X9eFVthgc6KQlJVmLH
-        72AaCx+nJ0GxRWQ9KxnpJWVJXLmVnWwp8BKtE9H0d5MULmEv2evduEJxjTlFMuNcqteTTu
-        eS2mLEVus71+l7czQPD0YQh5zz6KCyI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-592-JDmegdEANPq-fw31zqM9og-1; Wed, 31 Mar 2021 04:53:19 -0400
-X-MC-Unique: JDmegdEANPq-fw31zqM9og-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B6897108BD07;
-        Wed, 31 Mar 2021 08:53:17 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 583AB179E6;
-        Wed, 31 Mar 2021 08:53:08 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 10:53:06 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     Ong Boon Leong <boon.leong.ong@intel.com>,
+        id S234544AbhCaJWf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 05:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234654AbhCaJWa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 05:22:30 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35613C061574;
+        Wed, 31 Mar 2021 02:22:30 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id a143so20463711ybg.7;
+        Wed, 31 Mar 2021 02:22:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Io/8COCIMelBlssiGf/QwkSf0NWKvCwN1kFvShgTt3k=;
+        b=e9FcEWP/5o1QjN/f0/33JiTVAOPQ3JdICqsdLJtkSrslvLe7BlX4v4Ri0gKlXbMysA
+         Vxn6iFcYPzUMVM95+IhGqaeL2jgLeVyqxxtLi2PkTdm2WQqh1uIIKxfe74Yz7mXx6GR/
+         HAd7EVV1zWR4aTaAtM46I6Tg5YBw66x8JvdJCnloZ2FdaA4r4/C5Dqxsnvhc5OYzOkk8
+         c9A9dZQe5HQj27NG4Sg8eBohonUeb9CtettyYYNjtlyOOmHMF/EH2ma4MiBFUgDAlE1B
+         wzUDATrXdAnTql6h9rdcnhwOhF/UQ6vALjOqMw44jawpZmlhCGv9PUUPa5QPzpq7MUeK
+         2oEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Io/8COCIMelBlssiGf/QwkSf0NWKvCwN1kFvShgTt3k=;
+        b=QaYTHvOfqQzKPonPpfj6Ru9+5trMv4V35LAye/gAKPf138ebjFl5JRczGKGkoh6BI/
+         8GUZa62gL5G0GsPsdD/uOuKwPVkiQ1UWZwlCrVCyK8kCW+OD1aVjDs+K+x70Wc91bRSN
+         RQ9oLX/tycvIj5vlVhvBxqsZvyi5gcsVKYMzx82Q2E+6vxHILU0zGYGntHregJjE19z4
+         DN4Swa2ZAm1EdQukGU6ZyjP0PikBombOfXG50R2SxG0D41rQAfkgZjxoJvgYud4SvyDT
+         nZ3OzBF6hbGd6fTsaRoSrj4MzNQkql/OeUYsp5d1qZHCcmR5nlZikx25FzW75obIbnfP
+         CC4g==
+X-Gm-Message-State: AOAM531fsxQ6PpGJL02XLBrREOmG/VM5VbTnGoO1cI/QQwLAU2LC8Pkt
+        qBAYROTvfkkVXWq+vE8psxQR+2R8Ird+suTiVJ4=
+X-Google-Smtp-Source: ABdhPJyu9ieNGBg82MYlajy2cM5KBzgiBlcU4P77Qs2Qg8m0lch7OrGnx++N3mC3ia88bCMGMct/gteEy8HLzGXQDqU=
+X-Received: by 2002:a25:ba87:: with SMTP id s7mr3183267ybg.222.1617182549547;
+ Wed, 31 Mar 2021 02:22:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210330074235.525747-1-Jianlin.Lv@arm.com> <20210330093149.GA5281@willie-the-truck>
+In-Reply-To: <20210330093149.GA5281@willie-the-truck>
+From:   Jianlin Lv <iecedge@gmail.com>
+Date:   Wed, 31 Mar 2021 17:22:18 +0800
+Message-ID: <CAFA-uR8_N=RHbhm4PdiB-AMCBdXsoMyM-9WgaPxPQ7-ZF6ujXA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: arm64: Redefine MOV consistent with arch insn
+To:     Will Deacon <will@kernel.org>
+Cc:     Jianlin Lv <Jianlin.Lv@arm.com>, bpf <bpf@vger.kernel.org>,
+        zlim.lnx@gmail.com, catalin.marinas@arm.com,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, brouer@redhat.com
-Subject: Re: [PATCH net 1/1] xdp: fix xdp_return_frame() kernel BUG throw
- for page_pool memory model
-Message-ID: <20210331105306.5c7f09a6@carbon>
-In-Reply-To: <87lfa6rkpn.fsf@toke.dk>
-References: <20210329080039.32753-1-boon.leong.ong@intel.com>
-        <20210329170209.6db77c3d@carbon>
-        <87lfa6rkpn.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Ong,
+On Tue, Mar 30, 2021 at 5:31 PM Will Deacon <will@kernel.org> wrote:
+>
+> On Tue, Mar 30, 2021 at 03:42:35PM +0800, Jianlin Lv wrote:
+> > A64_MOV is currently mapped to Add Instruction. Architecturally MOV
+> > (register) is an alias of ORR (shifted register) and MOV (to or from SP)
+> > is an alias of ADD (immediate).
+> > This patch redefines A64_MOV and uses existing functionality
+> > aarch64_insn_gen_move_reg() in insn.c to encode MOV (register) instruction.
+> > For moving between register and stack pointer, rename macro to A64_MOV_SP.
+>
+> What does this gain us? There's no requirement for a BPF "MOV" to match an
+> arm64 architectural "MOV", so what's the up-side of aligning them like this?
+>
+> Cheers,
+>
+> Will
 
-Patch is in "Changes Requested".
-Thus, please send a V2 patch with suggested code changes below.
+According to the description in the Arm Software Optimization Guide,
+Arithmetic(basic) and Logical(basic) instructions have the same
+Exec Latency and Execution Throughput.
+This change did not bring about a performance improvement.
+The original intention was to make the instruction map more 'natively'.
 
---Jesper
-
-
-On Mon, 29 Mar 2021 18:25:08 +0200
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
-
-> Jesper Dangaard Brouer <brouer@redhat.com> writes:
->=20
-> > On Mon, 29 Mar 2021 16:00:39 +0800
-> > Ong Boon Leong <boon.leong.ong@intel.com> wrote:
-> > =20
-> >> xdp_return_frame() may be called outside of NAPI context to return
-> >> xdpf back to page_pool. xdp_return_frame() calls __xdp_return() with
-> >> napi_direct =3D false. For page_pool memory model, __xdp_return() calls
-> >> xdp_return_frame_no_direct() unconditionally and below false negative
-> >> kernel BUG throw happened under preempt-rt build:
-> >>=20
-> >> [  430.450355] BUG: using smp_processor_id() in preemptible [00000000]=
- code: modprobe/3884
-> >> [  430.451678] caller is __xdp_return+0x1ff/0x2e0
-> >> [  430.452111] CPU: 0 PID: 3884 Comm: modprobe Tainted: G     U      E=
-     5.12.0-rc2+ #45
-> >>=20
-> >> So, this patch fixes the issue by adding "if (napi_direct)" condition
-> >> to skip calling xdp_return_frame_no_direct() if napi_direct =3D false.
-> >>=20
-> >> Fixes: 2539650fadbf ("xdp: Helpers for disabling napi_direct of xdp_re=
-turn_frame")
-> >> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-> >> --- =20
-> >
-> > This looks correct to me.
-> >
-> > Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> >
-> > =20
-> >>  net/core/xdp.c | 3 ++-
-> >>  1 file changed, 2 insertions(+), 1 deletion(-)
-> >>=20
-> >> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> >> index 05354976c1fc..4eaa28972af2 100644
-> >> --- a/net/core/xdp.c
-> >> +++ b/net/core/xdp.c
-> >> @@ -350,7 +350,8 @@ static void __xdp_return(void *data, struct xdp_me=
-m_info *mem, bool napi_direct,
-> >>  		/* mem->id is valid, checked in xdp_rxq_info_reg_mem_model() */
-> >>  		xa =3D rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
-> >>  		page =3D virt_to_head_page(data);
-> >> -		napi_direct &=3D !xdp_return_frame_no_direct();
-> >> +		if (napi_direct)
-> >> +			napi_direct &=3D !xdp_return_frame_no_direct(); =20
-> >
-> > if (napi_direct && xdp_return_frame_no_direct())
-> > 	napi_direct =3D false;
-> >
-> > I wonder if this code would be easier to understand? =20
->=20
-> Yes, IMO it would! :)
->=20
-> -Toke
->=20
-
-
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Jianlin
