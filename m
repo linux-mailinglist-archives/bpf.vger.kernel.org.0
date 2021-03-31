@@ -2,215 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C3634F85A
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 07:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C646D34F861
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 07:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhCaFpY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 01:45:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233716AbhCaFpC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Mar 2021 01:45:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAC42619D7;
-        Wed, 31 Mar 2021 05:44:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617169501;
-        bh=sSF71qlnI974wAy+ZMYm8N/K3MKLmeAecrOWanR5chM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o17jHD7Wq2FySlhs4u73r/iKdAdAnMzfjGtvz7bjSB6d3vDeTbVREJLcHynV0aiIm
-         ExogATKA1g2qN5qvBaIR2kVSle/QjHWdFLfMxaoj9JpC+mypKWUUyFQHIk2/9YRpn1
-         6ZgyifbMrdGaa57DBXx9Z/BbIhnLIogLPGeY7+dw98jk1CFfqwViqZPsbyStc0S8ZP
-         rcSLW46ehTGG9sv+zMYBQzmPfz8K+b+0gTbeXho28Vkh8zwqA5p8uIfO2zsNNt2QJU
-         c0Eu8XtefNUCULDDpHKxkAy7k8uOhrXYJtpODxir48ZY153DXCSsteVDWokRPqsC19
-         Cv6t6O/sW5pPA==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [RFC PATCH -tip 3/3] x86/kprobes,orc: Unwind optprobe trampoline correctly
-Date:   Wed, 31 Mar 2021 14:44:56 +0900
-Message-Id: <161716949640.721514.14252504351086671126.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <161716946413.721514.4057380464113663840.stgit@devnote2>
-References: <161716946413.721514.4057380464113663840.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S231392AbhCaFtk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 01:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231315AbhCaFta (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 01:49:30 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7809C061574
+        for <bpf@vger.kernel.org>; Tue, 30 Mar 2021 22:49:29 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id l15so20013862ybm.0
+        for <bpf@vger.kernel.org>; Tue, 30 Mar 2021 22:49:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5Dt7nTZjxvYuCW2YkRE1K9Rl1LExWqQTyVcB5ZcYQKA=;
+        b=GXsWPyP+1JPKJ5odpI1McPvLCBmiDfIi5g9L3xcgfJ/mvkObCHYSZkb1qiHrZXOnpt
+         hiHmaCWDuRa6JG7sXU30E7JBJirsDhFY+EHud5wXnic9ku5+QooF/S6nZK7jxImvj7Pv
+         WNEOOjg4EsFJSq8UjonYugjImCTaXBuOPljol/7xbd3vC22D+zPgUMPNXEvdA/nQOknY
+         HX5XJmSIA5LtUWAgNrEVrn+Bt8J9/WpyJt4bTQNXz7oDYEDOBSQ0yLJqy20lgFQWYQ7F
+         QhVHwyVtZufWV1QBEhTZcHFqSpDLh7dtoDN4jZL3gXE4DEAbz/AgTFXMbJXQT9tCFVax
+         RQqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5Dt7nTZjxvYuCW2YkRE1K9Rl1LExWqQTyVcB5ZcYQKA=;
+        b=jEgTfzbnF895Gx4h5vYc9pEgQY5Wg57XOu/bsOQGTR5TLgP0AzFEWX7X58MdtvOAJH
+         FsUHg0DV5EW6VSxiV6nKnY8gpox4rmRq76jz9At4Kqv/pCqyLankigtUQpeaianhgfs2
+         TthwB4joBARYX2iS+Iui6dOoKmfAhytBeXOy2CDuY0WtMdiXOvJR8ibH4/vtBZrsVbVE
+         AuGwGbZtiJ+RNWboiQz3Zz+d4VVKAs0SN1zpg1cgvdOebTBl6HllsOAaOkO7dUARMs3d
+         Z74nmEilMDaTIwgl9+eXzleVeSfK/1DcQuL568JY+PSOFtdT1S516A/TEb2hm5dVTFJO
+         3wlA==
+X-Gm-Message-State: AOAM531a87mnrhMY97nGmMP2y2bg4PUnJbbKP/IG2a6dab+EwhqhNvlg
+        qL6De/THcmh0MbmtqHDur/7QIKc6SXHp1e4MSQqAQouQuhE=
+X-Google-Smtp-Source: ABdhPJwjMYg9kH8xkLJEmiW8Nle1ZfyvoOL22jAnM9eyevooP2LUtaIRISWCVJIrwz82EY+Bj8cEGoIXAHHTfAKRZWs=
+X-Received: by 2002:a25:becd:: with SMTP id k13mr2318756ybm.459.1617169769019;
+ Tue, 30 Mar 2021 22:49:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210326114658.210034-1-yauheni.kaliuta@redhat.com>
+ <20210326122438.211242-1-yauheni.kaliuta@redhat.com> <20210326122438.211242-4-yauheni.kaliuta@redhat.com>
+ <CAEf4BzZowiRKeLGw7JikKuMs+dy-=OTMbUb3eFJCq03Br7P30g@mail.gmail.com> <CANoWswmy1bHbU8hBkF2DiyW3oHr1wDxZU3CsyDHOJ+-fe5DBTA@mail.gmail.com>
+In-Reply-To: <CANoWswmy1bHbU8hBkF2DiyW3oHr1wDxZU3CsyDHOJ+-fe5DBTA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 30 Mar 2021 22:49:18 -0700
+Message-ID: <CAEf4BzbKfz7if1ktSMiyK4TZYZF8n7mk34UQCi3ZuDZvobkZqQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] selftests/bpf: ringbuf, mmap: bump up page size to 64K
+To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-ORC Unwinder can not unwind if an optprobe trampoline is on the
-stack because optprobe trampoline code has no ORC information.
+On Mon, Mar 29, 2021 at 8:20 AM Yauheni Kaliuta
+<yauheni.kaliuta@redhat.com> wrote:
+>
+> On Sun, Mar 28, 2021 at 8:03 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>
+> [...]
+>
+> > >
+> > >  struct {
+> > >         __uint(type, BPF_MAP_TYPE_ARRAY);
+> > > -       __uint(max_entries, 4096);
+> > > +       __uint(max_entries, PAGE_SIZE);
+> >
+> >
+> > so you can set map size at runtime before bpf_object__load (or
+> > skeleton's load) with bpf_map__set_max_entries. That way you don't
+> > have to do any assumptions. Just omit max_entries in BPF source code,
+> > and always set it in userspace.
+>
+> Will it work for ringbuf_multi? If I just set max_entries for ringbuf1
+> and ringbuf2 that way, it gives me
+>
+> libbpf: map 'ringbuf_arr': failed to create inner map: -22
+> libbpf: map 'ringbuf_arr': failed to create: Invalid argument(-22)
+> libbpf: failed to load object 'test_ringbuf_multi'
+> libbpf: failed to load BPF skeleton 'test_ringbuf_multi': -22
+> test_ringbuf_multi:FAIL:skel_load skeleton load failed
+>
 
-This uses the ORC information on the template code of the
-trampoline to adjust the sp register by ORC information and
-extract the correct probed address from the optprobe trampoline
-address.
+You are right, it won't work. We'd need to add something like
+bpf_map__inner_map() accessor to allow to adjust the inner map
+definition:
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- arch/x86/include/asm/kprobes.h |    6 ++++
- arch/x86/kernel/kprobes/opt.c  |   54 ++++++++++++++++++++++++++++++++++++++++
- arch/x86/kernel/unwind_orc.c   |   15 +++++++++--
- 3 files changed, 72 insertions(+), 3 deletions(-)
+bpf_map__set_max_entries(bpf_map__inner_map(skel->maps.ringbuf_arr), page_size);
 
-diff --git a/arch/x86/include/asm/kprobes.h b/arch/x86/include/asm/kprobes.h
-index 71ea2eab43d5..9bbc45fcb3f1 100644
---- a/arch/x86/include/asm/kprobes.h
-+++ b/arch/x86/include/asm/kprobes.h
-@@ -119,9 +119,15 @@ extern int kprobe_exceptions_notify(struct notifier_block *self,
- 				    unsigned long val, void *data);
- extern int kprobe_int3_handler(struct pt_regs *regs);
- 
-+unsigned long recover_optprobe_trampoline(unsigned long addr, unsigned long *sp);
- #else
- 
- static inline int kprobe_debug_handler(struct pt_regs *regs) { return 0; }
-+static inline unsigned long recover_optprobe_trampoline(unsigned long addr,
-+							unsigned long *sp)
-+{
-+	return addr;
-+}
- 
- #endif /* CONFIG_KPROBES */
- #endif /* _ASM_X86_KPROBES_H */
-diff --git a/arch/x86/kernel/kprobes/opt.c b/arch/x86/kernel/kprobes/opt.c
-index 6d26e5cf2ba2..f91922ba4844 100644
---- a/arch/x86/kernel/kprobes/opt.c
-+++ b/arch/x86/kernel/kprobes/opt.c
-@@ -30,6 +30,9 @@
- #include <asm/set_memory.h>
- #include <asm/sections.h>
- #include <asm/nospec-branch.h>
-+#include <asm/orc_types.h>
-+
-+struct orc_entry *orc_find(unsigned long ip);
- 
- #include "common.h"
- 
-@@ -100,6 +103,21 @@ static void synthesize_set_arg1(kprobe_opcode_t *addr, unsigned long val)
- 	*(unsigned long *)addr = val;
+And some more fixes. Here's minimal diff that made it work, but
+probably needs a bit more testing:
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 7aad78dbb4b4..ed5586cce227 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -2194,6 +2194,7 @@ static int parse_btf_map_def(struct bpf_object *obj,
+             map->inner_map = calloc(1, sizeof(*map->inner_map));
+             if (!map->inner_map)
+                 return -ENOMEM;
++            map->inner_map->fd = -1;
+             map->inner_map->sec_idx = obj->efile.btf_maps_shndx;
+             map->inner_map->name = malloc(strlen(map->name) +
+                               sizeof(".inner") + 1);
+@@ -3845,6 +3846,14 @@ __u32 bpf_map__max_entries(const struct bpf_map *map)
+     return map->def.max_entries;
  }
- 
-+/* Extract mov operand */
-+static unsigned long extract_set_arg1(kprobe_opcode_t *addr)
+
++struct bpf_map *bpf_map__inner_map(struct bpf_map *map)
 +{
-+#ifdef CONFIG_X86_64
-+	if (addr[0] != 0x48 || addr[1] != 0xbf)
-+		return 0;
-+	addr += 2;
-+#else
-+	if (*addr != 0xb8)
-+		return 0;
-+	addr++;
-+#endif
-+	return *(unsigned long *)addr;
++    if (!bpf_map_type__is_map_in_map(map->def.type))
++        return NULL;
++
++    return map->inner_map;
 +}
 +
- static void
- optimized_callback(struct optimized_kprobe *op, struct pt_regs *regs);
- 
-@@ -483,6 +501,42 @@ int arch_prepare_optimized_kprobe(struct optimized_kprobe *op,
- 	goto out;
- }
- 
-+#ifdef CONFIG_UNWINDER_ORC
-+unsigned long recover_optprobe_trampoline(unsigned long addr, unsigned long *sp)
-+{
-+	unsigned long offset, entry, probe_addr;
-+	struct optimized_kprobe *op;
-+	struct orc_entry *orc;
-+
-+	entry = find_kprobe_optinsn_slot_entry(addr);
-+	if (!entry)
-+		return addr;
-+
-+	offset = addr - entry;
-+
-+	/* Decode arg1 and get the optprobe */
-+	op = (void *)extract_set_arg1((void *)(entry + TMPL_MOVE_IDX));
-+	if (!op)
-+		return addr;
-+
-+	probe_addr = (unsigned long)op->kp.addr;
-+
-+	if (offset < TMPL_END_IDX) {
-+		orc = orc_find((unsigned long)optprobe_template_func + offset);
-+		if (!orc || orc->sp_reg != ORC_REG_SP)
-+			return addr;
-+		/*
-+		 * Since optprobe trampoline doesn't push caller on the stack,
-+		 * need to decrement 1 stack entry size
-+		 */
-+		*sp += orc->sp_offset - sizeof(long);
-+		return probe_addr;
-+	} else {
-+		return probe_addr + offset - TMPL_END_IDX;
-+	}
-+}
-+#endif
-+
- /*
-  * Replace breakpoints (INT3) with relative jumps (JMP.d32).
-  * Caller must call with locking kprobe_mutex and text_mutex.
-diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
-index c70dfeea4552..9f685f9c2358 100644
---- a/arch/x86/kernel/unwind_orc.c
-+++ b/arch/x86/kernel/unwind_orc.c
-@@ -79,7 +79,7 @@ static struct orc_entry *orc_module_find(unsigned long ip)
- #endif
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
--static struct orc_entry *orc_find(unsigned long ip);
-+struct orc_entry *orc_find(unsigned long ip);
- 
- /*
-  * Ftrace dynamic trampolines do not have orc entries of their own.
-@@ -142,7 +142,7 @@ static struct orc_entry orc_fp_entry = {
- 	.end		= 0,
- };
- 
--static struct orc_entry *orc_find(unsigned long ip)
-+struct orc_entry *orc_find(unsigned long ip)
+ int bpf_map__set_max_entries(struct bpf_map *map, __u32 max_entries)
  {
- 	static struct orc_entry *orc;
- 
-@@ -537,6 +537,7 @@ bool unwind_next_frame(struct unwind_state *state)
- 
- 		state->ip = unwind_recover_ret_addr(state, state->ip,
- 						    (unsigned long *)ip_p);
-+		state->ip = recover_optprobe_trampoline(state->ip, &sp);
- 		state->sp = sp;
- 		state->regs = NULL;
- 		state->prev_regs = NULL;
-@@ -558,6 +559,14 @@ bool unwind_next_frame(struct unwind_state *state)
- 		 */
- 		state->ip = unwind_recover_kretprobe(state, state->ip,
- 				(unsigned long *)(state->sp - sizeof(long)));
-+
-+		/*
-+		 * The optprobe trampoline has a unique stackframe. It has
-+		 * no caller (probed) address on the stack, Thus it has to
-+		 * decode the trampoline code and change the stack pointer
-+		 * for the next frame, but not change the pt_regs.
-+		 */
-+		state->ip = recover_optprobe_trampoline(state->ip, &state->sp);
- 		state->regs = (struct pt_regs *)sp;
- 		state->prev_regs = NULL;
- 		state->full_regs = true;
-@@ -573,7 +582,7 @@ bool unwind_next_frame(struct unwind_state *state)
- 		/* See UNWIND_HINT_TYPE_REGS case comment. */
- 		state->ip = unwind_recover_kretprobe(state, state->ip,
- 				(unsigned long *)(state->sp - sizeof(long)));
--
-+		state->ip = recover_optprobe_trampoline(state->ip, &state->sp);
- 		if (state->full_regs)
- 			state->prev_regs = state->regs;
- 		state->regs = (void *)sp - IRET_FRAME_OFFSET;
+     if (map->fd >= 0)
+@@ -9476,6 +9485,7 @@ int bpf_map__set_inner_map_fd(struct bpf_map *map, int fd)
+         pr_warn("error: inner_map_fd already specified\n");
+         return -EINVAL;
+     }
++    zfree(&map->inner_map);
+     map->inner_map_fd = fd;
+     return 0;
+ }
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index f500621d28e5..bec4e6a6e31d 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -480,6 +480,7 @@ LIBBPF_API int bpf_map__pin(struct bpf_map *map,
+const char *path);
+ LIBBPF_API int bpf_map__unpin(struct bpf_map *map, const char *path);
 
+ LIBBPF_API int bpf_map__set_inner_map_fd(struct bpf_map *map, int fd);
++LIBBPF_API struct bpf_map *bpf_map__inner_map(struct bpf_map *map);
+
+ LIBBPF_API long libbpf_get_error(const void *ptr);
+
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index f5990f7208ce..eeb6d5ebd1cc 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -360,4 +360,5 @@ LIBBPF_0.4.0 {
+         bpf_linker__free;
+         bpf_linker__new;
+         bpf_object__set_kversion;
++        bpf_map__inner_map;
+ } LIBBPF_0.3.0;
+diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
+b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
+index d37161e59bb2..cdc9c9b1d0e1 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
++++ b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
+@@ -41,13 +41,23 @@ static int process_sample(void *ctx, void *data, size_t len)
+ void test_ringbuf_multi(void)
+ {
+     struct test_ringbuf_multi *skel;
+-    struct ring_buffer *ringbuf;
++    struct ring_buffer *ringbuf = NULL;
+     int err;
+
+-    skel = test_ringbuf_multi__open_and_load();
++    skel = test_ringbuf_multi__open();
+     if (CHECK(!skel, "skel_open_load", "skeleton open&load failed\n"))
+         return;
+
++    bpf_map__set_max_entries(skel->maps.ringbuf1, 4096);
++    bpf_map__set_max_entries(skel->maps.ringbuf2, 4096);
++    bpf_map__set_max_entries(bpf_map__inner_map(skel->maps.ringbuf_arr), 4096);
++
++    err = test_ringbuf_multi__load(skel);
++    if (!ASSERT_OK(err, "skel_load"))
++        goto cleanup;
++
+     /* only trigger BPF program for current process */
+     skel->bss->pid = getpid();
+
+diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
+b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
+index edf3b6953533..055c10b2ff80 100644
+--- a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
++++ b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
+@@ -15,7 +15,6 @@ struct sample {
+
+ struct ringbuf_map {
+     __uint(type, BPF_MAP_TYPE_RINGBUF);
+-    __uint(max_entries, 1 << 12);
+ } ringbuf1 SEC(".maps"),
+   ringbuf2 SEC(".maps");
