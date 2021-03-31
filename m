@@ -2,175 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7E534F6C6
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 04:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6EA434F6E8
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 04:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233468AbhCaCdT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Mar 2021 22:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60528 "EHLO
+        id S233293AbhCaCkV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Mar 2021 22:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233426AbhCaCdH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 30 Mar 2021 22:33:07 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A1EBC061574;
-        Tue, 30 Mar 2021 19:33:07 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id w70so18654556oie.0;
-        Tue, 30 Mar 2021 19:33:07 -0700 (PDT)
+        with ESMTP id S233367AbhCaCjv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Mar 2021 22:39:51 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA67C06175F
+        for <bpf@vger.kernel.org>; Tue, 30 Mar 2021 19:39:50 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id y2so7151563plg.5
+        for <bpf@vger.kernel.org>; Tue, 30 Mar 2021 19:39:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zJsA5AZqU+uTJz0h7iEhTFBjGQWrPnAhpQ/zHuK8xKc=;
-        b=spkOC5wVCdDJKIO9YZiXnJKge4i/1KPDa//qPOz5QwQMZYpPHARuu3YfKFeZTJ5yHr
-         l/sZXvSQvmAePdiXaDSm19sQOpmeIKKT4A4m9ws1BkuaMM77tiEIk81Wq68w3mFakwNl
-         N2sGb0tblC2scKcKIGJ4z+zbn+8LgJ3Fh6XITjCoa6Pdvukzkmoc5yzcJKrF9PGPp0tG
-         ZLBsVDvGzwQAA/mmrNT/jcRfAAyFNCTMCij2OJCKhW34SUWUjACzWnaM8QBz++JISnof
-         giy3QhZNOiEM4P+XbA07jRIcHV7jhO5hq3+6FHHHXbAUjgxVxxtW6kVrTahUJI+uM/H/
-         Qfnw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ABi/1RQtTKGX0CM1QKK84G+1r8Xe7uaOR14Jy+a6M/s=;
+        b=XTtAdm9EjuJsMyYVm0cn8BVSSC8GVe9AT4CX29ersKPyuA6YdzyYb+4e1oxEM4TPZb
+         ZrlMeDNb5guhreeqdoPlzKpycXomFMTzQI4bQX0DuRV+1MjQZXnW2GnLcA1WLHgtZ7Uk
+         FACtEHF/5tvfQDRRwZORIGSCgZzPRm5Ae3Uwmfh/KR/8mxvcSQEJtQ/zfIqh7UuJLBjA
+         vJxNRm+GcQtKCDi+hrBOpXxVErf0Usaj0WhW8AVZJ9BnKe+JuNDa2737GDUjNeV3NaU0
+         TDEN/edVZgEZeVKG3a3rBgMQ6ZuPiSXIC5ODJCMrojjgAcFm0KWBieGSUp+/EHfSGgZe
+         aRYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zJsA5AZqU+uTJz0h7iEhTFBjGQWrPnAhpQ/zHuK8xKc=;
-        b=noIq+6U/ClPwLm9TtV+WSBsnw9LGshRj62Fz1O3lsPOMiHVRx2G0HzSHJRCH8c7ozi
-         gO6iVGbYwB+eTrLSXbVFHR4YN7mKgbVT/0WEIfeE0bEW6kFraiSw+rk9mhdM/KYuMT7u
-         OvVVVTTDAIrCo1EYOW/IaLqIB6qeX6unlF6rn/rofDw/wr13E2wvnEdXddn3glG04GuO
-         SgepGAE1YUl07OUIphyIyLvch7X5+4Udt6Z+s9bj8G3LH1rWU4RwavqvoD/21jxcwIe+
-         t+g1RYmVip3l62nLa5LsH+lzHGaDyXIopKca+eeTWIpw822IM17xPHtmNYDHKcpz0c9r
-         6YNw==
-X-Gm-Message-State: AOAM5316fPS4+optQ78+P0wxywWz3SnEZ6lTC/6BFTamDL2S7BdhdpB1
-        1fkYmi7OplN/RQwSrYB1iRR+04/o31UVUQ==
-X-Google-Smtp-Source: ABdhPJw840JvOOhx11ku3mcL6/lrfwH2JNsJAw/RBGSz62yk5Rhz3RDl+YOjeEXh46RUeSwIuntsWg==
-X-Received: by 2002:a05:6808:ab0:: with SMTP id r16mr671778oij.34.1617157986746;
-        Tue, 30 Mar 2021 19:33:06 -0700 (PDT)
-Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:a099:767b:2b62:48df])
-        by smtp.gmail.com with ESMTPSA id 7sm188125ois.20.2021.03.30.19.33.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 19:33:06 -0700 (PDT)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
-        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: [Patch bpf-next v8 16/16] selftests/bpf: add a test case for loading BPF_SK_SKB_VERDICT
-Date:   Tue, 30 Mar 2021 19:32:37 -0700
-Message-Id: <20210331023237.41094-17-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210331023237.41094-1-xiyou.wangcong@gmail.com>
-References: <20210331023237.41094-1-xiyou.wangcong@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ABi/1RQtTKGX0CM1QKK84G+1r8Xe7uaOR14Jy+a6M/s=;
+        b=gpdxUiEiyY1C87CuwP0wFToyNS5rafa8v0hXYzzKPxm/93+w9xFP4qxZScjgY62aJr
+         voBTPhCtehAjvNusC88GNeGFa8UhGBJIAHz5qRFuCSeZr5aoe/+tgF2phT4sv/t1QMP2
+         PjV7y2z9cBdR70DrGIKFUuWli/TGDuSC1IANMiVSd3PLKdT93YHWfeEYeKl8VzVuwPOv
+         bpVQFIjHAsXBk0Xm5FGLQ+b8dtgYZZuUZZrpvjZVAZ6N5niMrxuWMUmfZBC62Ft+Dxx9
+         fM3NSLE3zODaKG5vWQPTJpi6v6qxEIWSpAkEJbafBLiZU1Ae32fXB6yWVIiU5eNdcKKm
+         S7dg==
+X-Gm-Message-State: AOAM53050zfydtHoiHTcYDrurhpH83yTu+NQ/VO8hI05YQZRv0Je5PHh
+        ewJbc5ZRZ9hXF8TIXjxErQxpme3OdUxcueQmBeaL9g==
+X-Google-Smtp-Source: ABdhPJyaaL8BWzGbbUE/uZ3QHp+grRDbDohBivnntNoG3f/8E9lqMjRWDYV/iNx6MCLl0BhLIQ2OZCDHjfUAe4yej5o=
+X-Received: by 2002:a17:90b:3550:: with SMTP id lt16mr1246796pjb.47.1617158390101;
+ Tue, 30 Mar 2021 19:39:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210328064121.2062927-1-yhs@fb.com> <20210329225235.1845295-1-ndesaulniers@google.com>
+ <0b8d17be-e015-83c3-88d8-7c218cd01536@fb.com> <20210331002507.xv4sxe27dqirmxih@google.com>
+ <79f231f2-2d14-0900-332e-cba42f770d9e@fb.com>
+In-Reply-To: <79f231f2-2d14-0900-332e-cba42f770d9e@fb.com>
+From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Date:   Tue, 30 Mar 2021 19:39:38 -0700
+Message-ID: <CAFP8O3JjU26pNKhFE2AniP-k=8-G09G2ZXc6BXndK9hugX-0ag@mail.gmail.com>
+Subject: Re: [PATCH kbuild] kbuild: add -grecord-gcc-switches to clang build
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        kernel-team@fb.com,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Bill Wendling <morbo@google.com>,
+        David Blaikie <dblaikie@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+On Tue, Mar 30, 2021 at 6:48 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 3/30/21 5:25 PM, Fangrui Song wrote:
+> > On 2021-03-30, 'Yonghong Song' via Clang Built Linux wrote:
+> >>
+> >>
+> >> On 3/29/21 3:52 PM, Nick Desaulniers wrote:
+> >>> (replying to
+> >>> https://lore.kernel.org/bpf/20210328064121.2062927-1-yhs@fb.com/)
+> >>>
+> >>> Thanks for the patch!
+> >>>
+> >>>> +# gcc emits compilation flags in dwarf DW_AT_producer by default
+> >>>> +# while clang needs explicit flag. Add this flag explicitly.
+> >>>> +ifdef CONFIG_CC_IS_CLANG
+> >>>> +DEBUG_CFLAGS    +=3D -grecord-gcc-switches
+> >>>> +endif
+> >>>> +
+> >
+> > Yes, gcc defaults to -grecord-gcc-switches. Clang doesn't.
+>
+> Could you know why? dwarf size concern?
+>
+> >
+> >>> This adds ~5MB/1% to vmlinux of an x86_64 defconfig built with clang.
+> >>> Do we
+> >>> want to add additional guards for CONFIG_DEBUG_INFO_BTF, so that we
+> >>> don't have
+> >>> to pay that cost if that config is not set?
+> >>
+> >> Since this patch is mostly motivated to detect whether the kernel is
+> >> built with clang lto or not. Let me add the flag only if lto is
+> >> enabled. My measurement shows 0.5% increase to thinlto-vmlinux.
+> >> The smaller percentage is due to larger .debug_info section
+> >> (almost double) for thinlto vs. no lto.
+> >>
+> >> ifdef CONFIG_LTO_CLANG
+> >> DEBUG_CFLAGS   +=3D -grecord-gcc-switches
+> >> endif
+> >>
+> >> This will make pahole with any clang built kernels, lto or non-lto.
+> >
+> > I share the same concern about sizes. Can't pahole know it is clang LTO
+> > via other means? If pahole just needs to know the one-bit information
+> > (clang LTO vs not), having every compile option seems unnecessary....
+>
+> This is v2 of the patch
+>    https://lore.kernel.org/bpf/20210331001623.2778934-1-yhs@fb.com/
+> The flag will be guarded with CONFIG_LTO_CLANG.
+>
+> As mentioned in commit message of v2, the alternative is
+> to go through every cu to find out whether DW_FORM_ref_addr is used
+> or not. In other words, check every possible cross-cu references
+> to find whether cross-cu reference actually happens or not. This
+> is quite heavy for pahole...
+>
+> What we really want to know is whether cross-cu reference happens
+> or not? If there is an easy way to get it, that will be great.
 
-This adds a test case to ensure BPF_SK_SKB_VERDICT and
-BPF_SK_STREAM_VERDICT will never be attached at the same time.
++David Blaikie
 
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 40 +++++++++++++++++++
- .../progs/test_sockmap_skb_verdict_attach.c   | 18 +++++++++
- 2 files changed, 58 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_skb_verdict_attach.c
+> >
+> >> If the maintainer wants further restriction with CONFIG_DEBUG_INFO_BTF=
+,
+> >> I can do that in another revision.
+> >>
+> >> --
+> >> You received this message because you are subscribed to the Google
+> >> Groups "Clang Built Linux" group.
+> >> To unsubscribe from this group and stop receiving emails from it, send
+> >> an email to clang-built-linux+unsubscribe@googlegroups.com.
+> >> To view this discussion on the web visit
+> >> https://groups.google.com/d/msgid/clang-built-linux/0b8d17be-e015-83c3=
+-88d8-7c218cd01536@fb.com
+> >> .
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index b8b48cac2ac3..ab77596b64e3 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -7,6 +7,7 @@
- #include "test_skmsg_load_helpers.skel.h"
- #include "test_sockmap_update.skel.h"
- #include "test_sockmap_invalid_update.skel.h"
-+#include "test_sockmap_skb_verdict_attach.skel.h"
- #include "bpf_iter_sockmap.skel.h"
- 
- #define TCP_REPAIR		19	/* TCP sock is under repair right now */
-@@ -281,6 +282,39 @@ static void test_sockmap_copy(enum bpf_map_type map_type)
- 	bpf_iter_sockmap__destroy(skel);
- }
- 
-+static void test_sockmap_skb_verdict_attach(enum bpf_attach_type first,
-+					    enum bpf_attach_type second)
-+{
-+	struct test_sockmap_skb_verdict_attach *skel;
-+	int err, map, verdict;
-+
-+	skel = test_sockmap_skb_verdict_attach__open_and_load();
-+	if (CHECK_FAIL(!skel)) {
-+		perror("test_sockmap_skb_verdict_attach__open_and_load");
-+		return;
-+	}
-+
-+	verdict = bpf_program__fd(skel->progs.prog_skb_verdict);
-+	map = bpf_map__fd(skel->maps.sock_map);
-+
-+	err = bpf_prog_attach(verdict, map, first, 0);
-+	if (CHECK_FAIL(err)) {
-+		perror("bpf_prog_attach");
-+		goto out;
-+	}
-+
-+	err = bpf_prog_attach(verdict, map, second, 0);
-+	assert(err == -1 && errno == EBUSY);
-+
-+	err = bpf_prog_detach2(verdict, map, first);
-+	if (CHECK_FAIL(err)) {
-+		perror("bpf_prog_detach2");
-+		goto out;
-+	}
-+out:
-+	test_sockmap_skb_verdict_attach__destroy(skel);
-+}
-+
- void test_sockmap_basic(void)
- {
- 	if (test__start_subtest("sockmap create_update_free"))
-@@ -301,4 +335,10 @@ void test_sockmap_basic(void)
- 		test_sockmap_copy(BPF_MAP_TYPE_SOCKMAP);
- 	if (test__start_subtest("sockhash copy"))
- 		test_sockmap_copy(BPF_MAP_TYPE_SOCKHASH);
-+	if (test__start_subtest("sockmap skb_verdict attach")) {
-+		test_sockmap_skb_verdict_attach(BPF_SK_SKB_VERDICT,
-+						BPF_SK_SKB_STREAM_VERDICT);
-+		test_sockmap_skb_verdict_attach(BPF_SK_SKB_STREAM_VERDICT,
-+						BPF_SK_SKB_VERDICT);
-+	}
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_skb_verdict_attach.c b/tools/testing/selftests/bpf/progs/test_sockmap_skb_verdict_attach.c
-new file mode 100644
-index 000000000000..2d31f66e4f23
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_skb_verdict_attach.c
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKMAP);
-+	__uint(max_entries, 2);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} sock_map SEC(".maps");
-+
-+SEC("sk_skb/skb_verdict")
-+int prog_skb_verdict(struct __sk_buff *skb)
-+{
-+	return SK_DROP;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.25.1
 
+
+--=20
+=E5=AE=8B=E6=96=B9=E7=9D=BF
