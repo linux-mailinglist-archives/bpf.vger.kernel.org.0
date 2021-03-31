@@ -2,164 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3877E34FD76
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 11:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04C534FFDA
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 14:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234375AbhCaJwL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 05:52:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52155 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234790AbhCaJvu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 31 Mar 2021 05:51:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617184310;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gSVEMu/gb4JEhF05TMYdAdHmEbbEjzD0QedOu+4cT4M=;
-        b=iq4imOGbJkT/ZJ4ecr7xH9/z4je/W83CfNMXwBfR87oUT5Z3zE7MTPWnEFGmUaToi0ti52
-        qoiZZ8xIaLkTnVbYmSHB+nN9EoIjayRwc+j1buB3G2iOkfSz9qtOg+yZgpLQG4cYTnTfZj
-        gqHhtW7Rff43Q2oOefGYu9/bl9Ea2wU=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-174-y3kd65b0Mi6pRj-cKc1Q4g-1; Wed, 31 Mar 2021 05:51:48 -0400
-X-MC-Unique: y3kd65b0Mi6pRj-cKc1Q4g-1
-Received: by mail-ed1-f71.google.com with SMTP id bm8so830428edb.4
-        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 02:51:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=gSVEMu/gb4JEhF05TMYdAdHmEbbEjzD0QedOu+4cT4M=;
-        b=LZKwD2T4fujZ9M5eqjoVWYO1wLknnoI/g01hRJmKJrsw8yEY1EMJ05kMQKXTJxoSoI
-         XFnAZXz8ZNvpjPWu/ORjM4kd7rjdnK9GekV4uhFpBXNpI9sz5eC1nFha5xsWWblRWPRB
-         c/kJgGultoU3GwmyYhilfezYUETRrYdaQKkq+IM5Q2BmzbJLndlyZ9wZE8Ik87ANdqIS
-         PxuhgYPiqIpebJF1PA+j7tmNZ0agVWvv4BLhp8ghpqW3WPMrDYq+nWiASXap54D9C3aM
-         jzE8ena+hwUoa+QXlihvFkMMdPCB4pwBODslNeRZykwUrnjCUl1/h31fiyJGxqSzMj3A
-         +lag==
-X-Gm-Message-State: AOAM531HNAUCDTuzUgKpnftNwGmfLEOaOlEb5EX10KWVBQLTayoJXEUf
-        JWKOH10eobeoSlh9rNpapC2U8XcQ4mhSfiPPKU1xu+UWPYVQLI5D21eEzf0mAfHT3hTQPV+8oAX
-        4sEzp5p0y50F4
-X-Received: by 2002:aa7:d954:: with SMTP id l20mr2610475eds.1.1617184306908;
-        Wed, 31 Mar 2021 02:51:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzylwo4hPWcYcmlE62zpzxVfApqIEMleAceptnhOdFIA9MPn6oGC4nNnvquLFXWM5B7Cncu4w==
-X-Received: by 2002:aa7:d954:: with SMTP id l20mr2610446eds.1.1617184306509;
-        Wed, 31 Mar 2021 02:51:46 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id h17sm1123457eds.26.2021.03.31.02.51.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 02:51:46 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 5FCE6181B24; Wed, 31 Mar 2021 11:51:45 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
+        id S235115AbhCaMCD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 08:02:03 -0400
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:52010 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235035AbhCaMBf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 08:01:35 -0400
+Date:   Wed, 31 Mar 2021 12:01:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1617192093; bh=z8CUaRMV+W1DdXAmNRPxHigof0va9uxxc3ghbazANQw=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=lZ9Y2+Rx9IMXJGyzGR1r8fCec6Hg5fzSGRUVXr+KqhJO2JmCyO/h1DrmLR0u3kV8E
+         8NbVOmjwBLwIxjYnWpeoSXgfZ8meMiqtFXZmSq4Sp9WeHtTG7uknH02cIha4dUxCEO
+         s5xMMYX9SFqoKZs/1n+t+DSs22IvE1dQrKRXpX45sUI7rLQ4To1kqPgaH0fcuKb77S
+         Ir/QdFpJRPFPW6RYkq4Hs+yLKhiUEEFGMkttnRr3kCTUQ6Tsi7Dn6xOuA5v+PH09yU
+         WFPNnfLn2C19CgASzQoNrNSLUdSq2k1vyduxgsvlM9mORR+llDW8xiTZpzlrXgABad
+         Uhfl9AhYp5zUw==
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-In-Reply-To: <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
-References: <20210325120020.236504-1-memxor@gmail.com>
- <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
- <20210328080648.oorx2no2j6zslejk@apollo>
- <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
- <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 31 Mar 2021 11:51:45 +0200
-Message-ID: <878s63r6q6.fsf@toke.dk>
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH bpf-next 0/2] xsk: introduce generic almost-zerocopy xmit
+Message-ID: <20210331120116.2671-1-alobakin@pm.me>
+In-Reply-To: <CAJ8uoz2UNABjfpvHOopzvRfW4RJGSS2P=0MUZRkyg-e+S1OdHA@mail.gmail.com>
+References: <20210330231528.546284-1-alobakin@pm.me> <CAJ8uoz2UNABjfpvHOopzvRfW4RJGSS2P=0MUZRkyg-e+S1OdHA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Wed, 31 Mar 2021 11:44:45 +0200
 
-> On 3/30/21 10:39 PM, Andrii Nakryiko wrote:
->> On Sun, Mar 28, 2021 at 1:11 AM Kumar Kartikeya Dwivedi
->> <memxor@gmail.com> wrote:
->>> On Sun, Mar 28, 2021 at 10:12:40AM IST, Andrii Nakryiko wrote:
->>>> Is there some succinct but complete enough documentation/tutorial/etc
->>>> that I can reasonably read to understand kernel APIs provided by TC
->>>> (w.r.t. BPF, of course). I'm trying to wrap my head around this and
->>>> whether API makes sense or not. Please share links, if you have some.
->>>
->>> Hi Andrii,
->>>
->>> Unfortunately for the kernel API part, I couldn't find any when I was working
->>> on this. So I had to read the iproute2 tc code (tc_filter.c, f_bpf.c,
->>> m_action.c, m_bpf.c) and the kernel side bits (cls_api.c, cls_bpf.c, act_api.c,
->>> act_bpf.c) to grok anything I didn't understand. There's also similar code in
->>> libnl (lib/route/{act,cls}.c).
->>>
->>> Other than that, these resources were useful (perhaps you already went through
->>> some/all of them):
->>>
->>> https://docs.cilium.io/en/latest/bpf/#tc-traffic-control
->>> https://qmonnet.github.io/whirl-offload/2020/04/11/tc-bpf-direct-action/
->>> tc(8), and tc-bpf(8) man pages
->>>
->>> I hope this is helpful!
->> 
->> Thanks! I'll take a look. Sorry, I'm a bit behind with all the stuff,
->> trying to catch up.
->> 
->> I was just wondering if it would be more natural instead of having
->> _dev _block variants and having to specify __u32 ifindex, __u32
->> parent_id, __u32 protocol, to have some struct specifying TC
->> "destination"? Maybe not, but I thought I'd bring this up early. So
->> you'd have just bpf_tc_cls_attach(), and you'd so something like
->> 
->> bpf_tc_cls_attach(prog_fd, TC_DEV(ifindex, parent_id, protocol))
->> 
->> or
->> 
->> bpf_tc_cls_attach(prog_fd, TC_BLOCK(block_idx, protocol))
->> 
->> ? Or it's taking it too far?
->> 
->> But even if not, I think detaching can be unified between _dev and
->> _block, can't it?
+> On Wed, Mar 31, 2021 at 1:17 AM Alexander Lobakin <alobakin@pm.me> wrote:
+> >
+> > This series is based on the exceptional generic zerocopy xmit logics
+> > initially introduced by Xuan Zhuo. It extends it the way that it
+> > could cover all the sane drivers, not only the ones that are capable
+> > of xmitting skbs with no linear space.
+> >
+> > The first patch is a random while-we-are-here improvement over
+> > full-copy path, and the second is the main course. See the individual
+> > commit messages for the details.
+> >
+> > The original (full-zerocopy) path is still here and still generally
+> > faster, but for now it seems like virtio_net will remain the only
+> > user of it, at least for a considerable period of time.
+> >
+> > Alexander Lobakin (2):
+> >   xsk: speed-up generic full-copy xmit
+> >   xsk: introduce generic almost-zerocopy xmit
+> >
+> >  net/xdp/xsk.c | 33 +++++++++++++++++++++++----------
+> >  1 file changed, 23 insertions(+), 10 deletions(-)
+> >
+> > --
+> > Well, this is untested. I currently don't have an access to my setup
+> > and is bound by moving to another country, but as I don't know for
+> > sure at the moment when I'll get back to work on the kernel next time,
+> > I found it worthy to publish this now -- if any further changes will
+> > be required when I already will be out-of-sight, maybe someone could
+> > carry on to make a another revision and so on (I'm still here for any
+> > questions, comments, reviews and improvements till the end of this
+> > week).
+> > But this *should* work with all the sane drivers. If a particular
+> > one won't handle this, it's likely ill.
 >
-> Do we even need the _block variant? I would rather prefer to take the chance
-> and make it as simple as possible, and only iff really needed extend with
-> other APIs, for example:
->
->    bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS});
->
-> Internally, this will create the sch_clsact qdisc & cls_bpf filter instance
-> iff not present yet, and attach to a default prio 1 handle 1, and _always_ in
-> direct-action mode. This is /as simple as it gets/ and we don't need to bother
-> users with more complex tc/cls_bpf internals unless desired. For example,
-> extended APIs could add prio/parent so that multi-prog can be attached to a
-> single cls_bpf instance, but even that could be a second step, imho.
+> Thanks Alexander. I will take your patches for a spin on a couple of
+> NICs and get back to you, though it will be next week due to holidays
+> where I am based.
 
-While I'm all for simplifying where possible, the question becomes at
-what level? I.e., we initially figured we'd expose (most of) the netlink
-API in the low-level API (patch 3 in the series) and then have the
-bpf_program__* level API be the simple "just attach" one...
+Thanks a lot! Any tests will be much appreciated.
+I'll publish v2 in a moment though, want to drop a couple of
+micro-optimizations.
 
-We could simplify the low-level one further, of course, for instance by
-getting rid of the block stuff entirely, but I don't see much value in
-leaving out the support for prio/parent in the bpf_tc_cls_* - we'd have
-to make the API extensible so it could be added later anyway, so why not
-just include it from the get-go (especially as Kumar has already written
-the code?)
+> > --
+> > 2.31.1
 
--Toke
+Al
 
