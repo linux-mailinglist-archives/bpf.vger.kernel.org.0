@@ -2,69 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E8A350A1F
+	by mail.lfdr.de (Postfix) with ESMTP id 737D7350A1E
 	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 00:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhCaWUo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 18:20:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50130 "EHLO mail.kernel.org"
+        id S232686AbhCaWUp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 18:20:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhCaWUP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Mar 2021 18:20:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E041361078;
-        Wed, 31 Mar 2021 22:20:14 +0000 (UTC)
+        id S230309AbhCaWUS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 18:20:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7E53C60FEF;
+        Wed, 31 Mar 2021 22:20:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617229214;
-        bh=emkVMfPNBs6VfL684ehH4JMVFlgqaT3Etox40Szo5fc=;
+        s=k20201202; t=1617229218;
+        bh=XR2GhFJDG0uscdht9bNZ0OChS0oMBvs3rgKRpgNmwjI=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ggfSqsxqY3UdBekUS7UQ+WrTQDNqajcwkk6yfCx+rmWlEWOtOj34DM5BTy7gHe7gd
-         8PEyr+YhqSfNIhu/2ZfSHXaE0npMKXqHZ8ucfLlz8Obam6EmcSb9Sn++SzowpN9/Ou
-         osec4i+x86CM/UNIz4GvbmQwoVDBkDbU3Rwfs4TM5Ecdxb+UJNJQ4wDBhBvjB1+NnA
-         s+cjOmAq7PPMGmszMG2kDLcUQfyLyUbzU4AL0nAxAhf13hS9who4+vmJ345iBdi+VF
-         QYYmdfNJc28KXZRNHOj7xFZJsj2hqIdKbK9mr+cghZn5j4ushOaJ6tS/acFRVOHg2v
-         iagDefN6srTHw==
+        b=ldguJ9DKRH0UlysgAzc6tCCzef7qbCNBs/k1+72pIW9T/jdJZUhM5QJPpTkMsC67Y
+         OPL3TsiIzve4vRyD5rIBjmQMhBuFT/RbNxQWOnjnzMxxoocRQLX5qbWLC/8KoHMIt+
+         scIeFQf9ww8IVgeIgEHtb4TXM8y5FOkktOc5CwvJzUNV0vlY8txdRudG0UDOJhN2AR
+         mK/ClLLBhb8mZj+gcGQsbuYn9dQLZVlnGPmlew04VH2yM42kOzQkfrvfEiGuh07dC6
+         dYlyEWnoWpZWxC6x9eYo4bc3o6V5PakTYzz+bQ9x/xXU684Xwc/JauI0pra/924YVW
+         gE7CQ0AD/shiw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D4A6D608FA;
-        Wed, 31 Mar 2021 22:20:14 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7518060727;
+        Wed, 31 Mar 2021 22:20:18 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2 1/1] xdp: fix xdp_return_frame() kernel BUG throw for
- page_pool memory model
+Subject: Re: [PATCH net-next 0/9] XDP for NXP ENETC
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161722921486.2890.11294519050752062288.git-patchwork-notify@kernel.org>
-Date:   Wed, 31 Mar 2021 22:20:14 +0000
-References: <20210331132503.15926-1-boon.leong.ong@intel.com>
-In-Reply-To: <20210331132503.15926-1-boon.leong.ong@intel.com>
-To:     Ong Boon Leong <boon.leong.ong@intel.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        makita.toshiaki@lab.ntt.co.jp, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <161722921847.2890.11454275035323776176.git-patchwork-notify@kernel.org>
+Date:   Wed, 31 Mar 2021 22:20:18 +0000
+References: <20210331200857.3274425-1-olteanv@gmail.com>
+In-Reply-To: <20210331200857.3274425-1-olteanv@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, alexander.duyck@gmail.com,
+        ioana.ciornei@nxp.com, alexandru.marginean@nxp.com,
+        claudiu.manoil@nxp.com, ilias.apalodimas@linaro.org,
+        vladimir.oltean@nxp.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed, 31 Mar 2021 21:25:03 +0800 you wrote:
-> xdp_return_frame() may be called outside of NAPI context to return
-> xdpf back to page_pool. xdp_return_frame() calls __xdp_return() with
-> napi_direct = false. For page_pool memory model, __xdp_return() calls
-> xdp_return_frame_no_direct() unconditionally and below false negative
-> kernel BUG throw happened under preempt-rt build:
+On Wed, 31 Mar 2021 23:08:48 +0300 you wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
 > 
-> [  430.450355] BUG: using smp_processor_id() in preemptible [00000000] code: modprobe/3884
-> [  430.451678] caller is __xdp_return+0x1ff/0x2e0
-> [  430.452111] CPU: 0 PID: 3884 Comm: modprobe Tainted: G     U      E     5.12.0-rc2+ #45
+> This series adds support to the enetc driver for the basic XDP primitives.
+> The ENETC is a network controller found inside the NXP LS1028A SoC,
+> which is a dual-core Cortex A72 device for industrial networking,
+> with the CPUs clocked at up to 1.3 GHz. On this platform, there are 4
+> ENETC ports and a 6-port embedded DSA switch, in a topology that looks
+> like this:
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v2,1/1] xdp: fix xdp_return_frame() kernel BUG throw for page_pool memory model
-    https://git.kernel.org/netdev/net/c/622d13694b5f
+  - [net-next,1/9] net: enetc: consume the error RX buffer descriptors in a dedicated function
+    https://git.kernel.org/netdev/net-next/c/2fa423f5f0c6
+  - [net-next,2/9] net: enetc: move skb creation into enetc_build_skb
+    https://git.kernel.org/netdev/net-next/c/a800abd3ecb9
+  - [net-next,3/9] net: enetc: add a dedicated is_eof bit in the TX software BD
+    https://git.kernel.org/netdev/net-next/c/d504498d2eb3
+  - [net-next,4/9] net: enetc: clean the TX software BD on the TX confirmation path
+    https://git.kernel.org/netdev/net-next/c/1ee8d6f3bebb
+  - [net-next,5/9] net: enetc: move up enetc_reuse_page and enetc_page_reusable
+    https://git.kernel.org/netdev/net-next/c/65d0cbb414ce
+  - [net-next,6/9] net: enetc: add support for XDP_DROP and XDP_PASS
+    https://git.kernel.org/netdev/net-next/c/d1b15102dd16
+  - [net-next,7/9] net: enetc: add support for XDP_TX
+    https://git.kernel.org/netdev/net-next/c/7ed2bc80074e
+  - [net-next,8/9] net: enetc: increase RX ring default size
+    https://git.kernel.org/netdev/net-next/c/d6a2829e82cf
+  - [net-next,9/9] net: enetc: add support for XDP_REDIRECT
+    https://git.kernel.org/netdev/net-next/c/9d2b68cc108d
 
 You are awesome, thank you!
 --
