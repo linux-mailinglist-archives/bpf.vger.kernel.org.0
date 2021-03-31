@@ -2,121 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A96533503F8
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 17:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45403350441
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 18:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbhCaP6C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 11:58:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58189 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232399AbhCaP5s (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 31 Mar 2021 11:57:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617206268;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eqFru+9hw+gJWIwERvjgVi+GWdWYD0rWG4MghlDR7S0=;
-        b=YTzseYDX6tk+XNEZgB9IihZmVKy0v2DkhSbIjwAJynaVkhZSg9S5uMFiNFJU3RZp+xnc0/
-        VqxgYQaOI/wY6+cY7EvW7aQNfq54ofbjJcYtVy1BDP6HJCrppw4mcIBzqTlB60sJleoIy/
-        ns1DjmkC5yKf/fVlZtjCGK+XGNhWPnM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-89-ybA1eGXvOpmb49m-mdhcYA-1; Wed, 31 Mar 2021 11:57:45 -0400
-X-MC-Unique: ybA1eGXvOpmb49m-mdhcYA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0CD7C801814;
-        Wed, 31 Mar 2021 15:57:43 +0000 (UTC)
-Received: from treble (ovpn-119-212.rdu2.redhat.com [10.10.119.212])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 850E819D9F;
-        Wed, 31 Mar 2021 15:57:39 +0000 (UTC)
-Date:   Wed, 31 Mar 2021 10:57:36 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC PATCH -tip 3/3] x86/kprobes,orc: Unwind optprobe trampoline
- correctly
-Message-ID: <20210331155736.qyuph7sgabmqqmq3@treble>
-References: <161716946413.721514.4057380464113663840.stgit@devnote2>
- <161716949640.721514.14252504351086671126.stgit@devnote2>
+        id S230385AbhCaQO1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 12:14:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229486AbhCaQOI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 12:14:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D17416102A;
+        Wed, 31 Mar 2021 16:14:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617207244;
+        bh=VgwWgmjg9khzPt0mP1Tojd5JQXXGG70rDa5nw1IZQnQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HalAKJD2CJZEeF30MW0WR05W+hTZFDzEVCSEXzL4OhU+v/mDuPK/+LeXZ+ITxe052
+         nJCA/Qt6D4xMaMQsU8IpXcFRJRvFjosDtMnatRvn1TsQ/Nw7V9u2tGFQ8MCUYu7/1k
+         +IodcWBdDvom3CjuGSlhLKngyeFHjwAnJqPVq8YVU4Nrm4JJ1QiJNkvUCIhO24gdvY
+         fIHNxx89OwUuwSr+yJ+iGIeRM5VCPndF90RrnSNScnmMVWH5Fe/kwzwg1VQIQG3T53
+         oGYxEQAMStzHWeN+N5W5v5K54WbFa9+jCzEBdR3k/oNIOwcWrBaad/1BEknkJ69Pkl
+         N0Ty4VZYUErpA==
+Received: by mail-lj1-f172.google.com with SMTP id u20so24475884lja.13;
+        Wed, 31 Mar 2021 09:14:03 -0700 (PDT)
+X-Gm-Message-State: AOAM530/rKUJc3Pq624N+n9RXB1clOne0IEBUG40zJw1NoasbkONZDjP
+        F0wF2fjEkNlKbNxF8RxmWsSxyjBmorx4d3Me1N8=
+X-Google-Smtp-Source: ABdhPJyZnC6MHHfZno0xYkcUUBI/HLYguDDsNuX/RpDHNIEmgvJHJ/TpM4Nd6uPzwi6dfPuRZaE3/K6pfOjR+l2rvXs=
+X-Received: by 2002:a2e:809a:: with SMTP id i26mr2541423ljg.357.1617207242113;
+ Wed, 31 Mar 2021 09:14:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <161716949640.721514.14252504351086671126.stgit@devnote2>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210331075135.3850782-1-hefengqing@huawei.com>
+In-Reply-To: <20210331075135.3850782-1-hefengqing@huawei.com>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 31 Mar 2021 09:13:51 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW60V4WL+SGhYeZTGmLhFvc_vywATB61BBAvc9R8m02pTg@mail.gmail.com>
+Message-ID: <CAPhsuW60V4WL+SGhYeZTGmLhFvc_vywATB61BBAvc9R8m02pTg@mail.gmail.com>
+Subject: Re: [Patch bpf-next] bpf: remove unused parameter from ___bpf_prog_run
+To:     He Fengqing <hefengqing@huawei.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 02:44:56PM +0900, Masami Hiramatsu wrote:
-> +#ifdef CONFIG_UNWINDER_ORC
-> +unsigned long recover_optprobe_trampoline(unsigned long addr, unsigned long *sp)
-> +{
-> +	unsigned long offset, entry, probe_addr;
-> +	struct optimized_kprobe *op;
-> +	struct orc_entry *orc;
-> +
-> +	entry = find_kprobe_optinsn_slot_entry(addr);
-> +	if (!entry)
-> +		return addr;
-> +
-> +	offset = addr - entry;
-> +
-> +	/* Decode arg1 and get the optprobe */
-> +	op = (void *)extract_set_arg1((void *)(entry + TMPL_MOVE_IDX));
-> +	if (!op)
-> +		return addr;
-> +
-> +	probe_addr = (unsigned long)op->kp.addr;
-> +
-> +	if (offset < TMPL_END_IDX) {
-> +		orc = orc_find((unsigned long)optprobe_template_func + offset);
-> +		if (!orc || orc->sp_reg != ORC_REG_SP)
-> +			return addr;
-> +		/*
-> +		 * Since optprobe trampoline doesn't push caller on the stack,
-> +		 * need to decrement 1 stack entry size
-> +		 */
-> +		*sp += orc->sp_offset - sizeof(long);
-> +		return probe_addr;
-> +	} else {
-> +		return probe_addr + offset - TMPL_END_IDX;
-> +	}
-> +}
-> +#endif
+On Wed, Mar 31, 2021 at 12:14 AM He Fengqing <hefengqing@huawei.com> wrote:
+>
+> 'stack' parameter is not used in ___bpf_prog_run,
+> the base address have been set to FP reg. So consequently remove it.
+>
+> Signed-off-by: He Fengqing <hefengqing@huawei.com>
 
-Hm, I'd like to avoid intertwining kprobes and ORC like this.
-
-ORC unwinds other generated code by assuming the generated code uses a
-frame pointer.  Could we do that here?
-
-With CONFIG_FRAME_POINTER, unwinding works because SAVE_REGS_STRING has
-ENCODE_FRAME_POINTER, but that's not going to work for ORC.
-
-Instead of these patches, can we 'push %rbp; mov %rsp, %rbp' at the
-beginning of the template and 'pop %rbp' at the end?
-
-I guess SAVE_REGS_STRING would need to be smart enough to push the
-original saved version of %rbp.  Of course then that breaks the
-kretprobe_trampoline() usage, so it may need to be a separate macro.
-
-[ Or make the same change to kretprobe_trampoline().  Then the other
-  patch set wouldn't be needed either ;-) ]
-
-Of course the downside is, when you get an interrupt during the frame
-pointer setup, unwinding is broken.  But I think that's acceptable for
-generated code.  We've lived with that limitation for all code, with
-CONFIG_FRAME_POINTER, for many years.
-
-Eventually we may want to have a way to register generated code (and the
-ORC for it).
-
--- 
-Josh
-
+Acked-by: Song Liu <songliubraving@fb.com>
