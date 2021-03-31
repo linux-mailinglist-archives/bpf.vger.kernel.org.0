@@ -2,229 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D487C34F88E
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 08:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85DBE34F8EE
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 08:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233693AbhCaGMY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 02:12:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27205 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231315AbhCaGLz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 31 Mar 2021 02:11:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617171114;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FE/Uu9OdEgvNJJ5WkIjTkjZZpIGeqj+IVUkWfKoqNxU=;
-        b=QNX4yHrdd1DoDNWTzv6yMLunE0A1gWV6yJmOZYitsunWhB4f+yHIOGcu5W+hFb8nJ4K22E
-        s5L+COOQShMyCu90HgLb7zavjpmWqI4zAXBdKDjPxhd/rif2ebjRaEyAapy1FRGzENXaiN
-        tHQi5lwqDVZm9J6yxET3pXZLAz7oAhQ=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-462-16ScIzLAMEmfz8MKt12lrA-1; Wed, 31 Mar 2021 02:11:51 -0400
-X-MC-Unique: 16ScIzLAMEmfz8MKt12lrA-1
-Received: by mail-wr1-f70.google.com with SMTP id n17so447195wrq.5
-        for <bpf@vger.kernel.org>; Tue, 30 Mar 2021 23:11:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FE/Uu9OdEgvNJJ5WkIjTkjZZpIGeqj+IVUkWfKoqNxU=;
-        b=pEXJVfu0ijV1SpdlH0jlNEFAiXxR0KRvjwyDfD0ng0W9pJ/UhJ0LK6BFzLArIy/yPE
-         hT4sI9Y/J5OmjcVo3PvBqmmqptbWVydgc/x2z4+SPPHRTeOv6jWEk5LXLThUOhpKdSKM
-         Cw29w0SS6A5+LzLzz1QJm6ue+HUDDOI+iYH0KBicBjyDs0hINYe6uOqBEfYGMMtqyMra
-         fyzTnwdUojj52bu5LaAH5Y+ahUMo0vkvs9ZFlk713/iSftdxbrgn1S9IRm59wGteoSqC
-         FHPlQrg7Wv5nNKxkcmh/LLTWvNOeZF+2dUbieHB5NqPNZJLGnCOHmdQhi2y6+6jRd8dP
-         09fw==
-X-Gm-Message-State: AOAM530waZKIXDV0nw0XwHmc2YcRvQOqDMPLYvh//IhQiPYsrOoQT9ez
-        h/OCRuMtZmADm7TFNJ7jRX6bocZu5dK411tPLeMiEg0HiUnlqzBXD5YyA42zqZwh2l5wg1vgFos
-        65vTdcwmp14VskGc/PlRIQON4koeV
-X-Received: by 2002:a1c:bc8a:: with SMTP id m132mr1509939wmf.6.1617171110551;
-        Tue, 30 Mar 2021 23:11:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJze27AUkir+KGteM/afHioDAoV1j1RQFtkXoljyFf34Xf8Xb+fC1/poDuKoGPvzkuYoo45WfNUFV6GM9EhZKCA=
-X-Received: by 2002:a1c:bc8a:: with SMTP id m132mr1509914wmf.6.1617171110306;
- Tue, 30 Mar 2021 23:11:50 -0700 (PDT)
+        id S233781AbhCaGoC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 02:44:02 -0400
+Received: from mga05.intel.com ([192.55.52.43]:14630 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233693AbhCaGn6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 02:43:58 -0400
+IronPort-SDR: rF0uF3r4GYH9CAKHdpfoUG7aCaReqt+bSXwaGbw8v45wAbxMhEQf0V4zHwHPbDqtrX9Cc5wg9J
+ BiBsq4KvO5ww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9939"; a="277111325"
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="277111325"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Mar 2021 23:43:57 -0700
+IronPort-SDR: jXuYTlROpZ8rTLnlx2ka6f4SNEfUpzvyKQQgI8DhY5W4+dSbaf93PB7CcwDjVscTD1cPeh5bvT
+ VQrhhdJyTJkg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
+   d="scan'208";a="445523139"
+Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
+  by fmsmga002.fm.intel.com with ESMTP; 30 Mar 2021 23:43:56 -0700
+From:   Ciara Loftus <ciara.loftus@intel.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, bjorn@kernel.org,
+        alexei.starovoitov@gmail.com
+Cc:     Ciara Loftus <ciara.loftus@intel.com>
+Subject: [PATCH v4 bpf 0/3] AF_XDP Socket Creation Fixes
+Date:   Wed, 31 Mar 2021 06:12:15 +0000
+Message-Id: <20210331061218.1647-1-ciara.loftus@intel.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210326114658.210034-1-yauheni.kaliuta@redhat.com>
- <20210326122438.211242-1-yauheni.kaliuta@redhat.com> <20210326122438.211242-4-yauheni.kaliuta@redhat.com>
- <CAEf4BzZowiRKeLGw7JikKuMs+dy-=OTMbUb3eFJCq03Br7P30g@mail.gmail.com>
- <CANoWswmy1bHbU8hBkF2DiyW3oHr1wDxZU3CsyDHOJ+-fe5DBTA@mail.gmail.com> <CAEf4BzbKfz7if1ktSMiyK4TZYZF8n7mk34UQCi3ZuDZvobkZqQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzbKfz7if1ktSMiyK4TZYZF8n7mk34UQCi3ZuDZvobkZqQ@mail.gmail.com>
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Date:   Wed, 31 Mar 2021 09:11:34 +0300
-Message-ID: <CANoWswkx1zNy1fbCkgC6h8f21EPKTg15oezjtLsZ3eN6pEf2Ng@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] selftests/bpf: ringbuf, mmap: bump up page size to 64K
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Andrii,
+This series fixes some issues around socket creation for AF_XDP.
 
-On Wed, Mar 31, 2021 at 8:49 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Mar 29, 2021 at 8:20 AM Yauheni Kaliuta
-> <yauheni.kaliuta@redhat.com> wrote:
-> >
-> > On Sun, Mar 28, 2021 at 8:03 AM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >
-> > [...]
-> >
-> > > >
-> > > >  struct {
-> > > >         __uint(type, BPF_MAP_TYPE_ARRAY);
-> > > > -       __uint(max_entries, 4096);
-> > > > +       __uint(max_entries, PAGE_SIZE);
-> > >
-> > >
-> > > so you can set map size at runtime before bpf_object__load (or
-> > > skeleton's load) with bpf_map__set_max_entries. That way you don't
-> > > have to do any assumptions. Just omit max_entries in BPF source code,
-> > > and always set it in userspace.
-> >
-> > Will it work for ringbuf_multi? If I just set max_entries for ringbuf1
-> > and ringbuf2 that way, it gives me
-> >
-> > libbpf: map 'ringbuf_arr': failed to create inner map: -22
-> > libbpf: map 'ringbuf_arr': failed to create: Invalid argument(-22)
-> > libbpf: failed to load object 'test_ringbuf_multi'
-> > libbpf: failed to load BPF skeleton 'test_ringbuf_multi': -22
-> > test_ringbuf_multi:FAIL:skel_load skeleton load failed
-> >
->
-> You are right, it won't work. We'd need to add something like
-> bpf_map__inner_map() accessor to allow to adjust the inner map
-> definition:
->
-> bpf_map__set_max_entries(bpf_map__inner_map(skel->maps.ringbuf_arr), page_size);
+Patch 1 fixes a potential NULL pointer dereference in
+xsk_socket__create_shared.
 
-Thanks!
+Patch 2 ensures that the umem passed to xsk_socket__create(_shared)
+remains unchanged in event of failure.
 
-On top on that, for some reason simple ringbuf_multi (converted to use
-dynamic size) does not work on my 64K page configuration too, haven't
-investigated why. Works on x86 4K page.
+Patch 3 makes it possible for xsk_socket__create(_shared) to
+succeed even if the rx and tx XDP rings have already been set up by
+introducing a new fields to struct xsk_umem which represent the ring
+setup status for the xsk which shares the fd with the umem.
 
->
-> And some more fixes. Here's minimal diff that made it work, but
-> probably needs a bit more testing:
+v3->v4:
+* Reduced nesting in xsk_put_ctx as suggested by Alexei.
+* Use bools instead of a u8 and flags to represent the
+  ring setup status as suggested by Björn.
 
-Thanks again.
-I could send the patchset with mmap only converted and just increase
-ringbuf size since it's not selftests only change, but requires libbpf
-improvements.
+v2->v3:
+* Instead of ignoring the return values of the setsockopt calls, introduce
+  a new flag to determine whether or not to call them based on the ring
+  setup status as suggested by Alexei.
 
-Or you would prefer to change them all together?
+v1->v2:
+* Simplified restoring the _save pointers as suggested by Magnus.
+* Fixed the condition which determines whether to unmap umem rings
+ when socket create fails.
 
+This series applies on commit 861de02e5f3f2a104eecc5af1d248cb7bf8c5f75
 
+Ciara Loftus (3):
+  libbpf: ensure umem pointer is non-NULL before dereferencing
+  libbpf: restore umem state after socket create failure
+  libbpf: only create rx and tx XDP rings when necessary
 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 7aad78dbb4b4..ed5586cce227 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -2194,6 +2194,7 @@ static int parse_btf_map_def(struct bpf_object *obj,
->              map->inner_map = calloc(1, sizeof(*map->inner_map));
->              if (!map->inner_map)
->                  return -ENOMEM;
-> +            map->inner_map->fd = -1;
->              map->inner_map->sec_idx = obj->efile.btf_maps_shndx;
->              map->inner_map->name = malloc(strlen(map->name) +
->                                sizeof(".inner") + 1);
-> @@ -3845,6 +3846,14 @@ __u32 bpf_map__max_entries(const struct bpf_map *map)
->      return map->def.max_entries;
->  }
->
-> +struct bpf_map *bpf_map__inner_map(struct bpf_map *map)
-> +{
-> +    if (!bpf_map_type__is_map_in_map(map->def.type))
-> +        return NULL;
-> +
-> +    return map->inner_map;
-> +}
-> +
->  int bpf_map__set_max_entries(struct bpf_map *map, __u32 max_entries)
->  {
->      if (map->fd >= 0)
-> @@ -9476,6 +9485,7 @@ int bpf_map__set_inner_map_fd(struct bpf_map *map, int fd)
->          pr_warn("error: inner_map_fd already specified\n");
->          return -EINVAL;
->      }
-> +    zfree(&map->inner_map);
->      map->inner_map_fd = fd;
->      return 0;
->  }
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index f500621d28e5..bec4e6a6e31d 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -480,6 +480,7 @@ LIBBPF_API int bpf_map__pin(struct bpf_map *map,
-> const char *path);
->  LIBBPF_API int bpf_map__unpin(struct bpf_map *map, const char *path);
->
->  LIBBPF_API int bpf_map__set_inner_map_fd(struct bpf_map *map, int fd);
-> +LIBBPF_API struct bpf_map *bpf_map__inner_map(struct bpf_map *map);
->
->  LIBBPF_API long libbpf_get_error(const void *ptr);
->
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index f5990f7208ce..eeb6d5ebd1cc 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -360,4 +360,5 @@ LIBBPF_0.4.0 {
->          bpf_linker__free;
->          bpf_linker__new;
->          bpf_object__set_kversion;
-> +        bpf_map__inner_map;
->  } LIBBPF_0.3.0;
-> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-> b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-> index d37161e59bb2..cdc9c9b1d0e1 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
-> @@ -41,13 +41,23 @@ static int process_sample(void *ctx, void *data, size_t len)
->  void test_ringbuf_multi(void)
->  {
->      struct test_ringbuf_multi *skel;
-> -    struct ring_buffer *ringbuf;
-> +    struct ring_buffer *ringbuf = NULL;
->      int err;
->
-> -    skel = test_ringbuf_multi__open_and_load();
-> +    skel = test_ringbuf_multi__open();
->      if (CHECK(!skel, "skel_open_load", "skeleton open&load failed\n"))
->          return;
->
-> +    bpf_map__set_max_entries(skel->maps.ringbuf1, 4096);
-> +    bpf_map__set_max_entries(skel->maps.ringbuf2, 4096);
-> +    bpf_map__set_max_entries(bpf_map__inner_map(skel->maps.ringbuf_arr), 4096);
-> +
-> +    err = test_ringbuf_multi__load(skel);
-> +    if (!ASSERT_OK(err, "skel_load"))
-> +        goto cleanup;
-> +
->      /* only trigger BPF program for current process */
->      skel->bss->pid = getpid();
->
-> diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-> b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-> index edf3b6953533..055c10b2ff80 100644
-> --- a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-> +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
-> @@ -15,7 +15,6 @@ struct sample {
->
->  struct ringbuf_map {
->      __uint(type, BPF_MAP_TYPE_RINGBUF);
-> -    __uint(max_entries, 1 << 12);
->  } ringbuf1 SEC(".maps"),
->    ringbuf2 SEC(".maps");
->
-
+ tools/lib/bpf/xsk.c | 57 +++++++++++++++++++++++++++++----------------
+ 1 file changed, 37 insertions(+), 20 deletions(-)
 
 -- 
-WBR, Yauheni
+2.17.1
 
