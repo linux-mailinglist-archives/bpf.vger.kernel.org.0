@@ -2,155 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4417C34F560
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 02:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E8E34F575
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 02:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232580AbhCaAQp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 30 Mar 2021 20:16:45 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:35620 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232467AbhCaAQg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 30 Mar 2021 20:16:36 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12V05BUe008121
-        for <bpf@vger.kernel.org>; Tue, 30 Mar 2021 17:16:36 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=DP/oAbaLKJ61xhmWTYPxD7SAy/6hMsxribzBfBRmUtM=;
- b=pnp/Ouq60xlkNISgbm/KgZw6E6OqhUDglybUbeuR2EpD8/VUCMdYcAXMWQ80+Wzg+f1D
- VbCf5pcqC1IXjvr+FNWTy1V0zVjfsDySV3mZFGiJeiEuVo2IVl92zjL3WWPj5td/3323
- VdrwOuwNgbDk+yCGuVatKTkwNSASnkow3fQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37maa2s8fb-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 30 Mar 2021 17:16:36 -0700
-Received: from intmgw001.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 30 Mar 2021 17:16:34 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 6018DE148D2; Tue, 30 Mar 2021 17:16:23 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <linux-kbuild@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH kbuild v2] kbuild: add -grecord-gcc-switches to clang build
-Date:   Tue, 30 Mar 2021 17:16:23 -0700
-Message-ID: <20210331001623.2778934-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: jfIwuOph2F_78WrgTl1YMqecrc-Kqz1r
-X-Proofpoint-GUID: jfIwuOph2F_78WrgTl1YMqecrc-Kqz1r
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S232800AbhCaAZi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 30 Mar 2021 20:25:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232788AbhCaAZN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 30 Mar 2021 20:25:13 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC3CC061574
+        for <bpf@vger.kernel.org>; Tue, 30 Mar 2021 17:25:13 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id v186so12915436pgv.7
+        for <bpf@vger.kernel.org>; Tue, 30 Mar 2021 17:25:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JiHKW01RjgeP+AxOSQjcmRgzm3OlnqFilQWpe+Hu0iU=;
+        b=XiudSGq1mSA+kJYRm6uMHlQtLMnIiTd2WL/ptrd88evZ9T/MRqZEDVup0dMyxWd4QO
+         gMJTPr9cRYf7B0DFQcQijCT32MzbvpOHNNIi8dwNrkC2KghNIdNxqu1PAyr1XNzlPWnX
+         BEbS34Un5pXieoyCKRukLtv6mOpSTcNqKbdqcIa8iczvlpiHNWcNX317XjCtAywnA94h
+         ZbzcXzxK7UU6/k1RU1d6scEgN8Y3LK28HqmK81rDU61yNYpuA7t7MD0i8vwrjFGLSaOu
+         hR8eDr/TuZhwK//XpOA44Zv5w7DsSMJi0cqaRsvJdxFptCCJWxd0NSqkzslS51lfebr9
+         iF0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JiHKW01RjgeP+AxOSQjcmRgzm3OlnqFilQWpe+Hu0iU=;
+        b=U0g7Z0bxK+j6lDykmVdVxFMyd1fMHhzrthdtXwZFpCW2AAV3jVdf0vTAbRRGyJu1LB
+         IbuPyQIK2eWYHbR4iW+H6QUZRhn/lu5/CpSclEe+0SdFkVQmItIkq/Z6jpr5l4NExTdS
+         fgJKBiMyKVTlf42+snuQiERgFsQywrxrVxY9gqex5Qspa8zPUG12okMG1Q2foHQ+TaAB
+         Q5DQNrPEIco8lkVa1+cNxfM2vJh+UKs53LiuD1Ti2ju37W95imFMWZgBdeuhJ2563zVS
+         fa+jgBkKX7OjwG91Y5jOFtTd32wocEebGdQaepVjvvvi4y8AeP8cclTB0ZCYs/oqbEmy
+         EDYw==
+X-Gm-Message-State: AOAM532v810aDVjxs716V3bCZ7CqPa4dsCqbrTjqlrMPSRmcreezOjBB
+        CL7cDQZEPaHI+jT/kZb1TmQr7Q==
+X-Google-Smtp-Source: ABdhPJwLq+p6yNn/9+q/FDiltskY5nb+NU0Ab2ZV7w/+FWRi3W5mXt6xs/XuwS55GqnCBfZrkCGhIQ==
+X-Received: by 2002:a62:ddd2:0:b029:1f1:533b:b1cf with SMTP id w201-20020a62ddd20000b02901f1533bb1cfmr457601pff.56.1617150312427;
+        Tue, 30 Mar 2021 17:25:12 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:0:35db:7d2e:3c36:b064])
+        by smtp.gmail.com with ESMTPSA id q5sm152275pfk.219.2021.03.30.17.25.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Mar 2021 17:25:11 -0700 (PDT)
+Date:   Tue, 30 Mar 2021 17:25:07 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>, arnaldo.melo@gmail.com,
+        ast@kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        linux-kbuild@vger.kernel.org, masahiroy@kernel.org,
+        michal.lkml@markovi.net, clang-built-linux@googlegroups.com,
+        sedat.dilek@gmail.com, morbo@google.com
+Subject: Re: [PATCH kbuild] kbuild: add -grecord-gcc-switches to clang build
+Message-ID: <20210331002507.xv4sxe27dqirmxih@google.com>
+References: <20210328064121.2062927-1-yhs@fb.com>
+ <20210329225235.1845295-1-ndesaulniers@google.com>
+ <0b8d17be-e015-83c3-88d8-7c218cd01536@fb.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-30_13:2021-03-30,2021-03-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- spamscore=0 clxscore=1015 adultscore=0 bulkscore=0 phishscore=0
- lowpriorityscore=0 mlxlogscore=999 suspectscore=0 priorityscore=1501
- malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103300000 definitions=main-2103300175
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <0b8d17be-e015-83c3-88d8-7c218cd01536@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Putting compilation flags in dwarf is helpful in that
-it tells what potential transformations may have
-happened to generate the final binary. Furthermore,
-we have a particular usecase in [1] where pahole wants
-to detect whether vmlinux is compiled with clang lto
-or not, and if vmlinux is compiled with clang lto,
-pahole will merge all debuginfo cu's into one pahole cu.
+On 2021-03-30, 'Yonghong Song' via Clang Built Linux wrote:
+>
+>
+>On 3/29/21 3:52 PM, Nick Desaulniers wrote:
+>>(replying to https://lore.kernel.org/bpf/20210328064121.2062927-1-yhs@fb.com/)
+>>
+>>Thanks for the patch!
+>>
+>>>+# gcc emits compilation flags in dwarf DW_AT_producer by default
+>>>+# while clang needs explicit flag. Add this flag explicitly.
+>>>+ifdef CONFIG_CC_IS_CLANG
+>>>+DEBUG_CFLAGS	+= -grecord-gcc-switches
+>>>+endif
+>>>+
 
-If there is no easy indicator for whether the vmlinux
-is compiled with lto or not, pahole will need to
-go to each cu to iterates all die's to find out
-whether there is a cross-cu reference, for example,
-for one vmlinux I built locally with clang lto,
-5 cu's need to be visited before finding there is
-a cross-cu reference. To visit all cu's just proving
-there is no cross-cu reference is a heavy penalty
-for most pahole users whose codes may not be compiled
-with lto.
+Yes, gcc defaults to -grecord-gcc-switches. Clang doesn't.
 
-One way to get whether vmlinux is built with lto or not
-is through compilation flags. Currently gcc seems putting
-compilation flags into dwarf DW_AT_producer tag if -g
-is specified, while clang needs explicit flag
--grecord-gcc-switches.
-For example,
- build with gcc 8.4.1 (make -j60):
-   ...
-   DW_AT_producer    ("GNU C89 8.4.1 20200928 (Red Hat 8.4.1-1) -mno-sse -m=
-no-mmx -mno-sse2 ...")
-   DW_AT_language    (DW_LANG_C89)
-   DW_AT_name        ("/home/yhs/work/bpf-next/arch/x86/kernel/ebda.c")
+>>This adds ~5MB/1% to vmlinux of an x86_64 defconfig built with clang. Do we
+>>want to add additional guards for CONFIG_DEBUG_INFO_BTF, so that we don't have
+>>to pay that cost if that config is not set?
+>
+>Since this patch is mostly motivated to detect whether the kernel is
+>built with clang lto or not. Let me add the flag only if lto is
+>enabled. My measurement shows 0.5% increase to thinlto-vmlinux.
+>The smaller percentage is due to larger .debug_info section
+>(almost double) for thinlto vs. no lto.
+>
+> ifdef CONFIG_LTO_CLANG
+> DEBUG_CFLAGS   += -grecord-gcc-switches
+> endif
+>
+>This will make pahole with any clang built kernels, lto or non-lto.
 
- build with clang 13 trunk (make -j60 LLVM=3D1):
-   ...
-   DW_AT_producer    ("clang version 13.0.0 (https://github.com/llvm/llvm-p=
-roject.git
-                       11bf268864afbe35ad317e6354c51440d5184911)")
-   DW_AT_language    (DW_LANG_C89)
-   DW_AT_name        ("/home/yhs/work/bpf-next/arch/x86/kernel/ebda.c")
+I share the same concern about sizes. Can't pahole know it is clang LTO
+via other means? If pahole just needs to know the one-bit information
+(clang LTO vs not), having every compile option seems unnecessary....
 
-To solve out use case, the flag is added when clang lto
-(thin-lto or full-lto) is enabled. With this patch, build
-with clang 13 trunk (make -j60 LLVM=3D1 LLVM_IAS=3D1):
-   ...
-   DW_AT_producer    ("clang version 13.0.0 (https://github.com/llvm/llvm-p=
-roject.git
-                       11bf268864afbe35ad317e6354c51440d5184911)
-                       /home/yhs/work/llvm-project/llvm/build.cur/install/b=
-in/clang-13 -MMD
-                       -MF arch/x86/kernel/.ebda.o.d -nostdinc ...")
-   DW_AT_language    (DW_LANG_C89)
-   DW_AT_name        ("/home/yhs/work/bpf-next/arch/x86/kernel/ebda.c")
-
-pahole can just check top die of the dwarf cu to find the compilation flags.
-With detailed compilation flags, in [1], pahole is able to quickly
-decide whether merging cu's is a right choice or not.
-
- [1] https://lore.kernel.org/bpf/20210325065316.3121287-1-yhs@fb.com/
-
-I tested with latest bpf-next, but the patch is also applied cleanly on
-top of latest linus tree.
-
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- Makefile | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-Changelogs:
- v1 -> v2:
-   . guard with CONFIG_LTO_CLANG instead of CONFIG_CC_IS_CLANG
-
-diff --git a/Makefile b/Makefile
-index d4784d181123..74001f2ccf23 100644
---- a/Makefile
-+++ b/Makefile
-@@ -839,6 +839,14 @@ dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) :=3D 5
- DEBUG_CFLAGS	+=3D -gdwarf-$(dwarf-version-y)
- endif
-=20
-+# gcc emits compilation flags in dwarf DW_AT_producer by default
-+# while clang needs explicit flag. Let us enable compilation
-+# flags emission if compiled with clang lto which helps
-+# application distinguish lto vs. non-lto build.
-+ifdef CONFIG_LTO_CLANG
-+DEBUG_CFLAGS	+=3D -grecord-gcc-switches
-+endif
-+
- ifdef CONFIG_DEBUG_INFO_REDUCED
- DEBUG_CFLAGS	+=3D $(call cc-option, -femit-struct-debug-baseonly) \
- 		   $(call cc-option,-fno-var-tracking)
---=20
-2.30.2
-
+>If the maintainer wants further restriction with CONFIG_DEBUG_INFO_BTF,
+>I can do that in another revision.
+>
+>-- 
+>You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+>To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+>To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/0b8d17be-e015-83c3-88d8-7c218cd01536%40fb.com.
