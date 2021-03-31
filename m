@@ -2,169 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1413635076A
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 21:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575CF3507D2
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 22:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235876AbhCaTeS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 15:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55218 "EHLO
+        id S236323AbhCaUJS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 16:09:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235416AbhCaTds (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Mar 2021 15:33:48 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8504BC061574
-        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 12:33:48 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id i144so22390438ybg.1
-        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 12:33:48 -0700 (PDT)
+        with ESMTP id S236386AbhCaUJO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 16:09:14 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F83CC061574;
+        Wed, 31 Mar 2021 13:09:14 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id l18so23753790edc.9;
+        Wed, 31 Mar 2021 13:09:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j2V/u7CIXFhq6jKT7K2Jpc2Fda5EpohTEbl4jStlZ7w=;
-        b=PUEpDMo+oRtu2dAPLfYTtCQBPk/2RndD6/tTemaVnNVZ/DYOfwzNGgAn979TT6iw9K
-         VCGoZ7w0LjrpiEjuAqTCcZ9wj6S4AG5FSEBe7ZosdFxhM1ZQdkbR4rk2iq6mrRMwfpMB
-         gLfpC07V6eA7ctOzKxWg25+HHZQPlMvbf/55dQgDjsiHsd+y0fwcUAxeNBODa+68mCOe
-         3M+SXlzOD7kb7yC9H1B52jmUEDcvNCgXzZ1QeI2OZGZhDFWSVZJ6aCPNj2pBvHWT316A
-         T2DQtcYF7IAgt4HAPZ58ux7KS8jOj09wxteLZ0FSDeDMcgiSgv9Ynpb8VSHfW9t4hFJL
-         uW+g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qpF99nbMLGQ4bgjpmq9TVZKneD9kjHG1BvrLqH3YgvE=;
+        b=Inwsg8dCnVgW7ivUTNLhgXdOiNA2xx4WB8MlQvf+NHUjVXShkfH8l8s6/php+JVMBe
+         QsHN8vskNVnDl60/Stp2jWDUzwS3SziKaiLO/rKU/m2jfzswCFO4OERwymxrdDawWhht
+         WBoo/aOjNzykxXBfbEuWEr4i2kWCk9jWdGTIYSCNakazuosxVAR/vEqfUP7ftCu/gzC2
+         cM4DYugh2R/zos8dARdJuRoDl5aajdehEuJbvu9BRhTmwNC1S97R0bNsm6kZ2SxKbf97
+         iFRaehlq83TdaixObwcCY6Jv5jMYXkSMFJpsCZr639EdBkpotz7iknybSGzV7w9RMDdt
+         4cgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j2V/u7CIXFhq6jKT7K2Jpc2Fda5EpohTEbl4jStlZ7w=;
-        b=At/ZZbbURAA23C/auZbc8uKtxdtyHkxQL3BW35VzEssSoVAG7yVy4nGA3xF8s85stG
-         +Dxw7nWNRKoUIA9CqYo9Ssdvwbqrc3gXBwF3hV07rYbJ8oB1nN6NY9O5iwAnx7TK4dkk
-         K+lehWz5Kef6QaHgzGNASHEtbA5VTPQm515xx3i0ElCSUPLu9rmspe3JNGl3tuNTIJYU
-         yV6k60zkJ1Hz58uFmm27J/WUyhtb3HYpQysKUvmgHBy88CyrQjHUtqdeu/s82JPYCT7U
-         GXEcpfxgCkQF/dZAfvL2bpOn5ZQH/3YurzKFR7hVqtlIuW+x38BFGiMwhh2WviU37XHe
-         zYJQ==
-X-Gm-Message-State: AOAM5306PHvNxwafSiTgd/1OYGDxWnDZ3KdvrpAfaQsci+tCH51L6VlE
-        +LVwXuq7zqfjnFZ/eWWKq1B2WgHHAg2NZ2hg2tw=
-X-Google-Smtp-Source: ABdhPJxPbiH/W7vEaRQS10KCP37vEgtqkbKPPhxhCHzz33E3RQkESBNzJ5Bp75xJUUSu0uUkt2KLHEQXFp+ID8L2uwI=
-X-Received: by 2002:a25:6d83:: with SMTP id i125mr6676312ybc.27.1617219227761;
- Wed, 31 Mar 2021 12:33:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210323014752.3198283-1-kpsingh@kernel.org> <CAEf4BzY=VR4MbYiG4fPwNPVB3hKw4MckRv2sftk160H6TapMaQ@mail.gmail.com>
- <CACYkzJ4p-vMg_3Nom-NB781J3ELsZi=N1FK5RA=3=FZQaZaknA@mail.gmail.com> <CAEf4BzaVMMYAYqKc3rt02tfS=wXbcxc-jnSKYhcfhB1qHHxjNw@mail.gmail.com>
-In-Reply-To: <CAEf4BzaVMMYAYqKc3rt02tfS=wXbcxc-jnSKYhcfhB1qHHxjNw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 31 Mar 2021 12:33:36 -0700
-Message-ID: <CAEf4BzYAGK1uu4YT=-nxz1hVZSsLNOsGtj+cVn2rOhpK4PZSsg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] selftests/bpf: Add an option for a debug
- shell in vmtest.sh
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qpF99nbMLGQ4bgjpmq9TVZKneD9kjHG1BvrLqH3YgvE=;
+        b=j4zq2TH4mksjHCWnJzdSqqUbrEvvHchRBOGQWNyzsQvy4qvpFQ1LMj2fd+LQPItGwA
+         pckakHfh4bvz3oFYZTFQx8m6jTN3VqCyBg9svxfioopwfKqezmK/6Jy/lkGdbXaHHZpg
+         l3PWvGDEb9ZbkaQsxrxZLzhyyv61SCbdeLXEzHUC2rcB9BPdvGRu9Mt689KrLD4bBhLt
+         /tB9+FVIWETZNmVwnHBdjaGvM6PMmjJLVrGEVULxVKdFNeOA0ulTcEqQq7ZQltRObpAv
+         hCXPGV+u/eFSwhFw3u4Y8jNj9hyVNF40+Ge7/H6BMKX8Flh/4bzgxhu1JPmEHS0OLI17
+         8yKA==
+X-Gm-Message-State: AOAM532oy08WKRPhFAX0qmOACwAZifGN3f8CkjbPe0IpqGfih3wNQa5F
+        HZOT1pKffMCOYDcbx9BIVs6fatlBrGw=
+X-Google-Smtp-Source: ABdhPJz9FpCx8tcDvwOdforl9xwRQZUhkVr93khZM3ASQuZ8U1SnHf1OG/XzdzMD1KBKOoXWmmI99A==
+X-Received: by 2002:a05:6402:51d4:: with SMTP id r20mr5924888edd.112.1617221352785;
+        Wed, 31 Mar 2021 13:09:12 -0700 (PDT)
+Received: from localhost.localdomain (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
+        by smtp.gmail.com with ESMTPSA id r19sm1691305ejr.55.2021.03.31.13.09.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 13:09:12 -0700 (PDT)
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Alex Marginean <alexandru.marginean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: [PATCH net-next 0/9] XDP for NXP ENETC
+Date:   Wed, 31 Mar 2021 23:08:48 +0300
+Message-Id: <20210331200857.3274425-1-olteanv@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 10:17 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Mar 29, 2021 at 6:46 AM KP Singh <kpsingh@kernel.org> wrote:
-> >
-> > On Fri, Mar 26, 2021 at 5:48 AM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Mon, Mar 22, 2021 at 6:47 PM KP Singh <kpsingh@kernel.org> wrote:
-> > > >
-> > > > The newly introduced -s command line option starts an interactive shell.
-> > > > If a command is specified, the shell is started after the command
-> > > > finishes executing. It's useful to have a shell especially when
-> > > > debugging failing tests or developing new tests.
-> > > >
-> > > > Since the user may terminate the VM forcefully, an extra "sync" is added
-> > > > after the execution of the command to persist any logs from the command
-> > > > into the log file.
-> > > >
-> > > > Signed-off-by: KP Singh <kpsingh@kernel.org>
-> > > > ---
-> > >
-> > > I run:
-> > >
-> > > ./vmtest.sh -s
-> > >
-> > > And I get test_progs executed, not bash. What do I do wrong?...
-> >
-> > It does not seem to happen for me [classic, works on my machine :P]
-> >
-> > tools/testing/selftests/bpf$ ./vmtest.sh -s
-> > [...]
-> > + /etc/rcS.d/S50-startup
-> > bash: cannot set terminal process group (84): Inappropriate ioctl for device
-> > bash: no job control in this shell
-> > [root@(none) /]#
-> >
-> > To help debug this:
-> >
-> > Can you check the contents of /etc/rcS.d/S50-startup on the image,
-> > here's what mine looks like:
-> >
-> > [root@(none) /]# cat /etc/rcS.d/S50-startup
-> > #!/bin/bash
-> > bash
->
-> Couldn't do it, because it would only run test_progs, no matter which
-> command I specified (that didn't happen before, strange). E.g.,
-> running `./vmtest.sh -- cat /etc/rcS.d/S50-startup` gives this:
->
-> starting pid 83, tty '': '/etc/init.d/rcS'
-> [    1.070838] random: fast init done
-> + for path in /etc/rcS.d/S*
-> + '[' -x /etc/rcS.d/S10-mount ']'
-> + /etc/rcS.d/S10-mount
-> + /bin/mount proc /proc -t proc
-> + /bin/mount devtmpfs /dev -t devtmpfs
-> mount: mounting devtmpfs on /dev failed: Resource busy
-> + true
-> + /bin/mount sysfs /sys -t sysfs
-> + /bin/mount bpffs /sys/fs/bpf -t bpf
-> + /bin/mount debugfs /sys/kernel/debug -t debugfs
-> + echo 'Listing currently mounted file systems'
-> Listing currently mounted file systems
-> + /bin/mount
-> /dev/root on / type ext4 (rw,relatime)
-> devtmpfs on /dev type devtmpfs
-> (rw,relatime,size=1004288k,nr_inodes=251072,mode=755)
-> proc on /proc type proc (rw,relatime)
-> sysfs on /sys type sysfs (rw,relatime)
-> none on /sys/fs/bpf type bpf (rw,relatime)
-> debugfs on /sys/kernel/debug type debugfs (rw,relatime)
-> + for path in /etc/rcS.d/S*
-> + '[' -x /etc/rcS.d/S40-network ']'
-> + /etc/rcS.d/S40-network
-> + ip link set lo up
-> + for path in /etc/rcS.d/S*
-> + '[' -x /etc/rcS.d/S50-startup ']'
-> + /etc/rcS.d/S50-startup
-> ./test_progs
->
-> And there was a bunch of messages like this before kernel started:
->
-> error: Macro %global is a built-in (%define)
-> error: Macro %global is a built-in (%define)
-> warning: file /etc/rpm/macros.perl: 2 invalid macro definitions
->
-> Don't know if related.
->
-> >
-> > 2. Also, can you delete the cache in the home directory
-> > (~/.bpf_selftests by default) and try again?
-> >
->
-> But this solved the issue. So must be something in cached data.
->
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-I've applied it to bpf-next, thanks!
+This series adds support to the enetc driver for the basic XDP primitives.
+The ENETC is a network controller found inside the NXP LS1028A SoC,
+which is a dual-core Cortex A72 device for industrial networking,
+with the CPUs clocked at up to 1.3 GHz. On this platform, there are 4
+ENETC ports and a 6-port embedded DSA switch, in a topology that looks
+like this:
 
-> > >
-> > > >  tools/testing/selftests/bpf/vmtest.sh | 39 +++++++++++++++++++--------
-> > > >  1 file changed, 28 insertions(+), 11 deletions(-)
-> > > >
-> > >
-> > > [...]
+  +-------------------------------------------------------------------------+
+  |                    +--------+ 1 Gbps (typically disabled)               |
+  | ENETC PCI          |  ENETC |--------------------------+                |
+  | Root Complex       | port 3 |-----------------------+  |                |
+  | Integrated         +--------+                       |  |                |
+  | Endpoint                                            |  |                |
+  |                    +--------+ 2.5 Gbps              |  |                |
+  |                    |  ENETC |--------------+        |  |                |
+  |                    | port 2 |-----------+  |        |  |                |
+  |                    +--------+           |  |        |  |                |
+  |                                         |  |        |  |                |
+  |                        +------------------------------------------------+
+  |                        |             |  Felix |  |  Felix |             |
+  |                        | Switch      | port 4 |  | port 5 |             |
+  |                        |             +--------+  +--------+             |
+  |                        |                                                |
+  | +--------+  +--------+ | +--------+  +--------+  +--------+  +--------+ |
+  | |  ENETC |  |  ENETC | | |  Felix |  |  Felix |  |  Felix |  |  Felix | |
+  | | port 0 |  | port 1 | | | port 0 |  | port 1 |  | port 2 |  | port 3 | |
+  +-------------------------------------------------------------------------+
+         |          |             |           |            |          |
+         v          v             v           v            v          v
+       Up to      Up to                      Up to 4x 2.5Gbps
+      2.5Gbps     1Gbps
+
+The ENETC ports 2 and 3 can act as DSA masters for the embedded switch.
+Because 4 out of the 6 externally-facing ports of the SoC are switch
+ports, the most interesting use case for XDP on this device is in fact
+XDP_TX on the 2.5Gbps DSA master.
+
+Nonetheless, the results presented below are for IPv4 forwarding between
+ENETC port 0 (eno0) and port 1 (eno1) both configured for 1Gbps.
+There are two streams of IPv4/UDP datagrams with a frame length of 64
+octets delivered at 100% port load to eno0 and to eno1. eno0 has a flow
+steering rule to process the traffic on RX ring 0 (CPU 0), and eno1 has
+a flow steering rule towards RX ring 1 (CPU 1).
+
+For the IPFWD test, standard IP routing was enabled in the netns.
+For the XDP_DROP test, the samples/bpf/xdp1 program was attached to both
+eno0 and to eno1.
+For the XDP_TX test, the samples/bpf/xdp2 program was attached to both
+eno0 and to eno1.
+For the XDP_REDIRECT test, the samples/bpf/xdp_redirect program was
+attached once to the input of eno0/output of eno1, and twice to the
+input of eno1/output of eno0.
+
+Finally, the preliminary results are as follows:
+
+        | IPFWD | XDP_TX | XDP_REDIRECT | XDP_DROP
+--------+-------+--------+-------------------------
+fps     | 761   | 2535   | 1735         | 2783
+Gbps    | 0.51  | 1.71   | 1.17         | n/a
+
+There is a strange phenomenon in my testing sistem where it appears that
+one CPU is processing more than the other. I have not investigated this
+too much. Also, the code might not be very well optimized (for example
+dma_sync_for_device is called with the full ENETC_RXB_DMA_SIZE_XDP).
+
+Design wise, the ENETC is a PCI device with BD rings, so it uses the
+MEM_TYPE_PAGE_SHARED memory model, as can typically be seen in Intel
+devices. The strategy was to build upon the existing model that the
+driver uses, and not change it too much. So you will see things like a
+separate NAPI poll function for XDP.
+
+I have only tested with PAGE_SIZE=4096, and since we split pages in
+half, it means that MTU-sized frames are scatter/gather (the XDP
+headroom + skb_shared_info only leaves us 1476 bytes of data per
+buffer). This is sub-optimal, but I would rather keep it this way and
+help speed up Lorenzo's series for S/G support through testing, rather
+than change the enetc driver to use some other memory model like page_pool.
+My code is already structured for S/G, and that works fine for XDP_DROP
+and XDP_TX, just not for XDP_REDIRECT, even between two enetc ports.
+So the S/G XDP_REDIRECT is stubbed out (the frames are dropped), but
+obviously I would like to remove that limitation soon.
+
+Please note that I am rather new to this kind of stuff, I am more of a
+control path person, so I would appreciate feedback.
+
+Enough talking, on to the patches.
+
+Vladimir Oltean (9):
+  net: enetc: consume the error RX buffer descriptors in a dedicated
+    function
+  net: enetc: move skb creation into enetc_build_skb
+  net: enetc: add a dedicated is_eof bit in the TX software BD
+  net: enetc: clean the TX software BD on the TX confirmation path
+  net: enetc: move up enetc_reuse_page and enetc_page_reusable
+  net: enetc: add support for XDP_DROP and XDP_PASS
+  net: enetc: add support for XDP_TX
+  net: enetc: increase RX ring default size
+  net: enetc: add support for XDP_REDIRECT
+
+ drivers/net/ethernet/freescale/enetc/enetc.c  | 826 +++++++++++++++---
+ drivers/net/ethernet/freescale/enetc/enetc.h  |  53 +-
+ .../ethernet/freescale/enetc/enetc_ethtool.c  |  19 +-
+ .../net/ethernet/freescale/enetc/enetc_pf.c   |   2 +
+ 4 files changed, 796 insertions(+), 104 deletions(-)
+
+-- 
+2.25.1
+
