@@ -2,286 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43016350193
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 15:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD353501BB
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 15:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235755AbhCaNlf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 09:41:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36868 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235840AbhCaNlY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 31 Mar 2021 09:41:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617198083;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rccxDYfw9vp+Dvmt0DxJeFcvrSyYfaiVQ1bHIt9jCKE=;
-        b=YbDrGh3oU5xAsdCxrRUfx3yrBhRWjDBG+OgfXUJOseLnxP6glTcauVZkDoeWICHcpceZIj
-        dgFYSboAO3o9QCos2+gQQzp73Ajlq0A4yuSLFdruoD2zhNY6x5Y6ishe9qJyiLkme4dqtA
-        iek1Xipve3WCvcypkQCZTSq5EZ0ndTU=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-579-HGHieZo4OduheshudSD8gw-1; Wed, 31 Mar 2021 09:41:21 -0400
-X-MC-Unique: HGHieZo4OduheshudSD8gw-1
-Received: by mail-ed1-f72.google.com with SMTP id cq11so1122267edb.14
-        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 06:41:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=rccxDYfw9vp+Dvmt0DxJeFcvrSyYfaiVQ1bHIt9jCKE=;
-        b=ZHJYKZsbRTZg8ypWUJ0tHSfG7YNYg7uh/Z7cqRbKVIpAou9IKATpAVDieegmwcInbP
-         EkXcYyQ1hiYPA6vzwzW+lVF+j2V33RK9M3kcivMmF4uX32OVXdWHMhUeaROmQQNiGRXG
-         WI7bRQje+O8TsUFBjp4LjWyeXhq44OGSPEDBqB4rD4PXuDiscCl14i2zcXK0VyaPfAAc
-         GeTzGWfN2x+i9ns3XDdJMrJA2/EbvazZhH8gBRBi+EgZ5oPgzsbIEh4E2nArRkfZqMtK
-         vIsOHQkvWBI2qKNokRdR4zMs/g25Io6Hb/s8J/HtEu9DVu5VspHuTTfLl5kpNJxIQweq
-         F23g==
-X-Gm-Message-State: AOAM531BiGdn6s05tRheWdR4EQR0ZueLcXIK5qeKz74qyhwK+3kG0zuD
-        a5N5s1U7FX8wBEJs2+2PjwnZTQ1m+wpIs8WdHULlNeAuf0QK1HymjBamGPB63dWQd5SkcUkPSjq
-        DSI/4T25rsuVd
-X-Received: by 2002:a05:6402:698:: with SMTP id f24mr3760712edy.262.1617198079900;
-        Wed, 31 Mar 2021 06:41:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx/G4qPf7pSBWQy5oWo4qT5+kdwNdUvpaLfzYu8uKFPgPLv0KmHtt90UHmVIrMx9vBw2mYgqw==
-X-Received: by 2002:a05:6402:698:: with SMTP id f24mr3760676edy.262.1617198079511;
-        Wed, 31 Mar 2021 06:41:19 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id jx22sm1187681ejc.105.2021.03.31.06.41.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 06:41:18 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 1E86B1801A8; Wed, 31 Mar 2021 15:41:17 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        =?utf-8?B?QmrDtnJuIFQ=?= =?utf-8?B?w7ZwZWw=?= 
-        <bjorn.topel@gmail.com>, Hangbin Liu <liuhangbin@gmail.com>
-Subject: Re: [PATCHv3 bpf-next 2/4] xdp: extend xdp_redirect_map with
- broadcast support
-In-Reply-To: <20210325092733.3058653-3-liuhangbin@gmail.com>
-References: <20210325092733.3058653-1-liuhangbin@gmail.com>
- <20210325092733.3058653-3-liuhangbin@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 31 Mar 2021 15:41:17 +0200
-Message-ID: <87lfa3phj6.fsf@toke.dk>
+        id S235890AbhCaNy2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 09:54:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235777AbhCaNyV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 09:54:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68A8C606A5;
+        Wed, 31 Mar 2021 13:54:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617198860;
+        bh=mlpmYDu/MgPmlL9JJGa4xFueLTSyrRKM59SWYXdWgPo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p7m2dEc5+l1WmN9RPwRtdmJKTVrjyumk72TWimeufafY0BiPGhih6y1/xagJjhWN+
+         hN5N6n9wayJz+j5mrxE9wMsCI7jF6jWv3u2muv+S4Uua38hKAw1AHuggsMBnV3Ke4M
+         5GgaMxyegSEMxx6FtV8ocl7eyPVwqqD4XIundCSUa6X923cyUnglBHohheoJTxiBau
+         0WjEzs9QNcru9gckaQg0cgJItbZ+QlwPXY9+fn5lfE7bAn4fQ8aFNZT1LAW+ZbB+ge
+         9F/xE1BRD8Fkn9eU4b9xcaQCCecf0sO6HlLnnvwaBsSm2Ly1yXdILo6JaUZzPSKUmO
+         5h7WpNrptDeIQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 9D64440647; Wed, 31 Mar 2021 10:54:17 -0300 (-03)
+Date:   Wed, 31 Mar 2021 10:54:17 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Bill Wendling <morbo@google.com>, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH dwarves v3 0/3] permit merging all dwarf cu's for clang
+ lto built binary
+Message-ID: <YGR/Cc3/39V0kRuj@kernel.org>
+References: <20210328201400.1426437-1-yhs@fb.com>
+ <YGIQ9c3Qk+DMa+C7@kernel.org>
+ <YGM/Uh61RVExWnTU@kernel.org>
+ <YGNpBlf7sLalcFWB@kernel.org>
+ <YGNs4QxfGvQozqGS@kernel.org>
+ <503f852c-a7f4-efb2-5fd3-8431721dd67a@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <503f852c-a7f4-efb2-5fd3-8431721dd67a@fb.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hangbin Liu <liuhangbin@gmail.com> writes:
+Em Tue, Mar 30, 2021 at 08:20:20PM -0700, Yonghong Song escreveu:
+> On 3/30/21 11:24 AM, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Mar 30, 2021 at 03:08:06PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > [acme@five pahole]$ fullcircle tcp_bbr.o
+> > > [acme@five pahole]$
 
-> This patch add two flags BPF_F_BROADCAST and BPF_F_EXCLUDE_INGRESS to ext=
-end
-> xdp_redirect_map for broadcast support.
->
-> Keep the general data path in net/core/filter.c and the native data
-> path in kernel/bpf/devmap.c so we can use direct calls to get better
-> performace.
->
-> Here is the performance result by using xdp_redirect_{map, map_multi} in
-> sample/bpf and send pkts via pktgen cmd:
-> ./pktgen_sample03_burst_single_flow.sh -i eno1 -d $dst_ip -m $dst_mac -t =
-10 -s 64
->
-> There are some drop back as we need to loop the map and get each interfac=
-e.
->
-> Version          | Test                                | Generic | Native
-> 5.12 rc2         | redirect_map        i40e->i40e      |    2.0M |  9.8M
-> 5.12 rc2         | redirect_map        i40e->veth      |    1.8M | 12.0M
-> 5.12 rc2 + patch | redirect_map        i40e->i40e      |    2.0M |  9.6M
-> 5.12 rc2 + patch | redirect_map        i40e->veth      |    1.7M | 12.0M
-> 5.12 rc2 + patch | redirect_map multi  i40e->i40e      |    1.6M |  7.8M
-> 5.12 rc2 + patch | redirect_map multi  i40e->veth      |    1.4M |  9.3M
-> 5.12 rc2 + patch | redirect_map multi  i40e->mlx4+veth |    1.0M |  3.4M
->
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
-> v3:
-> a) Rebase the code on Bj=C3=B6rn's "bpf, xdp: Restructure redirect action=
-s".
->    - Add struct bpf_map *map back to struct bpf_redirect_info as we need
->      it for multicast.
->    - Add bpf_clear_redirect_map() back for devmap.c
->    - Add devmap_lookup_elem() as we need it in general path.
-> b) remove tmp_key in devmap_get_next_obj()
->
-> v2: Fix flag renaming issue in v1
-> ---
->  include/linux/bpf.h            |  22 ++++++
->  include/linux/filter.h         |  14 +++-
->  include/net/xdp.h              |   1 +
->  include/uapi/linux/bpf.h       |  17 ++++-
->  kernel/bpf/devmap.c            | 127 +++++++++++++++++++++++++++++++++
->  net/core/filter.c              |  92 +++++++++++++++++++++++-
->  net/core/xdp.c                 |  29 ++++++++
->  tools/include/uapi/linux/bpf.h |  17 ++++-
->  8 files changed, 310 insertions(+), 9 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index a25730eaa148..5dacb1a45a03 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1456,11 +1456,15 @@ struct sk_buff;
->  struct bpf_dtab_netdev;
->  struct bpf_cpu_map_entry;
->=20=20
-> +struct bpf_dtab_netdev *devmap_lookup_elem(struct bpf_map *map, u32 key);
->  void __dev_flush(void);
->  int dev_xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
->  		    struct net_device *dev_rx);
->  int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
->  		    struct net_device *dev_rx);
-> +bool dst_dev_is_ingress(struct bpf_dtab_netdev *obj, int ifindex);
-> +int dev_map_enqueue_multi(struct xdp_buff *xdp, struct net_device *dev_r=
-x,
-> +			  struct bpf_map *map, bool exclude_ingress);
->  int dev_map_generic_redirect(struct bpf_dtab_netdev *dst, struct sk_buff=
- *skb,
->  			     struct bpf_prog *xdp_prog);
->  bool dev_map_can_have_prog(struct bpf_map *map);
-> @@ -1595,6 +1599,11 @@ static inline int bpf_obj_get_user(const char __us=
-er *pathname, int flags)
->  	return -EOPNOTSUPP;
->  }
->=20=20
-> +static inline struct net_device *devmap_lookup_elem(struct bpf_map *map,=
- u32 key)
-> +{
-> +	return NULL;
-> +}
-> +
->  static inline bool dev_map_can_have_prog(struct bpf_map *map)
->  {
->  	return false;
-> @@ -1622,6 +1631,19 @@ int dev_map_enqueue(struct bpf_dtab_netdev *dst, s=
-truct xdp_buff *xdp,
->  	return 0;
->  }
->=20=20
-> +static inline
-> +bool dst_dev_is_ingress(struct bpf_dtab_netdev *obj, int ifindex)
-> +{
-> +	return false;
-> +}
-> +
-> +static inline
-> +int dev_map_enqueue_multi(struct xdp_buff *xdp, struct net_device *dev_r=
-x,
-> +			  struct bpf_map *map, bool exclude_ingress)
-> +{
-> +	return 0;
-> +}
-> +
->  struct sk_buff;
->=20=20
->  static inline int dev_map_generic_redirect(struct bpf_dtab_netdev *dst,
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index b2b85b2cad8e..434170aafd0d 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -646,6 +646,7 @@ struct bpf_redirect_info {
->  	u32 flags;
->  	u32 tgt_index;
->  	void *tgt_value;
-> +	struct bpf_map *map;
->  	u32 map_id;
->  	enum bpf_map_type map_type;
->  	u32 kern_flags;
-> @@ -1479,11 +1480,11 @@ static __always_inline int __bpf_xdp_redirect_map=
-(struct bpf_map *map, u32 ifind
->  	struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info);
->=20=20
->  	/* Lower bits of the flags are used as return code on lookup failure */
-> -	if (unlikely(flags > XDP_TX))
-> +	if (unlikely(flags & ~(BPF_F_ACTION_MASK | BPF_F_REDIR_MASK)))
->  		return XDP_ABORTED;
->=20=20
->  	ri->tgt_value =3D lookup_elem(map, ifindex);
-> -	if (unlikely(!ri->tgt_value)) {
-> +	if (unlikely(!ri->tgt_value) && !(flags & BPF_F_BROADCAST)) {
->  		/* If the lookup fails we want to clear out the state in the
->  		 * redirect_info struct completely, so that if an eBPF program
->  		 * performs multiple lookups, the last one always takes
-> @@ -1491,13 +1492,20 @@ static __always_inline int __bpf_xdp_redirect_map=
-(struct bpf_map *map, u32 ifind
->  		 */
->  		ri->map_id =3D INT_MAX; /* Valid map id idr range: [1,INT_MAX[ */
->  		ri->map_type =3D BPF_MAP_TYPE_UNSPEC;
-> -		return flags;
-> +		return flags & BPF_F_ACTION_MASK;
->  	}
->=20=20
->  	ri->tgt_index =3D ifindex;
->  	ri->map_id =3D map->id;
->  	ri->map_type =3D map->map_type;
->=20=20
-> +	if ((map->map_type =3D=3D BPF_MAP_TYPE_DEVMAP ||
-> +	     map->map_type =3D=3D BPF_MAP_TYPE_DEVMAP_HASH) &&
-> +	    (flags & BPF_F_BROADCAST)) {
-> +		ri->flags =3D flags;
+> > > This one is dealt with, doing some more tests and looking at that
+> > > array[] versus array[0].
 
-This, combined with this:
+> > I've pushed what I have to the main repos at kernel.org and github,
+> > please check, I'll continue from there.
 
-[...]
+> Looks good. Thanks!
 
-> +	if (ri->flags & BPF_F_BROADCAST) {
-> +		map =3D READ_ONCE(ri->map);
-> +		WRITE_ONCE(ri->map, NULL);
-> +	}
-> +
->  	switch (map_type) {
->  	case BPF_MAP_TYPE_DEVMAP:
->  		fallthrough;
->  	case BPF_MAP_TYPE_DEVMAP_HASH:
-> -		err =3D dev_map_enqueue(fwd, xdp, dev);
-> +		if (ri->flags & BPF_F_BROADCAST)
-> +			err =3D dev_map_enqueue_multi(xdp, dev, map,
-> +						    ri->flags & BPF_F_EXCLUDE_INGRESS);
-> +		else
-> +			err =3D dev_map_enqueue(fwd, xdp, dev);
+> I will try to experiment with an alternative way ([1]) to check whether
+> cross-cu reference happens or not. But at least checking flags
+> approach can be adapted to gcc (if we want after comparing the alternative)
+> since gcc always has flags in dwarf.
+ 
+> [1] https://lore.kernel.org/bpf/d34a3d62-bae8-3a30-26b6-4e5e8efcd0af@fb.com/T/#m1b0b1206091c19a90b15d054aa26239101289f84
 
-Means that (since the flags value is never cleared again) once someone
-has done a broadcast redirect, that's all they'll ever get until the
-next reboot ;)
+I thought about some other method, like adding a ELF note to vmlinux
+stating that this was built with LTO, that would be the fastest way, I
+think. If that note wasn't there, then we would fallback to looking at
+inter CU references, that way we would have the best of both worlds and
+wouldn't incur in per-CU DW_AT_producer overheads with the flags for
+each object file.
 
-Also, the bpf_clear_redirect_map() call has no effect since the call to
-dev_map_enqueue_multi() only checks the flags and not the value of the
-map pointer before deciding which enqueue function to call.
-
-To fix both of these, how about changing the logic so that:
-
-- __bpf_xdp_redirect_map() sets the map pointer if the broadcast flag is
-  set (and clears it if the flag isn't set!)
-
-- xdp_do_redirect() does the READ_ONCE/WRITE_ONCE on ri->map
-  unconditionally and then dispatches to dev_map_enqueue_multi() if the
-  read resulted in a non-NULL pointer
-
-Also, it should be invalid to set the broadcast flag with a map type
-other than a devmap; __bpf_xdp_redirect_map() should check that.
-
-And finally, with the changes above, you no longer need the broadcast
-flag in do_redirect() at all, so you could just have a bool
-ri->exclude_ingress that is set in the helper and pass that directly to
-dev_map_enqueue_multi().
-
-A selftest that validates that the above works as it's supposed to might
-be nice as well (i.e., one that broadcasts and does a regular redirect
-after one another)
-
--Toke
-
+- Arnaldo
