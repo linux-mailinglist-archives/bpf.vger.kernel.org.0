@@ -2,139 +2,233 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115E43509AE
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 23:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6363509B6
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 23:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhCaVnJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 17:43:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230073AbhCaVmi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Mar 2021 17:42:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D729460FE8;
-        Wed, 31 Mar 2021 21:42:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617226957;
-        bh=Fz/I/hl1yyAm72gSCKg/MoqAzZtuus5hQonetSpNc3I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RW787MI6LE5UtC5glGn/yEU6oFwJDa73G+GlcJhOken3vy86TdE6sAAxps0iZK0Qw
-         Y2oArBelG3AKmHuD46Ng83ZWBhbqDIo/Fuq7/qpoFCdiI1jfY58ahnJtJ8LFJUcwXl
-         9pHo0aABYPxyu5NbQbYUn7NMSpSX+2M8n1J68f9yJOUIp5W4M5snSwvgqCEKVr5lRp
-         9AME9mLRTClC/OLr7jgaF5mOJeY3de/6eQgFx5uiasgRexeBw2WTUvkBNayPdKvJWh
-         TqNdKCWsANAZUkxiRbLDyggIK1a+oAbAQFd6ub5HpQmttIln6uaZpxFCqVxkGG9wYw
-         T3YG47kvI60pw==
-Date:   Wed, 31 Mar 2021 14:42:35 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ong Boon Leong <boon.leong.ong@intel.com>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v3 5/6] net: stmmac: Add support for XDP_TX
- action
-Message-ID: <20210331144235.799dea32@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210331154135.8507-6-boon.leong.ong@intel.com>
-References: <20210331154135.8507-1-boon.leong.ong@intel.com>
-        <20210331154135.8507-6-boon.leong.ong@intel.com>
+        id S232271AbhCaVqV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 17:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231974AbhCaVqL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 17:46:11 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9041C061760
+        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 14:46:10 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so2003536pjb.0
+        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 14:46:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=esAh+eFc7x1e4muSLkstj3Ic+kmZW4D/uno+GAwyPqg=;
+        b=NzeLyJir6d1KwpiZ3RmekcvSne/weQo4YA0Uu7Q89IkbPP0+5tkV6E7R5TuBWawoMg
+         idGZp8zqhG+5HVjnv+msYLiZQ9S7h9tCa6GvjbE5b83fycdA9pvVk1tDXnlDajKP2SLi
+         74sdgQx/uoB7+AwHV0v7j226PbBND6y7yHvDI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=esAh+eFc7x1e4muSLkstj3Ic+kmZW4D/uno+GAwyPqg=;
+        b=B2wyjgYBtlCGx7sRDMQvqTByEbI+TNyKFiWnDDTxy7755zSLfpKk6dKEpVHcIKoAW6
+         DWVzaESU4XcDn0hpay9SNhbc357lko7PCNx8umhry6kx0DMkc4Q01YpgIpLZxKKpJ/EM
+         kBQRn8ZFM9H6MBQGziCZ0riWcok2d5xPg5CC1zgfXdSRRZuQ/E5W/sS90/BdtkhnxUCJ
+         ydCvInrdpxWLP/RxQ8cJo0PzZt26vRZF1eKG+RbdtHDxt+yDODrmgI9WY0SseAHynUgn
+         HqcguOXvQf8ElFLpQTZ3IaEdk7vJxxaTGZIIV1JNxWxxRPbEsMDKV8tgnyqegdLTa2Rl
+         qAMA==
+X-Gm-Message-State: AOAM530WWTnE/LVtIoqLp7OAZ7fz9HJFpb303+U3rpEUP0gekCriguTq
+        G9/lgLFZcE9jBs8B0K0thiPpOg==
+X-Google-Smtp-Source: ABdhPJyc6xYrPp/zlyE7RCl/S1V/S62i7LtVAPCykyeZ+e4UWpT04Q1Ln+T2FDOVuAGVX7rqBciSng==
+X-Received: by 2002:a17:90a:be0e:: with SMTP id a14mr5187306pjs.131.1617227170242;
+        Wed, 31 Mar 2021 14:46:10 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id iq6sm3106930pjb.31.2021.03.31.14.46.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Mar 2021 14:46:09 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 14:46:08 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v4 00/17] Add support for Clang CFI
+Message-ID: <202103311442.FDB6E8223@keescook>
+References: <20210331212722.2746212-1-samitolvanen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210331212722.2746212-1-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 31 Mar 2021 23:41:34 +0800 Ong Boon Leong wrote:
-> This patch adds support for XDP_TX action which enables XDP program to
-> transmit back received frames.
+On Wed, Mar 31, 2021 at 02:27:04PM -0700, Sami Tolvanen wrote:
+> This series adds support for Clang's Control-Flow Integrity (CFI)
+> checking. With CFI, the compiler injects a runtime check before each
+> indirect function call to ensure the target is a valid function with
+> the correct static type. This restricts possible call targets and
+> makes it more difficult for an attacker to exploit bugs that allow the
+> modification of stored function pointers. For more details, see:
 > 
-> This patch has been tested with the "xdp2" app located in samples/bpf
-> dir. The DUT receives burst traffic packet generated using pktgen script
-> 'pktgen_sample03_burst_single_flow.sh'.
+>   https://clang.llvm.org/docs/ControlFlowIntegrity.html
 > 
-> v3: Added 'nq->trans_start = jiffies' to avoid TX time-out as we are
->     sharing TX queue between slow path and XDP. Thanks to Jakub Kicinski
->     for pointing out.
+> The first patch contains build system changes and error handling,
+> and implements support for cross-module indirect call checking. The
+> remaining patches address issues caused by the compiler
+> instrumentation. These include fixing known type mismatches, as well
+> as issues with address space confusion and cross-module function
+> address equality.
 > 
-> Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+> These patches add support only for arm64, but I'll post patches also
+> for x86_64 after we address the remaining issues there, including
+> objtool support.
+> 
+> You can also pull this series from
+> 
+>   https://github.com/samitolvanen/linux.git cfi-v4
 
-> +static int stmmac_xdp_xmit_back(struct stmmac_priv *priv,
-> +				struct xdp_buff *xdp)
-> +{
-> +	struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
-> +	int cpu = smp_processor_id();
-> +	struct netdev_queue *nq;
-> +	int queue;
-> +	int res;
-> +
-> +	if (unlikely(!xdpf))
-> +		return -EFAULT;
+Thanks for the updates! I think this is ready to land in -next.
 
-Can you return -EFAULT here? looks like the function is otherwise
-returning positive STMMAC_XDP_* return codes/masks.
+Will, Mark, Catalin: would you prefer this go via arm64 or via my LTO
+tree? (Or does anyone see other stuff they'd like fixed first?)
 
-> +	queue = stmmac_xdp_get_tx_queue(priv, cpu);
-> +	nq = netdev_get_tx_queue(priv->dev, queue);
-> +
-> +	__netif_tx_lock(nq, cpu);
-> +	/* Avoids TX time-out as we are sharing with slow path */
-> +	nq->trans_start = jiffies;
-> +	res = stmmac_xdp_xmit_xdpf(priv, queue, xdpf);
-> +	if (res == STMMAC_XDP_TX) {
-> +		stmmac_flush_tx_descriptors(priv, queue);
-> +		stmmac_tx_timer_arm(priv, queue);
+-Kees
 
-Would it make sense to arm the timer and flush descriptors at the end
-of the NAPI poll cycle? Instead of after every TX frame?
+> ---
+> Changes in v4:
+>  - Per Mark's suggestion, dropped __pa_function() and renamed
+>    __va_function() to function_nocfi().
+>  - Added a comment to function_nocfi() to explain what it does.
+>  - Updated the psci patch to use an intermediate variable for
+>    the physical address for clarity.
+> 
+> Changes in v3:
+>  - Added a patch to change list_sort() callers treewide to use
+>    const pointers instead of simply removing the internal casts.
+>  - Changed cleanup_symbol_name() to return bool.
+>  - Changed module.lds.S to drop the .eh_frame section only with
+>    CONFIG_CFI_CLANG.
+>  - Switched to synchronize_rcu() in update_shadow().
+> 
+> Changes in v2:
+>  - Fixed .text merging in module.lds.S.
+>  - Added WARN_ON_FUNCTION_MISMATCH() and changed kernel/thread.c
+>    and kernel/workqueue.c to use the macro instead.
+> 
+> 
+> Sami Tolvanen (17):
+>   add support for Clang CFI
+>   cfi: add __cficanonical
+>   mm: add generic function_nocfi macro
+>   module: ensure __cfi_check alignment
+>   workqueue: use WARN_ON_FUNCTION_MISMATCH
+>   kthread: use WARN_ON_FUNCTION_MISMATCH
+>   kallsyms: strip ThinLTO hashes from static functions
+>   bpf: disable CFI in dispatcher functions
+>   treewide: Change list_sort to use const pointers
+>   lkdtm: use function_nocfi
+>   psci: use function_nocfi for cpu_resume
+>   arm64: implement function_nocfi
+>   arm64: use function_nocfi with __pa_symbol
+>   arm64: add __nocfi to functions that jump to a physical address
+>   arm64: add __nocfi to __apply_alternatives
+>   KVM: arm64: Disable CFI for nVHE
+>   arm64: allow CONFIG_CFI_CLANG to be selected
+> 
+>  Makefile                                      |  17 +
+>  arch/Kconfig                                  |  45 +++
+>  arch/arm64/Kconfig                            |   1 +
+>  arch/arm64/include/asm/memory.h               |  15 +
+>  arch/arm64/include/asm/mmu_context.h          |   4 +-
+>  arch/arm64/kernel/acpi_parking_protocol.c     |   3 +-
+>  arch/arm64/kernel/alternative.c               |   4 +-
+>  arch/arm64/kernel/cpu-reset.h                 |  10 +-
+>  arch/arm64/kernel/cpufeature.c                |   4 +-
+>  arch/arm64/kernel/psci.c                      |   3 +-
+>  arch/arm64/kernel/smp_spin_table.c            |   3 +-
+>  arch/arm64/kvm/hyp/nvhe/Makefile              |   6 +-
+>  arch/arm64/kvm/vgic/vgic-its.c                |   8 +-
+>  arch/arm64/kvm/vgic/vgic.c                    |   3 +-
+>  block/blk-mq-sched.c                          |   3 +-
+>  block/blk-mq.c                                |   3 +-
+>  drivers/acpi/nfit/core.c                      |   3 +-
+>  drivers/acpi/numa/hmat.c                      |   3 +-
+>  drivers/clk/keystone/sci-clk.c                |   4 +-
+>  drivers/firmware/psci/psci.c                  |   7 +-
+>  drivers/gpu/drm/drm_modes.c                   |   3 +-
+>  drivers/gpu/drm/i915/gt/intel_engine_user.c   |   3 +-
+>  drivers/gpu/drm/i915/gvt/debugfs.c            |   2 +-
+>  drivers/gpu/drm/i915/selftests/i915_gem_gtt.c |   3 +-
+>  drivers/gpu/drm/radeon/radeon_cs.c            |   4 +-
+>  .../hw/usnic/usnic_uiom_interval_tree.c       |   3 +-
+>  drivers/interconnect/qcom/bcm-voter.c         |   2 +-
+>  drivers/md/raid5.c                            |   3 +-
+>  drivers/misc/lkdtm/usercopy.c                 |   2 +-
+>  drivers/misc/sram.c                           |   4 +-
+>  drivers/nvme/host/core.c                      |   3 +-
+>  .../controller/cadence/pcie-cadence-host.c    |   3 +-
+>  drivers/spi/spi-loopback-test.c               |   3 +-
+>  fs/btrfs/raid56.c                             |   3 +-
+>  fs/btrfs/tree-log.c                           |   3 +-
+>  fs/btrfs/volumes.c                            |   3 +-
+>  fs/ext4/fsmap.c                               |   4 +-
+>  fs/gfs2/glock.c                               |   3 +-
+>  fs/gfs2/log.c                                 |   2 +-
+>  fs/gfs2/lops.c                                |   3 +-
+>  fs/iomap/buffered-io.c                        |   3 +-
+>  fs/ubifs/gc.c                                 |   7 +-
+>  fs/ubifs/replay.c                             |   4 +-
+>  fs/xfs/scrub/bitmap.c                         |   4 +-
+>  fs/xfs/xfs_bmap_item.c                        |   4 +-
+>  fs/xfs/xfs_buf.c                              |   6 +-
+>  fs/xfs/xfs_extent_busy.c                      |   4 +-
+>  fs/xfs/xfs_extent_busy.h                      |   3 +-
+>  fs/xfs/xfs_extfree_item.c                     |   4 +-
+>  fs/xfs/xfs_refcount_item.c                    |   4 +-
+>  fs/xfs/xfs_rmap_item.c                        |   4 +-
+>  include/asm-generic/bug.h                     |  16 +
+>  include/asm-generic/vmlinux.lds.h             |  20 +-
+>  include/linux/bpf.h                           |   4 +-
+>  include/linux/cfi.h                           |  41 +++
+>  include/linux/compiler-clang.h                |   3 +
+>  include/linux/compiler_types.h                |   8 +
+>  include/linux/init.h                          |   6 +-
+>  include/linux/list_sort.h                     |   7 +-
+>  include/linux/mm.h                            |  10 +
+>  include/linux/module.h                        |  13 +-
+>  include/linux/pci.h                           |   4 +-
+>  init/Kconfig                                  |   2 +-
+>  kernel/Makefile                               |   4 +
+>  kernel/cfi.c                                  | 329 ++++++++++++++++++
+>  kernel/kallsyms.c                             |  55 ++-
+>  kernel/kthread.c                              |   3 +-
+>  kernel/module.c                               |  43 +++
+>  kernel/workqueue.c                            |   2 +-
+>  lib/list_sort.c                               |  17 +-
+>  lib/test_list_sort.c                          |   3 +-
+>  net/tipc/name_table.c                         |   4 +-
+>  scripts/Makefile.modfinal                     |   2 +-
+>  scripts/module.lds.S                          |  20 +-
+>  74 files changed, 759 insertions(+), 112 deletions(-)
+>  create mode 100644 include/linux/cfi.h
+>  create mode 100644 kernel/cfi.c
+> 
+> 
+> base-commit: d19cc4bfbff1ae72c3505a00fb8ce0d3fa519e6c
+> -- 
+> 2.31.0.291.g576ba9dcdaf-goog
+> 
 
-> +	}
-> +	__netif_tx_unlock(nq);
-> +
-> +	return res;
-> +}
-
-> @@ -4365,16 +4538,26 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
->  			xdp.data_hard_start = page_address(buf->page);
->  			xdp_set_data_meta_invalid(&xdp);
->  			xdp.frame_sz = buf_sz;
-> +			xdp.rxq = &rx_q->xdp_rxq;
->  
-> +			pre_len = xdp.data_end - xdp.data_hard_start -
-> +				  buf->page_offset;
->  			skb = stmmac_xdp_run_prog(priv, &xdp);
-> +			/* Due xdp_adjust_tail: DMA sync for_device
-> +			 * cover max len CPU touch
-> +			 */
-> +			sync_len = xdp.data_end - xdp.data_hard_start -
-> +				   buf->page_offset;
-> +			sync_len = max(sync_len, pre_len);
->  
->  			/* For Not XDP_PASS verdict */
->  			if (IS_ERR(skb)) {
->  				unsigned int xdp_res = -PTR_ERR(skb);
->  
->  				if (xdp_res & STMMAC_XDP_CONSUMED) {
-> -					page_pool_recycle_direct(rx_q->page_pool,
-> -								 buf->page);
-> +					page_pool_put_page(rx_q->page_pool,
-> +							   virt_to_head_page(xdp.data),
-> +							   sync_len, true);
-
-IMHO the dma_sync_size logic is a little question, but it's not really
-related to your patch, others are already doing the same thing, so it's
-fine, I guess.
-
->  					buf->page = NULL;
->  					priv->dev->stats.rx_dropped++;
-
+-- 
+Kees Cook
