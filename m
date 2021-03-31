@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75ED93506B1
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 20:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D2F3506DA
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 20:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235282AbhCaSsn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 14:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45370 "EHLO
+        id S235485AbhCaSxA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 14:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235271AbhCaSs1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Mar 2021 14:48:27 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335FBC061574
-        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 11:48:27 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id a143so22234805ybg.7
-        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 11:48:27 -0700 (PDT)
+        with ESMTP id S235869AbhCaSwh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 14:52:37 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8B3C061574
+        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 11:52:36 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id q127-20020a4a33850000b02901b646aa81b1so4860257ooq.8
+        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 11:52:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bzXwTqaCsjNr5R9cHtOcIFzO+e5/2EeDyvGIAoWicuE=;
-        b=i3j3yuTJuOdjC+VAAv7q7LLZYwzRdZXDNfJ0gmAaV5bEM3B+gOU2pdCGisYs3S9JVd
-         zK6lwtnMY8LvLpfTdNk48BNPkt7ea0nFVLrXY+UsxeOBYv+iSmPglSZX+6WwcvAem4HY
-         Y10C1U9tCjiWMj6G0envyp0dGxRvYtKcOh3EBTRuOzdSoXXv0qDpRHzYsNh7xFGn90Gl
-         j2bpQ8+aeWM8UAW6h7lffjHmmiznyLgqLfuEYdp6EbyD5OUdHGrb1c5K84+iwObRjb2t
-         OAH/4zVzi0iU9kyFI83hVplAoNVAmX8n2uWNWUff77hvSt+BD07m16I5WRk9WznLICOR
-         YUAQ==
+        bh=uwG58KDcIJ/PJto0GhxZletjW0RV/aaeU84SYkm4RXo=;
+        b=OJ84ddmToAeFrPd3yMqPuL6eV4VFZ7UyMV6LciMsiy0l22h3QxevBtJ1xP9USMn8zo
+         X5+URl9Qe2WVEJfOnvTGSk286sDr91+3j1pgHF3ZWiDXXmJ7DOSv/8iOs9KSbfwr52E6
+         vussqui7q3odSqIr0AfouZxr6zdWObLE6xj3OONtELw6RyIsxIdhsUWsev6K4inGMECX
+         6Lv1Fb/YCrcvnC8MpP49q3h+ydc3nJevR8lpQjD1TO28kQzKgfIDjRO6byQqTnM0k5JT
+         pBhPoxxdliL18r9cIn58IGdBwV20ShfpNuQhgmrl4C7Qohk+eCgM2oyUjb/qUhPZ1azt
+         acPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bzXwTqaCsjNr5R9cHtOcIFzO+e5/2EeDyvGIAoWicuE=;
-        b=CzqoOssSqVtzCtoza717pzNwTyCJT0gS3A9mk4ZiZeMqPskUJ/W1PiTdDojgPfqNQO
-         DTQOx6JroEujcN/bUCPJ1u4vFKuhsl0WFzVfTpn+1/dxIbLqYrYBeqGbT1ahOFLB4EhG
-         j2aqO8G3mUVmu3t/8VgYYEpz58McgUFyR+nLowj0Zh69mQXABQlBP9NVmEPuz3EwdfoT
-         ANgfBsgFvOxBgKM9wVAdK34gdawTkezF6ir2EoV7QvwbIE0/1yMIIRlEKNL8sD4KzaHA
-         WlgwdUbXqAsm7huQGBaLiuxLCpNX7HnSVTlJiRlDm1+XMN7AAitq/Nxp5h9IQ+2VUdh1
-         7gzQ==
-X-Gm-Message-State: AOAM532APG0TN7V2iHEYrHDr0QS80ZrUk8i0erPhrr0hlvjMqRafq/nH
-        J5ZfRpdbJL2/ndfbWrm8R339+efQZj/DO91v5Bb+nEEJ
-X-Google-Smtp-Source: ABdhPJyMVuGezhNGI30Cf8bcuTllALgG43t/GfEmb1oKBdIo2fyggioXioH7pq051Cvxd6tBURA1ntD16roEa8eJ8FE=
-X-Received: by 2002:a25:ab03:: with SMTP id u3mr6704472ybi.347.1617216506413;
- Wed, 31 Mar 2021 11:48:26 -0700 (PDT)
+        bh=uwG58KDcIJ/PJto0GhxZletjW0RV/aaeU84SYkm4RXo=;
+        b=XwghEIttY7opagNhLSasvHhylGfS2Bevk8F2migMwu/O0cx1k/a5tPlv74B1k3ihLm
+         hGW1EadpM9YKO+jLS13OFFpcq604n1kZo5rxccuBFbrLWJ6x4n1bI/oIZRDSioMSxCQI
+         HDcrYvp9WB+8EbZ4ybi3T5b+49C3dbLendX8eBMJsmBG7UPrn775K93Q/MGFAqIfS8pB
+         wRwb+NHD6v7V6PjVYg/gNcAiRGhWbv/6w2E2cSQ9OzjwXzuTQkHPdGrBHOx5d+NQaxj2
+         AAHH1ZcZ+ewfSySwhNLI0PNDMdoc7n0E1Hrr96OrAC2OkAGYRaIQKk16hDQyovb/0vQT
+         gVxA==
+X-Gm-Message-State: AOAM5339F0pSlcvYG/6wWnD0LFzbqozCO7YuLK8nm/ud1qhl1F7a0DLI
+        Us1+ympXOnidujS50nkFAvcJ6vGLt0UZlPjQJt454aDe
+X-Google-Smtp-Source: ABdhPJxiXv7cEV8K88j6EiMqMFQvTDCsMJvhtZhIJSniCqkwKIrIhz95HjaZIm4U6y16FXYbz8qeXR1lkwBPOZ+MxhE=
+X-Received: by 2002:a25:37c1:: with SMTP id e184mr6412574yba.260.1617216743035;
+ Wed, 31 Mar 2021 11:52:23 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210331164433.320534-1-yauheni.kaliuta@redhat.com>
- <20210331164504.320614-1-yauheni.kaliuta@redhat.com> <20210331164504.320614-7-yauheni.kaliuta@redhat.com>
-In-Reply-To: <20210331164504.320614-7-yauheni.kaliuta@redhat.com>
+ <20210331164504.320614-1-yauheni.kaliuta@redhat.com> <20210331164504.320614-8-yauheni.kaliuta@redhat.com>
+In-Reply-To: <20210331164504.320614-8-yauheni.kaliuta@redhat.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 31 Mar 2021 11:48:15 -0700
-Message-ID: <CAEf4BzYMHLn2=+my40Un07CN8zGJZ5PpHSHZ3JJX6v=ZcsAG5w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 7/8] libbpf: add bpf_map__inner_map API
+Date:   Wed, 31 Mar 2021 11:52:07 -0700
+Message-ID: <CAEf4BzaeB_M-95U4cOUccM00XitBaMPnpS7Wik4T9SLSfdixyg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 8/8] selftests/bpf: ringbuf_multi: use runtime
+ page size
 To:     Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>
@@ -62,78 +63,85 @@ X-Mailing-List: bpf@vger.kernel.org
 On Wed, Mar 31, 2021 at 9:45 AM Yauheni Kaliuta
 <yauheni.kaliuta@redhat.com> wrote:
 >
-> From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Set bpf table sizes dynamically according to the runtime page size
+> value.
 >
-> The API gives access to inner map for map in map types (array or
-> hash of map). It will be used to dynamically set max_entries in it.
+> Do not switch to ASSERT macros, keep CHECK, for consistency with the
+> rest of the test. Can be a separate cleanup patch.
 >
 > Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 > ---
->  tools/lib/bpf/libbpf.c   | 10 ++++++++++
->  tools/lib/bpf/libbpf.h   |  1 +
->  tools/lib/bpf/libbpf.map |  1 +
->  3 files changed, 12 insertions(+)
+>  .../selftests/bpf/prog_tests/ringbuf_multi.c  | 23 ++++++++++++++++---
+>  .../selftests/bpf/progs/test_ringbuf_multi.c  |  1 -
+>  2 files changed, 20 insertions(+), 4 deletions(-)
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 7aad78dbb4b4..b48dc380059d 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -2194,6 +2194,7 @@ static int parse_btf_map_def(struct bpf_object *obj,
->                         map->inner_map = calloc(1, sizeof(*map->inner_map));
->                         if (!map->inner_map)
->                                 return -ENOMEM;
-> +                       map->inner_map->fd = -1;
->                         map->inner_map->sec_idx = obj->efile.btf_maps_shndx;
->                         map->inner_map->name = malloc(strlen(map->name) +
->                                                       sizeof(".inner") + 1);
-> @@ -3845,6 +3846,14 @@ __u32 bpf_map__max_entries(const struct bpf_map *map)
->         return map->def.max_entries;
->  }
->
-> +struct bpf_map *bpf_map__inner_map(struct bpf_map *map)
-> +{
-> +    if (!bpf_map_type__is_map_in_map(map->def.type))
-> +        return NULL;
-> +
-> +    return map->inner_map;
-> +}
-> +
->  int bpf_map__set_max_entries(struct bpf_map *map, __u32 max_entries)
+> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
+> index d37161e59bb2..159de99621c7 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
+> @@ -41,13 +41,30 @@ static int process_sample(void *ctx, void *data, size_t len)
+>  void test_ringbuf_multi(void)
 >  {
->         if (map->fd >= 0)
-> @@ -9476,6 +9485,7 @@ int bpf_map__set_inner_map_fd(struct bpf_map *map, int fd)
->                 pr_warn("error: inner_map_fd already specified\n");
->                 return -EINVAL;
->         }
-> +       zfree(&map->inner_map);
->         map->inner_map_fd = fd;
->         return 0;
->  }
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index f500621d28e5..bec4e6a6e31d 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -480,6 +480,7 @@ LIBBPF_API int bpf_map__pin(struct bpf_map *map, const char *path);
->  LIBBPF_API int bpf_map__unpin(struct bpf_map *map, const char *path);
+>         struct test_ringbuf_multi *skel;
+> -       struct ring_buffer *ringbuf;
+> +       struct ring_buffer *ringbuf = NULL;
+>         int err;
+> +       int page_size = getpagesize();
 >
->  LIBBPF_API int bpf_map__set_inner_map_fd(struct bpf_map *map, int fd);
-> +LIBBPF_API struct bpf_map *bpf_map__inner_map(struct bpf_map *map);
+> -       skel = test_ringbuf_multi__open_and_load();
+> -       if (CHECK(!skel, "skel_open_load", "skeleton open&load failed\n"))
+> +       skel = test_ringbuf_multi__open();
+> +       if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
+>                 return;
 >
->  LIBBPF_API long libbpf_get_error(const void *ptr);
->
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index f5990f7208ce..eeb6d5ebd1cc 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -360,4 +360,5 @@ LIBBPF_0.4.0 {
->                 bpf_linker__free;
->                 bpf_linker__new;
->                 bpf_object__set_kversion;
-> +               bpf_map__inner_map;
+> +       err = bpf_map__set_max_entries(skel->maps.ringbuf1, page_size);
+> +       if (CHECK(err != 0, "bpf_map__set_max_entries", "bpf_map__set_max_entries failed\n"))
+> +               goto cleanup;
+> +
+> +       err = bpf_map__set_max_entries(skel->maps.ringbuf2, page_size);
+> +       if (CHECK(err != 0, "bpf_map__set_max_entries", "bpf_map__set_max_entries failed\n"))
+> +               goto cleanup;
+> +
+> +       err = bpf_map__set_max_entries(bpf_map__inner_map(skel->maps.ringbuf_arr), page_size);
+> +       if (CHECK(err != 0, "bpf_map__set_max_entries", "bpf_map__set_max_entries failed\n"))
+> +               goto cleanup;
+> +
+> +       err = test_ringbuf_multi__load(skel);
+> +       if (CHECK(err != 0, "skel_load", "skeleton load failed\n"))
+> +               goto cleanup;
+> +
 
-please keep the list sorted alphabetically
+To test bpf_map__set_inner_map_fd() interaction with map-in-map
+initialization, can you extend the test to have another map-in-map
+(could be HASHMAP, just for fun), which is initialized with either
+ringbuf1 or ringbuf2, but then from user-space use a different way to
+override inner map definition:
 
->  } LIBBPF_0.3.0;
+int proto_fd = bpf_create_map(... RINGBUF of page_size ...);
+bpf_map__set_inner_map_fd(skel->maps.ringbuf_hash, proto_fd);
+close(proto_fd);
+
+/* perform load, it should succeed */
+
+Important is to use a different map-in-map from ringbuf_arr, so that
+load fails, unless set_inner_map_fd() properly updates internals of a
+map.
+
+>         /* only trigger BPF program for current process */
+>         skel->bss->pid = getpid();
+>
+> diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
+> index edf3b6953533..055c10b2ff80 100644
+> --- a/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
+> +++ b/tools/testing/selftests/bpf/progs/test_ringbuf_multi.c
+> @@ -15,7 +15,6 @@ struct sample {
+>
+>  struct ringbuf_map {
+>         __uint(type, BPF_MAP_TYPE_RINGBUF);
+> -       __uint(max_entries, 1 << 12);
+>  } ringbuf1 SEC(".maps"),
+>    ringbuf2 SEC(".maps");
+>
 > --
 > 2.31.1
 >
