@@ -2,29 +2,29 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B396350374
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 17:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CC9350399
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 17:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235519AbhCaPcA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 11:32:00 -0400
-Received: from mga06.intel.com ([134.134.136.31]:10013 "EHLO mga06.intel.com"
+        id S235706AbhCaPh4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 11:37:56 -0400
+Received: from mga03.intel.com ([134.134.136.65]:34667 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235420AbhCaPbm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Mar 2021 11:31:42 -0400
-IronPort-SDR: ix/TbFdwhqexlKDLzcSimdpnwqJy5k9ySxCYjUqlJ0+cbqK3u3U3HQbj+V79dN+DR1PyFljj/j
- S3N+iLVHSAFg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="253363775"
+        id S235520AbhCaPh0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 11:37:26 -0400
+IronPort-SDR: 0ZDlpzQwoAAcASMccIhJbjjPByNCu/5rNQK+h+iC2XJEoUR2KIZp1uDJ5osUSmfDsngJANJaus
+ coQyH141kfUQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="192054455"
 X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="253363775"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 08:31:38 -0700
-IronPort-SDR: t2ElSMhwnt8Hm7hqczZh4uqwTpjrT0CnReQGioO25F9+uRM8nZaJ0EiW3QO6AW0NUOZbkxvh/h
- y9c5DTJJe8Yg==
+   d="scan'208";a="192054455"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 08:37:26 -0700
+IronPort-SDR: bFLVobjcz36FiQAfEulhXkLO+PD+DqUOlkEpEmCQxJrLSR9BjRjPgUnK4afBfDx0Rdti0RG/UP
+ kFByFLIJdbLg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,293,1610438400"; 
-   d="scan'208";a="455537071"
+   d="scan'208";a="418729037"
 Received: from glass.png.intel.com ([10.158.65.59])
-  by orsmga001.jf.intel.com with ESMTP; 31 Mar 2021 08:31:32 -0700
+  by orsmga008.jf.intel.com with ESMTP; 31 Mar 2021 08:37:20 -0700
 From:   Ong Boon Leong <boon.leong.ong@intel.com>
 To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
         Alexandre Torgue <alexandre.torgue@st.com>,
@@ -44,8 +44,8 @@ Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         bpf@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>
 Subject: [PATCH net-next v3 0/6] stmmac: Add XDP support
-Date:   Wed, 31 Mar 2021 23:35:41 +0800
-Message-Id: <20210331153541.1892-1-boon.leong.ong@intel.com>
+Date:   Wed, 31 Mar 2021 23:41:29 +0800
+Message-Id: <20210331154135.8507-1-boon.leong.ong@intel.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -100,7 +100,7 @@ PING 169.254.1.11 (169.254.1.11) 300(328) bytes of data.
 308 bytes from 169.254.1.11: icmp_seq=5 ttl=64 time=0.585 ms
 308 bytes from 169.254.1.11: icmp_seq=6 ttl=64 time=0.591 ms
 308 bytes from 169.254.1.11: icmp_seq=7 ttl=64 time=0.599 ms
-^C
+
 --- 169.254.1.11 ping statistics ---
 7 packets transmitted, 7 received, 0% packet loss, time 6103ms
 rtt min/avg/max/mdev = 0.575/0.670/1.166/0.202 ms
