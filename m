@@ -2,120 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2100C3500FC
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 15:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D07350103
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 15:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235755AbhCaNK1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 09:10:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49452 "EHLO
+        id S235545AbhCaNOq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 09:14:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50058 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235753AbhCaNKU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 31 Mar 2021 09:10:20 -0400
+        by vger.kernel.org with ESMTP id S235450AbhCaNOd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 31 Mar 2021 09:14:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617196220;
+        s=mimecast20190719; t=1617196473;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=zJ1v/ByVz0LVci4ZFy2wRr2g5wKarpHLC+9VqsIXhEI=;
-        b=TpFYf0hY0VP/lNtAdWZ38nuf4eruW2SYIEWGb68iZ7wMX0Gljv3bh0lWergeZN0GirLxOs
-        C6EY4ZGNgAxFfpaKhI60pD8F7zbhrFZ7KdBMO5HZh/ehLQilvTCvWrjiKZYJwHxY2tnG/1
-        84zrUMGld58IoCexAYwAUakWIT4mp3g=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-432-mKLrV-i_M662Uo1VC2Pfag-1; Wed, 31 Mar 2021 09:10:18 -0400
-X-MC-Unique: mKLrV-i_M662Uo1VC2Pfag-1
-Received: by mail-ej1-f71.google.com with SMTP id kx22so763166ejc.17
-        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 06:10:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=zJ1v/ByVz0LVci4ZFy2wRr2g5wKarpHLC+9VqsIXhEI=;
-        b=ZR6h7dCr5V3Y6+tEzbQtOHKbBDydpb28/zZahCisgpumU1nXYGIC1juErKguXXomRE
-         drNqf5FPRirKs+MrUnxW5jZodyiXWaNK7QoOLHSOuxcX1XrRNT/qOJMRyEFfcHH7K0Kb
-         fja3KR5Ob3p7KkMVPVYjxmPbbY0RLJpbk0HMG0aL7anNCWWee1Oa/dUM7hkyPOCdKAJG
-         WuYWCinYXVqFmFJZR+QfUmZO1WIZ14Of9UXsRWqwCkgz7gS5XEh+hEEbovQQKHrKbntP
-         qnX0yvKmMsP3YvGU3BHk2VHmaMtwuclZzFFfSEzgH2Q3SrBjS+vaGiCkVy5P/gZgUZzA
-         q3YA==
-X-Gm-Message-State: AOAM532yWGHJsCE138SW0lgUcE2hnzu1Ix4jCD/1q8+zd6DIoMsYIb9g
-        373HqMhdoipCnG/dgFQX9LGBK+bcFNDRz5rIRhiWOV07d8DCQ/ZbP9c7a2zAQaJIkAnjhIVGdAZ
-        ZZsQIYuOF7Z0U
-X-Received: by 2002:a17:907:7014:: with SMTP id wr20mr3429169ejb.179.1617196216991;
-        Wed, 31 Mar 2021 06:10:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxz44gLfORHkiMvrYcdGjX+JWgs3nM3kvEs0NV1oSesnPwMj1FMJD9FAf+k5cktLYImXhxLIA==
-X-Received: by 2002:a17:907:7014:: with SMTP id wr20mr3429118ejb.179.1617196216561;
-        Wed, 31 Mar 2021 06:10:16 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id s13sm1621718edr.86.2021.03.31.06.10.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Mar 2021 06:10:15 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 2A8A51801A8; Wed, 31 Mar 2021 15:10:14 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
-        ast@kernel.org, andrii@kernel.org
-Cc:     bjorn.topel@intel.com, magnus.karlsson@intel.com,
-        ciara.loftus@intel.com, john.fastabend@gmail.com,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: Re: [PATCH v5 bpf-next 06/17] libbpf: xsk: use bpf_link
-In-Reply-To: <20210329224316.17793-7-maciej.fijalkowski@intel.com>
-References: <20210329224316.17793-1-maciej.fijalkowski@intel.com>
- <20210329224316.17793-7-maciej.fijalkowski@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 31 Mar 2021 15:10:14 +0200
-Message-ID: <87o8ezpiyx.fsf@toke.dk>
+        bh=2d2FkP+IOtMtjXx6saUVQwKJ33CT7kQz6QABuLcPkiw=;
+        b=JLgLiuKGpwQAfHfJfj0O+17SR5yDF+KCKh1mLDWb76HV18DA/9823cp+TIHjzSLb2+Mm6b
+        N+xMpA0xtfPa/1iYDLd8xz/eC9LTnjaqAzOgtU51WFRbZyG/u8mcL0+9NP3IhDYLRKL+2I
+        6sF3cpmgw/pv+59hEhJ6GkdHR0QdIc8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-235-WT173dPdPI6FgFkcmErBsg-1; Wed, 31 Mar 2021 09:14:28 -0400
+X-MC-Unique: WT173dPdPI6FgFkcmErBsg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 62707107ACCA;
+        Wed, 31 Mar 2021 13:14:27 +0000 (UTC)
+Received: from sandy.ghostprotocols.net (unknown [10.3.128.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E032B100164A;
+        Wed, 31 Mar 2021 13:14:26 +0000 (UTC)
+Received: by sandy.ghostprotocols.net (Postfix, from userid 1000)
+        id 56E90F9; Wed, 31 Mar 2021 10:14:24 -0300 (-03)
+Date:   Wed, 31 Mar 2021 10:14:24 -0300
+From:   Arnaldo Carvalho de Melo <acme@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH bpf-next] bpf: Generate BTF_KIND_FLOAT when linking
+ vmlinux
+Message-ID: <20210331131424.GA10292@redhat.com>
+References: <20210331014356.256212-1-iii@linux.ibm.com>
+ <CAEf4BzaF6WMz8pM2X03p_oQo95J1e-7Owi+8Y=GAOkXrx8H-aA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzaF6WMz8pM2X03p_oQo95J1e-7Owi+8Y=GAOkXrx8H-aA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.5.20 (2009-12-10)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+Em Tue, Mar 30, 2021 at 11:28:36PM -0700, Andrii Nakryiko escreveu:
+> On Tue, Mar 30, 2021 at 6:44 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+> >
+> > pahole v1.21 will support the --btf_gen_floats flag, which makes it
+> > generate the information about the floating-point types.
+> >
+> > Adjust link-vmlinux.sh to pass this flag to pahole in case it's
+> > supported. Whether or not this flag is supported is determined by
+> > probing, which is chosen over version check for two reasons:
+> >
+> > 1) at this moment --btf_gen_floats exists only in master, which
+> >    identifies itself as v1.20.
+> > 2) distros may backport features, making the version check too
+> >    conservative.
+> >
+> 
+> Does anyone really cherry-pick and backport pahole patches, though? So
+> far we've been using strictly version checks for pahole (1.13, then
+> 1.16, then 1.19 for modules), that keeps everything simpler and more
+> reliable, IMO. I'd stick with 1.21 check and just check with Arnaldo
+> when he's planning to release a new version.
 
-> Currently, if there are multiple xdpsock instances running on a single
-> interface and in case one of the instances is terminated, the rest of
-> them are left in an inoperable state due to the fact of unloaded XDP
-> prog from interface.
->
-> Consider the scenario below:
->
-> // load xdp prog and xskmap and add entry to xskmap at idx 10
-> $ sudo ./xdpsock -i ens801f0 -t -q 10
->
-> // add entry to xskmap at idx 11
-> $ sudo ./xdpsock -i ens801f0 -t -q 11
->
-> terminate one of the processes and another one is unable to work due to
-> the fact that the XDP prog was unloaded from interface.
->
-> To address that, step away from setting bpf prog in favour of bpf_link.
-> This means that refcounting of BPF resources will be done automatically
-> by bpf_link itself.
->
-> Provide backward compatibility by checking if underlying system is
-> bpf_link capable. Do this by looking up/creating bpf_link on loopback
-> device. If it failed in any way, stick with netlink-based XDP prog.
-> therwise, use bpf_link-based logic.
->
-> When setting up BPF resources during xsk socket creation, check whether
-> bpf_link for a given ifindex already exists via set of calls to
-> bpf_link_get_next_id -> bpf_link_get_fd_by_id -> bpf_obj_get_info_by_fd
-> and comparing the ifindexes from bpf_link and xsk socket.
->
-> For case where resources exist but they are not AF_XDP related, bail out
-> and ask user to remove existing prog and then retry.
->
-> Lastly, do a bit of refactoring within __xsk_setup_xdp_prog and pull out
-> existing code branches based on prog_id value onto separate functions
-> that are responsible for resource initialization if prog_id was 0 and
-> for lookup existing resources for non-zero prog_id as that implies that
-> XDP program is present on the underlying net device. This in turn makes
-> it easier to follow, especially the teardown part of both branches.
->
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+The plan is to get 1.21 out of the door when we finish the LTO work, which should be soon.
 
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+- Arnaldo
+ 
+> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > ---
+> >  scripts/link-vmlinux.sh | 7 ++++++-
+> >  1 file changed, 6 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> > index 3b261b0f74f0..f4c763d2661d 100755
+> > --- a/scripts/link-vmlinux.sh
+> > +++ b/scripts/link-vmlinux.sh
+> > @@ -227,8 +227,13 @@ gen_btf()
+> >
+> >         vmlinux_link ${1}
+> >
+> > +       local paholeopt=-J
+> > +       if ${PAHOLE} --btf_gen_floats --help >/dev/null 2>&1; then
+> > +               paholeopt="${paholeopt} --btf_gen_floats"
+> > +       fi
+> > +
+> >         info "BTF" ${2}
+> > -       LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
+> > +       LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} ${paholeopt} ${1}
+> 
+> we know that -J is always specified, so I'd leave it intact, and just
+> have "extra pahole options", potentially empty.
+> 
+> >
+> >         # Create ${2} which contains just .BTF section but no symbols. Add
+> >         # SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
+> > --
+> > 2.29.2
+> >
 
