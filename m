@@ -2,81 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD353501BB
-	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 15:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF53E3501D9
+	for <lists+bpf@lfdr.de>; Wed, 31 Mar 2021 16:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235890AbhCaNy2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 09:54:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235777AbhCaNyV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Mar 2021 09:54:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 68A8C606A5;
-        Wed, 31 Mar 2021 13:54:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617198860;
-        bh=mlpmYDu/MgPmlL9JJGa4xFueLTSyrRKM59SWYXdWgPo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p7m2dEc5+l1WmN9RPwRtdmJKTVrjyumk72TWimeufafY0BiPGhih6y1/xagJjhWN+
-         hN5N6n9wayJz+j5mrxE9wMsCI7jF6jWv3u2muv+S4Uua38hKAw1AHuggsMBnV3Ke4M
-         5GgaMxyegSEMxx6FtV8ocl7eyPVwqqD4XIundCSUa6X923cyUnglBHohheoJTxiBau
-         0WjEzs9QNcru9gckaQg0cgJItbZ+QlwPXY9+fn5lfE7bAn4fQ8aFNZT1LAW+ZbB+ge
-         9F/xE1BRD8Fkn9eU4b9xcaQCCecf0sO6HlLnnvwaBsSm2Ly1yXdILo6JaUZzPSKUmO
-         5h7WpNrptDeIQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9D64440647; Wed, 31 Mar 2021 10:54:17 -0300 (-03)
-Date:   Wed, 31 Mar 2021 10:54:17 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Bill Wendling <morbo@google.com>, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH dwarves v3 0/3] permit merging all dwarf cu's for clang
- lto built binary
-Message-ID: <YGR/Cc3/39V0kRuj@kernel.org>
-References: <20210328201400.1426437-1-yhs@fb.com>
- <YGIQ9c3Qk+DMa+C7@kernel.org>
- <YGM/Uh61RVExWnTU@kernel.org>
- <YGNpBlf7sLalcFWB@kernel.org>
- <YGNs4QxfGvQozqGS@kernel.org>
- <503f852c-a7f4-efb2-5fd3-8431721dd67a@fb.com>
+        id S235945AbhCaOEq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 10:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235951AbhCaOE0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 10:04:26 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94F5C06174A
+        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 07:04:25 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 184so23967853ljf.9
+        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 07:04:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7WkKKW/QkEs9/kkL1SzWso2zmgtPiw9JFTK148I7Nb4=;
+        b=niP6gSWqtgY8fqKdzU9VHeMUI4+Y+aJZqdJSpI7MrXBBXbr/yaOMsYQfYPtRMHvRbr
+         HFVoWRpG01gTfsI1lXIUDCA6ip2c2A8W/taxgcGCoJ7VmKM/TJYvM9p4JFAmOjKjWed/
+         qYpl40v1nu9CC9vOjChykYcdyjD5HQw6VVb3w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7WkKKW/QkEs9/kkL1SzWso2zmgtPiw9JFTK148I7Nb4=;
+        b=bd9/c0tJ83t1mM3FMigXSgzvVAYY2C76L8v2XZRkgtZA9kS6HlBd/rZRXgGIUY+62P
+         RCWJB+NKVR6UOGpl4C564vjF8x4ANtZyhVbYTuGwGNsbNgT8UAKYYllf9llMB8KJK+Kt
+         cuZZhtR4yzRCUO70ydJ1AKycsTesN3r1y/yaeMAhoqrJMGBTrl/Hklxev7QYl2yY5upi
+         ZjoGMEvqBbI9JznlniJqtEvqULV2fPGY+VjbSTGHA0Af/ZWiCEbggloeADYLxzSmGn8l
+         PE3e8akcoVwtMjoZToEB++y823w5hyIrHNpVGv2BbY+dL5kC2mY8h/pPhENOrMls06/a
+         gyMA==
+X-Gm-Message-State: AOAM531VBgtgqaAF9R4o8DyraMu25lM19PGKRuu0qOBq64hux4v+mLEu
+        e7m1MrQ3Patd3fEL6zzukXGBvsBKToWSZPVgkLba6Lv6J2o=
+X-Google-Smtp-Source: ABdhPJwGGJC46aQqg9+k+oN5WbxooZfC2RyoJrBbGmk9xp43AiM5ChwTRs/po0Pv34t6pPvRXgiXVBdqaoqxaQxZxkQ=
+X-Received: by 2002:a05:651c:118b:: with SMTP id w11mr2156382ljo.223.1617199463908;
+ Wed, 31 Mar 2021 07:04:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <503f852c-a7f4-efb2-5fd3-8431721dd67a@fb.com>
-X-Url:  http://acmel.wordpress.com
+References: <20210326160501.46234-1-lmb@cloudflare.com>
+In-Reply-To: <20210326160501.46234-1-lmb@cloudflare.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 31 Mar 2021 15:04:13 +0100
+Message-ID: <CACAyw9_FHepkTzdFkiGUFV6F8u7zaZYOeH+bUjWxcBNBNeBYBg@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 1/2] bpf: link: refuse non-O_RDWR flags in BPF_OBJ_GET
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     kernel-team <kernel-team@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Mar 30, 2021 at 08:20:20PM -0700, Yonghong Song escreveu:
-> On 3/30/21 11:24 AM, Arnaldo Carvalho de Melo wrote:
-> > Em Tue, Mar 30, 2021 at 03:08:06PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > [acme@five pahole]$ fullcircle tcp_bbr.o
-> > > [acme@five pahole]$
+On Fri, 26 Mar 2021 at 16:05, Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> Invoking BPF_OBJ_GET on a pinned bpf_link checks the path access
+> permissions based on file_flags, but the returned fd ignores flags.
+> This means that any user can acquire a "read-write" fd for a pinned
+> link with mode 0664 by invoking BPF_OBJ_GET with BPF_F_RDONLY in
+> file_flags. The fd can be used to invoke BPF_LINK_DETACH, etc.
+>
+> Fix this by refusing non-O_RDWR flags in BPF_OBJ_GET. This works
+> because OBJ_GET by default returns a read write mapping and libbpf
+> doesn't expose a way to override this behaviour for programs
+> and links.
 
-> > > This one is dealt with, doing some more tests and looking at that
-> > > array[] versus array[0].
+Hi Alexei and Daniel,
 
-> > I've pushed what I have to the main repos at kernel.org and github,
-> > please check, I'll continue from there.
+I think these two patches might have fallen through the cracks, could
+you take a look? I'm not sure what the etiquette is around bumping a
+set, so please let me know if you'd prefer me to send the patches with
+acks included or something like that.
 
-> Looks good. Thanks!
+Best
 
-> I will try to experiment with an alternative way ([1]) to check whether
-> cross-cu reference happens or not. But at least checking flags
-> approach can be adapted to gcc (if we want after comparing the alternative)
-> since gcc always has flags in dwarf.
- 
-> [1] https://lore.kernel.org/bpf/d34a3d62-bae8-3a30-26b6-4e5e8efcd0af@fb.com/T/#m1b0b1206091c19a90b15d054aa26239101289f84
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-I thought about some other method, like adding a ELF note to vmlinux
-stating that this was built with LTO, that would be the fastest way, I
-think. If that note wasn't there, then we would fallback to looking at
-inter CU references, that way we would have the best of both worlds and
-wouldn't incur in per-CU DW_AT_producer overheads with the flags for
-each object file.
-
-- Arnaldo
+www.cloudflare.com
