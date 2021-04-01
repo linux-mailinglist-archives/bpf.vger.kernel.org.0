@@ -2,115 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D12351ACF
-	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 20:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCBA351B7B
+	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 20:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236874AbhDASDR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Apr 2021 14:03:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236544AbhDAR57 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:57:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 218C66138B;
-        Thu,  1 Apr 2021 16:41:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617295267;
-        bh=Q4nUlg0ojVJGwCUl3O+CfLyq7kNu0aIIv7SoaXSZg80=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NZhkX8UDJ9Uq+jntCBvwepPQ9I4QMYXsXPLrVzQdBZa4v1Uv+J3AuuY2WUfkxbYko
-         fhUV5IpKYGqOPmvgw0c8c3/Ran1B0/QSd2/6BFCSrMnjVKQX84CAQ3jECoJXnURnpr
-         j0QL0VR3aDRxlYgtxagS681yDlXLATRtN6lNjlAmEwbriZfrGuSeFYqvpxfxYLgVXI
-         7cSG6FUCdk9JUj1N6PX2MaRa0gzcf6JB86ZAp4ewyoMrJKoM2r8HCG9rjg7jN0M+rv
-         EYH816XXgsIbw+FarFG5UC5yEEy/AqeiuYv1PnUKM3rwwRcvFt/YnWWDcaK4/2sFGS
-         01CDXMWbkz/fg==
-Received: by mail-lj1-f173.google.com with SMTP id u4so2938400ljo.6;
-        Thu, 01 Apr 2021 09:41:07 -0700 (PDT)
-X-Gm-Message-State: AOAM531ANvbcCnW+19oeL/JUppbP2al9iIiVv9rpb/GP6DkmGLE8AsBz
-        eeiH4M5can2LuV65KR/fyAIXEtdYXPEkcWR5qp8=
-X-Google-Smtp-Source: ABdhPJwMkQWLebv25U3vuHVMSmx0mnJPw54Z+BzLX41dITc/Gb9WjRJZ9BCfKBDwUBT1V5Hf8glA1bnl0LZTAcRUONs=
-X-Received: by 2002:a2e:bba1:: with SMTP id y33mr6001094lje.506.1617295265496;
- Thu, 01 Apr 2021 09:41:05 -0700 (PDT)
+        id S237735AbhDASIq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Apr 2021 14:08:46 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:35478 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234424AbhDASBJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Apr 2021 14:01:09 -0400
+Received: by mail-io1-f71.google.com with SMTP id v24so4552427ion.2
+        for <bpf@vger.kernel.org>; Thu, 01 Apr 2021 11:01:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=t1PSBwAKPIxSsjyHhjvOvydGcJv2nwxNeNnnB0pN5z4=;
+        b=rSt7iSZd0mqZi9GuQkNacon4s1czTrHm0Kz/t0QawrtZ2jRlgh0smsRsdAFVlhL0DD
+         7U531k5PPubQxHkZkoumKC5apiwcgHzgtPSnzBfpKzmUcBcE6zJMeJ/MZXDw+FnSwKyr
+         p9GeV0CiBQrH5VnSnGNiKB+HGDNPH8Au4pya9+lrtHW4GABtI1uyezQyzRWHYXzZckVZ
+         GgjGe+UaWl1MIjvVucNFqsTHnm8RTgKPWaTawkLqBlJlmRXGnxfmAAVSYBqOZTKMvgxs
+         Be2lUO8QZ5PXhaGHG3bOfDxyMa0oXn+yQBSd0ygtE/uD0dTFI9Qgeerc5teZJFdyRnv6
+         GW8g==
+X-Gm-Message-State: AOAM531I4PPHA2kbKpHAVEoaRccU3TDEv+Qyelo10Xxl793J2InoWSkm
+        dQsosy12DkgpA1p6CshHcisBxQ6eruKax38znrZ85Kf1x7kA
+X-Google-Smtp-Source: ABdhPJyvO0s22tKhZ9WnikY25h0lMQFGQxk3fm8YQuGAfS4QejjBrmdhMtUZGFynSyNRa1nHaVnvvFGyw+hSTQlenTkj1ltd289T
 MIME-Version: 1.0
-References: <e01b1a562c523f64049fa45da6c031b0749ca412.1617267115.git.lorenzo@kernel.org>
-In-Reply-To: <e01b1a562c523f64049fa45da6c031b0749ca412.1617267115.git.lorenzo@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Thu, 1 Apr 2021 09:40:54 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4QTOgC+fDYRZnVwWtt3NTS9D+56mpP04Kh3tHrkD7G1A@mail.gmail.com>
-Message-ID: <CAPhsuW4QTOgC+fDYRZnVwWtt3NTS9D+56mpP04Kh3tHrkD7G1A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] cpumap: bulk skb using netif_receive_skb_list
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        lorenzo.bianconi@redhat.com,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
+X-Received: by 2002:a05:6e02:170c:: with SMTP id u12mr7856308ill.100.1617300067465;
+ Thu, 01 Apr 2021 11:01:07 -0700 (PDT)
+Date:   Thu, 01 Apr 2021 11:01:07 -0700
+In-Reply-To: <000000000000680f2905afd0649c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000043f2c05beed04d8@google.com>
+Subject: Re: [syzbot] BUG: unable to handle kernel paging request in bpf_trace_run2
+From:   syzbot <syzbot+cc36fd07553c0512f5f7@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, corbet@lwn.net, daniel@iogearbox.net,
+        davem@davemloft.net, dsahern@gmail.com, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kpsingh@kernel.org, kuba@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+        mingo@kernel.org, mingo@redhat.com, mmullins@mmlx.us,
+        netdev@vger.kernel.org, peterz@infradead.org, rostedt@goodmis.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 1:57 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
->
-> Rely on netif_receive_skb_list routine to send skbs converted from
-> xdp_frames in cpu_map_kthread_run in order to improve i-cache usage.
-> The proposed patch has been tested running xdp_redirect_cpu bpf sample
-> available in the kernel tree that is used to redirect UDP frames from
-> ixgbe driver to a cpumap entry and then to the networking stack.
-> UDP frames are generated using pkt_gen.
->
-> $xdp_redirect_cpu  --cpu <cpu> --progname xdp_cpu_map0 --dev <eth>
->
-> bpf-next: ~2.2Mpps
-> bpf-next + cpumap skb-list: ~3.15Mpps
->
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  kernel/bpf/cpumap.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
->
-> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-> index 0cf2791d5099..b33114ce2e2b 100644
-> --- a/kernel/bpf/cpumap.c
-> +++ b/kernel/bpf/cpumap.c
-> @@ -257,6 +257,7 @@ static int cpu_map_kthread_run(void *data)
->                 void *frames[CPUMAP_BATCH];
->                 void *skbs[CPUMAP_BATCH];
->                 int i, n, m, nframes;
-> +               LIST_HEAD(list);
->
->                 /* Release CPU reschedule checks */
->                 if (__ptr_ring_empty(rcpu->queue)) {
-> @@ -305,7 +306,6 @@ static int cpu_map_kthread_run(void *data)
->                 for (i = 0; i < nframes; i++) {
->                         struct xdp_frame *xdpf = frames[i];
->                         struct sk_buff *skb = skbs[i];
-> -                       int ret;
->
->                         skb = __xdp_build_skb_from_frame(xdpf, skb,
->                                                          xdpf->dev_rx);
-> @@ -314,11 +314,10 @@ static int cpu_map_kthread_run(void *data)
->                                 continue;
->                         }
->
-> -                       /* Inject into network stack */
-> -                       ret = netif_receive_skb_core(skb);
-> -                       if (ret == NET_RX_DROP)
-> -                               drops++;
+syzbot suspects this issue was fixed by commit:
 
-I guess we stop tracking "drops" with this patch?
+commit befe6d946551d65cddbd32b9cb0170b0249fd5ed
+Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Date:   Wed Nov 18 14:34:05 2020 +0000
 
-Thanks,
-Song
+    tracepoint: Do not fail unregistering a probe due to memory failure
 
-> +                       list_add_tail(&skb->list, &list);
->                 }
-> +               netif_receive_skb_list(&list);
-> +
->                 /* Feedback loop via tracepoint */
->                 trace_xdp_cpumap_kthread(rcpu->map_id, n, drops, sched, &stats);
->
-> --
-> 2.30.2
->
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14f0260ed00000
+start commit:   12450081 libbpf: Fix native endian assumption when parsing..
+git tree:       bpf
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5ac0d21536db480b
+dashboard link: https://syzkaller.appspot.com/bug?extid=cc36fd07553c0512f5f7
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1365d2c3900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16d5f08d900000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: tracepoint: Do not fail unregistering a probe due to memory failure
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
