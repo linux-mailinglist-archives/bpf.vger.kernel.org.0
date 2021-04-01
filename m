@@ -2,280 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE62E350C60
-	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 04:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D03350C86
+	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 04:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233361AbhDACId (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 22:08:33 -0400
-Received: from mga17.intel.com ([192.55.52.151]:22177 "EHLO mga17.intel.com"
+        id S233129AbhDACUV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 22:20:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233305AbhDACII (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 31 Mar 2021 22:08:08 -0400
-IronPort-SDR: 49dRrPkplTcfkmu5zeC9DjlJ8W0K1h9YxcYmD9TLPY4VxxL+M6dwWK827F7s7EFlnbeW8qefjq
- odqaRwrwNVvA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9940"; a="172163702"
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="172163702"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Mar 2021 19:08:08 -0700
-IronPort-SDR: 88+4Hve+PQjv7Zhmtn6b1OBdEapIKl9MYDgo4SP1QnZip5D+7+aIjWSwO5oGA78EJGiB1A/7K7
- NF30+/i37/tA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,295,1610438400"; 
-   d="scan'208";a="528004281"
-Received: from glass.png.intel.com ([10.158.65.59])
-  by orsmga004.jf.intel.com with ESMTP; 31 Mar 2021 19:08:02 -0700
-From:   Ong Boon Leong <boon.leong.ong@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>
-Subject: [PATCH net-next v4 6/6] net: stmmac: Add support for XDP_REDIRECT action
-Date:   Thu,  1 Apr 2021 10:11:17 +0800
-Message-Id: <20210401021117.13360-7-boon.leong.ong@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210401021117.13360-1-boon.leong.ong@intel.com>
-References: <20210401021117.13360-1-boon.leong.ong@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232763AbhDACT4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 22:19:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 581F96101E;
+        Thu,  1 Apr 2021 02:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617243595;
+        bh=TBc2r00bRbjoWI5OI+E4Q5iVyqcKdlKmpAtKOk03Czc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=E4MmUjjq/Jl8z0TJynah29oPYPpdc4ScpMPRJgPjgjWM+IOERYzUE7Ufup0vxx31k
+         Sqr9lCm+p07v529O1vIZgY8CeHMYnhlOZ2sU9tAtAtedzib1n9q3vtlXRAL5Y1ySS5
+         Vr8+t30g5WOEGbVxdykC9m798MnPd1Hul9joOOHoVvaajDDfLb0L4J8467FA87hA7x
+         Ju0LkPcHHKS1QmHnrZ1S6Om/HfbPRPCJ00YfDAxptIGffbFMvBLUh1FWoa1p2qt2OW
+         S0hfDYHoFCPuxAa5kqcxJILN0E0WrWMESYMAtcaEK5QPnAVlw6mjLn6edUSQIWKoWt
+         W0I5TAPNU0ziQ==
+Date:   Thu, 1 Apr 2021 11:19:50 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RFC PATCH -tip 3/3] x86/kprobes,orc: Unwind optprobe
+ trampoline correctly
+Message-Id: <20210401111950.79b61063e8c87d6a39ec371e@kernel.org>
+In-Reply-To: <20210401104452.e442afd995d32afecf991301@kernel.org>
+References: <161716946413.721514.4057380464113663840.stgit@devnote2>
+        <161716949640.721514.14252504351086671126.stgit@devnote2>
+        <20210331155736.qyuph7sgabmqqmq3@treble>
+        <20210401104452.e442afd995d32afecf991301@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds the support of XDP_REDIRECT to another remote cpu for
-further action. It also implements ndo_xdp_xmit ops, enabling the driver
-to transmit packets forwarded to it by XDP program running on another
-interface.
+On Thu, 1 Apr 2021 10:44:52 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-This patch has been tested using "xdp_redirect_cpu" for XDP_REDIRECT
-+ drop testing. It also been tested with "xdp_redirect" sample app
-which can be used to exercise ndo_xdp_xmit ops. The burst traffics are
-generated using pktgen_sample03_burst_single_flow.sh in samples/pktgen
-directory.
+> On Wed, 31 Mar 2021 10:57:36 -0500
+> Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> 
+> > On Wed, Mar 31, 2021 at 02:44:56PM +0900, Masami Hiramatsu wrote:
+> > > +#ifdef CONFIG_UNWINDER_ORC
+> > > +unsigned long recover_optprobe_trampoline(unsigned long addr, unsigned long *sp)
+> > > +{
+> > > +	unsigned long offset, entry, probe_addr;
+> > > +	struct optimized_kprobe *op;
+> > > +	struct orc_entry *orc;
+> > > +
+> > > +	entry = find_kprobe_optinsn_slot_entry(addr);
+> > > +	if (!entry)
+> > > +		return addr;
+> > > +
+> > > +	offset = addr - entry;
+> > > +
+> > > +	/* Decode arg1 and get the optprobe */
+> > > +	op = (void *)extract_set_arg1((void *)(entry + TMPL_MOVE_IDX));
+> > > +	if (!op)
+> > > +		return addr;
+> > > +
+> > > +	probe_addr = (unsigned long)op->kp.addr;
+> > > +
+> > > +	if (offset < TMPL_END_IDX) {
+> > > +		orc = orc_find((unsigned long)optprobe_template_func + offset);
+> > > +		if (!orc || orc->sp_reg != ORC_REG_SP)
+> > > +			return addr;
+> > > +		/*
+> > > +		 * Since optprobe trampoline doesn't push caller on the stack,
+> > > +		 * need to decrement 1 stack entry size
+> > > +		 */
+> > > +		*sp += orc->sp_offset - sizeof(long);
+> > > +		return probe_addr;
+> > > +	} else {
+> > > +		return probe_addr + offset - TMPL_END_IDX;
+> > > +	}
+> > > +}
+> > > +#endif
+> > 
+> > Hm, I'd like to avoid intertwining kprobes and ORC like this.
+> > 
+> > ORC unwinds other generated code by assuming the generated code uses a
+> > frame pointer.  Could we do that here?
+> 
+> No, because the optprobe is not a function call. I considered to make
+> it call, but since it has to execute copied instructions directly on
+> the trampoline code (without changing stack frame) it is not possible.
+> 
+> > With CONFIG_FRAME_POINTER, unwinding works because SAVE_REGS_STRING has
+> > ENCODE_FRAME_POINTER, but that's not going to work for ORC.
+> 
+> Even in that case, the problem is that any interrupt can happen
+> before doing ENCODE_FRAME_POINTER. I think this ENCODE_FRAME_POINTER
+> in the SAVE_REGS_STRING is for probing right before the target
+> function setup a frame pointer.
+> 
+> > Instead of these patches, can we 'push %rbp; mov %rsp, %rbp' at the
+> > beginning of the template and 'pop %rbp' at the end?
+> 
+> No, since the trampoline code is not called, it is jumped into.
+> This means there is no "return address" in the stack. If we setup
+> the frame, there is no return address, thus it might stop there.
+> (Moreover, optprobe can copy multiple instructins on trampoline
+> buffer, since relative jump consumes 5bytes. where is the "return address"?)
+> 
+> > 
+> > I guess SAVE_REGS_STRING would need to be smart enough to push the
+> > original saved version of %rbp.  Of course then that breaks the
+> > kretprobe_trampoline() usage, so it may need to be a separate macro.
+> > 
+> > [ Or make the same change to kretprobe_trampoline().  Then the other
+> >   patch set wouldn't be needed either ;-) ]
+> 
+> Hmm, I don't think it is a good idea which making such change on the
+> optimized (hot) path only for the stack tracing. Moreover, that maybe
+> not transparent with the stack made by int3.
+> 
+> > Of course the downside is, when you get an interrupt during the frame
+> > pointer setup, unwinding is broken.  But I think that's acceptable for
+> > generated code.  We've lived with that limitation for all code, with
+> > CONFIG_FRAME_POINTER, for many years.
+> 
+> But above code can fix such issue too. To fix a corner case, non-generic
+> code may be required, even it is not so simple.
 
-v4: Move xdp_do_flush() processing into stmmac_finalize_xdp_rx() and
-    combined the XDP verdict of XDP TX and REDIRECT together.
+Hmm, I would like to confirm your policy on ORC unwinder. If it doesn't
+care the stacktrace from the interrupt handler, I think your suggestion
+is OK. But in that case, from a developer viewpoint, I need to recommend
+users to configure CONFIG_UNWIND_FRAME=y when CONFIG_KPROBES=y.
 
-v3: Added 'nq->trans_start = jiffies' to avoid TX time-out as we are
-    sharing TX queue between slow path and XDP. Thanks to Jakub Kicinski
-    for point out.
+> > Eventually we may want to have a way to register generated code (and the
+> > ORC for it).
 
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  1 +
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 94 ++++++++++++++++---
- 2 files changed, 84 insertions(+), 11 deletions(-)
+I see, but the generated code usually does not have a generic way to
+handle it. E.g. bpf has a solid entry point, but kretprobe trampoline's
+entry point is any "RET", optprobe trampoline's entry point is a jump
+which is also generated (patched) ...
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-index a93e22a6be59..c49debb62b05 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-@@ -39,6 +39,7 @@ struct stmmac_resources {
- enum stmmac_txbuf_type {
- 	STMMAC_TXBUF_T_SKB,
- 	STMMAC_TXBUF_T_XDP_TX,
-+	STMMAC_TXBUF_T_XDP_NDO,
- };
- 
- struct stmmac_tx_info {
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 65163b51f8ad..77285646c5fc 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -72,6 +72,7 @@ MODULE_PARM_DESC(phyaddr, "Physical device address");
- #define STMMAC_XDP_PASS		0
- #define STMMAC_XDP_CONSUMED	BIT(0)
- #define STMMAC_XDP_TX		BIT(1)
-+#define STMMAC_XDP_REDIRECT	BIT(2)
- 
- static int flow_ctrl = FLOW_AUTO;
- module_param(flow_ctrl, int, 0644);
-@@ -1458,7 +1459,8 @@ static void stmmac_free_tx_buffer(struct stmmac_priv *priv, u32 queue, int i)
- 	}
- 
- 	if (tx_q->xdpf[i] &&
--	    tx_q->tx_skbuff_dma[i].buf_type == STMMAC_TXBUF_T_XDP_TX) {
-+	    (tx_q->tx_skbuff_dma[i].buf_type == STMMAC_TXBUF_T_XDP_TX ||
-+	     tx_q->tx_skbuff_dma[i].buf_type == STMMAC_TXBUF_T_XDP_NDO)) {
- 		xdp_return_frame(tx_q->xdpf[i]);
- 		tx_q->xdpf[i] = NULL;
- 	}
-@@ -2220,7 +2222,8 @@ static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue)
- 		struct dma_desc *p;
- 		int status;
- 
--		if (tx_q->tx_skbuff_dma[entry].buf_type == STMMAC_TXBUF_T_XDP_TX) {
-+		if (tx_q->tx_skbuff_dma[entry].buf_type == STMMAC_TXBUF_T_XDP_TX ||
-+		    tx_q->tx_skbuff_dma[entry].buf_type == STMMAC_TXBUF_T_XDP_NDO) {
- 			xdpf = tx_q->xdpf[entry];
- 			skb = NULL;
- 		} else if (tx_q->tx_skbuff_dma[entry].buf_type == STMMAC_TXBUF_T_SKB) {
-@@ -2292,6 +2295,12 @@ static int stmmac_tx_clean(struct stmmac_priv *priv, int budget, u32 queue)
- 			tx_q->xdpf[entry] = NULL;
- 		}
- 
-+		if (xdpf &&
-+		    tx_q->tx_skbuff_dma[entry].buf_type == STMMAC_TXBUF_T_XDP_NDO) {
-+			xdp_return_frame(xdpf);
-+			tx_q->xdpf[entry] = NULL;
-+		}
-+
- 		if (tx_q->tx_skbuff_dma[entry].buf_type == STMMAC_TXBUF_T_SKB) {
- 			if (likely(skb)) {
- 				pkts_compl++;
-@@ -4246,10 +4255,9 @@ static unsigned int stmmac_rx_buf2_len(struct stmmac_priv *priv,
- }
- 
- static int stmmac_xdp_xmit_xdpf(struct stmmac_priv *priv, int queue,
--				struct xdp_frame *xdpf)
-+				struct xdp_frame *xdpf, bool dma_map)
- {
- 	struct stmmac_tx_queue *tx_q = &priv->tx_queue[queue];
--	struct page *page = virt_to_page(xdpf->data);
- 	unsigned int entry = tx_q->cur_tx;
- 	struct dma_desc *tx_desc;
- 	dma_addr_t dma_addr;
-@@ -4265,12 +4273,23 @@ static int stmmac_xdp_xmit_xdpf(struct stmmac_priv *priv, int queue,
- 	else
- 		tx_desc = tx_q->dma_tx + entry;
- 
--	dma_addr = page_pool_get_dma_addr(page) + sizeof(*xdpf) +
--		   xdpf->headroom;
--	dma_sync_single_for_device(priv->device, dma_addr,
--				   xdpf->len, DMA_BIDIRECTIONAL);
-+	if (dma_map) {
-+		dma_addr = dma_map_single(priv->device, xdpf->data,
-+					  xdpf->len, DMA_TO_DEVICE);
-+		if (dma_mapping_error(priv->device, dma_addr))
-+			return STMMAC_XDP_CONSUMED;
-+
-+		tx_q->tx_skbuff_dma[entry].buf_type = STMMAC_TXBUF_T_XDP_NDO;
-+	} else {
-+		struct page *page = virt_to_page(xdpf->data);
-+
-+		dma_addr = page_pool_get_dma_addr(page) + sizeof(*xdpf) +
-+			   xdpf->headroom;
-+		dma_sync_single_for_device(priv->device, dma_addr,
-+					   xdpf->len, DMA_BIDIRECTIONAL);
- 
--	tx_q->tx_skbuff_dma[entry].buf_type = STMMAC_TXBUF_T_XDP_TX;
-+		tx_q->tx_skbuff_dma[entry].buf_type = STMMAC_TXBUF_T_XDP_TX;
-+	}
- 
- 	tx_q->tx_skbuff_dma[entry].buf = dma_addr;
- 	tx_q->tx_skbuff_dma[entry].map_as_page = false;
-@@ -4340,7 +4359,7 @@ static int stmmac_xdp_xmit_back(struct stmmac_priv *priv,
- 	/* Avoids TX time-out as we are sharing with slow path */
- 	nq->trans_start = jiffies;
- 
--	res = stmmac_xdp_xmit_xdpf(priv, queue, xdpf);
-+	res = stmmac_xdp_xmit_xdpf(priv, queue, xdpf, false);
- 	if (res == STMMAC_XDP_TX)
- 		stmmac_flush_tx_descriptors(priv, queue);
- 
-@@ -4372,6 +4391,12 @@ static struct sk_buff *stmmac_xdp_run_prog(struct stmmac_priv *priv,
- 	case XDP_TX:
- 		res = stmmac_xdp_xmit_back(priv, xdp);
- 		break;
-+	case XDP_REDIRECT:
-+		if (xdp_do_redirect(priv->dev, xdp, prog) < 0)
-+			res = STMMAC_XDP_CONSUMED;
-+		else
-+			res = STMMAC_XDP_REDIRECT;
-+		break;
- 	default:
- 		bpf_warn_invalid_xdp_action(act);
- 		fallthrough;
-@@ -4398,6 +4423,9 @@ static void stmmac_finalize_xdp_rx(struct stmmac_priv *priv,
- 
- 	if (xdp_status & STMMAC_XDP_TX)
- 		stmmac_tx_timer_arm(priv, queue);
-+
-+	if (xdp_status & STMMAC_XDP_REDIRECT)
-+		xdp_do_flush();
- }
- 
- /**
-@@ -4584,7 +4612,8 @@ static int stmmac_rx(struct stmmac_priv *priv, int limit, u32 queue)
- 
- 					count++;
- 					continue;
--				} else if (xdp_res & STMMAC_XDP_TX) {
-+				} else if (xdp_res & (STMMAC_XDP_TX |
-+						      STMMAC_XDP_REDIRECT)) {
- 					xdp_status |= xdp_res;
- 					buf->page = NULL;
- 					skb = NULL;
-@@ -5600,6 +5629,48 @@ static int stmmac_bpf(struct net_device *dev, struct netdev_bpf *bpf)
- 	}
- }
- 
-+static int stmmac_xdp_xmit(struct net_device *dev, int num_frames,
-+			   struct xdp_frame **frames, u32 flags)
-+{
-+	struct stmmac_priv *priv = netdev_priv(dev);
-+	int cpu = smp_processor_id();
-+	struct netdev_queue *nq;
-+	int i, nxmit = 0;
-+	int queue;
-+
-+	if (unlikely(test_bit(STMMAC_DOWN, &priv->state)))
-+		return -ENETDOWN;
-+
-+	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
-+		return -EINVAL;
-+
-+	queue = stmmac_xdp_get_tx_queue(priv, cpu);
-+	nq = netdev_get_tx_queue(priv->dev, queue);
-+
-+	__netif_tx_lock(nq, cpu);
-+	/* Avoids TX time-out as we are sharing with slow path */
-+	nq->trans_start = jiffies;
-+
-+	for (i = 0; i < num_frames; i++) {
-+		int res;
-+
-+		res = stmmac_xdp_xmit_xdpf(priv, queue, frames[i], true);
-+		if (res == STMMAC_XDP_CONSUMED)
-+			break;
-+
-+		nxmit++;
-+	}
-+
-+	if (flags & XDP_XMIT_FLUSH) {
-+		stmmac_flush_tx_descriptors(priv, queue);
-+		stmmac_tx_timer_arm(priv, queue);
-+	}
-+
-+	__netif_tx_unlock(nq);
-+
-+	return nxmit;
-+}
-+
- static const struct net_device_ops stmmac_netdev_ops = {
- 	.ndo_open = stmmac_open,
- 	.ndo_start_xmit = stmmac_xmit,
-@@ -5619,6 +5690,7 @@ static const struct net_device_ops stmmac_netdev_ops = {
- 	.ndo_vlan_rx_add_vid = stmmac_vlan_rx_add_vid,
- 	.ndo_vlan_rx_kill_vid = stmmac_vlan_rx_kill_vid,
- 	.ndo_bpf = stmmac_bpf,
-+	.ndo_xdp_xmit = stmmac_xdp_xmit,
- };
- 
- static void stmmac_reset_subtask(struct stmmac_priv *priv)
+Thank you,
+
 -- 
-2.25.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
