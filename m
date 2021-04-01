@@ -2,105 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF53F351C70
-	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 20:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D9E351F60
+	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 21:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234578AbhDASRh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Apr 2021 14:17:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237309AbhDASIA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Apr 2021 14:08:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5056461382;
-        Thu,  1 Apr 2021 16:49:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617295763;
-        bh=P4Wu31cgAjtO3VpXOXOPtwyrVVPoSyC14LnSgQ2dWZQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i6bIr+ziyrP9UxI9zBf5DM13zFr3vCSC7fFMVEG9+rgyOyrXeCwNuoAPXcuff8t8z
-         hbJiocxOSndKA0IUM4dkpuzDvTA8mX4p2ehCisAoSS/eAGlqhaZa1pWSABGC1fHvSs
-         eGxlW1zQv6vXGHcOHTJLoi1E04EUcfTZ4y4dtPljax5gzAuGq5BHeZ+V19oGqDxBjh
-         npiPKNpT9qCPv+sHfqhvOQoV1j1L369Ca8DeesrLvPc4pnD06A3FnanKojfRntStyw
-         4VmcghTK2gyVbpnhwlcZxjAzUzHFEmstwKP1qBoX2LzMLPrGCKK6DmYH+VxIYugFmW
-         xHLipmqPqwY/Q==
-Date:   Thu, 1 Apr 2021 18:49:19 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Song Liu <song@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        lorenzo.bianconi@redhat.com,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [PATCH bpf-next] cpumap: bulk skb using netif_receive_skb_list
-Message-ID: <YGX5j7RDQIXlh69L@lore-desk>
-References: <e01b1a562c523f64049fa45da6c031b0749ca412.1617267115.git.lorenzo@kernel.org>
- <CAPhsuW4QTOgC+fDYRZnVwWtt3NTS9D+56mpP04Kh3tHrkD7G1A@mail.gmail.com>
+        id S234380AbhDATND (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Apr 2021 15:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234326AbhDATMe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Apr 2021 15:12:34 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04261C02FEA2;
+        Thu,  1 Apr 2021 11:03:15 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 184so3169633ljf.9;
+        Thu, 01 Apr 2021 11:03:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5j2wGNIifPE9DtC+i6h/LtepDO3gR15cYtvvyMQ28/U=;
+        b=oBhXLAryHgdavgOFDKjAdEEQzuPceFFXRQEKJnryrnFiyJH3+NvTPdmlT3ka+E75Ky
+         2GGyGGfaM1HeTORchAhAL+ID5cQ66pp+gqYBeSOJxViKDf5sVKlZWMraaUyTd6JVAuz/
+         UDaZGJIywBfzqW/VHohhL3NTl1l+PjAaK9gaeVD1beWxWGH9byY+MPZ4WZZb7Zghi2ND
+         clZC64HExAl2F4Ot9mHfVxbxVEkZFSrdFVfI3kmlfW+TaWVf56JaVSvgwaRf2ccT+qDH
+         GvAfRel7S+u5Msn4hKawitEA68iaLFR9sPk9WEL3K9F5FlWzcOtqmfzosXvvHPeFjaGp
+         PO5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5j2wGNIifPE9DtC+i6h/LtepDO3gR15cYtvvyMQ28/U=;
+        b=cI32w4ZDSzvMlWFZ8rabDHSWeEqPtQmKyfx8uAH4tTgEelsDH2OvNNTcVvCEKlkcjL
+         spslJe+duEzllgijFt3FmZSycyY5dJ5ZVv4EQ084Qr+9rRbI/p61ntFeIizlbN2ewy8y
+         xeGQBA/+ANUYcTaq+tioALmgkB5WKGenhGUzjCs2mAe9imJJe6vqxQhCnJpGRJBKzAFS
+         /5LZqCfvDOAmHQWY53MjWKS+uyqQOBDdBx8OlPWlwfQTVCU7YloJ2pPV5XU9aB1Rz9pW
+         bEpRogXo8Pec43y+EQ1ge44PwTYkr4pTvQ54s25sqYydGxwYEdewc2694cwD43SN4zAu
+         LiJg==
+X-Gm-Message-State: AOAM532hz4Vc/SAcAD7cu0iAxmZUPk1XjKrbTwpRIZMDV3JqBfrBFb1h
+        c7R2vQFXryC9d3VIEH2gULn75haZG1OU7aqf72vpTPc4
+X-Google-Smtp-Source: ABdhPJxMeAkRSh/QhjsbprT+ZINUC9UiSXuyyNvDFfVrVlxS1LiwX81cTGzomh1B923wkeLS80bbLZlc/GK8N+pLNSc=
+X-Received: by 2002:a2e:981a:: with SMTP id a26mr6123992ljj.204.1617300193470;
+ Thu, 01 Apr 2021 11:03:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fwaRRj5zPkdm8YeH"
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW4QTOgC+fDYRZnVwWtt3NTS9D+56mpP04Kh3tHrkD7G1A@mail.gmail.com>
+References: <20210331023237.41094-1-xiyou.wangcong@gmail.com> <6065fa04de8a2_4ff9208b1@john-XPS-13-9370.notmuch>
+In-Reply-To: <6065fa04de8a2_4ff9208b1@john-XPS-13-9370.notmuch>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 1 Apr 2021 11:03:01 -0700
+Message-ID: <CAADnVQKj__ZSDnCdZDuRzFAp9E8TBkLrX_3WWccT=UxVzk86aA@mail.gmail.com>
+Subject: Re: [Patch bpf-next v8 00/16] sockmap: introduce BPF_SK_SKB_VERDICT
+ and support UDP
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
---fwaRRj5zPkdm8YeH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-> On Thu, Apr 1, 2021 at 1:57 AM Lorenzo Bianconi <lorenzo@kernel.org> wrot=
-e:
+On Thu, Apr 1, 2021 at 10:52 AM John Fastabend <john.fastabend@gmail.com> wrote:
+>
+> Cong Wang wrote:
+> > From: Cong Wang <cong.wang@bytedance.com>
 > >
-
-[...]
-
-> > -                       /* Inject into network stack */
-> > -                       ret =3D netif_receive_skb_core(skb);
-> > -                       if (ret =3D=3D NET_RX_DROP)
-> > -                               drops++;
->=20
-> I guess we stop tracking "drops" with this patch?
->=20
-> Thanks,
-> Song
-
-Hi Song,
-
-we do not report the packets dropped by the stack but we still count the dr=
-ops
-in the cpumap. If you think they are really important I guess we can change
-return value of netif_receive_skb_list returning the dropped packets or
-similar. What do you think?
-
-Regards,
-Lorenzo
-
->=20
-> > +                       list_add_tail(&skb->list, &list);
-> >                 }
-> > +               netif_receive_skb_list(&list);
-> > +
-> >                 /* Feedback loop via tracepoint */
-> >                 trace_xdp_cpumap_kthread(rcpu->map_id, n, drops, sched,=
- &stats);
+> > We have thousands of services connected to a daemon on every host
+> > via AF_UNIX dgram sockets, after they are moved into VM, we have to
+> > add a proxy to forward these communications from VM to host, because
+> > rewriting thousands of them is not practical. This proxy uses an
+> > AF_UNIX socket connected to services and a UDP socket to connect to
+> > the host. It is inefficient because data is copied between kernel
+> > space and user space twice, and we can not use splice() which only
+> > supports TCP. Therefore, we want to use sockmap to do the splicing
+> > without going to user-space at all (after the initial setup).
 > >
-> > --
-> > 2.30.2
+> > Currently sockmap only fully supports TCP, UDP is partially supported
+> > as it is only allowed to add into sockmap. This patchset, as the second
+> > part of the original large patchset, extends sockmap with:
+> > 1) cross-protocol support with BPF_SK_SKB_VERDICT; 2) full UDP support.
 > >
+> > On the high level, ->read_sock() is required for each protocol to support
+> > sockmap redirection, and in order to do sock proto update, a new ops
+> > ->psock_update_sk_prot() is introduced, which is also required. And the
+> > BPF ->recvmsg() is also needed to replace the original ->recvmsg() to
+> > retrieve skmsg. To make life easier, we have to get rid of lock_sock()
+> > in sk_psock_handle_skb(), otherwise we would have to implement
+> > ->sendmsg_locked() on top of ->sendmsg(), which is ugly.
+> >
+> > Please see each patch for more details.
+> >
+> > To see the big picture, the original patchset is available here:
+> > https://github.com/congwang/linux/tree/sockmap
+> > this patchset is also available:
+> > https://github.com/congwang/linux/tree/sockmap2
+> >
+> > ---
+>
+> This LGTM, thanks for doing this Cong.
 
---fwaRRj5zPkdm8YeH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYGX5jAAKCRA6cBh0uS2t
-rHmIAQCUC8XmyYRkhjiBloWbAl9ZeUzp2vO73h1covAR/ZA4RwEAqHPO5mGL7CHb
-1B8W5Zbh8cT9dS60Bgb+opcGc6+EvQg=
-=ynkg
------END PGP SIGNATURE-----
-
---fwaRRj5zPkdm8YeH--
+Applied. Thanks everyone.
+Cong, please follow up with minor cleanup that John requested.
