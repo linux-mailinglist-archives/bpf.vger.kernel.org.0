@@ -2,103 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4F0351929
-	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 19:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63050351880
+	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 19:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234607AbhDARvw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Apr 2021 13:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59916 "EHLO
+        id S235657AbhDARpz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Apr 2021 13:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235550AbhDARtI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:49:08 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46960C031166;
-        Thu,  1 Apr 2021 09:51:24 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id b10so2860876iot.4;
-        Thu, 01 Apr 2021 09:51:24 -0700 (PDT)
+        with ESMTP id S234665AbhDARjD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:39:03 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF3BC0319D9;
+        Thu,  1 Apr 2021 10:28:24 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so5042066pjb.0;
+        Thu, 01 Apr 2021 10:28:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=DmfVJtbSnGyYd2SqAzIeEbPnridg9bZgNOGndhX3qPs=;
-        b=nZgEaFTptLG4xntpph92OU4DIpkhZJ6XmAe1YUXMbpYJ0R4A0jneE2T7jTSNLKLiWC
-         /htGo7C6DsYn4YC4TMiT7MP6ivmvVAF+AATi3XVH3OST03dofWBXbHgOi+r8W7GI/Mhr
-         mA7NxgKhpW3i7xeYQdrtqKP+siH8O00gEP3cFzQ1SMSmALPjxvRiuMMt0eGgNcEh27TK
-         cFVf4thiJReIkMW7+agfijsM7ramTyAS6D1RbKHdws0WBaiQZAUoucsaQl1U7ccnPPlP
-         GwAbrOhL34HkSh3mzctxUxrBVwDnD5zrucZSvO9wjwteAEUTczkzaVwBzRHDW16t3dJn
-         zDUw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DCSwYaITEXQEtOU9ZD5TxRNN3tBhbIlUXlHRNkWJ4G0=;
+        b=qQQ/vLHND0Pm7FoXvew0tIzmLeRM+qIP0Ujxammay52iRgrrFXs4C3nsXIGvEUzWmY
+         4tLBBtY7scDoqzjzIGiNmBPUYVkLvtI1Q3LtsgxlY0EUIfdwDrk8EPp4hZpUHaTNfvHE
+         bDu4M/nKDpnkgAX2yh95uFbFWp1jiAfJvxDN+5VQqMQWz8JrZdGS/LxuUoANVQse+uMQ
+         WPDXg7cpRnS5ukjn9CWkj40LCeXPqFhNFXgzGJCvagGDbaXUHq/L24T+CzU86mtCpqsH
+         XooFnu2Wl6C+h7ZaDQm1/M4QWvx8GIbmmDMe+ZjajvV+ZrSGKKVc87h81eBNVMstsVLN
+         YHpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=DmfVJtbSnGyYd2SqAzIeEbPnridg9bZgNOGndhX3qPs=;
-        b=UByAMcA3CPOATxC32TnRdVnu6D+ZI3pTY3KvWUaF1jdBvffAZpJ54jjNJPWOThRMj6
-         IJO/ZBpjrhAm8mj25QEM0Qguj/aYsKFc6m8DPFibqhAQ1v4/YpEPxwEInTfeyyGAScuB
-         RahEW3JqhUQq6/jA8WL5NCtktvu8u66FUvZCw1imBV02kTb7r9Tq5Z2YIKugUlC4tmSk
-         Jq/mQBiRpM0jZEOppZF4NBBO2eF+wW4LF9nM6nibpX10hp9SeCSGKhQ7xEkUXAf4zALw
-         IlWUSSRiyYtvMTdRTp3olIzeJhHEdF9zzNUWruAs4DfCPT6d4r8+f1UAGyQkV+NnUduh
-         KlaQ==
-X-Gm-Message-State: AOAM5331P9ybAPkeuIxdOfdssAOXjgC5/u9hgYYZk+hxbVlMOfPlA4pA
-        /2pRbrPoJOpbXZV83Ej1C8U=
-X-Google-Smtp-Source: ABdhPJx1P0qIcPLpaZ9cCCT/gaRHe5LD2VfFK4oinDcLSQrrwbdiUgrliGUW3Y3xy7hJWZxiTAUhOw==
-X-Received: by 2002:a05:6602:2596:: with SMTP id p22mr7353789ioo.186.1617295883731;
-        Thu, 01 Apr 2021 09:51:23 -0700 (PDT)
-Received: from localhost ([172.242.244.146])
-        by smtp.gmail.com with ESMTPSA id w16sm3015989iod.51.2021.04.01.09.51.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 09:51:23 -0700 (PDT)
-Date:   Thu, 01 Apr 2021 09:51:16 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
-        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
-        Cong Wang <cong.wang@bytedance.com>
-Message-ID: <6065fa04de8a2_4ff9208b1@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210331023237.41094-1-xiyou.wangcong@gmail.com>
-References: <20210331023237.41094-1-xiyou.wangcong@gmail.com>
-Subject: RE: [Patch bpf-next v8 00/16] sockmap: introduce BPF_SK_SKB_VERDICT
- and support UDP
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DCSwYaITEXQEtOU9ZD5TxRNN3tBhbIlUXlHRNkWJ4G0=;
+        b=mVqA4BjyvkY2f8ye2cy75LDRp8HQpoEMlSGJsBSkjnRy4g40iyr1xGFzVcXxYmaeb9
+         8EYnLNB3CwoQ0hrI25cJHMAud+9aBkUOzb17Jtdc2OFuAhhFFY6M8SXIaSDgN5cfJdzq
+         66FegRQ+CCuYS/ct8yT1pdEGaaTp7yXmh8koIbk6RfvAGi/oxA+iQJuq+ZY7FmF/0P0v
+         YgP+H+YGIaxLBlXNFehsb0GW7RReHe6Gx7ic1GBI4Wr37+L0dmZFMhKv8xmsZi+qJrUg
+         qpd797Nqmr9cgpAbcoMHnkr++Z7b3lJ+GldqWVkGAjEUZ2fq9Zpctg8vQxYoAXgXjdB5
+         1f8Q==
+X-Gm-Message-State: AOAM530j8YgDCUgA3vLP71F8bEd69Giso2H7SRJlFFwu2DK2vHbzzPc1
+        BROAk4M0x5pxVUZreN/Sokx1L/2bxTKLesGy7lQ=
+X-Google-Smtp-Source: ABdhPJwuRg9c87ReRDYEl/MFlZj8f+JRwd8nbe3KpkmGKzBacN9tlwCCWEr2kLZwmSTneY14fAN+W55rfS/fi5VrJlw=
+X-Received: by 2002:a17:90a:7061:: with SMTP id f88mr9971510pjk.56.1617298104093;
+ Thu, 01 Apr 2021 10:28:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210401042635.19768-1-xiyou.wangcong@gmail.com> <B42B247A-4D0B-4DE9-B4D3-0C452472532D@fb.com>
+In-Reply-To: <B42B247A-4D0B-4DE9-B4D3-0C452472532D@fb.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu, 1 Apr 2021 10:28:12 -0700
+Message-ID: <CAM_iQpW-cuiYsPsu4mYZxZ1Oixffu2pV1TFg1c+eg9XT3wWwPQ@mail.gmail.com>
+Subject: Re: [RFC Patch bpf-next] bpf: introduce bpf timer
+To:     Song Liu <songliubraving@fb.com>
+Cc:     "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>,
+        "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
+        "wangdongdong.6@bytedance.com" <wangdongdong.6@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
-> 
-> We have thousands of services connected to a daemon on every host
-> via AF_UNIX dgram sockets, after they are moved into VM, we have to
-> add a proxy to forward these communications from VM to host, because
-> rewriting thousands of them is not practical. This proxy uses an
-> AF_UNIX socket connected to services and a UDP socket to connect to
-> the host. It is inefficient because data is copied between kernel
-> space and user space twice, and we can not use splice() which only
-> supports TCP. Therefore, we want to use sockmap to do the splicing
-> without going to user-space at all (after the initial setup).
-> 
-> Currently sockmap only fully supports TCP, UDP is partially supported
-> as it is only allowed to add into sockmap. This patchset, as the second
-> part of the original large patchset, extends sockmap with:
-> 1) cross-protocol support with BPF_SK_SKB_VERDICT; 2) full UDP support.
-> 
-> On the high level, ->read_sock() is required for each protocol to support
-> sockmap redirection, and in order to do sock proto update, a new ops
-> ->psock_update_sk_prot() is introduced, which is also required. And the
-> BPF ->recvmsg() is also needed to replace the original ->recvmsg() to
-> retrieve skmsg. To make life easier, we have to get rid of lock_sock()
-> in sk_psock_handle_skb(), otherwise we would have to implement
-> ->sendmsg_locked() on top of ->sendmsg(), which is ugly.
-> 
-> Please see each patch for more details.
-> 
-> To see the big picture, the original patchset is available here:
-> https://github.com/congwang/linux/tree/sockmap
-> this patchset is also available:
-> https://github.com/congwang/linux/tree/sockmap2
-> 
-> ---
+On Wed, Mar 31, 2021 at 11:38 PM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On Mar 31, 2021, at 9:26 PM, Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> >
+> > From: Cong Wang <cong.wang@bytedance.com>
+> >
+> > (This patch is still in early stage and obviously incomplete. I am sending
+> > it out to get some high-level feedbacks. Please kindly ignore any coding
+> > details for now and focus on the design.)
+>
+> Could you please explain the use case of the timer? Is it the same as
+> earlier proposal of BPF_MAP_TYPE_TIMEOUT_HASH?
+>
+> Assuming that is the case, I guess the use case is to assign an expire
+> time for each element in a hash map; and periodically remove expired
+> element from the map.
+>
+> If this is still correct, my next question is: how does this compare
+> against a user space timer? Will the user space timer be too slow?
 
-This LGTM, thanks for doing this Cong.
+Yes, as I explained in timeout hashmap patchset, doing it in user-space
+would require a lot of syscalls (without batching) or copying (with batching).
+I will add the explanation here, in case people miss why we need a timer.
+
+>
+> >
+> > This patch introduces a bpf timer map and a syscall to create bpf timer
+> > from user-space.
+> >
+> > The reason why we have to use a map is because the lifetime of a timer,
+> > without a map, we have to delete the timer before exiting the eBPF program,
+> > this would significately limit its use cases. With a map, the timer can
+> > stay as long as the map itself and can be actually updated via map update
+> > API's too, where the key is the timer ID and the value is the timer expire
+> > timer.
+> >
+> > Timer creation is not easy either. In order to prevent users creating a
+> > timer but not adding it to a map, we have to enforce this in the API which
+> > takes a map parameter and adds the new timer into the map in one shot.
+>
+> I think we don't have to address "creating a timer but not adding it to a map"
+> problem in the kernel. If the user forgot it, the user should debug it.
+
+Good point. Initially the timer is created in kernel-space, now it is in user
+space, so it is probably fine to create it without a map. But we would have
+to provide more syscalls for users to manage the timer, so using a map
+still has an advantage of not adding more syscalls.
+
+Thanks.
