@@ -2,181 +2,295 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B3C35238A
-	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 01:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B234135238F
+	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 01:31:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235711AbhDAX13 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Apr 2021 19:27:29 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:23832 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235696AbhDAX13 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 1 Apr 2021 19:27:29 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 131NJl4A032421
-        for <bpf@vger.kernel.org>; Thu, 1 Apr 2021 16:27:29 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=YcRUCnQnduEELtvtPydWK4q4fQeOEDsuZr9Ueyetu7E=;
- b=gdRwV4DnSfKoLRvD+058MYnTWQ1I3rLyQ8CsumVeNXyegCxWXX8+xWr852ZiEZI4qDm5
- k5Lo4v8o7ATch6Mzcxa8IJp31P54q88lpP1Ck5gWQ3/yt7Ifq0oZI5xp9QYhajLCdDsC
- J0L4q/zDQ9Ldty0SaHdF4ytHvu+/SVcrz4g= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37ng353n6b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 01 Apr 2021 16:27:28 -0700
-Received: from intmgw002.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 1 Apr 2021 16:27:27 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id ACCC4F35686; Thu,  1 Apr 2021 16:27:23 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <linux-kbuild@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH kbuild v4] kbuild: add an elfnote for whether vmlinux is built with lto
-Date:   Thu, 1 Apr 2021 16:27:23 -0700
-Message-ID: <20210401232723.3571287-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: O_qQX8mHBCOVySRFWWTlIUmYs9myXlhL
-X-Proofpoint-ORIG-GUID: O_qQX8mHBCOVySRFWWTlIUmYs9myXlhL
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S234103AbhDAXb0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Apr 2021 19:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233677AbhDAXbZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Apr 2021 19:31:25 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E82AC0613E6;
+        Thu,  1 Apr 2021 16:31:25 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so3835002pjq.5;
+        Thu, 01 Apr 2021 16:31:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=roz3PEn7+bLIROLzB/ftzTMP1AzxenA92fYWMpRX3ac=;
+        b=DdpahmoM7rcJpP9iTPFmWv8+EqqsCuDyMAs4XzCJh9NQH7hHss9h9wpaK9LSNWmIef
+         ppPsmTAvezbxZ6jwiXUfiLyERR1w8urQf8gsEVSTIaef6FnXFRf66QYWbZctGtonfXdU
+         WgLzrsGXS7bsXuVvyABB+yumrwiVP2DwvUuwxOzmRvJzN86zlHq9bLPInfMZWNcKu5ua
+         Gr5/SiRupsxizRko1LK//5g0TmuUXgpq+Gc+64eXFZ0sffPpVLWO4NeZS86xxVFfkODC
+         3mbBDsh97mM6uvFqCowql6q+nr7OpIcz+EM3sHADAgAvr+fjSjPBJU2kNm1OTAwlFA1k
+         k6/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=roz3PEn7+bLIROLzB/ftzTMP1AzxenA92fYWMpRX3ac=;
+        b=fY86a7w72bGSRAziSmXJ32lkVdx863azRCYMlZJCinKrKNugnhKpsODG/prklxpVw9
+         uk6dpbqTUtUaakyGk13IfpUCqmS3P46yFNAXS2kYFyURLeCvyJSC0WTHrEVMjW5gFM96
+         UsR1NnzzvxTGWe8z4lA2LTdCuCuXA3j9NUFBm+ZaYYXemimYE/AKqx2J7CEFqaQ8W2cC
+         9EmyVHHaaF7z/dxQ9edNvA4qJBFiRYZ8fhVWOCeRlGZg8I+la2Bd3NL7gaqAF4RzrRxj
+         TG++0Pm5qLNcswr8pH/GSNB4h6sJvKaeUhFAVC1A9nhxZBCDhzsfv3YnF72FNU3x+ouJ
+         w5BQ==
+X-Gm-Message-State: AOAM532NKAh8Ci8dqcGl3FdUAC+lMER9mLyJa6iIj5s06bXfWLSReqKC
+        3+bgYzSrlfhfom4EBdPuyLY3vw8Ggls=
+X-Google-Smtp-Source: ABdhPJxNNKuETwnvuj5FwSad3IUt9MpHWIm4h48J6hshKad4cbp6DzShqWa/YyTJBUn2l4UIk+2qRA==
+X-Received: by 2002:a17:902:fe09:b029:e4:951e:2d2e with SMTP id g9-20020a170902fe09b02900e4951e2d2emr10228234plj.22.1617319884143;
+        Thu, 01 Apr 2021 16:31:24 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id e3sm6391167pfm.43.2021.04.01.16.31.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 01 Apr 2021 16:31:23 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, kuba@kernel.org, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: pull-request: bpf-next 2021-04-01
+Date:   Thu,  1 Apr 2021 16:31:21 -0700
+Message-Id: <20210401233121.65221-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-01_14:2021-04-01,2021-04-01 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- malwarescore=0 mlxscore=0 adultscore=0 clxscore=1015 spamscore=0
- impostorscore=0 phishscore=0 bulkscore=0 priorityscore=1501
- mlxlogscore=999 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2103310000 definitions=main-2104010151
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, clang LTO built vmlinux won't work with pahole.
-LTO introduced cross-cu dwarf tag references and broke
-current pahole model which handles one cu as a time.
-The solution is to merge all cu's as one pahole cu as in [1].
-We would like to do this merging only if cross-cu dwarf
-references happens. The LTO build mode is a pretty good
-indication for that.
+Hi David, hi Jakub,
 
-In earlier version of this patch ([2]), clang flag
--grecord-gcc-switches is proposed to add to compilation flags
-so pahole could detect "-flto" and then merging cu's.
-This will increate the binary size of 1% without LTO though.
+The following pull-request contains BPF updates for your *net-next* tree.
 
-Arnaldo suggested to use a note to indicate the vmlinux
-is built with LTO. Such a cheap way to get whether the vmlinux
-is built with LTO or not helps pahole but is also useful
-for tracing as LTO may inline/delete/demote global functions,
-promote static functions, etc.
+We've added 68 non-merge commits during the last 7 day(s) which contain
+a total of 70 files changed, 2944 insertions(+), 1139 deletions(-).
 
-So this patch added an elfnote with a new type LINUX_ELFNOTE_LTO_INFO.
-The owner of the note is "Linux".
+The main changes are:
 
-With gcc 8.4.1 and clang trunk, without LTO, I got
-  $ readelf -n vmlinux
-  Displaying notes found in: .notes
-    Owner                Data size        Description
-  ...
-    Linux                0x00000004       func
-     description data: 00 00 00 00
-  ...
-With "readelf -x ".notes" vmlinux", I can verify the above "func"
-with type code 0x101.
+1) UDP support for sockmap, from Cong.
 
-With clang thin-LTO, I got the same as above except the following:
-     description data: 01 00 00 00
-which indicates the vmlinux is built with LTO.
+2) Verifier merge conflict resolution fix, from Daniel.
 
-  [1] https://lore.kernel.org/bpf/20210325065316.3121287-1-yhs@fb.com/
-  [2] https://lore.kernel.org/bpf/20210331001623.2778934-1-yhs@fb.com/
+3) xsk selftests enhancements, from Maciej.
 
-Suggested-by: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- include/linux/elfnote-lto.h | 14 ++++++++++++++
- init/version.c              |  2 ++
- scripts/mod/modpost.c       |  2 ++
- 3 files changed, 18 insertions(+)
- create mode 100644 include/linux/elfnote-lto.h
+4) Unstable helpers aka kernel func calling, from Martin.
 
-Changelogs:
-  v3 -> v4:
-    . put new lto note in its own header file similar to
-      build-salt.h. (Nick)
-  v2 -> v3:
-    . abandoned the approach of adding -grecord-gcc-switches,
-      instead create a note to indicate whether it is a lto build
-      or not. The note definition is in compiler.h. (Arnaldo)
-  v1 -> v2:
-    . limited to add -grecord-gcc-switches for LTO_CLANG
-      instead of all clang build
+5) Batches ops for LPM map, from Pedro.
 
-diff --git a/include/linux/elfnote-lto.h b/include/linux/elfnote-lto.h
-new file mode 100644
-index 000000000000..d4635a3ecc4f
---- /dev/null
-+++ b/include/linux/elfnote-lto.h
-@@ -0,0 +1,14 @@
-+#ifndef __ELFNOTE_LTO_H
-+#define __ELFNOTE_LTO_H
-+
-+#include <linux/elfnote.h>
-+
-+#define LINUX_ELFNOTE_LTO_INFO	0x101
-+
-+#ifdef CONFIG_LTO
-+#define BUILD_LTO_INFO	ELFNOTE32("Linux", LINUX_ELFNOTE_LTO_INFO, 1)
-+#else
-+#define BUILD_LTO_INFO	ELFNOTE32("Linux", LINUX_ELFNOTE_LTO_INFO, 0)
-+#endif
-+
-+#endif /* __ELFNOTE_LTO_H */
-diff --git a/init/version.c b/init/version.c
-index 92afc782b043..1a356f5493e8 100644
---- a/init/version.c
-+++ b/init/version.c
-@@ -9,6 +9,7 @@
-=20
- #include <generated/compile.h>
- #include <linux/build-salt.h>
-+#include <linux/elfnote-lto.h>
- #include <linux/export.h>
- #include <linux/uts.h>
- #include <linux/utsname.h>
-@@ -45,3 +46,4 @@ const char linux_proc_banner[] =3D
- 	" (" LINUX_COMPILER ") %s\n";
-=20
- BUILD_SALT;
-+BUILD_LTO_INFO;
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 24725e50c7b4..98fb2bb024db 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -2191,10 +2191,12 @@ static void add_header(struct buffer *b, struct mod=
-ule *mod)
- 	 */
- 	buf_printf(b, "#define INCLUDE_VERMAGIC\n");
- 	buf_printf(b, "#include <linux/build-salt.h>\n");
-+	buf_printf(b, "#include <linux/elfnote-lto.h>\n");
- 	buf_printf(b, "#include <linux/vermagic.h>\n");
- 	buf_printf(b, "#include <linux/compiler.h>\n");
- 	buf_printf(b, "\n");
- 	buf_printf(b, "BUILD_SALT;\n");
-+	buf_printf(b, "BUILD_LTO_INFO;\n");
- 	buf_printf(b, "\n");
- 	buf_printf(b, "MODULE_INFO(vermagic, VERMAGIC_STRING);\n");
- 	buf_printf(b, "MODULE_INFO(name, KBUILD_MODNAME);\n");
---=20
-2.30.2
+6) Fix race in bpf_get_local_storage, from Yonghong.
 
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Alexei Starovoitov, Andrii Nakryiko, Cong Wang, Jakub Sitnicki, John 
+Fastabend, Lorenz Bauer, Roman Gushchin, Song Liu, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit 241949e488f38a192f2359dbb21d80e08173eb60:
+
+  Merge https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next (2021-03-25 16:30:46 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
+
+for you to fetch changes up to 89d69c5d0fbcabd8656459bc8b1a476d6f1efee4:
+
+  Merge branch 'sockmap: introduce BPF_SK_SKB_VERDICT and support UDP' (2021-04-01 10:56:15 -0700)
+
+----------------------------------------------------------------
+Alexei Starovoitov (5):
+      Merge branch 'add support for batched ops in LPM trie'
+      Merge branch 'bpf: Support calling kernel function'
+      Merge branch 'bpf: Update doc about calling kernel function'
+      Merge branch 'AF_XDP selftests improvements & bpf_link'
+      Merge branch 'sockmap: introduce BPF_SK_SKB_VERDICT and support UDP'
+
+Andrii Nakryiko (3):
+      libbpf: Constify few bpf_program getters
+      libbpf: Preserve empty DATASEC BTFs during static linking
+      libbpf: Fix memory leak when emitting final btf_ext
+
+Atul Gopinathan (1):
+      bpf: tcp: Remove comma which is causing build error
+
+Björn Töpel (3):
+      selftests: xsk: Remove thread attribute
+      selftests: xsk: Remove mutex and condition variable
+      selftests: xsk: Remove unused defines
+
+Colin Ian King (1):
+      bpf: Remove redundant assignment of variable id
+
+Cong Wang (16):
+      skmsg: Lock ingress_skb when purging
+      skmsg: Introduce a spinlock to protect ingress_msg
+      net: Introduce skb_send_sock() for sock_map
+      skmsg: Avoid lock_sock() in sk_psock_backlog()
+      skmsg: Use rcu work for destroying psock
+      skmsg: Use GFP_KERNEL in sk_psock_create_ingress_msg()
+      sock_map: Simplify sock_map_link() a bit
+      sock_map: Kill sock_map_link_no_progs()
+      sock_map: Introduce BPF_SK_SKB_VERDICT
+      sock: Introduce sk->sk_prot->psock_update_sk_prot()
+      udp: Implement ->read_sock() for sockmap
+      skmsg: Extract __tcp_bpf_recvmsg() and tcp_bpf_wait_data()
+      udp: Implement udp_bpf_recvmsg() for sockmap
+      sock_map: Update sock type checks for UDP
+      selftests/bpf: Add a test case for udp sockmap
+      selftests/bpf: Add a test case for loading BPF_SK_SKB_VERDICT
+
+Daniel Borkmann (1):
+      bpf: Undo ptr_to_map_key alu sanitation for now
+
+He Fengqing (1):
+      bpf: Remove unused bpf_load_pointer
+
+KP Singh (2):
+      selftests/bpf: Better error messages for ima_setup.sh failures
+      selftests/bpf: Add an option for a debug shell in vmtest.sh
+
+Lu Wei (1):
+      bpf: Remove unused headers
+
+Maciej Fijalkowski (14):
+      selftests: xsk: Don't call worker_pkt_dump() for stats test
+      selftests: xsk: Remove struct ifaceconfigobj
+      selftests: xsk: Remove unused function
+      selftests: xsk: Remove inline keyword from source file
+      selftests: xsk: Simplify frame traversal in dumping thread
+      libbpf: xsk: Use bpf_link
+      samples: bpf: Do not unload prog within xdpsock
+      selftests: xsk: Remove thread for netns switch
+      selftests: xsk: Split worker thread
+      selftests: xsk: Remove Tx synchronization resources
+      selftests: xsk: Refactor teardown/bidi test cases and testapp_validate
+      selftests: xsk: Remove sync_mutex_tx and atomic var
+      veth: Implement ethtool's get_channels() callback
+      selftests: xsk: Implement bpf_link test
+
+Martin KaFai Lau (18):
+      bpf: Simplify freeing logic in linfo and jited_linfo
+      bpf: Refactor btf_check_func_arg_match
+      bpf: Support bpf program calling kernel function
+      bpf: Support kernel function call in x86-32
+      tcp: Rename bictcp function prefix to cubictcp
+      bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc
+      libbpf: Refactor bpf_object__resolve_ksyms_btf_id
+      libbpf: Refactor codes for finding btf id of a kernel symbol
+      libbpf: Rename RELO_EXTERN to RELO_EXTERN_VAR
+      libbpf: Record extern sym relocation first
+      libbpf: Support extern kernel function
+      bpf: selftests: Rename bictcp to bpf_cubic
+      bpf: selftests: Bpf_cubic and bpf_dctcp calling kernel functions
+      bpf: selftests: Add kfunc_call test
+      bpf: tcp: Fix an error in the bpf_tcp_ca_kfunc_ids list
+      bpf: tcp: Limit calling some tcp cc functions to CONFIG_DYNAMIC_FTRACE
+      bpf: Update bpf_design_QA.rst to clarify the kfunc call is not ABI
+      bpf: selftests: Update clang requirement in README.rst for testing kfunc call
+
+Pedro Tammela (2):
+      bpf: Add support for batched ops in LPM trie maps
+      bpf: selftests: Add tests for batched ops in LPM trie maps
+
+Rafael David Tinoco (1):
+      libbpf: Add bpf object kern_version attribute setter
+
+Ricardo Ribalda (1):
+      bpf: Fix typo 'accesible' into 'accessible'
+
+Stanislav Fomichev (1):
+      tools/resolve_btfids: Fix warnings
+
+Wan Jiabing (1):
+      bpf: struct sock is declared twice in bpf_sk_storage header
+
+Yonghong Song (1):
+      bpf: Fix NULL pointer dereference in bpf_get_local_storage() helper
+
+ Documentation/bpf/bpf_design_QA.rst                |  15 +
+ arch/x86/net/bpf_jit_comp.c                        |   5 +
+ arch/x86/net/bpf_jit_comp32.c                      | 198 ++++++
+ drivers/net/veth.c                                 |  12 +
+ include/linux/bpf-cgroup.h                         |  57 +-
+ include/linux/bpf.h                                |  58 +-
+ include/linux/btf.h                                |   6 +
+ include/linux/filter.h                             |  13 +-
+ include/linux/skbuff.h                             |   1 +
+ include/linux/skmsg.h                              |  77 ++-
+ include/net/bpf_sk_storage.h                       |   1 -
+ include/net/sock.h                                 |   3 +
+ include/net/tcp.h                                  |   3 +-
+ include/net/udp.h                                  |   3 +
+ include/uapi/linux/bpf.h                           |   5 +
+ kernel/bpf/btf.c                                   | 219 ++++---
+ kernel/bpf/core.c                                  |  47 +-
+ kernel/bpf/disasm.c                                |  13 +-
+ kernel/bpf/helpers.c                               |  15 +-
+ kernel/bpf/local_storage.c                         |   5 +-
+ kernel/bpf/lpm_trie.c                              |   3 +
+ kernel/bpf/syscall.c                               |   5 +-
+ kernel/bpf/verifier.c                              | 390 ++++++++++--
+ net/bpf/test_run.c                                 |  34 +-
+ net/core/filter.c                                  |   1 +
+ net/core/skbuff.c                                  |  55 +-
+ net/core/skmsg.c                                   | 177 +++++-
+ net/core/sock_map.c                                | 118 ++--
+ net/ipv4/af_inet.c                                 |   1 +
+ net/ipv4/bpf_tcp_ca.c                              |  43 ++
+ net/ipv4/tcp_bpf.c                                 | 130 +---
+ net/ipv4/tcp_cubic.c                               |  24 +-
+ net/ipv4/tcp_ipv4.c                                |   3 +
+ net/ipv4/udp.c                                     |  32 +
+ net/ipv4/udp_bpf.c                                 |  79 ++-
+ net/ipv6/af_inet6.c                                |   1 +
+ net/ipv6/tcp_ipv6.c                                |   3 +
+ net/ipv6/udp.c                                     |   3 +
+ net/tls/tls_sw.c                                   |   4 +-
+ samples/bpf/sampleip_kern.c                        |   1 -
+ samples/bpf/trace_event_kern.c                     |   1 -
+ samples/bpf/xdpsock_user.c                         |  55 +-
+ tools/bpf/bpftool/common.c                         |   1 +
+ tools/bpf/bpftool/prog.c                           |   1 +
+ tools/bpf/resolve_btfids/main.c                    |  11 +-
+ tools/include/uapi/linux/bpf.h                     |   5 +
+ tools/lib/bpf/libbpf.c                             | 403 +++++++++---
+ tools/lib/bpf/libbpf.h                             |   5 +-
+ tools/lib/bpf/libbpf.map                           |   1 +
+ tools/lib/bpf/linker.c                             |  37 +-
+ tools/lib/bpf/xsk.c                                | 258 ++++++--
+ tools/testing/selftests/bpf/README.rst             |  14 +
+ tools/testing/selftests/bpf/bpf_tcp_helpers.h      |  29 +-
+ .../bpf/map_tests/lpm_trie_map_batch_ops.c         | 158 +++++
+ .../testing/selftests/bpf/prog_tests/kfunc_call.c  |  59 ++
+ .../selftests/bpf/prog_tests/sockmap_basic.c       |  40 ++
+ .../selftests/bpf/prog_tests/sockmap_listen.c      | 136 ++++
+ tools/testing/selftests/bpf/prog_tests/test_ima.c  |   6 +-
+ tools/testing/selftests/bpf/progs/bpf_cubic.c      |  36 +-
+ tools/testing/selftests/bpf/progs/bpf_dctcp.c      |  22 +-
+ .../testing/selftests/bpf/progs/kfunc_call_test.c  |  47 ++
+ .../selftests/bpf/progs/kfunc_call_test_subprog.c  |  42 ++
+ .../selftests/bpf/progs/test_sockmap_listen.c      |  22 +
+ .../bpf/progs/test_sockmap_skb_verdict_attach.c    |  18 +
+ tools/testing/selftests/bpf/test_xsk.sh            |   3 +-
+ tools/testing/selftests/bpf/verifier/calls.c       |  12 +-
+ tools/testing/selftests/bpf/verifier/dead_code.c   |  10 +-
+ tools/testing/selftests/bpf/vmtest.sh              |  39 +-
+ tools/testing/selftests/bpf/xdpxceiver.c           | 700 ++++++++++-----------
+ tools/testing/selftests/bpf/xdpxceiver.h           |  49 +-
+ 70 files changed, 2944 insertions(+), 1139 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/map_tests/lpm_trie_map_batch_ops.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kfunc_call.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kfunc_call_test_subprog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_skb_verdict_attach.c
