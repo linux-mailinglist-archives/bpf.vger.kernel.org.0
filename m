@@ -2,127 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78CDD350B10
-	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 02:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1EA350B7F
+	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 03:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhDAAI6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 31 Mar 2021 20:08:58 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62444 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229486AbhDAAIW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 31 Mar 2021 20:08:22 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13105UtZ005493
-        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 17:08:21 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=Olg6XMi32ieavYB+jWfj1NdlzbCHsmIiF6+WmF8V+3U=;
- b=GxNDxusQJq0mklaGzQ/UzP6Xq93sv/LWqxnXdD9BU9gNaLl7lFfz/3ImJucn3pQFDolA
- Xe8GuxLS+g/PfygkS4qzzr//beJpjrZ5fQ9jN4TR+3mjBEXkEhKdlnympWMhm3Zl9CXQ
- 0jiO5730SLcRyiuBFbXEaiOO7RnSyAyFXaw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37n2810am2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 17:08:21 -0700
-Received: from intmgw001.38.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 31 Mar 2021 17:08:20 -0700
-Received: by devbig030.frc3.facebook.com (Postfix, from userid 158236)
-        id 6FF3F192A25; Wed, 31 Mar 2021 17:08:17 -0700 (PDT)
-From:   Dave Marchevsky <davemarchevsky@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <kernel-team@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH bpf] bpf: refcount task stack in bpf_get_task_stack
-Date:   Wed, 31 Mar 2021 17:07:47 -0700
-Message-ID: <20210401000747.3648767-1-davemarchevsky@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S230349AbhDABIR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 31 Mar 2021 21:08:17 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:43857 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229959AbhDABIR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 31 Mar 2021 21:08:17 -0400
+Received: by mail-io1-f72.google.com with SMTP id d12so2777522ioo.10
+        for <bpf@vger.kernel.org>; Wed, 31 Mar 2021 18:08:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=HhXZSdtRdZONG6W//ZnC0o+E0uXZyzIdW05SEDejhRI=;
+        b=mn0UiLx375gEyfFdv1yqytmsS4qdwadgY5IhKyFKpKtbjAcAnBq/egAvnBFAgSWsjD
+         8pmSYjI4I44icZ2LupRTAgc3HTZz2SPmG45oo8pkLsjsdxK7+4iR+cefl0LucmqYicul
+         41lv4k6tfYGhb1wY0W2nE5Sw2L6CH1VRaBYueVUAaGhX0fvGIExmfU5ubhZtlnLeT8a5
+         tg0Y0e1gbxPp0cSWfB1d2/U5HI2E1in435ScZg2BItqyMCSZbEGZQuB6ABbwLq8uapLV
+         F8cmfGxEuAsVJz6kGwcp70fccV09SjJgA1zpbQLs8iG+1cV9ir+FSdBmBxSiIxPwsPR1
+         bViw==
+X-Gm-Message-State: AOAM530HgJrwHrr8nR8lNQhzI5o0luHDH3SHIqFIBSzfHbY0XLjrBxzY
+        qkOJY1JcN6JLQOJTeckeqgO9+1/ayAL+6+e0u7JYs50q75TX
+X-Google-Smtp-Source: ABdhPJxRG2A1XbTYVHAQer5B/AXXuXwpzcTQx1FSnrCnLb4+x+o7eoZfn1yC5fbJYF3rbpC7Co0C7bW0E1x7QM8/fB+BYzDMfYxn
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: Ny9J8_VT2mO1pB1LcidEDoKvi6kkgvGI
-X-Proofpoint-ORIG-GUID: Ny9J8_VT2mO1pB1LcidEDoKvi6kkgvGI
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-31_11:2021-03-31,2021-03-31 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1011 bulkscore=0
- impostorscore=0 spamscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0
- suspectscore=0 phishscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103310000
- definitions=main-2103310167
-X-FB-Internal: deliver
+X-Received: by 2002:a92:c90c:: with SMTP id t12mr79501ilp.248.1617239296423;
+ Wed, 31 Mar 2021 18:08:16 -0700 (PDT)
+Date:   Wed, 31 Mar 2021 18:08:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c7bbd305bededd29@google.com>
+Subject: [syzbot] memory leak in bpf (2)
+From:   syzbot <syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On x86 the struct pt_regs * grabbed by task_pt_regs() points to an
-offset of task->stack. The pt_regs are later dereferenced in
-__bpf_get_stack (e.g. by user_mode() check). This can cause a fault if
-the task in question exits while bpf_get_task_stack is executing, as
-warned by task_stack_page's comment:
+Hello,
 
-* When accessing the stack of a non-current task that might exit, use
-* try_get_task_stack() instead.  task_stack_page will return a pointer
-* that could get freed out from under you.
+syzbot found the following issue on:
 
-Taking the comment's advice and using try_get_task_stack() and
-put_task_stack() to hold task->stack refcount, or bail early if it's
-already 0. Incrementing stack_refcount will ensure the task's stack
-sticks around while we're using its data.
+HEAD commit:    0f4498ce Merge tag 'for-5.12/dm-fixes-2' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1250e126d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=49f2683f4e7a4347
+dashboard link: https://syzkaller.appspot.com/bug?extid=5d895828587f49e7fe9b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a17016d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10a32016d00000
 
-I noticed this bug while testing a bpf task iter similar to
-bpf_iter_task_stack in selftests, except mine grabbed user stack, and
-getting intermittent crashes, which resulted in dumps like:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
 
-  BUG: unable to handle page fault for address: 0000000000003fe0
-  \#PF: supervisor read access in kernel mode
-  \#PF: error_code(0x0000) - not-present page
-  RIP: 0010:__bpf_get_stack+0xd0/0x230
-  <snip...>
-  Call Trace:
-  bpf_prog_0a2be35c092cb190_get_task_stacks+0x5d/0x3ec
-  bpf_iter_run_prog+0x24/0x81
-  __task_seq_show+0x58/0x80
-  bpf_seq_read+0xf7/0x3d0
-  vfs_read+0x91/0x140
-  ksys_read+0x59/0xd0
-  do_syscall_64+0x48/0x120
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Warning: Permanently added '10.128.0.74' (ECDSA) to the list of known hosts.
+executing program
+executing program
+BUG: memory leak
+unreferenced object 0xffff8881133295c0 (size 64):
+  comm "syz-executor529", pid 8395, jiffies 4294943939 (age 8.130s)
+  hex dump (first 32 bytes):
+    40 48 3c 04 00 ea ff ff 00 48 3c 04 00 ea ff ff  @H<......H<.....
+    c0 e7 3c 04 00 ea ff ff 80 e7 3c 04 00 ea ff ff  ..<.......<.....
+  backtrace:
+    [<ffffffff8139511c>] kmalloc_node include/linux/slab.h:577 [inline]
+    [<ffffffff8139511c>] __bpf_map_area_alloc+0xfc/0x120 kernel/bpf/syscall.c:300
+    [<ffffffff813d2414>] bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:90 [inline]
+    [<ffffffff813d2414>] bpf_ringbuf_alloc kernel/bpf/ringbuf.c:131 [inline]
+    [<ffffffff813d2414>] ringbuf_map_alloc kernel/bpf/ringbuf.c:170 [inline]
+    [<ffffffff813d2414>] ringbuf_map_alloc+0x134/0x350 kernel/bpf/ringbuf.c:146
+    [<ffffffff8139c8d3>] find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
+    [<ffffffff8139c8d3>] map_create kernel/bpf/syscall.c:828 [inline]
+    [<ffffffff8139c8d3>] __do_sys_bpf+0x7c3/0x2fe0 kernel/bpf/syscall.c:4375
+    [<ffffffff842df20d>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Fixes: fa28dcb82a38 ("bpf: Introduce helper bpf_get_task_stack()")
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+
+
 ---
- kernel/bpf/stackmap.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index be35bfb7fb13..6fbc2abe9c91 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -517,9 +517,17 @@ const struct bpf_func_proto bpf_get_stack_proto =3D =
-{
- BPF_CALL_4(bpf_get_task_stack, struct task_struct *, task, void *, buf,
- 	   u32, size, u64, flags)
- {
--	struct pt_regs *regs =3D task_pt_regs(task);
-+	struct pt_regs *regs;
-+	long res;
-=20
--	return __bpf_get_stack(regs, task, NULL, buf, size, flags);
-+	if (!try_get_task_stack(task))
-+		return -EFAULT;
-+
-+	regs =3D task_pt_regs(task);
-+	res =3D __bpf_get_stack(regs, task, NULL, buf, size, flags);
-+	put_task_stack(task);
-+
-+	return res;
- }
-=20
- BTF_ID_LIST_SINGLE(bpf_get_task_stack_btf_ids, struct, task_struct)
---=20
-2.30.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
