@@ -2,198 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDC3351FA4
-	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 21:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21758351FBF
+	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 21:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234601AbhDATXx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Apr 2021 15:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52338 "EHLO
+        id S234646AbhDAT0t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Apr 2021 15:26:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234854AbhDATXs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Apr 2021 15:23:48 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE23C05BD2F
-        for <bpf@vger.kernel.org>; Thu,  1 Apr 2021 11:29:02 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id u20so3213097lja.13
-        for <bpf@vger.kernel.org>; Thu, 01 Apr 2021 11:29:02 -0700 (PDT)
+        with ESMTP id S234601AbhDAT0o (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Apr 2021 15:26:44 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A229BC0225A0
+        for <bpf@vger.kernel.org>; Thu,  1 Apr 2021 11:50:16 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id o10so4294283lfb.9
+        for <bpf@vger.kernel.org>; Thu, 01 Apr 2021 11:50:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZodewM9BDEcN7RA6IkLqbUAjYGLBtUxxRIlZauN5R30=;
-        b=ceqqjt4Stn0V9AQ3sSr7NmTUjQeYCI9ykPvXBIc/X7+tbmHZI47vdlsXCqr7tXtrQm
-         uP3Kn4jhag56YvGsn62nC1otJ5iVogOA87M/gK/k0JYnirOWBPbXgMUiebHxGsWWrJNM
-         aaLdziVg7XaUJRcIp/4K7E4kYJdoJZwCmJSanBbD8/MXApdnz/QDt9X/d82NMW+Z6Ipi
-         vVUyhDLA/HbHmAKw4IQ/PeIxulQPiDLPFH+TySEVaNUZ5iIOG0yOcv0sNSsbCd9+CyyT
-         S4LZZqGbyc/HxQ5/0xRntqcsQufko6a8RXZ2SEqbfNezb0lJKdqhNSNMl5wjAZXGtmBr
-         zyaQ==
+        bh=1KmEagxK+rhdAhvN7uNMepKmJEX8gVa3xuxeYizT0aQ=;
+        b=LJ6w4Y2MjdRR9qq6CmzLbI/1TIGqZxQz3fw/4U4ekFeyWFUGW7JANMOSJun4pZvhZw
+         0IfgNf7PA2cHVO8cvFSNXUgTdqv9CQ9UVLyL5IRijcT9PZjLOC5Wv/+ZW847NudcwHwB
+         s9drZQTiwl72nebslb9YgbCW/5eWip06VuOdPubCKv5xQk2WwlsoC6kUAkCgzGAMLzHR
+         Uy1x8e+xn+aj5Nl703kI8nraLZKOoH9n0Sc23mU2No2drb1zIkUXOquRizeyXAPrrlvN
+         J2rKHihIJNb7dc4Gz1PodvPmohjGOFoYOmg7rEy+cGZEyjej7lTAW8g3FthGnJRfpA/n
+         T+HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZodewM9BDEcN7RA6IkLqbUAjYGLBtUxxRIlZauN5R30=;
-        b=X202B/EinmTh3qiC2MVUjd1NNMVSNSEjhvtX2lmspAxTbkiB7FtywZhzDue2MNoOao
-         2Cf8/O5h3ST2ELb1Q4cmI/2vi10ClzIrM4FDKEx+zi3SyuRqPc07PpRL4UPjJZhy7/zS
-         4aB3UJBAO+xVwl5GvAP6gtOJnIaTkyH2In289D3c5gb6N6SEtNYKw2jkqCpIQoyVxzhC
-         Pi7mD2AyqRzHzmG+alcRelIi4p4oQ4FNxtNGKqbS3V6GMPmHyiSZ/N9cfvp8tSV5aWic
-         CwAxU7c7Z+OiZBwckK6zf9Uj3zB2w2soP9oAnL/bOIqXXLdiNWJErBeZOHX1lz+hAbBi
-         CJew==
-X-Gm-Message-State: AOAM533Z1yDd4l8/3dLvkaIl29DopGs2GEJqRFOfy31ff5fpkpqkKgfB
-        MV3fOlvd15yBnijfu3+W6mMnDLG8vD5TucpzXGYM/Q==
-X-Google-Smtp-Source: ABdhPJzjAsbhblRMKpLoXlyguONp+Qj7WC1Eqd/PUQFlNbTEyuxEjKtevwd69/Vxv+mGoYlJBvjvy9AEtHHiPsbL/eo=
-X-Received: by 2002:a2e:988a:: with SMTP id b10mr6207734ljj.341.1617301740883;
- Thu, 01 Apr 2021 11:29:00 -0700 (PDT)
+        bh=1KmEagxK+rhdAhvN7uNMepKmJEX8gVa3xuxeYizT0aQ=;
+        b=UwW0/rNc9NJim0IGUZMOmj7sDzQ0JGqWRlP8s+L5X3R47qYl1arFaOHAStJYVbkNPm
+         8KLPYyTy6WEWD2/uFPbk7dkv8+Jj3yB0AxUc3s7Y8zgxhW9jDAaFJskHBncSoVVK9XgK
+         coSBihPXimOMoHWJQogvlPRq5egFtC17Ky/XltkaX4B4o0LENCsu1E1/pswliC7dB46s
+         2w4w5pZvfOY8ycOT7OLUin9LWI4rJjy16PE04wrAJ/iPgOftsTinCpiveDK/o5LSN6v2
+         lKCuob3+0qVAgYOqHyeSB/puh3f8MuwUNSQdmWnB0KbvyppgchQnvKyQI/mz3qw9i9dZ
+         Vbew==
+X-Gm-Message-State: AOAM531bd8wdo8jugw7LhGtaMFV49EpKRYxL1nh/b8/ZJPf5wCdple5j
+        SsXBiU9ot7kVxqYhOkGiKxEQWXUYv8QrngwvBdCrkA==
+X-Google-Smtp-Source: ABdhPJzvHydJMrRKLEe5lQTcugNGl+V7JelQ4joFmeW58ikkQ+BHMey+pVknxNuG9KflDH1qaMkAGKFZm/ll5ytWc2s=
+X-Received: by 2002:a19:8c19:: with SMTP id o25mr6411654lfd.547.1617303014926;
+ Thu, 01 Apr 2021 11:50:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210401012406.1800957-1-yhs@fb.com> <20210401012417.1802681-1-yhs@fb.com>
-In-Reply-To: <20210401012417.1802681-1-yhs@fb.com>
+References: <20210401025815.2254256-1-yhs@fb.com>
+In-Reply-To: <20210401025815.2254256-1-yhs@fb.com>
 From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 1 Apr 2021 11:28:49 -0700
-Message-ID: <CAKwvOdnDnO4ye5GToe04L8B4Tk+Ls6tAAoMVoi8LoC4gRLyLYQ@mail.gmail.com>
-Subject: Re: [PATCH kbuild v3 2/2] kbuild: add an elfnote with type BUILD_COMPILER_LTO_INFO
+Date:   Thu, 1 Apr 2021 11:50:03 -0700
+Message-ID: <CAKwvOdka=a-RtLzBdEQm5s570rLSDLfRD4Xf8SxOQHWcTdUz3w@mail.gmail.com>
+Subject: Re: [PATCH dwarves 0/2] dwarf_loader: improve cus__merging_cu()
 To:     Yonghong Song <yhs@fb.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        bpf <bpf@vger.kernel.org>, kernel-team@fb.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Bill Wendling <morbo@google.com>, bpf <bpf@vger.kernel.org>,
+        David Blaikie <dblaikie@gmail.com>,
+        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        kernel-team@fb.com,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 6:24 PM Yonghong Song <yhs@fb.com> wrote:
+On Wed, Mar 31, 2021 at 7:58 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Currently, clang LTO built vmlinux won't work with pahole.
-> LTO introduced cross-cu dwarf tag references and broke
-> current pahole model which handles one cu as a time.
-> The solution is to merge all cu's as one pahole cu as in [1].
-> We would like to do this merging only if cross-cu dwarf
-> references happens. The LTO build mode is a pretty good
-> indication for that.
+> Function cus__merging_cu() is introduced in Commit 39227909db3c
+> ("dwarf_loader: Permit merging all DWARF CU's for clang LTO built
+> binary") to test whether cross-cu references may happen.
+> The original implementation anticipates compilation flags
+> in dwarf, but later some concerns about binary size surfaced
+> and the decision is to scan .debug_abbrev as a faster way
+> to check cross-cu references. Also putting a note in vmlinux
+> to indicate whether lto is enabled for built or not can
+> provide a much faster way.
 >
-> In earlier version of this patch ([2]), clang flag
-> -grecord-gcc-switches is proposed to add to compilation flags
-> so pahole could detect "-flto" and then merging cu's.
-> This will increate the binary size of 1% without LTO though.
->
-> Arnaldo suggested to use a note to indicate the vmlinux
-> is built with LTO. Such a cheap way to get whether the vmlinux
-> is built with LTO or not helps pahole but is also useful
-> for tracing as LTO may inline/delete/demote global functions,
-> promote static functions, etc.
->
-> So this patch added an elfnote with type BUILD_COMPILER_LTO_INFO.
-> The owner of the note is "Linux".
->
-> With gcc 8.4.1 and clang trunk, without LTO, I got
->   $ readelf -n vmlinux
->   Displaying notes found in: .notes
->     Owner                Data size        Description
->   ...
->     Linux                0x00000004       func
->      description data: 00 00 00 00
->   ...
-> With "readelf -x ".notes" vmlinux", I can verify the above "func"
-> with type code 0x101.
->
-> With clang thin-LTO, I got the same as above except the following:
->      description data: 01 00 00 00
-> which indicates the vmlinux is built with LTO.
->
->  [1] https://lore.kernel.org/bpf/20210325065316.3121287-1-yhs@fb.com/
->  [2] https://lore.kernel.org/bpf/20210331001623.2778934-1-yhs@fb.com/
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  include/linux/compiler.h | 8 ++++++++
->  include/linux/elfnote.h  | 1 +
->  init/version.c           | 2 ++
->  scripts/mod/modpost.c    | 1 +
->  4 files changed, 12 insertions(+)
->
-> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-> index df5b405e6305..b92930877277 100644
-> --- a/include/linux/compiler.h
-> +++ b/include/linux/compiler.h
-> @@ -245,6 +245,14 @@ static inline void *offset_to_ptr(const int *off)
->   */
->  #define prevent_tail_call_optimization()       mb()
->
-> +#include <linux/elfnote.h>
-> +
-> +#ifdef CONFIG_LTO
-> +#define BUILD_COMPILER_LTO_INFO ELFNOTE32("Linux", LINUX_ELFNOTE_BUILD_LTO, 1)
-> +#else
-> +#define BUILD_COMPILER_LTO_INFO ELFNOTE32("Linux", LINUX_ELFNOTE_BUILD_LTO, 0)
-> +#endif
+> This patch set implemented this two approaches, first
+> checking the note (in Patch #2), if not found, then
+> check .debug_abbrev (in Patch #1).
 
-With this approach BUILD_COMPILER_LTO_INFO won't be available `#ifdef
-__ASSEMBLER__`; we don't need it today, and perhaps YAGNI, but I think
-I prefer how include/linux/build-salt.h defines
-LINUX_ELFNOTE_BUILD_SALT and keeps it isolated there.  Similarly, I
-think it would be better to create a new header, say
-include/linux/elfnote-lto.h that is basically a copy of
-include/linux/build-salt.h, but with the relevant defines replaced
-with the LTO identifiers you add above.  Then init/version.c and
-scripts/mod/modpost.c can include include/linux/elfnote-lto.h and you
-don't have to touch include/linux/build-salt.h and we can keep the
-elfnote "types" isolated to their respective headers (otherwise this
-approach reduces the usefulness of include/linux/build-salt.h even
-existing, IMO. Feels like it should just be merged into
-include/linux/elfnote.h entirely at that point).
+For the series:
 
-But, this is a much nicer approach! I forgot that elf notes were a thing!
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
 
-> +
->  #include <asm/rwonce.h>
+(Noting for others on our mailing list:
+https://lore.kernel.org/linux-kbuild/20210401012406.1800957-1-yhs@fb.com/
+is a series of kernel patches required to test this. I had feedback on
+the kernel patches, but this approach in pahole LGTM since I think
+using simple notes in ELF is a good approach).
+
 >
->  #endif /* __LINUX_COMPILER_H */
-> diff --git a/include/linux/elfnote.h b/include/linux/elfnote.h
-> index 04af7ac40b1a..f5ec2b50ab7d 100644
-> --- a/include/linux/elfnote.h
-> +++ b/include/linux/elfnote.h
-> @@ -100,5 +100,6 @@
->   * The types for "Linux" owned notes.
->   */
->  #define LINUX_ELFNOTE_BUILD_SALT       0x100
-> +#define LINUX_ELFNOTE_BUILD_LTO                0x101
+> Yonghong Song (2):
+>   dwarf_loader: check .debug_abbrev for cross-cu references
+>   dwarf_loader: check .notes section for lto build info
 >
->  #endif /* _LINUX_ELFNOTE_H */
-> diff --git a/init/version.c b/init/version.c
-> index 92afc782b043..a4f74b06fe78 100644
-> --- a/init/version.c
-> +++ b/init/version.c
-> @@ -9,6 +9,7 @@
+>  dwarf_loader.c | 76 ++++++++++++++++++++++++++++++++++++--------------
+>  1 file changed, 55 insertions(+), 21 deletions(-)
 >
->  #include <generated/compile.h>
->  #include <linux/build-salt.h>
-> +#include <linux/compiler.h>
->  #include <linux/export.h>
->  #include <linux/uts.h>
->  #include <linux/utsname.h>
-> @@ -45,3 +46,4 @@ const char linux_proc_banner[] =
->         " (" LINUX_COMPILER ") %s\n";
->
->  BUILD_SALT;
-> +BUILD_COMPILER_LTO_INFO;
-> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> index 24725e50c7b4..713c0d5d5525 100644
-> --- a/scripts/mod/modpost.c
-> +++ b/scripts/mod/modpost.c
-> @@ -2195,6 +2195,7 @@ static void add_header(struct buffer *b, struct module *mod)
->         buf_printf(b, "#include <linux/compiler.h>\n");
->         buf_printf(b, "\n");
->         buf_printf(b, "BUILD_SALT;\n");
-> +       buf_printf(b, "BUILD_COMPILER_LTO_INFO;\n");
->         buf_printf(b, "\n");
->         buf_printf(b, "MODULE_INFO(vermagic, VERMAGIC_STRING);\n");
->         buf_printf(b, "MODULE_INFO(name, KBUILD_MODNAME);\n");
 > --
 > 2.30.2
 >
 
 
--- 
+--
 Thanks,
 ~Nick Desaulniers
