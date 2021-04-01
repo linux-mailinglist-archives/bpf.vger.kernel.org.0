@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6581F3523F7
-	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 01:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2413A3523FC
+	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 01:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236541AbhDAXeA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Apr 2021 19:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50226 "EHLO
+        id S236431AbhDAXeJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Apr 2021 19:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236493AbhDAXdq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Apr 2021 19:33:46 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68580C05BD15
-        for <bpf@vger.kernel.org>; Thu,  1 Apr 2021 16:32:53 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id o129so7365836ybg.23
-        for <bpf@vger.kernel.org>; Thu, 01 Apr 2021 16:32:53 -0700 (PDT)
+        with ESMTP id S236026AbhDAXdx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Apr 2021 19:33:53 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85F2C05BD19
+        for <bpf@vger.kernel.org>; Thu,  1 Apr 2021 16:32:55 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id ev19so4290750qvb.7
+        for <bpf@vger.kernel.org>; Thu, 01 Apr 2021 16:32:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=4zmDXsca0ECrWDzVS194BszWB+2fKXJW5Au7Imi/uhE=;
-        b=PH3FtJBGBsmgrkbZDVz3BXtOomtM40isF73uxHHdcAgWFlI0hQzmJ+Yiu0Nbk36AiS
-         oIUF/OouhVLXAHv5lePfztQEQCdoF3WKPYY1A6g21bn1QVawFocJ0FQMqW+JvkyRMXC0
-         7MlgKTeKlTukJdkvN/08vCaQdhh5X+mvr2muSbV3dFgjINzTMQPZYmQpEcNiuXE8tNMf
-         3VgtV0lRhBFCEGG3XpYQc/aLht2YKd/8ej+EsbM8UOkPXsBBShbt6fFkrZnQbYbNFDMD
-         JSw7hOAw7svmOppJvJC33a/bIukeU+OjfUKoipleTgiaIG9tnHBTD0G84ol+6TIFQPCe
-         UDkg==
+        bh=CIBsMUAzqVBKJMC//YF4MdkZzSoA2eT4NBvrPysyfhQ=;
+        b=BFiANp0pMWHC/IyuQ9DGSiKV70Aw33MNbDtGFQZCptIZJl11fKLLDwlPfO4BrNVOJp
+         xzRqfWKuwuvy9O8TfYc7fcGPZWCdHHqTS3flzLSd3zVxDLZBElZvtCaoUsohNJ42lKS+
+         7yY0vSiJ4daBjV9yrkjy1OXNtCCbOBPV5KYjE1jSVn2d02AszzrZlgXf0dFPaZ9Up5To
+         eq4R0xU+5yBj0s5fhti8O+UcraNwDXGjf0cZET5W6nlaaVo/DY6UE56DTVPCdAsmBb27
+         Qg0VzjbU12KqVP1onYHpSPh4rX6We4KOqxllBqzjOZeRf3DS2g8QdGnZX5lmwOzR6vrP
+         SHrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=4zmDXsca0ECrWDzVS194BszWB+2fKXJW5Au7Imi/uhE=;
-        b=Mp9/IT4Y5mUWlwC4jVefNVt2KKzNQEDl3VA6WeKLCo7Rz1fNp2N6ZmUzL9E+TPueYn
-         JaUr5KY9S4DOaTQfxJbf3xJxHDLVKNCOsZV9Bnl96eufVSYbzz4itzIMR0yocgQ0iR6g
-         roFaYz0UnOEqsqhgn98F+SgZgxTGq70GJVT7IvZn06vu+SM3qP7uevIuzzu3HXseCC8N
-         wSNIWV92AL36F0pEVU7QlM/UdEmjh0K89IKIbYJQeT2J1RwlsP+JcLjsLt4EjoPFx7IH
-         rqK0NAcE/fR1RypBS/acWnyxtzv8RtZoZHQUyaZBnGt7B3X0ygXJxpK32TkAS2QKuIt0
-         Aw3Q==
-X-Gm-Message-State: AOAM533/5Gr+YLrQwtPt2ndoQfmpKt24PtujQVcYHvdcB9RTjK2pInIM
-        cxZbhthxfRvIfnO2d0EpyYflCmMyjuS2hb2IPwc=
-X-Google-Smtp-Source: ABdhPJxZF9glk9+ZtBirKYDEGjQrdMhhNWgdR3tCZ5JLBfUCEc7h35+3XPVRFL47JJ5bGJZvKS8N/Lhi8ZZQtRsAJC4=
+        bh=CIBsMUAzqVBKJMC//YF4MdkZzSoA2eT4NBvrPysyfhQ=;
+        b=Zp6EimOuOEQfO5q48jJrH2PD46SwomwFXfa7Gon6KngkGPrFwqNKC8bO8kFXJcfJ1Q
+         guImCVcpps7unFF6IfiBM7zEOZWiiiYrFrcaCxIw5EvKLlgpMn94UMQWLZvPU13dJKMP
+         +yZo0xkOZXTz0DlmT34iMVjZsDc5Y16n4axrAdrXdkrHrLquA5TTFe/8f2e7nASPpD2w
+         oiMiW+jSbNHuPDPE2372lHRPgg5I28lCaYGQdolXAx9S1/ywGj7eVRdBPDiC3sSHDbCv
+         pbvRQoM0mUgFN6NzvCBfw/w7u7dyZ6ANlhZ6dfH983Img0g5vfz3zDSuRxh5dCi9nBth
+         cxEQ==
+X-Gm-Message-State: AOAM530soUHgty2xSoi8hJO/pIOwkdratxfantmU6iuvc2EorPPWe0Ur
+        oHE6cjCL5sLbMhOKA3iS6wfpqLfqaBylkCTW7BU=
+X-Google-Smtp-Source: ABdhPJwrLvJN4iFq87bXxxrX4+4K8e7wEfk2totPF6AIrVykX4E6RMB+YDXBq4nStyRioTba7CPxK2ZVTVGbLw7Xcks=
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:4cd1:da86:e91b:70b4])
- (user=samitolvanen job=sendgmr) by 2002:a25:880c:: with SMTP id
- c12mr15159486ybl.399.1617319972614; Thu, 01 Apr 2021 16:32:52 -0700 (PDT)
-Date:   Thu,  1 Apr 2021 16:32:14 -0700
+ (user=samitolvanen job=sendgmr) by 2002:a0c:f7d1:: with SMTP id
+ f17mr10229433qvo.38.1617319974835; Thu, 01 Apr 2021 16:32:54 -0700 (PDT)
+Date:   Thu,  1 Apr 2021 16:32:15 -0700
 In-Reply-To: <20210401233216.2540591-1-samitolvanen@google.com>
-Message-Id: <20210401233216.2540591-17-samitolvanen@google.com>
+Message-Id: <20210401233216.2540591-18-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20210401233216.2540591-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
-Subject: [PATCH v5 16/18] arm64: ftrace: use function_nocfi for ftrace_call
+Subject: [PATCH v5 17/18] KVM: arm64: Disable CFI for nVHE
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     Kees Cook <keescook@chromium.org>
 Cc:     Nathan Chancellor <nathan@kernel.org>,
@@ -74,30 +74,31 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With CONFIG_CFI_CLANG, the compiler replaces function pointers with
-jump table addresses, which breaks dynamic ftrace as the address of
-ftrace_call is replaced with the address of ftrace_call.cfi_jt. Use
-function_nocfi() to get the address of the actual function instead.
+Disable CFI for the nVHE code to avoid address space confusion.
 
-Suggested-by: Ben Dai <ben.dai@unisoc.com>
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
 ---
- arch/arm64/kernel/ftrace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/kvm/hyp/nvhe/Makefile | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
-index 86a5cf9bc19a..b5d3ddaf69d9 100644
---- a/arch/arm64/kernel/ftrace.c
-+++ b/arch/arm64/kernel/ftrace.c
-@@ -55,7 +55,7 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- 	unsigned long pc;
- 	u32 new;
+diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
+index a6707df4f6c0..fb24a0f022ad 100644
+--- a/arch/arm64/kvm/hyp/nvhe/Makefile
++++ b/arch/arm64/kvm/hyp/nvhe/Makefile
+@@ -75,9 +75,9 @@ quiet_cmd_hyprel = HYPREL  $@
+ quiet_cmd_hypcopy = HYPCOPY $@
+       cmd_hypcopy = $(OBJCOPY) --prefix-symbols=__kvm_nvhe_ $< $@
  
--	pc = (unsigned long)&ftrace_call;
-+	pc = (unsigned long)function_nocfi(ftrace_call);
- 	new = aarch64_insn_gen_branch_imm(pc, (unsigned long)func,
- 					  AARCH64_INSN_BRANCH_LINK);
+-# Remove ftrace and Shadow Call Stack CFLAGS.
+-# This is equivalent to the 'notrace' and '__noscs' annotations.
+-KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE) $(CC_FLAGS_SCS), $(KBUILD_CFLAGS))
++# Remove ftrace, Shadow Call Stack, and CFI CFLAGS.
++# This is equivalent to the 'notrace', '__noscs', and '__nocfi' annotations.
++KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE) $(CC_FLAGS_SCS) $(CC_FLAGS_CFI), $(KBUILD_CFLAGS))
  
+ # KVM nVHE code is run at a different exception code with a different map, so
+ # compiler instrumentation that inserts callbacks or checks into the code may
 -- 
 2.31.0.208.g409f899ff0-goog
 
