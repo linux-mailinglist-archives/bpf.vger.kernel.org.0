@@ -2,100 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F4E35187F
-	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 19:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276A1351928
+	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 19:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235569AbhDARpy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Apr 2021 13:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234646AbhDARiy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:38:54 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7CBC0613A7;
-        Thu,  1 Apr 2021 04:31:37 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id u5so2355546ejn.8;
-        Thu, 01 Apr 2021 04:31:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=e1k2jFYVkUvY3qWo/yAEsqj9pQAfQ8BRhGPE3QKDHv0=;
-        b=ZD433zJpfpq8cjtLjUhQxT9js3k/QQGKl5g41mZuchqReVJ+Lx1mxySZAsVFruartF
-         EJoddJcA7fSZURn3ZEOdpLEqoHjF+MfRrFGGbIYMOZUTAGx3laYJPzj1xCBbsAyf3C/H
-         n2jNpdpjR2fw/hEF+C8RlJ5oAcQrwxBrFCSxfqGb2OxoDwqAnuv4LauIyIRbQxUt7RSe
-         HcDAHaP/h1ThuRCY1jMESHKCZbWJ/moYLx0L3Id/ZKCc15ag1kcKcYclVWv7j0Jtngxo
-         i6WxQjRqAd4ymc8tUHArsHf9LpxpzuUFo2pVh7V/SP+YHTjRj3Ck/ojMFCWmf9TZcqek
-         39Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=e1k2jFYVkUvY3qWo/yAEsqj9pQAfQ8BRhGPE3QKDHv0=;
-        b=B77nw9l/2pStZqercd5nO0zsRNHlezdtQvBFbJEEYo1HJl5rNMpJuI9im/Jsdgn0T6
-         l1i4kVLtorm22WTRIpbb/PV94ddrn5tI+K20DPSw0K6BXzODLjpH083zQEURFnSxpVo9
-         UNjZlWg91NETdgI+GPP5dWaNhSGbhbaUEU2B2JEoijG6j3UhLyycC+XAf/f9ylo9+FPN
-         gSUZHrkhb4XypqAp4kCiHmwiN2ZZoFCaKequiyGA714QwebHQ9HSPrjWu9gutvAzHZDl
-         vvYnOY098vgeolnWWTivYJDuEhPupTYa3NmjX+SIBnN3xeNkVzdeHh5QPUHHFKphks9Q
-         b+zw==
-X-Gm-Message-State: AOAM532TcNjgmoboAmLYuynot+hnE8Flwe2OR6bBaVxG3X+zaVV9hT8c
-        m5uwRoRqM515ITsP4EOtRhg=
-X-Google-Smtp-Source: ABdhPJwbi48m1/vFhq9T6E4IJ05n1xEWnSphH1wrGflu34S3LVoiLfwRvf10Y32RxuY8g9HZ7MSs+Q==
-X-Received: by 2002:a17:907:7249:: with SMTP id ds9mr8775707ejc.9.1617276696365;
-        Thu, 01 Apr 2021 04:31:36 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id u13sm2746993ejn.59.2021.04.01.04.31.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 04:31:35 -0700 (PDT)
-Date:   Thu, 1 Apr 2021 14:31:33 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
+        id S234556AbhDARvv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Apr 2021 13:51:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48902 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236330AbhDARsA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:48:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D6A7611CB;
+        Thu,  1 Apr 2021 12:59:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617281962;
+        bh=QFBvSxpFBe+JRLuZOO99kIhfEMTprfAcsBarAbnDeB4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AaizDmKnP+8Q4qYSu0tQ8ujlblwti05LFGjCWGhiRTuK+AYogq5z1pOMOsZJrr+tG
+         RYUKsyFsylCUs0z+9eSvZAhsrXccM8ZDaYQxgyKocKxJJj7HjB0kg24bPJMcfy2Y59
+         xjMI1ppE05HQYRetrSrBNwXMgVSI8/rDhdIbGx9yRKYzygrvIcHmf9N2aGcYPhfQkZ
+         UKxTbvPA15PzL5VoRjkBcUomSlyO7RUTKF7QspBiFMTGJOt1MU1k/1ACQ1v7R0fJNV
+         5GSSlf6tKAYcHBD3YyA7eXaX5H9FE7obzEBaxRO9gLllY5e92vj4b0L/IXOJn4Ixhv
+         C0BUUmqG4mf1g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id DF52940647; Thu,  1 Apr 2021 09:59:19 -0300 (-03)
+Date:   Thu, 1 Apr 2021 09:59:19 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Alexander Duyck <alexander.duyck@gmail.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Alex Marginean <alexandru.marginean@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net-next 9/9] net: enetc: add support for XDP_REDIRECT
-Message-ID: <20210401113133.vzs3uxkp52k2ctla@skbuf>
-References: <20210331200857.3274425-1-olteanv@gmail.com>
- <20210331200857.3274425-10-olteanv@gmail.com>
- <87blaynt4l.fsf@toke.dk>
+        Bill Wendling <morbo@google.com>, bpf@vger.kernel.org,
+        David Blaikie <dblaikie@gmail.com>,
+        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH dwarves 0/2] dwarf_loader: improve cus__merging_cu()
+Message-ID: <YGXDp/AwQapX/wDj@kernel.org>
+References: <20210401025815.2254256-1-yhs@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87blaynt4l.fsf@toke.dk>
+In-Reply-To: <20210401025815.2254256-1-yhs@fb.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 01:26:02PM +0200, Toke Høiland-Jørgensen wrote:
-> > +int enetc_xdp_xmit(struct net_device *ndev, int num_frames,
-> > +		   struct xdp_frame **frames, u32 flags)
-> > +{
-> > +	struct enetc_tx_swbd xdp_redirect_arr[ENETC_MAX_SKB_FRAGS] = {0};
-> > +	struct enetc_ndev_priv *priv = netdev_priv(ndev);
-> > +	struct enetc_bdr *tx_ring;
-> > +	int xdp_tx_bd_cnt, i, k;
-> > +	int xdp_tx_frm_cnt = 0;
-> > +
-> > +	tx_ring = priv->tx_ring[smp_processor_id()];
-> 
-> What mechanism guarantees that this won't overflow the array? :)
+Em Wed, Mar 31, 2021 at 07:58:15PM -0700, Yonghong Song escreveu:
+> Function cus__merging_cu() is introduced in Commit 39227909db3c
+> ("dwarf_loader: Permit merging all DWARF CU's for clang LTO built
+> binary") to test whether cross-cu references may happen.
+> The original implementation anticipates compilation flags
+> in dwarf, but later some concerns about binary size surfaced
+> and the decision is to scan .debug_abbrev as a faster way
+> to check cross-cu references. Also putting a note in vmlinux
+> to indicate whether lto is enabled for built or not can
+> provide a much faster way.
 
-Which array, the array of TX rings?
-You mean that it's possible to receive a TC_SETUP_QDISC_MQPRIO or
-TC_SETUP_QDISC_TAPRIO with num_tc == 1, and we have 2 CPUs?
-Well, yeah, I don't know what's the proper way to deal with that. Ideas?
+Great work! Reviewing/testing right now.
+
+- Arnaldo
+ 
+> This patch set implemented this two approaches, first
+> checking the note (in Patch #2), if not found, then
+> check .debug_abbrev (in Patch #1).
+> 
+> Yonghong Song (2):
+>   dwarf_loader: check .debug_abbrev for cross-cu references
+>   dwarf_loader: check .notes section for lto build info
+> 
+>  dwarf_loader.c | 76 ++++++++++++++++++++++++++++++++++++--------------
+>  1 file changed, 55 insertions(+), 21 deletions(-)
+> 
+> -- 
+> 2.30.2
+> 
+
+-- 
+
+- Arnaldo
