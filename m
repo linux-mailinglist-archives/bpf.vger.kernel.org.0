@@ -2,196 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C4A351444
-	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 13:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67338351907
+	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 19:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbhDALLR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Apr 2021 07:11:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52249 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234211AbhDALLH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 1 Apr 2021 07:11:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617275433;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EeOJX2ut1yR1JpGJMK7VkaOeY20GXea4Wy+TEDh9VU8=;
-        b=AT0fDHpAuxOErp1fT6TaJ83eW+uf8WcfMZuPUKUcmUUh/YdXkGn9xRkJUICOfNtmVIHW8C
-        SnAEqk8TidyYLl92WYD6dPna6EZkI1BQ+Xskx26/iMVMJEypAJVyAebPBm6Ow95xljRRHX
-        6OHLvF0F9k4cspVCMMG9NmEcb1p08rc=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-271-P8a7qCBHPH-ZMTfZp8weUQ-1; Thu, 01 Apr 2021 07:10:32 -0400
-X-MC-Unique: P8a7qCBHPH-ZMTfZp8weUQ-1
-Received: by mail-ed1-f72.google.com with SMTP id h5so2652315edf.17
-        for <bpf@vger.kernel.org>; Thu, 01 Apr 2021 04:10:32 -0700 (PDT)
+        id S234520AbhDARtC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Apr 2021 13:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236068AbhDARq7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:46:59 -0400
+Received: from mail-il1-x148.google.com (mail-il1-x148.google.com [IPv6:2607:f8b0:4864:20::148])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4404DC08EADD
+        for <bpf@vger.kernel.org>; Thu,  1 Apr 2021 06:36:57 -0700 (PDT)
+Received: by mail-il1-x148.google.com with SMTP id s10so3840796ilo.7
+        for <bpf@vger.kernel.org>; Thu, 01 Apr 2021 06:36:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=EeOJX2ut1yR1JpGJMK7VkaOeY20GXea4Wy+TEDh9VU8=;
-        b=dSpzaNo2lmRSIvLBZdicVizm9PLqmtDt2B/aEEHyooXv5xRM0dpvu9B+IQ0aA2ZiYX
-         SRTPJXdLq3uz3vEDqNOR2XQ5c8YYlYGKa1QvDDQ2PhUi864CZUR/h7ixP24HNLyLDI7H
-         B4Ig8gTKoEhEQ6SIjmceEjFFSHgzjexwwR7bYWxYrLKmC9RnGrTFQ7HHPy4GXBP9IT1Z
-         C75Q/a5qzkHMgkFXWJhifP3feBOdpx4sfM5tsAzSq+Nl+nUVxmeHpWDs5/XGfHEUQRZC
-         fC5RwnuXK17sgJYSDanVa4gcFSm8rJOF2Mfb6zjgp9gfhhnRCU+v2WK6dmGO9h9hc3AU
-         hxWQ==
-X-Gm-Message-State: AOAM533pyjtcD6n72P1iUNpIx1yhDFUokmuyQpMfhzduRbtROM73P7/X
-        GgiQnk8VjGquEtlqYTg7HsIzD2CS9webjKZb9uQddeWlF4LuWDJZEap139bXTcp7ezezSXCCYnO
-        dj/AP3+poD+f9
-X-Received: by 2002:a17:906:ecaa:: with SMTP id qh10mr8507489ejb.425.1617275431190;
-        Thu, 01 Apr 2021 04:10:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyH/c17591YFQbsgmwGp7V0SjnoOBrfMHcajy8KjCCnk1H7QqgOkJGEEFnEo3CF9P6ujhIzGQ==
-X-Received: by 2002:a17:906:ecaa:: with SMTP id qh10mr8507458ejb.425.1617275430886;
-        Thu, 01 Apr 2021 04:10:30 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id gq9sm2689327ejb.62.2021.04.01.04.10.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Apr 2021 04:10:30 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 888D1180290; Thu,  1 Apr 2021 13:10:29 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        =?utf-8?B?QmrDtnJuIFQ=?= =?utf-8?B?w7ZwZWw=?= 
-        <bjorn.topel@gmail.com>
-Subject: Re: [PATCHv3 bpf-next 2/4] xdp: extend xdp_redirect_map with
- broadcast support
-In-Reply-To: <20210401043004.GE2900@Leo-laptop-t470s>
-References: <20210325092733.3058653-1-liuhangbin@gmail.com>
- <20210325092733.3058653-3-liuhangbin@gmail.com> <87lfa3phj6.fsf@toke.dk>
- <20210401043004.GE2900@Leo-laptop-t470s>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 01 Apr 2021 13:10:29 +0200
-Message-ID: <87k0pmntui.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=V1YPBBmXV6Zf6ofFKc69jLxBo6I+75nDp0+ssUeEtEM=;
+        b=iV356XEIASCsSjZPvL+DyQ8GlVMpGjNq/5V5Wm/bZCZP1IaI6uvDRhmMLODSTypgND
+         RLw4JX2wg3Uc4z8vqESvGq9jQ3ahOCOUyK+QB+f66sZjwQDg54lBxffpeaMGCBCJZ1N+
+         M9KHl+cT71w636ELmaFGIJjIXuqMXn6g0C1+zntU0ZTBiJhZ6mLu/9P/nOL3drgmibIA
+         M04xaQ2B2Gg+034GmuMiCd9eU0GdvF7JCw1iD1c71vfedLWwE3t3Uopmuxl59XUdCotf
+         gSgogWqeextzFKo9rw6/x8sooe/T+yoQdQyrUP3WHvZQT0sLSsR7enH86eBjhOcgeOCS
+         9PYw==
+X-Gm-Message-State: AOAM532XQ1OSsuORdsVADaDOv1IbFpH1IozIuDN5mZLgcsmWL/38nXwS
+        y5VkmuAAd4Uxk4+/pzJ//pgD7RXcM4L9sl/dXDjQnFMQBzNN
+X-Google-Smtp-Source: ABdhPJx/5tqNGXQlJ27uFdO6oc1q+y5cAbEhG+gQ0NtMiUPsSxdE1cBf9c1xnuC34oj9gnsTFZUhqBMyOMroa7wQiaswaike9eKr
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a05:6e02:20cd:: with SMTP id 13mr6179334ilq.126.1617276559816;
+ Thu, 01 Apr 2021 04:29:19 -0700 (PDT)
+Date:   Thu, 01 Apr 2021 04:29:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d9fefa05bee78afd@google.com>
+Subject: [syzbot] WARNING in bpf_test_run
+From:   syzbot <syzbot+774c590240616eaa3423@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        bp@alien8.de, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, hawk@kernel.org, hpa@zytor.com,
+        jmattson@google.com, john.fastabend@gmail.com, joro@8bytes.org,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, masahiroy@kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, pbonzini@redhat.com, peterz@infradead.org,
+        rafael.j.wysocki@intel.com, rostedt@goodmis.org, seanjc@google.com,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        will@kernel.org, x86@kernel.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hangbin Liu <liuhangbin@gmail.com> writes:
+Hello,
 
-> On Wed, Mar 31, 2021 at 03:41:17PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> > @@ -1491,13 +1492,20 @@ static __always_inline int __bpf_xdp_redirect_=
-map(struct bpf_map *map, u32 ifind
->> >  		 */
->> >  		ri->map_id =3D INT_MAX; /* Valid map id idr range: [1,INT_MAX[ */
->> >  		ri->map_type =3D BPF_MAP_TYPE_UNSPEC;
->> > -		return flags;
->> > +		return flags & BPF_F_ACTION_MASK;
->> >  	}
->> >=20=20
->> >  	ri->tgt_index =3D ifindex;
->> >  	ri->map_id =3D map->id;
->> >  	ri->map_type =3D map->map_type;
->> >=20=20
->> > +	if ((map->map_type =3D=3D BPF_MAP_TYPE_DEVMAP ||
->> > +	     map->map_type =3D=3D BPF_MAP_TYPE_DEVMAP_HASH) &&
->> > +	    (flags & BPF_F_BROADCAST)) {
->> > +		ri->flags =3D flags;
->>=20
->> This, combined with this:
->>=20
->> [...]
->>=20
->> > +	if (ri->flags & BPF_F_BROADCAST) {
->> > +		map =3D READ_ONCE(ri->map);
->> > +		WRITE_ONCE(ri->map, NULL);
->> > +	}
->> > +
->> >  	switch (map_type) {
->> >  	case BPF_MAP_TYPE_DEVMAP:
->> >  		fallthrough;
->> >  	case BPF_MAP_TYPE_DEVMAP_HASH:
->> > -		err =3D dev_map_enqueue(fwd, xdp, dev);
->> > +		if (ri->flags & BPF_F_BROADCAST)
->> > +			err =3D dev_map_enqueue_multi(xdp, dev, map,
->> > +						    ri->flags & BPF_F_EXCLUDE_INGRESS);
->> > +		else
->> > +			err =3D dev_map_enqueue(fwd, xdp, dev);
->>=20
->> Means that (since the flags value is never cleared again) once someone
->> has done a broadcast redirect, that's all they'll ever get until the
->> next reboot ;)
->
-> How about just get the ri->flags first and clean it directly. e.g.
->
-> flags =3D ri->flags;
-> ri->flags =3D 0;
+syzbot found the following issue on:
 
-That would fix the "until next reboot" issue, but would still render
-bpf_clear_redirect_map() useless. So you still need to check ri->map and
-if you do that you don't actually need to clear the flag field as long
-as it is set correctly whenever the map pointer is.
+HEAD commit:    36e79851 libbpf: Preserve empty DATASEC BTFs during static..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1569bb06d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7eff0f22b8563a5f
+dashboard link: https://syzkaller.appspot.com/bug?extid=774c590240616eaa3423
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17556b7cd00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1772be26d00000
 
-> With this we don't need to add an extra field ri->exclude_ingress as you
-> mentioned later.
+The issue was bisected to:
 
-The ri->exclude_ingress would be *instead* of the flags field. You could
-of course also just keep the flags field, but turning it into a bool
-makes it obvious that only one of the bits is actually used (and thus
-easier to see that it's correct to not clear it).
+commit 997acaf6b4b59c6a9c259740312a69ea549cc684
+Author: Mark Rutland <mark.rutland@arm.com>
+Date:   Mon Jan 11 15:37:07 2021 +0000
 
-> People may also need the flags field in future.
+    lockdep: report broken irq restoration
 
-In which case they can add it back at that time :)
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10197016d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12197016d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14197016d00000
 
->> Also, the bpf_clear_redirect_map() call has no effect since the call to
->> dev_map_enqueue_multi() only checks the flags and not the value of the
->> map pointer before deciding which enqueue function to call.
->>=20
->> To fix both of these, how about changing the logic so that:
->>=20
->> - __bpf_xdp_redirect_map() sets the map pointer if the broadcast flag is
->>   set (and clears it if the flag isn't set!)
->
-> OK
->>=20
->> - xdp_do_redirect() does the READ_ONCE/WRITE_ONCE on ri->map
->>   unconditionally and then dispatches to dev_map_enqueue_multi() if the
->>   read resulted in a non-NULL pointer
->>=20
->> Also, it should be invalid to set the broadcast flag with a map type
->> other than a devmap; __bpf_xdp_redirect_map() should check that.
->
-> The current code only do if (unlikely(flags > XDP_TX)) and didn't check t=
-he
-> map type. I also only set the map when there has devmap + broadcast flag.
-> Do you mean we need a more strict check? like
->
-> if (unlikely((flags & ~(BPF_F_ACTION_MASK | BPF_F_REDIR_MASK)) ||
-> 	      (map->map_type !=3D BPF_MAP_TYPE_DEVMAP &&
-> 	       map->map_type !=3D BPF_MAP_TYPE_DEVMAP_HASH &&
-> 	       flags & BPF_F_REDIR_MASK)))
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+774c590240616eaa3423@syzkaller.appspotmail.com
+Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
 
-Yeah, that's what I meant, but when you type it out that does seem like
-a bit too many checks.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 8725 at include/linux/bpf-cgroup.h:193 bpf_cgroup_storage_set include/linux/bpf-cgroup.h:193 [inline]
+WARNING: CPU: 0 PID: 8725 at include/linux/bpf-cgroup.h:193 bpf_test_run+0x65e/0xaa0 net/bpf/test_run.c:109
+Modules linked in:
+CPU: 0 PID: 8725 Comm: syz-executor927 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:bpf_cgroup_storage_set include/linux/bpf-cgroup.h:193 [inline]
+RIP: 0010:bpf_test_run+0x65e/0xaa0 net/bpf/test_run.c:109
+Code: e9 29 fe ff ff e8 b2 9d 3a fa 41 83 c6 01 bf 08 00 00 00 44 89 f6 e8 51 a5 3a fa 41 83 fe 08 0f 85 74 fc ff ff e8 92 9d 3a fa <0f> 0b bd f0 ff ff ff e9 5c fd ff ff e8 81 9d 3a fa 83 c5 01 bf 08
+RSP: 0018:ffffc900017bfaf0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc90000f29000 RCX: 0000000000000000
+RDX: ffff88801bc68000 RSI: ffffffff8739543e RDI: 0000000000000003
+RBP: 0000000000000007 R08: 0000000000000008 R09: 0000000000000001
+R10: ffffffff8739542f R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff888021dd54c0 R14: 0000000000000008 R15: 0000000000000000
+FS:  00007f00157d7700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0015795718 CR3: 00000000157ae000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ bpf_prog_test_run_skb+0xabc/0x1c70 net/bpf/test_run.c:628
+ bpf_prog_test_run kernel/bpf/syscall.c:3132 [inline]
+ __do_sys_bpf+0x218b/0x4f40 kernel/bpf/syscall.c:4411
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x446199
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f00157d72f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00000000004cb440 RCX: 0000000000446199
+RDX: 0000000000000028 RSI: 0000000020000080 RDI: 000000000000000a
+RBP: 000000000049b074 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: f9abde7200f522cd
+R13: 3952ddf3af240c07 R14: 1631e0d82d3fa99d R15: 00000000004cb448
 
-However, I think we can do something different: Since Bj=C3=B6rn has
-helpfully split out the helper functions for the different map types, we
-can add another argument to __bpf_xdp_redirect_map() which is the mask
-of valid flag values. With this, dev_{hash_,}map_redirect() can include
-BPF_F_REDIR_MASK in the valid flags, and {xsk,cpu}_map_redirect() can
-leave them out. That makes the code do the right thing without actually
-adding any more checks in the fast path :)
 
-(You'd still need to AND the return value with BPF_F_ACTION_MASK when
-returning, of course).
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
--Toke
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
