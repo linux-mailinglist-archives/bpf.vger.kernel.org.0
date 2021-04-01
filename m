@@ -2,145 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE723520BE
-	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 22:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A89A3352128
+	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 22:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233781AbhDAUus (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Apr 2021 16:50:48 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:1756 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233588AbhDAUus (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 1 Apr 2021 16:50:48 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 131KjEcq029356;
-        Thu, 1 Apr 2021 13:50:36 -0700
+        id S233930AbhDAUyr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Apr 2021 16:54:47 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:39306 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234220AbhDAUyd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 1 Apr 2021 16:54:33 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 131KnC67018739;
+        Thu, 1 Apr 2021 13:54:27 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=9zkAP9KyPvOCZG2JAqIz5XXFAZPwwW7CSpcieDHQ7bc=;
- b=PBelZpDI3ljjAtP6CzwJKF2eyGWbFuwzgFOHAm7O9d2yka0kYYUoG2hF0ksciohO855V
- ib7ZYaokBPqNbk+PcQUdhhy0e730aO1sGkI5JSQvfmllzgiQl6R6x+llqP0y+2ODrpRG
- hYi/8XJNaZR2B2kqiM6mLqs1u/uTintWnE4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 37n29ne9q8-1
+ bh=e7RanTSr/QO8HHw+N0T+QUxbV3bYTsoSGnn6YGleDoA=;
+ b=K8lZSMqw7BQ/tyssZxs1xSGzSGs4Ivv60zBntMIl3KlR5cVj7A1ubJIysqxuUY5TTJK5
+ SQ0GI0hoLJY6zlhF2hzVzcFyxSF/5Li6SFGQdxccYcSVSL10n0BLD5JSrqM9jOgR/KRw
+ LYKKd+0tOlcas+KobpLf/9DGOEqrdkfW5Ss= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 37n28mpja0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 01 Apr 2021 13:50:36 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+        Thu, 01 Apr 2021 13:54:27 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 1 Apr 2021 13:50:35 -0700
+ 15.1.2176.2; Thu, 1 Apr 2021 13:54:12 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=miJdtFvAZyOsLl8lFLnfnJM9eg5sHjbyeLpc8R7QSf1qzr8LuQOzZS+TW+UohnsN3wN+YQJhJCPNa1cKXYo1LKCaFobPwydse9xzaGP/L2RGmYDt8nci8uc+ormSGLKSPsc+RexMCksruIOqtxVvrvXxFHAJftKugcN6M5TINomlWcZE7WJhK94frXtsYSrIgbBbjaXN4yExFMEs9kRE+kVYJMukrsOEfk6U/g9RPYhj4Mlbr4Set1AxtMFqL/VBVWKdV6nqjuzBbmm9emkGk06FvdCf2TwFlb3kJTTDYH/YTfromZPDDJMsyn4PgbR65RX2JHCVL9xvBUnVB6qV1w==
+ b=LKGiEkOQvwyjX4bsAQoclMRp/FaadI1YVo9PMAwNo/28cjOeho1KCLAiti7zYqdaQ2C9M8HrifgTNm9bTHT8P5OP1AaD6d1Q4WRKBN2op5Uz5NGiYmVMMp46706MXXsuFJpDOFgrFympQwjxHZ9WpLu7/2Pp+3hgTJiXumsdYAfiux1GAZ6dZU6e+ck9bI02gnNpHPiYSn1N/J8NfN3xxbben78eaeZPPoOmDZfzwgMCTB0KFaSqcnAQkMoiRWrLdfAsOxhQ0YFnLciYqddLED3yRUSwhld0REhcqPAa34hec2jp9r6dz75nseJJha+gxrJyq1+ypT8xpw/mNAteRw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9zkAP9KyPvOCZG2JAqIz5XXFAZPwwW7CSpcieDHQ7bc=;
- b=FRnYCDaE/GnP9/HJGPLiuwcNbx3M0mdFEcJDMyyWNioS6NaGKz46inW/nYhqtqAZM8G4n4kIWyjztpPBqrR0PdL05uEu+Mn4nNFk/kdekkojo6Tv0uuai7W8GIcCVSAchMrgJEX/U1xpfFpEoPH9sEk73GCS17uKYkJqmDbjavsbtwFy+XNL6By2CwoeoN1FU1JITHAyoPI9W/PTKD/yo8dM/rEtgVyrgr7hI54tm0r8tinBdw/Z1hUkZh5mt/ZOX4OvLiP5jS0jrnRao8vl+zNeM00NUGotsUHB7GXh8cl5QzYB353EsM+TcHHQEtt3NHsRpGkPji2vHuGIfBM0AA==
+ bh=e7RanTSr/QO8HHw+N0T+QUxbV3bYTsoSGnn6YGleDoA=;
+ b=An614bJN2DYOQl9Gj52UgfsjYu1Fu+IB2bobqZBJHW7bfaDLt8fSOMILXSDEeXRinqJZypTixVfv7VDq7uhaIkM1WnE0VOEHwzKx6dsBdTn+r/fhcSPA9hMLaTXN7lCZq1vl6OomQWKDzkzwRIswHuj1171IOdkpv8UQ7by58EJPDb9qVL7ypoBoozoPMH+gfy1gH/kUBLkGE7tRQKDWht1n3erFzr17c4hN9xLkfV7khCW/Ge0mnLSg9Ksxra+7iN1xnKYugbiuV+b5ayW/juCbIpmP/EFKB5S4nXBwSjR3uYBoIBVIPNqcQ0xEt73t2KihY1r9MIMkhG1XFths1Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Authentication-Results: markovi.net; dkim=none (message not signed)
- header.d=none;markovi.net; dmarc=none action=none header.from=fb.com;
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4660.namprd15.prod.outlook.com (2603:10b6:806:19f::13) with
+ by SN7PR15MB4224.namprd15.prod.outlook.com (2603:10b6:806:f5::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Thu, 1 Apr
- 2021 20:50:34 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26; Thu, 1 Apr
+ 2021 20:54:10 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3977.033; Thu, 1 Apr 2021
- 20:50:34 +0000
-Subject: Re: [PATCH kbuild v3 2/2] kbuild: add an elfnote with type
- BUILD_COMPILER_LTO_INFO
-To:     Nick Desaulniers <ndesaulniers@google.com>
-CC:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        bpf <bpf@vger.kernel.org>, <kernel-team@fb.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-References: <20210401012406.1800957-1-yhs@fb.com>
- <20210401012417.1802681-1-yhs@fb.com>
- <CAKwvOdnDnO4ye5GToe04L8B4Tk+Ls6tAAoMVoi8LoC4gRLyLYQ@mail.gmail.com>
+ 20:54:10 +0000
+Subject: Re: [PATCH dwarves 1/2] dwarf_loader: check .debug_abbrev for
+ cross-cu references
+To:     Arnaldo <arnaldo.melo@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+CC:     <dwarves@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Bill Wendling <morbo@google.com>, bpf <bpf@vger.kernel.org>,
+        David Blaikie <dblaikie@gmail.com>,
+        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        <kernel-team@fb.com>, David Blaikie <blaikie@google.com>
+References: <20210401025815.2254256-1-yhs@fb.com>
+ <20210401025820.2254482-1-yhs@fb.com>
+ <CAKwvOd=mzDREDAXCxdFzSWnxC1hNc7udMXc7Lrf50qmJk9zE7Q@mail.gmail.com>
+ <E4B08495-BC24-40F7-9BEA-010B534E5454@gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <f6169e57-48aa-b36f-e811-668beffa6608@fb.com>
-Date:   Thu, 1 Apr 2021 13:50:28 -0700
+Message-ID: <e2750eab-4ced-88d2-a959-178c602cb9f4@fb.com>
+Date:   Thu, 1 Apr 2021 13:54:06 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.9.0
-In-Reply-To: <CAKwvOdnDnO4ye5GToe04L8B4Tk+Ls6tAAoMVoi8LoC4gRLyLYQ@mail.gmail.com>
+In-Reply-To: <E4B08495-BC24-40F7-9BEA-010B534E5454@gmail.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 X-Originating-IP: [2620:10d:c090:400::5:fb66]
-X-ClientProxiedBy: CO2PR05CA0095.namprd05.prod.outlook.com
- (2603:10b6:104:1::21) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: MWHPR04CA0053.namprd04.prod.outlook.com
+ (2603:10b6:300:6c::15) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::17eb] (2620:10d:c090:400::5:fb66) by CO2PR05CA0095.namprd05.prod.outlook.com (2603:10b6:104:1::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.9 via Frontend Transport; Thu, 1 Apr 2021 20:50:32 +0000
+Received: from [IPv6:2620:10d:c085:21cf::17eb] (2620:10d:c090:400::5:fb66) by MWHPR04CA0053.namprd04.prod.outlook.com (2603:10b6:300:6c::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27 via Frontend Transport; Thu, 1 Apr 2021 20:54:09 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 64ed7cd1-15d1-4e48-2442-08d8f54fcbd3
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4660:
+X-MS-Office365-Filtering-Correlation-Id: a3ba3775-3994-413e-fe34-08d8f5504c7f
+X-MS-TrafficTypeDiagnostic: SN7PR15MB4224:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA1PR15MB466038082FC635F1E548E335D37B9@SA1PR15MB4660.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <SN7PR15MB42243238B0AF56731757F68CD37B9@SN7PR15MB4224.namprd15.prod.outlook.com>
 X-FB-Source: Internal
 X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: b9TvwJVBnXbQt1LpIjDTkA7aympvLovTh532E9ez9ZqwW6m1RhSVHkxZ2GWbkLJr4/B69QOj2jnbA3sFYM87mgtAFz9um6CS45yIbUBlPyTiySbqKPsVIl8vFskgkuesfcv93jPtWPy3aSWN0bvDy+vjcILTiaB6jAjkTQhhs8wGtte7rvRMxb69xeqlluhHXNpwBsr6OluqdWfpBAcriRUQVtP0nWmya7nq64lFsXMb5W1araayoakH407JZnsQy9EnbjW8PMMnVecE/CAIm01bxMQJJZc9DvaJxGF8QjX5yHCquWyUPz5qp+V3AjfGmDcyc84MeBFT2YK9O3HOg1OL/c2jbc0iGUJT6YMcvRcLACdsJxVLYktLNnIcPHjpeAgJCSOljHgKr0sGoFyH/KWtuvyH97hJZGgthwtXFKlPcmvqav1HxH9nwq+v5R0GLcm4zREqDU5bwNLq6on+8ptDJKdpCECArLQUs4wKYEYvgvM5t6TsDW9pyQ4ygjDoLH9fVj9EVQ9vjBkHHQOwKWF4AccsHjEPoPrCqrENEUjA/ZQJt7U0lnW3pHnujRPuba8PMc7Iwekf+F9b6ydXDnSjlGZRJGdzAiB0UB4AdwR+FqsYmmPUiAqr80SboufGqsjDFRnrJAy/PkFuZJ5l6+0rtE7hoXsK0n7ViEFoqrJNwYuBhw8OrGEm7QjBiOtuK0wbkOROD7AI+WRUaWT285CQVISspdWw9l0BlD8qzcTzBdTG/6xct6axJQW1qcr+iTx+UnDe6MJ2a+s5hgaXkyU4mMn6rvOE1N7nKouaJz0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(376002)(396003)(346002)(39860400002)(16526019)(36756003)(2616005)(186003)(6486002)(66946007)(31686004)(478600001)(316002)(66476007)(66556008)(966005)(54906003)(4326008)(8936002)(53546011)(86362001)(31696002)(83380400001)(52116002)(8676002)(5660300002)(38100700001)(6666004)(6916009)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bkdtSTNBem9Sa1VYM3B6NXp1R2JVcGhaNmhxcStXaFBUNTZSZC8ySWJ0Rit5?=
- =?utf-8?B?WGs4UmxHYU5lZVRLdDdCckc0djZaZ1BBMzQySWY4aHRFUmdSdzRndFcwWjB4?=
- =?utf-8?B?YUdtV1pEejZxOThDRHR4L05zZ01iNEVDSDZOWStxWitCNGJPZDRTVlZQQ1hB?=
- =?utf-8?B?alYxdmU1MWN4NHRlcUZBNjJrVm5SVUFKOXNOVVVBTnVMY3p1TDh6UjdDeTlG?=
- =?utf-8?B?Zkt3bm9obC9VNVZ3Qnk0bm0veWdkdE50Qk4yZmZrZHI4eW5RdTBNZFBtZHI3?=
- =?utf-8?B?YmN4d1pFOW4yY3VrK1owR0ovdWZ0OGc5eWFGaFBWcDh0MVQ5L0JZRFNhL0Rh?=
- =?utf-8?B?VU9TRDFBbzNZV21YcnFVWXNCaDdEUGZ0dVoxVWtOM01WTC9hN0t2aFlEVmh0?=
- =?utf-8?B?UnJLODBIbUs4WjR0RHRZNlB1OUhhbEZnRnVXSk5MRDhGdEpJdU5qblNZNzJz?=
- =?utf-8?B?YWtzYSsrT29BUlArNDZDWWp5V25QWDlHdWdtWlN0NXI2ekd3ckxyYkpvNVla?=
- =?utf-8?B?ZEIyN25MM0RKMEJZc05BV3A4dnVLL2t1ZFVoUFBOV0pFMktMbi9HUC8yTlow?=
- =?utf-8?B?a2ZEK1Z5QWJzQWcwdFpNWFlzRlVnMGhvYnVvb2FJS1NuekFDM0k4K1E4UUlt?=
- =?utf-8?B?QVhHUTFOdWpjNmRiY1R6eEpyZ3QzMzR2WEhWZGt5ZEUxUzhOK3ZOWkN6QmJq?=
- =?utf-8?B?c2Jxc3lQbFJLRVMyektUa0lEUGZjK1hueG00eFZMOStleHc2OXRFR2RwMDU5?=
- =?utf-8?B?RXM3dnlCcDR6T1RTaTh1dTlsZzN2MStYT1o1YnJVSTA3MjkrQXYrMlFQQnYx?=
- =?utf-8?B?bUtnS2FNNTNQaURZc2lNQ0crUG94NGpDSldCaWRJTEFCcjNuam0xYWorZG40?=
- =?utf-8?B?TkI0Sjd6Vm0wWHpYQVJDSWRxeTdEU2lmWll5ZFhQdkN2bERFSElyRkhzK244?=
- =?utf-8?B?R2Jua2JaWVluRHUwaTJUMk1vWExaQ0tObEMzbTJPNVNGZjcrWGl3WVlEZ05I?=
- =?utf-8?B?aG9lVXRKRW9DYmpFMG1RNUhMN0NJM0xtUk1xRDBBSTdMMDkyakRmcE5XWHE5?=
- =?utf-8?B?cU9NY3p0VkI1T2JTYjEyKzFPcGJvc01sMFVWM3pkb0wxZ1BkVk55djY3VEZ5?=
- =?utf-8?B?MHZ1L1h6OU5Jc2g3Zmt3THBoNjkwL053ZnRtMFJFbjR5YnEzaWlBLzJWK3VW?=
- =?utf-8?B?OTRtRUhFRmJHSHFoR0VNQTMzSGJncEp2UUZ6Z3VnUEsxVElSS3Y2cnJ5Tnlk?=
- =?utf-8?B?RWYzK2lSblQyT0FMTC9XUE9FemtneTgya2gyZjRjRFk3N3V5Yjh1NFRQZzQ3?=
- =?utf-8?B?cFN6RVg2T2ZEVEdiK1FLZ2FnbCt6TEJhWmZVcHJTQ0xkOWFBVW9GQXQ0NStw?=
- =?utf-8?B?R29tajA4R3hpQ0RpNG5sYkhkV1M1YWc0YmdLNE5aRFlBL25Ybzk1aldZWXpF?=
- =?utf-8?B?ZmNiZS9CV2lIRTdYeHhBSkpMa2pFRjFsV0RJSVh5N05kM21kK2NTYjd4Z24r?=
- =?utf-8?B?WlY3N3hTVDVJU29FL1lYMkNZdXRCRFlRSVhJZ05ybmlobFM1SDlBcnJ5TW1N?=
- =?utf-8?B?a0NyYUpJQ2F4MVJ0bUYvOExwQk9JcHBHdHJQTTFXbmZ1THBPT1VRRkh0ekZu?=
- =?utf-8?B?OGZhV1VlbTBKejIya0oxeXVrZGR2Z2JWaUVyMG9nSGc2WUN0eWJxaEhSdk5Z?=
- =?utf-8?B?ZWJ1L2tHbmlpYVd3bGhmcXhLQW9Pd2pKTitlZll4RktjWjBHbmpHR1g1RDRl?=
- =?utf-8?B?aTBCd3JWbzBzZzBZZHA1YnFuWjhkajFMcEs1dWVWMlZQTEltN09tNDJvVGZy?=
- =?utf-8?B?bEZvME52ZEFybGxQVVVxZz09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64ed7cd1-15d1-4e48-2442-08d8f54fcbd3
+X-Microsoft-Antispam-Message-Info: wyXzasor/L7KdKHMmrnf9iG8oZyIillc/2bVKeybGQzK+jvglMSP2bF/TyLKLw/LZzdIfee22rPGFjOXgpuVBoPqZyJ1eh6hoSpXhuptq0fwVIFdYZRu3Sntpy8kfxIYdhsbXfqzgNpmIRhGlC7SVDonkhDUHsiLyvUJZ83L0tdvhGX6bJY29EEJW6gDA8xIllZvXG+MMBD6nh2QP1TnnkKnY11BQOiw7er4AnIDwOf28RlBRebOxW0NOFM9QCYT7Jtf1HUNpNvmQK3pxuIAlC+yn9hJLimLibyIb7KuK+1wFt7DSItyk0Q1L4eFkqYVys+ObT7qkDy/02doozUZAQi2ioqEk5WH1/FImVImuyr+7057pm/n33Mo6BuVmGBusPZKN7MLpbB2suDr/L2Epvn+G3VdgeYOS3EvctIN37qJ1dJJ516CCpybqFVoBSVqc7znhUnBhHPqSJelK/JX1f/Tu1T4OXxNaCebA3tWE5UL6qy5dVjc44lAvh7V7I1qD6R5aHn+kzQGiZX1VPT47WiQG6xfHcWDERM/ec+DQ86CghsGUVMm9ZjL9wqb2BS7Qs7R3dOCxVnNLS/ZZKHEopQTtHWB2V6u5M9yzxsUbRsHaVjOuT9dpnxUXs0k+Oo6rZvTuedDoo6KaEawGcqG5sm4SEd72C3fbmFdTrdJE7CgH9ZUFf5Vj1c53qGvPllU6/9po/mPDL3kR4NneIjRsR98kUb1b5mw/l+CklG4ZyaN5OGhDimMkLZEQe2Ax1mNRb5ST4jwe43OyeBYcUnc0b8qCWwsulpDZ1Z2R23fsjdnXMNnpN7Tg5lBo3KGTIxglIas2qcwmBk//D5ulPe/aw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(366004)(396003)(39860400002)(136003)(316002)(2906002)(110136005)(83380400001)(5660300002)(38100700001)(66556008)(2616005)(966005)(86362001)(16526019)(66946007)(52116002)(36756003)(7416002)(31686004)(6666004)(66476007)(186003)(4326008)(8936002)(6486002)(53546011)(54906003)(31696002)(478600001)(8676002)(142923001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?OEg5bGZsTzFpRW1hb3lhZ1Fmekk0c0hGbHYvY0hPZE9uWS9SeXNrQzZsRDRY?=
+ =?utf-8?B?T05veDNJb0xUVnNWNy9OdlFLdTdmNkdjM2dpMnVqZDRWNWdMZUNFNllzTEJk?=
+ =?utf-8?B?aUs4eDBvSllhM0JCYXFtbGZwWC9lRjJacFYyM0VIM3V2YkdOZDZMYlMxSUlw?=
+ =?utf-8?B?VUJGYzlPNVlKeTZNQUxNM3huckhBQ3BzT3g5RXF2MGp4UkwyYVBvQitLdzZm?=
+ =?utf-8?B?NElyVENPQXdselpUWGJrTG96R3dza1krc2c5YjFCcm5pdit6aE1PQ1BXY2Z2?=
+ =?utf-8?B?Y3pXMUhkd01iYXVpajNmc2pWMDZPMjFLbUVKU2xvRSt0TGd0TVhpS29EdVI5?=
+ =?utf-8?B?djhOK3NUeTJTM0hWSU8zYjFodDNMZnhpdWxIdmlWVjZHL3RZcW1DbEJyeFlJ?=
+ =?utf-8?B?UCtjKzVJMmtJbG9Oei9vUU9qZXM3cHpuazZabVd5dzFNb1ludUphVzRXS09Y?=
+ =?utf-8?B?UzJzcUcxcDF0SDg3QWpGU3Q2bUVnVzlRMkxZWUlVdFB5eGxadWdtVjlRTUJt?=
+ =?utf-8?B?ZWNYMzdML3l6R0dMbk13YlVqTGJPSEF2ZmRER2E3aC91b3lISTc0dE9YSTRh?=
+ =?utf-8?B?OHZIbTd5QU04bFVXOURXQ0JBdk9MeldXV2E1T3BQSGNnSVZqMjJTbVAzdExt?=
+ =?utf-8?B?MVBXRHRZcThkNklYYVR3VlRteCtSNURHSFJuT24wdHRBZ0xqYjY1OTV4Q0Nw?=
+ =?utf-8?B?dnNnUHM1OHk0L3VJVGtmcnFmRE9IR1d1a3g2M3pWL21KN0NUMitLSHdiMWRY?=
+ =?utf-8?B?KzF4NjAwWitadTlwdTEwTC9Ka0o1YWl0MzB4OVVsZ0Y0bXhnYi9wdXlQWlRJ?=
+ =?utf-8?B?emt0V3NCb3lLY1JJeEpHRmJIMEJKcDZzNll3aEpaQUUvZU9LNWlMNGxxM2Ra?=
+ =?utf-8?B?ZUdmSTVpaHVnSGJGaW4ydDFWRE9UejV6dlJXNWJCb09TcWFiSCtwUWZvbzZp?=
+ =?utf-8?B?eXdsa3R2M2ZHbW11N05DT2dvMWxvdlM2Tm9mbENXNWZYVUVVbkhTVDdOQ09H?=
+ =?utf-8?B?S3dxNmdDUjU5TlRGZ1loYkMvbFgvcmZ0UjdLcndpUDVrVjV1MHBDMmJpOS9o?=
+ =?utf-8?B?YjU1eTdmNmU2RUN1NlZRcU9tN1FCY0RUdklCdGpoRm02SWRVYWgxbjhZY2xr?=
+ =?utf-8?B?UGxmSUV4dmVOTzdQMzdEYWtVallncXpudjkvTnNJVmJVa0VvNnZzY0I5RHVW?=
+ =?utf-8?B?dEE5bVF3ckNBOHBYUU9ac3gxQmVMeE9oSS8vd2pyWklqaElCakwzVitmeXhL?=
+ =?utf-8?B?YkRubUNQMHNucEQvMkxSZlQ1VGFIZ1lOQnFPT3NqYVJUbTFLNkJSVmxZRDg1?=
+ =?utf-8?B?cXd3SzRiU3VYZ3Y5OUc4bG9lcVFqR01ZZ3lJRGp1UUQxK1RNQmZiYjV2bktU?=
+ =?utf-8?B?aytYZXlsb2dCTlhsNTlBcXBjSWlIdDhHS1lpRGlmVldVRW1iMlo1NlIrNEJt?=
+ =?utf-8?B?NjdDa1J0RnZ2aUNNQys2cVU5Q3lGbHR6MlA3QW1qc0tpWDQ3bjlQOHR0MWEw?=
+ =?utf-8?B?MVZqVU8vNURSelYrVEFhakpWWUlEYkplZG0vdVgzd1o4S1RUZkpXVjVGSHhV?=
+ =?utf-8?B?cUkreWdTY0lIZFg0WXhhMHBRR3dUcUFFOTExVXIxRjMzUU9tTS9tdzE0cW5J?=
+ =?utf-8?B?YnJ4K3MxQ3hNcmZRNUFFMzFyTFRHdkhYK2g1LzBVbWNsUERRT2hobmg2K2oz?=
+ =?utf-8?B?aHFkUTB6WmVseEtxbi81K3lIa1lNUjR4dHBpS283ajhUUzRZbDg3ZVJzNHR3?=
+ =?utf-8?B?Vk8zdnVmQmRUV1dldkNtMjlLMGdmTW9TVUo3Ly9NVnNDdkhqWE92RkpSY0hI?=
+ =?utf-8?Q?R4c+ZhEmYwQzjeT/jLvXEYR66GZfcW8F55Ypk=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3ba3775-3994-413e-fe34-08d8f5504c7f
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 20:50:34.5118
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Apr 2021 20:54:10.3789
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HZ1lYOQkKNyMFh9FQg3HsfiCZ+KcKz2CRjdctF6mRqC5OSG4Zv5o7ZqJWCnUc2SB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4660
+X-MS-Exchange-CrossTenant-UserPrincipalName: um73z4tDqvyXGTKOghnYjs8OI7FEemJ9wfxxDBu5OkcqTZzJ/eKuduriV+DMRGRm
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR15MB4224
 X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: WhWToYjQBVFHPRzH-pyN4DeDp7JhvHzQ
-X-Proofpoint-ORIG-GUID: WhWToYjQBVFHPRzH-pyN4DeDp7JhvHzQ
+X-Proofpoint-ORIG-GUID: ouuYhk2vaPOJW2jCB1-Wq7Ww7J7bYrz3
+X-Proofpoint-GUID: ouuYhk2vaPOJW2jCB1-Wq7Ww7J7bYrz3
 Content-Transfer-Encoding: 7bit
 X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-04-01_13:2021-04-01,2021-04-01 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- clxscore=1015 spamscore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0
- mlxscore=0 suspectscore=0 malwarescore=0 priorityscore=1501
- mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2103310000 definitions=main-2104010133
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ phishscore=0 priorityscore=1501 mlxlogscore=999 suspectscore=0 bulkscore=0
+ adultscore=0 mlxscore=0 spamscore=0 malwarescore=0 clxscore=1011
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103310000 definitions=main-2104010134
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -148,151 +150,157 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 4/1/21 11:28 AM, Nick Desaulniers wrote:
-> On Wed, Mar 31, 2021 at 6:24 PM Yonghong Song <yhs@fb.com> wrote:
->>
->> Currently, clang LTO built vmlinux won't work with pahole.
->> LTO introduced cross-cu dwarf tag references and broke
->> current pahole model which handles one cu as a time.
->> The solution is to merge all cu's as one pahole cu as in [1].
->> We would like to do this merging only if cross-cu dwarf
->> references happens. The LTO build mode is a pretty good
->> indication for that.
->>
->> In earlier version of this patch ([2]), clang flag
->> -grecord-gcc-switches is proposed to add to compilation flags
->> so pahole could detect "-flto" and then merging cu's.
->> This will increate the binary size of 1% without LTO though.
->>
->> Arnaldo suggested to use a note to indicate the vmlinux
->> is built with LTO. Such a cheap way to get whether the vmlinux
->> is built with LTO or not helps pahole but is also useful
->> for tracing as LTO may inline/delete/demote global functions,
->> promote static functions, etc.
->>
->> So this patch added an elfnote with type BUILD_COMPILER_LTO_INFO.
->> The owner of the note is "Linux".
->>
->> With gcc 8.4.1 and clang trunk, without LTO, I got
->>    $ readelf -n vmlinux
->>    Displaying notes found in: .notes
->>      Owner                Data size        Description
->>    ...
->>      Linux                0x00000004       func
->>       description data: 00 00 00 00
->>    ...
->> With "readelf -x ".notes" vmlinux", I can verify the above "func"
->> with type code 0x101.
->>
->> With clang thin-LTO, I got the same as above except the following:
->>       description data: 01 00 00 00
->> which indicates the vmlinux is built with LTO.
->>
->>   [1] https://lore.kernel.org/bpf/20210325065316.3121287-1-yhs@fb.com/
->>   [2] https://lore.kernel.org/bpf/20210331001623.2778934-1-yhs@fb.com/
->>
->> Signed-off-by: Yonghong Song <yhs@fb.com>
->> ---
->>   include/linux/compiler.h | 8 ++++++++
->>   include/linux/elfnote.h  | 1 +
->>   init/version.c           | 2 ++
->>   scripts/mod/modpost.c    | 1 +
->>   4 files changed, 12 insertions(+)
->>
->> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
->> index df5b405e6305..b92930877277 100644
->> --- a/include/linux/compiler.h
->> +++ b/include/linux/compiler.h
->> @@ -245,6 +245,14 @@ static inline void *offset_to_ptr(const int *off)
->>    */
->>   #define prevent_tail_call_optimization()       mb()
->>
->> +#include <linux/elfnote.h>
->> +
->> +#ifdef CONFIG_LTO
->> +#define BUILD_COMPILER_LTO_INFO ELFNOTE32("Linux", LINUX_ELFNOTE_BUILD_LTO, 1)
->> +#else
->> +#define BUILD_COMPILER_LTO_INFO ELFNOTE32("Linux", LINUX_ELFNOTE_BUILD_LTO, 0)
->> +#endif
+On 4/1/21 12:36 PM, Arnaldo wrote:
 > 
-> With this approach BUILD_COMPILER_LTO_INFO won't be available `#ifdef
-> __ASSEMBLER__`; we don't need it today, and perhaps YAGNI, but I think
+> 
+> On April 1, 2021 3:52:05 PM GMT-03:00, Nick Desaulniers <ndesaulniers@google.com> wrote:
+>> On Wed, Mar 31, 2021 at 7:58 PM Yonghong Song <yhs@fb.com> wrote:
+>>>
+>>> Commit 39227909db3c checked compilation flags to see
+>>> whether the binary is built with lto or not (-flto).
+>>> Currently, for clang lto build, default setting
+>>> won't put compilation flags in dwarf due to size
+>>> concern.
+>>>
+>>> David Blaikie suggested in [1] to scan through .debug_abbrev
+>>> for DW_FORM_ref_addr which should be most faster than
+>>> scanning through cu's. This patch implemented this
+>>> suggestion and replaced the previous compilation flag
+>>> matching approach. Indeed, it seems that the overhead
+>>> for this approach is indeed managable.
+>>>
+>>> I did some change to measure the overhead of cus_merging_cu():
+>>>    @@ -2650,7 +2652,15 @@ static int cus__load_module(struct cus *cus,
+>> struct conf_load *conf,
+>>>                    }
+>>>            }
+>>>
+>>>    -       if (cus__merging_cu(dw)) {
+>>>    +       bool do_merging;
+>>>    +       struct timeval start, end;
+>>>    +       gettimeofday(&start, NULL);
+>>>    +       do_merging = cus__merging_cu(dw);
+>>>    +       gettimeofday(&end, NULL);
+>>>    +       fprintf(stderr, "%ld %ld -> %ld %ld\n", start.tv_sec,
+>> start.tv_usec,
+>>>    +                       end.tv_sec, end.tv_usec);
+>>>    +
+>>>    +       if (do_merging) {
+>>>                    res = cus__merge_and_process_cu(cus, conf, mod, dw,
+>> elf, filename,
+>>>                                                    build_id,
+>> build_id_len,
+>>>                                                    type_cu ? &type_dcu
+>> : NULL);
+>>>
+>>> For lto vmlinux, the cus__merging_cu() checking takes
+>>> 130us over total "pahole -J vmlinux" time 65sec as the function bail
+>> out
+>>> earlier due to detecting a merging cu condition.
+>>> For non-lto vmlinux, the cus__merging_cu() checking takes
+>>> ~171368us over total pahole time 36sec, roughly 0.5% overhead.
+>>>
+>>>   [1] https://lore.kernel.org/bpf/20210328064121.2062927-1-yhs@fb.com/
+>>>
+>>
+>> It might be a nice little touch to add:
+>>
+>> Suggested-by: David Blaikie <blaikie@google.com>
+> 
+> Sure, this is something that is becoming the norm, be it from patch submitters, or, that being somehow lost, by the maintainer.
+> 
+> I think this is not just fair, but documents what actually happened and encourage people to share ideas more freely and quickly.
+> 
+> I'll do it in this specific case.
 
-That is true. I didn't add it since I don't feel it. BUILD_SALT also 
-added to vdso binary which I feel we don't need it today.
-
-> I prefer how include/linux/build-salt.h defines
-> LINUX_ELFNOTE_BUILD_SALT and keeps it isolated there.  Similarly, I
-> think it would be better to create a new header, say
-> include/linux/elfnote-lto.h that is basically a copy of
-> include/linux/build-salt.h, but with the relevant defines replaced
-
-Having a separate header like elfnote-lto.h sounds okay. Originally
-I am reluctant to add a new header file, but maybe a new header
-file is much cleaner than otherwise.
-
-> with the LTO identifiers you add above.  Then init/version.c and
-> scripts/mod/modpost.c can include include/linux/elfnote-lto.h and you
-> don't have to touch include/linux/build-salt.h and we can keep the
-> elfnote "types" isolated to their respective headers (otherwise this
-> approach reduces the usefulness of include/linux/build-salt.h even
-> existing, IMO. Feels like it should just be merged into
-> include/linux/elfnote.h entirely at that point).
-
-The only "drawback" is the type values are scattered in different
-files which I am not really comfortable with it. But with consistent
-naming convention, all values can be easily searched so we may not
-have issue at all.
+Thanks, Arnaldo. Sometimes I indeed missed to add necessary tags like 
+Suggested-by, Reported-by, etc, esp. if I want to push the patch
+out ASAP. Thanks for correcting this!
 
 > 
-> But, this is a much nicer approach! I forgot that elf notes were a thing!
+> if I failed to do so I'm the past, I'm sorry.
 > 
->> +
->>   #include <asm/rwonce.h>
+> - Arnaldo
 >>
->>   #endif /* __LINUX_COMPILER_H */
->> diff --git a/include/linux/elfnote.h b/include/linux/elfnote.h
->> index 04af7ac40b1a..f5ec2b50ab7d 100644
->> --- a/include/linux/elfnote.h
->> +++ b/include/linux/elfnote.h
->> @@ -100,5 +100,6 @@
->>    * The types for "Linux" owned notes.
->>    */
->>   #define LINUX_ELFNOTE_BUILD_SALT       0x100
->> +#define LINUX_ELFNOTE_BUILD_LTO                0x101
->>
->>   #endif /* _LINUX_ELFNOTE_H */
->> diff --git a/init/version.c b/init/version.c
->> index 92afc782b043..a4f74b06fe78 100644
->> --- a/init/version.c
->> +++ b/init/version.c
->> @@ -9,6 +9,7 @@
->>
->>   #include <generated/compile.h>
->>   #include <linux/build-salt.h>
->> +#include <linux/compiler.h>
->>   #include <linux/export.h>
->>   #include <linux/uts.h>
->>   #include <linux/utsname.h>
->> @@ -45,3 +46,4 @@ const char linux_proc_banner[] =
->>          " (" LINUX_COMPILER ") %s\n";
->>
->>   BUILD_SALT;
->> +BUILD_COMPILER_LTO_INFO;
->> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
->> index 24725e50c7b4..713c0d5d5525 100644
->> --- a/scripts/mod/modpost.c
->> +++ b/scripts/mod/modpost.c
->> @@ -2195,6 +2195,7 @@ static void add_header(struct buffer *b, struct module *mod)
->>          buf_printf(b, "#include <linux/compiler.h>\n");
->>          buf_printf(b, "\n");
->>          buf_printf(b, "BUILD_SALT;\n");
->> +       buf_printf(b, "BUILD_COMPILER_LTO_INFO;\n");
->>          buf_printf(b, "\n");
->>          buf_printf(b, "MODULE_INFO(vermagic, VERMAGIC_STRING);\n");
->>          buf_printf(b, "MODULE_INFO(name, KBUILD_MODNAME);\n");
->> --
->> 2.30.2
->>
-> 
+>>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>>> ---
+>>>   dwarf_loader.c | 43 ++++++++++++++++++++++++-------------------
+>>>   1 file changed, 24 insertions(+), 19 deletions(-)
+>>>
+>>> diff --git a/dwarf_loader.c b/dwarf_loader.c
+>>> index c1ca1a3..bd23751 100644
+>>> --- a/dwarf_loader.c
+>>> +++ b/dwarf_loader.c
+>>> @@ -2503,35 +2503,40 @@ static int cus__load_debug_types(struct cus
+>> *cus, struct conf_load *conf,
+>>>
+>>>   static bool cus__merging_cu(Dwarf *dw)
+>>>   {
+>>> -       uint8_t pointer_size, offset_size;
+>>>          Dwarf_Off off = 0, noff;
+>>>          size_t cuhl;
+>>> -       int cnt = 0;
+>>>
+>>> -       /*
+>>> -        * Just checking the first cu is not enough.
+>>> -        * In linux, some C files may have LTO is disabled, e.g.,
+>>> -        *   e242db40be27  x86, vdso: disable LTO only for vDSO
+>>> -        *   d2dcd3e37475  x86, cpu: disable LTO for cpu.c
+>>> -        * Fortunately, disabling LTO for a particular file in a LTO
+>> build
+>>> -        * is rather an exception. Iterating 5 cu's to check whether
+>>> -        * LTO is used or not should be enough.
+>>> -        */
+>>> -       while (dwarf_nextcu(dw, off, &noff, &cuhl, NULL,
+>> &pointer_size,
+>>> -                           &offset_size) == 0) {
+>>> +       while (dwarf_nextcu (dw, off, &noff, &cuhl, NULL, NULL, NULL)
+>> == 0) {
+>>>                  Dwarf_Die die_mem;
+>>>                  Dwarf_Die *cu_die = dwarf_offdie(dw, off + cuhl,
+>> &die_mem);
+>>>
+>>>                  if (cu_die == NULL)
+>>>                          break;
+>>>
+>>> -               if (++cnt > 5)
+>>> -                       break;
+>>> +               Dwarf_Off offset = 0;
+>>> +               while (true) {
+>>> +                       size_t length;
+>>> +                       Dwarf_Abbrev *abbrev = dwarf_getabbrev
+>> (cu_die, offset, &length);
+>>> +                       if (abbrev == NULL || abbrev ==
+>> DWARF_END_ABBREV)
+>>> +                               break;
+>>>
+>>> -               const char *producer = attr_string(cu_die,
+>> DW_AT_producer);
+>>> -               if (strstr(producer, "clang version") != NULL &&
+>>> -                   strstr(producer, "-flto") != NULL)
+>>> -                       return true;
+>>> +                       size_t attrcnt;
+>>> +                       if (dwarf_getattrcnt (abbrev, &attrcnt) != 0)
+>>> +                               return false;
+>>> +
+>>> +                       unsigned int attr_num, attr_form;
+>>> +                       Dwarf_Off aboffset;
+>>> +                       size_t j;
+>>> +                       for (j = 0; j < attrcnt; ++j) {
+>>> +                               if (dwarf_getabbrevattr (abbrev, j,
+>> &attr_num, &attr_form,
+>>> +                                                        &aboffset))
+>>> +                                       return false;
+>>> +                               if (attr_form == DW_FORM_ref_addr)
+>>> +                                       return true;
+>>> +                       }
+>>> +
+>>> +                       offset += length;
+>>> +               }
+>>>
+>>>                  off = noff;
+>>>          }
+>>> --
+>>> 2.30.2
+>>>
 > 
