@@ -2,81 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276A1351928
-	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 19:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E679E351886
+	for <lists+bpf@lfdr.de>; Thu,  1 Apr 2021 19:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234556AbhDARvv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Apr 2021 13:51:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236330AbhDARsA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:48:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D6A7611CB;
-        Thu,  1 Apr 2021 12:59:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617281962;
-        bh=QFBvSxpFBe+JRLuZOO99kIhfEMTprfAcsBarAbnDeB4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AaizDmKnP+8Q4qYSu0tQ8ujlblwti05LFGjCWGhiRTuK+AYogq5z1pOMOsZJrr+tG
-         RYUKsyFsylCUs0z+9eSvZAhsrXccM8ZDaYQxgyKocKxJJj7HjB0kg24bPJMcfy2Y59
-         xjMI1ppE05HQYRetrSrBNwXMgVSI8/rDhdIbGx9yRKYzygrvIcHmf9N2aGcYPhfQkZ
-         UKxTbvPA15PzL5VoRjkBcUomSlyO7RUTKF7QspBiFMTGJOt1MU1k/1ACQ1v7R0fJNV
-         5GSSlf6tKAYcHBD3YyA7eXaX5H9FE7obzEBaxRO9gLllY5e92vj4b0L/IXOJn4Ixhv
-         C0BUUmqG4mf1g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DF52940647; Thu,  1 Apr 2021 09:59:19 -0300 (-03)
-Date:   Thu, 1 Apr 2021 09:59:19 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Bill Wendling <morbo@google.com>, bpf@vger.kernel.org,
-        David Blaikie <dblaikie@gmail.com>,
-        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH dwarves 0/2] dwarf_loader: improve cus__merging_cu()
-Message-ID: <YGXDp/AwQapX/wDj@kernel.org>
-References: <20210401025815.2254256-1-yhs@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401025815.2254256-1-yhs@fb.com>
-X-Url:  http://acmel.wordpress.com
+        id S234665AbhDARp6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Apr 2021 13:45:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235122AbhDARmR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:42:17 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C32ACC02FEB1;
+        Thu,  1 Apr 2021 09:25:07 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id x16so2807715iob.1;
+        Thu, 01 Apr 2021 09:25:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=QZAzGw5cAuzFncKhsA5KKXaUsF0O+/nPG6lugtZwnpA=;
+        b=Ut8lxiYJjz1KZOfwAMhO+g/2mqpm5XorxQ2F8c/6rapd0RukkW5Ax7UPdC6AyIeAG8
+         RSE8ZTauPT29yMddEVsSUb3FsKHkqyvGMrPjJGQ7NWL7P+VltGOHWCs/26jeWTOs4pCQ
+         GqU0XVj4h+mYr8QPcKUMwT+Jm8m3Lt6HZhdOUQ4MRKewdX1nIcUEKxgv8FbwsyL2va0T
+         7Ch4968Wj80Nc/S7D8TVpWAOUWWzgIx4rG5iAg4QohnOEpA2EuRbak282cwbn+I9n1/H
+         N4miA1S0vmGjL8amqThicqPVaibChDBlHisX5Nb1SfFveTLAdvRU5gZQEMf831PVHrxV
+         uPcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=QZAzGw5cAuzFncKhsA5KKXaUsF0O+/nPG6lugtZwnpA=;
+        b=HhxZVyNAL3GABygBdr0q0DopEtUMtIYLAsGHqmYOS79PHxbygeAsTgE8DgaMowOslL
+         FdmkcS9UCMPY5wt2yS3xDajLALl/516S/WwlSZrHCXynEtQo0aS1HmjPelp6zUlXZMt2
+         vMjkvCJvEqN8q7tjI7bZf7MNOl7oPBY8rsDj75l1bQIPIyekBlmA8bm30d+tnXl/F+lO
+         0WDF5eQbL38XNYVhGe0nb66m3UDSg4t/yPnk87JRiv8kwvxTtKz8JoyGANVLC003UqXC
+         wA10Ydn7hex107Xl+iTC6s4XKcovzWdkdHagLVQU0AidsgfRB6HXrW+AH8ZNzSs9tMwk
+         Eokw==
+X-Gm-Message-State: AOAM530EsdM0D+qcek4JwbdFx5pRmeOvMkaBu+2RQiJD8t35JFDvTFK+
+        X+rM63ZPSYZwMzH/o6MB+Q0=
+X-Google-Smtp-Source: ABdhPJwm5qc3c1ZsCEVxdPoR9B3vWt8yT57uFcZN2VW4mTt6Oo4cJADImzmp1X1YtdqxSlyWy6BuOg==
+X-Received: by 2002:a05:6638:3399:: with SMTP id h25mr8714141jav.15.1617294307095;
+        Thu, 01 Apr 2021 09:25:07 -0700 (PDT)
+Received: from localhost ([172.242.244.146])
+        by smtp.gmail.com with ESMTPSA id l14sm2780151ilj.14.2021.04.01.09.25.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Apr 2021 09:25:05 -0700 (PDT)
+Date:   Thu, 01 Apr 2021 09:24:58 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
+        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Message-ID: <6065f3da5b75e_27eb2081c@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210331023237.41094-14-xiyou.wangcong@gmail.com>
+References: <20210331023237.41094-1-xiyou.wangcong@gmail.com>
+ <20210331023237.41094-14-xiyou.wangcong@gmail.com>
+Subject: RE: [Patch bpf-next v8 13/16] udp: implement udp_bpf_recvmsg() for
+ sockmap
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Mar 31, 2021 at 07:58:15PM -0700, Yonghong Song escreveu:
-> Function cus__merging_cu() is introduced in Commit 39227909db3c
-> ("dwarf_loader: Permit merging all DWARF CU's for clang LTO built
-> binary") to test whether cross-cu references may happen.
-> The original implementation anticipates compilation flags
-> in dwarf, but later some concerns about binary size surfaced
-> and the decision is to scan .debug_abbrev as a faster way
-> to check cross-cu references. Also putting a note in vmlinux
-> to indicate whether lto is enabled for built or not can
-> provide a much faster way.
-
-Great work! Reviewing/testing right now.
-
-- Arnaldo
- 
-> This patch set implemented this two approaches, first
-> checking the note (in Patch #2), if not found, then
-> check .debug_abbrev (in Patch #1).
+Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
 > 
-> Yonghong Song (2):
->   dwarf_loader: check .debug_abbrev for cross-cu references
->   dwarf_loader: check .notes section for lto build info
+> We have to implement udp_bpf_recvmsg() to replace the ->recvmsg()
+> to retrieve skmsg from ingress_msg.
 > 
->  dwarf_loader.c | 76 ++++++++++++++++++++++++++++++++++++--------------
->  1 file changed, 55 insertions(+), 21 deletions(-)
-> 
-> -- 
-> 2.30.2
-> 
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 
--- 
-
-- Arnaldo
+Acked-by: John Fastabend <john.fastabend@gmail.com>
