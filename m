@@ -2,256 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982AA352439
-	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 02:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862FA352468
+	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 02:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234548AbhDBAA6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 1 Apr 2021 20:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
+        id S235296AbhDBAUL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 1 Apr 2021 20:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233677AbhDBAA6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 1 Apr 2021 20:00:58 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13732C0613E6;
-        Thu,  1 Apr 2021 17:00:58 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id ay2so1785498plb.3;
-        Thu, 01 Apr 2021 17:00:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7CZehGQt3kA23ZrhfhHAJYF7GmYpe6W0wkBz5j2xmTo=;
-        b=torGvGieSpV3lJHRBMjFmPoybygOyVZjjd06cQLRiYWReJYayBRYAriMqi97crHueK
-         vhEMt6bGFMjvL768HKFO8S7Ngc1JhaP/fmyjvvQrMB7IKn6JKNMwQV6XRQsm8alLujvw
-         mFmHJfXaPTwa+oKcixWryBceP5ZUDW6Dv7xOWRrGxxeqkXmOcySuZ3QSeyYo4pxkMcG+
-         RBt9zp82XbmmtsrpThCWCgNHevoTkqxqhJ+ZhxvVh+zXog/KTxyQinAhAmP4NAWj3A/i
-         sD4Rbrov7qgc2g4lhNn9dIE47ZrbceDNDdUn/2dtCYSkkZbTqx/Xqs8BZYouJ+C5afJt
-         u+Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7CZehGQt3kA23ZrhfhHAJYF7GmYpe6W0wkBz5j2xmTo=;
-        b=VSeRxD3GLqvWtxjdFEDdJoNH2VbVkQbSFQs27w3XQrzM01mY4Eh9JGXxBfVtVVFRvi
-         ZJz7GTHQhORKfkX0Pcw0XRtPKLq1Esip9V500ODXxYELVDzGZWUUUQexnuxjThSA4oCQ
-         clI33WsDDCLmjKScXAonEjL4dXJ6lr4/aGtI3YpNmEpfnZBT0XXnwTYQ1+MK4C7WL74o
-         7rUTLim/RmR8pOgsPaX/7nCewhafd2FekuuiuUZAh94wqPmwFBDX2+q6vXzxhlhNS1CO
-         A3RNsKVEsg+HXpfsUub9ZDAFkchMtTm1JjGLj7dC4EDTROkCoegu/lBAg6JC7f6OINIc
-         nQKA==
-X-Gm-Message-State: AOAM530QPhUMkV0bKm6Aq/RsRrz+uumMkK4opG3x6L6ewa4wtJmqThYq
-        tO8rzDCSlsN+fc8acr0n+QQmSX2wEa8n148zMcM=
-X-Google-Smtp-Source: ABdhPJyE0/BSXTyfqxZ9GVOONK8GldPVbUz6/Xn0JHvdtD5IxVPIuUoD39GMMFCm/tkXZXhZuuWQBYs7MeuCofFAwSE=
-X-Received: by 2002:a17:902:dac2:b029:e6:30a6:4c06 with SMTP id
- q2-20020a170902dac2b02900e630a64c06mr10279990plx.65.1617321657531; Thu, 01
- Apr 2021 17:00:57 -0700 (PDT)
+        with ESMTP id S233677AbhDBAUK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 1 Apr 2021 20:20:10 -0400
+Received: from www62.your-server.de (www62.your-server.de [IPv6:2a01:4f8:d0a:276a::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB528C0613E6;
+        Thu,  1 Apr 2021 17:20:10 -0700 (PDT)
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lS7X8-0008fS-Ef; Fri, 02 Apr 2021 02:19:30 +0200
+Received: from [85.7.101.30] (helo=pc-6.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lS7X7-0001gm-W8; Fri, 02 Apr 2021 02:19:30 +0200
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+References: <20210325120020.236504-1-memxor@gmail.com>
+ <20210325120020.236504-4-memxor@gmail.com>
+ <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
+ <20210328080648.oorx2no2j6zslejk@apollo>
+ <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
+ <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
+ <20210331094400.ldznoctli6fljz64@apollo>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
+Date:   Fri, 2 Apr 2021 02:19:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20210401213620.3056084-1-yhs@fb.com> <e6f77eb7-b1ce-5dc3-3db7-bf67e7edfc0b@fb.com>
- <CAENS6EsZ5OX9o=Cn5L1jmx8ucR9siEWbGYiYHCUWuZjLyP3E7Q@mail.gmail.com> <1ef31dd8-2385-1da1-2c95-54429c895d8a@fb.com>
-In-Reply-To: <1ef31dd8-2385-1da1-2c95-54429c895d8a@fb.com>
-From:   David Blaikie <dblaikie@gmail.com>
-Date:   Thu, 1 Apr 2021 17:00:46 -0700
-Message-ID: <CAENS6EsiRsY1JptWJqu2wH=m4fkSiR+zD8JDD5DYke=ZnJOMrg@mail.gmail.com>
-Subject: Re: [PATCH dwarves] dwarf_loader: handle subprogram ret type with
- abstract_origin properly
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Bill Wendling <morbo@google.com>, bpf <bpf@vger.kernel.org>,
-        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210331094400.ldznoctli6fljz64@apollo>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26127/Thu Apr  1 13:11:26 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 1, 2021 at 4:41 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 4/1/21 3:27 PM, David Blaikie wrote:
-> > On Thu, Apr 1, 2021 at 2:41 PM Yonghong Song <yhs@fb.com
-> > <mailto:yhs@fb.com>> wrote:
-> >  >
-> >  >
-> >  >
-> >  > On 4/1/21 2:36 PM, Yonghong Song wrote:
-> >  > > With latest bpf-next built with clang lto (thin or full), I hit one
-> > test
-> >  > > failures:
-> >  > >    $ ./test_progs -t tcp
-> >  > >    ...
-> >  > >    libbpf: extern (func ksym) 'tcp_slow_start': func_proto [23]
-> > incompatible with kernel [115303]
-> >  > >    libbpf: failed to load object 'bpf_cubic'
-> >  > >    libbpf: failed to load BPF skeleton 'bpf_cubic': -22
-> >  > >    test_cubic:FAIL:bpf_cubic__open_and_load failed
-> >  > >    #9/2 cubic:FAIL
-> >  > >    ...
-> >  > >
-> >  > > The reason of the failure is due to bpf program 'tcp_slow_start'
-> >  > > func signature is different from vmlinux BTF. bpf program uses
-> >  > > the following signature:
-> >  > >    extern __u32 tcp_slow_start(struct tcp_sock *tp, __u32 acked);
-> >  > > which is identical to the kernel definition in linux:include/net/tcp.h:
-> >  > >    u32 tcp_slow_start(struct tcp_sock *tp, u32 acked);
-> >  > > While vmlinux BTF definition like:
-> >  > >    [115303] FUNC_PROTO '(anon)' ret_type_id=0 vlen=2
-> >  > >            'tp' type_id=39373
-> >  > >            'acked' type_id=18
-> >  > >    [115304] FUNC 'tcp_slow_start' type_id=115303 linkage=static
-> >  > > The above is dumped with `bpftool btf dump file vmlinux`.
-> >  > > You can see the ret_type_id is 0 and this caused the problem.
-> >  > >
-> >  > > Looking at dwarf, we have:
-> >  > >
-> >  > > 0x11f2ec67:   DW_TAG_subprogram
-> >  > >                  DW_AT_low_pc    (0xffffffff81ed2330)
-> >  > >                  DW_AT_high_pc   (0xffffffff81ed235c)
-> >  > >                  DW_AT_frame_base        ()
-> >  > >                  DW_AT_GNU_all_call_sites        (true)
-> >  > >                  DW_AT_abstract_origin   (0x11f2ed66 "tcp_slow_start")
-> >  > > ...
-> >  > > 0x11f2ed66:   DW_TAG_subprogram
-> >  > >                  DW_AT_name      ("tcp_slow_start")
-> >  > >                  DW_AT_decl_file
-> > ("/home/yhs/work/bpf-next/net/ipv4/tcp_cong.c")
-> >  > >                  DW_AT_decl_line (392)
-> >  > >                  DW_AT_prototyped        (true)
-> >  > >                  DW_AT_type      (0x11f130c2 "u32")
-> >  > >                  DW_AT_external  (true)
-> >  > >                  DW_AT_inline    (DW_INL_inlined)
-> >  >
-> >  > David,
-> >  >
-> >  > Could you help confirm whether DW_AT_abstract_origin at a
-> >  > DW_TAG_subprogram always points to another DW_TAG_subprogram,
-> >  > or there are possible other cases?
-> >
-> > That's correct, so far as I understand the spec, specifically DWARFv5
-> > <http://dwarfstd.org/doc/DWARF5.pdf>
-> > 3.3.8.3 says:
-> >
-> > "The root entry for a concrete out-of-line instance of a given inlined
-> > subroutine has the same tag as does its associated (abstract) inlined
-> > subroutine entry (that is, tag DW_TAG_subprogram rather than
-> > DW_TAG_inlined_subroutine)."
->
-> Thanks. That means that some of my codes in the patch is
-> dead code.
->
-> >
-> > Though people may come up with novel uses of DWARF features. What would
-> > happen if this constraint were violated/what's your motivation for
-> > asking (I don't quite understand the connection between test_progs
-> > failure description, and this question)
->
-> I have some codes to check the tag associated with abstract_origin
-> for a subprogram must be a subprogram. Through experiment, I didn't
-> see a violation, so I wonder that I can get confirmation from you
-> and then I may delete that code.
->
-> The test_progs failure exposed the bug, that is all.
->
-> pahole cannot handle all weird usages of dwarf, so I think pahole
-> is fine only to support well-formed dwarf.
+On 3/31/21 11:44 AM, Kumar Kartikeya Dwivedi wrote:
+> On Wed, Mar 31, 2021 at 02:55:47AM IST, Daniel Borkmann wrote:
+>> Do we even need the _block variant? I would rather prefer to take the chance
+>> and make it as simple as possible, and only iff really needed extend with
+>> other APIs, for example:
+> 
+> The block variant can be dropped, I'll use the TC_BLOCK/TC_DEV alternative which
+> sets parent_id/ifindex properly.
+> 
+>>    bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS});
+>>
+>> Internally, this will create the sch_clsact qdisc & cls_bpf filter instance
+>> iff not present yet, and attach to a default prio 1 handle 1, and _always_ in
+>> direct-action mode. This is /as simple as it gets/ and we don't need to bother
+>> users with more complex tc/cls_bpf internals unless desired. For example,
+>> extended APIs could add prio/parent so that multi-prog can be attached to a
+>> single cls_bpf instance, but even that could be a second step, imho.
+> 
+> I am not opposed to clsact qdisc setup if INGRESS/EGRESS is supplied (not sure
+> how others feel about it).
 
-Sounds good. Thanks for the context!
+What speaks against it? It would be 100% clear from API side where the prog is
+being attached. Same as with tc cmdline where you specify 'ingress'/'egress'.
 
->
-> >
-> > - David
-> >
-> >  >
-> >  > Thanks,
-> >  >
-> >  > >
-> >  > > We have a subprogram which has an abstract_origin pointing to
-> >  > > the subprogram prototype with return type. Current one pass
-> >  > > recoding cannot easily resolve this easily since
-> >  > > at the time recoding for 0x11f2ec67, the return type in
-> >  > > 0x11f2ed66 has not been resolved.
-> >  > >
-> >  > > To simplify implementation, I just added another pass to
-> >  > > go through all functions after recoding pass. This should
-> >  > > resolve the above issue.
-> >  > >
-> >  > > With this patch, among total 250999 functions in vmlinux,
-> >  > > 4821 functions needs return type adjustment from type id 0
-> >  > > to correct values. The above failed bpf selftest passed too.
-> >  > >
-> >  > > Signed-off-by: Yonghong Song <yhs@fb.com <mailto:yhs@fb.com>>
-> >  > > ---
-> >  > >   dwarf_loader.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
-> >  > >   1 file changed, 46 insertions(+)
-> >  > >
-> >  > > Arnaldo, this is the last known pahole bug in my hand w.r.t. clang
-> >  > > LTO. With this, all self tests are passed except ones due
-> >  > > to global function inlining, static variable promotion etc, which
-> >  > > are not related to pahole.
-> >  > >
-> >  > > diff --git a/dwarf_loader.c b/dwarf_loader.c
-> >  > > index 026d137..367ac06 100644
-> >  > > --- a/dwarf_loader.c
-> >  > > +++ b/dwarf_loader.c
-> >  > > @@ -2198,6 +2198,42 @@ out:
-> >  > >       return 0;
-> >  > >   }
-> >  > >
-> >  > > +static int cu__resolve_func_ret_types(struct cu *cu)
-> >  > > +{
-> >  > > +     struct ptr_table *pt = &cu->functions_table;
-> >  > > +     uint32_t i;
-> >  > > +
-> >  > > +     for (i = 0; i < pt->nr_entries; ++i) {
-> >  > > +             struct tag *tag = pt->entries[i];
-> >  > > +
-> >  > > +             if (tag == NULL || tag->type != 0)
-> >  > > +                     continue;
-> >  > > +
-> >  > > +             struct function *fn = tag__function(tag);
-> >  > > +             if (!fn->abstract_origin)
-> >  > > +                     continue;
-> >  > > +
-> >  > > +             struct dwarf_tag *dtag = tag->priv;
-> >  > > +             struct dwarf_tag *dfunc;
-> >  > > +             dfunc = dwarf_cu__find_tag_by_ref(cu->priv,
-> > &dtag->abstract_origin);
-> >  > > +             if (dfunc == NULL) {
-> >  > > +                     tag__print_abstract_origin_not_found(tag);
-> >  > > +                     return -1;
-> >  > > +             }
-> >  > > +
-> >  > > +             /*
-> >  > > +              * Based on what I see it should be a subprogram,
-> >  > > +              * but double check anyway to ensure I won't mess up
-> >  > > +              * now and in the future.
-> >  > > +              */
-> >  > > +             if (dfunc->tag->tag != DW_TAG_subprogram)
-> >  > > +                     continue;
-> >  > > +
-> >  > > +             tag->type = dfunc->tag->type;
-> >  > > +     }
-> >  > > +     return 0;
-> >  > > +}
-> >  > > +
-> >  > >   static int cu__recode_dwarf_types_table(struct cu *cu,
-> >  > >                                       struct ptr_table *pt,
-> >  > >                                       uint32_t i)
-> >  > > @@ -2637,6 +2673,16 @@ static int cus__merge_and_process_cu(struct
-> > cus *cus, struct conf_load *conf,
-> >  > >       /* process merged cu */
-> >  > >       if (cu__recode_dwarf_types(cu) != LSK__KEEPIT)
-> >  > >               return DWARF_CB_ABORT;
-> >  > > +
-> >  > > +     /*
-> >  > > +      * for lto build, the function return type may not be
-> >  > > +      * resolved due to the return type of a subprogram is
-> >  > > +      * encoded in another subprogram through abstract_origin
-> >  > > +      * tag. Let us visit all subprograms again to resolve this.
-> >  > > +      */
-> >  > > +     if (cu__resolve_func_ret_types(cu) != LSK__KEEPIT)
-> >  > > +             return DWARF_CB_ABORT;
-> >  > > +
-> >  > >       if (finalize_cu_immediately(cus, cu, dcu, conf)
-> >  > >           == LSK__STOP_LOADING)
-> >  > >               return DWARF_CB_ABORT;
-> >  > >
+> We could make direct_action mode default, and similarly choose prio
+
+To be honest, I wouldn't even support a mode from the lib/API side where direct_action
+is not set. It should always be forced to true. Everything else is rather broken
+setup-wise, imho, since it won't scale. We added direct_action a bit later to the
+kernel than original cls_bpf, but if I would do it again today, I'd make it the
+only available option. I don't see a reasonable use-case where you have it to false.
+
+> as 1 by default instead of letting the kernel do it. Then you can just pass in
+> NULL for bpf_tc_cls_opts and be close to what you're proposing. For protocol we
+> can choose ETH_P_ALL by default too if the user doesn't set it.
+
+Same here with ETH_P_ALL, I'm not sure anyone uses anything other than ETH_P_ALL,
+so yes, that should be default.
+
+> With these modifications, the equivalent would look like
+> 	bpf_tc_cls_attach(prog_fd, TC_DEV(ifindex, INGRESS), NULL, &id);
+
+Few things compared to bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
+
+1) nit, but why even 'cls' in the name. I think we shouldn't expose such old-days
+    tc semantics to a user. Just bpf_tc_attach() is cleaner/simpler to understand.
+2) What's the 'TC_DEV(ifindex, INGRESS)' macro doing exactly? Looks unnecessary,
+    why not regular args to the API?
+3) Exposed bpf_tc_attach() API could internally call a bpf_tc_attach_opts() API
+    with preset defaults, and the latter could have all the custom bits if the user
+    needs to go beyond the simple API, so from your bpf_tc_cls_attach() I'd also
+    drop the NULL.
+4) For the simple API I'd likely also drop the id (you could have a query API if
+    needed).
+
+> So as long as the user doesn't care about other details, they can just pass opts
+> as NULL.
+
