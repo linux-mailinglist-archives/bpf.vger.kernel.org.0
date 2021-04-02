@@ -2,80 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC3235272E
-	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 10:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 723EF35299B
+	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 12:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234217AbhDBICU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Apr 2021 04:02:20 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:20128 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233521AbhDBICS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Apr 2021 04:02:18 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FBXZt5thsz9ty31;
-        Fri,  2 Apr 2021 10:02:14 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id VBKlVp8DmBwy; Fri,  2 Apr 2021 10:02:14 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FBXZt4p4fz9ty2y;
-        Fri,  2 Apr 2021 10:02:14 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1740B8BB5D;
-        Fri,  2 Apr 2021 10:02:16 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id rfiWE6oboilV; Fri,  2 Apr 2021 10:02:16 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AA5438B78C;
-        Fri,  2 Apr 2021 10:02:15 +0200 (CEST)
-Subject: Re: selftests/bpf - Error: failed to open BPF object file: Endian
- mismatch
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     bpf <bpf@vger.kernel.org>, iii@linux.ibm.com,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-References: <21e66a09-514f-f426-b9e2-13baab0b938b@csgroup.eu>
-Message-ID: <24d7f121-5ae9-4605-3624-a5601542980e@csgroup.eu>
-Date:   Fri, 2 Apr 2021 10:02:16 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S229605AbhDBKQl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Apr 2021 06:16:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhDBKQk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Apr 2021 06:16:40 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB64C061788
+        for <bpf@vger.kernel.org>; Fri,  2 Apr 2021 03:16:39 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id j7so4350243wrd.1
+        for <bpf@vger.kernel.org>; Fri, 02 Apr 2021 03:16:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=r3nLh/oR75ohYBkJhQ6AjBcGBnjjpOyH6oMJC7oKGXs=;
+        b=yEM4ILac4ta+l36Bgz/XfR4V2uBuvts8deQvlo84DyuwaZqTUKa5Y+bdeB4kca8F4T
+         NPZOib6hDPr/2ndYNIlhuW26ZnwmDT1evfxmDRPlwm1lrNzYBuKK/4oCAaMHhNOnJxZO
+         pGx/mTfunGwlqfCCl4y5PkWkhf0yGSJ4OAHM0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=r3nLh/oR75ohYBkJhQ6AjBcGBnjjpOyH6oMJC7oKGXs=;
+        b=fAX3bkbZJ9/qBzlHqK33xBJvjy+dz54JpJls6iIWi7/Wqzw/HueNZhi+AqU2W82M0l
+         w7bEcbHYo8kwIKe6F2YHhALrVkucFz539XbDhLEN3BCZvS5VE/hak5GyOtxOPuAkJRb+
+         lOPN90n3wBoIEmYgLCQwfGXjhrCKGUT4j8MapifR7pHQ7qQ2t/FmECRPwwrZq1+m6pKn
+         EvnZFhS8ZbNdHm2WhHleUmzF/n1qsGPu6SyQ8KmT673uCt9rinR5qaqNiEZt5JxPwbAd
+         Dt96UQ/icH+AhLw64avxvDIxHCUqoFc8vVIbqYkF/sBtcluqmIa1pdKBY1ZAxxwWv7KN
+         NDuQ==
+X-Gm-Message-State: AOAM531s/MsLzth2Sj7irsnWBW8ahZbMwIctWDNq1Pb3fCG4ouepTpzi
+        TB+K2rMehbOxtBwLrziEGP4dtw==
+X-Google-Smtp-Source: ABdhPJwl1fJ2BYQy5idx/Pjh78XsaPD8or7dl+hRV203NiBd56UH5TdUVsNiKQGMy0/L66lhrPvXjg==
+X-Received: by 2002:a5d:6a87:: with SMTP id s7mr14480472wru.312.1617358598213;
+        Fri, 02 Apr 2021 03:16:38 -0700 (PDT)
+Received: from cloudflare.com (83.5.248.223.ipv4.supernova.orange.pl. [83.5.248.223])
+        by smtp.gmail.com with ESMTPSA id o2sm11648692wmc.23.2021.04.02.03.16.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 03:16:37 -0700 (PDT)
+References: <20210331023237.41094-1-xiyou.wangcong@gmail.com>
+ <20210331023237.41094-11-xiyou.wangcong@gmail.com>
+User-agent: mu4e 1.1.0; emacs 27.1
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        duanxiongchun@bytedance.com, wangdongdong.6@bytedance.com,
+        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: Re: [Patch bpf-next v8 10/16] sock: introduce
+ sk->sk_prot->psock_update_sk_prot()
+In-reply-to: <20210331023237.41094-11-xiyou.wangcong@gmail.com>
+Date:   Fri, 02 Apr 2021 12:16:36 +0200
+Message-ID: <87sg492dq3.fsf@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <21e66a09-514f-f426-b9e2-13baab0b938b@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Mar 31, 2021 at 04:32 AM CEST, Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+>
+> Currently sockmap calls into each protocol to update the struct
+> proto and replace it. This certainly won't work when the protocol
+> is implemented as a module, for example, AF_UNIX.
+>
+> Introduce a new ops sk->sk_prot->psock_update_sk_prot(), so each
+> protocol can implement its own way to replace the struct proto.
+> This also helps get rid of symbol dependencies on CONFIG_INET.
+>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
 
+[...]
 
-Le 02/04/2021 à 09:48, Christophe Leroy a écrit :
-> Hello,
-> 
-> I'm having hard time cross-building bpf selftests on an x86 for a powerpc target.
-> 
-> [root@PC-server-ldb bpf]# make CROSS_COMPILE=ppc-linux- ARCH=powerpc V=1
-> /root/gen_ldb/linux-powerpc/tools/testing/selftests/bpf/host-tools/sbin/bpftool gen skeleton 
-> /root/gen_ldb/linux-powerpc/tools/testing/selftests/bpf/atomic_bounds.o > 
-> /root/gen_ldb/linux-powerpc/tools/testing/selftests/bpf/atomic_bounds.skel.h
-> libbpf: elf: endianness mismatch in atomic_bounds.
-> Error: failed to open BPF object file: Endian mismatch
-> 
-> [root@PC-server-ldb bpf]# file atomic_bounds.o
-> atomic_bounds.o: ELF 64-bit MSB relocatable, eBPF, version 1 (SYSV), with debug_info, not stripped
-> 
-> Seems like the just-built host bpftool doesn't take into account target's endianness.
-> 
-> I see the patch https://github.com/torvalds/linux/commit/313e7f6f ("selftest/bpf: Use -m{little, 
-> big}-endian for clang") in bpf selftest to enable cross-compilation, but it seems it is not enough.
-> 
-> What should I do to get bpftool work with the target's endianness ?
-> 
+> diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> index 4a0478b17243..38952aaee3a1 100644
+> --- a/net/ipv4/udp.c
+> +++ b/net/ipv4/udp.c
+> @@ -2849,6 +2849,9 @@ struct proto udp_prot = {
+>  	.unhash			= udp_lib_unhash,
+>  	.rehash			= udp_v4_rehash,
+>  	.get_port		= udp_v4_get_port,
+> +#ifdef CONFIG_BPF_SYSCALL
+> +	.psock_update_sk_prot	= udp_bpf_update_proto,
+> +#endif
+>  	.memory_allocated	= &udp_memory_allocated,
+>  	.sysctl_mem		= sysctl_udp_mem,
+>  	.sysctl_wmem_offset	= offsetof(struct net, ipv4.sysctl_udp_wmem_min),
+> diff --git a/net/ipv4/udp_bpf.c b/net/ipv4/udp_bpf.c
+> index 7a94791efc1a..6001f93cd3a0 100644
+> --- a/net/ipv4/udp_bpf.c
+> +++ b/net/ipv4/udp_bpf.c
+> @@ -41,12 +41,23 @@ static int __init udp_bpf_v4_build_proto(void)
+>  }
+>  core_initcall(udp_bpf_v4_build_proto);
+>
+> -struct proto *udp_bpf_get_proto(struct sock *sk, struct sk_psock *psock)
+> +int udp_bpf_update_proto(struct sock *sk, bool restore)
+>  {
+>  	int family = sk->sk_family == AF_INET ? UDP_BPF_IPV4 : UDP_BPF_IPV6;
+> +	struct sk_psock *psock = sk_psock(sk);
+> +
+> +	if (restore) {
+> +		sk->sk_write_space = psock->saved_write_space;
+> +		/* Pairs with lockless read in sk_clone_lock() */
 
-I also see https://github.com/torvalds/linux/commit/8859b0da ("tools/bpftool: Fix cross-build") but 
-that commit doesn't seem to address endianness difference between the host and the target.
+Just to clarify. UDP sockets don't get cloned, so the above comment
+apply.
 
-Christophe
+> +		WRITE_ONCE(sk->sk_prot, psock->sk_proto);
+> +		return 0;
+> +	}
+>
+>  	if (sk->sk_family == AF_INET6)
+>  		udp_bpf_check_v6_needs_rebuild(psock->sk_proto);
+>
+> -	return &udp_bpf_prots[family];
+> +	/* Pairs with lockless read in sk_clone_lock() */
+> +	WRITE_ONCE(sk->sk_prot, &udp_bpf_prots[family]);
+> +	return 0;
+>  }
+> +EXPORT_SYMBOL_GPL(udp_bpf_update_proto);
+
+[...]
