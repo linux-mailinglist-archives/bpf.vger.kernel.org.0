@@ -2,129 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9B2352F50
-	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 20:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D321D352F7A
+	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 21:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbhDBSc3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Apr 2021 14:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229722AbhDBSc2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Apr 2021 14:32:28 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2226DC0613E6;
-        Fri,  2 Apr 2021 11:32:27 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id u9so6380955ljd.11;
-        Fri, 02 Apr 2021 11:32:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ad8VMz3WsxyloFA1un2SE8S0Vb3SXK/5tCOkJ+wMDVk=;
-        b=hgzwlPBSIM190eN3Rsl3Os6i9tIlxa+0q4o702zLLHZwfNP7o7XVwtgxSTT616Cmyn
-         CZX6FkDGqHeBC+qVoLOfyGbpvHN2Ez4sF1QweMn6xoHmNnZbxZtTUp4hwbaElWZisGpW
-         NWuZytZ6o8+WOa3Wi/1US3LFeEbfetkWSbSx3OFJ/Edy8jFzv+89Dxdn9Je0wYhzmFaw
-         ZwfQIU9t8ncjaUQiRWTXzyDWvvGb+UVje4mcyf1RiB70ShrYpR/FOUmrVDJOnb78Fwlj
-         fvZDjFLv+y22kZ9Cs+PAG8zZF8+b9W/cVP4E4rEm8OqVYnLoElbEFy99R4JXtvLjSDsO
-         fGOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ad8VMz3WsxyloFA1un2SE8S0Vb3SXK/5tCOkJ+wMDVk=;
-        b=O8bp0akaPP48GDW+u11ADFai3N5mztn3pqZpNbovy/Rin8DDx70MB3p+AO4F2Dnfkk
-         RINwBacp+RDehAE2AYHJ+FLzf/I1jWKLkUVd7djm/bwJEi3pkg3ccSKfHP4DT/MqDjjB
-         Jvbkys85Kas4DsfUBUPHqhQgDyzg5x05cwhgY+RcUYQsO9sovbLs7yOhW0mydzcJPM96
-         al0IYFrf4Odg2GOgDPfKq5XlA9bk9J5SV/G9m9gtwAK6K+RpOKQ28w7s8ZH0/+3I6eke
-         B4+fou8jLW72BiaRMjdl4bP9a//QKSDKo89Nbb6EtHDFGwsgKMrPYCdzWoVscPMnMB3d
-         SWjw==
-X-Gm-Message-State: AOAM5312Yxmzc0PFVLcH/sFTrS6bxYTJ4cETHznPxAIvr7SvPHPM2//Q
-        GnZkjI2s1RzdN6RTe7D8XkSuyVXRGY6dv0Hh/os=
-X-Google-Smtp-Source: ABdhPJzDt/m+lC1BzgsA4s5CdZw4tYVpOB9H34jfZ0ELnOZ6Shxr8RG5L4t7XV1QRw/yNbCVk6U8VdZUK8WL5lJt3LM=
-X-Received: by 2002:a2e:8ec1:: with SMTP id e1mr8871661ljl.236.1617388345623;
- Fri, 02 Apr 2021 11:32:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210325120020.236504-1-memxor@gmail.com> <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
- <20210328080648.oorx2no2j6zslejk@apollo> <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
- <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net> <20210331094400.ldznoctli6fljz64@apollo>
- <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net> <20210402152743.dbadpgcmrgjt4eca@apollo>
-In-Reply-To: <20210402152743.dbadpgcmrgjt4eca@apollo>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 2 Apr 2021 11:32:14 -0700
-Message-ID: <CAADnVQ+wqrEnOGd8E1yp+1WTAx8ZcAx3HUjJs6ipPd0eKmOrgA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        id S236090AbhDBTBO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Apr 2021 15:01:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52159 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235938AbhDBTBN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 2 Apr 2021 15:01:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617390071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lH8yhJxrynhxd0WvNK7HIa6U2kDcv+hX7f7c1Z+ZW/c=;
+        b=RV2nDVjt9NSS1D8dRkPl23AUaqtpxWbhqpKNpjptx2BR3S98CmuKm45fKmnAfW4mQWzIZE
+        /GfeRlEwjdDmngniSRiD0NEoyZEApxseaii7R5GA0KTBscXnHWS1BnEUvRSKqvdxR4A4BY
+        AYLTgcqOpsVsM3y1N3hsr+wzUtq+Uog=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-296-ZeI0OyflNsO4b_Zb0QpKHA-1; Fri, 02 Apr 2021 15:01:09 -0400
+X-MC-Unique: ZeI0OyflNsO4b_Zb0QpKHA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA9EB18C43C1;
+        Fri,  2 Apr 2021 19:01:07 +0000 (UTC)
+Received: from krava (unknown [10.40.193.98])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 547891037E81;
+        Fri,  2 Apr 2021 19:01:05 +0000 (UTC)
+Date:   Fri, 2 Apr 2021 21:01:04 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo <arnaldo.melo@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        David Blaikie <dblaikie@gmail.com>, dwarves@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Bill Wendling <morbo@google.com>, bpf <bpf@vger.kernel.org>,
+        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH dwarves] dwarf_loader: handle subprogram ret type with
+ abstract_origin properly
+Message-ID: <YGdp8NITtcwOoOs2@krava>
+References: <20210401213620.3056084-1-yhs@fb.com>
+ <e6f77eb7-b1ce-5dc3-3db7-bf67e7edfc0b@fb.com>
+ <CAENS6EsZ5OX9o=Cn5L1jmx8ucR9siEWbGYiYHCUWuZjLyP3E7Q@mail.gmail.com>
+ <1ef31dd8-2385-1da1-2c95-54429c895d8a@fb.com>
+ <CAENS6EsiRsY1JptWJqu2wH=m4fkSiR+zD8JDD5DYke=ZnJOMrg@mail.gmail.com>
+ <YGckYjyfxfNLzc34@kernel.org>
+ <YGcw4iq9QNkFFfyt@kernel.org>
+ <2d55d22b-d136-82b9-6a0f-8b09eeef7047@fb.com>
+ <82dfd420-96f9-aedc-6cdc-bf20042455db@fb.com>
+ <E9072F07-B689-402C-89F6-545B589EF7E4@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <E9072F07-B689-402C-89F6-545B589EF7E4@gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 8:27 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
->
-> This would be fine, because it's not a fast path or anything, but right now we
-> return the id using the netlink response, otherwise for query we have to open
-> the socket, prepare the msg, send and recv again. So it's a minor optimization.
->
-> However, there's one other problem. In an earlier version of this series, I
-> didn't keep the id/index out parameters (to act as handle to the newly attached
-> filter/action). This lead to problems on query. Suppose a user doesn't properly
-> fill the opts during query (e.g. in case of filters). This means the netlink
-> dump includes all filters matching filled in attributes. If the prog_id for all
-> of these is same (e.g. all have same bpf classifier prog attached to them), it
-> becomes impossible to determine which one is the filter user asked for. It is
-> not possible to enforce filling in all kinds of attributes since some can be
-> left out and assigned by default in the kernel (priority, chain_index etc.). So
-> returning the newly created filter's id turned out to be the best option. This
-> is also used to stash filter related information in bpf_link to properly release
-> it later.
->
-> The same problem happens with actions, where we look up using the prog_id, we
-> multiple actions with different index can match on same prog_id. It is not
-> possible to determine which index corresponds to last loaded action.
->
-> So unless there's a better idea on how to deal with this, a query API won't work
-> for the case where same bpf prog is attached more than once. Returning the
-> id/index during attach seemed better than all other options we considered.
+On Fri, Apr 02, 2021 at 03:08:27PM -0300, Arnaldo wrote:
+> 
+> 
+> On April 2, 2021 2:42:21 PM GMT-03:00, Yonghong Song <yhs@fb.com> wrote:
+> >On 4/2/21 10:23 AM, Yonghong Song wrote:
+> :> Thanks. I checked out the branch and did some testing with latest
+> >clang 
+> >> trunk (just pulled in).
+> >> 
+> >> With kernel LTO note support, I tested gcc non-lto, and llvm-lto
+> >mode, 
+> >> it works fine.
+> >> 
+> >> Without kernel LTO note support, I tested
+> >>    gcc non-lto  <=== ok
+> >>    llvm non-lto  <=== not ok
+> >>    llvm lto     <=== ok
+> >> 
+> >> Surprisingly llvm non-lto vmlinux had the same "tcp_slow_start"
+> >issue.
+> >> Some previous version of clang does not have this issue.
+> >> I double checked the dwarfdump and it is indeed has the same reason
+> >> for lto vmlinux. I checked abbrev section and there is no cross-cu
+> >> references.
+> >> 
+> >> That means we need to adapt this patch
+> >>    dwarf_loader: Handle subprogram ret type with abstract_origin
+> >properly
+> >> for non merging case as well.
+> >> The previous patch fixed lto subprogram abstract_origin issue,
+> >> I will submit a followup patch for this.
+> >
+> >Actually, the change is pretty simple,
+> >
+> >diff --git a/dwarf_loader.c b/dwarf_loader.c
+> >index 5dea837..82d7131 100644
+> >--- a/dwarf_loader.c
+> >+++ b/dwarf_loader.c
+> >@@ -2323,7 +2323,11 @@ static int die__process_and_recode(Dwarf_Die 
+> >*die, struct cu *cu)
+> >         int ret = die__process(die, cu);
+> >         if (ret != 0)
+> >                 return ret;
+> >-       return cu__recode_dwarf_types(cu);
+> >+       ret = cu__recode_dwarf_types(cu);
+> >+       if (ret != 0)
+> >+               return ret;
+> >+
+> >+       return cu__resolve_func_ret_types(cu);
+> >  }
+> >
+> >Arnaldo, do you just want to fold into previous patches, or
+> >you want me to submit a new one?
+> 
+> I can take care of that.
+> 
+> And I think it's time for to look at Jiri's test suite... :-)
+> 
+> It's a holiday here, so I'll take some time to get to this, hopefully I'll tag 1.21 tomorrow tho.
 
-All of these things are messy because of tc legacy. bpf tried to follow tc style
-with cls and act distinction and it didn't quite work. cls with
-direct-action is the only
-thing that became mainstream while tc style attach wasn't really addressed.
-There were several incidents where tc had tens of thousands of progs attached
-because of this attach/query/index weirdness described above.
-I think the only way to address this properly is to introduce bpf_link style of
-attaching to tc. Such bpf_link would support ingress/egress only.
-direction-action will be implied. There won't be any index and query
-will be obvious.
-So I would like to propose to take this patch set a step further from
-what Daniel said:
-int bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
-and make this proposed api to return FD.
-To detach from tc ingress/egress just close(fd).
-The user processes will not conflict with each other and will not accidently
-detach bpf program that was attached by another user process.
-Such api will address the existing tc query/attach/detach race race conditions.
-And libbpf side of support for this api will be trivial. Single bpf
-link_create command
-with ifindex and ingress|egress arguments.
-wdyt?
+heya,
+I did not follow this change, but if you put the latest change
+into some branch I can run it on top of that
+
+jirka
+
