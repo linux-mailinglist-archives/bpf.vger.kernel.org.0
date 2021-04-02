@@ -2,207 +2,260 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65797352D74
-	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 18:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2162352E33
+	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 19:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236306AbhDBP1t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Apr 2021 11:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236164AbhDBP1s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Apr 2021 11:27:48 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D63C0613E6;
-        Fri,  2 Apr 2021 08:27:47 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so6326636pjb.0;
-        Fri, 02 Apr 2021 08:27:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tIxHGNELb2mJ/qfIKGau1T48x653gpBZprlhpzqJO4U=;
-        b=hn5VX8uofqMm8+vFfHs88guqhAIkXJN8+mmgCzgk5hKsXnbUA+lDSEtR72ET/ZQIFh
-         17RMO1QuiYslstYV2r330BV9e5ZuiN1GkZBVZAzA+gG3o9FwvZz8Utwx5HYRowDhe6Ys
-         Pocn8Cpe0CfcVk5Fe8Iplw5hsCeTsg+2Z1XaHKFRBao041VzyvVbIVt0nVh+hxBpsZtO
-         VuH5lfPwjiZ8gnEk13cgo8X+iZSMmLKYAbUwZQWgsl7y4Q6ErjgtQIh5ACylFW2t8fRo
-         BDCt2wEA1/ML+mGNyOrbs/NAiuoFerJ9W/5mb6tiyuZkKHseokrLGaVT67RVqCssGHyv
-         LqGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tIxHGNELb2mJ/qfIKGau1T48x653gpBZprlhpzqJO4U=;
-        b=ukl2ddKsRDbcgaFlmqYVHbq22Go1E67OH9APCfLnRGZqrJ1O/wbFgJ1JorWf27+8yt
-         9Ij1rgJU8QtQunUGfXjDEChaVAnkOPaEmU4ALmru5boPCyDjD2sLsIfx8DabWz1LmxUG
-         ITFLnnsRXm7taN78ach47VApJsDUu2SHVEaPJadqwTi0epy0d7wDDyRm3beg+/0fWdxa
-         e3IRGIYSItvdECVGlgKzOocfANcm7llsNces/wgaW6yoTkcmvZhlfM4k9Hc9eIjlYjpf
-         PzdzYANJzzvGObo75t2MUL/mRQqibFrT2XgFj2xFEoCtLKNBvkFPesgxViZScP60WQ8K
-         ikoQ==
-X-Gm-Message-State: AOAM5302MsOhR6UOJygVmP5TgJ7aEoEToCmstrMUJTRX86ul7MyZUUm7
-        hgZt8YRh3f9ntU/XX8zS/+4=
-X-Google-Smtp-Source: ABdhPJz8zo37dXK1UUIAHPOswKvIYBxjtZ/wzO/H0RekbKh81R/BbuGVkGhJtGF/3pIZ6l+A6R59Cw==
-X-Received: by 2002:a17:902:7786:b029:e6:cc0f:4dff with SMTP id o6-20020a1709027786b02900e6cc0f4dffmr13343337pll.4.1617377266981;
-        Fri, 02 Apr 2021 08:27:46 -0700 (PDT)
-Received: from localhost ([112.79.204.47])
-        by smtp.gmail.com with ESMTPSA id y66sm8430706pgb.78.2021.04.02.08.27.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 08:27:46 -0700 (PDT)
-Date:   Fri, 2 Apr 2021 20:57:43 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        id S229722AbhDBRXs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Apr 2021 13:23:48 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:38548 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229553AbhDBRXs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 2 Apr 2021 13:23:48 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 132HKg40006274;
+        Fri, 2 Apr 2021 10:23:43 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=xKTn7bBQEISAzn5f7WdIJnuPUhRFJAGKEJuoYaZj6NQ=;
+ b=OYKM48kFj/m6oWzx/TaZ5rvQttz3eOTcmxn5OKhz4wzw70LHqlQropFLO1DpjJc1gY8W
+ lCOzNQSagN7xJm5GwKIY+rUR5/74D4zZ7kTUgezv7VmwODmSz1RvzFqd1NLmy7YkKvMh
+ 0bAsIxKaDEh+2mTpkIGw2h15lnbuaBLNEjo= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 37nspfuvhp-10
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 02 Apr 2021 10:23:42 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 2 Apr 2021 10:23:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R2L9OMS4ajiRsnhVed5MPwqTusnmDMJj9xXn5iOnyc1mR/Gydaf0DTFdjg24bher0aPbP34iIrnmRJhjBbnXB9o+W/NUT8cHHHYQIImt/XzKWoZ2ifr7N3N/vmJHU9U4x/cZuS/u/0gGi3nQ5yhiX3zE+TfRMTWzSQoowmb4kI4KOGlkpwryrg2NmqU8A6UzXPTwSoqP/b96LKzv1+YgSZKEqoXuUps36MEmPCGPlpJYpDeP6/XQ5aSoq5Ca6GqAv46LGopshmrlmyAKToA6xnQylzqQ6CmZ7VIHfXjeP9dZmwpMcxL8prpRJsuMx0+iyEQVF1fGo1PGJlTXVooOuw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xKTn7bBQEISAzn5f7WdIJnuPUhRFJAGKEJuoYaZj6NQ=;
+ b=i1TvGoMWXC6pgK7ZtVYMlLYqXSu/Abi+e8LiRnV75Dtc7yvZpeovZJwFeeG/FD14nULLPpOw6PtNTI/qyf8UvEaTbWzrT5BtuqGkhyX5j9SfdG7UbflJtAAG+JaFLW5G/R58qUHpel8baI1EyfgkH+GoGZ3bIgpJBIAlVgVpmUKXg8j/b9pLkqfgtw8UAG163WdazIpdaiygD5b+Ul/OuDygUlAnD48h68C50aIfYbaxTc+8/lZXMWdzpVrGVcfcyLhbPXTrQCaJjFlSVkitQASuNpkTFHUOlJn6+M/ckPwVV0It1E0hIqep/NgY6hrsjl/Bb6DECvyC1VhUQS8VtQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR15MB2415.namprd15.prod.outlook.com (2603:10b6:805:1c::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Fri, 2 Apr
+ 2021 17:23:39 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3999.027; Fri, 2 Apr 2021
+ 17:23:39 +0000
+Subject: Re: [PATCH dwarves] dwarf_loader: handle subprogram ret type with
+ abstract_origin properly
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     David Blaikie <dblaikie@gmail.com>, <dwarves@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-Message-ID: <20210402152743.dbadpgcmrgjt4eca@apollo>
-References: <20210325120020.236504-1-memxor@gmail.com>
- <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
- <20210328080648.oorx2no2j6zslejk@apollo>
- <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
- <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
- <20210331094400.ldznoctli6fljz64@apollo>
- <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
+        Bill Wendling <morbo@google.com>, bpf <bpf@vger.kernel.org>,
+        <kernel-team@fb.com>, Nick Desaulniers <ndesaulniers@google.com>,
+        Jiri Olsa <jolsa@kernel.org>
+References: <20210401213620.3056084-1-yhs@fb.com>
+ <e6f77eb7-b1ce-5dc3-3db7-bf67e7edfc0b@fb.com>
+ <CAENS6EsZ5OX9o=Cn5L1jmx8ucR9siEWbGYiYHCUWuZjLyP3E7Q@mail.gmail.com>
+ <1ef31dd8-2385-1da1-2c95-54429c895d8a@fb.com>
+ <CAENS6EsiRsY1JptWJqu2wH=m4fkSiR+zD8JDD5DYke=ZnJOMrg@mail.gmail.com>
+ <YGckYjyfxfNLzc34@kernel.org> <YGcw4iq9QNkFFfyt@kernel.org>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <2d55d22b-d136-82b9-6a0f-8b09eeef7047@fb.com>
+Date:   Fri, 2 Apr 2021 10:23:36 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
+In-Reply-To: <YGcw4iq9QNkFFfyt@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+X-Originating-IP: [2620:10d:c090:400::5:810b]
+X-ClientProxiedBy: MWHPR15CA0046.namprd15.prod.outlook.com
+ (2603:10b6:300:ad::32) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21cf::17eb] (2620:10d:c090:400::5:810b) by MWHPR15CA0046.namprd15.prod.outlook.com (2603:10b6:300:ad::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28 via Frontend Transport; Fri, 2 Apr 2021 17:23:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 65f8d72e-0b43-433a-beef-08d8f5fc0e3e
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2415:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR15MB24151EB135E4D4C7F5A53A36D37A9@SN6PR15MB2415.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: O2I920vHX2OzcNqhKL9aOlztM88tOz7drIJ+nutS1iv1XrG8zPjzCBi4QiUTavMVJVZrvtBUXTruL5AJYW05UkvYEbBGEmvyobqPyKiD7jzzWMFnmVIs1D/oNQVdwwCFi6rHs1xmvpDXrvgSd+fzqmsNI9lp/k4T2LOTLWFrmS5Gg7Og1TMvEwWj5K+yJdEJc8PXEDVC46Ic5qtU89z8zSJWXKzD7nokNAvLu0s4/QfApXC4oupMeaC1wCBDAnd24osJ5plAQr+9Id1wvr92d2WYZn4OvEEmvRqmGOJ7mDO15QsnZ5tf+yTHuz0EE0EaRMMm6QTJBybdw62OWV2WRRx9yWgsARlDcJPKU2SWHZqD02syEDlHEnSybZyTgDskS1XWdSTdXQnPdF9uT77QWa9CTIIk9CCD6dh0lQ4iNOl45hzzT0oqRafpV6WNGQ4RHRhvtxrvDVIsckWaD2CwcWMk+snyhNDTP5yVms8N4f4cVre5QuWI/LUnCTODnyQUbr5SejUiZrOdsX3M3SJ77CwMAl3Mkaj5ZPWOcg+hXI9U/9Zwe7tAYQpbdlDJPnNWatv0OeTcRhqPNYfa7emWmrruzUMmf/6KYPUm1YkF5o7O2JkUvUlAG2midVoGiGZyPaYz/ishdrbQY1B/r5pbEQoKHn2mIMaTxhhS4VmMjE3dmVQFWOeZz5SFw8I95/0taE9PDzgfvUphITmwRVzJiQ0MTotAOKFgnvWdSMTYs6PFMI2WmAyqGaQXm8QUjKVYvb3z7AbTDfFTSkbmxukgvnhnZUC4sOOYK64i7GNx1Oo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(39860400002)(136003)(346002)(396003)(4326008)(2906002)(31696002)(8676002)(36756003)(66946007)(66476007)(66556008)(38100700001)(52116002)(2616005)(6916009)(86362001)(5660300002)(478600001)(8936002)(966005)(186003)(83380400001)(31686004)(54906003)(53546011)(6486002)(316002)(16526019)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RTJvN2R5elBBQ2x0YndTNmlyb05UU1UrNlJtRlA3R2lKNE05cHJnZWlFSUgx?=
+ =?utf-8?B?RFRiTzdGQmkzWVBmRVlHdzJJcEJKMUU2Vm9LL3lzWXlDcHVmR09FenJkblRy?=
+ =?utf-8?B?SEtaQ21ZTDBCUnhDTG9rQks5SDFRbjVhYnFULzZQazVRY3R3cXlsYjJqSmJN?=
+ =?utf-8?B?eTdFUnhWRHVoZFl2MnEwUWtSN3dWNWM1QVJqZDRkTGtKRUVLWFFTM1RpRlY1?=
+ =?utf-8?B?cWlFS1lKSkNvZDZLZnlpQ3pLaDBHUnhhdnFmZ3ZMcmdsbVpVUVovZHhTb01I?=
+ =?utf-8?B?b1NEUE1mamY3dEN3K0ZuNkZlVGpZQ2YrUnhkRDRITnBpQ1RTdGZ4azdmYmp0?=
+ =?utf-8?B?RndaRTExZ29hVjJydHJwRnJpbUZad2RpZzB2YmpNWHlvTVA3Z0taMjcxS2pw?=
+ =?utf-8?B?bjBES1RLR1BjM0Y3YXhvV2krajhjOUZiUXE2M21tYlNXWWRHUjNzc0lKS3R0?=
+ =?utf-8?B?VzRhQlJIYkR0UWsybUs5QXM4a2JsM2VJYjMzaXZGSzNyV0VsaE16ZUhMQ2t0?=
+ =?utf-8?B?QzRBR0JZM3FaWjRqdnNSZWJONWxKSU1EOHFIeWQ0Vlh1d3pEZm11WWFZZnVo?=
+ =?utf-8?B?UytQZldvZTNPM1pBbnlSc2d0a3diRXJqd2R2VXRVYktJOExENjZVdURYUmVB?=
+ =?utf-8?B?dmRieFJDNDdiVDk2MHVNcnlOQmlrRjFncUFiZjJLdCs4YkpnUko4aWU5ZzBS?=
+ =?utf-8?B?TmlkUVRLcFpUSys4NWxIaUV6MVhsaVVZU25idXBkWTljRGRzTnFMOXlPUFFK?=
+ =?utf-8?B?NmhiNmZZQllHaFVsVjlHSHpuTEZVSWJQL1VYeFRnUTJjM2dOQVBHZVBHZFUr?=
+ =?utf-8?B?MXlvOHFkM2gyTVFrbG9TNVE5VCtwQ3hweTBqTENyWDVHRCswZGZVVlJSM01D?=
+ =?utf-8?B?QlVjVXg5Q2ZneDZOSFNFT05NOEVTcWlTaGdqcTV4YlQrN2k5MTVYSXNhMHFB?=
+ =?utf-8?B?dG9YT051UUVUYWI1c1dCN3VDTFZzZU9NWTIvVXV2U3JSbkRFVEJoMUlJazIw?=
+ =?utf-8?B?Nnl5WjI4Q21BU2ZOcTRCaFJyZXhOVktvTHM2aXA4WHJXYWNuWFc2M2tsb2Uw?=
+ =?utf-8?B?NGVTY09pRThPNHNMQVBnV3cyYVUrZlZiQmNiL3NBRFdWSGJKeWNaUUI5c2xt?=
+ =?utf-8?B?dS9TS2dYejNoUzVNdE5ZeUxocWNRUFZVSGxLem51a2tMNWlHUndVblZHZE5Z?=
+ =?utf-8?B?eWxZQnpSQ0ZDbTYxd3JIY1kyZExyWW9xTGNCWmU4WUluN1RPSkg4RzAwa2Rp?=
+ =?utf-8?B?b2c4RlNYR3UyVjN3U3pVcmFod0MyK0VNcnBBTjdHdkZpTUI2dG5IWEhWNlB4?=
+ =?utf-8?B?dFFQZnNaRmhHL0I4cUozUkNoZFBlYVZGand5bHlTYVZOc2FlR203NjRnQlVR?=
+ =?utf-8?B?eHZudld1RllXaFUxU2NxL2U3WkdRV1VEZ2Zzck03V0doQXJJb1RCR09EbklJ?=
+ =?utf-8?B?Y2Nxc0dpZTA2TGh5dWRScy9vOXAxSk9NS0p1aVptMnArcEo2WVRRSE5BTHMx?=
+ =?utf-8?B?alhsVHVoMmYrVHlMWjFDUFhPZGNVNXdIdk43Z3NjdllxVnQ0ckdNS05MeWpT?=
+ =?utf-8?B?S0NHNEduNzZlSjJsY0JJUEZCVzl4aEh1VVk1Q3ZHRW42ck9aRTA0anJySGNH?=
+ =?utf-8?B?Qld4TmN0RmV2cjlLeVEyNWhsZS96MzRZL1FRYVZnU3k2bGZkZFlYODBsdm5a?=
+ =?utf-8?B?ZEF6K0U3SVRETkhET2M0YjhSZEZubXdkM0RaQTBObWtJTzY0dm1iajVidFZF?=
+ =?utf-8?B?cGEvbkovVE5EVDBib2l2end2amFCaUNOVlpKajRMVFZRNk9URDc3MzBlY0d3?=
+ =?utf-8?Q?xpalqROMsTF4b6UjGSNQa7+6PTLyauwC5ReDI=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 65f8d72e-0b43-433a-beef-08d8f5fc0e3e
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2021 17:23:39.4151
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Cuka2wZQGVsdIypZIz1OyPysKiXND2VXSvup2Rqs6RryJizU0KTMiKdjhykxdH7H
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2415
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: 2GPUqKAWb0qnC1RmiSc7zETd5LKoc0AK
+X-Proofpoint-ORIG-GUID: 2GPUqKAWb0qnC1RmiSc7zETd5LKoc0AK
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-02_12:2021-04-01,2021-04-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ lowpriorityscore=0 impostorscore=0 clxscore=1015 malwarescore=0
+ suspectscore=0 bulkscore=0 adultscore=0 phishscore=0 mlxlogscore=999
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2103310000 definitions=main-2104020122
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 05:49:29AM IST, Daniel Borkmann wrote:
-> On 3/31/21 11:44 AM, Kumar Kartikeya Dwivedi wrote:
-> > On Wed, Mar 31, 2021 at 02:55:47AM IST, Daniel Borkmann wrote:
-> > > Do we even need the _block variant? I would rather prefer to take the chance
-> > > and make it as simple as possible, and only iff really needed extend with
-> > > other APIs, for example:
-> >
-> > The block variant can be dropped, I'll use the TC_BLOCK/TC_DEV alternative which
-> > sets parent_id/ifindex properly.
-> >
-> > >    bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS});
-> > >
-> > > Internally, this will create the sch_clsact qdisc & cls_bpf filter instance
-> > > iff not present yet, and attach to a default prio 1 handle 1, and _always_ in
-> > > direct-action mode. This is /as simple as it gets/ and we don't need to bother
-> > > users with more complex tc/cls_bpf internals unless desired. For example,
-> > > extended APIs could add prio/parent so that multi-prog can be attached to a
-> > > single cls_bpf instance, but even that could be a second step, imho.
-> >
-> > I am not opposed to clsact qdisc setup if INGRESS/EGRESS is supplied (not sure
-> > how others feel about it).
->
-> What speaks against it? It would be 100% clear from API side where the prog is
-> being attached. Same as with tc cmdline where you specify 'ingress'/'egress'.
->
 
-Ok, I will add the qdisc setup in the next revision.
 
-> > We could make direct_action mode default, and similarly choose prio
->
-> To be honest, I wouldn't even support a mode from the lib/API side where direct_action
-> is not set. It should always be forced to true. Everything else is rather broken
-> setup-wise, imho, since it won't scale. We added direct_action a bit later to the
-> kernel than original cls_bpf, but if I would do it again today, I'd make it the
-> only available option. I don't see a reasonable use-case where you have it to false.
->
+On 4/2/21 7:57 AM, Arnaldo Carvalho de Melo wrote:
+> Em Fri, Apr 02, 2021 at 11:04:18AM -0300, Arnaldo Carvalho de Melo escreveu:
+>> Em Thu, Apr 01, 2021 at 05:00:46PM -0700, David Blaikie escreveu:
+>>> On Thu, Apr 1, 2021 at 4:41 PM Yonghong Song <yhs@fb.com> wrote:
+>>>> On 4/1/21 3:27 PM, David Blaikie wrote:
+>>>>> Though people may come up with novel uses of DWARF features. What would
+>>>>> happen if this constraint were violated/what's your motivation for
+>>>>> asking (I don't quite understand the connection between test_progs
+>>>>> failure description, and this question)
+> 
+>>>> I have some codes to check the tag associated with abstract_origin
+>>>> for a subprogram must be a subprogram. Through experiment, I didn't
+>>>> see a violation, so I wonder that I can get confirmation from you
+>>>> and then I may delete that code.
+> 
+>>>> The test_progs failure exposed the bug, that is all.
+> 
+>>>> pahole cannot handle all weird usages of dwarf, so I think pahole
+>>>> is fine only to support well-formed dwarf.
+> 
+>>> Sounds good. Thanks for the context!
+> 
+>> David, since you took the time to go thru the changes and to agree that
+>> Yonghong's fix is good, can I add a:
+> 
+>> Acked-by: David Blaikie <dblaikie@gmail.com>
+> 
+>> to this patch?
+> 
+>> Maybe even a:
+> 
+>> Reviewed-by: David Blaikie <dblaikie@gmail.com>
+> 
+> What I have is at tmp.master, please take a look and check that
+> everything is ok, the only think I wished to fix but I think can be left
+> for later is in the tmp.master branch at:
+> 
+>   git://git.kernel.org/pub/scm/devel/pahole/pahole.git tmp.master
 
-I'm all for doing that, but in some sense that also speaks against SCHED_ACT
-support. Currently, you can load SCHED_ACT programs using this series, but not
-really bind them to classifier. I left that option open to a future patch, it
-would just reuse the existing tc_act_add_action helper (also why I kept it in
-its own function). Maybe we need to reconsider that, if direct action is the
-only recommended way going forward (to discourage people from using SCHED_ACT),
-or just add opts to do all the setup in low level API, instead of leaving it
-incomplete.
+Thanks. I checked out the branch and did some testing with latest clang 
+trunk (just pulled in).
 
-> > as 1 by default instead of letting the kernel do it. Then you can just pass in
-> > NULL for bpf_tc_cls_opts and be close to what you're proposing. For protocol we
-> > can choose ETH_P_ALL by default too if the user doesn't set it.
->
-> Same here with ETH_P_ALL, I'm not sure anyone uses anything other than ETH_P_ALL,
-> so yes, that should be default.
+With kernel LTO note support, I tested gcc non-lto, and llvm-lto mode, 
+it works fine.
 
-Ack.
+Without kernel LTO note support, I tested
+    gcc non-lto  <=== ok
+    llvm non-lto  <=== not ok
+    llvm lto     <=== ok
 
->
-> > With these modifications, the equivalent would look like
-> > 	bpf_tc_cls_attach(prog_fd, TC_DEV(ifindex, INGRESS), NULL, &id);
->
-> Few things compared to bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
->
-> 1) nit, but why even 'cls' in the name. I think we shouldn't expose such old-days
->    tc semantics to a user. Just bpf_tc_attach() is cleaner/simpler to understand.
+Surprisingly llvm non-lto vmlinux had the same "tcp_slow_start" issue.
+Some previous version of clang does not have this issue.
+I double checked the dwarfdump and it is indeed has the same reason
+for lto vmlinux. I checked abbrev section and there is no cross-cu
+references.
 
-Since it would make it clear this is for SCHED_CLS progs, likewise bpf_tc_act_*
-is for SCHED_ACT progs. Not opposed to changing the name.
+That means we need to adapt this patch
+    dwarf_loader: Handle subprogram ret type with abstract_origin properly
+for non merging case as well.
+The previous patch fixed lto subprogram abstract_origin issue,
+I will submit a followup patch for this.
 
-> 2) What's the 'TC_DEV(ifindex, INGRESS)' macro doing exactly? Looks unnecessary,
->    why not regular args to the API?
-
-It is very easy to support BLOCK (I know it's not really popular here, but I
-think if supporting it just requires adding a macro, then we can go ahead). So
-the user can use TC_BLOCK(block_idx) instead of remembering ifindex is to be set
-to TCM_IFINDEX_MAGIC_BLOCK and parent_id to actual block index. It will just
-expand to:
-
-#define TC_BLOCK(block_idx) TCM_IFINDEX_MAGIC_BLOCK, (block_idx)
-
-TC_DEV macro can be dropped, since user can directly pass ifindex and parent_id.
-
-> 3) Exposed bpf_tc_attach() API could internally call a bpf_tc_attach_opts() API
->    with preset defaults, and the latter could have all the custom bits if the user
->    needs to go beyond the simple API, so from your bpf_tc_cls_attach() I'd also
->    drop the NULL.
-
-Ok, this is probably better (but maybe we can do this for the high-level
-bpf_program__attach that returns a bpf_link * instead of introducing yet
-another function).
-
-> 4) For the simple API I'd likely also drop the id (you could have a query API if
->    needed).
->
-
-This would be fine, because it's not a fast path or anything, but right now we
-return the id using the netlink response, otherwise for query we have to open
-the socket, prepare the msg, send and recv again. So it's a minor optimization.
-
-However, there's one other problem. In an earlier version of this series, I
-didn't keep the id/index out parameters (to act as handle to the newly attached
-filter/action). This lead to problems on query. Suppose a user doesn't properly
-fill the opts during query (e.g. in case of filters). This means the netlink
-dump includes all filters matching filled in attributes. If the prog_id for all
-of these is same (e.g. all have same bpf classifier prog attached to them), it
-becomes impossible to determine which one is the filter user asked for. It is
-not possible to enforce filling in all kinds of attributes since some can be
-left out and assigned by default in the kernel (priority, chain_index etc.). So
-returning the newly created filter's id turned out to be the best option. This
-is also used to stash filter related information in bpf_link to properly release
-it later.
-
-The same problem happens with actions, where we look up using the prog_id, we
-multiple actions with different index can match on same prog_id. It is not
-possible to determine which index corresponds to last loaded action.
-
-So unless there's a better idea on how to deal with this, a query API won't work
-for the case where same bpf prog is attached more than once. Returning the
-id/index during attach seemed better than all other options we considered.
-
---
-Kartikeya
+> 
+> I did some testing for this ret type fix:
+> 
+> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=tmp.master
+> 
+> And for the LTO ELF notes:
+> 
+> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=tmp.master&id=7a79d2d7a573a863aa36fd06f540fe9fa824db4e
+> 
+> The only remaining thing, which I think can be left for 1.22 is:
+> 
+> [acme@five pahole]$ btfdiff vmlinux.clang.thin.LTO
+> vmlinux.clang.thin.LTO           vmlinux.clang.thin.LTO+ELF_note
+> [acme@five pahole]$ btfdiff vmlinux.clang.thin.LTO+ELF_note
+> --- /tmp/btfdiff.dwarf.CtLJpQ	2021-04-02 11:55:09.658433186 -0300
+> +++ /tmp/btfdiff.btf.d3L3vy	2021-04-02 11:55:09.925439277 -0300
+> @@ -67255,7 +67255,7 @@ struct cpu_rmap {
+>   	struct {
+>   		u16                index;                /*    16     2 */
+>   		u16                dist;                 /*    18     2 */
+> -	} near[0]; /*    16     0 */
+> +	} near[]; /*    16     0 */
+> 
+>   	/* size: 16, cachelines: 1, members: 5 */
+>   	/* last cacheline: 16 bytes */
+> @@ -101181,7 +101181,7 @@ struct linux_efi_memreserve {
+>   	struct {
+>   		phys_addr_t        base;                 /*    16     8 */
+>   		phys_addr_t        size;                 /*    24     8 */
+> -	} entry[0]; /*    16     0 */
+> +	} entry[]; /*    16     0 */
+> 
+>   	/* size: 16, cachelines: 1, members: 4 */
+>   	/* last cacheline: 16 bytes */
+> @@ -113516,7 +113516,7 @@ struct netlink_policy_dump_state {
+>   	struct {
+>   		const struct nla_policy  * policy;       /*    16     8 */
+>   		unsigned int       maxtype;              /*    24     4 */
+> -	} policies[0]; /*    16     0 */
+> +	} policies[]; /*    16     0 */
+> 
+>   	/* size: 16, cachelines: 1, members: 4 */
+>   	/* sum members: 12, holes: 1, sum holes: 4 */
+> [acme@five pahole]$
+> 
+> - Arnaldo
+> 
