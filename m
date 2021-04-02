@@ -2,212 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1320352F4E
-	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 20:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9B2352F50
+	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 20:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236255AbhDBSby (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Apr 2021 14:31:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42318 "EHLO
+        id S230092AbhDBSc3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Apr 2021 14:32:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbhDBSbx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Apr 2021 14:31:53 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87401C0613E6;
-        Fri,  2 Apr 2021 11:31:52 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id t14so5294635ilu.3;
-        Fri, 02 Apr 2021 11:31:52 -0700 (PDT)
+        with ESMTP id S229722AbhDBSc2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Apr 2021 14:32:28 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2226DC0613E6;
+        Fri,  2 Apr 2021 11:32:27 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id u9so6380955ljd.11;
+        Fri, 02 Apr 2021 11:32:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=BFBhTWbA18iJBRtXWFRSWL3NbbovxojieVF5twnWirs=;
-        b=Tc5Kq3mPbIujxRM/yG4dLepyGe3i0xnWqqzhk0AX9o3ilPmgjdIqJgnqpM3YTpWGw3
-         5QNeJsKtJ9G6JGR33u+dP5fkuVE/OpuixUnS6K/1Fa9tF0g/imuFkfKFqa9uuU/6hEFZ
-         D5M9kJFAt9qEDOh9S3Bb6RWsgJgd7UydPZ3YDEUKC/gPAsPfK75tfukc1WqL7tAEqOAQ
-         /TaPTZnPToIQU0ve6z18nvcDSQUx9ClWQHo6S8boDEnkn9HkLeJll3U0m7kwIKUfIH/j
-         07xTY1Ic2AdUYrFgHehO935S2I9Dnzfkyg965q7eWrCFyHkorM2OmJycEY8nTIPixPql
-         /mzA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ad8VMz3WsxyloFA1un2SE8S0Vb3SXK/5tCOkJ+wMDVk=;
+        b=hgzwlPBSIM190eN3Rsl3Os6i9tIlxa+0q4o702zLLHZwfNP7o7XVwtgxSTT616Cmyn
+         CZX6FkDGqHeBC+qVoLOfyGbpvHN2Ez4sF1QweMn6xoHmNnZbxZtTUp4hwbaElWZisGpW
+         NWuZytZ6o8+WOa3Wi/1US3LFeEbfetkWSbSx3OFJ/Edy8jFzv+89Dxdn9Je0wYhzmFaw
+         ZwfQIU9t8ncjaUQiRWTXzyDWvvGb+UVje4mcyf1RiB70ShrYpR/FOUmrVDJOnb78Fwlj
+         fvZDjFLv+y22kZ9Cs+PAG8zZF8+b9W/cVP4E4rEm8OqVYnLoElbEFy99R4JXtvLjSDsO
+         fGOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=BFBhTWbA18iJBRtXWFRSWL3NbbovxojieVF5twnWirs=;
-        b=S+WCwtL6dbek+jLzQjJBwZe5ukgv28BPIn+ecqKeNxYH5Kj6M0uL0MfDubCxId6b7h
-         RvrDx795l3wxuKuuxM+Ua+N0VmQLMdrmIfBKXHf6FmjavWatCV81GPqvcBZq361xiK1M
-         SPv9dnmPPoc+z/yWRe29LFy8LkVbliRdledgmCqnNrohxRgmJsxw4YLRvb40iBlgWKcf
-         4KP9sGxgwRhChOVp7dtMvaun1A3LqCihlEHnVmUYXLTg9tlh54Fdx9wsTMNVeRJmUoX/
-         46rJu07u1AyqjXAwftR/MxRRrQC3AurJXolq+YkA2Rg8DeuHMAlmzdmuKuydjc3J05Tr
-         Is8Q==
-X-Gm-Message-State: AOAM5313alhR40BZ6TsGaFfDpHBVe9iHgRRGYEw0wBslC3lWvoW2lSbx
-        E5H9SG/dtHdrM1N5TW3sf/IxIrm2I+Plumbs1Y0=
-X-Google-Smtp-Source: ABdhPJyUdEuM58vXDHGVrWHdUM1vJXdEDdizX87W+x8pFH0Z7996KSbwX45KJxBPjWNVMtOpctxKXIYExrqnCJkXe38=
-X-Received: by 2002:a92:444e:: with SMTP id a14mr11798341ilm.215.1617388311933;
- Fri, 02 Apr 2021 11:31:51 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ad8VMz3WsxyloFA1un2SE8S0Vb3SXK/5tCOkJ+wMDVk=;
+        b=O8bp0akaPP48GDW+u11ADFai3N5mztn3pqZpNbovy/Rin8DDx70MB3p+AO4F2Dnfkk
+         RINwBacp+RDehAE2AYHJ+FLzf/I1jWKLkUVd7djm/bwJEi3pkg3ccSKfHP4DT/MqDjjB
+         Jvbkys85Kas4DsfUBUPHqhQgDyzg5x05cwhgY+RcUYQsO9sovbLs7yOhW0mydzcJPM96
+         al0IYFrf4Odg2GOgDPfKq5XlA9bk9J5SV/G9m9gtwAK6K+RpOKQ28w7s8ZH0/+3I6eke
+         B4+fou8jLW72BiaRMjdl4bP9a//QKSDKo89Nbb6EtHDFGwsgKMrPYCdzWoVscPMnMB3d
+         SWjw==
+X-Gm-Message-State: AOAM5312Yxmzc0PFVLcH/sFTrS6bxYTJ4cETHznPxAIvr7SvPHPM2//Q
+        GnZkjI2s1RzdN6RTe7D8XkSuyVXRGY6dv0Hh/os=
+X-Google-Smtp-Source: ABdhPJzDt/m+lC1BzgsA4s5CdZw4tYVpOB9H34jfZ0ELnOZ6Shxr8RG5L4t7XV1QRw/yNbCVk6U8VdZUK8WL5lJt3LM=
+X-Received: by 2002:a2e:8ec1:: with SMTP id e1mr8871661ljl.236.1617388345623;
+ Fri, 02 Apr 2021 11:32:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210401232723.3571287-1-yhs@fb.com> <CAKwvOdmX8d3XTzJFk5rN_PnOQYJ8bXMrh8DrhzqN=UBNdQiO3g@mail.gmail.com>
-In-Reply-To: <CAKwvOdmX8d3XTzJFk5rN_PnOQYJ8bXMrh8DrhzqN=UBNdQiO3g@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 2 Apr 2021 20:31:15 +0200
-Message-ID: <CA+icZUVkS4epkNoktGDGGEQcOY8CNcRsAHbjK=Z-9uLUgqiNfw@mail.gmail.com>
-Subject: Re: [PATCH kbuild v4] kbuild: add an elfnote for whether vmlinux is
- built with lto
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+References: <20210325120020.236504-1-memxor@gmail.com> <20210325120020.236504-4-memxor@gmail.com>
+ <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
+ <20210328080648.oorx2no2j6zslejk@apollo> <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
+ <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net> <20210331094400.ldznoctli6fljz64@apollo>
+ <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net> <20210402152743.dbadpgcmrgjt4eca@apollo>
+In-Reply-To: <20210402152743.dbadpgcmrgjt4eca@apollo>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 2 Apr 2021 11:32:14 -0700
+Message-ID: <CAADnVQ+wqrEnOGd8E1yp+1WTAx8ZcAx3HUjJs6ipPd0eKmOrgA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        bpf <bpf@vger.kernel.org>, kernel-team@fb.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Bill Wendling <morbo@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 2, 2021 at 8:07 PM 'Nick Desaulniers' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
+On Fri, Apr 2, 2021 at 8:27 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 >
-> On Thu, Apr 1, 2021 at 4:27 PM Yonghong Song <yhs@fb.com> wrote:
-> >
-> > Currently, clang LTO built vmlinux won't work with pahole.
-> > LTO introduced cross-cu dwarf tag references and broke
-> > current pahole model which handles one cu as a time.
-> > The solution is to merge all cu's as one pahole cu as in [1].
-> > We would like to do this merging only if cross-cu dwarf
-> > references happens. The LTO build mode is a pretty good
-> > indication for that.
-> >
-> > In earlier version of this patch ([2]), clang flag
-> > -grecord-gcc-switches is proposed to add to compilation flags
-> > so pahole could detect "-flto" and then merging cu's.
-> > This will increate the binary size of 1% without LTO though.
-> >
-> > Arnaldo suggested to use a note to indicate the vmlinux
-> > is built with LTO. Such a cheap way to get whether the vmlinux
-> > is built with LTO or not helps pahole but is also useful
-> > for tracing as LTO may inline/delete/demote global functions,
-> > promote static functions, etc.
-> >
-> > So this patch added an elfnote with a new type LINUX_ELFNOTE_LTO_INFO.
-> > The owner of the note is "Linux".
-> >
-> > With gcc 8.4.1 and clang trunk, without LTO, I got
-> >   $ readelf -n vmlinux
-> >   Displaying notes found in: .notes
-> >     Owner                Data size        Description
-> >   ...
-> >     Linux                0x00000004       func
-> >      description data: 00 00 00 00
-> >   ...
-> > With "readelf -x ".notes" vmlinux", I can verify the above "func"
-> > with type code 0x101.
-> >
-> > With clang thin-LTO, I got the same as above except the following:
-> >      description data: 01 00 00 00
-> > which indicates the vmlinux is built with LTO.
-> >
-> >   [1] https://lore.kernel.org/bpf/20210325065316.3121287-1-yhs@fb.com/
-> >   [2] https://lore.kernel.org/bpf/20210331001623.2778934-1-yhs@fb.com/
-> >
-> > Suggested-by: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
+> This would be fine, because it's not a fast path or anything, but right now we
+> return the id using the netlink response, otherwise for query we have to open
+> the socket, prepare the msg, send and recv again. So it's a minor optimization.
 >
-> LGTM thanks Yonghong!
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> However, there's one other problem. In an earlier version of this series, I
+> didn't keep the id/index out parameters (to act as handle to the newly attached
+> filter/action). This lead to problems on query. Suppose a user doesn't properly
+> fill the opts during query (e.g. in case of filters). This means the netlink
+> dump includes all filters matching filled in attributes. If the prog_id for all
+> of these is same (e.g. all have same bpf classifier prog attached to them), it
+> becomes impossible to determine which one is the filter user asked for. It is
+> not possible to enforce filling in all kinds of attributes since some can be
+> left out and assigned by default in the kernel (priority, chain_index etc.). So
+> returning the newly created filter's id turned out to be the best option. This
+> is also used to stash filter related information in bpf_link to properly release
+> it later.
 >
-> > ---
-> >  include/linux/elfnote-lto.h | 14 ++++++++++++++
-> >  init/version.c              |  2 ++
-> >  scripts/mod/modpost.c       |  2 ++
-> >  3 files changed, 18 insertions(+)
-> >  create mode 100644 include/linux/elfnote-lto.h
-> >
-> > Changelogs:
-> >   v3 -> v4:
-> >     . put new lto note in its own header file similar to
-> >       build-salt.h. (Nick)
+> The same problem happens with actions, where we look up using the prog_id, we
+> multiple actions with different index can match on same prog_id. It is not
+> possible to determine which index corresponds to last loaded action.
+>
+> So unless there's a better idea on how to deal with this, a query API won't work
+> for the case where same bpf prog is attached more than once. Returning the
+> id/index during attach seemed better than all other options we considered.
 
-That is a bit smarter (and smaller) than v3.
-Queued up and building a new clang-lto kernel...
-Will report later.
-
-- Sedat -
-
-> >   v2 -> v3:
-> >     . abandoned the approach of adding -grecord-gcc-switches,
-> >       instead create a note to indicate whether it is a lto build
-> >       or not. The note definition is in compiler.h. (Arnaldo)
-> >   v1 -> v2:
-> >     . limited to add -grecord-gcc-switches for LTO_CLANG
-> >       instead of all clang build
-> >
-> > diff --git a/include/linux/elfnote-lto.h b/include/linux/elfnote-lto.h
-> > new file mode 100644
-> > index 000000000000..d4635a3ecc4f
-> > --- /dev/null
-> > +++ b/include/linux/elfnote-lto.h
-> > @@ -0,0 +1,14 @@
-> > +#ifndef __ELFNOTE_LTO_H
-> > +#define __ELFNOTE_LTO_H
-> > +
-> > +#include <linux/elfnote.h>
-> > +
-> > +#define LINUX_ELFNOTE_LTO_INFO 0x101
-> > +
-> > +#ifdef CONFIG_LTO
-> > +#define BUILD_LTO_INFO ELFNOTE32("Linux", LINUX_ELFNOTE_LTO_INFO, 1)
-> > +#else
-> > +#define BUILD_LTO_INFO ELFNOTE32("Linux", LINUX_ELFNOTE_LTO_INFO, 0)
-> > +#endif
-> > +
-> > +#endif /* __ELFNOTE_LTO_H */
-> > diff --git a/init/version.c b/init/version.c
-> > index 92afc782b043..1a356f5493e8 100644
-> > --- a/init/version.c
-> > +++ b/init/version.c
-> > @@ -9,6 +9,7 @@
-> >
-> >  #include <generated/compile.h>
-> >  #include <linux/build-salt.h>
-> > +#include <linux/elfnote-lto.h>
-> >  #include <linux/export.h>
-> >  #include <linux/uts.h>
-> >  #include <linux/utsname.h>
-> > @@ -45,3 +46,4 @@ const char linux_proc_banner[] =
-> >         " (" LINUX_COMPILER ") %s\n";
-> >
-> >  BUILD_SALT;
-> > +BUILD_LTO_INFO;
-> > diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> > index 24725e50c7b4..98fb2bb024db 100644
-> > --- a/scripts/mod/modpost.c
-> > +++ b/scripts/mod/modpost.c
-> > @@ -2191,10 +2191,12 @@ static void add_header(struct buffer *b, struct module *mod)
-> >          */
-> >         buf_printf(b, "#define INCLUDE_VERMAGIC\n");
-> >         buf_printf(b, "#include <linux/build-salt.h>\n");
-> > +       buf_printf(b, "#include <linux/elfnote-lto.h>\n");
-> >         buf_printf(b, "#include <linux/vermagic.h>\n");
-> >         buf_printf(b, "#include <linux/compiler.h>\n");
-> >         buf_printf(b, "\n");
-> >         buf_printf(b, "BUILD_SALT;\n");
-> > +       buf_printf(b, "BUILD_LTO_INFO;\n");
-> >         buf_printf(b, "\n");
-> >         buf_printf(b, "MODULE_INFO(vermagic, VERMAGIC_STRING);\n");
-> >         buf_printf(b, "MODULE_INFO(name, KBUILD_MODNAME);\n");
-> > --
-> > 2.30.2
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOdmX8d3XTzJFk5rN_PnOQYJ8bXMrh8DrhzqN%3DUBNdQiO3g%40mail.gmail.com.
+All of these things are messy because of tc legacy. bpf tried to follow tc style
+with cls and act distinction and it didn't quite work. cls with
+direct-action is the only
+thing that became mainstream while tc style attach wasn't really addressed.
+There were several incidents where tc had tens of thousands of progs attached
+because of this attach/query/index weirdness described above.
+I think the only way to address this properly is to introduce bpf_link style of
+attaching to tc. Such bpf_link would support ingress/egress only.
+direction-action will be implied. There won't be any index and query
+will be obvious.
+So I would like to propose to take this patch set a step further from
+what Daniel said:
+int bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
+and make this proposed api to return FD.
+To detach from tc ingress/egress just close(fd).
+The user processes will not conflict with each other and will not accidently
+detach bpf program that was attached by another user process.
+Such api will address the existing tc query/attach/detach race race conditions.
+And libbpf side of support for this api will be trivial. Single bpf
+link_create command
+with ifindex and ingress|egress arguments.
+wdyt?
