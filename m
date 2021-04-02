@@ -2,239 +2,250 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD283352FC1
-	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 21:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D47352FDD
+	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 21:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235946AbhDBT2a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Apr 2021 15:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54512 "EHLO
+        id S235392AbhDBTjj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Apr 2021 15:39:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235392AbhDBT23 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Apr 2021 15:28:29 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC43C0613E6;
-        Fri,  2 Apr 2021 12:28:27 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id x126so4131313pfc.13;
-        Fri, 02 Apr 2021 12:28:27 -0700 (PDT)
+        with ESMTP id S229553AbhDBTji (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Apr 2021 15:39:38 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2217CC0613E6;
+        Fri,  2 Apr 2021 12:39:36 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id r193so3350182ior.9;
+        Fri, 02 Apr 2021 12:39:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qzxHzGuLfubJaD1BeP2oz9tkIUBEYknTaCVf5njFEWo=;
-        b=OJRWPZ5w7FNuCzY77omt+HggTbeJZP5z8Z/FCCwcE0MCEMx8mQY4m047Fbnm774bv0
-         Jzr4cW2BQUSBW5Nw0q1R6D5L2npHtux+bRDHj7dLXMIzfFTjc4oAckUCS6mHJiqCJb1/
-         8rRy/CMHCTRiQllYJcE5sf+oVdgobiPnyLMqUsDyBWIfZ04uZQ9mSGgIleZ+dG9c1LGB
-         7eRMckpoy+l/iznz19BwqNbJE5X4R4fOlXMwBPPUZW98wUoea2yH0Qk9OYFaaTECLij4
-         PFh7R4pt9G5lhd2Yl9lF5/K9KI6EoNKJGuOp+fsRZwscs/6vqod7BZy0p5exHG47XT9E
-         iCSg==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=SjGDs+Qa/9i8ji0NhBFxGrsZE0ynLmxwlichp6PJDdM=;
+        b=SeA7WEOI6NAmBiw/9tpsW6m+m1/+OJq5Egfl6VRQFdRYEIEKDvM3C/DrHhrdCbUHK8
+         iiDN/n/4HNgrsHyMJGJMlialgVWVosrd59/a1dxqXLOGy2N0UUM3u6cToLNoT376kPIU
+         /9IagZh/Mog27qmiouT9zxeYkTc+zxoYXjJxB+WSR2uU2CgUEEhT9+BjRcpxzgW/iNAY
+         nAgockqAKSP1bmzZ/8RJQpfrc22kIEB12hSTrFY6OUOlKeOa7r5b30zYTx63wdor9NcH
+         Qq2gAbuIdRvwhspDhcABFig4WWNwYdyy0BQcdaj1iyXkeBOhGIrNnNVSfBaW9wZE8tHQ
+         MhRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qzxHzGuLfubJaD1BeP2oz9tkIUBEYknTaCVf5njFEWo=;
-        b=Ba7wFl3DF8QEppmhh8EUZ6M9GZe+I0X2fwzg2iorRbcB5y03TcTxCd0cBdGgRwzVhL
-         yfdTZht4KUmBE2puUHdeeGKFd7eiUXgx9udQHngDRnR398TiZAcTedUm61z34+1AAKBS
-         xMJlHI2nRMVOl+YUWQKy1if3ES3gEMwQc9O11qbaY7jhWxPueqzywO9dST3M5xhk+Ft/
-         AQPPOeYrpiSDFkUf8TOXqA4bxLpYdwg5K7Sqg8lkA2VFGUXye/lhY9iIT7at+49+SZrt
-         NKtnGXeTLs1Mfn36EyKMF9a+l8mGdwlfw1kkPWO3xJT66NusKB9WDCwR5NQVTbAAwhsV
-         z9hw==
-X-Gm-Message-State: AOAM532RBzV4P3zTeYTY0FiHSchgoY8C1x3HWYlyB66/5mr91sV5jdSB
-        s4lCNysyXvnf+Kywka6Xdxo=
-X-Google-Smtp-Source: ABdhPJx4PjfkPbyc7P3i/GmC1X1a249mZSMk4ThiPFU/NO/Esr67XP+zgLRidqRR23aNWoP1UTBG6A==
-X-Received: by 2002:a63:f258:: with SMTP id d24mr12901593pgk.174.1617391706601;
-        Fri, 02 Apr 2021 12:28:26 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:f671])
-        by smtp.gmail.com with ESMTPSA id t12sm8997127pga.85.2021.04.02.12.28.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 12:28:26 -0700 (PDT)
-Date:   Fri, 2 Apr 2021 12:28:23 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        duanxiongchun@bytedance.com, wangdongdong.6@bytedance.com,
-        songmuchun@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
-Subject: Re: [RFC Patch bpf-next] bpf: introduce bpf timer
-Message-ID: <20210402192823.bqwgipmky3xsucs5@ast-mbp>
-References: <20210401042635.19768-1-xiyou.wangcong@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=SjGDs+Qa/9i8ji0NhBFxGrsZE0ynLmxwlichp6PJDdM=;
+        b=LzG6UUcCrtvNIHVCoqsmTSi6iM4Gr0XyO08jl7yOTa6XkR1YEGa26gzsLYxW76ZNQh
+         SV+/mT4oMybwKAHi6ZyGj+mWXqy9gTPB2+r4ZmPaZrU9C3VIQhHPquCmc3+V/cEO7iC4
+         jvCo+1mz5tqOpmcMjG27EbkjjZQxnqKZKNenkot8YrXK0wGatpdFyenuLxmAW6I3McEy
+         skQi7G69U/4gi+n2B++DzmQsOCtw4ylIwkCAtcBn60y3n69qb5DMYCqaPa50fcW8BhZp
+         +S6cDbPNG3hWWWKaPL0JzsmkOarTlo4H7bKZDeChOk6xQxK3VRfJlRXxwPCo7rmtBAze
+         64Ug==
+X-Gm-Message-State: AOAM533KJD9X7Q2NJY7igoDFt458ibSAYYeWonKEHcLY5oeOA4LHtwZy
+        XNlns2C2Gu4bVsS2blyscmdVxs40ZNuZduUycYg=
+X-Google-Smtp-Source: ABdhPJxK6j8msCLyDRSaY+g2dtLMVdKM5ePNX0a2fqYKFpvBZcZAoym0u6vfdfDKQY/+04PxvaurZNicmMQyHl+gtPs=
+X-Received: by 2002:a6b:d80d:: with SMTP id y13mr12334390iob.75.1617392375486;
+ Fri, 02 Apr 2021 12:39:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401042635.19768-1-xiyou.wangcong@gmail.com>
+References: <20210401232723.3571287-1-yhs@fb.com> <CAKwvOdmX8d3XTzJFk5rN_PnOQYJ8bXMrh8DrhzqN=UBNdQiO3g@mail.gmail.com>
+ <CA+icZUVkS4epkNoktGDGGEQcOY8CNcRsAHbjK=Z-9uLUgqiNfw@mail.gmail.com>
+In-Reply-To: <CA+icZUVkS4epkNoktGDGGEQcOY8CNcRsAHbjK=Z-9uLUgqiNfw@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 2 Apr 2021 21:38:58 +0200
+Message-ID: <CA+icZUWskBYk9fFzJ-6=P9bRA3Fo-_+tQNO0HFOOuoA3S26oRA@mail.gmail.com>
+Subject: Re: [PATCH kbuild v4] kbuild: add an elfnote for whether vmlinux is
+ built with lto
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        bpf <bpf@vger.kernel.org>, kernel-team@fb.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Bill Wendling <morbo@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 09:26:35PM -0700, Cong Wang wrote:
+On Fri, Apr 2, 2021 at 8:31 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Fri, Apr 2, 2021 at 8:07 PM 'Nick Desaulniers' via Clang Built
+> Linux <clang-built-linux@googlegroups.com> wrote:
+> >
+> > On Thu, Apr 1, 2021 at 4:27 PM Yonghong Song <yhs@fb.com> wrote:
+> > >
+> > > Currently, clang LTO built vmlinux won't work with pahole.
+> > > LTO introduced cross-cu dwarf tag references and broke
+> > > current pahole model which handles one cu as a time.
+> > > The solution is to merge all cu's as one pahole cu as in [1].
+> > > We would like to do this merging only if cross-cu dwarf
+> > > references happens. The LTO build mode is a pretty good
+> > > indication for that.
+> > >
+> > > In earlier version of this patch ([2]), clang flag
+> > > -grecord-gcc-switches is proposed to add to compilation flags
+> > > so pahole could detect "-flto" and then merging cu's.
+> > > This will increate the binary size of 1% without LTO though.
+> > >
+> > > Arnaldo suggested to use a note to indicate the vmlinux
+> > > is built with LTO. Such a cheap way to get whether the vmlinux
+> > > is built with LTO or not helps pahole but is also useful
+> > > for tracing as LTO may inline/delete/demote global functions,
+> > > promote static functions, etc.
+> > >
+> > > So this patch added an elfnote with a new type LINUX_ELFNOTE_LTO_INFO.
+> > > The owner of the note is "Linux".
+> > >
+> > > With gcc 8.4.1 and clang trunk, without LTO, I got
+> > >   $ readelf -n vmlinux
+> > >   Displaying notes found in: .notes
+> > >     Owner                Data size        Description
+> > >   ...
+> > >     Linux                0x00000004       func
+> > >      description data: 00 00 00 00
+> > >   ...
+> > > With "readelf -x ".notes" vmlinux", I can verify the above "func"
+> > > with type code 0x101.
+> > >
+> > > With clang thin-LTO, I got the same as above except the following:
+> > >      description data: 01 00 00 00
+> > > which indicates the vmlinux is built with LTO.
+> > >
+> > >   [1] https://lore.kernel.org/bpf/20210325065316.3121287-1-yhs@fb.com/
+> > >   [2] https://lore.kernel.org/bpf/20210331001623.2778934-1-yhs@fb.com/
+> > >
+> > > Suggested-by: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> > > Signed-off-by: Yonghong Song <yhs@fb.com>
+> >
+> > LGTM thanks Yonghong!
+> > Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> >
+> > > ---
+> > >  include/linux/elfnote-lto.h | 14 ++++++++++++++
+> > >  init/version.c              |  2 ++
+> > >  scripts/mod/modpost.c       |  2 ++
+> > >  3 files changed, 18 insertions(+)
+> > >  create mode 100644 include/linux/elfnote-lto.h
+> > >
+> > > Changelogs:
+> > >   v3 -> v4:
+> > >     . put new lto note in its own header file similar to
+> > >       build-salt.h. (Nick)
+>
+> That is a bit smarter (and smaller) than v3.
+> Queued up and building a new clang-lto kernel...
+> Will report later.
+>
 
-> This patch introduces a bpf timer map and a syscall to create bpf timer
-> from user-space.
+link="https://lore.kernel.org/bpf/3f29403d-4942-e362-c98a-4e2d20a3db88@fb.com/T/#t"
+b4 -d am $link
 
-That will severely limit timer api usability.
-I agree with Song here. If user space has to create it there is no reason
-to introduce new sys_bpf command. Just do all timers in user space
-and trigger bpf prog via bpf_prog_test_run cmd.
+Needs this fix for the pahole side?
 
-> 
-> The reason why we have to use a map is because the lifetime of a timer,
-> without a map, we have to delete the timer before exiting the eBPF program,
-> this would significately limit its use cases. With a map, the timer can
-> stay as long as the map itself and can be actually updated via map update
-> API's too,
-
-this part is correct.
-
-> where the key is the timer ID and the value is the timer expire
-> timer.
-
-The timer ID is unnecessary. We cannot introduce new IDR for every new
-bpf object. It doesn't scale.
-
-> Timer creation is not easy either. In order to prevent users creating a
-> timer but not adding it to a map, we have to enforce this in the API which
-> takes a map parameter and adds the new timer into the map in one shot.
-
-Not quite true. The timer memory should be a part of the map otherwise
-the timer life time is hard to track. But arming the timer and initializing
-it with a callback doesn't need to be tied with allocation of timer memory.
-
-> And because timer is asynchronous, we can not just use its callback like
-> bpf_for_each_map_elem().
-
-Not quite. We can do it the same way as bpf_for_each_map_elem() despite
-being async.
-
-> More importantly, we have to properly reference
-> count its struct bpf_prog too. 
-
-It's true that callback prog or subprog has to stay alive while timer
-is alive.
-Traditional maps can live past the time of the progs that use them.
-Like bpf prog can load with a pointer to already created hash map.
-Then prog can unload and hashmap will stay around just fine.
-All maps are like this with the exception of prog_array.
-The progs get deleted from the prog_array map when appropriate.
-The same thing can work for maps with embedded timers.
-For example the subprog/prog can to be deleted from the timer if
-that prog is going away. Similar to ref/uref distinction we have for prog_array.
-
-> It seems impossible to do this either in
-> verifier or in JIT, so we have to make its callback code a separate eBPF
-> program and pass a program fd from user-space. Fortunately, timer callback
-> can still live in the same object file with the rest eBPF code and share
-> data too.
-> 
-> Here is a quick demo of the timer callback code:
-> 
-> static __u64
-> check_expired_elem(struct bpf_map *map, __u32 *key, __u64 *val,
->                   int *data)
-> {
->   u64 expires = *val;
-> 
->   if (expires < bpf_jiffies64()) {
->     bpf_map_delete_elem(map, key);
->     *data++;
->   }
->   return 0;
-> }
-> 
-> SEC("timer")
-> u32 timer_callback(void)
-> {
->   int count = 0;
-> 
->   bpf_for_each_map_elem(&map, check_expired_elem, &count, 0);
->   if (count)
->      return 0; // not re-arm this timer
->   else
->      return 10; // reschedule this timeGr after 10 jiffies
-> }
-
-As Song pointed out the exact same thing can be done with timers in user space
-and user space triggering prog exec with bpf_prog_test_run.
-
-Here is how more general timers might look like:
-https://lore.kernel.org/bpf/20210310011905.ozz4xahpkqbfkkvd@ast-mbp.dhcp.thefacebook.com/
-
-include/uapi/linux/bpf.h:
-struct bpf_timer {
-  u64 opaque;
-};
-The 'opaque' field contains a pointer to dynamically allocated struct timer_list and other data.
-
-The prog would do:
-struct map_elem {
-    int stuff;
-    struct bpf_timer timer;
-};
-
-struct {
-    __uint(type, BPF_MAP_TYPE_HASH);
-    __uint(max_entries, 1);
-    __type(key, int);
-    __type(value, struct map_elem);
-} hmap SEC(".maps");
-
-static int timer_cb(struct map_elem *elem)
-{
-    if (whatever && elem->stuff)
-        bpf_timer_mod(&elem->timer, new_expire);
+$ git diff
+diff --git a/dwarf_loader.c b/dwarf_loader.c
+index 026d13789ff9..244816042c88 100644
+--- a/dwarf_loader.c
++++ b/dwarf_loader.c
+@@ -2501,8 +2501,8 @@ static int cus__load_debug_types(struct cus
+*cus, struct conf_load *conf,
+       return 0;
 }
 
-int bpf_timer_test(...)
+-/* Match the define in linux:include/linux/elfnote.h */
+-#define LINUX_ELFNOTE_BUILD_LTO                0x101
++/* Match the define in linux:include/linux/elfnote-lto.h */
++#define LINUX_ELFNOTE_LTO_INFO         0x101
+
+static bool cus__merging_cu(Dwarf *dw, Elf *elf)
 {
-    struct map_elem *val;
+@@ -2520,7 +2520,7 @@ static bool cus__merging_cu(Dwarf *dw, Elf *elf)
+                       size_t name_off, desc_off, offset = 0;
+                       GElf_Nhdr hdr;
+                       while ((offset = gelf_getnote(data, offset,
+&hdr, &name_off, &desc_off)) != 0) {
+-                               if (hdr.n_type != LINUX_ELFNOTE_BUILD_LTO)
++                               if (hdr.n_type != LINUX_ELFNOTE_LTO_INFO)
+                                       continue;
 
-    val = bpf_map_lookup_elem(&hmap, &key);
-    if (val) {
-        bpf_timer_init(&val->timer, timer_cb, flags);
-        val->stuff = 123;
-        bpf_timer_mod(&val->timer, expires);
-    }
-}
+                               /* owner is Linux */
 
-bpf_map_update_elem() either from bpf prog or from user space
-allocates map element and zeros 8 byte space for the timer pointer.
-bpf_timer_init() allocates timer_list and stores it into opaque if opaque == 0.
-The validation of timer_cb() is done by the verifier.
-bpf_map_delete_elem() either from bpf prog or from user space
-does del_timer() if elem->opaque != 0.
-If prog refers such hmap as above during prog free the kernel does
-for_each_map_elem {if (elem->opaque) del_timer().}
-I think that is the simplest way of prevent timers firing past the prog life time.
-There could be other ways to solve it (like prog_array and ref/uref).
+- Sedat -
 
-Pseudo code:
-int bpf_timer_init(struct bpf_timer *timer, void *timer_cb, int flags)
-{
-  if (timer->opaque)
-    return -EBUSY;
-  t = alloc timer_list
-  t->cb = timer_cb;
-  t->..
-  timer->opaque = (long)t;
-}
-
-int bpf_timer_mod(struct bpf_timer *timer, u64 expires)
-{
-  if (!time->opaque)
-    return -EINVAL;
-  t = (struct timer_list *)timer->opaque;
-  mod_timer(t,..);
-}
-
-int bpf_timer_del(struct bpf_timer *timer)
-{
-  if (!time->opaque)
-    return -EINVAL;
-  t = (struct timer_list *)timer->opaque;
-  del_timer(t);
-}
-
-The verifier would need to check that 8 bytes occupied by bpf_timer and not accessed
-via load/store by the program. The same way it does it for bpf_spin_lock.
+>
+> > >   v2 -> v3:
+> > >     . abandoned the approach of adding -grecord-gcc-switches,
+> > >       instead create a note to indicate whether it is a lto build
+> > >       or not. The note definition is in compiler.h. (Arnaldo)
+> > >   v1 -> v2:
+> > >     . limited to add -grecord-gcc-switches for LTO_CLANG
+> > >       instead of all clang build
+> > >
+> > > diff --git a/include/linux/elfnote-lto.h b/include/linux/elfnote-lto.h
+> > > new file mode 100644
+> > > index 000000000000..d4635a3ecc4f
+> > > --- /dev/null
+> > > +++ b/include/linux/elfnote-lto.h
+> > > @@ -0,0 +1,14 @@
+> > > +#ifndef __ELFNOTE_LTO_H
+> > > +#define __ELFNOTE_LTO_H
+> > > +
+> > > +#include <linux/elfnote.h>
+> > > +
+> > > +#define LINUX_ELFNOTE_LTO_INFO 0x101
+> > > +
+> > > +#ifdef CONFIG_LTO
+> > > +#define BUILD_LTO_INFO ELFNOTE32("Linux", LINUX_ELFNOTE_LTO_INFO, 1)
+> > > +#else
+> > > +#define BUILD_LTO_INFO ELFNOTE32("Linux", LINUX_ELFNOTE_LTO_INFO, 0)
+> > > +#endif
+> > > +
+> > > +#endif /* __ELFNOTE_LTO_H */
+> > > diff --git a/init/version.c b/init/version.c
+> > > index 92afc782b043..1a356f5493e8 100644
+> > > --- a/init/version.c
+> > > +++ b/init/version.c
+> > > @@ -9,6 +9,7 @@
+> > >
+> > >  #include <generated/compile.h>
+> > >  #include <linux/build-salt.h>
+> > > +#include <linux/elfnote-lto.h>
+> > >  #include <linux/export.h>
+> > >  #include <linux/uts.h>
+> > >  #include <linux/utsname.h>
+> > > @@ -45,3 +46,4 @@ const char linux_proc_banner[] =
+> > >         " (" LINUX_COMPILER ") %s\n";
+> > >
+> > >  BUILD_SALT;
+> > > +BUILD_LTO_INFO;
+> > > diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> > > index 24725e50c7b4..98fb2bb024db 100644
+> > > --- a/scripts/mod/modpost.c
+> > > +++ b/scripts/mod/modpost.c
+> > > @@ -2191,10 +2191,12 @@ static void add_header(struct buffer *b, struct module *mod)
+> > >          */
+> > >         buf_printf(b, "#define INCLUDE_VERMAGIC\n");
+> > >         buf_printf(b, "#include <linux/build-salt.h>\n");
+> > > +       buf_printf(b, "#include <linux/elfnote-lto.h>\n");
+> > >         buf_printf(b, "#include <linux/vermagic.h>\n");
+> > >         buf_printf(b, "#include <linux/compiler.h>\n");
+> > >         buf_printf(b, "\n");
+> > >         buf_printf(b, "BUILD_SALT;\n");
+> > > +       buf_printf(b, "BUILD_LTO_INFO;\n");
+> > >         buf_printf(b, "\n");
+> > >         buf_printf(b, "MODULE_INFO(vermagic, VERMAGIC_STRING);\n");
+> > >         buf_printf(b, "MODULE_INFO(name, KBUILD_MODNAME);\n");
+> > > --
+> > > 2.30.2
+> > >
+> >
+> >
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
+> >
+> > --
+> > You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOdmX8d3XTzJFk5rN_PnOQYJ8bXMrh8DrhzqN%3DUBNdQiO3g%40mail.gmail.com.
