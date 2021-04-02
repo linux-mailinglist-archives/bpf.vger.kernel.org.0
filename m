@@ -2,135 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59703352C00
-	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 18:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65797352D74
+	for <lists+bpf@lfdr.de>; Fri,  2 Apr 2021 18:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234207AbhDBO5m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 2 Apr 2021 10:57:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229553AbhDBO5l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 2 Apr 2021 10:57:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5314461041;
-        Fri,  2 Apr 2021 14:57:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617375460;
-        bh=1EDxYdEkvBzV79vRsA7FHxJBG8WfRFBqvyPxRWuHldk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pdlODsdoDoUNWhl4ZaVhheiKgJvC5gKOIe+NR6jHmydy8kVqGhOMwBdr0+w7Hg2cX
-         azH0HE9Q/d0auwBi9RE0lhB3VH8q2548G18PjdZfYzNOZWDukn/I9r701dqZb/VFv/
-         HH4Bdmmd6RTZK/95jLNUj9fwBY+aUapyc/fR8ypn1Bzftt/qntEnai1n65RoFbaRxo
-         Xy+icYXy7NHfUVROLfffBjq+6JfNkE0kDxHtPkaR7NbYRByqzIF1R1TBf6R874x4bS
-         VYST2uihc4DccSBv1DCrENkF8AaCJ5LfsIvahUosa4EY86nEQC4g1//smNQ3JbyqpL
-         nU5rowAn8EYNw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 4F4DA40647; Fri,  2 Apr 2021 11:57:38 -0300 (-03)
-Date:   Fri, 2 Apr 2021 11:57:38 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     David Blaikie <dblaikie@gmail.com>, dwarves@vger.kernel.org,
+        id S236306AbhDBP1t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 2 Apr 2021 11:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236164AbhDBP1s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 2 Apr 2021 11:27:48 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D63C0613E6;
+        Fri,  2 Apr 2021 08:27:47 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so6326636pjb.0;
+        Fri, 02 Apr 2021 08:27:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tIxHGNELb2mJ/qfIKGau1T48x653gpBZprlhpzqJO4U=;
+        b=hn5VX8uofqMm8+vFfHs88guqhAIkXJN8+mmgCzgk5hKsXnbUA+lDSEtR72ET/ZQIFh
+         17RMO1QuiYslstYV2r330BV9e5ZuiN1GkZBVZAzA+gG3o9FwvZz8Utwx5HYRowDhe6Ys
+         Pocn8Cpe0CfcVk5Fe8Iplw5hsCeTsg+2Z1XaHKFRBao041VzyvVbIVt0nVh+hxBpsZtO
+         VuH5lfPwjiZ8gnEk13cgo8X+iZSMmLKYAbUwZQWgsl7y4Q6ErjgtQIh5ACylFW2t8fRo
+         BDCt2wEA1/ML+mGNyOrbs/NAiuoFerJ9W/5mb6tiyuZkKHseokrLGaVT67RVqCssGHyv
+         LqGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tIxHGNELb2mJ/qfIKGau1T48x653gpBZprlhpzqJO4U=;
+        b=ukl2ddKsRDbcgaFlmqYVHbq22Go1E67OH9APCfLnRGZqrJ1O/wbFgJ1JorWf27+8yt
+         9Ij1rgJU8QtQunUGfXjDEChaVAnkOPaEmU4ALmru5boPCyDjD2sLsIfx8DabWz1LmxUG
+         ITFLnnsRXm7taN78ach47VApJsDUu2SHVEaPJadqwTi0epy0d7wDDyRm3beg+/0fWdxa
+         e3IRGIYSItvdECVGlgKzOocfANcm7llsNces/wgaW6yoTkcmvZhlfM4k9Hc9eIjlYjpf
+         PzdzYANJzzvGObo75t2MUL/mRQqibFrT2XgFj2xFEoCtLKNBvkFPesgxViZScP60WQ8K
+         ikoQ==
+X-Gm-Message-State: AOAM5302MsOhR6UOJygVmP5TgJ7aEoEToCmstrMUJTRX86ul7MyZUUm7
+        hgZt8YRh3f9ntU/XX8zS/+4=
+X-Google-Smtp-Source: ABdhPJz8zo37dXK1UUIAHPOswKvIYBxjtZ/wzO/H0RekbKh81R/BbuGVkGhJtGF/3pIZ6l+A6R59Cw==
+X-Received: by 2002:a17:902:7786:b029:e6:cc0f:4dff with SMTP id o6-20020a1709027786b02900e6cc0f4dffmr13343337pll.4.1617377266981;
+        Fri, 02 Apr 2021 08:27:46 -0700 (PDT)
+Received: from localhost ([112.79.204.47])
+        by smtp.gmail.com with ESMTPSA id y66sm8430706pgb.78.2021.04.02.08.27.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Apr 2021 08:27:46 -0700 (PDT)
+Date:   Fri, 2 Apr 2021 20:57:43 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Bill Wendling <morbo@google.com>, bpf <bpf@vger.kernel.org>,
-        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH dwarves] dwarf_loader: handle subprogram ret type with
- abstract_origin properly
-Message-ID: <YGcw4iq9QNkFFfyt@kernel.org>
-References: <20210401213620.3056084-1-yhs@fb.com>
- <e6f77eb7-b1ce-5dc3-3db7-bf67e7edfc0b@fb.com>
- <CAENS6EsZ5OX9o=Cn5L1jmx8ucR9siEWbGYiYHCUWuZjLyP3E7Q@mail.gmail.com>
- <1ef31dd8-2385-1da1-2c95-54429c895d8a@fb.com>
- <CAENS6EsiRsY1JptWJqu2wH=m4fkSiR+zD8JDD5DYke=ZnJOMrg@mail.gmail.com>
- <YGckYjyfxfNLzc34@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
+Message-ID: <20210402152743.dbadpgcmrgjt4eca@apollo>
+References: <20210325120020.236504-1-memxor@gmail.com>
+ <20210325120020.236504-4-memxor@gmail.com>
+ <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
+ <20210328080648.oorx2no2j6zslejk@apollo>
+ <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
+ <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
+ <20210331094400.ldznoctli6fljz64@apollo>
+ <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YGckYjyfxfNLzc34@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Apr 02, 2021 at 11:04:18AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Thu, Apr 01, 2021 at 05:00:46PM -0700, David Blaikie escreveu:
-> > On Thu, Apr 1, 2021 at 4:41 PM Yonghong Song <yhs@fb.com> wrote:
-> > > On 4/1/21 3:27 PM, David Blaikie wrote:
-> > > > Though people may come up with novel uses of DWARF features. What would
-> > > > happen if this constraint were violated/what's your motivation for
-> > > > asking (I don't quite understand the connection between test_progs
-> > > > failure description, and this question)
+On Fri, Apr 02, 2021 at 05:49:29AM IST, Daniel Borkmann wrote:
+> On 3/31/21 11:44 AM, Kumar Kartikeya Dwivedi wrote:
+> > On Wed, Mar 31, 2021 at 02:55:47AM IST, Daniel Borkmann wrote:
+> > > Do we even need the _block variant? I would rather prefer to take the chance
+> > > and make it as simple as possible, and only iff really needed extend with
+> > > other APIs, for example:
+> >
+> > The block variant can be dropped, I'll use the TC_BLOCK/TC_DEV alternative which
+> > sets parent_id/ifindex properly.
+> >
+> > >    bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS});
+> > >
+> > > Internally, this will create the sch_clsact qdisc & cls_bpf filter instance
+> > > iff not present yet, and attach to a default prio 1 handle 1, and _always_ in
+> > > direct-action mode. This is /as simple as it gets/ and we don't need to bother
+> > > users with more complex tc/cls_bpf internals unless desired. For example,
+> > > extended APIs could add prio/parent so that multi-prog can be attached to a
+> > > single cls_bpf instance, but even that could be a second step, imho.
+> >
+> > I am not opposed to clsact qdisc setup if INGRESS/EGRESS is supplied (not sure
+> > how others feel about it).
+>
+> What speaks against it? It would be 100% clear from API side where the prog is
+> being attached. Same as with tc cmdline where you specify 'ingress'/'egress'.
+>
 
-> > > I have some codes to check the tag associated with abstract_origin
-> > > for a subprogram must be a subprogram. Through experiment, I didn't
-> > > see a violation, so I wonder that I can get confirmation from you
-> > > and then I may delete that code.
+Ok, I will add the qdisc setup in the next revision.
 
-> > > The test_progs failure exposed the bug, that is all.
+> > We could make direct_action mode default, and similarly choose prio
+>
+> To be honest, I wouldn't even support a mode from the lib/API side where direct_action
+> is not set. It should always be forced to true. Everything else is rather broken
+> setup-wise, imho, since it won't scale. We added direct_action a bit later to the
+> kernel than original cls_bpf, but if I would do it again today, I'd make it the
+> only available option. I don't see a reasonable use-case where you have it to false.
+>
 
-> > > pahole cannot handle all weird usages of dwarf, so I think pahole
-> > > is fine only to support well-formed dwarf.
+I'm all for doing that, but in some sense that also speaks against SCHED_ACT
+support. Currently, you can load SCHED_ACT programs using this series, but not
+really bind them to classifier. I left that option open to a future patch, it
+would just reuse the existing tc_act_add_action helper (also why I kept it in
+its own function). Maybe we need to reconsider that, if direct action is the
+only recommended way going forward (to discourage people from using SCHED_ACT),
+or just add opts to do all the setup in low level API, instead of leaving it
+incomplete.
 
-> > Sounds good. Thanks for the context!
+> > as 1 by default instead of letting the kernel do it. Then you can just pass in
+> > NULL for bpf_tc_cls_opts and be close to what you're proposing. For protocol we
+> > can choose ETH_P_ALL by default too if the user doesn't set it.
+>
+> Same here with ETH_P_ALL, I'm not sure anyone uses anything other than ETH_P_ALL,
+> so yes, that should be default.
 
-> David, since you took the time to go thru the changes and to agree that
-> Yonghong's fix is good, can I add a:
+Ack.
 
-> Acked-by: David Blaikie <dblaikie@gmail.com>
+>
+> > With these modifications, the equivalent would look like
+> > 	bpf_tc_cls_attach(prog_fd, TC_DEV(ifindex, INGRESS), NULL, &id);
+>
+> Few things compared to bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
+>
+> 1) nit, but why even 'cls' in the name. I think we shouldn't expose such old-days
+>    tc semantics to a user. Just bpf_tc_attach() is cleaner/simpler to understand.
 
-> to this patch?
+Since it would make it clear this is for SCHED_CLS progs, likewise bpf_tc_act_*
+is for SCHED_ACT progs. Not opposed to changing the name.
 
-> Maybe even a:
+> 2) What's the 'TC_DEV(ifindex, INGRESS)' macro doing exactly? Looks unnecessary,
+>    why not regular args to the API?
 
-> Reviewed-by: David Blaikie <dblaikie@gmail.com>
+It is very easy to support BLOCK (I know it's not really popular here, but I
+think if supporting it just requires adding a macro, then we can go ahead). So
+the user can use TC_BLOCK(block_idx) instead of remembering ifindex is to be set
+to TCM_IFINDEX_MAGIC_BLOCK and parent_id to actual block index. It will just
+expand to:
 
-What I have is at tmp.master, please take a look and check that
-everything is ok, the only think I wished to fix but I think can be left
-for later is in the tmp.master branch at:
+#define TC_BLOCK(block_idx) TCM_IFINDEX_MAGIC_BLOCK, (block_idx)
 
- git://git.kernel.org/pub/scm/devel/pahole/pahole.git tmp.master
+TC_DEV macro can be dropped, since user can directly pass ifindex and parent_id.
 
-I did some testing for this ret type fix:
+> 3) Exposed bpf_tc_attach() API could internally call a bpf_tc_attach_opts() API
+>    with preset defaults, and the latter could have all the custom bits if the user
+>    needs to go beyond the simple API, so from your bpf_tc_cls_attach() I'd also
+>    drop the NULL.
 
-https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=tmp.master
+Ok, this is probably better (but maybe we can do this for the high-level
+bpf_program__attach that returns a bpf_link * instead of introducing yet
+another function).
 
-And for the LTO ELF notes:
+> 4) For the simple API I'd likely also drop the id (you could have a query API if
+>    needed).
+>
 
-https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=tmp.master&id=7a79d2d7a573a863aa36fd06f540fe9fa824db4e
+This would be fine, because it's not a fast path or anything, but right now we
+return the id using the netlink response, otherwise for query we have to open
+the socket, prepare the msg, send and recv again. So it's a minor optimization.
 
-The only remaining thing, which I think can be left for 1.22 is:
+However, there's one other problem. In an earlier version of this series, I
+didn't keep the id/index out parameters (to act as handle to the newly attached
+filter/action). This lead to problems on query. Suppose a user doesn't properly
+fill the opts during query (e.g. in case of filters). This means the netlink
+dump includes all filters matching filled in attributes. If the prog_id for all
+of these is same (e.g. all have same bpf classifier prog attached to them), it
+becomes impossible to determine which one is the filter user asked for. It is
+not possible to enforce filling in all kinds of attributes since some can be
+left out and assigned by default in the kernel (priority, chain_index etc.). So
+returning the newly created filter's id turned out to be the best option. This
+is also used to stash filter related information in bpf_link to properly release
+it later.
 
-[acme@five pahole]$ btfdiff vmlinux.clang.thin.LTO
-vmlinux.clang.thin.LTO           vmlinux.clang.thin.LTO+ELF_note
-[acme@five pahole]$ btfdiff vmlinux.clang.thin.LTO+ELF_note
---- /tmp/btfdiff.dwarf.CtLJpQ	2021-04-02 11:55:09.658433186 -0300
-+++ /tmp/btfdiff.btf.d3L3vy	2021-04-02 11:55:09.925439277 -0300
-@@ -67255,7 +67255,7 @@ struct cpu_rmap {
- 	struct {
- 		u16                index;                /*    16     2 */
- 		u16                dist;                 /*    18     2 */
--	} near[0]; /*    16     0 */
-+	} near[]; /*    16     0 */
+The same problem happens with actions, where we look up using the prog_id, we
+multiple actions with different index can match on same prog_id. It is not
+possible to determine which index corresponds to last loaded action.
 
- 	/* size: 16, cachelines: 1, members: 5 */
- 	/* last cacheline: 16 bytes */
-@@ -101181,7 +101181,7 @@ struct linux_efi_memreserve {
- 	struct {
- 		phys_addr_t        base;                 /*    16     8 */
- 		phys_addr_t        size;                 /*    24     8 */
--	} entry[0]; /*    16     0 */
-+	} entry[]; /*    16     0 */
+So unless there's a better idea on how to deal with this, a query API won't work
+for the case where same bpf prog is attached more than once. Returning the
+id/index during attach seemed better than all other options we considered.
 
- 	/* size: 16, cachelines: 1, members: 4 */
- 	/* last cacheline: 16 bytes */
-@@ -113516,7 +113516,7 @@ struct netlink_policy_dump_state {
- 	struct {
- 		const struct nla_policy  * policy;       /*    16     8 */
- 		unsigned int       maxtype;              /*    24     4 */
--	} policies[0]; /*    16     0 */
-+	} policies[]; /*    16     0 */
-
- 	/* size: 16, cachelines: 1, members: 4 */
- 	/* sum members: 12, holes: 1, sum holes: 4 */
-[acme@five pahole]$
-
-- Arnaldo
+--
+Kartikeya
