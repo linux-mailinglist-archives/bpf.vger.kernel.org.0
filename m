@@ -2,114 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16FA635349B
-	for <lists+bpf@lfdr.de>; Sat,  3 Apr 2021 17:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8678C3534A1
+	for <lists+bpf@lfdr.de>; Sat,  3 Apr 2021 18:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236792AbhDCPxb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 3 Apr 2021 11:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34344 "EHLO
+        id S230516AbhDCQCD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 3 Apr 2021 12:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbhDCPxb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 3 Apr 2021 11:53:31 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD56CC0613E6;
-        Sat,  3 Apr 2021 08:53:26 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id l15so8081492ybm.0;
-        Sat, 03 Apr 2021 08:53:26 -0700 (PDT)
+        with ESMTP id S230266AbhDCQCD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 3 Apr 2021 12:02:03 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA85AC0613E6
+        for <bpf@vger.kernel.org>; Sat,  3 Apr 2021 09:01:58 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id z1so8046762ybf.6
+        for <bpf@vger.kernel.org>; Sat, 03 Apr 2021 09:01:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=0QORQQ85/zORLcruKl4W25E8R6bS7s+xRhix7pPuuzE=;
-        b=Aatz7RP1zMiYQdAsTrrO+XmPiEsJKNmfW6ROxNtEUoyNeB6gy247WSH1OAXpsi5w5z
-         2On51glSZcnhBLq85rbDmOY4dEcj1+dFb/Y7NrWhv/O1DiqUJxyOZe7tT6MLGTGdTLeU
-         5xlyNEvQc6/if4Z5PEDzQNTi9O6Iupf33/JeZvRuG3HtDreFtrIjZ01sg7P98K8+1FD7
-         Zy424Bjt090Z+uYB7fGTlJpcCsXPiIchs3rMjVqh7/vOC/Qr1svR4C7j7Lat8c91Oor8
-         ooaRRa6vqm7XTFnzBUPvzzH/SchWIWWP+JSo5oo5gmp0sWMBj4wRfBkng85slXq7yHDD
-         Zk3w==
+        bh=jaoImIBte+b3tcieoUd3MRSFx4IWiYZ836FmSaGO3Vw=;
+        b=c/NTVDUCKP15JEcR3tQ9kNdH8dvTZNvFsCznWcwn4AcajQFcFdpjKxIxUdAPV+uyqN
+         AI+h/JqNIt+CHPlu8ubMzMWweWJcs4lEIkgjwpSHj3fDtWbHKqRcx4myIxGDpTSE5YLS
+         fZQ4PhZui/ae+sMsZ1rvvN5++5lcWM43KZxXtjxhui0yqwh9vEAB/PYWSQE04DkpfjD+
+         sX/NwojDJNF8TDRNwhvwVu7hCvFJcmx5Ydg344QYoSytJt+7dgjibMVaOQX/OUU1/Bj/
+         eEESUva7JqM1PZKz8Rwo9j9TONUZz2vCSxrdIC+WCcedztMphC78C6EtcRuXkDqCWPZi
+         9N+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0QORQQ85/zORLcruKl4W25E8R6bS7s+xRhix7pPuuzE=;
-        b=jnmihlYU3EH3OjUAx+tPyX6ScA3KgdTpYg9s8N41yc65jpGE9I0FDtgIvwYPgFpoBe
-         1/nYAC89clUbqM3oVapdDAeC2HkUSCk5rn2xQ7aN3gbNiAb4tRauqvOvbTdK8o+5+Vgk
-         2cPoTjzuwgnDpznbE4wiKq1eUXSUUZI/W+17gjErjV+WMMpqhYwh59GYOdKGcqpLL4XP
-         d7KbRJNY/YA4/9oGbuc3gbMviJgV2zV52hfqWw1LhnCmiV/2U1crBsgk3php8g6UOQ2q
-         AJjlXORIANldnvaanSXjbalXkHvIpmHMxWccxy+IFvtol9hhc9OA+OVXh9ACG9Dj1FOT
-         y5sA==
-X-Gm-Message-State: AOAM533zDe6s6rRwKTyQ55ushjO63S1c6NzET9qYZ7VjGJQMnpxc5ddk
-        072lTI2IwPmCrodWb2o+NcFDRK+SZEbumPFXcmI=
-X-Google-Smtp-Source: ABdhPJxyAOSP8SvOxRkrqL6uUAx7A5ZDlierIHAEMBesbHi2wQsnmSDepywX1+BK5rJWgkIMZVGx0k170mVKesvUes4=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr25148921ybo.230.1617465206168;
- Sat, 03 Apr 2021 08:53:26 -0700 (PDT)
+        bh=jaoImIBte+b3tcieoUd3MRSFx4IWiYZ836FmSaGO3Vw=;
+        b=IMeze0hlzsH/CsuyWsdbwDmJrzug7jOh+ndMlmHi720FDQJ63znZ19CFbJcOyL/GW9
+         ociWa+cOpjzbPF6k13X0DeXCnxapcM7iYyJKXWkuNIrtLSUC8i2qBPQk3i5jp0+OvvlB
+         lUqa/h2/8IOIKRlttVV7dRR73w3RBSPzFnAfSueARGyjdtwzpOKkIoEc4TABv926Txx6
+         zAC85zZ5gdWFAyurmOn53yJiC2hrY+4PBxo2rOYa9i7JdIE8GE1EN0si41yMQSWYdyNT
+         Es7/DOKH82fnfIdNiyb3/4JjfRz7Urz3wKVZDlCS2kXXNbMNFhM/CsiJqsyceY1r7jF0
+         QxPg==
+X-Gm-Message-State: AOAM530eEtRhKCD1baJreuru+3hBSBkRdGbyVP+3HrQhyBFYYEtYt0p+
+        Rx18DSJtb3vrWd93+RiFNhLtKwL4cf0nZykHClSIgZaM
+X-Google-Smtp-Source: ABdhPJwZNgNdMasx435o9jhEek/BVOC+0ri/KgMjOnnEMg7RqMM32d4Ee8xurpt4101Tx1NaldNMbw6+q2GgqsyQMm4=
+X-Received: by 2002:a25:5b55:: with SMTP id p82mr24245305ybb.510.1617465718171;
+ Sat, 03 Apr 2021 09:01:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210330223748.399563-1-pctammela@mojatatu.com>
- <CAADnVQK+n69_uUm6Ac1WgvqM4X0_74nXHwkYxbkWFc1F5hU98Q@mail.gmail.com>
- <CAEf4BzZmBiq_JG5-Y2u9jTZraEtyyuOJYWgKivcKk0WFCzKa8g@mail.gmail.com> <CAKY_9u3VR+B=q0rPNYV1V9sr7+DG=T7786wQwMf1jrSxsKUgfw@mail.gmail.com>
-In-Reply-To: <CAKY_9u3VR+B=q0rPNYV1V9sr7+DG=T7786wQwMf1jrSxsKUgfw@mail.gmail.com>
+References: <21e66a09-514f-f426-b9e2-13baab0b938b@csgroup.eu> <24d7f121-5ae9-4605-3624-a5601542980e@csgroup.eu>
+In-Reply-To: <24d7f121-5ae9-4605-3624-a5601542980e@csgroup.eu>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 3 Apr 2021 08:53:15 -0700
-Message-ID: <CAEf4BzYAcUsObPj_hm3tfC-d+EHfeeHLVDD4OigPg82hiehc7A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: check flags in 'bpf_ringbuf_discard()'
- and 'bpf_ringbuf_submit()'
-To:     Pedro Tammela <pctammela@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Joe Stringer <joe@cilium.io>,
-        Quentin Monnet <quentin@isovalent.com>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
-        Pedro Tammela <pctammela@mojatatu.com>
+Date:   Sat, 3 Apr 2021 09:01:47 -0700
+Message-ID: <CAEf4BzZCnP3oB81w4BDL4TCmvO3vPw8MucOTbVnjbW8UuCtejw@mail.gmail.com>
+Subject: Re: selftests/bpf - Error: failed to open BPF object file: Endian mismatch
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     bpf <bpf@vger.kernel.org>, Ilya Leoshkevich <iii@linux.ibm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 3, 2021 at 6:29 AM Pedro Tammela <pctammela@gmail.com> wrote:
+On Fri, Apr 2, 2021 at 1:02 AM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
 >
-> Em qua., 31 de mar. de 2021 =C3=A0s 04:02, Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> escreveu:
-> >
-> > On Tue, Mar 30, 2021 at 4:16 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Tue, Mar 30, 2021 at 3:54 PM Pedro Tammela <pctammela@gmail.com> w=
-rote:
-> > > >
-> > > >  BPF_CALL_2(bpf_ringbuf_submit, void *, sample, u64, flags)
-> > > >  {
-> > > > +       if (unlikely(flags & ~(BPF_RB_NO_WAKEUP | BPF_RB_FORCE_WAKE=
-UP)))
-> > > > +               return -EINVAL;
-> > > > +
-> > > >         bpf_ringbuf_commit(sample, flags, false /* discard */);
-> > > > +
-> > > >         return 0;
-> > >
-> > > I think ringbuf design was meant for bpf_ringbuf_submit to never fail=
-.
-> > > If we do flag validation it probably should be done at the verifier t=
-ime.
-> >
-> > Oops, replied on another version already. But yes, BPF verifier relies
-> > on it succeeding. I don't think we can do flags validation at BPF
-> > verification time, though, because it is defined as non-const integer
-> > and we do have valid cases where we dynamically determine whether to
-> > FORCE_WAKEUP or NO_WAKEUP, based on application-driven criteria (e.g.,
-> > amount of enqueued data).
 >
-> Then shouldn't we remove the flags check in 'bpf_ringbuf_output()'?
+>
+> Le 02/04/2021 =C3=A0 09:48, Christophe Leroy a =C3=A9crit :
+> > Hello,
+> >
+> > I'm having hard time cross-building bpf selftests on an x86 for a power=
+pc target.
+> >
+> > [root@PC-server-ldb bpf]# make CROSS_COMPILE=3Dppc-linux- ARCH=3Dpowerp=
+c V=3D1
+> > /root/gen_ldb/linux-powerpc/tools/testing/selftests/bpf/host-tools/sbin=
+/bpftool gen skeleton
+> > /root/gen_ldb/linux-powerpc/tools/testing/selftests/bpf/atomic_bounds.o=
+ >
+> > /root/gen_ldb/linux-powerpc/tools/testing/selftests/bpf/atomic_bounds.s=
+kel.h
+> > libbpf: elf: endianness mismatch in atomic_bounds.
+> > Error: failed to open BPF object file: Endian mismatch
+> >
+> > [root@PC-server-ldb bpf]# file atomic_bounds.o
+> > atomic_bounds.o: ELF 64-bit MSB relocatable, eBPF, version 1 (SYSV), wi=
+th debug_info, not stripped
+> >
+> > Seems like the just-built host bpftool doesn't take into account target=
+'s endianness.
+> >
+> > I see the patch https://github.com/torvalds/linux/commit/313e7f6f ("sel=
+ftest/bpf: Use -m{little,
+> > big}-endian for clang") in bpf selftest to enable cross-compilation, bu=
+t it seems it is not enough.
+> >
+> > What should I do to get bpftool work with the target's endianness ?
+> >
 
-bpf_ringbuf_output() combines reserve + commit operations, so if it
-performs checks before anything is reserved in ringbuf, it's ok for it
-to fail and return error. So I don't see any problem there. But once
-it internally reserves, it always proceeds to complete the commit.
+bpftool is using bpf_object__open() from libbpf to discover all
+information (maps, progs, etc) from the given BPF object file. This is
+needed to generate BPF skeleton.
+
+But libbpf itself doesn't support opening BPF object files with
+non-native endianness. We solved that problem for BTF specifically to
+allow cross-compiling kernel (to let pahole -J generate BTF for an
+endianness different from the host endianness), but libbpf was never
+taught to work with non-native endianness of loaded ELF file.
+
+And solving this for ELF processing in libbpf is a messier problem
+than for BTF itself, so I don't know if I'd like to support such use
+case at all.
+
+>
+> I also see https://github.com/torvalds/linux/commit/8859b0da ("tools/bpft=
+ool: Fix cross-build") but
+> that commit doesn't seem to address endianness difference between the hos=
+t and the target.
+>
+> Christophe
