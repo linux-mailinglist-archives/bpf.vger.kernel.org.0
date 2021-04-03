@@ -2,98 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1584E35353A
-	for <lists+bpf@lfdr.de>; Sat,  3 Apr 2021 20:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC68353545
+	for <lists+bpf@lfdr.de>; Sat,  3 Apr 2021 20:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236484AbhDCSWC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 3 Apr 2021 14:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236323AbhDCSWB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 3 Apr 2021 14:22:01 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1FDC0613E6;
-        Sat,  3 Apr 2021 11:21:58 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id h3so798228pfr.12;
-        Sat, 03 Apr 2021 11:21:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=bDafbjF9fSu1FMwOwXasSOKmYpWgCnT0ByRHS4AhmtE=;
-        b=uEmDXd+5gG7NWhCWL7hNKI7pUMIsBLucOsmey82O5pIjQYcXbYbj9WLqQxtV9zxcob
-         ZEbgPuloFuwWfuchMtfSPmriHFfbmXz0haf2IMOJPnbJytm67v7z1etW5EMx4XIWAu2F
-         xMKlKHY8iYzj56auhv4P0ey3tpkvBe9tWoqplagTa8snIh4ZM4s0DeGvYYyFoqzuI4Z8
-         uxA4h9OoSqwTf9kvAQMiPr5MpSFgb5IFl8/hrL2vvn3BBR1gUFqqMMHJAhKKNb5eE2OR
-         RMkSvdYJP6WmPW+260SwQw1xDKgkxlXYgttcib0uiAKHUHZFiFLJsMFbTaMFDfu9w+hc
-         9G5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=bDafbjF9fSu1FMwOwXasSOKmYpWgCnT0ByRHS4AhmtE=;
-        b=qTf0vJYeRsbo36s8omEctcmE8lJQ/3HI8JHw/cf102LJ/dn49Jc1BY1iovZNNe/A0E
-         dGpl2kfivzDLMsABGyhMXsm0xknW1FmG0tR2GHNDUJxyz5gXumshm4Ch3pL/8r2kzQhc
-         dH4cMxdnUgfqz9f9hFjHYTj0L1vFYBtH/FcTtJCJrA7n9PkhpQ2fjVwWlN7DVEnAfCyd
-         B3QfQmD8ZvbKjhQ0z2YFxTEc3I3bWXcRFBnkJ4dK9cHBaqpy7V2xKUvyw0yYJ2zcXC4A
-         i0saFQtnjnv+HNdLEm9mQ+qqyU/+fL+H14VVt55s5nUKnQnWq74OIqrMg74r4ppdWHZ7
-         x9Sg==
-X-Gm-Message-State: AOAM533NbkIr9PF9j6/P69gDYrU09DAEYb0OtWEGxZKBDhEPwSBVTN40
-        GKPDI/63bbPhCUpsn/FzHVM=
-X-Google-Smtp-Source: ABdhPJxxO25x7v9vPMRtmLCd9zajbI86tucoVb3o9JelqZtD9zmsTg7xr24Xna3KRajYyiXj/cXy1A==
-X-Received: by 2002:a63:9811:: with SMTP id q17mr16834302pgd.238.1617474118379;
-        Sat, 03 Apr 2021 11:21:58 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:f671])
-        by smtp.gmail.com with ESMTPSA id y9sm11140457pja.50.2021.04.03.11.21.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Apr 2021 11:21:57 -0700 (PDT)
-Date:   Sat, 3 Apr 2021 11:21:55 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [RFC PATCH bpf-next 1/4] bpf: Allow trampoline re-attach
-Message-ID: <20210403182155.upi6267fh3gsdvrq@ast-mbp>
-References: <20210328112629.339266-1-jolsa@kernel.org>
- <20210328112629.339266-2-jolsa@kernel.org>
- <87blavd31f.fsf@toke.dk>
+        id S236403AbhDCSmJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 3 Apr 2021 14:42:09 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52150 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230516AbhDCSmJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 3 Apr 2021 14:42:09 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 133IZDru015789
+        for <bpf@vger.kernel.org>; Sat, 3 Apr 2021 11:42:06 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=i25EX9hXAwW0gzWdq5t+9gu1kPI5X50IDCUEkiaPwGI=;
+ b=n6Cm/7Tht9q3l9KtAoxCQmzYtxePTy3Bb5o4w3ATHZgEdmmeDUyz+TP8M06LMlZRhW8A
+ TjaythBm+gRv1YTdG22JCn4dG/dRyG1RYyGo8hK39hrLkg4buQGGL+57T8bNfNze6ptW
+ metQ7kpwDux17OZC1PciI7zSCajbwXwA4sM= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 37pvprg50g-17
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Sat, 03 Apr 2021 11:42:06 -0700
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 3 Apr 2021 11:42:03 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id EE9781038B6E; Sat,  3 Apr 2021 11:41:58 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        <dwarves@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Bill Wendling <morbo@google.com>, <bpf@vger.kernel.org>,
+        David Blaikie <dblaikie@gmail.com>, <kernel-team@fb.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: [PATCH dwarves] dwarf_loader: handle DWARF5 DW_OP_addrx properly
+Date:   Sat, 3 Apr 2021 11:41:58 -0700
+Message-ID: <20210403184158.2834387-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87blavd31f.fsf@toke.dk>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: xv50NJYOv8FpnV3mWJbI4XtMPK_WJPKN
+X-Proofpoint-ORIG-GUID: xv50NJYOv8FpnV3mWJbI4XtMPK_WJPKN
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-03_09:2021-04-01,2021-04-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ spamscore=0 malwarescore=0 suspectscore=0 phishscore=0 clxscore=1015
+ adultscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0
+ mlxlogscore=891 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103310000 definitions=main-2104030128
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 03, 2021 at 01:24:12PM +0200, Toke Høiland-Jørgensen wrote:
-> >  	if (!prog->aux->dst_trampoline && !tgt_prog) {
-> > -		err = -ENOENT;
-> > -		goto out_unlock;
-> > +		/*
-> > +		 * Allow re-attach for tracing programs, if it's currently
-> > +		 * linked, bpf_trampoline_link_prog will fail.
-> > +		 */
-> > +		if (prog->type != BPF_PROG_TYPE_TRACING) {
-> > +			err = -ENOENT;
-> > +			goto out_unlock;
-> > +		}
-> > +		if (!prog->aux->attach_btf) {
-> > +			err = -EINVAL;
-> > +			goto out_unlock;
-> > +		}
-> 
-> I'm wondering about the two different return codes here. Under what
-> circumstances will aux->attach_btf be NULL, and why is that not an
-> ENOENT error? :)
+Currently, when DWARF5 is enabled in kernel, DEBUG_INFO_BTF
+needs to be disabled. I hacked the kernel to enable DEBUG_INFO_BTF
+like:
+  --- a/lib/Kconfig.debug
+  +++ b/lib/Kconfig.debug
+  @@ -286,7 +286,6 @@ config DEBUG_INFO_DWARF5
+          bool "Generate DWARF Version 5 debuginfo"
+          depends on GCC_VERSION >=3D 50000 || CC_IS_CLANG
+          depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf=
+5_support.sh $(CC) $(CLANG_FLAGS))
+  -       depends on !DEBUG_INFO_BTF
+          help
+and tried DWARF5 with latest trunk clang, thin-lto and no lto.
+In both cases, I got a few additional failures like:
+  $ ./test_progs -n 55/2
+  ...
+  libbpf: extern (var ksym) 'bpf_prog_active': failed to find BTF ID in k=
+ernel BTF(s).
+  libbpf: failed to load object 'kfunc_call_test_subprog'
+  libbpf: failed to load BPF skeleton 'kfunc_call_test_subprog': -22
+  test_subprog:FAIL:skel unexpected error: 0
+  #55/2 subprog:FAIL
 
-The feature makes sense to me as well.
-I don't quite see how it would get here with attach_btf == NULL.
-Maybe WARN_ON then?
-Also if we're allowing re-attach this way why exclude PROG_EXT and LSM?
+Here, bpf_prog_active is a percpu global variable and pahole is supposed =
+to
+put into BTF, but it is not there.
+
+Further analysis shows this is due to encoding difference between
+DWARF4 and DWARF5. In DWARF5, a new section .debug_addr
+and several new ops, e.g. DW_OP_addrx, are introduced.
+DW_OP_addrx is actually an index into .debug_addr section starting
+from an offset encoded with DW_AT_addr_base in DW_TAG_compile_unit.
+
+For the above 'bpf_prog_active' example, with DWARF4, we have
+  0x02281a96:   DW_TAG_variable
+                  DW_AT_name      ("bpf_prog_active")
+                  DW_AT_decl_file ("/home/yhs/work/bpf-next/include/linux=
+/bpf.h")
+                  DW_AT_decl_line (1170)
+                  DW_AT_decl_column       (0x01)
+                  DW_AT_type      (0x0226d171 "int")
+                  DW_AT_external  (true)
+                  DW_AT_declaration       (true)
+
+  0x02292f04:   DW_TAG_variable
+                  DW_AT_specification     (0x02281a96 "bpf_prog_active")
+                  DW_AT_decl_file ("/home/yhs/work/bpf-next/kernel/bpf/sy=
+scall.c")
+                  DW_AT_decl_line (45)
+                  DW_AT_location  (DW_OP_addr 0x28940)
+For DWARF5, we have
+  0x0138b0a1:   DW_TAG_variable
+                  DW_AT_name      ("bpf_prog_active")
+                  DW_AT_type      (0x013760b9 "int")
+                  DW_AT_external  (true)
+                  DW_AT_decl_file ("/home/yhs/work/bpf-next/kernel/bpf/sy=
+scall.c")
+                  DW_AT_decl_line (45)
+                  DW_AT_location  (DW_OP_addrx 0x16)
+
+This patch added support for DW_OP_addrx. With the patch, the above
+failing bpf selftest and other similar failed selftests succeeded.
+---
+ dwarf_loader.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+NOTE: with this patch, at least for clang trunk, all bpf selftests
+      are fine for DWARF5 w.r.t. compiler and pahole. Hopefully
+      after pahole 1.21 release, we can remove DWARF5 dependence
+      with !DEBUG_INFO_BTF.
+
+diff --git a/dwarf_loader.c b/dwarf_loader.c
+index 82d7131..49336ac 100644
+--- a/dwarf_loader.c
++++ b/dwarf_loader.c
+@@ -401,8 +401,19 @@ static int attr_location(Dwarf_Die *die, Dwarf_Op **=
+expr, size_t *exprlen)
+ {
+ 	Dwarf_Attribute attr;
+ 	if (dwarf_attr(die, DW_AT_location, &attr) !=3D NULL) {
+-		if (dwarf_getlocation(&attr, expr, exprlen) =3D=3D 0)
++		if (dwarf_getlocation(&attr, expr, exprlen) =3D=3D 0) {
++			/* DW_OP_addrx needs additional lookup for real addr. */
++			if (*exprlen !=3D 0 && expr[0]->atom =3D=3D DW_OP_addrx) {
++				Dwarf_Attribute addr_attr;
++				dwarf_getlocation_attr(&attr, expr[0], &addr_attr);
++
++				Dwarf_Addr address;
++				dwarf_formaddr (&addr_attr, &address);
++
++				expr[0]->number =3D address;
++			}
+ 			return 0;
++		}
+ 	}
+=20
+ 	return 1;
+@@ -626,6 +637,7 @@ static enum vscope dwarf__location(Dwarf_Die *die, ui=
+nt64_t *addr, struct locati
+ 		Dwarf_Op *expr =3D location->expr;
+ 		switch (expr->atom) {
+ 		case DW_OP_addr:
++		case DW_OP_addrx:
+ 			scope =3D VSCOPE_GLOBAL;
+ 			*addr =3D expr[0].number;
+ 			break;
+--=20
+2.30.2
+
