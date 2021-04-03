@@ -2,103 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E73DF3532BA
-	for <lists+bpf@lfdr.de>; Sat,  3 Apr 2021 07:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82963532D9
+	for <lists+bpf@lfdr.de>; Sat,  3 Apr 2021 08:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbhDCF1e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 3 Apr 2021 01:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
+        id S232200AbhDCGpi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 3 Apr 2021 02:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhDCF1d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 3 Apr 2021 01:27:33 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743A2C0613E6;
-        Fri,  2 Apr 2021 22:27:31 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id c3so6981562qkc.5;
-        Fri, 02 Apr 2021 22:27:31 -0700 (PDT)
+        with ESMTP id S232140AbhDCGpi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 3 Apr 2021 02:45:38 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6DD1C0613E6;
+        Fri,  2 Apr 2021 23:45:35 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id o10so10225066lfb.9;
+        Fri, 02 Apr 2021 23:45:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ABtMI8ksFSdWzNo+QyX4TO78LN4nqKlOQbP/dp/j8yA=;
-        b=ZF6hI2cjwuyUsdYmcWCMvhfhVFtrHBp2hsJdQMyfoH+/EJ1hYOUPXzbzANyEFwDBB9
-         fUCETIEKtRsH581Gafpcu7iYCW6Y8ZFKJojwKTP4Y1N5eOr1Ljj0xTeOp4A+mGLxh5CH
-         G9Jfk6y9tI5Phg1sF2H5n8V3QQKrljT49vA6269keoy9/6XxpwUMk+EDhG8W6u2V7bkT
-         0/q/SpuerHhM34PVLBnq8GiLg4IyQme1ye3HmU4G5UJmAL3fYbldjzOZsoJ+mmAklAJj
-         AqaU6T9MB7lYopmlx2LMul6x8uTuHVuKfrJV16pTF5I7cNra6fUuQrNnHbDbEvoMJ00x
-         a5Xw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GEfGTCfkrKkYIhxPCGweey7DAMBSosPp3/p3EwEGYSc=;
+        b=lMCJZh9L6wGuFPrk+qTLj4Hhv71c02PMNf//MMFlKrWDjBQAjXmz/Lb9SXmDiTzhSQ
+         ryTN8+yMhECtjDZyuPfwptbktIfhv/zpqsuyYpqDSg4cIhLEVcnbCzY7utz1ro6KueZg
+         XceLoK/pWb/45iOeBWqNfyu8iAc6yy6uyPvqtoIIRkfizw/bTVp2HlJnngSdblI8o1Jc
+         GLgPfKbEKo0i+htLNY7LyS0yTn2YA2rr0CHDh/Wwsd7dGPpGhlek3iYh5uLAksbRIS9W
+         vKupoS/g0QnXvRUnW0KJ9Upm7/tHctx++y/Z1CasLFgHPktZ20a6+nNGRlHohJr2oS/A
+         Q4eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ABtMI8ksFSdWzNo+QyX4TO78LN4nqKlOQbP/dp/j8yA=;
-        b=JgTveuaC1sQwUzIOwm+xeOaDWS6M0sW/Hc/mZUhQdPtCWZbl5eiHiIghqzyIR+yqNM
-         I0L8HgpbTXIKt5VQhwf/k5y8kCFw5NTaZxOhe2Lat7HyA9rK3apj82VdUqMtL+iQIwGg
-         poKb21sfrtO5K+hgMQvpyDp0NhOq8mJ6aimBGLL0h07Kluh6hMh3qrlhDiZL0xZIMMYv
-         XqgJmFYcFaVlL37Z6/n9nLaO6MVffW4yVByFnCcuYsZ7uivoTi2+P64OtWCiwkTjh7dR
-         luiaCQOIN42w5ZcfE6301EIZPmTYVn5zbIcIgD4OdOagb47e78PQaFxURdDT0CBdIAk3
-         imeg==
-X-Gm-Message-State: AOAM530BXjdNR5chPiZMefbEIgsxWSaTFT8tCq8Xm7RzlH1sRsJ+5vIZ
-        Px6WRzlcRel35CS1Fs1iHrw/Y17JeB5NIA==
-X-Google-Smtp-Source: ABdhPJwf+ODeyrc94hUge2+X1fh2EhD8g9HcWgBg0FoXBUQzwXFi+rW2B9FoBGem3nGUR+AdeWx3Eg==
-X-Received: by 2002:a37:78b:: with SMTP id 133mr16001499qkh.109.1617427650588;
-        Fri, 02 Apr 2021 22:27:30 -0700 (PDT)
-Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:d1:9277:b313:2e46])
-        by smtp.gmail.com with ESMTPSA id v35sm8076007qtd.56.2021.04.02.22.27.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Apr 2021 22:27:30 -0700 (PDT)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: [Patch bpf-next] udp_bpf: remove some pointless comments
-Date:   Fri,  2 Apr 2021 22:27:15 -0700
-Message-Id: <20210403052715.13854-1-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GEfGTCfkrKkYIhxPCGweey7DAMBSosPp3/p3EwEGYSc=;
+        b=r4Rp8JzwJoEgdu99mfdV9CJsZM247SoACvzhPqMeXIvBJQUS37M+0ZjSSKrlrl2nOI
+         9/CwZ8P+BkAEPUUyQe5ruGmvddwRLVR/EAm8f396DhlXJB0axv+52Rf2SVG3U5RKN5Ej
+         yVsGvWQ5J7w3wn2aknJKR243trjhXtF6ithIIRlNSvXY1mLo8BD2Stp4OEelPQBwKjCt
+         lYLcvOSDUHdVYV1aDZBadAG4C3LCll2e6qo5auuDhWqGXMMs3G3Gz3XzNR0uvi6B3CmH
+         HMru5WFybmoRYS/+ckXOZ2byFRqu/LfPJOnDu+tnnyqrO8cmbQFObK7oLKWtsGpphSuA
+         N3DQ==
+X-Gm-Message-State: AOAM533jwzIJRbAQnZrhyWX4+uokvq2aO1dHfK9ojiE//aDOhhCRKVOa
+        zPwdskai+44m7rKKXASiNDfpvBA1nGyLXI4ipCBsm56f
+X-Google-Smtp-Source: ABdhPJx7O685/ty6GJOb4vOjJH9mvn+0Q8Jecm+iYguMTJBy+Vxj03W3ZpjlM7jZ6yrpf55ybYS6+e1mdrllIQHblaE=
+X-Received: by 2002:a19:ed06:: with SMTP id y6mr11382704lfy.539.1617432334144;
+ Fri, 02 Apr 2021 23:45:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210331023237.41094-1-xiyou.wangcong@gmail.com>
+ <20210331023237.41094-12-xiyou.wangcong@gmail.com> <6065619aa26d1_938bb2085e@john-XPS-13-9370.notmuch>
+ <CAM_iQpVG3Sd=jA4jdt6HFRr8rKn7DRdWRyHBd9O3q0DuubMsRg@mail.gmail.com>
+In-Reply-To: <CAM_iQpVG3Sd=jA4jdt6HFRr8rKn7DRdWRyHBd9O3q0DuubMsRg@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 2 Apr 2021 23:45:22 -0700
+Message-ID: <CAADnVQ+F3GBo_tpbBkB0C2h12VXpzBT4dr2LekxB3NXeWnU=Tg@mail.gmail.com>
+Subject: Re: [Patch bpf-next v8 11/16] udp: implement ->read_sock() for sockmap
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+On Fri, Apr 2, 2021 at 10:12 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> On Wed, Mar 31, 2021 at 11:01 PM John Fastabend
+> <john.fastabend@gmail.com> wrote:
+> > This 'else if' is always true if above is false right? Would be
+> > impler and clearer IMO as,
+> >
+> >                if (used <= 0) {
+> >                         if (!copied)
+> >                                 copied = used;
+> >                         break;
+> >                }
+> >                copied += used;
+> >
+> > I don't see anyway for used to be great than  skb->len.
+>
+> Yes, slightly better. Please feel free to submit a patch by yourself,
+> like always your patches are welcome.
 
-These comments in udp_bpf_update_proto() are copied from the
-original TCP code and apparently do not apply to UDP. Just
-remove them.
-
-Reported-by: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- net/ipv4/udp_bpf.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/net/ipv4/udp_bpf.c b/net/ipv4/udp_bpf.c
-index 7d5c4ebf42fe..4a7e38c5d842 100644
---- a/net/ipv4/udp_bpf.c
-+++ b/net/ipv4/udp_bpf.c
-@@ -110,7 +110,6 @@ int udp_bpf_update_proto(struct sock *sk, bool restore)
- 
- 	if (restore) {
- 		sk->sk_write_space = psock->saved_write_space;
--		/* Pairs with lockless read in sk_clone_lock() */
- 		WRITE_ONCE(sk->sk_prot, psock->sk_proto);
- 		return 0;
- 	}
-@@ -118,7 +117,6 @@ int udp_bpf_update_proto(struct sock *sk, bool restore)
- 	if (sk->sk_family == AF_INET6)
- 		udp_bpf_check_v6_needs_rebuild(psock->sk_proto);
- 
--	/* Pairs with lockless read in sk_clone_lock() */
- 	WRITE_ONCE(sk->sk_prot, &udp_bpf_prots[family]);
- 	return 0;
- }
--- 
-2.25.1
-
+Please submit a follow up patch as John requested
+or I'm reverting your set.
