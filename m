@@ -2,345 +2,330 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A257035390D
-	for <lists+bpf@lfdr.de>; Sun,  4 Apr 2021 19:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 434B835392A
+	for <lists+bpf@lfdr.de>; Sun,  4 Apr 2021 19:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhDDRWs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 4 Apr 2021 13:22:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38520 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230202AbhDDRWr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 4 Apr 2021 13:22:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617556961;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8c7B8LbE/9XfuZfi7qwSBp2axeeRiFCmbTTxA0Fq0Zs=;
-        b=RwA1VkJQOCTlTAwd6PSvC20cS9NQaL4llp+Hs4Yeks4WKnajY9960wSJHkuDRoQNDbrWGZ
-        Q01c0mHa15uL/OxRTGuxCPy0xiJDJrpuCWvpXjspv+OMe4fKMTMr/WhvE41I7jcfHzCJ3S
-        YIJIiDxdNsrxTm6P1xuidNanZvskgZg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-279-zr5PJDwhN6Guule9lICs9g-1; Sun, 04 Apr 2021 13:22:37 -0400
-X-MC-Unique: zr5PJDwhN6Guule9lICs9g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5ED26108BD06;
-        Sun,  4 Apr 2021 17:22:35 +0000 (UTC)
-Received: from krava (unknown [10.40.192.69])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D7CD5C257;
-        Sun,  4 Apr 2021 17:22:32 +0000 (UTC)
-Date:   Sun, 4 Apr 2021 19:22:32 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Yonghong Song <yhs@fb.com>, Arnaldo <arnaldo.melo@gmail.com>,
-        David Blaikie <dblaikie@gmail.com>, dwarves@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Bill Wendling <morbo@google.com>, bpf <bpf@vger.kernel.org>,
-        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH dwarves] dwarf_loader: handle subprogram ret type with
- abstract_origin properly
-Message-ID: <YGn12FFII822p8zJ@krava>
-References: <CAENS6EsZ5OX9o=Cn5L1jmx8ucR9siEWbGYiYHCUWuZjLyP3E7Q@mail.gmail.com>
- <1ef31dd8-2385-1da1-2c95-54429c895d8a@fb.com>
- <CAENS6EsiRsY1JptWJqu2wH=m4fkSiR+zD8JDD5DYke=ZnJOMrg@mail.gmail.com>
- <YGckYjyfxfNLzc34@kernel.org>
- <YGcw4iq9QNkFFfyt@kernel.org>
- <2d55d22b-d136-82b9-6a0f-8b09eeef7047@fb.com>
- <82dfd420-96f9-aedc-6cdc-bf20042455db@fb.com>
- <E9072F07-B689-402C-89F6-545B589EF7E4@gmail.com>
- <d4899252-af75-f284-a684-b33a7a12c840@fb.com>
- <YGig8cHwNoccQwr+@kernel.org>
+        id S231150AbhDDRZ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 4 Apr 2021 13:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231190AbhDDRZz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 4 Apr 2021 13:25:55 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65575C0613E6;
+        Sun,  4 Apr 2021 10:25:48 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id d10so8469457ils.5;
+        Sun, 04 Apr 2021 10:25:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=kS10I4f86B4zS7CszxsyJyiWHLBIzBv9ppNKPY27ofE=;
+        b=pHVURMtQcDfkUnKppoySryYAZfc4jixc+49hX+USHlaBLHckhK0BmaxSclA71Hcu8v
+         aFkJLXBjACwoSZKqmLqMmmRPVFfJ4ho45zv6sNRaV3Jrtg6Cfe/o9MelBW7TAy5eQrvr
+         1WrUarDLL+QSUMl3TkTY8y6vyb5fW5eHEaefEyiePFhX81HVlhmBeHXk/ARaIBc8CF7/
+         C83GDSawbB4wGz5ud2JZ7XxFbMze9GkdraycGqqfQhZMDHdGzOXblf6CWvP8HLA3DH9Z
+         QGxaDY/lpTG2/HBttaxfJF+O792oF09iGJKyl2xqOcUmLzRa5DqaYyt8WhFBfRvCD3pT
+         wjOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=kS10I4f86B4zS7CszxsyJyiWHLBIzBv9ppNKPY27ofE=;
+        b=BuFjVsZoZbkknaW24Ljl/L1ku5NkR0OLU9hjMaPPmSRtGiFiiE2iSw20DjxOlSniWW
+         Al4cFoZWgIMzVyNDk7W6f0TMFhFWBytotZ1a7Qgv5FLV44T08LCHomGuyIs9x3TXfs/X
+         v2Y/786kXCb5z07vOidDMJElkhJgBx7AdHxQFxRBVJUjPsjjUWsOuMIOsP6wFu7idfKB
+         vLQJAm2R/IH9cRgkNcnWJSivJzO0TNtgSoyVTS3kRzLxszkslhAAe7lP5vbsHsXi+KP3
+         1Oayj7C9dMBEdtFAgaCVPTuwLRPvRa+/5OiBtIkH7owoC48YAPoV9ZEUSICw8Y9w9TCY
+         sI/Q==
+X-Gm-Message-State: AOAM532juAAcvMXcyhhdc79XFfngEyXicFEPfcE5yLW9t5L2V6+o1SS2
+        wEFpi0MSYYbUDWtBfsLX60QwYU/a0+1cqNSGLQE=
+X-Google-Smtp-Source: ABdhPJyobKEMl3gcCS4WDVOeRtQSzY6ifZWgiaSNjNhdVZhhuwjyoEgAt+BB1/QR6ahOgnuymjS6+ktwg1wqkO/jwrc=
+X-Received: by 2002:a92:c545:: with SMTP id a5mr17256076ilj.209.1617557148270;
+ Sun, 04 Apr 2021 10:25:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YGig8cHwNoccQwr+@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210403184158.2834387-1-yhs@fb.com> <CA+icZUWLf4W_1u_p4-Rx1OD7h_ydP4Xzv12tMA2HZqj9CCOH0Q@mail.gmail.com>
+ <6c67f02a-3bc2-625a-3b05-7eb3533044bb@fb.com> <CA+icZUV4fw5GNXFnyOjvajkVFdPhkOrhr3rn5OrAKGujpSrmgQ@mail.gmail.com>
+ <CA+icZUWh6YOkCKG72SndqUbQNwG+iottO4=cPyRRVjaHD2=0qw@mail.gmail.com> <f706e8b9-77ca-6341-db13-e2a74549576b@fb.com>
+In-Reply-To: <f706e8b9-77ca-6341-db13-e2a74549576b@fb.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sun, 4 Apr 2021 19:25:11 +0200
+Message-ID: <CA+icZUVb_J95Gk2Kf0i8waL6TDfJ2n9JrGbNK_dsN1n8HdcoXQ@mail.gmail.com>
+Subject: Re: [PATCH dwarves] dwarf_loader: handle DWARF5 DW_OP_addrx properly
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Bill Wendling <morbo@google.com>, bpf@vger.kernel.org,
+        David Blaikie <dblaikie@gmail.com>, kernel-team@fb.com,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 03, 2021 at 02:08:01PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Apr 02, 2021 at 12:41:47PM -0700, Yonghong Song escreveu:
-> > 
-> > 
-> > On 4/2/21 11:08 AM, Arnaldo wrote:
-> > > 
-> > > 
-> > > On April 2, 2021 2:42:21 PM GMT-03:00, Yonghong Song <yhs@fb.com> wrote:
-> > > > On 4/2/21 10:23 AM, Yonghong Song wrote:
-> > > :> Thanks. I checked out the branch and did some testing with latest
-> > > > clang
-> > > > > trunk (just pulled in).
-> > > > > 
-> > > > > With kernel LTO note support, I tested gcc non-lto, and llvm-lto
-> > > > mode,
-> > > > > it works fine.
-> > > > > 
-> > > > > Without kernel LTO note support, I tested
-> > > > >     gcc non-lto  <=== ok
-> > > > >     llvm non-lto  <=== not ok
-> > > > >     llvm lto     <=== ok
-> > > > > 
-> > > > > Surprisingly llvm non-lto vmlinux had the same "tcp_slow_start"
-> > > > issue.
-> > > > > Some previous version of clang does not have this issue.
-> > > > > I double checked the dwarfdump and it is indeed has the same reason
-> > > > > for lto vmlinux. I checked abbrev section and there is no cross-cu
-> > > > > references.
-> > > > > 
-> > > > > That means we need to adapt this patch
-> > > > >     dwarf_loader: Handle subprogram ret type with abstract_origin
-> > > > properly
-> > > > > for non merging case as well.
-> > > > > The previous patch fixed lto subprogram abstract_origin issue,
-> > > > > I will submit a followup patch for this.
-> > > > 
-> > > > Actually, the change is pretty simple,
-> > > > 
-> > > > diff --git a/dwarf_loader.c b/dwarf_loader.c
-> > > > index 5dea837..82d7131 100644
-> > > > --- a/dwarf_loader.c
-> > > > +++ b/dwarf_loader.c
-> > > > @@ -2323,7 +2323,11 @@ static int die__process_and_recode(Dwarf_Die
-> > > > *die, struct cu *cu)
-> > > >          int ret = die__process(die, cu);
-> > > >          if (ret != 0)
-> > > >                  return ret;
-> > > > -       return cu__recode_dwarf_types(cu);
-> > > > +       ret = cu__recode_dwarf_types(cu);
-> > > > +       if (ret != 0)
-> > > > +               return ret;
-> > > > +
-> > > > +       return cu__resolve_func_ret_types(cu);
-> > > >   }
-> > > > 
-> > > > Arnaldo, do you just want to fold into previous patches, or
-> > > > you want me to submit a new one?
-> > > 
-> > > I can take care of that.
-> > > 
-> > > And I think it's time for to look at Jiri's test suite... :-)
+On Sun, Apr 4, 2021 at 6:40 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 4/4/21 5:46 AM, Sedat Dilek wrote:
+> >> This shows a new build-error:
+> >>
+> >> clang  -g -D__TARGET_ARCH_x86 -mlittle-endian
+> >> -I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/tools/include
+> >> -I/home/dileks/src/linux-kernel/git/tools/t
+> >> esting/selftests/bpf
+> >> -I/home/dileks/src/linux-kernel/git/tools/include/uapi
+> >> -I/home/dileks/src/linux-kernel/git/tools/testing/selftests/usr/include
+> >> -idirafter /usr/loc
+> >> al/include -idirafter /opt/llvm-toolchain/lib/clang/12.0.0/include
+> >> -idirafter /usr/include/x86_64-linux-gnu -idirafter /usr/include
+> >> -Wno-compare-distinct-pointer-type
+> >> s -DENABLE_ATOMICS_TESTS -O2 -target bpf -c
+> >> progs/test_sk_storage_tracing.c -o
+> >> /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_sk_storage_tracing.o-mcpu=v3
+> >> progs/test_sk_storage_tracing.c:38:18: error: use of undeclared
+> >> identifier 'BPF_TCP_CLOSE'
+> >>         if (newstate == BPF_TCP_CLOSE)
+> >>                         ^
+> >> 1 error generated.
+> >> make: *** [Makefile:414:
+> >> /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_sk_storage_tracing.o]
+> >> Error 1
+> >>
+> >
+> > I was able to fix this by adding appropriate enums from <linux/bpf.h>.
+> >
+> > $ git diff
+> > diff --git a/tools/testing/selftests/bpf/progs/test_sk_storage_tracing.c
+> > b/tools/testing/selftests/bpf/progs/test_sk_storage_tracing.c
+> > index 8e94e5c080aa..3c7508f48ce0 100644
+> > --- a/tools/testing/selftests/bpf/progs/test_sk_storage_tracing.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_sk_storage_tracing.c
+> > @@ -6,6 +6,28 @@
+> > #include <bpf/bpf_core_read.h>
+> > #include <bpf/bpf_helpers.h>
+> >
+> > +/* List of TCP states. There is a build check in net/ipv4/tcp.c to detect
+> > + * changes between the TCP and BPF versions. Ideally this should never happen.
+> > + * If it does, we need to add code to convert them before calling
+> > + * the BPF sock_ops function.
+> > + */
+> > +enum {
+> > +       BPF_TCP_ESTABLISHED = 1,
+> > +       BPF_TCP_SYN_SENT,
+> > +       BPF_TCP_SYN_RECV,
+> > +       BPF_TCP_FIN_WAIT1,
+> > +       BPF_TCP_FIN_WAIT2,
+> > +       BPF_TCP_TIME_WAIT,
+> > +       BPF_TCP_CLOSE,
+> > +       BPF_TCP_CLOSE_WAIT,
+> > +       BPF_TCP_LAST_ACK,
+> > +       BPF_TCP_LISTEN,
+> > +       BPF_TCP_CLOSING,        /* Now a valid state */
+> > +       BPF_TCP_NEW_SYN_RECV,
+> > +
+> > +       BPF_TCP_MAX_STATES      /* Leave at the end! */
+> > +};
+> > +
+> > struct sk_stg {
+> >         __u32 pid;
+> >         __u32 last_notclose_state;
+> >
+> > NOTE: Attached as a diff as Gmail might truncate it.
+>
+> This bpf-next commit:
+>    commit 97a19caf1b1f6a9d4f620a9d51405a1973bd4641
+>    Author: Yonghong Song <yhs@fb.com>
+>    Date:   Wed Mar 17 10:41:32 2021 -0700
+>
+>      bpf: net: Emit anonymous enum with BPF_TCP_CLOSE value explicitly
+>
+> fixed the issue.
+>
 
-heya,
-the test did not get change in generated BTF data with the change below,
-so looks good
+Cool, looks like the correct fix.
 
-jirka
+> >
+> > [ Q ] Should these enums be in vmlinux.h - if so why are they missing?
+> >
+> > Next build-error:
+> >
+> > g++ -g -rdynamic -Wall -O2 -DHAVE_GENHDR
+> > -I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf
+> > -I/home/dileks/src/linux-kernel/git/tools/testing/selftests/b
+> > pf/tools/include -I/home/dileks/src/linux-kernel/git/include/generated
+> > -I/home/dileks/src/linux-kernel/git/tools/lib
+> > -I/home/dileks/src/linux-kernel/git/tools/include
+> > -I/home/dileks/src/linux-kernel/git/tools/include/uapi
+> > -I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf
+> > -Dbpf_prog_load=bpf_prog_test_load
+> > -Dbpf_load_program=bpf_test_load_program test_cpp.cpp
+> > /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_core_extern.skel.h
+> > /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a
+> > /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_stub.o
+> > -lcap -lelf -lz -lrt -lpthread -o
+> > /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_cpp
+> > /usr/bin/ld: /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a(libbpf-in.o):
+> > relocation R_X86_64_32 against `.rodata.str1.1' ca
+> > n not be used when making a PIE object; recompile with -fPIE
+> > collect2: error: ld returned 1 exit status
+> > make: *** [Makefile:455:
+> > /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_cpp]
+> > Error 1
+> > make: Leaving directory
+> > '/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf'
+> >
+> > LOL, I was not aware that there is usage of *** CXX*** in tools
+> > directory (see g++ line and /usr/bin/ld ?).
+> >
+> > So, I changed my $MAKE_OPTS to use "CXX=clang++".
+>
+> In kernel, if LLVM=1 is set, we have:
+>
+> ifneq ($(LLVM),)
+> HOSTCC  = clang
+> HOSTCXX = clang++
+> else
+> HOSTCC  = gcc
+> HOSTCXX = g++
+> endif
+>
+> ifneq ($(LLVM),)
+> CC              = clang
+> LD              = ld.lld
+> AR              = llvm-ar
+> NM              = llvm-nm
+> OBJCOPY         = llvm-objcopy
+> OBJDUMP         = llvm-objdump
+> READELF         = llvm-readelf
+> STRIP           = llvm-strip
+> else
+> CC              = $(CROSS_COMPILE)gcc
+> LD              = $(CROSS_COMPILE)ld
+> AR              = $(CROSS_COMPILE)ar
+> NM              = $(CROSS_COMPILE)nm
+> OBJCOPY         = $(CROSS_COMPILE)objcopy
+> OBJDUMP         = $(CROSS_COMPILE)objdump
+> READELF         = $(CROSS_COMPILE)readelf
+> STRIP           = $(CROSS_COMPILE)strip
+> endif
+>
+> So if you have right path, you don't need to set HOSTCC and HOSTCXX
+> explicitly.
+>
 
-> > > 
-> > > It's a holiday here, so I'll take some time to get to this, hopefully I'll tag 1.21 tomorrow tho.
-> > 
-> > Thanks for taking care of this! Right, 1.21 looks very close.
-> 
-> So our HEAD now is this:
-> 
-> 
-> commit c03cd5c6ae0cec97d23edcf0a343bbff3df3c96a
-> Author: Yonghong Song <yhs@fb.com>
-> Date:   Thu Apr 1 16:55:34 2021 -0700
-> 
->     dwarf_loader: Handle subprogram ret type with abstract_origin properly
->     
->     With latest bpf-next built with clang LTO (thin or full), I hit one test
->     failures:
->     
->       $ ./test_progs -t tcp
->       ...
->       libbpf: extern (func ksym) 'tcp_slow_start': func_proto [23] incompatible with kernel [115303]
->       libbpf: failed to load object 'bpf_cubic'
->       libbpf: failed to load BPF skeleton 'bpf_cubic': -22
->       test_cubic:FAIL:bpf_cubic__open_and_load failed
->       #9/2 cubic:FAIL
->       ...
->     
->     The reason of the failure is due to bpf program 'tcp_slow_start' func
->     signature is different from vmlinux BTF. bpf program uses the following
->     signature:
->     
->       extern __u32 tcp_slow_start(struct tcp_sock *tp, __u32 acked);
->     
->     which is identical to the kernel definition in linux:include/net/tcp.h:
->     
->       u32 tcp_slow_start(struct tcp_sock *tp, u32 acked);
->     
->     While vmlinux BTF definition like:
->     
->       [115303] FUNC_PROTO '(anon)' ret_type_id=0 vlen=2
->               'tp' type_id=39373
->               'acked' type_id=18
->       [115304] FUNC 'tcp_slow_start' type_id=115303 linkage=static
->     
->     The above is dumped with `bpftool btf dump file vmlinux`.
->     
->     You can see the ret_type_id is 0 and this caused the problem.
->     
->     Looking at dwarf, we have:
->     
->     0x11f2ec67:   DW_TAG_subprogram
->                     DW_AT_low_pc    (0xffffffff81ed2330)
->                     DW_AT_high_pc   (0xffffffff81ed235c)
->                     DW_AT_frame_base        ()
->                     DW_AT_GNU_all_call_sites        (true)
->                     DW_AT_abstract_origin   (0x11f2ed66 "tcp_slow_start")
->     ...
->     0x11f2ed66:   DW_TAG_subprogram
->                     DW_AT_name      ("tcp_slow_start")
->                     DW_AT_decl_file ("/home/yhs/work/bpf-next/net/ipv4/tcp_cong.c")
->                     DW_AT_decl_line (392)
->                     DW_AT_prototyped        (true)
->                     DW_AT_type      (0x11f130c2 "u32")
->                     DW_AT_external  (true)
->                     DW_AT_inline    (DW_INL_inlined)
->     
->     We have a subprogram which has an abstract_origin pointing to the
->     subprogram prototype with return type. Current one pass recoding cannot
->     easily resolve this easily since at the time recoding for 0x11f2ec67,
->     the return type in 0x11f2ed66 has not been resolved.
->     
->     To simplify implementation, I just added another pass to go through all
->     functions after recoding pass. This should resolve the above issue.
->     
->     With this patch, among total 250999 functions in vmlinux, 4821 functions
->     needs return type adjustment from type id 0 to correct values. The above
->     failed bpf selftest passed too.
->     
->     Committer testing:
->     
->     Before:
->     
->       $ pfunct tcp_slow_start
->       void tcp_slow_start(struct tcp_sock * tp, u32 acked);
->       $
->       $ pfunct --prototypes /sys/kernel/btf/vmlinux > before
->       $ head before
->       int fb_is_primary_device(struct fb_info * info);
->       int arch_resume_nosmt(void);
->       int relocate_restore_code(void);
->       int arch_hibernation_header_restore(void * addr);
->       int get_e820_md5(struct e820_table * table, void * buf);
->       int arch_hibernation_header_save(void * addr, unsigned int max_size);
->       int pfn_is_nosave(long unsigned int pfn);
->       int swsusp_arch_resume(void);
->       int amd_bus_cpu_online(unsigned int cpu);
->       void pci_enable_pci_io_ecs(void);
->       $
->     
->     After:
->     
->       $ pfunct -F btf ../build/bpf_clang_thin_lto/vmlinux -f tcp_slow_start
->       u32 tcp_slow_start(struct tcp_sock * tp, u32 acked);
->       $
->       $ pfunct -F btf --prototypes ../build/bpf_clang_thin_lto/vmlinux > after
->       $
->       $ head after
->       int fb_is_primary_device(struct fb_info * info);
->       int arch_resume_nosmt(void);
->       int relocate_restore_code(void);
->       int arch_hibernation_header_restore(void * addr);
->       int get_e820_md5(struct e820_table * table, void * buf);
->       int arch_hibernation_header_save(void * addr, unsigned int max_size);
->       int pfn_is_nosave(long unsigned int pfn);
->       int swsusp_arch_resume(void);
->       int amd_bus_cpu_online(unsigned int cpu);
->       void pci_enable_pci_io_ecs(void);
->       $
->       $ diff -u before after | grep ^+ | wc -l
->       1604
->       $
->     
->       $ diff -u before after | grep tcp_slow_start
->       -void tcp_slow_start(struct tcp_sock * tp, u32 acked);
->       +u32 tcp_slow_start(struct tcp_sock * tp, u32 acked);
->       $
->       $ diff -u before after | grep ^[+-] | head
->       --- before    2021-04-02 11:35:15.578160795 -0300
->       +++ after     2021-04-02 11:33:34.204847317 -0300
->       -void set_bf_sort(const struct dmi_system_id  * d);
->       +int set_bf_sort(const struct dmi_system_id  * d);
->       -void raw_pci_write(unsigned int domain, unsigned int bus, unsigned int devfn, int reg, int len, u32 val);
->       -void raw_pci_read(unsigned int domain, unsigned int bus, unsigned int devfn, int reg, int len, u32 * val);
->       +int raw_pci_write(unsigned int domain, unsigned int bus, unsigned int devfn, int reg, int len, u32 val);
->       +int raw_pci_read(unsigned int domain, unsigned int bus, unsigned int devfn, int reg, int len, u32 * val);
->       -void xen_find_device_domain_owner(struct pci_dev * dev);
->       +int xen_find_device_domain_owner(struct pci_dev * dev);
->       $
->     
->     The same results are obtained if using /sys/kernel/btf/vmlinux after
->     rebooting with the kernel built from the ../build/bpf_clang_thin_lto/vmlinux
->     file used in the above 'after' examples.
->     
->     Signed-off-by: Yonghong Song <yhs@fb.com>
->     Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
->     Acked-by: David Blaikie <dblaikie@gmail.com>
->     Cc: Alexei Starovoitov <ast@kernel.org>
->     Cc: Bill Wendling <morbo@google.com>
->     Cc: Nick Desaulniers <ndesaulniers@google.com>
->     Cc: bpf@vger.kernel.org
->     Cc: dwarves@vger.kernel.org
->     Cc: kernel-team@fb.com
->     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> 
-> diff --git a/dwarf_loader.c b/dwarf_loader.c
-> index 026d13789ff912be..5dea8378d7d2a30b 100644
-> --- a/dwarf_loader.c
-> +++ b/dwarf_loader.c
-> @@ -2198,6 +2198,34 @@ out:
->  	return 0;
->  }
->  
-> +static int cu__resolve_func_ret_types(struct cu *cu)
-> +{
-> +	struct ptr_table *pt = &cu->functions_table;
-> +	uint32_t i;
-> +
-> +	for (i = 0; i < pt->nr_entries; ++i) {
-> +		struct tag *tag = pt->entries[i];
-> +
-> +		if (tag == NULL || tag->type != 0)
-> +			continue;
-> +
-> +		struct function *fn = tag__function(tag);
-> +		if (!fn->abstract_origin)
-> +			continue;
-> +
-> +		struct dwarf_tag *dtag = tag->priv;
-> +		struct dwarf_tag *dfunc;
-> +		dfunc = dwarf_cu__find_tag_by_ref(cu->priv, &dtag->abstract_origin);
-> +		if (dfunc == NULL) {
-> +			tag__print_abstract_origin_not_found(tag);
-> +			return -1;
-> +		}
-> +
-> +		tag->type = dfunc->tag->type;
-> +	}
-> +	return 0;
-> +}
-> +
->  static int cu__recode_dwarf_types_table(struct cu *cu,
->  					struct ptr_table *pt,
->  					uint32_t i)
-> @@ -2637,6 +2665,16 @@ static int cus__merge_and_process_cu(struct cus *cus, struct conf_load *conf,
->  	/* process merged cu */
->  	if (cu__recode_dwarf_types(cu) != LSK__KEEPIT)
->  		return DWARF_CB_ABORT;
-> +
-> +	/*
-> +	 * for lto build, the function return type may not be
-> +	 * resolved due to the return type of a subprogram is
-> +	 * encoded in another subprogram through abstract_origin
-> +	 * tag. Let us visit all subprograms again to resolve this.
-> +	 */
-> +	if (cu__resolve_func_ret_types(cu) != LSK__KEEPIT)
-> +		return DWARF_CB_ABORT;
-> +
->  	if (finalize_cu_immediately(cus, cu, dcu, conf)
->  	    == LSK__STOP_LOADING)
->  		return DWARF_CB_ABORT;
-> 
+That is all correct with HOSTCXX but there is no CXX=... assignment
+otherwise test_cpp will use g++ as demonstrated.
 
+> >
+> > $ echo $PATH
+> > /opt/llvm-toolchain/bin:/opt/proxychains-ng/bin:/home/dileks/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+> >
+> > $ echo $MAKE $MAKE_OPTS
+> > make V=1 HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang
+> > CXX=clang++ LD=ld.lld LLVM=1 LLVM_IAS=1 PAHOLE=/opt/pahole/bin/pahole
+> >
+> > $ clang --version
+> > dileks clang version 12.0.0 (https://github.com/llvm/llvm-project.git
+> > 04ba60cfe598e41084fb848daae47e0ed910fa7d)
+> > Target: x86_64-unknown-linux-gnu
+> > Thread model: posix
+> > InstalledDir: /opt/llvm-toolchain/bin
+> > $ ld.lld --version
+> > LLD 12.0.0 (https://github.com/llvm/llvm-project.git
+> > 04ba60cfe598e41084fb848daae47e0ed910fa7d) (compatible with GNU
+> > linkers)
+> >
+> > $ LC_ALL=C $MAKE $MAKE_OPTS -C tools/testing/selftests/bpf/
+> >
+> > This breaks like this:
+> >
+> > clang++ -g -rdynamic -Wall -O2 -DHAVE_GENHDR
+> > -I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf
+> > -I/home/dileks/src/linux-kernel/git/tools/testing/selftes
+> > ts/bpf/tools/include
+> > -I/home/dileks/src/linux-kernel/git/include/generated
+> > -I/home/dileks/src/linux-kernel/git/tools/lib
+> > -I/home/dileks/src/linux-kernel/git/tools/incl
+> > ude -I/home/dileks/src/linux-kernel/git/tools/include/uapi
+> > -I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf
+> > -Dbpf_prog_load=bpf_prog_test_load -Dbpf_loa
+> > d_program=bpf_test_load_program test_cpp.cpp
+> > /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_core_extern.skel.h
+> > /home/dileks/src/linux-kernel/git/to
+> > ols/testing/selftests/bpf/tools/build/libbpf/libbpf.a
+> > /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_stub.o
+> > -lcap -lelf -lz -lrt -lpthread -o /home
+> > /dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_cpp
+> > clang-12: warning: treating 'c-header' input as 'c++-header' when in
+> > C++ mode, this behavior is deprecated [-Wdeprecated]
+> > clang-12: error: cannot specify -o when generating multiple output files
+> > make: *** [Makefile:455:
+> > /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_cpp]
+> > Error 1
+> >
+> > OK, I see in bpf-next includes several fixes like:
+> >
+> > commit a0964f526df6facd4e12a4c416185013026eecf9
+> > "selftests/bpf: Add multi-file statically linked BPF object file test"
+> >
+> > ...and to "selftests: xsk".
+> >
+> > Finally, I was able to build by suppressing the build of "test_cpp"
+> > and "xdpxceiver":
+> >
+> > $ git diff tools/testing/selftests/bpf/Makefile
+> > diff --git a/tools/testing/selftests/bpf/Makefile
+> > b/tools/testing/selftests/bpf/Makefile
+> > index 044bfdcf5b74..d9b19524b2d4 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -77,8 +77,8 @@ TEST_PROGS_EXTENDED := with_addr.sh \
+> > # Compile but not part of 'make run_tests'
+> > TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
+> >         flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
+> > -       test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
+> > -       xdpxceiver
+> > +       test_lirc_mode2_user xdping runqslower bench bpf_testmod.ko
+> > +       # test_cpp xdpxceiver
+> >
+> > TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read
+> >
+> > This diff is also attached before Gmail eats it.
+> >
+> > Yonghong Song as you described your build-environment and checking
+> > requirements for clang-13 in bpf-next (see [1]), I am unsure if I want
+> > to upgrade LLVM toolchain to v13-git and use bpf-next as the new
+> > kernel base.
+> > Lemme see if I get LLVM/Clang v13-git from Debian/experimental and/or
+> > <apt.llvm.org>.
+>
+> If you want to run bpf-next, clang v13 definitely recommended.
+> But I think if you use clang v13 to run linus linux, you may
+> hit DWARF5 DW_OP_addrx as well. But unfortunately you will
+> may hit a few selftest issues (e.g., BPF_TCP_CLOSE issue).
+>
+
+OK, I started a fresh build with LLVM/Clang v13-git from <apt.llvm.org>...
+
+$ /usr/lib/llvm-13/bin/clang --version
+Debian clang version
+13.0.0-++20210404092853+c4c511337247-1~exp1~20210404073605.3891
+Target: x86_64-pc-linux-gnu
+Thread model: posix
+InstalledDir: /usr/lib/llvm-13/bin
+
+...with latest bpf-next as new base.
+
+I applied your/this pahole patch "[PATCH dwarves] dwarf_loader: handle
+DWARF5 DW_OP_addrx properly".
+
+Will report later...
+
+- Sedat -
+
+> >
+> > [1] https://git.kernel.org/bpf/bpf-next/c/2ba4badca9977b64c966b0177920daadbd5501fe
+> > [2] https://git.kernel.org/bpf/bpf-next/c/a0964f526df6facd4e12a4c416185013026eecf9
+> >
