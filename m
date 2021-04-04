@@ -2,253 +2,345 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE423538E5
-	for <lists+bpf@lfdr.de>; Sun,  4 Apr 2021 18:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A257035390D
+	for <lists+bpf@lfdr.de>; Sun,  4 Apr 2021 19:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhDDQqE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 4 Apr 2021 12:46:04 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52896 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229861AbhDDQqD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 4 Apr 2021 12:46:03 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 134GjsRU017860;
-        Sun, 4 Apr 2021 09:45:55 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : from : to : cc
- : references : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=l7aG4N9Xb8XbHma0F5XR3Gg24/qvuCSXP/nQ24cSnYE=;
- b=UkUqTtDL6KDKkhGfAlOpdoOtscCq1gXJUv1+g3XPUDBQPLC9N0xmqsm5bRmV6KAsz+Bx
- AOusUYY2ActJbVUeQQYZrpQYMdzCD/3lrRyokF7uVfy8OW/oJxOxWnMn8uBjn42Xj05B
- Q8C4GIybJQrZnkHInKnv4EBlMY5itlXXDw8= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37qgk10481-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 04 Apr 2021 09:45:55 -0700
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 4 Apr 2021 09:45:49 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k+a3mCTegv5Dc3dARYmJhL+t7WSsvRJPtg/vR67iOyAmC0tIzlax+uqqsHPnKgP43DcGzrCSV56C6YYsMwSjzyQr9rGB7vrvTga/9NtWSLJIaReb3kj7KQ39KO0x87sKAatXVkdU2KAhYyXwBq0nmQP1cfKp5TwTu7jgvqAxE7CfT0tQ/+eJSPoNJ6UdM4qifUJGx8ZJ9mbvG2XMRciOIBqIB+8jAIvNm+MHx5UWGFRi7zPb1v/e7wWyLXCYzc0x3Cv0Spmpuah5HEbkGsnwz5+uHOt8y8KtMD6svByq4QdayRrHZT3o4zQXm2aQ4pz7BRFve3DVz5wCfIVS7hG5+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l7aG4N9Xb8XbHma0F5XR3Gg24/qvuCSXP/nQ24cSnYE=;
- b=lNE/KoJYl1M0ePV8E9bsn6L6bgYMxnsA+a+H4cLNFdNCyKcZtENwKl9LNeue52gfH9l/Y1vtsfpg5YshIXuCiDS6SgqZqOhCvQlvJYe4bL2nykBelF+4oq6FhpZi5hBJCd4rmaW/jH1jlofKP6qYtw+vW5xgOJ5hCBPe8+N8uJL2fzdDW+EL9oAlYF1S2wwSx8roqqepRUzJnZChrQAFBIdQ743jDPDSNhFvCjnn/78O1G84j69bQLeEYBBz4Uy8Gdj7rqFQrFqSW9xF9XrRV6R39NNyNVYo0koEYtLCDHkY2p6PPvq8JxBPzUhsVaHZYT2JmFgUGUE2jHzxeAuR5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN6PR15MB2286.namprd15.prod.outlook.com (2603:10b6:805:1f::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.27; Sun, 4 Apr
- 2021 16:45:46 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3999.032; Sun, 4 Apr 2021
- 16:45:46 +0000
-Subject: Re: [PATCH dwarves] dwarf_loader: handle DWARF5 DW_OP_addrx properly
-From:   Yonghong Song <yhs@fb.com>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        <dwarves@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Bill Wendling <morbo@google.com>, <bpf@vger.kernel.org>,
-        David Blaikie <dblaikie@gmail.com>, <kernel-team@fb.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-References: <20210403184158.2834387-1-yhs@fb.com>
-Message-ID: <d4786dab-b35c-c8f4-a848-3fc9f93228a0@fb.com>
-Date:   Sun, 4 Apr 2021 09:45:42 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
-In-Reply-To: <20210403184158.2834387-1-yhs@fb.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:c996]
-X-ClientProxiedBy: CO2PR04CA0090.namprd04.prod.outlook.com
- (2603:10b6:104:6::16) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        id S230495AbhDDRWs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 4 Apr 2021 13:22:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38520 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230202AbhDDRWr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 4 Apr 2021 13:22:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617556961;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8c7B8LbE/9XfuZfi7qwSBp2axeeRiFCmbTTxA0Fq0Zs=;
+        b=RwA1VkJQOCTlTAwd6PSvC20cS9NQaL4llp+Hs4Yeks4WKnajY9960wSJHkuDRoQNDbrWGZ
+        Q01c0mHa15uL/OxRTGuxCPy0xiJDJrpuCWvpXjspv+OMe4fKMTMr/WhvE41I7jcfHzCJ3S
+        YIJIiDxdNsrxTm6P1xuidNanZvskgZg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-279-zr5PJDwhN6Guule9lICs9g-1; Sun, 04 Apr 2021 13:22:37 -0400
+X-MC-Unique: zr5PJDwhN6Guule9lICs9g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5ED26108BD06;
+        Sun,  4 Apr 2021 17:22:35 +0000 (UTC)
+Received: from krava (unknown [10.40.192.69])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D7CD5C257;
+        Sun,  4 Apr 2021 17:22:32 +0000 (UTC)
+Date:   Sun, 4 Apr 2021 19:22:32 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Yonghong Song <yhs@fb.com>, Arnaldo <arnaldo.melo@gmail.com>,
+        David Blaikie <dblaikie@gmail.com>, dwarves@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Bill Wendling <morbo@google.com>, bpf <bpf@vger.kernel.org>,
+        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH dwarves] dwarf_loader: handle subprogram ret type with
+ abstract_origin properly
+Message-ID: <YGn12FFII822p8zJ@krava>
+References: <CAENS6EsZ5OX9o=Cn5L1jmx8ucR9siEWbGYiYHCUWuZjLyP3E7Q@mail.gmail.com>
+ <1ef31dd8-2385-1da1-2c95-54429c895d8a@fb.com>
+ <CAENS6EsiRsY1JptWJqu2wH=m4fkSiR+zD8JDD5DYke=ZnJOMrg@mail.gmail.com>
+ <YGckYjyfxfNLzc34@kernel.org>
+ <YGcw4iq9QNkFFfyt@kernel.org>
+ <2d55d22b-d136-82b9-6a0f-8b09eeef7047@fb.com>
+ <82dfd420-96f9-aedc-6cdc-bf20042455db@fb.com>
+ <E9072F07-B689-402C-89F6-545B589EF7E4@gmail.com>
+ <d4899252-af75-f284-a684-b33a7a12c840@fb.com>
+ <YGig8cHwNoccQwr+@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::10a5] (2620:10d:c090:400::5:c996) by CO2PR04CA0090.namprd04.prod.outlook.com (2603:10b6:104:6::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26 via Frontend Transport; Sun, 4 Apr 2021 16:45:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fb04c0f7-ea98-4ab9-083c-08d8f7891865
-X-MS-TrafficTypeDiagnostic: SN6PR15MB2286:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR15MB2286BE587FE1FB3FF1828649D3789@SN6PR15MB2286.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: elI1udykc/vL2lThHzVIMhBAzy3hYt3LFclBCYQ9T9qCzm208ef8uH9MiBZqB7A0femH2Rr+t8qOh7aWYKLebZpUSUDoDq3UB8s+CFnfZKoMZ9pWeR0WXwoWJLgFcsTPnGBX6jt2pO4GEzEl+XeclytEPxh/xPVTmi5ikJuABSwIQk0YU70NAp26ld/ia5syaiZ84wwcRQs3TpfFZ1w6LVzQWu6lgpIHFUXTpYAlWjZYR/Q0sF1NybDf43IOp2YehwY+Ksb15auUO5tk0Slj+rMwvUNTW3q5UBooEfkLYvHp95nSfjCKqoJO0bknDsCHV7lXwZc+rhldriHp9WwjY6XHd3cWjRDlho9wrI00zPaV+MwHgTQv7vFrzr2YD3FtZ4d+Bnxs49sHdw3lcC546rUtms3HpIw4ce7kDtx7l76pyQWMLLSehnmAjtshNjNlC6qhDRzBHSiKw2yfdPgNLPMqEqLiHnEl6aAhKdN1gAJNSU/MtXbxSRRysuQeda24mN9YSXjSYMJLOsmUWbbwhbXu5fd+cLNoyJF3wRieu9MNYsJ/p0Tjg6w1s6uPS9XlpFJGk5+0St2T5UEb4TxWIWIWJDm+oZokIRHRU4vPJ+6Ynud9Qee0l7s5giIVtMnVkQdIALhylaPdWY3xLc+9rw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(366004)(136003)(39860400002)(396003)(86362001)(38100700001)(54906003)(53546011)(31686004)(31696002)(4326008)(2616005)(316002)(6486002)(36756003)(66946007)(5660300002)(16526019)(66556008)(186003)(8936002)(2906002)(478600001)(8676002)(66476007)(83380400001)(52116002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TjhuL3RpZi9nNE84aUJNOGFaQzk0TVBoZEVIMUs4ODRSMG1ScktlVzBXMkZJ?=
- =?utf-8?B?cktoeC93OEFEc1VDLy80WEh5R0JrN21SYXczTjlGTGNsbkhNUVdkTDg1YmNk?=
- =?utf-8?B?elhxVUQ0dTV0djdKanUzTmx3d3R3TDF0TmNwMndwM2M3b1QrcnZKblJFaFRJ?=
- =?utf-8?B?dlRKOXo0dDljOTIydTBpVnRTdHBvYW1HL0xER1Q2cGZlVTFLUGdBU3hkWitR?=
- =?utf-8?B?TUV6SWhuNDF4THkrU0xZUmZ3bUJSS21mNlJBRU54a3EwUE0wMWpEa0lpSlFt?=
- =?utf-8?B?bVlwaVdwMlFjOUFPamVkSnRLdjJLWEFyNTdSRUdrWEwwRG1HcDZSbzVoVlNR?=
- =?utf-8?B?VDJMc1lPRCtjOG04M0hrb2JVRk5kY0hxeTQ5dHZBSFg0cEVmb0NMaG1PdmVx?=
- =?utf-8?B?eDU5SWluZjZTM1lTeElERklXSmMwS1dIMkpXRm1EcHpRV0tzcmN5eUlZVGFx?=
- =?utf-8?B?M3RQdE1mVkF6UWlSR0diSk9laUhWT2dhNVR3bGZrNTRud0N0MWx0OENPSW1k?=
- =?utf-8?B?NXZXTU1GM2dWNFd6S2JmdGhOMEVmUXhITllaK1cyblRjRnlBQndMdS9CaTRF?=
- =?utf-8?B?NDU4ekMwZ0dobXE3a0pQbU5Ma3ljUVY5blFaczBZVmxaQitneTFsOHhNSVFo?=
- =?utf-8?B?Q3pSMHZodzNITDNNbkNCRFNsMFhWU2tJdFI0bDcreDNyd2gvYkhjaWJ3bkxu?=
- =?utf-8?B?S0gzSENraDhyNDVaazJMbCtxd2F5Y0lBVXlCazhxVEtpVXIxY2Z2SEZObGRz?=
- =?utf-8?B?MzRNaHROaUdDVktnMFVZbTYweGpHMUpQT29UMEkxSVhCTk81a2NNQ09MNWRD?=
- =?utf-8?B?QWo4L0tJQlVHTnUxNGVPMkJZVzU2cmY4WWYvRStoSmpPUUF6eW5KTjBkMFho?=
- =?utf-8?B?VUhuQzVYczB0enB2Znp0cnNLcTBPcEJQSElKVVE4NnNsRjRyQ0JWUTdOTXQw?=
- =?utf-8?B?UEJqNmMwM2tmQWgyTVh5OEJMUG03ZWcxUkhQV29rTis3RGxtQnp1akJremdz?=
- =?utf-8?B?Z3lFeFVmeGloMVNwV2FxUk42dy9RRm5tZnZESEJYVCtuZGs1QVR0WnF3endK?=
- =?utf-8?B?M3ZuUmU5LzdaNDNUdFVVS2NJcmFwTzFBUWNxcFdSKzhBcHErcUtISWtqSlRv?=
- =?utf-8?B?SXY4U2xYU3FCdHJZRlE2bWhwZDJMRk9WNHNweWwyUCtMdkNiSmlMSGtVOXJj?=
- =?utf-8?B?ZTZFaVBnL3NkQjNYSjBTbGF3MW5RQStSNjZtRlZlSVM4MFFaK3RnMlFOUkNY?=
- =?utf-8?B?UWo2T0xhR1plV0NPd09FTGltUmN2NkxZVEhISEhaNDRWbXlmcDByZnYvRFdQ?=
- =?utf-8?B?MEFyaE1YTlBiRFZvV3FLaFUyVHZTa3piTFJnMmg1ZlVHeE1RRm9STWZLU0wz?=
- =?utf-8?B?eW1FQzZHaWlOekw4bTYxSGNqODBPQ0hVMHM2bDdIaExYY0NHNmIveUtrQVBK?=
- =?utf-8?B?cXBaL21TbUVSQU5kWURVTTIrSUdnOTBNUVMzNjRsZkNVVGtOWm9ib3BqbmJX?=
- =?utf-8?B?YlA0NW5nRVA3ZzhqNkdYSWtYTGhzK3BHWGdqajZ2QmlaRHRFTHN0RHZyWU5J?=
- =?utf-8?B?RnhKWG1kOFZ6Nm1BOFZaU0haQU1kRVQvMzRaVHRKSnR1cEdXL3RIbHFZY1B5?=
- =?utf-8?B?UDc2L0JiUlJXUjFFKzZSWnlLczhBUWdmdUZINmw1bTBSMnpLb2hJdWhRLzBz?=
- =?utf-8?B?eVdmUlIzR01RM2FlV0VhTUtVQTF2SjV2a1dlSkRGWmdDZ1FSK1BOYTF6c1hT?=
- =?utf-8?B?THJvV2xNWnloVnFnaW5mVkRHZm1uSllsWjcxaUZmQitEcnB4K2Q0ZlVxOEhL?=
- =?utf-8?Q?hrLWWU7ns/rvzXnJZkEE+Uw3MIwtnemaGmDIQ=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb04c0f7-ea98-4ab9-083c-08d8f7891865
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2021 16:45:46.5879
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IC+5iCd6c3zswThSr9HCSDCH+EiTC+Wvcbz5nQxrVRqpMHsmM+mBJCAyfXnaNLwS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2286
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: 456W99ZTci9CvOwGsjVcsxSu0gqolGVM
-X-Proofpoint-GUID: 456W99ZTci9CvOwGsjVcsxSu0gqolGVM
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-04-04_05:2021-04-01,2021-04-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- phishscore=0 adultscore=0 priorityscore=1501 suspectscore=0 clxscore=1015
- bulkscore=0 lowpriorityscore=0 malwarescore=0 mlxlogscore=999 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104030000 definitions=main-2104040116
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YGig8cHwNoccQwr+@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sat, Apr 03, 2021 at 02:08:01PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Fri, Apr 02, 2021 at 12:41:47PM -0700, Yonghong Song escreveu:
+> > 
+> > 
+> > On 4/2/21 11:08 AM, Arnaldo wrote:
+> > > 
+> > > 
+> > > On April 2, 2021 2:42:21 PM GMT-03:00, Yonghong Song <yhs@fb.com> wrote:
+> > > > On 4/2/21 10:23 AM, Yonghong Song wrote:
+> > > :> Thanks. I checked out the branch and did some testing with latest
+> > > > clang
+> > > > > trunk (just pulled in).
+> > > > > 
+> > > > > With kernel LTO note support, I tested gcc non-lto, and llvm-lto
+> > > > mode,
+> > > > > it works fine.
+> > > > > 
+> > > > > Without kernel LTO note support, I tested
+> > > > >     gcc non-lto  <=== ok
+> > > > >     llvm non-lto  <=== not ok
+> > > > >     llvm lto     <=== ok
+> > > > > 
+> > > > > Surprisingly llvm non-lto vmlinux had the same "tcp_slow_start"
+> > > > issue.
+> > > > > Some previous version of clang does not have this issue.
+> > > > > I double checked the dwarfdump and it is indeed has the same reason
+> > > > > for lto vmlinux. I checked abbrev section and there is no cross-cu
+> > > > > references.
+> > > > > 
+> > > > > That means we need to adapt this patch
+> > > > >     dwarf_loader: Handle subprogram ret type with abstract_origin
+> > > > properly
+> > > > > for non merging case as well.
+> > > > > The previous patch fixed lto subprogram abstract_origin issue,
+> > > > > I will submit a followup patch for this.
+> > > > 
+> > > > Actually, the change is pretty simple,
+> > > > 
+> > > > diff --git a/dwarf_loader.c b/dwarf_loader.c
+> > > > index 5dea837..82d7131 100644
+> > > > --- a/dwarf_loader.c
+> > > > +++ b/dwarf_loader.c
+> > > > @@ -2323,7 +2323,11 @@ static int die__process_and_recode(Dwarf_Die
+> > > > *die, struct cu *cu)
+> > > >          int ret = die__process(die, cu);
+> > > >          if (ret != 0)
+> > > >                  return ret;
+> > > > -       return cu__recode_dwarf_types(cu);
+> > > > +       ret = cu__recode_dwarf_types(cu);
+> > > > +       if (ret != 0)
+> > > > +               return ret;
+> > > > +
+> > > > +       return cu__resolve_func_ret_types(cu);
+> > > >   }
+> > > > 
+> > > > Arnaldo, do you just want to fold into previous patches, or
+> > > > you want me to submit a new one?
+> > > 
+> > > I can take care of that.
+> > > 
+> > > And I think it's time for to look at Jiri's test suite... :-)
 
+heya,
+the test did not get change in generated BTF data with the change below,
+so looks good
 
-On 4/3/21 11:41 AM, Yonghong Song wrote:
-> Currently, when DWARF5 is enabled in kernel, DEBUG_INFO_BTF
-> needs to be disabled. I hacked the kernel to enable DEBUG_INFO_BTF
-> like:
->    --- a/lib/Kconfig.debug
->    +++ b/lib/Kconfig.debug
->    @@ -286,7 +286,6 @@ config DEBUG_INFO_DWARF5
->            bool "Generate DWARF Version 5 debuginfo"
->            depends on GCC_VERSION >= 50000 || CC_IS_CLANG
->            depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
->    -       depends on !DEBUG_INFO_BTF
->            help
-> and tried DWARF5 with latest trunk clang, thin-lto and no lto.
-> In both cases, I got a few additional failures like:
->    $ ./test_progs -n 55/2
->    ...
->    libbpf: extern (var ksym) 'bpf_prog_active': failed to find BTF ID in kernel BTF(s).
->    libbpf: failed to load object 'kfunc_call_test_subprog'
->    libbpf: failed to load BPF skeleton 'kfunc_call_test_subprog': -22
->    test_subprog:FAIL:skel unexpected error: 0
->    #55/2 subprog:FAIL
-> 
-> Here, bpf_prog_active is a percpu global variable and pahole is supposed to
-> put into BTF, but it is not there.
-> 
-> Further analysis shows this is due to encoding difference between
-> DWARF4 and DWARF5. In DWARF5, a new section .debug_addr
-> and several new ops, e.g. DW_OP_addrx, are introduced.
-> DW_OP_addrx is actually an index into .debug_addr section starting
-> from an offset encoded with DW_AT_addr_base in DW_TAG_compile_unit.
-> 
-> For the above 'bpf_prog_active' example, with DWARF4, we have
->    0x02281a96:   DW_TAG_variable
->                    DW_AT_name      ("bpf_prog_active")
->                    DW_AT_decl_file ("/home/yhs/work/bpf-next/include/linux/bpf.h")
->                    DW_AT_decl_line (1170)
->                    DW_AT_decl_column       (0x01)
->                    DW_AT_type      (0x0226d171 "int")
->                    DW_AT_external  (true)
->                    DW_AT_declaration       (true)
-> 
->    0x02292f04:   DW_TAG_variable
->                    DW_AT_specification     (0x02281a96 "bpf_prog_active")
->                    DW_AT_decl_file ("/home/yhs/work/bpf-next/kernel/bpf/syscall.c")
->                    DW_AT_decl_line (45)
->                    DW_AT_location  (DW_OP_addr 0x28940)
-> For DWARF5, we have
->    0x0138b0a1:   DW_TAG_variable
->                    DW_AT_name      ("bpf_prog_active")
->                    DW_AT_type      (0x013760b9 "int")
->                    DW_AT_external  (true)
->                    DW_AT_decl_file ("/home/yhs/work/bpf-next/kernel/bpf/syscall.c")
->                    DW_AT_decl_line (45)
->                    DW_AT_location  (DW_OP_addrx 0x16)
-> 
-> This patch added support for DW_OP_addrx. With the patch, the above
-> failing bpf selftest and other similar failed selftests succeeded.
+jirka
 
-Arnaldo, sorry, I just found that I forgot signed-off. Here it is,
-
-Signed-off-by: Yonghong Song <yhs@fb.com>
-
-If no further change is needed for this patch, maybe you can help add 
-it? Otherwise, I can add it in v2. Thanks!
-
-> ---
->   dwarf_loader.c | 14 +++++++++++++-
->   1 file changed, 13 insertions(+), 1 deletion(-)
+> > > 
+> > > It's a holiday here, so I'll take some time to get to this, hopefully I'll tag 1.21 tomorrow tho.
+> > 
+> > Thanks for taking care of this! Right, 1.21 looks very close.
 > 
-> NOTE: with this patch, at least for clang trunk, all bpf selftests
->        are fine for DWARF5 w.r.t. compiler and pahole. Hopefully
->        after pahole 1.21 release, we can remove DWARF5 dependence
->        with !DEBUG_INFO_BTF.
+> So our HEAD now is this:
+> 
+> 
+> commit c03cd5c6ae0cec97d23edcf0a343bbff3df3c96a
+> Author: Yonghong Song <yhs@fb.com>
+> Date:   Thu Apr 1 16:55:34 2021 -0700
+> 
+>     dwarf_loader: Handle subprogram ret type with abstract_origin properly
+>     
+>     With latest bpf-next built with clang LTO (thin or full), I hit one test
+>     failures:
+>     
+>       $ ./test_progs -t tcp
+>       ...
+>       libbpf: extern (func ksym) 'tcp_slow_start': func_proto [23] incompatible with kernel [115303]
+>       libbpf: failed to load object 'bpf_cubic'
+>       libbpf: failed to load BPF skeleton 'bpf_cubic': -22
+>       test_cubic:FAIL:bpf_cubic__open_and_load failed
+>       #9/2 cubic:FAIL
+>       ...
+>     
+>     The reason of the failure is due to bpf program 'tcp_slow_start' func
+>     signature is different from vmlinux BTF. bpf program uses the following
+>     signature:
+>     
+>       extern __u32 tcp_slow_start(struct tcp_sock *tp, __u32 acked);
+>     
+>     which is identical to the kernel definition in linux:include/net/tcp.h:
+>     
+>       u32 tcp_slow_start(struct tcp_sock *tp, u32 acked);
+>     
+>     While vmlinux BTF definition like:
+>     
+>       [115303] FUNC_PROTO '(anon)' ret_type_id=0 vlen=2
+>               'tp' type_id=39373
+>               'acked' type_id=18
+>       [115304] FUNC 'tcp_slow_start' type_id=115303 linkage=static
+>     
+>     The above is dumped with `bpftool btf dump file vmlinux`.
+>     
+>     You can see the ret_type_id is 0 and this caused the problem.
+>     
+>     Looking at dwarf, we have:
+>     
+>     0x11f2ec67:   DW_TAG_subprogram
+>                     DW_AT_low_pc    (0xffffffff81ed2330)
+>                     DW_AT_high_pc   (0xffffffff81ed235c)
+>                     DW_AT_frame_base        ()
+>                     DW_AT_GNU_all_call_sites        (true)
+>                     DW_AT_abstract_origin   (0x11f2ed66 "tcp_slow_start")
+>     ...
+>     0x11f2ed66:   DW_TAG_subprogram
+>                     DW_AT_name      ("tcp_slow_start")
+>                     DW_AT_decl_file ("/home/yhs/work/bpf-next/net/ipv4/tcp_cong.c")
+>                     DW_AT_decl_line (392)
+>                     DW_AT_prototyped        (true)
+>                     DW_AT_type      (0x11f130c2 "u32")
+>                     DW_AT_external  (true)
+>                     DW_AT_inline    (DW_INL_inlined)
+>     
+>     We have a subprogram which has an abstract_origin pointing to the
+>     subprogram prototype with return type. Current one pass recoding cannot
+>     easily resolve this easily since at the time recoding for 0x11f2ec67,
+>     the return type in 0x11f2ed66 has not been resolved.
+>     
+>     To simplify implementation, I just added another pass to go through all
+>     functions after recoding pass. This should resolve the above issue.
+>     
+>     With this patch, among total 250999 functions in vmlinux, 4821 functions
+>     needs return type adjustment from type id 0 to correct values. The above
+>     failed bpf selftest passed too.
+>     
+>     Committer testing:
+>     
+>     Before:
+>     
+>       $ pfunct tcp_slow_start
+>       void tcp_slow_start(struct tcp_sock * tp, u32 acked);
+>       $
+>       $ pfunct --prototypes /sys/kernel/btf/vmlinux > before
+>       $ head before
+>       int fb_is_primary_device(struct fb_info * info);
+>       int arch_resume_nosmt(void);
+>       int relocate_restore_code(void);
+>       int arch_hibernation_header_restore(void * addr);
+>       int get_e820_md5(struct e820_table * table, void * buf);
+>       int arch_hibernation_header_save(void * addr, unsigned int max_size);
+>       int pfn_is_nosave(long unsigned int pfn);
+>       int swsusp_arch_resume(void);
+>       int amd_bus_cpu_online(unsigned int cpu);
+>       void pci_enable_pci_io_ecs(void);
+>       $
+>     
+>     After:
+>     
+>       $ pfunct -F btf ../build/bpf_clang_thin_lto/vmlinux -f tcp_slow_start
+>       u32 tcp_slow_start(struct tcp_sock * tp, u32 acked);
+>       $
+>       $ pfunct -F btf --prototypes ../build/bpf_clang_thin_lto/vmlinux > after
+>       $
+>       $ head after
+>       int fb_is_primary_device(struct fb_info * info);
+>       int arch_resume_nosmt(void);
+>       int relocate_restore_code(void);
+>       int arch_hibernation_header_restore(void * addr);
+>       int get_e820_md5(struct e820_table * table, void * buf);
+>       int arch_hibernation_header_save(void * addr, unsigned int max_size);
+>       int pfn_is_nosave(long unsigned int pfn);
+>       int swsusp_arch_resume(void);
+>       int amd_bus_cpu_online(unsigned int cpu);
+>       void pci_enable_pci_io_ecs(void);
+>       $
+>       $ diff -u before after | grep ^+ | wc -l
+>       1604
+>       $
+>     
+>       $ diff -u before after | grep tcp_slow_start
+>       -void tcp_slow_start(struct tcp_sock * tp, u32 acked);
+>       +u32 tcp_slow_start(struct tcp_sock * tp, u32 acked);
+>       $
+>       $ diff -u before after | grep ^[+-] | head
+>       --- before    2021-04-02 11:35:15.578160795 -0300
+>       +++ after     2021-04-02 11:33:34.204847317 -0300
+>       -void set_bf_sort(const struct dmi_system_id  * d);
+>       +int set_bf_sort(const struct dmi_system_id  * d);
+>       -void raw_pci_write(unsigned int domain, unsigned int bus, unsigned int devfn, int reg, int len, u32 val);
+>       -void raw_pci_read(unsigned int domain, unsigned int bus, unsigned int devfn, int reg, int len, u32 * val);
+>       +int raw_pci_write(unsigned int domain, unsigned int bus, unsigned int devfn, int reg, int len, u32 val);
+>       +int raw_pci_read(unsigned int domain, unsigned int bus, unsigned int devfn, int reg, int len, u32 * val);
+>       -void xen_find_device_domain_owner(struct pci_dev * dev);
+>       +int xen_find_device_domain_owner(struct pci_dev * dev);
+>       $
+>     
+>     The same results are obtained if using /sys/kernel/btf/vmlinux after
+>     rebooting with the kernel built from the ../build/bpf_clang_thin_lto/vmlinux
+>     file used in the above 'after' examples.
+>     
+>     Signed-off-by: Yonghong Song <yhs@fb.com>
+>     Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+>     Acked-by: David Blaikie <dblaikie@gmail.com>
+>     Cc: Alexei Starovoitov <ast@kernel.org>
+>     Cc: Bill Wendling <morbo@google.com>
+>     Cc: Nick Desaulniers <ndesaulniers@google.com>
+>     Cc: bpf@vger.kernel.org
+>     Cc: dwarves@vger.kernel.org
+>     Cc: kernel-team@fb.com
+>     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 > 
 > diff --git a/dwarf_loader.c b/dwarf_loader.c
-> index 82d7131..49336ac 100644
+> index 026d13789ff912be..5dea8378d7d2a30b 100644
 > --- a/dwarf_loader.c
 > +++ b/dwarf_loader.c
-> @@ -401,8 +401,19 @@ static int attr_location(Dwarf_Die *die, Dwarf_Op **expr, size_t *exprlen)
->   {
->   	Dwarf_Attribute attr;
->   	if (dwarf_attr(die, DW_AT_location, &attr) != NULL) {
-> -		if (dwarf_getlocation(&attr, expr, exprlen) == 0)
-> +		if (dwarf_getlocation(&attr, expr, exprlen) == 0) {
-> +			/* DW_OP_addrx needs additional lookup for real addr. */
-> +			if (*exprlen != 0 && expr[0]->atom == DW_OP_addrx) {
-> +				Dwarf_Attribute addr_attr;
-> +				dwarf_getlocation_attr(&attr, expr[0], &addr_attr);
+> @@ -2198,6 +2198,34 @@ out:
+>  	return 0;
+>  }
+>  
+> +static int cu__resolve_func_ret_types(struct cu *cu)
+> +{
+> +	struct ptr_table *pt = &cu->functions_table;
+> +	uint32_t i;
 > +
-> +				Dwarf_Addr address;
-> +				dwarf_formaddr (&addr_attr, &address);
+> +	for (i = 0; i < pt->nr_entries; ++i) {
+> +		struct tag *tag = pt->entries[i];
 > +
-> +				expr[0]->number = address;
-> +			}
->   			return 0;
+> +		if (tag == NULL || tag->type != 0)
+> +			continue;
+> +
+> +		struct function *fn = tag__function(tag);
+> +		if (!fn->abstract_origin)
+> +			continue;
+> +
+> +		struct dwarf_tag *dtag = tag->priv;
+> +		struct dwarf_tag *dfunc;
+> +		dfunc = dwarf_cu__find_tag_by_ref(cu->priv, &dtag->abstract_origin);
+> +		if (dfunc == NULL) {
+> +			tag__print_abstract_origin_not_found(tag);
+> +			return -1;
 > +		}
->   	}
->   
->   	return 1;
-> @@ -626,6 +637,7 @@ static enum vscope dwarf__location(Dwarf_Die *die, uint64_t *addr, struct locati
->   		Dwarf_Op *expr = location->expr;
->   		switch (expr->atom) {
->   		case DW_OP_addr:
-> +		case DW_OP_addrx:
->   			scope = VSCOPE_GLOBAL;
->   			*addr = expr[0].number;
->   			break;
+> +
+> +		tag->type = dfunc->tag->type;
+> +	}
+> +	return 0;
+> +}
+> +
+>  static int cu__recode_dwarf_types_table(struct cu *cu,
+>  					struct ptr_table *pt,
+>  					uint32_t i)
+> @@ -2637,6 +2665,16 @@ static int cus__merge_and_process_cu(struct cus *cus, struct conf_load *conf,
+>  	/* process merged cu */
+>  	if (cu__recode_dwarf_types(cu) != LSK__KEEPIT)
+>  		return DWARF_CB_ABORT;
+> +
+> +	/*
+> +	 * for lto build, the function return type may not be
+> +	 * resolved due to the return type of a subprogram is
+> +	 * encoded in another subprogram through abstract_origin
+> +	 * tag. Let us visit all subprograms again to resolve this.
+> +	 */
+> +	if (cu__resolve_func_ret_types(cu) != LSK__KEEPIT)
+> +		return DWARF_CB_ABORT;
+> +
+>  	if (finalize_cu_immediately(cus, cu, dcu, conf)
+>  	    == LSK__STOP_LOADING)
+>  		return DWARF_CB_ABORT;
 > 
+
