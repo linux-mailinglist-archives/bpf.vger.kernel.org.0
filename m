@@ -2,65 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8909D3542AC
-	for <lists+bpf@lfdr.de>; Mon,  5 Apr 2021 16:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D2835438A
+	for <lists+bpf@lfdr.de>; Mon,  5 Apr 2021 17:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237496AbhDEOUP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Apr 2021 10:20:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237450AbhDEOUO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Apr 2021 10:20:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 96A6A613B1;
-        Mon,  5 Apr 2021 14:20:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617632408;
-        bh=1yM1ydajs00nts4Yq8R6FyJMbgeKaGI1O2iM3aO8eks=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=APyn1fuXvSuXnWJ90Fq8DQ2E1Wv19Tg8UcbGiVfz4N7s9WwU8kMfbocSstAJJXztN
-         4ZpQirlGZ38cVy1Rk8usk1EJgEsj6sH0XLZXnU2gSgb5sILQ4yyox2rlNaCp6VzgAs
-         XyIUuCKc3jmC//idql7CkATnXYt2ktpz2mww8eMEDbCgtqSA4TdbjjfsYURX/wyFMM
-         C0mTz1966JyGHiepRclpnmLuRoYqpS8ac98GVUFJBp1ZeqgydsSw/8bK0/I2ikZ1O4
-         1gHs7/4iGfIxG5toKxvx4BpCvvqr+6PTdI+x6sRZgAf59/Uw9lkSkK90lP2uHTx6JF
-         b4h1wB0pcBM6w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8737960A00;
-        Mon,  5 Apr 2021 14:20:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S238675AbhDEPp2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Apr 2021 11:45:28 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:33671 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238659AbhDEPp1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Apr 2021 11:45:27 -0400
+Received: by mail-il1-f200.google.com with SMTP id a2so464613ilq.0
+        for <bpf@vger.kernel.org>; Mon, 05 Apr 2021 08:45:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+x9/MKuc2hmxIJVR5bNwtBPQEtsjTs7ETZd3G6qI0TE=;
+        b=UXuiFy2Vfd/QMmiRqtjHzUZBqY4Pr2XIsdtNEtxbkAKJMlsXiW+OdM1MkPBDVVcLHL
+         eLNN23JdCO8OLKAjLrSMbYINaOfMTI9OdG/1gf/Eg4pPv0VgRqef3Qs7DgpvSJA+F7mU
+         a6o6qo74ZbkgyPGek2FMSYG+ju5zeKlsYZxYilACGuoJBG80puWZEZT7/YKH6q9n/gPm
+         Oj/9sxgdaPrPMp5HahjGxsZaqclAQyH8z4mgREunBUZHCKiIn0z92ooJG3ezModZV5lE
+         sDXaW4l3jgP4Ku96zuPcHZDwYTFCY9fM6r8htgUvgUSxqCSwo8x1itZU6jflV8q40zae
+         m2oA==
+X-Gm-Message-State: AOAM532S/j+ckrbV8kS+ZQxwYwnozhiSbDlJzy5RzQqLTeAkRkRDZpet
+        80xDLGvRwwdWL05h9ox5egGzaFSTR41Esu+K7BEHvJp2OhxA
+X-Google-Smtp-Source: ABdhPJzD7s2Zc45ImbfUcMY8nAFcTIlyrXFu4hSwoKW418AJ3Sx3xHQrWBnP0sohlKOQwvM8tvMlKyGj5IPFkQ/ENRBuGJHFFnyk
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] libbpf: Fix KERNEL_VERSION macro
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161763240854.530.7712695951554965162.git-patchwork-notify@kernel.org>
-Date:   Mon, 05 Apr 2021 14:20:08 +0000
-References: <20210405040119.802188-1-hengqi.chen@gmail.com>
-In-Reply-To: <20210405040119.802188-1-hengqi.chen@gmail.com>
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, andrii@kernel.org,
-        yhs@fb.com
+X-Received: by 2002:a05:6e02:1cad:: with SMTP id x13mr21246553ill.144.1617637520858;
+ Mon, 05 Apr 2021 08:45:20 -0700 (PDT)
+Date:   Mon, 05 Apr 2021 08:45:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ce66e005bf3b9531@google.com>
+Subject: [syzbot] WARNING: suspicious RCU usage in lock_sock_nested
+From:   syzbot <syzbot+80a4f8091f8d5ba51de9@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hello,
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+syzbot found the following issue on:
 
-On Mon,  5 Apr 2021 12:01:19 +0800 you wrote:
-> Add missing ')' for KERNEL_VERSION macro.
-> 
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> ---
->  tools/lib/bpf/bpf_helpers.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+HEAD commit:    d19cc4bf Merge tag 'trace-v5.12-rc5' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14898326d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d1a3d65a48dbd1bc
+dashboard link: https://syzkaller.appspot.com/bug?extid=80a4f8091f8d5ba51de9
 
-Here is the summary with links:
-  - [bpf-next] libbpf: Fix KERNEL_VERSION macro
-    https://git.kernel.org/bpf/bpf-next/c/1e1032b0c4af
+Unfortunately, I don't have any reproducer for this issue yet.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+80a4f8091f8d5ba51de9@syzkaller.appspotmail.com
+
+=============================
+WARNING: suspicious RCU usage
+5.12.0-rc5-syzkaller #0 Not tainted
+-----------------------------
+kernel/sched/core.c:8294 Illegal context switch in RCU-bh read-side critical section!
+
+other info that might help us debug this:
 
 
+rcu_scheduler_active = 2, debug_locks = 0
+no locks held by syz-executor.3/8407.
+
+stack backtrace:
+CPU: 0 PID: 8407 Comm: syz-executor.3 Not tainted 5.12.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ ___might_sleep+0x229/0x2c0 kernel/sched/core.c:8294
+ lock_sock_nested+0x25/0x120 net/core/sock.c:3062
+ lock_sock include/net/sock.h:1600 [inline]
+ do_ip_getsockopt+0x227/0x18e0 net/ipv4/ip_sockglue.c:1536
+ ip_getsockopt+0x84/0x1c0 net/ipv4/ip_sockglue.c:1761
+ tcp_getsockopt+0x86/0xd0 net/ipv4/tcp.c:4239
+ __sys_getsockopt+0x21f/0x5f0 net/socket.c:2161
+ __do_sys_getsockopt net/socket.c:2176 [inline]
+ __se_sys_getsockopt net/socket.c:2173 [inline]
+ __x64_sys_getsockopt+0xba/0x150 net/socket.c:2173
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x467a6a
+Code: 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 37 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc76a6a848 EFLAGS: 00000246 ORIG_RAX: 0000000000000037
+RAX: ffffffffffffffda RBX: 00007ffc76a6a85c RCX: 0000000000467a6a
+RDX: 0000000000000060 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 0000000000000003 R08: 00007ffc76a6a85c R09: 00007ffc76a6a8c0
+R10: 00007ffc76a6a860 R11: 0000000000000246 R12: 00007ffc76a6a860
+R13: 000000000005ecdc R14: 0000000000000000 R15: 00007ffc76a6afd0
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
