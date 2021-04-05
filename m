@@ -2,107 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2D1353C5F
-	for <lists+bpf@lfdr.de>; Mon,  5 Apr 2021 10:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2533A35415D
+	for <lists+bpf@lfdr.de>; Mon,  5 Apr 2021 13:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232317AbhDEIZh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Apr 2021 04:25:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45692 "EHLO
+        id S233405AbhDELE7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Apr 2021 07:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232135AbhDEIZh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Apr 2021 04:25:37 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43CA3C061756;
-        Mon,  5 Apr 2021 01:25:31 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id j20-20020a05600c1914b029010f31e15a7fso7245816wmq.1;
-        Mon, 05 Apr 2021 01:25:31 -0700 (PDT)
+        with ESMTP id S233399AbhDELE6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Apr 2021 07:04:58 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4850C061756;
+        Mon,  5 Apr 2021 04:04:52 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id k25so4674396iob.6;
+        Mon, 05 Apr 2021 04:04:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=H/0+G/p8tUP3jzEhCTql+Tw550CCeXnthrGtXnd5hkc=;
-        b=CcRc/YfsGwQ/cB/zZ+QTzebFyTwuDoomeOxOi4ogiMaMnu+cu0e2azaM9KyCOP86Cr
-         ExlgKSc+8sEvEeajKxKZVLj06I+J7eZzagIQdR8aS8FYIHGpvSUVq5ApT2rzLzNsC+Y5
-         8nzvfSiSEmvC9roOYPM2IOmzaLhcjwCTS/lZySKNWEpC5hHiuZI/nGpn07c+YwZ88roc
-         m3na9LFsjOuTAukgzDe3vg0mERtdTFE3b3wuIXBpIOWctL1Jf9lcrL5NSGz8HQsQ80ex
-         rftbjfn9EUgA91b8ikRfsCY2REcG45ayIad3cexwyguKQvUF+fKgtFf1pEo+7Ro9AARR
-         uSKA==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=LKcfQyq8DPp4UgPqwpH5DMSMhYuKQItgNTo3FX2vdOY=;
+        b=gCSw90ZXGnQqI20WMRreQs6bbXrW9bRIxSvGs+QuwMlc6NC8DTfVoVOcT/aV+um2X7
+         4OmfbX69V3vAgzgERim11R5o2DWuE3jVPhHVotc9JClwXYV4auMLBcB53QuV727bMRmb
+         54MNgcFBrZgi8Xaxx4EOGU0EwVvlbn5F8f48PIT9gOy772SpIv7xaQFnaSkLS2lXr0XR
+         LFfTdssyiTqUo6u/uX2bzIkvnHacNYbYY9Spr6bxr/BDS52ebhYFDggciyU/0ts046Sv
+         m1Tdo34Vo+mHhyg91tDa6Pfib12Jg7EChajDroMyVivIH79cdI56gWhJw8qTaa8ojvZN
+         HGKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=H/0+G/p8tUP3jzEhCTql+Tw550CCeXnthrGtXnd5hkc=;
-        b=cGS1MpQpxFA8o4N8qGJAgpAVUCTP7rttepseX3VxzjUaVjz7tlU1LiESEvj7PitJcX
-         RmprFc5XeFPxk2WM4VPH7eEJgc2pLHmtw9cbUqVL4sJuKMOqr/dAYUEBq7pxQ/diVTHV
-         eiGU5QYu7pSdYJ1DZlxBM7tvL0mHuOcrDD6XzCZNyAIPZeGRaUR2djpdaw+ET5U0X8zs
-         UIzIVXI8RyDAQzfXmERECUQBtPYBLlPon9LeW/d+zU08imwj1ZuCUz/79QYLSVdgIekZ
-         TUd7rKRV9+4NDD7WYxTZQ+JLTPjHQfnXUwni3vOt5CyvvDlMHJT36NmjndCdMS9CGnyu
-         X8NQ==
-X-Gm-Message-State: AOAM530caRtWzIlObPxCed0OAqZWcNlPEPGmjTilhWkN7rDMdma//BzR
-        bM3ym4ZbtflValOC095XORM=
-X-Google-Smtp-Source: ABdhPJwXb76ryddMPep8c1GXTtSARX0Xzwralvoy60CdRCp6u+pryVASJkFxk/ZM4/1jJVB51O9TCw==
-X-Received: by 2002:a1c:750d:: with SMTP id o13mr24190507wmc.76.1617611129962;
-        Mon, 05 Apr 2021 01:25:29 -0700 (PDT)
-Received: from [192.168.1.101] ([37.170.219.60])
-        by smtp.gmail.com with ESMTPSA id o14sm17172857wrh.88.2021.04.05.01.25.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 05 Apr 2021 01:25:29 -0700 (PDT)
-Subject: Re: [Patch bpf-next v8 10/16] sock: introduce
- sk->sk_prot->psock_update_sk_prot()
-To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
-        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-References: <20210331023237.41094-1-xiyou.wangcong@gmail.com>
- <20210331023237.41094-11-xiyou.wangcong@gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <1aeb42b4-c0fe-4a25-bd73-00bc7b7de285@gmail.com>
-Date:   Mon, 5 Apr 2021 10:25:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=LKcfQyq8DPp4UgPqwpH5DMSMhYuKQItgNTo3FX2vdOY=;
+        b=nyDyowJ5xLJvOSnGShJewnRoAshOKcVYZyBVNrj2lKrrVqI2kQB0wenL2PO8G6Q1as
+         o/nxwD6xC+oBJS5YimdjDd29nHab+3H7Rq1jHKfnfv5YdDktQq3Yd39VviS1TGl6tAoP
+         fICQFOFrhgep4mekN/J3cuD0mYjDAdIyha10YXxA9p8U8Y1CA8Giqth3+M8MNNV7xmAU
+         TKImFFHDb+QY5ZAbBXRJqEJGJRDCaY3vmRwStIc4n6pyG/yA4I71Hcthy1NkgDuSp2ys
+         25tCeGHWtQkxQ8vrTPVu8XaOH59hGIuYFajK7rkP+q3LvE/vAQ1NU94eTR0kETovpcZ5
+         58Hg==
+X-Gm-Message-State: AOAM533M+7FijlhO3WdzOd2t+qOuF+aukN7itmwwjItcvQjgeiuJ4PCy
+        RA+cf2VGi5laAG2ASqVkjVUqqo+S7YZxhisU+cM=
+X-Google-Smtp-Source: ABdhPJzQAaSVM4Gm8crkWmB0TSJ+JxZgmzcvPzYESrybZb8Nf7KMEfiP5l9hp3lZL+dwjCh63mgmQINTlAp6MwIkMXw=
+X-Received: by 2002:a02:b890:: with SMTP id p16mr23003486jam.138.1617620692349;
+ Mon, 05 Apr 2021 04:04:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210331023237.41094-11-xiyou.wangcong@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210403184158.2834387-1-yhs@fb.com> <CA+icZUWLf4W_1u_p4-Rx1OD7h_ydP4Xzv12tMA2HZqj9CCOH0Q@mail.gmail.com>
+ <6c67f02a-3bc2-625a-3b05-7eb3533044bb@fb.com> <CA+icZUV4fw5GNXFnyOjvajkVFdPhkOrhr3rn5OrAKGujpSrmgQ@mail.gmail.com>
+ <CA+icZUWh6YOkCKG72SndqUbQNwG+iottO4=cPyRRVjaHD2=0qw@mail.gmail.com>
+ <f706e8b9-77ca-6341-db13-e2a74549576b@fb.com> <CA+icZUVb_J95Gk2Kf0i8waL6TDfJ2n9JrGbNK_dsN1n8HdcoXQ@mail.gmail.com>
+ <458faf4c-7681-13eb-023d-c51f582bfec6@fb.com> <CA+icZUVcQ+vQjc0VavetA3s6jzNhC20dU4Sa9ApBLNXbY=w5wA@mail.gmail.com>
+In-Reply-To: <CA+icZUVcQ+vQjc0VavetA3s6jzNhC20dU4Sa9ApBLNXbY=w5wA@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 5 Apr 2021 13:04:18 +0200
+Message-ID: <CA+icZUUa_gad43TeUC8Ufz0kMgXMQoFy9a_hwzPwOPZHNfmNeA@mail.gmail.com>
+Subject: Re: [PATCH dwarves] dwarf_loader: handle DWARF5 DW_OP_addrx properly
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Bill Wendling <morbo@google.com>, bpf@vger.kernel.org,
+        David Blaikie <dblaikie@gmail.com>, kernel-team@fb.com,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+I hoped to drop "test_core_extern.skel.h"
+tools/testing/selftests/bpf/Makefile as test_cpp.cpp includes it:
 
+$ git grep include tools/testing/selftests/bpf/test_cpp.cpp
+tools/testing/selftests/bpf/test_cpp.cpp:#include "test_core_extern.skel.h"
 
-On 3/31/21 4:32 AM, Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
-> 
-> Currently sockmap calls into each protocol to update the struct
-> proto and replace it. This certainly won't work when the protocol
-> is implemented as a module, for example, AF_UNIX.
-> 
-> Introduce a new ops sk->sk_prot->psock_update_sk_prot(), so each
-> protocol can implement its own way to replace the struct proto.
-> This also helps get rid of symbol dependencies on CONFIG_INET.
+$ git diff
+diff --git a/tools/testing/selftests/bpf/Makefile
+b/tools/testing/selftests/bpf/Makefile
+index 044bfdcf5b74..a93e4d6ff93c 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -450,7 +450,7 @@ $(OUTPUT)/test_verifier: test_verifier.c
+verifier/tests.h $(BPFOBJ) | $(OUTPUT)
+       $(Q)$(CC) $(CFLAGS) $(filter %.a %.o %.c,$^) $(LDLIBS) -o $@
 
-[...]
+# Make sure we are able to include and link libbpf against c++.
+-$(OUTPUT)/test_cpp: test_cpp.cpp $(OUTPUT)/test_core_extern.skel.h $(BPFOBJ)
++$(OUTPUT)/test_cpp: test_cpp.cpp $(BPFOBJ)
+       $(call msg,CXX,,$@)
+       $(Q)$(CXX) $(CFLAGS) $^ $(LDLIBS) -o $@
 
+When using g++:
 
->  
-> -struct proto *tcp_bpf_get_proto(struct sock *sk, struct sk_psock *psock)
-> +int tcp_bpf_update_proto(struct sock *sk, bool restore)
->  {
-> +	struct sk_psock *psock = sk_psock(sk);
+$ llvm-objdump-12 -Dr test_cpp | grep test_core_extern
+   77dd: e8 be 01 00 00                callq   0x79a0
+<_ZL25test_core_extern__destroyP16test_core_extern>
+   7842: e8 59 01 00 00                callq   0x79a0
+<_ZL25test_core_extern__destroyP16test_core_extern>
+00000000000079a0 <_ZL25test_core_extern__destroyP16test_core_extern>:
+   79a3: 74 1a                         je      0x79bf
+<_ZL25test_core_extern__destroyP16test_core_extern+0x1f>
+   79af: 74 05                         je      0x79b6
+<_ZL25test_core_extern__destroyP16test_core_extern+0x16>
+   799e: 74 06                         je      0x79a6
+<_ZL25test_core_extern__destroyP16test_core_extern+0x6>
+   7942: 73 61                         jae     0x79a5
+<_ZL25test_core_extern__destroyP16test_core_extern+0x5>
+   7945: 70 6c                         jo      0x79b3
+<_ZL25test_core_extern__destroyP16test_core_extern+0x13>
+   794b: 70 65                         jo      0x79b2
+<_ZL25test_core_extern__destroyP16test_core_extern+0x12>
+   7954: 73 5f                         jae     0x79b5
+<_ZL25test_core_extern__destroyP16test_core_extern+0x15>
+   79aa: 79 00                         jns     0x79ac
+<_ZL25test_core_extern__destroyP16test_core_extern+0xc>
 
-I do not think RCU is held here ?
+When using clang++-12:
 
-sk_psock() is using rcu_dereference_sk_user_data()
+$ llvm-objdump-12 -Dr test_cpp | grep test_core_extern
+[ empty ]
 
->  	int family = sk->sk_family == AF_INET6 ? TCP_BPF_IPV6 : TCP_BPF_IPV4;
->  	int config = psock->progs.msg_parser   ? TCP_BPF_TX   : TCP_BPF_BASE;
->  
+Last I tried:
 
-Same issue in udp_bpf_update_proto() of course.
+selftests-bpf-Makefile-EXTRA_CXXFLAGS-x-c-header.diff
+diff --git a/tools/testing/selftests/bpf/Makefile
+b/tools/testing/selftests/bpf/Makefile
+index 044bfdcf5b74..df07fd9325d0 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -27,6 +27,7 @@ CFLAGS += -g -rdynamic -Wall -O2 $(GENFLAGS)
+$(SAN_CFLAGS)            \
+         -Dbpf_prog_load=bpf_prog_test_load                            \
+         -Dbpf_load_program=bpf_test_load_program
+LDLIBS += -lcap -lelf -lz -lrt -lpthread
++EXTRA_CXXFLAGS := -x c-header
 
+# Order correspond to 'make run_tests' order
+TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map
+test_lpm_map test_progs \
+@@ -452,7 +453,7 @@ $(OUTPUT)/test_verifier: test_verifier.c
+verifier/tests.h $(BPFOBJ) | $(OUTPUT)
+# Make sure we are able to include and link libbpf against c++.
+$(OUTPUT)/test_cpp: test_cpp.cpp $(OUTPUT)/test_core_extern.skel.h $(BPFOBJ)
+       $(call msg,CXX,,$@)
+-       $(Q)$(CXX) $(CFLAGS) $^ $(LDLIBS) -o $@
++       $(Q)$(CXX) $(CFLAGS) $(EXTRA_CXXFLAGS) $^ $(LDLIBS) -o $@
+
+# Benchmark runner
+$(OUTPUT)/bench_%.o: benchs/bench_%.c bench.h
+
+NOPE.
+
+- Sedat -
