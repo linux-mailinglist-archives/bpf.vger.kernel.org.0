@@ -2,110 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C2135486B
-	for <lists+bpf@lfdr.de>; Mon,  5 Apr 2021 23:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3AA354873
+	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 00:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241352AbhDEV6p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Apr 2021 17:58:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50301 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235981AbhDEV6p (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 5 Apr 2021 17:58:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617659918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rp0B3Z0gvL548SBUOTCx5smRmcVt/tRjB04FMO2XAaU=;
-        b=IaYUlTDipOQet/miNz55hBWZ5Yz9AXj0I2mhv+MbrVdIF7UfRn3X+Gp/PmP1XLqOvfL/te
-        hgBhvJQ8RLPmhxAzqmkGnvr9ut2jOrUbaZM2LuyNjil8IhyMNcsWyr7VlN48V6y1EZWNSb
-        nTlKPNd4veNgYdySnmjXSsWPwXyP/GU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-154-m2NPmldfNDCt_1mt-l5W0g-1; Mon, 05 Apr 2021 17:58:34 -0400
-X-MC-Unique: m2NPmldfNDCt_1mt-l5W0g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA7991005D54;
-        Mon,  5 Apr 2021 21:58:32 +0000 (UTC)
-Received: from krava (unknown [10.40.192.146])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 12EB819C45;
-        Mon,  5 Apr 2021 21:58:26 +0000 (UTC)
-Date:   Mon, 5 Apr 2021 23:58:25 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [RFC PATCH bpf-next 1/4] bpf: Allow trampoline re-attach
-Message-ID: <YGuIAWA4kRJCfI4U@krava>
-References: <20210328112629.339266-1-jolsa@kernel.org>
- <20210328112629.339266-2-jolsa@kernel.org>
- <87blavd31f.fsf@toke.dk>
- <20210403182155.upi6267fh3gsdvrq@ast-mbp>
- <YGsZ0VGMk/hBfr2y@krava>
- <87ft04rf51.fsf@toke.dk>
+        id S242649AbhDEWFZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Apr 2021 18:05:25 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:41725 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241263AbhDEWFX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Apr 2021 18:05:23 -0400
+Received: by mail-il1-f197.google.com with SMTP id g11so10381832ilc.8
+        for <bpf@vger.kernel.org>; Mon, 05 Apr 2021 15:05:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=rE9Lgt+L6rHEa2lPaIz2LAbklGrZ/8/l6OV+XVfhjIQ=;
+        b=UJtPF76iBteiQBaTnJtZGx3/JzK76GAFyXgAj5IUasrmhf+D/h/jHD6n8kOTcsewBw
+         3RfpDyaLW2a1grSdZgS6MNleSSNPJlzjm+40goqMV/1O+Ntvstp/HbQJKsLq3cQoKRqE
+         jhNsJ020cSX6wAssf36YT3uNCc3fz9eDbsoWxCCRqcipxfBWXe71TKgbPIuh36kjHMgt
+         FgYFzZgKb6QFEkq+166eYfg6FNUfaPfTC83oE6XbHyPoS6n8Tm6bCU/FUOhuBDGKLy47
+         zOD/h9vA14XmPrxrxrFZYQyW7B8iv/8k4VfWE3kdWBua7qnHWUy/EgRSRhqjMiBxiUZU
+         P9cQ==
+X-Gm-Message-State: AOAM530Fs2nNkF4A8bPGsGAikRuDtU78WN+Wfj1yMBHKhXMMy0LNnt0q
+        waTn55ySZqGFwve8DEQkp+S39bGBpPuTVKW9w8/YOckeT3Wp
+X-Google-Smtp-Source: ABdhPJwsl00yvfIuD6YEyJZUif+FP4TrNvNVIATDR9q3M8i0uQFmnaAG/Sm5oszwt4k13naHE6JC49fHrNIzBfixsVl0+UduvZNv
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87ft04rf51.fsf@toke.dk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Received: by 2002:a05:6e02:1a87:: with SMTP id k7mr19967967ilv.69.1617660316511;
+ Mon, 05 Apr 2021 15:05:16 -0700 (PDT)
+Date:   Mon, 05 Apr 2021 15:05:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008872ff05bf40e4db@google.com>
+Subject: [syzbot] WARNING: suspicious RCU usage in tcp_bpf_update_proto
+From:   syzbot <syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, anton@tuxera.com,
+        ast@kernel.org, bp@alien8.de, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hpa@zytor.com,
+        jakub@cloudflare.com, jmattson@google.com,
+        john.fastabend@gmail.com, joro@8bytes.org, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lmb@cloudflare.com, mingo@redhat.com,
+        netdev@vger.kernel.org, pbonzini@redhat.com, rkovhaev@gmail.com,
+        seanjc@google.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        torvalds@linux-foundation.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, x86@kernel.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 04:15:54PM +0200, Toke Høiland-Jørgensen wrote:
-> Jiri Olsa <jolsa@redhat.com> writes:
-> 
-> > On Sat, Apr 03, 2021 at 11:21:55AM -0700, Alexei Starovoitov wrote:
-> >> On Sat, Apr 03, 2021 at 01:24:12PM +0200, Toke Høiland-Jørgensen wrote:
-> >> > >  	if (!prog->aux->dst_trampoline && !tgt_prog) {
-> >> > > -		err = -ENOENT;
-> >> > > -		goto out_unlock;
-> >> > > +		/*
-> >> > > +		 * Allow re-attach for tracing programs, if it's currently
-> >> > > +		 * linked, bpf_trampoline_link_prog will fail.
-> >> > > +		 */
-> >> > > +		if (prog->type != BPF_PROG_TYPE_TRACING) {
-> >> > > +			err = -ENOENT;
-> >> > > +			goto out_unlock;
-> >> > > +		}
-> >> > > +		if (!prog->aux->attach_btf) {
-> >> > > +			err = -EINVAL;
-> >> > > +			goto out_unlock;
-> >> > > +		}
-> >> > 
-> >> > I'm wondering about the two different return codes here. Under what
-> >> > circumstances will aux->attach_btf be NULL, and why is that not an
-> >> > ENOENT error? :)
-> >> 
-> >> The feature makes sense to me as well.
-> >> I don't quite see how it would get here with attach_btf == NULL.
-> >> Maybe WARN_ON then?
-> >
-> > right, that should be always there
-> >
-> >> Also if we're allowing re-attach this way why exclude PROG_EXT and LSM?
-> >> 
-> >
-> > I was enabling just what I needed for the test, which is so far
-> > the only use case.. I'll see if I can enable that for all of them
-> 
-> How would that work? For PROG_EXT we clear the destination on the first
-> attach (to avoid keeping a ref on it), so re-attach can only be done
-> with an explicit target (which already works just fine)...
+Hello,
 
-right, I'm just looking on it ;-) extensions already seem allow for that,
-I'll check LSM
+syzbot found the following issue on:
 
-jirka
+HEAD commit:    514e1150 net: x25: Queue received packets in the drivers i..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=112a8831d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7eff0f22b8563a5f
+dashboard link: https://syzkaller.appspot.com/bug?extid=320a3bc8d80f478c37e4
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1532d711d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f44c5ed00000
 
+The issue was bisected to:
+
+commit 4dfe6bd94959222e18d512bdf15f6bf9edb9c27c
+Author: Rustam Kovhaev <rkovhaev@gmail.com>
+Date:   Wed Feb 24 20:00:30 2021 +0000
+
+    ntfs: check for valid standard information attribute
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16207a81d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15207a81d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11207a81d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com
+Fixes: 4dfe6bd94959 ("ntfs: check for valid standard information attribute")
+
+=============================
+WARNING: suspicious RCU usage
+5.12.0-rc4-syzkaller #0 Not tainted
+-----------------------------
+include/linux/skmsg.h:286 suspicious rcu_dereference_check() usage!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 1
+1 lock held by syz-executor383/8454:
+ #0: ffff888013a99b48 (clock-AF_INET){++..}-{2:2}, at: sk_psock_drop+0x2c/0x460 net/core/skmsg.c:788
+
+stack backtrace:
+CPU: 1 PID: 8454 Comm: syz-executor383 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ sk_psock include/linux/skmsg.h:286 [inline]
+ tcp_bpf_update_proto+0x530/0x5f0 net/ipv4/tcp_bpf.c:504
+ sk_psock_restore_proto include/linux/skmsg.h:408 [inline]
+ sk_psock_drop+0xdf/0x460 net/core/skmsg.c:789
+ sk_psock_put include/linux/skmsg.h:446 [inline]
+ tcp_bpf_recvmsg+0x42d/0x480 net/ipv4/tcp_bpf.c:208
+ inet_recvmsg+0x11b/0x5d0 net/ipv4/af_inet.c:852
+ sock_recvmsg_nosec net/socket.c:888 [inline]
+ sock_recvmsg net/socket.c:906 [inline]
+ sock_recvmsg net/socket.c:902 [inline]
+ ____sys_recvmsg+0x2c4/0x600 net/socket.c:2569
+ ___sys_recvmsg+0x127/0x200 net/socket.c:2611
+ do_recvmmsg+0x24d/0x6d0 net/socket.c:2705
+ __sys_recvmmsg net/socket.c:2784 [inline]
+ __do_sys_recvmmsg net/socket.c:2807 [inline]
+ __se_sys_recvmmsg net/socket.c:2800 [inline]
+ __x64_sys_recvmmsg+0x20b/0x260 net/socket.c:2800
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4468e9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 a1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f010b0cc318 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: ffffffffffffffda RBX: 00000000004cb4e8 RCX: 00000000004468e9
+RDX: 0000000000000422 RSI: 0000000020000540 RDI: 0000000000000004
+RBP: 00000000004cb4e0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000049b270
+R13: 00007ffe3829a5bf R14: 00007f010b0cc400 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
