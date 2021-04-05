@@ -2,315 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820473547B3
-	for <lists+bpf@lfdr.de>; Mon,  5 Apr 2021 22:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C7A3547F1
+	for <lists+bpf@lfdr.de>; Mon,  5 Apr 2021 23:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235607AbhDEUmo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Apr 2021 16:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235457AbhDEUmo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Apr 2021 16:42:44 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FBBC061756;
-        Mon,  5 Apr 2021 13:42:36 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id z9so11191940ilb.4;
-        Mon, 05 Apr 2021 13:42:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=xriwDN7Vh/VSP7uT4t/oE7iMcBMILzHUJq29fupRkbE=;
-        b=YTBUpU6OIQE8d226MADAEG8bdGXGYeLTGUKN5VtPb2ukL+AsFj+7kCPQBkTmW5Ib/z
-         W+C12hEFDg8Zww/Subx48pWLY+CykTkK72Cl8XZH56KnDEwvKE9DMjnQtEtSApQuV19r
-         pqjQXiWXwJk/C4WGz/ZbPXGubnx7tXOpQFYrNP+XKbs5AhbLdaGsrJi/itrrU0vBleLc
-         5lMER3umO3zZN2nx7duQYr/otdZsQarbtXyF1U7ajh0KAc02Tn4JfaoTxDJ0K61LEEFy
-         E6ZTtfW0HCX/6oYVzSk5dIM0BrVxNbtQGk7/4xljeaMAkeSq9xx+RLkp/NJ/E7Tsvohl
-         QHAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=xriwDN7Vh/VSP7uT4t/oE7iMcBMILzHUJq29fupRkbE=;
-        b=hdi96VE0H01Py4oN92/e3ikFYR4MJKAXiSMbqfcOuFtWedM8WNmHxyrO2L2lBWAzQR
-         +dC8rGzJRLzRtzItLH6cYgS8VB00QJKjqHqsxJBZiOyS3PlyGYIpP+SQ+7oSIsAIU107
-         9WiXBu4w8dz7/8icjaYr1GNn1Hp6EqIt6XJ4pkBpQW2ejtm2PcQ1eKMHMW1kVyhVezov
-         WzI5XIQvWE89UJ2kuyr4osViUMR4X1PgqbYPMy7UXRnZF2euSbYam0c9s3tkAemdQsjP
-         dTdhxDuzdCKMLko0c+pVxC/MozAwxr6Bv09Ybk147VqljPZ6sed3cJsVxUPs+rQ0+m/f
-         NBqQ==
-X-Gm-Message-State: AOAM532h3rl3k3rurl5QpN5qnogQ9h/SDL+XcIK5s80VU0SIKr1JylSm
-        yRnOqneVqtYedVU+IV/tF6LAmZ9VRkqaHsDHjZw=
-X-Google-Smtp-Source: ABdhPJzLhI6R1WsPTGea0YU+qPFITCl3twqqLV9tzF8E/RvrwRXH/4p7ztKW/cnuUo2gVHjldc9Q3jh8oXGC2pbHSZk=
-X-Received: by 2002:a92:c545:: with SMTP id a5mr21338320ilj.209.1617655355483;
- Mon, 05 Apr 2021 13:42:35 -0700 (PDT)
+        id S241194AbhDEVCH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Apr 2021 17:02:07 -0400
+Received: from mga07.intel.com ([134.134.136.100]:34793 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237300AbhDEVCG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Apr 2021 17:02:06 -0400
+IronPort-SDR: soEgZbHxwJsLIFFMwIjwWc59IL8dhnuV9uxzq6P/CZBYDhyys2dM2d46Fy7mSRqPYkfY0pZYT3
+ hWZ+gvpiPxQA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9945"; a="256908590"
+X-IronPort-AV: E=Sophos;i="5.81,307,1610438400"; 
+   d="scan'208";a="256908590"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 14:01:59 -0700
+IronPort-SDR: o+gAVIFmH11CT3k4mPTCaWOFMEuoUXlD5TU/3DPISumNTD1c1CmxSGRVSAbqfS6FH5befZEJQf
+ d/9JSzvr5PYA==
+X-IronPort-AV: E=Sophos;i="5.81,307,1610438400"; 
+   d="scan'208";a="414446416"
+Received: from wenhuali-mobl1.amr.corp.intel.com (HELO [10.254.184.105]) ([10.254.184.105])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2021 14:01:58 -0700
+Subject: Re: [RFC 2/3] vmalloc: Support grouped page allocations
+To:     Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        akpm@linux-foundation.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+        dave.hansen@linux.intel.com, peterz@infradead.org, luto@kernel.org,
+        jeyu@kernel.org
+Cc:     linux-kernel@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, hch@infradead.org, x86@kernel.org
+References: <20210405203711.1095940-1-rick.p.edgecombe@intel.com>
+ <20210405203711.1095940-3-rick.p.edgecombe@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <971aae01-32a0-3f45-1810-010e3295b1c4@intel.com>
+Date:   Mon, 5 Apr 2021 14:01:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210403184158.2834387-1-yhs@fb.com> <CA+icZUWLf4W_1u_p4-Rx1OD7h_ydP4Xzv12tMA2HZqj9CCOH0Q@mail.gmail.com>
- <6c67f02a-3bc2-625a-3b05-7eb3533044bb@fb.com> <CA+icZUV4fw5GNXFnyOjvajkVFdPhkOrhr3rn5OrAKGujpSrmgQ@mail.gmail.com>
- <CA+icZUWh6YOkCKG72SndqUbQNwG+iottO4=cPyRRVjaHD2=0qw@mail.gmail.com>
- <f706e8b9-77ca-6341-db13-e2a74549576b@fb.com> <CA+icZUVb_J95Gk2Kf0i8waL6TDfJ2n9JrGbNK_dsN1n8HdcoXQ@mail.gmail.com>
- <458faf4c-7681-13eb-023d-c51f582bfec6@fb.com> <CA+icZUVcQ+vQjc0VavetA3s6jzNhC20dU4Sa9ApBLNXbY=w5wA@mail.gmail.com>
- <b4963c83-df8a-630a-cc78-c72f6a388823@fb.com> <CA+icZUVd64WJkX+adNKpGbL+=g-Yn-D-_XwqW_GOt9vp0Fpamw@mail.gmail.com>
- <cd3f781e-ad2f-644d-d2af-8ea15902dbf8@fb.com>
-In-Reply-To: <cd3f781e-ad2f-644d-d2af-8ea15902dbf8@fb.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 5 Apr 2021 22:42:02 +0200
-Message-ID: <CA+icZUW8dHL2vqnYp9ADneMRORLtZTYhomwuUafOsdXEvsdL6g@mail.gmail.com>
-Subject: Re: [PATCH dwarves] dwarf_loader: handle DWARF5 DW_OP_addrx properly
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Bill Wendling <morbo@google.com>, bpf@vger.kernel.org,
-        David Blaikie <dblaikie@gmail.com>, kernel-team@fb.com,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210405203711.1095940-3-rick.p.edgecombe@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 5, 2021 at 8:56 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 4/5/21 11:32 AM, Sedat Dilek wrote:
-> > On Mon, Apr 5, 2021 at 6:17 PM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 4/4/21 11:55 PM, Sedat Dilek wrote:
-> >>> On Mon, Apr 5, 2021 at 4:24 AM Yonghong Song <yhs@fb.com> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 4/4/21 10:25 AM, Sedat Dilek wrote:
-> >>>>> On Sun, Apr 4, 2021 at 6:40 PM Yonghong Song <yhs@fb.com> wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>>
-> >>>>>> On 4/4/21 5:46 AM, Sedat Dilek wrote:
-> >>>> [...]
-> >>>>>>> Next build-error:
-> >>>>>>>
-> >>>>>>> g++ -g -rdynamic -Wall -O2 -DHAVE_GENHDR
-> >>>>>>> -I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf
-> >>>>>>> -I/home/dileks/src/linux-kernel/git/tools/testing/selftests/b
-> >>>>>>> pf/tools/include -I/home/dileks/src/linux-kernel/git/include/generated
-> >>>>>>> -I/home/dileks/src/linux-kernel/git/tools/lib
-> >>>>>>> -I/home/dileks/src/linux-kernel/git/tools/include
-> >>>>>>> -I/home/dileks/src/linux-kernel/git/tools/include/uapi
-> >>>>>>> -I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf
-> >>>>>>> -Dbpf_prog_load=bpf_prog_test_load
-> >>>>>>> -Dbpf_load_program=bpf_test_load_program test_cpp.cpp
-> >>>>>>> /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_core_extern.skel.h
-> >>>>>>> /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a
-> >>>>>>> /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_stub.o
-> >>>>>>> -lcap -lelf -lz -lrt -lpthread -o
-> >>>>>>> /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_cpp
-> >>>>>>> /usr/bin/ld: /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a(libbpf-in.o):
-> >>>>>>> relocation R_X86_64_32 against `.rodata.str1.1' ca
-> >>>>>>> n not be used when making a PIE object; recompile with -fPIE
-> >>>>>>> collect2: error: ld returned 1 exit status
-> >>>>>>> make: *** [Makefile:455:
-> >>>>>>> /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_cpp]
-> >>>>>>> Error 1
-> >>>>>>> make: Leaving directory
-> >>>>>>> '/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf'
-> >>>>>>>
-> >>>>>>> LOL, I was not aware that there is usage of *** CXX*** in tools
-> >>>>>>> directory (see g++ line and /usr/bin/ld ?).
-> >>>>>>>
-> >>>>>>> So, I changed my $MAKE_OPTS to use "CXX=clang++".
-> >>>>>>
-> >>>>>> In kernel, if LLVM=1 is set, we have:
-> >>>>>>
-> >>>>>> ifneq ($(LLVM),)
-> >>>>>> HOSTCC  = clang
-> >>>>>> HOSTCXX = clang++
-> >>>>>> else
-> >>>>>> HOSTCC  = gcc
-> >>>>>> HOSTCXX = g++
-> >>>>>> endif
-> >>>>>>
-> >>>>>> ifneq ($(LLVM),)
-> >>>>>> CC              = clang
-> >>>>>> LD              = ld.lld
-> >>>>>> AR              = llvm-ar
-> >>>>>> NM              = llvm-nm
-> >>>>>> OBJCOPY         = llvm-objcopy
-> >>>>>> OBJDUMP         = llvm-objdump
-> >>>>>> READELF         = llvm-readelf
-> >>>>>> STRIP           = llvm-strip
-> >>>>>> else
-> >>>>>> CC              = $(CROSS_COMPILE)gcc
-> >>>>>> LD              = $(CROSS_COMPILE)ld
-> >>>>>> AR              = $(CROSS_COMPILE)ar
-> >>>>>> NM              = $(CROSS_COMPILE)nm
-> >>>>>> OBJCOPY         = $(CROSS_COMPILE)objcopy
-> >>>>>> OBJDUMP         = $(CROSS_COMPILE)objdump
-> >>>>>> READELF         = $(CROSS_COMPILE)readelf
-> >>>>>> STRIP           = $(CROSS_COMPILE)strip
-> >>>>>> endif
-> >>>>>>
-> >>>>>> So if you have right path, you don't need to set HOSTCC and HOSTCXX
-> >>>>>> explicitly.
-> >>>>>>
-> >>>>>
-> >>>>> That is all correct with HOSTCXX but there is no CXX=... assignment
-> >>>>> otherwise test_cpp will use g++ as demonstrated.
-> >>>>
-> >>>> This is not a kernel Makefile issue.
-> >>>>
-> >>>> We have:
-> >>>> testing/selftests/bpf/Makefile:CXX ?= $(CROSS_COMPILE)g++
-> >>>>
-> >>>> So you need to explicit add CXX=clang++ when compiling
-> >>>> bpf selftests with LLVM=1 LLVM_IAS=1.
-> >>>>
-> >>>
-> >>> NOPE.
-> >>>
-> >>> $ echo $MAKE $MAKE_OPTS
-> >>> make V=1 LLVM=1 LLVM_IAS=1 CXX=clang++ PAHOLE=/opt/pahole/bin/pahole
-> >>>
-> >>> $ LC_ALL=C $MAKE $MAKE_OPTS -C tools/testing/selftests/bpf/ 2>&1 | tee
-> >>> ../make-log_tools-testing-selftests-bpf_llvm-1-llvm_ias-1_cxx-clang.txt
-> >>>
-> >>> This breaks again like reported before:
-> >>>
-> >>> clang++ -g -rdynamic -Wall -O2 -DHAVE_GENHDR
-> >>> -I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf
-> >>> -I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/tools/include
-> >>> -I/home/dileks/src/linux-kernel/git/include/generated
-> >>> -I/home/dileks/src/linux-kernel/git/tools/lib
-> >>> -I/home/dileks/src/linux-kernel/git/tools/include
-> >>> -I/home/dileks/src/linux-kernel/git/tools/include/uapi
-> >>> -I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf
-> >>> -Dbpf_prog_load=bpf_prog_test_load
-> >>> -Dbpf_load_program=bpf_test_load_program test_cpp.cpp
-> >>> /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_core_extern.skel.h
-> >>> /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a
-> >>> /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_stub.o
-> >>> -lcap -lelf -lz -lrt -lpthread -o
-> >>> /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_cpp
-> >>>
-> >>> clang-12: warning: treating 'c-header' input as 'c++-header' when in
-> >>> C++ mode, this behavior is deprecated [-Wdeprecated]
-> >>> clang-12: error: cannot specify -o when generating multiple output files
-> >>> make: *** [Makefile:455:
-> >>> /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_cpp]
-> >>> Error 1
-> >>> make: Leaving directory
-> >>> '/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf'
-> >>>
-> >>> Do you know some magic CXX flags to be passed?
-> >>
-> >> I tested in my environment. The reason is LC_ALL=C.
-> >> Without LC_ALL=C, make succeeded and with it, test_cpp
-> >> compilation failed. Is it possible for you to drop
-> >> LC_ALL=C for bpf selftests?
-> >>
-> >> The following command succeeded for me:
-> >>      make -C tools/testing/selftests/bpf -j60 LLVM=1 V=1 CXX=clang++ CC=clang
-> >>
-> >
-> > First, I tried the exact make invocation ^^^ in my build-environment
-> > but that breaks with the same ERROR.
-> >
-> > I did in a second run:
-> >
-> > LLVM_TOOLCHAIN_PATH="/opt/llvm-toolchain/bin"
-> > if [ -d ${LLVM_TOOLCHAIN_PATH} ]; then
-> >    export PATH="${LLVM_TOOLCHAIN_PATH}:${PATH}"
-> > fi
-> >
-> > echo $PATH
-> > /opt/llvm-toolchain/bin:/opt/proxychains-ng/bin:/home/dileks/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
-> >
-> > MAKE="make"
-> > MAKE_OPTS="V=1 -j4 LLVM=1 CC=clang CXX=clang++"
-> > MAKE_OPTS="$MAKE_OPTS PAHOLE=/opt/pahole/bin/pahole"
-> >
-> > echo $MAKE $MAKE_OPTS
-> > make V=1 -j4 LLVM=1 CC=clang CXX=clang++ PAHOLE=/opt/pahole/bin/pahole
-> >
-> > $MAKE $MAKE_OPTS -C tools/testing/selftests/bpf/ 2>&1 | tee
-> > ../make-log_tools-testing-selftests-bpf.txt
-> >
-> > That would have been funny... Drop LC_ALL=C from make line as a fix.
-> >
-> > Just curious: Do you see these warnings?
-> >
-> > clang-12: warning: argument unused during compilation: '-rdynamic'
-> > [-Wunused-command-line-argument]
-> > clang-12: warning: -lcap: 'linker' input unused [-Wunused-command-line-argument]
-> > clang-12: warning: -lelf: 'linker' input unused [-Wunused-command-line-argument]
-> > clang-12: warning: -lz: 'linker' input unused [-Wunused-command-line-argument]
-> > clang-12: warning: -lrt: 'linker' input unused [-Wunused-command-line-argument]
-> > clang-12: warning: -lpthread: 'linker' input unused
-> > [-Wunused-command-line-argument]
-> > clang-12: warning: -lm: 'linker' input unused [-Wunused-command-line-argument]
-> >
-> > Equivalent CFLAGS for '-rdynamic' when CC=clang is used?
-> > Missing LDFLAGS when LD=ld.lld (make LLVM=1) is used?
->
-> I see this warning as well, but seems it does not hurt...
-> Maybe some flags need change if the CC is clang...
->
-> >
-> > Last question:
-> > Can you pass LLVM_IAS=1 (means use LLVM/Clang Integrated ASsembler) to
-> > your make line?
-> >
-> > Old: make -C tools/testing/selftests/bpf -j60 LLVM=1 V=1 CXX=clang++ CC=clang
-> > New: make -C tools/testing/selftests/bpf -j60 LLVM=1 LLVM_IAS=1 V=1
-> > CXX=clang++ CC=clang
-> >
-> > Does it build successfully?
->
-> I think it is better to add LLVM_IAS=1. In my build, for non-lto, I
-> didn't pass LLVM_IAS=1 to kernel build, so selftest does not need it either.
->
-> But for LTO build, LLVM_IAS=1 is required so selftest also needs
-> LLVM_IAS=1.
->
-> Yes, we can always have LLVM_IAS=1 if it is included in kernel build.
->
+On 4/5/21 1:37 PM, Rick Edgecombe wrote:
+> +static void __dispose_pages(struct list_head *head)
+> +{
+> +	struct list_head *cur, *next;
+> +
+> +	list_for_each_safe(cur, next, head) {
+> +		list_del(cur);
+> +
+> +		/* The list head is stored at the start of the page */
+> +		free_page((unsigned long)cur);
+> +	}
+> +}
 
-For Clang-LTO builds LLVM_IAS=1 is mandatory.
+This is interesting.
 
-- Sedat -
+While the page is in the allocator, you're using the page contents
+themselves to store the list_head.  It took me a minute to figure out
+what you were doing here because: "start of the page" is a bit
+ambiguous.  It could mean:
 
+ * the first 16 bytes in 'struct page'
+or
+ * the first 16 bytes in the page itself, aka *page_address(page)
 
+The fact that this doesn't work on higmem systems makes this an OK thing
+to do, but it is a bit weird.  It's also doubly susceptible to bugs
+where there's a page_to_virt() or virt_to_page() screwup.
 
-> >
-> > - Sedat -
-> >
-> >>>
-> >>> The only solution is to suppress the build of test_cpp (see
-> >>> TEST_GEN_PROGS_EXTENDED):
-> >>>
-> >>> $ git diff tools/testing/selftests/bpf/Makefile
-> >>> diff --git a/tools/testing/selftests/bpf/Makefile
-> >>> b/tools/testing/selftests/bpf/Makefile
-> >>> index 044bfdcf5b74..cf7c7c8f72cf 100644
-> >>> --- a/tools/testing/selftests/bpf/Makefile
-> >>> +++ b/tools/testing/selftests/bpf/Makefile
-> >>> @@ -77,8 +77,8 @@ TEST_PROGS_EXTENDED := with_addr.sh \
-> >>> # Compile but not part of 'make run_tests'
-> >>> TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
-> >>>          flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
-> >>> -       test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
-> >>> -       xdpxceiver
-> >>> +       test_lirc_mode2_user xdping runqslower bench bpf_testmod.ko xdpxceiver
-> >>> +       # test_cpp # Suppress the build when CXX=clang++ is used
-> >>>
-> >>> TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read
-> >>>
-> >>> I have attached both make-logs with and without suppressing the build
-> >>> of test_cpp and the diff.
-> >>>
-> >>> - Sedat -
-> >>>
-> >>>>
-> >>>>>
-> >> [...]
+I was *hoping* there was still sufficient space in 'struct page' for
+this second list_head in addition to page->lru.  I think there *should*
+be.  That would at least make this allocator a bit more "normal" in not
+caring about page contents while the page is free in the allocator.  If
+you were able to do that you could do things like kmemcheck or page
+alloc debugging while the page is in the allocator.
+
+Anyway, I think I'd prefer that you *try* to use 'struct page' alone.
+But, if that doesn't work out, please comment the snot out of this thing
+because it _is_ weird.
