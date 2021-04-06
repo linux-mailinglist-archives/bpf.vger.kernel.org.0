@@ -2,160 +2,223 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E252F354AC8
-	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 04:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0880354B1F
+	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 05:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239456AbhDFCOg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 5 Apr 2021 22:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232976AbhDFCOf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 5 Apr 2021 22:14:35 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7717CC06174A;
-        Mon,  5 Apr 2021 19:14:28 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id u6so1107715uap.1;
-        Mon, 05 Apr 2021 19:14:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bo2lGDxVCGe9lNbS3u8q99z58ww2lLJ0dkDpvy52v0w=;
-        b=JvKwIZpYl1ZrZ/CWCEVT1AOF2mrWXUr06VkbH2ArfDp0TW+a/pVvBQTk+am3kLYI34
-         SPRDumS7uOBLEKVJEGdV3zWGCaLtrTumMoUbGatgWL/ru+5C8HLvJgZ9MQTxbnctON3J
-         ac6RdV3G76MTa4dm/MRHfhKz9jfEpVBcADojFeayjUBG0evBff+WgPkpZNcS+Kb3OIEU
-         PCMSb23pCKazUjexsjLATjAZsVnhLUV8jw8TUkgZUcJ/Rt94lpXNNKV4M+HQIoXUWn1t
-         plrYjfYIdZPsOv21ZBP7j5vHTj1cMUfRmiThn4zRZmosjLS8IlWtkpRYGOhX0DQNkvZV
-         W//A==
+        id S233273AbhDFDPW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 5 Apr 2021 23:15:22 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:52049 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233270AbhDFDPV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 5 Apr 2021 23:15:21 -0400
+Received: by mail-io1-f71.google.com with SMTP id s13so12132085iow.18
+        for <bpf@vger.kernel.org>; Mon, 05 Apr 2021 20:15:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bo2lGDxVCGe9lNbS3u8q99z58ww2lLJ0dkDpvy52v0w=;
-        b=XVKB/vCCbruZ7R60U5I/hNmwnDUTYMmhHqkcK8hFl0lsKL8WjuAzLzX/QOct9MXs9A
-         mFJPkNaAuTyJ/9mPl+ybbHRRQJWqbrmp5ywY42iAZk2biU9LQk9MXuQGdCRYx2P2MDfS
-         cX08REYFkPpEfg++kgByF95ffJZeAbSviD2SmceVJlAnCFsUsHOSoCcuUKqdZ131VCvB
-         WRrOnPdKIqNPUkBpHCuNEjf0aDesEQcEmFB7qrA8Hf5quyqLwgETD4oEX6YSlPGgVTZK
-         BT+qZR3JKG4a4hB2GEhsIbmlUUYYu7uwSIuC8NiwDEuzg4EPezDXBV1EiMu+yJwcaZhv
-         bjyw==
-X-Gm-Message-State: AOAM532h61Huwkf+1FX+X4AI8pH5seIqAVb0VlrvTBQPVrrzxRvwTs34
-        QhTWhrCbRdq4MYMHxynBdPxZ/AZy76u1E058hVQ=
-X-Google-Smtp-Source: ABdhPJxAzsq+e2cvHUhJ7oB4lJEPFAWLVTTzHqKcybnYLe57CJXw0rLxoH0FORpXXLfQ3ojfSSqy9fGG+NPw0t9e1xA=
-X-Received: by 2002:a9f:3fcf:: with SMTP id m15mr14688262uaj.55.1617675267029;
- Mon, 05 Apr 2021 19:14:27 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=MTyOa4fPHpq0/87Y0jha96oeT+k49mXnNFosEwUFhYM=;
+        b=qvUTv/Bcii31MLDayxyy1xhlRY6JTTk3TjJdB+UXXV5NPh+dfaPcNaS9U+CDAJewcA
+         XHUPxEF6xf9aEJ8KhHb8bVCiFMRpNrfF7KosBtaHTfUztXk7uMSccfcpFhWHmtIwEop4
+         d3mzdZdGugttoNy5la7BS1iuAHtvsX5IW+mft1fN9bVCpfbgyuft0shVMV/hK3ky+pNz
+         gpLVwm9WsVMPMlrb+uqdgIiy/+k+IKjIzT1/vm4LgoVE+MGusc1vu14h5TbELxq+t+7O
+         mPyFs47vZcRiH8VfUkOSoq2pbkvh6ZE0XdD1fPg1WdJArQi4LmjQ6pWvpy/SpzWvyLrJ
+         +L8w==
+X-Gm-Message-State: AOAM533Cd1k/8mJZfOZRGttfylzkoURfbZjVVdfDxunWwJxzuoarlZrZ
+        n12lXRY8+Bu53WGY/tCBBcC3UF/h9VGrAd2095fUuIjWnZQp
+X-Google-Smtp-Source: ABdhPJwPSrXl7HFg867qIRVRxBEkrgbX5jpNhzU39JujPTlQD6QrJugZ8Sc6gLmr7agK725QXp1a/bvAiENuOXzM/i0vBygw/dsg
 MIME-Version: 1.0
-References: <20210329123635.56915-1-qianjun.kernel@gmail.com> <20210330224406.5e195f3b8b971ff2a56c657d@linux-foundation.org>
-In-Reply-To: <20210330224406.5e195f3b8b971ff2a56c657d@linux-foundation.org>
-From:   jun qian <qianjun.kernel@gmail.com>
-Date:   Tue, 6 Apr 2021 10:14:16 +0800
-Message-ID: <CAKc596KE+mN1xOXppTOtJY7UDDLSb+zg2kwj=x8AzMN_Px2DuQ@mail.gmail.com>
-Subject: Re: [PATCH V2 1/1] mm:improve the performance during fork
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, andriin@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
+X-Received: by 2002:a5d:89d9:: with SMTP id a25mr22242262iot.69.1617678912805;
+ Mon, 05 Apr 2021 20:15:12 -0700 (PDT)
+Date:   Mon, 05 Apr 2021 20:15:12 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f560e805bf453804@google.com>
+Subject: [syzbot] KASAN: use-after-free Write in sk_psock_stop
+From:   syzbot <syzbot+7b6548ae483d6f4c64ae@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        bp@alien8.de, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, hpa@zytor.com, jakub@cloudflare.com,
+        jmattson@google.com, john.fastabend@gmail.com, joro@8bytes.org,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lmb@cloudflare.com, mark.rutland@arm.com, masahiroy@kernel.org,
+        mingo@redhat.com, netdev@vger.kernel.org, pbonzini@redhat.com,
+        peterz@infradead.org, rafael.j.wysocki@intel.com,
+        rostedt@goodmis.org, seanjc@google.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, will@kernel.org,
+        x86@kernel.org, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrew Morton <akpm@linux-foundation.org> =E4=BA=8E2021=E5=B9=B43=E6=9C=883=
-1=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=881:44=E5=86=99=E9=81=93=EF=BC=
-=9A
->
-> On Mon, 29 Mar 2021 20:36:35 +0800 qianjun.kernel@gmail.com wrote:
->
-> > From: jun qian <qianjun.kernel@gmail.com>
-> >
-> > In our project, Many business delays come from fork, so
-> > we started looking for the reason why fork is time-consuming.
-> > I used the ftrace with function_graph to trace the fork, found
-> > that the vm_normal_page will be called tens of thousands and
-> > the execution time of this vm_normal_page function is only a
-> > few nanoseconds. And the vm_normal_page is not a inline function.
-> > So I think if the function is inline style, it maybe reduce the
-> > call time overhead.
-> >
-> > I did the following experiment:
-> >
-> > use the bpftrace tool to trace the fork time :
-> >
-> > bpftrace -e 'kprobe:_do_fork/comm=3D=3D"redis-server"/ {@st=3Dnsecs;} \
-> > kretprobe:_do_fork /comm=3D=3D"redis-server"/{printf("the fork time \
-> > is %d us\n", (nsecs-@st)/1000)}'
-> >
-> > no inline vm_normal_page:
-> > result:
-> > the fork time is 40743 us
-> > the fork time is 41746 us
-> > the fork time is 41336 us
-> > the fork time is 42417 us
-> > the fork time is 40612 us
-> > the fork time is 40930 us
-> > the fork time is 41910 us
-> >
-> > inline vm_normal_page:
-> > result:
-> > the fork time is 39276 us
-> > the fork time is 38974 us
-> > the fork time is 39436 us
-> > the fork time is 38815 us
-> > the fork time is 39878 us
-> > the fork time is 39176 us
-> >
-> > In the same test environment, we can get 3% to 4% of
-> > performance improvement.
-> >
-> > note:the test data is from the 4.18.0-193.6.3.el8_2.v1.1.x86_64,
-> > because my product use this version kernel to test the redis
-> > server, If you need to compare the latest version of the kernel
-> > test data, you can refer to the version 1 Patch.
-> >
-> > We need to compare the changes in the size of vmlinux:
-> >                   inline           non-inline       diff
-> > vmlinux size      9709248 bytes    9709824 bytes    -576 bytes
-> >
->
-> I get very different results with gcc-7.2.0:
->
-> q:/usr/src/25> size mm/memory.o
->    text    data     bss     dec     hex filename
->   74898    3375      64   78337   13201 mm/memory.o-before
->   75119    3363      64   78546   132d2 mm/memory.o-after
->
-> That's a somewhat significant increase in code size, and larger code
-> size has a worsened cache footprint.
->
-> Not that this is necessarily a bad thing for a function which is
-> tightly called many times in succession as is vm__normal_page()
->
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@ -592,7 +592,7 @@ static void print_bad_pte(struct vm_area_struct *vm=
-a, unsigned long addr,
-> >   * PFNMAP mappings in order to support COWable mappings.
-> >   *
-> >   */
-> > -struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long =
-addr,
-> > +inline struct page *vm_normal_page(struct vm_area_struct *vma, unsigne=
-d long addr,
-> >                           pte_t pte)
-> >  {
-> >       unsigned long pfn =3D pte_pfn(pte);
->
-> I'm a bit surprised this made any difference - rumour has it that
-> modern gcc just ignores `inline' and makes up its own mind.  Which is
-> why we added __always_inline.
->
-the kernel code version: kernel-4.18.0-193.6.3.el8_2
-gcc version 8.4.1 20200928 (Red Hat 8.4.1-1) (GCC)
+Hello,
 
-and I made it again, got the results, and later i will test in the
-latest version kernel with the new gcc.
+syzbot found the following issue on:
 
-757368576  vmlinux   inline
-757381440  vmlinux   no inline
+HEAD commit:    f07669df libbpf: Remove redundant semi-colon
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1564f0e2d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7eff0f22b8563a5f
+dashboard link: https://syzkaller.appspot.com/bug?extid=7b6548ae483d6f4c64ae
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16462311d00000
+
+The issue was bisected to:
+
+commit 997acaf6b4b59c6a9c259740312a69ea549cc684
+Author: Mark Rutland <mark.rutland@arm.com>
+Date:   Mon Jan 11 15:37:07 2021 +0000
+
+    lockdep: report broken irq restoration
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12c1c9ced00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11c1c9ced00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16c1c9ced00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7b6548ae483d6f4c64ae@syzkaller.appspotmail.com
+Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
+
+==================================================================
+BUG: KASAN: use-after-free in __lock_acquire+0x3e6f/0x54c0 kernel/locking/lockdep.c:4770
+Read of size 8 at addr ffff888024f66238 by task syz-executor.1/14202
+
+CPU: 0 PID: 14202 Comm: syz-executor.1 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
+ __kasan_report mm/kasan/report.c:399 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
+ __lock_acquire+0x3e6f/0x54c0 kernel/locking/lockdep.c:4770
+ lock_acquire kernel/locking/lockdep.c:5510 [inline]
+ lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+ _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
+ spin_lock_bh include/linux/spinlock.h:359 [inline]
+ sk_psock_stop+0x2f/0x4d0 net/core/skmsg.c:750
+ sock_map_close+0x172/0x390 net/core/sock_map.c:1534
+ inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
+ __sock_release+0xcd/0x280 net/socket.c:599
+ sock_close+0x18/0x20 net/socket.c:1258
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x466459
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f1bde3a3188 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 000000000056bf60 RCX: 0000000000466459
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
+RBP: 00000000004bf9fb R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007ffe6eb13bbf R14: 00007f1bde3a3300 R15: 0000000000022000
+
+Allocated by task 14202:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:427 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:506 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:465 [inline]
+ __kasan_kmalloc+0x99/0xc0 mm/kasan/common.c:515
+ kmalloc_node include/linux/slab.h:572 [inline]
+ kzalloc_node include/linux/slab.h:695 [inline]
+ sk_psock_init+0xaf/0x730 net/core/skmsg.c:668
+ sock_map_link+0xbf4/0x1020 net/core/sock_map.c:286
+ sock_hash_update_common+0xe2/0xa60 net/core/sock_map.c:993
+ sock_map_update_elem_sys+0x561/0x680 net/core/sock_map.c:596
+ bpf_map_update_value.isra.0+0x36b/0x8d0 kernel/bpf/syscall.c:167
+ map_update_elem kernel/bpf/syscall.c:1129 [inline]
+ __do_sys_bpf+0x2d6e/0x4f40 kernel/bpf/syscall.c:4384
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 9712:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free mm/kasan/common.c:360 [inline]
+ ____kasan_slab_free mm/kasan/common.c:325 [inline]
+ __kasan_slab_free+0xf5/0x130 mm/kasan/common.c:367
+ kasan_slab_free include/linux/kasan.h:199 [inline]
+ slab_free_hook mm/slub.c:1562 [inline]
+ slab_free_freelist_hook+0x92/0x210 mm/slub.c:1600
+ slab_free mm/slub.c:3161 [inline]
+ kfree+0xe5/0x7f0 mm/slub.c:4213
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ insert_work+0x48/0x370 kernel/workqueue.c:1331
+ __queue_work+0x5c1/0xf00 kernel/workqueue.c:1497
+ rcu_work_rcufn+0x58/0x80 kernel/workqueue.c:1733
+ rcu_do_batch kernel/rcu/tree.c:2559 [inline]
+ rcu_core+0x74a/0x12f0 kernel/rcu/tree.c:2794
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3039 [inline]
+ call_rcu+0xb1/0x740 kernel/rcu/tree.c:3114
+ queue_rcu_work+0x82/0xa0 kernel/workqueue.c:1753
+ sk_psock_put include/linux/skmsg.h:446 [inline]
+ sock_map_unref+0x109/0x190 net/core/sock_map.c:182
+ sock_hash_delete_from_link net/core/sock_map.c:918 [inline]
+ sock_map_unlink net/core/sock_map.c:1480 [inline]
+ sock_map_remove_links+0x389/0x530 net/core/sock_map.c:1492
+ sock_map_close+0x12f/0x390 net/core/sock_map.c:1532
+ inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
+ __sock_release+0xcd/0x280 net/socket.c:599
+ sock_close+0x18/0x20 net/socket.c:1258
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+ exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff888024f66000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 568 bytes inside of
+ 2048-byte region [ffff888024f66000, ffff888024f66800)
+The buggy address belongs to the page:
+page:ffffea000093d800 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888024f60000 pfn:0x24f60
+head:ffffea000093d800 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head)
+raw: 00fff00000010200 ffffea0000951000 0000000200000002 ffff888010842000
+raw: ffff888024f60000 0000000080080007 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888024f66100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888024f66180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888024f66200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                        ^
+ ffff888024f66280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888024f66300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
