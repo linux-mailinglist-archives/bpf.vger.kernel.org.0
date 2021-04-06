@@ -2,168 +2,225 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6786835507B
-	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 12:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F753550AF
+	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 12:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241762AbhDFKGk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Apr 2021 06:06:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49697 "EHLO
+        id S245038AbhDFKTk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Apr 2021 06:19:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34170 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241197AbhDFKGi (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 6 Apr 2021 06:06:38 -0400
+        by vger.kernel.org with ESMTP id S242740AbhDFKTb (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 6 Apr 2021 06:19:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617703590;
+        s=mimecast20190719; t=1617704363;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=HMmoJ8lzD0jdeUc9n0Wk+eKCrv0ig+3eGAmzp2n3I2E=;
-        b=ObLlaAiW/jethRX3PH0Ekui0AdngzW2j78M2ekH+uXmT+q50MNvuZTZWWkOCNxfdTXJUVX
-        TJj4rVwTnDZu50+acKUHrCIYnwYbEdC2UHatzZbuTOgYT/jfDPf+vD5rwievHv/Gxx3X6G
-        rk+QQThUtZaCfA8BZNn6kAjR5pUgubU=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-566-9-mtuGAYNHiDUt3DK_PFRA-1; Tue, 06 Apr 2021 06:06:26 -0400
-X-MC-Unique: 9-mtuGAYNHiDUt3DK_PFRA-1
-Received: by mail-ej1-f70.google.com with SMTP id gn30so5245038ejc.3
-        for <bpf@vger.kernel.org>; Tue, 06 Apr 2021 03:06:26 -0700 (PDT)
+        bh=+ufcdt/zJw9j/1FNSFVZxZoRU8kGYBv449O2z2yjeO8=;
+        b=XSU8yr9Mml8P/27nyc9gssDJxJBCllTwgF1ABdr48dSRN180Eh3mQT3AoCjcHVVjCl5Ugg
+        ANnpm54VfECC96lnOK5+dLHrj7Jakg2c9EjIlJigmKi+4OWPXys1XnN54/x11Z1LDUhWJZ
+        IPe2fulcTKtIArMw4To3yWdVCuZJxdM=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-457-BH87rMBlNbCMmK43cRumNA-1; Tue, 06 Apr 2021 06:19:21 -0400
+X-MC-Unique: BH87rMBlNbCMmK43cRumNA-1
+Received: by mail-ed1-f72.google.com with SMTP id o24so10144578edt.15
+        for <bpf@vger.kernel.org>; Tue, 06 Apr 2021 03:19:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version;
-        bh=HMmoJ8lzD0jdeUc9n0Wk+eKCrv0ig+3eGAmzp2n3I2E=;
-        b=cSkw9mPq+VP2p58W6QD3MbN80ZzGmhTcbGFYp/OBoubiRUlhrnhntTTocSbwFdc6bX
-         ZQBadAWS/dKTj1Bi0iupYqLQHhjhyQVRnqsCJHhKtzyAsoCNhZ5KoRZotISHf4p1tgCt
-         AM5hjWslGGdnLJh7FSCNuHPZjdtoz6lJZZ4Fi3iUK9hLIX82uW27/KfS3NCcQEDs1Mhb
-         WyQu6X0R1wLYrNdUW/gbZkene6EMB8jju0o4QMCSITSakjyDwk7+gdZmPgc8ncyMKVrn
-         C5WbFt26WpFOMko0aNRVBnaw77rT9cI+RCvV8KaSp3UwyDfBAMdWjia3PNiml95jKhxh
-         HKgg==
-X-Gm-Message-State: AOAM533n5+7Sy1HZEbJggA7bs00q4jBYvCJpgdNSyT+oc3BffR7QwZ0v
-        D7TZ4FhXcTzqIo8Ucdf24exJdtFy4HQx/1emcaVfLtPKXt0cP6NDP9xPkSzvo2O+i9yrGU8cr4w
-        YyFWUZBp3sfg0
-X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr12908366edb.62.1617703585695;
-        Tue, 06 Apr 2021 03:06:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwkFahB+GBVvfN5+4DjXC410VqB3rQQ1MthTGIdEaIgp48fePTzVnaVaxK/KzASTOExPeqmdA==
-X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr12908347edb.62.1617703585534;
-        Tue, 06 Apr 2021 03:06:25 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id y24sm13732387eds.23.2021.04.06.03.06.24
+        bh=+ufcdt/zJw9j/1FNSFVZxZoRU8kGYBv449O2z2yjeO8=;
+        b=hK0mRdaLrd8ofCMsArZgMQx71QnZy/SvOsUZ+9VzdWnpTMwy9gkYZdwKUzotUQR+u9
+         LOUOW0qyA7G3a2spoDwkpKB3m3nov9unK2mDFrRiAk3/wcHse5TjwRHxtSMHclEfI81e
+         TT93CSN/zAy4kq3fefvL4CQowf8qXPnDkja8SZ3ntkaZLk+VN9BEy2wphY1W8qb4s3F5
+         995eebpHV7OoeVSR15pmu4aqK88nZVuFsTPOLLYK+sJ34L2tmXV1/OjzB5ns89Z+ifbt
+         1iN1LMOBxWVx/XZ1ppr+sPhWgkBmTKawbwJG1/MWf1otkrGDB6nnaksdHN26jyaDmILq
+         vukA==
+X-Gm-Message-State: AOAM5301lxV39Sqov4uG25KQpuIXl284ulkuhdNWcPm7zYKPMrbo90VL
+        KnNWKyLVE4pxejFXo6vrF7DesTSGLJVSdYcPG899iSimEUXqqvWFRIqVIoaglDfNUbMy/hNmxcL
+        k48Ewr0v00z1r
+X-Received: by 2002:a17:906:26c9:: with SMTP id u9mr32838243ejc.520.1617704360469;
+        Tue, 06 Apr 2021 03:19:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxKwe/Gl6HZeC04h+m57gvA5VMqo2tcnIH+2UED5/265g04nui6Cog7Q0uWkVz8QiZw6NE3pg==
+X-Received: by 2002:a17:906:26c9:: with SMTP id u9mr32838210ejc.520.1617704360075;
+        Tue, 06 Apr 2021 03:19:20 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id w13sm994838edx.15.2021.04.06.03.19.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 03:06:24 -0700 (PDT)
+        Tue, 06 Apr 2021 03:19:19 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 5D5CF180300; Tue,  6 Apr 2021 12:06:24 +0200 (CEST)
+        id 02137180300; Tue,  6 Apr 2021 12:19:18 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
+To:     Hangbin Liu <liuhangbin@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-In-Reply-To: <CAEf4Bzaeu4apgEtwS_3q1iPuURjPXMs9H43cYUtJSmjPMU5M9A@mail.gmail.com>
-References: <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
- <20210328080648.oorx2no2j6zslejk@apollo>
- <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
- <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
- <20210331094400.ldznoctli6fljz64@apollo>
- <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
- <20210402152743.dbadpgcmrgjt4eca@apollo>
- <CAADnVQ+wqrEnOGd8E1yp+1WTAx8ZcAx3HUjJs6ipPd0eKmOrgA@mail.gmail.com>
- <20210402190806.nhcgappm3iocvd3d@apollo>
- <20210403174721.vg4wle327wvossgl@ast-mbp>
- <CAEf4Bzaeu4apgEtwS_3q1iPuURjPXMs9H43cYUtJSmjPMU5M9A@mail.gmail.com>
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Subject: Re: [PATCHv4 bpf-next 2/4] xdp: extend xdp_redirect_map with
+ broadcast support
+In-Reply-To: <20210406063819.GF2900@Leo-laptop-t470s>
+References: <20210402121954.3568992-1-liuhangbin@gmail.com>
+ <20210402121954.3568992-3-liuhangbin@gmail.com>
+ <606baa5025735_d46462085b@john-XPS-13-9370.notmuch>
+ <20210406063819.GF2900@Leo-laptop-t470s>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 06 Apr 2021 12:06:24 +0200
-Message-ID: <87blar4ti7.fsf@toke.dk>
+Date:   Tue, 06 Apr 2021 12:19:18 +0200
+Message-ID: <878s5v4swp.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+Hangbin Liu <liuhangbin@gmail.com> writes:
 
-> On Sat, Apr 3, 2021 at 10:47 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->>
->> On Sat, Apr 03, 2021 at 12:38:06AM +0530, Kumar Kartikeya Dwivedi wrote:
->> > On Sat, Apr 03, 2021 at 12:02:14AM IST, Alexei Starovoitov wrote:
->> > > On Fri, Apr 2, 2021 at 8:27 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
->> > > > [...]
->> > >
->> > > All of these things are messy because of tc legacy. bpf tried to follow tc style
->> > > with cls and act distinction and it didn't quite work. cls with
->> > > direct-action is the only
->> > > thing that became mainstream while tc style attach wasn't really addressed.
->> > > There were several incidents where tc had tens of thousands of progs attached
->> > > because of this attach/query/index weirdness described above.
->> > > I think the only way to address this properly is to introduce bpf_link style of
->> > > attaching to tc. Such bpf_link would support ingress/egress only.
->> > > direction-action will be implied. There won't be any index and query
->> > > will be obvious.
->> >
->> > Note that we already have bpf_link support working (without support for pinning
->> > ofcourse) in a limited way. The ifindex, protocol, parent_id, priority, handle,
->> > chain_index tuple uniquely identifies a filter, so we stash this in the bpf_link
->> > and are able to operate on the exact filter during release.
->>
->> Except they're not unique. The library can stash them, but something else
->> doing detach via iproute2 or their own netlink calls will detach the prog.
->> This other app can attach to the same spot a different prog and now
->> bpf_link__destroy will be detaching somebody else prog.
->>
->> > > So I would like to propose to take this patch set a step further from
->> > > what Daniel said:
->> > > int bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
->> > > and make this proposed api to return FD.
->> > > To detach from tc ingress/egress just close(fd).
->> >
->> > You mean adding an fd-based TC API to the kernel?
->>
->> yes.
+> On Mon, Apr 05, 2021 at 05:24:48PM -0700, John Fastabend wrote:
+>> Hangbin Liu wrote:
+>> > This patch add two flags BPF_F_BROADCAST and BPF_F_EXCLUDE_INGRESS to extend
+>> > xdp_redirect_map for broadcast support.
+>> > 
+>> > Keep the general data path in net/core/filter.c and the native data
+>> > path in kernel/bpf/devmap.c so we can use direct calls to get better
+>> > performace.
+>> > 
+>> > Here is the performance result by using xdp_redirect_{map, map_multi} in
+>> > sample/bpf and send pkts via pktgen cmd:
+>> > ./pktgen_sample03_burst_single_flow.sh -i eno1 -d $dst_ip -m $dst_mac -t 10 -s 64
+>> > 
+>> > There are some drop back as we need to loop the map and get each interface.
+>> > 
+>> > Version          | Test                                | Generic | Native
+>> > 5.12 rc2         | redirect_map        i40e->i40e      |    2.0M |  9.8M
+>> > 5.12 rc2         | redirect_map        i40e->veth      |    1.8M | 12.0M
+>> 
+>> Are these are 10gbps i40e ports? Sorry if I asked this earlier, maybe
+>> add a note in the commit if another respin is needed.
 >
-> I'm totally for bpf_link-based TC attachment.
+> Yes, I will add it if there is an update.
 >
-> But I think *also* having "legacy" netlink-based APIs will allow
-> applications to handle older kernels in a much nicer way without extra
-> dependency on iproute2. We have a similar situation with kprobe, where
-> currently libbpf only supports "modern" fd-based attachment, but users
-> periodically ask questions and struggle to figure out issues on older
-> kernels that don't support new APIs.
+>> > diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+>> > index 3980fb3bfb09..c8452c5f40f8 100644
+>> > --- a/kernel/bpf/devmap.c
+>> > +++ b/kernel/bpf/devmap.c
+>> > @@ -198,6 +198,7 @@ static void dev_map_free(struct bpf_map *map)
+>> >  	list_del_rcu(&dtab->list);
+>> >  	spin_unlock(&dev_map_lock);
+>> >  
+>> > +	bpf_clear_redirect_map(map);
+>> 
+>> Is this a bugfix? If its needed here wouldn't we also need it in the
+>> devmap case.
+>
+> No, in ee75aef23afe ("bpf, xdp: Restructure redirect actions") this function
+> was removed. I added it back as we use ri->map again.
+>
+> What devmap case you mean?
+>
+>> 
+>> >  	synchronize_rcu();
+>> >  
+>> >  	/* Make sure prior __dev_map_entry_free() have completed. */
+>> 
+>> [...]
+>> 
+>> > +
+>> > +static struct bpf_dtab_netdev *devmap_get_next_obj(struct xdp_buff *xdp,
+>> > +						   struct bpf_map *map,
+>> > +						   u32 *key, u32 *next_key,
+>> > +						   int ex_ifindex)
+>> > +{
+>> > +	struct bpf_dtab_netdev *obj;
+>> > +	struct net_device *dev;
+>> > +	u32 index;
+>> > +	int err;
+>> > +
+>> > +	err = devmap_get_next_key(map, key, next_key);
+>> > +	if (err)
+>> > +		return NULL;
+>> > +
+>> > +	/* When using dev map hash, we could restart the hashtab traversal
+>> > +	 * in case the key has been updated/removed in the mean time.
+>> > +	 * So we may end up potentially looping due to traversal restarts
+>> > +	 * from first elem.
+>> > +	 *
+>> > +	 * Let's use map's max_entries to limit the loop number.
+>> > +	 */
+>> > +	for (index = 0; index < map->max_entries; index++) {
+>> > +		obj = devmap_lookup_elem(map, *next_key);
+>> > +		if (!obj || dst_dev_is_ingress(obj, ex_ifindex))
+>> > +			goto find_next;
+>> > +
+>> > +		dev = obj->dev;
+>> > +
+>> > +		if (!dev->netdev_ops->ndo_xdp_xmit)
+>> > +			goto find_next;
+>> > +
+>> > +		err = xdp_ok_fwd_dev(dev, xdp->data_end - xdp->data);
+>> > +		if (unlikely(err))
+>> > +			goto find_next;
+>> > +
+>> > +		return obj;
+>> > +
+>> > +find_next:
+>> > +		key = next_key;
+>> > +		err = devmap_get_next_key(map, key, next_key);
+>> > +		if (err)
+>> > +			break;
+>> > +	}
+>> 
+>> I'm missing something. Either an elaborated commit message or comment
+>> is probably needed. I've been looking at this block for 30 minutes and
+>> can't see how we avoid sending duplicate frames on a single interface?
+>> Can you check this code flow, 
+>> 
+>>   dev_map_enqueue_multi()
+>>    for (;;) {
+>>      next_obj = devmap_get_next_obj(...)
+>>         for (index = 0; index < map->max_entries; index++) {
+>>            obj = devmap_lookup_elem();
+>>            if (!obj) goto find_next
+>>            key = next_key;
+>>            err = devmap_get_next_key() 
+>>                   if (!key) goto find_first
+>>                   for (i = 0; i < dtab->n_buckets; i++)
+>>                      return *next <- now *next_key is point back
+>>                                      at first entry
+>>            // loop back through and find first obj and return that
+>
+> 	 devmap_get_next_key() will loop to find the first one if there is no
+> 	 key or dev. In normal time it will stop after the latest one.
+>>         }
+>>       bq_enqueue(...) // enqueue original obj
+>>       obj = next_obj;
+>>       key = next_key; 
+>>       ...  // we are going to enqueue first obj, but how do we know
+>>            // this hasn't already been sent? Presumably if we have
+>>            // a delete in the hash table in the middle of a multicast
+>>            // operation this might happen?
+>>    }
+>
+> And yes, there is an corner case that if we removed a dev during multicast,
+> there is an possibility that restart from the first key. But given that
+> this is an unlikely case, and in normal internet there is also a possibility
+> of duplicate/lost packet. This should also be acceptable?
 
-+1; I am OK with adding a new bpf_link-based way to attach TC programs,
-but we still need to support the netlink API in libbpf.
+In my mind this falls under "acceptable corner cases". I.e., if you're
+going to use the map for redirect and you expect to be updating it while
+you're doing so, don't use a hashmap. But if you will not be updating
+the map (or find the possible duplication acceptable), you can use the
+hashmap and gain the benefit of being able to index by ifindex.
 
-> So I think we'd have to support legacy TC APIs, but I agree with
-> Alexei and Daniel that we should keep it to the simplest and most
-> straightforward API of supporting direction-action attachments and
-> setting up qdisc transparently (if I'm getting all the terminology
-> right, after reading Quentin's blog post). That coincidentally should
-> probably match how bpf_link-based TC API will look like, so all that
-> can be abstracted behind a single bpf_link__attach_tc() API as well,
-> right? That's the plan for dealing with kprobe right now, btw. Libbpf
-> will detect the best available API and transparently fall back (maybe
-> with some warning for awareness, due to inherent downsides of legacy
-> APIs: no auto-cleanup being the most prominent one).
-
-Yup, SGTM: Expose both in the low-level API (in bpf.c), and make the
-high-level API auto-detect. That way users can also still use the
-netlink attach function if they don't want the fd-based auto-close
-behaviour of bpf_link.
+But John does have a point that this is not obvious; so maybe it should
+be pointed out in the helper documentation?
 
 -Toke
 
