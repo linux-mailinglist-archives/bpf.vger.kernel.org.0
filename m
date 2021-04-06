@@ -2,144 +2,275 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E89355B08
-	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 20:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA1B355B25
+	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 20:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233970AbhDFSM1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Apr 2021 14:12:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36078 "EHLO
+        id S237479AbhDFSSS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Apr 2021 14:18:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232876AbhDFSM1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:12:27 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C172C06174A;
-        Tue,  6 Apr 2021 11:12:19 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id r193so13587757ior.9;
-        Tue, 06 Apr 2021 11:12:19 -0700 (PDT)
+        with ESMTP id S235539AbhDFSSR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Apr 2021 14:18:17 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE777C06174A;
+        Tue,  6 Apr 2021 11:18:07 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id x26so4290796pfn.0;
+        Tue, 06 Apr 2021 11:18:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=dbKehqFatDSQcVDjENi2b6srsbitv1ymAQeqIDiNaU0=;
-        b=YlpQNCtgMLKGKl0/MlVQ5QzAQnf8j7YfUx8YQjXk+FYH/NKcersaLBL5v6UsnOpYxa
-         zfsKnjKmRkA8+WcCaS19Wot7kOmKA6qLWJIk3i8tlVioydF6UVgkNNpz6tGsocD27EpQ
-         D7JkPDE7BWuy+XSEiYiUlLAz0HU5BpnDnJRRamXf+S3oy7dSYZj8h6qB5sAJ6BGMGDB/
-         UvtGeUrmHxiIAP8+8WXiMPKYJmR21vUVS6NNXC4dOGVkl3uRMS9sUFUcL/cFCU5x79WF
-         uo00NvNDtboeHNDqTuJehmQOabbnPesxmIbnzyUfO3EWbWx6Va4uVDVi7CVpkqmeKM35
-         TxfQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C9LSUo0ezPUmzQMPSTmB/gxpRnO4Vx24+5kbdVGuluE=;
+        b=GgxjPLz+yulUBTe1daE1pUHLwYAIawz5i2DgIq7iU5od4yZuUtXwz+Zfci1U83J9m8
+         P3hxPPvttHcUUzeLGEvdmVeegv30q+juF+6BF9IRexXMqG84d4jRYa+b5I4a9yxhT5GC
+         m2fUDlbNG7Zl5LGkkJGQKyPsjEIXvFx2033evwvL+NYdDrGOLfVAV6YffTbSJTT/aAvg
+         zKulzKHdu5W63o0TzSwl7BXfZdecW/b4rutJUUpSFZRlEGxIIRzK9h1a1I3cVqdmjGiG
+         fD3veHNhs+ZBsRdPWdZyGNauY1SQjHENY2GGSnKax64RUW35rZoJJoTFAoABiJ+BJ2Na
+         sOpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=dbKehqFatDSQcVDjENi2b6srsbitv1ymAQeqIDiNaU0=;
-        b=VIjY1UD76cDw8CiKpg9F95MCQ7aqSyQGBRKOiy2Q9fonBd7yMuUFS4b2xEW5J8x78W
-         4wjFCWr0zAZK1BVQuhTRMnRplGge0VCmpimxi3uH1bY976+5Q/Beicu3xb3nqjCdBNGH
-         6JJBXNDyiA9Kqubqo7lk3BflmBBDy6Cn8lzR8ZFZLUm/jAy0YI6eglEF9MivOht9cTgt
-         ZWgRo6mvqb7N7/Sc1F91BiOQY/RYQSDSe6JIyk5gLY0+bM52sGhNscJ7kpJZ4W5pKgYa
-         vMcXB3rCDAlGDKFR4peWCV1Gk6GT8dlkyunnkVVBkMBOODb946ig/KAKWdhVr5N792AP
-         w1lw==
-X-Gm-Message-State: AOAM533QXAkfeUbGxWVu5CmyZNkqGomYXBKH15i7pQ/NtlT/TmEhFiRs
-        cZIOZRJLh1/wTl9TNQ5sij0=
-X-Google-Smtp-Source: ABdhPJw+z4Usn808/YCBABN/hRCf3PPqpQZEwzKjA4wnlnkBVupuYDqPRP43tye5+IFzEmzdXFDFaA==
-X-Received: by 2002:a05:6638:2101:: with SMTP id n1mr30775934jaj.7.1617732738752;
-        Tue, 06 Apr 2021 11:12:18 -0700 (PDT)
-Received: from localhost ([172.242.244.146])
-        by smtp.gmail.com with ESMTPSA id d2sm13022251ilm.7.2021.04.06.11.12.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 11:12:18 -0700 (PDT)
-Date:   Tue, 06 Apr 2021 11:12:10 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
-        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Message-ID: <606ca47a5496b_f02420821@john-XPS-13-9370.notmuch>
-In-Reply-To: <1aeb42b4-c0fe-4a25-bd73-00bc7b7de285@gmail.com>
-References: <20210331023237.41094-1-xiyou.wangcong@gmail.com>
- <20210331023237.41094-11-xiyou.wangcong@gmail.com>
- <1aeb42b4-c0fe-4a25-bd73-00bc7b7de285@gmail.com>
-Subject: Re: [Patch bpf-next v8 10/16] sock: introduce
- sk->sk_prot->psock_update_sk_prot()
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C9LSUo0ezPUmzQMPSTmB/gxpRnO4Vx24+5kbdVGuluE=;
+        b=USbN09/hVr44ElPkI/3hnrius1UkkqwU/zSUWL94TG1UxpUq907nZHmCprwW96z8BT
+         GBFAUWRis19krI/gs3WZUFdGX53q1bxu03qi96AjbF+Ut712dXXEwzTY4o6iSDv7KkII
+         6QvaOtzdgOpr7rq8fp8uQkjK5O1DV28cUTARewKGgD4DVwy2gpPsY+vSTsnKZSNTcENf
+         BuGX9gY0erxNzjN2lvFmK5TfWz16sRLBo22TItX4F193/oQVTGWwEDvKAr6k55uYcC30
+         an0sscDIxZTlRCoaz5nK+26aEAHt0YtwHlnNc0RlQp4N4wqqr+f9tDPvD7lCUInY99zc
+         58rQ==
+X-Gm-Message-State: AOAM532joZJq3hzoEbyqG2xXc5S7MLovt1GUnZ6b8ZOT/SICn850iK2O
+        p4oYrNaRdqvNWuQCopaW/Cd3TDx2AOJ0ehLJxvY=
+X-Google-Smtp-Source: ABdhPJwpOyhlNN2QAwx86oSazK5BjaxbgIkq0Aw6StiG41IqlwIsklS9ziWOqxDWmqr908Lv4rMaZL+o0cLggg+mG/o=
+X-Received: by 2002:a63:3245:: with SMTP id y66mr28767637pgy.435.1617733087385;
+ Tue, 06 Apr 2021 11:18:07 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAGG=3QUUYn9K7zVQ1UVZ57_FFeiiOexwq_OgDw9VFPJD3fFbVw@mail.gmail.com>
+ <06ba2ed4-2730-9ce8-0665-3c720bc786a3@fb.com> <CAGG=3QXkvwrm_tnsYtJ-gvHw8Emv5xFWeckoPoD4PhEud7v8EA@mail.gmail.com>
+ <YGxgnQyBPf5fxQxM@kernel.org> <YGyO9KzDoxu5zk33@kernel.org>
+ <YGySmmmn4J43I0EG@kernel.org> <YGyTco9NvT8Bin8i@kernel.org>
+ <YGyUbX/HRBdGjH3i@kernel.org> <3a6aa243-add9-88a5-b405-85fd8bfbe21d@fb.com>
+ <4eda63d8-f9df-71ab-d625-dcc4df429a89@fb.com> <YGyicDTUkPNhab4K@kernel.org>
+In-Reply-To: <YGyicDTUkPNhab4K@kernel.org>
+From:   David Blaikie <dblaikie@gmail.com>
+Date:   Tue, 6 Apr 2021 11:17:56 -0700
+Message-ID: <CAENS6EvW8+oAa_DfN3LZsHmVkwA2WTb-TrcSf1FLEroyrnQXzQ@mail.gmail.com>
+Subject: Re: [PATCH dwarves 0/2] dwarf_loader: improve cus__merging_cu()
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Bill Wendling <morbo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Eric Dumazet wrote:
-> 
-> 
-> On 3/31/21 4:32 AM, Cong Wang wrote:
-> > From: Cong Wang <cong.wang@bytedance.com>
-> > 
-> > Currently sockmap calls into each protocol to update the struct
-> > proto and replace it. This certainly won't work when the protocol
-> > is implemented as a module, for example, AF_UNIX.
-> > 
-> > Introduce a new ops sk->sk_prot->psock_update_sk_prot(), so each
-> > protocol can implement its own way to replace the struct proto.
-> > This also helps get rid of symbol dependencies on CONFIG_INET.
-> 
-> [...]
-> 
-> 
-> >  
-> > -struct proto *tcp_bpf_get_proto(struct sock *sk, struct sk_psock *psock)
-> > +int tcp_bpf_update_proto(struct sock *sk, bool restore)
-> >  {
-> > +	struct sk_psock *psock = sk_psock(sk);
-> 
-> I do not think RCU is held here ?
+On Tue, Apr 6, 2021 at 11:03 AM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
+>
+> Em Tue, Apr 06, 2021 at 10:48:22AM -0700, Yonghong Song escreveu:
+> >
+> >
+> > On 4/6/21 10:23 AM, Yonghong Song wrote:
+> > >
+> > >
+> > > On 4/6/21 10:03 AM, Arnaldo Carvalho de Melo wrote:
+> > > > Em Tue, Apr 06, 2021 at 01:59:30PM -0300, Arnaldo Carvalho de Melo
+> > > > escreveu:
+> > > > > Em Tue, Apr 06, 2021 at 01:55:54PM -0300, Arnaldo Carvalho de
+> > > > > Melo escreveu:
+> > > > > > Em Tue, Apr 06, 2021 at 01:40:20PM -0300, Arnaldo Carvalho
+> > > > > > de Melo escreveu:
+> > > > > > > Em Tue, Apr 06, 2021 at 10:22:37AM -0300, Arnaldo
+> > > > > > > Carvalho de Melo escreveu:
+> > > > > > > > I'm seeing these here:
+> > > > > >
+> > > > > > > > [acme@five bpf]$ rm -f ../build/bpf_clang_thin_lto/*vmlinu*
+> > > > > > > > [acme@five bpf]$ time make -j28 LLVM=1 LLVM_IAS=1
+> > > > > > > > O=../build/bpf_clang_thin_lto/ vmlinux
+> > > > > > > > make[1]: Entering directory '/home/acme/git/build/bpf_clang_thin_lto'
+> > > > > > > >    GEN     Makefile
+> > > > > > > >    DESCEND  objtool
+> > > > > > > >    DESCEND  bpf/resolve_btfids
+> > > > > > > >    CALL    /home/acme/git/bpf/scripts/atomic/check-atomics.sh
+> > > > > > > >    CALL    /home/acme/git/bpf/scripts/checksyscalls.sh
+> > > > > > > >    CHK     include/generated/compile.h
+> > > > > > > >    GEN     .version
+> > > > > > > >    CHK     include/generated/compile.h
+> > > > > > > >    UPD     include/generated/compile.h
+> > > > > > > >    CC      init/version.o
+> > > > > > > >    AR      init/built-in.a
+> > > > > > > >    GEN     .tmp_initcalls.lds
+> > > > > > > >    LTO     vmlinux.o
+> > > > > > > >    OBJTOOL vmlinux.o
+> > > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > > aesni_gcm_init_avx_gen2()+0x12: unsupported stack
+> > > > > > > > pointer realignment
+> > > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > > aesni_gcm_enc_update_avx_gen2()+0x12: unsupported
+> > > > > > > > stack pointer realignment
+> > > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > > aesni_gcm_dec_update_avx_gen2()+0x12: unsupported
+> > > > > > > > stack pointer realignment
+> > > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > > aesni_gcm_finalize_avx_gen2()+0x12: unsupported
+> > > > > > > > stack pointer realignment
+> > > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > > aesni_gcm_init_avx_gen4()+0x12: unsupported stack
+> > > > > > > > pointer realignment
+> > > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > > aesni_gcm_enc_update_avx_gen4()+0x12: unsupported
+> > > > > > > > stack pointer realignment
+> > > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > > aesni_gcm_dec_update_avx_gen4()+0x12: unsupported
+> > > > > > > > stack pointer realignment
+> > > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > > aesni_gcm_finalize_avx_gen4()+0x12: unsupported
+> > > > > > > > stack pointer realignment
+> > > > > > > >    MODPOST vmlinux.symvers
+> > > > > > > >    MODINFO modules.builtin.modinfo
+> > > > > > > >    GEN     modules.builtin
+> > > > > > > >    LD      .tmp_vmlinux.btf
+> > > > > > > >    BTF     .btf.vmlinux.bin.o
+> > > > > > > >    LD      .tmp_vmlinux.kallsyms1
+> > > > > > > >    KSYMS   .tmp_vmlinux.kallsyms1.S
+> > > > > > > >    AS      .tmp_vmlinux.kallsyms1.S
+> > > > > > > >    LD      .tmp_vmlinux.kallsyms2
+> > > > > > > >    KSYMS   .tmp_vmlinux.kallsyms2.S
+> > > > > > > >    AS      .tmp_vmlinux.kallsyms2.S
+> > > > > > > >    LD      vmlinux
+> > > > > > > >    BTFIDS  vmlinux
+> > > > > > > > WARN: multiple IDs found for 'inode': 232, 28822 - using 232
+> > > > > > > > WARN: multiple IDs found for 'file': 374, 28855 - using 374
+> > > > > > > > WARN: multiple IDs found for 'path': 379, 28856 - using 379
+> > > > > > > > WARN: multiple IDs found for 'vm_area_struct': 177, 28929 - using 177
+> > > > > > > > WARN: multiple IDs found for 'task_struct': 97, 28966 - using 97
+> > > > > > > > WARN: multiple IDs found for 'seq_file': 510, 29059 - using 510
+> > > > > > > > WARN: multiple IDs found for 'inode': 232, 29345 - using 232
+> > > > > > > > WARN: multiple IDs found for 'file': 374, 29429 - using 374
+> > > > > > > > WARN: multiple IDs found for 'path': 379, 29430 - using 379
+> > > > > > > > WARN: multiple IDs found for 'vm_area_struct': 177, 29471 - using 177
+> > > > > > > > WARN: multiple IDs found for 'task_struct': 97, 29481 - using 97
+> > > > > > > > WARN: multiple IDs found for 'seq_file': 510, 29512 - using 510
+> > > > > > > >    SORTTAB vmlinux
+> > > > > > > >    SYSMAP  System.map
+> > > > > > > > make[1]: Leaving directory '/home/acme/git/build/bpf_clang_thin_lto'
+> > > > > > > >
+> > > > > > > > [acme@five pahole]$ clang -v
+> > > > > > > > clang version 11.0.0 (Fedora 11.0.0-2.fc33)
+> > >
+> > > This could be due to the compiler. The clang 11 is used here. Sedat is
+> > > using clang 12 and didn't see warnings and I am using clang dev branch
+> > > (clang 13) and didn't see warnings either. clang 11 could generate
+> > > some debuginfo where pahole didn't handle it properly.
+> > >
+> > > I tried to build locally with clang 11 but it crashed as I enabled
+> > > assert during compiler build. Will try a little bit more.
+> >
+> > Yes, I can see it with llvm11:
+> >
+> >   LD      vmlinux
+> >
+> >
+> >   BTFIDS  vmlinux
+> >
+> >
+> > WARN: multiple IDs found for 'inode': 245, 36255 - using 245
+> >
+> >
+> > WARN: multiple IDs found for 'file': 390, 36288 - using 390
+> >
+> >
+> > WARN: multiple IDs found for 'path': 395, 36289 - using 395
+> >
+> >
+> > WARN: multiple IDs found for 'vm_area_struct': 190, 36362 - using 190
+> >
+> >
+> > WARN: multiple IDs found for 'task_struct': 93, 36399 - using 93
+> >
+> >
+> > WARN: multiple IDs found for 'seq_file': 524, 36498 - using 524
+> >
+> >
+> > WARN: multiple IDs found for 'inode': 245, 36784 - using 245
+> >
+> >
+> > WARN: multiple IDs found for 'file': 390, 36868 - using 390
+> >
+> >
+> > WARN: multiple IDs found for 'path': 395, 36869 - using 395
+> >
+> >
+> > WARN: multiple IDs found for 'vm_area_struct': 190, 36910 - using 190
+> >
+> >
+> > WARN: multiple IDs found for 'task_struct': 93, 36920 - using 93
+> >
+> >
+> > WARN: multiple IDs found for 'seq_file': 524, 36951 - using 524
+> >
+> >
+> >   SORTTAB vmlinux
+> >
+> >
+> >   SYSMAP  System.map
+> >
+> >
+> >   LTO [M] crypto/crypto_engine.lto.o
+> >
+> >
+> >   LTO [M] drivers/crypto/virtio/virtio_crypto.lto.o
+> >
+> > $ clang --version
+> > clang version 11.1.0 (https://github.com/llvm/llvm-project.git
+> > 1fdec59bffc11ae37eb51a1b9869f0696bfd5312)
+> > Target: x86_64-unknown-linux-gnu
+> > Thread model: posix
+> > InstalledDir: /home/yhs/work/llvm-project/llvm/build/install/bin
+> >
+> > clang12 is okay:
+> >
+> >   LTO     vmlinux.o
+> >   OBJTOOL vmlinux.o
+> >   MODPOST vmlinux.symvers
+> >   MODINFO modules.builtin.modinfo
+> >   GEN     modules.builtin
+> >   LD      .tmp_vmlinux.btf
+> >   BTF     .btf.vmlinux.bin.o
+> >   LD      .tmp_vmlinux.kallsyms1
+> >   KSYMS   .tmp_vmlinux.kallsyms1.S
+> >   AS      .tmp_vmlinux.kallsyms1.S
+> >   LD      .tmp_vmlinux.kallsyms2
+> >   KSYMS   .tmp_vmlinux.kallsyms2.S
+> >
+> > $ clang --version
+> > clang version 12.0.0 (https://github.com/llvm/llvm-project.git
+> > 31001be371e8f2c74470e727e54503fb2aabec8b)
+> > Target: x86_64-unknown-linux-gnu
+> > Thread model: posix
+> > InstalledDir: /home/yhs/work/llvm-project/llvm/build/install/bin
+> >
+> > I think we do not need to fix pahole for llvm11.
+> > When linus tree 5.12 is out. clang 12 should have been released
+> > or very close, we can just recommend clang 12 and later.
+>
+> Agreed, and it is just for _thin_ LTO, those warnings don't pop up when
+> building for full LTO with clang 11, the one in Fedora 33.
+>
+> And Fedora 34 beta has clang/llvm 12.0, so we're good.
+>
+> /me goes back to building clang/llvm HEAD, reducing the number of linker
+> instances to 1 as I have just 32GB of ram in this Ryzen machine... ;-)
 
-Hi, thanks for looking at this.
+32GB should be enough for a lot of parallel links - unless you're
+using ld.bfd - highly advised to switch to gold or lld & then you
+shuold be able to do a fair number of parallel links without loads of
+thrashing.
 
-> 
-> sk_psock() is using rcu_dereference_sk_user_data()
+ https://llvm.org/docs/GettingStarted.html#common-problems discusses a
+few things to try
 
-First caller of this is here,
-
- sock_{hash|map}_update_common <- has a WARN_ON_ONCE(!rcu_read_lock_held);
-  sock_map_link()
-   sock_map_init_proto()
-    psock_update_sk_prot(sk, false)
-
-And the other does this,
-
- sk_psock_put()
-   sk_psock_drop()
-     sk_psock_restore_proto
-        psock_update_sk_prot(sk, true)
-
-But we can get here through many callers and it sure doesn't look like its
-all safe. For example one case,
-
- .sendmsg
-   tcp_bpf_sendmsg
-    psock = sk_psock_get(sk)
-    sk_psock_put(sk, psock) <- this doesn't have the RCU held
-
-> 
-> >  	int family = sk->sk_family == AF_INET6 ? TCP_BPF_IPV6 : TCP_BPF_IPV4;
-> >  	int config = psock->progs.msg_parser   ? TCP_BPF_TX   : TCP_BPF_BASE;
-> >  
-> 
-> Same issue in udp_bpf_update_proto() of course.
-> 
-
-Yep.
-
-Either we revert the patch or we can fix it to pass the psock through.
-Passing the psock works because we have a reference on it and it wont
-go away. I don't have any other good ideas off-hand.
-
-Thanks Eric! I'm a bit surprised we didn't get an RCU splat from the
-tests though.
-
-.John
+ - Dave
