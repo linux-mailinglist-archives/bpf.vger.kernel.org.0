@@ -2,67 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C29D5355AF9
-	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 20:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E89355B08
+	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 20:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236637AbhDFSEr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Apr 2021 14:04:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237312AbhDFSEr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:04:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B435261154;
-        Tue,  6 Apr 2021 18:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617732278;
-        bh=Qw6oVGU/76mVgUbEjpilItCHs1Dj0PAxM5M9pZO1LvM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E16Us8E3BJq/6kzWMts91Z14/+27kpa1aW6Da5OvxonQA0t6+DQzFHjoB6ZMGhkUZ
-         Vh6vgtWDhmwlfAfJqWQ1IxpyYNhELZIm3Jrdg2f2oPJms2lo+s9P1I4Yp5w+XlM+gR
-         apSxhBwZwioxKc/F/8E7OnuiIvs2Eh3+5qYoADfvLJrk5bxDtXeVFg/lVKCRJ74tIm
-         9fWYPIVRMyTnCTb9wFE6+wjEuHBpmo35oifJYyrfQckM/+UP6Ty5APulBkLxZJJmR6
-         1MZWHd5eNdfJrt7qRQKs4iXmxZIuOp29lN31OrjxvoagWpmCIQg15B06dsT/uAR6D8
-         XUT2hqKTOgLgw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id CE3A940647; Tue,  6 Apr 2021 15:04:35 -0300 (-03)
-Date:   Tue, 6 Apr 2021 15:04:35 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Bill Wendling <morbo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        David Blaikie <dblaikie@gmail.com>,
-        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH dwarves 0/2] dwarf_loader: improve cus__merging_cu()
-Message-ID: <YGyis5/OlebLxYQQ@kernel.org>
-References: <06ba2ed4-2730-9ce8-0665-3c720bc786a3@fb.com>
- <CAGG=3QXkvwrm_tnsYtJ-gvHw8Emv5xFWeckoPoD4PhEud7v8EA@mail.gmail.com>
- <YGxgnQyBPf5fxQxM@kernel.org>
- <YGyO9KzDoxu5zk33@kernel.org>
- <YGySmmmn4J43I0EG@kernel.org>
- <YGyTco9NvT8Bin8i@kernel.org>
- <YGyUbX/HRBdGjH3i@kernel.org>
- <3a6aa243-add9-88a5-b405-85fd8bfbe21d@fb.com>
- <4eda63d8-f9df-71ab-d625-dcc4df429a89@fb.com>
- <YGyicDTUkPNhab4K@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGyicDTUkPNhab4K@kernel.org>
-X-Url:  http://acmel.wordpress.com
+        id S233970AbhDFSM1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Apr 2021 14:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232876AbhDFSM1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Apr 2021 14:12:27 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C172C06174A;
+        Tue,  6 Apr 2021 11:12:19 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id r193so13587757ior.9;
+        Tue, 06 Apr 2021 11:12:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=dbKehqFatDSQcVDjENi2b6srsbitv1ymAQeqIDiNaU0=;
+        b=YlpQNCtgMLKGKl0/MlVQ5QzAQnf8j7YfUx8YQjXk+FYH/NKcersaLBL5v6UsnOpYxa
+         zfsKnjKmRkA8+WcCaS19Wot7kOmKA6qLWJIk3i8tlVioydF6UVgkNNpz6tGsocD27EpQ
+         D7JkPDE7BWuy+XSEiYiUlLAz0HU5BpnDnJRRamXf+S3oy7dSYZj8h6qB5sAJ6BGMGDB/
+         UvtGeUrmHxiIAP8+8WXiMPKYJmR21vUVS6NNXC4dOGVkl3uRMS9sUFUcL/cFCU5x79WF
+         uo00NvNDtboeHNDqTuJehmQOabbnPesxmIbnzyUfO3EWbWx6Va4uVDVi7CVpkqmeKM35
+         TxfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=dbKehqFatDSQcVDjENi2b6srsbitv1ymAQeqIDiNaU0=;
+        b=VIjY1UD76cDw8CiKpg9F95MCQ7aqSyQGBRKOiy2Q9fonBd7yMuUFS4b2xEW5J8x78W
+         4wjFCWr0zAZK1BVQuhTRMnRplGge0VCmpimxi3uH1bY976+5Q/Beicu3xb3nqjCdBNGH
+         6JJBXNDyiA9Kqubqo7lk3BflmBBDy6Cn8lzR8ZFZLUm/jAy0YI6eglEF9MivOht9cTgt
+         ZWgRo6mvqb7N7/Sc1F91BiOQY/RYQSDSe6JIyk5gLY0+bM52sGhNscJ7kpJZ4W5pKgYa
+         vMcXB3rCDAlGDKFR4peWCV1Gk6GT8dlkyunnkVVBkMBOODb946ig/KAKWdhVr5N792AP
+         w1lw==
+X-Gm-Message-State: AOAM533QXAkfeUbGxWVu5CmyZNkqGomYXBKH15i7pQ/NtlT/TmEhFiRs
+        cZIOZRJLh1/wTl9TNQ5sij0=
+X-Google-Smtp-Source: ABdhPJw+z4Usn808/YCBABN/hRCf3PPqpQZEwzKjA4wnlnkBVupuYDqPRP43tye5+IFzEmzdXFDFaA==
+X-Received: by 2002:a05:6638:2101:: with SMTP id n1mr30775934jaj.7.1617732738752;
+        Tue, 06 Apr 2021 11:12:18 -0700 (PDT)
+Received: from localhost ([172.242.244.146])
+        by smtp.gmail.com with ESMTPSA id d2sm13022251ilm.7.2021.04.06.11.12.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 11:12:18 -0700 (PDT)
+Date:   Tue, 06 Apr 2021 11:12:10 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
+        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Message-ID: <606ca47a5496b_f02420821@john-XPS-13-9370.notmuch>
+In-Reply-To: <1aeb42b4-c0fe-4a25-bd73-00bc7b7de285@gmail.com>
+References: <20210331023237.41094-1-xiyou.wangcong@gmail.com>
+ <20210331023237.41094-11-xiyou.wangcong@gmail.com>
+ <1aeb42b4-c0fe-4a25-bd73-00bc7b7de285@gmail.com>
+Subject: Re: [Patch bpf-next v8 10/16] sock: introduce
+ sk->sk_prot->psock_update_sk_prot()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Apr 06, 2021 at 03:03:29PM -0300, Arnaldo Carvalho de Melo escreveu:
-> /me goes back to building clang/llvm HEAD, reducing the number of linker
-> instances to 1 as I have just 32GB of ram in this Ryzen machine... ;-)
+Eric Dumazet wrote:
+> 
+> 
+> On 3/31/21 4:32 AM, Cong Wang wrote:
+> > From: Cong Wang <cong.wang@bytedance.com>
+> > 
+> > Currently sockmap calls into each protocol to update the struct
+> > proto and replace it. This certainly won't work when the protocol
+> > is implemented as a module, for example, AF_UNIX.
+> > 
+> > Introduce a new ops sk->sk_prot->psock_update_sk_prot(), so each
+> > protocol can implement its own way to replace the struct proto.
+> > This also helps get rid of symbol dependencies on CONFIG_INET.
+> 
+> [...]
+> 
+> 
+> >  
+> > -struct proto *tcp_bpf_get_proto(struct sock *sk, struct sk_psock *psock)
+> > +int tcp_bpf_update_proto(struct sock *sk, bool restore)
+> >  {
+> > +	struct sk_psock *psock = sk_psock(sk);
+> 
+> I do not think RCU is held here ?
 
-And guess what takes a long time?
+Hi, thanks for looking at this.
 
-[ 61%] Linking CXX executable ../../bin/llvm-lto
+> 
+> sk_psock() is using rcu_dereference_sk_user_data()
 
-;-)
+First caller of this is here,
 
-- Arnaldo
+ sock_{hash|map}_update_common <- has a WARN_ON_ONCE(!rcu_read_lock_held);
+  sock_map_link()
+   sock_map_init_proto()
+    psock_update_sk_prot(sk, false)
+
+And the other does this,
+
+ sk_psock_put()
+   sk_psock_drop()
+     sk_psock_restore_proto
+        psock_update_sk_prot(sk, true)
+
+But we can get here through many callers and it sure doesn't look like its
+all safe. For example one case,
+
+ .sendmsg
+   tcp_bpf_sendmsg
+    psock = sk_psock_get(sk)
+    sk_psock_put(sk, psock) <- this doesn't have the RCU held
+
+> 
+> >  	int family = sk->sk_family == AF_INET6 ? TCP_BPF_IPV6 : TCP_BPF_IPV4;
+> >  	int config = psock->progs.msg_parser   ? TCP_BPF_TX   : TCP_BPF_BASE;
+> >  
+> 
+> Same issue in udp_bpf_update_proto() of course.
+> 
+
+Yep.
+
+Either we revert the patch or we can fix it to pass the psock through.
+Passing the psock works because we have a reference on it and it wont
+go away. I don't have any other good ideas off-hand.
+
+Thanks Eric! I'm a bit surprised we didn't get an RCU splat from the
+tests though.
+
+.John
