@@ -2,431 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77768354DA5
-	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 09:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6786835507B
+	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 12:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239919AbhDFHRK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Apr 2021 03:17:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60617 "EHLO
+        id S241762AbhDFKGk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Apr 2021 06:06:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49697 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232063AbhDFHRJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 6 Apr 2021 03:17:09 -0400
+        by vger.kernel.org with ESMTP id S241197AbhDFKGi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 6 Apr 2021 06:06:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617693422;
+        s=mimecast20190719; t=1617703590;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KRYW55+Dd5MnNv8uEo1vs2aXldFpsMQxzeAOfkPingY=;
-        b=g2xUK1wX/Y5BW8z4xAIdV3FvS9durNn6ujw3GcfRkQDjfttpRSJ/geHCPl/5Mihi54Izz+
-        ZBZFRCH4UGI4v5datl6nJMBJAceJcYBwQISslmInJywjOuL7GOA12PfhjXKGEesTH++sRg
-        dcmBAQAfepdJQIlDEyjSvlBGNjdAX9g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-233-gzcRvBJRPiW6MstSXUeYsQ-1; Tue, 06 Apr 2021 03:16:57 -0400
-X-MC-Unique: gzcRvBJRPiW6MstSXUeYsQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E4896108BD06;
-        Tue,  6 Apr 2021 07:16:54 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-95.pek2.redhat.com [10.72.13.95])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6D7B959443;
-        Tue,  6 Apr 2021 07:16:45 +0000 (UTC)
-Subject: Re: [PATCH net-next v3 8/8] virtio-net: free old xmit handle xsk
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        bh=HMmoJ8lzD0jdeUc9n0Wk+eKCrv0ig+3eGAmzp2n3I2E=;
+        b=ObLlaAiW/jethRX3PH0Ekui0AdngzW2j78M2ekH+uXmT+q50MNvuZTZWWkOCNxfdTXJUVX
+        TJj4rVwTnDZu50+acKUHrCIYnwYbEdC2UHatzZbuTOgYT/jfDPf+vD5rwievHv/Gxx3X6G
+        rk+QQThUtZaCfA8BZNn6kAjR5pUgubU=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-566-9-mtuGAYNHiDUt3DK_PFRA-1; Tue, 06 Apr 2021 06:06:26 -0400
+X-MC-Unique: 9-mtuGAYNHiDUt3DK_PFRA-1
+Received: by mail-ej1-f70.google.com with SMTP id gn30so5245038ejc.3
+        for <bpf@vger.kernel.org>; Tue, 06 Apr 2021 03:06:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=HMmoJ8lzD0jdeUc9n0Wk+eKCrv0ig+3eGAmzp2n3I2E=;
+        b=cSkw9mPq+VP2p58W6QD3MbN80ZzGmhTcbGFYp/OBoubiRUlhrnhntTTocSbwFdc6bX
+         ZQBadAWS/dKTj1Bi0iupYqLQHhjhyQVRnqsCJHhKtzyAsoCNhZ5KoRZotISHf4p1tgCt
+         AM5hjWslGGdnLJh7FSCNuHPZjdtoz6lJZZ4Fi3iUK9hLIX82uW27/KfS3NCcQEDs1Mhb
+         WyQu6X0R1wLYrNdUW/gbZkene6EMB8jju0o4QMCSITSakjyDwk7+gdZmPgc8ncyMKVrn
+         C5WbFt26WpFOMko0aNRVBnaw77rT9cI+RCvV8KaSp3UwyDfBAMdWjia3PNiml95jKhxh
+         HKgg==
+X-Gm-Message-State: AOAM533n5+7Sy1HZEbJggA7bs00q4jBYvCJpgdNSyT+oc3BffR7QwZ0v
+        D7TZ4FhXcTzqIo8Ucdf24exJdtFy4HQx/1emcaVfLtPKXt0cP6NDP9xPkSzvo2O+i9yrGU8cr4w
+        YyFWUZBp3sfg0
+X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr12908366edb.62.1617703585695;
+        Tue, 06 Apr 2021 03:06:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwkFahB+GBVvfN5+4DjXC410VqB3rQQ1MthTGIdEaIgp48fePTzVnaVaxK/KzASTOExPeqmdA==
+X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr12908347edb.62.1617703585534;
+        Tue, 06 Apr 2021 03:06:25 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id y24sm13732387eds.23.2021.04.06.03.06.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 03:06:24 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 5D5CF180300; Tue,  6 Apr 2021 12:06:24 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        Dust Li <dust.li@linux.alibaba.com>
-References: <20210331071139.15473-1-xuanzhuo@linux.alibaba.com>
- <20210331071139.15473-9-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <8596957b-aeac-9626-ea2e-a74535961df4@redhat.com>
-Date:   Tue, 6 Apr 2021 15:16:43 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.0
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
+In-Reply-To: <CAEf4Bzaeu4apgEtwS_3q1iPuURjPXMs9H43cYUtJSmjPMU5M9A@mail.gmail.com>
+References: <20210325120020.236504-4-memxor@gmail.com>
+ <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
+ <20210328080648.oorx2no2j6zslejk@apollo>
+ <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
+ <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
+ <20210331094400.ldznoctli6fljz64@apollo>
+ <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
+ <20210402152743.dbadpgcmrgjt4eca@apollo>
+ <CAADnVQ+wqrEnOGd8E1yp+1WTAx8ZcAx3HUjJs6ipPd0eKmOrgA@mail.gmail.com>
+ <20210402190806.nhcgappm3iocvd3d@apollo>
+ <20210403174721.vg4wle327wvossgl@ast-mbp>
+ <CAEf4Bzaeu4apgEtwS_3q1iPuURjPXMs9H43cYUtJSmjPMU5M9A@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 06 Apr 2021 12:06:24 +0200
+Message-ID: <87blar4ti7.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <20210331071139.15473-9-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-ÔÚ 2021/3/31 ÏÂÎç3:11, Xuan Zhuo Ð´µÀ:
-> Based on the last two bit of ptr returned by virtqueue_get_buf, 01
-> represents the packet sent by xdp, 10 is the packet sent by xsk, and 00
-> is skb by default.
+> On Sat, Apr 3, 2021 at 10:47 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Sat, Apr 03, 2021 at 12:38:06AM +0530, Kumar Kartikeya Dwivedi wrote:
+>> > On Sat, Apr 03, 2021 at 12:02:14AM IST, Alexei Starovoitov wrote:
+>> > > On Fri, Apr 2, 2021 at 8:27 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>> > > > [...]
+>> > >
+>> > > All of these things are messy because of tc legacy. bpf tried to follow tc style
+>> > > with cls and act distinction and it didn't quite work. cls with
+>> > > direct-action is the only
+>> > > thing that became mainstream while tc style attach wasn't really addressed.
+>> > > There were several incidents where tc had tens of thousands of progs attached
+>> > > because of this attach/query/index weirdness described above.
+>> > > I think the only way to address this properly is to introduce bpf_link style of
+>> > > attaching to tc. Such bpf_link would support ingress/egress only.
+>> > > direction-action will be implied. There won't be any index and query
+>> > > will be obvious.
+>> >
+>> > Note that we already have bpf_link support working (without support for pinning
+>> > ofcourse) in a limited way. The ifindex, protocol, parent_id, priority, handle,
+>> > chain_index tuple uniquely identifies a filter, so we stash this in the bpf_link
+>> > and are able to operate on the exact filter during release.
+>>
+>> Except they're not unique. The library can stash them, but something else
+>> doing detach via iproute2 or their own netlink calls will detach the prog.
+>> This other app can attach to the same spot a different prog and now
+>> bpf_link__destroy will be detaching somebody else prog.
+>>
+>> > > So I would like to propose to take this patch set a step further from
+>> > > what Daniel said:
+>> > > int bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
+>> > > and make this proposed api to return FD.
+>> > > To detach from tc ingress/egress just close(fd).
+>> >
+>> > You mean adding an fd-based TC API to the kernel?
+>>
+>> yes.
 >
-> If the xmit work of xsk has not been completed, but the ring is full,
-> napi must first exit and wait for the ring to be available, so
-> need_wakeup is set. If __free_old_xmit is called first by start_xmit, we
-> can quickly wake up napi to execute xsk xmit work.
+> I'm totally for bpf_link-based TC attachment.
 >
-> When recycling, we need to count the number of bytes sent, so put xsk
-> desc->len into the ptr pointer. Because ptr does not point to meaningful
-> objects in xsk.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> But I think *also* having "legacy" netlink-based APIs will allow
+> applications to handle older kernels in a much nicer way without extra
+> dependency on iproute2. We have a similar situation with kprobe, where
+> currently libbpf only supports "modern" fd-based attachment, but users
+> periodically ask questions and struggle to figure out issues on older
+> kernels that don't support new APIs.
 
++1; I am OK with adding a new bpf_link-based way to attach TC programs,
+but we still need to support the netlink API in libbpf.
 
-This needs to be squashed into patch 4.
+> So I think we'd have to support legacy TC APIs, but I agree with
+> Alexei and Daniel that we should keep it to the simplest and most
+> straightforward API of supporting direction-action attachments and
+> setting up qdisc transparently (if I'm getting all the terminology
+> right, after reading Quentin's blog post). That coincidentally should
+> probably match how bpf_link-based TC API will look like, so all that
+> can be abstracted behind a single bpf_link__attach_tc() API as well,
+> right? That's the plan for dealing with kprobe right now, btw. Libbpf
+> will detect the best available API and transparently fall back (maybe
+> with some warning for awareness, due to inherent downsides of legacy
+> APIs: no auto-cleanup being the most prominent one).
 
+Yup, SGTM: Expose both in the low-level API (in bpf.c), and make the
+high-level API auto-detect. That way users can also still use the
+netlink attach function if they don't want the fd-based auto-close
+behaviour of bpf_link.
 
-> ---
->   drivers/net/virtio_net.c | 171 ++++++++++++++++++++++++++-------------
->   1 file changed, 113 insertions(+), 58 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index fac7d0020013..8318b89b2971 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -50,6 +50,9 @@ module_param(xsk_kick_thr, int, 0644);
->   #define VIRTIO_XDP_REDIR	BIT(1)
->   
->   #define VIRTIO_XDP_FLAG	BIT(0)
-> +#define VIRTIO_XSK_FLAG	BIT(1)
-> +
-> +#define VIRTIO_XSK_PTR_SHIFT       4
->   
->   static struct virtio_net_hdr_mrg_rxbuf xsk_hdr;
->   
-> @@ -147,6 +150,9 @@ struct send_queue {
->   
->   		/* save the desc for next xmit, when xmit fail. */
->   		struct xdp_desc last_desc;
-> +
-> +		/* xsk wait for tx inter or softirq */
-> +		bool need_wakeup;
->   	} xsk;
->   };
->   
-> @@ -266,6 +272,12 @@ struct padded_vnet_hdr {
->   
->   static int virtnet_xsk_run(struct send_queue *sq, struct xsk_buff_pool *pool,
->   			   int budget, bool in_napi);
-> +static void virtnet_xsk_complete(struct send_queue *sq, u32 num);
-> +
-> +static bool is_skb_ptr(void *ptr)
-> +{
-> +	return !((unsigned long)ptr & (VIRTIO_XDP_FLAG | VIRTIO_XSK_FLAG));
-> +}
->   
->   static bool is_xdp_frame(void *ptr)
->   {
-> @@ -277,11 +289,58 @@ static void *xdp_to_ptr(struct xdp_frame *ptr)
->   	return (void *)((unsigned long)ptr | VIRTIO_XDP_FLAG);
->   }
->   
-> +static void *xsk_to_ptr(struct xdp_desc *desc)
-> +{
-> +	/* save the desc len to ptr */
-> +	u64 p = desc->len << VIRTIO_XSK_PTR_SHIFT;
-> +
-> +	return (void *)(p | VIRTIO_XSK_FLAG);
-> +}
-> +
-> +static void ptr_to_xsk(void *ptr, struct xdp_desc *desc)
-> +{
-> +	desc->len = ((u64)ptr) >> VIRTIO_XSK_PTR_SHIFT;
-> +}
-> +
->   static struct xdp_frame *ptr_to_xdp(void *ptr)
->   {
->   	return (struct xdp_frame *)((unsigned long)ptr & ~VIRTIO_XDP_FLAG);
->   }
->   
-> +static void __free_old_xmit(struct send_queue *sq, bool in_napi,
-> +			    struct virtnet_sq_stats *stats)
-> +{
-> +	unsigned int xsknum = 0;
-> +	unsigned int len;
-> +	void *ptr;
-> +
-> +	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
-> +		if (is_skb_ptr(ptr)) {
-> +			struct sk_buff *skb = ptr;
-> +
-> +			pr_debug("Sent skb %p\n", skb);
-> +
-> +			stats->bytes += skb->len;
-> +			napi_consume_skb(skb, in_napi);
-> +		} else if (is_xdp_frame(ptr)) {
-> +			struct xdp_frame *frame = ptr_to_xdp(ptr);
-> +
-> +			stats->bytes += frame->len;
-> +			xdp_return_frame(frame);
-> +		} else {
-> +			struct xdp_desc desc;
-> +
-> +			ptr_to_xsk(ptr, &desc);
-> +			stats->bytes += desc.len;
-> +			++xsknum;
-> +		}
-> +		stats->packets++;
-> +	}
-> +
-> +	if (xsknum)
-> +		virtnet_xsk_complete(sq, xsknum);
-> +}
-> +
->   /* Converting between virtqueue no. and kernel tx/rx queue no.
->    * 0:rx0 1:tx0 2:rx1 3:tx1 ... 2N:rxN 2N+1:txN 2N+2:cvq
->    */
-> @@ -543,15 +602,12 @@ static int virtnet_xdp_xmit(struct net_device *dev,
->   			    int n, struct xdp_frame **frames, u32 flags)
->   {
->   	struct virtnet_info *vi = netdev_priv(dev);
-> +	struct virtnet_sq_stats stats = {};
->   	struct receive_queue *rq = vi->rq;
->   	struct bpf_prog *xdp_prog;
->   	struct send_queue *sq;
-> -	unsigned int len;
-> -	int packets = 0;
-> -	int bytes = 0;
->   	int nxmit = 0;
->   	int kicks = 0;
-> -	void *ptr;
->   	int ret;
->   	int i;
->   
-> @@ -570,20 +626,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
->   	}
->   
->   	/* Free up any pending old buffers before queueing new ones. */
-> -	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
-> -		if (likely(is_xdp_frame(ptr))) {
-> -			struct xdp_frame *frame = ptr_to_xdp(ptr);
-> -
-> -			bytes += frame->len;
-> -			xdp_return_frame(frame);
-> -		} else {
-> -			struct sk_buff *skb = ptr;
-> -
-> -			bytes += skb->len;
-> -			napi_consume_skb(skb, false);
-> -		}
-> -		packets++;
-> -	}
-> +	__free_old_xmit(sq, false, &stats);
-
-
-Let's use a separate patch for this kind of factoring.
-
-
->   
->   	for (i = 0; i < n; i++) {
->   		struct xdp_frame *xdpf = frames[i];
-> @@ -600,8 +643,8 @@ static int virtnet_xdp_xmit(struct net_device *dev,
->   	}
->   out:
->   	u64_stats_update_begin(&sq->stats.syncp);
-> -	sq->stats.bytes += bytes;
-> -	sq->stats.packets += packets;
-> +	sq->stats.bytes += stats.bytes;
-> +	sq->stats.packets += stats.packets;
->   	sq->stats.xdp_tx += n;
->   	sq->stats.xdp_tx_drops += n - nxmit;
->   	sq->stats.kicks += kicks;
-> @@ -1426,37 +1469,19 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
->   
->   static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
->   {
-> -	unsigned int len;
-> -	unsigned int packets = 0;
-> -	unsigned int bytes = 0;
-> -	void *ptr;
-> -
-> -	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
-> -		if (likely(!is_xdp_frame(ptr))) {
-> -			struct sk_buff *skb = ptr;
-> +	struct virtnet_sq_stats stats = {};
->   
-> -			pr_debug("Sent skb %p\n", skb);
-> -
-> -			bytes += skb->len;
-> -			napi_consume_skb(skb, in_napi);
-> -		} else {
-> -			struct xdp_frame *frame = ptr_to_xdp(ptr);
-> -
-> -			bytes += frame->len;
-> -			xdp_return_frame(frame);
-> -		}
-> -		packets++;
-> -	}
-> +	__free_old_xmit(sq, in_napi, &stats);
->   
->   	/* Avoid overhead when no packets have been processed
->   	 * happens when called speculatively from start_xmit.
->   	 */
-> -	if (!packets)
-> +	if (!stats.packets)
->   		return;
->   
->   	u64_stats_update_begin(&sq->stats.syncp);
-> -	sq->stats.bytes += bytes;
-> -	sq->stats.packets += packets;
-> +	sq->stats.bytes += stats.bytes;
-> +	sq->stats.packets += stats.packets;
->   	u64_stats_update_end(&sq->stats.syncp);
->   }
->   
-> @@ -2575,6 +2600,28 @@ static void virtnet_xsk_check_space(struct send_queue *sq)
->   		netif_stop_subqueue(dev, qnum);
->   }
->   
-> +static void virtnet_xsk_complete(struct send_queue *sq, u32 num)
-> +{
-> +	struct xsk_buff_pool *pool;
-> +
-> +	rcu_read_lock();
-> +
-> +	pool = rcu_dereference(sq->xsk.pool);
-> +	if (!pool) {
-> +		rcu_read_unlock();
-> +		return;
-> +	}
-> +
-> +	xsk_tx_completed(pool, num);
-> +
-> +	rcu_read_unlock();
-> +
-> +	if (sq->xsk.need_wakeup) {
-> +		sq->xsk.need_wakeup = false;
-> +		virtqueue_napi_schedule(&sq->napi, sq->vq);
-> +	}
-> +}
-> +
->   static int virtnet_xsk_xmit(struct send_queue *sq, struct xsk_buff_pool *pool,
->   			    struct xdp_desc *desc)
->   {
-> @@ -2613,7 +2660,8 @@ static int virtnet_xsk_xmit(struct send_queue *sq, struct xsk_buff_pool *pool,
->   			offset = 0;
->   	}
->   
-> -	err = virtqueue_add_outbuf(sq->vq, sq->sg, n, NULL, GFP_ATOMIC);
-> +	err = virtqueue_add_outbuf(sq->vq, sq->sg, n, xsk_to_ptr(desc),
-> +				   GFP_ATOMIC);
->   	if (unlikely(err))
->   		sq->xsk.last_desc = *desc;
->   
-> @@ -2623,13 +2671,13 @@ static int virtnet_xsk_xmit(struct send_queue *sq, struct xsk_buff_pool *pool,
->   static int virtnet_xsk_xmit_batch(struct send_queue *sq,
->   				  struct xsk_buff_pool *pool,
->   				  unsigned int budget,
-> -				  bool in_napi, int *done)
-> +				  bool in_napi, int *done,
-> +				  struct virtnet_sq_stats *stats)
->   {
->   	struct xdp_desc desc;
->   	int err, packet = 0;
->   	int ret = -EAGAIN;
->   	int need_kick = 0;
-> -	int kicks = 0;
->   
->   	if (sq->xsk.last_desc.addr) {
->   		err = virtnet_xsk_xmit(sq, pool, &sq->xsk.last_desc);
-> @@ -2665,7 +2713,7 @@ static int virtnet_xsk_xmit_batch(struct send_queue *sq,
->   		if (need_kick > xsk_kick_thr) {
->   			if (virtqueue_kick_prepare(sq->vq) &&
->   			    virtqueue_notify(sq->vq))
-> -				++kicks;
-> +				++stats->kicks;
->   
->   			need_kick = 0;
->   		}
-> @@ -2675,15 +2723,11 @@ static int virtnet_xsk_xmit_batch(struct send_queue *sq,
->   		if (need_kick) {
->   			if (virtqueue_kick_prepare(sq->vq) &&
->   			    virtqueue_notify(sq->vq))
-> -				++kicks;
-> -		}
-> -		if (kicks) {
-> -			u64_stats_update_begin(&sq->stats.syncp);
-> -			sq->stats.kicks += kicks;
-> -			u64_stats_update_end(&sq->stats.syncp);
-> +				++stats->kicks;
->   		}
->   
->   		*done = packet;
-> +		stats->xdp_tx += packet;
->   
->   		xsk_tx_release(pool);
->   	}
-> @@ -2694,26 +2738,37 @@ static int virtnet_xsk_xmit_batch(struct send_queue *sq,
->   static int virtnet_xsk_run(struct send_queue *sq, struct xsk_buff_pool *pool,
->   			   int budget, bool in_napi)
->   {
-> +	struct virtnet_sq_stats stats = {};
->   	int done = 0;
->   	int err;
->   
-> -	free_old_xmit_skbs(sq, in_napi);
-> +	sq->xsk.need_wakeup = false;
-> +	__free_old_xmit(sq, in_napi, &stats);
->   
-> -	err = virtnet_xsk_xmit_batch(sq, pool, budget, in_napi, &done);
-> +	err = virtnet_xsk_xmit_batch(sq, pool, budget, in_napi, &done, &stats);
->   	/* -EAGAIN: done == budget
->   	 * -EBUSY: done < budget
->   	 *  0    : done < budget
->   	 */
->   	if (err == -EBUSY) {
-> -		free_old_xmit_skbs(sq, in_napi);
-> +		__free_old_xmit(sq, in_napi, &stats);
->   
->   		/* If the space is enough, let napi run again. */
->   		if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
->   			done = budget;
-
-
-So I don't see how NAPI can be rescheduled here.
-
-Thanks
-
-
-> +		else
-> +			sq->xsk.need_wakeup = true;
->   	}
->   
->   	virtnet_xsk_check_space(sq);
->   
-> +	u64_stats_update_begin(&sq->stats.syncp);
-> +	sq->stats.packets += stats.packets;
-> +	sq->stats.bytes += stats.bytes;
-> +	sq->stats.kicks += stats.kicks;
-> +	sq->stats.xdp_tx += stats.xdp_tx;
-> +	u64_stats_update_end(&sq->stats.syncp);
-> +
->   	return done;
->   }
->   
-> @@ -2991,9 +3046,9 @@ static void free_unused_bufs(struct virtnet_info *vi)
->   	for (i = 0; i < vi->max_queue_pairs; i++) {
->   		struct virtqueue *vq = vi->sq[i].vq;
->   		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL) {
-> -			if (!is_xdp_frame(buf))
-> +			if (is_skb_ptr(buf))
->   				dev_kfree_skb(buf);
-> -			else
-> +			else if (is_xdp_frame(buf))
->   				xdp_return_frame(ptr_to_xdp(buf));
->   		}
->   	}
+-Toke
 
