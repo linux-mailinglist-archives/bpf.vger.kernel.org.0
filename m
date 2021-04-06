@@ -2,186 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B93355B8E
-	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 20:40:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FBF355BC4
+	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 20:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235325AbhDFSks (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Apr 2021 14:40:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42056 "EHLO
+        id S237145AbhDFSyw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Apr 2021 14:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347118AbhDFSjb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Apr 2021 14:39:31 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F01C061760
-        for <bpf@vger.kernel.org>; Tue,  6 Apr 2021 11:39:22 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 12so24191863lfq.13
-        for <bpf@vger.kernel.org>; Tue, 06 Apr 2021 11:39:22 -0700 (PDT)
+        with ESMTP id S238551AbhDFSyu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Apr 2021 14:54:50 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F160C06174A;
+        Tue,  6 Apr 2021 11:54:40 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id n44so2671827qvg.12;
+        Tue, 06 Apr 2021 11:54:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HQMr+myNry7kMYJRVZWeSVgVa7oM6pbfeSZSl/6u29k=;
-        b=Pejc/BsA8L+TrZPdOwGHEPycuL6xNz5a8xRww8TuUSCgKj81lbNaCMvZ5AezmAQOo3
-         iHffyxnvTmFH7xH1zeco1pel6rsL9/SLE7+vYfV8Q2byaIXSP/WyDIdz4/JhkoV6E8ao
-         C196PK+sW2SGOEDgD4CihqKsl+i2l6NvINN+hzneYJZhSlabo9suuKlOcZ/teKY+epXk
-         kIrWCtpa0jSvxVILeR85ZnCyHpvG4AZhXKnFjw+GO3gN/C1spLIA7WFl6kUWAMxToRRh
-         SaeHhHZntayiEUo9dRoaT4nPrF2Hy/fyJdSa6aJCTo3TUuTtNphN9MjO2NCNY3GDLRf8
-         vZDw==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mq4zboVwgG7RX/zWtMqfC1lbGCW4ytsyD+Jtu8rxp4Q=;
+        b=KGb3I7tY0ieqRMPjgNri6Kauk+AB1DD1L3RI6yu19lY/UE457TaZa9bANwsYVmFLB+
+         FJRQuO9LYk681h1UOsfQYVx2cbsvwb4xdT7hh4kpjDP1ZiZ1tVjtnjtRW8ZUp8/YRc5d
+         vct/it8nQUTBSRI8wSbToLT5+wLw40SkWwDRnKjodTKkI/kkPzZNbPUsnf2lN51wdRxC
+         bqOcSpfWUi2PrB10K3mXLaxCyZ9gv50pLR96eWq601lKi9UgAU36PQVpczp5O1Dp8oDD
+         61WMwDZo77O6YIiDDD8rqmTjYt4q3+grZN3fW2xHXD+BG6Y+eG3Ypn0eKwthq5iszdRa
+         v4+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HQMr+myNry7kMYJRVZWeSVgVa7oM6pbfeSZSl/6u29k=;
-        b=XY7zWare4zCsqbDBH1RJUY0W1ldGLRTF/LiOJ5L/Ss+mfrNHgKmC4sf5j6j65NT0hm
-         g2Ptn+UQeDaes84+eZzeSif+5bhmgzK7WVntxJyet75jnhd6yOC0QzrhT10s2NF+9uO6
-         we9uCau7HxLkhGCmttutdVExthqmeoxNo1uF2JezEnjef6YYv9a0KY7O/2OQ4ngazKDh
-         DFYuFQLn5J0nBBmadi0YtoJYkKAOxGNj2aK15v2h9NOamjFyVodrtD1DzSrUzjOYlywz
-         nARvp6j2jPhGWzsn6jJpMKQnXoTfIMvOpbbfN1w64qdrGGexuoxj7ksnfTiw6PFRzPSO
-         CriA==
-X-Gm-Message-State: AOAM530GogRHqR1a1Ve2OKdcA+d+aoDczjOO/hAGMzbiU74nfjKJVNW+
-        SaSpt7ImdPLScICKN1iaiHj0BdsPHAdwBK89QbIFNA==
-X-Google-Smtp-Source: ABdhPJwfF8QTg6t910CMAqJ9lPp1gWVxBDXydZblUn3PzjSJ4R76U4j8NWJdIQODLYvQGTNNGH20bVl5J4NuLLVRId0=
-X-Received: by 2002:a19:8c19:: with SMTP id o25mr22129544lfd.547.1617734360307;
- Tue, 06 Apr 2021 11:39:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Mq4zboVwgG7RX/zWtMqfC1lbGCW4ytsyD+Jtu8rxp4Q=;
+        b=UKrg9/psFBAuxR7XN5bdjLgtaRgUkj6rjQbT6S/QTyHBP6okGzCDD4Aw2XaUO8vDqC
+         Zw1/ieaq1P3CBlzHjVc1l8tmpmBFjU2hD1mnk3FlarI7gIEk4ekYNOassywDjMzyiW83
+         ksC+ZJ8qldigaZBnEP7pTXXRHmuaV9I+iSb69+THqLCVfLrVge3+v2BqUHUP4VzvVzPT
+         WtK2L2LbGWjECC9IjbssQ79E+8Dy/d6grQkfJ660WBjtfZqlvjg1e1qm6bVAlS2qzHEU
+         8hV/fkSuc3EakGLHIT0FjZ1ILF64R2LQO4gXSwqr/5SKhhpj3V/2KLkQOQM/9DDlyggr
+         zSNg==
+X-Gm-Message-State: AOAM531k+TZUvgpueSWNzVkeqTaGAjy13CGAixQfLuMRjBpLSXrdDKYg
+        eYU1fth0i04RbqZKxG1rTpQ=
+X-Google-Smtp-Source: ABdhPJxAFMdsKBkliMghidiCHHzY0b/fu9Y9pGy3RHy8D8ehZqkWvYDjz3XOuUsfsQjUTz+ffTUa8Q==
+X-Received: by 2002:a0c:8b12:: with SMTP id q18mr30398917qva.51.1617735279536;
+        Tue, 06 Apr 2021 11:54:39 -0700 (PDT)
+Received: from localhost.localdomain ([179.218.4.27])
+        by smtp.gmail.com with ESMTPSA id a19sm16581652qkl.126.2021.04.06.11.54.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 11:54:39 -0700 (PDT)
+From:   Pedro Tammela <pctammela@gmail.com>
+X-Google-Original-From: Pedro Tammela <pctammela@mojatatu.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        David Verbeiren <david.verbeiren@tessares.net>,
+        netdev@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
+        linux-kernel@vger.kernel.org (open list),
+        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
+Subject: [PATCH bpf-next v2 0/3] add batched ops support for percpu
+Date:   Tue,  6 Apr 2021 15:53:51 -0300
+Message-Id: <20210406185400.377293-1-pctammela@mojatatu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210403184158.2834387-1-yhs@fb.com> <CA+icZUVxpkCJVnibqm3+OYdfdh5U=eU_u7pPKUZMoPm3XzZWPQ@mail.gmail.com>
-In-Reply-To: <CA+icZUVxpkCJVnibqm3+OYdfdh5U=eU_u7pPKUZMoPm3XzZWPQ@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 6 Apr 2021 11:39:09 -0700
-Message-ID: <CAKwvOdn+ScOD=LyU+4CxL6AOpfjXuzzQD-=TuM9ER-Q8Wposuw@mail.gmail.com>
-Subject: Re: Usage of CXX in tools directory
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        David Blaikie <dblaikie@gmail.com>,
-        Bill Wendling <morbo@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, kernel-team@fb.com,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Apr 4, 2021 at 8:00 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> [ Please CC me I am not subscribed to all mailing-lists ]
-> [ Please CC some more folks if you like ]
->
-> Hi,
->
-> when dealing/experimenting with BPF together with pahole/dwarves and
-> dwarf-v5 and clang-lto I fell over that there is usage of CXX in tools
-> directory.
-> Especially,  I wanted to build and run test_progs from BPF selftests.
-> One BPF selftest called "test_cpp" used GNU/g++ (and even /usr/bin/ld)
-> and NOT LLVM/clang++.
->
-> For details see the linux-bpf/dwarves thread "[PATCH dwarves]
-> dwarf_loader: handle DWARF5 DW_OP_addrx properly" in [1].
->
-> Lemme check:
->
-> $ git grep CXX tools/
-> tools/build/Build.include:cxx_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@
-> $(CXXFLAGS) -D"BUILD_STR(s)=\#s" $(CXXFLAGS_$(basetarget).o)
-> $(CXXFLAGS_$(obj))
-> tools/build/Makefile.build:quiet_cmd_cxx_o_c = CXX      $@
-> tools/build/Makefile.build:      cmd_cxx_o_c = $(CXX) $(cxx_flags) -c -o $@ $<
-> tools/build/Makefile.feature:  feature-$(1) := $(shell $(MAKE)
-> OUTPUT=$(OUTPUT_FEATURES) CC="$(CC)" CXX="$(CXX)"
-> CFLAGS="$(EXTRA_CFLAGS) $(FEATURE_CHECK_CFLAGS-$(1))"
-> CXXFLAGS="$(EXTRA_CXXFLAGS) $(FEATURE_CHECK_CXXFLAGS-$(1))"
-> LDFLAGS="$(LDFLAGS) $(FEATURE_CHECK_LDFLAGS-$(1))" -C $(feature_dir)
-> $(OUTPUT_FEATURES)test-$1.bin >/dev/nu
-> ll 2>/dev/null && echo 1 || echo 0)
-> tools/build/feature/Makefile:__BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall
-> -Werror -o $@ $(patsubst %.bin,%.cpp,$(@F)) $(LDFLAGS)
-> ...
-> tools/perf/Makefile.config:USE_CXX = 0
-> tools/perf/Makefile.config:        CXXFLAGS +=
-> -DHAVE_LIBCLANGLLVM_SUPPORT -I$(shell $(LLVM_CONFIG) --includedir)
-> tools/perf/Makefile.config:        $(call detected,CONFIG_CXX)
-> tools/perf/Makefile.config:     USE_CXX = 1
-> tools/perf/Makefile.perf:export srctree OUTPUT RM CC CXX LD AR CFLAGS
-> CXXFLAGS V BISON FLEX AWK
-> tools/perf/Makefile.perf:ifeq ($(USE_CXX), 1)
-> tools/perf/util/Build:perf-$(CONFIG_CXX) += c++/
-> ...
-> tools/scripts/Makefile.include:$(call allow-override,CXX,$(CROSS_COMPILE)g++)
-> ...
-> tools/testing/selftests/bpf/Makefile:CXX ?= $(CROSS_COMPILE)g++
-> tools/testing/selftests/bpf/Makefile:   $(call msg,CXX,,$@)
-> tools/testing/selftests/bpf/Makefile:   $(Q)$(CXX) $(CFLAGS) $^ $(LDLIBS) -o $@
->
-> The problem is if you pass LLVM=1 there is no clang(++) assigned to
-> CXX automagically.
->
-> [2] says:
->
-> LLVM has substitutes for GNU binutils utilities. Kbuild supports
-> LLVM=1 to enable them.
->
-> make LLVM=1
-> They can be enabled individually. The full list of the parameters:
->
-> make CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \
->   OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump READELF=llvm-readelf \
->   HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar HOSTLD=ld.lld
->
-> [ EndOfQuote  ]
->
-> So you need to pass CXX=clang++ manually when playing in tools directory:
+This patchset introduces batched operations for the per-cpu variant of
+the array map.
 
-Yes, CXX is not set by LLVM=1 in the top level Makefile.  CXX is not
-exported by the top level Makefile.  I suspect that
-tools/scripts/Mafefile.include (and possible
-testing/selftests/bpf/Makefile) needs to check for LLVM=1 and set
-CXX=clang++ explicitly.
+It also introduces a standard way to define per-cpu values via the
+'BPF_PERCPU_TYPE()' macro, which handles the alignment transparently.
+This was already implemented in the selftests and was merely refactored
+out to libbpf, with some simplifications for reuse.
 
->
-> MAKE="make V=1
-> MAKE_OPTS="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang
-> CXX=clang++ LD=ld.lld LLVM=1 LLVM_IAS=1"
-> MAKE_OPTS="MAKE_OPTS $PAHOLE=/opt/pahole/bin/pahole"
->
-> $ LC_ALL=C $MAKE $MAKE_OPTS -C tools/testing/selftests/bpf/ clean
-> $ LC_ALL=C $MAKE $MAKE_OPTS -C tools/testing/selftests/bpf/
->
-> Unsure, if tools needs a special treatment in things of CXX or LLVM=1
-> needs to be enhanced with CCX=clang++.
-> If we have HOSTCXX why not have a CXX in toplevel Makefile?
->
-> In "tools: Factor Clang, LLC and LLVM utils definitions" (see [3]) I
-> did some factor-ing.
->
-> For the records: Here Linus Git is my base.
->
-> Ideas?
->
-> Thanks.
->
-> Regards,
-> - Sedat -
->
-> P.S.: Just a small note: I know there is less usage of CXX code in the
-> linux-kernel.
->
-> [1] https://lore.kernel.org/bpf/CA+icZUWh6YOkCKG72SndqUbQNwG+iottO4=cPyRRVjaHD2=0qw@mail.gmail.com/T/#m22907f838d2d27be24e8959a53473a62f21cecea
-> [2] https://www.kernel.org/doc/html/latest/kbuild/llvm.html#llvm-utilities
-> [3] https://git.kernel.org/linus/211a741cd3e124bffdc13ee82e7e65f204e53f60
+The tests were updated to reflect all the new changes.
 
+v1 -> v2:
+- Amended a more descriptive commit message
 
+Pedro Tammela (3):
+  bpf: add batched ops support for percpu array
+  libbpf: selftests: refactor 'BPF_PERCPU_TYPE()' and 'bpf_percpu()'
+    macros
+  bpf: selftests: update array map tests for per-cpu batched ops
+
+ kernel/bpf/arraymap.c                         |   2 +
+ tools/lib/bpf/bpf.h                           |  10 ++
+ tools/testing/selftests/bpf/bpf_util.h        |   7 --
+ .../bpf/map_tests/array_map_batch_ops.c       | 114 +++++++++++++-----
+ .../bpf/map_tests/htab_map_batch_ops.c        |  48 ++++----
+ .../selftests/bpf/prog_tests/map_init.c       |   5 +-
+ tools/testing/selftests/bpf/test_maps.c       |  16 +--
+ 7 files changed, 133 insertions(+), 69 deletions(-)
 
 -- 
-Thanks,
-~Nick Desaulniers
+2.25.1
+
