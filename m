@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB0B35583F
-	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 17:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C5735584A
+	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 17:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239006AbhDFPix (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Apr 2021 11:38:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58772 "EHLO
+        id S244174AbhDFPku (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Apr 2021 11:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234664AbhDFPiw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Apr 2021 11:38:52 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074A6C061756
-        for <bpf@vger.kernel.org>; Tue,  6 Apr 2021 08:38:43 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id d10so13469669ils.5
-        for <bpf@vger.kernel.org>; Tue, 06 Apr 2021 08:38:43 -0700 (PDT)
+        with ESMTP id S244153AbhDFPku (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Apr 2021 11:40:50 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66FE1C06174A
+        for <bpf@vger.kernel.org>; Tue,  6 Apr 2021 08:40:41 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id 6so3819329ilt.9
+        for <bpf@vger.kernel.org>; Tue, 06 Apr 2021 08:40:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=JEi9pkoyq0DRGmPdjuw9UVMkgpOddRxRIDpF7zpDfNM=;
-        b=V8KKchNyj4AhE6nnF7/d2L6cVqqbVOM8Tle3VwM0W5rN2GBBB/S/1hnfwOZ3uUAK26
-         8BriLy45W4wsntUZainZBukhOTz5ZUS8rhLesR80oJVp/7cpZeSw4huXuY3CRh9MZH3r
-         B7OMUnNSox3cOoktdiGr3JKWineXWoGIth4UA=
+        bh=/i6oRBuCC1nnDdk8f5MbgBKgjuwAQ5G7EynnRn+CM2U=;
+        b=jNGs8/kzK6fF4rFABzfWwSKeIItGRig5tl4meXpRcksf4WjzMzD5Kw6Fwdzxl6OEyT
+         xfQnEyG92W3AEuG4rzQahom4jtzNpMAw+dpQrzqHP9ZtX6OVv43FlC59IrxkWUEj2ecS
+         GPzo8PQJebMdfdDMgHHWXnKpMn8FcDTndvWWc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=JEi9pkoyq0DRGmPdjuw9UVMkgpOddRxRIDpF7zpDfNM=;
-        b=krCXxpPk+HMz9LYe8Gy9OrNS6EYUIUmyLL7jTSryxMxE1WdTlIKpsSCAkuzCRsLnMx
-         ybQGA+z7jTXMd8VDWFpZrP/17QEV9qzYrN13etthcPRYcCoCn4ZudC8DGtwpbNV7MEdB
-         6Z2ZCF5P8o6Cqg8lEI7+w/1IPN2EJY/l/BNiryzV/DKLjoL49mSb+CqlaENejXyQZTdp
-         25eRtGU1Zq9ZfuyddMI2MlDS+JnOJhCYTUJzxwP5oDR3cILjWRctO6Ko5Hn5WeuoqMdd
-         ziyxfoMT35F1fHocfxy91uZV8po84l0g6u1QboQT8MTsP2QCGipE66VIY4r7rJEwc0bu
-         6bww==
-X-Gm-Message-State: AOAM530UQUPMsTBbDhmGQxYZk/9xNlVtwxFOUoQu/qs8Gqb0jxMHRXl+
-        0k1HSHN2TX4a+wvVexytx5qCeSmG+0oh8H5DZS/M1w==
-X-Google-Smtp-Source: ABdhPJyuasAPHEnCviV1xX228L2aM9NIfQOvh6+nAE2oLo6llEE5yNzoE8dG1l35F+PCj4k7WUbbT8HhrvNHRCuHmp0=
-X-Received: by 2002:a92:c9ca:: with SMTP id k10mr9629827ilq.42.1617723522485;
- Tue, 06 Apr 2021 08:38:42 -0700 (PDT)
+        bh=/i6oRBuCC1nnDdk8f5MbgBKgjuwAQ5G7EynnRn+CM2U=;
+        b=ao6qm0XBFKUoMFz7IEZVghRblbZgGfR1pIS52K0jSQgh5DQlknsbnfcHT7SYEIfFBW
+         jgzq9i+wTHPMCmRxlFBjCCfgwuTqY72R+qpcs3zp5Vi+Osxft3j3lyWa9owxDSs64Ib8
+         CcaQ2BfsDtoGnfel+d1ggfIUPTzFR/eOdb32SIQ0eMJU6f6+wGvzpzwfPZHBfKaoKRt1
+         haeJqMC6qp1aeyMb2cDnRiUbdSx9NHOcHMww7a8VjmpKzcpdB7yC+7tW3zQNp2jXM9uG
+         uyDpoNGb4tYZ130Csq792sNI/ECV0uN6Fu1Ik3tFm+1Xeovyn+W9nX4TojnjmM3tODBc
+         qWUw==
+X-Gm-Message-State: AOAM532OZXcsjTAGZt5+yKQObpQnU1Si3KYF8wgUhAxnJvUQx5+MY314
+        ZYecgDtZFoPTshHaZZg5lI98Far3bxQqLBbxrGwgVg==
+X-Google-Smtp-Source: ABdhPJyy0Kus26xdVGm4mg3woI6tVGuaURUUcH6bXPAT0XCsNbcTjHptv5f2ARgt/+EB/ozLBWgBLRIKYX9IbT1/Ems=
+X-Received: by 2002:a92:c9ca:: with SMTP id k10mr9636555ilq.42.1617723640967;
+ Tue, 06 Apr 2021 08:40:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210324022211.1718762-1-revest@chromium.org> <20210324022211.1718762-3-revest@chromium.org>
- <CAEf4BzZEgHyodDqj7exrEo+eBOzHEnsvkc003vxq3dcRVZXE2A@mail.gmail.com>
-In-Reply-To: <CAEf4BzZEgHyodDqj7exrEo+eBOzHEnsvkc003vxq3dcRVZXE2A@mail.gmail.com>
+References: <20210324022211.1718762-1-revest@chromium.org> <20210324022211.1718762-7-revest@chromium.org>
+ <CAEf4Bzb1z2KOHsMTrSP2t3S0iT3UrYMAWsO1_OqD_EYMECsZ-w@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb1z2KOHsMTrSP2t3S0iT3UrYMAWsO1_OqD_EYMECsZ-w@mail.gmail.com>
 From:   Florent Revest <revest@chromium.org>
-Date:   Tue, 6 Apr 2021 17:38:31 +0200
-Message-ID: <CABRcYmKUQcRjQhLgpM6pb4oMWCB2=ov8iL1prxn3B54Or=aC=w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/6] bpf: Add a ARG_PTR_TO_CONST_STR argument type
+Date:   Tue, 6 Apr 2021 17:40:30 +0200
+Message-ID: <CABRcYmJZ856joqkSxThS6Kv0m9ZGufUCffQ4OwCTWALg907O5g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -60,26 +60,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 11:23 PM Andrii Nakryiko
+On Sat, Mar 27, 2021 at 12:05 AM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
+>
 > On Tue, Mar 23, 2021 at 7:23 PM Florent Revest <revest@chromium.org> wrote:
-> > +
-> > +               map_off = reg->off + reg->var_off.value;
-> > +               err = map->ops->map_direct_value_addr(map, &map_addr, map_off);
-> > +               if (err)
-> > +                       return err;
-> > +
-> > +               str_ptr = (char *)(long)(map_addr);
-> > +               if (!strnchr(str_ptr + map_off,
-> > +                            map->value_size - reg->off - map_off, 0))
+> >
+> > This exercises most of the format specifiers when things go well.
+> >
+> > Signed-off-by: Florent Revest <revest@chromium.org>
+> > ---
 >
-> you are double subtracting reg->off here. isn't map->value_size -
-> map_off what you want?
+> Looks good. Please add a no-argument test case as well.
 
-Good catch!
+Agreed
 
-> > +                       verbose(env, "string is not zero-terminated\n");
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 >
-> I'd prefer `return -EINVAL;`, but at least set err, otherwise what's the point?
+> >  .../selftests/bpf/prog_tests/snprintf.c       | 65 +++++++++++++++++++
+> >  .../selftests/bpf/progs/test_snprintf.c       | 59 +++++++++++++++++
+> >  2 files changed, 124 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
+> >
+>
+> [...]
+>
+> > +
+> > +SEC("raw_tp/sys_enter")
+> > +int handler(const void *ctx)
+> > +{
+> > +       /* Convenient values to pretty-print */
+> > +       const __u8 ex_ipv4[] = {127, 0, 0, 1};
+> > +       const __u8 ex_ipv6[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+> > +       const char str1[] = "str1";
+> > +       const char longstr[] = "longstr";
+> > +       extern const void schedule __ksym;
+>
+> oh, fancy. I'd move it out of this function into global space, though,
+> to make it more apparent. I almost missed that it's a special one.
 
-Ah yeah, absolutely.
+Just schedule? Alright.
