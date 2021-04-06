@@ -2,129 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4D9355466
-	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 14:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9153554E9
+	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 15:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242308AbhDFM7t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Apr 2021 08:59:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50518 "EHLO mail.kernel.org"
+        id S242548AbhDFNWs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Apr 2021 09:22:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239096AbhDFM7s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Apr 2021 08:59:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5CE4613D0;
-        Tue,  6 Apr 2021 12:59:40 +0000 (UTC)
+        id S231897AbhDFNWs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:22:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECBD6613B7;
+        Tue,  6 Apr 2021 13:22:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617713980;
-        bh=MmM0Z9fxkhm9SnK1fIQO8WfodlzxxDy0XGkEAZogl2I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ced3vzglcPx9Dq5ivxegHloEXLqHUvr8HzmjUiElf9G8ZTMaTmyhNp0joHw1JKNqf
-         ZRM9DA+kHwYmohQHkWQqZ1mY5MX6JFQVwnqjFhTgpF6IBsYESfOJZOAf0RELyopPJq
-         LkabyEZF6sycaumizzGhgcJVYpUNNw9ZTxllksAQoGC0qwN2IigVSJRhHO1esBD9bc
-         k+MKBv2YFYHFbZfivBGsRSPcz2wvcaPmknHEprCzG4ndkuBInhHLDt5q5SbcJGQsSC
-         KmaNndJU8U3WBfgQ/3iyaX4nEl5Ndzt9vGN5HTeu6tYmP0JWsfixBFtjFrLGaL76Qi
-         pBcLmFQkBVvwQ==
-Received: by mail-oo1-f50.google.com with SMTP id p2-20020a4aa8420000b02901bc7a7148c4so3650862oom.11;
-        Tue, 06 Apr 2021 05:59:40 -0700 (PDT)
-X-Gm-Message-State: AOAM532n7cYUjwAs6uDDoeTlXiHt6OUSQdczA6zxR19Aii4NhVMDTBPN
-        M7kefO9QCZAv1tmBjTkkciGwbH4QZw0KYyagFu0=
-X-Google-Smtp-Source: ABdhPJxDNCj1NGgcj5QYLyY5XEVb262+iXVbnwzUprYhCzBA1PE1J8t6rkdEDSwZ0xpnvPoJA7HzmVROrJw7qRz0qWw=
-X-Received: by 2002:a4a:bd97:: with SMTP id k23mr26482678oop.13.1617713980054;
- Tue, 06 Apr 2021 05:59:40 -0700 (PDT)
+        s=k20201202; t=1617715360;
+        bh=93u0E4XyYh1bouzyAmmcW4rgYj9An/k8IHmZQqnpMV8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QorMal7uBIGVo0lgwWycNgR6jLzHQiAMIKpF/GosxHWhvsOZOyYUovo0mXTkr+ItH
+         M5qyLcSYm4ggw2ZS/fY7RCxV/J93MUDD757kK2HmzKLSDrg70ckxr/MSGeptmhGP6/
+         HgVSeYw30wbU34tdQ3/O/cK2fG4Q7EWYAPC0bsXk/wIeNVniN97/cwvGK41mHC5u0N
+         wzDjVlI7Gs5GixAPjXZZo3sPYx3J66ks1ZGzquWP3tff62fgZdZcbkJgc/eEd2Yc9I
+         tRM5mAxL/Pyvvr93+U1ZGdjfhkJxevbqp+5jNCVlQlmP/pmgyqy8L9DXWKJPLKIf9U
+         5jebm7hKSyJUA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 9583240647; Tue,  6 Apr 2021 10:22:37 -0300 (-03)
+Date:   Tue, 6 Apr 2021 10:22:37 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Bill Wendling <morbo@google.com>
+Cc:     Yonghong Song <yhs@fb.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        David Blaikie <dblaikie@gmail.com>,
+        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH dwarves 0/2] dwarf_loader: improve cus__merging_cu()
+Message-ID: <YGxgnQyBPf5fxQxM@kernel.org>
+References: <20210401025815.2254256-1-yhs@fb.com>
+ <CAGG=3QWpcCG7b70oQsRTATgt10acEFS=-Tg9U=DHZ6xoS3GeMA@mail.gmail.com>
+ <CAGG=3QUUYn9K7zVQ1UVZ57_FFeiiOexwq_OgDw9VFPJD3fFbVw@mail.gmail.com>
+ <06ba2ed4-2730-9ce8-0665-3c720bc786a3@fb.com>
+ <CAGG=3QXkvwrm_tnsYtJ-gvHw8Emv5xFWeckoPoD4PhEud7v8EA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210401233216.2540591-1-samitolvanen@google.com>
- <20210401233216.2540591-15-samitolvanen@google.com> <20210406115357.GE96480@C02TD0UTHF1T.local>
-In-Reply-To: <20210406115357.GE96480@C02TD0UTHF1T.local>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 6 Apr 2021 14:59:28 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFHm5rqKqku5=WF-NcsUNmWp4Ymxu7aO9=XkD-LhLr-dA@mail.gmail.com>
-Message-ID: <CAMj1kXFHm5rqKqku5=WF-NcsUNmWp4Ymxu7aO9=XkD-LhLr-dA@mail.gmail.com>
-Subject: Re: [PATCH v5 14/18] arm64: add __nocfi to functions that jump to a
- physical address
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGG=3QXkvwrm_tnsYtJ-gvHw8Emv5xFWeckoPoD4PhEud7v8EA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 6 Apr 2021 at 13:54, Mark Rutland <mark.rutland@arm.com> wrote:
->
-> [adding Ard for EFI runtime services bits]
->
-> On Thu, Apr 01, 2021 at 04:32:12PM -0700, Sami Tolvanen wrote:
-> > Disable CFI checking for functions that switch to linear mapping and
-> > make an indirect call to a physical address, since the compiler only
-> > understands virtual addresses and the CFI check for such indirect calls
-> > would always fail.
->
-> What does physical vs virtual have to do with this? Does the address
-> actually matter, or is this just a general thing that when calling an
-> assembly function we won't have a trampoline that the caller expects?
->
-> I wonder if we need to do something with asmlinkage here, perhaps?
->
-> I didn't spot anything in the seriues handling EFI runtime services
-> calls, and I strongly suspect we need to do something for those, unless
-> they're handled implicitly by something else.
->
-
-All indirect EFI calls are routed via a asm helper that I originally
-added to check whether x18 was corrupted by the firmware. So from the
-caller side, we should be fine.
-
-All callees are addresses that are provided by the firmware via tables
-in memory, so I would assume that this addresses the callee side as
-well. AFAICT, it is never left up to the compiler to emit these
-indirect calls, or take the address of a firmware routine.
-
-But a test would be nice :-)
-
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  arch/arm64/include/asm/mmu_context.h | 2 +-
-> >  arch/arm64/kernel/cpu-reset.h        | 8 ++++----
-> >  arch/arm64/kernel/cpufeature.c       | 2 +-
-> >  3 files changed, 6 insertions(+), 6 deletions(-)
+Em Fri, Apr 02, 2021 at 12:44:50PM -0700, Bill Wendling escreveu:
+> I tried porting the .config we're using to the official branch and
+> couldn't replicate the problem. It's probably something local.
+> 
+> On Thu, Apr 1, 2021 at 3:00 PM Yonghong Song <yhs@fb.com> wrote:
+> > On 4/1/21 1:56 PM, Bill Wendling wrote:
+> > > On Thu, Apr 1, 2021 at 12:35 PM Bill Wendling <morbo@google.com> wrote:
+> > >>
+> > >> On Wed, Mar 31, 2021 at 7:58 PM Yonghong Song <yhs@fb.com> wrote:
+> > >>>
+> > >>> Function cus__merging_cu() is introduced in Commit 39227909db3c
+> > >>> ("dwarf_loader: Permit merging all DWARF CU's for clang LTO built
+> > >>> binary") to test whether cross-cu references may happen.
+> > >>> The original implementation anticipates compilation flags
+> > >>> in dwarf, but later some concerns about binary size surfaced
+> > >>> and the decision is to scan .debug_abbrev as a faster way
+> > >>> to check cross-cu references. Also putting a note in vmlinux
+> > >>> to indicate whether lto is enabled for built or not can
+> > >>> provide a much faster way.
+> > >>>
+> > >>> This patch set implemented this two approaches, first
+> > >>> checking the note (in Patch #2), if not found, then
+> > >>> check .debug_abbrev (in Patch #1).
+> > >>>
+> > >>> Yonghong Song (2):
+> > >>>    dwarf_loader: check .debug_abbrev for cross-cu references
+> > >>>    dwarf_loader: check .notes section for lto build info
+> > >>>
+> > >>>   dwarf_loader.c | 76 ++++++++++++++++++++++++++++++++++++--------------
+> > >>>   1 file changed, 55 insertions(+), 21 deletions(-)
+> > >>>
+> > >> With this series of patches, the compilation passes for me with
+> > >> ThinLTO. You may add this if you like:
+> > >>
+> > >> Tested-by: Bill Wendling <morbo@google.com>
+> > >
+> > > I did notice these warnings following the "pahole -J .tmp_vmlinux.btf"
+> > > command. I don't know the severity of them, but it might be good to
+> > > investigate.
+> > >
+> > > $ ./tools/bpf/resolve_btfids/resolve_btfids vmlinux
+> > >    BTFIDS  vmlinux
+> > > WARN: multiple IDs found for 'inode': 355, 8746 - using 355
+> > > WARN: multiple IDs found for 'file': 588, 8779 - using 588
+> > > WARN: multiple IDs found for 'path': 411, 8780 - using 411
+> > > WARN: multiple IDs found for 'seq_file': 1414, 8836 - using 1414
+> > > WARN: multiple IDs found for 'vm_area_struct': 538, 8873 - using 538
+> > > WARN: multiple IDs found for 'task_struct': 28, 8880 - using 28
+> > > WARN: multiple IDs found for 'inode': 355, 9484 - using 355
+> > > WARN: multiple IDs found for 'file': 588, 9517 - using 588
+> > > WARN: multiple IDs found for 'path': 411, 9518 - using 411
+> > > WARN: multiple IDs found for 'seq_file': 1414, 9578 - using 1414
+> > > WARN: multiple IDs found for 'vm_area_struct': 538, 9615 - using 538
+> > > WARN: multiple IDs found for 'task_struct': 28, 9622 - using 28
+> > > WARN: multiple IDs found for 'seq_file': 1414, 12223 - using 1414
+> > > WARN: multiple IDs found for 'file': 588, 12237 - using 588
+> > > WARN: multiple IDs found for 'path': 411, 12238 - using 411
+> > > ...
 > >
-> > diff --git a/arch/arm64/include/asm/mmu_context.h b/arch/arm64/include/asm/mmu_context.h
-> > index 386b96400a57..d3cef9133539 100644
-> > --- a/arch/arm64/include/asm/mmu_context.h
-> > +++ b/arch/arm64/include/asm/mmu_context.h
-> > @@ -119,7 +119,7 @@ static inline void cpu_install_idmap(void)
-> >   * Atomically replaces the active TTBR1_EL1 PGD with a new VA-compatible PGD,
-> >   * avoiding the possibility of conflicting TLB entries being allocated.
-> >   */
-> > -static inline void cpu_replace_ttbr1(pgd_t *pgdp)
-> > +static inline void __nocfi cpu_replace_ttbr1(pgd_t *pgdp)
->
-> Given these are inlines, what's the effect when these are inlined into a
-> function that would normally use CFI? Does CFI get supressed for the
-> whole function, or just the bit that got inlined?
->
-> Is there an attribute that we could place on a function pointer to tell
-> the compiler to not check calls via that pointer? If that existed we'd
-> be able to scope this much more tightly.
->
+> > I didn't see it with my config. Maybe you can share your config file?
 
-I agree that it would be very helpful to be able to define a function
-pointer type that is exempt from CFI checks.
+I'm seeing these here:
+
+[acme@five bpf]$ rm -f ../build/bpf_clang_thin_lto/*vmlinu*
+[acme@five bpf]$ time make -j28 LLVM=1 LLVM_IAS=1 O=../build/bpf_clang_thin_lto/ vmlinux
+make[1]: Entering directory '/home/acme/git/build/bpf_clang_thin_lto'
+  GEN     Makefile
+  DESCEND  objtool
+  DESCEND  bpf/resolve_btfids
+  CALL    /home/acme/git/bpf/scripts/atomic/check-atomics.sh
+  CALL    /home/acme/git/bpf/scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+  GEN     .version
+  CHK     include/generated/compile.h
+  UPD     include/generated/compile.h
+  CC      init/version.o
+  AR      init/built-in.a
+  GEN     .tmp_initcalls.lds
+  LTO     vmlinux.o
+  OBJTOOL vmlinux.o
+vmlinux.o: warning: objtool: aesni_gcm_init_avx_gen2()+0x12: unsupported stack pointer realignment
+vmlinux.o: warning: objtool: aesni_gcm_enc_update_avx_gen2()+0x12: unsupported stack pointer realignment
+vmlinux.o: warning: objtool: aesni_gcm_dec_update_avx_gen2()+0x12: unsupported stack pointer realignment
+vmlinux.o: warning: objtool: aesni_gcm_finalize_avx_gen2()+0x12: unsupported stack pointer realignment
+vmlinux.o: warning: objtool: aesni_gcm_init_avx_gen4()+0x12: unsupported stack pointer realignment
+vmlinux.o: warning: objtool: aesni_gcm_enc_update_avx_gen4()+0x12: unsupported stack pointer realignment
+vmlinux.o: warning: objtool: aesni_gcm_dec_update_avx_gen4()+0x12: unsupported stack pointer realignment
+vmlinux.o: warning: objtool: aesni_gcm_finalize_avx_gen4()+0x12: unsupported stack pointer realignment
+  MODPOST vmlinux.symvers
+  MODINFO modules.builtin.modinfo
+  GEN     modules.builtin
+  LD      .tmp_vmlinux.btf
+  BTF     .btf.vmlinux.bin.o
+  LD      .tmp_vmlinux.kallsyms1
+  KSYMS   .tmp_vmlinux.kallsyms1.S
+  AS      .tmp_vmlinux.kallsyms1.S
+  LD      .tmp_vmlinux.kallsyms2
+  KSYMS   .tmp_vmlinux.kallsyms2.S
+  AS      .tmp_vmlinux.kallsyms2.S
+  LD      vmlinux
+  BTFIDS  vmlinux
+WARN: multiple IDs found for 'inode': 232, 28822 - using 232
+WARN: multiple IDs found for 'file': 374, 28855 - using 374
+WARN: multiple IDs found for 'path': 379, 28856 - using 379
+WARN: multiple IDs found for 'vm_area_struct': 177, 28929 - using 177
+WARN: multiple IDs found for 'task_struct': 97, 28966 - using 97
+WARN: multiple IDs found for 'seq_file': 510, 29059 - using 510
+WARN: multiple IDs found for 'inode': 232, 29345 - using 232
+WARN: multiple IDs found for 'file': 374, 29429 - using 374
+WARN: multiple IDs found for 'path': 379, 29430 - using 379
+WARN: multiple IDs found for 'vm_area_struct': 177, 29471 - using 177
+WARN: multiple IDs found for 'task_struct': 97, 29481 - using 97
+WARN: multiple IDs found for 'seq_file': 510, 29512 - using 510
+  SORTTAB vmlinux
+  SYSMAP  System.map
+make[1]: Leaving directory '/home/acme/git/build/bpf_clang_thin_lto'
+
+[acme@five pahole]$ clang -v
+clang version 11.0.0 (Fedora 11.0.0-2.fc33)
+Target: x86_64-unknown-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-redhat-linux/10
+Found candidate GCC installation: /usr/lib/gcc/x86_64-redhat-linux/10
+Selected GCC installation: /usr/lib/gcc/x86_64-redhat-linux/10
+Candidate multilib: .;@m64
+Candidate multilib: 32;@m32
+Selected multilib: .;@m64
+[acme@five pahole]$
+
+[acme@five bpf]$ git log --oneline -10
+49b9da70941c3c8a (HEAD -> bpf_perf_enable) kbuild: add an elfnote with type BUILD_COMPILER_LTO_INFO
+5c4f082a143c786e kbuild: move LINUX_ELFNOTE_BUILD_SALT to elfnote.h
+42c8b565decb3662 bpf: Introduce helpers to enable/disable perf event fds in a map
+f73ea1eb4cce6637 (bpf-next/master, bpf-next/for-next) bpf: selftests: Specify CONFIG_DYNAMIC_FTRACE in the testing config
+f07669df4c8df0b7 libbpf: Remove redundant semi-colon
+6ac4c6f887f5a8ef bpf: Remove repeated struct btf_type declaration
+2daae89666ad2532 bpf, cgroup: Delete repeated struct bpf_prog declaration
+2ec9898e9c70b93a bpf: Remove unused parameter from ___bpf_prog_run
+007bdc12d4b46656 bpf, selftests: test_maps generating unrecognized data section
+82506665179209e4 tcp: reorder tcp_congestion_ops for better cache locality
+[acme@five bpf]$
+
+I'll try after a 'make mrproper'
+
+- Arnaldo
