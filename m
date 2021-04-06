@@ -2,149 +2,253 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE54355ADE
-	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 19:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D82355AF2
+	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 20:03:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235231AbhDFR6n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Apr 2021 13:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234333AbhDFR6m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:58:42 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78CFC06174A;
-        Tue,  6 Apr 2021 10:58:34 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id ay2so7944299plb.3;
-        Tue, 06 Apr 2021 10:58:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/0Ezdo6TTMIV4q/ibcjxA5ib8Vts+E2/aSfa4Pm8Xlw=;
-        b=O2M4esYxVNDD2b0CmxjVzfdmbRa5/2CdJ1KDx7k8gjjImYg1rGy9mtdBS9COtByQP2
-         3mSNJxLlvkVS8nWDv5Dom6fskBqP+6FeqAfFnWOrtq7XTzasxJ2gPQSI/S3e3/kQ+QuC
-         kUQg/iObwnXMthh5NRinOWCwarrIxVBLh4GslT1WjLcbnwYb7Hk4V9mlCOfoIob/GhnM
-         Ydk+iNK/LOedtw2ka9BBGiAS6z73oh6UV5Ua+1ZQZkmbbUzOJsoXm9mfd3lcSvDlL9BS
-         5OF2+r57j7YGE0t7atWGAs4VzECMnYK7Lngj91YlG9rCWWyrTKnaSet/7jkRlJLvXIer
-         qsFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/0Ezdo6TTMIV4q/ibcjxA5ib8Vts+E2/aSfa4Pm8Xlw=;
-        b=A8EKwyahpTYLzS/3dmVkiATXWCI8yLDQeUL413JDmtEoI50j8QexcFNnPEc5gQ0RjS
-         v1iZrBjzoeJnMVZuWzFBl9KI5LhxVZpoblBUU51h8iSCoMzn7Yr5Ta00UM0oBUfe67cR
-         OrfaE6IOwLLhR64UbMMIxByeZk5E/dr91px8KNcud57gcqTHFs2f7Rq+crEJRZWoUwj2
-         NiKmDKBSiwPlOS34KENWE4z+s87Eh3tLyKa2bnm1ogNVK4wsQnV1ZzNBUuQX7NnHsudB
-         mimuWWPFQCT1gXY81kRwFS7I+BxrViIi2cNDO48sg1H9NyAU9F2k1Tbm05MfwlFLe2Xo
-         GzQA==
-X-Gm-Message-State: AOAM533XgNtLV+FL7niWozs/ok24w9Nakg895OpTLYJI3zVQFt25r5Aa
-        5v2NfnZt5iPFo6R1tjeftyDdGDeNJcxez+VDchc=
-X-Google-Smtp-Source: ABdhPJzMKWH4LeMxZBkUQvZXRLpiJ+fJNytEmS2UWHGUQ7xi7GEyQxv2bnGTvcVHT0yX8JODLz4UgamvJPVNzYH7KQw=
-X-Received: by 2002:a17:902:8347:b029:e7:4a2d:6589 with SMTP id
- z7-20020a1709028347b02900e74a2d6589mr30609818pln.64.1617731914383; Tue, 06
- Apr 2021 10:58:34 -0700 (PDT)
+        id S237055AbhDFSDm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Apr 2021 14:03:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236565AbhDFSDl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Apr 2021 14:03:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7636161154;
+        Tue,  6 Apr 2021 18:03:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617732212;
+        bh=7j9GmUZpSnlPxAKxWA/IqA7Y9fT7sbk0lvqEkScqtw8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VDw1hzgqCcMreZ0eLTvZDPyGeg0tIteSFhwSW5RRc3lbhCpIkYQ2sT/S9WXJYbDBu
+         2vdcMbtbe+lgp/mA3uSvpwB7GKFkti3hJcJJDzJJXwvUnySuIqzUm9i9VSxobSJn7r
+         m/7VqiEUoNXl0GFrYD3APjlfiXDa1Qh8nOEm7r6A1apUbOuwef/9d9SfBPoU5/s/kz
+         RErwQiqbaSh5kOQDfqclssQfKoj9Ck5ShHmIXnsOUsFuDjFDwE2ChNroXl9xQ01lQ8
+         syFiAzazXT08FHFg5O2/c5wVQDuhHFu8vM3OFtYhMYiMDcr++DkQbD6hMRdDAcoEI+
+         d/k6wp9t7wkWg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0F4C440647; Tue,  6 Apr 2021 15:03:29 -0300 (-03)
+Date:   Tue, 6 Apr 2021 15:03:28 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Bill Wendling <morbo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        David Blaikie <dblaikie@gmail.com>,
+        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH dwarves 0/2] dwarf_loader: improve cus__merging_cu()
+Message-ID: <YGyicDTUkPNhab4K@kernel.org>
+References: <CAGG=3QUUYn9K7zVQ1UVZ57_FFeiiOexwq_OgDw9VFPJD3fFbVw@mail.gmail.com>
+ <06ba2ed4-2730-9ce8-0665-3c720bc786a3@fb.com>
+ <CAGG=3QXkvwrm_tnsYtJ-gvHw8Emv5xFWeckoPoD4PhEud7v8EA@mail.gmail.com>
+ <YGxgnQyBPf5fxQxM@kernel.org>
+ <YGyO9KzDoxu5zk33@kernel.org>
+ <YGySmmmn4J43I0EG@kernel.org>
+ <YGyTco9NvT8Bin8i@kernel.org>
+ <YGyUbX/HRBdGjH3i@kernel.org>
+ <3a6aa243-add9-88a5-b405-85fd8bfbe21d@fb.com>
+ <4eda63d8-f9df-71ab-d625-dcc4df429a89@fb.com>
 MIME-Version: 1.0
-References: <0000000000008872ff05bf40e4db@google.com>
-In-Reply-To: <0000000000008872ff05bf40e4db@google.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Tue, 6 Apr 2021 10:58:23 -0700
-Message-ID: <CAM_iQpU9gSy++6Ba0vfnHz_J4-FcGpAMG7yzFDFk+qTi1DJnwA@mail.gmail.com>
-Subject: Re: [syzbot] WARNING: suspicious RCU usage in tcp_bpf_update_proto
-To:     syzbot <syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrii Nakryiko <andrii@kernel.org>, anton@tuxera.com,
-        Alexei Starovoitov <ast@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>, jmattson@google.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "kvm@vger.kernel.org list" <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        pbonzini@redhat.com, rkovhaev@gmail.com, seanjc@google.com,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        vkuznets@redhat.com, wanpengli@tencent.com, x86 <x86@kernel.org>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4eda63d8-f9df-71ab-d625-dcc4df429a89@fb.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 2:44 AM syzbot
-<syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    514e1150 net: x25: Queue received packets in the drivers i..
-> git tree:       net-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=112a8831d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=7eff0f22b8563a5f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=320a3bc8d80f478c37e4
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1532d711d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15f44c5ed00000
->
-> The issue was bisected to:
->
-> commit 4dfe6bd94959222e18d512bdf15f6bf9edb9c27c
-> Author: Rustam Kovhaev <rkovhaev@gmail.com>
-> Date:   Wed Feb 24 20:00:30 2021 +0000
->
->     ntfs: check for valid standard information attribute
+Em Tue, Apr 06, 2021 at 10:48:22AM -0700, Yonghong Song escreveu:
+> 
+> 
+> On 4/6/21 10:23 AM, Yonghong Song wrote:
+> > 
+> > 
+> > On 4/6/21 10:03 AM, Arnaldo Carvalho de Melo wrote:
+> > > Em Tue, Apr 06, 2021 at 01:59:30PM -0300, Arnaldo Carvalho de Melo
+> > > escreveu:
+> > > > Em Tue, Apr 06, 2021 at 01:55:54PM -0300, Arnaldo Carvalho de
+> > > > Melo escreveu:
+> > > > > Em Tue, Apr 06, 2021 at 01:40:20PM -0300, Arnaldo Carvalho
+> > > > > de Melo escreveu:
+> > > > > > Em Tue, Apr 06, 2021 at 10:22:37AM -0300, Arnaldo
+> > > > > > Carvalho de Melo escreveu:
+> > > > > > > I'm seeing these here:
+> > > > > 
+> > > > > > > [acme@five bpf]$ rm -f ../build/bpf_clang_thin_lto/*vmlinu*
+> > > > > > > [acme@five bpf]$ time make -j28 LLVM=1 LLVM_IAS=1
+> > > > > > > O=../build/bpf_clang_thin_lto/ vmlinux
+> > > > > > > make[1]: Entering directory '/home/acme/git/build/bpf_clang_thin_lto'
+> > > > > > >    GEN     Makefile
+> > > > > > >    DESCEND  objtool
+> > > > > > >    DESCEND  bpf/resolve_btfids
+> > > > > > >    CALL    /home/acme/git/bpf/scripts/atomic/check-atomics.sh
+> > > > > > >    CALL    /home/acme/git/bpf/scripts/checksyscalls.sh
+> > > > > > >    CHK     include/generated/compile.h
+> > > > > > >    GEN     .version
+> > > > > > >    CHK     include/generated/compile.h
+> > > > > > >    UPD     include/generated/compile.h
+> > > > > > >    CC      init/version.o
+> > > > > > >    AR      init/built-in.a
+> > > > > > >    GEN     .tmp_initcalls.lds
+> > > > > > >    LTO     vmlinux.o
+> > > > > > >    OBJTOOL vmlinux.o
+> > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > aesni_gcm_init_avx_gen2()+0x12: unsupported stack
+> > > > > > > pointer realignment
+> > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > aesni_gcm_enc_update_avx_gen2()+0x12: unsupported
+> > > > > > > stack pointer realignment
+> > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > aesni_gcm_dec_update_avx_gen2()+0x12: unsupported
+> > > > > > > stack pointer realignment
+> > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > aesni_gcm_finalize_avx_gen2()+0x12: unsupported
+> > > > > > > stack pointer realignment
+> > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > aesni_gcm_init_avx_gen4()+0x12: unsupported stack
+> > > > > > > pointer realignment
+> > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > aesni_gcm_enc_update_avx_gen4()+0x12: unsupported
+> > > > > > > stack pointer realignment
+> > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > aesni_gcm_dec_update_avx_gen4()+0x12: unsupported
+> > > > > > > stack pointer realignment
+> > > > > > > vmlinux.o: warning: objtool:
+> > > > > > > aesni_gcm_finalize_avx_gen4()+0x12: unsupported
+> > > > > > > stack pointer realignment
+> > > > > > >    MODPOST vmlinux.symvers
+> > > > > > >    MODINFO modules.builtin.modinfo
+> > > > > > >    GEN     modules.builtin
+> > > > > > >    LD      .tmp_vmlinux.btf
+> > > > > > >    BTF     .btf.vmlinux.bin.o
+> > > > > > >    LD      .tmp_vmlinux.kallsyms1
+> > > > > > >    KSYMS   .tmp_vmlinux.kallsyms1.S
+> > > > > > >    AS      .tmp_vmlinux.kallsyms1.S
+> > > > > > >    LD      .tmp_vmlinux.kallsyms2
+> > > > > > >    KSYMS   .tmp_vmlinux.kallsyms2.S
+> > > > > > >    AS      .tmp_vmlinux.kallsyms2.S
+> > > > > > >    LD      vmlinux
+> > > > > > >    BTFIDS  vmlinux
+> > > > > > > WARN: multiple IDs found for 'inode': 232, 28822 - using 232
+> > > > > > > WARN: multiple IDs found for 'file': 374, 28855 - using 374
+> > > > > > > WARN: multiple IDs found for 'path': 379, 28856 - using 379
+> > > > > > > WARN: multiple IDs found for 'vm_area_struct': 177, 28929 - using 177
+> > > > > > > WARN: multiple IDs found for 'task_struct': 97, 28966 - using 97
+> > > > > > > WARN: multiple IDs found for 'seq_file': 510, 29059 - using 510
+> > > > > > > WARN: multiple IDs found for 'inode': 232, 29345 - using 232
+> > > > > > > WARN: multiple IDs found for 'file': 374, 29429 - using 374
+> > > > > > > WARN: multiple IDs found for 'path': 379, 29430 - using 379
+> > > > > > > WARN: multiple IDs found for 'vm_area_struct': 177, 29471 - using 177
+> > > > > > > WARN: multiple IDs found for 'task_struct': 97, 29481 - using 97
+> > > > > > > WARN: multiple IDs found for 'seq_file': 510, 29512 - using 510
+> > > > > > >    SORTTAB vmlinux
+> > > > > > >    SYSMAP  System.map
+> > > > > > > make[1]: Leaving directory '/home/acme/git/build/bpf_clang_thin_lto'
+> > > > > > > 
+> > > > > > > [acme@five pahole]$ clang -v
+> > > > > > > clang version 11.0.0 (Fedora 11.0.0-2.fc33)
+> > 
+> > This could be due to the compiler. The clang 11 is used here. Sedat is
+> > using clang 12 and didn't see warnings and I am using clang dev branch
+> > (clang 13) and didn't see warnings either. clang 11 could generate
+> > some debuginfo where pahole didn't handle it properly.
+> > 
+> > I tried to build locally with clang 11 but it crashed as I enabled
+> > assert during compiler build. Will try a little bit more.
+> 
+> Yes, I can see it with llvm11:
+> 
+>   LD      vmlinux
+> 
+> 
+>   BTFIDS  vmlinux
+> 
+> 
+> WARN: multiple IDs found for 'inode': 245, 36255 - using 245
+> 
+> 
+> WARN: multiple IDs found for 'file': 390, 36288 - using 390
+> 
+> 
+> WARN: multiple IDs found for 'path': 395, 36289 - using 395
+> 
+> 
+> WARN: multiple IDs found for 'vm_area_struct': 190, 36362 - using 190
+> 
+> 
+> WARN: multiple IDs found for 'task_struct': 93, 36399 - using 93
+> 
+> 
+> WARN: multiple IDs found for 'seq_file': 524, 36498 - using 524
+> 
+> 
+> WARN: multiple IDs found for 'inode': 245, 36784 - using 245
+> 
+> 
+> WARN: multiple IDs found for 'file': 390, 36868 - using 390
+> 
+> 
+> WARN: multiple IDs found for 'path': 395, 36869 - using 395
+> 
+> 
+> WARN: multiple IDs found for 'vm_area_struct': 190, 36910 - using 190
+> 
+> 
+> WARN: multiple IDs found for 'task_struct': 93, 36920 - using 93
+> 
+> 
+> WARN: multiple IDs found for 'seq_file': 524, 36951 - using 524
+> 
+> 
+>   SORTTAB vmlinux
+> 
+> 
+>   SYSMAP  System.map
+> 
+> 
+>   LTO [M] crypto/crypto_engine.lto.o
+> 
+> 
+>   LTO [M] drivers/crypto/virtio/virtio_crypto.lto.o
+> 
+> $ clang --version
+> clang version 11.1.0 (https://github.com/llvm/llvm-project.git
+> 1fdec59bffc11ae37eb51a1b9869f0696bfd5312)
+> Target: x86_64-unknown-linux-gnu
+> Thread model: posix
+> InstalledDir: /home/yhs/work/llvm-project/llvm/build/install/bin
+> 
+> clang12 is okay:
+> 
+>   LTO     vmlinux.o
+>   OBJTOOL vmlinux.o
+>   MODPOST vmlinux.symvers
+>   MODINFO modules.builtin.modinfo
+>   GEN     modules.builtin
+>   LD      .tmp_vmlinux.btf
+>   BTF     .btf.vmlinux.bin.o
+>   LD      .tmp_vmlinux.kallsyms1
+>   KSYMS   .tmp_vmlinux.kallsyms1.S
+>   AS      .tmp_vmlinux.kallsyms1.S
+>   LD      .tmp_vmlinux.kallsyms2
+>   KSYMS   .tmp_vmlinux.kallsyms2.S
+> 
+> $ clang --version
+> clang version 12.0.0 (https://github.com/llvm/llvm-project.git
+> 31001be371e8f2c74470e727e54503fb2aabec8b)
+> Target: x86_64-unknown-linux-gnu
+> Thread model: posix
+> InstalledDir: /home/yhs/work/llvm-project/llvm/build/install/bin
+> 
+> I think we do not need to fix pahole for llvm11.
+> When linus tree 5.12 is out. clang 12 should have been released
+> or very close, we can just recommend clang 12 and later.
 
-This is caused by one of my sockmap patches.
+Agreed, and it is just for _thin_ LTO, those warnings don't pop up when
+building for full LTO with clang 11, the one in Fedora 33.
 
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16207a81d00000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=15207a81d00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11207a81d00000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com
-> Fixes: 4dfe6bd94959 ("ntfs: check for valid standard information attribute")
->
-> =============================
-> WARNING: suspicious RCU usage
-> 5.12.0-rc4-syzkaller #0 Not tainted
-> -----------------------------
-> include/linux/skmsg.h:286 suspicious rcu_dereference_check() usage!
->
-> other info that might help us debug this:
->
->
-> rcu_scheduler_active = 2, debug_locks = 1
-> 1 lock held by syz-executor383/8454:
->  #0: ffff888013a99b48 (clock-AF_INET){++..}-{2:2}, at: sk_psock_drop+0x2c/0x460 net/core/skmsg.c:788
->
-> stack backtrace:
-> CPU: 1 PID: 8454 Comm: syz-executor383 Not tainted 5.12.0-rc4-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
->  sk_psock include/linux/skmsg.h:286 [inline]
->  tcp_bpf_update_proto+0x530/0x5f0 net/ipv4/tcp_bpf.c:504
->  sk_psock_restore_proto include/linux/skmsg.h:408 [inline]
->  sk_psock_drop+0xdf/0x460 net/core/skmsg.c:789
->  sk_psock_put include/linux/skmsg.h:446 [inline]
->  tcp_bpf_recvmsg+0x42d/0x480 net/ipv4/tcp_bpf.c:208
->  inet_recvmsg+0x11b/0x5d0 net/ipv4/af_inet.c:852
+And Fedora 34 beta has clang/llvm 12.0, so we're good.
 
-Oddly, I have all relevant Kconfig enabled but never see this
-warning when running selftests for hours....
+/me goes back to building clang/llvm HEAD, reducing the number of linker
+instances to 1 as I have just 32GB of ram in this Ryzen machine... ;-)
 
-Anyway, let me see how this should be fixed.
-
-Thanks!
+- Arnaldo
