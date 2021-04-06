@@ -2,128 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717873559EA
-	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 19:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2888C3559EB
+	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 19:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346742AbhDFRDT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Apr 2021 13:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236300AbhDFRDS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Apr 2021 13:03:18 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B625BC06174A
-        for <bpf@vger.kernel.org>; Tue,  6 Apr 2021 10:03:08 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id r12so8178870vsj.5
-        for <bpf@vger.kernel.org>; Tue, 06 Apr 2021 10:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aSGe0bQ5V3W50ybbudz7bPErfQLcHAnbU3s+nR3236o=;
-        b=NC4Z5tuEQPH56mSVdL6re/GYvhMXmcZBBZJAe0K5oARYXXzfmQy/y1gj01ihWMSmli
-         1Lb/UGbC8aKZb1zPEG9o6M9ucnwbSG6WIoA+FHAPLLbQ01uPDRIuyTwZIpAHLwOG+yq1
-         kkZI+8JMwHOnnEn+lyCTAlWm8etMOLtVCp3S1q3K3aO4yA/23/eH2gEXX6vdFz0CJGwN
-         VF7c5vQJUcdiwYPAChJeB0X1E472u2faiMpy7Ui5DpvqvQTq4h26rGokMp0GpoEMI+P1
-         LV6JUbpNRzT8/BwmE+OHq/ZwSd4sY0JKeDMdURpYfRd1bJM30/6AX5SE7dZl6ySWo0EK
-         KluA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aSGe0bQ5V3W50ybbudz7bPErfQLcHAnbU3s+nR3236o=;
-        b=rVXAHWseIxBxNoPmih+btQvL1aL4uCoOimt/RLiQtuVMCqloiaeITL0EPkBdjLMwyL
-         zr8ni4bIj1PweJKp4rZjimHA/120o+nbVGWAC5EtoC2tnT+KuOZ89CrKt4PFNizvSiIa
-         DKXtsJz2hVWPjAxvSaR/c/WVbEaHv1cLPaSxR2a9cPygjiHn/R7T3SwhCYNct+erDy5+
-         QdgaQSIaG9TRZJR7XIEtgnlJLI/OKBirJrvf+4S8BuAQ1myddVvDO26xZWj3Kq+D81da
-         6+RRJXaqRHANlYm5eyULhjNGG7nEQgG9nz2BVLKvg95TTW7u8rDb9SDWldlG0+bPEV0q
-         A+nQ==
-X-Gm-Message-State: AOAM533Efp9LDwYWygUWRShZstEhhKWUk7c2HUyQ8+SCyfS2OYXwR2AM
-        04Aufl34ae0iOjE8sOImMiUwHI4NCC5UxSgzkLgCfQ==
-X-Google-Smtp-Source: ABdhPJxQSX0S7k4FzbEyhTnhHluxlT34cEUaV5NL9+ccGUPUJJazSLwY0K1+rikJtvM1UuMR3n/GOvlAUPSV1eX6hZs=
-X-Received: by 2002:a05:6102:2423:: with SMTP id l3mr16985008vsi.54.1617728587679;
- Tue, 06 Apr 2021 10:03:07 -0700 (PDT)
+        id S233582AbhDFRDx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Apr 2021 13:03:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233232AbhDFRDw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Apr 2021 13:03:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E93D61074;
+        Tue,  6 Apr 2021 17:03:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617728624;
+        bh=GC7mxLuEics/xRxzm/TFT7hcTdHtBLTnrHNAWAa2s4s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ncKA+0vpAuTv1p/srB2oaPD2VPHBjFLNiWBXRUsqfqWoTI6Ycpdaad1HByy3vvjcT
+         +Syzk0cQT9IeDiiqo1kho9ucV7LOgfNEpBz07Z22NVP2dttUq+NHjfTSY4XO286pbA
+         AcGzGyaNaQHlB/ohgkRUKLi+P52qQS0+D2sAQU860xUllTihEJdZ0wape1/Pm9T+fa
+         7i5HKjaUPWasWiJ9Olr5VIuzWPHxI/TMgrYe7MpQtA4dYKNxs6DWoygtdW+n+30H44
+         2HtC9J2DtKeo3TkxaDbQtmGzIwMtz5PZrJ27HMc+cSvxMYiUIqJ3Ti9WF2iwgPwxAl
+         mW2DSIuP1CpEg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id ADA4240647; Tue,  6 Apr 2021 14:03:41 -0300 (-03)
+Date:   Tue, 6 Apr 2021 14:03:41 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Bill Wendling <morbo@google.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        David Blaikie <dblaikie@gmail.com>,
+        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH dwarves 0/2] dwarf_loader: improve cus__merging_cu()
+Message-ID: <YGyUbX/HRBdGjH3i@kernel.org>
+References: <20210401025815.2254256-1-yhs@fb.com>
+ <CAGG=3QWpcCG7b70oQsRTATgt10acEFS=-Tg9U=DHZ6xoS3GeMA@mail.gmail.com>
+ <CAGG=3QUUYn9K7zVQ1UVZ57_FFeiiOexwq_OgDw9VFPJD3fFbVw@mail.gmail.com>
+ <06ba2ed4-2730-9ce8-0665-3c720bc786a3@fb.com>
+ <CAGG=3QXkvwrm_tnsYtJ-gvHw8Emv5xFWeckoPoD4PhEud7v8EA@mail.gmail.com>
+ <YGxgnQyBPf5fxQxM@kernel.org>
+ <YGyO9KzDoxu5zk33@kernel.org>
+ <YGySmmmn4J43I0EG@kernel.org>
+ <YGyTco9NvT8Bin8i@kernel.org>
 MIME-Version: 1.0
-References: <20210401233216.2540591-1-samitolvanen@google.com>
- <20210401233216.2540591-13-samitolvanen@google.com> <20210406113657.GC96480@C02TD0UTHF1T.local>
-In-Reply-To: <20210406113657.GC96480@C02TD0UTHF1T.local>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Tue, 6 Apr 2021 10:02:56 -0700
-Message-ID: <CABCJKueabmkC3OXSGHKMKS9wJEeRGHBd3b1hK6fM=mMKkj3b1A@mail.gmail.com>
-Subject: Re: [PATCH v5 12/18] arm64: implement function_nocfi
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        bpf <bpf@vger.kernel.org>, linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YGyTco9NvT8Bin8i@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 4:37 AM Mark Rutland <mark.rutland@arm.com> wrote:
->
-> On Thu, Apr 01, 2021 at 04:32:10PM -0700, Sami Tolvanen wrote:
-> > With CONFIG_CFI_CLANG, the compiler replaces function addresses in
-> > instrumented C code with jump table addresses. This change implements
-> > the function_nocfi() macro, which returns the actual function address
-> > instead.
-> >
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
->
-> I think that it's unfortunate that we have to drop to assembly here, but
-> given this is infrequent I agree it's not the end of the world, so:
->
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
->
-> > ---
-> >  arch/arm64/include/asm/memory.h | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> >
-> > diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
-> > index 0aabc3be9a75..b55410afd3d1 100644
-> > --- a/arch/arm64/include/asm/memory.h
-> > +++ b/arch/arm64/include/asm/memory.h
-> > @@ -321,6 +321,21 @@ static inline void *phys_to_virt(phys_addr_t x)
-> >  #define virt_to_pfn(x)               __phys_to_pfn(__virt_to_phys((unsigned long)(x)))
-> >  #define sym_to_pfn(x)                __phys_to_pfn(__pa_symbol(x))
-> >
-> > +#ifdef CONFIG_CFI_CLANG
-> > +/*
-> > + * With CONFIG_CFI_CLANG, the compiler replaces function address
-> > + * references with the address of the function's CFI jump table
-> > + * entry. The function_nocfi macro always returns the address of the
-> > + * actual function instead.
-> > + */
-> > +#define function_nocfi(x) ({                                         \
-> > +     void *addr;                                                     \
-> > +     asm("adrp %0, " __stringify(x) "\n\t"                           \
-> > +         "add  %0, %0, :lo12:" __stringify(x) : "=r" (addr));        \
->
-> If it's not too painful, could we please move the asm constrain onto its
-> own line? That makes it slightly easier to read, and aligns with what
-> we've (mostly) done elsewhere in arm64.
+Em Tue, Apr 06, 2021 at 01:59:30PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Tue, Apr 06, 2021 at 01:55:54PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Tue, Apr 06, 2021 at 01:40:20PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Em Tue, Apr 06, 2021 at 10:22:37AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > > I'm seeing these here:
+> > 
+> > > > [acme@five bpf]$ rm -f ../build/bpf_clang_thin_lto/*vmlinu*
+> > > > [acme@five bpf]$ time make -j28 LLVM=1 LLVM_IAS=1 O=../build/bpf_clang_thin_lto/ vmlinux
+> > > > make[1]: Entering directory '/home/acme/git/build/bpf_clang_thin_lto'
+> > > >   GEN     Makefile
+> > > >   DESCEND  objtool
+> > > >   DESCEND  bpf/resolve_btfids
+> > > >   CALL    /home/acme/git/bpf/scripts/atomic/check-atomics.sh
+> > > >   CALL    /home/acme/git/bpf/scripts/checksyscalls.sh
+> > > >   CHK     include/generated/compile.h
+> > > >   GEN     .version
+> > > >   CHK     include/generated/compile.h
+> > > >   UPD     include/generated/compile.h
+> > > >   CC      init/version.o
+> > > >   AR      init/built-in.a
+> > > >   GEN     .tmp_initcalls.lds
+> > > >   LTO     vmlinux.o
+> > > >   OBJTOOL vmlinux.o
+> > > > vmlinux.o: warning: objtool: aesni_gcm_init_avx_gen2()+0x12: unsupported stack pointer realignment
+> > > > vmlinux.o: warning: objtool: aesni_gcm_enc_update_avx_gen2()+0x12: unsupported stack pointer realignment
+> > > > vmlinux.o: warning: objtool: aesni_gcm_dec_update_avx_gen2()+0x12: unsupported stack pointer realignment
+> > > > vmlinux.o: warning: objtool: aesni_gcm_finalize_avx_gen2()+0x12: unsupported stack pointer realignment
+> > > > vmlinux.o: warning: objtool: aesni_gcm_init_avx_gen4()+0x12: unsupported stack pointer realignment
+> > > > vmlinux.o: warning: objtool: aesni_gcm_enc_update_avx_gen4()+0x12: unsupported stack pointer realignment
+> > > > vmlinux.o: warning: objtool: aesni_gcm_dec_update_avx_gen4()+0x12: unsupported stack pointer realignment
+> > > > vmlinux.o: warning: objtool: aesni_gcm_finalize_avx_gen4()+0x12: unsupported stack pointer realignment
+> > > >   MODPOST vmlinux.symvers
+> > > >   MODINFO modules.builtin.modinfo
+> > > >   GEN     modules.builtin
+> > > >   LD      .tmp_vmlinux.btf
+> > > >   BTF     .btf.vmlinux.bin.o
+> > > >   LD      .tmp_vmlinux.kallsyms1
+> > > >   KSYMS   .tmp_vmlinux.kallsyms1.S
+> > > >   AS      .tmp_vmlinux.kallsyms1.S
+> > > >   LD      .tmp_vmlinux.kallsyms2
+> > > >   KSYMS   .tmp_vmlinux.kallsyms2.S
+> > > >   AS      .tmp_vmlinux.kallsyms2.S
+> > > >   LD      vmlinux
+> > > >   BTFIDS  vmlinux
+> > > > WARN: multiple IDs found for 'inode': 232, 28822 - using 232
+> > > > WARN: multiple IDs found for 'file': 374, 28855 - using 374
+> > > > WARN: multiple IDs found for 'path': 379, 28856 - using 379
+> > > > WARN: multiple IDs found for 'vm_area_struct': 177, 28929 - using 177
+> > > > WARN: multiple IDs found for 'task_struct': 97, 28966 - using 97
+> > > > WARN: multiple IDs found for 'seq_file': 510, 29059 - using 510
+> > > > WARN: multiple IDs found for 'inode': 232, 29345 - using 232
+> > > > WARN: multiple IDs found for 'file': 374, 29429 - using 374
+> > > > WARN: multiple IDs found for 'path': 379, 29430 - using 379
+> > > > WARN: multiple IDs found for 'vm_area_struct': 177, 29471 - using 177
+> > > > WARN: multiple IDs found for 'task_struct': 97, 29481 - using 97
+> > > > WARN: multiple IDs found for 'seq_file': 510, 29512 - using 510
+> > > >   SORTTAB vmlinux
+> > > >   SYSMAP  System.map
+> > > > make[1]: Leaving directory '/home/acme/git/build/bpf_clang_thin_lto'
+> > > > 
+> > > > [acme@five pahole]$ clang -v
+> > > > clang version 11.0.0 (Fedora 11.0.0-2.fc33)
+> > > > Target: x86_64-unknown-linux-gnu
+> > > > Thread model: posix
+> > > > InstalledDir: /usr/bin
+> > > > Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-redhat-linux/10
+> > > > Found candidate GCC installation: /usr/lib/gcc/x86_64-redhat-linux/10
+> > > > Selected GCC installation: /usr/lib/gcc/x86_64-redhat-linux/10
+> > > > Candidate multilib: .;@m64
+> > > > Candidate multilib: 32;@m32
+> > > > Selected multilib: .;@m64
+> > > > [acme@five pahole]$
+> > > > 
+> > > > [acme@five bpf]$ git log --oneline -10
+> > > > 49b9da70941c3c8a (HEAD -> bpf_perf_enable) kbuild: add an elfnote with type BUILD_COMPILER_LTO_INFO
+> > > > 5c4f082a143c786e kbuild: move LINUX_ELFNOTE_BUILD_SALT to elfnote.h
+> > > > 42c8b565decb3662 bpf: Introduce helpers to enable/disable perf event fds in a map
+> > > > f73ea1eb4cce6637 (bpf-next/master, bpf-next/for-next) bpf: selftests: Specify CONFIG_DYNAMIC_FTRACE in the testing config
+> > > > f07669df4c8df0b7 libbpf: Remove redundant semi-colon
+> > > > 6ac4c6f887f5a8ef bpf: Remove repeated struct btf_type declaration
+> > > > 2daae89666ad2532 bpf, cgroup: Delete repeated struct bpf_prog declaration
+> > > > 2ec9898e9c70b93a bpf: Remove unused parameter from ___bpf_prog_run
+> > > > 007bdc12d4b46656 bpf, selftests: test_maps generating unrecognized data section
+> > > > 82506665179209e4 tcp: reorder tcp_congestion_ops for better cache locality
+> > > > [acme@five bpf]$
+> > > > 
+> > > > I'll try after a 'make mrproper'
+> > > 
+> > > Same thing, trying now with gcc.
+> > 
+> > With gcc no such messages:
+> > 
+> >   CC [M]  drivers/gpu/drm/nouveau/nv84_fence.o
+> >   CC [M]  drivers/gpu/drm/nouveau/nvc0_fence.o
+> >   LD [M]  drivers/gpu/drm/nouveau/nouveau.o
+> >   AR      drivers/gpu/built-in.a
+> >   AR      drivers/built-in.a
+> >   GEN     .version
+> >   CHK     include/generated/compile.h
+> >   LD      vmlinux.o
+> >   MODPOST vmlinux.symvers
+> >   MODINFO modules.builtin.modinfo
+> >   GEN     modules.builtin
+> >   LD      .tmp_vmlinux.btf
+> >   BTF     .btf.vmlinux.bin.o
+> >   LD      .tmp_vmlinux.kallsyms1
+> >   KSYMS   .tmp_vmlinux.kallsyms1.S
+> >   AS      .tmp_vmlinux.kallsyms1.S
+> >   LD      .tmp_vmlinux.kallsyms2
+> >   KSYMS   .tmp_vmlinux.kallsyms2.S
+> >   AS      .tmp_vmlinux.kallsyms2.S
+> >   LD      vmlinux
+> >   BTFIDS  vmlinux
+> >   SORTTAB vmlinux
+> >   SYSMAP  System.map
+> >   HOSTCC  arch/x86/tools/insn_decoder_test
+> >   HOSTCC  arch/x86/tools/insn_sanity
+> >   MODPOST Module.symvers
+> >   TEST    posttest
+> >   CC [M]  arch/x86/crypto/aegis128-aesni.mod.o
+> >   CC [M]  arch/x86/crypto/blake2s-x86_64.mod.o
+> > 
+> > Now will try with clang non-LTO.
+> 
+> Works:
+> 
+>   AR      drivers/usb/built-in.a
+>   AR      lib/built-in.a
+>   AR      drivers/md/built-in.a
+>   AR      drivers/built-in.a
+>   GEN     .version
+>   CHK     include/generated/compile.h
+>   LD      vmlinux.o
+>   MODPOST vmlinux.symvers
+>   MODINFO modules.builtin.modinfo
+>   GEN     modules.builtin
+>   LD      .tmp_vmlinux.btf
+>   BTF     .btf.vmlinux.bin.o
+>   LD      .tmp_vmlinux.kallsyms1
+>   KSYMS   .tmp_vmlinux.kallsyms1.S
+>   AS      .tmp_vmlinux.kallsyms1.S
+>   LD      .tmp_vmlinux.kallsyms2
+>   KSYMS   .tmp_vmlinux.kallsyms2.S
+>   AS      .tmp_vmlinux.kallsyms2.S
+>   LD      vmlinux
+>   BTFIDS  vmlinux
+>   SORTTAB vmlinux
+>   SYSMAP  System.map
+> make[1]: Leaving directory '/home/acme/git/build/bpf_clang_no_lto'
+> 
+> [acme@five bpf]$ grep LTO ../build/bpf_clang_no_lto/.config
+> CONFIG_ARCH_SUPPORTS_LTO_CLANG=y
+> CONFIG_ARCH_SUPPORTS_LTO_CLANG_THIN=y
+> CONFIG_LTO_NONE=y
+> CONFIG_HID_WALTOP=m
+> [acme@five bpf]$
 
-Sure, I'll change this in the next version.
+Sorry, I forgot to use clang on this no-lto build... doing it now with:
 
-> Not a big deal either way, and the ack stands regardless.
->
-> Thanks,
-> Mark.
+[acme@five bpf]$ grep LTO ../build/bpf_clang_no_lto/.config
+CONFIG_ARCH_SUPPORTS_LTO_CLANG=y
+CONFIG_ARCH_SUPPORTS_LTO_CLANG_THIN=y
+CONFIG_HAS_LTO_CLANG=y
+CONFIG_LTO_NONE=y
+# CONFIG_LTO_CLANG_FULL is not set
+# CONFIG_LTO_CLANG_THIN is not set
+CONFIG_HID_WALTOP=m
+[acme@five bpf]$
+[acme@five bpf]$ make -j28 LLVM=1 LLVM_IAS=1 O=../build/bpf_clang_no_lto/ vmlinux
 
-Sami
+- Arnaldo
+
+
