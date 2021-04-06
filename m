@@ -2,123 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AFC355BF3
-	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 21:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6677D355CCC
+	for <lists+bpf@lfdr.de>; Tue,  6 Apr 2021 22:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234046AbhDFTFu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Apr 2021 15:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47808 "EHLO
+        id S245239AbhDFUTX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Apr 2021 16:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230391AbhDFTFu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Apr 2021 15:05:50 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D668C06174A;
-        Tue,  6 Apr 2021 12:05:42 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id p10so2901350pld.0;
-        Tue, 06 Apr 2021 12:05:42 -0700 (PDT)
+        with ESMTP id S231339AbhDFUTX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Apr 2021 16:19:23 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF54C06174A;
+        Tue,  6 Apr 2021 13:19:15 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d8so8128110plh.11;
+        Tue, 06 Apr 2021 13:19:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fR7uBE+KZgKRNGirNt0J9yqoqy113eytjrhGmdX8vhc=;
-        b=TojC3B0s7I3+/nfSWs80/9xaTunkHwnkKDBu0qMg6TLU4XRxHMsgSdErm3Rmk3JsJU
-         mryDZ+lYvgfSbnj2+2DV+tNy2hSnZzx9JSrwv05R4WdMAhs0ldJA89oJuEcMaEwRndqS
-         MYny9f2VB0fXOvTK4N4sVcpxeE/Rj7Ws45TRD7hgPxX5eQIYECZ56yD1nAnqoFnWWeL1
-         eGCWd7lCWR1nvBSe7EnoOCkg/OH0bhhpF9SykB/kkPf0+nJ7MSvuSYGOY7shixqk36UC
-         Dj+tJMc9KRxOBwmpf6HwkJQicZBtHFvS1JDVL1le3a1DwLNXmIHGHzqKgTLlur+jthEJ
-         5ZcA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rxGs5zULjcirUWPWFIh26VgiWnlwmvSjrLs+AL4Pbvw=;
+        b=vDy4WsqcwKoVR+XP/vAjgZHbu4LXaj8DaNflf2t3PhAFwPk+k9PebxLwOZOzJ3BE3o
+         siO2k41JIDYDCU3zxIhtGy9pJyopYIVw9dafHjKsmdjZ+yLLHYAId0yTH4PVEmo9L4Ag
+         eeCmrgVsb59vhPyg6ewAC0FbTSkdzhLfF3U4vn0oOHGTPIC1PXVYPcpWGKB4xPvJH+iG
+         61OFTnnpd9uCU5t10qxihJ+dmYqGcJ9PzPeJ5iuXna32Z6r+ygVN9zNBFzYQNT5H8Dyv
+         r7M4g7niIBxQXv1+b46WRi8F86tCKQ5KdXiAR3uDtyCmN8VQO0C6d7TNPiyOtdMeNY4L
+         vztA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fR7uBE+KZgKRNGirNt0J9yqoqy113eytjrhGmdX8vhc=;
-        b=aodHXExjcJa1UBJzDo74A5a/hp4E2KMQgyZEk3RbMjZY9B6LgkjAUEukUKobmzxN/W
-         ts7IqeeqeV4WvyBEEG9UrJKjf7Z/V03Jc3z7CDokOkdq/BRfT4xpoD7D1g5P5Tz+Pz9Y
-         ww0vLStlrsYKbr2nqPVFImX5PGYo4KAiGTdO6HdHwA0EcOyl1FdJWZzhTZUVfFuyT17S
-         neLTCOuYKZaZp0Jm9kO5KIUF6hjs5o/zJYNNOoAubOsJIQswLsW9TTwqJQq+awStiSC5
-         YPu91F1yu7UD6kIw3tqN5ODkkbJyUWyUTKlsl8U956lJHbB0QnPJ2UujkLgD/0heq6lK
-         cuAw==
-X-Gm-Message-State: AOAM530ZjUeiCZgK+I5WHVwkuvRvmoxzfiRc7XeJKwCmxBcWUNA+3VHZ
-        WIyVoo12X0eUuunamjxouCE=
-X-Google-Smtp-Source: ABdhPJwlP3QmABh4/nIwmiUI0ymstaWn3umCEZUef0OvuVGmL6HHCgt6yYD9gjyKppqKOMZS8rnNyw==
-X-Received: by 2002:a17:90a:f2cc:: with SMTP id gt12mr5723370pjb.136.1617735941762;
-        Tue, 06 Apr 2021 12:05:41 -0700 (PDT)
-Received: from localhost ([47.9.169.206])
-        by smtp.gmail.com with ESMTPSA id l10sm18453586pfc.125.2021.04.06.12.05.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Apr 2021 12:05:41 -0700 (PDT)
-Date:   Wed, 7 Apr 2021 00:35:38 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-Message-ID: <20210406190538.fdqo7g2tzolgckpy@apollo>
-References: <20210325120020.236504-1-memxor@gmail.com>
- <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
- <20210328080648.oorx2no2j6zslejk@apollo>
- <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
- <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net>
- <20210331094400.ldznoctli6fljz64@apollo>
- <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net>
- <20210402152743.dbadpgcmrgjt4eca@apollo>
- <CAEf4Bzbk9t9Cx4DONzNu8reP+Fkdq8WA90syqesgQYgAQyCaLw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rxGs5zULjcirUWPWFIh26VgiWnlwmvSjrLs+AL4Pbvw=;
+        b=mdRXfRj/zxtZ/0fkNEc7kRXkw0bIG4d1MYBno9EZACKLl4S5NFI2LvJvH9Xi/MKLN0
+         3/ebMTalnvncoxxUz49XKf1vAKqgqVce+Tb5OHlQ4hTxWCLpZOeoD7L6814CLgcZ4O+s
+         Uhf8gKxwSIUNUhNnO+P5gLG7bXpzEoVphGvoPBU0dl9m62SFNWBImb+zVTbx8MfYjfMH
+         dCkbFbT7gNaFJCv8MdpbMbbTyDR92aXvv2m9syV+LiVGhwaPNQO2Nklr1cetJMrfh3Ov
+         oV/usziwQGUNjN99DSgoSINUR/Rvrnfr3qboeJbmeWNlSJPqdYcMRhLC/nhJYz6BVuJd
+         8S0Q==
+X-Gm-Message-State: AOAM531DUPkLo7bnr5b34hyE1tlzRalaechUbjtuFDhxQV2E4c8zfmW9
+        gPTlY/4LyDClzcyENJFCp8X3We8k+wo9Md82HUY=
+X-Google-Smtp-Source: ABdhPJw1YOt7aCE8xGpRZIkndllPQVURuvgF3KF2Vfn/8/jearuglCVS7JPsh9oY8hj1AAnSPs9BKBoH2g8ouPKYB+A=
+X-Received: by 2002:a17:90a:9f0b:: with SMTP id n11mr5992029pjp.56.1617740354734;
+ Tue, 06 Apr 2021 13:19:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzbk9t9Cx4DONzNu8reP+Fkdq8WA90syqesgQYgAQyCaLw@mail.gmail.com>
+References: <000000000000f560e805bf453804@google.com>
+In-Reply-To: <000000000000f560e805bf453804@google.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Tue, 6 Apr 2021 13:19:03 -0700
+Message-ID: <CAM_iQpW6js5R02vWuR7iRfGGkeSj=BprinY6ZEBCtbm7QG=+Xw@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: use-after-free Write in sk_psock_stop
+To:     syzbot <syzbot+7b6548ae483d6f4c64ae@syzkaller.appspotmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>, jmattson@google.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "kvm@vger.kernel.org list" <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Mark Rutland <mark.rutland@arm.com>, masahiroy@kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        pbonzini@redhat.com, Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>, seanjc@google.com,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>, vkuznets@redhat.com,
+        wanpengli@tencent.com, Will Deacon <will@kernel.org>,
+        x86 <x86@kernel.org>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 10:51:09PM IST, Andrii Nakryiko wrote:
-> > [...]
+On Tue, Apr 6, 2021 at 6:01 AM syzbot
+<syzbot+7b6548ae483d6f4c64ae@syzkaller.appspotmail.com> wrote:
+> ==================================================================
+> BUG: KASAN: use-after-free in __lock_acquire+0x3e6f/0x54c0 kernel/locking/lockdep.c:4770
+> Read of size 8 at addr ffff888024f66238 by task syz-executor.1/14202
 >
-> if _block variant is just a special ifindex value, then it should be
-> fine for users to know such a detail (we can leave a comment
-> mentioning this specifically), especially given it's not a very
-> popular thing. Almost doubling amount of APIs just for this doesn't
-> make much sense, IMO.
->
+> CPU: 0 PID: 14202 Comm: syz-executor.1 Not tainted 5.12.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>  print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
+>  __kasan_report mm/kasan/report.c:399 [inline]
+>  kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
+>  __lock_acquire+0x3e6f/0x54c0 kernel/locking/lockdep.c:4770
+>  lock_acquire kernel/locking/lockdep.c:5510 [inline]
+>  lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5475
+>  __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+>  _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
+>  spin_lock_bh include/linux/spinlock.h:359 [inline]
+>  sk_psock_stop+0x2f/0x4d0 net/core/skmsg.c:750
+>  sock_map_close+0x172/0x390 net/core/sock_map.c:1534
+>  inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
+>  __sock_release+0xcd/0x280 net/socket.c:599
+>  sock_close+0x18/0x20 net/socket.c:1258
+>  __fput+0x288/0x920 fs/file_table.c:280
+>  task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+>  tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
+>  exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+>  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x466459
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f1bde3a3188 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+> RAX: 0000000000000000 RBX: 000000000056bf60 RCX: 0000000000466459
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000005
+> RBP: 00000000004bf9fb R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+> R13: 00007ffe6eb13bbf R14: 00007f1bde3a3300 R15: 0000000000022000
+[...]
+> Second to last potentially related work creation:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+>  __call_rcu kernel/rcu/tree.c:3039 [inline]
+>  call_rcu+0xb1/0x740 kernel/rcu/tree.c:3114
+>  queue_rcu_work+0x82/0xa0 kernel/workqueue.c:1753
+>  sk_psock_put include/linux/skmsg.h:446 [inline]
+>  sock_map_unref+0x109/0x190 net/core/sock_map.c:182
+>  sock_hash_delete_from_link net/core/sock_map.c:918 [inline]
+>  sock_map_unlink net/core/sock_map.c:1480 [inline]
+>  sock_map_remove_links+0x389/0x530 net/core/sock_map.c:1492
+>  sock_map_close+0x12f/0x390 net/core/sock_map.c:1532
 
-Ok.
+Looks like the last refcnt can be gone before sk_psock_stop().
 
->
-> If we know that we need variant with options, I'd vote for having just
-> one bpf_tc_attach() API which always takes options. Passing NULL for
-> opts is simple, no need for two APIs, I think.
->
+Technically, we can call sk_psock_stop() before
+sock_map_remove_links(), the only barrier is the RCU read lock
+there. Let me see if we can get rid of that RCU read lock.
 
-Ack.
-
->
-> Which parts of that id struct is the data that caller might not know
-> or can't know? Is it handle and chain_index? Or just one of them?
-> Or?... If there is something that has to be returned back, I'd keep
-> only that, instead of returning 6+ fields, most of which user should
-> already know.
->
-
-The user will know ifindex and parent_id, and perhaps protocol (it would be
-ETH_P_ALL if they don't supply one by default). Other fields like handle,
-priority and chain_index can all be kernel assigned, so keeping those still
-makes sense. I'll change this in v2.
-
---
-Kartikeya
+Thanks.
