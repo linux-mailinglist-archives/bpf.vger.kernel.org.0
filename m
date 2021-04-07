@@ -2,258 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B81835619B
-	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 05:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5D33561D5
+	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 05:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242313AbhDGDCI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 6 Apr 2021 23:02:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38090 "EHLO
+        id S233139AbhDGDVe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 6 Apr 2021 23:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238951AbhDGDCH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 6 Apr 2021 23:02:07 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6E6C06174A;
-        Tue,  6 Apr 2021 20:01:57 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id l9so8900753ils.6;
-        Tue, 06 Apr 2021 20:01:57 -0700 (PDT)
+        with ESMTP id S231781AbhDGDVe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 6 Apr 2021 23:21:34 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3C6C06174A;
+        Tue,  6 Apr 2021 20:21:23 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id c3so17372380qkc.5;
+        Tue, 06 Apr 2021 20:21:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=wGQ0sxcwnuJFFVwGhbqE7uRx2c2DK/aUefWolAGGvoo=;
-        b=IhRDrWKuQdFvDAwYh/ag3QDqqS4SlyVAFfhoqOf/5NwNRgIcr6cxHyQzYEfHFTEtz3
-         fYrnuf2ZM6myi8QZmKOJb820lezGoCyuV7QkZmhelhppo05GfRxDbBG+gEb2O1uLaaO6
-         cwKWDcukBWuLafFT57q20JQ9xOEprDRCGG9i5JImzQ1dwCctEsgVUjUGi0rnkDcMk6MY
-         QOn18MZjHhwc2diXtnBiIhOpyNd4uSVnFCtPoWs0CzPv+0UxnrPBFF632UrjvfTWYF4B
-         K/074qMewTMx/6YlF8ZwQOejDBUP3+A0BYr1jqexXZLl8AWdOh+L9U8oaesY3yKi9BSy
-         7OpA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5P9yhB2ipajvGPZkRP/J5oDNtkEzGGHrQDNL3q9n6sQ=;
+        b=rgzdrHFN+NjBsU+o+0mM2dHwX4NGkabQTyE4g9xBhSfG/aqEPgRlM9CYAHaFbsEdtZ
+         7JWWTpOv/yahBlKrv/RBUpN7XNh4LnqaBCzcXoD+73HsaFrgMJ17DN8Ro6ZQh33iXnlL
+         BiVvp/jUYX+3vqRgF8qiwjf2gJ+uxuyEtVlmPSqG1azcLTQMocZOuZzTT+jqIEwKGQCh
+         cbU+mKBBqNswD0WREZVTlcPW2FP+hQAreoyV8VRADilBnJ+WCUcbkSQQk8RgvubJIFHz
+         yLqBYcXFmgiNoEtSDW0pQyGEYXEn9eMom0H0dakk8T5RSKuW5COTQzIf1khhDqvI2vBg
+         PXIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=wGQ0sxcwnuJFFVwGhbqE7uRx2c2DK/aUefWolAGGvoo=;
-        b=Kaa6h+z12Cq8DTxVVCjmx+ql4B7JP0LqvzuChI2eACVlw0NUexNzfCAl6P8+wSZ7AN
-         xm2/d8Hx4gwAGqXamdXZfRBp4QlE554nctJAbf4UbgzdDru3YJ2qvTaLdKM6u34am6Or
-         Z8CsJmnX6au4UgjI/7zGfI7GU8RBAOnF0PwwQ1tvP317lSbNj3D4dxhWXzkJ9AkVa+aH
-         IyFhjZE8MvPhVbVBqtRCVib0hFYwtQqMc9xvRufEeACDJmlgWpQebzK7glYqRxR6FlVp
-         2/kbW2C14Jod2/OZra1Hn6MtlxFzmFywo/oaZQx+NooiMcdwwL0MQ5+X7geCud3pf+Tj
-         nKgQ==
-X-Gm-Message-State: AOAM533ygjCiJZ4Eisqj3DPGP4nO5GaL+S4fwoPCVnrjV7+g09IU9GlV
-        uBnhZeihTlxsmiRJyGW8cYhKsN/Jon7u+oQNOW8=
-X-Google-Smtp-Source: ABdhPJySsp6EeFECpuYSDaIXmzhBjJCCHKBB+Gi7xjqjMjTEXwsFCSzi5z2LeipY9OsVQ6WscFPvEcLseoPQayWr6hg=
-X-Received: by 2002:a05:6e02:b2e:: with SMTP id e14mr1045849ilu.186.1617764516036;
- Tue, 06 Apr 2021 20:01:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5P9yhB2ipajvGPZkRP/J5oDNtkEzGGHrQDNL3q9n6sQ=;
+        b=P6Jo8HxFMQ/og+hCa6fEt3lyM0qCS/5U5wyjcDQ7F6+j9RqBm9UMzVXcctiLOlGlN2
+         +fy9sU90xytguQkm8d2E1HTmZ4s4bABoHg9nPelDatjFDImcNPFYpivCLQpshapB6XkK
+         Uh/SbIDhNNMOcehycdfd78twLyWtC0Raj4jZBF6PFyxmt/94VE13/ILxnCneLpCkgDE6
+         k37gVxA8MxV+nPllE1L+NdXhmGd82yt0zWkL2125GtxDnYkGmIgW50ROhy+Niuwh/Qju
+         783BfAGP8Lgp8r1hKLWEUUhJwFv4byY4jR9x47OWEvkz79JnkELfnE8NIkHRz/tKZ/QF
+         26mA==
+X-Gm-Message-State: AOAM531BOzV7i3Eot2WR4JOVJJe+YHgfTle/GFoDCvJwMr0l30XHu1tJ
+        DdOV8B9Jrh6A6RPjCXlWUxsxuXSWB1QR655t
+X-Google-Smtp-Source: ABdhPJxJ00tR3gql7/Ti0r5AW1lR1bCzH+teuPcFhRDOxepFmHCqIYGFzbz/XEhjoB3k8/DVVoRx3Q==
+X-Received: by 2002:a37:6c01:: with SMTP id h1mr1213547qkc.182.1617765682553;
+        Tue, 06 Apr 2021 20:21:22 -0700 (PDT)
+Received: from unknown.attlocal.net (76-217-55-94.lightspeed.sntcca.sbcglobal.net. [76.217.55.94])
+        by smtp.gmail.com with ESMTPSA id y13sm16189989qto.39.2021.04.06.20.21.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 06 Apr 2021 20:21:22 -0700 (PDT)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+        syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: [Patch bpf-next] skmsg: pass psock pointer to ->psock_update_sk_prot()
+Date:   Tue,  6 Apr 2021 20:21:11 -0700
+Message-Id: <20210407032111.33398-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210401232723.3571287-1-yhs@fb.com> <CAKwvOdmX8d3XTzJFk5rN_PnOQYJ8bXMrh8DrhzqN=UBNdQiO3g@mail.gmail.com>
- <CA+icZUVKCY4UJfSG_sXjZHwfOQZfBZQu0pj1VZ9cXX4e7w0n6g@mail.gmail.com> <c6daf068-ead0-810b-2afa-c4d1c8305893@fb.com>
-In-Reply-To: <c6daf068-ead0-810b-2afa-c4d1c8305893@fb.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 7 Apr 2021 05:01:27 +0200
-Message-ID: <CA+icZUWYQ8wjOYHYrTX52AbEa3nbXco6ZKdqeMwJaZfHuJ5BhA@mail.gmail.com>
-Subject: Re: [PATCH kbuild v4] kbuild: add an elfnote for whether vmlinux is
- built with lto
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        bpf <bpf@vger.kernel.org>, kernel-team@fb.com,
-        Bill Wendling <morbo@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 6:13 PM Yonghong Song <yhs@fb.com> wrote:
->
->
-> Masahiro and Michal,
->
-> Friendly ping. Any comments on this patch?
->
-> The addition LTO .notes information emitted by kernel is used by pahole
-> in the following patch:
->     https://lore.kernel.org/bpf/20210401025825.2254746-1-yhs@fb.com/
->     (dwarf_loader: check .notes section for lto build info)
->
+From: Cong Wang <cong.wang@bytedance.com>
 
-Hi Yonghong,
+Using sk_psock() to retrieve psock pointer from sock requires
+RCU read lock, but we already get psock pointer before calling
+->psock_update_sk_prot() in both cases, so we can just pass it
+without bothering sk_psock().
 
-the above pahole patch has this define and comment:
+Reported-and-tested-by: syzbot+320a3bc8d80f478c37e4@syzkaller.appspotmail.com
+Fixes: 8a59f9d1e3d4 ("sock: Introduce sk->sk_prot->psock_update_sk_prot()")
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jakub Sitnicki <jakub@cloudflare.com>
+Cc: Lorenz Bauer <lmb@cloudflare.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+---
+ include/linux/skmsg.h | 5 +++--
+ include/net/sock.h    | 5 ++++-
+ include/net/tcp.h     | 2 +-
+ include/net/udp.h     | 2 +-
+ net/core/sock_map.c   | 2 +-
+ net/ipv4/tcp_bpf.c    | 3 +--
+ net/ipv4/udp_bpf.c    | 3 +--
+ 7 files changed, 12 insertions(+), 10 deletions(-)
 
--static bool cus__merging_cu(Dwarf *dw)
-+/* Match the define in linux:include/linux/elfnote.h */
-+#define LINUX_ELFNOTE_BUILD_LTO 0x101
+diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+index f78e90a04a69..e2fb0a5a101e 100644
+--- a/include/linux/skmsg.h
++++ b/include/linux/skmsg.h
+@@ -99,7 +99,8 @@ struct sk_psock {
+ 	void (*saved_close)(struct sock *sk, long timeout);
+ 	void (*saved_write_space)(struct sock *sk);
+ 	void (*saved_data_ready)(struct sock *sk);
+-	int  (*psock_update_sk_prot)(struct sock *sk, bool restore);
++	int  (*psock_update_sk_prot)(struct sock *sk, struct sk_psock *psock,
++				     bool restore);
+ 	struct proto			*sk_proto;
+ 	struct mutex			work_mutex;
+ 	struct sk_psock_work_state	work_state;
+@@ -405,7 +406,7 @@ static inline void sk_psock_restore_proto(struct sock *sk,
+ {
+ 	sk->sk_prot->unhash = psock->saved_unhash;
+ 	if (psock->psock_update_sk_prot)
+-		psock->psock_update_sk_prot(sk, true);
++		psock->psock_update_sk_prot(sk, psock, true);
+ }
+ 
+ static inline void sk_psock_set_state(struct sk_psock *psock,
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 8b4155e756c2..c4bbdcd83f4d 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -1114,6 +1114,7 @@ struct inet_hashinfo;
+ struct raw_hashinfo;
+ struct smc_hashinfo;
+ struct module;
++struct sk_psock;
+ 
+ /*
+  * caches using SLAB_TYPESAFE_BY_RCU should let .next pointer from nulls nodes
+@@ -1185,7 +1186,9 @@ struct proto {
+ 	void			(*rehash)(struct sock *sk);
+ 	int			(*get_port)(struct sock *sk, unsigned short snum);
+ #ifdef CONFIG_BPF_SYSCALL
+-	int			(*psock_update_sk_prot)(struct sock *sk, bool restore);
++	int			(*psock_update_sk_prot)(struct sock *sk,
++							struct sk_psock *psock,
++							bool restore);
+ #endif
+ 
+ 	/* Keeping track of sockets in use */
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index eaea43afcc97..d05193cb0d99 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -2215,7 +2215,7 @@ struct sk_psock;
+ 
+ #ifdef CONFIG_BPF_SYSCALL
+ struct proto *tcp_bpf_get_proto(struct sock *sk, struct sk_psock *psock);
+-int tcp_bpf_update_proto(struct sock *sk, bool restore);
++int tcp_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore);
+ void tcp_bpf_clone(const struct sock *sk, struct sock *newsk);
+ #endif /* CONFIG_BPF_SYSCALL */
+ 
+diff --git a/include/net/udp.h b/include/net/udp.h
+index f55aaeef7e91..360df454356c 100644
+--- a/include/net/udp.h
++++ b/include/net/udp.h
+@@ -543,7 +543,7 @@ static inline void udp_post_segment_fix_csum(struct sk_buff *skb)
+ #ifdef CONFIG_BPF_SYSCALL
+ struct sk_psock;
+ struct proto *udp_bpf_get_proto(struct sock *sk, struct sk_psock *psock);
+-int udp_bpf_update_proto(struct sock *sk, bool restore);
++int udp_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore);
+ #endif
+ 
+ #endif	/* _UDP_H */
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 3d190d22b0d8..f473c51cbc4b 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -188,7 +188,7 @@ static int sock_map_init_proto(struct sock *sk, struct sk_psock *psock)
+ 	if (!sk->sk_prot->psock_update_sk_prot)
+ 		return -EINVAL;
+ 	psock->psock_update_sk_prot = sk->sk_prot->psock_update_sk_prot;
+-	return sk->sk_prot->psock_update_sk_prot(sk, false);
++	return sk->sk_prot->psock_update_sk_prot(sk, psock, false);
+ }
+ 
+ static struct sk_psock *sock_map_psock_get_checked(struct sock *sk)
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index 3d622a0d0753..4930bc8ab47e 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -499,9 +499,8 @@ static int tcp_bpf_assert_proto_ops(struct proto *ops)
+ 	       ops->sendpage == tcp_sendpage ? 0 : -ENOTSUPP;
+ }
+ 
+-int tcp_bpf_update_proto(struct sock *sk, bool restore)
++int tcp_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
+ {
+-	struct sk_psock *psock = sk_psock(sk);
+ 	int family = sk->sk_family == AF_INET6 ? TCP_BPF_IPV6 : TCP_BPF_IPV4;
+ 	int config = psock->progs.msg_parser   ? TCP_BPF_TX   : TCP_BPF_BASE;
+ 
+diff --git a/net/ipv4/udp_bpf.c b/net/ipv4/udp_bpf.c
+index 4a7e38c5d842..954c4591a6fd 100644
+--- a/net/ipv4/udp_bpf.c
++++ b/net/ipv4/udp_bpf.c
+@@ -103,10 +103,9 @@ static int __init udp_bpf_v4_build_proto(void)
+ }
+ core_initcall(udp_bpf_v4_build_proto);
+ 
+-int udp_bpf_update_proto(struct sock *sk, bool restore)
++int udp_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
+ {
+ 	int family = sk->sk_family == AF_INET ? UDP_BPF_IPV4 : UDP_BPF_IPV6;
+-	struct sk_psock *psock = sk_psock(sk);
+ 
+ 	if (restore) {
+ 		sk->sk_write_space = psock->saved_write_space;
+-- 
+2.25.1
 
-...and does not fit with the define and comment in this kernel patch:
-
-+#include <linux/elfnote.h>
-+
-+#define LINUX_ELFNOTE_LTO_INFO 0x101
-
-Thanks.
-
-- Sedat -
-
-
-> Thanks,
->
-> Yonghong
->
-> On 4/6/21 12:05 AM, Sedat Dilek wrote:
-> > On Fri, Apr 2, 2021 at 8:07 PM 'Nick Desaulniers' via Clang Built
-> > Linux <clang-built-linux@googlegroups.com> wrote:
-> >>
-> >> On Thu, Apr 1, 2021 at 4:27 PM Yonghong Song <yhs@fb.com> wrote:
-> >>>
-> >>> Currently, clang LTO built vmlinux won't work with pahole.
-> >>> LTO introduced cross-cu dwarf tag references and broke
-> >>> current pahole model which handles one cu as a time.
-> >>> The solution is to merge all cu's as one pahole cu as in [1].
-> >>> We would like to do this merging only if cross-cu dwarf
-> >>> references happens. The LTO build mode is a pretty good
-> >>> indication for that.
-> >>>
-> >>> In earlier version of this patch ([2]), clang flag
-> >>> -grecord-gcc-switches is proposed to add to compilation flags
-> >>> so pahole could detect "-flto" and then merging cu's.
-> >>> This will increate the binary size of 1% without LTO though.
-> >>>
-> >>> Arnaldo suggested to use a note to indicate the vmlinux
-> >>> is built with LTO. Such a cheap way to get whether the vmlinux
-> >>> is built with LTO or not helps pahole but is also useful
-> >>> for tracing as LTO may inline/delete/demote global functions,
-> >>> promote static functions, etc.
-> >>>
-> >>> So this patch added an elfnote with a new type LINUX_ELFNOTE_LTO_INFO.
-> >>> The owner of the note is "Linux".
-> >>>
-> >>> With gcc 8.4.1 and clang trunk, without LTO, I got
-> >>>    $ readelf -n vmlinux
-> >>>    Displaying notes found in: .notes
-> >>>      Owner                Data size        Description
-> >>>    ...
-> >>>      Linux                0x00000004       func
-> >>>       description data: 00 00 00 00
-> >>>    ...
-> >>> With "readelf -x ".notes" vmlinux", I can verify the above "func"
-> >>> with type code 0x101.
-> >>>
-> >>> With clang thin-LTO, I got the same as above except the following:
-> >>>       description data: 01 00 00 00
-> >>> which indicates the vmlinux is built with LTO.
-> >>>
-> >>>    [1] https://lore.kernel.org/bpf/20210325065316.3121287-1-yhs@fb.com/
-> >>>    [2] https://lore.kernel.org/bpf/20210331001623.2778934-1-yhs@fb.com/
-> >>>
-> >>> Suggested-by: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> >>> Signed-off-by: Yonghong Song <yhs@fb.com>
-> >>
-> >> LGTM thanks Yonghong!
-> >> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> >>
-> >
-> > Thanks for the patch.
-> >
-> > Feel free to add:
-> >
-> > Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # LLVM/Clang v12.0.0-rc4 (x86-64)
-> >
-> > As a note for the pahole side:
-> > Recent patches require an adaptation of the define and its comment.
-> >
-> > 1. LINUX_ELFNOTE_BUILD_LTO -> LINUX_ELFNOTE_LTO_INFO
-> > 2. include/linux/elfnote.h -> include/linux/elfnote-lto.h
-> >
-> > - Sedat -
-> >
-> >>> ---
-> >>>   include/linux/elfnote-lto.h | 14 ++++++++++++++
-> >>>   init/version.c              |  2 ++
-> >>>   scripts/mod/modpost.c       |  2 ++
-> >>>   3 files changed, 18 insertions(+)
-> >>>   create mode 100644 include/linux/elfnote-lto.h
-> >>>
-> >>> Changelogs:
-> >>>    v3 -> v4:
-> >>>      . put new lto note in its own header file similar to
-> >>>        build-salt.h. (Nick)
-> >>>    v2 -> v3:
-> >>>      . abandoned the approach of adding -grecord-gcc-switches,
-> >>>        instead create a note to indicate whether it is a lto build
-> >>>        or not. The note definition is in compiler.h. (Arnaldo)
-> >>>    v1 -> v2:
-> >>>      . limited to add -grecord-gcc-switches for LTO_CLANG
-> >>>        instead of all clang build
-> >>>
-> >>> diff --git a/include/linux/elfnote-lto.h b/include/linux/elfnote-lto.h
-> >>> new file mode 100644
-> >>> index 000000000000..d4635a3ecc4f
-> >>> --- /dev/null
-> >>> +++ b/include/linux/elfnote-lto.h
-> >>> @@ -0,0 +1,14 @@
-> >>> +#ifndef __ELFNOTE_LTO_H
-> >>> +#define __ELFNOTE_LTO_H
-> >>> +
-> >>> +#include <linux/elfnote.h>
-> >>> +
-> >>> +#define LINUX_ELFNOTE_LTO_INFO 0x101
-> >>> +
-> >>> +#ifdef CONFIG_LTO
-> >>> +#define BUILD_LTO_INFO ELFNOTE32("Linux", LINUX_ELFNOTE_LTO_INFO, 1)
-> >>> +#else
-> >>> +#define BUILD_LTO_INFO ELFNOTE32("Linux", LINUX_ELFNOTE_LTO_INFO, 0)
-> >>> +#endif
-> >>> +
-> >>> +#endif /* __ELFNOTE_LTO_H */
-> >>> diff --git a/init/version.c b/init/version.c
-> >>> index 92afc782b043..1a356f5493e8 100644
-> >>> --- a/init/version.c
-> >>> +++ b/init/version.c
-> >>> @@ -9,6 +9,7 @@
-> >>>
-> >>>   #include <generated/compile.h>
-> >>>   #include <linux/build-salt.h>
-> >>> +#include <linux/elfnote-lto.h>
-> >>>   #include <linux/export.h>
-> >>>   #include <linux/uts.h>
-> >>>   #include <linux/utsname.h>
-> >>> @@ -45,3 +46,4 @@ const char linux_proc_banner[] =
-> >>>          " (" LINUX_COMPILER ") %s\n";
-> >>>
-> >>>   BUILD_SALT;
-> >>> +BUILD_LTO_INFO;
-> >>> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> >>> index 24725e50c7b4..98fb2bb024db 100644
-> >>> --- a/scripts/mod/modpost.c
-> >>> +++ b/scripts/mod/modpost.c
-> >>> @@ -2191,10 +2191,12 @@ static void add_header(struct buffer *b, struct module *mod)
-> >>>           */
-> >>>          buf_printf(b, "#define INCLUDE_VERMAGIC\n");
-> >>>          buf_printf(b, "#include <linux/build-salt.h>\n");
-> >>> +       buf_printf(b, "#include <linux/elfnote-lto.h>\n");
-> >>>          buf_printf(b, "#include <linux/vermagic.h>\n");
-> >>>          buf_printf(b, "#include <linux/compiler.h>\n");
-> >>>          buf_printf(b, "\n");
-> >>>          buf_printf(b, "BUILD_SALT;\n");
-> >>> +       buf_printf(b, "BUILD_LTO_INFO;\n");
-> >>>          buf_printf(b, "\n");
-> >>>          buf_printf(b, "MODULE_INFO(vermagic, VERMAGIC_STRING);\n");
-> >>>          buf_printf(b, "MODULE_INFO(name, KBUILD_MODNAME);\n");
-> >>> --
-> >>> 2.30.2
-> >>>
-> >>
-> >>
-> >> --
-> >> Thanks,
-> >> ~Nick Desaulniers
-> >>
-> >> --
-> >> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> >> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> >> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAKwvOdmX8d3XTzJFk5rN_PnOQYJ8bXMrh8DrhzqN=UBNdQiO3g@mail.gmail.com .
