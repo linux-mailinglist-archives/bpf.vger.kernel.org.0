@@ -2,138 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05649357839
-	for <lists+bpf@lfdr.de>; Thu,  8 Apr 2021 01:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60853357858
+	for <lists+bpf@lfdr.de>; Thu,  8 Apr 2021 01:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbhDGXFL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Apr 2021 19:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48618 "EHLO
+        id S229449AbhDGXOt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Apr 2021 19:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229723AbhDGXFK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Apr 2021 19:05:10 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E11DC061760;
-        Wed,  7 Apr 2021 16:05:00 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id l9so586531ybm.0;
-        Wed, 07 Apr 2021 16:05:00 -0700 (PDT)
+        with ESMTP id S229497AbhDGXOt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Apr 2021 19:14:49 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46086C061760;
+        Wed,  7 Apr 2021 16:14:39 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id p12so10167892pgj.10;
+        Wed, 07 Apr 2021 16:14:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Sqg66sn58LZtVTqUpPZYqAX3Du9q2k6vKUJa6Q9TW88=;
-        b=DFx4Aqz9FyTOWKlb+LvrDu34fJHEkTtH3rQrt64iB9W9Y20sMItMMXsxWn+gS3qzzI
-         GOrLKAZ3+0sTlHJNLQTCOZvoKvfwqyPocz1L88fMdx5u/ObhB6HlcjsHADs/KV46YFd+
-         WzeqTKxwAtHXeNeVvLhIH8gghACmHzZHb6fZhdil3vFH9I2Y4MBvKTqeDbv58I0PAHLL
-         68bkxkWXbzgzeGXfdffjynydF2xEqIv3bnDoOzHUFF0XyWBTJHd/+L1p2VRdJG++oTVJ
-         L0CmoWiS067oh9gm21Ya8LJrFIbrsbWJkAwzYmeMIkf8LuRNvpd/N3jO5VfetO/BOZAM
-         s45Q==
+        bh=vdhYf9J/J/LeifXgyo0yJPbV1Fchbgma7e7wm36aBQ8=;
+        b=EK4mqKyYjoayRxkK+Iwhj6jhCUhpdRvmpQJEjtbxbe/PKOnJ7UoETDgJRgtly9ri/i
+         VSNF9S8OUiSxAja7QF7HMSlOf7HYyRyhEMaubU+lRxwB5auBXnY0CQYNEJhsFSnyxn7O
+         HeXEHqj68CPkD5nPylrAuQRdqvf5oMlhCWn4nu04SBkILhKxnxxnubcmCCsya8Xb2yhU
+         Qb5KWWy4CjCgJpeHOy97Zhqgg6AWyO3DN0r4E0zycCPLIF8AQszWOr6FD8capyTG+FWo
+         Ui9E2cRiwiv6wvv9RQYB++lmUla8lQXXDIOzejizBiE4H9QmahKPD38mQs4La64lx0HZ
+         yAzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Sqg66sn58LZtVTqUpPZYqAX3Du9q2k6vKUJa6Q9TW88=;
-        b=RCdHSlY3cMG50I9vRCUXhBjnp6e3Nwmy/VrJTEgEz0xU7cKa3EzQnQOUT2T0N4sXHh
-         2O9mHf7ZhLV2dXG4lATeZBXf+tocrn5QR58S0KorkwvUYqP9RiUeyJf1qMwFyskBBcn/
-         YAJxM+kZUAq4Yh/RuUZU4vxOfhn8v6SBY+7gnomusZGazFX1Orn+2s8IjToXicDXq35w
-         cdUTZaIvquiA+dJ6pCt4BfB/PFSeAqJRRq1TD2L1GQ4IyhqxpdxVqG5OBoXG/WEDnvzm
-         1pNWAImJC/t68MFYfSbUlL2sXlL9dGdvOonNQ0DdVHqkHOcuEXhKhB1DlJK2iYRz2KNQ
-         qeTw==
-X-Gm-Message-State: AOAM530hVRinJkgFPzAjbsNAPRP55yB70HrXafovOrjOZhI53gXmQc/i
-        Bv3Vc3BlsgtMQQuynLVC2pjLhI9jcD7qRjS/PQqIAn1Qdbk=
-X-Google-Smtp-Source: ABdhPJy5HpL97dObmXwifU4/RHL4htDVDXXRJwuKo2TQ+4TZkQFC4vxa8ugCCMjLNSUg3c+bBX/xMXp1SEdbuA/wDqA=
-X-Received: by 2002:a05:6902:6a3:: with SMTP id j3mr7566067ybt.403.1617836699711;
- Wed, 07 Apr 2021 16:04:59 -0700 (PDT)
+        bh=vdhYf9J/J/LeifXgyo0yJPbV1Fchbgma7e7wm36aBQ8=;
+        b=XFoefGdydvHe5quH86kIP05YCJefZA1YmvjInhbGBsUdYvFJT+179UzN5GUWxRqraM
+         2DcNP6Hmj/7/VRtM7S7N49Cfof3bEd3qna0bel+YDcFp2OhqaRRfDAwZIMCIr1+rB5Qq
+         uJnca9VPePTT5KOx7rPvelL1Cr64HMCx7jHCeyxNmulcsztKcCnyZOuLoTrAqM2oo3Vd
+         rE0SVGypHwozzCGvMuswavvF2+EFyr6PQSPClKMcPkyB2zzZMO7aKKlgC+PHVZl9Ooen
+         RCxT+KBAv9jCLGnAYRAsWyTp8QFNWXI3fU6O1O0nR+Z+HhKj0Lwkvn8Bu7Ngz2MRehzN
+         ooeA==
+X-Gm-Message-State: AOAM530lQS8gIzT+ZLuCIuWToCgMb6L02mc40jj/QLuuTeIcRM56mYpJ
+        4ATnIe0BL7Gu2Sx/9f1XbHqbEUt9w+fow376SdE=
+X-Google-Smtp-Source: ABdhPJz3kNJsptq+qEkv3mJ20fgEN6ihbPdMBBofgIFBgq9DfZTalhDkPLfGooMbQJGB6Jt8pZgyGGi55R989xoi4V4=
+X-Received: by 2002:a63:6a41:: with SMTP id f62mr5259840pgc.428.1617837278842;
+ Wed, 07 Apr 2021 16:14:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210406212913.970917-1-jolsa@kernel.org> <20210406212913.970917-6-jolsa@kernel.org>
-In-Reply-To: <20210406212913.970917-6-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 7 Apr 2021 16:04:48 -0700
-Message-ID: <CAEf4BzYnr=r-+iYaZ9yoTgRCs7h0mNo=rjg6S2OAYRkDdPniJA@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 5/5] selftests/bpf: Test that module can't be
- unloaded with attached trampoline
-To:     Jiri Olsa <jolsa@kernel.org>
+References: <YG3SuK4W/N9jqknL@krava>
+In-Reply-To: <YG3SuK4W/N9jqknL@krava>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Wed, 7 Apr 2021 16:14:27 -0700
+Message-ID: <CAM_iQpUdbsf97g8X=K7wKnGu1mmfuu7bseHdtaQ_uvo1XOmG_A@mail.gmail.com>
+Subject: Re: WARNING net/core/stream.c:208 when running test_sockmap
+To:     Jiri Olsa <jolsa@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>, Jiri Benc <jbenc@redhat.com>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 4:22 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Wed, Apr 7, 2021 at 2:22 PM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> Adding test to verify that once we attach module's trampoline,
-> the module can't be unloaded.
+> hi,
+> I'm getting couple of WARNINGs below when running
+> test_sockmap on latest bpf-next/master, like:
 >
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
+>   # while :; do ./test_sockmap ; done
+>
+> The warning is at:
+>   WARN_ON(sk->sk_forward_alloc);
+>
+> so looks like some socket allocation math goes wrong.
 
-To be fair, to test that you are actually testing what you think you
-are testing, you'd have to prove that you *can* detach when no program
-is attached to bpf_testmod ;) You'd also need kern_sync_rcu() to wait
-for all the async clean up to complete inside the kernel. But that
-doesn't interact with other tests well, so I think it's fine.
+This one should be fixed by:
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=144748eb0c445091466c9b741ebd0bfcc5914f3d
 
-grumpily due to CHECK() usage (please do consider updating to ASSERT):
+So please try the latest bpf branch.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  .../selftests/bpf/prog_tests/module_attach.c  | 23 +++++++++++++++++++
->  1 file changed, 23 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach.c b/tools/testing/selftests/bpf/prog_tests/module_attach.c
-> index 5bc53d53d86e..d180b8c28287 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/module_attach.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/module_attach.c
-> @@ -45,12 +45,18 @@ static int trigger_module_test_write(int write_sz)
->         return 0;
->  }
->
-> +static int delete_module(const char *name, int flags)
-> +{
-> +       return syscall(__NR_delete_module, name, flags);
-> +}
-> +
->  void test_module_attach(void)
->  {
->         const int READ_SZ = 456;
->         const int WRITE_SZ = 457;
->         struct test_module_attach* skel;
->         struct test_module_attach__bss *bss;
-> +       struct bpf_link *link;
->         int err;
->
->         skel = test_module_attach__open();
-> @@ -84,6 +90,23 @@ void test_module_attach(void)
->         ASSERT_EQ(bss->fexit_ret, -EIO, "fexit_tet");
->         ASSERT_EQ(bss->fmod_ret_read_sz, READ_SZ, "fmod_ret");
->
-> +       test_module_attach__detach(skel);
-> +
-> +       /* attach fentry/fexit and make sure it get's module reference */
-> +       link = bpf_program__attach(skel->progs.handle_fentry);
-> +       if (CHECK(IS_ERR(link), "attach_fentry", "err: %ld\n", PTR_ERR(link)))
-> +               goto cleanup;
-> +
-> +       ASSERT_ERR(delete_module("bpf_testmod", 0), "delete_module");
-> +       bpf_link__destroy(link);
-> +
-> +       link = bpf_program__attach(skel->progs.handle_fexit);
-> +       if (CHECK(IS_ERR(link), "attach_fexit", "err: %ld\n", PTR_ERR(link)))
-> +               goto cleanup;
-> +
-> +       ASSERT_ERR(delete_module("bpf_testmod", 0), "delete_module");
-> +       bpf_link__destroy(link);
-> +
->  cleanup:
->         test_module_attach__destroy(skel);
->  }
-> --
-> 2.30.2
->
+Thanks.
