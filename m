@@ -2,38 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E8C356788
-	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 11:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 659613567CF
+	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 11:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243686AbhDGJB3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Apr 2021 05:01:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44694 "EHLO
+        id S1350021AbhDGJQw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Apr 2021 05:16:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53238 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346018AbhDGJBY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 7 Apr 2021 05:01:24 -0400
+        by vger.kernel.org with ESMTP id S1350016AbhDGJQu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 7 Apr 2021 05:16:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617786072;
+        s=mimecast20190719; t=1617787001;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Rkz4nKqmSi3Q6k0oz/hhB2XArXf+uraFndElilQ7l4Y=;
-        b=RSu8/EBOUtEzlWlDDoONXqpyOjTX3Kp99K6Yy2pAtny3PmHF8WrjvCtq1K6ToYy67ykTsV
-        i/Fkk6AORXg0DPyKvWMn8sx0gtnWjBTULuW4c/oYd/B2Yy3ERmWjuxNzu+F1GxlCtjldCB
-        8VfWAHIoi2tFkzLUqWNvoZsJtI8Ki5Y=
+        bh=Gyj7IJkIUvUgggyzLzduzdDumbbdYLArWF7fFDCSWyE=;
+        b=ZBuI8I6Swqxuo0iZTzbj+JAkJ6SsnW0SOcQ/dG5UnI+rrs8tn9hd/neAdUw6ujbxUTdcxB
+        BfAMK3wgCSXY7VWae+gnvnlB9T2pZrXcrnw8F4vI2FyCa7QIBLrM/lvlbvj+fzFN94WISR
+        Xd2uzwYY9JjPqUeroKy3K75B6bQsNvg=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-126-qJLkybGIMl2vhBM809sq0g-1; Wed, 07 Apr 2021 05:01:10 -0400
-X-MC-Unique: qJLkybGIMl2vhBM809sq0g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-372-qUhOMZ4FPBGKHH9acOmwuQ-1; Wed, 07 Apr 2021 05:16:37 -0400
+X-MC-Unique: qUhOMZ4FPBGKHH9acOmwuQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1D41B5B38D;
-        Wed,  7 Apr 2021 09:01:08 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A607E1922967;
+        Wed,  7 Apr 2021 09:16:35 +0000 (UTC)
 Received: from wangxiaodeMacBook-Air.local (ovpn-13-236.pek2.redhat.com [10.72.13.236])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B86135D762;
-        Wed,  7 Apr 2021 09:00:57 +0000 (UTC)
-Subject: Re: [PATCH net-next v3 3/8] virtio-net: xsk zero copy xmit setup
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 43F1E10023AF;
+        Wed,  7 Apr 2021 09:16:27 +0000 (UTC)
+Subject: Re: [PATCH net-next v3 7/8] virtio-net: poll tx call xsk zerocopy
+ xmit
 To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -51,194 +52,110 @@ Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
         KP Singh <kpsingh@kernel.org>,
         virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
         Dust Li <dust.li@linux.alibaba.com>, netdev@vger.kernel.org
-References: <1617780476.5300975-1-xuanzhuo@linux.alibaba.com>
+References: <1617786614.454336-5-xuanzhuo@linux.alibaba.com>
 From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <67f0091a-e065-9183-04a0-4722e1fff84f@redhat.com>
-Date:   Wed, 7 Apr 2021 17:00:56 +0800
+Message-ID: <6dc46d13-7bdc-33d8-3bab-9cabd16d69d0@redhat.com>
+Date:   Wed, 7 Apr 2021 17:16:26 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <1617780476.5300975-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1617786614.454336-5-xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-在 2021/4/7 下午3:27, Xuan Zhuo 写道:
-> On Tue, 6 Apr 2021 12:27:14 +0800, Jason Wang <jasowang@redhat.com> wrote:
+在 2021/4/7 下午5:10, Xuan Zhuo 写道:
+> On Tue, 6 Apr 2021 15:03:29 +0800, Jason Wang <jasowang@redhat.com> wrote:
 >> 在 2021/3/31 下午3:11, Xuan Zhuo 写道:
->>> xsk is a high-performance packet receiving and sending technology.
->>>
->>> This patch implements the binding and unbinding operations of xsk and
->>> the virtio-net queue for xsk zero copy xmit.
->>>
->>> The xsk zero copy xmit depends on tx napi. So if tx napi is not opened,
->>> an error will be reported. And the entire operation is under the
->>> protection of rtnl_lock
+>>> poll tx call virtnet_xsk_run, then the data in the xsk tx queue will be
+>>> continuously consumed by napi.
 >>>
 >>> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 >>> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+>>
+>> I think we need squash this into patch 4, it looks more like a bug fix
+>> to me.
+>>
+>>
 >>> ---
->>>    drivers/net/virtio_net.c | 66 ++++++++++++++++++++++++++++++++++++++++
->>>    1 file changed, 66 insertions(+)
+>>>    drivers/net/virtio_net.c | 20 +++++++++++++++++---
+>>>    1 file changed, 17 insertions(+), 3 deletions(-)
 >>>
 >>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->>> index bb4ea9dbc16b..4e25408a2b37 100644
+>>> index d7e95f55478d..fac7d0020013 100644
 >>> --- a/drivers/net/virtio_net.c
 >>> +++ b/drivers/net/virtio_net.c
->>> @@ -22,6 +22,7 @@
->>>    #include <net/route.h>
->>>    #include <net/xdp.h>
->>>    #include <net/net_failover.h>
->>> +#include <net/xdp_sock_drv.h>
->>>
->>>    static int napi_weight = NAPI_POLL_WEIGHT;
->>>    module_param(napi_weight, int, 0444);
->>> @@ -133,6 +134,11 @@ struct send_queue {
->>>    	struct virtnet_sq_stats stats;
->>>
->>>    	struct napi_struct napi;
->>> +
->>> +	struct {
->>> +		/* xsk pool */
->>> +		struct xsk_buff_pool __rcu *pool;
->>> +	} xsk;
+>>> @@ -264,6 +264,9 @@ struct padded_vnet_hdr {
+>>>    	char padding[4];
 >>>    };
 >>>
->>>    /* Internal representation of a receive virtqueue */
->>> @@ -2526,11 +2532,71 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
->>>    	return err;
->>>    }
->>>
->>> +static int virtnet_xsk_pool_enable(struct net_device *dev,
->>> +				   struct xsk_buff_pool *pool,
->>> +				   u16 qid)
->>> +{
->>> +	struct virtnet_info *vi = netdev_priv(dev);
->>> +	struct send_queue *sq;
->>> +	int ret = -EBUSY;
->>
->> I'd rather move this under the check of xsk.pool.
->>
->>
+>>> +static int virtnet_xsk_run(struct send_queue *sq, struct xsk_buff_pool *pool,
+>>> +			   int budget, bool in_napi);
 >>> +
->>> +	if (qid >= vi->curr_queue_pairs)
->>> +		return -EINVAL;
->>> +
->>> +	sq = &vi->sq[qid];
->>> +
->>> +	/* xsk zerocopy depend on the tx napi */
->>
->> Need more comments to explain why tx NAPI is required here.
->>
->> And what's more important, tx NAPI could be enabled/disable via ethtool,
->> what if the NAPI is disabled after xsk is enabled?
->>
-> If napi_tx is turned off, then the xmit will be affected.
-
-
-Please document what kind of effect that prevents xsk from working.
-
-
-> Maybe I
-> should restrict that tx NAPI be disable via ethtool after xsk is enabled.
-
-
-It can work.
-
-
->
->>> +	if (!sq->napi.weight)
->>> +		return -EPERM;
->>> +
->>> +	rcu_read_lock();
->>> +	if (rcu_dereference(sq->xsk.pool))
->>> +		goto end;
->>
->> Under what condition can we reach here?
-> When the user tries to bind repeatedly.
-
-
-Ok, I am a little suprised that it was not checked by xsk_bind().
-
-
-
->
->>
->>> +
->>> +	/* Here is already protected by rtnl_lock, so rcu_assign_pointer is
->>> +	 * safe.
->>> +	 */
->>> +	rcu_assign_pointer(sq->xsk.pool, pool);
->>> +	ret = 0;
->>> +end:
->>> +	rcu_read_unlock();
->>> +
->>> +	return ret;
->>> +}
->>> +
->>> +static int virtnet_xsk_pool_disable(struct net_device *dev, u16 qid)
->>> +{
->>> +	struct virtnet_info *vi = netdev_priv(dev);
->>> +	struct send_queue *sq;
->>> +
->>> +	if (qid >= vi->curr_queue_pairs)
->>> +		return -EINVAL;
->>> +
->>> +	sq = &vi->sq[qid];
->>> +
->>> +	/* Here is already protected by rtnl_lock, so rcu_assign_pointer is
->>> +	 * safe.
->>> +	 */
->>> +	rcu_assign_pointer(sq->xsk.pool, NULL);
->>> +
->>> +	synchronize_rcu(); /* Sync with the XSK wakeup and with NAPI. */
->>
->> Since rtnl is held here, I guess it's better to use synchornize_net().
->>
->>
->>> +
->>> +	return 0;
->>> +}
->>> +
->>>    static int virtnet_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+>>>    static bool is_xdp_frame(void *ptr)
 >>>    {
->>>    	switch (xdp->command) {
->>>    	case XDP_SETUP_PROG:
->>>    		return virtnet_xdp_set(dev, xdp->prog, xdp->extack);
->>> +	case XDP_SETUP_XSK_POOL:
->>> +		/* virtio net not use dma before call vring api */
->>> +		xdp->xsk.check_dma = false;
+>>>    	return (unsigned long)ptr & VIRTIO_XDP_FLAG;
+>>> @@ -1553,7 +1556,9 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+>>>    	struct send_queue *sq = container_of(napi, struct send_queue, napi);
+>>>    	struct virtnet_info *vi = sq->vq->vdev->priv;
+>>>    	unsigned int index = vq2txq(sq->vq);
+>>> +	struct xsk_buff_pool *pool;
+>>>    	struct netdev_queue *txq;
+>>> +	int work = 0;
+>>>
+>>>    	if (unlikely(is_xdp_raw_buffer_queue(vi, index))) {
+>>>    		/* We don't need to enable cb for XDP */
+>>> @@ -1563,15 +1568,24 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+>>>
+>>>    	txq = netdev_get_tx_queue(vi->dev, index);
+>>>    	__netif_tx_lock(txq, raw_smp_processor_id());
+>>> -	free_old_xmit_skbs(sq, true);
+>>> +	rcu_read_lock();
+>>> +	pool = rcu_dereference(sq->xsk.pool);
+>>> +	if (pool) {
+>>> +		work = virtnet_xsk_run(sq, pool, budget, true);
+>>> +		rcu_read_unlock();
+>>> +	} else {
+>>> +		rcu_read_unlock();
+>>> +		free_old_xmit_skbs(sq, true);
+>>> +	}
+>>>    	__netif_tx_unlock(txq);
+>>>
+>>> -	virtqueue_napi_complete(napi, sq->vq, 0);
+>>> +	if (work < budget)
+>>> +		virtqueue_napi_complete(napi, sq->vq, 0);
+>>>
+>>>    	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
+>>>    		netif_tx_wake_queue(txq);
+>>>
+>>> -	return 0;
+>>> +	return work;
 >>
->> I think it's better not open code things like this. How about introduce
->> new parameters in xp_assign_dev()?
-> xp_assign_dev is called by the user, we should let xsk perceive that the current
-> dev does not directly use dma. Is it possible to use dev->priv_flags? I only
-> know that this is the case with virtio-net!!
+>> Need a separate patch to "fix" the budget returned by poll_tx here.
+> I will merge #5 #7 #8 into #4, which is indeed more reasonable, but maybe this
+> patch will be too big.
+>
+> But I don't understand, what you are talking about here, what is the separate
+> patch, when this is squashed into patch 4?
 
 
-Ok, then it should be fine, but we need a better name other than 
-"check_dma". Maybe "use_dma_addr" instead.
+So you modify the behaviour of NAPI poll to return the number of work 
+now (0 is returned previously). Do we need to do that for non XSK part 
+as well (which seems to be the behaviour of other nic driver)? If yes, 
+this part should be a separated patch to be more bisect friendly.
 
 Thanks
 
 
 >
-> Thanks very much.
->
->>
->>> +		if (xdp->xsk.pool)
->>> +			return virtnet_xsk_pool_enable(dev, xdp->xsk.pool,
->>> +						       xdp->xsk.queue_id);
->>> +		else
->>> +			return virtnet_xsk_pool_disable(dev, xdp->xsk.queue_id);
->>>    	default:
->>>    		return -EINVAL;
->>>    	}
->>
 >> Thanks
 >>
+>>
+>>>    }
+>>>
+>>>    static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
 
