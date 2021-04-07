@@ -2,139 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F31435768A
-	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 23:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D447A357719
+	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 23:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhDGVRI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Apr 2021 17:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhDGVRI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Apr 2021 17:17:08 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73030C061760;
-        Wed,  7 Apr 2021 14:16:58 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id n12so250114ybf.8;
-        Wed, 07 Apr 2021 14:16:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3O1UY45/jWO/BQZWJoj52TQjaRoRPI7XxTD27HudHmQ=;
-        b=icwGjw1OD0LnP09NN6vVmx5HYkxTM8IMdOPHZYcxyyuC9bb3I0N20RzdBPnsbptuwZ
-         TjTR8JuUZQI1Z7t5flMqu1FF8SZJbdoj3dnP4fDLG2sCzncQNczlmugjiwG3NjsAzP5c
-         On4NWF85O2j0vUH3cwmOZYYyp5GI5x67AY6VaD5b3p6npgFTv8Xh5nV6ivf62VS7E4dp
-         FMrhsWu0ZDc/nimY783MvtkuS/yiXWIrPYgiMQ2hGfX6pmRJz4QW0z0z1fhqethpjQ/X
-         DeTXJQ5fSEoLyICs7W69FI3J/L+i4GJEE3+oZdgTLeo8ljButapPk3a2zNIindfXbf5s
-         onww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3O1UY45/jWO/BQZWJoj52TQjaRoRPI7XxTD27HudHmQ=;
-        b=Y6vIuOs6CLXYFQikup3vZRuHfwkc9nOtByRu+0hCj4Hk1XPmhKZoQFRWGDnhl4MSbB
-         TnoXhuUolERF+1piBjIV3/e6RYqH5sOmuvPpIxcx/xkcOV3dQfRGabi8bYk1+dgcjiL5
-         /ZP1QVke+wlz7Q2lc3cH6eemR3hSx7IzldIFsS/jfzSwYbXEEIdxbjCwIqUgyWKMcTNe
-         jo4v1Mo6TkGataDC1uiIdF385eQGwr2DDW1ME64uV4Zog2JQ3VAOcsVc2nl/dZT0D+Vb
-         fDgJ8UFIF8GLSnDTtekcjWJu643kAX2xBQel+9jCwZGvAn8lc8nO4EyPQqGNoRh3qz8g
-         tJvQ==
-X-Gm-Message-State: AOAM530ihiddrIkcUIuSokXGizUUPZUL+z00dFPPN1agWyC6FKjPe2oq
-        N6Zy6zX2HZus/LIw+66cnBH2YaGDClPTtKbxvFs=
-X-Google-Smtp-Source: ABdhPJxXO4Mu/o54Xpk7t60PBmspEOIMbelwxz0OhBrLE+ZvykEXC5MwQM5SwiXs8eDRg5TziHNyjKk11lcsWYPOagI=
-X-Received: by 2002:a25:d87:: with SMTP id 129mr7291662ybn.260.1617830217744;
- Wed, 07 Apr 2021 14:16:57 -0700 (PDT)
+        id S234168AbhDGVqp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Apr 2021 17:46:45 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:40791 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234143AbhDGVqo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 7 Apr 2021 17:46:44 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7A3655C005D;
+        Wed,  7 Apr 2021 17:46:33 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 07 Apr 2021 17:46:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=r69jFNtPYMJmCAhPcCZ3L+qjCl
+        ChR6gNTOq2XMQYtQQ=; b=OqQIvQ1uZKwgHjj/kcphq7iaZ7o9yTt9CctVAeDj6+
+        hTF6QX1cHj6JHh87LQGCi0dqRyry8cLpLbERV6D1b1eK4g8E+WgYi2eT27OhO3uD
+        RzhryrfCxH6gxMBE2hwPAxaSsscfWIGgvdquY8uG98jJJ1kCSZllT1z0MYyAu3O2
+        hwlEqRXIUXokV7s/ZyvzE4OXj8DPS3G8iA0iX6nq1Xkdrh6yti0dt2qBSOPIxjQN
+        5fNtwF6P7sgGitE31umRXXEvh+8ilR1sN/nb2xvQxtzsE1w9exHDTwg56gFdYVqI
+        qqpERmBSR4KkFaIP8ogzBGtfzUauFkfiYlZ6oqXQSAbQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=r69jFNtPYMJmCAhPc
+        CZ3L+qjClChR6gNTOq2XMQYtQQ=; b=lLc4lLXaLNeqrRCFt5Pso8k9QTg8KQYrS
+        bodqzIjYCxBsY4IvSyEbOLopro7UhqXyKNjcUyBGAejGk5JYsvWhW/va+HQsm/Jx
+        j0HdwXrNZDlEd+EqQvZiAlwELfR0hwvJ06zqx5mfekVEEgcSOiamPhQ2GaOz0SKt
+        4jnzSIV3nAtl8p64DVl94nFic9fF80gJvVR5EWDwREf6lmLcgW5ytXjR+uQF/rZW
+        wCPNU9opn/QnVI+iKFPaeobKkleBRuC3//dQjIBV0wBTl8FeEG3F4uRsbXC9KuhE
+        tOxItTX6p4fiQz9TyhTSY0py2kZwo8xTffT4DmUUOPpFejfjf4XNA==
+X-ME-Sender: <xms:OShuYIdl7otXIPPxEF_bCMFdEEjcQd1XOMHPXbZm-xjEuQjz4tBcHA>
+    <xme:OShuYKOgIrakxBlSWq9SyqNCmApjYVPKrQVnaMM_B75rwxkUq-w7HMvcdfs5F4VeG
+    -ZJWNIPUzKG3gH-xQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejkedgtdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeifffgledvffeitdeljedvte
+    effeeivdefheeiveevjeduieeigfetieevieffffenucfkphepudeifedruddugedrudef
+    vddrjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:OShuYJgvtRB1COqJ7NeuHRqjw580JpVqzl0dOWcTfN7vi5yIWXU3Gg>
+    <xmx:OShuYN8_69oDFjoWb0xBfH5nf1bIZ4yGIBx6LlThBYV1IHGwKs3zhg>
+    <xmx:OShuYEtQZBEKgSgXGAZZT8flBiHC17L0GdbJqTO5tFK8NtwLvDa_xA>
+    <xmx:OShuYIg67LADkOcavzQmxLDA9p5x2pU5XMvPIBphZ04gNzAfd4MUjg>
+Received: from dlxu-fedora-R90QNFJV.thefacebook.com (unknown [163.114.132.7])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4484124005A;
+        Wed,  7 Apr 2021 17:46:31 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, jolsa@kernel.org, hannes@cmpxchg.org,
+        yhs@fb.com
+Subject: [RFC bpf-next 0/1] bpf: Add page cache iterator
+Date:   Wed,  7 Apr 2021 14:46:10 -0700
+Message-Id: <cover.1617831474.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-References: <20210406185806.377576-1-pctammela@mojatatu.com>
- <CAOftzPgmZSB7oWDLLoO-NEDq3s8LdLxSXdhoaB2feScuTP-JSA@mail.gmail.com>
- <CAEf4BzaBJH-=iO-P6ZTj3zmycz0VESzBzpZkbVOVTvPaZ9OEaA@mail.gmail.com> <CAKY_9u0KV0dW2_xW9g67r9YWAh9UjVpTAsEVWs3xF2htzzVAYQ@mail.gmail.com>
-In-Reply-To: <CAKY_9u0KV0dW2_xW9g67r9YWAh9UjVpTAsEVWs3xF2htzzVAYQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 7 Apr 2021 14:16:46 -0700
-Message-ID: <CAEf4BzbUC9JxhD9cpRX6C0oY2GgkEQMQsniv=AixF63TgNcSsQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: clarify flags in ringbuf helpers
-To:     Pedro Tammela <pctammela@gmail.com>
-Cc:     Joe Stringer <joe@cilium.io>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
-        Pedro Tammela <pctammela@mojatatu.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 1:10 PM Pedro Tammela <pctammela@gmail.com> wrote:
->
-> Em qua., 7 de abr. de 2021 =C3=A0s 16:58, Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> escreveu:
-> >
-> > On Wed, Apr 7, 2021 at 11:43 AM Joe Stringer <joe@cilium.io> wrote:
-> > >
-> > > Hi Pedro,
-> > >
-> > > On Tue, Apr 6, 2021 at 11:58 AM Pedro Tammela <pctammela@gmail.com> w=
-rote:
-> > > >
-> > > > In 'bpf_ringbuf_reserve()' we require the flag to '0' at the moment=
-.
-> > > >
-> > > > For 'bpf_ringbuf_{discard,submit,output}' a flag of '0' might send =
-a
-> > > > notification to the process if needed.
-> > > >
-> > > > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
-> > > > ---
-> > > >  include/uapi/linux/bpf.h       | 7 +++++++
-> > > >  tools/include/uapi/linux/bpf.h | 7 +++++++
-> > > >  2 files changed, 14 insertions(+)
-> > > >
-> > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > > index 49371eba98ba..8c5c7a893b87 100644
-> > > > --- a/include/uapi/linux/bpf.h
-> > > > +++ b/include/uapi/linux/bpf.h
-> > > > @@ -4061,12 +4061,15 @@ union bpf_attr {
-> > > >   *             of new data availability is sent.
-> > > >   *             If **BPF_RB_FORCE_WAKEUP** is specified in *flags*,=
- notification
-> > > >   *             of new data availability is sent unconditionally.
-> > > > + *             If **0** is specified in *flags*, notification
-> > > > + *             of new data availability is sent if needed.
-> > >
-> > > Maybe a trivial question, but what does "if needed" mean? Does that
-> > > mean "when the buffer is full"?
-> >
-> > I used to call it ns "adaptive notification", so maybe let's use that
-> > term instead of "if needed"? It means that in kernel BPF ringbuf code
-> > will check if the user-space consumer has caught up and consumed all
-> > the available data. In that case user-space might be waiting
-> > (sleeping) in epoll_wait() already and not processing samples
-> > actively. That means that we have to send notification, otherwise
-> > user-space might never wake up. But if the kernel sees that user-space
-> > is still processing previous record (consumer position < producer
-> > position), then we can bypass sending another notification, because
-> > user-space consumer protocol dictates that it needs to consume all the
-> > record until consumer position =3D=3D producer position. So no
-> > notification is necessary for the newly submitted sample, as
-> > user-space will eventually see it without notification.
-> >
-> > Of course there is careful writes and memory ordering involved to make
-> > sure that we never miss notification.
-> >
-> > Does someone want to try to condense it into a succinct description? ;)
->
-> OK.
->
-> I can try to condense this and perhaps add it as code in the comment?
+There currently does not exist a way to answer the question: "What is in
+the page cache?". There are various heuristics and counters but nothing
+that can tell you anything like:
 
-Sure, though there is already a brief comment to that effect. But
-having high-level explanation in uapi/linux/bpf.h would be great for
-users, though.
+  * 3M from /home/dxu/foo.txt
+  * 5K from ...
+  * etc.
+
+The answer to the question is particularly useful in the stacked
+container world. Stacked containers implies multiple containers are run
+on the same physical host. Memory is precious resource on some (if not
+most) of these systems. On these systems, it's useful to know how much
+duplicated data is in the page cache. Once you know the answer, you can
+do something about it. One possible technique would be bind mount common
+items from the root host into each container.
+
+NOTES: 
+
+  * This patch compiles and (maybe) works -- totally not fully tested
+    or in a final state
+
+  * I'm sending this early RFC to get comments on the general approach.
+    I chatted w/ Johannes a little bit and it seems like the best way to
+    do this is through superblock -> inode -> address_space iteration
+    rather than going from numa node -> LRU iteration
+
+  * I'll most likely add a page_hash() helper (or something) that hashes
+    a page so that userspace can more easily tell which pages are
+    duplicate
+
+Daniel Xu (1):
+  bpf: Introduce iter_pagecache
+
+ kernel/bpf/Makefile         |   2 +-
+ kernel/bpf/pagecache_iter.c | 293 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 294 insertions(+), 1 deletion(-)
+ create mode 100644 kernel/bpf/pagecache_iter.c
+
+-- 
+2.26.3
+
