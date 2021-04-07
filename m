@@ -2,401 +2,443 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A0335771D
-	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 23:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65655357730
+	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 23:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbhDGVqs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Apr 2021 17:46:48 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:44583 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234143AbhDGVqr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 7 Apr 2021 17:46:47 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 482455C005D;
-        Wed,  7 Apr 2021 17:46:37 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 07 Apr 2021 17:46:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=BSlRvWdKiUN+u
-        S17kDchw8iKNxB+3LsjnL5ICnMGYJI=; b=Y0QqS0hxPXBX/OuXcoCv701p9Q7LS
-        GsFyABqe3JyksYig1rSAwFwI/cVlZ+bA6ge+Be7FwOV22KhYWoat36tFlo36V8fG
-        L7r3N9/kkZHZrtGp6aGE2xdWac5Z8xlpJhWxThboAT42hXUwQQn6OpamFpscWxg5
-        rwPGzErIgjNBbE3sqJ3zskyZT+/kL/uJZlvCoGz+8AoHlHpxYGR5+DneR42TM07x
-        P4vmmIlLtutjeOB56fN7vobbh9W4ko7E8e8DwowC0OW9cQkRAjQcQmaASYP37vbT
-        GL4UGOtjT9pcWLQKA12F6veMMEChj4hT8FXv1A2AVKcg4Z6xODaYBVZrA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=BSlRvWdKiUN+uS17kDchw8iKNxB+3LsjnL5ICnMGYJI=; b=D0JAqJGF
-        ImGVY1iym9knuB7JC8X85hqZswvL//BO2P/Ux2pS8r8nhKj+8ot5N5GVsttqmK0S
-        XP1ddJX4EKZNr3Garj/5xg5scsupXRday7+Clgp7vCEk4rqOLpfyE0ECPwyGvo9J
-        n1YoSGevKbuNPOX2rewvmh5Dqyojfps/qtRM8fhA1cqQwQBRpHz6lGGJAYRuurY9
-        L20ID0Yu4eBomxAv6PTmKLjM7nTrJ+bEmwTg1KCzdJK2BunnUbgtfo9G/rmcrUpZ
-        VjfYWF4qOwhvbZPNZmXWmc/k2YNrZVB87pzzJ++SXRjxoMKEK+cBwRdFn8FGwtaj
-        1PqXjM0B6e8TDw==
-X-ME-Sender: <xms:PShuYOTXFzxvyO0SbKNu5ftiU9cX_xEPpyEf7vkTv0OHQRpwDHQDDQ>
-    <xme:PShuYEcy_U43HWN2eG2Cr1OHigb0PI3_0DcQytok3KtIjLNqPuOk1bSk5l3RzNiAc
-    kQuT8IsX86w99BTrw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejkedgtdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    fufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegu
-    gihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgkeduleekhfetvefhge
-    fgvdegfeejfefguedvuddthffggffhhedtueeuteefieenucfkphepudeifedruddugedr
-    udefvddrjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:PShuYKAGI1C2pyvng_Le8CmuVjC1EOSle7cdHE-dkn8gbfFZRVi5bQ>
-    <xmx:PShuYOnxqsS0D5WBBO8WCi1JfC13Z9KEEcWFMHS3k826hH7VPJilPg>
-    <xmx:PShuYNexxtZLA4bVZ1OeQPnlw9Qv6Pif1wZPg7AdbHYmqvGD4HlZsg>
-    <xmx:PShuYE7WAM2l0wzyRsVobZBuPohp-wZXrenArNcHlPLg9YDmgbdIIA>
-Received: from dlxu-fedora-R90QNFJV.thefacebook.com (unknown [163.114.132.7])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7A0C924005C;
-        Wed,  7 Apr 2021 17:46:35 -0400 (EDT)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, jolsa@kernel.org, hannes@cmpxchg.org,
-        yhs@fb.com
-Subject: [RFC bpf-next 1/1] bpf: Introduce iter_pagecache
-Date:   Wed,  7 Apr 2021 14:46:11 -0700
-Message-Id: <22bededbd502e0df45326a54b3056941de65a101.1617831474.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <cover.1617831474.git.dxu@dxuuu.xyz>
-References: <cover.1617831474.git.dxu@dxuuu.xyz>
+        id S233392AbhDGVy0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Apr 2021 17:54:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234434AbhDGVyM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Apr 2021 17:54:12 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 317C3C061762;
+        Wed,  7 Apr 2021 14:54:02 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id o198so374863yba.2;
+        Wed, 07 Apr 2021 14:54:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AvfD1dcQstydTAnPhC7lkNFIzoP257wsWncfM4nrT4Y=;
+        b=hNfwbo6dC9Ul07Zt/6R2fzryyvF/5PINP8siT6sLhYaL1joZku+yETT8kmcFfrFFpA
+         QqGe0+C91d5vXOMOEOTFl88Nr1MZrL8xlIVrKvnFw6VoPLLpk+uJS29Xn5Crwxukwt4A
+         6yjp97ryO4qhXrcZqUVReE5M3bZCsne/qs37+YfljI/4+YCentHGloOmAj6kXuBhD+Uq
+         dCyJBRgUKpxsd6kkAuY5u+s/zmE+ojZFVp/L5dxi6L/Lqb8fexh5y9F6qJuHeWIg3h89
+         R5ByOXrriEiyjcS8e+SqEWiWZJXxJHbl75wNrecIh7Ni7UBszEMdMCKrbPLq1G02dc64
+         nCGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AvfD1dcQstydTAnPhC7lkNFIzoP257wsWncfM4nrT4Y=;
+        b=rccKwX28QuNfjvtwJH+yExvNbQuaC6DG0cvg3TZBXGLOSKYE1bTsReaCM44b4MqNXf
+         WnTsquxTPl6V8+e1v4NbUqdzIq67JkfFFNveRAF+bhmIHy8FtqeT7LL1fnVXY1nlsgSo
+         MF2gBwt6r5SVSQFDKd68H+WIxGssMnYQbMuU6k5Bm7HOxfY+8ewyZU5heIG9WEvKScVM
+         Y+hv5dR7QqwW20aCpMDlKtUWZ1+GPHhhrmwWfLvDpfB8t34txV91qcRlFC3BMy7yiRJ9
+         zafnvZcdAjZNRJuTbuTReF2wJMXsYBIxPZr8Zx37U7y3Eh9d/M4oaDiVnvZx/A3q6TBN
+         +YIg==
+X-Gm-Message-State: AOAM530TjOfVS51ZPHifPMajyRlvkalzLvelr9cUvZPxlErDtAIER7sn
+        qsGvF84oxOd4ww5bnBpDM2qXryqr6PVtNfhtuQo=
+X-Google-Smtp-Source: ABdhPJwCexO+5xqwv+wiegBIH7/33vukqRH7pzhAjhurC6pJ/KQYXXHcMf+WIQr/1ZH8slCcRp6K7GKZofTzPH/kHt0=
+X-Received: by 2002:a05:6902:6a3:: with SMTP id j3mr7233781ybt.403.1617832441317;
+ Wed, 07 Apr 2021 14:54:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210324022211.1718762-1-revest@chromium.org> <20210324022211.1718762-2-revest@chromium.org>
+ <CAEf4BzZP6uK_ZcKJZsESWrMHG5kEG_swRYJwqsaiD95CEOdJ5g@mail.gmail.com>
+ <CAEf4BzYVTHm5Zrr7RPoRB7EL9nsE5kUzciHEv5fPipbMoEtQxA@mail.gmail.com> <CABRcYmJpRyqbeZmMT=SxAg95p8ndtEbTR9EUWK0CfSNhSF3egw@mail.gmail.com>
+In-Reply-To: <CABRcYmJpRyqbeZmMT=SxAg95p8ndtEbTR9EUWK0CfSNhSF3egw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 7 Apr 2021 14:53:50 -0700
+Message-ID: <CAEf4BzZVEGM4esi-Rz67_xX_RTDrgxViy0gHfpeauECR5bmRNA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/6] bpf: Factorize bpf_trace_printk and bpf_seq_printf
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit introduces the bpf page cache iterator. This iterator allows
-users to run a bpf prog against each page in the "page cache".
-Internally, the "page cache" is extremely tied to VFS superblock + inode
-combo. Because of this, iter_pagecache will only examine pages in the
-caller's mount namespace.
+On Tue, Apr 6, 2021 at 8:35 AM Florent Revest <revest@chromium.org> wrote:
+>
+> [Sorry for the late replies, I'm just back from a long easter break :)]
+>
+> On Fri, Mar 26, 2021 at 11:51 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> > On Fri, Mar 26, 2021 at 2:53 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > > On Tue, Mar 23, 2021 at 7:23 PM Florent Revest <revest@chromium.org> wrote:
+> > > > Unfortunately, the implementation of the two existing helpers already
+> > > > drifted quite a bit and unifying them entailed a lot of changes:
+> > >
+> > > "Unfortunately" as in a lot of extra work for you? I think overall
+> > > though it was very fortunate that you ended up doing it, all
+> > > implementations are more feature-complete and saner now, no? Thanks a
+> > > lot for your hard work!
+>
+> Ahah, "unfortunately" a bit of extra work for me, indeed. But I find
+> this kind of refactoring patches even harder to review than to write
+> so thank you too!
+>
+> > > > - bpf_trace_printk always expected fmt[fmt_size] to be the terminating
+> > > >   NULL character, this is no longer true, the first 0 is terminating.
+> > >
+> > > You mean if you had bpf_trace_printk("bla bla\0some more bla\0", 24)
+> > > it would emit that zero character? If yes, I don't think it was a sane
+> > > behavior anyways.
+>
+> The call to snprintf in bpf_do_trace_printk would eventually ignore
+> "some more bla" but the parsing done in bpf_trace_printk would indeed
+> read the whole string.
+>
+> > > This is great, you already saved some lines of code! I suspect I'll
+> > > have some complaints about mods (it feels like this preample should
+> > > provide extra information about which arguments have to be read from
+> > > kernel/user memory, but I'll see next patches first.
+> >
+> > Disregard the last part (at least for now). I had a mental model that
+> > it should be possible to parse a format string once and then remember
+> > "instructions" (i.e., arg1 is long, arg2 is string, and so on). But
+> > that's too complicated, so I think re-parsing the format string is
+> > much simpler.
+>
+> I also wanted to do that originally but realized it would keep a lot
+> of the complexity in the helpers themselves and not really move the
+> needle.
+>
+> > > > +/* Horrid workaround for getting va_list handling working with different
+> > > > + * argument type combinations generically for 32 and 64 bit archs.
+> > > > + */
+> > > > +#define BPF_CAST_FMT_ARG(arg_nb, args, mod)                            \
+> > > > +       ((mod[arg_nb] == BPF_PRINTF_LONG_LONG ||                        \
+> > > > +        (mod[arg_nb] == BPF_PRINTF_LONG && __BITS_PER_LONG == 64))     \
+> > > > +         ? args[arg_nb]                                                \
+> > > > +         : ((mod[arg_nb] == BPF_PRINTF_LONG ||                         \
+> > > > +            (mod[arg_nb] == BPF_PRINTF_INT && __BITS_PER_LONG == 32))  \
+> > >
+> > > is this right? INT is always 32-bit, it's only LONG that differs.
+> > > Shouldn't the rule be
+> > >
+> > > (LONG_LONG || LONG && __BITS_PER_LONG) -> (__u64)args[args_nb]
+> > > (INT || LONG && __BITS_PER_LONG == 32) -> (__u32)args[args_nb]
+> > >
+> > > Does (long) cast do anything fancy when casting from u64? Sorry, maybe
+> > > I'm confused.
+>
+> To be honest, I am also confused by that logic... :p My patch tries to
+> conserve exactly the same logic as "88a5c690b6 bpf: fix
+> bpf_trace_printk on 32 bit archs" because I was also afraid of missing
+> something and could not test it on 32 bit arches. From that commit
+> description, it is unclear to me what "u32 and long are passed
+> differently to u64, since the result of C conditional operators
+> follows the "usual arithmetic conversions" rules" means. Maybe Daniel
+> can comment on this ?
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- kernel/bpf/Makefile         |   2 +-
- kernel/bpf/pagecache_iter.c | 293 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 294 insertions(+), 1 deletion(-)
- create mode 100644 kernel/bpf/pagecache_iter.c
+Yeah, no idea. Seems like the code above should work fine for 32 and
+64 bitness and both little- and big-endianness.
 
-diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-index 7f33098ca63f..3deb6a8d3f75 100644
---- a/kernel/bpf/Makefile
-+++ b/kernel/bpf/Makefile
-@@ -6,7 +6,7 @@ cflags-nogcse-$(CONFIG_X86)$(CONFIG_CC_IS_GCC) := -fno-gcse
- endif
- CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-nogcse-yy)
- 
--obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
-+obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o pagecache_iter.o map_iter.o task_iter.o prog_iter.o
- obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
- obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
- obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
-diff --git a/kernel/bpf/pagecache_iter.c b/kernel/bpf/pagecache_iter.c
-new file mode 100644
-index 000000000000..8442ab0d4221
---- /dev/null
-+++ b/kernel/bpf/pagecache_iter.c
-@@ -0,0 +1,293 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2021 Facebook */
-+
-+#include <linux/bpf.h>
-+#include <linux/btf_ids.h>
-+#include <linux/init.h>
-+#include <linux/mm_types.h>
-+#include <linux/mnt_namespace.h>
-+#include <linux/nsproxy.h>
-+#include <linux/pagemap.h>
-+#include <linux/radix-tree.h>
-+#include <linux/seq_file.h>
-+#include "../../fs/mount.h"
-+
-+struct bpf_iter_seq_pagecache_info {
-+	struct mnt_namespace *ns;
-+	struct radix_tree_root superblocks;
-+	struct super_block *cur_sb;
-+	struct inode *cur_inode;
-+	unsigned long cur_page_idx;
-+};
-+
-+static struct super_block *goto_next_sb(struct bpf_iter_seq_pagecache_info *info)
-+{
-+	struct super_block *sb = NULL;
-+	struct radix_tree_iter iter;
-+	void **slot;
-+
-+	radix_tree_for_each_slot(slot, &info->superblocks, &iter,
-+				 ((unsigned long)info->cur_sb + 1)) {
-+		sb = (struct super_block *)iter.index;
-+		break;
-+	}
-+
-+	info->cur_sb = sb;
-+	info->cur_inode = NULL;
-+	info->cur_page_idx = 0;
-+	return sb;
-+}
-+
-+static bool inode_unusual(struct inode *inode) {
-+	return ((inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) ||
-+		(inode->i_mapping->nrpages == 0));
-+}
-+
-+static struct inode *goto_next_inode(struct bpf_iter_seq_pagecache_info *info)
-+{
-+	struct inode *prev_inode = info->cur_inode;
-+	struct inode *inode;
-+
-+retry:
-+	BUG_ON(!info->cur_sb);
-+	spin_lock(&info->cur_sb->s_inode_list_lock);
-+
-+	if (!info->cur_inode) {
-+		list_for_each_entry(inode, &info->cur_sb->s_inodes, i_sb_list) {
-+			spin_lock(&inode->i_lock);
-+			if (inode_unusual(inode)) {
-+				spin_unlock(&inode->i_lock);
-+				continue;
-+			}
-+			__iget(inode);
-+			spin_unlock(&inode->i_lock);
-+			info->cur_inode = inode;
-+			break;
-+		}
-+	} else {
-+		inode = info->cur_inode;
-+		info->cur_inode = NULL;
-+		list_for_each_entry_continue(inode, &info->cur_sb->s_inodes,
-+					     i_sb_list) {
-+			spin_lock(&inode->i_lock);
-+			if (inode_unusual(inode)) {
-+				spin_unlock(&inode->i_lock);
-+				continue;
-+			}
-+			__iget(inode);
-+			spin_unlock(&inode->i_lock);
-+			info->cur_inode = inode;
-+			break;
-+		}
-+	}
-+
-+	/* Seen all inodes in this superblock */
-+	if (!info->cur_inode) {
-+		spin_unlock(&info->cur_sb->s_inode_list_lock);
-+		if (!goto_next_sb(info)) {
-+			inode = NULL;
-+			goto out;
-+		}
-+
-+		goto retry;
-+	}
-+
-+	spin_unlock(&info->cur_sb->s_inode_list_lock);
-+	info->cur_page_idx = 0;
-+out:
-+	iput(prev_inode);
-+	return info->cur_inode;
-+}
-+
-+static struct page *goto_next_page(struct bpf_iter_seq_pagecache_info *info)
-+{
-+	struct page *page, *ret = NULL;
-+	unsigned long idx;
-+
-+	rcu_read_lock();
-+retry:
-+	BUG_ON(!info->cur_inode);
-+	ret = NULL;
-+	xa_for_each_start(&info->cur_inode->i_data.i_pages, idx, page,
-+			  info->cur_page_idx) {
-+		if (!page_cache_get_speculative(page))
-+			continue;
-+
-+		ret = page;
-+		info->cur_page_idx = idx + 1;
-+		break;
-+	}
-+
-+	if (!ret) {
-+		/* Seen all inodes and superblocks */
-+		if (!goto_next_inode(info))
-+			goto out;
-+
-+		goto retry;
-+	}
-+
-+out:
-+	rcu_read_unlock();
-+	return ret;
-+}
-+
-+static void *pagecache_seq_start(struct seq_file *seq, loff_t *pos)
-+{
-+	struct bpf_iter_seq_pagecache_info *info = seq->private;
-+	struct page *page;
-+
-+	if (!info->cur_sb && !goto_next_sb(info))
-+		return NULL;
-+	if (!info->cur_inode && !goto_next_inode(info))
-+		return NULL;
-+
-+	page = goto_next_page(info);
-+	if (!page)
-+		return NULL;
-+
-+	if (*pos == 0)
-+		++*pos;
-+
-+	return page;
-+
-+}
-+
-+static void *pagecache_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-+{
-+	struct bpf_iter_seq_pagecache_info *info = seq->private;
-+	struct page *page;
-+
-+	++*pos;
-+	put_page((struct page *)v);
-+	page = goto_next_page(info);
-+	if (!page)
-+		return NULL;
-+
-+	return page;
-+}
-+
-+struct bpf_iter__pagecache {
-+	__bpf_md_ptr(struct bpf_iter_meta *, meta);
-+	__bpf_md_ptr(struct page *, page);
-+};
-+
-+DEFINE_BPF_ITER_FUNC(pagecache, struct bpf_iter_meta *meta, struct page *page)
-+
-+static int __pagecache_seq_show(struct seq_file *seq, struct page *page,
-+				bool in_stop)
-+{
-+	struct bpf_iter_meta meta;
-+	struct bpf_iter__pagecache ctx;
-+	struct bpf_prog *prog;
-+
-+	meta.seq = seq;
-+	prog = bpf_iter_get_info(&meta, in_stop);
-+	if (!prog)
-+		return 0;
-+
-+	meta.seq = seq;
-+	ctx.meta = &meta;
-+	ctx.page = page;
-+	return bpf_iter_run_prog(prog, &ctx);
-+}
-+
-+static int pagecache_seq_show(struct seq_file *seq, void *v)
-+{
-+	return __pagecache_seq_show(seq, v, false);
-+}
-+
-+static void pagecache_seq_stop(struct seq_file *seq, void *v)
-+{
-+	(void)__pagecache_seq_show(seq, v, true);
-+	if (v)
-+		put_page((struct page *)v);
-+}
-+
-+static int init_seq_pagecache(void *priv_data, struct bpf_iter_aux_info *aux)
-+{
-+	struct bpf_iter_seq_pagecache_info *info = priv_data;
-+	struct radix_tree_iter iter;
-+	struct super_block *sb;
-+	struct mount *mnt;
-+	void **slot;
-+	int err;
-+
-+	info->ns = current->nsproxy->mnt_ns;
-+	get_mnt_ns(info->ns);
-+	INIT_RADIX_TREE(&info->superblocks, GFP_KERNEL);
-+
-+	spin_lock(&info->ns->ns_lock);
-+	list_for_each_entry(mnt, &info->ns->list, mnt_list) {
-+		sb = mnt->mnt.mnt_sb;
-+
-+		/* The same mount may be mounted in multiple places */
-+		if (radix_tree_lookup(&info->superblocks, (unsigned long)sb))
-+			continue;
-+
-+		err = radix_tree_insert(&info->superblocks,
-+				        (unsigned long)sb, (void *)1);
-+		if (err)
-+			goto out;
-+	}
-+
-+	radix_tree_for_each_slot(slot, &info->superblocks, &iter, 0) {
-+		sb = (struct super_block *)iter.index;
-+		atomic_inc(&sb->s_active);
-+	}
-+
-+	err = 0;
-+out:
-+	spin_unlock(&info->ns->ns_lock);
-+	return err;
-+}
-+
-+static void fini_seq_pagecache(void *priv_data)
-+{
-+	struct bpf_iter_seq_pagecache_info *info = priv_data;
-+	struct radix_tree_iter iter;
-+	struct super_block *sb;
-+	void **slot;
-+
-+	radix_tree_for_each_slot(slot, &info->superblocks, &iter, 0) {
-+		sb = (struct super_block *)iter.index;
-+		atomic_dec(&sb->s_active);
-+		radix_tree_delete(&info->superblocks, iter.index);
-+	}
-+
-+	put_mnt_ns(info->ns);
-+}
-+
-+static const struct seq_operations pagecache_seq_ops = {
-+	.start	= pagecache_seq_start,
-+	.next	= pagecache_seq_next,
-+	.stop	= pagecache_seq_stop,
-+	.show	= pagecache_seq_show,
-+};
-+
-+static const struct bpf_iter_seq_info pagecache_seq_info = {
-+	.seq_ops		= &pagecache_seq_ops,
-+	.init_seq_private	= init_seq_pagecache,
-+	.fini_seq_private	= fini_seq_pagecache,
-+	.seq_priv_size		= sizeof(struct bpf_iter_seq_pagecache_info),
-+};
-+
-+static struct bpf_iter_reg pagecache_reg_info = {
-+	.target			= "pagecache",
-+	.ctx_arg_info_size	= 1,
-+	.ctx_arg_info		= {
-+		{ offsetof(struct bpf_iter__pagecache, page),
-+		  PTR_TO_BTF_ID_OR_NULL },
-+	},
-+	.seq_info		= &pagecache_seq_info,
-+};
-+
-+BTF_ID_LIST(btf_page_id)
-+BTF_ID(struct, page)
-+
-+static int __init bpf_pagecache_iter_init(void)
-+{
-+	pagecache_reg_info.ctx_arg_info[0].btf_id = *btf_page_id;
-+	return bpf_iter_reg_target(&pagecache_reg_info);
-+}
-+
-+late_initcall(bpf_pagecache_iter_init);
--- 
-2.26.3
+>
+> > > > +int bpf_printf_preamble(char *fmt, u32 fmt_size, const u64 *raw_args,
+> > > > +                       u64 *final_args, enum bpf_printf_mod_type *mod,
+> > > > +                       u32 num_args)
+> > > > +{
+> > > > +       struct bpf_printf_buf *bufs = this_cpu_ptr(&bpf_printf_buf);
+> > > > +       int err, i, fmt_cnt = 0, copy_size, used;
+> > > > +       char *unsafe_ptr = NULL, *tmp_buf = NULL;
+> > > > +       bool prepare_args = final_args && mod;
+> > >
+> > > probably better to enforce that both or none are specified, otherwise
+> > > return error
+>
+> Fair :)
+>
+> > it's actually three of them: raw_args, mod, and num_args, right? All
+> > three are either NULL or non-NULL.
+>
+> It is a bit tricky to see from that patch but in "3/6 bpf: Add a
+> bpf_snprintf helper" the verifier code calls this function with
+> num_args != 0 to check whether the number of arguments is correct
+> without actually converting anything.
+>
+> Also when the helper gets called, raw_args can come from the BPF
+> program and be NULL but in that case we will also have num_args = 0
+> guaranteed by the helper so the loop will bail out if it encounters a
+> format specifier.
 
+ok, but at least final_args and mod are locked together, so should be
+enforced to be either null or not, right?
+
+>
+> > > > +       enum bpf_printf_mod_type current_mod;
+> > > > +       size_t tmp_buf_len;
+> > > > +       u64 current_arg;
+> > > > +       char fmt_ptype;
+> > > > +
+> > > > +       for (i = 0; i < fmt_size && fmt[i] != '\0'; i++) {
+> > >
+> > > Can we say that if the last character is not '\0' then it's a bad
+> > > format string and return -EINVAL? And if \0 is inside the format
+> > > string, then it's also a bad format string? I wonder what others think
+> > > about this?... I think sanity should prevail.
+>
+> Overall, there are two situations:
+> - bpf_seq_printf, bpf_trace_printk: we have a pointer and size but we
+> are not guaranteed zero-termination
+> - bpf_snprintf: we have a pointer, no size but it's guaranteed to be
+> zero-terminated (by ARG_PTR_TO_CONST_STR)
+>
+> Currently, in the bpf_snprintf helper, I set fmt_size to UINT_MAX and
+> the terminating condition will be fmt[i] == '\0'.
+> As you pointed out a bit further, I got a bit carried away with the
+> refactoring and dropped the zero-termination checks for the existing
+> helpers !
+>
+> So I see two possibilities:
+> - either we check fmt[last] == '\0', add a bail out condition in the
+> loop if we encounter another `\0` and set fmt_size to sprintf(fmt) in
+> the bpf_snprintf verifier and helper code.
+> - or we unconditionally call strnlen(fmt, fmt_size) in
+> bpf_printf_preamble. If no 0 is found, we return an error, if there is
+> one we treat it as the NULL terminating character.
+
+I was thinking about the second one. It is clearly acceptable on BPF
+verifier side, though one might argue that we are doing extra work on
+the BPF helper side. I don't think it matters in practice, so I'll be
+fine with that, if that makes code cleaner and simpler.
+
+>
+> > > > +               if ((!isprint(fmt[i]) && !isspace(fmt[i])) ||
+> > > > +                   !isascii(fmt[i])) {
+> > >
+> > > && always binds tighter than ||, so you can omit extra (). I'd put
+> > > this on a single line as well, but that's a total nit.
+>
+> Neat! :)
+
+I just got a compilation warning in a similar situation yesterday when
+I dropped unnecessary parentheses, so some versions of compilers might
+think it is not a good practice. Just keep that in mind. I don't think
+I care enough.
+
+>
+> > > > +                       err = -EINVAL;
+> > > > +                       goto out;
+> > > > +               }
+> > > >
+> > > >                 if (fmt[i] != '%')
+> > > >                         continue;
+> > > >
+> > > > -               if (fmt_cnt >= 3)
+> > > > -                       return -EINVAL;
+> > > > +               if (fmt[i + 1] == '%') {
+> > > > +                       i++;
+> > > > +                       continue;
+> > > > +               }
+> > > > +
+> > > > +               if (fmt_cnt >= num_args) {
+> > > > +                       err = -EINVAL;
+> > > > +                       goto out;
+> > > > +               }
+> > > >
+> > > >                 /* fmt[i] != 0 && fmt[last] == 0, so we can access fmt[i + 1] */
+> > > >                 i++;
+> > > > -               if (fmt[i] == 'l') {
+> > > > -                       mod[fmt_cnt]++;
+> > > > +
+> > > > +               /* skip optional "[0 +-][num]" width formating field */
+> > >
+> > > typo: formatting
+>
+> Fixed
+>
+> > > > +               while (fmt[i] == '0' || fmt[i] == '+'  || fmt[i] == '-' ||
+> > > > +                      fmt[i] == ' ')
+> > > > +                       i++;
+> > > > +               if (fmt[i] >= '1' && fmt[i] <= '9') {
+> > > >                         i++;
+> > >
+> > > Are we worried about integer overflow here? %123123123123123d
+> > > hopefully won't crash anything, right?
+>
+> I expect that this should be handled gracefully by the subsequent call
+> to snprintf(). Our parsing logic does not guarantee that the format
+> string is 100% legit but it guarantees that it's safe to call
+> vsnprintf with arguments coming from BPF. If the output buffer is too
+> small to hold the output, the output will be truncated.
+>
+> Note that this is already how bpf_seq_printf already works.
+
+Ok, but let's not hope and add the test for this.
+
+>
+> > > > -               } else if (fmt[i] == 'p') {
+> > > > -                       mod[fmt_cnt]++;
+> > > > -                       if ((fmt[i + 1] == 'k' ||
+> > > > -                            fmt[i + 1] == 'u') &&
+> > > > +                       while (fmt[i] >= '0' && fmt[i] <= '9')
+> > > > +                               i++;
+> > >
+> > > whoa, fmt_size shouldn't be ignored
+>
+> Oh no, I'll attach the stone of shame! It all made sense with
+> bpf_snprintf() in mind because, there, we are guaranteed to have a
+> NULL terminated string already but in an excess of refactoring
+> enthusiasm I dropped the zero-termination check for the other helpers.
+>
+> But if we implement either of the options discussed above, then we do
+> not need to constantly check fmt_size.
+
+let's see when we get to the next version ;) I don't remember code
+enough by now, but I'll keep that in mind for the next revision
+anyways
+
+>
+> > > > +               }
+> > > > +
+> > >
+> > > and here if we exhausted all format string but haven't gotten to
+> > > format specified, we should -EINVAL
+> > >
+> > > if (i >= fmt_size) return -EINVAL?
+>
+> Same comment as above, if we are already guaranteed zero-termination
+> by a prior check, we don't need that.
+>
+> > > > +               if (fmt[i] == 'p') {
+> > > > +                       current_mod = BPF_PRINTF_LONG;
+> > > > +
+> > > > +                       if ((fmt[i + 1] == 'k' || fmt[i + 1] == 'u') &&
+> > > >                             fmt[i + 2] == 's') {
+> > >
+> > > right, if i + 2 is ok to access? always be remembering about fmt_size
+>
+> Same.
+>
+> > > >                                 fmt_ptype = fmt[i + 1];
+> > > >                                 i += 2;
+> > > >                                 goto fmt_str;
+> > > >                         }
+> > > >
+> > > > -                       if (fmt[i + 1] == 'B') {
+> > > > -                               i++;
+> > > > +                       if (fmt[i + 1] == 0 || isspace(fmt[i + 1]) ||
+> > > > +                           ispunct(fmt[i + 1]) || fmt[i + 1] == 'K' ||
+> > > > +                           fmt[i + 1] == 'x' || fmt[i + 1] == 'B' ||
+> > > > +                           fmt[i + 1] == 's' || fmt[i + 1] == 'S') {
+> > > > +                               /* just kernel pointers */
+> > > > +                               if (prepare_args)
+> > > > +                                       current_arg = raw_args[fmt_cnt];
+> > >
+> > > fmt_cnt is not the best name, imo. arg_cnt makes more sense
+>
+> Mh, we already have "num_args" that can make it confusing. The way I see it:
+> - the number of format specifiers is the number of %d %s... in the format string
+> - the number of arguments is the number of values given in the raw_args array.
+>
+
+Well, if you read "fmt_cnt" as "number of formatters" then yeah, I
+suppose it's fine. Never mind. Just fmt_cnt and fmt_size refers to
+slightly different "fmt"s, which confused me for a bit, but that's ok.
+You use different naming conventions, which is inconsistent, so maybe
+adjust that for purists (i.e., if you have num_args, then you should
+have num_fmts; or, alternatively, arg_cnt and fmt_cnt). But I'm just
+nitpicking, obviously.
+
+> Potentially, the number of arguments can be higher than the number of
+> format specifiers, for example printf("%d\n", i, j); so calling them
+> differently sorta makes sense.
+> But to be honest I don't have a strong opinion about this and this is
+> mainly just a remaining from the current bpf_seq_printf
+> implementation.
+
+Yep. I think it's ok to allow num_args > fmt_cnt.
+
+>
+> > > > +                       if (!tmp_buf) {
+> > > > +                               used = this_cpu_inc_return(bpf_printf_buf_used);
+> > > > +                               if (WARN_ON_ONCE(used > 1)) {
+> > > > +                                       this_cpu_dec(bpf_printf_buf_used);
+> > > > +                                       return -EBUSY;
+> > > > +                               }
+> > > > +                               preempt_disable();
+> > >
+> > > shouldn't we preempt_disable before we got bpf_printf_buf_used? if we
+> > > get preempted after incrementing counter, buffer will be unusable for
+> > > a while, potentially, right?
+>
+> Good catch :)
+>
+> > > > +                       if (!tmp_buf) {
+> > > > +                               used = this_cpu_inc_return(bpf_printf_buf_used);
+> > > > +                               if (WARN_ON_ONCE(used > 1)) {
+> > > > +                                       this_cpu_dec(bpf_printf_buf_used);
+> > > > +                                       return -EBUSY;
+> > > > +                               }
+> > > > +                               preempt_disable();
+> > > > +                               tmp_buf = bufs->tmp_buf;
+> > > > +                               tmp_buf_len = MAX_PRINTF_BUF_LEN;
+> > > > +                       }
+> > >
+> > > how about helper used like this:
+> > >
+> > > if (try_get_fmt_tmp_buf(&tmp_buf, &tmp_buf_len))
+> > >    return -EBUSY;
+> > >
+> > > which will do nothing if tmp_buf != NULL?
+>
+> Yep, I quite like that. :)
+>
+> > > >  fmt_next:
+> > > > +               if (prepare_args) {
+> > >
+> > > I'd ditch prepare_args variable and just check final_args (and that
+> > > check to ensure both mods and final_args are specified I suggested
+> > > above)
+>
+> Agreed.
+>
+> > > > +                       mod[fmt_cnt] = current_mod;
+> > > > +                       final_args[fmt_cnt] = current_arg;
+> > > > +               }
+> > > >                 fmt_cnt++;
+> > > >         }
+> > >
+> > > [...]
+> > >
+> > > > -
+> > > > -       return __BPF_TP_EMIT();
+> > > > +       err = 0;
+> > > > +out:
+> > > > +       bpf_printf_postamble();
+> > >
+> > > naming is hard, but preamble and postamble reads way too fancy :)
+> > > bpf_printf_prepare() and bpf_printf_cleanup() or something like that
+> > > is a bit more to the point, no?
+>
+> Haha, you're totally right.
+>
+> > > > +       if (data_len & 7 || data_len > MAX_SEQ_PRINTF_VARARGS * 8 ||
+> > > > +           (data_len && !data))
+> > >
+> > > data && !data_len is also an error, no?
+>
+> Isn't that checked by the verifier ?
+
+data_len is ARG_CONST_SIZE_OR_ZERO, so data_len == 0 is allowed by
+verifier. But it's probably no harm either to allow data != NULL and
+data_len = 0. Might simplify some more dynamic use of snprintf(),
+actually.
+
+>
+> I don't mind adding an explicit check for it (data_len ^ data or two
+> clearer conditions ?) but I think that even if this were to happen,
+> this would not be a problem: if we encounter a format specifier,
+> num_args will be zero so bpf_printf_preamble will bail out before it
+> tries to access data.
+
+agree
