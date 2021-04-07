@@ -2,151 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53894356F3A
-	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 16:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC80356F5C
+	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 16:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242437AbhDGOuQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Apr 2021 10:50:16 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:61116 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348807AbhDGOtt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 7 Apr 2021 10:49:49 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137ElifD019711;
-        Wed, 7 Apr 2021 07:49:19 -0700
+        id S234683AbhDGOyz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Apr 2021 10:54:55 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:48682 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230426AbhDGOyt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 7 Apr 2021 10:54:49 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 137Er2sL026976;
+        Wed, 7 Apr 2021 07:54:35 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=zcJAFrGAKjYUxZ/0yOhTbki4mNXby9yceFJAdb1YxfY=;
- b=bdnyLqLOQ7G97moVd2f/rKnB/T6pn/Y+0iti+bQOEHdpKpe25EYAzGGbSrugC7HFyNIp
- CMtYHJsMWrz8N8MtOYjqs67/qF8lp8BmS6YfGNxEDOg+HhSw+qBIHU2D/4d5ESSE2S+C
- 9GHWKbIi+c/QBpUP9dXh0ZqqUE2E3Nze/iY= 
+ bh=Yb9FO5/CgNo9H3FVqgaZ4NASU+H86GLmes5VcdzKTUg=;
+ b=ZXKR0jbByzLFU/stQn13p5ZlUZgDToCirJoGPjmgwhTCycgkiC7awRG3YaQuq2nvvwIx
+ wwUH355gOp+CegAYT4yStuzDb6eUxyivesj47w1Up1QLZk2xUmM5CJbGTcPuiqNqvYYs
+ Ci455L64fh/3WcsPj4ETsGc8GjwAagmtBS4= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37rvanwrdw-16
+        by mx0a-00082601.pphosted.com with ESMTP id 37sew1r0ak-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 07 Apr 2021 07:49:19 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+        Wed, 07 Apr 2021 07:54:34 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 7 Apr 2021 07:49:14 -0700
+ 15.1.2176.2; Wed, 7 Apr 2021 07:54:30 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z2BP182RVzaox9w5zmui+Q+tt5Vs/TLWi9PhDg5+r5iE9JjDTRFVJTfVsuhO6grq14S5Kodj1/Kr6xUMcl1PHv6tjADj2Nxe/fYMzvRd/CnO+a/u66Zvj7kbeET/ctM4X6qNu32mN7ttBDx6ruhaKQuTE8AB1j8lllF8FSq0HQhgclbRZR3HrZ1jMthTbDScOFDfZQhjo9yjKlZmIez3WZPZFYyvQB3/I6ycT6tgZzfr+GuqXd4CVvaigWN3c1Tu+82u0P4M4DV6wo8MGaoPijhrBZv0PezLWJ91FnRpI2BU7uZmJqti7WQwg1mIwpGwHdabdTJs13qKj0CyahcWiA==
+ b=EOy9uCcZaXwzT+SnFGGIkzom8J/DM1sH34sYwTejSst08l4gTteJIJVenuu32P/bm6M+cBZ1kciGGa+HBcy9Zr56xDOLwFnhpWVsbqFNsjIvZyIjzgbOLRQQH30YYOyD3MBLBIPvQGS74D5HtPRJAQNES5l9zTal21lWF5UHYw4hR49krBMVlnx0dli4wVPUemV8UH6tkmg45vXdAJb94WxXCtgg5GJ/pbgb1dPNGUFh8+oSRbT1RtIG1BGkHToHEfEWM5n9J8t7Un9widBI0+sYgqnl7ee2gIBwg2nflSn4w8yEPdRGkV6xLWUbzqDFkPWALmzHEJYZvDh5z6cVgg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zcJAFrGAKjYUxZ/0yOhTbki4mNXby9yceFJAdb1YxfY=;
- b=Clo+2dmXSemG2TT43zwxn4z8PBBEDWMe/ytOlyCdpOrNrx0Ic3X+K0SCl8kmPxTQbhrxKyY7kDshyq43fVUntboOtZSpW+mJwFH9l5hezHNl/NVmeR8/66PiHCoeRDNYpa8bRQDAgwWA0PxgddtUmEqxasrMAHbU42mhCNL84r2lnWTYPADFEPBJNWCxH7bb8UlodVtadUQ4zD21jKRD2n7ejD5taQpjUo33VTIz1uNA6vggp3Cu8fwxtIujIaIdcxUgOy+vNv9av9ISbOFMDT/wT/8qWtJx3H/kStp0eW0jTMvKR21m6PPbP4MHMKNNFfU5UCqvvmvG8RNrPK5Q1A==
+ bh=Yb9FO5/CgNo9H3FVqgaZ4NASU+H86GLmes5VcdzKTUg=;
+ b=HRGH4hWCvGuM31trfq+LQU7MgjNIeAdxkLnlhBehH+u9r77OhUXt+cnPdJl8/ijedAMoD2LrYecsq+BFEBBemAKyVN4Ikr3WwoKjELglLQkdPrAKcr6jySbgEZMDmA7fhVTmIjSCiNmF1Q6hu/zLl3+6I/bbPxo9CVsWI8QRC5o7BX+wCB++4W2zvmqGqLx4y/CfpCNCI5FLH2o98no4Iv7chzJ3GiqOf3f1aIpAKlXnX2ZwutAxpZQvNqi2Dbv2ORAIDY8HchRe1XSanhF1613ToE62g33WQKln2jCLAsBlSChP2z6H6z3fzhxzBcJbzT7q6S0XE2b8RtTxWBSQAQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN7PR15MB4176.namprd15.prod.outlook.com (2603:10b6:806:10c::23) with
+ by SA1PR15MB4659.namprd15.prod.outlook.com (2603:10b6:806:19e::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Wed, 7 Apr
- 2021 14:49:13 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Wed, 7 Apr
+ 2021 14:54:29 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3999.033; Wed, 7 Apr 2021
- 14:49:13 +0000
-Subject: Re: [PATCH kbuild v4] kbuild: add an elfnote for whether vmlinux is
- built with lto
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-CC:     <sedat.dilek@gmail.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+ 14:54:29 +0000
+Subject: Re: [PATCH dwarves] dwarf_loader: handle subprogram ret type with
+ abstract_origin properly
+To:     Arnaldo <arnaldo.melo@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     David Blaikie <dblaikie@gmail.com>, <dwarves@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        bpf <bpf@vger.kernel.org>, <kernel-team@fb.com>,
-        Bill Wendling <morbo@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-References: <20210401232723.3571287-1-yhs@fb.com>
- <CAKwvOdmX8d3XTzJFk5rN_PnOQYJ8bXMrh8DrhzqN=UBNdQiO3g@mail.gmail.com>
- <CA+icZUVKCY4UJfSG_sXjZHwfOQZfBZQu0pj1VZ9cXX4e7w0n6g@mail.gmail.com>
- <c6daf068-ead0-810b-2afa-c4d1c8305893@fb.com>
- <CA+icZUWYQ8wjOYHYrTX52AbEa3nbXco6ZKdqeMwJaZfHuJ5BhA@mail.gmail.com>
- <128db515-14dc-4ff1-eacb-8e48fc1f6ff6@fb.com> <YG23xiRqJLYRtZgQ@kernel.org>
+        Bill Wendling <morbo@google.com>, bpf <bpf@vger.kernel.org>,
+        <kernel-team@fb.com>, Nick Desaulniers <ndesaulniers@google.com>,
+        Jiri Olsa <jolsa@kernel.org>
+References: <20210401213620.3056084-1-yhs@fb.com>
+ <e6f77eb7-b1ce-5dc3-3db7-bf67e7edfc0b@fb.com>
+ <CAENS6EsZ5OX9o=Cn5L1jmx8ucR9siEWbGYiYHCUWuZjLyP3E7Q@mail.gmail.com>
+ <1ef31dd8-2385-1da1-2c95-54429c895d8a@fb.com>
+ <CAENS6EsiRsY1JptWJqu2wH=m4fkSiR+zD8JDD5DYke=ZnJOMrg@mail.gmail.com>
+ <YGckYjyfxfNLzc34@kernel.org> <YGcw4iq9QNkFFfyt@kernel.org>
+ <2d55d22b-d136-82b9-6a0f-8b09eeef7047@fb.com>
+ <82dfd420-96f9-aedc-6cdc-bf20042455db@fb.com>
+ <E9072F07-B689-402C-89F6-545B589EF7E4@gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <08f2eda5-2226-d551-d660-dba981b6ced8@fb.com>
-Date:   Wed, 7 Apr 2021 07:49:09 -0700
+Message-ID: <be7079b4-718c-e4a7-dff4-56543e5854a6@fb.com>
+Date:   Wed, 7 Apr 2021 07:54:26 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.9.0
-In-Reply-To: <YG23xiRqJLYRtZgQ@kernel.org>
+In-Reply-To: <E9072F07-B689-402C-89F6-545B589EF7E4@gmail.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 X-Originating-IP: [2620:10d:c090:400::5:3758]
-X-ClientProxiedBy: MWHPR08CA0054.namprd08.prod.outlook.com
- (2603:10b6:300:c0::28) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: MW4PR03CA0134.namprd03.prod.outlook.com
+ (2603:10b6:303:8c::19) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
+MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::10dc] (2620:10d:c090:400::5:3758) by MWHPR08CA0054.namprd08.prod.outlook.com (2603:10b6:300:c0::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Wed, 7 Apr 2021 14:49:12 +0000
+Received: from [IPv6:2620:10d:c085:21d6::10dc] (2620:10d:c090:400::5:3758) by MW4PR03CA0134.namprd03.prod.outlook.com (2603:10b6:303:8c::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Wed, 7 Apr 2021 14:54:28 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 95a75dad-208c-4818-6112-08d8f9d44f5f
-X-MS-TrafficTypeDiagnostic: SN7PR15MB4176:
+X-MS-Office365-Filtering-Correlation-Id: 753875ad-c3db-46f9-6d77-08d8f9d50b9f
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4659:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN7PR15MB417657542E3EC905A1991C68D3759@SN7PR15MB4176.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <SA1PR15MB46598D0C2A35CBC4997988CBD3759@SA1PR15MB4659.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Oob-TLC-OOBClassifiers: OLM:1265;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HUoq1tg9pn/sO1iyCjW235gMTofPl5arguun7o5swIYziWpKetmxYtjG4mIME3JSYhraLZSyOqu8E4rpHmMeSnxXrVNpxzwG85X/rNlwMbJK8vqzMxAs55VGZvJRPz1xCBeSsuhlkI2Sf1/ROIgckMkAX2d19cHnUu5wfdMmu6RU22+JEZQ2XpWB/+PEt1LVu1QRUwvu1rodDA1ELBHcTDyAUIvtMaMJENo0b2E+3wniuaHWsrRY2Z3QmJXY36U9ZXyexxOPnMA8euyVBpo6r2aA/nThnpnTKBUfQkbFy8xoQbLKF4EUMp7Q/E/89H2sdHWmd4bksN0SFy7Kktb7b5I6KFyLU7d/dTZno6A6p5+HV7EkT4Wgoijb9rWvU7rt93HQlbk9XN0ROCfGMKI18rf7GNRKwpwzAPlmw7mUAwnrG5qUwInFVc5zoyvbBXkpeNd00pH1MPwdpxKdsUK0ux5a/N5ObIquQ2Caoz1A9quEKeBYXRkucDgqKhq/+4ikDMftUb3tD1q1XzjYmdFOhtwE1+LUkNlJU5p+elFdTnKpGquwvCKfuZufwHs/b4ntlpGFoD3t72npfDhXsPYTlKMZU0Ji7hoYxPEb8sTpkf+b6b5xY7Wbl+C5NeNROZJSVieDZq7QNFp7ptFYTYFKw6ZEJfSKcEJzpEScjm9del8MzsadZqCR1XebcupS+C/cGABkTPkVwtxhaZrZVJt+Gca9cSRLD+8WueXWJjNMm7Rv17mqQOUU7cO2qyoOmUc90wsDRrLVOy3PJHA8xjuFuz5lQ2hDgRrnKh1Glwuc6KQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(136003)(346002)(39860400002)(478600001)(2616005)(6666004)(5660300002)(966005)(53546011)(6486002)(31686004)(16526019)(186003)(38100700001)(4326008)(86362001)(8676002)(36756003)(66946007)(66476007)(66556008)(8936002)(316002)(110136005)(54906003)(7416002)(52116002)(31696002)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WTZyTlMreDFLVld3Z0g5TnVtdG4yRms1WkQvQzQ1d3ZuYkkyZG0vbDc4MHZ2?=
- =?utf-8?B?Z1J2c0ZyR0l5dVJCMkVmdlhTa3I3b3RIZzhBcC9WV3JaYUJVYkV3NzNtMGc1?=
- =?utf-8?B?NngwMWZFQ1B0bGhZdGVnQnFJUWlWMGNLNTVPRE9TZWJwYUIvbm9CRjBTamVG?=
- =?utf-8?B?OXh5NmJnMjQyNlZMUnFpTVRqOTJQcjJreWY3d0ZmRlRSdTg0bGphYzR5bUFy?=
- =?utf-8?B?T21pM1VJQmR2NitmS1BYR29hVWpyODlBV0xRVVFobjFqWTllTlo1d3N5eVBX?=
- =?utf-8?B?bnN0Z1BpcXQ2YUxWYThwWTNueXRhcnV1cURKTW5RdVljZFBvVXU3VmgxWTJh?=
- =?utf-8?B?cXd5VzY2aFgxdEFXbHNYcHBwY1k2S2hvZVBuK2VGQmpVSkRGaGp2S1YwdXpK?=
- =?utf-8?B?SzJ5UmRmU1dZdTFOL1ZNelUyZTBBTTR4clZ2eFZHZjNPTVllM3pscmRhQVRU?=
- =?utf-8?B?VXVyUjJaSnpUcGhRazBacVJ5VHVrMnUyM1VBSWpLTDdjQ01XL05rWnZRZmVC?=
- =?utf-8?B?TzVCeFpCbXFNQk50cVRtNHBVbzdGUm1lZFBrMGdsL1ZLRVpQZE1Sd2Q4MHVo?=
- =?utf-8?B?enNwUmNoL2llT294UVRJRjlLSTNZY2hlMjNaNTJrbG9TK0dzYXMveFYxeW96?=
- =?utf-8?B?c25YZWs0NVVlRlNvWlF5eS9uWHZjWWp0MEJuUmNqZGp2cFEzQjByMjlsV2dT?=
- =?utf-8?B?QjRqalhQVDAzek51RFJmNURsbWNOV1phMTA2WFVZYm5vRmt1N2pJRlZGUmFH?=
- =?utf-8?B?S0IyNElHanhONmU4R1pXeEN2a28wTHhQYUsxWEhBSE5jMHZKK1dYcVlaVFdw?=
- =?utf-8?B?Mjg0dHBpVDIvb1lXTjBjaU9GRkp0a1ptWGZRdGtjNnQwbjZySUZMMEJxZHJp?=
- =?utf-8?B?TXFrcWdRQWs3MDBqakVVeDdBYTBqaFJZdWR2dkNUVlFHRnR1ZElXWU9MUVgy?=
- =?utf-8?B?WkNUM0h0SFlTK3B1VlZuUExGanBGWTltMU5kZWs2VThsS1dyZTZOMlM5cUxr?=
- =?utf-8?B?eFRic0xqamZjQnFSS1M3ZXEwWTlTSXMzTHVuWElQTFoxN1pNWlpiZE45cmJ2?=
- =?utf-8?B?Q3B1MzBzMDBDU1NPL3k0VXVHNDZYc1Jwb0ZFSjhmNGgwYTBNVFp6Z255UHdC?=
- =?utf-8?B?dzdWRUVSalhyZWkySkt0UE9NMkIwVkRkb0x5SkU5QVNjWE9aRENwUzdPTEtQ?=
- =?utf-8?B?SlJvRkthbi9jV3R1QnBuYkgrZitZcnM4MjUwcDFWdngzSklxeFF0QUFjQ0I0?=
- =?utf-8?B?L0RuWFBTUm02Q2ZlRWNFcTNIYitQQjFyZndSWmdhUVEzU0hlR0Y5QWJ5eThm?=
- =?utf-8?B?c3NIaTMxRENlNEZSZ1k0UW5tZVJXMkxvNnVwWk5UUU5HdXl1d0dCb2NNQkZC?=
- =?utf-8?B?dXRtU25Tc3dzbWtQeldGa2RNZmxsRjBlVmFoLzU5RE8zYVJsMlFDZEVwSzNO?=
- =?utf-8?B?aVZHMlBaYjRPSzBJS2lTTDVPVktZY2JTWU5PTkxKaDF3a09jdDFDMFBlK3NO?=
- =?utf-8?B?d2dmeFEzMVBFWWtOc1VaSjh2eWcyazNKclRtWGtPWGY5eGl0MjQ4UCtJekM3?=
- =?utf-8?B?TnA2MjBRVVBoTVFzeXdvMDg1NS9LemdoTDZaNUNiVExvWWJILzVWUng0RkJl?=
- =?utf-8?B?ak9aVXoyVmhYMWJQYVZXaFE4MWZqcDY0UCtzS0RneDI5R2tidGZmYjBwVHVz?=
- =?utf-8?B?enRyOW1CTzB0cnY2RWY0Z250Zlh0NFg2RkxMZDdqVUJldkhGbGJVd1VGWXMy?=
- =?utf-8?B?WWczZzlpeXh3L2gyTk91VTJoZ2RzN0dlY1VIMHh3aVBScGNKTlczTTdhUnZl?=
- =?utf-8?B?WmY3cnA4Tm9FekFtRTlyQT09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95a75dad-208c-4818-6112-08d8f9d44f5f
+X-Microsoft-Antispam-Message-Info: QUGo7TooArPj9Dmnt8i807v24c+e+ca7CqfSD9ijknpzxq1xBPyEMCwRm8bOFGw26N40v0wrAN0l/P6DdlLF/SE82smmRhs+6BWn86PhEpGB/If97hDqqq0+gtn2pDsTCUYz9PBYfm2w3JRa4n6VHer9ymBv38sTD40IEklreJTB7v7yUDcf2M7CBR34iymsoqVHzstnjZaIc65UlirqP+gckRgvH0MmCvfq2v6QcndAkUmN8CmMdOI17UpSSXC1vX5ExW3EhyI7qhqHt8H55FEiVqKM2L5MXulEH4Tvl8uzbg13NCZex4Co0Evvw1Krts1xFzzp+vKDpd0v89eKxxe5ab0qBvbAqKxlMvD8Sny9g2FEbluSCVSpteIkK+LeKOKD/9LzeczBBtRUpn1PbPV786NTM7j38QX1k1D/Zs9PRaJfS7BF19gqM9P/IosZUSUmAd54sfvW+ZIMHLgcXkdx8T3LlzjxCCDvlT02uD2oAMtfuelR3Tty6h1HRP05kVYkZT7n+vtXm2Ek8wPaW1UYOFFbmvq2WM9B4eBhYuiYcaG6IvFKW6B/vpUC03V7qdYdtOHoclqY8+VQmv89iqeMOZO+3NR1VOG9k+94nOJEtw4Mx+JD9qvjS9vMouhr+w8J4fFCXDypWn9YfpQXGHeqWg9++f/PZFAnAvBLfWGsL1JdcZDswTN1jgt9PWlFYvpiT7YBS5M6w3fDjPDvTwdgWfXPuJnu6TvQkFt8CjU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(376002)(39860400002)(366004)(396003)(54906003)(86362001)(8936002)(66476007)(2906002)(478600001)(31686004)(31696002)(52116002)(5660300002)(316002)(38100700001)(110136005)(186003)(66946007)(66556008)(16526019)(2616005)(4326008)(36756003)(8676002)(53546011)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eHdQbUl1NWo0QzNUVHZKNVBVaUh2QjRsbWZ3UDJsejk3WjBQVEdFM3c4T1Qw?=
+ =?utf-8?B?alhSckc1VkJvdHZtQ3lXUFM2YW5pSnVOUVVyWHpod0U0THN2ZWN6cStSZDFI?=
+ =?utf-8?B?dlFYWjIyRUJ1TVdHVFZReGQ4dkRvMTBoRER0aUVzR3NFV2Rla3dmbGUzajgy?=
+ =?utf-8?B?YWFKUkF2cnh1UFZsaldoWExFTnBBQUg3MUltc21kdEkvUTRJb1lReTEvVm05?=
+ =?utf-8?B?ckQ0NmxQdkhrbW1BM1FRQWJwaW03MFZyVlkwZnhmZTZES3d1V2lkM2tJRSth?=
+ =?utf-8?B?QzNleUhKR1pKWHkyZzk0dW92Zit3SG5FSEZwc242b09Wd0xGbHhOcVNnbmp2?=
+ =?utf-8?B?S2lQbDdReFpMd1F0dFo0eUxNbkx6alJEdURxek1Wcithd0JiQnJrQTcvK0pN?=
+ =?utf-8?B?RXBFaWd6Z1U2Z2w2OE5UWDRCYU5UM3M4bzhQM2FLM0xLRFNBZ0xJOUJBMVRn?=
+ =?utf-8?B?SjVLWWpCUHBGMW5HMlZGZjVGbUhIenpDSCs5OS9EWEhWajJQNE9UbFo4Y1VL?=
+ =?utf-8?B?Qy95ZzA0Y2oyUWxTRlJBTHB2NnNLUkpHQnNpUG50TEwxRUFEeWZ3enBTS2lw?=
+ =?utf-8?B?NGpzaTRRV2VFb3dZeXZPL29la21NNitnYVg4cGVnN0pEajdZOER2MXlwenF4?=
+ =?utf-8?B?VDZWaFBKMUtmcFpVQi9QdndUeFE4Q09XK0Z0VUxIQjFIVEl5YzY1QWl5c0JB?=
+ =?utf-8?B?eko1S1Z1VktXL1VObERzSllNL3A2VGNnQmdMb0xBdjFyd1VUUXY3MTJkdW9m?=
+ =?utf-8?B?UFhhT21CV0dIS3Fnd2JtalRiQXdNZU8xSUZnSjdFZW1IUkxmWE4rcTVBM3Ni?=
+ =?utf-8?B?ZzgzNXJ6YVo5VmJvSzMyR3pYWlM0dnpzbDlwbUpNYTA2RlQwemc1QWhENGtJ?=
+ =?utf-8?B?TnRFMm40ekpLdWZhNlNQWVlPQ29rY2NWdVpYUjlIUXV6bGFrUTNaOXAxa2Fw?=
+ =?utf-8?B?ckdyKzhEWjU5Y25PT0ZvZ0U4a0l3OGhJQ2JLYUxHamlXd09SVnpmM0paQnNM?=
+ =?utf-8?B?STlRRGRTVVg5NUFucEo1dlJNSytFMyt4aks3NmxkZytzdmduTm55a0NLLy9B?=
+ =?utf-8?B?bEpCNjRUcjdhS3pOYTNKcmYyNW83RHQ5SzF1dHp2cWcyclI1Szk0bFhnendB?=
+ =?utf-8?B?bGZBRng4TDhCUGhicUtHcERKcWlGTFF0NnhSNlNjSFZQZFdNUk9xVTlIeTVo?=
+ =?utf-8?B?QzU0ajAzcGxKRisySG9qM1pSQkhvQkVBdkZDdWI5bXpRZWlya1dSWWFKOThE?=
+ =?utf-8?B?QU1iYnFtQ3orbG5hME12QjU1WmpEVXZQU2NiTXhXZmMveGdiQkZPZzhBQlUr?=
+ =?utf-8?B?ZVVZUGllcHZwL2tlQkxxVERWemlCRUp2M1pCMmZPTEd3M1ErSHUvSzFnNE5x?=
+ =?utf-8?B?WUEycUNtUk9vMG9xUTk1bE5KTHdQdzluQ21MTmNDS1V1MDNsdHk5Wi9tUWNu?=
+ =?utf-8?B?dlNuQjZlMldmcGR1NEtqTUJ5Qk1NRHJxSlNYWHAvdm9tQTBRN2ZkcS81K2FQ?=
+ =?utf-8?B?Vm56ODhFa2Z4SHQrV00rNEQ4bW1qRnR1Y0pOVXlNeHVKaklmSnNmaGpYN3p4?=
+ =?utf-8?B?TFRaQTRyaGpFZms3UmpTemRHVCtORnN1RER1dEF5ZEplSDQ3RklYWklGdEtD?=
+ =?utf-8?B?ZTRzSWN1aTNtVHV5UEhoSElLd2V1aTNSbjB4dGxkMENNNUpEWlBsMTRSTkox?=
+ =?utf-8?B?KzhmVmh4N3NsdVU5N0d5Z1BTVnFidSt2SWVURVR5bXZNSGZSQjlCYjFHeENx?=
+ =?utf-8?B?cHU5TnlFN2wyVjlyY1JRSmRUQ0pDR1B6WkhaUjhKMlIvN2JjUWdad01RTHBp?=
+ =?utf-8?Q?4CRgFWucEiyoFcN/MK8LKs+cIUNZoQYZjJqBc=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 753875ad-c3db-46f9-6d77-08d8f9d50b9f
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 14:49:13.5917
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 14:54:29.2582
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bRXjEH5QLXD/WMlU9N6bLluc6SyXdJzPe07juJrSbpwCtCQ5RKZC6n7pwgBaizb/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR15MB4176
+X-MS-Exchange-CrossTenant-UserPrincipalName: Rr1wimQm2GKHEGwB+ny/qbqLafJ+DN4NkoHYuzgYG3AM9Mcpd3xOpFKs4J87V0/G
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4659
 X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: SxxrNBT19wEJ8TQ7M10bDzzeB3viTURk
-X-Proofpoint-ORIG-GUID: SxxrNBT19wEJ8TQ7M10bDzzeB3viTURk
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-GUID: GfZeIWTsPJ08mkTjFnk2BJjbSu45yRXl
+X-Proofpoint-ORIG-GUID: GfZeIWTsPJ08mkTjFnk2BJjbSu45yRXl
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-07_08:2021-04-07,2021-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- mlxscore=0 suspectscore=0 phishscore=0 malwarescore=0 priorityscore=1501
- impostorscore=0 spamscore=0 clxscore=1015 bulkscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ impostorscore=0 suspectscore=0 clxscore=1015 phishscore=0
+ lowpriorityscore=0 spamscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2104060000 definitions=main-2104070106
 X-FB-Internal: deliver
 Precedence: bulk
@@ -155,47 +153,74 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 4/7/21 6:46 AM, Arnaldo Carvalho de Melo wrote:
-> Em Tue, Apr 06, 2021 at 11:23:27PM -0700, Yonghong Song escreveu:
->> On 4/6/21 8:01 PM, Sedat Dilek wrote:
->>> On Tue, Apr 6, 2021 at 6:13 PM Yonghong Song <yhs@fb.com> wrote:
->>>> Masahiro and Michal,
+On 4/2/21 11:08 AM, Arnaldo wrote:
 > 
->>>> Friendly ping. Any comments on this patch?
 > 
->>>> The addition LTO .notes information emitted by kernel is used by pahole
->>>> in the following patch:
->>>>       https://lore.kernel.org/bpf/20210401025825.2254746-1-yhs@fb.com/
->>>>       (dwarf_loader: check .notes section for lto build info)
+> On April 2, 2021 2:42:21 PM GMT-03:00, Yonghong Song <yhs@fb.com> wrote:
+>> On 4/2/21 10:23 AM, Yonghong Song wrote:
+> :> Thanks. I checked out the branch and did some testing with latest
+>> clang
+>>> trunk (just pulled in).
+>>>
+>>> With kernel LTO note support, I tested gcc non-lto, and llvm-lto
+>> mode,
+>>> it works fine.
+>>>
+>>> Without kernel LTO note support, I tested
+>>>     gcc non-lto  <=== ok
+>>>     llvm non-lto  <=== not ok
+>>>     llvm lto     <=== ok
+>>>
+>>> Surprisingly llvm non-lto vmlinux had the same "tcp_slow_start"
+>> issue.
+>>> Some previous version of clang does not have this issue.
+>>> I double checked the dwarfdump and it is indeed has the same reason
+>>> for lto vmlinux. I checked abbrev section and there is no cross-cu
+>>> references.
+>>>
+>>> That means we need to adapt this patch
+>>>     dwarf_loader: Handle subprogram ret type with abstract_origin
+>> properly
+>>> for non merging case as well.
+>>> The previous patch fixed lto subprogram abstract_origin issue,
+>>> I will submit a followup patch for this.
+>>
+>> Actually, the change is pretty simple,
+>>
+>> diff --git a/dwarf_loader.c b/dwarf_loader.c
+>> index 5dea837..82d7131 100644
+>> --- a/dwarf_loader.c
+>> +++ b/dwarf_loader.c
+>> @@ -2323,7 +2323,11 @@ static int die__process_and_recode(Dwarf_Die
+>> *die, struct cu *cu)
+>>          int ret = die__process(die, cu);
+>>          if (ret != 0)
+>>                  return ret;
+>> -       return cu__recode_dwarf_types(cu);
+>> +       ret = cu__recode_dwarf_types(cu);
+>> +       if (ret != 0)
+>> +               return ret;
+>> +
+>> +       return cu__resolve_func_ret_types(cu);
+>>   }
+>>
+>> Arnaldo, do you just want to fold into previous patches, or
+>> you want me to submit a new one?
 > 
->>> the above pahole patch has this define and comment:
-> 
->>> -static bool cus__merging_cu(Dwarf *dw)
->>> +/* Match the define in linux:include/linux/elfnote.h */
->>> +#define LINUX_ELFNOTE_BUILD_LTO 0x101
-> 
->>> ...and does not fit with the define and comment in this kernel patch:
-> 
->>> +#include <linux/elfnote.h>
->>> +
->>> +#define LINUX_ELFNOTE_LTO_INFO 0x101
-> 
->> Thanks, Sedat. I am aware of this. I think we can wait in pahole
->> to make a change until the kernel patch is finalized and merged.
->> The kernel patch may still change as we haven't get
->> maintainer's comment. This will avoid unnecessary churn's
->> in pahole side.
-> 
-> So, I tested with clang 12 on fedora rawhide as well on fedora 33, and
-> I'm satisfied with the current state to release v1.21, Masahiro, have
-> you had the time to look at this?
-> 
-> Yonghong, as we have a fallback in case the ELF note isn't available, I
-> think we're safe even if the notes patch merge gets delayed, right?
+> I can take care of that.
 
-Right. That is why I separated the notes patch from other patches.
-We can revisit it once the kernel patch is settled.
+Arnaldo, just in case that you missed it, please remember
+to fold the above changes to the patch:
+    [PATCH dwarves] dwarf_loader: handle subprogram ret type with 
+abstract_origin properly
+Thanks!
 
+> 
+> And I think it's time for to look at Jiri's test suite... :-)
+> 
+> It's a holiday here, so I'll take some time to get to this, hopefully I'll tag 1.21 tomorrow tho.
+> 
+> Cheers,
 > 
 > - Arnaldo
 > 
