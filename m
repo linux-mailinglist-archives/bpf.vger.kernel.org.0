@@ -2,684 +2,266 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8A93562A7
-	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 06:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4FB3563DB
+	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 08:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232499AbhDGEuF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Apr 2021 00:50:05 -0400
-Received: from wforward3-smtp.messagingengine.com ([64.147.123.22]:40201 "EHLO
-        wforward3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229825AbhDGEuF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 7 Apr 2021 00:50:05 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailforward.west.internal (Postfix) with ESMTP id 7AAD01555;
-        Wed,  7 Apr 2021 00:49:56 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 07 Apr 2021 00:49:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=GOL+J7Dq1+NRvbGHBj0dtiObWzKNWDOC0Rl9g4fdk
-        q8=; b=OkbYJG3r4l18lUV09uuF6c1DhKrKJ70FXT/KclQstI/vZ5B3iWLDDraLf
-        grnYMmH/brjNKC1gTmHCeiw5E4Tr1DQdb7NJhdI91wu5Po6u17G723DzlMpda6V9
-        fAKbxHLiLB9gyFglu881zy+7nl4oCYs795vrGY5U7MABSHE30E+uAoTyT83hukxy
-        GMDRNpahn5S4Bk0AI5BWkOVeZoAyu2pfcIVLN5hU0o8j0sfmwLa/nJsRRiQ2odES
-        MSrq4un477VlTw5pnvBvlzLlOyBpv98YwPso0BO2EeHMeWKOJ14+XoccmL8unN39
-        4JOidrkDUzhc4il+yyJDsZjp7wofQ==
-X-ME-Sender: <xms:8zltYIaV27-CenzOVWRBgonPUaH5k7DVLv_pmFmjeaaepvQZeMInRA>
-    <xme:8zltYDYqU0zeAMMhrBG9tTk3DNFoqvz5X4z9uqRtmQjDpOs7al9DZzlGziWaoig6f
-    BX-PnYPHRCV8snxfrE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejiedgkeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurheptggguffhjgffgffkfhfvofesthekmhdthhdtjeenucfhrhhomheptfgrfhgr
-    vghlucffrghvihguucfvihhnohgtohcuoehrrghfrggvlhguthhinhhotghosehusghunh
-    htuhdrtghomheqnecuggftrfgrthhtvghrnhepfeegueelkeeiteettdfhjeevgfehgeek
-    vedtvdekveejgfejjedvfeejleehjeffnecuffhomhgrihhnpehgihhthhhusgdrtghomh
-    dpkhgvrhhnvghlrdhorhhgnecukfhppedukeehrdduheefrddujeeirdekjeenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghfrggvlhguth
-    hinhhotghosehusghunhhtuhdrtghomh
-X-ME-Proxy: <xmx:8zltYC_Vfey_lIf0qCdFYwIiJwoiuBSiDAbYymO5bdWTklnr2__zmg>
-    <xmx:8zltYCprU02SxQERL8g98ppMYHLFzg9LM3ssjasF_5l-ufESvFCRww>
-    <xmx:8zltYDohyFHIcQd4QI6yTAsA0-sD5q12Z1dmkhUMn27SkxzNntfXRQ>
-    <xmx:9DltYA3r2n_UIsncTUZlOwkZKHVKTTuWbnDMkTviO7U9VT99eMZ-Rq2Kp04>
-Received: from [10.6.2.35] (unknown [185.153.176.87])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2C7B1108005F;
-        Wed,  7 Apr 2021 00:49:55 -0400 (EDT)
-Content-Type: text/plain;
-        charset=utf-8;
-        delsp=yes;
-        format=flowed
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH v2 bpf-next][RFC] libbpf: introduce legacy kprobe events
- support
-From:   Rafael David Tinoco <rafaeldtinoco@ubuntu.com>
-In-Reply-To: <CAEf4BzaimrGXFrfFVHvV53ta7NwDWsN0YHcDiVJELEnbdjmKdg@mail.gmail.com>
-Date:   Wed, 7 Apr 2021 01:49:53 -0300
-Cc:     LKML BPF <bpf@vger.kernel.org>
-X-Mao-Original-Outgoing-Id: 639463793.548651-328f7d899a128d525f69dcd92a0be8f4
-Content-Transfer-Encoding: 8bit
-Message-Id: <045DF0ED-10A2-4D9F-AA01-5CE7E3E95193@ubuntu.com>
-References: <CAEf4Bzap6qS9_HQZTHJsM-X2VZso+N5xMwa3HNG9ycMW4WXtQg@mail.gmail.com>
- <20210322180441.1364511-1-rafaeldtinoco@ubuntu.com>
- <4BB60234-7970-405C-9447-D19CA6564BC2@ubuntu.com>
- <CAEf4BzaimrGXFrfFVHvV53ta7NwDWsN0YHcDiVJELEnbdjmKdg@mail.gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        id S229777AbhDGGX5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Apr 2021 02:23:57 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43946 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230426AbhDGGX5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 7 Apr 2021 02:23:57 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13765MBu028457;
+        Tue, 6 Apr 2021 23:23:34 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=JrksJuJBqphd+1xyz9PhonG54IGG6v54GOlIR7NxU2M=;
+ b=m0hw7v1lIt+ZcHbPZ9iyp7RpVh6jXM+4p8rrgwdYJoyPtCefQsrO+s//ZQxSbM+hnkBg
+ 9Z/FDp8p4g83g++S9WVxznFt1/A8PdB0l/3ebFPXp5MHAkgfKp1Iw2flJqXriZ+57Wok
+ IbMjhDDJgKdqm4Qe472uhgbNdT37Q93lP+I= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 37rvbe3ugr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 06 Apr 2021 23:23:33 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 6 Apr 2021 23:23:33 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KjvQM29YWMcLgrhNtW/ny5fw+jVKbRkw1Aig9rv6tdhmRtNwrIqJtS+kNueBBk4VFWUYLEhQ9Fh9F4jF9DvGI21FMLYzkHEsFHaFcb/YSjd1b7OEfFwZUPGUvUgniy+Dwk0KxUjuK78WnfVK1XrE/IVbup7voFh1lNQOfdk49Cft18uX2xgUGdB1kgpfYndoH9kkeLjhF3CcwgfNVP7PS41RB6lyfGc5a/RQyKIrvmx3YWHTflIQ4JqDKUpppfWx0Qlb7k7+0Yx07LC7WxAJ/HIbM4Wt7rkf5fQO+RXsbf/gMwGlI+iaVfb2OnsXVRGf6H+XL8T/HFpPXXTpFVugEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JrksJuJBqphd+1xyz9PhonG54IGG6v54GOlIR7NxU2M=;
+ b=obV3IEufnGZqT8mxOAilZBV8dky4U0lNZfJTJSIZiNR0j+7M0w3g2zt/RaYKFaBtnhuluJ9i7DmtvJ+d5+9A3eH2Ug9Rus7cXBShZ09gsAo0iifIULisyv/F8jgKyz1X1uREjhAS9cs82QGkDqYm18ed0A8FM0fMPce+Kjmy56LOz7ER6cwqGwSH8/bQ+H9gMqNAlc42FD+wbaQWaBIuwpGUEcKq4vChy/eViSNZEcvKjMFXRpya74y0+QIvLvX2DQQPzIJXOPYBf/o3i65mI3AgRBXD/kQ6Q4ujiB1JWCb2luFInLsvhSfHLcLnSY+beFz+K6YlxgSL59b7oB/7oQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR1501MB2160.namprd15.prod.outlook.com (2603:10b6:805:9::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.26; Wed, 7 Apr
+ 2021 06:23:31 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3999.032; Wed, 7 Apr 2021
+ 06:23:31 +0000
+Subject: Re: [PATCH kbuild v4] kbuild: add an elfnote for whether vmlinux is
+ built with lto
+To:     <sedat.dilek@gmail.com>
+CC:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        bpf <bpf@vger.kernel.org>, <kernel-team@fb.com>,
+        Bill Wendling <morbo@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+References: <20210401232723.3571287-1-yhs@fb.com>
+ <CAKwvOdmX8d3XTzJFk5rN_PnOQYJ8bXMrh8DrhzqN=UBNdQiO3g@mail.gmail.com>
+ <CA+icZUVKCY4UJfSG_sXjZHwfOQZfBZQu0pj1VZ9cXX4e7w0n6g@mail.gmail.com>
+ <c6daf068-ead0-810b-2afa-c4d1c8305893@fb.com>
+ <CA+icZUWYQ8wjOYHYrTX52AbEa3nbXco6ZKdqeMwJaZfHuJ5BhA@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <128db515-14dc-4ff1-eacb-8e48fc1f6ff6@fb.com>
+Date:   Tue, 6 Apr 2021 23:23:27 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
+In-Reply-To: <CA+icZUWYQ8wjOYHYrTX52AbEa3nbXco6ZKdqeMwJaZfHuJ5BhA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+X-Originating-IP: [2620:10d:c090:400::5:e6b7]
+X-ClientProxiedBy: MWHPR02CA0007.namprd02.prod.outlook.com
+ (2603:10b6:300:4b::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21d6::10dc] (2620:10d:c090:400::5:e6b7) by MWHPR02CA0007.namprd02.prod.outlook.com (2603:10b6:300:4b::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Wed, 7 Apr 2021 06:23:29 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a800f946-a2fb-44bc-98c7-08d8f98da9e0
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2160:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR1501MB2160A5A61452AC818FD7C43BD3759@SN6PR1501MB2160.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: U3M5X6i5BFrL+xLVgUlHFXqa9rJpLX/sGsJjWuEYKQXvteS5NWD46D7zF3jqjRPrNpYAhaFTdl/GpDpNekAGhj6gg/wAT00M1ZDi7u5TYXAuRWl+2LLFPB2KudtVnhQFrqqF+t8ZqJsKrCc5bqgR8Y5Fy31UX072Nddx1A+TuCjS9/L8Ps637K0Jr2vbEZ3/9IF8Qdl1meNvw1ryl4DKniAa5FuYh9u5i0mQhxNc4hCFBJjmEtcViazmBjCAK86Dh7/+IU6umBTGYXxhOvzCz9ceu2W8mJYC8GTXvXwNf2VFdLwqPaDZhaCJ2y16Sr3yeW9IB4WglheZXLEhmQl3yAGL7sdmvJ2FCVeGjKMniKgxD5nyy+XxkgugCcLfc6IMyZfH78AX3jx026H9+jss+9xJD7RDZPYCgypm6MxU8ReoB+x0rbZoIsnZgnK8/OPU7RH9uCrztcDYvyOUPamJXAAiZPkUz2c+pieVpISPRsHIhyOCMUGnonGEClZFuE9vQ4OeGPaFv2/44mKqVyAyQ6/GUXHOcx0Vux9zJuRUCpyVkB2w8kzinzYIJgv6mKvi9dYNYv8SX+ESaA9i44hCNMJLntS4gswfZqeGBt6hGyfwcgu0SvgPZUd76vfdH2/C79cAdV55y8cinEahqyaO9O/Uuip0HMn5ANxEMbDIjZKYgczGPinsheBDK5oB9E6QljYNAtRLWnjzUs0iFzuwTUIWM4x6kYTKTPZOAft4BGe7QtBpddywx5HgALzs+T5q+vqoAi0cv6xKIKYMabq3qI8j7czyhlZXY9xVGzNf39k=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(366004)(376002)(346002)(396003)(6916009)(8676002)(8936002)(6486002)(38100700001)(478600001)(31696002)(83380400001)(2906002)(86362001)(316002)(54906003)(66476007)(66556008)(5660300002)(7416002)(36756003)(52116002)(31686004)(4326008)(16526019)(186003)(66946007)(2616005)(966005)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TWxmTUJvWEtEQkR6ZE5BS0NmTGoxem4xZmJzaVZVNnJMcGNGNjVDd0lsZHRP?=
+ =?utf-8?B?TGwxRE1HK0pxQWJzNU9aQVBxVFU5ZVNUMDBiSWN4TlRoQ21NZ1QvQ0xFN3h6?=
+ =?utf-8?B?ZWp6Tmx5Q09NWXhUR3k2dldLRXJGK2JqMWg3eWEzRGVxRk9KSmx2OHZtdjVQ?=
+ =?utf-8?B?cmF2aEM2UjBTTFF1UTJ6RjY0bWEzbzZydlZDSjU1Y2NYTWpBV25vK1RVaG9B?=
+ =?utf-8?B?akRxbW45U1B4eEJ3dnJQbTFVL29EY1l4LzJ5Q2M1cUdDRVFvU3V2NjhhL0Mr?=
+ =?utf-8?B?TFhmY2VBNC9uUmZESDhJZ1lEbUxJRm9EcnhKR0cvU1hPaXNjTCtPMVp1MXZh?=
+ =?utf-8?B?YVZNS0tMNGVYdDFONVFuMldYclhuSnpGeW40YmNrUXZnSzNmdmZKWUo5L1Vn?=
+ =?utf-8?B?QTVoQzd2OWpucTF4VW5KS3hkVi9LeUdXTWticXBqcmpaVGNIUlhZMEFLVWhL?=
+ =?utf-8?B?bm83dEV4WUF3aHljS1dyenczVDJGcDdKdFRFVUN2Yk1hQlBLVExsN1M1L0NK?=
+ =?utf-8?B?MEVXbjBKNFBhUmQ2RGhPNTdGcVNmZUFLQVJVbno4MDhsUWs4SXI4b2dYRXBs?=
+ =?utf-8?B?WlZsWXJRSHdYQ2ZCYkZtQ3JRUkRCOS9JTExvSlRpd3RaTmtKbGFYYmFkVlBu?=
+ =?utf-8?B?OVlGMVNwUTNINDFuSTZNdjV6Wm1hUTJpbEVHUSs3UVE4WkN4bHpOSmdxazZV?=
+ =?utf-8?B?aEhMbnFPcjJyZVhTSmhVZHlyL2xGM011Wk9EdVVXblZ3Y05wWFlxTkJmSEVE?=
+ =?utf-8?B?bjdCc054cUZwbEVyUlZDd0pVcVFGTm5hMWxGVDl2U3UxcWFmMUlqcHhZTzZs?=
+ =?utf-8?B?Y1ByOG42cUQxaUt2Vm92UGpEZy91eVZjdTUxYnF2VVM5U3AxamlXdlJKQTJw?=
+ =?utf-8?B?WkpVazh6eEM5VlE2UGFJZmovSkVoU0F0SEJ3cGsrZkM3TTdKbmRVZUFPTlRV?=
+ =?utf-8?B?aFZNZ2JKQXg0TmZrWGVSajJiR3RibkIvOGFkTHVpdTNBMU5VR1BndlpYdjNL?=
+ =?utf-8?B?QXpRQ2RuUmVSejBhelpvT2VlbUtDaVFxVXJGaElJb29INkN4SGJ1TmhScW1F?=
+ =?utf-8?B?b2p4WTdmR1lzMEVEVlZ5cXkrMXVEUkx6NWY4K0FaSVcrOVdLOFFwdmRIYUVO?=
+ =?utf-8?B?L0N6dWpjRC9acUNROHlBNVY3ZXFEaEtFemNLbXlzYjV4MkFyRGhrdGt4ekVT?=
+ =?utf-8?B?YUUyaVhpbUxyOGIyWGRicHNMZFMxazVVSFFieWU4bnpVQmw3VHZ2RFpEUm5k?=
+ =?utf-8?B?clJESkk3d0wwTWdmcFFnODBFbFBweDRXdHpqbGZyeTczVmFGSjVIVFdna3p5?=
+ =?utf-8?B?cnVhV1YvbnlpY1hHTG9XL1VQaUYzMS9jTzRwQ3pCSlMxRnRCRmQvdFY3LzZs?=
+ =?utf-8?B?cHhIdklnTWV2WnFncVNZR28xZFBFWld4R04vT3cwNGV6Y2NjbmR1NVc4dFRB?=
+ =?utf-8?B?SmZYTlJzY2hMTEY1ZjlHUzE4czBzWXpMZUlieFR3QkxzK0lVUjVuMDQ2ZEVk?=
+ =?utf-8?B?VXB3WXFsZDJGeVArUmg3L3RTU3JrZE1jL2MyZWtBTTdpaVVkeCswd3NFNE00?=
+ =?utf-8?B?UjAxRjlTd1F0Z3FZank3cjJtWlpHY0FSekhJZFhBQkxNUVRxT1VYMnlweTNn?=
+ =?utf-8?B?c0xGTzd1dnFTb1BPQ05Od1puTGVFbzB1NjhiVTdUMFN3RE9HZWdYSnhraEZy?=
+ =?utf-8?B?bVNmYnpHRkdwZzNGSjkzcjJrZTVMY3UvWDNuUlRtUVpONlJsMFBtMms0NzFl?=
+ =?utf-8?B?MzgrZTE2d1lVMFdHcEVtdVkrQ3ZrQ1Z0NHREUVRnRzdRUFhUay96MEtxdm9p?=
+ =?utf-8?B?N0dYUm1ibjIrdGpvcjVTUT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a800f946-a2fb-44bc-98c7-08d8f98da9e0
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2021 06:23:31.0727
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XgmTgoXX3t8UmCaVWlNYlRlYSw0EE/YmTjG7sE6XwwYK5L8ds9vClYwt2I+C9XkY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2160
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: taZ1e7e3fUmL6n5e2x-O-u4S86l15jnM
+X-Proofpoint-GUID: taZ1e7e3fUmL6n5e2x-O-u4S86l15jnM
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-04-07_03:2021-04-06,2021-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
+ impostorscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0
+ adultscore=0 spamscore=0 bulkscore=0 priorityscore=1501 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104070045
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sorry taking so long for replying on this… have been working in:
-https://github.com/rafaeldtinoco/conntracker/tree/main/ebpf
-as a consumer for the work being proposed by this patch.
 
-Current working version at:
-https://github.com/rafaeldtinoco/conntracker/blob/main/ebpf/patches/libbpf-introduce-legacy-kprobe-events-support.patch
-About to be changed with suggestions from this thread.
 
->>> --- a/src/libbpf.c
->>> +++ b/src/libbpf.c
->>> @@ -9465,6 +9465,10 @@ struct bpf_link {
->>>       char *pin_path;         /* NULL, if not pinned */
->>>       int fd;                 /* hook FD, -1 if not applicable */
->>>       bool disconnected;
->>> +     struct {
->>> +             const char *name;
->>> +             bool retprobe;
->>> +     } legacy;
->>>  };
+On 4/6/21 8:01 PM, Sedat Dilek wrote:
+> On Tue, Apr 6, 2021 at 6:13 PM Yonghong Song <yhs@fb.com> wrote:
 >>
->> For bpf_link->detach() I needed func_name somewhere.
->
-> Right, though it's not func_name that you need, but "event_name".
-
-Yep.
-
-> Let's add link ([0]) to poke_kprobe_events somewhere, and probably
-> event have example full syntax of all the commands:
->
->  p[:[GRP/]EVENT] [MOD:]SYM[+offs]|MEMADDR [FETCHARGS]  : Set a probe
->  r[MAXACTIVE][:[GRP/]EVENT] [MOD:]SYM[+0] [FETCHARGS]  : Set a return probe
->  p:[GRP/]EVENT] [MOD:]SYM[+0]%return [FETCHARGS]       : Set a return probe
->  -:[GRP/]EVENT                                         : Clear a probe
->
->   [0] https://www.kernel.org/doc/html/latest/trace/kprobetrace.html
-
-Add [0] as a comment you say (as a reference) ? Or you mean to alter
-the way I’m writing to kprobe_events file in a more complete way ?
-
-> Now, you should not extend bpf_link itself. Create bpf_link_kprobe,
-> that will have those two extra fields. Put struct bpf_link as a first
-> field of bpf_link_kprobe. We used to have bpf_link_fd, you can try to
-> find it in Git history to see how it was done.
-
-Will do.
-
-> And another problem -- you should allocate memory for this event_name,
-> not rely on the user to keep that memory for you.
-
-Definitely.
-
->>> +
->>> +#define KPROBE_PERF_TYPE     "/sys/bus/event_source/devices/kprobe/type"
->>> +#define UPROBE_PERF_TYPE     "/sys/bus/event_source/devices/uprobe/type"
->>> +#define KPROBERET_FORMAT
->>> "/sys/bus/event_source/devices/kprobe/format/retprobe"
->>> +#define UPROBERET_FORMAT
->>> "/sys/bus/event_source/devices/uprobe/format/retprobe"
->>> +/* legacy kprobe events related files */
->>> +#define KPROBE_EVENTS                 
->>> "/sys/kernel/debug/tracing/kprobe_events"
->>> +#define KPROBE_LEG_TOGGLE    "/sys/kernel/debug/kprobes/enabled"
->
-> Not LEG, please, LEGACY
-
-I’m removing all those like you said, not much advantage in going back
-and forth because of those definitions.
-
->
->>> +#define KPROBE_LEG_ALL_TOGGLE
->>> "/sys/kernel/debug/tracing/events/kprobes/enable";
->>> +#define KPROBE_SINGLE_TOGGLE
->>> "/sys/kernel/debug/tracing/events/kprobes/%s/enable";
->>> +#define KPROBE_EVENT_ID       
->>> "/sys/kernel/debug/tracing/events/kprobes/%s/id";
->>> +
 >>
->> This made the life easier: to understand which files were related to what
->
-> Ok, sure, just not legs, please :)
->
->>> +static bool determine_kprobe_legacy(void)
->>> +{
->>> +     struct stat s;
->>> +
->>> +     return stat(KPROBE_PERF_TYPE, &s) == 0 ? false : true;
->
-> there is access(file, F_OK) which is nicer to use for checking file  
-> existence
-
-Sure.
-
->>> +static int toggle_kprobe_legacy(bool on)
->>> +{
->>> +     static int refcount;
->>> +     static bool initial, veryfirst;
->>> +     const char *file = KPROBE_LEG_TOGGLE;
->>> +
->>> +     if (on) {
->>> +             refcount++;
->>> +             if (veryfirst)
->>> +                     return 0;
->>> +             veryfirst = true;
->>> +             /* initial value for KPROB_LEG_TOGGLE */
->>> +             initial = (bool) parse_uint_from_file(file, "%d\n");
->>> +             return write_uint_to_file(file, 1); /* enable kprobes */
->>> +     }
->>> +     refcount--;
->>> +     printf("DEBUG: kprobe_legacy refcount=%d\n", refcount);
->>> +     if (refcount == 0) {
->>> +             /* off ret value back to initial value if last consumer */
->>> +             return write_uint_to_file(file, initial);
->>> +     }
->>> +     return 0;
->>> +}
->>> +
->>> +static int toggle_kprobe_event_legacy_all(bool on)
->>> +{
->>> +     static int refcount;
->>> +     static bool initial, veryfirst;
->>> +     const char *file = KPROBE_LEG_ALL_TOGGLE;
->>> +
->>> +     if (on) {
->>> +             refcount++;
->>> +             if (veryfirst)
->>> +                     return 0;
->>> +             veryfirst = true;
->>> +             // initial value for KPROB_LEG_ALL_TOGGLE
->>> +             initial = (bool) parse_uint_from_file(file, "%d\n");
->>> +             return write_uint_to_file(file, 1); // enable kprobes
->>> +     }
->>> +     refcount--;
->>> +     printf("DEBUG: legacy_all refcount=%d\n", refcount);
->>> +     if (refcount == 0) {
->>> +             // off ret value back to initial value if last consumer
->>> +             return write_uint_to_file(file, initial);
->>> +     }
->>> +     return 0;
->>> +}
+>> Masahiro and Michal,
 >>
->> Same thing here: 2 functions that could be reduced to one with an
->> argument to KPROB_LEG_TOGGLE or KPROB_LEG_ALL_TOGGLE.
+>> Friendly ping. Any comments on this patch?
 >>
->> I’m using static initial so I can recover the original status of
->> the “enable” files after the program is unloaded. Unfortunately
->> this is not multi-task friendly as another process would
->> step into this logic but I did not want to leave “enabled”
->> after we unload if it wasn’t before.
+>> The addition LTO .notes information emitted by kernel is used by pahole
+>> in the following patch:
+>>      https://lore.kernel.org/bpf/20210401025825.2254746-1-yhs@fb.com/
+>>      (dwarf_loader: check .notes section for lto build info)
 >>
->> I’m saying this because of your idea of having PID as the kprobe
->> event names… it would have the same problem… We could, in theory
->> leave all “enabled” files enabled (1) at the end, use PID in the
->> kprobe event names and unload only our events… but then I would
->> leave /sys/kernel/debug/kprobes/enabled enabled even if it was
->> not.. because we could be concurrent to other tasks using libbpf.
->
-> So I don't get at all why you have these toggles, especially
-> ALL_TOGGLE? You shouldn't try to determine the state of another probe.
-> You always know whether you want to enable or disable your specific
-> toggle. I'm very confused by all this.
+> 
+> Hi Yonghong,
+> 
+> the above pahole patch has this define and comment:
+> 
+> -static bool cus__merging_cu(Dwarf *dw)
+> +/* Match the define in linux:include/linux/elfnote.h */
+> +#define LINUX_ELFNOTE_BUILD_LTO 0x101
+> 
+> ...and does not fit with the define and comment in this kernel patch:
+> 
+> +#include <linux/elfnote.h>
+> +
+> +#define LINUX_ELFNOTE_LTO_INFO 0x101
 
-Yes, this was a confusing thing indeed and to be honest it proved to
-be very buggy when testing with conntracker. What I’ll do (or I’m
-doing) is to toggle ON to needed files before the probe is added:
+Thanks, Sedat. I am aware of this. I think we can wait in pahole
+to make a change until the kernel patch is finalized and merged.
+The kernel patch may still change as we haven't get
+maintainer's comment. This will avoid unnecessary churn's
+in pahole side.
 
-static inline int add_kprobe_event_legacy(const char* func_name, bool  
-retprobe)
-{
-	int ret = 0;
-
-	ret |= poke_kprobe_events(true, func_name, retprobe);
-	ret |= toggle_kprobe_event_legacy_all(true);
-	ret |= toggle_single_kprobe_event_legacy(true, func_name, retprobe);
-
-	return ret;
-}
-
-1) /sys/kernel/debug/tracing/kprobe_events => 1
-2) /sys/kernel/debug/tracing/events/kprobes/enable => 1
-3) /sys/kernel/debug/tracing/events/kprobes/%s/enable => 1
-
-And toggle off only kprobe_event:
-
-static inline int remove_kprobe_event_legacy(const char* func_name, bool  
-retprobe)
-{
-	int ret = 0;
-
-	ret |= toggle_single_kprobe_event_legacy(false, func_name, retprobe);
-	ret |= poke_kprobe_events(false, func_name, retprobe);
-
-	return ret;
-}
-
-1) /sys/kernel/debug/tracing/events/kprobes/%s/enable => 0
-
-This is working good for my tests.
-
->
->>> +static int kprobe_event_normalize(char *newname, size_t size, const char
->>> *name, bool retprobe)
->>> +{
->>> +     int ret = 0;
->>> +
->>> +     if (IS_ERR(name))
->>> +             return -1;
->>> +
->>> +     if (retprobe)
->>> +             ret = snprintf(newname, size, "kprobes/%s_ret", name);
->>> +     else
->>> +             ret = snprintf(newname, size, "kprobes/%s", name);
->>> +
->>> +     if (ret <= strlen("kprobes/"))
->>> +             ret = -errno;
->>> +
->>> +     return ret;
->>> +}
->>> +
->>> +static int toggle_single_kprobe_event_legacy(bool on, const char *name,
->>> bool retprobe)
->
-> don't get why you need this function either...
-
-Because of /sys/kernel/debug/tracing/events/kprobes/%s/enable. I’m
-toggling it to OFF before removing the kprobe in kprobe_events, like
-showed above.
-
->
->>> +{
->>> +     char probename[32], f[96];
->>> +     const char *file = KPROBE_SINGLE_TOGGLE;
->>> +     int ret;
->>> +
->>> +     ret = kprobe_event_normalize(probename, sizeof(probename), name,
->>> retprobe);
->>> +     if (ret < 0)
->>> +             return ret;
->>> +
->>> +     snprintf(f, sizeof(f), file, probename + strlen("kprobes/"));
->>> +
->>> +     printf("DEBUG: writing %u to %s\n", (unsigned int) on, f);
->>> +
->>> +     ret = write_uint_to_file(f, (unsigned int) on);
->>> +
->>> +     return ret;
->>> +}
->>> +
->>> +static int poke_kprobe_events(bool add, const char *name, bool retprobe)
->>> +{
->>> +     int fd, ret = 0;
->>> +     char probename[32], cmd[96];
->>> +     const char *file = KPROBE_EVENTS;
->>> +
->>> +     ret = kprobe_event_normalize(probename, sizeof(probename), name,
->>> retprobe);
->
-> just have that if/else + snprintf right here, no need to jump through hoops
->
-
-Sure.
-
->>> +     if (ret < 0)
->>> +             return ret;
->>> +
->>> +     if (add)
->>> +             snprintf(cmd, sizeof(cmd),"%c:%s %s", retprobe ? 'r' : 'p',
->>> probename, name);
->>> +     else
->>> +             snprintf(cmd, sizeof(cmd), "-:%s", probename);
->>> +
->>> +     printf("DEBUG: %s\n", cmd);
->>> +
->>> +     fd = open(file, O_WRONLY|O_APPEND, 0);
->>> +     if (!fd)
->>> +             return -errno;
->>> +     ret = write(fd, cmd, strlen(cmd));
->>> +     if (ret < 0)
->>> +             ret = -errno;
->>> +     close(fd);
->>> +
->>> +     return ret;
->>> +}
->>> +
->>> +static inline int add_kprobe_event_legacy(const char* func_name, bool
->>> retprobe)
->>> +{
->>> +     int ret = 0;
->>> +
->>> +     ret = poke_kprobe_events(true, func_name, retprobe);
->>> +     if (ret < 0)
->>> +             printf("DEBUG: poke_kprobe_events (on) error\n");
->>> +
->>> +     ret = toggle_kprobe_event_legacy_all(true);
->
-> why?... why do you need to touch the state of other probes. This will
-> never work reliable but also should not be required
-
-Addressed above.
-
->>> +     if (ret < 0)
->>> +             printf("DEBUG: toggle_kprobe_event_legacy_all (on)  
->>> error\n");
->>> +
->>> +     ret = toggle_single_kprobe_event_legacy(true, func_name, retprobe);
->>> +     if (ret < 0)
->>> +             printf("DEBUG: toggle_single_kprobe_event_legacy (on)  
->>> error\n");
->>> +
->>> +     return ret;
->>> +}
->>> +
->>> +static inline int remove_kprobe_event_legacy(const char* func_name, bool
->>> retprobe)
->>> +{
->>> +     int ret = 0;
->>> +
->>> +     ret = toggle_kprobe_event_legacy_all(true);
->>> +     if (ret < 0)
->>> +             printf("DEBUG: toggle_kprobe_event_legacy_all (off)  
->>> error\n");
->>> +
->>> +     ret = toggle_single_kprobe_event_legacy(true, func_name, retprobe);
->>> +     if (ret < 0)
->>> +             printf("DEBUG: toggle_single_kprobe_event_legacy (off)  
->>> error\n");
->>> +
->>> +     ret = toggle_single_kprobe_event_legacy(false, func_name,  
->>> retprobe);
->>> +     if (ret < 0)
->>> +             printf("DEBUG: toggle_single_kprobe_event_legacy (off)  
->>> error\n");
->>> +
->>> +     ret = poke_kprobe_events(false, func_name, retprobe);
->>> +     if (ret < 0)
->>> +             printf("DEBUG: poke_kprobe_events (off) error\n");
->>> +
->>> +     return ret;
->>> +}
+> 
+> Thanks.
+> 
+> - Sedat -
+> 
+> 
+>> Thanks,
 >>
->> I’m doing a “make sure what has to be enabled to be enabled” approach  
->> here.
->> Please ignore all the DEBUGs, etc, I’ll deal with errors after its good.
->
-> again, you haven't explained why. Don't touch probes you haven't created.
-
-Addressed above.
-
->
->>> +
->>> +static int determine_kprobe_perf_type_legacy(const char *func_name)
->>> +{
->>> +     char file[96];
->>> +     const char *fname = KPROBE_EVENT_ID;
->
-> again, what's the point of this variable, just inline
->
-> and this is a problem with those #defines. I need to now jump back and
-> forth to see what KPROBE_EVENT_ID is. So unless we have to use them in
-> multiple places, I'd keep those constants where they were, honestly.
-
-Addressed above.
->
-
->>> +
->>> +     snprintf(file, sizeof(file), fname, func_name);
->>> +
->>> +     return parse_uint_from_file(file, "%d\n");
->>> +}
->>> +
->>>  static int perf_event_open_probe(bool uprobe, bool retprobe, const char *name,
->>>                                uint64_t offset, int pid)
->>>  {
->>> @@ -9760,6 +10034,51 @@ static int perf_event_open_probe(bool uprobe,
->>> bool retprobe, const char *name,
->>>       return pfd;
->>>  }
+>> Yonghong
+>>
+>> On 4/6/21 12:05 AM, Sedat Dilek wrote:
+>>> On Fri, Apr 2, 2021 at 8:07 PM 'Nick Desaulniers' via Clang Built
+>>> Linux <clang-built-linux@googlegroups.com> wrote:
+>>>>
+>>>> On Thu, Apr 1, 2021 at 4:27 PM Yonghong Song <yhs@fb.com> wrote:
+>>>>>
+>>>>> Currently, clang LTO built vmlinux won't work with pahole.
+>>>>> LTO introduced cross-cu dwarf tag references and broke
+>>>>> current pahole model which handles one cu as a time.
+>>>>> The solution is to merge all cu's as one pahole cu as in [1].
+>>>>> We would like to do this merging only if cross-cu dwarf
+>>>>> references happens. The LTO build mode is a pretty good
+>>>>> indication for that.
+>>>>>
+>>>>> In earlier version of this patch ([2]), clang flag
+>>>>> -grecord-gcc-switches is proposed to add to compilation flags
+>>>>> so pahole could detect "-flto" and then merging cu's.
+>>>>> This will increate the binary size of 1% without LTO though.
+>>>>>
+>>>>> Arnaldo suggested to use a note to indicate the vmlinux
+>>>>> is built with LTO. Such a cheap way to get whether the vmlinux
+>>>>> is built with LTO or not helps pahole but is also useful
+>>>>> for tracing as LTO may inline/delete/demote global functions,
+>>>>> promote static functions, etc.
+>>>>>
+>>>>> So this patch added an elfnote with a new type LINUX_ELFNOTE_LTO_INFO.
+>>>>> The owner of the note is "Linux".
+>>>>>
+>>>>> With gcc 8.4.1 and clang trunk, without LTO, I got
+>>>>>     $ readelf -n vmlinux
+>>>>>     Displaying notes found in: .notes
+>>>>>       Owner                Data size        Description
+>>>>>     ...
+>>>>>       Linux                0x00000004       func
+>>>>>        description data: 00 00 00 00
+>>>>>     ...
+>>>>> With "readelf -x ".notes" vmlinux", I can verify the above "func"
+>>>>> with type code 0x101.
+>>>>>
+>>>>> With clang thin-LTO, I got the same as above except the following:
+>>>>>        description data: 01 00 00 00
+>>>>> which indicates the vmlinux is built with LTO.
+>>>>>
+>>>>>     [1] https://lore.kernel.org/bpf/20210325065316.3121287-1-yhs@fb.com/
+>>>>>     [2] https://lore.kernel.org/bpf/20210331001623.2778934-1-yhs@fb.com/
+>>>>>
+>>>>> Suggested-by: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+>>>>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>>>>
+>>>> LGTM thanks Yonghong!
+>>>> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+>>>>
 >>>
->>> +static int perf_event_open_probe_legacy(bool uprobe, bool retprobe,
->>> const char *name,
->>> +                                     uint64_t offset, int pid)
->>> +{
->>> +     struct perf_event_attr attr = {};
->>> +     char errmsg[STRERR_BUFSIZE];
->>> +     int type, pfd, err;
->>> +
->>> +     if (uprobe) // legacy uprobe not supported yet
->>> +             return -1;
->>
->> Would that be ok for now ? Until we are sure kprobe legacy interface is
->> good ?
->
-> it's ok, but return -EOPNOTSUPP instead
-
-Cool.
-
->>> +
->>> +     err = toggle_kprobe_legacy(true);
->>> +     if (err < 0) {
->>> +             pr_warn("failed to toggle kprobe legacy support: %s\n",
->>> libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
->>> +             return err;
->>> +     }
->>> +     err = add_kprobe_event_legacy(name, retprobe);
->>> +     if (err < 0) {
->>> +             pr_warn("failed to add legacy kprobe event: %s\n",
->>> libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
->>> +             return err;
->>> +     }
->>> +     type = determine_kprobe_perf_type_legacy(name);
->>> +     if (err < 0) {
->>> +             pr_warn("failed to determine legacy kprobe event id: %s\n",
->>> libbpf_strerror_r(type, errmsg, sizeof(errmsg)));
->>> +             return type;
->>> +     }
->>> +
->>> +     attr.size = sizeof(attr);
->>> +     attr.config = type;
->>> +     attr.type = PERF_TYPE_TRACEPOINT;
->>> +
->>> +     pfd = syscall(__NR_perf_event_open,
->>> +                   &attr,
->>> +                   pid < 0 ? -1 : pid,
->>> +                   pid == -1 ? 0 : -1,
->>> +                   -1,
->>> +                   PERF_FLAG_FD_CLOEXEC);
->
-> btw, a question. Is there similar legacy interface to tracepoints? It
-> would be good to support those as well. Doesn't have to happen at the
-> same time, but let's just keep it in mind as we implement this.
-
-I *think* the current one is good enough for ~4.15, but I’ll test and
-make sure to _at least_ document we need something else if we really
-do.
-
->
->>> +
->>> +     if (pfd < 0) {
->>> +             err = -errno;
->>> +             pr_warn("legacy kprobe perf_event_open() failed: %s\n",
->>> libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
->>> +             return err;
->>> +     }
->>> +     return pfd;
->>> +}
->>> +
->>>  struct bpf_link *bpf_program__attach_kprobe(struct bpf_program *prog,
->>>                                           bool retprobe,
->>>                                           const char *func_name)
->>> @@ -9788,6 +10107,33 @@ struct bpf_link
->>> *bpf_program__attach_kprobe(struct bpf_program *prog,
->>>       return link;
->>>  }
+>>> Thanks for the patch.
 >>>
->>> +struct bpf_link *bpf_program__attach_kprobe_legacy(struct bpf_program
->
-> this is wrong from the API perspective. The goal is to not make users
-> decide whether they want legacy or non-legacy interfaces. With all
-> your work there shouldn't be any new APIs.
-> bpf_program__attach_kprobe() should detect which interface to use and
-> just use it.
-
-Yep, I failed to recognise it as an API symbol back when I did this.
-
->
->>> *prog,
->>> +                                                bool retprobe,
->>> +                                                const char *func_name)
->>> +{
->>> +     char errmsg[STRERR_BUFSIZE];
->>> +     struct bpf_link *link;
->>> +     int pfd, err;
->>> +
->>> +     pfd = perf_event_open_probe_legacy(false, retprobe, func_name, 0,  
->>> -1);
->>> +     if (pfd < 0) {
->>> +             pr_warn("prog '%s': failed to create %s '%s' legacy perf
->>> event: %s\n", prog->name, retprobe ? "kretprobe" : "kprobe", func_name,
->>> libbpf_strerror_r(pfd, errmsg, sizeof(errmsg)));
->>> +             return ERR_PTR(pfd);
->>> +     }
->>> +     link = bpf_program__attach_perf_event_legacy(prog, pfd);
->>> +     if (IS_ERR(link)) {
->>> +             close(pfd);
->>> +             err = PTR_ERR(link);
->>> +             pr_warn("prog '%s': failed to attach to %s '%s': %s\n",
->>> prog->name, retprobe ? "kretprobe" : "kprobe", func_name,
->>> libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
->>> +             return link;
->>> +     }
->>> +     /* needed history for the legacy probe cleanup */
->>> +     link->legacy.name = func_name;
->>> +     link->legacy.retprobe = retprobe;
->>
->> Note I’m not setting those variables inside
->> bpf_program__atach_perf_event_legacy(). They’re not available
->> there and I did not want to make them to be (through arguments).
->
-> as I said above, you shouldn't assume that func_name will still be
-> allocated by the time you get to detaching kprobe. You should strdup()
-> or do whatever is necessary to own necessary memory.
-
-+1
-
->
->>> +
->>> +     return link;
->>> +}
->>> +
->>>  static struct bpf_link *attach_kprobe(const struct bpf_sec_def *sec,
->>>                                     struct bpf_program *prog)
->>>  {
->>> @@ -9797,6 +10143,9 @@ static struct bpf_link */(const struct
->>> bpf_sec_def *sec,
->>>       func_name = prog->sec_name + sec->len;
->>>       retprobe = strcmp(sec->sec, "kretprobe/") == 0;
+>>> Feel free to add:
 >>>
->>> +     if(determine_kprobe_legacy())
->>> +             return bpf_program__attach_kprobe_legacy(prog, retprobe,  
->>> func_name);
->>> +
->
-> the other way around, attach_kprobe should just delegate to
-> bpf_program__attach_kprobe, but bpf_program__attach_kprobe should be
-> smart enough
-
-Understood.
-
->
->>>      return bpf_program__attach_kprobe(prog, retprobe, func_name);
->>>  }
->>
->> I’m assuming this is okay based on your saying of detecting a feature
->> instead of using the if(x) if(y) approach.
->>
->>> @@ -11280,4 +11629,7 @@ void bpf_object__destroy_skeleton(struct
->>> bpf_object_skeleton *s)
->>>       free(s->maps);
->>>       free(s->progs);(),
->>>       free(s);
->>> +
->>> +     remove_kprobe_event_legacy("ip_set_create", false);
->>> +     remove_kprobe_event_legacy("ip_set_create", true);
->>
->> This is the main issue I wanted to show you before continuing.
->> I cannot remove the kprobe event unless the obj is unloaded.
->> That is why I have this hard coded here, just because I was
->> testing. Any thoughts how to cleanup the kprobes without
->> jeopardising the API too much ?
->
-> cannot as in it doesn't work for whatever reason? Or what do you mean?
->
-> I see that you had bpf_link__detach_perf_event_legacy calling
-> remove_kprobe_event_legacy, what didn't work?
->
-
-I’m sorry for not being very clear here. What happens is that, if I
-try to remove the kprobe_event_legacy() BEFORE:
-
-if (s->progs)
-	bpf_object__detach_skeleton(s);
-if (s->obj)
-	bpf_object__close(*s->obj);
-
-It fails with generic write error on kprobe_events file. I need to
-remove legacy kprobe AFTER object closure. To workaround this on
-my project, and to show you this issue, I have come up with:
-
-void bpf_object__destroy_skeleton(struct bpf_object_skeleton *s)
-{
-         int i, j;
-         struct probeleft {
-                 char *probename;
-                 bool retprobe;
-         } probesleft[24];
-
-         for (i = 0, j = 0; i < s->prog_cnt; i++) {
-                 struct bpf_link **link = s->progs[i].link;
-                 if ((*link)->legacy.name) {
-                         memset(&probesleft[j], 0, sizeof(struct probeleft));
-                         probesleft[j].probename = strdup((*link)->legacy.name);
-                         probesleft[j].retprobe = (*link)->legacy.retprobe;
-                         j++;
-                 }
-         }
-
-         if (s->progs)
-                 bpf_object__detach_skeleton(s);
-         if (s->obj)
-                 bpf_object__close(*s->obj);
-         free(s->maps);
-         free(s->progs);
-         free(s);
-
-         for (j--; j >= 0; j--) {
-                 remove_kprobe_event_legacy(probesleft[j].probename, probesleft[j].retprobe);
-                 free(probesleft[j].probename);
-         }
-}
-
-Which, of course, is not what I’m suggesting to the lib, but shows
-the problem and gives you a better idea on how to solve it not
-breaking the API.
-
-> You somehow ended up with 3 times more code and I have more questions
-> now then before. When you say "it doesn't work", please make sure to
-> explain what exactly doesn't work, what you did, what you expected to
-> happen/see.
-
-Deal. Thanks a lot for reviewing all this.
-
--rafaeldtinoco
-
+>>> Tested-by: Sedat Dilek <sedat.dilek@gmail.com> # LLVM/Clang v12.0.0-rc4 (x86-64)
+>>>
+>>> As a note for the pahole side:
+>>> Recent patches require an adaptation of the define and its comment.
+>>>
+>>> 1. LINUX_ELFNOTE_BUILD_LTO -> LINUX_ELFNOTE_LTO_INFO
+>>> 2. include/linux/elfnote.h -> include/linux/elfnote-lto.h
+>>>
+>>> - Sedat -
+>>>
+[...]
