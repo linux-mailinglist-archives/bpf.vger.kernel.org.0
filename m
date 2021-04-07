@@ -2,105 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7791C356D02
-	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 15:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D57B356DB9
+	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 15:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344193AbhDGNNh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Apr 2021 09:13:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56794 "EHLO mail.kernel.org"
+        id S243133AbhDGNrA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Apr 2021 09:47:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232797AbhDGNNh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Apr 2021 09:13:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E2EE61242;
-        Wed,  7 Apr 2021 13:13:27 +0000 (UTC)
+        id S245306AbhDGNq7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Apr 2021 09:46:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 852FF61382;
+        Wed,  7 Apr 2021 13:46:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617801207;
-        bh=ICPFzg58kKpJNMHwZgJBVHNTI7bhTkZtLs5jacpCd0E=;
+        s=k20201202; t=1617803209;
+        bh=fY8O2/1gVYg0u4oNDjrQG8Vqno4tPQZ8l6Gtxj85mCc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cMhrycHcNCIgDOzzoWCFpPErsVYtO3sQh5FT8VKwLNUHumUxd0jSYlnuVIc2E08gd
-         sMGPsiEs3J+NtRfkCLO5XcuuDJm3JeoJ9UmcZjWswe80Jhk/Hta4kerWcwzEh0kqQT
-         YIAJHkrvTgs7gIMqApfIdAsrAPSLwqbTke/MdY7DYAQb9hFTUMX2QM+dfQHR2fOhK0
-         OCe1B03TaATg/nNL9ctH9hZb4EfdV/Hx00CuK7cDpekj7kcZ4Djx4/MqC3rmPSvohf
-         2UzXDz9WiZKtyUNAHavi808Q9CZwpjiJxHbT/EW4okiR0zqUFb3NcNzFN0LHQMiQXp
-         Fz1JZY8VP2CTQ==
+        b=HA571evbtYN676q3iZ1xeaF2Xbb0renzazRSaARDuHYtqrBMg6R8BVfD/UU6gk/W9
+         YwskdAWf4baNWLPt2fdLMpzutYGtf6vE3T5vm52eBZBFBvHGAAVUK9QuT9l7eIvvpV
+         jH0fFicERiSDOH6kYCR4EUaTV37qDnZVYQoRba2u1DXtuKfX0UlmubQjJUBFL2ZPSl
+         GC4cg3s7RkodS5X7TAyj/QxbcA0xHo27bOym9aGJ52O4DExxZhDwYlpzkGCEcu2yVB
+         cExGEL4psaw0f0/ZHiuNlbk2gq6l1cay5TSPyOfJPzQ/3dETHcknOy8xoZNPgXZyRj
+         +9UN4WRJoKlmA==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8841A40647; Wed,  7 Apr 2021 10:13:24 -0300 (-03)
-Date:   Wed, 7 Apr 2021 10:13:24 -0300
+        id A02C040647; Wed,  7 Apr 2021 10:46:46 -0300 (-03)
+Date:   Wed, 7 Apr 2021 10:46:46 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Yonghong Song <yhs@fb.com>,
+To:     Yonghong Song <yhs@fb.com>, Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     sedat.dilek@gmail.com,
         Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
         bpf <bpf@vger.kernel.org>, kernel-team@fb.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
         Bill Wendling <morbo@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
 Subject: Re: [PATCH kbuild v4] kbuild: add an elfnote for whether vmlinux is
  built with lto
-Message-ID: <YG2v9EY0WWp+bijr@kernel.org>
+Message-ID: <YG23xiRqJLYRtZgQ@kernel.org>
 References: <20210401232723.3571287-1-yhs@fb.com>
  <CAKwvOdmX8d3XTzJFk5rN_PnOQYJ8bXMrh8DrhzqN=UBNdQiO3g@mail.gmail.com>
+ <CA+icZUVKCY4UJfSG_sXjZHwfOQZfBZQu0pj1VZ9cXX4e7w0n6g@mail.gmail.com>
+ <c6daf068-ead0-810b-2afa-c4d1c8305893@fb.com>
+ <CA+icZUWYQ8wjOYHYrTX52AbEa3nbXco6ZKdqeMwJaZfHuJ5BhA@mail.gmail.com>
+ <128db515-14dc-4ff1-eacb-8e48fc1f6ff6@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKwvOdmX8d3XTzJFk5rN_PnOQYJ8bXMrh8DrhzqN=UBNdQiO3g@mail.gmail.com>
+In-Reply-To: <128db515-14dc-4ff1-eacb-8e48fc1f6ff6@fb.com>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Apr 02, 2021 at 11:07:10AM -0700, Nick Desaulniers escreveu:
-> On Thu, Apr 1, 2021 at 4:27 PM Yonghong Song <yhs@fb.com> wrote:
-> > Currently, clang LTO built vmlinux won't work with pahole.
-> > LTO introduced cross-cu dwarf tag references and broke
-> > current pahole model which handles one cu as a time.
-> > The solution is to merge all cu's as one pahole cu as in [1].
-> > We would like to do this merging only if cross-cu dwarf
-> > references happens. The LTO build mode is a pretty good
-> > indication for that.
+Em Tue, Apr 06, 2021 at 11:23:27PM -0700, Yonghong Song escreveu:
+> On 4/6/21 8:01 PM, Sedat Dilek wrote:
+> > On Tue, Apr 6, 2021 at 6:13 PM Yonghong Song <yhs@fb.com> wrote:
+> > > Masahiro and Michal,
 
-> > In earlier version of this patch ([2]), clang flag
-> > -grecord-gcc-switches is proposed to add to compilation flags
-> > so pahole could detect "-flto" and then merging cu's.
-> > This will increate the binary size of 1% without LTO though.
+> > > Friendly ping. Any comments on this patch?
 
-> > Arnaldo suggested to use a note to indicate the vmlinux
-> > is built with LTO. Such a cheap way to get whether the vmlinux
-> > is built with LTO or not helps pahole but is also useful
-> > for tracing as LTO may inline/delete/demote global functions,
-> > promote static functions, etc.
+> > > The addition LTO .notes information emitted by kernel is used by pahole
+> > > in the following patch:
+> > >      https://lore.kernel.org/bpf/20210401025825.2254746-1-yhs@fb.com/
+> > >      (dwarf_loader: check .notes section for lto build info)
 
-> > So this patch added an elfnote with a new type LINUX_ELFNOTE_LTO_INFO.
-> > The owner of the note is "Linux".
+> > the above pahole patch has this define and comment:
 
-> > With gcc 8.4.1 and clang trunk, without LTO, I got
-> >   $ readelf -n vmlinux
-> >   Displaying notes found in: .notes
-> >     Owner                Data size        Description
-> >   ...
-> >     Linux                0x00000004       func
-> >      description data: 00 00 00 00
-> >   ...
-> > With "readelf -x ".notes" vmlinux", I can verify the above "func"
-> > with type code 0x101.
-> >
-> > With clang thin-LTO, I got the same as above except the following:
-> >      description data: 01 00 00 00
-> > which indicates the vmlinux is built with LTO.
-> >
-> >   [1] https://lore.kernel.org/bpf/20210325065316.3121287-1-yhs@fb.com/
-> >   [2] https://lore.kernel.org/bpf/20210331001623.2778934-1-yhs@fb.com/
-> >
-> > Suggested-by: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
-> 
-> LGTM thanks Yonghong!
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> > -static bool cus__merging_cu(Dwarf *dw)
+> > +/* Match the define in linux:include/linux/elfnote.h */
+> > +#define LINUX_ELFNOTE_BUILD_LTO 0x101
 
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > ...and does not fit with the define and comment in this kernel patch:
 
-Thanks!
+> > +#include <linux/elfnote.h>
+> > +
+> > +#define LINUX_ELFNOTE_LTO_INFO 0x101
+
+> Thanks, Sedat. I am aware of this. I think we can wait in pahole
+> to make a change until the kernel patch is finalized and merged.
+> The kernel patch may still change as we haven't get
+> maintainer's comment. This will avoid unnecessary churn's
+> in pahole side.
+
+So, I tested with clang 12 on fedora rawhide as well on fedora 33, and
+I'm satisfied with the current state to release v1.21, Masahiro, have
+you had the time to look at this?
+
+Yonghong, as we have a fallback in case the ELF note isn't available, I
+think we're safe even if the notes patch merge gets delayed, right?
 
 - Arnaldo
