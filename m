@@ -2,239 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B55135750C
-	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 21:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC60B357533
+	for <lists+bpf@lfdr.de>; Wed,  7 Apr 2021 21:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348789AbhDGTk3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 7 Apr 2021 15:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60126 "EHLO
+        id S1355738AbhDGTvx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 7 Apr 2021 15:51:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236301AbhDGTk3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 7 Apr 2021 15:40:29 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01CE7C06175F;
-        Wed,  7 Apr 2021 12:40:19 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id i144so15740ybg.1;
-        Wed, 07 Apr 2021 12:40:18 -0700 (PDT)
+        with ESMTP id S1345736AbhDGTvw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 7 Apr 2021 15:51:52 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DA92C06175F;
+        Wed,  7 Apr 2021 12:51:42 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id o10so1888915ybb.10;
+        Wed, 07 Apr 2021 12:51:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2g5D0xOA3ujEGqGeN4cMLv0+uOERBTSZIDhrkslcITw=;
-        b=cQxM9qZSdgS1JRFQoRkDGN4e9JsBmUo2NpuRsj+EdWNnp/FbLns980SvWWQPGS0+Ju
-         7RA5Lo/XsW0drcVFMr1MQHNrelcok6T0zA9+vUxgUeP4Z1jiukE3XumGRpu1KRWKC4NM
-         lzzQGDy9sYxb5nDgxGLrJRRM/0b4bDSfRyAHL7CmM2Lub5nvw4SuIvDCQQ7G6zKgp5WY
-         9WjfSuM7+WEj+wcIZ0zV33Q4Y4OpyW9r22jSlW6Qxh3pmyhVnrZdlWR2b5COg6j2EKJh
-         6HgU568zdHsSF3Zz61ssZuKg9nLE0GPO+S61cHSdOBBTRoBBqg/xTNesa8Wrf8+nQ46N
-         0sUw==
+         :cc:content-transfer-encoding;
+        bh=NhiV7Lg6NFf2SWTJt1l5/TSaQotsKL/48Z7LwEwUbxo=;
+        b=IfaB7wP0POCwNjxYNSpx71tw+Rgsvm9ifsLVIgxnOYzI9oH+Agho6ks0bXCUuW68Oe
+         FfaaOIzTAkcQi87vtt2ioy04PhXrFB6kUtnGpLAQH7RX74PA3L6b1QwGHTI/cXEIN+C1
+         8thqMoCQ/Kcm0ko/9yDCcqRZUaodNiZJ58jg4QBLac9KONHj21/tshUEm+PatylL49Sf
+         gZxpdtXk6wwKSd078zvTJRwE6NS+MBNt/ShrZu+7KgcFbKHVmOFrFafFmGCAE2FFWKSg
+         mhK3Zv/cvrGzbB54gx2Aie/u5DTjkFTxylry2DzW2aLSUOxtBXPbNIK599rukYQO3W46
+         vs8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2g5D0xOA3ujEGqGeN4cMLv0+uOERBTSZIDhrkslcITw=;
-        b=NLPtoqwHMF+uyW3sPBsfAwvfi6lOtVZHsV5XEWeJg58z4OIR6BzHn/871yj8/1D45L
-         ONd2aQeED0Os2TQxLNhNmZIOIlZPD3Fb3IHEiu2WM+Fju9HPf+pxMd7b1PUTcW7Gr2SD
-         cVXZ8xfHkBIxtGJyQtLYin1JC2itHav+LbtChbVORbizYBW6nR2IauePhSTAmPa01yNI
-         xW8cJQ2cTw1xwuw7baBZf2W9uANPUODSc8OMSJM3OATSWb0OFoVgdECXvpVmTr6dW/O5
-         u8Pb8WEOoHt7ZEj/ok94BQfMc0bSE9AF1/hXF5jl93qtva+kZ7NQsDcdjAPwjoODYrRR
-         cdmQ==
-X-Gm-Message-State: AOAM531FWH2ST6DYj+WD1OKuK4E05ujpwn3K1iRkbViYAzydg10IRLA8
-        OKyfolXX6HgM8eF1XI25vx5q5LXQdhszYiFggic=
-X-Google-Smtp-Source: ABdhPJyS6Ankjq1MROF4o6dv8wdv+2vP43HGx123bOujNFiB3GBQqrLWQih3TcMAa24IMfMgztko6Dfpu9TbtGA9PbA=
-X-Received: by 2002:a25:ab03:: with SMTP id u3mr7005745ybi.347.1617824418240;
- Wed, 07 Apr 2021 12:40:18 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NhiV7Lg6NFf2SWTJt1l5/TSaQotsKL/48Z7LwEwUbxo=;
+        b=lQJ1hPcfO02Qt8QOtqP+HNNnW2neYLYVRD0PR9IziZhejAHlUJSG+S9qRJEqlxSPBH
+         1WK7B7BubTAbQK9zrYm7Rnlzhi4n+YanKvLxGAN1PxtXkUjvPaaxC1rLgxgDtpdOz0i9
+         h04EeiFT8UYaLx0h9N3Bmuaz9JSEhKkK3R/K5mRh/EDf8AW3vERGoEVDAwKntMmB+5gc
+         sEQ5X+Xtdf/VsrAMJkAub7jeOB1WsXH+FEug1OS7wuqGWU0eSdrC8YP19XQZzYjpdtIT
+         oD2IjHUbo81me4aFk2Q2V8wYV/DhlkWGyiAH2q7e2+eWdkR8G3XuPEMn6EbtR7yENSgZ
+         WYpA==
+X-Gm-Message-State: AOAM533fLEBzXQ//o5v5zckepLWuC5LmmYkev5DojC3aveewYUkQryZI
+        y4ZbeawXCTzwwPSLUy7sJWa5qZnRMxnbqzE+W87A3PAY
+X-Google-Smtp-Source: ABdhPJyU4GB8wA/t0KzUh6YGE+cjbSCczuBUC5i0dg2k+CO3N+I2P9ldAnSJOgtYCV7fEU/Ou7UtqdoGZPXd8Q+rBXY=
+X-Received: by 2002:a25:d87:: with SMTP id 129mr6828786ybn.260.1617825101859;
+ Wed, 07 Apr 2021 12:51:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000c7bbd305bededd29@google.com>
-In-Reply-To: <000000000000c7bbd305bededd29@google.com>
+References: <20210406185400.377293-1-pctammela@mojatatu.com>
+ <20210406185400.377293-3-pctammela@mojatatu.com> <CAEf4BzYmj_ZPDq8Zi4dbntboJKRPU2TVopysBNrdd9foHTfLZw@mail.gmail.com>
+ <CAKY_9u3Y9Ay6yBwt27MaCCm=5aVmH92OkFe2aaoD6YWkCkYjBw@mail.gmail.com>
+In-Reply-To: <CAKY_9u3Y9Ay6yBwt27MaCCm=5aVmH92OkFe2aaoD6YWkCkYjBw@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 7 Apr 2021 12:40:07 -0700
-Message-ID: <CAEf4BzYk+dqs+jwu6VKXP-RttcTEGFe+ySTGWT9CRNkagDiJVA@mail.gmail.com>
-Subject: Re: [syzbot] memory leak in bpf (2)
-To:     syzbot <syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+Date:   Wed, 7 Apr 2021 12:51:31 -0700
+Message-ID: <CAEf4BzaLKm_fy4oO4Rdp76q2KoC6yC1WcJLuehoZUu9JobG-Cw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/3] libbpf: selftests: refactor
+ 'BPF_PERCPU_TYPE()' and 'bpf_percpu()' macros
+To:     Pedro Tammela <pctammela@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        Martin Lau <kafai@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        David Verbeiren <david.verbeiren@tessares.net>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 6:08 PM syzbot
-<syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com> wrote:
+On Wed, Apr 7, 2021 at 12:30 PM Pedro Tammela <pctammela@gmail.com> wrote:
 >
-> Hello,
+> Em qua., 7 de abr. de 2021 =C3=A0s 15:31, Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> escreveu:
+> >
+> > On Tue, Apr 6, 2021 at 11:55 AM Pedro Tammela <pctammela@gmail.com> wro=
+te:
+> > >
+> > > This macro was refactored out of the bpf selftests.
+> > >
+> > > Since percpu values are rounded up to '8' in the kernel, a careless
+> > > user in userspace might encounter unexpected values when parsing the
+> > > output of the batched operations.
+> >
+> > I wonder if a user has to be more careful, though? This
+> > BPF_PERCPU_TYPE, __bpf_percpu_align and bpf_percpu macros seem to
+> > create just another opaque layer. It actually seems detrimental to me.
+> >
+> > I'd rather emphasize in the documentation (e.g., in
+> > bpf_map_lookup_elem) that all per-cpu maps are aligning values at 8
+> > bytes, so user has to make sure that array of values provided to
+> > bpf_map_lookup_elem() has each element size rounded up to 8.
 >
-> syzbot found the following issue on:
->
-> HEAD commit:    0f4498ce Merge tag 'for-5.12/dm-fixes-2' of git://git.kern..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1250e126d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=49f2683f4e7a4347
-> dashboard link: https://syzkaller.appspot.com/bug?extid=5d895828587f49e7fe9b
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a17016d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10a32016d00000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+5d895828587f49e7fe9b@syzkaller.appspotmail.com
->
-> Warning: Permanently added '10.128.0.74' (ECDSA) to the list of known hosts.
-> executing program
-> executing program
-> BUG: memory leak
-> unreferenced object 0xffff8881133295c0 (size 64):
->   comm "syz-executor529", pid 8395, jiffies 4294943939 (age 8.130s)
->   hex dump (first 32 bytes):
->     40 48 3c 04 00 ea ff ff 00 48 3c 04 00 ea ff ff  @H<......H<.....
->     c0 e7 3c 04 00 ea ff ff 80 e7 3c 04 00 ea ff ff  ..<.......<.....
->   backtrace:
->     [<ffffffff8139511c>] kmalloc_node include/linux/slab.h:577 [inline]
->     [<ffffffff8139511c>] __bpf_map_area_alloc+0xfc/0x120 kernel/bpf/syscall.c:300
->     [<ffffffff813d2414>] bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:90 [inline]
->     [<ffffffff813d2414>] bpf_ringbuf_alloc kernel/bpf/ringbuf.c:131 [inline]
->     [<ffffffff813d2414>] ringbuf_map_alloc kernel/bpf/ringbuf.c:170 [inline]
->     [<ffffffff813d2414>] ringbuf_map_alloc+0x134/0x350 kernel/bpf/ringbuf.c:146
->     [<ffffffff8139c8d3>] find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
->     [<ffffffff8139c8d3>] map_create kernel/bpf/syscall.c:828 [inline]
->     [<ffffffff8139c8d3>] __do_sys_bpf+0x7c3/0x2fe0 kernel/bpf/syscall.c:4375
->     [<ffffffff842df20d>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->     [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
->
->
+> From my own experience, the documentation has been a very unreliable
+> source, to the point that I usually jump to the code first rather than
+> to the documentation nowadays[1].
 
-I think either kmemleak or syzbot are mis-reporting this. I've added a
-bunch of printks around all allocations performed by BPF ringbuf. When
-I run repro, I see this:
+I totally agree, which is why I think improving docs is necessary.
+Unfortunately docs are usually lagging behind, because generally
+people hate writing documentation and it's just a fact of life.
 
-[   26.013500] ALLOC rb_map ffff888118d7d000
-[   26.013946] ALLOC KMALLOC AREA ffff88810d538c00
-[   26.014439] ALLOC PAGES ffff88810d538c00
-[   26.014826] ALLOC PAGE[0] ffffea000419af00
-[   26.015272] ALLOC PAGE[1] ffffea000419aec0
-[   26.015686] ALLOC PAGE[2] ffffea000419ae80
-[   26.016090] ALLOC PAGE[3] ffffea00042e29c0
-[   26.016513] ALLOC PAGE[4] ffffea00042a1000
-[   26.016928] VMAP rb ffffc90000539000
-[   26.017291] ALLOC rb_map->rb ffffc90000539000
-[   26.017712] FINISHED ALLOC BPF_MAP ffff888118d7d000
-[   32.105069] ALLOC rb_map ffff888118d7d200
-[   32.105568] ALLOC KMALLOC AREA ffff88810d538c80
-[   32.106005] ALLOC PAGES ffff88810d538c80
-[   32.106407] ALLOC PAGE[0] ffffea000419aa80
-[   32.106805] ALLOC PAGE[1] ffffea000419ab00
-[   32.107206] ALLOC PAGE[2] ffffea000419abc0
-[   32.107607] ALLOC PAGE[3] ffffea0004284480
-[   32.108003] ALLOC PAGE[4] ffffea0004284440
-[   32.108419] VMAP rb ffffc900005ad000
-[   32.108765] ALLOC rb_map->rb ffffc900005ad000
-[   32.109186] FINISHED ALLOC BPF_MAP ffff888118d7d200
-[   33.592874] kmemleak: 1 new suspected memory leaks (see
-/sys/kernel/debug/kmemleak)
-[   40.526922] kmemleak: 1 new suspected memory leaks (see
-/sys/kernel/debug/kmemleak)
+> Tests, samples and projects have always been my source of truth and we
+> are already lacking a bit on those as well. For instance, the samples
+> directory contains programs that are very outdated (I didn't check if
+> they are still functional).
 
-On repro side I get these two warnings:
-
-[vmuser@archvm bpf]$ sudo ./repro
-BUG: memory leak
-unreferenced object 0xffff88810d538c00 (size 64):
-  comm "repro", pid 2140, jiffies 4294692933 (age 14.540s)
-  hex dump (first 32 bytes):
-    00 af 19 04 00 ea ff ff c0 ae 19 04 00 ea ff ff  ................
-    80 ae 19 04 00 ea ff ff c0 29 2e 04 00 ea ff ff  .........)......
-  backtrace:
-    [<0000000077bfbfbd>] __bpf_map_area_alloc+0x31/0xc0
-    [<00000000587fa522>] ringbuf_map_alloc.cold.4+0x48/0x218
-    [<0000000044d49e96>] __do_sys_bpf+0x359/0x1d90
-    [<00000000f601d565>] do_syscall_64+0x2d/0x40
-    [<0000000043d3112a>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810d538c80 (size 64):
-  comm "repro", pid 2143, jiffies 4294699025 (age 8.448s)
-  hex dump (first 32 bytes):
-    80 aa 19 04 00 ea ff ff 00 ab 19 04 00 ea ff ff  ................
-    c0 ab 19 04 00 ea ff ff 80 44 28 04 00 ea ff ff  .........D(.....
-  backtrace:
-    [<0000000077bfbfbd>] __bpf_map_area_alloc+0x31/0xc0
-    [<00000000587fa522>] ringbuf_map_alloc.cold.4+0x48/0x218
-    [<0000000044d49e96>] __do_sys_bpf+0x359/0x1d90
-    [<00000000f601d565>] do_syscall_64+0x2d/0x40
-    [<0000000043d3112a>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Note that both reported leaks (ffff88810d538c80 and ffff88810d538c00)
-correspond to pages array bpf_ringbuf is allocating and tracking
-properly internally.
-
-Note also that syzbot repro doesn't close FD of created BPF ringbufs,
-and even when ./repro itself exits with error, there are still two
-forked processes hanging around in my system. So clearly ringbuf maps
-are alive at that point. So reporting any memory leak looks weird at
-that point, because that memory is being used by active referenced BPF
-ringbuf.
-
-It's also a question why repro doesn't clean up its forks. But if I do
-`pkill repro`, I do see that all the allocated memory is properly
-cleaned up:
+Yeah, samples/bpf is bitrotting. selftests/bpf, though, are maintained
+and run regularly and vigorously, so making sure they set a good and
+realistic example is a good.
 
 
-[   84.039790] MAP RELEASE MAP ffff888118d7d000
-[   84.039980] MAP RELEASE MAP ffff888118d7d200
-[   84.040421] MAP ffff888118d7d000 PUT USERCNT 0
-[   84.040849] MAP ffff888118d7d200 PUT USERCNT 0
-[   84.040854] MAP ffff888118d7d200 PUT REFCNT 0
-[   84.041485] MAP ffff888118d7d000 PUT REFCNT 0
-[   84.041513] MAP FREE DEFERRED MAP ffff888118d7d000
-[   84.041921] MAP FREE DEFERRED MAP ffff888118d7d200
-[   84.042530] VUNMAP rb ffffc90000539000
-[   84.043127] VUNMAP rb ffffc900005ad000
-[   84.043802] DEALLOC page[0] ffffea000419af00
-[   84.044258] DEALLOC page[0] ffffea000419aa80
-[   84.044814] DEALLOC page[1] ffffea000419aec0
-[   84.045180] DEALLOC page[1] ffffea000419ab00
-[   84.045772] DEALLOC page[2] ffffea000419ae80
-[   84.046188] DEALLOC page[2] ffffea000419abc0
-[   84.046817] DEALLOC page[3] ffffea00042e29c0
-[   84.047245] DEALLOC page[3] ffffea0004284480
-[   84.047895] DEALLOC page[4] ffffea00042a1000
-[   84.048371] DEALLOC page[4] ffffea0004284440
-[   84.048373] DEALLOC pages ffff88810d538c80
-[   84.048375] DEALLOC rb_map ffff888118d7d200
-[   84.052392] DEALLOC pages ffff88810d538c00
-[   84.053015] DEALLOC rb_map ffff888118d7d000
+> I think macros like these will be present in most of the project
+> dealing with batched operations and as a daily user of libbpf I don't
+> see how this could not be offered by libbpf as a standardized way to
+> declare percpu types.
 
-
-Note that "leaks" are deallocated properly:
-
-[   84.048373] DEALLOC pages ffff88810d538c80
-[   84.052392] DEALLOC pages ffff88810d538c00
-
-
-BTW, if I add close() right after bpf() syscall in syzbot repro, I see
-that everything is immediately deallocated, like designed. And no
-memory leak is reported.
-
-So I don't think the problem is anywhere in bpf_ringbuf code, rather
-in the leak detection and/or repro itself. Any suggestions how to
-silence or fix these reports?
+If I were using per-CPU maps a lot, I'd make sure I use u64 and
+aligned(8) types and bypass all the macro ugliness, because there is
+no need in it and it just hurts readability. So I don't want libbpf to
+incentivize bad choices here by providing seemingly convenient macros.
+Users have to be aware that values are 8-byte aligned/extended. That's
+not a big secret and not a very obscure thing to learn anyways.
 
 >
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> [1] So batched operations were introduced a little bit over a 1 year
+> ago and yet the only reference I had for it was the selftests. The
+> documentation is on my TODO list, but that's just because I have to
+> deal with it daily.
 >
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
+
+Yeah, please do contribute them!
+
+> >
+> > In practice, I'd recommend users to always use __u64/__s64 when having
+> > primitive integers in a map (they are not saving anything by using
+> > int, it just creates an illusion of savings). Well, maybe on 32-bit
+> > arches they would save a bit of CPU, but not on typical 64-bit
+> > architectures. As for using structs as values, always mark them as
+> > __attribute__((aligned(8))).
+> >
+> > Basically, instead of obscuring the real use some more, let's clarify
+> > and maybe even provide some examples in documentation?
+>
+> Why not do both?
+>
+> Provide a standardized way to declare a percpu value with examples and
+> a good documentation with examples.
+> Let the user decide what is best for his use case.
+
+What is a standardized way? A custom macro with struct { T v; }
+inside? That's just one way of doing this, and it requires another
+macro to just access the value (because no one wants to write
+my_values[cpu].v, right?). I'd say the standardized way of reading
+values should look like `my_values[cpu]`, that's it. For that you use
+64-bit integers or 8-byte aligned structs. And don't mess with macros
+for that at all.
+
+So if a user insists on using int/short/char as value, they can do
+their own struct { char v} __aligned(8) trick. But I'd advise such
+users to reconsider and use u64. If they are using structs for values,
+always mark __aligned(8) and forget about this in the rest of your
+code.
+
+As for allocating memory for array of per-cpu values, there is also no
+single standardized way we can come up with. It could be malloc() on
+the heap. Or alloca() on the stack. Or it could be pre-allocated one
+for up to maximum supported CPUs. Or... whatever makes sense.
+
+So I think the best way to handle all that is to clearly explain how
+reading per-CPU values from per-CPU maps works in BPF and what are the
+memory layout expectations.
+
+>
+> >
+> > >
+> > > Now that both array and hash maps have support for batched ops in the
+> > > percpu variant, let's provide a convenient macro to declare percpu ma=
+p
+> > > value types.
+> > >
+> > > Updates the tests to a "reference" usage of the new macro.
+> > >
+> > > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> > > ---
+> > >  tools/lib/bpf/bpf.h                           | 10 ++++
+> > >  tools/testing/selftests/bpf/bpf_util.h        |  7 ---
+> > >  .../bpf/map_tests/htab_map_batch_ops.c        | 48 ++++++++++-------=
+--
+> > >  .../selftests/bpf/prog_tests/map_init.c       |  5 +-
+> > >  tools/testing/selftests/bpf/test_maps.c       | 16 ++++---
+> > >  5 files changed, 46 insertions(+), 40 deletions(-)
+> > >
+> >
+> > [...]
+> >
+> > > @@ -400,11 +402,11 @@ static void test_arraymap(unsigned int task, vo=
+id *data)
+> > >  static void test_arraymap_percpu(unsigned int task, void *data)
+> > >  {
+> > >         unsigned int nr_cpus =3D bpf_num_possible_cpus();
+> > > -       BPF_DECLARE_PERCPU(long, values);
+> > > +       pcpu_map_value_t values[nr_cpus];
+> > >         int key, next_key, fd, i;
+> > >
+> > >         fd =3D bpf_create_map(BPF_MAP_TYPE_PERCPU_ARRAY, sizeof(key),
+> > > -                           sizeof(bpf_percpu(values, 0)), 2, 0);
+> > > +                           sizeof(long), 2, 0);
+> > >         if (fd < 0) {
+> > >                 printf("Failed to create arraymap '%s'!\n", strerror(=
+errno));
+> > >                 exit(1);
+> > > @@ -459,7 +461,7 @@ static void test_arraymap_percpu(unsigned int tas=
+k, void *data)
+> > >  static void test_arraymap_percpu_many_keys(void)
+> > >  {
+> > >         unsigned int nr_cpus =3D bpf_num_possible_cpus();
+> >
+> > This just sets a bad example for anyone using selftests as an
+> > aspiration for their own code. bpf_num_possible_cpus() does exit(1)
+> > internally if libbpf_num_possible_cpus() returns error. No one should
+> > write real production code like that. So maybe let's provide a better
+> > example instead with error handling and malloc (or perhaps alloca)?
+>
+> OK. Makes sense.
+>
+> >
+> > > -       BPF_DECLARE_PERCPU(long, values);
+> > > +       pcpu_map_value_t values[nr_cpus];
+> > >         /* nr_keys is not too large otherwise the test stresses percp=
+u
+> > >          * allocator more than anything else
+> > >          */
+> > > @@ -467,7 +469,7 @@ static void test_arraymap_percpu_many_keys(void)
+> > >         int key, fd, i;
+> > >
+> > >         fd =3D bpf_create_map(BPF_MAP_TYPE_PERCPU_ARRAY, sizeof(key),
+> > > -                           sizeof(bpf_percpu(values, 0)), nr_keys, 0=
+);
+> > > +                           sizeof(long), nr_keys, 0);
+> > >         if (fd < 0) {
+> > >                 printf("Failed to create per-cpu arraymap '%s'!\n",
+> > >                        strerror(errno));
+> > > --
+> > > 2.25.1
+> > >
