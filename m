@@ -2,85 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6868D358767
-	for <lists+bpf@lfdr.de>; Thu,  8 Apr 2021 16:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543D8358949
+	for <lists+bpf@lfdr.de>; Thu,  8 Apr 2021 18:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhDHOr3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Apr 2021 10:47:29 -0400
-Received: from www62.your-server.de ([213.133.104.62]:49972 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231557AbhDHOr3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:47:29 -0400
-Received: from [2001:1620:665:0:5795:5b0a:e5d5:5944] (helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lUVw4-0002Nd-UJ; Thu, 08 Apr 2021 16:47:15 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2021-04-08
-Date:   Thu,  8 Apr 2021 16:46:42 +0200
-Message-Id: <20210408144642.29822-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S232230AbhDHQJJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Apr 2021 12:09:09 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:47135 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231655AbhDHQJH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 8 Apr 2021 12:09:07 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id A7F145C00DF;
+        Thu,  8 Apr 2021 12:08:55 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 08 Apr 2021 12:08:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=mC9lT507J6RIj+U5nS4hMawdjll
+        gWQu3AF4sHZo0txk=; b=ftKoFL1DidJZ8AA4UiXRBaU5Tu/vdy4sOfZHQQmhepU
+        HFTbJRcZk4OJYHb7DXNl1OHOgfJGsD0r8tiXXEeY730VTP+oE0SnZy8Y1GVsNKXw
+        bLI4yQ8/J2guhtUHQIUQYA3dKLYMe+7xf9I4FGT1eVdicvUi05vrxgSzIH4HIMdV
+        +4KJ+4o6qNs4r/AAmuWFKgdyTGY5ltllEXKqhmP/FzQOY2YCIw2GguWbUAkqhS3t
+        mxlWlEa/p/Efv/FKnhlcqtbnEVEKepAyYZL+GXFx7r+pFIH+J+8tlk8pEd8Mm/TL
+        RBiv9VPfKNNj2SrCDhrrbjjz9sHMFJz4Blvr+seB0Vw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=mC9lT5
+        07J6RIj+U5nS4hMawdjllgWQu3AF4sHZo0txk=; b=QuGYtViLn86Ts9x5v5g3bd
+        MVi95Jp1JOot0EuVp4/oK46YOgRBpnkpsxCK05+VilcbR8CjelhsaBupaZBiRqD8
+        36+6xejpOF86GaFL9DZuhdR8GnQQFT5peUrpzpelRPcS+LLYFBtu7oaB699rpKmE
+        7+Uh9cL5tIZfJQNmxEFuTLdprT8MUmC9RKgt9d+vY0LmiaePWIwrPwGzoTS203cl
+        Y1o8ujJmjsrczLBw+KMiHiLNsAS93ogs+fciMCd80KEdPYJXq/NYdo6A8dcnMUKk
+        naDGagrYNcCUX/44wxC3Ri2u59NRTLRQxY58nNlL+6Ka80F/GNZLHrWIRm0/KUvg
+        ==
+X-ME-Sender: <xms:lipvYF7SfN6hNym_9V4OYOWn5Okx7dgtJvSqli_dhA_3bMhvaYuzpQ>
+    <xme:lipvYC4ixJoGnA6Q4ZMtsIzXcY2Mz-WPG0Y-5hO75A8cWwkXfE0aCUr0oCdUT4MOA
+    6RtxjdXZuaZgzdGlQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejledgleelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvuffkfhggtggujgesthdtredttddt
+    vdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqeenuc
+    ggtffrrghtthgvrhhnpeeuuddvjeefffelgfeuveehfeegfeetfeetueduudfhudfhheev
+    leetveduleehjeenucfkphepudeifedruddugedrudefvddrheenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:lipvYMc5AHrO0bJ0YYtZHVOA4DkPwEazneQcBEkIV7VVW6bNzgcuBw>
+    <xmx:lipvYOLPWECCm__gGzjEHGj6wLfKS4p75juNqctycEiUFlqiOzHtJg>
+    <xmx:lipvYJJTMQ19BjHxkt47O7443iOtPuOcbWY1ImfKIH5cnKE5lMQlvA>
+    <xmx:lypvYB-LW7W04XNfwu0IrGh4H4juFXqHfL4louBnMaazNjISkn_FOg>
+Received: from dlxu-fedora-R90QNFJV (unknown [163.114.132.5])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9C2731080054;
+        Thu,  8 Apr 2021 12:08:53 -0400 (EDT)
+Date:   Thu, 8 Apr 2021 09:08:37 -0700
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, jolsa@kernel.org, hannes@cmpxchg.org,
+        yhs@fb.com
+Subject: Re: [RFC bpf-next 0/1] bpf: Add page cache iterator
+Message-ID: <20210408160837.kbqxe3ls6ogjvayc@dlxu-fedora-R90QNFJV>
+References: <cover.1617831474.git.dxu@dxuuu.xyz>
+ <20210408075117.oqoqspilk3c3xsaa@wittgenstein>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26134/Thu Apr  8 13:08:38 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408075117.oqoqspilk3c3xsaa@wittgenstein>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+Hi Christian, thanks for taking a look.
 
-The following pull-request contains BPF updates for your *net* tree.
+On Thu, Apr 08, 2021 at 09:51:17AM +0200, Christian Brauner wrote:
+> On Wed, Apr 07, 2021 at 02:46:10PM -0700, Daniel Xu wrote:
+> > There currently does not exist a way to answer the question: "What is in
+> > the page cache?". There are various heuristics and counters but nothing
+> > that can tell you anything like:
+> > 
+> >   * 3M from /home/dxu/foo.txt
+> >   * 5K from ...
+> >   * etc.
+> > 
+> > The answer to the question is particularly useful in the stacked
+> > container world. Stacked containers implies multiple containers are run
+> > on the same physical host. Memory is precious resource on some (if not
+> 
+> Just to clarify: what are "stacked containers"? Do you mean nested
+> containers, i.e. containers running within containers?
 
-We've added 4 non-merge commits during the last 2 day(s) which contain
-a total of 4 files changed, 31 insertions(+), 10 deletions(-).
+I mean multiple containers running side by side on the same host.
 
-The main changes are:
-
-1) Validate and reject invalid JIT branch displacements, from Piotr Krysiuk.
-
-2) Fix incorrect unhash restore as well as fwd_alloc memory accounting in
-   sock map, from John Fastabend.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Andrii Nakryiko, Cong Wang, Daniel Borkmann, Lorenz Bauer
-
-----------------------------------------------------------------
-
-The following changes since commit 2a2403ca3add03f542f6b34bef9f74649969b06d:
-
-  tipc: increment the tmp aead refcnt before attaching it (2021-04-06 16:25:34 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 26f55a59dc65ff77cd1c4b37991e26497fc68049:
-
-  bpf, x86: Validate computation of branch displacements for x86-32 (2021-04-08 16:24:53 +0200)
-
-----------------------------------------------------------------
-John Fastabend (2):
-      bpf, sockmap: Fix sk->prot unhash op reset
-      bpf, sockmap: Fix incorrect fwd_alloc accounting
-
-Piotr Krysiuk (2):
-      bpf, x86: Validate computation of branch displacements for x86-64
-      bpf, x86: Validate computation of branch displacements for x86-32
-
- arch/x86/net/bpf_jit_comp.c   | 11 ++++++++++-
- arch/x86/net/bpf_jit_comp32.c | 11 ++++++++++-
- include/linux/skmsg.h         |  7 ++++++-
- net/core/skmsg.c              | 12 +++++-------
- 4 files changed, 31 insertions(+), 10 deletions(-)
+Thanks,
+Daniel
