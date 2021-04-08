@@ -2,109 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6DE358F1D
-	for <lists+bpf@lfdr.de>; Thu,  8 Apr 2021 23:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67613358F25
+	for <lists+bpf@lfdr.de>; Thu,  8 Apr 2021 23:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232426AbhDHVXx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Apr 2021 17:23:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39177 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232387AbhDHVXx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 8 Apr 2021 17:23:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617917021;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1UNtpRwMCYUQEKSW/rnSecQHWPrqwfmhzTyqLh1wSNk=;
-        b=LCyKdj0yAyA0qLMtGJ2WVa2L3sE8vIdISz8YbAPAO1SU9MepCBVteSHxOJIsptv1oec+Gb
-        6+5NmMfSQwfodmcx41LHV6H/yP6mkFTj38R4W9Sxe8QxMGMGJvniAR9iKPQfwbMk37arLh
-        NjTVtlpjpSFG+tEh2NXWTDL1cADzU1U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-448-a2NJ5TGkNNqL_K5BbtvHRA-1; Thu, 08 Apr 2021 17:23:37 -0400
-X-MC-Unique: a2NJ5TGkNNqL_K5BbtvHRA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 913CA801A82;
-        Thu,  8 Apr 2021 21:23:35 +0000 (UTC)
-Received: from krava (unknown [10.40.192.110])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6579F5D71D;
-        Thu,  8 Apr 2021 21:23:33 +0000 (UTC)
-Date:   Thu, 8 Apr 2021 23:23:32 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Yonghong Song <yhs@fb.com>, Arnaldo <arnaldo.melo@gmail.com>,
-        David Blaikie <dblaikie@gmail.com>, dwarves@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Bill Wendling <morbo@google.com>, bpf <bpf@vger.kernel.org>,
-        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [RFT] prepping up pahole 1.21, wanna test it? was Re: [PATCH
- dwarves] dwarf_loader: handle subprogram ret type with abstract_origin
- properly
-Message-ID: <YG90VJNUJA6EWZ1X@krava>
-References: <1ef31dd8-2385-1da1-2c95-54429c895d8a@fb.com>
- <CAENS6EsiRsY1JptWJqu2wH=m4fkSiR+zD8JDD5DYke=ZnJOMrg@mail.gmail.com>
- <YGckYjyfxfNLzc34@kernel.org>
- <YGcw4iq9QNkFFfyt@kernel.org>
- <2d55d22b-d136-82b9-6a0f-8b09eeef7047@fb.com>
- <82dfd420-96f9-aedc-6cdc-bf20042455db@fb.com>
- <E9072F07-B689-402C-89F6-545B589EF7E4@gmail.com>
- <be7079b4-718c-e4a7-dff4-56543e5854a6@fb.com>
- <YG3RpVgLC9UEUrb8@kernel.org>
- <YG3SYoNWqb8DlP61@kernel.org>
+        id S232372AbhDHVaM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Apr 2021 17:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232350AbhDHVaM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Apr 2021 17:30:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B53C061760;
+        Thu,  8 Apr 2021 14:30:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FMwsbzIx2vhE3AUqGng1fDydGgdG4KsD5JUXQdwoJ+w=; b=ZxjfWMBPLVX108xUoD3fxC9LtV
+        GXYGhxpBrxOZBsUh44HUWr/CHWB9mc+dHoAoJXCPYBBcg6r9FWxoWze7gYmBh/InxbGY+oZiib2/e
+        uSiPXADkWIuCB7BPPYc8jAI8K5299K4EmEGVIsMuhq6WN6HzH44P5V6ehuhmAYrlbvRIpvlkZj3QB
+        vMAlYFJ0RSwGbaABVxZ55vWznbJtOhiytyUr8lsGvOGsVUjuqNqgv3OmXc6nD2marT8BrKu+l3du0
+        2Ll4ZUu8wtjpPHQ15i/yRYnEFgA52ZX9NSdHi71qA4xU4ABcomSEwgISzH37BDAugOThzCej9KTH4
+        ou83SQiw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUcDP-00Gtps-RP; Thu, 08 Apr 2021 21:29:33 +0000
+Date:   Thu, 8 Apr 2021 22:29:27 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, jolsa@kernel.org, hannes@cmpxchg.org,
+        yhs@fb.com
+Subject: Re: [RFC bpf-next 1/1] bpf: Introduce iter_pagecache
+Message-ID: <20210408212927.GQ2531743@casper.infradead.org>
+References: <cover.1617831474.git.dxu@dxuuu.xyz>
+ <22bededbd502e0df45326a54b3056941de65a101.1617831474.git.dxu@dxuuu.xyz>
+ <20210408061401.GI2531743@casper.infradead.org>
+ <20210408194849.wmueo74qcxghhf2d@dlxu-fedora-R90QNFJV>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YG3SYoNWqb8DlP61@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210408194849.wmueo74qcxghhf2d@dlxu-fedora-R90QNFJV>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 12:40:18PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Apr 07, 2021 at 12:37:09PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Wed, Apr 07, 2021 at 07:54:26AM -0700, Yonghong Song escreveu:
-> > > Arnaldo, just in case that you missed it, please remember
-> > > to fold the above changes to the patch:
-> > >    [PATCH dwarves] dwarf_loader: handle subprogram ret type with
-> > > abstract_origin properly
-> > > Thanks!
-> > 
-> > Its there, I did it Sunday, IIRC:
-> > 
-> > https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=tmp.master&id=9adb014930f31c66608fa39a35ccea2daa5586ad
+On Thu, Apr 08, 2021 at 12:48:49PM -0700, Daniel Xu wrote:
+> No reason other than I didn't know about the latter. Thanks for the
+> hint. find_get_entries() seems to return a pagevec of entries which
+> would complicate the iteration (a 4th layer of things to iterate over).
 > 
-> So I pushed it all to the master branch, hopefully some more people may
-> feel encouraged to give it a try for the various things it fixes since
-> 1.20:
+> But I did find find_get_pages_range() which I think can be used to find
+> 1 page at a time. I'll look into it further.
 
-heya,
-the test script passed
+Please don't, that's going to be a pagevec too.
 
-jirka
-
+> > I'm not really keen on the idea of random BPF programs being able to poke
+> > at pages in the page cache like this.  From your initial description,
+> > it sounded like all you needed was a list of which pages are present.
 > 
-> [acme@quaco pahole]$ git log --oneline v1.20..
-> ae0b7dde1fd50b12 (HEAD -> master, origin/tmp.master, origin/master, origin/HEAD, github/master, five/master, acme.korg/tmp.master, acme.korg/master) dwarf_loader: Handle DWARF5 DW_OP_addrx properly
-> 9adb014930f31c66 dwarf_loader: Handle subprogram ret type with abstract_origin properly
-> 5752d1951d081a80 dwarf_loader: Check .notes section for LTO build info
-> 209e45424ff4a22d dwarf_loader: Check .debug_abbrev for cross-CU references
-> 39227909db3cc2c2 dwarf_loader: Permit merging all DWARF CU's for clang LTO built binary
-> 763475ca1101ccfe dwarf_loader: Factor out common code to initialize a cu
-> d0d3fbd4744953e8 dwarf_loader: Permit a flexible HASHTAGS__BITS
-> ffe0ef4d73906c18 btf: Add --btf_gen_all flag
-> de708b33114d42c2 btf: Add support for the floating-point types
-> 4b7f8c04d009942b fprintf: Honour conf_fprintf.hex when printing enumerations
-> f2889ff163726336 Avoid warning when building with NDEBUG
-> 8e1f8c904e303d5d btf_encoder: Match ftrace addresses within ELF functions
-> 9fecc77ed82d429f dwarf_loader: Use a better hashing function, from libbpf
-> 0125de3a4c055cdf btf_encoder: Funnel ELF error reporting through a macro
-> 7d8e829f636f47ab btf_encoder: Sanitize non-regular int base type
-> [acme@quaco pahole]$
+> Could you elaborate on what "list of which pages are present" implies?
+> The overall goal with this patch is to detect duplicate content in the
+> page cache. So anything that helps achieve that goal I would (in theory)
+> be OK with.
 > 
-> - Arnaldo
-> 
+> My understanding is the user would need to hash the contents
+> of each page in the page cache. And BPF provides the flexibility such
+> that this work could be reused for currently unanticipated use cases.
 
+But if you need the contents, then you'll need to kmap() the pages.
+I don't see people being keen on exposing kmap() to bpf either.  I think
+you're much better off providing an interface that returns a hash of
+each page to the BPF program.
+
+> Furthermore, bpf programs could already look at all the pages in the
+> page cache by hooking into tracepoint:filemap:mm_filemap_add_to_page_cache,
+> albeit at a much slower rate. I figure the downside of adding this
+> page cache iterator is we're explicitly condoning the behavior.
+
+That should never have been exposed.  It's only supposed to be for error
+injection.  If people have started actually using it for something,
+then it's time we delete that tracepoint.
+
+> The idea behind the radix tree was to deduplicate the mounts by
+> superblock. Because a single filesystem may be mounted in different
+> locations. I didn't find a set data structure I could reuse so I
+> figured radix tree / xarray would work too.
+> 
+> Happy to take any better ideas too.
+> 
+> > If you don't understand why this is so bad, call xa_dump() on it after
+> > constructing it.  I'll wait.
+> 
+> I did a dump and got the following results: http://ix.io/2VpY .
+> 
+> I receieved a hint that you may be referring to how the xarray/radix
+> tree would be as large as the largest pointer. To my uneducated eye it
+> doesn't look like that's the case in this dump. Could you please
+> clarify?
+
+We get seven nodes per 4kB page.
+
+$ grep -c 'value 0' 2VpY 
+15
+$ grep -c node 2VpY 
+43
+
+so we use 6+1/7 pages in order to store 15 values.  That's 387 cache
+lines, for the amount of data that could fit in two.
+
+Liam and I are working on a data structure that would support doing
+something along these lines in an efficient manner, but it's not
+ready yet.
