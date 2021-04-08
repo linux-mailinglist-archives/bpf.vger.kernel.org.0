@@ -2,100 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC2435903B
-	for <lists+bpf@lfdr.de>; Fri,  9 Apr 2021 01:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0815359055
+	for <lists+bpf@lfdr.de>; Fri,  9 Apr 2021 01:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbhDHXNp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Apr 2021 19:13:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53634 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232404AbhDHXNp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Apr 2021 19:13:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53565610E6;
-        Thu,  8 Apr 2021 23:13:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617923613;
-        bh=mpb93QphQtuxs5UnMlRM4pkZBibPsFpxB+KeCxq8Bns=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SmkVmZIHE2AzWbDXTTV8ESq9Z0tJYGNFMGAPNiOGJdTjrTTli6v29PSWLk3I86M5p
-         JYFfHf5U7r9CljP54pZ0BOGQvm10ZPTGabdvEC7Q4Wu57Wl1I3ZxIOhmeAaTVgbfNR
-         o7UYNeCzclQgVzOWuKG7kGUsMcrOuNdJxEIe0+73QHSIDmMzZ1D7n+5N7cShz7p2ia
-         bmvNo7aEDdV9M/U2kEIZs90y5DTcg0LpIN5oWKy4xbChHttOWce+6Aq4xPM99jVkrB
-         9mBLVH/ZdSjloHt+wZUVUK35uHgZjmlfH4FHABfG/x5Qk+cvtSml0rD0uT142+YWP9
-         e8FfPB9ffhOgw==
-Date:   Thu, 8 Apr 2021 16:13:32 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, jolsa@kernel.org, hannes@cmpxchg.org,
-        yhs@fb.com
-Subject: Re: [RFC bpf-next 0/1] bpf: Add page cache iterator
-Message-ID: <20210408231332.GH22094@magnolia>
-References: <cover.1617831474.git.dxu@dxuuu.xyz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1617831474.git.dxu@dxuuu.xyz>
+        id S232426AbhDHXbI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Apr 2021 19:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232981AbhDHXbI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Apr 2021 19:31:08 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C534CC061760;
+        Thu,  8 Apr 2021 16:30:56 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id p8so3227228ilm.13;
+        Thu, 08 Apr 2021 16:30:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=WeGvI3R9SdgcM6wF5Ki+UP+pYa2aJmS+hQ8AwdTFp5I=;
+        b=kOvlnOIz7uWex9biXejsl1zEVbpNQQRVaWITBtRRVAY73MYPY1k5bhah3jnB3wrBqI
+         CrEMx1HwCT8EYSvdDwjI7rNE+a6nQ61esLLhpxXuxhdqyHzE7tXl3HODU5p2k077MEkQ
+         cgK6KexqYdRG2OaS5LO8UhPDq+4TV1Za//wja3R9CVUWeCcuU3Gm4WARygO8X1CRld9x
+         YL15gm3Djti6ZXGF4NqXLO9sL3V1k1PBBC2gUmf4cna0LzKiIDJWMhQxx/uKsAGZcJa5
+         k7dXgwzQJrDyswzJa7HXG8+GZtcVejCsI3d1y0zQG/qX/jsTYTMJ4cqe1oVgv3RFoatF
+         cR8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=WeGvI3R9SdgcM6wF5Ki+UP+pYa2aJmS+hQ8AwdTFp5I=;
+        b=sAKMZwkdU+E7n9h1+sNQagEWtJbSKYLqFJPwwYRdMGJXNNszsibIFNsVT8myiIPdTH
+         YfiFbYcxCmheY8vWQHOo+pZJMRwuThbGfT64025/J9weQz/XTmbWpYib2BFnkF500P+F
+         Gn+fvXyxcBngMAQkC3bF3DseC6sFM5r2KzgHk3xRHSf3kPrQvEBaNSrRLEiRJEniZ8d7
+         oFoWoCzBtzyKMRAuUCi6qb8MXq7YUU7Zo9X6LzDHKGbogTcvnOSS0dqoZA0fyd2fJNL5
+         6e5FWUTGMNe2SmTUxmNo3WWS0DMVbNn5ROBkWTu0I/VZm9qujO9yK5j+++37LhUzqzl9
+         TPvA==
+X-Gm-Message-State: AOAM530iqjGbKGMwpjKUwKeEYCCu+EeZJc7RiQFC8Utn80upN2HpuIia
+        FuUmhpWdmRDbneEqOMTk0f0=
+X-Google-Smtp-Source: ABdhPJyvLitg0H8zkokxcASRCTOGL5l4Q827K+V/MJmLiogDnbBMtp1aoQaBppkEW8C+4oFa+e3oAA==
+X-Received: by 2002:a05:6e02:1a65:: with SMTP id w5mr9011592ilv.5.1617924656284;
+        Thu, 08 Apr 2021 16:30:56 -0700 (PDT)
+Received: from localhost ([172.242.244.146])
+        by smtp.gmail.com with ESMTPSA id j1sm35057ioa.19.2021.04.08.16.30.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 16:30:55 -0700 (PDT)
+Date:   Thu, 08 Apr 2021 16:30:45 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Message-ID: <606f922584d89_c8b92089a@john-XPS-13-9370.notmuch>
+In-Reply-To: <87h7kj2enn.fsf@toke.dk>
+References: <20210402121954.3568992-1-liuhangbin@gmail.com>
+ <20210402121954.3568992-3-liuhangbin@gmail.com>
+ <606baa5025735_d46462085b@john-XPS-13-9370.notmuch>
+ <20210406063819.GF2900@Leo-laptop-t470s>
+ <878s5v4swp.fsf@toke.dk>
+ <606cd787d64da_22ba520855@john-XPS-13-9370.notmuch>
+ <87k0pf2gz6.fsf@toke.dk>
+ <606ce0db7cd40_2865920845@john-XPS-13-9370.notmuch>
+ <87h7kj2enn.fsf@toke.dk>
+Subject: Re: [PATCHv4 bpf-next 2/4] xdp: extend xdp_redirect_map with
+ broadcast support
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 02:46:10PM -0700, Daniel Xu wrote:
-> There currently does not exist a way to answer the question: "What is in
-> the page cache?". There are various heuristics and counters but nothing
-> that can tell you anything like:
-> 
->   * 3M from /home/dxu/foo.txt
->   * 5K from ...
+Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> John Fastabend <john.fastabend@gmail.com> writes:
+> =
 
-5K?  That's an extraordinary Weird Machine(tm).
+> > Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >> John Fastabend <john.fastabend@gmail.com> writes:
+> >> =
 
->   * etc.
-> 
-> The answer to the question is particularly useful in the stacked
-> container world. Stacked containers implies multiple containers are run
-> on the same physical host. Memory is precious resource on some (if not
-> most) of these systems. On these systems, it's useful to know how much
-> duplicated data is in the page cache. Once you know the answer, you can
-> do something about it. One possible technique would be bind mount common
-> items from the root host into each container.
+> >> > Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >> >> Hangbin Liu <liuhangbin@gmail.com> writes:
+> >> >> =
 
-Um, are you describing a system that uses BPF to deduplicating the page
-cache by using bind mounts?  Can the containers scribble on these files
-and thereby mess up the other containers?  What happens if the container
-wants to update itself and clobbers the root host's copy instead?  How
-do you deal with a software update process failing because the root host
-fights back against the container trying to change its files?
+> >> >> > On Mon, Apr 05, 2021 at 05:24:48PM -0700, John Fastabend wrote:=
 
-Also, I thought we weren't supposed to share resources across security
-boundaries anymore?
+> >> >> >> Hangbin Liu wrote:
+> >> >> >> > This patch add two flags BPF_F_BROADCAST and BPF_F_EXCLUDE_I=
+NGRESS to extend
+> >> >> >> > xdp_redirect_map for broadcast support.
 
---D
+[...]
 
-> 
-> NOTES: 
-> 
->   * This patch compiles and (maybe) works -- totally not fully tested
->     or in a final state
-> 
->   * I'm sending this early RFC to get comments on the general approach.
->     I chatted w/ Johannes a little bit and it seems like the best way to
->     do this is through superblock -> inode -> address_space iteration
->     rather than going from numa node -> LRU iteration
-> 
->   * I'll most likely add a page_hash() helper (or something) that hashes
->     a page so that userspace can more easily tell which pages are
->     duplicate
-> 
-> Daniel Xu (1):
->   bpf: Introduce iter_pagecache
-> 
->  kernel/bpf/Makefile         |   2 +-
->  kernel/bpf/pagecache_iter.c | 293 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 294 insertions(+), 1 deletion(-)
->  create mode 100644 kernel/bpf/pagecache_iter.c
-> 
-> -- 
-> 2.26.3
-> 
+> >> > Have we consider doing something like the batch lookup ops over ha=
+shtab?
+> >> > I don't mind "missing" values so if we just walk the list?
+> >> >
+> >> >      head =3D dev_map_index_hash(dtab, i)
+> >> >      // collect all my devs and get ready to send multicast
+> >> >      hlist_nulls_for_each_entry_safe(dev, next, head, index_hlist)=
+ {
+> >> > 		enqueue(dev, skb)
+> >> >      }
+> >> >      // submit the queue of entries and do all the work to actuall=
+y xmit
+> >> >      submit_enqueued();
+> >> >
+> >> > We don't have to care about keys just walk the hash list?
+> >> =
+
+> >> So you'd wrap that in a loop like:
+> >> =
+
+> >> for (i =3D 0; i < dtab->n_buckets; i++) {
+> >> 	head =3D dev_map_index_hash(dtab, i);
+> >> 	hlist_nulls_for_each_entry_safe(dev, next, head, index_hlist) {
+> >> 		bq_enqueue(dev, xdpf, dev_rx, obj->xdp_prog);
+> >> 	}
+> >> }
+> >> =
+
+> >> or? Yeah, I guess that would work!
+> >
+> > Nice. Thanks for sticking with this Hangbin its taking us a bit, but
+> > I think above works on my side at least.
+> >
+> >> =
+
+> >> It would mean that dev_map_enqueue_multi() would need more in-depth
+> >> knowledge into the map type, so would likely need to be two differen=
+t
+> >> functions for the two different map types, living in devmap.c - but
+> >> that's probably acceptable.
+> >
+> > Yeah, I think thats fine.
+> >
+> >> =
+
+> >> And while we're doing that, the array-map version can also loop over=
+ all
+> >> indexes up to max_entries, instead of stopping at the first index th=
+at
+> >> doesn't have an entry like it does now (right now, it looks like if =
+you
+> >> populate entries 0 and 2 in an array-map only one copy of the packet=
+
+> >> will be sent, to index 0).
+> >
+> > Right, this is likely needed anyways. At least when I was doing proto=
+types
+> > of using array maps I often ended up with holes in the map. Just imag=
+ine
+> > adding a set of devs and then removing one, its not likely to be the
+> > last one you insert.
+> =
+
+> Yeah, totally. Would have pointed it out if I'd noticed before, but I
+> was too trusting in the abstraction of get_next_key() etc :)
+ =
+
+Hangbin,
+
+If possible please try to capture some of the design discussion in
+the commit message on the next rev along with the tradeoffs we are making=
+
+so we don't lose these important details. Some of these points are fairly=
+
+subtle calling them out will surely save (for me at least) some thinking
+when I pick this up when it lands in a released kernel.
+
+Thanks!=
