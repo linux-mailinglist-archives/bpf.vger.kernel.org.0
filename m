@@ -2,323 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00839357DEF
-	for <lists+bpf@lfdr.de>; Thu,  8 Apr 2021 10:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A5F358050
+	for <lists+bpf@lfdr.de>; Thu,  8 Apr 2021 12:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbhDHITw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Apr 2021 04:19:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229566AbhDHITv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Apr 2021 04:19:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5519B61154;
-        Thu,  8 Apr 2021 08:19:38 +0000 (UTC)
-Date:   Thu, 8 Apr 2021 10:19:35 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, jolsa@kernel.org, hannes@cmpxchg.org,
-        yhs@fb.com, Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [RFC bpf-next 1/1] bpf: Introduce iter_pagecache
-Message-ID: <20210408081935.b3xollrzl6lejbyf@wittgenstein>
-References: <cover.1617831474.git.dxu@dxuuu.xyz>
- <22bededbd502e0df45326a54b3056941de65a101.1617831474.git.dxu@dxuuu.xyz>
+        id S230506AbhDHKKj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Apr 2021 06:10:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54038 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229686AbhDHKKj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 8 Apr 2021 06:10:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617876626;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UTr/e7iTYGD0N+XocUt6MT1hNOKxHbIF/br9tzGgYJQ=;
+        b=jNchhmleGm93zjGkFjBV7fygAPmyXM3cz2JMjwoDxdpQPijQcehvLOXQlEKN1GX8bEr1N6
+        O67P3zITKyt7q/Sw1Xjf7eCIk9A2pKUij0W6wtGAhJvePRcnfhceNrjYsJZspKapyD923J
+        v9e5nJiqgIH3a3Sd3tsiySS2otKPlSM=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-7MnwnBqNO3CooVvJmrtpuw-1; Thu, 08 Apr 2021 06:10:25 -0400
+X-MC-Unique: 7MnwnBqNO3CooVvJmrtpuw-1
+Received: by mail-ed1-f71.google.com with SMTP id m21so784348edp.12
+        for <bpf@vger.kernel.org>; Thu, 08 Apr 2021 03:10:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UTr/e7iTYGD0N+XocUt6MT1hNOKxHbIF/br9tzGgYJQ=;
+        b=aW01q+PUiCHV3rSiraULvlAgqXAvrlnGgOAB3maGzzhK8ztYIyH2FdxE+M+Hr5o8RI
+         h33jTighaxl4lsOX5Dq8bsQDkGeimUs+Mhhz9zBhdRFc3MFUjkHcFfemtmDd070DOxc1
+         539YFi7IeEMAGc9WLO6YX/BAcnHOBaQWY44MZ53hDAallTPy+KMLSVyyfvew84ef3bwW
+         XxZKVTv0fsSV40FFLI/Cnfg7RH1++D5Jj6Ixhv536B3553HcH+ViQLgRYTDAhTSWmcpE
+         /QB+AYASP0UFNhqfSFWigSvAdbFDnjBk4oAxUL3WKtLWeQd0qShJhuGBe5VJ0Ql05DjA
+         HY0g==
+X-Gm-Message-State: AOAM533u8/rfi74oengcEclXi60cEC8tp/MVolFRNUegIo1Luz4jrQRX
+        hNwuCI3A6llaBvRk3mxxMi6T/heXx+f+/VTxehbmknpWvyi8codEv5+di65EDbYYo+LUkrF+2eT
+        FU+qjiu3w9G0v
+X-Received: by 2002:a17:906:54e:: with SMTP id k14mr7648299eja.149.1617876623785;
+        Thu, 08 Apr 2021 03:10:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwpnJjQy2rZdlAboIQBscmKQmo84RgWlmjXkcCNGPz1zcfUSVUF8HWkzTgefk3L069TwaB2mw==
+X-Received: by 2002:a17:906:54e:: with SMTP id k14mr7648271eja.149.1617876623571;
+        Thu, 08 Apr 2021 03:10:23 -0700 (PDT)
+Received: from localhost ([151.66.38.94])
+        by smtp.gmail.com with ESMTPSA id gq9sm14287766ejb.62.2021.04.08.03.10.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 03:10:23 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 12:10:19 +0200
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     Song Liu <song@kernel.org>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: [PATCH bpf-next] cpumap: bulk skb using netif_receive_skb_list
+Message-ID: <YG7Wi/vFK+XFBUcQ@lore-desk>
+References: <e01b1a562c523f64049fa45da6c031b0749ca412.1617267115.git.lorenzo@kernel.org>
+ <CAPhsuW4QTOgC+fDYRZnVwWtt3NTS9D+56mpP04Kh3tHrkD7G1A@mail.gmail.com>
+ <YGX5j7RDQIXlh69L@lore-desk>
+ <CAPhsuW7ih9ULA=aq0G7Ka+15KfSWgyuLXD_BxTUcRhn8++UNoQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Yqa6TSx8vTqTsFV8"
 Content-Disposition: inline
-In-Reply-To: <22bededbd502e0df45326a54b3056941de65a101.1617831474.git.dxu@dxuuu.xyz>
+In-Reply-To: <CAPhsuW7ih9ULA=aq0G7Ka+15KfSWgyuLXD_BxTUcRhn8++UNoQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 02:46:11PM -0700, Daniel Xu wrote:
-> This commit introduces the bpf page cache iterator. This iterator allows
-> users to run a bpf prog against each page in the "page cache".
-> Internally, the "page cache" is extremely tied to VFS superblock + inode
-> combo. Because of this, iter_pagecache will only examine pages in the
-> caller's mount namespace.
-> 
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  kernel/bpf/Makefile         |   2 +-
->  kernel/bpf/pagecache_iter.c | 293 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 294 insertions(+), 1 deletion(-)
->  create mode 100644 kernel/bpf/pagecache_iter.c
-> 
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index 7f33098ca63f..3deb6a8d3f75 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -6,7 +6,7 @@ cflags-nogcse-$(CONFIG_X86)$(CONFIG_CC_IS_GCC) := -fno-gcse
->  endif
->  CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-nogcse-yy)
->  
-> -obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
-> +obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o pagecache_iter.o map_iter.o task_iter.o prog_iter.o
->  obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
->  obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
->  obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
-> diff --git a/kernel/bpf/pagecache_iter.c b/kernel/bpf/pagecache_iter.c
-> new file mode 100644
-> index 000000000000..8442ab0d4221
-> --- /dev/null
-> +++ b/kernel/bpf/pagecache_iter.c
-> @@ -0,0 +1,293 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2021 Facebook */
-> +
-> +#include <linux/bpf.h>
-> +#include <linux/btf_ids.h>
-> +#include <linux/init.h>
-> +#include <linux/mm_types.h>
-> +#include <linux/mnt_namespace.h>
-> +#include <linux/nsproxy.h>
-> +#include <linux/pagemap.h>
-> +#include <linux/radix-tree.h>
-> +#include <linux/seq_file.h>
-> +#include "../../fs/mount.h"
 
-This is a private header on purpose. Outside of fs/ poking around in
-struct mount or struct mount_namespace should not be done.
+--Yqa6TSx8vTqTsFV8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +
-> +struct bpf_iter_seq_pagecache_info {
-> +	struct mnt_namespace *ns;
-> +	struct radix_tree_root superblocks;
-> +	struct super_block *cur_sb;
-> +	struct inode *cur_inode;
-> +	unsigned long cur_page_idx;
-> +};
-> +
-> +static struct super_block *goto_next_sb(struct bpf_iter_seq_pagecache_info *info)
-> +{
-> +	struct super_block *sb = NULL;
-> +	struct radix_tree_iter iter;
-> +	void **slot;
-> +
-> +	radix_tree_for_each_slot(slot, &info->superblocks, &iter,
-> +				 ((unsigned long)info->cur_sb + 1)) {
-> +		sb = (struct super_block *)iter.index;
-> +		break;
-> +	}
-> +
-> +	info->cur_sb = sb;
-> +	info->cur_inode = NULL;
-> +	info->cur_page_idx = 0;
-> +	return sb;
-> +}
-> +
-> +static bool inode_unusual(struct inode *inode) {
-> +	return ((inode->i_state & (I_FREEING|I_WILL_FREE|I_NEW)) ||
-> +		(inode->i_mapping->nrpages == 0));
-> +}
-> +
-> +static struct inode *goto_next_inode(struct bpf_iter_seq_pagecache_info *info)
-> +{
-> +	struct inode *prev_inode = info->cur_inode;
-> +	struct inode *inode;
-> +
-> +retry:
-> +	BUG_ON(!info->cur_sb);
-> +	spin_lock(&info->cur_sb->s_inode_list_lock);
-> +
-> +	if (!info->cur_inode) {
-> +		list_for_each_entry(inode, &info->cur_sb->s_inodes, i_sb_list) {
-> +			spin_lock(&inode->i_lock);
-> +			if (inode_unusual(inode)) {
-> +				spin_unlock(&inode->i_lock);
-> +				continue;
-> +			}
-> +			__iget(inode);
-> +			spin_unlock(&inode->i_lock);
-> +			info->cur_inode = inode;
-> +			break;
-> +		}
-> +	} else {
-> +		inode = info->cur_inode;
-> +		info->cur_inode = NULL;
-> +		list_for_each_entry_continue(inode, &info->cur_sb->s_inodes,
-> +					     i_sb_list) {
-> +			spin_lock(&inode->i_lock);
-> +			if (inode_unusual(inode)) {
-> +				spin_unlock(&inode->i_lock);
-> +				continue;
-> +			}
-> +			__iget(inode);
-> +			spin_unlock(&inode->i_lock);
-> +			info->cur_inode = inode;
-> +			break;
-> +		}
-> +	}
-> +
-> +	/* Seen all inodes in this superblock */
-> +	if (!info->cur_inode) {
-> +		spin_unlock(&info->cur_sb->s_inode_list_lock);
-> +		if (!goto_next_sb(info)) {
-> +			inode = NULL;
-> +			goto out;
-> +		}
-> +
-> +		goto retry;
-> +	}
-> +
-> +	spin_unlock(&info->cur_sb->s_inode_list_lock);
-> +	info->cur_page_idx = 0;
-> +out:
-> +	iput(prev_inode);
-> +	return info->cur_inode;
-> +}
-> +
-> +static struct page *goto_next_page(struct bpf_iter_seq_pagecache_info *info)
-> +{
-> +	struct page *page, *ret = NULL;
-> +	unsigned long idx;
-> +
-> +	rcu_read_lock();
-> +retry:
-> +	BUG_ON(!info->cur_inode);
-> +	ret = NULL;
-> +	xa_for_each_start(&info->cur_inode->i_data.i_pages, idx, page,
-> +			  info->cur_page_idx) {
-> +		if (!page_cache_get_speculative(page))
-> +			continue;
-> +
-> +		ret = page;
-> +		info->cur_page_idx = idx + 1;
-> +		break;
-> +	}
-> +
-> +	if (!ret) {
-> +		/* Seen all inodes and superblocks */
-> +		if (!goto_next_inode(info))
-> +			goto out;
-> +
-> +		goto retry;
-> +	}
-> +
-> +out:
-> +	rcu_read_unlock();
-> +	return ret;
-> +}
-> +
-> +static void *pagecache_seq_start(struct seq_file *seq, loff_t *pos)
-> +{
-> +	struct bpf_iter_seq_pagecache_info *info = seq->private;
-> +	struct page *page;
-> +
-> +	if (!info->cur_sb && !goto_next_sb(info))
-> +		return NULL;
-> +	if (!info->cur_inode && !goto_next_inode(info))
-> +		return NULL;
-> +
-> +	page = goto_next_page(info);
-> +	if (!page)
-> +		return NULL;
-> +
-> +	if (*pos == 0)
-> +		++*pos;
-> +
-> +	return page;
-> +
-> +}
-> +
-> +static void *pagecache_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-> +{
-> +	struct bpf_iter_seq_pagecache_info *info = seq->private;
-> +	struct page *page;
-> +
-> +	++*pos;
-> +	put_page((struct page *)v);
-> +	page = goto_next_page(info);
-> +	if (!page)
-> +		return NULL;
-> +
-> +	return page;
-> +}
-> +
-> +struct bpf_iter__pagecache {
-> +	__bpf_md_ptr(struct bpf_iter_meta *, meta);
-> +	__bpf_md_ptr(struct page *, page);
-> +};
-> +
-> +DEFINE_BPF_ITER_FUNC(pagecache, struct bpf_iter_meta *meta, struct page *page)
-> +
-> +static int __pagecache_seq_show(struct seq_file *seq, struct page *page,
-> +				bool in_stop)
-> +{
-> +	struct bpf_iter_meta meta;
-> +	struct bpf_iter__pagecache ctx;
-> +	struct bpf_prog *prog;
-> +
-> +	meta.seq = seq;
-> +	prog = bpf_iter_get_info(&meta, in_stop);
-> +	if (!prog)
-> +		return 0;
-> +
-> +	meta.seq = seq;
-> +	ctx.meta = &meta;
-> +	ctx.page = page;
-> +	return bpf_iter_run_prog(prog, &ctx);
-> +}
-> +
-> +static int pagecache_seq_show(struct seq_file *seq, void *v)
-> +{
-> +	return __pagecache_seq_show(seq, v, false);
-> +}
-> +
-> +static void pagecache_seq_stop(struct seq_file *seq, void *v)
-> +{
-> +	(void)__pagecache_seq_show(seq, v, true);
-> +	if (v)
-> +		put_page((struct page *)v);
-> +}
-> +
-> +static int init_seq_pagecache(void *priv_data, struct bpf_iter_aux_info *aux)
-> +{
-> +	struct bpf_iter_seq_pagecache_info *info = priv_data;
-> +	struct radix_tree_iter iter;
-> +	struct super_block *sb;
-> +	struct mount *mnt;
-> +	void **slot;
-> +	int err;
-> +
-> +	info->ns = current->nsproxy->mnt_ns;
-> +	get_mnt_ns(info->ns);
-> +	INIT_RADIX_TREE(&info->superblocks, GFP_KERNEL);
-> +
-> +	spin_lock(&info->ns->ns_lock);
-> +	list_for_each_entry(mnt, &info->ns->list, mnt_list) {
+> On Thu, Apr 1, 2021 at 9:49 AM Lorenzo Bianconi <lorenzo@kernel.org> wrot=
+e:
+> >
+> > > On Thu, Apr 1, 2021 at 1:57 AM Lorenzo Bianconi <lorenzo@kernel.org> =
+wrote:
+> > > >
+> >
+> > [...]
+> >
+> > > > -                       /* Inject into network stack */
+> > > > -                       ret =3D netif_receive_skb_core(skb);
+> > > > -                       if (ret =3D=3D NET_RX_DROP)
+> > > > -                               drops++;
+> > >
+> > > I guess we stop tracking "drops" with this patch?
+> > >
+> > > Thanks,
+> > > Song
+> >
+> > Hi Song,
+> >
+> > we do not report the packets dropped by the stack but we still count th=
+e drops
+> > in the cpumap. If you think they are really important I guess we can ch=
+ange
+> > return value of netif_receive_skb_list returning the dropped packets or
+> > similar. What do you think?
+>=20
+> I think we shouldn't silently change the behavior of the tracepoint below:
+>=20
+> trace_xdp_cpumap_kthread(rcpu->map_id, n, drops, sched, &stats);
+>=20
+> Returning dropped packets from netif_receive_skb_list() sounds good to me.
 
-Not just are there helpers for taking ns_lock
-static inline void lock_ns_list(struct mnt_namespace *ns)
-static inline void unlock_ns_list(struct mnt_namespace *ns)
-they are private to fs/namespace.c because it's the only place that
-should ever walk this list.
+Hi Song,
 
-This seems buggy: why is it ok here to only take ns_lock and not also
-namespace_sem like mnt_already_visible() and __is_local_mountpoint() or
-the relevant proc iterators? I might be missing something.
+I reviewed the netif_receive_skb_list() and I guess the code needed to count
+number of dropped frames is a bit intrusive and we need to add some checks
+in the hot path.
+Moreover the dropped frames are already accounted in the networking stack
+(e.g. mib counters for the ip traffic).
+Since drop counter is just exported in a tracepoint in cpu_map_kthread_run,
+I guess we can just not count dropped packets in the networking stack here
+and rely on the mib counters. What do you think?
 
-> +		sb = mnt->mnt.mnt_sb;
-> +
-> +		/* The same mount may be mounted in multiple places */
-> +		if (radix_tree_lookup(&info->superblocks, (unsigned long)sb))
-> +			continue;
-> +
-> +		err = radix_tree_insert(&info->superblocks,
-> +				        (unsigned long)sb, (void *)1);
-> +		if (err)
-> +			goto out;
-> +	}
-> +
-> +	radix_tree_for_each_slot(slot, &info->superblocks, &iter, 0) {
-> +		sb = (struct super_block *)iter.index;
-> +		atomic_inc(&sb->s_active);
+@Jesper: since you added the original code, what do you think about it?
 
-It also isn't nice that you mess with sb->s_active directly.
+Regards,
+Lorenzo
 
-Imho, this is poking around in a lot of fs/ specific stuff that other
-parts of the kernel should not care about or have access to.
+>=20
+> Thanks,
+> Song
+>=20
 
-Christian
+--Yqa6TSx8vTqTsFV8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYG7WiAAKCRA6cBh0uS2t
+rBYDAP0RCcYqwIC/AtBhEVkKZUoTdEjAGWpOeyNHj2d0LpEoFgEAny0pzyMyPYxZ
+tutnWMeXubA5rheq8FbzRU/YzxKHLgU=
+=PC/0
+-----END PGP SIGNATURE-----
+
+--Yqa6TSx8vTqTsFV8--
+
