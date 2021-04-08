@@ -2,99 +2,242 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC50F358CAB
-	for <lists+bpf@lfdr.de>; Thu,  8 Apr 2021 20:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F4F358CAD
+	for <lists+bpf@lfdr.de>; Thu,  8 Apr 2021 20:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232885AbhDHSbX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Apr 2021 14:31:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48668 "EHLO
+        id S231676AbhDHSb2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Apr 2021 14:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232992AbhDHSaz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Apr 2021 14:30:55 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165D2C0610DF
-        for <bpf@vger.kernel.org>; Thu,  8 Apr 2021 11:29:21 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id z39so2800597ybh.23
-        for <bpf@vger.kernel.org>; Thu, 08 Apr 2021 11:29:21 -0700 (PDT)
+        with ESMTP id S232964AbhDHSbF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Apr 2021 14:31:05 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3B2C0613DB;
+        Thu,  8 Apr 2021 11:30:52 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id o18so1608102pjs.4;
+        Thu, 08 Apr 2021 11:30:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=wpJei33p36j3KjjMHxyiKmG4dj3y1cwd0hIxQebiEdM=;
-        b=a3nRPCcLgUjC8+dAsZsjnXIQNP/rwy/DDjL0mVaRLZUSJLKjLCe23/7r3jufcOURP2
-         YfreigpdbzFmBPynu7ev4x2f9hGuOwXl1gQNFI+p2gMnNBATgfM6aNqo8eWkwib0f/8F
-         EUNhOz40NxYK4iX4IsYefTQK+m8Ly9vO79flGB3PdZreeWclK/3HsvQa2Eu+zlw9dkH7
-         6qm5k1CF4uhU9Fd39Czmkl971aNRY+2JAKOGLjLe1yvMJopP7gW/T36sDYdpLNjW4pel
-         /nYjwa7lv0PuEkaqdQpGCQ8z4533FqqU8pmp1ExKErObiCmjnfRuj5TuEngXRWPRbWkv
-         GPuA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eORt1ZrQ4WUu/DvLA59Zct/hYR/T38U7T+CJD9gajYg=;
+        b=dqEcx+aHrZfVZ6fhhe+kGNY7EyEk8IbaD2viCQQX9o7ZbbSOuownXRcg/QvfWv7E0q
+         j9F83XfHSSs/1qdsDsM8xGUudWIfv4deUCj1s0dhQmH91Ja1AZYf7e0PrxotIMg/unNl
+         25mCydZ75LWXk3uih47aOGv9XwDunZBbHAKBWJ48P/LzfBQboIyXpPJAmzjYmWAd6ydN
+         1tCrMvdGiM1n/B0bG3pS/jILpwU614M3bdBVtWrOyWfRE9MMLWn9K/ESTYMGG16sDJof
+         L6BbxH/pWgnOw71402BQ4WXOVMtfMrKzIiDDn08AOprX0CwIUA2PU/endHcoJMgHSTfA
+         61EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=wpJei33p36j3KjjMHxyiKmG4dj3y1cwd0hIxQebiEdM=;
-        b=MPV2c5XpL58BXy2YGygyrHO6X4pArISECVFUXweYuK5ugIKp4HSpHnSu/H1tYRYlpP
-         wIqGqgd5OzoRg3AKqm3jS9bUp2JBic6jT/DYQe/WC1MVfluFZgZc8ljAv6KWnO5SPogc
-         EEyT1Y/bjvSsBwZ/O0PChvm4i+jv5kqW7yQjrXR7KfkVawFx8DnyMf6GGnd76kz+4AhB
-         xWFN8o39WY0mHyOiHQ7LdF23rGjC4+9mk7BqzG7d592u8mXP1ztMQKid8VZXBtK5w0R1
-         xTTRzF+KxHAJB5Xf8m0OPR2wNQtq+Rj/J7LYy4+iv9LBQd/VOwoPNcUYDYf0ZO2k4i6r
-         yrZg==
-X-Gm-Message-State: AOAM530DhQIIHiN8s0UQboYdNBjSXdX7R4l5uV23SE22TnXQqf22vKX2
-        +vXSoKmvVIylwA/e/sKIYS6noTDe7pUppUQF854=
-X-Google-Smtp-Source: ABdhPJy+nIguXtNRexvJIjrSyuROKE2OJGFq0G34E3vTRN1y9bOJbuovRIfl9/FQBpeHGk7p24GDKVlYncDOiGe0FU8=
-X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:3560:8505:40a2:e021])
- (user=samitolvanen job=sendgmr) by 2002:a25:cf16:: with SMTP id
- f22mr13542667ybg.342.1617906560306; Thu, 08 Apr 2021 11:29:20 -0700 (PDT)
-Date:   Thu,  8 Apr 2021 11:28:43 -0700
-In-Reply-To: <20210408182843.1754385-1-samitolvanen@google.com>
-Message-Id: <20210408182843.1754385-19-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20210408182843.1754385-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH v6 18/18] arm64: allow CONFIG_CFI_CLANG to be selected
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eORt1ZrQ4WUu/DvLA59Zct/hYR/T38U7T+CJD9gajYg=;
+        b=ShI9ovxrHtACvkxs4zz75ahOTq9Cgfmycn5QETBZeR4ZyXtuymSDTqjHdICjN3L/G+
+         6tUzvpSlGzFDvZvFa6tXgMHZpn7KE0cnaO7/Gd2cU/W9cLRFr9JwCnzkS/2haJdpAdib
+         btkkHuidGxy3x6cdTSaXoQurYRphTjQQMz/MYD8OQ7eBS3b2dLlExdGKEUfhPIFl0AsA
+         zaf+LcBx8Z5Cs8BD+WFUTi+YTIhxF8Dhf6Q4/cG5+bav29XSRzxPKBvBrWww99iqKtgR
+         SsmAI5dOAN66Q6sY5OPUuJPuc7U9vC4YBf3CdxSXL3KNF+OT8WPFD7ar/ToVf2R2gsEW
+         ZTxw==
+X-Gm-Message-State: AOAM531QwP8aKmxJl2CRpD0/FjiLQpb3A4dWTs2sZOmf9YNxeS945IfT
+        ktmM8LP6EuQDjh+XHiODci0=
+X-Google-Smtp-Source: ABdhPJw4Zh3aeihojADz7V3hCEcIZ/e1F8Bd10EuT34M02jfs3kjzXRaeYUBW/ZzUjx3Jsw5UHjYLA==
+X-Received: by 2002:a17:90a:6304:: with SMTP id e4mr3422517pjj.63.1617906651924;
+        Thu, 08 Apr 2021 11:30:51 -0700 (PDT)
+Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
+        by smtp.gmail.com with ESMTPSA id h4sm158429pfo.170.2021.04.08.11.30.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 11:30:51 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 21:30:38 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        sameehj@amazon.com, john.fastabend@gmail.com, dsahern@kernel.org,
+        brouer@redhat.com, echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com
+Subject: Re: [PATCH v8 bpf-next 04/14] xdp: add multi-buff support to
+ xdp_return_{buff/frame}
+Message-ID: <20210408183038.yacxn575nl7omcol@skbuf>
+References: <cover.1617885385.git.lorenzo@kernel.org>
+ <d616c727e8890c43f3e2c93bfd62b396292a7378.1617885385.git.lorenzo@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d616c727e8890c43f3e2c93bfd62b396292a7378.1617885385.git.lorenzo@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Select ARCH_SUPPORTS_CFI_CLANG to allow CFI to be enabled.
+On Thu, Apr 08, 2021 at 02:50:56PM +0200, Lorenzo Bianconi wrote:
+> Take into account if the received xdp_buff/xdp_frame is non-linear
+> recycling/returning the frame memory to the allocator or into
+> xdp_frame_bulk.
+> Introduce xdp_return_num_frags_from_buff to return a given number of
+> fragments from a xdp multi-buff starting from the tail.
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  include/net/xdp.h | 19 ++++++++++--
+>  net/core/xdp.c    | 76 ++++++++++++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 92 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index 02aea7696d15..c8eb7cf4ebed 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -289,6 +289,7 @@ void xdp_return_buff(struct xdp_buff *xdp);
+>  void xdp_flush_frame_bulk(struct xdp_frame_bulk *bq);
+>  void xdp_return_frame_bulk(struct xdp_frame *xdpf,
+>  			   struct xdp_frame_bulk *bq);
+> +void xdp_return_num_frags_from_buff(struct xdp_buff *xdp, u16 num_frags);
+>  
+>  /* When sending xdp_frame into the network stack, then there is no
+>   * return point callback, which is needed to release e.g. DMA-mapping
+> @@ -299,10 +300,24 @@ void __xdp_release_frame(void *data, struct xdp_mem_info *mem);
+>  static inline void xdp_release_frame(struct xdp_frame *xdpf)
+>  {
+>  	struct xdp_mem_info *mem = &xdpf->mem;
+> +	struct xdp_shared_info *xdp_sinfo;
+> +	int i;
+>  
+>  	/* Curr only page_pool needs this */
+> -	if (mem->type == MEM_TYPE_PAGE_POOL)
+> -		__xdp_release_frame(xdpf->data, mem);
+> +	if (mem->type != MEM_TYPE_PAGE_POOL)
+> +		return;
+> +
+> +	if (likely(!xdpf->mb))
+> +		goto out;
+> +
+> +	xdp_sinfo = xdp_get_shared_info_from_frame(xdpf);
+> +	for (i = 0; i < xdp_sinfo->nr_frags; i++) {
+> +		struct page *page = xdp_get_frag_page(&xdp_sinfo->frags[i]);
+> +
+> +		__xdp_release_frame(page_address(page), mem);
+> +	}
+> +out:
+> +	__xdp_release_frame(xdpf->data, mem);
+>  }
+>  
+>  int xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index 05354976c1fc..430f516259d9 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -374,12 +374,38 @@ static void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
+>  
+>  void xdp_return_frame(struct xdp_frame *xdpf)
+>  {
+> +	struct xdp_shared_info *xdp_sinfo;
+> +	int i;
+> +
+> +	if (likely(!xdpf->mb))
+> +		goto out;
+> +
+> +	xdp_sinfo = xdp_get_shared_info_from_frame(xdpf);
+> +	for (i = 0; i < xdp_sinfo->nr_frags; i++) {
+> +		struct page *page = xdp_get_frag_page(&xdp_sinfo->frags[i]);
+> +
+> +		__xdp_return(page_address(page), &xdpf->mem, false, NULL);
+> +	}
+> +out:
+>  	__xdp_return(xdpf->data, &xdpf->mem, false, NULL);
+>  }
+>  EXPORT_SYMBOL_GPL(xdp_return_frame);
+>  
+>  void xdp_return_frame_rx_napi(struct xdp_frame *xdpf)
+>  {
+> +	struct xdp_shared_info *xdp_sinfo;
+> +	int i;
+> +
+> +	if (likely(!xdpf->mb))
+> +		goto out;
+> +
+> +	xdp_sinfo = xdp_get_shared_info_from_frame(xdpf);
+> +	for (i = 0; i < xdp_sinfo->nr_frags; i++) {
+> +		struct page *page = xdp_get_frag_page(&xdp_sinfo->frags[i]);
+> +
+> +		__xdp_return(page_address(page), &xdpf->mem, true, NULL);
+> +	}
+> +out:
+>  	__xdp_return(xdpf->data, &xdpf->mem, true, NULL);
+>  }
+>  EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
+> @@ -415,7 +441,7 @@ void xdp_return_frame_bulk(struct xdp_frame *xdpf,
+>  	struct xdp_mem_allocator *xa;
+>  
+>  	if (mem->type != MEM_TYPE_PAGE_POOL) {
+> -		__xdp_return(xdpf->data, &xdpf->mem, false, NULL);
+> +		xdp_return_frame(xdpf);
+>  		return;
+>  	}
+>  
+> @@ -434,15 +460,63 @@ void xdp_return_frame_bulk(struct xdp_frame *xdpf,
+>  		bq->xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
+>  	}
+>  
+> +	if (unlikely(xdpf->mb)) {
+> +		struct xdp_shared_info *xdp_sinfo;
+> +		int i;
+> +
+> +		xdp_sinfo = xdp_get_shared_info_from_frame(xdpf);
+> +		for (i = 0; i < xdp_sinfo->nr_frags; i++) {
+> +			skb_frag_t *frag = &xdp_sinfo->frags[i];
+> +
+> +			bq->q[bq->count++] = xdp_get_frag_address(frag);
+> +			if (bq->count == XDP_BULK_QUEUE_SIZE)
+> +				xdp_flush_frame_bulk(bq);
+> +		}
+> +	}
+>  	bq->q[bq->count++] = xdpf->data;
+>  }
+>  EXPORT_SYMBOL_GPL(xdp_return_frame_bulk);
+>  
+>  void xdp_return_buff(struct xdp_buff *xdp)
+>  {
+> +	struct xdp_shared_info *xdp_sinfo;
+> +	int i;
+> +
+> +	if (likely(!xdp->mb))
+> +		goto out;
+> +
+> +	xdp_sinfo = xdp_get_shared_info_from_buff(xdp);
+> +	for (i = 0; i < xdp_sinfo->nr_frags; i++) {
+> +		struct page *page = xdp_get_frag_page(&xdp_sinfo->frags[i]);
+> +
+> +		__xdp_return(page_address(page), &xdp->rxq->mem, true, xdp);
+> +	}
+> +out:
+>  	__xdp_return(xdp->data, &xdp->rxq->mem, true, xdp);
+>  }
+>  
+> +void xdp_return_num_frags_from_buff(struct xdp_buff *xdp, u16 num_frags)
+> +{
+> +	struct xdp_shared_info *xdp_sinfo;
+> +	int i;
+> +
+> +	if (unlikely(!xdp->mb))
+> +		return;
+> +
+> +	xdp_sinfo = xdp_get_shared_info_from_buff(xdp);
+> +	num_frags = min_t(u16, num_frags, xdp_sinfo->nr_frags);
+> +	for (i = 1; i <= num_frags; i++) {
+> +		skb_frag_t *frag = &xdp_sinfo->frags[xdp_sinfo->nr_frags - i];
+> +		struct page *page = xdp_get_frag_page(frag);
+> +
+> +		xdp_sinfo->data_length -= xdp_get_frag_size(frag);
+> +		__xdp_return(page_address(page), &xdp->rxq->mem, false, NULL);
+> +	}
+> +	xdp_sinfo->nr_frags -= num_frags;
+> +	xdp->mb = !!xdp_sinfo->nr_frags;
+> +}
+> +EXPORT_SYMBOL_GPL(xdp_return_num_frags_from_buff);
+> +
+>  /* Only called for MEM_TYPE_PAGE_POOL see xdp.h */
+>  void __xdp_release_frame(void *data, struct xdp_mem_info *mem)
+>  {
 
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
----
- arch/arm64/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index e4e1b6550115..d7395772b6b8 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -75,6 +75,7 @@ config ARM64
- 	select ARCH_SUPPORTS_SHADOW_CALL_STACK if CC_HAVE_SHADOW_CALL_STACK
- 	select ARCH_SUPPORTS_LTO_CLANG if CPU_LITTLE_ENDIAN
- 	select ARCH_SUPPORTS_LTO_CLANG_THIN
-+	select ARCH_SUPPORTS_CFI_CLANG
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && (GCC_VERSION >= 50000 || CC_IS_CLANG)
- 	select ARCH_SUPPORTS_NUMA_BALANCING
--- 
-2.31.1.295.g9ea45b61b8-goog
-
+None of this really benefits in any way from having the extra "mb" bit,
+does it? I get the impression it would work just the same way without it.
