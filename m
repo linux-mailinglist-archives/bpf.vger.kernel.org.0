@@ -2,190 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE006358DB1
-	for <lists+bpf@lfdr.de>; Thu,  8 Apr 2021 21:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C6C358DEB
+	for <lists+bpf@lfdr.de>; Thu,  8 Apr 2021 21:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232252AbhDHTtG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Apr 2021 15:49:06 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:59851 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232023AbhDHTtG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 8 Apr 2021 15:49:06 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 61BF65C00F9;
-        Thu,  8 Apr 2021 15:48:54 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 08 Apr 2021 15:48:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=fw9IHCLJHiRwr8mG8aPR5wNCw+y
-        Sr2ECQd6P2WIYQTA=; b=NUjIuKakvgWBWb63I3f5BeSkW2jFtfJjHEwDl7Gn9Kv
-        qZf0zp8LN02gDnCrEr2MFMUWj8VYzEUQlyVF24zV0P0BhA5N4lx2PBlLxdELp9NX
-        h8dqFRZLBh0Qi0/nMaI3Bl6Y0P7jju4dohJtGZ9zoEU9hP1NL4XBQZ+hL2hfNvnP
-        DpEaHnZPsp1A183gWRjA5+XsGoyY5dvDrHpXSokCGvr0fFncQyINaXUtkXeHdvFy
-        /ZLV/iJ/E/pPuii6RGn+cUPYof/8a3NGzLe2jKljsg8G5zQ7SjUG2rN8jR5b4Td1
-        YTWwjaeVea7uYO092nsTdupuCyGRyT8RDrHpUNX+PSQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=fw9IHC
-        LJHiRwr8mG8aPR5wNCw+ySr2ECQd6P2WIYQTA=; b=K6vo3oY3mP345AdlOqgpvG
-        MDIxj3WMxCM4GwBvGv09JZ7QreGswrNZMCCGhJyrh4U3JdctjJg4GCuBxl2XYmaA
-        2aCMuxTZmuohGeCTrz9eh/N7wcd7I6JNTROU/6oQF7TYhbM13tYInXrJo6c6DxT8
-        a/0bRdIZm+BY3XDfunvCguu0T88ha9ItyqZ0dwNS4Ia+toqTuSNBymatj4e+5SB2
-        8Vlq5BOpTgC0npw7CDbMiCzj+e7W9sS+pYygWjryEiycWWlggUTmCMHXNSzPTHZh
-        /d2+EnzAwpvxq5P7ggd1BAzglOi7CFmAm1WHg1LIpxVt5qjjQfHFr9e40YLl1OLQ
-        ==
-X-ME-Sender: <xms:JV5vYGU1ZWrzrTAUr2bMvroLreoIYiS0kscJJfqKYvT4UMPaNTKY0Q>
-    <xme:JV5vYJk6W20mIIu97g4hMFceyu7Njv5cLYIY_7aFuFknd4idkP9VmNu-4VrPawuSu
-    mbYPz9a6k6VcWc0wg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejledgudegfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecuogfuuhhsphgvtghtffhomhgrihhnucdlgeelmd
-    enfghrlhcuvffnffculdefhedmnecujfgurhepfffhvffukfhfgggtuggjsehttdertddt
-    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepudevudelgedtjeehieekjeeiffevffevtedtheekudegvdef
-    ffegfeehjefhuddvnecuffhomhgrihhnpehigidrihhonecukfhppeduieefrdduudegrd
-    dufedvrddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
-    mhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:JV5vYPZ2c6eURSAz3TGFymWFEhGHhOyK1LmgZtxCOkmR0CqR6MkhUw>
-    <xmx:JV5vYMO48uArW9L2NrCOACSZah3wFJhUgcu5vxmWhbWsBvF5JMWCXQ>
-    <xmx:JV5vYMYSXfQUCVKB32Pg0BrxECXQrr-hhiHrj2Dj4X5XP_YnTVmYtg>
-    <xmx:Jl5vYMz3k3eAkRrNExz_9VbjJwZaNSmYvEmG8zAHrWNRvGbiVbI2Hw>
-Received: from dlxu-fedora-R90QNFJV (unknown [163.114.132.1])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8FD711080057;
-        Thu,  8 Apr 2021 15:48:51 -0400 (EDT)
-Date:   Thu, 8 Apr 2021 12:48:49 -0700
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, jolsa@kernel.org, hannes@cmpxchg.org,
-        yhs@fb.com
-Subject: Re: [RFC bpf-next 1/1] bpf: Introduce iter_pagecache
-Message-ID: <20210408194849.wmueo74qcxghhf2d@dlxu-fedora-R90QNFJV>
-References: <cover.1617831474.git.dxu@dxuuu.xyz>
- <22bededbd502e0df45326a54b3056941de65a101.1617831474.git.dxu@dxuuu.xyz>
- <20210408061401.GI2531743@casper.infradead.org>
+        id S232041AbhDHT6J (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Apr 2021 15:58:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60255 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232014AbhDHT6H (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 8 Apr 2021 15:58:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617911875;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=u0nNX2o4h5m416muun3Jd14ek5DO05wnyGCg4TXEeew=;
+        b=Q9O2dvNFjOw29voHGwQoXtkmyOVS5l92b2c9XxjKN7oBXZqgjUG9nJOvpiCVdVvO1mkru8
+        NEw9YsEs2ONu378c1puH9NUsUR4NAYiD4COahuLfJQMY/qpa/4+4frNCgZQAW3i/yHd6Q/
+        li9G9L41MqzuuraNbV+qR7fI6QCcNIU=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-eZQvHhhxM2SXs0q7_8HBjQ-1; Thu, 08 Apr 2021 15:57:53 -0400
+X-MC-Unique: eZQvHhhxM2SXs0q7_8HBjQ-1
+Received: by mail-ed1-f69.google.com with SMTP id dj13so1527445edb.14
+        for <bpf@vger.kernel.org>; Thu, 08 Apr 2021 12:57:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u0nNX2o4h5m416muun3Jd14ek5DO05wnyGCg4TXEeew=;
+        b=mmbJG6xTDTYyaHl3iSMvxV1LcKDwCqrvufpCUfPTxwyeEIRnZQaWNOfyqtKh2dLAW+
+         2H7sHr9GTwYKmusNYltepjTJwHS8Asv/fwN7rUs0nUdJo4aUQOP0Tv95lvczeR3o7yta
+         bjRj0lCo++s68lt7LOwlFyIcHW231Y7qwvKLexKr4C8fVQL/oDbjp1Ry6kjS71LkH5KD
+         bq2D4ApNs/XFPUjK+yAVxLu2VP3tm3xoEgEIja68wl2Qo9KIgmceLBLYDnhEMcfRKWlE
+         AbbQka9/+xIuAIxKKw6BGvTPgU3XQv4y6DR8lyjiDX9b9TDp5wD2zO8DnXXXHnKpn/S9
+         FZ9Q==
+X-Gm-Message-State: AOAM533q1MvnhQAC3gP1gFY7sgSVrhLPshpdxMNcbTxX0LmIIS+ehE0p
+        POduWJuCP6b24htVeA9XlRHOqojjpI/YxeCBh5nD5yWNGxZSRQYgSXiEaLjG/9ktgRggJaYoTBC
+        XgSEB3KYzEtgt
+X-Received: by 2002:aa7:cd07:: with SMTP id b7mr13962236edw.293.1617911872566;
+        Thu, 08 Apr 2021 12:57:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy54R4ftKO8Xjvg3SYcXRQN9uXALiuY1BQdTnNpyh7YToz/DAToSOK2txrLbguE4bqiQGLcqQ==
+X-Received: by 2002:aa7:cd07:: with SMTP id b7mr13962214edw.293.1617911872155;
+        Thu, 08 Apr 2021 12:57:52 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id h3sm183291edv.80.2021.04.08.12.57.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 12:57:51 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id D4EFE18030D; Thu,  8 Apr 2021 21:57:50 +0200 (CEST)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
+Subject: [PATCH bpf-next 1/2] bpf: return target info when a tracing bpf_link is queried
+Date:   Thu,  8 Apr 2021 21:57:39 +0200
+Message-Id: <20210408195740.153029-1-toke@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408061401.GI2531743@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 07:14:01AM +0100, Matthew Wilcox wrote:
-> On Wed, Apr 07, 2021 at 02:46:11PM -0700, Daniel Xu wrote:
-> > +struct bpf_iter_seq_pagecache_info {
-> > +	struct mnt_namespace *ns;
-> > +	struct radix_tree_root superblocks;
-> 
-> Why are you adding a new radix tree?  Use an XArray instead.
+There is currently no way to discover the target of a tracing program
+attachment after the fact. Add this information to bpf_link_info and return
+it when querying the bpf_link fd.
 
-Ah right, sorry. Will do.
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+---
+ include/linux/bpf_verifier.h   | 9 +++++++++
+ include/uapi/linux/bpf.h       | 2 ++
+ kernel/bpf/syscall.c           | 3 +++
+ tools/include/uapi/linux/bpf.h | 2 ++
+ 4 files changed, 16 insertions(+)
 
-> > +static struct page *goto_next_page(struct bpf_iter_seq_pagecache_info *info)
-> > +{
-> > +	struct page *page, *ret = NULL;
-> > +	unsigned long idx;
-> > +
-> > +	rcu_read_lock();
-> > +retry:
-> > +	BUG_ON(!info->cur_inode);
-> > +	ret = NULL;
-> > +	xa_for_each_start(&info->cur_inode->i_data.i_pages, idx, page,
-> > +			  info->cur_page_idx) {
-> > +		if (!page_cache_get_speculative(page))
-> > +			continue;
-> 
-> Why do you feel the need to poke around in i_pages directly?  Is there
-> something wrong with find_get_entries()?
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 51c2ffa3d901..6023a1367853 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -487,6 +487,15 @@ static inline u64 bpf_trampoline_compute_key(const struct bpf_prog *tgt_prog,
+ 		return ((u64)btf_obj_id(btf) << 32) | 0x80000000 | btf_id;
+ }
+ 
++/* unpack the IDs from the key as constructed above */
++static inline void bpf_trampoline_unpack_key(u64 key, u32 *obj_id, u32 *btf_id)
++{
++	if (obj_id)
++		*obj_id = key >> 32;
++	if (btf_id)
++		*btf_id = key & 0x7FFFFFFF;
++}
++
+ int bpf_check_attach_target(struct bpf_verifier_log *log,
+ 			    const struct bpf_prog *prog,
+ 			    const struct bpf_prog *tgt_prog,
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 49371eba98ba..397884396671 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5379,6 +5379,8 @@ struct bpf_link_info {
+ 		} raw_tracepoint;
+ 		struct {
+ 			__u32 attach_type;
++			__u32 target_obj_id; /* prog_id for PROG_EXT, otherwise btf object id */
++			__u32 target_btf_id; /* BTF type id inside the object */
+ 		} tracing;
+ 		struct {
+ 			__u64 cgroup_id;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 6428634da57e..fd495190115e 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2551,6 +2551,9 @@ static int bpf_tracing_link_fill_link_info(const struct bpf_link *link,
+ 		container_of(link, struct bpf_tracing_link, link);
+ 
+ 	info->tracing.attach_type = tr_link->attach_type;
++	bpf_trampoline_unpack_key(tr_link->trampoline->key,
++				  &info->tracing.target_obj_id,
++				  &info->tracing.target_btf_id);
+ 
+ 	return 0;
+ }
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 69902603012c..1a240be873d7 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5373,6 +5373,8 @@ struct bpf_link_info {
+ 		} raw_tracepoint;
+ 		struct {
+ 			__u32 attach_type;
++			__u32 target_obj_id; /* prog_id for PROG_EXT, otherwise btf object id */
++			__u32 target_btf_id; /* BTF type id inside the object */
+ 		} tracing;
+ 		struct {
+ 			__u64 cgroup_id;
+-- 
+2.31.1
 
-No reason other than I didn't know about the latter. Thanks for the
-hint. find_get_entries() seems to return a pagevec of entries which
-would complicate the iteration (a 4th layer of things to iterate over).
-
-But I did find find_get_pages_range() which I think can be used to find
-1 page at a time. I'll look into it further.
-
-> > +static int __pagecache_seq_show(struct seq_file *seq, struct page *page,
-> > +				bool in_stop)
-> > +{
-> > +	struct bpf_iter_meta meta;
-> > +	struct bpf_iter__pagecache ctx;
-> > +	struct bpf_prog *prog;
-> > +
-> > +	meta.seq = seq;
-> > +	prog = bpf_iter_get_info(&meta, in_stop);
-> > +	if (!prog)
-> > +		return 0;
-> > +
-> > +	meta.seq = seq;
-> > +	ctx.meta = &meta;
-> > +	ctx.page = page;
-> > +	return bpf_iter_run_prog(prog, &ctx);
-> 
-> I'm not really keen on the idea of random BPF programs being able to poke
-> at pages in the page cache like this.  From your initial description,
-> it sounded like all you needed was a list of which pages are present.
-
-Could you elaborate on what "list of which pages are present" implies?
-The overall goal with this patch is to detect duplicate content in the
-page cache. So anything that helps achieve that goal I would (in theory)
-be OK with.
-
-My understanding is the user would need to hash the contents
-of each page in the page cache. And BPF provides the flexibility such
-that this work could be reused for currently unanticipated use cases.
-
-Furthermore, bpf programs could already look at all the pages in the
-page cache by hooking into tracepoint:filemap:mm_filemap_add_to_page_cache,
-albeit at a much slower rate. I figure the downside of adding this
-page cache iterator is we're explicitly condoning the behavior.
-
-> > +	INIT_RADIX_TREE(&info->superblocks, GFP_KERNEL);
-> > +
-> > +	spin_lock(&info->ns->ns_lock);
-> > +	list_for_each_entry(mnt, &info->ns->list, mnt_list) {
-> > +		sb = mnt->mnt.mnt_sb;
-> > +
-> > +		/* The same mount may be mounted in multiple places */
-> > +		if (radix_tree_lookup(&info->superblocks, (unsigned long)sb))
-> > +			continue;
-> > +
-> > +		err = radix_tree_insert(&info->superblocks,
-> > +				        (unsigned long)sb, (void *)1);
-> > +		if (err)
-> > +			goto out;
-> > +	}
-> > +
-> > +	radix_tree_for_each_slot(slot, &info->superblocks, &iter, 0) {
-> > +		sb = (struct super_block *)iter.index;
-> > +		atomic_inc(&sb->s_active);
-> > +	}
-> 
-> Uh.  What on earth made you think this was a good way to use the radix
-> tree?  And, no, the XArray doesn't change that.
-
-The idea behind the radix tree was to deduplicate the mounts by
-superblock. Because a single filesystem may be mounted in different
-locations. I didn't find a set data structure I could reuse so I
-figured radix tree / xarray would work too.
-
-Happy to take any better ideas too.
-
-> If you don't understand why this is so bad, call xa_dump() on it after
-> constructing it.  I'll wait.
-
-I did a dump and got the following results: http://ix.io/2VpY .
-
-I receieved a hint that you may be referring to how the xarray/radix
-tree would be as large as the largest pointer. To my uneducated eye it
-doesn't look like that's the case in this dump. Could you please
-clarify?
-
-<...>
-
-Thanks,
-Daniel
