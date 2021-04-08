@@ -2,146 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93796358292
-	for <lists+bpf@lfdr.de>; Thu,  8 Apr 2021 13:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E6A3583A9
+	for <lists+bpf@lfdr.de>; Thu,  8 Apr 2021 14:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbhDHL7t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Apr 2021 07:59:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41785 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229741AbhDHL7s (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 8 Apr 2021 07:59:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617883177;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qijMefmIa45ZdhR9YEweDU07OhF4NJOr6eTWwpRgQ2g=;
-        b=QqeJZLoWRdSzapiBNkTVNjFffQpPVHcOjxbmPpB746ShGRcHDsjvJeuBtxzR8ngJuo+jaG
-        eOcf7aJy4Qu/nYRzD7fEkzcA3R4KjsjiaQDRl9eVejhOITFw1ZXERD2dO5vUmK2AJPy7w3
-        z2Bq1GOWbF3pz4GMKcL4AjNyYDIEFO4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-mH7BT3bLOV2DNUAMcevOqw-1; Thu, 08 Apr 2021 07:59:35 -0400
-X-MC-Unique: mH7BT3bLOV2DNUAMcevOqw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1DECA107ACC7;
-        Thu,  8 Apr 2021 11:59:32 +0000 (UTC)
-Received: from krava (unknown [10.40.195.201])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 3EC4D5D71D;
-        Thu,  8 Apr 2021 11:59:25 +0000 (UTC)
-Date:   Thu, 8 Apr 2021 13:59:25 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCHv2 bpf-next 5/5] selftests/bpf: Test that module can't be
- unloaded with attached trampoline
-Message-ID: <YG7wHWVArOvUPkyn@krava>
-References: <20210406212913.970917-1-jolsa@kernel.org>
- <20210406212913.970917-6-jolsa@kernel.org>
- <CAEf4BzYnr=r-+iYaZ9yoTgRCs7h0mNo=rjg6S2OAYRkDdPniJA@mail.gmail.com>
+        id S230467AbhDHMve (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Apr 2021 08:51:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57094 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230412AbhDHMve (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Apr 2021 08:51:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D7ED61106;
+        Thu,  8 Apr 2021 12:51:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617886283;
+        bh=IFsWqI+cB5EMl9pSJyy9aWP80EiZi4fZy3Uw0UAbwZ8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dlYq1LH3nrDft7Tu+Ygv2J2pQw5uQM/AJZ3c51uwXk28UVBvR5q3+mJm7K+VPLysP
+         Z5SrRizWcVJlzRJwD7g1tv+ZgQ8nuiFsUgBvYkJfQ1zbyr/j037seELqO2zRj57X3p
+         oKOccEHAcsYzU1AyLftMZ0FCzwFJIAeGtC5mZUAXm5m1ciaw1W2kFqrdC2+vqMtlFd
+         ZxSCYpBF0PKqEvOX3ay1vuMvOIMeQlHOnmTfopIfBj6vVTNvqt81RUz9UQYcaUCM3+
+         s0A1h+8JG/AOINuDkcH3WeZ0EthetR5+klXYCKuKtkGk5eW57v1TPnmXXIJdyFnfnd
+         UScm3s2d1FiWQ==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        sameehj@amazon.com, john.fastabend@gmail.com, dsahern@kernel.org,
+        brouer@redhat.com, echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com
+Subject: [PATCH v8 bpf-next 00/14] mvneta: introduce XDP multi-buffer support
+Date:   Thu,  8 Apr 2021 14:50:52 +0200
+Message-Id: <cover.1617885385.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYnr=r-+iYaZ9yoTgRCs7h0mNo=rjg6S2OAYRkDdPniJA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 04:04:48PM -0700, Andrii Nakryiko wrote:
-> On Wed, Apr 7, 2021 at 4:22 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Adding test to verify that once we attach module's trampoline,
-> > the module can't be unloaded.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> 
-> To be fair, to test that you are actually testing what you think you
-> are testing, you'd have to prove that you *can* detach when no program
-> is attached to bpf_testmod ;) You'd also need kern_sync_rcu() to wait
-> for all the async clean up to complete inside the kernel. But that
-> doesn't interact with other tests well, so I think it's fine.
+This series introduce XDP multi-buffer support. The mvneta driver is
+the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
+please focus on how these new types of xdp_{buff,frame} packets
+traverse the different layers and the layout design. It is on purpose
+that BPF-helpers are kept simple, as we don't want to expose the
+internal layout to allow later changes.
 
-well without the kernel change the module gets unloaded
-and the test below fails.. we could add module unload
-test, but as you described it could probably interfere
-with other tests
+For now, to keep the design simple and to maintain performance, the XDP
+BPF-prog (still) only have access to the first-buffer. It is left for
+later (another patchset) to add payload access across multiple buffers.
+This patchset should still allow for these future extensions. The goal
+is to lift the XDP MTU restriction that comes with XDP, but maintain
+same performance as before.
 
-> 
-> grumpily due to CHECK() usage (please do consider updating to ASSERT):
+The main idea for the new multi-buffer layout is to reuse the same
+layout used for non-linear SKB. We introduced a "xdp_shared_info" data
+structure at the end of the first buffer to link together subsequent buffers.
+xdp_shared_info will alias skb_shared_info allowing to keep most of the frags
+in the same cache-line (while with skb_shared_info only the first fragment will
+be placed in the first "shared_info" cache-line). Moreover we introduced some
+xdp_shared_info helpers aligned to skb_frag* ones.
+Converting xdp_frame to SKB and deliver it to the network stack is shown in
+patch 07/14. Building the SKB, the xdp_shared_info structure will be converted
+in a skb_shared_info one.
 
-ok, will check
+A multi-buffer bit (mb) has been introduced in xdp_{buff,frame} structure
+to notify the bpf/network layer if this is a xdp multi-buffer frame (mb = 1)
+or not (mb = 0).
+The mb bit will be set by a xdp multi-buffer capable driver only for
+non-linear frames maintaining the capability to receive linear frames
+without any extra cost since the xdp_shared_info structure at the end
+of the first buffer will be initialized only if mb is set.
 
-thanks,
-jirka
+Typical use cases for this series are:
+- Jumbo-frames
+- Packet header split (please see Google’s use-case @ NetDevConf 0x14, [0])
+- TSO
 
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> 
-> >  .../selftests/bpf/prog_tests/module_attach.c  | 23 +++++++++++++++++++
-> >  1 file changed, 23 insertions(+)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach.c b/tools/testing/selftests/bpf/prog_tests/module_attach.c
-> > index 5bc53d53d86e..d180b8c28287 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/module_attach.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/module_attach.c
-> > @@ -45,12 +45,18 @@ static int trigger_module_test_write(int write_sz)
-> >         return 0;
-> >  }
-> >
-> > +static int delete_module(const char *name, int flags)
-> > +{
-> > +       return syscall(__NR_delete_module, name, flags);
-> > +}
-> > +
-> >  void test_module_attach(void)
-> >  {
-> >         const int READ_SZ = 456;
-> >         const int WRITE_SZ = 457;
-> >         struct test_module_attach* skel;
-> >         struct test_module_attach__bss *bss;
-> > +       struct bpf_link *link;
-> >         int err;
-> >
-> >         skel = test_module_attach__open();
-> > @@ -84,6 +90,23 @@ void test_module_attach(void)
-> >         ASSERT_EQ(bss->fexit_ret, -EIO, "fexit_tet");
-> >         ASSERT_EQ(bss->fmod_ret_read_sz, READ_SZ, "fmod_ret");
-> >
-> > +       test_module_attach__detach(skel);
-> > +
-> > +       /* attach fentry/fexit and make sure it get's module reference */
-> > +       link = bpf_program__attach(skel->progs.handle_fentry);
-> > +       if (CHECK(IS_ERR(link), "attach_fentry", "err: %ld\n", PTR_ERR(link)))
-> > +               goto cleanup;
-> > +
-> > +       ASSERT_ERR(delete_module("bpf_testmod", 0), "delete_module");
-> > +       bpf_link__destroy(link);
-> > +
-> > +       link = bpf_program__attach(skel->progs.handle_fexit);
-> > +       if (CHECK(IS_ERR(link), "attach_fexit", "err: %ld\n", PTR_ERR(link)))
-> > +               goto cleanup;
-> > +
-> > +       ASSERT_ERR(delete_module("bpf_testmod", 0), "delete_module");
-> > +       bpf_link__destroy(link);
-> > +
-> >  cleanup:
-> >         test_module_attach__destroy(skel);
-> >  }
-> > --
-> > 2.30.2
-> >
-> 
+A new frame_length field has been introduce in XDP ctx in order to notify the
+eBPF layer about the total frame size (linear + paged parts).
+
+bpf_xdp_adjust_tail and bpf_xdp_copy helpers have been modified to take into
+account xdp multi-buff frames.
+
+More info about the main idea behind this approach can be found here [1][2].
+
+Changes since v7:
+- rebase on top of bpf-next
+- fix sparse warnings
+- improve comments for frame_length in include/net/xdp.h
+
+Changes since v6:
+- the main difference respect to previous versions is the new approach proposed
+  by Eelco to pass full length of the packet to eBPF layer in XDP context
+- reintroduce multi-buff support to eBPF kself-tests
+- reintroduce multi-buff support to bpf_xdp_adjust_tail helper
+- introduce multi-buffer support to bpf_xdp_copy helper
+- rebase on top of bpf-next
+
+Changes since v5:
+- rebase on top of bpf-next
+- initialize mb bit in xdp_init_buff() and drop per-driver initialization
+- drop xdp->mb initialization in xdp_convert_zc_to_xdp_frame()
+- postpone introduction of frame_length field in XDP ctx to another series
+- minor changes
+
+Changes since v4:
+- rebase ontop of bpf-next
+- introduce xdp_shared_info to build xdp multi-buff instead of using the
+  skb_shared_info struct
+- introduce frame_length in xdp ctx
+- drop previous bpf helpers
+- fix bpf_xdp_adjust_tail for xdp multi-buff
+- introduce xdp multi-buff self-tests for bpf_xdp_adjust_tail
+- fix xdp_return_frame_bulk for xdp multi-buff
+
+Changes since v3:
+- rebase ontop of bpf-next
+- add patch 10/13 to copy back paged data from a xdp multi-buff frame to
+  userspace buffer for xdp multi-buff selftests
+
+Changes since v2:
+- add throughput measurements
+- drop bpf_xdp_adjust_mb_header bpf helper
+- introduce selftest for xdp multibuffer
+- addressed comments on bpf_xdp_get_frags_count
+- introduce xdp multi-buff support to cpumaps
+
+Changes since v1:
+- Fix use-after-free in xdp_return_{buff/frame}
+- Introduce bpf helpers
+- Introduce xdp_mb sample program
+- access skb_shared_info->nr_frags only on the last fragment
+
+Changes since RFC:
+- squash multi-buffer bit initialization in a single patch
+- add mvneta non-linear XDP buff support for tx side
+
+[0] https://netdevconf.info/0x14/session.html?talk-the-path-to-tcp-4k-mtu-and-rx-zerocopy
+[1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-multi-buffer01-design.org
+[2] https://netdevconf.info/0x14/session.html?tutorial-add-XDP-support-to-a-NIC-driver (XDPmulti-buffers section)
+
+Eelco Chaudron (4):
+  bpf: add multi-buff support to the bpf_xdp_adjust_tail() API
+  bpd: add multi-buffer support to xdp copy helpers
+  bpf: add new frame_length field to the XDP ctx
+  bpf: update xdp_adjust_tail selftest to include multi-buffer
+
+Lorenzo Bianconi (10):
+  xdp: introduce mb in xdp_buff/xdp_frame
+  xdp: add xdp_shared_info data structure
+  net: mvneta: update mb bit before passing the xdp buffer to eBPF layer
+  xdp: add multi-buff support to xdp_return_{buff/frame}
+  net: mvneta: add multi buffer support to XDP_TX
+  net: mvneta: enable jumbo frames for XDP
+  net: xdp: add multi-buff support to xdp_build_skb_from_fram
+  bpf: move user_size out of bpf_test_init
+  bpf: introduce multibuff support to bpf_prog_test_run_xdp()
+  bpf: test_run: add xdp_shared_info pointer in bpf_test_finish
+    signature
+
+ drivers/net/ethernet/marvell/mvneta.c         | 182 ++++++++++--------
+ include/linux/filter.h                        |   7 +
+ include/net/xdp.h                             | 105 +++++++++-
+ include/uapi/linux/bpf.h                      |   1 +
+ net/bpf/test_run.c                            | 109 +++++++++--
+ net/core/filter.c                             | 134 ++++++++++++-
+ net/core/xdp.c                                | 103 +++++++++-
+ tools/include/uapi/linux/bpf.h                |   1 +
+ .../bpf/prog_tests/xdp_adjust_tail.c          | 105 ++++++++++
+ .../selftests/bpf/prog_tests/xdp_bpf2bpf.c    | 127 ++++++++----
+ .../bpf/progs/test_xdp_adjust_tail_grow.c     |  17 +-
+ .../bpf/progs/test_xdp_adjust_tail_shrink.c   |  32 ++-
+ .../selftests/bpf/progs/test_xdp_bpf2bpf.c    |   3 +-
+ 13 files changed, 767 insertions(+), 159 deletions(-)
+
+-- 
+2.30.2
 
