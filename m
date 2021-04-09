@@ -2,106 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23FA735A060
-	for <lists+bpf@lfdr.de>; Fri,  9 Apr 2021 15:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F0635A222
+	for <lists+bpf@lfdr.de>; Fri,  9 Apr 2021 17:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233619AbhDINwV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Apr 2021 09:52:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232642AbhDINwV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Apr 2021 09:52:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F59561108;
-        Fri,  9 Apr 2021 13:52:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617976328;
-        bh=NFIRdHtpQ7HiIC9Gv8NFS7wN7NNJeQnF2jjJGj2F7aE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Om3IGO+XAfxPIpaJe+PncrqeBnM0qYlogQBI2pL1uWo1ua/3C4xXlkaLFJNIPK+1b
-         0LYO8932ZkYJpRE8P79fo+3XgehjxJnrokCg7tJxaZHM51BwXI6mIhG9nhJbpu1btt
-         feybS2I4CnoPOLsXPYKLTI7t6SvNGe1lnxCW3dbQ35FnVMhkXi4cvh4yPaIj2gTIhj
-         X177xCFW6LLHPhUC0USkG55z+UucN9xpQmHPZaixH1+0qFNDzi7W0jdOROzfMcTYHK
-         X3HBFo2v7PM3yUR4Oh+rFZo+zK4INf7bhuBU4yCA8hk1sHgXZGToAhWOaQeVCYJVO/
-         zqC769Be0P9cA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BF3D540647; Fri,  9 Apr 2021 10:52:05 -0300 (-03)
-Date:   Fri, 9 Apr 2021 10:52:05 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Arnaldo <arnaldo.melo@gmail.com>,
-        David Blaikie <dblaikie@gmail.com>, dwarves@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Bill Wendling <morbo@google.com>, bpf <bpf@vger.kernel.org>,
-        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [RFT] prepping up pahole 1.21, wanna test it? was Re: [PATCH
- dwarves] dwarf_loader: handle subprogram ret type with abstract_origin
- properly
-Message-ID: <YHBcBXNATDOg+mYr@kernel.org>
-References: <CAENS6EsiRsY1JptWJqu2wH=m4fkSiR+zD8JDD5DYke=ZnJOMrg@mail.gmail.com>
- <YGckYjyfxfNLzc34@kernel.org>
- <YGcw4iq9QNkFFfyt@kernel.org>
- <2d55d22b-d136-82b9-6a0f-8b09eeef7047@fb.com>
- <82dfd420-96f9-aedc-6cdc-bf20042455db@fb.com>
- <E9072F07-B689-402C-89F6-545B589EF7E4@gmail.com>
- <be7079b4-718c-e4a7-dff4-56543e5854a6@fb.com>
- <YG3RpVgLC9UEUrb8@kernel.org>
- <YG3SYoNWqb8DlP61@kernel.org>
- <7cdd9179-df5e-bdb5-ab36-983acddcbc1c@fb.com>
+        id S233527AbhDIPja (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Apr 2021 11:39:30 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:55756 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232395AbhDIPja (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Apr 2021 11:39:30 -0400
+Received: by mail-io1-f70.google.com with SMTP id i63so1781053ioa.22
+        for <bpf@vger.kernel.org>; Fri, 09 Apr 2021 08:39:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=jZbg77mtmUAx73slrlTxgnb1mnony9A1Ml58bH1UALw=;
+        b=WE8Qy9xtXAazoDLYeeXxOIsNE1dDXNkyICpxYwBJBBd1XVqZgKEAhc0AgegYbk8r4R
+         r3cTz0voG9aWh2boUWz5fp2KFg4qha/LExrXhgX/jOM9C5Kepz8g7jC/dnZ8NaoyZgo5
+         LGDaN+42EugaWd6NB4n7GwVI5i53Y1inI6n6xSWi/4QDRdwAulHfk77gWg3cjdlu9ouv
+         GWXMd4jTUz8FzDV5WPbY3qcB2lnnR2V6pX1VJMhyO5d+J6Dz6znsY3JpeogG0x354by4
+         LKJTKjnEJo9uz/ljzdr5FXiUSOehXDuNImpHPOhhHFP/nRvdZcPe/0y3zPVZkWAt5ebK
+         bsVQ==
+X-Gm-Message-State: AOAM531/3HybVc4RnCjvUN/tSQTwNf2JGis4L+DokNgcMaYTbolZ/S21
+        6gAOeb8qbiBM9TMB0Hcn+SHkhz0JVVk9swdmqTs1WzoBhk/r
+X-Google-Smtp-Source: ABdhPJywqm5sQ8uWfvrUvAFPSwnslEiHr4h+DPIlj9Ki8nKrSEPlMx/yenRdvwaJicFT4iECq25yIRgOCwGTyTSCdIqY1+4lZ3RN
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7cdd9179-df5e-bdb5-ab36-983acddcbc1c@fb.com>
-X-Url:  http://acmel.wordpress.com
+X-Received: by 2002:a02:b615:: with SMTP id h21mr15254285jam.93.1617982756977;
+ Fri, 09 Apr 2021 08:39:16 -0700 (PDT)
+Date:   Fri, 09 Apr 2021 08:39:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007b81f905bf8bf7ac@google.com>
+Subject: [syzbot] WARNING: refcount bug in sk_psock_get
+From:   syzbot <syzbot+b54a1ce86ba4a623b7f0@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        borisp@nvidia.com, bp@alien8.de, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hpa@zytor.com,
+        jmattson@google.com, john.fastabend@gmail.com, joro@8bytes.org,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, masahiroy@kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, pbonzini@redhat.com, peterz@infradead.org,
+        rafael.j.wysocki@intel.com, rostedt@goodmis.org, seanjc@google.com,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        will@kernel.org, x86@kernel.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Apr 07, 2021 at 03:53:32PM -0700, Yonghong Song escreveu:
-> 
-> 
-> On 4/7/21 8:40 AM, Arnaldo Carvalho de Melo wrote:
-> > Em Wed, Apr 07, 2021 at 12:37:09PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Em Wed, Apr 07, 2021 at 07:54:26AM -0700, Yonghong Song escreveu:
-> > > > Arnaldo, just in case that you missed it, please remember
-> > > > to fold the above changes to the patch:
-> > > >     [PATCH dwarves] dwarf_loader: handle subprogram ret type with
-> > > > abstract_origin properly
-> > > > Thanks!
-> > > 
-> > > Its there, I did it Sunday, IIRC:
-> > > 
-> > > https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=tmp.master&id=9adb014930f31c66608fa39a35ccea2daa5586ad
-> > 
-> > So I pushed it all to the master branch, hopefully some more people may
-> > feel encouraged to give it a try for the various things it fixes since
-> > 1.20:
-> > 
-> > [acme@quaco pahole]$ git log --oneline v1.20..
-> > ae0b7dde1fd50b12 (HEAD -> master, origin/tmp.master, origin/master, origin/HEAD, github/master, five/master, acme.korg/tmp.master, acme.korg/master) dwarf_loader: Handle DWARF5 DW_OP_addrx properly
-> > 9adb014930f31c66 dwarf_loader: Handle subprogram ret type with abstract_origin properly
-> > 5752d1951d081a80 dwarf_loader: Check .notes section for LTO build info
-> > 209e45424ff4a22d dwarf_loader: Check .debug_abbrev for cross-CU references
-> > 39227909db3cc2c2 dwarf_loader: Permit merging all DWARF CU's for clang LTO built binary
-> > 763475ca1101ccfe dwarf_loader: Factor out common code to initialize a cu
-> > d0d3fbd4744953e8 dwarf_loader: Permit a flexible HASHTAGS__BITS
-> > ffe0ef4d73906c18 btf: Add --btf_gen_all flag
-> > de708b33114d42c2 btf: Add support for the floating-point types
-> > 4b7f8c04d009942b fprintf: Honour conf_fprintf.hex when printing enumerations
-> > f2889ff163726336 Avoid warning when building with NDEBUG
-> > 8e1f8c904e303d5d btf_encoder: Match ftrace addresses within ELF functions
-> > 9fecc77ed82d429f dwarf_loader: Use a better hashing function, from libbpf
-> > 0125de3a4c055cdf btf_encoder: Funnel ELF error reporting through a macro
-> > 7d8e829f636f47ab btf_encoder: Sanitize non-regular int base type
-> > [acme@quaco pahole]$
-> 
-> I tested with llvm-project "main" branch and latest bpf-next.
-> clang non-lto, dwarf4/5: okay
-> clang thin-lto, dwarf4/5: okay
-> gcc (8.4.1, non-lto, default dwarf4): okay
-> 
-> So pahole looks good. Thanks!
+Hello,
 
-Thanks a lot, in time for a friday release! :-)
+syzbot found the following issue on:
 
-- Arnaldo
+HEAD commit:    9c54130c Add linux-next specific files for 20210406
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17d8d7aad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d125958c3995ddcd
+dashboard link: https://syzkaller.appspot.com/bug?extid=b54a1ce86ba4a623b7f0
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1729797ed00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1190f46ad00000
+
+The issue was bisected to:
+
+commit 997acaf6b4b59c6a9c259740312a69ea549cc684
+Author: Mark Rutland <mark.rutland@arm.com>
+Date:   Mon Jan 11 15:37:07 2021 +0000
+
+    lockdep: report broken irq restoration
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11a6cc96d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13a6cc96d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15a6cc96d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b54a1ce86ba4a623b7f0@syzkaller.appspotmail.com
+Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
+
+------------[ cut here ]------------
+refcount_t: saturated; leaking memory.
+WARNING: CPU: 1 PID: 8414 at lib/refcount.c:19 refcount_warn_saturate+0xf4/0x1e0 lib/refcount.c:19
+Modules linked in:
+CPU: 1 PID: 8414 Comm: syz-executor793 Not tainted 5.12.0-rc6-next-20210406-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:refcount_warn_saturate+0xf4/0x1e0 lib/refcount.c:19
+Code: 1d 69 0c e6 09 31 ff 89 de e8 c8 b4 a6 fd 84 db 75 ab e8 0f ae a6 fd 48 c7 c7 e0 52 c2 89 c6 05 49 0c e6 09 01 e8 91 0f 00 05 <0f> 0b eb 8f e8 f3 ad a6 fd 0f b6 1d 33 0c e6 09 31 ff 89 de e8 93
+RSP: 0018:ffffc90000eef388 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88801bbdd580 RSI: ffffffff815c2e05 RDI: fffff520001dde63
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815bcc6e R11: 0000000000000000 R12: 1ffff920001dde74
+R13: 0000000090200301 R14: ffff888026e00000 R15: ffffc90000eef3c0
+FS:  0000000001422300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000000 CR3: 0000000012b3b000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __refcount_add_not_zero include/linux/refcount.h:163 [inline]
+ __refcount_inc_not_zero include/linux/refcount.h:227 [inline]
+ refcount_inc_not_zero include/linux/refcount.h:245 [inline]
+ sk_psock_get+0x3b0/0x400 include/linux/skmsg.h:435
+ bpf_exec_tx_verdict+0x11e/0x11a0 net/tls/tls_sw.c:799
+ tls_sw_sendmsg+0xa41/0x1800 net/tls/tls_sw.c:1013
+ inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:821
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ sock_write_iter+0x289/0x3c0 net/socket.c:1001
+ call_write_iter include/linux/fs.h:2106 [inline]
+ do_iter_readv_writev+0x46f/0x740 fs/read_write.c:740
+ do_iter_write+0x188/0x670 fs/read_write.c:866
+ vfs_writev+0x1aa/0x630 fs/read_write.c:939
+ do_writev+0x27f/0x300 fs/read_write.c:982
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43efa9
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe9279f418 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043efa9
+RDX: 0000000000000001 RSI: 0000000020000100 RDI: 0000000000000003
+RBP: 0000000000402f90 R08: 0000000000400488 R09: 0000000000400488
+R10: 0000000000000038 R11: 0000000000000246 R12: 0000000000403020
+R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
