@@ -2,98 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B832635921E
-	for <lists+bpf@lfdr.de>; Fri,  9 Apr 2021 04:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2215359393
+	for <lists+bpf@lfdr.de>; Fri,  9 Apr 2021 06:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbhDICp0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Apr 2021 22:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
+        id S229840AbhDIEI3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Apr 2021 00:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232616AbhDICp0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Apr 2021 22:45:26 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89E4C061760;
-        Thu,  8 Apr 2021 19:45:13 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id l76so2782051pga.6;
-        Thu, 08 Apr 2021 19:45:13 -0700 (PDT)
+        with ESMTP id S229450AbhDIEI2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Apr 2021 00:08:28 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11ADC061760;
+        Thu,  8 Apr 2021 21:08:16 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id l76so2910242pga.6;
+        Thu, 08 Apr 2021 21:08:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=j1Bj0rvoy+oFNKx+EoumArjPjh1aRsIQYcLQ6zUAxI4=;
-        b=G81O/B89oL2N1gRawcKLyRZhoNbwsCRc579s0/bSN0wh3U2MrrWjruFbr0q3cMA7Pa
-         J+ucntcdq4xL+h4V0Y3N1idtH4iCIWmWWc11EL8ZE7Vm6GLn7sqhAApp9dD0Mpyt7c9t
-         kgWrHtOKHzZftfEACi9Is4jy5OuMDzsosxu5BTZPNF/hdOYjtDZlCsAsi077/XvY0aMM
-         CE+M3E2w8eRj8YWzMCiss0b09zM7tW2iBLvQfE0PllOjpf0sYLAGb6n9lUS9Dbdn4Mkr
-         dbmCoLu6QDRoNBaxZ2FAUz7qustsh809CKYBm7LwAgCBvhk6zMfpFA1jCWEi0YA1jWb8
-         3azA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZwkJQMPwiOfDOGttdSfGe5hwvJwsvckYfhrgLcypAHk=;
+        b=cMsfegVZH+3NipbLHANwo/P/BbWZO42Kbx3YDYj6O1jDB7bVh2wxrEhNg4mO3v3cMh
+         4bJ/nO9BQoR2QrlYyVKImKpIJx5kUcJju+nt1IjkmkBw0lOUNTQozIgRDbVphoAzbuJj
+         RJiAItoSokF8I/prV+vG7IwVsyJXk7dDZwYtPKFqBHX+6tSPrLeYsmFkhbf0I6R/4wU0
+         h669knn3PRoiuMz3d/wyAOUtFaE6wYPKzw8wDYV2Pj8yayzlFsnTkBiWH9SaMQ4g2ukV
+         YCKOwxBALinguDGtI8kxnerpqxMoLW9TH5ZdA4Uz1hRU4ZCoKpsznX04hIEC8BV1Fzvp
+         zgNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j1Bj0rvoy+oFNKx+EoumArjPjh1aRsIQYcLQ6zUAxI4=;
-        b=ENS75F/KWNTLPe6iK78yuyC6e4EeYMBqA8mPxJZyuBUrXpX9LJGilTZVzR0xLsLL4i
-         uR7uv/u1xlTNYcHnxeY2ijlV1/PL+u2Jf4w9WJnrmTkz8ylxrVwauzBxQPmDKpe4jNXk
-         FGMaMyPmWPGJ8cQrPo6nm+5h4/k3G50wviCce07QYR4C48EQsjhKo9mYVxtG3nOqTkWm
-         WWPuCT3CH41CwwtbAcE/jsBTsVvXoKKlUDugS77NAZ+cesYp2FiUZ+BaqFujpK98hEP5
-         iHaXrCpI4q9FlAFU5R1pCB9ZonrNpE+Yllxk8+QyRTvjQsxTnsTCJNYHwU6vTID9AMxH
-         TnHA==
-X-Gm-Message-State: AOAM5334BH/CWf6jvdbi/jHNSxFSKJVNyNf839heJPthJT5X67/ZqKo5
-        q205K12EARrkr+ETnP/xWVc=
-X-Google-Smtp-Source: ABdhPJzxiGwUKdUoVkg0jKHoGD4KfWPlDLyBj1pQ7pf5fXE4ElRZAfSEfIFek3GSp1UJilQs4xQyhA==
-X-Received: by 2002:a65:40c7:: with SMTP id u7mr10909516pgp.29.1617936313292;
-        Thu, 08 Apr 2021 19:45:13 -0700 (PDT)
-Received: from Leo-laptop-t470s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id s9sm624802pfc.192.2021.04.08.19.45.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 19:45:12 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 10:45:00 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
-Subject: Re: [PATCHv4 bpf-next 2/4] xdp: extend xdp_redirect_map with
- broadcast support
-Message-ID: <20210409024500.GM2900@Leo-laptop-t470s>
-References: <20210402121954.3568992-1-liuhangbin@gmail.com>
- <20210402121954.3568992-3-liuhangbin@gmail.com>
- <606baa5025735_d46462085b@john-XPS-13-9370.notmuch>
- <20210406063819.GF2900@Leo-laptop-t470s>
- <878s5v4swp.fsf@toke.dk>
- <606cd787d64da_22ba520855@john-XPS-13-9370.notmuch>
- <87k0pf2gz6.fsf@toke.dk>
- <606ce0db7cd40_2865920845@john-XPS-13-9370.notmuch>
- <87h7kj2enn.fsf@toke.dk>
- <606f922584d89_c8b92089a@john-XPS-13-9370.notmuch>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZwkJQMPwiOfDOGttdSfGe5hwvJwsvckYfhrgLcypAHk=;
+        b=TY0RSCfOoRsOGiV+4JJnQ20b/myb3KQsPQD7bRv4EAYjfO8RNfLwhBZT9xITz4Nh0F
+         YfuWj0rGXNFc359saxWd/k/8fZnuvtHdjHizEkp/G9oWF5m9fY5XwJ1Dur/Qg5MWqyle
+         7qBt9M+qaIqJU0khx9zbnwDws9YQzQI5kvzR0P+z7oHu7pwNog9lx0x+G3z1p2WOl6di
+         y/4delgW4uiE0hUtukLLqRzcGa8wNxeX3atCYiBSlv66lxOT+yqXZPnKWfzU0vxm+usg
+         h/s6C+WN5lw/WyohbyuAfyjNq4MJ4kcx+P/8DAqNwB1mohK+txE5W8b6QPQWnBR0R3Bn
+         ROfA==
+X-Gm-Message-State: AOAM532iiGS4X/kogW9jpGtYm/LWVc0t+KcxHI1+T+GOpPHg5toIMpbM
+        P6R174X+kbFFbszxm8ArsFYLwnwA33hBA89b/q4=
+X-Google-Smtp-Source: ABdhPJwewqPOUQ+1EvjSpcIxAS0fOf8DEeSrkTxFrkc3qmkIKX4/wJKoH6dbkKhjeLHaIsLL69SOFOfe7+j2H4T8woo=
+X-Received: by 2002:aa7:90d3:0:b029:241:21a1:6ffb with SMTP id
+ k19-20020aa790d30000b029024121a16ffbmr10335444pfk.43.1617941296208; Thu, 08
+ Apr 2021 21:08:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <606f922584d89_c8b92089a@john-XPS-13-9370.notmuch>
+References: <20210408030556.45134-1-xiyou.wangcong@gmail.com> <606f9f2b26b1a_c8b9208a4@john-XPS-13-9370.notmuch>
+In-Reply-To: <606f9f2b26b1a_c8b9208a4@john-XPS-13-9370.notmuch>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu, 8 Apr 2021 21:08:05 -0700
+Message-ID: <CAM_iQpXqfAXPoesdXskH7BaE206zc5QDEsfjFnfSRck2FH+wLg@mail.gmail.com>
+Subject: Re: [Patch bpf-next] sock_map: fix a potential use-after-free in sock_map_close()
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
+        syzbot <syzbot+7b6548ae483d6f4c64ae@syzkaller.appspotmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 04:30:45PM -0700, John Fastabend wrote:
-> Hangbin,
-> 
-> If possible please try to capture some of the design discussion in
-> the commit message on the next rev along with the tradeoffs we are making
-> so we don't lose these important details. Some of these points are fairly
-> subtle calling them out will surely save (for me at least) some thinking
-> when I pick this up when it lands in a released kernel.
+On Thu, Apr 8, 2021 at 5:26 PM John Fastabend <john.fastabend@gmail.com> wrote:
+>
+> Cong Wang wrote:
+> > From: Cong Wang <cong.wang@bytedance.com>
+> >
+> > The last refcnt of the psock can be gone right after
+> > sock_map_remove_links(), so sk_psock_stop() could trigger a UAF.
+> > The reason why I placed sk_psock_stop() there is to avoid RCU read
+> > critical section, and more importantly, some callee of
+> > sock_map_remove_links() is supposed to be called with RCU read lock,
+> > we can not simply get rid of RCU read lock here. Therefore, the only
+> > choice we have is to grab an additional refcnt with sk_psock_get()
+> > and put it back after sk_psock_stop().
+> >
+> > Reported-by: syzbot+7b6548ae483d6f4c64ae@syzkaller.appspotmail.com
+> > Fixes: 799aa7f98d53 ("skmsg: Avoid lock_sock() in sk_psock_backlog()")
+> > Cc: John Fastabend <john.fastabend@gmail.com>
+> > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> > Cc: Lorenz Bauer <lmb@cloudflare.com>
+> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > ---
+> >  net/core/sock_map.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> > index f473c51cbc4b..6f1b82b8ad49 100644
+> > --- a/net/core/sock_map.c
+> > +++ b/net/core/sock_map.c
+> > @@ -1521,7 +1521,7 @@ void sock_map_close(struct sock *sk, long timeout)
+> >
+> >       lock_sock(sk);
+> >       rcu_read_lock();
+>
+> It looks like we can drop the rcu_read_lock()/unlock() section then if we
+> take a reference on the psock? Before it was there to ensure we didn't
+> lose the psock from some other context, but with a reference held this
+> can not happen.
 
-OK, I will try. There are too many rounds discussion. Please forgive me
-if I missed something.
+Some callees under sock_map_remove_links() still assert RCU read
+lock, so we can not simply drop the RCU read lock here. Some
+additional efforts are needed to take care of those assertions, which
+can be a separate patch.
 
-Thanks
-Hangbin
+Thanks.
