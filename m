@@ -2,125 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11703590E1
-	for <lists+bpf@lfdr.de>; Fri,  9 Apr 2021 02:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA33C359114
+	for <lists+bpf@lfdr.de>; Fri,  9 Apr 2021 02:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232958AbhDIA0j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Apr 2021 20:26:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41654 "EHLO
+        id S232918AbhDIA4g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Apr 2021 20:56:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232951AbhDIA0j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Apr 2021 20:26:39 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB973C061760;
-        Thu,  8 Apr 2021 17:26:27 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id r193so4142059ior.9;
-        Thu, 08 Apr 2021 17:26:27 -0700 (PDT)
+        with ESMTP id S232426AbhDIA4g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Apr 2021 20:56:36 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37EE2C061760;
+        Thu,  8 Apr 2021 17:56:24 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id t14so3394483ilu.3;
+        Thu, 08 Apr 2021 17:56:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=qAptFUU90Znoha/E9NINSsAXDHdY41JcMDe7P0BQ2Yg=;
-        b=lqAGPuzRmQzOkMzEJ9f0AoMW+aNm0bys8BXHQIwaHKHGSBML0IDUTzNKKH3ch1XqPN
-         VkmHxyqWhT2OmqMAtrliPhTJ6RJcf/6sOgYJAPjLBUEQyviZpLUpWz4Z+e0ckkD2vcVa
-         5W0omj+G0zkx55JP5i1w7lhfz/R1whTl8FBuFc4nC1Ro9gVNSmxuxo3BNVpjBzUDdWS4
-         A9jR/+pguoo3iuT9N1vfW6GmBcF7VBOB4o4bdZzYAz6XdkV/YPxrcF4jDfQitgBUy7R1
-         Pm8f+g/fhldAB12N62U06LPaFa3RxMq+Xhjgn6FFXepOdE/8jXjXP1b5PUttC9zE+HCI
-         hD4w==
+        bh=UEdsZX4xRKTXy7Uhxf5TSkdKwTjEEWUxQ3XylhoYirQ=;
+        b=qkr1UC9iVxiC/F7eKOS/bwa6AAfT+Q3NXwb9FTbHB3CRanaZclRhekzYIBgEADA668
+         82oWjx+UzO6vHE0iQaZBEUZPG451oJ3G9uHKFPpgD1pXaALQ6odKuOgSvB/R20f+x1Ce
+         MkM1NmbSOWP/5b/8quKpwGS4P0oQQSUlP4cxNI+r8RbUy/VoGeFtthhuXzld14cScrO9
+         IE2rk5cIretqc4wPeFxiqFVIMQFBoTMIM6nAxPeVW2e6Gtm+MLrsbJygbY5MIOh6RYML
+         9QYAsd+/Hyz3Bf+XGH7w8MbgRjRNPTAvnxuS01a8Nud8RyvyqK3/qQ8yPe2wI7TFcsZe
+         S34Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=qAptFUU90Znoha/E9NINSsAXDHdY41JcMDe7P0BQ2Yg=;
-        b=cb6winHOUCxqUO0Y7qRKBapePl4LQiGVW+PYHxr8oSaZEYK2aR8RWdwWQkYkYiM2qQ
-         6HwqJDXmMw2Mfg+nDfKpP0Q4MLFc54dwKa2GYfVoYmljOPl8Jk+X1dwpJXmr08EY0w/+
-         tGSv0wwp9GE3T/mbT1SGK1mHmH2a3vFxA4gECVR//4m2dNzgIdorp2c8rkykTKwChRf1
-         7v+ltOzLhcDUd6ghzIK21B9dBLB1Qs0aRIj3nHOU/6kFbA9wd2cMVf6LMgCl+nn9bYqW
-         FpG2wNUaK+/b05tnCsJK7sX9XzoF4ux3P9u0BSom6KL2NLrQb+8T8N7O7gBIDaenNyDv
-         DKhg==
-X-Gm-Message-State: AOAM530jk4m5PROt1Yf3yiT9YV8wpx0WEgBwzjCxxcDzVZHculn/TeaI
-        Uy/GXtKGQi7v012ksMFjygA=
-X-Google-Smtp-Source: ABdhPJwNBeyYBBhR5PYARBaEDWRkA3HCI5UnZZMdpyf1XJ8WKww02UwfsAbdyg7KmbNmVeWgO9ichw==
-X-Received: by 2002:a6b:8b0e:: with SMTP id n14mr9145619iod.199.1617927987114;
-        Thu, 08 Apr 2021 17:26:27 -0700 (PDT)
+        bh=UEdsZX4xRKTXy7Uhxf5TSkdKwTjEEWUxQ3XylhoYirQ=;
+        b=l/isTb9JAq2E4RGBiJ9W8b3TZbrBdYrcMOhGNqqD4yJwG7pc0PkOkGtPtouuDZBXbp
+         nNHgsHa+jqlTA7HVkJMv2PyGO8WcfmawL1Lk65+R8Zmlm4SV6zd7l2dKqogJpsHf9Ud+
+         ZnRwaPUOb7cnHfYRz5dx3w8Sj4Fv6+jIQWtfFJnmHtf0P1DH9t89JxRnHtFF0EeFTofV
+         wED7nbV7h4f+KLOSoidC4seKmkFXvzM61ajjjbNUCm6T+ww39h7UnaxfJPX9RoZOaPK4
+         j+V9nwU3jUynnf9o9u8lwNt+l6BtUARWDUMmnxnDalNz68/RUkScZP5EC0zChoqOsrwX
+         Si2g==
+X-Gm-Message-State: AOAM533vH5cXghFHfAv848GhNVCYZl8fnJFB9RsAvBo9dkZ/6qmKctmT
+        4OPeWka/BaWun2Qr1REESj8=
+X-Google-Smtp-Source: ABdhPJxhyOwfkTTc+MdVlfsb5am4+JwHytngO8T/7QAGvKIiJ53g41x+hLH8AT8i0oFwja9vzF4ysg==
+X-Received: by 2002:a05:6e02:174d:: with SMTP id y13mr8881673ill.83.1617929783623;
+        Thu, 08 Apr 2021 17:56:23 -0700 (PDT)
 Received: from localhost ([172.242.244.146])
-        by smtp.gmail.com with ESMTPSA id k11sm455905ilv.73.2021.04.08.17.26.24
+        by smtp.gmail.com with ESMTPSA id v17sm429789ios.46.2021.04.08.17.56.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 17:26:26 -0700 (PDT)
-Date:   Thu, 08 Apr 2021 17:26:19 -0700
+        Thu, 08 Apr 2021 17:56:23 -0700 (PDT)
+Date:   Thu, 08 Apr 2021 17:56:15 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        syzbot+7b6548ae483d6f4c64ae@syzkaller.appspotmail.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Message-ID: <606f9f2b26b1a_c8b9208a4@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210408030556.45134-1-xiyou.wangcong@gmail.com>
-References: <20210408030556.45134-1-xiyou.wangcong@gmail.com>
-Subject: RE: [Patch bpf-next] sock_map: fix a potential use-after-free in
- sock_map_close()
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        sameehj@amazon.com, john.fastabend@gmail.com, dsahern@kernel.org,
+        brouer@redhat.com, echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com
+Message-ID: <606fa62f6fe99_c8b920884@john-XPS-13-9370.notmuch>
+In-Reply-To: <cover.1617885385.git.lorenzo@kernel.org>
+References: <cover.1617885385.git.lorenzo@kernel.org>
+Subject: RE: [PATCH v8 bpf-next 00/14] mvneta: introduce XDP multi-buffer
+ support
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
-> 
-> The last refcnt of the psock can be gone right after
-> sock_map_remove_links(), so sk_psock_stop() could trigger a UAF.
-> The reason why I placed sk_psock_stop() there is to avoid RCU read
-> critical section, and more importantly, some callee of
-> sock_map_remove_links() is supposed to be called with RCU read lock,
-> we can not simply get rid of RCU read lock here. Therefore, the only
-> choice we have is to grab an additional refcnt with sk_psock_get()
-> and put it back after sk_psock_stop().
-> 
-> Reported-by: syzbot+7b6548ae483d6f4c64ae@syzkaller.appspotmail.com
-> Fixes: 799aa7f98d53 ("skmsg: Avoid lock_sock() in sk_psock_backlog()")
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> ---
->  net/core/sock_map.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index f473c51cbc4b..6f1b82b8ad49 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -1521,7 +1521,7 @@ void sock_map_close(struct sock *sk, long timeout)
->  
->  	lock_sock(sk);
->  	rcu_read_lock();
+Lorenzo Bianconi wrote:
+> This series introduce XDP multi-buffer support. The mvneta driver is
+> the first to support these new "non-linear" xdp_{buff,frame}. Reviewers=
 
-It looks like we can drop the rcu_read_lock()/unlock() section then if we
-take a reference on the psock? Before it was there to ensure we didn't
-lose the psock from some other context, but with a reference held this
-can not happen.
+> please focus on how these new types of xdp_{buff,frame} packets
+> traverse the different layers and the layout design. It is on purpose
+> that BPF-helpers are kept simple, as we don't want to expose the
+> internal layout to allow later changes.
+> =
 
-> -	psock = sk_psock(sk);
-> +	psock = sk_psock_get(sk);
->  	if (unlikely(!psock)) {
->  		rcu_read_unlock();
->  		release_sock(sk);
-> @@ -1532,6 +1532,7 @@ void sock_map_close(struct sock *sk, long timeout)
->  	sock_map_remove_links(sk, psock);
->  	rcu_read_unlock();
->  	sk_psock_stop(psock, true);
-> +	sk_psock_put(sk, psock);
->  	release_sock(sk);
->  	saved_close(sk, timeout);
->  }
-> -- 
-> 2.25.1
-> 
+> For now, to keep the design simple and to maintain performance, the XDP=
 
+> BPF-prog (still) only have access to the first-buffer. It is left for
+> later (another patchset) to add payload access across multiple buffers.=
 
+> This patchset should still allow for these future extensions. The goal
+> is to lift the XDP MTU restriction that comes with XDP, but maintain
+> same performance as before.
+> =
+
+> The main idea for the new multi-buffer layout is to reuse the same
+> layout used for non-linear SKB. We introduced a "xdp_shared_info" data
+> structure at the end of the first buffer to link together subsequent bu=
+ffers.
+> xdp_shared_info will alias skb_shared_info allowing to keep most of the=
+ frags
+> in the same cache-line (while with skb_shared_info only the first fragm=
+ent will
+> be placed in the first "shared_info" cache-line). Moreover we introduce=
+d some
+> xdp_shared_info helpers aligned to skb_frag* ones.
+> Converting xdp_frame to SKB and deliver it to the network stack is show=
+n in
+> patch 07/14. Building the SKB, the xdp_shared_info structure will be co=
+nverted
+> in a skb_shared_info one.
+> =
+
+> A multi-buffer bit (mb) has been introduced in xdp_{buff,frame} structu=
+re
+> to notify the bpf/network layer if this is a xdp multi-buffer frame (mb=
+ =3D 1)
+> or not (mb =3D 0).
+> The mb bit will be set by a xdp multi-buffer capable driver only for
+> non-linear frames maintaining the capability to receive linear frames
+> without any extra cost since the xdp_shared_info structure at the end
+> of the first buffer will be initialized only if mb is set.
+> =
+
+> Typical use cases for this series are:
+> - Jumbo-frames
+> - Packet header split (please see Google=EF=BF=BD=EF=BF=BD=EF=BF=BDs us=
+e-case @ NetDevConf 0x14, [0])
+> - TSO
+> =
+
+> A new frame_length field has been introduce in XDP ctx in order to noti=
+fy the
+> eBPF layer about the total frame size (linear + paged parts).
+> =
+
+> bpf_xdp_adjust_tail and bpf_xdp_copy helpers have been modified to take=
+ into
+> account xdp multi-buff frames.
+
+I just read the commit messages for v8 so far. But, I'm still wondering h=
+ow
+to handle use cases where we want to put extra bytes at the end of the
+packet, or really anywhere in the general case. We can extend tail with a=
+bove
+is there anyway to then write into that extra space?
+
+I think most use cases will only want headers so we can likely make it =
+
+a callout to a helper. Could we add something like, xdp_get_bytes(start, =
+end)
+to pull in the bytes?
+
+My dumb pseudoprogram being something like,
+
+  trailer[16] =3D {0,1,2,3,4,5,6,7,8,9,a,b,c,d,e}
+  trailer_size =3D 16;
+  old_end =3D xdp->length;
+  new_end =3D xdp->length + trailer_size;
+
+  err =3D bpf_xdp_adjust_tail(xdp, trailer_size)
+  if (err) return err;
+
+  err =3D xdp_get_bytes(xdp, old_end, new_end);
+  if (err) return err;
+
+  memcpy(xdp->data, trailer, trailer_size);
+
+Do you think that could work if we code up xdp_get_bytes()? Does the driv=
+er
+have enough context to adjust xdp to map to my get_bytes() call? I think
+so but we should check.
+
+> =
+
+> More info about the main idea behind this approach can be found here [1=
+][2].
+
+Thanks for working on this!=
