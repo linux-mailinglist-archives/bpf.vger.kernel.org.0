@@ -2,138 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F0635A222
-	for <lists+bpf@lfdr.de>; Fri,  9 Apr 2021 17:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B0335A28A
+	for <lists+bpf@lfdr.de>; Fri,  9 Apr 2021 18:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233527AbhDIPja (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Apr 2021 11:39:30 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:55756 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232395AbhDIPja (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:39:30 -0400
-Received: by mail-io1-f70.google.com with SMTP id i63so1781053ioa.22
-        for <bpf@vger.kernel.org>; Fri, 09 Apr 2021 08:39:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=jZbg77mtmUAx73slrlTxgnb1mnony9A1Ml58bH1UALw=;
-        b=WE8Qy9xtXAazoDLYeeXxOIsNE1dDXNkyICpxYwBJBBd1XVqZgKEAhc0AgegYbk8r4R
-         r3cTz0voG9aWh2boUWz5fp2KFg4qha/LExrXhgX/jOM9C5Kepz8g7jC/dnZ8NaoyZgo5
-         LGDaN+42EugaWd6NB4n7GwVI5i53Y1inI6n6xSWi/4QDRdwAulHfk77gWg3cjdlu9ouv
-         GWXMd4jTUz8FzDV5WPbY3qcB2lnnR2V6pX1VJMhyO5d+J6Dz6znsY3JpeogG0x354by4
-         LKJTKjnEJo9uz/ljzdr5FXiUSOehXDuNImpHPOhhHFP/nRvdZcPe/0y3zPVZkWAt5ebK
-         bsVQ==
-X-Gm-Message-State: AOAM531/3HybVc4RnCjvUN/tSQTwNf2JGis4L+DokNgcMaYTbolZ/S21
-        6gAOeb8qbiBM9TMB0Hcn+SHkhz0JVVk9swdmqTs1WzoBhk/r
-X-Google-Smtp-Source: ABdhPJywqm5sQ8uWfvrUvAFPSwnslEiHr4h+DPIlj9Ki8nKrSEPlMx/yenRdvwaJicFT4iECq25yIRgOCwGTyTSCdIqY1+4lZ3RN
+        id S231402AbhDIQDt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 9 Apr 2021 12:03:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229665AbhDIQDt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 9 Apr 2021 12:03:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FBA1610E5;
+        Fri,  9 Apr 2021 16:03:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617984216;
+        bh=7/81Y+myzymuyO2hy7z8DMdky9J4N0s66QO8qQAh754=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JBMIYY2b2DO1T0+k68Bc9iXc8XTPIveGRdK/m8o1eliNFnGMT/erwLTYKeXCMc/aj
+         6Kdy6HaARr5KJNWGh7s81CbAa9/mUxRLi1UIsMQCRplDwJunbABIR/cw2cZd/1zzJZ
+         Z88EKLRJkl23J5BpCHgNp8Yb8T2va348u7iWnzPzP2epvqBEkZMuDVny8HHg4P9d9U
+         lnLo/piHpAgmhFxLC4bVN4p37TXCOcuf2yx3Igo9HFCDigTRGk6oyCZlc159zrJ9lB
+         8XQ2Cqrhz51rwUC6GZAomt+OUkiD0x5bu0hB3paz66CUlIMlKHthfUskUvrTXFmvP8
+         z3No+IhApSyIw==
+Date:   Fri, 9 Apr 2021 18:03:31 +0200
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        sameehj@amazon.com, john.fastabend@gmail.com, dsahern@kernel.org,
+        brouer@redhat.com, echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com
+Subject: Re: [PATCH v8 bpf-next 01/14] xdp: introduce mb in xdp_buff/xdp_frame
+Message-ID: <YHB60776godABPej@lore-desk>
+References: <cover.1617885385.git.lorenzo@kernel.org>
+ <eef58418ab78408f4a5fbd3d3b0071f30ece2ccd.1617885385.git.lorenzo@kernel.org>
+ <20210408181700.vlay72gyxzknfc7m@skbuf>
 MIME-Version: 1.0
-X-Received: by 2002:a02:b615:: with SMTP id h21mr15254285jam.93.1617982756977;
- Fri, 09 Apr 2021 08:39:16 -0700 (PDT)
-Date:   Fri, 09 Apr 2021 08:39:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007b81f905bf8bf7ac@google.com>
-Subject: [syzbot] WARNING: refcount bug in sk_psock_get
-From:   syzbot <syzbot+b54a1ce86ba4a623b7f0@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        borisp@nvidia.com, bp@alien8.de, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hpa@zytor.com,
-        jmattson@google.com, john.fastabend@gmail.com, joro@8bytes.org,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, masahiroy@kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, pbonzini@redhat.com, peterz@infradead.org,
-        rafael.j.wysocki@intel.com, rostedt@goodmis.org, seanjc@google.com,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        will@kernel.org, x86@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="r0EKIoESLXm69aJt"
+Content-Disposition: inline
+In-Reply-To: <20210408181700.vlay72gyxzknfc7m@skbuf>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--r0EKIoESLXm69aJt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    9c54130c Add linux-next specific files for 20210406
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17d8d7aad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d125958c3995ddcd
-dashboard link: https://syzkaller.appspot.com/bug?extid=b54a1ce86ba4a623b7f0
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1729797ed00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1190f46ad00000
+> On Thu, Apr 08, 2021 at 02:50:53PM +0200, Lorenzo Bianconi wrote:
+> > Introduce multi-buffer bit (mb) in xdp_frame/xdp_buffer data structure
+> > in order to specify if this is a linear buffer (mb =3D 0) or a multi-bu=
+ffer
+> > frame (mb =3D 1). In the latter case the shared_info area at the end of=
+ the
+> > first buffer will be properly initialized to link together subsequent
+> > buffers.
+> >=20
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >  include/net/xdp.h | 11 +++++++++--
+> >  1 file changed, 9 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/include/net/xdp.h b/include/net/xdp.h
+> > index a5bc214a49d9..842580a61563 100644
+> > --- a/include/net/xdp.h
+> > +++ b/include/net/xdp.h
+> > @@ -73,7 +73,10 @@ struct xdp_buff {
+> >  	void *data_hard_start;
+> >  	struct xdp_rxq_info *rxq;
+> >  	struct xdp_txq_info *txq;
+> > -	u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom=
+*/
+> > +	u32 frame_sz:31; /* frame size to deduce data_hard_end/reserved
+> > +			  * tailroom
+> > +			  */
+>=20
+> This comment would have fit just fine on one line:
+>=20
+> 	/* frame size to deduce data_hard_end/reserved tailroom */
 
-The issue was bisected to:
+ack, thx I will fix it in v9
 
-commit 997acaf6b4b59c6a9c259740312a69ea549cc684
-Author: Mark Rutland <mark.rutland@arm.com>
-Date:   Mon Jan 11 15:37:07 2021 +0000
+Regards,
+Lorenzo
 
-    lockdep: report broken irq restoration
+>=20
+> > +	u32 mb:1; /* xdp non-linear buffer */
+> >  };
+> > =20
+> >  static __always_inline void
+> > @@ -81,6 +84,7 @@ xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, str=
+uct xdp_rxq_info *rxq)
+> >  {
+> >  	xdp->frame_sz =3D frame_sz;
+> >  	xdp->rxq =3D rxq;
+> > +	xdp->mb =3D 0;
+> >  }
+> > =20
+> >  static __always_inline void
+> > @@ -116,7 +120,8 @@ struct xdp_frame {
+> >  	u16 len;
+> >  	u16 headroom;
+> >  	u32 metasize:8;
+> > -	u32 frame_sz:24;
+> > +	u32 frame_sz:23;
+> > +	u32 mb:1; /* xdp non-linear frame */
+> >  	/* Lifetime of xdp_rxq_info is limited to NAPI/enqueue time,
+> >  	 * while mem info is valid on remote CPU.
+> >  	 */
+> > @@ -179,6 +184,7 @@ void xdp_convert_frame_to_buff(struct xdp_frame *fr=
+ame, struct xdp_buff *xdp)
+> >  	xdp->data_end =3D frame->data + frame->len;
+> >  	xdp->data_meta =3D frame->data - frame->metasize;
+> >  	xdp->frame_sz =3D frame->frame_sz;
+> > +	xdp->mb =3D frame->mb;
+> >  }
+> > =20
+> >  static inline
+> > @@ -205,6 +211,7 @@ int xdp_update_frame_from_buff(struct xdp_buff *xdp,
+> >  	xdp_frame->headroom =3D headroom - sizeof(*xdp_frame);
+> >  	xdp_frame->metasize =3D metasize;
+> >  	xdp_frame->frame_sz =3D xdp->frame_sz;
+> > +	xdp_frame->mb =3D xdp->mb;
+> > =20
+> >  	return 0;
+> >  }
+> > --=20
+> > 2.30.2
+> >=20
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11a6cc96d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13a6cc96d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15a6cc96d00000
+--r0EKIoESLXm69aJt
+Content-Type: application/pgp-signature; name="signature.asc"
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b54a1ce86ba4a623b7f0@syzkaller.appspotmail.com
-Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
+-----BEGIN PGP SIGNATURE-----
 
-------------[ cut here ]------------
-refcount_t: saturated; leaking memory.
-WARNING: CPU: 1 PID: 8414 at lib/refcount.c:19 refcount_warn_saturate+0xf4/0x1e0 lib/refcount.c:19
-Modules linked in:
-CPU: 1 PID: 8414 Comm: syz-executor793 Not tainted 5.12.0-rc6-next-20210406-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:refcount_warn_saturate+0xf4/0x1e0 lib/refcount.c:19
-Code: 1d 69 0c e6 09 31 ff 89 de e8 c8 b4 a6 fd 84 db 75 ab e8 0f ae a6 fd 48 c7 c7 e0 52 c2 89 c6 05 49 0c e6 09 01 e8 91 0f 00 05 <0f> 0b eb 8f e8 f3 ad a6 fd 0f b6 1d 33 0c e6 09 31 ff 89 de e8 93
-RSP: 0018:ffffc90000eef388 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801bbdd580 RSI: ffffffff815c2e05 RDI: fffff520001dde63
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815bcc6e R11: 0000000000000000 R12: 1ffff920001dde74
-R13: 0000000090200301 R14: ffff888026e00000 R15: ffffc90000eef3c0
-FS:  0000000001422300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000000 CR3: 0000000012b3b000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __refcount_add_not_zero include/linux/refcount.h:163 [inline]
- __refcount_inc_not_zero include/linux/refcount.h:227 [inline]
- refcount_inc_not_zero include/linux/refcount.h:245 [inline]
- sk_psock_get+0x3b0/0x400 include/linux/skmsg.h:435
- bpf_exec_tx_verdict+0x11e/0x11a0 net/tls/tls_sw.c:799
- tls_sw_sendmsg+0xa41/0x1800 net/tls/tls_sw.c:1013
- inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:821
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- sock_write_iter+0x289/0x3c0 net/socket.c:1001
- call_write_iter include/linux/fs.h:2106 [inline]
- do_iter_readv_writev+0x46f/0x740 fs/read_write.c:740
- do_iter_write+0x188/0x670 fs/read_write.c:866
- vfs_writev+0x1aa/0x630 fs/read_write.c:939
- do_writev+0x27f/0x300 fs/read_write.c:982
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43efa9
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe9279f418 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043efa9
-RDX: 0000000000000001 RSI: 0000000020000100 RDI: 0000000000000003
-RBP: 0000000000402f90 R08: 0000000000400488 R09: 0000000000400488
-R10: 0000000000000038 R11: 0000000000000246 R12: 0000000000403020
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYHB60QAKCRA6cBh0uS2t
+rC2XAPsG70xItN8SfwYYBqOjYqMc7Fl/kPqW/bFsy5ytxLXCrAEApbcEjenpX+Ag
+Q46MoI+m8wzDRCdsVyxH5kDVlgMQlQs=
+=M0PZ
+-----END PGP SIGNATURE-----
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--r0EKIoESLXm69aJt--
