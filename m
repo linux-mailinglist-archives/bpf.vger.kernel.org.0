@@ -2,175 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA33C359114
-	for <lists+bpf@lfdr.de>; Fri,  9 Apr 2021 02:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B832635921E
+	for <lists+bpf@lfdr.de>; Fri,  9 Apr 2021 04:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbhDIA4g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 8 Apr 2021 20:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48090 "EHLO
+        id S232662AbhDICp0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 8 Apr 2021 22:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhDIA4g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 8 Apr 2021 20:56:36 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37EE2C061760;
-        Thu,  8 Apr 2021 17:56:24 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id t14so3394483ilu.3;
-        Thu, 08 Apr 2021 17:56:24 -0700 (PDT)
+        with ESMTP id S232616AbhDICp0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 8 Apr 2021 22:45:26 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89E4C061760;
+        Thu,  8 Apr 2021 19:45:13 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id l76so2782051pga.6;
+        Thu, 08 Apr 2021 19:45:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=UEdsZX4xRKTXy7Uhxf5TSkdKwTjEEWUxQ3XylhoYirQ=;
-        b=qkr1UC9iVxiC/F7eKOS/bwa6AAfT+Q3NXwb9FTbHB3CRanaZclRhekzYIBgEADA668
-         82oWjx+UzO6vHE0iQaZBEUZPG451oJ3G9uHKFPpgD1pXaALQ6odKuOgSvB/R20f+x1Ce
-         MkM1NmbSOWP/5b/8quKpwGS4P0oQQSUlP4cxNI+r8RbUy/VoGeFtthhuXzld14cScrO9
-         IE2rk5cIretqc4wPeFxiqFVIMQFBoTMIM6nAxPeVW2e6Gtm+MLrsbJygbY5MIOh6RYML
-         9QYAsd+/Hyz3Bf+XGH7w8MbgRjRNPTAvnxuS01a8Nud8RyvyqK3/qQ8yPe2wI7TFcsZe
-         S34Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j1Bj0rvoy+oFNKx+EoumArjPjh1aRsIQYcLQ6zUAxI4=;
+        b=G81O/B89oL2N1gRawcKLyRZhoNbwsCRc579s0/bSN0wh3U2MrrWjruFbr0q3cMA7Pa
+         J+ucntcdq4xL+h4V0Y3N1idtH4iCIWmWWc11EL8ZE7Vm6GLn7sqhAApp9dD0Mpyt7c9t
+         kgWrHtOKHzZftfEACi9Is4jy5OuMDzsosxu5BTZPNF/hdOYjtDZlCsAsi077/XvY0aMM
+         CE+M3E2w8eRj8YWzMCiss0b09zM7tW2iBLvQfE0PllOjpf0sYLAGb6n9lUS9Dbdn4Mkr
+         dbmCoLu6QDRoNBaxZ2FAUz7qustsh809CKYBm7LwAgCBvhk6zMfpFA1jCWEi0YA1jWb8
+         3azA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=UEdsZX4xRKTXy7Uhxf5TSkdKwTjEEWUxQ3XylhoYirQ=;
-        b=l/isTb9JAq2E4RGBiJ9W8b3TZbrBdYrcMOhGNqqD4yJwG7pc0PkOkGtPtouuDZBXbp
-         nNHgsHa+jqlTA7HVkJMv2PyGO8WcfmawL1Lk65+R8Zmlm4SV6zd7l2dKqogJpsHf9Ud+
-         ZnRwaPUOb7cnHfYRz5dx3w8Sj4Fv6+jIQWtfFJnmHtf0P1DH9t89JxRnHtFF0EeFTofV
-         wED7nbV7h4f+KLOSoidC4seKmkFXvzM61ajjjbNUCm6T+ww39h7UnaxfJPX9RoZOaPK4
-         j+V9nwU3jUynnf9o9u8lwNt+l6BtUARWDUMmnxnDalNz68/RUkScZP5EC0zChoqOsrwX
-         Si2g==
-X-Gm-Message-State: AOAM533vH5cXghFHfAv848GhNVCYZl8fnJFB9RsAvBo9dkZ/6qmKctmT
-        4OPeWka/BaWun2Qr1REESj8=
-X-Google-Smtp-Source: ABdhPJxhyOwfkTTc+MdVlfsb5am4+JwHytngO8T/7QAGvKIiJ53g41x+hLH8AT8i0oFwja9vzF4ysg==
-X-Received: by 2002:a05:6e02:174d:: with SMTP id y13mr8881673ill.83.1617929783623;
-        Thu, 08 Apr 2021 17:56:23 -0700 (PDT)
-Received: from localhost ([172.242.244.146])
-        by smtp.gmail.com with ESMTPSA id v17sm429789ios.46.2021.04.08.17.56.21
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j1Bj0rvoy+oFNKx+EoumArjPjh1aRsIQYcLQ6zUAxI4=;
+        b=ENS75F/KWNTLPe6iK78yuyC6e4EeYMBqA8mPxJZyuBUrXpX9LJGilTZVzR0xLsLL4i
+         uR7uv/u1xlTNYcHnxeY2ijlV1/PL+u2Jf4w9WJnrmTkz8ylxrVwauzBxQPmDKpe4jNXk
+         FGMaMyPmWPGJ8cQrPo6nm+5h4/k3G50wviCce07QYR4C48EQsjhKo9mYVxtG3nOqTkWm
+         WWPuCT3CH41CwwtbAcE/jsBTsVvXoKKlUDugS77NAZ+cesYp2FiUZ+BaqFujpK98hEP5
+         iHaXrCpI4q9FlAFU5R1pCB9ZonrNpE+Yllxk8+QyRTvjQsxTnsTCJNYHwU6vTID9AMxH
+         TnHA==
+X-Gm-Message-State: AOAM5334BH/CWf6jvdbi/jHNSxFSKJVNyNf839heJPthJT5X67/ZqKo5
+        q205K12EARrkr+ETnP/xWVc=
+X-Google-Smtp-Source: ABdhPJzxiGwUKdUoVkg0jKHoGD4KfWPlDLyBj1pQ7pf5fXE4ElRZAfSEfIFek3GSp1UJilQs4xQyhA==
+X-Received: by 2002:a65:40c7:: with SMTP id u7mr10909516pgp.29.1617936313292;
+        Thu, 08 Apr 2021 19:45:13 -0700 (PDT)
+Received: from Leo-laptop-t470s ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id s9sm624802pfc.192.2021.04.08.19.45.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 17:56:23 -0700 (PDT)
-Date:   Thu, 08 Apr 2021 17:56:15 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        sameehj@amazon.com, john.fastabend@gmail.com, dsahern@kernel.org,
-        brouer@redhat.com, echaudro@redhat.com, jasowang@redhat.com,
-        alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com
-Message-ID: <606fa62f6fe99_c8b920884@john-XPS-13-9370.notmuch>
-In-Reply-To: <cover.1617885385.git.lorenzo@kernel.org>
-References: <cover.1617885385.git.lorenzo@kernel.org>
-Subject: RE: [PATCH v8 bpf-next 00/14] mvneta: introduce XDP multi-buffer
- support
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Thu, 08 Apr 2021 19:45:12 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 10:45:00 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
+Subject: Re: [PATCHv4 bpf-next 2/4] xdp: extend xdp_redirect_map with
+ broadcast support
+Message-ID: <20210409024500.GM2900@Leo-laptop-t470s>
+References: <20210402121954.3568992-1-liuhangbin@gmail.com>
+ <20210402121954.3568992-3-liuhangbin@gmail.com>
+ <606baa5025735_d46462085b@john-XPS-13-9370.notmuch>
+ <20210406063819.GF2900@Leo-laptop-t470s>
+ <878s5v4swp.fsf@toke.dk>
+ <606cd787d64da_22ba520855@john-XPS-13-9370.notmuch>
+ <87k0pf2gz6.fsf@toke.dk>
+ <606ce0db7cd40_2865920845@john-XPS-13-9370.notmuch>
+ <87h7kj2enn.fsf@toke.dk>
+ <606f922584d89_c8b92089a@john-XPS-13-9370.notmuch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <606f922584d89_c8b92089a@john-XPS-13-9370.notmuch>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lorenzo Bianconi wrote:
-> This series introduce XDP multi-buffer support. The mvneta driver is
-> the first to support these new "non-linear" xdp_{buff,frame}. Reviewers=
+On Thu, Apr 08, 2021 at 04:30:45PM -0700, John Fastabend wrote:
+> Hangbin,
+> 
+> If possible please try to capture some of the design discussion in
+> the commit message on the next rev along with the tradeoffs we are making
+> so we don't lose these important details. Some of these points are fairly
+> subtle calling them out will surely save (for me at least) some thinking
+> when I pick this up when it lands in a released kernel.
 
-> please focus on how these new types of xdp_{buff,frame} packets
-> traverse the different layers and the layout design. It is on purpose
-> that BPF-helpers are kept simple, as we don't want to expose the
-> internal layout to allow later changes.
-> =
+OK, I will try. There are too many rounds discussion. Please forgive me
+if I missed something.
 
-> For now, to keep the design simple and to maintain performance, the XDP=
-
-> BPF-prog (still) only have access to the first-buffer. It is left for
-> later (another patchset) to add payload access across multiple buffers.=
-
-> This patchset should still allow for these future extensions. The goal
-> is to lift the XDP MTU restriction that comes with XDP, but maintain
-> same performance as before.
-> =
-
-> The main idea for the new multi-buffer layout is to reuse the same
-> layout used for non-linear SKB. We introduced a "xdp_shared_info" data
-> structure at the end of the first buffer to link together subsequent bu=
-ffers.
-> xdp_shared_info will alias skb_shared_info allowing to keep most of the=
- frags
-> in the same cache-line (while with skb_shared_info only the first fragm=
-ent will
-> be placed in the first "shared_info" cache-line). Moreover we introduce=
-d some
-> xdp_shared_info helpers aligned to skb_frag* ones.
-> Converting xdp_frame to SKB and deliver it to the network stack is show=
-n in
-> patch 07/14. Building the SKB, the xdp_shared_info structure will be co=
-nverted
-> in a skb_shared_info one.
-> =
-
-> A multi-buffer bit (mb) has been introduced in xdp_{buff,frame} structu=
-re
-> to notify the bpf/network layer if this is a xdp multi-buffer frame (mb=
- =3D 1)
-> or not (mb =3D 0).
-> The mb bit will be set by a xdp multi-buffer capable driver only for
-> non-linear frames maintaining the capability to receive linear frames
-> without any extra cost since the xdp_shared_info structure at the end
-> of the first buffer will be initialized only if mb is set.
-> =
-
-> Typical use cases for this series are:
-> - Jumbo-frames
-> - Packet header split (please see Google=EF=BF=BD=EF=BF=BD=EF=BF=BDs us=
-e-case @ NetDevConf 0x14, [0])
-> - TSO
-> =
-
-> A new frame_length field has been introduce in XDP ctx in order to noti=
-fy the
-> eBPF layer about the total frame size (linear + paged parts).
-> =
-
-> bpf_xdp_adjust_tail and bpf_xdp_copy helpers have been modified to take=
- into
-> account xdp multi-buff frames.
-
-I just read the commit messages for v8 so far. But, I'm still wondering h=
-ow
-to handle use cases where we want to put extra bytes at the end of the
-packet, or really anywhere in the general case. We can extend tail with a=
-bove
-is there anyway to then write into that extra space?
-
-I think most use cases will only want headers so we can likely make it =
-
-a callout to a helper. Could we add something like, xdp_get_bytes(start, =
-end)
-to pull in the bytes?
-
-My dumb pseudoprogram being something like,
-
-  trailer[16] =3D {0,1,2,3,4,5,6,7,8,9,a,b,c,d,e}
-  trailer_size =3D 16;
-  old_end =3D xdp->length;
-  new_end =3D xdp->length + trailer_size;
-
-  err =3D bpf_xdp_adjust_tail(xdp, trailer_size)
-  if (err) return err;
-
-  err =3D xdp_get_bytes(xdp, old_end, new_end);
-  if (err) return err;
-
-  memcpy(xdp->data, trailer, trailer_size);
-
-Do you think that could work if we code up xdp_get_bytes()? Does the driv=
-er
-have enough context to adjust xdp to map to my get_bytes() call? I think
-so but we should check.
-
-> =
-
-> More info about the main idea behind this approach can be found here [1=
-][2].
-
-Thanks for working on this!=
+Thanks
+Hangbin
