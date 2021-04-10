@@ -2,129 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C6B35A998
-	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 02:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605BF35AE4E
+	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 16:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235268AbhDJAkS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 9 Apr 2021 20:40:18 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:52614 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235215AbhDJAkR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 9 Apr 2021 20:40:17 -0400
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A584220B5683;
-        Fri,  9 Apr 2021 17:40:03 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A584220B5683
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1618015203;
-        bh=JxAWTKu0RsLOn+CtOJNoC1FW0WcD7DLqFKDKm5Tu7xg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oHL6t39YonTW38B5zIyWMIxXPFYAXsrJ1LA+xAxog1i3nr6opzclHK9FMNwuSJPjp
-         G+O74GkXOPZ6fYtvi5mj7L2gjH2mejD4EkEumfzzh21qpKtYX+e8olGqz8gfjD3Hz+
-         Z1/3PwXzhgpo+Uh1MrFjw71nPxqY5i2+/NOUWl6k=
-Received: by mail-pj1-f42.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so5765558pjb.4;
-        Fri, 09 Apr 2021 17:40:03 -0700 (PDT)
-X-Gm-Message-State: AOAM532z8fWhtlAfHeIOvh7bNlggRgaxC39Qlm12m7mzEXBpXMjK6+EN
-        qTWef47rBPltY2VScCk18PLuW5LQJTOtZBWFkEQ=
-X-Google-Smtp-Source: ABdhPJxsiSBaEo0q7IWG1XR6kNJzbJXnsnMAllDVNr0h3y82Zw+JbOCz2+OIKyRWvvOv4WiFz2E42r9sXZlYYlk4Od0=
-X-Received: by 2002:a17:90a:5306:: with SMTP id x6mr11539930pjh.39.1618015203252;
- Fri, 09 Apr 2021 17:40:03 -0700 (PDT)
+        id S234836AbhDJO3v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Apr 2021 10:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234820AbhDJO3u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Apr 2021 10:29:50 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B36DC06138B;
+        Sat, 10 Apr 2021 07:29:35 -0700 (PDT)
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4FHcp46kq2z9sWk; Sun, 11 Apr 2021 00:29:32 +1000 (AEST)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        songliubraving@fb.com, Michael Ellerman <mpe@ellerman.id.au>,
+        kafai@fb.com, naveen.n.rao@linux.ibm.com,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        daniel@iogearbox.net, john.fastabend@gmail.com,
+        sandipan@linux.ibm.com, yhs@fb.com, ast@kernel.org,
+        kpsingh@chromium.org, andrii@kernel.org,
+        Paul Mackerras <paulus@samba.org>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org
+In-Reply-To: <cover.1616430991.git.christophe.leroy@csgroup.eu>
+References: <cover.1616430991.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH v2 0/8] Implement EBPF on powerpc32
+Message-Id: <161806493489.1467223.13057218503369355190.b4-ty@ellerman.id.au>
+Date:   Sun, 11 Apr 2021 00:28:54 +1000
 MIME-Version: 1.0
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-4-mcroce@linux.microsoft.com> <YHDtQWyzFmrjuQWr@apalos.home>
-In-Reply-To: <YHDtQWyzFmrjuQWr@apalos.home>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Sat, 10 Apr 2021 02:39:27 +0200
-X-Gmail-Original-Message-ID: <CAFnufp0aRJnJU4ZvLnp+zj2mp7FkgXGTon5JDFDU4BMoPsdUaQ@mail.gmail.com>
-Message-ID: <CAFnufp0aRJnJU4ZvLnp+zj2mp7FkgXGTon5JDFDU4BMoPsdUaQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 3/5] page_pool: Allow drivers to hint on SKB recycling
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 2:11 AM Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
->
-> Hi Matteo,
->
+On Mon, 22 Mar 2021 16:37:45 +0000 (UTC), Christophe Leroy wrote:
+> This series implements extended BPF on powerpc32. For the implementation
+> details, see the patch before the last.
+> 
+> The following operations are not implemented:
+> 
+> 		case BPF_ALU64 | BPF_DIV | BPF_X: /* dst /= src */
+> 		case BPF_ALU64 | BPF_MOD | BPF_X: /* dst %= src */
+> 		case BPF_STX | BPF_XADD | BPF_DW: /* *(u64 *)(dst + off) += src */
+> 
 > [...]
-> > +bool page_pool_return_skb_page(void *data);
-> > +
-> >  struct page_pool *page_pool_create(const struct page_pool_params *params);
-> >
-> >  #ifdef CONFIG_PAGE_POOL
-> > @@ -243,4 +247,13 @@ static inline void page_pool_ring_unlock(struct page_pool *pool)
-> >               spin_unlock_bh(&pool->ring.producer_lock);
-> >  }
-> >
-> > +/* Store mem_info on struct page and use it while recycling skb frags */
-> > +static inline
-> > +void page_pool_store_mem_info(struct page *page, struct xdp_mem_info *mem)
-> > +{
-> > +     u32 *xmi = (u32 *)mem;
-> > +
->
-> I just noticed this changed from the original patchset I was carrying.
-> On the original, I had a union containing a u32 member to explicitly avoid
-> this casting. Let's wait for comments on the rest of the series, but i'd like
-> to change that back in a v4. Aplogies, I completely missed this on the
-> previous postings ...
->
 
-Hi,
+Applied to powerpc/next.
 
-I had to change this because including net/xdp.h here caused a
-circular dependency.
-I think that the safest thing we can do is to use memcpy(), which will
-handle the alignments correctly, depending on the architecture.
+[1/8] powerpc/bpf: Remove classical BPF support for PPC32
+      https://git.kernel.org/powerpc/c/6944caad78fc4de4ecd0364bbc9715b62b020965
+[2/8] powerpc/bpf: Change register numbering for bpf_set/is_seen_register()
+      https://git.kernel.org/powerpc/c/ed573b57e77a7860fe4026e1700faa2f6938caf1
+[3/8] powerpc/bpf: Move common helpers into bpf_jit.h
+      https://git.kernel.org/powerpc/c/f1b1583d5faa86cb3dcb7b740594868debad7c30
+[4/8] powerpc/bpf: Move common functions into bpf_jit_comp.c
+      https://git.kernel.org/powerpc/c/4ea76e90a97d22f86adbb10044d29d919e620f2e
+[5/8] powerpc/bpf: Change values of SEEN_ flags
+      https://git.kernel.org/powerpc/c/c426810fcf9f96e3b43d16039e41ecb959f6dc29
+[6/8] powerpc/asm: Add some opcodes in asm/ppc-opcode.h for PPC32 eBPF
+      https://git.kernel.org/powerpc/c/355a8d26cd0416e7e764e4db766cf91e773a03e7
+[7/8] powerpc/bpf: Implement extended BPF on PPC32
+      https://git.kernel.org/powerpc/c/51c66ad849a703d9bbfd7704c941827aed0fd9fd
+[8/8] powerpc/bpf: Reallocate BPF registers to volatile registers when possible on PPC32
+      https://git.kernel.org/powerpc/c/40272035e1d0edcd515ad45be297c4cce044536d
 
-Cheers,
--- 
-per aspera ad upstream
+cheers
