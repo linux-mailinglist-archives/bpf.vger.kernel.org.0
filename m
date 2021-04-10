@@ -2,120 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 836DC35B012
-	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 21:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F57B35B020
+	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 21:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234439AbhDJTUP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Apr 2021 15:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
+        id S234668AbhDJTkn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Apr 2021 15:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234948AbhDJTUN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Apr 2021 15:20:13 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA392C06138B
-        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 12:19:58 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id s16so4091582iog.9
-        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 12:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=xgkO2ESp6uFztUQZqA6oMVu1vokwSusfDdfaSnmRr0k=;
-        b=MC3oC6ZajUjR/nCzIYQXYlTi8I95AXEduyDxaFls+SXlIvGmROvxBd54YMOw03XR+V
-         FQgfQ1g33IW5EMxEhr6jjuZpZ9l68UMQ/TBeFxWkwzWoAoKF2vo2Vn7ZM7n54PcNCCyF
-         ZA462pY3Q8cu6XAYMW2loFKbFlpGdCifKIEZM70EYUGq362Svk+skkF/PrW5DiO4scTs
-         CsQIODt0EFwqiOONUJEmeJ9dD8RYcxxsXxy1nt031S6JyjspNLAI9q4FJLRpZiVdz3A4
-         XTc1SKhGgcwLZAiDNVd+tmo9B3FlU8dE72ubskONHvKRAoeMbTeGaPTbqmhjuwI8QhFh
-         tmqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=xgkO2ESp6uFztUQZqA6oMVu1vokwSusfDdfaSnmRr0k=;
-        b=JuFyuXANZKI2f9G/hdRRZQoXw5azBvLq8iTwl5eJXJocmWF47bIi6djIITTczjwqkv
-         Me0siNrGR450tFyfZQa+pQ6fBhnZ3UMrA6QAlEcQxGl7kmCArYKK1IFDkhDJiuEjxAho
-         NV0mx2kBmEWamjYBwELZDjAbAEsbNzphCEXhnxWQl7BjmVXnCaxg212abKkJu8hrvLVT
-         HxtQzQP4X5lvs9RJdYxGCQKbiGlkPJ+oWVSk4AFZr+of0w2dulZO0NH/EzdnJR3AKht0
-         iLnvRBdLAK9Yfr6ObxLz4CiiXYkphZe7oNxzpIzeKqcNx/HrrhQtQ5nPsxtOsrdqz+jE
-         zzSw==
-X-Gm-Message-State: AOAM530QZj/ur4fuidS0jQHFSCRiryCyaAxhQNBX3A02va5t6MShVF4z
-        eu0kdu2HGq3J4GqXt5FBGoeSVJZzdCU2KMG3Thw=
-X-Google-Smtp-Source: ABdhPJxA3XcIhhlI8EVHuLpulVTpkf9s69E0Qh9sc3G6RPKWpEPofCghg4kuYJ/UAeWbDgWp7uVkSRVq/WlAm1xDumI=
-X-Received: by 2002:a6b:8bd3:: with SMTP id n202mr2925815iod.57.1618082398105;
- Sat, 10 Apr 2021 12:19:58 -0700 (PDT)
+        with ESMTP id S234439AbhDJTkm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Apr 2021 15:40:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFDF1C06138A;
+        Sat, 10 Apr 2021 12:40:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=99tw4rU1bA7MagbzMJxSzuFi8jXoglqEVx3rS3aCE60=; b=UGDCSJOiJywTxRKlV+QWUUkYP7
+        kHAPe+brHhCRWvTl8X0RQzmmsptTNBASWc4j9OilorC2V0moXMOenrd66GalMZDuksOyQBFG7sFY1
+        1jLeCodMt4E0psSQ7+VC0cCIB4Xzgu2R8jxbO4PUlnN76xoO30oeD5CgPk5fzBEQzyihDvOiN26Lo
+        12Pdio68QTCIU89I+zOINcuLobkzYiXQTdLKdO5+/R9uyi2j0Xk93sPyWtmnr6bYL3LR3yx7oY7/H
+        d9DYi1uymvbbmI2fSLCtHv4aPx2dEN7oqaKQBU/Sg9s6Z+Az2JgzxmDEIeClT51aqbma6dXWGBGn5
+        RICJ642g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lVJSV-0023YN-DW; Sat, 10 Apr 2021 19:40:02 +0000
+Date:   Sat, 10 Apr 2021 20:39:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+Message-ID: <20210410193955.GA2531743@casper.infradead.org>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com>
+ <20210410154824.GZ2531743@casper.infradead.org>
+ <YHHPbQm2pn2ysth0@enceladus>
+ <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+ <YHHuE7g73mZNrMV4@enceladus>
 MIME-Version: 1.0
-References: <20210410164925.768741-1-yhs@fb.com>
-In-Reply-To: <20210410164925.768741-1-yhs@fb.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 10 Apr 2021 21:19:21 +0200
-Message-ID: <CA+icZUVz0US1y7LSkk_cvq5bOrTok0LqVSCLkUukmyde5aChpA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/5] support build selftests/bpf with clang
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHHuE7g73mZNrMV4@enceladus>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 6:49 PM Yonghong Song <yhs@fb.com> wrote:
->
-> To build kernel with clang, people typically use
->   make -j60 LLVM=1 LLVM_IAS=1
-> LLVM_IAS=1 is not required for non-LTO build but
-> is required for LTO build. In my environment,
-> I am always having LLVM_IAS=1 regardless of
-> whether LTO is enabled or not.
->
-> After kernel is build with clang, the following command
-> can be used to build selftests with clang:
->   make -j60 -C tools/testing/selftests/bpf LLVM=1 LLVM_IAS=1
->
-> But currently, some compilations still use gcc
-> and there are also compilation errors and warnings.
-> This patch set intends to fix these issues.
-> Patch #1 and #2 fixed the issue so clang/clang++ is
-> used instead of gcc/g++. Patch #3 fixed a compilation
-> failure. Patch #4 and #5 fixed various compiler warnings.
->
-> Yonghong Song (5):
->   selftests: set CC to clang in lib.mk if LLVM is set
->   tools: allow proper CC/CXX/... override with LLVM=1 in
->     Makefile.include
->   selftests/bpf: fix test_cpp compilation failure with clang
->   selftests/bpf: silence clang compilation warnings
->   bpftool: fix a clang compilation warning
->
->  tools/bpf/bpftool/net.c              |  2 +-
->  tools/scripts/Makefile.include       | 12 ++++++++++--
->  tools/testing/selftests/bpf/Makefile |  4 +++-
->  tools/testing/selftests/lib.mk       |  4 ++++
->  4 files changed, 18 insertions(+), 4 deletions(-)
->
-> --
-> 2.30.2
->
+On Sat, Apr 10, 2021 at 09:27:31PM +0300, Ilias Apalodimas wrote:
+> > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
+> > can not be used.
+> 
+> Yes it can, since it's going to be used as your default allocator for
+> payloads, which might end up on an SKB.
+> So we have to keep the extra added field on struct page for our mark.
+> Matthew had an intersting idea.  He suggested keeping it, but changing the 
+> magic number, so it can't be a kernel address, but I'll let him follow 
+> up on the details.
 
-Thanks for CCing me and taking care to clean BPF selftests with clang.
+Sure!  So, given the misalignment problem I discovered yesterday [1],
+we probably want a page_pool page to look like:
 
-I applied (adapted 4/5) the 5 patches to fit latest Linus Git.
+unsigned long	flags;
+unsigned long	pp_magic;
+unsigned long	xmi;
+unsigned long	_pp_mapping_pad;
+dma_addr_t	dma_addr;	/* might be one or two words */
 
-As I had a fresh compiled Clang-CFI kernel without enabling BTF
-debug-info KConfig this fails at some point.
-I am not sure what the situation is with Clang-CFI + BTF thus I will
-do another Clang-LTO build with BTF enabled.
-So, I was not able to build test_cpp.
+The only real restriction here is that pp_magic should not be a valid
+pointer, and it must have the bottom bit clear.  I'd recommend something
+like:
 
-I am missing some comments that LLVM=1 misses to set CXX=clang++ if
-people want that explicitly as CXX.
-Did you try with this?
+#define PP_MAGIC	(0x20 + POISON_POINTER_DELTA)
 
-AFAICS LC_ALL=C was not the culprit.
-Did you try with and without LC_ALL=C - I have this in all my build-scripts.
-Here I have German localisation as default.
+This leaves page->mapping as NULL, so you don't have to worry about
+clearing it before free.
 
-Wil report later... (might be Monday when Linux v5.12-rc7 is released).
+[1] https://lore.kernel.org/linux-mm/20210410024313.GX2531743@casper.infradead.org/
 
-- Sedat -
