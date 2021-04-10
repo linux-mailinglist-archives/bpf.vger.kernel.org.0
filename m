@@ -2,44 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D4535AF1E
-	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 18:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 472F135AF20
+	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 18:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234513AbhDJQt6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Apr 2021 12:49:58 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:14236 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234334AbhDJQt6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 10 Apr 2021 12:49:58 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13AGncEW024146
-        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 09:49:43 -0700
+        id S234761AbhDJQuK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Apr 2021 12:50:10 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:65140 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234334AbhDJQuJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 10 Apr 2021 12:50:09 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13AGnsGJ025207
+        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 09:49:54 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=JMPLZuc/6km7QOVuox6fHp2lxrcTKoN61IfDOcVBqug=;
- b=kMJdDgc8ZW8r/CFDgVwi/aArRkxLu2r7PUo5IzoUHd5yKlzAdUNczxLLuKIM5sJvmHJO
- /o2eg5E0fI7ZG+eikUOn6uJAD/w//uENI6caLoAxLdBPsbtS+HVAptvRFqYqWX5Pm7DA
- 0kaFhoAxMbgMJSWRZPjPYHVSPj171/qAGnw= 
+ bh=LnSkRrEzzj9hjlPxrFdVSseq7lBuWls5Y18seJhV5Tk=;
+ b=hQwAKVuRiTrlHv+eQwUz4Uu1WJsxSFOtxTZeBMVagQ/8q8fgSncz5WHVLujO/v8QZd7j
+ q1xurFD3fnphjsASldE1p//0LhULUimZDoxlObaKm7cub+EqDJAr2nIHG12/+BChsfpd
+ Ywf4DGgAGdoTNQYQu1/TlUgQ1PYAOIW4uTU= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 37u82eshbe-5
+        by mx0a-00082601.pphosted.com with ESMTP id 37u9un17y0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 09:49:43 -0700
-Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 09:49:53 -0700
+Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 10 Apr 2021 09:49:31 -0700
+ 15.1.2176.2; Sat, 10 Apr 2021 09:49:43 -0700
 Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 7E9DA1450401; Sat, 10 Apr 2021 09:49:30 -0700 (PDT)
+        id B61621450419; Sat, 10 Apr 2021 09:49:35 -0700 (PDT)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Andrii Nakryiko <andrii@kernel.org>,
         Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
         <kernel-team@fb.com>, Nick Desaulniers <ndesaulniers@google.com>,
         Sedat Dilek <sedat.dilek@gmail.com>
-Subject: [PATCH bpf-next 1/5] selftests: set CC to clang in lib.mk if LLVM is set
-Date:   Sat, 10 Apr 2021 09:49:30 -0700
-Message-ID: <20210410164930.769251-1-yhs@fb.com>
+Subject: [PATCH bpf-next 2/5] tools: allow proper CC/CXX/... override with LLVM=1 in Makefile.include
+Date:   Sat, 10 Apr 2021 09:49:35 -0700
+Message-ID: <20210410164935.769789-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210410164925.768741-1-yhs@fb.com>
 References: <20210410164925.768741-1-yhs@fb.com>
@@ -47,49 +47,76 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: LBuceEE8AOH8dxtGhLRi1Ec2mD9vmiij
-X-Proofpoint-ORIG-GUID: LBuceEE8AOH8dxtGhLRi1Ec2mD9vmiij
+X-Proofpoint-ORIG-GUID: EljUcm6HZALBncap2lhK_gC1GZYJav1O
+X-Proofpoint-GUID: EljUcm6HZALBncap2lhK_gC1GZYJav1O
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-10_07:2021-04-09,2021-04-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- mlxlogscore=758 spamscore=0 mlxscore=0 clxscore=1015 phishscore=0
- suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104100127
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ adultscore=0 spamscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
+ mlxlogscore=999 phishscore=0 mlxscore=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104100126
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-selftests/bpf/Makefile includes lib.mk. With the following command
+selftests/bpf/Makefile includes tools/scripts/Makefile.include.
+With the following command
   make -j60 LLVM=3D1 LLVM_IAS=3D1  <=3D=3D=3D compile kernel
   make -j60 -C tools/testing/selftests/bpf LLVM=3D1 LLVM_IAS=3D1 V=3D1
 some files are still compiled with gcc. This patch
-fixed lib.mk issue which sets CC to gcc in all cases.
+fixed the case if CC/AR/LD/CXX/STRIP is allowed to be
+overridden, it will be written to clang/llvm-ar/..., instead of
+gcc binaries. The definition of CC_NO_CLANG is also relocated
+to the place after the above CC is defined.
 
 Cc: Sedat Dilek <sedat.dilek@gmail.com>
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- tools/testing/selftests/lib.mk | 4 ++++
- 1 file changed, 4 insertions(+)
+ tools/scripts/Makefile.include | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib=
-.mk
-index a5ce26d548e4..9a41d8bb9ff1 100644
---- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -1,6 +1,10 @@
- # This mimics the top-level Makefile. We do it explicitly here so that t=
-his
- # Makefile can operate with or without the kbuild infrastructure.
-+ifneq ($(LLVM),)
-+CC :=3D clang
-+else
- CC :=3D $(CROSS_COMPILE)gcc
-+endif
+diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.incl=
+ude
+index a402f32a145c..91130648d8e6 100644
+--- a/tools/scripts/Makefile.include
++++ b/tools/scripts/Makefile.include
+@@ -39,8 +39,6 @@ EXTRA_WARNINGS +=3D -Wundef
+ EXTRA_WARNINGS +=3D -Wwrite-strings
+ EXTRA_WARNINGS +=3D -Wformat
 =20
- ifeq (0,$(MAKELEVEL))
-     ifeq ($(OUTPUT),)
+-CC_NO_CLANG :=3D $(shell $(CC) -dM -E -x c /dev/null | grep -Fq "__clang=
+__"; echo $$?)
+-
+ # Makefiles suck: This macro sets a default value of $(2) for the
+ # variable named by $(1), unless the variable has been set by
+ # environment or command line. This is necessary for CC and AR
+@@ -52,12 +50,22 @@ define allow-override
+     $(eval $(1) =3D $(2)))
+ endef
+=20
++ifneq ($(LLVM),)
++$(call allow-override,CC,clang)
++$(call allow-override,AR,llvm-ar)
++$(call allow-override,LD,ld.lld)
++$(call allow-override,CXX,clang++)
++$(call allow-override,STRIP,llvm-strip)
++else
+ # Allow setting various cross-compile vars or setting CROSS_COMPILE as a=
+ prefix.
+ $(call allow-override,CC,$(CROSS_COMPILE)gcc)
+ $(call allow-override,AR,$(CROSS_COMPILE)ar)
+ $(call allow-override,LD,$(CROSS_COMPILE)ld)
+ $(call allow-override,CXX,$(CROSS_COMPILE)g++)
+ $(call allow-override,STRIP,$(CROSS_COMPILE)strip)
++endif
++
++CC_NO_CLANG :=3D $(shell $(CC) -dM -E -x c /dev/null | grep -Fq "__clang=
+__"; echo $$?)
+=20
+ ifneq ($(LLVM),)
+ HOSTAR  ?=3D llvm-ar
 --=20
 2.30.2
 
