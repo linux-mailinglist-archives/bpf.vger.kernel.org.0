@@ -2,129 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F2635AF74
-	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 20:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580FC35AF91
+	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 20:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234851AbhDJSMv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Apr 2021 14:12:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
+        id S234874AbhDJS1z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Apr 2021 14:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234513AbhDJSMv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Apr 2021 14:12:51 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58EC2C06138A
-        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 11:12:36 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id y12so6789348qtx.11
-        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 11:12:36 -0700 (PDT)
+        with ESMTP id S234738AbhDJS1y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Apr 2021 14:27:54 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1D9C06138C
+        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 11:27:38 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id sd23so4995941ejb.12
+        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 11:27:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cilium-io.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=o9A3MkSF7vbq5UcAcz2SLX1O7G0t/lr0VlIgIy1YGEY=;
-        b=r/AUBYaK22wukmeMr7Np/v0YcIjWxwBJSCiY+wumfKCWxnLRswYZdLKgUTl4c/CTye
-         2rB8srARW0oUhpGc1Y0iYTKmJcsoyGZbouHMZEdaKXYvN0ZMkzsLZ/5HuXkiPC3e7RuC
-         O/paXXi50IzJmo5rQ8we8lm3Okkx1yNNCTn+HCMTXWKjxekC01TpqTxLuEjNukyFcsnb
-         05Z9dY4zSaxnKlfpm7nvBjUijMT/UWEiHYx3ed3BXu4ox9T15zS5ARAAxNXZCOcjhn7O
-         LN9QEutvjRWPrYNUI51L+3KzIk/Mc2UCL5UjF3IF4fgFe4WrmVZokbTcDrMHSvfOXU08
-         3WjQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kHhLeejRCafLd1b38lNlB9DRMFKc8tcaJUOcirv3Ooo=;
+        b=LirYQ65VsI53h0KeKH0f834XSic/s38SLU/7BywMfLNrhws9tcg6zOhn8mpZDi4lQ7
+         Ui7ZUnQX1a9r5eS7sjBSbRZ2uYMoW5O7HqUUhcVkmhBh/aEIaa/0SV33BvMFmUSxX9Rl
+         bqQdH0zS2mf1vuVqUqoFqkr66P8uBX3NSmzPwubXK5qTNduMc5b5qTTqYexwEfDYZE8b
+         nzUCzqtPIHKFBS9mY9HlIuBjruNelDixyPOH5QQU5oIGfs5FwxjfCSxN4wtfzXXbmCUB
+         bPeJr5P7ZkOuSi2xTfPJJwT2bXofjtHW320TWP9ER7ppnpxY6lpS6AfiIwSLGyj3jm+7
+         HhNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=o9A3MkSF7vbq5UcAcz2SLX1O7G0t/lr0VlIgIy1YGEY=;
-        b=MGnfktktiPj/a9gre0keJ1rtr9rVe3xhfzfpQ8QXtZKiv3HkwYrb3lOQ7DH85bCrru
-         L9dhU11DVsmTFhkVsm5vCHvHuW1df+xSp/QHSKbCey0/SqtGnDMhSMuNF+UI/7SqVPd2
-         q/MjBGNONlGn3q6/ZnlNlMXHANR/w2yKKu8xKBoEVwZUW08rlrpnwOzHgZO/g5CRU6wa
-         AueR2K76fQrl2WIjeS9RttKscfpE43D0HptvxLCu4hNshyygmSOwM11n5/YDVqAVusqo
-         Z6n5AfAwyiO3L4hnL1+JlZDzwLwRdW7TCYmsmTQfLr8kMEvIvy4qddOXjEqBAYC+v35T
-         2hLw==
-X-Gm-Message-State: AOAM530rj62hFoCbbFQ2vHW0gTTMjQq7FHuPBY2/QklILjbJCMwkKd4J
-        RpoRj3IHUemamdBLJJ/2ghAJy2Tjn6JiE78l
-X-Google-Smtp-Source: ABdhPJwMS2ixcj97nEYKk6WGCyrCdn20G9mszw0a8+YBl8ebWZciV2vpV1SkJkLYCayPg8Y+t96OGw==
-X-Received: by 2002:ac8:5716:: with SMTP id 22mr18974985qtw.212.1618078344889;
-        Sat, 10 Apr 2021 11:12:24 -0700 (PDT)
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
-        by smtp.gmail.com with ESMTPSA id n2sm4166461qta.61.2021.04.10.11.12.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Apr 2021 11:12:24 -0700 (PDT)
-Received: by mail-yb1-f179.google.com with SMTP id o10so10239635ybb.10;
-        Sat, 10 Apr 2021 11:12:24 -0700 (PDT)
-X-Received: by 2002:a25:7612:: with SMTP id r18mr1704826ybc.172.1618078344178;
- Sat, 10 Apr 2021 11:12:24 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kHhLeejRCafLd1b38lNlB9DRMFKc8tcaJUOcirv3Ooo=;
+        b=Ve85MpfgD9fzTrjbcTokLgV7Tdl/NrFUfQEFnCGjREbAMUZ+MOfh44vj5yOqZqc9+c
+         invCorvIZaNjpFd/MWNk/QXcaWtULODNNB2X1iVOIjF9Pn9Mz6+l//TiDztCd6jBEU2J
+         ztq5qEXi9u+uROO63w9oYsn0Z/V1b0p9YTdIALZF+iEntjOvhlMtbR00wVgxmrb4c8br
+         ZwMjfdaoOnn+LZ/8g4Y797kYcIVf2nshyP6P28VHlGs51i8E/dd5Bp0gL3oGv3DDpoeQ
+         TNy9kboVYiTh4qjukljPE5b6h87bmvQxStpw+NOayCcZfFIzO4Uxi9wQL3pqeIneY07l
+         7qdg==
+X-Gm-Message-State: AOAM531e0tQrfITak90C6qEvqeyWgqVNm2QF/00LnP5qDfZQZGH/Gr6M
+        Xlt9KxE59Ylu//LwHN/0RdGqWw==
+X-Google-Smtp-Source: ABdhPJx0V2aCh2XNTn2Q3nZt+vNNiODmlAlAROTAsWvAgu7uGCCaBqDifF+3nlWpkGlVcihCmauAxg==
+X-Received: by 2002:a17:906:4c91:: with SMTP id q17mr21299868eju.0.1618079257332;
+        Sat, 10 Apr 2021 11:27:37 -0700 (PDT)
+Received: from enceladus (ppp-94-65-225-75.home.otenet.gr. [94.65.225.75])
+        by smtp.gmail.com with ESMTPSA id y6sm2926830ejw.83.2021.04.10.11.27.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Apr 2021 11:27:36 -0700 (PDT)
+Date:   Sat, 10 Apr 2021 21:27:31 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+Message-ID: <YHHuE7g73mZNrMV4@enceladus>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com>
+ <20210410154824.GZ2531743@casper.infradead.org>
+ <YHHPbQm2pn2ysth0@enceladus>
+ <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210302171947.2268128-1-joe@cilium.io> <20210302171947.2268128-7-joe@cilium.io>
- <79954d84-ad75-8f91-118c-0ce2150a1c96@fb.com> <CADa=RyzgsEsRpED34Bi141216de9ecbSUw7M+349wtDDKVy2dw@mail.gmail.com>
-In-Reply-To: <CADa=RyzgsEsRpED34Bi141216de9ecbSUw7M+349wtDDKVy2dw@mail.gmail.com>
-From:   Joe Stringer <joe@cilium.io>
-Date:   Sat, 10 Apr 2021 11:12:07 -0700
-X-Gmail-Original-Message-ID: <CAOftzPgK5=Y67NU5W+3tEemv4GkBPuYJ3neRUczqQLHYv2CZXA@mail.gmail.com>
-Message-ID: <CAOftzPgK5=Y67NU5W+3tEemv4GkBPuYJ3neRUczqQLHYv2CZXA@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 06/15] bpf: Document BPF_PROG_TEST_RUN syscall command
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, linux-doc@vger.kernel.org,
-        linux-man@vger.kernel.org,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 3, 2021 at 5:38 PM Joe Stringer <joe@cilium.io> wrote:
->
-> On Wed, Mar 3, 2021 at 12:29 PM Yonghong Song <yhs@fb.com> wrote:
-> >
-> >
-> >
-> > On 3/2/21 9:19 AM, Joe Stringer wrote:
-> > > Based on a brief read of the corresponding source code.
-> > >
-> > > Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> > > Reviewed-by: Quentin Monnet <quentin@isovalent.com>
-> > > Signed-off-by: Joe Stringer <joe@cilium.io>
-> >
-> > Acked-by: Yonghong Song <yhs@fb.com>
-> >
-> > > ---
-> > >   include/uapi/linux/bpf.h | 14 +++++++++++---
-> > >   1 file changed, 11 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index a8f2964ec885..a6cd6650e23d 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -306,14 +306,22 @@ union bpf_iter_link_info {
-> > >    *
-> > >    * BPF_PROG_TEST_RUN
-> > >    *  Description
-> > > - *           Run an eBPF program a number of times against a provide=
-d
-> > > - *           program context and return the modified program context=
- and
-> > > - *           duration of the test run.
-> > > + *           Run the eBPF program associated with the *prog_fd* a *r=
-epeat*
-> > > + *           number of times against a provided program context *ctx=
-_in* and
-> > > + *           data *data_in*, and return the modified program context
-> > > + *           *ctx_out*, *data_out* (for example, packet data), resul=
-t of the
-> > > + *           execution *retval*, and *duration* of the test run.
-> >
-> > FYI, Lorenz's BPF_PROG_TEST_RUN support for sk_lookup program
-> > requires data_in and data_out to be NULL. Not sure whether it is
-> > worthwhile to specially mention here or not. The patch has not
-> > been merged but close.
-> >
-> > https://lore.kernel.org/bpf/20210301101859.46045-1-lmb@cloudflare.com/
->
-> Not sure how close either series is but I'm sure between Lorenz & I we
-> can figure out how to fix this up. If I need to respin the series and
-> Lorenz's one is in by then, I'll fix it up but it's not the end of the
-> world to send an extra dedicated patch for this.
+Hi Shakeel, 
 
-I sent this out:
-https://lore.kernel.org/bpf/20210410174549.816482-1-joe@cilium.io/T/#u
+On Sat, Apr 10, 2021 at 10:42:30AM -0700, Shakeel Butt wrote:
+> On Sat, Apr 10, 2021 at 9:16 AM Ilias Apalodimas
+> <ilias.apalodimas@linaro.org> wrote:
+> >
+> > Hi Matthew
+> >
+> > On Sat, Apr 10, 2021 at 04:48:24PM +0100, Matthew Wilcox wrote:
+> > > On Sat, Apr 10, 2021 at 12:37:58AM +0200, Matteo Croce wrote:
+> > > > This is needed by the page_pool to avoid recycling a page not allocated
+> > > > via page_pool.
+> > >
+> > > Is the PageType mechanism more appropriate to your needs?  It wouldn't
+> > > be if you use page->_mapcount (ie mapping it to userspace).
+> >
+> > Interesting!
+> > Please keep in mind this was written ~2018 and was stale on my branches for
+> > quite some time.  So back then I did try to use PageType, but had not free
+> > bits.  Looking at it again though, it's cleaned up.  So yes I think this can
+> > be much much cleaner.  Should we go and define a new PG_pagepool?
+> >
+> >
+> 
+> Can this page_pool be used for TCP RX zerocopy? If yes then PageType
+> can not be used.
+
+Yes it can, since it's going to be used as your default allocator for
+payloads, which might end up on an SKB.
+So we have to keep the extra added field on struct page for our mark.
+Matthew had an intersting idea.  He suggested keeping it, but changing the 
+magic number, so it can't be a kernel address, but I'll let him follow 
+up on the details.
+
+> 
+> There is a recent discussion [1] on memcg accounting of TCP RX
+> zerocopy and I am wondering if this work can somehow help in that
+> regard. I will take a look at the series.
+> 
+
+I'll try having a look on this as well. The idea behind the patchset is to
+allow lower speed NICs that use the API already, gain recycling 'easily'.  
+Using page_pool for the driver comes with a penalty to begin with.
+Allocating pages instead of SKBs has a measurable difference. By enabling them
+to recycle they'll get better performance, since you skip the
+reallocation/remapping and only care for syncing the buffers correctly.
+
+> [1] https://lore.kernel.org/linux-mm/20210316013003.25271-1-arjunroy.kdev@gmail.com/
