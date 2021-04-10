@@ -2,107 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1672035AF69
-	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 19:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F2635AF74
+	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 20:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234513AbhDJR45 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Apr 2021 13:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44544 "EHLO
+        id S234851AbhDJSMv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Apr 2021 14:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234392AbhDJR45 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Apr 2021 13:56:57 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488F6C06138A
-        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 10:56:42 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id g35so6192174pgg.9
-        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 10:56:42 -0700 (PDT)
+        with ESMTP id S234513AbhDJSMv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Apr 2021 14:12:51 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58EC2C06138A
+        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 11:12:36 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id y12so6789348qtx.11
+        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 11:12:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cilium-io.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7zhxgGD0Qe04Ri9cfIqQvNqUSMP7RX4IA7zyXt/5Wf0=;
-        b=qHnRY6sLLDW9gtKAl8nqpfuI3KNkE/Y2brtsPFqtcqO0EK1O4350XrVPBBF1+Gqkmm
-         PNXCPSzhEeSfJIPvkuX2s142PqfRVSkIC/nOrtPh2Q87tGoaime/8p0bPBHCfwrOd4qs
-         KTd7ImSAeBIzRDtY/DaK6KZ5j7YcFOD4ya03DUXMrg6HjrKWV6K5Wk7ryGFNHbk1nAgq
-         eruz2nidHlzxNBoyKKr3ZY2anA8HVcnAKuK/Uv2CR4DYtdqszyq8s0rBxmYVbdIVwDLq
-         gzyPTAsX/McMK/i76hp3/07YHIrmM1XxC7YqvAqKjynD5LgvQgCtgpcBFnVXCo6+JaC0
-         t85w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=o9A3MkSF7vbq5UcAcz2SLX1O7G0t/lr0VlIgIy1YGEY=;
+        b=r/AUBYaK22wukmeMr7Np/v0YcIjWxwBJSCiY+wumfKCWxnLRswYZdLKgUTl4c/CTye
+         2rB8srARW0oUhpGc1Y0iYTKmJcsoyGZbouHMZEdaKXYvN0ZMkzsLZ/5HuXkiPC3e7RuC
+         O/paXXi50IzJmo5rQ8we8lm3Okkx1yNNCTn+HCMTXWKjxekC01TpqTxLuEjNukyFcsnb
+         05Z9dY4zSaxnKlfpm7nvBjUijMT/UWEiHYx3ed3BXu4ox9T15zS5ARAAxNXZCOcjhn7O
+         LN9QEutvjRWPrYNUI51L+3KzIk/Mc2UCL5UjF3IF4fgFe4WrmVZokbTcDrMHSvfOXU08
+         3WjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7zhxgGD0Qe04Ri9cfIqQvNqUSMP7RX4IA7zyXt/5Wf0=;
-        b=gw/9LSHkaxoKRuUERLrKND8sc39ASpnORKlk1fWfaaqORh2HYp/xgIe1iPlm7hVrXC
-         U+0BGSaXzCu5JU3G0r3gfC798UZ3nk5yvYsIHXfpZVh45+Y2ehgAXqbnuS9gql/PCEhk
-         FZ3hJGlZspRPRVznQhAA3fOJz5XU+ljrX3/xeQ8ecSp3TpwOFtZtUHUhRFyKcFgAHiGY
-         wnNAMMCMSmAPppgSZxilEb+UIgRa3MWC+bh/U8UqZt0E94xp1eFamvwIVBWW+kPSo05z
-         mT5TUpuYbCQu3j95f3nBwXJ3HNEdTLTO7AQ8wFKeFE3OyeLrenAq4zxpWlDyWGOe6zBS
-         SfVQ==
-X-Gm-Message-State: AOAM531CjXUsKoED3WTrQmBlwpRRWOTZeSCKCMQJUF79u4fjDN4EKN+o
-        wZl2aUHk+BmebExPJuR9WICVT8aDX7vNcIDU
-X-Google-Smtp-Source: ABdhPJxzRSOMTBmoaECibs5y6iCOMatWFeWCyz/I9feDJYG8kJmmqdI9pUAPMsoh7AiO2ot09BHQ3Q==
-X-Received: by 2002:a63:1a50:: with SMTP id a16mr19495543pgm.92.1618077401603;
-        Sat, 10 Apr 2021 10:56:41 -0700 (PDT)
-Received: from localhost.localdomain (c-73-93-5-123.hsd1.ca.comcast.net. [73.93.5.123])
-        by smtp.gmail.com with ESMTPSA id w26sm5457277pfj.58.2021.04.10.10.56.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 10:56:41 -0700 (PDT)
-From:   Joe Stringer <joe@cilium.io>
-To:     bpf@vger.kernel.org
-Cc:     daniel@iogearbox.net, ast@kernel.org
-Subject: [PATCH bpf-next] selftests/bpf: Make docs tests fail more reliably
-Date:   Sat, 10 Apr 2021 10:56:01 -0700
-Message-Id: <20210410175601.831013-1-joe@cilium.io>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=o9A3MkSF7vbq5UcAcz2SLX1O7G0t/lr0VlIgIy1YGEY=;
+        b=MGnfktktiPj/a9gre0keJ1rtr9rVe3xhfzfpQ8QXtZKiv3HkwYrb3lOQ7DH85bCrru
+         L9dhU11DVsmTFhkVsm5vCHvHuW1df+xSp/QHSKbCey0/SqtGnDMhSMuNF+UI/7SqVPd2
+         q/MjBGNONlGn3q6/ZnlNlMXHANR/w2yKKu8xKBoEVwZUW08rlrpnwOzHgZO/g5CRU6wa
+         AueR2K76fQrl2WIjeS9RttKscfpE43D0HptvxLCu4hNshyygmSOwM11n5/YDVqAVusqo
+         Z6n5AfAwyiO3L4hnL1+JlZDzwLwRdW7TCYmsmTQfLr8kMEvIvy4qddOXjEqBAYC+v35T
+         2hLw==
+X-Gm-Message-State: AOAM530rj62hFoCbbFQ2vHW0gTTMjQq7FHuPBY2/QklILjbJCMwkKd4J
+        RpoRj3IHUemamdBLJJ/2ghAJy2Tjn6JiE78l
+X-Google-Smtp-Source: ABdhPJwMS2ixcj97nEYKk6WGCyrCdn20G9mszw0a8+YBl8ebWZciV2vpV1SkJkLYCayPg8Y+t96OGw==
+X-Received: by 2002:ac8:5716:: with SMTP id 22mr18974985qtw.212.1618078344889;
+        Sat, 10 Apr 2021 11:12:24 -0700 (PDT)
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
+        by smtp.gmail.com with ESMTPSA id n2sm4166461qta.61.2021.04.10.11.12.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Apr 2021 11:12:24 -0700 (PDT)
+Received: by mail-yb1-f179.google.com with SMTP id o10so10239635ybb.10;
+        Sat, 10 Apr 2021 11:12:24 -0700 (PDT)
+X-Received: by 2002:a25:7612:: with SMTP id r18mr1704826ybc.172.1618078344178;
+ Sat, 10 Apr 2021 11:12:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210302171947.2268128-1-joe@cilium.io> <20210302171947.2268128-7-joe@cilium.io>
+ <79954d84-ad75-8f91-118c-0ce2150a1c96@fb.com> <CADa=RyzgsEsRpED34Bi141216de9ecbSUw7M+349wtDDKVy2dw@mail.gmail.com>
+In-Reply-To: <CADa=RyzgsEsRpED34Bi141216de9ecbSUw7M+349wtDDKVy2dw@mail.gmail.com>
+From:   Joe Stringer <joe@cilium.io>
+Date:   Sat, 10 Apr 2021 11:12:07 -0700
+X-Gmail-Original-Message-ID: <CAOftzPgK5=Y67NU5W+3tEemv4GkBPuYJ3neRUczqQLHYv2CZXA@mail.gmail.com>
+Message-ID: <CAOftzPgK5=Y67NU5W+3tEemv4GkBPuYJ3neRUczqQLHYv2CZXA@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 06/15] bpf: Document BPF_PROG_TEST_RUN syscall command
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, linux-doc@vger.kernel.org,
+        linux-man@vger.kernel.org,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Previously, if rst2man caught errors, then these would be ignored and
-the output file would be written anyway. This would allow developers to
-introduce regressions in the docs comments in the BPF headers.
+On Wed, Mar 3, 2021 at 5:38 PM Joe Stringer <joe@cilium.io> wrote:
+>
+> On Wed, Mar 3, 2021 at 12:29 PM Yonghong Song <yhs@fb.com> wrote:
+> >
+> >
+> >
+> > On 3/2/21 9:19 AM, Joe Stringer wrote:
+> > > Based on a brief read of the corresponding source code.
+> > >
+> > > Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> > > Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+> > > Signed-off-by: Joe Stringer <joe@cilium.io>
+> >
+> > Acked-by: Yonghong Song <yhs@fb.com>
+> >
+> > > ---
+> > >   include/uapi/linux/bpf.h | 14 +++++++++++---
+> > >   1 file changed, 11 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index a8f2964ec885..a6cd6650e23d 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -306,14 +306,22 @@ union bpf_iter_link_info {
+> > >    *
+> > >    * BPF_PROG_TEST_RUN
+> > >    *  Description
+> > > - *           Run an eBPF program a number of times against a provide=
+d
+> > > - *           program context and return the modified program context=
+ and
+> > > - *           duration of the test run.
+> > > + *           Run the eBPF program associated with the *prog_fd* a *r=
+epeat*
+> > > + *           number of times against a provided program context *ctx=
+_in* and
+> > > + *           data *data_in*, and return the modified program context
+> > > + *           *ctx_out*, *data_out* (for example, packet data), resul=
+t of the
+> > > + *           execution *retval*, and *duration* of the test run.
+> >
+> > FYI, Lorenz's BPF_PROG_TEST_RUN support for sk_lookup program
+> > requires data_in and data_out to be NULL. Not sure whether it is
+> > worthwhile to specially mention here or not. The patch has not
+> > been merged but close.
+> >
+> > https://lore.kernel.org/bpf/20210301101859.46045-1-lmb@cloudflare.com/
+>
+> Not sure how close either series is but I'm sure between Lorenz & I we
+> can figure out how to fix this up. If I need to respin the series and
+> Lorenz's one is in by then, I'll fix it up but it's not the end of the
+> world to send an extra dedicated patch for this.
 
-Additionally, even if you instruct rst2man to fail out, it will still
-write out to the destination target file, so if you ran the tests twice
-in a row it would always pass. Use a temporary file for the initial run
-to ensure that if rst2man fails out under "--strict" mode, subsequent
-runs will not automatically pass.
-
-Tested via ./tools/testing/selftests/bpf/test_doc_build.sh
-
-Signed-off-by: Joe Stringer <joe@cilium.io>
----
- tools/testing/selftests/bpf/Makefile.docs     | 3 ++-
- tools/testing/selftests/bpf/test_doc_build.sh | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile.docs b/tools/testing/selftests/bpf/Makefile.docs
-index ccf260021e83..a918790c8f9c 100644
---- a/tools/testing/selftests/bpf/Makefile.docs
-+++ b/tools/testing/selftests/bpf/Makefile.docs
-@@ -52,7 +52,8 @@ $(OUTPUT)%.$2: $(OUTPUT)%.rst
- ifndef RST2MAN_DEP
- 	$$(error "rst2man not found, but required to generate man pages")
- endif
--	$$(QUIET_GEN)rst2man $$< > $$@
-+	$$(QUIET_GEN)rst2man --strict $$< > $$@.tmp
-+	$$(QUIET_GEN)mv $$@.tmp $$@
- 
- docs-clean-$1:
- 	$$(call QUIET_CLEAN, eBPF_$1-manpage)
-diff --git a/tools/testing/selftests/bpf/test_doc_build.sh b/tools/testing/selftests/bpf/test_doc_build.sh
-index 7eb940a7b2eb..ed12111cd2f0 100755
---- a/tools/testing/selftests/bpf/test_doc_build.sh
-+++ b/tools/testing/selftests/bpf/test_doc_build.sh
-@@ -1,5 +1,6 @@
- #!/bin/bash
- # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+set -e
- 
- # Assume script is located under tools/testing/selftests/bpf/. We want to start
- # build attempts from the top of kernel repository.
--- 
-2.27.0
-
+I sent this out:
+https://lore.kernel.org/bpf/20210410174549.816482-1-joe@cilium.io/T/#u
