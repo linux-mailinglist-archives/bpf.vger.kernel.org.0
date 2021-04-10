@@ -2,72 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605BF35AE4E
-	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 16:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED7735AEE8
+	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 17:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234836AbhDJO3v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Apr 2021 10:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
+        id S234548AbhDJPtI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Apr 2021 11:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234820AbhDJO3u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:29:50 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B36DC06138B;
-        Sat, 10 Apr 2021 07:29:35 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4FHcp46kq2z9sWk; Sun, 11 Apr 2021 00:29:32 +1000 (AEST)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        songliubraving@fb.com, Michael Ellerman <mpe@ellerman.id.au>,
-        kafai@fb.com, naveen.n.rao@linux.ibm.com,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        daniel@iogearbox.net, john.fastabend@gmail.com,
-        sandipan@linux.ibm.com, yhs@fb.com, ast@kernel.org,
-        kpsingh@chromium.org, andrii@kernel.org,
-        Paul Mackerras <paulus@samba.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org
-In-Reply-To: <cover.1616430991.git.christophe.leroy@csgroup.eu>
-References: <cover.1616430991.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH v2 0/8] Implement EBPF on powerpc32
-Message-Id: <161806493489.1467223.13057218503369355190.b4-ty@ellerman.id.au>
-Date:   Sun, 11 Apr 2021 00:28:54 +1000
+        with ESMTP id S234334AbhDJPtI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Apr 2021 11:49:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4D0C06138A;
+        Sat, 10 Apr 2021 08:48:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=91B1rcP8cMJQqrbDXcQN0ARnzQOA1OqZMuSrhvn5KWM=; b=evTQPZqIi5C2RLsOo/Cnp8EvmB
+        +uevWJugbBaSvzGC1a3HmfgpppZ6H1ka7pXORdatOgeVE3x3oXAbAseMJAUFRD7T4ieZ5i7iiKhlp
+        s13tFWfw/Cw0h1OKIkHOpy0hV022PAiVzvvtxFLai9MMVguPFdLDq4j90+T/YAth83dSLczxTeuNW
+        2WU9FO6QmMXdyNeytzYOZHDNDUKGMJaWbvPFUxIgPtJXRTCKU1gjDOL5ajONo2fvEa5FSsVZ0rf/K
+        M0ZWL1F0jSmahwlmebzn8v0M9ft1X/XAyYHxO5+HYitLqCGcQCzcmbfBB0K9PsGLHRcbZ62eFStHJ
+        5u/3GzcQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lVFqS-001rFg-3o; Sat, 10 Apr 2021 15:48:28 +0000
+Date:   Sat, 10 Apr 2021 16:48:24 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+Message-ID: <20210410154824.GZ2531743@casper.infradead.org>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409223801.104657-3-mcroce@linux.microsoft.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 22 Mar 2021 16:37:45 +0000 (UTC), Christophe Leroy wrote:
-> This series implements extended BPF on powerpc32. For the implementation
-> details, see the patch before the last.
-> 
-> The following operations are not implemented:
-> 
-> 		case BPF_ALU64 | BPF_DIV | BPF_X: /* dst /= src */
-> 		case BPF_ALU64 | BPF_MOD | BPF_X: /* dst %= src */
-> 		case BPF_STX | BPF_XADD | BPF_DW: /* *(u64 *)(dst + off) += src */
-> 
-> [...]
+On Sat, Apr 10, 2021 at 12:37:58AM +0200, Matteo Croce wrote:
+> This is needed by the page_pool to avoid recycling a page not allocated
+> via page_pool.
 
-Applied to powerpc/next.
+Is the PageType mechanism more appropriate to your needs?  It wouldn't
+be if you use page->_mapcount (ie mapping it to userspace).
 
-[1/8] powerpc/bpf: Remove classical BPF support for PPC32
-      https://git.kernel.org/powerpc/c/6944caad78fc4de4ecd0364bbc9715b62b020965
-[2/8] powerpc/bpf: Change register numbering for bpf_set/is_seen_register()
-      https://git.kernel.org/powerpc/c/ed573b57e77a7860fe4026e1700faa2f6938caf1
-[3/8] powerpc/bpf: Move common helpers into bpf_jit.h
-      https://git.kernel.org/powerpc/c/f1b1583d5faa86cb3dcb7b740594868debad7c30
-[4/8] powerpc/bpf: Move common functions into bpf_jit_comp.c
-      https://git.kernel.org/powerpc/c/4ea76e90a97d22f86adbb10044d29d919e620f2e
-[5/8] powerpc/bpf: Change values of SEEN_ flags
-      https://git.kernel.org/powerpc/c/c426810fcf9f96e3b43d16039e41ecb959f6dc29
-[6/8] powerpc/asm: Add some opcodes in asm/ppc-opcode.h for PPC32 eBPF
-      https://git.kernel.org/powerpc/c/355a8d26cd0416e7e764e4db766cf91e773a03e7
-[7/8] powerpc/bpf: Implement extended BPF on PPC32
-      https://git.kernel.org/powerpc/c/51c66ad849a703d9bbfd7704c941827aed0fd9fd
-[8/8] powerpc/bpf: Reallocate BPF registers to volatile registers when possible on PPC32
-      https://git.kernel.org/powerpc/c/40272035e1d0edcd515ad45be297c4cce044536d
-
-cheers
+> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+> ---
+>  include/linux/mm_types.h | 1 +
+>  include/net/page_pool.h  | 2 ++
+>  net/core/page_pool.c     | 4 ++++
+>  3 files changed, 7 insertions(+)
+> 
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 6613b26a8894..ef2d0d5f62e4 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -101,6 +101,7 @@ struct page {
+>  			 * 32-bit architectures.
+>  			 */
+>  			dma_addr_t dma_addr;
+> +			unsigned long signature;
+>  		};
+>  		struct {	/* slab, slob and slub */
+>  			union {
+> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> index b5b195305346..b30405e84b5e 100644
+> --- a/include/net/page_pool.h
+> +++ b/include/net/page_pool.h
+> @@ -63,6 +63,8 @@
+>   */
+>  #define PP_ALLOC_CACHE_SIZE	128
+>  #define PP_ALLOC_CACHE_REFILL	64
+> +#define PP_SIGNATURE		0x20210303
+> +
+>  struct pp_alloc_cache {
+>  	u32 count;
+>  	void *cache[PP_ALLOC_CACHE_SIZE];
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index ad8b0707af04..2ae9b554ef98 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -232,6 +232,8 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+>  		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
+>  
+>  skip_dma_map:
+> +	page->signature = PP_SIGNATURE;
+> +
+>  	/* Track how many pages are held 'in-flight' */
+>  	pool->pages_state_hold_cnt++;
+>  
+> @@ -302,6 +304,8 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
+>  			     DMA_ATTR_SKIP_CPU_SYNC);
+>  	page->dma_addr = 0;
+>  skip_dma_unmap:
+> +	page->signature = 0;
+> +
+>  	/* This may be the last page returned, releasing the pool, so
+>  	 * it is not safe to reference pool afterwards.
+>  	 */
+> -- 
+> 2.30.2
+> 
