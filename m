@@ -2,160 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580FC35AF91
-	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 20:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836DC35B012
+	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 21:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234874AbhDJS1z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Apr 2021 14:27:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
+        id S234439AbhDJTUP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 10 Apr 2021 15:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234738AbhDJS1y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Apr 2021 14:27:54 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1D9C06138C
-        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 11:27:38 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id sd23so4995941ejb.12
-        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 11:27:38 -0700 (PDT)
+        with ESMTP id S234948AbhDJTUN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 10 Apr 2021 15:20:13 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA392C06138B
+        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 12:19:58 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id s16so4091582iog.9
+        for <bpf@vger.kernel.org>; Sat, 10 Apr 2021 12:19:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kHhLeejRCafLd1b38lNlB9DRMFKc8tcaJUOcirv3Ooo=;
-        b=LirYQ65VsI53h0KeKH0f834XSic/s38SLU/7BywMfLNrhws9tcg6zOhn8mpZDi4lQ7
-         Ui7ZUnQX1a9r5eS7sjBSbRZ2uYMoW5O7HqUUhcVkmhBh/aEIaa/0SV33BvMFmUSxX9Rl
-         bqQdH0zS2mf1vuVqUqoFqkr66P8uBX3NSmzPwubXK5qTNduMc5b5qTTqYexwEfDYZE8b
-         nzUCzqtPIHKFBS9mY9HlIuBjruNelDixyPOH5QQU5oIGfs5FwxjfCSxN4wtfzXXbmCUB
-         bPeJr5P7ZkOuSi2xTfPJJwT2bXofjtHW320TWP9ER7ppnpxY6lpS6AfiIwSLGyj3jm+7
-         HhNA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=xgkO2ESp6uFztUQZqA6oMVu1vokwSusfDdfaSnmRr0k=;
+        b=MC3oC6ZajUjR/nCzIYQXYlTi8I95AXEduyDxaFls+SXlIvGmROvxBd54YMOw03XR+V
+         FQgfQ1g33IW5EMxEhr6jjuZpZ9l68UMQ/TBeFxWkwzWoAoKF2vo2Vn7ZM7n54PcNCCyF
+         ZA462pY3Q8cu6XAYMW2loFKbFlpGdCifKIEZM70EYUGq362Svk+skkF/PrW5DiO4scTs
+         CsQIODt0EFwqiOONUJEmeJ9dD8RYcxxsXxy1nt031S6JyjspNLAI9q4FJLRpZiVdz3A4
+         XTc1SKhGgcwLZAiDNVd+tmo9B3FlU8dE72ubskONHvKRAoeMbTeGaPTbqmhjuwI8QhFh
+         tmqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kHhLeejRCafLd1b38lNlB9DRMFKc8tcaJUOcirv3Ooo=;
-        b=Ve85MpfgD9fzTrjbcTokLgV7Tdl/NrFUfQEFnCGjREbAMUZ+MOfh44vj5yOqZqc9+c
-         invCorvIZaNjpFd/MWNk/QXcaWtULODNNB2X1iVOIjF9Pn9Mz6+l//TiDztCd6jBEU2J
-         ztq5qEXi9u+uROO63w9oYsn0Z/V1b0p9YTdIALZF+iEntjOvhlMtbR00wVgxmrb4c8br
-         ZwMjfdaoOnn+LZ/8g4Y797kYcIVf2nshyP6P28VHlGs51i8E/dd5Bp0gL3oGv3DDpoeQ
-         TNy9kboVYiTh4qjukljPE5b6h87bmvQxStpw+NOayCcZfFIzO4Uxi9wQL3pqeIneY07l
-         7qdg==
-X-Gm-Message-State: AOAM531e0tQrfITak90C6qEvqeyWgqVNm2QF/00LnP5qDfZQZGH/Gr6M
-        Xlt9KxE59Ylu//LwHN/0RdGqWw==
-X-Google-Smtp-Source: ABdhPJx0V2aCh2XNTn2Q3nZt+vNNiODmlAlAROTAsWvAgu7uGCCaBqDifF+3nlWpkGlVcihCmauAxg==
-X-Received: by 2002:a17:906:4c91:: with SMTP id q17mr21299868eju.0.1618079257332;
-        Sat, 10 Apr 2021 11:27:37 -0700 (PDT)
-Received: from enceladus (ppp-94-65-225-75.home.otenet.gr. [94.65.225.75])
-        by smtp.gmail.com with ESMTPSA id y6sm2926830ejw.83.2021.04.10.11.27.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 11:27:36 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 21:27:31 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <YHHuE7g73mZNrMV4@enceladus>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com>
- <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus>
- <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=xgkO2ESp6uFztUQZqA6oMVu1vokwSusfDdfaSnmRr0k=;
+        b=JuFyuXANZKI2f9G/hdRRZQoXw5azBvLq8iTwl5eJXJocmWF47bIi6djIITTczjwqkv
+         Me0siNrGR450tFyfZQa+pQ6fBhnZ3UMrA6QAlEcQxGl7kmCArYKK1IFDkhDJiuEjxAho
+         NV0mx2kBmEWamjYBwELZDjAbAEsbNzphCEXhnxWQl7BjmVXnCaxg212abKkJu8hrvLVT
+         HxtQzQP4X5lvs9RJdYxGCQKbiGlkPJ+oWVSk4AFZr+of0w2dulZO0NH/EzdnJR3AKht0
+         iLnvRBdLAK9Yfr6ObxLz4CiiXYkphZe7oNxzpIzeKqcNx/HrrhQtQ5nPsxtOsrdqz+jE
+         zzSw==
+X-Gm-Message-State: AOAM530QZj/ur4fuidS0jQHFSCRiryCyaAxhQNBX3A02va5t6MShVF4z
+        eu0kdu2HGq3J4GqXt5FBGoeSVJZzdCU2KMG3Thw=
+X-Google-Smtp-Source: ABdhPJxA3XcIhhlI8EVHuLpulVTpkf9s69E0Qh9sc3G6RPKWpEPofCghg4kuYJ/UAeWbDgWp7uVkSRVq/WlAm1xDumI=
+X-Received: by 2002:a6b:8bd3:: with SMTP id n202mr2925815iod.57.1618082398105;
+ Sat, 10 Apr 2021 12:19:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+References: <20210410164925.768741-1-yhs@fb.com>
+In-Reply-To: <20210410164925.768741-1-yhs@fb.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 10 Apr 2021 21:19:21 +0200
+Message-ID: <CA+icZUVz0US1y7LSkk_cvq5bOrTok0LqVSCLkUukmyde5aChpA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/5] support build selftests/bpf with clang
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Shakeel, 
+On Sat, Apr 10, 2021 at 6:49 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> To build kernel with clang, people typically use
+>   make -j60 LLVM=1 LLVM_IAS=1
+> LLVM_IAS=1 is not required for non-LTO build but
+> is required for LTO build. In my environment,
+> I am always having LLVM_IAS=1 regardless of
+> whether LTO is enabled or not.
+>
+> After kernel is build with clang, the following command
+> can be used to build selftests with clang:
+>   make -j60 -C tools/testing/selftests/bpf LLVM=1 LLVM_IAS=1
+>
+> But currently, some compilations still use gcc
+> and there are also compilation errors and warnings.
+> This patch set intends to fix these issues.
+> Patch #1 and #2 fixed the issue so clang/clang++ is
+> used instead of gcc/g++. Patch #3 fixed a compilation
+> failure. Patch #4 and #5 fixed various compiler warnings.
+>
+> Yonghong Song (5):
+>   selftests: set CC to clang in lib.mk if LLVM is set
+>   tools: allow proper CC/CXX/... override with LLVM=1 in
+>     Makefile.include
+>   selftests/bpf: fix test_cpp compilation failure with clang
+>   selftests/bpf: silence clang compilation warnings
+>   bpftool: fix a clang compilation warning
+>
+>  tools/bpf/bpftool/net.c              |  2 +-
+>  tools/scripts/Makefile.include       | 12 ++++++++++--
+>  tools/testing/selftests/bpf/Makefile |  4 +++-
+>  tools/testing/selftests/lib.mk       |  4 ++++
+>  4 files changed, 18 insertions(+), 4 deletions(-)
+>
+> --
+> 2.30.2
+>
 
-On Sat, Apr 10, 2021 at 10:42:30AM -0700, Shakeel Butt wrote:
-> On Sat, Apr 10, 2021 at 9:16 AM Ilias Apalodimas
-> <ilias.apalodimas@linaro.org> wrote:
-> >
-> > Hi Matthew
-> >
-> > On Sat, Apr 10, 2021 at 04:48:24PM +0100, Matthew Wilcox wrote:
-> > > On Sat, Apr 10, 2021 at 12:37:58AM +0200, Matteo Croce wrote:
-> > > > This is needed by the page_pool to avoid recycling a page not allocated
-> > > > via page_pool.
-> > >
-> > > Is the PageType mechanism more appropriate to your needs?  It wouldn't
-> > > be if you use page->_mapcount (ie mapping it to userspace).
-> >
-> > Interesting!
-> > Please keep in mind this was written ~2018 and was stale on my branches for
-> > quite some time.  So back then I did try to use PageType, but had not free
-> > bits.  Looking at it again though, it's cleaned up.  So yes I think this can
-> > be much much cleaner.  Should we go and define a new PG_pagepool?
-> >
-> >
-> 
-> Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-> can not be used.
+Thanks for CCing me and taking care to clean BPF selftests with clang.
 
-Yes it can, since it's going to be used as your default allocator for
-payloads, which might end up on an SKB.
-So we have to keep the extra added field on struct page for our mark.
-Matthew had an intersting idea.  He suggested keeping it, but changing the 
-magic number, so it can't be a kernel address, but I'll let him follow 
-up on the details.
+I applied (adapted 4/5) the 5 patches to fit latest Linus Git.
 
-> 
-> There is a recent discussion [1] on memcg accounting of TCP RX
-> zerocopy and I am wondering if this work can somehow help in that
-> regard. I will take a look at the series.
-> 
+As I had a fresh compiled Clang-CFI kernel without enabling BTF
+debug-info KConfig this fails at some point.
+I am not sure what the situation is with Clang-CFI + BTF thus I will
+do another Clang-LTO build with BTF enabled.
+So, I was not able to build test_cpp.
 
-I'll try having a look on this as well. The idea behind the patchset is to
-allow lower speed NICs that use the API already, gain recycling 'easily'.  
-Using page_pool for the driver comes with a penalty to begin with.
-Allocating pages instead of SKBs has a measurable difference. By enabling them
-to recycle they'll get better performance, since you skip the
-reallocation/remapping and only care for syncing the buffers correctly.
+I am missing some comments that LLVM=1 misses to set CXX=clang++ if
+people want that explicitly as CXX.
+Did you try with this?
 
-> [1] https://lore.kernel.org/linux-mm/20210316013003.25271-1-arjunroy.kdev@gmail.com/
+AFAICS LC_ALL=C was not the culprit.
+Did you try with and without LC_ALL=C - I have this in all my build-scripts.
+Here I have German localisation as default.
+
+Wil report later... (might be Monday when Linux v5.12-rc7 is released).
+
+- Sedat -
