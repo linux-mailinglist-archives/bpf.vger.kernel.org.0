@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2B535B334
-	for <lists+bpf@lfdr.de>; Sun, 11 Apr 2021 12:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF48335B34A
+	for <lists+bpf@lfdr.de>; Sun, 11 Apr 2021 13:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233514AbhDKKsZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Apr 2021 06:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34238 "EHLO
+        id S235229AbhDKLGw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Apr 2021 07:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhDKKsZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 11 Apr 2021 06:48:25 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E3FC061574
-        for <bpf@vger.kernel.org>; Sun, 11 Apr 2021 03:48:08 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id d2so8474663ilm.10
-        for <bpf@vger.kernel.org>; Sun, 11 Apr 2021 03:48:08 -0700 (PDT)
+        with ESMTP id S235095AbhDKLGv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Apr 2021 07:06:51 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5416BC061574
+        for <bpf@vger.kernel.org>; Sun, 11 Apr 2021 04:06:34 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id s16so5202915iog.9
+        for <bpf@vger.kernel.org>; Sun, 11 Apr 2021 04:06:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc;
-        bh=SyuYJ6SWJz7EdQGQpJhE9GWp/Fnf//HKyKFHTv9MEkQ=;
-        b=lscUaezelbfZGcSJ5zDjJlTrgAZHFtrWJBhMYeJcXmTEDT78QxhnN+HimK4tbT6YmU
-         vxGs43hMQ7Gi/hYTnlg7RJUTILZ/BqsCNVLXbWe5oRpaIudUPAoDRsCnt4r8VgJlxxY4
-         awKZcNwj82NO1YHM5LTWJPop/VYdxJBkXBFO+5kUamgtb27Rt89FuZ6tbcqmW2ZBbb9Q
-         wZ+C49Zmrdt5ONWSpL5Vqyk4VPseHHLkMwrMGw4mm5RHJp1TDkyh1mgUGwWnm6bOkldQ
-         sysRvC5NQYSCiOx77CPsmKBUxeygMoiMNXZvgoHoDJrWZnXnJMoe4CkR/VKW0OqNqIch
-         cbVw==
+        bh=jFG0OCtLOSQVeS3qPU1OvTw12sEFCIOmxByreHdr7iY=;
+        b=SMO67DkfeChdlMfdqz1h4HlczekSjyoNQPNlkEVTL3bbRvLIMxtp7QZLhyaFgS3DA9
+         IgCAIWms7f+Xieo9fv2DK7JGKPR/2s/GmP9yvqQjsqDrNlZMtjYe2y4GeLuNaSQbbz/y
+         9Wlm517QvP/U0eLkiTpkaIuHzhEbrwkDmvtecsY5z/xfwgCBV7t3kZozxs54Va+0ndg+
+         sM6jED0y8CYtlYVbWsw/UBIPDzQfYwnztA2JHop7QoSB2EEeOCIxzBBy9OibiViNQOrH
+         VKNucPovF+157qP0ViPv1BqMh0DstDcnTRzNh3cl3mVKL6+LejY/A0V5Ggcj11W4O4WM
+         OatQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc;
-        bh=SyuYJ6SWJz7EdQGQpJhE9GWp/Fnf//HKyKFHTv9MEkQ=;
-        b=cdS2niQAss5jHyXV9bPKw1v2vbdVBteIBZsNPd4bYQFgGCsh8IMtLsm5+sTYYDtC/E
-         t9xNDOR0+K2vmkUN+IoU3jtIxHsk7OEcpNr5hlBOxik9V7diYybwOsYDkNYutf/Oqwp+
-         SjaMp1xcc3kQPPs8Wi+OQm7VmlpzbmF/iBQvMdaMuvKMCL8pm7TlQH/3Q2uRpdXtpweI
-         wXBviX3XOCWHb91BHsCBsEf5MTT+pHPqo2BaZ/mM0tzN6yps5N00HNbO5Ir9k4FOWDR1
-         HO1wCthhg+Jjw4RAjrbst3btaO22gbG3EjJNiyeyE+yhYRFHAfExPAf27M0TMfk5Y+H5
-         akCg==
-X-Gm-Message-State: AOAM533wGqwgMgP2z37zoS/XwOX1KVSegUWOHqZ6HZZ9G8dCbKpStvPZ
-        JpKJorFYGHn8HBugB+cEzkKwAbLUcE33N6gFcsMbgU9ARiD6Gw==
-X-Google-Smtp-Source: ABdhPJz2yJpVKa5LGItYY0pBfvdbowShogzM9z8m10KhsCQB8UBCQHPFyfesolX6wswNAe53+F9NixuzhLBjibGex7o=
-X-Received: by 2002:a92:603:: with SMTP id x3mr601624ilg.215.1618138088437;
- Sun, 11 Apr 2021 03:48:08 -0700 (PDT)
+        bh=jFG0OCtLOSQVeS3qPU1OvTw12sEFCIOmxByreHdr7iY=;
+        b=aTxQlVgjXFcTr98g1oBjUjEt05S6Ntj3QP2IfixpiGUzVPhk4f9H36QvfS8HraUbcn
+         0ytWu+REdUcp/5etYUBIW8XQnDe38kEf7rVOgU/E+yOS+FLc6vpxbaAWp2WnFWIfeIpX
+         xSzgzRgViXnY1lDtUkqaxPXMmMNQ/jmL2YTYY0HdbakLHI4XJ767b8TbS33HAskhLSwl
+         6KD/8Y1TWnK9jWw2E5tAhrJ2EafAqkgh2iNEwiUMf3X0tkA69U6ikj6AIHXGlhdrv33x
+         ZvhVzXRrnwbimyMEodbJLTGsuHSPg4tzUVI960GoM/h6CSPKk1XLgZwAXYPESaO0hfUo
+         S5aA==
+X-Gm-Message-State: AOAM533P4p/D/vihyGjAy1SIWkTwb9UOfNtbO5KMN/KHDQtYQ1Dz8lHQ
+        KpVdiVN++DNjKlqwLjrTbJL9bvMRHROQTWXsDRU=
+X-Google-Smtp-Source: ABdhPJwCV6Rp525iWToa4Ef36f3H63y4C3q5COtXVm+4YUMzEwzmDv0bILr4v0k63gyES1y4zr3WEMvGvtC5eM9RQs0=
+X-Received: by 2002:a05:6638:2605:: with SMTP id m5mr18312279jat.97.1618139193583;
+ Sun, 11 Apr 2021 04:06:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210410164925.768741-1-yhs@fb.com> <20210410164940.770304-1-yhs@fb.com>
-In-Reply-To: <20210410164940.770304-1-yhs@fb.com>
+References: <20210410164925.768741-1-yhs@fb.com> <20210410164951.770920-1-yhs@fb.com>
+In-Reply-To: <20210410164951.770920-1-yhs@fb.com>
 Reply-To: sedat.dilek@gmail.com
 From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sun, 11 Apr 2021 12:47:32 +0200
-Message-ID: <CA+icZUXzCpHWk8Vm5D4ZcCbdd9gqipVD5ALCw6SGTFbYfdJZiA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/5] selftests/bpf: fix test_cpp compilation
- failure with clang
+Date:   Sun, 11 Apr 2021 13:05:57 +0200
+Message-ID: <CA+icZUUuqNrzho6vQXNUonSuvbZbkyEx100UWzGFEzUrGzYSKg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/5] bpftool: fix a clang compilation warning
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
         Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
@@ -65,127 +64,59 @@ On Sat, Apr 10, 2021 at 6:49 PM Yonghong Song <yhs@fb.com> wrote:
 >
 > With clang compiler:
 >   make -j60 LLVM=1 LLVM_IAS=1  <=== compile kernel
+>   # build selftests/bpf or bpftool
 >   make -j60 -C tools/testing/selftests/bpf LLVM=1 LLVM_IAS=1
-> the test_cpp build failed due to the failure:
->   warning: treating 'c-header' input as 'c++-header' when in C++ mode, this behavior is deprecated [-Wdeprecated]
->   clang-13: warning: cannot specify -o when generating multiple output files
+>   make -j60 -C tools/bpf/bpftool LLVM=1 LLVM_IAS=1
+> the following compilation warning showed up,
+>   net.c:160:37: warning: comparison of integers of different signs: '__u32' (aka 'unsigned int') and 'int' [-Wsign-compare]
+>                 for (nh = (struct nlmsghdr *)buf; NLMSG_OK(nh, len);
+>                                                   ^~~~~~~~~~~~~~~~~
+>   .../tools/include/uapi/linux/netlink.h:99:24: note: expanded from macro 'NLMSG_OK'
+>                            (nlh)->nlmsg_len <= (len))
+>                            ~~~~~~~~~~~~~~~~ ^   ~~~
 >
-> test_cpp compilation flag looks like:
->   clang++ -g -Og -rdynamic -Wall -I<...> ... \
->   -Dbpf_prog_load=bpf_prog_test_load -Dbpf_load_program=bpf_test_load_program \
->   test_cpp.cpp <...>/test_core_extern.skel.h <...>/libbpf.a <...>/test_stub.o \
->   -lcap -lelf -lz -lrt -lpthread -o <...>/test_cpp
+> In this particular case, "len" is defined as "int" and (nlh)->nlmsg_len is "unsigned int".
+> The macro NLMSG_OK is defined as below in uapi/linux/netlink.h.
+>   #define NLMSG_OK(nlh,len) ((len) >= (int)sizeof(struct nlmsghdr) && \
+>                              (nlh)->nlmsg_len >= sizeof(struct nlmsghdr) && \
+>                              (nlh)->nlmsg_len <= (len))
 >
-> The clang++ compiler complains the header file in the command line.
-> Let us remove the header file from the command line which is not intended
-> any way, and this fixed the problem.
+> The clang compiler complains the comparision "(nlh)->nlmsg_len <= (len))",
+> but in bpftool/net.c, it is already ensured that "len > 0" must be true.
+> So let us add an explicit type conversion (from "int" to "unsigned int")
+> for "len" in NLMSG_OK to silence this warning.
 >
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  tools/testing/selftests/bpf/Makefile | 2 +-
+>  tools/bpf/bpftool/net.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 6448c626498f..bbd61cc3889b 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -481,7 +481,7 @@ $(OUTPUT)/test_verifier: test_verifier.c verifier/tests.h $(BPFOBJ) | $(OUTPUT)
->  # Make sure we are able to include and link libbpf against c++.
->  $(OUTPUT)/test_cpp: test_cpp.cpp $(OUTPUT)/test_core_extern.skel.h $(BPFOBJ)
->         $(call msg,CXX,,$@)
-> -       $(Q)$(CXX) $(CFLAGS) $^ $(LDLIBS) -o $@
-> +       $(Q)$(CXX) $(CFLAGS) test_cpp.cpp $(BPFOBJ) $(LDLIBS) -o $@
+> diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+> index ff3aa0cf3997..f836d115d7d6 100644
+> --- a/tools/bpf/bpftool/net.c
+> +++ b/tools/bpf/bpftool/net.c
+> @@ -157,7 +157,7 @@ static int netlink_recv(int sock, __u32 nl_pid, __u32 seq,
+>                 if (len == 0)
+>                         break;
 >
->  # Benchmark runner
->  $(OUTPUT)/bench_%.o: benchs/bench_%.c bench.h
+> -               for (nh = (struct nlmsghdr *)buf; NLMSG_OK(nh, len);
+> +               for (nh = (struct nlmsghdr *)buf; NLMSG_OK(nh, (unsigned int)len);
+>                      nh = NLMSG_NEXT(nh, len)) {
+>                         if (nh->nlmsg_pid != nl_pid) {
+>                                 ret = -LIBBPF_ERRNO__WRNGPID;
 > --
 > 2.30.2
 >
 
-NOTE: bpf-next might be different from my build-environment.
+Thanks for the patch.
 
-Yonghong, can you please re-test by adding explicitly CXX=g++ to your make line?
+I remember darkly I have seen this, too.
 
-Here I have:
+The only warning I see remaining *here* is fixed by this patch from bpf-next:
 
-$ grep test_cpp make-log_tools-testing-selftests-bpf_clang_clang++.txt
-1907:clang++ -g -rdynamic -Wall -O2 -DHAVE_GENHDR
--I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf
--I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/tools/include
--I/home/dileks/src/linux-kernel/git/include/generated
--I/home/dileks/src/linux-kernel/git/tools/lib
--I/home/dileks/src/linux-kernel/git/tools/include
--I/home/dileks/src/linux-kernel/git/tools/include/uapi
--I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf
--Wno-unused-command-line-argument -Wno-format-security
--Dbpf_prog_load=bpf_prog_test_load
--Dbpf_load_program=bpf_test_load_program test_cpp.cpp
-/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a
--lcap -lelf -lz -lrt -lpthread -o
-/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_cpp
-
-This clang++ line does not include <...>/test_core_extern.skel.h ^^^
-
-$ grep test_core_extern.skel.h
-make-log_tools-testing-selftests-bpf_clang_clang++.txt
-704:/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/tools/sbin/bpftool
-gen skeleton /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_co
-re_extern.o > /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_core_extern.skel.h
-1592:/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/tools/sbin/bpftool
-gen skeleton /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/no_alu
-32/test_core_extern.o >
-/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/no_alu32/test_core_extern.skel.h
-
-Checking test_cpp:
-
-$ /opt/llvm-toolchain/bin/llvm-objdump-12 -Dr test_cpp | grep extern
-0000000000417e50 <cmp_externs>:
- 417e54: 75 22                         jne     0x417e78 <cmp_externs+0x28>
- 417e59: 75 10                         jne     0x417e6b <cmp_externs+0x1b>
- 417e61: 75 21                         jne     0x417e84 <cmp_externs+0x34>
- 417e69: 75 1e                         jne     0x417e89 <cmp_externs+0x39>
- 417e87: eb f2                         jmp     0x417e7b <cmp_externs+0x2b>
- 417e8c: eb ed                         jmp     0x417e7b <cmp_externs+0x2b>
-
-$ /opt/llvm-toolchain/bin/llvm-objdump-12 -Dr test_cpp | grep core_extern
-[ EMPTY ]
-
-When compiled with g++ in an earlier setup this contained "core_extern".
-
-With this version of your patchser it breaks *here* when using CXX=g++
-(and uses /usr/bin/ld as linker):
-
-g++ -g -rdynamic -Wall -O2 -DHAVE_GENHDR
--I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf
--I/home/dileks/src/linux-kernel/git/tools/testing/selftests/b
-pf/tools/include -I/home/dileks/src/linux-kernel/git/include/generated
--I/home/dileks/src/linux-kernel/git/tools/lib
--I/home/dileks/src/linux-kernel/git/tools/include
--I/home/dileks/src/linux-kernel/git/tools/include/uapi
--I/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf
--Wno-unused-command-line-argument -Wno-format-security
--Dbpf_prog_load=bpf_prog_test_load
--Dbpf_load_program=bpf_test_load_program test_cpp.cpp
-/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a
--lcap -lelf -lz -lrt -lpthread -o
-/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_cpp
-
-/usr/bin/ld: /home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/tools/build/libbpf/libbpf.a(libbpf-in.o):
-relocation R_X86_64_32 against `.rodata.str1.1' ca
-n not be used when making a PIE object; recompile with -fPIE
-collect2: error: ld returned 1 exit status
-make: *** [Makefile:457:
-/home/dileks/src/linux-kernel/git/tools/testing/selftests/bpf/test_cpp]
-Error 1
-
-$ grep test_cpp ../make-log_tools-testing-selftests-bpf_clang_g++.txt
-| grep test_core_extern.skel.h
-[ EMPTY ]
-
-As said I do NOT use bpf-next.
+commit 7519c387e69d367075bf493de8a9ea427c9d2a1b
+"selftests: xsk: Remove unused function"
 
 - Sedat -
 
-
-
-- Sedat -
+[1] https://git.kernel.org/bpf/bpf-next/c/7519c387e69d367075bf493de8a9ea427c9d2a1b
