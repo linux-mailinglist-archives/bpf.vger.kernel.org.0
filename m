@@ -2,147 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752B735B2F4
-	for <lists+bpf@lfdr.de>; Sun, 11 Apr 2021 12:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2DC735B312
+	for <lists+bpf@lfdr.de>; Sun, 11 Apr 2021 12:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235377AbhDKKGH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 11 Apr 2021 06:06:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55758 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235353AbhDKKGH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 11 Apr 2021 06:06:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618135551;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MhHr3Cd5ZDKM5bg6lUgtgpxP7s+VM/Oo10g+H6b6Os0=;
-        b=a+3sPGmtIOxLyeOPh9KSnp53+MynC9DSKW8Ri/0ZDifr5XfR3lLeN5mzXTBJOFKZ8ywQeu
-        qtbApmq4+z+phofJrIRoQYDDoHnTMj2AUHpIRkpnacEg8E2YxAP+8TojFPcIHl3JOyACa6
-        WrcVb0tDl0jKOmQT8uPTLfvM+Iwyyhc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-589-6klkBEv5OCOBZMidoXHS7A-1; Sun, 11 Apr 2021 06:05:48 -0400
-X-MC-Unique: 6klkBEv5OCOBZMidoXHS7A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 415DD10053EC;
-        Sun, 11 Apr 2021 10:05:41 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 957FD14106;
-        Sun, 11 Apr 2021 10:05:18 +0000 (UTC)
-Date:   Sun, 11 Apr 2021 12:05:17 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     brouer@redhat.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <20210411120500.73c1cadb@carbon>
-In-Reply-To: <20210410193955.GA2531743@casper.infradead.org>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
-        <20210409223801.104657-3-mcroce@linux.microsoft.com>
-        <20210410154824.GZ2531743@casper.infradead.org>
-        <YHHPbQm2pn2ysth0@enceladus>
-        <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
-        <YHHuE7g73mZNrMV4@enceladus>
-        <20210410193955.GA2531743@casper.infradead.org>
+        id S235301AbhDKKXe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Apr 2021 06:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235232AbhDKKXe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 11 Apr 2021 06:23:34 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519A2C061574
+        for <bpf@vger.kernel.org>; Sun, 11 Apr 2021 03:23:18 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id c3so2376187ils.5
+        for <bpf@vger.kernel.org>; Sun, 11 Apr 2021 03:23:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=EZbI6zXVkEKBWVckHFqRhQCzijJJcTjRddzax2FzWv4=;
+        b=sjMwFfTKq1ySwZgwfaRGHuX6+VJtzudtPqQfIJM8tjGpOZRDejrXFN4uX4FB9dK93L
+         ICIlRGoDKyMBv2zFMJQNdRgaDxODMvQkxxFrSTVIZYnEG9hI7EF5uc7Ukv7sE/xm3Vdv
+         1d+uZAOO2xvHZdPZAStbolMdbBu3Qv/KEihKjnI+XbKaMPcaMQYSQ0Rqm5EL9m8pQ5Gi
+         JTHiKmi75IxAI6neFBxHw1675MKyLQ9Ec4G1SaQw0OjLhUbg/qxOjIPiZgbHc9B0mOTz
+         TMQ8LRkrvDdmIoJ5F5jENEU1d/4BzEUTrK3TuCVPR5Tmd6HNf3N7iS545B2STzmPRiJc
+         zOag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=EZbI6zXVkEKBWVckHFqRhQCzijJJcTjRddzax2FzWv4=;
+        b=jD0dgHJyoxpEbxp4aN5MbkGWi6kAC+9iU/thaPuFW3GAcCfHamhWchQbgm5L7o7RAt
+         4NLh0kJiwDtg/FQBoQmtMpYDFomHGMXZqyqcx1DS0N+hpiJqymRR7/ucmx5BLtxyLUob
+         0VHk4keCUEUPgAezw2WMo/m8RgU9PhbFkoQCviCBfAuINqSyUBnS9b5F+u/j96jjZtHs
+         Vj1MUaVAnMPSOK8E9pgbV/Mc9Xlri/b5EnxjS7Ag1K619z/IvMJzHK6pfxQIOCVgTLFe
+         /lamxKraAcc4dMVWFwbD7IEVA1WsxOwwOTAYfdxYqBoT6qEBOgmSUb64k7sg+eh0Qbnm
+         XaNg==
+X-Gm-Message-State: AOAM531j/UWE2eA5nrQWBv0AvqSPjcH9DPZjAR76Ze04piQIhOmVTKQJ
+        E2UDv7WxLxUqw2V+ZLmhn+R7NjDvpGANHpRv4iA=
+X-Google-Smtp-Source: ABdhPJzvJJEszJA+R6LeGUee4XsmeAFQn9hEnW6bouRXmeVy5gcmKWnh0ACpXulxxvhkItFRjMtdy8FwUp2+A7jgEXU=
+X-Received: by 2002:a05:6e02:dea:: with SMTP id m10mr11609586ilj.112.1618136597797;
+ Sun, 11 Apr 2021 03:23:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210410164925.768741-1-yhs@fb.com> <20210410164930.769251-1-yhs@fb.com>
+In-Reply-To: <20210410164930.769251-1-yhs@fb.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sun, 11 Apr 2021 12:22:41 +0200
+Message-ID: <CA+icZUVf9RPxBHZvTaEK0scNoPkF3pf__wWCy3K=TeacgBq98g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/5] selftests: set CC to clang in lib.mk if LLVM
+ is set
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        kernel-team@fb.com, Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 10 Apr 2021 20:39:55 +0100
-Matthew Wilcox <willy@infradead.org> wrote:
-
-> On Sat, Apr 10, 2021 at 09:27:31PM +0300, Ilias Apalodimas wrote:
-> > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-> > > can not be used.  
-> > 
-> > Yes it can, since it's going to be used as your default allocator for
-> > payloads, which might end up on an SKB.
-> > So we have to keep the extra added field on struct page for our mark.
-> > Matthew had an intersting idea.  He suggested keeping it, but changing the 
-> > magic number, so it can't be a kernel address, but I'll let him follow 
-> > up on the details.  
-> 
-> Sure!  So, given the misalignment problem I discovered yesterday [1],
-> we probably want a page_pool page to look like:
-> 
-> unsigned long	flags;
-> unsigned long	pp_magic;
-> unsigned long	xmi;
-> unsigned long	_pp_mapping_pad;
-> dma_addr_t	dma_addr;	/* might be one or two words */
-> 
-> The only real restriction here is that pp_magic should not be a valid
-> pointer, and it must have the bottom bit clear.  I'd recommend something
-> like:
-> 
-> #define PP_MAGIC	(0x20 + POISON_POINTER_DELTA)
-> 
-> This leaves page->mapping as NULL, so you don't have to worry about
-> clearing it before free.
+On Sat, Apr 10, 2021 at 6:49 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> [1] https://lore.kernel.org/linux-mm/20210410024313.GX2531743@casper.infradead.org/
+> selftests/bpf/Makefile includes lib.mk. With the following command
+>   make -j60 LLVM=1 LLVM_IAS=1  <=== compile kernel
+>   make -j60 -C tools/testing/selftests/bpf LLVM=1 LLVM_IAS=1 V=1
+> some files are still compiled with gcc. This patch
+> fixed lib.mk issue which sets CC to gcc in all cases.
+>
+> Cc: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  tools/testing/selftests/lib.mk | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+> index a5ce26d548e4..9a41d8bb9ff1 100644
+> --- a/tools/testing/selftests/lib.mk
+> +++ b/tools/testing/selftests/lib.mk
+> @@ -1,6 +1,10 @@
+>  # This mimics the top-level Makefile. We do it explicitly here so that this
+>  # Makefile can operate with or without the kbuild infrastructure.
+> +ifneq ($(LLVM),)
+> +CC := clang
+> +else
+>  CC := $(CROSS_COMPILE)gcc
+> +endif
+>
 
-I didn't see this, before asking[2] for explaining your intent.
-I still worry about page->index, see [2].
+Why not use include "include ../../../scripts/Makefile.include" here
+and include CC and GNU or LLVM (bin)utils from there?
 
-[2] https://lore.kernel.org/netdev/20210411114307.5087f958@carbon/
+Should the CC line have a $(CROSS_COMPILE) for people doing cross-compilation?
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+CC := $(CROSS_COMPILE)clang
 
+- Sedat -
+
+
+>  ifeq (0,$(MAKELEVEL))
+>      ifeq ($(OUTPUT),)
+> --
+> 2.30.2
+>
