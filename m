@@ -2,34 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F57B35B020
-	for <lists+bpf@lfdr.de>; Sat, 10 Apr 2021 21:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752B735B2F4
+	for <lists+bpf@lfdr.de>; Sun, 11 Apr 2021 12:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234668AbhDJTkn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 10 Apr 2021 15:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234439AbhDJTkm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 10 Apr 2021 15:40:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFDF1C06138A;
-        Sat, 10 Apr 2021 12:40:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=99tw4rU1bA7MagbzMJxSzuFi8jXoglqEVx3rS3aCE60=; b=UGDCSJOiJywTxRKlV+QWUUkYP7
-        kHAPe+brHhCRWvTl8X0RQzmmsptTNBASWc4j9OilorC2V0moXMOenrd66GalMZDuksOyQBFG7sFY1
-        1jLeCodMt4E0psSQ7+VC0cCIB4Xzgu2R8jxbO4PUlnN76xoO30oeD5CgPk5fzBEQzyihDvOiN26Lo
-        12Pdio68QTCIU89I+zOINcuLobkzYiXQTdLKdO5+/R9uyi2j0Xk93sPyWtmnr6bYL3LR3yx7oY7/H
-        d9DYi1uymvbbmI2fSLCtHv4aPx2dEN7oqaKQBU/Sg9s6Z+Az2JgzxmDEIeClT51aqbma6dXWGBGn5
-        RICJ642g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVJSV-0023YN-DW; Sat, 10 Apr 2021 19:40:02 +0000
-Date:   Sat, 10 Apr 2021 20:39:55 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Shakeel Butt <shakeelb@google.com>,
+        id S235377AbhDKKGH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 11 Apr 2021 06:06:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55758 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235353AbhDKKGH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 11 Apr 2021 06:06:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618135551;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MhHr3Cd5ZDKM5bg6lUgtgpxP7s+VM/Oo10g+H6b6Os0=;
+        b=a+3sPGmtIOxLyeOPh9KSnp53+MynC9DSKW8Ri/0ZDifr5XfR3lLeN5mzXTBJOFKZ8ywQeu
+        qtbApmq4+z+phofJrIRoQYDDoHnTMj2AUHpIRkpnacEg8E2YxAP+8TojFPcIHl3JOyACa6
+        WrcVb0tDl0jKOmQT8uPTLfvM+Iwyyhc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-589-6klkBEv5OCOBZMidoXHS7A-1; Sun, 11 Apr 2021 06:05:48 -0400
+X-MC-Unique: 6klkBEv5OCOBZMidoXHS7A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 415DD10053EC;
+        Sun, 11 Apr 2021 10:05:41 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 957FD14106;
+        Sun, 11 Apr 2021 10:05:18 +0000 (UTC)
+Date:   Sun, 11 Apr 2021 12:05:17 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     brouer@redhat.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Shakeel Butt <shakeelb@google.com>,
         Matteo Croce <mcroce@linux.microsoft.com>,
         netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
         Ayush Sawal <ayush.sawal@chelsio.com>,
@@ -76,49 +84,65 @@ Cc:     Shakeel Butt <shakeelb@google.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
 Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <20210410193955.GA2531743@casper.infradead.org>
+Message-ID: <20210411120500.73c1cadb@carbon>
+In-Reply-To: <20210410193955.GA2531743@casper.infradead.org>
 References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com>
- <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus>
- <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
- <YHHuE7g73mZNrMV4@enceladus>
+        <20210409223801.104657-3-mcroce@linux.microsoft.com>
+        <20210410154824.GZ2531743@casper.infradead.org>
+        <YHHPbQm2pn2ysth0@enceladus>
+        <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+        <YHHuE7g73mZNrMV4@enceladus>
+        <20210410193955.GA2531743@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHHuE7g73mZNrMV4@enceladus>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 09:27:31PM +0300, Ilias Apalodimas wrote:
-> > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-> > can not be used.
+On Sat, 10 Apr 2021 20:39:55 +0100
+Matthew Wilcox <willy@infradead.org> wrote:
+
+> On Sat, Apr 10, 2021 at 09:27:31PM +0300, Ilias Apalodimas wrote:
+> > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
+> > > can not be used.  
+> > 
+> > Yes it can, since it's going to be used as your default allocator for
+> > payloads, which might end up on an SKB.
+> > So we have to keep the extra added field on struct page for our mark.
+> > Matthew had an intersting idea.  He suggested keeping it, but changing the 
+> > magic number, so it can't be a kernel address, but I'll let him follow 
+> > up on the details.  
 > 
-> Yes it can, since it's going to be used as your default allocator for
-> payloads, which might end up on an SKB.
-> So we have to keep the extra added field on struct page for our mark.
-> Matthew had an intersting idea.  He suggested keeping it, but changing the 
-> magic number, so it can't be a kernel address, but I'll let him follow 
-> up on the details.
+> Sure!  So, given the misalignment problem I discovered yesterday [1],
+> we probably want a page_pool page to look like:
+> 
+> unsigned long	flags;
+> unsigned long	pp_magic;
+> unsigned long	xmi;
+> unsigned long	_pp_mapping_pad;
+> dma_addr_t	dma_addr;	/* might be one or two words */
+> 
+> The only real restriction here is that pp_magic should not be a valid
+> pointer, and it must have the bottom bit clear.  I'd recommend something
+> like:
+> 
+> #define PP_MAGIC	(0x20 + POISON_POINTER_DELTA)
+> 
+> This leaves page->mapping as NULL, so you don't have to worry about
+> clearing it before free.
+>
+> [1] https://lore.kernel.org/linux-mm/20210410024313.GX2531743@casper.infradead.org/
 
-Sure!  So, given the misalignment problem I discovered yesterday [1],
-we probably want a page_pool page to look like:
+I didn't see this, before asking[2] for explaining your intent.
+I still worry about page->index, see [2].
 
-unsigned long	flags;
-unsigned long	pp_magic;
-unsigned long	xmi;
-unsigned long	_pp_mapping_pad;
-dma_addr_t	dma_addr;	/* might be one or two words */
+[2] https://lore.kernel.org/netdev/20210411114307.5087f958@carbon/
 
-The only real restriction here is that pp_magic should not be a valid
-pointer, and it must have the bottom bit clear.  I'd recommend something
-like:
-
-#define PP_MAGIC	(0x20 + POISON_POINTER_DELTA)
-
-This leaves page->mapping as NULL, so you don't have to worry about
-clearing it before free.
-
-[1] https://lore.kernel.org/linux-mm/20210410024313.GX2531743@casper.infradead.org/
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
