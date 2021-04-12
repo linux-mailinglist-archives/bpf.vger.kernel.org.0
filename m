@@ -2,151 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4F835C96A
-	for <lists+bpf@lfdr.de>; Mon, 12 Apr 2021 17:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F051235CA28
+	for <lists+bpf@lfdr.de>; Mon, 12 Apr 2021 17:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238999AbhDLPIe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Apr 2021 11:08:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237526AbhDLPId (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:08:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F108611F0;
-        Mon, 12 Apr 2021 15:08:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618240095;
-        bh=yEYZUKPaHR793ZDhmZ+P1vlAN1MGuDfGKGZ/vHIAn3Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=K3Zdpb3zv2ms3Q7FD6i2Sv3atrOd3gtXVtLnczlukv1pjpMlW+rGc0C/jBoHa0Cdb
-         KiZdEu9/2ES3dZSuydULJoVbPW0DqxdBUaQn0D6g7GubujH/gHpzUoTMrZseVKfiTJ
-         sQHgbKEtK/n+L7vDqz76Is5G0B/LzClBD+C9bnLZp1rPxq3qPLyDhPpQ8Bg0dbaFOp
-         e6w/g2vtSzTZ1AL7yg1v2YEefQTRHhVvV8CCKaO593zpFAja2i/EyxxAQDJTeHZlof
-         ubYtmxZsy+/7rPmQ4YIw9zyFN7MybZuMeW1TzuopXEKNgkDaBEtUvH9RtaTkSmDMRK
-         MstQHuloq83+g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0B4D040647; Mon, 12 Apr 2021 12:08:13 -0300 (-03)
-Date:   Mon, 12 Apr 2021 12:08:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     dwarves@vger.kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Bill Wendling <morbo@google.com>,
-        David Blaikie <dblaikie@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: ANNOUNCE: pahole v1.21 (clang's LTO edition, BTF floats)
-Message-ID: <YHRiXNX1JUF2Az0A@kernel.org>
+        id S243111AbhDLPiZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Apr 2021 11:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243125AbhDLPiU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Apr 2021 11:38:20 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 970C7C06174A
+        for <bpf@vger.kernel.org>; Mon, 12 Apr 2021 08:38:01 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id r7so1426557wrm.1
+        for <bpf@vger.kernel.org>; Mon, 12 Apr 2021 08:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HzaMXQHvQos4Gg+0sZigLGcf/ybdwK5N7cMvXafL5UM=;
+        b=SioqsK2iJ13XqJOeLpzM4AXe5YVWW1Q2GDmrFgyFqmcVvH+7ufzSq8c5zWO1kCAGz5
+         b6Ocg2StBqvbJFLWpOAhxJbEKwhqdBdhFN/0NpXVKDO56KSQ9ZI30VgTe2RTOozfkWUL
+         MDee+oC9LKqJc+jjgHfjKjp/oNUUWD5IRlYz8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HzaMXQHvQos4Gg+0sZigLGcf/ybdwK5N7cMvXafL5UM=;
+        b=tzHulS4rrYo0f+em0+EyOhA+16qna/QRbgqLzSpzSCvGEswSEhrwNUQa9Q+1do0c6z
+         GKRurdqHSpdBprOm8zZ5pYQY1/2TqxQpQVqRMX+tp0GmfzBiR+F1nFRWmSCkD6ZBXrj1
+         cPI9+ao+JzlBMM4rtospcawFtRGEhp9KoG0JLAAJf4RHr/HLc0FFbF7BL3K1+4kl88ZC
+         FdkCVGrBsAY9ob1JhZZPm6gp35BEO0wAolTAiC7PmoKMhWi9z66JBRnB6Uhsr3cqXEhI
+         VF9MA9vdPzfw6X+kEBiHIRRWRz7u7eaVlPAl611WAYFqeaRxd+I83ybf/LX8uHoP7blo
+         J5WQ==
+X-Gm-Message-State: AOAM5306BB8krBf1yFkt+sMBnadJ7n7Jz4JwKltu1OJXENbpZOZwZDG4
+        1py5xP2K/JYsMsDuntnoFN7bp37sBudEtw==
+X-Google-Smtp-Source: ABdhPJyCIBayVGyIwLdotL+HbMLf2PnC4mPKF4PoUT9Gx4lowdGchstB9V/3NH9NGU7lgx75yGPFYg==
+X-Received: by 2002:adf:f991:: with SMTP id f17mr7306135wrr.5.1618241880150;
+        Mon, 12 Apr 2021 08:38:00 -0700 (PDT)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:a372:3c3b:eeb:ad14])
+        by smtp.gmail.com with ESMTPSA id i4sm2501449wrx.56.2021.04.12.08.37.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 08:37:59 -0700 (PDT)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, jackmanb@chromium.org,
+        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
+Subject: [PATCH bpf-next v3 0/6] Add a snprintf eBPF helper
+Date:   Mon, 12 Apr 2021 17:37:48 +0200
+Message-Id: <20210412153754.235500-1-revest@chromium.org>
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
- 
-	The v1.21 release of pahole and its friends is out, this time it's
-about using clang to build the kernel with LTO, some DWARF5 fixes, supporting
-floating types in the BTF encoder for s/390 sake and some misc fixes and
-improvements. Ah, it should also be faster due to switching to using libbpf's
-hashing routines.
+We have a usecase where we want to audit symbol names (if available) in
+callback registration hooks. (ex: fentry/nf_register_net_hook)
 
-Main git repo:
+A few months back, I proposed a bpf_kallsyms_lookup series but it was
+decided in the reviews that a more generic helper, bpf_snprintf, would
+be more useful.
 
-   git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+This series implements the helper according to the feedback received in
+https://lore.kernel.org/bpf/20201126165748.1748417-1-revest@google.com/T/#u
 
-Mirror git repo:
+- A new arg type guarantees the NULL-termination of string arguments and
+  lets us pass format strings in only one arg
+- A new helper is implemented using that guarantee. Because the format
+  string is known at verification time, the format string validation is
+  done by the verifier
+- To implement a series of tests for bpf_snprintf, the logic for
+  marshalling variadic args in a fixed-size array is reworked as per:
+https://lore.kernel.org/bpf/20210310015455.1095207-1-revest@chromium.org/T/#u
 
-   https://github.com/acmel/dwarves.git
+---
+Changes in v3:
+- Simplified temporary buffer acquisition with try_get_fmt_tmp_buf()
+- Made zero-termination check more consistent
+- Allowed NULL output_buffer
+- Simplified the BPF_CAST_FMT_ARG macro
+- Three new test cases: number padding, simple string with no arg and
+  string length extraction only with a NULL output buffer
+- Clarified helper's description for edge cases (eg: str_size == 0)
+- Lots of cosmetic changes
 
-tarball + gpg signature:
+---
+Changes in v2:
+- Extracted the format validation/argument sanitization in a generic way
+  for all printf-like helpers.
+- bpf_snprintf's str_size can now be 0
+- bpf_snprintf is now exposed to all BPF program types
+- We now preempt_disable when using a per-cpu temporary buffer
+- Addressed a few cosmetic changes
 
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.21.tar.xz
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.21.tar.bz2
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.21.tar.sign
+Florent Revest (6):
+  bpf: Factorize bpf_trace_printk and bpf_seq_printf
+  bpf: Add a ARG_PTR_TO_CONST_STR argument type
+  bpf: Add a bpf_snprintf helper
+  libbpf: Initialize the bpf_seq_printf parameters array field by field
+  libbpf: Introduce a BPF_SNPRINTF helper macro
+  selftests/bpf: Add a series of tests for bpf_snprintf
 
-	Thanks a lot to all the contributors and distro packagers, you're on the
-CC list, I appreciate a lot the work you put into these tools,
+ include/linux/bpf.h                           |   7 +
+ include/uapi/linux/bpf.h                      |  28 +
+ kernel/bpf/helpers.c                          |   2 +
+ kernel/bpf/verifier.c                         |  82 +++
+ kernel/trace/bpf_trace.c                      | 579 +++++++++---------
+ tools/include/uapi/linux/bpf.h                |  28 +
+ tools/lib/bpf/bpf_tracing.h                   |  58 +-
+ .../selftests/bpf/prog_tests/snprintf.c       |  81 +++
+ .../selftests/bpf/progs/test_snprintf.c       |  74 +++
+ 9 files changed, 647 insertions(+), 292 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
 
-Best Regards,
- 
- - Arnaldo
+-- 
+2.31.1.295.g9ea45b61b8-goog
 
-DWARF loader:
-
-- Handle DWARF5 DW_OP_addrx properly
-
-  Part of the effort to support the subset of DWARF5 that is generated when building the kernel.
-
-- Handle subprogram ret type with abstract_origin properly
-
-  Adds a second pass to resolve abstract origin DWARF description of functions to aid
-  the BTF encoder in getting the right return type.
-
-- Check .notes section for LTO build info
-
-  When LTO is used, currently only with clang, we need to do extra steps to handle references
-  from one object (compile unit, aka CU) to another, a way for DWARF to avoid duplicating
-  information.
-
-- Check .debug_abbrev for cross-CU references
-
-  When the kernel build process doesn't add an ELF note in vmlinux indicating that LTO was
-  used and thus intra-CU references are present and thus we need to use a more expensive
-  way to resolve types and (again) thus to encode BTF, we need to look at DWARF's .debug_abbrev
-  ELF section to figure out if such intra-CU references are present.
-
-- Permit merging all DWARF CU's for clang LTO built binary
-
-  Allow not trowing away previously supposedly self contained compile units
-  (objects, aka CU, aka Compile Units) as they have type descriptions that will
-  be used in later CUs.
-
-- Permit a flexible HASHTAGS__BITS
-
-  So that we can use a more expensive algorithm when we need to keep previously processed
-  compile units that will then be referenced by later ones to resolve types.
-
-- Use a better hashing function, from libbpf
-
-  Enabling patch to combine compile units when using LTO.
-
-BTF encoder:
-
-- Add --btf_gen_all flag
-
-  A new command line to allow asking for the generation of all BTF encodings, so that we
-  can stop adding new command line options to enable new encodings in the kernel Makefile.
-
-- Match ftrace addresses within ELF functions
-
-  To cope with differences in how DWARF and ftrace describes function boundaries.
-
-- Funnel ELF error reporting through a macro
-
-  To use libelf's elf_error() function, improving error messages.
-
-- Sanitize non-regular int base type
-
-  Cope with clang with dwarf5 non-regular int base types, tricky stuff, see yhs
-  full explanation in the relevant cset.
-
-- Add support for the floating-point types
-
-  S/390 has floats'n'doubles in its arch specific linux headers, cope with that.
-
-Pretty printer:
-
-- Honour conf_fprintf.hex when printing enumerations
-
-  If the user specifies --hex in the command line, honour it when printing enumerations.
-
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
