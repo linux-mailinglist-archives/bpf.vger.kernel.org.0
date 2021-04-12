@@ -2,116 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D177335C8BD
-	for <lists+bpf@lfdr.de>; Mon, 12 Apr 2021 16:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4F835C96A
+	for <lists+bpf@lfdr.de>; Mon, 12 Apr 2021 17:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241996AbhDLO34 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Apr 2021 10:29:56 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:10116 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241820AbhDLO3z (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 12 Apr 2021 10:29:55 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13CEQX8W020446
-        for <bpf@vger.kernel.org>; Mon, 12 Apr 2021 07:29:37 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=/J836uGdjnoZNS+SmzkhLb1RvwunfsbasQkPupPM6tU=;
- b=rbN0LpHiNLyvNkvegGXD5mzpGDZnjvAeYaCXFQMCNLaDKTXb5HWzWUGUYsYUuL1VVywA
- DyTirizRy7zwPHf6ExeIA+V3EZpD9wzWLlzt+sCqME4WXxZDUPgRjO5xvw7vmeY8ZTRN
- rGt36LxGuTT5hNEQY4vWLi7+FGEPikA4x9k= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37uv3pdj75-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 12 Apr 2021 07:29:37 -0700
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 12 Apr 2021 07:29:36 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id CB0701569ABE; Mon, 12 Apr 2021 07:29:32 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        <kernel-team@fb.com>, Nick Desaulniers <ndesaulniers@google.com>,
+        id S238999AbhDLPIe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Apr 2021 11:08:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237526AbhDLPId (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Apr 2021 11:08:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F108611F0;
+        Mon, 12 Apr 2021 15:08:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618240095;
+        bh=yEYZUKPaHR793ZDhmZ+P1vlAN1MGuDfGKGZ/vHIAn3Q=;
+        h=Date:From:To:Cc:Subject:From;
+        b=K3Zdpb3zv2ms3Q7FD6i2Sv3atrOd3gtXVtLnczlukv1pjpMlW+rGc0C/jBoHa0Cdb
+         KiZdEu9/2ES3dZSuydULJoVbPW0DqxdBUaQn0D6g7GubujH/gHpzUoTMrZseVKfiTJ
+         sQHgbKEtK/n+L7vDqz76Is5G0B/LzClBD+C9bnLZp1rPxq3qPLyDhPpQ8Bg0dbaFOp
+         e6w/g2vtSzTZ1AL7yg1v2YEefQTRHhVvV8CCKaO593zpFAja2i/EyxxAQDJTeHZlof
+         ubYtmxZsy+/7rPmQ4YIw9zyFN7MybZuMeW1TzuopXEKNgkDaBEtUvH9RtaTkSmDMRK
+         MstQHuloq83+g==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0B4D040647; Mon, 12 Apr 2021 12:08:13 -0300 (-03)
+Date:   Mon, 12 Apr 2021 12:08:12 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     dwarves@vger.kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Mark Wieelard <mjw@redhat.com>,
+        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Bill Wendling <morbo@google.com>,
+        David Blaikie <dblaikie@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Sedat Dilek <sedat.dilek@gmail.com>
-Subject: [PATCH bpf-next v2 5/5] bpftool: fix a clang compilation warning
-Date:   Mon, 12 Apr 2021 07:29:32 -0700
-Message-ID: <20210412142932.268930-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210412142905.266942-1-yhs@fb.com>
-References: <20210412142905.266942-1-yhs@fb.com>
+Subject: ANNOUNCE: pahole v1.21 (clang's LTO edition, BTF floats)
+Message-ID: <YHRiXNX1JUF2Az0A@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: FkUhaQDnZPgfhokW5tmdTHGUJxGudDcQ
-X-Proofpoint-GUID: FkUhaQDnZPgfhokW5tmdTHGUJxGudDcQ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-12_11:2021-04-12,2021-04-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- clxscore=1015 suspectscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=761
- spamscore=0 lowpriorityscore=0 adultscore=0 phishscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104120098
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With clang compiler:
-  make -j60 LLVM=3D1 LLVM_IAS=3D1  <=3D=3D=3D compile kernel
-  # build selftests/bpf or bpftool
-  make -j60 -C tools/testing/selftests/bpf LLVM=3D1 LLVM_IAS=3D1
-  make -j60 -C tools/bpf/bpftool LLVM=3D1 LLVM_IAS=3D1
-the following compilation warning showed up,
-  net.c:160:37: warning: comparison of integers of different signs: '__u3=
-2' (aka 'unsigned int') and 'int' [-Wsign-compare]
-                for (nh =3D (struct nlmsghdr *)buf; NLMSG_OK(nh, len);
-                                                  ^~~~~~~~~~~~~~~~~
-  .../tools/include/uapi/linux/netlink.h:99:24: note: expanded from macro=
- 'NLMSG_OK'
-                           (nlh)->nlmsg_len <=3D (len))
-                           ~~~~~~~~~~~~~~~~ ^   ~~~
+Hi,
+ 
+	The v1.21 release of pahole and its friends is out, this time it's
+about using clang to build the kernel with LTO, some DWARF5 fixes, supporting
+floating types in the BTF encoder for s/390 sake and some misc fixes and
+improvements. Ah, it should also be faster due to switching to using libbpf's
+hashing routines.
 
-In this particular case, "len" is defined as "int" and (nlh)->nlmsg_len i=
-s "unsigned int".
-The macro NLMSG_OK is defined as below in uapi/linux/netlink.h.
-  #define NLMSG_OK(nlh,len) ((len) >=3D (int)sizeof(struct nlmsghdr) && \
-                             (nlh)->nlmsg_len >=3D sizeof(struct nlmsghdr=
-) && \
-                             (nlh)->nlmsg_len <=3D (len))
+Main git repo:
 
-The clang compiler complains the comparision "(nlh)->nlmsg_len <=3D (len)=
-)",
-but in bpftool/net.c, it is already ensured that "len > 0" must be true.
-So theoretically the compiler could deduce that comparison of
-"(nlh)->nlmsg_len" and "len" is okay, but this really depends on compiler
-internals. Let us add an explicit type conversion (from "int" to "unsigne=
-d int")
-for "len" in NLMSG_OK to silence this warning right now.
+   git://git.kernel.org/pub/scm/devel/pahole/pahole.git
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/bpf/bpftool/net.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Mirror git repo:
 
-diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
-index ff3aa0cf3997..f836d115d7d6 100644
---- a/tools/bpf/bpftool/net.c
-+++ b/tools/bpf/bpftool/net.c
-@@ -157,7 +157,7 @@ static int netlink_recv(int sock, __u32 nl_pid, __u32=
- seq,
- 		if (len =3D=3D 0)
- 			break;
-=20
--		for (nh =3D (struct nlmsghdr *)buf; NLMSG_OK(nh, len);
-+		for (nh =3D (struct nlmsghdr *)buf; NLMSG_OK(nh, (unsigned int)len);
- 		     nh =3D NLMSG_NEXT(nh, len)) {
- 			if (nh->nlmsg_pid !=3D nl_pid) {
- 				ret =3D -LIBBPF_ERRNO__WRNGPID;
---=20
-2.30.2
+   https://github.com/acmel/dwarves.git
 
+tarball + gpg signature:
+
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.21.tar.xz
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.21.tar.bz2
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.21.tar.sign
+
+	Thanks a lot to all the contributors and distro packagers, you're on the
+CC list, I appreciate a lot the work you put into these tools,
+
+Best Regards,
+ 
+ - Arnaldo
+
+DWARF loader:
+
+- Handle DWARF5 DW_OP_addrx properly
+
+  Part of the effort to support the subset of DWARF5 that is generated when building the kernel.
+
+- Handle subprogram ret type with abstract_origin properly
+
+  Adds a second pass to resolve abstract origin DWARF description of functions to aid
+  the BTF encoder in getting the right return type.
+
+- Check .notes section for LTO build info
+
+  When LTO is used, currently only with clang, we need to do extra steps to handle references
+  from one object (compile unit, aka CU) to another, a way for DWARF to avoid duplicating
+  information.
+
+- Check .debug_abbrev for cross-CU references
+
+  When the kernel build process doesn't add an ELF note in vmlinux indicating that LTO was
+  used and thus intra-CU references are present and thus we need to use a more expensive
+  way to resolve types and (again) thus to encode BTF, we need to look at DWARF's .debug_abbrev
+  ELF section to figure out if such intra-CU references are present.
+
+- Permit merging all DWARF CU's for clang LTO built binary
+
+  Allow not trowing away previously supposedly self contained compile units
+  (objects, aka CU, aka Compile Units) as they have type descriptions that will
+  be used in later CUs.
+
+- Permit a flexible HASHTAGS__BITS
+
+  So that we can use a more expensive algorithm when we need to keep previously processed
+  compile units that will then be referenced by later ones to resolve types.
+
+- Use a better hashing function, from libbpf
+
+  Enabling patch to combine compile units when using LTO.
+
+BTF encoder:
+
+- Add --btf_gen_all flag
+
+  A new command line to allow asking for the generation of all BTF encodings, so that we
+  can stop adding new command line options to enable new encodings in the kernel Makefile.
+
+- Match ftrace addresses within ELF functions
+
+  To cope with differences in how DWARF and ftrace describes function boundaries.
+
+- Funnel ELF error reporting through a macro
+
+  To use libelf's elf_error() function, improving error messages.
+
+- Sanitize non-regular int base type
+
+  Cope with clang with dwarf5 non-regular int base types, tricky stuff, see yhs
+  full explanation in the relevant cset.
+
+- Add support for the floating-point types
+
+  S/390 has floats'n'doubles in its arch specific linux headers, cope with that.
+
+Pretty printer:
+
+- Honour conf_fprintf.hex when printing enumerations
+
+  If the user specifies --hex in the command line, honour it when printing enumerations.
+
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
