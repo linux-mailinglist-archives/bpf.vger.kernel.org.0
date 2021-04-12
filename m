@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BF635D104
-	for <lists+bpf@lfdr.de>; Mon, 12 Apr 2021 21:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2DEC35D134
+	for <lists+bpf@lfdr.de>; Mon, 12 Apr 2021 21:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237161AbhDLTZz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Apr 2021 15:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
+        id S237505AbhDLTki (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Apr 2021 15:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237137AbhDLTZz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Apr 2021 15:25:55 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E9A9C061574;
-        Mon, 12 Apr 2021 12:25:36 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id 7so15449492qka.7;
-        Mon, 12 Apr 2021 12:25:36 -0700 (PDT)
+        with ESMTP id S236309AbhDLTki (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Apr 2021 15:40:38 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E83C061574;
+        Mon, 12 Apr 2021 12:40:18 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id h7so10900875qtx.3;
+        Mon, 12 Apr 2021 12:40:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=EAOBbEIZlFDzXoi0Sp9FWL3CYelnvTw/J4PVfYOgrZk=;
-        b=uNznQpSuXYdrtTvTibDNk1OknoGzngDinSUmjuZbcAFNgiy/aocOUTMEdbFnRig3yz
-         cBe4DVF/4ykUXy7zVFVV4FgeZ/CK+rBBbFCvkdwBchDcgbZS40t6I/gH7nbAbdhxB+lf
-         MwO2Ffg++S0JRl2lrL8sK0HOQpPOXAI57XFiu6vkkR7C4DHR2qDKdHTZOk7G/eiMaOzc
-         xbgj/xmdoUFS+4ycK5E54VP3yBZtvToH/0UaMxZJwoZ/B3c+0R06PMSJPemAjvJ7qBvO
-         esYnF4AD0T5YFg74d05qAgqtGbzhId/7OYh7a8otS+X5GpdPmHLmrF2RlUWHPLj+jzi+
-         Cn4w==
+        bh=AejPjhsHd0YI0MrjTxvC6alCH6cYbS+O/IVWNwQC52Y=;
+        b=dQRAMB2MLNab3KT3Zr1FvYs2vktv0pqd+leX97cPUMRc74VTuCPDoBqymtb9FYz6lM
+         Dkav/M0wqTAQvNYaNmKeSmrJEd/0YAzPOGv9kx0pQ4j21CYgkFikwVhQ78RxAoTJGxHL
+         HJv2MkZB6GDfC5YHsW5VHhrA0WZnvJJluz+/GARa254x6UGJJyO33ndSMtcOXpOHe+WN
+         RnEFH/MWZkInjvOYmJbD6ZjKZWGn9GuM3lf21SOqtZsV++E8C6gPEj3YnIiE5EoJCtLx
+         KubgNgqw5XLc9zOfJJJ9bQ7YX+wYdbxKsgZisOEbu5xD6rEUQGUkcH6y5XXIyn/w2B0F
+         Xdfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=EAOBbEIZlFDzXoi0Sp9FWL3CYelnvTw/J4PVfYOgrZk=;
-        b=So6pZAZzqj/rp9Qhx09KvNsjXepkWJJvzWVwQwFfo+P+rXwAShF2YQfYxDfGGcvBO+
-         Q+tXRHS4M1sEFZzq3QvGADvXa5VkQDd/qbBJBjHkAhRQHQAV+lQ+I/A6G+WA+RQRXHST
-         B3pTasxkioOaf+beBKzseym4JtdCNrnahLkW2wtb71jYp1IZmT1xfe5kWu2h9cYG+Gyg
-         Zpx2m4XYubkF/WR38y8lSTPK5BvPAWod4JKcHgWhJ3xQvGLRDGrvW1sbxwzO70xURLZy
-         7m4m5XFfj/btRS0o13axs7ZQ2NTKRW5QVlEpXXnKRXDHUmjseojG3FgQ28UEoDfyf0LS
-         enXw==
-X-Gm-Message-State: AOAM5314L5E33npwXht8d7PF671rtRRqBuGPmL1z+mdxa5xleSME/lWH
-        pkl4U4pzY3GrnKo1vu639XE=
-X-Google-Smtp-Source: ABdhPJyzQZvikmtooDGKaaUlhXS4ZfppmEozmQBQ86q8I57sjs+dzXsaVe1JlRdJHwNH102o1asWdA==
-X-Received: by 2002:a37:e30c:: with SMTP id y12mr11556664qki.33.1618255535792;
-        Mon, 12 Apr 2021 12:25:35 -0700 (PDT)
+        bh=AejPjhsHd0YI0MrjTxvC6alCH6cYbS+O/IVWNwQC52Y=;
+        b=XNZbEqZuX8BIn4RbnB/1JLXoRV/hD1CEogaXO7gA3kTm28SmyO8JP+qq4SXvM4eIU0
+         4UktsUC3EuAnQaUNlkylg1OOdjmN492INWtr77FJpf9FmSuYAiQCGgMVumQLaqc31gF8
+         wvALva9qgOT1P2lXE7Sv1+NPOwvqni4xybPg+2CKghkW+Hk57EfDnP+Kiz0LIQPrMch8
+         AWSmRU0lK92AMauHdzQZScES3orPsyeRe7zEunRLsKwFhast1aabZII5iPrBdjaLkSg8
+         Z2y/OMjZTJTvs8S9m7nOyT9G2jXmN9i0HscFEpbDY3wlnFxjmd8cbmdeCioTC8Kp5TuW
+         oSZA==
+X-Gm-Message-State: AOAM531djWQZHEsf/RZe8tibpMDg6hAboAJTbtNpAFhSkIq0uHslRBKT
+        bwKaOghdyBB0kKZ+19Eh0r0=
+X-Google-Smtp-Source: ABdhPJx0Zz3O9Xoxm/2TLm1HoYTUBcMlWd7T4zM6t1HqVhuw31+cQzPVzPvMaIRT/TAXCiAAUQ4SvA==
+X-Received: by 2002:ac8:dc3:: with SMTP id t3mr27647070qti.221.1618256417489;
+        Mon, 12 Apr 2021 12:40:17 -0700 (PDT)
 Received: from localhost.localdomain ([179.218.4.27])
-        by smtp.gmail.com with ESMTPSA id l16sm3841679qtr.65.2021.04.12.12.25.31
+        by smtp.gmail.com with ESMTPSA id j30sm8407911qka.57.2021.04.12.12.40.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 12:25:35 -0700 (PDT)
+        Mon, 12 Apr 2021 12:40:17 -0700 (PDT)
 From:   Pedro Tammela <pctammela@gmail.com>
 X-Google-Original-From: Pedro Tammela <pctammela@mojatatu.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
@@ -55,15 +55,17 @@ To:     Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Joe Stringer <joe@cilium.io>,
-        Quentin Monnet <quentin@isovalent.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        David Verbeiren <david.verbeiren@tessares.net>,
         netdev@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
         bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools)),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Pedro Tammela <pctammela@mojatatu.com>
-Subject: [PATCH bpf-next v2] libbpf: clarify flags in ringbuf helpers
-Date:   Mon, 12 Apr 2021 16:24:32 -0300
-Message-Id: <20210412192434.944343-1-pctammela@mojatatu.com>
+        linux-kernel@vger.kernel.org (open list),
+        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
+Subject: [PATCH bpf-next v3 0/3] add batched ops for percpu array
+Date:   Mon, 12 Apr 2021 16:39:58 -0300
+Message-Id: <20210412194001.946213-1-pctammela@mojatatu.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -71,111 +73,34 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In 'bpf_ringbuf_reserve()' we require the flag to '0' at the moment.
+This patchset introduces batched operations for the per-cpu variant of
+the array map.
 
-For 'bpf_ringbuf_{discard,submit,output}' a flag of '0' might send a
-notification to the process if needed.
+It also removes the percpu macros from 'bpf_util.h'. This change was
+suggested by Andrii in a earlier iteration of this patchset.
 
-Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
----
- include/uapi/linux/bpf.h       | 16 ++++++++++++++++
- tools/include/uapi/linux/bpf.h | 16 ++++++++++++++++
- 2 files changed, 32 insertions(+)
+The tests were updated to reflect all the new changes.
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 49371eba98ba..24593fd72f9d 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -4061,12 +4061,20 @@ union bpf_attr {
-  * 		of new data availability is sent.
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-+ * 		If **0** is specified in *flags*, an adaptive notification
-+ * 		of new data availability is sent.
-+ *
-+ * 		An adaptive notification is a notification sent whenever the user-space
-+ * 		process has caught up and consumed all available payloads. In case the user-space
-+ * 		process is still processing a previous payload, then no notification is needed
-+ * 		as it will process the newly added payload automatically.
-  * 	Return
-  * 		0 on success, or a negative error in case of failure.
-  *
-  * void *bpf_ringbuf_reserve(void *ringbuf, u64 size, u64 flags)
-  * 	Description
-  * 		Reserve *size* bytes of payload in a ring buffer *ringbuf*.
-+ * 		*flags* must be 0.
-  * 	Return
-  * 		Valid pointer with *size* bytes of memory available; NULL,
-  * 		otherwise.
-@@ -4078,6 +4086,10 @@ union bpf_attr {
-  * 		of new data availability is sent.
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-+ * 		If **0** is specified in *flags*, an adaptive notification
-+ * 		of new data availability is sent.
-+ *
-+ * 		See 'bpf_ringbuf_output()' for the definition of adaptive notification.
-  * 	Return
-  * 		Nothing. Always succeeds.
-  *
-@@ -4088,6 +4100,10 @@ union bpf_attr {
-  * 		of new data availability is sent.
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-+ * 		If **0** is specified in *flags*, an adaptive notification
-+ * 		of new data availability is sent.
-+ *
-+ * 		See 'bpf_ringbuf_output()' for the definition of adaptive notification.
-  * 	Return
-  * 		Nothing. Always succeeds.
-  *
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 69902603012c..8debc8280f3e 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -4061,12 +4061,20 @@ union bpf_attr {
-  * 		of new data availability is sent.
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-+ * 		If **0** is specified in *flags*, an adaptive notification
-+ * 		of new data availability is sent.
-+ *
-+ * 		An adaptive notification is a notification sent whenever the user-space
-+ * 		process has caught up and consumed all available payloads. In case the user-space
-+ * 		process is still processing a previous payload, then no notification is needed
-+ * 		as it will process the newly added payload automatically.
-  * 	Return
-  * 		0 on success, or a negative error in case of failure.
-  *
-  * void *bpf_ringbuf_reserve(void *ringbuf, u64 size, u64 flags)
-  * 	Description
-  * 		Reserve *size* bytes of payload in a ring buffer *ringbuf*.
-+ * 		*flags* must be 0.
-  * 	Return
-  * 		Valid pointer with *size* bytes of memory available; NULL,
-  * 		otherwise.
-@@ -4078,6 +4086,10 @@ union bpf_attr {
-  * 		of new data availability is sent.
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-+ * 		If **0** is specified in *flags*, an adaptive notification
-+ * 		of new data availability is sent.
-+ *
-+ * 		See 'bpf_ringbuf_output()' for the definition of adaptive notification.
-  * 	Return
-  * 		Nothing. Always succeeds.
-  *
-@@ -4088,6 +4100,10 @@ union bpf_attr {
-  * 		of new data availability is sent.
-  * 		If **BPF_RB_FORCE_WAKEUP** is specified in *flags*, notification
-  * 		of new data availability is sent unconditionally.
-+ * 		If **0** is specified in *flags*, an adaptive notification
-+ * 		of new data availability is sent.
-+ *
-+ * 		See 'bpf_ringbuf_output()' for the definition of adaptive notification.
-  * 	Return
-  * 		Nothing. Always succeeds.
-  *
+v2 -> v3:
+- Remove percpu macros as suggested by Andrii
+- Update tests that used the per cpu macros
+
+v1 -> v2:
+- Amended a more descriptive commit message
+
+Pedro Tammela (3):
+  bpf: add batched ops support for percpu array
+  bpf: selftests: remove percpu macros from bpf_util.h
+  bpf: selftests: update array map tests for per-cpu batched ops
+
+ kernel/bpf/arraymap.c                         |   2 +
+ tools/testing/selftests/bpf/bpf_util.h        |   7 --
+ .../bpf/map_tests/array_map_batch_ops.c       | 110 +++++++++++++-----
+ .../bpf/map_tests/htab_map_batch_ops.c        |  71 ++++++-----
+ .../selftests/bpf/prog_tests/map_init.c       |   9 +-
+ tools/testing/selftests/bpf/test_maps.c       |  84 +++++++------
+ 6 files changed, 171 insertions(+), 112 deletions(-)
+
 -- 
 2.25.1
 
