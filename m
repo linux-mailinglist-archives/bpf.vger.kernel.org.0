@@ -2,155 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6045835CB29
-	for <lists+bpf@lfdr.de>; Mon, 12 Apr 2021 18:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A9335CC33
+	for <lists+bpf@lfdr.de>; Mon, 12 Apr 2021 18:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243453AbhDLQXk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Apr 2021 12:23:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243288AbhDLQXg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:23:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F41E60FD7;
-        Mon, 12 Apr 2021 16:23:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618244598;
-        bh=U7lrLvYeZLzX0uWHc2XMXoABjhSSZOMnk8XosbBLOO4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mcoHbbEhN1AQi77tyBt6EzJdWysBNEabNc9Yg70IAeYoY4OupuBku+5UrAS+0w6qc
-         U5/2d5ncvRE1ypt8p+/Ii2UZ272yXsFs/gq0Qg1NL+E2YTkXNPKgcvw8xueleHlnQT
-         mlf05pZ35vXY9bnk00wzNR+tcGYf6vViMNfFWOFVW45fT+fC8l5Umy6pJyOEliBODm
-         B/b4qypQ22TR8FUY02fd3XjrTC9McaMuBYVzqNd+6SjkxR4feJMI0d/CCfm1HSekmQ
-         ENOgVmoTIf1/OCaRUm09TPeYnEeo7JvcM29OEH9nVN2dM6lVtuxQsxb0G/zDk0BVGo
-         1CZgOnubebcZg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 17/51] bpf: Take module reference for trampoline in module
-Date:   Mon, 12 Apr 2021 12:22:22 -0400
-Message-Id: <20210412162256.313524-17-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210412162256.313524-1-sashal@kernel.org>
-References: <20210412162256.313524-1-sashal@kernel.org>
+        id S243601AbhDLQ1i convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 12 Apr 2021 12:27:38 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:27586 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243900AbhDLQZi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 12 Apr 2021 12:25:38 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-130-xCfcqp_7ObyxpbgdmtugIw-1; Mon, 12 Apr 2021 12:25:16 -0400
+X-MC-Unique: xCfcqp_7ObyxpbgdmtugIw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1ADC891270;
+        Mon, 12 Apr 2021 16:25:15 +0000 (UTC)
+Received: from krava.cust.in.nbox.cz (unknown [10.40.195.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6F3006A034;
+        Mon, 12 Apr 2021 16:25:03 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>
+Subject: [PATCHv4 bpf-next 0/5] bpf: Tracing and lsm programs re-attach
+Date:   Mon, 12 Apr 2021 18:24:57 +0200
+Message-Id: <20210412162502.1417018-1-jolsa@kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jiri Olsa <jolsa@kernel.org>
+hi,
+while adding test for pinning the module while there's
+trampoline attach to it, I noticed that we don't allow
+link detach and following re-attach for trampolines.
+Adding that for tracing and lsm programs.
 
-[ Upstream commit 861de02e5f3f2a104eecc5af1d248cb7bf8c5f75 ]
+You need to have patch [1] from bpf tree for test module
+attach test to pass.
 
-Currently module can be unloaded even if there's a trampoline
-register in it. It's easily reproduced by running in parallel:
+v4 changes:
+  - fix wrong cleanup goto jump reported by Julia
 
-  # while :; do ./test_progs -t module_attach; done
-  # while :; do rmmod bpf_testmod; sleep 0.5; done
+thanks,
+jirka
 
-Taking the module reference in case the trampoline's ip is
-within the module code. Releasing it when the trampoline's
-ip is unregistered.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20210326105900.151466-1-jolsa@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+[1] https://lore.kernel.org/bpf/20210326105900.151466-1-jolsa@kernel.org/
 ---
- include/linux/bpf.h     |  2 ++
- kernel/bpf/trampoline.c | 30 ++++++++++++++++++++++++++++++
- 2 files changed, 32 insertions(+)
+Jiri Olsa (5):
+      bpf: Allow trampoline re-attach for tracing and lsm programs
+      selftests/bpf: Add re-attach test to fentry_test
+      selftests/bpf: Add re-attach test to fexit_test
+      selftests/bpf: Add re-attach test to lsm test
+      selftests/bpf: Test that module can't be unloaded with attached trampoline
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 564ebf91793e..88b581b75d5b 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -41,6 +41,7 @@ struct bpf_local_storage;
- struct bpf_local_storage_map;
- struct kobject;
- struct mem_cgroup;
-+struct module;
- 
- extern struct idr btf_idr;
- extern spinlock_t btf_idr_lock;
-@@ -630,6 +631,7 @@ struct bpf_trampoline {
- 	/* Executable image of trampoline */
- 	struct bpf_tramp_image *cur_image;
- 	u64 selector;
-+	struct module *mod;
- };
- 
- struct bpf_attach_target_info {
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 986dabc3d11f..a431d7af884c 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -9,6 +9,7 @@
- #include <linux/btf.h>
- #include <linux/rcupdate_trace.h>
- #include <linux/rcupdate_wait.h>
-+#include <linux/module.h>
- 
- /* dummy _ops. The verifier will operate on target program's ops. */
- const struct bpf_verifier_ops bpf_extension_verifier_ops = {
-@@ -87,6 +88,26 @@ static struct bpf_trampoline *bpf_trampoline_lookup(u64 key)
- 	return tr;
- }
- 
-+static int bpf_trampoline_module_get(struct bpf_trampoline *tr)
-+{
-+	struct module *mod;
-+	int err = 0;
-+
-+	preempt_disable();
-+	mod = __module_text_address((unsigned long) tr->func.addr);
-+	if (mod && !try_module_get(mod))
-+		err = -ENOENT;
-+	preempt_enable();
-+	tr->mod = mod;
-+	return err;
-+}
-+
-+static void bpf_trampoline_module_put(struct bpf_trampoline *tr)
-+{
-+	module_put(tr->mod);
-+	tr->mod = NULL;
-+}
-+
- static int is_ftrace_location(void *ip)
- {
- 	long addr;
-@@ -108,6 +129,9 @@ static int unregister_fentry(struct bpf_trampoline *tr, void *old_addr)
- 		ret = unregister_ftrace_direct((long)ip, (long)old_addr);
- 	else
- 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, old_addr, NULL);
-+
-+	if (!ret)
-+		bpf_trampoline_module_put(tr);
- 	return ret;
- }
- 
-@@ -134,10 +158,16 @@ static int register_fentry(struct bpf_trampoline *tr, void *new_addr)
- 		return ret;
- 	tr->func.ftrace_managed = ret;
- 
-+	if (bpf_trampoline_module_get(tr))
-+		return -ENOENT;
-+
- 	if (tr->func.ftrace_managed)
- 		ret = register_ftrace_direct((long)ip, (long)new_addr);
- 	else
- 		ret = bpf_arch_text_poke(ip, BPF_MOD_CALL, NULL, new_addr);
-+
-+	if (ret)
-+		bpf_trampoline_module_put(tr);
- 	return ret;
- }
- 
--- 
-2.30.2
+ kernel/bpf/syscall.c                                   | 23 +++++++++++++++++------
+ kernel/bpf/trampoline.c                                |  2 +-
+ tools/testing/selftests/bpf/prog_tests/fentry_test.c   | 51 ++++++++++++++++++++++++++++++++++++---------------
+ tools/testing/selftests/bpf/prog_tests/fexit_test.c    | 51 ++++++++++++++++++++++++++++++++++++---------------
+ tools/testing/selftests/bpf/prog_tests/module_attach.c | 23 +++++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/test_lsm.c      | 48 ++++++++++++++++++++++++++++++++++++++----------
+ tools/testing/selftests/bpf/test_progs.h               |  2 +-
+ 7 files changed, 152 insertions(+), 48 deletions(-)
 
