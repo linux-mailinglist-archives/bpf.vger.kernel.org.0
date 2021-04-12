@@ -2,192 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806AB35B9DE
-	for <lists+bpf@lfdr.de>; Mon, 12 Apr 2021 07:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68F335B9E5
+	for <lists+bpf@lfdr.de>; Mon, 12 Apr 2021 07:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhDLFhq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Apr 2021 01:37:46 -0400
-Received: from mail-dm6nam12on2083.outbound.protection.outlook.com ([40.107.243.83]:7855
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229448AbhDLFhq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Apr 2021 01:37:46 -0400
+        id S229493AbhDLFm7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Apr 2021 01:42:59 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63518 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229482AbhDLFm7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 12 Apr 2021 01:42:59 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13C5fgSV006303;
+        Sun, 11 Apr 2021 22:42:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=2s72PkXY7mRV3gFC7SfQcHGu+skqgE+71goewvlpovs=;
+ b=fVG2JMs2X2qFbF3Yu5bNUzixvrBAayz5C71UfWQRrbOCGCEY0jIMWYKLxq1QwoPiqtzs
+ nKECyuxbTlNLZgkSaC9ZeNQZ9L6YSZ/VJuUa1KO8okf1PcATLaVfJa+euGQ4meziS7q3
+ nBFntbMx8lMmYPBzRyZzXI6n3KWEfLUlOW8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 37uuusbch8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 11 Apr 2021 22:42:37 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sun, 11 Apr 2021 22:42:36 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aFREYCECw0e8QM0EugRbBCMsUBp5qzb/eb3JxkQCQydrP7+w6LWbWqOYtJj355lxPKoVIg+A4rkh/mVQ6ZsVI4KU15S8gMgGkc2QmGP/bGir6zsT7OIcpcayEh4tGj8n0CFogogXGkTGMn5qrUDW+R0f4YETVLXA5WnMANRRLfTC7pV5tOTvCBIBlSQInbQ5AlnO/80A7QseewdzM6mCNSryCWc80uJTsquAvRK7KtbtZ/z19vjYcCE0QKHH35LfCI57VsrLbnN/okQUYqycHHHCReW+rPQwW1KELqUaL7cbPja22X4c1ckhjgifhywbyHsHq5In0E1Npm4qAjZ4Og==
+ b=TQR6rPbWrb2/W559AtS6g7uUd3/aRoz1zPvoN2f4MWy0iWAI3INVY+ysOGeHOv5vnE5Pb9s1msXCwx1ksZCacjWrbGac0BqzDTFCaUNoJ6Ylzd5snX/1nbSoOXGEGJ6xBNTD0zd3CZXc8VkI5otAb9dsJ+/vfX/N7p6IyHwRMW5V01GhAcCM3DoqoeBayuA/zh1qhV93Q64yYGDbPiDHP5CTRHO4IgniKyyFT2EChObz7N9AFP0xvPEZ3MmJ6/etmsQExMkneB1aGEUXeDct+rR7ybahFV2qu6QlzX1BejRHQp4u1PaG8YXBmdYbkDFk/Z1nXZxCNQsZ7C7p0vnhFg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0HyWMggtiuCprit4TgYCubO+2iv3tDIcJ1LNHMmF0wg=;
- b=dozUTVfaA+il/snJWzW2cpWIBQ9u/jePdmzmjMwGw9ZerUSuv9zrD72LYNVdarUAocIjc/c7SKuSQ5Wa50BGiLWp2lZDUrS/CdJas3EjBInfZ5P5T1B583LnerllHSCOWd2amRzv2Acp5w54NvQhwWyRpBcSddDtXpp5Cy6yGumlutvMywj6CpnsNLSNNSr2gfM/mqKF3wmQMLzJ+lB2cyz/Bz7wIAYkq9+7S6P06uUy0QbbIUT2b0tcaIwCqaB4ZGAdmUCQqpkGbdeiBY/EzmYQFBQSN2TrXX/ooag94JYsau5jFXRKhs/HQa6ZDLpQucJ5FmyDF9GdJUBmS+3plA==
+ bh=2s72PkXY7mRV3gFC7SfQcHGu+skqgE+71goewvlpovs=;
+ b=LSmFlp9asuvKxPEZodIGBRiC/niJMvIQ0AlyjCFQuOT0DRMeUwtz+i/yW/CI82/Jx/4FGrhzCeDpGeYlL5/b51yKjLamvMwU/n8y99xALyI1YZMB4M0zITBGfBFsvRl0R59Io5ZUj4yKH542DReKEspdjW11jDeZTLQCngWxp1pYe/jxpWhpRk5HyYkvag3/Er77Bs7sXBvwrz1jeGTz68pse+rdWrThxzPaZpB/iy8ZweRQETbaU/4RcFCL/xteJo2JIzC4igxkePSlxd1XxjY/CIeFRnY2hmNqTiDwxCJpb4+jSMKqES/DjoCpX23NRSpwenqiWVQmvzWwYpAZVQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0HyWMggtiuCprit4TgYCubO+2iv3tDIcJ1LNHMmF0wg=;
- b=MbOTBEthr/QEo4a7BjZ8X7KwFmjwJQyRnVf+9iqhLiGjWgyJRNgMikYCjgzrRhG68BAzyQLf463NubSBs1mr/NTqINVPKH65gZjpSfW2i0h5kAQWSL+JI1CMtx4MAo6LuSlEMDl7o6fhEQdiGvYyPFeX7U1Ez67jqrs1eVTCQVQ=
-Authentication-Results: brainfault.org; dkim=none (message not signed)
- header.d=none;brainfault.org; dmarc=none action=none
- header.from=synaptics.com;
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
- by SJ0PR03MB6239.namprd03.prod.outlook.com (2603:10b6:a03:3ad::11) with
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA0PR15MB3936.namprd15.prod.outlook.com (2603:10b6:806:80::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Mon, 12 Apr
- 2021 05:37:27 +0000
-Received: from BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
- ([fe80::8569:341f:4bc6:5b72%8]) with mapi id 15.20.4020.022; Mon, 12 Apr 2021
- 05:37:27 +0000
-Date:   Mon, 12 Apr 2021 13:37:11 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2 1/9] riscv: add __init section marker to some
- functions
-Message-ID: <20210412133711.7b625842@xhacker.debian>
-In-Reply-To: <CAAhSdy0CgxZj14Jx62CS=gRVzZs9c9NUysWi1iTTZ3BJvAOjPQ@mail.gmail.com>
-References: <20210401002442.2fe56b88@xhacker>
-        <20210401002518.5cf48e91@xhacker>
-        <CAAhSdy0CgxZj14Jx62CS=gRVzZs9c9NUysWi1iTTZ3BJvAOjPQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
+ 2021 05:42:35 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3999.033; Mon, 12 Apr 2021
+ 05:42:35 +0000
+Subject: Re: [PATCH bpf-next 3/5] selftests/bpf: fix test_cpp compilation
+ failure with clang
+To:     <sedat.dilek@gmail.com>
+CC:     <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        <kernel-team@fb.com>, Nick Desaulniers <ndesaulniers@google.com>
+References: <20210410164925.768741-1-yhs@fb.com>
+ <20210410164940.770304-1-yhs@fb.com>
+ <CA+icZUXzCpHWk8Vm5D4ZcCbdd9gqipVD5ALCw6SGTFbYfdJZiA@mail.gmail.com>
+ <7c82c0f5-2a96-7a5c-b090-f26c9351786c@fb.com>
+ <CA+icZUWwSg4Nd+AzAMx8Os4iAfs=40zeoYn0eVKg3Cy7fB5Cow@mail.gmail.com>
+ <3f224f2c-bb7e-accc-b095-7fee8210861b@fb.com>
+ <CA+icZUVPQT9WNona7xdmZP+2nS=xLn6hssd1wmLSeVNBzsOqTQ@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <1184be32-46d6-15a8-06b6-7e9bd26a88c6@fb.com>
+Date:   Sun, 11 Apr 2021 22:42:31 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
+In-Reply-To: <CA+icZUVPQT9WNona7xdmZP+2nS=xLn6hssd1wmLSeVNBzsOqTQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.147.44.204]
-X-ClientProxiedBy: SJ0PR13CA0159.namprd13.prod.outlook.com
- (2603:10b6:a03:2c7::14) To BY5PR03MB5345.namprd03.prod.outlook.com
- (2603:10b6:a03:219::16)
+X-Originating-IP: [2620:10d:c090:400::5:5961]
+X-ClientProxiedBy: MWHPR1401CA0003.namprd14.prod.outlook.com
+ (2603:10b6:301:4b::13) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (192.147.44.204) by SJ0PR13CA0159.namprd13.prod.outlook.com (2603:10b6:a03:2c7::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.8 via Frontend Transport; Mon, 12 Apr 2021 05:37:21 +0000
+Received: from [IPv6:2620:10d:c085:21cf::110f] (2620:10d:c090:400::5:5961) by MWHPR1401CA0003.namprd14.prod.outlook.com (2603:10b6:301:4b::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Mon, 12 Apr 2021 05:42:34 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d4b3d65e-3f10-4ac8-da1c-08d8fd750e83
-X-MS-TrafficTypeDiagnostic: SJ0PR03MB6239:
-X-Microsoft-Antispam-PRVS: <SJ0PR03MB62391076B51DF15413E545D6ED709@SJ0PR03MB6239.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Office365-Filtering-Correlation-Id: 682f6659-c7f1-4421-2405-08d8fd75c672
+X-MS-TrafficTypeDiagnostic: SA0PR15MB3936:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR15MB393617214CEB8D8CB0B2129DD3709@SA0PR15MB3936.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3GAciX+Jg7Rqb/SH7ftcrqi9XKo6wTuMWLj8pkq213uxsUyX487RYzB0J1RDhMiwl1SXhGR2aHm3V09+RNuQamXbkurWBGssxgoO+RmUbxJGwvW36BDu9IlIzGe8bMp3TRU05FrxMLiot8wD3m+7BwOKQBjOHESPVV0DfW5aDv4HgZX3xkCEJ7sUivgr9F94lq0s22b0r4TmhEaZOfjpegJ9rP6ou3BTx576cMlatU+00h1s+yL5hAZV4bDMDI27Ihn44Z9+2leyv/1dTS0/+YgsbEXETpmFSCG2HHXTwtHFhZ0Bidv8a4LsL+I39FmvJhAp/IrUVS+R76a7tRXP4Hgj85G2jCDkPh1+pC5Ur0cb3ydjddnLrPkYz701ubWqKo+nveAQFv6dUrp4/CIoWZKS6i/qWxBEE9i2BjhCXUylAJJX0q9DblBCsomoCzKJT4VixnlwVkb7DjlTRZu5fyXtXJwkmkCna4xMtVV3Ka4xnzRgwYEwmaDdHCQOjJDH/FkGLJ22c0JJMhaK33KcnysIgkznf5sR1EuunFno3Dq/rGakPdjFhmS9Jb3VV4CE/O93R8CEMefiOHlHndCc1NN5AfBAdrE/E0B2US2x+0DowXaspX2dfQnSBx5YCyb78fjZlt9/BRwRAFvcRGeQYwSca2d5YglS6p08KoJTuGk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39850400004)(396003)(346002)(376002)(136003)(7696005)(52116002)(55016002)(38100700002)(38350700002)(2906002)(316002)(26005)(4326008)(1076003)(6506007)(16526019)(53546011)(9686003)(86362001)(66556008)(186003)(8676002)(6666004)(956004)(66946007)(7416002)(6916009)(66476007)(8936002)(478600001)(54906003)(5660300002)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?bLYrPWHF8JJ2Cl+59CWRQovnlUXJ5MKx8TwAMHcnFc3RDO9l0Yi2lRntLzXd?=
- =?us-ascii?Q?qvvXZZaCJmsDbEXDg56iyNpDKORv0lq+BY9hwFqgTO7GPXZi8AtDENdHz4hA?=
- =?us-ascii?Q?TAlTY03dc/Ja+oHQW4nSoafkrxQX9Lmwt4uMmqqW+Jdg9eQdRZ44m083Y1TL?=
- =?us-ascii?Q?qm7Dfe4+r2PFpCsAjZE3V9a9eT5enLiEHj1XlUf6EvWaiSZAH/N5Cd47TmQu?=
- =?us-ascii?Q?4MAPHdlznCghDd74BoSxrBItLSzkvgZwM+besQwK9eTVxdYCt4TTDpo3kQCA?=
- =?us-ascii?Q?2h8UOkVg6QwWWsGVYThYYthoSTr+CVzoJDYFJ2mHcBj5OwPJnHd7c/kum7dX?=
- =?us-ascii?Q?CCQoTlrCZ94h/XU1zq2i36IzTWXpyx1buF/jx9bwC0jMDT9VESImuvHZp7UF?=
- =?us-ascii?Q?FFsWfOZ91ubbL9RtrceYXitDWv3AehsRY2iynwRLHMT+xkeOgdOnxrUxFxTq?=
- =?us-ascii?Q?bMw68Oa90zExVgoAaDkNoVHARJ3mC2nwDZuIGJJgDwOv64ywmrkKK6KUUCW4?=
- =?us-ascii?Q?YZF8pvHb38teciIQDThiaBifzFMnF8A2Ne8tHuQmpOQObpmRl6pozY//P9Pj?=
- =?us-ascii?Q?4QcGxVcYJRP9EiyH+uRfrPY5zD2qBaPCblFHcTajTcKC8bkH4uougsAu2Fev?=
- =?us-ascii?Q?hsuamdFkkMZcyAQQRrXg1eIzy3cGmBkB0FTqOMcJB/oLXILt3ZES6vYObAR4?=
- =?us-ascii?Q?hsesKe3pn0f6goz4xu6VR8YgUJ8RmEzMoxnPCphkT+9thQM2uXuXWrFJ7XJ7?=
- =?us-ascii?Q?ey0+9L2S6cG090TtC62Ry3OMHXfTjA/ah7b8WEOxkYREK/kPzROmQRq44j2T?=
- =?us-ascii?Q?m/QbKPZ4JjotVCVO0TOW+Yg0dIHI1WHo+MTBz65YQFC3mK85Hg9qMdFjHAy7?=
- =?us-ascii?Q?l5thFTEKaztCuyaWmVfRlkOklSr5LcUEEQTTOI29Nv6a2p1uhVZdCEOMDHYo?=
- =?us-ascii?Q?oVRQhQcWgS5Yed1E0ur15xlicaMduxnkiPsDRYS34AxA18g0cxgjKfV7DCbc?=
- =?us-ascii?Q?mZWnoYXVQcdw3FxNTAl4HDtSAyv2+ASP39DJ7j0PJawe4xFKbZz5XP7TOURj?=
- =?us-ascii?Q?apQDJPUeaF1NorlZISlBYsUngzd3R46wiM3ndXKqwxmIH0sSkjV2s0tLQKcV?=
- =?us-ascii?Q?a37uEzjMgbjQX29fp1DLIHi98FBbDMUTpP4Wk3/+0NempLlx4CcTebb14Wzr?=
- =?us-ascii?Q?qyKOq8rkQZ3H7NmrrIi58krQKfzhDikVn9UABRS15XRSCxf/rrWysMCDGviy?=
- =?us-ascii?Q?/J56/BYfU4jYVLFMwq1eN2aTW7zbsy+lflbf7hnllqQciM9BK0MdxoSOVS3C?=
- =?us-ascii?Q?9b184m6F0fnGkG40s5qbQeGZ?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4b3d65e-3f10-4ac8-da1c-08d8fd750e83
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: dvHh4S8iRyZ5YC0hOOsB6MKlssXij0Rpign2VBEo3A9WhV84fzvsbBClR8P1oG1eN+Lkk36MuHEtkYMrkJsy+JD31CeJmgVgl6Ixgssd2ctNVCCeDUpRW9lCbvJOYSnseJNGzeS6Z1o3JSFi5mXuNe8Ja9MdceyaW03zd1VD/ksY+Jb9Zozjo1iqh8uEEqv5BGk3zu7IyT5TmmbfCvOJ3NyVd5VjyekVp/wnKSGgBk2TfF5V86/u1k00CR/Sbo2Js7x52bBajf2fMlnxdAXfkFVvcWMW54PkckTG7vI6VDgc+XPg9/7yA36fMNC4H7ImV/RplmbOEg+CmzmvCGbcu43c/B4PPDv35gZfiuCgbWOGFU8WODo/XcIsaJQ3LHLRi59kpQEZJlm8Pd585Z+IY6ALMcl4LTQ9af+wi0ZmjyRVQ9V/2i2NJWTg/iarEb8npkaV2oXisebVcvFDlooSSr3S2uGdfpjjGfPZeIYa29Xrez359v/Tc5FZ+t0nCs4G7TPLPIBQbuVYiTCda6gQ0Wql8DRqNg+zL8Ia9mQYvu1lsV0iFAx9la0ppb/9FvWUZRWOu3CASzQgQMdjL4XmlHfi1ez5ykFHuhg1wkBPVKgzbdPw0QqT8fkWsA+vMx7w96tj6s3pJJmPWIZoL8kZzgch89uiG+vhmBPwF1ZC5DJ6mXc+5M+/Dmx6tRvgcr8J
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(366004)(376002)(136003)(346002)(52116002)(66946007)(6486002)(38100700002)(36756003)(478600001)(5660300002)(2906002)(16526019)(2616005)(66556008)(4326008)(53546011)(31696002)(316002)(186003)(83380400001)(6666004)(8936002)(54906003)(6916009)(66476007)(31686004)(8676002)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SFRaTDVKZk9laGljNXFDS3ZGUFpvUTl4MXBkQ0FZMXIzbGtlQ0lxRTdqeWxm?=
+ =?utf-8?B?YlV0WGRWM1k1OHgxaG9IeTZmSGlJY24vWDV1YlpQTXlzN1JyT0FlRFNQcE5r?=
+ =?utf-8?B?ZFJPOHRCMkF4N0hORWoxOHBlb1dLeW03WkxrK1Rvd3lOeHI4VE5zVHJScW1v?=
+ =?utf-8?B?U29KWU8wcTNzb25UUm1uMDZKNnIzM2duT2twcloxc2pzMzZDRWFySVdTdlk4?=
+ =?utf-8?B?MUtsQWRBcEVXSXJ1VExaMllTekxNWDF1QkwvWC9FVHhLQms4eUdzU1g2aEk0?=
+ =?utf-8?B?eEVYUjc4K3JNWGJZaXNETlZtRGdPbVZscHBTRE1xMEkvUWozQVRCcjZVQ3JQ?=
+ =?utf-8?B?c3hKQmxJcVE1eEpZeE5mMFJYV3lvaHlqbDBOamJhdytJekh2dzBPNGt4cGw0?=
+ =?utf-8?B?QllnK3pEMU1Yb3IwcUtpOUJkcVE0dVFhcDk0TFhxcDRCc1AvRkdTb29SZU9K?=
+ =?utf-8?B?K0ZkbjkvS2J2TnE5OVExMnB3Mk9UenZFTUpjZkV5aXNIU2Nlb3lIcXM0QnF1?=
+ =?utf-8?B?Z0pIRzhMc0NSaXZaQS9xeDMrV0FFbjNidDRyaVlhUExiNGk4dS9KMFFsR0Rk?=
+ =?utf-8?B?Wm5YelhJT2FmOVc4Y0cyZmR2VWR1Q1pUVWU2UUN4ejdQRmRmVEtwbUFqYmQ5?=
+ =?utf-8?B?d29McVFCZDRDdTVtU3BwNklObXVkSnIwTUhWRjN4SllOTEpNNXY4aUc0a1Vr?=
+ =?utf-8?B?WVUyR205Q3NUL0pXU2s3MlJDT1FxRk1kVXZHZzk2ZGYxZWd5b1lpbml5NmJx?=
+ =?utf-8?B?bU9MTkV2OEVuN1NwNGMwc0NOOG9vRmpTd1hLa1ErSndia0prMTQxL1FZc2Vi?=
+ =?utf-8?B?V21jMnR3THNqSzFnVGR6V2VjVEpocDlZdVlSRy9DSU1TWCtsTjllTDdYQ3Bm?=
+ =?utf-8?B?R0xvLzM0d0Q5eWgzMVorUHZMZlRCVjVPVXNZVVg2RzZteWJ6dVNMZDluOWY4?=
+ =?utf-8?B?TnFWcm5RUW9BaXNOTUVWOS8ralNxM0NqaitGZENXNk44Zi93SHZyV0RXSkhv?=
+ =?utf-8?B?MU9GRmdvNGwvTlNRNjV3UTR1dWVBamFEcU1FeW5haUpPS3JtcmRUakFYelJR?=
+ =?utf-8?B?dGpZRXV2aHdpcDY3Yk5lNk9wSm9hWU1pc200azJIWVVWNUxNQmdnT1lYTlds?=
+ =?utf-8?B?UEJwd0dQQkVHS1JHY3dIMWpXaVFNSUJUNFhwUGFQVHRRYjZBZHhSOTlTYjdZ?=
+ =?utf-8?B?T0Q0YlptVjR0cjNoNk1iOEFjaURUbnRsUGZPN0RXSDlFd0RSWjVESWtsdUkz?=
+ =?utf-8?B?S1NzSHVtL3QzcFRqSHVMaEZmYzZ0aW5OVHNERElkUEV6WnQ4RzJ5cHFxbnRx?=
+ =?utf-8?B?RnhFdk4yb3RzK0QvVW02V1J4Zkdpa1A1d1plcm5EeGJQY2U4ZFdjRkFIanFC?=
+ =?utf-8?B?RCs5S0lUUlZUWDhNZTF0NHF6dzNTQmJpd21CRndxM1E4cm9jU256Qlc1TFR5?=
+ =?utf-8?B?T29mSnpwQk55QmludHBSVTlGTWk0cXhKblRZL21hT0ZrRzk3R3NBT1lpdVpW?=
+ =?utf-8?B?SXlDTHA0c0hOenFmbHpjaVRxMmd0TVVjTEIybUVGdmRIVEJoMlRMdEdCUWdK?=
+ =?utf-8?B?eE5VdGhqODRPTHYybUpic2xTQlV4QWg4NzVXUDQrK2thSVlTbU9HbEFITUR2?=
+ =?utf-8?B?MG9EWTV4TWV3VVhQdG8wZWJQWWlaRUU5eEtpUERkL0dhejZzVEwwY3NMdEFB?=
+ =?utf-8?B?TURVeUdaZW01dys4bXhMblQyeVpDQVdDSWRwa1o5RnlobFFaYk9nWWpPSXVE?=
+ =?utf-8?B?c04vUWNyMmZFQlFEaEV6SzI2L3hXaGZrV0RLVlkvYVIzL0EyNjVibHRYd2xY?=
+ =?utf-8?B?VFQvUlV3aTJVQ1NzczRHZz09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 682f6659-c7f1-4421-2405-08d8fd75c672
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2021 05:37:27.1768
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2021 05:42:35.7194
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NYlbIr71RZ2/13b1wPPqXxEXBPhYgu3cUn/KoPoVLKJrCsribjr1dy9tCnb5b9HzD8P+DwZd+Oz6nPQID8GuZw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR03MB6239
+X-MS-Exchange-CrossTenant-UserPrincipalName: VN8m6t1UFKRAd+9BKvU4lIg72c2VQ3F/ZUup4r7zPfdtKXEGijOBl52TmvdVh83Y
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3936
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: 3QBMcLu0UiTnRorHTRZik_y7t_vZ_NRa
+X-Proofpoint-ORIG-GUID: 3QBMcLu0UiTnRorHTRZik_y7t_vZ_NRa
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-12_03:2021-04-12,2021-04-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=851 priorityscore=1501 suspectscore=0
+ lowpriorityscore=0 adultscore=0 phishscore=0 malwarescore=0 clxscore=1015
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104120037
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 2 Apr 2021 09:38:02 +0530
-Anup Patel <anup@brainfault.org> wrote:
 
+
+On 4/11/21 9:47 PM, Sedat Dilek wrote:
+> On Sun, Apr 11, 2021 at 9:08 PM Yonghong Song <yhs@fb.com> wrote:
+> [ ... ]
+>>> BTW, did you check (llvm-)objdump output?
+>>>
+>>> $ /opt/llvm-toolchain/bin/llvm-objdump-12 -Dr test_cpp | grep core_extern
+>>
+>> This is what I got with g++ compiled test_cpp:
+>>
+>> $ llvm-objdump -Dr test_cpp | grep core_extern
+>>     406a80: e8 5b 01 00 00                callq   0x406be0
+>> <_ZL25test_core_extern__destroyP16test_core_extern>
+>>     406ab9: e8 22 01 00 00                callq   0x406be0
+>> <_ZL25test_core_extern__destroyP16test_core_extern>
+>> 0000000000406be0 <_ZL25test_core_extern__destroyP16test_core_extern>:
+>>     406be3: 74 1a                         je      0x406bff
+>> <_ZL25test_core_extern__destroyP16test_core_extern+0x1f>
+>>     406bef: 74 05                         je      0x406bf6
+>> <_ZL25test_core_extern__destroyP16test_core_extern+0x16>
+>>
+> 
+> What is the output when compiling with clang++ in your bpf-next environment?
+
+$ llvm-objdump -Dr test_cpp | grep core_extern
+$
+
+So looks like all test_core_extern_*() functions are inlined.
+This can be confirmed by looking at assembly code.
+while for gcc, there is still the call to
+   _ZL25test_core_extern__destroyP16test_core_extern
+which is
+   test_core_extern__destroy(test_core_extern*)
+
+This is just a difference between compiler optimizations
+between gcc and clang. We don't need to worry about this.
 
 > 
+> - Sedat -
 > 
-> On Wed, Mar 31, 2021 at 10:00 PM Jisheng Zhang
-> <jszhang3@mail.ustc.edu.cn> wrote:
-> >
-> > From: Jisheng Zhang <jszhang@kernel.org>
-> >
-> > They are not needed after booting, so mark them as __init to move them
-> > to the __init section.
-> >
-> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > ---
-> >  arch/riscv/kernel/traps.c  | 2 +-
-> >  arch/riscv/mm/init.c       | 6 +++---
-> >  arch/riscv/mm/kasan_init.c | 6 +++---
-> >  arch/riscv/mm/ptdump.c     | 2 +-
-> >  4 files changed, 8 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-> > index 1357abf79570..07fdded10c21 100644
-> > --- a/arch/riscv/kernel/traps.c
-> > +++ b/arch/riscv/kernel/traps.c
-> > @@ -197,6 +197,6 @@ int is_valid_bugaddr(unsigned long pc)
-> >  #endif /* CONFIG_GENERIC_BUG */
-> >
-> >  /* stvec & scratch is already set from head.S */
-> > -void trap_init(void)
-> > +void __init trap_init(void)
-> >  {
-> >  }  
-> 
-> The trap_init() is unused currently so you can drop this change
-> and remove trap_init() as a separate patch.
-
-the kernel init/main.c expects a trap_init() implementation in architecture
-code. Some architecture's implementation is NULL, similar as riscv, for example,
-arm, powerpc and so on. However I think you are right, the trap_init() can be
-removed, we need a trivial series to provide a __weak but NULL trap_init()
-implementation in init/main.c then remove all NULL implementation from
-all arch. I can take the task to do the clean up.
-
-> 
-> > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> > index 067583ab1bd7..76bf2de8aa59 100644
-> > --- a/arch/riscv/mm/init.c
-> > +++ b/arch/riscv/mm/init.c
-> > @@ -57,7 +57,7 @@ static void __init zone_sizes_init(void)
-> >         free_area_init(max_zone_pfns);
-> >  }
-> >
-> > -static void setup_zero_page(void)
-> > +static void __init setup_zero_page(void)
-> >  {
-> >         memset((void *)empty_zero_page, 0, PAGE_SIZE);
-
-I think the zero page is already initialized as "0" because empty_zero_page
-sits in .bss section. So this setup_zero_page() function can be removed. I
-will send a newer version later.
-
-thanks
