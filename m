@@ -2,128 +2,293 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FBE35BA74
-	for <lists+bpf@lfdr.de>; Mon, 12 Apr 2021 08:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E591035BA9F
+	for <lists+bpf@lfdr.de>; Mon, 12 Apr 2021 09:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbhDLG6c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Apr 2021 02:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
+        id S229764AbhDLHLj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Apr 2021 03:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhDLG6c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Apr 2021 02:58:32 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7772C061574;
-        Sun, 11 Apr 2021 23:58:14 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d124so8559092pfa.13;
-        Sun, 11 Apr 2021 23:58:14 -0700 (PDT)
+        with ESMTP id S229581AbhDLHLi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Apr 2021 03:11:38 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD375C061574;
+        Mon, 12 Apr 2021 00:11:20 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id w8so3532688plg.9;
+        Mon, 12 Apr 2021 00:11:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=R61KIRW9eJhAauoZ++ww3cJarlsZLJBuOebMWuzeCs8=;
-        b=PhRRBRVM13us4+Vnnf8O8QY/seKGZHYKcHE/fmGn3iNXzY7+dyQkfelUrbJdeLHJ3y
-         gAYiqylMaDfzvVd2UJhKJ6CnGZrMLW3RA54wCwwZO5caSQodJkxOFN4C/ebVnSRtkdw9
-         8FR2Dv7EGlbLsf01Be0tnY9rTlQszP2qDn4tsnR4tXkL0DqQcEw3WMVElKNhhcaV9awS
-         1R+I3RvtuvY/4IChSM93U17e6yqlgI2FSQ5qHZjI/dTGoafISCnCn2nRjMsPh53dv8XA
-         5gnuZfgxqwYRMndVboB9ir/7ypLJFCPYO5opFKzLvIxNgIyBmNn8i40+PinSy556sL7i
-         HuVA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ppdiEWGNg0vMhgLnO1iUl3C7FGroJ7Uxfmw4PhKvKaA=;
+        b=a1IC0BLoF/J8pmYkIyQkvfI6WbNIG86JPMSPfDLvJyuQsP4Lrd/nAKmBTRFbL09cBS
+         Qj0VBfcy81XImQDiozKi6yAdreJq8L1fcNbNFxkG29W3kG/Tq6m8bZ5WoPHJyCIgpm76
+         e2FyW+0Jy+nLwkkLAvI/5/M5Jce0m+vWkVIYnWjd0HPsp144OIckziqkXnJTfSzmNPh9
+         BcR8oEd6EXGuUj7QC0j5snqpGFWxChHm6yC7HJRgBqVr5fNhaxODT30AoL5tfVchcoMx
+         UATsqe2atOuFNl2vXpd+R/di/1eqsQ6QJhbz/cyqDIyH68ZXkzSCZngA7DT3FGfQWLLJ
+         IfcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=R61KIRW9eJhAauoZ++ww3cJarlsZLJBuOebMWuzeCs8=;
-        b=pevcait5MnWBuCNMRwPl9op3a4LsskgB2A8L1OtNCpwf9gHsiR/lGJXY9il/k3/6/e
-         T4dvEBwlxMPUClj1HZxoq/GtkFSMVClQ1H2o2iQIQGLptt4uqVhRhtzfHhfu0On5n2CY
-         bs4MiG2uBcapQhhufyqv6g7dxPlp5NQBe2wDaMhWzdZcqiCCd7K1Ash9sEiWph51G1VR
-         6t4StrW+ztMDF5u6Wa7mNq13Go3z0FyF01PAyZ6ULWd/qMFUgo5LwkAPaTCreBCyD/20
-         dDBPIyafcYUi5pXYTzg1uZUxd1jHlrzgTNe2oK8pKkjnfUQugMA/T+2uJYS0Uk31exUT
-         kzDg==
-X-Gm-Message-State: AOAM532Xq5jc/gfG1CHV0eMQh4aEAcrR84k5YtBzPlNlUqrP9PwhsMDo
-        lGZp4R4oeLCUq+hOH+/DOVQ6RO3vkyJ6y0tb
-X-Google-Smtp-Source: ABdhPJyK4C7wwWmayAbPvEzyPx4pgsKzynqeaIvEX0hhz9GCmhkg6IQlCYZxQsqm7Or77mnPisyOAw==
-X-Received: by 2002:a63:5f0c:: with SMTP id t12mr25183838pgb.381.1618210694278;
-        Sun, 11 Apr 2021 23:58:14 -0700 (PDT)
-Received: from localhost.localdomain ([103.112.79.203])
-        by smtp.gmail.com with ESMTPSA id v135sm10538992pgb.82.2021.04.11.23.58.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 11 Apr 2021 23:58:14 -0700 (PDT)
-From:   kerneljasonxing@gmail.com
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kerneljasonxing@gmail.com, Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
-Subject: [PATCH] i40e: fix the panic when running bpf in xdpdrv mode
-Date:   Mon, 12 Apr 2021 14:57:59 +0800
-Message-Id: <20210412065759.2907-1-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ppdiEWGNg0vMhgLnO1iUl3C7FGroJ7Uxfmw4PhKvKaA=;
+        b=UO4F9M1ve4XoFBuGr7IAcfgqpIfIPfmk38m7Q/aA7IEeGmG1GZdCqDVf5bqpWQV3L7
+         3JC2NvucQqI1PAUJMLpV9W0/UuJDWWBtowmyAB0lty/3+N130ADTpYiHE+qExgEvpmGL
+         WTPSrUf5pvq7jxLPuZB804mNTgKYzlzzQVxCh27j63WE7lmGOJ0ce9a8XhMtgpSVlk2b
+         0rk286hFjX8K0wRrkkpSq4DWtTAhbtL3m5tWDq9IA1uMeeNFsWd4hyQjU4D6jexhmtde
+         AYkISrt8Bv59wM2l7/dJ8wrL6MQzWGX7jtQudyawjEAHNq9CEwI47R5gG/N4ByRStSIT
+         ZvSA==
+X-Gm-Message-State: AOAM530Q9H9YR1IXDMODBXongVkoiD4R7bLlGUGsryqLfCvwSg7btWFY
+        1NNmFO/EH+Nb6BUKPWNUQ8F3L4MlkTGYjGFEiQ==
+X-Google-Smtp-Source: ABdhPJztHd7ROeKEi95CD/PyFXTwQvREz5hPZeca9seo1vNducxZ29SSYXSl3unYh39hsJeTxrs+YwxVKMvU14sDlrw=
+X-Received: by 2002:a17:90a:714a:: with SMTP id g10mr20397142pjs.57.1618211480419;
+ Mon, 12 Apr 2021 00:11:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CACkBjsa12CEHfT75J6M1Pqy9=6uGFvOX+vGHCa7yO-mqUN14FQ@mail.gmail.com>
+In-Reply-To: <CACkBjsa12CEHfT75J6M1Pqy9=6uGFvOX+vGHCa7yO-mqUN14FQ@mail.gmail.com>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Mon, 12 Apr 2021 15:11:18 +0800
+Message-ID: <CACkBjsbcmt=+PFjEybaumg3Rp2peSyoyc_1McZmqT0zeKNUSCg@mail.gmail.com>
+Subject: Re: BUG: unable to handle kernel paging request in bpf_check
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="00000000000076950b05bfc1384a"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jason Xing <xingwanli@kuaishou.com>
+--00000000000076950b05bfc1384a
+Content-Type: text/plain; charset="UTF-8"
 
-Fix this by add more rules to calculate the value of @rss_size_max which
-could be used in allocating the queues when bpf is loaded, which, however,
-could cause the failure and then triger the NULL pointer of vsi->rx_rings.
-Prio to this fix, the machine doesn't care about how many cpus are online
-and then allocates 256 queues on the machine with 32 cpus online
-actually.
-
-Once the load of bpf begins, the log will go like this "failed to get
-tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
-failed".
-
-Thus, I attach the key information of the crash-log here.
-
-BUG: unable to handle kernel NULL pointer dereference at
-0000000000000000
-RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
+Besides, another similar bug occurred while fault injection was enabled.
+====
+BUG: unable to handle kernel paging request in bpf_prog_alloc_no_stats
+========================================================
+RAX: ffffffffffffffda RBX: 000000000059c080 RCX: 000000000047338d
+RDX: 0000000000000078 RSI: 0000000020000300 RDI: 0000000000000005
+RBP: 00007f7e3c38fc90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000004
+R13: 00007ffed3a1dd6f R14: 00007ffed3a1df10 R15: 00007f7e3c38fdc0
+BUG: unable to handle page fault for address: ffff91f2077ed028
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0002) - not-present page
+PGD 1810067 P4D 1810067 PUD 1915067 PMD 3b907067 PTE 0
+Oops: 0002 [#1] SMP
+CPU: 3 PID: 17344 Comm: executor Not tainted 5.12.0-rc6+ #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.13.0-1ubuntu1.1 04/01/2014
+RIP: 0010:bpf_prog_alloc_no_stats+0x251/0x6e0 kernel/bpf/core.c:94
+Code: 45 b0 4c 8d 78 28 4d 8b a5 20 03 00 00 41 8b 85 a8 0f 00 00 89
+45 c8 48 83 7d a8 00 0f 85 2e 03 00 00 4c 89 ff e8 4f 18 60 00 <4c> 89
+20 4d 85 e4 0f 85 27 03 00 00 49 89 1f 4d 85 e4 74 0c 49 f7
+RSP: 0018:ffff89f2077cfaa8 EFLAGS: 00010286
+RAX: ffff91f2077ed028 RBX: 0000096680024de8 RCX: ffff91f2077ed028
+RDX: ffff99f2077ed028 RSI: 0000000000000008 RDI: ffff89f2077ed028
+RBP: ffff89f2077cfb28 R08: ffffd7eb8000000f R09: ffff888b7ffd3000
+R10: 000000000000037a R11: 0000000000000000 R12: 0000000000000000
+R13: ffff888b1465aad8 R14: 0000000004c30000 R15: ffff89f2077ed028
+FS:  00007f7e3c390700(0000) GS:ffff888b7fd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff91f2077ed028 CR3: 0000000044802004 CR4: 0000000000770ee0
+PKRU: 55555554
 Call Trace:
-[2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
-[2160294.717666]  dev_xdp_install+0x4f/0x70
-[2160294.718036]  dev_change_xdp_fd+0x11f/0x230
-[2160294.718380]  ? dev_disable_lro+0xe0/0xe0
-[2160294.718705]  do_setlink+0xac7/0xe70
-[2160294.719035]  ? __nla_parse+0xed/0x120
-[2160294.719365]  rtnl_newlink+0x73b/0x860
+ bpf_prog_alloc+0x74/0x310 kernel/bpf/core.c:119
+ bpf_prog_load kernel/bpf/syscall.c:2162 [inline]
+ __do_sys_bpf+0x11af3/0x17290 kernel/bpf/syscall.c:4393
+ __se_sys_bpf+0x8e/0xa0 kernel/bpf/syscall.c:4351
+ __x64_sys_bpf+0x4a/0x70 kernel/bpf/syscall.c:4351
+ do_syscall_64+0xa2/0x120 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x47338d
+Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f7e3c38fc58 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 000000000059c080 RCX: 000000000047338d
+RDX: 0000000000000078 RSI: 0000000020000300 RDI: 0000000000000005
+RBP: 00007f7e3c38fc90 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000004
+R13: 00007ffed3a1dd6f R14: 00007ffed3a1df10 R15: 00007f7e3c38fdc0
+Modules linked in:
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+CR2: ffff91f2077ed028
+---[ end trace bc1de9e0e1b51e8c ]---
+RIP: 0010:bpf_prog_alloc_no_stats+0x251/0x6e0 kernel/bpf/core.c:94
+Code: 45 b0 4c 8d 78 28 4d 8b a5 20 03 00 00 41 8b 85 a8 0f 00 00 89
+45 c8 48 83 7d a8 00 0f 85 2e 03 00 00 4c 89 ff e8 4f 18 60 00 <4c> 89
+20 4d 85 e4 0f 85 27 03 00 00 49 89 1f 4d 85 e4 74 0c 49 f7
+RSP: 0018:ffff89f2077cfaa8 EFLAGS: 00010286
+RAX: ffff91f2077ed028 RBX: 0000096680024de8 RCX: ffff91f2077ed028
+RDX: ffff99f2077ed028 RSI: 0000000000000008 RDI: ffff89f2077ed028
+RBP: ffff89f2077cfb28 R08: ffffd7eb8000000f R09: ffff888b7ffd3000
+R10: 000000000000037a R11: 0000000000000000 R12: 0000000000000000
+R13: ffff888b1465aad8 R14: 0000000004c30000 R15: ffff89f2077ed028
+FS:  00007f7e3c390700(0000) GS:ffff888b7fd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff91f2077ed028 CR3: 0000000044802004 CR4: 0000000000770ee0
+PKRU: 55555554
 
-Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
-Signed-off-by: Shujin Li <lishujin@kuaishou.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+The following system call sequence (Syzlang format) can reproduce the crash:
+# {Threaded:false Collide:false Repeat:true RepeatTimes:0 Procs:1
+Slowdown:1 Sandbox:none Fault:true FaultCall:0 FaultNth:4 Leak:false
+NetInjection:true NetDevices:true NetReset:true Cgroups:true
+BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:true USB:true
+VhciInjection:true Wifi:true IEEE802154:true Sysctl:true
+UseTmpDir:true HandleSegv:true Repro:false Trace:false}
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 521ea9d..4e9a247 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -11867,6 +11867,7 @@ static int i40e_sw_init(struct i40e_pf *pf)
- {
- 	int err = 0;
- 	int size;
-+	u16 pow;
- 
- 	/* Set default capability flags */
- 	pf->flags = I40E_FLAG_RX_CSUM_ENABLED |
-@@ -11885,6 +11886,11 @@ static int i40e_sw_init(struct i40e_pf *pf)
- 	pf->rss_table_size = pf->hw.func_caps.rss_table_size;
- 	pf->rss_size_max = min_t(int, pf->rss_size_max,
- 				 pf->hw.func_caps.num_tx_qp);
-+
-+	/* find the next higher power-of-2 of num cpus */
-+	pow = roundup_pow_of_two(num_online_cpus());
-+	pf->rss_size_max = min_t(int, pf->rss_size_max, pow);
-+
- 	if (pf->hw.func_caps.rss) {
- 		pf->flags |= I40E_FLAG_RSS_ENABLED;
- 		pf->alloc_rss_size = min_t(int, pf->rss_size_max,
--- 
-1.8.3.1
+bpf$BPF_PROG_WITH_BTFID_LOAD(0x5, &(0x7f0000000300)=@bpf_ext={0x1c,
+0x8, &(0x7f00000001c0)=@raw=[@initr0={0x18, 0x0, 0x0, 0x0,
+0x4953b92f0467cc49, 0x0, 0x0, 0x0, 0xdbd689758db6b4a7}, @func={0x85,
+0x0, 0x1, 0x0, 0x1}, @exit, @generic={0xd3c15618b9efaeff, 0x0, 0x0,
+0x0, 0xc0fc52df13f3fbec}, @map_val={0x18, 0x0, 0x2, 0x0, 0x0, 0x0,
+0x0, 0x0, 0xf7a72204b1b46d92}, @jmp], &(0x7f0000000200)='GPL\x00',
+0x0, 0x0, 0x0, 0x0, 0x9, [], 0x0, 0x0, 0x0, 0x8, 0x0, 0x0, 0x10, 0x0,
+0x0, 0x0, 0x0}, 0x78)
 
+Using syz-execprog can run this reproduction program directly:
+ ./syz-execprog -repeat 0 -procs 1 -slowdown 1 -fault_call 0
+-fault_nth 4 -enable tun -enable netdev -enable resetnet -enable
+cgroups -enable binfmt-misc -enable close_fds -enable devlinkpci
+-enable usb -enable vhci -enable wifi -enable ieee802154 -enable
+sysctl repro.prog
+
+--00000000000076950b05bfc1384a
+Content-Type: application/octet-stream; name=log
+Content-Disposition: attachment; filename=log
+Content-Transfer-Encoding: base64
+Content-ID: <f_kne9bmpm0>
+X-Attachment-Id: f_kne9bmpm0
+
+WyAgODIwLjQ1OTg2Ml0gRkFVTFRfSU5KRUNUSU9OOiBmb3JjaW5nIGEgZmFpbHVyZS4NClsgIDgy
+MC40NTk4NjJdIG5hbWUgZmFpbHNsYWIsIGludGVydmFsIDEsIHByb2JhYmlsaXR5IDAsIHNwYWNl
+IDAsIHRpbWVzIDANClsgIDgyMC40NjA4MzldIENQVTogMyBQSUQ6IDE3MzQ0IENvbW06IGV4ZWN1
+dG9yIE5vdCB0YWludGVkIDUuMTIuMC1yYzYrICMxDQpbICA4MjAuNDYxNDY5XSBIYXJkd2FyZSBu
+YW1lOiBRRU1VIFN0YW5kYXJkIFBDIChpNDQwRlggKyBQSUlYLCAxOTk2KSwgQklPUyAxLjEzLjAt
+MXVidW50dTEuMSAwNC8wMS8yMDE0DQpbICA4MjAuNDYyMjY5XSBDYWxsIFRyYWNlOg0KWyAgODIw
+LjQ2MjUwOV0gIGR1bXBfc3RhY2srMHgxZmYvMHgyNzUNClsgIDgyMC40NjI4NzZdICBzaG91bGRf
+ZmFpbCsweDhiMC8weDlkMA0KWyAgODIwLjQ2MzMyNl0gIF9fc2hvdWxkX2ZhaWxzbGFiKzB4MWY0
+LzB4MjkwDQpbICA4MjAuNDYzNzQ1XSAgc2hvdWxkX2ZhaWxzbGFiKzB4MjkvMHg3MA0KWyAgODIw
+LjQ2NDEyM10gIF9fa21hbGxvYysweGJjLzB4NTYwDQpbICA4MjAuNDY0NDgyXSAgPyBrY2FsbG9j
+KzB4MWUvMHgzMA0KWyAgODIwLjQ2NDgwM10gID8ga21zYW5fZ2V0X21ldGFkYXRhKzB4MTFkLzB4
+MTgwDQpbICA4MjAuNDY1MjIyXSAga2NhbGxvYysweDFlLzB4MzANClsgIDgyMC40NjU1NDNdICBr
+bXNhbl9tYXBfa2VybmVsX3JhbmdlX25vZmx1c2grMHhhNy8weDIzMA0KWyAgODIwLjQ2NjAzOF0g
+IF9fdm1hbGxvY19ub2RlX3JhbmdlKzB4YWQzLzB4MTFhMA0KWyAgODIwLjQ2NjQ5NF0gIF9fdm1h
+bGxvYysweDEyZi8weDE0MA0KWyAgODIwLjQ2Njg1N10gID8gYnBmX3Byb2dfYWxsb2Nfbm9fc3Rh
+dHMrMHhhNi8weDZlMA0KWyAgODIwLjQ2NzI5Nl0gID8gYnBmX3Byb2dfYWxsb2Nfbm9fc3RhdHMr
+MHhhNi8weDZlMA0KWyAgODIwLjQ2ODI1M10gIGJwZl9wcm9nX2FsbG9jX25vX3N0YXRzKzB4YTYv
+MHg2ZTANClsgIDgyMC40Njg3MjFdICA/IHNlY3VyaXR5X2NhcGFibGUrMHgxY2IvMHgyMjANClsg
+IDgyMC40NjkyOTddICA/IGttc2FuX2dldF9tZXRhZGF0YSsweDExZC8weDE4MA0KWyAgODIwLjQ2
+OTcxMF0gIGJwZl9wcm9nX2FsbG9jKzB4NzQvMHgzMTANClsgIDgyMC40NzAwNzRdICA/IGttc2Fu
+X2dldF9zaGFkb3dfb3JpZ2luX3B0cisweDg0LzB4YjANClsgIDgyMC40NzA1NTVdICBfX2RvX3N5
+c19icGYrMHgxMWFmMy8weDE3MjkwDQpbICA4MjAuNDcxMDYxXSAgPyBfX21zYW5faW5zdHJ1bWVu
+dF9hc21fc3RvcmUrMHgyMi8weDEzMA0KWyAgODIwLjQ3MjA2Nl0gID8gdmZzX3dyaXRlKzB4ZTQw
+LzB4MTcwMA0KWyAgODIwLjQ3MjU3NF0gID8ga21zYW5fZ2V0X21ldGFkYXRhKzB4MTFkLzB4MTgw
+DQpbICA4MjAuNDczMTkzXSAgPyBrbXNhbl9nZXRfbWV0YWRhdGErMHgxMWQvMHgxODANClsgIDgy
+MC40NzM3NDRdICA/IGZwdXQrMHg1Mi8weDI3MA0KWyAgODIwLjQ3NDExMl0gID8ga21zYW5fZ2V0
+X21ldGFkYXRhKzB4MTFkLzB4MTgwDQpbICA4MjAuNDc0NTIwXSAgPyBrbXNhbl9nZXRfbWV0YWRh
+dGErMHgxMWQvMHgxODANClsgIDgyMC40NzQ5MjhdICA/IGttc2FuX2dldF9zaGFkb3dfb3JpZ2lu
+X3B0cisweDg0LzB4YjANClsgIDgyMC40NzUzODJdICA/IF9fbXNhbl9tZXRhZGF0YV9wdHJfZm9y
+X3N0b3JlXzQrMHgxMy8weDIwDQpbICA4MjAuNDc1ODcwXSAgX19zZV9zeXNfYnBmKzB4OGUvMHhh
+MA0KWyAgODIwLjQ3NjIxMF0gIF9feDY0X3N5c19icGYrMHg0YS8weDcwDQpbICA4MjAuNDc2NTUy
+XSAgZG9fc3lzY2FsbF82NCsweGEyLzB4MTIwDQpbICA4MjAuNDc2OTAwXSAgZW50cnlfU1lTQ0FM
+TF82NF9hZnRlcl9od2ZyYW1lKzB4NDQvMHhhZQ0KWyAgODIwLjQ3NzM1OV0gUklQOiAwMDMzOjB4
+NDczMzhkDQpbICA4MjAuNDc3Nzk0XSBDb2RlOiAwMiBiOCBmZiBmZiBmZiBmZiBjMyA2NiAwZiAx
+ZiA0NCAwMCAwMCBmMyAwZiAxZSBmYSA0OCA4OSBmOCA0OCA4OSBmNyA0OCA4OSBkNiA0OCA4OSBj
+YSA0ZCA4OSBjMiA0ZCA4OSBjOCA0YyA4YiA0YyAyNCAwOCAwZiAwNSA8NDg+IDNkIDAxIGYwIGZm
+IGZmIDczIDAxIGMzIDQ4IGM3IGMxIGJjIGZmIGZmIGZmIGY3IGQ4IDY0IDg5IDAxIDQ4DQpbICA4
+MjAuNDc5Mjc1XSBSU1A6IDAwMmI6MDAwMDdmN2UzYzM4ZmM1OCBFRkxBR1M6IDAwMDAwMjQ2IE9S
+SUdfUkFYOiAwMDAwMDAwMDAwMDAwMTQxDQpbICA4MjAuNDc5OTY0XSBSQVg6IGZmZmZmZmZmZmZm
+ZmZmZGEgUkJYOiAwMDAwMDAwMDAwNTljMDgwIFJDWDogMDAwMDAwMDAwMDQ3MzM4ZA0KWyAgODIw
+LjQ4MDU5M10gUkRYOiAwMDAwMDAwMDAwMDAwMDc4IFJTSTogMDAwMDAwMDAyMDAwMDMwMCBSREk6
+IDAwMDAwMDAwMDAwMDAwMDUNClsgIDgyMC40ODExNzNdIFJCUDogMDAwMDdmN2UzYzM4ZmM5MCBS
+MDg6IDAwMDAwMDAwMDAwMDAwMDAgUjA5OiAwMDAwMDAwMDAwMDAwMDAwDQpbICA4MjAuNDgxODIw
+XSBSMTA6IDAwMDAwMDAwMDAwMDAwMDAgUjExOiAwMDAwMDAwMDAwMDAwMjQ2IFIxMjogMDAwMDAw
+MDAwMDAwMDAwNA0KWyAgODIwLjQ4MjgyNF0gUjEzOiAwMDAwN2ZmZWQzYTFkZDZmIFIxNDogMDAw
+MDdmZmVkM2ExZGYxMCBSMTU6IDAwMDA3ZjdlM2MzOGZkYzANClsgIDgyMC40ODM4NzddIEJVRzog
+dW5hYmxlIHRvIGhhbmRsZSBwYWdlIGZhdWx0IGZvciBhZGRyZXNzOiBmZmZmOTFmMjA3N2VkMDI4
+DQpbICA4MjAuNDg0NDI0XSAjUEY6IHN1cGVydmlzb3Igd3JpdGUgYWNjZXNzIGluIGtlcm5lbCBt
+b2RlDQpbICA4MjAuNDg0ODMwXSAjUEY6IGVycm9yX2NvZGUoMHgwMDAyKSAtIG5vdC1wcmVzZW50
+IHBhZ2UNClsgIDgyMC40ODUyMjhdIFBHRCAxODEwMDY3IFA0RCAxODEwMDY3IFBVRCAxOTE1MDY3
+IFBNRCAzYjkwNzA2NyBQVEUgMA0KWyAgODIwLjQ4NTgyOF0gT29wczogMDAwMiBbIzFdIFNNUA0K
+WyAgODIwLjQ4NjA5OV0gQ1BVOiAzIFBJRDogMTczNDQgQ29tbTogZXhlY3V0b3IgTm90IHRhaW50
+ZWQgNS4xMi4wLXJjNisgIzENClsgIDgyMC40ODY2MTRdIEhhcmR3YXJlIG5hbWU6IFFFTVUgU3Rh
+bmRhcmQgUEMgKGk0NDBGWCArIFBJSVgsIDE5OTYpLCBCSU9TIDEuMTMuMC0xdWJ1bnR1MS4xIDA0
+LzAxLzIwMTQNClsgIDgyMC40ODczMzNdIFJJUDogMDAxMDpicGZfcHJvZ19hbGxvY19ub19zdGF0
+cysweDI1MS8weDZlMA0KWyAgODIwLjQ4Nzg5MV0gQ29kZTogNDUgYjAgNGMgOGQgNzggMjggNGQg
+OGIgYTUgMjAgMDMgMDAgMDAgNDEgOGIgODUgYTggMGYgMDAgMDAgODkgNDUgYzggNDggODMgN2Qg
+YTggMDAgMGYgODUgMmUgMDMgMDAgMDAgNGMgODkgZmYgZTggNGYgMTggNjAgMDAgPDRjPiA4OSAy
+MCA0ZCA4NSBlNCAwZiA4NSAyNyAwMyAwMCAwMCA0OSA4OSAxZiA0ZCA4NSBlNCA3NCAwYyA0OSBm
+Nw0KWyAgODIwLjQ4OTI5M10gUlNQOiAwMDE4OmZmZmY4OWYyMDc3Y2ZhYTggRUZMQUdTOiAwMDAx
+MDI4Ng0KWyAgODIwLjQ4OTgwMl0gUkFYOiBmZmZmOTFmMjA3N2VkMDI4IFJCWDogMDAwMDA5NjY4
+MDAyNGRlOCBSQ1g6IGZmZmY5MWYyMDc3ZWQwMjgNClsgIDgyMC40OTAzOTddIFJEWDogZmZmZjk5
+ZjIwNzdlZDAyOCBSU0k6IDAwMDAwMDAwMDAwMDAwMDggUkRJOiBmZmZmODlmMjA3N2VkMDI4DQpb
+ICA4MjAuNDkwOTc3XSBSQlA6IGZmZmY4OWYyMDc3Y2ZiMjggUjA4OiBmZmZmZDdlYjgwMDAwMDBm
+IFIwOTogZmZmZjg4OGI3ZmZkMzAwMA0KWyAgODIwLjQ5MTUzM10gUjEwOiAwMDAwMDAwMDAwMDAw
+MzdhIFIxMTogMDAwMDAwMDAwMDAwMDAwMCBSMTI6IDAwMDAwMDAwMDAwMDAwMDANClsgIDgyMC40
+OTIxMTVdIFIxMzogZmZmZjg4OGIxNDY1YWFkOCBSMTQ6IDAwMDAwMDAwMDRjMzAwMDAgUjE1OiBm
+ZmZmODlmMjA3N2VkMDI4DQpbICA4MjAuNDkyNzEzXSBGUzogIDAwMDA3ZjdlM2MzOTA3MDAoMDAw
+MCkgR1M6ZmZmZjg4OGI3ZmQwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQpbICA4
+MjAuNDkzMzg0XSBDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUw
+MDMzDQpbICA4MjAuNDkzODcxXSBDUjI6IGZmZmY5MWYyMDc3ZWQwMjggQ1IzOiAwMDAwMDAwMDQ0
+ODAyMDA0IENSNDogMDAwMDAwMDAwMDc3MGVlMA0KWyAgODIwLjQ5NDQ2Ml0gUEtSVTogNTU1NTU1
+NTQNClsgIDgyMC40OTQ3MTddIENhbGwgVHJhY2U6DQpbICA4MjAuNDk0OTQ1XSAgYnBmX3Byb2df
+YWxsb2MrMHg3NC8weDMxMA0KWyAgODIwLjQ5NTMwNF0gID8ga21zYW5fZ2V0X3NoYWRvd19vcmln
+aW5fcHRyKzB4ODQvMHhiMA0KWyAgODIwLjQ5NTc2NF0gIF9fZG9fc3lzX2JwZisweDExYWYzLzB4
+MTcyOTANClsgIDgyMC40OTYxMjFdICA/IF9fbXNhbl9pbnN0cnVtZW50X2FzbV9zdG9yZSsweDIy
+LzB4MTMwDQpbICA4MjAuNDk2NTc3XSAgPyB2ZnNfd3JpdGUrMHhlNDAvMHgxNzAwDQpbICA4MjAu
+NDk2OTMzXSAgPyBrbXNhbl9nZXRfbWV0YWRhdGErMHgxMWQvMHgxODANClsgIDgyMC40OTczNjJd
+ICA/IGttc2FuX2dldF9tZXRhZGF0YSsweDExZC8weDE4MA0KWyAgODIwLjQ5Nzg5OV0gID8gZnB1
+dCsweDUyLzB4MjcwDQpbICA4MjAuNDk4MjUwXSAgPyBrbXNhbl9nZXRfbWV0YWRhdGErMHgxMWQv
+MHgxODANClsgIDgyMC40OTg2NThdICA/IGttc2FuX2dldF9tZXRhZGF0YSsweDExZC8weDE4MA0K
+WyAgODIwLjQ5OTA4OF0gID8ga21zYW5fZ2V0X3NoYWRvd19vcmlnaW5fcHRyKzB4ODQvMHhiMA0K
+WyAgODIwLjQ5OTU0M10gID8gX19tc2FuX21ldGFkYXRhX3B0cl9mb3Jfc3RvcmVfNCsweDEzLzB4
+MjANClsgIDgyMC41MDAxMjJdICBfX3NlX3N5c19icGYrMHg4ZS8weGEwDQpbICA4MjAuNTAwNDg5
+XSAgX194NjRfc3lzX2JwZisweDRhLzB4NzANClsgIDgyMC41MDA4ODBdICBkb19zeXNjYWxsXzY0
+KzB4YTIvMHgxMjANClsgIDgyMC41MDEyNzldICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJh
+bWUrMHg0NC8weGFlDQpbICA4MjAuNTAxNzM3XSBSSVA6IDAwMzM6MHg0NzMzOGQNClsgIDgyMC41
+MDIwMzhdIENvZGU6IDAyIGI4IGZmIGZmIGZmIGZmIGMzIDY2IDBmIDFmIDQ0IDAwIDAwIGYzIDBm
+IDFlIGZhIDQ4IDg5IGY4IDQ4IDg5IGY3IDQ4IDg5IGQ2IDQ4IDg5IGNhIDRkIDg5IGMyIDRkIDg5
+IGM4IDRjIDhiIDRjIDI0IDA4IDBmIDA1IDw0OD4gM2QgMDEgZjAgZmYgZmYgNzMgMDEgYzMgNDgg
+YzcgYzEgYmMgZmYgZmYgZmYgZjcgZDggNjQgODkgMDEgNDgNClsgIDgyMC41MDM1MTddIFJTUDog
+MDAyYjowMDAwN2Y3ZTNjMzhmYzU4IEVGTEFHUzogMDAwMDAyNDYgT1JJR19SQVg6IDAwMDAwMDAw
+MDAwMDAxNDENClsgIDgyMC41MDQxNjRdIFJBWDogZmZmZmZmZmZmZmZmZmZkYSBSQlg6IDAwMDAw
+MDAwMDA1OWMwODAgUkNYOiAwMDAwMDAwMDAwNDczMzhkDQpbICA4MjAuNTA0NzE4XSBSRFg6IDAw
+MDAwMDAwMDAwMDAwNzggUlNJOiAwMDAwMDAwMDIwMDAwMzAwIFJESTogMDAwMDAwMDAwMDAwMDAw
+NQ0KWyAgODIwLjUwNTMxM10gUkJQOiAwMDAwN2Y3ZTNjMzhmYzkwIFIwODogMDAwMDAwMDAwMDAw
+MDAwMCBSMDk6IDAwMDAwMDAwMDAwMDAwMDANClsgIDgyMC41MDU4NzddIFIxMDogMDAwMDAwMDAw
+MDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAyNDYgUjEyOiAwMDAwMDAwMDAwMDAwMDA0DQpbICA4
+MjAuNTA2NDM5XSBSMTM6IDAwMDA3ZmZlZDNhMWRkNmYgUjE0OiAwMDAwN2ZmZWQzYTFkZjEwIFIx
+NTogMDAwMDdmN2UzYzM4ZmRjMA0KWyAgODIwLjUwNzAxNV0gTW9kdWxlcyBsaW5rZWQgaW46DQpb
+ICA4MjAuNTA3MzI1XSBEdW1waW5nIGZ0cmFjZSBidWZmZXI6DQpbICA4MjAuNTA3NzQzXSAgICAo
+ZnRyYWNlIGJ1ZmZlciBlbXB0eSkNClsgIDgyMC41MDgwMzRdIENSMjogZmZmZjkxZjIwNzdlZDAy
+OA0KWyAgODIwLjUwODMzNF0gLS0tWyBlbmQgdHJhY2UgYmMxZGU5ZTBlMWI1MWU4YyBdLS0tDQpb
+ICA4MjAuNTA4Njk5XSBSSVA6IDAwMTA6YnBmX3Byb2dfYWxsb2Nfbm9fc3RhdHMrMHgyNTEvMHg2
+ZTANClsgIDgyMC41MDkxNjddIENvZGU6IDQ1IGIwIDRjIDhkIDc4IDI4IDRkIDhiIGE1IDIwIDAz
+IDAwIDAwIDQxIDhiIDg1IGE4IDBmIDAwIDAwIDg5IDQ1IGM4IDQ4IDgzIDdkIGE4IDAwIDBmIDg1
+IDJlIDAzIDAwIDAwIDRjIDg5IGZmIGU4IDRmIDE4IDYwIDAwIDw0Yz4gODkgMjAgNGQgODUgZTQg
+MGYgODUgMjcgMDMgMDAgMDAgNDkgODkgMWYgNGQgODUgZTQgNzQgMGMgNDkgZjcNClsgIDgyMC41
+MTA1MzhdIFJTUDogMDAxODpmZmZmODlmMjA3N2NmYWE4IEVGTEFHUzogMDAwMTAyODYNClsgIDgy
+MC41MTA5ODNdIFJBWDogZmZmZjkxZjIwNzdlZDAyOCBSQlg6IDAwMDAwOTY2ODAwMjRkZTggUkNY
+OiBmZmZmOTFmMjA3N2VkMDI4DQpbICA4MjAuNTExNTQ3XSBSRFg6IGZmZmY5OWYyMDc3ZWQwMjgg
+UlNJOiAwMDAwMDAwMDAwMDAwMDA4IFJESTogZmZmZjg5ZjIwNzdlZDAyOA0KWyAgODIwLjUxMjEw
+Nl0gUkJQOiBmZmZmODlmMjA3N2NmYjI4IFIwODogZmZmZmQ3ZWI4MDAwMDAwZiBSMDk6IGZmZmY4
+ODhiN2ZmZDMwMDANClsgIDgyMC41MTI2NjNdIFIxMDogMDAwMDAwMDAwMDAwMDM3YSBSMTE6IDAw
+MDAwMDAwMDAwMDAwMDAgUjEyOiAwMDAwMDAwMDAwMDAwMDAwDQpbICA4MjAuNTEzMjA2XSBSMTM6
+IGZmZmY4ODhiMTQ2NWFhZDggUjE0OiAwMDAwMDAwMDA0YzMwMDAwIFIxNTogZmZmZjg5ZjIwNzdl
+ZDAyOA0KWyAgODIwLjUxMzcyM10gRlM6ICAwMDAwN2Y3ZTNjMzkwNzAwKDAwMDApIEdTOmZmZmY4
+ODhiN2ZkMDAwMDAoMDAwMCkga25sR1M6MDAwMDAwMDAwMDAwMDAwMA0KWyAgODIwLjUxNDMzNF0g
+Q1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMw0KWyAgODIw
+LjUxNDc2MV0gQ1IyOiBmZmZmOTFmMjA3N2VkMDI4IENSMzogMDAwMDAwMDA0NDgwMjAwNCBDUjQ6
+IDAwMDAwMDAwMDA3NzBlZTANClsgIDgyMC41MTUyNjZdIFBLUlU6IDU1NTU1NTU0DQpbICA4MjAu
+NTE1NDg0XSBLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogRmF0YWwgZXhjZXB0aW9uDQpbICA4
+MjAuNTE2MDM4XSBEdW1waW5nIGZ0cmFjZSBidWZmZXI6DQpbICA4MjAuNTE2MzI5XSAgICAoZnRy
+YWNlIGJ1ZmZlciBlbXB0eSkNClsgIDgyMC41MTY2MDhdIEtlcm5lbCBPZmZzZXQ6IDB4N2EwMDAw
+MCBmcm9tIDB4ZmZmZmZmZmY4MTAwMDAwMCAocmVsb2NhdGlvbiByYW5nZTogMHhmZmZmZmZmZjgw
+MDAwMDAwLTB4ZmZmZmZmZmZiZmZmZmZmZikNClsgIDgyMC41MTc0MzRdIFJlYm9vdGluZyBpbiAx
+IHNlY29uZHMuLg0K
+--00000000000076950b05bfc1384a--
