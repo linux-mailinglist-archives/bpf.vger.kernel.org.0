@@ -2,124 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FBC35E397
-	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 18:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9DA35E3CC
+	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 18:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237638AbhDMQO5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Apr 2021 12:14:57 -0400
-Received: from mail-lf1-f54.google.com ([209.85.167.54]:44839 "EHLO
-        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236853AbhDMQO5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Apr 2021 12:14:57 -0400
-Received: by mail-lf1-f54.google.com with SMTP id e14so15482403lfn.11;
-        Tue, 13 Apr 2021 09:14:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oZa6xX98+lkUJw38jz4IW+RW3vhcytEYCGbyuVjeplQ=;
-        b=k8t/UGWhPiHZJ45SazvSK/dkLlXNJ5vqj7mHLukq3zLiERcxc/6G9btqsJBVr8Y+sL
-         JLsA6lL5O0zB0Vs37DDDFoNZFwER+7OOoJ/9zjGPPON73d9+m+bYIcUeZtP1h/p4qxzo
-         ykulc3XEMWfj3dvHmdKfS1J8TVbpFIzSm81pCW8ps8TQ13zlddfINi08AV+d9yTZaX8n
-         ekhADWpivzyZj9rbR0q0kdRY12dAyB9K74PTHwCipEmiCjViFCGX+r12NzhrS34RsQWR
-         WfyAKQlIAw0EKE67zHn6HV+TlH6T45Y7wvuhedvwc7hqiT5SXot3OOjuFBixWGhypA3A
-         3S8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oZa6xX98+lkUJw38jz4IW+RW3vhcytEYCGbyuVjeplQ=;
-        b=L3kagSCQo8DdUBssMUxD0FkJ8Ayck5nVrR6yVL1nwj2l18tOL3o/d5gAUNEfdFCtgb
-         ZV6WJs2CwdrFAdbtT34gMRUl6SepowgPxvG9lND1aQZc/+ZODQXpbWJPcSh7o79+V8Lw
-         ba9auejzP33yk+7qyKwRtNBEJBg7rqV27dd7l6uOWCtvacoys1g7j8NwqlQa02X0Ig7B
-         3KSUhdlrnxSAS31b7y1xfr9Hi3uNK/2gM6v2NB8CECEtXa+1Tfxvw9JPt9piYAgebMnH
-         TohXKZ+LVN0MOxXieBeVCkttd80zD9v68cpFdeLNuPdgN+gP61DWYhSkUklNHlgyfrR/
-         t6KQ==
-X-Gm-Message-State: AOAM533JMsVBVoz2jjUoBupwoy1pwz3xn34TLEHhq097LDqnrwH5L//K
-        sp1OK1xRQFbF6vHH9dfaoZm5yJPeCWasoGjZU/c=
-X-Google-Smtp-Source: ABdhPJxXIFxMSHEbOtOERgUPBpgR2jRiJOTnPDQcTDuqmf/m00cg9RrJk2mUUP+J5hhqoHclMRNNzXNzb17gX/PL5UA=
-X-Received: by 2002:ac2:4d4d:: with SMTP id 13mr16413881lfp.540.1618330415836;
- Tue, 13 Apr 2021 09:13:35 -0700 (PDT)
+        id S232001AbhDMQY6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Apr 2021 12:24:58 -0400
+Received: from mga01.intel.com ([192.55.52.88]:10663 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231969AbhDMQY5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Apr 2021 12:24:57 -0400
+IronPort-SDR: RPZ/jslSmFUv/O/neq5BV1KVttHx1cgAvs7NegU9Z3YmsugUbG7aK0JenIDAy+w5X021NWrVdq
+ ZyZu5w/BC+xg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9953"; a="214930983"
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="214930983"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 09:18:14 -0700
+IronPort-SDR: Jzr+S+le5B4GUu2EQyxbXU3HDtawIzY+OyQ3xLADIAL2ivTY0OdI80xwzRmJf+X6sUAh0+Jpqv
+ lf+q961xqT/g==
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="452023243"
+Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.209.118.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 09:18:13 -0700
+Date:   Tue, 13 Apr 2021 09:18:12 -0700
+From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
+To:     kerneljasonxing@gmail.com
+Cc:     anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Jason Xing <xingwanli@kuaishou.com>,
+        Shujin Li <lishujin@kuaishou.com>,
+        intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH net v2] i40e: fix the panic when running bpf in xdpdrv
+ mode
+Message-ID: <20210413091812.0000383d@intel.com>
+In-Reply-To: <20210413025011.1251-1-kerneljasonxing@gmail.com>
+References: <20210412065759.2907-1-kerneljasonxing@gmail.com>
+        <20210413025011.1251-1-kerneljasonxing@gmail.com>
+X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <1618307549-78149-1-git-send-email-yang.lee@linux.alibaba.com>
- <CAADnVQJmsipci_ou6OOFGC6O9z935jFw4+pe7YQvvh2=eCoarQ@mail.gmail.com> <BN7PR13MB24996213858443821CA7E400FD4F9@BN7PR13MB2499.namprd13.prod.outlook.com>
-In-Reply-To: <BN7PR13MB24996213858443821CA7E400FD4F9@BN7PR13MB2499.namprd13.prod.outlook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 13 Apr 2021 09:13:24 -0700
-Message-ID: <CAADnVQJJ03L5H11P0NYNC9kYy=YkQdWrbpytB2Jps8AuxgamFA@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: use !E instead of comparing with NULL
-To:     "Bird, Tim" <Tim.Bird@sony.com>
-Cc:     Yang Li <yang.lee@linux.alibaba.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 9:10 AM <Tim.Bird@sony.com> wrote:
->
->
->
-> > -----Original Message-----
-> > From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> >
-> > On Tue, Apr 13, 2021 at 2:52 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
-> > >
-> > > Fix the following coccicheck warnings:
-> > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:189:7-11: WARNING
-> > > comparing pointer to 0, suggest !E
-> > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:361:7-11: WARNING
-> > > comparing pointer to 0, suggest !E
-> > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:386:14-18: WARNING
-> > > comparing pointer to 0, suggest !E
-> > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:402:14-18: WARNING
-> > > comparing pointer to 0, suggest !E
-> > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:433:7-11: WARNING
-> > > comparing pointer to 0, suggest !E
-> > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:534:14-18: WARNING
-> > > comparing pointer to 0, suggest !E
-> > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:625:7-11: WARNING
-> > > comparing pointer to 0, suggest !E
-> > > ./tools/testing/selftests/bpf/progs/profiler.inc.h:767:7-11: WARNING
-> > > comparing pointer to 0, suggest !E
-> > >
-> > > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > > Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> > > ---
-> > >  tools/testing/selftests/bpf/progs/profiler.inc.h | 22 +++++++++++-----------
-> > >  1 file changed, 11 insertions(+), 11 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/testing/selftests/bpf/progs/profiler.inc.h
-> > > index 4896fdf8..a33066c 100644
-> > > --- a/tools/testing/selftests/bpf/progs/profiler.inc.h
-> > > +++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
-> > > @@ -189,7 +189,7 @@ static INLINE void populate_ancestors(struct task_struct* task,
-> > >  #endif
-> > >         for (num_ancestors = 0; num_ancestors < MAX_ANCESTORS; num_ancestors++) {
-> > >                 parent = BPF_CORE_READ(parent, real_parent);
-> > > -               if (parent == NULL)
-> > > +               if (!parent)
-> >
-> > Sorry, but I'd like the progs to stay as close as possible to the way
-> > they were written.
-> Why?
->
-> > They might not adhere to kernel coding style in some cases.
-> > The code could be grossly inefficient and even buggy.
-> There would have to be a really good reason to accept
-> grossly inefficient and even buggy code into the kernel.
->
-> Can you please explain what that reason is?
+kerneljasonxing@gmail.com wrote:
 
-It's not the kernel. It's a test of bpf program.
+> From: Jason Xing <xingwanli@kuaishou.com>
+
+Hi Jason,
+
+Sorry, I missed this on the first time: Added intel-wired-lan,
+please include on any future submissions for Intel drivers.
+get-maintainers script might help here?
+
+> 
+> Fix this panic by adding more rules to calculate the value of @rss_size_max
+> which could be used in allocating the queues when bpf is loaded, which,
+> however, could cause the failure and then trigger the NULL pointer of
+> vsi->rx_rings. Prio to this fix, the machine doesn't care about how many
+> cpus are online and then allocates 256 queues on the machine with 32 cpus
+> online actually.
+> 
+> Once the load of bpf begins, the log will go like this "failed to get
+> tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
+> failed".
+> 
+> Thus, I attach the key information of the crash-log here.
+> 
+> BUG: unable to handle kernel NULL pointer dereference at
+> 0000000000000000
+> RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
+> Call Trace:
+> [2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
+> [2160294.717666]  dev_xdp_install+0x4f/0x70
+> [2160294.718036]  dev_change_xdp_fd+0x11f/0x230
+> [2160294.718380]  ? dev_disable_lro+0xe0/0xe0
+> [2160294.718705]  do_setlink+0xac7/0xe70
+> [2160294.719035]  ? __nla_parse+0xed/0x120
+> [2160294.719365]  rtnl_newlink+0x73b/0x860
+> 
+> Fixes: 41c445ff0f48 ("i40e: main driver core")
+> 
+
+This Fixes line should be connected to the Sign offs with
+no linefeeds between.
+
+> Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+> Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+
+Did Shujin contribute to this patch? Why are they signing off? If
+they developed this patch with you, it should say:
+Co-developed-by: Shujin ....
+Signed-off-by: Shujin ...
+Signed-off-by: Jason ...
+
+Your signature should be last if you sent the patch. The sign-offs are
+like a chain of custody, please review 
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
+
+Thanks,
+ Jesse
