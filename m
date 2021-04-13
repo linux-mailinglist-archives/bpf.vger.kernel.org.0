@@ -2,135 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6FA35E879
-	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 23:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4B835E898
+	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 23:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232453AbhDMVn7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Apr 2021 17:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
+        id S231750AbhDMVym (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Apr 2021 17:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345350AbhDMVn5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Apr 2021 17:43:57 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38CBC061574
-        for <bpf@vger.kernel.org>; Tue, 13 Apr 2021 14:43:35 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id x76so9802231ybe.5
-        for <bpf@vger.kernel.org>; Tue, 13 Apr 2021 14:43:35 -0700 (PDT)
+        with ESMTP id S231513AbhDMVym (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Apr 2021 17:54:42 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C5DC061574;
+        Tue, 13 Apr 2021 14:54:22 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id l9so19891206ybm.0;
+        Tue, 13 Apr 2021 14:54:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kcFlzNqAu39YayNllapyK0vi3XSnSkry/R7jzt3TQ/k=;
-        b=Y84+Bg5Ej7PWm2JWLiYodchxZOLMccEqvqZ/3LXg7xv6WexcdIaaAWcDlNikAUpf5+
-         ZtDLLCRSLyFM6756Sq1TEH3FR2zbOTHrihOAS1YzSvUgyfxJLD21hA0lb82yHCIGFcgD
-         keo5xP9zt8K/63o+augfEPSIFmq/RIWnl6kQ9xA9voVy1ygHSvVk7jWoDVCttAfMuS0g
-         +DW3qeK0Kpf+KCCFpIKqMm7dvB7XCAJhcP8WBoY24plkzPF84Mnees6PWUnFt6nQqVZU
-         7mAlVG6AwDPaMGVY14I9GS/k08Uaqe0Q9GgeL//QX16FYJVmXlIgU78GmnCK3Uo/OMA8
-         zszQ==
+         :cc;
+        bh=N/0emf9Qx5elopjGCJXPU0s9jmMACfNBS8pO0rZzUlI=;
+        b=iSR3E9+iIjOnKmN8qBY5qhqrDkaaJuWKSSH1T2gYufE+FChGjUnoZ+Fl5IQK+7B211
+         rPj1Ecu03/vmr8TRZzmfo2QSZQvOCggEmgJTDrWytgBnf5YLtcYHfwsN/AZJAxixRmT7
+         LkqVpkiBEVFNO11pYc9FIzE/2/p40FPnVdJZ0wFaFrrXLqj4EoYIRktC/Fr7yyQ80Rm4
+         h+ozlvc9cAiGoY47OA5Y9KO7SRlB47Td6Pt4NcPpOyR0ZI5XfB1lKaNOfzV5eGpQhlGS
+         /2GKR1FDGGPmp5HL86bMbmHXZQtytir8ffDvRjemFbYQ5ca4WvCokH8l5QsaRuDH7N6C
+         TEkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kcFlzNqAu39YayNllapyK0vi3XSnSkry/R7jzt3TQ/k=;
-        b=dvA70q9SOMtLwh4rV3oYF7ZK0tnI+Mt1YtW4ybQJI9ssTYrX8ZsDYXuuOLtGAuSVPP
-         lVe2rB2Ocr4diY2xOOE3UCRkAVlMn8h6LJOhH70QbP6qbGow6Kv+yc1KnCNdAAx10cij
-         ez/mwTBYhsCGhbBMdp2q6OZP+GQAvdRYY94hyY5aLOgONo6hmNEt1XlyT0LDbPsBd5Np
-         Unxhu5sYqbSzRxdkCsP9qFoZ9TYMk4eV0xCwiU2eCubtGz34aoigUHfeGgsbKpVrNyA+
-         GaoMuuBMP8XPsDE8Hsq8JRtIAznncN0RQ9VSDoW9BoZGThHAnUSMFQzdKW6v+rlpPEos
-         qMiA==
-X-Gm-Message-State: AOAM531qsb4SQIahRpimGNATHgoGQq8dsoq6tspjFgI9ivkAaqJY+ZDj
-        NmusQ7gPdaYnb1ypG84zA933FEBMhyYS23vuDQc=
-X-Google-Smtp-Source: ABdhPJzLHMwRnCcgVbsn0YAs8xMat3fYUpzinYP4tikG8fvRXmu974+7wHgPQVmEiCrgR/SoktPhJldcgmNJG9ftMyY=
-X-Received: by 2002:a25:d70f:: with SMTP id o15mr36220700ybg.403.1618350214908;
- Tue, 13 Apr 2021 14:43:34 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=N/0emf9Qx5elopjGCJXPU0s9jmMACfNBS8pO0rZzUlI=;
+        b=TbtThtZljkRHn1KLw7X6Tr5J7/zbpwe9cPPze4F9k/llvBFv38LYyAbnaTwgNjgg/K
+         /Z+r1jZDC9WBuLeyJg1tZwzf+SO6VopSZQjJsXbcdtTJ+EO/iT+0zEkQR0Z8aOTZR3oL
+         NBhFihGrT75hDJeecDwLFMAZZ4g51m11pYi8ytzO5dsyKpGzFgHT2lyMlKpbaSREAJPC
+         A+99YLswrLpF14xtNiqsRA/AepknFYDsZLbgd84iYWLI2mJ0cdNhtYDrYsYcCwQuLbTV
+         tRPlk+1MGrUYsc+sJHGtyz9uozMZaGhKG7kOADk2YZIpW9Q5PRZOG6RpHKwdduczbz1v
+         pDRg==
+X-Gm-Message-State: AOAM532Up1jyZjTojp/Tz3VzMoc3Z6rrTODmnFPsXYFWiKtB8xYylrkU
+        S6NJdycxlO9lD3qQ8n0JhkuI8RToBadBiHgw1FA=
+X-Google-Smtp-Source: ABdhPJz3vs0Z+ZMygYn+xPVuVrbbJYN5xNyoerrrhA/PrB/vMVPPhThbxyjKlJIjEXQpSPoXy7OoEILriNAKgb5M21w=
+X-Received: by 2002:a25:3357:: with SMTP id z84mr38985872ybz.260.1618350861455;
+ Tue, 13 Apr 2021 14:54:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <87blaozi20.fsf@toke.dk> <CAEf4Bzb4LDi1ZVrhNEojpWhxi33tkv4rv6F7Czj28Y0tHxXh0w@mail.gmail.com>
- <87im4qo9ey.fsf@toke.dk>
-In-Reply-To: <87im4qo9ey.fsf@toke.dk>
+References: <20210412162502.1417018-1-jolsa@kernel.org> <20210412162502.1417018-3-jolsa@kernel.org>
+In-Reply-To: <20210412162502.1417018-3-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 13 Apr 2021 14:43:24 -0700
-Message-ID: <CAEf4Bzahxw5-KTb2yOk8PHQmEyc6gDgTTR6znZjH2OhZ66wiUw@mail.gmail.com>
-Subject: Re: Selftest failures related to kern_sync_rcu()
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>
+Date:   Tue, 13 Apr 2021 14:54:10 -0700
+Message-ID: <CAEf4Bza6OXC4aVuxVGnn-DOANuFbnuJ++=q8fFpD-f48kb7_pw@mail.gmail.com>
+Subject: Re: [PATCHv4 bpf-next 2/5] selftests/bpf: Add re-attach test to fentry_test
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 1:50 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
+On Mon, Apr 12, 2021 at 9:29 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> Adding the test to re-attach (detach/attach again) tracing
+> fentry programs, plus check that already linked program can't
+> be attached again.
 >
-> > On Thu, Apr 8, 2021 at 12:34 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
-> >>
-> >> Hi Andrii
-> >>
-> >> I'm getting some selftest failures that all seem to have something to =
-do
-> >> with kern_sync_rcu() not being enough to trigger the kernel events tha=
-t
-> >> the selftest expects:
-> >>
-> >> $ ./test_progs | grep FAIL
-> >> test_lookup_update:FAIL:map1_leak inner_map1 leaked!
-> >> #15/1 lookup_update:FAIL
-> >> #15 btf_map_in_map:FAIL
-> >> test_exit_creds:FAIL:null_ptr_count unexpected null_ptr_count: actual =
-0 =3D=3D expected 0
-> >> #123/2 exit_creds:FAIL
-> >> #123 task_local_storage:FAIL
-> >> test_exit_creds:FAIL:null_ptr_count unexpected null_ptr_count: actual =
-0 =3D=3D expected 0
-> >> #123/2 exit_creds:FAIL
-> >> #123 task_local_storage:FAIL
-> >>
-> >> They are all fixed by adding a sleep(1) after the call(s) to
-> >> kern_sync_rcu(), so I'm guessing it's some kind of
-> >> timing/synchronisation problem. Is there a particular kernel config
-> >> that's needed for the membarrier syscall trick to work? I've tried wit=
-h
-> >> various settings of PREEMPT and that doesn't really seem to make any
-> >> difference...
-> >>
-> >
-> > If you check kern_sync_rcu(), it relies on membarrier() syscall
-> > (passing cmd =3D MEMBARRIER_CMD_SHARED =3D=3D MEMBARRIER_CMD_GLOBAL).
-> > Now, looking at kernel sources:
-> >   - CONFIG_MEMBARRIER should be enabled for that syscall;
-> >   - it has some extra conditions:
-> >
-> >            case MEMBARRIER_CMD_GLOBAL:
-> >                 /* MEMBARRIER_CMD_GLOBAL is not compatible with nohz_fu=
-ll. */
-> >                 if (tick_nohz_full_enabled())
-> >                         return -EINVAL;
-> >                 if (num_online_cpus() > 1)
-> >                         synchronize_rcu();
-> >                 return 0;
-> >
-> > Could it be that one of those conditions is not satisfied?
+> Also switching to ASSERT* macros and adding missing ';' in
+> ASSERT_ERR_PTR macro.
 >
-> Aha, bingo! Found the membarrier syscall stuff, but for some reason
-> didn't think to actually read the code of it; and I was running this in
-> a VM with a single CPU, adding another fixed this. Thanks! :)
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  .../selftests/bpf/prog_tests/fentry_test.c    | 51 +++++++++++++------
+>  tools/testing/selftests/bpf/test_progs.h      |  2 +-
+>  2 files changed, 37 insertions(+), 16 deletions(-)
 >
-> Do you think we could detect this in the tests? I suppose the
-> tick_nohz_full_enabled() check should already result in a visible
-> failure since that makes the syscall fail; but the CPU thing is silent,
-> so it would be nice with a hint. Could kern_sync_rcu() check the CPU
-> count and print a warning or fail if it is 1? Or maybe just straight up
-> fall back to sleep()'ing?
+> diff --git a/tools/testing/selftests/bpf/prog_tests/fentry_test.c b/tools/testing/selftests/bpf/prog_tests/fentry_test.c
+> index 04ebbf1cb390..f440c74f5367 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/fentry_test.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/fentry_test.c
+> @@ -3,35 +3,56 @@
+>  #include <test_progs.h>
+>  #include "fentry_test.skel.h"
+>
+> -void test_fentry_test(void)
+> +static int fentry_test(struct fentry_test *fentry_skel)
+>  {
+> -       struct fentry_test *fentry_skel = NULL;
+>         int err, prog_fd, i;
+>         __u32 duration = 0, retval;
+> +       struct bpf_link *link;
+>         __u64 *result;
+>
+> -       fentry_skel = fentry_test__open_and_load();
+> -       if (CHECK(!fentry_skel, "fentry_skel_load", "fentry skeleton failed\n"))
+> -               goto cleanup;
+> -
+>         err = fentry_test__attach(fentry_skel);
+> -       if (CHECK(err, "fentry_attach", "fentry attach failed: %d\n", err))
+> -               goto cleanup;
+> +       if (!ASSERT_OK(err, "fentry_attach"))
+> +               return err;
+> +
+> +       /* Check that already linked program can't be attached again. */
+> +       link = bpf_program__attach(fentry_skel->progs.test1);
+> +       if (!ASSERT_ERR_PTR(link, "fentry_attach_link"))
+> +               return -1;
+>
+>         prog_fd = bpf_program__fd(fentry_skel->progs.test1);
+>         err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
+>                                 NULL, NULL, &retval, &duration);
+> -       CHECK(err || retval, "test_run",
+> -             "err %d errno %d retval %d duration %d\n",
+> -             err, errno, retval, duration);
+> +       ASSERT_OK(err || retval, "test_run");
 
-If membarrier() is unreliable, I guess we can just go back to the
-previous way of triggering synchronize_rcu() (create and update
-map-in-map element)? See 635599bace25 ("selftests/bpf: Sync RCU before
-unloading bpf_testmod") that removed that in favor of membarrier()
-syscall.
+this is quite misleading, even if will result in a correct check. Toke
+did this in his patch set:
+
+ASSERT_OK(err, ...);
+ASSERT_EQ(retval, 0, ...);
+
+It is a better and more straightforward way to validate the checks
+instead of relying on (err || retval) -> bool (true) -> int (1) -> !=
+0 chain.
+
 
 >
-> -Toke
+>         result = (__u64 *)fentry_skel->bss;
+> -       for (i = 0; i < 6; i++) {
+> -               if (CHECK(result[i] != 1, "result",
+> -                         "fentry_test%d failed err %lld\n", i + 1, result[i]))
+> -                       goto cleanup;
+> +       for (i = 0; i < sizeof(*fentry_skel->bss) / sizeof(__u64); i++) {
+> +               if (!ASSERT_EQ(result[i], 1, "fentry_result"))
+> +                       return -1;
+>         }
+>
+> +       fentry_test__detach(fentry_skel);
+> +
+> +       /* zero results for re-attach test */
+> +       memset(fentry_skel->bss, 0, sizeof(*fentry_skel->bss));
+> +       return 0;
+> +}
+> +
+> +void test_fentry_test(void)
+> +{
+> +       struct fentry_test *fentry_skel = NULL;
+> +       int err;
+> +
+> +       fentry_skel = fentry_test__open_and_load();
+> +       if (!ASSERT_OK_PTR(fentry_skel, "fentry_skel_load"))
+> +               goto cleanup;
+> +
+> +       err = fentry_test(fentry_skel);
+> +       if (!ASSERT_OK(err, "fentry_first_attach"))
+> +               goto cleanup;
+> +
+> +       err = fentry_test(fentry_skel);
+> +       ASSERT_OK(err, "fentry_second_attach");
+> +
+>  cleanup:
+>         fentry_test__destroy(fentry_skel);
+>  }
+> diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+> index e87c8546230e..ee7e3b45182a 100644
+> --- a/tools/testing/selftests/bpf/test_progs.h
+> +++ b/tools/testing/selftests/bpf/test_progs.h
+> @@ -210,7 +210,7 @@ extern int test__join_cgroup(const char *path);
+>  #define ASSERT_ERR_PTR(ptr, name) ({                                   \
+>         static int duration = 0;                                        \
+>         const void *___res = (ptr);                                     \
+> -       bool ___ok = IS_ERR(___res)                                     \
+> +       bool ___ok = IS_ERR(___res);                                    \
+
+heh, it probably deserves a separate patch with Fixes tag...
+
+>         CHECK(!___ok, (name), "unexpected pointer: %p\n", ___res);      \
+>         ___ok;                                                          \
+>  })
+> --
+> 2.30.2
 >
