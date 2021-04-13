@@ -2,537 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50F935E30A
-	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 17:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2942135E3D9
+	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 18:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346113AbhDMPjR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Apr 2021 11:39:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22579 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237651AbhDMPjR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 13 Apr 2021 11:39:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618328337;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tsZNPPwQEwQsXCj8Y4wzus7mksq3VK2t+TU1GNor3ko=;
-        b=FMkErTDMvrrC8oMl1m3b2PxjwShaMLyilcNtvLJqP6H4F8ExCPZhU4VQpyy+W8b6i18Bxn
-        9mVfvImh4tHF7dNiW91T5Itzv1u9FJUhIPS9pnsr53hEjr7Ac4GfqVVMOP2Dlae+0mF0na
-        x4idXkxpmoojNpcGi+tAa4LqnffFkZE=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-490-EqXp5DutMBSQon6unHwD4A-1; Tue, 13 Apr 2021 11:38:55 -0400
-X-MC-Unique: EqXp5DutMBSQon6unHwD4A-1
-Received: by mail-ej1-f69.google.com with SMTP id bn26so5196826ejb.20
-        for <bpf@vger.kernel.org>; Tue, 13 Apr 2021 08:38:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=tsZNPPwQEwQsXCj8Y4wzus7mksq3VK2t+TU1GNor3ko=;
-        b=LHbEHoNO6R8UR7c+eYeTYdqmjMgZp62EfIpOm1uEA+Xy68JRAC7Q8fZt+GWgh60Mjv
-         Hdz7iuYu8+il0izHTL4p+CzpObem7XYffFdq5/zU9onSAcyTkB5iq/lt24sNZpmLPYpK
-         kMccjaWWMzHz3wlseN6s6sAEyPu+XccpvITsMMKGa3Ni9qygcHxc/M9jX0lfxM5Lb/28
-         y7207H81izLSN5P6ze5T7R25V/0W6/aVo6UTPX8BIqUrn5CopR8GQWhxvIJJVlJo6120
-         3QLqUDsPCSeI7F8sWme+ru0/gDS7q5dU+FpX7FoDuPGkqBLT16GQ2ifY8E5C+CMrxjnw
-         g0Yg==
-X-Gm-Message-State: AOAM5307162zNr8k8HwVtJdcCmwNkis7PYH1DcoR44TJum+yeSz+3aiR
-        48jliOSYYlGVQ8Q5ToZMKSYeFjyMyXZ3BMh+nRlsGy9sGLXKQyB3AL6w0aZsyx+o7UrXeZ7/XzJ
-        tAaY144J2hKzO
-X-Received: by 2002:a50:fb8c:: with SMTP id e12mr36495165edq.295.1618328333540;
-        Tue, 13 Apr 2021 08:38:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwoZoR7tJsGGC5ktcn7/4InCfrE93Aa/j07i53Tqh4Xv1zk7pQOFY9KC8BmGYT2YHKFeFDVxw==
-X-Received: by 2002:a50:fb8c:: with SMTP id e12mr36495111edq.295.1618328332928;
-        Tue, 13 Apr 2021 08:38:52 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id yr16sm7210222ejb.63.2021.04.13.08.38.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 08:38:51 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 2BB6C1804E8; Tue, 13 Apr 2021 17:38:51 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        =?utf-8?B?QmrDtnJuIFQ=?= =?utf-8?B?w7ZwZWw=?= 
-        <bjorn.topel@gmail.com>, Hangbin Liu <liuhangbin@gmail.com>
-Subject: Re: [PATCHv5 bpf-next 2/4] xdp: extend xdp_redirect_map with
- broadcast support
-In-Reply-To: <20210413094133.3966678-3-liuhangbin@gmail.com>
-References: <20210413094133.3966678-1-liuhangbin@gmail.com>
- <20210413094133.3966678-3-liuhangbin@gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 13 Apr 2021 17:38:51 +0200
-Message-ID: <87wnt6mbxw.fsf@toke.dk>
+        id S244971AbhDMQ11 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Apr 2021 12:27:27 -0400
+Received: from mx07-001d1705.pphosted.com ([185.132.183.11]:46064 "EHLO
+        mx07-001d1705.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244786AbhDMQ11 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 13 Apr 2021 12:27:27 -0400
+Received: from pps.filterd (m0209326.ppops.net [127.0.0.1])
+        by mx08-001d1705.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13DG9mth019574;
+        Tue, 13 Apr 2021 16:10:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sony.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=S1;
+ bh=TzgmIrKocDTugP6dAJe90Ya7xmPmD/tMAeZ7bZo11ck=;
+ b=lQh6vDVOd9Wo5K9O5wxqWZxtP62KDvFOGlBhWmeSCzJyLFMnF1oATVgezl3JFq87hUDu
+ 26tWFlJU1wMHJuumiF112+BFpIejwNKFzGopf/aGQy3uuTKbq44nCpbC2dka1HOql0Ni
+ VAl9G52XluhDVN9dhMeJ4UDsMEItn2VTJ1xmdR8+IFDNsNrEHMPOnoSY2oq4dMs+us15
+ 0aE0uDCvzFVLJvYKkNJaA5QG8vfGc2SmvjzVC19+HP+VAQd96HwOBHsqDTJrjvE8icQI
+ C8hxZBNWoEQYimBTs8LMjN1h7lX52JAm1vTZoCI8wJOSSRjRN/FhpfNzhhrjtijq0sq6 Hw== 
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2176.outbound.protection.outlook.com [104.47.55.176])
+        by mx08-001d1705.pphosted.com with ESMTP id 37u27m25d8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Apr 2021 16:10:30 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gTVLBIgXHXIDMnM3AEOzmZIsW4u4KQ6fYp+Kn+WkFJoIK7oJ1jnAChG45y5/LsRQRDvCOCPO3WSEbSUq5SUrFzr53Bu3dS/Cfaw1nBg+X9EscyEFyFZBjZwmWExPfW1VjRUvqm6xH5Ss+kqIg8yXSz1B647+oUzlgLh+z4SC13ebxQ84uEhEghP8HtD57Pm9xsL4VVVIacFnj1zjrBUe0MSDIpLIMUaQSFYLEjnR6gVVtMRKYKQ+A4LJZEGub6fIXiIr8Ednt2grQ2HprDcYLrtiHC5sQcSqVU35gGLxZ4hnnPKupxl8EfApDVo3EG2UqTUU3zcs2yDwu+bmOUHF7w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TzgmIrKocDTugP6dAJe90Ya7xmPmD/tMAeZ7bZo11ck=;
+ b=CJqxdeeozA489b2pGlF14VfzajF58Gm9t5vEtNNBF26i20J6l1gShPh/xGR8seb5UcnpgPDqWeLNI+X7qNmklRi/YNcbmV/LXlxhG01zq5aHhQIJ7uPffAzVL1l5BG3DeZEgj2o/mYWeNjqix0RyDxbhXYDlK2uDyW2vIN/Joad2Aidi43wWp4f/JJanmM3ZER3nI56rv9OYOXcrmBuaxIiWu2oFHUo37PF8DXBRFKqyGtXjJjsJSAAK5CGJi/bjvaoCcRr2H6CoozSAgqC0RG1hzAZFTtCWdW/L+8gKsXKVBLVZ0skoP88S1TJAEQSFQa7FIBzFW9wUMAjIRnnfcg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=sony.com; dmarc=pass action=none header.from=sony.com;
+ dkim=pass header.d=sony.com; arc=none
+Received: from BN7PR13MB2499.namprd13.prod.outlook.com (2603:10b6:406:ac::18)
+ by BN0PR13MB4743.namprd13.prod.outlook.com (2603:10b6:408:12e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.6; Tue, 13 Apr
+ 2021 16:10:27 +0000
+Received: from BN7PR13MB2499.namprd13.prod.outlook.com
+ ([fe80::24ab:22c1:7c5f:2ca6]) by BN7PR13MB2499.namprd13.prod.outlook.com
+ ([fe80::24ab:22c1:7c5f:2ca6%7]) with mapi id 15.20.3999.016; Tue, 13 Apr 2021
+ 16:10:27 +0000
+From:   <Tim.Bird@sony.com>
+To:     <alexei.starovoitov@gmail.com>, <yang.lee@linux.alibaba.com>
+CC:     <shuah@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] selftests/bpf: use !E instead of comparing with NULL
+Thread-Topic: [PATCH] selftests/bpf: use !E instead of comparing with NULL
+Thread-Index: AQHXMErV8JcfI63Nok6Yi06yGd1P+6qyj46AgAAONpA=
+Date:   Tue, 13 Apr 2021 16:10:27 +0000
+Message-ID: <BN7PR13MB24996213858443821CA7E400FD4F9@BN7PR13MB2499.namprd13.prod.outlook.com>
+References: <1618307549-78149-1-git-send-email-yang.lee@linux.alibaba.com>
+ <CAADnVQJmsipci_ou6OOFGC6O9z935jFw4+pe7YQvvh2=eCoarQ@mail.gmail.com>
+In-Reply-To: <CAADnVQJmsipci_ou6OOFGC6O9z935jFw4+pe7YQvvh2=eCoarQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=sony.com;
+x-originating-ip: [136.175.96.185]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d5026152-e973-4986-871d-08d8fe96a6f5
+x-ms-traffictypediagnostic: BN0PR13MB4743:
+x-microsoft-antispam-prvs: <BN0PR13MB47437E1F5A1D35B60410C551FD4F9@BN0PR13MB4743.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Gukdu51KGhoEZEnAOYX9Zdmf+modY4qS3iphO0d+pLj8h+iPFP3hxeCf0pvtV6pefNV0XhcUvIKUsT/VQcomqjhLUTos5DqmQewZpIXDY5VofmaaXaPrKsVW6hINsD7l2TvNiZ+l5PD8nK6pewXfmIUs9o5xpM1m92U5X3W6/R9yww2XNzOtR2lbRkcXZmgiTWIZ5KQ3j4YL8rkaycd0FdawLZ5XKlMsg1VA4PjIKRD9xnaic34JNpseYBuA0j77FNhDz2HLvLMrfHURHQgjmjbXs8GzjzzIJOJnufGk1Fz7nEHTl3d0tswYQ/VZ1Vo5pR/5KoXbFwqfXFEWA82JImjfQvNF2BE98maa2AAArj7Lj5JNepPUYZsgYN8yamIKJ3m1cEMjIWEUW213yrzogHrXn0ItffZOppGg/6LVs/2lGPpLCIOIXTNPPcvzg75t3ILNIcwJt/4HOPhB1NwhS5D1w5vKzyE+M2DXXCt8hRIqcYhn+UnuulYmdT0+y4DkgDt4tfLH/c3rCvGZF6BPkIq8ZfFWWElAJXJ58pErsD9oN1Ax9sLG3/ISglu0/0X+SByExmKpjWe/AgYRUV/e79PgC6xJfKUzvjhNkbfSwc0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR13MB2499.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(376002)(366004)(396003)(186003)(5660300002)(86362001)(6506007)(66476007)(2906002)(53546011)(52536014)(64756008)(66446008)(71200400001)(66556008)(76116006)(66946007)(83380400001)(9686003)(26005)(478600001)(8676002)(33656002)(8936002)(4326008)(110136005)(38100700002)(54906003)(7696005)(55016002)(122000001)(316002)(7416002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?Yy9ZTkQrcjFFdSt1cXROc2lXeEZmRUFoVGMvS1Y0MHVjUk9SRGVmMllXb2Fp?=
+ =?utf-8?B?cVMxSGZOMUdqUThZK0w5RjBTY0p4RUdBbXFoQWQxeFZhQjBETjBmNFZMOWxl?=
+ =?utf-8?B?eTRYNnZiV1hsOWg0dEhycjBnanVWQzF2VkxKeVFDVzV1TWk0aGR4d0hWMHNX?=
+ =?utf-8?B?azdXZERweWdFanRCdVd1SmF5c3h6R2pnRE1DNjdGY2F2YzgrMDl3Y1BNWmgz?=
+ =?utf-8?B?M1pHS09LR2ZwTEZacGJXWWRoQm9ib2FTbjZhQ2xSUHRwWmRHbzc0c1U5YlZo?=
+ =?utf-8?B?MWhHcWd0a3pBc1M1bTUwT3p3M2g4VVo0eFFTUDVuUFEybFBSa2NzNUxhRFgr?=
+ =?utf-8?B?NitpMFpqZGlFaFJYV2w0OFFsLzlCVHAxdjk3dHZhQlUrazNxV2Z1cEp5Mnhu?=
+ =?utf-8?B?TTJXSEcwb1hvRUtaY204UTEwUjBKcTdQZlNRSTBrV2lqNW1yZEw0QzFLZ1dG?=
+ =?utf-8?B?K0NsMEE3Sm5hOE9uSXN1aDVkOFBobHBGak8yOWgzK0hoMGtxcjJsVVRxb2M5?=
+ =?utf-8?B?VE5idy9reUhzZjRFYzRrY2o1K2JDWXd5d2NJeUJCdFM0ckhoWlU5SEVOSUhO?=
+ =?utf-8?B?dEl3b1dhWUYxTEFMZk1HSDZQem5MbzVGeE1JUU5ncklKSkNwbW9pSE1veUZh?=
+ =?utf-8?B?Mnp6ZGVEc1B2cW1tRVQzWXJRbmU0N3J2Ym9GK2pISHRFNVdGNWRWOUNVZnJH?=
+ =?utf-8?B?eHJWV0tncHFuRi96K3ZQNWFCd3FzZ2F3eEtlN0tlUmdBSlB4RXcwM3BLTjA0?=
+ =?utf-8?B?aEhIendQaHlOT0hFNXdvU1h2eWVLNS9uZWh6ZlN6cVJtQWxxR1RRcmJuYjZ1?=
+ =?utf-8?B?QUYrQk1Ra0xlY2QyYUV1VGs0L0NlMVFaOXJoSktNdWNocnltOEpnMUhsVHdJ?=
+ =?utf-8?B?NEJKbXRvaGMxRHEzTVpwN3lWY3dDZXkxNmcrd0lxeHppcXdFQUkveUU2RVR4?=
+ =?utf-8?B?Sm5OYTZNVXpjYVJYQnp5RnpDZFNBR2orbzgwZGhHN1h2UkRmN0V0WnMrYXd2?=
+ =?utf-8?B?clpBTkFCWjlCQ1VvTUdXWThiTE9WVHdoWThwWjdvZ2ZqdDVqZjl2dS92ZTRx?=
+ =?utf-8?B?by9zMUU1WnVYRkloOGRxdk5DTE9YUzltU0poR0NxMmg4WllaZ2RBNnMzUEh3?=
+ =?utf-8?B?emt3aC8rbWdZTjlGMm5qSXJ2KzJMRmxXTDZIRzh5di9XbkVQRkRaZTBFS2Ez?=
+ =?utf-8?B?M1JDRDlUbm9TYUUyL1QwZGxVaFRaNkRHdzFSYzd2QzZvemd0ODloM1dKNGVV?=
+ =?utf-8?B?UjRGZXV2bVU2UitpOVNjT2x3WmJGbllzenJXWmUrVlV2d1dLSjE1bDA3WVMr?=
+ =?utf-8?B?WStsckg2cHpPOGY4MFVLSWVaMWg5VTRZbkVmNS8venhLb0VqU1g1dlNnTzJC?=
+ =?utf-8?B?eGRWaTNqM2ZYL2ZHaGdrWDVuaUxEQUJVVGZPWUdIeXhaZ3ZLRERUbW9laHBp?=
+ =?utf-8?B?T0UyZ3V5ZEpzUm5zSFVJYW5wWWltc1NZK0tDNW5EZDZKeUZucXkyRlRpREd4?=
+ =?utf-8?B?ZXlNQWF1QndacVFoSkxJa21yWm9IL2NjNmUxMHM2UHdJN0R3YmRENmdCRHk0?=
+ =?utf-8?B?amVGMkNvdTdwcnIzWXZ3by9hTlFpaXVhSkMvdEZSdlJqcnNZMkwwVForS2hT?=
+ =?utf-8?B?UUxNYm1vcFVidGx2enE0OGhHZkR5VjNwUXF0U3BpVU1Jb2xIYUVEdEhTdGxS?=
+ =?utf-8?B?b1M4TE15NXFkaUQzOEF5c3dWaFFmaGZtWmUwUGxDZk5waXQ1WmNHRVQ2R3JO?=
+ =?utf-8?Q?g799eZgtRE89qQAoYWVOHDPnYFDPuO4h4RMEOI7?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: sony.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN7PR13MB2499.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d5026152-e973-4986-871d-08d8fe96a6f5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Apr 2021 16:10:27.1494
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 66c65d8a-9158-4521-a2d8-664963db48e4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /2RWjCYVbbl8Zn4SZFBBhKILxxouyW1BfC+5CURQSuUjngXUL6IYUvHggzS30Uw+RTbyH8BwGC2EpkbSemiFxQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR13MB4743
+X-Proofpoint-ORIG-GUID: lO5rh5s6CfdW5lLO98Ct66kyO975Z9Pk
+X-Proofpoint-GUID: lO5rh5s6CfdW5lLO98Ct66kyO975Z9Pk
+X-Sony-Outbound-GUID: lO5rh5s6CfdW5lLO98Ct66kyO975Z9Pk
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-13_09:2021-04-13,2021-04-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1011 phishscore=0 adultscore=0
+ lowpriorityscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104130110
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hangbin Liu <liuhangbin@gmail.com> writes:
-
-> This patch adds two flags BPF_F_BROADCAST and BPF_F_EXCLUDE_INGRESS to
-> extend xdp_redirect_map for broadcast support.
->
-> With BPF_F_BROADCAST the packet will be broadcasted to all the interfaces
-> in the map. with BPF_F_EXCLUDE_INGRESS the ingress interface will be
-> excluded when do broadcasting.
->
-> When getting the devices in dev hash map via dev_map_hash_get_next_key(),
-> there is a possibility that we fall back to the first key when a device
-> was removed. This will duplicate packets on some interfaces. So just walk
-> the whole buckets to avoid this issue. For dev array map, we also walk the
-> whole map to find valid interfaces.
->
-> Function bpf_clear_redirect_map() was removed in
-> commit ee75aef23afe ("bpf, xdp: Restructure redirect actions").
-> Add it back as we need to use ri->map again.
->
-> Here is the performance result by using 10Gb i40e NIC, do XDP_DROP on
-> veth peer, run xdp_redirect_{map, map_multi} in sample/bpf and send pkts
-> via pktgen cmd:
-> ./pktgen_sample03_burst_single_flow.sh -i eno1 -d $dst_ip -m $dst_mac -t =
-10 -s 64
->
-> There are some drop back as we need to loop the map and get each interfac=
-e.
->
-> Version          | Test                                | Generic | Native
-> 5.12 rc4         | redirect_map        i40e->i40e      |    1.9M |  9.6M
-> 5.12 rc4         | redirect_map        i40e->veth      |    1.7M | 11.7M
-> 5.12 rc4 + patch | redirect_map        i40e->i40e      |    1.9M |  9.3M
-> 5.12 rc4 + patch | redirect_map        i40e->veth      |    1.7M | 11.4M
-> 5.12 rc4 + patch | redirect_map multi  i40e->i40e      |    1.9M |  8.9M
-> 5.12 rc4 + patch | redirect_map multi  i40e->veth      |    1.7M | 10.9M
-> 5.12 rc4 + patch | redirect_map multi  i40e->mlx4+veth |    1.2M |  3.8M
->
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-
-Mostly looking good, but found a memory leak in the error path for generic =
-XDP :(
-
-See below...
-
-> ---
-> v5:
-> a) use xchg() instead of READ/WRITE_ONCE and no need to clear ri->flags
->    in xdp_do_redirect()
-> b) Do not use get_next_key() as we may restart looping from the first key
->    when remove/update a dev in hash map. Just walk the map directly to
->    get all the devices and ignore the new added/deleted objects.
-> c) Loop all the array map instead stop at the first hole.
->
-> v4:
-> a) add a new argument flag_mask to __bpf_xdp_redirect_map() filter out
-> invalid map.
-> b) __bpf_xdp_redirect_map() sets the map pointer if the broadcast flag
-> is set and clears it if the flag isn't set
-> c) xdp_do_redirect() does the READ_ONCE/WRITE_ONCE on ri->map to check
-> if we should enqueue multi
->
-> v3:
-> a) Rebase the code on Bj=C3=B6rn's "bpf, xdp: Restructure redirect action=
-s".
->    - Add struct bpf_map *map back to struct bpf_redirect_info as we need
->      it for multicast.
->    - Add bpf_clear_redirect_map() back for devmap.c
->    - Add devmap_lookup_elem() as we need it in general path.
-> b) remove tmp_key in devmap_get_next_obj()
->
-> v2: Fix flag renaming issue in v1
-> ---
->  include/linux/bpf.h            |  20 ++++
->  include/linux/filter.h         |  18 +++-
->  include/net/xdp.h              |   1 +
->  include/uapi/linux/bpf.h       |  17 +++-
->  kernel/bpf/cpumap.c            |   3 +-
->  kernel/bpf/devmap.c            | 172 ++++++++++++++++++++++++++++++++-
->  net/core/filter.c              |  33 ++++++-
->  net/core/xdp.c                 |  29 ++++++
->  net/xdp/xskmap.c               |   3 +-
->  tools/include/uapi/linux/bpf.h |  17 +++-
->  10 files changed, 299 insertions(+), 14 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index ff8cd68c01b3..ab6bde1f3b91 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1496,8 +1496,13 @@ int dev_xdp_enqueue(struct net_device *dev, struct=
- xdp_buff *xdp,
->  		    struct net_device *dev_rx);
->  int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
->  		    struct net_device *dev_rx);
-> +int dev_map_enqueue_multi(struct xdp_buff *xdp, struct net_device *dev_r=
-x,
-> +			  struct bpf_map *map, bool exclude_ingress);
->  int dev_map_generic_redirect(struct bpf_dtab_netdev *dst, struct sk_buff=
- *skb,
->  			     struct bpf_prog *xdp_prog);
-> +int dev_map_redirect_multi(struct net_device *dev, struct sk_buff *skb,
-> +			   struct bpf_prog *xdp_prog, struct bpf_map *map,
-> +			   bool exclude_ingress);
->  bool dev_map_can_have_prog(struct bpf_map *map);
->=20=20
->  void __cpu_map_flush(void);
-> @@ -1665,6 +1670,13 @@ int dev_map_enqueue(struct bpf_dtab_netdev *dst, s=
-truct xdp_buff *xdp,
->  	return 0;
->  }
->=20=20
-> +static inline
-> +int dev_map_enqueue_multi(struct xdp_buff *xdp, struct net_device *dev_r=
-x,
-> +			  struct bpf_map *map, bool exclude_ingress)
-> +{
-> +	return 0;
-> +}
-> +
->  struct sk_buff;
->=20=20
->  static inline int dev_map_generic_redirect(struct bpf_dtab_netdev *dst,
-> @@ -1674,6 +1686,14 @@ static inline int dev_map_generic_redirect(struct =
-bpf_dtab_netdev *dst,
->  	return 0;
->  }
->=20=20
-> +static inline
-> +int dev_map_redirect_multi(struct net_device *dev, struct sk_buff *skb,
-> +			   struct bpf_prog *xdp_prog, struct bpf_map *map,
-> +			   bool exclude_ingress)
-> +{
-> +	return 0;
-> +}
-> +
->  static inline void __cpu_map_flush(void)
->  {
->  }
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index 9a09547bc7ba..e4885b42d754 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -646,6 +646,7 @@ struct bpf_redirect_info {
->  	u32 flags;
->  	u32 tgt_index;
->  	void *tgt_value;
-> +	struct bpf_map *map;
->  	u32 map_id;
->  	enum bpf_map_type map_type;
->  	u32 kern_flags;
-> @@ -1464,17 +1465,18 @@ static inline bool bpf_sk_lookup_run_v6(struct ne=
-t *net, int protocol,
->  }
->  #endif /* IS_ENABLED(CONFIG_IPV6) */
->=20=20
-> -static __always_inline int __bpf_xdp_redirect_map(struct bpf_map *map, u=
-32 ifindex, u64 flags,
-> +static __always_inline int __bpf_xdp_redirect_map(struct bpf_map *map, u=
-32 ifindex,
-> +						  u64 flags, u64 flag_mask,
->  						  void *lookup_elem(struct bpf_map *map, u32 key))
->  {
->  	struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info);
->=20=20
->  	/* Lower bits of the flags are used as return code on lookup failure */
-> -	if (unlikely(flags > XDP_TX))
-> +	if (unlikely(flags & ~(BPF_F_ACTION_MASK | flag_mask)))
->  		return XDP_ABORTED;
->=20=20
->  	ri->tgt_value =3D lookup_elem(map, ifindex);
-> -	if (unlikely(!ri->tgt_value)) {
-> +	if (unlikely(!ri->tgt_value) && !(flags & BPF_F_BROADCAST)) {
->  		/* If the lookup fails we want to clear out the state in the
->  		 * redirect_info struct completely, so that if an eBPF program
->  		 * performs multiple lookups, the last one always takes
-> @@ -1482,13 +1484,21 @@ static __always_inline int __bpf_xdp_redirect_map=
-(struct bpf_map *map, u32 ifind
->  		 */
->  		ri->map_id =3D INT_MAX; /* Valid map id idr range: [1,INT_MAX[ */
->  		ri->map_type =3D BPF_MAP_TYPE_UNSPEC;
-> -		return flags;
-> +		return flags & BPF_F_ACTION_MASK;
->  	}
->=20=20
->  	ri->tgt_index =3D ifindex;
->  	ri->map_id =3D map->id;
->  	ri->map_type =3D map->map_type;
->=20=20
-> +	if (flags & BPF_F_BROADCAST) {
-> +		WRITE_ONCE(ri->map, map);
-> +		ri->flags =3D flags;
-> +	} else {
-> +		WRITE_ONCE(ri->map, NULL);
-> +		ri->flags =3D 0;
-> +	}
-> +
->  	return XDP_REDIRECT;
->  }
->=20=20
-> diff --git a/include/net/xdp.h b/include/net/xdp.h
-> index a5bc214a49d9..5533f0ab2afc 100644
-> --- a/include/net/xdp.h
-> +++ b/include/net/xdp.h
-> @@ -170,6 +170,7 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp=
-_frame *xdpf,
->  struct sk_buff *xdp_build_skb_from_frame(struct xdp_frame *xdpf,
->  					 struct net_device *dev);
->  int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp_t gfp);
-> +struct xdp_frame *xdpf_clone(struct xdp_frame *xdpf);
->=20=20
->  static inline
->  void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff =
-*xdp)
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 85c924bc21b1..b178f5b0d3f4 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -2534,8 +2534,12 @@ union bpf_attr {
->   * 		The lower two bits of *flags* are used as the return code if
->   * 		the map lookup fails. This is so that the return value can be
->   * 		one of the XDP program return codes up to **XDP_TX**, as chosen
-> - * 		by the caller. Any higher bits in the *flags* argument must be
-> - * 		unset.
-> + * 		by the caller. The higher bits of *flags* can be set to
-> + * 		BPF_F_BROADCAST or BPF_F_EXCLUDE_INGRESS as defined below.
-> + *
-> + * 		With BPF_F_BROADCAST the packet will be broadcasted to all the
-> + * 		interfaces in the map. with BPF_F_EXCLUDE_INGRESS the ingress
-> + * 		interface will be excluded when do broadcasting.
->   *
->   * 		See also **bpf_redirect**\ (), which only supports redirecting
->   * 		to an ifindex, but doesn't require a map to do so.
-> @@ -5052,6 +5056,15 @@ enum {
->  	BPF_F_BPRM_SECUREEXEC	=3D (1ULL << 0),
->  };
->=20=20
-> +/* Flags for bpf_redirect_map helper */
-> +enum {
-> +	BPF_F_BROADCAST		=3D (1ULL << 3),
-> +	BPF_F_EXCLUDE_INGRESS	=3D (1ULL << 4),
-> +};
-> +
-> +#define BPF_F_ACTION_MASK (XDP_ABORTED | XDP_DROP | XDP_PASS | XDP_TX)
-> +#define BPF_F_REDIR_MASK (BPF_F_BROADCAST | BPF_F_EXCLUDE_INGRESS)
-> +
->  #define __bpf_md_ptr(type, name)	\
->  union {					\
->  	type name;			\
-> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-> index 0cf2791d5099..2c33a7a09783 100644
-> --- a/kernel/bpf/cpumap.c
-> +++ b/kernel/bpf/cpumap.c
-> @@ -601,7 +601,8 @@ static int cpu_map_get_next_key(struct bpf_map *map, =
-void *key, void *next_key)
->=20=20
->  static int cpu_map_redirect(struct bpf_map *map, u32 ifindex, u64 flags)
->  {
-> -	return __bpf_xdp_redirect_map(map, ifindex, flags, __cpu_map_lookup_ele=
-m);
-> +	return __bpf_xdp_redirect_map(map, ifindex, flags, 0,
-> +				      __cpu_map_lookup_elem);
->  }
->=20=20
->  static int cpu_map_btf_id;
-> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> index 3980fb3bfb09..599a96c9d2c0 100644
-> --- a/kernel/bpf/devmap.c
-> +++ b/kernel/bpf/devmap.c
-> @@ -198,6 +198,7 @@ static void dev_map_free(struct bpf_map *map)
->  	list_del_rcu(&dtab->list);
->  	spin_unlock(&dev_map_lock);
->=20=20
-> +	bpf_clear_redirect_map(map);
->  	synchronize_rcu();
->=20=20
->  	/* Make sure prior __dev_map_entry_free() have completed. */
-> @@ -515,6 +516,101 @@ int dev_map_enqueue(struct bpf_dtab_netdev *dst, st=
-ruct xdp_buff *xdp,
->  	return __xdp_enqueue(dev, xdp, dev_rx, dst->xdp_prog);
->  }
->=20=20
-> +static bool is_valid_dst(struct bpf_dtab_netdev *obj, struct xdp_buff *x=
-dp,
-> +			 int exclude_ifindex)
-> +{
-> +	if (!obj || obj->dev->ifindex =3D=3D exclude_ifindex ||
-> +	    !obj->dev->netdev_ops->ndo_xdp_xmit)
-> +		return false;
-> +
-> +	if (xdp_ok_fwd_dev(obj->dev, xdp->data_end - xdp->data))
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
-> +static int dev_map_enqueue_clone(struct bpf_dtab_netdev *obj,
-> +				 struct net_device *dev_rx,
-> +				 struct xdp_frame *xdpf)
-> +{
-> +	struct xdp_frame *nxdpf;
-> +
-> +	nxdpf =3D xdpf_clone(xdpf);
-> +	if (unlikely(!nxdpf)) {
-> +		xdp_return_frame_rx_napi(xdpf);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	bq_enqueue(obj->dev, nxdpf, dev_rx, obj->xdp_prog);
-> +
-> +	return 0;
-> +}
-> +
-> +int dev_map_enqueue_multi(struct xdp_buff *xdp, struct net_device *dev_r=
-x,
-> +			  struct bpf_map *map, bool exclude_ingress)
-> +{
-> +	struct bpf_dtab *dtab =3D container_of(map, struct bpf_dtab, map);
-> +	int exclude_ifindex =3D exclude_ingress ? dev_rx->ifindex : 0;
-> +	struct bpf_dtab_netdev *dst, *last_dst =3D NULL;
-> +	struct hlist_head *head;
-> +	struct hlist_node *next;
-> +	struct xdp_frame *xdpf;
-> +	unsigned int i;
-> +	int err;
-> +
-> +	xdpf =3D xdp_convert_buff_to_frame(xdp);
-> +	if (unlikely(!xdpf))
-> +		return -ENOSPC;
-> +
-> +	if (map->map_type =3D=3D BPF_MAP_TYPE_DEVMAP) {
-> +		for (i =3D 0; i < map->max_entries; i++) {
-> +			dst =3D READ_ONCE(dtab->netdev_map[i]);
-> +			if (!is_valid_dst(dst, xdp, exclude_ifindex))
-> +				continue;
-> +
-> +			/* we only need n-1 clones; last_dst enqueued below */
-> +			if (!last_dst) {
-> +				last_dst =3D dst;
-> +				continue;
-> +			}
-> +
-> +			err =3D dev_map_enqueue_clone(last_dst, dev_rx, xdpf);
-> +			if (err)
-> +				return err;
-> +
-> +			last_dst =3D dst;
-> +		}
-> +	} else { /* BPF_MAP_TYPE_DEVMAP_HASH */
-> +		for (i =3D 0; i < dtab->n_buckets; i++) {
-> +			head =3D dev_map_index_hash(dtab, i);
-> +			hlist_for_each_entry_safe(dst, next, head, index_hlist) {
-> +				if (!is_valid_dst(dst, xdp, exclude_ifindex))
-> +					continue;
-> +
-> +				/* we only need n-1 clones; last_dst enqueued below */
-> +				if (!last_dst) {
-> +					last_dst =3D dst;
-> +					continue;
-> +				}
-> +
-> +				err =3D dev_map_enqueue_clone(last_dst, dev_rx, xdpf);
-> +				if (err)
-> +					return err;
-> +
-> +				last_dst =3D dst;
-> +			}
-> +		}
-> +	}
-> +
-> +	/* consume the last copy of the frame */
-> +	if (last_dst)
-> +		bq_enqueue(last_dst->dev, xdpf, dev_rx, last_dst->xdp_prog);
-> +	else
-> +		xdp_return_frame_rx_napi(xdpf); /* dtab is empty */
-> +
-> +	return 0;
-> +}
-> +
->  int dev_map_generic_redirect(struct bpf_dtab_netdev *dst, struct sk_buff=
- *skb,
->  			     struct bpf_prog *xdp_prog)
->  {
-> @@ -529,6 +625,76 @@ int dev_map_generic_redirect(struct bpf_dtab_netdev =
-*dst, struct sk_buff *skb,
->  	return 0;
->  }
->=20=20
-> +int dev_map_redirect_multi(struct net_device *dev, struct sk_buff *skb,
-> +			   struct bpf_prog *xdp_prog, struct bpf_map *map,
-> +			   bool exclude_ingress)
-> +{
-> +	struct bpf_dtab *dtab =3D container_of(map, struct bpf_dtab, map);
-> +	int exclude_ifindex =3D exclude_ingress ? dev->ifindex : 0;
-> +	struct bpf_dtab_netdev *dst, *last_dst =3D NULL;
-> +	struct hlist_head *head;
-> +	struct hlist_node *next;
-> +	struct sk_buff *nskb;
-> +	unsigned int i;
-> +	int err;
-> +
-> +	if (map->map_type =3D=3D BPF_MAP_TYPE_DEVMAP) {
-> +		for (i =3D 0; i < map->max_entries; i++) {
-> +			dst =3D READ_ONCE(dtab->netdev_map[i]);
-> +			if (!dst || dst->dev->ifindex =3D=3D exclude_ifindex)
-> +				continue;
-> +
-> +			/* we only need n-1 clones; last_dst enqueued below */
-> +			if (!last_dst) {
-> +				last_dst =3D dst;
-> +				continue;
-> +			}
-> +
-> +			nskb =3D skb_clone(skb, GFP_ATOMIC);
-> +			if (!nskb)
-> +				return -ENOMEM;
-> +
-> +			err =3D dev_map_generic_redirect(last_dst, nskb, xdp_prog);
-> +			if (err)
-> +				return err;
-
-In dev_map_enqueue_multi() you're using a helper that makes sure to free
-the original frame before returning an error, but here you're
-open-coding it, which means that these two error returns will leak the
-original skb.
-
-Maybe introduce a similar dev_map_redirect_clone() helper that also
-frees the skb on error? That would make the two functions more similar
-as well (and hopefully make any future consolidation easier).
-
-> +			last_dst =3D dst;
-> +		}
-> +	} else { /* BPF_MAP_TYPE_DEVMAP_HASH */
-> +		for (i =3D 0; i < dtab->n_buckets; i++) {
-> +			head =3D dev_map_index_hash(dtab, i);
-> +			hlist_for_each_entry_safe(dst, next, head, index_hlist) {
-> +				if (!dst || dst->dev->ifindex =3D=3D exclude_ifindex)
-> +					continue;
-> +
-> +				/* we only need n-1 clones; last_dst enqueued below */
-> +				if (!last_dst) {
-> +					last_dst =3D dst;
-> +					continue;
-> +				}
-> +
-> +				nskb =3D skb_clone(skb, GFP_ATOMIC);
-> +				if (!nskb)
-> +					return -ENOMEM;
-> +
-> +				err =3D dev_map_generic_redirect(last_dst, nskb, xdp_prog);
-> +				if (err)
-> +					return err;
-
-Same here, of course...
-
--Toke
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQWxleGVpIFN0YXJvdm9p
+dG92IDxhbGV4ZWkuc3Rhcm92b2l0b3ZAZ21haWwuY29tPg0KPiANCj4gT24gVHVlLCBBcHIgMTMs
+IDIwMjEgYXQgMjo1MiBBTSBZYW5nIExpIDx5YW5nLmxlZUBsaW51eC5hbGliYWJhLmNvbT4gd3Jv
+dGU6DQo+ID4NCj4gPiBGaXggdGhlIGZvbGxvd2luZyBjb2NjaWNoZWNrIHdhcm5pbmdzOg0KPiA+
+IC4vdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3Byb2ZpbGVyLmluYy5oOjE4OTo3
+LTExOiBXQVJOSU5HDQo+ID4gY29tcGFyaW5nIHBvaW50ZXIgdG8gMCwgc3VnZ2VzdCAhRQ0KPiA+
+IC4vdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3Byb2ZpbGVyLmluYy5oOjM2MTo3
+LTExOiBXQVJOSU5HDQo+ID4gY29tcGFyaW5nIHBvaW50ZXIgdG8gMCwgc3VnZ2VzdCAhRQ0KPiA+
+IC4vdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3Byb2ZpbGVyLmluYy5oOjM4Njox
+NC0xODogV0FSTklORw0KPiA+IGNvbXBhcmluZyBwb2ludGVyIHRvIDAsIHN1Z2dlc3QgIUUNCj4g
+PiAuL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy9wcm9maWxlci5pbmMuaDo0MDI6
+MTQtMTg6IFdBUk5JTkcNCj4gPiBjb21wYXJpbmcgcG9pbnRlciB0byAwLCBzdWdnZXN0ICFFDQo+
+ID4gLi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3MvcHJvZmlsZXIuaW5jLmg6NDMz
+OjctMTE6IFdBUk5JTkcNCj4gPiBjb21wYXJpbmcgcG9pbnRlciB0byAwLCBzdWdnZXN0ICFFDQo+
+ID4gLi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ3MvcHJvZmlsZXIuaW5jLmg6NTM0
+OjE0LTE4OiBXQVJOSU5HDQo+ID4gY29tcGFyaW5nIHBvaW50ZXIgdG8gMCwgc3VnZ2VzdCAhRQ0K
+PiA+IC4vdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3Byb2ZpbGVyLmluYy5oOjYy
+NTo3LTExOiBXQVJOSU5HDQo+ID4gY29tcGFyaW5nIHBvaW50ZXIgdG8gMCwgc3VnZ2VzdCAhRQ0K
+PiA+IC4vdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3Byb2ZpbGVyLmluYy5oOjc2
+Nzo3LTExOiBXQVJOSU5HDQo+ID4gY29tcGFyaW5nIHBvaW50ZXIgdG8gMCwgc3VnZ2VzdCAhRQ0K
+PiA+DQo+ID4gUmVwb3J0ZWQtYnk6IEFiYWNpIFJvYm90IDxhYmFjaUBsaW51eC5hbGliYWJhLmNv
+bT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBZYW5nIExpIDx5YW5nLmxlZUBsaW51eC5hbGliYWJhLmNv
+bT4NCj4gPiAtLS0NCj4gPiAgdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3Byb2Zp
+bGVyLmluYy5oIHwgMjIgKysrKysrKysrKystLS0tLS0tLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdl
+ZCwgMTEgaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0
+IGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3Byb2ZpbGVyLmluYy5oIGIvdG9v
+bHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3Byb2ZpbGVyLmluYy5oDQo+ID4gaW5kZXgg
+NDg5NmZkZjguLmEzMzA2NmMgMTAwNjQ0DQo+ID4gLS0tIGEvdG9vbHMvdGVzdGluZy9zZWxmdGVz
+dHMvYnBmL3Byb2dzL3Byb2ZpbGVyLmluYy5oDQo+ID4gKysrIGIvdG9vbHMvdGVzdGluZy9zZWxm
+dGVzdHMvYnBmL3Byb2dzL3Byb2ZpbGVyLmluYy5oDQo+ID4gQEAgLTE4OSw3ICsxODksNyBAQCBz
+dGF0aWMgSU5MSU5FIHZvaWQgcG9wdWxhdGVfYW5jZXN0b3JzKHN0cnVjdCB0YXNrX3N0cnVjdCog
+dGFzaywNCj4gPiAgI2VuZGlmDQo+ID4gICAgICAgICBmb3IgKG51bV9hbmNlc3RvcnMgPSAwOyBu
+dW1fYW5jZXN0b3JzIDwgTUFYX0FOQ0VTVE9SUzsgbnVtX2FuY2VzdG9ycysrKSB7DQo+ID4gICAg
+ICAgICAgICAgICAgIHBhcmVudCA9IEJQRl9DT1JFX1JFQUQocGFyZW50LCByZWFsX3BhcmVudCk7
+DQo+ID4gLSAgICAgICAgICAgICAgIGlmIChwYXJlbnQgPT0gTlVMTCkNCj4gPiArICAgICAgICAg
+ICAgICAgaWYgKCFwYXJlbnQpDQo+IA0KPiBTb3JyeSwgYnV0IEknZCBsaWtlIHRoZSBwcm9ncyB0
+byBzdGF5IGFzIGNsb3NlIGFzIHBvc3NpYmxlIHRvIHRoZSB3YXkNCj4gdGhleSB3ZXJlIHdyaXR0
+ZW4uDQpXaHk/DQoNCj4gVGhleSBtaWdodCBub3QgYWRoZXJlIHRvIGtlcm5lbCBjb2Rpbmcgc3R5
+bGUgaW4gc29tZSBjYXNlcy4NCj4gVGhlIGNvZGUgY291bGQgYmUgZ3Jvc3NseSBpbmVmZmljaWVu
+dCBhbmQgZXZlbiBidWdneS4NClRoZXJlIHdvdWxkIGhhdmUgdG8gYmUgYSByZWFsbHkgZ29vZCBy
+ZWFzb24gdG8gYWNjZXB0DQpncm9zc2x5IGluZWZmaWNpZW50IGFuZCBldmVuIGJ1Z2d5IGNvZGUg
+aW50byB0aGUga2VybmVsLg0KDQpDYW4geW91IHBsZWFzZSBleHBsYWluIHdoYXQgdGhhdCByZWFz
+b24gaXM/DQoNCj4gUGxlYXNlIGRvbid0IHJ1biBzcGVsbCBjaGVja3MsIGNvY2NpY2hlY2ssIGNo
+ZWNrcGF0Y2gucGwgb24gdGhlbS4NCg0KIC0tIFRpbQ0KDQo=
