@@ -2,70 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856EA35D67C
-	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 06:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DBAC35D683
+	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 06:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229892AbhDMEab (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Apr 2021 00:30:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229882AbhDMEa2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Apr 2021 00:30:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5A82F613AB;
-        Tue, 13 Apr 2021 04:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618288209;
-        bh=/0ir3Fkbfp7lsymYhOzAfQexZTLRCwhmQw1Ofn5CGeA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=CEMnUWIORiE9xKtA8bSVZ3ax/NLGbYjb5H8FiFgNn5PiiRMGiJr1aIS2vVlvOG53R
-         j/7chU7nBmcpZgU9n7Zi/sc9M95eSR5QoRySLBhn6xJJ4NjQhfdyUedXqMpvcqdKGM
-         DjBPJ3FP1iRi2vGxLgUCKbdwFJQEhdy0LNRj/UPK6L/zrRn9pyk0nDfvxFZlhTUOls
-         k0OzDo1TkYbHPToAODEE5Sr17ir2f8W5KepvebhzL0k6Un2rtsXjX/CSRPtEtfT4hl
-         aHJn1MgtGwxytA17Fmu5PG9WE8g6gd6V9Hv9o2gOZijROKIXlJmjFe/CA7ty4ZGEFl
-         aVcTQIWxqWdsg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 45B4260CCF;
-        Tue, 13 Apr 2021 04:30:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229951AbhDMEc6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Apr 2021 00:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229866AbhDMEc6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Apr 2021 00:32:58 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E76C061574
+        for <bpf@vger.kernel.org>; Mon, 12 Apr 2021 21:32:39 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id g38so16705452ybi.12
+        for <bpf@vger.kernel.org>; Mon, 12 Apr 2021 21:32:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rz1Za0B1D9+GzGO0agdnLO/MEQqtVzeqwQI5C4bKxNQ=;
+        b=R3MqB3tIwRcSrMvHieO1JFIPL8Wi83BK49k82Vn8aZg/HinKx24NVXywIPaH9bpbMV
+         ze2gR88vcog9KXseEFzXarOXgZ+ftgLw07qaZiPCZXnyxopCqfoFmNCNeQVTislrM/VW
+         mXTMOvq65x0L0zSw74lQCwVqzGjz+pYz6ytKdNiwdMwSbeGP5aNAb2x3gXpU00HBg9VH
+         ipeDZzuzgH6OEi68ENUDZxrb9OdGtcKLEKJkTFrx4DYW92MjJurS8IuejGWwmouues0h
+         WC2FamDtTeMKixco+nQ4pLmke8GmUOeRvgtqqqrn8B8GN4TBSR75taW/4R4PcXTozC2T
+         Ddbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rz1Za0B1D9+GzGO0agdnLO/MEQqtVzeqwQI5C4bKxNQ=;
+        b=d6mu2ES1jGWjwPWFXFA/hreqi5Q5TJDVhRPlhDQQUGHYSJCROVME+ooCnuqKWteQBo
+         1ihbh6HlNBisGCzOm5/ENFAOn2NFnyTyIhnUX8cCAFySg4iYmaQbWEy/5S+amEh7bpIJ
+         QtotvjfZj5MOPONoiHq8sOMka1cFuvYp5eg/fg7ITh6A5gD175BBbLu7cXFwtXGHoZNt
+         cj+w1Aw2RZ0pjajBD1/xfbLouNFagtQWNFTWGzKqX3BR5jPtQF3fb+61DANiAlDI9cV1
+         cZpwv8OTx2UwpSRr8FUOpJdbA68tTDLY9MnhhV2mACSNPqLiCAccWv3HjknVJ4ZwZHYv
+         OEFA==
+X-Gm-Message-State: AOAM531o4fLVQHJCgvU555917Whe6yULOgMF9qn4Kc8obHpnwB+T7QzG
+        fTnKMuQ+adKLpQKYmKtNhwHDu/kMzE89o5nmM8g=
+X-Google-Smtp-Source: ABdhPJyrg3FDH5Io0VX9asirzBUTjlT8W+cBZQs9VQBjtCVNWFacss+5487iYfHJTQiKJR42leEFcg0wLgDYv3y7YSo=
+X-Received: by 2002:a25:dc46:: with SMTP id y67mr17022073ybe.27.1618288358426;
+ Mon, 12 Apr 2021 21:32:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] libbpf: clarify flags in ringbuf helpers
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161828820927.6788.4472259651967052992.git-patchwork-notify@kernel.org>
-Date:   Tue, 13 Apr 2021 04:30:09 +0000
-References: <20210412192434.944343-1-pctammela@mojatatu.com>
-In-Reply-To: <20210412192434.944343-1-pctammela@mojatatu.com>
-To:     Pedro Tammela <pctammela@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, joe@cilium.io,
-        quentin@isovalent.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pctammela@mojatatu.com
+References: <20210410164925.768741-1-yhs@fb.com> <20210410164940.770304-1-yhs@fb.com>
+In-Reply-To: <20210410164940.770304-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 12 Apr 2021 21:32:27 -0700
+Message-ID: <CAEf4BzbhbAhRqfkqrzXODVr=ETm7MmwpTDZ5jKd=bGmFvU9G7A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/5] selftests/bpf: fix test_cpp compilation
+ failure with clang
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Sat, Apr 10, 2021 at 9:49 AM Yonghong Song <yhs@fb.com> wrote:
+>
+> With clang compiler:
+>   make -j60 LLVM=1 LLVM_IAS=1  <=== compile kernel
+>   make -j60 -C tools/testing/selftests/bpf LLVM=1 LLVM_IAS=1
+> the test_cpp build failed due to the failure:
+>   warning: treating 'c-header' input as 'c++-header' when in C++ mode, this behavior is deprecated [-Wdeprecated]
+>   clang-13: warning: cannot specify -o when generating multiple output files
+>
+> test_cpp compilation flag looks like:
+>   clang++ -g -Og -rdynamic -Wall -I<...> ... \
+>   -Dbpf_prog_load=bpf_prog_test_load -Dbpf_load_program=bpf_test_load_program \
+>   test_cpp.cpp <...>/test_core_extern.skel.h <...>/libbpf.a <...>/test_stub.o \
+>   -lcap -lelf -lz -lrt -lpthread -o <...>/test_cpp
+>
+> The clang++ compiler complains the header file in the command line.
+> Let us remove the header file from the command line which is not intended
+> any way, and this fixed the problem.
+>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  tools/testing/selftests/bpf/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 6448c626498f..bbd61cc3889b 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -481,7 +481,7 @@ $(OUTPUT)/test_verifier: test_verifier.c verifier/tests.h $(BPFOBJ) | $(OUTPUT)
+>  # Make sure we are able to include and link libbpf against c++.
+>  $(OUTPUT)/test_cpp: test_cpp.cpp $(OUTPUT)/test_core_extern.skel.h $(BPFOBJ)
+>         $(call msg,CXX,,$@)
+> -       $(Q)$(CXX) $(CFLAGS) $^ $(LDLIBS) -o $@
+> +       $(Q)$(CXX) $(CFLAGS) test_cpp.cpp $(BPFOBJ) $(LDLIBS) -o $@
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+see what we do for other binaries:
 
-On Mon, 12 Apr 2021 16:24:32 -0300 you wrote:
-> In 'bpf_ringbuf_reserve()' we require the flag to '0' at the moment.
-> 
-> For 'bpf_ringbuf_{discard,submit,output}' a flag of '0' might send a
-> notification to the process if needed.
-> 
-> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
-> 
-> [...]
+$(filter %.a %.o %.c,$^)
 
-Here is the summary with links:
-  - [bpf-next,v2] libbpf: clarify flags in ringbuf helpers
-    https://git.kernel.org/bpf/bpf-next/c/5c507329000e
+It's more generic. Add %.cpp, of course.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+>  # Benchmark runner
+>  $(OUTPUT)/bench_%.o: benchs/bench_%.c bench.h
+> --
+> 2.30.2
+>
