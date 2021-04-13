@@ -2,121 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071F435E8C4
-	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 00:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A8935E8CC
+	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 00:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231480AbhDMWIV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Apr 2021 18:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbhDMWIV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Apr 2021 18:08:21 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0761DC061574
-        for <bpf@vger.kernel.org>; Tue, 13 Apr 2021 15:08:00 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id y2so17770726ybq.13
-        for <bpf@vger.kernel.org>; Tue, 13 Apr 2021 15:08:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SpvpsMiE8x2EQYt0LszCFHNufodZU5Qfra6iRGbLVMs=;
-        b=aqKPDPd6FwUEExI+aS6suoJvqHJsS27pk31ymhkwghgNObhj3A2TSY4KL2YdQwfMd+
-         E1/hZkQMzIHAiPS4F14/U3RvupfRcSsOyiv0rSpbJuZQjBVLNrgAOIVDH0I3R3vtG5AD
-         rkKW7KXTL6gWmXpVVLkQj6rlEnBCS9bnq+0M4kO7S6xX5X3OqolHsHCYi9pDGr1EcizA
-         JD7PgTxXv35VMr3VEPoXWx6xp3qy2TZsycOZodFm0VJ4FOlesJEQspMKCmtssar8rIYL
-         lYF+BJcVpVVGLxoie6+ADhPFzv+2kLD0Bd6jqEJW3cz54/ki5CwYgGKuIQW3zUgvjtH1
-         YQPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SpvpsMiE8x2EQYt0LszCFHNufodZU5Qfra6iRGbLVMs=;
-        b=XgLp11R7Rf0NEd9vM7zunsaZBIFlzjU0c9SCS5kBTDhD4Zx2fDm0L/yDJ+lZhhjPQC
-         cykjn+iUKDBH4YCcteUOi7O3wYckrjrh3HjhNtimQTHVSVKRxsw6HdZ4fhfj7n9hMIir
-         l+/wJRY3ig3T9AebA/vPy+k1UCrdYfyBBRO/leniR2Fjpg9XnCTMbg90DwdxL3CWrdaX
-         cvqprQgbQ0/01YMNrjJd47ixylPaHeDyFNYhDOg8muKj3w0CCoLQ5VmJPQKvYJ5V+qm1
-         HzIkaLGCE/Biv9+og7cNb/bK4jwp6mxDtu0z1tUGu1hf+sFyaON4ZHWSYAfs0JlOwtam
-         kzeg==
-X-Gm-Message-State: AOAM533NINPq4/P090wVPSpKPTxaPubOrHIoZoNrDdb4kbkZNKa82s5/
-        xY+W+mFa+GD3wtz94VFLJRF0we5rDerDUHSRA3k=
-X-Google-Smtp-Source: ABdhPJy0yAVIZnzWeGgvCaGTC9kmn2CkyEs8p+gJOEVTPDmh4QCd7BolgjOYPZTVehmbE+LjPA/B39nLpoXLRVjAJ28=
-X-Received: by 2002:a25:850c:: with SMTP id w12mr4232530ybk.347.1618351680290;
- Tue, 13 Apr 2021 15:08:00 -0700 (PDT)
+        id S1347136AbhDMWKe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Apr 2021 18:10:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231648AbhDMWKb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Apr 2021 18:10:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id D606861249;
+        Tue, 13 Apr 2021 22:10:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618351810;
+        bh=FSLHKB18JSSgjogb29XxS0VuBaUCWkBk7hZ8VUgrRkg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=BPw910v5yOEtt9nWt01ryGQB7wRe8IBSuf6TxfvpyriWcV6iWe43QvbtkOoniZ4Wl
+         9JLgpGfmt+j1IVjXxN6txmlpUXOEQ3anpj5Qkc2Px1QZuLx8FeOgGpZvqzkLjGyvFa
+         Oh7Zd2pzDvadK0Kx4TB4VpR6dVYKvAazmetMp4iYeQTNmIhEUcPAfrEE+ZCjR/vrcs
+         uqwAVAEwYxG2zJa3o90eFRnKgwXJqb3NdpWcAyCZ/Y+675nUWoAPbQqlz0awTGB2tT
+         vuSLVU77+Z+VZvrGI1Z4IkxDC+75PzqfrOf7SKnyIgGEHeAFTMzeZ+8rkhffc8sAQ3
+         aYQa94FH4k2DA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CE1BC60CCF;
+        Tue, 13 Apr 2021 22:10:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210413153408.3027270-1-yhs@fb.com> <20210413153429.3029377-1-yhs@fb.com>
-In-Reply-To: <20210413153429.3029377-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 13 Apr 2021 15:07:49 -0700
-Message-ID: <CAEf4BzY2qKks5EV2CYZjSHpv3Z-qakfKAw=dA-Uc7kh88_f0AA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/5] selftests/bpf: silence clang compilation warnings
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v2 0/7] stmmac: add XDP ZC support
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161835181083.31494.7438008757120147305.git-patchwork-notify@kernel.org>
+Date:   Tue, 13 Apr 2021 22:10:10 +0000
+References: <20210413093626.3447-1-boon.leong.ong@intel.com>
+In-Reply-To: <20210413093626.3447-1-boon.leong.ong@intel.com>
+To:     Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, alexandre.torgue@foss.st.com,
+        mcoquelin.stm32@gmail.com, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 8:34 AM Yonghong Song <yhs@fb.com> wrote:
->
-> With clang compiler:
->   make -j60 LLVM=1 LLVM_IAS=1  <=== compile kernel
->   make -j60 -C tools/testing/selftests/bpf LLVM=1 LLVM_IAS=1
-> Some linker flags are not used/effective for some binaries and
-> we have warnings like:
->   warning: -lelf: 'linker' input unused [-Wunused-command-line-argument]
->
-> We also have warnings like:
->   .../selftests/bpf/prog_tests/ns_current_pid_tgid.c:74:57: note: treat the string as an argument to avoid this
->         if (CHECK(waitpid(cpid, &wstatus, 0) == -1, "waitpid", strerror(errno)))
->                                                                ^
->                                                                "%s",
->   .../selftests/bpf/test_progs.h:129:35: note: expanded from macro 'CHECK'
->         _CHECK(condition, tag, duration, format)
->                                          ^
->   .../selftests/bpf/test_progs.h:108:21: note: expanded from macro '_CHECK'
->                 fprintf(stdout, ##format);                              \
->                                   ^
-> The first warning can be silenced with clang option -Wno-unused-command-line-argument.
-> For the second warning, source codes are modified as suggested by the compiler
-> to silence the warning. Since gcc does not support the option
-> -Wno-unused-command-line-argument and the warning only happens with clang
-> compiler, the option -Wno-unused-command-line-argument is enabled only when
-> clang compiler is used.
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
+Hello:
 
-LGTM, please see the question below.
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+On Tue, 13 Apr 2021 17:36:19 +0800 you wrote:
+> Hi,
+> 
+> This is the v2 patch series to add XDP ZC support to stmmac driver.
+> 
+> Summary of v2 patch change:-
+> 
+> 6/7: fix synchronize_rcu() is called stmmac_disable_all_queues() that is
+>      used by ndo_setup_tc().
+> 
+> [...]
 
->  tools/testing/selftests/bpf/Makefile                         | 5 +++++
->  tools/testing/selftests/bpf/prog_tests/fexit_sleep.c         | 4 ++--
->  tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c | 4 ++--
->  3 files changed, 9 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index dcc2dc1f2a86..c45ae13b88a0 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -28,6 +28,11 @@ CFLAGS += -g -Og -rdynamic -Wall $(GENFLAGS) $(SAN_CFLAGS)           \
->           -Dbpf_load_program=bpf_test_load_program
->  LDLIBS += -lcap -lelf -lz -lrt -lpthread
->
-> +# Silence some warnings when compiled with clang
-> +ifneq ($(LLVM),)
+Here is the summary with links:
+  - [net-next,v2,1/7] net: stmmac: rearrange RX buffer allocation and free functions
+    https://git.kernel.org/netdev/net-next/c/4298255f26fa
+  - [net-next,v2,2/7] net: stmmac: introduce dma_recycle_rx_skbufs for stmmac_reinit_rx_buffers
+    https://git.kernel.org/netdev/net-next/c/80f573c995fc
+  - [net-next,v2,3/7] net: stmmac: refactor stmmac_init_rx_buffers for stmmac_reinit_rx_buffers
+    https://git.kernel.org/netdev/net-next/c/da5ec7f22a0f
+  - [net-next,v2,4/7] net: stmmac: rearrange RX and TX desc init into per-queue basis
+    https://git.kernel.org/netdev/net-next/c/de0b90e52a11
+  - [net-next,v2,5/7] net: stmmac: Refactor __stmmac_xdp_run_prog for XDP ZC
+    https://git.kernel.org/netdev/net-next/c/bba71cac680f
+  - [net-next,v2,6/7] net: stmmac: Enable RX via AF_XDP zero-copy
+    https://git.kernel.org/netdev/net-next/c/bba2556efad6
+  - [net-next,v2,7/7] net: stmmac: Add TX via XDP zero-copy socket
+    https://git.kernel.org/netdev/net-next/c/132c32ee5bc0
 
-This won't handle the case where someone does `make CC=clang`, right?
-Do we care at all?
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-> +CFLAGS += -Wno-unused-command-line-argument
-> +endif
-> +
-
-[...]
