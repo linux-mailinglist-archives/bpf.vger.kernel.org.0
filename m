@@ -2,152 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D8C35DBD7
-	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 11:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3B035DE74
+	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 14:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241859AbhDMJxJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Apr 2021 05:53:09 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:36696 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241803AbhDMJwx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 13 Apr 2021 05:52:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R491e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0UVRaqpU_1618307550;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UVRaqpU_1618307550)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 13 Apr 2021 17:52:31 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     shuah@kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] selftests/bpf: use !E instead of comparing with NULL
-Date:   Tue, 13 Apr 2021 17:52:29 +0800
-Message-Id: <1618307549-78149-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1344233AbhDMMQR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 13 Apr 2021 08:16:17 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:60515 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239901AbhDMMQP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 13 Apr 2021 08:16:15 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-242-4x3DzP0wMy64Z040bCIsnQ-1; Tue, 13 Apr 2021 08:15:50 -0400
+X-MC-Unique: 4x3DzP0wMy64Z040bCIsnQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7B23101521A;
+        Tue, 13 Apr 2021 12:15:20 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.196.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 136B010023B0;
+        Tue, 13 Apr 2021 12:15:16 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jesper Brouer <jbrouer@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: [PATCHv2 RFC bpf-next 0/7] bpf: Add support for ftrace probe
+Date:   Tue, 13 Apr 2021 14:15:09 +0200
+Message-Id: <20210413121516.1467989-1-jolsa@kernel.org>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix the following coccicheck warnings:
-./tools/testing/selftests/bpf/progs/profiler.inc.h:189:7-11: WARNING
-comparing pointer to 0, suggest !E
-./tools/testing/selftests/bpf/progs/profiler.inc.h:361:7-11: WARNING
-comparing pointer to 0, suggest !E
-./tools/testing/selftests/bpf/progs/profiler.inc.h:386:14-18: WARNING
-comparing pointer to 0, suggest !E
-./tools/testing/selftests/bpf/progs/profiler.inc.h:402:14-18: WARNING
-comparing pointer to 0, suggest !E
-./tools/testing/selftests/bpf/progs/profiler.inc.h:433:7-11: WARNING
-comparing pointer to 0, suggest !E
-./tools/testing/selftests/bpf/progs/profiler.inc.h:534:14-18: WARNING
-comparing pointer to 0, suggest !E
-./tools/testing/selftests/bpf/progs/profiler.inc.h:625:7-11: WARNING
-comparing pointer to 0, suggest !E
-./tools/testing/selftests/bpf/progs/profiler.inc.h:767:7-11: WARNING
-comparing pointer to 0, suggest !E
+hi,
+sending another attempt on speeding up load of multiple probes
+for bpftrace and possibly other tools (first post in [1]).
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+This patchset adds support to attach bpf program directly to
+ftrace probe as suggested by Steven and it speeds up loading
+for bpftrace commands like:
+
+   # bpftrace -e 'kfunc:_raw_spin* { @[probe] = count(); }'
+   # bpftrace -e 'kfunc:ksys_* { @[probe] = count(); }'
+
+Using ftrace with single bpf program for attachment to multiple
+functions is much faster than current approach, where we need to
+load and attach program for each probe function.
+
+Also available in
+  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  bpf/ftrace
+
+thanks,
+jirka
+
+
+[1] https://lore.kernel.org/bpf/20201022082138.2322434-1-jolsa@kernel.org/
 ---
- tools/testing/selftests/bpf/progs/profiler.inc.h | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+Jiri Olsa (7):
+      bpf: Move bpf_prog_start/end functions to generic place
+      bpf: Add bpf_functions object
+      bpf: Add support to attach program to ftrace probe
+      libbpf: Add btf__find_by_pattern_kind function
+      libbpf: Add support to load and attach ftrace probe
+      selftests/bpf: Add ftrace probe to fentry test
+      selftests/bpf: Add ftrace probe test
 
-diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/testing/selftests/bpf/progs/profiler.inc.h
-index 4896fdf8..a33066c 100644
---- a/tools/testing/selftests/bpf/progs/profiler.inc.h
-+++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
-@@ -189,7 +189,7 @@ static INLINE void populate_ancestors(struct task_struct* task,
- #endif
- 	for (num_ancestors = 0; num_ancestors < MAX_ANCESTORS; num_ancestors++) {
- 		parent = BPF_CORE_READ(parent, real_parent);
--		if (parent == NULL)
-+		if (!parent)
- 			break;
- 		ppid = BPF_CORE_READ(parent, tgid);
- 		if (is_init_process(ppid))
-@@ -361,7 +361,7 @@ static INLINE void* populate_var_metadata(struct var_metadata_t* metadata,
- 	int zero = 0;
- 	struct var_kill_data_t* kill_data = bpf_map_lookup_elem(&data_heap, &zero);
- 
--	if (kill_data == NULL)
-+	if (!kill_data)
- 		return NULL;
- 	struct task_struct* task = (struct task_struct*)bpf_get_current_task();
- 
-@@ -386,14 +386,14 @@ static INLINE int trace_var_sys_kill(void* ctx, int tpid, int sig)
- 	u32 spid = get_userspace_pid();
- 	struct var_kill_data_arr_t* arr_struct = bpf_map_lookup_elem(&var_tpid_to_data, &tpid);
- 
--	if (arr_struct == NULL) {
-+	if (!arr_struct) {
- 		struct var_kill_data_t* kill_data = get_var_kill_data(ctx, spid, tpid, sig);
- 		int zero = 0;
- 
--		if (kill_data == NULL)
-+		if (!kill_data)
- 			return 0;
- 		arr_struct = bpf_map_lookup_elem(&data_heap, &zero);
--		if (arr_struct == NULL)
-+		if (!arr_struct)
- 			return 0;
- 		bpf_probe_read(&arr_struct->array[0], sizeof(arr_struct->array[0]), kill_data);
- 	} else {
-@@ -402,7 +402,7 @@ static INLINE int trace_var_sys_kill(void* ctx, int tpid, int sig)
- 		if (index == -1) {
- 			struct var_kill_data_t* kill_data =
- 				get_var_kill_data(ctx, spid, tpid, sig);
--			if (kill_data == NULL)
-+			if (!kill_data)
- 				return 0;
- #ifdef UNROLL
- #pragma unroll
-@@ -433,7 +433,7 @@ static INLINE int trace_var_sys_kill(void* ctx, int tpid, int sig)
- 		} else {
- 			struct var_kill_data_t* kill_data =
- 				get_var_kill_data(ctx, spid, tpid, sig);
--			if (kill_data == NULL)
-+			if (!kill_data)
- 				return 0;
- 			bpf_probe_read(&arr_struct->array[index],
- 				       sizeof(arr_struct->array[index]),
-@@ -534,14 +534,14 @@ static INLINE bool is_dentry_allowed_for_filemod(struct dentry* file_dentry,
- 	*device_id = dev_id;
- 	bool* allowed_device = bpf_map_lookup_elem(&allowed_devices, &dev_id);
- 
--	if (allowed_device == NULL)
-+	if (!allowed_device)
- 		return false;
- 
- 	u64 ino = BPF_CORE_READ(file_dentry, d_inode, i_ino);
- 	*file_ino = ino;
- 	bool* allowed_file = bpf_map_lookup_elem(&allowed_file_inodes, &ino);
- 
--	if (allowed_file == NULL)
-+	if (!allowed_fil)
- 		if (!is_ancestor_in_allowed_inodes(BPF_CORE_READ(file_dentry, d_parent)))
- 			return false;
- 	return true;
-@@ -625,7 +625,7 @@ int raw_tracepoint__sched_process_exit(void* ctx)
- 	struct var_kill_data_arr_t* arr_struct = bpf_map_lookup_elem(&var_tpid_to_data, &tpid);
- 	struct var_kill_data_t* kill_data = bpf_map_lookup_elem(&data_heap, &zero);
- 
--	if (arr_struct == NULL || kill_data == NULL)
-+	if (!arr_struct || !kill_data)
- 		goto out;
- 
- 	struct task_struct* task = (struct task_struct*)bpf_get_current_task();
-@@ -767,7 +767,7 @@ int kprobe_ret__do_filp_open(struct pt_regs* ctx)
- 
- 	struct file* filp = (struct file*)PT_REGS_RC_CORE(ctx);
- 
--	if (filp == NULL || IS_ERR(filp))
-+	if (!filp || IS_ERR(filp))
- 		goto out;
- 	unsigned int flags = BPF_CORE_READ(filp, f_flags);
- 	if ((flags & (O_RDWR | O_WRONLY)) == 0)
--- 
-1.8.3.1
+ include/uapi/linux/bpf.h                             |   8 ++++
+ kernel/bpf/syscall.c                                 | 381 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ kernel/bpf/trampoline.c                              |  97 ---------------------------------------
+ kernel/bpf/verifier.c                                |  27 +++++++++++
+ net/bpf/test_run.c                                   |   1 +
+ tools/include/uapi/linux/bpf.h                       |   8 ++++
+ tools/lib/bpf/bpf.c                                  |  12 +++++
+ tools/lib/bpf/bpf.h                                  |   5 +-
+ tools/lib/bpf/btf.c                                  |  67 +++++++++++++++++++++++++++
+ tools/lib/bpf/btf.h                                  |   3 ++
+ tools/lib/bpf/libbpf.c                               |  74 ++++++++++++++++++++++++++++++
+ tools/lib/bpf/libbpf.map                             |   1 +
+ tools/testing/selftests/bpf/prog_tests/fentry_test.c |   5 +-
+ tools/testing/selftests/bpf/prog_tests/ftrace_test.c |  48 +++++++++++++++++++
+ tools/testing/selftests/bpf/progs/fentry_test.c      |  16 +++++++
+ tools/testing/selftests/bpf/progs/ftrace_test.c      |  17 +++++++
+ 16 files changed, 671 insertions(+), 99 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/ftrace_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/ftrace_test.c
 
