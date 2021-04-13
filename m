@@ -2,172 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A051035E6B6
-	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 20:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9F835E6C0
+	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 21:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232893AbhDMS5G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Apr 2021 14:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232517AbhDMS5G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Apr 2021 14:57:06 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1915C061574
-        for <bpf@vger.kernel.org>; Tue, 13 Apr 2021 11:56:45 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id z8so20537870ljm.12
-        for <bpf@vger.kernel.org>; Tue, 13 Apr 2021 11:56:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ARfjqOYNlaO1jlju+4KpJJ8P9tnwboLeDU5ZxUNADXs=;
-        b=XtMB5W7g9lY6AlnmGkOSwvq52ixaNb4o6KK3VO1O8ZO1r0weC6u9I5V28BZx2iPmVD
-         osbmxjmWZA79yAEsCO53+lbdFwFV6r8PFo8Jb4jWPqJELLqRdUe4OtF70aT+Hr3666y4
-         7jqZ9BEorgfnKwP+RGS8pU2Dlgm0xy6lV/BGwNFuPpDanUWNQQhGGYwfLksFaQaiTwio
-         QyXz0I+vh7KCw6YA7AZH0tXrXDR8kHXt/7t3uVFfCm4Sd0jVom1gW6zvIJHDr+k/rq7u
-         FS/8ixHryX9vkJljDjOZBLFuzA78A0iVpxg1drgrIBX69RDFw7LFlp0CGMHIXSaIkM6m
-         6t2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ARfjqOYNlaO1jlju+4KpJJ8P9tnwboLeDU5ZxUNADXs=;
-        b=PowjCAaCL35I7jpwcqOx5aJ1qFK/HZH91TBB4th3wuN/uTqiVObxMQrHOaq9KofIIQ
-         S6lSK0Q1cw29fEiw7SxVP4f6STjPDCDiTeDpAoZipTPkXuuG4Gs11Gd8JlNLxjdS2xQT
-         8y6t0pxjAZRuM1l8xdJFX9Q4moe/SQ76nHr1i59zYXzrTaxF1LBDFsqOTmw/a3ZR9Oeb
-         RAx665fX/lLa+cUp0BTZlnr3qX6VjXqTjTOItkICql5nO7WNhPSXRcxHuC/EAkcQzoEG
-         NBnilSQmftSiNYcNVKLgFZRu1G54rQoCu6xvpnyc0pEGFzZ5OvFZzCiXfvqQjrAJEgqK
-         NLKQ==
-X-Gm-Message-State: AOAM531GY0IrfMRgQNKe7o3D8uI8fJONlRAkqN2qi6bSq7Jgs39+eKxm
-        W+Z1uPo2NDJm5lookSvTz4EEjivkpq2vd8V/Mk7tLA==
-X-Google-Smtp-Source: ABdhPJyljz1Cvhkj/tag3RLbVji65GDzfSuLlN43MNyZ0MSVdmHwhq0r03hGyi+wlNWpDhJuf3T9KQyMV+QuKSpSSJY=
-X-Received: by 2002:a2e:988a:: with SMTP id b10mr22038250ljj.341.1618340204142;
- Tue, 13 Apr 2021 11:56:44 -0700 (PDT)
+        id S1347894AbhDMTBb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Apr 2021 15:01:31 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40252 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230397AbhDMTBa (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 13 Apr 2021 15:01:30 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13DIWdZr191542;
+        Tue, 13 Apr 2021 15:00:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=LUStBOqhkFroVcj4oRoT0Yt+1VDfQvnw8+F9s7FvlhM=;
+ b=K6BD7N6V8GDizVXXxNiRFwM78eNwTR3+n553DN/J4lORsokZ/cbAVtyw4udCRb6sX+07
+ vZp2rHeMLC1rqVYAuCXSRX7OiYqCzDJVZGNWrSNlL7fV2dCPmrDeT83klWuUvT/BzyGV
+ qSGVNqEL3ftAOzsTqNAyMrOWONteJ05KYEzv4vryv9+VeZz72t64M5RR8tuLirtJ5reV
+ dNxX8Hsj33qlm3QXt7IAIubuNToROwE8N7XC/wS5dR9UsLsAymZAv+kWRTXq7xZtClMx
+ pWS2MUavAyWmviNpMb8qaizv9QX44YuY/mgL/EHeGmqDXMpvqpn33v9wi5YyT0abkMuD rw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37wetsber1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 15:00:50 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13DIWfZj191667;
+        Tue, 13 Apr 2021 15:00:50 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37wetsbepp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 15:00:50 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13DIrLhu031216;
+        Tue, 13 Apr 2021 19:00:48 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 37u3n8autx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 13 Apr 2021 19:00:48 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13DJ0jRw55705920
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Apr 2021 19:00:45 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 55C6C11C04A;
+        Tue, 13 Apr 2021 19:00:45 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D661511C04C;
+        Tue, 13 Apr 2021 19:00:44 +0000 (GMT)
+Received: from vm.lan (unknown [9.145.157.105])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 13 Apr 2021 19:00:44 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH bpf-next v3] bpf: Generate BTF_KIND_FLOAT when linking vmlinux
+Date:   Tue, 13 Apr 2021 21:00:43 +0200
+Message-Id: <20210413190043.21918-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.29.2
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 3iMKYcY1VBYG4e8XVjGIQkj9oHeo6d83
+X-Proofpoint-ORIG-GUID: xfINGv4ptqTESxZ-SHj6UbCewewmBIiF
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210412142905.266942-1-yhs@fb.com> <CAKwvOdkTUFUwq0Uwi4D9-Z9nbg1FfaP1P2oiBsxNn3+ikT9MwA@mail.gmail.com>
- <CAKwvOdkFWe76ggKrLeckS+mzmyQeq6eJBnkQM1bKgEGQBCspSA@mail.gmail.com>
- <e5f5f6b3-64e6-7068-ca72-9f06f3ffda54@fb.com> <CAKwvOdnJsQ-XDcjq=tbXL_iBeJYNk2h8VGwx-sSLWw_LRef6Qg@mail.gmail.com>
-In-Reply-To: <CAKwvOdnJsQ-XDcjq=tbXL_iBeJYNk2h8VGwx-sSLWw_LRef6Qg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 13 Apr 2021 11:56:33 -0700
-Message-ID: <CAKwvOdkhJgCyEFpXUaMZP4NDho-2YWcNfmF+4P_MprcipB7Ycw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/5] bpf: tools: support build selftests/bpf
- with clang
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        kernel-team@fb.com, Sedat Dilek <sedat.dilek@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-13_12:2021-04-13,2021-04-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 phishscore=0 mlxscore=0 priorityscore=1501 adultscore=0
+ malwarescore=0 mlxlogscore=999 clxscore=1015 bulkscore=0 impostorscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104130124
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 11:46 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Mon, Apr 12, 2021 at 5:31 PM Yonghong Song <yhs@fb.com> wrote:
-> >
-> >
-> >
-> > On 4/12/21 5:02 PM, Nick Desaulniers wrote:
-> > > On Mon, Apr 12, 2021 at 4:58 PM Nick Desaulniers
-> > > <ndesaulniers@google.com> wrote:
-> > >>
-> > >> On Mon, Apr 12, 2021 at 7:29 AM Yonghong Song <yhs@fb.com> wrote:
-> > >>>
-> > >>> To build kernel with clang, people typically use
-> > >>>    make -j60 LLVM=1 LLVM_IAS=1
-> > >>> LLVM_IAS=1 is not required for non-LTO build but
-> > >>> is required for LTO build. In my environment,
-> > >>> I am always having LLVM_IAS=1 regardless of
-> > >>> whether LTO is enabled or not.
-> > >>>
-> > >>> After kernel is build with clang, the following command
-> > >>> can be used to build selftests with clang:
-> > >>>    make -j60 -C tools/testing/selftests/bpf LLVM=1 LLVM_IAS=1
-> > >>
-> > >> Thank you for the series Yonghong.  When I test the above command with
-> > >> your series applied, I observe:
-> > >> tools/include/tools/libc_compat.h:11:21: error: static declaration of
-> > >> 'reallocarray' follows non-static declaration
-> > >> static inline void *reallocarray(void *ptr, size_t nmemb, size_t size)
-> > >>                      ^
-> > >> /usr/include/stdlib.h:559:14: note: previous declaration is here
-> > >> extern void *reallocarray (void *__ptr, size_t __nmemb, size_t __size)
-> > >>               ^
-> > >> so perhaps the detection of
-> > >> COMPAT_NEED_REALLOCARRAY/feature-reallocarray is incorrect?
-> > >
-> > > Is this related to _DEFAULT_SOURCE vs _GNU_SOURCE.  via man 3 reallocarray:
-> > >         reallocarray():
-> > >             Since glibc 2.29:
-> > >                 _DEFAULT_SOURCE
-> > >             Glibc 2.28 and earlier:
-> > >                 _GNU_SOURCE
-> > >
-> >
-> > You can try the following patch to see whether it works or not.
-> >
-> > diff --git a/tools/build/feature/test-reallocarray.c
-> > b/tools/build/feature/test-reallocarray.c
-> > index 8f6743e31da7..500cdeca07a7 100644
-> > --- a/tools/build/feature/test-reallocarray.c
-> > +++ b/tools/build/feature/test-reallocarray.c
-> > @@ -1,5 +1,5 @@
-> >   // SPDX-License-Identifier: GPL-2.0
-> > -#define _GNU_SOURCE
-> > +#define _DEFAULT_SOURCE
-> >   #include <stdlib.h>
-> >
-> >   int main(void)
-> > @@ -7,4 +7,4 @@ int main(void)
-> >          return !!reallocarray(NULL, 1, 1);
-> >   }
-> >
-> > -#undef _GNU_SOURCE
-> > +#undef _DEFAULT_SOURCE
->
-> Yeah, I had tried that. No luck though; same error message.  Even:
->
-> $ cat foo.c
-> #define _DEFAULT_SOURCE
-> #include <stdlib.h>
-> void *reallocarray(void *ptr, size_t nmemb, size_t size) { return (void*)0; };
-> $ clang -c foo.c
-> $ echo $?
-> 0
->
-> So I'm not sure precisely what's going on here.  I probably have to go
-> digging around to understand tools/build/feature/ anyways.  With your
-> v3 applied, I consistently see:
-> No zlib found
-> and yet, I certainly do have zlib on my host.
-> https://stackoverflow.com/a/54558861
+pahole v1.21 supports the --btf_gen_floats flag, which makes it
+generate the information about the floating-point types [1].
 
-Jiri, any tips on how to debug feature detection in
-tools/build/feature/Makefile?
+Adjust link-vmlinux.sh to pass this flag to pahole in case it's
+supported, which is determined using a simple version check.
 
->
-> > [yhs@devbig003.ftw2 ~/work/bpf-next/tools/build]$
-> >
-> > > $ cd tools/testing/selftests/bpf
-> > > $ grep -rn _DEFAULT_SOURCE | wc -l
-> > > 0
-> > > $ grep -rn _GNU_SOURCE | wc -l
-> > > 37
-> > > $ ldd --version | head -n1
-> > > ldd (Debian GLIBC 2.31-9+build1) 2.31
-> > >
->
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+[1] https://lore.kernel.org/dwarves/YHRiXNX1JUF2Az0A@kernel.org/
 
+Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+---
 
+v1:
+https://lore.kernel.org/bpf/20210331014356.256212-1-iii@linux.ibm.com/
+v1 -> v2: Use a version check instead of probing.
 
+v2:
+https://lore.kernel.org/bpf/20210412215629.17865-1-iii@linux.ibm.com/
+v2 -> v3: Simplify extra_paholeopt handling (it's still useful to have
+          "=" when declaring it to be "-u"-compliant, even though
+          link-vmlinux.sh does not use this flag at the moment).
+
+ scripts/link-vmlinux.sh | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 3b261b0f74f0..667aacb9261c 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -213,6 +213,7 @@ vmlinux_link()
+ gen_btf()
+ {
+ 	local pahole_ver
++	local extra_paholeopt=
+ 
+ 	if ! [ -x "$(command -v ${PAHOLE})" ]; then
+ 		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
+@@ -227,8 +228,12 @@ gen_btf()
+ 
+ 	vmlinux_link ${1}
+ 
++	if [ "${pahole_ver}" -ge "121" ]; then
++		extra_paholeopt="${extra_paholeopt} --btf_gen_floats"
++	fi
++
+ 	info "BTF" ${2}
+-	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
++	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${extra_paholeopt} ${1}
+ 
+ 	# Create ${2} which contains just .BTF section but no symbols. Add
+ 	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
 -- 
-Thanks,
-~Nick Desaulniers
+2.29.2
+
