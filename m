@@ -2,109 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7625835D607
-	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 05:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847D435D615
+	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 05:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239106AbhDMDij (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Apr 2021 23:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
+        id S239077AbhDMDmA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Apr 2021 23:42:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238980AbhDMDii (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Apr 2021 23:38:38 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097C8C061574
-        for <bpf@vger.kernel.org>; Mon, 12 Apr 2021 20:38:20 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id y2so14517443ybq.13
-        for <bpf@vger.kernel.org>; Mon, 12 Apr 2021 20:38:20 -0700 (PDT)
+        with ESMTP id S238789AbhDMDmA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 12 Apr 2021 23:42:00 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62425C061574
+        for <bpf@vger.kernel.org>; Mon, 12 Apr 2021 20:41:41 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id c195so16605023ybf.9
+        for <bpf@vger.kernel.org>; Mon, 12 Apr 2021 20:41:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=5v/vNfiMJaw9l++fcsYKSE/QRXjzOn2qP4/rAYRdzm4=;
-        b=QSgPBN4rG7WVPHXETxJkmzBipGiFNa5JXoD1qZsLWf2+hAvKZttHR2Cny7dBi1/vcb
-         9rZ7pomFUJYsFrT/Zo+odnOM18Cq4GeLk4NJyX9NYU+zvq6SZcmCfKj4wHwxCHcTuqZ5
-         andxQOarsdeFio2B9MEYQHI7dk3CDO4tUoxDZ4XrVwwwjGXTFcN9LdEZQnJkieBkjjm6
-         C6Uom+w4KxOtMEUGu5ErWLCFDSmi78GWdXqe1//HLX6EvU7++4Q4wx9xzHWwLWPd6OET
-         PlU5UN6pSddW4JnLFLTIa2NMYbbEVDpQi2+AKz1UE8kysO7OCC3NeD+nh7mVOavUGv83
-         cf2w==
+        bh=R8dmaqfcpkmnj8Xn/Be2N6cyed0wiL1ZT6oUKVGdy5Q=;
+        b=QzFk49zrLcCp8oSaIlZlEnwCQ3U89Vd9vIQJlijVNRsQbACd2YjKOPsqMc7nvvrr/S
+         t7gps/GTQMS5X+8EYVN9EVnTIdvDueQyNMSHu9b5C2Zep4wbkGF4vYrITRdqehNJo0wc
+         4YA0d5pelExjwjYbUf7TCg3MWG6CrNd7ow8Kl0qz3R3GuiG89DZcl0I7pkgytRpyBNTQ
+         IeSjnilKu0JNVcSmc7r0c+H+noaxrkFBlk+F+6r63MQtij9974erqvsuVui0M5kuN4/D
+         cfUUvOVWmYgPBmoBG4yTxBJV8394CXfHAetTYxKjY6DyWygEUM/ZHGkQC2McCpWWKbZ/
+         HR8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5v/vNfiMJaw9l++fcsYKSE/QRXjzOn2qP4/rAYRdzm4=;
-        b=OvbPFmmQQnrfhcx3kKvLIhliasFhL5F+4zEzli0LZ21popnKSo7QOAOmojNVjzn9Ac
-         0tvYwBCzriHD9cipBmdCxzKpOqcMHsajDNwL/6RVc+6VvuqGVOqNBVlB2YoLbbfCuf3P
-         /THfQUodgGE/HBLr8CCwJWXRvsG2BP9ZFoR6+3k9XooMd9vCQ4sQkwEjBdjFd/wfylk9
-         4FPs1AmH5bI2IhZOVx9X4erqFLc62bdhbl26eFxck3p41uPJ700Aso4KU723/QbfE/t6
-         CmcOnrZq7m+pAJ5jfgKk2fAg6J5tbMRzLHqUVzEXOoQYCXsaDdcOoZaPOHVLaJ5CTTi0
-         8hxw==
-X-Gm-Message-State: AOAM532aRMN9znNEck7jUNmWKi644WTpiASMwtRruzLno3o4A+Y95KbF
-        nl1MTcICgFYpqGDjf7bN4X3418R5LTSm/Zg3Xes=
-X-Google-Smtp-Source: ABdhPJzXyASP5jPD3U77S2h3W42rcxUWyG1VEdtew7zvJVwQ7NK7P8EyYIRjSIVnWD6jTion205w4WYE0ZPNdlVGx+w=
-X-Received: by 2002:a25:5b55:: with SMTP id p82mr40531676ybb.510.1618285099319;
- Mon, 12 Apr 2021 20:38:19 -0700 (PDT)
+        bh=R8dmaqfcpkmnj8Xn/Be2N6cyed0wiL1ZT6oUKVGdy5Q=;
+        b=HSVGp5clIzIc+A00kTQMy2iRcIEQgyeRtI+pMYNKZWyARBABCpIx4h/9vzuj1o8cuI
+         O3Ej0ZvAPcxRaVwwYlrV+d49xbQg4rkYglNK0Qc1fj5bkwB4Cr+6+g8XkCqTTxAOgqOn
+         T9xpSBFmFsYTbtKc8Znrr98hygFQMc19Prt6MKziZ9nG5fG4XxZiPIe5kUSDV5kgrs6Z
+         M4p42lADkZ4JdD39s5kCXWJKUYuGgUfgibPfBbVzsP4Ymc6kZpZjM2RBXsnL7tVECFZn
+         kv31i0MTS7eFRdBH7QJcS/7xzlM0hNImnLM0KRLNB/PdI7yzKbaqRZ67/p/7ctZpRdnw
+         ie1g==
+X-Gm-Message-State: AOAM531WTG6ZC8KS31t9yhJjv39/UrXwId/hJGLwR7tEReN8m+welTtr
+        j/BZwnEDp0MJH/fah/w5JPvU5GJa383DA2j97jgE/qUZldk=
+X-Google-Smtp-Source: ABdhPJyxG12Rw/OSMA8aVes00upwzCFN/4yuJ9x5K8SFmetjDv8wrrbx/6aMszHPBkWU4wfmgSPememkx2Fgcc24Fzc=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr41189547ybo.230.1618285300711;
+ Mon, 12 Apr 2021 20:41:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <87blaozi20.fsf@toke.dk>
-In-Reply-To: <87blaozi20.fsf@toke.dk>
+References: <20210408195740.153029-1-toke@redhat.com>
+In-Reply-To: <20210408195740.153029-1-toke@redhat.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 12 Apr 2021 20:38:08 -0700
-Message-ID: <CAEf4Bzb4LDi1ZVrhNEojpWhxi33tkv4rv6F7Czj28Y0tHxXh0w@mail.gmail.com>
-Subject: Re: Selftest failures related to kern_sync_rcu()
+Date:   Mon, 12 Apr 2021 20:41:29 -0700
+Message-ID: <CAEf4BzYX3C1t7PkB5bewCLT92Gh0Ouy6EJocKvphzEY8w484_g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: return target info when a tracing
+ bpf_link is queried
 To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 12:34 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+On Thu, Apr 8, 2021 at 12:57 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
 at.com> wrote:
 >
-> Hi Andrii
+> There is currently no way to discover the target of a tracing program
+> attachment after the fact. Add this information to bpf_link_info and retu=
+rn
+> it when querying the bpf_link fd.
 >
-> I'm getting some selftest failures that all seem to have something to do
-> with kern_sync_rcu() not being enough to trigger the kernel events that
-> the selftest expects:
->
-> $ ./test_progs | grep FAIL
-> test_lookup_update:FAIL:map1_leak inner_map1 leaked!
-> #15/1 lookup_update:FAIL
-> #15 btf_map_in_map:FAIL
-> test_exit_creds:FAIL:null_ptr_count unexpected null_ptr_count: actual 0 =
-=3D=3D expected 0
-> #123/2 exit_creds:FAIL
-> #123 task_local_storage:FAIL
-> test_exit_creds:FAIL:null_ptr_count unexpected null_ptr_count: actual 0 =
-=3D=3D expected 0
-> #123/2 exit_creds:FAIL
-> #123 task_local_storage:FAIL
->
-> They are all fixed by adding a sleep(1) after the call(s) to
-> kern_sync_rcu(), so I'm guessing it's some kind of
-> timing/synchronisation problem. Is there a particular kernel config
-> that's needed for the membarrier syscall trick to work? I've tried with
-> various settings of PREEMPT and that doesn't really seem to make any
-> difference...
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> ---
+
+LGTM.
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  include/linux/bpf_verifier.h   | 9 +++++++++
+>  include/uapi/linux/bpf.h       | 2 ++
+>  kernel/bpf/syscall.c           | 3 +++
+>  tools/include/uapi/linux/bpf.h | 2 ++
+>  4 files changed, 16 insertions(+)
 >
 
-If you check kern_sync_rcu(), it relies on membarrier() syscall
-(passing cmd =3D MEMBARRIER_CMD_SHARED =3D=3D MEMBARRIER_CMD_GLOBAL).
-Now, looking at kernel sources:
-  - CONFIG_MEMBARRIER should be enabled for that syscall;
-  - it has some extra conditions:
-
-           case MEMBARRIER_CMD_GLOBAL:
-                /* MEMBARRIER_CMD_GLOBAL is not compatible with nohz_full. =
-*/
-                if (tick_nohz_full_enabled())
-                        return -EINVAL;
-                if (num_online_cpus() > 1)
-                        synchronize_rcu();
-                return 0;
-
-Could it be that one of those conditions is not satisfied?
-
-
-> -Toke
->
+[...]
