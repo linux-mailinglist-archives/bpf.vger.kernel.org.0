@@ -2,132 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5823735D574
-	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 04:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C1F35D5B1
+	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 05:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245632AbhDMCvT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Apr 2021 22:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238431AbhDMCvS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 12 Apr 2021 22:51:18 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E5BC061574;
-        Mon, 12 Apr 2021 19:51:00 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id t22so7090545ply.1;
-        Mon, 12 Apr 2021 19:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WaHFfcPJ+3sbinVxpYP4an1fZeysBF2p9bqkO0Z0pX0=;
-        b=DUQ2t+iTufRRuZYkeivDWWd32fAMqbNXdhJDaQbsV0X9TXy0FEoY1IldrssVcRzxMc
-         JSx8+fo91BqVPXqj6Tm5ijI8O+P3pSVE0uYfwRBUUGavmlspuQVqfQgAsSYMXancRMG0
-         xbegYnk9XN58NVz6I3JRZbOtQA3YehpMzi6FPzblBG1APSR5Uoft7prwTCFfDWAkEq8o
-         /t+IVHmjZlkD8IoU65Lc75rLh3cp4GxGDxQuaG+g9B52UbFgw4rgevwYit3/pSCvhRUu
-         KaLEbJiBCVtZzbs/APC0TvuiRjAY070c7uNlCLt0/qp9uE7n6LnaP7JqULKPTAyOJsa2
-         FsFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WaHFfcPJ+3sbinVxpYP4an1fZeysBF2p9bqkO0Z0pX0=;
-        b=YnZCwnakulAfR8mYMDccz9T5YxpJgLlPiXlZ5FsyIypcHjBz2ypJe31msjWNSFe0d7
-         WPOoQ6jQabblMq9fq/YPhwRSeVLPGZOd72BaZwOfc5WeSMqsZlVV+Arfig5sRlteR6vz
-         5Natj5J9V0cUW9sP/gMnH2x8q0vX6P/+6hwMdLApMFnAGFw0K6GuGkGLvF50C3SKsf1x
-         veTBZeRN/InmS1NC1nois7hNVgUDmSIq7yyqNRWheRV+MBh/R3mMUht4fzDizQ2tlGLt
-         XJOfMEU/9KLktzm+BkubUrWDWXFP1NrrIECZMXOpyKz7cHDXicbsavhAi4x6rI0gdnsK
-         NTBA==
-X-Gm-Message-State: AOAM533QpKZuzpx7wg33lZAc15tWVEZHaZ7eD3kK+oryExU11ud3sihm
-        SQ8VQ+fYjmuBXcMJsbpbqUc=
-X-Google-Smtp-Source: ABdhPJxt60DfDVuddlrs0naNoU9IsplaxpKwBU5kVTKr83wquWneKpDo+5UfVHg+pU1Jhk7bbBM7bg==
-X-Received: by 2002:a17:90a:7f8b:: with SMTP id m11mr2317105pjl.221.1618282259705;
-        Mon, 12 Apr 2021 19:50:59 -0700 (PDT)
-Received: from localhost.localdomain ([103.112.79.203])
-        by smtp.gmail.com with ESMTPSA id f21sm633093pjj.52.2021.04.12.19.50.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Apr 2021 19:50:59 -0700 (PDT)
-From:   kerneljasonxing@gmail.com
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kerneljasonxing@gmail.com,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
-Subject: [PATCH net v2] i40e: fix the panic when running bpf in xdpdrv mode
-Date:   Tue, 13 Apr 2021 10:50:11 +0800
-Message-Id: <20210413025011.1251-1-kerneljasonxing@gmail.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20210412065759.2907-1-kerneljasonxing@gmail.com>
-References: <20210412065759.2907-1-kerneljasonxing@gmail.com>
+        id S241518AbhDMDPo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Apr 2021 23:15:44 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:41778 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241101AbhDMDPo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 12 Apr 2021 23:15:44 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R921e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0UVPZqgO_1618283723;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UVPZqgO_1618283723)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 13 Apr 2021 11:15:23 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     netdev@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        "dust . li" <dust.li@linux.alibaba.com>
+Subject: [PATCH net-next v4 00/10] virtio-net support xdp socket zero copy xmit
+Date:   Tue, 13 Apr 2021 11:15:13 +0800
+Message-Id: <20210413031523.73507-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jason Xing <xingwanli@kuaishou.com>
+XDP socket is an excellent by pass kernel network transmission framework. The
+zero copy feature of xsk (XDP socket) needs to be supported by the driver. The
+performance of zero copy is very good. mlx5 and intel ixgbe already support this
+feature, This patch set allows virtio-net to support xsk's zerocopy xmit
+feature.
 
-Fix this panic by adding more rules to calculate the value of @rss_size_max
-which could be used in allocating the queues when bpf is loaded, which,
-however, could cause the failure and then trigger the NULL pointer of
-vsi->rx_rings. Prio to this fix, the machine doesn't care about how many
-cpus are online and then allocates 256 queues on the machine with 32 cpus
-online actually.
+And xsk's zerocopy rx has made major changes to virtio-net, and I hope to submit
+it after this patch set are received.
 
-Once the load of bpf begins, the log will go like this "failed to get
-tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
-failed".
+Compared with other drivers, virtio-net does not directly obtain the dma
+address, so I first obtain the xsk page, and then pass the page to virtio.
 
-Thus, I attach the key information of the crash-log here.
+When recycling the sent packets, we have to distinguish between skb and xdp.
+Now we have to distinguish between skb, xdp, xsk.
 
-BUG: unable to handle kernel NULL pointer dereference at
-0000000000000000
-RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
-Call Trace:
-[2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
-[2160294.717666]  dev_xdp_install+0x4f/0x70
-[2160294.718036]  dev_change_xdp_fd+0x11f/0x230
-[2160294.718380]  ? dev_disable_lro+0xe0/0xe0
-[2160294.718705]  do_setlink+0xac7/0xe70
-[2160294.719035]  ? __nla_parse+0xed/0x120
-[2160294.719365]  rtnl_newlink+0x73b/0x860
+---------------- Performance Testing ------------
 
-Fixes: 41c445ff0f48 ("i40e: main driver core")
+The udp package tool implemented by the interface of xsk vs sockperf(kernel udp)
+for performance testing:
 
-Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
-Signed-off-by: Shujin Li <lishujin@kuaishou.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+xsk zero copy xmit in virtio-net:
+CPU        PPS         MSGSIZE    vhost-cpu
+7.9%       511804      64         100%
+13.3%%     484373      1500       100%
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 521ea9d..4e9a247 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -11867,6 +11867,7 @@ static int i40e_sw_init(struct i40e_pf *pf)
- {
- 	int err = 0;
- 	int size;
-+	u16 pow;
- 
- 	/* Set default capability flags */
- 	pf->flags = I40E_FLAG_RX_CSUM_ENABLED |
-@@ -11885,6 +11886,11 @@ static int i40e_sw_init(struct i40e_pf *pf)
- 	pf->rss_table_size = pf->hw.func_caps.rss_table_size;
- 	pf->rss_size_max = min_t(int, pf->rss_size_max,
- 				 pf->hw.func_caps.num_tx_qp);
-+
-+	/* find the next higher power-of-2 of num cpus */
-+	pow = roundup_pow_of_two(num_online_cpus());
-+	pf->rss_size_max = min_t(int, pf->rss_size_max, pow);
-+
- 	if (pf->hw.func_caps.rss) {
- 		pf->flags |= I40E_FLAG_RSS_ENABLED;
- 		pf->alloc_rss_size = min_t(int, pf->rss_size_max,
--- 
-1.8.3.1
+sockperf:
+CPU        PPS         MSGSIZE    vhost-cpu
+100%       375227      64         89.1%
+100%       307322      1500       81.5%
+
+v4:
+    1. add priv_flags IFF_NOT_USE_DMA_ADDR
+    2. more reasonable patch split
+
+
+Xuan Zhuo (10):
+  netdevice: priv_flags extend to 64bit
+  netdevice: add priv_flags IFF_NOT_USE_DMA_ADDR
+  virtio-net: add priv_flags IFF_NOT_USE_DMA_ADDR
+  xsk: support get page by addr
+  xsk: XDP_SETUP_XSK_POOL support option IFF_NOT_USE_DMA_ADDR
+  virtio-net: unify the code for recycling the xmit ptr
+  virtio-net: virtnet_poll_tx support budget check
+  virtio-net: xsk zero copy xmit setup
+  virtio-net: xsk zero copy xmit implement wakeup and xmit
+  virtio-net: xsk zero copy xmit kick by threshold
+
+ drivers/net/virtio_net.c   | 479 ++++++++++++++++++++++++++++++++-----
+ include/linux/netdevice.h  | 139 ++++++-----
+ include/net/xdp_sock_drv.h |  11 +
+ net/xdp/xsk_buff_pool.c    |   2 +-
+ 4 files changed, 511 insertions(+), 120 deletions(-)
+
+--
+2.31.0
 
