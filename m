@@ -2,137 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD5235E8EE
-	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 00:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3662935E8F0
+	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 00:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhDMWSX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Apr 2021 18:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48582 "EHLO
+        id S1344329AbhDMWSm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Apr 2021 18:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231238AbhDMWSX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Apr 2021 18:18:23 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E1CC061574
-        for <bpf@vger.kernel.org>; Tue, 13 Apr 2021 15:18:02 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id l14so18243789ljb.1
-        for <bpf@vger.kernel.org>; Tue, 13 Apr 2021 15:18:02 -0700 (PDT)
+        with ESMTP id S231238AbhDMWSl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Apr 2021 18:18:41 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917E4C061574;
+        Tue, 13 Apr 2021 15:18:21 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id c195so19882543ybf.9;
+        Tue, 13 Apr 2021 15:18:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vI1T++XVMddunMQm6m8+Ept2Pbyb4PuMdjV9WGh6X2k=;
-        b=W6w4Vd5ppA+JcaRcEKuDOnKiZQ+9mb7XB1uwX0jMZ/HhT1fI5kBAhMUT7NEarvEF+E
-         J1syqD97wKfBlBdssG9C4KliNWCB3XGjtE8E7ymDETR1osbqzkRMkHPl+3VnMsZhcJS8
-         kjs75GBdmCUjlGwLswZ3lO8PcCUsBDiolcas+XiAkFjdzXEjPhl4TV18klZfnXCW3dwl
-         FcpTPDuhhK2aAX6U0Pc5wDn7xt9aYS21ZDYWNrHqP3dPRLMbC1JPIGR7GMVn36Qvetbd
-         VAkp1l0+wqjaVBidC7g5tolV6yxJvMyAczFSIuGMAa6BxyM/27RBiS4umsarK6VpZd6w
-         0rWw==
+         :cc:content-transfer-encoding;
+        bh=bd7fqYh5LO3bEok4xPNV0VnP9oPXB8+3qeiCw3rycvA=;
+        b=NQv+fC4YU97VEE09EwZmiFaWbjmZuWSfPJzeJjLWNlLOX+OpU1RaeKcr8wDaNmcZXY
+         63YEqgmc1527mdYd0g1j0ueTSEtlypS/prFx345wdlhhzP4rBuXAMku8E1J/cmlIvzVE
+         Mo1VKAKfXSUC0jmd2KYUUtZglz4BnI6EW2mbXFUDpgXz9t0ZccGBUs73BawjNgwXB79a
+         xBMQoLHS0Q0u1iUQhnPjjAdQ7wgjTj/w8MnrTGRNlfuNyWrFUOGL0M8ZWvuSDxxbxkr8
+         +pqN4yzli20q5hBScR068k/gprfr/p8/+6G8y9C6pT8kJR7aJwueIia/0N87qdrZbXqI
+         5dpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vI1T++XVMddunMQm6m8+Ept2Pbyb4PuMdjV9WGh6X2k=;
-        b=cxMPOIsvBMkDn7zHC3atexA9gQ/52Yrnclza1gg1oS4OQ/Klmm6/wPznR5QfMgYX1R
-         a4WmvU2S2MDSyhSXwDzs2nvzQWC/+tifG/8MqxYJcGBaWBgP3OeSuCi4o2BFmP9T2jdR
-         IxlvJS/wiTwniwklmDjkWN3FrIx8L4nkvcKeH30hR5VO2gby9RYm2b4OLstzWZc8qtkv
-         RUt3eb11yotCSizZnLsIYhqmOQbP8OSOJUQPWIAjAi1AjcoHZDbJNHPXYA5i6LnHTLrd
-         dLCJTJF67hJ8BA9ZMezaAwg7TsxYTcYjNMPg58G3ak6ahOq85iobjskOtlodby5chZRd
-         J3Jw==
-X-Gm-Message-State: AOAM531Pc4pkip+aBHdPjQgSa8LNcg0VMBFDkrgVOYqs5G31+Bf7I7Wl
-        2a1xRsPgxTfpT4PRTgRwpR/SXf0MhFILebDCmq+epw==
-X-Google-Smtp-Source: ABdhPJxn0rbbwtOSInyleVJ9d9m7vZP3dMmAyoteQYX9VeoG1bvChHXvZyDc4L+SsjppQxBrrtW+yF4u1r3EQGV+XhE=
-X-Received: by 2002:a2e:b008:: with SMTP id y8mr21360358ljk.233.1618352280935;
- Tue, 13 Apr 2021 15:18:00 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bd7fqYh5LO3bEok4xPNV0VnP9oPXB8+3qeiCw3rycvA=;
+        b=d5LPfSxUNo2FAEKWBdNZ65zJTuSrN/Cvy9D5rZPkQ7RiMl2WFafnEjgUXICchhsRnK
+         FmLlmaFsgN7QHT1b5Jc80d7ACD+nAmawytIfmRZ8c8YBoSC3C1U+r4wWU+y8ihgMzpED
+         eZXq5zjncMjhTrzAg1YavNxSYYMb6S6LfqwgXrTa3uWBlmtkyK49pdbOHGq8ukgOW2Lj
+         A+UBodGhTqCZR40PYNmxNKHUyhfaYh+m7rK/jDrVX9prc/YPlaIWPh9Blew+ozhJKjo/
+         Qyl9yFNAJezI0JV2BhdL4boCSu9uBEjq6uCeL6dMCDWsvZp0MrlIOe2F/+UpLGH2V+cE
+         6Diw==
+X-Gm-Message-State: AOAM530ewOnVC9zZGoEifepkb1bsSx2IcLUd+Ky6zM6hLc4hGTArFncT
+        gzAEOowB7072ULRi61TcbsSXwYutmznRk9mgfDc=
+X-Google-Smtp-Source: ABdhPJyk67mnwYw+qePAAL4jHTp0oNni6Ua5ZFeVs93cD9K1ZOtNYqJ7Bz1Rp2ICBBl8rb4c03KHO2E66m29aI6EcIQ=
+X-Received: by 2002:a25:3357:: with SMTP id z84mr39122289ybz.260.1618352300905;
+ Tue, 13 Apr 2021 15:18:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210413153408.3027270-1-yhs@fb.com> <20210413153429.3029377-1-yhs@fb.com>
- <CAEf4BzY2qKks5EV2CYZjSHpv3Z-qakfKAw=dA-Uc7kh88_f0AA@mail.gmail.com>
-In-Reply-To: <CAEf4BzY2qKks5EV2CYZjSHpv3Z-qakfKAw=dA-Uc7kh88_f0AA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 13 Apr 2021 15:17:49 -0700
-Message-ID: <CAKwvOdmgJBV5yv5robxvmpdYhkw1epY6FNYYwiszqZ0zyE0UAw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/5] selftests/bpf: silence clang compilation warnings
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>
+References: <20210412034813.EK9k9%akpm@linux-foundation.org> <7208c4e4-8ff1-7e0d-50ad-6b0aae872a6d@infradead.org>
+In-Reply-To: <7208c4e4-8ff1-7e0d-50ad-6b0aae872a6d@infradead.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 13 Apr 2021 15:18:10 -0700
+Message-ID: <CAEf4BzZBHUX=8=FYwq0bp6GFkOTxCbtiJN31SSoWCsMyh7_hMg@mail.gmail.com>
+Subject: Re: mmotm 2021-04-11-20-47 uploaded (bpf: xsk.c)
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
+        mhocko@suse.cz, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        mm-commits@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 3:08 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Mon, Apr 12, 2021 at 9:38 AM Randy Dunlap <rdunlap@infradead.org> wrote:
 >
-> On Tue, Apr 13, 2021 at 8:34 AM Yonghong Song <yhs@fb.com> wrote:
+> On 4/11/21 8:48 PM, akpm@linux-foundation.org wrote:
+> > The mm-of-the-moment snapshot 2021-04-11-20-47 has been uploaded to
 > >
-> > With clang compiler:
-> >   make -j60 LLVM=1 LLVM_IAS=1  <=== compile kernel
-> >   make -j60 -C tools/testing/selftests/bpf LLVM=1 LLVM_IAS=1
-> > Some linker flags are not used/effective for some binaries and
-> > we have warnings like:
-> >   warning: -lelf: 'linker' input unused [-Wunused-command-line-argument]
+> >    https://www.ozlabs.org/~akpm/mmotm/
 > >
-> > We also have warnings like:
-> >   .../selftests/bpf/prog_tests/ns_current_pid_tgid.c:74:57: note: treat the string as an argument to avoid this
-> >         if (CHECK(waitpid(cpid, &wstatus, 0) == -1, "waitpid", strerror(errno)))
-> >                                                                ^
-> >                                                                "%s",
-> >   .../selftests/bpf/test_progs.h:129:35: note: expanded from macro 'CHECK'
-> >         _CHECK(condition, tag, duration, format)
-> >                                          ^
-> >   .../selftests/bpf/test_progs.h:108:21: note: expanded from macro '_CHECK'
-> >                 fprintf(stdout, ##format);                              \
-> >                                   ^
-> > The first warning can be silenced with clang option -Wno-unused-command-line-argument.
-> > For the second warning, source codes are modified as suggested by the compiler
-> > to silence the warning. Since gcc does not support the option
-> > -Wno-unused-command-line-argument and the warning only happens with clang
-> > compiler, the option -Wno-unused-command-line-argument is enabled only when
-> > clang compiler is used.
+> > mmotm-readme.txt says
 > >
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
-> > ---
->
-> LGTM, please see the question below.
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->
-> >  tools/testing/selftests/bpf/Makefile                         | 5 +++++
-> >  tools/testing/selftests/bpf/prog_tests/fexit_sleep.c         | 4 ++--
-> >  tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c | 4 ++--
-> >  3 files changed, 9 insertions(+), 4 deletions(-)
+> > README for mm-of-the-moment:
 > >
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index dcc2dc1f2a86..c45ae13b88a0 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -28,6 +28,11 @@ CFLAGS += -g -Og -rdynamic -Wall $(GENFLAGS) $(SAN_CFLAGS)           \
-> >           -Dbpf_load_program=bpf_test_load_program
-> >  LDLIBS += -lcap -lelf -lz -lrt -lpthread
+> > https://www.ozlabs.org/~akpm/mmotm/
 > >
-> > +# Silence some warnings when compiled with clang
-> > +ifneq ($(LLVM),)
+> > This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> > more than once a week.
+> >
+> > You will need quilt to apply these patches to the latest Linus release =
+(5.x
+> > or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated=
+ in
+> > https://ozlabs.org/~akpm/mmotm/series
+> >
+> > The file broken-out.tar.gz contains two datestamp files: .DATE and
+> > .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss=
+,
+> > followed by the base kernel version against which this patch series is =
+to
+> > be applied.
+> >
+> > This tree is partially included in linux-next.  To see which patches ar=
+e
+> > included in linux-next, consult the `series' file.  Only the patches
+> > within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included i=
+n
+> > linux-next.
+> >
+> >
+> > A full copy of the full kernel tree with the linux-next and mmotm patch=
+es
+> > already applied is available through git within an hour of the mmotm
+> > release.  Individual mmotm releases are tagged.  The master branch alwa=
+ys
+> > points to the latest release, so it's constantly rebasing.
+> >
+> >       https://github.com/hnaz/linux-mm
+> >
+> > The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
+> > contains daily snapshots of the -mm tree.  It is updated more frequentl=
+y
+> > than mmotm, and is untested.
+> >
+> > A git copy of this tree is also available at
+> >
+> >       https://github.com/hnaz/linux-mm
 >
-> This won't handle the case where someone does `make CC=clang`, right?
-> Do we care at all?
-
-Right; it would be better to check CC=clang and have LLVM=1 enable
-CC=clang from a higher level Makefile (since tools/build/Makefile
-seems to override the top level $CC). See the top level Makefile
-L448-456.  Then it should work for CC=clang or LLVM=1.
-
+> on x86_64:
+>
+> xsk.c: In function =E2=80=98xsk_socket__create_shared=E2=80=99:
+> xsk.c:1027:7: error: redeclaration of =E2=80=98unmap=E2=80=99 with no lin=
+kage
+>   bool unmap =3D umem->fill_save !=3D fill;
+>        ^~~~~
+> xsk.c:1020:7: note: previous declaration of =E2=80=98unmap=E2=80=99 was h=
+ere
+>   bool unmap, rx_setup_done =3D false, tx_setup_done =3D false;
+>        ^~~~~
+> xsk.c:1028:7: error: redefinition of =E2=80=98rx_setup_done=E2=80=99
+>   bool rx_setup_done =3D false, tx_setup_done =3D false;
+>        ^~~~~~~~~~~~~
+> xsk.c:1020:14: note: previous definition of =E2=80=98rx_setup_done=E2=80=
+=99 was here
+>   bool unmap, rx_setup_done =3D false, tx_setup_done =3D false;
+>               ^~~~~~~~~~~~~
+> xsk.c:1028:30: error: redefinition of =E2=80=98tx_setup_done=E2=80=99
+>   bool rx_setup_done =3D false, tx_setup_done =3D false;
+>                               ^~~~~~~~~~~~~
+> xsk.c:1020:37: note: previous definition of =E2=80=98tx_setup_done=E2=80=
+=99 was here
+>   bool unmap, rx_setup_done =3D false, tx_setup_done =3D false;
+>                                      ^~~~~~~~~~~~~
 >
 >
-> > +CFLAGS += -Wno-unused-command-line-argument
-> > +endif
-> > +
+> Full randconfig file is attached.
+
+What SHA are you on? I checked that github tree, the source code there
+doesn't correspond to the errors here (i.e., there is no unmap
+redefinition on lines 1020 and 1027). Could it be some local merge
+conflict?
+
 >
-> [...]
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
+> --
+> ~Randy
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
