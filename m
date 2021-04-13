@@ -2,127 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEEF335DAE9
-	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 11:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68FF35DB33
+	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 11:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245596AbhDMJRQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Apr 2021 05:17:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31428 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237858AbhDMJRQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 13 Apr 2021 05:17:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618305416;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fa0VO4NS0WcM6QKIm6X93LeNCNUpBKsoeWvxsAb3W6A=;
-        b=cp2bQCYl1Yknw8E1Sssa1pVIcBoaXYbfaEmJl7BqJnkYab8piZm18j2cL0x511SvtxDLoW
-        Cfgw2aEqqXkhVgsDAxZrUp3zvON9U0ss4wJPeJMhYDJUfgtSSZzpbv++l7PfnzphJyp2yP
-        Bx004NssgV6LcSf7XohdtL7/HJttKK4=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-244-Yg6tqjeXM7ucg81pH7BoFQ-1; Tue, 13 Apr 2021 05:16:55 -0400
-X-MC-Unique: Yg6tqjeXM7ucg81pH7BoFQ-1
-Received: by mail-ed1-f70.google.com with SMTP id ay2-20020a0564022022b02903824b52f2d8so947427edb.22
-        for <bpf@vger.kernel.org>; Tue, 13 Apr 2021 02:16:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=Fa0VO4NS0WcM6QKIm6X93LeNCNUpBKsoeWvxsAb3W6A=;
-        b=U2h8bq55HptvkuK0FP/nyaR0JtMU0dOHKRLFtxc24FqSya0dsu7QVF/7bzEBZuOqRs
-         FPzJ8J17w2hIR1bY6JBjkiP9UeMCVOF94HR+zgmufm0HTdTfGDQoBS5EydMdY6aKlNQ/
-         RganYXgeLkIz2szYXP98yYXkW2GcXRtexiQ+I+VMTaEfbf4hOzffirKmN3mACo0qkK0c
-         5m/EBcmCIJdELM+OvqAOKsFL1A62CML+OojzeADIc/+IpISDP0GxY1Y4nimD0lI6W49b
-         zokkxbMNF0lBBaAiWD3rnzbsZIIXa92FIprQI0C13TBMA3u4GV4itDmEZc7c2Na1E9Zd
-         LytA==
-X-Gm-Message-State: AOAM532lpVX6d5I88C+EnN9yB1zncQxLcnkfC5+XXzY3B68HgpxVe1AR
-        roF1FWsSPDZ88t+P8xjXNMvJ+zEVYmcvxVILdKHgwDkq5JqyxDvVjZKZoogbwQhmiusQ+vkslFc
-        +Iiw+ZP9Rjuj2
-X-Received: by 2002:a05:6402:1a:: with SMTP id d26mr33922784edu.99.1618305413235;
-        Tue, 13 Apr 2021 02:16:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwb19cyfHtp062mT2t/joUSCyyAo4rjkwRZEQv9nXu7Yt+rpIz9Pw792L/CaBDPL464iV5z0Q==
-X-Received: by 2002:a05:6402:1a:: with SMTP id d26mr33922740edu.99.1618305412788;
-        Tue, 13 Apr 2021 02:16:52 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id x24sm8938429edr.36.2021.04.13.02.16.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 02:16:52 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D693C1804E8; Tue, 13 Apr 2021 11:16:51 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S237739AbhDMJcf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Apr 2021 05:32:35 -0400
+Received: from mga12.intel.com ([192.55.52.136]:15985 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230251AbhDMJcf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Apr 2021 05:32:35 -0400
+IronPort-SDR: elErqZP/fBlNNINW9GFTIXvKz16NHiN+UinrOS6z5MR2jGUGpk9roJ4J0cSRPpSw5gE94k43t6
+ mYCg0pSLJ8Ow==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="173868030"
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="173868030"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2021 02:32:14 -0700
+IronPort-SDR: gbYVj5qwLtUIw5q8DrxLiv4BRR4jht7zSoRGbxrC5sHYn6kDuJ1GSxWWZB1Pi4NTQ9OKOit9Uv
+ zUunE2UAFYpg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,219,1613462400"; 
+   d="scan'208";a="424178034"
+Received: from glass.png.intel.com ([10.158.65.59])
+  by orsmga008.jf.intel.com with ESMTP; 13 Apr 2021 02:32:08 -0700
+From:   Ong Boon Leong <boon.leong.ong@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     alexandre.torgue@foss.st.com,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: add tests for target
- information in bpf_link info queries
-In-Reply-To: <87blaio8m4.fsf@toke.dk>
-References: <20210408195740.153029-1-toke@redhat.com>
- <20210408195740.153029-2-toke@redhat.com>
- <CAEf4BzaZ8nAAqs8twnqCtSvmxsDvKBDUaYw+s+CcOnZyYo=0Vw@mail.gmail.com>
- <87blaio8m4.fsf@toke.dk>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 13 Apr 2021 11:16:51 +0200
-Message-ID: <878s5mo870.fsf@toke.dk>
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>
+Subject: [PATCH net-next v2 0/7] stmmac: add XDP ZC support
+Date:   Tue, 13 Apr 2021 17:36:19 +0800
+Message-Id: <20210413093626.3447-1-boon.leong.ong@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
+Hi,
 
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
->> On Thu, Apr 8, 2021 at 12:57 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
->>>
->>> Extend the fexit_bpf2bpf test to check that the info for the bpf_link
->>> returned by the kernel matches the expected values.
->>>
->>> While we're updating the test, change existing uses of CHEC() to use the
->>> much easier to read ASSERT_*() macros.
->>>
->>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->>> ---
->>
->> Just a minor nit below. Looks good, thanks.
->>
->> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->>
->>>  .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 50 +++++++++++++++----
->>>  1 file changed, 39 insertions(+), 11 deletions(-)
->>>
->>> diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/t=
-ools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
->>> index 5c0448910426..019a46d8e98e 100644
->>> --- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
->>> +++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
->>> @@ -57,11 +57,13 @@ static void test_fexit_bpf2bpf_common(const char *o=
-bj_file,
->>>                                       bool run_prog,
->>>                                       test_cb cb)
->>>  {
->>> +       __u32 duration =3D 0, retval, tgt_prog_id, info_len;
->>
->> if not CHECK() is used, duration shouldn't be needed anymore
->
-> Oh, and duration is still needed for bpf_prog_test_run(), so I'll keep
-> that; but removing it did make the compiler point out that I missed one
-> CHECK() at the beginning of the function when converting, so will fix
-> that instead :)
+This is the v2 patch series to add XDP ZC support to stmmac driver.
 
-Argh, no, bpf_prog_test_run() will accept a NULL pointer for duration;
-sorry for the noise!
+Summary of v2 patch change:-
 
--Toke
+6/7: fix synchronize_rcu() is called stmmac_disable_all_queues() that is
+     used by ndo_setup_tc().
+
+ ########################################################################
+
+Continuous burst traffics are generated by pktgen script and in the midst
+of each packet processing operation by xdpsock the following tc-loop.sh
+script is looped continuously:-
+
+ #!/bin/bash
+ tc qdisc del dev eth0 parent root
+ tc qdisc add dev eth0 ingress
+ tc qdisc add dev eth0 root mqprio num_tc 4 map 0 1 2 3 0 0 0 0 0 0 0 0 0 0 0 0 queues 1@0 1@1 1@2 1@3 hw 0
+ tc filter add dev eth0 parent ffff: protocol 802.1Q flower vlan_prio 0 hw_tc 0
+ tc filter add dev eth0 parent ffff: protocol 802.1Q flower vlan_prio 1 hw_tc 1
+ tc filter add dev eth0 parent ffff: protocol 802.1Q flower vlan_prio 2 hw_tc 2
+ tc filter add dev eth0 parent ffff: protocol 802.1Q flower vlan_prio 3 hw_tc 3
+ tc qdisc list dev eth0
+ tc filter show dev eth0 ingress
+
+ On different ssh terminal
+ $ while true; do ./tc-loop.sh; sleep 1; done
+
+The v2 patch series have been tested using the xdpsock app:
+ $ ./xdpsock -i eth0 -l -z
+
+From xdpsock poller pps report and dmesg, we don't find any warning
+related to rcu and the only difference when the script is executed is
+the pps rate drops momentarily.
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 436347         191361334
+tx                 436411         191361334
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 254117         191615476
+tx                 254053         191615412
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 466395         192081924
+tx                 466395         192081860
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 287410         192369365
+tx                 287474         192369365
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 395853         192765329
+tx                 395789         192765265
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 466132         193231514
+tx                 466132         193231450
+
+ ########################################################################
+
+Based on the above result, the fix looks promising. Appreciate that if
+community can help to review the patch series and provide me feedback
+for improvement.
+
+Thanks,
+Boon Leong
+
+ ------------------------------------------------------------------------
+ History of patch series as follow:-
+
+ v1: https://patchwork.kernel.org/project/netdevbpf/list/?series=465747&state=*
+
+ ------------------------------------------------------------------------
+
+Ong Boon Leong (7):
+  net: stmmac: rearrange RX buffer allocation and free functions
+  net: stmmac: introduce dma_recycle_rx_skbufs for
+    stmmac_reinit_rx_buffers
+  net: stmmac: refactor stmmac_init_rx_buffers for
+    stmmac_reinit_rx_buffers
+  net: stmmac: rearrange RX and TX desc init into per-queue basis
+  net: stmmac: Refactor __stmmac_xdp_run_prog for XDP ZC
+  net: stmmac: Enable RX via AF_XDP zero-copy
+  net: stmmac: Add TX via XDP zero-copy socket
+
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |   24 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 1718 +++++++++++++----
+ .../net/ethernet/stmicro/stmmac/stmmac_xdp.c  |   95 +
+ .../net/ethernet/stmicro/stmmac/stmmac_xdp.h  |    3 +
+ 4 files changed, 1411 insertions(+), 429 deletions(-)
+
+-- 
+2.25.1
 
