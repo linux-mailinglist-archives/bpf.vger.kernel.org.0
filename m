@@ -2,126 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1864235E5CB
-	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 20:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 564B435E5FE
+	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 20:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347417AbhDMSA6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 13 Apr 2021 14:00:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237095AbhDMSA5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 13 Apr 2021 14:00:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAB07613B6;
-        Tue, 13 Apr 2021 18:00:35 +0000 (UTC)
-Date:   Tue, 13 Apr 2021 19:00:33 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Liam Howlett <liam.howlett@oracle.com>
-Cc:     Andre Przywara <andre.przywara@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Collingbourne <pcc@google.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Amit Daniel Kachhap <amit.kachhap@arm.com>
-Subject: Re: [PATCH] arch/arm64/kernel/traps: Use find_vma_intersection() in
- traps for setting si_code
-Message-ID: <20210413180030.GA31164@arm.com>
-References: <20210407150940.542103-1-Liam.Howlett@Oracle.com>
- <20210412174343.GG2060@arm.com>
- <20210413143035.7zrct6a3up42uaoo@revolver>
+        id S232760AbhDMSLN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 13 Apr 2021 14:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232721AbhDMSLM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 13 Apr 2021 14:11:12 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC93C061756
+        for <bpf@vger.kernel.org>; Tue, 13 Apr 2021 11:10:52 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id d23so6745575qko.12
+        for <bpf@vger.kernel.org>; Tue, 13 Apr 2021 11:10:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FGbhF4j/4KvKvgmcMI4tSFrHp3z+B+kvQjIt7JNGVtM=;
+        b=DfO/jKlu63SfJMFWbKyUV0bbBZCRd1vz/+G/YmzhTTDH2TksvMdvLPRxbz3c5WeN41
+         R44AUBkiZ81oyS2Lj85bwtjNER3XalFky7kL9bC8JR/lyUE29zCFoaBxqknj1X7fInIM
+         SE1PDklgLxqM12WgbGtGcGK3AxZYkvZjHrb1FUUrrfQAVuDGJ+xRcHiy/P8RMOuCUJXT
+         M68JwzItCLD1ZOmOdHkv/LRa4MH+RrzZCxmaWyybHoDiWwcbbRPzWyJOSZTUlsUS3oZo
+         TYqW3UAhV6PcjrG+cIettEB2u7LoXChq3U0cCsRGXUsjHHLiZ7GEVHCZIB5VRPqLB3Sb
+         BKTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FGbhF4j/4KvKvgmcMI4tSFrHp3z+B+kvQjIt7JNGVtM=;
+        b=rQ30D/QG9aOZVmNGQ6Io6OzTxjdy/Za7aSO/z+YtdoIA5mG7K1+zAOLP+YZ2tsxnGS
+         R02aealvj+OOTeo8R5Cbq1JWZe7CFlG66KHTagNzw9PwjCDHbuf5dHO40I6Orkiusyux
+         nUye09eJ7T4fljGscYXDOUj6UYeYk6Ng6k0DrVRkbKFaj8oUV+MtUMeHcNsDSDA8Z/Iu
+         NN/6EiTrXn2XqFWJz6AkC2NGUCKYdCmPLQ05t/6Fc9XdXoQD3vD2CPVXJTkYkzB8minP
+         skVHhIV9LHHeFL1+PHxKKJjlIyya/5p4V2BjC9AxG8sMLzv/SwaQN9gL6Oxsq/5JUj4h
+         /IJQ==
+X-Gm-Message-State: AOAM5305iv/ItHgR40RumJXXxjaMO8HRNKGmQhcfCVLrRpsYRJ2GgE/A
+        dVLSvm1AF4odsPR0sB6IRed2TULkHyeAIjaQPvPJtdFBfvDC6yWA
+X-Google-Smtp-Source: ABdhPJwgMLCFIyBm4ZJyOejRwBNHEomxHGEGdG3AM3IECeJOe3e/Sq3AX/EF9w+bYLlFMQswhzAYa1DyDU2rtW1P9VI=
+X-Received: by 2002:ae9:e513:: with SMTP id w19mr35388617qkf.231.1618337451241;
+ Tue, 13 Apr 2021 11:10:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413143035.7zrct6a3up42uaoo@revolver>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <000000000000ce66e005bf3b9531@google.com>
+In-Reply-To: <000000000000ce66e005bf3b9531@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 13 Apr 2021 20:10:39 +0200
+Message-ID: <CACT4Y+asWh+a9snv-V=a=h1i9A-4hWW4fb4=1vnEKH7vgoh-Lw@mail.gmail.com>
+Subject: Re: [syzbot] WARNING: suspicious RCU usage in lock_sock_nested
+To:     syzbot <syzbot+80a4f8091f8d5ba51de9@syzkaller.appspotmail.com>
+Cc:     andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, dsahern@kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 04:52:34PM +0000, Liam Howlett wrote:
-> * Catalin Marinas <catalin.marinas@arm.com> [210412 13:44]:
-> > On Wed, Apr 07, 2021 at 03:11:06PM +0000, Liam Howlett wrote:
-> > > find_vma() will continue to search upwards until the end of the virtual
-> > > memory space.  This means the si_code would almost never be set to
-> > > SEGV_MAPERR even when the address falls outside of any VMA.  The result
-> > > is that the si_code is not reliable as it may or may not be set to the
-> > > correct result, depending on where the address falls in the address
-> > > space.
-> > > 
-> > > Using find_vma_intersection() allows for what is intended by only
-> > > returning a VMA if it falls within the range provided, in this case a
-> > > window of 1.
-> > > 
-> > > Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
-> > > ---
-> > >  arch/arm64/kernel/traps.c | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-> > > index a05d34f0e82a..a44007904a64 100644
-> > > --- a/arch/arm64/kernel/traps.c
-> > > +++ b/arch/arm64/kernel/traps.c
-> > > @@ -383,9 +383,10 @@ void force_signal_inject(int signal, int code, unsigned long address, unsigned i
-> > >  void arm64_notify_segfault(unsigned long addr)
-> > >  {
-> > >  	int code;
-> > > +	unsigned long ut_addr = untagged_addr(addr);
-> > >  
-> > >  	mmap_read_lock(current->mm);
-> > > -	if (find_vma(current->mm, untagged_addr(addr)) == NULL)
-> > > +	if (find_vma_intersection(current->mm, ut_addr, ut_addr + 1) == NULL)
-> > >  		code = SEGV_MAPERR;
-> > >  	else
-> > >  		code = SEGV_ACCERR;
-[...]
-> > I don't think your change is entirely correct either. We can have a
-> > fault below the vma of a stack (with VM_GROWSDOWN) and
-> > find_vma_intersection() would return NULL but it should be a SEGV_ACCERR
-> > instead.
-> 
-> I'm pretty sure I am missing something.  From what you said above, I
-> think this means that there can be a user cache fault below the stack
-> which should notify the user application that they are not allowed to
-> expand the stack by sending a SIGV_ACCERR in the si_code?  Is this
-> expected behaviour or am I missing a code path to this function?
+On Mon, Apr 5, 2021 at 5:45 PM syzbot
+<syzbot+80a4f8091f8d5ba51de9@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    d19cc4bf Merge tag 'trace-v5.12-rc5' of git://git.kernel.o..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14898326d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=d1a3d65a48dbd1bc
+> dashboard link: https://syzkaller.appspot.com/bug?extid=80a4f8091f8d5ba51de9
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+80a4f8091f8d5ba51de9@syzkaller.appspotmail.com
 
-My point was that find_vma() may return a valid vma where addr < vm_end
-but also addr < vm_addr. It's the responsibility of the caller to check
-that that vma can be expanded (VM_GROWSDOWN) and we do something like
-this in __do_page_fault(). find_vma_intersection(), OTOH, requires addr
->= vm_start.
+#syz dup: WARNING: suspicious RCU usage in getname_flags
 
-If we hit this case (addr < vm_start), normally we'd first need to check
-whether it's expandable and, if not, return MAPERR. If it's expandable,
-it should be ACCERR since something else caused the fault.
-
-Now, I think at least for user_cache_maint_handler(), we can assume that
-__do_page_fault() handled any expansion already, so we don't need to
-check it here. In this case, your find_vma_intersection() check should
-work.
-
-Are there other cases where we invoke arm64_notify_segfault() without a
-prior fault? I think in swp_handler() we can bail out early before we
-even attempted the access so we may report MAPERR but ACCERR is a better
-indication. Also in sys_rt_sigreturn() we always call it as
-arm64_notify_segfault(regs->sp). I'm not sure that's correct in all
-cases, see restore_altstack().
-
-I guess this code needs some tidying up.
-
-> > Maybe this should employ similar checks as __do_page_fault() (with
-> > expand_stack() and VM_GROWSDOWN).
-> 
-> You mean the code needs to detect endianness and to check if this is an
-> attempt to expand the stack for both cases?
-
-Nothing to do with endianness, just the relation between the address and
-the vma->vm_start and whether the vma can be expanded down.
-
--- 
-Catalin
+> =============================
+> WARNING: suspicious RCU usage
+> 5.12.0-rc5-syzkaller #0 Not tainted
+> -----------------------------
+> kernel/sched/core.c:8294 Illegal context switch in RCU-bh read-side critical section!
+>
+> other info that might help us debug this:
+>
+>
+> rcu_scheduler_active = 2, debug_locks = 0
+> no locks held by syz-executor.3/8407.
+>
+> stack backtrace:
+> CPU: 0 PID: 8407 Comm: syz-executor.3 Not tainted 5.12.0-rc5-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>  ___might_sleep+0x229/0x2c0 kernel/sched/core.c:8294
+>  lock_sock_nested+0x25/0x120 net/core/sock.c:3062
+>  lock_sock include/net/sock.h:1600 [inline]
+>  do_ip_getsockopt+0x227/0x18e0 net/ipv4/ip_sockglue.c:1536
+>  ip_getsockopt+0x84/0x1c0 net/ipv4/ip_sockglue.c:1761
+>  tcp_getsockopt+0x86/0xd0 net/ipv4/tcp.c:4239
+>  __sys_getsockopt+0x21f/0x5f0 net/socket.c:2161
+>  __do_sys_getsockopt net/socket.c:2176 [inline]
+>  __se_sys_getsockopt net/socket.c:2173 [inline]
+>  __x64_sys_getsockopt+0xba/0x150 net/socket.c:2173
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x467a6a
+> Code: 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 37 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffc76a6a848 EFLAGS: 00000246 ORIG_RAX: 0000000000000037
+> RAX: ffffffffffffffda RBX: 00007ffc76a6a85c RCX: 0000000000467a6a
+> RDX: 0000000000000060 RSI: 0000000000000000 RDI: 0000000000000003
+> RBP: 0000000000000003 R08: 00007ffc76a6a85c R09: 00007ffc76a6a8c0
+> R10: 00007ffc76a6a860 R11: 0000000000000246 R12: 00007ffc76a6a860
+> R13: 000000000005ecdc R14: 0000000000000000 R15: 00007ffc76a6afd0
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000ce66e005bf3b9531%40google.com.
