@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E483735D469
-	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 02:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1400835D476
+	for <lists+bpf@lfdr.de>; Tue, 13 Apr 2021 02:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238206AbhDMA0A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 12 Apr 2021 20:26:00 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:24870 "EHLO
+        id S239994AbhDMAbn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 12 Apr 2021 20:31:43 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:1976 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229581AbhDMAZ7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 12 Apr 2021 20:25:59 -0400
+        by vger.kernel.org with ESMTP id S239870AbhDMAbn (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 12 Apr 2021 20:31:43 -0400
 Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13D0EUTO021290;
-        Mon, 12 Apr 2021 17:25:36 -0700
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13D0SFDp011454;
+        Mon, 12 Apr 2021 17:31:20 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=BYxJZedBl+WTermU0WcmjuVeVwWwSOcmy7zcwwoOdUo=;
- b=fGhhAmfRJ5Q6Ld5QLMaIFATD8xix6RxqqUdEjL+E6qtRDgT3yAOmVL+vniCDShxleadH
- EjTMtiBOQvkCdkhSe6i26kItmYaQBpQstTI82ZmiNVHhX8RtDNCMi01BThJMg9SRaS+t
- JDD8FrruSHxPJPGWK+g/aQy8CD1xslKl6CY= 
+ bh=6oyG6Q2KsFeGQ37wO3NL6q9irA1NI6/anRiPpYkGP1Q=;
+ b=ZD52hhL4PX/HComsjDJHsr0fJYa58indciZeW4rUt35r2BgTv1V8VZj+PJUH7VurARwm
+ eH2ngLGU80+i9aQhptySV3qcLKzUxqtPX/iHV/DD/6IKuBoRVqwE6nmpTXireXrjXLdl
+ rNRYAeGDhcEAqGu2lNzF4N0TAeomo90+6zA= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37vs1cjsec-1
+        by mx0a-00082601.pphosted.com with ESMTP id 37vs1cjt1p-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 12 Apr 2021 17:25:36 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+        Mon, 12 Apr 2021 17:31:20 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 12 Apr 2021 17:25:34 -0700
+ 15.1.2176.2; Mon, 12 Apr 2021 17:31:18 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l3miuWLnHwereSu3sT3gbXYzxYrouKoZwpAv+wNzxJMVxO9yrU1AkpU2O6RSzbfNMqUQbmkQidqXrzWnEeQKm2bsLy5FCBtpftrdjWMN1G74HhVkVdOT3J6cxlIZGxjjhW0+XrFrMvNLULr0gvgMI/6fHmj6EBD7Kf8RwbUELFPLbJ9+UV0yBUspnj3PCvtChwr2zna0+AS4l+0AT71WBU4WVwSIYpnHgI6lr1TKGOTG7VGsjiyQCxxgCcuwaBOGqsr4AySjEoSMpi9Ds/J+a5VExHI55cuCrlhbfzBHqt+MhypoEs45zpnbZrqYkGVQkiXXj5SuttCpmE+mm34f+Q==
+ b=oaZ5RR9K2RVrfzZ2c7kGD8AmPLFC77ixHKw5qwHS71/VXBNEidr10jFWj7GGsO5f76W2yF/Ik5kuBhUMbxmulynYJNUms8yIN1ssQXrWE3Gq9Bnf6/QwxsAt0UQxhVV04Viltb1K087OdEp66jyKNQZ3+iZGUkd1GyI98rLQCqywGP+mWlyOKcWDHJQHy3ylN8Yz9e72vTyBJeJqhCOBw6lPrVen6v5/cw8uRHW65fuNbGJmqWzhVyreMY30/YSNdXpL2ujgynfb0+2UvgCCMXs+eioDm2gug3flv23yL5o4CRB0lurnCNcUrRUzZWVkirW3tLBxKP/YUWvB9f07+w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BYxJZedBl+WTermU0WcmjuVeVwWwSOcmy7zcwwoOdUo=;
- b=b2D8rk3HS6UghgvdLc06qXkzHy6ZBKfgNsVC8837aQWV8qmObp/BiFDJPUl3rI9bCAKmO789nOigj5gYyuv0exBRBH1NUzLnJj8Gq7la0sU++T9MM+VGg3Omlg2erfPlgvoG5QB0thzOHV6U3iiezSLaPu/odJFZ5g+9XnJmUXsKhJBbG1QC6nTiKPAj5KK3DUqMP96FDN0/BtzHO6g3apzS/9OSm1yo/EWV1n8t3ZJG4/ipDDnmDes7xarANBtoMf48zqsNh3fV1F9mys1khBzW2+pIWKNHcc4FHWxqjfukzw4PPMz5qikBFfxWz0pZaZiMu5W024AVI9KW0XFI+Q==
+ bh=6oyG6Q2KsFeGQ37wO3NL6q9irA1NI6/anRiPpYkGP1Q=;
+ b=h9oMP+4Hm7XugSNIgVSR3gg75dV0AF7nK57dAMJI+V2faRvBhUJxXZAObF3h25gN7kEkFfcfVseoKE1OY4R4TbBeXwqsv/y+kcpMLAr5R4KQDFayo59HcAhMdH7pO+/6fN00ExEOOMjswNtbvplFfWghqRcwXkQVxs0aqqTmV/YF1ilN7onRXKiqzVr0qRciAchC23zOOadTitSddO9Fow5bbOCoFebxvexXwZ3yttZIzDlYwz/43ry+DjVilw/UZTnXNJEzTMx0Jvo4eKu8DUob8y+NA7/7NYNnEOj2RekuJP0yU+wkpmo9UD8L7oKwxb9Cq/qZOZ08qmQYH7a7lg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Authentication-Results: gmail.com; dkim=none (message not signed)
  header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN6PR1501MB2158.namprd15.prod.outlook.com (2603:10b6:805:3::15) with
+ by SN6PR1501MB2157.namprd15.prod.outlook.com (2603:10b6:805:8::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.22; Tue, 13 Apr
- 2021 00:25:33 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Tue, 13 Apr
+ 2021 00:31:18 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3999.033; Tue, 13 Apr 2021
- 00:25:33 +0000
+ 00:31:18 +0000
 Subject: Re: [PATCH bpf-next v2 0/5] bpf: tools: support build selftests/bpf
  with clang
 To:     Nick Desaulniers <ndesaulniers@google.com>
@@ -58,84 +58,85 @@ CC:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         <kernel-team@fb.com>, Sedat Dilek <sedat.dilek@gmail.com>
 References: <20210412142905.266942-1-yhs@fb.com>
  <CAKwvOdkTUFUwq0Uwi4D9-Z9nbg1FfaP1P2oiBsxNn3+ikT9MwA@mail.gmail.com>
+ <CAKwvOdkFWe76ggKrLeckS+mzmyQeq6eJBnkQM1bKgEGQBCspSA@mail.gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <ffa4feb1-db9d-5305-e1c3-042f3ce26f99@fb.com>
-Date:   Mon, 12 Apr 2021 17:25:29 -0700
+Message-ID: <e5f5f6b3-64e6-7068-ca72-9f06f3ffda54@fb.com>
+Date:   Mon, 12 Apr 2021 17:31:15 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.9.1
-In-Reply-To: <CAKwvOdkTUFUwq0Uwi4D9-Z9nbg1FfaP1P2oiBsxNn3+ikT9MwA@mail.gmail.com>
+In-Reply-To: <CAKwvOdkFWe76ggKrLeckS+mzmyQeq6eJBnkQM1bKgEGQBCspSA@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [2620:10d:c090:400::5:2d37]
-X-ClientProxiedBy: CO2PR04CA0100.namprd04.prod.outlook.com
- (2603:10b6:104:6::26) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: MW4PR03CA0117.namprd03.prod.outlook.com
+ (2603:10b6:303:b7::32) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c8::1a0e] (2620:10d:c090:400::5:2d37) by CO2PR04CA0100.namprd04.prod.outlook.com (2603:10b6:104:6::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Tue, 13 Apr 2021 00:25:32 +0000
+Received: from [IPv6:2620:10d:c085:21c8::1a0e] (2620:10d:c090:400::5:2d37) by MW4PR03CA0117.namprd03.prod.outlook.com (2603:10b6:303:b7::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21 via Frontend Transport; Tue, 13 Apr 2021 00:31:17 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a7b15769-f2fb-4954-8043-08d8fe12a69f
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2158:
+X-MS-Office365-Filtering-Correlation-Id: 41d9b51c-c0de-481e-a27f-08d8fe13740e
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2157:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR1501MB2158A00ED5455FFA858DAA96D34F9@SN6PR1501MB2158.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <SN6PR1501MB21576DDEE422FA59DD79BA3CD34F9@SN6PR1501MB2157.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cR2/7VF1UZu3bh7QYH3Tu7sZY1pxh9OFa6Sc32Ot5u1IwU5uicCXHXJa26xphDBz2rhk8RsVFsIgx13Cr2nYgRkJttp1J1TLocC1IWAo6ZX6A7X4092MDx258gRCPSg7Un6sgFWIGdQ6FTvcvZOK9WTmeolnoQ96zZMYXIviXKKwNnecdUzCNH3jFZ7uNg5IUu3QI2GoOFhiNliuT7ms2bjAXnAc1o8sQ1l7dxuD0pwStiHeXNkwEvMnk8aV/boXn64NKAuOxeNYgmn4X7clJJMEOhKfzcosrckkoea4clnMd3O9Jef9pAUBMtE5YoqYtEQf7qq6Ch746HOFZuDyrvXe2s8mKUF9IXCjVCseFC2r5z82sfrqnT20Ep+gLKRrQNaLv1ZpOw5GAeRE3M75E39/Pf6e6/PRW754ZdZbOApwrx0ZBpyvNvMOqtndbLlOU3JS7vrhNOwb2y0/1mm3CVWa2j9RCnTjQSEpj/NGLp8lzv86OWV5XI9+QA7WIMnhQJ6qvVQ0KlURTYla5T2hHr1Mig179g2rOCoPGpubCS3sZWijl+jrk4GjqH37B4NLqZyu7JjT7uJOfYK/yKxewKv2akU/HdiMD5JqEVFeaZyv8lr7xO88BDbJZ+TieKl70hPtM/c7UgBtZS+EMFOx3qUM9a2wrZ/Bq7oyWLKripYyvmCFBMMhiFP6XcgMbq5S
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(376002)(39860400002)(136003)(366004)(5660300002)(66476007)(4326008)(66946007)(2906002)(31686004)(478600001)(186003)(16526019)(83380400001)(31696002)(86362001)(66556008)(6486002)(36756003)(8676002)(6916009)(2616005)(8936002)(38100700002)(316002)(52116002)(6666004)(54906003)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bjBFb2xybEc3c3RxV0pZK01NL2dSdGZNakdwUnMwMWNXQnY1bTh3MnNQaytZ?=
- =?utf-8?B?STJrOTNnZENvQmxEaDhtU0lHanUxSjZpNDIwVjhZZXQrS1pDKy9ZeHIxalFz?=
- =?utf-8?B?cmY4RENUcnphS1FhYXoyRmxUaTZnMFhtUEtWVElUMEdFdUJnUmx1M25GcXl6?=
- =?utf-8?B?UUdNV0pLbHlZMWd2K01DMG9mWmNzSG1Va3U1K09HK0JqQkx3TXFVYXlBcm5l?=
- =?utf-8?B?UXNNbzFyWjYyMTFEcWNIWVNpRzdiK05YNlRrdDA0Y0M3UkZIbkhTTWx1VW82?=
- =?utf-8?B?MTB6aDlCSkZxUjFyeWl1NERTb3RydzVjRUJuK3dHVDNjZ2F6NmJyQkg1VmVB?=
- =?utf-8?B?Tzl4V2pGb21NaTZvemZ0K2JkYnJMbC8rNTVTT21DZ1VGNG1xZG5ROW5mSlVL?=
- =?utf-8?B?V04wdHRNbkR4eHZUNUx2aWFpY0R3bElsRDFEZVF5R1JPQkJTNit6NFlhVnhU?=
- =?utf-8?B?SXJmR3RqTnlsY1FOTjlBYUhMbmdISUoxakM1RTkwVnFTRStjL2xsQklFbWgx?=
- =?utf-8?B?L2ROWTVndVRRNVh0eXBxa0s4bkUzS0hPQnhyaGMxWTArWm5RZFlEU1IyYi9v?=
- =?utf-8?B?aGtNWWRRTHFEWFlzaHZjbzRTaWE5dVBXVjc4SjcwMzhLcFlaUFBGWTRYalVi?=
- =?utf-8?B?d3dCYWZpdzlmTTZCU0NuMmNTNCtWOCtlS09rdFBOUE5yNVEzNEUxL0Q0OGdl?=
- =?utf-8?B?elhIWkVYdmkxaS9mOWRDd25rNHlLdDhhRlFzS1hUdk1STXZmOXNwUVpHQ3ln?=
- =?utf-8?B?bHpLT0RVZTloUExrVWdWZ1ZyQ0Q0bTJXS202ZWNnLy9UTDdsdkdVNWRZVjFX?=
- =?utf-8?B?T1lkMnR4amQvRVVvS0kwYkkyZWREOVJvOG9ldVVpaDNkM0ZPS01RR0FzY0Z6?=
- =?utf-8?B?bWhVOC9KSThUN2FQeTJvcjVRR0RTdm1sL1puNFJUS2l2WHAwMnV0akh6VWFq?=
- =?utf-8?B?WENnNUc4b0wwR2tKTkRYY2ZIQnFETVlyekZxNURNRURKLzA0THFHWkQ3T3RF?=
- =?utf-8?B?WC9NdHcvZ0huUjlaWER5bjZ2TUZIM25wb2N2dlNDdzJXci9BRjA4MUJLMi9S?=
- =?utf-8?B?MTRYU3dSZitYQjZ4OTRxSVhHdFpMRFFMQmt3SHJJcjJzZmZqREhJQVNLa01l?=
- =?utf-8?B?UkpnVFpRbnBXSFlFdnhGdDF3OHlOSnh2dXViV0VYcyswQjBveDVVOU9CbU9E?=
- =?utf-8?B?NVgxcGhTemlmWmRYamNpMnFWd3N4SVd0K2FwemtodHI0SThHc00wM0V4SFJo?=
- =?utf-8?B?UHEyQ2VaR0FvM1JDei9qTkFqWHFudERRenJXTUNmeEJoWVkwVm1MbHc1Qm8w?=
- =?utf-8?B?Y24vbFY0NTZXRmY3THRqc2RFRlI1ZUoxTU9uWDV4b1FWU1NuZVFYWVJDTEl4?=
- =?utf-8?B?SHNlSi8yRGhlTmZJYmFyM2QzdGU1Y0pGdElnTmFRTFhFMEVuY2N0N3JyQmxq?=
- =?utf-8?B?c05LakVOd1YvOEhHU29wK2xMMkphZTZFQTNEOURPRUlBNk5RMU0rTVQrK1pE?=
- =?utf-8?B?Y0tyU1UyNUwzSDlWRmZHZm52NU1ZZTB3TEtGdmJ2V2J2YnEwb252dkJaa3N3?=
- =?utf-8?B?RDNvRXZ4OWhhL1JDSlRzM3hiY1pmK0krQUhWemlTVTdMOGwrbEdVUWlCdnh3?=
- =?utf-8?B?NjlUL203Ulo4RmdlRWE4TG1weGVTKzdxWE5WcGNwNllWb0Ztd3E2dXE3QzQy?=
- =?utf-8?B?WEZrYVlPQ3ZsNVJrNDRWQUVBSFpJVzFmcmpLRFF5ei9zZEJYRFg3ZE9aUHBi?=
- =?utf-8?B?ZENvempHU2VIVCtHY2IyQ2hpZktIMVhpMzlPL3JkaXY0cWtkaE5aaU1ZS2ZY?=
- =?utf-8?B?QkI1Wk02UzJ6K2FPYlVhUT09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7b15769-f2fb-4954-8043-08d8fe12a69f
+X-Microsoft-Antispam-Message-Info: 76hVsbnyTBZMdx0i9quRb4YcxdLMqPUFbVzvz+AY1twZTBnxdt92j/O35a1mkTiXH0qphya/+8bw+jKaYZcOx+neiJSu27Kra1eU6Eh2ZZfiI2/Q8QRIZ8dEi45Cd4Xaxbczk61P7tbK8fjOnIx6xPBz94IxRtTRgd8kscZ7KZnRjEuGFIqKm9SbbFDzNdBPhq3Ypiq+welg2Hmh1QDBCx8/jqc8tYvwQEBv9GNFkHmALEt/YJId0crxzI02RpCHQw7/lyU1cSskmshL+D31vrtwJwWNdL1tCdp/muov97cP3nuZI+Ty7yAcX82UPHwofQdDYXSm6JiPzIdt+2OXmfj49kSbVD4R/SkpOWXpdCn614gl79guc5cRCTxNU3y8gc+MA/MFBsv53KNjuGz9z1RuzyNk62o9AAy1qid7ev/wrxFfcZ1HppJuPYSkMSd20YHD47CGUb5ClUlri9IlCDRGDuQFXbNToiAlcV+zcXhzt7DlWWQV2XdYI6CfTn5ZkSq8MgvV8+h8diRI1vKrEKPfgwf9Wjo9CNxv+NFATgKl+8B2i7JVDkRYbe7YuKLwnQwGwEupuLCJJwkQgCcZLvBksKQ08tFrl9uH3PkOvxG+j1/DY1UpmARdORAIxQgrfMBVobbfScOGXu4j/MJzHwSVXzttI8Mj+VxHyeU3kE1qZmczpus06eq39Ld8AnLBoei0bENVFOybJ9ZUwKyVxQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(376002)(366004)(136003)(346002)(86362001)(8676002)(5660300002)(478600001)(54906003)(316002)(6916009)(53546011)(8936002)(4326008)(31686004)(83380400001)(38100700002)(66476007)(6486002)(66556008)(2616005)(66946007)(31696002)(186003)(36756003)(16526019)(52116002)(2906002)(43740500002)(45980500001)(309714004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?L05rbXpDWDNFK08rRzZ4MDcxTzJpWTZwZkRHNDVtZ2hDcVRCc253NVNxVDVB?=
+ =?utf-8?B?WmpOUHBBRFNuaXpsU29uTXhxc0sxbC8rblpSM0FXU3RMWk8vNHR2dWNwalBS?=
+ =?utf-8?B?SmVSOGxZcUtTbXJjTUYwekVRclJJUWFwcWtGTWN2RnZ1VlM3bnREdzVSNjFp?=
+ =?utf-8?B?bnh0L0o4MTExUnczRU1XcC83VUhaQmFlVFRwY0lRSUNnSy9hMzYxR3AwTnJH?=
+ =?utf-8?B?eWRKUFBaVDBubFhOOWdXVFY4MFR2eHNrczJJMnhHZ21WTHJ4ci9KMWdLVUZ1?=
+ =?utf-8?B?OTIzNnl2c3pFYWpFZlNRS3d6ek4veDErNmg2bmloKzI3S2hVZFNCUCthc28r?=
+ =?utf-8?B?TkxnS0R1dFNaaExtU0hoai91ZFRXQWVoeGo0UUJmS21PZVErTHJIWWg4VEo4?=
+ =?utf-8?B?Q1VyTkVMTng2VjA4WWdHMUlDRThmYWZtb2dObUtNcm5aMTFsY1FGaUJYMG1N?=
+ =?utf-8?B?Zjl1bThBc3FUbmFYWUQvMDZGbXErK2xaOUFuNmNkZVZyV0dJOVpvVjRkN1li?=
+ =?utf-8?B?SUgwSDZTdUh1ZVp3WTlBbXNSYWJLSjJINkdVR0l1dUtDVG12cXFuT2NvWVdT?=
+ =?utf-8?B?MzZ5T1RiaWltL3NwUjAyMWJzZWJxU29GSVI0OW1yTjM0bXZaanE4SUpmN2JB?=
+ =?utf-8?B?U01rMkZBaUl1WVNvRmQ2TWFHZkVmcHR3M05iTlppYnNqVlZ6WjdnTDlUL1Vl?=
+ =?utf-8?B?TkdQb3FxTzYrTVc2dnFvUzVPdTk3alNZM0J4OHF1Unc2YW0xbStWUDFyUGJ1?=
+ =?utf-8?B?SkpOeXg5cGhwSjgrRWFnTlRuTVowS25GSThma1B6MG5KZ2dSQW1NbGt5UENu?=
+ =?utf-8?B?dE1QanEwaFhzbE0wZFpDZGtUekhmeUs1WktuOThYQUN5R0tzQkJqeGVwWDlR?=
+ =?utf-8?B?dFZKSGh2ZVVXL25YS2RkZXlZMWEyMmYwa25zd090eWlGaGNxaUh6OFJLeEFU?=
+ =?utf-8?B?RzNhY1BFNi9aL2RCdi80anF2ZlBvUjlNSDRjSnp4RkJzZnpvQkVBbUsxWmVR?=
+ =?utf-8?B?TjVJbStpVGpnYlBQaUFZVTRkSjZiYjNSUVpob2ZVUVRlTkdUVmZKRUEwQ25v?=
+ =?utf-8?B?SEV5V1k0aFZ0dllZNkdETnFsd1NSMklWWktpS01JUHc3a2RnUnhraTBGY2ZP?=
+ =?utf-8?B?dTZjS01LK2NrS0szTmkzdlVkbGF4TllmTnRjWVBINDE0OVdDbG9mWnRab3Rz?=
+ =?utf-8?B?bTNwQk40WEw3M05ubkNnRnZnaDNZK09RZGZTSllxNjB0bC8rNm1UTngyNUM2?=
+ =?utf-8?B?WSsxdVJNY1c0Y3c5QXFvSm9rWDlYbk9IMnl6Y1Z2ejFOT2JJZVJRMGZPVW9p?=
+ =?utf-8?B?NmIrWk80U0pDOXd5RDZMOUI3NXFWNEV0UWF2aHVnLys3Q0dNa0lNV0RCUEhO?=
+ =?utf-8?B?aGxYNDBqMy9TejN4RHpDNjRIdjE3emRoWDdtcnJ6SlNCcGRheUdyL05NQ25J?=
+ =?utf-8?B?UzJGU0RpUEJjb3RWR3RlUUVZeFJxSVNBSjlYNGdDQjhFVzg2TTVoU0M3SEpj?=
+ =?utf-8?B?ZHdyQkF4TGFYUkxjekY3ek5zSk1PdXI2bCtWNXVha3ltbGdTd0wreCtZbE1N?=
+ =?utf-8?B?eHZMWk01RTNlVkRHZ3dlSEhtNFZEV0pGRDVMandOdkNYSnpkVWhSWFVCR015?=
+ =?utf-8?B?U2w4dFhyTXd5dnBldkRGcHlHVWZBem03c1JKU0orUzhoR21LSnhNU3JvaFZR?=
+ =?utf-8?B?cldCOU1Qam90RkpvSTlCZ3E3VjNyV3E1UldJajFzMHlRU1QxdmpRQ2k5L3pm?=
+ =?utf-8?B?b3huSVV6bkFWNGt3Rmp4cmFSRlJ0TGt2Rk1QMkVsV2xrV0VDazl2SFBoVDhE?=
+ =?utf-8?Q?a7lj0e9zEPq8Vno1J+SOj/Tz9wBVFqS6T0QbQ=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41d9b51c-c0de-481e-a27f-08d8fe13740e
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 00:25:33.2821
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2021 00:31:17.8854
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oOrqtC5F534qJWfF//xPFDskvHFGQudB74tDXJg9n0Pap9LHRDxjNFl2VYa04P+Z
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2158
+X-MS-Exchange-CrossTenant-UserPrincipalName: J+Mr8IIhi1U4QNMoBdzLqgiZXmg8cTBzCcy47NXgOcSgyZw5YpcZlqZ72hC6WaiF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2157
 X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: 2PxN9RtO2bmxK3x6qTauF4t0SjQ83O5v
-X-Proofpoint-GUID: 2PxN9RtO2bmxK3x6qTauF4t0SjQ83O5v
+X-Proofpoint-ORIG-GUID: jUyTu9Ke8JuokKpMO0bcPkOhkiUeSJli
+X-Proofpoint-GUID: jUyTu9Ke8JuokKpMO0bcPkOhkiUeSJli
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-12_11:2021-04-12,2021-04-12 signatures=0
 X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
  malwarescore=0 mlxscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
  lowpriorityscore=0 mlxlogscore=999 clxscore=1015 suspectscore=0
  spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104130000
+ engine=8.12.0-2104060000 definitions=main-2104130001
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -143,98 +144,70 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 4/12/21 4:58 PM, Nick Desaulniers wrote:
-> On Mon, Apr 12, 2021 at 7:29 AM Yonghong Song <yhs@fb.com> wrote:
+On 4/12/21 5:02 PM, Nick Desaulniers wrote:
+> On Mon, Apr 12, 2021 at 4:58 PM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
 >>
->> To build kernel with clang, people typically use
->>    make -j60 LLVM=1 LLVM_IAS=1
->> LLVM_IAS=1 is not required for non-LTO build but
->> is required for LTO build. In my environment,
->> I am always having LLVM_IAS=1 regardless of
->> whether LTO is enabled or not.
+>> On Mon, Apr 12, 2021 at 7:29 AM Yonghong Song <yhs@fb.com> wrote:
+>>>
+>>> To build kernel with clang, people typically use
+>>>    make -j60 LLVM=1 LLVM_IAS=1
+>>> LLVM_IAS=1 is not required for non-LTO build but
+>>> is required for LTO build. In my environment,
+>>> I am always having LLVM_IAS=1 regardless of
+>>> whether LTO is enabled or not.
+>>>
+>>> After kernel is build with clang, the following command
+>>> can be used to build selftests with clang:
+>>>    make -j60 -C tools/testing/selftests/bpf LLVM=1 LLVM_IAS=1
 >>
->> After kernel is build with clang, the following command
->> can be used to build selftests with clang:
->>    make -j60 -C tools/testing/selftests/bpf LLVM=1 LLVM_IAS=1
+>> Thank you for the series Yonghong.  When I test the above command with
+>> your series applied, I observe:
+>> tools/include/tools/libc_compat.h:11:21: error: static declaration of
+>> 'reallocarray' follows non-static declaration
+>> static inline void *reallocarray(void *ptr, size_t nmemb, size_t size)
+>>                      ^
+>> /usr/include/stdlib.h:559:14: note: previous declaration is here
+>> extern void *reallocarray (void *__ptr, size_t __nmemb, size_t __size)
+>>               ^
+>> so perhaps the detection of
+>> COMPAT_NEED_REALLOCARRAY/feature-reallocarray is incorrect?
 > 
-> Thank you for the series Yonghong.  When I test the above command with
-> your series applied, I observe:
-> /usr/bin/ld: cannot find -lcap
-> clang-13: error: linker command failed with exit code 1 (use -v to see
-> invocation)
+> Is this related to _DEFAULT_SOURCE vs _GNU_SOURCE.  via man 3 reallocarray:
+>         reallocarray():
+>             Since glibc 2.29:
+>                 _DEFAULT_SOURCE
+>             Glibc 2.28 and earlier:
+>                 _GNU_SOURCE
 > 
-> I need to install libcap-dev, but this also seems to imply that BFD is
-> being used as the linker, not LLD.  Perhaps if the compiler is being
-> used as the "driver" to also link executables, `-fuse-ld=lld` is
-> needed for the compiler flags.
 
-Yes, bfd is needed to build selftests/bpf. This is due to a dependency
-on bpftool which needs uses libbfd to disassemble the jited code.
+You can try the following patch to see whether it works or not.
 
-> 
-> Then there's:
-> tools/include/tools/libc_compat.h:11:21: error: static declaration of
-> 'reallocarray' follows non-static declaration
-> static inline void *reallocarray(void *ptr, size_t nmemb, size_t size)
->                      ^
-> /usr/include/stdlib.h:559:14: note: previous declaration is here
-> extern void *reallocarray (void *__ptr, size_t __nmemb, size_t __size)
->               ^
-> so perhaps the detection of
-> COMPAT_NEED_REALLOCARRAY/feature-reallocarray is incorrect?
+diff --git a/tools/build/feature/test-reallocarray.c 
+b/tools/build/feature/test-reallocarray.c
+index 8f6743e31da7..500cdeca07a7 100644
+--- a/tools/build/feature/test-reallocarray.c
++++ b/tools/build/feature/test-reallocarray.c
+@@ -1,5 +1,5 @@
+  // SPDX-License-Identifier: GPL-2.0
+-#define _GNU_SOURCE
++#define _DEFAULT_SOURCE
+  #include <stdlib.h>
 
-libbpf already stopped to use system reallocarray(), but
-bpftool still uses it.
+  int main(void)
+@@ -7,4 +7,4 @@ int main(void)
+         return !!reallocarray(NULL, 1, 1);
+  }
 
-In bpftool makefile, we have
+-#undef _GNU_SOURCE
++#undef _DEFAULT_SOURCE
+[yhs@devbig003.ftw2 ~/work/bpf-next/tools/build]$
 
-ifeq ($(feature-reallocarray), 0)
-CFLAGS += -DCOMPAT_NEED_REALLOCARRAY
-endif
-
-I guess probably detection of feature-reallocarray is
-not correct? Could you take a look at your system?
-My system supports reallocarray, so the above
--DCOMPAT_NEED_REALLOCARRAY is not added to
-compilation flags.
-
-> 
-> 
->>
->> But currently, using the above command, some compilations
->> still use gcc and there are also compilation errors and warnings.
->> This patch set intends to fix these issues.
->> Patch #1 and #2 fixed the issue so clang/clang++ is
->> used instead of gcc/g++. Patch #3 fixed a compilation
->> failure. Patch #4 and #5 fixed various compiler warnings.
->>
->> Changelog:
->>    v1 -> v2:
->>      . add -Wno-unused-command-line-argument and -Wno-format-security
->>        for clang only as (1). gcc does not exhibit those
->>        warnings, and (2). -Wno-unused-command-line-argument is
->>        only supported by clang. (Sedat)
->>
->> Yonghong Song (5):
->>    selftests: set CC to clang in lib.mk if LLVM is set
->>    tools: allow proper CC/CXX/... override with LLVM=1 in
->>      Makefile.include
->>    selftests/bpf: fix test_cpp compilation failure with clang
->>    selftests/bpf: silence clang compilation warnings
->>    bpftool: fix a clang compilation warning
->>
->>   tools/bpf/bpftool/net.c              |  2 +-
->>   tools/scripts/Makefile.include       | 12 ++++++++++--
->>   tools/testing/selftests/bpf/Makefile |  7 ++++++-
->>   tools/testing/selftests/lib.mk       |  4 ++++
->>   4 files changed, 21 insertions(+), 4 deletions(-)
->>
->> --
->> 2.30.2
->>
-> 
-> 
-> --
-> Thanks,
-> ~Nick Desaulniers
+> $ cd tools/testing/selftests/bpf
+> $ grep -rn _DEFAULT_SOURCE | wc -l
+> 0
+> $ grep -rn _GNU_SOURCE | wc -l
+> 37
+> $ ldd --version | head -n1
+> ldd (Debian GLIBC 2.31-9+build1) 2.31
 > 
