@@ -2,82 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78B9135F1C5
-	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 12:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D4935F1C8
+	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 12:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234673AbhDNK5S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Apr 2021 06:57:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231672AbhDNK5S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Apr 2021 06:57:18 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7568BC061574
-        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 03:56:57 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id v123so13352418ioe.10
-        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 03:56:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xJdZSbHTyMBCsVp7BAaTCxdXi6B0tpl9od8+wlQ9J+g=;
-        b=TEAgfFBFUB3b0fB+QOyjxFBwYw0U5RxeWNc26RxJa8ik23iALaiCaRngy5LMzw9L8o
-         ngDCjNrtS7pw5RNK5LCLafOfxKX5DMh1H3zLWoCqWVa9aaP7xk6xhD22vEEhdjO/3zMq
-         4tbPUaynT31cZgfRtXvFhfpcpcSWqp//AzYq0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xJdZSbHTyMBCsVp7BAaTCxdXi6B0tpl9od8+wlQ9J+g=;
-        b=GuqV4uY6/0oqUiIa32DwauGAPIaCpkuuKaBMOxh7NFbHXzIclSNG6ySxKq4pRB4csI
-         s/HgfxERs3UcPx8omV7TnQiOuvdUuEOcdl1se7BbSflSN6j7gQK/HkntcdTZpNIDu+uX
-         ycElOp79ZAzBRk8WXKuDqgR5WDo65Mk7GsKqLKSolYs5qce2lmxc5kCsLaTpn4cEpIiZ
-         ZgY166fAxQbD2MYQAkiff7o2Eb5QcYEnuK31NgIV+mdN933I/VXSFIzdL4FQECdSBYol
-         diqYDBKrrooTJ2fBxN3wxzJ/5ehVHMnyXK6mEprp47fG1+L1GlNqauYS97kLpRiTV1wp
-         g7uw==
-X-Gm-Message-State: AOAM531ZVCfVLYJZ2g5dJcvTcRE7v28RYiFNzZ9OOeABIyOEdqVJobaN
-        gioydVakqJznwnGodREiX6RwrGIw5tbYicSz/zAcgw==
-X-Google-Smtp-Source: ABdhPJzbOpygaeq8A7GMJvLn+Om67N8hLLaO1CKhbeDgYPkDMIxrniuJJUuaib3hhaIExfwv2HbHOYjtPypZ2p0Mt3M=
-X-Received: by 2002:a02:b197:: with SMTP id t23mr37906352jah.125.1618397816954;
- Wed, 14 Apr 2021 03:56:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210412153754.235500-1-revest@chromium.org> <20210412153754.235500-2-revest@chromium.org>
- <CAEf4BzaUeE7EPObUuS=NPw9qmssxJ=i6+M1v6A3=wvLVGOKkXg@mail.gmail.com> <CABRcYmKjcZD4px3QwjqMZozOJDTXV+fWvf+w2R=ssPyBOJmMTg@mail.gmail.com>
-In-Reply-To: <CABRcYmKjcZD4px3QwjqMZozOJDTXV+fWvf+w2R=ssPyBOJmMTg@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Wed, 14 Apr 2021 12:56:46 +0200
-Message-ID: <CABRcYmJz_yGqJx_suu8JN8SkHZm10RaSS5xx=f7QDZFFNS9twg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/6] bpf: Factorize bpf_trace_printk and bpf_seq_printf
+        id S237553AbhDNK5e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Apr 2021 06:57:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48536 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234570AbhDNK5c (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 14 Apr 2021 06:57:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618397830;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ELq9zKU27FitcY2T4bXBDMfbwmaQ/MzW+vSVnb6xYoY=;
+        b=Utge4RBxoq08wpH3jNJfWUd5HxQm2uKF5KIjo2qLmUvdqVar0GRzIVk4PnUrmU6hDC4z2a
+        y/lwdGhlvosO6OZTzDbqXD99kW/R8P7gzsVY+SE5ehGcOLi4JuJaWyo7h9HRJdZAjsH+QY
+        Vre+/iQdY1w99bW5l/7cPihXsnelA2o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-113-_-oPm9ukMmSefKA5ji6W9A-1; Wed, 14 Apr 2021 06:57:06 -0400
+X-MC-Unique: _-oPm9ukMmSefKA5ji6W9A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A65FA10053E8;
+        Wed, 14 Apr 2021 10:57:04 +0000 (UTC)
+Received: from krava (unknown [10.40.196.56])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1C27B60657;
+        Wed, 14 Apr 2021 10:56:59 +0000 (UTC)
+Date:   Wed, 14 Apr 2021 12:56:59 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>
+Subject: Re: [PATCHv4 bpf-next 2/5] selftests/bpf: Add re-attach test to
+ fentry_test
+Message-ID: <YHbKexxx+jyMeVnM@krava>
+References: <20210412162502.1417018-1-jolsa@kernel.org>
+ <20210412162502.1417018-3-jolsa@kernel.org>
+ <CAEf4Bza6OXC4aVuxVGnn-DOANuFbnuJ++=q8fFpD-f48kb7_pw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bza6OXC4aVuxVGnn-DOANuFbnuJ++=q8fFpD-f48kb7_pw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 11:56 AM Florent Revest <revest@chromium.org> wrote:
-> On Wed, Apr 14, 2021 at 1:01 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > On Mon, Apr 12, 2021 at 8:38 AM Florent Revest <revest@chromium.org> wrote:
-> > > +       err = 0;
-> > > +out:
-> > > +       put_fmt_tmp_buf();
-> >
-> > so you are putting tmp_buf unconditionally, even when there was no
-> > error. That seems wrong? Should this be:
-> >
-> > if (err)
-> >     put_fmt_tmp_buf()
-> >
-> > ?
->
-> Yeah the naming is unfortunate, as discussed in the other patch, I
-> will rename that to bpf_pintf_cleanup instead. It's not clear from the
-> name that it only "puts" if the buffer was already gotten.
+On Tue, Apr 13, 2021 at 02:54:10PM -0700, Andrii Nakryiko wrote:
 
-Ah, sorry I see what you meant! Indeed, my mistake. :|
+SNIP
+
+> >         __u32 duration = 0, retval;
+> > +       struct bpf_link *link;
+> >         __u64 *result;
+> >
+> > -       fentry_skel = fentry_test__open_and_load();
+> > -       if (CHECK(!fentry_skel, "fentry_skel_load", "fentry skeleton failed\n"))
+> > -               goto cleanup;
+> > -
+> >         err = fentry_test__attach(fentry_skel);
+> > -       if (CHECK(err, "fentry_attach", "fentry attach failed: %d\n", err))
+> > -               goto cleanup;
+> > +       if (!ASSERT_OK(err, "fentry_attach"))
+> > +               return err;
+> > +
+> > +       /* Check that already linked program can't be attached again. */
+> > +       link = bpf_program__attach(fentry_skel->progs.test1);
+> > +       if (!ASSERT_ERR_PTR(link, "fentry_attach_link"))
+> > +               return -1;
+> >
+> >         prog_fd = bpf_program__fd(fentry_skel->progs.test1);
+> >         err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
+> >                                 NULL, NULL, &retval, &duration);
+> > -       CHECK(err || retval, "test_run",
+> > -             "err %d errno %d retval %d duration %d\n",
+> > -             err, errno, retval, duration);
+> > +       ASSERT_OK(err || retval, "test_run");
+> 
+> this is quite misleading, even if will result in a correct check. Toke
+> did this in his patch set:
+> 
+> ASSERT_OK(err, ...);
+> ASSERT_EQ(retval, 0, ...);
+> 
+> It is a better and more straightforward way to validate the checks
+> instead of relying on (err || retval) -> bool (true) -> int (1) -> !=
+> 0 chain.
+
+ok, makes sense
+
+SNIP
+
+> > +void test_fentry_test(void)
+> > +{
+> > +       struct fentry_test *fentry_skel = NULL;
+> > +       int err;
+> > +
+> > +       fentry_skel = fentry_test__open_and_load();
+> > +       if (!ASSERT_OK_PTR(fentry_skel, "fentry_skel_load"))
+> > +               goto cleanup;
+> > +
+> > +       err = fentry_test(fentry_skel);
+> > +       if (!ASSERT_OK(err, "fentry_first_attach"))
+> > +               goto cleanup;
+> > +
+> > +       err = fentry_test(fentry_skel);
+> > +       ASSERT_OK(err, "fentry_second_attach");
+> > +
+> >  cleanup:
+> >         fentry_test__destroy(fentry_skel);
+> >  }
+> > diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
+> > index e87c8546230e..ee7e3b45182a 100644
+> > --- a/tools/testing/selftests/bpf/test_progs.h
+> > +++ b/tools/testing/selftests/bpf/test_progs.h
+> > @@ -210,7 +210,7 @@ extern int test__join_cgroup(const char *path);
+> >  #define ASSERT_ERR_PTR(ptr, name) ({                                   \
+> >         static int duration = 0;                                        \
+> >         const void *___res = (ptr);                                     \
+> > -       bool ___ok = IS_ERR(___res)                                     \
+> > +       bool ___ok = IS_ERR(___res);                                    \
+> 
+> heh, it probably deserves a separate patch with Fixes tag...
+
+va bene
+
+jirka
+
