@@ -2,115 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C77E35FCDB
-	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 22:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A6835FD43
+	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 23:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232891AbhDNUwf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Apr 2021 16:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbhDNUwf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Apr 2021 16:52:35 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FDAC06175F
-        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 13:52:11 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id k73so17376347ybf.3
-        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 13:52:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qMc1dVoRXovpTYQV/nXgGHQYIIUU1MZrniZIcaPAzYI=;
-        b=jZ63PQvS0OSJEWxuC8eQL+mgIeY3zye5GVk1y4o1Jz5FWVvQk/PfIiL7GTYhxNoeq0
-         rGznM1hJWUQXA6P+waeuHPSY/DJs03JNq0uVwSWPnPsBzxVjgnn6TMUzGdV111v1vp2Q
-         /nX5IfLwP9juprGuNEOuTT07JchH9A7AGMglO6Rb+9+c7hhfVbUxRh2zz0sBnmQacfBf
-         EWnX8k44LFD6bjU3kBqM3T1EuffW2JooY05UpEBA0BKMVo1IB4OZNKKbX1gUPW2isFLB
-         R4bgmou+/6jqYIgPw+6DqLVgue9r1GJfCIJRUL/HusGRiJ45hR+a3JnPDjJrbBlQveOp
-         CdDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qMc1dVoRXovpTYQV/nXgGHQYIIUU1MZrniZIcaPAzYI=;
-        b=gZ3wAx0YoiynLvHVZgKG/EJYElg5zXh9VwFflFFhuqDhvvL4DjcFAal/49nueU7qLB
-         maj6dL0w+zvxtUwhUM7yLyYzZ86KKaHwioORGqwr61pwksZ/r/VDhPwNDkaVfFJtu/0O
-         dQSjVsYmcAeP6xeZqzudk4Xt/amRfkiGDc9V+lbjMLyy9U8dij+M7mMjYkAFaTe+GPCZ
-         awLxQwGgIGjCj8T3cOBMFcspWkQWPrMNebjKhyDiUTdKhXdlBUTjZ9kP/rjTZZzLX1K8
-         /g9prQKmbAEKzYQCFjCSsg5Ejf+hLHr+qbLOpo4oF558TsseK1dwgK68NnAoLwJAC9KV
-         D79w==
-X-Gm-Message-State: AOAM531QZ+OcKnl4eMSUh7e0H/ZR4rs7nqe9qt6riXQYGz+JhCKCrspQ
-        WokMIoUiKxHvpMbiNGpXpU6fBWaKUHxMrfZcY7oIVQ==
-X-Google-Smtp-Source: ABdhPJyqMKv7jKazLHNQr9xfoSHuUWvXv3SH59PCH1Ndn1yE1hoJqvYOK5wZMT0jkn32p4YGeb+4ZAvFlg7cBrY5JE0=
-X-Received: by 2002:a25:850b:: with SMTP id w11mr55634403ybk.518.1618433530591;
- Wed, 14 Apr 2021 13:52:10 -0700 (PDT)
+        id S232723AbhDNVZZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Apr 2021 17:25:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232559AbhDNVZY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Apr 2021 17:25:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C13AD61155;
+        Wed, 14 Apr 2021 21:25:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618435502;
+        bh=jZIX9LrM0id9K+Xt+PCBTE3R8mFcr0lcJUfT2FcH2CQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=TsS+XDDpLesMAlkm153mt4faQ1RD1g/J/Ee2UKX9nqbG1dE6RdKECrhY5LU1sDJzt
+         Qjr9ehiPC0jdqMXxY7i76yzlRUZ99pIOp5LbvETz6Ss8oTrQUeg04bUq+jJsJyQzuN
+         c49WGJW4Nw/eC8NSkxpCAXGAOps+7gOXUHMNpTgH4ZYd/VqxVKuHYYqqRbNB4iNvKc
+         mq3M7DdxNVk/yMWSzmtti1q6jWZEbtF59kgCKVQki/tnuNK7xUMU+HD5CEy085yPBW
+         IOvdKJtDvpMkzigo5NvONM/sp+L5CxK0aqXawKC4EvlwjcjAAKIg3KwGl8xcDed3Bj
+         dbGVctpfr6T4w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 93FB85C26C5; Wed, 14 Apr 2021 14:25:02 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 14:25:02 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: Selftest failures related to kern_sync_rcu()
+Message-ID: <20210414212502.GX4510@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <CAEf4Bzb4LDi1ZVrhNEojpWhxi33tkv4rv6F7Czj28Y0tHxXh0w@mail.gmail.com>
+ <87im4qo9ey.fsf@toke.dk>
+ <CAEf4Bzahxw5-KTb2yOk8PHQmEyc6gDgTTR6znZjH2OhZ66wiUw@mail.gmail.com>
+ <CAADnVQ+6xoBaD1GSSm=U3n67ooHvjGgxXPAHmFD6AhksrM8BoQ@mail.gmail.com>
+ <20210414175245.GT4510@paulmck-ThinkPad-P17-Gen-1>
+ <CAADnVQKyHb-j3-DSzF1wbzxYR39HdQiJVTVv1NkBS+9ZEeiEvg@mail.gmail.com>
+ <20210414181934.GV4510@paulmck-ThinkPad-P17-Gen-1>
+ <87czuwlnhz.fsf@toke.dk>
+ <20210414184133.GW4510@paulmck-ThinkPad-P17-Gen-1>
+ <87a6q0llou.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com> <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus> <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
- <YHHuE7g73mZNrMV4@enceladus> <20210414214132.74f721dd@carbon> <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
-In-Reply-To: <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 14 Apr 2021 22:51:59 +0200
-Message-ID: <CANn89i+ASy7d+ew0BrnsB5aH8BPb+kr_pazWgfaAB9939o-cmQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87a6q0llou.fsf@toke.dk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 10:09 PM Shakeel Butt <shakeelb@google.com> wrote:
+On Wed, Apr 14, 2021 at 09:18:09PM +0200, Toke Høiland-Jørgensen wrote:
+> "Paul E. McKenney" <paulmck@kernel.org> writes:
+> 
+> > On Wed, Apr 14, 2021 at 08:39:04PM +0200, Toke Høiland-Jørgensen wrote:
+> >> "Paul E. McKenney" <paulmck@kernel.org> writes:
+> >> 
+> >> > On Wed, Apr 14, 2021 at 10:59:23AM -0700, Alexei Starovoitov wrote:
+> >> >> On Wed, Apr 14, 2021 at 10:52 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >> >> >
+> >> >> > > > > >                 if (num_online_cpus() > 1)
+> >> >> > > > > >                         synchronize_rcu();
+> >> >> >
+> >> >> > In CONFIG_PREEMPT_NONE=y and CONFIG_PREEMPT_VOLUNTARY=y kernels, this
+> >> >> > synchronize_rcu() will be a no-op anyway due to there only being the
+> >> >> > one CPU.  Or are these failures all happening in CONFIG_PREEMPT=y kernels,
+> >> >> > and in tests where preemption could result in the observed failures?
+> >> >> >
+> >> >> > Could you please send your .config file, or at least the relevant portions
+> >> >> > of it?
+> >> >> 
+> >> >> That's my understanding as well. I assumed Toke has preempt=y.
+> >> >> Otherwise the whole thing needs to be root caused properly.
+> >> >
+> >> > Given that there is only a single CPU, I am still confused about what
+> >> > the tests are expecting the membarrier() system call to do for them.
+> >> 
+> >> It's basically a proxy for waiting until the objects are freed on the
+> >> kernel side, as far as I understand...
+> >
+> > There are in-kernel objects that are freed via call_rcu(), and the idea
+> > is to wait until these objects really are freed?  Or am I still missing
+> > out on what is going on?
+> 
+> Something like that? Although I'm not actually sure these are using
+> call_rcu()? One of them needs __put_task_struct() to run, and the other
+> waits for map freeing, with this comment:
+> 
+> 
+> 	/* we need to either wait for or force synchronize_rcu(), before
+> 	 * checking for "still exists" condition, otherwise map could still be
+> 	 * resolvable by ID, causing false positives.
+> 	 *
+> 	 * Older kernels (5.8 and earlier) freed map only after two
+> 	 * synchronize_rcu()s, so trigger two, to be entirely sure.
+> 	 */
+> 	CHECK(kern_sync_rcu(), "sync_rcu", "failed\n");
+> 	CHECK(kern_sync_rcu(), "sync_rcu", "failed\n");
 
->
-> I will let TCP RX zerocopy experts respond to this but from my high
-> level code inspection, I didn't see page->private usage.
+OK, so the issue is that the membarrier() system call is designed to force
+ordering only within a user process, and you need it in the kernel.
 
-Indeed, we do not use page->private, since we do not own the page(s).
+Give or take my being puzzled as to why the membarrier() system call
+doesn't do it for you on a CONFIG_PREEMPT_NONE=y system, this brings
+us back to the question Alexei asked me in the first place, what is the
+best way to invoke an in-kernel synchronize_rcu() from userspace?
+
+You guys gave some reasonable examples.  Here are a few others:
+
+o	Bring a CPU online, then force it offline, or vice versa.
+	But in this case, sys_membarrier() would do what you need
+	given more than one CPU.
+
+o	Use the membarrier() system call, but require that the tests
+	run on systems with at least two CPUs.
+
+o	Create a kernel module whose init function does a
+	synchronize_rcu() and then returns failure.  This will
+	avoid the overhead of removing that kernel module.
+
+o	Create a sysfs or debugfs interface that does a
+	synchronize_rcu().
+
+But I am still concerned that you are needing more than synchronize_rcu()
+can do.  Otherwise, the membarrier() system call would work just fine
+on a single CPU on your CONFIG_PREEMPT_VOLUNTARY=y kernel.
+
+							Thanx, Paul
