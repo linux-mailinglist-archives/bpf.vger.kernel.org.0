@@ -2,145 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECC635F06C
-	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 11:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8674535F0B0
+	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 11:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbhDNJHm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Apr 2021 05:07:42 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:49318 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232723AbhDNJHl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:07:41 -0400
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxLcjAsHZgVOsHAA--.11804S3;
-        Wed, 14 Apr 2021 17:07:12 +0800 (CST)
-Subject: Re: [PATCH bpf-next] MAINTAINERS: BPF: Update web-page bpf.io to
- ebpf.io to avoid redirects
-To:     Daniel Borkmann <daniel@iogearbox.net>
-References: <1611825204-14887-1-git-send-email-yangtiezhu@loongson.cn>
- <f7ab5a24-a4c8-5da3-cc37-f6729a0ce1ca@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <5ca44ee7-3bef-49cf-ec20-d26924e4a41a@loongson.cn>
-Date:   Wed, 14 Apr 2021 17:07:12 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1347647AbhDNJV5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Apr 2021 05:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347622AbhDNJVz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Apr 2021 05:21:55 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB7AC061756
+        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 02:21:34 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id e14so5208214ils.12
+        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 02:21:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bHpie5HpZgHlzw3ULYYgfK8HzQppRmaDIQ+JyFmm3tc=;
+        b=QlOQDTDC6+TFMXbxL4bxceCqvjswx//Lmdk4CAO1oE//dHahhT8jOfftD/CV4t5y47
+         HmNr0TY1RLAy9fNL1hzmQsvrCqMB8p0xE7GaT8rIJJPQrxyV33A0L+bPI51NcJE/OuvE
+         uOZNBxO2u/9URtGWy3edZaWD8cqW7AXUapOLY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bHpie5HpZgHlzw3ULYYgfK8HzQppRmaDIQ+JyFmm3tc=;
+        b=Zh0uf3+uWw0GUlCmKCa3KGnsHdVXvnQ8ovpOcbNjm3tqssBQ0LxlG/rDk0sSh1UBOw
+         MwSsZgAEOfSx4B3KJVUpDsWNxgDtWYy/OVqZx5ixdmnavnR8KtugKwAW6dKvqtj4D9Qy
+         pl7Gv95vhNleAlKYzF9dcBwUaAEokKoMCRe+DD/rNmpG9OlxnX4ymf4/esdZ1zmqKDNT
+         B23UcBw2Rb6A2LSH1WvVhriGFuW5rp8HgszaMmarNPJPLH+246aNnDoN5CujodmSrMUF
+         UzmwjQ9coy9asGbYM+guIi6FeQhKjC1S8T4c0Tdzq3Hrjd6ATpwatCWP7btPTCIXnUbD
+         qmmA==
+X-Gm-Message-State: AOAM531R+tAUImlWEf/OkR1QHdXDL3EH8R2/q6RAatzzVKb7pTVifG7D
+        0CtDKZF7H7YExNP4VfKXh60B+4vzNFTasoCCf9dQmg==
+X-Google-Smtp-Source: ABdhPJzR/Eyk4vNV+pEmINVYnRnn1ZEdPsz4uQSiSwKX1m0Oq6toGUbWmCeUF3zhJ1HwBombj9oKmGbZNmHGLtoLt1g=
+X-Received: by 2002:a05:6e02:2182:: with SMTP id j2mr32034994ila.89.1618392093374;
+ Wed, 14 Apr 2021 02:21:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f7ab5a24-a4c8-5da3-cc37-f6729a0ce1ca@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxLcjAsHZgVOsHAA--.11804S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZryUCry7AF1fuF4DKF1UGFg_yoW5Wr1DpF
-        4ruF4xXrZYkrWUWFZ2kr4kWF13WF97JFWIv3srW34fA3s8Gwn5tr1kuw48Jwn5XF15tr1F
-        vry0qrWDuF10qrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvab7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY
-        02Avz4vE14v_GFWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r12
-        6r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxUkeOJDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+References: <20210412153754.235500-1-revest@chromium.org> <20210412153754.235500-7-revest@chromium.org>
+ <CAEf4BzZ6cLio0ZZEkc5iYp9yWg3Fc1ZORBTr85TdoqF-sRU3DQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ6cLio0ZZEkc5iYp9yWg3Fc1ZORBTr85TdoqF-sRU3DQ@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Wed, 14 Apr 2021 11:21:22 +0200
+Message-ID: <CABRcYm+v7xC8WsxYu6BoiEX1vhQSVSX5U-LyUnevGt1tFud5tA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 02/05/2021 05:40 AM, Daniel Borkmann wrote:
-> On 1/28/21 10:13 AM, Tiezhu Yang wrote:
->> When I open https://bpf.io/, it seems too slow.
->>
->> $ curl -s -S -L https://bpf.io/ -o /dev/null -w '%{time_redirect}\n'
->> 2.373
+On Wed, Apr 14, 2021 at 1:21 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Thanks for the report! I fixed some settings, should hopefully be 
-> better now within
-> next 24hrs; I do see minimal latency from my location, hopefully 
-> that'll do also on
-> your side..
+> On Mon, Apr 12, 2021 at 8:38 AM Florent Revest <revest@chromium.org> wrote:
+> >
+> > This exercises most of the format specifiers.
+> >
+> > Signed-off-by: Florent Revest <revest@chromium.org>
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
 >
-> (before) $ curl -s -S -L https://bpf.io/ -o /dev/null -w 
-> '%{time_redirect}\n'
-> 0.548841
+> As I mentioned on another patch, we probably need negative tests even
+> more than positive ones.
+
+Agreed.
+
+> I think an easy and nice way to do this is to have a separate BPF
+> skeleton where fmt string and arguments are provided through read-only
+> global variables, so that user-space can re-use the same BPF skeleton
+> to simulate multiple cases. BPF program itself would just call
+> bpf_snprintf() and store the returned result.
+
+Ah, great idea! I was thinking of having one skeleton for each but it
+would be a bit much indeed.
+
+Because the format string needs to be in a read only map though, I
+hope it can be modified from userspace before loading. I'll try it out
+and see :) if it doesn't work I'll just use more skeletons
+
+> Whether we need to validate the verifier log is up to debate (though
+> it's not that hard to do by overriding libbpf_print_fn() callback),
+> I'd be ok at least knowing that some bad format strings are rejected
+> and don't crash the kernel.
+
+Alright :)
+
 >
-> (after)  $ curl -s -S -L https://bpf.io/ -o /dev/null -w 
-> '%{time_redirect}\n'
-> 0.105061
-
-(1) bpf.io is very unstable:
-
-[yangtiezhu@linux ~]$ curl -s -S -L https://bpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-22.309
-[yangtiezhu@linux ~]$ curl -s -S -L https://bpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-2.092
-[yangtiezhu@linux ~]$ curl -s -S -L https://bpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-22.578
-[yangtiezhu@linux ~]$ curl -s -S -L https://bpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-2.086
-[yangtiezhu@linux ~]$ curl -s -S -L https://bpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-1.836
-[yangtiezhu@linux ~]$ curl -s -S -L https://bpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-32.363
-[yangtiezhu@linux ~]$ curl -s -S -L https://bpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-2.087
-[yangtiezhu@linux ~]$ curl -s -S -L https://bpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-0.000
-curl: (6) Could not resolve host: bpf.io
-[yangtiezhu@linux ~]$ curl -s -S -L https://bpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-7.292
-[yangtiezhu@linux ~]$ curl -s -S -L https://bpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-0.000
-curl: (6) Could not resolve host: bpf.io
-[yangtiezhu@linux ~]$ curl -s -S -L https://bpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-17.381
-
-
-[yangtiezhu@linux ~]$ curl -s -S -L https://bpf.io/ -o /dev/null -w 
-'%{url_effective}\n'
-https://ebpf.io/zh-cn/
-
-
-(2) ebpf.io is relatively stable:
-
-[yangtiezhu@linux ~]$ curl -s -S -L https://ebpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-1.011
-[yangtiezhu@linux ~]$ curl -s -S -L https://ebpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-1.009
-[yangtiezhu@linux ~]$ curl -s -S -L https://ebpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-1.016
-[yangtiezhu@linux ~]$ curl -s -S -L https://ebpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-1.018
-[yangtiezhu@linux ~]$ curl -s -S -L https://ebpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-1.013
-[yangtiezhu@linux ~]$ curl -s -S -L https://ebpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-1.029
-[yangtiezhu@linux ~]$ curl -s -S -L https://ebpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-1.034
-[yangtiezhu@linux ~]$ curl -s -S -L https://ebpf.io/ -o /dev/null -w 
-'%{time_redirect}\n'
-1.015
-
+> >  .../selftests/bpf/prog_tests/snprintf.c       | 81 +++++++++++++++++++
+> >  .../selftests/bpf/progs/test_snprintf.c       | 74 +++++++++++++++++
+> >  2 files changed, 155 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
+> >
+>
+> [...]
