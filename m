@@ -2,226 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240B635FDB8
-	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 00:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E0D35FDC6
+	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 00:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232271AbhDNWXG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Apr 2021 18:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231829AbhDNWXF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Apr 2021 18:23:05 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7049FC061574;
-        Wed, 14 Apr 2021 15:22:43 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id k73so17607726ybf.3;
-        Wed, 14 Apr 2021 15:22:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DBrFNOxaMA/7ZTSjVDCpN1Cf8EPs2BVUIE7dJq/XIFY=;
-        b=ZASmmu9cCOp0GLby5ge3ySdPHTyYlhTYWt0JOSAB6sZncJ1s1rnPPV+Mz2oZu8G3RO
-         bofdF4GlF/hbrO6Pa8d8VSjD+SX1THore3s/+xPaX2IlCEsbfN2SeVI66YR+B0U1gq5G
-         +52Qm55upbNs438HLYAax2yyCTikl2QkUb+Czg9yNGHKGFhjgxxOuBWWgbV8A76UfTED
-         SMk6If6tUFDT/uK8qBGYwQAVQWIA8NpOGqFptgfKRuCfVZ2XA6hFOlf5tCm8yWhrNmfU
-         IlE0XtimzWMa5zTqoZqYJPxhcRX2r9GSW6eGv0YG2ED5ES9mJ2zyS11Kvkk0LFn+alBr
-         F7cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DBrFNOxaMA/7ZTSjVDCpN1Cf8EPs2BVUIE7dJq/XIFY=;
-        b=btySjORW4rvDYnJJ+ULu94FixVQDWqRGpucq1W3CNtjWgvYUsttQSxKiQUjiqiVJhi
-         osnCmwLOrDoLcC5dzFMDPSnuAwt3te+8ucs/Iryf/+E8f4zlTfMJ5nhSowx7BC1KQ/kj
-         pYClPRL7GkzZgFOpVmKpdaxNhgc3hvGF/zSjJV2KgexXvb1EbVMznOeAAvybp4nSgw9t
-         fnC7NVt8JHC/vmjrwQ0v+rYMxUV2laHu0PqAnyPrUNEtA0TbM9ZE7XKaq30P1LSeeRgK
-         Izot/nJ9gzQH4qhTUHxTQ0Xs5uDH/XWgFWGT3udrTCUuZxfCT9Je15BnnyX2D6RbJwfA
-         qn5Q==
-X-Gm-Message-State: AOAM531VMXMfKGV9hTAqFbuLd1IBxD5pyNJ8Ymzzw5Ryb+zQJFZHVpu+
-        Y3VtPe8z91YI4jqdiU4j8gRJTnkTCP4GVD7Ha/U=
-X-Google-Smtp-Source: ABdhPJxiog5q4JCineo0XCm6gpjbEOo7LKP6Kpc65ooTrU3BbGB4xCtX26vFc3CxiwdhgRLIApa7JjZICSStXX5WWzQ=
-X-Received: by 2002:a25:becd:: with SMTP id k13mr222090ybm.459.1618438962678;
- Wed, 14 Apr 2021 15:22:42 -0700 (PDT)
+        id S232818AbhDNW2D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Apr 2021 18:28:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231207AbhDNW2B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Apr 2021 18:28:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08A196109E;
+        Wed, 14 Apr 2021 22:27:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618439260;
+        bh=caSHuvV0GB6uHNpKGaWObpI+uG87KsIQsQHPNdSbm3I=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Vq3pFcHNUBlnTFZKbIbLX3rb+khHKm+oVOuR6jKOzc0Sswm3AkH2ql5a0e5Qq+7sm
+         AzGWgWZuFmiFK66nlmkE+jZmKvONyH3vG8DR5dZt9YsONCCzqU6rmZnPgHYW0hwx/8
+         u05esKGQSzcUXWtHn80aSn9tc4PQjjRMpauN3fl4XYqs299Sd756mBLZQJ17iS7wfG
+         WIA3xtQeVcKDvUVYaoup0O7/VtypKnuGtmtOxk3EQxu22+6ztGDc0Ra5uUllqb374i
+         dYJedBBZ0cNTdWE87yflL9xhTXJ66zfTiWO9+HWoAAetnNsnKn/3hPd8UIG4ygVpab
+         /aRHk1Gy7UWuA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id BFE465C2738; Wed, 14 Apr 2021 15:27:39 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 15:27:39 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: Selftest failures related to kern_sync_rcu()
+Message-ID: <20210414222739.GY4510@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <CAEf4Bzahxw5-KTb2yOk8PHQmEyc6gDgTTR6znZjH2OhZ66wiUw@mail.gmail.com>
+ <CAADnVQ+6xoBaD1GSSm=U3n67ooHvjGgxXPAHmFD6AhksrM8BoQ@mail.gmail.com>
+ <20210414175245.GT4510@paulmck-ThinkPad-P17-Gen-1>
+ <CAADnVQKyHb-j3-DSzF1wbzxYR39HdQiJVTVv1NkBS+9ZEeiEvg@mail.gmail.com>
+ <20210414181934.GV4510@paulmck-ThinkPad-P17-Gen-1>
+ <87czuwlnhz.fsf@toke.dk>
+ <20210414184133.GW4510@paulmck-ThinkPad-P17-Gen-1>
+ <87a6q0llou.fsf@toke.dk>
+ <20210414212502.GX4510@paulmck-ThinkPad-P17-Gen-1>
+ <CAEf4BzZ=oFbTaS2DPOry8jbunb2Qtu4omF3VsYMNJ5_8VNHoQw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210325120020.236504-4-memxor@gmail.com> <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
- <20210328080648.oorx2no2j6zslejk@apollo> <CAEf4BzaMsixmrrgGv6Qr68Ytq8k9W+WP6m4Vdb1wDhDFBKStgw@mail.gmail.com>
- <48b99ccc-8ef6-4ba9-00f9-d7e71ae4fb5d@iogearbox.net> <20210331094400.ldznoctli6fljz64@apollo>
- <5d59b5ee-a21e-1860-e2e5-d03f89306fd8@iogearbox.net> <20210402152743.dbadpgcmrgjt4eca@apollo>
- <CAADnVQ+wqrEnOGd8E1yp+1WTAx8ZcAx3HUjJs6ipPd0eKmOrgA@mail.gmail.com>
- <20210402190806.nhcgappm3iocvd3d@apollo> <20210403174721.vg4wle327wvossgl@ast-mbp>
- <CAEf4Bzaeu4apgEtwS_3q1iPuURjPXMs9H43cYUtJSmjPMU5M9A@mail.gmail.com>
- <87blar4ti7.fsf@toke.dk> <CAEf4BzaOJ-WD3A13B2uCrsE2yrctAL8QtJ8TuXHLeP+tm98pbA@mail.gmail.com>
- <874kg9m8t1.fsf@toke.dk>
-In-Reply-To: <874kg9m8t1.fsf@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 14 Apr 2021 15:22:31 -0700
-Message-ID: <CAEf4BzaEkzPeAXqmm5aEdQxnCkrqJTHcSu7afnV11+697KgZTQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZ=oFbTaS2DPOry8jbunb2Qtu4omF3VsYMNJ5_8VNHoQw@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 3:58 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
-> > On Tue, Apr 6, 2021 at 3:06 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
-> >>
-> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-> >>
-> >> > On Sat, Apr 3, 2021 at 10:47 AM Alexei Starovoitov
-> >> > <alexei.starovoitov@gmail.com> wrote:
-> >> >>
-> >> >> On Sat, Apr 03, 2021 at 12:38:06AM +0530, Kumar Kartikeya Dwivedi w=
-rote:
-> >> >> > On Sat, Apr 03, 2021 at 12:02:14AM IST, Alexei Starovoitov wrote:
-> >> >> > > On Fri, Apr 2, 2021 at 8:27 AM Kumar Kartikeya Dwivedi <memxor@=
-gmail.com> wrote:
-> >> >> > > > [...]
-> >> >> > >
-> >> >> > > All of these things are messy because of tc legacy. bpf tried t=
-o follow tc style
-> >> >> > > with cls and act distinction and it didn't quite work. cls with
-> >> >> > > direct-action is the only
-> >> >> > > thing that became mainstream while tc style attach wasn't reall=
-y addressed.
-> >> >> > > There were several incidents where tc had tens of thousands of =
-progs attached
-> >> >> > > because of this attach/query/index weirdness described above.
-> >> >> > > I think the only way to address this properly is to introduce b=
-pf_link style of
-> >> >> > > attaching to tc. Such bpf_link would support ingress/egress onl=
-y.
-> >> >> > > direction-action will be implied. There won't be any index and =
-query
-> >> >> > > will be obvious.
-> >> >> >
-> >> >> > Note that we already have bpf_link support working (without suppo=
-rt for pinning
-> >> >> > ofcourse) in a limited way. The ifindex, protocol, parent_id, pri=
-ority, handle,
-> >> >> > chain_index tuple uniquely identifies a filter, so we stash this =
-in the bpf_link
-> >> >> > and are able to operate on the exact filter during release.
-> >> >>
-> >> >> Except they're not unique. The library can stash them, but somethin=
-g else
-> >> >> doing detach via iproute2 or their own netlink calls will detach th=
-e prog.
-> >> >> This other app can attach to the same spot a different prog and now
-> >> >> bpf_link__destroy will be detaching somebody else prog.
-> >> >>
-> >> >> > > So I would like to propose to take this patch set a step furthe=
-r from
-> >> >> > > what Daniel said:
-> >> >> > > int bpf_tc_attach(prog_fd, ifindex, {INGRESS,EGRESS}):
-> >> >> > > and make this proposed api to return FD.
-> >> >> > > To detach from tc ingress/egress just close(fd).
-> >> >> >
-> >> >> > You mean adding an fd-based TC API to the kernel?
-> >> >>
-> >> >> yes.
-> >> >
-> >> > I'm totally for bpf_link-based TC attachment.
-> >> >
-> >> > But I think *also* having "legacy" netlink-based APIs will allow
-> >> > applications to handle older kernels in a much nicer way without ext=
-ra
-> >> > dependency on iproute2. We have a similar situation with kprobe, whe=
-re
-> >> > currently libbpf only supports "modern" fd-based attachment, but use=
-rs
-> >> > periodically ask questions and struggle to figure out issues on olde=
-r
-> >> > kernels that don't support new APIs.
-> >>
-> >> +1; I am OK with adding a new bpf_link-based way to attach TC programs=
-,
-> >> but we still need to support the netlink API in libbpf.
-> >>
-> >> > So I think we'd have to support legacy TC APIs, but I agree with
-> >> > Alexei and Daniel that we should keep it to the simplest and most
-> >> > straightforward API of supporting direction-action attachments and
-> >> > setting up qdisc transparently (if I'm getting all the terminology
-> >> > right, after reading Quentin's blog post). That coincidentally shoul=
-d
-> >> > probably match how bpf_link-based TC API will look like, so all that
-> >> > can be abstracted behind a single bpf_link__attach_tc() API as well,
-> >> > right? That's the plan for dealing with kprobe right now, btw. Libbp=
-f
-> >> > will detect the best available API and transparently fall back (mayb=
-e
-> >> > with some warning for awareness, due to inherent downsides of legacy
-> >> > APIs: no auto-cleanup being the most prominent one).
-> >>
-> >> Yup, SGTM: Expose both in the low-level API (in bpf.c), and make the
-> >> high-level API auto-detect. That way users can also still use the
-> >> netlink attach function if they don't want the fd-based auto-close
-> >> behaviour of bpf_link.
+On Wed, Apr 14, 2021 at 03:13:38PM -0700, Andrii Nakryiko wrote:
+> On Wed, Apr 14, 2021 at 2:25 PM Paul E. McKenney <paulmck@kernel.org> wrote:
 > >
-> > So I thought a bit more about this, and it feels like the right move
-> > would be to expose only higher-level TC BPF API behind bpf_link. It
-> > will keep the API complexity and amount of APIs that libbpf will have
-> > to support to the minimum, and will keep the API itself simple:
-> > direct-attach with the minimum amount of input arguments. By not
-> > exposing low-level APIs we also table the whole bpf_tc_cls_attach_id
-> > design discussion, as we now can keep as much info as needed inside
-> > bpf_link_tc (which will embed bpf_link internally as well) to support
-> > detachment and possibly some additional querying, if needed.
->
-> But then there would be no way for the caller to explicitly select a
-> mechanism? I.e., if I write a BPF program using this mechanism targeting
-> a 5.12 kernel, I'll get netlink attachment, which can stick around when
-> I do bpf_link__disconnect(). But then if the kernel gets upgraded to
-> support bpf_link for TC programs I'll suddenly transparently get
-> bpf_link and the attachments will go away unless I pin them. This
-> seems... less than ideal?
+> > On Wed, Apr 14, 2021 at 09:18:09PM +0200, Toke Høiland-Jørgensen wrote:
+> > > "Paul E. McKenney" <paulmck@kernel.org> writes:
+> > >
+> > > > On Wed, Apr 14, 2021 at 08:39:04PM +0200, Toke Høiland-Jørgensen wrote:
+> > > >> "Paul E. McKenney" <paulmck@kernel.org> writes:
+> > > >>
+> > > >> > On Wed, Apr 14, 2021 at 10:59:23AM -0700, Alexei Starovoitov wrote:
+> > > >> >> On Wed, Apr 14, 2021 at 10:52 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> > > >> >> >
+> > > >> >> > > > > >                 if (num_online_cpus() > 1)
+> > > >> >> > > > > >                         synchronize_rcu();
+> > > >> >> >
+> > > >> >> > In CONFIG_PREEMPT_NONE=y and CONFIG_PREEMPT_VOLUNTARY=y kernels, this
+> > > >> >> > synchronize_rcu() will be a no-op anyway due to there only being the
+> > > >> >> > one CPU.  Or are these failures all happening in CONFIG_PREEMPT=y kernels,
+> > > >> >> > and in tests where preemption could result in the observed failures?
+> > > >> >> >
+> > > >> >> > Could you please send your .config file, or at least the relevant portions
+> > > >> >> > of it?
+> > > >> >>
+> > > >> >> That's my understanding as well. I assumed Toke has preempt=y.
+> > > >> >> Otherwise the whole thing needs to be root caused properly.
+> > > >> >
+> > > >> > Given that there is only a single CPU, I am still confused about what
+> > > >> > the tests are expecting the membarrier() system call to do for them.
+> > > >>
+> > > >> It's basically a proxy for waiting until the objects are freed on the
+> > > >> kernel side, as far as I understand...
+> > > >
+> > > > There are in-kernel objects that are freed via call_rcu(), and the idea
+> > > > is to wait until these objects really are freed?  Or am I still missing
+> > > > out on what is going on?
+> > >
+> > > Something like that? Although I'm not actually sure these are using
+> > > call_rcu()? One of them needs __put_task_struct() to run, and the other
+> > > waits for map freeing, with this comment:
+> > >
+> > >
+> > >       /* we need to either wait for or force synchronize_rcu(), before
+> > >        * checking for "still exists" condition, otherwise map could still be
+> > >        * resolvable by ID, causing false positives.
+> > >        *
+> > >        * Older kernels (5.8 and earlier) freed map only after two
+> > >        * synchronize_rcu()s, so trigger two, to be entirely sure.
+> > >        */
+> > >       CHECK(kern_sync_rcu(), "sync_rcu", "failed\n");
+> > >       CHECK(kern_sync_rcu(), "sync_rcu", "failed\n");
+> >
+> > OK, so the issue is that the membarrier() system call is designed to force
+> > ordering only within a user process, and you need it in the kernel.
+> >
+> > Give or take my being puzzled as to why the membarrier() system call
+> > doesn't do it for you on a CONFIG_PREEMPT_NONE=y system, this brings
+> > us back to the question Alexei asked me in the first place, what is the
+> > best way to invoke an in-kernel synchronize_rcu() from userspace?
+> >
+> > You guys gave some reasonable examples.  Here are a few others:
+> >
+> > o       Bring a CPU online, then force it offline, or vice versa.
+> >         But in this case, sys_membarrier() would do what you need
+> >         given more than one CPU.
+> >
+> > o       Use the membarrier() system call, but require that the tests
+> >         run on systems with at least two CPUs.
+> >
+> > o       Create a kernel module whose init function does a
+> >         synchronize_rcu() and then returns failure.  This will
+> >         avoid the overhead of removing that kernel module.
+> >
+> > o       Create a sysfs or debugfs interface that does a
+> >         synchronize_rcu().
+> >
+> > But I am still concerned that you are needing more than synchronize_rcu()
+> > can do.  Otherwise, the membarrier() system call would work just fine
+> > on a single CPU on your CONFIG_PREEMPT_VOLUNTARY=y kernel.
+> 
+> Selftests know internals of kernel implementation and wait for some
+> objects to be freed with call_rcu(). So I think at this point the best
+> way is just to go back to map-in-map or socket local storage.
+> Map-in-map will probably work on older kernels, so I'd stick with that
+> (plus all the code is there in the referenced commit). The performance
+> and number of syscalls performed doesn't matter, really.
 
-That's what we are doing with bpf_program__attach_kprobe(), though.
-And so far I've only seen people (privately) saying how good it would
-be to have bpf_link-based TC APIs, doesn't seem like anyone with a
-realistic use case prefers the current APIs. So I suspect it's not
-going to be a problem in practice. But at least I'd start there and
-see how people are using it and if they need anything else.
+Ah!  If they need to wait for objects to be freed with call_rcu(), then
+they need to make the kernel execute an rcu_barrier().  One way to make
+this happen is to unmount an ext4 filesystem.  This would explain why
+the membarrier() system call wasn't doing the job on single-CPU systems
+even in kernels built with CONFIG_PREEMPT_VOLUNTARY=y.
 
+But if you have a more direct way to wait the required period of time,
+so much the better!
 
->
-> If we expose the low-level API I can elect to just use this if I know I
-> want netlink behaviour, but if bpf_program__attach_tc() is the only API
-> available it would at least need a flag to enforce one mode or the other
-> (I can see someone wanting to enforce kernel bpf_link semantics as well,
-> so a flag for either mode seems reasonable?).
-
-Sophisticated enough users can also do feature detection to know if
-it's going to work or not. There are many ways to skin this cat. I'd
-prioritize bpf_link-based TC APIs to be added with legacy TC API as a
-fallback.
-
->
-> -Toke
->
+							Thanx, Paul
