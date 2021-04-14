@@ -2,133 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AB835FA32
-	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 20:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC3235FAB3
+	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 20:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351687AbhDNSCu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Apr 2021 14:02:50 -0400
-Received: from mail-ua1-f45.google.com ([209.85.222.45]:46611 "EHLO
-        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351678AbhDNSCt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Apr 2021 14:02:49 -0400
-Received: by mail-ua1-f45.google.com with SMTP id v23so6658637uaq.13;
-        Wed, 14 Apr 2021 11:02:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NFAyc/0OnDwFm+c9BzGYO5+jcNQjjTnGY0d4m8lX60E=;
-        b=Z3Z1LxlxODt8jVq/0tbLAAdWm3M0vh2hsD56eUL1CMRjfFGWnYNq3bzX0d1xAff13F
-         oI8ttpbe77BcwYNZMTqhIqQl7OoKblbzcZhtg9gwd4Wq4RSeM4XSIY8bCcnrRUjzmV9/
-         17/q2rgPMCJEhQgyAdzZlw08rNr2O0aUfGhL40/BQzVzm8xtObG4tqpDNgna8gHisK8d
-         ffAwT8ID2IdqF8vO3Zdx9N/lDAaU4UoB7KDXAtcW0344D4DHtMoQTGl0uxKn2F3//03r
-         0vAtnn45ErYTigKrFmZ9mfeLS6ZTQgtADEV3leZ87gONAotpQX+oD5ETIHBko3p6v3dl
-         b8Ag==
-X-Gm-Message-State: AOAM531++6x7ZIbG7rhyoYNop8fd6cHJ7E2shCJuV20AzepIxOvb6Bse
-        OmrB8ZL6Gdgi+sE6l01fYg1feO9VWo0GHwqO7B0=
-X-Google-Smtp-Source: ABdhPJzi+z6KrrxRcyVmBGK4K6qI0YwfFskdGKirAKIKyHt0YoKnsJ/YqTzeHbO9SQWE7CMFfV69oN8rXUt99iBlnYU=
-X-Received: by 2002:ab0:3157:: with SMTP id e23mr27444457uam.106.1618423347408;
- Wed, 14 Apr 2021 11:02:27 -0700 (PDT)
+        id S1353257AbhDNSUC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Apr 2021 14:20:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353215AbhDNST4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Apr 2021 14:19:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FC6960FF0;
+        Wed, 14 Apr 2021 18:19:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618424374;
+        bh=aOSzYbb6UyX+jNuUFmbQ2HkO9J34deV2uGEys5JiEGk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=kgojq+O9jlOfVqHvIBvAa9WQbVN7NhsLNxdgiGTy2sm4X1xCG/BxOyTfBcM9WXRsG
+         YOOqDxqP+1CSkV5fHBCo7SlX8WOtYDCzV6HDQpuUIQ2i9f4XbKWPEJSWVUhbo/phBe
+         L7C1aHH01YqiwHILMVZSn+0hYLPqAh409jy7Dt9K0cR0+rzDxZadD1OA4HONC5bNp5
+         IR51fMEN4BcFOB0kUAy3TjQ+s/OEtBCXrcLvRXFrM0oikpJeoEFJ/Ej5FiqYmuAdqH
+         cq/KPgS3q9ZvWB6Vv5GmbFiFbQi5FZNvKesSGghY721HqwX6sFFxh1WygDtkq+z78P
+         1GaxEGZNT1x+w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 5A3CE5C23EB; Wed, 14 Apr 2021 11:19:34 -0700 (PDT)
+Date:   Wed, 14 Apr 2021 11:19:34 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: Selftest failures related to kern_sync_rcu()
+Message-ID: <20210414181934.GV4510@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <87blaozi20.fsf@toke.dk>
+ <CAEf4Bzb4LDi1ZVrhNEojpWhxi33tkv4rv6F7Czj28Y0tHxXh0w@mail.gmail.com>
+ <87im4qo9ey.fsf@toke.dk>
+ <CAEf4Bzahxw5-KTb2yOk8PHQmEyc6gDgTTR6znZjH2OhZ66wiUw@mail.gmail.com>
+ <CAADnVQ+6xoBaD1GSSm=U3n67ooHvjGgxXPAHmFD6AhksrM8BoQ@mail.gmail.com>
+ <20210414175245.GT4510@paulmck-ThinkPad-P17-Gen-1>
+ <CAADnVQKyHb-j3-DSzF1wbzxYR39HdQiJVTVv1NkBS+9ZEeiEvg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210412153754.235500-1-revest@chromium.org> <20210412153754.235500-4-revest@chromium.org>
- <CAEf4BzZCR2JMXwNvJikfWYnZa-CyCQTQsW+Xs_5w9zOT3kbVSA@mail.gmail.com>
-In-Reply-To: <CAEf4BzZCR2JMXwNvJikfWYnZa-CyCQTQsW+Xs_5w9zOT3kbVSA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 14 Apr 2021 20:02:15 +0200
-Message-ID: <CAMuHMdUQOi8h31D_Qtnv_E1vsEu6RO8sHy-DArQ0jQt5v_JoVA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/6] bpf: Add a bpf_snprintf helper
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Florent Revest <revest@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKyHb-j3-DSzF1wbzxYR39HdQiJVTVv1NkBS+9ZEeiEvg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Andrii,
-
-On Wed, Apr 14, 2021 at 9:41 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> On Mon, Apr 12, 2021 at 8:38 AM Florent Revest <revest@chromium.org> wrote:
-> > The implementation takes inspiration from the existing bpf_trace_printk
-> > helper but there are a few differences:
+On Wed, Apr 14, 2021 at 10:59:23AM -0700, Alexei Starovoitov wrote:
+> On Wed, Apr 14, 2021 at 10:52 AM Paul E. McKenney <paulmck@kernel.org> wrote:
 > >
-> > To allow for a large number of format-specifiers, parameters are
-> > provided in an array, like in bpf_seq_printf.
+> > > > > >                 if (num_online_cpus() > 1)
+> > > > > >                         synchronize_rcu();
 > >
-> > Because the output string takes two arguments and the array of
-> > parameters also takes two arguments, the format string needs to fit in
-> > one argument. Thankfully, ARG_PTR_TO_CONST_STR is guaranteed to point to
-> > a zero-terminated read-only map so we don't need a format string length
-> > arg.
+> > In CONFIG_PREEMPT_NONE=y and CONFIG_PREEMPT_VOLUNTARY=y kernels, this
+> > synchronize_rcu() will be a no-op anyway due to there only being the
+> > one CPU.  Or are these failures all happening in CONFIG_PREEMPT=y kernels,
+> > and in tests where preemption could result in the observed failures?
 > >
-> > Because the format-string is known at verification time, we also do
-> > a first pass of format string validation in the verifier logic. This
-> > makes debugging easier.
-> >
-> > Signed-off-by: Florent Revest <revest@chromium.org>
-> > ---
-> >  include/linux/bpf.h            |  6 ++++
-> >  include/uapi/linux/bpf.h       | 28 +++++++++++++++++++
-> >  kernel/bpf/helpers.c           |  2 ++
-> >  kernel/bpf/verifier.c          | 41 ++++++++++++++++++++++++++++
-> >  kernel/trace/bpf_trace.c       | 50 ++++++++++++++++++++++++++++++++++
-> >  tools/include/uapi/linux/bpf.h | 28 +++++++++++++++++++
-> >  6 files changed, 155 insertions(+)
-> >
->
-> [...]
->
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 5f46dd6f3383..d4020e5f91ee 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -5918,6 +5918,41 @@ static int check_reference_leak(struct bpf_verifier_env *env)
-> >         return state->acquired_refs ? -EINVAL : 0;
-> >  }
-> >
-> > +static int check_bpf_snprintf_call(struct bpf_verifier_env *env,
-> > +                                  struct bpf_reg_state *regs)
-> > +{
-> > +       struct bpf_reg_state *fmt_reg = &regs[BPF_REG_3];
-> > +       struct bpf_reg_state *data_len_reg = &regs[BPF_REG_5];
-> > +       struct bpf_map *fmt_map = fmt_reg->map_ptr;
-> > +       int err, fmt_map_off, num_args;
-> > +       u64 fmt_addr;
-> > +       char *fmt;
-> > +
-> > +       /* data must be an array of u64 */
-> > +       if (data_len_reg->var_off.value % 8)
-> > +               return -EINVAL;
-> > +       num_args = data_len_reg->var_off.value / 8;
-> > +
-> > +       /* fmt being ARG_PTR_TO_CONST_STR guarantees that var_off is const
-> > +        * and map_direct_value_addr is set.
-> > +        */
-> > +       fmt_map_off = fmt_reg->off + fmt_reg->var_off.value;
-> > +       err = fmt_map->ops->map_direct_value_addr(fmt_map, &fmt_addr,
-> > +                                                 fmt_map_off);
-> > +       if (err)
-> > +               return err;
-> > +       fmt = (char *)fmt_addr + fmt_map_off;
-> > +
->
-> bot complained about lack of (long) cast before fmt_addr, please address
+> > Could you please send your .config file, or at least the relevant portions
+> > of it?
+> 
+> That's my understanding as well. I assumed Toke has preempt=y.
+> Otherwise the whole thing needs to be root caused properly.
 
-(uintptr_t), I assume?
+Given that there is only a single CPU, I am still confused about what
+the tests are expecting the membarrier() system call to do for them.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+							Thanx, Paul
