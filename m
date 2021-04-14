@@ -2,151 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D64035F21B
-	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 13:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F62735F23D
+	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 13:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348287AbhDNLVL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Apr 2021 07:21:11 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:50682 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229886AbhDNLVL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Apr 2021 07:21:11 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx3+8B0HZg8_MHAA--.897S2;
-        Wed, 14 Apr 2021 19:20:33 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S1348932AbhDNLWX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Apr 2021 07:22:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53811 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348923AbhDNLWW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 14 Apr 2021 07:22:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618399321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PVId7o3lQtIks2yXeQsOoMjWTTFDLY+Z4zrdMUPuNNg=;
+        b=egPnpLXOy7EZHGXTn9ZbpgODuODSrpxBL0rVHmAssuQk9v1phmKkZz5E/IpOHVyxMRFDAA
+        BFNv+FBxKudckm8gI9+fB2ftKJP66Ydczkb6ApbxWV1lVAd2+qCHEbiy2uBaLUOYDNt62D
+        +X9S14T4E3Pfjy3GtS/qBNf0kfLSZkU=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-281-s-6bCkhiNM-jj2ZB6qrP4A-1; Wed, 14 Apr 2021 07:21:59 -0400
+X-MC-Unique: s-6bCkhiNM-jj2ZB6qrP4A-1
+Received: by mail-ed1-f69.google.com with SMTP id f26-20020a056402069ab02903788b40ed89so3137138edy.2
+        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 04:21:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=PVId7o3lQtIks2yXeQsOoMjWTTFDLY+Z4zrdMUPuNNg=;
+        b=ELf5cDvu4UJWb0iUCG8twybeJOTAjf5fI1pbw/QaVlMoNGEB0HBPicCHI7CglyVhyj
+         DofhGYRi5vJYSgPMHLkQGJ9J6mJ9qkGsirbUHZ7Qq3XpVSzhlGn8uZZLWOizUkqoQuap
+         4NlWfr6EcL7xIMWizKnZ6JCjVGLqVadmTirgKOrLc7yKugE9n4JO3ceo101/tLzyxafY
+         hPAsid+r0bmq1FG6H2jtTTMNJEC/cMhwhkx/Tb8heNXY8dphQFK/q0wOufeKB/OFh/cr
+         wH7wh8YF8x4grJ+z8UEQUkgO5BRg1jj+2GJYmCqV7le5MAFf77aHan3Mr9SnX0xNludH
+         2vjA==
+X-Gm-Message-State: AOAM533QbEU8HacKJGr1931BdH277pYdplOLcT4MEa0mKH0O8BQnvfi5
+        pLIwhAovofo8qDLdZbYtZjyeRmWwgfdzMynNPufkLO8LjmGXCmGpBv7loEmkTkSBNzNron6Fvgx
+        75PMn1ryK6QC8
+X-Received: by 2002:a05:6402:3487:: with SMTP id v7mr40500406edc.302.1618399318220;
+        Wed, 14 Apr 2021 04:21:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwjx+te+EROqkEH5R1MOeN8pBw66QcrMYzo4o84liXDc/JB14cLDfpBsxQMLBFyyVc9ZHqupw==
+X-Received: by 2002:a05:6402:3487:: with SMTP id v7mr40500374edc.302.1618399317891;
+        Wed, 14 Apr 2021 04:21:57 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id li16sm6829761ejb.101.2021.04.14.04.21.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 04:21:57 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 937901804E8; Wed, 14 Apr 2021 13:21:56 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH bpf-next v2] bpf: Fix some invalid links in bpf_devel_QA.rst
-Date:   Wed, 14 Apr 2021 19:20:32 +0800
-Message-Id: <1618399232-17858-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx3+8B0HZg8_MHAA--.897S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXrWUKrWfJr1fWF1xtF1DWrg_yoWrZF1Upa
-        1fGrnIkr18XF13Wwn7GrWUurySqas3GayUCF18Jr95Zw1jvryktr1IgrWfXa98Gr909ay3
-        Za4SkryYka18ZrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCY02Avz4vE14v_Gw4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI
-        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
-        evJa73UjIFyTuYvjfU589NDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?utf-8?B?QmrDtnJuIFQ=?= =?utf-8?B?w7ZwZWw=?= 
+        <bjorn.topel@gmail.com>, Hangbin Liu <liuhangbin@gmail.com>
+Subject: Re: [PATCHv6 bpf-next 2/4] xdp: extend xdp_redirect_map with
+ broadcast support
+In-Reply-To: <20210414012341.3992365-3-liuhangbin@gmail.com>
+References: <20210414012341.3992365-1-liuhangbin@gmail.com>
+ <20210414012341.3992365-3-liuhangbin@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 14 Apr 2021 13:21:56 +0200
+Message-ID: <87y2dlkt63.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There exist some errors "404 Not Found" when I click the link
-of "MAINTAINERS" [1], "samples/bpf/" [2] and "selftests" [3]
-in the documentation "HOWTO interact with BPF subsystem" [4].
+Hangbin Liu <liuhangbin@gmail.com> writes:
 
-Use correct link of "MAINTAINERS" and just remove the links of
-"samples/bpf/" and "selftests" because there are no related
-documentations.
+> This patch adds two flags BPF_F_BROADCAST and BPF_F_EXCLUDE_INGRESS to
+> extend xdp_redirect_map for broadcast support.
+>
+> With BPF_F_BROADCAST the packet will be broadcasted to all the interfaces
+> in the map. with BPF_F_EXCLUDE_INGRESS the ingress interface will be
+> excluded when do broadcasting.
+>
+> When getting the devices in dev hash map via dev_map_hash_get_next_key(),
+> there is a possibility that we fall back to the first key when a device
+> was removed. This will duplicate packets on some interfaces. So just walk
+> the whole buckets to avoid this issue. For dev array map, we also walk the
+> whole map to find valid interfaces.
+>
+> Function bpf_clear_redirect_map() was removed in
+> commit ee75aef23afe ("bpf, xdp: Restructure redirect actions").
+> Add it back as we need to use ri->map again.
+>
+> Here is the performance result by using 10Gb i40e NIC, do XDP_DROP on
+> veth peer, run xdp_redirect_{map, map_multi} in sample/bpf and send pkts
+> via pktgen cmd:
+> ./pktgen_sample03_burst_single_flow.sh -i eno1 -d $dst_ip -m $dst_mac -t 10 -s 64
+>
+> There are some drop back as we need to loop the map and get each interface.
+>
+> Version          | Test                                | Generic | Native
+> 5.12 rc4         | redirect_map        i40e->i40e      |    1.9M |  9.6M
+> 5.12 rc4         | redirect_map        i40e->veth      |    1.7M | 11.7M
+> 5.12 rc4 + patch | redirect_map        i40e->i40e      |    1.9M |  9.3M
+> 5.12 rc4 + patch | redirect_map        i40e->veth      |    1.7M | 11.4M
+> 5.12 rc4 + patch | redirect_map multi  i40e->i40e      |    1.9M |  8.9M
+> 5.12 rc4 + patch | redirect_map multi  i40e->veth      |    1.7M | 10.9M
+> 5.12 rc4 + patch | redirect_map multi  i40e->mlx4+veth |    1.2M |  3.8M
+>
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+>
+> ---
+> v6:
+> Fix a skb leak in the error path for generic XDP
 
-[1] https://www.kernel.org/doc/html/MAINTAINERS
-[2] https://www.kernel.org/doc/html/samples/bpf/
-[3] https://www.kernel.org/doc/html/tools/testing/selftests/bpf/
-[4] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html
+That's better, thanks! When checking this I at first thought you were
+missing a free; turns out I was wrong, the caller of
+xdp_do_generic_redirect() will free the skb on error.
 
-Fixes: 542228384888 ("bpf, doc: convert bpf_devel_QA.rst to use RST formatting")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
+However, this is also the case for the native path: the driver is
+supposed to free/recycle the frame if xdp_do_redirect() fails. Which
+means that this:
 
-v2: Add Fixes: tag
+[...]
+> +static int dev_map_enqueue_clone(struct bpf_dtab_netdev *obj,
+> +				 struct net_device *dev_rx,
+> +				 struct xdp_frame *xdpf)
+> +{
+> +	struct xdp_frame *nxdpf;
+> +
+> +	nxdpf = xdpf_clone(xdpf);
+> +	if (unlikely(!nxdpf)) {
+> +		xdp_return_frame_rx_napi(xdpf);
+> +		return -ENOMEM;
+> +	}
 
- Documentation/bpf/bpf_devel_QA.rst | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
+is wrong; the ENOMEM return gets propagated up to the caller of
+xdp_do_redirect() which will take care of freeing the frame, so this
+code shouldn't also be freeing it.
 
-diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
-index 2ed89ab..4fd4c8c 100644
---- a/Documentation/bpf/bpf_devel_QA.rst
-+++ b/Documentation/bpf/bpf_devel_QA.rst
-@@ -29,7 +29,7 @@ list:
- This may also include issues related to XDP, BPF tracing, etc.
- 
- Given netdev has a high volume of traffic, please also add the BPF
--maintainers to Cc (from kernel MAINTAINERS_ file):
-+maintainers to Cc (from kernel :ref:`MAINTAINERS <maintainers>` file):
- 
- * Alexei Starovoitov <ast@kernel.org>
- * Daniel Borkmann <daniel@iogearbox.net>
-@@ -217,11 +217,11 @@ page run by David S. Miller on net-next that provides guidance:
- Q: Verifier changes and test cases
- ----------------------------------
- Q: I made a BPF verifier change, do I need to add test cases for
--BPF kernel selftests_?
-+BPF kernel selftests?
- 
- A: If the patch has changes to the behavior of the verifier, then yes,
- it is absolutely necessary to add test cases to the BPF kernel
--selftests_ suite. If they are not present and we think they are
-+selftests suite. If they are not present and we think they are
- needed, then we might ask for them before accepting any changes.
- 
- In particular, test_verifier.c is tracking a high number of BPF test
-@@ -234,11 +234,11 @@ be subject to change.
- 
- Q: samples/bpf preference vs selftests?
- ---------------------------------------
--Q: When should I add code to `samples/bpf/`_ and when to BPF kernel
--selftests_ ?
-+Q: When should I add code to ``samples/bpf/`` and when to BPF kernel
-+selftests?
- 
--A: In general, we prefer additions to BPF kernel selftests_ rather than
--`samples/bpf/`_. The rationale is very simple: kernel selftests are
-+A: In general, we prefer additions to BPF kernel selftests rather than
-+``samples/bpf/``. The rationale is very simple: kernel selftests are
- regularly run by various bots to test for kernel regressions.
- 
- The more test cases we add to BPF selftests, the better the coverage
-@@ -246,9 +246,9 @@ and the less likely it is that those could accidentally break. It is
- not that BPF kernel selftests cannot demo how a specific feature can
- be used.
- 
--That said, `samples/bpf/`_ may be a good place for people to get started,
-+That said, ``samples/bpf/`` may be a good place for people to get started,
- so it might be advisable that simple demos of features could go into
--`samples/bpf/`_, but advanced functional and corner-case testing rather
-+``samples/bpf/``, but advanced functional and corner-case testing rather
- into kernel selftests.
- 
- If your sample looks like a test case, then go for BPF kernel selftests
-@@ -413,7 +413,7 @@ Testing patches
- Q: How to run BPF selftests
- ---------------------------
- A: After you have booted into the newly compiled kernel, navigate to
--the BPF selftests_ suite in order to test BPF functionality (current
-+the BPF selftests suite in order to test BPF functionality (current
- working directory points to the root of the cloned git tree)::
- 
-   $ cd tools/testing/selftests/bpf/
-@@ -645,10 +645,7 @@ when:
- 
- .. Links
- .. _Documentation/process/: https://www.kernel.org/doc/html/latest/process/
--.. _MAINTAINERS: ../../MAINTAINERS
- .. _netdev-FAQ: ../networking/netdev-FAQ.rst
--.. _samples/bpf/: ../../samples/bpf/
--.. _selftests: ../../tools/testing/selftests/bpf/
- .. _Documentation/dev-tools/kselftest.rst:
-    https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
- .. _Documentation/bpf/btf.rst: btf.rst
--- 
-2.1.0
+Sorry for not spotting this on the last round - these error conditions
+are a bit confusing to me as well. Making the generic and native paths
+more similar like you did in this round made it more obvious, though,
+which was the point; so yay! :)
+
+-Toke
 
