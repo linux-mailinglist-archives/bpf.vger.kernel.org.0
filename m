@@ -2,135 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643F635FB73
-	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 21:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2322235FBC2
+	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 21:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbhDNTSf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Apr 2021 15:18:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29665 "EHLO
+        id S233374AbhDNTmZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Apr 2021 15:42:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23230 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230040AbhDNTSf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 14 Apr 2021 15:18:35 -0400
+        by vger.kernel.org with ESMTP id S234978AbhDNTmY (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 14 Apr 2021 15:42:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618427893;
+        s=mimecast20190719; t=1618429322;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=I9jduqdM8v5VPul5wVy4AgQvCgpr7qTLfUEH4/7xZeE=;
-        b=f4/gbUKYcFO08oPboWiHuaIEaEZmSjPVU/hK7otp+ctIIlYhOkI0316lZ1gVmBDkhP+7jv
-        mClBI0HWqrkJUkusuSL03sQpDOdko6f8djvuo/WDz4o/u6YYec/nt2YnRYNzHSeppwkNJd
-        /yAFDlLv8pWPVisU8AC0h5EDBCwUUS8=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-271-44osk9uxMjWZ5qC4DfSh3g-1; Wed, 14 Apr 2021 15:18:11 -0400
-X-MC-Unique: 44osk9uxMjWZ5qC4DfSh3g-1
-Received: by mail-ej1-f69.google.com with SMTP id r14-20020a1709062cceb0290373a80b4002so145421ejr.20
-        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 12:18:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=I9jduqdM8v5VPul5wVy4AgQvCgpr7qTLfUEH4/7xZeE=;
-        b=UsSqG+CLbdDOEtgsjeehODjOnNcnuQO0hitRNFItHW7SGZSRMDG5F4EBmpTIQ65FHC
-         jMyWxkVr3IndzBI+n1Jp0rDmVt6NkXnRP4Np6qeDJRIeuZn3nu5YIWsbBd4v72MeApuZ
-         jXMfCT7cVa6q+cahlo7vD1sQpXHDm9OlB2mb/K76aQN83CMrVJ77XAxSD+5ROaB8LnT/
-         319UzKCHTZAESn1PoWmnM9zUjniSS/kIBNnqQpLB70JGdewbiOyJoduXhyzDptW6hBls
-         c4+ySxDHglDq3GiVWADCMt0+TxfX4mjiky134jNtu2OvFoQHDYMpGvw1NAbdGRwn7CkG
-         7Qng==
-X-Gm-Message-State: AOAM533thJIGQwQVftxC5Ww0V1HZociTiM2K1as8UWb6+ebkN/vvgkcd
-        DYz437I7bsb8XFqarKvo3BFiiWBiCNwaJyQQPLWTCSlM2GtZtuKhoekzJmJWSGsRGjT2CFbGn1L
-        zoAXsOuxYe1VY
-X-Received: by 2002:a17:906:86c2:: with SMTP id j2mr381329ejy.257.1618427890606;
-        Wed, 14 Apr 2021 12:18:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzWP89fmXdi4sP7xmm8uId9jMn0L8zk2L/KbMjB/S9E3rfjr8nFUgLXTc1VzixyP0U+ZvoVNg==
-X-Received: by 2002:a17:906:86c2:: with SMTP id j2mr381314ejy.257.1618427890447;
-        Wed, 14 Apr 2021 12:18:10 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id n3sm236779ejj.113.2021.04.14.12.18.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 12:18:09 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 1C0931804E8; Wed, 14 Apr 2021 21:18:09 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     paulmck@kernel.org
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: Selftest failures related to kern_sync_rcu()
-In-Reply-To: <20210414184133.GW4510@paulmck-ThinkPad-P17-Gen-1>
-References: <87blaozi20.fsf@toke.dk>
- <CAEf4Bzb4LDi1ZVrhNEojpWhxi33tkv4rv6F7Czj28Y0tHxXh0w@mail.gmail.com>
- <87im4qo9ey.fsf@toke.dk>
- <CAEf4Bzahxw5-KTb2yOk8PHQmEyc6gDgTTR6znZjH2OhZ66wiUw@mail.gmail.com>
- <CAADnVQ+6xoBaD1GSSm=U3n67ooHvjGgxXPAHmFD6AhksrM8BoQ@mail.gmail.com>
- <20210414175245.GT4510@paulmck-ThinkPad-P17-Gen-1>
- <CAADnVQKyHb-j3-DSzF1wbzxYR39HdQiJVTVv1NkBS+9ZEeiEvg@mail.gmail.com>
- <20210414181934.GV4510@paulmck-ThinkPad-P17-Gen-1>
- <87czuwlnhz.fsf@toke.dk>
- <20210414184133.GW4510@paulmck-ThinkPad-P17-Gen-1>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 14 Apr 2021 21:18:09 +0200
-Message-ID: <87a6q0llou.fsf@toke.dk>
+        bh=yabYzh4cj6LIMrN9G97xSgLjHLEzr2USN5EFIehOUuc=;
+        b=XWu/W9zNsUch7eKaivqBiatkVfxuZ4Hj2o/JCfOYLI0qXiv1b69UqMb0zMgIBHX+rvmOy+
+        1TfC7pqssKcjYI+9JEbZ5BYfUNGJ5Mo6q9fph0nDspfTDzcI2mdq9Zm8NGfkyZToE8Y3pv
+        d4y1vCKO+0nhThxZQ9aAj7BebV6qzDw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-8tbCLW4hMAWToOB92QjbSw-1; Wed, 14 Apr 2021 15:42:00 -0400
+X-MC-Unique: 8tbCLW4hMAWToOB92QjbSw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D495A1008060;
+        Wed, 14 Apr 2021 19:41:54 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 21B355D6BA;
+        Wed, 14 Apr 2021 19:41:33 +0000 (UTC)
+Date:   Wed, 14 Apr 2021 21:41:32 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     brouer@redhat.com, Shakeel Butt <shakeelb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+Message-ID: <20210414214132.74f721dd@carbon>
+In-Reply-To: <YHHuE7g73mZNrMV4@enceladus>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+        <20210409223801.104657-3-mcroce@linux.microsoft.com>
+        <20210410154824.GZ2531743@casper.infradead.org>
+        <YHHPbQm2pn2ysth0@enceladus>
+        <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+        <YHHuE7g73mZNrMV4@enceladus>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"Paul E. McKenney" <paulmck@kernel.org> writes:
+On Sat, 10 Apr 2021 21:27:31 +0300
+Ilias Apalodimas <ilias.apalodimas@linaro.org> wrote:
 
-> On Wed, Apr 14, 2021 at 08:39:04PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> "Paul E. McKenney" <paulmck@kernel.org> writes:
->>=20
->> > On Wed, Apr 14, 2021 at 10:59:23AM -0700, Alexei Starovoitov wrote:
->> >> On Wed, Apr 14, 2021 at 10:52 AM Paul E. McKenney <paulmck@kernel.org=
-> wrote:
->> >> >
->> >> > > > > >                 if (num_online_cpus() > 1)
->> >> > > > > >                         synchronize_rcu();
->> >> >
->> >> > In CONFIG_PREEMPT_NONE=3Dy and CONFIG_PREEMPT_VOLUNTARY=3Dy kernels=
-, this
->> >> > synchronize_rcu() will be a no-op anyway due to there only being the
->> >> > one CPU.  Or are these failures all happening in CONFIG_PREEMPT=3Dy=
- kernels,
->> >> > and in tests where preemption could result in the observed failures?
->> >> >
->> >> > Could you please send your .config file, or at least the relevant p=
-ortions
->> >> > of it?
->> >>=20
->> >> That's my understanding as well. I assumed Toke has preempt=3Dy.
->> >> Otherwise the whole thing needs to be root caused properly.
->> >
->> > Given that there is only a single CPU, I am still confused about what
->> > the tests are expecting the membarrier() system call to do for them.
->>=20
->> It's basically a proxy for waiting until the objects are freed on the
->> kernel side, as far as I understand...
+> On Sat, Apr 10, 2021 at 10:42:30AM -0700, Shakeel Butt wrote:
 >
-> There are in-kernel objects that are freed via call_rcu(), and the idea
-> is to wait until these objects really are freed?  Or am I still missing
-> out on what is going on?
+> > On Sat, Apr 10, 2021 at 9:16 AM Ilias Apalodimas
+> > <ilias.apalodimas@linaro.org> wrote:  
+> > >
+> > > Hi Matthew
+> > >
+> > > On Sat, Apr 10, 2021 at 04:48:24PM +0100, Matthew Wilcox wrote:  
+> > > > On Sat, Apr 10, 2021 at 12:37:58AM +0200, Matteo Croce wrote:  
+> > > > > This is needed by the page_pool to avoid recycling a page not allocated
+> > > > > via page_pool.  
+> > > >
+> > > > Is the PageType mechanism more appropriate to your needs?  It wouldn't
+> > > > be if you use page->_mapcount (ie mapping it to userspace).  
+> > >
+> > > Interesting!
+> > > Please keep in mind this was written ~2018 and was stale on my branches for
+> > > quite some time.  So back then I did try to use PageType, but had not free
+> > > bits.  Looking at it again though, it's cleaned up.  So yes I think this can
+> > > be much much cleaner.  Should we go and define a new PG_pagepool?
+> > >
+> > 
+> > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
+> > can not be used.  
+> 
+> Yes it can, since it's going to be used as your default allocator for
+> payloads, which might end up on an SKB.
 
-Something like that? Although I'm not actually sure these are using
-call_rcu()? One of them needs __put_task_struct() to run, and the other
-waits for map freeing, with this comment:
+I'm not sure we want or should "allow" page_pool be used for TCP RX
+zerocopy.
+For several reasons.
+
+(1) This implies mapping these pages page to userspace, which AFAIK
+means using page->mapping and page->index members (right?).
+
+(2) It feels wrong (security wise) to keep the DMA-mapping (for the
+device) and also map this page into userspace.
+
+(3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
+zerocopy will bump the refcnt, which means the page_pool will not
+recycle the page when it see the elevated refcnt (it will instead
+release its DMA-mapping).
+
+(4) I remember vaguely that this code path for (TCP RX zerocopy) uses
+page->private for tricks.  And our patch [3/5] use page->private for
+storing xdp_mem_info.
+
+IMHO when the SKB travel into this TCP RX zerocopy code path, we should
+call page_pool_release_page() to release its DMA-mapping.
 
 
-	/* we need to either wait for or force synchronize_rcu(), before
-	 * checking for "still exists" condition, otherwise map could still be
-	 * resolvable by ID, causing false positives.
-	 *
-	 * Older kernels (5.8 and earlier) freed map only after two
-	 * synchronize_rcu()s, so trigger two, to be entirely sure.
-	 */
-	CHECK(kern_sync_rcu(), "sync_rcu", "failed\n");
-	CHECK(kern_sync_rcu(), "sync_rcu", "failed\n");
+> > [1] https://lore.kernel.org/linux-mm/20210316013003.25271-1-arjunroy.kdev@gmail.com/  
 
-
--Toke
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
