@@ -2,251 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571D535F11B
-	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 11:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95BBA35F1C3
+	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 12:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbhDNJ52 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Apr 2021 05:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231174AbhDNJ51 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Apr 2021 05:57:27 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95CFC061756
-        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 02:57:02 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id d5so10635969iof.3
-        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 02:57:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ilr4nYYuLua8u/5rpMGCuRSKg5BbVKR1oTVkZgGq8YM=;
-        b=J5dMM0tUpszxfjI8JS6aCxCePUvhhXK5qW0Gom0xOACuzCYD+mrjvksyDZmMcM0KlR
-         zr6VRM4AN3HohuMcZRuI1QxKnQ1O7q8GjrRroSmgpzH9XQpbJQ7oEHA1OARyrh9ToYXi
-         2mZ/7py6oGEiZ+GZrVc4W2ebBva2fsqHY1HDU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ilr4nYYuLua8u/5rpMGCuRSKg5BbVKR1oTVkZgGq8YM=;
-        b=Hz4y9NAm3qnEODAYwOIKh5nqC8ut4o26mFkKga30/DsKdO8yDQc9lI65gvLtfdoSuG
-         TkdUNdiyDh10Br2evt32k5t4mftPtN7KPY338As+MDGNUQYOZNvaNFwovuEQ5g9QyGGt
-         oc/zP/b3737e3rKgQDYR46LWgRSXaSgttiAwCKBMMwmdprIuMJ3ctwAxYWjrDa6WjC8s
-         3HNQSMbXv5x+cYVmF25/df0xQUA01BVFsIVbQVlf4vfn8HqFQ+m2G6tLWRsPfSInCx6q
-         JdDO6Ral8GUcadUbFGmCWju7WBXFbYaG5/X6riGvDXeyqJzoL7Q2iOqDRzSyt4qRbey6
-         m94w==
-X-Gm-Message-State: AOAM530MiaX4kAitBbnIUrvXEMH8bhk9KYDL4+f2DB8+3ur2SdgYWpPm
-        SbzvGhdC3o8cyiI5r4Iczdfz/LbKcHxbcj9Nj4Ruag==
-X-Google-Smtp-Source: ABdhPJzPq9lpd6QMokc51nU/hP/o00aGgKlDWI+9MZt2Tgf6b2dVy+x6A/zy5xQkqTX0WawY7A6/y3VgfkhmXh4Jx7U=
-X-Received: by 2002:a6b:b645:: with SMTP id g66mr11176615iof.83.1618394222069;
- Wed, 14 Apr 2021 02:57:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210412153754.235500-1-revest@chromium.org> <20210412153754.235500-2-revest@chromium.org>
- <CAEf4BzaUeE7EPObUuS=NPw9qmssxJ=i6+M1v6A3=wvLVGOKkXg@mail.gmail.com>
-In-Reply-To: <CAEf4BzaUeE7EPObUuS=NPw9qmssxJ=i6+M1v6A3=wvLVGOKkXg@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Wed, 14 Apr 2021 11:56:51 +0200
-Message-ID: <CABRcYmKjcZD4px3QwjqMZozOJDTXV+fWvf+w2R=ssPyBOJmMTg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/6] bpf: Factorize bpf_trace_printk and bpf_seq_printf
+        id S233085AbhDNKzH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Apr 2021 06:55:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30820 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232965AbhDNKzG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 14 Apr 2021 06:55:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618397684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ieI7qTBn6GqAPqvEII3jgRrqEuYuZz29QYT+fhzGUmI=;
+        b=ODu7kBLrdEOjNZsM77WAZ9mim9aHs3vbR776D51/br0RG6fqrfZpLr9TRoMZKtVNYnhFre
+        9hEg4hFZdRllJaYsKcvRt7NI1M3l+KY+YpS/t7mrHgXNVmPmVbS9xuFJCuGilKIkwSs1QQ
+        HTI8s0ktq5gSn3b3JdMddcz3wovIzCo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-152-h9uyCyV8Ps2beIGSHaIdWg-1; Wed, 14 Apr 2021 06:54:41 -0400
+X-MC-Unique: h9uyCyV8Ps2beIGSHaIdWg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 931138030BB;
+        Wed, 14 Apr 2021 10:54:39 +0000 (UTC)
+Received: from krava (unknown [10.40.196.56])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 3F90551DCB;
+        Wed, 14 Apr 2021 10:54:32 +0000 (UTC)
+Date:   Wed, 14 Apr 2021 12:54:31 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>
+Subject: Re: [PATCHv4 bpf-next 4/5] selftests/bpf: Add re-attach test to lsm
+ test
+Message-ID: <YHbJ54+KIY6kEHyd@krava>
+References: <20210412162502.1417018-1-jolsa@kernel.org>
+ <20210412162502.1417018-5-jolsa@kernel.org>
+ <CAEf4BzZfGccOFt6hJgRyONexLyVvV4q6ydQ86zeOBFnjo8PS0w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZfGccOFt6hJgRyONexLyVvV4q6ydQ86zeOBFnjo8PS0w@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 1:01 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> On Mon, Apr 12, 2021 at 8:38 AM Florent Revest <revest@chromium.org> wrote:
-> > +/* Per-cpu temp buffers which can be used by printf-like helpers for %s or %p
-> > + */
-> > +#define MAX_PRINTF_BUF_LEN     512
-> > +
-> > +struct bpf_printf_buf {
-> > +       char tmp_buf[MAX_PRINTF_BUF_LEN];
-> > +};
-> > +static DEFINE_PER_CPU(struct bpf_printf_buf, bpf_printf_buf);
-> > +static DEFINE_PER_CPU(int, bpf_printf_buf_used);
-> > +
-> > +static int try_get_fmt_tmp_buf(char **tmp_buf)
-> >  {
-> > -       static char buf[BPF_TRACE_PRINTK_SIZE];
-> > -       unsigned long flags;
-> > -       va_list ap;
-> > -       int ret;
-> > +       struct bpf_printf_buf *bufs = this_cpu_ptr(&bpf_printf_buf);
->
-> why doing this_cpu_ptr() if below (if *tmp_buf case), you will not use
-> it. just a waste of CPU, no?
-
-Sure I can move it past the conditions.
-
-> > +       int used;
+On Tue, Apr 13, 2021 at 02:57:26PM -0700, Andrii Nakryiko wrote:
+> On Mon, Apr 12, 2021 at 9:31 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > >
-> > -       raw_spin_lock_irqsave(&trace_printk_lock, flags);
-> > -       va_start(ap, fmt);
-> > -       ret = vsnprintf(buf, sizeof(buf), fmt, ap);
-> > -       va_end(ap);
-> > -       /* vsnprintf() will not append null for zero-length strings */
-> > -       if (ret == 0)
-> > -               buf[0] = '\0';
-> > -       trace_bpf_trace_printk(buf);
-> > -       raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
-> > +       if (*tmp_buf)
-> > +               return 0;
+> > Adding the test to re-attach (detach/attach again) lsm programs,
+> > plus check that already linked program can't be attached again.
 > >
-> > -       return ret;
-> > +       preempt_disable();
-> > +       used = this_cpu_inc_return(bpf_printf_buf_used);
-> > +       if (WARN_ON_ONCE(used > 1)) {
-> > +               this_cpu_dec(bpf_printf_buf_used);
-> > +               return -EBUSY;
-> > +       }
->
-> get bufs pointer here instead?
-
-Okay :)
-
-> > +       *tmp_buf = bufs->tmp_buf;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static void put_fmt_tmp_buf(void)
-> > +{
-> > +       if (this_cpu_read(bpf_printf_buf_used)) {
-> > +               this_cpu_dec(bpf_printf_buf_used);
-> > +               preempt_enable();
-> > +       }
-> >  }
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  .../selftests/bpf/prog_tests/test_lsm.c       | 48 +++++++++++++++----
+> >  1 file changed, 38 insertions(+), 10 deletions(-)
 > >
-> >  /*
-> > - * Only limited trace_printk() conversion specifiers allowed:
-> > - * %d %i %u %x %ld %li %lu %lx %lld %lli %llu %llx %p %pB %pks %pus %s
-> > + * bpf_parse_fmt_str - Generic pass on format strings for printf-like helpers
-> > + *
-> > + * Returns a negative value if fmt is an invalid format string or 0 otherwise.
-> > + *
-> > + * This can be used in two ways:
-> > + * - Format string verification only: when final_args and mod are NULL
-> > + * - Arguments preparation: in addition to the above verification, it writes in
-> > + *   final_args a copy of raw_args where pointers from BPF have been sanitized
-> > + *   into pointers safe to use by snprintf. This also writes in the mod array
-> > + *   the size requirement of each argument, usable by BPF_CAST_FMT_ARG for ex.
-> > + *
-> > + * In argument preparation mode, if 0 is returned, safe temporary buffers are
-> > + * allocated and put_fmt_tmp_buf should be called to free them after use.
-> >   */
-> > -BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
-> > -          u64, arg2, u64, arg3)
-> > -{
-> > -       int i, mod[3] = {}, fmt_cnt = 0;
-> > -       char buf[64], fmt_ptype;
-> > -       void *unsafe_ptr = NULL;
-> > -       bool str_seen = false;
-> > +int bpf_printf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
-> > +                       u64 *final_args, enum bpf_printf_mod_type *mod,
-> > +                       u32 num_args)
-> > +{
-> > +       int err, i, curr_specifier = 0, copy_size;
-> > +       char *unsafe_ptr = NULL, *tmp_buf = NULL;
-> > +       size_t tmp_buf_len = MAX_PRINTF_BUF_LEN;
-> > +       enum bpf_printf_mod_type current_mod;
-> > +       u64 current_arg;
->
-> naming consistency: current_arg vs curr_specifier? maybe just cur_arg
-> and cur_spec?
+> 
+> Surprised you didn't switch this one to ASSERT, but ok, we can do it
+> some other time ;)
 
-Ahah, you're right again :)
+yep, I commented on that in the previous version ;-)
 
-> > +       char fmt_ptype;
-> > +
-> > +       if ((final_args && !mod) || (mod && !final_args))
->
-> nit: same check:
->
-> if (!!final_args != !!mod)
+  - used ASSERT* macros apart from lsm test, which is using
+    CHECKs all over the place [Andrii]
 
-Fancy! :)
+I think it should go to separate patch, so it won't shade
+the actual change
 
-> > +               return -EINVAL;
+jirka
+
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+> 
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/test_lsm.c b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+> > index 2755e4f81499..d492e76e01cf 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+> > @@ -18,6 +18,8 @@ char *CMD_ARGS[] = {"true", NULL};
+> >  #define GET_PAGE_ADDR(ADDR, PAGE_SIZE)                                 \
+> >         (char *)(((unsigned long) (ADDR + PAGE_SIZE)) & ~(PAGE_SIZE-1))
 > >
-> > -       /*
-> > -        * bpf_check()->check_func_arg()->check_stack_boundary()
-> > -        * guarantees that fmt points to bpf program stack,
-> > -        * fmt_size bytes of it were initialized and fmt_size > 0
-> > -        */
-> > -       if (fmt[--fmt_size] != 0)
-> > +       fmt_size = (strnchr(fmt, fmt_size, 0) - fmt);
->
-> extra ()
+> 
+> [...]
+> 
 
-Oops!
-
-> > +       if (!fmt_size)
->
-> hm... strnchr() will return NULL if the character is not found, so
-> fmt_size will be some non-zero value (due to - fmt), how is this
-> supposed to work?
-
-Ugh!
-
-> some negative tests are clearly missing, it seems, if you didn't catch this
-
-Agree
-
-> >                 return -EINVAL;
-> >
-> > -       /* check format string for allowed specifiers */
-> >         for (i = 0; i < fmt_size; i++) {
-> > -               if ((!isprint(fmt[i]) && !isspace(fmt[i])) || !isascii(fmt[i]))
-> > -                       return -EINVAL;
-> > +               if ((!isprint(fmt[i]) && !isspace(fmt[i])) || !isascii(fmt[i])) {
-> > +                       err = -EINVAL;
-> > +                       goto out;
-> > +               }
-> >
-> >                 if (fmt[i] != '%')
-> >                         continue;
-> >
-> > -               if (fmt_cnt >= 3)
-> > -                       return -EINVAL;
-> > +               if (fmt[i + 1] == '%') {
-> > +                       i++;
-> > +                       continue;
-> > +               }
-> > +
-> > +               if (curr_specifier >= num_args) {
-> > +                       err = -EINVAL;
-> > +                       goto out;
-> > +               }
-> >
-> >                 /* fmt[i] != 0 && fmt[last] == 0, so we can access fmt[i + 1] */
->
-> a bit outdated comment, last doesn't exist anymore. I think the
-> comment is trying to say that fmt[i + 1] can be read because in the
-> worst case it will be a final zero terminator (which we checked
-> above).
-
-Yes that's the idea. I will rewrite it as a sentence if "last" is confusing.
-
-> > +       err = 0;
-> > +out:
-> > +       put_fmt_tmp_buf();
->
-> so you are putting tmp_buf unconditionally, even when there was no
-> error. That seems wrong? Should this be:
->
-> if (err)
->     put_fmt_tmp_buf()
->
-> ?
-
-Yeah the naming is unfortunate, as discussed in the other patch, I
-will rename that to bpf_pintf_cleanup instead. It's not clear from the
-name that it only "puts" if the buffer was already gotten.
