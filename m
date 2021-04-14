@@ -2,145 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7529C35FACB
-	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 20:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BFD35FAD1
+	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 20:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbhDNS2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Apr 2021 14:28:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50600 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232769AbhDNS2B (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 14 Apr 2021 14:28:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618424859;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G0+mpzPnadp3YFpo4WNN9eJhKKlIukTfGGbUpb45yZU=;
-        b=gS2MR9ESt1Cu4K89qifVkGwpfD7pndJLyXnn1q9Xp9V57NMtpHCxg/HXgR7OZTmLZ/ATUC
-        ZwcUFM07XllasFMKlT1m2Mj4Q66jycecNp4hM4J0ecd04BT6ILhpgMfdAS8TyTRyGTtdk3
-        w5uvrny9EHX5Bs6Ye9Xa3/BfWhNSGlQ=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-206-QeiN7P-RMP-LiVgTuvivmQ-1; Wed, 14 Apr 2021 14:27:37 -0400
-X-MC-Unique: QeiN7P-RMP-LiVgTuvivmQ-1
-Received: by mail-ej1-f69.google.com with SMTP id o25-20020a1709061d59b029037c94676df5so93893ejh.7
-        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 11:27:37 -0700 (PDT)
+        id S1352637AbhDNSbI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Apr 2021 14:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234655AbhDNSbC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Apr 2021 14:31:02 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C84EC061574
+        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 11:30:41 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id d2so17928528ilm.10
+        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 11:30:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GSVZulurztEIDpsvLgnH0S/lLQGg76QIVX9BgE5+U8w=;
+        b=EFpytYWN2VnOFuIdwbqUT/TFmTrUeqlTlgURImphJPv1xOxmT2TJNpJMwo/ofmTFms
+         CtAszqE3HIbdYeb434Hs9FGgu34u+WJUZYvvllo7KJF0iPueiFSLDbOBhWryG/DjfvL5
+         aIoD32p960Ir1xAn4KRqj8s3RahPz/Ro1ba4Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=G0+mpzPnadp3YFpo4WNN9eJhKKlIukTfGGbUpb45yZU=;
-        b=ELVoa0tq2QLPUtWpVNTHfmsnXc1z1ru8k4CG4+v++w8h8ply22OaFEY4YgxZaOYgHI
-         OX8EPuWX9GoBEGwscgtCIt5YB5wD1OkcsOjR2i2EYysy5TYBBIgwFVt5c73xaaKRNean
-         LENYfPWlgGRhCMj/aF4ardWG9M1fxJwMGJW6p5LDJPi3uqDzhzz7WOGbBHe7hy8HQ9ln
-         +ca7BBOdsz//c0yA7K8l9b9hh9ZJCKIzBEHmX8uReqxwRUGd98vyJz1Xb9GZjhUDHcBP
-         9v47TlrvdLydIZfwJYq9/QbpYzH0QNwkmc0Cj63VvOIPhK/pu/+fE8WViO5oYcgYsN+Q
-         duRA==
-X-Gm-Message-State: AOAM5304GoTFvnLpIfzW36E4Z1iskifXjr3AldW7iQOrcpynCQ7oNguV
-        /uw15IB5wf0a1VxW+OM2o0bk/QxHW+dOji9LFHS/4+y6LGTl53dSJ7J+FQ7h1Fz8qysL5a/kXC/
-        FMOnf8a4SlKnn
-X-Received: by 2002:a17:906:c09:: with SMTP id s9mr197331ejf.145.1618424856147;
-        Wed, 14 Apr 2021 11:27:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJximSK2EUfERhx2502Mxya0CdHERdsde5DvSKSTChVgKPNYA0RINEsr0STROK0tAJlYnH9DCA==
-X-Received: by 2002:a17:906:c09:: with SMTP id s9mr197306ejf.145.1618424855791;
-        Wed, 14 Apr 2021 11:27:35 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id v8sm301003edc.30.2021.04.14.11.27.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 11:27:35 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 917201804E8; Wed, 14 Apr 2021 20:27:34 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: Selftest failures related to kern_sync_rcu()
-In-Reply-To: <CAADnVQKyHb-j3-DSzF1wbzxYR39HdQiJVTVv1NkBS+9ZEeiEvg@mail.gmail.com>
-References: <87blaozi20.fsf@toke.dk>
- <CAEf4Bzb4LDi1ZVrhNEojpWhxi33tkv4rv6F7Czj28Y0tHxXh0w@mail.gmail.com>
- <87im4qo9ey.fsf@toke.dk>
- <CAEf4Bzahxw5-KTb2yOk8PHQmEyc6gDgTTR6znZjH2OhZ66wiUw@mail.gmail.com>
- <CAADnVQ+6xoBaD1GSSm=U3n67ooHvjGgxXPAHmFD6AhksrM8BoQ@mail.gmail.com>
- <20210414175245.GT4510@paulmck-ThinkPad-P17-Gen-1>
- <CAADnVQKyHb-j3-DSzF1wbzxYR39HdQiJVTVv1NkBS+9ZEeiEvg@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 14 Apr 2021 20:27:34 +0200
-Message-ID: <87fszslo15.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GSVZulurztEIDpsvLgnH0S/lLQGg76QIVX9BgE5+U8w=;
+        b=sQpsGQHpT0Y7g5sQqmgAU03DR+2vb1rxfGJbYBcA+mdqyPM9PpVDONvDijgoedWj0s
+         lPNCD0+wEkq8VzZbeRwNEQ8FOoMUmMvU5+KunJc8/dAQ/VCnC4PwDCEmfBX5ddpbb2r0
+         7byYMuq+hh4xo2typK3BrUiq+R8yZqak1P8AT0BSGBgDVn3Xz4kbWfb8yX11Bu+Emuwl
+         VFuGMU5qDV9y1CWDyowkGhnK/e4EemRumc91EHz0va25oqwXJb9P4ltkedWA2xPCa3di
+         9PjrEqQjgZYNZpU9XKsUvOw06hhnCqEVD6HCzRsmmXTQ/Z662ELgvTMbnmT/YJcG3BJj
+         knJg==
+X-Gm-Message-State: AOAM531Wsy1s53pDhJcYRPC2YhUsUYOEKYMSwY/nzEPfOLnnJUykY7+u
+        vT0xsMNCRPRgdOT//9lRcR22Ar3AIn5/H3EJ5m8PgQRh1ns=
+X-Google-Smtp-Source: ABdhPJwidopytC6IhNqasB6wdNQ8zczQF884T9qeHg1BY4dzYWodXhx3yvtKeoyDQA1uYDjlv0e3F0UVE24Vt1SiWHg=
+X-Received: by 2002:a92:ce90:: with SMTP id r16mr203960ilo.220.1618425040629;
+ Wed, 14 Apr 2021 11:30:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210412153754.235500-1-revest@chromium.org> <20210412153754.235500-4-revest@chromium.org>
+ <CAEf4BzZCR2JMXwNvJikfWYnZa-CyCQTQsW+Xs_5w9zOT3kbVSA@mail.gmail.com> <CAMuHMdUQOi8h31D_Qtnv_E1vsEu6RO8sHy-DArQ0jQt5v_JoVA@mail.gmail.com>
+In-Reply-To: <CAMuHMdUQOi8h31D_Qtnv_E1vsEu6RO8sHy-DArQ0jQt5v_JoVA@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Wed, 14 Apr 2021 20:30:29 +0200
+Message-ID: <CABRcYmK597zCNs_ay6BUjxCuxGJazKn4iujYtOUxcZC0J=xVPg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/6] bpf: Add a bpf_snprintf helper
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+Hey Geert! :)
 
-> On Wed, Apr 14, 2021 at 10:52 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->>
->> > > > >                 if (num_online_cpus() > 1)
->> > > > >                         synchronize_rcu();
->>
->> In CONFIG_PREEMPT_NONE=y and CONFIG_PREEMPT_VOLUNTARY=y kernels, this
->> synchronize_rcu() will be a no-op anyway due to there only being the
->> one CPU.  Or are these failures all happening in CONFIG_PREEMPT=y kernels,
->> and in tests where preemption could result in the observed failures?
->>
->> Could you please send your .config file, or at least the relevant portions
->> of it?
+On Wed, Apr 14, 2021 at 8:02 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Wed, Apr 14, 2021 at 9:41 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> > On Mon, Apr 12, 2021 at 8:38 AM Florent Revest <revest@chromium.org> wrote:
+> > > +       fmt = (char *)fmt_addr + fmt_map_off;
+> > > +
+> >
+> > bot complained about lack of (long) cast before fmt_addr, please address
 >
-> That's my understanding as well. I assumed Toke has preempt=y.
-> Otherwise the whole thing needs to be root caused properly.
+> (uintptr_t), I assume?
 
-Running with a single CPU fails, with multiple CPUs succeeds.
-Happens without PREEMPT as well:
-
-$ egrep 'HZ|PREEMPT|RCU' .config
-CONFIG_NO_HZ_COMMON=y
-# CONFIG_HZ_PERIODIC is not set
-CONFIG_NO_HZ_IDLE=y
-# CONFIG_NO_HZ_FULL is not set
-CONFIG_NO_HZ=y
-# CONFIG_PREEMPT_NONE is not set
-CONFIG_PREEMPT_VOLUNTARY=y
-# CONFIG_PREEMPT is not set
-# RCU Subsystem
-CONFIG_TREE_RCU=y
-CONFIG_RCU_EXPERT=y
-CONFIG_SRCU=y
-CONFIG_TREE_SRCU=y
-CONFIG_TASKS_RCU_GENERIC=y
-CONFIG_TASKS_RUDE_RCU=y
-CONFIG_TASKS_TRACE_RCU=y
-CONFIG_RCU_STALL_COMMON=y
-CONFIG_RCU_NEED_SEGCBLIST=y
-CONFIG_RCU_FANOUT=64
-CONFIG_RCU_FANOUT_LEAF=16
-# CONFIG_RCU_FAST_NO_HZ is not set
-# CONFIG_RCU_NOCB_CPU is not set
-# CONFIG_TASKS_TRACE_RCU_READ_MB is not set
-# end of RCU Subsystem
-# CONFIG_HZ_100 is not set
-CONFIG_HZ_250=y
-# CONFIG_HZ_300 is not set
-# CONFIG_HZ_1000 is not set
-CONFIG_HZ=250
-CONFIG_MMU_GATHER_RCU_TABLE_FREE=y
-CONFIG_HAVE_PREEMPT_DYNAMIC=y
-CONFIG_PREEMPT_NOTIFIERS=y
-# CONFIG_MACHZ_WDT is not set
-# RCU Debugging
-# CONFIG_RCU_SCALE_TEST is not set
-# CONFIG_RCU_TORTURE_TEST is not set
-# CONFIG_RCU_REF_SCALE_TEST is not set
-CONFIG_RCU_CPU_STALL_TIMEOUT=60
-# CONFIG_RCU_TRACE is not set
-# CONFIG_RCU_EQS_DEBUG is not set
-# CONFIG_RCU_STRICT_GRACE_PERIOD is not set
-# end of RCU Debugging
-# CONFIG_PREEMPTIRQ_DELAY_TEST is not set
-
-Anything else you need from .config?
-
--Toke
-
+(uintptr_t) seems more correct to me as well. However, I just had a
+look at the rest of verifier.c and (long) casts are already used
+pretty much everywhere whereas uintptr_t isn't used yet.
+I'll send a v4 with a long cast for the sake of consistency with the
+rest of the verifier.
