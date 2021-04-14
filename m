@@ -2,70 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0471935F4E2
-	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 15:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F8135F608
+	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 16:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348115AbhDNNdJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Apr 2021 09:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348130AbhDNNdI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 14 Apr 2021 09:33:08 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24538C061574
-        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 06:32:35 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id e14so5783662ils.12
-        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 06:32:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+rJkm+pt7IAIh3meE9DcpUBzUhbdXEUDSKBscpDbcvQ=;
-        b=SdJvtJWFpdtL24ZNlj+RoMxAj5tA6pT+FNmGcPLgHU0k94dxjF7yuNFFoBBo1LY4r6
-         IhBsY1KplvIJlpe302RTUiVZPvoyVU5AO0u0dNEp6+jD+i7N4WnItL/yk/LlBf0rlXbr
-         86GH9pU9ZIpe7lbkOa6WmN2CohV0FPVA/gwB0=
+        id S1345706AbhDNORE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Apr 2021 10:17:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23206 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345592AbhDNORD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 14 Apr 2021 10:17:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618409801;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6EnIkHF0mrKFySBJ0Tb9/DPDchSiulKvYv90SvgrrsQ=;
+        b=dIzxGZluuVswTuViYAlwrTrNamX0gYUPmT24Ds3cuC+v2RDMz5CyL+dYUUnJb7hD28f/d7
+        yhwlz46c3GlSZ26yHosZXkBs0HdWPM/siuJkRDg0ASZnaKqR+LbJ4sMqVyZsYZlASonTrH
+        zXJnlk8yjtFEHZ6ksfnH6xWpbLkgR2g=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-487-ZzRIwhctP_aTZBYS-HqyNw-1; Wed, 14 Apr 2021 10:16:40 -0400
+X-MC-Unique: ZzRIwhctP_aTZBYS-HqyNw-1
+Received: by mail-ed1-f71.google.com with SMTP id co5-20020a0564020c05b02903825bcdad12so3416394edb.0
+        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 07:16:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+rJkm+pt7IAIh3meE9DcpUBzUhbdXEUDSKBscpDbcvQ=;
-        b=sOxWqmwKLM9BbARyBAIpyLOde1JucswUs4daWEajlFZli8NRjhdpTuQfz/jGM6fw+r
-         3AXjucmWhr0MK+A7K10y1ZOjUY9ER4kPN5lCW0hSMdxAyIG+mtjpiPWg2ySoVjRcBb7O
-         nyrw6RYkHuZtLNqL5uOQx3uzQ9b2floj7WOuHLWDpXyZwVFnleDdP4fKEtsyVh0iKChq
-         r5Mu7XstcMdCR+zkQg/al2QhYgXJkSBCFLZaWhhYP5PY6VYJ4AAW/7xhifkQFvAWeH4W
-         U043F2rFNjghDoP8ESA49B/ysQW/R+UZZaitk/XETERhP3Tr8txxiHQkcIHJ2xw5AbAH
-         0z2A==
-X-Gm-Message-State: AOAM531XNi6VSizBIj1h34MGfvkaJgyCfyO7aPB79cjJgc1HjS5Q30kQ
-        cn8SiFjSFrgBOr0n02GF3jwTGD0X4e++mM0/6CxEOg==
-X-Google-Smtp-Source: ABdhPJxpQBuy43S79HHF6y0YaWWhOf7xOlTljrKXOqrhq+xJ7yWxHZ2nsrlYqB99sBD3phaEhBb5ng2ySZoZ/DB+8qE=
-X-Received: by 2002:a92:ce90:: with SMTP id r16mr13484481ilo.220.1618407154503;
- Wed, 14 Apr 2021 06:32:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210412153754.235500-4-revest@chromium.org> <202104130447.2WLAvV47-lkp@intel.com>
-In-Reply-To: <202104130447.2WLAvV47-lkp@intel.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Wed, 14 Apr 2021 15:32:23 +0200
-Message-ID: <CABRcYmLe-PO5nKKXjiyBhzAtx2A80qBRfy362dFzt9PA5Ndi9Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/6] bpf: Add a bpf_snprintf helper
-To:     kernel test robot <lkp@intel.com>
-Cc:     bpf <bpf@vger.kernel.org>, kbuild-all@lists.01.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=6EnIkHF0mrKFySBJ0Tb9/DPDchSiulKvYv90SvgrrsQ=;
+        b=GdIFDXmaqMMPsGq/090PhAtfl1kOB1kkKne7jsJoghSM/k2oOxZldEAWLFW/ZC8bnm
+         ZlikWM8Sgq4+3Uj5VHu1hvQNi7pcMxIqZHV5JqPRBZpADW2k/W4Hyswpxob35bd5/UF6
+         b3o1Wo5CRi14TDlD58/xEm6so4faWBpcIdQLtM7+3oV+oSIP7bpuOC1LrrsTgTY8Qz58
+         tqFCglEJUqHC/wlIYqblP277b8Ndu8CWHEzlMpUuAZ1s8CPEpbDdYmXSoc6ibREVRJh/
+         JrK/ov4QHFlpUOocOQ7tmZFx9uspxI3auZKwcTNF14GrWGu9rfAxooW+Fu2rzQhOnIli
+         /vkg==
+X-Gm-Message-State: AOAM532Kqb2CeVgqzUX4mzUxLn7g/Pa99lLSApLEePlC87sklgc1kinD
+        fyAD/mTBZCc6AHHxnMINOgx7tHCrZk4sFIy88pnxCDIWdKj9PPkf9u4LRLwObZ5SdccYR6B4I/3
+        2A6S3Dxrn42ec
+X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr42187991edd.78.1618409798481;
+        Wed, 14 Apr 2021 07:16:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyljjol7myZaSjPi3ZrpP7abhsmGrhOla/DTSa/iTifsYFqNZAKw5gISQdqEU3wdj72s4jQlg==
+X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr42187966edd.78.1618409798368;
+        Wed, 14 Apr 2021 07:16:38 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id w5sm2705366ejc.84.2021.04.14.07.16.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 07:16:37 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id B8AA91804E8; Wed, 14 Apr 2021 16:16:36 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?utf-8?B?QmrDtnJuIFQ=?= =?utf-8?B?w7ZwZWw=?= 
+        <bjorn.topel@gmail.com>, Hangbin Liu <liuhangbin@gmail.com>
+Subject: Re: [PATCHv7 bpf-next 0/4] xdp: extend xdp_redirect_map with
+ broadcast support
+In-Reply-To: <20210414122610.4037085-1-liuhangbin@gmail.com>
+References: <20210414122610.4037085-1-liuhangbin@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 14 Apr 2021 16:16:36 +0200
+Message-ID: <87r1jdkl2z.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 10:32 PM kernel test robot <lkp@intel.com> wrote:
->    m68k-linux-ld: kernel/bpf/verifier.o: in function `check_helper_call.isra.0':
-> >> verifier.c:(.text+0xf79e): undefined reference to `bpf_printf_prepare'
->    m68k-linux-ld: kernel/bpf/helpers.o: in function `bpf_base_func_proto':
-> >> helpers.c:(.text+0xd82): undefined reference to `bpf_snprintf_proto'
+Hangbin Liu <liuhangbin@gmail.com> writes:
 
-I'll move the implementation of bpf_printf_prepare/bpf_printf_cleanup
-and bpf_snprintf to kernel/bpf/helpers.c so that they all get built on
-kernels with CONFIG_BPF_SYSCALL but not CONFIG_BPF_EVENTS.
+> Hi,
+>
+> This patchset is a new implementation for XDP multicast support based
+> on my previous 2 maps implementation[1]. The reason is that Daniel think
+> the exclude map implementation is missing proper bond support in XDP
+> context. And there is a plan to add native XDP bonding support. Adding a
+> exclude map in the helper also increase the complex of verifier and has
+> draw back of performace.
+>
+> The new implementation just add two new flags BPF_F_BROADCAST and
+> BPF_F_EXCLUDE_INGRESS to extend xdp_redirect_map for broadcast support.
+>
+> With BPF_F_BROADCAST the packet will be broadcasted to all the interfaces
+> in the map. with BPF_F_EXCLUDE_INGRESS the ingress interface will be
+> excluded when do broadcasting.
+
+Alright, I'm out of things to complain about - thanks for sticking with
+it! :)
+
+For the series:
+
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+
