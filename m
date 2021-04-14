@@ -2,163 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2322235FBC2
-	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 21:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4364135FBE4
+	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 21:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233374AbhDNTmZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Apr 2021 15:42:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23230 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234978AbhDNTmY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 14 Apr 2021 15:42:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618429322;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yabYzh4cj6LIMrN9G97xSgLjHLEzr2USN5EFIehOUuc=;
-        b=XWu/W9zNsUch7eKaivqBiatkVfxuZ4Hj2o/JCfOYLI0qXiv1b69UqMb0zMgIBHX+rvmOy+
-        1TfC7pqssKcjYI+9JEbZ5BYfUNGJ5Mo6q9fph0nDspfTDzcI2mdq9Zm8NGfkyZToE8Y3pv
-        d4y1vCKO+0nhThxZQ9aAj7BebV6qzDw=
+        id S1349360AbhDNTwW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 14 Apr 2021 15:52:22 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:59003 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349356AbhDNTwW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 14 Apr 2021 15:52:22 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-408-8tbCLW4hMAWToOB92QjbSw-1; Wed, 14 Apr 2021 15:42:00 -0400
-X-MC-Unique: 8tbCLW4hMAWToOB92QjbSw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-310-6NTSzC4ENvSCcuLet0KdcA-1; Wed, 14 Apr 2021 15:51:55 -0400
+X-MC-Unique: 6NTSzC4ENvSCcuLet0KdcA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D495A1008060;
-        Wed, 14 Apr 2021 19:41:54 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 21B355D6BA;
-        Wed, 14 Apr 2021 19:41:33 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 21:41:32 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     brouer@redhat.com, Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 377EB1854E20;
+        Wed, 14 Apr 2021 19:51:54 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.192.62])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 396DF197F9;
+        Wed, 14 Apr 2021 19:51:48 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <20210414214132.74f721dd@carbon>
-In-Reply-To: <YHHuE7g73mZNrMV4@enceladus>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
-        <20210409223801.104657-3-mcroce@linux.microsoft.com>
-        <20210410154824.GZ2531743@casper.infradead.org>
-        <YHHPbQm2pn2ysth0@enceladus>
-        <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
-        <YHHuE7g73mZNrMV4@enceladus>
+        KP Singh <kpsingh@chromium.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Julia Lawall <julia.lawall@inria.fr>
+Subject: [PATCHv5 bpf-next 0/7] bpf: Tracing and lsm programs re-attach
+Date:   Wed, 14 Apr 2021 21:51:40 +0200
+Message-Id: <20210414195147.1624932-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 10 Apr 2021 21:27:31 +0300
-Ilias Apalodimas <ilias.apalodimas@linaro.org> wrote:
+hi,
+while adding test for pinning the module while there's
+trampoline attach to it, I noticed that we don't allow
+link detach and following re-attach for trampolines.
+Adding that for tracing and lsm programs.
 
-> On Sat, Apr 10, 2021 at 10:42:30AM -0700, Shakeel Butt wrote:
->
-> > On Sat, Apr 10, 2021 at 9:16 AM Ilias Apalodimas
-> > <ilias.apalodimas@linaro.org> wrote:  
-> > >
-> > > Hi Matthew
-> > >
-> > > On Sat, Apr 10, 2021 at 04:48:24PM +0100, Matthew Wilcox wrote:  
-> > > > On Sat, Apr 10, 2021 at 12:37:58AM +0200, Matteo Croce wrote:  
-> > > > > This is needed by the page_pool to avoid recycling a page not allocated
-> > > > > via page_pool.  
-> > > >
-> > > > Is the PageType mechanism more appropriate to your needs?  It wouldn't
-> > > > be if you use page->_mapcount (ie mapping it to userspace).  
-> > >
-> > > Interesting!
-> > > Please keep in mind this was written ~2018 and was stale on my branches for
-> > > quite some time.  So back then I did try to use PageType, but had not free
-> > > bits.  Looking at it again though, it's cleaned up.  So yes I think this can
-> > > be much much cleaner.  Should we go and define a new PG_pagepool?
-> > >
-> > 
-> > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-> > can not be used.  
-> 
-> Yes it can, since it's going to be used as your default allocator for
-> payloads, which might end up on an SKB.
+You need to have patch [1] from bpf tree for test module
+attach test to pass.
 
-I'm not sure we want or should "allow" page_pool be used for TCP RX
-zerocopy.
-For several reasons.
+v5 changes:
+  - fixed missing hlist_del_init change
+  - fixed several ASSERT calls
+  - added extra patch for missing ';'
+  - added ASSERT macros to lsm test
+  - added acks
 
-(1) This implies mapping these pages page to userspace, which AFAIK
-means using page->mapping and page->index members (right?).
-
-(2) It feels wrong (security wise) to keep the DMA-mapping (for the
-device) and also map this page into userspace.
-
-(3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
-zerocopy will bump the refcnt, which means the page_pool will not
-recycle the page when it see the elevated refcnt (it will instead
-release its DMA-mapping).
-
-(4) I remember vaguely that this code path for (TCP RX zerocopy) uses
-page->private for tricks.  And our patch [3/5] use page->private for
-storing xdp_mem_info.
-
-IMHO when the SKB travel into this TCP RX zerocopy code path, we should
-call page_pool_release_page() to release its DMA-mapping.
+thanks,
+jirka
 
 
-> > [1] https://lore.kernel.org/linux-mm/20210316013003.25271-1-arjunroy.kdev@gmail.com/  
+[1] https://lore.kernel.org/bpf/20210326105900.151466-1-jolsa@kernel.org/
+---
+Jiri Olsa (7):
+      bpf: Allow trampoline re-attach for tracing and lsm programs
+      selftests/bpf: Add missing semicolon
+      selftests/bpf: Add re-attach test to fentry_test
+      selftests/bpf: Add re-attach test to fexit_test
+      selftests/bpf: Add re-attach test to lsm test
+      selftests/bpf: Test that module can't be unloaded with attached trampoline
+      selftests/bpf: Use ASSERT macros in lsm test
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+ kernel/bpf/syscall.c                                   | 23 +++++++++++++++++------
+ kernel/bpf/trampoline.c                                |  4 ++--
+ tools/testing/selftests/bpf/prog_tests/fentry_test.c   | 52 +++++++++++++++++++++++++++++++++++++---------------
+ tools/testing/selftests/bpf/prog_tests/fexit_test.c    | 52 +++++++++++++++++++++++++++++++++++++---------------
+ tools/testing/selftests/bpf/prog_tests/module_attach.c | 23 +++++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/test_lsm.c      | 61 +++++++++++++++++++++++++++++++++++++++++--------------------
+ tools/testing/selftests/bpf/test_progs.h               |  2 +-
+ 7 files changed, 158 insertions(+), 59 deletions(-)
 
