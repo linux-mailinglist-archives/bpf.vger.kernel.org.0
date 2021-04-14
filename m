@@ -2,135 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBC235F4AA
-	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 15:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0471935F4E2
+	for <lists+bpf@lfdr.de>; Wed, 14 Apr 2021 15:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351237AbhDNNSp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 14 Apr 2021 09:18:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42306 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351238AbhDNNSo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 14 Apr 2021 09:18:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618406302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=acWkfu4Z7CO7GGUcaU6n4Bm8bQWjjgP+uqLjmsxyrxA=;
-        b=a2ZUTKj0slLi0dEXqq0N8wmqDx59gCZEROJkDYCKrSAR8UK/UCChl7KJTWPuGjX+3l/eGt
-        jtJg/eGvSYym6vPuEUvABPal7yeL4qgqBU3SC5arHLduJfF0/uBRw3rHn05aX2A2XvT/4l
-        IOCjsngboFGC8eqjRmvZyMCM7tkLWdA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-350-bWWaGIYTPiqy5RVwNAzlBA-1; Wed, 14 Apr 2021 09:18:18 -0400
-X-MC-Unique: bWWaGIYTPiqy5RVwNAzlBA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 25DB1188E3D3;
-        Wed, 14 Apr 2021 13:18:17 +0000 (UTC)
-Received: from krava (unknown [10.40.196.56])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 58E8B60C9B;
-        Wed, 14 Apr 2021 13:18:15 +0000 (UTC)
-Date:   Wed, 14 Apr 2021 15:18:14 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        kernel-team@fb.com, Sedat Dilek <sedat.dilek@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf-next v2 0/5] bpf: tools: support build selftests/bpf
- with clang
-Message-ID: <YHbrlsN8UZPWwrzi@krava>
-References: <20210412142905.266942-1-yhs@fb.com>
- <CAKwvOdkTUFUwq0Uwi4D9-Z9nbg1FfaP1P2oiBsxNn3+ikT9MwA@mail.gmail.com>
- <CAKwvOdkFWe76ggKrLeckS+mzmyQeq6eJBnkQM1bKgEGQBCspSA@mail.gmail.com>
- <e5f5f6b3-64e6-7068-ca72-9f06f3ffda54@fb.com>
- <CAKwvOdnJsQ-XDcjq=tbXL_iBeJYNk2h8VGwx-sSLWw_LRef6Qg@mail.gmail.com>
- <CAKwvOdkhJgCyEFpXUaMZP4NDho-2YWcNfmF+4P_MprcipB7Ycw@mail.gmail.com>
- <YHYApbcaa1faflw3@krava>
- <CAKwvOd=GfdEd_FZXY+yr9e1xzLaGFkvD4QLNb_52wTVFECHaKQ@mail.gmail.com>
+        id S1348115AbhDNNdJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 14 Apr 2021 09:33:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348130AbhDNNdI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 14 Apr 2021 09:33:08 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24538C061574
+        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 06:32:35 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e14so5783662ils.12
+        for <bpf@vger.kernel.org>; Wed, 14 Apr 2021 06:32:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+rJkm+pt7IAIh3meE9DcpUBzUhbdXEUDSKBscpDbcvQ=;
+        b=SdJvtJWFpdtL24ZNlj+RoMxAj5tA6pT+FNmGcPLgHU0k94dxjF7yuNFFoBBo1LY4r6
+         IhBsY1KplvIJlpe302RTUiVZPvoyVU5AO0u0dNEp6+jD+i7N4WnItL/yk/LlBf0rlXbr
+         86GH9pU9ZIpe7lbkOa6WmN2CohV0FPVA/gwB0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+rJkm+pt7IAIh3meE9DcpUBzUhbdXEUDSKBscpDbcvQ=;
+        b=sOxWqmwKLM9BbARyBAIpyLOde1JucswUs4daWEajlFZli8NRjhdpTuQfz/jGM6fw+r
+         3AXjucmWhr0MK+A7K10y1ZOjUY9ER4kPN5lCW0hSMdxAyIG+mtjpiPWg2ySoVjRcBb7O
+         nyrw6RYkHuZtLNqL5uOQx3uzQ9b2floj7WOuHLWDpXyZwVFnleDdP4fKEtsyVh0iKChq
+         r5Mu7XstcMdCR+zkQg/al2QhYgXJkSBCFLZaWhhYP5PY6VYJ4AAW/7xhifkQFvAWeH4W
+         U043F2rFNjghDoP8ESA49B/ysQW/R+UZZaitk/XETERhP3Tr8txxiHQkcIHJ2xw5AbAH
+         0z2A==
+X-Gm-Message-State: AOAM531XNi6VSizBIj1h34MGfvkaJgyCfyO7aPB79cjJgc1HjS5Q30kQ
+        cn8SiFjSFrgBOr0n02GF3jwTGD0X4e++mM0/6CxEOg==
+X-Google-Smtp-Source: ABdhPJxpQBuy43S79HHF6y0YaWWhOf7xOlTljrKXOqrhq+xJ7yWxHZ2nsrlYqB99sBD3phaEhBb5ng2ySZoZ/DB+8qE=
+X-Received: by 2002:a92:ce90:: with SMTP id r16mr13484481ilo.220.1618407154503;
+ Wed, 14 Apr 2021 06:32:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOd=GfdEd_FZXY+yr9e1xzLaGFkvD4QLNb_52wTVFECHaKQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210412153754.235500-4-revest@chromium.org> <202104130447.2WLAvV47-lkp@intel.com>
+In-Reply-To: <202104130447.2WLAvV47-lkp@intel.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Wed, 14 Apr 2021 15:32:23 +0200
+Message-ID: <CABRcYmLe-PO5nKKXjiyBhzAtx2A80qBRfy362dFzt9PA5Ndi9Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/6] bpf: Add a bpf_snprintf helper
+To:     kernel test robot <lkp@intel.com>
+Cc:     bpf <bpf@vger.kernel.org>, kbuild-all@lists.01.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 01:45:39PM -0700, Nick Desaulniers wrote:
+On Mon, Apr 12, 2021 at 10:32 PM kernel test robot <lkp@intel.com> wrote:
+>    m68k-linux-ld: kernel/bpf/verifier.o: in function `check_helper_call.isra.0':
+> >> verifier.c:(.text+0xf79e): undefined reference to `bpf_printf_prepare'
+>    m68k-linux-ld: kernel/bpf/helpers.o: in function `bpf_base_func_proto':
+> >> helpers.c:(.text+0xd82): undefined reference to `bpf_snprintf_proto'
 
-SNIP
-
-> > > >
-> > > > So I'm not sure precisely what's going on here.  I probably have to go
-> > > > digging around to understand tools/build/feature/ anyways.  With your
-> > > > v3 applied, I consistently see:
-> > > > No zlib found
-> > > > and yet, I certainly do have zlib on my host.
-> > > > https://stackoverflow.com/a/54558861
-> > >
-> > > Jiri, any tips on how to debug feature detection in
-> > > tools/build/feature/Makefile?
-> >
-> > for quick check, there's output file for each test, like:
-> >
-> >         [jolsa@krava feature]$ ls -l *.make.output
-> >         -rw-rw-r--. 1 jolsa jolsa   0 Apr  8 20:25 test-all.make.output
-> >         -rw-rw-r--. 1 jolsa jolsa 182 Apr  9 15:52 test-bionic.make.output
-> >         -rw-rw-r--. 1 jolsa jolsa   0 Apr  8 20:25 test-cplus-demangle.make.output
-> >         -rw-rw-r--. 1 jolsa jolsa 145 Apr  9 15:52 test-jvmti.make.output
-> >         -rw-rw-r--. 1 jolsa jolsa   0 Apr  8 20:25 test-libbabeltrace.make.output
-> >         -rw-rw-r--. 1 jolsa jolsa   0 Apr  8 20:25 test-libbpf.make.output
-> >         -rw-rw-r--. 1 jolsa jolsa   0 Apr  8 20:25 test-libdebuginfod.make.output
-> >         -rw-rw-r--. 1 jolsa jolsa 193 Apr  9 15:52 test-libunwind-aarch64.make.output
-> >         -rw-rw-r--. 1 jolsa jolsa 177 Apr  9 15:52 test-libunwind-x86.make.output
-> >         [jolsa@krava feature]$ cat test-libunwind-aarch64.make.output
-> >         test-libunwind-aarch64.c:2:10: fatal error: libunwind-aarch64.h: No such file or directory
-> >             2 | #include <libunwind-aarch64.h>
-> >               |          ^~~~~~~~~~~~~~~~~~~~~
-> >         compilation terminated.
-> >         [jolsa@krava feature]$ cat test-libunwind-x86.make.output
-> >         test-libunwind-x86.c:2:10: fatal error: libunwind-x86.h: No such file or directory
-> >             2 | #include <libunwind-x86.h>
-> >               |          ^~~~~~~~~~~~~~~~~
-> >
-> > zlib should be done by:
-> >         [jolsa@krava feature]$ make test-zlib.bin
-> >         gcc  -MD -Wall -Werror -o test-zlib.bin test-zlib.c  > test-zlib.make.output 2>&1 -lz
-> >
-> >
-> > I can try to recreate, how do you build?
-> 
-> See note above, I'm similarly running precisely:
-> $ make LLVM=1 LLVM_IAS=1 -j72 defconfig
-> $ make LLVM=1 LLVM_IAS=1 -j72 clean
-> $ make LLVM=1 LLVM_IAS=1 -j72 -C tools/testing/selftests/bpf
-
-for some reason I'm stuck with this error on latest bpf-next/master
-
-$ make LLVM=1 LLVM_IAS=1 -C tools/testing/selftests/bpf
-
-make[1]: Nothing to be done for 'docs'.
-  CLNG-BPF [test_maps] test_lwt_ip_encap.o
-  CLNG-BPF [test_maps] test_tc_edt.o
-  CLNG-BPF [test_maps] local_storage.o
-progs/local_storage.c:41:15: error: use of undeclared identifier 'BPF_MAP_TYPE_TASK_STORAGE'; did you mean 'BPF_MAP_TYPE_SK_STORAGE'?
-        __uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~
-                     BPF_MAP_TYPE_SK_STORAGE
-/home/jolsa/linux/tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:13:39: note: expanded from macro '__uint'
-#define __uint(name, val) int (*name)[val]
-                                      ^
-/home/jolsa/linux/tools/testing/selftests/bpf/tools/include/vmlinux.h:10317:2: note: 'BPF_MAP_TYPE_SK_STORAGE' declared here
-        BPF_MAP_TYPE_SK_STORAGE = 24,
-        ^
-1 error generated.
-make: *** [Makefile:448: /home/jolsa/linux/tools/testing/selftests/bpf/local_storage.o] Error 1
-make: Leaving directory '/home/jolsa/linux/tools/testing/selftests/bpf'
-
-
-jirka
-
+I'll move the implementation of bpf_printf_prepare/bpf_printf_cleanup
+and bpf_snprintf to kernel/bpf/helpers.c so that they all get built on
+kernels with CONFIG_BPF_SYSCALL but not CONFIG_BPF_EVENTS.
