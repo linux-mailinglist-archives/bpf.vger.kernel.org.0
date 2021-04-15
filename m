@@ -2,58 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BF236161A
-	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 01:23:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235B4361620
+	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 01:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236940AbhDOXXx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Apr 2021 19:23:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42486 "EHLO
+        id S236543AbhDOXZ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Apr 2021 19:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234985AbhDOXXv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Apr 2021 19:23:51 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DE7C061574;
-        Thu, 15 Apr 2021 16:23:27 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id g38so28029225ybi.12;
-        Thu, 15 Apr 2021 16:23:27 -0700 (PDT)
+        with ESMTP id S235045AbhDOXZ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Apr 2021 19:25:26 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD50C061574;
+        Thu, 15 Apr 2021 16:25:01 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id k73so21755507ybf.3;
+        Thu, 15 Apr 2021 16:25:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=j1XPw7b/+W7Na1k6uIGrWaUES935coxa1bqROOuqck0=;
-        b=fcEgboNwM2KbKeXZUxsxv4iUUD5VHu6aoWSIl9UsrG1hhh8cXAMpOfRAOcZvrOr6rG
-         rjqX8aZp9BgjChXkjYDBLL6GPPKJsEgZUqQtUEIo8wyT/zXud/f3aktfAL3/oWF73l/D
-         /wrrdod/5tCk3W7gKQHZM36hV18JKSISDNbNHWwgtN/Pjo86AxbnaN8PVmjbUTveJRi1
-         /ynixGrP8UDTz6KPFYC2APryR/awsggzViV6WLXfcIv2qsBi2Dkd2LVZdlKtb6k+IloQ
-         KVB6ub1PjPoljydk9QTEVTadaq0G73I+CFUAb7Ti288EmxaidC0UwSk0LfA5fuxn+VlZ
-         wLKw==
+        bh=tPjAFbaR02gR7T2FSdFoUeYsPQ/c9XI0aL2RMY3Jv3I=;
+        b=guND6eSpfJIZq/fXVujObCTSc7aAf2EN1m/+vVQAXSwrs39AaN8eobn+tv3ySGgxq3
+         cycjYWdKLxv2j6u3+FzaxqERQZTS2KOGdwhZKVX43oFNXiXBLqBVRDbmyaKwdZd+oQ+5
+         pNK3CoSrGmYGgZ9g4kwJklPMl0BWB22QlNxjMM7yDlmdceFMeWzKxbeAX/kFX2CjAqYW
+         8WWchTOB3k17Wl0Jt4XYCukmiicKWsR8tbd+rg33gu4dZF5F6D///JLZ66WPDAK5dUHy
+         w7bzGc8DgQMO/Uj2dokfQdNE/keH6HDX8R9/ZqRDEfIBUVEanfi3+Vdr/YAGCuRSi3Fv
+         AdkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=j1XPw7b/+W7Na1k6uIGrWaUES935coxa1bqROOuqck0=;
-        b=MEDleMAmzfzRu2rAMgO9S7lEJ8YT2bTwU1fmjt3/FkLXxDLqzmvkGJDmDngwIDBpiD
-         dPgorvSrKNmlXV0QACIcj9xu3vOHJ4pNsjzG/htaw0GDdR0fdJ0KtX1TRPvXz1yY88Lv
-         CXE94tkbFZnb6XTxT4eWKegYoxZIM0siFVI4+LeGWjEEslfAc3QpGtixePzS6CmmUXEp
-         tL5SSb/xTuxbkR23545bMq9FpV0cV/zoZj63PPmEOGXzzjUTxWpU5FZzBbbnA7RtpKqH
-         zMZTu68qE6pqon1LoP3i8Ynknx5o+ILYAPK2YEOu65aXcqyq2kzpOVUOcXOTvgLfl2pi
-         rJfw==
-X-Gm-Message-State: AOAM531z9IMboMZI4UGhA3ba5zjYq5d9HSzrA+HinTDkKfZQwxiDjBwg
-        ftz+P+bW3Ia8dN6RkZPHgcT64QJgNoR3YY7hZa4=
-X-Google-Smtp-Source: ABdhPJwVTw31i9vrY0lMD5MROXRaOW5SYbugYIgBcbALCpUENsaIG29UNXDgqWnE6v5GaoJNizTPlQcEVAkDBMf15KM=
-X-Received: by 2002:a25:3357:: with SMTP id z84mr7838536ybz.260.1618529007160;
- Thu, 15 Apr 2021 16:23:27 -0700 (PDT)
+        bh=tPjAFbaR02gR7T2FSdFoUeYsPQ/c9XI0aL2RMY3Jv3I=;
+        b=l8CmQaFDGmEAKyYdXDVjGxQWzIK36f5IpVAn7MetH5OCA9IBf/K9D0R/c+WPVjCIjy
+         kB68oV7FUl9wlZgekapLrErHOHbrLrRLBv7q3M1YHXJMeOJwyRjyJlqihbxSCvTyYya7
+         DcsEsOYWsBRrjxTjnqYmHcb4KKybkt2qieASTJ/QtFnLYeY0Jxi2/A9I7ZnacyjMHxTy
+         KTGCekAoZAsOZQGHH9nP80yKhig1sUvwKOJsk3zYUoOboF7Hf5HHU2tqdT7Bqce6R2kC
+         8CBy3Q1P/benLJlxHKjAJru9wdHLYLVp9LFQySqlgdQ0eCZam3vk6hoWLlLIVuaRZG0A
+         nczw==
+X-Gm-Message-State: AOAM531R6CwKAa4JyFLPmURfl2mY9U7Wsicco4W621iXWfJuw7oi8Pjx
+        f2GfAWOA/+YLwn91OxI+gkBH0ydzFSxNZ3CN544=
+X-Google-Smtp-Source: ABdhPJwS7ty2JBCadp8ddbN6rtonw+KTRy52GNaBoKmhOdJL/BZZsQTKf1nVU1WbB5HJkC4jEn0jmU26eZ6bndLrlls=
+X-Received: by 2002:a25:d70f:: with SMTP id o15mr7439503ybg.403.1618529101142;
+ Thu, 15 Apr 2021 16:25:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210414195147.1624932-1-jolsa@kernel.org> <20210414195147.1624932-3-jolsa@kernel.org>
-In-Reply-To: <20210414195147.1624932-3-jolsa@kernel.org>
+References: <20210414195147.1624932-1-jolsa@kernel.org> <20210414195147.1624932-8-jolsa@kernel.org>
+In-Reply-To: <20210414195147.1624932-8-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 15 Apr 2021 16:23:16 -0700
-Message-ID: <CAEf4BzbF03jhVuKsdsNxnpE-TE-M7AhuHBUGPvPVWpht_JMiUA@mail.gmail.com>
-Subject: Re: [PATCHv5 bpf-next 2/7] selftests/bpf: Add missing semicolon
+Date:   Thu, 15 Apr 2021 16:24:50 -0700
+Message-ID: <CAEf4BzYgwPNrGAzsZgmLhNnJ9eVpr4qTe-NbsFcyfrZ3xZmq5A@mail.gmail.com>
+Subject: Re: [PATCHv5 bpf-next 7/7] selftests/bpf: Use ASSERT macros in lsm test
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
@@ -66,33 +67,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 5:43 PM Jiri Olsa <jolsa@kernel.org> wrote:
+On Wed, Apr 14, 2021 at 12:52 PM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding missing semicolon.
+> Replacing CHECK with ASSERT macros.
 >
-> Fixes: 22ba36351631 ("selftests/bpf: Move and extend ASSERT_xxx() testing macros")
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
 
-this is already fixed by 1969b3c60db6 ("selftests/bpf: Fix the
-ASSERT_ERR_PTR macro")
+thanks!
 
->  tools/testing/selftests/bpf/test_progs.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  .../selftests/bpf/prog_tests/test_lsm.c       | 27 +++++++------------
+>  1 file changed, 10 insertions(+), 17 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/test_progs.h b/tools/testing/selftests/bpf/test_progs.h
-> index e87c8546230e..ee7e3b45182a 100644
-> --- a/tools/testing/selftests/bpf/test_progs.h
-> +++ b/tools/testing/selftests/bpf/test_progs.h
-> @@ -210,7 +210,7 @@ extern int test__join_cgroup(const char *path);
->  #define ASSERT_ERR_PTR(ptr, name) ({                                   \
->         static int duration = 0;                                        \
->         const void *___res = (ptr);                                     \
-> -       bool ___ok = IS_ERR(___res)                                     \
-> +       bool ___ok = IS_ERR(___res);                                    \
->         CHECK(!___ok, (name), "unexpected pointer: %p\n", ___res);      \
->         ___ok;                                                          \
->  })
-> --
-> 2.30.2
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_lsm.c b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+> index d492e76e01cf..244c01125126 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_lsm.c
+> @@ -18,8 +18,6 @@ char *CMD_ARGS[] = {"true", NULL};
+>  #define GET_PAGE_ADDR(ADDR, PAGE_SIZE)                                 \
+>         (char *)(((unsigned long) (ADDR + PAGE_SIZE)) & ~(PAGE_SIZE-1))
 >
+
+[...]
