@@ -2,169 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E16A361608
-	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 01:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC396361615
+	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 01:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234735AbhDOXU5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Apr 2021 19:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
+        id S237034AbhDOXWv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Apr 2021 19:22:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234716AbhDOXU4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Apr 2021 19:20:56 -0400
+        with ESMTP id S236940AbhDOXWv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Apr 2021 19:22:51 -0400
 Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E76C061574;
-        Thu, 15 Apr 2021 16:20:33 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id z1so28022736ybf.6;
-        Thu, 15 Apr 2021 16:20:33 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B56C061574;
+        Thu, 15 Apr 2021 16:22:27 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 65so28052272ybc.4;
+        Thu, 15 Apr 2021 16:22:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/7cv1II7ATL1p7rnLX19uxXv/NG365+OJej7Ub+kNWk=;
-        b=DCJlXBdfCBZtwG4V0xfAdEryHYlqGRUgb80U7tNdhS5OoWf31VBanPzpY9K/wYdBK9
-         Mh0ZS91C/sbo4jlcNHX5wZ8EgI/zLHJzhLjx98KT/8K/h4O1dad8OSWlIYe4pIRjy1bf
-         srmDDWVFjFmDsg0CyvZ8EEZ1OMheDjypRN9Yd2gc8LHtt5+UCN3c5eg/azZ6IES/Ey5F
-         kzwCBCrSIS+P0uc0bvp7emNO0SC+QS7Rzwc0W/sjDJ9i6Q7beQoW0b+FgcJpbNe+3qPG
-         YOf7d78TChAuwrmIKF8hYOycUb8c9gxysm1sbYbVFv9s+55Ia27UqAJeQqnlMrM4MGAg
-         gImQ==
+         :cc:content-transfer-encoding;
+        bh=nu29gQa5rCWwaGP+3hOEc439kMWISL5dJFk/f8+ft7g=;
+        b=TydsCjR3BVT0kNQAfMVhCEN7Uj3tQFuKd6rQKk/NQKevM62CQTIQvnSjm0hqpWHcWT
+         IwikOxWsiew4ptw+vg88pRynDmY3oOVnBdAhdTAWMIzSVWbj+PI5fwRNjVdspaXW+I2V
+         cGSebUs2fbIb3d4umMQHYTCEuvXYnqxZiZS9lOls7o0fYzBwDqXIo4qe52+nKSPg6y0C
+         cjgZMRNP64+LHd47pfRFouYD18pMvEYnzu0RbExdqTEJEs10c/bkXwWwQT/8YXPG4qdx
+         PnizRc/uqOxmk4K870F+bA7gdA78CL4aa5zgemKu/4+nrvZRPA7L1IMnN5OuP2EMphPy
+         RTog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/7cv1II7ATL1p7rnLX19uxXv/NG365+OJej7Ub+kNWk=;
-        b=QXHs0T53wNltF0vrJ52rmPO3dyseipPkuISanctoaN19xkWxvxNplL2uq9JvMcSf0c
-         ywROEUObPEcZ0CORgpAy3HDD33uhs0vCe9yeQiCU6kytCbnHNbk72HfcRnkyHflOC02D
-         2qMTHjX+93mex8y7M4LViPKHcUS+uPSm4rYaMMezGDCBKe9tBzNt9IqDwvQBxEFrLky7
-         3oUgKpYETgsN9OY3hIBv2Nk/me5yWyhUuE4c9PXT2fr4EQcadef6Ci6eua8PpqI9l1qa
-         13LvXdtMLGb1+pFqRS01nssAdD6NYFbtIHA0j/9//4Utda7I8AY0EE3RjOGVuNixGF+v
-         RVQQ==
-X-Gm-Message-State: AOAM533Nym6nMJZLGEojbFO7doeBtwv+Ks0jNmxA6633nPsjLVtf6Ts7
-        62CYMZ6Jf4+ZRfgMXhi3DePjKs8ANoZ9pp1erw0=
-X-Google-Smtp-Source: ABdhPJxRaMC/DRhWPKqRLBtjFdXAvpOI6e4nSM6fmGjbGh/xSCJ/iuwxzolO+ziSafVe2UgtLsSBxM87X31+0J8Ed2Q=
-X-Received: by 2002:a25:3357:: with SMTP id z84mr7824691ybz.260.1618528832490;
- Thu, 15 Apr 2021 16:20:32 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nu29gQa5rCWwaGP+3hOEc439kMWISL5dJFk/f8+ft7g=;
+        b=TzCBHaxadBGelHJainAadWrkw6uyeIQRfYgk9m2njFAkf85Q6Q0Z2T6NmNvIblalnn
+         jmKl++HTTIU/KbvBgF2cQiZbkBtY4uLtarPz9hAVRT+yPhuCZp9mwstUFaVKosiA5U1L
+         QBMnilcYmC57ZfKwpWluQOoE6ZltB/dxwh6LyPFCVV/vbxkUMQWXK2UF7f4pqfHUvytK
+         E946cg0x+vVBm+wFJl08/jiGHJeugamGx1c73OAsRXzy0WTa2ACipDS/XnXw2Sn8Hb8J
+         tEbwxkoAnR9pTpZ1Jlyk9ASCzUDlwvXbYtSTfBRD+sm+DfUYsKiYeE31SYJ2RYh40Nfm
+         PESA==
+X-Gm-Message-State: AOAM532eK7N9RJDDCUFLBHALlDTgcdtVj7XcUGaIF3N4vwjk8LQib61f
+        e6+ynXQjvNXs7Uz362S2BVu6ok7yAzTllGEcOgY=
+X-Google-Smtp-Source: ABdhPJyo8v9LrvabLYnSynbdvAhsQPxu1k+lCkoPL/VYyI/b4XY28/pdv1G1RVi1kaFhXbPCUn4RV10GX4qF+udRsEI=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr7972000ybo.230.1618528946554;
+ Thu, 15 Apr 2021 16:22:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210414185406.917890-1-revest@chromium.org> <20210414185406.917890-7-revest@chromium.org>
-In-Reply-To: <20210414185406.917890-7-revest@chromium.org>
+References: <20210414195147.1624932-1-jolsa@kernel.org> <20210414195147.1624932-2-jolsa@kernel.org>
+In-Reply-To: <20210414195147.1624932-2-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 15 Apr 2021 16:20:21 -0700
-Message-ID: <CAEf4BzYtOOwDLOGmfQ+pF5t-muDXQB_StFB7SQS6Ap78P5FjQQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 15 Apr 2021 16:22:15 -0700
+Message-ID: <CAEf4BzagYcy-UxbgXGC81B=K02-wUctvUSTFDySsR6B0cJdwaA@mail.gmail.com>
+Subject: Re: [PATCHv5 bpf-next 1/7] bpf: Allow trampoline re-attach for
+ tracing and lsm programs
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
+        Andrii Nakryiko <andriin@fb.com>,
+        kernel test robot <lkp@intel.com>,
+        Julia Lawall <julia.lawall@lip6.fr>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Julia Lawall <julia.lawall@inria.fr>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 11:54 AM Florent Revest <revest@chromium.org> wrote:
+On Wed, Apr 14, 2021 at 5:44 PM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> The "positive" part tests all format specifiers when things go well.
+> Currently we don't allow re-attaching of trampolines. Once
+> it's detached, it can't be re-attach even when the program
+> is still loaded.
 >
-> The "negative" part makes sure that incorrect format strings fail at
-> load time.
+> Adding the possibility to re-attach the loaded tracing and
+> lsm programs.
 >
-> Signed-off-by: Florent Revest <revest@chromium.org>
+> Fixing missing unlock with proper cleanup goto jump reported
+> by Julia.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Julia Lawall <julia.lawall@lip6.fr>
+> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  .../selftests/bpf/prog_tests/snprintf.c       | 124 ++++++++++++++++++
->  .../selftests/bpf/progs/test_snprintf.c       |  73 +++++++++++
->  .../bpf/progs/test_snprintf_single.c          |  20 +++
->  3 files changed, 217 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf_single.c
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  kernel/bpf/syscall.c    | 23 +++++++++++++++++------
+>  kernel/bpf/trampoline.c |  4 ++--
+>  2 files changed, 19 insertions(+), 8 deletions(-)
 >
 
 [...]
-
-> +/* Loads an eBPF object calling bpf_snprintf with up to 10 characters of fmt */
-> +static int load_single_snprintf(char *fmt)
-> +{
-> +       struct test_snprintf_single *skel;
-> +       int ret;
-> +
-> +       skel = test_snprintf_single__open();
-> +       if (!skel)
-> +               return -EINVAL;
-> +
-> +       memcpy(skel->rodata->fmt, fmt, min(strlen(fmt) + 1, 10));
-> +
-> +       ret = test_snprintf_single__load(skel);
-> +       if (!ret)
-> +               test_snprintf_single__destroy(skel);
-
-destroy unconditionally?
-
-> +
-> +       return ret;
-> +}
-> +
-> +void test_snprintf_negative(void)
-> +{
-> +       ASSERT_OK(load_single_snprintf("valid %d"), "valid usage");
-> +
-> +       ASSERT_ERR(load_single_snprintf("0123456789"), "no terminating zero");
-> +       ASSERT_ERR(load_single_snprintf("%d %d"), "too many specifiers");
-> +       ASSERT_ERR(load_single_snprintf("%pi5"), "invalid specifier 1");
-> +       ASSERT_ERR(load_single_snprintf("%a"), "invalid specifier 2");
-> +       ASSERT_ERR(load_single_snprintf("%"), "invalid specifier 3");
-> +       ASSERT_ERR(load_single_snprintf("\x80"), "non ascii character");
-> +       ASSERT_ERR(load_single_snprintf("\x1"), "non printable character");
-
-Some more cases that came up in my mind:
-
-1. %123987129387192387 -- long and unterminated specified
-2. similarly %------- or something like that
-
-Do you think they are worth checking?
-
-> +}
-> +
-> +void test_snprintf(void)
-> +{
-> +       if (test__start_subtest("snprintf_positive"))
-> +               test_snprintf_positive();
-> +       if (test__start_subtest("snprintf_negative"))
-> +               test_snprintf_negative();
-> +}
-
-[...]
-
-> +char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/progs/test_snprintf_single.c b/tools/testing/selftests/bpf/progs/test_snprintf_single.c
-> new file mode 100644
-> index 000000000000..15ccc5c43803
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_snprintf_single.c
-> @@ -0,0 +1,20 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2021 Google LLC. */
-> +
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +// The format string is filled from the userspace side such that loading fails
-
-C++ style format
-
-> +static const char fmt[10];
-> +
-> +SEC("raw_tp/sys_enter")
-> +int handler(const void *ctx)
-> +{
-> +       unsigned long long arg = 42;
-> +
-> +       bpf_snprintf(NULL, 0, fmt, &arg, sizeof(arg));
-> +
-> +       return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> --
-> 2.31.1.295.g9ea45b61b8-goog
->
