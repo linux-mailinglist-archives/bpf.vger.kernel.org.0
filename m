@@ -2,100 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C0B360619
-	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 11:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B79AB360729
+	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 12:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbhDOJqi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Apr 2021 05:46:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58383 "EHLO
+        id S230190AbhDOKc1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Apr 2021 06:32:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43369 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229537AbhDOJqh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 15 Apr 2021 05:46:37 -0400
+        by vger.kernel.org with ESMTP id S231687AbhDOKc0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 15 Apr 2021 06:32:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618479974;
+        s=mimecast20190719; t=1618482723;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Yt0pPRk4FAx3KOA3uBg3sAaCbyFJ9MPZjUZtHs4zBdQ=;
-        b=B3xej8LqVZ7l5oq8o9ubI5a88w2GW4T0i6hyce6ZCUYyj+DSzetlzCHQlCNDvj7d/DGHlw
-        p0BK2bPVLLm97mUqZjCXLSeRJ10oQyFidehTfDoSJz1UjvqL631u7xNRW1FOpWekkfgZD+
-        g+27fssK9a78QUb0tCFXGGE0KFISypk=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-NC5zC8IqOFW9JuAp8QoLWw-1; Thu, 15 Apr 2021 05:46:11 -0400
-X-MC-Unique: NC5zC8IqOFW9JuAp8QoLWw-1
-Received: by mail-ed1-f70.google.com with SMTP id y13-20020aa7cccd0000b02903781fa66252so4907665edt.18
-        for <bpf@vger.kernel.org>; Thu, 15 Apr 2021 02:46:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Yt0pPRk4FAx3KOA3uBg3sAaCbyFJ9MPZjUZtHs4zBdQ=;
-        b=N5theHcSYOHb/dOFLMcsadFhPET0e/dIhAI/kfV4oOxuRVnWObcM+R68afokzyFxvK
-         FgsyuhlJ2hR4DBoH8qeET4Bw5Q1SasanstEJ53qnT+Viwr3m8mShGYCtNtMZx941P9Tw
-         Fv2+hBW8j1G1GNskZ9i1rMjBeq07gvt85ell51MO6XtqmFsLgJW3oLhSL1/dGX7jcwNF
-         xHOe8NotZNJ4rb1FQDwfUlosC58zVMZ6KvtcqNShK4aNxx3XzH5fdpUhrmIp56JzOkGO
-         azJLVoVkdWASFSfTrO1agQjOajIOs5qUFRMIaExamWD7cyqA7h9vIdj+QC/EnKwEg/OP
-         FzHg==
-X-Gm-Message-State: AOAM530aBAyl5wvmpvWvy1T7BhRFP6uCFjTrcXt0n16Zu+NBZZIB+Yo5
-        ULQLm/PZC3nIH4ul5bYWDDdIhqD/fCh/ihO+mMrZzMZ+UkddBV/AGsiz4t+ovv1kE+QoVpQXAnt
-        8pkeuy6khMQ8b
-X-Received: by 2002:a17:906:29ca:: with SMTP id y10mr2591053eje.250.1618479969989;
-        Thu, 15 Apr 2021 02:46:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyBGZpidcdzWh3/QTwVlja8CQutaML1ZwlEhIFOv2PmdzHG+T94JebFZ/xKVAekAbf2stb8lg==
-X-Received: by 2002:a17:906:29ca:: with SMTP id y10mr2591030eje.250.1618479969609;
-        Thu, 15 Apr 2021 02:46:09 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id qt10sm1559903ejb.34.2021.04.15.02.46.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 02:46:09 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 659221806B3; Thu, 15 Apr 2021 11:46:08 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Grant Seltzer Richman <grantseltzer@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Subject: Re: Access to rodata when using libbpf directly
-In-Reply-To: <CAEf4BzZ2Piu5kkpp6PmHUFryGOo7P=jjNk7DkUVg6kJUBaHs8g@mail.gmail.com>
-References: <CAO658oVyB2b+Y6K3--sAhTcXfmPpmPjLhA0z7bbjyjhzDV8kcA@mail.gmail.com>
- <CAEf4BzZ2Piu5kkpp6PmHUFryGOo7P=jjNk7DkUVg6kJUBaHs8g@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 15 Apr 2021 11:46:08 +0200
-Message-ID: <87fszrkhi7.fsf@toke.dk>
+        bh=rxu5W4NqttayWiJx0YLwC8tZ6Q9P2DOL2R7jZQALhDQ=;
+        b=FpKu7fyyMZqeAOdvSIeOXSSiq7quUXVxhxZtx+AK8o1iobwFApq6Bj566EALsAb3Hkv1CV
+        tT7RYXRCXfY3X0nEQc1xjh1eKfHB7Pq7R0n1y9B8CEhwhnXFNmuWdhdderTBg++U6mhUNg
+        coEkGHcUTKDFwyJdNDIloCY1noXPt4Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-cDtOEI6tOpOGHIEIEUvbXw-1; Thu, 15 Apr 2021 06:31:59 -0400
+X-MC-Unique: cDtOEI6tOpOGHIEIEUvbXw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95957107ACCD;
+        Thu, 15 Apr 2021 10:31:56 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 63BF42B4A0;
+        Thu, 15 Apr 2021 10:31:46 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 12:31:45 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     brouer@redhat.com, kerneljasonxing@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, anthony.l.nguyen@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Jason Xing <xingwanli@kuaishou.com>,
+        Shujin Li <lishujin@kuaishou.com>
+Subject: Re: [PATCH net v3] i40e: fix the panic when running bpf in xdpdrv
+ mode
+Message-ID: <20210415123145.56af01ca@carbon>
+In-Reply-To: <20210414190652.00006680@intel.com>
+References: <20210413025011.1251-1-kerneljasonxing@gmail.com>
+        <20210414023428.10121-1-kerneljasonxing@gmail.com>
+        <20210414190652.00006680@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On Wed, 14 Apr 2021 19:06:52 -0700
+Jesse Brandeburg <jesse.brandeburg@intel.com> wrote:
 
-> On Wed, Apr 14, 2021 at 7:26 PM Grant Seltzer Richman
-> <grantseltzer@gmail.com> wrote:
->>
->> As I understand it, accessing and setting read only global variables
->> from a userspace control program through libbpf can only happen when
->> importing a BPF skeleton. Things like `bpf_object__find_map_by_name()`
->> are exposed but the name of this map is internal and
->> `internal_map_name()` is as well. Traversing through the maps array
->> via bpf_object directly doesn't seem possible either.
->
-> Not really.
->
-> See bpf_object__for_each_map() macro and bpf_map__is_internal() API,
-> both of which are public. As for the name, it's also sort of part of
-> API, though I want to fix them in libbpf 1.0 (they should be named
-> .rodata, .data, .bss). So you can definitely either find the map with
-> iteration or by knowing how the name is generated. Then do mmap() and
-> using BTF you'll know each variable's offset and size. No magic, just
-> some code to do this, which is what is done by bpftool for skeletons
-> (bpftool is a completely external user of libbpf in this case, no
-> private APIs are involved).
+> kerneljasonxing@gmail.com wrote:
+> 
+> > From: Jason Xing <xingwanli@kuaishou.com>
+> > 
+> > Fix this panic by adding more rules to calculate the value of @rss_size_max
+> > which could be used in allocating the queues when bpf is loaded, which,
+> > however, could cause the failure and then trigger the NULL pointer of
+> > vsi->rx_rings. Prio to this fix, the machine doesn't care about how many
+> > cpus are online and then allocates 256 queues on the machine with 32 cpus
+> > online actually.
+> > 
+> > Once the load of bpf begins, the log will go like this "failed to get
+> > tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
+> > failed".
+> > 
+> > Thus, I attach the key information of the crash-log here.
+> > 
+> > BUG: unable to handle kernel NULL pointer dereference at
+> > 0000000000000000
+> > RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
+> > Call Trace:
+> > [2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
+> > [2160294.717666]  dev_xdp_install+0x4f/0x70
+> > [2160294.718036]  dev_change_xdp_fd+0x11f/0x230
+> > [2160294.718380]  ? dev_disable_lro+0xe0/0xe0
+> > [2160294.718705]  do_setlink+0xac7/0xe70
+> > [2160294.719035]  ? __nla_parse+0xed/0x120
+> > [2160294.719365]  rtnl_newlink+0x73b/0x860
+> > 
+> > Fixes: 41c445ff0f48 ("i40e: main driver core")
+> > Co-developed-by: Shujin Li <lishujin@kuaishou.com>
+> > Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+> > Signed-off-by: Jason Xing <xingwanli@kuaishou.com>  
+> 
+> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+> 
+> @Jakub/@DaveM - feel free to apply this directly.
 
-We also added bpf_map__set_initial_value() for this, so you don't even
-need to mmap(); we're using this in libxdp:
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
-https://github.com/xdp-project/xdp-tools/blob/master/lib/libxdp/libxdp.c#L2325
+The crash/bug happens in this code:
 
--Toke
+ static int i40e_xdp_setup(struct i40e_vsi *vsi, struct bpf_prog *prog,
+			  struct netlink_ext_ack *extack)
+ {
+ [...]
+	for (i = 0; i < vsi->num_queue_pairs; i++)
+		WRITE_ONCE(vsi->rx_rings[i]->xdp_prog, vsi->xdp_prog);
+
+
+And this is a side effect of i40e_setup_pf_switch() failing with "setup
+of MAIN VSI failed".
+
+LGTM
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
