@@ -2,116 +2,274 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B4A3600B2
-	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 06:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790F33600B7
+	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 06:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229462AbhDOEBv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Apr 2021 00:01:51 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:57962 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229450AbhDOEBv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Apr 2021 00:01:51 -0400
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxPcmTundgzikIAA--.11464S3;
-        Thu, 15 Apr 2021 12:01:24 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [QUESTION] Will the pahole tar source code with corresponding libbpf
- submodule codes be released as well in the future?
-To:     Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <2de4aad5-fa9e-1c39-3c92-9bb9229d0966@loongson.cn>
-Date:   Thu, 15 Apr 2021 12:01:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S229485AbhDOECx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Apr 2021 00:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhDOECx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Apr 2021 00:02:53 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39752C061574;
+        Wed, 14 Apr 2021 21:02:29 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id nm3-20020a17090b19c3b029014e1bbf6c60so7748208pjb.4;
+        Wed, 14 Apr 2021 21:02:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cs+nYm4puz5jC77R0dguGP56AyLhSuHd4YSbnutWjz4=;
+        b=LvoTQHHJKIbo686MInYyR+7ptRP+aucEQil0X5yMJVnyQx+QAtmGtQkDInZ7c794zE
+         R4JeZ8RMcwR59T3TFCS8IxNTPg5t+2pmzkOFlFs/kFdltGyJhr+FggVVzmpbg819DsNl
+         Z1uQOv4R/XrrCeRDylgb5qe4D1+iyFToLtipqQ8uJfUdPAivpbkYwvAJ3OA9oUO5W6w1
+         ubbF5DqmvWRDjlGlGpBeXB+UZ/YI2CMb9sRAgVmvFWWyTuWMfoSuTevBK3jZmQkS8IoE
+         lf+rBd1tzB/Y7Si2/BEkLaTBzuN16k3WZBLqWEfQetDGmWg0DTGWoTD7l0vzijn5BMpg
+         4d5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Cs+nYm4puz5jC77R0dguGP56AyLhSuHd4YSbnutWjz4=;
+        b=Ar1F6mevtYxvpO2eMpeXaT5RTix7FtKNITWzkez17qy+jicHw1/BAsB669z2D9tZTW
+         9+m+SJQrFmz1no4SThlRP75bPGWzwlYsRVNwRJKzT6LyxqgbxVe9I2bP9JwlHfuFwMsm
+         udn5H2jvgjYY+csdb7mDudBLQ5gh7diFETWV1r7NTxT7xYHPTkIllUDn2yQr3Z5GckWs
+         9u2INCnEkJqNyp4oHKLBXy44Bkw6vQHtxZzL/VrvazvPBUtAaVdsN8kjhji5+NRwe9LI
+         1Dw2KLUG+LnT+TSWcvghdzpbyKVu6XhYC+mYcLlQ7TAPiXwNU0IalWJxxMvh4EA2FgJt
+         58LA==
+X-Gm-Message-State: AOAM533xZdXUEoM+b429Z/gNEd2RyrvM/1xCf3kh1i39fwb07UTsrWv5
+        27LFPLQo9qWbmjvn3mGDBt1yCI810DqOJtceIFA=
+X-Google-Smtp-Source: ABdhPJxMDhqscip21s1AHvy5IgX6hx5EzKx0uKbaw7lQyh8rga/cj9Yyq0Ec9Yhtbp/7JjQreo2MpmiFNlCAtxaOfiY=
+X-Received: by 2002:a17:90a:f2ca:: with SMTP id gt10mr1619287pjb.231.1618459348689;
+ Wed, 14 Apr 2021 21:02:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxPcmTundgzikIAA--.11464S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF1UGr1UKFyxJFyfAr15XFb_yoW5XFy8pF
-        Z3J3Z5tr45Kw4FyrWkA34xWr4YqrZ5tr4aqa4Skr4UCrZ8Xa1xWan2vF43urZxAwn8Jay2
-        qF17CF4UCFy8Wr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkvb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07bOoGdUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+References: <20210401042635.19768-1-xiyou.wangcong@gmail.com>
+ <20210402192823.bqwgipmky3xsucs5@ast-mbp> <CAM_iQpUfv7c19zFN1Y5-cSUiVwpk0bmtBMSxZoELgDOFCQ=qAw@mail.gmail.com>
+ <20210402234500.by3wigegeluy5w7j@ast-mbp> <CAM_iQpWf2aYbY=tKejb=nx7LWBLo1woTp-n4wOLhkUuDCz8u-Q@mail.gmail.com>
+ <20210412230151.763nqvaadrrg77kd@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210412230151.763nqvaadrrg77kd@ast-mbp.dhcp.thefacebook.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Wed, 14 Apr 2021 21:02:17 -0700
+Message-ID: <CAM_iQpWePmmpr0RKqCrQ=NPiGrq2Tx9OU9y3e4CTzFjvh5t47w@mail.gmail.com>
+Subject: Re: [RFC Patch bpf-next] bpf: introduce bpf timer
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-(1) tools/bpf/bpftool build failed due to the following reason:
+On Mon, Apr 12, 2021 at 4:01 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Apr 05, 2021 at 05:36:27PM -0700, Cong Wang wrote:
+> > On Fri, Apr 2, 2021 at 4:45 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Fri, Apr 02, 2021 at 02:24:51PM -0700, Cong Wang wrote:
+> > > > > > where the key is the timer ID and the value is the timer expire
+> > > > > > timer.
+> > > > >
+> > > > > The timer ID is unnecessary. We cannot introduce new IDR for every new
+> > > > > bpf object. It doesn't scale.
+> > > >
+> > > > The IDR is per map, not per timer.
+> > >
+> > > Per-map is not acceptable. One IDR for all maps with timers is not acceptable either.
+> > > We have 3 IDRs now: for progs, for maps, and for links.
+> > > No other objects need IDRs.
+> > >
+> > > > > Here is how more general timers might look like:
+> > > > > https://lore.kernel.org/bpf/20210310011905.ozz4xahpkqbfkkvd@ast-mbp.dhcp.thefacebook.com/
+> > > > >
+> > > > > include/uapi/linux/bpf.h:
+> > > > > struct bpf_timer {
+> > > > >   u64 opaque;
+> > > > > };
+> > > > > The 'opaque' field contains a pointer to dynamically allocated struct timer_list and other data.
+> > > >
+> > > > This is my initial design as we already discussed, it does not work,
+> > > > please see below.
+> > >
+> > > It does work. The perceived "issue" you referred to is a misunderstanding. See below.
+> > >
+> > > > >
+> > > > > The prog would do:
+> > > > > struct map_elem {
+> > > > >     int stuff;
+> > > > >     struct bpf_timer timer;
+> > > > > };
+> > > > >
+> > > > > struct {
+> > > > >     __uint(type, BPF_MAP_TYPE_HASH);
+> > > > >     __uint(max_entries, 1);
+> > > > >     __type(key, int);
+> > > > >     __type(value, struct map_elem);
+> > > > > } hmap SEC(".maps");
+> > > > >
+> > > > > static int timer_cb(struct map_elem *elem)
+> > > > > {
+> > > > >     if (whatever && elem->stuff)
+> > > > >         bpf_timer_mod(&elem->timer, new_expire);
+> > > > > }
+> > > > >
+> > > > > int bpf_timer_test(...)
+> > > > > {
+> > > > >     struct map_elem *val;
+> > > > >
+> > > > >     val = bpf_map_lookup_elem(&hmap, &key);
+> > > > >     if (val) {
+> > > > >         bpf_timer_init(&val->timer, timer_cb, flags);
+> > > > >         val->stuff = 123;
+> > > > >         bpf_timer_mod(&val->timer, expires);
+> > > > >     }
+> > > > > }
+> > > > >
+> > > > > bpf_map_update_elem() either from bpf prog or from user space
+> > > > > allocates map element and zeros 8 byte space for the timer pointer.
+> > > > > bpf_timer_init() allocates timer_list and stores it into opaque if opaque == 0.
+> > > > > The validation of timer_cb() is done by the verifier.
+> > > > > bpf_map_delete_elem() either from bpf prog or from user space
+> > > > > does del_timer() if elem->opaque != 0.
+> > > > > If prog refers such hmap as above during prog free the kernel does
+> > > > > for_each_map_elem {if (elem->opaque) del_timer().}
+> > > > > I think that is the simplest way of prevent timers firing past the prog life time.
+> > > > > There could be other ways to solve it (like prog_array and ref/uref).
+> > > > >
+> > > > > Pseudo code:
+> > > > > int bpf_timer_init(struct bpf_timer *timer, void *timer_cb, int flags)
+> > > > > {
+> > > > >   if (timer->opaque)
+> > > > >     return -EBUSY;
+> > > > >   t = alloc timer_list
+> > > > >   t->cb = timer_cb;
+> > > > >   t->..
+> > > > >   timer->opaque = (long)t;
+> > > > > }
+> > > > >
+> > > > > int bpf_timer_mod(struct bpf_timer *timer, u64 expires)
+> > > > > {
+> > > > >   if (!time->opaque)
+> > > > >     return -EINVAL;
+> > > > >   t = (struct timer_list *)timer->opaque;
+> > > > >   mod_timer(t,..);
+> > > > > }
+> > > > >
+> > > > > int bpf_timer_del(struct bpf_timer *timer)
+> > > > > {
+> > > > >   if (!time->opaque)
+> > > > >     return -EINVAL;
+> > > > >   t = (struct timer_list *)timer->opaque;
+> > > > >   del_timer(t);
+> > > > > }
+> > > > >
+> > > > > The verifier would need to check that 8 bytes occupied by bpf_timer and not accessed
+> > > > > via load/store by the program. The same way it does it for bpf_spin_lock.
+> > > >
+> > > > This does not work, because bpf_timer_del() has to be matched
+> > > > with bpf_timer_init(), otherwise we would leak timer resources.
+> > > > For example:
+> > > >
+> > > > SEC("foo")
+> > > > bad_ebpf_code()
+> > > > {
+> > > >   struct bpf_timer t;
+> > > >   bpf_timer_init(&t, ...); // allocate a timer
+> > > >   bpf_timer_mod(&t, ..);
+> > > >   // end of BPF program
+> > > >   // now the timer is leaked, no one will delete it
+> > > > }
+> > > >
+> > > > We can not enforce the matching in the verifier, because users would
+> > > > have to call bpf_timer_del() before exiting, which is not what we want
+> > > > either.
+> > >
+> > > ```
+> > > bad_ebpf_code()
+> > > {
+> > >   struct bpf_timer t;
+> > > ```
+> > > is not at all what was proposed. This kind of code will be rejected by the verifier.
+> > >
+> > > 'struct bpf_timer' has to be part of the map element and the verifier will enforce that
+> > > just like it does so for bpf_spin_lock.
+> > > Try writing the following program:
+> > > ```
+> > > bad_ebpf_code()
+> > > {
+> > >   struct bpf_spin_lock t;
+> > >   bpf_spin_lock(&t);
+> > > }
+> > > ``
+> > > and then follow the code to see why the verifier rejects it.
+> >
+> > Well, embedding a spinlock makes sense as it is used to protect
+> > the value it is associated with, but for a timer, no, it has no value
+> > to associate.
+>
+> The way kernel code is using timers is alwasy by embedding timer_list
+> into another data structure and then using container_of() in a callback.
+> So all existing use cases of timers disagree with your point.
 
-Error: failed to load BTF from /boot/vmlinux-5.12.0-rc2: No such file or 
-directory
-make: *** [Makefile:158: vmlinux.h] Error 2
+Not always. Data can be passed as a global data structure visible to
+timer callback.
 
-(2) When set CONFIG_DEBUG_INFO_BTF=y, failed to generate BTF for vmlinux
-due to pahole is not available
+>
+> > Even if it does, updating it requires a lock as the
+> > callback can run concurrently with value update.
+>
+> No lock is necessary.
+> map_value_update_elem can either return EBUSY if timer_list != NULL
+> or it can del_timer() before updating the whole value.
+> Both choices can be expressed with flags.
 
-BTF: .tmp_vmlinux.btf: pahole (pahole) is not available
-Failed to generate BTF for vmlinux
-Try to disable CONFIG_DEBUG_INFO_BTF
-make: *** [Makefile:1197: vmlinux] Error 1
+This sounds problematic, because the hash map is visible to
+users but not the timers associated, hence in user-space users
+just unexpectedly get EBUSY.
 
-(3) When build pahole from tar.gz source code, it still failed
-due to no libbpf submodule.
+>
+> > So, they are very
+> > different hence should be treated differently rather than similarly.
+> >
+> > >
+> > > The implementation of what I'm proposing is straightforward.
+> > > I certainly understand that it might look intimidating and "impossible",
+> > > but it's really quite simple.
+> >
+> > How do you refcnt the struct bpf_prog with your approach? Or with
+>
+> you don't. More so prog must not be refcnted otherwise it's a circular
+> dependency between progs and maps.
+> We did that in the past with prog_array and the api became unpleasant
+> and not user friendly. Not going to repeat the same mistake again.
 
-loongson@linux:~$ wget 
-https://git.kernel.org/pub/scm/devel/pahole/pahole.git/snapshot/pahole-1.21.tar.gz
-loongson@linux:~$ tar xf pahole-1.21.tar.gz
-loongson@linux:~$ cd pahole-1.21
-loongson@linux:~/pahole-1.21$ mkdir build
-loongson@linux:~/pahole-1.21$ cd build/
-loongson@linux:~/pahole-1.21/build$ cmake -D__LIB=lib ..
--- The C compiler identification is GNU 10.2.1
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Checking availability of DWARF and ELF development libraries
--- Looking for dwfl_module_build_id in elf
--- Looking for dwfl_module_build_id in elf - found
--- Found dwarf.h header: /usr/include
--- Found elfutils/libdw.h header: /usr/include
--- Found libdw library: /usr/lib/mips64el-linux-gnuabi64/libdw.so
--- Found libelf library: /usr/lib/mips64el-linux-gnuabi64/libelf.so
--- Checking availability of DWARF and ELF development libraries - done
--- Found ZLIB: /usr/lib/mips64el-linux-gnuabi64/libz.so (found version 
-"1.2.11")
-CMake Error at CMakeLists.txt:60 (message):
-   The submodules were not downloaded! GIT_SUBMODULE was turned off or 
-failed.
-   Please update submodules and try again.
+Then how do you prevent prog being unloaded when the timer callback
+is still active?
 
--- Configuring incomplete, errors occurred!
-See also "/home/loongson/pahole-1.21/build/CMakeFiles/CMakeOutput.log".
 
-(4) I notice that the pahole git source code can build successful because
-it will clone libbpf automatically:
+>
+> > actually any attempt to create timers in kernel-space. I am not intimidated
+> > but quite happy to hear. If you do it in the verifier, we do not know which
+> > code path is actually executed when running it. If you do it with JIT, I do
+> > not see how JIT can even get the right struct bpf_prog pointer in context.
+>
+> Neither. See pseudo code for bpf_timer_init/bpf_timer_mod in the earlier email.
+>
+> > This is how I concluded it looks impossible.
+>
+> Please explain what 'impossible' or buggy you see in the pseudo code.
 
--- Submodule update
-Submodule 'lib/bpf' (https://github.com/libbpf/libbpf) registered for 
-path 'lib/bpf'
-Cloning into '/home/loongson/pahole/lib/bpf'...
-Submodule path 'lib/bpf': checked out 
-'986962fade5dfa89c2890f3854eb040d2a64ab38'
--- Submodule update - done
+Your pseudo code never shows how to refcnt the struct bpf_prog, which
+is critical to the bpf timer design.
 
-(5) So Will the pahole tar source code with corresponding libbpf 
-submodule codes
-be released as well in the future? just like bcc:
-https://github.com/iovisor/bcc/releases
-https://github.com/iovisor/bcc/commit/708f786e3784dc32570a079f2ed74c35731664ea
-
-Thanks,
-Tiezhu
-
+Thanks.
