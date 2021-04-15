@@ -2,55 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB209360834
-	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 13:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAFF3608E0
+	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 14:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbhDOLZR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Apr 2021 07:25:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40257 "EHLO
+        id S232650AbhDOMFQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Apr 2021 08:05:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27487 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231531AbhDOLZQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 15 Apr 2021 07:25:16 -0400
+        by vger.kernel.org with ESMTP id S232541AbhDOMFP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 15 Apr 2021 08:05:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618485893;
+        s=mimecast20190719; t=1618488292;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qtyli+TcTqBo1+AtKSSB53e78WK+2Xfl6H+IvpWkujk=;
-        b=IzJT08zsHa0fes3QtnQPU46NqM3qStnnp17VW4jrOHhpUM+JLcjxH4MH1MARoEH+lwe/fN
-        +ltKP4ylMDBvIrsZ0jFylbY/rL6D5FPRv3eRrV7xzJB2Zj7yfutdrxF7iYs3NcXUll+fy1
-        T60Z+LpS7f7pEyc0Xi5HsgfzxqWxThY=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-364-VbQbqeuCNH-J0VdOGfFvvA-1; Thu, 15 Apr 2021 07:24:50 -0400
-X-MC-Unique: VbQbqeuCNH-J0VdOGfFvvA-1
-Received: by mail-ed1-f71.google.com with SMTP id w14-20020aa7da4e0000b02903834aeed684so3242765eds.13
-        for <bpf@vger.kernel.org>; Thu, 15 Apr 2021 04:24:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qtyli+TcTqBo1+AtKSSB53e78WK+2Xfl6H+IvpWkujk=;
-        b=Eav5f6mDRjmYfBBXO8j2hbLmJqJ66o/OqrPX8X3rCjc3+35oSUaLqs5t5WmyWKLhJn
-         7uAqtY9/409u/GkynpKbfdDU9zC4QUcUQLu/bDlPuQGOtdE6jgejw6BfcrLWG4g5ZEJa
-         Vajv8u3R66cxiiAHkn8GIx4oisuo4Ppz6fQqkjDBpi+fWqQWJmcV5NFodryuPKtAhnBA
-         1SWeXLZuEUFB5i90EsX4uXMWTXM3F1OkZwATXau6SqoVUSf9Grcvtv/cVIZXEWiyahGh
-         VOyzZEH7i22lrj2ECu1QxyAy3XTMFvRirVYf7oidUokjyrGbnouz3r5znfOW3zyHSdCv
-         p3LA==
-X-Gm-Message-State: AOAM5302AVaML5M6NKZjfqzQxPxIWPwriOHadC1RdtKLmDG+vnKuzAVe
-        yPAGEwf8xWyNmMY4YJbntqANPSMgMNrdVUaQx49K8ry5pkdMuGba+Na9w2Gaq2vP8VFFgeloQXY
-        cLoz7LGD4C6Tn
-X-Received: by 2002:a05:6402:350b:: with SMTP id b11mr3472135edd.288.1618485889717;
-        Thu, 15 Apr 2021 04:24:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJytyOBJFIQYM0UbnPL9QUE+YYP0KWgVfB4dwFgVRmRiT0kz9PNM2cSazNbOQLO6e0ZEe5lwiw==
-X-Received: by 2002:a05:6402:350b:: with SMTP id b11mr3472107edd.288.1618485889539;
-        Thu, 15 Apr 2021 04:24:49 -0700 (PDT)
-Received: from localhost ([151.66.38.94])
-        by smtp.gmail.com with ESMTPSA id jw7sm1717368ejc.4.2021.04.15.04.24.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 04:24:48 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 13:24:45 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+        bh=KnDmEC1PEXguYIGj0CwznxutAgI3StoFIDa8gakyiAE=;
+        b=LrixZqNobu6wJisPQGhyMKsqA/Z34IUtHD8qb7OUixIWN1NL/d/8lkfMRLlfELVwQ+EHxb
+        +JS8pX06ts/WB3ntxarN66ECWAL3dTJNYhaKWcv5SEs5UXVOhGvkBBbpQwFfPjG0zaCF9K
+        YCdaNAIJn5QOzfM4sUZlxnd8PZDyxlE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-21-z0_8Q-5rPguF2E4pbTNTyA-1; Thu, 15 Apr 2021 08:04:47 -0400
+X-MC-Unique: z0_8Q-5rPguF2E4pbTNTyA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8755679EC5;
+        Thu, 15 Apr 2021 12:04:45 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A5602C01E;
+        Thu, 15 Apr 2021 12:04:41 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 14:04:38 +0200
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
 To:     Kurt Kanzenbach <kurt@linutronix.de>
 Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
@@ -68,284 +52,48 @@ Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Richard Cochran <richardcochran@gmail.com>
 Subject: Re: [PATCH net] igb: Fix XDP with PTP enabled
-Message-ID: <YHgiffS6A0sDzLGW@lore-desk>
-References: <20210415092145.27322-1-kurt@linutronix.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="BSw18Pe0ja94wJ00"
-Content-Disposition: inline
+Message-ID: <20210415140438.60221f21@carbon>
 In-Reply-To: <20210415092145.27322-1-kurt@linutronix.de>
+References: <20210415092145.27322-1-kurt@linutronix.de>
+Organization: Red Hat Inc.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, 15 Apr 2021 11:21:45 +0200
+Kurt Kanzenbach <kurt@linutronix.de> wrote:
 
---BSw18Pe0ja94wJ00
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-[...]
-> @@ -8683,7 +8676,10 @@ static int igb_clean_rx_irq(struct igb_q_vector *q=
-_vector, const int budget)
->  	while (likely(total_packets < budget)) {
->  		union e1000_adv_rx_desc *rx_desc;
->  		struct igb_rx_buffer *rx_buffer;
-> +		ktime_t timestamp =3D 0;
-> +		int pkt_offset =3D 0;
->  		unsigned int size;
-> +		void *pktbuf;
-> =20
->  		/* return some buffers to hardware, one at a time is too slow */
->  		if (cleaned_count >=3D IGB_RX_BUFFER_WRITE) {
-> @@ -8703,15 +8699,22 @@ static int igb_clean_rx_irq(struct igb_q_vector *=
-q_vector, const int budget)
->  		dma_rmb();
-> =20
->  		rx_buffer =3D igb_get_rx_buffer(rx_ring, size, &rx_buf_pgcnt);
-> +		pktbuf =3D page_address(rx_buffer->page) + rx_buffer->page_offset;
-> +
-> +		/* pull rx packet timestamp if available */
-> +		if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
-> +			timestamp =3D igb_ptp_rx_pktstamp(rx_ring->q_vector,
-> +							pktbuf);
-> +			pkt_offset +=3D IGB_TS_HDR_LEN;
-> +			size -=3D IGB_TS_HDR_LEN;
-> +		}
-> =20
->  		/* retrieve a buffer from the ring */
->  		if (!skb) {
-> -			unsigned int offset =3D igb_rx_offset(rx_ring);
-> -			unsigned char *hard_start;
-> -
-> -			hard_start =3D page_address(rx_buffer->page) +
-> -				     rx_buffer->page_offset - offset;
-> -			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
-> +			xdp.data =3D pktbuf + pkt_offset;
-> +			xdp.data_end =3D xdp.data + size;
-> +			xdp.data_meta =3D xdp.data;
-> +			xdp.data_hard_start =3D pktbuf - igb_rx_offset(rx_ring);
-
-in order to keep it aligned with other xdp drivers, I guess you can do some=
-thing like:
-
-			unsigned char *hard_start =3D pktbuf - igb_rx_offset(rx_ring);
-			unsigned int offset =3D pkt_offset + igb_rx_offset(rx_ring);
-
-			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
-
-Probably the compiler will optimize it.
-
-Regards,
-Lorenzo
-
-> When using native XDP with the igb driver, the XDP frame data doesn't poi=
-nt to
-> the beginning of the packet. It's off by 16 bytes. Everything works as ex=
-pected
+> When using native XDP with the igb driver, the XDP frame data doesn't point to
+> the beginning of the packet. It's off by 16 bytes. Everything works as expected
 > with XDP skb mode.
->=20
-> Actually these 16 bytes are used to store the packet timestamps. Therefor=
-e, pull
-> the timestamp before executing any XDP operations and adjust all other co=
-de
+> 
+> Actually these 16 bytes are used to store the packet timestamps. Therefore, pull
+> the timestamp before executing any XDP operations and adjust all other code
 > accordingly. The igc driver does it like that as well.
->=20
+> 
 > Tested with Intel i210 card and AF_XDP sockets.
->=20
+
+Doesn't the i210 card use the igc driver?
+This change is for igb driver.
+
+
 > Fixes: 9cbc948b5a20 ("igb: add XDP support")
 > Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
 > ---
->=20
-> Changes since RFC:
->=20
->  * Removed unused return value definitions
->=20
-> Previous versions:
->=20
->  * https://lkml.kernel.org/netdev/20210412101713.15161-1-kurt@linutronix.=
-de/
->=20
+[...]
+> 
 > drivers/net/ethernet/intel/igb/igb.h      |  3 +-
 >  drivers/net/ethernet/intel/igb/igb_main.c | 46 ++++++++++++-----------
 >  drivers/net/ethernet/intel/igb/igb_ptp.c  | 21 ++++-------
 >  3 files changed, 33 insertions(+), 37 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/intel/igb/igb.h b/drivers/net/ethernet/=
-intel/igb/igb.h
-> index 7bda8c5edea5..72cf967c1a00 100644
-> --- a/drivers/net/ethernet/intel/igb/igb.h
-> +++ b/drivers/net/ethernet/intel/igb/igb.h
-> @@ -748,8 +748,7 @@ void igb_ptp_suspend(struct igb_adapter *adapter);
->  void igb_ptp_rx_hang(struct igb_adapter *adapter);
->  void igb_ptp_tx_hang(struct igb_adapter *adapter);
->  void igb_ptp_rx_rgtstamp(struct igb_q_vector *q_vector, struct sk_buff *=
-skb);
-> -int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
-> -			struct sk_buff *skb);
-> +ktime_t igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va);
->  int igb_ptp_set_ts_config(struct net_device *netdev, struct ifreq *ifr);
->  int igb_ptp_get_ts_config(struct net_device *netdev, struct ifreq *ifr);
->  void igb_set_flag_queue_pairs(struct igb_adapter *, const u32);
-> diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethe=
-rnet/intel/igb/igb_main.c
-> index a45cd2b416c8..4677b08d3270 100644
-> --- a/drivers/net/ethernet/intel/igb/igb_main.c
-> +++ b/drivers/net/ethernet/intel/igb/igb_main.c
-> @@ -8281,7 +8281,7 @@ static void igb_add_rx_frag(struct igb_ring *rx_rin=
-g,
->  static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
->  					 struct igb_rx_buffer *rx_buffer,
->  					 struct xdp_buff *xdp,
-> -					 union e1000_adv_rx_desc *rx_desc)
-> +					 ktime_t timestamp)
->  {
->  #if (PAGE_SIZE < 8192)
->  	unsigned int truesize =3D igb_rx_pg_size(rx_ring) / 2;
-> @@ -8301,12 +8301,8 @@ static struct sk_buff *igb_construct_skb(struct ig=
-b_ring *rx_ring,
->  	if (unlikely(!skb))
->  		return NULL;
-> =20
-> -	if (unlikely(igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP))) {
-> -		if (!igb_ptp_rx_pktstamp(rx_ring->q_vector, xdp->data, skb)) {
-> -			xdp->data +=3D IGB_TS_HDR_LEN;
-> -			size -=3D IGB_TS_HDR_LEN;
-> -		}
-> -	}
-> +	if (timestamp)
-> +		skb_hwtstamps(skb)->hwtstamp =3D timestamp;
-> =20
->  	/* Determine available headroom for copy */
->  	headlen =3D size;
-> @@ -8337,7 +8333,7 @@ static struct sk_buff *igb_construct_skb(struct igb=
-_ring *rx_ring,
->  static struct sk_buff *igb_build_skb(struct igb_ring *rx_ring,
->  				     struct igb_rx_buffer *rx_buffer,
->  				     struct xdp_buff *xdp,
-> -				     union e1000_adv_rx_desc *rx_desc)
-> +				     ktime_t timestamp)
->  {
->  #if (PAGE_SIZE < 8192)
->  	unsigned int truesize =3D igb_rx_pg_size(rx_ring) / 2;
-> @@ -8364,11 +8360,8 @@ static struct sk_buff *igb_build_skb(struct igb_ri=
-ng *rx_ring,
->  	if (metasize)
->  		skb_metadata_set(skb, metasize);
-> =20
-> -	/* pull timestamp out of packet data */
-> -	if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
-> -		if (!igb_ptp_rx_pktstamp(rx_ring->q_vector, skb->data, skb))
-> -			__skb_pull(skb, IGB_TS_HDR_LEN);
-> -	}
-> +	if (timestamp)
-> +		skb_hwtstamps(skb)->hwtstamp =3D timestamp;
-> =20
->  	/* update buffer offset */
->  #if (PAGE_SIZE < 8192)
 
->  #if (PAGE_SIZE > 4096)
->  			/* At larger PAGE_SIZE, frame_sz depend on len size */
->  			xdp.frame_sz =3D igb_rx_frame_truesize(rx_ring, size);
-> @@ -8733,10 +8736,11 @@ static int igb_clean_rx_irq(struct igb_q_vector *=
-q_vector, const int budget)
->  		} else if (skb)
->  			igb_add_rx_frag(rx_ring, rx_buffer, skb, size);
->  		else if (ring_uses_build_skb(rx_ring))
-> -			skb =3D igb_build_skb(rx_ring, rx_buffer, &xdp, rx_desc);
-> +			skb =3D igb_build_skb(rx_ring, rx_buffer, &xdp,
-> +					    timestamp);
->  		else
->  			skb =3D igb_construct_skb(rx_ring, rx_buffer,
-> -						&xdp, rx_desc);
-> +						&xdp, timestamp);
-> =20
->  		/* exit if we failed to retrieve a buffer */
->  		if (!skb) {
-> diff --git a/drivers/net/ethernet/intel/igb/igb_ptp.c b/drivers/net/ether=
-net/intel/igb/igb_ptp.c
-> index 86a576201f5f..8e23df7da641 100644
-> --- a/drivers/net/ethernet/intel/igb/igb_ptp.c
-> +++ b/drivers/net/ethernet/intel/igb/igb_ptp.c
-> @@ -856,30 +856,26 @@ static void igb_ptp_tx_hwtstamp(struct igb_adapter =
-*adapter)
->  	dev_kfree_skb_any(skb);
->  }
-> =20
-> -#define IGB_RET_PTP_DISABLED 1
-> -#define IGB_RET_PTP_INVALID 2
-> -
->  /**
->   * igb_ptp_rx_pktstamp - retrieve Rx per packet timestamp
->   * @q_vector: Pointer to interrupt specific structure
->   * @va: Pointer to address containing Rx buffer
-> - * @skb: Buffer containing timestamp and packet
->   *
->   * This function is meant to retrieve a timestamp from the first buffer =
-of an
->   * incoming frame.  The value is stored in little endian format starting=
- on
->   * byte 8
->   *
-> - * Returns: 0 if success, nonzero if failure
-> + * Returns: 0 on failure, timestamp on success
->   **/
-> -int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
-> -			struct sk_buff *skb)
-> +ktime_t igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va)
->  {
->  	struct igb_adapter *adapter =3D q_vector->adapter;
-> +	struct skb_shared_hwtstamps ts;
->  	__le64 *regval =3D (__le64 *)va;
->  	int adjust =3D 0;
-> =20
->  	if (!(adapter->ptp_flags & IGB_PTP_ENABLED))
-> -		return IGB_RET_PTP_DISABLED;
-> +		return 0;
-> =20
->  	/* The timestamp is recorded in little endian format.
->  	 * DWORD: 0        1        2        3
-> @@ -888,10 +884,9 @@ int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vecto=
-r, void *va,
-> =20
->  	/* check reserved dwords are zero, be/le doesn't matter for zero */
->  	if (regval[0])
-> -		return IGB_RET_PTP_INVALID;
-> +		return 0;
-> =20
-> -	igb_ptp_systim_to_hwtstamp(adapter, skb_hwtstamps(skb),
-> -				   le64_to_cpu(regval[1]));
-> +	igb_ptp_systim_to_hwtstamp(adapter, &ts, le64_to_cpu(regval[1]));
-> =20
->  	/* adjust timestamp for the RX latency based on link speed */
->  	if (adapter->hw.mac.type =3D=3D e1000_i210) {
-> @@ -907,10 +902,8 @@ int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vecto=
-r, void *va,
->  			break;
->  		}
->  	}
-> -	skb_hwtstamps(skb)->hwtstamp =3D
-> -		ktime_sub_ns(skb_hwtstamps(skb)->hwtstamp, adjust);
-> =20
-> -	return 0;
-> +	return ktime_sub_ns(ts.hwtstamp, adjust);
->  }
-> =20
->  /**
-> --=20
-> 2.20.1
->=20
-
---BSw18Pe0ja94wJ00
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYHgiewAKCRA6cBh0uS2t
-rGifAP41u3eYsesX4Vq3u4Y+ivd77mrhucZi5zn9gWM/uAlQcwD/TY6g3U062vJm
-qHYmvOK3bm7d88EC/XsxM7oibFouYgY=
-=DTze
------END PGP SIGNATURE-----
-
---BSw18Pe0ja94wJ00--
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
