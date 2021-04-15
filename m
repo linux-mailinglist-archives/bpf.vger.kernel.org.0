@@ -2,105 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9575E36118F
-	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 20:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2C83611F3
+	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 20:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233052AbhDOSAm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Apr 2021 14:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232759AbhDOSAl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Apr 2021 14:00:41 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3F0C061574;
-        Thu, 15 Apr 2021 11:00:16 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id s1-20020a4ac1010000b02901cfd9170ce2so5573850oop.12;
-        Thu, 15 Apr 2021 11:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uCTgNUtrQaN47ypy4tlXXz/Fqi8+o6qT6fOZMZagGcw=;
-        b=nMFZ/OL7qNpHZzONQgpskAMU2rJwmvJSnPP/c3MXcgBlksmsSXUhXJOFkk0h8qujs4
-         MrGJeKQi3/XiGZfVsN+Id8MmIXRrpzrON5VWyhp+FXdeglX27qTnQ7h2BVrm5ptDH3fw
-         o5iI3aB/WfBEZQaad1aiEefb3gHYH8RRxf7mdQpLGVDk/ylYKzHmkL81YEnQhAF3gKvA
-         U4y4QsqPTGUeHW+a5t6JNjZfOs1ZBYY+PTaFtAK5USuu4YHmLRk5ksI32/2MA7/YtKk/
-         1NZB+RV2itpbq/IUPx74jO0nT8Ph6h5Sfyxbn2P8AFm7ElTA+82CwbXFonQFWWd0gbHR
-         L5bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uCTgNUtrQaN47ypy4tlXXz/Fqi8+o6qT6fOZMZagGcw=;
-        b=IVGXGOIenZ9uW1hTfSzrP/LAiKDnVN8NB8v5X8IRyO6q7H4I9rKFwMQ2iN924ynxPL
-         h2a+2ulCvpfP+lFFLoL1YfOZCzUUxLjYJtAjLiuOsPyI3cJmQ3WmwYXak4HiLxa/ba+1
-         1anxMedqu0UiynTQOcUkmpb5qqc2kd0YtYMHqP2yPKiiNrGpkGmw4xZ53hh9kVUIYk0S
-         Qgf/xhJhfvzL86Ox8PngBS6+tNI2HqoLhjmiLErT4oHFNSWUWR+Z9xFceUWkfAEQu4DI
-         gh9Ni8broLD9vjAfkZMIKqDf2sZuu3rfGC8bIFqeLdDkBUio57spm/S2mxbj2r418ogj
-         Lhhw==
-X-Gm-Message-State: AOAM532p85rTBocD3DGAneCrC9qsfpbpcs0S7DYD+Vezb4QWKXZ20Wt3
-        TeQ/uVlmjJIR28RclKH/Rj1SiHReMkE=
-X-Google-Smtp-Source: ABdhPJzskz6SKpTG6OSI6vcbvbVbR1R20AjrI8DTmF6340xaIC58QJh0RcEsILE01IaV7XH3DZ1AOA==
-X-Received: by 2002:a4a:9e42:: with SMTP id w2mr330605ook.4.1618509614837;
-        Thu, 15 Apr 2021 11:00:14 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.45.42.70])
-        by smtp.googlemail.com with ESMTPSA id d17sm798298oth.19.2021.04.15.11.00.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 11:00:14 -0700 (PDT)
-Subject: Re: [PATCH v2 bpf-next] cpumap: bulk skb using netif_receive_skb_list
-To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, brouer@redhat.com, song@kernel.org
-References: <bb627106428ea3223610f5623142c24270f0e14e.1618330734.git.lorenzo@kernel.org>
- <252403c5-d3a7-03fb-24c3-0f328f8f8c70@iogearbox.net>
- <47f3711d-e13a-a537-4e0e-13c3c5ff6822@gmail.com> <YHhj61rDPai8YKjL@lore-desk>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <7cbba160-c56a-8ec5-b9e1-455889bacb86@gmail.com>
-Date:   Thu, 15 Apr 2021 11:00:11 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
+        id S233610AbhDOSS6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Apr 2021 14:18:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233052AbhDOSS6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Apr 2021 14:18:58 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BB0B610EA;
+        Thu, 15 Apr 2021 18:18:32 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 14:18:31 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Jesper Brouer <jbrouer@redhat.com>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: Re: [PATCHv2 RFC bpf-next 0/7] bpf: Add support for ftrace probe
+Message-ID: <20210415141831.7b8fbe72@gandalf.local.home>
+In-Reply-To: <YHh6YeOPh0HIlb3e@krava>
+References: <20210413121516.1467989-1-jolsa@kernel.org>
+        <CAEf4Bzazst1rBi4=LuP6_FnPXCRYBNFEtDnK3UVBj6Eo6xFNtQ@mail.gmail.com>
+        <YHbd2CmeoaiLJj7X@krava>
+        <CAEf4BzYyVj-Tjy9ZZdAU5nOtJ8_auvVobTT6pMqg8zPb9jj-Ow@mail.gmail.com>
+        <20210415111002.324b6bfa@gandalf.local.home>
+        <YHh6YeOPh0HIlb3e@krava>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YHhj61rDPai8YKjL@lore-desk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/15/21 9:03 AM, Lorenzo Bianconi wrote:
->> On 4/15/21 8:05 AM, Daniel Borkmann wrote:
-> 
-> [...]
->>>> &stats);
->>>
->>> Given we stop counting drops with the netif_receive_skb_list(), we
->>> should then
->>> also remove drops from trace_xdp_cpumap_kthread(), imho, as otherwise it
->>> is rather
->>> misleading (as in: drops actually happening, but 0 are shown from the
->>> tracepoint).
->>> Given they are not considered stable API, I would just remove those to
->>> make it clear
->>> to users that they cannot rely on this counter anymore anyway.
->>>
->>
->> What's the visibility into drops then? Seems like it would be fairly
->> easy to have netif_receive_skb_list return number of drops.
->>
-> 
-> In order to return drops from netif_receive_skb_list() I guess we need to introduce
-> some extra checks in the hot path. Moreover packet drops are already accounted
-> in the networking stack and this is currently the only consumer for this info.
-> Does it worth to do so?
+On Thu, 15 Apr 2021 19:39:45 +0200
+Jiri Olsa <jolsa@redhat.com> wrote:
 
-right - softnet_stat shows the drop. So the loss here is that the packet
-is from a cpumap XDP redirect.
+> > I don't know how the BPF code does it, but if you are tracing the exit
+> > of a function, I'm assuming that you hijack the return pointer and replace
+> > it with a call to a trampoline that has access to the arguments. To do  
+> 
+> hi,
+> it's bit different, the trampoline makes use of the fact that the
+> call to trampoline is at the very begining of the function and, so
+> it can call the origin function with 'call function + 5' instr.
+> 
+> so in nutshell the trampoline does:
+> 
+>   call entry_progs
+>   call original_func+5
 
-Better insights into drops is needed, but I guess in this case coming
-from the cpumap does not really aid into why it is dropped - that is
-more core to __netif_receive_skb_list_core. I guess this is ok to drop
-the counter from the tracepoint.
+How does the above handle functions that have parameters on the stack?
+
+>   call exit_progs
+> 
+> you can check this in arch/x86/net/bpf_jit_comp.c in moe detail:
+> 
+>  * The assembly code when eth_type_trans is called from trampoline:
+>  *
+>  * push rbp
+>  * mov rbp, rsp
+>  * sub rsp, 24                     // space for skb, dev, return value
+>  * push rbx                        // temp regs to pass start time
+>  * mov qword ptr [rbp - 24], rdi   // save skb pointer to stack
+>  * mov qword ptr [rbp - 16], rsi   // save dev pointer to stack
+>  * call __bpf_prog_enter           // rcu_read_lock and preempt_disable
+>  * mov rbx, rax                    // remember start time if bpf stats are enabled
+>  * lea rdi, [rbp - 24]             // R1==ctx of bpf prog
+>  * call addr_of_jited_FENTRY_prog  // bpf prog can access skb and dev
+> 
+> entry program called ^^^
+> 
+>  * movabsq rdi, 64bit_addr_of_struct_bpf_prog  // unused if bpf stats are off
+>  * mov rsi, rbx                    // prog start time
+>  * call __bpf_prog_exit            // rcu_read_unlock, preempt_enable and stats math
+>  * mov rdi, qword ptr [rbp - 24]   // restore skb pointer from stack
+>  * mov rsi, qword ptr [rbp - 16]   // restore dev pointer from stack
+>  * call eth_type_trans+5           // execute body of eth_type_trans
+> 
+> original function called ^^^
+
+This would need to be limited to only functions that do not have any
+parameters on the stack.
+
+> 
+>  * mov qword ptr [rbp - 8], rax    // save return value
+>  * call __bpf_prog_enter           // rcu_read_lock and preempt_disable
+>  * mov rbx, rax                    // remember start time in bpf stats are enabled
+>  * lea rdi, [rbp - 24]             // R1==ctx of bpf prog
+>  * call addr_of_jited_FEXIT_prog   // bpf prog can access skb, dev, return value
+> 
+> exit program called ^^^
+> 
+>  * movabsq rdi, 64bit_addr_of_struct_bpf_prog  // unused if bpf stats are off
+>  * mov rsi, rbx                    // prog start time
+>  * call __bpf_prog_exit            // rcu_read_unlock, preempt_enable and stats math
+>  * mov rax, qword ptr [rbp - 8]    // restore eth_type_trans's return value
+>  * pop rbx
+>  * leave
+>  * add rsp, 8                      // skip eth_type_trans's frame
+>  * ret                             // return to its caller
+> 
+> > this you need a shadow stack to save the real return as well as the
+> > parameters of the function. This is something that I have patches that do
+> > similar things with function graph.
+> > 
+> > If you want this feature, lets work together and make this work for both
+> > BPF and ftrace.  
+> 
+> it's been some time I saw a graph tracer, is there a way to make it
+> access input arguments and make it available through ftrace_ops
+> interface?
+
+I have patches that could easily make it do so. And should probably get
+them out again. The function graph tracer has a shadow stack, and my
+patches allow you to store data on it for use with the exiting of the
+program.
+
+My last release of that code is here:
+
+  https://lore.kernel.org/lkml/20190525031633.811342628@goodmis.org/
+
+It allows you to "reserve data" to pass from the caller to the return, and
+that could hold the arguments. See patch 15 of that series.
+
+
+-- Steve
+
