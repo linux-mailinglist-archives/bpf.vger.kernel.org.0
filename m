@@ -2,148 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D9D360BAE
-	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 16:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2BF360BF8
+	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 16:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233289AbhDOOSn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Apr 2021 10:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233263AbhDOOSn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:18:43 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7787DC061574
-        for <bpf@vger.kernel.org>; Thu, 15 Apr 2021 07:18:20 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id j32so2231289pgm.6
-        for <bpf@vger.kernel.org>; Thu, 15 Apr 2021 07:18:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=xmoFfH95KqIzSfvJOukFbl18IziLSL8YgoFoiqluIZQ=;
-        b=YzFCXwhnAW7rTvuCgkLqKxCkKpP21klIdaGOUUbwuHD3GdCfowL/TBPq5U2AA707Hx
-         yPRaE9RkO4HC9bK3lwjvDDM5MdD6CbeUH2LqE7cQzUBXd/XUJqFtILtZ3DPwMPzFkr4G
-         V23qrypGtjDdjS9ROirlyoMXi+vy+n1VEZYq8o3/DHAmI29xx8Dr99N6mLW1SZbM6T/x
-         51o8n37vhQLbfcMGUUZgCNATooP2C29DvReUyxaq80GbZ52EkklZ3/hWT2hfOQBHMypI
-         1087o1dBOewiIQ034OP9pTMZL8tRsy8DZPlw50aC8MFwreCnE9CSYzKn9dCFSYPoocH1
-         exRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=xmoFfH95KqIzSfvJOukFbl18IziLSL8YgoFoiqluIZQ=;
-        b=Ju47WGr6doVqYYPR3vz8dc8fvg6qzfO3xEewVLhXAmwcQoasM2OO92JlJTDhSu+Vdi
-         YSFIINGXNeYqBgM+4uqtqO9jqqR/9Nc4oK4WYJXz9hdFPDCiQ+LWMTLM+rQSp3r9YFb4
-         U9rOZIw/hjJBAf58RK+MbKWnSGfYiIw9T/BNZOYmkmDybhmwvt+s2Vdim3c9TuR5sGT1
-         WmTkjace7oehYV5ePvg9eAsXpLVfVTFJlBJzftUit8DoFZC99wT21XtHUT+PN6RmXRvF
-         FX9sROiV7X0VDNzrebO/LSMRptvRznTtNAke4z2Jx9mRvEzkyPlk51BZhfQpuvyhorhP
-         RKcQ==
-X-Gm-Message-State: AOAM531vUonsTfEHti/MbZqR047ksj3uJUmEmLOJF3MbMWeRIFYaE3Aq
-        r/C5s6qa+uCI6t1Nqpzdtus=
-X-Google-Smtp-Source: ABdhPJzKF/0D5egI7+DWoEEVZCan3+u+Uig8/uo67SdLb9T26xzwSbI5u/fYaPV9oJFNPmnldUV94A==
-X-Received: by 2002:aa7:92cb:0:b029:1f1:542f:2b2b with SMTP id k11-20020aa792cb0000b02901f1542f2b2bmr3309041pfa.31.1618496299916;
-        Thu, 15 Apr 2021 07:18:19 -0700 (PDT)
-Received: from ast-mbp.thefacebook.com ([163.114.132.7])
-        by smtp.gmail.com with ESMTPSA id mz18sm2762571pjb.13.2021.04.15.07.18.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Apr 2021 07:18:19 -0700 (PDT)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH bpf-next] libbpf: Remove unused field.
-Date:   Thu, 15 Apr 2021 07:18:17 -0700
-Message-Id: <20210415141817.53136-1-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.13.5
+        id S233473AbhDOOiX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Apr 2021 10:38:23 -0400
+Received: from www62.your-server.de ([213.133.104.62]:41750 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233363AbhDOOiV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:38:21 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lX37j-000708-Ga; Thu, 15 Apr 2021 16:37:39 +0200
+Received: from [85.7.101.30] (helo=pc-6.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lX37i-000EJ3-8n; Thu, 15 Apr 2021 16:37:38 +0200
+Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
+To:     Jianlin Lv <Jianlin.Lv@arm.com>, bpf@vger.kernel.org
+Cc:     corbet@lwn.net, ast@kernel.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, davem@davemloft.net, kuba@kernel.org,
+        illusionist.neo@gmail.com, linux@armlinux.org.uk,
+        zlim.lnx@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        paulburton@kernel.org, tsbogend@alpha.franken.de,
+        naveen.n.rao@linux.ibm.com, sandipan@linux.ibm.com,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        luke.r.nels@gmail.com, xi.wang@gmail.com, bjorn@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, iii@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, borntraeger@de.ibm.com, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, udknight@gmail.com,
+        mchehab+huawei@kernel.org, dvyukov@google.com, maheshb@google.com,
+        horms@verge.net.au, nicolas.dichtel@6wind.com,
+        viro@zeniv.linux.org.uk, masahiroy@kernel.org,
+        keescook@chromium.org, quentin@isovalent.com, tklauser@distanz.ch,
+        grantseltzer@gmail.com, irogers@google.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, iecedge@gmail.com
+References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
+Date:   Thu, 15 Apr 2021 16:37:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26141/Thu Apr 15 13:13:26 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+On 4/15/21 11:32 AM, Jianlin Lv wrote:
+> For debugging JITs, dumping the JITed image to kernel log is discouraged,
+> "bpftool prog dump jited" is much better way to examine JITed dumps.
+> This patch get rid of the code related to bpf_jit_enable=2 mode and
+> update the proc handler of bpf_jit_enable, also added auxiliary
+> information to explain how to use bpf_jit_disasm tool after this change.
+> 
+> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+[...]
+> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
+> index 0a7a2870f111..8d36b4658076 100644
+> --- a/arch/x86/net/bpf_jit_comp32.c
+> +++ b/arch/x86/net/bpf_jit_comp32.c
+> @@ -2566,9 +2566,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>   		cond_resched();
+>   	}
+>   
+> -	if (bpf_jit_enable > 1)
+> -		bpf_jit_dump(prog->len, proglen, pass + 1, image);
+> -
+>   	if (image) {
+>   		bpf_jit_binary_lock_ro(header);
+>   		prog->bpf_func = (void *)image;
+> diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+> index c8496c1142c9..990b1720c7a4 100644
+> --- a/net/core/sysctl_net_core.c
+> +++ b/net/core/sysctl_net_core.c
+> @@ -273,16 +273,8 @@ static int proc_dointvec_minmax_bpf_enable(struct ctl_table *table, int write,
+>   
+>   	tmp.data = &jit_enable;
+>   	ret = proc_dointvec_minmax(&tmp, write, buffer, lenp, ppos);
+> -	if (write && !ret) {
+> -		if (jit_enable < 2 ||
+> -		    (jit_enable == 2 && bpf_dump_raw_ok(current_cred()))) {
+> -			*(int *)table->data = jit_enable;
+> -			if (jit_enable == 2)
+> -				pr_warn("bpf_jit_enable = 2 was set! NEVER use this in production, only for JIT debugging!\n");
+> -		} else {
+> -			ret = -EPERM;
+> -		}
+> -	}
+> +	if (write && !ret)
+> +		*(int *)table->data = jit_enable;
+>   	return ret;
+>   }
+>   
+> @@ -389,7 +381,7 @@ static struct ctl_table net_core_table[] = {
+>   		.extra2		= SYSCTL_ONE,
+>   # else
+>   		.extra1		= SYSCTL_ZERO,
+> -		.extra2		= &two,
+> +		.extra2		= SYSCTL_ONE,
+>   # endif
+>   	},
+>   # ifdef CONFIG_HAVE_EBPF_JIT
+> diff --git a/tools/bpf/bpf_jit_disasm.c b/tools/bpf/bpf_jit_disasm.c
+> index c8ae95804728..efa4b17ae016 100644
+> --- a/tools/bpf/bpf_jit_disasm.c
+> +++ b/tools/bpf/bpf_jit_disasm.c
+> @@ -7,7 +7,7 @@
+>    *
+>    * To get the disassembly of the JIT code, do the following:
+>    *
+> - *  1) `echo 2 > /proc/sys/net/core/bpf_jit_enable`
+> + *  1) Insert bpf_jit_dump() and recompile the kernel to output JITed image into log
 
-relo->processed is set, but not used. Remove it.
+Hmm, if we remove bpf_jit_dump(), the next drive-by cleanup patch will be thrown
+at bpf@vger stating that bpf_jit_dump() has no in-tree users and should be removed.
+Maybe we should be removing bpf_jit_disasm.c along with it as well as bpf_jit_dump()
+itself ... I guess if it's ever needed in those rare occasions for JIT debugging we
+can resurrect it from old kernels just locally. But yeah, bpftool's jit dump should
+suffice for vast majority of use cases.
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- tools/lib/bpf/libbpf.c | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
+There was a recent set for ppc32 jit which was merged into ppc tree which will create
+a merge conflict with this one [0]. So we would need a rebase and take it maybe during
+merge win once the ppc32 landed..
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index ed5586cce227..9cc2d45b0080 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -195,7 +195,6 @@ struct reloc_desc {
- 	int insn_idx;
- 	int map_idx;
- 	int sym_off;
--	bool processed;
- };
- 
- struct bpf_sec_def;
-@@ -3499,8 +3498,6 @@ static int bpf_program__record_reloc(struct bpf_program *prog,
- 	const char *sym_sec_name;
- 	struct bpf_map *map;
- 
--	reloc_desc->processed = false;
--
- 	if (!is_call_insn(insn) && !is_ldimm64_insn(insn)) {
- 		pr_warn("prog '%s': invalid relo against '%s' for insns[%d].code 0x%x\n",
- 			prog->name, sym_name, insn_idx, insn->code);
-@@ -6314,13 +6311,11 @@ bpf_object__relocate_data(struct bpf_object *obj, struct bpf_program *prog)
- 		case RELO_LD64:
- 			insn[0].src_reg = BPF_PSEUDO_MAP_FD;
- 			insn[0].imm = obj->maps[relo->map_idx].fd;
--			relo->processed = true;
- 			break;
- 		case RELO_DATA:
- 			insn[0].src_reg = BPF_PSEUDO_MAP_VALUE;
- 			insn[1].imm = insn[0].imm + relo->sym_off;
- 			insn[0].imm = obj->maps[relo->map_idx].fd;
--			relo->processed = true;
- 			break;
- 		case RELO_EXTERN_VAR:
- 			ext = &obj->externs[relo->sym_off];
-@@ -6338,13 +6333,11 @@ bpf_object__relocate_data(struct bpf_object *obj, struct bpf_program *prog)
- 					insn[1].imm = ext->ksym.addr >> 32;
- 				}
- 			}
--			relo->processed = true;
- 			break;
- 		case RELO_EXTERN_FUNC:
- 			ext = &obj->externs[relo->sym_off];
- 			insn[0].src_reg = BPF_PSEUDO_KFUNC_CALL;
- 			insn[0].imm = ext->ksym.kernel_btf_id;
--			relo->processed = true;
- 			break;
- 		case RELO_SUBPROG_ADDR:
- 			insn[0].src_reg = BPF_PSEUDO_FUNC;
-@@ -6630,9 +6623,6 @@ bpf_object__reloc_code(struct bpf_object *obj, struct bpf_program *main_prog,
- 		 * different main programs */
- 		insn->imm = subprog->sub_insn_off - (prog->sub_insn_off + insn_idx) - 1;
- 
--		if (relo)
--			relo->processed = true;
--
- 		pr_debug("prog '%s': insn #%zu relocated, imm %d points to subprog '%s' (now at %zu offset)\n",
- 			 prog->name, insn_idx, insn->imm, subprog->name, subprog->sub_insn_off);
- 	}
-@@ -6725,7 +6715,7 @@ static int
- bpf_object__relocate_calls(struct bpf_object *obj, struct bpf_program *prog)
- {
- 	struct bpf_program *subprog;
--	int i, j, err;
-+	int i, err;
- 
- 	/* mark all subprogs as not relocated (yet) within the context of
- 	 * current main program
-@@ -6736,9 +6726,6 @@ bpf_object__relocate_calls(struct bpf_object *obj, struct bpf_program *prog)
- 			continue;
- 
- 		subprog->sub_insn_off = 0;
--		for (j = 0; j < subprog->nr_reloc; j++)
--			if (subprog->reloc_desc[j].type == RELO_CALL)
--				subprog->reloc_desc[j].processed = false;
- 	}
- 
- 	err = bpf_object__reloc_code(obj, prog, prog);
--- 
-2.30.2
+   [0] https://lore.kernel.org/bpf/cover.1616430991.git.christophe.leroy@csgroup.eu/
+
+>    *  2) Load a BPF filter (e.g. `tcpdump -p -n -s 0 -i eth1 host 192.168.20.0/24`)
+>    *  3) Run e.g. `bpf_jit_disasm -o` to read out the last JIT code
+>    *
+> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
+> index 40a88df275f9..98c7eec2923f 100644
+> --- a/tools/bpf/bpftool/feature.c
+> +++ b/tools/bpf/bpftool/feature.c
+> @@ -203,9 +203,6 @@ static void probe_jit_enable(void)
+>   		case 1:
+>   			printf("JIT compiler is enabled\n");
+>   			break;
+> -		case 2:
+> -			printf("JIT compiler is enabled with debugging traces in kernel logs\n");
+> -			break;
+
+This would still need to be there for older kernels ...
+
+>   		case -1:
+>   			printf("Unable to retrieve JIT-compiler status\n");
+>   			break;
+> 
 
