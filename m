@@ -2,59 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2BF360BF8
-	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 16:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EC8360DED
+	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 17:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233473AbhDOOiX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Apr 2021 10:38:23 -0400
-Received: from www62.your-server.de ([213.133.104.62]:41750 "EHLO
+        id S234279AbhDOPHR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Apr 2021 11:07:17 -0400
+Received: from www62.your-server.de ([213.133.104.62]:48184 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233363AbhDOOiV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:38:21 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
+        with ESMTP id S233673AbhDOPGB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:06:01 -0400
+Received: from sslproxy06.your-server.de ([78.46.172.3])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1lX37j-000708-Ga; Thu, 15 Apr 2021 16:37:39 +0200
+        id 1lX3Yn-00097Y-J1; Thu, 15 Apr 2021 17:05:37 +0200
 Received: from [85.7.101.30] (helo=pc-6.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1lX37i-000EJ3-8n; Thu, 15 Apr 2021 16:37:38 +0200
-Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
-To:     Jianlin Lv <Jianlin.Lv@arm.com>, bpf@vger.kernel.org
-Cc:     corbet@lwn.net, ast@kernel.org, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        illusionist.neo@gmail.com, linux@armlinux.org.uk,
-        zlim.lnx@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        paulburton@kernel.org, tsbogend@alpha.franken.de,
-        naveen.n.rao@linux.ibm.com, sandipan@linux.ibm.com,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        luke.r.nels@gmail.com, xi.wang@gmail.com, bjorn@kernel.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, iii@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, udknight@gmail.com,
-        mchehab+huawei@kernel.org, dvyukov@google.com, maheshb@google.com,
-        horms@verge.net.au, nicolas.dichtel@6wind.com,
-        viro@zeniv.linux.org.uk, masahiroy@kernel.org,
-        keescook@chromium.org, quentin@isovalent.com, tklauser@distanz.ch,
-        grantseltzer@gmail.com, irogers@google.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, iecedge@gmail.com
-References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
+        id 1lX3Yn-0006uU-Cf; Thu, 15 Apr 2021 17:05:37 +0200
+Subject: Re: [PATCH v2 bpf-next] cpumap: bulk skb using netif_receive_skb_list
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, lorenzo.bianconi@redhat.com,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        brouer@redhat.com, song@kernel.org
+References: <bb627106428ea3223610f5623142c24270f0e14e.1618330734.git.lorenzo@kernel.org>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
-Date:   Thu, 15 Apr 2021 16:37:36 +0200
+Message-ID: <252403c5-d3a7-03fb-24c3-0f328f8f8c70@iogearbox.net>
+Date:   Thu, 15 Apr 2021 17:05:36 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
+In-Reply-To: <bb627106428ea3223610f5623142c24270f0e14e.1618330734.git.lorenzo@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -64,104 +43,77 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/15/21 11:32 AM, Jianlin Lv wrote:
-> For debugging JITs, dumping the JITed image to kernel log is discouraged,
-> "bpftool prog dump jited" is much better way to examine JITed dumps.
-> This patch get rid of the code related to bpf_jit_enable=2 mode and
-> update the proc handler of bpf_jit_enable, also added auxiliary
-> information to explain how to use bpf_jit_disasm tool after this change.
+On 4/13/21 6:22 PM, Lorenzo Bianconi wrote:
+> Rely on netif_receive_skb_list routine to send skbs converted from
+> xdp_frames in cpu_map_kthread_run in order to improve i-cache usage.
+> The proposed patch has been tested running xdp_redirect_cpu bpf sample
+> available in the kernel tree that is used to redirect UDP frames from
+> ixgbe driver to a cpumap entry and then to the networking stack.
+> UDP frames are generated using pkt_gen.
 > 
-> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
-[...]
-> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
-> index 0a7a2870f111..8d36b4658076 100644
-> --- a/arch/x86/net/bpf_jit_comp32.c
-> +++ b/arch/x86/net/bpf_jit_comp32.c
-> @@ -2566,9 +2566,6 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->   		cond_resched();
->   	}
->   
-> -	if (bpf_jit_enable > 1)
-> -		bpf_jit_dump(prog->len, proglen, pass + 1, image);
-> -
->   	if (image) {
->   		bpf_jit_binary_lock_ro(header);
->   		prog->bpf_func = (void *)image;
-> diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-> index c8496c1142c9..990b1720c7a4 100644
-> --- a/net/core/sysctl_net_core.c
-> +++ b/net/core/sysctl_net_core.c
-> @@ -273,16 +273,8 @@ static int proc_dointvec_minmax_bpf_enable(struct ctl_table *table, int write,
->   
->   	tmp.data = &jit_enable;
->   	ret = proc_dointvec_minmax(&tmp, write, buffer, lenp, ppos);
-> -	if (write && !ret) {
-> -		if (jit_enable < 2 ||
-> -		    (jit_enable == 2 && bpf_dump_raw_ok(current_cred()))) {
-> -			*(int *)table->data = jit_enable;
-> -			if (jit_enable == 2)
-> -				pr_warn("bpf_jit_enable = 2 was set! NEVER use this in production, only for JIT debugging!\n");
-> -		} else {
-> -			ret = -EPERM;
-> -		}
-> -	}
-> +	if (write && !ret)
-> +		*(int *)table->data = jit_enable;
->   	return ret;
->   }
->   
-> @@ -389,7 +381,7 @@ static struct ctl_table net_core_table[] = {
->   		.extra2		= SYSCTL_ONE,
->   # else
->   		.extra1		= SYSCTL_ZERO,
-> -		.extra2		= &two,
-> +		.extra2		= SYSCTL_ONE,
->   # endif
->   	},
->   # ifdef CONFIG_HAVE_EBPF_JIT
-> diff --git a/tools/bpf/bpf_jit_disasm.c b/tools/bpf/bpf_jit_disasm.c
-> index c8ae95804728..efa4b17ae016 100644
-> --- a/tools/bpf/bpf_jit_disasm.c
-> +++ b/tools/bpf/bpf_jit_disasm.c
-> @@ -7,7 +7,7 @@
->    *
->    * To get the disassembly of the JIT code, do the following:
->    *
-> - *  1) `echo 2 > /proc/sys/net/core/bpf_jit_enable`
-> + *  1) Insert bpf_jit_dump() and recompile the kernel to output JITed image into log
-
-Hmm, if we remove bpf_jit_dump(), the next drive-by cleanup patch will be thrown
-at bpf@vger stating that bpf_jit_dump() has no in-tree users and should be removed.
-Maybe we should be removing bpf_jit_disasm.c along with it as well as bpf_jit_dump()
-itself ... I guess if it's ever needed in those rare occasions for JIT debugging we
-can resurrect it from old kernels just locally. But yeah, bpftool's jit dump should
-suffice for vast majority of use cases.
-
-There was a recent set for ppc32 jit which was merged into ppc tree which will create
-a merge conflict with this one [0]. So we would need a rebase and take it maybe during
-merge win once the ppc32 landed..
-
-   [0] https://lore.kernel.org/bpf/cover.1616430991.git.christophe.leroy@csgroup.eu/
-
->    *  2) Load a BPF filter (e.g. `tcpdump -p -n -s 0 -i eth1 host 192.168.20.0/24`)
->    *  3) Run e.g. `bpf_jit_disasm -o` to read out the last JIT code
->    *
-> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-> index 40a88df275f9..98c7eec2923f 100644
-> --- a/tools/bpf/bpftool/feature.c
-> +++ b/tools/bpf/bpftool/feature.c
-> @@ -203,9 +203,6 @@ static void probe_jit_enable(void)
->   		case 1:
->   			printf("JIT compiler is enabled\n");
->   			break;
-> -		case 2:
-> -			printf("JIT compiler is enabled with debugging traces in kernel logs\n");
-> -			break;
-
-This would still need to be there for older kernels ...
-
->   		case -1:
->   			printf("Unable to retrieve JIT-compiler status\n");
->   			break;
+> $xdp_redirect_cpu  --cpu <cpu> --progname xdp_cpu_map0 --dev <eth>
 > 
+> bpf-next: ~2.2Mpps
+> bpf-next + cpumap skb-list: ~3.15Mpps
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+> Changes since v1:
+> - fixed comment
+> - rebased on top of bpf-next tree
+> ---
+>   kernel/bpf/cpumap.c | 11 +++++------
+>   1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+> index 0cf2791d5099..d89551a508b2 100644
+> --- a/kernel/bpf/cpumap.c
+> +++ b/kernel/bpf/cpumap.c
+> @@ -27,7 +27,7 @@
+>   #include <linux/capability.h>
+>   #include <trace/events/xdp.h>
+>   
+> -#include <linux/netdevice.h>   /* netif_receive_skb_core */
+> +#include <linux/netdevice.h>   /* netif_receive_skb_list */
+>   #include <linux/etherdevice.h> /* eth_type_trans */
+>   
+>   /* General idea: XDP packets getting XDP redirected to another CPU,
+> @@ -257,6 +257,7 @@ static int cpu_map_kthread_run(void *data)
+>   		void *frames[CPUMAP_BATCH];
+>   		void *skbs[CPUMAP_BATCH];
+>   		int i, n, m, nframes;
+> +		LIST_HEAD(list);
+>   
+>   		/* Release CPU reschedule checks */
+>   		if (__ptr_ring_empty(rcpu->queue)) {
+> @@ -305,7 +306,6 @@ static int cpu_map_kthread_run(void *data)
+>   		for (i = 0; i < nframes; i++) {
+>   			struct xdp_frame *xdpf = frames[i];
+>   			struct sk_buff *skb = skbs[i];
+> -			int ret;
+>   
+>   			skb = __xdp_build_skb_from_frame(xdpf, skb,
+>   							 xdpf->dev_rx);
+> @@ -314,11 +314,10 @@ static int cpu_map_kthread_run(void *data)
+>   				continue;
+>   			}
+>   
+> -			/* Inject into network stack */
+> -			ret = netif_receive_skb_core(skb);
+> -			if (ret == NET_RX_DROP)
+> -				drops++;
+> +			list_add_tail(&skb->list, &list);
+>   		}
+> +		netif_receive_skb_list(&list);
+> +
+>   		/* Feedback loop via tracepoint */
+>   		trace_xdp_cpumap_kthread(rcpu->map_id, n, drops, sched, &stats);
 
+Given we stop counting drops with the netif_receive_skb_list(), we should then
+also remove drops from trace_xdp_cpumap_kthread(), imho, as otherwise it is rather
+misleading (as in: drops actually happening, but 0 are shown from the tracepoint).
+Given they are not considered stable API, I would just remove those to make it clear
+to users that they cannot rely on this counter anymore anyway.
+
+Thanks,
+Daniel
