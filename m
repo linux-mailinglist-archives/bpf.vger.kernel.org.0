@@ -2,36 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12E0360930
-	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 14:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3093609CD
+	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 14:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhDOMUV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Apr 2021 08:20:21 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59736 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbhDOMUV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:20:21 -0400
-From:   Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618489197;
+        id S232332AbhDOMwH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Apr 2021 08:52:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30907 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231482AbhDOMwG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 15 Apr 2021 08:52:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618491102;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BMbOvheSsOknaamptk4bilePbxHfJjQDO8qYoDp5N4I=;
-        b=tDV80DqYhwfGCxUK5pbLFv6e0FzxvMQVUbQo3ZwUc0ufmhbXjYUb4sOHQ7fWY1cRB2c2Wu
-        4vL9NI0ttW0K9OeFJaN39C2ctqVtd5LTGzLhEkpndjqhTlO4lQvLX1UgMW3xcjWOtrPVFo
-        dg+rzBxVGWr9xlku3Bu8HRBymsQMPo4/BRl2D1lhVIEKCrQlkzOjqeAYwxKbMOlSw1zUxX
-        KgFT6FdA8+sftqEjQykhGmIDE7gjjAjiw3eEotDsX+i8Bkq85WQyJARKZN1Vu9jM3ryWnK
-        nYtDWQFehKqvXR3SHyJYjX1xQWYjH/z+DmL3Zvsou2zQECRwUChF/jjwrHALOw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618489197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BMbOvheSsOknaamptk4bilePbxHfJjQDO8qYoDp5N4I=;
-        b=QKOPL7EPIF9GfHnmB2VbsPfPlSTmQAiP36KJxphlUzGla2GAXIS/sYqzS0If2D+yr603B6
-        pb8sCUYgd7NWoYCA==
-To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+        bh=m+egjn8p3lm4N8WT7Rqz4QHSvGTjGYcB6Au487i0bKQ=;
+        b=NmZCHWJTf8Lf9AcR3Fc5yIBRgWvsRDk2S3zSfxc4oyjaSWy6SQ4ddFe3/LTqIkyF8Fjwi6
+        A6JNsHIj65OgdFe4sbWW3rBBFPzKBLrZJyVxC67sFhVrvTCEI7mX5rGNpu/lr3w+5k1UHH
+        jwMmMbovXczOWvgLiTNOFwKE6cjZpjs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-Cz96uEqYPjG0x8NmQ1PDqg-1; Thu, 15 Apr 2021 08:51:38 -0400
+X-MC-Unique: Cz96uEqYPjG0x8NmQ1PDqg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CDF85107ACE6;
+        Thu, 15 Apr 2021 12:51:35 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9436060CE7;
+        Thu, 15 Apr 2021 12:51:31 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 14:51:28 +0200
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+To:     Kurt Kanzenbach <kurt@linutronix.de>
 Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -48,99 +52,59 @@ Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Richard Cochran <richardcochran@gmail.com>
 Subject: Re: [PATCH net] igb: Fix XDP with PTP enabled
-In-Reply-To: <YHgiffS6A0sDzLGW@lore-desk>
-References: <20210415092145.27322-1-kurt@linutronix.de> <YHgiffS6A0sDzLGW@lore-desk>
-Date:   Thu, 15 Apr 2021 14:19:55 +0200
-Message-ID: <871rbbhh90.fsf@kurt>
+Message-ID: <20210415145011.6734d3fb@carbon>
+In-Reply-To: <874kg7hhej.fsf@kurt>
+References: <20210415092145.27322-1-kurt@linutronix.de>
+        <20210415140438.60221f21@carbon>
+        <874kg7hhej.fsf@kurt>
+Organization: Red Hat Inc.
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Thu, 15 Apr 2021 14:16:36 +0200
+Kurt Kanzenbach <kurt@linutronix.de> wrote:
 
-On Thu Apr 15 2021, Lorenzo Bianconi wrote:
-> [...]
->> @@ -8683,7 +8676,10 @@ static int igb_clean_rx_irq(struct igb_q_vector *=
-q_vector, const int budget)
->>  	while (likely(total_packets < budget)) {
->>  		union e1000_adv_rx_desc *rx_desc;
->>  		struct igb_rx_buffer *rx_buffer;
->> +		ktime_t timestamp =3D 0;
->> +		int pkt_offset =3D 0;
->>  		unsigned int size;
->> +		void *pktbuf;
->>=20=20
->>  		/* return some buffers to hardware, one at a time is too slow */
->>  		if (cleaned_count >=3D IGB_RX_BUFFER_WRITE) {
->> @@ -8703,15 +8699,22 @@ static int igb_clean_rx_irq(struct igb_q_vector =
-*q_vector, const int budget)
->>  		dma_rmb();
->>=20=20
->>  		rx_buffer =3D igb_get_rx_buffer(rx_ring, size, &rx_buf_pgcnt);
->> +		pktbuf =3D page_address(rx_buffer->page) + rx_buffer->page_offset;
->> +
->> +		/* pull rx packet timestamp if available */
->> +		if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
->> +			timestamp =3D igb_ptp_rx_pktstamp(rx_ring->q_vector,
->> +							pktbuf);
->> +			pkt_offset +=3D IGB_TS_HDR_LEN;
->> +			size -=3D IGB_TS_HDR_LEN;
->> +		}
->>=20=20
->>  		/* retrieve a buffer from the ring */
->>  		if (!skb) {
->> -			unsigned int offset =3D igb_rx_offset(rx_ring);
->> -			unsigned char *hard_start;
->> -
->> -			hard_start =3D page_address(rx_buffer->page) +
->> -				     rx_buffer->page_offset - offset;
->> -			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
->> +			xdp.data =3D pktbuf + pkt_offset;
->> +			xdp.data_end =3D xdp.data + size;
->> +			xdp.data_meta =3D xdp.data;
->> +			xdp.data_hard_start =3D pktbuf - igb_rx_offset(rx_ring);
->
-> in order to keep it aligned with other xdp drivers, I guess you can do so=
-mething like:
->
-> 			unsigned char *hard_start =3D pktbuf - igb_rx_offset(rx_ring);
-> 			unsigned int offset =3D pkt_offset + igb_rx_offset(rx_ring);
->
-> 			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
+> On Thu Apr 15 2021, Jesper Dangaard Brouer wrote:
+> > On Thu, 15 Apr 2021 11:21:45 +0200
+> > Kurt Kanzenbach <kurt@linutronix.de> wrote:
+> >  
+> >> When using native XDP with the igb driver, the XDP frame data doesn't point to
+> >> the beginning of the packet. It's off by 16 bytes. Everything works as expected
+> >> with XDP skb mode.
+> >> 
+> >> Actually these 16 bytes are used to store the packet timestamps. Therefore, pull
+> >> the timestamp before executing any XDP operations and adjust all other code
+> >> accordingly. The igc driver does it like that as well.
+> >> 
+> >> Tested with Intel i210 card and AF_XDP sockets.  
+> >
+> > Doesn't the i210 card use the igc driver?
+> > This change is for igb driver.  
+> 
+> Nope. igb is for i210 and igc is for the newer Intel i225 NICs.
+> 
+> |01:00.0 Ethernet controller: Intel Corporation I210 Gigabit Network Connection (rev 03)
+> |[...]
+> |        Kernel driver in use: igb
+> |        Kernel modules: igb
 
-This should work as well. I just kept it in sync with the igc driver,
-because it doesn't use xdp_prepare_buff() either.
+Thanks a lot for correcting me!
 
->
-> Probably the compiler will optimize it.
+I have a project involving i225+igc (using TSN).  And someone suggested
+that I also looked at i210 for TSN.  I've ordered hardware that have
+i210 on motherboard (and I will insert my i225 card) so I have a system
+with both chips for experimenting with TSN.  I guess, I would have
+discovered this eventually when I got the hardware.  Thanks for saving
+me from this mistake. Thanks!
 
-Most likely.
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-Thanks,
-Kurt
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAmB4L2sACgkQeSpbgcuY
-8KaS9A/+OHp/1uZIOitP04uK8NHdGEgU6woimHvvC3CrFIHC+GDx1NiPZJhKWi2b
-LRsAe8kPJuYIRNX7D67LQK1ZaRh7pVzc2fRyDbyZACag5jHyX1pUHhVykSiX8b67
-yepBMiUG01KB3p/UIliLhuRG/v+QOht9XH5QtH2YLtPTy0KE+81Z5ZHTss/wcaqX
-aFrdhwjVakQNXNbVnrNBQdrdcQv9kidIIeRNFgsftkLPz4agoULLF590yZSTqt+m
-uAJTBceAc+TviLxr7wNcDEGkQaRNIK3QhcLinRsfodI3OcI5AfNulIE4H8xX14aU
-oKLMLsHcN2BXt5GS7E4oPz5nr4Bqgcjq7m5pPTpUaFhO8konyY2JhQL/B5O9EtKR
-BdT5uC321drrl8ZeweF5p/veLnDNWEsnBVHc+oKNQR1vDRXyIX30QXRqkKQ1EFKB
-iR7jE0OK7joG78ik0Vt66PweAfRphX2wrCNyNef4BrsCgrd3aNiLTbeeTkwoSCWs
-nZci29OrJUKpA9HVC6Skq75RpvyGhXxr+aBRxJuz5bch9+hunk8RqZHjEVmkac17
-tirlZ9vffyYnw1nim4wN3pjV/VpLGZE7HqCyAhOelAiEbXJ5nIp/ghcI3qzcgQfD
-5KiKgBu0fWoyxQWykXHaewfY/tCMFwYDKiY/jJpUk+XOaAydHIg=
-=bJH5
------END PGP SIGNATURE-----
---=-=-=--
