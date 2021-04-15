@@ -2,154 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34651360A70
-	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 15:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC72360B11
+	for <lists+bpf@lfdr.de>; Thu, 15 Apr 2021 15:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbhDONXo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Apr 2021 09:23:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56627 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230202AbhDONXo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 15 Apr 2021 09:23:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618493000;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=utw/N7hNynWSPN0im00+qlXNLl0otqsN6gC2ettqad8=;
-        b=LrSHkWXGy29OYRqOYHcToSCBQB/8r3v9Fo6LxjAC6iF1IIPlavHC9w8wEwwsZbcIFznWYe
-        bWdmH+I/UC65huJlKBnNj+lp2jb2plYOYIkm1SC2AOuZzNSw0Gczcs2Ilvo5bWCsMJ90fu
-        PPRvb5qFD9J1rcTP8jFAsiBlDlKqNcg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-366--qictWhPN_Kilm1lyV-YTQ-1; Thu, 15 Apr 2021 09:23:18 -0400
-X-MC-Unique: -qictWhPN_Kilm1lyV-YTQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C8868030BB;
-        Thu, 15 Apr 2021 13:23:15 +0000 (UTC)
-Received: from krava (unknown [10.40.196.6])
-        by smtp.corp.redhat.com (Postfix) with SMTP id B3D4210074E1;
-        Thu, 15 Apr 2021 13:23:13 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 15:23:12 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf-next v2 0/5] bpf: tools: support build selftests/bpf
- with clang
-Message-ID: <YHg+QFL0O5eOHD+7@krava>
-References: <20210412142905.266942-1-yhs@fb.com>
- <CAKwvOdkTUFUwq0Uwi4D9-Z9nbg1FfaP1P2oiBsxNn3+ikT9MwA@mail.gmail.com>
- <CAKwvOdkFWe76ggKrLeckS+mzmyQeq6eJBnkQM1bKgEGQBCspSA@mail.gmail.com>
- <e5f5f6b3-64e6-7068-ca72-9f06f3ffda54@fb.com>
- <CAKwvOdnJsQ-XDcjq=tbXL_iBeJYNk2h8VGwx-sSLWw_LRef6Qg@mail.gmail.com>
- <CAKwvOdkhJgCyEFpXUaMZP4NDho-2YWcNfmF+4P_MprcipB7Ycw@mail.gmail.com>
- <YHYApbcaa1faflw3@krava>
- <CAKwvOd=GfdEd_FZXY+yr9e1xzLaGFkvD4QLNb_52wTVFECHaKQ@mail.gmail.com>
- <YHbrlsN8UZPWwrzi@krava>
- <CAEf4Bzb2YcH+dwhMyd5gRsjmzwGjxjjdSbqHn6zkcesF8J7Jwg@mail.gmail.com>
+        id S233186AbhDONyB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Apr 2021 09:54:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233059AbhDONyA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 15 Apr 2021 09:54:00 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039BAC061574;
+        Thu, 15 Apr 2021 06:53:37 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id p16so8136252plf.12;
+        Thu, 15 Apr 2021 06:53:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wJRegN5GQuH5b9gAz36NB95gQyRO3U7EOZr5gw35MIw=;
+        b=MR/LD/TvTdYKM8tDwNz85uYaYZOZLlXxKWr5piX7M+jSs3YtW5BS3oybQSLGom7bxh
+         ttRFntHyUDJHoHFM2KKJc3XfSGUT5FPLcQ6JZwtPF3aHSxSe6nWNakY+t5YjJZMfh3YM
+         IiVg44tTq6wNyKUYCrHPnRuEpUF94ME30Z6cUC8nheUSgf85pT4SCQm8imXvDfPxmDvR
+         kXQPRzWKVcuk83zPtiXS06ww4NUH+2O7WIPVvZqeOWvI3KlPt8X8mzLNwGEPGj6Lbi4s
+         xXCjAEzIQ53Gnwhx+yRQ/ahKBXsOfV68SNmbK3Yd6tWzF169nrLNI/2QQAsqmjBsUp5H
+         zHRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wJRegN5GQuH5b9gAz36NB95gQyRO3U7EOZr5gw35MIw=;
+        b=BjvBqKWwNCLVUA/idjGS0K8OwapMibu+s90UePFfrNzZblxS5JW2dfz1VK4oqDMama
+         /jvqqIEgrF/dA0a5k44kIiYKTw0k4xthjSdp2fTWOdxXuunADti9NFm/ZsFmKTFuPNIl
+         aBSwnpr8YgKuBUkwHa8R3Vtq5k3YePmgJgBPwJTNkCFUeOjuehUwdwl1cDxCCFnTjl5e
+         6qCIrDQmHblUx2dx2b+U5KB3Ls4dZtMp/ds5cy7X07S4S6v4viHJHScfnHawNNfgUV71
+         q68hty947g+mykwcdu8lNYhCDYkRIHobsqv2FAKUeor0k8emAQFGxIX/+MA8oABd0iJL
+         FYog==
+X-Gm-Message-State: AOAM533XIsR0aNFqOIA4IumPa2vWVztFZgDCfS1fi6PSOjb+Fa/5E9B3
+        7DlhymZQgTk4aScjlQCIWyuYn0IIThc=
+X-Google-Smtp-Source: ABdhPJxu4OlVrgIOw/QyM7bnbGcZT+IvNaZ/B0kOfmir6YJ3wNWceJhBIPenshyywCmMyb/2uYFVIA==
+X-Received: by 2002:a17:90a:17a3:: with SMTP id q32mr4100552pja.224.1618494816267;
+        Thu, 15 Apr 2021 06:53:36 -0700 (PDT)
+Received: from Leo-laptop-t470s.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id h16sm2324868pfo.191.2021.04.15.06.53.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 06:53:35 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv8 bpf-next 0/4] xdp: extend xdp_redirect_map with broadcast support
+Date:   Thu, 15 Apr 2021 21:53:16 +0800
+Message-Id: <20210415135320.4084595-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzb2YcH+dwhMyd5gRsjmzwGjxjjdSbqHn6zkcesF8J7Jwg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 05:16:01PM -0700, Andrii Nakryiko wrote:
-> On Wed, Apr 14, 2021 at 6:18 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Tue, Apr 13, 2021 at 01:45:39PM -0700, Nick Desaulniers wrote:
-> >
-> > SNIP
-> >
-> > > > > >
-> > > > > > So I'm not sure precisely what's going on here.  I probably have to go
-> > > > > > digging around to understand tools/build/feature/ anyways.  With your
-> > > > > > v3 applied, I consistently see:
-> > > > > > No zlib found
-> > > > > > and yet, I certainly do have zlib on my host.
-> > > > > > https://stackoverflow.com/a/54558861
-> > > > >
-> > > > > Jiri, any tips on how to debug feature detection in
-> > > > > tools/build/feature/Makefile?
-> > > >
-> > > > for quick check, there's output file for each test, like:
-> > > >
-> > > >         [jolsa@krava feature]$ ls -l *.make.output
-> > > >         -rw-rw-r--. 1 jolsa jolsa   0 Apr  8 20:25 test-all.make.output
-> > > >         -rw-rw-r--. 1 jolsa jolsa 182 Apr  9 15:52 test-bionic.make.output
-> > > >         -rw-rw-r--. 1 jolsa jolsa   0 Apr  8 20:25 test-cplus-demangle.make.output
-> > > >         -rw-rw-r--. 1 jolsa jolsa 145 Apr  9 15:52 test-jvmti.make.output
-> > > >         -rw-rw-r--. 1 jolsa jolsa   0 Apr  8 20:25 test-libbabeltrace.make.output
-> > > >         -rw-rw-r--. 1 jolsa jolsa   0 Apr  8 20:25 test-libbpf.make.output
-> > > >         -rw-rw-r--. 1 jolsa jolsa   0 Apr  8 20:25 test-libdebuginfod.make.output
-> > > >         -rw-rw-r--. 1 jolsa jolsa 193 Apr  9 15:52 test-libunwind-aarch64.make.output
-> > > >         -rw-rw-r--. 1 jolsa jolsa 177 Apr  9 15:52 test-libunwind-x86.make.output
-> > > >         [jolsa@krava feature]$ cat test-libunwind-aarch64.make.output
-> > > >         test-libunwind-aarch64.c:2:10: fatal error: libunwind-aarch64.h: No such file or directory
-> > > >             2 | #include <libunwind-aarch64.h>
-> > > >               |          ^~~~~~~~~~~~~~~~~~~~~
-> > > >         compilation terminated.
-> > > >         [jolsa@krava feature]$ cat test-libunwind-x86.make.output
-> > > >         test-libunwind-x86.c:2:10: fatal error: libunwind-x86.h: No such file or directory
-> > > >             2 | #include <libunwind-x86.h>
-> > > >               |          ^~~~~~~~~~~~~~~~~
-> > > >
-> > > > zlib should be done by:
-> > > >         [jolsa@krava feature]$ make test-zlib.bin
-> > > >         gcc  -MD -Wall -Werror -o test-zlib.bin test-zlib.c  > test-zlib.make.output 2>&1 -lz
-> > > >
-> > > >
-> > > > I can try to recreate, how do you build?
-> > >
-> > > See note above, I'm similarly running precisely:
-> > > $ make LLVM=1 LLVM_IAS=1 -j72 defconfig
-> > > $ make LLVM=1 LLVM_IAS=1 -j72 clean
-> > > $ make LLVM=1 LLVM_IAS=1 -j72 -C tools/testing/selftests/bpf
-> >
-> > for some reason I'm stuck with this error on latest bpf-next/master
-> 
-> did you build vmlinux image before building selftests? those enums
-> should come through vmlinux.h from up-to-date vmlinux
+Hi,
 
-it was there.. but I found the clang/lld I compiled can't link properly,
-which is probably unrelated to the error below, but I need to solve it
-first ;-)
+This patchset is a new implementation for XDP multicast support based
+on my previous 2 maps implementation[1]. The reason is that Daniel think
+the exclude map implementation is missing proper bond support in XDP
+context. And there is a plan to add native XDP bonding support. Adding a
+exclude map in the helper also increase the complex of verifier and has
+draw back of performace.
 
-jirka
+The new implementation just add two new flags BPF_F_BROADCAST and
+BPF_F_EXCLUDE_INGRESS to extend xdp_redirect_map for broadcast support.
 
-> 
-> >
-> > $ make LLVM=1 LLVM_IAS=1 -C tools/testing/selftests/bpf
-> >
-> > make[1]: Nothing to be done for 'docs'.
-> >   CLNG-BPF [test_maps] test_lwt_ip_encap.o
-> >   CLNG-BPF [test_maps] test_tc_edt.o
-> >   CLNG-BPF [test_maps] local_storage.o
-> > progs/local_storage.c:41:15: error: use of undeclared identifier 'BPF_MAP_TYPE_TASK_STORAGE'; did you mean 'BPF_MAP_TYPE_SK_STORAGE'?
-> >         __uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-> >                      ^~~~~~~~~~~~~~~~~~~~~~~~~
-> >                      BPF_MAP_TYPE_SK_STORAGE
-> > /home/jolsa/linux/tools/testing/selftests/bpf/tools/include/bpf/bpf_helpers.h:13:39: note: expanded from macro '__uint'
-> > #define __uint(name, val) int (*name)[val]
-> >                                       ^
-> > /home/jolsa/linux/tools/testing/selftests/bpf/tools/include/vmlinux.h:10317:2: note: 'BPF_MAP_TYPE_SK_STORAGE' declared here
-> >         BPF_MAP_TYPE_SK_STORAGE = 24,
-> >         ^
-> > 1 error generated.
-> > make: *** [Makefile:448: /home/jolsa/linux/tools/testing/selftests/bpf/local_storage.o] Error 1
-> > make: Leaving directory '/home/jolsa/linux/tools/testing/selftests/bpf'
-> >
-> >
-> > jirka
-> >
-> 
+With BPF_F_BROADCAST the packet will be broadcasted to all the interfaces
+in the map. with BPF_F_EXCLUDE_INGRESS the ingress interface will be
+excluded when do broadcasting.
+
+The patchv7 link is here[2].
+
+[1] https://lore.kernel.org/bpf/20210223125809.1376577-1-liuhangbin@gmail.com
+[2] https://lore.kernel.org/bpf/20210414122610.4037085-1-liuhangbin@gmail.com
+
+v8: use hlist_for_each_entry_rcu() when looping the devmap hash ojbs
+v7: No need to free xdpf in dev_map_enqueue_clone() if xdpf_clone failed.
+v6: Fix a skb leak in the error path for generic XDP
+v5: Just walk the map directly to get interfaces as get_next_key() of devmap
+    hash may restart looping from the first key if the device get removed.
+    After update the performace has improved 10% compired with v4.
+v4: Fix flags never cleared issue in patch 02. Update selftest to cover this.
+v3: Rebase the code based on latest bpf-next
+v2: fix flag renaming issue in patch 02
+
+Hangbin Liu (3):
+  xdp: extend xdp_redirect_map with broadcast support
+  sample/bpf: add xdp_redirect_map_multi for redirect_map broadcast test
+  selftests/bpf: add xdp_redirect_multi test
+
+Jesper Dangaard Brouer (1):
+  bpf: run devmap xdp_prog on flush instead of bulk enqueue
+
+ include/linux/bpf.h                           |  20 ++
+ include/linux/filter.h                        |  18 +-
+ include/net/xdp.h                             |   1 +
+ include/uapi/linux/bpf.h                      |  17 +-
+ kernel/bpf/cpumap.c                           |   3 +-
+ kernel/bpf/devmap.c                           | 304 +++++++++++++++---
+ net/core/filter.c                             |  33 +-
+ net/core/xdp.c                                |  29 ++
+ net/xdp/xskmap.c                              |   3 +-
+ samples/bpf/Makefile                          |   3 +
+ samples/bpf/xdp_redirect_map_multi_kern.c     |  87 +++++
+ samples/bpf/xdp_redirect_map_multi_user.c     | 302 +++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |  17 +-
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../bpf/progs/xdp_redirect_multi_kern.c       |  99 ++++++
+ .../selftests/bpf/test_xdp_redirect_multi.sh  | 205 ++++++++++++
+ .../selftests/bpf/xdp_redirect_multi.c        | 236 ++++++++++++++
+ 17 files changed, 1316 insertions(+), 64 deletions(-)
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_kern.c
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_user.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
+ create mode 100755 tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
+ create mode 100644 tools/testing/selftests/bpf/xdp_redirect_multi.c
+
+-- 
+2.26.3
 
