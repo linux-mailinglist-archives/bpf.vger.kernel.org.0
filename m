@@ -2,152 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87915361E1E
-	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 12:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2BF361F02
+	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 13:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235477AbhDPKlb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Apr 2021 06:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
+        id S243007AbhDPLno (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Apr 2021 07:43:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhDPKla (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Apr 2021 06:41:30 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F284AC061574;
-        Fri, 16 Apr 2021 03:41:04 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FMCRd1BPDz9sVv;
-        Fri, 16 Apr 2021 20:41:01 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1618569661;
-        bh=SeOzQ9Fg9C2zAMuj8cY5McP+aFk25PiM311deR2n+II=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=dlrfmoa66rjbsgjm/6d63tAsvauWz+/zCQSBCnuup3KRzbygxslVoQS9YLGzEmxCp
-         BlmJROc2q2TCvBVUIsPXowKqD3tb+ePzQL27V3dkPyfXbwzb78UU1jdjd137lpsvKm
-         KRliFf+AabCTWYguQlPH0zI4TXJyjldAKamw26SoqGPY25rAGdtoTIaVkio+4Uf4L1
-         SEAb53oUP9Z4uROoJLiyxDIETXgY4VU69wU0ZSnGCG4nWNO75litn3pAbksUGbd/82
-         gAnYfZRakpES4+dl5kRnYehiwK32L5HnaGG6PdUlZ0kv9Tk4UjgZL+TxjgXEcebnmo
-         67fGXanIuuK6g==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Tony Ambardar <tony.ambardar@gmail.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>, Rosen Penev <rosenp@gmail.com>
-Subject: Re: [PATCH v3] powerpc: fix EDEADLOCK redefinition error in
- uapi/asm/errno.h
-In-Reply-To: <CAPGftE-Q+Q479j7SikDBQLiM+VKbpXpRYnTeEJeAHeZrh_Ok2A@mail.gmail.com>
-References: <20200917000757.1232850-1-Tony.Ambardar@gmail.com>
- <20200917135437.1238787-1-Tony.Ambardar@gmail.com>
- <CAPGftE-Q+Q479j7SikDBQLiM+VKbpXpRYnTeEJeAHeZrh_Ok2A@mail.gmail.com>
-Date:   Fri, 16 Apr 2021 20:41:00 +1000
-Message-ID: <87r1jaeclf.fsf@mpe.ellerman.id.au>
+        with ESMTP id S243050AbhDPLnk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Apr 2021 07:43:40 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7369C061761
+        for <bpf@vger.kernel.org>; Fri, 16 Apr 2021 04:43:15 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id 6so22819733ilt.9
+        for <bpf@vger.kernel.org>; Fri, 16 Apr 2021 04:43:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=68NMAA2B4Awwhyw+whUFCT5VDNXIb8+KoAK85427Mt8=;
+        b=O8yl1blR6AjwJ5hVDkk4duXLgNFwdzAF82yw4VcaNtfuSp+ZqgZheTkQyGkwyFSt1v
+         gN2NDnsHmURMhcIXsgs7ikXRH8VuoGPDBdEGtqOOzc1XNqPQb23e4c2mvHoxPEvF/8vO
+         078RJXpDYy7Q4lOwTFVEhfluIMW18lafUAPc8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=68NMAA2B4Awwhyw+whUFCT5VDNXIb8+KoAK85427Mt8=;
+        b=LW4nNEJey5pnIxw9gILpY224fXIdDWKr9tCQZi72iN3GV/hbgTkLXulmV/H9y2Hfcv
+         jVile/yVQdqcfRHnf51M2WNZ5NJlq4WgRoXsJ/xVujSdFYRKVteGfNYog9fTUScOJpRH
+         IivKwfkaP2OAvW6TZcm0isli6J+RNeMRnFwmT92K5dPAxScZKWRIWRW/6dM2RdsgaQyA
+         z0yP2Xw3f5btKOclnkOYYEqATc/iSIXIF8r97S0rk/eSCbNXwMWdxszHz/CzBoxY/FSU
+         NxY0hvdRU+HxCwV8MPGT5tU4Hipi7QU4CsmlprodIEe6qMsKf700LvXdcYfjRC9C8ifY
+         4EpA==
+X-Gm-Message-State: AOAM533YrjVMWPMTolkz78cePWvIfxi28inAp6aiJ46PKZL7EDFGTXJH
+        ORvXakE+s4MP/PgubBdohnOEbsDEBk+axmOfB7/ZLg==
+X-Google-Smtp-Source: ABdhPJxiHu7B+35/59i/lpg0Mpcnb2GOQbekTnQ2xxWa22S8mjDn84umuvIYpxVUrADlxGU8lvBWhfgKNDfwhTFqR3g=
+X-Received: by 2002:a05:6e02:1caf:: with SMTP id x15mr6807843ill.89.1618573395313;
+ Fri, 16 Apr 2021 04:43:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210414185406.917890-1-revest@chromium.org> <20210414185406.917890-7-revest@chromium.org>
+ <CAEf4BzYtOOwDLOGmfQ+pF5t-muDXQB_StFB7SQS6Ap78P5FjQQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzYtOOwDLOGmfQ+pF5t-muDXQB_StFB7SQS6Ap78P5FjQQ@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Fri, 16 Apr 2021 13:43:04 +0200
+Message-ID: <CABRcYm+6TYKhbGZY4y=vdeoG15EVfAPcV-8bo7ugomoNZ6F1tA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Tony Ambardar <tony.ambardar@gmail.com> writes:
-> Hello Michael,
+On Fri, Apr 16, 2021 at 1:20 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> The latest version of this patch addressed all feedback I'm aware of
-> when submitted last September, and I've seen no further comments from
-> reviewers since then.
+> On Wed, Apr 14, 2021 at 11:54 AM Florent Revest <revest@chromium.org> wrote:
+> > +/* Loads an eBPF object calling bpf_snprintf with up to 10 characters of fmt */
+> > +static int load_single_snprintf(char *fmt)
+> > +{
+> > +       struct test_snprintf_single *skel;
+> > +       int ret;
+> > +
+> > +       skel = test_snprintf_single__open();
+> > +       if (!skel)
+> > +               return -EINVAL;
+> > +
+> > +       memcpy(skel->rodata->fmt, fmt, min(strlen(fmt) + 1, 10));
+> > +
+> > +       ret = test_snprintf_single__load(skel);
+> > +       if (!ret)
+> > +               test_snprintf_single__destroy(skel);
 >
-> Could you please let me know where this stands and if anything further
-> is needed?
+> destroy unconditionally?
 
-Sorry, it's still sitting in my inbox :/
+sweet!
 
-I was going to reply to suggest we split the tools change out. The
-headers under tools are usually updated by another maintainer, I think
-it might even be scripted.
+> > +void test_snprintf_negative(void)
+> > +{
+> > +       ASSERT_OK(load_single_snprintf("valid %d"), "valid usage");
+> > +
+> > +       ASSERT_ERR(load_single_snprintf("0123456789"), "no terminating zero");
+> > +       ASSERT_ERR(load_single_snprintf("%d %d"), "too many specifiers");
+> > +       ASSERT_ERR(load_single_snprintf("%pi5"), "invalid specifier 1");
+> > +       ASSERT_ERR(load_single_snprintf("%a"), "invalid specifier 2");
+> > +       ASSERT_ERR(load_single_snprintf("%"), "invalid specifier 3");
+> > +       ASSERT_ERR(load_single_snprintf("\x80"), "non ascii character");
+> > +       ASSERT_ERR(load_single_snprintf("\x1"), "non printable character");
+>
+> Some more cases that came up in my mind:
+>
+> 1. %123987129387192387 -- long and unterminated specified
+> 2. similarly %------- or something like that
+>
+> Do you think they are worth checking?
 
-Anyway I've applied your patch and done that (dropped the change to
-tools/.../errno.h), which should also mean the stable backport is more
-likely to work automatically.
+well, it doesn't hurt :) and it's very easy to add so no problem
 
-It will hit mainline in v5.13-rc1 and then be backported to the stable
-trees.
+> > +++ b/tools/testing/selftests/bpf/progs/test_snprintf_single.c
+> > @@ -0,0 +1,20 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright (c) 2021 Google LLC. */
+> > +
+> > +#include <linux/bpf.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +
+> > +// The format string is filled from the userspace side such that loading fails
+>
+> C++ style format
 
-I don't think you actually need the tools version of the header updated
-to fix your bug? In which case we can probably just wait for it to be
-updated automatically when the tools headers are sync'ed with the kernel
-versions.
-
-cheers
-
-
-> On Thu, 17 Sept 2020 at 06:54, Tony Ambardar <tony.ambardar@gmail.com> wrote:
->>
->> A few archs like powerpc have different errno.h values for macros
->> EDEADLOCK and EDEADLK. In code including both libc and linux versions of
->> errno.h, this can result in multiple definitions of EDEADLOCK in the
->> include chain. Definitions to the same value (e.g. seen with mips) do
->> not raise warnings, but on powerpc there are redefinitions changing the
->> value, which raise warnings and errors (if using "-Werror").
->>
->> Guard against these redefinitions to avoid build errors like the following,
->> first seen cross-compiling libbpf v5.8.9 for powerpc using GCC 8.4.0 with
->> musl 1.1.24:
->>
->>   In file included from ../../arch/powerpc/include/uapi/asm/errno.h:5,
->>                    from ../../include/linux/err.h:8,
->>                    from libbpf.c:29:
->>   ../../include/uapi/asm-generic/errno.h:40: error: "EDEADLOCK" redefined [-Werror]
->>    #define EDEADLOCK EDEADLK
->>
->>   In file included from toolchain-powerpc_8540_gcc-8.4.0_musl/include/errno.h:10,
->>                    from libbpf.c:26:
->>   toolchain-powerpc_8540_gcc-8.4.0_musl/include/bits/errno.h:58: note: this is the location of the previous definition
->>    #define EDEADLOCK       58
->>
->>   cc1: all warnings being treated as errors
->>
->> CC: Stable <stable@vger.kernel.org>
->> Reported-by: Rosen Penev <rosenp@gmail.com>
->> Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
->> ---
->> v1 -> v2:
->>  * clean up commit description formatting
->>
->> v2 -> v3: (per Michael Ellerman)
->>  * drop indeterminate 'Fixes' tags, request stable backports instead
->> ---
->>  arch/powerpc/include/uapi/asm/errno.h       | 1 +
->>  tools/arch/powerpc/include/uapi/asm/errno.h | 1 +
->>  2 files changed, 2 insertions(+)
->>
->> diff --git a/arch/powerpc/include/uapi/asm/errno.h b/arch/powerpc/include/uapi/asm/errno.h
->> index cc79856896a1..4ba87de32be0 100644
->> --- a/arch/powerpc/include/uapi/asm/errno.h
->> +++ b/arch/powerpc/include/uapi/asm/errno.h
->> @@ -2,6 +2,7 @@
->>  #ifndef _ASM_POWERPC_ERRNO_H
->>  #define _ASM_POWERPC_ERRNO_H
->>
->> +#undef EDEADLOCK
->>  #include <asm-generic/errno.h>
->>
->>  #undef EDEADLOCK
->> diff --git a/tools/arch/powerpc/include/uapi/asm/errno.h b/tools/arch/powerpc/include/uapi/asm/errno.h
->> index cc79856896a1..4ba87de32be0 100644
->> --- a/tools/arch/powerpc/include/uapi/asm/errno.h
->> +++ b/tools/arch/powerpc/include/uapi/asm/errno.h
->> @@ -2,6 +2,7 @@
->>  #ifndef _ASM_POWERPC_ERRNO_H
->>  #define _ASM_POWERPC_ERRNO_H
->>
->> +#undef EDEADLOCK
->>  #include <asm-generic/errno.h>
->>
->>  #undef EDEADLOCK
->> --
->> 2.25.1
->>
+Oopsie
