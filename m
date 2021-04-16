@@ -2,119 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2BF361F02
-	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 13:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7651B362052
+	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 14:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243007AbhDPLno (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Apr 2021 07:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243050AbhDPLnk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Apr 2021 07:43:40 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7369C061761
-        for <bpf@vger.kernel.org>; Fri, 16 Apr 2021 04:43:15 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id 6so22819733ilt.9
-        for <bpf@vger.kernel.org>; Fri, 16 Apr 2021 04:43:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=68NMAA2B4Awwhyw+whUFCT5VDNXIb8+KoAK85427Mt8=;
-        b=O8yl1blR6AjwJ5hVDkk4duXLgNFwdzAF82yw4VcaNtfuSp+ZqgZheTkQyGkwyFSt1v
-         gN2NDnsHmURMhcIXsgs7ikXRH8VuoGPDBdEGtqOOzc1XNqPQb23e4c2mvHoxPEvF/8vO
-         078RJXpDYy7Q4lOwTFVEhfluIMW18lafUAPc8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=68NMAA2B4Awwhyw+whUFCT5VDNXIb8+KoAK85427Mt8=;
-        b=LW4nNEJey5pnIxw9gILpY224fXIdDWKr9tCQZi72iN3GV/hbgTkLXulmV/H9y2Hfcv
-         jVile/yVQdqcfRHnf51M2WNZ5NJlq4WgRoXsJ/xVujSdFYRKVteGfNYog9fTUScOJpRH
-         IivKwfkaP2OAvW6TZcm0isli6J+RNeMRnFwmT92K5dPAxScZKWRIWRW/6dM2RdsgaQyA
-         z0yP2Xw3f5btKOclnkOYYEqATc/iSIXIF8r97S0rk/eSCbNXwMWdxszHz/CzBoxY/FSU
-         NxY0hvdRU+HxCwV8MPGT5tU4Hipi7QU4CsmlprodIEe6qMsKf700LvXdcYfjRC9C8ifY
-         4EpA==
-X-Gm-Message-State: AOAM533YrjVMWPMTolkz78cePWvIfxi28inAp6aiJ46PKZL7EDFGTXJH
-        ORvXakE+s4MP/PgubBdohnOEbsDEBk+axmOfB7/ZLg==
-X-Google-Smtp-Source: ABdhPJxiHu7B+35/59i/lpg0Mpcnb2GOQbekTnQ2xxWa22S8mjDn84umuvIYpxVUrADlxGU8lvBWhfgKNDfwhTFqR3g=
-X-Received: by 2002:a05:6e02:1caf:: with SMTP id x15mr6807843ill.89.1618573395313;
- Fri, 16 Apr 2021 04:43:15 -0700 (PDT)
+        id S239124AbhDPMyl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Apr 2021 08:54:41 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:32415 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235495AbhDPMyk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Apr 2021 08:54:40 -0400
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 13GCruXn017060;
+        Fri, 16 Apr 2021 21:53:57 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 13GCruXn017060
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618577637;
+        bh=FpBTE/PmjepHTlzWsrX59REOgQgL2WrtsCCIoF/CYWE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pnl4cChP9BDT4wIiEZMCXce74IYPbyviH0geJnOMydzhvTMMKqvimUCJ8LuO/ydUi
+         B7GCRGzMyz8AbBjXaIdqdOj97w4Mvl4+xM1yl+DjOmMRHy8sXXrxwF2VPV6p3HkIDh
+         n6j6f7LmOePGYddtG4MeM1IJTF09NZL2HYvxNn0VmUbtcoGAQN0WIk8JwzmNwqxNuH
+         IfVvglF9RnOeg2qR9OQZYFuxmRVvfEgsWCD65f5cmxQGtubERM4wyCwE/Fx0XhOF6+
+         fHFg+T4J4DNZEIcoxa3aGVqRu3zGr7QifJpt93kYMOXSvEw6iuQScro++18+YzyjqF
+         Xuddd4D8zQwkQ==
+X-Nifty-SrcIP: [209.85.216.43]
+Received: by mail-pj1-f43.google.com with SMTP id em21-20020a17090b0155b029014e204a81e6so6371593pjb.1;
+        Fri, 16 Apr 2021 05:53:57 -0700 (PDT)
+X-Gm-Message-State: AOAM530bgqjsO3lWF/tHwnQMGcasjhkPXEs8XTPkhXTB07EP/ZLEsXmv
+        3mp4/TT+UMxTuIlUFayxCQxemxeq34bCCblaPSY=
+X-Google-Smtp-Source: ABdhPJxb/FC19twtF+zRiYRXoqGzOZCJTyiYCPanDW2DbASdA2RE0I7WCFpU5qPpBix6mu/jtdFnthAB/xgwIUGoUjg=
+X-Received: by 2002:a17:90a:1056:: with SMTP id y22mr9094969pjd.153.1618577636323;
+ Fri, 16 Apr 2021 05:53:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210414185406.917890-1-revest@chromium.org> <20210414185406.917890-7-revest@chromium.org>
- <CAEf4BzYtOOwDLOGmfQ+pF5t-muDXQB_StFB7SQS6Ap78P5FjQQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYtOOwDLOGmfQ+pF5t-muDXQB_StFB7SQS6Ap78P5FjQQ@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Fri, 16 Apr 2021 13:43:04 +0200
-Message-ID: <CABRcYm+6TYKhbGZY4y=vdeoG15EVfAPcV-8bo7ugomoNZ6F1tA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <20210415072700.147125-1-masahiroy@kernel.org> <20210415072700.147125-2-masahiroy@kernel.org>
+ <eb623ea6-a2f4-9692-ff3d-cb9f9b9ea15f@de.ibm.com> <0eeed665-a105-917b-e7fb-8dafe2ae9d94@de.ibm.com>
+In-Reply-To: <0eeed665-a105-917b-e7fb-8dafe2ae9d94@de.ibm.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 16 Apr 2021 21:53:18 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASfiiLJd9dOpaJ47pJ4FzgV8JL3vU8okOYz0=eaE4OYgQ@mail.gmail.com>
+Message-ID: <CAK7LNASfiiLJd9dOpaJ47pJ4FzgV8JL3vU8okOYz0=eaE4OYgQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] tools: do not include scripts/Kbuild.include
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Harish <harish@linux.ibm.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        kvm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 1:20 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Apr 16, 2021 at 2:56 PM Christian Borntraeger
+<borntraeger@de.ibm.com> wrote:
 >
-> On Wed, Apr 14, 2021 at 11:54 AM Florent Revest <revest@chromium.org> wrote:
-> > +/* Loads an eBPF object calling bpf_snprintf with up to 10 characters of fmt */
-> > +static int load_single_snprintf(char *fmt)
-> > +{
-> > +       struct test_snprintf_single *skel;
-> > +       int ret;
-> > +
-> > +       skel = test_snprintf_single__open();
-> > +       if (!skel)
-> > +               return -EINVAL;
-> > +
-> > +       memcpy(skel->rodata->fmt, fmt, min(strlen(fmt) + 1, 10));
-> > +
-> > +       ret = test_snprintf_single__load(skel);
-> > +       if (!ret)
-> > +               test_snprintf_single__destroy(skel);
 >
-> destroy unconditionally?
+> On 15.04.21 10:06, Christian Borntraeger wrote:
+> >
+> > On 15.04.21 09:27, Masahiro Yamada wrote:
+> >> Since commit d9f4ff50d2aa ("kbuild: spilt cc-option and friends to
+> >> scripts/Makefile.compiler"), some kselftests fail to build.
+> >>
+> >> The tools/ directory opted out Kbuild, and went in a different
+> >> direction. They copy any kind of files to the tools/ directory
+> >> in order to do whatever they want to do in their world.
+> >>
+> >> tools/build/Build.include mimics scripts/Kbuild.include, but some
+> >> tool Makefiles included the Kbuild one to import a feature that is
+> >> missing in tools/build/Build.include:
+> >>
+> >>   - Commit ec04aa3ae87b ("tools/thermal: tmon: use "-fstack-protector"
+> >>     only if supported") included scripts/Kbuild.include from
+> >>     tools/thermal/tmon/Makefile to import the cc-option macro.
+> >>
+> >>   - Commit c2390f16fc5b ("selftests: kvm: fix for compilers that do
+> >>     not support -no-pie") included scripts/Kbuild.include from
+> >>     tools/testing/selftests/kvm/Makefile to import the try-run macro.
+> >>
+> >>   - Commit 9cae4ace80ef ("selftests/bpf: do not ignore clang
+> >>     failures") included scripts/Kbuild.include from
+> >>     tools/testing/selftests/bpf/Makefile to import the .DELETE_ON_ERROR
+> >>     target.
+> >>
+> >>   - Commit 0695f8bca93e ("selftests/powerpc: Handle Makefile for
+> >>     unrecognized option") included scripts/Kbuild.include from
+> >>     tools/testing/selftests/powerpc/pmu/ebb/Makefile to import the
+> >>     try-run macro.
+> >>
+> >> Copy what they want there, and stop including scripts/Kbuild.include
+> >> from the tool Makefiles.
+> >>
+> >> Link: https://lore.kernel.org/lkml/86dadf33-70f7-a5ac-cb8c-64966d2f45a1@linux.ibm.com/
+> >> Fixes: d9f4ff50d2aa ("kbuild: spilt cc-option and friends to scripts/Makefile.compiler")
+> >> Reported-by: Janosch Frank <frankja@linux.ibm.com>
+> >> Reported-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> >> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> >
+> > When applying this on top of d9f4ff50d2aa ("kbuild: spilt cc-option and friends to scripts/Makefile.compiler")
+> >
+> > I still do get
+> >
+> > # ==== Test Assertion Failure ====
+> > #   lib/kvm_util.c:142: vm->fd >= 0
+> > #   pid=315635 tid=315635 - Invalid argument
+> > #      1    0x0000000001002f4b: vm_open at kvm_util.c:142
+> > #      2     (inlined by) vm_create at kvm_util.c:258
+> > #      3    0x00000000010015ef: test_add_max_memory_regions at set_memory_region_test.c:351
+> > #      4     (inlined by) main at set_memory_region_test.c:397
+> > #      5    0x000003ff971abb89: ?? ??:0
+> > #      6    0x00000000010017ad: .annobin_abi_note.c.hot at crt1.o:?
+> > #   KVM_CREATE_VM ioctl failed, rc: -1 errno: 22
+> > not ok 7 selftests: kvm: set_memory_region_test # exit=254
+> >
+> > and the testcase compilation does not pickup the pgste option.
+>
+> What does work is the following:
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index a6d61f451f88..d9c6d9c2069e 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -1,5 +1,6 @@
+>   # SPDX-License-Identifier: GPL-2.0-only
+>   include ../../../../scripts/Kbuild.include
+> +include ../../../../scripts/Makefile.compiler
+>
+>   all:
+>
+>
+> as it does pickup the linker option handling.
 
-sweet!
 
-> > +void test_snprintf_negative(void)
-> > +{
-> > +       ASSERT_OK(load_single_snprintf("valid %d"), "valid usage");
-> > +
-> > +       ASSERT_ERR(load_single_snprintf("0123456789"), "no terminating zero");
-> > +       ASSERT_ERR(load_single_snprintf("%d %d"), "too many specifiers");
-> > +       ASSERT_ERR(load_single_snprintf("%pi5"), "invalid specifier 1");
-> > +       ASSERT_ERR(load_single_snprintf("%a"), "invalid specifier 2");
-> > +       ASSERT_ERR(load_single_snprintf("%"), "invalid specifier 3");
-> > +       ASSERT_ERR(load_single_snprintf("\x80"), "non ascii character");
-> > +       ASSERT_ERR(load_single_snprintf("\x1"), "non printable character");
->
-> Some more cases that came up in my mind:
->
-> 1. %123987129387192387 -- long and unterminated specified
-> 2. similarly %------- or something like that
->
-> Do you think they are worth checking?
+Kbuild and the tools are divorced.
 
-well, it doesn't hurt :) and it's very easy to add so no problem
+They cannot be married unless the tools/
+build system is largely refactored.
+That will be a tons of works (and
+I am not sure if it is welcome).
 
-> > +++ b/tools/testing/selftests/bpf/progs/test_snprintf_single.c
-> > @@ -0,0 +1,20 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2021 Google LLC. */
-> > +
-> > +#include <linux/bpf.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +
-> > +// The format string is filled from the userspace side such that loading fails
->
-> C++ style format
+The Kbuild refactoring should not be bothered by
+the tools.
+For now, I want them separated from each other.
 
-Oopsie
+
+
+--
+Best Regards
+
+Masahiro Yamada
