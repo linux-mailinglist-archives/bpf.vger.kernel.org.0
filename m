@@ -2,151 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05F73628BC
-	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 21:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D6D36292B
+	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 22:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240930AbhDPTjL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Apr 2021 15:39:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243879AbhDPTjK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Apr 2021 15:39:10 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB0EC061574
-        for <bpf@vger.kernel.org>; Fri, 16 Apr 2021 12:38:44 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id l11so6009128vsr.10
-        for <bpf@vger.kernel.org>; Fri, 16 Apr 2021 12:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+sLELYf2ikX/yh1Og49eeJUNRxG1Nq09JbaL4tgNnHo=;
-        b=QOJylPtOuhy2/V2gEW5P8LTXaCIBv5LAe/ykdBk5GWn7IoNeCPWOmsXL3r1WL80Ilo
-         IJWJAsMnegRgQccVuD9U67SK7CpOpCyVe0fy76xwZztgWUUPGLWlZX9qzDKojI/8CGZ7
-         EquX4dTu7zSDxDANV1mlO8zXgy03PYsHfaWwrWHF+f2rmYPD0IWlsVd3ZWEdrJgu29SB
-         2q7wRtEO7oly67rcBnRkfBrq68+6ZhU94Qr/IAA9O7QY9jS7kMnmhQI7+NglWFNGiXXW
-         FjwbAPiVbS2x+ppTtdjlC5fqrw9QpSBco9Db+vhyouQ+2sNmaP7rH22Ji4ZEYrnXOYkj
-         G9cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+sLELYf2ikX/yh1Og49eeJUNRxG1Nq09JbaL4tgNnHo=;
-        b=lZIovYXFXK9Cp406XNBA3Yr112FoGFjSZ/i8Y1PP7JxUg2llBB0nKmpgGK5mgdIPFn
-         Htev/KJX4BmIZoEwFJ91I3Ri8SO84ugvknyvzAGeDkt5MgQJHI7qlHexoF4HZUmI6FL8
-         BtsJtqzZagGn7eJOGAQemYQI+vIRrgBmJ44s4x5rOfgT9elhnbdqTVGD4OcIh2//7yVM
-         zZkhAgbnNB9jxg19RA8Xwr9tgDawI5s34ZEQkRSPU03S1MFmpDRfLRS6mSLbKinL02LL
-         6JSMNbb33ky5ZaJgQLcwFPYAGxyPcVlmFx9B1OJy2VXf2JS7zrsly3mEROnqi9UAApvH
-         3yUQ==
-X-Gm-Message-State: AOAM532HIMPkQZc1KEBBE+w7eab3BOyfv4jUMYUVLHFdyVesYMZox0Ae
-        RozMGqOhXXAUkbziYKojwUrjhcWfsL9KVdXkUus=
-X-Google-Smtp-Source: ABdhPJyg4WqdfYTJd5B/a4A8EJnBu7TrJ+l3eOSFYjY5VAf4VkcoaIu/IXWqSWfWFRG0AyZiDH10bXCRc4JsGcicylo=
-X-Received: by 2002:a05:6102:30b0:: with SMTP id y16mr8472289vsd.9.1618601923961;
- Fri, 16 Apr 2021 12:38:43 -0700 (PDT)
+        id S244861AbhDPUYe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 16 Apr 2021 16:24:34 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63522 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234654AbhDPUYd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 16 Apr 2021 16:24:33 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13GKIuCX026836
+        for <bpf@vger.kernel.org>; Fri, 16 Apr 2021 13:24:08 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 37yb5e2dgn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 16 Apr 2021 13:24:08 -0700
+Received: from intmgw001.05.ash9.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 16 Apr 2021 13:24:06 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 308832ED4EE0; Fri, 16 Apr 2021 13:24:05 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH v2 bpf-next 00/17] BPF static linker: support externs
+Date:   Fri, 16 Apr 2021 13:23:47 -0700
+Message-ID: <20210416202404.3443623-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: k7gHFk9UG3E4pZ5kzy7dWXDkQ3tzU4m_
+X-Proofpoint-ORIG-GUID: k7gHFk9UG3E4pZ5kzy7dWXDkQ3tzU4m_
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <CAO658oXG4HEm0rGEW-==0kaTmqenDUC_GM-qi7CEjwSakbnJRw@mail.gmail.com>
- <CAEf4BzZy0XDYcchPkarUw5AusO7LZfOnswuOyUqakkVJ-ksCDQ@mail.gmail.com> <CAO658oUJApo-1RMmkkj=y7oH-LAHLd48E0aqobTiTRSuYm617w@mail.gmail.com>
-In-Reply-To: <CAO658oUJApo-1RMmkkj=y7oH-LAHLd48E0aqobTiTRSuYm617w@mail.gmail.com>
-From:   Grant Seltzer Richman <grantseltzer@gmail.com>
-Date:   Fri, 16 Apr 2021 15:38:33 -0400
-Message-ID: <CAO658oV=NPtTNRk1_W_F1jzKMTyCONWL4kKC+YwexGP2Q5ZYEA@mail.gmail.com>
-Subject: Re: Generating libbpf API documentation
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-16_09:2021-04-16,2021-04-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 spamscore=0 clxscore=1015 malwarescore=0
+ priorityscore=1501 lowpriorityscore=0 impostorscore=0 phishscore=0
+ suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104160143
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 4:14 PM Grant Seltzer Richman
-<grantseltzer@gmail.com> wrote:
->
-> On Mon, Mar 15, 2021 at 8:47 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Mon, Mar 15, 2021 at 9:51 AM Grant Seltzer Richman
-> > <grantseltzer@gmail.com> wrote:
-> > >
-> > > Hi all,
-> > >
-> > > I have been experimenting with ways to contribute documentation to
-> > > libbpf to make it easier for developers of bpf projects to use it.
-> > > With the goal of making a documentation site that is easy to
-> > > maintain/generate I found Doxygen (many of you may have experience
-> > > with it, I did not). I set up a CI/CD workflow using github actions
-> > > that runs doxygen on the libbpf mirror hosted there, and hosts the
-> > > produced HTML using netlify. You can find the currently hosted version
-> > > of it at https://libbpf-docs.netlify.app (I would gladly donate a real
-> > > domain name for this purpose). The docs generation workflow is in my
-> > > github repo here: https://github.com/grantseltzer/libbpf-docs
-> >
-> > Thanks for investigating this! I've look at libbpf-docs.netlify.app,
-> > and it seems like it just contains a list of structs and their fields
-> > (both those that are part of libbpf API, as well as internal). Out of
-> > all functions only two are listed there (libbpf_nla_parse_nested and
-> > libbpf_nla_parse) and both are not part of libbpf API as well. So I
-> > understand that I don't see any comments due to the '/**' format
-> > (though it would be easy to run sed script adding it everywhere, just
-> > as part of an experiment), but I'm not sure why none of API functions
-> > are present there?
-> >
-> > I think kernel docs used to be hosted on readthedocs.org, seems like
-> > they are also providing hosting for open-source projects, so that
-> > would solve the problem of the hosting. Have you looked at that
-> > solution? It definitely has a bit more modern UI that
-> > Doxygen-generated one :) but I don't know what are the real
-> > differences between Sphinx and Doxygen and which one we should choose.
-> >
-> > >
-> > > In order to make this work all we would need is to format comments
-> > > above functions we want to document. Doxygen requires that the comment
-> > > just be in a block that starts with `/**`. I don't think doxygen
-> > > specific directives should be committed to code but I think this is a
-> > > fine convention to follow. Other doxygen directives (i.e. having
-> > > `@file` in every file) can be faked using a step I have in the github
-> > > actions.
-> > >
-> > > What does everyone think? Can we agree on this convention and start
-> > > contributing documentation in this way? Any pitfalls to doxygen I'm
-> > > not familiar with?
-> > >
-> > > Thanks!
->
-> As far as I understand Doxygen's only criteria for generating
-> documentation for functions is if the correctly formatted comment is
-> present. I've changed the repo that the libbpf-docs.netlify.app
-> website uses to track a fork libbpf I have on my personal account. I
-> added comments above some ringbuffer functions to demonstrate this.
->
-> Interestingly the two functions that already show up
-> (libbpf_nla_parse/parse_nested) have comments which are specifically
-> formatted for doxygen, even including directives for arguments and
-> related functions.
->
-> I have heard of Sphinx/read-the-docs but didn't look too deeply into
-> it, I'll check it out and report back with my findings!
+Add BPF static linker support for extern resolution of global variables,
+functions, and BTF-defined maps.
 
-I've finally gotten a chance to circle around to this. I investigated
-Sphinx and read the docs. As far as I can tell Doxygen is still
-required for generating that docs from code. Sphinx seems to typically
-be used to transform markdown documentation files into themed html
-pages. Sphinx would also enable us to host the documentation on
-readthedocs's, but it would still be the output of Doxygen, meaning it
-wouldn't have the nice theme that you see on other readthedocs pages.
+This patch set consists of 4 parts:
+  - few patches are extending bpftool to simplify working with BTF dump;
+  - libbpf object loading logic is extended to support __hidden functions and
+    overriden (unused) __weak functions; also BTF-defined map parsing logic is
+    refactored to be re-used by linker;
+  - the crux of the patch set is BPF static linker logic extension to perform
+    extern resolution for three categories: global variables, BPF
+    sub-programs, BTF-defined maps;
+  - a set of selftests that validate that all the combinations of
+    extern/weak/__hidden are working as expected.
 
-I have a barebones example set up of what that would look like at
-libbpf.readthedocs.io which pulls from my fork of the github mirror
-here: github.com/grantseltzer/libbpf
+See respective patches for more details.
 
-The advantage of this approach is only having free hosting and having
-a 'readthedocs.io' domain. It would still require CI for pulling in
-libbpf releases, appending doxygen directives, and of course
-committing comments in code next to api functions/types.
+One aspect hasn't been addressed yet and is going to be resolved in the next
+patch set, but is worth mentioning. With BPF static linking of multiple .o
+files, dealing with static everything becomes more problematic for BPF
+skeleton and in general for any by name look up APIs. This is due to static
+entities are allowed to have non-unique name. Historically this was never
+a problem due to BPF programs were always confined to a single C file. That
+changes now and needs to be addressed. The thinking so far is for BPF static
+linker to prepend filename to each static variable and static map (which is
+currently not supported by libbpf, btw), so that they can be unambiguously
+resolved by (mostly) unique name. Mostly, because even filenames can be
+duplicated, but that should be rare and easy to address by wiser choice of
+filenames by users. Fortunately, static BPF subprograms don't suffer from this
+issues, as they are not independent entities and are neither exposed in BPF
+skeleton, nor is lookup-able by any of libbpf APIs (and there is little reason
+to do that anyways).
 
-I prefer the previous approach (github actions + netlify/github pages)
-but regardless would happily set this up if we can start an initiative
-to add those code comments in code, which I'd also like to help
-contribute to. I'd also be happy to hear of suggestions of free/open
-source alternatives for CI.
+This and few other things will be the topic of the next set of patches.
 
-Andrii, do you run the libbpf github org and mirror repo?
+Some tests rely on Clang fix ([0]), so need latest Clang built from main.
+
+  [0] https://reviews.llvm.org/D100362
+
+v1->v2:
+  - make map externs support full attribute list, adjust linked_maps selftest
+    to demonstrate that typedef works now (though no shared header file was
+    added to simplicity sake) (Alexei);
+  - remove commented out parts from selftests and fix few minor code style
+    issues;
+  - special __weak map definition semantics not yet implemented and will be
+    addressed in a follow up.
+
+Andrii Nakryiko (17):
+  bpftool: support dumping BTF VAR's "extern" linkage
+  bpftool: dump more info about DATASEC members
+  libbpf: suppress compiler warning when using SEC() macro with externs
+  libbpf: mark BPF subprogs with hidden visibility as static for BPF
+    verifier
+  libbpf: allow gaps in BPF program sections to support overriden weak
+    functions
+  libbpf: refactor BTF map definition parsing
+  libbpf: factor out symtab and relos sanity checks
+  libbpf: make few internal helpers available outside of libbpf.c
+  libbpf: extend sanity checking ELF symbols with externs validation
+  libbpf: tighten BTF type ID rewriting with error checking
+  libbpf: add linker extern resolution support for functions and global
+    variables
+  libbpf: support extern resolution for BTF-defined maps in .maps
+    section
+  selftests/bpf: use -O0 instead of -Og in selftests builds
+  selftests/bpf: omit skeleton generation for multi-linked BPF object
+    files
+  selftests/bpf: add function linking selftest
+  selftests/bpf: add global variables linking selftest
+  sleftests/bpf: add map linking selftest
+
+ tools/bpf/bpftool/btf.c                       |   30 +-
+ tools/lib/bpf/bpf_helpers.h                   |   19 +-
+ tools/lib/bpf/btf.c                           |    5 -
+ tools/lib/bpf/libbpf.c                        |  370 +++--
+ tools/lib/bpf/libbpf_internal.h               |   45 +
+ tools/lib/bpf/linker.c                        | 1261 ++++++++++++++---
+ tools/testing/selftests/bpf/Makefile          |   18 +-
+ .../selftests/bpf/prog_tests/linked_funcs.c   |   42 +
+ .../selftests/bpf/prog_tests/linked_maps.c    |   30 +
+ .../selftests/bpf/prog_tests/linked_vars.c    |   43 +
+ .../selftests/bpf/progs/linked_funcs1.c       |   73 +
+ .../selftests/bpf/progs/linked_funcs2.c       |   73 +
+ .../selftests/bpf/progs/linked_maps1.c        |   82 ++
+ .../selftests/bpf/progs/linked_maps2.c        |   76 +
+ .../selftests/bpf/progs/linked_vars1.c        |   54 +
+ .../selftests/bpf/progs/linked_vars2.c        |   55 +
+ 16 files changed, 1922 insertions(+), 354 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/linked_funcs.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/linked_maps.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/linked_vars.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_funcs1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_funcs2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_maps1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_maps2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_vars1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_vars2.c
+
+-- 
+2.30.2
+
