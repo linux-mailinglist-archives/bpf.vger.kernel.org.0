@@ -2,294 +2,244 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CD7362153
-	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 15:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5CB362231
+	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 16:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242938AbhDPNqZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Apr 2021 09:46:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22065 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229706AbhDPNqY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 16 Apr 2021 09:46:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618580760;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Oa5LDEP9CPGhnwNXSai1ubG+32x2mP3X1nVW/ALFn/k=;
-        b=SKC3SmoSxJPHUmGUV4KXgkBbscn2eg7Q9H8zeqtbYaPmz1lFueWx8g3TqVvH8gNohxDnTG
-        Zqa+ILN4ueC3lllt7CIpLhPH6J2hbQaS0Wb27lUA6LBPVRWJKmGjjTFkrdNbWND5e1PEP3
-        IRxRItmIB+d9fcu2a5ZIvJNmRI2FmAM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-9Gy1UqSDNrSownMAvLakmQ-1; Fri, 16 Apr 2021 09:45:58 -0400
-X-MC-Unique: 9Gy1UqSDNrSownMAvLakmQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6BA29814337;
-        Fri, 16 Apr 2021 13:45:56 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BC4FA50FA2;
-        Fri, 16 Apr 2021 13:45:24 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 15:45:23 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFQ=?= =?UTF-8?B?w7ZwZWw=?= 
-        <bjorn.topel@gmail.com>, brouer@redhat.com,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Subject: Re: [PATCHv7 bpf-next 1/4] bpf: run devmap xdp_prog on flush
- instead of bulk enqueue
-Message-ID: <20210416154523.3b1fe700@carbon>
-In-Reply-To: <20210416003913.azcjk4fqxs7gag3m@kafai-mbp.dhcp.thefacebook.com>
-References: <20210414122610.4037085-1-liuhangbin@gmail.com>
-        <20210414122610.4037085-2-liuhangbin@gmail.com>
-        <20210415001711.dpbt2lej75ry6v7a@kafai-mbp.dhcp.thefacebook.com>
-        <20210415023746.GR2900@Leo-laptop-t470s>
-        <87o8efkilw.fsf@toke.dk>
-        <20210415173551.7ma4slcbqeyiba2r@kafai-mbp.dhcp.thefacebook.com>
-        <20210415202132.7b5e8d0d@carbon>
-        <87k0p3i957.fsf@toke.dk>
-        <20210416003913.azcjk4fqxs7gag3m@kafai-mbp.dhcp.thefacebook.com>
+        id S235820AbhDPO14 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Apr 2021 10:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235814AbhDPO1z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:27:55 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8450C061574;
+        Fri, 16 Apr 2021 07:27:29 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id u15so5516207plf.10;
+        Fri, 16 Apr 2021 07:27:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=rfVSAU7w1TUjJHnly91DDtvcNAkvESAcAghYh02RrtY=;
+        b=a2GqMl6VOV2cr5Iedz0kelkhly+8jmMwigfr2QlnO90ZxR0yFrcxXuReV60tCd3+0R
+         UQ8HsT9eAIi/cUt8TDAQtdGQGho2ZKZAm5kur3Q6G6MIw0VHzi8Hvcm7fxRzMVftRWhr
+         C+W3ixZEb60TI3EE8SWzF0NMBQEBzUFChDoxdASE8QFKKg5g3eVr3pLueMXd7MQvvxmf
+         skVNQKgwjz5IAS8BgNclp6G/NJ6mPTADZvi6Iap5UuOnkN6Qv60MX+bjZYnjKcDN+CKc
+         5twR5FFr+adjEZg/HNKWAkuFR+0GpoQGzHWaIzPHkXAAsxD65nQm918S0kIJpXwXtYm9
+         D/Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=rfVSAU7w1TUjJHnly91DDtvcNAkvESAcAghYh02RrtY=;
+        b=Up/uzhVcEbWJFn+BD19VIxuslO40f+uYcpvit/WGxgef5PK9JLGfzJo+CO5tCLlFGg
+         yKzI9iOwJS3fGV3PjYnh9gDY7lMKDnmN4P/x1GmdtxU5GhLxfvqxgOjW/qBwXqZ7/bt6
+         d234MUvtkNWSfEg7c1clVx0ZFomPpgrnIKJn8ZYv6gi2yufLpu9DAIUD1JBiqq68CBKD
+         6QxL1FH2oDwJCneVOjx8nq22HHnrZC8IhbCC4xRPtQxJwLNlC6bDkrfL89elqvVQ7aq3
+         Fs38ZS9Nq+RUcsi26Ytb31dNkRTu56aY4rvDb0egdPWd08QMVlm3OZEBtY9ioqqm7qcn
+         2aZQ==
+X-Gm-Message-State: AOAM532D5YxmYamX2UYDrxPESSgkQYh3qXIBc6VFdzWio5eHGtAijUiW
+        YMvhPd/Sv6WRpNZhrwNhLRyzM56zSUbqPZRunH4=
+X-Google-Smtp-Source: ABdhPJzUKgeGp8hm7ihO8O30dTJbi7w6vPbzoNhbgq5TdrF/f3KT8LFKdhuQBcK1dFObMU9uJquCx+9EgkRxeT7UGgU=
+X-Received: by 2002:a17:90a:a613:: with SMTP id c19mr10271368pjq.117.1618583249205;
+ Fri, 16 Apr 2021 07:27:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <cover.1617885385.git.lorenzo@kernel.org>
+In-Reply-To: <cover.1617885385.git.lorenzo@kernel.org>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Fri, 16 Apr 2021 16:27:18 +0200
+Message-ID: <CAJ8uoz1MOYLzyy7xXq_fmpKDEakxSomzfM76Szjr5gWsqHc9jQ@mail.gmail.com>
+Subject: Re: [PATCH v8 bpf-next 00/14] mvneta: introduce XDP multi-buffer support
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        lorenzo.bianconi@redhat.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
+        sameehj@amazon.com, John Fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Tirthendu <tirthendu.sarkar@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 15 Apr 2021 17:39:13 -0700
-Martin KaFai Lau <kafai@fb.com> wrote:
-
-> On Thu, Apr 15, 2021 at 10:29:40PM +0200, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
-> > Jesper Dangaard Brouer <brouer@redhat.com> writes:
-> >  =20
-> > > On Thu, 15 Apr 2021 10:35:51 -0700
-> > > Martin KaFai Lau <kafai@fb.com> wrote:
-> > > =20
-> > >> On Thu, Apr 15, 2021 at 11:22:19AM +0200, Toke H=C3=B8iland-J=C3=B8r=
-gensen wrote: =20
-> > >> > Hangbin Liu <liuhangbin@gmail.com> writes:
-> > >> >    =20
-> > >> > > On Wed, Apr 14, 2021 at 05:17:11PM -0700, Martin KaFai Lau wrote=
-:   =20
-> > >> > >> >  static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 f=
-lags)
-> > >> > >> >  {
-> > >> > >> >  	struct net_device *dev =3D bq->dev;
-> > >> > >> > -	int sent =3D 0, err =3D 0;
-> > >> > >> > +	int sent =3D 0, drops =3D 0, err =3D 0;
-> > >> > >> > +	unsigned int cnt =3D bq->count;
-> > >> > >> > +	int to_send =3D cnt;
-> > >> > >> >  	int i;
-> > >> > >> > =20
-> > >> > >> > -	if (unlikely(!bq->count))
-> > >> > >> > +	if (unlikely(!cnt))
-> > >> > >> >  		return;
-> > >> > >> > =20
-> > >> > >> > -	for (i =3D 0; i < bq->count; i++) {
-> > >> > >> > +	for (i =3D 0; i < cnt; i++) {
-> > >> > >> >  		struct xdp_frame *xdpf =3D bq->q[i];
-> > >> > >> > =20
-> > >> > >> >  		prefetch(xdpf);
-> > >> > >> >  	}
-> > >> > >> > =20
-> > >> > >> > -	sent =3D dev->netdev_ops->ndo_xdp_xmit(dev, bq->count, bq->=
-q, flags);
-> > >> > >> > +	if (bq->xdp_prog) {   =20
-> > >> > >> bq->xdp_prog is used here
-> > >> > >>    =20
-> > >> > >> > +		to_send =3D dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt,=
- dev);
-> > >> > >> > +		if (!to_send)
-> > >> > >> > +			goto out;
-> > >> > >> > +
-> > >> > >> > +		drops =3D cnt - to_send;
-> > >> > >> > +	}
-> > >> > >> > +   =20
-> > >> > >>=20
-> > >> > >> [ ... ]
-> > >> > >>    =20
-> > >> > >> >  static void bq_enqueue(struct net_device *dev, struct xdp_fr=
-ame *xdpf,
-> > >> > >> > -		       struct net_device *dev_rx)
-> > >> > >> > +		       struct net_device *dev_rx, struct bpf_prog *xdp_pro=
-g)
-> > >> > >> >  {
-> > >> > >> >  	struct list_head *flush_list =3D this_cpu_ptr(&dev_flush_li=
-st);
-> > >> > >> >  	struct xdp_dev_bulk_queue *bq =3D this_cpu_ptr(dev->xdp_bul=
-kq);
-> > >> > >> > @@ -412,18 +466,22 @@ static void bq_enqueue(struct net_devic=
-e *dev, struct xdp_frame *xdpf,
-> > >> > >> >  	/* Ingress dev_rx will be the same for all xdp_frame's in
-> > >> > >> >  	 * bulk_queue, because bq stored per-CPU and must be flushed
-> > >> > >> >  	 * from net_device drivers NAPI func end.
-> > >> > >> > +	 *
-> > >> > >> > +	 * Do the same with xdp_prog and flush_list since these fie=
-lds
-> > >> > >> > +	 * are only ever modified together.
-> > >> > >> >  	 */
-> > >> > >> > -	if (!bq->dev_rx)
-> > >> > >> > +	if (!bq->dev_rx) {
-> > >> > >> >  		bq->dev_rx =3D dev_rx;
-> > >> > >> > +		bq->xdp_prog =3D xdp_prog;   =20
-> > >> > >> bp->xdp_prog is assigned here and could be used later in bq_xmi=
-t_all().
-> > >> > >> How is bq->xdp_prog protected? Are they all under one rcu_read_=
-lock()?
-> > >> > >> It is not very obvious after taking a quick look at xdp_do_flus=
-h[_map].
-> > >> > >>=20
-> > >> > >> e.g. what if the devmap elem gets deleted.   =20
-> > >> > >
-> > >> > > Jesper knows better than me. From my veiw, based on the descript=
-ion of
-> > >> > > __dev_flush():
-> > >> > >
-> > >> > > On devmap tear down we ensure the flush list is empty before com=
-pleting to
-> > >> > > ensure all flush operations have completed. When drivers update =
-the bpf
-> > >> > > program they may need to ensure any flush ops are also complete.=
-   =20
-> > >>
-> > >> AFAICT, the bq->xdp_prog is not from the dev. It is from a devmap's =
-elem.
-
-The bq->xdp_prog comes form the devmap "dev" element, and it is stored
-in temporarily in the "bq" structure that is only valid for this
-softirq NAPI-cycle.  I'm slightly worried that we copied this pointer
-the the xdp_prog here, more below (and Q for Paul).
-
-> > >> >=20
-> > >> > Yeah, drivers call xdp_do_flush() before exiting their NAPI poll l=
-oop,
-> > >> > which also runs under one big rcu_read_lock(). So the storage in t=
-he
-> > >> > bulk queue is quite temporary, it's just used for bulking to incre=
-ase
-> > >> > performance :)   =20
-> > >>
-> > >> I am missing the one big rcu_read_lock() part.  For example, in i40e=
-_txrx.c,
-> > >> i40e_run_xdp() has its own rcu_read_lock/unlock().  dst->xdp_prog us=
-ed to run
-> > >> in i40e_run_xdp() and it is fine.
-> > >>=20
-> > >> In this patch, dst->xdp_prog is run outside of i40e_run_xdp() where =
-the
-> > >> rcu_read_unlock() has already done.  It is now run in xdp_do_flush_m=
-ap().
-> > >> or I missed the big rcu_read_lock() in i40e_napi_poll()?
-> > >>
-> > >> I do see the big rcu_read_lock() in mlx5e_napi_poll(). =20
-> > >
-> > > I believed/assumed xdp_do_flush_map() was already protected under an
-> > > rcu_read_lock.  As the devmap and cpumap, which get called via
-> > > __dev_flush() and __cpu_map_flush(), have multiple RCU objects that we
-> > > are operating on. =20
+On Thu, Apr 8, 2021 at 2:51 PM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 >
-> What other rcu objects it is using during flush?
-
-Look at code:
- kernel/bpf/cpumap.c
- kernel/bpf/devmap.c
-
-The devmap is filled with RCU code and complicated take-down steps. =20
-The devmap's elements are also RCU objects and the BPF xdp_prog is
-embedded in this object (struct bpf_dtab_netdev).  The call_rcu
-function is __dev_map_entry_free().
-
-
-> > > Perhaps it is a bug in i40e? =20
+> This series introduce XDP multi-buffer support. The mvneta driver is
+> the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
+> please focus on how these new types of xdp_{buff,frame} packets
+> traverse the different layers and the layout design. It is on purpose
+> that BPF-helpers are kept simple, as we don't want to expose the
+> internal layout to allow later changes.
 >
-> A quick look into ixgbe falls into the same bucket.
-> didn't look at other drivers though.
-
-Intel driver are very much in copy-paste mode.
-=20
-> > >
-> > > We are running in softirq in NAPI context, when xdp_do_flush_map() is
-> > > call, which I think means that this CPU will not go-through a RCU gra=
-ce
-> > > period before we exit softirq, so in-practice it should be safe. =20
-> >=20
-> > Yup, this seems to be correct: rcu_softirq_qs() is only called between
-> > full invocations of the softirq handler, which for networking is
-> > net_rx_action(), and so translates into full NAPI poll cycles. =20
+> For now, to keep the design simple and to maintain performance, the XDP
+> BPF-prog (still) only have access to the first-buffer. It is left for
+> later (another patchset) to add payload access across multiple buffers.
+> This patchset should still allow for these future extensions. The goal
+> is to lift the XDP MTU restriction that comes with XDP, but maintain
+> same performance as before.
 >
-> I don't know enough to comment on the rcu/softirq part, may be someone
-> can chime in.  There is also a recent napi_threaded_poll().
+> The main idea for the new multi-buffer layout is to reuse the same
+> layout used for non-linear SKB. We introduced a "xdp_shared_info" data
+> structure at the end of the first buffer to link together subsequent buff=
+ers.
+> xdp_shared_info will alias skb_shared_info allowing to keep most of the f=
+rags
+> in the same cache-line (while with skb_shared_info only the first fragmen=
+t will
+> be placed in the first "shared_info" cache-line). Moreover we introduced =
+some
+> xdp_shared_info helpers aligned to skb_frag* ones.
+> Converting xdp_frame to SKB and deliver it to the network stack is shown =
+in
+> patch 07/14. Building the SKB, the xdp_shared_info structure will be conv=
+erted
+> in a skb_shared_info one.
+>
+> A multi-buffer bit (mb) has been introduced in xdp_{buff,frame} structure
+> to notify the bpf/network layer if this is a xdp multi-buffer frame (mb =
+=3D 1)
+> or not (mb =3D 0).
+> The mb bit will be set by a xdp multi-buffer capable driver only for
+> non-linear frames maintaining the capability to receive linear frames
+> without any extra cost since the xdp_shared_info structure at the end
+> of the first buffer will be initialized only if mb is set.
+>
+> Typical use cases for this series are:
+> - Jumbo-frames
+> - Packet header split (please see Google=E2=80=99s use-case @ NetDevConf =
+0x14, [0])
+> - TSO
+>
+> A new frame_length field has been introduce in XDP ctx in order to notify=
+ the
+> eBPF layer about the total frame size (linear + paged parts).
+>
+> bpf_xdp_adjust_tail and bpf_xdp_copy helpers have been modified to take i=
+nto
+> account xdp multi-buff frames.
+>
+> More info about the main idea behind this approach can be found here [1][=
+2].
+>
+> Changes since v7:
+> - rebase on top of bpf-next
+> - fix sparse warnings
+> - improve comments for frame_length in include/net/xdp.h
+>
+> Changes since v6:
+> - the main difference respect to previous versions is the new approach pr=
+oposed
+>   by Eelco to pass full length of the packet to eBPF layer in XDP context
+> - reintroduce multi-buff support to eBPF kself-tests
+> - reintroduce multi-buff support to bpf_xdp_adjust_tail helper
+> - introduce multi-buffer support to bpf_xdp_copy helper
+> - rebase on top of bpf-next
+>
+> Changes since v5:
+> - rebase on top of bpf-next
+> - initialize mb bit in xdp_init_buff() and drop per-driver initialization
+> - drop xdp->mb initialization in xdp_convert_zc_to_xdp_frame()
+> - postpone introduction of frame_length field in XDP ctx to another serie=
+s
+> - minor changes
+>
+> Changes since v4:
+> - rebase ontop of bpf-next
+> - introduce xdp_shared_info to build xdp multi-buff instead of using the
+>   skb_shared_info struct
+> - introduce frame_length in xdp ctx
+> - drop previous bpf helpers
+> - fix bpf_xdp_adjust_tail for xdp multi-buff
+> - introduce xdp multi-buff self-tests for bpf_xdp_adjust_tail
+> - fix xdp_return_frame_bulk for xdp multi-buff
+>
+> Changes since v3:
+> - rebase ontop of bpf-next
+> - add patch 10/13 to copy back paged data from a xdp multi-buff frame to
+>   userspace buffer for xdp multi-buff selftests
+>
+> Changes since v2:
+> - add throughput measurements
+> - drop bpf_xdp_adjust_mb_header bpf helper
+> - introduce selftest for xdp multibuffer
+> - addressed comments on bpf_xdp_get_frags_count
+> - introduce xdp multi-buff support to cpumaps
+>
+> Changes since v1:
+> - Fix use-after-free in xdp_return_{buff/frame}
+> - Introduce bpf helpers
+> - Introduce xdp_mb sample program
+> - access skb_shared_info->nr_frags only on the last fragment
+>
+> Changes since RFC:
+> - squash multi-buffer bit initialization in a single patch
+> - add mvneta non-linear XDP buff support for tx side
+>
+> [0] https://netdevconf.info/0x14/session.html?talk-the-path-to-tcp-4k-mtu=
+-and-rx-zerocopy
+> [1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp=
+-multi-buffer01-design.org
+> [2] https://netdevconf.info/0x14/session.html?tutorial-add-XDP-support-to=
+-a-NIC-driver (XDPmulti-buffers section)
 
-CC added Paul. (link to patch[1][2] for context)
+Took your patches for a test run with the AF_XDP sample xdpsock on an
+i40e card and the throughput degradation is between 2 to 6% depending
+on the setup and microbenchmark within xdpsock that is executed. And
+this is without sending any multi frame packets. Just single frame
+ones. Tirtha made changes to the i40e driver to support this new
+interface so that is being included in the measurements.
 
-> If it is the case, then some of the existing rcu_read_lock() is unnecessa=
-ry?
+What performance do you see with the mvneta card? How much are we
+willing to pay for this feature when it is not being used or can we in
+some way selectively turn it on only when needed?
 
-Well, in many cases, especially depending on how kernel is compiled,
-that is true.  But we want to keep these, as they also document the
-intend of the programmer.  And allow us to make the kernel even more
-preempt-able in the future.
+Thanks: Magnus
 
-> At least, it sounds incorrect to only make an exception here while keeping
-> other rcu_read_lock() as-is.
-
-Let me be clear:  I think you have spotted a problem, and we need to
-add rcu_read_lock() at least around the invocation of
-bpf_prog_run_xdp() or before around if-statement that call
-dev_map_bpf_prog_run(). (Hangbin please do this in V8).
-
-Thank you Martin for reviewing the code carefully enough to find this
-issue, that some drivers don't have a RCU-section around the full XDP
-code path in their NAPI-loop.
-
-Question to Paul.  (I will attempt to describe in generic terms what
-happens, but ref real-function names).
-
-We are running in softirq/NAPI context, the driver will call a
-bq_enqueue() function for every packet (if calling xdp_do_redirect) ,
-some driver wrap this with a rcu_read_lock/unlock() section (other have
-a large RCU-read section, that include the flush operation).
-
-In the bq_enqueue() function we have a per_cpu_ptr (that store the
-xdp_frame packets) that will get flushed/send in the call
-xdp_do_flush() (that end-up calling bq_xmit_all()).  This flush will
-happen before we end our softirq/NAPI context.
-
-The extension is that the per_cpu_ptr data structure (after this patch)
-store a pointer to an xdp_prog (which is a RCU object).  In the flush
-operation (which we will wrap with RCU-read section), we will use this
-xdp_prog pointer.   I can see that it is in-principle wrong to pass
-this-pointer between RCU-read sections, but I consider this safe as we
-are running under softirq/NAPI and the per_cpu_ptr is only valid in
-this short interval.
-
-I claim a grace/quiescent RCU cannot happen between these two RCU-read
-sections, but I might be wrong? (especially in the future or for RT).
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
-[1] https://lore.kernel.org/netdev/20210414122610.4037085-2-liuhangbin@gmai=
-l.com/
-[2] https://patchwork.kernel.org/project/netdevbpf/patch/20210414122610.403=
-7085-2-liuhangbin@gmail.com/
-
+> Eelco Chaudron (4):
+>   bpf: add multi-buff support to the bpf_xdp_adjust_tail() API
+>   bpd: add multi-buffer support to xdp copy helpers
+>   bpf: add new frame_length field to the XDP ctx
+>   bpf: update xdp_adjust_tail selftest to include multi-buffer
+>
+> Lorenzo Bianconi (10):
+>   xdp: introduce mb in xdp_buff/xdp_frame
+>   xdp: add xdp_shared_info data structure
+>   net: mvneta: update mb bit before passing the xdp buffer to eBPF layer
+>   xdp: add multi-buff support to xdp_return_{buff/frame}
+>   net: mvneta: add multi buffer support to XDP_TX
+>   net: mvneta: enable jumbo frames for XDP
+>   net: xdp: add multi-buff support to xdp_build_skb_from_fram
+>   bpf: move user_size out of bpf_test_init
+>   bpf: introduce multibuff support to bpf_prog_test_run_xdp()
+>   bpf: test_run: add xdp_shared_info pointer in bpf_test_finish
+>     signature
+>
+>  drivers/net/ethernet/marvell/mvneta.c         | 182 ++++++++++--------
+>  include/linux/filter.h                        |   7 +
+>  include/net/xdp.h                             | 105 +++++++++-
+>  include/uapi/linux/bpf.h                      |   1 +
+>  net/bpf/test_run.c                            | 109 +++++++++--
+>  net/core/filter.c                             | 134 ++++++++++++-
+>  net/core/xdp.c                                | 103 +++++++++-
+>  tools/include/uapi/linux/bpf.h                |   1 +
+>  .../bpf/prog_tests/xdp_adjust_tail.c          | 105 ++++++++++
+>  .../selftests/bpf/prog_tests/xdp_bpf2bpf.c    | 127 ++++++++----
+>  .../bpf/progs/test_xdp_adjust_tail_grow.c     |  17 +-
+>  .../bpf/progs/test_xdp_adjust_tail_shrink.c   |  32 ++-
+>  .../selftests/bpf/progs/test_xdp_bpf2bpf.c    |   3 +-
+>  13 files changed, 767 insertions(+), 159 deletions(-)
+>
+> --
+> 2.30.2
+>
