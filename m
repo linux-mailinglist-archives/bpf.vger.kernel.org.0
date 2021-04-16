@@ -2,139 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0286A361686
-	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 01:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C1A3616BC
+	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 02:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235597AbhDOXuO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 15 Apr 2021 19:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235576AbhDOXuN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 15 Apr 2021 19:50:13 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80220C061574;
-        Thu, 15 Apr 2021 16:49:49 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id j4so2383135lfp.0;
-        Thu, 15 Apr 2021 16:49:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=93RaKIcPxj4ed/vj3/T6taZCo8gljqrXH2nCGhdkM1Q=;
-        b=aBCM67HeOS1RQpmZ9d1xkBbfZ9OjHVKizD6JMJntC1jztjXCaMAD4PxLVP6PE65ty3
-         cKPeKzgiEbgw3SQZ8eR83qtBjTP2OYUdbnqkzhUAbE0u+1hOdGsAn8xKem5MzABFlQgD
-         mRXyEbRdJWemOBA5ZL1H2F5rm/kMfg/eeqCccq1PGYnduzRrD+ZOmE6Jc8ZifznL8idv
-         FrDgLXsLKsMduLqpBFFg7xH0u5XmXHclHLbXV0TX9HDDr95c+SXlKyzlZoT5Ez5tEE8O
-         yL7SLoB/UGXylkkP0jVvQUti3azG7QIpldbt+d5lTdgqR0VqbJM4y+Fb3QAjnu0TlNPa
-         AWGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=93RaKIcPxj4ed/vj3/T6taZCo8gljqrXH2nCGhdkM1Q=;
-        b=NBeeKEl+SDqHxh0WzmN7s/knZGZEHz9+ow9jKXLEnCkg8ZCNlAK8VquipOILHOPasM
-         G6PX5iw5kJFSM/WWJQdJFnxhnGANHBNakvIkAgPKiC3eHVS65skz8zcNslTG/8GeJPeX
-         D+KY5lvbBuvNfEOUcMl6oTYR05yesWVw/iX2LbOj4YzVvuL7R+Wl0KayDpLfR4p1z/Cz
-         aF2TWgaOdOiKC5qW9nKluFNK77YYTM/OwywIEzkTlqXh3q6DO6WSShNGLpqEXkUfq+dW
-         o6cXoVD0x5kjaWeo0yMAI+B5q+XrSUbF1ONuX+O9VEtOY0xofyCkNZ3OxQ13ZtCK8gaG
-         Dgog==
-X-Gm-Message-State: AOAM533kX0OdH+H6rXq5RAVhK167nyX6Qf7HgnHu+iQQszdYyqGY76hQ
-        57otHoWt+UXRfpV77SDnzsBgyrpvEbjNSULikuk=
-X-Google-Smtp-Source: ABdhPJyNhOogFP8g+e8x1hnSTCcEzJfdpg/9ifXfqOKSgpR6Q7EyYPjeRQKWzaeLUb3+uY3vv8XYIkkzgMMMfdz4tQA=
-X-Received: by 2002:ac2:4d4d:: with SMTP id 13mr1106974lfp.540.1618530588068;
- Thu, 15 Apr 2021 16:49:48 -0700 (PDT)
+        id S234716AbhDPAWe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 15 Apr 2021 20:22:34 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23224 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235139AbhDPAWe (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 15 Apr 2021 20:22:34 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 13G0Af9v004415;
+        Thu, 15 Apr 2021 17:22:06 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=0d2nT0MxxHW4qD/Q3bnx7T9tBKoIGVMVrf+WN5JcnzI=;
+ b=P3f5nA3ix1r0Od6/Q4fmQnhp0+NB3RqnuAo0EThCbBqiBX4GypPfjqjDv4+1OidNwjko
+ yFgY9aa65GWyz69NCgwm4i/ktEti86yf22AwwvfsRA1SOiHgmb53h71HseXmuk/9cg91
+ TNSE5nzpLB/ldT9fcVJgh3ktL+pc1RU85Gw= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 37wvgkb2n9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 15 Apr 2021 17:22:06 -0700
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 15 Apr 2021 17:22:05 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TyHNIGOhkO5tCqghN3ypssPtLnNxtLxvnRHyEzCMzBu7Ueohhc2TXCbqqZQKSzZZcdvC9Q5d+NPSENCHLlLsbQ37SqPlhiy04Pw9stjJ6JAA9iTs+ZGhmqvEmjC9gorf87/BwnQiWVgjm6tQ3Y6YGGJDDx1hbKH1vdPqgO4dXG8+1/R5pEMYKfATTPGZQ9/bYCkMbqEPw8H1am/zqiLYStMLWUWeJ4opbc2S76ADfeI9A4ipEM+ndgj8G3QSdQYBOaq45lsMWEd/C3tKWN5xY+eYdrXVGpLEV7S37I1v4NLbHibQgrgWcHUTyD+0uF8O5YnNqhyks9jnTc5hJ5ViMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0d2nT0MxxHW4qD/Q3bnx7T9tBKoIGVMVrf+WN5JcnzI=;
+ b=BFxTn6b27zPyYOKhWzRSyqGr8wvQOygqNepH/7rceZgzdI7/3b1ejeTHTe27Ib8CVqzCd6aVM4N6+BUmIc4oT3e/KT8l5RFaYe9ymyc44vx/SWj2eZvZILQ8tBba4NbMxLgUlj+++JvSGBxGu0xSGQRKpVvICWd/wZ0eKxYAzB9wD/BSZj3ng/pyoLdYUGZZEsVx6bsJIYYOUIsykVl/tsUZqgouPicmyqXP4VpUFQBrSf9pgdepwKZ24IWVB6iKxtjy5waUeVbhvY65WsseqJGDik0FAz0HG8czpO0cbP9qpF5QT9E2p+tYFFIvBjzg3+UmA4KHhYJBscxj/Fg69A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from BN8PR15MB3282.namprd15.prod.outlook.com (2603:10b6:408:a8::32)
+ by BN6PR15MB1411.namprd15.prod.outlook.com (2603:10b6:404:c4::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Fri, 16 Apr
+ 2021 00:22:03 +0000
+Received: from BN8PR15MB3282.namprd15.prod.outlook.com
+ ([fe80::315e:e061:c785:e40]) by BN8PR15MB3282.namprd15.prod.outlook.com
+ ([fe80::315e:e061:c785:e40%3]) with mapi id 15.20.3933.040; Fri, 16 Apr 2021
+ 00:22:03 +0000
+Subject: Re: [PATCH bpf-next v3 0/5] bpf: tools: support build selftests/bpf
+ with clang
+To:     Yonghong Song <yhs@fb.com>, <bpf@vger.kernel.org>
+CC:     Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        <kernel-team@fb.com>, Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+References: <20210413153408.3027270-1-yhs@fb.com>
+From:   Alexei Starovoitov <ast@fb.com>
+Message-ID: <26309b44-e719-2fed-6feb-397389985d2b@fb.com>
+Date:   Thu, 15 Apr 2021 17:21:57 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
+In-Reply-To: <20210413153408.3027270-1-yhs@fb.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+X-Originating-IP: [2620:10d:c090:400::5:62e6]
+X-ClientProxiedBy: MWHPR12CA0032.namprd12.prod.outlook.com
+ (2603:10b6:301:2::18) To BN8PR15MB3282.namprd15.prod.outlook.com
+ (2603:10b6:408:a8::32)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:2103:c99:e09d:8a8f:94f0] (2620:10d:c090:400::5:62e6) by MWHPR12CA0032.namprd12.prod.outlook.com (2603:10b6:301:2::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Fri, 16 Apr 2021 00:22:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 95fcacb2-9467-468a-92f9-08d9006da868
+X-MS-TrafficTypeDiagnostic: BN6PR15MB1411:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN6PR15MB1411E32A9C8B1B8A62F23C7CD74C9@BN6PR15MB1411.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qAU1LJJ8CdosyX9Lmqe4OvTxLoMx1ShF2ZbDHF30QH2swLpVZerqi71EbB5ahzajwlisXqAn0SzURYIzEznpqxxso6LIqjskAoOA/CDYSL55gorsUUspu5FOy8qxgv6bKDvOWTrsKhVt+ngrv+ssFauaNveXlyIDLqd1WUz5SvYQq39gCmxzdFyWQxdjblIC+sXsgRLC2v0+7z0QkE0rD1/SBG5zIJ+l13CfoAPGqRTs+tLXs+L/SqSpESeEGCuR4WizLw6y/J8QLs5tFbhMpfats7dpzmuOgvnMuLcjtHvU8c3oNU5BhOQXs0IdI5aFDvK47oLV65eWD+7pXy/w9aBrWzHWCgQSjiZaZu8o+aTlUmckgtmwrd4hzuz+jdlqmm6JfNc1Udlcippboih+/SB8UOeM9hbie0TI/F87yvlRZgr/s8DfCgJ1doiG/pZrbZIBEI/DcPX+ngiyO2wKHmvhkenzgbY/UzlxqdrY3MX+UnhGT5tAOuQSWhpXr+3j0CRe8eJdkUKPF++QbJKzobU2rk4z2tyIkb6JFGS5T1kvxYxSc+CQc/BAKZlISQzbZzQy3BbcCn1jFJRrpcHOWpeOWO4bSIehocj1E4vQpEw0D12Y/CBl26WM9BYW4UXw3gkETv5TMkhlW4PlHomkAK9s/kmoghcU4Wn/FpHLr4dzN3vwTn+nSUaiQTEvFI3//6Eaa8CrATGZVJdyKsfzgHOII962dsFdAChcLLq2jrDpfSZaf9qR3E9y39oFWyobj74etEhgp6Oqx7ynWYst2w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR15MB3282.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(346002)(396003)(136003)(366004)(31696002)(54906003)(6666004)(316002)(6486002)(38100700002)(83380400001)(2906002)(36756003)(86362001)(2616005)(478600001)(52116002)(4326008)(186003)(966005)(53546011)(8676002)(66476007)(8936002)(66946007)(16526019)(66556008)(31686004)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bWcxeEV1L0kxbnhNM2dPeVBiL0Z2UXpWZHNlZXBZYmxaazNicU9NNXp5blNl?=
+ =?utf-8?B?RVd4OHh2NmJqRTBDZ0hmOVFRSENkNWc1eHY0dUhEd1o4dkdmM0dZR3dSOEFH?=
+ =?utf-8?B?L2ZTYmZvNW5MS2R3L1dBWTlMMmJ0dFVpNkphdnp3Qk1DM2d0aG5FMTRoVnFo?=
+ =?utf-8?B?WFl2QXhwMTl2bldQb0JlR3pRN0Rhbmo4RDJ3REh3MklwaWV1bEl0QWp6TFRn?=
+ =?utf-8?B?Tm1hRUVQUDZxMVVCTnN0bnBaME1SZzhsV0l3SDdhZDU3M05tbW9aTWIrRXVa?=
+ =?utf-8?B?RW5OY3RnZE1BUjdMN05SVGlEM0x5ZFpGK1ZJekpKYWd2eW1EUGpGcEVGb252?=
+ =?utf-8?B?UHE0MlNXdUVBK1BjdzArcEtKalhrTE8vOFRzZldOWnJMbUdtM1JCREtjcU9F?=
+ =?utf-8?B?amQ1RVZOU1Z2bzZ4a2M4SHN1aFJPN1JVejJGWUlFL2FXZ0N2emw0MmduditF?=
+ =?utf-8?B?YnNmdytYOHh6MmZjd1gxNTVFMmN5QlBCYU14aGhxa003eWNNQ092Z0o1TlBY?=
+ =?utf-8?B?Q3FKQXU3d3F5Nko1VXpjdHBEKytkL3FUbzA2RTU2OTRmbUxTbElYNkIxcEE0?=
+ =?utf-8?B?RjQ3eDY2TVB3TkRCMTVoTHZMSWVTK1BrVnhJVFhPOVNXTHI1a2lLdFhaRCt0?=
+ =?utf-8?B?M1RwQjY1dFpseHFYU3h5c2Y5Mmc0dW55VTZmdG5tSVphTWkzY2FPcU9vekc0?=
+ =?utf-8?B?M1BzZkI0MHBYQWthdGJUNCtEZStnQjFMalpYb2MzbERka25Fd1h5ZHNKYU55?=
+ =?utf-8?B?eUF2N0RGNTF6c0pmcVhUdmFmcHJWM08vV08xeXVTTytOTTRpSjdCYjZOUmJJ?=
+ =?utf-8?B?eXgwS3BvLzFmNEtWV0MrUWlsajJyQmlYWVdrZmtRUEY4Vlg2T1JaVVBGYVFQ?=
+ =?utf-8?B?SEc3SDBJRzM5Wi8xcDdoZmlrVU10QlBuM2RtMlFjQVZ3VlUvVytTTFJQTXFj?=
+ =?utf-8?B?cmtMZmJWNnFyTm56UlBEMU4ybVlMcjhQN1JJZzdCUWVrdldBZjBuSHZNTUtW?=
+ =?utf-8?B?UWRLemd4dElJQ0VpMTdYTW9CelMybmVITWRwbmFWQVNEL3pHVDAyRlkrbXg0?=
+ =?utf-8?B?TGs2SlhGeGNVSUg5ZzVKL2lBMXV4WlNJdHkrVkh6NFA2L0E2Z2RadDBkWXQ4?=
+ =?utf-8?B?ZHBHY3ZzMnNab2w2Z25SNUd6OFdUdDRqK0Z4aHpTaHlOelJVYWZQV1A2RzNt?=
+ =?utf-8?B?c3NhbldGYUIwOE1ldzJSMkMreHZyTlNkOXNzMXgwWnFtLytuTjBLMDY3WnN3?=
+ =?utf-8?B?N3FwUkd5UWx5cGJweWVvNXpBUVNEa3k2NHRzdnZyT09IZldtUkM1V3NMcm1m?=
+ =?utf-8?B?U2RMRDczVjZrTUxROGdrVjZHSWhkcXJ2RXdoZFZFdGYzbFBhSzNyOWxaWHZV?=
+ =?utf-8?B?U3BaWnNmTU9SeE5laUcxd2RIS3hlK09KZXRjQXRRODJyY2U5WjE1Y0prT0l1?=
+ =?utf-8?B?N1M3TTlGT0gyaDMyb0VMUFh2dVlVeklNQ0JJM1FOc1hWSXBQTkgxRERaSHlQ?=
+ =?utf-8?B?c3RyR0VtN2lKYXVUcjhJc3pSWEkwMGZtdEZodG5IT2hrMUhKSnlKd0xVOHl6?=
+ =?utf-8?B?Uy9paEE4eVc0YW5MSk5ZZXFXdjI1UXc4UDR6ZlVvenZhNXY2eENYVHk3bkZY?=
+ =?utf-8?B?VmxlYk1UMFpJa1MxNkplbTZ2c1ZQUHBWejkyNmRsN0hEeUpIVTJVR1NCUGhG?=
+ =?utf-8?B?b043SlZXVTAzMXpkdEpIRlo1eWU5YWxhYTIwV29PdVkrVU9kdGZIZ2hyUU9X?=
+ =?utf-8?B?UXplVEFoZjhaS2x4NENyUWZWY3B1OEdOWmczZjhEbEF0QWM2U080VmJNWXNo?=
+ =?utf-8?Q?CIGGvac699cWfA9SFs6AOFqk3uH/zJZNAzv9Q=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95fcacb2-9467-468a-92f9-08d9006da868
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR15MB3282.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 00:22:02.9654
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fazvnydOcXnyYfEm2KstWLEGFq+OSutKPpgn4zm9ZUi058ECyw+qtmTb61ue3kNN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR15MB1411
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: HDxSlXb3mKM9QLtHyDHhb8fjThSJT8ez
+X-Proofpoint-GUID: HDxSlXb3mKM9QLtHyDHhb8fjThSJT8ez
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210415093250.3391257-1-Jianlin.Lv@arm.com> <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
- <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com>
-In-Reply-To: <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 15 Apr 2021 16:49:36 -0700
-Message-ID: <CAADnVQJ2oHbYfgY9jqM_JMxUsoZxaNrxKSVFYfgCXuHVpDehpQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jianlin Lv <Jianlin.Lv@arm.com>, bpf <bpf@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, paulburton@kernel.org,
-        tsbogend@alpha.franken.de,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Wang YanQing <udknight@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Simon Horman <horms@verge.net.au>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tobias Klauser <tklauser@distanz.ch>, grantseltzer@gmail.com,
-        Ian Rogers <irogers@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-mips@vger.kernel.org,
-        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux@vger.kernel.org, iecedge@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-15_11:2021-04-15,2021-04-15 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ lowpriorityscore=0 mlxlogscore=999 spamscore=0 phishscore=0
+ priorityscore=1501 mlxscore=0 bulkscore=0 suspectscore=0 clxscore=1015
+ malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104160000
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 8:41 AM Quentin Monnet <quentin@isovalent.com> wrote:
->
-> 2021-04-15 16:37 UTC+0200 ~ Daniel Borkmann <daniel@iogearbox.net>
-> > On 4/15/21 11:32 AM, Jianlin Lv wrote:
-> >> For debugging JITs, dumping the JITed image to kernel log is discouraged,
-> >> "bpftool prog dump jited" is much better way to examine JITed dumps.
-> >> This patch get rid of the code related to bpf_jit_enable=2 mode and
-> >> update the proc handler of bpf_jit_enable, also added auxiliary
-> >> information to explain how to use bpf_jit_disasm tool after this change.
-> >>
-> >> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
->
-> Hello,
->
-> For what it's worth, I have already seen people dump the JIT image in
-> kernel logs in Qemu VMs running with just a busybox, not for kernel
-> development, but in a context where buiding/using bpftool was not
-> possible.
+On 4/13/21 8:34 AM, Yonghong Song wrote:
+> To build kernel with clang, people typically use
+>    make -j60 LLVM=1 LLVM_IAS=1
+> LLVM_IAS=1 is not required for non-LTO build but
+> is required for LTO build. In my environment,
+> I am always having LLVM_IAS=1 regardless of
+> whether LTO is enabled or not.
+> 
+> After kernel is build with clang, the following command
+> can be used to build selftests with clang:
+>    make -j60 -C tools/testing/selftests/bpf LLVM=1 LLVM_IAS=1
+> 
+> I am using latest bpf-next kernel code base and
+> latest clang built from source from
+>    https://github.com/llvm/llvm-project.git
+> Using earlier version of llvm may have compilation errors, see
+>    tools/testing/selftests/bpf
+> due to continuous development in llvm bpf features and selftests
+> to use these features.
+> 
+> To run bpf selftest properly, you need have certain necessary
+> kernel configs like at:
+>    bpf-next:tools/testing/selftests/bpf/config
+> (not that this is not a complete .config file and some other configs
+>   might still be needed.)
+> 
+> Currently, using the above command, some compilations
+> still use gcc and there are also compilation errors and warnings.
+> This patch set intends to fix these issues.
+> Patch #1 and #2 fixed the issue so clang/clang++ is
+> used instead of gcc/g++. Patch #3 fixed a compilation
+> failure. Patch #4 and #5 fixed various compiler warnings.
+> 
+> Changelog:
+>    v2 -> v3:
+>      . more test environment description in cover letter. (Sedat)
+>      . use a different fix, but similar to other use in selftests/bpf
+>        Makefile, to exclude header files from CXX compilation command
+>        line. (Andrii)
+>      . fix codes instead of adding -Wno-format-security. (Andrii)
 
-If building/using bpftool is not possible then majority of selftests won't
-be exercised. I don't think such environment is suitable for any kind
-of bpf development. Much so for JIT debugging.
-While bpf_jit_enable=2 is nothing but the debugging tool for JIT developers.
-I'd rather nuke that code instead of carrying it from kernel to kernel.
+I struggled to tweak my llvm setup, but at the end it compiled and
+selftests/bpf/test_progs passed compiled by clang,
+so I've applied to bpf-next.
+
+The things I've seen:
+1.
+include <iostream> not found due to my setup quirks.
+2.
+diff selftests/bpf/tools/build/libbpf/libbpf_global_syms.tmp	
+diff selftests/bpf/tools/build/libbpf/libbpf_versioned_syms.tmp	
+  btf__set_pointer_size
+  btf__str_by_offset
+  btf__type_by_id
++LIBBPF_0.0.1
++LIBBPF_0.0.2
+and this was happening with packaged llvm builds,
+but my own llvm build was fine, so I didn't debug further.
+
+3.
+clang-12: error: unsupported option '-mrecord-mcount' for target 
+'x86_64-unknown-linux-gnu'
+due to kernel not built with clang.
+
+I suspect followups will be needed to make it bulletproof.
