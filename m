@@ -2,133 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4EE362610
-	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 18:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D340362615
+	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 18:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236451AbhDPQye (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Apr 2021 12:54:34 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:38756 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236427AbhDPQye (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 16 Apr 2021 12:54:34 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 13GGqENN005868;
-        Fri, 16 Apr 2021 09:53:55 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=p66zOUkaboUbrtBAo0Zj1vHiewbE+6VciXeje4duF4M=;
- b=UQDt/k6LpAdanEDJxJHoYly/rhuXbbSQlt4i+Yq7h0eKlVFAoOIQAmFyMbmxgsxsr339
- ttRvHBj2UnF3mR+NpNUWIXX1zhal/Hdtwx2ov3T/zwngL5Z/nh93q72fY1nFSqJqR0PM
- 0TcaITlrgms76kc79TSdAd8pjCN1l2jwtYE= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 37wvnyf5nf-2
+        id S236441AbhDPQzt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Apr 2021 12:55:49 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:18138 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236427AbhDPQzt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 16 Apr 2021 12:55:49 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13GGt9DG006712;
+        Fri, 16 Apr 2021 09:55:12 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=trZZp9y2sfkKJfpi4zkr7/YrX5eyGkiodumIn3RcldY=;
+ b=V28VWO0Q958IVHNN6WkebLVKC5tcz8ysmu1+CDSVLL9gEbCCGN1QukpX//F9lEMe3dhC
+ aJLK9ZHPV4oD76ePlm0D1HzIMiAN0NMwvhNRtsACx7KPjSIkog/U6npUDYSSQNgfHZT4
+ T+WoQS0nPpO9+WYKCQS9iYlfUq7cd5MataY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 37yb5e18sc-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 16 Apr 2021 09:53:55 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+        Fri, 16 Apr 2021 09:55:12 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 16 Apr 2021 09:53:54 -0700
+ 15.1.2176.2; Fri, 16 Apr 2021 09:54:55 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ODfAvm3YJg32GpaNvIEv4rcUBuQdq064dqucFA13nNe3OIEp8Pzft2nAFGX8x+ZV9ej/zAS1Dj6MEytUQpamo2oCMYSQh/xThYSU2QYGt2ltrZzRCIIeTFeICQb3lazcS0ndImRieYSX9AZu1IpkkxG9s+HhLLsshuVYPhVxwAZZLAGo0aKeMsKQI5E1Bvhega3tHofOmrxcZHoKGF0ZkiODiF3BDC0o5tzVpHac62bP3aYzeBjAEYnqcJJu0EYKqESTgLLOAIfx9IHeO/FHNuiBoIq1jrWU7y/J9YWCFmHUKByc5mFY+R8GgfF8eY8X7EjfpUngL5p0t4HKopCmTw==
+ b=Up+hF1bDFcDg1a3k4wfU0XvxrAFpOmO5DyyyjF1gEEsZZryQzWIxyChorbysOZXXJcSb1mxnR9PHpqQZkV0xcB7BQbKQeMxj8SjNlH3X7yo3eIVQ3IcgxtXBl4yrZyBBM3FRRzoR7NFwyuQ9SeV9UXSHPgwcywcGA3/BG5H2YqZJ1c5nV6/9Ji5j24iCceaPz0EA5jzb7Byx81XIhCUsnEjRdbgEUOFM3Y6jbQqVK4HnPALrRznr9bS7bH6clhSoQemeWqN0dN4tuQINkBRI7DyXTDdpammn12HUITMhaEWC8orWDDIh50I8G5rCcHdGf0z+kh4LBfiijt2AjRW31A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p66zOUkaboUbrtBAo0Zj1vHiewbE+6VciXeje4duF4M=;
- b=dPmncoFCY3CzS6+X+e3Y5QggIYr0osal3dvAjopqQcNgP674aFvNMZ47dnxXuvVMI648GBaMBONXxtx6+ihv3gEveNfsVW2v/GAkVADaGTYI0vz5NszSv6R9Z3/EkbufHIagZGkDD/ppL0Fa8PH2x4dBDxmBablvZePDpNKYNHaWX7bk92LHn4NNNMj/62i4bj2OFul/9ShMYiiiX0Ae40q1OT4YB1iPJqUSRCswiUAH+cfxg9Y+x9F6wsklzjrnPJdJvJGb4rcdzc/AWKApT2WS+zc+02z+YK2lMNOM5BSK4EmrWqo9ncM7f2xVtMNiEn27dKFdcLyYENH3ECkCzg==
+ bh=trZZp9y2sfkKJfpi4zkr7/YrX5eyGkiodumIn3RcldY=;
+ b=SgJbd7Be1f4oMdsRkIckDn5ldEV/rcbSMrIwSmOxZi1N3NcmlmQdx5IDqJdQJtRS87cJ0Y0QfRfJU63ceqgi409bp32JcVLkKG1sharGkCCrK07fSV8kjHhNHzuL7FqmwTwv9kAxj/bJU9IaeaT4oOC3lhgutaCN1TuC2tlyaeqc+78FfrtJI2uS4KMI7uGo9ZfWM/tv92s/GLevQoCd6n6Ajc/7dErPGHbg7T8hRKUOXxs/w5gbG6+zMuG/eo4bidO3NB7pGqlPKGmSfK9f3fMCcJDCEnmgP7eHHraDW1jnhaat7VRWxiuCMgaQ7hVu5ASmQlWBuf40wOeAtabbqQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB3189.namprd15.prod.outlook.com (2603:10b6:a03:103::27) with
+Authentication-Results: iogearbox.net; dkim=none (message not signed)
+ header.d=none;iogearbox.net; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA0PR15MB4016.namprd15.prod.outlook.com (2603:10b6:806:84::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Fri, 16 Apr
- 2021 16:53:53 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::1ce0:8b27:f740:6b60]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::1ce0:8b27:f740:6b60%4]) with mapi id 15.20.3933.040; Fri, 16 Apr 2021
- 16:53:53 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: refine retval for bpf_get_task_stack
- helper
-Thread-Topic: [PATCH bpf-next 1/3] bpf: refine retval for bpf_get_task_stack
- helper
-Thread-Index: AQHXMmwUAtjnkhet7kS+x9qUpCFMbqq3XU+A
-Date:   Fri, 16 Apr 2021 16:53:53 +0000
-Message-ID: <EDB79C86-794D-4293-B372-3FE5A4E19B61@fb.com>
-References: <20210416025537.2352753-1-davemarchevsky@fb.com>
- <20210416025537.2352753-2-davemarchevsky@fb.com>
-In-Reply-To: <20210416025537.2352753-2-davemarchevsky@fb.com>
-Accept-Language: en-US
+ 2021 16:54:54 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.3999.038; Fri, 16 Apr 2021
+ 16:54:54 +0000
+Subject: Re: [PATCH v5 bpf-next 2/3] bpf: extend libbpf with
+ bpf_map_lookup_and_delete_elem_flags
+To:     Denis Salopek <denis.salopek@sartura.hr>, <bpf@vger.kernel.org>
+CC:     Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
+        Luka Oreskovic <luka.oreskovic@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+References: <20210416095814.2771-1-denis.salopek@sartura.hr>
+ <20210416095814.2771-2-denis.salopek@sartura.hr>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <983b48bd-9653-66fe-ccd0-464ce2614e82@fb.com>
+Date:   Fri, 16 Apr 2021 09:54:51 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
+In-Reply-To: <20210416095814.2771-2-denis.salopek@sartura.hr>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.60.0.2.21)
-x-originating-ip: [2620:10d:c090:400::5:8797]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cb899024-95d2-4873-1bfd-08d900f8378d
-x-ms-traffictypediagnostic: BYAPR15MB3189:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB31896FC5EAE662E87E5B6154B34C9@BYAPR15MB3189.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:2582;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Yta10YJYYrFgMABfFK1dK4AfisIxr7xo1G8sKDuhHqPjJUaQEO8g+4G2StPvMyeLnK7ZTUNaTBrwe/2Rv7agzeLT+qw0/KAClE6ZOmSqbC6TCwsayHWBPnxZt6pd8bzVMyXDo2jG64LuwB7kPqHdOlw+AoScIuvx0+nN0xH7lG5pu8OnyM/TqQ5ZYv3UJhkJAwWdCtpsJS9H1ZJdOtomHUjlu+LdrznoLHvPRF9KBoSV0r36K9XKYe97SO/fITskBXl322via2T6ZS3wFGYyM0og7z37I18XE9RwtJU9OY674P+zMt4qGsmK5LD/7dhRibCK4ksjPkw0fvZ6Ii2eItHhuxLY1A3H5MVjz/Fy/uMkLdZtBrYoy4frrYIQL+ljCsIm/NmoyoHzR1WKwRpx4z2LIgJ+sruwaYV3EJoxsXeUHAn9f78Po67H4Uf2g7BknUWWzgF9IeOdDIlwAP9M0rRZV3JbHm/+bBoo8MQh10nmqq0zFzyRZ5Yo26OPF3aYyn+6MCsYuq88Iq1STCc3LNU3GAb9V7ZJnYizpTSvXM1y9ppoSAqCVVxLEPnJ1uq2Gs/OfiguD8BBOTmJkswNO9UJxTr/2G9uzUfQgN7Ub8dWvAQPw5piXLykNStc3EhCirNi12d84Hqz5BSypFuMceheumBJv1UkVm4fYXbVSrk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(346002)(376002)(396003)(366004)(122000001)(38100700002)(53546011)(91956017)(66446008)(6636002)(33656002)(86362001)(478600001)(186003)(6512007)(71200400001)(64756008)(4326008)(5660300002)(66556008)(8676002)(66476007)(2616005)(36756003)(66946007)(6506007)(76116006)(2906002)(8936002)(316002)(37006003)(6862004)(4744005)(54906003)(6486002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?km+bSxFqtRbmnTeeU6LZWfpZkwMO6HvhtZ/g7HzUmIXIb2wltZpUxHNnucN3?=
- =?us-ascii?Q?YFTDnlmcgGweVbLPnGRmNxm0WbiTk3afi3aYCYX4bS2uPMXxQlH8xx6BXbCv?=
- =?us-ascii?Q?eCcecaka0sLB5BWwPUUpP4Sf944XPED2BdYayhE1OhOs84hLsFdKwp66Z7bC?=
- =?us-ascii?Q?T3JzVMgI287FAvZ2+TRYRSNFpDt8/IjZjRbXzE26uuT/pOe8fb6ejJlfaUeX?=
- =?us-ascii?Q?kA23p5alQA8RGq58i+qCR3hyD8SuGFQLPnsoX+tCgcGc9Q/J3l+v/2RdLBa9?=
- =?us-ascii?Q?j7+pRU1KqDQmlbD5idmKXQETlQW70JTh+TXUU91oYmNGcFtKYHdVBcea2ywn?=
- =?us-ascii?Q?VVia5/lxuiiyBu86PGdlaDvtfpedmhp4Tbr3GK69MPm5YWdZU5JK7sSOVLIh?=
- =?us-ascii?Q?LWoXse3zFQs9GTXGkLWjd89NGvz7buZu+yRZipKPt6t0JdbNd2vXZOHD1PM4?=
- =?us-ascii?Q?yNjqQeH95LxgDy1voQITpUAAYI+6x1HBspJzRES/XhIdR1ckEUlYFlIkLs/n?=
- =?us-ascii?Q?/WzXT8ymKsGm1HjzXpCiLjDFGKwtZnd8TiYRiSNnRTMDhqCdzmITnr72Q1DX?=
- =?us-ascii?Q?CX0eLNKkMMfQVJKlq4pAaiuw5V5VrcyYOlCVp2l3N10XmQNXg1T1aXVea5WS?=
- =?us-ascii?Q?3woSFdkMEwSZGJOUlR+hd356ZjuWhj7Skw6BQj0WNmfUlTB6ZPSVWpoFgm+Y?=
- =?us-ascii?Q?vL5/YUx5BCjJiN5EPIe1N06tNuF64Kgk0R2H+7Qda7D/ROjzT5QNDSZp3/eS?=
- =?us-ascii?Q?94fXh2KFFMIqgl3UB1gfpxRH29L2/DfJfm0DSrK3D2J9EjvjQO6wPqlRBvhm?=
- =?us-ascii?Q?JA6Nlnb2tFi+H8tD5EDgTAAAiEg80kF53hD47075HT+kvEUUltSnP53zlU2w?=
- =?us-ascii?Q?GW0Mzxys0slhq6CSO9B1vvfrolI/7XdBj96xxUh/f7yjJG+N5wQHfKr4iE7E?=
- =?us-ascii?Q?/+c5uxcuux8LYz4bUivXYKYHJyfV4gQKbNu+wdlxEJxnRL1N567r6gjVjCSf?=
- =?us-ascii?Q?ZiRUjH1k0QV/moE0N6k+d8SHxOg0nBP17L5nF/Z2zO7l/D/TK04ctGM+yj3l?=
- =?us-ascii?Q?FpLInfo3hk0y8RqwaPIIUHqNNArSVM+TCNxlZIMqwCEdvO6lXlfH74XKLXDa?=
- =?us-ascii?Q?5khK7k/rehIKcsFsNMBZ3RA5XZKpBzTHHTGbBxrP7AxhEIpFpsmMpwoSyw1H?=
- =?us-ascii?Q?sklnAGEnyWhDWiJl9FkGtjsmstBUgmFzdZycmWA7Kg7Ss4sUP+y9MBQub9MQ?=
- =?us-ascii?Q?Ro7GMJz6RVIzTxHWzS6skRtpCSLu5mxIiLTEOTw+yeoAVjevUyl4rBmiriDg?=
- =?us-ascii?Q?Anyy/QX6dsD61BjlinQi8U//XPYmLxwKBWr5WKMjTr9uVgzlqgECV4Ejt5n+?=
- =?us-ascii?Q?baNtbEg=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1DA4416993D0C34C8AC298C60C6404FF@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:7e08]
+X-ClientProxiedBy: MWHPR1601CA0013.namprd16.prod.outlook.com
+ (2603:10b6:300:da::23) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21d6::112e] (2620:10d:c090:400::5:7e08) by MWHPR1601CA0013.namprd16.prod.outlook.com (2603:10b6:300:da::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Fri, 16 Apr 2021 16:54:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 503f7b53-ed1f-48fd-dce6-08d900f85ba4
+X-MS-TrafficTypeDiagnostic: SA0PR15MB4016:
+X-Microsoft-Antispam-PRVS: <SA0PR15MB40160243A63EF7C15FFF9807D34C9@SA0PR15MB4016.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: me7R2ZEnH+2ITPS+T2nqRkLVwtqKo4bNEBUeDGCC71xkn/uBznxDtqbtxEu77nz2lb0j46GMqR4LygswNDVpMdSHP15OgbsFoGrTLO2LTGNaB7Nd5z+y9Qk5MltJa3Bvd5MX4/39rJ3efdPr3ABpoxj6DfwJJOpuOXMLw+HpLPpoaH0aJg7LmYEV7npLq/5CBAMYpcIuGmmGZqjEwm+79itIZJcM6CXgSpyKyKpID6fCstCGv2ioNst8em26dpKrZqBtnP8mhz9TgmpP/I8cAR+oEJAVMvsm03nZD3mKIz/4lxQ57gPExOFyQaBOEC8f95qQPwE6IQ6ftXRpEqmaghtNPo2hN7B57mb2nwNN00qrs/B7SiFUg6tSvreYpsl+qtMthPzIiw+2LzaBMHBbrSLx82DHimFKswcepZIqpSSTswl7jH5zPlU9FnZp9Cgc9nXH67hu/d6qBziRLvgn9pVDKkqiEaYn+91j2wzcwaibn7MSZmp7hPeQeAXrPArjfotAOFg+v6ZCybXYvu9j5UiRZDRumHwMeDbkhOVQhBGIk5VVHrbdn75wu0ftXG5EhJUTIm9SnArdfmHI5ATTnHUgyuFPM10ilUVEJdYZqFPNhCZ2v85MDY1GUYVH9MEh/AjRqlPMhIR/IldwQnvVj7BgpCvuIFHyACng2j4sGEXwppc14zQtuwrCaLWetyRC
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(346002)(136003)(39860400002)(396003)(54906003)(478600001)(66476007)(8676002)(4326008)(5660300002)(66556008)(4744005)(53546011)(16526019)(6486002)(38100700002)(186003)(8936002)(36756003)(2906002)(86362001)(83380400001)(2616005)(31686004)(316002)(31696002)(52116002)(66946007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ejNNQ1FIQ1hmZzduKzFXVjdEYThVTCswUkpXVEppYjhNeUNTNDNFTVRIWWhD?=
+ =?utf-8?B?Q1lyU2NwMi9FaDRJblQ3eXJBNmdFd3BMMURmbDM4YzcxaHNSSGxzT1NqWkJU?=
+ =?utf-8?B?MmFLSmpGa0FUbnFDSFNQNXdUTEdQOFhFZkRGOHlHM3ZCdk8yNlJWRnVsRDdV?=
+ =?utf-8?B?SnVBMjFCMXRqN0R3U0hhN2NUNEJnbVdqY2hzaU5ickJwM0ZId2xEMEtCOGlF?=
+ =?utf-8?B?SEluSjJISCtzdnBCL2doMDZvVEdZYXdtL3p1NG5PeFhxMHBaZ0N1QzFVZjQv?=
+ =?utf-8?B?QWlDNGtueXNZOGVnTjJWSXhZTHVXajljUXltaGRhdmdtbzFrVGYvdkhMNkM5?=
+ =?utf-8?B?ZEtSdmI0SlhhVFFsc1hWOEVnUEVNTkRWU1dqUk9PdUU1V0ZuMHdsR3BoZ2Q0?=
+ =?utf-8?B?bVVTYVJqa0Y5SW1FcjRtOG1CVHNTbk11bE9HVWlpbFBCcXFFVVlOOUErNzdV?=
+ =?utf-8?B?Rk82cE1MNk1xK3JaQWNLd05hQnBTNmRPbHpTdGJXYTVleEhPS1h4dTYvUWZQ?=
+ =?utf-8?B?b0tudUFhcXFaY09wczNPcW81aG13bm5LRzIxbE9sZTgrWkk5enNYYlliemZt?=
+ =?utf-8?B?UVZNOWg3OXM1ZVZQZENLMmRYZno1K25YOGRlbzRlSHp2NWlhTkxBaW1GSE1S?=
+ =?utf-8?B?RFNhazBsMUg5N2VCYUFVR2xvaUhObjJ1NTNuaCtMZHZNSDR6QURxSFFHWTN1?=
+ =?utf-8?B?eE5aREwzbjg3Z05TSTdUcU0wd0cyMHozK3M3UTVDNUxyUm5tMXJHbEF5VTFP?=
+ =?utf-8?B?aVZHVzdvTittYjBRY05HMWVDOWZpMEN5L2RTdXkrcFNhRktVUG9aSWNWQlN6?=
+ =?utf-8?B?YzFSOFp4SlJjZ2VHaC9KMXJldzdLaUkxUlNLRUl0Rk9Iclhqd3NZc042WkZH?=
+ =?utf-8?B?N24zVXRJdDJRVnBYWXhEeXdyd0pNbVYzVlVpQ1VtMlNXaUhZaFI5UVh2SUw5?=
+ =?utf-8?B?Zm1JREV6aVpPM2hpRGR4MS91RC95M2ljWWZXc2pvc01xM0Y5RGdObE5LUUxM?=
+ =?utf-8?B?d1hoMzhYcjBvWjROWFJMeFhUdWVsTFFUY1RQV0tJU1pJbGJmUVQrbnRQc2k5?=
+ =?utf-8?B?VDNFbGRrczA4T1pZSTN3VkNsN25KOVNrR2RXL3ExYm9LYjBxOHdNdDR3Nll1?=
+ =?utf-8?B?V0RXeXY0MS9ieFBqaWNmNFp4ZzdlRWhQOWhKRzdydG5QSzdjOXVScFBlYmM1?=
+ =?utf-8?B?QzUvVVVUY2J2dStLMlRLYjVpWndwSTkwY0RDaytyVmt3aXVTejhnWWJxblcw?=
+ =?utf-8?B?MTJPb0NVY2xhaWVOMEp3cVE4SjhQVWJZUC9CcmhzM1BrZ2xQSU5TNW52ZklR?=
+ =?utf-8?B?azNocFYrV3VwY3BNNldxWHQzbjBlY3BpNi9Xbmh4K3djRlF4M1pwOWVOMC84?=
+ =?utf-8?B?TnlPWS9lNzBuT1BqWkwvODI4Q3JGQ2ZmWGpKOEN6bEZrUy9rQjFFMWtVMTZ5?=
+ =?utf-8?B?VDJmVkJQU2E2dUVlMENDTkxCdlFiWE1JVFJpVzF0TXczYzkyOGFFVGk0VjJ3?=
+ =?utf-8?B?Tlg2bkoyOHBwR0ZRMUpqZ1Blck0rK21SbEpHMTNuL2dsalllT0syZUh1NmRt?=
+ =?utf-8?B?bFdPbHRiNTc4d2ZYTmFnbHI3d1VuOXpkTExyeEQ2bzkrOG5GVm9pZDd3NUVL?=
+ =?utf-8?B?SDk0UE9BWVZmWktlMjJpK1RuaFJUNFVpSFQ2bkNnWUZyMDBUWXJadU5QL01U?=
+ =?utf-8?B?UGNzODlBV2IrZkE5TjJySUlQayt0V3Bnd1RtQ2IzUnJvQlVOdHNWay9TeHVa?=
+ =?utf-8?B?MFBjSDd1eWhnZ1A1M3NSYVdoTnVLMEhGK0o4NC9hNGdPZytuMTlQRGtvYzZC?=
+ =?utf-8?Q?MiTO1/uWtbNU6ZZIb0/tpIoXTX+jAYVv6qsB4=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 503f7b53-ed1f-48fd-dce6-08d900f85ba4
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cb899024-95d2-4873-1bfd-08d900f8378d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2021 16:53:53.2200
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 16:54:54.0155
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DZrpyB+9NG1vUejlfeNzNUm7KGxfuXS/TbK9e6nisns/Ol1xkFmFx40dXKnmXzXnmjd84MDxo0/3zReS8xxiUg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3189
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3LVqhg4sFQK+jN+F+JhjvzL0ip2Gkau2ceJM2KVBPbzavNZkcduJPUmWcTru82Se
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB4016
 X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: 4k69OKbhJZ1sUfd6vD9-qYW6-IwSBEAW
-X-Proofpoint-GUID: 4k69OKbhJZ1sUfd6vD9-qYW6-IwSBEAW
+X-Proofpoint-GUID: iZy798Xn7ubciwSSVF8a0pjPHh9AjLFb
+X-Proofpoint-ORIG-GUID: iZy798Xn7ubciwSSVF8a0pjPHh9AjLFb
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-16_08:2021-04-16,2021-04-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- bulkscore=0 suspectscore=0 phishscore=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 priorityscore=1501 clxscore=1015 mlxscore=0 mlxlogscore=999
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 adultscore=0
+ mlxlogscore=875 spamscore=0 clxscore=1015 malwarescore=0
+ priorityscore=1501 lowpriorityscore=0 impostorscore=0 phishscore=0
+ suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2104060000 definitions=main-2104160121
 X-FB-Internal: deliver
 Precedence: bulk
@@ -137,36 +144,16 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-> On Apr 15, 2021, at 7:55 PM, Dave Marchevsky <davemarchevsky@fb.com> wrot=
-e:
->=20
-> Verifier can constrain the min/max bounds of bpf_get_task_stack's return
-> value more tightly than the default tnum_unknown. Like bpf_get_stack,
-> return value is num bytes written into a caller-supplied buf, or error,
-> so do_refine_retval_range will work.
->=20
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+On 4/16/21 2:58 AM, Denis Salopek wrote:
+> Add bpf_map_lookup_and_delete_elem_flags() libbpf API in order to use
+> the BPF_F_LOCK flag with the map_lookup_and_delete_elem() function.
+> 
+> Cc: Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+> Cc: Luka Oreskovic <luka.oreskovic@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Signed-off-by: Denis Salopek <denis.salopek@sartura.hr>
 
-Acked-by: Song Liu <songliubraving@fb.com>
-
-> ---
-> kernel/bpf/verifier.c | 1 +
-> 1 file changed, 1 insertion(+)
->=20
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 852541a435ef..348e97f77003 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -5767,6 +5767,7 @@ static void do_refine_retval_range(struct bpf_reg_s=
-tate *regs, int ret_type,
->=20
-> 	if (ret_type !=3D RET_INTEGER ||
-> 	    (func_id !=3D BPF_FUNC_get_stack &&
-> +	     func_id !=3D BPF_FUNC_get_task_stack &&
-> 	     func_id !=3D BPF_FUNC_probe_read_str &&
-> 	     func_id !=3D BPF_FUNC_probe_read_kernel_str &&
-> 	     func_id !=3D BPF_FUNC_probe_read_user_str))
-> --=20
-> 2.30.2
->=20
-
+Acked-by: Yonghong Song <yhs@fb.com>
