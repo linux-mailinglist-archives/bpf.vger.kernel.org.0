@@ -2,96 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BA8362B20
-	for <lists+bpf@lfdr.de>; Sat, 17 Apr 2021 00:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7716D362B9A
+	for <lists+bpf@lfdr.de>; Sat, 17 Apr 2021 00:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhDPWh2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Apr 2021 18:37:28 -0400
-Received: from www62.your-server.de ([213.133.104.62]:56632 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhDPWh1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Apr 2021 18:37:27 -0400
-Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lXX5A-0007nb-Jx; Sat, 17 Apr 2021 00:37:00 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2021-04-17
-Date:   Sat, 17 Apr 2021 00:37:00 +0200
-Message-Id: <20210416223700.15611-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S231898AbhDPWuf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Apr 2021 18:50:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230432AbhDPWuf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Apr 2021 18:50:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id CA915610CD;
+        Fri, 16 Apr 2021 22:50:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618613409;
+        bh=oGA9b/am8idc6a70H66OfjahSEfuNXtc71twJLWqEoU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=rMxYcIZ9epReTZQ0jv7W+2r4hrVv7TEmvFUVkjObh6qiZmQ3an5poTGH2hctzL2Xu
+         zWnFir0SotCCmkpizpiyrj2g/4uvgmDfWbq3nT2/92EKUGwEpcmzYv1n9d8ivbskmI
+         aXtUDb/ZL6Ca3pns06ieDMZjLnAgr2n9nRjYltArpixUgKNQ45Joj5UOvDnZWfFYz3
+         iHXCnyR7LmygpAU8pikWApaSuwnDTs5w03qA+qlC8bHloas+CvcCcikZ8T0zhP6w7g
+         z+14r8XQMsrJwQJtajWDcENiMZqxbWA6iGa1kyYnadc+ZC6GVvie644gPrwuB6j8iR
+         oq7fiEVPbYifA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C055D60CD4;
+        Fri, 16 Apr 2021 22:50:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26142/Fri Apr 16 13:14:04 2021)
+Subject: Re: [PATCH net-next] veth: check for NAPI instead of xdp_prog before xmit
+ of XDP frame
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161861340978.29090.2271798719941906376.git-patchwork-notify@kernel.org>
+Date:   Fri, 16 Apr 2021 22:50:09 +0000
+References: <20210416154745.238804-1-toke@redhat.com>
+In-Reply-To: <20210416154745.238804-1-toke@redhat.com>
+To:     =?utf-8?b?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+?=@ci.codeaurora.org
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        pabeni@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+Hello:
 
-The following pull-request contains BPF updates for your *net* tree.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-We've added 10 non-merge commits during the last 9 day(s) which contain
-a total of 8 files changed, 175 insertions(+), 111 deletions(-).
+On Fri, 16 Apr 2021 17:47:45 +0200 you wrote:
+> The recent patch that tied enabling of veth NAPI to the GRO flag also has
+> the nice side effect that a veth device can be the target of an
+> XDP_REDIRECT without an XDP program needing to be loaded on the peer
+> device. However, the patch adding this extra NAPI mode didn't actually
+> change the check in veth_xdp_xmit() to also look at the new NAPI pointer,
+> so let's fix that.
+> 
+> [...]
 
-The main changes are:
+Here is the summary with links:
+  - [net-next] veth: check for NAPI instead of xdp_prog before xmit of XDP frame
+    https://git.kernel.org/netdev/net-next/c/0e672f306a28
 
-1) Fix a potential NULL pointer dereference in libbpf's xsk
-   umem handling, from Ciara Loftus.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-2) Mitigate a speculative oob read of up to map value size by
-   tightening the masking window, from Daniel Borkmann.
 
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Alexei Starovoitov, Benedict Schlueter, John Fastabend, Piotr Krysiuk
-
-----------------------------------------------------------------
-
-The following changes since commit 1ffbc7ea91606e4abd10eb60de5367f1c86daf5e:
-
-  net: sched: sch_teql: fix null-pointer dereference (2021-04-08 14:14:42 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to d7a5091351756d0ae8e63134313c455624e36a13:
-
-  bpf: Update selftests to reflect new error states (2021-04-16 23:52:15 +0200)
-
-----------------------------------------------------------------
-Ciara Loftus (1):
-      libbpf: Fix potential NULL pointer dereference
-
-Daniel Borkmann (9):
-      bpf: Use correct permission flag for mixed signed bounds arithmetic
-      bpf: Move off_reg into sanitize_ptr_alu
-      bpf: Ensure off_reg has no mixed signed bounds for all types
-      bpf: Rework ptr_limit into alu_limit and add common error path
-      bpf: Improve verifier error messages for users
-      bpf: Refactor and streamline bounds check into helper
-      bpf: Move sanitize_val_alu out of op switch
-      bpf: Tighten speculative pointer arithmetic mask
-      bpf: Update selftests to reflect new error states
-
- kernel/bpf/verifier.c                              | 230 ++++++++++++++-------
- tools/lib/bpf/xsk.c                                |   5 +-
- tools/testing/selftests/bpf/verifier/bounds.c      |   5 -
- .../selftests/bpf/verifier/bounds_deduction.c      |  21 +-
- .../bpf/verifier/bounds_mix_sign_unsign.c          |  13 --
- tools/testing/selftests/bpf/verifier/map_ptr.c     |   4 +-
- tools/testing/selftests/bpf/verifier/unpriv.c      |   2 +-
- .../selftests/bpf/verifier/value_ptr_arith.c       |   6 +-
- 8 files changed, 175 insertions(+), 111 deletions(-)
