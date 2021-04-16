@@ -2,182 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8550D361991
-	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 08:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7623C3619E1
+	for <lists+bpf@lfdr.de>; Fri, 16 Apr 2021 08:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238863AbhDPF53 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Apr 2021 01:57:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39152 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237974AbhDPF53 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 16 Apr 2021 01:57:29 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13G5Y9CV094409;
-        Fri, 16 Apr 2021 01:56:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : references : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=mD4JHx4ue4R4SWQTfzp86VvxTxtf2D6eHtp4kBqDp2U=;
- b=K+wZXvqyggiXIVUk43dPMcgg0X1uPV7RmiOlOI2xX7OrAEvYzClF9znpPcf4HWx8C+mk
- QjtPQoVTBN7/jW5PvtKEf0HP2ABacMhpSDBkvMeBR74z+PBVTUWFA+gWCdv2Ilx1RWFI
- 6U9IJH8N0NpAFx63mpM/EA5+cC5w9XAIBxBHTX0CdIi0HHtmGUD5uNqW24gbH5T+jhZv
- 26m6AxGvR0l0M5cMvbIk5jtSdkhvrfWavBHPPLdmn7VL1QL0dQrGy6hhMkfJafBHNHJd
- Trk95btM0l1Luij2mpU1s8SFwkl9/Vrc0+RVqAZ5oakKsCLr0E5vJCwkyOMKQIO1jZdk 5w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37xvte9u90-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 01:56:28 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13G5ZFNE096365;
-        Fri, 16 Apr 2021 01:56:28 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37xvte9u8b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 01:56:27 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13G5rttD011621;
-        Fri, 16 Apr 2021 05:56:25 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma02fra.de.ibm.com with ESMTP id 37u3n8j9qc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 05:56:25 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13G5u0UG37618172
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Apr 2021 05:56:00 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 80067A405B;
-        Fri, 16 Apr 2021 05:56:22 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3D2F1A4054;
-        Fri, 16 Apr 2021 05:56:19 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.64.24])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 16 Apr 2021 05:56:19 +0000 (GMT)
-Subject: Re: [PATCH 2/2] tools: do not include scripts/Kbuild.include
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     Janosch Frank <frankja@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Harish <harish@linux.ibm.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        netdev@vger.kernel.org
-References: <20210415072700.147125-1-masahiroy@kernel.org>
- <20210415072700.147125-2-masahiroy@kernel.org>
- <eb623ea6-a2f4-9692-ff3d-cb9f9b9ea15f@de.ibm.com>
-Message-ID: <0eeed665-a105-917b-e7fb-8dafe2ae9d94@de.ibm.com>
-Date:   Fri, 16 Apr 2021 07:56:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-In-Reply-To: <eb623ea6-a2f4-9692-ff3d-cb9f9b9ea15f@de.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9iL9uw5JSj46ABaUJ5-OgKR5h6DlkRk1
-X-Proofpoint-ORIG-GUID: TiW04LfuFfbrVJq-d80Jlu1KQqPml71C
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S239089AbhDPGfg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Apr 2021 02:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233959AbhDPGff (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Apr 2021 02:35:35 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33BC1C061574
+        for <bpf@vger.kernel.org>; Thu, 15 Apr 2021 23:35:11 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d6so1820989qtx.13
+        for <bpf@vger.kernel.org>; Thu, 15 Apr 2021 23:35:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wzYhl/kLkuf2zoQjIh+L1Ak/Vs4OYCeoB4+BeUIpZMg=;
+        b=qqDG00BKayubR3jZRy9vUxctP7f1/6Xs7Mwn4Moa8MAym9s/UNJEKSo66v40rBPeUN
+         qITQPjAFEySnqz1RKICORLFChzXx2UTf04WtilTLxtr2vzjkB9GDKNLUdicMSKF6zno6
+         OJka/p6I/0ihC0PgqoNKeCLBr50Yry196xMgvDNTOQ4aKuLABftfK4Y9b4qgW1DTVUNP
+         F1DmLNL9OOF9aVLvOTcUbPMHXpJTj/BZ2jXECiJIVLdKxMV3DZFcQxI+wswhCGiHWYWm
+         QG4a0F/Lpqlv4THHfjYVEhKxJbzq+Fw037SLDUx9KFLuY7FtDJOjCBCG8xt5XxzEuQEB
+         /XlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wzYhl/kLkuf2zoQjIh+L1Ak/Vs4OYCeoB4+BeUIpZMg=;
+        b=i133YndfHkcYjA0i8ozEqZWORmx7ovWU1fEAKWjE/PSqBq4JJgHbfxAVlcnID63EZ/
+         c0+g+bnnzbF4cK7doxt0SjyUC7Q1ghEUajqdmiDDYLhjCfOjzshaVGiCA5wrcVR/es7W
+         dMuK8QRvRdJ+o+W5R7Ghi1UBoTvM64vw6atgNfV+PD5MpoS6awfQirb8ooSNLFGzyTNY
+         Vw3rorxU+QMu7RKvZQHcR6XnGo4Gl0Q+9ic6qpK+kztojJANSwC/y2jvO/EvuvSkhLZ8
+         rh2Z8Lclm4KPPLrDHRx6GwMNrS7ehvPxwm+DmjWxasgZ2jAsvy7hOduqHjxdZ5lIEoM2
+         Fn7A==
+X-Gm-Message-State: AOAM533NI577Z9ch1CoAYLG97YnI1R0PRvT5BbCXoVcl/6LbY6wHV+4i
+        ldnvRKnxUp7YXnRl5r7lIhKiy4NS7oYnlUJ4g4ysew==
+X-Google-Smtp-Source: ABdhPJyVx5xNy340fC0rFmYlCpPhUw7Mv8ysgS6HKbvdOl+hgrJk5iuXZPEemctGgyvCc9EsOjXG4Oh7+2H+KJJHuJc=
+X-Received: by 2002:ac8:768c:: with SMTP id g12mr6482816qtr.67.1618554910039;
+ Thu, 15 Apr 2021 23:35:10 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-15_11:2021-04-15,2021-04-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 mlxscore=0 phishscore=0 bulkscore=0 lowpriorityscore=0
- mlxlogscore=999 priorityscore=1501 clxscore=1015 spamscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104160042
+References: <000000000000a5772005c00f8101@google.com>
+In-Reply-To: <000000000000a5772005c00f8101@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 16 Apr 2021 08:34:58 +0200
+Message-ID: <CACT4Y+ZZZu94pTz-WZXDLDA7-R+quErC1uYgkRJ8gnUCq2OJ2w@mail.gmail.com>
+Subject: Re: [syzbot] WARNING in ctx_sched_in
+To:     syzbot <syzbot+50d41b514809f6f4f326@syzkaller.appspotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>, Martin KaFai Lau <kafai@fb.com>,
+        kpsingh@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Apr 16, 2021 at 6:35 AM syzbot
+<syzbot+50d41b514809f6f4f326@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    79c338ab riscv: keep interrupts disabled for BREAKPOINT ex..
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10fb93f9d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f8af20e245283c9a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=50d41b514809f6f4f326
+> userspace arch: riscv64
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+50d41b514809f6f4f326@syzkaller.appspotmail.com
 
-On 15.04.21 10:06, Christian Borntraeger wrote:
-> 
-> On 15.04.21 09:27, Masahiro Yamada wrote:
->> Since commit d9f4ff50d2aa ("kbuild: spilt cc-option and friends to
->> scripts/Makefile.compiler"), some kselftests fail to build.
->>
->> The tools/ directory opted out Kbuild, and went in a different
->> direction. They copy any kind of files to the tools/ directory
->> in order to do whatever they want to do in their world.
->>
->> tools/build/Build.include mimics scripts/Kbuild.include, but some
->> tool Makefiles included the Kbuild one to import a feature that is
->> missing in tools/build/Build.include:
->>
->>   - Commit ec04aa3ae87b ("tools/thermal: tmon: use "-fstack-protector"
->>     only if supported") included scripts/Kbuild.include from
->>     tools/thermal/tmon/Makefile to import the cc-option macro.
->>
->>   - Commit c2390f16fc5b ("selftests: kvm: fix for compilers that do
->>     not support -no-pie") included scripts/Kbuild.include from
->>     tools/testing/selftests/kvm/Makefile to import the try-run macro.
->>
->>   - Commit 9cae4ace80ef ("selftests/bpf: do not ignore clang
->>     failures") included scripts/Kbuild.include from
->>     tools/testing/selftests/bpf/Makefile to import the .DELETE_ON_ERROR
->>     target.
->>
->>   - Commit 0695f8bca93e ("selftests/powerpc: Handle Makefile for
->>     unrecognized option") included scripts/Kbuild.include from
->>     tools/testing/selftests/powerpc/pmu/ebb/Makefile to import the
->>     try-run macro.
->>
->> Copy what they want there, and stop including scripts/Kbuild.include
->> from the tool Makefiles.
->>
->> Link: https://lore.kernel.org/lkml/86dadf33-70f7-a5ac-cb8c-64966d2f45a1@linux.ibm.com/
->> Fixes: d9f4ff50d2aa ("kbuild: spilt cc-option and friends to scripts/Makefile.compiler")
->> Reported-by: Janosch Frank <frankja@linux.ibm.com>
->> Reported-by: Christian Borntraeger <borntraeger@de.ibm.com>
->> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> 
-> When applying this on top of d9f4ff50d2aa ("kbuild: spilt cc-option and friends to scripts/Makefile.compiler")
-> 
-> I still do get
-> 
-> # ==== Test Assertion Failure ====
-> #   lib/kvm_util.c:142: vm->fd >= 0
-> #   pid=315635 tid=315635 - Invalid argument
-> #      1    0x0000000001002f4b: vm_open at kvm_util.c:142
-> #      2     (inlined by) vm_create at kvm_util.c:258
-> #      3    0x00000000010015ef: test_add_max_memory_regions at set_memory_region_test.c:351
-> #      4     (inlined by) main at set_memory_region_test.c:397
-> #      5    0x000003ff971abb89: ?? ??:0
-> #      6    0x00000000010017ad: .annobin_abi_note.c.hot at crt1.o:?
-> #   KVM_CREATE_VM ioctl failed, rc: -1 errno: 22
-> not ok 7 selftests: kvm: set_memory_region_test # exit=254
-> 
-> and the testcase compilation does not pickup the pgste option.
++riscv maintainers as this happens only on riscv64
 
-
-What does work is the following:
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index a6d61f451f88..d9c6d9c2069e 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -1,5 +1,6 @@
-  # SPDX-License-Identifier: GPL-2.0-only
-  include ../../../../scripts/Kbuild.include
-+include ../../../../scripts/Makefile.compiler
-  
-  all:
-  
-
-as it does pickup the linker option handling.
-
-
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 4475 at kernel/events/core.c:3752 ctx_sched_in+0x12e/0x3ee kernel/events/core.c:3752
+> Modules linked in:
+> CPU: 1 PID: 4475 Comm: syz-executor.1 Not tainted 5.12.0-rc6-syzkaller-00183-g79c338ab575e #0
+> Hardware name: riscv-virtio,qemu (DT)
+> epc : ctx_sched_in+0x12e/0x3ee kernel/events/core.c:3752
+>  ra : ctx_sched_in+0x12e/0x3ee kernel/events/core.c:3752
+> epc : ffffffe000279fe8 ra : ffffffe000279fe8 sp : ffffffe009e17680
+>  gp : ffffffe004588ad0 tp : ffffffe006398000 t0 : 0000000000000000
+>  t1 : 0000000000000001 t2 : 00000000000f4240 s0 : ffffffe009e176f0
+>  s1 : ffffffe0077edc00 a0 : ffffffe067d79118 a1 : 00000000000f0000
+>  a2 : 0000000000000002 a3 : ffffffe000279fe8 a4 : ffffffe006399000
+>  a5 : 0000000040000000 a6 : 0000000000f00000 a7 : ffffffe000280cc8
+>  s2 : 0000000000000007 s3 : ffffffe0077edd40 s4 : ffffffe006398000
+>  s5 : 0000000000000002 s6 : ffffffe00458c0d0 s7 : ffffffe067d78f70
+>  s8 : 0000000000000007 s9 : ffffffe067d79118 s10: ffffffe0077edc00
+>  s11: ffffffe0077edc08 t3 : e189d98bb4bfb900 t4 : ffffffc4042c47b2
+>  t5 : ffffffc4042c47ba t6 : 0000000000040000
+> status: 0000000000000100 badaddr: 0000000000000000 cause: 0000000000000003
+> Call Trace:
+> [<ffffffe000279fe8>] ctx_sched_in+0x12e/0x3ee kernel/events/core.c:3752
+> [<ffffffe00027a2e0>] perf_event_sched_in+0x38/0x74 kernel/events/core.c:2680
+> [<ffffffe000280da2>] perf_event_context_sched_in kernel/events/core.c:3817 [inline]
+> [<ffffffe000280da2>] __perf_event_task_sched_in+0x4ea/0x680 kernel/events/core.c:3860
+> [<ffffffe0000850f8>] perf_event_task_sched_in include/linux/perf_event.h:1210 [inline]
+> [<ffffffe0000850f8>] finish_task_switch.isra.0+0x284/0x318 kernel/sched/core.c:4189
+> [<ffffffe002a94308>] context_switch kernel/sched/core.c:4325 [inline]
+> [<ffffffe002a94308>] __schedule+0x484/0xe8c kernel/sched/core.c:5073
+> [<ffffffe002a95102>] preempt_schedule_notrace+0x9c/0x19a kernel/sched/core.c:5312
+> [<ffffffe0000cd54a>] rcu_read_unlock_sched_notrace include/linux/rcupdate.h:794 [inline]
+> [<ffffffe0000cd54a>] trace_lock_acquire+0xf0/0x20e include/trace/events/lock.h:13
+> [<ffffffe0000d3c0e>] lock_acquire+0x28/0x5a kernel/locking/lockdep.c:5481
+> [<ffffffe0003b20ee>] rcu_lock_acquire include/linux/rcupdate.h:267 [inline]
+> [<ffffffe0003b20ee>] rcu_read_lock include/linux/rcupdate.h:656 [inline]
+> [<ffffffe0003b20ee>] percpu_ref_put_many.constprop.0+0x38/0x148 include/linux/percpu-refcount.h:317
+> [<ffffffe0003baa56>] percpu_ref_put include/linux/percpu-refcount.h:338 [inline]
+> [<ffffffe0003baa56>] obj_cgroup_put include/linux/memcontrol.h:713 [inline]
+> [<ffffffe0003baa56>] memcg_slab_free_hook mm/slab.h:372 [inline]
+> [<ffffffe0003baa56>] memcg_slab_free_hook mm/slab.h:336 [inline]
+> [<ffffffe0003baa56>] do_slab_free mm/slub.c:3117 [inline]
+> [<ffffffe0003baa56>] ___cache_free+0x2bc/0x3dc mm/slub.c:3168
+> [<ffffffe0003be26c>] qlink_free mm/kasan/quarantine.c:146 [inline]
+> [<ffffffe0003be26c>] qlist_free_all+0x56/0xac mm/kasan/quarantine.c:165
+> [<ffffffe0003be774>] kasan_quarantine_reduce+0x14c/0x1c8 mm/kasan/quarantine.c:272
+> [<ffffffe0003bc3f8>] __kasan_slab_alloc+0x60/0x62 mm/kasan/common.c:437
+> [<ffffffe0003b8f10>] kasan_slab_alloc include/linux/kasan.h:223 [inline]
+> [<ffffffe0003b8f10>] slab_post_alloc_hook mm/slab.h:516 [inline]
+> [<ffffffe0003b8f10>] slab_alloc_node mm/slub.c:2907 [inline]
+> [<ffffffe0003b8f10>] slab_alloc mm/slub.c:2915 [inline]
+> [<ffffffe0003b8f10>] kmem_cache_alloc+0x168/0x3ca mm/slub.c:2920
+> [<ffffffe0001aaee2>] kmem_cache_zalloc include/linux/slab.h:674 [inline]
+> [<ffffffe0001aaee2>] taskstats_tgid_alloc kernel/taskstats.c:561 [inline]
+> [<ffffffe0001aaee2>] taskstats_exit+0x3ce/0x5fe kernel/taskstats.c:600
+> [<ffffffe000031bfc>] do_exit+0x3b2/0x1846 kernel/exit.c:810
+> [<ffffffe00003319a>] do_group_exit+0xa0/0x198 kernel/exit.c:922
+> [<ffffffe00004c558>] get_signal+0x31e/0x14ba kernel/signal.c:2781
+> [<ffffffe000007e06>] do_signal arch/riscv/kernel/signal.c:271 [inline]
+> [<ffffffe000007e06>] do_notify_resume+0xa8/0x930 arch/riscv/kernel/signal.c:317
+> [<ffffffe000005586>] ret_from_exception+0x0/0x14
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000a5772005c00f8101%40google.com.
