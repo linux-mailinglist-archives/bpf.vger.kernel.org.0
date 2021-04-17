@@ -2,86 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6417362DD3
-	for <lists+bpf@lfdr.de>; Sat, 17 Apr 2021 07:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C05362E70
+	for <lists+bpf@lfdr.de>; Sat, 17 Apr 2021 10:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbhDQFCX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 17 Apr 2021 01:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37480 "EHLO
+        id S235990AbhDQIBi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 17 Apr 2021 04:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhDQFCW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 17 Apr 2021 01:02:22 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C647BC061574;
-        Fri, 16 Apr 2021 22:01:56 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id j18so48013293lfg.5;
-        Fri, 16 Apr 2021 22:01:56 -0700 (PDT)
+        with ESMTP id S235982AbhDQIBh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 17 Apr 2021 04:01:37 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B801C061574
+        for <bpf@vger.kernel.org>; Sat, 17 Apr 2021 01:01:10 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id s15so34905116edd.4
+        for <bpf@vger.kernel.org>; Sat, 17 Apr 2021 01:01:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JS5ToxDYDEg+E8RwSyqs2bCJvCy+zGOhHKQvlmMv9O8=;
-        b=nHUsfVFx1zCWs+niphx3RfnQ8oE4aMInQpEJwPGKuhvlgRv/xajSccq7IrCWza/nEU
-         s1uF9Xy5U6HERGzLc61hTHdROlDAwNhCLVxPAZ0ihm/93AlZYquhLacDtPFacwLOy4fD
-         I/m5AJ/BxUoQUW7s2TaLhAfNQzsvmGM/fiKeyuCskPPDmUnHz6bSGkJnA5ay6N+s4yrZ
-         SsTUZSdsmFpVyZf9J8AUoQdqkUV9xSkDoD1Yw3wIVTy3hTJfWb/d4nXm/GENh8WYYd6V
-         XQWFI4JDCAw409lUzsZJQmMxWwPh7Pa2Fld1Jhv41VRgZcKr0MMNt6PPHHp7Ar9Lrc0K
-         mL4w==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=hldrX7DaK3vtFLdkulHs1OmsyUauWlphuBrfoAtGxSU=;
+        b=ZM7EKC5cBWOKN27w8N5AiPBpMOdezcjH8sxrXPPOxRRbUMYxUsyKfkaMSgCrCkRzb8
+         WanBHXt5Y4eMNwTqQHfFrVxhwdhRZjM0BUGZu9qeesPI22uu1SgNPZvxnTOmCicjrCua
+         FTxsCHgPdNIgiXG1O+TLCXRa03F5KkcsgqtwQ4aOn04VvERaKtQ6zLs2Kyrn1zQnAH2N
+         Hybok1ybU6ffYr/TgqepcbY25h1mdsRR/9NLhbVnI8KnM1P2VnyOxp61TlU8JMvEfeS4
+         F2Z+sRQbkHQi3kZFPDGwyrM8zqaqhkA1VTSCC7KYigfbVSreCAHCKBp2+wf072NjU939
+         m11g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JS5ToxDYDEg+E8RwSyqs2bCJvCy+zGOhHKQvlmMv9O8=;
-        b=jVklfZYO58Zn20xrDzzih373Y0usPDq7gAk6HCeUgfwDJsxYT/iN8lWFnZepxykpqK
-         DZe4JEZ5AzeY9GmVcRsNkt05cHVRwHyYUDinmxnGVxBJetuOtBhhw+Qf0K/OzmetZzac
-         0P9c5LW+e86sqMx5ZXzj4k8SLokcnXrROVqG6gxnlod0mUqoZ9+YfK89lAflKjYnMIXm
-         MbpwqWw7T1+dfH8gi/YJlz8lMn6BmEdduuGV2wEEdUnqZx7nkmL3Qxyzykb0NNGbvLEh
-         0sGmAugzJIXlGL42jiEBRMeMs7d1Uv+8D5quScjP6zJ8CUFaZwhn+lUbugNW+9wSNP2S
-         wqIA==
-X-Gm-Message-State: AOAM531afXERcTVYS5D2QQj8u1g9qa145BXpwkizTgOTra0VVuJ0Pl47
-        RY9VEHYM5pqMLfqX4n0V+VYkVLlTgzT46Jh+NGi69VIC
-X-Google-Smtp-Source: ABdhPJxcMTZXG0F1BOJAHysoyWx3MRoSkHObFdVFWelI6IRMHRjvQsLWAbn7sajMpHOqVLF1UjK7+r6giKvSvWUtHlA=
-X-Received: by 2002:a05:6512:2026:: with SMTP id s6mr5368136lfs.214.1618635715172;
- Fri, 16 Apr 2021 22:01:55 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=hldrX7DaK3vtFLdkulHs1OmsyUauWlphuBrfoAtGxSU=;
+        b=ck15P0w+x5Xr/BOdPE5hfDE0PAu1tjCSKCAwOqoFsqxfaA6+X9ThmQB1m4W+l+t7E7
+         xzmehWz2I0t3FKRb5uVqBvpbU1u4LpAW33No6sXIlq+uBt7xHIL9UpyyEuLBZ39fbfnh
+         Ax99wTM2NBvcQtCmt8BGtnmaXC/LYc7ZVPyhYj7j4G3B4gxunf9Bm217Jqv1UIlbNTZx
+         dG1pyVhjvxTRly+/o5iIKwG74Lgas8SEMIRnuFKK2OdJ6u4+b3Sx+cZj1nSx3i+pLZxW
+         Vn33eEpUyD9r/lNwLE4iXeN9E4nL80FYQnab4kl/9KSJ7LJmeNg36QYrNIdDXciCchRn
+         RlYg==
+X-Gm-Message-State: AOAM531cAbSVXE4J/GpWghinPsSsjbXT98z3vLKe4lKz8m+kSaVTjwP6
+        JXHYvlU/q3h4XIMacjyz3s9J6g82DoZC2AtmqqE=
+X-Google-Smtp-Source: ABdhPJySaHAqEGdc8EutfflCqlnziF1sn60qS0BSj4H/+yb0769BAeGzhx0NpU4Ha7nsWvhx9jLa7PUUIqyW+Sn6YN4=
+X-Received: by 2002:a05:6402:4388:: with SMTP id o8mr14186637edc.262.1618646468843;
+ Sat, 17 Apr 2021 01:01:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210417033224.8063-1-alexei.starovoitov@gmail.com>
- <20210417033224.8063-12-alexei.starovoitov@gmail.com> <YHpZGeOcermVlQVF@zeniv-ca.linux.org.uk>
- <CAADnVQL9tmHtRCue5Og0kBz=dAsUoFyMoOF61JM7yJhPAH8V8Q@mail.gmail.com> <YHpeTKV2Y+sjuzbD@zeniv-ca.linux.org.uk>
-In-Reply-To: <YHpeTKV2Y+sjuzbD@zeniv-ca.linux.org.uk>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 16 Apr 2021 22:01:43 -0700
-Message-ID: <CAADnVQLOZ7QL61_XPCSmxDfZ0OHX_pBOmpEWLjSUwqhLm_10Jw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 11/15] bpf: Add bpf_sys_close() helper.
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Received: by 2002:aa7:c94d:0:0:0:0:0 with HTTP; Sat, 17 Apr 2021 01:01:08
+ -0700 (PDT)
+Reply-To: dunawattara96@outlook.com
+From:   alihjduna wattara <alihjdunawattara015@gmail.com>
+Date:   Sat, 17 Apr 2021 00:01:08 -0800
+Message-ID: <CAKJtRNGVDsuGgTkHKZpNcWmL5Fx-H97bSSm0ptn938NbhA0sOw@mail.gmail.com>
+Subject: with due respect
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 9:04 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> On Fri, Apr 16, 2021 at 08:46:05PM -0700, Alexei Starovoitov wrote:
-> > On Fri, Apr 16, 2021 at 8:42 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> > >
-> > > On Fri, Apr 16, 2021 at 08:32:20PM -0700, Alexei Starovoitov wrote:
-> > > > From: Alexei Starovoitov <ast@kernel.org>
-> > > >
-> > > > Add bpf_sys_close() helper to be used by the syscall/loader program to close
-> > > > intermediate FDs and other cleanup.
-> > >
-> > > Conditional NAK.  In a lot of contexts close_fd() is very much unsafe.
-> > > In particular, anything that might call it between fdget() and fdput()
-> > > is Right Fucking Out(tm).
-> > > In which contexts can that thing be executed?
-> >
-> > user context only.
-> > It's not for all of bpf _obviously_.
->
-> Let me restate the question: what call chains could lead to bpf_sys_close()?
+Dear Friend,
 
-Already answered. User context only. It's all safe.
+I know that this mail will come to you as a surprise as we have never
+met before, but need not to worry as I am contacting you independently
+of my investigation and no one is informed of this communication.
+
+I need your urgent assistance in transferring the sum of $11.3million
+immediately to your private account.The money has been here in our
+Bank lying dormant for years now without anybody coming for the claim of it.
+
+I want to release the money to you as the relative to our deceased
+customer (the account owner) who died a long with his supposed NEXT OF
+KIN since 16th October 2005. The Banking laws here does not allow such
+money to stay more than 16 years, because the money will be recalled
+to the Bank treasury account as unclaimed fund.
+
+By indicating your interest I will send you the full details on how
+the business will be executed.
+
+Please respond urgently and delete if you are not interested.
+
+Best Regards,
+Mr. Duna Wattara.
