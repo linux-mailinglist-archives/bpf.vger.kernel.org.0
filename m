@@ -2,104 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EF5362C87
-	for <lists+bpf@lfdr.de>; Sat, 17 Apr 2021 03:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87B6362D35
+	for <lists+bpf@lfdr.de>; Sat, 17 Apr 2021 05:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233525AbhDQBBG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 16 Apr 2021 21:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
+        id S235636AbhDQDdv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 16 Apr 2021 23:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhDQBBG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 16 Apr 2021 21:01:06 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7804BC061574;
-        Fri, 16 Apr 2021 18:00:39 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id p15so13652370iln.3;
-        Fri, 16 Apr 2021 18:00:39 -0700 (PDT)
+        with ESMTP id S234999AbhDQDdt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 16 Apr 2021 23:33:49 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 896A5C061574;
+        Fri, 16 Apr 2021 20:32:27 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id u11so11359115pjr.0;
+        Fri, 16 Apr 2021 20:32:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iY+RihvUPyX8tk9Gf02ocgT2AcANbu5qgEKSYd9h/Ek=;
-        b=N/Jg6sWs2uTjuQV8jiDzF6n5Lf3QwDms6wQEpSc8aWUFWSMPkbQ9QEMbRYUk6xfqBj
-         dzck2Rm9wPsvncZr7eAWIH/wSp/IcaLZhcQGNjOPXh8yPty1LyIcR6Mlte++IiC6AM1r
-         ordl5QUCnOxEsKIyaXsVFCZe99JutM+4Ofn41bUD32SHhNQJBvYNf5QELhXqW+7e5c4N
-         meIktTQ8UNgn4agwzzCwycOjPqcNWEZ4Z30EPVybzvpvMQlc6TwR8CR0Qa64cH8hNXKA
-         kmn3JEMYRCJ9FZuM+MdA33Bb+KaUsCEH+Oj5ZzAAJAvHPcSMeu8LohfQ2RFTgZ6jb4VF
-         K8ZQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=oLLOhF5h3HEHXDRM46MODiHrnjR4R+ZWCobT5Aaqsx0=;
+        b=o1U7zam7K5GKMjGjCSWScJaE3MY4Oztn8eDVTbSRnB3LE7taD7ubF4JwndPJEhl8Cq
+         9otJWs+w5VvN4eOEr6InA/4wTlIf19t6LUq1OlyU5dJdbHFhN1WMQKuvKztJ7U6BB8F4
+         nSvapJjrmztbwPe2PUcrxKBRrNT7bDBwp5+CkGa4z8HdpkxWGBWlJcyZDRhz/sLO6BFo
+         YZuNLI6Opvy0p9pW6R+VeNOuxJuccKAdd49MhRSb5vR6FMYwSdWWniG+bTXhJRIYlBHK
+         ykzZ4Z5DsC6/yhRBx9qTltjRm5JtiMO/UowtUC9cQRcE06B4tks++fPS0BpD5HoC7u0S
+         yx6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iY+RihvUPyX8tk9Gf02ocgT2AcANbu5qgEKSYd9h/Ek=;
-        b=rfQia6xgiGhntUV1ObpCA5e9BJA0ElOV4ytArbfhPbmpvJZYkFUVak3Hty1puNXfBh
-         4lp14iRnlCeuyUXpHoPnqjcsdtm5Ot8pBYNn4+8hrCbFtBkCC3A+ora7AJiM8V6cknro
-         Fd61DHVaLZ2ycx0/zw88wpWdXzT2y+uyD4AgCtaJb3rwgpTVR+xOnwMnzvV4t4tIhtxO
-         cdyLWjKQhYmzd9rtW9DBX4q45vAvsxYVT0dJ5A8v/Yrrcj9IZRtOox3YjeSo8Yonl8bu
-         u+xhTZsZydVWmGunXffJFDVPH/DifNCI02dPNBta9/0hSBWqndhR0X/HweNyAGflf7vH
-         S4kg==
-X-Gm-Message-State: AOAM530BOwxBxFu88uZrSOdKdCbbccoESCbysOcSuV5Zy9WijrbfVr2F
-        AgJoxRP401/qXvdDIKqcj3Nvpqgy6Q/i4T6jTfk=
-X-Google-Smtp-Source: ABdhPJzsa5kRDU9e1LTH578C8d3QJIyrDRz+zu/YLglh/0yMAo2iePlaNMdHQwGNda+kPmEY9OrI07+IhNdKg1wI6nA=
-X-Received: by 2002:a92:c78a:: with SMTP id c10mr9318404ilk.64.1618621237415;
- Fri, 16 Apr 2021 18:00:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200917000757.1232850-1-Tony.Ambardar@gmail.com>
- <20200917135437.1238787-1-Tony.Ambardar@gmail.com> <CAPGftE-Q+Q479j7SikDBQLiM+VKbpXpRYnTeEJeAHeZrh_Ok2A@mail.gmail.com>
- <87r1jaeclf.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87r1jaeclf.fsf@mpe.ellerman.id.au>
-From:   Tony Ambardar <tony.ambardar@gmail.com>
-Date:   Fri, 16 Apr 2021 18:00:26 -0700
-Message-ID: <CAPGftE_JthCCWdH8sgTNp7WVcuUu7zPCpmG1KWZ8iovcEwSd2w@mail.gmail.com>
-Subject: Re: [PATCH v3] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>, Rosen Penev <rosenp@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=oLLOhF5h3HEHXDRM46MODiHrnjR4R+ZWCobT5Aaqsx0=;
+        b=htd0H7hS6pMrdUeRiiiNHlEuS2zdoXP8WMFTUKk7ves40hipRkevsLI/nkzPaGQugw
+         s4sWshGK4DBHuS0kmRhssTOZE83gsv5IH3VwVaNRVXgrYtYz93bNTq6FPzeriVRN2hVr
+         uXQWgSOsP2pwfqggOnPhUNgLKwRjeTpxKhcKSZhwRTRua0F9YL0y/UG7maHY3Oxx6oIv
+         9MJmLRoHy5MFrrVCkrKu+OYJawaEm0+LlXMkDGfO2EQLvWY4ulvD9q8V2kwgSTEnoAsg
+         kOmQcIZRVWLwhbNyIcDZbgVdxFUSqKZmoAoMxCZq+Gy/lSUKIxw0CUL6Tda1qQZFFiIN
+         pHtQ==
+X-Gm-Message-State: AOAM533BBof3+oMtsr8YY213sXdx2u4RlSaEk0TA0LP9JJlT3DEfUycr
+        DW0dAK6GOQcLtcYhqFHoa/3d/BNr3j4=
+X-Google-Smtp-Source: ABdhPJwxh8CJdwj7gWe81twCFPVzHgFdZ44Ya4UBPmFSZTvF9Suy3P5HpglU2oso2mNSRcTPswz9jg==
+X-Received: by 2002:a17:90b:14c4:: with SMTP id jz4mr12256917pjb.144.1618630346930;
+        Fri, 16 Apr 2021 20:32:26 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id h1sm6069870pgv.88.2021.04.16.20.32.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 16 Apr 2021 20:32:25 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, andrii@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH bpf-next 00/15] bpf: syscall program, FD array, loader program, light skeleton.
+Date:   Fri, 16 Apr 2021 20:32:09 -0700
+Message-Id: <20210417033224.8063-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 16 Apr 2021 at 03:41, Michael Ellerman <mpe@ellerman.id.au> wrote:
->
-> Tony Ambardar <tony.ambardar@gmail.com> writes:
-> > Hello Michael,
-> >
-> > The latest version of this patch addressed all feedback I'm aware of
-> > when submitted last September, and I've seen no further comments from
-> > reviewers since then.
-> >
-> > Could you please let me know where this stands and if anything further
-> > is needed?
->
-> Sorry, it's still sitting in my inbox :/
->
-> I was going to reply to suggest we split the tools change out. The
-> headers under tools are usually updated by another maintainer, I think
-> it might even be scripted.
->
-> Anyway I've applied your patch and done that (dropped the change to
-> tools/.../errno.h), which should also mean the stable backport is more
-> likely to work automatically.
->
-> It will hit mainline in v5.13-rc1 and then be backported to the stable
-> trees.
->
-> I don't think you actually need the tools version of the header updated
-> to fix your bug? In which case we can probably just wait for it to be
-> updated automatically when the tools headers are sync'ed with the kernel
-> versions.
->
-> cheers
+From: Alexei Starovoitov <ast@kernel.org>
 
-I appreciate the follow up. My original bug was indeed with the tools
-header but is being patched locally, so waiting for those headers to
-sync with the kernel versions is fine if it simplifies things overall.
+This is a first step towards signed bpf programs and the third approach of that kind.
+The first approach was to bring libbpf into the kernel as a user-mode-driver.
+The second approach was to invent a new file format and let kernel execute
+that format as a sequence of syscalls that create maps and load programs.
+This third approach is using new type of bpf program instead of inventing file format.
+1st and 2nd approaches had too many downsides comparing to this 3rd and were discarded
+after months of work.
 
-Thanks,
-Tony
+To make it work the following new concepts are introduced:
+1. syscall bpf program type
+A kind of bpf program that can do sys_bpf and sys_close syscalls.
+It can only execute in user context.
+
+2. FD array or FD index.
+Traditionally BPF instructions are patched with FDs.
+What it means that maps has to be created first and then instructions modified
+which breaks signature verification if the program is signed.
+Instead of patching each instruction with FD patch it with an index into array of FDs.
+That makes the program signature stable if it uses maps.
+
+3. loader program that is generated as "strace of libbpf".
+When libbpf is loading bpf_file.o it does a bunch of sys_bpf() syscalls to
+load BTF, create maps, populate maps and finally load programs.
+Instead of actually doing the syscalls generate a trace of what libbpf
+would have done and represent it as the "loader program".
+The "loader program" consists of single map and single bpf program that
+does those syscalls.
+Executing such "loader program" via bpf_prog_test_run() command will
+replay the sequence of syscalls that libbpf would have done which will result
+the same maps created and programs loaded as specified in the elf file.
+The "loader program" removes libelf and majority of libbpf dependency from
+program loading process.
+
+4. light skeleton
+Instead of embedding the whole elf file into skeleton and using libbpf
+to parse it later generate a loader program and embed it into "light skeleton".
+Such skeleton can load the same set of elf files, but it doesn't need
+libbpf and libelf to do that. It only needs few sys_bpf wrappers.
+
+Future steps:
+- support CO-RE in the kernel. This patch set is already too big,
+so that critical feature is left for the next step.
+- generate light skeleton in golang to allow such users use BTF and
+all other features provided by libbpf
+- generate light skeleton for kernel, so that bpf programs can be embeded
+in the kernel module. The UMD usage in bpf_preload will be replaced with
+such skeleton, so bpf_preload would become a standard kernel module
+without user space dependency.
+- finally do the signing of the loader program.
+
+The patches are work in progress with few rough edges.
+
+Alexei Starovoitov (15):
+  bpf: Introduce bpf_sys_bpf() helper and program type.
+  bpf: Introduce bpfptr_t user/kernel pointer.
+  bpf: Prepare bpf syscall to be used from kernel and user space.
+  libbpf: Support for syscall program type
+  selftests/bpf: Test for syscall program type
+  bpf: Make btf_load command to be bpfptr_t compatible.
+  selftests/bpf: Test for btf_load command.
+  bpf: Introduce fd_idx
+  libbpf: Support for fd_idx
+  bpf: Add bpf_btf_find_by_name_kind() helper.
+  bpf: Add bpf_sys_close() helper.
+  libbpf: Change the order of data and text relocations.
+  libbpf: Generate loader program out of BPF ELF file.
+  bpftool: Use syscall/loader program in "prog load" and "gen skeleton"
+    command.
+  selftests/bpf: Convert few tests to light skeleton.
+
+ include/linux/bpf.h                           |  19 +-
+ include/linux/bpf_types.h                     |   2 +
+ include/linux/bpf_verifier.h                  |   1 +
+ include/linux/bpfptr.h                        |  81 +++
+ include/linux/btf.h                           |   2 +-
+ include/uapi/linux/bpf.h                      |  39 +-
+ kernel/bpf/bpf_iter.c                         |  13 +-
+ kernel/bpf/btf.c                              |  59 +-
+ kernel/bpf/syscall.c                          | 179 ++++--
+ kernel/bpf/verifier.c                         |  81 ++-
+ net/bpf/test_run.c                            |  45 +-
+ tools/bpf/bpftool/Makefile                    |   2 +-
+ tools/bpf/bpftool/gen.c                       | 263 ++++++++-
+ tools/bpf/bpftool/main.c                      |   7 +-
+ tools/bpf/bpftool/main.h                      |   1 +
+ tools/bpf/bpftool/prog.c                      |  78 +++
+ tools/bpf/bpftool/xlated_dumper.c             |   3 +
+ tools/include/uapi/linux/bpf.h                |  39 +-
+ tools/lib/bpf/Build                           |   2 +-
+ tools/lib/bpf/bpf.c                           |  62 ++
+ tools/lib/bpf/bpf.h                           |  35 ++
+ tools/lib/bpf/bpf_gen_internal.h              |  38 ++
+ tools/lib/bpf/gen_trace.c                     | 529 ++++++++++++++++++
+ tools/lib/bpf/libbpf.c                        | 346 ++++++++++--
+ tools/lib/bpf/libbpf.map                      |   1 +
+ tools/lib/bpf/libbpf_internal.h               |   3 +
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |  16 +-
+ .../selftests/bpf/prog_tests/fentry_fexit.c   |   6 +-
+ .../selftests/bpf/prog_tests/fentry_test.c    |   4 +-
+ .../selftests/bpf/prog_tests/fexit_sleep.c    |   6 +-
+ .../selftests/bpf/prog_tests/fexit_test.c     |   4 +-
+ .../selftests/bpf/prog_tests/kfunc_call.c     |   6 +-
+ .../selftests/bpf/prog_tests/syscall.c        |  53 ++
+ tools/testing/selftests/bpf/progs/syscall.c   | 121 ++++
+ .../selftests/bpf/progs/test_subprogs.c       |  13 +
+ 36 files changed, 1972 insertions(+), 188 deletions(-)
+ create mode 100644 include/linux/bpfptr.h
+ create mode 100644 tools/lib/bpf/bpf_gen_internal.h
+ create mode 100644 tools/lib/bpf/gen_trace.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/syscall.c
+ create mode 100644 tools/testing/selftests/bpf/progs/syscall.c
+
+-- 
+2.30.2
+
