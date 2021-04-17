@@ -2,80 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C05362E70
-	for <lists+bpf@lfdr.de>; Sat, 17 Apr 2021 10:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D513B362E81
+	for <lists+bpf@lfdr.de>; Sat, 17 Apr 2021 10:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235990AbhDQIBi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 17 Apr 2021 04:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235982AbhDQIBh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 17 Apr 2021 04:01:37 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B801C061574
-        for <bpf@vger.kernel.org>; Sat, 17 Apr 2021 01:01:10 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id s15so34905116edd.4
-        for <bpf@vger.kernel.org>; Sat, 17 Apr 2021 01:01:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=hldrX7DaK3vtFLdkulHs1OmsyUauWlphuBrfoAtGxSU=;
-        b=ZM7EKC5cBWOKN27w8N5AiPBpMOdezcjH8sxrXPPOxRRbUMYxUsyKfkaMSgCrCkRzb8
-         WanBHXt5Y4eMNwTqQHfFrVxhwdhRZjM0BUGZu9qeesPI22uu1SgNPZvxnTOmCicjrCua
-         FTxsCHgPdNIgiXG1O+TLCXRa03F5KkcsgqtwQ4aOn04VvERaKtQ6zLs2Kyrn1zQnAH2N
-         Hybok1ybU6ffYr/TgqepcbY25h1mdsRR/9NLhbVnI8KnM1P2VnyOxp61TlU8JMvEfeS4
-         F2Z+sRQbkHQi3kZFPDGwyrM8zqaqhkA1VTSCC7KYigfbVSreCAHCKBp2+wf072NjU939
-         m11g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=hldrX7DaK3vtFLdkulHs1OmsyUauWlphuBrfoAtGxSU=;
-        b=ck15P0w+x5Xr/BOdPE5hfDE0PAu1tjCSKCAwOqoFsqxfaA6+X9ThmQB1m4W+l+t7E7
-         xzmehWz2I0t3FKRb5uVqBvpbU1u4LpAW33No6sXIlq+uBt7xHIL9UpyyEuLBZ39fbfnh
-         Ax99wTM2NBvcQtCmt8BGtnmaXC/LYc7ZVPyhYj7j4G3B4gxunf9Bm217Jqv1UIlbNTZx
-         dG1pyVhjvxTRly+/o5iIKwG74Lgas8SEMIRnuFKK2OdJ6u4+b3Sx+cZj1nSx3i+pLZxW
-         Vn33eEpUyD9r/lNwLE4iXeN9E4nL80FYQnab4kl/9KSJ7LJmeNg36QYrNIdDXciCchRn
-         RlYg==
-X-Gm-Message-State: AOAM531cAbSVXE4J/GpWghinPsSsjbXT98z3vLKe4lKz8m+kSaVTjwP6
-        JXHYvlU/q3h4XIMacjyz3s9J6g82DoZC2AtmqqE=
-X-Google-Smtp-Source: ABdhPJySaHAqEGdc8EutfflCqlnziF1sn60qS0BSj4H/+yb0769BAeGzhx0NpU4Ha7nsWvhx9jLa7PUUIqyW+Sn6YN4=
-X-Received: by 2002:a05:6402:4388:: with SMTP id o8mr14186637edc.262.1618646468843;
- Sat, 17 Apr 2021 01:01:08 -0700 (PDT)
+        id S229854AbhDQIQ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 17 Apr 2021 04:16:56 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:1364 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229631AbhDQIQ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 17 Apr 2021 04:16:56 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FMmBL3B3mz9vBnD;
+        Sat, 17 Apr 2021 10:16:26 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id KdXChgWPk-BP; Sat, 17 Apr 2021 10:16:26 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FMmBL21vRz9vBnC;
+        Sat, 17 Apr 2021 10:16:26 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 312848B777;
+        Sat, 17 Apr 2021 10:16:27 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id efFKgaQ79CvE; Sat, 17 Apr 2021 10:16:27 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3BFFF8B75B;
+        Sat, 17 Apr 2021 10:16:24 +0200 (CEST)
+Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Quentin Monnet <quentin@isovalent.com>
+Cc:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Mahesh Bandewar <maheshb@google.com>,
+        Will Deacon <will@kernel.org>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Ilya Leoshkevich <iii@linux.ibm.com>, paulburton@kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        linux-mips@vger.kernel.org, grantseltzer@gmail.com,
+        Xi Wang <xi.wang@gmail.com>, Albert Ou <aou@eecs.berkeley.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        KP Singh <kpsingh@kernel.org>, iecedge@gmail.com,
+        Simon Horman <horms@verge.net.au>,
+        Borislav Petkov <bp@alien8.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Yonghong Song <yhs@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Vyukov <dvyukov@google.com>, tsbogend@alpha.franken.de,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Network Development <netdev@vger.kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Wang YanQing <udknight@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>, bpf <bpf@vger.kernel.org>,
+        Jianlin Lv <Jianlin.Lv@arm.com>,
+        "David S. Miller" <davem@davemloft.net>
+References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
+ <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
+ <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com>
+ <CAADnVQJ2oHbYfgY9jqM_JMxUsoZxaNrxKSVFYfgCXuHVpDehpQ@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <0dea05ba-9467-0d84-4515-b8766f60318e@csgroup.eu>
+Date:   Sat, 17 Apr 2021 10:16:22 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Received: by 2002:aa7:c94d:0:0:0:0:0 with HTTP; Sat, 17 Apr 2021 01:01:08
- -0700 (PDT)
-Reply-To: dunawattara96@outlook.com
-From:   alihjduna wattara <alihjdunawattara015@gmail.com>
-Date:   Sat, 17 Apr 2021 00:01:08 -0800
-Message-ID: <CAKJtRNGVDsuGgTkHKZpNcWmL5Fx-H97bSSm0ptn938NbhA0sOw@mail.gmail.com>
-Subject: with due respect
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAADnVQJ2oHbYfgY9jqM_JMxUsoZxaNrxKSVFYfgCXuHVpDehpQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear Friend,
 
-I know that this mail will come to you as a surprise as we have never
-met before, but need not to worry as I am contacting you independently
-of my investigation and no one is informed of this communication.
 
-I need your urgent assistance in transferring the sum of $11.3million
-immediately to your private account.The money has been here in our
-Bank lying dormant for years now without anybody coming for the claim of it.
+Le 16/04/2021 à 01:49, Alexei Starovoitov a écrit :
+> On Thu, Apr 15, 2021 at 8:41 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>>
+>> 2021-04-15 16:37 UTC+0200 ~ Daniel Borkmann <daniel@iogearbox.net>
+>>> On 4/15/21 11:32 AM, Jianlin Lv wrote:
+>>>> For debugging JITs, dumping the JITed image to kernel log is discouraged,
+>>>> "bpftool prog dump jited" is much better way to examine JITed dumps.
+>>>> This patch get rid of the code related to bpf_jit_enable=2 mode and
+>>>> update the proc handler of bpf_jit_enable, also added auxiliary
+>>>> information to explain how to use bpf_jit_disasm tool after this change.
+>>>>
+>>>> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+>>
+>> Hello,
+>>
+>> For what it's worth, I have already seen people dump the JIT image in
+>> kernel logs in Qemu VMs running with just a busybox, not for kernel
+>> development, but in a context where buiding/using bpftool was not
+>> possible.
+> 
+> If building/using bpftool is not possible then majority of selftests won't
+> be exercised. I don't think such environment is suitable for any kind
+> of bpf development. Much so for JIT debugging.
+> While bpf_jit_enable=2 is nothing but the debugging tool for JIT developers.
+> I'd rather nuke that code instead of carrying it from kernel to kernel.
+> 
 
-I want to release the money to you as the relative to our deceased
-customer (the account owner) who died a long with his supposed NEXT OF
-KIN since 16th October 2005. The Banking laws here does not allow such
-money to stay more than 16 years, because the money will be recalled
-to the Bank treasury account as unclaimed fund.
+When I implemented JIT for PPC32, it was extremely helpfull.
 
-By indicating your interest I will send you the full details on how
-the business will be executed.
+As far as I understand, for the time being bpftool is not usable in my environment because it 
+doesn't support cross compilation when the target's endianess differs from the building host 
+endianess, see discussion at 
+https://lore.kernel.org/bpf/21e66a09-514f-f426-b9e2-13baab0b938b@csgroup.eu/
 
-Please respond urgently and delete if you are not interested.
+That's right that selftests can't be exercised because they don't build.
 
-Best Regards,
-Mr. Duna Wattara.
+The question might be candid as I didn't investigate much about the replacement of "bpf_jit_enable=2 
+debugging mode" by bpftool, how do we use bpftool exactly for that ? Especially when using the BPF 
+test module ?
+
