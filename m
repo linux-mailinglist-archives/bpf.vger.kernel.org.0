@@ -2,116 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A710A363692
-	for <lists+bpf@lfdr.de>; Sun, 18 Apr 2021 18:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B648736376E
+	for <lists+bpf@lfdr.de>; Sun, 18 Apr 2021 22:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232052AbhDRQSv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 18 Apr 2021 12:18:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58549 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231368AbhDRQSt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 18 Apr 2021 12:18:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618762699;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gtqF7+8hdOsOAqsZblGuMHHe5YxbPyqEJw9acCV3MPw=;
-        b=V7z/HAw/PwPtEOIkFYmwh2aKhBNuknk8An3HAoTA3tErvLcBETqC9Hq6GGfdREu5B+aS6+
-        uw4CbdFD5zh+rZYzlZHUPTCeVibTUjvbzJBgbrchdbJm/9YdZ+U0tDNHcHfFNVLZC4NBL4
-        h9WYBWUJ8A2dJVoQRyQ8tWBN18CENaw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-394-lYJvDT76NgKpzdeP30YW3g-1; Sun, 18 Apr 2021 12:18:15 -0400
-X-MC-Unique: lYJvDT76NgKpzdeP30YW3g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D4231817469;
-        Sun, 18 Apr 2021 16:18:13 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 59DD1107D5C6;
-        Sun, 18 Apr 2021 16:18:02 +0000 (UTC)
-Date:   Sun, 18 Apr 2021 18:18:01 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        lorenzo.bianconi@redhat.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
-        sameehj@amazon.com, John Fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Tirthendu <tirthendu.sarkar@intel.com>, brouer@redhat.com
-Subject: Re: [PATCH v8 bpf-next 00/14] mvneta: introduce XDP multi-buffer
- support
-Message-ID: <20210418181801.17166935@carbon>
-In-Reply-To: <CAJ8uoz1MOYLzyy7xXq_fmpKDEakxSomzfM76Szjr5gWsqHc9jQ@mail.gmail.com>
-References: <cover.1617885385.git.lorenzo@kernel.org>
-        <CAJ8uoz1MOYLzyy7xXq_fmpKDEakxSomzfM76Szjr5gWsqHc9jQ@mail.gmail.com>
+        id S232082AbhDRUDa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Apr 2021 16:03:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhDRUDa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 18 Apr 2021 16:03:30 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A61C06174A;
+        Sun, 18 Apr 2021 13:03:00 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id j3so15949344qvs.1;
+        Sun, 18 Apr 2021 13:03:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/3T7y9WNnZVrw+KXlkUiPbUTLLcEjroke08FHYAv/2Q=;
+        b=fEfzrkvJxLN/+ywdBMUTM28GEelq9i51jLIV6NA/MatzkDTpIb1Tban3sf7blmc3QI
+         Vg5vkgGAKI/VamhwHjfNw3LmLXBP6eeyFU7i7l61WeH5taZsvBhck6+WIZtt01/Hw9ss
+         TTozIlu45xswP/8OQSTCGNvy8eN/2WtqWmhATnlmYrSk19Sistnz6zVvpExKtnNCHdJv
+         8iGf5H4W6Ljp0EvBispPoF7fDtESEfS98Hoc/tb5oicO/EzPZTUEf1mc6dMilPqHpAHl
+         Nho0FS4AHdBrKTvcVBoaVysBrTDcR7OOxdShziAkNrLZ1cR9FXS2EKs53QD07mLO6Ivd
+         42sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/3T7y9WNnZVrw+KXlkUiPbUTLLcEjroke08FHYAv/2Q=;
+        b=PrOR87+VHFAd9AI/899X+OjyFR1CJcpecjJsbAbBd9QX3t2zc4WbLY3yoOmUHEZUX+
+         IqvnRSvx1i46WYOGAy8mzRMa2VvYSFAAkcKJkzIFcJW2pSq6z+0BdcqHbmhDh4UM7usO
+         xYF2lom1bT/SXoQxQWWGf+X1QZdUu9dzBjD7H7V4MIrlZQYe5oePRD165E5Hp32KNTx/
+         Twsmj3rF+lQThlVcxMot6RvNftSAuOrAppqltGXMXgJyMlTS/RMZ9mLIu1O3y9Q5m2YY
+         17mnpF4VhfZrVmPDgg0qNrMg7sp9XUkszaqNXZxftF8uK1XSR1sBGwH3+JQh4yiQSXLB
+         Wu/g==
+X-Gm-Message-State: AOAM531AYvIRoT0rE1tYBndTqjHiB/Uo+jSiEUgGbQJb5eNPR1cXDAEu
+        zV4psSNveRHJECQfH4m/nHgiuLeB72GS7922
+X-Google-Smtp-Source: ABdhPJxY2IRQnVgLX3ZvtaGGsNI8JjroZqIaO1kZAWHrSy3chZh+nmOpIH9BtjlI1N4zshC7HCNKxg==
+X-Received: by 2002:a0c:f1cc:: with SMTP id u12mr18344532qvl.20.1618776178684;
+        Sun, 18 Apr 2021 13:02:58 -0700 (PDT)
+Received: from localhost.localdomain ([179.218.4.27])
+        by smtp.gmail.com with ESMTPSA id x18sm7906225qtj.58.2021.04.18.13.02.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Apr 2021 13:02:58 -0700 (PDT)
+From:   Pedro Tammela <pctammela@gmail.com>
+X-Google-Original-From: Pedro Tammela <pctammela@mojatatu.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Pedro Tammela <pctammela@mojatatu.com>
+Subject: [PATCH] bpf: fix errno code for unsupported batch ops
+Date:   Sun, 18 Apr 2021 17:02:49 -0300
+Message-Id: <20210418200249.174835-1-pctammela@mojatatu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 16 Apr 2021 16:27:18 +0200
-Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
+ENOTSUPP is not a valid userland errno[1], which is annoying for
+userland applications that implement a fallback to iterative, report
+errors via 'strerror()' or both.
 
-> On Thu, Apr 8, 2021 at 2:51 PM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-> >
-> > This series introduce XDP multi-buffer support. The mvneta driver is
-> > the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
-> > please focus on how these new types of xdp_{buff,frame} packets
-> > traverse the different layers and the layout design. It is on purpose
-> > that BPF-helpers are kept simple, as we don't want to expose the
-> > internal layout to allow later changes.
-> >
-> > For now, to keep the design simple and to maintain performance, the XDP
-> > BPF-prog (still) only have access to the first-buffer. It is left for
-> > later (another patchset) to add payload access across multiple buffers.
-> > This patchset should still allow for these future extensions. The goal
-> > is to lift the XDP MTU restriction that comes with XDP, but maintain
-> > same performance as before.
-[...]
-> >
-> > [0] https://netdevconf.info/0x14/session.html?talk-the-path-to-tcp-4k-mtu-and-rx-zerocopy
-> > [1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-multi-buffer01-design.org
-> > [2] https://netdevconf.info/0x14/session.html?tutorial-add-XDP-support-to-a-NIC-driver (XDPmulti-buffers section)  
-> 
-> Took your patches for a test run with the AF_XDP sample xdpsock on an
-> i40e card and the throughput degradation is between 2 to 6% depending
-> on the setup and microbenchmark within xdpsock that is executed. And
-> this is without sending any multi frame packets. Just single frame
-> ones. Tirtha made changes to the i40e driver to support this new
-> interface so that is being included in the measurements.
+The batched ops return this errno whenever an operation
+is not implemented for kernels that implement batched ops.
 
-Could you please share Tirtha's i40e support patch with me?
+In older kernels, pre batched ops, it returns EINVAL as the arguments
+are not supported in the syscall.
 
-I would like to reproduce these results in my testlab, in-order to
-figure out where the throughput degradation comes from.
+[1] https://lore.kernel.org/netdev/20200511165319.2251678-1-kuba@kernel.org/
 
-> What performance do you see with the mvneta card? How much are we
-> willing to pay for this feature when it is not being used or can we in
-> some way selectively turn it on only when needed?
+Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+---
+ kernel/bpf/syscall.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Well, as Daniel says performance wise we require close to /zero/
-additional overhead, especially as you state this happens when sending
-a single frame, which is a base case that we must not slowdown.
-
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index fd495190115e..88fe19c0aeb1 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3961,7 +3961,7 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
+ #define BPF_DO_BATCH(fn)			\
+ 	do {					\
+ 		if (!fn) {			\
+-			err = -ENOTSUPP;	\
++			err = -EOPNOTSUPP;	\
+ 			goto err_put;		\
+ 		}				\
+ 		err = fn(map, attr, uattr);	\
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+2.25.1
 
