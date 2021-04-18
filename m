@@ -2,131 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C394363150
-	for <lists+bpf@lfdr.de>; Sat, 17 Apr 2021 19:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985183634FC
+	for <lists+bpf@lfdr.de>; Sun, 18 Apr 2021 14:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236612AbhDQRKG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 17 Apr 2021 13:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236595AbhDQRKF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 17 Apr 2021 13:10:05 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56760C061574;
-        Sat, 17 Apr 2021 10:09:35 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id lt13so6790263pjb.1;
-        Sat, 17 Apr 2021 10:09:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x7a2xqi/iFnK0eHNKezFE2yZURJDDLRgYL5anBL6QIo=;
-        b=ksU6jZGHvtPyz9NcZUzfkbpgqw1ieXJvb+e/rFGwKblsqE2vHomN3yT+aVc4rsuTlZ
-         CZKcevPy/7pHKtcnjL/x6lO8D6IcCG/Xh8WWi6xWLmMsXdP4K+1//1/0TMXOEhNCW3uE
-         +4K5q856L9rTWqyJtWiBYixORwbnguLrzA8vpLNWwL1Ro9i3MpB3zXsUOwk1mAg1IQe6
-         pQKUgsq7IKqxkn84+cvKM4EPU0P0ckvp+62kbZ6ETCUSLfvzBytFnVsbUqygUpjzgrZK
-         Km5KyBhvWanU6Wr7dENvO5oXt0c7dzQOMh58vd8sBuD/1zMcz3FrvzQLWPGsoHXY8fTS
-         Qd6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x7a2xqi/iFnK0eHNKezFE2yZURJDDLRgYL5anBL6QIo=;
-        b=jaybjOHk0c9M8x537ON3ZhEgmyQScLtdCLLDLhzawIBLLCI/vVlrVy6cV+L6qlz1xf
-         xkCnCQvc3GKzBx+4HKwpLoTBmEiHM+z+5sfWP0x5Qo9To0VEIml8KveI62aQYrBD1+EL
-         tS0cjez83DOuARvlSs9VBwolYLpbY3JOhN7rvKy5edJJXiQ5Wy5e9VD7sjrbXmLD7a+m
-         6W9NDJPqLy4uWJ6LLWab6YlyWrs7mg07LSsJh0J9MdNUkZTxRi9ph3fakTw0DEc+MwJZ
-         m5bLqdJeyVl6VnklLVOoOp1AVRIsC7JjlUKrGpX1wZOr3jfGmXMKl1cqnH1NVoR0uk9w
-         ANHQ==
-X-Gm-Message-State: AOAM531ZLuRWEyVeAibDkLpsZzdPFCRCXr4EjeoRiKLQFaN+TOQpVhRe
-        B9fvyzruV0gYNblJZVYzz8I=
-X-Google-Smtp-Source: ABdhPJwyMg/eGlknw6XyTMcxkhCp0BFWFfoAeobWrvIpW2wiVcFhrqhYvn8xxzyFY67Xol+C/QQT3w==
-X-Received: by 2002:a17:90a:8410:: with SMTP id j16mr15553053pjn.120.1618679374717;
-        Sat, 17 Apr 2021 10:09:34 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8587])
-        by smtp.gmail.com with ESMTPSA id t19sm8461891pfg.38.2021.04.17.10.09.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Apr 2021 10:09:34 -0700 (PDT)
-Date:   Sat, 17 Apr 2021 10:09:31 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        id S230457AbhDRMF1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 18 Apr 2021 08:05:27 -0400
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:18080 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230225AbhDRMF1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 18 Apr 2021 08:05:27 -0400
+Date:   Sun, 18 Apr 2021 12:04:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1618747497; bh=S6+7IL9psNB52Dh+xGxHAd9iOltPMkvweODEzTOF5hQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=KG3PBF05MIU1gCXucaCnQQGVhDVLH3fhBBNTUS1oMKAn+2aDmw/ho2Qx5Dr7wbMWh
+         N2NfBSQ9negZLZs2iVHq0T3h23lulHBS47TotCeQ3oEY3iQAF1SR4bd3fExWyb7lxk
+         +2xNWOQiwpXHIvFkKtMo11ZMlAl+KHaGRhn0CSHXJ0zHe1nOmrDVNjpSThrcMDv/iZ
+         EinJCF2a6+5qXHn8P8fhC12T3EXUtFuGGXeZB7dLzyVcB9zpN/cfYXJwsxJyat/yD0
+         Q1lSNI2YYrC5xNyRyAwtV3iR5RUDxSEn8eMSkCLudBTN8UmhAciW/EIp1HQRQ00DVG
+         Mz6WnsyEKZPOg==
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next 11/15] bpf: Add bpf_sys_close() helper.
-Message-ID: <20210417170931.hxo2vvt4532jrx7k@ast-mbp.dhcp.thefacebook.com>
-References: <20210417033224.8063-1-alexei.starovoitov@gmail.com>
- <20210417033224.8063-12-alexei.starovoitov@gmail.com>
- <YHpZGeOcermVlQVF@zeniv-ca.linux.org.uk>
- <CAADnVQL9tmHtRCue5Og0kBz=dAsUoFyMoOF61JM7yJhPAH8V8Q@mail.gmail.com>
- <YHpeTKV2Y+sjuzbD@zeniv-ca.linux.org.uk>
- <CAADnVQLOZ7QL61_XPCSmxDfZ0OHX_pBOmpEWLjSUwqhLm_10Jw@mail.gmail.com>
- <20210417143639.kq3nafzlsridtbb6@ast-mbp>
- <YHsRdTqgurSCykt7@zeniv-ca.linux.org.uk>
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH v2 bpf-next 0/2] xsk: introduce generic almost-zerocopy xmit
+Message-ID: <20210418120431.6945-1-alobakin@pm.me>
+In-Reply-To: <CAJ8uoz27wTWU0HhfVWkcHESfAtMXT6dj=p+JW87zm-ownDF7Ww@mail.gmail.com>
+References: <CAJ8uoz2jym_AmCyMt_B32YBAEsjTNpaQF-WAJUavUe3P5_at3w@mail.gmail.com> <1618278328.0085247-1-xuanzhuo@linux.alibaba.com> <CAJ8uoz27wTWU0HhfVWkcHESfAtMXT6dj=p+JW87zm-ownDF7Ww@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHsRdTqgurSCykt7@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 04:48:53PM +0000, Al Viro wrote:
-> On Sat, Apr 17, 2021 at 07:36:39AM -0700, Alexei Starovoitov wrote:
-> 
-> > The kernel will perform the same work with FDs. The same locks are held
-> > and the same execution conditions are in both cases. The LSM hooks,
-> > fsnotify, etc will be called the same way.
-> > It's no different if new syscall was introduced "sys_foo(int num)" that
-> > would do { return close_fd(num); }.
-> > It would opearate in the same user context.
-> 
-> Hmm...  unless I'm misreading the code, one of the call chains would seem to
-> be sys_bpf() -> bpf_prog_test_run() -> ->test_run() -> ... -> bpf_sys_close().
-> OK, as long as you make sure bpf_prog_get() does fdput() (i.e. that we
-> don't have it restructured so that fdget()/fdput() pair would be lifted into
-> bpf_prog_test_run(), with fdput() moved in place of bpf_prog_put()).
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Tue, 13 Apr 2021 09:14:02 +0200
 
-Got it. There is no fdget/put bracketing in the code.
-On the way to test_run we do __bpf_prog_get() which does fdget and immediately
-fdput after incrementing refcnt of the prog.
-I believe this pattern is consistent everywhere in kernel/bpf/*
+Hi!
 
-> Note that we *really* can not allow close_fd() on anything to be bracketed
-> by fdget()/fdput() pair; we had bugs of that sort and, as the matter of fact,
-> still have one in autofs_dev_ioctl().
-> 
-> The trouble happens if you have file F with 2 references, held by descriptor
-> tables of different processes.  Say, process A has descriptor 6 refering to
-> it, while B has descriptor 42 doing the same.  Descriptor tables of A and B
-> are not shared with anyone.
-> 
-> A: fdget(6) 	-> returns a reference to F, refcount _not_ touched
-> A: close_fd(6)	-> rips the reference to F from descriptor table, does fput(F)
-> 		   refcount drops to 1.
-> B: close(42)	-> rips the reference to F from B's descriptor table, does fput(F)
-> 		   This time refcount does reach 0 and we use task_work_add() to
-> 		   make sure the destructor (__fput()) runs before B returns to
-> 		   userland.  sys_close() returns and B goes off to userland.
-> 		   On the way out __fput() is run, and among other things,
-> 		   ->release() of F is executed, doing whatever it wants to do.
-> 		   F is freed.
-> And at that point A, which presumably is using the guts of F, gets screwed.
+I've finally done with a kinda comfy setup after moving to another
+country and can finally continue working on patches and stuff.
 
-Thanks for these details. That's really helpful.
+> On Tue, Apr 13, 2021 at 3:49 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wr=
+ote:
+> >
+> > On Mon, 12 Apr 2021 16:13:12 +0200, Magnus Karlsson <magnus.karlsson@gm=
+ail.com> wrote:
+> > > On Wed, Mar 31, 2021 at 2:27 PM Alexander Lobakin <alobakin@pm.me> wr=
+ote:
+> > > >
+> > > > This series is based on the exceptional generic zerocopy xmit logic=
+s
+> > > > initially introduced by Xuan Zhuo. It extends it the way that it
+> > > > could cover all the sane drivers, not only the ones that are capabl=
+e
+> > > > of xmitting skbs with no linear space.
+> > > >
+> > > > The first patch is a random while-we-are-here improvement over
+> > > > full-copy path, and the second is the main course. See the individu=
+al
+> > > > commit messages for the details.
+> > > >
+> > > > The original (full-zerocopy) path is still here and still generally
+> > > > faster, but for now it seems like virtio_net will remain the only
+> > > > user of it, at least for a considerable period of time.
+> > > >
+> > > > From v1 [0]:
+> > > >  - don't add a whole SMP_CACHE_BYTES because of only two bytes
+> > > >    (NET_IP_ALIGN);
+> > > >  - switch to zerocopy if the frame is 129 bytes or longer, not 128.
+> > > >    128 still fit to kmalloc-512, while a zerocopy skb is always
+> > > >    kmalloc-1024 -> can potentially be slower on this frame size.
+> > > >
+> > > > [0] https://lore.kernel.org/netdev/20210330231528.546284-1-alobakin=
+@pm.me
+> > > >
+> > > > Alexander Lobakin (2):
+> > > >   xsk: speed-up generic full-copy xmit
+> > >
+> > > I took both your patches for a spin on my machine and for the first
+> > > one I do see a small but consistent drop in performance. I thought it
+> > > would go the other way, but it does not so let us put this one on the
+> > > shelf for now.
 
-> 	So please, mark all call sites with "make very sure you never get
-> here with unpaired fdget()".
+This is kinda strange as the solution is pretty straightforward.
+But sure, if the performance dropped after this one, it should not
+be considered for taking.
+I might have a look at it later.
 
-Good point. Will add this comment.
+> > > >   xsk: introduce generic almost-zerocopy xmit
+> > >
+> > > This one wreaked havoc on my machine ;-). The performance dropped wit=
+h
+> > > 75% for packets larger than 128 bytes when the new scheme kicks in.
+> > > Checking with perf top, it seems that we spend much more time
+> > > executing the sendmsg syscall. Analyzing some more:
+> > >
+> > > $ sudo bpftrace -e 'kprobe:__sys_sendto { @calls =3D @calls + 1; }
+> > > interval:s:1 {printf("calls/sec: %d\n", @calls); @calls =3D 0;}'
+> > > Attaching 2 probes...
+> > > calls/sec: 1539509 with your patch compared to
+> > >
+> > > calls/sec: 105796 without your patch
+> > >
+> > > The application spends a lot of more time trying to get the kernel to
+> > > send new packets, but the kernel replies with "have not completed the
+> > > outstanding ones, so come back later" =3D EAGAIN. Seems like the
+> > > transmission takes longer when the skbs have fragments, but I have no=
+t
+> > > examined this any further. Did you get a speed-up?
+> >
+> > Regarding this solution, I actually tested it on my mlx5 network card, =
+but the
+> > performance was severely degraded, so I did not continue this solution =
+later. I
+> > guess it might have something to do with the physical network card. We =
+can try
+> > other network cards.
+>
+> I tried it on a third card and got a 40% degradation, so let us scrap
+> this idea. It should stay optional as it is today as the (software)
+> drivers that benefit from this can turn it on explicitly.
 
-> 	BTW, if my reading (re ->test_run()) is correct, what limits the recursion
-> via bpf_sys_bpf()?
+Thank you guys a lot for the testing!
 
-Glad you asked! This kind of code review questions are much appreciated.
+I think the main reason is the DMA mapping of one additional frag
+(14 bytes of MAC header, which is excessive). It can take a lot of
+CPU cycles, especially when the device is behind an IOMMU, and seems
+like memcpying is faster here.
 
-It's an allowlist of possible commands in bpf_sys_bpf().
-'case BPF_PROG_TEST_RUN:' is not there for this exact reason.
-I'll add a comment to make it more obvious.
+Moreover, if Xuan tested it as one of the steps towards his
+full-zerocopy and found it to be a bad idea, this should not
+go further.
+So I'm burying this.
+
+> > links: https://www.spinics.net/lists/netdev/msg710918.html
+> >
+> > Thanks.
+> >
+> > >
+> > > >  net/xdp/xsk.c | 32 ++++++++++++++++++++++----------
+> > > >  1 file changed, 22 insertions(+), 10 deletions(-)
+> > > >
+> > > > --
+> > > > Well, this is untested. I currently don't have an access to my setu=
+p
+> > > > and is bound by moving to another country, but as I don't know for
+> > > > sure at the moment when I'll get back to work on the kernel next ti=
+me,
+> > > > I found it worthy to publish this now -- if any further changes wil=
+l
+> > > > be required when I already will be out-of-sight, maybe someone coul=
+d
+> > > > carry on to make a another revision and so on (I'm still here for a=
+ny
+> > > > questions, comments, reviews and improvements till the end of this
+> > > > week).
+> > > > But this *should* work with all the sane drivers. If a particular
+> > > > one won't handle this, it's likely ill. Any tests are highly
+> > > > appreciated. Thanks!
+> > > > --
+> > > > 2.31.1
+
+Thanks,
+Al
+
