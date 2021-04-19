@@ -2,169 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DDF36424D
-	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 15:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1522A364549
+	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 15:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbhDSNEV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Apr 2021 09:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
+        id S231939AbhDSNwv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Apr 2021 09:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbhDSNEV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:04:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E76FC061760;
-        Mon, 19 Apr 2021 06:03:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8Y0pwAVt5liDDolwhxFKvBOLg1az19k+Kyl8s6P7Mkw=; b=qh+osCLCYoBzdKk4OeJfdc7J9J
-        shl+bJI6rxfcBQSyUHfvACIIxpBednLK2EubX+7seel0bFOvQcQK+jZoQeITc+v2PI2mb2vCfurG4
-        Iz1Jx+evxKF0mxbN3hGOTdmKkw/Big46+gSRFjS7Bcm1zy1oyWgzxp5sakrTLJBWnvbYovFe8a2Tj
-        6drEwpV5y+w6FDXtd5amPm+3usP0JSTm7fxq2CdQjbgRmW6fOEF7HDFoUma/fp6LsDiBYcgbUg3lU
-        xOWtgX+S7Y2kwtviMj2NHv0xDQhr/xFfW5udlCZV7yiQvRTBIOJ4bdLWiNP47NQMfxvezra9yhVN1
-        F7lE216g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYTXA-00DlIj-GW; Mon, 19 Apr 2021 13:02:10 +0000
-Date:   Mon, 19 Apr 2021 14:01:48 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <20210419130148.GA2531743@casper.infradead.org>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com>
- <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus>
- <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
- <YHHuE7g73mZNrMV4@enceladus>
- <20210414214132.74f721dd@carbon>
- <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
- <20210419132204.1e07d5b9@carbon>
+        with ESMTP id S229635AbhDSNwt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:52:49 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3DFC06174A;
+        Mon, 19 Apr 2021 06:52:19 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id p8so13542536iol.11;
+        Mon, 19 Apr 2021 06:52:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Gt16QylDheR8xWPIXKNaPKZyKT22Q7EnSGM+4gpD6LU=;
+        b=Qcu4HYLP7VaVWZd53EmrWCBNaY1QjDxJR0cq6lPZzYYjdhZn4nzGtb/Rtnt6Q19rVl
+         HYaWJqJxWG2zfycNh2IOHx3qJGB5H7we92AEVfZ1I2Vf98VoLjELgYipsR+7JXH1nzJc
+         m/wPw5m9s+7WpykoGSZDxvS3yxHb1Kkr+wlDkHU6ysWxzLw2ipuw1Uq0FJtJQ5e8j3Ms
+         J/hoqXtCPl8yBFvwpv2r4zzwLyKHIX2HRs+TjpQtFEsXSRII2RTe+Chd7ZWeQnIZA2cY
+         viVsjITptAzeR0+FPYmek8MZpKs1J7Je8ksDtT0cpq7pqErjoLdPMkx5l/MaicaU/csz
+         pw9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Gt16QylDheR8xWPIXKNaPKZyKT22Q7EnSGM+4gpD6LU=;
+        b=CEAFuGUDSrqFa7SpPsC2/1XskkFYodvs+IPJTVAAymKk6Y8eGpwfT3mC9dgY8c1vcJ
+         KpuJav8cuk9g63KqbBBtabuBR8nX3VjY1AjCeZwh04t5jffiyjqsiawQ5S9ixRfGpOwS
+         0olTeQE02Ljk90tG6SAq8V8fmxpVDrEeb+0QT7Ze0XgUwwmuB5eHUtXK5kN0gqRwgpt0
+         Nbq2u7166OMx6In4phBOTlniDfJsrnReciqKbKOvxRcHxW8NlMfn03qGjFqSvx/Tk6Qb
+         QHQnscK/qErIRy78vUY4i+Jfv6G23zX6Zz8Nf7PIhR6Tc1EoQ2/xbOHZ+G1ht1j5k0u/
+         xrWw==
+X-Gm-Message-State: AOAM5301SlzqUMoeWT3MWHRY+E+XSuJcmw8LJg7mEVQZ9cRhHo5sLphO
+        c5AISc5JOLOH9WU9Qs65PT4G2G37JWHzmbEhnNA=
+X-Google-Smtp-Source: ABdhPJzvI4WWzIaZrrMjXaqt0Ng/O9c2rA0Mbhx/YIaKUDttEbB23keXhYKY0wvkB6OeUb3UfIjN1gmho3Y0sYxlGgw=
+X-Received: by 2002:a5e:9817:: with SMTP id s23mr5418212ioj.149.1618840338411;
+ Mon, 19 Apr 2021 06:52:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419132204.1e07d5b9@carbon>
+References: <20210418200249.174835-1-pctammela@mojatatu.com> <CAADnVQLJDsnQ1YO9a_pQ-1aTJ1hNKYJXcSHypfzCare-c4HO1A@mail.gmail.com>
+In-Reply-To: <CAADnVQLJDsnQ1YO9a_pQ-1aTJ1hNKYJXcSHypfzCare-c4HO1A@mail.gmail.com>
+From:   Pedro Tammela <pctammela@gmail.com>
+Date:   Mon, 19 Apr 2021 10:52:07 -0300
+Message-ID: <CAKY_9u0Ye9pt7igtxT8UR=Ro7=yNwUz2zQZDKH20NK92_LvgxA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: fix errno code for unsupported batch ops
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 01:22:04PM +0200, Jesper Dangaard Brouer wrote:
-> On Wed, 14 Apr 2021 13:09:47 -0700
-> Shakeel Butt <shakeelb@google.com> wrote:
-> 
-> > On Wed, Apr 14, 2021 at 12:42 PM Jesper Dangaard Brouer
-> > <brouer@redhat.com> wrote:
-> > >  
-> > [...]
-> > > > >
-> > > > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-> > > > > can not be used.  
-> > > >
-> > > > Yes it can, since it's going to be used as your default allocator for
-> > > > payloads, which might end up on an SKB.  
-> > >
-> > > I'm not sure we want or should "allow" page_pool be used for TCP RX
-> > > zerocopy.
-> > > For several reasons.
-> > >
-> > > (1) This implies mapping these pages page to userspace, which AFAIK
-> > > means using page->mapping and page->index members (right?).
-> > >  
-> > 
-> > No, only page->_mapcount is used.
-> 
-> Good to know.
-> I will admit that I don't fully understand the usage of page->mapping
-> and page->index members.
+Em dom., 18 de abr. de 2021 =C3=A0s 19:56, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> escreveu:
+>
+> On Sun, Apr 18, 2021 at 1:03 PM Pedro Tammela <pctammela@gmail.com> wrote=
+:
+> >
+> > ENOTSUPP is not a valid userland errno[1], which is annoying for
+> > userland applications that implement a fallback to iterative, report
+> > errors via 'strerror()' or both.
+> >
+> > The batched ops return this errno whenever an operation
+> > is not implemented for kernels that implement batched ops.
+> >
+> > In older kernels, pre batched ops, it returns EINVAL as the arguments
+> > are not supported in the syscall.
+> >
+> > [1] https://lore.kernel.org/netdev/20200511165319.2251678-1-kuba@kernel=
+.org/
+> >
+> > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> > ---
+> >  kernel/bpf/syscall.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index fd495190115e..88fe19c0aeb1 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -3961,7 +3961,7 @@ static int bpf_task_fd_query(const union bpf_attr=
+ *attr,
+> >  #define BPF_DO_BATCH(fn)                       \
+> >         do {                                    \
+> >                 if (!fn) {                      \
+> > -                       err =3D -ENOTSUPP;        \
+> > +                       err =3D -EOPNOTSUPP;      \
+>
+> $ git grep EOPNOTSUPP kernel/bpf/|wc -l
+> 11
+> $ git grep ENOTSUPP kernel/bpf/|wc -l
+> 51
+>
+> For new code EOPNOTSUPP is better, but I don't think changing all 51 case
+> is a good idea. Something might depend on it already.
 
-That's fair.  It's not well-documented, and it's complicated.
+OK, makes sense.
 
-For a page mapped into userspace, page->mapping is one of:
- - NULL
- - A pointer to a file's address_space
- - A pointer to an anonymous page's anon_vma
-If a page isn't mapped into userspace, you can use the space in page->mapping
-for anything you like (eg slab uses it)
-
-page->index is only used for indicating pfmemalloc today (and I want to
-move that indicator).  I think it can also be used to merge VMAs (if
-some other conditions are also true), but failing to merge VMAs isn't
-a big deal for this kind of situation.
-
-> > > (2) It feels wrong (security wise) to keep the DMA-mapping (for the
-> > > device) and also map this page into userspace.
-> > 
-> > I think this is already the case i.e pages still DMA-mapped and also
-> > mapped into userspace.
-> 
-> True, other drivers are doing the same.
-
-And the contents of this page already came from that device ... if it
-wanted to write bad data, it could already have done so.
-
-> > > (3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
-> > > zerocopy will bump the refcnt, which means the page_pool will not
-> > > recycle the page when it see the elevated refcnt (it will instead
-> > > release its DMA-mapping).  
-> > 
-> > Yes this is right but the userspace might have already consumed and
-> > unmapped the page before the driver considers to recycle the page.
-> 
-> That is a good point.  So, there is a race window where it is possible
-> to gain recycling.
-> 
-> It seems my page_pool co-maintainer Ilias is interested in taking up the
-> challenge to get this working with TCP RX zerocopy.  So, lets see how
-> this is doable.
-
-You could also check page_ref_count() - page_mapcount() instead of
-just checking page_ref_count().  Assuming mapping/unmapping can't
-race with recycling?
-
+Perhaps, handle this errno in 'libbpf_strerror()'? So language
+bindings don't get lost when dealing with this errno.
