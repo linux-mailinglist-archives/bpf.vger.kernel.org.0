@@ -2,181 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 748CD364060
-	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 13:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F92364175
+	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 14:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238318AbhDSLXH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Apr 2021 07:23:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47915 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238312AbhDSLXG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 19 Apr 2021 07:23:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618831356;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vqJ+FOS6XVGlmbD09GMCCte4Tn5COUmCLJ4wF14ufSc=;
-        b=M638Knc8+/pO+nAc8lAuzV2f8bbdBUd4dpL/jQpjlGiK/SIc++4etxtw15bqm4xmWD0Awc
-        HJJNHUGPDVPY2BndWImGnk/7w46VYSC1hK/wd8V0Peay9FxWWitCy3Lpf9NQ4dDeSUrMHC
-        NiE66kwURhkN0bfPGqs1FGPYYGD8pXI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-279-zx4PZQXzOmCDg2Karuy0FA-1; Mon, 19 Apr 2021 07:22:34 -0400
-X-MC-Unique: zx4PZQXzOmCDg2Karuy0FA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B220818397A4;
-        Mon, 19 Apr 2021 11:22:27 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DD7B55D9CD;
-        Mon, 19 Apr 2021 11:22:05 +0000 (UTC)
-Date:   Mon, 19 Apr 2021 13:22:04 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        id S239049AbhDSMSw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Apr 2021 08:18:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239046AbhDSMSw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Apr 2021 08:18:52 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE8EC06174A;
+        Mon, 19 Apr 2021 05:18:22 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id s22so3021081pgk.6;
+        Mon, 19 Apr 2021 05:18:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FS9eUWQBzPFmXBIhw/M3KyM94oXuT5zWRYZ7FLuaBsw=;
+        b=NN5ZhbKG64vkIPJ97wrmD/nLO78n9wn5ujp5E8YK+cdAjRopD1vhK9vNWn8foA1nsI
+         hPyKhJfaUzxGV7NDnlzELkmMVAc5NK01MTlp6umFOOzwKJ2CvQds2qLOx3cUTXvzbx/b
+         y/C8FZlLJk21jg4yFnBp9WITHXEAfMfCuRf3ctaUquzKmlTBLJjqQkkBpobCTGm15vm7
+         SQENcxFCQ/zwBF/MNjF6ZCK5CZ6WaDT3WY2mouJoHTp3bXfK2UHUiR+1OVZW1EYKnQr5
+         Hv/P5ySDrfKSC2WCPIQ9J3ZuEzhP79LUxDBNpUyw7n41ao4j9qKt+DwCdyWUqgMQ0mQQ
+         7ZoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FS9eUWQBzPFmXBIhw/M3KyM94oXuT5zWRYZ7FLuaBsw=;
+        b=fsN8eF8jmx4088X0/ITAn/KiHoVmM0JNaT4ZA0toPgodjTZOeo9dJzJ7z4/UU7fpjI
+         KE7DrunezS5emFLFAs9Qw2Gvo3hmJINqeuw0JzkRKHdjJzLi7oC0rUxq6ZpdhzSiqFga
+         DmzQVo0pV6+8pHtxa4XnJW9Asszo6/6YxXyOWyq9FasrqQKmXUG/Tmg7LrzsLPrVZcA3
+         22k4qtyTlvy6cBR16M+xyiT644I5hVkqcyAohePuGbw2DdrjQ3PJgtmMnpF7gkmCGuD+
+         w5xMwjDuxgyTTa5jQJ46AfdWKh1jshThUxPy75MbN6dZAw+ybVl+6629Czj+HZYD7g4I
+         Ld1w==
+X-Gm-Message-State: AOAM531UWD+wGO7fFxWmcN1BSZR0RF+sr8uZvZT2MQeuiaZwssulJRNd
+        OrMx2cZCASetreiX7csNsqcO9b7kc78y1A==
+X-Google-Smtp-Source: ABdhPJwZgeMHmOXKaC9e+0OTJsfpFxZm/JVQYrotQH09pstPM+DB6lFrasvDOw9VWyLR6atojEZ5mg==
+X-Received: by 2002:a63:1a5e:: with SMTP id a30mr11692093pgm.156.1618834701808;
+        Mon, 19 Apr 2021 05:18:21 -0700 (PDT)
+Received: from localhost ([112.79.253.181])
+        by smtp.gmail.com with ESMTPSA id 22sm14625765pjl.31.2021.04.19.05.18.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 05:18:21 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        brouer@redhat.com
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <20210419132204.1e07d5b9@carbon>
-In-Reply-To: <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
-        <20210409223801.104657-3-mcroce@linux.microsoft.com>
-        <20210410154824.GZ2531743@casper.infradead.org>
-        <YHHPbQm2pn2ysth0@enceladus>
-        <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
-        <YHHuE7g73mZNrMV4@enceladus>
-        <20210414214132.74f721dd@carbon>
-        <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/4] Add TC-BPF API
+Date:   Mon, 19 Apr 2021 17:48:07 +0530
+Message-Id: <20210419121811.117400-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 14 Apr 2021 13:09:47 -0700
-Shakeel Butt <shakeelb@google.com> wrote:
+This is the second version of the TC-BPF series.
 
-> On Wed, Apr 14, 2021 at 12:42 PM Jesper Dangaard Brouer
-> <brouer@redhat.com> wrote:
-> >  
-> [...]
-> > > >
-> > > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-> > > > can not be used.  
-> > >
-> > > Yes it can, since it's going to be used as your default allocator for
-> > > payloads, which might end up on an SKB.  
-> >
-> > I'm not sure we want or should "allow" page_pool be used for TCP RX
-> > zerocopy.
-> > For several reasons.
-> >
-> > (1) This implies mapping these pages page to userspace, which AFAIK
-> > means using page->mapping and page->index members (right?).
-> >  
-> 
-> No, only page->_mapcount is used.
+It adds a simple API that uses netlink to attach the tc filter and its bpf
+classifier. Currently, a user needs to shell out to the tc command line to be
+able to create filters and attach SCHED_CLS programs as classifiers. With the
+help of this API, it will be possible to use libbpf for doing all parts of bpf
+program setup and attach.
 
-Good to know.
-I will admit that I don't fully understand the usage of page->mapping
-and page->index members.
+Direct action is now the default, and currently no way to disable it has been
+provided. This also means that SCHED_ACT programs are a lot less useful, so
+support for them has been removed for now. In the future, if someone comes up
+with a convincing use case where the direct action mode doesn't serve their
+needs, a simple extension that allows disabling direct action mode and passing
+the list of actions that would be bound to the classifier can be added.
 
-> > (2) It feels wrong (security wise) to keep the DMA-mapping (for the
-> > device) and also map this page into userspace.
-> >  
-> 
-> I think this is already the case i.e pages still DMA-mapped and also
-> mapped into userspace.
+In an effort to keep discussion focused, this series doesn't have the high level
+TC-BPF API. It was clear that there is a need for a bpf_link API in the kernel,
+hence that will be submitted as a separate patchset.
 
-True, other drivers are doing the same.
+The individual commit messages contain more details, and also a brief summary of
+the API.
 
-> > (3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
-> > zerocopy will bump the refcnt, which means the page_pool will not
-> > recycle the page when it see the elevated refcnt (it will instead
-> > release its DMA-mapping).  
-> 
-> Yes this is right but the userspace might have already consumed and
-> unmapped the page before the driver considers to recycle the page.
+Changelog:
+----------
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20210325120020.236504-1-memxor@gmail.com
 
-That is a good point.  So, there is a race window where it is possible
-to gain recycling.
+ * netlink helpers have been renamed to object_action style.
+ * attach_id now only contains attributes that are not explicitly set. Only
+   the bare minimum info is kept in it.
+ * protocol is now an optional and defaults to ETH_P_ALL.
+ * direct-action mode is default, and cannot be unset for now.
+ * skip_sw and skip_hw options have also been removed.
+ * bpf_tc_cls_info struct now also returns the bpf program tag and id, as
+   available in the netlink response. This came up as a requirement during
+   discussion with people wanting to use this functionality.
+ * support for attaching SCHED_ACT programs has been dropped, as it isn't
+   useful without any support for binding loaded actions to a classifier.
+ * the distinction between dev and block API has been dropped, there is now
+   a single set of functions and user has to pass the special ifindex value
+   to indicate operation on a shared filter block on their own.
+ * The high level API returning a bpf_link is gone. This was already non-
+   functional for pinning and typical ownership semantics. Instead, a separate
+   patchset will be sent adding a bpf_link API for attaching SCHED_CLS progs to
+   the kernel, and its corresponding libbpf API.
+ * The clsact qdisc is now setup automatically in a best-effort fashion whenever
+   user passes in the clsact ingress or egress parent id. This is done with
+   exclusive mode, such that if an ingress or clsact qdisc is already set up,
+   we skip the setup and move on with filter creation.
+ * Other minor changes that came up during the course of discussion and rework.
 
-It seems my page_pool co-maintainer Ilias is interested in taking up the
-challenge to get this working with TCP RX zerocopy.  So, lets see how
-this is doable.
+Kumar Kartikeya Dwivedi (4):
+  tools: pkt_cls.h: sync with kernel sources
+  libbpf: add helpers for preparing netlink attributes
+  libbpf: add low level TC-BPF API
+  libbpf: add selftests for TC-BPF API
 
- 
-> >
-> > (4) I remember vaguely that this code path for (TCP RX zerocopy) uses
-> > page->private for tricks.  And our patch [3/5] use page->private for
-> > storing xdp_mem_info.
-> >
-> > IMHO when the SKB travel into this TCP RX zerocopy code path, we should
-> > call page_pool_release_page() to release its DMA-mapping.
-> >  
-> 
-> I will let TCP RX zerocopy experts respond to this but from my high
-> level code inspection, I didn't see page->private usage.
+ tools/include/uapi/linux/pkt_cls.h            | 174 +++++++-
+ tools/lib/bpf/Makefile                        |   3 +
+ tools/lib/bpf/libbpf.h                        |  52 +++
+ tools/lib/bpf/libbpf.map                      |   5 +
+ tools/lib/bpf/netlink.c                       | 414 ++++++++++++++++--
+ tools/lib/bpf/nlattr.h                        |  48 ++
+ .../selftests/bpf/prog_tests/test_tc_bpf.c    | 112 +++++
+ .../selftests/bpf/progs/test_tc_bpf_kern.c    |  12 +
+ 8 files changed, 789 insertions(+), 31 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c
 
-I trust when Eric says page->private isn't used in this code path.
-So, it might actually be possible :-)
-
-I will challenge Ilias and Matteo to pull this off. (But I know that
-both of them are busy for personal reasons, so be patient with them).
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+--
+2.30.2
 
