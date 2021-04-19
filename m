@@ -2,55 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5183C363A0C
-	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 06:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC15B363AE9
+	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 07:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233641AbhDSEHU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Apr 2021 00:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
+        id S230392AbhDSFM4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Apr 2021 01:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237494AbhDSEFc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Apr 2021 00:05:32 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144B5C061760;
-        Sun, 18 Apr 2021 21:05:00 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4FNtVr5w9cz9vH8; Mon, 19 Apr 2021 14:04:36 +1000 (AEST)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Tony Ambardar <tony.ambardar@gmail.com>
-Cc:     Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org,
-        linux-arch@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tony Ambardar <Tony.Ambardar@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Stable <stable@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Rosen Penev <rosenp@gmail.com>
-In-Reply-To: <20200917135437.1238787-1-Tony.Ambardar@gmail.com>
-References: <20200917000757.1232850-1-Tony.Ambardar@gmail.com> <20200917135437.1238787-1-Tony.Ambardar@gmail.com>
-Subject: Re: [PATCH v3] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
-Message-Id: <161880480720.1398509.14927712402293166726.b4-ty@ellerman.id.au>
-Date:   Mon, 19 Apr 2021 14:00:07 +1000
+        with ESMTP id S230002AbhDSFMz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Apr 2021 01:12:55 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6170C06174A
+        for <bpf@vger.kernel.org>; Sun, 18 Apr 2021 22:12:24 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id w23so35063599ejb.9
+        for <bpf@vger.kernel.org>; Sun, 18 Apr 2021 22:12:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8ofWC35j+mTbhSxNhXaJK905wQN1NLDPBGPqQMOa3eQ=;
+        b=IrctopW6n++Uebb9it23T0FZjRjZrOUlcZCKLPSu29QZNIiTLFO6vbTVHcjm67FoxX
+         +XryZ6v1nnko8Qadw0FIa9a8U7bNDBNxOgjNi7XSRhViae4kcZDZhYqcDWBmd7Zf2t8I
+         w+rz1dqBOXDSUqJCOi2L1S5u0gQFYtt3XFmat8ud+6GGdDXPJaPHYE2FE8KpFg4Tzba/
+         Y0rkksO8F/XkcMzyoqV2nJc2yT8dMRprLgJTK2weOql8Fwr+RM0WbsvbNi/LtbE8coA5
+         MgeifV8B/ubDmAKV2xxhqdCCVOfYkDQVe+cicPvl4Z5zW+Nq/51LGZ79wC4JwaAI+WP3
+         cLVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8ofWC35j+mTbhSxNhXaJK905wQN1NLDPBGPqQMOa3eQ=;
+        b=Y11zLeTywwxzu9F4L+Iu2maGAJRHf+1PWEYgI8mevOhv/exQnnaznYHM7NvjkBs8W1
+         02RfEMd0XFGTPNeM9X9Vd43qi/BVM5oumpyTNu0BsAC/PIk5FNkWU0FzfgrLXuERCamz
+         r0IWDB7rrFMR9wCRq2Duzym9pgLEz7Vk3ugNvVsIWlg5XMbQl5ykrKgWLAqVNu3e6JVC
+         hIPLUQWum5mw6rzBGNqffiKWQgebLjrSV1eQmecBFmFCV9gN3TcfdS+TgtxegW4VtVB/
+         el5YzZiKlhxtbR1Q6c3UnN80CnY8oufWY3KdgPEa9lBmcINiq+dM7AQQZEdv7W7K4YmQ
+         hypw==
+X-Gm-Message-State: AOAM531DkdXVEbEVDHRIAC91ApKlaEIiXEGSwQo46uRjvq/q/J3Lc4Ys
+        7hNZdwKRX3Xkm/NQ8bITrRat3g==
+X-Google-Smtp-Source: ABdhPJw+oqRM110gHJFTVOQMCmNMJ31CDRgfffttfgzjSIimvIlDuXQkKo0zADVumPLs30SmZ9O6bQ==
+X-Received: by 2002:a17:906:cb11:: with SMTP id lk17mr20356893ejb.517.1618809143641;
+        Sun, 18 Apr 2021 22:12:23 -0700 (PDT)
+Received: from apalos.home (ppp-94-65-92-88.home.otenet.gr. [94.65.92.88])
+        by smtp.gmail.com with ESMTPSA id s5sm9541238ejq.52.2021.04.18.22.12.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Apr 2021 22:12:23 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 08:12:17 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+Message-ID: <YH0RMV7+56gVOzJe@apalos.home>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com>
+ <20210410154824.GZ2531743@casper.infradead.org>
+ <YHHPbQm2pn2ysth0@enceladus>
+ <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+ <YHHuE7g73mZNrMV4@enceladus>
+ <20210414214132.74f721dd@carbon>
+ <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 17 Sep 2020 06:54:37 -0700, Tony Ambardar wrote:
-> A few archs like powerpc have different errno.h values for macros
-> EDEADLOCK and EDEADLK. In code including both libc and linux versions of
-> errno.h, this can result in multiple definitions of EDEADLOCK in the
-> include chain. Definitions to the same value (e.g. seen with mips) do
-> not raise warnings, but on powerpc there are redefinitions changing the
-> value, which raise warnings and errors (if using "-Werror").
-> 
+On Wed, Apr 14, 2021 at 01:09:47PM -0700, Shakeel Butt wrote:
+> On Wed, Apr 14, 2021 at 12:42 PM Jesper Dangaard Brouer
+> <brouer@redhat.com> wrote:
+> >
 > [...]
+> > > >
+> > > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
+> > > > can not be used.
+> > >
+> > > Yes it can, since it's going to be used as your default allocator for
+> > > payloads, which might end up on an SKB.
+> >
+> > I'm not sure we want or should "allow" page_pool be used for TCP RX
+> > zerocopy.
+> > For several reasons.
+> >
+> > (1) This implies mapping these pages page to userspace, which AFAIK
+> > means using page->mapping and page->index members (right?).
+> >
+> 
+> No, only page->_mapcount is used.
+> 
 
-Applied to powerpc/next.
+I am not sure I like leaving out TCP RX zerocopy. Since we want driver to
+adopt the recycling mechanism we should try preserving the current
+functionality of the network stack.
 
-[1/1] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
-      https://git.kernel.org/powerpc/c/7de21e679e6a789f3729e8402bc440b623a28eae
+The question is how does it work with the current drivers that already have an
+internal page recycling mechanism.
 
-cheers
+> > (2) It feels wrong (security wise) to keep the DMA-mapping (for the
+> > device) and also map this page into userspace.
+> >
+> 
+> I think this is already the case i.e pages still DMA-mapped and also
+> mapped into userspace.
+> 
+> > (3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
+> > zerocopy will bump the refcnt, which means the page_pool will not
+> > recycle the page when it see the elevated refcnt (it will instead
+> > release its DMA-mapping).
+> 
+> Yes this is right but the userspace might have already consumed and
+> unmapped the page before the driver considers to recycle the page.
+
+Same question here. I'll have a closer look in a few days and make sure we are
+not breaking anything wrt zerocopy.
+
+> 
+> >
+> > (4) I remember vaguely that this code path for (TCP RX zerocopy) uses
+> > page->private for tricks.  And our patch [3/5] use page->private for
+> > storing xdp_mem_info.
+> >
+> > IMHO when the SKB travel into this TCP RX zerocopy code path, we should
+> > call page_pool_release_page() to release its DMA-mapping.
+> >
+> 
+> I will let TCP RX zerocopy experts respond to this but from my high
+> level code inspection, I didn't see page->private usage.
+
+Shakeel are you aware of any 'easy' way I can have rx zerocopy running?
+
+
+Thanks!
+/Ilias
