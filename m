@@ -2,116 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1522A364549
-	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 15:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 277953645EC
+	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 16:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231939AbhDSNwv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Apr 2021 09:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhDSNwt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:52:49 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3DFC06174A;
-        Mon, 19 Apr 2021 06:52:19 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id p8so13542536iol.11;
-        Mon, 19 Apr 2021 06:52:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Gt16QylDheR8xWPIXKNaPKZyKT22Q7EnSGM+4gpD6LU=;
-        b=Qcu4HYLP7VaVWZd53EmrWCBNaY1QjDxJR0cq6lPZzYYjdhZn4nzGtb/Rtnt6Q19rVl
-         HYaWJqJxWG2zfycNh2IOHx3qJGB5H7we92AEVfZ1I2Vf98VoLjELgYipsR+7JXH1nzJc
-         m/wPw5m9s+7WpykoGSZDxvS3yxHb1Kkr+wlDkHU6ysWxzLw2ipuw1Uq0FJtJQ5e8j3Ms
-         J/hoqXtCPl8yBFvwpv2r4zzwLyKHIX2HRs+TjpQtFEsXSRII2RTe+Chd7ZWeQnIZA2cY
-         viVsjITptAzeR0+FPYmek8MZpKs1J7Je8ksDtT0cpq7pqErjoLdPMkx5l/MaicaU/csz
-         pw9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Gt16QylDheR8xWPIXKNaPKZyKT22Q7EnSGM+4gpD6LU=;
-        b=CEAFuGUDSrqFa7SpPsC2/1XskkFYodvs+IPJTVAAymKk6Y8eGpwfT3mC9dgY8c1vcJ
-         KpuJav8cuk9g63KqbBBtabuBR8nX3VjY1AjCeZwh04t5jffiyjqsiawQ5S9ixRfGpOwS
-         0olTeQE02Ljk90tG6SAq8V8fmxpVDrEeb+0QT7Ze0XgUwwmuB5eHUtXK5kN0gqRwgpt0
-         Nbq2u7166OMx6In4phBOTlniDfJsrnReciqKbKOvxRcHxW8NlMfn03qGjFqSvx/Tk6Qb
-         QHQnscK/qErIRy78vUY4i+Jfv6G23zX6Zz8Nf7PIhR6Tc1EoQ2/xbOHZ+G1ht1j5k0u/
-         xrWw==
-X-Gm-Message-State: AOAM5301SlzqUMoeWT3MWHRY+E+XSuJcmw8LJg7mEVQZ9cRhHo5sLphO
-        c5AISc5JOLOH9WU9Qs65PT4G2G37JWHzmbEhnNA=
-X-Google-Smtp-Source: ABdhPJzvI4WWzIaZrrMjXaqt0Ng/O9c2rA0Mbhx/YIaKUDttEbB23keXhYKY0wvkB6OeUb3UfIjN1gmho3Y0sYxlGgw=
-X-Received: by 2002:a5e:9817:: with SMTP id s23mr5418212ioj.149.1618840338411;
- Mon, 19 Apr 2021 06:52:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210418200249.174835-1-pctammela@mojatatu.com> <CAADnVQLJDsnQ1YO9a_pQ-1aTJ1hNKYJXcSHypfzCare-c4HO1A@mail.gmail.com>
-In-Reply-To: <CAADnVQLJDsnQ1YO9a_pQ-1aTJ1hNKYJXcSHypfzCare-c4HO1A@mail.gmail.com>
-From:   Pedro Tammela <pctammela@gmail.com>
-Date:   Mon, 19 Apr 2021 10:52:07 -0300
-Message-ID: <CAKY_9u0Ye9pt7igtxT8UR=Ro7=yNwUz2zQZDKH20NK92_LvgxA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: fix errno code for unsupported batch ops
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S239188AbhDSOXB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Apr 2021 10:23:01 -0400
+Received: from sitav-80046.hsr.ch ([152.96.80.46]:53452 "EHLO
+        mail.strongswan.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238543AbhDSOXB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Apr 2021 10:23:01 -0400
+X-Greylist: delayed 375 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Apr 2021 10:23:00 EDT
+Received: from think.home (224.110.78.83.dynamic.wline.res.cust.swisscom.ch [83.78.110.224])
+        by mail.strongswan.org (Postfix) with ESMTPSA id C8029401B1;
+        Mon, 19 Apr 2021 16:16:14 +0200 (CEST)
+From:   Martin Willi <martin@strongswan.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Pedro Tammela <pctammela@mojatatu.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH net-next] net: xdp: Update pkt_type if generic XDP changes unicast MAC
+Date:   Mon, 19 Apr 2021 16:15:59 +0200
+Message-Id: <20210419141559.8611-1-martin@strongswan.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em dom., 18 de abr. de 2021 =C3=A0s 19:56, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> escreveu:
->
-> On Sun, Apr 18, 2021 at 1:03 PM Pedro Tammela <pctammela@gmail.com> wrote=
-:
-> >
-> > ENOTSUPP is not a valid userland errno[1], which is annoying for
-> > userland applications that implement a fallback to iterative, report
-> > errors via 'strerror()' or both.
-> >
-> > The batched ops return this errno whenever an operation
-> > is not implemented for kernels that implement batched ops.
-> >
-> > In older kernels, pre batched ops, it returns EINVAL as the arguments
-> > are not supported in the syscall.
-> >
-> > [1] https://lore.kernel.org/netdev/20200511165319.2251678-1-kuba@kernel=
-.org/
-> >
-> > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
-> > ---
-> >  kernel/bpf/syscall.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index fd495190115e..88fe19c0aeb1 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -3961,7 +3961,7 @@ static int bpf_task_fd_query(const union bpf_attr=
- *attr,
-> >  #define BPF_DO_BATCH(fn)                       \
-> >         do {                                    \
-> >                 if (!fn) {                      \
-> > -                       err =3D -ENOTSUPP;        \
-> > +                       err =3D -EOPNOTSUPP;      \
->
-> $ git grep EOPNOTSUPP kernel/bpf/|wc -l
-> 11
-> $ git grep ENOTSUPP kernel/bpf/|wc -l
-> 51
->
-> For new code EOPNOTSUPP is better, but I don't think changing all 51 case
-> is a good idea. Something might depend on it already.
+If a generic XDP program changes the destination MAC address from/to
+multicast/broadcast, the skb->pkt_type is updated to properly handle
+the packet when passed up the stack. When changing the MAC from/to
+the NICs MAC, PACKET_HOST/OTHERHOST is not updated, though, making
+the behavior different from that of native XDP.
 
-OK, makes sense.
+Remember the PACKET_HOST/OTHERHOST state before calling the program
+in generic XDP, and update pkt_type accordingly if the destination
+MAC address has changed. As eth_type_trans() assumes a default
+pkt_type of PACKET_HOST, restore that before calling it.
 
-Perhaps, handle this errno in 'libbpf_strerror()'? So language
-bindings don't get lost when dealing with this errno.
+The use case for this is when a XDP program wants to push received
+packets up the stack by rewriting the MAC to the NICs MAC, for
+example by cluster nodes sharing MAC addresses.
+
+Fixes: 297249569932 ("net: fix generic XDP to handle if eth header was mangled")
+Signed-off-by: Martin Willi <martin@strongswan.org>
+---
+ net/core/dev.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/net/core/dev.c b/net/core/dev.c
+index d9bf63dbe4fd..eed028aec6a4 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -4723,10 +4723,10 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
+ 	void *orig_data, *orig_data_end, *hard_start;
+ 	struct netdev_rx_queue *rxqueue;
+ 	u32 metalen, act = XDP_DROP;
++	bool orig_bcast, orig_host;
+ 	u32 mac_len, frame_sz;
+ 	__be16 orig_eth_type;
+ 	struct ethhdr *eth;
+-	bool orig_bcast;
+ 	int off;
+ 
+ 	/* Reinjected packets coming from act_mirred or similar should
+@@ -4773,6 +4773,7 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
+ 	orig_data_end = xdp->data_end;
+ 	orig_data = xdp->data;
+ 	eth = (struct ethhdr *)xdp->data;
++	orig_host = ether_addr_equal_64bits(eth->h_dest, skb->dev->dev_addr);
+ 	orig_bcast = is_multicast_ether_addr_64bits(eth->h_dest);
+ 	orig_eth_type = eth->h_proto;
+ 
+@@ -4800,8 +4801,11 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
+ 	/* check if XDP changed eth hdr such SKB needs update */
+ 	eth = (struct ethhdr *)xdp->data;
+ 	if ((orig_eth_type != eth->h_proto) ||
++	    (orig_host != ether_addr_equal_64bits(eth->h_dest,
++						  skb->dev->dev_addr)) ||
+ 	    (orig_bcast != is_multicast_ether_addr_64bits(eth->h_dest))) {
+ 		__skb_push(skb, ETH_HLEN);
++		skb->pkt_type = PACKET_HOST;
+ 		skb->protocol = eth_type_trans(skb, skb->dev);
+ 	}
+ 
+-- 
+2.25.1
+
