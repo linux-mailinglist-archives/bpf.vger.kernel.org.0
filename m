@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1301F364C07
-	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 22:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A47C364C2B
+	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 22:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241723AbhDSUsX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Apr 2021 16:48:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54476 "EHLO mail.kernel.org"
+        id S243025AbhDSUtA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Apr 2021 16:49:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242413AbhDSUqW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Apr 2021 16:46:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6605613EB;
-        Mon, 19 Apr 2021 20:45:12 +0000 (UTC)
+        id S241413AbhDSUq7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Apr 2021 16:46:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AEC6613DE;
+        Mon, 19 Apr 2021 20:45:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618865113;
-        bh=x2n7AHMk4xuQM/Nj3J0Y6kw8h5pEDWqP9+6+2bmkT/c=;
+        s=k20201202; t=1618865134;
+        bh=uJpH5YPPJmhUxv7AM91hsYVccL/15UaUQyMRo4BWexo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QLEXw1XQCuF8fv+FhdzgPgM2kr19gk1Pwbgk41wUlsCwIWV9RPwQhsOGyHnGJGF0q
-         HlsM9x7E/ja7cqoc5NZCTrdaQNdWCQgncXTX9HD7CsiNIcENYHxmQAMcrHqhdWTLNU
-         2YijGhIHfyMxPPZ0ucNtjx18fHAaIxyLjXAs0S3sitxddir2/DcXH6eOkL5heriMgX
-         Mm8XSdA1Pyh0MrxmaElwTTef3CkSUbhZJHvQmsTXCO4Z+L0mPincr1zqFTb8E+PSVm
-         hz0rf5XMIHTjZTAPL0AXZuhUTGEaHr+TAd55JRFlKu3wP+XQD0PkrnTgiRbla8Mmjj
-         QC3ZdJRY2G+VA==
+        b=rjcFsthGpv0/vCYbb8CHx/J/zErEw/0SM3KLm6Ls5yPOjxSKzvu1P7BbdgPXFC2v+
+         wpoA3GSP3SdB29AWez037VIGZbpBt+VQUDbCVQMs0ztOQOT7pyWGm8D81FsKbdRbmd
+         R29X4L8yFvIHgh/t4YZLc1hXXH4xrd2t+d05gq84zsNhLYY/CabMwdbXIqjlhawCsE
+         OiQPzT9AwFxRX0hcNSBNaAfr4CVQPA2e75r8EJFaWxSmEHn1q1+2HFATrm7yM+Ye3D
+         elVM3/NocULvp+QKfuo8HwVlyw4XbH4OmVfZpzEKZyZ/uymF6A6zruHNBckTnW1wsP
+         2o+hxCKiGDxSw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
@@ -30,12 +30,12 @@ Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 12/14] ia64: tools: remove duplicate definition of ia64_mf() on ia64
-Date:   Mon, 19 Apr 2021 16:44:52 -0400
-Message-Id: <20210419204454.6601-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 11/12] ia64: tools: remove duplicate definition of ia64_mf() on ia64
+Date:   Mon, 19 Apr 2021 16:45:16 -0400
+Message-Id: <20210419204517.6770-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210419204454.6601-1-sashal@kernel.org>
-References: <20210419204454.6601-1-sashal@kernel.org>
+In-Reply-To: <20210419204517.6770-1-sashal@kernel.org>
+References: <20210419204517.6770-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -82,7 +82,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 deletions(-)
 
 diff --git a/tools/arch/ia64/include/asm/barrier.h b/tools/arch/ia64/include/asm/barrier.h
-index 4d471d9511a5..6fffe5682713 100644
+index d808ee0e77b5..90f8bbd9aede 100644
 --- a/tools/arch/ia64/include/asm/barrier.h
 +++ b/tools/arch/ia64/include/asm/barrier.h
 @@ -39,9 +39,6 @@
