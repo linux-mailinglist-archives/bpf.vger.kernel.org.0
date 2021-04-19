@@ -2,190 +2,276 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F119A363BF8
-	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 08:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F6C363C67
+	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 09:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbhDSG44 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Apr 2021 02:56:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46025 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231831AbhDSG4z (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 19 Apr 2021 02:56:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618815357;
+        id S237686AbhDSHYZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Apr 2021 03:24:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237563AbhDSHYY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Apr 2021 03:24:24 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C69FC06174A;
+        Mon, 19 Apr 2021 00:23:55 -0700 (PDT)
+From:   Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618817032;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CfFgAP3oaXw9DBMJywNjiJxkc/lfcdS2wTAzSi6+ro8=;
-        b=UGlsAJ9S0XYGimHLvecSY/yd8fWIZM8LveyFv7HnAgnQURpsHfkHR3hc3aQNLbK2txMgQ2
-        9ZHMILrxe/kUQAIsJyEwXpiHPxN08QjXksgIpwtTGhQ55VH7DFUpjq1yDniJ0ZCcO/DJl9
-        iTVWtMBSaudJf0ZLlwOtlPjctBmC7+o=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-396-VUfwwlIQMVWR4RdHSzny6w-1; Mon, 19 Apr 2021 02:55:54 -0400
-X-MC-Unique: VUfwwlIQMVWR4RdHSzny6w-1
-Received: by mail-ej1-f70.google.com with SMTP id ji8-20020a1709079808b029037c921a9ea0so3274001ejc.9
-        for <bpf@vger.kernel.org>; Sun, 18 Apr 2021 23:55:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CfFgAP3oaXw9DBMJywNjiJxkc/lfcdS2wTAzSi6+ro8=;
-        b=uNnJ35Hn4rwYtDzL6v0Etg2DVBcui+D7oP3i6QqsoEqKrnfVumOvHviJbwQGtHZd07
-         we72hy3YGatgdFigVbl99O/nDLJKMH8Tbgl5q44VxGgl8dVH7csrDsoKvn+mp3OxHz0R
-         eOTqF+W3NH8XpNHhFFT8yVC4Pyy+1/Of+Z+94jrFuQep+16w2Mm+ywKJWepm018uz5tl
-         Yxji88wHVf5boWYgLu76oD0zc/TYIXSF4Ec/MBTm0g0VtG+i6HykmOQw3EsvHLpGUrux
-         /89zNkQRCh24k2eMJLgifACHAtsas7NeperqfDkxaRkficX6kvlj7PfTH0dCQ09hxlgD
-         iAFg==
-X-Gm-Message-State: AOAM530FIat8nJMc2melfvaY4b3atyDwQrPZ2opJ7pDUDB5132gZQgLb
-        fw3wDX1siVXEouGemkg7v9iJKqI4oGMc0oZ3H++1mjlJZ/X4woYwwah4dSMAaBg3uFTcaNq1XP6
-        6KxrLHLRUZ+3P
-X-Received: by 2002:a17:906:9b2:: with SMTP id q18mr20434081eje.147.1618815353491;
-        Sun, 18 Apr 2021 23:55:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcn890CBV/YNi8GpOhoDwYaWgjCDq79VbJ5vYMQq42Tf7E/7us2+m+jkJL+50T0u4LSEMJwg==
-X-Received: by 2002:a17:906:9b2:: with SMTP id q18mr20434070eje.147.1618815353329;
-        Sun, 18 Apr 2021 23:55:53 -0700 (PDT)
-Received: from localhost ([151.66.28.185])
-        by smtp.gmail.com with ESMTPSA id s3sm12039574edw.66.2021.04.18.23.55.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Apr 2021 23:55:52 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 08:55:49 +0200
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0yUPCGi5Qzs0eCJF6W8l4MzA23lsWwUXLo57LdFubCU=;
+        b=XAR3sWMSqGPcuhuPrGXlWQSz/NT2R2zsemd8ORtyKnA2gHAudq0eIpPQw8C+2SlfEvPvnw
+        BGRaDZ8+LCissxqqejC0YEJG1+vXLl41/cIqIgnY+HFPeKknSbX41kncU/0NHTUJYEhsPV
+        TBwj0VaJVEGKVqlBn6ej7KXHkMSFDlQOzlQekNp0ROYPzFwz/40jHpXOsyJNtmvd195OxE
+        JR8Hz8FPFzLPFTJC/s6byUbcsQBI+3Ot1JtsPrL+gbfl6GRYes3E3/q/59Dz9zs3Z1UKK6
+        /C/goDAQsfPOeustEObBpmlvHO5HIfRkB0CPjakPkzYJms4WvjAOZY/RkhsU1g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618817032;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0yUPCGi5Qzs0eCJF6W8l4MzA23lsWwUXLo57LdFubCU=;
+        b=LPsPYwYiqaMlPxMjEe0/n1bCMR2cY5FDRgIY24wDQZdu2bRXi/3y9Owp0UvvC0n5Hbhzpc
+        UREHUSA5G16wwfBg==
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
-        sameehj@amazon.com, John Fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Richard Cochran <richardcochran@gmail.com>,
         Alexander Duyck <alexander.duyck@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Tirthendu <tirthendu.sarkar@intel.com>
-Subject: Re: [PATCH v8 bpf-next 00/14] mvneta: introduce XDP multi-buffer
- support
-Message-ID: <YH0pdXXsZ7IELBn3@lore-desk>
-References: <cover.1617885385.git.lorenzo@kernel.org>
- <CAJ8uoz1MOYLzyy7xXq_fmpKDEakxSomzfM76Szjr5gWsqHc9jQ@mail.gmail.com>
- <20210418181801.17166935@carbon>
- <CAJ8uoz0m8AAJFddn2LjehXtdeGS0gat7dwOLA_-_ZeOVYjBdxw@mail.gmail.com>
+        Kurt Kanzenbach <kurt@linutronix.de>
+Subject: [PATCH net v2] igb: Fix XDP with PTP enabled
+Date:   Mon, 19 Apr 2021 09:23:32 +0200
+Message-Id: <20210419072332.7246-1-kurt@linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zJQ7ehSoYb8/vkCh"
-Content-Disposition: inline
-In-Reply-To: <CAJ8uoz0m8AAJFddn2LjehXtdeGS0gat7dwOLA_-_ZeOVYjBdxw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+When using native XDP with the igb driver, the XDP frame data doesn't point to
+the beginning of the packet. It's off by 16 bytes. Everything works as expected
+with XDP skb mode.
 
---zJQ7ehSoYb8/vkCh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Actually these 16 bytes are used to store the packet timestamps. Therefore, pull
+the timestamp before executing any XDP operations and adjust all other code
+accordingly. The igc driver does it like that as well.
 
-> On Sun, Apr 18, 2021 at 6:18 PM Jesper Dangaard Brouer
-> <brouer@redhat.com> wrote:
-> >
-> > On Fri, 16 Apr 2021 16:27:18 +0200
-> > Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
-> >
-> > > On Thu, Apr 8, 2021 at 2:51 PM Lorenzo Bianconi <lorenzo@kernel.org> =
-wrote:
-> > > >
-> > > > This series introduce XDP multi-buffer support. The mvneta driver is
-> > > > the first to support these new "non-linear" xdp_{buff,frame}. Revie=
-wers
-> > > > please focus on how these new types of xdp_{buff,frame} packets
-> > > > traverse the different layers and the layout design. It is on purpo=
-se
-> > > > that BPF-helpers are kept simple, as we don't want to expose the
-> > > > internal layout to allow later changes.
-> > > >
-> > > > For now, to keep the design simple and to maintain performance, the=
- XDP
-> > > > BPF-prog (still) only have access to the first-buffer. It is left f=
-or
-> > > > later (another patchset) to add payload access across multiple buff=
-ers.
-> > > > This patchset should still allow for these future extensions. The g=
-oal
-> > > > is to lift the XDP MTU restriction that comes with XDP, but maintain
-> > > > same performance as before.
-> > [...]
-> > > >
-> > > > [0] https://netdevconf.info/0x14/session.html?talk-the-path-to-tcp-=
-4k-mtu-and-rx-zerocopy
-> > > > [1] https://github.com/xdp-project/xdp-project/blob/master/areas/co=
-re/xdp-multi-buffer01-design.org
-> > > > [2] https://netdevconf.info/0x14/session.html?tutorial-add-XDP-supp=
-ort-to-a-NIC-driver (XDPmulti-buffers section)
-> > >
-> > > Took your patches for a test run with the AF_XDP sample xdpsock on an
-> > > i40e card and the throughput degradation is between 2 to 6% depending
-> > > on the setup and microbenchmark within xdpsock that is executed. And
-> > > this is without sending any multi frame packets. Just single frame
-> > > ones. Tirtha made changes to the i40e driver to support this new
-> > > interface so that is being included in the measurements.
-> >
-> > Could you please share Tirtha's i40e support patch with me?
->=20
-> We will post them on the list as an RFC. Tirtha also added AF_XDP
-> multi-frame support on top of Lorenzo's patches so we will send that
-> one out as well. Will also rerun my experiments, properly document
-> them and send out just to be sure that I did not make any mistake.
+Tested with Intel i210 card and AF_XDP sockets.
 
-ack, very cool, thx
+Fixes: 9cbc948b5a20 ("igb: add XDP support")
+Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
+---
 
->=20
-> Just note that I would really like for the multi-frame support to get
-> in. I have lost count on how many people that have asked for it to be
-> added to XDP and AF_XDP. So please check our implementation and
-> improve it so we can get the overhead down to where we want it to be.
+Changes since v1:
 
-sure, I will do.
+ * Use xdp_prepare_buff() (Lorenzo Bianconi)
 
-Regards,
-Lorenzo
+Changes since RFC:
 
->=20
-> Thanks: Magnus
->=20
-> > I would like to reproduce these results in my testlab, in-order to
-> > figure out where the throughput degradation comes from.
-> >
-> > > What performance do you see with the mvneta card? How much are we
-> > > willing to pay for this feature when it is not being used or can we in
-> > > some way selectively turn it on only when needed?
-> >
-> > Well, as Daniel says performance wise we require close to /zero/
-> > additional overhead, especially as you state this happens when sending
-> > a single frame, which is a base case that we must not slowdown.
-> >
-> > --
-> > Best regards,
-> >   Jesper Dangaard Brouer
-> >   MSc.CS, Principal Kernel Engineer at Red Hat
-> >   LinkedIn: http://www.linkedin.com/in/brouer
-> >
->=20
+ * Removed unused return value definitions (Alexander Duyck)
 
---zJQ7ehSoYb8/vkCh
-Content-Type: application/pgp-signature; name="signature.asc"
+Previous versions:
 
------BEGIN PGP SIGNATURE-----
+ * https://lkml.kernel.org/netdev/20210415092145.27322-1-kurt@linutronix.de/
+ * https://lkml.kernel.org/netdev/20210412101713.15161-1-kurt@linutronix.de/
 
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYH0pcwAKCRA6cBh0uS2t
-rLg6AQC4guHiZReHqLkzgFeVNP3vQpWAKZzxHZ6EIgR8I6Ba+AEA0uGSd14znwF8
-DySXiO48RWgBbJeoVDf6wSagKTGRCA0=
-=rFYd
------END PGP SIGNATURE-----
+ drivers/net/ethernet/intel/igb/igb.h      |  3 +-
+ drivers/net/ethernet/intel/igb/igb_main.c | 42 +++++++++++++----------
+ drivers/net/ethernet/intel/igb/igb_ptp.c  | 21 ++++--------
+ 3 files changed, 31 insertions(+), 35 deletions(-)
 
---zJQ7ehSoYb8/vkCh--
+diff --git a/drivers/net/ethernet/intel/igb/igb.h b/drivers/net/ethernet/intel/igb/igb.h
+index 7bda8c5edea5..72cf967c1a00 100644
+--- a/drivers/net/ethernet/intel/igb/igb.h
++++ b/drivers/net/ethernet/intel/igb/igb.h
+@@ -748,8 +748,7 @@ void igb_ptp_suspend(struct igb_adapter *adapter);
+ void igb_ptp_rx_hang(struct igb_adapter *adapter);
+ void igb_ptp_tx_hang(struct igb_adapter *adapter);
+ void igb_ptp_rx_rgtstamp(struct igb_q_vector *q_vector, struct sk_buff *skb);
+-int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+-			struct sk_buff *skb);
++ktime_t igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va);
+ int igb_ptp_set_ts_config(struct net_device *netdev, struct ifreq *ifr);
+ int igb_ptp_get_ts_config(struct net_device *netdev, struct ifreq *ifr);
+ void igb_set_flag_queue_pairs(struct igb_adapter *, const u32);
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index a45cd2b416c8..49873a5eaeaa 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -8281,7 +8281,7 @@ static void igb_add_rx_frag(struct igb_ring *rx_ring,
+ static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
+ 					 struct igb_rx_buffer *rx_buffer,
+ 					 struct xdp_buff *xdp,
+-					 union e1000_adv_rx_desc *rx_desc)
++					 ktime_t timestamp)
+ {
+ #if (PAGE_SIZE < 8192)
+ 	unsigned int truesize = igb_rx_pg_size(rx_ring) / 2;
+@@ -8301,12 +8301,8 @@ static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
+ 	if (unlikely(!skb))
+ 		return NULL;
+ 
+-	if (unlikely(igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP))) {
+-		if (!igb_ptp_rx_pktstamp(rx_ring->q_vector, xdp->data, skb)) {
+-			xdp->data += IGB_TS_HDR_LEN;
+-			size -= IGB_TS_HDR_LEN;
+-		}
+-	}
++	if (timestamp)
++		skb_hwtstamps(skb)->hwtstamp = timestamp;
+ 
+ 	/* Determine available headroom for copy */
+ 	headlen = size;
+@@ -8337,7 +8333,7 @@ static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
+ static struct sk_buff *igb_build_skb(struct igb_ring *rx_ring,
+ 				     struct igb_rx_buffer *rx_buffer,
+ 				     struct xdp_buff *xdp,
+-				     union e1000_adv_rx_desc *rx_desc)
++				     ktime_t timestamp)
+ {
+ #if (PAGE_SIZE < 8192)
+ 	unsigned int truesize = igb_rx_pg_size(rx_ring) / 2;
+@@ -8364,11 +8360,8 @@ static struct sk_buff *igb_build_skb(struct igb_ring *rx_ring,
+ 	if (metasize)
+ 		skb_metadata_set(skb, metasize);
+ 
+-	/* pull timestamp out of packet data */
+-	if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
+-		if (!igb_ptp_rx_pktstamp(rx_ring->q_vector, skb->data, skb))
+-			__skb_pull(skb, IGB_TS_HDR_LEN);
+-	}
++	if (timestamp)
++		skb_hwtstamps(skb)->hwtstamp = timestamp;
+ 
+ 	/* update buffer offset */
+ #if (PAGE_SIZE < 8192)
+@@ -8683,7 +8676,10 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
+ 	while (likely(total_packets < budget)) {
+ 		union e1000_adv_rx_desc *rx_desc;
+ 		struct igb_rx_buffer *rx_buffer;
++		ktime_t timestamp = 0;
++		int pkt_offset = 0;
+ 		unsigned int size;
++		void *pktbuf;
+ 
+ 		/* return some buffers to hardware, one at a time is too slow */
+ 		if (cleaned_count >= IGB_RX_BUFFER_WRITE) {
+@@ -8703,14 +8699,21 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
+ 		dma_rmb();
+ 
+ 		rx_buffer = igb_get_rx_buffer(rx_ring, size, &rx_buf_pgcnt);
++		pktbuf = page_address(rx_buffer->page) + rx_buffer->page_offset;
++
++		/* pull rx packet timestamp if available */
++		if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
++			timestamp = igb_ptp_rx_pktstamp(rx_ring->q_vector,
++							pktbuf);
++			pkt_offset += IGB_TS_HDR_LEN;
++			size -= IGB_TS_HDR_LEN;
++		}
+ 
+ 		/* retrieve a buffer from the ring */
+ 		if (!skb) {
+-			unsigned int offset = igb_rx_offset(rx_ring);
+-			unsigned char *hard_start;
++			unsigned char *hard_start = pktbuf - igb_rx_offset(rx_ring);
++			unsigned int offset = pkt_offset + igb_rx_offset(rx_ring);
+ 
+-			hard_start = page_address(rx_buffer->page) +
+-				     rx_buffer->page_offset - offset;
+ 			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
+ #if (PAGE_SIZE > 4096)
+ 			/* At larger PAGE_SIZE, frame_sz depend on len size */
+@@ -8733,10 +8736,11 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
+ 		} else if (skb)
+ 			igb_add_rx_frag(rx_ring, rx_buffer, skb, size);
+ 		else if (ring_uses_build_skb(rx_ring))
+-			skb = igb_build_skb(rx_ring, rx_buffer, &xdp, rx_desc);
++			skb = igb_build_skb(rx_ring, rx_buffer, &xdp,
++					    timestamp);
+ 		else
+ 			skb = igb_construct_skb(rx_ring, rx_buffer,
+-						&xdp, rx_desc);
++						&xdp, timestamp);
+ 
+ 		/* exit if we failed to retrieve a buffer */
+ 		if (!skb) {
+diff --git a/drivers/net/ethernet/intel/igb/igb_ptp.c b/drivers/net/ethernet/intel/igb/igb_ptp.c
+index 86a576201f5f..8e23df7da641 100644
+--- a/drivers/net/ethernet/intel/igb/igb_ptp.c
++++ b/drivers/net/ethernet/intel/igb/igb_ptp.c
+@@ -856,30 +856,26 @@ static void igb_ptp_tx_hwtstamp(struct igb_adapter *adapter)
+ 	dev_kfree_skb_any(skb);
+ }
+ 
+-#define IGB_RET_PTP_DISABLED 1
+-#define IGB_RET_PTP_INVALID 2
+-
+ /**
+  * igb_ptp_rx_pktstamp - retrieve Rx per packet timestamp
+  * @q_vector: Pointer to interrupt specific structure
+  * @va: Pointer to address containing Rx buffer
+- * @skb: Buffer containing timestamp and packet
+  *
+  * This function is meant to retrieve a timestamp from the first buffer of an
+  * incoming frame.  The value is stored in little endian format starting on
+  * byte 8
+  *
+- * Returns: 0 if success, nonzero if failure
++ * Returns: 0 on failure, timestamp on success
+  **/
+-int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+-			struct sk_buff *skb)
++ktime_t igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va)
+ {
+ 	struct igb_adapter *adapter = q_vector->adapter;
++	struct skb_shared_hwtstamps ts;
+ 	__le64 *regval = (__le64 *)va;
+ 	int adjust = 0;
+ 
+ 	if (!(adapter->ptp_flags & IGB_PTP_ENABLED))
+-		return IGB_RET_PTP_DISABLED;
++		return 0;
+ 
+ 	/* The timestamp is recorded in little endian format.
+ 	 * DWORD: 0        1        2        3
+@@ -888,10 +884,9 @@ int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+ 
+ 	/* check reserved dwords are zero, be/le doesn't matter for zero */
+ 	if (regval[0])
+-		return IGB_RET_PTP_INVALID;
++		return 0;
+ 
+-	igb_ptp_systim_to_hwtstamp(adapter, skb_hwtstamps(skb),
+-				   le64_to_cpu(regval[1]));
++	igb_ptp_systim_to_hwtstamp(adapter, &ts, le64_to_cpu(regval[1]));
+ 
+ 	/* adjust timestamp for the RX latency based on link speed */
+ 	if (adapter->hw.mac.type == e1000_i210) {
+@@ -907,10 +902,8 @@ int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+ 			break;
+ 		}
+ 	}
+-	skb_hwtstamps(skb)->hwtstamp =
+-		ktime_sub_ns(skb_hwtstamps(skb)->hwtstamp, adjust);
+ 
+-	return 0;
++	return ktime_sub_ns(ts.hwtstamp, adjust);
+ }
+ 
+ /**
+-- 
+2.20.1
 
