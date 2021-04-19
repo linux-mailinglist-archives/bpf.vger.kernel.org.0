@@ -2,316 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E16364779
-	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 17:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1332636481E
+	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 18:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241844AbhDSPx1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Apr 2021 11:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
+        id S238392AbhDSQWm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Apr 2021 12:22:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241782AbhDSPx0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Apr 2021 11:53:26 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041F4C061761
-        for <bpf@vger.kernel.org>; Mon, 19 Apr 2021 08:52:56 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id w186so13967634wmg.3
-        for <bpf@vger.kernel.org>; Mon, 19 Apr 2021 08:52:55 -0700 (PDT)
+        with ESMTP id S233071AbhDSQWj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Apr 2021 12:22:39 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 823FDC061761
+        for <bpf@vger.kernel.org>; Mon, 19 Apr 2021 09:22:09 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id x19so26480571lfa.2
+        for <bpf@vger.kernel.org>; Mon, 19 Apr 2021 09:22:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VHFu+TA/lSSRurTiC4mK+DaRY1R0OxK9d25W798Er1E=;
-        b=UAGxmP5FNGhY3xNZ1VO8FiJhVSI624Q4bgCQg/ATkFSILIKUTfJ+lApou1iJWDMH9M
-         IjXM7AsaQDUO4OquGc4MNrrMSaEf/Fmxjm17I+e3ToQAadUrlxnoUzXKxdC+3FxckAnA
-         36EeMnv/iT5EMjEKUcRv3nKpVbuSjvrZ7me04=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O961I/6SpeSlE/psbTVuCjUHNPMleqN4PCYNj9U2q7A=;
+        b=QyCXioim+uvs6ZsZ5HXYH8805X6eZVpFOsRXDPDu0FhkLM2j9m+7VBhsbXtQ60iw90
+         VG4CzcSNws5VKEnnaLwaE+Mla8FPUF4Ifo/aduTqVEEsqkEIHDsv7++Nb8PAs+zX9RJs
+         l4FvqPnoAc6U8fzSYX23GNIlLVFESDEdeZw4ASgibwICAnAA31uQArRchuzLd7XpCmqY
+         MplUe6zFqDWDRPswRq04ECp9Kdz+N7Fihf5+eX9D+hxKcWBqFD4iHE/tYp91Yr2laL1W
+         4GCuRoeQb17je7gyDNL69BxZQAhg2z1g3kNu32/o4rF6quRGBe/h8EnLEcbHG1UhK1rf
+         DaiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VHFu+TA/lSSRurTiC4mK+DaRY1R0OxK9d25W798Er1E=;
-        b=jlBi1YkQgfADTGdNXaZVGM20lD+OIXM6ZLM20dxkzGvb0SkM1N99T67WPR1Rt6WTIL
-         y02fSSW3gul9EHfa/JNxAQDTYOWg1SC+fUSEQQVPzlehIpiYvbX+UMJ0cQhjrk8PzQ3T
-         MPA/BJZquy69+1phWaNwOFnXHkD0zLi3srKC2cye1CSUonJKIGjzMuyzQkadn+E8L0zI
-         H/dCg0svlsF+9XKuJdhFM8PqCc3AO6HmmF9HWyhPdr6aPk6JQZ0/5w+DkAfNlMz5ktsl
-         UzdBuetaNYBlQGsfvTxrEpPruWwj2b2WDdf9EqayVNmbruYZPKSXmBxqs6x+hxueBi25
-         18Xg==
-X-Gm-Message-State: AOAM530WfmAKuWO2XaZ6z3tuR3UtcI5oOuMfcYo3z2gYwwKgeJsuVYs7
-        ujaJM0lG+UB8Dn2/iSvTGBzOXicD4ZGYVrb/
-X-Google-Smtp-Source: ABdhPJyNCxSnu85I4Fyx/k0ABnCj8ColHXdBxFbYwYxwiOruIrFluYObyHhGYertTzQ91y+lKBetNg==
-X-Received: by 2002:a1c:b6c4:: with SMTP id g187mr21760596wmf.119.1618847574356;
-        Mon, 19 Apr 2021 08:52:54 -0700 (PDT)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:3bbb:3f8f:826f:7f55])
-        by smtp.gmail.com with ESMTPSA id l9sm22868669wrz.7.2021.04.19.08.52.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 08:52:54 -0700 (PDT)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, jackmanb@chromium.org,
-        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v5 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
-Date:   Mon, 19 Apr 2021 17:52:43 +0200
-Message-Id: <20210419155243.1632274-7-revest@chromium.org>
-X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
-In-Reply-To: <20210419155243.1632274-1-revest@chromium.org>
-References: <20210419155243.1632274-1-revest@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O961I/6SpeSlE/psbTVuCjUHNPMleqN4PCYNj9U2q7A=;
+        b=uBm4voUMr5HBnzaellUA6psQV7shMIWsh2xRCFkIdWRbfoWUrt1CR5ctnIBwOzI33L
+         MggJTfwsMrDQX75U/mMxCCiCs+H0DGNCCbnvK+4FQohR273dyOhvk1wLMUqtOXUMOA3L
+         DUCn7GqkTc1JyGVNzKaU/Amz+xYkJI3KYZSeOIxfXQhejh3bABlkbfPMSlRdYcrLYtN+
+         WFSLwth5veTFX3ka9AGh7U4YtJF47Xk2/75Ccgnk7dBh1MH1y71IXuuxRc0a66E9eOmO
+         zWhX7d9xJvguxmMhOMRvi0Q74ibMaVVA795w+E9e5CnMe/QSuVPwVJhWqpNk5QIRwix3
+         yFNA==
+X-Gm-Message-State: AOAM532gMHobD2Y12e9xRXzbKrfCMmcZWMAnWnXXpCHtRbGSZnNQErzq
+        MhLFkQLg/0TNnVI/3mUDU3LtLPgdwysWzZ5oxHiSHg==
+X-Google-Smtp-Source: ABdhPJyPLPorxRBakMjIU9mAt+YhIT0rjnyA4Jhv/b2TF9PoyD81mokL98bTTyiEHaEb8stXptpRF/697s3tntJvUOQ=
+X-Received: by 2002:ac2:58d9:: with SMTP id u25mr3133485lfo.117.1618849327780;
+ Mon, 19 Apr 2021 09:22:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com> <20210410154824.GZ2531743@casper.infradead.org>
+ <YHHPbQm2pn2ysth0@enceladus> <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+ <YHHuE7g73mZNrMV4@enceladus> <20210414214132.74f721dd@carbon>
+ <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
+ <YH0RMV7+56gVOzJe@apalos.home> <CALvZod7oa4q6pMUyDi4FMW4WKY7AjOZ7P2=02GoxjpwrQpA-OQ@mail.gmail.com>
+ <YH2lFYbj3d8nC+hF@apalos.home>
+In-Reply-To: <YH2lFYbj3d8nC+hF@apalos.home>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 19 Apr 2021 09:21:55 -0700
+Message-ID: <CALvZod7oZ+7CNwSjqHs5XaLH9o_6+YYwEUeii5ETqeUwUTG6+Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The "positive" part tests all format specifiers when things go well.
+On Mon, Apr 19, 2021 at 8:43 AM Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+[...]
+> > Pages mapped into the userspace have their refcnt elevated, so the
+> > page_ref_count() check by the drivers indicates to not reuse such
+> > pages.
+> >
+>
+> When tcp_zerocopy_receive() is invoked it will call tcp_zerocopy_vm_insert_batch()
+> which will end up doing a get_page().
+> What you are saying is that once the zerocopy is done though, skb_release_data()
+> won't be called, but instead put_page() will be? If that's the case then we are
+> indeed leaking DMA mappings and memory. That sounds weird though, since the
+> refcnt will be one in that case (zerocopy will do +1/-1 once it's done), so who
+> eventually frees the page?
+> If kfree_skb() (or any wrapper that calls skb_release_data()) is called
+> eventually, we'll end up properly recycling the page into our pool.
+>
 
-The "negative" part makes sure that incorrect format strings fail at
-load time.
+From what I understand (Eric, please correct me if I'm wrong) for
+simple cases there are 3 page references taken. One by the driver,
+second by skb and third by page table.
 
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- .../selftests/bpf/prog_tests/snprintf.c       | 125 ++++++++++++++++++
- .../selftests/bpf/progs/test_snprintf.c       |  73 ++++++++++
- .../bpf/progs/test_snprintf_single.c          |  20 +++
- 3 files changed, 218 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf_single.c
+In tcp_zerocopy_receive(), tcp_zerocopy_vm_insert_batch() gets one
+page ref through insert_page_into_pte_locked(). However before
+returning from tcp_zerocopy_receive(), the skb references are dropped
+through tcp_recv_skb(). So, whenever the user unmaps the page and
+drops the page ref only then that page can be reused by the driver.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-new file mode 100644
-index 000000000000..a958c22aec75
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-@@ -0,0 +1,125 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Google LLC. */
-+
-+#include <test_progs.h>
-+#include "test_snprintf.skel.h"
-+#include "test_snprintf_single.skel.h"
-+
-+#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
-+#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
-+
-+#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
-+#define EXP_IP_RET   sizeof(EXP_IP_OUT)
-+
-+/* The third specifier, %pB, depends on compiler inlining so don't check it */
-+#define EXP_SYM_OUT  "schedule schedule+0x0/"
-+#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
-+
-+/* The third specifier, %p, is a hashed pointer which changes on every reboot */
-+#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
-+#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
-+
-+#define EXP_STR_OUT  "str1 longstr"
-+#define EXP_STR_RET  sizeof(EXP_STR_OUT)
-+
-+#define EXP_OVER_OUT "%over"
-+#define EXP_OVER_RET 10
-+
-+#define EXP_PAD_OUT "    4 000"
-+#define EXP_PAD_RET 900007
-+
-+#define EXP_NO_ARG_OUT "simple case"
-+#define EXP_NO_ARG_RET 12
-+
-+#define EXP_NO_BUF_RET 29
-+
-+void test_snprintf_positive(void)
-+{
-+	char exp_addr_out[] = EXP_ADDR_OUT;
-+	char exp_sym_out[]  = EXP_SYM_OUT;
-+	struct test_snprintf *skel;
-+
-+	skel = test_snprintf__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	if (!ASSERT_OK(test_snprintf__attach(skel), "skel_attach"))
-+		goto cleanup;
-+
-+	/* trigger tracepoint */
-+	usleep(1);
-+
-+	ASSERT_STREQ(skel->bss->num_out, EXP_NUM_OUT, "num_out");
-+	ASSERT_EQ(skel->bss->num_ret, EXP_NUM_RET, "num_ret");
-+
-+	ASSERT_STREQ(skel->bss->ip_out, EXP_IP_OUT, "ip_out");
-+	ASSERT_EQ(skel->bss->ip_ret, EXP_IP_RET, "ip_ret");
-+
-+	ASSERT_OK(memcmp(skel->bss->sym_out, exp_sym_out,
-+			 sizeof(exp_sym_out) - 1), "sym_out");
-+	ASSERT_LT(MIN_SYM_RET, skel->bss->sym_ret, "sym_ret");
-+
-+	ASSERT_OK(memcmp(skel->bss->addr_out, exp_addr_out,
-+			 sizeof(exp_addr_out) - 1), "addr_out");
-+	ASSERT_EQ(skel->bss->addr_ret, EXP_ADDR_RET, "addr_ret");
-+
-+	ASSERT_STREQ(skel->bss->str_out, EXP_STR_OUT, "str_out");
-+	ASSERT_EQ(skel->bss->str_ret, EXP_STR_RET, "str_ret");
-+
-+	ASSERT_STREQ(skel->bss->over_out, EXP_OVER_OUT, "over_out");
-+	ASSERT_EQ(skel->bss->over_ret, EXP_OVER_RET, "over_ret");
-+
-+	ASSERT_STREQ(skel->bss->pad_out, EXP_PAD_OUT, "pad_out");
-+	ASSERT_EQ(skel->bss->pad_ret, EXP_PAD_RET, "pad_ret");
-+
-+	ASSERT_STREQ(skel->bss->noarg_out, EXP_NO_ARG_OUT, "no_arg_out");
-+	ASSERT_EQ(skel->bss->noarg_ret, EXP_NO_ARG_RET, "no_arg_ret");
-+
-+	ASSERT_EQ(skel->bss->nobuf_ret, EXP_NO_BUF_RET, "no_buf_ret");
-+
-+cleanup:
-+	test_snprintf__destroy(skel);
-+}
-+
-+#define min(a, b) ((a) < (b) ? (a) : (b))
-+
-+/* Loads an eBPF object calling bpf_snprintf with up to 10 characters of fmt */
-+static int load_single_snprintf(char *fmt)
-+{
-+	struct test_snprintf_single *skel;
-+	int ret;
-+
-+	skel = test_snprintf_single__open();
-+	if (!skel)
-+		return -EINVAL;
-+
-+	memcpy(skel->rodata->fmt, fmt, min(strlen(fmt) + 1, 10));
-+
-+	ret = test_snprintf_single__load(skel);
-+	test_snprintf_single__destroy(skel);
-+
-+	return ret;
-+}
-+
-+void test_snprintf_negative(void)
-+{
-+	ASSERT_OK(load_single_snprintf("valid %d"), "valid usage");
-+
-+	ASSERT_ERR(load_single_snprintf("0123456789"), "no terminating zero");
-+	ASSERT_ERR(load_single_snprintf("%d %d"), "too many specifiers");
-+	ASSERT_ERR(load_single_snprintf("%pi5"), "invalid specifier 1");
-+	ASSERT_ERR(load_single_snprintf("%a"), "invalid specifier 2");
-+	ASSERT_ERR(load_single_snprintf("%"), "invalid specifier 3");
-+	ASSERT_ERR(load_single_snprintf("%12345678"), "invalid specifier 4");
-+	ASSERT_ERR(load_single_snprintf("%--------"), "invalid specifier 5");
-+	ASSERT_ERR(load_single_snprintf("\x80"), "non ascii character");
-+	ASSERT_ERR(load_single_snprintf("\x1"), "non printable character");
-+}
-+
-+void test_snprintf(void)
-+{
-+	if (test__start_subtest("snprintf_positive"))
-+		test_snprintf_positive();
-+	if (test__start_subtest("snprintf_negative"))
-+		test_snprintf_negative();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
-new file mode 100644
-index 000000000000..951a0301c553
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
-@@ -0,0 +1,73 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Google LLC. */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char num_out[64] = {};
-+long num_ret = 0;
-+
-+char ip_out[64] = {};
-+long ip_ret = 0;
-+
-+char sym_out[64] = {};
-+long sym_ret = 0;
-+
-+char addr_out[64] = {};
-+long addr_ret = 0;
-+
-+char str_out[64] = {};
-+long str_ret = 0;
-+
-+char over_out[6] = {};
-+long over_ret = 0;
-+
-+char pad_out[10] = {};
-+long pad_ret = 0;
-+
-+char noarg_out[64] = {};
-+long noarg_ret = 0;
-+
-+long nobuf_ret = 0;
-+
-+extern const void schedule __ksym;
-+
-+SEC("raw_tp/sys_enter")
-+int handler(const void *ctx)
-+{
-+	/* Convenient values to pretty-print */
-+	const __u8 ex_ipv4[] = {127, 0, 0, 1};
-+	const __u8 ex_ipv6[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-+	static const char str1[] = "str1";
-+	static const char longstr[] = "longstr";
-+
-+	/* Integer types */
-+	num_ret  = BPF_SNPRINTF(num_out, sizeof(num_out),
-+				"%d %u %x %li %llu %lX",
-+				-8, 9, 150, -424242, 1337, 0xDABBAD00);
-+	/* IP addresses */
-+	ip_ret   = BPF_SNPRINTF(ip_out, sizeof(ip_out), "%pi4 %pI6",
-+				&ex_ipv4, &ex_ipv6);
-+	/* Symbol lookup formatting */
-+	sym_ret  = BPF_SNPRINTF(sym_out,  sizeof(sym_out), "%ps %pS %pB",
-+				&schedule, &schedule, &schedule);
-+	/* Kernel pointers */
-+	addr_ret = BPF_SNPRINTF(addr_out, sizeof(addr_out), "%pK %px %p",
-+				0, 0xFFFF00000ADD4E55, 0xFFFF00000ADD4E55);
-+	/* Strings embedding */
-+	str_ret  = BPF_SNPRINTF(str_out, sizeof(str_out), "%s %+05s",
-+				str1, longstr);
-+	/* Overflow */
-+	over_ret = BPF_SNPRINTF(over_out, sizeof(over_out), "%%overflow");
-+	/* Padding of fixed width numbers */
-+	pad_ret = BPF_SNPRINTF(pad_out, sizeof(pad_out), "%5d %0900000X", 4, 4);
-+	/* No args */
-+	noarg_ret = BPF_SNPRINTF(noarg_out, sizeof(noarg_out), "simple case");
-+	/* No buffer */
-+	nobuf_ret = BPF_SNPRINTF(NULL, 0, "only interested in length %d", 60);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/test_snprintf_single.c b/tools/testing/selftests/bpf/progs/test_snprintf_single.c
-new file mode 100644
-index 000000000000..402adaf344f9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_snprintf_single.c
-@@ -0,0 +1,20 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Google LLC. */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+/* The format string is filled from the userspace such that loading fails */
-+static const char fmt[10];
-+
-+SEC("raw_tp/sys_enter")
-+int handler(const void *ctx)
-+{
-+	unsigned long long arg = 42;
-+
-+	bpf_snprintf(NULL, 0, fmt, &arg, sizeof(arg));
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.31.1.368.gbe11c130af-goog
+In my understanding, for zerocopy rx the skb_release_data() is called
+on the pages while they are still mapped into the userspace. So,
+skb_release_data() might not be the right place to recycle the page
+for zerocopy. The email chain at [1] has some discussion on how to
+bundle the recycling of pages with their lifetime.
 
+[1] https://lore.kernel.org/linux-mm/20210316013003.25271-1-arjunroy.kdev@gmail.com/
