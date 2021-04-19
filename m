@@ -2,182 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC15B363AE9
-	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 07:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0034A363B61
+	for <lists+bpf@lfdr.de>; Mon, 19 Apr 2021 08:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbhDSFM4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 19 Apr 2021 01:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
+        id S231203AbhDSGU4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 19 Apr 2021 02:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbhDSFMz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 19 Apr 2021 01:12:55 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6170C06174A
-        for <bpf@vger.kernel.org>; Sun, 18 Apr 2021 22:12:24 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id w23so35063599ejb.9
-        for <bpf@vger.kernel.org>; Sun, 18 Apr 2021 22:12:24 -0700 (PDT)
+        with ESMTP id S229840AbhDSGUz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 19 Apr 2021 02:20:55 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57F93C06174A;
+        Sun, 18 Apr 2021 23:20:26 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id p2so8074274pgh.4;
+        Sun, 18 Apr 2021 23:20:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8ofWC35j+mTbhSxNhXaJK905wQN1NLDPBGPqQMOa3eQ=;
-        b=IrctopW6n++Uebb9it23T0FZjRjZrOUlcZCKLPSu29QZNIiTLFO6vbTVHcjm67FoxX
-         +XryZ6v1nnko8Qadw0FIa9a8U7bNDBNxOgjNi7XSRhViae4kcZDZhYqcDWBmd7Zf2t8I
-         w+rz1dqBOXDSUqJCOi2L1S5u0gQFYtt3XFmat8ud+6GGdDXPJaPHYE2FE8KpFg4Tzba/
-         Y0rkksO8F/XkcMzyoqV2nJc2yT8dMRprLgJTK2weOql8Fwr+RM0WbsvbNi/LtbE8coA5
-         MgeifV8B/ubDmAKV2xxhqdCCVOfYkDQVe+cicPvl4Z5zW+Nq/51LGZ79wC4JwaAI+WP3
-         cLVQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ezRYPA67jeMC8C9EWs9Ki9/ijbprU5hhVKkaedlFpEU=;
+        b=t9idlPCVG7qbp5TtcZvprGTEr875JbVd+8+CZQ662DhQGxJYPoMHPIhaekZa11e/DJ
+         Dwtyt0gTlUNZPpZT3+n3MSwu0DgsrZyJiWK7zNM0JxIIzBDPS3F4rZDavBtmvZB4dg8Z
+         +AWgnqAgPrM67Htw3N0BIqgXJpidNcCtqaoE6y3E4sZJF2weU33sWvD9dproLbHpJk8g
+         Q5CPweoD5y/bc3iherPcPFI9MzJVOcZk4lb5Bcv5aY1qR2pAd/YKC41nyo3ZZXqEYoTl
+         cdL7B6CA7LxZVlqix4649mOR/Vq/tzsp7TQAjHFL1hCKvMXpmMyKXiNThbKOjsmWPA2s
+         SLcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8ofWC35j+mTbhSxNhXaJK905wQN1NLDPBGPqQMOa3eQ=;
-        b=Y11zLeTywwxzu9F4L+Iu2maGAJRHf+1PWEYgI8mevOhv/exQnnaznYHM7NvjkBs8W1
-         02RfEMd0XFGTPNeM9X9Vd43qi/BVM5oumpyTNu0BsAC/PIk5FNkWU0FzfgrLXuERCamz
-         r0IWDB7rrFMR9wCRq2Duzym9pgLEz7Vk3ugNvVsIWlg5XMbQl5ykrKgWLAqVNu3e6JVC
-         hIPLUQWum5mw6rzBGNqffiKWQgebLjrSV1eQmecBFmFCV9gN3TcfdS+TgtxegW4VtVB/
-         el5YzZiKlhxtbR1Q6c3UnN80CnY8oufWY3KdgPEa9lBmcINiq+dM7AQQZEdv7W7K4YmQ
-         hypw==
-X-Gm-Message-State: AOAM531DkdXVEbEVDHRIAC91ApKlaEIiXEGSwQo46uRjvq/q/J3Lc4Ys
-        7hNZdwKRX3Xkm/NQ8bITrRat3g==
-X-Google-Smtp-Source: ABdhPJw+oqRM110gHJFTVOQMCmNMJ31CDRgfffttfgzjSIimvIlDuXQkKo0zADVumPLs30SmZ9O6bQ==
-X-Received: by 2002:a17:906:cb11:: with SMTP id lk17mr20356893ejb.517.1618809143641;
-        Sun, 18 Apr 2021 22:12:23 -0700 (PDT)
-Received: from apalos.home (ppp-94-65-92-88.home.otenet.gr. [94.65.92.88])
-        by smtp.gmail.com with ESMTPSA id s5sm9541238ejq.52.2021.04.18.22.12.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Apr 2021 22:12:23 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 08:12:17 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ezRYPA67jeMC8C9EWs9Ki9/ijbprU5hhVKkaedlFpEU=;
+        b=coHTCQeBlu/cOOYeKusgnXDzOtAAyhvOEgdfovPGPaGz02KUWN/PHLySBfpuueXZdi
+         y1yEvXKq+mIDivEYz8f3DO+CLJCKusSkdcQA2EmbYsDovqvIiAi/JF5RYml6iTwT9P73
+         KXW0k6/076uT3/cXer6RTaO5R+otuual3yatjWXk6EPyjIgMowRJnoz0fUd66wXUcVTE
+         yvgqYEpTd9EJV08QgiXuZ5AF6d82YievNH6YPbLxQfsBFCJDa81lrMANtlBSrI7ZaolM
+         Wi3xPs7iggmZna5B/ZJLK1F+n5azgRJoayxJ3YnDHNmrXixSwy/L2iEvLMDL4s5kD9pl
+         TptA==
+X-Gm-Message-State: AOAM532GCDoe0P5QPqsjOi6BRhAqFBvMl6u3i3xDxZW993HcDJgZOwHF
+        hfbwcteXB1b0bjbnm3I+xtKF5WuPuGSVGPJnAzw=
+X-Google-Smtp-Source: ABdhPJzjH0rLVvRnal7R8v1xBeXGip3oImljC4hpaa4en3m2jNjU4oziXL0bpGhfe40IZmOG7carm1daWIfDsLbnrOo=
+X-Received: by 2002:aa7:82ce:0:b029:242:deb4:9442 with SMTP id
+ f14-20020aa782ce0000b0290242deb49442mr18724815pfn.73.1618813225693; Sun, 18
+ Apr 2021 23:20:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1617885385.git.lorenzo@kernel.org> <CAJ8uoz1MOYLzyy7xXq_fmpKDEakxSomzfM76Szjr5gWsqHc9jQ@mail.gmail.com>
+ <20210418181801.17166935@carbon>
+In-Reply-To: <20210418181801.17166935@carbon>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 19 Apr 2021 08:20:14 +0200
+Message-ID: <CAJ8uoz0m8AAJFddn2LjehXtdeGS0gat7dwOLA_-_ZeOVYjBdxw@mail.gmail.com>
+Subject: Re: [PATCH v8 bpf-next 00/14] mvneta: introduce XDP multi-buffer support
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        lorenzo.bianconi@redhat.com,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <YH0RMV7+56gVOzJe@apalos.home>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com>
- <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus>
- <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
- <YHHuE7g73mZNrMV4@enceladus>
- <20210414214132.74f721dd@carbon>
- <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
+        sameehj@amazon.com, John Fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Tirthendu <tirthendu.sarkar@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 01:09:47PM -0700, Shakeel Butt wrote:
-> On Wed, Apr 14, 2021 at 12:42 PM Jesper Dangaard Brouer
-> <brouer@redhat.com> wrote:
-> >
-> [...]
-> > > >
-> > > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-> > > > can not be used.
+On Sun, Apr 18, 2021 at 6:18 PM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
+>
+> On Fri, 16 Apr 2021 16:27:18 +0200
+> Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
+>
+> > On Thu, Apr 8, 2021 at 2:51 PM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 > > >
-> > > Yes it can, since it's going to be used as your default allocator for
-> > > payloads, which might end up on an SKB.
+> > > This series introduce XDP multi-buffer support. The mvneta driver is
+> > > the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
+> > > please focus on how these new types of xdp_{buff,frame} packets
+> > > traverse the different layers and the layout design. It is on purpose
+> > > that BPF-helpers are kept simple, as we don't want to expose the
+> > > internal layout to allow later changes.
+> > >
+> > > For now, to keep the design simple and to maintain performance, the XDP
+> > > BPF-prog (still) only have access to the first-buffer. It is left for
+> > > later (another patchset) to add payload access across multiple buffers.
+> > > This patchset should still allow for these future extensions. The goal
+> > > is to lift the XDP MTU restriction that comes with XDP, but maintain
+> > > same performance as before.
+> [...]
+> > >
+> > > [0] https://netdevconf.info/0x14/session.html?talk-the-path-to-tcp-4k-mtu-and-rx-zerocopy
+> > > [1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-multi-buffer01-design.org
+> > > [2] https://netdevconf.info/0x14/session.html?tutorial-add-XDP-support-to-a-NIC-driver (XDPmulti-buffers section)
 > >
-> > I'm not sure we want or should "allow" page_pool be used for TCP RX
-> > zerocopy.
-> > For several reasons.
-> >
-> > (1) This implies mapping these pages page to userspace, which AFAIK
-> > means using page->mapping and page->index members (right?).
-> >
-> 
-> No, only page->_mapcount is used.
-> 
+> > Took your patches for a test run with the AF_XDP sample xdpsock on an
+> > i40e card and the throughput degradation is between 2 to 6% depending
+> > on the setup and microbenchmark within xdpsock that is executed. And
+> > this is without sending any multi frame packets. Just single frame
+> > ones. Tirtha made changes to the i40e driver to support this new
+> > interface so that is being included in the measurements.
+>
+> Could you please share Tirtha's i40e support patch with me?
 
-I am not sure I like leaving out TCP RX zerocopy. Since we want driver to
-adopt the recycling mechanism we should try preserving the current
-functionality of the network stack.
+We will post them on the list as an RFC. Tirtha also added AF_XDP
+multi-frame support on top of Lorenzo's patches so we will send that
+one out as well. Will also rerun my experiments, properly document
+them and send out just to be sure that I did not make any mistake.
 
-The question is how does it work with the current drivers that already have an
-internal page recycling mechanism.
+Just note that I would really like for the multi-frame support to get
+in. I have lost count on how many people that have asked for it to be
+added to XDP and AF_XDP. So please check our implementation and
+improve it so we can get the overhead down to where we want it to be.
 
-> > (2) It feels wrong (security wise) to keep the DMA-mapping (for the
-> > device) and also map this page into userspace.
-> >
-> 
-> I think this is already the case i.e pages still DMA-mapped and also
-> mapped into userspace.
-> 
-> > (3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
-> > zerocopy will bump the refcnt, which means the page_pool will not
-> > recycle the page when it see the elevated refcnt (it will instead
-> > release its DMA-mapping).
-> 
-> Yes this is right but the userspace might have already consumed and
-> unmapped the page before the driver considers to recycle the page.
+Thanks: Magnus
 
-Same question here. I'll have a closer look in a few days and make sure we are
-not breaking anything wrt zerocopy.
-
-> 
-> >
-> > (4) I remember vaguely that this code path for (TCP RX zerocopy) uses
-> > page->private for tricks.  And our patch [3/5] use page->private for
-> > storing xdp_mem_info.
-> >
-> > IMHO when the SKB travel into this TCP RX zerocopy code path, we should
-> > call page_pool_release_page() to release its DMA-mapping.
-> >
-> 
-> I will let TCP RX zerocopy experts respond to this but from my high
-> level code inspection, I didn't see page->private usage.
-
-Shakeel are you aware of any 'easy' way I can have rx zerocopy running?
-
-
-Thanks!
-/Ilias
+> I would like to reproduce these results in my testlab, in-order to
+> figure out where the throughput degradation comes from.
+>
+> > What performance do you see with the mvneta card? How much are we
+> > willing to pay for this feature when it is not being used or can we in
+> > some way selectively turn it on only when needed?
+>
+> Well, as Daniel says performance wise we require close to /zero/
+> additional overhead, especially as you state this happens when sending
+> a single frame, which is a base case that we must not slowdown.
+>
+> --
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>
