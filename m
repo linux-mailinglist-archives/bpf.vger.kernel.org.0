@@ -2,144 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E85365C15
-	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 17:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B242365C46
+	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 17:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbhDTPYs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Apr 2021 11:24:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35218 "EHLO
+        id S233029AbhDTPe2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Apr 2021 11:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232965AbhDTPYH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:24:07 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E32C06174A;
-        Tue, 20 Apr 2021 08:23:34 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id m7so33170110ljp.10;
-        Tue, 20 Apr 2021 08:23:34 -0700 (PDT)
+        with ESMTP id S232507AbhDTPe2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Apr 2021 11:34:28 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96351C06138A;
+        Tue, 20 Apr 2021 08:33:56 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id y4so21968847lfl.10;
+        Tue, 20 Apr 2021 08:33:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EjKoa8Hb8NJHG5oHC5Qy7PkfK1T1P6HlwUTWtNshDX0=;
-        b=o0dj0xGcs+C6QHRe8wvzo6TjGXc1YXF5jX29xHml7ACBMh/BHPWzwyDZUwDNIxkTgY
-         Q/ha0GpXwqWVNu7zzB/GijpBhqWp+OCYCVTDI3lwR8CLcY20U5IMhPuMvIbjJYrUfnZl
-         M4NkQcVjnQe8mckDgknRB+HmTXKfpzqKZiINa0/ED9IMf1I8HyVtB59aJzKxfkXfdBd9
-         mlb79D/k8UK68UAt6mfrtds8/XT8xWTF5HwkOjftgnbYxd23xq8imEOcLEU6TSYjAuQs
-         34aiSQ2LVNmUy/auRBCGo2rQiF4dWn9y4ehiJ/iPFipMeQiDrj1+uO4Rkbowy7HbtHxu
-         dKKw==
+        bh=h1XjX61ulCn+oC3jvyFmJYPP3W1LUsOhQ1VuV/tYUlg=;
+        b=LX5kv6aJvq/0MWZjdPQ8teehiYZ6oibqLtw+XwWbMQ3Iiq4cBXLa0Htp2M4MLnpvR9
+         pk3d2aP2H/vxmASKbdOU4D8Xp2TikE9BInzmQvpY+MvQEGNxoTzSSo7RTBaTuTrGNyuI
+         hsLyliNN8YtqFCx01A4Y068CI0dBeILaIJlu03zlIvjXXfg+0PRwgpz2mtl1EDwiifd3
+         jP/dqDOUAwRZXgZklbHnJiKCA15/hlAubxzZHHfhVgCgIZlBWZ0eTyQIRdH3T5pPjlU6
+         Mhr9xbYQaUfXfEC7zOQYRkUy1yxIVnParnR6C0UkaptJ4YKvCLDbKSyQSJNcwnwMtxZv
+         XJMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EjKoa8Hb8NJHG5oHC5Qy7PkfK1T1P6HlwUTWtNshDX0=;
-        b=bz5dNkvnL3aLlTB9mghpKGeH7/GOnyo8ArRkQDKZQckgtqNwnrYzILzg0WsPyaVSVQ
-         8fpGzkeOww29rXky7JQrNshO6yh271bbNi0bbNYtjVgEB4YvdvgwgDj+qYtpuhsxPxSU
-         oQvmRy3NSsOGdLG7+WxCHHXMctD3D3UmfMud3f0Xk/5IlwndgcXne+3wbDFWQuz1ni1P
-         U0nJsv6lyV4KSimhexEN2O52Ooan0fQNb16yjXcRCM+bhu8v9fMMvOvQP5HTPUCrar/q
-         eyKJg3cP2QGRzKKu89EHbQeSvvswi2zZzQ1vbULk5dYlG498wxLY4+7TMyS/J0eKd2pc
-         BRJw==
-X-Gm-Message-State: AOAM532XzBJHXSQ2ks5Mmf6h4v/6hFJnGDKepnkNpCvATPP+DWqavbIx
-        klPJsG2oiyMpPEcGRMMQQo38N3ql/l6xJmyFYRoaU5De
-X-Google-Smtp-Source: ABdhPJwaQqluiwc9vDRTAoQ9Bss3qMuRW/xYdZ1oNcJpCD20dFcdgeVhkuZgFH6l6VenpGU7NLpL/uxmOFgQ9q3T8B0=
-X-Received: by 2002:a2e:3511:: with SMTP id z17mr11571026ljz.32.1618932212699;
- Tue, 20 Apr 2021 08:23:32 -0700 (PDT)
+        bh=h1XjX61ulCn+oC3jvyFmJYPP3W1LUsOhQ1VuV/tYUlg=;
+        b=C0nP2zG/hjIaAnqWm4MAsow6t5xJYVY2xT35XhEgBTbFNBds5SQmCMbwfWbjiK9BW0
+         Jks7BPBKnuPtFSqBmsQf6C2Lz0c4lfQF86jdlzh7H81EJ+PjI8bWesK3mPDV5AhlT+SS
+         ph66BRRUail6zxQeh+cNj0oKqhznzfUjJngUiqtkHj6oZgF84mVbwbtTGU88lnrOgyir
+         qiMIMg4QTVaeC36m7oXtuCJQPDdH9Mg6oYgshKIwrOETgT4/gKWLFah9cmRGY4jDXs51
+         39AfTC8+kxUf2O6cs9ZBLtrMq9e+2ZmgCFPg37AfhzEa9BjqZK6/vCKeu7VPSyEvAlqb
+         jSkQ==
+X-Gm-Message-State: AOAM531CvFlkmqapy/dOAUB08BDjyhNTIqE0w6HnRU3m0V3RgZWXR9Gb
+        C988fCX3X5SzFpxsElCLUCJVYwC8lg3kjGxVKeI=
+X-Google-Smtp-Source: ABdhPJzAYsMAIzKdSoQJnNVCbxsSxFC0PyV+0h4zBuLBCVNe7B8S9fp0lUdpbvTND4u1T0CSGN/1slzl3qfXAkKCP3A=
+X-Received: by 2002:a05:6512:3f93:: with SMTP id x19mr16400011lfa.182.1618932834700;
+ Tue, 20 Apr 2021 08:33:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-3-revest@chromium.org>
- <20210419225404.chlkiaku5vaxmmyh@ast-mbp.dhcp.thefacebook.com> <CABRcYmJO5+tFtGuL9pdtFqLnBV7fGugEjaPbNRtJ3iXpbs3kFg@mail.gmail.com>
-In-Reply-To: <CABRcYmJO5+tFtGuL9pdtFqLnBV7fGugEjaPbNRtJ3iXpbs3kFg@mail.gmail.com>
+References: <20210413121516.1467989-1-jolsa@kernel.org> <CAEf4Bzazst1rBi4=LuP6_FnPXCRYBNFEtDnK3UVBj6Eo6xFNtQ@mail.gmail.com>
+ <YHbd2CmeoaiLJj7X@krava> <CAEf4BzYyVj-Tjy9ZZdAU5nOtJ8_auvVobTT6pMqg8zPb9jj-Ow@mail.gmail.com>
+ <20210415111002.324b6bfa@gandalf.local.home> <CAEf4BzY=yBZH2Aad1hNcqCt51u0+SmNdkD6NfJRVMzF7DsvG+A@mail.gmail.com>
+ <20210415170007.31420132@gandalf.local.home> <20210417000304.fc987dc00d706e7551b29c04@kernel.org>
+ <20210416124834.05862233@gandalf.local.home> <YH7OXrjBIqvEZbsc@krava>
+In-Reply-To: <YH7OXrjBIqvEZbsc@krava>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 20 Apr 2021 08:23:21 -0700
-Message-ID: <CAADnVQKrc1Rz_qr5R50vJ2H7-K+9AzBVQZ4OMgGEno+8r6sHpw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/6] bpf: Add a ARG_PTR_TO_CONST_STR argument type
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 20 Apr 2021 08:33:43 -0700
+Message-ID: <CAADnVQK55WzR6_JfxkMzEfUnLJnX75bRHjCkaptcVF=nQ_gWfw@mail.gmail.com>
+Subject: Re: [PATCHv2 RFC bpf-next 0/7] bpf: Add support for ftrace probe
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Jesper Brouer <jbrouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 5:35 AM Florent Revest <revest@chromium.org> wrote:
+On Tue, Apr 20, 2021 at 5:51 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> On Tue, Apr 20, 2021 at 12:54 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+> On Fri, Apr 16, 2021 at 12:48:34PM -0400, Steven Rostedt wrote:
+> > On Sat, 17 Apr 2021 00:03:04 +0900
+> > Masami Hiramatsu <mhiramat@kernel.org> wrote:
 > >
-> > On Mon, Apr 19, 2021 at 05:52:39PM +0200, Florent Revest wrote:
-> > > This type provides the guarantee that an argument is going to be a const
-> > > pointer to somewhere in a read-only map value. It also checks that this
-> > > pointer is followed by a zero character before the end of the map value.
+> > > > Anyway, IIRC, Masami wasn't sure that the full regs was ever needed for the
+> > > > return (who cares about the registers on return, except for the return
+> > > > value?)
 > > >
-> > > Signed-off-by: Florent Revest <revest@chromium.org>
-> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  include/linux/bpf.h   |  1 +
-> > >  kernel/bpf/verifier.c | 41 +++++++++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 42 insertions(+)
-> > >
-> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > index 77d1d8c65b81..c160526fc8bf 100644
-> > > --- a/include/linux/bpf.h
-> > > +++ b/include/linux/bpf.h
-> > > @@ -309,6 +309,7 @@ enum bpf_arg_type {
-> > >       ARG_PTR_TO_PERCPU_BTF_ID,       /* pointer to in-kernel percpu type */
-> > >       ARG_PTR_TO_FUNC,        /* pointer to a bpf program function */
-> > >       ARG_PTR_TO_STACK_OR_NULL,       /* pointer to stack or NULL */
-> > > +     ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
-> > >       __BPF_ARG_TYPE_MAX,
-> > >  };
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 852541a435ef..5f46dd6f3383 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -4787,6 +4787,7 @@ static const struct bpf_reg_types spin_lock_types = { .types = { PTR_TO_MAP_VALU
-> > >  static const struct bpf_reg_types percpu_btf_ptr_types = { .types = { PTR_TO_PERCPU_BTF_ID } };
-> > >  static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
-> > >  static const struct bpf_reg_types stack_ptr_types = { .types = { PTR_TO_STACK } };
-> > > +static const struct bpf_reg_types const_str_ptr_types = { .types = { PTR_TO_MAP_VALUE } };
-> > >
-> > >  static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
-> > >       [ARG_PTR_TO_MAP_KEY]            = &map_key_value_types,
-> > > @@ -4817,6 +4818,7 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
-> > >       [ARG_PTR_TO_PERCPU_BTF_ID]      = &percpu_btf_ptr_types,
-> > >       [ARG_PTR_TO_FUNC]               = &func_ptr_types,
-> > >       [ARG_PTR_TO_STACK_OR_NULL]      = &stack_ptr_types,
-> > > +     [ARG_PTR_TO_CONST_STR]          = &const_str_ptr_types,
-> > >  };
-> > >
-> > >  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
-> > > @@ -5067,6 +5069,45 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
-> > >               if (err)
-> > >                       return err;
-> > >               err = check_ptr_alignment(env, reg, 0, size, true);
-> > > +     } else if (arg_type == ARG_PTR_TO_CONST_STR) {
-> > > +             struct bpf_map *map = reg->map_ptr;
-> > > +             int map_off;
-> > > +             u64 map_addr;
-> > > +             char *str_ptr;
-> > > +
-> > > +             if (reg->type != PTR_TO_MAP_VALUE || !map ||
+> > > I think kretprobe and ftrace are for a bit different usage. kretprobe can be
+> > > used for something like debugger. In that case, accessing full regs stack
+> > > will be more preferrable. (BTW, what the not "full regs" means? Does that
+> > > save partial registers?)
 > >
-> > I think the 'type' check is redundant,
-> > since check_reg_type() did it via compatible_reg_types.
-> > If so it's probably better to remove it here ?
+> > When the REGS flag is not set in the ftrace_ops (where kprobes uses the
+> > REGS flags), the regs parameter is not a full set of regs, but holds just
+> > enough to get access to the parameters. This just happened to be what was
+> > saved in the mcount/fentry trampoline, anyway, because tracing the start of
+> > the program, you had to save the arguments before calling the trace code,
+> > otherwise you would corrupt the parameters of the function being traced.
 > >
-> > '!map' looks unnecessary. Can it ever happen? If yes, it's a verifier bug.
-> > For example in check_mem_access() we just deref reg->map_ptr without checking
-> > which, I think, is correct.
+> > I just tweaked it so that by default, the ftrace callbacks now have access
+> > to the saved regs (call ftrace_regs, to not let a callback get confused and
+> > think it has full regs when it does not).
+> >
+> > Now for the exit of a function, what does having the full pt_regs give you?
+> > Besides the information to get the return value, the rest of the regs are
+> > pretty much meaningless. Is there any example that someone wants access to
+> > the regs at the end of a function besides getting the return value?
 >
-> I agree with all of the above. I only thought it's better to be safe
-> than sorry but if you'd like I could follow up with a patch that
-> removes some checks?
-...
-> Sure, does not hurt. I can also follow up with a patch unless if you
-> prefer doing it yourself.
+> for ebpf program attached to the function exit we need the functions's
+> arguments.. so original registers from time when the function was entered,
+> we don't need registers state at the time function is returning
+>
+> as we discussed in another email, we could save input registers in
+> fgraph_ops entry handler and load them in exit handler before calling
+> ebpf program
 
-Please send a follow up patch.
-I consider this kind of "safe than sorry" to be defensive programming that
-promotes less-thinking-is-fine-because-its-faster-to-code style.
-I'm sure you've seen my rants against defensive programming in the past :)
+I don't see how you can do it without BTF.
+The mass-attach feature should prepare generic 6 or so arguments
+from all functions it attached to.
+On x86-64 it's trivial because 6 regs are the same.
+On arm64 is now more challenging since return value regs overlaps with
+first argument, so bpf trampoline (when it's ready for arm64) will look
+a bit different than bpf trampoline on x86-64 to preserve arg0, arg1,
+..arg6, ret
+64-bit values that bpf prog expects to see.
+On x86-32 it's even more trickier, since the same 6 args need to be copied
+from a combination of regs and stack.
+This is not some hypothetical case. We already use BTF in x86-32 JIT
+and btf_func_model was introduced specifically to handle such cases.
+So I really don't see how ftrace can do that just yet. It has to understand BTF
+of all of the funcs it attaches to otherwise it's just saving all regs.
+That approach was a pain to deal with.
+Just look at bpf code samples with ugly per architecture macros to access regs.
+BPF trampoline solved it and I don't think going back to per-arch macros
+is an option at this point.
