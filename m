@@ -2,162 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2FA365DF9
-	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 18:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E0B365DF8
+	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 18:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232916AbhDTQ4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Apr 2021 12:56:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40365 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233214AbhDTQ4R (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 20 Apr 2021 12:56:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618937745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6VX5nIkOjQFrnQnPvJLFtPSaZjbDSX89pb1f05vmUZA=;
-        b=XzAHavOW10Kn28jl2OfhsiV/GISymVyL5GftiYHK4mywZ2eT/qB936h4zDu0xJrjwxZzmF
-        q4chicrJLhUahfYY2KXfXOmomhwXPlxMbrxGr+vp0qkMBsobUogq5yx0IaP6lZjp4Sb+qo
-        t+59KlCdLyPkZNsk0kj1J3ab1W6DaME=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547-igJoo5lHPumzic6YEpVmzA-1; Tue, 20 Apr 2021 12:55:32 -0400
-X-MC-Unique: igJoo5lHPumzic6YEpVmzA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D537C80F05C;
-        Tue, 20 Apr 2021 16:54:54 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EDE9618A60;
-        Tue, 20 Apr 2021 16:54:41 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 18:54:40 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, song@kernel.org,
-        toke@redhat.com, brouer@redhat.com
-Subject: Re: [PATCH v3 bpf-next] cpumap: bulk skb using
- netif_receive_skb_list
-Message-ID: <20210420185440.1dfcf71c@carbon>
-In-Reply-To: <01cd8afa22786b2c8a4cd7250d165741e990a771.1618927173.git.lorenzo@kernel.org>
-References: <01cd8afa22786b2c8a4cd7250d165741e990a771.1618927173.git.lorenzo@kernel.org>
+        id S233207AbhDTQ4M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Apr 2021 12:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232916AbhDTQ4M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Apr 2021 12:56:12 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF27C06174A
+        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 09:55:41 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 65so43812189ybc.4
+        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 09:55:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gICuAp3Pquh/lrfQ+hVpwQGGb7ciruRL5YwQXBd9yuE=;
+        b=f7pLr5I/ZAsprw3VFMITeM5qXtn2Kl862lifEKceXEa2aub70Ip50oVCZGQW6LvDug
+         bx7ARU7qCL4feSXj1oipvGgxvdIYEME5air226Rnpo9hPsxvTEEtgbak1RZA4wlSxiBg
+         gpUDcfnE6Em+hVrowPXZijRZQV6kNortlx1O745PtNf0puGOKNrL5o1wDhgj7QbW1yvh
+         8tndP6m63y/0ZDOEsrSFmtoiHqERO2LkSDCAp2tSJBQnBnDvfYreq6CGMf6wRRNeBIvk
+         /Ohz6zokN+2rOpQDdhp3UlAuf5W69MPsEFTpSeSTxesfiaTb/f3C7ZRVc4NoDOXtkQ7p
+         FEMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gICuAp3Pquh/lrfQ+hVpwQGGb7ciruRL5YwQXBd9yuE=;
+        b=KP6zwLjmYl0z8lMeInfayDUeD3FKfYNjaLfyaitQQjBhgMQNU27OpWpxkAb9PEa9RA
+         2L7UjbdNOT80VO1hEOzk7aj2yGgb0iWItHHxBpYSjJ1EXNnHTifmzHO+RMGmPrqD6S3V
+         79k0BjXcQvuWaEX4xf1mWsZD15bDFDfEMflvLfaVw+MPXBticb4wkg8/yH21MaJM/4Yt
+         a1Xjs95l71MWRA5jpqdBnrpkGDJB+GD1D/N/BywnC6ezWqSllfbjAgjdwMvuDSqCCjmr
+         OAHUYWpuqpcbgBe1msjC7RlS2mNMr2IVh7sIx8MsG9ep5/RiDLHVMJhPwWZ+pNb5kLe6
+         LUQw==
+X-Gm-Message-State: AOAM5313q10rVZBOqTUpOGhgksnYgs/fkPzRMAa9hIpowGPYyIE3uUwn
+        ynl7WuBA3groFP8AtxsBmAIq2ioSWoJGRBCAI2bVKam/W6w=
+X-Google-Smtp-Source: ABdhPJyTzIAmr5qTiXZLjkHcVpOYiJtIv8p+8cYzFlKIwLzzIMVOHcvTu7zGEbfoq33u2AndS9SSKl1mqIFCzOqq1sM=
+X-Received: by 2002:a25:3357:: with SMTP id z84mr26091572ybz.260.1618937740422;
+ Tue, 20 Apr 2021 09:55:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <CACAyw9_66VctZZajdAUb0jhhn03nFkvbFLRMc=1_2zJ2_kr-aw@mail.gmail.com>
+In-Reply-To: <CACAyw9_66VctZZajdAUb0jhhn03nFkvbFLRMc=1_2zJ2_kr-aw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 20 Apr 2021 09:55:29 -0700
+Message-ID: <CAEf4Bza1=DKHtXJ3+Ez7xXFJ1EKQqB7fUrB-fDz_dSOKcGm7FA@mail.gmail.com>
+Subject: Re: Behaviour of bpf_core_enum_value with missing value
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 20 Apr 2021 16:05:14 +0200
-Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+On Tue, Apr 20, 2021 at 6:43 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> Hi Andrii,
+>
+> The documentation for bpf_core_enum_value says that a missing
+> enum_value will make the macro return 0:
+>
+> * 64-bit value, if specified enum type and its enumerator value are
+> * present in target kernel's BTF;
+> * 0, if no matching enum and/or enum value within that enum is found.
+> */
+> #define bpf_core_enum_value(enum_type, enum_value)
+>
+> However, the enumval___err_missing test asserts that
+> bpf_core_enum_value with a missing value will poison the result if I
+> understand correctly.
+>
 
-> Rely on netif_receive_skb_list routine to send skbs converted from
-> xdp_frames in cpu_map_kthread_run in order to improve i-cache usage.
-> The proposed patch has been tested running xdp_redirect_cpu bpf sample
-> available in the kernel tree that is used to redirect UDP frames from
-> ixgbe driver to a cpumap entry and then to the networking stack.
-> UDP frames are generated using pkt_gen. Packets are discarded by the
-> UDP layer.
-> 
-> $xdp_redirect_cpu  --cpu <cpu> --progname xdp_cpu_map0 --dev <eth>
-> 
-> bpf-next: ~2.35Mpps
-> bpf-next + cpumap skb-list: ~2.72Mpps
-> 
-> Since netif_receive_skb_list does not return number of discarded packets,
-> remove drop counter from xdp_cpumap_kthread tracepoint and update related
-> xdp samples.
-> 
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
-> Changes since v2:
-> - remove drop counter and update related xdp samples
-> - rebased on top of bpf-next
-> 
-> Changes since v1:
-> - fixed comment
-> - rebased on top of bpf-next tree
-> ---
->  include/trace/events/xdp.h          | 14 +++++---------
->  kernel/bpf/cpumap.c                 | 16 +++++++---------
->  samples/bpf/xdp_monitor_kern.c      |  6 ++----
->  samples/bpf/xdp_monitor_user.c      | 14 ++++++--------
->  samples/bpf/xdp_redirect_cpu_kern.c | 12 +++++-------
->  samples/bpf/xdp_redirect_cpu_user.c | 10 ++++------
->  6 files changed, 29 insertions(+), 43 deletions(-)
-> 
-> diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
-> index fcad3645a70b..52ecfe9c7e25 100644
-> --- a/include/trace/events/xdp.h
-> +++ b/include/trace/events/xdp.h
-> @@ -184,16 +184,15 @@ DEFINE_EVENT(xdp_redirect_template, xdp_redirect_map_err,
->  
->  TRACE_EVENT(xdp_cpumap_kthread,
->  
-> -	TP_PROTO(int map_id, unsigned int processed,  unsigned int drops,
-> -		 int sched, struct xdp_cpumap_stats *xdp_stats),
-> +	TP_PROTO(int map_id, unsigned int processed, int sched,
-> +		 struct xdp_cpumap_stats *xdp_stats),
->  
-> -	TP_ARGS(map_id, processed, drops, sched, xdp_stats),
-> +	TP_ARGS(map_id, processed, sched, xdp_stats),
->  
->  	TP_STRUCT__entry(
->  		__field(int, map_id)
->  		__field(u32, act)
->  		__field(int, cpu)
-> -		__field(unsigned int, drops)
->  		__field(unsigned int, processed)
+I think comment is outdated. This was my initial approach, but after
+discussing with Alexei we decided to keep the behavior consistent with
+other types of relocation and require guarding with
+bpf_core_enum_value_exists() to handle cases where enum value is
+expected to not exist sometimes.
 
-So, struct member @processed will takeover the room for @drops.
+> $ sudo ./test_progs -n 31/77 -vvv
+> ...
+> libbpf: prog 'test_core_enumval': relo #9: kind <enumval_value> (11),
+> spec is [5] typedef anon_enum::ANON_ENUM_VAL2 = 32
+> libbpf: prog 'test_core_enumval': relo #9: non-matching candidate #0
+> [6] typedef anon_enum___err_missing::ANON_ENUM_VAL1___err_missing =
+> 273
+> libbpf: prog 'test_core_enumval': relo #9: no matching targets found
+> libbpf: prog 'test_core_enumval': relo #9: substituting insn #48 w/ invalid insn
+> libbpf: prog 'test_core_enumval': relo #9: substituting insn #47 w/ invalid insn
+> libbpf: load bpf program failed: Invalid argument
+>
+> What is the correct behaviour in this case?
 
-Can you please test how an old xdp_monitor program will react to this?
-Will it fail, or extract and show wrong values?
+Tests and code are right, comment is wrong. Now looking at
+progs/test_core_reloc_enumval.c, /* NAMED_ENUM_VAL3 value is optional
+*/ should be probably replaced with if (bpf_core_enum_value_exists())
+{ out->named_val3 = bpf_core_enum_value() } else { out->named_val3 =
+0xBAD } pattern or similar.
 
-The xdp_mointor tool is in several external git repos:
-
- https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/samples/bpf/xdp_monitor_kern.c
- https://github.com/xdp-project/xdp-tutorial/tree/master/tracing02-xdp-monitor
-
-Do you have any plans for fixing those tools?
-
-
->  		__field(int, sched)
->  		__field(unsigned int, xdp_pass)
-> @@ -205,7 +204,6 @@ TRACE_EVENT(xdp_cpumap_kthread,
->  		__entry->map_id		= map_id;
->  		__entry->act		= XDP_REDIRECT;
->  		__entry->cpu		= smp_processor_id();
-> -		__entry->drops		= drops;
->  		__entry->processed	= processed;
->  		__entry->sched	= sched;
->  		__entry->xdp_pass	= xdp_stats->pass;
-> @@ -215,13 +213,11 @@ TRACE_EVENT(xdp_cpumap_kthread,
->  
->  	TP_printk("kthread"
->  		  " cpu=%d map_id=%d action=%s"
-> -		  " processed=%u drops=%u"
-> -		  " sched=%d"
-> +		  " processed=%u sched=%u"
->  		  " xdp_pass=%u xdp_drop=%u xdp_redirect=%u",
->  		  __entry->cpu, __entry->map_id,
->  		  __print_symbolic(__entry->act, __XDP_ACT_SYM_TAB),
-> -		  __entry->processed, __entry->drops,
-> -		  __entry->sched,
-> +		  __entry->processed, __entry->sched,
->  		  __entry->xdp_pass, __entry->xdp_drop, __entry->xdp_redirect)
->  );
-
-
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+>
+> Lorenz
+>
+> --
+> Lorenz Bauer  |  Systems Engineer
+> 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+>
+> www.cloudflare.com
