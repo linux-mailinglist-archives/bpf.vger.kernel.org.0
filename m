@@ -2,101 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F6C3659F4
-	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 15:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D194365A5F
+	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 15:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231758AbhDTNZW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 20 Apr 2021 09:25:22 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:21177 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230479AbhDTNZV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 20 Apr 2021 09:25:21 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-547-X9KMndiGMfGSldWhX6i1CA-1; Tue, 20 Apr 2021 09:24:33 -0400
-X-MC-Unique: X9KMndiGMfGSldWhX6i1CA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBB9352800;
-        Tue, 20 Apr 2021 13:24:31 +0000 (UTC)
-Received: from krava.cust.in.nbox.cz (unknown [10.40.196.37])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 722D219172;
-        Tue, 20 Apr 2021 13:24:29 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     Joe Stringer <joe@cilium.io>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: [PATCH bpf-next] selftests/bpf: Add docs target as all dependency
-Date:   Tue, 20 Apr 2021 15:24:28 +0200
-Message-Id: <20210420132428.15710-1-jolsa@kernel.org>
+        id S232359AbhDTNnZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Apr 2021 09:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232327AbhDTNnY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:43:24 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A300C06174A
+        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 06:42:52 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id g8so61590676lfv.12
+        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 06:42:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=cJs+y6GFszhbi+6DK/cYEwMv4Va3/avDkjdCxeqSUVU=;
+        b=v301bcCb+OFOMB+YVSWT6sGT0oei6ZuPNAkDzbM1lNtWWTNpm7iMgonJ9kQMT1epCw
+         nu6w4Jiq1/5e5pysUcIGn2hy8qhg3miq25LzzBeFqsG3Mf74htsQo/eppkEH6thHO1gs
+         QtAbpX9gAcUtMnimqGHkO1CZmMP4RbwQiT9/0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=cJs+y6GFszhbi+6DK/cYEwMv4Va3/avDkjdCxeqSUVU=;
+        b=q4PGoAXXu8UfhOG2lF8gMK9qm4N23Ih/vbLM5MqBtbTIxk6DtTtvLywDymqDOfZsp0
+         35jyDSzWp+Z0cJHMda13NABhZVaDTkH/XzyK2DnGht6cqGvtjTOotqs4DhwJHW4FJA8e
+         ic1KaqnYYcsxWLCPoXXINxJ4/9enE3HQU0k7eUk/bMv7m/o68pGcsfiU8Bfl9x0o656M
+         65zsQkYaUXo2NCf8rTymYy5qOqtkw/6neOt1uKEFF9qH/QFCJ8HrHcEkSm1vsdXTY4Ou
+         pw4Sg+s74UNyIaIwPbdPbiQdWeVy7Ho+ZN0OxFpxqQL/4nuPknLp9rx1D97ZCWmL1BlE
+         U89w==
+X-Gm-Message-State: AOAM5323064JwdYNxPZiz8JVX9uZLW2H22P1P1cGt20KmoO5KaY+PSp/
+        gu2Tfy85ZpcPBpSs/HHSmap9qTNpBox6597Mh+ZIMBA+MhNJ5Q==
+X-Google-Smtp-Source: ABdhPJy0+ibaw11Q7emSwzI5ukpUMr3VSyxSS0930XvjW9jWP/Rb2/L8Dxj597Cpm1D/Qu1/jlyjWPQSeJjkBAOH9CU=
+X-Received: by 2002:ac2:4d08:: with SMTP id r8mr13730547lfi.97.1618926170821;
+ Tue, 20 Apr 2021 06:42:50 -0700 (PDT)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 20 Apr 2021 14:42:39 +0100
+Message-ID: <CACAyw9_66VctZZajdAUb0jhhn03nFkvbFLRMc=1_2zJ2_kr-aw@mail.gmail.com>
+Subject: Behaviour of bpf_core_enum_value with missing value
+To:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently docs target is make dependency for TEST_GEN_FILES,
-which makes tests to be rebuilt every time you run make.
+Hi Andrii,
 
-Adding docs as all target dependency, so when running make
-on top of built selftests it will show just:
+The documentation for bpf_core_enum_value says that a missing
+enum_value will make the macro return 0:
 
-  $ make
-  make[1]: Nothing to be done for 'docs'.
+* 64-bit value, if specified enum type and its enumerator value are
+* present in target kernel's BTF;
+* 0, if no matching enum and/or enum value within that enum is found.
+*/
+#define bpf_core_enum_value(enum_type, enum_value)
 
-After cleaning docs, only docs is rebuilt:
+However, the enumval___err_missing test asserts that
+bpf_core_enum_value with a missing value will poison the result if I
+understand correctly.
 
-  $ make docs-clean
-  CLEAN    eBPF_helpers-manpage
-  CLEAN    eBPF_syscall-manpage
-  $ make
-  GEN      ...selftests/bpf/bpf-helpers.rst
-  GEN      ...selftests/bpf/bpf-helpers.7
-  GEN      ...selftests/bpf/bpf-syscall.rst
-  GEN      ...selftests/bpf/bpf-syscall.2
-  $ make
-  make[1]: Nothing to be done for 'docs'.
+$ sudo ./test_progs -n 31/77 -vvv
+...
+libbpf: prog 'test_core_enumval': relo #9: kind <enumval_value> (11),
+spec is [5] typedef anon_enum::ANON_ENUM_VAL2 = 32
+libbpf: prog 'test_core_enumval': relo #9: non-matching candidate #0
+[6] typedef anon_enum___err_missing::ANON_ENUM_VAL1___err_missing =
+273
+libbpf: prog 'test_core_enumval': relo #9: no matching targets found
+libbpf: prog 'test_core_enumval': relo #9: substituting insn #48 w/ invalid insn
+libbpf: prog 'test_core_enumval': relo #9: substituting insn #47 w/ invalid insn
+libbpf: load bpf program failed: Invalid argument
 
-Cc: Joe Stringer <joe@cilium.io>
-Fixes: a01d935b2e09 ("tools/bpf: Remove bpf-helpers from bpftool docs")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/testing/selftests/bpf/Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+What is the correct behaviour in this case?
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index c45ae13b88a0..c5bcdb3d4b12 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -187,7 +187,6 @@ $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL)
- 		    cp $(SCRATCH_DIR)/runqslower $@
- 
- $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(OUTPUT)/test_stub.o $(BPFOBJ)
--$(TEST_GEN_FILES): docs
- 
- $(OUTPUT)/test_dev_cgroup: cgroup_helpers.c
- $(OUTPUT)/test_skb_cgroup_id_user: cgroup_helpers.c
-@@ -210,6 +209,8 @@ $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)    \
- 		    OUTPUT=$(HOST_BUILD_DIR)/bpftool/			       \
- 		    prefix= DESTDIR=$(HOST_SCRATCH_DIR)/ install
- 
-+all: docs
-+
- docs:
- 	$(Q)RST2MAN_OPTS="--exit-status=1" $(MAKE) $(submake_extras)	\
- 	            -f Makefile.docs					\
+Lorenz
+
 -- 
-2.30.2
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
