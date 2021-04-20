@@ -2,135 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C970E365DD3
-	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 18:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB5C365DEC
+	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 18:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233207AbhDTQvI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Apr 2021 12:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233429AbhDTQvD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Apr 2021 12:51:03 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DDDC06138C
-        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 09:50:30 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id p202so136551ybg.8
-        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 09:50:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uhlcY8FEVNGAKjQ0RJ6+4XOOKzlSCVvhyanZCd4gyB0=;
-        b=ibAy8nahcPs58CUyAxaJIYpfJ0VPwPEaNBTB2CD6ZQ3GPqsc97Nx9EvZalaCSkeFsW
-         737Yt7Q+QKNkDJ5+5Zk9Io43Km/p1hOuhH1FT/NXCrdIbDAJiin/OIY/DJkRwTBt4OzM
-         xoBMsT7e8ux1YGfTwIUt/Qy97si0TzhsPQtW0+d4uEgcHCkpNWQ2ifKpc3KBzunoipf9
-         9YxJcpUWUKaVMCOQLX/LjwM53L8enXVXDhrPS+47gPyJhNcX1tayBN9zwNkFEhIHW4wA
-         Y/HWfyAm0YPmx4f2ctuc/tIYVDTJbayIXsRJwULyOd/WU5RJ0lf6r5ZyVuwyoluqcAlw
-         kfrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uhlcY8FEVNGAKjQ0RJ6+4XOOKzlSCVvhyanZCd4gyB0=;
-        b=YWI4JEkxuZiAxvjyKhvSvBDWSIovdUd11zebMbmkRUAIhlmTdEQc4A1h7eqGxEBbRP
-         3EFDNvyz2Z2FoHoGRYN37JeaMIBkCvUoHdhO2KCSv/cC4yZE3fKAoIfz7+4bFtumtoHE
-         kQTqN/6Z0EIOxRYPxdKY7kAw+KPy37JMn+H/4tbu5BAiGvSSazMTzngE6ggXqrixp7So
-         qC+bFPawUAnK4Lo6/c9mi3braYz1UoZz9UxcO2f3vw8tcb2jAi32G1Vb0ZEg6RgJWo5a
-         b5tLSa8dkkwovdz8Gryl88kCaVGkfYrYEuBQmHYK0y0F0yt4DRiK50LYSw1aINDnmjZ4
-         JyDA==
-X-Gm-Message-State: AOAM532UqdzuI1htjsOj9bognT0dzcEamS/5hQz0Zt3LcJFIROMZ4KQt
-        2PsWwzw3bKaQaPE6srI21kIcFWB60KEk9i2BQWC3w5fG
-X-Google-Smtp-Source: ABdhPJxfEw1khGjTAMrqYzxZxRpH0rZssy80h50lhWeMQMT4BmtcGns/uHRogoBRWWIklxEGWhjbS4QQLK4VzS6cV88=
-X-Received: by 2002:a25:dc46:: with SMTP id y67mr26307040ybe.27.1618937429816;
- Tue, 20 Apr 2021 09:50:29 -0700 (PDT)
+        id S233263AbhDTQxN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Apr 2021 12:53:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59693 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233245AbhDTQxM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 20 Apr 2021 12:53:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618937560;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SWluZQwf/XWaF+JoqgpVc9LhHEKvzg3vw4BFLJNp6JQ=;
+        b=ReEfjKi8Ny++wTz1aHNlFyzIu3+tYr3odi5/ClytfimFndz8ZFTh8PMeXcE6jwZn3B7svF
+        fTxb9420KdJwWIrs+b+at7GTxAUIyywKCXgLrXhjYeg+ZOsQfZILRA0Wjk7B7E3RCwOJNu
+        /FGV2zRUk/EMYmvccbpetYLnykavLIg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-523-RtM3fOicMjSko0MV24VSig-1; Tue, 20 Apr 2021 12:52:35 -0400
+X-MC-Unique: RtM3fOicMjSko0MV24VSig-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC34C107B467;
+        Tue, 20 Apr 2021 16:52:32 +0000 (UTC)
+Received: from krava (unknown [10.40.196.37])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1671C5D9C0;
+        Tue, 20 Apr 2021 16:52:20 +0000 (UTC)
+Date:   Tue, 20 Apr 2021 18:52:20 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Jesper Brouer <jbrouer@redhat.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: Re: [PATCHv2 RFC bpf-next 0/7] bpf: Add support for ftrace probe
+Message-ID: <YH8GxNi5VuYjwNmK@krava>
+References: <CAEf4Bzazst1rBi4=LuP6_FnPXCRYBNFEtDnK3UVBj6Eo6xFNtQ@mail.gmail.com>
+ <YHbd2CmeoaiLJj7X@krava>
+ <CAEf4BzYyVj-Tjy9ZZdAU5nOtJ8_auvVobTT6pMqg8zPb9jj-Ow@mail.gmail.com>
+ <20210415111002.324b6bfa@gandalf.local.home>
+ <CAEf4BzY=yBZH2Aad1hNcqCt51u0+SmNdkD6NfJRVMzF7DsvG+A@mail.gmail.com>
+ <20210415170007.31420132@gandalf.local.home>
+ <20210417000304.fc987dc00d706e7551b29c04@kernel.org>
+ <20210416124834.05862233@gandalf.local.home>
+ <YH7OXrjBIqvEZbsc@krava>
+ <CAADnVQK55WzR6_JfxkMzEfUnLJnX75bRHjCkaptcVF=nQ_gWfw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210420111639.155580-1-lmb@cloudflare.com>
-In-Reply-To: <20210420111639.155580-1-lmb@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 20 Apr 2021 09:50:19 -0700
-Message-ID: <CAEf4BzYWNahvHA+WYz13o9Wy7oAtPXo0gv9S6jT42fYnoN72eQ@mail.gmail.com>
-Subject: Re: Some CO-RE negative testcases are buggy
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQK55WzR6_JfxkMzEfUnLJnX75bRHjCkaptcVF=nQ_gWfw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 4:23 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
->
-> Hi Andrii,
->
-> I was looking at some CORE testcases, and noticed two problems:
->
-> * The checks for negative test cases use an incorrect CHECK(false)
->   invocation. This means negative test cases don't fail when they
->   should.
+On Tue, Apr 20, 2021 at 08:33:43AM -0700, Alexei Starovoitov wrote:
+> On Tue, Apr 20, 2021 at 5:51 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Fri, Apr 16, 2021 at 12:48:34PM -0400, Steven Rostedt wrote:
+> > > On Sat, 17 Apr 2021 00:03:04 +0900
+> > > Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > >
+> > > > > Anyway, IIRC, Masami wasn't sure that the full regs was ever needed for the
+> > > > > return (who cares about the registers on return, except for the return
+> > > > > value?)
+> > > >
+> > > > I think kretprobe and ftrace are for a bit different usage. kretprobe can be
+> > > > used for something like debugger. In that case, accessing full regs stack
+> > > > will be more preferrable. (BTW, what the not "full regs" means? Does that
+> > > > save partial registers?)
+> > >
+> > > When the REGS flag is not set in the ftrace_ops (where kprobes uses the
+> > > REGS flags), the regs parameter is not a full set of regs, but holds just
+> > > enough to get access to the parameters. This just happened to be what was
+> > > saved in the mcount/fentry trampoline, anyway, because tracing the start of
+> > > the program, you had to save the arguments before calling the trace code,
+> > > otherwise you would corrupt the parameters of the function being traced.
+> > >
+> > > I just tweaked it so that by default, the ftrace callbacks now have access
+> > > to the saved regs (call ftrace_regs, to not let a callback get confused and
+> > > think it has full regs when it does not).
+> > >
+> > > Now for the exit of a function, what does having the full pt_regs give you?
+> > > Besides the information to get the return value, the rest of the regs are
+> > > pretty much meaningless. Is there any example that someone wants access to
+> > > the regs at the end of a function besides getting the return value?
+> >
+> > for ebpf program attached to the function exit we need the functions's
+> > arguments.. so original registers from time when the function was entered,
+> > we don't need registers state at the time function is returning
+> >
+> > as we discussed in another email, we could save input registers in
+> > fgraph_ops entry handler and load them in exit handler before calling
+> > ebpf program
+> 
+> I don't see how you can do it without BTF.
+> The mass-attach feature should prepare generic 6 or so arguments
+> from all functions it attached to.
+> On x86-64 it's trivial because 6 regs are the same.
+> On arm64 is now more challenging since return value regs overlaps with
+> first argument, so bpf trampoline (when it's ready for arm64) will look
+> a bit different than bpf trampoline on x86-64 to preserve arg0, arg1,
+> ..arg6, ret
+> 64-bit values that bpf prog expects to see.
+> On x86-32 it's even more trickier, since the same 6 args need to be copied
+> from a combination of regs and stack.
+> This is not some hypothetical case. We already use BTF in x86-32 JIT
+> and btf_func_model was introduced specifically to handle such cases.
+> So I really don't see how ftrace can do that just yet. It has to understand BTF
+> of all of the funcs it attaches to otherwise it's just saving all regs.
+> That approach was a pain to deal with.
 
-CHECK() misuse? shocker ;) This is why I'm harping on ASSERT_xxx() vs
-CHECK() all the time lately.
+ok, my idea was to get regs from the ftrace and have arch specific code
+to prepare 6 (or less) args for ebpf program.. that part would be
+already in bpf code
 
-> * Some existence tests use incorrect file names, but the test harness
->   is unable to detect this. Basically, failure to load due to a failed
->   CORE relocation is not distinguished from ENOENT. I found the CHECK
->   issue when investigating this problem.
->
-> I've written the patch attached below, but there are now 12 failures.
-> I don't understand the tests well enough to fix them, maybe you can
-> take a look?
+so you'd like to see this functionality directly in ftrace, so we don't
+save unneeded regs, is that right?
 
-Yep, thanks for reporting, I'll take a look.
+jirka
 
->
-> Best
-> Lorenz
->
-> ---
->  .../selftests/bpf/prog_tests/core_reloc.c        | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> index d94dcead72e6..bd759290347c 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> @@ -644,12 +644,12 @@ static struct core_reloc_test_case test_cases[] = {
->                 .output_len = sizeof(struct core_reloc_existence_output),
->         },
->
-> -       FIELD_EXISTS_ERR_CASE(existence__err_int_sz),
-> -       FIELD_EXISTS_ERR_CASE(existence__err_int_type),
-> -       FIELD_EXISTS_ERR_CASE(existence__err_int_kind),
-> -       FIELD_EXISTS_ERR_CASE(existence__err_arr_kind),
-> -       FIELD_EXISTS_ERR_CASE(existence__err_arr_value_type),
-> -       FIELD_EXISTS_ERR_CASE(existence__err_struct_type),
-> +       FIELD_EXISTS_ERR_CASE(existence___err_wrong_int_sz),
-> +       FIELD_EXISTS_ERR_CASE(existence___err_wrong_int_type),
-> +       FIELD_EXISTS_ERR_CASE(existence___err_wrong_int_kind),
-> +       FIELD_EXISTS_ERR_CASE(existence___err_wrong_arr_kind),
-> +       FIELD_EXISTS_ERR_CASE(existence___err_wrong_arr_value_type),
-> +       FIELD_EXISTS_ERR_CASE(existence___err_wrong_struct_type),
->
->         /* bitfield relocation checks */
->         BITFIELDS_CASE(bitfields, {
-> @@ -864,7 +864,7 @@ void test_core_reloc(void)
->                 err = bpf_object__load_xattr(&load_attr);
->                 if (err) {
->                         if (!test_case->fails)
-> -                               CHECK(false, "obj_load", "failed to load prog '%s': %d\n", probe_name, err);
-> +                               CHECK(true, "obj_load", "failed to load prog '%s': %d\n", probe_name, err);
->                         goto cleanup;
->                 }
->
-> @@ -904,7 +904,7 @@ void test_core_reloc(void)
->                 }
->
->                 if (test_case->fails) {
-> -                       CHECK(false, "obj_load_fail", "should fail to load prog '%s'\n", probe_name);
-> +                       CHECK(true, "obj_load_fail", "should fail to load prog '%s'\n", probe_name);
->                         goto cleanup;
->                 }
->
-> --
-> 2.27.0
->
+> Just look at bpf code samples with ugly per architecture macros to access regs.
+> BPF trampoline solved it and I don't think going back to per-arch macros
+> is an option at this point.
+> 
+
