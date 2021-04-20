@@ -2,128 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F1C366103
-	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 22:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA3836613D
+	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 22:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233938AbhDTUfe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Apr 2021 16:35:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59658 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233724AbhDTUfe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Apr 2021 16:35:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 26D8BB00E;
-        Tue, 20 Apr 2021 20:35:01 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id 8F5FA60789; Tue, 20 Apr 2021 22:34:59 +0200 (CEST)
-Date:   Tue, 20 Apr 2021 22:34:59 +0200
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, olteanv@gmail.com,
-        ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
-        edumazet@google.com, weiwan@google.com, cong.wang@bytedance.com,
-        ap420073@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
-        mkl@pengutronix.de, linux-can@vger.kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        pabeni@redhat.com, mzhivich@akamai.com, johunt@akamai.com,
-        albcamus@gmail.com, kehuan.feng@gmail.com, a.fatoum@pengutronix.de,
-        atenart@kernel.org, alexander.duyck@gmail.com, hdanton@sina.com,
-        jgross@suse.com, JKosina@suse.com
-Subject: Re: [PATCH net v4 1/2] net: sched: fix packet stuck problem for
- lockless qdisc
-Message-ID: <20210420203459.h7top4zogn56oa55@lion.mk-sys.cz>
-References: <1618535809-11952-1-git-send-email-linyunsheng@huawei.com>
- <1618535809-11952-2-git-send-email-linyunsheng@huawei.com>
- <20210419152946.3n7adsd355rfeoda@lion.mk-sys.cz>
- <20210419235503.eo77f6s73a4d25oh@lion.mk-sys.cz>
+        id S233896AbhDTU5d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Apr 2021 16:57:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51879 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233548AbhDTU5d (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 20 Apr 2021 16:57:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618952221;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jaUBjKAkpa//MM0yQNbkSJ9iNCCsC84Gfu+QxFXy1fQ=;
+        b=JT7anWQUmSulAfa60HVnm6utvdwVY9LK33svISn2EflEhCM4gBnWqoEn9d/MGrR+yYL8Fh
+        UpVfXC3U4mOAaudgYlugsSrr0PKih1dnVtsXvUW9c4swcfst3584h4Kzg9GAq2nzal5VfZ
+        ZOZJyfW9OtittpXC9TjgIq8vujH5Fas=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-190-GIqeFXoVM2mRw0cWcgwe1A-1; Tue, 20 Apr 2021 16:56:59 -0400
+X-MC-Unique: GIqeFXoVM2mRw0cWcgwe1A-1
+Received: by mail-ed1-f69.google.com with SMTP id i18-20020aa7c7120000b02903853032ef71so4840902edq.22
+        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 13:56:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=jaUBjKAkpa//MM0yQNbkSJ9iNCCsC84Gfu+QxFXy1fQ=;
+        b=ZBmQlpzdf7sgIMILXjaAzrzlJh4tYSeFO4t4QRexbN2weP1yIAIHn4W8n0JUtlNK4a
+         WEU9tUPbFoK819kQvsvSXiBVa3xNF7CIEbPVsl32shY4ZP3WMp7Z/yRxNQbOWn4AJ4U/
+         K6nBQ8LYFOOhyK/n/X7eGzEN5N5wB8CNPUbeUBSm9bOavQmUdgW7+/lpwpI2ZR6DbQIc
+         7ec1/HqPmhFzNjMQeJ3IxM+h2Po5SfK3yEWHc+jCV56hqa3d9B6wKIBUZIgwg7X62P7C
+         ueUnfisrk4GHpCsllSJP3voyoRFnoLkgX70b6KLM6AkNccPLdi3YOcIJnQizlLK08aeN
+         GrTg==
+X-Gm-Message-State: AOAM530OXxgnWlsjHjaIJtkuqC94WR8SGazo3d94S9nemEAGez+1zQLl
+        E9Y3Lmk/kFvPxqtcX3LOzTt/n5pydw3A+JcJgt7kABOl+OHBKchLwvIsa8zOlBvAPXjtYZ+1csC
+        U6Aakey8Bs1eF
+X-Received: by 2002:a05:6402:42d1:: with SMTP id i17mr33576664edc.131.1618952218011;
+        Tue, 20 Apr 2021 13:56:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyTrTCH9Yrw9i8jpig06/5MVIkPXQ98967ofiZhgDvEis+3uowhLeyQe2Umw2AbDnM4TIStvQ==
+X-Received: by 2002:a05:6402:42d1:: with SMTP id i17mr33576627edc.131.1618952217597;
+        Tue, 20 Apr 2021 13:56:57 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id n11sm284913edo.15.2021.04.20.13.56.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 13:56:57 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 3363A1804E5; Tue, 20 Apr 2021 22:56:56 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Martin KaFai Lau <kafai@fb.com>, Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?utf-8?B?QmrDtnJuIFQ=?= =?utf-8?B?w7ZwZWw=?= 
+        <bjorn.topel@gmail.com>
+Subject: Re: [PATCHv8 bpf-next 1/4] bpf: run devmap xdp_prog on flush
+ instead of bulk enqueue
+In-Reply-To: <20210420182854.rsis4npditizm5pu@kafai-mbp.dhcp.thefacebook.com>
+References: <20210415135320.4084595-1-liuhangbin@gmail.com>
+ <20210415135320.4084595-2-liuhangbin@gmail.com>
+ <20210420182854.rsis4npditizm5pu@kafai-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 20 Apr 2021 22:56:56 +0200
+Message-ID: <87o8e8ektj.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419235503.eo77f6s73a4d25oh@lion.mk-sys.cz>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 01:55:03AM +0200, Michal Kubecek wrote:
-> On Mon, Apr 19, 2021 at 05:29:46PM +0200, Michal Kubecek wrote:
-> > 
-> > As pointed out in the discussion on v3, this patch may result in
-> > significantly higher CPU consumption with multiple threads competing on
-> > a saturated outgoing device. I missed this submission so that I haven't
-> > checked it yet but given the description of v3->v4 changes above, it's
-> > quite likely that it suffers from the same problem.
-> 
-> And it indeed does. However, with the additional patch from the v3
-> discussion, the numbers are approximately the same as with an unpatched
-> mainline kernel.
-> 
-> As with v4, I tried this patch on top of 5.12-rc7 with real devices.
-> I used two machines with 10Gb/s Intel ixgbe NICs, sender has 16 CPUs
-> (2 8-core CPUs with HT disabled) and 16 Rx/Tx queues, receiver has
-> 48 CPUs (2 12-core CPUs with HT enabled) and 48 Rx/Tx queues.
-> 
->   threads    5.12-rc7    5.12-rc7 + v4    5.12-rc7 + v4 + stop
->      1        25.1%          38.1%            22.9%
->      8        66.2%         277.0%            74.1%
->     16        90.1%         150.7%            91.0%
->     32       107.2%         272.6%           108.3%
->     64       116.3%         487.5%           118.1%
->    128       126.1%         946.7%           126.9%
-> 
-> (The values are normalized to one core, i.e. 100% corresponds to one
-> fully used logical CPU.)
+Martin KaFai Lau <kafai@fb.com> writes:
 
-I repeated the tests few more times and with more iterations and it
-seems the problem rather was that the CPU utilization numbers are not
-very stable, in particular with number of connections/threads close to
-the number of CPUs and Tx queues. Refined results (and also other tests)
-show that full 3-patch series performs similar to unpatched 5.12-rc7
-(within the margin of statistical error).
+> On Thu, Apr 15, 2021 at 09:53:17PM +0800, Hangbin Liu wrote:
+>> From: Jesper Dangaard Brouer <brouer@redhat.com>
+>> 
+>> This changes the devmap XDP program support to run the program when the
+>> bulk queue is flushed instead of before the frame is enqueued. This has
+>> a couple of benefits:
+>> 
+>> - It "sorts" the packets by destination devmap entry, and then runs the
+>>   same BPF program on all the packets in sequence. This ensures that we
+>>   keep the XDP program and destination device properties hot in I-cache.
+>> 
+>> - It makes the multicast implementation simpler because it can just
+>>   enqueue packets using bq_enqueue() without having to deal with the
+>>   devmap program at all.
+>> 
+>> The drawback is that if the devmap program drops the packet, the enqueue
+>> step is redundant. However, arguably this is mostly visible in a
+>> micro-benchmark, and with more mixed traffic the I-cache benefit should
+>> win out. The performance impact of just this patch is as follows:
+>> 
+>> When bq_xmit_all() is called from bq_enqueue(), another packet will
+>> always be enqueued immediately after, so clearing dev_rx, xdp_prog and
+>> flush_node in bq_xmit_all() is redundant. Move the clear to __dev_flush(),
+>> and only check them once in bq_enqueue() since they are all modified
+>> together.
 
-However, I noticed something disturbing in the results of a simple
-1-thread TCP_STREAM test (client sends data through a TCP connection to
-server using long writes, we measure the amount of data received by the
-server):
+(side note, while we're modifying the commit message, this paragraph
+should probably be moved to the end)
 
-  server: 172.17.1.1, port 12543
-  iterations: 20, threads: 1, test length: 30
-  test: TCP_STREAM, message size: 1048576
-  
-  1     927403548.4 B/s,  avg   927403548.4 B/s, mdev           0.0 B/s (  0.0%)
-  2    1176317172.1 B/s,  avg  1051860360.2 B/s, mdev   124456811.8 B/s ( 11.8%), confid. +/-  1581348251.3 B/s (150.3%)
-  3     927335837.8 B/s,  avg  1010352186.1 B/s, mdev   117354970.3 B/s ( 11.6%), confid. +/-   357073677.2 B/s ( 35.3%)
-  4    1176728045.1 B/s,  avg  1051946150.8 B/s, mdev   124576544.7 B/s ( 11.8%), confid. +/-   228863127.8 B/s ( 21.8%)
-  5    1176788216.3 B/s,  avg  1076914563.9 B/s, mdev   122102985.3 B/s ( 11.3%), confid. +/-   169478943.5 B/s ( 15.7%)
-  6    1158167055.1 B/s,  avg  1090456645.8 B/s, mdev   115504209.5 B/s ( 10.6%), confid. +/-   132805140.8 B/s ( 12.2%)
-  7    1176243474.4 B/s,  avg  1102711907.0 B/s, mdev   111069717.1 B/s ( 10.1%), confid. +/-   110956822.2 B/s ( 10.1%)
-  8    1176771142.8 B/s,  avg  1111969311.5 B/s, mdev   106744173.5 B/s (  9.6%), confid. +/-    95417120.0 B/s (  8.6%)
-  9    1176206364.6 B/s,  avg  1119106761.8 B/s, mdev   102644185.2 B/s (  9.2%), confid. +/-    83685200.5 B/s (  7.5%)
-  10   1175888409.4 B/s,  avg  1124784926.6 B/s, mdev    98855550.5 B/s (  8.8%), confid. +/-    74537085.1 B/s (  6.6%)
-  11   1176541407.6 B/s,  avg  1129490061.2 B/s, mdev    95422224.8 B/s (  8.4%), confid. +/-    67230249.7 B/s (  6.0%)
-  12    934185352.8 B/s,  avg  1113214668.9 B/s, mdev   106114984.5 B/s (  9.5%), confid. +/-    70420712.5 B/s (  6.3%)
-  13   1176550558.1 B/s,  avg  1118086660.3 B/s, mdev   103339448.9 B/s (  9.2%), confid. +/-    65002902.4 B/s (  5.8%)
-  14   1176521808.8 B/s,  avg  1122260599.5 B/s, mdev   100711151.3 B/s (  9.0%), confid. +/-    60333655.0 B/s (  5.4%)
-  15   1176744840.8 B/s,  avg  1125892882.3 B/s, mdev    98240838.2 B/s (  8.7%), confid. +/-    56319052.3 B/s (  5.0%)
-  16   1176593778.5 B/s,  avg  1129061688.3 B/s, mdev    95909740.8 B/s (  8.5%), confid. +/-    52771633.5 B/s (  4.7%)
-  17   1176583967.4 B/s,  avg  1131857116.5 B/s, mdev    93715582.2 B/s (  8.3%), confid. +/-    49669258.6 B/s (  4.4%)
-  18   1176853301.8 B/s,  avg  1134356904.5 B/s, mdev    91656530.2 B/s (  8.1%), confid. +/-    46905244.8 B/s (  4.1%)
-  19   1176592845.7 B/s,  avg  1136579848.8 B/s, mdev    89709043.8 B/s (  7.9%), confid. +/-    44424855.9 B/s (  3.9%)
-  20   1176608117.3 B/s,  avg  1138581262.2 B/s, mdev    87871692.6 B/s (  7.7%), confid. +/-    42193098.5 B/s (  3.7%)
-  all                     avg  1138581262.2 B/s, mdev    87871692.6 B/s (  7.7%), confid. +/-    42193098.5 B/s (  3.7%)
+>> Using 10Gb i40e NIC, do XDP_DROP on veth peer, with xdp_redirect_map in
+>> sample/bpf, send pkts via pktgen cmd:
+>> ./pktgen_sample03_burst_single_flow.sh -i eno1 -d $dst_ip -m $dst_mac -t 10 -s 64
+>> 
+>> There are about +/- 0.1M deviation for native testing, the performance
+>> improved for the base-case, but some drop back with xdp devmap prog attached.
+>> 
+>> Version          | Test                           | Generic | Native | Native + 2nd xdp_prog
+>> 5.12 rc4         | xdp_redirect_map   i40e->i40e  |    1.9M |   9.6M |  8.4M
+>> 5.12 rc4         | xdp_redirect_map   i40e->veth  |    1.7M |  11.7M |  9.8M
+>> 5.12 rc4 + patch | xdp_redirect_map   i40e->i40e  |    1.9M |   9.8M |  8.0M
+>> 5.12 rc4 + patch | xdp_redirect_map   i40e->veth  |    1.7M |  12.0M |  9.4M
+> Based on the discussion in v7, a summary of what still needs to be
+> addressed will be useful.
 
-Each line shows result of one 30 second long test and average, mean
-deviation and 99% confidence interval half width through the iterations
-so far. While 17 iteration results are essentially the wire speed minus
-TCP overhead, iterations 1, 3 and 12 are more than 20% lower. As results
-of the same test on unpatched 5.12-rc7 are much more consistent (the
-lowest iteration result through the whole test was 1175939718.3 and the
-mean deviation only 276889.1 B/s), it doesn't seeem to be just a random
-fluctuation.
+That's fair. How about we add a paragraph like this (below the one I
+just suggested above that we move to the end):
 
-I'll try to find out what happens in these outstanding iterations.
+This change also has the side effect of extending the lifetime of the
+RCU-protected xdp_prog that lives inside the devmap entries: Instead of
+just living for the duration of the XDP program invocation, the
+reference now lives all the way until the bq is flushed. This is safe
+because the bq flush happens at the end of the NAPI poll loop, so
+everything happens between a local_bh_disable()/local_bh_enable() pair.
+However, this is by no means obvious from looking at the call sites; in
+particular, some drivers have an additional rcu_read_lock() around only
+the XDP program invocation, which only confuses matters further.
+Clearing this up will be done in a separate patch series.
 
-Michal
