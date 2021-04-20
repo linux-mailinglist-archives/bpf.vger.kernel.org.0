@@ -2,110 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E0B365DF8
-	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 18:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14B4365E37
+	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 19:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233207AbhDTQ4M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Apr 2021 12:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232916AbhDTQ4M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Apr 2021 12:56:12 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF27C06174A
-        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 09:55:41 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 65so43812189ybc.4
-        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 09:55:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gICuAp3Pquh/lrfQ+hVpwQGGb7ciruRL5YwQXBd9yuE=;
-        b=f7pLr5I/ZAsprw3VFMITeM5qXtn2Kl862lifEKceXEa2aub70Ip50oVCZGQW6LvDug
-         bx7ARU7qCL4feSXj1oipvGgxvdIYEME5air226Rnpo9hPsxvTEEtgbak1RZA4wlSxiBg
-         gpUDcfnE6Em+hVrowPXZijRZQV6kNortlx1O745PtNf0puGOKNrL5o1wDhgj7QbW1yvh
-         8tndP6m63y/0ZDOEsrSFmtoiHqERO2LkSDCAp2tSJBQnBnDvfYreq6CGMf6wRRNeBIvk
-         /Ohz6zokN+2rOpQDdhp3UlAuf5W69MPsEFTpSeSTxesfiaTb/f3C7ZRVc4NoDOXtkQ7p
-         FEMw==
+        id S232648AbhDTRKU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Apr 2021 13:10:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42103 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231549AbhDTRKT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 20 Apr 2021 13:10:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618938586;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SRf/Tph3L3NAvNbWzjfk07FIkQyOeKwYwW/14Laa07M=;
+        b=LhbAO+DCVrf5gJ+wqxibKz5YjBIVOsOHkx5ah1oAEKcppahMIxFgtc1m8EudVfYV3aPT1s
+        DYtdU30c9Gk2wiritPNA5gsW4ArlIJCuk1QNLtpQM6FT82UGZvdCrfWxieSEtcx6tm6s9a
+        xkJYk5tK4WUN1zv6Ja6vkqeib1lkJg4=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-420-yrv673iPMyKQyR3TIxqZtA-1; Tue, 20 Apr 2021 13:09:43 -0400
+X-MC-Unique: yrv673iPMyKQyR3TIxqZtA-1
+Received: by mail-ed1-f69.google.com with SMTP id l22-20020a0564021256b0290384ebfba68cso9643208edw.2
+        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 10:09:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gICuAp3Pquh/lrfQ+hVpwQGGb7ciruRL5YwQXBd9yuE=;
-        b=KP6zwLjmYl0z8lMeInfayDUeD3FKfYNjaLfyaitQQjBhgMQNU27OpWpxkAb9PEa9RA
-         2L7UjbdNOT80VO1hEOzk7aj2yGgb0iWItHHxBpYSjJ1EXNnHTifmzHO+RMGmPrqD6S3V
-         79k0BjXcQvuWaEX4xf1mWsZD15bDFDfEMflvLfaVw+MPXBticb4wkg8/yH21MaJM/4Yt
-         a1Xjs95l71MWRA5jpqdBnrpkGDJB+GD1D/N/BywnC6ezWqSllfbjAgjdwMvuDSqCCjmr
-         OAHUYWpuqpcbgBe1msjC7RlS2mNMr2IVh7sIx8MsG9ep5/RiDLHVMJhPwWZ+pNb5kLe6
-         LUQw==
-X-Gm-Message-State: AOAM5313q10rVZBOqTUpOGhgksnYgs/fkPzRMAa9hIpowGPYyIE3uUwn
-        ynl7WuBA3groFP8AtxsBmAIq2ioSWoJGRBCAI2bVKam/W6w=
-X-Google-Smtp-Source: ABdhPJyTzIAmr5qTiXZLjkHcVpOYiJtIv8p+8cYzFlKIwLzzIMVOHcvTu7zGEbfoq33u2AndS9SSKl1mqIFCzOqq1sM=
-X-Received: by 2002:a25:3357:: with SMTP id z84mr26091572ybz.260.1618937740422;
- Tue, 20 Apr 2021 09:55:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SRf/Tph3L3NAvNbWzjfk07FIkQyOeKwYwW/14Laa07M=;
+        b=eW35CQ6vvMlBdSfsQjQRbDJHfwm6q6yJ9OsK/S6Z2ixnGpdttZV4RLJsnFxvkJRG5D
+         TDvDTPmf8TOTWx+ji+NcEKoS3q4MM6XrMp/FtedHiRA7/tliOPqD1nbrzP8zsdfo/pNV
+         WLmVn/XIpt6dcPxW7o2eMxNsmzq2rbTmhkNzWwyWCWO4/J9sgkjsTVqKBS/1+wcg3/Ry
+         TaqXENI7jbTVj3PjYg/bvjLVmZlgQ1Wxu4g9of9IohR2JjVkfaYlrPfUrndX03YnoS8V
+         ml5iTK67KlXqRgE0hn2oXdGyOzWWlNy/CUfHMJj0H5tvsZrw1XPipWIea3Q6l7CkpG4T
+         xJAw==
+X-Gm-Message-State: AOAM532tI/Hs79oSQxxkhcT+3LogHv/IOaxeQ4ck4pEq/BC2HPe2hxeU
+        nyvTVMJGhAzBFTxTvnBAeLNrxGKtPMHS9TQ28x7zWX3aZCfWotif8m2aRxUyek+bVx/RbyoMko6
+        cKIXjj+wuANS5
+X-Received: by 2002:a17:906:77c5:: with SMTP id m5mr27364259ejn.201.1618938582563;
+        Tue, 20 Apr 2021 10:09:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw6gn2isDw3WqUDXHO63YDx5KhOxC+YyfUal3meuEXKHwTt4Ve781FuwcvJ5bPN0AapIjE8qg==
+X-Received: by 2002:a17:906:77c5:: with SMTP id m5mr27364232ejn.201.1618938582404;
+        Tue, 20 Apr 2021 10:09:42 -0700 (PDT)
+Received: from localhost ([151.66.28.185])
+        by smtp.gmail.com with ESMTPSA id r19sm12913751ejr.55.2021.04.20.10.09.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 10:09:41 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 19:09:38 +0200
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, song@kernel.org,
+        toke@redhat.com
+Subject: Re: [PATCH v3 bpf-next] cpumap: bulk skb using netif_receive_skb_list
+Message-ID: <YH8K0gkYoZVfq0FV@lore-desk>
+References: <01cd8afa22786b2c8a4cd7250d165741e990a771.1618927173.git.lorenzo@kernel.org>
+ <20210420185440.1dfcf71c@carbon>
 MIME-Version: 1.0
-References: <CACAyw9_66VctZZajdAUb0jhhn03nFkvbFLRMc=1_2zJ2_kr-aw@mail.gmail.com>
-In-Reply-To: <CACAyw9_66VctZZajdAUb0jhhn03nFkvbFLRMc=1_2zJ2_kr-aw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 20 Apr 2021 09:55:29 -0700
-Message-ID: <CAEf4Bza1=DKHtXJ3+Ez7xXFJ1EKQqB7fUrB-fDz_dSOKcGm7FA@mail.gmail.com>
-Subject: Re: Behaviour of bpf_core_enum_value with missing value
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="X48EGoxOSC8+66zO"
+Content-Disposition: inline
+In-Reply-To: <20210420185440.1dfcf71c@carbon>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 6:43 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
->
-> Hi Andrii,
->
-> The documentation for bpf_core_enum_value says that a missing
-> enum_value will make the macro return 0:
->
-> * 64-bit value, if specified enum type and its enumerator value are
-> * present in target kernel's BTF;
-> * 0, if no matching enum and/or enum value within that enum is found.
-> */
-> #define bpf_core_enum_value(enum_type, enum_value)
->
-> However, the enumval___err_missing test asserts that
-> bpf_core_enum_value with a missing value will poison the result if I
-> understand correctly.
->
 
-I think comment is outdated. This was my initial approach, but after
-discussing with Alexei we decided to keep the behavior consistent with
-other types of relocation and require guarding with
-bpf_core_enum_value_exists() to handle cases where enum value is
-expected to not exist sometimes.
+--X48EGoxOSC8+66zO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> $ sudo ./test_progs -n 31/77 -vvv
-> ...
-> libbpf: prog 'test_core_enumval': relo #9: kind <enumval_value> (11),
-> spec is [5] typedef anon_enum::ANON_ENUM_VAL2 = 32
-> libbpf: prog 'test_core_enumval': relo #9: non-matching candidate #0
-> [6] typedef anon_enum___err_missing::ANON_ENUM_VAL1___err_missing =
-> 273
-> libbpf: prog 'test_core_enumval': relo #9: no matching targets found
-> libbpf: prog 'test_core_enumval': relo #9: substituting insn #48 w/ invalid insn
-> libbpf: prog 'test_core_enumval': relo #9: substituting insn #47 w/ invalid insn
-> libbpf: load bpf program failed: Invalid argument
->
-> What is the correct behaviour in this case?
+[...]
+> > +	TP_ARGS(map_id, processed, sched, xdp_stats),
+> > =20
+> >  	TP_STRUCT__entry(
+> >  		__field(int, map_id)
+> >  		__field(u32, act)
+> >  		__field(int, cpu)
+> > -		__field(unsigned int, drops)
+> >  		__field(unsigned int, processed)
+>=20
+> So, struct member @processed will takeover the room for @drops.
+>=20
+> Can you please test how an old xdp_monitor program will react to this?
+> Will it fail, or extract and show wrong values?
 
-Tests and code are right, comment is wrong. Now looking at
-progs/test_core_reloc_enumval.c, /* NAMED_ENUM_VAL3 value is optional
-*/ should be probably replaced with if (bpf_core_enum_value_exists())
-{ out->named_val3 = bpf_core_enum_value() } else { out->named_val3 =
-0xBAD } pattern or similar.
+Ack, right. I think we should keep the struct layout in order to maintain
+back-compatibility. I will fix it in v4.
 
->
-> Lorenz
->
-> --
-> Lorenz Bauer  |  Systems Engineer
-> 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
->
-> www.cloudflare.com
+>=20
+> The xdp_mointor tool is in several external git repos:
+>=20
+>  https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/samp=
+les/bpf/xdp_monitor_kern.c
+>  https://github.com/xdp-project/xdp-tutorial/tree/master/tracing02-xdp-mo=
+nitor
+>=20
+> Do you have any plans for fixing those tools?
+
+I update xdp_monitor_{kern,user}.c and xdp_redirect_cpu_{kern,user}.c in the
+patch. Do you mean to post a dedicated patch for xdp-project tutorial?
+
+Regards,
+Lorenzo
+
+>=20
+>=20
+>=20
+>=20
+> --=20
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>=20
+
+--X48EGoxOSC8+66zO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYH8K0AAKCRA6cBh0uS2t
+rNYJAQCb772jtidNWS9ZSDM5wbswkXCz6KJpLOFAehcLc5flGAEAhCs+jMvOs1hI
+GWt2R3oUmF1T3uv6Hx14tzIAeUmb1Qk=
+=obBe
+-----END PGP SIGNATURE-----
+
+--X48EGoxOSC8+66zO--
+
