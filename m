@@ -2,84 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F81A3651A2
-	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 06:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7883651C0
+	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 07:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229588AbhDTEyN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Apr 2021 00:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhDTEyM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Apr 2021 00:54:12 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5A3C06174A;
-        Mon, 19 Apr 2021 21:53:42 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id v13so5401529ple.9;
-        Mon, 19 Apr 2021 21:53:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=80f/iB31iHFj3JMe7YWLAFAu3yiai8iBvlOjNXOsjk0=;
-        b=AcdWNKrQ1R36sK8EdObUXzbup/WaCjWhvaBYfEdi3s5Dzm0ShIr+MvxfzTYkAqG8+z
-         waIOeiFME01HE+MLgM9ksupUO+OfVYRQl5dPAcAOX5OmAnz4ZNtEuVz0gsgDBrNPPiP+
-         dzQdazMQBSK05+AH/065mySnewwnx1Z5gWxH2lIvzj/4pq+xFvO+apir0a/tG15LLunQ
-         QsIvwc8Kt+Mnoqnx9K0OH1hzoGsXU7PV6z1s5Z8bpNtxp+dL4Gf9V9olbUFrAdZBGSqz
-         ZHPTqbBM89bMPB0W26IspNGz9YArHz7nJ68W9XmV8WM8IraL6hIlLlNRczPX5NYnqcov
-         yDVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=80f/iB31iHFj3JMe7YWLAFAu3yiai8iBvlOjNXOsjk0=;
-        b=nNlTgk03s3Gp7KCUWNUQumTiQDVni2yoUeYAgZ3u8W/+pfcRuHPG6DQercqpgYi/ty
-         e25JRofxBtK65vP+dkz4kr1FAfzn37QnZkdDH7/sH0FvYyglQgSj5C2h8h2wJPNW9PtM
-         0HLXumwyIz20ed6HCe2apqUIBF8vWz9nxh7slExlyDG4SlnY9203w4b3/YbW478PB1Cw
-         uokxPs3ysJhtjPAqTh/2zRZgIzXKY9mtjTH11zArxuK5mgtiDsJkOb4JnF+yNNUjjN5x
-         JgN4Dz+8zxUEq+mS+0JVLC+9ZCFTs3eodpayyHMXbq4ulFnKjJoqyIJmWY+dvskW7u/U
-         pbQg==
-X-Gm-Message-State: AOAM5326AMst7zZzcCywB5prjWuPooJr5jNMXpjR7nznqYgQf24i3m7P
-        2KdmcVhCbwsUFix8gbTZhJA=
-X-Google-Smtp-Source: ABdhPJymGcRMTwiJF8Dxqv9mtzC4tHS1squKA6novLwIEj9wwGw+6+0FVBRwQykVLMlqilwfxDw41Q==
-X-Received: by 2002:a17:90a:b00b:: with SMTP id x11mr2897846pjq.67.1618894421389;
-        Mon, 19 Apr 2021 21:53:41 -0700 (PDT)
-Received: from localhost (121-45-173-48.tpgi.com.au. [121.45.173.48])
-        by smtp.gmail.com with ESMTPSA id o9sm15082251pfh.217.2021.04.19.21.53.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 21:53:40 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 14:53:37 +1000
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     Samuel Mendoza-Jonas <samjonas@amazon.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [PATCH] bpf: Fix backport of "bpf: restrict unknown scalars of
- mixed signed bounds for unprivileged"
-Message-ID: <20210420045337.GF8178@balbir-desktop>
-References: <20210419235641.5442-1-samjonas@amazon.com>
+        id S229593AbhDTFPd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Apr 2021 01:15:33 -0400
+Received: from sitav-80046.hsr.ch ([152.96.80.46]:43264 "EHLO
+        mail.strongswan.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229588AbhDTFPd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Apr 2021 01:15:33 -0400
+Received: from think.home (224.110.78.83.dynamic.wline.res.cust.swisscom.ch [83.78.110.224])
+        by mail.strongswan.org (Postfix) with ESMTPSA id EF823401B1;
+        Tue, 20 Apr 2021 07:15:00 +0200 (CEST)
+Message-ID: <f14da35f8cfa4b8f888dadfe4c9ebcd031d8e870.camel@strongswan.org>
+Subject: Re: [PATCH net-next] net: xdp: Update pkt_type if generic XDP
+ changes unicast MAC
+From:   Martin Willi <martin@strongswan.org>
+To:     Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Date:   Tue, 20 Apr 2021 07:15:00 +0200
+In-Reply-To: <87tuo2gwbj.fsf@toke.dk>
+References: <20210419141559.8611-1-martin@strongswan.org>
+         <87tuo2gwbj.fsf@toke.dk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419235641.5442-1-samjonas@amazon.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 04:56:41PM -0700, Samuel Mendoza-Jonas wrote:
-> The 4.14 backport of 9d7eceede ("bpf: restrict unknown scalars of mixed
-> signed bounds for unprivileged") adds the PTR_TO_MAP_VALUE check to the
-> wrong location in adjust_ptr_min_max_vals(), most likely because 4.14
-> doesn't include the commit that updates the if-statement to a
-> switch-statement (aad2eeaf4 "bpf: Simplify ptr_min_max_vals adjustment").
-> 
-> Move the check to the proper location in adjust_ptr_min_max_vals().
-> 
-> Fixes: 17efa65350c5a ("bpf: restrict unknown scalars of mixed signed bounds for unprivileged")
-> Signed-off-by: Samuel Mendoza-Jonas <samjonas@amazon.com>
-> Reviewed-by: Frank van der Linden <fllinden@amazon.com>
-> Reviewed-by: Ethan Chen <yishache@amazon.com>
-> ---
+Hi,
 
-Thanks for catching it :)
+Thanks for your comments.
 
-Reviewed-by: Balbir Singh <bsingharora@gmail.com>
+> >  	eth = (struct ethhdr *)xdp->data;
+> > +	orig_host = ether_addr_equal_64bits(eth->h_dest, skb->dev->dev_addr);
+> 
+> ether_addr_equal_64bits() seems to assume that the addresses passed to 
+> it are padded to be 8 bytes long, which is not the case for eth->h_dest.
+> AFAICT the only reason the _64bits variant works for multicast is that
+> it happens to be only checking the top-most bit, but unless I'm missing
+> something you'll have to use the boring old ether_addr_equal() here, no?
+
+This is what eth_type_trans() uses below, so I assumed it is safe to
+use. Isn't that working on the same data?
+
+Also, the destination address in Ethernet is followed by the source
+address, so two extra bytes in the source are used as padding. These
+are then shifted out by ether_addr_equal_64bits(), no?
+
+> > +		skb->pkt_type = PACKET_HOST;
+> >  		skb->protocol = eth_type_trans(skb, skb->dev);
+> >  	}
+> 
+> Okay, so this was a bit confusing to me at fist glance:
+> eth_type_trans() will reset the type, but not back to PACKET_HOST. So
+> this works, just a bit confusing :)
+
+Indeed. I considered changing eth_type_trans() to always reset
+pkt_type, but I didn't want to take the risk for any side effects.
+
+Thanks!
+Martin
+
