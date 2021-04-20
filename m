@@ -2,283 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B09366050
-	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 21:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F1C366103
+	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 22:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233785AbhDTTi1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Apr 2021 15:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233787AbhDTTi1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Apr 2021 15:38:27 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B823C06138A;
-        Tue, 20 Apr 2021 12:37:55 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id y32so27374032pga.11;
-        Tue, 20 Apr 2021 12:37:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ggSnWKXUJLE6iHcOs0eUWOJm8Vh5SmESAPT+YojILTs=;
-        b=ZkUENDZH0Dfzhu3yQhk2ckxI79uQ/YN8MF/ZzdjvRJYty1qkQSl+5AWbCMoeIiPYzJ
-         xa53ShKa4XGlecfYUHuXLEOXyDAead5kghszWVKO6DYH0wT0O7oSD3uudMwQhgpQ6t7x
-         YZ2JRGwGjfw9p5iURmNzh+fUNF4XZNdRY6imEjYA+jYG40Nd1QbgjqarXa4MWjJkKGr2
-         73pbGVvacPqraYGSmn9S2n4oRPUzw0NQ+9WUEDLu2Oo+oSW6S7kAJ26GHkstKIbqu4ac
-         dIaNWgM69ht4UuBWBJJQELSEvq5kMuadquT04dpQlTS4/JZI8bPeFAUFekW0v5ixeuXt
-         y6NQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ggSnWKXUJLE6iHcOs0eUWOJm8Vh5SmESAPT+YojILTs=;
-        b=RX7+hQuvKF9rOosO102EX/Ium9nWNE8GbbWoxsVw5Sfu4joLUTyIAJbc0Ti2M7vN/O
-         KuKrw02Wps4FRQLR6wCGBMZJgYcd3D19HqXJIJPSkCy8vVMQAxqoZpgHDFe/x+0f38Lr
-         9gyv4RR9CYrKudzcVLeP90aw7LgYmLhSCN9PO2irD+gSV97hmMz9tpJj/gpyA6FAh7KA
-         TZLo0zn6pvOGZgDSiAI856B3ujUxOiZH0RzTK6d8h7nXJM3gBH8xb4OIoGoUzw5TSKpN
-         8plZhoFfFlJ31oTT+4MFN7ncNZra4U4Tb1oC8DHrjCref9Kq4hE+aRAMrY5bp0sOFtMk
-         sOSQ==
-X-Gm-Message-State: AOAM532mBhRPGO44S0d0i1+7xNQgKtV4wCWABcXTmnqBqlEkKWNlO6kU
-        9WWud50tEFuuWlGgKcn+xiCfi7MFsEw8DA==
-X-Google-Smtp-Source: ABdhPJz1Vyx87oJ0VKjUuP7ZO7nPIrrWmgbTjs1OprdgRfIjMp9RwNjF1walaOY49VihKz2QUFy/sQ==
-X-Received: by 2002:a62:4d86:0:b029:252:c889:2dd8 with SMTP id a128-20020a624d860000b0290252c8892dd8mr27264030pfb.41.1618947474750;
-        Tue, 20 Apr 2021 12:37:54 -0700 (PDT)
-Received: from localhost ([112.79.227.195])
-        by smtp.gmail.com with ESMTPSA id p22sm3063937pjg.39.2021.04.20.12.37.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 12:37:54 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org
-Subject: [PATCH bpf-next v3 3/3] libbpf: add selftests for TC-BPF API
-Date:   Wed, 21 Apr 2021 01:07:40 +0530
-Message-Id: <20210420193740.124285-4-memxor@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210420193740.124285-1-memxor@gmail.com>
-References: <20210420193740.124285-1-memxor@gmail.com>
+        id S233938AbhDTUfe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Apr 2021 16:35:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59658 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233724AbhDTUfe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Apr 2021 16:35:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 26D8BB00E;
+        Tue, 20 Apr 2021 20:35:01 +0000 (UTC)
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+        id 8F5FA60789; Tue, 20 Apr 2021 22:34:59 +0200 (CEST)
+Date:   Tue, 20 Apr 2021 22:34:59 +0200
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, olteanv@gmail.com,
+        ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
+        edumazet@google.com, weiwan@google.com, cong.wang@bytedance.com,
+        ap420073@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
+        mkl@pengutronix.de, linux-can@vger.kernel.org, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        pabeni@redhat.com, mzhivich@akamai.com, johunt@akamai.com,
+        albcamus@gmail.com, kehuan.feng@gmail.com, a.fatoum@pengutronix.de,
+        atenart@kernel.org, alexander.duyck@gmail.com, hdanton@sina.com,
+        jgross@suse.com, JKosina@suse.com
+Subject: Re: [PATCH net v4 1/2] net: sched: fix packet stuck problem for
+ lockless qdisc
+Message-ID: <20210420203459.h7top4zogn56oa55@lion.mk-sys.cz>
+References: <1618535809-11952-1-git-send-email-linyunsheng@huawei.com>
+ <1618535809-11952-2-git-send-email-linyunsheng@huawei.com>
+ <20210419152946.3n7adsd355rfeoda@lion.mk-sys.cz>
+ <20210419235503.eo77f6s73a4d25oh@lion.mk-sys.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210419235503.eo77f6s73a4d25oh@lion.mk-sys.cz>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds some basic tests for the low level bpf_tc_* API.
+On Tue, Apr 20, 2021 at 01:55:03AM +0200, Michal Kubecek wrote:
+> On Mon, Apr 19, 2021 at 05:29:46PM +0200, Michal Kubecek wrote:
+> > 
+> > As pointed out in the discussion on v3, this patch may result in
+> > significantly higher CPU consumption with multiple threads competing on
+> > a saturated outgoing device. I missed this submission so that I haven't
+> > checked it yet but given the description of v3->v4 changes above, it's
+> > quite likely that it suffers from the same problem.
+> 
+> And it indeed does. However, with the additional patch from the v3
+> discussion, the numbers are approximately the same as with an unpatched
+> mainline kernel.
+> 
+> As with v4, I tried this patch on top of 5.12-rc7 with real devices.
+> I used two machines with 10Gb/s Intel ixgbe NICs, sender has 16 CPUs
+> (2 8-core CPUs with HT disabled) and 16 Rx/Tx queues, receiver has
+> 48 CPUs (2 12-core CPUs with HT enabled) and 48 Rx/Tx queues.
+> 
+>   threads    5.12-rc7    5.12-rc7 + v4    5.12-rc7 + v4 + stop
+>      1        25.1%          38.1%            22.9%
+>      8        66.2%         277.0%            74.1%
+>     16        90.1%         150.7%            91.0%
+>     32       107.2%         272.6%           108.3%
+>     64       116.3%         487.5%           118.1%
+>    128       126.1%         946.7%           126.9%
+> 
+> (The values are normalized to one core, i.e. 100% corresponds to one
+> fully used logical CPU.)
 
-Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../selftests/bpf/prog_tests/test_tc_bpf.c    | 169 ++++++++++++++++++
- .../selftests/bpf/progs/test_tc_bpf_kern.c    |  12 ++
- 2 files changed, 181 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c
+I repeated the tests few more times and with more iterations and it
+seems the problem rather was that the CPU utilization numbers are not
+very stable, in particular with number of connections/threads close to
+the number of CPUs and Tx queues. Refined results (and also other tests)
+show that full 3-patch series performs similar to unpatched 5.12-rc7
+(within the margin of statistical error).
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c b/tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c
-new file mode 100644
-index 000000000000..563a3944553c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c
-@@ -0,0 +1,169 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <linux/err.h>
-+#include <linux/limits.h>
-+#include <bpf/libbpf.h>
-+#include <errno.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <test_progs.h>
-+#include <linux/if_ether.h>
-+
-+#define LO_IFINDEX 1
-+
-+static int test_tc_internal(int fd, __u32 parent_id)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts, .handle = 1, .priority = 10,
-+			    .class_id = TC_H_MAKE(1UL << 16, 1));
-+	struct bpf_tc_attach_id id = {};
-+	struct bpf_tc_info info = {};
-+	int ret;
-+
-+	ret = bpf_tc_attach(fd, LO_IFINDEX, parent_id, &opts, &id);
-+	if (!ASSERT_EQ(ret, 0, "bpf_tc_attach"))
-+		return ret;
-+
-+	ret = bpf_tc_get_info(LO_IFINDEX, parent_id, &id, &info);
-+	if (!ASSERT_EQ(ret, 0, "bpf_tc_get_info"))
-+		goto end;
-+
-+	if (!ASSERT_EQ(info.id.handle, id.handle, "handle mismatch") ||
-+	    !ASSERT_EQ(info.id.priority, id.priority, "priority mismatch") ||
-+	    !ASSERT_EQ(info.id.handle, 1, "handle incorrect") ||
-+	    !ASSERT_EQ(info.chain_index, 0, "chain_index incorrect") ||
-+	    !ASSERT_EQ(info.id.priority, 10, "priority incorrect") ||
-+	    !ASSERT_EQ(info.class_id, TC_H_MAKE(1UL << 16, 1),
-+		       "class_id incorrect") ||
-+	    !ASSERT_EQ(info.protocol, ETH_P_ALL, "protocol incorrect"))
-+		goto end;
-+
-+	opts.replace = true;
-+	ret = bpf_tc_attach(fd, LO_IFINDEX, parent_id, &opts, &id);
-+	if (!ASSERT_EQ(ret, 0, "bpf_tc_attach in replace mode"))
-+		return ret;
-+
-+	/* Demonstrate changing attributes */
-+	opts.class_id = TC_H_MAKE(1UL << 16, 2);
-+
-+	ret = bpf_tc_attach(fd, LO_IFINDEX, parent_id, &opts, &id);
-+	if (!ASSERT_EQ(ret, 0, "bpf_tc attach in replace mode"))
-+		goto end;
-+
-+	ret = bpf_tc_get_info(LO_IFINDEX, parent_id, &id, &info);
-+	if (!ASSERT_EQ(ret, 0, "bpf_tc_get_info"))
-+		goto end;
-+
-+	if (!ASSERT_EQ(info.class_id, TC_H_MAKE(1UL << 16, 2),
-+		       "class_id incorrect after replace"))
-+		goto end;
-+	if (!ASSERT_EQ(info.bpf_flags & TCA_BPF_FLAG_ACT_DIRECT, 1,
-+		       "direct action mode not set"))
-+		goto end;
-+
-+end:
-+	ret = bpf_tc_detach(LO_IFINDEX, parent_id, &id);
-+	ASSERT_EQ(ret, 0, "detach failed");
-+	return ret;
-+}
-+
-+int test_tc_info(int fd)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts, .handle = 1, .priority = 10,
-+			    .class_id = TC_H_MAKE(1UL << 16, 1));
-+	struct bpf_tc_attach_id id = {}, old;
-+	struct bpf_tc_info info = {};
-+	int ret;
-+
-+	ret = bpf_tc_attach(fd, LO_IFINDEX, BPF_TC_CLSACT_INGRESS, &opts, &id);
-+	if (!ASSERT_EQ(ret, 0, "bpf_tc_attach"))
-+		return ret;
-+	old = id;
-+
-+	ret = bpf_tc_get_info(LO_IFINDEX, BPF_TC_CLSACT_INGRESS, &id, &info);
-+	if (!ASSERT_EQ(ret, 0, "bpf_tc_get_info"))
-+		goto end_old;
-+
-+	if (!ASSERT_EQ(info.id.handle, id.handle, "handle mismatch") ||
-+	    !ASSERT_EQ(info.id.priority, id.priority, "priority mismatch") ||
-+	    !ASSERT_EQ(info.id.handle, 1, "handle incorrect") ||
-+	    !ASSERT_EQ(info.chain_index, 0, "chain_index incorrect") ||
-+	    !ASSERT_EQ(info.id.priority, 10, "priority incorrect") ||
-+	    !ASSERT_EQ(info.class_id, TC_H_MAKE(1UL << 16, 1),
-+		       "class_id incorrect") ||
-+	    !ASSERT_EQ(info.protocol, ETH_P_ALL, "protocol incorrect"))
-+		goto end_old;
-+
-+	/* choose a priority */
-+	opts.priority = 0;
-+	ret = bpf_tc_attach(fd, LO_IFINDEX, BPF_TC_CLSACT_INGRESS, &opts, &id);
-+	if (!ASSERT_EQ(ret, 0, "bpf_tc_attach"))
-+		goto end_old;
-+
-+	ret = bpf_tc_get_info(LO_IFINDEX, BPF_TC_CLSACT_INGRESS, &id, &info);
-+	if (!ASSERT_EQ(ret, 0, "bpf_tc_get_info"))
-+		goto end;
-+
-+	if (!ASSERT_NEQ(id.priority, old.priority, "filter priority mismatch"))
-+		goto end;
-+	if (!ASSERT_EQ(info.id.priority, id.priority, "priority mismatch"))
-+		goto end;
-+
-+end:
-+	ret = bpf_tc_detach(LO_IFINDEX, BPF_TC_CLSACT_INGRESS, &id);
-+	ASSERT_EQ(ret, 0, "detach failed");
-+end_old:
-+	ret = bpf_tc_detach(LO_IFINDEX, BPF_TC_CLSACT_INGRESS, &old);
-+	ASSERT_EQ(ret, 0, "detach failed");
-+	return ret;
-+}
-+
-+void test_test_tc_bpf(void)
-+{
-+	const char *file = "./test_tc_bpf_kern.o";
-+	struct bpf_program *clsp;
-+	struct bpf_object *obj;
-+	int cls_fd, ret;
-+
-+	obj = bpf_object__open(file);
-+	if (!ASSERT_OK_PTR(obj, "bpf_object__open"))
-+		return;
-+
-+	clsp = bpf_object__find_program_by_title(obj, "classifier");
-+	if (!ASSERT_OK_PTR(clsp, "bpf_object__find_program_by_title"))
-+		goto end;
-+
-+	ret = bpf_object__load(obj);
-+	if (!ASSERT_EQ(ret, 0, "bpf_object__load"))
-+		goto end;
-+
-+	cls_fd = bpf_program__fd(clsp);
-+
-+	system("tc qdisc del dev lo clsact");
-+
-+	ret = test_tc_internal(cls_fd, BPF_TC_CLSACT_INGRESS);
-+	if (!ASSERT_EQ(ret, 0, "test_tc_internal INGRESS"))
-+		goto end;
-+
-+	if (!ASSERT_EQ(system("tc qdisc del dev lo clsact"), 0,
-+		       "clsact qdisc delete failed"))
-+		goto end;
-+
-+	ret = test_tc_info(cls_fd);
-+	if (!ASSERT_EQ(ret, 0, "test_tc_info"))
-+		goto end;
-+
-+	if (!ASSERT_EQ(system("tc qdisc del dev lo clsact"), 0,
-+		       "clsact qdisc delete failed"))
-+		goto end;
-+
-+	ret = test_tc_internal(cls_fd, BPF_TC_CLSACT_EGRESS);
-+	if (!ASSERT_EQ(ret, 0, "test_tc_internal EGRESS"))
-+		goto end;
-+
-+	ASSERT_EQ(system("tc qdisc del dev lo clsact"), 0,
-+		  "clsact qdisc delete failed");
-+
-+end:
-+	bpf_object__close(obj);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c b/tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c
-new file mode 100644
-index 000000000000..18a3a7ed924a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+/* Dummy prog to test TC-BPF API */
-+
-+SEC("classifier")
-+int cls(struct __sk_buff *skb)
-+{
-+	return 0;
-+}
--- 
-2.30.2
+However, I noticed something disturbing in the results of a simple
+1-thread TCP_STREAM test (client sends data through a TCP connection to
+server using long writes, we measure the amount of data received by the
+server):
 
+  server: 172.17.1.1, port 12543
+  iterations: 20, threads: 1, test length: 30
+  test: TCP_STREAM, message size: 1048576
+  
+  1     927403548.4 B/s,  avg   927403548.4 B/s, mdev           0.0 B/s (  0.0%)
+  2    1176317172.1 B/s,  avg  1051860360.2 B/s, mdev   124456811.8 B/s ( 11.8%), confid. +/-  1581348251.3 B/s (150.3%)
+  3     927335837.8 B/s,  avg  1010352186.1 B/s, mdev   117354970.3 B/s ( 11.6%), confid. +/-   357073677.2 B/s ( 35.3%)
+  4    1176728045.1 B/s,  avg  1051946150.8 B/s, mdev   124576544.7 B/s ( 11.8%), confid. +/-   228863127.8 B/s ( 21.8%)
+  5    1176788216.3 B/s,  avg  1076914563.9 B/s, mdev   122102985.3 B/s ( 11.3%), confid. +/-   169478943.5 B/s ( 15.7%)
+  6    1158167055.1 B/s,  avg  1090456645.8 B/s, mdev   115504209.5 B/s ( 10.6%), confid. +/-   132805140.8 B/s ( 12.2%)
+  7    1176243474.4 B/s,  avg  1102711907.0 B/s, mdev   111069717.1 B/s ( 10.1%), confid. +/-   110956822.2 B/s ( 10.1%)
+  8    1176771142.8 B/s,  avg  1111969311.5 B/s, mdev   106744173.5 B/s (  9.6%), confid. +/-    95417120.0 B/s (  8.6%)
+  9    1176206364.6 B/s,  avg  1119106761.8 B/s, mdev   102644185.2 B/s (  9.2%), confid. +/-    83685200.5 B/s (  7.5%)
+  10   1175888409.4 B/s,  avg  1124784926.6 B/s, mdev    98855550.5 B/s (  8.8%), confid. +/-    74537085.1 B/s (  6.6%)
+  11   1176541407.6 B/s,  avg  1129490061.2 B/s, mdev    95422224.8 B/s (  8.4%), confid. +/-    67230249.7 B/s (  6.0%)
+  12    934185352.8 B/s,  avg  1113214668.9 B/s, mdev   106114984.5 B/s (  9.5%), confid. +/-    70420712.5 B/s (  6.3%)
+  13   1176550558.1 B/s,  avg  1118086660.3 B/s, mdev   103339448.9 B/s (  9.2%), confid. +/-    65002902.4 B/s (  5.8%)
+  14   1176521808.8 B/s,  avg  1122260599.5 B/s, mdev   100711151.3 B/s (  9.0%), confid. +/-    60333655.0 B/s (  5.4%)
+  15   1176744840.8 B/s,  avg  1125892882.3 B/s, mdev    98240838.2 B/s (  8.7%), confid. +/-    56319052.3 B/s (  5.0%)
+  16   1176593778.5 B/s,  avg  1129061688.3 B/s, mdev    95909740.8 B/s (  8.5%), confid. +/-    52771633.5 B/s (  4.7%)
+  17   1176583967.4 B/s,  avg  1131857116.5 B/s, mdev    93715582.2 B/s (  8.3%), confid. +/-    49669258.6 B/s (  4.4%)
+  18   1176853301.8 B/s,  avg  1134356904.5 B/s, mdev    91656530.2 B/s (  8.1%), confid. +/-    46905244.8 B/s (  4.1%)
+  19   1176592845.7 B/s,  avg  1136579848.8 B/s, mdev    89709043.8 B/s (  7.9%), confid. +/-    44424855.9 B/s (  3.9%)
+  20   1176608117.3 B/s,  avg  1138581262.2 B/s, mdev    87871692.6 B/s (  7.7%), confid. +/-    42193098.5 B/s (  3.7%)
+  all                     avg  1138581262.2 B/s, mdev    87871692.6 B/s (  7.7%), confid. +/-    42193098.5 B/s (  3.7%)
+
+Each line shows result of one 30 second long test and average, mean
+deviation and 99% confidence interval half width through the iterations
+so far. While 17 iteration results are essentially the wire speed minus
+TCP overhead, iterations 1, 3 and 12 are more than 20% lower. As results
+of the same test on unpatched 5.12-rc7 are much more consistent (the
+lowest iteration result through the whole test was 1175939718.3 and the
+mean deviation only 276889.1 B/s), it doesn't seeem to be just a random
+fluctuation.
+
+I'll try to find out what happens in these outstanding iterations.
+
+Michal
