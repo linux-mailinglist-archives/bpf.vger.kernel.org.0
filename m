@@ -2,52 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6662365848
-	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 14:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DAC6365903
+	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 14:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbhDTMDM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Apr 2021 08:03:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47058 "EHLO
+        id S232000AbhDTMfz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Apr 2021 08:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbhDTMDM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Apr 2021 08:03:12 -0400
+        with ESMTP id S231996AbhDTMfz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Apr 2021 08:35:55 -0400
 Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37812C06138A
-        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 05:02:41 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id r5so23633349ilb.2
-        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 05:02:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B47C06138A
+        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 05:35:24 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id e14so8160094ils.12
+        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 05:35:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ol5tN6LzU4QpczLTG/xlWTHRE1wF9xYsn/S+VKMLcYI=;
-        b=EB+4caDk+kG1nx5/kTcTzZotG8ZWJ+/qwnRBg7CMgjiiaeZxib+rfxp7m7SqR1MwYC
-         ijoMcgoYMRn5z8tPDCIN21JPZn6LvjhulkT3htAISTZ/RHI2wrpwGEpx8DiIHnbWdPDI
-         yC2OVZcC7tzqPrACQ6D556OWBxTFc8BYijKj4=
+        bh=P28NEtKGrus7iCaFCDC+6w2lb8tH4ieeIEUK4kLrfXA=;
+        b=QUv3+aqdlb4XRlG2GHw2B7TtkI+RBPjYu48aRrXyeXSOeTB/xIK7PRY6O9vwaf8kjl
+         sfA9jHF6RIE8zwKMnxa4KmwTJEen+6ffB7+wrfJTNy4TdHayPirM7JmsSUeCJEcBX/F5
+         iyu8j/hX+HGCfkBj5k0nW0Zdi7tElpM3qELkE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ol5tN6LzU4QpczLTG/xlWTHRE1wF9xYsn/S+VKMLcYI=;
-        b=uCCR7plETQMYWGAgm0kjTCJ1JW+zlZjfPBvNF8pjleMbGuaW7PsWo87eaIcGITm1/7
-         CDwTcDBpTekqO39FpNPSiPfnzGbtVC7geNOB8fk5kcvkOLT5MRdilLsGsKvLQguakNB5
-         OihwcNJKy2l/Kl/o5413T/n82ALcDn+/VpYVO7OyWVkYLhWTHN5Ik2ZT/IrUvZL+jQ+a
-         zYPyUJoJWbirJ5hhRLL18xmqbm3fMAOwRz+WLgtPr5Mvgxw67Zt7TATBwm3srSPmekOu
-         2X2EBvwRMXB8SSsoPR1x4SDLJ8GM0By2pia6NekRCVGtpoSKlp9K1Sau+FmD6Oe7CV15
-         TB7A==
-X-Gm-Message-State: AOAM533ykumkY8WRU/1u3ti5MJtKdFnTp9u5RYaKY0GHaS6wt1UxrgkP
-        yZEkDBRZV+1hLjZTyUNUWw18sNjveXwgXmqwVczZRg==
-X-Google-Smtp-Source: ABdhPJyrWb+OsWxva+ogTutAmy/QL7k33YF3AKIDZ9v3loaRPfMfXbpcvAbgUTvjFpQ9zZwHIDv0peNIXlMWpI0brtg=
-X-Received: by 2002:a92:c9ca:: with SMTP id k10mr20869397ilq.42.1618920160504;
- Tue, 20 Apr 2021 05:02:40 -0700 (PDT)
+        bh=P28NEtKGrus7iCaFCDC+6w2lb8tH4ieeIEUK4kLrfXA=;
+        b=YF+rDEch6YtgNnrU0l/ViHOoLkq97qPkv/o1+Fc19+XH5gNU1y8vXZ2grtYcMD2veM
+         VH1tlkUnoFaTs+j3XG9s3hcZWQayulHhyaHca0juzgYxsZvl+E+a2ALc1oBjpu3UmaLe
+         OLUdu+lRdnoIJuDkOPZGU03VpDGfD2TEm/cQstyGDYLqIEWZV0JN7UoDRkiloexi37yO
+         g92jFPt4r3cfPtp62+cja3fQmFtiyEn+qcZGRWy2s6hKeVk/L4UCeF264OZapgJoiySZ
+         ns41X2lNwkXsetlipfOQij1eB63Kn35StqpIBoWoa83+5aWwI0G/C7n6dC7PSTknhuGa
+         Ot2A==
+X-Gm-Message-State: AOAM531mNmBE4vkurxWDsemJRiU1lXijVXZohIU3jAmdJ286jFC9YcPi
+        zwZmNgg1gzbvvkLKPTl3fWyp9TNz8cnQ7dV3+Gr8vg==
+X-Google-Smtp-Source: ABdhPJy8y2m9CJbWLpXZPnSWRCgBF77zu21Iz5jz1+Fy6R3Q2JDmfvbxC0YDCG/XMsmCDR3Ms1zsgJc3/ZTA3feuK5I=
+X-Received: by 2002:a05:6e02:5a2:: with SMTP id k2mr22150327ils.177.1618922123638;
+ Tue, 20 Apr 2021 05:35:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210419155243.1632274-1-revest@chromium.org> <CAEf4BzZoOVZrVz+aAnx3X3fow9tMA7YZxxe6C_uu+Xx6vy1Ofg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZoOVZrVz+aAnx3X3fow9tMA7YZxxe6C_uu+Xx6vy1Ofg@mail.gmail.com>
+References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-3-revest@chromium.org>
+ <20210419225404.chlkiaku5vaxmmyh@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210419225404.chlkiaku5vaxmmyh@ast-mbp.dhcp.thefacebook.com>
 From:   Florent Revest <revest@chromium.org>
-Date:   Tue, 20 Apr 2021 14:02:29 +0200
-Message-ID: <CABRcYmL_SMT80UTyV98bRsOzW0wBd1sZcYUpTrcOAV+9m+YoWQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 0/6] Add a snprintf eBPF helper
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 20 Apr 2021 14:35:12 +0200
+Message-ID: <CABRcYmJO5+tFtGuL9pdtFqLnBV7fGugEjaPbNRtJ3iXpbs3kFg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 2/6] bpf: Add a ARG_PTR_TO_CONST_STR argument type
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -59,100 +60,127 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 9:34 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Apr 20, 2021 at 12:54 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Mon, Apr 19, 2021 at 8:52 AM Florent Revest <revest@chromium.org> wrote:
+> On Mon, Apr 19, 2021 at 05:52:39PM +0200, Florent Revest wrote:
+> > This type provides the guarantee that an argument is going to be a const
+> > pointer to somewhere in a read-only map value. It also checks that this
+> > pointer is followed by a zero character before the end of the map value.
 > >
-> > We have a usecase where we want to audit symbol names (if available) in
-> > callback registration hooks. (ex: fentry/nf_register_net_hook)
-> >
-> > A few months back, I proposed a bpf_kallsyms_lookup series but it was
-> > decided in the reviews that a more generic helper, bpf_snprintf, would
-> > be more useful.
-> >
-> > This series implements the helper according to the feedback received in
-> > https://lore.kernel.org/bpf/20201126165748.1748417-1-revest@google.com/T/#u
-> >
-> > - A new arg type guarantees the NULL-termination of string arguments and
-> >   lets us pass format strings in only one arg
-> > - A new helper is implemented using that guarantee. Because the format
-> >   string is known at verification time, the format string validation is
-> >   done by the verifier
-> > - To implement a series of tests for bpf_snprintf, the logic for
-> >   marshalling variadic args in a fixed-size array is reworked as per:
-> > https://lore.kernel.org/bpf/20210310015455.1095207-1-revest@chromium.org/T/#u
-> >
+> > Signed-off-by: Florent Revest <revest@chromium.org>
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > > ---
-> > Changes in v5:
-> > - Fixed the bpf_printf_buf_used counter logic in try_get_fmt_tmp_buf
-> > - Added a couple of extra incorrect specifiers tests
-> > - Call test_snprintf_single__destroy unconditionally
-> > - Fixed a C++-style comment
+> >  include/linux/bpf.h   |  1 +
+> >  kernel/bpf/verifier.c | 41 +++++++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 42 insertions(+)
 > >
-> > ---
-> > Changes in v4:
-> > - Moved bpf_snprintf, bpf_printf_prepare and bpf_printf_cleanup to
-> >   kernel/bpf/helpers.c so that they get built without CONFIG_BPF_EVENTS
-> > - Added negative test cases (various invalid format strings)
-> > - Renamed put_fmt_tmp_buf() as bpf_printf_cleanup()
-> > - Fixed a mistake that caused temporary buffers to be unconditionally
-> >   freed in bpf_printf_prepare
-> > - Fixed a mistake that caused missing 0 character to be ignored
-> > - Fixed a warning about integer to pointer conversion
-> > - Misc cleanups
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 77d1d8c65b81..c160526fc8bf 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -309,6 +309,7 @@ enum bpf_arg_type {
+> >       ARG_PTR_TO_PERCPU_BTF_ID,       /* pointer to in-kernel percpu type */
+> >       ARG_PTR_TO_FUNC,        /* pointer to a bpf program function */
+> >       ARG_PTR_TO_STACK_OR_NULL,       /* pointer to stack or NULL */
+> > +     ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
+> >       __BPF_ARG_TYPE_MAX,
+> >  };
 > >
-> > ---
-> > Changes in v3:
-> > - Simplified temporary buffer acquisition with try_get_fmt_tmp_buf()
-> > - Made zero-termination check more consistent
-> > - Allowed NULL output_buffer
-> > - Simplified the BPF_CAST_FMT_ARG macro
-> > - Three new test cases: number padding, simple string with no arg and
-> >   string length extraction only with a NULL output buffer
-> > - Clarified helper's description for edge cases (eg: str_size == 0)
-> > - Lots of cosmetic changes
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 852541a435ef..5f46dd6f3383 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -4787,6 +4787,7 @@ static const struct bpf_reg_types spin_lock_types = { .types = { PTR_TO_MAP_VALU
+> >  static const struct bpf_reg_types percpu_btf_ptr_types = { .types = { PTR_TO_PERCPU_BTF_ID } };
+> >  static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
+> >  static const struct bpf_reg_types stack_ptr_types = { .types = { PTR_TO_STACK } };
+> > +static const struct bpf_reg_types const_str_ptr_types = { .types = { PTR_TO_MAP_VALUE } };
 > >
-> > ---
-> > Changes in v2:
-> > - Extracted the format validation/argument sanitization in a generic way
-> >   for all printf-like helpers.
-> > - bpf_snprintf's str_size can now be 0
-> > - bpf_snprintf is now exposed to all BPF program types
-> > - We now preempt_disable when using a per-cpu temporary buffer
-> > - Addressed a few cosmetic changes
+> >  static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
+> >       [ARG_PTR_TO_MAP_KEY]            = &map_key_value_types,
+> > @@ -4817,6 +4818,7 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
+> >       [ARG_PTR_TO_PERCPU_BTF_ID]      = &percpu_btf_ptr_types,
+> >       [ARG_PTR_TO_FUNC]               = &func_ptr_types,
+> >       [ARG_PTR_TO_STACK_OR_NULL]      = &stack_ptr_types,
+> > +     [ARG_PTR_TO_CONST_STR]          = &const_str_ptr_types,
+> >  };
 > >
-> > Florent Revest (6):
-> >   bpf: Factorize bpf_trace_printk and bpf_seq_printf
-> >   bpf: Add a ARG_PTR_TO_CONST_STR argument type
-> >   bpf: Add a bpf_snprintf helper
-> >   libbpf: Initialize the bpf_seq_printf parameters array field by field
-> >   libbpf: Introduce a BPF_SNPRINTF helper macro
-> >   selftests/bpf: Add a series of tests for bpf_snprintf
-> >
-> >  include/linux/bpf.h                           |  22 ++
-> >  include/uapi/linux/bpf.h                      |  28 ++
-> >  kernel/bpf/helpers.c                          | 306 ++++++++++++++
-> >  kernel/bpf/verifier.c                         |  82 ++++
-> >  kernel/trace/bpf_trace.c                      | 373 ++----------------
-> >  tools/include/uapi/linux/bpf.h                |  28 ++
-> >  tools/lib/bpf/bpf_tracing.h                   |  58 ++-
-> >  .../selftests/bpf/prog_tests/snprintf.c       | 125 ++++++
-> >  .../selftests/bpf/progs/test_snprintf.c       |  73 ++++
-> >  .../bpf/progs/test_snprintf_single.c          |  20 +
-> >  10 files changed, 770 insertions(+), 345 deletions(-)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf_single.c
-> >
-> > --
-> > 2.31.1.368.gbe11c130af-goog
-> >
+> >  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+> > @@ -5067,6 +5069,45 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> >               if (err)
+> >                       return err;
+> >               err = check_ptr_alignment(env, reg, 0, size, true);
+> > +     } else if (arg_type == ARG_PTR_TO_CONST_STR) {
+> > +             struct bpf_map *map = reg->map_ptr;
+> > +             int map_off;
+> > +             u64 map_addr;
+> > +             char *str_ptr;
+> > +
+> > +             if (reg->type != PTR_TO_MAP_VALUE || !map ||
 >
-> Looks great, thank you!
+> I think the 'type' check is redundant,
+> since check_reg_type() did it via compatible_reg_types.
+> If so it's probably better to remove it here ?
 >
-> For the series:
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> '!map' looks unnecessary. Can it ever happen? If yes, it's a verifier bug.
+> For example in check_mem_access() we just deref reg->map_ptr without checking
+> which, I think, is correct.
 
-Thank you for the all the fast and in-depth reviews Andrii! :)
+I agree with all of the above. I only thought it's better to be safe
+than sorry but if you'd like I could follow up with a patch that
+removes some checks?
+
+> > +                 !bpf_map_is_rdonly(map)) {
+>
+> This check is needed, of course.
+>
+> > +                     verbose(env, "R%d does not point to a readonly map'\n", regno);
+> > +                     return -EACCES;
+> > +             }
+> > +
+> > +             if (!tnum_is_const(reg->var_off)) {
+> > +                     verbose(env, "R%d is not a constant address'\n", regno);
+> > +                     return -EACCES;
+> > +             }
+> > +
+> > +             if (!map->ops->map_direct_value_addr) {
+> > +                     verbose(env, "no direct value access support for this map type\n");
+> > +                     return -EACCES;
+> > +             }
+> > +
+> > +             err = check_map_access(env, regno, reg->off,
+> > +                                    map->value_size - reg->off, false);
+> > +             if (err)
+> > +                     return err;
+> > +
+> > +             map_off = reg->off + reg->var_off.value;
+> > +             err = map->ops->map_direct_value_addr(map, &map_addr, map_off);
+> > +             if (err) {
+>
+> since the code checks it here the same check in check_bpf_snprintf_call() should
+> probably do:
+>  if (err) {
+>    verbose("verifier bug\n");
+>    return -EFAULT;
+>  }
+>
+> instead of just "return err;"
+> ?
+
+Sure, does not hurt. I can also follow up with a patch unless if you
+prefer doing it yourself.
+
+> > +                     verbose(env, "direct value access on string failed\n");
+>
+> I think the message doesn't tell users much, but they probably should never
+> see it unless they try to do lookup from readonly array with
+> more than one element.
+> So I guess it's fine to keep this one as-is. Just flagging.
+
+Ack
+
+> Anyway the whole set looks great, so I've applied to bpf-next.
+> Thanks!
+
+Thank you :D
