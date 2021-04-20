@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37758365F22
-	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 20:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82748365F38
+	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 20:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233363AbhDTSXU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Apr 2021 14:23:20 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:16154 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232879AbhDTSXS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 20 Apr 2021 14:23:18 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13KIEG4D010450;
-        Tue, 20 Apr 2021 11:21:50 -0700
+        id S233509AbhDTS36 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Apr 2021 14:29:58 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:16242 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233518AbhDTS3z (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 20 Apr 2021 14:29:55 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 13KIMe5H016015;
+        Tue, 20 Apr 2021 11:28:59 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=facebook;
- bh=lMzMem1F+uYCKN/b19dVaxRTWB65xQA5ZTojYz2v2rE=;
- b=i42SH/oaleSHZCvkVI1VlLzw0MUCGTooG+ACMJksV8GxGCQD7jW52ZI185FqWdz8iUR5
- ReY0xAdAZTjk7K9oiCxIqpJQvjdsqnuObdmO5m+ner48HE5XW+Qcukk11K+YbR2hVPAM
- /nlnLyBs1DCArhdIcCveI6hGqZF9I0kAUvQ= 
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=xVB2vMB0WIHu6n0J7FfnBBG5B0RsePFB2Ah6hBLhcV8=;
+ b=ZD71InqTV2KtV+d1+cx9p9ZuO80mAtuY2LVSsZAoKASTcfQqHqOlhvIQLo5/kk3ylToR
+ PPU4CBrkqBYQqqmbIc0kf5p15ptQStvLdDIKjfODV5/OpAik2K64zp6HrVhReKN516Ep
+ sljGwY9YvuUhchikamLTp8BIe1mVRsgpY6Q= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 381mxecew5-1
+        by m0001303.ppops.net with ESMTP id 38191g8cr5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 20 Apr 2021 11:21:50 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+        Tue, 20 Apr 2021 11:28:59 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Apr 2021 11:21:49 -0700
+ 15.1.2176.2; Tue, 20 Apr 2021 11:28:58 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ifaWbV0gwS9JQveuqg9cyywgpCx/L6n3XU9BdF8oIBTpweXGHrAw19xBGwuG/5jcYaUfZte+UnkD0QM46N6LhiL0gvg98yTmSH8he8FBWZ1+gAZw3Ts7aGjdYMXQCyIlX31kn5mTs+uVZpLhtEe374+4nv1jOYsAuDSk+RjXwA8QB7WRWspS3AAMxJ5DVpWGTpwOdhkMT9AmXr5DDcYXpzOPYb2N12HTdU8wyMkFqSH4G6DqmHs7vavxViMYBL9l0evS7wDFpvuH71VWgVGHd/SSg030lrXrEUWo6z5x5PjaTvxGEc2qTmKfC6QdQQcEFD5KSQS9a6gNKthroK3RJA==
+ b=lv+v90m7Po9I9Y0VfBqBWdxOaT0kR1qfghCCXmF9el0RFqDhRSvqGWfcu6zyyrBS13EzCvXky+i6r17ZrlPJQZKmEo7QfkvzJ2t0I6emM+zfqOvzZL7sWRqJbiT783GydYHPjU9CbC6hdV0wjjlG/mXhU5Z8V2ap4Yx6wlD2kipY1WgdVFZ+/RH19ohl88OxkZqDsHadGqph323H9SBDszc25vVt4GjllIdtWU8cCO69BZ8JdBs5/MuRLGhfIusebxPD73yi6RzJY2spWrhYQlJnhyBGZcfXtUc5nPB/ehO+EoGwQBrnJXKhA9xbQCxzJPymaIY9DKQTNlDM6L2XbQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cIgp2YOkkXNxj5u2Ui1IrHyVi6lPdtV4bOk8FvQgjhQ=;
- b=kzSHSKOsc+v4MeGp/AUwNvJxO++WWTlvHMXNfe+Lx/z8o1UH8my+L+yVCzKJtx5JcC1Dg3SCNG6sKDnN3nxy7uFexJaeUnDCNBcpfn4k+0rNnDL+0ApKE5yr11hx0eWh7a1muM5Et4u9OCSm0W4QCVhpEdOuuEGqMCBJLq8CUZtaPjqaG+iOkZuco7N8toleoiEWuqq8akvfSsDfMc+J2vbfcnbPU3k/c1wlNdZi7advyIWqBklzUrR+yBL9xY/l0bLa2Jf5IBgx3KLB6MUV5o0LvpOx9IlASaebRcpqP2st2gtgbf3hv1vJqzEWuMzbH3Ii1A338aoJ0cCmX+AgUw==
+ bh=xVB2vMB0WIHu6n0J7FfnBBG5B0RsePFB2Ah6hBLhcV8=;
+ b=Is+P0W59w8vGh4GlZcjP6eaTJQYz8A1WDdHaxyfuHZ9AmOJJnU6tLUbeB1hj7/fnDpN0dHTAQnauKJJ4b9ar94Uk+r0ZQSKWrlqJ6tq3klwDVQCJspUntAhlMxUsI2UAloBViOUKBJajvCGyYGT1VXbRVCz44M46osz4nLNzm+kNtSSuYgE4hVkwxEuzxPRKz/s88kkGdyAg+yMcEjaj07qUtAuWKXvo5ts3swxx7QWF5yxwGUIt5GHqI7+TLMz/W96D0x6nj/cikqMXN1Xwni/2b5E/cCoP/CWgSIwW7BbjR07Nxj1INkm0CyVFN9s6aclGIqqMNEjXm/R5fi+xXg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Authentication-Results: gmail.com; dkim=none (message not signed)
  header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
 Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BY5PR15MB3716.namprd15.prod.outlook.com (2603:10b6:a03:1b4::22) with
+ by BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Tue, 20 Apr
- 2021 18:21:48 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Tue, 20 Apr
+ 2021 18:28:57 +0000
 Received: from BY5PR15MB3571.namprd15.prod.outlook.com
  ([fe80::718a:4142:4c92:732f]) by BY5PR15MB3571.namprd15.prod.outlook.com
  ([fe80::718a:4142:4c92:732f%6]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
- 18:21:48 +0000
-Date:   Tue, 20 Apr 2021 11:21:43 -0700
+ 18:28:57 +0000
+Date:   Tue, 20 Apr 2021 11:28:54 -0700
 From:   Martin KaFai Lau <kafai@fb.com>
 To:     Hangbin Liu <liuhangbin@gmail.com>
 CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
@@ -66,119 +65,115 @@ CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Subject: Re: [PATCHv8 bpf-next 2/4] xdp: extend xdp_redirect_map with
- broadcast support
-Message-ID: <20210420182143.om3gheczszoovp2y@kafai-mbp.dhcp.thefacebook.com>
+Subject: Re: [PATCHv8 bpf-next 1/4] bpf: run devmap xdp_prog on flush instead
+ of bulk enqueue
+Message-ID: <20210420182854.rsis4npditizm5pu@kafai-mbp.dhcp.thefacebook.com>
 References: <20210415135320.4084595-1-liuhangbin@gmail.com>
- <20210415135320.4084595-3-liuhangbin@gmail.com>
-Content-Type: text/plain; charset="iso-8859-1"
+ <20210415135320.4084595-2-liuhangbin@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210415135320.4084595-3-liuhangbin@gmail.com>
+In-Reply-To: <20210415135320.4084595-2-liuhangbin@gmail.com>
 X-Originating-IP: [2620:10d:c090:400::5:a3ad]
-X-ClientProxiedBy: MWHPR1601CA0003.namprd16.prod.outlook.com
- (2603:10b6:300:da::13) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+X-ClientProxiedBy: MWHPR01CA0033.prod.exchangelabs.com (2603:10b6:300:101::19)
+ To BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:a3ad) by MWHPR1601CA0003.namprd16.prod.outlook.com (2603:10b6:300:da::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Tue, 20 Apr 2021 18:21:46 +0000
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:a3ad) by MWHPR01CA0033.prod.exchangelabs.com (2603:10b6:300:101::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Tue, 20 Apr 2021 18:28:56 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c3578801-e8f1-4920-9ff5-08d90429291b
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3716:
-X-Microsoft-Antispam-PRVS: <BY5PR15MB3716EEF96316EB8461F13422D5489@BY5PR15MB3716.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 0474d553-72a2-4cd0-5b91-08d9042a290f
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2999:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB299955E21D670097EB597D0ED5489@BYAPR15MB2999.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1728;
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6y/mrx+fIzdPdDSksJMm8gHBguUA1sLtcop8cMkunUmzx500ai9qZW0+IYLKjPzwum52tbLEFF02elW4mORVcdG53QvJElCwYQas0+JOvjzPbM9Sf27TKOdu7fEaEstT9QGvq+GjuJg9Iwb3P8MbTBeizcD3ojl8aJa5S9HqQmGKYuX0Ew8Tcq16cMgVg1a7GyL7lZggdh/HDexGMGPnyUNk1BF1aN1G/RF3T2M2IP1Xqi9RwIH+4natwlVXRzwSVL9ltq+bu7zU/a87Eh0OsNYHdXJzUQ1t+UMXJDIDjrDf86hKYGHXaYrfdwmGLzhP81im4xPVhP2nWJJF0GfOtqns89DavV97PhMsev7bW+p17TuONLmoxmdHm6r36GdTjxzmFpLCPKEPOTFWqjy34+Y81+vDmXSe2wfaBUZZGr6p8FK5FevBqaQLjvVVjbD8BvZ4y1q5PFFSuNXskZXJHJkmGxGGMT4BJuVkz8Wl+LE8SdrOPpF3MAyKfklsfsyEA3JvagdX87aQlYgWuLVMJ7HrdR7TegwEQiPE2hv/bZC0UqNBazQ2+WR+BaVUisMT7FZjsEKeUCJgGniBRtGbyIMe1Bo9r3aJcN6Z8+drigk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(376002)(136003)(366004)(39860400002)(4326008)(86362001)(38100700002)(478600001)(186003)(8936002)(8676002)(52116002)(1076003)(6506007)(6666004)(316002)(55016002)(9686003)(66556008)(66946007)(6916009)(66476007)(2906002)(5660300002)(7416002)(16526019)(54906003)(7696005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-1?Q?GWz/ZD09/lmpIVBiw3lPBlix9jWR9MRVpWAW093ej2F5ET1ucd/htO8QFR?=
- =?iso-8859-1?Q?CLVcinEH5T7jcDGTPH40xCzgFU4ayj0lr5o1REXAKLR0rgHBsO/930q6HD?=
- =?iso-8859-1?Q?epAuSeKEVfr5jiY1qPvnYqOT65r3pt0AGXTJKHCbmBi8Q8YFvwFDsYHjSP?=
- =?iso-8859-1?Q?VNAl0EoNhRw9TQrpqh/ZI1nnuIVHyNsiguP4gyYTXBhc5oFEg+37icjLcV?=
- =?iso-8859-1?Q?c8/g5aEDxqctYPWrQ+RLa0gC5zTldXaoppXm0+DSRO/vwWIRU7tslkbpmc?=
- =?iso-8859-1?Q?NfsM0saWcwFLKRWrT/OJHxZldkP1InvfjS/TWtT1KQKtjwuW5/QihaL1Kx?=
- =?iso-8859-1?Q?LlwJRNLDejFh9V84IZPKanVCASAx9lbMBHbWZfhVCNoR3RE3Iwl9NMihzO?=
- =?iso-8859-1?Q?xp1UAtNimlvYxkutHtWRG9JEpv6/BOtRPazU4v/gITDgJSCYlDFMsNRHtw?=
- =?iso-8859-1?Q?xyOP5v/5rDr4T6hCXwRQ58nXJkCceLLPEF0+QdfU2C41ofPrKfg38VTLkb?=
- =?iso-8859-1?Q?TX7s6QCgp6GUeHaGsLCC97gnF1OwNS9jE3L0+kvQSgjT6VPWHiLSNaM9to?=
- =?iso-8859-1?Q?V0W5QC3YoBhuZj2wzfGOKF2bswVUFPI5V5ZrzoBEw77BK/fdzWqQn3wsrb?=
- =?iso-8859-1?Q?xNl60I95jeASgTotaxKnSlqEvsJ5xaCvkB+urAN/mf+jU1GyKOO3mXGkxc?=
- =?iso-8859-1?Q?eoiOYbvFPBLlJR1tuSEmKXDHrh5KWAB2rPv+fzEzMQt8KL3nkxl8MyWtFR?=
- =?iso-8859-1?Q?h7VnrVrOQStvXUiEd/OG8HkHkkoVV0WHoszPI2VP0IHMB7F/By0W+79pcZ?=
- =?iso-8859-1?Q?isc/pP+8xOnmhoak0GkAxYRttRMzlzG+1Lr4ovcy1jGCTHLL1aapOIcR9l?=
- =?iso-8859-1?Q?ZLar6/yKLUZK8uCZc6nPfBX5CKqXcdj9mYRGSoehJBdzkS7t0bnFxlV8nV?=
- =?iso-8859-1?Q?Ssb5a/WIvzSasiwh/j2aO98qaSukY73UKZ1DnZuePVeCKM2VMVpJh0YGs3?=
- =?iso-8859-1?Q?JvC4v3N4U8KU2zqcQ5oy12CvUbC71HA/m1YEALoCgffOoHiJea3gYM8UKx?=
- =?iso-8859-1?Q?zGgSc2Ee0860aDkhjqccRSKdvS5hGlIHOw97vuPKvzTMJ8ZcVOzaKwHSj/?=
- =?iso-8859-1?Q?KHa2iuxtqNPp0aZwPL+YuuqqF/nyPAnlRkaxQRS5K0d6ixRt1feS1OkK1e?=
- =?iso-8859-1?Q?PJbRHUYfr4vK7ui8xD/LjZNfPbsVUztHhs51E4kHw9USkspKRS2BNgslls?=
- =?iso-8859-1?Q?ikiPA1YrpvQ1vxJyGs8uW6MSKistXuTLpB7LRYdLg3AF9vpG1jQOn+rATx?=
- =?iso-8859-1?Q?IdE0DgcJPhymAkKbyPLquK8tcJNJAenU8no5U/uF/BTv7SdTCVC1YVAgcf?=
- =?iso-8859-1?Q?Wa/rq4/ug8zUdvCYnXP1RdsUu2tJx/oA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c3578801-e8f1-4920-9ff5-08d90429291b
+X-Microsoft-Antispam-Message-Info: /cicm8v0qq4cdmWfp7s7rUNUj2FgzWITUYMkQ7QSSYeg4Q4z9AaFzX0hbAuSyMnDrlZQd83CA82p9ya/utzaN8ncj42fwTKOhTNr/c8hL5LD5vq2vlZIgjLVQcz3YNizodwV07QrR2WZs4GbBcmLS7k1esplc6Ip/JZQQ2Q4EHztD1qlddd7xcCyAWLAbimpFSoqbjLgEYs8NSgpl2uVCdCQvNZhX+T49X4WU5Fy9GpvODdRxf3pFtoMXRvtFqHk018Tg3s2gmAhAwtsAfTtCSIoNvtzLSnRbNP7HBfYxO1r8qQH2AlTNsgyU2F60qyIIh62tA5mOI+1UwJQ7Ihc8zUXiU4vKjdEtwWJpYH+TngjvjzdXDHWXllkuHV7nMAecU2uSo31hCWmXsdTx6CzQ8c1HRHgZud6LfjNham3ryugrfj5FZUzlM1dUBIBblCtqVqOyOeDMLXc1/tjwLsw7dN7yz7tm0Bg1o3vDb04vBt8Ge4JVVm8WTBy4yiw3yf9DpCXRlzMwC45kTY++SrUeXN6wUWVlPsfDEEdpU8tROeIN15NOPo3l24wR8Jcspj6po0ZZHPC0BPo848cb8ovZ1rATOp5tUqfBn6EdQHaSe4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(39860400002)(136003)(396003)(346002)(16526019)(186003)(478600001)(1076003)(5660300002)(52116002)(7696005)(83380400001)(6506007)(316002)(66946007)(66556008)(6916009)(66476007)(7416002)(86362001)(9686003)(4326008)(8936002)(2906002)(8676002)(38100700002)(55016002)(54906003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?tJ5RKdp7js323OWupjgyc0TQXhHwa5ReOOFYSBPMbXYV+ENDoVoixTIFjVb4?=
+ =?us-ascii?Q?4HI48RWev/a1ZSkH+b9WdKbaiVAesRmP0Y4CkIZa+jGlZG5DFxDEINGt2x/Z?=
+ =?us-ascii?Q?54l/gjoXkeJOWq8ALjPEoxJCCCFDM4R/HFvxVrsEZ/1MB6pB02C6Z6U4DSwJ?=
+ =?us-ascii?Q?VAO9w42upNPNHnTz6SjtFY/vFJym1WyOFlRRyzO4UboEjy+rbl+YjEd5Zgge?=
+ =?us-ascii?Q?AB8vTI7v5mb97aClpDhs7RKuofCGdwir6N/mZwzxiV1yYe40g+48ViDwDGqK?=
+ =?us-ascii?Q?pY7+Pd2Nc9ZxfUKyRnjpb4scTsdPcJ4wjoT+rikyjGXGK5QfnVwZMY1l8wY/?=
+ =?us-ascii?Q?mK1d7niYWZPbDf9wt12Zd7lrl+hsWW2T/nlPsE2LP5sXExiTwpAT9h/pzXOJ?=
+ =?us-ascii?Q?mHBa7nsc7gwIQINgmNnTdo5OdwZfFcC+NRK+XVEat8Ud8Xc1graJe+aoKBgn?=
+ =?us-ascii?Q?r/w/6KHmJHvhgnXnSqOrEEHn7Rp//AOiqNCUc4QK7JvYdE5Gu1njK+BjS59w?=
+ =?us-ascii?Q?aeqAxgyL6+RAhMm/16qIIk7QeM8i9O3fIbZrpnmB3dOrVedz47i3vurGP364?=
+ =?us-ascii?Q?wjwOEDSz8JlY4XpMSGX6NAgeYJSNgbXG0OUXCOjfIR53kIA1RxyvGVqpX1e3?=
+ =?us-ascii?Q?C8polKwqX2ALa4KsMCBSZTAL7KZ9/hp6O5tLjOUu6REd3/cC3fTN7sKsvLj4?=
+ =?us-ascii?Q?nGAYa6o9d3oqOzwcgUffMYgbnU6NT4jEN97ao/ZAHs1tTXHKXbchgFYSqCmc?=
+ =?us-ascii?Q?1vHgvalFLCpCusqKRu/lSjgge6Mc6AGb1p2ue8Y0+TaB28nlBV6DT0OQlKio?=
+ =?us-ascii?Q?5TQ/WX9hW/KmF3xqQuePnjX2c2IYY+SejMxIahRZomGXhPJ3eyfF4bltaSWb?=
+ =?us-ascii?Q?BZWBXsNQ62v9yjMfJDsp9mzEcDX4nlVvFDcpY28CJHvgT3ung81bJ7vTvKPu?=
+ =?us-ascii?Q?OAI9ntaEYI7gy1eYWc5cc2a2AYLucD2MB94Q/dPYJUuf77u15O2cgm0YtHmk?=
+ =?us-ascii?Q?1tXjxdCr36XmHnWnlKBmHmxtgAFODlaTKKdP6rlaDWRwWu0IiuktvZ0A5O7f?=
+ =?us-ascii?Q?0LkMm2Upjr7RTqOotQV+mG6ih+lJZzEzGKZ4TaZUn/cMdCmZI0pdt+Xr6Rry?=
+ =?us-ascii?Q?IyxwcdNrqDcx0sa/k23dtDkpyS7mr3EaTWsrmBTMpHeAd2O9WmEVycpOrdJS?=
+ =?us-ascii?Q?KW2AU+lVZ3im0xt0QmwgRGn9XPuGK5D65puWsQqmrXsEcFq3jcUIYDCTzhRT?=
+ =?us-ascii?Q?nHpr4aYkBYcgvW+o03/oG81eKwWnADodJ9TTBlqhdWhbI2TEqa7NpKAiltUv?=
+ =?us-ascii?Q?VDJXwh222PIQe9EMOwUE1H/PTkxJ70HAvN/VqRm7fkjKMQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0474d553-72a2-4cd0-5b91-08d9042a290f
 X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 18:21:48.5069
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 18:28:57.5004
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0QkPW8xB5Eix9w6f5mA+MRMzHsGL7eUzACblAWu1caExCB/akHNII2HLKedKgtX4
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3716
+X-MS-Exchange-CrossTenant-UserPrincipalName: C3JdOv4Q6zprmNeb2uftXYJdyJCidb7vUAvJRLHgPjnQAvHEn8vU8ctkdHsCVuiC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2999
 X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: RQEbtunwzw-X6K8-l8ORAjvbKeOtZw8o
-X-Proofpoint-ORIG-GUID: RQEbtunwzw-X6K8-l8ORAjvbKeOtZw8o
+X-Proofpoint-GUID: zumgQH-hPJ5TBjV_os_QJ51UW5RcYcE0
+X-Proofpoint-ORIG-GUID: zumgQH-hPJ5TBjV_os_QJ51UW5RcYcE0
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-20_08:2021-04-20,2021-04-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- spamscore=0 priorityscore=1501 clxscore=1015 impostorscore=0
- malwarescore=0 adultscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0
- mlxscore=0 mlxlogscore=662 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104200125
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ adultscore=0 priorityscore=1501 bulkscore=0 spamscore=0 malwarescore=0
+ lowpriorityscore=0 phishscore=0 impostorscore=0 mlxscore=0 suspectscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104200126
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 09:53:18PM +0800, Hangbin Liu wrote:
-> This patch adds two flags BPF_F_BROADCAST and BPF_F_EXCLUDE_INGRESS to
-> extend xdp_redirect_map for broadcast support.
+On Thu, Apr 15, 2021 at 09:53:17PM +0800, Hangbin Liu wrote:
+> From: Jesper Dangaard Brouer <brouer@redhat.com>
 > 
-> With BPF_F_BROADCAST the packet will be broadcasted to all the interfaces
-> in the map. with BPF_F_EXCLUDE_INGRESS the ingress interface will be
-> excluded when do broadcasting.
+> This changes the devmap XDP program support to run the program when the
+> bulk queue is flushed instead of before the frame is enqueued. This has
+> a couple of benefits:
 > 
-> When getting the devices in dev hash map via dev_map_hash_get_next_key(),
-> there is a possibility that we fall back to the first key when a device
-> was removed. This will duplicate packets on some interfaces. So just walk
-> the whole buckets to avoid this issue. For dev array map, we also walk the
-> whole map to find valid interfaces.
+> - It "sorts" the packets by destination devmap entry, and then runs the
+>   same BPF program on all the packets in sequence. This ensures that we
+>   keep the XDP program and destination device properties hot in I-cache.
 > 
-> Function bpf_clear_redirect_map() was removed in
-> commit ee75aef23afe ("bpf, xdp: Restructure redirect actions").
-> Add it back as we need to use ri->map again.
+> - It makes the multicast implementation simpler because it can just
+>   enqueue packets using bq_enqueue() without having to deal with the
+>   devmap program at all.
 > 
-> Here is the performance result by using 10Gb i40e NIC, do XDP_DROP on
-> veth peer, run xdp_redirect_{map, map_multi} in sample/bpf and send pkts
-> via pktgen cmd:
+> The drawback is that if the devmap program drops the packet, the enqueue
+> step is redundant. However, arguably this is mostly visible in a
+> micro-benchmark, and with more mixed traffic the I-cache benefit should
+> win out. The performance impact of just this patch is as follows:
+> 
+> When bq_xmit_all() is called from bq_enqueue(), another packet will
+> always be enqueued immediately after, so clearing dev_rx, xdp_prog and
+> flush_node in bq_xmit_all() is redundant. Move the clear to __dev_flush(),
+> and only check them once in bq_enqueue() since they are all modified
+> together.
+> 
+> Using 10Gb i40e NIC, do XDP_DROP on veth peer, with xdp_redirect_map in
+> sample/bpf, send pkts via pktgen cmd:
 > ./pktgen_sample03_burst_single_flow.sh -i eno1 -d $dst_ip -m $dst_mac -t 10 -s 64
 > 
-> There are some drop back as we need to loop the map and get each interface.
+> There are about +/- 0.1M deviation for native testing, the performance
+> improved for the base-case, but some drop back with xdp devmap prog attached.
 > 
-> Version          | Test                                | Generic | Native
-> 5.12 rc4         | redirect_map        i40e->i40e      |    1.9M |  9.6M
-> 5.12 rc4         | redirect_map        i40e->veth      |    1.7M | 11.7M
-> 5.12 rc4 + patch | redirect_map        i40e->i40e      |    1.9M |  9.3M
-> 5.12 rc4 + patch | redirect_map        i40e->veth      |    1.7M | 11.4M
-> 5.12 rc4 + patch | redirect_map multi  i40e->i40e      |    1.9M |  8.9M
-> 5.12 rc4 + patch | redirect_map multi  i40e->veth      |    1.7M | 10.9M
-> 5.12 rc4 + patch | redirect_map multi  i40e->mlx4+veth |    1.2M |  3.8M
-> 
-> Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> 
-> ---
-> v8:
-> use hlist_for_each_entry_rcu() when looping the devmap hash ojbs
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+> Version          | Test                           | Generic | Native | Native + 2nd xdp_prog
+> 5.12 rc4         | xdp_redirect_map   i40e->i40e  |    1.9M |   9.6M |  8.4M
+> 5.12 rc4         | xdp_redirect_map   i40e->veth  |    1.7M |  11.7M |  9.8M
+> 5.12 rc4 + patch | xdp_redirect_map   i40e->i40e  |    1.9M |   9.8M |  8.0M
+> 5.12 rc4 + patch | xdp_redirect_map   i40e->veth  |    1.7M |  12.0M |  9.4M
+Based on the discussion in v7, a summary of what still needs to be
+addressed will be useful.
