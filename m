@@ -2,109 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD6A365942
-	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 14:51:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F6C3659F4
+	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 15:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232091AbhDTMwY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Apr 2021 08:52:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37213 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231661AbhDTMwW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 20 Apr 2021 08:52:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618923111;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GZw2QV10ZPoSVV/r5DXbb6EIzcgNZJBaR0TDFr3TPLw=;
-        b=DQ/fQ1kusZct03yXwnVngq4jzhYOLTSRMfeX2HmIrLgT6v8IkotHKN5K1ULf8hKyCD18Jn
-        Awz3yJV0T3vcolAt0AQq2Wo+HPF9Po4b7rKUC60PPbdKII/6r2SZ39d8zZm8pp+EzOT5sM
-        7eXfeyHlUJS5ym2M+sxfBpqBnqhNgbQ=
+        id S231758AbhDTNZW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 20 Apr 2021 09:25:22 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:21177 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230479AbhDTNZV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 20 Apr 2021 09:25:21 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-509-CmDtPpsENnC57rOZn9QEDQ-1; Tue, 20 Apr 2021 08:51:49 -0400
-X-MC-Unique: CmDtPpsENnC57rOZn9QEDQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+ us-mta-547-X9KMndiGMfGSldWhX6i1CA-1; Tue, 20 Apr 2021 09:24:33 -0400
+X-MC-Unique: X9KMndiGMfGSldWhX6i1CA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 087EF10BFFDA;
-        Tue, 20 Apr 2021 12:51:47 +0000 (UTC)
-Received: from krava (unknown [10.40.196.37])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 5E42560916;
-        Tue, 20 Apr 2021 12:51:43 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 14:51:42 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBB9352800;
+        Tue, 20 Apr 2021 13:24:31 +0000 (UTC)
+Received: from krava.cust.in.nbox.cz (unknown [10.40.196.37])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 722D219172;
+        Tue, 20 Apr 2021 13:24:29 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     Joe Stringer <joe@cilium.io>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Jesper Brouer <jbrouer@redhat.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Viktor Malik <vmalik@redhat.com>
-Subject: Re: [PATCHv2 RFC bpf-next 0/7] bpf: Add support for ftrace probe
-Message-ID: <YH7OXrjBIqvEZbsc@krava>
-References: <20210413121516.1467989-1-jolsa@kernel.org>
- <CAEf4Bzazst1rBi4=LuP6_FnPXCRYBNFEtDnK3UVBj6Eo6xFNtQ@mail.gmail.com>
- <YHbd2CmeoaiLJj7X@krava>
- <CAEf4BzYyVj-Tjy9ZZdAU5nOtJ8_auvVobTT6pMqg8zPb9jj-Ow@mail.gmail.com>
- <20210415111002.324b6bfa@gandalf.local.home>
- <CAEf4BzY=yBZH2Aad1hNcqCt51u0+SmNdkD6NfJRVMzF7DsvG+A@mail.gmail.com>
- <20210415170007.31420132@gandalf.local.home>
- <20210417000304.fc987dc00d706e7551b29c04@kernel.org>
- <20210416124834.05862233@gandalf.local.home>
+        KP Singh <kpsingh@chromium.org>
+Subject: [PATCH bpf-next] selftests/bpf: Add docs target as all dependency
+Date:   Tue, 20 Apr 2021 15:24:28 +0200
+Message-Id: <20210420132428.15710-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416124834.05862233@gandalf.local.home>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 12:48:34PM -0400, Steven Rostedt wrote:
-> On Sat, 17 Apr 2021 00:03:04 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > > Anyway, IIRC, Masami wasn't sure that the full regs was ever needed for the
-> > > return (who cares about the registers on return, except for the return
-> > > value?)  
-> > 
-> > I think kretprobe and ftrace are for a bit different usage. kretprobe can be
-> > used for something like debugger. In that case, accessing full regs stack
-> > will be more preferrable. (BTW, what the not "full regs" means? Does that
-> > save partial registers?)
-> 
-> When the REGS flag is not set in the ftrace_ops (where kprobes uses the
-> REGS flags), the regs parameter is not a full set of regs, but holds just
-> enough to get access to the parameters. This just happened to be what was
-> saved in the mcount/fentry trampoline, anyway, because tracing the start of
-> the program, you had to save the arguments before calling the trace code,
-> otherwise you would corrupt the parameters of the function being traced.
-> 
-> I just tweaked it so that by default, the ftrace callbacks now have access
-> to the saved regs (call ftrace_regs, to not let a callback get confused and
-> think it has full regs when it does not).
-> 
-> Now for the exit of a function, what does having the full pt_regs give you?
-> Besides the information to get the return value, the rest of the regs are
-> pretty much meaningless. Is there any example that someone wants access to
-> the regs at the end of a function besides getting the return value?
+Currently docs target is make dependency for TEST_GEN_FILES,
+which makes tests to be rebuilt every time you run make.
 
-for ebpf program attached to the function exit we need the functions's
-arguments.. so original registers from time when the function was entered,
-we don't need registers state at the time function is returning
+Adding docs as all target dependency, so when running make
+on top of built selftests it will show just:
 
-as we discussed in another email, we could save input registers in
-fgraph_ops entry handler and load them in exit handler before calling
-ebpf program
+  $ make
+  make[1]: Nothing to be done for 'docs'.
 
-jirka
+After cleaning docs, only docs is rebuilt:
+
+  $ make docs-clean
+  CLEAN    eBPF_helpers-manpage
+  CLEAN    eBPF_syscall-manpage
+  $ make
+  GEN      ...selftests/bpf/bpf-helpers.rst
+  GEN      ...selftests/bpf/bpf-helpers.7
+  GEN      ...selftests/bpf/bpf-syscall.rst
+  GEN      ...selftests/bpf/bpf-syscall.2
+  $ make
+  make[1]: Nothing to be done for 'docs'.
+
+Cc: Joe Stringer <joe@cilium.io>
+Fixes: a01d935b2e09 ("tools/bpf: Remove bpf-helpers from bpftool docs")
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/testing/selftests/bpf/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index c45ae13b88a0..c5bcdb3d4b12 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -187,7 +187,6 @@ $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL)
+ 		    cp $(SCRATCH_DIR)/runqslower $@
+ 
+ $(TEST_GEN_PROGS) $(TEST_GEN_PROGS_EXTENDED): $(OUTPUT)/test_stub.o $(BPFOBJ)
+-$(TEST_GEN_FILES): docs
+ 
+ $(OUTPUT)/test_dev_cgroup: cgroup_helpers.c
+ $(OUTPUT)/test_skb_cgroup_id_user: cgroup_helpers.c
+@@ -210,6 +209,8 @@ $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)    \
+ 		    OUTPUT=$(HOST_BUILD_DIR)/bpftool/			       \
+ 		    prefix= DESTDIR=$(HOST_SCRATCH_DIR)/ install
+ 
++all: docs
++
+ docs:
+ 	$(Q)RST2MAN_OPTS="--exit-status=1" $(MAKE) $(submake_extras)	\
+ 	            -f Makefile.docs					\
+-- 
+2.30.2
 
