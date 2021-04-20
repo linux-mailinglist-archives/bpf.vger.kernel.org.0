@@ -2,128 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C3E365580
-	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 11:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EF3365781
+	for <lists+bpf@lfdr.de>; Tue, 20 Apr 2021 13:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhDTJgb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Apr 2021 05:36:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50678 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229761AbhDTJga (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 20 Apr 2021 05:36:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618911359;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qLC/fMpScBSSJ5G9NEpH9AKjnUVqqpw3OSPo3mLcv5E=;
-        b=AV46E0zLyGhthHLKRx3SdhCERj8QbaNkuNyvqrCT0EVrZxsGZMneTvWHLOs3sUs0AjlTrv
-        dfVmyBp57DmdeqAqbxdf9km8X8XGGWKetn9j3MKzRNLL9DGkzrtcwSMsQqFWfRKe/b0sfh
-        VHhOaLpeLYuwFUqPT/QDLIGNmzTkr+0=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-507-wI0udugcNa2O9to-NCu6Aw-1; Tue, 20 Apr 2021 05:35:57 -0400
-X-MC-Unique: wI0udugcNa2O9to-NCu6Aw-1
-Received: by mail-ej1-f69.google.com with SMTP id d16-20020a1709066410b0290373cd3ce7e6so4547655ejm.14
-        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 02:35:57 -0700 (PDT)
+        id S232088AbhDTLYK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 20 Apr 2021 07:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232066AbhDTLYH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 20 Apr 2021 07:24:07 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E00FCC06174A
+        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 04:23:35 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id n10-20020a05600c4f8ab0290130f0d3cba3so917253wmq.1
+        for <bpf@vger.kernel.org>; Tue, 20 Apr 2021 04:23:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6vFcLQC9p9nN/hpsSg6W2eBmrNCnz7mFXHTxsgTtyxM=;
+        b=iBJWfIz/C0KYJJS5Mv5clqW5ZmAMP2VXfa4gf7Et0A3y19++wOW7RX6AS9aabqyt0E
+         upyOcidkhk0EMzxEeCMk3JZVk9erOC+2s7WCU9y4TpUACLgYwJMCG18xUbtMvk1Cb83u
+         hdEHJE/QiVYhyNaQ7Eu9K+h8+yj+F42+O9Z0s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=qLC/fMpScBSSJ5G9NEpH9AKjnUVqqpw3OSPo3mLcv5E=;
-        b=Y0X22L3vEelnTrH87wtMOn5a9GpD2BWWsxylVPMwVMKNPP6d4cSiWSIERqy70id2e6
-         bfVloO/vjtTsburJ4BWIBl/sc7iz3QVvd4bnT3HwyiiGTeWs3WQyIzSzeWeqjuvT87OE
-         NEi20UtkYHdQQakk9sHWvZNyg2aSWaviN4nx/vuMqZcBJFxYuCbN967gAHF02+Nwwwdw
-         SN7Kr0PzLZepRGdFBj4S5TIFdJY3RMsuYqHiK0mYPmzuswC8fodmzRzLGrVTjOQtchE0
-         Fq4HbC5C9Lzrhp7bUVld7B2fhdUHx7yxpw1WSeMXtFSXLuPfnQC/rktum+AxWKN2j5Nt
-         VXnA==
-X-Gm-Message-State: AOAM530NR0a0vuxe43By3qgWbMb5AxTdRpTceWszgidPLXbQAalE3g3P
-        1V9kcpMjZYZSw9jYlhi/3NSWLuCx1V0Vd2SrvpGIGrWxSLnZkGwcRg5CsiNZ3ee1t+iTMmP6Q77
-        aLEkAOqmPhHvv
-X-Received: by 2002:a17:906:2b05:: with SMTP id a5mr26805419ejg.446.1618911356004;
-        Tue, 20 Apr 2021 02:35:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJygUvQBo5REQ1U3GcHppe37i8r/zepGZC/vvWAKuiPEsJIOpg5VA2hFakvZ6s2VQvupH8jbGQ==
-X-Received: by 2002:a17:906:2b05:: with SMTP id a5mr26805396ejg.446.1618911355570;
-        Tue, 20 Apr 2021 02:35:55 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id f1sm11283234edt.4.2021.04.20.02.35.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6vFcLQC9p9nN/hpsSg6W2eBmrNCnz7mFXHTxsgTtyxM=;
+        b=kmIDfFRr3DVSJOgfh8zUG9/zygU8daHxwvNpIvwDy3PpToSXYEo/oYP+HfikyYTKLK
+         O5JBXoHFKqvT07fljQn6CQarkY0Zy+Jb+kOy4UVV8M6mXJ3AGdMJAXKkXxPEEey1GQRE
+         taah/63lyuU9CI2egF9vU94Cu5rXD16OIe6qn5bl/gzUTptjHeU51xSHLeTt5AH0A4Nb
+         5e6QrtmrXTNHZisuFeynuRvtPJMws//yyl2GeY8WvLEJyUEKNsV1vP3iaZvw+dqSxdEG
+         sxf18f0quFX0xv+RpSqPd1B4DYGln52E4kq9G739MOpVHP/mUg2qoTL3v3i3cRMe6Z/3
+         ADpQ==
+X-Gm-Message-State: AOAM533iKyAs9w68g+MoYcM9agMq9+UdR7NwzBiIS5NoqccegFJbUDIH
+        sq9Hid5gMEFTn6/sYQxNs4X7yIMrsj5ouQ==
+X-Google-Smtp-Source: ABdhPJzh5/ifrt1Reoll0p0dNZonsQNQj7VRdQdq6LQHhWMn736yN6Rlqdh64iaSVzTAuC2sU04HpA==
+X-Received: by 2002:a1c:2c0a:: with SMTP id s10mr3886245wms.158.1618917814604;
+        Tue, 20 Apr 2021 04:23:34 -0700 (PDT)
+Received: from localhost.localdomain (8.6.1.2.2.7.f.2.3.4.9.1.8.9.b.e.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:eb98:1943:2f72:2168])
+        by smtp.gmail.com with ESMTPSA id l5sm2946450wmh.0.2021.04.20.04.23.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 02:35:55 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 6DEC41802D9; Tue, 20 Apr 2021 11:35:54 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Martin Willi <martin@strongswan.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next] net: xdp: Update pkt_type if generic XDP
- changes unicast MAC
-In-Reply-To: <f14da35f8cfa4b8f888dadfe4c9ebcd031d8e870.camel@strongswan.org>
-References: <20210419141559.8611-1-martin@strongswan.org>
- <87tuo2gwbj.fsf@toke.dk>
- <f14da35f8cfa4b8f888dadfe4c9ebcd031d8e870.camel@strongswan.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 20 Apr 2021 11:35:54 +0200
-Message-ID: <87sg3lfgcl.fsf@toke.dk>
+        Tue, 20 Apr 2021 04:23:34 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     andrii@kernel.org
+Cc:     bpf@vger.kernel.org, kernel-team@cloudflare.com,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: Some CO-RE negative testcases are buggy
+Date:   Tue, 20 Apr 2021 12:16:40 +0100
+Message-Id: <20210420111639.155580-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Martin Willi <martin@strongswan.org> writes:
+Hi Andrii,
 
-> Hi,
->
-> Thanks for your comments.
->
->> >  	eth =3D (struct ethhdr *)xdp->data;
->> > +	orig_host =3D ether_addr_equal_64bits(eth->h_dest, skb->dev->dev_add=
-r);
->>=20
->> ether_addr_equal_64bits() seems to assume that the addresses passed to=20
->> it are padded to be 8 bytes long, which is not the case for eth->h_dest.
->> AFAICT the only reason the _64bits variant works for multicast is that
->> it happens to be only checking the top-most bit, but unless I'm missing
->> something you'll have to use the boring old ether_addr_equal() here, no?
->
-> This is what eth_type_trans() uses below, so I assumed it is safe to
-> use. Isn't that working on the same data?
->
-> Also, the destination address in Ethernet is followed by the source
-> address, so two extra bytes in the source are used as padding. These
-> are then shifted out by ether_addr_equal_64bits(), no?
+I was looking at some CORE testcases, and noticed two problems:
 
-Ohh, you're right, it's shifting off the two extra bytes afterwards.
-Clever! I obviously missed that, but yeah, that means it just needs the
-two extra bytes to not be out-of-bounds reads, so this usage should be
-fine :)
+* The checks for negative test cases use an incorrect CHECK(false) 
+  invocation. This means negative test cases don't fail when they
+  should.
+* Some existence tests use incorrect file names, but the test harness
+  is unable to detect this. Basically, failure to load due to a failed
+  CORE relocation is not distinguished from ENOENT. I found the CHECK
+  issue when investigating this problem.
 
->> > +		skb->pkt_type =3D PACKET_HOST;
->> >  		skb->protocol =3D eth_type_trans(skb, skb->dev);
->> >  	}
->>=20
->> Okay, so this was a bit confusing to me at fist glance:
->> eth_type_trans() will reset the type, but not back to PACKET_HOST. So
->> this works, just a bit confusing :)
->
-> Indeed. I considered changing eth_type_trans() to always reset
-> pkt_type, but I didn't want to take the risk for any side effects.
+I've written the patch attached below, but there are now 12 failures.
+I don't understand the tests well enough to fix them, maybe you can
+take a look?
 
-Hmm, yeah, it does seem there are quite a few call sites to audit if you
-were to change the behaviour. I guess we'll have to live with the slight
-confusion, then :)
+Best
+Lorenz
 
--Toke
+---
+ .../selftests/bpf/prog_tests/core_reloc.c        | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-
-Given the above:
-
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+index d94dcead72e6..bd759290347c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
++++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+@@ -644,12 +644,12 @@ static struct core_reloc_test_case test_cases[] = {
+ 		.output_len = sizeof(struct core_reloc_existence_output),
+ 	},
+ 
+-	FIELD_EXISTS_ERR_CASE(existence__err_int_sz),
+-	FIELD_EXISTS_ERR_CASE(existence__err_int_type),
+-	FIELD_EXISTS_ERR_CASE(existence__err_int_kind),
+-	FIELD_EXISTS_ERR_CASE(existence__err_arr_kind),
+-	FIELD_EXISTS_ERR_CASE(existence__err_arr_value_type),
+-	FIELD_EXISTS_ERR_CASE(existence__err_struct_type),
++	FIELD_EXISTS_ERR_CASE(existence___err_wrong_int_sz),
++	FIELD_EXISTS_ERR_CASE(existence___err_wrong_int_type),
++	FIELD_EXISTS_ERR_CASE(existence___err_wrong_int_kind),
++	FIELD_EXISTS_ERR_CASE(existence___err_wrong_arr_kind),
++	FIELD_EXISTS_ERR_CASE(existence___err_wrong_arr_value_type),
++	FIELD_EXISTS_ERR_CASE(existence___err_wrong_struct_type),
+ 
+ 	/* bitfield relocation checks */
+ 	BITFIELDS_CASE(bitfields, {
+@@ -864,7 +864,7 @@ void test_core_reloc(void)
+ 		err = bpf_object__load_xattr(&load_attr);
+ 		if (err) {
+ 			if (!test_case->fails)
+-				CHECK(false, "obj_load", "failed to load prog '%s': %d\n", probe_name, err);
++				CHECK(true, "obj_load", "failed to load prog '%s': %d\n", probe_name, err);
+ 			goto cleanup;
+ 		}
+ 
+@@ -904,7 +904,7 @@ void test_core_reloc(void)
+ 		}
+ 
+ 		if (test_case->fails) {
+-			CHECK(false, "obj_load_fail", "should fail to load prog '%s'\n", probe_name);
++			CHECK(true, "obj_load_fail", "should fail to load prog '%s'\n", probe_name);
+ 			goto cleanup;
+ 		}
+ 
+-- 
+2.27.0
 
