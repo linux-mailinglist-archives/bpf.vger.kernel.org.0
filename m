@@ -2,282 +2,239 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357FF366AAE
-	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 14:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFAA4366ABB
+	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 14:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234637AbhDUMZc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Apr 2021 08:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
+        id S239515AbhDUM1O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Apr 2021 08:27:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234625AbhDUMZa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Apr 2021 08:25:30 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA01C06138A
-        for <bpf@vger.kernel.org>; Wed, 21 Apr 2021 05:24:56 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id x15-20020a0ce0cf0000b029019cb3e75c62so13538557qvk.15
-        for <bpf@vger.kernel.org>; Wed, 21 Apr 2021 05:24:56 -0700 (PDT)
+        with ESMTP id S238971AbhDUM1N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Apr 2021 08:27:13 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7DCC06174A
+        for <bpf@vger.kernel.org>; Wed, 21 Apr 2021 05:26:40 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id 1so31063043qtb.0
+        for <bpf@vger.kernel.org>; Wed, 21 Apr 2021 05:26:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=OD2jJ9yLCKnYZIcD98cpt1RR7ymAHhRQ2H9+zlmmjug=;
-        b=Avtml08dV8RD/7rMgmE8OvfgkjFdUDKpPY/pGUuZzrs4SHKHLGtOaYo/MEW4pVtG3A
-         Yvm2aK343VzqaJksCf19+sHWvrbtM7zz5B8N7J+QhUqieWsel9Po8IVRfk+LoCHw4qAl
-         WkMdgnNXw/jJ4paY1dzzBdUpFK+wTHotoj9Iuo/IzjnXWVMUtAS9ptqW1R+qjK8F/Lhh
-         N8BU5qKoBvxc2vW0I9UTSoIxLlt/HEqTVDdlontCV+qTfNQnkmdQ2KPjqtjjwNsNgUxT
-         7QZW3LiixvtvtEbeBnceOU8FJx6orLMTyS+eWDh6IfNjspUAOAewHp50hN95RkaR0kT2
-         ELmg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PfdUg8qCYc8gMXz26FZLYUj2ZZgGdRD3Vxnn3cJ18Mg=;
+        b=TCFikcAU1fKwXmNOc3DUpmk0HxrFW8oOQW1rtm1jQT/c4Ug1VdKbjYRTAVcn8Qmtw2
+         Nl1WYk7FbqQ8sDiCosbNJQOUO4jm7CKzlbHZWUwrNbFpALOJjIpA+382/GIxfaY+GuIZ
+         df8HUd4ke/bQKOkl3cbC/SUXNKI9g7jcUeaBhwQSFMNitHWaBAwIdTBRWWEfwRfY0ban
+         U5n+D2EIsHj3TL6LTBpVHzWBaJ5m4oFLeViJl7Qv4LAlFE8M39tn4OXK4sEKuok6d7CJ
+         Y18RRYbpVAadfn1Ql8SnBD78P/D5ZUTqFXglyJfY8PJWrGS8uYp8HY86L8J6fiEsBJEU
+         GJ0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=OD2jJ9yLCKnYZIcD98cpt1RR7ymAHhRQ2H9+zlmmjug=;
-        b=qc1Gjb6YxutMvyLEkmxqF6iZQQ+wtcshkVtD0HNW4nAHgBc/OEvNvWg7F6Aqzs58i5
-         gmmJDdEgqcG/kcBeAh6CVTxY6Ry48UUHW28tbQPLUhlabY9QIYNyiAaUJxn0ZlM4+tR8
-         vgT8/nlhRm2BFkPAnN4j/fduV7Z/BS0b1M4NaMMsgu0IEDwgBICcc+KYv3dqwpUz99Gu
-         +skdFjmlMykhdUCzuJWe1GgGZw7aQ5aBYJ6wLjS/f/2KEkwGxdFO/CUULD0gKm58I9Iy
-         BS7YrS5vA+orRFSsG8RN8/NIGP30AXg7/1z322S0m/mQwtIG4+gp/RwGhnDDaa9pEHzp
-         0WRQ==
-X-Gm-Message-State: AOAM530gzISW3XfEwVAr+gfrR95W1efNckUu9Cu+bEQQUJFeo6CW6vXl
-        OBIjHz3CSK/NwnGfmD5U7/7Oi0XWjXB69xLbOEVtkK1LCqBSuN9FLzwB+NZ9QeTZFWL+2AbUBDK
-        f+Hw8BIjlaiA7+islNhYspTDfVc6/LqhxgSG4I+6+fM3dAwaLpM+M1AQ5Ja6/EHg=
-X-Google-Smtp-Source: ABdhPJwdPqK7TVpIQ7Pri5OSevKRBEwXc8ZU2QtGuP5x3Hg+8x8ccehM6kZA+SSmO+esKvGhPL5q7ilIY2JSKw==
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a0c:f802:: with SMTP id
- r2mr32315555qvn.50.1619007895392; Wed, 21 Apr 2021 05:24:55 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 12:23:48 +0000
-Message-Id: <20210421122348.547922-1-jackmanb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
-Subject: Help with verifier failure
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PfdUg8qCYc8gMXz26FZLYUj2ZZgGdRD3Vxnn3cJ18Mg=;
+        b=h1N424Kjstrw28Pm3qcr9PUDUkPD0xkazZxtJOAFF9z+5L0AbXR8YnBPD/7Rl7dEJ1
+         792hYMEyWp7hh6XYToM4OdiChj/b7+f7oa8yza4zxkozNHYN63s6eiXpYoiPK8atCC/G
+         Ji1J0mfluXW61Lu0j34YfhOOTpwi53xT4Ul/PpfyxojLK7yp5ajnJGwOmt5BHGxbuyTv
+         jXjsccU+m/rniH9TWwDGf5k/roixxZQ6HIwFQe+i6ZdkYx7ZRP42qHv9bHu7lR78tmkx
+         JIQQetN+p5lylslmhlS2P7zfabjI0VQMYQgTvhs9tFsgDw3HaG4J42EABqGk6OPs525d
+         6umQ==
+X-Gm-Message-State: AOAM533boGNoMm5Pz6oqd/JPufhvEMaFmaiG0PoN78AMSp7A8QvAXhlo
+        TZHuQIs3HYl17eWwKvtAsDFXWEYCrVGvVzghUif7gA==
+X-Google-Smtp-Source: ABdhPJzKMfw3c8z2Bk0lm1xBbc0eCX4jiGr6K2CJqkalj3qV6FPnuQbXtVbVzcCk66rkIaAVNaUcDyrR54nlgxFvfiU=
+X-Received: by 2002:ac8:110d:: with SMTP id c13mr21244783qtj.337.1619007999712;
+ Wed, 21 Apr 2021 05:26:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <00000000000057102e058e722bba@google.com> <000000000000dfe1bc05c063d0fa@google.com>
+ <YH/wggx86Ph1bwPi@hirez.programming.kicks-ass.net>
+In-Reply-To: <YH/wggx86Ph1bwPi@hirez.programming.kicks-ass.net>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 21 Apr 2021 14:26:28 +0200
+Message-ID: <CACT4Y+YnWXtoDTNL6E3=wTZWKvDhu7jp-frXrGUgvJ5YorBUKw@mail.gmail.com>
+Subject: Re: [syzbot] INFO: task hung in perf_event_free_task
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     syzbot <syzbot+7692cea7450c97fa2a0a@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        bpf <bpf@vger.kernel.org>, cobranza@ingcoecuador.com,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stephane Eranian <eranian@google.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>, Martin KaFai Lau <kafai@fb.com>,
+        kpsingh@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
-
-Recently when our internal Clang build was updated to 0e92cbd6a652 we start=
-ed
-hitting a verifier issue that I can't see an easy fix for. I've narrowed it=
- down
-to a minimal reproducer - this email is a patch to add that repro as a prog
-test (./test_progs -t example).
-
-Here's the BPF code I get from the attached source:
-
-0000000000000000 <exec>:
-; int BPF_PROG(exec, struct linux_binprm *bprm) {
-       0:       79 11 00 00 00 00 00 00 r1 =3D *(u64 *)(r1 + 0)
-       1:       7b 1a e8 ff 00 00 00 00 *(u64 *)(r10 - 24) =3D r1
-;   uint64_t args_size =3D bprm->argc & 0xFFFFFFF;
-       2:       61 17 58 00 00 00 00 00 r7 =3D *(u32 *)(r1 + 88)
-       3:       b4 01 00 00 00 00 00 00 w1 =3D 0
-;   int map_key =3D 0;
-       4:       63 1a fc ff 00 00 00 00 *(u32 *)(r10 - 4) =3D r1
-       5:       bf a2 00 00 00 00 00 00 r2 =3D r10
-       6:       07 02 00 00 fc ff ff ff r2 +=3D -4
-;   void *buf =3D bpf_map_lookup_elem(&buf_map, &map_key);
-       7:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 =3D 0 ll
-       9:       85 00 00 00 01 00 00 00 call 1
-      10:       7b 0a f0 ff 00 00 00 00 *(u64 *)(r10 - 16) =3D r0
-      11:       57 07 00 00 ff ff ff 0f r7 &=3D 268435455
-      12:       bf 76 00 00 00 00 00 00 r6 =3D r7
-;   if (!buf)
-      13:       16 07 12 00 00 00 00 00 if w7 =3D=3D 0 goto +18 <LBB0_7>
-      14:       79 a1 f0 ff 00 00 00 00 r1 =3D *(u64 *)(r10 - 16)
-      15:       15 01 10 00 00 00 00 00 if r1 =3D=3D 0 goto +16 <LBB0_7>
-      16:       b4 09 00 00 00 00 00 00 w9 =3D 0
-      17:       b7 01 00 00 00 10 00 00 r1 =3D 4096
-      18:       bf 68 00 00 00 00 00 00 r8 =3D r6
-      19:       05 00 0e 00 00 00 00 00 goto +14 <LBB0_3>
-
-00000000000000a0 <LBB0_5>:
-;     void *src =3D (void *)(char *)bprm->p + offset;
-      20:       79 a1 e8 ff 00 00 00 00 r1 =3D *(u64 *)(r10 - 24)
-      21:       79 13 18 00 00 00 00 00 r3 =3D *(u64 *)(r1 + 24)
-;     uint64_t read_size =3D args_size - offset;
-      22:       0f 73 00 00 00 00 00 00 r3 +=3D r7
-      23:       07 03 00 00 00 f0 ff ff r3 +=3D -4096
-;     (void) bpf_probe_read_user(buf, read_size, src);
-      24:       79 a1 f0 ff 00 00 00 00 r1 =3D *(u64 *)(r10 - 16)
-      25:       85 00 00 00 70 00 00 00 call 112
-;   for (int i =3D 0; i < 512 && offset < args_size; i++) {
-      26:       26 09 05 00 fe 01 00 00 if w9 > 510 goto +5 <LBB0_7>
-      27:       07 08 00 00 00 f0 ff ff r8 +=3D -4096
-      28:       bf 71 00 00 00 00 00 00 r1 =3D r7
-      29:       07 01 00 00 00 10 00 00 r1 +=3D 4096
-      30:       04 09 00 00 01 00 00 00 w9 +=3D 1
-;   for (int i =3D 0; i < 512 && offset < args_size; i++) {
-      31:       ad 67 02 00 00 00 00 00 if r7 < r6 goto +2 <LBB0_3>
-
-0000000000000100 <LBB0_7>:
-; int BPF_PROG(exec, struct linux_binprm *bprm) {
-      32:       b4 00 00 00 00 00 00 00 w0 =3D 0
-      33:       95 00 00 00 00 00 00 00 exit
-
-0000000000000110 <LBB0_3>:
-      34:       bf 17 00 00 00 00 00 00 r7 =3D r1
-;     (void) bpf_probe_read_user(buf, read_size, src);
-      35:       bc 82 00 00 00 00 00 00 w2 =3D w8
-      36:       a5 08 ef ff 00 10 00 00 if r8 < 4096 goto -17 <LBB0_5>
-      37:       b4 02 00 00 00 10 00 00 w2 =3D 4096
-      38:       05 00 ed ff 00 00 00 00 goto -19 <LBB0_5>
+On Wed, Apr 21, 2021 at 11:30 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Apr 20, 2021 at 02:10:22AM -0700, syzbot wrote:
+> > syzbot has found a reproducer for the following issue on:
+> >
+> > HEAD commit:    7af08140 Revert "gcov: clang: fix clang-11+ build"
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=15416871d00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=c0a6882014fd3d45
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=7692cea7450c97fa2a0a
+> > compiler:       Debian clang version 11.0.1-2
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145c9ffed00000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12de31ded00000
+>
+> When I build that C file and run it, it completes. AFAICT that's not the
+> expected outcome given we're looking for a hung-task scenario. Hmm?
 
 
-The full log I get is at
-https://gist.githubusercontent.com/bjackman/2928c4ff4cc89545f3993bddd9d5edb=
-2/raw/feda6d7c165d24be3ea72c3cf7045c50246abd83/gistfile1.txt,
-but basically the verifier runs through the loop a large number of times, g=
-oing
-down the true path of the `if (read_size > CHUNK_LEN)` every time. Then
-eventually it takes the false path.
+I just reproduced it on some similar kernel I had. Maybe you used a
+different config. Or maybe it requires a similar qemu machine.
+However, the reproducer looks like a fork bomb and it produced
+thousands of subprocesses and took some time.
+In the past 2 years it's been happening all reproducers look similar
+and involve clone and perf_event_open.
 
-In the disassembly this is basically instructions 35-37 - pseudocode:
-  w2 =3D w8
-  if (r8 < 4096) {
-    w2 =3D 4096
-  }
 
-w2 can't exceed 4096 but the verifier doesn't seem to "backpropagate" those
-bounds from r8 (note the umax_value for R8 goes to 4095 after the branch fr=
-om 36
-to 20, but R2's umax_value is still 266342399)
 
-from 31 to 34: R0_w=3Dinv(id=3D0) R1_w=3Dinv2097152 R6=3Dinv(id=3D2,umin_va=
-lue=3D2093057,umax_value=3D268435455,var_off=3D(0x0; 0xfffffff)) R7_w=3Dinv=
-2093056 R8_w=3Dinv(id=3D0,umax_value=3D266342399,var_off=3D(0x0; 0xfffffff)=
-) R9_w=3DinvP511 R10=3Dfp0 fp-8=3Dmmmm???? fp-16=3Dmap_value fp-24=3Dptr_
-; int BPF_PROG(exec, struct linux_binprm *bprm) {
-34: (bf) r7 =3D r1
-; (void) bpf_probe_read_user(buf, read_size, src);
-35: (bc) w2 =3D w8
-36: (a5) if r8 < 0x1000 goto pc-17
+INFO: task a.out:13194 blocked for more than 143 seconds.
+      Not tainted 5.12.0-rc5-next-20210330 #113
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:a.out           state:D stack:28616 pid:13194 ppid: 23696 flags:0x00004004
+Call Trace:
+ context_switch kernel/sched/core.c:4329 [inline]
+ __schedule+0x911/0x2160 kernel/sched/core.c:5079
+ schedule+0xcf/0x270 kernel/sched/core.c:5158
+ perf_event_free_task+0x519/0x6c0 kernel/events/core.c:12627
+ copy_process+0x4a1e/0x70b0 kernel/fork.c:2377
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2501
+ __do_sys_clone+0xc8/0x110 kernel/fork.c:2618
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x451e49
+RSP: 002b:00007fa8e0d66118 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000451e49
+RDX: 9999999999999999 RSI: 0000000000000000 RDI: 0000000022086605
+RBP: 00007fa8e0d66200 R08: ffffffffffffffff R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc688a6c7e
+R13: 00007ffc688a6c7f R14: 00007fa8e0d66300 R15: 0000000000022000
 
-from 36 to 20: R0_w=3Dinv(id=3D0) R1_w=3Dinv2097152 R2_w=3Dinv(id=3D0,umax_=
-value=3D266342399,var_off=3D(0x0; 0xfffffff)) R6=3Dinv(id=3D2,umin_value=3D=
-2093057,umax_value=3D268435455,var_off=3D(0x0; 0xfffffff)) R7_w=3Dinv209715=
-2 R8_w=3Dinv(id=3D0,umax_value=3D4095,var_off=3D(0x0; 0xfff)) R9_w=3DinvP51=
-1 R10=3Dfp0 fp-8=3Dmmmm???? fp-16=3Dmap_value fp-24=3Dptr_
-; void *src =3D (void *)(char *)bprm->p + offset;
-20: (79) r1 =3D *(u64 *)(r10 -24)
-21: (79) r3 =3D *(u64 *)(r1 +24)
-; uint64_t read_size =3D args_size - offset;
-22: (0f) r3 +=3D r7
-23: (07) r3 +=3D -4096
-; (void) bpf_probe_read_user(buf, read_size, src);
-24: (79) r1 =3D *(u64 *)(r10 -16)
-25: (85) call bpf_probe_read_user#112
- R0_w=3Dinv(id=3D0) R1_w=3Dmap_value(id=3D0,off=3D0,ks=3D4,vs=3D4096,imm=3D=
-0) R2_w=3Dinv(id=3D0,umax_value=3D266342399,var_off=3D(0x0; 0xfffffff)) R3_=
-w=3Dinv(id=3D0) R6=3Dinv(id=3D2,umin_value=3D2093057,umax_value=3D268435455=
-,var_off=3D(0x0; 0xfffffff)) R7_w=3Dinv2097152 R8_w=3Dinv(id=3D0,umax_value=
-=3D4095,var_off=3D(0x0; 0xfff)) R9_w=3DinvP511 R10=3Dfp0 fp-8=3Dmmmm???? fp=
--16=3Dmap_value fp-24=3Dptr_
- R0_w=3Dinv(id=3D0) R1_w=3Dmap_value(id=3D0,off=3D0,ks=3D4,vs=3D4096,imm=3D=
-0) R2_w=3Dinv(id=3D0,umax_value=3D266342399,var_off=3D(0x0; 0xfffffff)) R3_=
-w=3Dinv(id=3D0) R6=3Dinv(id=3D2,umin_value=3D2093057,umax_value=3D268435455=
-,var_off=3D(0x0; 0xfffffff)) R7_w=3Dinv2097152 R8_w=3Dinv(id=3D0,umax_value=
-=3D4095,var_off=3D(0x0; 0xfff)) R9_w=3DinvP511 R10=3Dfp0 fp-8=3Dmmmm???? fp=
--16=3Dmap_value fp-24=3Dptr_
-invalid access to map value, value_size=3D4096 off=3D0 size=3D266342399
-R1 min value is outside of the allowed memory range
-processed 9239 insns (limit 1000000) max_states_per_insn 4 total_states 133=
- peak_states 133 mark_read 2
+Showing all locks held in the system:
+3 locks held by kworker/u8:1/35:
+ #0: ffff888010782938 ((wq_completion)netns){+.+.}-{0:0}, at:
+arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010782938 ((wq_completion)netns){+.+.}-{0:0}, at:
+atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888010782938 ((wq_completion)netns){+.+.}-{0:0}, at:
+atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888010782938 ((wq_completion)netns){+.+.}-{0:0}, at:
+set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888010782938 ((wq_completion)netns){+.+.}-{0:0}, at:
+set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888010782938 ((wq_completion)netns){+.+.}-{0:0}, at:
+process_one_work+0x871/0x1600 kernel/workqueue.c:2246
+ #1: ffffc90000597da8 (net_cleanup_work){+.+.}-{0:0}, at:
+process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
+ #2: ffffffff8ce94f50 (pernet_ops_rwsem){++++}-{3:3}, at:
+cleanup_net+0x9b/0xb10 net/core/net_namespace.c:557
+3 locks held by kworker/u8:3/269:
+1 lock held by khungtaskd/1654:
+ #0: ffffffff8b7773a0 (rcu_read_lock){....}-{1:2}, at:
+debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6333
+1 lock held by rsyslogd/8425:
+ #0: ffff88801433edf0 (&f->f_pos_lock){+.+.}-{3:3}, at:
+__fdget_pos+0xe9/0x100 fs/file.c:967
+2 locks held by getty/8519:
+ #0: ffff888020a09098 (&tty->ldisc_sem){++++}-{0:0}, at:
+tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc9000115b2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at:
+n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
+2 locks held by getty/8520:
+ #0: ffff888025793098 (&tty->ldisc_sem){++++}-{0:0}, at:
+tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc9000113b2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at:
+n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
+2 locks held by getty/8521:
+ #0: ffff8880194b5098 (&tty->ldisc_sem){++++}-{0:0}, at:
+tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc900011ab2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at:
+n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
+2 locks held by getty/8522:
+ #0: ffff888020a0f098 (&tty->ldisc_sem){++++}-{0:0}, at:
+tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc900011db2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at:
+n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
+2 locks held by getty/8523:
+ #0: ffff888019293098 (&tty->ldisc_sem){++++}-{0:0}, at:
+tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc900011bb2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at:
+n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
+2 locks held by getty/8524:
+ #0: ffff888019296098 (&tty->ldisc_sem){++++}-{0:0}, at:
+tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc900011cb2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at:
+n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
+2 locks held by kworker/0:5/8616:
+ #0: ffff88800fc64d38 ((wq_completion)events){+.+.}-{0:0}, at:
+arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff88800fc64d38 ((wq_completion)events){+.+.}-{0:0}, at:
+atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff88800fc64d38 ((wq_completion)events){+.+.}-{0:0}, at:
+atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff88800fc64d38 ((wq_completion)events){+.+.}-{0:0}, at:
+set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff88800fc64d38 ((wq_completion)events){+.+.}-{0:0}, at:
+set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff88800fc64d38 ((wq_completion)events){+.+.}-{0:0}, at:
+process_one_work+0x871/0x1600 kernel/workqueue.c:2246
+ #1: ffffc90001d77da8 ((kfence_timer).work){+.+.}-{0:0}, at:
+process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
+2 locks held by bash/13876:
+ #0: ffff88804e222098 (&tty->ldisc_sem){++++}-{0:0}, at:
+tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
+ #1: ffffc9000be332e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at:
+n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
 
-This seems like it must be a common pitfall, any idea what we can do to fix=
- it
-and avoid it in future? Am I misunderstanding the issue?
+=============================================
 
-Cheers,
-Brendan
-
----
- .../selftests/bpf/prog_tests/example.c        | 17 ++++++++
- tools/testing/selftests/bpf/progs/example.c   | 42 +++++++++++++++++++
- 2 files changed, 59 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/example.c
- create mode 100644 tools/testing/selftests/bpf/progs/example.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/example.c b/tools/testi=
-ng/selftests/bpf/prog_tests/example.c
-new file mode 100644
-index 000000000000..9c36858019b3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/example.c
-@@ -0,0 +1,17 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+
-+#include "example.skel.h"
-+
-+void test_example(void)
-+{
-+	struct example *skel;
-+	__u32 duration =3D 0;
-+
-+	skel =3D example__open_and_load();
-+	if (CHECK(!skel, "skel_load", "couldn't load program\n"))
-+		return;
-+
-+	example__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/example.c b/tools/testing/se=
-lftests/bpf/progs/example.c
-new file mode 100644
-index 000000000000..6c90060e92e0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/example.c
-@@ -0,1 +1,42 @@
-+#include "vmlinux.h"
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+#define CHUNK_LEN (uint64_t)4096
-+struct {
-+  __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+  __uint(key_size, sizeof(int));
-+  __uint(value_size, CHUNK_LEN);
-+  __uint(max_entries, 1);
-+} buf_map SEC(".maps");
-+
-+SEC("lsm/bprm_committed_creds")
-+int BPF_PROG(exec, struct linux_binprm *bprm) {
-+  /* Actual value doesn't make sense here, just picking something unknown =
-to the
-+   * verifier that produces simple disassembly
-+   */
-+  uint64_t args_size =3D bprm->argc & 0xFFFFFFF;
-+  int map_key =3D 0;
-+  void *buf =3D bpf_map_lookup_elem(&buf_map, &map_key);
-+  uint64_t offset =3D 0;
-+  if (!buf)
-+    return 0;
-+
-+  for (int i =3D 0; i < 512 && offset < args_size; i++) {
-+    void *src =3D (void *)(char *)bprm->p + offset;
-+    uint64_t read_size =3D args_size - offset;
-+
-+    if (read_size > CHUNK_LEN) {
-+      read_size =3D CHUNK_LEN;
-+    }
-+
-+    (void) bpf_probe_read_user(buf, read_size, src);
-+
-+    offset +=3D CHUNK_LEN;
-+  }
-+
-+  return 0;
-+}
---
-2.31.1.368.gbe11c130af-goog
-
+NMI backtrace for cpu 3
+CPU: 3 PID: 1654 Comm: khungtaskd Not tainted 5.12.0-rc5-next-20210330 #113
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
+ watchdog+0xd8e/0xf40 kernel/hung_task.c:338
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Sending NMI from CPU 3 to CPUs 0-2:
+NMI backtrace for cpu 2 skipped: idling at native_safe_halt
+arch/x86/include/asm/irqflags.h:51 [inline]
+NMI backtrace for cpu 2 skipped: idling at arch_safe_halt
+arch/x86/include/asm/irqflags.h:89 [inline]
+NMI backtrace for cpu 2 skipped: idling at default_idle+0xe/0x10
+arch/x86/kernel/process.c:683
+NMI backtrace for cpu 0 skipped: idling at native_safe_halt
+arch/x86/include/asm/irqflags.h:51 [inline]
+NMI backtrace for cpu 0 skipped: idling at arch_safe_halt
+arch/x86/include/asm/irqflags.h:89 [inline]
+NMI backtrace for cpu 0 skipped: idling at default_idle+0xe/0x10
+arch/x86/kernel/process.c:683
+NMI backtrace for cpu 1 skipped: idling at native_safe_halt
+arch/x86/include/asm/irqflags.h:51 [inline]
+NMI backtrace for cpu 1 skipped: idling at arch_safe_halt
+arch/x86/include/asm/irqflags.h:89 [inline]
+NMI backtrace for cpu 1 skipped: idling at default_idle+0xe/0x10
+arch/x86/kernel/process.c:683
