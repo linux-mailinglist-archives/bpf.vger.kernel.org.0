@@ -2,91 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0C936732E
-	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 21:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B8E367350
+	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 21:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238119AbhDUTIQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Apr 2021 15:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236238AbhDUTIP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:08:15 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E948C06174A
-        for <bpf@vger.kernel.org>; Wed, 21 Apr 2021 12:07:40 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id k17so11096910edr.7
-        for <bpf@vger.kernel.org>; Wed, 21 Apr 2021 12:07:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HfuyWzaRCHi4p0AIL1yf6uYPLz6so+Mgoph5gf0xKEE=;
-        b=GQLyPeSgUnxmCprFj4i5Sx5FH2Bbf+ND/0vOqqOUHFhkZ4gCvWQxE2WMT1Vffbh5Tx
-         zsYsxEk1j/mXKNlvc8U1peFxcWlA017nrakG7fkpTYcX1IUwBYG0cQzyPITNqRSxKHAu
-         JMTlowccj/u4w6yvu/m6mDLZTi+AwUKKih/5g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HfuyWzaRCHi4p0AIL1yf6uYPLz6so+Mgoph5gf0xKEE=;
-        b=IM2BRDpom7ug5EUHZeXEBUYw7zdZCUL3+Degsn0vM95d9UEt2WVF3KTQqSsvAXsfko
-         eL/8pm+4wzd6yFye4agZEzr5mlw/8yKEt7jUTOuOKvzsPkMGtb14oOQZ5q0X1SuePkax
-         bMkB/Aa+OGLw2BjRRQrgZo1QXOCig9YKnIEhZxceBUBP1nVsp9apV2KmrLc9Ckafe1tl
-         VjHwulzE1N+w65MHal7cNQhy+Hd63jwVpKqEwReNYnxtIKWGoChwOvBYrnzdnx5tmi9J
-         ZTLKonn7VRoC91MOP8sCVFA3zV9DfgzGjky/ZAP14jxoSVeqc5z6wOn4umkjaMixnzkl
-         y8Zw==
-X-Gm-Message-State: AOAM532naQZwNyMIW6oaaZh04lX1YgH2bgAiGXh4NQppP7bSH1Xc4f0U
-        HEdZIks8M7gX778kG4vGGXgkyw==
-X-Google-Smtp-Source: ABdhPJwZuKHB1GLs7hfQZCw+Zja/AgwnA3tCfOM3vVmdk62srIHyqWCuFcXvt8ILWyO9So28UlV3jQ==
-X-Received: by 2002:aa7:d693:: with SMTP id d19mr24515304edr.8.1619032059428;
-        Wed, 21 Apr 2021 12:07:39 -0700 (PDT)
-Received: from prevas-ravi.prevas.se ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id e5sm251908ejq.85.2021.04.21.12.07.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Apr 2021 12:07:38 -0700 (PDT)
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Steven Rostedt <rostedt@goodmis.org>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: [PATCH] bpf: remove pointless code from bpf_do_trace_printk()
-Date:   Wed, 21 Apr 2021 21:07:36 +0200
-Message-Id: <20210421190736.1538217-1-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.29.2
+        id S241818AbhDUTTh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Apr 2021 15:19:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57694 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237169AbhDUTTh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 21 Apr 2021 15:19:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619032743;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pRVP1W0iITlIP4ujNjLNfbbCnRnIJxXMkOVM3pr1dLA=;
+        b=ON3eyGunGIUVBbFaUV2ERqzM1zXAeeHiVtkaE/t88x7nkE/r/RP1/hjKyAWMPzUISY4gIJ
+        5ciY+O/8LtLyovLRgyL4Q/qbQHh+VgKMjuIYHvvX8MB7jhp5qPp4ZmmYAI2dQKmXqf0XBp
+        y0Hte6A9ynuiChXNrp2rp5pdDu9yLPY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-275-YHSZrK4ENPKkAQhE9xuexw-1; Wed, 21 Apr 2021 15:18:53 -0400
+X-MC-Unique: YHSZrK4ENPKkAQhE9xuexw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1829584B9A3;
+        Wed, 21 Apr 2021 19:18:51 +0000 (UTC)
+Received: from krava (unknown [10.40.195.227])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CC7B25C1B4;
+        Wed, 21 Apr 2021 19:18:43 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 21:18:42 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Jesper Brouer <jbrouer@redhat.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: Re: [PATCHv2 RFC bpf-next 0/7] bpf: Add support for ftrace probe
+Message-ID: <YIB6kr1fb5VvK5H4@krava>
+References: <20210415170007.31420132@gandalf.local.home>
+ <20210417000304.fc987dc00d706e7551b29c04@kernel.org>
+ <20210416124834.05862233@gandalf.local.home>
+ <YH7OXrjBIqvEZbsc@krava>
+ <CAADnVQK55WzR6_JfxkMzEfUnLJnX75bRHjCkaptcVF=nQ_gWfw@mail.gmail.com>
+ <YH8GxNi5VuYjwNmK@krava>
+ <CAADnVQLh3tCWi=TiWnJVaMrYhJ=j-xSrJ72+XnZDP8CMZM+1mQ@mail.gmail.com>
+ <YIArVa6IE37vsazU@krava>
+ <20210421100541.3ea5c3bf@gandalf.local.home>
+ <CAEf4BzaYEOqVYBaxVSs8p6Nmy_giztaxTX9DtDk4N77NzsHbDQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzaYEOqVYBaxVSs8p6Nmy_giztaxTX9DtDk4N77NzsHbDQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The comment is wrong. snprintf(buf, 16, "") and snprintf(buf, 16,
-"%s", "") etc. will certainly put '\0' in buf[0]. The only case where
-snprintf() does not guarantee a nul-terminated string is when it is
-given a buffer size of 0 (which of course prevents it from writing
-anything at all to the buffer).
+On Wed, Apr 21, 2021 at 11:52:11AM -0700, Andrii Nakryiko wrote:
+> On Wed, Apr 21, 2021 at 7:05 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Wed, 21 Apr 2021 15:40:37 +0200
+> > Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> 
+> [...]
+> 
+> >
+> > >
+> > > perhaps this is a good topic to discuss in one of the Thursday's BPF mtg?
+> >
+> > I'm unaware of these meetings.
+> 
+> We have BPF office hours weekly meetings every Thursday at 9am PDT.
+> There is a spreadsheet ([0]) in which anyone can propose a topic for
+> deeper discussion over Zoom. I've already added the topic for the
+> discussion in this thread. It would be great if you and Jiri could
+> join tomorrow. See the first tab in the spreadsheet for Zoom link.
+> Thanks!
+> 
+>   [0] https://docs.google.com/spreadsheets/d/1LfrDXZ9-fdhvPEp_LHkxAMYyxxpwBXjywWa0AejEveU/edit#gid=883029154
 
-Remove it before it gets cargo-culted elsewhere.
+great, I can come
 
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- kernel/trace/bpf_trace.c | 3 ---
- 1 file changed, 3 deletions(-)
+thanks,
+jirka
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index b0c45d923f0f..4ee55df84cd3 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -412,9 +412,6 @@ static __printf(1, 0) int bpf_do_trace_printk(const char *fmt, ...)
- 	va_start(ap, fmt);
- 	ret = vsnprintf(buf, sizeof(buf), fmt, ap);
- 	va_end(ap);
--	/* vsnprintf() will not append null for zero-length strings */
--	if (ret == 0)
--		buf[0] = '\0';
- 	trace_bpf_trace_printk(buf);
- 	raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
- 
--- 
-2.29.2
+> 
+> >
+> >
+> > -- Steve
+> 
 
