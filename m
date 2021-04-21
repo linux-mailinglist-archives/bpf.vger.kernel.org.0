@@ -2,170 +2,361 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3BB2366378
-	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 03:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7383664A0
+	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 06:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233874AbhDUBxR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 20 Apr 2021 21:53:17 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3088 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232659AbhDUBxR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 20 Apr 2021 21:53:17 -0400
-Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FQ3PL2rC4zWPtY;
-        Wed, 21 Apr 2021 09:48:54 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Wed, 21 Apr 2021 09:52:42 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 21 Apr
- 2021 09:52:41 +0800
-Subject: Re: [PATCH net v4 1/2] net: sched: fix packet stuck problem for
- lockless qdisc
-To:     Michal Kubecek <mkubecek@suse.cz>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <olteanv@gmail.com>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <andriin@fb.com>,
-        <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <pabeni@redhat.com>, <mzhivich@akamai.com>,
-        <johunt@akamai.com>, <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>
-References: <1618535809-11952-1-git-send-email-linyunsheng@huawei.com>
- <1618535809-11952-2-git-send-email-linyunsheng@huawei.com>
- <20210419152946.3n7adsd355rfeoda@lion.mk-sys.cz>
- <20210419235503.eo77f6s73a4d25oh@lion.mk-sys.cz>
- <20210420203459.h7top4zogn56oa55@lion.mk-sys.cz>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <80d64438-e3e5-e861-4da0-f6c89e3c73f7@huawei.com>
-Date:   Wed, 21 Apr 2021 09:52:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S234769AbhDUErV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Apr 2021 00:47:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234716AbhDUErV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Apr 2021 00:47:21 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD8C7C06174A;
+        Tue, 20 Apr 2021 21:46:47 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id c17so27529407pfn.6;
+        Tue, 20 Apr 2021 21:46:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=p2NPnR+CWZyiy1MnvLCcfSHpmjZGdfrjRhj3DHgLE28=;
+        b=SJS/IVB5N5hg3XTypiaDMf6d9pD+hGytZoBb/V0DPiNbDJTnl4hGpnd7mhR5tYWOBF
+         Elgq4uLsrULPtk8FP3TZocAbF5e2EfmALZ8sboROFkI8067fWpTPP4zZ1rum7/Kgy4dl
+         Ym23hdVqf2FxCMUXuorMxP/S6xf6XCEMX2q58wwZPWyVySNT9KHZANdLnsck1nEIsvBu
+         /tfdeaouxBQc2oNmSsU3fm4HsC+CnNrcBNaAldPq6O5kXCi+UqLtV/bAmgsHsu+gXODG
+         jCgRVwITM1iwZhvRA5mxFXbqXCRjM71kZfBvuh8artN0uvliTAQIXR3uHhMBQD/WKI3D
+         jfQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=p2NPnR+CWZyiy1MnvLCcfSHpmjZGdfrjRhj3DHgLE28=;
+        b=QSUvgL1AedNUinxfmEgNseRt7xAu8Sy4JrCcBhmCK6bkOVLrhULHK/gNTSIQg6AJY9
+         KpFZJQwqDZzg2X62VdWB1qcgdF31EPcExfDrZFL9IaVIhJ/Q6SFSVLx4D2+xtci3/I3Z
+         wuF1ch3R5XwKpL32HIDfuh7GaIG/LQVrzKOOzSHcXFgmCaGyeKJh11aCPeLupX3eQOKB
+         9e5AbQVppSbF/ZEu0sxSPWx8iss/iXSf3uwOlaB0xkvvHGEj9LrQzD0cjjOc3R6CE5Kg
+         Ak6JS08vkE5dhsdgu30HJhOE4uXX+G7ND+DJxtzC6K/N7a0jjEkEaCuezAokirUraur8
+         7G9w==
+X-Gm-Message-State: AOAM531Mp/C6jEdSyt24jY0ij2oQtv+Y8CyyAIEAOgbO/fPa7js0gaSe
+        NSQhmSz0nTl3jHIsJ1vyrrc=
+X-Google-Smtp-Source: ABdhPJxzO9MMDOmZR/OKFqlPpb4yxcPtJwqUgGy/zgnU1RHPu14Y3NAmQbg6AEeN5mj0cW/iLZ3Hgw==
+X-Received: by 2002:a17:90b:915:: with SMTP id bo21mr8678413pjb.118.1618980407215;
+        Tue, 20 Apr 2021 21:46:47 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:f3c3])
+        by smtp.gmail.com with ESMTPSA id a185sm518599pfd.70.2021.04.20.21.46.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 21:46:46 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 21:46:43 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 13/15] libbpf: Generate loader program out of
+ BPF ELF file.
+Message-ID: <20210421044643.mqb4lnbqtgxmkcl4@ast-mbp.dhcp.thefacebook.com>
+References: <20210417033224.8063-1-alexei.starovoitov@gmail.com>
+ <20210417033224.8063-14-alexei.starovoitov@gmail.com>
+ <a63a54c3-e04a-e557-3fe1-dacfece1e359@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <20210420203459.h7top4zogn56oa55@lion.mk-sys.cz>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme701-chm.china.huawei.com (10.1.199.97) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a63a54c3-e04a-e557-3fe1-dacfece1e359@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/4/21 4:34, Michal Kubecek wrote:
-> On Tue, Apr 20, 2021 at 01:55:03AM +0200, Michal Kubecek wrote:
->> On Mon, Apr 19, 2021 at 05:29:46PM +0200, Michal Kubecek wrote:
->>>
->>> As pointed out in the discussion on v3, this patch may result in
->>> significantly higher CPU consumption with multiple threads competing on
->>> a saturated outgoing device. I missed this submission so that I haven't
->>> checked it yet but given the description of v3->v4 changes above, it's
->>> quite likely that it suffers from the same problem.
->>
->> And it indeed does. However, with the additional patch from the v3
->> discussion, the numbers are approximately the same as with an unpatched
->> mainline kernel.
->>
->> As with v4, I tried this patch on top of 5.12-rc7 with real devices.
->> I used two machines with 10Gb/s Intel ixgbe NICs, sender has 16 CPUs
->> (2 8-core CPUs with HT disabled) and 16 Rx/Tx queues, receiver has
->> 48 CPUs (2 12-core CPUs with HT enabled) and 48 Rx/Tx queues.
->>
->>   threads    5.12-rc7    5.12-rc7 + v4    5.12-rc7 + v4 + stop
->>      1        25.1%          38.1%            22.9%
->>      8        66.2%         277.0%            74.1%
->>     16        90.1%         150.7%            91.0%
->>     32       107.2%         272.6%           108.3%
->>     64       116.3%         487.5%           118.1%
->>    128       126.1%         946.7%           126.9%
->>
->> (The values are normalized to one core, i.e. 100% corresponds to one
->> fully used logical CPU.)
+On Tue, Apr 20, 2021 at 06:34:11PM -0700, Yonghong Song wrote:
+> > 
+> > kconfig, typeless ksym, struct_ops and CO-RE are not supported yet.
 > 
-> I repeated the tests few more times and with more iterations and it
-> seems the problem rather was that the CPU utilization numbers are not
-> very stable, in particular with number of connections/threads close to
-> the number of CPUs and Tx queues. Refined results (and also other tests)
-> show that full 3-patch series performs similar to unpatched 5.12-rc7
-> (within the margin of statistical error).
+> Beyond this, currently libbpf has a lot of flexibility between prog open
+> and load, change program type, key/value size, pin maps, max_entries, reuse
+> map, etc. it is worthwhile to mention this in the cover letter.
+> It is possible that these changes may defeat the purpose of signing the
+> program though.
 
-Thanks for the clarifying.
-I did a similar test yesterday(using 10Gb netdev and the iperf tool I has),
-the initial result suggested the same.
+Right. We'd need to decide which ones are ok to change after signature
+verification. I think max_entries gotta be allowed, since tools
+actively change it. The other fields selftest change too, but I'm not sure
+it's a good thing to allow for signed progs. TBD.
+
+> > +	if (gen->error)
+> > +		return -ENOMEM;
+> 
+> return gen->error?
+
+right
+
+> > +	if (off + size > UINT32_MAX) {
+> > +		gen->error = -ERANGE;
+> > +		return -ERANGE;
+> > +	}
+> > +	gen->insn_start = realloc(gen->insn_start, off + size);
+> > +	if (!gen->insn_start) {
+> > +		gen->error = -ENOMEM;
+> > +		return -ENOMEM;
+> > +	}
+> > +	gen->insn_cur = gen->insn_start + off;
+> > +	return 0;
+> > +}
+> > +
+> > +static int bpf_gen__realloc_data_buf(struct bpf_gen *gen, __u32 size)
+> 
+> Maybe change the return type to size_t? Esp. in the below
+> we have off + size > UINT32_MAX.
+
+return type? it's 0 or error. you mean argument type?
+I think u32 is better. The prog size and all other ways
+the bpf_gen__add_data is called with 32-bit values.
+
+> > +{
+> > +	size_t off = gen->data_cur - gen->data_start;
+> > +
+> > +	if (gen->error)
+> > +		return -ENOMEM;
+> 
+> return gen->error?
+
+right
+
+> > +	if (off + size > UINT32_MAX) {
+> > +		gen->error = -ERANGE;
+> > +		return -ERANGE;
+> > +	}
+> > +	gen->data_start = realloc(gen->data_start, off + size);
+> > +	if (!gen->data_start) {
+> > +		gen->error = -ENOMEM;
+> > +		return -ENOMEM;
+> > +	}
+> > +	gen->data_cur = gen->data_start + off;
+> > +	return 0;
+> > +}
+> > +
+> > +static void bpf_gen__emit(struct bpf_gen *gen, struct bpf_insn insn)
+> > +{
+> > +	if (bpf_gen__realloc_insn_buf(gen, sizeof(insn)))
+> > +		return;
+> > +	memcpy(gen->insn_cur, &insn, sizeof(insn));
+> > +	gen->insn_cur += sizeof(insn);
+> > +}
+> > +
+> > +static void bpf_gen__emit2(struct bpf_gen *gen, struct bpf_insn insn1, struct bpf_insn insn2)
+> > +{
+> > +	bpf_gen__emit(gen, insn1);
+> > +	bpf_gen__emit(gen, insn2);
+> > +}
+> > +
+> > +void bpf_gen__init(struct bpf_gen *gen, int log_level)
+> > +{
+> > +	gen->log_level = log_level;
+> > +	bpf_gen__emit(gen, BPF_MOV64_REG(BPF_REG_6, BPF_REG_1));
+> > +	bpf_gen__emit(gen, BPF_ST_MEM(BPF_W, BPF_REG_10, stack_off(last_attach_btf_obj_fd), 0));
+> 
+> Here we initialize last_attach_btf_obj_fd, do we need to initialize
+> last_btf_id?
+
+Not sure why I inited it. Probably left over. I'll remove it.
+
+> > +}
+> > +
+> > +static int bpf_gen__add_data(struct bpf_gen *gen, const void *data, __u32 size)
+> > +{
+> > +	void *prev;
+> > +
+> > +	if (bpf_gen__realloc_data_buf(gen, size))
+> > +		return 0;
+> > +	prev = gen->data_cur;
+> > +	memcpy(gen->data_cur, data, size);
+> > +	gen->data_cur += size;
+> > +	return prev - gen->data_start;
+> > +}
+> > +
+> > +static int insn_bytes_to_bpf_size(__u32 sz)
+> > +{
+> > +	switch (sz) {
+> > +	case 8: return BPF_DW;
+> > +	case 4: return BPF_W;
+> > +	case 2: return BPF_H;
+> > +	case 1: return BPF_B;
+> > +	default: return -1;
+> > +	}
+> > +}
+> > +
+> [...]
+> > +
+> > +static void __bpf_gen__debug(struct bpf_gen *gen, int reg1, int reg2, const char *fmt, va_list args)
+> > +{
+> > +	char buf[1024];
+> > +	int addr, len, ret;
+> > +
+> > +	if (!gen->log_level)
+> > +		return;
+> > +	ret = vsnprintf(buf, sizeof(buf), fmt, args);
+> > +	if (ret < 1024 - 7 && reg1 >= 0 && reg2 < 0)
+> > +		strcat(buf, " r=%d");
+> 
+> Why only for reg1 >= 0 && reg2 < 0?
+
+To avoid specifying BPF_REG_7 and adding " r=%%d" to printks explicitly.
+Just to make bpf_gen__debug_ret() short and less verbose.
+
+> > +	len = strlen(buf) + 1;
+> > +	addr = bpf_gen__add_data(gen, buf, len);
+> > +
+> > +	bpf_gen__emit2(gen, BPF_LD_IMM64_RAW_FULL(BPF_REG_1, BPF_PSEUDO_MAP_IDX_VALUE, 0, 0, 0, addr));
+> > +	bpf_gen__emit(gen, BPF_MOV64_IMM(BPF_REG_2, len));
+> > +	if (reg1 >= 0)
+> > +		bpf_gen__emit(gen, BPF_MOV64_REG(BPF_REG_3, reg1));
+> > +	if (reg2 >= 0)
+> > +		bpf_gen__emit(gen, BPF_MOV64_REG(BPF_REG_4, reg2));
+> > +	bpf_gen__emit(gen, BPF_EMIT_CALL(BPF_FUNC_trace_printk));
+> > +}
+> > +
+> > +static void bpf_gen__debug_regs(struct bpf_gen *gen, int reg1, int reg2, const char *fmt, ...)
+> > +{
+> > +	va_list args;
+> > +
+> > +	va_start(args, fmt);
+> > +	__bpf_gen__debug(gen, reg1, reg2, fmt, args);
+> > +	va_end(args);
+> > +}
+> > +
+> > +static void bpf_gen__debug_ret(struct bpf_gen *gen, const char *fmt, ...)
+> > +{
+> > +	va_list args;
+> > +
+> > +	va_start(args, fmt);
+> > +	__bpf_gen__debug(gen, BPF_REG_7, -1, fmt, args);
+> > +	va_end(args);
+> > +}
+> > +
+> > +static void bpf_gen__emit_sys_close(struct bpf_gen *gen, int stack_off)
+> > +{
+> > +	bpf_gen__emit(gen, BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_10, stack_off));
+> > +	bpf_gen__emit(gen, BPF_JMP_IMM(BPF_JSLE, BPF_REG_1, 0, 2 + (gen->log_level ? 6 : 0)));
+> 
+> The number "6" is magic. This refers the number of insns generated below
+> with
+>    bpf_gen__debug_regs(gen, BPF_REG_9, BPF_REG_0, "close(%%d) = %%d");
+> At least some comment will be better.
+
+good point. will add a comment.
 
 > 
-> However, I noticed something disturbing in the results of a simple
-> 1-thread TCP_STREAM test (client sends data through a TCP connection to
-> server using long writes, we measure the amount of data received by the
-> server):
+> > +	bpf_gen__emit(gen, BPF_MOV64_REG(BPF_REG_9, BPF_REG_1));
+> > +	bpf_gen__emit(gen, BPF_EMIT_CALL(BPF_FUNC_sys_close));
+> > +	bpf_gen__debug_regs(gen, BPF_REG_9, BPF_REG_0, "close(%%d) = %%d");
+> > +}
+> > +
+> > +int bpf_gen__finish(struct bpf_gen *gen)
+> > +{
+> > +	int i;
+> > +
+> > +	bpf_gen__emit_sys_close(gen, stack_off(btf_fd));
+> > +	for (i = 0; i < gen->nr_progs; i++)
+> > +		bpf_gen__move_stack2ctx(gen, offsetof(struct bpf_loader_ctx,
+> > +						      u[gen->nr_maps + i].map_fd), 4,
 > 
->   server: 172.17.1.1, port 12543
->   iterations: 20, threads: 1, test length: 30
->   test: TCP_STREAM, message size: 1048576
->   
->   1     927403548.4 B/s,  avg   927403548.4 B/s, mdev           0.0 B/s (  0.0%)
->   2    1176317172.1 B/s,  avg  1051860360.2 B/s, mdev   124456811.8 B/s ( 11.8%), confid. +/-  1581348251.3 B/s (150.3%)
->   3     927335837.8 B/s,  avg  1010352186.1 B/s, mdev   117354970.3 B/s ( 11.6%), confid. +/-   357073677.2 B/s ( 35.3%)
->   4    1176728045.1 B/s,  avg  1051946150.8 B/s, mdev   124576544.7 B/s ( 11.8%), confid. +/-   228863127.8 B/s ( 21.8%)
->   5    1176788216.3 B/s,  avg  1076914563.9 B/s, mdev   122102985.3 B/s ( 11.3%), confid. +/-   169478943.5 B/s ( 15.7%)
->   6    1158167055.1 B/s,  avg  1090456645.8 B/s, mdev   115504209.5 B/s ( 10.6%), confid. +/-   132805140.8 B/s ( 12.2%)
->   7    1176243474.4 B/s,  avg  1102711907.0 B/s, mdev   111069717.1 B/s ( 10.1%), confid. +/-   110956822.2 B/s ( 10.1%)
->   8    1176771142.8 B/s,  avg  1111969311.5 B/s, mdev   106744173.5 B/s (  9.6%), confid. +/-    95417120.0 B/s (  8.6%)
->   9    1176206364.6 B/s,  avg  1119106761.8 B/s, mdev   102644185.2 B/s (  9.2%), confid. +/-    83685200.5 B/s (  7.5%)
->   10   1175888409.4 B/s,  avg  1124784926.6 B/s, mdev    98855550.5 B/s (  8.8%), confid. +/-    74537085.1 B/s (  6.6%)
->   11   1176541407.6 B/s,  avg  1129490061.2 B/s, mdev    95422224.8 B/s (  8.4%), confid. +/-    67230249.7 B/s (  6.0%)
->   12    934185352.8 B/s,  avg  1113214668.9 B/s, mdev   106114984.5 B/s (  9.5%), confid. +/-    70420712.5 B/s (  6.3%)
->   13   1176550558.1 B/s,  avg  1118086660.3 B/s, mdev   103339448.9 B/s (  9.2%), confid. +/-    65002902.4 B/s (  5.8%)
->   14   1176521808.8 B/s,  avg  1122260599.5 B/s, mdev   100711151.3 B/s (  9.0%), confid. +/-    60333655.0 B/s (  5.4%)
->   15   1176744840.8 B/s,  avg  1125892882.3 B/s, mdev    98240838.2 B/s (  8.7%), confid. +/-    56319052.3 B/s (  5.0%)
->   16   1176593778.5 B/s,  avg  1129061688.3 B/s, mdev    95909740.8 B/s (  8.5%), confid. +/-    52771633.5 B/s (  4.7%)
->   17   1176583967.4 B/s,  avg  1131857116.5 B/s, mdev    93715582.2 B/s (  8.3%), confid. +/-    49669258.6 B/s (  4.4%)
->   18   1176853301.8 B/s,  avg  1134356904.5 B/s, mdev    91656530.2 B/s (  8.1%), confid. +/-    46905244.8 B/s (  4.1%)
->   19   1176592845.7 B/s,  avg  1136579848.8 B/s, mdev    89709043.8 B/s (  7.9%), confid. +/-    44424855.9 B/s (  3.9%)
->   20   1176608117.3 B/s,  avg  1138581262.2 B/s, mdev    87871692.6 B/s (  7.7%), confid. +/-    42193098.5 B/s (  3.7%)
->   all                     avg  1138581262.2 B/s, mdev    87871692.6 B/s (  7.7%), confid. +/-    42193098.5 B/s (  3.7%)
+> Maybe u[gen->nr_maps + i].prog_fd?
+> u[..] is a union, but prog_fd better reflects what it is.
+
+ohh. right.
+
+> > +					stack_off(prog_fd[i]));
+> > +	for (i = 0; i < gen->nr_maps; i++)
+> > +		bpf_gen__move_stack2ctx(gen, offsetof(struct bpf_loader_ctx,
+> > +						      u[i].prog_fd), 4,
 > 
-> Each line shows result of one 30 second long test and average, mean
-> deviation and 99% confidence interval half width through the iterations
-> so far. While 17 iteration results are essentially the wire speed minus
-> TCP overhead, iterations 1, 3 and 12 are more than 20% lower. As results
-> of the same test on unpatched 5.12-rc7 are much more consistent (the
-> lowest iteration result through the whole test was 1175939718.3 and the
-> mean deviation only 276889.1 B/s), it doesn't seeem to be just a random
-> fluctuation.
+> u[i].map_fd?
 
-I think I need to relearn the statistial math to understand the above
-"99% confidence interval half width ":)
+right.
 
-But the problem do not seems related too much with "99% confidence
-interval half width ", but with "mean deviation"?
-
-I tried using netperf, which seems only show throughput of 9415.06
-(10^6bits/sec) using 10G netdev. which tool did you used to show the
-above number?
-
+> > +	/* remember map_fd in the stack, if successful */
+> > +	if (map_idx < 0) {
+> > +		bpf_gen__emit(gen, BPF_STX_MEM(BPF_W, BPF_REG_10, BPF_REG_7, stack_off(inner_map_fd)));
 > 
-> I'll try to find out what happens in these outstanding iterations.
+> Some comments here to indicate map_idx < 0 is for inner map creation will
+> help understand the code.
 
-As my understanding, if there is only one thread, the first spin_trylock()
-is likely to return true for the xmiting thread, unless the scheduled
-net_tx_action() cause the xmiting thread's spin_trylock() returning false?
+will do.
 
-Thanks for comprehensive testing and analysing.
-
+> > +	/* store btf_id into insn[insn_idx].imm */
+> > +	insn = (int)(long)&((struct bpf_insn *)(long)insns)[relo->insn_idx].imm;
 > 
-> Michal
-> 
-> .
-> 
+> This is really fancy. Maybe something like
+> 	insn = insns + sizeof(struct bpf_insn) * relo->insn_idx + offsetof(struct
+> bpf_insn, imm).
+> Does this sound better?
 
+yeah. much better.
+
+> > +static void mark_feat_supported(enum kern_feature_id last_feat)
+> > +{
+> > +	struct kern_feature_desc *feat;
+> > +	int i;
+> > +
+> > +	for (i = 0; i <= last_feat; i++) {
+> > +		feat = &feature_probes[i];
+> > +		WRITE_ONCE(feat->res, FEAT_SUPPORTED);
+> > +	}
+> 
+> This assumes all earlier features than FD_IDX are supported. I think this is
+> probably fine although it may not work for some weird backport.
+> Did you see any issues if we don't explicitly set previous features
+> supported?
+
+This helper is only used as mark_feat_supported(FEAT_FD_IDX)
+to tell libbpf that it shouldn't probe anything.
+Otherwise probing via prog_load screw up gen_trace completely.
+May be it will be mark_all_feat_supported(void), but that seems less flexible.
+
+> > @@ -9383,7 +9512,13 @@ static int libbpf_find_attach_btf_id(struct bpf_program *prog, int *btf_obj_fd,
+> >   	}
+> >   	/* kernel/module BTF ID */
+> > -	err = find_kernel_btf_id(prog->obj, attach_name, attach_type, btf_obj_fd, btf_type_id);
+> > +	if (prog->obj->gen_trace) {
+> > +		bpf_gen__record_find_name(prog->obj->gen_trace, attach_name, attach_type);
+> > +		*btf_obj_fd = 0;
+> > +		*btf_type_id = 1;
+> 
+> We have quite some codes like this and may add more to support more
+> features. I am wondering whether we could have some kind of callbacks
+> to make the code more streamlined. But I am not sure how easy it is.
+
+you mean find_kernel_btf_id() in general?
+This 'find' operation is translated differently for
+prog name as seen in this hunk via bpf_gen__record_find_name()
+and via bpf_gen__record_extern() in another place.
+For libbpf it's all find_kernel_btf_id(), but semantically they are different,
+so they cannot map as-is to gen trace bpf_gen__find_kernel_btf_id (if there was
+such thing).
+Because such 'generic' callback wouldn't convey the meaning of what to do
+with the result of the find.
+
+> > +	} else {
+> > +		err = find_kernel_btf_id(prog->obj, attach_name, attach_type, btf_obj_fd, btf_type_id);
+> > +	}
+> >   	if (err) {
+> >   		pr_warn("failed to find kernel BTF type ID of '%s': %d\n", attach_name, err);
+> >   		return err;
+> > diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> > index b9b29baf1df8..a5dffc0a3369 100644
+> > --- a/tools/lib/bpf/libbpf.map
+> > +++ b/tools/lib/bpf/libbpf.map
+> > @@ -361,4 +361,5 @@ LIBBPF_0.4.0 {
+> >   		bpf_linker__new;
+> >   		bpf_map__inner_map;
+> >   		bpf_object__set_kversion;
+> > +		bpf_load;
+> 
+> Based on alphabet ordering, this should move a few places earlier.
+> 
+> I will need to go through the patch again for better understanding ...
+
+Thanks a lot for the review.
+
+I'll address these comments and those that I got offline and will post v2.
+This gen stuff will look quite different.
+I hope bpf_load will not be a part of uapi anymore.
+And 'struct bpf_gen' will not be exposed to bpftool directly.
