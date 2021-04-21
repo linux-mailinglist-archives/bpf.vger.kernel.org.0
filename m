@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06135366586
-	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 08:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7113665C3
+	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 08:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235679AbhDUGiq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Apr 2021 02:38:46 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:20902 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235123AbhDUGip (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 21 Apr 2021 02:38:45 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13L6Jd3K023425;
-        Tue, 20 Apr 2021 23:37:56 -0700
+        id S235248AbhDUG65 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Apr 2021 02:58:57 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:22808 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229536AbhDUG65 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 21 Apr 2021 02:58:57 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 13L6qqvx021860;
+        Tue, 20 Apr 2021 23:58:07 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=o5by0peAeYUbQ8CG4/fDjLhjYLsgfPs+Fm6i+E9ZQMI=;
- b=OjcUX8KhtzmmWgup50nr2g1eUG0O5+5avHxHo73tuyti/3QfaYfOq1nE5+LabkbCrX1Q
- AaLZJ5xKQU6gN/movdAlQfbql5scnbHHvNl8DaMDqbzHx0KNLdmMexWIVST8BdXNd6TH
- ZKu30Jo46V2xR/A1z4HHO2iPRtzy2o13bGw= 
+ bh=6bsHqEkrq01yc++zvSxROgOCclTwvZIo7q34uov9pms=;
+ b=bp7DKU5xnxdnOHPAMgAwzFLYD2gn1BLx54hY0AJ4w1i3y9dROUHLX5WdcrPWy9yTWqGX
+ TroUWOJ6GqfsKkbvexYFc6msmQWfe9UUG2YzUK22DGcQaeQuio7u92s+aow6O+LBcsMn
+ /C0A3DoBqAmfVPKuQkqgrR08dxEOCMaFM0A= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 382726hxbj-1
+        by m0001303.ppops.net with ESMTP id 38270dt2h1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 20 Apr 2021 23:37:56 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+        Tue, 20 Apr 2021 23:58:07 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 20 Apr 2021 23:37:55 -0700
+ 15.1.2176.2; Tue, 20 Apr 2021 23:58:06 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XX6nC7L82jgiv10TBUfm4I9t0fUBBnsBZN8LnY8EKCQ/TRPZx5CYeAeM3jPvXz5Q6+rk34z7Y2/TI3jS43EfnWX5iuF7kLsGWAiDiu+Q9b6ygKB+8R75LATfvukVDtYLk8ksA0YQuzWANSYgO4caAutEDsdzq+ovMgRLjlB+Z+wBQVAIdS/Nw1pAAgw0+cG/S8F2/j6phcufHgu+S7b3qvCxgNVFFstcuyKtLu6tITebekNR/asf3Oc1NZPUlJuH0X4rPxvYWfMgfx97YAawz0pyeRzvya1iaMBcF1NSiTHE3fDZxSMrKz4pvJFIOSTk89ENB8hymPiMaKe5mQf6gg==
+ b=PyOPJd6+LELqhTgE06Wl8PegER8mreu793rdze/vgWTtsSPNO/CWLkxIJZt9eKQnWuAx0UmuRe31jp0zAbHpts7CKgPoAgQwadfrduRyjboRZBf3z/KAgyGrAq9oiQza+h5HPe2sreaDVEdKSwBgzV1Jc6vQa2JTEz+wpfhMihN6mTSKQvfGpNdhS8+PjrGVqXLG0io+kS93z7n0MLUf1qyMp7tOB56A25wILreXao7Qr6BjWuis7PktPkZg/e97TSPQvpBGTFtIUGHiXI5CKNu0AoMqXj+E90vX0twSYC9kyheZqgmSjDFx2xgZfHW/xu9WTYa4DjWfGSzh/Ku8Sg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o5by0peAeYUbQ8CG4/fDjLhjYLsgfPs+Fm6i+E9ZQMI=;
- b=AiP74eXDWToFJIJ2LZImFLG+SJ45mph5NdR8MsUrQX3WnbNrd4m6j2U5eK1ItOLuHUeJO7dpeLTNpAzw+cPzq/ZXKnsEnXYORlkiZ82Yq+NZK9l9GPudy4dZK1JoPgLum4b/A6XZawg2VSDcns1uiJZ0W2JBoVtKJgOuqMbDvxrmf7noxivxvT+69qd7STNPl8oe18nsyunvww3KZW6xKLm3sSIOAZiFLiTqVa6cVB/Or3tbu6iFiplLSJvs5zc3cQaznrjXAYJhqZyPiH2xCN8+Gsd8k3TLxrFzI/xFumV5z9vTN5c+TxBWH/VdkEq+KpyDDSE6yqtH0iF+o46Fzw==
+ bh=6bsHqEkrq01yc++zvSxROgOCclTwvZIo7q34uov9pms=;
+ b=cp5FdLykkUeWHwGxqa9rLJp5y9x789waYNeT6V46KXSLqgg/2hV+260SZL2LOZ23RutuByQm4F/VOhMV5PAZtPmH5rbsrYBT+4b5nEQN4Xkl4ckdS6exWbXLuv1wzkQ3oVeU5S1wP2ItwmTTN6H7cW7hAGkAoYAU6xHeJq0JKUyeMstEccQcM2LRvIPMsi6nvGtJpeiHoEWoQpJX2Huu7emFxTrIcpzroed7a7lBDSEHkobSqCtOeCF7njunwaCqJ43XB0n6L4ey9Ob6fO+bmmJy6kw79+oB+elaK71mipwmy4g1uswlxQJJClMX6WtOMnwvskX+jk5K+YBjzPviWQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4436.namprd15.prod.outlook.com (2603:10b6:806:197::19) with
+ by SA1PR15MB4904.namprd15.prod.outlook.com (2603:10b6:806:1d3::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Wed, 21 Apr
- 2021 06:37:52 +0000
+ 2021 06:58:05 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.4042.024; Wed, 21 Apr 2021
- 06:37:52 +0000
-Subject: Re: [PATCH bpf-next v3 1/3] libbpf: add helpers for preparing netlink
- attributes
+ 06:58:05 +0000
+Subject: Re: [PATCH bpf-next v3 2/3] libbpf: add low level TC-BPF API
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, <bpf@vger.kernel.org>
 CC:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -66,85 +65,85 @@ CC:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         <netdev@vger.kernel.org>
 References: <20210420193740.124285-1-memxor@gmail.com>
- <20210420193740.124285-2-memxor@gmail.com>
+ <20210420193740.124285-3-memxor@gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <b1648e8a-44de-3d9a-963f-4c79f42e4713@fb.com>
-Date:   Tue, 20 Apr 2021 23:37:48 -0700
+Message-ID: <27b90b27-ce90-7b2c-23be-24cbc0781fbe@fb.com>
+Date:   Tue, 20 Apr 2021 23:58:01 -0700
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.9.1
-In-Reply-To: <20210420193740.124285-2-memxor@gmail.com>
+In-Reply-To: <20210420193740.124285-3-memxor@gmail.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 X-Originating-IP: [2620:10d:c090:400::5:d87c]
-X-ClientProxiedBy: MW4PR02CA0013.namprd02.prod.outlook.com
- (2603:10b6:303:80::33) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: CO2PR18CA0049.namprd18.prod.outlook.com
+ (2603:10b6:104:2::17) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::137a] (2620:10d:c090:400::5:d87c) by MW4PR02CA0013.namprd02.prod.outlook.com (2603:10b6:303:80::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Wed, 21 Apr 2021 06:37:51 +0000
+Received: from [IPv6:2620:10d:c085:21cf::137a] (2620:10d:c090:400::5:d87c) by CO2PR18CA0049.namprd18.prod.outlook.com (2603:10b6:104:2::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Wed, 21 Apr 2021 06:58:04 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bf4b40b9-c43f-463a-f8dc-08d9048ffd35
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4436:
+X-MS-Office365-Filtering-Correlation-Id: 60924d05-0f73-4b19-d15e-08d90492d02d
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4904:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA1PR15MB4436AB96A79482A5653332E9D3479@SA1PR15MB4436.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <SA1PR15MB49047A12DECCE023057E7ADCD3479@SA1PR15MB4904.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HNEIDXxBHzJmYTK0B68lqPJ6kn5SCw1/cmYo+/s168vz5KP7f2pCSsFVLCRFZNxuh3TUvNxoUcC/hva9gQSfV0jDfN6If26bsGHmzFkhG3DI/RMg21k576oSzFZg7Pa0CCLKGRKRU4flKpHNCdxsKQnBNCR6qufSzOzn4fNAMeU1fDB2P0OPK2kSsk4/oo+hgWA10tj+gyckEu2w9kpGFZ2XN0Idw95JY6/ERriXCn2nskOGLZt+ZsKsTVUyQI8UyWS+UMEY7jpkRi4pwzDqwjUv4BTkslJw5Hyk9uISYm5HGXLKkvkO7xs7u3O8WAv+PAf5u9LMQCk82fPkUFdNAlibVlvgw4eYjVLIwuksPS2mQN5iIBOhhAnErsb1pDmbz44Ci+/Ezz9TV3KLNTSUQuh6nLuoE22kakAlwzYPZD6hdKB/atJTpAVM2stZ9C9CjpasHfZJuoB0q7wVjjG4a0jGAJHm49XN4MwM/mGLU0bash/GbWXEKKdj12AylSv+iGg4dbVFEnQXNYqkhZn9GBOaURpTpEvMAsqiiRT9xAxeoEsmG+0dtqY1fv7Nk+cZ7t6l/SowX72/hDDJTjTznr8M13o+Wq7LmhB44DFx9irPlzv+1+c0rCX79Sm93T2dZR3DDn5JnPNU2ylaAc6FaaXYNYfuvEFK4L+pZOCR+TUrM24hKq/DMaoGGycDlklj
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(366004)(376002)(39860400002)(346002)(8936002)(66946007)(16526019)(186003)(36756003)(83380400001)(478600001)(66556008)(2906002)(66476007)(38100700002)(4326008)(7416002)(5660300002)(53546011)(31686004)(316002)(6486002)(54906003)(52116002)(6666004)(31696002)(86362001)(8676002)(2616005)(66574015)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Y0JaL1ZOdlZZdy9vVzJQUUhMQ0p5aFVJL1lOeWx3NDYxejdJNWlna2NhTWxy?=
- =?utf-8?B?U09BUDhNMk5OSUsvQk1wWEN3RFNzMTg4Smo3Rnhhd1hQeHd4Z3I3YWk1N3lY?=
- =?utf-8?B?bGdSS1VYUktKeTVwS3lXaDU5ejhma3h6bWZJY1pzVEYxa0RQaEoxWEdJQVYx?=
- =?utf-8?B?VDFrNmJ4a3FqWmN5Sm8yT2MyUGk0NjdaYnIwR09xT1haT2JFaTJUUEVyV2R6?=
- =?utf-8?B?OFJESWR4dGJ2ZWVpOGhhZE5FQXFmRWtQT3RQSTFCQ2FoM3lrR0RGcENKZFVM?=
- =?utf-8?B?cUNtTXRGWlJibzRBZ2t3c3dncDQ1UkpXTGVJZEl0MGRuV3dzN2dZUWhqeGg4?=
- =?utf-8?B?TUhwTEt3WEdFbHFaZ2FEUTJiczFRaDNFM0FDbm0rZnlaKzg2eXBUaG84NTls?=
- =?utf-8?B?L0J0ZWZza3hwYTBJS0JlZy9PZGZqWDBTc0E3STBYV3Qrd1JFbWtPMTVlSHdr?=
- =?utf-8?B?TEF0NVJiVFMzbXZvSmdxV01QbnFwUWdnckR3MUM0RVNIdkRzWmxHRkhJK28r?=
- =?utf-8?B?ZDE1RE8yK1NMTmNiWnNwSlFDYldXeXFMRXlMQ2JudnkyZ2JvZUhJVk1sU0xa?=
- =?utf-8?B?QVZsb3B3bUJtZmkwM2xLZTEwUHZPc05HTzJTZVdsN1E3SDBGNzVxZTFJbHRD?=
- =?utf-8?B?cXppSEl4TkRoWkVsZFN3YU5FNnQrOU1ld2hQR1ppMmJVcm0wZTZiOXNmYTJS?=
- =?utf-8?B?MGRkYXVuWG9ETmNqWnh6dXJYV3d3K1NVVnlXWWRCb2loWE9wa3dDVE1nSklX?=
- =?utf-8?B?d0grazZrWHlnczBxcHJiUENyS2dEajV3NGJyWVFRdXI0R1JkR0h6TDVUZ2o1?=
- =?utf-8?B?M2R3aU93dTJBKzNPK1JrRzZBZ1ZNazVaRE1iN3dUcm9OeTkxT2lTNjNEcExO?=
- =?utf-8?B?a2JFbjVoeGF6RCtBWjc4M0hZazhJWDVCNU1GK2JwMWk5d3ZpSkhsZGcrMzFZ?=
- =?utf-8?B?ZUJWalBNQ1ZjNENmbjFpSFZKT21QR2VTNlVKRjJGcko2Q0JJeVVPeXNxazFw?=
- =?utf-8?B?V2g5L0dzRU9BQlpqYWVsL3dSSnBjWUVabk9xclYrY1NQMzBoZHhTL1poUzNP?=
- =?utf-8?B?VVRPUlJxb2pOdzJFSjU0SW03OGRBRXFzVGdRd2xSRUxmSGw1Ty83dkhITHQw?=
- =?utf-8?B?SjBnNVVmUzZWNm1sZm9yajJHYnZzZkUxMjQ3eG1VRGZUbHRFbjNCYTJqK3NW?=
- =?utf-8?B?N2cxTFRnU1QyUllNd2NZUXRwb21lb0dIZnY1SVpMNEZBNzN6T29QK01MVkgz?=
- =?utf-8?B?dnZqR3lNMWF5eTc3SHdsT21jOXc5L29hTUprZkRrd1dWUVR4UWVVazZoemh2?=
- =?utf-8?B?ZnlKZnhpL2FjUVdFOCtUMEo0VDd5SDE4YnB6cFk4aFExN2crOTB1TVZpRk44?=
- =?utf-8?B?amdKQWpKV1lWTzlReTJqcGUvQlF6SFRqM1hkRnA3VngzbWZMUTVxYXdvZFVU?=
- =?utf-8?B?ZXdFOWxNV0JSK3pxcHREbUN6d3RVdDBCVmE1c01jR2lwaHc2R0ZpSS9hRExT?=
- =?utf-8?B?d2ZNT0w3UGxRUm1uNzd5YzFqYlJMek5Wb1VrTGUyei9IQkRTUmkweHljLzFP?=
- =?utf-8?B?OU9iTXVFaG0xNkM5UlN0d2tRRzVYMXIrWHNxOWJ1bzFzU01hbmJxdEJFV2lp?=
- =?utf-8?B?K3dpcUpHRkJ2V3h0aHdPUUxxQ3U2dEllS1FTQXRDT3R2ODJXUElJdC9lWmFO?=
- =?utf-8?B?bUo4cFp0YzJsMDNpVkNWVCtEaU9NaFp3WDQ2U0xab1cyaENQZnVpdDMyRUk3?=
- =?utf-8?B?UjQvUWQ5WDhYL0JXOHZIWTdDODRYWGxFUzN4YVhLTFhJbGc5Y05aVVdZTFBV?=
- =?utf-8?Q?1TwCQsIZIrsgHwautOYdA1KnZOMj/sNSC/Oj4=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf4b40b9-c43f-463a-f8dc-08d9048ffd35
+X-Microsoft-Antispam-Message-Info: fvfYyciF8T3jXzgkgM0cjmN2KpCh9R/NFwkEg2UPwgcylxbQr68TTKHFnxfkJ2ZF5VlVDA3DhJUovUEFCzW/yR7dyNp7HTJl2mJ3OTZhCVWGQsDvyuLB2howLFvK9xuRLfK8NIdHPI2p+XU0/EXU4EIq/AzjY3+/xhWIYXiPIjYZHfaYKDZ5WMRDz03/jmU81iOLckyeZD1Ikmi0+1LRxNUYHCXJfwqRBU38QsysQDymSBt3PPmZKX36e3RpsxSBtPJjEkf9QO66iRFwpskWZ3+98eU/VbpfQBXs4FOIVMDOWjl+MhR1e/AycjmDj4/c4guzgZlixaoZjgbxQ0SqdQzMXDDL1oVdpiwldw7uoQV4RG/fRFMHN511BZ/4nKy55NJ4iGAksWPtE6a2mTYfeq7wqafgodpJKZ0VttjW5MgXS338HufVYRuF0lbiwoh1LTOjwFy4d9+VSd2AvUDXz8EcB0rKOTgXaWSeIK5JTLOJ16sMZYL5xeZgyyO/Vdn/f1to+1lH4VokKM5GMOtUg0UbFo9LfFXcyeP6OaPLyP31vrSF/GP8f+zSyG0mGmUZkWeE2QMImx1vbm9tmkvQDZbMxMI1SEbGFr+WPhxKpg/hotKItS4jwqkhn06/21SmUzprnuz8/fAFqk+yo2Hc7KAUNxVgE2jo41M5h1x8G5hR/dP04S2mO4UnkoEzt/Rd
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(36756003)(5660300002)(38100700002)(86362001)(31696002)(2906002)(16526019)(6666004)(8676002)(186003)(83380400001)(4326008)(66556008)(66476007)(31686004)(54906003)(6486002)(7416002)(66946007)(53546011)(498600001)(8936002)(52116002)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?c2ljQ1FVQzhoeTQ4eDczdXZiRWpLOGttbzdQZldZL1FKMkdpUW1HV1orZ0hZ?=
+ =?utf-8?B?Sk9iRzRhM1FkKzRtMldVZnF1bmsvdzF3aDVjdDNlVlI0OHVWNldMZnZNdVUy?=
+ =?utf-8?B?ZDduMmR6MW5ERC9TM0ZMdmtxRWZUVFJ2SnhNbnV2YWJPMDRoSDk0Um1TVzdy?=
+ =?utf-8?B?UFhkTzZWak9MWHBtbHZHYWdMRGRDRWhkRDA0UGhZcTJ3dEpzcGc2bWlCaSsy?=
+ =?utf-8?B?cjNNbUp6Njdid0JiU1Z6QkU1dEczT0c5OVQ0ZUh1T3JPdnlxMHI4dXhWTkF0?=
+ =?utf-8?B?Y0hWTHZQbHZsTmVjMjlZV3FxeTRXRzN5Vm5OMEQ0K1R4cXpoRExHdmxhRXdt?=
+ =?utf-8?B?M2IzZURXazhkeVVpbE81dkx1TFRFOFZqZ3NPemhkcGNlRUFHdDF4cGpKeXNI?=
+ =?utf-8?B?dGdJWVd6TEZFQU0yN2xsYkdreDFUaHJUUC9GQm5PV25YN2Q5d2ZvcDJYQ2g3?=
+ =?utf-8?B?cWtsZkhkdDUzS2lJZXNqVmRYbGFXbElSK0NkN0E3eVl4amE1b2w1bTIvbzgx?=
+ =?utf-8?B?YXNTWVBUYStWS1liL3pJOU4wZnU3Y0UvYXExWkg2MGY3MFNhWWZ6WS9IZjFn?=
+ =?utf-8?B?cTJNTlZQZkFMNXEvL2xUeEZBVStWR0lsMTZidzRXY1VlajZmdCtGMFg1ekF2?=
+ =?utf-8?B?VjU1UExmcUJQNTlRSGtaTkVFZnJkTVFpSWhyT3ZEeU9JMXlrdUxXWXFaY1NH?=
+ =?utf-8?B?ZzRZRkFFVFRWYmlZSXJ5WmRTK0lXM0Z2ZUlUZ3l0ZE5FbElQdlpMQUpncDJN?=
+ =?utf-8?B?c0tZdkdxbjlYZjlTYnVueXN2Wjk4OWxRcXZtT0RmNFE3S2ZlZ0VmWFR6QXNp?=
+ =?utf-8?B?eVA4dXVINUorbVZZVTdVZ1E3TEE1ZmtzS2grdGpqOHl6elFkUHd1ckZhNkNW?=
+ =?utf-8?B?T1Q2cHo0ZHRSOXJuNlJlZUFnTnY0dGNsUCtqVUpCVkd3eWRDUzBiVDM0VFZo?=
+ =?utf-8?B?eG1wRjNPOEVLeHRUL0RLTFFCUkxlT2Q0TUxLeW1PanFvNGtSTVBaeWdUZjd0?=
+ =?utf-8?B?WC9kUk90dXFPYjhPMFBTMVlmeUZoQ21rVkE3VTBnOWxscXl2UVlZcnlTbFlG?=
+ =?utf-8?B?WUxTZHA1WHJMeDJoeXgyeWpraUR6RU1Ray80MjYySkhUaUJMRnFLMU4rNmMw?=
+ =?utf-8?B?aitFRGFIbXFFUVBjeEloamRIempFUVdselZ5V2daNmNjYUJnWWloWUFPY0l5?=
+ =?utf-8?B?RGdERWJxdjh6eUsvbWVZTVhyVkE2bEFmaVVYbzR2MzRWdVAyV1I0SCthTTA3?=
+ =?utf-8?B?QzZJeVMya3pPNmhySkZJU05yTGV2RndPYSsreUhodEpRNkZGRjJieFJ0VzFP?=
+ =?utf-8?B?UXRnTXR2L0Zod2FzV2dRSWkwQW9ZNGxRRXNBVTFwRVl1c29qcGpyczNnSHN5?=
+ =?utf-8?B?SmN6WmUzTFVTaWdOK2w2SG5LdHU1QitqKzRIZHN6Tjg2N0Q1TWRUN3I1aG41?=
+ =?utf-8?B?ZzhJcmVpS1J2c1ZYMW8waXRTQzRtNVJxRDVldDhoWStrdXlrUHl0VHo5cHNK?=
+ =?utf-8?B?Skp3bGh4SFo4Q1JPTzc0T20rL0wycTRxQ1dBSlhHa2ZNMFZUM2MwNlR2VWhS?=
+ =?utf-8?B?QmdtNWZaYU15Q1pwV0gvczBGQkdmbitPZktjQlNPT3JsMnR0cFhZSCtCcGl5?=
+ =?utf-8?B?SE1zRzlSM3lDZDhDcU9vYVdKRHdYR295QXJWK3lMd0hyb2VPSE1oNDZ3SEh4?=
+ =?utf-8?B?elEzcWhYY2JUTjNPWlNxYVRIZFJkSm9pSGdHZjhFQTF1REdHWVJFYlRSUTA2?=
+ =?utf-8?B?anA0V3FIaVBQWjhQOXRLS2ZURGp6K0UzdUQ1ZStXSHFGSitaWG4zeTJIUHlq?=
+ =?utf-8?Q?JCLX319iJtRaH49vAHPeueIiyq7DnqJH+2zbE=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60924d05-0f73-4b19-d15e-08d90492d02d
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 06:37:52.7671
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 06:58:05.5115
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CcGHD6+nygXAyYEu8/sujWNAp43eJ9qRXfTvVSPPeKQT2T7gKXfDpBdWoxBF1GfA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4436
+X-MS-Exchange-CrossTenant-UserPrincipalName: OiY6wW+T9yFKolS4Hcs1p3UJis9VV5gUvXkFrmmXh1cmx/SCkf9pNWun35NBR2kZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4904
 X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: nAh7gSmu0lrmt8NCokjSnJE-QnuzBGc0
-X-Proofpoint-GUID: nAh7gSmu0lrmt8NCokjSnJE-QnuzBGc0
+X-Proofpoint-ORIG-GUID: jjn3CW6gsoug_rpJdHuCbxS9egClBMBl
+X-Proofpoint-GUID: jjn3CW6gsoug_rpJdHuCbxS9egClBMBl
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-21_02:2021-04-20,2021-04-21 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- mlxscore=0 spamscore=0 malwarescore=0 bulkscore=0 phishscore=0
- priorityscore=1501 clxscore=1011 suspectscore=0 adultscore=0
- mlxlogscore=999 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2104210052
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 spamscore=0 impostorscore=0 mlxlogscore=999
+ phishscore=0 suspectscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104210054
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -153,38 +152,149 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 On 4/20/21 12:37 PM, Kumar Kartikeya Dwivedi wrote:
-> This change introduces a few helpers to wrap open coded attribute
-> preparation in netlink.c.
+> This adds functions that wrap the netlink API used for adding,
+> manipulating, and removing traffic control filters. These functions
+> operate directly on the loaded prog's fd, and return a handle to the
+> filter using an out parameter named id.
 > 
-> Every nested attribute's closure must happen using the helper
-> nlattr_end_nested, which sets its length properly. NLA_F_NESTED is
-> enforeced using nlattr_begin_nested helper. Other simple attributes
+> The basic featureset is covered to allow for attaching and removal of
+> filters. Some additional features like TCA_BPF_POLICE and TCA_RATE for
+> the API have been omitted. These can added on top later by extending the
 
-typo: enforced
+"later" => "layer"?
 
-> can be added directly.
+> bpf_tc_opts struct.
 > 
-> The maxsz parameter corresponds to the size of the request structure
-> which is being filled in, so for instance with req being:
+> Support for binding actions directly to a classifier by passing them in
+> during filter creation has also been omitted for now. These actions have
+> an auto clean up property because their lifetime is bound to the filter
+> they are attached to. This can be added later, but was omitted for now
+> as direct action mode is a better alternative to it, which is enabled by
+> default.
 > 
-> struct {
-> 	struct nlmsghdr nh;
-> 	struct tcmsg t;
-> 	char buf[4096];
-> } req;
+> An API summary:
 > 
-> Then, maxsz should be sizeof(req).
+> bpf_tc_attach may be used to attach, and replace SCHED_CLS bpf
+> classifier. The protocol is always set as ETH_P_ALL. The replace option
+> in bpf_tc_opts is used to control replacement behavior.  Attachment
+> fails if filter with existing attributes already exists.
 > 
-> This change also converts the open coded attribute preparation with the
-> helpers. Note that the only failure the internal call to nlattr_add
-> could result in the nested helper would be -EMSGSIZE, hence that is what
-> we return to our caller.
+> bpf_tc_detach may be used to detach existing SCHED_CLS filter. The
+> bpf_tc_attach_id object filled in during attach must be passed in to the
+> detach functions for them to remove the filter and its attached
+> classififer correctly.
+> 
+> bpf_tc_get_info is a helper that can be used to obtain attributes
+> for the filter and classififer.
+> 
+> Examples:
+> 
+> 	struct bpf_tc_attach_id id = {};
+> 	struct bpf_object *obj;
+> 	struct bpf_program *p;
+> 	int fd, r;
+> 
+> 	obj = bpf_object_open("foo.o");
+> 	if (IS_ERR_OR_NULL(obj))
+> 		return PTR_ERR(obj);
+> 
+> 	p = bpf_object__find_program_by_title(obj, "classifier");
+
+Please use bpf_object__find_program_by_name() API.
+bpf_object__find_program_by_title() is not recommended as now
+libbpf supports multiple programs within the same section.
+
+> 	if (IS_ERR_OR_NULL(p))
+> 		return PTR_ERR(p);
+> 
+> 	if (bpf_object__load(obj) < 0)
+> 		return -1;
+> 
+> 	fd = bpf_program__fd(p);
+> 
+> 	r = bpf_tc_attach(fd, if_nametoindex("lo"),
+> 			  BPF_TC_CLSACT_INGRESS,
+> 			  NULL, &id);
+> 	if (r < 0)
+> 		return r;
+> 
+> ... which is roughly equivalent to:
+>    # tc qdisc add dev lo clsact
+>    # tc filter add dev lo ingress bpf obj foo.o sec classifier da
+> 
+> ... as direct action mode is always enabled.
+> 
+> To replace an existing filter:
+> 
+> 	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts, .handle = id.handle,
+> 			    .priority = id.priority, .replace = true);
+> 	r = bpf_tc_attach(fd, if_nametoindex("lo"),
+> 			  BPF_TC_CLSACT_INGRESS,
+> 			  &opts, &id);
+> 	if (r < 0)
+> 		return r;
+> 
+> To obtain info of a particular filter, the example above can be extended
+> as follows:
+> 
+> 	struct bpf_tc_info info = {};
+> 
+> 	r = bpf_tc_get_info(if_nametoindex("lo"),
+> 			    BPF_TC_CLSACT_INGRESS,
+> 			    &id, &info);
+> 	if (r < 0)
+> 		return r;
+> 
+> ... where id corresponds to the bpf_tc_attach_id filled in during an
+> attach operation.
 > 
 > Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
 > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->   tools/lib/bpf/netlink.c | 37 ++++++++++++++-----------------
->   tools/lib/bpf/nlattr.h  | 48 +++++++++++++++++++++++++++++++++++++++++
->   2 files changed, 64 insertions(+), 21 deletions(-)
+>   tools/lib/bpf/libbpf.h   |  44 ++++++
+>   tools/lib/bpf/libbpf.map |   3 +
+>   tools/lib/bpf/netlink.c  | 319 ++++++++++++++++++++++++++++++++++++++-
+>   3 files changed, 360 insertions(+), 6 deletions(-)
 > 
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index bec4e6a6e31d..b4ed6a41ea70 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -16,6 +16,8 @@
+>   #include <stdbool.h>
+>   #include <sys/types.h>  // for size_t
+>   #include <linux/bpf.h>
+> +#include <linux/pkt_sched.h>
+> +#include <linux/tc_act/tc_bpf.h>
+>   
+>   #include "libbpf_common.h"
+>   
+> @@ -775,6 +777,48 @@ LIBBPF_API int bpf_linker__add_file(struct bpf_linker *linker, const char *filen
+>   LIBBPF_API int bpf_linker__finalize(struct bpf_linker *linker);
+>   LIBBPF_API void bpf_linker__free(struct bpf_linker *linker);
+>   
+> +/* Convenience macros for the clsact attach hooks */
+> +#define BPF_TC_CLSACT_INGRESS TC_H_MAKE(TC_H_CLSACT, TC_H_MIN_INGRESS)
+> +#define BPF_TC_CLSACT_EGRESS TC_H_MAKE(TC_H_CLSACT, TC_H_MIN_EGRESS)
+> +
+> +struct bpf_tc_opts {
+> +	size_t sz;
+> +	__u32 handle;
+> +	__u32 class_id;
+> +	__u16 priority;
+> +	bool replace;
+> +	size_t :0;
+
+Did you see any error without "size_t :0"?
+
+> +};
+> +
+> +#define bpf_tc_opts__last_field replace
+> +
+> +/* Acts as a handle for an attached filter */
+> +struct bpf_tc_attach_id {
+> +	__u32 handle;
+> +	__u16 priority;
+> +};
+> +
 [...]
