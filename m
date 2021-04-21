@@ -2,200 +2,296 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F27B8367365
-	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 21:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6183673BC
+	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 21:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236477AbhDUTZA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Apr 2021 15:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235949AbhDUTY7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Apr 2021 15:24:59 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96830C06174A
-        for <bpf@vger.kernel.org>; Wed, 21 Apr 2021 12:24:25 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id d25so15076867vsp.1
-        for <bpf@vger.kernel.org>; Wed, 21 Apr 2021 12:24:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rpw3HnSoPex755DRcO5g3WiG7qEIWl72qHNoKQxjqtc=;
-        b=hDHnlhw+alfxBs1pHcG5ulwuLcfAjZRBkDtIyB0xDjko38R+AnY8id3sOW8OBRl0nJ
-         rbLEGLXoSkMfhVNhy5A3VxSablFbpq3xAkAp+DYvA3+4rbe6WLQcAovxrx06h05OvFx2
-         AHzWuM+srWdBDrsYzD2QMyYV9aVT9U9n3pbZEQt/E3KzznB8b9L7xsALkSglvuh8kD6r
-         UO0obCdng5/4yrxnwqXo1Oc14yPpEv4pl1EpaJKwSAj4yE4hDzEPnYjohx0xOJbvGKwU
-         oXTtjkt1yqXdosQcUjgyY15yKyHPoqpl14CxGu09ErCJNJn9AW/lxg5ArfI0tn/LzdI1
-         Rzgg==
+        id S239865AbhDUTs6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Apr 2021 15:48:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20874 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235886AbhDUTs5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 21 Apr 2021 15:48:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619034502;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aDyAIAqxEn1SzlmQk6UpZ8hs3r6UcjdZArF9QOOa8Jk=;
+        b=BSGHyJQ/g88to8Pi3+OVSc8mZm0DZRiEj9IDziMNa2/MVFoKlEXgum9fIl4mqMWxtZr5sh
+        sQuw08YL/o/KRF3ibbOW0CZjY7NCArdwb2lrkZ5tgW2fr7xIaA5/69HiUeU44Zmn+ejGx6
+        mGrzDupet+up0ps+gtqBpvfw0FWLdl4=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-332--LCpJTChM8aElXAfZibj4A-1; Wed, 21 Apr 2021 15:48:17 -0400
+X-MC-Unique: -LCpJTChM8aElXAfZibj4A-1
+Received: by mail-ej1-f71.google.com with SMTP id g7-20020a1709065d07b029037c872d9cdcso6317501ejt.11
+        for <bpf@vger.kernel.org>; Wed, 21 Apr 2021 12:48:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rpw3HnSoPex755DRcO5g3WiG7qEIWl72qHNoKQxjqtc=;
-        b=bWKjO6ca6AZ7z4XRBcUFiPTGqdKmFqzl5+kapOarWFZ/qngMapTQR5D0iEYMV0S3lU
-         POn3SBAd/Iueg4XVWSGkwCW7nIML1ozWyrth7gnje8068KeSOuo8l8JekZlrIiQuRKtC
-         PrYYTuaCXyIMhMSLN/iMsxIQNm6XOYZgHt+67YVvrG8mrafG0aAExJrDtQRRI232redd
-         4IJV9YtCB/mpy0P/AoAMKlMfUrbfWLJHoWqRz+XiCxLysPfj1Ti2Ef1K0kO2E8MzxyPm
-         N5Q3HNZ4/YHAcLVGblB+CCWU9pT4OM/NKxni3vznsVKaqt7KJKeTs/0WVnBd0oEeh4wb
-         xa9w==
-X-Gm-Message-State: AOAM531fOHtPNHybrHDfA4LnNyvbzddlpnyREK8qxdgpty9V0FKP+I0j
-        /Ed4Ktll3McV40zFr/3Tv+wnpWjUWbPmFEdqYdY=
-X-Google-Smtp-Source: ABdhPJwhU93H5A0V4NP59BlMN06I08BEkIUah/NLwa1kGZluq9WacROinIj4BqmgGf9pvl1Faz7lx4E7LUMOCJBKsmA=
-X-Received: by 2002:a67:f498:: with SMTP id o24mr5323736vsn.6.1619033064727;
- Wed, 21 Apr 2021 12:24:24 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=aDyAIAqxEn1SzlmQk6UpZ8hs3r6UcjdZArF9QOOa8Jk=;
+        b=pAHmQmiTrkvxtRUlui31cvNByB6GLODXpITcW4Eg3ly00MFteF/l1DUCMuTShYer08
+         sS0fYQpp/Zbc20mHreNfRh4qCliOqOfw/p2rE45vkdTVuQ+jj+EH7DZLvFCbgGbFC3Us
+         lh68LiWwdRew8EEqMMhxoTgDyedGUyPiTiIwLbs3ccr29D02x6ptLJgZZZCGMbEzEM4/
+         tGe6M2S6GRbXGs8RgK8GtiKZ3Ll1Rh43G3Hrsit9MrpjbpTPfw4aPeple5t3sCvUOd//
+         TQhevpTm2o8etTMKivDrF9Uo4znvUAbktlkoB3iovaXIKJ8rP1lMEtqxcaVOPQfg4e6E
+         nOyQ==
+X-Gm-Message-State: AOAM532FryUJQ8QtgSQqVXxM6SuLZ03wJ7p8CFFAqPcTk4Wd2rZd12sq
+        1MaZ0qrnTvOUbqkyEUPoUn56XaLi7FPcYc/QdxRwctvgYgxliqKM8XYJawbbXlkHMipCpb83Slr
+        SLcEuyN2COGEt
+X-Received: by 2002:a17:906:1c98:: with SMTP id g24mr34969330ejh.457.1619034496278;
+        Wed, 21 Apr 2021 12:48:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxUEQGSALFlwav/fV6aD+lgzplpjC3to3umNZrY1bwWGdvt15dySM2RR9Gi0GKsq8zflWd6BA==
+X-Received: by 2002:a17:906:1c98:: with SMTP id g24mr34969298ejh.457.1619034495962;
+        Wed, 21 Apr 2021 12:48:15 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id v19sm314399ejy.78.2021.04.21.12.48.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 12:48:15 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 501A41802FE; Wed, 21 Apr 2021 21:48:14 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v3 2/3] libbpf: add low level TC-BPF API
+In-Reply-To: <CAEf4BzYj_pODiQ_Xkdz_czAj3iaBcRhudeb_kJ4M2SczA_jDjA@mail.gmail.com>
+References: <20210420193740.124285-1-memxor@gmail.com>
+ <20210420193740.124285-3-memxor@gmail.com>
+ <CAEf4BzYj_pODiQ_Xkdz_czAj3iaBcRhudeb_kJ4M2SczA_jDjA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 21 Apr 2021 21:48:14 +0200
+Message-ID: <87tunzh11d.fsf@toke.dk>
 MIME-Version: 1.0
-References: <CAO658oXG4HEm0rGEW-==0kaTmqenDUC_GM-qi7CEjwSakbnJRw@mail.gmail.com>
- <CAEf4BzZy0XDYcchPkarUw5AusO7LZfOnswuOyUqakkVJ-ksCDQ@mail.gmail.com>
- <CAO658oUJApo-1RMmkkj=y7oH-LAHLd48E0aqobTiTRSuYm617w@mail.gmail.com>
- <CAO658oV=NPtTNRk1_W_F1jzKMTyCONWL4kKC+YwexGP2Q5ZYEA@mail.gmail.com> <CAEf4BzbxZsS+6S+qdXHFSYPGsevQhxdXqsVH8Z9HGTWreP5uGQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzbxZsS+6S+qdXHFSYPGsevQhxdXqsVH8Z9HGTWreP5uGQ@mail.gmail.com>
-From:   Grant Seltzer Richman <grantseltzer@gmail.com>
-Date:   Wed, 21 Apr 2021 15:24:13 -0400
-Message-ID: <CAO658oXWP2dsAsD9S8=EjosnoE4ND6LWr3js_yiDNGNw3ZqGQg@mail.gmail.com>
-Subject: Re: Generating libbpf API documentation
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 12:26 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Apr 16, 2021 at 12:38 PM Grant Seltzer Richman
-> <grantseltzer@gmail.com> wrote:
-> >
-> > On Tue, Mar 16, 2021 at 4:14 PM Grant Seltzer Richman
-> > <grantseltzer@gmail.com> wrote:
-> > >
-> > > On Mon, Mar 15, 2021 at 8:47 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Mon, Mar 15, 2021 at 9:51 AM Grant Seltzer Richman
-> > > > <grantseltzer@gmail.com> wrote:
-> > > > >
-> > > > > Hi all,
-> > > > >
-> > > > > I have been experimenting with ways to contribute documentation to
-> > > > > libbpf to make it easier for developers of bpf projects to use it.
-> > > > > With the goal of making a documentation site that is easy to
-> > > > > maintain/generate I found Doxygen (many of you may have experience
-> > > > > with it, I did not). I set up a CI/CD workflow using github actions
-> > > > > that runs doxygen on the libbpf mirror hosted there, and hosts the
-> > > > > produced HTML using netlify. You can find the currently hosted version
-> > > > > of it at https://libbpf-docs.netlify.app (I would gladly donate a real
-> > > > > domain name for this purpose). The docs generation workflow is in my
-> > > > > github repo here: https://github.com/grantseltzer/libbpf-docs
-> > > >
-> > > > Thanks for investigating this! I've look at libbpf-docs.netlify.app,
-> > > > and it seems like it just contains a list of structs and their fields
-> > > > (both those that are part of libbpf API, as well as internal). Out of
-> > > > all functions only two are listed there (libbpf_nla_parse_nested and
-> > > > libbpf_nla_parse) and both are not part of libbpf API as well. So I
-> > > > understand that I don't see any comments due to the '/**' format
-> > > > (though it would be easy to run sed script adding it everywhere, just
-> > > > as part of an experiment), but I'm not sure why none of API functions
-> > > > are present there?
-> > > >
-> > > > I think kernel docs used to be hosted on readthedocs.org, seems like
-> > > > they are also providing hosting for open-source projects, so that
-> > > > would solve the problem of the hosting. Have you looked at that
-> > > > solution? It definitely has a bit more modern UI that
-> > > > Doxygen-generated one :) but I don't know what are the real
-> > > > differences between Sphinx and Doxygen and which one we should choose.
-> > > >
-> > > > >
-> > > > > In order to make this work all we would need is to format comments
-> > > > > above functions we want to document. Doxygen requires that the comment
-> > > > > just be in a block that starts with `/**`. I don't think doxygen
-> > > > > specific directives should be committed to code but I think this is a
-> > > > > fine convention to follow. Other doxygen directives (i.e. having
-> > > > > `@file` in every file) can be faked using a step I have in the github
-> > > > > actions.
-> > > > >
-> > > > > What does everyone think? Can we agree on this convention and start
-> > > > > contributing documentation in this way? Any pitfalls to doxygen I'm
-> > > > > not familiar with?
-> > > > >
-> > > > > Thanks!
-> > >
-> > > As far as I understand Doxygen's only criteria for generating
-> > > documentation for functions is if the correctly formatted comment is
-> > > present. I've changed the repo that the libbpf-docs.netlify.app
-> > > website uses to track a fork libbpf I have on my personal account. I
-> > > added comments above some ringbuffer functions to demonstrate this.
-> > >
-> > > Interestingly the two functions that already show up
-> > > (libbpf_nla_parse/parse_nested) have comments which are specifically
-> > > formatted for doxygen, even including directives for arguments and
-> > > related functions.
-> > >
-> > > I have heard of Sphinx/read-the-docs but didn't look too deeply into
-> > > it, I'll check it out and report back with my findings!
-> >
-> > I've finally gotten a chance to circle around to this. I investigated
-> > Sphinx and read the docs. As far as I can tell Doxygen is still
-> > required for generating that docs from code. Sphinx seems to typically
-> > be used to transform markdown documentation files into themed html
-> > pages. Sphinx would also enable us to host the documentation on
-> > readthedocs's, but it would still be the output of Doxygen, meaning it
-> > wouldn't have the nice theme that you see on other readthedocs pages.
-> >
-> > I have a barebones example set up of what that would look like at
-> > libbpf.readthedocs.io which pulls from my fork of the github mirror
-> > here: github.com/grantseltzer/libbpf
-> >
-> > The advantage of this approach is only having free hosting and having
-> > a 'readthedocs.io' domain. It would still require CI for pulling in
-> > libbpf releases, appending doxygen directives, and of course
-> > committing comments in code next to api functions/types.
-> >
->
-> I didn't have much time to investigate Sphinx vs Doxygen. Reding [0]
-> diagonally, seems like you need few extensions (breathe and
-> sphinx_rtd_theme) to make everything work. It also seems like
-> readthedocs will be able to automatically pull and generate
-> documentation, so if all that is true, it still seems like Sphinx +
-> readthedocs is the better and more modern approach.
->
->   [0] https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-That link proved helpful. I was not using the breathe plugin
-directives correctly in the previous iteration. Thanks!
-
+> On Tue, Apr 20, 2021 at 12:37 PM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+>>
+>> This adds functions that wrap the netlink API used for adding,
+>> manipulating, and removing traffic control filters. These functions
+>> operate directly on the loaded prog's fd, and return a handle to the
+>> filter using an out parameter named id.
+>>
+>> The basic featureset is covered to allow for attaching and removal of
+>> filters. Some additional features like TCA_BPF_POLICE and TCA_RATE for
+>> the API have been omitted. These can added on top later by extending the
+>> bpf_tc_opts struct.
+>>
+>> Support for binding actions directly to a classifier by passing them in
+>> during filter creation has also been omitted for now. These actions have
+>> an auto clean up property because their lifetime is bound to the filter
+>> they are attached to. This can be added later, but was omitted for now
+>> as direct action mode is a better alternative to it, which is enabled by
+>> default.
+>>
+>> An API summary:
+>>
+>> bpf_tc_attach may be used to attach, and replace SCHED_CLS bpf
+>> classifier. The protocol is always set as ETH_P_ALL. The replace option
+>> in bpf_tc_opts is used to control replacement behavior.  Attachment
+>> fails if filter with existing attributes already exists.
+>>
+>> bpf_tc_detach may be used to detach existing SCHED_CLS filter. The
+>> bpf_tc_attach_id object filled in during attach must be passed in to the
+>> detach functions for them to remove the filter and its attached
+>> classififer correctly.
+>>
+>> bpf_tc_get_info is a helper that can be used to obtain attributes
+>> for the filter and classififer.
+>>
+>> Examples:
+>>
+>>         struct bpf_tc_attach_id id =3D {};
+>>         struct bpf_object *obj;
+>>         struct bpf_program *p;
+>>         int fd, r;
+>>
+>>         obj =3D bpf_object_open("foo.o");
+>>         if (IS_ERR_OR_NULL(obj))
+>>                 return PTR_ERR(obj);
+>>
+>>         p =3D bpf_object__find_program_by_title(obj, "classifier");
+>>         if (IS_ERR_OR_NULL(p))
+>>                 return PTR_ERR(p);
+>>
+>>         if (bpf_object__load(obj) < 0)
+>>                 return -1;
+>>
+>>         fd =3D bpf_program__fd(p);
+>>
+>>         r =3D bpf_tc_attach(fd, if_nametoindex("lo"),
+>>                           BPF_TC_CLSACT_INGRESS,
+>>                           NULL, &id);
+>>         if (r < 0)
+>>                 return r;
+>>
+>> ... which is roughly equivalent to:
+>>   # tc qdisc add dev lo clsact
+>>   # tc filter add dev lo ingress bpf obj foo.o sec classifier da
+>>
+>> ... as direct action mode is always enabled.
+>>
+>> To replace an existing filter:
+>>
+>>         DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts, .handle =3D id.handle,
+>>                             .priority =3D id.priority, .replace =3D true=
+);
+>>         r =3D bpf_tc_attach(fd, if_nametoindex("lo"),
+>>                           BPF_TC_CLSACT_INGRESS,
+>>                           &opts, &id);
+>>         if (r < 0)
+>>                 return r;
+>>
+>> To obtain info of a particular filter, the example above can be extended
+>> as follows:
+>>
+>>         struct bpf_tc_info info =3D {};
+>>
+>>         r =3D bpf_tc_get_info(if_nametoindex("lo"),
+>>                             BPF_TC_CLSACT_INGRESS,
+>>                             &id, &info);
+>>         if (r < 0)
+>>                 return r;
+>>
+>> ... where id corresponds to the bpf_tc_attach_id filled in during an
+>> attach operation.
+>>
+>> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+>> ---
+>>  tools/lib/bpf/libbpf.h   |  44 ++++++
+>>  tools/lib/bpf/libbpf.map |   3 +
+>>  tools/lib/bpf/netlink.c  | 319 ++++++++++++++++++++++++++++++++++++++-
+>>  3 files changed, 360 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+>> index bec4e6a6e31d..b4ed6a41ea70 100644
+>> --- a/tools/lib/bpf/libbpf.h
+>> +++ b/tools/lib/bpf/libbpf.h
+>> @@ -16,6 +16,8 @@
+>>  #include <stdbool.h>
+>>  #include <sys/types.h>  // for size_t
+>>  #include <linux/bpf.h>
+>> +#include <linux/pkt_sched.h>
+>> +#include <linux/tc_act/tc_bpf.h>
 >
-> > I prefer the previous approach (github actions + netlify/github pages)
-> > but regardless would happily set this up if we can start an initiative
-> > to add those code comments in code, which I'd also like to help
-> > contribute to. I'd also be happy to hear of suggestions of free/open
-> > source alternatives for CI.
+> apart from those unused macros below, are these needed in public API head=
+er?
 >
-> We currently use Travis CI for libbpf CI, but I'm not very happy with
-> it and ideally we should move to GitHub Actions or something along
-> those lines.
-
-I recently set up some github actions workflow for the project I help
-maintain and really like it so far, I would be happy to help
-transition.
-
+>>
+>>  #include "libbpf_common.h"
+>>
+>> @@ -775,6 +777,48 @@ LIBBPF_API int bpf_linker__add_file(struct bpf_link=
+er *linker, const char *filen
+>>  LIBBPF_API int bpf_linker__finalize(struct bpf_linker *linker);
+>>  LIBBPF_API void bpf_linker__free(struct bpf_linker *linker);
+>>
+>> +/* Convenience macros for the clsact attach hooks */
+>> +#define BPF_TC_CLSACT_INGRESS TC_H_MAKE(TC_H_CLSACT, TC_H_MIN_INGRESS)
+>> +#define BPF_TC_CLSACT_EGRESS TC_H_MAKE(TC_H_CLSACT, TC_H_MIN_EGRESS)
 >
-> >
-> > Andrii, do you run the libbpf github org and mirror repo?
+> these seem to be used only internally, why exposing them in public
+> API?
+
+No they're "aliases" for when you want to attach the filter directly to
+the interface (and thus install the clsact qdisc as the root). You can
+also use the filter with an existing qdisc (most commonly HTB), in which
+case you need to specify the qdisc handle as the root. We have a few
+examples of this use case:
+
+https://github.com/xdp-project/bpf-examples/tree/master/traffic-pacing-edt
+and
+https://github.com/xdp-project/xdp-cpumap-tc
+
+>> +struct bpf_tc_opts {
+>> +       size_t sz;
+>> +       __u32 handle;
+>> +       __u32 class_id;
+>> +       __u16 priority;
+>> +       bool replace;
+>> +       size_t :0;
+>> +};
+>> +
+>> +#define bpf_tc_opts__last_field replace
+>> +
+>> +/* Acts as a handle for an attached filter */
+>> +struct bpf_tc_attach_id {
+>> +       __u32 handle;
+>> +       __u16 priority;
+>> +};
 >
-> Yes, I have admin access along Alexei and Daniel. So we'll be able to
-> set up whatever needs to be set up.
+> what are the chances that we'll need to grow this id struct? If that
+> happens, how do we do that in a backward/forward compatible manner?
+>
+> if handle/prio are the only two ever necessary, we can actually use
+> bpf_tc_opts to return them back to user (we do that with
+> bpf_test_run_opts API). And then adjust detach/get_info methods to let
+> pass those values.
+>
+> The whole idea of a struct for id just screams "compatibility problems
+> down the road" at me. Does anyone else has any other opinion on this?
 
-I just pushed changes for libbpf.readthedocs.io for you to check out.
-The 'API' page has the auto generated docs based on public
-functions/structs/enums in libbpf.h. There's a couple of functions
-that I added bogus test comments to show what documentation  would
-look like. (`libbpf_num_possible_cpus` has a good example). Also the
-'BPF Program Types' page is just to serve as an example of how we can
-include documentation that isn't just auto generated from code.
+Well, *if* we ever want to extend them (e.g., to support other values of
+the protocol field, if that ever becomes necessary), we'll probably also
+want to make it possible to pass the same identifiers as options, so
+just reusing the opts struct definitely makes sense!
 
-I need to read the `sync-kernel.sh` script to better understand how
-the mirror works, but after that would it be helpful to open a github
-PR? Once that'd get merged I'd transfer the readthedocs libbpf page to
-track it. I also want to discuss this on the linux-doc mailing list
-for input.
+>> +struct bpf_tc_info {
+>> +       struct bpf_tc_attach_id id;
+>> +       __u16 protocol;
+>> +       __u32 chain_index;
+>> +       __u32 prog_id;
+>> +       __u8 tag[BPF_TAG_SIZE];
+>> +       __u32 class_id;
+>> +       __u32 bpf_flags;
+>> +       __u32 bpf_flags_gen;
+>> +};
+>> +
+>> +/* id is out parameter that will be written to, it must not be NULL */
+>> +LIBBPF_API int bpf_tc_attach(int fd, __u32 ifindex, __u32 parent_id,
+>
+> so parent_id is INGRESS|EGRESS, right? Is that an obvious name for
+> this parameter? I had to look at the code to understand what's
+> expected. Is it possible that it will be anything other than INGRESS
+> or EGRESS? If not `bool ingress` might be an option. Or perhaps enum
+> bpf_tc_direction { BPF_TC_INGRESS, BPF_TC_EGRESS } is better still.
+
+See above; the parent is the attach point, and you use the defines from
+above if you just want to attach to the interface.
+
+But maybe documenting this in a comment above the function signature
+would be good (along with a bit of terminology from the TC world for
+those coming from there) :)
+
+>> +                            const struct bpf_tc_opts *opts,
+>> +                            struct bpf_tc_attach_id *id);
+>> +LIBBPF_API int bpf_tc_detach(__u32 ifindex, __u32 parent_id,
+>> +                            const struct bpf_tc_attach_id *id);
+>> +LIBBPF_API int bpf_tc_get_info(__u32 ifindex, __u32 parent_id,
+>
+> bpf_tc_query() to be more in line with attach/detach single-word
+> verbs?
+
+OK by me!
+
+-Toke
+
