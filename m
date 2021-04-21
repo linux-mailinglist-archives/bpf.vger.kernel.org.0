@@ -2,104 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 178223672E2
-	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 20:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0C936732E
+	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 21:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243069AbhDUSw5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Apr 2021 14:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60122 "EHLO
+        id S238119AbhDUTIQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Apr 2021 15:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243061AbhDUSw4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Apr 2021 14:52:56 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8B2C06174A;
-        Wed, 21 Apr 2021 11:52:23 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id p202so4740930ybg.8;
-        Wed, 21 Apr 2021 11:52:23 -0700 (PDT)
+        with ESMTP id S236238AbhDUTIP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Apr 2021 15:08:15 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E948C06174A
+        for <bpf@vger.kernel.org>; Wed, 21 Apr 2021 12:07:40 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id k17so11096910edr.7
+        for <bpf@vger.kernel.org>; Wed, 21 Apr 2021 12:07:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D/EZo6r3sPWCLKwMKMgTd+tOlzEgZfYGYUiK/hneHwI=;
-        b=MfelRG6p6UDtz2dcVpfnUHevwmsoFCeJiMdgFDmlZK8AbOd4aYRp4Rni5oIIxX0wyz
-         XCgRS5wvZw0nr6AWDWyUEmddgXBcbSYVAW3dk6WtjW0DcT/tbfQl8v+KsZ2569okZPuD
-         9WXvj8IJUAgGztySGu+/maMJbEq8TtxzxGTHoagrNKqWO6glQgHn6nTXLIG+iBKnBIYx
-         F/f9vN2RIEcg0aYwzvbCA+Vr72b4Su0RKy6iN9qyHisPpKO9n9RsK8acdrXRnbgb/xIZ
-         +D3WHoTrw25+v8MhFkIMbkOE3ae2+rGY86yzox+UKDPFQJTEuksLDKCLGh1C51oq1OpW
-         mrRg==
+        d=rasmusvillemoes.dk; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HfuyWzaRCHi4p0AIL1yf6uYPLz6so+Mgoph5gf0xKEE=;
+        b=GQLyPeSgUnxmCprFj4i5Sx5FH2Bbf+ND/0vOqqOUHFhkZ4gCvWQxE2WMT1Vffbh5Tx
+         zsYsxEk1j/mXKNlvc8U1peFxcWlA017nrakG7fkpTYcX1IUwBYG0cQzyPITNqRSxKHAu
+         JMTlowccj/u4w6yvu/m6mDLZTi+AwUKKih/5g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D/EZo6r3sPWCLKwMKMgTd+tOlzEgZfYGYUiK/hneHwI=;
-        b=Ksrr6P/gOPiIL3MyFHQXla8QMDFoKrdJIKtgEBMu2pDI9bAniK7mFz56brmvqJEkCU
-         hAsMkVJNbzA9xYRwofMCcRNwcsEiM+YA1N0LxmeyGygtAbzd+AN12sHIYj+2v4MoAryl
-         LhG7Ukkvn+YRw24OPZxpsUTqe1DbAqpLLFAO56zB0hmvZfaHzjieSCrSfcbeIcA8Hhk2
-         TObo8FqF3SeVbG/CQMpYY+xWN7JEuSnOVw1ly06QZUWENcWq2KmO7bCObWAsLA9fM387
-         +E+WHCLwCPuygCpsxjd89sgthnE8psXuWvVVqTB5aeKfzqlVWSC1bsG5fQNCW0ju/llw
-         blQw==
-X-Gm-Message-State: AOAM533nXwQRVwvevt1X5YlKXOk4utUCscyIRU9c0miWNeShPuX8YNim
-        /bxL7dmrfO//i5V40QPZqHPkMoULY0Lg5DBIGII=
-X-Google-Smtp-Source: ABdhPJxZFUzAog/7gULk2KM5Vzcm+Q5rH68WmNuTLRoVhThMgXX6J39iQ43oPOJdB4jd5dRYK0nhMiaADbRCeKrVLAA=
-X-Received: by 2002:a25:ba06:: with SMTP id t6mr25489524ybg.459.1619031142500;
- Wed, 21 Apr 2021 11:52:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HfuyWzaRCHi4p0AIL1yf6uYPLz6so+Mgoph5gf0xKEE=;
+        b=IM2BRDpom7ug5EUHZeXEBUYw7zdZCUL3+Degsn0vM95d9UEt2WVF3KTQqSsvAXsfko
+         eL/8pm+4wzd6yFye4agZEzr5mlw/8yKEt7jUTOuOKvzsPkMGtb14oOQZ5q0X1SuePkax
+         bMkB/Aa+OGLw2BjRRQrgZo1QXOCig9YKnIEhZxceBUBP1nVsp9apV2KmrLc9Ckafe1tl
+         VjHwulzE1N+w65MHal7cNQhy+Hd63jwVpKqEwReNYnxtIKWGoChwOvBYrnzdnx5tmi9J
+         ZTLKonn7VRoC91MOP8sCVFA3zV9DfgzGjky/ZAP14jxoSVeqc5z6wOn4umkjaMixnzkl
+         y8Zw==
+X-Gm-Message-State: AOAM532naQZwNyMIW6oaaZh04lX1YgH2bgAiGXh4NQppP7bSH1Xc4f0U
+        HEdZIks8M7gX778kG4vGGXgkyw==
+X-Google-Smtp-Source: ABdhPJwZuKHB1GLs7hfQZCw+Zja/AgwnA3tCfOM3vVmdk62srIHyqWCuFcXvt8ILWyO9So28UlV3jQ==
+X-Received: by 2002:aa7:d693:: with SMTP id d19mr24515304edr.8.1619032059428;
+        Wed, 21 Apr 2021 12:07:39 -0700 (PDT)
+Received: from prevas-ravi.prevas.se ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id e5sm251908ejq.85.2021.04.21.12.07.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Apr 2021 12:07:38 -0700 (PDT)
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Steven Rostedt <rostedt@goodmis.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH] bpf: remove pointless code from bpf_do_trace_printk()
+Date:   Wed, 21 Apr 2021 21:07:36 +0200
+Message-Id: <20210421190736.1538217-1-linux@rasmusvillemoes.dk>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <CAEf4BzYyVj-Tjy9ZZdAU5nOtJ8_auvVobTT6pMqg8zPb9jj-Ow@mail.gmail.com>
- <20210415111002.324b6bfa@gandalf.local.home> <CAEf4BzY=yBZH2Aad1hNcqCt51u0+SmNdkD6NfJRVMzF7DsvG+A@mail.gmail.com>
- <20210415170007.31420132@gandalf.local.home> <20210417000304.fc987dc00d706e7551b29c04@kernel.org>
- <20210416124834.05862233@gandalf.local.home> <YH7OXrjBIqvEZbsc@krava>
- <CAADnVQK55WzR6_JfxkMzEfUnLJnX75bRHjCkaptcVF=nQ_gWfw@mail.gmail.com>
- <YH8GxNi5VuYjwNmK@krava> <CAADnVQLh3tCWi=TiWnJVaMrYhJ=j-xSrJ72+XnZDP8CMZM+1mQ@mail.gmail.com>
- <YIArVa6IE37vsazU@krava> <20210421100541.3ea5c3bf@gandalf.local.home>
-In-Reply-To: <20210421100541.3ea5c3bf@gandalf.local.home>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 21 Apr 2021 11:52:11 -0700
-Message-ID: <CAEf4BzaYEOqVYBaxVSs8p6Nmy_giztaxTX9DtDk4N77NzsHbDQ@mail.gmail.com>
-Subject: Re: [PATCHv2 RFC bpf-next 0/7] bpf: Add support for ftrace probe
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Jesper Brouer <jbrouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Viktor Malik <vmalik@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 7:05 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Wed, 21 Apr 2021 15:40:37 +0200
-> Jiri Olsa <jolsa@redhat.com> wrote:
->
+The comment is wrong. snprintf(buf, 16, "") and snprintf(buf, 16,
+"%s", "") etc. will certainly put '\0' in buf[0]. The only case where
+snprintf() does not guarantee a nul-terminated string is when it is
+given a buffer size of 0 (which of course prevents it from writing
+anything at all to the buffer).
 
-[...]
+Remove it before it gets cargo-culted elsewhere.
 
->
-> >
-> > perhaps this is a good topic to discuss in one of the Thursday's BPF mtg?
->
-> I'm unaware of these meetings.
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+ kernel/trace/bpf_trace.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-We have BPF office hours weekly meetings every Thursday at 9am PDT.
-There is a spreadsheet ([0]) in which anyone can propose a topic for
-deeper discussion over Zoom. I've already added the topic for the
-discussion in this thread. It would be great if you and Jiri could
-join tomorrow. See the first tab in the spreadsheet for Zoom link.
-Thanks!
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index b0c45d923f0f..4ee55df84cd3 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -412,9 +412,6 @@ static __printf(1, 0) int bpf_do_trace_printk(const char *fmt, ...)
+ 	va_start(ap, fmt);
+ 	ret = vsnprintf(buf, sizeof(buf), fmt, ap);
+ 	va_end(ap);
+-	/* vsnprintf() will not append null for zero-length strings */
+-	if (ret == 0)
+-		buf[0] = '\0';
+ 	trace_bpf_trace_printk(buf);
+ 	raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
+ 
+-- 
+2.29.2
 
-  [0] https://docs.google.com/spreadsheets/d/1LfrDXZ9-fdhvPEp_LHkxAMYyxxpwBXjywWa0AejEveU/edit#gid=883029154
-
->
->
-> -- Steve
