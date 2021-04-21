@@ -2,174 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C663B366C31
-	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 15:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 699C1366D03
+	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 15:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241012AbhDUNL6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Apr 2021 09:11:58 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:50808 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241464AbhDUNLA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Apr 2021 09:11:00 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FQLWV59G9z9vBLf;
-        Wed, 21 Apr 2021 15:10:14 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 1tKtWkP_gmVi; Wed, 21 Apr 2021 15:10:14 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FQLWV4Fv2z9vBLc;
-        Wed, 21 Apr 2021 15:10:14 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id F36848B829;
-        Wed, 21 Apr 2021 15:10:14 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id TzC-CtULx2FR; Wed, 21 Apr 2021 15:10:14 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D3C3C8B825;
-        Wed, 21 Apr 2021 15:10:11 +0200 (CEST)
-Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
+        id S241307AbhDUNlj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Apr 2021 09:41:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23039 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241222AbhDUNli (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 21 Apr 2021 09:41:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619012464;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=STcz0ul+ETL19QfN18GAZ+r8q/bNd6kMm1/aoWNmSeA=;
+        b=QnnRF9iVA8HWzPEbGRgQR3WMJ0NT/HLjbYCrQwFGioWm2scnRqkzE+Hm5THN1CZ41TGLbg
+        dNjSkdYrL/X1bIVV0xDThDm8WEeIi+UHlpIZbVimxcHKzMBQ4Z5BfyBXzE4yS0c5EeKBlL
+        qYSg5g5ZCV2lAuJ97B3FtidGpa36suw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-251-I3NGd9NBN_iruWEv8XyJwg-1; Wed, 21 Apr 2021 09:40:51 -0400
+X-MC-Unique: I3NGd9NBN_iruWEv8XyJwg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1AC21020C32;
+        Wed, 21 Apr 2021 13:40:48 +0000 (UTC)
+Received: from krava (unknown [10.40.195.227])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 583815D9C0;
+        Wed, 21 Apr 2021 13:40:38 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 15:40:37 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Quentin Monnet <quentin@isovalent.com>,
-        Ian Rogers <irogers@google.com>,
-        Song Liu <songliubraving@fb.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Will Deacon <will@kernel.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>, paulburton@kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        linux-mips@vger.kernel.org, grantseltzer@gmail.com,
-        Xi Wang <xi.wang@gmail.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        KP Singh <kpsingh@kernel.org>, iecedge@gmail.com,
-        Simon Horman <horms@verge.net.au>,
-        Borislav Petkov <bp@alien8.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Yonghong Song <yhs@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Vyukov <dvyukov@google.com>, tsbogend@alpha.franken.de,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Network Development <netdev@vger.kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Wang YanQing <udknight@gmail.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, bpf <bpf@vger.kernel.org>,
-        Jianlin Lv <Jianlin.Lv@arm.com>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
- <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
- <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com>
- <CAADnVQJ2oHbYfgY9jqM_JMxUsoZxaNrxKSVFYfgCXuHVpDehpQ@mail.gmail.com>
- <0dea05ba-9467-0d84-4515-b8766f60318e@csgroup.eu>
- <CAADnVQ+oQT6C7Qv7P5TV-x7im54omKoCYYKtYhcnhb1Uv3LPMQ@mail.gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <7dc31256-eb1d-dc93-5e55-2de27475e0c6@csgroup.eu>
-Date:   Wed, 21 Apr 2021 15:10:10 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Jesper Brouer <jbrouer@redhat.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: Re: [PATCHv2 RFC bpf-next 0/7] bpf: Add support for ftrace probe
+Message-ID: <YIArVa6IE37vsazU@krava>
+References: <CAEf4BzYyVj-Tjy9ZZdAU5nOtJ8_auvVobTT6pMqg8zPb9jj-Ow@mail.gmail.com>
+ <20210415111002.324b6bfa@gandalf.local.home>
+ <CAEf4BzY=yBZH2Aad1hNcqCt51u0+SmNdkD6NfJRVMzF7DsvG+A@mail.gmail.com>
+ <20210415170007.31420132@gandalf.local.home>
+ <20210417000304.fc987dc00d706e7551b29c04@kernel.org>
+ <20210416124834.05862233@gandalf.local.home>
+ <YH7OXrjBIqvEZbsc@krava>
+ <CAADnVQK55WzR6_JfxkMzEfUnLJnX75bRHjCkaptcVF=nQ_gWfw@mail.gmail.com>
+ <YH8GxNi5VuYjwNmK@krava>
+ <CAADnVQLh3tCWi=TiWnJVaMrYhJ=j-xSrJ72+XnZDP8CMZM+1mQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQ+oQT6C7Qv7P5TV-x7im54omKoCYYKtYhcnhb1Uv3LPMQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQLh3tCWi=TiWnJVaMrYhJ=j-xSrJ72+XnZDP8CMZM+1mQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Apr 20, 2021 at 04:38:45PM -0700, Alexei Starovoitov wrote:
 
+SNIP
 
-Le 20/04/2021 à 05:28, Alexei Starovoitov a écrit :
-> On Sat, Apr 17, 2021 at 1:16 AM Christophe Leroy
-> <christophe.leroy@csgroup.eu> wrote:
->>
->>
->>
->> Le 16/04/2021 à 01:49, Alexei Starovoitov a écrit :
->>> On Thu, Apr 15, 2021 at 8:41 AM Quentin Monnet <quentin@isovalent.com> wrote:
->>>>
->>>> 2021-04-15 16:37 UTC+0200 ~ Daniel Borkmann <daniel@iogearbox.net>
->>>>> On 4/15/21 11:32 AM, Jianlin Lv wrote:
->>>>>> For debugging JITs, dumping the JITed image to kernel log is discouraged,
->>>>>> "bpftool prog dump jited" is much better way to examine JITed dumps.
->>>>>> This patch get rid of the code related to bpf_jit_enable=2 mode and
->>>>>> update the proc handler of bpf_jit_enable, also added auxiliary
->>>>>> information to explain how to use bpf_jit_disasm tool after this change.
->>>>>>
->>>>>> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
->>>>
->>>> Hello,
->>>>
->>>> For what it's worth, I have already seen people dump the JIT image in
->>>> kernel logs in Qemu VMs running with just a busybox, not for kernel
->>>> development, but in a context where buiding/using bpftool was not
->>>> possible.
->>>
->>> If building/using bpftool is not possible then majority of selftests won't
->>> be exercised. I don't think such environment is suitable for any kind
->>> of bpf development. Much so for JIT debugging.
->>> While bpf_jit_enable=2 is nothing but the debugging tool for JIT developers.
->>> I'd rather nuke that code instead of carrying it from kernel to kernel.
->>>
->>
->> When I implemented JIT for PPC32, it was extremely helpfull.
->>
->> As far as I understand, for the time being bpftool is not usable in my environment because it
->> doesn't support cross compilation when the target's endianess differs from the building host
->> endianess, see discussion at
->> https://lore.kernel.org/bpf/21e66a09-514f-f426-b9e2-13baab0b938b@csgroup.eu/
->>
->> That's right that selftests can't be exercised because they don't build.
->>
->> The question might be candid as I didn't investigate much about the replacement of "bpf_jit_enable=2
->> debugging mode" by bpftool, how do we use bpftool exactly for that ? Especially when using the BPF
->> test module ?
+> > >
+> > > I don't see how you can do it without BTF.
+> > > The mass-attach feature should prepare generic 6 or so arguments
+> > > from all functions it attached to.
+> > > On x86-64 it's trivial because 6 regs are the same.
+> > > On arm64 is now more challenging since return value regs overlaps with
+> > > first argument, so bpf trampoline (when it's ready for arm64) will look
+> > > a bit different than bpf trampoline on x86-64 to preserve arg0, arg1,
+> > > ..arg6, ret
+> > > 64-bit values that bpf prog expects to see.
+> > > On x86-32 it's even more trickier, since the same 6 args need to be copied
+> > > from a combination of regs and stack.
+> > > This is not some hypothetical case. We already use BTF in x86-32 JIT
+> > > and btf_func_model was introduced specifically to handle such cases.
+> > > So I really don't see how ftrace can do that just yet. It has to understand BTF
+> > > of all of the funcs it attaches to otherwise it's just saving all regs.
+> > > That approach was a pain to deal with.
+> >
+> > ok, my idea was to get regs from the ftrace and have arch specific code
+> > to prepare 6 (or less) args for ebpf program.. that part would be
+> > already in bpf code
+> >
+> > so you'd like to see this functionality directly in ftrace, so we don't
+> > save unneeded regs, is that right?
 > 
-> the kernel developers can add any amount of printk and dumps to debug
-> their code,
-> but such debugging aid should not be part of the production kernel.
-> That sysctl was two things at once: debugging tool for kernel devs and
-> introspection for users.
-> bpftool jit dump solves the 2nd part. It provides JIT introspection to users.
-> Debugging of the kernel can be done with any amount of auxiliary code
-> including calling print_hex_dump() during jiting.
+> What do you mean by "already in bpf code" ?
+
+that it would not be part of ftrace code
+
 > 
+> The main question is an api across layers.
+> If ftrace doesn't use BTF it has to prepare all regs that could be used.
+> Meaning on x86-64 that has to be 6 regs for args, 1 reg for return and
+> stack pointer.
+> That would be enough to discover input args and return value in fexit.
+> On arm64 that has to be similar, but while x86-64 can do with single pt_regs
+> where %rax is updated on fexit, arm64 cannot do so, since the same register
+> is used as arg1 and as a return value.
+> The most generic api between ftrace and bpf layers would be two sets of
+> pt_regs. One on entry and one on exit, but that's going to be very expensive.
 
-I get the following message when trying the command suggested in the patch message:
+that's what I was going for and I think it's the only way if
+we use ftrace graph_ops for mass attaching
 
-root@vgoip:~# ./bpftool prog dump jited
-Error: No libbfd support
+> On x86-32 it would have to be 3 regs plus stack pointer and another 2 regs
+> to cover all input args and return value.
+> So there will be plenty of per-arch differences.
+> 
+> Jiri, if you're thinking of a bpf helper like:
+> u64 bpf_read_argN(pt_regs, ip, arg_num)
+> that will do lookup of btf_id from ip, then it will parse btf_id and
+> function proto,
+> then it will translate that to btf_func_model and finally will extract the right
+> argument value from a combination of stack and regs ?
+> That's doable, but it's a lot of run-time overhead.
+> It would be usable by bpf progs that don't care much about run-time perf
+> and don't care that they're not usable 24/7 on production systems.
+> Such tools exist and they're useful,
+> but I'd like this mass-attach facility to be usable everywhere
+> including the production and 24/7 tracing.
 
-Christophe
+I did not think of this option, but yep, seems also expensive
+
+> Hence I think it's better to do this per-arch translation during bpf
+> prog attach.
+> That's exactly what bpf trampoline is doing.
+> Currently it's doing for single btf_id, single trampoline, and single bpf prog.
+> To make the same logic work across N attach points the trampoline logic
+> would need to iterate all btf_func_model-s of all btf_id-s and generate
+> M trampolines (where M < N) for a combination of possible argument passing.
+> On x86-64 the M will be equal to 1. On arm64 it will be equal to 1 as well.
+> But on x86-32 it will depend on a set of btf_ids. It could be 1,2,..10.
+> Since bpf doesn't allow to attach to struct-by-value it's only 32-bit and 64-bit
+> integers to deal with and number of combinations of possible calling conventions
+> is actually very small. I suspect it won't be more than 10.
+> This way there will be no additional run-time overhead and bpf programs
+> can be portable. They will work as-is on x86-64, x86-32, arm64.
+> Just like fentry/fexit work today. Or rather they will be portable
+> when bpf trampoline is supported on these archs.
+> This portability is the key feature of bpf trampoline design. The bpf trampoline
+> was implemented for x86-64 only so far. Arm64 patches are still wip.
+> btf_func_model is used by both x86-64 and x86-32 JITs.
+
+ok, I understand why this would be the best solution for calling
+the program from multiple probes
+
+I think it's the 'attach' layer which is the source of problems
+
+currently there is ftrace's fgraph_ops support that allows fast mass
+attach and calls callbacks for functions entry and exit:
+  https://lore.kernel.org/lkml/20190525031633.811342628@goodmis.org/
+
+these callbacks get ip/parent_ip and can get pt_regs (that's not
+implemented at the moment)
+
+but that gets us to the situation of having full pt_regs on both
+entry/exit callbacks that you described above and want to avoid,
+but I think it's the price for having this on top of generic
+tracing layer
+
+the way ftrace's fgraph_ops is implemented, I'm not sure it can
+be as fast as current bpf entry/exit trampoline
+
+but to better understand the pain points I think I'll try to implement
+the 'mass trampolines' call to the bpf program you described above and
+attach it for now to fgraph_ops callbacks
+
+perhaps this is a good topic to discuss in one of the Thursday's BPF mtg?
+
+thanks,
+jirka
+
