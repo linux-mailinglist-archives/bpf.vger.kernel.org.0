@@ -2,121 +2,283 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0F5366D95
-	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 16:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0849366DD2
+	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 16:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239238AbhDUOGT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Apr 2021 10:06:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243275AbhDUOGS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Apr 2021 10:06:18 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C8DED61445;
-        Wed, 21 Apr 2021 14:05:42 +0000 (UTC)
-Date:   Wed, 21 Apr 2021 10:05:41 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
-        Jesper Brouer <jbrouer@redhat.com>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Viktor Malik <vmalik@redhat.com>
-Subject: Re: [PATCHv2 RFC bpf-next 0/7] bpf: Add support for ftrace probe
-Message-ID: <20210421100541.3ea5c3bf@gandalf.local.home>
-In-Reply-To: <YIArVa6IE37vsazU@krava>
-References: <CAEf4BzYyVj-Tjy9ZZdAU5nOtJ8_auvVobTT6pMqg8zPb9jj-Ow@mail.gmail.com>
-        <20210415111002.324b6bfa@gandalf.local.home>
-        <CAEf4BzY=yBZH2Aad1hNcqCt51u0+SmNdkD6NfJRVMzF7DsvG+A@mail.gmail.com>
-        <20210415170007.31420132@gandalf.local.home>
-        <20210417000304.fc987dc00d706e7551b29c04@kernel.org>
-        <20210416124834.05862233@gandalf.local.home>
-        <YH7OXrjBIqvEZbsc@krava>
-        <CAADnVQK55WzR6_JfxkMzEfUnLJnX75bRHjCkaptcVF=nQ_gWfw@mail.gmail.com>
-        <YH8GxNi5VuYjwNmK@krava>
-        <CAADnVQLh3tCWi=TiWnJVaMrYhJ=j-xSrJ72+XnZDP8CMZM+1mQ@mail.gmail.com>
-        <YIArVa6IE37vsazU@krava>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235552AbhDUONS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Apr 2021 10:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242126AbhDUONR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Apr 2021 10:13:17 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437B5C06174A;
+        Wed, 21 Apr 2021 07:12:44 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id t22so21390654ply.1;
+        Wed, 21 Apr 2021 07:12:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pof0238uH77OvXTLRd+cnQcvD+lGCLIOdFWhGakoP3Y=;
+        b=KbHl3oDR8QzL/Iaau8qpmm25cSyTLBtIHJraKZ/KC9A3ZpsFoR6t9nG5KnxYpFEOhU
+         B32CGcJ2wn4IGhRoZOY8ToY8V+mpxrto/EwWaHeJ9/63sYHWNEUkgqcyv9OqZDZ86BqR
+         mWCifRd9Wjgm4HPmwQuWSSFeE4LcCI0DoEIRk2hBGgVPR/yGj9UAul2shtDFB4BixZU7
+         wNukWzjGgBVOh0nG7kkvyHRKy6qWMnrXpPhrFU9+++WuBI5lDMhP+XDe8f3ZUcHJUICO
+         r/Y4upF66QXFe8+CNdnYxAMaolbLu7ifbTaX/XzCscwRuTIwGEvDqkk3wpAXwCU7nD1Y
+         afDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pof0238uH77OvXTLRd+cnQcvD+lGCLIOdFWhGakoP3Y=;
+        b=KAYe2Sq2HS11Husufe4rdiUn5Z2t9p8Pk7TPyvvM2/BiykEeXfDoIC24deafettrBI
+         1b48BqyhsizALU+PLSwA5GMhWxhedLgKTm3Dqr5F5UunmNP/9EpAYywsVR43q8pj3ve9
+         xsbGGaah+pxyiT8mwpCNK4lfoVs61RWsL+zZDrqXzFdt692HMxakHQ11MnyLw0KoYwG9
+         03Ls4bwd34yFP0j8XT9v8ihbg7hwvzHBUoMgGqgt5AUJq6TOa9Abc3ctpQT29l/uHf2u
+         KMV5C5d7NKdAUlW7LzIm+E/zRWwpSLZtx4Y40SgJTUs3CPTBpPprf7z+OyLQd1e+RCfK
+         ZGnA==
+X-Gm-Message-State: AOAM532x6ZFqcS705QpSE+AOvf+vvdyjpbj+tTNeh45NU3aS9OLKoPx8
+        u3ShobLxn84Byb7As7cRo7zquxGIC+oG+RVC1ps=
+X-Google-Smtp-Source: ABdhPJwUno5YPC7BqOWOKEZ6oMfGNxK4o0iMZCJO4gHU2e8g4g6LUewoB+EzV3dwXoV2Tj0Kt7CDnZg1nkaQqbPwYLk=
+X-Received: by 2002:a17:902:b494:b029:e7:36be:9ce7 with SMTP id
+ y20-20020a170902b494b02900e736be9ce7mr34047403plr.43.1619014363633; Wed, 21
+ Apr 2021 07:12:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <cover.1617885385.git.lorenzo@kernel.org> <CAJ8uoz1MOYLzyy7xXq_fmpKDEakxSomzfM76Szjr5gWsqHc9jQ@mail.gmail.com>
+ <20210418181801.17166935@carbon> <CAJ8uoz0m8AAJFddn2LjehXtdeGS0gat7dwOLA_-_ZeOVYjBdxw@mail.gmail.com>
+ <YH0pdXXsZ7IELBn3@lore-desk> <CAJ8uoz101VZiwuvM-bs4UdW+kFT5xjgdgUwPWHZn4ABEOkyQ-w@mail.gmail.com>
+ <20210421144747.33c5f51f@carbon>
+In-Reply-To: <20210421144747.33c5f51f@carbon>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 21 Apr 2021 16:12:32 +0200
+Message-ID: <CAJ8uoz3ROiPn+-bh7OjFOjXjXK9xGhU5cxWoFPM9JoYeh=zw=g@mail.gmail.com>
+Subject: Re: [PATCH v8 bpf-next 00/14] mvneta: introduce XDP multi-buffer support
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
+        sameehj@amazon.com, John Fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Tirthendu <tirthendu.sarkar@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 21 Apr 2021 15:40:37 +0200
-Jiri Olsa <jolsa@redhat.com> wrote:
+On Wed, Apr 21, 2021 at 2:48 PM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
+>
+> On Tue, 20 Apr 2021 15:49:44 +0200
+> Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
+>
+> > On Mon, Apr 19, 2021 at 8:56 AM Lorenzo Bianconi
+> > <lorenzo.bianconi@redhat.com> wrote:
+> > >
+> > > > On Sun, Apr 18, 2021 at 6:18 PM Jesper Dangaard Brouer
+> > > > <brouer@redhat.com> wrote:
+> > > > >
+> > > > > On Fri, 16 Apr 2021 16:27:18 +0200
+> > > > > Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
+> > > > >
+> > > > > > On Thu, Apr 8, 2021 at 2:51 PM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> > > > > > >
+> > > > > > > This series introduce XDP multi-buffer support. The mvneta driver is
+> > > > > > > the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
+> > > > > > > please focus on how these new types of xdp_{buff,frame} packets
+> > > > > > > traverse the different layers and the layout design. It is on purpose
+> > > > > > > that BPF-helpers are kept simple, as we don't want to expose the
+> > > > > > > internal layout to allow later changes.
+> > > > > > >
+> > > > > > > For now, to keep the design simple and to maintain performance, the XDP
+> > > > > > > BPF-prog (still) only have access to the first-buffer. It is left for
+> > > > > > > later (another patchset) to add payload access across multiple buffers.
+> > > > > > > This patchset should still allow for these future extensions. The goal
+> > > > > > > is to lift the XDP MTU restriction that comes with XDP, but maintain
+> > > > > > > same performance as before.
+> > > > > [...]
+> > > > > > >
+> > > > > > > [0] https://netdevconf.info/0x14/session.html?talk-the-path-to-tcp-4k-mtu-and-rx-zerocopy
+> > > > > > > [1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-multi-buffer01-design.org
+> > > > > > > [2] https://netdevconf.info/0x14/session.html?tutorial-add-XDP-support-to-a-NIC-driver (XDPmulti-buffers section)
+> > > > > >
+> > > > > > Took your patches for a test run with the AF_XDP sample xdpsock on an
+> > > > > > i40e card and the throughput degradation is between 2 to 6% depending
+> > > > > > on the setup and microbenchmark within xdpsock that is executed. And
+> > > > > > this is without sending any multi frame packets. Just single frame
+> > > > > > ones. Tirtha made changes to the i40e driver to support this new
+> > > > > > interface so that is being included in the measurements.
+> > > > >
+> > > > > Could you please share Tirtha's i40e support patch with me?
+> > > >
+> > > > We will post them on the list as an RFC. Tirtha also added AF_XDP
+> > > > multi-frame support on top of Lorenzo's patches so we will send that
+> > > > one out as well. Will also rerun my experiments, properly document
+> > > > them and send out just to be sure that I did not make any mistake.
+> > >
+> > > ack, very cool, thx
+> >
+> > I have now run a new set of experiments on a Cascade Lake server at
+> > 2.1 GHz with turbo boost disabled. Two NICs: i40e and ice. The
+> > baseline is commit 5c507329000e ("libbpf: Clarify flags in ringbuf
+> > helpers") and Lorenzo's and Eelco's path set is their v8. First some
+> > runs with xdpsock (i.e. AF_XDP) in both 2-core mode (app on one core
+> > and the driver on another) and 1-core mode using busy_poll.
+> >
+> > xdpsock rxdrop throughput change with the multi-buffer patches without
+> > any driver changes:
+> > 1-core i40e: -0.5 to 0%   2-cores i40e: -0.5%
+> > 1-core ice: -2%   2-cores ice: -1 to -0.5%
+> >
+> > xdp_rxq_info -a XDP_DROP
+> > i40e: -4%   ice: +8%
+> >
+> > xdp_rxq_info -a XDP_TX
+> > i40e: -10%   ice: +9%
+> >
+> > The XDP results with xdp_rxq_info are just weird! I reran them three
+> > times, rebuilt and rebooted in between and I always get the same
+> > results. And I also checked that I am running on the correct NUMA node
+> > and so on. But I have a hard time believing them. Nearly +10% and -10%
+> > difference. Too much in my book. Jesper, could you please run the same
+> > and see what you get?
+>
+> We of-cause have to find the root-cause of the +-10%, but let me drill
+> into what the 10% represent time/cycle wise.  Using a percentage
+> difference is usually a really good idea as it implies a comparative
+> measure (something I always request people to do, as a single
+> performance number means nothing by itself).
+>
+> For a zoom-in-benchmarks like these where the amount of code executed
+> is very small, the effect of removing or adding code can effect the
+> measurement a lot.
+>
+> I can only do the tests for i40e, as I don't have ice hardware (but
+> Intel is working on fixing that ;-)).
+>
+>  xdp_rxq_info -a XDP_DROP
+>   i40e: 33,417,775 pps
 
-> ok, I understand why this would be the best solution for calling
-> the program from multiple probes
-> 
-> I think it's the 'attach' layer which is the source of problems
-> 
-> currently there is ftrace's fgraph_ops support that allows fast mass
-> attach and calls callbacks for functions entry and exit:
->   https://lore.kernel.org/lkml/20190525031633.811342628@goodmis.org/
-> 
-> these callbacks get ip/parent_ip and can get pt_regs (that's not
-> implemented at the moment)
-> 
-> but that gets us to the situation of having full pt_regs on both
-> entry/exit callbacks that you described above and want to avoid,
-> but I think it's the price for having this on top of generic
-> tracing layer
-> 
-> the way ftrace's fgraph_ops is implemented, I'm not sure it can
-> be as fast as current bpf entry/exit trampoline
+Here I only get around 21 Mpps
 
-Note, the above mentioned code was an attempt to consolidate the code that
-does the "highjacking" of the return pointer in order to record the
-return of a function. At the time there was only kretprobes and function
-graph tracing. Now bpf has another version. That means there's three
-utilities that record the exit of the function.
+>  CPU is 100% used, so we can calculate nanosec used per packet:
+>   29.92 nanosec (1/33417775*10^9)
+>   2.1 GHz CPU =  approx 63 CPU-cycles
+>
+>  You lost -4% performance in this case.  This correspond to:
+>   -1.2 nanosec (29.92*0.04) slower
+>   (This could be cost of single func call overhead = 1.3 ns)
+>
+> My measurement for XDP_TX:
+>
+>  xdp_rxq_info -a XDP_TX
+>   28,278,722 pps
+>   35.36 ns (1/28278722*10^9)
 
-What we need is a single method that works for all three utilities. And I'm
-perfectly fine with a rewrite of function graph tracer to do that. The one
-problem is that function graph and kretprobes works for pretty much all the
-architectures now, and whatever we decide to do, we can't break those
-architectures.
+And here, much lower at around 8 Mpps. But I do see correct packets
+coming back on the cable for i40e but not for ice! There is likely a
+bug there in the XDP_TX logic for ice. Might explain the weird results
+I am getting. Will investigate.
 
-One way is to have an abstract layer that allows function graph and
-kretprobes to work with the old implementation as well as, depending on a
-config set, a new implementation that also supports bpf trampolines.
+But why do I get only a fraction of your performance? XDP_TX touches
+the packet so I would expect it to be far less than what you get, but
+more than I get. What CPU core do you run on? It actually looks like
+your packet data gets prefetched successfully. If it had not, you
+would have gotten an access to LLC which is much more expensive than
+the drop you are seeing. If I run on the wrong NUMA node, I get 4
+Mpps, so it is not that.
 
-> 
-> but to better understand the pain points I think I'll try to implement
-> the 'mass trampolines' call to the bpf program you described above and
-> attach it for now to fgraph_ops callbacks
+One interesting thing is that I get better results using the zero-copy
+path in the driver. I start xdp_rxq_drop then tie an AF_XDP socket to
+the queue id the XDP program gets its traffic from. The AF_XDP program
+will get no traffic in this case, but it will force the driver to use
+the zero-copy path for its XDP processing. In this case I get this:
 
-One thing that ftrace gives you is a way to have each function call its own
-trampoline, then depending on what is attached, each one can have multiple
-implementations.
+-0.5% for XDP_DROP and +-0% for XDP_TX for i40e.
 
-One thing that needs to be fixed is the direct trampoline and function
-graph and kretprobes. As the direct trampoline will break both of them,
-with the bpf implementation to trace after it.
-
-I would be interested in what a mass generic trampoline would look like, if
-it had to deal with handling functions with 1 parameter and one with 12
-parameters. From this thread, I was told it can currently only handle 6
-parameters on x86_64. Not sure how it works on x86_32.
-
-> 
-> perhaps this is a good topic to discuss in one of the Thursday's BPF mtg?
-
-I'm unaware of these meetings.
-
-
--- Steve
+>  You lost -10% performance in this case:
+>   -3.54 nanosec (35.36*0.10) slower
+>
+> In XDP context 3.54 nanosec is a lot, as you can see it is 10% in this
+> zoom-in benchmark.  We have to look at the details.
+>
+> One detail/issue with i40e doing XDP_TX, is that I cannot verify that
+> packets are actually transmitted... not via exception tracepoint, not
+> via netstats, not via ethtool_stats.pl.  Maybe all the packets are
+> getting (silently) drop in my tests...!?!
+>
+>
+> > The xdpsock numbers are more in the ballpark of
+> > what I would expect.
+> >
+> > Tirtha and I found some optimizations in the i40e
+> > multi-frame/multi-buffer support that we have implemented. Will test
+> > those next, post the results and share the code.
+> >
+> > > >
+> > > > Just note that I would really like for the multi-frame support to get
+> > > > in. I have lost count on how many people that have asked for it to be
+> > > > added to XDP and AF_XDP. So please check our implementation and
+> > > > improve it so we can get the overhead down to where we want it to be.
+> > >
+> > > sure, I will do.
+> > >
+> > > Regards,
+> > > Lorenzo
+> > >
+> > > >
+> > > > Thanks: Magnus
+> > > >
+> > > > > I would like to reproduce these results in my testlab, in-order to
+> > > > > figure out where the throughput degradation comes from.
+> > > > >
+> > > > > > What performance do you see with the mvneta card? How much are we
+> > > > > > willing to pay for this feature when it is not being used or can we in
+> > > > > > some way selectively turn it on only when needed?
+> > > > >
+> > > > > Well, as Daniel says performance wise we require close to /zero/
+> > > > > additional overhead, especially as you state this happens when sending
+> > > > > a single frame, which is a base case that we must not slowdown.
+> > > > >
+> > > > > --
+> > > > > Best regards,
+> > > > >   Jesper Dangaard Brouer
+>
+> --
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>
+>
+> Running XDP on dev:i40e2 (ifindex:6) action:XDP_DROP options:read
+> XDP stats       CPU     pps         issue-pps
+> XDP-RX CPU      2       33,417,775  0
+> XDP-RX CPU      total   33,417,775
+>
+> RXQ stats       RXQ:CPU pps         issue-pps
+> rx_queue_index    2:2   33,417,775  0
+> rx_queue_index    2:sum 33,417,775
+>
+>
+> Running XDP on dev:i40e2 (ifindex:6) action:XDP_TX options:swapmac
+> XDP stats       CPU     pps         issue-pps
+> XDP-RX CPU      2       28,278,722  0
+> XDP-RX CPU      total   28,278,722
+>
+> RXQ stats       RXQ:CPU pps         issue-pps
+> rx_queue_index    2:2   28,278,726  0
+> rx_queue_index    2:sum 28,278,726
+>
+>
+>
