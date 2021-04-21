@@ -2,456 +2,263 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4818366E9F
-	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 16:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75B5366EBF
+	for <lists+bpf@lfdr.de>; Wed, 21 Apr 2021 17:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242970AbhDUPA1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Apr 2021 11:00:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240091AbhDUPA1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Apr 2021 11:00:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC66761449;
-        Wed, 21 Apr 2021 14:59:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619017191;
-        bh=bBsHN1sKbdzEp4pmApdqIbBqGtD1LRH4fEenRcZAwHE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=G2iJue2ZS4ugyK9xloA5BrU1MiGFWeyIH9MWuBafwI7ZT1scrCxrmTurBTYiQ81DZ
-         Pnk6Z5/EE6SHyL2vPvzp8uCJwTbh0AGwP9CSabrAp6FPIRKSOuAWQtZWioKi83v1ES
-         zRANAX/m4Gsii0CsdvHM1JH5Hx1y4Ai+HRpVtFrB9+eh9VgS/bFERQI60nKJ0bSn4R
-         lpWy5HSs3fqNv/L4BrazlOx6Xq8z9YPQzZkRkqAFXXR1gxhYn/NBxqRRVEFxVKAQzN
-         cne1os9CPZ8xK7GKVmeTJWbVdjx/COdZFgrCqgIVIax6LHy6v1LfN/no+tI12u7yix
-         HoXDxf4AOz9SA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 40F5B5C0267; Wed, 21 Apr 2021 07:59:51 -0700 (PDT)
-Date:   Wed, 21 Apr 2021 07:59:51 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
-Subject: Re: [PATCHv7 bpf-next 1/4] bpf: run devmap xdp_prog on flush instead
- of bulk enqueue
-Message-ID: <20210421145951.GT975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210417002301.GO4212@paulmck-ThinkPad-P17-Gen-1>
- <87h7k5hza0.fsf@toke.dk>
- <20210419165837.GA975577@paulmck-ThinkPad-P17-Gen-1>
- <87lf9egn3o.fsf@toke.dk>
- <20210419183223.GC975577@paulmck-ThinkPad-P17-Gen-1>
- <877dkygeca.fsf@toke.dk>
- <20210419214117.GE975577@paulmck-ThinkPad-P17-Gen-1>
- <87y2ddgbsn.fsf@toke.dk>
- <20210419223143.GG975577@paulmck-ThinkPad-P17-Gen-1>
- <87wnsvhg0m.fsf@toke.dk>
+        id S243121AbhDUPHc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Apr 2021 11:07:32 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:53454 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243814AbhDUPHb (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 21 Apr 2021 11:07:31 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13LExnEk006985;
+        Wed, 21 Apr 2021 08:06:44 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=Sz5wS6k6uJ4avuWwe4WiE4JiEuwnAjPOAZDcfyhMOE8=;
+ b=Ew0q9pDR7Ctu5sHhRSKcj7x9CG4TqIQgONChl4ZWrolFAXWHSpefL76dhWqiO3YSOirc
+ F9+YCesczfLZFYg4t7emIi/iXJDNLJI6nhrFglNMiY2Vr10vpyvHj4rYU2pkpOsU8Yfm
+ PjRWzoQxILLwjaWVtN6cAdWhQJYOV2ft5bI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3826yuc92t-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 21 Apr 2021 08:06:44 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 21 Apr 2021 08:06:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dWENQ2RuX8Epm0QSh9gu138CnQnSRIDjG9NAic4fr1NiJdiOtent6teGHueQzXbaRbIdW2YD4y0t3OcegwD/59lKlfwrxdwRAxlBgBuJV0j+eeXprwT5z5HyrmFN/14Ja4YgkVYnLaM7Bvm2TpWjqvwKQ0asulZKoOePYXjWXZwB8tKXjBxGKU5Y2Xs/ryZnuXU2m5eRqTmhPEgo4NcDQu/Q5aUepoQC8g6Dj0OKdk2qTl0NkWqrU9YjWxskCb9+Ytwl0Yf2Nzrn0jV10rAsTv/5VxHRca9k0GfU38foDFmH4DponFJcaCJGopebMuzNEC60NNjcFs6uS1gkaEgoMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2F5NyQ9T+BDty1Tjq0+Hf0gCGkhX8BPJzseDZk+LCCM=;
+ b=hZebq2ADwG/vW5cuFOWjGgyX+iaXLOlZNzYvveImQ0+6KvTeuJMnn/oKNjClDN5luQ8B/37WTZlGcZTbwPMCJADvrvnLHgAB6v+WF8JLaUPNEAP7VGnWonnpoMOeMkcIiCYt3QjW6aNs29ejhhqXiNqHhgYs8SndLP5S/ABZAnWeDpDN4bJSAO0oz5IDyXNIX+WKtg6OZ11tTArC7FvrtW7CPh0SAcnjaWDxMrSJ8KhXdkfnSBd9NXGcQZxrpBGsf1CkFlc9mLPwA2NtAzlxfxoeiXdkbWs4T5+T3BZomIRllBVZdRkEyjXPstcsn+FiIrAG821O/Yd4yCAq3PE6Fg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR15MB2334.namprd15.prod.outlook.com (2603:10b6:805:23::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Wed, 21 Apr
+ 2021 15:06:39 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f433:fd99:f905:8912%3]) with mapi id 15.20.4065.021; Wed, 21 Apr 2021
+ 15:06:39 +0000
+Subject: Re: Help with verifier failure
+To:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210421122348.547922-1-jackmanb@google.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <94c4f7b0-c64e-e580-7d9b-a0a65e2fe33d@fb.com>
+Date:   Wed, 21 Apr 2021 08:06:35 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
+In-Reply-To: <20210421122348.547922-1-jackmanb@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+X-Originating-IP: [2620:10d:c090:400::5:f2b4]
+X-ClientProxiedBy: MWHPR18CA0027.namprd18.prod.outlook.com
+ (2603:10b6:320:31::13) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21cf::137a] (2620:10d:c090:400::5:f2b4) by MWHPR18CA0027.namprd18.prod.outlook.com (2603:10b6:320:31::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend Transport; Wed, 21 Apr 2021 15:06:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1657e102-13fa-4dc6-4732-08d904d71099
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2334:
+X-Microsoft-Antispam-PRVS: <SN6PR15MB233445EA006EF52F71B2D118D3479@SN6PR15MB2334.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yNuZZcmRXsPIZweEJYw/kQj+dKugPl6P2qsI9U6Z8xCkboVGjmhEpll6CJ5TYs35KJSbqgX10FcXdxV3dri0vY0Go8jAfVdXHDhnqfzJrzKMQVTAdTBSoRJIR8m7subGs9Xdm1HqcVa+QJuMiEC5aXzryziO2PDn2FoCeMxPGW8m+DS1qM57p6wbu1JjfFx5IEcCvsJQSXMfO0FrJ9kTJnV1l7GppJNCm1TyOarddKPOSQF7Hr5cD2fYn2Mf0eQVo4Vplz7dbs3bXwpneUfpAMdCeqHDTA9sGvsv+CDoYB0CUajEiJAci/h2H4frt/WgFPIRJRoytdvb0c5B51vBDo/+PuqYg33a047WzIxMA/DlNsIfLCPblgFJa4410wt95OQH8ZLvQRhMwk9kF52ASYrjNRurjIRk/N7iPqGgbINEoc/tj4AE5equepznpSrDjXdnHOQ2PKCpCn4dLBus5hiGfywYnyrWp24MCUYt0O3YSlXhry4BeyOYW4R3XYuF/BPG+o+9zSwFtMaLdu6Vo/AswvBssr6Q4rYsde5Wh4Y8GIWFNVwc1jVdk0tgqHBmI361Mvs4hf7RDywhw/wmHMZWVB+c/c6c0TNInzZK4nTnjRN6/MLlLUGPa5oKss+QbjK/6hAZFYzL6T8vjkAm5/MOrH92CFQ2pBUVjEiMUF/OazGUii+3feEkngSHWyIGILjleFS1Gt5uEHNbtxy3nDG9sNLLvda87D/MUc1Qakzy61JYZ1LuTEMw151oFYhlXMWFz1lb5psfo2+pAM32H5qYPY6JMAAOP43GNJiJsxI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39850400004)(136003)(366004)(376002)(396003)(83380400001)(4326008)(966005)(36756003)(316002)(5660300002)(478600001)(31686004)(2616005)(8936002)(53546011)(186003)(16526019)(2906002)(86362001)(52116002)(31696002)(66946007)(8676002)(6666004)(66476007)(3480700007)(6486002)(38100700002)(66556008)(45980500001)(43740500002)(505234006);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bnprVFpCY0tldkJzZkptUVpaTDRrUTdISFpPRmxhWlc3R0pZZEkwQmpIeGNt?=
+ =?utf-8?B?N1NYbUZMaXJhek1ZaXJDMTQ1bFpNZVkvdENQcldRUlNBR1Z4QlNNS0M4UCtt?=
+ =?utf-8?B?SnpKeVhBMUhuSkxzUnNzNzBxS2N6ZTBoSWJuMEdDVVdOcDJhUXF2OWpHVGx6?=
+ =?utf-8?B?eks4S0JFbndGazJtdTlHaGlTRmxCZnJwVTg5WGF4eWorbVovak9iUTlHMDcx?=
+ =?utf-8?B?enhzTnZmRmhlbjA1bHZwTXNiVDNCL2ljU1lZS3VjVFFVdTlJQ0pZY0Noc0ly?=
+ =?utf-8?B?MXBzdzRqZVFqa0J2ZG5HMXM0Ym5yYW1HZVY2YVpOcnV2OG14Mk5tbG4wQ0Fi?=
+ =?utf-8?B?OExoeHVXYUVCS1FGLzl2d0ZWSHh4cVlXb2pIalVqQXAyUHVGdVppZm1lV3pq?=
+ =?utf-8?B?ejd0WjJ1OHdONThOWnNnUGJiMXZnKzQvZ0VjY0xKWnZYdWxOM1F5NEVrc3ox?=
+ =?utf-8?B?YlZyRjlIVFViWEN3VHIwT292Lzg4QWFUY2lVUGZlUEhyUnlNNmFCVGh1dS91?=
+ =?utf-8?B?K2cycDl3ZFk4eTd1aWFaMjVCOWVheGVkandJc0U3YTRoRm1sekM3L09ZRmlj?=
+ =?utf-8?B?elNSQjZpcE5IaEN5clQ1SHFNZW96L29JcDNnd0tVbUVKNWpkUzhDR3JkVUFi?=
+ =?utf-8?B?MzZHZVozQ3BGSGE5WFE4RmF0UktFK21FWEVOUU5BQWJvblB1TXNDWUdObWxX?=
+ =?utf-8?B?OTY4bzlDaFNWYllvVHE4VWlwVEFya1ZJem1LSEFNN1lma0VwTko3MUp6ZmJU?=
+ =?utf-8?B?VkNTZFp4anBVd0taTkp2ekU3d01WUkVSTmU3eHdXSXViUlJXZXdLQit3U2RL?=
+ =?utf-8?B?MjZZOERVblZYWHlZbDQ1eXcxN1ZXT2VWSnpoRUs0UlZZclVZSFM3bTlkUDI5?=
+ =?utf-8?B?alBkeFduaEJpOXNMaWNaTUdFWFBCdFJDUXQydTRROE9ZZUNGNGZyR3Y2aHNX?=
+ =?utf-8?B?OFJHTFJyZTRGM3laY0hKeGN6MTZPMVBhWUY5QTFXQmV5U1RYZjArSU5hdVRm?=
+ =?utf-8?B?VS9WbEZsWXViWVhDM3lCdzU3M05UWUhHcDFNd3hPUyt3VnlYSElYWjAwODM3?=
+ =?utf-8?B?TUVYQmFhL1FXRGlKeCtsRmNzb0RkeHNUQkNBdjZ6Y0lyNzg2WXhLTnIxeUl4?=
+ =?utf-8?B?N0grU2RUcEI2U216bGpYL25BYlhoR2xBeFBMUC9hVHh5YzIrTUVzWjVZWlFw?=
+ =?utf-8?B?VGR1dDVQS04xQUs4d2k0aDdYWHBteVdQMFo0MnNzNWQzVXRaWG95OUZUQlFr?=
+ =?utf-8?B?dEpFcVJIVkdaTzZxUllDWk9VRXFSQ2puQnFLWWFVUG1tNXNqdmxNZzIrdVds?=
+ =?utf-8?B?b3VjRzVEN2VldGhOc1lZd2ZkUE5UMHNETyt6dGZreUIxTGlrMk9kOXZKcDZV?=
+ =?utf-8?B?dlBQZWxlOUZqYk93ZWNoRHh4d2ZOSUtJWHlZUEplUURiRjFlbEhyeGJ3SEJt?=
+ =?utf-8?B?SzArT01qeW04VEtWQXpQU3FETE1WV2NzbUhjUVJCbEF1U3RVQnpKZFB0SUhG?=
+ =?utf-8?B?QXEyKy9nZHZDdnJkUVByVXdocUdGV3JSbC9vUlNDMUZxbWp3Ti9NNWNSYTRL?=
+ =?utf-8?B?RGtXUXlvTStLV0p0NThqQ3p2cStJai9LWXcxSWtXUGEzSEtQWTBPZjJWSkhR?=
+ =?utf-8?B?VWt3TGVrNXhCTkFsUWtTMFlnTGxkTmVOK3dpaVA0RlRaS3Z2N1B0YTVBbmww?=
+ =?utf-8?B?Y2Q4L1pyc0k5QUdzcDYrcDVENlA3TXJ4ZEV6alZQZlVCRHlyZE1FSmdvQ0Vs?=
+ =?utf-8?B?MldEaTlVNHlhMmRsOFpaTEN3VGFacU94Z3o4WmZoMW9XamxydHVGZmg3MTNX?=
+ =?utf-8?Q?PKMONpqowKSLkWnC4Mgs8wH6RbaGYtcTrcwvE=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1657e102-13fa-4dc6-4732-08d904d71099
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Apr 2021 15:06:39.4165
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +gnwocmCxQJG5wvRgUzKguDOhLVHcWWcVXgx9EqcruxAQhzmyIxi8Va6cn9Tdmmq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2334
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: 8MnXVEfosBnbExNEVOtjeHHyoh_u7Jhi
+X-Proofpoint-ORIG-GUID: 8MnXVEfosBnbExNEVOtjeHHyoh_u7Jhi
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87wnsvhg0m.fsf@toke.dk>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-21_05:2021-04-21,2021-04-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ adultscore=0 mlxscore=0 spamscore=0 clxscore=1011 priorityscore=1501
+ mlxlogscore=999 malwarescore=0 bulkscore=0 suspectscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104210115
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 04:24:41PM +0200, Toke Høiland-Jørgensen wrote:
-> "Paul E. McKenney" <paulmck@kernel.org> writes:
-> 
-> > On Tue, Apr 20, 2021 at 12:16:40AM +0200, Toke Høiland-Jørgensen wrote:
-> >> "Paul E. McKenney" <paulmck@kernel.org> writes:
-> >> 
-> >> > On Mon, Apr 19, 2021 at 11:21:41PM +0200, Toke Høiland-Jørgensen wrote:
-> >> >> "Paul E. McKenney" <paulmck@kernel.org> writes:
-> >> >> 
-> >> >> > On Mon, Apr 19, 2021 at 08:12:27PM +0200, Toke Høiland-Jørgensen wrote:
-> >> >> >> "Paul E. McKenney" <paulmck@kernel.org> writes:
-> >> >> >> 
-> >> >> >> > On Sat, Apr 17, 2021 at 02:27:19PM +0200, Toke Høiland-Jørgensen wrote:
-> >> >> >> >> "Paul E. McKenney" <paulmck@kernel.org> writes:
-> >> >> >> >> 
-> >> >> >> >> > On Fri, Apr 16, 2021 at 11:22:52AM -0700, Martin KaFai Lau wrote:
-> >> >> >> >> >> On Fri, Apr 16, 2021 at 03:45:23PM +0200, Jesper Dangaard Brouer wrote:
-> >> >> >> >> >> > On Thu, 15 Apr 2021 17:39:13 -0700
-> >> >> >> >> >> > Martin KaFai Lau <kafai@fb.com> wrote:
-> >> >> >> >> >> > 
-> >> >> >> >> >> > > On Thu, Apr 15, 2021 at 10:29:40PM +0200, Toke Høiland-Jørgensen wrote:
-> >> >> >> >> >> > > > Jesper Dangaard Brouer <brouer@redhat.com> writes:
-> >> >> >> >> >> > > >   
-> >> >> >> >> >> > > > > On Thu, 15 Apr 2021 10:35:51 -0700
-> >> >> >> >> >> > > > > Martin KaFai Lau <kafai@fb.com> wrote:
-> >> >> >> >> >> > > > >  
-> >> >> >> >> >> > > > >> On Thu, Apr 15, 2021 at 11:22:19AM +0200, Toke Høiland-Jørgensen wrote:  
-> >> >> >> >> >> > > > >> > Hangbin Liu <liuhangbin@gmail.com> writes:
-> >> >> >> >> >> > > > >> >     
-> >> >> >> >> >> > > > >> > > On Wed, Apr 14, 2021 at 05:17:11PM -0700, Martin KaFai Lau wrote:    
-> >> >> >> >> >> > > > >> > >> >  static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
-> >> >> >> >> >> > > > >> > >> >  {
-> >> >> >> >> >> > > > >> > >> >  	struct net_device *dev = bq->dev;
-> >> >> >> >> >> > > > >> > >> > -	int sent = 0, err = 0;
-> >> >> >> >> >> > > > >> > >> > +	int sent = 0, drops = 0, err = 0;
-> >> >> >> >> >> > > > >> > >> > +	unsigned int cnt = bq->count;
-> >> >> >> >> >> > > > >> > >> > +	int to_send = cnt;
-> >> >> >> >> >> > > > >> > >> >  	int i;
-> >> >> >> >> >> > > > >> > >> >  
-> >> >> >> >> >> > > > >> > >> > -	if (unlikely(!bq->count))
-> >> >> >> >> >> > > > >> > >> > +	if (unlikely(!cnt))
-> >> >> >> >> >> > > > >> > >> >  		return;
-> >> >> >> >> >> > > > >> > >> >  
-> >> >> >> >> >> > > > >> > >> > -	for (i = 0; i < bq->count; i++) {
-> >> >> >> >> >> > > > >> > >> > +	for (i = 0; i < cnt; i++) {
-> >> >> >> >> >> > > > >> > >> >  		struct xdp_frame *xdpf = bq->q[i];
-> >> >> >> >> >> > > > >> > >> >  
-> >> >> >> >> >> > > > >> > >> >  		prefetch(xdpf);
-> >> >> >> >> >> > > > >> > >> >  	}
-> >> >> >> >> >> > > > >> > >> >  
-> >> >> >> >> >> > > > >> > >> > -	sent = dev->netdev_ops->ndo_xdp_xmit(dev, bq->count, bq->q, flags);
-> >> >> >> >> >> > > > >> > >> > +	if (bq->xdp_prog) {    
-> >> >> >> >> >> > > > >> > >> bq->xdp_prog is used here
-> >> >> >> >> >> > > > >> > >>     
-> >> >> >> >> >> > > > >> > >> > +		to_send = dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt, dev);
-> >> >> >> >> >> > > > >> > >> > +		if (!to_send)
-> >> >> >> >> >> > > > >> > >> > +			goto out;
-> >> >> >> >> >> > > > >> > >> > +
-> >> >> >> >> >> > > > >> > >> > +		drops = cnt - to_send;
-> >> >> >> >> >> > > > >> > >> > +	}
-> >> >> >> >> >> > > > >> > >> > +    
-> >> >> >> >> >> > > > >> > >> 
-> >> >> >> >> >> > > > >> > >> [ ... ]
-> >> >> >> >> >> > > > >> > >>     
-> >> >> >> >> >> > > > >> > >> >  static void bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
-> >> >> >> >> >> > > > >> > >> > -		       struct net_device *dev_rx)
-> >> >> >> >> >> > > > >> > >> > +		       struct net_device *dev_rx, struct bpf_prog *xdp_prog)
-> >> >> >> >> >> > > > >> > >> >  {
-> >> >> >> >> >> > > > >> > >> >  	struct list_head *flush_list = this_cpu_ptr(&dev_flush_list);
-> >> >> >> >> >> > > > >> > >> >  	struct xdp_dev_bulk_queue *bq = this_cpu_ptr(dev->xdp_bulkq);
-> >> >> >> >> >> > > > >> > >> > @@ -412,18 +466,22 @@ static void bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
-> >> >> >> >> >> > > > >> > >> >  	/* Ingress dev_rx will be the same for all xdp_frame's in
-> >> >> >> >> >> > > > >> > >> >  	 * bulk_queue, because bq stored per-CPU and must be flushed
-> >> >> >> >> >> > > > >> > >> >  	 * from net_device drivers NAPI func end.
-> >> >> >> >> >> > > > >> > >> > +	 *
-> >> >> >> >> >> > > > >> > >> > +	 * Do the same with xdp_prog and flush_list since these fields
-> >> >> >> >> >> > > > >> > >> > +	 * are only ever modified together.
-> >> >> >> >> >> > > > >> > >> >  	 */
-> >> >> >> >> >> > > > >> > >> > -	if (!bq->dev_rx)
-> >> >> >> >> >> > > > >> > >> > +	if (!bq->dev_rx) {
-> >> >> >> >> >> > > > >> > >> >  		bq->dev_rx = dev_rx;
-> >> >> >> >> >> > > > >> > >> > +		bq->xdp_prog = xdp_prog;    
-> >> >> >> >> >> > > > >> > >> bp->xdp_prog is assigned here and could be used later in bq_xmit_all().
-> >> >> >> >> >> > > > >> > >> How is bq->xdp_prog protected? Are they all under one rcu_read_lock()?
-> >> >> >> >> >> > > > >> > >> It is not very obvious after taking a quick look at xdp_do_flush[_map].
-> >> >> >> >> >> > > > >> > >> 
-> >> >> >> >> >> > > > >> > >> e.g. what if the devmap elem gets deleted.    
-> >> >> >> >> >> > > > >> > >
-> >> >> >> >> >> > > > >> > > Jesper knows better than me. From my veiw, based on the description of
-> >> >> >> >> >> > > > >> > > __dev_flush():
-> >> >> >> >> >> > > > >> > >
-> >> >> >> >> >> > > > >> > > On devmap tear down we ensure the flush list is empty before completing to
-> >> >> >> >> >> > > > >> > > ensure all flush operations have completed. When drivers update the bpf
-> >> >> >> >> >> > > > >> > > program they may need to ensure any flush ops are also complete.    
-> >> >> >> >> >> > > > >>
-> >> >> >> >> >> > > > >> AFAICT, the bq->xdp_prog is not from the dev. It is from a devmap's elem.
-> >> >> >> >> >> > 
-> >> >> >> >> >> > The bq->xdp_prog comes form the devmap "dev" element, and it is stored
-> >> >> >> >> >> > in temporarily in the "bq" structure that is only valid for this
-> >> >> >> >> >> > softirq NAPI-cycle.  I'm slightly worried that we copied this pointer
-> >> >> >> >> >> > the the xdp_prog here, more below (and Q for Paul).
-> >> >> >> >> >> > 
-> >> >> >> >> >> > > > >> > 
-> >> >> >> >> >> > > > >> > Yeah, drivers call xdp_do_flush() before exiting their NAPI poll loop,
-> >> >> >> >> >> > > > >> > which also runs under one big rcu_read_lock(). So the storage in the
-> >> >> >> >> >> > > > >> > bulk queue is quite temporary, it's just used for bulking to increase
-> >> >> >> >> >> > > > >> > performance :)    
-> >> >> >> >> >> > > > >>
-> >> >> >> >> >> > > > >> I am missing the one big rcu_read_lock() part.  For example, in i40e_txrx.c,
-> >> >> >> >> >> > > > >> i40e_run_xdp() has its own rcu_read_lock/unlock().  dst->xdp_prog used to run
-> >> >> >> >> >> > > > >> in i40e_run_xdp() and it is fine.
-> >> >> >> >> >> > > > >> 
-> >> >> >> >> >> > > > >> In this patch, dst->xdp_prog is run outside of i40e_run_xdp() where the
-> >> >> >> >> >> > > > >> rcu_read_unlock() has already done.  It is now run in xdp_do_flush_map().
-> >> >> >> >> >> > > > >> or I missed the big rcu_read_lock() in i40e_napi_poll()?
-> >> >> >> >> >> > > > >>
-> >> >> >> >> >> > > > >> I do see the big rcu_read_lock() in mlx5e_napi_poll().  
-> >> >> >> >> >> > > > >
-> >> >> >> >> >> > > > > I believed/assumed xdp_do_flush_map() was already protected under an
-> >> >> >> >> >> > > > > rcu_read_lock.  As the devmap and cpumap, which get called via
-> >> >> >> >> >> > > > > __dev_flush() and __cpu_map_flush(), have multiple RCU objects that we
-> >> >> >> >> >> > > > > are operating on.  
-> >> >> >> >> >> > >
-> >> >> >> >> >> > > What other rcu objects it is using during flush?
-> >> >> >> >> >> > 
-> >> >> >> >> >> > Look at code:
-> >> >> >> >> >> >  kernel/bpf/cpumap.c
-> >> >> >> >> >> >  kernel/bpf/devmap.c
-> >> >> >> >> >> > 
-> >> >> >> >> >> > The devmap is filled with RCU code and complicated take-down steps.  
-> >> >> >> >> >> > The devmap's elements are also RCU objects and the BPF xdp_prog is
-> >> >> >> >> >> > embedded in this object (struct bpf_dtab_netdev).  The call_rcu
-> >> >> >> >> >> > function is __dev_map_entry_free().
-> >> >> >> >> >> > 
-> >> >> >> >> >> > 
-> >> >> >> >> >> > > > > Perhaps it is a bug in i40e?  
-> >> >> >> >> >> > >
-> >> >> >> >> >> > > A quick look into ixgbe falls into the same bucket.
-> >> >> >> >> >> > > didn't look at other drivers though.
-> >> >> >> >> >> > 
-> >> >> >> >> >> > Intel driver are very much in copy-paste mode.
-> >> >> >> >> >> >  
-> >> >> >> >> >> > > > >
-> >> >> >> >> >> > > > > We are running in softirq in NAPI context, when xdp_do_flush_map() is
-> >> >> >> >> >> > > > > call, which I think means that this CPU will not go-through a RCU grace
-> >> >> >> >> >> > > > > period before we exit softirq, so in-practice it should be safe.  
-> >> >> >> >> >> > > > 
-> >> >> >> >> >> > > > Yup, this seems to be correct: rcu_softirq_qs() is only called between
-> >> >> >> >> >> > > > full invocations of the softirq handler, which for networking is
-> >> >> >> >> >> > > > net_rx_action(), and so translates into full NAPI poll cycles.  
-> >> >> >> >> >> > >
-> >> >> >> >> >> > > I don't know enough to comment on the rcu/softirq part, may be someone
-> >> >> >> >> >> > > can chime in.  There is also a recent napi_threaded_poll().
-> >> >> >> >> >> > 
-> >> >> >> >> >> > CC added Paul. (link to patch[1][2] for context)
-> >> >> >> >> >> Updated Paul's email address.
-> >> >> >> >> >> 
-> >> >> >> >> >> > 
-> >> >> >> >> >> > > If it is the case, then some of the existing rcu_read_lock() is unnecessary?
-> >> >> >> >> >> > 
-> >> >> >> >> >> > Well, in many cases, especially depending on how kernel is compiled,
-> >> >> >> >> >> > that is true.  But we want to keep these, as they also document the
-> >> >> >> >> >> > intend of the programmer.  And allow us to make the kernel even more
-> >> >> >> >> >> > preempt-able in the future.
-> >> >> >> >> >> > 
-> >> >> >> >> >> > > At least, it sounds incorrect to only make an exception here while keeping
-> >> >> >> >> >> > > other rcu_read_lock() as-is.
-> >> >> >> >> >> > 
-> >> >> >> >> >> > Let me be clear:  I think you have spotted a problem, and we need to
-> >> >> >> >> >> > add rcu_read_lock() at least around the invocation of
-> >> >> >> >> >> > bpf_prog_run_xdp() or before around if-statement that call
-> >> >> >> >> >> > dev_map_bpf_prog_run(). (Hangbin please do this in V8).
-> >> >> >> >> >> > 
-> >> >> >> >> >> > Thank you Martin for reviewing the code carefully enough to find this
-> >> >> >> >> >> > issue, that some drivers don't have a RCU-section around the full XDP
-> >> >> >> >> >> > code path in their NAPI-loop.
-> >> >> >> >> >> > 
-> >> >> >> >> >> > Question to Paul.  (I will attempt to describe in generic terms what
-> >> >> >> >> >> > happens, but ref real-function names).
-> >> >> >> >> >> > 
-> >> >> >> >> >> > We are running in softirq/NAPI context, the driver will call a
-> >> >> >> >> >> > bq_enqueue() function for every packet (if calling xdp_do_redirect) ,
-> >> >> >> >> >> > some driver wrap this with a rcu_read_lock/unlock() section (other have
-> >> >> >> >> >> > a large RCU-read section, that include the flush operation).
-> >> >> >> >> >> > 
-> >> >> >> >> >> > In the bq_enqueue() function we have a per_cpu_ptr (that store the
-> >> >> >> >> >> > xdp_frame packets) that will get flushed/send in the call
-> >> >> >> >> >> > xdp_do_flush() (that end-up calling bq_xmit_all()).  This flush will
-> >> >> >> >> >> > happen before we end our softirq/NAPI context.
-> >> >> >> >> >> > 
-> >> >> >> >> >> > The extension is that the per_cpu_ptr data structure (after this patch)
-> >> >> >> >> >> > store a pointer to an xdp_prog (which is a RCU object).  In the flush
-> >> >> >> >> >> > operation (which we will wrap with RCU-read section), we will use this
-> >> >> >> >> >> > xdp_prog pointer.   I can see that it is in-principle wrong to pass
-> >> >> >> >> >> > this-pointer between RCU-read sections, but I consider this safe as we
-> >> >> >> >> >> > are running under softirq/NAPI and the per_cpu_ptr is only valid in
-> >> >> >> >> >> > this short interval.
-> >> >> >> >> >> > 
-> >> >> >> >> >> > I claim a grace/quiescent RCU cannot happen between these two RCU-read
-> >> >> >> >> >> > sections, but I might be wrong? (especially in the future or for RT).
-> >> >> >> >> >
-> >> >> >> >> > If I am reading this correctly (ha!), a very high-level summary of the
-> >> >> >> >> > code in question is something like this:
-> >> >> >> >> >
-> >> >> >> >> > 	void foo(void)
-> >> >> >> >> > 	{
-> >> >> >> >> > 		local_bh_disable();
-> >> >> >> >> >
-> >> >> >> >> > 		rcu_read_lock();
-> >> >> >> >> > 		p = rcu_dereference(gp);
-> >> >> >> >> > 		do_something_with(p);
-> >> >> >> >> > 		rcu_read_unlock();
-> >> >> >> >> >
-> >> >> >> >> > 		do_something_else();
-> >> >> >> >> >
-> >> >> >> >> > 		rcu_read_lock();
-> >> >> >> >> > 		do_some_other_thing(p);
-> >> >> >> >> > 		rcu_read_unlock();
-> >> >> >> >> >
-> >> >> >> >> > 		local_bh_enable();
-> >> >> >> >> > 	}
-> >> >> >> >> >
-> >> >> >> >> > 	void bar(struct blat *new_gp)
-> >> >> >> >> > 	{
-> >> >> >> >> > 		struct blat *old_gp;
-> >> >> >> >> >
-> >> >> >> >> > 		spin_lock(my_lock);
-> >> >> >> >> > 		old_gp = rcu_dereference_protected(gp, lock_held(my_lock));
-> >> >> >> >> > 		rcu_assign_pointer(gp, new_gp);
-> >> >> >> >> > 		spin_unlock(my_lock);
-> >> >> >> >> > 		synchronize_rcu();
-> >> >> >> >> > 		kfree(old_gp);
-> >> >> >> >> > 	}
-> >> >> >> >> 
-> >> >> >> >> Yeah, something like that (the object is freed using call_rcu() - but I
-> >> >> >> >> think that's equivalent, right?). And the question is whether we need to
-> >> >> >> >> extend foo() so that is has one big rcu_read_lock() that covers the
-> >> >> >> >> whole lifetime of p.
-> >> >> >> >
-> >> >> >> > Yes, use of call_rcu() is an asynchronous version of synchronize_rcu().
-> >> >> >> > In fact, synchronize_rcu() is implemented in terms of call_rcu().  ;-)
-> >> >> >> 
-> >> >> >> Right, gotcha!
-> >> >> >> 
-> >> >> >> >> > I need to check up on -rt.
-> >> >> >> >> >
-> >> >> >> >> > But first... In recent mainline kernels, the local_bh_disable() region
-> >> >> >> >> > will look like one big RCU read-side critical section.  But don't try
-> >> >> >> >> > this prior to v4.20!!!  In v4.19 and earlier, you would need to use
-> >> >> >> >> > both synchronize_rcu() and synchronize_rcu_bh() to make this work, or,
-> >> >> >> >> > for less latency, synchronize_rcu_mult(call_rcu, call_rcu_bh).
-> >> >> >> >> 
-> >> >> >> >> OK. Variants of this code has been around since before then, but I
-> >> >> >> >> honestly have no idea what it looked like back then exactly...
-> >> >> >> >
-> >> >> >> > I know that feeling...
-> >> >> >> >
-> >> >> >> >> > Except that in that case, why not just drop the inner rcu_read_unlock()
-> >> >> >> >> > and rcu_read_lock() pair?  Awkward function boundaries or some such?
-> >> >> >> >> 
-> >> >> >> >> Well if we can just treat such a local_bh_disable()/enable() pair as the
-> >> >> >> >> equivalent of rcu_read_lock()/unlock() then I suppose we could just get
-> >> >> >> >> rid of the inner ones. What about tools like lockdep; do they understand
-> >> >> >> >> this, or are we likely to get complaints if we remove it?
-> >> >> >> >
-> >> >> >> > If you just got rid of the first rcu_read_unlock() and the second
-> >> >> >> > rcu_read_lock() in the code above, lockdep will understand.
-> >> >> >> 
-> >> >> >> Right, but doing so entails going through all the drivers, which is what
-> >> >> >> we're trying to avoid :)
-> >> >> >
-> >> >> > I was afraid of that...  ;-)
-> >> >> >
-> >> >> >> > However, if you instead get rid of -all- of the rcu_read_lock() and
-> >> >> >> > rcu_read_unlock() invocations in the code above, you would need to let
-> >> >> >> > lockdep know by adding rcu_read_lock_bh_held().  So instead of this:
-> >> >> >> >
-> >> >> >> > 	p = rcu_dereference(gp);
-> >> >> >> >
-> >> >> >> > You would do this:
-> >> >> >> >
-> >> >> >> > 	p = rcu_dereference_check(gp, rcu_read_lock_bh_held());
-> >> >> >> >
-> >> >> >> > This would be needed for mainline, regardless of -rt.
-> >> >> >> 
-> >> >> >> OK. And as far as I can tell this is harmless for code paths that call
-> >> >> >> the same function but from a regular rcu_read_lock()-protected section
-> >> >> >> instead from a bh-disabled section, right?
-> >> >> >
-> >> >> > That is correct.  That rcu_dereference_check() invocation will make
-> >> >> > lockdep be OK with rcu_read_lock() or with softirq being disabled.
-> >> >> > Or both, for that matter.
-> >> >> 
-> >> >> OK, great, thank you for confirming my understanding!
-> >> >> 
-> >> >> >> What happens, BTW, if we *don't* get rid of all the existing
-> >> >> >> rcu_read_lock() sections? Going back to your foo() example above, what
-> >> >> >> we're discussing is whether to add that second rcu_read_lock() around
-> >> >> >> do_some_other_thing(p). I.e., the first one around the rcu_dereference()
-> >> >> >> is already there (in the particular driver we're discussing), and the
-> >> >> >> local_bh_disable/enable() pair is already there. AFAICT from our
-> >> >> >> discussion, there really is not much point in adding that second
-> >> >> >> rcu_read_lock/unlock(), is there?
-> >> >> >
-> >> >> > From an algorithmic point of view, the second rcu_read_lock()
-> >> >> > and rcu_read_unlock() are redundant.  Of course, there are also
-> >> >> > software-engineering considerations, including copy-pasta issues.
-> >> >> >
-> >> >> >> And because that first rcu_read_lock() around the rcu_dereference() is
-> >> >> >> already there, lockdep is not likely to complain either, so we're
-> >> >> >> basically fine? Except that the code is somewhat confusing as-is, of
-> >> >> >> course; i.e., we should probably fix it but it's not terribly urgent. Or?
-> >> >> >
-> >> >> > I am concerned about copy-pasta-induced bugs.  Someone looks just at
-> >> >> > the code, fails to note the fact that softirq is disabled throughout,
-> >> >> > and decides that leaking a pointer from one RCU read-side critical
-> >> >> > section to a later one is just fine.  :-/
-> >> >> 
-> >> >> Yup, totally agreed that we need to fix this for the sake of the humans
-> >> >> reading the code; just wanted to make sure my understanding was correct
-> >> >> that we don't strictly need to do anything as far as the machines
-> >> >> executing it are concerned :)
-> >> >> 
-> >> >> >> Hmm, looking at it now, it seems not all the lookup code is actually
-> >> >> >> doing rcu_dereference() at all, but rather just a plain READ_ONCE() with
-> >> >> >> a comment above it saying that RCU ensures objects won't disappear[0];
-> >> >> >> so I suppose we're at least safe from lockdep in that sense :P - but we
-> >> >> >> should definitely clean this up.
-> >> >> >> 
-> >> >> >> [0] Exhibit A: https://elixir.bootlin.com/linux/latest/source/kernel/bpf/devmap.c#L391
-> >> >> >
-> >> >> > That use of READ_ONCE() will definitely avoid lockdep complaints,
-> >> >> > including those complaints that point out bugs.  It also might get you
-> >> >> > sparse complaints if the RCU-protected pointer is marked with __rcu.
-> >> >> 
-> >> >> It's not; it's the netdev_map member of this struct:
-> >> >> 
-> >> >> struct bpf_dtab {
-> >> >> 	struct bpf_map map;
-> >> >> 	struct bpf_dtab_netdev **netdev_map; /* DEVMAP type only */
-> >> >> 	struct list_head list;
-> >> >> 
-> >> >> 	/* these are only used for DEVMAP_HASH type maps */
-> >> >> 	struct hlist_head *dev_index_head;
-> >> >> 	spinlock_t index_lock;
-> >> >> 	unsigned int items;
-> >> >> 	u32 n_buckets;
-> >> >> };
-> >> >> 
-> >> >> Will adding __rcu to such a dynamic array member do the right thing when
-> >> >> paired with rcu_dereference() on array members (i.e., in place of the
-> >> >> READ_ONCE in the code linked above)?
-> >> >
-> >> > The only thing __rcu will do is provide information to the sparse static
-> >> > analysis tool.  Which will then gripe at you for applying READ_ONCE()
-> >> > to a __rcu pointer.  But it is already griping at you for applying
-> >> > rcu_dereference() to something not marked __rcu, so...  ;-)
-> >> 
-> >> Right, hence the need for a cleanup ;)
-> >> 
-> >> My question was more if it understood arrays, though. I.e., that
-> >> 'netdev_map' is an array of RCU pointers, not an RCU pointer to an
-> >> array... Or am I maybe thinking that tool is way smarter than it is, and
-> >> it just complains for any access to that field that doesn't use
-> >> rcu_dereference()?
-> >
-> > I believe that sparse will know about the pointers being __rcu, but
-> > not the array.  Unless you mark both levels.
-> 
-> Hi Paul
-> 
-> One more question, since I started adding the annotations: We are
-> currently swapping out the pointers using xchg():
-> https://elixir.bootlin.com/linux/latest/source/kernel/bpf/devmap.c#L555
-> 
-> and even cmpxchg():
-> https://elixir.bootlin.com/linux/latest/source/kernel/bpf/devmap.c#L831
-> 
-> Sparse complains about these if I add the __rcu annotation to the
-> definition (which otherwise works just fine with the double-pointer,
-> BTW). Is there a way to fix that? Some kind of rcu_ macro version of the
-> atomic swaps or something? Or do we just keep the regular xchg() and
-> ignore those particular sparse warnings?
 
-Sounds like I need to supply a unrcu_pointer() macro or some such.
-This would operate something like the current open-coded casts
-in __rcu_dereference_protected().
 
-Would something like that work for you?
+On 4/21/21 5:23 AM, Brendan Jackman wrote:
+> Hi,
+> 
+> Recently when our internal Clang build was updated to 0e92cbd6a652 we started
+> hitting a verifier issue that I can't see an easy fix for. I've narrowed it down
+> to a minimal reproducer - this email is a patch to add that repro as a prog
+> test (./test_progs -t example).
+> 
+> Here's the BPF code I get from the attached source:
+> 
+> 0000000000000000 <exec>:
+> ; int BPF_PROG(exec, struct linux_binprm *bprm) {
+>         0:       79 11 00 00 00 00 00 00 r1 = *(u64 *)(r1 + 0)
+>         1:       7b 1a e8 ff 00 00 00 00 *(u64 *)(r10 - 24) = r1
+> ;   uint64_t args_size = bprm->argc & 0xFFFFFFF;
+>         2:       61 17 58 00 00 00 00 00 r7 = *(u32 *)(r1 + 88)
+>         3:       b4 01 00 00 00 00 00 00 w1 = 0
+> ;   int map_key = 0;
+>         4:       63 1a fc ff 00 00 00 00 *(u32 *)(r10 - 4) = r1
+>         5:       bf a2 00 00 00 00 00 00 r2 = r10
+>         6:       07 02 00 00 fc ff ff ff r2 += -4
+> ;   void *buf = bpf_map_lookup_elem(&buf_map, &map_key);
+>         7:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+>         9:       85 00 00 00 01 00 00 00 call 1
+>        10:       7b 0a f0 ff 00 00 00 00 *(u64 *)(r10 - 16) = r0
+>        11:       57 07 00 00 ff ff ff 0f r7 &= 268435455
+>        12:       bf 76 00 00 00 00 00 00 r6 = r7
+> ;   if (!buf)
+>        13:       16 07 12 00 00 00 00 00 if w7 == 0 goto +18 <LBB0_7>
+>        14:       79 a1 f0 ff 00 00 00 00 r1 = *(u64 *)(r10 - 16)
+>        15:       15 01 10 00 00 00 00 00 if r1 == 0 goto +16 <LBB0_7>
+>        16:       b4 09 00 00 00 00 00 00 w9 = 0
+>        17:       b7 01 00 00 00 10 00 00 r1 = 4096
+>        18:       bf 68 00 00 00 00 00 00 r8 = r6
+>        19:       05 00 0e 00 00 00 00 00 goto +14 <LBB0_3>
+> 
+> 00000000000000a0 <LBB0_5>:
+> ;     void *src = (void *)(char *)bprm->p + offset;
+>        20:       79 a1 e8 ff 00 00 00 00 r1 = *(u64 *)(r10 - 24)
+>        21:       79 13 18 00 00 00 00 00 r3 = *(u64 *)(r1 + 24)
+> ;     uint64_t read_size = args_size - offset;
+>        22:       0f 73 00 00 00 00 00 00 r3 += r7
+>        23:       07 03 00 00 00 f0 ff ff r3 += -4096
+> ;     (void) bpf_probe_read_user(buf, read_size, src);
+>        24:       79 a1 f0 ff 00 00 00 00 r1 = *(u64 *)(r10 - 16)
+>        25:       85 00 00 00 70 00 00 00 call 112
+> ;   for (int i = 0; i < 512 && offset < args_size; i++) {
+>        26:       26 09 05 00 fe 01 00 00 if w9 > 510 goto +5 <LBB0_7>
+>        27:       07 08 00 00 00 f0 ff ff r8 += -4096
+>        28:       bf 71 00 00 00 00 00 00 r1 = r7
+>        29:       07 01 00 00 00 10 00 00 r1 += 4096
+>        30:       04 09 00 00 01 00 00 00 w9 += 1
+> ;   for (int i = 0; i < 512 && offset < args_size; i++) {
+>        31:       ad 67 02 00 00 00 00 00 if r7 < r6 goto +2 <LBB0_3>
+> 
+> 0000000000000100 <LBB0_7>:
+> ; int BPF_PROG(exec, struct linux_binprm *bprm) {
+>        32:       b4 00 00 00 00 00 00 00 w0 = 0
+>        33:       95 00 00 00 00 00 00 00 exit
+> 
+> 0000000000000110 <LBB0_3>:
+>        34:       bf 17 00 00 00 00 00 00 r7 = r1
+> ;     (void) bpf_probe_read_user(buf, read_size, src);
+>        35:       bc 82 00 00 00 00 00 00 w2 = w8
+>        36:       a5 08 ef ff 00 10 00 00 if r8 < 4096 goto -17 <LBB0_5>
+>        37:       b4 02 00 00 00 10 00 00 w2 = 4096
+>        38:       05 00 ed ff 00 00 00 00 goto -19 <LBB0_5>
+> 
+> 
+> The full log I get is at
+> https://gist.githubusercontent.com/bjackman/2928c4ff4cc89545f3993bddd9d5edb2/raw/feda6d7c165d24be3ea72c3cf7045c50246abd83/gistfile1.txt ,
+> but basically the verifier runs through the loop a large number of times, going
+> down the true path of the `if (read_size > CHUNK_LEN)` every time. Then
+> eventually it takes the false path.
+> 
+> In the disassembly this is basically instructions 35-37 - pseudocode:
+>    w2 = w8
+>    if (r8 < 4096) {
+>      w2 = 4096
+>    }
+> 
+> w2 can't exceed 4096 but the verifier doesn't seem to "backpropagate" those
+> bounds from r8 (note the umax_value for R8 goes to 4095 after the branch from 36
+> to 20, but R2's umax_value is still 266342399)
+> 
+> from 31 to 34: R0_w=inv(id=0) R1_w=inv2097152 R6=inv(id=2,umin_value=2093057,umax_value=268435455,var_off=(0x0; 0xfffffff)) R7_w=inv2093056 R8_w=inv(id=0,umax_value=266342399,var_off=(0x0; 0xfffffff)) R9_w=invP511 R10=fp0 fp-8=mmmm???? fp-16=map_value fp-24=ptr_
+> ; int BPF_PROG(exec, struct linux_binprm *bprm) {
+> 34: (bf) r7 = r1
+> ; (void) bpf_probe_read_user(buf, read_size, src);
+> 35: (bc) w2 = w8
+> 36: (a5) if r8 < 0x1000 goto pc-17
+> 
+> from 36 to 20: R0_w=inv(id=0) R1_w=inv2097152 R2_w=inv(id=0,umax_value=266342399,var_off=(0x0; 0xfffffff)) R6=inv(id=2,umin_value=2093057,umax_value=268435455,var_off=(0x0; 0xfffffff)) R7_w=inv2097152 R8_w=inv(id=0,umax_value=4095,var_off=(0x0; 0xfff)) R9_w=invP511 R10=fp0 fp-8=mmmm???? fp-16=map_value fp-24=ptr_
+> ; void *src = (void *)(char *)bprm->p + offset;
+> 20: (79) r1 = *(u64 *)(r10 -24)
+> 21: (79) r3 = *(u64 *)(r1 +24)
+> ; uint64_t read_size = args_size - offset;
+> 22: (0f) r3 += r7
+> 23: (07) r3 += -4096
+> ; (void) bpf_probe_read_user(buf, read_size, src);
+> 24: (79) r1 = *(u64 *)(r10 -16)
+> 25: (85) call bpf_probe_read_user#112
+>   R0_w=inv(id=0) R1_w=map_value(id=0,off=0,ks=4,vs=4096,imm=0) R2_w=inv(id=0,umax_value=266342399,var_off=(0x0; 0xfffffff)) R3_w=inv(id=0) R6=inv(id=2,umin_value=2093057,umax_value=268435455,var_off=(0x0; 0xfffffff)) R7_w=inv2097152 R8_w=inv(id=0,umax_value=4095,var_off=(0x0; 0xfff)) R9_w=invP511 R10=fp0 fp-8=mmmm???? fp-16=map_value fp-24=ptr_
+>   R0_w=inv(id=0) R1_w=map_value(id=0,off=0,ks=4,vs=4096,imm=0) R2_w=inv(id=0,umax_value=266342399,var_off=(0x0; 0xfffffff)) R3_w=inv(id=0) R6=inv(id=2,umin_value=2093057,umax_value=268435455,var_off=(0x0; 0xfffffff)) R7_w=inv2097152 R8_w=inv(id=0,umax_value=4095,var_off=(0x0; 0xfff)) R9_w=invP511 R10=fp0 fp-8=mmmm???? fp-16=map_value fp-24=ptr_
+> invalid access to map value, value_size=4096 off=0 size=266342399
+> R1 min value is outside of the allowed memory range
+> processed 9239 insns (limit 1000000) max_states_per_insn 4 total_states 133 peak_states 133 mark_read 2
 
-							Thanx, Paul
+Thanks, Brendan. Looks at least the verifier failure is triggered
+by recent clang changes. I will take a look whether we could
+improve verifier for such a case and whether we could improve
+clang to avoid generate such codes the verifier doesn't like.
+Will get back to you once I had concrete analysis.
+
+> 
+> This seems like it must be a common pitfall, any idea what we can do to fix it
+> and avoid it in future? Am I misunderstanding the issue?
+> 
+> Cheers,
+> Brendan
+> 
+[...]
