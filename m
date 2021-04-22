@@ -2,57 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51CB368954
-	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 01:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C54D36895F
+	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 01:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239849AbhDVX3c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Apr 2021 19:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42596 "EHLO
+        id S236763AbhDVXdc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Apr 2021 19:33:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239773AbhDVX3b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Apr 2021 19:29:31 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08F4C061574;
-        Thu, 22 Apr 2021 16:28:54 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 82so53549173yby.7;
-        Thu, 22 Apr 2021 16:28:54 -0700 (PDT)
+        with ESMTP id S230368AbhDVXdc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Apr 2021 19:33:32 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B664C061574;
+        Thu, 22 Apr 2021 16:32:57 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id p202so9884651ybg.8;
+        Thu, 22 Apr 2021 16:32:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MsAUP8hfMm5Flo9URYi6EnEGXp6KOww0sDyUOef+0Rs=;
-        b=jeE/a+TMQ+mamP5CRpcdvvoi1xb/6fwMugETHobjJuSmYRG2GCKAa7/nG5YyV7p1xK
-         op2LBwpiX5ysJZB2I21EW4JgO8Ti3uNDXXgOHTyeAHyiIcRwFRFeDGhD24iX5KK/yGPt
-         EU65cgVRYNosjXvsc0g9GfeiPh6l11fXXLuHxqtl1w/DTPlpVnx9arJIzbCaw9ToBBzJ
-         wDcL8Sb4rWHG2WK6g23GaG+Udt2KEinWQJwXgkwsp/UI6lDzXjpGiuHuAm2HdduUSpdt
-         e94WVsKAD8QEmhlTPg9nQlDSLYTQbg9thrakcBwMFp9FDg13WdtOahRUov0fg2t9xOtN
-         zF8A==
+        bh=TUYhQZb4DbUxjuc8B4+AAWj+X4vv2BZE0tiPNRy591U=;
+        b=RQNNNzmFPnewtoP/MY+sGn8LPLJW0ZjvQ+uwUtfha6l316pGtPFx9RX77uwmgoYy/H
+         pMeCmgjX9lB92suKEZymtSobdu6LBm5y3LTGMi6cWGucGRTAVN9FQACgEEQsT+0kXYCc
+         N7PGfym4HJJnmVzxdFG3FAW+XPmY6XIjGTjHpFC3Ebe8rBpATt2aUIWqMFdgfNapen6F
+         EXWqcUisu0GxfV7Ho+dRSU/tKbyXkRmTEfrueuFtFOxAuwoQEvAuryiqPxml5Kjdi3D5
+         j4VxRDPhFH402qoyOBMhA8plpHsfbSSCrVAAFYPK3ERMvP753HhqSNvVCgMl6EP+3cgo
+         rc8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MsAUP8hfMm5Flo9URYi6EnEGXp6KOww0sDyUOef+0Rs=;
-        b=rKZgklsLhhCKZ1F4v8X4nx8beX/4RauSbR1Yd4x0Xrjw+9Z1RN7EVfY+HqbiOSw57B
-         5cwIuSve/rMSnpVS7IIuoWfH2UhHOPNnrORQrevs2XtMzH77gRGQT5M9TB9MgEBa5RKp
-         8Al5+3JNO5lXFDyLDtztj94qsd7V2jrXeFGtk+k+EGdGp4JTDkdDb7KsTDa51w3hBWz7
-         s+QMNCYviSJvrcMbqqVfi2o9ga7OvJdchhDxUfBDTqrJnV432n3i2mjjVtl1sJCTw+/6
-         ES2+JqWAXNpF61NoEn04d/XcEORxuZdvYxJ0hjjMGNkkOc43mxc29h3uyvxdm8/FqjS6
-         uCug==
-X-Gm-Message-State: AOAM532oJ7+zQft9bOVAVL9TKgtf3bBFJ8xsnot2V2mScoacnnEK/K+l
-        MjvnP0NP22pMELY5wJt5ecJWO/xjQ3/xog9pMno=
-X-Google-Smtp-Source: ABdhPJxt25Bl9NBktC7VIlxZQq/mpYZVdkUs1UC0pKAlHBpkIJTJp9sswqn/HBC6qwjQddYpJcFpvymbzmd8JKxLUO4=
-X-Received: by 2002:a05:6902:1144:: with SMTP id p4mr1590838ybu.510.1619134134039;
- Thu, 22 Apr 2021 16:28:54 -0700 (PDT)
+        bh=TUYhQZb4DbUxjuc8B4+AAWj+X4vv2BZE0tiPNRy591U=;
+        b=nJtx0fcrXjHrkltgZ/60wKE1/EQvDeJczfY1LTlL01QxNad2BE+8FSaMoRyxmUbm3S
+         MPSxbBcPvJQYtuFnbI3yuN6zje/NDaFSD1RM0OVfDpdrhZ7Tu31LCtAfxl0HmIWRi6by
+         4EI1sauH1x71sKks9VFCQwSyG8vSuieoVjak7RePbIHwb4vib55E4MB+lCGcIkuSwGo6
+         XhXnNybSVL8TJj2POdjt146VJzuI3k1yK2tqX6WEuvdBMN4HFyLsRoHERsKp6ItyEYFP
+         xxsA3PhJAxFfZu3F01bQiSbFUXyArIv/DigtH4EXvfnxAPMAZh2BSX5BXzGFn/Dv7pSe
+         wTyg==
+X-Gm-Message-State: AOAM533c7Dw91mnIghXH5FhcrwHBDl0k9/Kwn4R9Yg9odDWY2QicFXVu
+        gR1udVS8rNCdc4LVSM6XW5Ec/Fy4zZtjk+KrOUQ=
+X-Google-Smtp-Source: ABdhPJxQS8Zc8BSSSBUZFysgXa8+3Hmo90hhXn+7tZwrU53yUWNQPRl7KeBGUBiTSBmcNKHTWoRx4PlxXfbKkvD2lu0=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr1673942ybo.230.1619134376324;
+ Thu, 22 Apr 2021 16:32:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210416202404.3443623-1-andrii@kernel.org> <20210416202404.3443623-5-andrii@kernel.org>
- <8cde2756-e62f-7103-05b1-7d9a9d97442a@fb.com> <CAEf4BzYFHp8vt6rwgcZG5Lp-DQU0xrVq8QXvDqOyVOtx0gosnw@mail.gmail.com>
- <65869842-b1a0-5e95-9ca2-42aaf86644a8@fb.com>
-In-Reply-To: <65869842-b1a0-5e95-9ca2-42aaf86644a8@fb.com>
+References: <20210416202404.3443623-1-andrii@kernel.org> <20210416202404.3443623-13-andrii@kernel.org>
+ <d85c8d5a-7eaf-1d6b-afff-7fddd2083982@fb.com>
+In-Reply-To: <d85c8d5a-7eaf-1d6b-afff-7fddd2083982@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 22 Apr 2021 16:28:42 -0700
-Message-ID: <CAEf4BzZhgqDsBQ+Ytqmh9v7HFoHB1o9kWp1dgFay9d6kEyrMJA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 04/17] libbpf: mark BPF subprogs with hidden
- visibility as static for BPF verifier
+Date:   Thu, 22 Apr 2021 16:32:45 -0700
+Message-ID: <CAEf4BzbROxCu83uAc3EHCfG8dd71Gbo_w63vE+keybbTuorOPg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 12/17] libbpf: support extern resolution for
+ BTF-defined maps in .maps section
 To:     Yonghong Song <yhs@fb.com>
 Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
@@ -64,119 +63,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 4:00 PM Yonghong Song <yhs@fb.com> wrote:
+On Thu, Apr 22, 2021 at 3:56 PM Yonghong Song <yhs@fb.com> wrote:
 >
 >
 >
-> On 4/22/21 11:09 AM, Andrii Nakryiko wrote:
-> > On Wed, Apr 21, 2021 at 10:43 PM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 4/16/21 1:23 PM, Andrii Nakryiko wrote:
-> >>> Define __hidden helper macro in bpf_helpers.h, which is a short-hand for
-> >>> __attribute__((visibility("hidden"))). Add libbpf support to mark BPF
-> >>> subprograms marked with __hidden as static in BTF information to enforce BPF
-> >>> verifier's static function validation algorithm, which takes more information
-> >>> (caller's context) into account during a subprogram validation.
-> >>>
-> >>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> >>> ---
-> >>>    tools/lib/bpf/bpf_helpers.h     |  8 ++++++
-> >>>    tools/lib/bpf/btf.c             |  5 ----
-> >>>    tools/lib/bpf/libbpf.c          | 45 ++++++++++++++++++++++++++++++++-
-> >>>    tools/lib/bpf/libbpf_internal.h |  6 +++++
-> >>>    4 files changed, 58 insertions(+), 6 deletions(-)
-> >>>
-> >>> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> >>> index 75c7581b304c..9720dc0b4605 100644
-> >>> --- a/tools/lib/bpf/bpf_helpers.h
-> >>> +++ b/tools/lib/bpf/bpf_helpers.h
-> >>> @@ -47,6 +47,14 @@
-> >>>    #define __weak __attribute__((weak))
-> >>>    #endif
-> >>>
-> >>> +/*
-> >>> + * Use __hidden attribute to mark a non-static BPF subprogram effectively
-> >>> + * static for BPF verifier's verification algorithm purposes, allowing more
-> >>> + * extensive and permissive BPF verification process, taking into account
-> >>> + * subprogram's caller context.
-> >>> + */
-> >>> +#define __hidden __attribute__((visibility("hidden")))
-> >>
-> >> To prevent potential external __hidden macro definition conflict, how
-> >> about
-> >>
-> >> #ifdef __hidden
-> >> #undef __hidden
-> >> #define __hidden __attribute__((visibility("hidden")))
-> >> #endif
-> >>
+> On 4/16/21 1:23 PM, Andrii Nakryiko wrote:
+> > Add extra logic to handle map externs (only BTF-defined maps are supported for
+> > linking). Re-use the map parsing logic used during bpf_object__open(). Map
+> > externs are currently restricted to always match complete map definition. So
+> > all the specified attributes will be compared (down to pining, map_flags,
+> > numa_node, etc). In the future this restriction might be relaxed with no
+> > backwards compatibility issues. If any attribute is mismatched between extern
+> > and actual map definition, linker will report an error, pointing out which one
+> > mismatches.
 > >
-> > We do force #undef only with __always_inline because of the bad
-> > definition in linux/stddef.h And we check #ifndef for __weak, because
-> > __weak is defined in kernel headers. This is not really the case for
-> > __hidden, the only definition is in
-> > tools/lib/traceevent/event-parse-local.h, which I don't think we
-> > should worry about in BPF context. So I wanted to keep it simple and
-> > fix only if that really causes some real conflicts.
+> > The original intent was to allow for extern to specify attributes that matters
+> > (to user) to enforce. E.g., if you specify just key information and omit
+> > value, then any value fits. Similarly, it should have been possible to enforce
+> > map_flags, pinning, and any other possible map attribute. Unfortunately, that
+> > means that multiple externs can be only partially overlapping with each other,
+> > which means linker would need to combine their type definitions to end up with
+> > the most restrictive and fullest map definition. This requires an extra amount
+> > of BTF manipulation which at this time was deemed unnecessary and would
+> > require further extending generic BTF writer APIs. So that is left for future
+> > follow ups, if there will be demand for that. But the idea seems intresting
+> > and useful, so I want to document it here.
 > >
-> > And keep in mind that in BPF code bpf_helpers.h is usually included as
-> > one of the first few headers anyways.
+> > Weak definitions are also supported, but are pretty strict as well, just
+> > like externs: all weak map definitions have to match exactly. In the follow up
+> > patches this most probably will be relaxed, with __weak map definitions being
+> > able to differ between each other (with non-weak definition always winning, of
+> > course).
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 >
-> That is fine. Conflict of __hidden is a low risk and we can deal with it
-> later if needed.
->
-> >
-> >
-> >>> +
-> >>>    /* When utilizing vmlinux.h with BPF CO-RE, user BPF programs can't include
-> >>>     * any system-level headers (such as stddef.h, linux/version.h, etc), and
-> >>>     * commonly-used macros like NULL and KERNEL_VERSION aren't available through
-> >
-> > [...]
-> >
-> >>> @@ -698,6 +700,15 @@ bpf_object__add_programs(struct bpf_object *obj, Elf_Data *sec_data,
-> >>>                if (err)
-> >>>                        return err;
-> >>>
-> >>> +             /* if function is a global/weak symbol, but has hidden
-> >>> +              * visibility (or any non-default one), mark its BTF FUNC as
-> >>> +              * static to enable more permissive BPF verification mode with
-> >>> +              * more outside context available to BPF verifier
-> >>> +              */
-> >>> +             if (GELF_ST_BIND(sym.st_info) != STB_LOCAL
-> >>> +                 && GELF_ST_VISIBILITY(sym.st_other) != STV_DEFAULT)
-> >>
-> >> Maybe we should check GELF_ST_VISIBILITY(sym.st_other) == STV_HIDDEN
-> >> instead?
-> >
-> > It felt like only STV_DEFAULT should be "exported", semantically
-> > speaking. Everything else would be treated as if it was static, except
-> > that C rules require that function has to be global. Do you think
-> > there is some danger to do it this way?
-> >
-> > Currently static linker doesn't do anything special for STV_INTERNAL
-> > and STV_PROTECTED, so we could just disable those. Do you prefer that?
->
-> Yes, let us just deal with STV_DEFAULT and STV_HIDDEN. We already
-> specialized STV_HIDDEN, so we should not treat STV_INTERNAL/PROTECTED
-> as what they mean in ELF standard, so let us disable them for now.
+> I think strict enforcement of extern/global map definitions is good.
+> If library want people will use its maps, it may put the map definition
+> into one of its headers and application can include and have
+> exact the same definition.
 
-Yep, will do
+In a lot of cases yes. But imagine I, as BPF library creator, started
+out with just a typical hashmap definition, and then decided to add
+pinning and maybe map_flags BPF_F_NO_PREALLOC. Why would that change
+necessitate extern definition? But as you said, library provider can
+(and should) provide extern definition that will be kept 100% in sync,
+so this is not something that I urgently want to change.
 
 >
-> >
-> > I just felt that there is no risk of regression if we do this for
-> > non-STV_DEFAULT generically.
-> >
-> >
-> >>
-> >>> +                     prog->mark_btf_static = true;
-> >>> +
-> >>>                nr_progs++;
-> >>>                obj->nr_programs = nr_progs;
-> >>>
-> >
-> > [...]
-> >
+> Acked-by: Yonghong Song <yhs@fb.com>
