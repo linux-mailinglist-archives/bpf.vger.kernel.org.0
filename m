@@ -2,131 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6DB367AB5
-	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 09:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 047B3367AC0
+	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 09:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhDVHNi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Apr 2021 03:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52556 "EHLO
+        id S235030AbhDVHPr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Apr 2021 03:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbhDVHNh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Apr 2021 03:13:37 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38610C06174A
-        for <bpf@vger.kernel.org>; Thu, 22 Apr 2021 00:13:03 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id w3so67243224ejc.4
-        for <bpf@vger.kernel.org>; Thu, 22 Apr 2021 00:13:03 -0700 (PDT)
+        with ESMTP id S229655AbhDVHPq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Apr 2021 03:15:46 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B88EC06174A;
+        Thu, 22 Apr 2021 00:15:12 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id p2so16740822pgh.4;
+        Thu, 22 Apr 2021 00:15:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Vdeyx2EiZ4VVtfgSkJvRIr5ICOqaF5aOZ8liQEySarM=;
-        b=YPV3CqMEfMbRawW5v7Mh0/kDQEEeiRidIc6BFfEJ7Cy2RPnOBKpjJ3meCyg3B3dj7Y
-         T23HcXybLv+3EUDMj25ODMxPRP8kuUreNtyZ4Ci8dIhpAMxALrSBE8jJrGWzTXmhxYZb
-         Ua7sq7Z+p4ds57CAyxWZL0TtBlqKP20dnp5kg=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=08Beg/X2DkMw4LbTKV9DGPwWfP+ZIvVZ0dj7l+E72oA=;
+        b=UoKZx+pJyvG7CInq3T4GJnngnw8xESG9QlEpGhdwnoNUAGLFqpVqVigfw7S2mt+Cyq
+         2rbxVlXptoBzYP42V1cCjjO+M3UwHWu17zmUw9r34C4qCaNNQVD3GRd3Dc3+1NWX4VQb
+         Y/vw7b9C9QFiECCSRwrM8qHuK3vsbhY72EZJGVRLTcdzqQgVMp1S/XiKSnrqskFhPWt+
+         8vJisN3VGc9KeousnbXV2KsROclnEp/51OthsnNaaqyzxi5XK5sNTxiSA5jpJZJCqeTE
+         zaSAKGV1wfU8FY4/NAxQm6risXk1YwU52ZptXGJYcheAmEKIVDI4z8QiKxaL6xKREKjG
+         RZjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Vdeyx2EiZ4VVtfgSkJvRIr5ICOqaF5aOZ8liQEySarM=;
-        b=ikmF9atv1xrmdTwjqw8qoDVMtHuofwOfyPFnJPHJNaSX7RDFJKiwEp0b2Hd5Dl6fXl
-         MGmXJgDJnSFXykanstjJw7x1NwMJbhP3YsHEh6vk8DUnwMMEZg6l4eiyJjRMV2DYLrPo
-         3oJaV5UoCYbnm38FJdNWHAI2tmyM9CRj2OeYPyIEU3649doLdXu3a48Fmglgmbp8aelj
-         l+y8sRVlKU2Yi6+TWEkymw5/kE6YfsCUJGEF8LW7gRnI8CewuuChEurOEoMISUTq/nHB
-         qcm2FyaYLJcOVQY+VGbOUqqah7TAXGHFxCC0ixmvx1M5uTt4Ht3Ssu6qeZFOeYJTwg9q
-         okrA==
-X-Gm-Message-State: AOAM530CVUzdsGA/d4q9BgAcZwUJUd0NmBl+bogIIhoARQijuUS6YW90
-        qd9bWWojdrzve0lffbGjM89sXw==
-X-Google-Smtp-Source: ABdhPJzmo155Rt45+yFK2rxmK+jof0hG9KwOE3VJP8U8oPglLPeWzFmQpm5PJGsvjv1Y0WrrLAtA/g==
-X-Received: by 2002:a17:906:9990:: with SMTP id af16mr1776543ejc.195.1619075581971;
-        Thu, 22 Apr 2021 00:13:01 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id ca1sm1248712edb.76.2021.04.22.00.13.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Apr 2021 00:13:01 -0700 (PDT)
-Subject: Re: [PATCH] bpf: remove pointless code from bpf_do_trace_printk()
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Alexei Starovoitov <ast@kernel.org>
-References: <20210421190736.1538217-1-linux@rasmusvillemoes.dk>
- <CAEf4Bza6-Unvr7QmcbvVtNDPc4BNzf8zMaU4XardNqB_GnGDHw@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <236995f6-30ee-8047-624c-08d0a1552dc1@rasmusvillemoes.dk>
-Date:   Thu, 22 Apr 2021 09:13:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        bh=08Beg/X2DkMw4LbTKV9DGPwWfP+ZIvVZ0dj7l+E72oA=;
+        b=OcllMrxfxBK1gkSBP5vfydx7UD/Mk1+waob+Cf3NRwGCVVzdT48N3015m4NpMitt/m
+         aPD+v/YgNN6i/aMCgGBSDn38bgJ0YJBh1vOssQLneTIA2g1Y1qAe6UrWsfqrDQeWmIQM
+         27QCmmLKw4Fq+5ZxrwyXZ82Og7tOgtFotrlJ/vqXkk5wbdy+6sK9Y9dZemNvw64H4Gpz
+         oQhZtjWgutmSjLwI7TzNzGFuC97G6QbsHsyGH5xMFoPWRyLUimY3aFTzMMU0BU/Q0y/r
+         sCSG0xgAposrJ8uJxRj+yd/ihWeYGzJQk/4zxJgcTAnawLrzNKKHgIQqoUcmfYx5VPc7
+         eggA==
+X-Gm-Message-State: AOAM531kbAKzF+mXk/7cIDGbIOepFVwzQKFTKlDy+QeKzT89KVYrmskZ
+        5DluVXjzW7t2HazXhMVrlOajH397CGVLlw==
+X-Google-Smtp-Source: ABdhPJxchR3BUy9g7TRPj11sGHjyeuSm/IiPy0p1lRnfpjR7S1B8xx6ZRm8xDme877oFPhq37Okl4g==
+X-Received: by 2002:a65:4382:: with SMTP id m2mr2160268pgp.354.1619075711784;
+        Thu, 22 Apr 2021 00:15:11 -0700 (PDT)
+Received: from Leo-laptop-t470s.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id u21sm1181816pfm.89.2021.04.22.00.15.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 00:15:11 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv9 bpf-next 0/4] xdp: extend xdp_redirect_map with broadcast support
+Date:   Thu, 22 Apr 2021 15:14:50 +0800
+Message-Id: <20210422071454.2023282-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-In-Reply-To: <CAEf4Bza6-Unvr7QmcbvVtNDPc4BNzf8zMaU4XardNqB_GnGDHw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 22/04/2021 05.32, Andrii Nakryiko wrote:
-> On Wed, Apr 21, 2021 at 6:19 PM Rasmus Villemoes
-> <linux@rasmusvillemoes.dk> wrote:
->>
->> The comment is wrong. snprintf(buf, 16, "") and snprintf(buf, 16,
->> "%s", "") etc. will certainly put '\0' in buf[0]. The only case where
->> snprintf() does not guarantee a nul-terminated string is when it is
->> given a buffer size of 0 (which of course prevents it from writing
->> anything at all to the buffer).
->>
->> Remove it before it gets cargo-culted elsewhere.
->>
->> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
->> ---
->>  kernel/trace/bpf_trace.c | 3 ---
->>  1 file changed, 3 deletions(-)
->>
-> 
-> The change looks good to me, but please rebase it on top of the
-> bpf-next tree. This is not a bug, so it doesn't have to go into the
-> bpf tree. As it is right now, it doesn't apply cleanly onto bpf-next.
+Hi,
 
-Thanks for the pointer. Looking in next-20210420, it seems to me that
+This patchset is a new implementation for XDP multicast support based
+on my previous 2 maps implementation[1]. The reason is that Daniel thinks
+the exclude map implementation is missing proper bond support in XDP
+context. And there is a plan to add native XDP bonding support. Adding a
+exclude map in the helper also increases the complexity of verifier and has
+drawback of performance.
 
-commit d9c9e4db186ab4d81f84e6f22b225d333b9424e3
-Author: Florent Revest <revest@chromium.org>
-Date:   Mon Apr 19 17:52:38 2021 +0200
+The new implementation just add two new flags BPF_F_BROADCAST and
+BPF_F_EXCLUDE_INGRESS to extend xdp_redirect_map for broadcast support.
 
-    bpf: Factorize bpf_trace_printk and bpf_seq_printf
+With BPF_F_BROADCAST the packet will be broadcasted to all the interfaces
+in the map. with BPF_F_EXCLUDE_INGRESS the ingress interface will be
+excluded when do broadcasting.
 
-is buggy. In particular, these two snippets:
+The patchv8 link is here[2].
 
-+#define BPF_CAST_FMT_ARG(arg_nb, args, mod)                            \
-+       (mod[arg_nb] == BPF_PRINTF_LONG_LONG ||                         \
-+        (mod[arg_nb] == BPF_PRINTF_LONG && __BITS_PER_LONG == 64)      \
-+         ? (u64)args[arg_nb]                                           \
-+         : (u32)args[arg_nb])
+[1] https://lore.kernel.org/bpf/20210223125809.1376577-1-liuhangbin@gmail.com
+[2] https://lore.kernel.org/bpf/20210415135320.4084595-1-liuhangbin@gmail.com
 
+v9: Update patch 01 commit description
+v8: use hlist_for_each_entry_rcu() when looping the devmap hash ojbs
+v7: No need to free xdpf in dev_map_enqueue_clone() if xdpf_clone failed.
+v6: Fix a skb leak in the error path for generic XDP
+v5: Just walk the map directly to get interfaces as get_next_key() of devmap
+    hash may restart looping from the first key if the device get removed.
+    After update the performace has improved 10% compired with v4.
+v4: Fix flags never cleared issue in patch 02. Update selftest to cover this.
+v3: Rebase the code based on latest bpf-next
+v2: fix flag renaming issue in patch 02
 
-+       ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args,
-mod),
-+               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2,
-args, mod));
+Hangbin Liu (3):
+  xdp: extend xdp_redirect_map with broadcast support
+  sample/bpf: add xdp_redirect_map_multi for redirect_map broadcast test
+  selftests/bpf: add xdp_redirect_multi test
 
-Regardless of the casts done in that macro, the type of the resulting
-expression is that resulting from C promotion rules. And (foo ? (u64)bla
-: (u32)blib) has type u64, which is thus the type the compiler uses when
-building the vararg list being passed into snprintf(). C simply doesn't
-allow you to change types at run-time in this way.
+Jesper Dangaard Brouer (1):
+  bpf: run devmap xdp_prog on flush instead of bulk enqueue
 
-It probably works fine on x86-64, which passes the first six or so
-argument in registers, va_start() puts those registers into the va_list
-opaque structure, and when it comes time to do a va_arg(int), just the
-lower 32 bits are used. It is broken on i386 and other architectures
-where arguments are passed on the stack (and for x86-64 as well had
-there been a few more arguments) and va_arg(ap, int) is essentially ({
-int res = *(int *)ap; ap += 4; res; }) [or maybe it's -= 4 because stack
-direction etc., that's not really relevant here].
+ include/linux/bpf.h                           |  20 ++
+ include/linux/filter.h                        |  18 +-
+ include/net/xdp.h                             |   1 +
+ include/uapi/linux/bpf.h                      |  17 +-
+ kernel/bpf/cpumap.c                           |   3 +-
+ kernel/bpf/devmap.c                           | 304 +++++++++++++++---
+ net/core/filter.c                             |  33 +-
+ net/core/xdp.c                                |  29 ++
+ net/xdp/xskmap.c                              |   3 +-
+ samples/bpf/Makefile                          |   3 +
+ samples/bpf/xdp_redirect_map_multi_kern.c     |  87 +++++
+ samples/bpf/xdp_redirect_map_multi_user.c     | 302 +++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |  17 +-
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../bpf/progs/xdp_redirect_multi_kern.c       |  99 ++++++
+ .../selftests/bpf/test_xdp_redirect_multi.sh  | 205 ++++++++++++
+ .../selftests/bpf/xdp_redirect_multi.c        | 236 ++++++++++++++
+ 17 files changed, 1316 insertions(+), 64 deletions(-)
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_kern.c
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_user.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
+ create mode 100755 tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
+ create mode 100644 tools/testing/selftests/bpf/xdp_redirect_multi.c
 
-Rasmus
+-- 
+2.26.3
+
