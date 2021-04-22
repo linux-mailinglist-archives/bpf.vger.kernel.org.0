@@ -2,129 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43ECC367F22
-	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 12:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E73E367F4A
+	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 13:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235800AbhDVK74 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Apr 2021 06:59:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56922 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230285AbhDVK7y (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 22 Apr 2021 06:59:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619089158;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jXNqgpkvJIOW6Rt8kqHFZkkNxiI31FFU9sMkTfD7ohA=;
-        b=CVLojpTDZ6SE3vOIRWQqhRIpC8JJHyfbK4CcMsQKwBTdGuW3IBTBxamRY1JTggnxcHnO4F
-        nwD2yoGwNVTFU8X5eDDME4MBFH5QscfoK0YinOAjOJZ19c3zTfkxMN3Y5bO6OUZ65KMoED
-        TpoZvlRnWpxO4ZTcq7il9XFISw8Ioyk=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-16-l9lGJq5oOSC6rYxqLeidxQ-1; Thu, 22 Apr 2021 06:59:16 -0400
-X-MC-Unique: l9lGJq5oOSC6rYxqLeidxQ-1
-Received: by mail-yb1-f200.google.com with SMTP id n129-20020a2527870000b02904ed02e1aab5so7841119ybn.21
-        for <bpf@vger.kernel.org>; Thu, 22 Apr 2021 03:59:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jXNqgpkvJIOW6Rt8kqHFZkkNxiI31FFU9sMkTfD7ohA=;
-        b=JkhrOi7XislZdsEbT4oQRbbs3IggMnFVPTrCid1exMEeGaA5ltny40BtyYQ8L9teC3
-         OsFOYeJK6tskB/KP+/+tN72ISZLr9DEPIT0TIDHSKm+IcqvcOxZ1ybr6WiOcRFEFCLOw
-         buZ21VLzTeyEQjS0iygDuc+czVqva66ti5FUNLjkjfVAuGUGKNtOWfCo9WUfQc0XwSCY
-         lNxPP+o9EZccghULUk1jVdJeFPBGA76O3G3AoZWhN8Kzw88TLkNByWSUQ29uQq3tQHIu
-         WZQo4PV6ORCjj6T1mINSBdKJll5XmAzEZk1/wkIBTa9g0TRAmXC6Id+r5ziE/DcReECC
-         xY+g==
-X-Gm-Message-State: AOAM530lJVzMPpQpuNZkIVDcysLBPkijEe6VkFF0pNP2Bsx2zWWrkHGf
-        dK4VUZg+ybV5J+1Vdo9NtopOUXP25R4dDC1yPkaVYKbNJ5nMaeDbb6oaW6wut2J8UOqPNIV5R7x
-        fymoHbMYEmrxQIIIU1Zw/7gce1bVC
-X-Received: by 2002:a25:3585:: with SMTP id c127mr3926065yba.494.1619089155923;
-        Thu, 22 Apr 2021 03:59:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzbSavXiKuXISIWG4lDMx1DpdqRbDapWghhX7SXS7dMcL+73FMg0jHtgYPGDi4OvA7FZTXtYyB2luur95DYKP8=
-X-Received: by 2002:a25:3585:: with SMTP id c127mr3926032yba.494.1619089155577;
- Thu, 22 Apr 2021 03:59:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <01cd8afa22786b2c8a4cd7250d165741e990a771.1618927173.git.lorenzo@kernel.org>
- <20210420185440.1dfcf71c@carbon> <YH8K0gkYoZVfq0FV@lore-desk>
-In-Reply-To: <YH8K0gkYoZVfq0FV@lore-desk>
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Date:   Thu, 22 Apr 2021 12:59:31 +0200
-Message-ID: <CAJ0CqmVozWi5uCnzWCpkc5kccnEJWRNbLMb-5YmWe7te9E_Odg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next] cpumap: bulk skb using netif_receive_skb_list
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S235998AbhDVLKr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Apr 2021 07:10:47 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:42466 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229972AbhDVLKq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Apr 2021 07:10:46 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx7+6AWYFgpFQMAA--.4507S2;
+        Thu, 22 Apr 2021 19:09:54 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Jonathan Corbet <corbet@lwn.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <song@kernel.org>,
-        Toke Hoiland Jorgensen <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH bpf-next v4] bpf: Fix some invalid links in bpf_devel_QA.rst
+Date:   Thu, 22 Apr 2021 19:09:50 +0800
+Message-Id: <1619089790-6252-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx7+6AWYFgpFQMAA--.4507S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1kJw1fKF1UKFyfZFW5Wrg_yoW8Kr1rpa
+        18Gr1a9r1Sgr1fXw4kKr4jvF4SvFs5Way7CFn7Jw1UZFyDZFykXr1S9rs8XanxGrykCFW5
+        ArnakryF9w18Z37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9j14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26F4j6r4UJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+        8cxan2IY04v7MxkIecxEwVAFwVW8KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+        WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+        67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+        IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1l
+        IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
+        C2KfnxnUUI43ZEXa7VUbG2NtUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
->
-> [...]
-> > > +   TP_ARGS(map_id, processed, sched, xdp_stats),
-> > >
-> > >     TP_STRUCT__entry(
-> > >             __field(int, map_id)
-> > >             __field(u32, act)
-> > >             __field(int, cpu)
-> > > -           __field(unsigned int, drops)
-> > >             __field(unsigned int, processed)
-> >
-> > So, struct member @processed will takeover the room for @drops.
-> >
-> > Can you please test how an old xdp_monitor program will react to this?
-> > Will it fail, or extract and show wrong values?
->
-> Ack, right. I think we should keep the struct layout in order to maintain
-> back-compatibility. I will fix it in v4.
->
-> >
-> > The xdp_mointor tool is in several external git repos:
-> >
-> >  https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/samples/bpf/xdp_monitor_kern.c
-> >  https://github.com/xdp-project/xdp-tutorial/tree/master/tracing02-xdp-monitor
+There exist some errors "404 Not Found" when I click the link
+of "MAINTAINERS" [1], "samples/bpf/" [2] and "selftests" [3]
+in the documentation "HOWTO interact with BPF subsystem" [4].
 
-Running an old version of xdp_monitor with a patched kernel, I
-verified the xdp sample does not crash but it reports wrong values
-(e.g. pps are reported as drops for tracepoint disagliment).
-I think we have two possibilities here:
-- assuming tracepoints are not a stable ABI, we can just fix xdp
-samples available in the kernel tree and provide a patch for
-xdp-project
-- keep current tracepoint layout and just rename current drop variable
-in bpf/cpumap.c in something like skb_alloc_drop.
+As Jesper Dangaard Brouer said, the links work if you are browsing
+the document via GitHub [5], so I think maybe it is better to use
+the corresponding GitHub links to fix the issues in the kernel.org
+official document [4], this change has no influence on GitHub and
+looks like more clear.
 
-I am not against both of them. What do you think?
+[1] https://www.kernel.org/doc/html/MAINTAINERS
+[2] https://www.kernel.org/doc/html/samples/bpf/
+[3] https://www.kernel.org/doc/html/tools/testing/selftests/bpf/
+[4] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html
+[5] https://github.com/torvalds/linux/blob/master/Documentation/bpf/bpf_devel_QA.rst
 
-Regards,
-Lorenzo
+Fixes: 542228384888 ("bpf, doc: convert bpf_devel_QA.rst to use RST formatting")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
 
-> >
-> > Do you have any plans for fixing those tools?
->
-> I update xdp_monitor_{kern,user}.c and xdp_redirect_cpu_{kern,user}.c in the
-> patch. Do you mean to post a dedicated patch for xdp-project tutorial?
->
-> Regards,
-> Lorenzo
->
-> >
-> >
-> >
-> >
-> > --
-> > Best regards,
-> >   Jesper Dangaard Brouer
-> >   MSc.CS, Principal Kernel Engineer at Red Hat
-> >   LinkedIn: http://www.linkedin.com/in/brouer
-> >
+The initial aim is to fix the invalid links, sorry for the noisy.
+
+v4: Use the corresponding GitHub links
+
+v3: Remove "MAINTAINERS" and "samples/bpf/" links and
+    use correct link of "selftests"
+
+v2: Add Fixes: tag
+
+ Documentation/bpf/bpf_devel_QA.rst | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
+index 2ed89ab..36a9b62 100644
+--- a/Documentation/bpf/bpf_devel_QA.rst
++++ b/Documentation/bpf/bpf_devel_QA.rst
+@@ -645,10 +645,10 @@ when:
+ 
+ .. Links
+ .. _Documentation/process/: https://www.kernel.org/doc/html/latest/process/
+-.. _MAINTAINERS: ../../MAINTAINERS
++.. _MAINTAINERS: https://github.com/torvalds/linux/blob/master/MAINTAINERS
+ .. _netdev-FAQ: ../networking/netdev-FAQ.rst
+-.. _samples/bpf/: ../../samples/bpf/
+-.. _selftests: ../../tools/testing/selftests/bpf/
++.. _samples/bpf/: https://github.com/torvalds/linux/tree/master/samples/bpf
++.. _selftests: https://github.com/torvalds/linux/tree/master/tools/testing/selftests/bpf
+ .. _Documentation/dev-tools/kselftest.rst:
+    https://www.kernel.org/doc/html/latest/dev-tools/kselftest.html
+ .. _Documentation/bpf/btf.rst: btf.rst
+-- 
+2.1.0
 
