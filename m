@@ -2,248 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B3E368099
-	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 14:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 425253680C7
+	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 14:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236206AbhDVMhp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Apr 2021 08:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236228AbhDVMhn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:37:43 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D7FC06138D
-        for <bpf@vger.kernel.org>; Thu, 22 Apr 2021 05:37:07 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id c15so37710586ilj.1
-        for <bpf@vger.kernel.org>; Thu, 22 Apr 2021 05:37:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A665ErDKUdmsQDlfh0SCMscZakL4a8DB0rDSnVVLJ5g=;
-        b=cbO5PaTxCYtLcvQnj3TKsFgXHTI0X/UzwDrcZiH6jvdvJiF4FedjajAB44bF46M8pJ
-         6eE+oYtoHZkmwd5EhBEY/eJpHH6TIlz1FsIp4motwyZf24wj4xp3SJzhrypsr5IVtVaa
-         XvkYCzm3IR/LOXTj1UTalPBhojQDkssRcW7ZU=
+        id S230510AbhDVMrD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Apr 2021 08:47:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44782 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236340AbhDVMrC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 22 Apr 2021 08:47:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619095587;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wJdetsQNKO+HfPrY27/1LZB2tNfMg+8AplOf5GBQwVs=;
+        b=TWRziaVYCY2BEygxKfXhJu502cUNyJzELi5LlX6m3ITzpm0mmle+1CgVrxQjx1qTS6Rf+c
+        8xg+YFoRsY/1+aU+czFTKqWcwwiKQ2QP2244RUny8JClV57MjKa0XwhF/w2QKd5HdEUr59
+        LAKtc7ap4I/5r5Vzf5bzObvA7nY8nxY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-337-IZPdKlnHPd6UqO8qJ6nShg-1; Thu, 22 Apr 2021 08:46:12 -0400
+X-MC-Unique: IZPdKlnHPd6UqO8qJ6nShg-1
+Received: by mail-ed1-f69.google.com with SMTP id r14-20020a50d68e0000b0290385504d6e4eso6761221edi.7
+        for <bpf@vger.kernel.org>; Thu, 22 Apr 2021 05:46:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A665ErDKUdmsQDlfh0SCMscZakL4a8DB0rDSnVVLJ5g=;
-        b=UGBX8rydSKnZUiWMv8NUTFiEh9Wg8h52HdtCwPX7j69bzob40FFEZVvnN2xIqFoM7B
-         9UH+eETLcyC3333y0kbi1kp30ep4xP10E//WDSJO7hxGyGxvhgTsk2BEI1UPamNvyXPM
-         o2FCViKfzu5RewHq5F79Dt7iMQPdvq/aZV/pzyyVF3m2IBI/OhRpRrepFTKs7Rq5XM0T
-         VGscGek7F2O6TLvF7RHubAdquuxiQmFMHUCpo16/tmtIEEot1+ihIhANMwr1/cKR0fOt
-         xNt5+ojSW4K5G31j2/12VbHtqIt94pejUA3Eq2QmZH6dNAccAojKtBTeYpRyVySWzW8S
-         QBRg==
-X-Gm-Message-State: AOAM530986UcpOp/9xs74DpJ5dqle6YeNC89IuQf4BGNwfxR0ZT7cjA8
-        ULCOe977YmKCKi0aKE/55XPCkgnyRcWioXPiMXPZyA==
-X-Google-Smtp-Source: ABdhPJyiG/f5qhwUvdtkH0ZkVZ7NdNUmooZC7RMWMCIvCpKoFeMRhcZRV8C37SD3oGPQWOgsiKQoEqMcu1DNtJJ1Mc8=
-X-Received: by 2002:a05:6e02:219d:: with SMTP id j29mr2669565ila.204.1619095027316;
- Thu, 22 Apr 2021 05:37:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=wJdetsQNKO+HfPrY27/1LZB2tNfMg+8AplOf5GBQwVs=;
+        b=o/wZxqJy8wlL8Kp6CvScscxuBkPxA8ePsoGdVy+jeLbgmpRl2LOX3iN9b00g0mVdzt
+         rc7ryiyP4xiz+vaCgOEZ9Vx7YwsZ+jk9yddxEWVcOymaeU3Mw2e48M+Mvf+a2K6vs3XZ
+         D6vnhRHJh6GhGZp8n0c8hJqRBHuhLh84fXb1tfqq/IbgnU3fm4KODrIREjAuO5el6LbM
+         pegH050+IrH++GBBpASqoAezh9K/ysf2A8RXwU1bPQpH4BqvzgGtLLXAdz1eASnOQeK1
+         oeqvPaRFMSwG4wDg9KlRmXWJBb+5bLM4WBKQA58yVJ52bnXhMUYYhjYZsIZBRt42Lqiq
+         j7WA==
+X-Gm-Message-State: AOAM531GqzSzR/cJXPWWKA+XMdSmeVdyMzQiEysvHssI6akr7e9/10DY
+        jzfYLF2S+Ddq1s/MTF4/GoMHhFFEnizX5JfI4+pQ16f6/SnyGI+pQOk7yHkuVOtZlHXA+1NmV+N
+        ZNuwZy+Q9DkDw
+X-Received: by 2002:a17:906:350e:: with SMTP id r14mr3189845eja.365.1619095571631;
+        Thu, 22 Apr 2021 05:46:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxGkQVIAQtHd9cDZNFi4IVj77yakTnxMj5BdrnuUZbozuZW9uuUei5Hn20uAb1OJjqp/YUCuQ==
+X-Received: by 2002:a17:906:350e:: with SMTP id r14mr3189809eja.365.1619095571349;
+        Thu, 22 Apr 2021 05:46:11 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id d14sm2008128edc.11.2021.04.22.05.46.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Apr 2021 05:46:10 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 20980180675; Thu, 22 Apr 2021 14:46:10 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v3 2/3] libbpf: add low level TC-BPF API
+In-Reply-To: <ab19b29f-f7a7-5f4b-001f-28d57c6c203f@iogearbox.net>
+References: <20210420193740.124285-1-memxor@gmail.com>
+ <20210420193740.124285-3-memxor@gmail.com>
+ <CAEf4BzYj_pODiQ_Xkdz_czAj3iaBcRhudeb_kJ4M2SczA_jDjA@mail.gmail.com>
+ <87tunzh11d.fsf@toke.dk>
+ <bd2ed7ed-a502-bee5-0a56-0f3064ee2be5@iogearbox.net>
+ <875z0ehej8.fsf@toke.dk>
+ <ab19b29f-f7a7-5f4b-001f-28d57c6c203f@iogearbox.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 22 Apr 2021 14:46:10 +0200
+Message-ID: <8735vih4h9.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20210421190736.1538217-1-linux@rasmusvillemoes.dk>
- <CAEf4Bza6-Unvr7QmcbvVtNDPc4BNzf8zMaU4XardNqB_GnGDHw@mail.gmail.com>
- <236995f6-30ee-8047-624c-08d0a1552dc1@rasmusvillemoes.dk> <CABRcYmJFfdCU_QxX+gYRWc+7BSbmTWX84o_WT=oBg_CPr8qS=g@mail.gmail.com>
- <7e9d3337-eb7b-a2c8-a5ef-037d6a9765d7@rasmusvillemoes.dk>
-In-Reply-To: <7e9d3337-eb7b-a2c8-a5ef-037d6a9765d7@rasmusvillemoes.dk>
-From:   Florent Revest <revest@chromium.org>
-Date:   Thu, 22 Apr 2021 14:36:56 +0200
-Message-ID: <CABRcYmLU0f9eSvsjBogKmc_FK8qykfR1pNx9VCW8Scjj4-VQQg@mail.gmail.com>
-Subject: Re: [PATCH] bpf: remove pointless code from bpf_do_trace_printk()
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 12:09 PM Rasmus Villemoes
-<linux@rasmusvillemoes.dk> wrote:
->
-> On 22/04/2021 11.23, Florent Revest wrote:
-> > On Thu, Apr 22, 2021 at 9:13 AM Rasmus Villemoes
-> > <linux@rasmusvillemoes.dk> wrote:
-> >>
-> >> On 22/04/2021 05.32, Andrii Nakryiko wrote:
-> >>> On Wed, Apr 21, 2021 at 6:19 PM Rasmus Villemoes
-> >>> <linux@rasmusvillemoes.dk> wrote:
-> >>>>
-> >>>> The comment is wrong. snprintf(buf, 16, "") and snprintf(buf, 16,
-> >>>> "%s", "") etc. will certainly put '\0' in buf[0]. The only case where
-> >>>> snprintf() does not guarantee a nul-terminated string is when it is
-> >>>> given a buffer size of 0 (which of course prevents it from writing
-> >>>> anything at all to the buffer).
-> >>>>
-> >>>> Remove it before it gets cargo-culted elsewhere.
-> >>>>
-> >>>> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> >>>> ---
-> >>>>  kernel/trace/bpf_trace.c | 3 ---
-> >>>>  1 file changed, 3 deletions(-)
-> >>>>
-> >>>
-> >>> The change looks good to me, but please rebase it on top of the
-> >>> bpf-next tree. This is not a bug, so it doesn't have to go into the
-> >>> bpf tree. As it is right now, it doesn't apply cleanly onto bpf-next.
-> >
-> > FWIW the idea of the patch also looks good to me :)
-> >
-> >> Thanks for the pointer. Looking in next-20210420, it seems to me that
-> >>
-> >> commit d9c9e4db186ab4d81f84e6f22b225d333b9424e3
-> >> Author: Florent Revest <revest@chromium.org>
-> >> Date:   Mon Apr 19 17:52:38 2021 +0200
-> >>
-> >>     bpf: Factorize bpf_trace_printk and bpf_seq_printf
-> >>
-> >> is buggy. In particular, these two snippets:
-> >>
-> >> +#define BPF_CAST_FMT_ARG(arg_nb, args, mod)                            \
-> >> +       (mod[arg_nb] == BPF_PRINTF_LONG_LONG ||                         \
-> >> +        (mod[arg_nb] == BPF_PRINTF_LONG && __BITS_PER_LONG == 64)      \
-> >> +         ? (u64)args[arg_nb]                                           \
-> >> +         : (u32)args[arg_nb])
-> >>
-> >>
-> >> +       ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args,
-> >> mod),
-> >> +               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2,
-> >> args, mod));
-> >>
-> >> Regardless of the casts done in that macro, the type of the resulting
-> >> expression is that resulting from C promotion rules. And (foo ? (u64)bla
-> >> : (u32)blib) has type u64, which is thus the type the compiler uses when
-> >> building the vararg list being passed into snprintf(). C simply doesn't
-> >> allow you to change types at run-time in this way.
-> >>
-> >> It probably works fine on x86-64, which passes the first six or so
-> >> argument in registers, va_start() puts those registers into the va_list
-> >> opaque structure, and when it comes time to do a va_arg(int), just the
-> >> lower 32 bits are used. It is broken on i386 and other architectures
-> >> where arguments are passed on the stack (and for x86-64 as well had
-> >> there been a few more arguments) and va_arg(ap, int) is essentially ({
-> >> int res = *(int *)ap; ap += 4; res; }) [or maybe it's -= 4 because stack
-> >> direction etc., that's not really relevant here].
-> >>
-> >> Rasmus
-> >
-> > Thank you Rasmus :)
->
->
-> I think you were lucky (or unlucky, depending on how you look at it)
-> with your test case
->
-> +       num_ret  = BPF_SNPRINTF(num_out, sizeof(num_out),
-> +                               "%d %u %x %li %llu %lX",
-> +                               -8, 9, 150, -424242, 1337, 0xDABBAD00);
->
-> because it just so happens that the eventual snprintf() call uses three
-> arguments for itself, so the first three 32-bit arguments end up being
-> passed via registers, while the 64 bit arguments are passed via the
-> stack. Can I get you to test what would happen if you interchanged
-> these, i.e. changed the test case to do
->
-> +       num_ret  = BPF_SNPRINTF(num_out, sizeof(num_out),
-> +                               "%li %llu %lX %d %u %x",
-> +                               -424242, 1337, 0xDABBAD00, -8, 9, 150);
->
-> (or just add a few more expects-a-32-bit argument format specifiers and
-> corresponding arguments). My guess is that up until formatting -8 it
-> goes well, but when vsnprintf() is to grab the argument corresponding to
-> %u, it will get the 0xffffffff from the upper half of (u64)-8.
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-I will need to come up with a repro and let you know yes :)
-
-> > It seems that we went offtrack in
-> > https://lore.kernel.org/bpf/CAEf4BzZVEGM4esi-Rz67_xX_RTDrgxViy0gHfpeauECR5bmRNA@mail.gmail.com/
-> > and we do need something like "88a5c690b6 bpf: fix bpf_trace_printk on
-> > 32 bit archs". Thinking about it again, it's clearer now why the
-> > __BPF_TP_EMIT macro emits 2^3=8 different __trace_printk() indeed.
+> On 4/22/21 11:08 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Daniel Borkmann <daniel@iogearbox.net> writes:
+>>> On 4/21/21 9:48 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>>>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>>>> On Tue, Apr 20, 2021 at 12:37 PM Kumar Kartikeya Dwivedi
+>>>>> <memxor@gmail.com> wrote:
+>>> [...]
+>>>>>> ---
+>>>>>>    tools/lib/bpf/libbpf.h   |  44 ++++++
+>>>>>>    tools/lib/bpf/libbpf.map |   3 +
+>>>>>>    tools/lib/bpf/netlink.c  | 319 ++++++++++++++++++++++++++++++++++=
+++++-
+>>>>>>    3 files changed, 360 insertions(+), 6 deletions(-)
+>>>>>>
+>>>>>> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+>>>>>> index bec4e6a6e31d..b4ed6a41ea70 100644
+>>>>>> --- a/tools/lib/bpf/libbpf.h
+>>>>>> +++ b/tools/lib/bpf/libbpf.h
+>>>>>> @@ -16,6 +16,8 @@
+>>>>>>    #include <stdbool.h>
+>>>>>>    #include <sys/types.h>  // for size_t
+>>>>>>    #include <linux/bpf.h>
+>>>>>> +#include <linux/pkt_sched.h>
+>>>>>> +#include <linux/tc_act/tc_bpf.h>
+>>>>>
+>>>>> apart from those unused macros below, are these needed in public API =
+header?
+>>>>>
+>>>>>>    #include "libbpf_common.h"
+>>>>>>
+>>>>>> @@ -775,6 +777,48 @@ LIBBPF_API int bpf_linker__add_file(struct bpf_=
+linker *linker, const char *filen
+>>>>>>    LIBBPF_API int bpf_linker__finalize(struct bpf_linker *linker);
+>>>>>>    LIBBPF_API void bpf_linker__free(struct bpf_linker *linker);
+>>>>>>
+>>>>>> +/* Convenience macros for the clsact attach hooks */
+>>>>>> +#define BPF_TC_CLSACT_INGRESS TC_H_MAKE(TC_H_CLSACT, TC_H_MIN_INGRE=
+SS)
+>>>>>> +#define BPF_TC_CLSACT_EGRESS TC_H_MAKE(TC_H_CLSACT, TC_H_MIN_EGRESS)
+>>>>>
+>>>>> these seem to be used only internally, why exposing them in public
+>>>>> API?
+>>>>
+>>>> No they're "aliases" for when you want to attach the filter directly to
+>>>> the interface (and thus install the clsact qdisc as the root). You can
+>>>> also use the filter with an existing qdisc (most commonly HTB), in whi=
+ch
+>>>> case you need to specify the qdisc handle as the root. We have a few
+>>>> examples of this use case:
+>>>>
+>>>> https://github.com/xdp-project/bpf-examples/tree/master/traffic-pacing=
+-edt
+>>>> and
+>>>> https://github.com/xdp-project/xdp-cpumap-tc
+>>>
+>>> I'm a bit puzzled, could you elaborate on your use case on why you woul=
+dn't
+>>> use the tc egress hook for those especially given it's guaranteed to run
+>>> outside of root qdisc lock?
+>>=20
+>> Jesper can correct me if I'm wrong, but I think the first one of the
+>> links above is basically his implementation of just that EDT-based
+>> shaper. And it works reasonably well, except you don't get the nice
+>> per-flow scheduling and sparse flow prioritisation like in FQ-CoDel
+>> unless you implement that yourself in BPF when you set the timestamps
+>> (and that is by no means trivial to implement).
+>>=20
+>> So if you want to use any of the features of the existing qdiscs (I have
+>> also been suggesting to people that they use tc_bpf if they want to
+>> customise sch_cake's notion of flows or shaping tiers), you need to be
+>> able to attach the filter to an existing qdisc. Sure, this means you're
+>> still stuck behind the qdisc lock, but for some applications that is
+>> fine (not everything is a data centre, some devices don't have that many
+>> CPUs anyway; and as the second example above shows, you can get around
+>> the qdisc lock by some clever use of partitioning of flows using
+>> cpumap).
+>>=20
+>> So what this boils down to is, we should keep the 'parent' parameter not
+>> just as an egress/ingress enum, but also as a field the user can fill
+>> out. I'm fine with moving the latter into the opts struct, though, so
+>> maybe the function parameter can be an enum like:
+>>=20
+>> enum bpf_tc_attach_point {
+>>    BPF_TC_CLSACT_INGRESS,
+>>    BPF_TC_CLSACT_EGRESS,
+>>    BPF_TC_QDISC_PARENT
+>> };
+>>=20
+>> where if you set the last one you have to fill in the parent in opts?
 >
-> Isn't it 3^3 = 27, or has that been reduced in -next compared to Linus'
-> master? Doesn't matter much, just curious.
+> Fair enough, I still think this is a bit backwards and should be discoura=
+ged
+> given the constraints, but if you have an actual need for it ... I'd rath=
+er
+> simplify API naming, the fact that it's clsact is an implementation detail
+> and shouldn't matter to a user, like:
 >
-> > In the case of bpf_trace_printk with a maximum of 3 args, it's
-> > relatively cheap; but for bpf_seq_printf and bpf_snprintf which accept
-> > up to 12 arguments, that would be 2^12=4096 calls.
->
-> Yeah, that doesn't scale at all.
->
->  Until now
-> > bpf_seq_printf has just ignored this problem and just considered
-> > everything as u64, I wonder if that'd be the best approach for these
-> > two helpers anyway.
-> >
->
-> [wild handwaving ahead]
->
-> One possibility, if one is willing to get hands dirty and dig into ABI
-> details on various arches, is to create a
->
->   struct fake_va_list {
->     union {
->       va_list      ap; /* opaque, compiler-provided */
->       arch_va_list _ap; /* arch-provided, must match layout of ap */
->     };
->     void *stack;
->   };
->
-> Then do
->
->   struct fake_va_list fva;
->   u64 buf[24]; /* or whatever you want to support, can be different in
-> different functions */
->
->   fake_va_init(&fva, buf);
->   /* various C code, parsing format string etc. */
->   if (arg[i] is really 32 bits)
->     fake_va_push(&fva, (u32)arg[i]);
->   else
->     fake_va_push(&fva, (u64)arg[i]);
->   /* etc. */
->   ...
->   vsnprintf(out, size, fmt, fva.va);
->
-> On arches like x86-64, where va_list is really a typedef for a
-> one-element array of
->
-> struct __va_list_tag {
->         unsigned int               gp_offset;
->         unsigned int               fp_offset;
->         void *                     overflow_arg_area;
->         void *                     reg_save_area;
+> enum bpf_tc_attach_point {
+> 	BPF_TC_INGRESS,
+> 	BPF_TC_EGRESS,
+> 	BPF_TC_CUSTOM_PARENT,
 > };
 >
->
-> fake_va_init() would make the va_list look like the reg_save_area is
-> already used (i.e., set gp_offset to 48), and initialize both
-> ->_ap.overflow_arg_area and ->stack to point at the given buffer.
-> fake_va_push() would use and update stack appropriately. For 32 bit x86,
-> va_list is really just a pointer, so fake_va_init would essentially just
-> do "fva->_ap = fva->stack = buf", and fake_va_push() would again just
-> need to manipulate ->stack.
->
-> It's not pretty, but I don't think it necessarily requires too much
-> arch-specific work (fake_va_push() could be common, perhaps just with a
-> arch define to say whether 64 bit arguments need ->stack to first be
-> up-aligned to an 8 byte boundary).
->
-> Rasmus
+> For BPF_TC_INGRESS and BPF_TC_EGRESS, I would enforce opts parent paramet=
+er
+> to be /zero/ from the API.
 
-Creative! :D I think these arch-specific structures would be a hard
-sell though ahah.
+OK, SGTM :)
 
-I was having a stroll through lib/vsprintf.c and noticed bstr_printf:
+-Toke
 
- * This function like C99 vsnprintf, but the difference is that vsnprintf gets
- * arguments from stack, and bstr_printf gets arguments from @bin_buf which is
- * a binary buffer that generated by vbin_printf.
-
-Maybe it would be easier to just build our argument buffer similarly
-to what vbin_printf does.
