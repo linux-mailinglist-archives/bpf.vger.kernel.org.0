@@ -2,117 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A726A368424
-	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 17:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F8636842A
+	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 17:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236594AbhDVPrK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Apr 2021 11:47:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
+        id S236396AbhDVPrk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Apr 2021 11:47:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236709AbhDVPrJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Apr 2021 11:47:09 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE441C06174A;
-        Thu, 22 Apr 2021 08:46:34 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id B5ECB44A;
-        Thu, 22 Apr 2021 15:46:33 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net B5ECB44A
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1619106393; bh=pdu7hsbhhGkYv58bQsi3XOeVvdvaYtVS+UWp9QvoCTY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=hJUO+/8Gd/vq2XZ/FfniFxLt5R08sOGkT6GpZOSy5VhUxfoJXQdlDRhrcZ/NsUp/l
-         FfsZ7G7PnWaEym9PvkYnIgXIgP86Duc80zXfj4y7IacbUmsWiA0M0T93cIOrjVGLg3
-         UyxKgDEfeNsAiNDKtAOuBnCRD4eKf1tDsPf8BuUzv/KlqDwO/yHDFCahNmgHagbX3x
-         4J/zJFCrcnOc7EIPKiiwxR4Sv2Gbb1cJP1MggB8bBdeISoRpIJghlZ0V6c3EIGcS9h
-         3akHauOObQHiV2hCF2WuEWDnnXowsAATBOskzd3zNJXhlHz5DfVNGIGvEr39Sump37
-         2glQpjkvFq6Ew==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH bpf-next v4] bpf: Fix some invalid links in
- bpf_devel_QA.rst
-In-Reply-To: <1619089790-6252-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1619089790-6252-1-git-send-email-yangtiezhu@loongson.cn>
-Date:   Thu, 22 Apr 2021 09:46:33 -0600
-Message-ID: <87pmymcofa.fsf@meer.lwn.net>
+        with ESMTP id S236333AbhDVPrk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Apr 2021 11:47:40 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F94AC06138B
+        for <bpf@vger.kernel.org>; Thu, 22 Apr 2021 08:47:05 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id y10so16350903ilv.0
+        for <bpf@vger.kernel.org>; Thu, 22 Apr 2021 08:47:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nEm+i856aWTS/KuoTyGdIs6rox+5k0UsymaTZ8RhEM4=;
+        b=TWVLr55yMtYSPZE3c/dTh4sBwcfxNa9J+I9twfvM/E+H2XUzV6TDcnsvcOKSBK5uuD
+         1m0CKqEpUbP8YKRe3rF4xjJl89wxnQrJrU2CIgeQmmbz/uUKF6H82ttEfQq4VIa8BdLG
+         SWzPCa7eGzYHC0tb+eownBWiXCL6HrO6d8jHQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nEm+i856aWTS/KuoTyGdIs6rox+5k0UsymaTZ8RhEM4=;
+        b=dzNvyWK8S6uAQrmDjmJEEjU++zen42Ker9K+3a7QJoUhK5RrPzfl+bO23kae0kB/H6
+         HijBMi7aG6LwwGJoKvrmr41JB8XNhnxdj4UJQdeJ4ZDFjpZiOk/r4mfWZV3CchET2/xX
+         jEXsfCu8mC3KVyTVClBbsZwFaSfBqQqH5uwGi3BHy0td5xH0QDYjSPC+5eVu/4NWiXon
+         wiecsFug/Ru4NuZQgbWUTYdb+lc7atHRokevEayAJHT1FGL1QqzCp+PJdy9xnOtfiPm0
+         soqiXf3UomIu3D3RfoPfI7p0jnvwTOTcew2q8J5MlRyn7ud5BJYhlAvbXe9Z0AIaOt5w
+         wSXQ==
+X-Gm-Message-State: AOAM532TelcgoIYSeR2vc/g4G/e4HOPthO+/hXWV/KHrWl9Kj2itBRpI
+        RyDzxQVNimrSAKWPTBIhLbbvF/hj+YRr2KyIYjIrSg==
+X-Google-Smtp-Source: ABdhPJymhGBNWAcwyhSn/kQdhi6SyJ7zSlArKnubbEkAZ0DbySpxwCgbELh7eamILItvLuJphJ7cQiCMi3RUAQ7KX3o=
+X-Received: by 2002:a92:ce90:: with SMTP id r16mr3381504ilo.220.1619106424675;
+ Thu, 22 Apr 2021 08:47:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210421190736.1538217-1-linux@rasmusvillemoes.dk>
+ <CAEf4Bza6-Unvr7QmcbvVtNDPc4BNzf8zMaU4XardNqB_GnGDHw@mail.gmail.com>
+ <236995f6-30ee-8047-624c-08d0a1552dc1@rasmusvillemoes.dk> <CABRcYmJFfdCU_QxX+gYRWc+7BSbmTWX84o_WT=oBg_CPr8qS=g@mail.gmail.com>
+ <7e9d3337-eb7b-a2c8-a5ef-037d6a9765d7@rasmusvillemoes.dk> <CABRcYmLU0f9eSvsjBogKmc_FK8qykfR1pNx9VCW8Scjj4-VQQg@mail.gmail.com>
+ <CABRcYm+2r0XmXX2uHr2E6BEj=WpEBRV93i0mLtHUTsz041Z0Tw@mail.gmail.com> <CAADnVQ+wFcjMzs2G1VAKW5WnFtcBgKMeJcK3ouKJYCR7GdvfWw@mail.gmail.com>
+In-Reply-To: <CAADnVQ+wFcjMzs2G1VAKW5WnFtcBgKMeJcK3ouKJYCR7GdvfWw@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Thu, 22 Apr 2021 17:46:53 +0200
+Message-ID: <CABRcYmKM2B1czd_ekmP3H5JapHHznV95HL4-LYOuXccKw=ZB9g@mail.gmail.com>
+Subject: Re: [PATCH] bpf: remove pointless code from bpf_do_trace_printk()
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Tiezhu Yang <yangtiezhu@loongson.cn> writes:
-
-> There exist some errors "404 Not Found" when I click the link
-> of "MAINTAINERS" [1], "samples/bpf/" [2] and "selftests" [3]
-> in the documentation "HOWTO interact with BPF subsystem" [4].
+On Thu, Apr 22, 2021 at 5:44 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> As Jesper Dangaard Brouer said, the links work if you are browsing
-> the document via GitHub [5], so I think maybe it is better to use
-> the corresponding GitHub links to fix the issues in the kernel.org
-> official document [4], this change has no influence on GitHub and
-> looks like more clear.
-
-No, we really don't want to link to GitHub, that's what we have
-kernel.org for.
-
-> [1] https://www.kernel.org/doc/html/MAINTAINERS
-> [2] https://www.kernel.org/doc/html/samples/bpf/
-> [3] https://www.kernel.org/doc/html/tools/testing/selftests/bpf/
-> [4] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html
-> [5] https://github.com/torvalds/linux/blob/master/Documentation/bpf/bpf_devel_QA.rst
+> On Thu, Apr 22, 2021 at 8:35 AM Florent Revest <revest@chromium.org> wrote:
+> > >
+> > > I was having a stroll through lib/vsprintf.c and noticed bstr_printf:
+> > >
+> > >  * This function like C99 vsnprintf, but the difference is that vsnprintf gets
+> > >  * arguments from stack, and bstr_printf gets arguments from @bin_buf which is
+> > >  * a binary buffer that generated by vbin_printf.
+> > >
+> > > Maybe it would be easier to just build our argument buffer similarly
+> > > to what vbin_printf does.
+> >
+> > I've been experimenting with this idea and it is quite promising :) it
+> > also makes the code much cleaner, I find. I'll send a series asap.
 >
-> Fixes: 542228384888 ("bpf, doc: convert bpf_devel_QA.rst to use RST formatting")
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->
-> The initial aim is to fix the invalid links, sorry for the noisy.
->
-> v4: Use the corresponding GitHub links
->
-> v3: Remove "MAINTAINERS" and "samples/bpf/" links and
->     use correct link of "selftests"
->
-> v2: Add Fixes: tag
->
->  Documentation/bpf/bpf_devel_QA.rst | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
-> index 2ed89ab..36a9b62 100644
-> --- a/Documentation/bpf/bpf_devel_QA.rst
-> +++ b/Documentation/bpf/bpf_devel_QA.rst
-> @@ -645,10 +645,10 @@ when:
->  
->  .. Links
->  .. _Documentation/process/: https://www.kernel.org/doc/html/latest/process/
-> -.. _MAINTAINERS: ../../MAINTAINERS
-> +.. _MAINTAINERS: https://github.com/torvalds/linux/blob/master/MAINTAINERS
+> You mean to use bstr_printf internally ? That could work indeed.
+> Make sure CONFIG_BINARY_PRINTF is selected.
+> CONFIG_TRACING does it already.
 
-https://www.kernel.org/doc/html/latest/process/maintainers.html
+Yes :)
 
->  .. _netdev-FAQ: ../networking/netdev-FAQ.rst
-> -.. _samples/bpf/: ../../samples/bpf/
-> -.. _selftests: ../../tools/testing/selftests/bpf/
-> +.. _samples/bpf/: https://github.com/torvalds/linux/tree/master/samples/bpf
+> > BPF maintainers: should we fix forward or do you prefer reverting the
+> > snprintf series and then re-applying another snprintf series without
+> > the regression in bpf_trace_printk that mangles some argument types ?
+> > (bpf_seq_printf has always been like that so no regression there)
+>
+> Pls send it as a follow up.
+> Along with another patch to clean verifier bits we discussed.
+> The merge window is approaching, so it has to be done asap.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/samples/bpf
-
-...etc.
-
-Thanks,
-
-jon
+On it ;)
