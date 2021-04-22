@@ -2,126 +2,284 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2376367828
-	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 06:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1893136793A
+	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 07:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229441AbhDVEAm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Apr 2021 00:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38642 "EHLO
+        id S230319AbhDVF1K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Apr 2021 01:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhDVEAi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Apr 2021 00:00:38 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65960C06174A;
-        Wed, 21 Apr 2021 21:00:02 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id v3so47416796ybi.1;
-        Wed, 21 Apr 2021 21:00:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XrmiHn9veLJZtruOzFEYxfRmanDJ+LDdZNSOgA37p+4=;
-        b=hx3OvCwl6VNHXOWE6Efxu2zzB2VxzN8gkGSbSj8GiQ7oHA/cpKEY2uByb16l6L7b/a
-         SoXODyZemZ0LoXOXwEWWp2H2Ssr/VlnuLDCLKOL48pw8o5cLJgqtG49x7h2xDuC5Sw4g
-         tyZ6fkLTtXUHD2QFPI6WNwQbcvevdMETKneGK0anxQqZo4oTwmN9iGaQSxSaz4NudNu9
-         rmuDZs7nKfzNZO/T+XQ+C15FfCmGpjGxA+Uqz9/tqWh+f6dOetZcgHPlZlQDLwniOzJJ
-         NwkJtY+Gm4glHixs7uqWN4HmOg7oGRwi19RkgqioGmYVKTcbfXAM6RyBsQ/svAw2J/C1
-         5cWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XrmiHn9veLJZtruOzFEYxfRmanDJ+LDdZNSOgA37p+4=;
-        b=Npg0FyojjNUVdWmjFHJEZcyOA3r6n+73MZoDWLh6hWjBzWzzXMW1VLRyBfip3Grh/R
-         O58eos4Ou9LLozKA/5Yxq3ceu2k8vJxUGt/EUMV4+4a+CECqfZH/3rBDV9q9ZC0Ccg9F
-         99PS7xKIAhdf8RfOBSVSK+ICGJitlFbZ2GA6X/kXjNUDTZoqY3zh+tJcMVM4JcBrZV/W
-         gw1ZUlrhnR5KDtbZHhYCex6jGrH6PUk3eQ9NDp8POVH2v3TQ8oWy9q94ZKcRjC9sR/hS
-         B0Eu0IJsL+DWxfTZu+x5sT25rJfB7rmFDZolEsA3GyPxhVfB6sQqYS/T0IZHss+1D61y
-         VVtQ==
-X-Gm-Message-State: AOAM533D6n1Iuvud7d46+riidL7IhxVXXA0WaSmN73O6FZLPYMca1S95
-        gzx/5NCvCKQCeBXu3v7q4eXOy58QpByvI31NYsA=
-X-Google-Smtp-Source: ABdhPJwzGeskpZsGlTF8Pff4DLzeb+hWhNgq1LZWlacRa3BBHV8IIuj184EiaMmGJXAqp+FfhcEjSN4clgKhj/RGRn0=
-X-Received: by 2002:a25:ae8c:: with SMTP id b12mr1845190ybj.347.1619064001784;
- Wed, 21 Apr 2021 21:00:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210416202404.3443623-1-andrii@kernel.org> <20210416202404.3443623-4-andrii@kernel.org>
- <c9367c9d-527c-ba50-bb28-59abad9f5009@fb.com>
-In-Reply-To: <c9367c9d-527c-ba50-bb28-59abad9f5009@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 21 Apr 2021 20:59:50 -0700
-Message-ID: <CAEf4BzbJMtqxkaJNAvv_M1OoxN6TKZgniLbJD1u5nxj1H32wKw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 03/17] libbpf: suppress compiler warning when
- using SEC() macro with externs
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        with ESMTP id S229533AbhDVF1J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Apr 2021 01:27:09 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2ABC06174A;
+        Wed, 21 Apr 2021 22:26:34 -0700 (PDT)
+From:   Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1619069192;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=H4I9jDECVuNT5dAo2H1sU8x8x5LKQ978c0zFpbnNYhQ=;
+        b=bMGf8v7PqPG3YVT5KTAu25H9MLK7qPgAbOoHLoFnJqNPPCATp/ARNny3Mr2S2YIQeYKPTF
+        0r9+mcUnYVpbs2UapZoEj0F87IaKUO0QlajbxQEXoDF/H7ZqYShfAmMbOCq476Xug7SjTO
+        BnTXe6fgNIsjBMNySigUW2fjiMPDLlVuHDY+VAg2rLrDSisE2uoHPKqjiQToJAy13J1aEP
+        6DtlZZewkCRiJ+mHFBy6L186ZzhnVL46sT78i2UbK0TOK/Sgy4dQw38pjahlsE9OJoeNHh
+        58Y3pweQrzs0fsbl1JtHatf3QxvFkh/p3ANrYmJd+PnW4f105muZSaDGfLpGbQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1619069192;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=H4I9jDECVuNT5dAo2H1sU8x8x5LKQ978c0zFpbnNYhQ=;
+        b=JscbAzBIx+fpzhBRlBO2IxLI29oXcUjrFMOKnp1QP+KvO3h6zbZLJXQUBcxy3YZXy9dBRo
+        rGCquC/A3/bWMgBg==
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>
+Subject: [PATCH net v3] igb: Fix XDP with PTP enabled
+Date:   Thu, 22 Apr 2021 07:26:17 +0200
+Message-Id: <20210422052617.17267-1-kurt@linutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 8:48 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 4/16/21 1:23 PM, Andrii Nakryiko wrote:
-> > When used on externs SEC() macro will trigger compilation warning about
-> > inapplicable `__attribute__((used))`. That's expected for extern declarations,
-> > so suppress it with the corresponding _Pragma.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
->
-> Ack with some comments below.
-> Acked-by: Yonghong Song <yhs@fb.com>
->
-> > ---
-> >   tools/lib/bpf/bpf_helpers.h | 11 +++++++++--
-> >   1 file changed, 9 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> > index b904128626c2..75c7581b304c 100644
-> > --- a/tools/lib/bpf/bpf_helpers.h
-> > +++ b/tools/lib/bpf/bpf_helpers.h
-> > @@ -25,9 +25,16 @@
-> >   /*
-> >    * Helper macro to place programs, maps, license in
-> >    * different sections in elf_bpf file. Section names
-> > - * are interpreted by elf_bpf loader
-> > + * are interpreted by libbpf depending on the context (BPF programs, BPF maps,
-> > + * extern variables, etc).
-> > + * To allow use of SEC() with externs (e.g., for extern .maps declarations),
-> > + * make sure __attribute__((unused)) doesn't trigger compilation warning.
-> >    */
-> > -#define SEC(NAME) __attribute__((section(NAME), used))
-> > +#define SEC(name) \
-> > +     _Pragma("GCC diagnostic push")                                      \
-> > +     _Pragma("GCC diagnostic ignored \"-Wignored-attributes\"")          \
-> > +     __attribute__((section(name), used))                                \
-> > +     _Pragma("GCC diagnostic pop")                                       \
->
-> The 'used' attribute is mostly useful for static variable/functions
-> since otherwise if not really used, the compiler could delete them
-> freely. The 'used' attribute does not really have an impact on
-> global variables regardless whether they are used or not in a particular
-> compilation unit. We could drop 'used' here and selftests should still
-> work. The only worry is that if people define something like
->     static int _version SEC("version") = 1;
->     static char _license[] SEC("license") = "GPL";
-> Removing 'used' may cause failure.
->
-> Since we don't want to remove 'used', then adding _Pragma to silence
-> the warning is a right thing to do here.
+When using native XDP with the igb driver, the XDP frame data doesn't point to
+the beginning of the packet. It's off by 16 bytes. Everything works as expected
+with XDP skb mode.
 
-Right, SEC() has become a universal macro used for functions,
-variables, and externs. I didn't want to introduce multiple variants,
-but also we can't break existing use cases. So pragma, luckily,
-allowed to support all cases.
+Actually these 16 bytes are used to store the packet timestamps. Therefore, pull
+the timestamp before executing any XDP operations and adjust all other code
+accordingly. The igc driver does it like that as well.
 
->
-> >
-> >   /* Avoid 'linux/stddef.h' definition of '__always_inline'. */
-> >   #undef __always_inline
-> >
+Tested with Intel i210 card and AF_XDP sockets.
+
+Fixes: 9cbc948b5a20 ("igb: add XDP support")
+Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
+---
+
+Changes since v2:
+
+ * Check timestamp for validity (Nguyen, Anthony L)
+
+Changes since v1:
+
+ * Use xdp_prepare_buff() (Lorenzo Bianconi)
+
+Changes since RFC:
+
+ * Removed unused return value definitions (Alexander Duyck)
+
+Previous versions:
+
+ * https://lkml.kernel.org/netdev/20210419072332.7246-1-kurt@linutronix.de/
+ * https://lkml.kernel.org/netdev/20210415092145.27322-1-kurt@linutronix.de/
+ * https://lkml.kernel.org/netdev/20210412101713.15161-1-kurt@linutronix.de/
+
+ drivers/net/ethernet/intel/igb/igb.h      |  3 +-
+ drivers/net/ethernet/intel/igb/igb_main.c | 45 +++++++++++++----------
+ drivers/net/ethernet/intel/igb/igb_ptp.c  | 21 ++++-------
+ 3 files changed, 34 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/igb/igb.h b/drivers/net/ethernet/intel/igb/igb.h
+index 7bda8c5edea5..72cf967c1a00 100644
+--- a/drivers/net/ethernet/intel/igb/igb.h
++++ b/drivers/net/ethernet/intel/igb/igb.h
+@@ -748,8 +748,7 @@ void igb_ptp_suspend(struct igb_adapter *adapter);
+ void igb_ptp_rx_hang(struct igb_adapter *adapter);
+ void igb_ptp_tx_hang(struct igb_adapter *adapter);
+ void igb_ptp_rx_rgtstamp(struct igb_q_vector *q_vector, struct sk_buff *skb);
+-int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+-			struct sk_buff *skb);
++ktime_t igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va);
+ int igb_ptp_set_ts_config(struct net_device *netdev, struct ifreq *ifr);
+ int igb_ptp_get_ts_config(struct net_device *netdev, struct ifreq *ifr);
+ void igb_set_flag_queue_pairs(struct igb_adapter *, const u32);
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index a45cd2b416c8..13595618f9e3 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -8281,7 +8281,7 @@ static void igb_add_rx_frag(struct igb_ring *rx_ring,
+ static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
+ 					 struct igb_rx_buffer *rx_buffer,
+ 					 struct xdp_buff *xdp,
+-					 union e1000_adv_rx_desc *rx_desc)
++					 ktime_t timestamp)
+ {
+ #if (PAGE_SIZE < 8192)
+ 	unsigned int truesize = igb_rx_pg_size(rx_ring) / 2;
+@@ -8301,12 +8301,8 @@ static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
+ 	if (unlikely(!skb))
+ 		return NULL;
+ 
+-	if (unlikely(igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP))) {
+-		if (!igb_ptp_rx_pktstamp(rx_ring->q_vector, xdp->data, skb)) {
+-			xdp->data += IGB_TS_HDR_LEN;
+-			size -= IGB_TS_HDR_LEN;
+-		}
+-	}
++	if (timestamp)
++		skb_hwtstamps(skb)->hwtstamp = timestamp;
+ 
+ 	/* Determine available headroom for copy */
+ 	headlen = size;
+@@ -8337,7 +8333,7 @@ static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
+ static struct sk_buff *igb_build_skb(struct igb_ring *rx_ring,
+ 				     struct igb_rx_buffer *rx_buffer,
+ 				     struct xdp_buff *xdp,
+-				     union e1000_adv_rx_desc *rx_desc)
++				     ktime_t timestamp)
+ {
+ #if (PAGE_SIZE < 8192)
+ 	unsigned int truesize = igb_rx_pg_size(rx_ring) / 2;
+@@ -8364,11 +8360,8 @@ static struct sk_buff *igb_build_skb(struct igb_ring *rx_ring,
+ 	if (metasize)
+ 		skb_metadata_set(skb, metasize);
+ 
+-	/* pull timestamp out of packet data */
+-	if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
+-		if (!igb_ptp_rx_pktstamp(rx_ring->q_vector, skb->data, skb))
+-			__skb_pull(skb, IGB_TS_HDR_LEN);
+-	}
++	if (timestamp)
++		skb_hwtstamps(skb)->hwtstamp = timestamp;
+ 
+ 	/* update buffer offset */
+ #if (PAGE_SIZE < 8192)
+@@ -8683,7 +8676,10 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
+ 	while (likely(total_packets < budget)) {
+ 		union e1000_adv_rx_desc *rx_desc;
+ 		struct igb_rx_buffer *rx_buffer;
++		ktime_t timestamp = 0;
++		int pkt_offset = 0;
+ 		unsigned int size;
++		void *pktbuf;
+ 
+ 		/* return some buffers to hardware, one at a time is too slow */
+ 		if (cleaned_count >= IGB_RX_BUFFER_WRITE) {
+@@ -8703,14 +8699,24 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
+ 		dma_rmb();
+ 
+ 		rx_buffer = igb_get_rx_buffer(rx_ring, size, &rx_buf_pgcnt);
++		pktbuf = page_address(rx_buffer->page) + rx_buffer->page_offset;
++
++		/* pull rx packet timestamp if available and valid */
++		if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
++			timestamp = igb_ptp_rx_pktstamp(rx_ring->q_vector,
++							pktbuf);
++
++			if (timestamp) {
++				pkt_offset += IGB_TS_HDR_LEN;
++				size -= IGB_TS_HDR_LEN;
++			}
++		}
+ 
+ 		/* retrieve a buffer from the ring */
+ 		if (!skb) {
+-			unsigned int offset = igb_rx_offset(rx_ring);
+-			unsigned char *hard_start;
++			unsigned char *hard_start = pktbuf - igb_rx_offset(rx_ring);
++			unsigned int offset = pkt_offset + igb_rx_offset(rx_ring);
+ 
+-			hard_start = page_address(rx_buffer->page) +
+-				     rx_buffer->page_offset - offset;
+ 			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
+ #if (PAGE_SIZE > 4096)
+ 			/* At larger PAGE_SIZE, frame_sz depend on len size */
+@@ -8733,10 +8739,11 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
+ 		} else if (skb)
+ 			igb_add_rx_frag(rx_ring, rx_buffer, skb, size);
+ 		else if (ring_uses_build_skb(rx_ring))
+-			skb = igb_build_skb(rx_ring, rx_buffer, &xdp, rx_desc);
++			skb = igb_build_skb(rx_ring, rx_buffer, &xdp,
++					    timestamp);
+ 		else
+ 			skb = igb_construct_skb(rx_ring, rx_buffer,
+-						&xdp, rx_desc);
++						&xdp, timestamp);
+ 
+ 		/* exit if we failed to retrieve a buffer */
+ 		if (!skb) {
+diff --git a/drivers/net/ethernet/intel/igb/igb_ptp.c b/drivers/net/ethernet/intel/igb/igb_ptp.c
+index 86a576201f5f..8e23df7da641 100644
+--- a/drivers/net/ethernet/intel/igb/igb_ptp.c
++++ b/drivers/net/ethernet/intel/igb/igb_ptp.c
+@@ -856,30 +856,26 @@ static void igb_ptp_tx_hwtstamp(struct igb_adapter *adapter)
+ 	dev_kfree_skb_any(skb);
+ }
+ 
+-#define IGB_RET_PTP_DISABLED 1
+-#define IGB_RET_PTP_INVALID 2
+-
+ /**
+  * igb_ptp_rx_pktstamp - retrieve Rx per packet timestamp
+  * @q_vector: Pointer to interrupt specific structure
+  * @va: Pointer to address containing Rx buffer
+- * @skb: Buffer containing timestamp and packet
+  *
+  * This function is meant to retrieve a timestamp from the first buffer of an
+  * incoming frame.  The value is stored in little endian format starting on
+  * byte 8
+  *
+- * Returns: 0 if success, nonzero if failure
++ * Returns: 0 on failure, timestamp on success
+  **/
+-int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+-			struct sk_buff *skb)
++ktime_t igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va)
+ {
+ 	struct igb_adapter *adapter = q_vector->adapter;
++	struct skb_shared_hwtstamps ts;
+ 	__le64 *regval = (__le64 *)va;
+ 	int adjust = 0;
+ 
+ 	if (!(adapter->ptp_flags & IGB_PTP_ENABLED))
+-		return IGB_RET_PTP_DISABLED;
++		return 0;
+ 
+ 	/* The timestamp is recorded in little endian format.
+ 	 * DWORD: 0        1        2        3
+@@ -888,10 +884,9 @@ int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+ 
+ 	/* check reserved dwords are zero, be/le doesn't matter for zero */
+ 	if (regval[0])
+-		return IGB_RET_PTP_INVALID;
++		return 0;
+ 
+-	igb_ptp_systim_to_hwtstamp(adapter, skb_hwtstamps(skb),
+-				   le64_to_cpu(regval[1]));
++	igb_ptp_systim_to_hwtstamp(adapter, &ts, le64_to_cpu(regval[1]));
+ 
+ 	/* adjust timestamp for the RX latency based on link speed */
+ 	if (adapter->hw.mac.type == e1000_i210) {
+@@ -907,10 +902,8 @@ int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+ 			break;
+ 		}
+ 	}
+-	skb_hwtstamps(skb)->hwtstamp =
+-		ktime_sub_ns(skb_hwtstamps(skb)->hwtstamp, adjust);
+ 
+-	return 0;
++	return ktime_sub_ns(ts.hwtstamp, adjust);
+ }
+ 
+ /**
+-- 
+2.20.1
+
