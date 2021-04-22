@@ -2,60 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC53368548
-	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 18:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF755368582
+	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 19:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238021AbhDVQye (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Apr 2021 12:54:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57032 "EHLO
+        id S236684AbhDVRIl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Apr 2021 13:08:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55576 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237829AbhDVQyd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 22 Apr 2021 12:54:33 -0400
+        by vger.kernel.org with ESMTP id S237414AbhDVRIk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 22 Apr 2021 13:08:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619110438;
+        s=mimecast20190719; t=1619111285;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=L67e35Y8xefipQs4qC6+RLpK6ouDIFBfNvy+uHX4DBo=;
-        b=AHxGH+OZ18vjsdeG3HFyBJBA6IAl+ce3DpCS7TVbH7oUf4Mv66JQAoXm6XzUxZ14GCYFcw
-        uvClTySAlha49xlgndV9uVtl9ze8QzjQME4kDVyX3dHUjfYYgP5+PC9jzzjjDgWD+lGgUC
-        c4y8XPuUkecjnVY1mKMbbAXMPvqA8Gc=
+        bh=6iyRCQCEGRHHV6y2IaFBtD9oS6jvBRER/Lqe7zRME5s=;
+        b=ZTN7K54dBx2v6RP8uOlKR3VRO0K9wvEW0xe4lNmtwzMYCGpCvw421/UMuALkKgafsgu1B6
+        2jDDWg1fXykj6OWBAX47sKgs1vlPcal13GBqXR3/u12CkOVKKWpfcLWsp8QojntkmzuO8l
+        dRRvzqFS7VS4DcZqM8bhT0Z6dUoqSqg=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-488-sCyT0bQ0MnKfk83RlvTJmw-1; Thu, 22 Apr 2021 12:53:54 -0400
-X-MC-Unique: sCyT0bQ0MnKfk83RlvTJmw-1
+ us-mta-465-2ey14UIJOzuK4QqUFlPTBw-1; Thu, 22 Apr 2021 13:08:01 -0400
+X-MC-Unique: 2ey14UIJOzuK4QqUFlPTBw-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6D1E5A40C7;
-        Thu, 22 Apr 2021 16:53:52 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CBB80A40C1;
+        Thu, 22 Apr 2021 17:07:58 +0000 (UTC)
 Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F175B5C261;
-        Thu, 22 Apr 2021 16:53:34 +0000 (UTC)
-Date:   Thu, 22 Apr 2021 18:53:32 +0200
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AE4F25C27C;
+        Thu, 22 Apr 2021 17:07:51 +0000 (UTC)
+Date:   Thu, 22 Apr 2021 19:07:50 +0200
 From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Toke =?UTF-8?B?SMO4aWxh?= =?UTF-8?B?bmQtSsO4cmdlbnNlbg==?= 
-        <toke@redhat.com>, Jiri Benc <jbenc@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFQ=?= =?UTF-8?B?w7ZwZWw=?= 
-        <bjorn.topel@gmail.com>, Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>, linux-doc@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
         brouer@redhat.com
-Subject: Re: [PATCHv9 bpf-next 2/4] xdp: extend xdp_redirect_map with
- broadcast support
-Message-ID: <20210422185332.3199ca2e@carbon>
-In-Reply-To: <20210422071454.2023282-3-liuhangbin@gmail.com>
-References: <20210422071454.2023282-1-liuhangbin@gmail.com>
-        <20210422071454.2023282-3-liuhangbin@gmail.com>
+Subject: Re: [PATCH bpf-next v4] bpf: Fix some invalid links in
+ bpf_devel_QA.rst
+Message-ID: <20210422190750.7273292c@carbon>
+In-Reply-To: <87pmymcofa.fsf@meer.lwn.net>
+References: <1619089790-6252-1-git-send-email-yangtiezhu@loongson.cn>
+        <87pmymcofa.fsf@meer.lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -64,70 +61,34 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 22 Apr 2021 15:14:52 +0800
-Hangbin Liu <liuhangbin@gmail.com> wrote:
+On Thu, 22 Apr 2021 09:46:33 -0600
+Jonathan Corbet <corbet@lwn.net> wrote:
 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index cae56d08a670..afec192c3b21 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-[...]
->  int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
->  		    struct bpf_prog *xdp_prog)
->  {
-> @@ -3933,6 +3950,7 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
->  	enum bpf_map_type map_type = ri->map_type;
->  	void *fwd = ri->tgt_value;
->  	u32 map_id = ri->map_id;
-> +	struct bpf_map *map;
->  	int err;
->  
->  	ri->map_id = 0; /* Valid map id idr range: [1,INT_MAX[ */
-> @@ -3942,7 +3960,12 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
->  	case BPF_MAP_TYPE_DEVMAP:
->  		fallthrough;
->  	case BPF_MAP_TYPE_DEVMAP_HASH:
-> -		err = dev_map_enqueue(fwd, xdp, dev);
-> +		map = xchg(&ri->map, NULL);
+> Tiezhu Yang <yangtiezhu@loongson.cn> writes:
+> 
+> > There exist some errors "404 Not Found" when I click the link
+> > of "MAINTAINERS" [1], "samples/bpf/" [2] and "selftests" [3]
+> > in the documentation "HOWTO interact with BPF subsystem" [4].
+> >
+> > As Jesper Dangaard Brouer said, the links work if you are browsing
+> > the document via GitHub [5], so I think maybe it is better to use
+> > the corresponding GitHub links to fix the issues in the kernel.org
+> > official document [4], this change has no influence on GitHub and
+> > looks like more clear.  
+> 
+> No, we really don't want to link to GitHub, that's what we have
+> kernel.org for.
 
-Hmm, this looks dangerous for performance to have on this fast-path.
-The xchg call can be expensive, AFAIK this is an atomic operation.
+I fully agree.
+I actually liked V3 better.
 
+Back when I wrote the documentation with these links, the BPF doc was
+not well integrated with the kernels doc-system.  It is today, so it
+makes sense to remove the links (that happens to work on GitHub) as you
+did in V3.
 
-> +		if (map)
-> +			err = dev_map_enqueue_multi(xdp, dev, map,
-> +						    ri->flags & BPF_F_EXCLUDE_INGRESS);
-> +		else
-> +			err = dev_map_enqueue(fwd, xdp, dev);
->  		break;
->  	case BPF_MAP_TYPE_CPUMAP:
->  		err = cpu_map_enqueue(fwd, xdp, dev);
-> @@ -3984,13 +4007,19 @@ static int xdp_do_generic_redirect_map(struct net_device *dev,
->  				       enum bpf_map_type map_type, u32 map_id)
->  {
->  	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
-> +	struct bpf_map *map;
->  	int err;
->  
->  	switch (map_type) {
->  	case BPF_MAP_TYPE_DEVMAP:
->  		fallthrough;
->  	case BPF_MAP_TYPE_DEVMAP_HASH:
-> -		err = dev_map_generic_redirect(fwd, skb, xdp_prog);
-> +		map = xchg(&ri->map, NULL);
-
-Same here!
-
-> +		if (map)
-> +			err = dev_map_redirect_multi(dev, skb, xdp_prog, map,
-> +						     ri->flags & BPF_F_EXCLUDE_INGRESS);
-> +		else
-> +			err = dev_map_generic_redirect(fwd, skb, xdp_prog);
->  		if (unlikely(err))
->  			goto err;
->  		break;
-
-
+Today BPF documentation is nicely organized via this link:
+ https://www.kernel.org/doc/html/latest/bpf/index.html
 
 -- 
 Best regards,
