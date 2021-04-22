@@ -2,210 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79EE036877B
-	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 21:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7F036887F
+	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 23:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236896AbhDVT5u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Apr 2021 15:57:50 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57608 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236058AbhDVT5t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Apr 2021 15:57:49 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13MIghlg175252;
-        Thu, 22 Apr 2021 18:56:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=ZJRa6DBI0YbEWX+8F6U2BY8cz8Do/qdBDgZ/49jfTRA=;
- b=jVK8g6j2YjUnA8GRxg48bVifIalOKcNTU6FEO4OAwsOnS7iR+LT3EikIW244yX5NHg2N
- vTOq+AxR7bLux7ZmdNUSVDHMB7XWICBjpnYN/uEaSiA4OwBV7Kr0ddF80eHWFuxFx8Ji
- YTuVVzXMgtPAvimpl4Km3x8QGg/8RPAyCqRpWgo8HbGkZNqzJmetFunDUa0fV4aDV4ey
- 3Pxf7oLyXgnQjbAWXJtv6WaScKDS0N7qiKZ/aUM5FzSBkAEjHNOSwjULs2Cel7A/fEMd
- SMVC5v3136werH/S/n0myaNj7zJFGxSNF1XATtX8BCWcy62GDQQ8n4GDgaoCUpiW+sQn Pw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 38022y5rxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Apr 2021 18:56:20 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13MIo0AO186349;
-        Thu, 22 Apr 2021 18:56:20 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-        by userp3020.oracle.com with ESMTP id 383cg9esp4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Apr 2021 18:56:20 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Im9yCfYrtqzoCJ4/Dq7953j5sKr+XgEUItm45VTpk6MTYC98gScnVFpLuW4hfyuqNVa4l7gWwxkzfHvUqUsPX4L35zRlC6YUes1UdHE0qV7pj9WN1n5oxaUidlmnRHgK/zCf7kJA4kVbo5i5mw2+agzALHGIKhmTf+8QlB6BjM5fqHLex5nZT4qAFPiMrRx+jICtqIhgJHTpJs8UgnoiUgOl3x0BzDMFWteKjEftki7l5F12nTBjUSUYCDpNy+oOa1tZGi8Dfaw6Ge/Zm4g32Dw0DE/N3VBqg0neX8cg49if2EO8pzVeKyxvhezV2QL4j5f6FXx1Dpi+Y8eoGOh/vQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZJRa6DBI0YbEWX+8F6U2BY8cz8Do/qdBDgZ/49jfTRA=;
- b=gmUtbm5yX6S3e8aQNAnHshSTSBQ+YPp96mdkCmCTlnKtGPoSYW3anfxa2DNH3WYHpveFMbtpWJYC+6JXzZbXailKrFSgWsFA6ejtTxf1xsziM20UqE7Bj6sSZ5jFbduKMK6v3Mm7uFx0NoWOF5uj9SuR4QuQwrZUBuFD5ok1EB++y2xBLzp4KjBJVbaRBXr77uMNosobJ0cIxcBVpit6Rozi8vxA5E5LMMTIjsxIYCOuUlg/GMEIA7RB+/YZbjmGVxC9TjnUZIoG557KEQzNduPm/ESXMbgegsrV311hGp0ZT6ZQMIvgA2QTYHEU8Yo2h1b1Ia2DCU93JcdD38QBMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        id S237048AbhDVVVl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Apr 2021 17:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237018AbhDVVVl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Apr 2021 17:21:41 -0400
+Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A10C06174A
+        for <bpf@vger.kernel.org>; Thu, 22 Apr 2021 14:21:05 -0700 (PDT)
+Received: by mail-vk1-xa29.google.com with SMTP id x4so10160846vkx.5
+        for <bpf@vger.kernel.org>; Thu, 22 Apr 2021 14:21:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZJRa6DBI0YbEWX+8F6U2BY8cz8Do/qdBDgZ/49jfTRA=;
- b=HMjFIYORCigC6dzYWeVcMsckTM+KbWetHOH2rWPZyk0FLvE2fu+hkYSxQqE8PDppNNiaPJdeHqE9s61aAstgLBNayuUYAI9zhnN6R209kcw/JktrQBCdLMMTEFZY4FUR3K64nqo5t7F1E7gAy1uZP4V8jVeDcDVK0dEk0ZpvvCU=
-Received: from MWHPR10MB1582.namprd10.prod.outlook.com (2603:10b6:300:22::8)
- by CO1PR10MB4788.namprd10.prod.outlook.com (2603:10b6:303:94::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Thu, 22 Apr
- 2021 18:56:18 +0000
-Received: from MWHPR10MB1582.namprd10.prod.outlook.com
- ([fe80::353a:1802:6e91:1811]) by MWHPR10MB1582.namprd10.prod.outlook.com
- ([fe80::353a:1802:6e91:1811%8]) with mapi id 15.20.4065.022; Thu, 22 Apr 2021
- 18:56:18 +0000
-From:   Liam Howlett <liam.howlett@oracle.com>
-To:     Will Deacon <will@kernel.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Julien Grall <julien.grall@arm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH 3/3] arch/arm64/kernel/traps: Use find_vma_intersection()
- in traps for setting si_code
-Thread-Topic: [PATCH 3/3] arch/arm64/kernel/traps: Use find_vma_intersection()
- in traps for setting si_code
-Thread-Index: AQHXNgU7TopVgzWGUEaUH9orR8DEd6rAgPcAgABlUIA=
-Date:   Thu, 22 Apr 2021 18:56:17 +0000
-Message-ID: <20210422185611.ccdf3rm4zr3xtuzl@revolver>
-References: <20210420165001.3790670-1-Liam.Howlett@Oracle.com>
- <20210420165001.3790670-3-Liam.Howlett@Oracle.com>
- <20210422125334.GB1521@willie-the-truck>
-In-Reply-To: <20210422125334.GB1521@willie-the-truck>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [23.233.25.87]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5f90d5f6-ba9c-4c79-b1be-08d905c04ff4
-x-ms-traffictypediagnostic: CO1PR10MB4788:
-x-microsoft-antispam-prvs: <CO1PR10MB4788EA500C3AD6D34A07511BFD469@CO1PR10MB4788.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: iQHxli9Rk2mXdysXKyxOHrT1tSYrX4gIOfYigDiloUcgcL75VQzcEW8QxqX0e1JtXgMlS0kjgQNLmsfcZ7aYllxZEK7ibZ0/NzKkpxEXbnlFlkZMHAA3swywux7rP/Pc5UKC7ySgJPzA7wxbHb7c/GzGnAsgN2ML0k0rminNg0ObXwgzuIOW0wDJ0Voe0JDcyPrg3YSl18AnEP0o4icHMgp6Sr+aVg+LQ1hUrBVZCxKdAxymNGehvR2GjAnq+o+qlvWFhEWF6rYk09dt4I6gFk6J2Jrjb9tKpC9jYpZ+SrN3dGIh5EW1BHrXEh+YdEe/+tZbVzpojdyym0sfTw42k7G4X8HZPyG8wPwdrygmzvxMjVr4XixUEXt+AsL34k3tW0pOihJx2vDEdos3J2MJ44HpL+8DXaypjguvdxRx0Lz3FRFsznJMBUSO8MptxBvca+IsXPXY8XMczYxI68Zra6mrK6n4LX+5UUX9PkYbi9lg1d2rhV3eje0qwD1CG5s3+KP1KNeU79WEXmBmxIITz2rRINViA8WDNFzKl8LEdDW7KT6HIAN3akwfWlh5xoCDAqFt57IvsEIasQi65w3GX95SkEEBE+cbI5v3DNkR07YLWwXnxtS+AaBwhnPPH3C47FIapK5JQHNfkRyVmcWyUdLVEYlWSRCQs5QQ/XFwQuQ=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1582.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(366004)(396003)(136003)(39860400002)(376002)(346002)(5660300002)(6916009)(478600001)(9686003)(6512007)(54906003)(6506007)(4326008)(122000001)(91956017)(71200400001)(8936002)(8676002)(66946007)(44832011)(33716001)(26005)(316002)(2906002)(83380400001)(66476007)(76116006)(186003)(66556008)(66446008)(1076003)(64756008)(966005)(7416002)(38100700002)(6486002)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?3pqPoDmZZFihOdv3rxZ9mQcccxRa24XU4tlVkKJ1ERJrHslfgTV+LQ1nOuTj?=
- =?us-ascii?Q?NWQfvhUJdZah40i8vaQHAA43YYXljAhpuqAsUvgd/7zJHxELq5V1p9151kYt?=
- =?us-ascii?Q?4iqm7eyy7ZxH8DVMviEix+fisOPkYjCO8HOnO6oOhm4QocWnH/T3pUSn3Jpy?=
- =?us-ascii?Q?jdhlpFVqF8OUKPAuD0YNQ0I+RUxEG79MiTQrqoUNNVIw34hTIGxUPc3sjtwD?=
- =?us-ascii?Q?fzEIA7AUd5TSOB+p/pMc0cJORuAktJI9+4hdIGeMGeLpjMKqTRtBxOaYO06O?=
- =?us-ascii?Q?NMtOl2s5ykMplhv/gijEOSBEj1aK6/806mTRWOQaDlvszGVe/oGZ0S///RMi?=
- =?us-ascii?Q?en+UBEqR0LMdtHWLkUjuS9ufLJcrXqa5Kqlk6QswnQNpVzMMueh5OylfRq8Z?=
- =?us-ascii?Q?m/aT5w15q624mG8eZJV1iKin/qlReQitdjKF5CKAdsrzFgj4QKFWmMxj9JRf?=
- =?us-ascii?Q?LjVQW7pM6idLQvxGQTkf7Di1zFte87zflZ16GK4Ltg3jsBPcnNX7ZApV1dQE?=
- =?us-ascii?Q?ChkwMbd6HmbIfbuvOHABveEw5ehahXlJDAn0sXDIcES4XumPjG+fKenHQIOR?=
- =?us-ascii?Q?HL0f3Id92RWlAbv+O3pRTEBnjdLwLsaI46BeDLLLct90pj2tt48MEEmwLLYU?=
- =?us-ascii?Q?LxLPmnmrqgan2TPKbQ1eL9s8Eg5AUI6UkwO/GYQEaXVoSzkiQE+uNirL+VdM?=
- =?us-ascii?Q?Ao5Nk4Mhhtuh1CNXRe7qeiQFEI+B5EnPNdxBSW2Vu3LMY/U3tWjiv3H/Fh1r?=
- =?us-ascii?Q?HRLUeK8iQ/P1qRiQZuax92uQj649E2qnSUd8OwSBNZ6WaCf0NoQwYRDGPy2g?=
- =?us-ascii?Q?viu1n+tFUJy1QF9VQUGluAL+1KOaaePiqJtVfrxD15ipR9bYAVDcyIqDgZj6?=
- =?us-ascii?Q?mgrbsOPFh+r6dyLF7fNJ8dH84GLYc8OVUXR/HQQwAdYW0wXq2rpHAa0e1v7t?=
- =?us-ascii?Q?DiJjcG+Cpf2zjnCQS/HLAjI6UiwKU7oZ/odIQ/qo06oLbUr+HbSdYJudHhdM?=
- =?us-ascii?Q?5vL3VgnmBy40Ijxwq8viq8L0DwbzHNZlJUnqp2OyEkstrEq8f51T1hY2JnGs?=
- =?us-ascii?Q?uDuByFu78PvDBFeix9SedDuRIhXfskiVi9DgolWo/S6d4/fFNlVeRLny7yp9?=
- =?us-ascii?Q?gJspceTtRKGoTHnW7duyl3LDzbOMMre6z//GSqLRREKU8q2v3af6hhx90fT0?=
- =?us-ascii?Q?Ls429EjCrweG8Y1fMhdluIP9O7CPSf6XyavRqPhBi/zhckkv0A9oZ/LGwDfU?=
- =?us-ascii?Q?U7zD9x+0YYNT4m0aM/5aRoGp3gBUWL2TqHuRWCzwxvHe5yvkTVb/ackwGpDM?=
- =?us-ascii?Q?kIL6A9CClXjk8wdXu+zMUthx?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <880F3AE23546C046A5BF7362C44334AC@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IGhXjnkSXjtzb3EVBdwJaLUgJJh/tTihxGt6DqyeoiQ=;
+        b=Gf2Jbim10f8ltIngbegutuIKfJkXc5rxo1dqe2k7Ixte9OexHwemMVgI/tTzXpqnJw
+         8q7mh+mYU66/ZEqLH65jZIuwX6gwogsf1zXkCO7Y8apMgzzUwFwW13OE1h3QeN0ZkUTQ
+         +AENROU0/d3bDDQabsTceexm2rIKIR23PyH1ukylxGnsSs7qQvL+BOvHt/gMdziHIOtr
+         OFpfsSA69igO+audyXdWFoW3vOpNtl0wsMspklmfmGYPIMAWdSWxwo60wDk76eUB+RuA
+         pG7/8UQ+PYHXh+Ur6RYUaI1/D2ak8FbsCqS3B5DN2mq7c6NWTippVTsL1SUwoWab3vRd
+         u3bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IGhXjnkSXjtzb3EVBdwJaLUgJJh/tTihxGt6DqyeoiQ=;
+        b=al2e3+22B/ciW0RtcO+ZkSThX7OWnbJvMBUVVbHg0zNSLqIaPwY8nr2WDzAx7tt00J
+         4L3EvoRic+1AtNm4E5lIiQrYVs+rHdmWf2xbSgiPz9t1ISalnGJBH0oemkfRsidmp3Wt
+         OwEODmv45HmkMMSdJoWGP+kyxr4sRhca3Ax5FIXN6w7XX/SUF/NoAuMW7Zfe/J6LS5hi
+         4x6UJK0rF0djUP10pxVGTVOnyGL25jWNvDeNff8XpMC23Pp7VmTkhnR2iFLGaencCqVp
+         BD9tQseOWb51FLaFMwjJ2cU6Ky2IMppouB4dPWshPf3Q7ziWKjMt5sigAJemqORFIqUK
+         aSyw==
+X-Gm-Message-State: AOAM531WDnTTkMocLpd7hz3o4dHF96uHaic0JY16yWOypiS/r8qJ1k1B
+        W+qi1vyTF0Ett38ixclm9BKCA3dXQI9b58xjme0=
+X-Google-Smtp-Source: ABdhPJyY8ULNCywKmKEf0JvUYqPhtOPw8YXMGmaFZToa9Ly+AVmDEGsH7TsdtR7qHzhwdiw4POHkmpB5eNby36Ouk9w=
+X-Received: by 2002:a1f:1e01:: with SMTP id e1mr842962vke.8.1619126464522;
+ Thu, 22 Apr 2021 14:21:04 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1582.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f90d5f6-ba9c-4c79-b1be-08d905c04ff4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Apr 2021 18:56:18.1102
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: br4uFs1/K/H8v8zQwQAT7GQ3LTrwOJJTKm/f/bPAOtTQS8uLlaN49Hoc2UYdIvaeOYJ7/6I/x3jQZu2m/osN3A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4788
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9962 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 suspectscore=0
- mlxlogscore=999 bulkscore=0 adultscore=0 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104220139
-X-Proofpoint-ORIG-GUID: Cffe_KYwpV46DEvyr-1F5CAxnaoOd4jA
-X-Proofpoint-GUID: Cffe_KYwpV46DEvyr-1F5CAxnaoOd4jA
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9962 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
- spamscore=0 bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0
- mlxlogscore=999 adultscore=0 malwarescore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104220138
+References: <CAO658oXG4HEm0rGEW-==0kaTmqenDUC_GM-qi7CEjwSakbnJRw@mail.gmail.com>
+ <CAEf4BzZy0XDYcchPkarUw5AusO7LZfOnswuOyUqakkVJ-ksCDQ@mail.gmail.com>
+ <CAO658oUJApo-1RMmkkj=y7oH-LAHLd48E0aqobTiTRSuYm617w@mail.gmail.com>
+ <CAO658oV=NPtTNRk1_W_F1jzKMTyCONWL4kKC+YwexGP2Q5ZYEA@mail.gmail.com>
+ <CAEf4BzbxZsS+6S+qdXHFSYPGsevQhxdXqsVH8Z9HGTWreP5uGQ@mail.gmail.com>
+ <CAO658oXWP2dsAsD9S8=EjosnoE4ND6LWr3js_yiDNGNw3ZqGQg@mail.gmail.com> <CAEf4Bza34-z4CXHdz6C7wEL9ghcaDSQdGp7NX1QF7T5u3brO1w@mail.gmail.com>
+In-Reply-To: <CAEf4Bza34-z4CXHdz6C7wEL9ghcaDSQdGp7NX1QF7T5u3brO1w@mail.gmail.com>
+From:   Grant Seltzer Richman <grantseltzer@gmail.com>
+Date:   Thu, 22 Apr 2021 17:20:53 -0400
+Message-ID: <CAO658oUmvX1FYwHey1_6oF82ep=h6XvGNdW4oFTPtMhJ8fxrug@mail.gmail.com>
+Subject: Re: Generating libbpf API documentation
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-* Will Deacon <will@kernel.org> [210422 08:53]:
-> On Tue, Apr 20, 2021 at 04:50:13PM +0000, Liam Howlett wrote:
-> > find_vma() will continue to search upwards until the end of the virtual
-> > memory space.  This means the si_code would almost never be set to
-> > SEGV_MAPERR even when the address falls outside of any VMA.  The result
-> > is that the si_code is not reliable as it may or may not be set to the
-> > correct result, depending on where the address falls in the address
-> > space.
-> >=20
-> > Using find_vma_intersection() allows for what is intended by only
-> > returning a VMA if it falls within the range provided, in this case a
-> > window of 1.
-> >=20
-> > Fixes: bd35a4adc413 (arm64: Port SWP/SWPB emulation support from arm)
-> > Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
-> > ---
-> >  arch/arm64/kernel/traps.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-> > index a05d34f0e82a..a44007904a64 100644
-> > --- a/arch/arm64/kernel/traps.c
-> > +++ b/arch/arm64/kernel/traps.c
-> > @@ -383,9 +383,10 @@ void force_signal_inject(int signal, int code, uns=
-igned long address, unsigned i
-> >  void arm64_notify_segfault(unsigned long addr)
-> >  {
-> >  	int code;
-> > +	unsigned long ut_addr =3D untagged_addr(addr);
-> > =20
-> >  	mmap_read_lock(current->mm);
-> > -	if (find_vma(current->mm, untagged_addr(addr)) =3D=3D NULL)
-> > +	if (find_vma_intersection(current->mm, ut_addr, ut_addr + 1) =3D=3D N=
-ULL)
-> >  		code =3D SEGV_MAPERR;
-> >  	else
-> >  		code =3D SEGV_ACCERR;
->=20
-> I'm not seeing how this addresses VM_GROWSDOWN as Catalin mentioned befor=
-e.
+On Wed, Apr 21, 2021 at 11:58 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Apr 21, 2021 at 12:24 PM Grant Seltzer Richman
+> <grantseltzer@gmail.com> wrote:
+> >
+> > On Tue, Apr 20, 2021 at 12:26 AM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Fri, Apr 16, 2021 at 12:38 PM Grant Seltzer Richman
+> > > <grantseltzer@gmail.com> wrote:
+> > > >
+> > > > On Tue, Mar 16, 2021 at 4:14 PM Grant Seltzer Richman
+> > > > <grantseltzer@gmail.com> wrote:
+> > > > >
+> > > > > On Mon, Mar 15, 2021 at 8:47 PM Andrii Nakryiko
+> > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > >
+> > > > > > On Mon, Mar 15, 2021 at 9:51 AM Grant Seltzer Richman
+> > > > > > <grantseltzer@gmail.com> wrote:
+> > > > > > >
+> > > > > > > Hi all,
+> > > > > > >
+> > > > > > > I have been experimenting with ways to contribute documentation to
+> > > > > > > libbpf to make it easier for developers of bpf projects to use it.
+> > > > > > > With the goal of making a documentation site that is easy to
+> > > > > > > maintain/generate I found Doxygen (many of you may have experience
+> > > > > > > with it, I did not). I set up a CI/CD workflow using github actions
+> > > > > > > that runs doxygen on the libbpf mirror hosted there, and hosts the
+> > > > > > > produced HTML using netlify. You can find the currently hosted version
+> > > > > > > of it at https://libbpf-docs.netlify.app (I would gladly donate a real
+> > > > > > > domain name for this purpose). The docs generation workflow is in my
+> > > > > > > github repo here: https://github.com/grantseltzer/libbpf-docs
+> > > > > >
+> > > > > > Thanks for investigating this! I've look at libbpf-docs.netlify.app,
+> > > > > > and it seems like it just contains a list of structs and their fields
+> > > > > > (both those that are part of libbpf API, as well as internal). Out of
+> > > > > > all functions only two are listed there (libbpf_nla_parse_nested and
+> > > > > > libbpf_nla_parse) and both are not part of libbpf API as well. So I
+> > > > > > understand that I don't see any comments due to the '/**' format
+> > > > > > (though it would be easy to run sed script adding it everywhere, just
+> > > > > > as part of an experiment), but I'm not sure why none of API functions
+> > > > > > are present there?
+> > > > > >
+> > > > > > I think kernel docs used to be hosted on readthedocs.org, seems like
+> > > > > > they are also providing hosting for open-source projects, so that
+> > > > > > would solve the problem of the hosting. Have you looked at that
+> > > > > > solution? It definitely has a bit more modern UI that
+> > > > > > Doxygen-generated one :) but I don't know what are the real
+> > > > > > differences between Sphinx and Doxygen and which one we should choose.
+> > > > > >
+> > > > > > >
+> > > > > > > In order to make this work all we would need is to format comments
+> > > > > > > above functions we want to document. Doxygen requires that the comment
+> > > > > > > just be in a block that starts with `/**`. I don't think doxygen
+> > > > > > > specific directives should be committed to code but I think this is a
+> > > > > > > fine convention to follow. Other doxygen directives (i.e. having
+> > > > > > > `@file` in every file) can be faked using a step I have in the github
+> > > > > > > actions.
+> > > > > > >
+> > > > > > > What does everyone think? Can we agree on this convention and start
+> > > > > > > contributing documentation in this way? Any pitfalls to doxygen I'm
+> > > > > > > not familiar with?
+> > > > > > >
+> > > > > > > Thanks!
+> > > > >
+> > > > > As far as I understand Doxygen's only criteria for generating
+> > > > > documentation for functions is if the correctly formatted comment is
+> > > > > present. I've changed the repo that the libbpf-docs.netlify.app
+> > > > > website uses to track a fork libbpf I have on my personal account. I
+> > > > > added comments above some ringbuffer functions to demonstrate this.
+> > > > >
+> > > > > Interestingly the two functions that already show up
+> > > > > (libbpf_nla_parse/parse_nested) have comments which are specifically
+> > > > > formatted for doxygen, even including directives for arguments and
+> > > > > related functions.
+> > > > >
+> > > > > I have heard of Sphinx/read-the-docs but didn't look too deeply into
+> > > > > it, I'll check it out and report back with my findings!
+> > > >
+> > > > I've finally gotten a chance to circle around to this. I investigated
+> > > > Sphinx and read the docs. As far as I can tell Doxygen is still
+> > > > required for generating that docs from code. Sphinx seems to typically
+> > > > be used to transform markdown documentation files into themed html
+> > > > pages. Sphinx would also enable us to host the documentation on
+> > > > readthedocs's, but it would still be the output of Doxygen, meaning it
+> > > > wouldn't have the nice theme that you see on other readthedocs pages.
+> > > >
+> > > > I have a barebones example set up of what that would look like at
+> > > > libbpf.readthedocs.io which pulls from my fork of the github mirror
+> > > > here: github.com/grantseltzer/libbpf
+> > > >
+> > > > The advantage of this approach is only having free hosting and having
+> > > > a 'readthedocs.io' domain. It would still require CI for pulling in
+> > > > libbpf releases, appending doxygen directives, and of course
+> > > > committing comments in code next to api functions/types.
+> > > >
+> > >
+> > > I didn't have much time to investigate Sphinx vs Doxygen. Reding [0]
+> > > diagonally, seems like you need few extensions (breathe and
+> > > sphinx_rtd_theme) to make everything work. It also seems like
+> > > readthedocs will be able to automatically pull and generate
+> > > documentation, so if all that is true, it still seems like Sphinx +
+> > > readthedocs is the better and more modern approach.
+> > >
+> > >   [0] https://devblogs.microsoft.com/cppblog/clear-functional-c-documentation-with-sphinx-breathe-doxygen-cmake/
+> >
+> > That link proved helpful. I was not using the breathe plugin
+> > directives correctly in the previous iteration. Thanks!
+> >
+>
+> Great, glad it helped.
+>
+> > >
+> > > > I prefer the previous approach (github actions + netlify/github pages)
+> > > > but regardless would happily set this up if we can start an initiative
+> > > > to add those code comments in code, which I'd also like to help
+> > > > contribute to. I'd also be happy to hear of suggestions of free/open
+> > > > source alternatives for CI.
+> > >
+> > > We currently use Travis CI for libbpf CI, but I'm not very happy with
+> > > it and ideally we should move to GitHub Actions or something along
+> > > those lines.
+> >
+> > I recently set up some github actions workflow for the project I help
+> > maintain and really like it so far, I would be happy to help
+> > transition.
+>
+> Yeah, we currently have entire infrastructure around Travis CI in
+> which we compile the latest kernel, selftests, spin up qemu instance
+> and run selftests inside it. It would be great to migrate that to
+> Github Actions, I hope that most of the logic doesn't need to change.
+> But unfortunately I haven't been able to dedicate enough time to
+> tackle that migration.
+>
+> >
+> > >
+> > > >
+> > > > Andrii, do you run the libbpf github org and mirror repo?
+> > >
+> > > Yes, I have admin access along Alexei and Daniel. So we'll be able to
+> > > set up whatever needs to be set up.
+> >
+> > I just pushed changes for libbpf.readthedocs.io for you to check out.
+>
+> It looks great! Something that's from the modern era, you know... ;)
+>
+> > The 'API' page has the auto generated docs based on public
+> > functions/structs/enums in libbpf.h. There's a couple of functions
+> > that I added bogus test comments to show what documentation  would
+> > look like. (`libbpf_num_possible_cpus` has a good example). Also the
+> > 'BPF Program Types' page is just to serve as an example of how we can
+> > include documentation that isn't just auto generated from code.
+> >
+> > I need to read the `sync-kernel.sh` script to better understand how
+> > the mirror works, but after that would it be helpful to open a github
+> > PR? Once that'd get merged I'd transfer the readthedocs libbpf page to
+> > track it. I also want to discuss this on the linux-doc mailing list
+> > for input.
+>
+> sync-kernel.sh has few places where rules for transforming kernel
+> source code into Github layout are specified. Only those would need to
+> be updated, probably.
+>
+> So yeah, please take a look and submit PR and/or patches here. Let's
+> start with just bare bones infra for documentation and then start
+> improving doc comments themselves.
 
-Sorry for not including the link before, but for context, I've added the
-URL for the lore conversation from before at the end of my message [1].
+Went ahead and submitted a PR on the mirror:
+https://github.com/libbpf/libbpf/pull/260
 
-I thought this was resolved by the fact that the stack expansion would
-have already taken care of the VM_GROWSDOWN code path?  Did I
-misunderstand what was said?
-
-I've modified the other paths to this function to avoid causing issues
-elsewhere and to hopefully do the necessary cleanup that Catalin said
-needed to be tidied.
-
-Link:  https://lore.kernel.org/lkml/20210413180030.GA31164@arm.com/
-
-Thanks,
-Liam=
+I'll follow that up with some initial patches to the code with comment
+documentation, and likely also some blog content promoting this
+initiative.
