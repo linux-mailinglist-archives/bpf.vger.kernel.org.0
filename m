@@ -2,152 +2,338 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33283686AA
-	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 20:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B72F3686AE
+	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 20:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236796AbhDVSjA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Apr 2021 14:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35462 "EHLO
+        id S236287AbhDVSl3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Apr 2021 14:41:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236668AbhDVSi7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Apr 2021 14:38:59 -0400
+        with ESMTP id S236058AbhDVSl3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Apr 2021 14:41:29 -0400
 Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA996C06174A;
-        Thu, 22 Apr 2021 11:38:22 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id 82so52689174yby.7;
-        Thu, 22 Apr 2021 11:38:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCD5C06174A;
+        Thu, 22 Apr 2021 11:40:54 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 82so52698828yby.7;
+        Thu, 22 Apr 2021 11:40:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aL/QKwy+XkQh0q91Wy+csx8NaLsGuJJ+p/obXjssK4k=;
-        b=DG2eaIaFHg/xGnlHJ2YODcnqhgKAgP4MxgtBlN3VsV8ikEAFVQ0Y+5LKCsq4rJrdyy
-         oQ/oJjBBr272/B8XFd5m8tlWQreDzFAW4Pl0JXHjnh9uHDlSaSgnsYkp+MGTn9Y2wERX
-         jQknrD3iKKmfS0htyaOGY3qDRUH8zrqA9A0FL5ycmJyhLhu3hLsSKYcx2zLlGlDweT2q
-         5KggMyAe6ePbyjhE7g6tJsaosocbHX2UlO3Hb1HQEp3oQ6GdwDKuH6elRSbcrJpNror6
-         c3u1nmhUR5AoMXKr0f7tahnt6VvPplk1QizZFoisOmykzKSOUKLHwj0CYdq6hOi8gee/
-         ZQEA==
+        bh=yRGWe8cy3lSmMEo0AAnmgNmy4yCW+CV5r5L8Zh4NUGk=;
+        b=h8I3vFzM26y/4dBYgZGRewIkDZRzmJuFQt3UqGA4LFeLc+k0vigY0oWU9tCIVEXxk/
+         kUEYKMz+IvdnMTvoX1+CfOGrKKCRuck02bLDXtZ/MV8ZZL284qq1Is0muD6X8tV4tsjH
+         w+9HlWCXau+Lu5qo+MLbjpncRpN7nRxDk9k7xiOJxYWgOVahFxzSnm4EeipePIEB3N9+
+         7DrTubvRWUvQLfz7kms3hCFoTQ77rm22B5nrafNo2kzMwRbdkh+wN2bkqoria+FdLCsF
+         bI/XUNB1S0M8i0OqNy+gXFIezUym0Bv0dQXgbELkLog4IugHFAyc+znNmcRzDAyT8vBU
+         cGNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aL/QKwy+XkQh0q91Wy+csx8NaLsGuJJ+p/obXjssK4k=;
-        b=bJj6EQ+uW+ssRx4xbtfnBFqddGedfvEBoSIAAcijRgjSilDSLoJcTllId1UBzVLfij
-         ClE1n0Q1JpJEmJEo2hBfJ43NV59uH6N0y/QBUzcbCYU7F3PZenJCK5DwxpABcvmSPeUB
-         QLwmTEk+VcsrKBmzbaB4iXFMM/aFFTeE1WlTKanvDnyRoSCI2eTs6SQhPirEwXAdexkL
-         N+RX00ei96FNo8Vn6dBHIy08Raqkwy9Twbl1eWg7dceUSs3zE4Y9AhmGpO2mf/8hgG+T
-         zGdY5vORf3AoODpZf/DdlvKax8L8G1ahqJNt5Cpk7qmW/347KstZTM/A1sjF9faX3VXo
-         nifQ==
-X-Gm-Message-State: AOAM531EJpzEyPbVVIH152IKM4os10nch9Y44dNNwc3n3R6u3LB85hpl
-        de95dtSFaaU8wIwReE4Rawa/QXXwVr8akrzqX2U=
-X-Google-Smtp-Source: ABdhPJwnTGEzcqOzJdfU4E3ZWlI2Iesq9XlOP24Sm67XXm5ZRFNNrltVkwNmgpqD3RuCz90gEUrewH8qMipI7juIIQE=
-X-Received: by 2002:a05:6902:1144:: with SMTP id p4mr46904ybu.510.1619116702286;
- Thu, 22 Apr 2021 11:38:22 -0700 (PDT)
+        bh=yRGWe8cy3lSmMEo0AAnmgNmy4yCW+CV5r5L8Zh4NUGk=;
+        b=Os1OY/CHiQnzdGeK+eMDbszqCTgXNbuvxp/SdacXIfYA809I8cYxMSlG3Y4cjTH4cu
+         hxtX/tJ+cXteYWSlMgGf4tSfogTR7CsmntE4ADu4vpe54wQr8nEm66CGja3jXNUDV/LB
+         WqHWvDpSeHXjmZzXdFbBbjqtwyGSb6Wy6PElUcROHEdKRo/e53EWW68ODrlBp2sR2ONC
+         GyX7mAFcSLVKfn02w8cz2gVHDZSTR2lwlXvxe8EqHewaXaqFnn7qzQk5Q61xRWdkknjb
+         47bqZZbedn03yaMOnoWN4Z2XOA//PXW0BaYRpOiwdGRgCfKt6w8ZEN/hZXGG4BEifK47
+         UT8w==
+X-Gm-Message-State: AOAM532QIq/32o9Cglk/9FIf2kfhMfNXG2fVOEQ/+f05bj0W8mBIllrr
+        9yAswSk2CKs66OwfR5ASmq5IpCYhDKp622A8UNE=
+X-Google-Smtp-Source: ABdhPJywENPU7512El5EjpPGXAOJ/bpG9hiXvlay9amQ6S3NgycZaV2wzyShxOjYhcY1lvmmdvp+NuByugbE429Uwbw=
+X-Received: by 2002:a25:dc46:: with SMTP id y67mr61794ybe.27.1619116853737;
+ Thu, 22 Apr 2021 11:40:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210421190736.1538217-1-linux@rasmusvillemoes.dk>
- <CAEf4Bza6-Unvr7QmcbvVtNDPc4BNzf8zMaU4XardNqB_GnGDHw@mail.gmail.com>
- <236995f6-30ee-8047-624c-08d0a1552dc1@rasmusvillemoes.dk> <CABRcYmJFfdCU_QxX+gYRWc+7BSbmTWX84o_WT=oBg_CPr8qS=g@mail.gmail.com>
-In-Reply-To: <CABRcYmJFfdCU_QxX+gYRWc+7BSbmTWX84o_WT=oBg_CPr8qS=g@mail.gmail.com>
+References: <20210416202404.3443623-1-andrii@kernel.org> <20210416202404.3443623-7-andrii@kernel.org>
+ <0ae37c13-e8d9-b0ca-00ca-1750dc2799c9@fb.com>
+In-Reply-To: <0ae37c13-e8d9-b0ca-00ca-1750dc2799c9@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 22 Apr 2021 11:38:11 -0700
-Message-ID: <CAEf4BzZsYv78znqAkuhTPLSzgAxhSB9vr6eODn2G-vnV0yQyLQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf: remove pointless code from bpf_do_trace_printk()
-To:     Florent Revest <revest@chromium.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+Date:   Thu, 22 Apr 2021 11:40:42 -0700
+Message-ID: <CAEf4Bzb40Ki+eZdKJ+QFnzuaburPRC6v4fVPtiWXtj5ZyWLg=A@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 06/17] libbpf: refactor BTF map definition parsing
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 2:23 AM Florent Revest <revest@chromium.org> wrote:
+On Thu, Apr 22, 2021 at 8:33 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> On Thu, Apr 22, 2021 at 9:13 AM Rasmus Villemoes
-> <linux@rasmusvillemoes.dk> wrote:
-> >
-> > On 22/04/2021 05.32, Andrii Nakryiko wrote:
-> > > On Wed, Apr 21, 2021 at 6:19 PM Rasmus Villemoes
-> > > <linux@rasmusvillemoes.dk> wrote:
-> > >>
-> > >> The comment is wrong. snprintf(buf, 16, "") and snprintf(buf, 16,
-> > >> "%s", "") etc. will certainly put '\0' in buf[0]. The only case where
-> > >> snprintf() does not guarantee a nul-terminated string is when it is
-> > >> given a buffer size of 0 (which of course prevents it from writing
-> > >> anything at all to the buffer).
-> > >>
-> > >> Remove it before it gets cargo-culted elsewhere.
-> > >>
-> > >> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> > >> ---
-> > >>  kernel/trace/bpf_trace.c | 3 ---
-> > >>  1 file changed, 3 deletions(-)
-> > >>
-> > >
-> > > The change looks good to me, but please rebase it on top of the
-> > > bpf-next tree. This is not a bug, so it doesn't have to go into the
-> > > bpf tree. As it is right now, it doesn't apply cleanly onto bpf-next.
 >
-> FWIW the idea of the patch also looks good to me :)
 >
-> > Thanks for the pointer. Looking in next-20210420, it seems to me that
+> On 4/16/21 1:23 PM, Andrii Nakryiko wrote:
+> > Refactor BTF-defined maps parsing logic to allow it to be nicely reused by BPF
+> > static linker. Further, at least for BPF static linker, it's important to know
+> > which attributes of a BPF map were defined explicitly, so provide a bit set
+> > for each known portion of BTF map definition. This allows BPF static linker to
+> > do a simple check when dealing with extern map declarations.
 > >
-> > commit d9c9e4db186ab4d81f84e6f22b225d333b9424e3
-> > Author: Florent Revest <revest@chromium.org>
-> > Date:   Mon Apr 19 17:52:38 2021 +0200
+> > The same capabilities allow to distinguish attributes explicitly set to zero
+> > (e.g., __uint(max_entries, 0)) vs the case of not specifying it at all (no
+> > max_entries attribute at all). Libbpf is currently not utilizing that, but it
+> > could be useful for backwards compatibility reasons later.
 > >
-> >     bpf: Factorize bpf_trace_printk and bpf_seq_printf
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >   tools/lib/bpf/libbpf.c          | 256 ++++++++++++++++++--------------
+> >   tools/lib/bpf/libbpf_internal.h |  32 ++++
+> >   2 files changed, 177 insertions(+), 111 deletions(-)
 > >
-> > is buggy. In particular, these two snippets:
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index a0e6d6bc47f3..f6f4126389ac 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -2025,255 +2025,262 @@ static int build_map_pin_path(struct bpf_map *map, const char *path)
+> >       return bpf_map__set_pin_path(map, buf);
+> >   }
 > >
-> > +#define BPF_CAST_FMT_ARG(arg_nb, args, mod)                            \
-> > +       (mod[arg_nb] == BPF_PRINTF_LONG_LONG ||                         \
-> > +        (mod[arg_nb] == BPF_PRINTF_LONG && __BITS_PER_LONG == 64)      \
-> > +         ? (u64)args[arg_nb]                                           \
-> > +         : (u32)args[arg_nb])
+> > -
+> > -static int parse_btf_map_def(struct bpf_object *obj,
+> > -                          struct bpf_map *map,
+> > -                          const struct btf_type *def,
+> > -                          bool strict, bool is_inner,
+> > -                          const char *pin_root_path)
+> > +int parse_btf_map_def(const char *map_name, struct btf *btf,
+> > +                   const struct btf_type *def_t, bool strict,
+> > +                   struct btf_map_def *map_def, struct btf_map_def *inner_def)
+> >   {
+> >       const struct btf_type *t;
+> >       const struct btf_member *m;
+> > +     bool is_inner = inner_def == NULL;
+> >       int vlen, i;
 > >
+> > -     vlen = btf_vlen(def);
+> > -     m = btf_members(def);
+> > +     vlen = btf_vlen(def_t);
+> > +     m = btf_members(def_t);
+> >       for (i = 0; i < vlen; i++, m++) {
+> > -             const char *name = btf__name_by_offset(obj->btf, m->name_off);
+> > +             const char *name = btf__name_by_offset(btf, m->name_off);
 > >
-> > +       ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args,
-> > mod),
-> > +               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2,
-> > args, mod));
+> [...]
+> >               }
+> >               else if (strcmp(name, "values") == 0) {
+> > +                     char inner_map_name[128];
+> >                       int err;
 > >
-> > Regardless of the casts done in that macro, the type of the resulting
-> > expression is that resulting from C promotion rules. And (foo ? (u64)bla
-> > : (u32)blib) has type u64, which is thus the type the compiler uses when
-> > building the vararg list being passed into snprintf(). C simply doesn't
-> > allow you to change types at run-time in this way.
+> >                       if (is_inner) {
+> >                               pr_warn("map '%s': multi-level inner maps not supported.\n",
+> > -                                     map->name);
+> > +                                     map_name);
+> >                               return -ENOTSUP;
+> >                       }
+> >                       if (i != vlen - 1) {
+> >                               pr_warn("map '%s': '%s' member should be last.\n",
+> > -                                     map->name, name);
+> > +                                     map_name, name);
+> >                               return -EINVAL;
+> >                       }
+> > -                     if (!bpf_map_type__is_map_in_map(map->def.type)) {
+> > +                     if (!bpf_map_type__is_map_in_map(map_def->map_type)) {
+> >                               pr_warn("map '%s': should be map-in-map.\n",
+> > -                                     map->name);
+> > +                                     map_name);
+> >                               return -ENOTSUP;
+> >                       }
+> > -                     if (map->def.value_size && map->def.value_size != 4) {
+> > +                     if (map_def->value_size && map_def->value_size != 4) {
+> >                               pr_warn("map '%s': conflicting value size %u != 4.\n",
+> > -                                     map->name, map->def.value_size);
+> > +                                     map_name, map_def->value_size);
+> >                               return -EINVAL;
+> >                       }
+> > -                     map->def.value_size = 4;
+> > -                     t = btf__type_by_id(obj->btf, m->type);
+> > +                     map_def->value_size = 4;
+> > +                     t = btf__type_by_id(btf, m->type);
+> >                       if (!t) {
+> >                               pr_warn("map '%s': map-in-map inner type [%d] not found.\n",
+> > -                                     map->name, m->type);
+> > +                                     map_name, m->type);
+> >                               return -EINVAL;
+> >                       }
+> >                       if (!btf_is_array(t) || btf_array(t)->nelems) {
+> >                               pr_warn("map '%s': map-in-map inner spec is not a zero-sized array.\n",
+> > -                                     map->name);
+> > +                                     map_name);
+> >                               return -EINVAL;
+> >                       }
+> > -                     t = skip_mods_and_typedefs(obj->btf, btf_array(t)->type,
+> > -                                                NULL);
+> > +                     t = skip_mods_and_typedefs(btf, btf_array(t)->type, NULL);
+> >                       if (!btf_is_ptr(t)) {
+> >                               pr_warn("map '%s': map-in-map inner def is of unexpected kind %s.\n",
+> > -                                     map->name, btf_kind_str(t));
+> > +                                     map_name, btf_kind_str(t));
+> >                               return -EINVAL;
+> >                       }
+> > -                     t = skip_mods_and_typedefs(obj->btf, t->type, NULL);
+> > +                     t = skip_mods_and_typedefs(btf, t->type, NULL);
+> >                       if (!btf_is_struct(t)) {
+> >                               pr_warn("map '%s': map-in-map inner def is of unexpected kind %s.\n",
+> > -                                     map->name, btf_kind_str(t));
+> > +                                     map_name, btf_kind_str(t));
+> >                               return -EINVAL;
+> >                       }
 > >
-> > It probably works fine on x86-64, which passes the first six or so
-> > argument in registers, va_start() puts those registers into the va_list
-> > opaque structure, and when it comes time to do a va_arg(int), just the
-> > lower 32 bits are used. It is broken on i386 and other architectures
-> > where arguments are passed on the stack (and for x86-64 as well had
-> > there been a few more arguments) and va_arg(ap, int) is essentially ({
-> > int res = *(int *)ap; ap += 4; res; }) [or maybe it's -= 4 because stack
-> > direction etc., that's not really relevant here].
-> >
-> > Rasmus
+> > -                     map->inner_map = calloc(1, sizeof(*map->inner_map));
+> > -                     if (!map->inner_map)
+> > -                             return -ENOMEM;
+> > -                     map->inner_map->fd = -1;
+> > -                     map->inner_map->sec_idx = obj->efile.btf_maps_shndx;
 >
-> Thank you Rasmus :)
+> The refactoring didn't set map->inner_map->sec_idx. I guess since
+> inner_map is only used internally by libbpf, so it does not
+> have a user visible sec_idx and hence useless? It is worthwhile to
+> mention in the commit message for this difference, I think.
 >
-> It seems that we went offtrack in
-> https://lore.kernel.org/bpf/CAEf4BzZVEGM4esi-Rz67_xX_RTDrgxViy0gHfpeauECR5bmRNA@mail.gmail.com/
-> and we do need something like "88a5c690b6 bpf: fix bpf_trace_printk on
-> 32 bit archs". Thinking about it again, it's clearer now why the
-> __BPF_TP_EMIT macro emits 2^3=8 different __trace_printk() indeed.
+> > -                     map->inner_map->name = malloc(strlen(map->name) +
+> > -                                                   sizeof(".inner") + 1);
+> > -                     if (!map->inner_map->name)
+> > -                             return -ENOMEM;
+> > -                     sprintf(map->inner_map->name, "%s.inner", map->name);
+> > -
+> > -                     err = parse_btf_map_def(obj, map->inner_map, t, strict,
+> > -                                             true /* is_inner */, NULL);
+> > +                     snprintf(inner_map_name, sizeof(inner_map_name), "%s.inner", map_name);
+> > +                     err = parse_btf_map_def(inner_map_name, btf, t, strict, inner_def, NULL);
+> >                       if (err)
+> >                               return err;
+> > +
+> > +                     map_def->parts |= MAP_DEF_INNER_MAP;
+> >               } else if (strcmp(name, "pinning") == 0) {
+> >                       __u32 val;
+> > -                     int err;
+> >
+> >                       if (is_inner) {
+> > -                             pr_debug("map '%s': inner def can't be pinned.\n",
+> > -                                      map->name);
+> > +                             pr_warn("map '%s': inner def can't be pinned.\n", map_name);
+> >                               return -EINVAL;
+> >                       }
+> > -                     if (!get_map_field_int(map->name, obj->btf, m, &val))
+> > +                     if (!get_map_field_int(map_name, btf, m, &val))
+> >                               return -EINVAL;
+> > -                     pr_debug("map '%s': found pinning = %u.\n",
+> > -                              map->name, val);
+> > -
+> > -                     if (val != LIBBPF_PIN_NONE &&
+> > -                         val != LIBBPF_PIN_BY_NAME) {
+> > +                     if (val != LIBBPF_PIN_NONE && val != LIBBPF_PIN_BY_NAME) {
+> >                               pr_warn("map '%s': invalid pinning value %u.\n",
+> > -                                     map->name, val);
+> > +                                     map_name, val);
+> >                               return -EINVAL;
+> >                       }
+> > -                     if (val == LIBBPF_PIN_BY_NAME) {
+> > -                             err = build_map_pin_path(map, pin_root_path);
+> > -                             if (err) {
+> > -                                     pr_warn("map '%s': couldn't build pin path.\n",
+> > -                                             map->name);
+> > -                                     return err;
+> > -                             }
+> > -                     }
+> > +                     map_def->pinning = val;
+> > +                     map_def->parts |= MAP_DEF_PINNING;
+> >               } else {
+> >                       if (strict) {
+> > -                             pr_warn("map '%s': unknown field '%s'.\n",
+> > -                                     map->name, name);
+> > +                             pr_warn("map '%s': unknown field '%s'.\n", map_name, name);
+> >                               return -ENOTSUP;
+> >                       }
+> > -                     pr_debug("map '%s': ignoring unknown field '%s'.\n",
+> > -                              map->name, name);
+> > +                     pr_debug("map '%s': ignoring unknown field '%s'.\n", map_name, name);
+> >               }
+> >       }
+> >
+> > -     if (map->def.type == BPF_MAP_TYPE_UNSPEC) {
+> > -             pr_warn("map '%s': map type isn't specified.\n", map->name);
+> > +     if (map_def->map_type == BPF_MAP_TYPE_UNSPEC) {
+> > +             pr_warn("map '%s': map type isn't specified.\n", map_name);
+> >               return -EINVAL;
+> >       }
+> >
+> >       return 0;
+> >   }
+> >
+> > +static void fill_map_from_def(struct bpf_map *map, const struct btf_map_def *def)
+> > +{
+> [...]
+> > +}
+> > +
+> >   static int bpf_object__init_user_btf_map(struct bpf_object *obj,
+> >                                        const struct btf_type *sec,
+> >                                        int var_idx, int sec_idx,
+> >                                        const Elf_Data *data, bool strict,
+> >                                        const char *pin_root_path)
+> >   {
+> > +     struct btf_map_def map_def = {}, inner_def = {};
+> >       const struct btf_type *var, *def;
+> >       const struct btf_var_secinfo *vi;
+> >       const struct btf_var *var_extra;
+> >       const char *map_name;
+> >       struct bpf_map *map;
+> > +     int err;
+> >
+> >       vi = btf_var_secinfos(sec) + var_idx;
+> >       var = btf__type_by_id(obj->btf, vi->type);
+> > @@ -2327,7 +2334,34 @@ static int bpf_object__init_user_btf_map(struct bpf_object *obj,
+> >       pr_debug("map '%s': at sec_idx %d, offset %zu.\n",
+> >                map_name, map->sec_idx, map->sec_offset);
+> >
+> > -     return parse_btf_map_def(obj, map, def, strict, false, pin_root_path);
+> > +     err = parse_btf_map_def(map->name, obj->btf, def, strict, &map_def, &inner_def);
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     fill_map_from_def(map, &map_def);
+> > +
+> > +     if (map_def.pinning == LIBBPF_PIN_BY_NAME) {
+> > +             err = build_map_pin_path(map, pin_root_path);
+> > +             if (err) {
+> > +                     pr_warn("map '%s': couldn't build pin path.\n", map->name);
+> > +                     return err;
+> > +             }
+> > +     }
+> > +
+> > +     if (map_def.parts & MAP_DEF_INNER_MAP) {
+> > +             map->inner_map = calloc(1, sizeof(*map->inner_map));
+> > +             if (!map->inner_map)
+> > +                     return -ENOMEM;
+> > +             map->inner_map->fd = -1;
+>
+> missing set map->inner_map->sec_idx here.
 
-Yeah, we wondering but no one could guess why it was done the way it
-was done :) Next time we should invest in a better comment ;-P
+I'll add it back here, but it was never really necessary. More for the
+completeness sake. sec_idx is used only to match relo to a map, and
+this inner_map is never matched and never referenced by a relocation.
 
 >
-> In the case of bpf_trace_printk with a maximum of 3 args, it's
-> relatively cheap; but for bpf_seq_printf and bpf_snprintf which accept
-> up to 12 arguments, that would be 2^12=4096 calls. Until now
-> bpf_seq_printf has just ignored this problem and just considered
-> everything as u64, I wonder if that'd be the best approach for these
-> two helpers anyway.
+> > +             map->inner_map->name = malloc(strlen(map_name) + sizeof(".inner") + 1);
+> > +             if (!map->inner_map->name)
+> > +                     return -ENOMEM;
+> > +             sprintf(map->inner_map->name, "%s.inner", map_name);
+> > +
+> > +             fill_map_from_def(map->inner_map, &inner_def);
+> > +     }
+> > +
+> > +     return 0;
+> >   }
+> >
+> >   static int bpf_object__init_user_btf_maps(struct bpf_object *obj, bool strict,
+> > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> > index 92b7eae10c6d..17883073710c 100644
+> > --- a/tools/lib/bpf/libbpf_internal.h
+> > +++ b/tools/lib/bpf/libbpf_internal.h
+> > @@ -138,6 +138,38 @@ static inline __u32 btf_type_info(int kind, int vlen, int kflag)
+> >       return (kflag << 31) | (kind << 24) | vlen;
+> >   }
+> >
+> [...]
