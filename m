@@ -2,69 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8465B368417
-	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 17:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33731368418
+	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 17:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236634AbhDVPqf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Apr 2021 11:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52734 "EHLO
+        id S236583AbhDVPqg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Apr 2021 11:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236547AbhDVPq0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S236485AbhDVPq0 (ORCPT <rfc822;bpf@vger.kernel.org>);
         Thu, 22 Apr 2021 11:46:26 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD41EC061366
-        for <bpf@vger.kernel.org>; Thu, 22 Apr 2021 08:44:05 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id j4so33400876lfp.0
-        for <bpf@vger.kernel.org>; Thu, 22 Apr 2021 08:44:05 -0700 (PDT)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FB1C061367;
+        Thu, 22 Apr 2021 08:44:06 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id y4so32693675lfl.10;
+        Thu, 22 Apr 2021 08:44:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=hyFiUvpnYR/YCt5ur9aidpVEDU1fslnEtXvgoVuBY1o=;
-        b=n4QfrB4VrRgFHd1OSFumM7+/5oc9XLrnlT4bRg1Z5MGIlkQ8iTiB/wbHxWm59OqChf
-         3P5LvNzK1oI1PMr7nehXD32xwc13T+DZzbqBRKJkNvU3dadsmwRQzgMBY1Z1guOLu2fT
-         8PK2qF3TfTA4c12jvyO12XBq41C1IBeeLW45f1Llo3nKhePOOBeu9l4WM5aOAwAdvous
-         MqXk7l6AfJfKI507ddyl+n56PU/dC2jx0hlkZjT6bJbC5NaPiN3tv4OW1/WE1BJ9l6xz
-         bgYB4rbmHQZUiA1njmAhDY7BV8GVmV1R0ZlRkIXeFU2Kxw/OseR7378y1fJlsnEf3RrI
-         PbuA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m57p73/6EC8FlSnir1szkJ7jqEqfWVCfqYqX+nVjqck=;
+        b=ve0MpZs6IKHSbgFFzkqP8d/fRYxjCj8eKWRw/2nI3/b3bSMBpQZW7jykiRUl2W4ohk
+         fpYIFUWyKzepqpAy6OIsMBPXqG+sMr9RG0dbdIIaIm3S8my4nvlG+yl+CjfS+fC9WhFY
+         4wPmYlDHlBkDfLalCkyE0HUJWnfOqNKYJrRtfw60ZUJz9cx6XbNslm91T3mMUpM4kz+z
+         WLmgdo8kjSfIn9KBK98b2e+a1z/Fv7Yv+8lE3jpZOVMGV62AreEmsgBC2kuGQZBFvsvS
+         cA6BOJLlXVUZEr2CP6yDgdrTlgLYAl5mmHmKlW1TRMS55mNrIfry5xwVQpvjVTVthfjU
+         zj6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=hyFiUvpnYR/YCt5ur9aidpVEDU1fslnEtXvgoVuBY1o=;
-        b=luOMp2hCqL8n9xb03/uuJcsD2GwgTGKMEQvdN8gfbmTDj/uYbByoJJgURSM6ToFvji
-         ooUTjCQzYdru9pCXhIvyCvahx0oIx1JzkBj643TjTodYx/SzW8uj/oxB1ROTWSq6bKeD
-         QTaYqvHWLnjWc5uS46+za3Pt27MOru/CA1GiVuTfdkysh+rAcEaOwyscJIvbWJp5yQNa
-         4XCctCfR9Pnnnb+ikCKFsO9lm94916TqTFnJTbKKBvkwFJbkB2+n5PCCmAR9i8F5KddY
-         FUcIxnc9+c+rDqnLu9CjGTmvbUc0dobzG8GBW/r1/VPnXthFYC3qG4NP6stloCGq1Lgu
-         DxWQ==
-X-Gm-Message-State: AOAM533cyQgz48/9UuTfF3PCZqsVMXUvk37k1btkVgUXGEEtO7seOtSy
-        BU8qNH/LsAZEL+PELiezx35js6hph1FBydxTu8emBHj0Gh1DOtGS
-X-Google-Smtp-Source: ABdhPJwfc15F+Noxc9hE4Tzd8vNNjwqlAZ1Da6qggHAXPCca8nEbNkAOoRESus4f+9Hr8Ek2E9P27BvTGdLUkLAReHY=
-X-Received: by 2002:a05:6512:3984:: with SMTP id j4mr3094919lfu.38.1619106244012;
- Thu, 22 Apr 2021 08:44:04 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m57p73/6EC8FlSnir1szkJ7jqEqfWVCfqYqX+nVjqck=;
+        b=LhMtdh4XHixxtdvq3UAnxItt0zq26scjcR2edeYwRI1m0dvXWYDEuXt/21kVuoml+L
+         wHdj6d1p/ICbOsbxrS3aB970bul1yFkjzQKC6md8JyRueWhg3xfRY/en6dtk1DisOfpQ
+         /rkTzpwpC87dh8Xbpvq9C9aQiNjFFczyxgVsLb8wl1YumtbXyTB281YbLL8YucS6JrS5
+         RVG3fPnkLRBGWLjmL1NhZj9a0AY/JBwlOoYhVWGTfgbflH/uo8XUrWoz/bkn0T1lt7Pd
+         iPOHzAa3rsWZKIPqPazXhrk7RbAB726CxiHSB/SWa4vkT6m0ug1fQg/lG+XnMKOBaBui
+         jvLQ==
+X-Gm-Message-State: AOAM533DBWi8E8kVA+2++Uaxx+uOFKQsV+685+R9kp/Qj3JMMSsZeDnF
+        uqo8+uth/Owtqf4DG4LAOqhLVKyMMoorNLPA7Eg=
+X-Google-Smtp-Source: ABdhPJzbTnyFdLToRPn2UfW0jXnyOg5pUZxzOADTdRr+UIwZzwthDRI8BqzV/Y/zZ2GbShl+AwIDD+FAS9LALPLY1Tc=
+X-Received: by 2002:a05:6512:2026:: with SMTP id s6mr3051615lfs.214.1619106245393;
+ Thu, 22 Apr 2021 08:44:05 -0700 (PDT)
 MIME-Version: 1.0
-From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Thu, 22 Apr 2021 11:43:53 -0400
-Message-ID: <CAOWid-eY4CHZw01d9w3KC0qpodWmTXfQqLopkNFVNwZhmCYgMQ@mail.gmail.com>
-Subject: bpf helper functions from kernel module
-To:     bpf <bpf@vger.kernel.org>
+References: <20210421190736.1538217-1-linux@rasmusvillemoes.dk>
+ <CAEf4Bza6-Unvr7QmcbvVtNDPc4BNzf8zMaU4XardNqB_GnGDHw@mail.gmail.com>
+ <236995f6-30ee-8047-624c-08d0a1552dc1@rasmusvillemoes.dk> <CABRcYmJFfdCU_QxX+gYRWc+7BSbmTWX84o_WT=oBg_CPr8qS=g@mail.gmail.com>
+ <7e9d3337-eb7b-a2c8-a5ef-037d6a9765d7@rasmusvillemoes.dk> <CABRcYmLU0f9eSvsjBogKmc_FK8qykfR1pNx9VCW8Scjj4-VQQg@mail.gmail.com>
+ <CABRcYm+2r0XmXX2uHr2E6BEj=WpEBRV93i0mLtHUTsz041Z0Tw@mail.gmail.com>
+In-Reply-To: <CABRcYm+2r0XmXX2uHr2E6BEj=WpEBRV93i0mLtHUTsz041Z0Tw@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 22 Apr 2021 08:43:54 -0700
+Message-ID: <CAADnVQ+wFcjMzs2G1VAKW5WnFtcBgKMeJcK3ouKJYCR7GdvfWw@mail.gmail.com>
+Subject: Re: [PATCH] bpf: remove pointless code from bpf_do_trace_printk()
+To:     Florent Revest <revest@chromium.org>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Thu, Apr 22, 2021 at 8:35 AM Florent Revest <revest@chromium.org> wrote:
+> >
+> > I was having a stroll through lib/vsprintf.c and noticed bstr_printf:
+> >
+> >  * This function like C99 vsnprintf, but the difference is that vsnprintf gets
+> >  * arguments from stack, and bstr_printf gets arguments from @bin_buf which is
+> >  * a binary buffer that generated by vbin_printf.
+> >
+> > Maybe it would be easier to just build our argument buffer similarly
+> > to what vbin_printf does.
+>
+> I've been experimenting with this idea and it is quite promising :) it
+> also makes the code much cleaner, I find. I'll send a series asap.
 
-From https://www.collabora.com/news-and-blog/blog/2019/04/15/an-ebpf-overview-part-2-machine-and-bytecode/
-"The BPF-accesible kernel "helper" functions are defined by the kernel
-core (not extensible through modules) via an API similar to defining
-syscalls"
+You mean to use bstr_printf internally ? That could work indeed.
+Make sure CONFIG_BINARY_PRINTF is selected.
+CONFIG_TRACING does it already.
 
-Has there been interest/discussion around having helper functions from
-kernel modules?  Going through the code, I am guessing one of the
-obstacles is to have the verifier checking against helper functions
-that may or may not be available but I am not an expert of the
-subsystem.  What are the current opinions on having helper functions
-from kernel modules?
+> BPF maintainers: should we fix forward or do you prefer reverting the
+> snprintf series and then re-applying another snprintf series without
+> the regression in bpf_trace_printk that mangles some argument types ?
+> (bpf_seq_printf has always been like that so no regression there)
 
-Regards,
-Kenny Ho
+Pls send it as a follow up.
+Along with another patch to clean verifier bits we discussed.
+The merge window is approaching, so it has to be done asap.
