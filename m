@@ -2,88 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D303B368590
-	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 19:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0D8368631
+	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 19:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238487AbhDVRKi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Apr 2021 13:10:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32125 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238405AbhDVRKh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 22 Apr 2021 13:10:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619111402;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y5BqwVyFTuRUmMT95k385ZqmCV9Q+o4MykSmzv1VAmo=;
-        b=grN1XYhD8DA1nW1gEz//0uJMcU/PNlYConzKv2VQFAhdFZdUKU4B7cqzujLncAw0sZL+93
-        AND3HKUT7+e9evJr24NSDMtrc4HOQ7yamNSupAkrxeblyzSVd7JhXiwchFcvtOQDhSJfOb
-        /DxkkFb3fDEdjFpiZ2H+BJIo6F3duKc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-RJJhQvpENbetK7hBWkDKQw-1; Thu, 22 Apr 2021 13:09:58 -0400
-X-MC-Unique: RJJhQvpENbetK7hBWkDKQw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A4631922963;
-        Thu, 22 Apr 2021 17:09:56 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B10D760938;
-        Thu, 22 Apr 2021 17:09:49 +0000 (UTC)
-Date:   Thu, 22 Apr 2021 19:09:48 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-doc@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        brouer@redhat.com
-Subject: Re: [PATCH bpf-next v3] bpf: Fix some invalid links in
- bpf_devel_QA.rst
-Message-ID: <20210422190948.432c1cab@carbon>
-In-Reply-To: <20210422111540.7e37c004@carbon>
-References: <1619062560-30483-1-git-send-email-yangtiezhu@loongson.cn>
-        <20210422111540.7e37c004@carbon>
+        id S236287AbhDVRsl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Apr 2021 13:48:41 -0400
+Received: from sv1021.xserver.jp ([157.112.189.22]:49982 "EHLO
+        sv1021.xserver.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236058AbhDVRsl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Apr 2021 13:48:41 -0400
+X-Greylist: delayed 1076 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Apr 2021 13:48:40 EDT
+Received: from virusgw7.xserver.jp (virusgw7.xserver.jp [157.112.189.122])
+        by sv1021.xserver.jp (Postfix) with ESMTP id 5CB90103A11B97;
+        Fri, 23 Apr 2021 02:24:44 +0900 (JST)
+Received: from sv1021.xserver.jp (157.112.189.22)
+ by virusgw7.xserver.jp (F-Secure/fsigk_smtp/521/virusgw7.xserver.jp);
+ Fri, 23 Apr 2021 02:24:42 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/521/virusgw7.xserver.jp)
+Received: from webmail.xserver.ne.jp (webmail.xserver.ne.jp [210.188.201.183])
+        by sv1021.xserver.jp (Postfix) with ESMTPA id 448FC103926964;
+        Fri, 23 Apr 2021 02:24:41 +0900 (JST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Date:   Thu, 22 Apr 2021 19:24:41 +0200
+From:   Basha Saeed <basha@xserver.ne.jp>
+To:     undisclosed-recipients:;
+Subject: PROJECT FUNDING
+Reply-To: basha.saeed@tokoshimainvestementgroup.com, basha7.saeed@gmail.com
+Mail-Reply-To: basha.saeed@tokoshimainvestementgroup.com,
+ basha7.saeed@gmail.com
+Message-ID: <3cee316a98a1db0e42cb8b923f953206@esteel5106.xsrv.jp>
+X-Sender: basha@xserver.ne.jp
+User-Agent: Roundcube Webmail/1.2.0
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 22 Apr 2021 11:15:40 +0200
-Jesper Dangaard Brouer <brouer@redhat.com> wrote:
 
-> On Thu, 22 Apr 2021 11:36:00 +0800
-> Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
-> 
-> > There exist some errors "404 Not Found" when I click the link
-> > of "MAINTAINERS" [1], "samples/bpf/" [2] and "selftests" [3]
-> > in the documentation "HOWTO interact with BPF subsystem" [4].  
-> 
-> The links work if you are browsing the document via GitHub:
->  https://github.com/torvalds/linux/blob/master/Documentation/bpf/bpf_devel_QA.rst
-> 
-> But I'm fine with removing those links as the official doc is here:
->  https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html
-
-IMHO a V4 was not needed.  Let me make it clear by ACKing this patch.
-
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+ATTN:SIR
 
+I'M BASHA  WORKING AS SENIOR SPECIAL FINANCIAL ADVISOR TO SOME PRUDENT
+INVESTORS WHO SPECIALIZE ON EXISTING BUSINESSES NEEDING FUNDING OR LOAN
+FOR EXPANSION, INCLUDING STARTUP PROJECTS,  DO YOU HAVE PROJECTS THAT
+REQUIRE IMMEDIATE FUNDING?GET BACK TO ME FOR DETAILS
+
+BASHA SAEED
+SR.FINANCIAL & INVESTMENT CONSULTANT
+TEL: +16019106966
+WHATSAPP:+ 16019106966
