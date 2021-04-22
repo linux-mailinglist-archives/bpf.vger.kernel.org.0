@@ -2,168 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB4F3675D5
-	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 01:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667613676B3
+	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 03:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234986AbhDUXmI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 21 Apr 2021 19:42:08 -0400
-Received: from www62.your-server.de ([213.133.104.62]:50060 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232353AbhDUXmI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 21 Apr 2021 19:42:08 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lZMTM-000GyF-U2; Thu, 22 Apr 2021 01:41:32 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lZMTM-000FjC-Ka; Thu, 22 Apr 2021 01:41:32 +0200
-Subject: Re: [PATCH bpf-next v3 2/3] libbpf: add low level TC-BPF API
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        id S237424AbhDVBRp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 21 Apr 2021 21:17:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234970AbhDVBRp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 21 Apr 2021 21:17:45 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 864E5613AB;
+        Thu, 22 Apr 2021 01:17:09 +0000 (UTC)
+Date:   Wed, 21 Apr 2021 21:17:06 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shaun Crampton <shaun@tigera.io>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org
-References: <20210420193740.124285-1-memxor@gmail.com>
- <20210420193740.124285-3-memxor@gmail.com>
- <9b0aab2c-9b92-0bcb-2064-f66dd39e7552@iogearbox.net>
- <20210421230858.ruwqw5jvsy7cjioy@apollo>
- <21c55619-e26d-d901-076e-20f55302c2fd@iogearbox.net>
- <20210421233054.sgs5lemcuycx4vjb@apollo>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b504c839-d698-19a2-2018-05f867a8ff84@iogearbox.net>
-Date:   Thu, 22 Apr 2021 01:41:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        KP Singh <kpsingh@chromium.org>, Daniel Xu <dxu@dxuuu.xyz>,
+        Jesper Brouer <jbrouer@redhat.com>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Viktor Malik <vmalik@redhat.com>
+Subject: Re: [PATCHv2 RFC bpf-next 0/7] bpf: Add support for ftrace probe
+Message-ID: <20210421211706.3589473e@oasis.local.home>
+In-Reply-To: <YICbK5JLqRXnjgEW@krava>
+References: <CAEf4BzY=yBZH2Aad1hNcqCt51u0+SmNdkD6NfJRVMzF7DsvG+A@mail.gmail.com>
+        <20210415170007.31420132@gandalf.local.home>
+        <20210417000304.fc987dc00d706e7551b29c04@kernel.org>
+        <20210416124834.05862233@gandalf.local.home>
+        <YH7OXrjBIqvEZbsc@krava>
+        <CAADnVQK55WzR6_JfxkMzEfUnLJnX75bRHjCkaptcVF=nQ_gWfw@mail.gmail.com>
+        <YH8GxNi5VuYjwNmK@krava>
+        <CAADnVQLh3tCWi=TiWnJVaMrYhJ=j-xSrJ72+XnZDP8CMZM+1mQ@mail.gmail.com>
+        <YIArVa6IE37vsazU@krava>
+        <20210421100541.3ea5c3bf@gandalf.local.home>
+        <YICbK5JLqRXnjgEW@krava>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210421233054.sgs5lemcuycx4vjb@apollo>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26147/Wed Apr 21 13:06:05 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/22/21 1:30 AM, Kumar Kartikeya Dwivedi wrote:
-> On Thu, Apr 22, 2021 at 04:51:55AM IST, Daniel Borkmann wrote:
->> On 4/22/21 1:08 AM, Kumar Kartikeya Dwivedi wrote:
->>> On Thu, Apr 22, 2021 at 04:29:28AM IST, Daniel Borkmann wrote:
->>>> On 4/20/21 9:37 PM, Kumar Kartikeya Dwivedi wrote:
->>>> [...]
->>>>> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
->>>>> index bec4e6a6e31d..b4ed6a41ea70 100644
->>>>> --- a/tools/lib/bpf/libbpf.h
->>>>> +++ b/tools/lib/bpf/libbpf.h
->>>>> @@ -16,6 +16,8 @@
->>>>>     #include <stdbool.h>
->>>>>     #include <sys/types.h>  // for size_t
->>>>>     #include <linux/bpf.h>
->>>>> +#include <linux/pkt_sched.h>
->>>>> +#include <linux/tc_act/tc_bpf.h>
->>>>>     #include "libbpf_common.h"
->>>>> @@ -775,6 +777,48 @@ LIBBPF_API int bpf_linker__add_file(struct bpf_linker *linker, const char *filen
->>>>>     LIBBPF_API int bpf_linker__finalize(struct bpf_linker *linker);
->>>>>     LIBBPF_API void bpf_linker__free(struct bpf_linker *linker);
->>>>> +/* Convenience macros for the clsact attach hooks */
->>>>> +#define BPF_TC_CLSACT_INGRESS TC_H_MAKE(TC_H_CLSACT, TC_H_MIN_INGRESS)
->>>>> +#define BPF_TC_CLSACT_EGRESS TC_H_MAKE(TC_H_CLSACT, TC_H_MIN_EGRESS)
->>>>
->>>> I would abstract those away into an enum, plus avoid having to pull in
->>>> linux/pkt_sched.h and linux/tc_act/tc_bpf.h from main libbpf.h header.
->>>>
->>>> Just add a enum { BPF_TC_DIR_INGRESS, BPF_TC_DIR_EGRESS, } and then the
->>>> concrete tc bits (TC_H_MAKE()) can be translated internally.
->>>
->>> Ok, will do.
->>>
->>>>> +struct bpf_tc_opts {
->>>>> +	size_t sz;
->>>>
->>>> Is this set anywhere?
->>>
->>> This is needed by the OPTS_* infrastructure.
->>>
->>>>> +	__u32 handle;
->>>>> +	__u32 class_id;
->>>>
->>>> I'd remove class_id from here as well given in direct-action a BPF prog can
->>>> set it if needed.
->>>
->>> Ok, makes sense.
->>>
->>>>> +	__u16 priority;
->>>>> +	bool replace;
->>>>> +	size_t :0;
->>>>
->>>> What's the rationale for this padding?
->>>
->>> dde7b3f5f2f4 ("libbpf: Add explicit padding to bpf_xdp_set_link_opts")
->>
->> Hm, fair enough.
->>
->>>>> +};
->>>>> +
->>>>> +#define bpf_tc_opts__last_field replace
->>>>> +
->>>>> +/* Acts as a handle for an attached filter */
->>>>> +struct bpf_tc_attach_id {
->>>>
->>>> nit: maybe bpf_tc_ctx
->>>
->>> Noted.
->>>
->>>>> +	__u32 handle;
->>>>> +	__u16 priority;
->>>>> +};
->>>>> +
->>>>> +struct bpf_tc_info {
->>>>> +	struct bpf_tc_attach_id id;
->>>>> +	__u16 protocol;
->>>>> +	__u32 chain_index;
->>>>> +	__u32 prog_id;
->>>>> +	__u8 tag[BPF_TAG_SIZE];
->>>>> +	__u32 class_id;
->>>>> +	__u32 bpf_flags;
->>>>> +	__u32 bpf_flags_gen;
->>>>
->>>> Given we do not yet have any setters e.g. for offload, etc, the one thing
->>>> I'd see useful and crucial initially is prog_id.
->>>>
->>>> The protocol, chain_index, and I would also include tag should be dropped.
->>>
->>> A future user of this API needs to know the tag, so I would like to keep that.
->>> The rest we can drop, and probably document the default values explicitly.
->>
->> Couldn't this be added along with the future patch for the [future] user?
+On Wed, 21 Apr 2021 23:37:47 +0200
+Jiri Olsa <jolsa@redhat.com> wrote:
+> > 
+> > One thing that ftrace gives you is a way to have each function call its own
+> > trampoline, then depending on what is attached, each one can have multiple
+> > implementations.  
 > 
-> True.
-> 
->> The tag should be the tag of the prog itself, so if you have prog_id, you
->> could also retrieve the same tag from the prog. The tag was basically from
->> the early days where we didn't have bpf_prog_get_info_by_fd().
->>
->> What does that future user need to do different here?
-> 
->  From Shaun Crampton:
-> "My particular use case is to load a program, link it with its maps and then
-> check if its tag matches the existing program on the interface (and if so, abort
-> the update)"
-> 
-> Also CC'd, they would be able to elaborate better, and whether or not dropping
-> it is ok.
+> but that would cut off other tracers for the function, right?
 
-Nope, just get it from the prog itself.
+No, actually just the opposite. It can be updated by what is attached
+to it to provide the best trampoline for the use case.
+
+If all the callbacks are attached to a single function with a limited
+set of required args, it could jump to a trampoline that only saves the
+required args.
+
+If any of the callbacks are attached to multiple functions, and needs
+all the args, then it can jump to a trampoline to save all of them.
+
+This is similar to how it works now. One is for a trampoline that only
+cares about saving the arguments, another is for a trampoline that
+wants to save *all* the regs. And if there's a callback that wants
+both, it will use the trampoline that can handle all the callbacks to
+that function.
+
+> 
+> AFAICT it's used only when there's single ftrace_ops registered
+> for the probe and if there are more ftrace_ops, ops->trampoline
+> is replaced by the generic one and ftrace will call ops->func
+> instead, right?
+
+Somewhat, but let me explain it in more detail.
+
+There's currently two variables that determine what trampoline to call.
+
+Variable 1: number of callbacks attached. It cares about 0, 1, more than one.
+
+Variable 2: Does any callback require a full set of regs?
+
+Variable 1 determines if the trampoline that is called will call a loop
+function, that will loop through all the attached callbacks.
+
+Variable 2 determines if it should save all the regs or not.
+
+If all the callbacks attached to a function do not require saving all
+the regs, then it will only save the regs that are required for calling
+functions (which is all the arguments but not all the regs). Then it
+calls the loop function with a limited number of regs saved.
+
+If one of the functions attached requires all the regs, then it will
+save all the regs, and pass that to the loop function that calls the
+callbacks. All the callbacks will get the full set of regs, even though
+only one might care about them. But the work was already done, and the
+regs is just a pointer passed to the callbacks.
+
+
+> 
+> if we would not care about sharing function by multiple tracers,
+> we could make special 'exclusive' trampoline that would require
+> that no other tracer is (or will be) registered for the function
+> while the tracer is registered
+
+We don't want to restrict other traces. But you can switch trampolines,
+without disruption. We do that now.
+
+If a single callback that doesn't care about all regs is attached to a
+function, then a custom trampoline is created, and when the function is
+called, it calls that trampoline, which saves the required regs, and
+then does a direct call to the callback.
+
+If we add another callback to that same function, and that callback
+also doesn't care for all regs, then we switch to a new trampoline that
+instead of calling the original callback directly, it calls the loop
+function, that iterates over all the functions. The first callback sees
+no difference. We just switch the function "fentry" to point to the new
+trampoline.
+
+Then if we add a callback to that same function, but this callback
+wants all the regs, then we switch to a new trampoline that will save
+all the regs and call the loop function. The first two callbacks notice
+no change.
+
+And this can be backed out as well when callbacks are removed from a
+function. All this accounting is taken care of by
+__ftrace_hash_rec_update() in kernel/trace/ftrace. And yes, it takes a
+bit of care to get this right.
+
+The point is, you can modify the trampolines dynamically individually
+per function depending on the callback requirements that are attached
+to it.
+
+The state of each function is determined by the dyn_ftrace structure
+flags field. (see include/linux/ftrace.h)
+
+The 23 least significant bits of flags is a counter. 2^23 is much more
+than needed, because there should never be that many callbacks attached
+to a single function. Variable 1 above is determined by the count. 0,
+1 , more than one.
+
+And you'll see the flags for: REGS / REGS_EN, TRAMP / TRAMP_EN and even
+DIRECT / DIRECT_EN, for whether or not the function wants regs, if the
+function calls a trampoline directly or uses the loop, and if it has a
+direct caller or not, respectively.
+
+The "_EN" part of those flags show the state that the actual function
+is in. The __ftrace_hash_rec_update() will look at the ftrace_ops that
+is being registered or unregistered, and will update each of the functions
+it traces dyn_ftrace non "_EN" flags. Then the code that actually does
+the modifications will look at each record (that represent all
+traceable functions), and if the non "_EN" flag does not match the
+"_EN" part it knows to update that function appropriately, and then it
+updates the "_EN" flag.
+
+
+> 
+> then we could run BPF trampolines directly without 'direct' API
+> and use ftrace for mass attach
+> 
+> that is if we don't care about other tracers for the function,
+> which I guess was concern when the 'direct' API was introduced
+
+I still very much care about other traces for the function. Remember,
+kprobes and perf uses this too, and kprobes was the one that requires
+all regs being saved.
+
+-- Steve
+
