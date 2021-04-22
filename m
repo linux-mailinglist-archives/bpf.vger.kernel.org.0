@@ -2,220 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C141736868D
-	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 20:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B33283686AA
+	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 20:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238607AbhDVS3Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Apr 2021 14:29:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33206 "EHLO
+        id S236796AbhDVSjA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Apr 2021 14:39:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238463AbhDVS3Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Apr 2021 14:29:24 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F010C06174A;
-        Thu, 22 Apr 2021 11:28:48 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id p202so8979724ybg.8;
-        Thu, 22 Apr 2021 11:28:48 -0700 (PDT)
+        with ESMTP id S236668AbhDVSi7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Apr 2021 14:38:59 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA996C06174A;
+        Thu, 22 Apr 2021 11:38:22 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 82so52689174yby.7;
+        Thu, 22 Apr 2021 11:38:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kccFp5PkD2OzEdY3szoFVg5JbDJwnPZzgBEkYQnfrB0=;
-        b=qXj5xLHlA+PIZD3iIGirCpXXZIvXbVtVMWheYsd+G8D9o89UERWqfqtyEsRRISxqdc
-         2HZ9jZUwwF0RsCNtGQxOAJxV9mjI86yftTWNF9KfefdNbc4hsbucDKjAZxOct4boNHCW
-         KBxdYbHYOd1iUy9iE7Gf3+uSjNLpZzEQ4YCxMtjAuYSdbK2Dg9xsTjZf7iqI7v+N1Hoi
-         HG4LNU6TtpS4bYVXG7CLty1cF3AuWdMa/ljUXrrsUTvYWLQw8syH9o5Ii3ZPHK7z5FdZ
-         yUI0XHlF17QPsFJG977zyu4m3V5mzdbyb5maq+InHwWY0MDQg0/+JcYxnB6Kcr4LU0pe
-         07kw==
+        bh=aL/QKwy+XkQh0q91Wy+csx8NaLsGuJJ+p/obXjssK4k=;
+        b=DG2eaIaFHg/xGnlHJ2YODcnqhgKAgP4MxgtBlN3VsV8ikEAFVQ0Y+5LKCsq4rJrdyy
+         oQ/oJjBBr272/B8XFd5m8tlWQreDzFAW4Pl0JXHjnh9uHDlSaSgnsYkp+MGTn9Y2wERX
+         jQknrD3iKKmfS0htyaOGY3qDRUH8zrqA9A0FL5ycmJyhLhu3hLsSKYcx2zLlGlDweT2q
+         5KggMyAe6ePbyjhE7g6tJsaosocbHX2UlO3Hb1HQEp3oQ6GdwDKuH6elRSbcrJpNror6
+         c3u1nmhUR5AoMXKr0f7tahnt6VvPplk1QizZFoisOmykzKSOUKLHwj0CYdq6hOi8gee/
+         ZQEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kccFp5PkD2OzEdY3szoFVg5JbDJwnPZzgBEkYQnfrB0=;
-        b=YSYDIYdj0VEIDjVhFwkyUpq2gD9EAepKUY4ul6Mle9zRVW0YnTMYcy+sgBR+wMYy7O
-         Z8+ce9CNNmfo+oZ4azWwDKA6o4ojSnnKscJEWx3gyB/7Y4l91dVOY0oW+RZHR1tJGs2l
-         NHuTdzsY351hR0TxMdn5oHIU0B0Kvb4Z/g8gGEtkIp+syL6tbU72gylbdjffGbfo5Xba
-         +9JuKQ8IQrGb6q3kcIvLvWT6z4NSk7n6Gt5234znjfqzZeRrv4muFO4epIyv4HcpSJwM
-         JKntKN8Mzuqf/OS8U23Uz7IK6Y+pixJGfhcOXE3Bv9SrCEOTE697torIhfatBrvAsb1w
-         aPIQ==
-X-Gm-Message-State: AOAM5300xL53qzqz5splEBQIM2VQaa2jWs/OboqH1LECw85XxPielOn5
-        wNtIIUg8Mf918rhKBUr3tLGtFBE8fyVw2ZFr9Go=
-X-Google-Smtp-Source: ABdhPJz12k0vgb/zprEdY0F4pPYSCC55kx1TKYoUV9kTG7E5cLCUbaE9B9FsmmM3VIPwttxF7VgnzuPXumDdogUKDx0=
-X-Received: by 2002:a25:d70f:: with SMTP id o15mr6398881ybg.403.1619116127605;
- Thu, 22 Apr 2021 11:28:47 -0700 (PDT)
+        bh=aL/QKwy+XkQh0q91Wy+csx8NaLsGuJJ+p/obXjssK4k=;
+        b=bJj6EQ+uW+ssRx4xbtfnBFqddGedfvEBoSIAAcijRgjSilDSLoJcTllId1UBzVLfij
+         ClE1n0Q1JpJEmJEo2hBfJ43NV59uH6N0y/QBUzcbCYU7F3PZenJCK5DwxpABcvmSPeUB
+         QLwmTEk+VcsrKBmzbaB4iXFMM/aFFTeE1WlTKanvDnyRoSCI2eTs6SQhPirEwXAdexkL
+         N+RX00ei96FNo8Vn6dBHIy08Raqkwy9Twbl1eWg7dceUSs3zE4Y9AhmGpO2mf/8hgG+T
+         zGdY5vORf3AoODpZf/DdlvKax8L8G1ahqJNt5Cpk7qmW/347KstZTM/A1sjF9faX3VXo
+         nifQ==
+X-Gm-Message-State: AOAM531EJpzEyPbVVIH152IKM4os10nch9Y44dNNwc3n3R6u3LB85hpl
+        de95dtSFaaU8wIwReE4Rawa/QXXwVr8akrzqX2U=
+X-Google-Smtp-Source: ABdhPJwnTGEzcqOzJdfU4E3ZWlI2Iesq9XlOP24Sm67XXm5ZRFNNrltVkwNmgpqD3RuCz90gEUrewH8qMipI7juIIQE=
+X-Received: by 2002:a05:6902:1144:: with SMTP id p4mr46904ybu.510.1619116702286;
+ Thu, 22 Apr 2021 11:38:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210420193740.124285-1-memxor@gmail.com> <20210420193740.124285-3-memxor@gmail.com>
- <9b0aab2c-9b92-0bcb-2064-f66dd39e7552@iogearbox.net> <CAEf4Bzai3maV8E9eWi1fc8fgaeC7qFg7_-N_WdLH4ukv302bhg@mail.gmail.com>
- <b7ace8c2-0147-fde7-d319-479be1e2a05e@iogearbox.net>
-In-Reply-To: <b7ace8c2-0147-fde7-d319-479be1e2a05e@iogearbox.net>
+References: <20210421190736.1538217-1-linux@rasmusvillemoes.dk>
+ <CAEf4Bza6-Unvr7QmcbvVtNDPc4BNzf8zMaU4XardNqB_GnGDHw@mail.gmail.com>
+ <236995f6-30ee-8047-624c-08d0a1552dc1@rasmusvillemoes.dk> <CABRcYmJFfdCU_QxX+gYRWc+7BSbmTWX84o_WT=oBg_CPr8qS=g@mail.gmail.com>
+In-Reply-To: <CABRcYmJFfdCU_QxX+gYRWc+7BSbmTWX84o_WT=oBg_CPr8qS=g@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 22 Apr 2021 11:28:36 -0700
-Message-ID: <CAEf4BzZKjhsrF3ii4U-pMk3pJt7G3U7Hzkf_7zMOFhGMv7WKWg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/3] libbpf: add low level TC-BPF API
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+Date:   Thu, 22 Apr 2021 11:38:11 -0700
+Message-ID: <CAEf4BzZsYv78znqAkuhTPLSzgAxhSB9vr6eODn2G-vnV0yQyLQ@mail.gmail.com>
+Subject: Re: [PATCH] bpf: remove pointless code from bpf_do_trace_printk()
+To:     Florent Revest <revest@chromium.org>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         bpf <bpf@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Networking <netdev@vger.kernel.org>
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 8:35 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Thu, Apr 22, 2021 at 2:23 AM Florent Revest <revest@chromium.org> wrote:
 >
-> On 4/22/21 5:43 AM, Andrii Nakryiko wrote:
-> > On Wed, Apr 21, 2021 at 3:59 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >> On 4/20/21 9:37 PM, Kumar Kartikeya Dwivedi wrote:
-> >> [...]
-> >>> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> >>> index bec4e6a6e31d..b4ed6a41ea70 100644
-> >>> --- a/tools/lib/bpf/libbpf.h
-> >>> +++ b/tools/lib/bpf/libbpf.h
-> >>> @@ -16,6 +16,8 @@
-> >>>    #include <stdbool.h>
-> >>>    #include <sys/types.h>  // for size_t
-> >>>    #include <linux/bpf.h>
-> >>> +#include <linux/pkt_sched.h>
-> >>> +#include <linux/tc_act/tc_bpf.h>
-> >>>
-> >>>    #include "libbpf_common.h"
-> >>>
-> >>> @@ -775,6 +777,48 @@ LIBBPF_API int bpf_linker__add_file(struct bpf_linker *linker, const char *filen
-> >>>    LIBBPF_API int bpf_linker__finalize(struct bpf_linker *linker);
-> >>>    LIBBPF_API void bpf_linker__free(struct bpf_linker *linker);
-> >>>
-> >>> +/* Convenience macros for the clsact attach hooks */
-> >>> +#define BPF_TC_CLSACT_INGRESS TC_H_MAKE(TC_H_CLSACT, TC_H_MIN_INGRESS)
-> >>> +#define BPF_TC_CLSACT_EGRESS TC_H_MAKE(TC_H_CLSACT, TC_H_MIN_EGRESS)
-> >>
-> >> I would abstract those away into an enum, plus avoid having to pull in
-> >> linux/pkt_sched.h and linux/tc_act/tc_bpf.h from main libbpf.h header.
-> >>
-> >> Just add a enum { BPF_TC_DIR_INGRESS, BPF_TC_DIR_EGRESS, } and then the
-> >> concrete tc bits (TC_H_MAKE()) can be translated internally.
-> >>
-> >>> +struct bpf_tc_opts {
-> >>> +     size_t sz;
-> >>
-> >> Is this set anywhere?
-> >>
-> >>> +     __u32 handle;
-> >>> +     __u32 class_id;
-> >>
-> >> I'd remove class_id from here as well given in direct-action a BPF prog can
-> >> set it if needed.
-> >>
-> >>> +     __u16 priority;
-> >>> +     bool replace;
-> >>> +     size_t :0;
-> >>
-> >> What's the rationale for this padding?
-> >>
-> >>> +};
-> >>> +
-> >>> +#define bpf_tc_opts__last_field replace
-> >>> +
-> >>> +/* Acts as a handle for an attached filter */
-> >>> +struct bpf_tc_attach_id {
-> >>
-> >> nit: maybe bpf_tc_ctx
+> On Thu, Apr 22, 2021 at 9:13 AM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
 > >
-> > ok, so wait. It seems like apart from INGRESS|EGRESS enum and ifindex,
-> > everything else is optional and/or has some sane defaults, right? So
-> > this bpf_tc_attach_id or bpf_tc_ctx seems a bit artificial construct
-> > and it will cause problems for extending this.
-> >
-> > So if my understanding is correct, I'd get rid of it completely. As I
-> > said previously, opts allow returning parameters back, so if user
-> > didn't specify handle and priority and kernel picks values on user's
-> > behalf, we can return them in the same opts fields.
-> >
-> > For detach, again, ifindex and INGRESS|EGRESS is sufficient, but if
-> > user want to provide more detailed parameters, we should do that
-> > through extensible opts. That way we can keep growing this easily,
-> > plus simple cases will remain simple.
-> >
-> > Similarly bpf_tc_info below, there is no need to have struct
-> > bpf_tc_attach_id id; field, just have handle and priority right there.
-> > And bpf_tc_info should use OPTS framework for extensibility (though
-> > opts name doesn't fit it very well, but it is still nice for
-> > extensibility and for doing optional input/output params).
-> >
-> > Does this make sense? Am I missing something crucial here?
+> > On 22/04/2021 05.32, Andrii Nakryiko wrote:
+> > > On Wed, Apr 21, 2021 at 6:19 PM Rasmus Villemoes
+> > > <linux@rasmusvillemoes.dk> wrote:
+> > >>
+> > >> The comment is wrong. snprintf(buf, 16, "") and snprintf(buf, 16,
+> > >> "%s", "") etc. will certainly put '\0' in buf[0]. The only case where
+> > >> snprintf() does not guarantee a nul-terminated string is when it is
+> > >> given a buffer size of 0 (which of course prevents it from writing
+> > >> anything at all to the buffer).
+> > >>
+> > >> Remove it before it gets cargo-culted elsewhere.
+> > >>
+> > >> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> > >> ---
+> > >>  kernel/trace/bpf_trace.c | 3 ---
+> > >>  1 file changed, 3 deletions(-)
+> > >>
+> > >
+> > > The change looks good to me, but please rebase it on top of the
+> > > bpf-next tree. This is not a bug, so it doesn't have to go into the
+> > > bpf tree. As it is right now, it doesn't apply cleanly onto bpf-next.
 >
-> I would probably keep the handle + priority in there; maybe if both are 0,
-> we could fix it to some default value internally, but without those it might
-> be a bit hard if people want to build a 'pipeline' of cls_bpf progs if they
-> need/want to.
+> FWIW the idea of the patch also looks good to me :)
+>
+> > Thanks for the pointer. Looking in next-20210420, it seems to me that
+> >
+> > commit d9c9e4db186ab4d81f84e6f22b225d333b9424e3
+> > Author: Florent Revest <revest@chromium.org>
+> > Date:   Mon Apr 19 17:52:38 2021 +0200
+> >
+> >     bpf: Factorize bpf_trace_printk and bpf_seq_printf
+> >
+> > is buggy. In particular, these two snippets:
+> >
+> > +#define BPF_CAST_FMT_ARG(arg_nb, args, mod)                            \
+> > +       (mod[arg_nb] == BPF_PRINTF_LONG_LONG ||                         \
+> > +        (mod[arg_nb] == BPF_PRINTF_LONG && __BITS_PER_LONG == 64)      \
+> > +         ? (u64)args[arg_nb]                                           \
+> > +         : (u32)args[arg_nb])
+> >
+> >
+> > +       ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args,
+> > mod),
+> > +               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2,
+> > args, mod));
+> >
+> > Regardless of the casts done in that macro, the type of the resulting
+> > expression is that resulting from C promotion rules. And (foo ? (u64)bla
+> > : (u32)blib) has type u64, which is thus the type the compiler uses when
+> > building the vararg list being passed into snprintf(). C simply doesn't
+> > allow you to change types at run-time in this way.
+> >
+> > It probably works fine on x86-64, which passes the first six or so
+> > argument in registers, va_start() puts those registers into the va_list
+> > opaque structure, and when it comes time to do a va_arg(int), just the
+> > lower 32 bits are used. It is broken on i386 and other architectures
+> > where arguments are passed on the stack (and for x86-64 as well had
+> > there been a few more arguments) and va_arg(ap, int) is essentially ({
+> > int res = *(int *)ap; ap += 4; res; }) [or maybe it's -= 4 because stack
+> > direction etc., that's not really relevant here].
+> >
+> > Rasmus
+>
+> Thank you Rasmus :)
+>
+> It seems that we went offtrack in
+> https://lore.kernel.org/bpf/CAEf4BzZVEGM4esi-Rz67_xX_RTDrgxViy0gHfpeauECR5bmRNA@mail.gmail.com/
+> and we do need something like "88a5c690b6 bpf: fix bpf_trace_printk on
+> 32 bit archs". Thinking about it again, it's clearer now why the
+> __BPF_TP_EMIT macro emits 2^3=8 different __trace_printk() indeed.
 
-Oh, I'm not proposing to drop support for specifying handle and prio.
-I'm just saying having a fixed UAPI struct bpf_tc_attach_id as an "ID"
-is problematic from API stability point of view. So instead of
-pretending we know what "ID" will always be like, pass any extra
-non-default fields in OPTS struct. And if those are not specified by
-user (either opts is NULL or handle/prio is 0), use sane defaults, as
-you are proposing.
+Yeah, we wondering but no one could guess why it was done the way it
+was done :) Next time we should invest in a better comment ;-P
 
 >
-> Potentially, one could fixate the handle itself, and then allow to specify
-> different priorities for it such that when a BPF prog returns a TC_ACT_UNSPEC,
-> it will exec the next one inside that cls_bpf instance, every other TC_ACT_*
-> opcode will terminate the processing. Technically, only priority would really
-> be needed (unless you combine multiple different classifiers from tc side on
-> the ingress/egress hook which is not great to begin with, tbh).
->
-> > The general rule with any new structs added to libbpf APIs is to
-> > either be 100% (ok, 99.99%) sure that they will never be changed, or
-> > do forward/backward compatible OPTS. Any other thing is pain and calls
-> > for symbol versioning, which we are trying really hard to avoid.
-> >
-> >>> +     __u32 handle;
-> >>> +     __u16 priority;
-> >>> +};
-> >>> +
-> >>> +struct bpf_tc_info {
-> >>> +     struct bpf_tc_attach_id id;
-> >>> +     __u16 protocol;
-> >>> +     __u32 chain_index;
-> >>> +     __u32 prog_id;
-> >>> +     __u8 tag[BPF_TAG_SIZE];
-> >>> +     __u32 class_id;
-> >>> +     __u32 bpf_flags;
-> >>> +     __u32 bpf_flags_gen;
-> >>
-> >> Given we do not yet have any setters e.g. for offload, etc, the one thing
-> >> I'd see useful and crucial initially is prog_id.
-> >>
-> >> The protocol, chain_index, and I would also include tag should be dropped.
-> >> Similarly class_id given my earlier statement, and flags I would extend once
-> >> this lib API would support offloading progs.
-> >>
-> >>> +};
-> >>> +
-> >>> +/* id is out parameter that will be written to, it must not be NULL */
-> >>> +LIBBPF_API int bpf_tc_attach(int fd, __u32 ifindex, __u32 parent_id,
-> >>> +                          const struct bpf_tc_opts *opts,
-> >>> +                          struct bpf_tc_attach_id *id);
-> >>> +LIBBPF_API int bpf_tc_detach(__u32 ifindex, __u32 parent_id,
-> >>> +                          const struct bpf_tc_attach_id *id);
-> >>> +LIBBPF_API int bpf_tc_get_info(__u32 ifindex, __u32 parent_id,
-> >>> +                            const struct bpf_tc_attach_id *id,
-> >>> +                            struct bpf_tc_info *info);
-> >>
-> >> As per above, for parent_id I'd replace with dir enum.
-> >>
-> >>> +
-> >>>    #ifdef __cplusplus
-> >>>    } /* extern "C" */
-> >>>    #endif
->
+> In the case of bpf_trace_printk with a maximum of 3 args, it's
+> relatively cheap; but for bpf_seq_printf and bpf_snprintf which accept
+> up to 12 arguments, that would be 2^12=4096 calls. Until now
+> bpf_seq_printf has just ignored this problem and just considered
+> everything as u64, I wonder if that'd be the best approach for these
+> two helpers anyway.
