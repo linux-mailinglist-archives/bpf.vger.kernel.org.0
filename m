@@ -2,28 +2,28 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0763680E1
-	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 14:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9B53680F6
+	for <lists+bpf@lfdr.de>; Thu, 22 Apr 2021 14:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236168AbhDVMyP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Apr 2021 08:54:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45258 "EHLO mail.kernel.org"
+        id S230510AbhDVM7q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Apr 2021 08:59:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230510AbhDVMyO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Apr 2021 08:54:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28C6761421;
-        Thu, 22 Apr 2021 12:53:38 +0000 (UTC)
+        id S230005AbhDVM7p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Apr 2021 08:59:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65CB661424;
+        Thu, 22 Apr 2021 12:59:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619096020;
-        bh=QY4q0Wt0COJBeXEbp9vPIxWFGHaGiOrakwpjUWPB1aw=;
+        s=k20201202; t=1619096350;
+        bh=UjMAOd2UY1Y84zIa/x0wRbJZbLQX/kFg0f6APiYraiw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ibKfsQmd0KaSiH0RVUfeEnW09IXzLMfWDpJLewySDNOiLvqG0gPVlZa5aAYmhkGU5
-         HEpOtY8D213CFK5vGfeKWGzJGkLSEkc26M0fQ73oJfrPcE82hn2fM3rVvySu6/vwtb
-         DzEbaA7sp4Q5qliKJpU7SqlsIRcWaOGs6vPj5XvCgNnDgU8TjiGrbi2SNOVT+/tzB/
-         D+VJgevS3sTAeGOETYeYn92QCNd0AlhV5LeaWymZhhmXhhlaHcX+lg0c20Rj4v7pST
-         46x7WpQSA2OujBNCcG95ZNbVGsmjnO+r4Vc8X+uSGQqqgou0gDBb/eiIvCNCvaOE+0
-         Si5khKEWxAysA==
-Date:   Thu, 22 Apr 2021 13:53:34 +0100
+        b=OYosfNU8EEAgG1j3LOtzhMky4usmFyOUV5AG64cPFjg3fc2ckgRR4jVwbFa8ovqhJ
+         UZLs4iOOp4PExPkyrg0TcEsvGruBhtmNv6RWd47aRwCDsAlhmzFtTsgPzKWuTTA3PU
+         9Gye/+s1byQMhPz0jxz1PTJbnjmGdFZ2jhAJHmyncGDjD94tQPW4juXiBIZ3i3t7vB
+         53QrI9nt1RHgAgiqtteGS1Y+9zBVSyx1WK5R/nB8uC43DShl7QCL6seYgj/1dnH1YA
+         IE5VSvpDiIUPfQ2Vb504FmeFB0vK/Ghz/iOpj8Y3IUaRXndSBPDMb//++Z6hkLm/OP
+         AvLRfcDe3pA8Q==
+Date:   Thu, 22 Apr 2021 13:59:04 +0100
 From:   Will Deacon <will@kernel.org>
 To:     Liam Howlett <liam.howlett@oracle.com>
 Cc:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -36,55 +36,42 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH 3/3] arch/arm64/kernel/traps: Use find_vma_intersection()
- in traps for setting si_code
-Message-ID: <20210422125334.GB1521@willie-the-truck>
+Subject: Re: [PATCH 1/3] arm64: armv8_deprecated: Fix swp_handler() signal
+ generation
+Message-ID: <20210422125903.GD1521@willie-the-truck>
 References: <20210420165001.3790670-1-Liam.Howlett@Oracle.com>
- <20210420165001.3790670-3-Liam.Howlett@Oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210420165001.3790670-3-Liam.Howlett@Oracle.com>
+In-Reply-To: <20210420165001.3790670-1-Liam.Howlett@Oracle.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 04:50:13PM +0000, Liam Howlett wrote:
-> find_vma() will continue to search upwards until the end of the virtual
-> memory space.  This means the si_code would almost never be set to
-> SEGV_MAPERR even when the address falls outside of any VMA.  The result
-> is that the si_code is not reliable as it may or may not be set to the
-> correct result, depending on where the address falls in the address
-> space.
+On Tue, Apr 20, 2021 at 04:50:12PM +0000, Liam Howlett wrote:
+> arm64_notify_segfault() was written to decide on the si_code from the
+> assembly emulation of the swp_handler(), but was also used for the
+> signal generation from failed access_ok() and unaligned instructions.
 > 
-> Using find_vma_intersection() allows for what is intended by only
-> returning a VMA if it falls within the range provided, in this case a
-> window of 1.
+> When access_ok() fails, there is no need to search for the offending
+> address in the VMA space.  Instead, simply set the error to SIGSEGV with
+> si_code SEGV_ACCERR.
+> 
+> Change the return code from emulate_swpX() when there is an unaligned
+> pointer so the caller can differentiate from the EFAULT.  It is
+> unnecessary to search the VMAs in the case of an unaligned pointer.
+> This change uses SIGSEGV and SEGV_ACCERR instead of SIGBUS to keep with
+> what was returned before.
 > 
 > Fixes: bd35a4adc413 (arm64: Port SWP/SWPB emulation support from arm)
 > Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 > ---
->  arch/arm64/kernel/traps.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-> index a05d34f0e82a..a44007904a64 100644
-> --- a/arch/arm64/kernel/traps.c
-> +++ b/arch/arm64/kernel/traps.c
-> @@ -383,9 +383,10 @@ void force_signal_inject(int signal, int code, unsigned long address, unsigned i
->  void arm64_notify_segfault(unsigned long addr)
->  {
->  	int code;
-> +	unsigned long ut_addr = untagged_addr(addr);
->  
->  	mmap_read_lock(current->mm);
-> -	if (find_vma(current->mm, untagged_addr(addr)) == NULL)
-> +	if (find_vma_intersection(current->mm, ut_addr, ut_addr + 1) == NULL)
->  		code = SEGV_MAPERR;
->  	else
->  		code = SEGV_ACCERR;
+>  arch/arm64/kernel/armv8_deprecated.c | 20 +++++++++++++-------
 
-I'm not seeing how this addresses VM_GROWSDOWN as Catalin mentioned before.
+Can you give an example of something that is fixed by this, please? At first
+glance, it doesn't look like it changes the user-visible behaviour.
+
+We should also be compatible with arch/arm/ here (see set_segfault()).
 
 Will
