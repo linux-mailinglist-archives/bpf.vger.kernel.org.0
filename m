@@ -2,183 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2CF36904B
-	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 12:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AE9369070
+	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 12:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242014AbhDWK07 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Apr 2021 06:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229794AbhDWK05 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Apr 2021 06:26:57 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F40C061756
-        for <bpf@vger.kernel.org>; Fri, 23 Apr 2021 03:26:20 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id k128so25701394wmk.4
-        for <bpf@vger.kernel.org>; Fri, 23 Apr 2021 03:26:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pZC3bOQbN5+fqyuA7H9ye81q8uOWfqddKhA+GXdAbe0=;
-        b=aSb/o1mV8h0CcE9ai+0+GIlXRSGlsJTPumKNmGEJ88Z4i3bGRbY+GZu4y+9bXJ2Ej0
-         Gnr1pQPVFxw/OkuLgXzy8PcFfaYDEZW1fihUNP/VtK/ltQ5OgS+ABY7Byb2o9rvuH3w9
-         aiiyIdPgdOTZ+hKQKeseFBSIHuPOG3wEViDcm9o+RO0YnIbhhMqz+iQQf7AY04+ybwHf
-         2nC4MhrVKh/73RRSCeoHklo+CLEPmhYLF8BmrTl+dusVmM5VfEfslHL7IoEnP1IXaaeU
-         +VlpWeuLfKHGTov0axRspP5fwSgIZ4r+kUdG1PRmBmRYDbmUFoGKlyjNhDcKQj1tRsaO
-         5EEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pZC3bOQbN5+fqyuA7H9ye81q8uOWfqddKhA+GXdAbe0=;
-        b=rSU3AOA5rRe7eaaDS7oOl23LppgTf1VxnISFrqqQLZk/+NI+NZJIq3MZkHbSeW9r6c
-         PMMIwlK8LwZHEw28c3PnjUPhxQcMDGf/XV9Cj3oR2Kq+vdQiIfMET9EiIiEN5wcf5s0i
-         ATJg7v0FG8zjNE2TolKxNInA8Y6xReAA+4xri/0csD/czj/9Sc/nlu+wfCCXQqJXpqpN
-         qr3sOfYYTEG4MErXXPqT5bfX4OwLHskSI6OG8Cc/vkVSBhwhbBea5nXHxP673MCvwt4S
-         ScZlMxIEI5paP5g11SpeaTDL1KLE2xt2pOQj70heBJCrQtrMHBxi3tZBj0eY9PqlTvJg
-         GCOA==
-X-Gm-Message-State: AOAM530VTYG19H5A8b+wIu0Owi5IYboicFHFF3Qjr8w1gGOmhNckpx2a
-        fchrGMoUX04i0vghhVOGlRtKLg==
-X-Google-Smtp-Source: ABdhPJwzRkVz3Ofbfxh8n0buCkcX7vCmdhQBvEZ1KP3t4/FvoWzwFRVeYSa0K9So4C2Yfv4k3szanw==
-X-Received: by 2002:a1c:b743:: with SMTP id h64mr3431829wmf.35.1619173579445;
-        Fri, 23 Apr 2021 03:26:19 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.88.56])
-        by smtp.gmail.com with ESMTPSA id b15sm8464544wrt.57.2021.04.23.03.26.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 03:26:18 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Will Deacon <will@kernel.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>, paulburton@kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        linux-mips@vger.kernel.org, grantseltzer@gmail.com,
-        Xi Wang <xi.wang@gmail.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        KP Singh <kpsingh@kernel.org>, iecedge@gmail.com,
-        Simon Horman <horms@verge.net.au>,
-        Borislav Petkov <bp@alien8.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Yonghong Song <yhs@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Vyukov <dvyukov@google.com>, tsbogend@alpha.franken.de,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Network Development <netdev@vger.kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Wang YanQing <udknight@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, bpf <bpf@vger.kernel.org>,
-        Jianlin Lv <Jianlin.Lv@arm.com>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
- <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
- <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com>
- <CAADnVQJ2oHbYfgY9jqM_JMxUsoZxaNrxKSVFYfgCXuHVpDehpQ@mail.gmail.com>
- <0dea05ba-9467-0d84-4515-b8766f60318e@csgroup.eu>
- <CAADnVQ+oQT6C7Qv7P5TV-x7im54omKoCYYKtYhcnhb1Uv3LPMQ@mail.gmail.com>
- <be132117-f267-5817-136d-e1aeb8409c2a@csgroup.eu>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <58296f87-ad00-a0f5-954b-2150aa84efc4@isovalent.com>
-Date:   Fri, 23 Apr 2021 11:26:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229871AbhDWKfs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Apr 2021 06:35:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35736 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229794AbhDWKfr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 23 Apr 2021 06:35:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619174110;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x6V3sezXsAAxDR9VM4Vjf0CE1EnjmSBiIUUbI8iN2Aw=;
+        b=emiS5OlSyq7IUYeVWAYUG6xwAiOx+7Eg1oYIdoZ+dGE4yVXSR3FCICr40idoy9vk1hfJd7
+        F+5jMwbb5huUpfaNTWp5uSB1ESrtpy4ZIflvwl8tztVQE39dRZxmqm3D4bhnEK6xOTrJWD
+        9paFZcUAqJAxprFA+00G8rbpaoWtV28=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-175-KPx-srr6Mtas2ozr-3_I7Q-1; Fri, 23 Apr 2021 06:35:08 -0400
+X-MC-Unique: KPx-srr6Mtas2ozr-3_I7Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA954343A0;
+        Fri, 23 Apr 2021 10:35:06 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E93342D103;
+        Fri, 23 Apr 2021 10:34:56 +0000 (UTC)
+Date:   Fri, 23 Apr 2021 12:34:55 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, toke@redhat.com,
+        song@kernel.org, brouer@redhat.com
+Subject: Re: [PATCH v4 bpf-next] cpumap: bulk skb using
+ netif_receive_skb_list
+Message-ID: <20210423123455.279dae88@carbon>
+In-Reply-To: <c729f83e5d7482d9329e0f165bdbe5adcefd1510.1619169700.git.lorenzo@kernel.org>
+References: <c729f83e5d7482d9329e0f165bdbe5adcefd1510.1619169700.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <be132117-f267-5817-136d-e1aeb8409c2a@csgroup.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2021-04-23 09:19 UTC+0200 ~ Christophe Leroy <christophe.leroy@csgroup.eu>
+On Fri, 23 Apr 2021 11:27:27 +0200
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-[...]
-
-> I finally managed to cross compile bpftool with libbpf, libopcodes,
-> readline, ncurses, libcap, libz and all needed stuff. Was not easy but I
-> made it.
-
-Libcap is optional and bpftool does not use readline or ncurses. May I
-ask how you tried to build it?
-
+> Rely on netif_receive_skb_list routine to send skbs converted from
+> xdp_frames in cpu_map_kthread_run in order to improve i-cache usage.
+> The proposed patch has been tested running xdp_redirect_cpu bpf sample
+> available in the kernel tree that is used to redirect UDP frames from
+> ixgbe driver to a cpumap entry and then to the networking stack.
+> UDP frames are generated using pkt_gen. Packets are discarded by the
+> UDP layer.
 > 
-> Now, how do I use it ?
+> $xdp_redirect_cpu  --cpu <cpu> --progname xdp_cpu_map0 --dev <eth>
 > 
-> Let say I want to dump the jitted code generated from a call to
-> 'tcpdump'. How do I do that with 'bpftool prog dump jited' ?
+> bpf-next: ~2.35Mpps
+> bpf-next + cpumap skb-list: ~2.72Mpps
 > 
-> I thought by calling this line I would then get programs dumped in a way
-> or another just like when setting 'bpf_jit_enable=2', but calling that
-> line just provides me some bpftool help text.
-
-Well the purpose of this text is to help you find the way to call
-bpftool to do what you want :). For dumping your programs' instructions,
-you need to tell bpftool what program to dump: Bpftool isn't waiting
-until you load a program to dump it, instead you need to load your
-program first and then tell bpftool to retrieve the instructions from
-the kernel. To reference your program you could use a pinned path, or
-first list the programs on your system with "bpftool prog show":
-
-
-    # bpftool prog show
-    138: tracing  name foo  tag e54c922dfa54f65f  gpl
-            loaded_at 2021-02-25T01:32:30+0000  uid 0
-            xlated 256B  jited 154B  memlock 4096B  map_ids 64
-            btf_id 235
-
-Then you can use for example the program id displayed on the first line
-to reference and dump your program:
-
-    # bpftool prog dump jited id 138
-
-You should find additional documentation under
-tools/bpf/bpftool/Documentation.
-
+> Rename drops counter in kmem_alloc_drops since now it reports just
+> kmem_cache_alloc_bulk failures
 > 
-> By the way, I would be nice to have a kernel OPTION that selects all
-> OPTIONS required for building bpftool. Because you discover them one by
-> one at every build failure. I had to had CONFIG_IPV6, CONFIG_DEBUG_BTF,
-> CONFIG_CGROUPS, ... If there could be an option like "Build a 'bpftool'
-> ready kernel" that selected all those, it would be great.
-> 
-> Christophe
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
-I do not believe any of these are required to build bpftool.
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
-Quentin
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
