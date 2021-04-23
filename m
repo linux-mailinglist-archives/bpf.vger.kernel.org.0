@@ -2,111 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285C3368AB5
-	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 04:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702B6368ADD
+	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 04:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240166AbhDWBtm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 22 Apr 2021 21:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44842 "EHLO
+        id S240042AbhDWCBZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 22 Apr 2021 22:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240442AbhDWBtH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 22 Apr 2021 21:49:07 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286D9C061344
-        for <bpf@vger.kernel.org>; Thu, 22 Apr 2021 18:48:32 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id h20so24476419plr.4
-        for <bpf@vger.kernel.org>; Thu, 22 Apr 2021 18:48:32 -0700 (PDT)
+        with ESMTP id S230367AbhDWCBZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 22 Apr 2021 22:01:25 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7D5C061574;
+        Thu, 22 Apr 2021 19:00:49 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id u14-20020a17090a1f0eb029014e38011b09so408566pja.5;
+        Thu, 22 Apr 2021 19:00:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=XajKNy6aoIfR9fbxhkyLjiEoAllUlrFjsDiP5vSV8KI=;
-        b=16Qh8D3ZW09f+o41dGeMuO8jYxQStQWUf8WQAcJBxyGephSQEm1pixjYLvHT7hx7uG
-         B5IH70i7Vf5dN6C+dPps5sR73nPC7Z0WiasfMoumBSvW9Zpxv1+t+4w6Uo+P5AgwvX3v
-         aevwalaXJpmnDNJTZv/QFm88qjzZW+cy+mmV6iU/ZU4LCJYg/nlKj3zvLUmL1X9NOcyA
-         6KtO60xIcclIYBfhI4w/sN0j0fSsysXPJ5AB4PujGRXM2AObwsQudjLbhC0adIsHd5wO
-         UnRvSk8Ii4bDHs/uYn5p9VHH94bGc5KWzLlhtlf9JptbVH/tc0vo/wFJnK/YyA/UOXwv
-         HOYQ==
+        bh=mtGrsoLRm6yuKMc9pFMMMRzrTKFrebBHy6EvapVbSQ0=;
+        b=LwiqbKC66g2VP8M/+KGTAFLmrUjq0ba0ZAILayQXQoLSRoTSaFsB6dfjPivDouLWzO
+         Do5BmEtNV1VzlXTvrXkwd8kTJ+4KDMFGVRiigZLUHBd7aFpxTLZ5N4kHbTHbiZYg7huc
+         /w24ziwSp8A0QGriYcdVpEUKQnyh0S5AtEW7dQhlXaSzCt1yoJmLM134ntOge9TH7Z4M
+         IJPIxDbAQ+XNY3Oqxo0aHjsLpLk0rUkAxND1hqIOOP7anFkpvBeUdJbpCGvuZHvelyfm
+         mGp7FHz5gZbJM9vfHkquP++/ky6ADdzJyLD+p2ng+PwBqX6pxeBWaw6V53QO8FaEaLof
+         u/2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=XajKNy6aoIfR9fbxhkyLjiEoAllUlrFjsDiP5vSV8KI=;
-        b=jFbLGYIvh/rkFUCD06bCbRD4nmQ0w5WstR6FvnWQ9y42gRJL3aGCwYgxY6RQB+fntB
-         MQQLDwH5Lj8MmAWsV5/OUyo34iTS+7krMz55c2A3cKgpuSDJ0USagwQEviT3vCcTCTcA
-         O+Yo5sEBcYmVVwUT3IpygMUbQ7rBDap65ziNHgS64ObTjgDcUkC9e2d47rlNwbmFnGEH
-         STmO3c5Nk3uKqZrNq7siXjrvZKXZUzEVsNAApW3ThPvgP7oRW3xP/47I85B8mspxlIsb
-         ctxsYRvCm05O6Wq5tdC++Gy0Zg0QF9WVkSziCzRotaGY/+A1Js9/bJvduU75kZR649vM
-         br9Q==
-X-Gm-Message-State: AOAM53116W9rXZaD7iGMbmhQ1DkdZ3mWFg8ADh+07ojmMD0E5Lyz1/H+
-        I24oMSylPTRJdHDSa9/j4vKbZQ==
-X-Google-Smtp-Source: ABdhPJwe7Y0d6/UnJxQlMZahTCa3FPgMdPek0KQGrK4wDzL21FZNrfZYihgBPY83nUxvyLVUn921Iw==
-X-Received: by 2002:a17:90a:c3:: with SMTP id v3mr3158756pjd.55.1619142511541;
-        Thu, 22 Apr 2021 18:48:31 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id w123sm3004405pfb.109.2021.04.22.18.48.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mtGrsoLRm6yuKMc9pFMMMRzrTKFrebBHy6EvapVbSQ0=;
+        b=WfgVdjx3E5PiNyZqQQ6of/YqAthUGVIUbZXjAlGmx+Oj7IQYcgINx0Uqu2icAEUnOt
+         WTcgw4dTjO24idfby6YfVvSxi7mWrUJHU0F1jk0I3xJa5rnla5sBtZ8T/SeFdr+2BhF0
+         KSdllynW7bQNHDGrLexm4gcK0jDSizIf7OuPpuyn4WYbTKIx86hYd2Zz2LFuzu7K+OfB
+         uhms2gtSdHWkK2TDe00g+vKVoJS5Vm6Eld+C/L0lf2RnlSuI2nF0dc74VKuKzRT/GK05
+         g0FR72eHlL8+xAUDZ4fEj5kzFzgOEqVeQ3q7CYmp+b0kP05LK7Xtv1eN7bhV1rr8HL5c
+         Gacw==
+X-Gm-Message-State: AOAM531qAC0+YZCPiyRVBu0ZJZbtXdRav60g6HFec+yQQm855DIyqG6T
+        JPbxDNG8heTnwgLRazMIwmWhQ6avFXH1+Q==
+X-Google-Smtp-Source: ABdhPJzKj/oDpBn6/iXOqBRR/WggCf6HtawoiH7eo8OyetvT8k3shKx2w+29v1SY/X6sdXatvsbwCg==
+X-Received: by 2002:a17:90b:238d:: with SMTP id mr13mr1810864pjb.23.1619143249178;
+        Thu, 22 Apr 2021 19:00:49 -0700 (PDT)
+Received: from Leo-laptop-t470s.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id z5sm3079244pff.191.2021.04.22.19.00.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Apr 2021 18:48:30 -0700 (PDT)
-Date:   Thu, 22 Apr 2021 18:48:30 -0700 (PDT)
-X-Google-Original-Date: Thu, 22 Apr 2021 18:48:29 PDT (-0700)
-Subject:     Re: [PATCH 0/9] riscv: improve self-protection
-In-Reply-To: <20210330022144.150edc6e@xhacker>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        dvyukov@google.com, bjorn@kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     jszhang3@mail.ustc.edu.cn
-Message-ID: <mhng-c1b60b87-7dd7-43e7-91eb-1f54528384f8@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Thu, 22 Apr 2021 19:00:48 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv10 bpf-next 0/4] xdp: extend xdp_redirect_map with broadcast support
+Date:   Fri, 23 Apr 2021 10:00:15 +0800
+Message-Id: <20210423020019.2333192-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.26.3
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 29 Mar 2021 11:21:44 PDT (-0700), jszhang3@mail.ustc.edu.cn wrote:
-> From: Jisheng Zhang <jszhang@kernel.org>
->
-> patch1 is a trivial improvement patch to move some functions to .init
-> section
->
-> Then following patches improve self-protection by:
->
-> Marking some variables __ro_after_init
-> Constifing some variables
-> Enabling ARCH_HAS_STRICT_MODULE_RWX
->
-> Jisheng Zhang (9):
->   riscv: add __init section marker to some functions
->   riscv: Mark some global variables __ro_after_init
->   riscv: Constify sys_call_table
->   riscv: Constify sbi_ipi_ops
->   riscv: kprobes: Implement alloc_insn_page()
->   riscv: bpf: Move bpf_jit_alloc_exec() and bpf_jit_free_exec() to core
->   riscv: bpf: Avoid breaking W^X
->   riscv: module: Create module allocations without exec permissions
->   riscv: Set ARCH_HAS_STRICT_MODULE_RWX if MMU
->
->  arch/riscv/Kconfig                 |  1 +
->  arch/riscv/include/asm/smp.h       |  4 ++--
->  arch/riscv/include/asm/syscall.h   |  2 +-
->  arch/riscv/kernel/module.c         |  2 +-
->  arch/riscv/kernel/probes/kprobes.c |  8 ++++++++
->  arch/riscv/kernel/sbi.c            | 10 +++++-----
->  arch/riscv/kernel/smp.c            |  6 +++---
->  arch/riscv/kernel/syscall_table.c  |  2 +-
->  arch/riscv/kernel/time.c           |  2 +-
->  arch/riscv/kernel/traps.c          |  2 +-
->  arch/riscv/kernel/vdso.c           |  4 ++--
->  arch/riscv/mm/init.c               | 12 ++++++------
->  arch/riscv/mm/kasan_init.c         |  6 +++---
->  arch/riscv/mm/ptdump.c             |  2 +-
->  arch/riscv/net/bpf_jit_comp64.c    | 13 -------------
->  arch/riscv/net/bpf_jit_core.c      | 14 ++++++++++++++
->  16 files changed, 50 insertions(+), 40 deletions(-)
+Hi,
 
-Thanks.  These are on for-next.  I had to fix up a handful of merge 
-conflicts, so LMK if I made any mistakes.
+This patchset is a new implementation for XDP multicast support based
+on my previous 2 maps implementation[1]. The reason is that Daniel thinks
+the exclude map implementation is missing proper bond support in XDP
+context. And there is a plan to add native XDP bonding support. Adding a
+exclude map in the helper also increases the complexity of verifier and has
+drawback of performance.
+
+The new implementation just add two new flags BPF_F_BROADCAST and
+BPF_F_EXCLUDE_INGRESS to extend xdp_redirect_map for broadcast support.
+
+With BPF_F_BROADCAST the packet will be broadcasted to all the interfaces
+in the map. with BPF_F_EXCLUDE_INGRESS the ingress interface will be
+excluded when do broadcasting.
+
+The patchv9 link is here[2].
+
+[1] https://lore.kernel.org/bpf/20210223125809.1376577-1-liuhangbin@gmail.com
+[2] https://lore.kernel.org/bpf/20210422071454.2023282-1-liuhangbin@gmail.com
+
+v10: use READ/WRITE_ONCE when read/write map instead of xchg()
+v9: Update patch 01 commit description
+v8: use hlist_for_each_entry_rcu() when looping the devmap hash ojbs
+v7: No need to free xdpf in dev_map_enqueue_clone() if xdpf_clone failed.
+v6: Fix a skb leak in the error path for generic XDP
+v5: Just walk the map directly to get interfaces as get_next_key() of devmap
+    hash may restart looping from the first key if the device get removed.
+    After update the performace has improved 10% compired with v4.
+v4: Fix flags never cleared issue in patch 02. Update selftest to cover this.
+v3: Rebase the code based on latest bpf-next
+v2: fix flag renaming issue in patch 02
+
+Hangbin Liu (3):
+  xdp: extend xdp_redirect_map with broadcast support
+  sample/bpf: add xdp_redirect_map_multi for redirect_map broadcast test
+  selftests/bpf: add xdp_redirect_multi test
+
+Jesper Dangaard Brouer (1):
+  bpf: run devmap xdp_prog on flush instead of bulk enqueue
+
+ include/linux/bpf.h                           |  20 ++
+ include/linux/filter.h                        |  18 +-
+ include/net/xdp.h                             |   1 +
+ include/uapi/linux/bpf.h                      |  17 +-
+ kernel/bpf/cpumap.c                           |   3 +-
+ kernel/bpf/devmap.c                           | 304 +++++++++++++++---
+ net/core/filter.c                             |  37 ++-
+ net/core/xdp.c                                |  29 ++
+ net/xdp/xskmap.c                              |   3 +-
+ samples/bpf/Makefile                          |   3 +
+ samples/bpf/xdp_redirect_map_multi_kern.c     |  87 +++++
+ samples/bpf/xdp_redirect_map_multi_user.c     | 302 +++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |  17 +-
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../bpf/progs/xdp_redirect_multi_kern.c       |  99 ++++++
+ .../selftests/bpf/test_xdp_redirect_multi.sh  | 205 ++++++++++++
+ .../selftests/bpf/xdp_redirect_multi.c        | 236 ++++++++++++++
+ 17 files changed, 1320 insertions(+), 64 deletions(-)
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_kern.c
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_user.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
+ create mode 100755 tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
+ create mode 100644 tools/testing/selftests/bpf/xdp_redirect_multi.c
+
+-- 
+2.26.3
+
