@@ -2,65 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5770D3697E3
-	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 19:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39136369824
+	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 19:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhDWRDI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Apr 2021 13:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        id S229957AbhDWRTB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Apr 2021 13:19:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhDWRDH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Apr 2021 13:03:07 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E738C061574;
-        Fri, 23 Apr 2021 10:02:31 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id g38so56376379ybi.12;
-        Fri, 23 Apr 2021 10:02:31 -0700 (PDT)
+        with ESMTP id S229691AbhDWRTA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Apr 2021 13:19:00 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D97C061574;
+        Fri, 23 Apr 2021 10:18:24 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id p126so2824698yba.1;
+        Fri, 23 Apr 2021 10:18:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=owg94yUIU0a2eRqMOnoPDCKjXrACNS+uhbxAnQkFBqI=;
-        b=XYOe2NjaeNttbS+/bzmBLPVv0G2fUZl87TWVzFDiKWN06wUJRdqxX00IX2tU9llt62
-         E+xGTjKxtRS/SS81dKCvHXEaOXMXhybPvuK+c5z6X1tLzd/0ZxNEu/ohIy+az/PkFWy8
-         EJ4K9FNF8fX5xwSasLWvJs6kqTOMXf5Aoailojd8dAMpKJ/ISFHIpS0qtpCCQ2j1DaUt
-         PZE6/TcSeJpVF3zyXxxi5RZCRjt2VTBK/jN8kPaUDS/jQi8xmQEg0D4qWQJDuWwFLNum
-         kust6JhcnqluB9LXmkTvsmsTULs+IMNzJBUkkhH/YZzwu62u1o59QNDlEGxPdu+/YSnt
-         VKTw==
+        bh=Ro7xCYFTIMq+4aXdu0vnN1al3dV+lMpIl8csXTesIbU=;
+        b=sjl8rnUjbHS5FhocMnzYK/CDexn3v38B54UYwP3iFCPU+PwGcOQaKI59Y3HKb8L3o8
+         24R/zBF5yZjwwZhtFTyRQfIgmP/FK7hzDREhgJEBcwOrAxisuw3NLqZVL+kPsfHtNlwW
+         NJB3t59NfUhelqL5udZkEu4iqdaCNRPxsYoSYUDsA45GP03reoaa4LQnDQ3LRf4AtgfQ
+         e3e3gc4tS+XJMEGxnflX0ykJH8HZDxY7PGFf2CnF+bHo0pIou8OKxupWLdI6vN17f6Yq
+         N0g5XupONvXOVW1W0eAnloXkB1QmVdAfExNVDpW6jZUXQ09A9HUAMpW7lBOcEsCysbS0
+         lHVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=owg94yUIU0a2eRqMOnoPDCKjXrACNS+uhbxAnQkFBqI=;
-        b=I+vYgmij1D9Gtuh8Bd1x37DRg2yK6Q9uoN1iDUS1HZiKJ79xDRnUKeKA5hGg6Qx5YZ
-         JgyJQSrEImd6CJY9sM+yoSzhLrhCNm6win1vgOB6JX6qXcGV3l//8LuqvJy+TeoF715V
-         D9YSclzo+RCImbzYrgmBUe6/2KjSKuCwJg7ZG5+h27UED0Hs2ARSePkSuYurSCvR7FOy
-         snnN+IFRN9OzvfVT1rE3H19FcigNPttVOTY7++o53+qg/I3MwryE5i0Gpa0FJad8DwQA
-         XexiDXm7xKb3UEZG/ZLxHx9bjcOgyt9XAFJd4RahjNCWZxwCVSeADClkh+Rp3+V26rlE
-         5MMw==
-X-Gm-Message-State: AOAM532yMKEgmRqjjOcu5tLPdlZxhRL0RBYLWIRexAZRzR38gk626Oyc
-        9G6Q2M1/uedRgQWBqADsEH3EAXlk0xjcnk71QLo=
-X-Google-Smtp-Source: ABdhPJxLx0Is4f0m7YmQiEx8RXvbldyfM84RdoX1zH4Ix89f7jtKtSPjrciCTLjym1xZKKm06KPJ0leaEeycKApOon0=
-X-Received: by 2002:a25:ba06:: with SMTP id t6mr6268185ybg.459.1619197350640;
- Fri, 23 Apr 2021 10:02:30 -0700 (PDT)
+        bh=Ro7xCYFTIMq+4aXdu0vnN1al3dV+lMpIl8csXTesIbU=;
+        b=RsFMxv9XvI7TGxWjLGuNVZZQak/x9sB4zWNUCN6BZW+KoDLU25RrUTkrHkuu70ZE7Y
+         I3UuniYpINPmMkfBn+agt5mwMeeHIIw1oK5iotckx08DxN3afLqZSrSmTVKBVVnaFRTv
+         8YAJF6CubvdTl14R4VRPXbZCAp8GKeEnoJeDhDZt/fMQxdkyEk0F1CJC5BPrvMzi7kS/
+         u7iLKTnJhyo0lw3sThzbMFKDrSfnp00fIhDWNlg24O/mGiJ1j/ikMqOrd5wMoKHc48yU
+         bjxXPlYGWPZIpIYntqM5uHr9tWdt4QY8sZ4HAkZMMTkY0ayZi95qAu3yQuO/CIcYOy4Z
+         QXYg==
+X-Gm-Message-State: AOAM531b7mkdiEQesPjSd0wBzd+EE9chubG1ycz78Hzzv2zGWqpme+ix
+        2TG+MvalQoJQd4rirk6T6lLjYAZr5V1n7ySd9Lw=
+X-Google-Smtp-Source: ABdhPJy/PI8enZ3VVWM1OOLOMAN/E+WKrgw2anRZOFWnpYPUGT0G3hO4Kbh7I2X0+QHUB6roP+X1D3RE4Q9uSs8Ln9Q=
+X-Received: by 2002:a25:c4c5:: with SMTP id u188mr6949290ybf.425.1619198303207;
+ Fri, 23 Apr 2021 10:18:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210416202404.3443623-1-andrii@kernel.org> <20210416202404.3443623-11-andrii@kernel.org>
- <c9f1cab3-2aba-bbfb-25bd-6d23f7191a5d@fb.com> <CAEf4Bzai43dFxkZuh3FU0VrHZ008qT=GDDhhAsmOdgZuykkdTw@mail.gmail.com>
- <CAADnVQJ_PS=PH8AQySiHqn-Bm=+DxsqRkgx+2_7OxM5CQkB4Mg@mail.gmail.com>
- <CAEf4BzYXZOX=dmrAQAxHinSa0mxJ5gkJkpL=paVJjtrEWQex4A@mail.gmail.com>
- <CAADnVQK+s=hx1z4wjNFp5oYqi4_ovtcbGMbkVD4qKkUzVaeLvQ@mail.gmail.com>
- <CAEf4BzY8VZyXGUYdtOCvyLjRGGcuOF07rA1OJPTLpRmEat+jbg@mail.gmail.com>
- <CAADnVQJe-5sPyRxWnOwSyVyudkFo-WC2TgxXaibiMRM=54XhgA@mail.gmail.com>
- <CAEf4BzZbaOv0UoGF3Vwim94EgLtkTWtVYnDeuhfEbWkK9B1orw@mail.gmail.com> <CAADnVQLkXhui3K2O4v4u1gfMVXzBdEtfuUixPhnb=n-BdUbH9Q@mail.gmail.com>
-In-Reply-To: <CAADnVQLkXhui3K2O4v4u1gfMVXzBdEtfuUixPhnb=n-BdUbH9Q@mail.gmail.com>
+References: <20210416202404.3443623-1-andrii@kernel.org> <20210416202404.3443623-16-andrii@kernel.org>
+ <3947e6ff-0b73-995e-630f-4a1252f8694b@fb.com>
+In-Reply-To: <3947e6ff-0b73-995e-630f-4a1252f8694b@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 23 Apr 2021 10:02:19 -0700
-Message-ID: <CAEf4Bzaw0Je1zQvbKQh9VP3f1UuWTbsLZjJpyvSCHOr_JZGjsA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 10/17] libbpf: tighten BTF type ID rewriting
- with error checking
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+Date:   Fri, 23 Apr 2021 10:18:12 -0700
+Message-ID: <CAEf4BzasVszkBCA0Ra2NsU+0ixoR65khF2E6h7CG_P3FOyamFQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 15/17] selftests/bpf: add function linking selftest
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>
@@ -69,49 +62,173 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 9:34 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Thu, Apr 22, 2021 at 5:50 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> On Fri, Apr 23, 2021 at 9:31 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > static int remap_type_id(__u32 *type_id, void *ctx)
-> > > > {
-> > > >         int *id_map = ctx;
-> > > >         int new_id = id_map[*type_id];
-> > > >
-> > > >
-> > > > /* Here VOID stays VOID, that's all */
-> > > >
-> > > >         if (*type_id == 0)
-> > > >                 return 0;
-> > >
-> > > Does it mean that id_map[0] is a garbage value?
-> > > and all other code that might be doing id_map[idx] might be reading
-> > > garbage if it doesn't have a check for idx == 0 ?
+>
+>
+> On 4/16/21 1:24 PM, Andrii Nakryiko wrote:
+> > Add selftest validating various aspects of statically linking functions:
+> >    - no conflicts and correct resolution for name-conflicting static funcs;
+> >    - correct resolution of extern functions;
+> >    - correct handling of weak functions, both resolution itself and libbpf's
+> >      handling of unused weak function that "lost" (it leaves gaps in code with
+> >      no ELF symbols);
+> >    - correct handling of hidden visibility to turn global function into
+> >      "static" for the purpose of BPF verification.
 > >
-> > No, id_map[0] == 0 by construction (id_map is obj->btf_type_map and is
-> > calloc()'ed) and can be used as id_map[idx].
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 >
-> Ok. Then why are you insisting on this micro optimization to return 0
-> directly?
-> That's the confusing part for me.
+> Ack with a small nit below.
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
+>
+> > ---
+> >   tools/testing/selftests/bpf/Makefile          |  3 +-
+> >   .../selftests/bpf/prog_tests/linked_funcs.c   | 42 +++++++++++
+> >   .../selftests/bpf/progs/linked_funcs1.c       | 73 +++++++++++++++++++
+> >   .../selftests/bpf/progs/linked_funcs2.c       | 73 +++++++++++++++++++
+> >   4 files changed, 190 insertions(+), 1 deletion(-)
+> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/linked_funcs.c
+> >   create mode 100644 tools/testing/selftests/bpf/progs/linked_funcs1.c
+> >   create mode 100644 tools/testing/selftests/bpf/progs/linked_funcs2.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> > index 666b462c1218..427ccfec1a6a 100644
+> > --- a/tools/testing/selftests/bpf/Makefile
+> > +++ b/tools/testing/selftests/bpf/Makefile
+> > @@ -308,9 +308,10 @@ endef
+> >
+> >   SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
+> >
+> > -LINKED_SKELS := test_static_linked.skel.h
+> > +LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h
+> >
+> >   test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
+> > +linked_funcs.skel.h-deps := linked_funcs1.o linked_funcs2.o
+> >
+> >   LINKED_BPF_SRCS := $(patsubst %.o,%.c,$(foreach skel,$(LINKED_SKELS),$($(skel)-deps)))
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/linked_funcs.c b/tools/testing/selftests/bpf/prog_tests/linked_funcs.c
+> > new file mode 100644
+> > index 000000000000..03bf8ef131ce
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/linked_funcs.c
+> > @@ -0,0 +1,42 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright (c) 2021 Facebook */
+> > +
+> > +#include <test_progs.h>
+> > +#include <sys/syscall.h>
+> > +#include "linked_funcs.skel.h"
+> > +
+> > +void test_linked_funcs(void)
+> > +{
+> > +     int err;
+> > +     struct linked_funcs *skel;
+> > +
+> > +     skel = linked_funcs__open();
+> > +     if (!ASSERT_OK_PTR(skel, "skel_open"))
+> > +             return;
+> > +
+> > +     skel->rodata->my_tid = syscall(SYS_gettid);
+> > +     skel->rodata->syscall_id = SYS_getpgid;
+> > +
+> > +     err = linked_funcs__load(skel);
+> > +     if (!ASSERT_OK(err, "skel_load"))
+> > +             goto cleanup;
+> > +
+> > +     err = linked_funcs__attach(skel);
+> > +     if (!ASSERT_OK(err, "skel_attach"))
+> > +             goto cleanup;
+> > +
+> > +     /* trigger */
+> > +     syscall(SYS_getpgid);
+> > +
+> > +     ASSERT_EQ(skel->bss->output_val1, 2000 + 2000, "output_val1");
+> > +     ASSERT_EQ(skel->bss->output_ctx1, SYS_getpgid, "output_ctx1");
+> > +     ASSERT_EQ(skel->bss->output_weak1, 42, "output_weak1");
+> > +
+> > +     ASSERT_EQ(skel->bss->output_val2, 2 * 1000 + 2 * (2 * 1000), "output_val2");
+> > +     ASSERT_EQ(skel->bss->output_ctx2, SYS_getpgid, "output_ctx2");
+> > +     /* output_weak2 should never be updated */
+> > +     ASSERT_EQ(skel->bss->output_weak2, 0, "output_weak2");
+> > +
+> > +cleanup:
+> > +     linked_funcs__destroy(skel);
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/progs/linked_funcs1.c b/tools/testing/selftests/bpf/progs/linked_funcs1.c
+> > new file mode 100644
+> > index 000000000000..cc621d4e4d82
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/linked_funcs1.c
+> > @@ -0,0 +1,73 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright (c) 2021 Facebook */
+> > +
+> > +#include "vmlinux.h"
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +
+> > +/* weak and shared between two files */
+> > +const volatile int my_tid __weak = 0;
+> > +const volatile long syscall_id __weak = 0;
+>
+> Since the new compiler (llvm13) is recommended for this patch set.
+> We can simplify the above two definition with
+>    int my_tid __weak;
+>    long syscall_id __weak;
+> The same for the other file.
 
-I'm not insisting:
-
-  > but I'll rewrite it to a combined if if it makes it easier to follow
-
-So I'm confused why you are confused.
+This is not about old vs new compilers. I wanted to use .rodata
+variables, but I'll switch to .bss, no problem.
 
 >
-> If it was:
-> "if (new_id == 0 && *type_id != 0) { pr_warn"
-> Then it would be clear what error condition is about.
-> But 'return 0' messing things up in my mind,
-> because it's far from obvious that first check is really a combination
-> with the 2nd check and by itself it's a micro optimization to avoid
-> reading id_map[0].
-
-I didn't try to micro optimize, that's how I naturally think about the
-problem. I'll rewrite the if, don't know why we are spending emails on
-this still.
+> But I am also okay with the current form
+> to *satisfy* llvm10 some people may still use.
+>
+> > +
+> > +int output_val1 = 0;
+> > +int output_ctx1 = 0;
+> > +int output_weak1 = 0;
+> > +
+> > +/* same "subprog" name in all files, but it's ok because they all are static */
+> > +static __noinline int subprog(int x)
+> > +{
+> > +     /* but different formula */
+> > +     return x * 1;
+> > +}
+> > +
+> > +/* Global functions can't be void */
+> > +int set_output_val1(int x)
+> > +{
+> > +     output_val1 = x + subprog(x);
+> > +     return x;
+> > +}
+> > +
+> > +/* This function can't be verified as global, as it assumes raw_tp/sys_enter
+> > + * context and accesses syscall id (second argument). So we mark it as
+> > + * __hidden, so that libbpf will mark it as static in the final object file,
+> > + * right before verifying it in the kernel.
+> > + *
+> > + * But we don't mark it as __hidden here, rather at extern site. __hidden is
+> > + * "contaminating" visibility, so it will get propagated from either extern or
+> > + * actual definition (including from the losing __weak definition).
+> > + */
+> > +void set_output_ctx1(__u64 *ctx)
+> > +{
+> > +     output_ctx1 = ctx[1]; /* long id, same as in BPF_PROG below */
+> > +}
+> > +
+> > +/* this weak instance should win because it's the first one */
+> > +__weak int set_output_weak(int x)
+> > +{
+> > +     output_weak1 = x;
+> > +     return x;
+> > +}
+> > +
+> > +extern int set_output_val2(int x);
+> > +
+> > +/* here we'll force set_output_ctx2() to be __hidden in the final obj file */
+> > +__hidden extern void set_output_ctx2(__u64 *ctx);
+> > +
+> [...]
