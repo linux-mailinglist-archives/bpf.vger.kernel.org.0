@@ -2,37 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A57369086
-	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 12:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0683690B3
+	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 12:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbhDWKr1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Apr 2021 06:47:27 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:43462 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229885AbhDWKr0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Apr 2021 06:47:26 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FRWF12hTFz9vBLr;
-        Fri, 23 Apr 2021 12:46:45 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id OMUajc0KWjbX; Fri, 23 Apr 2021 12:46:45 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FRWF117fBz9vBKj;
-        Fri, 23 Apr 2021 12:46:45 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id CE9A68B849;
-        Fri, 23 Apr 2021 12:46:46 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id bnOKyCWI-iRB; Fri, 23 Apr 2021 12:46:46 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B69ED8B765;
-        Fri, 23 Apr 2021 12:46:43 +0200 (CEST)
+        id S229961AbhDWLAZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Apr 2021 07:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229871AbhDWLAY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Apr 2021 07:00:24 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EBB7C06174A
+        for <bpf@vger.kernel.org>; Fri, 23 Apr 2021 03:59:48 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id w186so21233804wmg.3
+        for <bpf@vger.kernel.org>; Fri, 23 Apr 2021 03:59:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=POTZ/1KbTme2ehdkYN4t8NUzorpYmuLDB40ValCRCzY=;
+        b=GQ9SWSJA7G7fyBqL5po7yWgTUyHybJVBlTbgimQMgeLWnHWPXCKisioR3lZg+tWt9h
+         z7HehOh3qZDxqUF30ai6ZxU2U1Ow8Hgk0PqsAAC8Krl1BFBv1LZT6QdVT/JFwyXax67L
+         yuhPNrcw/yNhw/HJ/+mBzX14R/l6x0ltK3lCOOHEpIJIqdhDC2YNufJNDNzcMBJzYj7J
+         qXutqCgEPewjWKcMIBsTzFe/Bmpc7u7/mRj+o83NFL3pJXd98Xo9so+tu+SwhEVXrFw7
+         JXcq+GREZl6F3rYzfj9RA96tSdlkEWNtZt6P/WPXfX78yWs83/u4GkJ5e7gZ4nQ0GGXG
+         J7lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=POTZ/1KbTme2ehdkYN4t8NUzorpYmuLDB40ValCRCzY=;
+        b=Qid7Bv6uYtjUKSpXt5BZ+BBEuWpfO3OGtttZsVaV8akxppIU8g3myWSTVdHqWifWYj
+         TX6LKr1KvIFpTe+Q86D0XigEqxDJFUQHThQD5QFajYal7Bgl1efcxWUXI2nZbCi2Qhnu
+         1dfwF/IhhLCEAsuqgMvO2Akp5vD37XbkQZ/y9nWFkr71znkFH023kkJ2l44voFCuA0SB
+         o4OYqZyIY4eXqmhqqgv0V4eDR8JniuWYkR7aL9akOUZuh7WX08c1JLhT1g/Qhk7rAp1I
+         scTGh1x2yfD3ZkF6xiID/379CLqI8giQPyZqCEhs/Z+bxO9+6CwTMCutUA6EWMggUtij
+         J/yA==
+X-Gm-Message-State: AOAM532m1TolgSYJDO5Z4VBQPzgTtZ2qvSL8bFwSx8+4bkRuJNzWslJZ
+        du3yTa9OYwcfTCnqO8rJ9iDO6g==
+X-Google-Smtp-Source: ABdhPJzObvm9TMswQFwB877SBftpV3WuHpQFVBzCA+XkW+5tO9tLL2qswInPQ8jeRFQ5yWhqFZ0H4A==
+X-Received: by 2002:a1c:4c09:: with SMTP id z9mr3570424wmf.104.1619175586997;
+        Fri, 23 Apr 2021 03:59:46 -0700 (PDT)
+Received: from [192.168.1.8] ([149.86.88.56])
+        by smtp.gmail.com with ESMTPSA id e18sm9152733wrc.85.2021.04.23.03.59.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 03:59:46 -0700 (PDT)
 Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
-To:     Quentin Monnet <quentin@isovalent.com>,
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>,
         "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
@@ -96,37 +113,47 @@ References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
  <CAADnVQ+oQT6C7Qv7P5TV-x7im54omKoCYYKtYhcnhb1Uv3LPMQ@mail.gmail.com>
  <be132117-f267-5817-136d-e1aeb8409c2a@csgroup.eu>
  <58296f87-ad00-a0f5-954b-2150aa84efc4@isovalent.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <6a809d3f-c9e3-0eb7-9c1d-a202ad848424@csgroup.eu>
-Date:   Fri, 23 Apr 2021 12:46:39 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ <6a809d3f-c9e3-0eb7-9c1d-a202ad848424@csgroup.eu>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <ab1c3803-179c-7882-2bba-9eeda5211ad1@isovalent.com>
+Date:   Fri, 23 Apr 2021 11:59:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <58296f87-ad00-a0f5-954b-2150aa84efc4@isovalent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+In-Reply-To: <6a809d3f-c9e3-0eb7-9c1d-a202ad848424@csgroup.eu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-Le 23/04/2021 à 12:26, Quentin Monnet a écrit :
-> 2021-04-23 09:19 UTC+0200 ~ Christophe Leroy <christophe.leroy@csgroup.eu>
+2021-04-23 12:46 UTC+0200 ~ Christophe Leroy <christophe.leroy@csgroup.eu>
 > 
-> [...]
 > 
->> I finally managed to cross compile bpftool with libbpf, libopcodes,
->> readline, ncurses, libcap, libz and all needed stuff. Was not easy but I
->> made it.
+> Le 23/04/2021 à 12:26, Quentin Monnet a écrit :
+>> 2021-04-23 09:19 UTC+0200 ~ Christophe Leroy
+>> <christophe.leroy@csgroup.eu>
+>>
+>> [...]
+>>
+>>> I finally managed to cross compile bpftool with libbpf, libopcodes,
+>>> readline, ncurses, libcap, libz and all needed stuff. Was not easy but I
+>>> made it.
+>>
+>> Libcap is optional and bpftool does not use readline or ncurses. May I
+>> ask how you tried to build it?
 > 
-> Libcap is optional and bpftool does not use readline or ncurses. May I
-> ask how you tried to build it?
+> cd tools/bpf/
+> 
+> make ARCH=powerpc CROSS_COMPILE=ppc-linux-
 
-cd tools/bpf/
+Ok, you could try running directly from tools/bpf/bpftool/ next time
+instead.
 
-make ARCH=powerpc CROSS_COMPILE=ppc-linux-
+Readline at least is for a different tool under tools/bpf/, bpf_dbg (But
+I'm still not sure where that ncurses requirement was pulled from). The
+requirements for specific kernel options probably came from yet another
+tool (runqslower, I think).
 
-
-Christophe
+Quentin
