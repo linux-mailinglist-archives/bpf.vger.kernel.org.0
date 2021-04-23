@@ -2,142 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1B236919D
-	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 13:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 168113691BB
+	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 14:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235830AbhDWL6C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Apr 2021 07:58:02 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:58168 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230431AbhDWL6B (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 23 Apr 2021 07:58:01 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=abaci@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UWVQKet_1619179042;
-Received: from B-V3K2HV2H-1858.local(mailfrom:abaci@linux.alibaba.com fp:SMTPD_---0UWVQKet_1619179042)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 23 Apr 2021 19:57:23 +0800
-Subject: Re: [PATCH] selftests/bpf: fix warning comparing pointer to 0
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1619085648-36826-1-git-send-email-jiapeng.chong@linux.alibaba.com>
- <7ecb85e6-410b-65bb-a042-74045ee17c3f@iogearbox.net>
-From:   Abaci Robot <abaci@linux.alibaba.com>
-Message-ID: <93957f3e-2274-c389-64a4-235ed8a228bf@linux.alibaba.com>
-Date:   Fri, 23 Apr 2021 19:57:22 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
+        id S242153AbhDWMHQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Apr 2021 08:07:16 -0400
+Received: from mga01.intel.com ([192.55.52.88]:9565 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229479AbhDWMHP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Apr 2021 08:07:15 -0400
+IronPort-SDR: Wl0CYK8WwsJm0SJYUD2g79ZiCfcLIK0de42BMSAEmYagqfSyE3A7uoGt9Uan8kqYl3OBDZhV4y
+ q7Dnix2pXl0A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9962"; a="216741479"
+X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
+   d="scan'208";a="216741479"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 05:06:39 -0700
+IronPort-SDR: jHLdHp/7cZWAzZ1xBF+5GdsV/b6RbTdlmh/DqV+zeClSdXidxRdGp++38iezLl8Zeplu2s/KMb
+ CZ2Wso0VxfkA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
+   d="scan'208";a="464302721"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga001.jf.intel.com with ESMTP; 23 Apr 2021 05:06:35 -0700
+Date:   Fri, 23 Apr 2021 13:51:50 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Kurt Kanzenbach <kurt@linutronix.de>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+Subject: Re: [PATCH net v3] igb: Fix XDP with PTP enabled
+Message-ID: <20210423115150.GB64904@ranger.igk.intel.com>
+References: <20210422052617.17267-1-kurt@linutronix.de>
+ <20210422101129.GB44289@ranger.igk.intel.com>
+ <878s59qz1b.fsf@kurt>
 MIME-Version: 1.0
-In-Reply-To: <7ecb85e6-410b-65bb-a042-74045ee17c3f@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878s59qz1b.fsf@kurt>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-在 2021/4/23 上午5:56, Daniel Borkmann 写道:
-> On 4/22/21 12:00 PM, Jiapeng Chong wrote:
->> Fix the following coccicheck warning:
->>
->> ./tools/testing/selftests/bpf/progs/fentry_test.c:76:15-16: WARNING
->> comparing pointer to 0.
->>
->> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
->> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On Fri, Apr 23, 2021 at 08:45:52AM +0200, Kurt Kanzenbach wrote:
+> On Thu Apr 22 2021, Maciej Fijalkowski wrote:
+> > On Thu, Apr 22, 2021 at 07:26:17AM +0200, Kurt Kanzenbach wrote:
+> >> +		/* pull rx packet timestamp if available and valid */
+> >> +		if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
+> >> +			timestamp = igb_ptp_rx_pktstamp(rx_ring->q_vector,
+> >> +							pktbuf);
+> >> +
+> >> +			if (timestamp) {
+> >> +				pkt_offset += IGB_TS_HDR_LEN;
+> >> +				size -= IGB_TS_HDR_LEN;
+> >> +			}
+> >> +		}
+> >
+> > Small nit: since this is a hot path, maybe we could omit the additional
+> > branch that you're introducing above and make igb_ptp_rx_pktstamp() to
+> > return either 0 for error cases and IGB_TS_HDR_LEN if timestamp was fine?
+> > timestamp itself would be passed as an arg.
+> >
+> > So:
+> > 		if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
+> > 			ts_offset = igb_ptp_rx_pktstamp(rx_ring->q_vector,
+> > 							pktbuf, &timestamp);
+> > 			pkt_offset += ts_offset;
+> > 			size -= ts_offset;
+> > 		}
+> >
+> > Thoughts? I feel like if we see that desc has timestamp enabled then let's
+> > optimize it for successful case.
 > 
-> How many more of those 'comparing pointer to 0' patches do you have?
-> Right now we already merged the following with similar trivial pattern:
+> Yes, this should work as well. Actually I didn't like the if statement
+> either. Only one comment: It's not an offset but rather the timestamp
+> header length. I'd call it 'ts_len'.
+
+Right, sorry.
+
 > 
-> - ebda107e5f222a086c83ddf6d1ab1da97dd15810
-> - a9c80b03e586fd3819089fbd33c38fb65ad5e00c
-> - 04ea63e34a2ee85cfd38578b3fc97b2d4c9dd573
+> >
+> >>  
+> >>  		/* retrieve a buffer from the ring */
+> >>  		if (!skb) {
+> >> -			unsigned int offset = igb_rx_offset(rx_ring);
+> >> -			unsigned char *hard_start;
+> >> +			unsigned char *hard_start = pktbuf - igb_rx_offset(rx_ring);
+> >> +			unsigned int offset = pkt_offset + igb_rx_offset(rx_ring);
+> >
+> > Probably we could do something similar in flavour of:
+> > https://lore.kernel.org/bpf/20210118151318.12324-10-maciej.fijalkowski@intel.com/
+> >
+> > which broke XDP_REDIRECT and got fixed in:
+> > https://lore.kernel.org/bpf/20210303153928.11764-2-maciej.fijalkowski@intel.com/
+> >
+> > You get the idea.
 > 
-> Given they don't really 'fix' anything, I would like to reduce such
-> patch cleanup churn on the bpf tree. Please _consolidate_ all other
-> such occurrences into a _single_ patch for BPF selftests, and resubmit.
+> Yes, I do. However, I think such a change doesn't belong in this patch,
+> which is a bugfix for XDP. It looks like an optimization. Should I split
+> it into two patches and rather target net-next instead of net?
+
+This was just a heads up from my side as it caught my eye. For sure it's
+out of the scope of that patch, but would be good to have a follow up on
+that.
+
 > 
-> Thanks!
+> Thanks for your review.
 > 
->> ---
->>   tools/testing/selftests/bpf/progs/fentry_test.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c 
->> b/tools/testing/selftests/bpf/progs/fentry_test.c
->> index 52a550d..d4247d6 100644
->> --- a/tools/testing/selftests/bpf/progs/fentry_test.c
->> +++ b/tools/testing/selftests/bpf/progs/fentry_test.c
->> @@ -73,7 +73,7 @@ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
->>   SEC("fentry/bpf_fentry_test8")
->>   int BPF_PROG(test8, struct bpf_fentry_test_t *arg)
->>   {
->> -    if (arg->a == 0)
->> +    if (!arg->a)
->>           test8_result = 1;
->>       return 0;
->>   }
->>
-
-Hi,
-
-Thanks for your reply.
-
-TLDR:
-1. Now all this kind of warning in tools/testing/selftests/bpf/progs/ 
-were reported and discussed except this one.
-2. We might not do scanning and check reports on 
-tools/testing/selftests/bpf/progs/ in the future, because some 
-contributors want the progs to stay as close as possible to the way they 
-were written. 
-(https://patchwork.kernel.org/project/linux-kselftest/patch/1618307549-78149-1-git-send-email-yang.lee@linux.alibaba.com/)
+> Thanks,
+> Kurt
 
 
-Details:
-
-We have checked the recent linux master (commit: 
-16fc44d6387e260f4932e9248b985837324705d8), and the related reports and 
-their current status is shown as follows:
-
-./tools/testing/selftests/bpf/progs/fentry_test.c:67:12-13: WARNING 
-comparing pointer to 0
-(not appear in the bpf-next branch)
-
-
-./tools/testing/selftests/bpf/progs/fentry_test.c:76:15-16: WARNING 
-comparing pointer to 0
-(the above patch try to eliminate it)
-
-
-./tools/testing/selftests/bpf/progs/fexit_test.c:68:12-13: WARNING 
-comparing pointer to 0
-./tools/testing/selftests/bpf/progs/fexit_test.c:77:15-16: WARNING 
-comparing pointer to 0
-(eliminated in 
-https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=ebda107e5f222a086c83ddf6d1ab1da97dd15810)
-
-./tools/testing/selftests/bpf/progs/profiler.inc.h:364:18-22: WARNING 
-comparing pointer to 0
-./tools/testing/selftests/bpf/progs/profiler.inc.h:364:18-22: WARNING 
-comparing pointer to 0, suggest !E
-./tools/testing/selftests/bpf/progs/profiler.inc.h:537:23-27: WARNING 
-comparing pointer to 0
-./tools/testing/selftests/bpf/progs/profiler.inc.h:537:23-27: WARNING 
-comparing pointer to 0, suggest !E
-./tools/testing/selftests/bpf/progs/profiler.inc.h:544:21-25: WARNING 
-comparing pointer to 0
-./tools/testing/selftests/bpf/progs/profiler.inc.h:544:21-25: WARNING 
-comparing pointer to 0, suggest !E
-./tools/testing/selftests/bpf/progs/profiler.inc.h:692:29-33: WARNING 
-comparing pointer to 0
-./tools/testing/selftests/bpf/progs/profiler.inc.h:770:13-17: WARNING 
-comparing pointer to 0
-(Discussed in 
-https://patchwork.kernel.org/project/linux-kselftest/patch/1618307549-78149-1-git-send-email-yang.lee@linux.alibaba.com/)
-
-./tools/testing/selftests/bpf/progs/test_global_func10.c:17:12-13: 
-WARNING comparing pointer to 0
-(cleanup in 
-https://kernel.source.codeaurora.cn/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=04ea63e34a2ee85cfd38578b3fc97b2d4c9dd573)
-
-Thanks.
