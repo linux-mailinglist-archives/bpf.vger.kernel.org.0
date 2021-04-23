@@ -2,141 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A3A36946A
-	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 16:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9BDA3694C4
+	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 16:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhDWOM2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Apr 2021 10:12:28 -0400
-Received: from mga11.intel.com ([192.55.52.93]:3869 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229890AbhDWOM2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Apr 2021 10:12:28 -0400
-IronPort-SDR: l2LME7WpeOzJj5CkBzLkCJdY0ePhujjcMrpd2oy+mMmuMYQat2RtXbI1PvgBj9RNtrXZlliz7B
- JMrGyzddaLjg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9963"; a="192885905"
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="192885905"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2021 07:11:51 -0700
-IronPort-SDR: rgCBhGZxy3SQeAJYG6hyLfcfhtvaW79uRi1BZRb4R4+r5B44ip2yUCK+mdMnjGAbhnz8kQWQNY
- ntDpB2NfANJw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,245,1613462400"; 
-   d="scan'208";a="456237874"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga002.fm.intel.com with ESMTP; 23 Apr 2021 07:11:49 -0700
-Date:   Fri, 23 Apr 2021 15:57:04 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH RFC bpf-next 4/4] i40e: remove rcu_read_lock() around XDP
- program invocation
-Message-ID: <20210423135704.GC64904@ranger.igk.intel.com>
-References: <161917591559.102337.3558507780042453425.stgit@toke.dk>
- <161917591996.102337.9559803697014955421.stgit@toke.dk>
+        id S231220AbhDWOcd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Apr 2021 10:32:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229871AbhDWOcd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Apr 2021 10:32:33 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26D2C061574
+        for <bpf@vger.kernel.org>; Fri, 23 Apr 2021 07:31:56 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id r20so24465404ejo.11
+        for <bpf@vger.kernel.org>; Fri, 23 Apr 2021 07:31:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Po06NcnT9yNS5y0Tdw+z+LUZj1goxErV8JsQ4hnl1f8=;
+        b=h2sigU193ei7wlls3OtQxPVANPWHCDuUQdHwG9ltnN//J0Y+dgEP64zStBizdjw7B+
+         c5XCST0dVO3wfJIGUSRxXtvohSa1ELxPpXtNky0BGp5I5bLY15sX/zsnmFYx71TGvTZU
+         0tNlwjM31HwVyWv/Gwt19ZBLR1YKBsNQT8VUI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Po06NcnT9yNS5y0Tdw+z+LUZj1goxErV8JsQ4hnl1f8=;
+        b=jYra9d/VOl//2b4puB7X7jLO4znG0IJrEVCROzDTJDKCt7Iz5Fykv4CBbWmkdUDs0i
+         wShGIFiWUWVHLQ5ex9bzHmsCXBCGtk3Pwf8I9A5xFW/MvuoQ+O32RANnWoqIU9NkAi6X
+         gy3yY74sKhdxVzCu7Tp1qfC1sLyeVs8jPiLtmrB5yu434brQupB2KESaxvV8mx/bPy91
+         +PTaX+2sEjuuNc2HYK8J3OJWA6ooCrgfp754AH+JMI8sUGnnSLBYDRgQ3wDSyXAStjaO
+         kPlBHcyDHdxFCGJeDX/1z7Vr+HBHVYiP7zNsP3nT994El+3bNy6ppf+A3qynUcsfL0QK
+         MdtA==
+X-Gm-Message-State: AOAM532cefUzsI5RudWceWjgjg8krafJoe3LX8QmI75AZ0UkFR6+C+WR
+        9fi/IIeaD5q2BzaknuuSdocqiQ==
+X-Google-Smtp-Source: ABdhPJzxo07/NknLqD5JUK4v3yRS/SIjczGsIh8TkIp5c36iA9BoNwxl5nrsA9zdEXJV0KvkNa0Hjw==
+X-Received: by 2002:a17:906:1101:: with SMTP id h1mr4686184eja.179.1619188315737;
+        Fri, 23 Apr 2021 07:31:55 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id s9sm4602492edd.16.2021.04.23.07.31.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Apr 2021 07:31:55 -0700 (PDT)
+Subject: Re: [PATCH bpf-next 0/2] Implement BPF formatted output helpers with
+ bstr_printf
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210423011517.4069221-1-revest@chromium.org>
+ <8f89faf1-d7e6-ebe0-fb7d-c5b8243d140a@rasmusvillemoes.dk>
+ <CABRcYmLDBfoM8rOwPf+SdqkmJgtFRLYF94S4Fv2eU=Uwg4asTQ@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <8ef7319d-7692-0067-bb86-a0d5465e997f@rasmusvillemoes.dk>
+Date:   Fri, 23 Apr 2021 16:31:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <161917591996.102337.9559803697014955421.stgit@toke.dk>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <CABRcYmLDBfoM8rOwPf+SdqkmJgtFRLYF94S4Fv2eU=Uwg4asTQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 01:05:20PM +0200, Toke Høiland-Jørgensen wrote:
-> From: Toke Høiland-Jørgensen <toke@redhat.com>
-> 
-> The i40e driver has rcu_read_lock()/rcu_read_unlock() pairs around XDP
-> program invocations. However, the actual lifetime of the objects referred
-> by the XDP program invocation is longer, all the way through to the call to
-> xdp_do_flush(), making the scope of the rcu_read_lock() too small. This
-> turns out to be harmless because it all happens in a single NAPI poll
-> cycle (and thus under local_bh_disable()), but it makes the rcu_read_lock()
-> misleading.
+On 23/04/2021 15.26, Florent Revest wrote:
+> On Fri, Apr 23, 2021 at 10:50 AM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
+>>
 
-Okay, but what about the lifetime of the xdp_prog itself? Can xdp_prog
-change within a single NAPI poll? After reading previous discussions I
-would say it can't, right?
-
-There are drivers that have a big RCU critical section in NAPI poll, but it
-seems that some read a xdp_prog a single time whereas others read it per
-processed frame.
-
-If we are sure that xdp_prog can't change on-the-fly then first low
-hanging fruit, at least for the Intel drivers, is to skip a test against
-NULL and read it only once at the beginning of NAPI poll. There might be
-also other micro-optimizations specific to each drivers that could be done
-based on that (that of course read the xdp_prog per each frame).
-
-Or am I nuts?
-
+>>> This solves a bug reported by Rasmus Villemoes that would mangle
+>>> arguments on 32 bit machines.
+>>
+>> That's not entirely accurate. The arguments are also mangled on x86-64,
+>> it's just that in a few cases that goes unnoticed. That's why I
+>> suggested you try and take your test case (which I assume had been
+>> passing with flying colours on x86-64) and rearrange the specifiers,
+>> arguments and expected output string so that the (morally) 32 bit
+>> arguments end up beyond those-that-end-up-in-the-reg_save_area.
+>>
+>> IOWs, it is the 32 bit arguments that are mangled (because they get
+>> passed as-if they were actually 64 bits), and that applies on all
+>> architectures; nothing to do with sizeof(long).
 > 
-> Rather than extend the scope of the rcu_read_lock(), just get rid of it
-> entirely. With the addition of RCU annotations to the XDP_REDIRECT map
-> types that take bh execution into account, lockdep even understands this to
-> be safe, so there's really no reason to keep it around.
+> Mh, yes, I get your point and I agree that my description does not
+> really fit what you reported.
 > 
-> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> ---
->  drivers/net/ethernet/intel/i40e/i40e_txrx.c |    2 --
->  drivers/net/ethernet/intel/i40e/i40e_xsk.c  |    6 +-----
->  2 files changed, 1 insertion(+), 7 deletions(-)
+> I tried what you suggested though, with the current bpf-next/master on x86_64:
+> BPF_SNPRINTF(out, sizeof(out),
+> "%u %d %u %d %u %d %u %d %u %d %u %d",
+> 1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12);
 > 
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> index fc20afc23bfa..3f4c947a5185 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> @@ -2303,7 +2303,6 @@ static struct sk_buff *i40e_run_xdp(struct i40e_ring *rx_ring,
->  	struct bpf_prog *xdp_prog;
->  	u32 act;
->  
-> -	rcu_read_lock();
->  	xdp_prog = READ_ONCE(rx_ring->xdp_prog);
->  
->  	if (!xdp_prog)
-> @@ -2334,7 +2333,6 @@ static struct sk_buff *i40e_run_xdp(struct i40e_ring *rx_ring,
->  		break;
->  	}
->  xdp_out:
-> -	rcu_read_unlock();
->  	return ERR_PTR(-result);
->  }
->  
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> index d89c22347d9d..93b349f11d3b 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-> @@ -153,7 +153,6 @@ static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
->  	struct bpf_prog *xdp_prog;
->  	u32 act;
->  
-> -	rcu_read_lock();
->  	/* NB! xdp_prog will always be !NULL, due to the fact that
->  	 * this path is enabled by setting an XDP program.
->  	 */
-> @@ -162,9 +161,7 @@ static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
->  
->  	if (likely(act == XDP_REDIRECT)) {
->  		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
-> -		result = !err ? I40E_XDP_REDIR : I40E_XDP_CONSUMED;
-> -		rcu_read_unlock();
-> -		return result;
-> +		return !err ? I40E_XDP_REDIR : I40E_XDP_CONSUMED;
->  	}
->  
->  	switch (act) {
-> @@ -184,7 +181,6 @@ static int i40e_run_xdp_zc(struct i40e_ring *rx_ring, struct xdp_buff *xdp)
->  		result = I40E_XDP_CONSUMED;
->  		break;
->  	}
-> -	rcu_read_unlock();
->  	return result;
->  }
->  
+> And out is "1 -2 3 -4 5 -6 7 -8 9 -10 11 -12" so i can't seem to be
+> able to produce the bug you described.
+> Do you think I'm missing something? Would you try it differently ?
 > 
+
+Nah, sorry, I must have misremembered the x86-64 ABI. Re-reading it, it
+clearly says as the very first thing "The size of each argument gets
+rounded up to eightbytes". So each of the ints that get passed on the
+stack do indeed occupy 8 bytes (i.e., the overflow_area pointer gets
+adjusted by 8 bytes, for both va_arg(ap, int) and va_arg(ap, long)). So
+it will indeed work on x86-64. And probably other 64 bit ABIs behave the
+same way (it would make sense) - at least ppc64 and arm64 seem to behave
+like that.
+
+So in a round-about way it's probably true that the bug would only be
+seen on 32 bit machines, but only because all (relevant) 64 bit arches
+seem to, on the ABI level, effectively do argument promotion to u64 anyway.
+
+Rasmus
