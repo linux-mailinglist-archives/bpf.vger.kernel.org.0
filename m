@@ -2,118 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE830368F50
-	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 11:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF708368F57
+	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 11:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbhDWJ1k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Apr 2021 05:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbhDWJ1k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Apr 2021 05:27:40 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3DCCC061574
-        for <bpf@vger.kernel.org>; Fri, 23 Apr 2021 02:27:03 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id l4so72881218ejc.10
-        for <bpf@vger.kernel.org>; Fri, 23 Apr 2021 02:27:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sx864cJ9nz1GjChrLeVjiJWOVBxDhckrfyU12rLCtIM=;
-        b=RVLGPUq/2uXKHX3VBqekN2rBvE6xjWWfHpG1V+dMk2KoZ3JMVvNdULeRLPPHdv0v+W
-         c+sWQ0H6V+Izrh1Iod17fOG7mthcwptwZwCkaksW+6/eThf/Ov743lju8KJQy3CPQ7II
-         Bi8SCS2eQndZKRRyyhd+CHa97zDl/sLiK7w2A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sx864cJ9nz1GjChrLeVjiJWOVBxDhckrfyU12rLCtIM=;
-        b=Qld4WjVK1nzj8ddwqG+qm1p2MxmkVGXDU7LSYoyQqQxNfpiQSFLBZbAmggckQOJPWu
-         Du2rYr6pp/yAr8/C2dgap8XUo8zk4MGoHhHKi49gguqP/DQyH3Mz3Wpc3Y6w3Tqk6V3f
-         DxeA5hAhKD7hCfjOmid65M8UHlI26/ai+HzHbXFkULc6jsaX41Mm5V7ciCmkLsXB/W7j
-         Rv2gckrOft1zW0trf0R31Y5P2spEaZfWxSUUCXkRVKKdGLrd06JEEvgc+qagWF7IdiqK
-         zN/avOYHDGPLBc+Y5r1+3aH98hNzOmDGBnCNaCCo54uvtryOowNtTkxTJ5M6pUa2r1w9
-         YoUg==
-X-Gm-Message-State: AOAM5327N+64dKkLXuiBhfrzDqDuo77j0ZDjtrhowfqddzB65Dh83c0z
-        qYIlrSc5+akyGiol0cS+W1q98w==
-X-Google-Smtp-Source: ABdhPJxkXQb5uiylmDY2V93WELe9Zadfag5FXoXKd0c2vGX77x04oLiMnKfVyynFHYyi0MCkYBLJmA==
-X-Received: by 2002:a17:906:7257:: with SMTP id n23mr3255833ejk.412.1619170022630;
-        Fri, 23 Apr 2021 02:27:02 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id x7sm4208167eds.67.2021.04.23.02.27.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 02:27:02 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 2/2] bpf: Implement formatted output helpers with
- bstr_printf
-To:     Florent Revest <revest@chromium.org>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@kernel.org, jackmanb@google.com,
-        linux-kernel@vger.kernel.org
-References: <20210423011517.4069221-1-revest@chromium.org>
- <20210423011517.4069221-3-revest@chromium.org>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <ebe46a2a-92f8-8235-ecd8-566a46e41ed5@rasmusvillemoes.dk>
-Date:   Fri, 23 Apr 2021 11:27:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229942AbhDWJ2P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Apr 2021 05:28:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230032AbhDWJ2P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 23 Apr 2021 05:28:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA4606145E;
+        Fri, 23 Apr 2021 09:27:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619170058;
+        bh=uSO9NtVGykADtblu1hYIMvVRLCvbZiO5+pUb1Ap4dKc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pktQmnEWf9WAiYuFcB6y1uw9XC6cP33Qd44BPG0zmmAvXGrCFKxN7MmM30dsp/k4c
+         orqkc5R3/yju8jkYPP3gsJkuXi0loXe0Ch3ECnI/2XO0dOpX4GekWPmILvi7K2YIc5
+         WSBRLTwDDEfvs6MS3jTDahW1pbyou579dy5hnebBDa3d3UjzJFDaN/B8siueCw/4XE
+         QsJdt6JXUygz2hOVa2KTg36qXB6xe0rVBBFEv5SOG1gC6ytmtpz8Qc1TpbeEHgCeV8
+         dsmYpsR5EFNVX0L5b/zjFYXxxa0i8Tj7RWTtKnoETI3qWR81ynBDRX60ZQJ2EMr+4j
+         Jc5KgqPlhi3Kw==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, lorenzo.bianconi@redhat.com,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, brouer@redhat.com, toke@redhat.com,
+        song@kernel.org
+Subject: [PATCH v4 bpf-next] cpumap: bulk skb using netif_receive_skb_list
+Date:   Fri, 23 Apr 2021 11:27:27 +0200
+Message-Id: <c729f83e5d7482d9329e0f165bdbe5adcefd1510.1619169700.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210423011517.4069221-3-revest@chromium.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 23/04/2021 03.15, Florent Revest wrote:
-> BPF has three formatted output helpers: bpf_trace_printk, bpf_seq_printf
-> and bpf_snprintf. Their signatures specifies that arguments are always
-> provided from the BPF world as u64s (in an array or as registers). All
-> of these helpers are currently implemented by calling functions such as
-> snprintf() whose signatures take arguments as a va_list.
+Rely on netif_receive_skb_list routine to send skbs converted from
+xdp_frames in cpu_map_kthread_run in order to improve i-cache usage.
+The proposed patch has been tested running xdp_redirect_cpu bpf sample
+available in the kernel tree that is used to redirect UDP frames from
+ixgbe driver to a cpumap entry and then to the networking stack.
+UDP frames are generated using pkt_gen. Packets are discarded by the
+UDP layer.
 
-It's nitpicking, but I'd prefer to keep the details accurate as this has
-already caused enough confusion. snprintf() does not take a va_list, it
-takes a variable number of arguments.
+$xdp_redirect_cpu  --cpu <cpu> --progname xdp_cpu_map0 --dev <eth>
 
-> To convert args from u64s to a va_list 
+bpf-next: ~2.35Mpps
+bpf-next + cpumap skb-list: ~2.72Mpps
 
-No, the args are not converted from u64 to a va_list, they are passed to
-said variadic function (possibly after zeroing the top half via an
-interim cast to u32) as 64-bit arguments.
+Rename drops counter in kmem_alloc_drops since now it reports just
+kmem_cache_alloc_bulk failures
 
-"d9c9e4db bpf: Factorize
-> bpf_trace_printk and bpf_seq_printf" introduced a bpf_printf_prepare
-> function that fills an array of arguments and an array of modifiers.
-> The BPF_CAST_FMT_ARG macro was supposed to consume these arrays and cast
-> each argument to the right size. However, the C promotion rules implies
-> that every argument is stored as a u64 in the va_list.
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+Changes since v3:
+- drop tracepoint layout/xdp samples changes and rename drops
+  variable in kmem_alloc_drops
 
-"that every argument is passed as a u64".
+Changes since v2:
+- remove drop counter and update related xdp samples
+- rebased on top of bpf-next
 
-> 
-> To comply with the format expected by bstr_printf, certain format
-> specifiers also need to be pre-formatted: %pB and %pi6/%pi4/%pI4/%pI6.
-> Because vsnprintf subroutines for these specifiers are hard to expose,
+Changes since v1:
+- fixed comment
+- rebased on top of bpf-next tree
+---
+ kernel/bpf/cpumap.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-Indeed, as lib/vsnprintf.c reviewer I would very likely NAK that.
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index 0cf2791d5099..5dd3e866599a 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -27,7 +27,7 @@
+ #include <linux/capability.h>
+ #include <trace/events/xdp.h>
+ 
+-#include <linux/netdevice.h>   /* netif_receive_skb_core */
++#include <linux/netdevice.h>   /* netif_receive_skb_list */
+ #include <linux/etherdevice.h> /* eth_type_trans */
+ 
+ /* General idea: XDP packets getting XDP redirected to another CPU,
+@@ -252,11 +252,12 @@ static int cpu_map_kthread_run(void *data)
+ 	 */
+ 	while (!kthread_should_stop() || !__ptr_ring_empty(rcpu->queue)) {
+ 		struct xdp_cpumap_stats stats = {}; /* zero stats */
++		unsigned int kmem_alloc_drops = 0, sched = 0;
+ 		gfp_t gfp = __GFP_ZERO | GFP_ATOMIC;
+-		unsigned int drops = 0, sched = 0;
+ 		void *frames[CPUMAP_BATCH];
+ 		void *skbs[CPUMAP_BATCH];
+ 		int i, n, m, nframes;
++		LIST_HEAD(list);
+ 
+ 		/* Release CPU reschedule checks */
+ 		if (__ptr_ring_empty(rcpu->queue)) {
+@@ -297,7 +298,7 @@ static int cpu_map_kthread_run(void *data)
+ 			if (unlikely(m == 0)) {
+ 				for (i = 0; i < nframes; i++)
+ 					skbs[i] = NULL; /* effect: xdp_return_frame */
+-				drops += nframes;
++				kmem_alloc_drops += nframes;
+ 			}
+ 		}
+ 
+@@ -305,7 +306,6 @@ static int cpu_map_kthread_run(void *data)
+ 		for (i = 0; i < nframes; i++) {
+ 			struct xdp_frame *xdpf = frames[i];
+ 			struct sk_buff *skb = skbs[i];
+-			int ret;
+ 
+ 			skb = __xdp_build_skb_from_frame(xdpf, skb,
+ 							 xdpf->dev_rx);
+@@ -314,13 +314,13 @@ static int cpu_map_kthread_run(void *data)
+ 				continue;
+ 			}
+ 
+-			/* Inject into network stack */
+-			ret = netif_receive_skb_core(skb);
+-			if (ret == NET_RX_DROP)
+-				drops++;
++			list_add_tail(&skb->list, &list);
+ 		}
++		netif_receive_skb_list(&list);
++
+ 		/* Feedback loop via tracepoint */
+-		trace_xdp_cpumap_kthread(rcpu->map_id, n, drops, sched, &stats);
++		trace_xdp_cpumap_kthread(rcpu->map_id, n, kmem_alloc_drops,
++					 sched, &stats);
+ 
+ 		local_bh_enable(); /* resched point, may call do_softirq() */
+ 	}
+-- 
+2.30.2
 
-> we pre-format these arguments with calls to snprintf().
-
-Nothing to do with this patch, but wouldn't it be better if one just
-stored the 4 or 16 bytes of ip address in the buffer, and let
-bstr_printf do the formatting?
-
-The derefencing of the pointer must be done at "prepare" time, but I
-don't see the point of actually doing the textual formatting at that
-time, when the point of BINARY_PRINT is to get out of the way as fast as
-possible and punt the decimal conversion slowness to a later time.
-
-I also don't see why '%pB' needs to be handled specially, other than the
-fact that bin_printf doesn't handle it currently; AFAICT it should be
-just as safe as 'S' and 's' to just save the pointer and act on the
-pointer value later.
-
-Rasmus
