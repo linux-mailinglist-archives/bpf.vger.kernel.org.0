@@ -2,278 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62EF3698C7
-	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 20:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E353698DC
+	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 20:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbhDWSAq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Apr 2021 14:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbhDWSAq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Apr 2021 14:00:46 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA60C061574;
-        Fri, 23 Apr 2021 11:00:09 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id v72so35893802ybe.11;
-        Fri, 23 Apr 2021 11:00:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5XY99hVS9yq4YHWv0NyUo7LsqeDBpS85jO1WJl2092g=;
-        b=Q476CmVkPihaBow0uIezkhDQfIqRZFneGFaKsRz39fFxgR1Fd0ExVEXcJhqwHLy6XP
-         cV3hrpntjCs4qZbKnTUXvrdYXjquSt2ZbaxA54K/N88R/vYU+PXOg7wrm9UESG3APTHY
-         2zlV/MqdLtQs1xM/sD7UyrAm5teopI8zGLGNAp53hiUDUh8n5K3wHgtzruzDKNKOSZkS
-         SMS2aZOUIK9Sxj/NDn5rba8aFZnPkYWNINU/EtoADJ+h94+sGISR5YyB3BmqL+ci/Fsa
-         Hu1zRASOpk37cebsCUrD5Vu5b+KPznI+9Ys4aaIMP8v3l87HCvLp7FiXbh/rzEyNkPPP
-         HSIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5XY99hVS9yq4YHWv0NyUo7LsqeDBpS85jO1WJl2092g=;
-        b=XwD7zxjUErr+50B1MZYszB+/JmcDFKepEx+Qo2wG6c0lArc+5glU2l2tnQECMCLD2G
-         mvH8P0daJ3rX44ZSdmrTc3yXeKw0WAvmfj2crTw9YOgWyTpl6igR3/OKUVDrEfegb0rM
-         FImFE7dRzgOioxL/bs3gFJ4icc1QgX5hgfxx+UTRFkBHw4YmKM7DrybDrOtRxzPgBgx5
-         DlLfL1NPHaC6dnPGlkEVFmjCBp1rbvzSx4XGbi0W84EARf70vJ3aeTyR8fuPn7KXDkzh
-         G9ZCrYt06gTGAUO6lengyJExxOWSZCEceqWfht0GPQfnXHpq9AEp4dqt/xMM062BoFnE
-         /y8w==
-X-Gm-Message-State: AOAM532ZwImmqAFYPzTUD4RY5w7evMWxV/xRnh6fdZ9IACGbwxvAEseK
-        68UWSM+/Ni/h+2qyHKTchKVeJndpTGwLY70HEPY=
-X-Google-Smtp-Source: ABdhPJyzElvI7RLtyIMkDldepWKdYAhxTmBUIz0Yh8D31khrpK/qgPuGbFTpdG/pHphs8WZuIiqC7pEan6xnICgSpj8=
-X-Received: by 2002:a05:6902:1144:: with SMTP id p4mr7022759ybu.510.1619200809234;
- Fri, 23 Apr 2021 11:00:09 -0700 (PDT)
+        id S231728AbhDWSOb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 23 Apr 2021 14:14:31 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:50460 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231684AbhDWSOb (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 23 Apr 2021 14:14:31 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 13NID7WD025032
+        for <bpf@vger.kernel.org>; Fri, 23 Apr 2021 11:13:54 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 3839vur7yk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 23 Apr 2021 11:13:54 -0700
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 23 Apr 2021 11:13:52 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 623672ED5CB8; Fri, 23 Apr 2021 11:13:50 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH v3 bpf-next 00/18] BPF static linker: support externs
+Date:   Fri, 23 Apr 2021 11:13:30 -0700
+Message-ID: <20210423181348.1801389-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: rsTqd2MkG0b3vIfDlW0w5d9T83t8tYXO
+X-Proofpoint-GUID: rsTqd2MkG0b3vIfDlW0w5d9T83t8tYXO
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210416202404.3443623-1-andrii@kernel.org> <20210416202404.3443623-16-andrii@kernel.org>
- <3947e6ff-0b73-995e-630f-4a1252f8694b@fb.com> <CAEf4BzasVszkBCA0Ra2NsU+0ixoR65khF2E6h7CG_P3FOyamFQ@mail.gmail.com>
- <b49042fc-0af8-11f4-4316-39b0d6f0e6e4@fb.com> <CAEf4BzbP+trfjW-_AwcLsmS=79jqXWoRbQJnSH2xkE=MOxN2Gg@mail.gmail.com>
- <94f367e9-24f0-5ba6-eb8d-2951dee4219a@fb.com>
-In-Reply-To: <94f367e9-24f0-5ba6-eb8d-2951dee4219a@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 23 Apr 2021 10:59:58 -0700
-Message-ID: <CAEf4BzaH4Sr5HenM1+-j4d=r=juw8pacPpXZM3YBxJu2S_uPwg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 15/17] selftests/bpf: add function linking selftest
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-23_07:2021-04-23,2021-04-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ adultscore=0 suspectscore=0 clxscore=1015 mlxscore=0 lowpriorityscore=0
+ phishscore=0 mlxlogscore=999 impostorscore=0 spamscore=0
+ priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104230120
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 10:58 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 4/23/21 10:55 AM, Andrii Nakryiko wrote:
-> > On Fri, Apr 23, 2021 at 10:35 AM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 4/23/21 10:18 AM, Andrii Nakryiko wrote:
-> >>> On Thu, Apr 22, 2021 at 5:50 PM Yonghong Song <yhs@fb.com> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 4/16/21 1:24 PM, Andrii Nakryiko wrote:
-> >>>>> Add selftest validating various aspects of statically linking functions:
-> >>>>>      - no conflicts and correct resolution for name-conflicting static funcs;
-> >>>>>      - correct resolution of extern functions;
-> >>>>>      - correct handling of weak functions, both resolution itself and libbpf's
-> >>>>>        handling of unused weak function that "lost" (it leaves gaps in code with
-> >>>>>        no ELF symbols);
-> >>>>>      - correct handling of hidden visibility to turn global function into
-> >>>>>        "static" for the purpose of BPF verification.
-> >>>>>
-> >>>>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> >>>>
-> >>>> Ack with a small nit below.
-> >>>>
-> >>>> Acked-by: Yonghong Song <yhs@fb.com>
-> >>>>
-> >>>>> ---
-> >>>>>     tools/testing/selftests/bpf/Makefile          |  3 +-
-> >>>>>     .../selftests/bpf/prog_tests/linked_funcs.c   | 42 +++++++++++
-> >>>>>     .../selftests/bpf/progs/linked_funcs1.c       | 73 +++++++++++++++++++
-> >>>>>     .../selftests/bpf/progs/linked_funcs2.c       | 73 +++++++++++++++++++
-> >>>>>     4 files changed, 190 insertions(+), 1 deletion(-)
-> >>>>>     create mode 100644 tools/testing/selftests/bpf/prog_tests/linked_funcs.c
-> >>>>>     create mode 100644 tools/testing/selftests/bpf/progs/linked_funcs1.c
-> >>>>>     create mode 100644 tools/testing/selftests/bpf/progs/linked_funcs2.c
-> >>>>>
-> >>>>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> >>>>> index 666b462c1218..427ccfec1a6a 100644
-> >>>>> --- a/tools/testing/selftests/bpf/Makefile
-> >>>>> +++ b/tools/testing/selftests/bpf/Makefile
-> >>>>> @@ -308,9 +308,10 @@ endef
-> >>>>>
-> >>>>>     SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
-> >>>>>
-> >>>>> -LINKED_SKELS := test_static_linked.skel.h
-> >>>>> +LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h
-> >>>>>
-> >>>>>     test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
-> >>>>> +linked_funcs.skel.h-deps := linked_funcs1.o linked_funcs2.o
-> >>>>>
-> >>>>>     LINKED_BPF_SRCS := $(patsubst %.o,%.c,$(foreach skel,$(LINKED_SKELS),$($(skel)-deps)))
-> >>>>>
-> >>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/linked_funcs.c b/tools/testing/selftests/bpf/prog_tests/linked_funcs.c
-> >>>>> new file mode 100644
-> >>>>> index 000000000000..03bf8ef131ce
-> >>>>> --- /dev/null
-> >>>>> +++ b/tools/testing/selftests/bpf/prog_tests/linked_funcs.c
-> >>>>> @@ -0,0 +1,42 @@
-> >>>>> +// SPDX-License-Identifier: GPL-2.0
-> >>>>> +/* Copyright (c) 2021 Facebook */
-> >>>>> +
-> >>>>> +#include <test_progs.h>
-> >>>>> +#include <sys/syscall.h>
-> >>>>> +#include "linked_funcs.skel.h"
-> >>>>> +
-> >>>>> +void test_linked_funcs(void)
-> >>>>> +{
-> >>>>> +     int err;
-> >>>>> +     struct linked_funcs *skel;
-> >>>>> +
-> >>>>> +     skel = linked_funcs__open();
-> >>>>> +     if (!ASSERT_OK_PTR(skel, "skel_open"))
-> >>>>> +             return;
-> >>>>> +
-> >>>>> +     skel->rodata->my_tid = syscall(SYS_gettid);
-> >>>>> +     skel->rodata->syscall_id = SYS_getpgid;
-> >>>>> +
-> >>>>> +     err = linked_funcs__load(skel);
-> >>>>> +     if (!ASSERT_OK(err, "skel_load"))
-> >>>>> +             goto cleanup;
-> >>>>> +
-> >>>>> +     err = linked_funcs__attach(skel);
-> >>>>> +     if (!ASSERT_OK(err, "skel_attach"))
-> >>>>> +             goto cleanup;
-> >>>>> +
-> >>>>> +     /* trigger */
-> >>>>> +     syscall(SYS_getpgid);
-> >>>>> +
-> >>>>> +     ASSERT_EQ(skel->bss->output_val1, 2000 + 2000, "output_val1");
-> >>>>> +     ASSERT_EQ(skel->bss->output_ctx1, SYS_getpgid, "output_ctx1");
-> >>>>> +     ASSERT_EQ(skel->bss->output_weak1, 42, "output_weak1");
-> >>>>> +
-> >>>>> +     ASSERT_EQ(skel->bss->output_val2, 2 * 1000 + 2 * (2 * 1000), "output_val2");
-> >>>>> +     ASSERT_EQ(skel->bss->output_ctx2, SYS_getpgid, "output_ctx2");
-> >>>>> +     /* output_weak2 should never be updated */
-> >>>>> +     ASSERT_EQ(skel->bss->output_weak2, 0, "output_weak2");
-> >>>>> +
-> >>>>> +cleanup:
-> >>>>> +     linked_funcs__destroy(skel);
-> >>>>> +}
-> >>>>> diff --git a/tools/testing/selftests/bpf/progs/linked_funcs1.c b/tools/testing/selftests/bpf/progs/linked_funcs1.c
-> >>>>> new file mode 100644
-> >>>>> index 000000000000..cc621d4e4d82
-> >>>>> --- /dev/null
-> >>>>> +++ b/tools/testing/selftests/bpf/progs/linked_funcs1.c
-> >>>>> @@ -0,0 +1,73 @@
-> >>>>> +// SPDX-License-Identifier: GPL-2.0
-> >>>>> +/* Copyright (c) 2021 Facebook */
-> >>>>> +
-> >>>>> +#include "vmlinux.h"
-> >>>>> +#include <bpf/bpf_helpers.h>
-> >>>>> +#include <bpf/bpf_tracing.h>
-> >>>>> +
-> >>>>> +/* weak and shared between two files */
-> >>>>> +const volatile int my_tid __weak = 0;
-> >>>>> +const volatile long syscall_id __weak = 0;
-> >>>>
-> >>>> Since the new compiler (llvm13) is recommended for this patch set.
-> >>>> We can simplify the above two definition with
-> >>>>      int my_tid __weak;
-> >>>>      long syscall_id __weak;
-> >>>> The same for the other file.
-> >>>
-> >>> This is not about old vs new compilers. I wanted to use .rodata
-> >>> variables, but I'll switch to .bss, no problem.
-> >>
-> >> I see. You can actually hone one "const volatile ing my_tid __weak = 0"
-> >> and another "long syscall_id __weak". This way, you will be able to
-> >> test both .rodata and .bss section.
-> >
-> > I wonder if you meant to have one my_tid __weak in .bss and another
-> > my_tid __weak in .rodata. Or just my_tid in .bss and syscall_id in
-> > .rodata?
-> >
-> > If the former (mixing ELF sections across definitions of the same
-> > symbol), then it's disallowed right now. libbpf will error out on
-> > mismatched sections. I tested this with normal compilation, it does
-> > work and the final section is the section of the winner.
-> >
-> > But I think that's quite confusing, actually, so I'm going to leave it
-> > disallowed for now. E.g., if one file expects a read-write variable
-> > and another expects that same variable to be read-only, and the winner
-> > ends up being read-only one, then the file expecting read-write will
-> > essentially have incorrect code (and will be rejected by BPF verifier,
-> > if anything attempts to write). So I think it's better to reject it at
-> > the linking time.
-> >
-> > But I'll do one (my_tid) as .bss, and another (syscall_id) as .rodata.
->
-> I mean this one. Permitting the same variable in both .bss and .rodata
-> sections is never a good practice.
+Add BPF static linker support for extern resolution of global variables,
+functions, and BTF-defined maps.
 
-Ok, cool, that's what we do right now. I wonder why it is allowed by
-user-space linkers, it seems dangerous.
+This patch set consists of 4 parts:
+  - few patches are extending bpftool to simplify working with BTF dump;
+  - libbpf object loading logic is extended to support __hidden functions and
+    overriden (unused) __weak functions; also BTF-defined map parsing logic is
+    refactored to be re-used by linker;
+  - the crux of the patch set is BPF static linker logic extension to perform
+    extern resolution for three categories: global variables, BPF
+    sub-programs, BTF-defined maps;
+  - a set of selftests that validate that all the combinations of
+    extern/weak/__hidden are working as expected.
 
->
-> >
-> >>
-> >>>
-> >>>>
-> >>>> But I am also okay with the current form
-> >>>> to *satisfy* llvm10 some people may still use.
-> >>>>
-> >>>>> +
-> >>>>> +int output_val1 = 0;
-> >>>>> +int output_ctx1 = 0;
-> >>>>> +int output_weak1 = 0;
-> >>>>> +
-> >>>>> +/* same "subprog" name in all files, but it's ok because they all are static */
-> >>>>> +static __noinline int subprog(int x)
-> >>>>> +{
-> >>>>> +     /* but different formula */
-> >>>>> +     return x * 1;
-> >>>>> +}
-> >>>>> +
-> >>>>> +/* Global functions can't be void */
-> >>>>> +int set_output_val1(int x)
-> >>>>> +{
-> >>>>> +     output_val1 = x + subprog(x);
-> >>>>> +     return x;
-> >>>>> +}
-> >>>>> +
-> >>>>> +/* This function can't be verified as global, as it assumes raw_tp/sys_enter
-> >>>>> + * context and accesses syscall id (second argument). So we mark it as
-> >>>>> + * __hidden, so that libbpf will mark it as static in the final object file,
-> >>>>> + * right before verifying it in the kernel.
-> >>>>> + *
-> >>>>> + * But we don't mark it as __hidden here, rather at extern site. __hidden is
-> >>>>> + * "contaminating" visibility, so it will get propagated from either extern or
-> >>>>> + * actual definition (including from the losing __weak definition).
-> >>>>> + */
-> >>>>> +void set_output_ctx1(__u64 *ctx)
-> >>>>> +{
-> >>>>> +     output_ctx1 = ctx[1]; /* long id, same as in BPF_PROG below */
-> >>>>> +}
-> >>>>> +
-> >>>>> +/* this weak instance should win because it's the first one */
-> >>>>> +__weak int set_output_weak(int x)
-> >>>>> +{
-> >>>>> +     output_weak1 = x;
-> >>>>> +     return x;
-> >>>>> +}
-> >>>>> +
-> >>>>> +extern int set_output_val2(int x);
-> >>>>> +
-> >>>>> +/* here we'll force set_output_ctx2() to be __hidden in the final obj file */
-> >>>>> +__hidden extern void set_output_ctx2(__u64 *ctx);
-> >>>>> +
-> >>>> [...]
+See respective patches for more details.
+
+One aspect hasn't been addressed yet and is going to be resolved in the next
+patch set, but is worth mentioning. With BPF static linking of multiple .o
+files, dealing with static everything becomes more problematic for BPF
+skeleton and in general for any by name look up APIs. This is due to static
+entities are allowed to have non-unique name. Historically this was never
+a problem due to BPF programs were always confined to a single C file. That
+changes now and needs to be addressed. The thinking so far is for BPF static
+linker to prepend filename to each static variable and static map (which is
+currently not supported by libbpf, btw), so that they can be unambiguously
+resolved by (mostly) unique name. Mostly, because even filenames can be
+duplicated, but that should be rare and easy to address by wiser choice of
+filenames by users. Fortunately, static BPF subprograms don't suffer from this
+issues, as they are not independent entities and are neither exposed in BPF
+skeleton, nor is lookup-able by any of libbpf APIs (and there is little reason
+to do that anyways).
+
+This and few other things will be the topic of the next set of patches.
+
+Some tests rely on Clang fix ([0]), so need latest Clang built from main.
+
+  [0] https://reviews.llvm.org/D100362
+
+v2->v3:
+  - allow only STV_DEFAULT and STV_HIDDEN ELF symbol visibility (Yonghong);
+  - update selftests' README for required Clang 13 fix dependency (Alexei);
+  - comments, typos, slight code changes (Yonghong, Alexei);
+
+v1->v2:
+  - make map externs support full attribute list, adjust linked_maps selftest
+    to demonstrate that typedef works now (though no shared header file was
+    added to simplicity sake) (Alexei);
+  - remove commented out parts from selftests and fix few minor code style
+    issues;
+  - special __weak map definition semantics not yet implemented and will be
+    addressed in a follow up.
+
+Andrii Nakryiko (18):
+  bpftool: support dumping BTF VAR's "extern" linkage
+  bpftool: dump more info about DATASEC members
+  libbpf: suppress compiler warning when using SEC() macro with externs
+  libbpf: mark BPF subprogs with hidden visibility as static for BPF
+    verifier
+  libbpf: allow gaps in BPF program sections to support overriden weak
+    functions
+  libbpf: refactor BTF map definition parsing
+  libbpf: factor out symtab and relos sanity checks
+  libbpf: make few internal helpers available outside of libbpf.c
+  libbpf: extend sanity checking ELF symbols with externs validation
+  libbpf: tighten BTF type ID rewriting with error checking
+  libbpf: add linker extern resolution support for functions and global
+    variables
+  libbpf: support extern resolution for BTF-defined maps in .maps
+    section
+  selftests/bpf: use -O0 instead of -Og in selftests builds
+  selftests/bpf: omit skeleton generation for multi-linked BPF object
+    files
+  selftests/bpf: add function linking selftest
+  selftests/bpf: add global variables linking selftest
+  selftests/bpf: add map linking selftest
+  selftests/bpf: document latest Clang fix expectations for linking
+    tests
+
+ tools/bpf/bpftool/btf.c                       |   30 +-
+ tools/lib/bpf/bpf_helpers.h                   |   19 +-
+ tools/lib/bpf/btf.c                           |    5 -
+ tools/lib/bpf/libbpf.c                        |  373 +++--
+ tools/lib/bpf/libbpf_internal.h               |   45 +
+ tools/lib/bpf/linker.c                        | 1270 ++++++++++++++---
+ tools/testing/selftests/bpf/Makefile          |   18 +-
+ tools/testing/selftests/bpf/README.rst        |    9 +
+ .../selftests/bpf/prog_tests/linked_funcs.c   |   42 +
+ .../selftests/bpf/prog_tests/linked_maps.c    |   30 +
+ .../selftests/bpf/prog_tests/linked_vars.c    |   43 +
+ .../selftests/bpf/progs/linked_funcs1.c       |   73 +
+ .../selftests/bpf/progs/linked_funcs2.c       |   73 +
+ .../selftests/bpf/progs/linked_maps1.c        |   82 ++
+ .../selftests/bpf/progs/linked_maps2.c        |   76 +
+ .../selftests/bpf/progs/linked_vars1.c        |   54 +
+ .../selftests/bpf/progs/linked_vars2.c        |   55 +
+ 17 files changed, 1942 insertions(+), 355 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/linked_funcs.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/linked_maps.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/linked_vars.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_funcs1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_funcs2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_maps1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_maps2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_vars1.c
+ create mode 100644 tools/testing/selftests/bpf/progs/linked_vars2.c
+
+-- 
+2.30.2
+
