@@ -2,158 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0683690B3
-	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 12:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BAAD3690C8
+	for <lists+bpf@lfdr.de>; Fri, 23 Apr 2021 13:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhDWLAZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 23 Apr 2021 07:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbhDWLAY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 23 Apr 2021 07:00:24 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EBB7C06174A
-        for <bpf@vger.kernel.org>; Fri, 23 Apr 2021 03:59:48 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id w186so21233804wmg.3
-        for <bpf@vger.kernel.org>; Fri, 23 Apr 2021 03:59:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=POTZ/1KbTme2ehdkYN4t8NUzorpYmuLDB40ValCRCzY=;
-        b=GQ9SWSJA7G7fyBqL5po7yWgTUyHybJVBlTbgimQMgeLWnHWPXCKisioR3lZg+tWt9h
-         z7HehOh3qZDxqUF30ai6ZxU2U1Ow8Hgk0PqsAAC8Krl1BFBv1LZT6QdVT/JFwyXax67L
-         yuhPNrcw/yNhw/HJ/+mBzX14R/l6x0ltK3lCOOHEpIJIqdhDC2YNufJNDNzcMBJzYj7J
-         qXutqCgEPewjWKcMIBsTzFe/Bmpc7u7/mRj+o83NFL3pJXd98Xo9so+tu+SwhEVXrFw7
-         JXcq+GREZl6F3rYzfj9RA96tSdlkEWNtZt6P/WPXfX78yWs83/u4GkJ5e7gZ4nQ0GGXG
-         J7lg==
+        id S229965AbhDWLF6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 23 Apr 2021 07:05:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30088 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229928AbhDWLF5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 23 Apr 2021 07:05:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619175921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=jr7f/c656B14iZH1W7iqJ5TVJAXFbRzcz+BEzN3sEdE=;
+        b=E/spkWFwPfnlDdgUg8ECIhpnK3KJcFv/WI/Q/ldPGKyPltWclZgrJmyeuk7iKvEg4ttBM8
+        ayruBDVB7Po+Kz8Ae7zmeSz77typpWNScLGsmEJJKzN0DKTc5c0VyzK41ZGwQRHd/9l78m
+        EVta77BJsL0nQn+J0eTRN1LDghWEnY4=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-476-Sw-pdbf9Nn-mSvDNjtVhsA-1; Fri, 23 Apr 2021 07:05:18 -0400
+X-MC-Unique: Sw-pdbf9Nn-mSvDNjtVhsA-1
+Received: by mail-ed1-f71.google.com with SMTP id w15-20020a056402268fb02903828f878ec5so18407109edd.5
+        for <bpf@vger.kernel.org>; Fri, 23 Apr 2021 04:05:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=POTZ/1KbTme2ehdkYN4t8NUzorpYmuLDB40ValCRCzY=;
-        b=Qid7Bv6uYtjUKSpXt5BZ+BBEuWpfO3OGtttZsVaV8akxppIU8g3myWSTVdHqWifWYj
-         TX6LKr1KvIFpTe+Q86D0XigEqxDJFUQHThQD5QFajYal7Bgl1efcxWUXI2nZbCi2Qhnu
-         1dfwF/IhhLCEAsuqgMvO2Akp5vD37XbkQZ/y9nWFkr71znkFH023kkJ2l44voFCuA0SB
-         o4OYqZyIY4eXqmhqqgv0V4eDR8JniuWYkR7aL9akOUZuh7WX08c1JLhT1g/Qhk7rAp1I
-         scTGh1x2yfD3ZkF6xiID/379CLqI8giQPyZqCEhs/Z+bxO9+6CwTMCutUA6EWMggUtij
-         J/yA==
-X-Gm-Message-State: AOAM532m1TolgSYJDO5Z4VBQPzgTtZ2qvSL8bFwSx8+4bkRuJNzWslJZ
-        du3yTa9OYwcfTCnqO8rJ9iDO6g==
-X-Google-Smtp-Source: ABdhPJzObvm9TMswQFwB877SBftpV3WuHpQFVBzCA+XkW+5tO9tLL2qswInPQ8jeRFQ5yWhqFZ0H4A==
-X-Received: by 2002:a1c:4c09:: with SMTP id z9mr3570424wmf.104.1619175586997;
-        Fri, 23 Apr 2021 03:59:46 -0700 (PDT)
-Received: from [192.168.1.8] ([149.86.88.56])
-        by smtp.gmail.com with ESMTPSA id e18sm9152733wrc.85.2021.04.23.03.59.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Apr 2021 03:59:46 -0700 (PDT)
-Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Will Deacon <will@kernel.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>, paulburton@kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        linux-mips@vger.kernel.org, grantseltzer@gmail.com,
-        Xi Wang <xi.wang@gmail.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        KP Singh <kpsingh@kernel.org>, iecedge@gmail.com,
-        Simon Horman <horms@verge.net.au>,
-        Borislav Petkov <bp@alien8.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Yonghong Song <yhs@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Vyukov <dvyukov@google.com>, tsbogend@alpha.franken.de,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Network Development <netdev@vger.kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Wang YanQing <udknight@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, bpf <bpf@vger.kernel.org>,
-        Jianlin Lv <Jianlin.Lv@arm.com>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
- <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
- <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com>
- <CAADnVQJ2oHbYfgY9jqM_JMxUsoZxaNrxKSVFYfgCXuHVpDehpQ@mail.gmail.com>
- <0dea05ba-9467-0d84-4515-b8766f60318e@csgroup.eu>
- <CAADnVQ+oQT6C7Qv7P5TV-x7im54omKoCYYKtYhcnhb1Uv3LPMQ@mail.gmail.com>
- <be132117-f267-5817-136d-e1aeb8409c2a@csgroup.eu>
- <58296f87-ad00-a0f5-954b-2150aa84efc4@isovalent.com>
- <6a809d3f-c9e3-0eb7-9c1d-a202ad848424@csgroup.eu>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <ab1c3803-179c-7882-2bba-9eeda5211ad1@isovalent.com>
-Date:   Fri, 23 Apr 2021 11:59:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        h=x-gm-message-state:subject:from:to:cc:date:message-id:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=jr7f/c656B14iZH1W7iqJ5TVJAXFbRzcz+BEzN3sEdE=;
+        b=Y7JZPQdS04+zZ3GpBWla7bSo77X052+wv3qGzKE/KcqxtQs+AD49G80ZqGzAploE5K
+         pwmAy4PKu9xfxjamUwyFovragbNho9TotwHxQ1JlD+GIDGje4U18l/Nxc30hWOLb7+hb
+         Dj7XRrptqzl8E/RkpxI6cCQiiyYZ6BmCMFAPd+js8/9kUe7NgabKerPAHkawCvDGHTQl
+         JLboEs54DM+cZy+7e6YFC12UzCSRsS0gMk+0Bn5Bj+dMDZsQ65CLNGsQj1cBtxwThCd2
+         Br8GUKI4s32Az2IEEE3aJSmt14G8yY935vKHXR5ylyh2cEZHkTrKl6ei9gBAmm1QMYzq
+         mJsA==
+X-Gm-Message-State: AOAM532xYO1p4pRBnHHLTXL4VNH/OV/DqcI7LNQdfS52CRSbdNCqYBFt
+        eJY46DIozERfDQzZzPAEwNF9OjgPEaBbwh6hBnBQkr5Uqrb2xzGvgDom47ZXzf0dDQkdTdakQ10
+        D8JFYEJsyoKfI
+X-Received: by 2002:a50:e848:: with SMTP id k8mr3711098edn.179.1619175917567;
+        Fri, 23 Apr 2021 04:05:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwXXZ2dv5SzDhemDUOV/fCE22p57ll81ceIAP/uMuiIiYIkTTmOwirVTG7v6dZRooXO3JjS4A==
+X-Received: by 2002:a50:e848:: with SMTP id k8mr3711072edn.179.1619175917300;
+        Fri, 23 Apr 2021 04:05:17 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id gz10sm3720420ejc.25.2021.04.23.04.05.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Apr 2021 04:05:16 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id A7A42180675; Fri, 23 Apr 2021 13:05:15 +0200 (CEST)
+Subject: [PATCH RFC bpf-next 0/4] Clean up and document RCU-based object
+ protection for XDP_REDIRECT
+From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Date:   Fri, 23 Apr 2021 13:05:15 +0200
+Message-ID: <161917591559.102337.3558507780042453425.stgit@toke.dk>
+User-Agent: StGit/1.0
 MIME-Version: 1.0
-In-Reply-To: <6a809d3f-c9e3-0eb7-9c1d-a202ad848424@csgroup.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2021-04-23 12:46 UTC+0200 ~ Christophe Leroy <christophe.leroy@csgroup.eu>
-> 
-> 
-> Le 23/04/2021 à 12:26, Quentin Monnet a écrit :
->> 2021-04-23 09:19 UTC+0200 ~ Christophe Leroy
->> <christophe.leroy@csgroup.eu>
->>
->> [...]
->>
->>> I finally managed to cross compile bpftool with libbpf, libopcodes,
->>> readline, ncurses, libcap, libz and all needed stuff. Was not easy but I
->>> made it.
->>
->> Libcap is optional and bpftool does not use readline or ncurses. May I
->> ask how you tried to build it?
-> 
-> cd tools/bpf/
-> 
-> make ARCH=powerpc CROSS_COMPILE=ppc-linux-
+During the discussion[0] of Hangbin's multicast patch series, Martin pointed out
+that the lifetime of the RCU-protected  map entries used by XDP_REDIRECT is by
+no means obvious. I promised to look into cleaning this up, and Paul helpfully
+provided some hints and a new unrcu_pointer() helper to aid in this.
 
-Ok, you could try running directly from tools/bpf/bpftool/ next time
-instead.
+This is mostly a documentation exercise, clearing up the description of the
+lifetime expectations and adding __rcu annotations so sparse and lockdep can
+help verify it. I'm sending this as RFC since I don't have any i40e hardware to
+test on. A complete submission would also involve going through all the drivers,
+of course, but I wanted to get some feedback onthis first. I did test on mlx5,
+but that uses an rhashtable in the driver code, so we can't actually remove the
+top-level rcu_read_lock() from that without getting lockdep splats.
 
-Readline at least is for a different tool under tools/bpf/, bpf_dbg (But
-I'm still not sure where that ncurses requirement was pulled from). The
-requirements for specific kernel options probably came from yet another
-tool (runqslower, I think).
+Patches 1-2 are prepatory: Patch 1 adds Paul's unrcu_pointer() helper and patch
+2 is a small fix for dev_get_by_index_rcu() so lockdep understands _bh-disabled
+access to it. Patch 3 is the main bit that adds the __rcu annotations and
+updates documentation comments, and patch 4 is an example of driver changes,
+removing the rcu_read_lock() from i40e.
 
-Quentin
+Please take a look, and let me know if you think this is the right direction for
+clarifying the usage.
+
+Thanks,
+-Toke
+
+[0] https://lore.kernel.org/bpf/20210415173551.7ma4slcbqeyiba2r@kafai-mbp.dhcp.thefacebook.com/
+
+---
+
+Paul E. McKenney (1):
+      rcu: Create an unrcu_pointer() to remove __rcu from a pointer
+
+Toke Høiland-Jørgensen (3):
+      dev: add rcu_read_lock_bh_held() as a valid check when getting a RCU dev ref
+      xdp: add proper __rcu annotations to redirect map entries
+      i40e: remove rcu_read_lock() around XDP program invocation
+
+
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c |  2 -
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c  |  6 +--
+ include/net/xdp_sock.h                      |  2 +-
+ kernel/bpf/cpumap.c                         | 14 ++++--
+ kernel/bpf/devmap.c                         | 52 +++++++++------------
+ net/core/dev.c                              |  2 +-
+ net/core/filter.c                           | 28 +++++++++++
+ net/xdp/xsk.c                               |  4 +-
+ net/xdp/xsk.h                               |  4 +-
+ net/xdp/xskmap.c                            | 29 +++++++-----
+ 10 files changed, 85 insertions(+), 58 deletions(-)
+
