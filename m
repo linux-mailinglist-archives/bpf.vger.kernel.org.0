@@ -2,101 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6EB36A302
-	for <lists+bpf@lfdr.de>; Sat, 24 Apr 2021 22:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D5236A33B
+	for <lists+bpf@lfdr.de>; Sat, 24 Apr 2021 23:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235872AbhDXUoN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 24 Apr 2021 16:44:13 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:55768 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233485AbhDXUoM (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 24 Apr 2021 16:44:12 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-38-cob5SrwlO66mazRem5lY2w-1; Sat, 24 Apr 2021 21:43:31 +0100
-X-MC-Unique: cob5SrwlO66mazRem5lY2w-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Sat, 24 Apr 2021 21:43:30 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Sat, 24 Apr 2021 21:43:30 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Alexei Starovoitov' <alexei.starovoitov@gmail.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-CC:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "gcc-patches@gcc.gnu.org" <gcc-patches@gcc.gnu.org>
-Subject: RE: [RFC] bpf.2: Use standard types and attributes
-Thread-Topic: [RFC] bpf.2: Use standard types and attributes
-Thread-Index: AQHXOJdJ6YNcCKeqkEK6KUcQdn8TZarEIdzg
-Date:   Sat, 24 Apr 2021 20:43:30 +0000
-Message-ID: <78af3c302dd5447887f4a14cd4629119@AcuMS.aculab.com>
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
- <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com>
-In-Reply-To: <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S230167AbhDXVqR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 24 Apr 2021 17:46:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229778AbhDXVqQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 24 Apr 2021 17:46:16 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05A2C061574;
+        Sat, 24 Apr 2021 14:45:37 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id y136so21008580qkb.1;
+        Sat, 24 Apr 2021 14:45:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yJ8wJLMMAquK5WtfrTW6hzTEU+ckVaXd0nyZfZC6hyk=;
+        b=Om5/5+hzFTmqf+55Fk2jo4zNCknQgMCWenWPL3gUhDNKGGBwMVRbNsopRbhxhBb4Qj
+         GP0RHxv8GP6r/b1FFTDBwCCo5A0e7NKstxZrJc8hfybJ8ov5hzT8vViq2inNkmrFHHd5
+         eEDvx6FlWkUw5ZVHyIm4/mdb/KsM+ytJTqNdBav09vG+vxQ/5VRAWThnXHOfre5NuQhP
+         /xQbhTEE+uNlcBmbURuky/N42LvppPlVqexaF+aPJNwdeAKoBMjgKeSG2icfaph+iynE
+         BEdzk/M7XK9lanw8R7WCaFgVQWo7CqMTs1OQC1048cBoFPvdZxU3cj3cN3DOJ3ca5rtI
+         Ix6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yJ8wJLMMAquK5WtfrTW6hzTEU+ckVaXd0nyZfZC6hyk=;
+        b=PmJ0xLuPuMiANoJ3chAc+X+8PP/jzxOA2cT3pwezAkiG9jQvDjcog9dJ5aLG50RnD/
+         CWwrxnEVKObUBhYzOSqWfJ1ws2JrCL1vYSH67n/Bnv3LHKWeP4BhfOftYBb98zIDZlfD
+         rbig0mNbJYUavDcWKSR/6bDKoTmo1y8cpvulhh62tnLZ/9BlvfK0VRGn/j1698q4YyEs
+         vlbL9WwOyZnjDLDNo7oIuW+X6NpcHKhc0UqhhiYlPhnQ2kqibWNpUlvzUMg74qQri8lA
+         B544bZl2mx5+5SjpQ6lf9gr9PRjrUjWY+MR1MvvpqzU0dqbaRykxDRiOcA2d320PMS/s
+         fcaA==
+X-Gm-Message-State: AOAM532g6ABIclZ495AYAt0Obf1OLlNPbhHfPEXTj46JMV02w1fJp7gI
+        KjK0NRYr3nk4f9JpjuMD0DY=
+X-Google-Smtp-Source: ABdhPJzLZmTBQzvohUaspwiOSF1VO1y8v7lYyd71lzQ6jYrXsyFdmQ4Ii9IrPMqzo7ON71d+1lpf8w==
+X-Received: by 2002:a37:7b41:: with SMTP id w62mr9916583qkc.256.1619300736679;
+        Sat, 24 Apr 2021 14:45:36 -0700 (PDT)
+Received: from localhost.localdomain ([179.218.4.27])
+        by smtp.gmail.com with ESMTPSA id b17sm6638904qto.88.2021.04.24.14.45.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Apr 2021 14:45:36 -0700 (PDT)
+From:   Pedro Tammela <pctammela@gmail.com>
+X-Google-Original-From: Pedro Tammela <pctammela@mojatatu.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        David Verbeiren <david.verbeiren@tessares.net>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v5 0/2] add batched ops for percpu array
+Date:   Sat, 24 Apr 2021 18:45:08 -0300
+Message-Id: <20210424214510.806627-1-pctammela@mojatatu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RnJvbTogQWxleGVpIFN0YXJvdm9pdG92DQo+IFNlbnQ6IDI0IEFwcmlsIDIwMjEgMDA6MjANCj4g
-DQo+IE9uIEZyaSwgQXByIDIzLCAyMDIxIGF0IDQ6MTUgUE0gQWxlamFuZHJvIENvbG9tYXINCj4g
-PGFseC5tYW5wYWdlc0BnbWFpbC5jb20+IHdyb3RlOg0KPiA+DQo+ID4gU29tZSBtYW51YWwgcGFn
-ZXMgYXJlIGFscmVhZHkgdXNpbmcgQzk5IHN5bnRheCBmb3IgaW50ZWdyYWwNCj4gPiB0eXBlcyAn
-dWludDMyX3QnLCBidXQgc29tZSBhcmVuJ3QuICBUaGVyZSBhcmUgc29tZSB1c2luZyBrZXJuZWwN
-Cj4gPiBzeW50YXggJ19fdTMyJy4gIEZpeCB0aG9zZS4NCj4gPg0KPiA+IFNvbWUgcGFnZXMgYWxz
-byBkb2N1bWVudCBhdHRyaWJ1dGVzLCB1c2luZyBHTlUgc3ludGF4DQo+ID4gJ19fYXR0cmlidXRl
-X18oKHh4eCkpJy4gIFVwZGF0ZSB0aG9zZSB0byB1c2UgdGhlIHNob3J0ZXIgYW5kIG1vcmUNCj4g
-PiBwb3J0YWJsZSBDMnggc3ludGF4LCB3aGljaCBoYXNuJ3QgYmVlbiBzdGFuZGFyZGl6ZWQgeWV0
-LCBidXQgaXMNCj4gPiBhbHJlYWR5IGltcGxlbWVudGVkIGluIEdDQywgYW5kIGF2YWlsYWJsZSB0
-aHJvdWdoIGVpdGhlciAtLXN0ZD1jMngNCj4gPiBvciBhbnkgb2YgdGhlIC0tc3RkPWdudS4uLiBv
-cHRpb25zLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQWxlamFuZHJvIENvbG9tYXIgPGFseC5t
-YW5wYWdlc0BnbWFpbC5jb20+DQo+ID4gLS0tDQo+ID4gIG1hbjIvYnBmLjIgfCA0NyArKysrKysr
-KysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiA+ICAxIGZpbGUgY2hh
-bmdlZCwgMjMgaW5zZXJ0aW9ucygrKSwgMjQgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0t
-Z2l0IGEvbWFuMi9icGYuMiBiL21hbjIvYnBmLjINCj4gPiBpbmRleCA2ZTFmZmExOTguLjIwNGYw
-MWJmYyAxMDA2NDQNCj4gPiAtLS0gYS9tYW4yL2JwZi4yDQo+ID4gKysrIGIvbWFuMi9icGYuMg0K
-PiA+IEBAIC0xODgsMzkgKzE4OCwzOCBAQCBjb21tYW5kczoNCj4gPiAgLkVYDQo+ID4gIHVuaW9u
-IGJwZl9hdHRyIHsNCj4gPiAgICAgIHN0cnVjdCB7ICAgIC8qIFVzZWQgYnkgQlBGX01BUF9DUkVB
-VEUgKi8NCj4gPiAtICAgICAgICBfX3UzMiAgICAgICAgIG1hcF90eXBlOw0KPiA+IC0gICAgICAg
-IF9fdTMyICAgICAgICAga2V5X3NpemU7ICAgIC8qIHNpemUgb2Yga2V5IGluIGJ5dGVzICovDQo+
-ID4gLSAgICAgICAgX191MzIgICAgICAgICB2YWx1ZV9zaXplOyAgLyogc2l6ZSBvZiB2YWx1ZSBp
-biBieXRlcyAqLw0KPiA+IC0gICAgICAgIF9fdTMyICAgICAgICAgbWF4X2VudHJpZXM7IC8qIG1h
-eGltdW0gbnVtYmVyIG9mIGVudHJpZXMNCj4gPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBpbiBhIG1hcCAqLw0KPiA+ICsgICAgICAgIHVpbnQzMl90ICAgIG1hcF90eXBl
-Ow0KPiA+ICsgICAgICAgIHVpbnQzMl90ICAgIGtleV9zaXplOyAgICAvKiBzaXplIG9mIGtleSBp
-biBieXRlcyAqLw0KPiA+ICsgICAgICAgIHVpbnQzMl90ICAgIHZhbHVlX3NpemU7ICAvKiBzaXpl
-IG9mIHZhbHVlIGluIGJ5dGVzICovDQo+ID4gKyAgICAgICAgdWludDMyX3QgICAgbWF4X2VudHJp
-ZXM7IC8qIG1heGltdW0gbnVtYmVyIG9mIGVudHJpZXMNCj4gPiArICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgaW4gYSBtYXAgKi8NCj4gDQo+IE5hY2suDQo+IFRoZSBtYW4gcGFn
-ZSBzaG91bGQgZGVzY3JpYmUgdGhlIGtlcm5lbCBhcGkgdGhlIHdheSBpdCBpcyBpbiAuaCBmaWxl
-Lg0KDQpBbmQgdGhlIGNvZGUgYmVsb3cgaXMgbm8gbW9yZSBwb3J0YWJsZSB0aGF0IGEgI3ByYWdt
-YScuDQpJdCBpcyBwcm9iYWJseSB3b3JzZSB0aGFuIF9fYXR0cmlidXRlX18oKGFsaWduZWQoOCkp
-KQ0KKyAgICAgICAgICAgIHVpbnQ2NF90IFtbZ251OjphbGlnbmVkKDgpXV0gdmFsdWU7DQpUaGUg
-c3RhbmRhcmRzIGNvbW1pdHRlZSBhcmUgc21va2luZyBkb3BlIGFnYWluLg0KQXQgbGVhc3QgdGhl
-ICdfX2FsaWduZWRfdTY0IHZhbHVlOycgZm9ybSBzdGFuZHMgYSByZWFzb25hYmxlDQpjaGFuY2Ug
-b2YgYmVpbmcgY29udmVydGVkIGJ5IGNwcCBpbnRvIHdoYXRldmVyIHlvdXIgY29tcGlsZXIgc3Vw
-cG9ydHMuDQoNCk9UT0ggdGhlIGJmcCBkZXZlbG9wZXJzIHdhbnQgc2hvb3RpbmcgZm9yIGRlZmlu
-aW5nIGEgc3RydWN0dXJlDQp3aXRoIGhpZGRlbiBwYWRkaW5nIGZpZWxkcy4NCkl0IHRoZXkgZW5z
-dXJlZCB0aGF0IGFsbCA2NGJpdCBmaWVsZHMgd2VyZSBhbGlnbmVkIHRoZXkgd291bGRuJ3QNCm5l
-ZWQgdGhlIF9fYWxpZ25lZF91NjQgYXQgYWxsLg0KQW5kIHdvdWxkIGJlIG11Y2ggbGVzcyBsaWtl
-bHkgdG8gbGVhayBrZXJuZWwgc3RhY2sgdG8gdXNlcnNwYWNlLg0KDQoJRGF2aWQNCg0KLQ0KUmVn
-aXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRv
-biBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+This patchset introduces batched operations for the per-cpu variant of
+the array map.
+
+Also updates the batch ops test for arrays.
+
+v4 -> v5:
+- Revert removal of percpu macros
+
+v3 -> v4:
+- Prefer 'calloc()' over 'malloc()' on batch ops tests
+- Add missing static keyword in a couple of test functions
+- 'offset' to 'cpu_offset' as suggested by Martin
+
+v2 -> v3:
+- Remove percpu macros as suggested by Andrii
+- Update tests that used the per cpu macros
+
+v1 -> v2:
+- Amended a more descriptive commit message
+
+Pedro Tammela (2):
+  bpf: add batched ops support for percpu array
+  bpf: selftests: update array map tests for per-cpu batched ops
+
+ kernel/bpf/arraymap.c                         |   2 +
+ .../bpf/map_tests/array_map_batch_ops.c       | 104 +++++++++++++-----
+ 2 files changed, 77 insertions(+), 29 deletions(-)
+
+-- 
+2.25.1
 
