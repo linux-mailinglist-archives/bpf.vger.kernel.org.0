@@ -2,106 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05AE36A275
-	for <lists+bpf@lfdr.de>; Sat, 24 Apr 2021 19:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6EB36A302
+	for <lists+bpf@lfdr.de>; Sat, 24 Apr 2021 22:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231814AbhDXR5U (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 24 Apr 2021 13:57:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbhDXR5T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 24 Apr 2021 13:57:19 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B885FC061574;
-        Sat, 24 Apr 2021 10:56:39 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id a26-20020a05600c225ab029013f5867af96so699467wmm.0;
-        Sat, 24 Apr 2021 10:56:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+3dJUoLYyYMa/vI7AHmb/SZXL5HX54JGSkbPUpPeWD0=;
-        b=I7TgfXrERMrF6Fg9DoDM8q+Lt7w163xeraBoXQ/1BM9RzL4K0G+rDROWM2V/6qnvoy
-         3sIX4n4Qi9bf/mxEDs21jY84L8sqKVUuX0LQEIrzUXQvO1FZTuzC+C3Y6ClblxviaKCg
-         7eWglwb9jr7+x9ZgdvSNAkR6cnsyMdEBZrpgsYc0Mw305P9W3cV8xhRMZoZJqGFuLFrD
-         ls1AwHYPWZIlxFZhnFv021paz1pa4MXi8i3eLBbEofdU0QmFy2kOCmAK4KNvsn5RHXoJ
-         5Dw/+O/OM7OJpWUXNhrfGIQQs9rdGoVLHVAtfYNL7Pu2eZDbYkdXzWlkTa1sAfNNkTwu
-         WcXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+3dJUoLYyYMa/vI7AHmb/SZXL5HX54JGSkbPUpPeWD0=;
-        b=DMKceKyBp0j78qITgJVWP1DVNbPjBdmikB6mxCxd/aNdBudmTq5e47mp+gpzaqdy1C
-         ZuYqdX08r8QdH1OUQMRpdrhuPMqU4N1GHaBXAso+Lv5IQafXG1KbYx1Rjz2Mn6vUR5Tb
-         KeZeSxGabhRj0bVM6jzwHgcPyBThNIMC1RU0WYetVojW7oMMVIm7cZ7pMqDyKRRTJRNI
-         yv1MCLt5DRlBUflAX2XlVvEoj+Zx+2SijUanfqqSxfVuriZj+mEmwGsjxNzHlg5v8i3K
-         1tOeotcXyzD5OB1GdwNFEiD9cl/HAu/GfjxgCFT5exQKHN5YJ4eEJC6j6jA99tnWwss3
-         QBBQ==
-X-Gm-Message-State: AOAM530fBV/ZAYRMvhMnRR8aKezM1Jh4HuBhUP76nDycHXR4KnoxL6Lm
-        EFXJaPrAYmV67AtYVAep2vs=
-X-Google-Smtp-Source: ABdhPJyLjRZ6IPyTgXPVKlvPeziTETG15nsqCl3g7zO7HhQkPygxFVlUvq4iKkWvgcpkbthEvvaxEw==
-X-Received: by 2002:a1c:6382:: with SMTP id x124mr11669823wmb.142.1619286998442;
-        Sat, 24 Apr 2021 10:56:38 -0700 (PDT)
-Received: from [192.168.0.169] ([170.253.36.171])
-        by smtp.gmail.com with ESMTPSA id t14sm13485428wrz.55.2021.04.24.10.56.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Apr 2021 10:56:38 -0700 (PDT)
-Subject: Re: [RFC] bpf.2: Use standard types and attributes
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        id S235872AbhDXUoN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 24 Apr 2021 16:44:13 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:55768 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233485AbhDXUoM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 24 Apr 2021 16:44:12 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-38-cob5SrwlO66mazRem5lY2w-1; Sat, 24 Apr 2021 21:43:31 +0100
+X-MC-Unique: cob5SrwlO66mazRem5lY2w-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Sat, 24 Apr 2021 21:43:30 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Sat, 24 Apr 2021 21:43:30 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Alexei Starovoitov' <alexei.starovoitov@gmail.com>,
+        Alejandro Colomar <alx.manpages@gmail.com>,
         bpf <bpf@vger.kernel.org>
-Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+CC:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
         linux-man <linux-man@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, libc-alpha@sourceware.org,
-        gcc-patches@gcc.gnu.org
+        LKML <linux-kernel@vger.kernel.org>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        "gcc-patches@gcc.gnu.org" <gcc-patches@gcc.gnu.org>
+Subject: RE: [RFC] bpf.2: Use standard types and attributes
+Thread-Topic: [RFC] bpf.2: Use standard types and attributes
+Thread-Index: AQHXOJdJ6YNcCKeqkEK6KUcQdn8TZarEIdzg
+Date:   Sat, 24 Apr 2021 20:43:30 +0000
+Message-ID: <78af3c302dd5447887f4a14cd4629119@AcuMS.aculab.com>
 References: <20210423230609.13519-1-alx.manpages@gmail.com>
  <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <56932c68-4992-c5e4-819f-a88f60b3f63a@gmail.com>
-Date:   Sat, 24 Apr 2021 19:56:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
 In-Reply-To: <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello Alexei,
+RnJvbTogQWxleGVpIFN0YXJvdm9pdG92DQo+IFNlbnQ6IDI0IEFwcmlsIDIwMjEgMDA6MjANCj4g
+DQo+IE9uIEZyaSwgQXByIDIzLCAyMDIxIGF0IDQ6MTUgUE0gQWxlamFuZHJvIENvbG9tYXINCj4g
+PGFseC5tYW5wYWdlc0BnbWFpbC5jb20+IHdyb3RlOg0KPiA+DQo+ID4gU29tZSBtYW51YWwgcGFn
+ZXMgYXJlIGFscmVhZHkgdXNpbmcgQzk5IHN5bnRheCBmb3IgaW50ZWdyYWwNCj4gPiB0eXBlcyAn
+dWludDMyX3QnLCBidXQgc29tZSBhcmVuJ3QuICBUaGVyZSBhcmUgc29tZSB1c2luZyBrZXJuZWwN
+Cj4gPiBzeW50YXggJ19fdTMyJy4gIEZpeCB0aG9zZS4NCj4gPg0KPiA+IFNvbWUgcGFnZXMgYWxz
+byBkb2N1bWVudCBhdHRyaWJ1dGVzLCB1c2luZyBHTlUgc3ludGF4DQo+ID4gJ19fYXR0cmlidXRl
+X18oKHh4eCkpJy4gIFVwZGF0ZSB0aG9zZSB0byB1c2UgdGhlIHNob3J0ZXIgYW5kIG1vcmUNCj4g
+PiBwb3J0YWJsZSBDMnggc3ludGF4LCB3aGljaCBoYXNuJ3QgYmVlbiBzdGFuZGFyZGl6ZWQgeWV0
+LCBidXQgaXMNCj4gPiBhbHJlYWR5IGltcGxlbWVudGVkIGluIEdDQywgYW5kIGF2YWlsYWJsZSB0
+aHJvdWdoIGVpdGhlciAtLXN0ZD1jMngNCj4gPiBvciBhbnkgb2YgdGhlIC0tc3RkPWdudS4uLiBv
+cHRpb25zLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQWxlamFuZHJvIENvbG9tYXIgPGFseC5t
+YW5wYWdlc0BnbWFpbC5jb20+DQo+ID4gLS0tDQo+ID4gIG1hbjIvYnBmLjIgfCA0NyArKysrKysr
+KysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiA+ICAxIGZpbGUgY2hh
+bmdlZCwgMjMgaW5zZXJ0aW9ucygrKSwgMjQgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0t
+Z2l0IGEvbWFuMi9icGYuMiBiL21hbjIvYnBmLjINCj4gPiBpbmRleCA2ZTFmZmExOTguLjIwNGYw
+MWJmYyAxMDA2NDQNCj4gPiAtLS0gYS9tYW4yL2JwZi4yDQo+ID4gKysrIGIvbWFuMi9icGYuMg0K
+PiA+IEBAIC0xODgsMzkgKzE4OCwzOCBAQCBjb21tYW5kczoNCj4gPiAgLkVYDQo+ID4gIHVuaW9u
+IGJwZl9hdHRyIHsNCj4gPiAgICAgIHN0cnVjdCB7ICAgIC8qIFVzZWQgYnkgQlBGX01BUF9DUkVB
+VEUgKi8NCj4gPiAtICAgICAgICBfX3UzMiAgICAgICAgIG1hcF90eXBlOw0KPiA+IC0gICAgICAg
+IF9fdTMyICAgICAgICAga2V5X3NpemU7ICAgIC8qIHNpemUgb2Yga2V5IGluIGJ5dGVzICovDQo+
+ID4gLSAgICAgICAgX191MzIgICAgICAgICB2YWx1ZV9zaXplOyAgLyogc2l6ZSBvZiB2YWx1ZSBp
+biBieXRlcyAqLw0KPiA+IC0gICAgICAgIF9fdTMyICAgICAgICAgbWF4X2VudHJpZXM7IC8qIG1h
+eGltdW0gbnVtYmVyIG9mIGVudHJpZXMNCj4gPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBpbiBhIG1hcCAqLw0KPiA+ICsgICAgICAgIHVpbnQzMl90ICAgIG1hcF90eXBl
+Ow0KPiA+ICsgICAgICAgIHVpbnQzMl90ICAgIGtleV9zaXplOyAgICAvKiBzaXplIG9mIGtleSBp
+biBieXRlcyAqLw0KPiA+ICsgICAgICAgIHVpbnQzMl90ICAgIHZhbHVlX3NpemU7ICAvKiBzaXpl
+IG9mIHZhbHVlIGluIGJ5dGVzICovDQo+ID4gKyAgICAgICAgdWludDMyX3QgICAgbWF4X2VudHJp
+ZXM7IC8qIG1heGltdW0gbnVtYmVyIG9mIGVudHJpZXMNCj4gPiArICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgaW4gYSBtYXAgKi8NCj4gDQo+IE5hY2suDQo+IFRoZSBtYW4gcGFn
+ZSBzaG91bGQgZGVzY3JpYmUgdGhlIGtlcm5lbCBhcGkgdGhlIHdheSBpdCBpcyBpbiAuaCBmaWxl
+Lg0KDQpBbmQgdGhlIGNvZGUgYmVsb3cgaXMgbm8gbW9yZSBwb3J0YWJsZSB0aGF0IGEgI3ByYWdt
+YScuDQpJdCBpcyBwcm9iYWJseSB3b3JzZSB0aGFuIF9fYXR0cmlidXRlX18oKGFsaWduZWQoOCkp
+KQ0KKyAgICAgICAgICAgIHVpbnQ2NF90IFtbZ251OjphbGlnbmVkKDgpXV0gdmFsdWU7DQpUaGUg
+c3RhbmRhcmRzIGNvbW1pdHRlZSBhcmUgc21va2luZyBkb3BlIGFnYWluLg0KQXQgbGVhc3QgdGhl
+ICdfX2FsaWduZWRfdTY0IHZhbHVlOycgZm9ybSBzdGFuZHMgYSByZWFzb25hYmxlDQpjaGFuY2Ug
+b2YgYmVpbmcgY29udmVydGVkIGJ5IGNwcCBpbnRvIHdoYXRldmVyIHlvdXIgY29tcGlsZXIgc3Vw
+cG9ydHMuDQoNCk9UT0ggdGhlIGJmcCBkZXZlbG9wZXJzIHdhbnQgc2hvb3RpbmcgZm9yIGRlZmlu
+aW5nIGEgc3RydWN0dXJlDQp3aXRoIGhpZGRlbiBwYWRkaW5nIGZpZWxkcy4NCkl0IHRoZXkgZW5z
+dXJlZCB0aGF0IGFsbCA2NGJpdCBmaWVsZHMgd2VyZSBhbGlnbmVkIHRoZXkgd291bGRuJ3QNCm5l
+ZWQgdGhlIF9fYWxpZ25lZF91NjQgYXQgYWxsLg0KQW5kIHdvdWxkIGJlIG11Y2ggbGVzcyBsaWtl
+bHkgdG8gbGVhayBrZXJuZWwgc3RhY2sgdG8gdXNlcnNwYWNlLg0KDQoJRGF2aWQNCg0KLQ0KUmVn
+aXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRv
+biBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-On 4/24/21 1:20 AM, Alexei Starovoitov wrote:
-> Nack.
-> The man page should describe the kernel api the way it is in .h file.
-
-Why?
-
-When glibc uses __size_t (or any other non-standard types) just because 
-the standard doesn't allow it to define some types in some specific 
-header, the manual pages document the equivalent standard type, (i.e., 
-if glibc uses __size_t, we document size_t).
-
-The compiler, AFAIK (gcc is CCd, so they can jump in if I'm wrong), 
-using uint32_t in every situation where __u32 is expected.  They're both 
-typedefs for the same basic type.
-
-I can understand why Linux will keep using u32 types (and their __ user 
-space variants), but that doesn't mean user space programs need to use 
-the same type.
-
-If we have a standard syntax for fixed-width integral types (and for 
-anything, actually), the manual pages should probably follow it, 
-whenever possible.  Any deviation from the standard (be it C or POSIX) 
-should have a very good reason to be;  otherwise, it only creates confusion.
-
-Thanks,
-
-Alex
-
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-Senior SW Engineer; http://www.alejandro-colomar.es/
