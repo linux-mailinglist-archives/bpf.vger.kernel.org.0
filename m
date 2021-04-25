@@ -2,365 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE5A36A518
-	for <lists+bpf@lfdr.de>; Sun, 25 Apr 2021 08:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A6236A651
+	for <lists+bpf@lfdr.de>; Sun, 25 Apr 2021 11:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbhDYG1J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 25 Apr 2021 02:27:09 -0400
-Received: from conuserg-11.nifty.com ([210.131.2.78]:23101 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhDYG1I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 25 Apr 2021 02:27:08 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 13P6OBfL031298;
-        Sun, 25 Apr 2021 15:24:13 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 13P6OBfL031298
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1619331854;
-        bh=pHJt3NARoAElt9Jf/+b1t0lrVzcVf5LdrItofT0Do8M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FyxJCmD24XlBXV7s8x5LiC2xJk90iS0IX2rGcmaSick2GxqBSG6OVn4gd532IqGJX
-         9zRaolsSXCIR17YFvODgSHk5WlVUusQr2saC2oqrLQrmmJELQNiC5Nc9myZWSnWdc5
-         rW2yCbt6Y4UIUT65UJRqjmPv1BhaydcwEM9rrGwvXpMGUIM3/UIiIwFOqydorVYcq1
-         VXNtDz4s+ya4c2xAWGqYEleACURyS3EamQgnSo+eM6hUHEy8umOdwj8lepLRKGc/2A
-         FnhnKdJuPreLJLRkFc65zwHkOqDoqlQ5hLbu0hvanGIG7ypqgZY7uegqKtXNNcVRQr
-         LlfhV7VJeuUkg==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Alexandru Ciobotaru <alcioa@amazon.com>,
-        Alexandru Vasile <lexnv@amazon.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        devicetree@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH 4/5] .gitignore: prefix local generated files with a slash
-Date:   Sun, 25 Apr 2021 15:24:06 +0900
-Message-Id: <20210425062407.1183801-4-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210425062407.1183801-1-masahiroy@kernel.org>
-References: <20210425062407.1183801-1-masahiroy@kernel.org>
+        id S229985AbhDYJqN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 25 Apr 2021 05:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229551AbhDYJqH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 25 Apr 2021 05:46:07 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D649C061574;
+        Sun, 25 Apr 2021 02:45:28 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id o16so13778001plg.5;
+        Sun, 25 Apr 2021 02:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T1lYoSyJXwqRNFkOwskLBS8m5G2V6R0rZBRK97ae8hM=;
+        b=Z80W45UKKLz+X9/n65cHifc7KUqdTWYZJtlbIzBMOTkNYjfEATFfS8ABbkgzB1TBeX
+         TDj380QJ3v/xt45RUzGCVOoBvoC5wEB7WRQaPL0EwVqO/6DA7SFjbEnMRAPhs8+Kq5i3
+         hmGVl2T0lp7llnZoXnXJXPuCUoRKuBASzoPtqMUTmLQnpJSTWOeVYHjoxgE7trVBOi9m
+         jIxKuXGBl1Uc2/DT0K+1hIsTOuHn/nTcGAhlSDbgR6cc21bQmf5U5BOHvFoF2ErFCWmV
+         I7gpZ9t4ZMVBOkG7kKbWCwyNryghFiVM/eQt53sAsR7UR9qRXK14TanLPOqR0JH3tKFV
+         WEGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T1lYoSyJXwqRNFkOwskLBS8m5G2V6R0rZBRK97ae8hM=;
+        b=EcW/h8xGciHKAQ5qU4aigQgTrGVV7eEewq8MyKq3TWEUfx5NZ0YMCfJdzKPjip6KB2
+         38i8LHKOrZO+d203BIP9lxjd7PTgK86XhLctbvRb8dxKV9pEGxDXffpaLpNE/B46Jb1B
+         Uh1q2LojQOBhxsZaC4thVDDs/suLUniX+Lfa+uXwELP0KxjOH+y07Q0NQ0einAIt/Jat
+         foDkQ+KHzdE42oeY0yqnQKMHi3GE3jzCNxUxTdx8Hq/wCCYfqmiyfVn4Z9TRIHAOMx5M
+         T1bE6OHO95qBGqhVW8DGkH3XuJZou9NM9ZBi/4skMgBgkOOszbUnGXi9hMdagD04fW1N
+         hslg==
+X-Gm-Message-State: AOAM531/MhZJSy35HsA2zXWEbOccMkqEsslbqfLTfpO0Piwr8ksqKpvi
+        2lDiteX75de65arS4nlewBmiAzyOC6y+f5o/nIs=
+X-Google-Smtp-Source: ABdhPJxzvgBuaiGB5HpleLnZlj05OywDZQTBuYaivuKjz/vONpnUlVgGSA2YmMBjNI7CmHt0XEfv8nySGLxalxMEogY=
+X-Received: by 2002:a17:902:b494:b029:e7:36be:9ce7 with SMTP id
+ y20-20020a170902b494b02900e736be9ce7mr12915494plr.43.1619343927649; Sun, 25
+ Apr 2021 02:45:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1617885385.git.lorenzo@kernel.org> <CAJ8uoz1MOYLzyy7xXq_fmpKDEakxSomzfM76Szjr5gWsqHc9jQ@mail.gmail.com>
+ <20210418181801.17166935@carbon> <CAJ8uoz0m8AAJFddn2LjehXtdeGS0gat7dwOLA_-_ZeOVYjBdxw@mail.gmail.com>
+ <YH0pdXXsZ7IELBn3@lore-desk> <CAJ8uoz101VZiwuvM-bs4UdW+kFT5xjgdgUwPWHZn4ABEOkyQ-w@mail.gmail.com>
+ <20210421144747.33c5f51f@carbon> <CAJ8uoz3ROiPn+-bh7OjFOjXjXK9xGhU5cxWoFPM9JoYeh=zw=g@mail.gmail.com>
+ <20210421173921.23fef6a7@carbon> <CAJ8uoz2JpfdjvjJp-vjWuhw5z1=2D32jj-KktFnLN6Zd9ZVmAQ@mail.gmail.com>
+ <20210422164223.77870d28@carbon> <20210422170508.22c58226@carbon>
+ <CAJ8uoz1oEa6ZEp3QKZiPx4oUtt9-nuY4Sh6PVrEnZdu-d_PudQ@mail.gmail.com> <CAKgT0UceK7D1R7c_Y=ze4_6pupCfLpfr5QOj-GCeJeMSD=P48g@mail.gmail.com>
+In-Reply-To: <CAKgT0UceK7D1R7c_Y=ze4_6pupCfLpfr5QOj-GCeJeMSD=P48g@mail.gmail.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Sun, 25 Apr 2021 11:45:16 +0200
+Message-ID: <CAJ8uoz2_nvDd+n_YfZZyd1m6xByQ6wo_D2HKSPRVi061+2M1RQ@mail.gmail.com>
+Subject: Re: Crash for i40e on net-next (was: [PATCH v8 bpf-next 00/14]
+ mvneta: introduce XDP multi-buffer support)
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Tirthendu <tirthendu.sarkar@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The pattern prefixed with '/' matches a file in the same directory,
-but not a one in sub-directories.
+On Fri, Apr 23, 2021 at 6:43 PM Alexander Duyck
+<alexander.duyck@gmail.com> wrote:
+>
+> On Thu, Apr 22, 2021 at 10:28 PM Magnus Karlsson
+> <magnus.karlsson@gmail.com> wrote:
+> >
+> > On Thu, Apr 22, 2021 at 5:05 PM Jesper Dangaard Brouer
+> > <brouer@redhat.com> wrote:
+> > >
+> > > On Thu, 22 Apr 2021 16:42:23 +0200
+> > > Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+> > >
+> > > > On Thu, 22 Apr 2021 12:24:32 +0200
+> > > > Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
+> > > >
+> > > > > On Wed, Apr 21, 2021 at 5:39 PM Jesper Dangaard Brouer
+> > > > > <brouer@redhat.com> wrote:
+> > > > > >
+> > > > > > On Wed, 21 Apr 2021 16:12:32 +0200
+> > > > > > Magnus Karlsson <magnus.karlsson@gmail.com> wrote:
+> > > > > >
+> > > > [...]
+> > > > > > > more than I get.
+> > > > > >
+> > > > > > I clearly have a bug in the i40e driver.  As I wrote later, I don't see
+> > > > > > any packets transmitted for XDP_TX.  Hmm, I using Mel Gorman's tree,
+> > > > > > which contains the i40e/ice/ixgbe bug we fixed earlier.
+> > > >
+> > > > Something is wrong with i40e, I changed git-tree to net-next (at
+> > > > commit 5d869070569a) and XDP seems to have stopped working on i40e :-(
+> >
+> > Found this out too when switching to the net tree yesterday to work on
+> > proper packet drop tracing as you spotted/requested yesterday. The
+> > commit below completely broke XDP support on i40e (if you do not run
+> > with a zero-copy AF_XDP socket because that path still works). I am
+> > working on a fix that does not just revert the patch, but fixes the
+> > original problem without breaking XDP. Will post it and the tracing
+> > fixes as soon as I can.
+> >
+> > commit 12738ac4754ec92a6a45bf3677d8da780a1412b3
+> > Author: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+> > Date:   Fri Mar 26 19:43:40 2021 +0100
+> >
+> >     i40e: Fix sparse errors in i40e_txrx.c
+> >
+> >     Remove error handling through pointers. Instead use plain int
+> >     to return value from i40e_run_xdp(...).
+> >
+> >     Previously:
+> >     - sparse errors were produced during compilation:
+> >     i40e_txrx.c:2338 i40e_run_xdp() error: (-2147483647) too low for ERR_PTR
+> >     i40e_txrx.c:2558 i40e_clean_rx_irq() error: 'skb' dereferencing
+> > possible ERR_PTR()
+> >
+> >     - sk_buff* was used to return value, but it has never had valid
+> >     pointer to sk_buff. Returned value was always int handled as
+> >     a pointer.
+> >
+> >     Fixes: 0c8493d90b6b ("i40e: add XDP support for pass and drop actions")
+> >     Fixes: 2e6893123830 ("i40e: split XDP_TX tail and XDP_REDIRECT map
+> > flushing")
+> >     Signed-off-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+> >     Signed-off-by: Arkadiusz Kubalewski <arkadiusz.kubalewski@intel.com>
+> >     Tested-by: Dave Switzer <david.switzer@intel.com>
+> >     Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+>
+> Yeah, this patch would horribly break things, especially in the
+> multi-buffer case. The idea behind using the skb pointer to indicate
+> the error is that it is persistent until we hit the EOP descriptor.
+> With that removed you end up mangling the entire list of frames since
+> it will start trying to process the next frame in the middle of a
+> packet.
+>
+> >
+> > > Renamed subj as this is without this patchset applied.
+> > >
+> > > > $ uname -a
+> > > > Linux broadwell 5.12.0-rc7-net-next+ #600 SMP PREEMPT Thu Apr 22 15:13:15 CEST 2021 x86_64 x86_64 x86_64 GNU/Linux
+> > > >
+> > > > When I load any XDP prog almost no packets are let through:
+> > > >
+> > > >  [kernel-bpf-samples]$ sudo ./xdp1 i40e2
+> > > >  libbpf: elf: skipping unrecognized data section(16) .eh_frame
+> > > >  libbpf: elf: skipping relo section(17) .rel.eh_frame for section(16) .eh_frame
+> > > >  proto 17:          1 pkt/s
+> > > >  proto 0:          0 pkt/s
+> > > >  proto 17:          0 pkt/s
+> > > >  proto 0:          0 pkt/s
+> > > >  proto 17:          1 pkt/s
+> > >
+> > > Trying out xdp_redirect:
+> > >
+> > >  [kernel-bpf-samples]$ sudo ./xdp_redirect i40e2 i40e2
+> > >  input: 7 output: 7
+> > >  libbpf: elf: skipping unrecognized data section(20) .eh_frame
+> > >  libbpf: elf: skipping relo section(21) .rel.eh_frame for section(20) .eh_frame
+> > >  libbpf: Kernel error message: XDP program already attached
+> > >  WARN: link set xdp fd failed on 7
+> > >  ifindex 7:       7357 pkt/s
+> > >  ifindex 7:       7909 pkt/s
+> > >  ifindex 7:       7909 pkt/s
+> > >  ifindex 7:       7909 pkt/s
+> > >  ifindex 7:       7909 pkt/s
+> > >  ifindex 7:       7909 pkt/s
+> > >  ifindex 7:       6357 pkt/s
+> > >
+> > > And then it crash (see below) at page_frag_free+0x31 which calls
+> > > virt_to_head_page() with a wrong addr (I guess).  This is called by
+> > > i40e_clean_tx_irq+0xc9.
+> >
+> > Did not see a crash myself, just 4 Kpps. But the rings and DMA
+> > mappings got completely mangled by the patch above, so could be the
+> > same cause.
+>
+> Are you running with jumbo frames enabled? I would think this change
+> would really blow things up in the jumbo enabled case.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- Documentation/devicetree/bindings/.gitignore |  4 ++--
- arch/.gitignore                              |  4 ++--
- certs/.gitignore                             |  2 +-
- drivers/memory/.gitignore                    |  2 +-
- drivers/tty/vt/.gitignore                    |  6 +++---
- kernel/.gitignore                            |  2 +-
- lib/.gitignore                               | 10 +++++-----
- samples/auxdisplay/.gitignore                |  2 +-
- samples/binderfs/.gitignore                  |  3 ++-
- samples/connector/.gitignore                 |  2 +-
- samples/hidraw/.gitignore                    |  2 +-
- samples/mei/.gitignore                       |  2 +-
- samples/nitro_enclaves/.gitignore            |  2 +-
- samples/pidfd/.gitignore                     |  2 +-
- samples/seccomp/.gitignore                   |  8 ++++----
- samples/timers/.gitignore                    |  2 +-
- samples/vfs/.gitignore                       |  4 ++--
- samples/watch_queue/.gitignore               |  3 ++-
- samples/watchdog/.gitignore                  |  2 +-
- scripts/.gitignore                           | 18 +++++++++---------
- scripts/basic/.gitignore                     |  2 +-
- scripts/dtc/.gitignore                       |  4 ++--
- scripts/gcc-plugins/.gitignore               |  2 +-
- scripts/genksyms/.gitignore                  |  2 +-
- scripts/mod/.gitignore                       |  8 ++++----
- usr/.gitignore                               |  4 ++--
- 26 files changed, 53 insertions(+), 51 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/.gitignore b/Documentation/devicetree/bindings/.gitignore
-index 3a05b99bfa26..a77719968a7e 100644
---- a/Documentation/devicetree/bindings/.gitignore
-+++ b/Documentation/devicetree/bindings/.gitignore
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
- *.example.dts
--processed-schema*.yaml
--processed-schema*.json
-+/processed-schema*.yaml
-+/processed-schema*.json
-diff --git a/arch/.gitignore b/arch/.gitignore
-index 4191da401dbb..756c19c34f99 100644
---- a/arch/.gitignore
-+++ b/arch/.gitignore
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
--i386
--x86_64
-+/i386/
-+/x86_64/
-diff --git a/certs/.gitignore b/certs/.gitignore
-index 2a2483990686..5759643f638b 100644
---- a/certs/.gitignore
-+++ b/certs/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--x509_certificate_list
-+/x509_certificate_list
-diff --git a/drivers/memory/.gitignore b/drivers/memory/.gitignore
-index caedc4c7d2db..5e84bee05ef8 100644
---- a/drivers/memory/.gitignore
-+++ b/drivers/memory/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--ti-emif-asm-offsets.h
-+/ti-emif-asm-offsets.h
-diff --git a/drivers/tty/vt/.gitignore b/drivers/tty/vt/.gitignore
-index 3ecf42234d89..0221709b177d 100644
---- a/drivers/tty/vt/.gitignore
-+++ b/drivers/tty/vt/.gitignore
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
--conmakehash
--consolemap_deftbl.c
--defkeymap.c
-+/conmakehash
-+/consolemap_deftbl.c
-+/defkeymap.c
-diff --git a/kernel/.gitignore b/kernel/.gitignore
-index 4abc4e033ed8..4dc1ffe9770b 100644
---- a/kernel/.gitignore
-+++ b/kernel/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--kheaders.md5
-+/kheaders.md5
-diff --git a/lib/.gitignore b/lib/.gitignore
-index 327cb2c7f2c9..5e7fa54c4536 100644
---- a/lib/.gitignore
-+++ b/lib/.gitignore
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
--gen_crc32table
--gen_crc64table
--crc32table.h
--crc64table.h
--oid_registry_data.c
-+/crc32table.h
-+/crc64table.h
-+/gen_crc32table
-+/gen_crc64table
-+/oid_registry_data.c
-diff --git a/samples/auxdisplay/.gitignore b/samples/auxdisplay/.gitignore
-index 2ed744c0e741..d023816849bd 100644
---- a/samples/auxdisplay/.gitignore
-+++ b/samples/auxdisplay/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--cfag12864b-example
-+/cfag12864b-example
-diff --git a/samples/binderfs/.gitignore b/samples/binderfs/.gitignore
-index eb60241e8087..8fa415a3640b 100644
---- a/samples/binderfs/.gitignore
-+++ b/samples/binderfs/.gitignore
-@@ -1 +1,2 @@
--binderfs_example
-+# SPDX-License-Identifier: GPL-2.0
-+/binderfs_example
-diff --git a/samples/connector/.gitignore b/samples/connector/.gitignore
-index d86f2ff9c947..0e26039f39b5 100644
---- a/samples/connector/.gitignore
-+++ b/samples/connector/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--ucon
-+/ucon
-diff --git a/samples/hidraw/.gitignore b/samples/hidraw/.gitignore
-index d7a6074ebcf9..5233ab63262e 100644
---- a/samples/hidraw/.gitignore
-+++ b/samples/hidraw/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--hid-example
-+/hid-example
-diff --git a/samples/mei/.gitignore b/samples/mei/.gitignore
-index db5e802f041e..fe894bcb6a62 100644
---- a/samples/mei/.gitignore
-+++ b/samples/mei/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--mei-amt-version
-+/mei-amt-version
-diff --git a/samples/nitro_enclaves/.gitignore b/samples/nitro_enclaves/.gitignore
-index 827934129c90..6a718eec71f4 100644
---- a/samples/nitro_enclaves/.gitignore
-+++ b/samples/nitro_enclaves/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0
--ne_ioctl_sample
-+/ne_ioctl_sample
-diff --git a/samples/pidfd/.gitignore b/samples/pidfd/.gitignore
-index eea857fca736..d4cfa3176b1b 100644
---- a/samples/pidfd/.gitignore
-+++ b/samples/pidfd/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--pidfd-metadata
-+/pidfd-metadata
-diff --git a/samples/seccomp/.gitignore b/samples/seccomp/.gitignore
-index 4a5a5b7db30b..a6df0da77c5d 100644
---- a/samples/seccomp/.gitignore
-+++ b/samples/seccomp/.gitignore
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
--bpf-direct
--bpf-fancy
--dropper
--user-trap
-+/bpf-direct
-+/bpf-fancy
-+/dropper
-+/user-trap
-diff --git a/samples/timers/.gitignore b/samples/timers/.gitignore
-index 40510c33cf08..cd9ff7b95383 100644
---- a/samples/timers/.gitignore
-+++ b/samples/timers/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--hpet_example
-+/hpet_example
-diff --git a/samples/vfs/.gitignore b/samples/vfs/.gitignore
-index 8fdabf7e5373..79212d91285b 100644
---- a/samples/vfs/.gitignore
-+++ b/samples/vfs/.gitignore
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
--test-fsmount
--test-statx
-+/test-fsmount
-+/test-statx
-diff --git a/samples/watch_queue/.gitignore b/samples/watch_queue/.gitignore
-index 2aa3c7e56a1a..823b351d3db9 100644
---- a/samples/watch_queue/.gitignore
-+++ b/samples/watch_queue/.gitignore
-@@ -1 +1,2 @@
--watch_test
-+# SPDX-License-Identifier: GPL-2.0-only
-+/watch_test
-diff --git a/samples/watchdog/.gitignore b/samples/watchdog/.gitignore
-index 74153b831244..a70a0150ed9f 100644
---- a/samples/watchdog/.gitignore
-+++ b/samples/watchdog/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--watchdog-simple
-+/watchdog-simple
-diff --git a/scripts/.gitignore b/scripts/.gitignore
-index a6c11316c969..e83c620ef52c 100644
---- a/scripts/.gitignore
-+++ b/scripts/.gitignore
-@@ -1,11 +1,11 @@
- # SPDX-License-Identifier: GPL-2.0-only
--bin2c
--kallsyms
--unifdef
--recordmcount
--sorttable
--asn1_compiler
--extract-cert
--sign-file
--insert-sys-cert
-+/asn1_compiler
-+/bin2c
-+/extract-cert
-+/insert-sys-cert
-+/kallsyms
- /module.lds
-+/recordmcount
-+/sign-file
-+/sorttable
-+/unifdef
-diff --git a/scripts/basic/.gitignore b/scripts/basic/.gitignore
-index 98ae1f509592..961c91c8a884 100644
---- a/scripts/basic/.gitignore
-+++ b/scripts/basic/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--fixdep
-+/fixdep
-diff --git a/scripts/dtc/.gitignore b/scripts/dtc/.gitignore
-index 8a8b62bf3d3c..e0b5c1d2464a 100644
---- a/scripts/dtc/.gitignore
-+++ b/scripts/dtc/.gitignore
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
--dtc
--fdtoverlay
-+/dtc
-+/fdtoverlay
-diff --git a/scripts/gcc-plugins/.gitignore b/scripts/gcc-plugins/.gitignore
-index b04e0f0f033e..5cc385b9eb97 100644
---- a/scripts/gcc-plugins/.gitignore
-+++ b/scripts/gcc-plugins/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--randomize_layout_seed.h
-+/randomize_layout_seed.h
-diff --git a/scripts/genksyms/.gitignore b/scripts/genksyms/.gitignore
-index 999af710f83d..0b275abf9405 100644
---- a/scripts/genksyms/.gitignore
-+++ b/scripts/genksyms/.gitignore
-@@ -1,2 +1,2 @@
- # SPDX-License-Identifier: GPL-2.0-only
--genksyms
-+/genksyms
-diff --git a/scripts/mod/.gitignore b/scripts/mod/.gitignore
-index 07e4a39f90a6..ed2e13b708ce 100644
---- a/scripts/mod/.gitignore
-+++ b/scripts/mod/.gitignore
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
--elfconfig.h
--mk_elfconfig
--modpost
--devicetable-offsets.h
-+/elfconfig.h
-+/mk_elfconfig
-+/modpost
-+/devicetable-offsets.h
-diff --git a/usr/.gitignore b/usr/.gitignore
-index 935442ed1eb2..8996e7a88902 100644
---- a/usr/.gitignore
-+++ b/usr/.gitignore
-@@ -1,4 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
--gen_init_cpio
--initramfs_data.cpio
-+/gen_init_cpio
-+/initramfs_data.cpio
- /initramfs_inc_data
--- 
-2.27.0
-
+I did not. Just using XDP_DROP or XDP_TX would crash the system just fine.
