@@ -2,65 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A909C36A7D5
-	for <lists+bpf@lfdr.de>; Sun, 25 Apr 2021 16:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6E136A87A
+	for <lists+bpf@lfdr.de>; Sun, 25 Apr 2021 18:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230327AbhDYOrY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 25 Apr 2021 10:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45538 "EHLO
+        id S231197AbhDYQxE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 25 Apr 2021 12:53:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhDYOrY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 25 Apr 2021 10:47:24 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ABDEC061756
-        for <bpf@vger.kernel.org>; Sun, 25 Apr 2021 07:46:43 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id y14-20020a056830208eb02902a1c9fa4c64so13181577otq.9
-        for <bpf@vger.kernel.org>; Sun, 25 Apr 2021 07:46:43 -0700 (PDT)
+        with ESMTP id S230329AbhDYQxE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 25 Apr 2021 12:53:04 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47193C061756;
+        Sun, 25 Apr 2021 09:52:24 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id n138so84830298lfa.3;
+        Sun, 25 Apr 2021 09:52:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=oiaZQCWo/+8uUx9TiUqPyKjHpWYnE7MZMGwxGTgY1VY=;
-        b=KeIoq0vkM7Y3z14jjAT4+n33vKefuTw97usUTPpH9pFJoOxWwwp5vqQ9nqlG4YVQ8U
-         NQrQ5ZNGYeGzNsJijGJc6vnlsUQOzOFIewd3un2FgGtmrxL82vCeIrnWiEGA2+Y3aby2
-         PXaIyzF5M8zkeuTSlsuZRQr05F4mmb0VHXTdo6bz8dMr9X8lv9kedUjc33ZKFKohhyly
-         wYinzmDH2rh8P8ej4XqbIswzXUJlxy+nVLJSRaLDfKDynBG5eG7dmhOwm/W7veuYayY4
-         boFi0n8LgSrZiKRZUFmS9ay+HBTo1RQBifuZ3JDGnEvFk2yS4TSBEOj9nHyRSxGABG7I
-         Zk5A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EB1M0gWo0xUwH/H5pRRZr/jjgjnHFpq4HP5/7TLgquw=;
+        b=mKfL7XBbPUgpXuoeT+M8J5UA00y9KDHkBBlyJDTRIGF18oMS4QFwLiEW4qQrpeL7aA
+         kSuh5AQKpTcn5fkeippGQS7dy7rt5+b/QIoYBtnwZn2LsaCybLc3Pa9/m+ft6cQKnL6r
+         ioSqz0KVxR9XhsPoTqNJbYRtVIWqPfqhXN9RujBMqJpf4FOxO9ymoLQk/M9EVc8oWJFD
+         azY0/6SjJSfaEuiFxYla8gU9/yzf98eG1DDrSurrTt6bciE0gEfTerFKPaSh3B/qBYGy
+         PdaWbAK6V3oyjW+i2ia8krlH7aTwKPzr8xylNMrcEXe/6B+nicTWobw6ArD05/6A1TSR
+         uxGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=oiaZQCWo/+8uUx9TiUqPyKjHpWYnE7MZMGwxGTgY1VY=;
-        b=gFIzew5GmUl5kPnXA/DumO+XwIOYU9cLyDBiPEs/gM8vO5dAxLtqqM3t3huPdpeggj
-         vCUkknEeVErEv5ptSFeOh0mbE2p9aaIkM3U5VyiBbEfazjtqhArFRbmPp3o9NGt7d4Bc
-         BZuprqUytKsWe8aHQcjY8omKuCjuyKzH51Z08Z6IXdv0zsVN1FPO/gBaw6T3/w24elps
-         6K08CQ4SQWImG/V6zFQmJmaEGOLKNfxtvyehALQ0gDgiwAhZFoTB1F6IABftuNYZYCSU
-         hnCj83CnTW7ftWmsyr2cUJOLZuJSmP2v4O901rApxSIseJC65EzAYDN7ejUDaxCWWPwj
-         1lbA==
-X-Gm-Message-State: AOAM531v6f6/zAZLCV9n6ZlEhf9KkVTFNsvH+I50qxx6IxdpkWuxaUBP
-        WU+jy6uVbwHI6DfCkFV9rUUH8aSudlVZKi4soqQ=
-X-Google-Smtp-Source: ABdhPJytJfRBx1q2nQr4q2J+mLN9uyfrhNuTo0i3IviD6WwwY8JJXfO/8sH4kVHXDpVI1Vb7L0LjhpFQUA+urJqJoN4=
-X-Received: by 2002:a05:6830:3487:: with SMTP id c7mr11331635otu.35.1619362002582;
- Sun, 25 Apr 2021 07:46:42 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EB1M0gWo0xUwH/H5pRRZr/jjgjnHFpq4HP5/7TLgquw=;
+        b=sedIqK9NhfJwuSVeP9WyWWSrqn/qLgYGUKFshTQbka1VMa9ZzKsagYmcHyre222KFR
+         1rtH/ofdO+DyXmHyCFsgv1qMb79dUcCRplnYoczxRYe1HhoBaAxc4am0laWC5/E0Wqbq
+         Bh4DL7P3F8swVvQ1fFm/7dXHMFoa8S3++YHK5+N9LA3HTMus2MuSfgjDjtCLyruZY/dJ
+         3yRVcy7Ljcr+TuC0fSw5nMfb4kLmZN5zbKhA84SqJ7oxeq/T4vhvYIOTfrOX0rgMofXN
+         uRR479U6e0kbAmJFjBtZBNi0UoFAdjlm0b0TrKO8qCIXudtSvrKWs4eY1X7OxGxdNK4R
+         2esg==
+X-Gm-Message-State: AOAM5334c634n4zVS0KZpWuL874wW4lL4bw4iXR81tSdT9PVSCGp9VVb
+        o7ySwW+D64ZFQytZMdRW+3TMmfl9nVfdbyrUriU=
+X-Google-Smtp-Source: ABdhPJxyKCSLAn2xg/0qj+PERrbhg57bibRrpgyu2+FdeamRpnAVVz+6UeBZD+v1w1V4KlK02GEyZcz75ouK5KpNtEI=
+X-Received: by 2002:ac2:510d:: with SMTP id q13mr10060117lfb.75.1619369542791;
+ Sun, 25 Apr 2021 09:52:22 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ac9:1695:0:0:0:0:0 with HTTP; Sun, 25 Apr 2021 07:46:42
- -0700 (PDT)
-Reply-To: barristerdinkarim09@gmail.com
-From:   Din Karim <katiehiggins953@gmail.com>
-Date:   Sun, 25 Apr 2021 14:46:42 +0000
-Message-ID: <CAG4iW7ZuB7XDUF-_5YyS2TyBVm__Hmm-YK5q1Qt34Hm8aZ=H3Q@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+ <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com> <56932c68-4992-c5e4-819f-a88f60b3f63a@gmail.com>
+In-Reply-To: <56932c68-4992-c5e4-819f-a88f60b3f63a@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 25 Apr 2021 09:52:11 -0700
+Message-ID: <CAADnVQJU=r0qE-4ZHsvX4YndbFgDGvzAgNgVo7kPMGF4jCrVeg@mail.gmail.com>
+Subject: Re: [RFC] bpf.2: Use standard types and attributes
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, libc-alpha@sourceware.org,
+        gcc-patches@gcc.gnu.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Sat, Apr 24, 2021 at 10:56 AM Alejandro Colomar (man-pages)
+<alx.manpages@gmail.com> wrote:
+>
+> Hello Alexei,
+>
+> On 4/24/21 1:20 AM, Alexei Starovoitov wrote:
+> > Nack.
+> > The man page should describe the kernel api the way it is in .h file.
+>
+> Why?
 
-I'm Barr Din Karim from Republic of Ghana please i wish to have a
-communication with you.
+Because man page must describe the linux uapi headers the way they
+are installed in the system and not invent alternative implementations.
+The users will include those .h with __u32 and will see them in their code.
+Man page saying something else is a dangerous lie.
 
-I wait for your response.
+> using uint32_t in every situation where __u32 is expected.  They're both
+> typedefs for the same basic type.
 
-Barr Din Karim(Esq)
+That's irrelevant. Languages like golang have their own bpf.h equivalent
+that matches /usr/include/linux/bpf.h.
+
+> I can understand why Linux will keep using u32 types (and their __ user
+> space variants), but that doesn't mean user space programs need to use
+> the same type.
+
+No one says that the users must use __u32. See golang example.
+But if the users do #include <linux/bpf.h> they will get them and man page
+must describe that.
+
+> If we have a standard syntax for fixed-width integral types (and for
+> anything, actually), the manual pages should probably follow it,
+> whenever possible.
+
+Absolutely not. linux man page must describe linux.
