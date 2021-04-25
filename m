@@ -2,77 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 719AF36A909
-	for <lists+bpf@lfdr.de>; Sun, 25 Apr 2021 21:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6301D36A961
+	for <lists+bpf@lfdr.de>; Sun, 25 Apr 2021 23:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231207AbhDYTd4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 25 Apr 2021 15:33:56 -0400
-Received: from l2mail1.panix.com ([166.84.1.75]:59969 "EHLO l2mail1.panix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230494AbhDYTd4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 25 Apr 2021 15:33:56 -0400
-Received: from mailbackend.panix.com (mailbackend.panix.com [166.84.1.89])
-        by l2mail1.panix.com (Postfix) with ESMTPS id 4FSySz3gfQzDjg;
-        Sun, 25 Apr 2021 15:17:07 -0400 (EDT)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-        by mailbackend.panix.com (Postfix) with ESMTPSA id 4FSySy3clvzSNw;
-        Sun, 25 Apr 2021 15:17:06 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=panix.com; s=panix;
-        t=1619378226; bh=XhZeMGV3zn3KbXb4vXiIiqcwTRwZv6RkFQ/y5sRLQ54=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc;
-        b=UChIu6fy15PFybZhRlSS4vrq054UVvqJdU+KyBlRIxDTTEMHxGg67D25N0JFbLdVR
-         Kpz2r1rpi9w8L0pujDrTE5VNtc1dOAgk9Q+U0GRptV9ZEyiYrybQdA9biZxvkpUBjM
-         zYgAEqqXpozo0XtOvTFPBBXgir5C57DjzTdcc/cY=
-Received: by mail-yb1-f171.google.com with SMTP id p202so18428452ybg.8;
-        Sun, 25 Apr 2021 12:17:06 -0700 (PDT)
-X-Gm-Message-State: AOAM532wkqOoWBIjPeoDxhJuTOFDCRwJFb7Sgby9eKFfY5ZT+I1fXHPP
-        SxnpyKjV7HFe61q+BpWqy/RWtLP2/mw4vk7EMqA=
-X-Google-Smtp-Source: ABdhPJztPCPXO7s31JTURrUaXheP5N6/ezQIspG2gIv0gIdLsrS/RpqygJaJ2EKeEgLkyzpRG1xzKDeBit2LpklR234=
-X-Received: by 2002:a5b:34a:: with SMTP id q10mr19917362ybp.224.1619378226198;
- Sun, 25 Apr 2021 12:17:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
- <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com> <78af3c302dd5447887f4a14cd4629119@AcuMS.aculab.com>
-In-Reply-To: <78af3c302dd5447887f4a14cd4629119@AcuMS.aculab.com>
-From:   Zack Weinberg <zackw@panix.com>
-Date:   Sun, 25 Apr 2021 15:16:54 -0400
-X-Gmail-Original-Message-ID: <CAKCAbMgJBRKc+kszT-foDtOQC6Q1veOuxC_a1aX_Qt4PTCpEkg@mail.gmail.com>
-Message-ID: <CAKCAbMgJBRKc+kszT-foDtOQC6Q1veOuxC_a1aX_Qt4PTCpEkg@mail.gmail.com>
-Subject: Re: [RFC] bpf.2: Use standard types and attributes
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        id S231247AbhDYVKG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 25 Apr 2021 17:10:06 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:54202 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231207AbhDYVKF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 25 Apr 2021 17:10:05 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-264-PkwKK9X8NdyBSIEz6JCoUA-1; Sun, 25 Apr 2021 22:09:22 +0100
+X-MC-Unique: PkwKK9X8NdyBSIEz6JCoUA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Sun, 25 Apr 2021 22:09:21 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Sun, 25 Apr 2021 22:09:21 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Zack Weinberg' <zackw@panix.com>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Alejandro Colomar <alx.manpages@gmail.com>,
         bpf <bpf@vger.kernel.org>, linux-man <linux-man@vger.kernel.org>,
         "gcc-patches@gcc.gnu.org" <gcc-patches@gcc.gnu.org>,
         "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
         "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: RE: [RFC] bpf.2: Use standard types and attributes
+Thread-Topic: [RFC] bpf.2: Use standard types and attributes
+Thread-Index: AQHXOJdJ6YNcCKeqkEK6KUcQdn8TZarEIdzggAFrTACAAC7GAA==
+Date:   Sun, 25 Apr 2021 21:09:21 +0000
+Message-ID: <600f0f5de9ff4bc887eec42d38113a8c@AcuMS.aculab.com>
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+ <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com>
+ <78af3c302dd5447887f4a14cd4629119@AcuMS.aculab.com>
+ <CAKCAbMgJBRKc+kszT-foDtOQC6Q1veOuxC_a1aX_Qt4PTCpEkg@mail.gmail.com>
+In-Reply-To: <CAKCAbMgJBRKc+kszT-foDtOQC6Q1veOuxC_a1aX_Qt4PTCpEkg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 24, 2021 at 4:43 PM David Laight via Libc-alpha
-<libc-alpha@sourceware.org> wrote:
-> From: Alexei Starovoitov
-> > On Fri, Apr 23, 2021 at 4:15 PM Alejandro Colomar <alx.manpages@gmail.com> wrote:
-...
-> > > Some pages also document attributes, using GNU syntax
-> > > '__attribute__((xxx))'.  Update those to use the shorter and more
-> > > portable C2x syntax, which hasn't been standardized yet, but is
-> > > already implemented in GCC, and available through either --std=c2x
-> > > or any of the --std=gnu... options.
-..
-> And the code below is no more portable that a #pragma'.
-> It is probably worse than __attribute__((aligned(8)))
-> +            uint64_t [[gnu::aligned(8)]] value;
-> The standards committee are smoking dope again.
-> At least the '__aligned_u64 value;' form stands a reasonable
-> chance of being converted by cpp into whatever your compiler supports.
+RnJvbTogWmFjayBXZWluYmVyZw0KPiBTZW50OiAyNSBBcHJpbCAyMDIxIDIwOjE3DQo+IA0KPiBP
+biBTYXQsIEFwciAyNCwgMjAyMSBhdCA0OjQzIFBNIERhdmlkIExhaWdodCB2aWEgTGliYy1hbHBo
+YQ0KPiA8bGliYy1hbHBoYUBzb3VyY2V3YXJlLm9yZz4gd3JvdGU6DQo+ID4gRnJvbTogQWxleGVp
+IFN0YXJvdm9pdG92DQo+ID4gPiBPbiBGcmksIEFwciAyMywgMjAyMSBhdCA0OjE1IFBNIEFsZWph
+bmRybyBDb2xvbWFyIDxhbHgubWFucGFnZXNAZ21haWwuY29tPiB3cm90ZToNCj4gLi4uDQo+ID4g
+PiA+IFNvbWUgcGFnZXMgYWxzbyBkb2N1bWVudCBhdHRyaWJ1dGVzLCB1c2luZyBHTlUgc3ludGF4
+DQo+ID4gPiA+ICdfX2F0dHJpYnV0ZV9fKCh4eHgpKScuICBVcGRhdGUgdGhvc2UgdG8gdXNlIHRo
+ZSBzaG9ydGVyIGFuZCBtb3JlDQo+ID4gPiA+IHBvcnRhYmxlIEMyeCBzeW50YXgsIHdoaWNoIGhh
+c24ndCBiZWVuIHN0YW5kYXJkaXplZCB5ZXQsIGJ1dCBpcw0KPiA+ID4gPiBhbHJlYWR5IGltcGxl
+bWVudGVkIGluIEdDQywgYW5kIGF2YWlsYWJsZSB0aHJvdWdoIGVpdGhlciAtLXN0ZD1jMngNCj4g
+PiA+ID4gb3IgYW55IG9mIHRoZSAtLXN0ZD1nbnUuLi4gb3B0aW9ucy4NCj4gLi4NCj4gPiBBbmQg
+dGhlIGNvZGUgYmVsb3cgaXMgbm8gbW9yZSBwb3J0YWJsZSB0aGF0IGEgI3ByYWdtYScuDQo+ID4g
+SXQgaXMgcHJvYmFibHkgd29yc2UgdGhhbiBfX2F0dHJpYnV0ZV9fKChhbGlnbmVkKDgpKSkNCj4g
+PiArICAgICAgICAgICAgdWludDY0X3QgW1tnbnU6OmFsaWduZWQoOCldXSB2YWx1ZTsNCj4gPiBU
+aGUgc3RhbmRhcmRzIGNvbW1pdHRlZSBhcmUgc21va2luZyBkb3BlIGFnYWluLg0KPiA+IEF0IGxl
+YXN0IHRoZSAnX19hbGlnbmVkX3U2NCB2YWx1ZTsnIGZvcm0gc3RhbmRzIGEgcmVhc29uYWJsZQ0K
+PiA+IGNoYW5jZSBvZiBiZWluZyBjb252ZXJ0ZWQgYnkgY3BwIGludG8gd2hhdGV2ZXIgeW91ciBj
+b21waWxlciBzdXBwb3J0cy4NCj4gDQo+IElzIGl0IGFjdHVhbGx5IG5lY2Vzc2FyeSB0byBtZW50
+aW9uIHRoZSBhbGlnbm1lbnQgb3ZlcnJpZGVzIGF0IGFsbCBpbg0KPiB0aGUgbWFucGFnZXM/ICBU
+aGV5IGFyZSBvbmx5IHJlbGV2YW50IHRvIHBlb3BsZSB3b3JraW5nIGF0IHRoZSBsZXZlbA0KPiBv
+ZiBwaHlzaWNhbCBsYXlvdXQgb2YgdGhlIGRhdGEgaW4gUkFNLCBhbmQgdGhvc2UgcGVvcGxlIGFy
+ZSBwcm9iYWJseQ0KPiBnb2luZyB0byBoYXZlIHRvIGNvbnN1bHQgdGhlIGhlYWRlciBmaWxlIGFu
+eXdheS4NCg0KRGVwZW5kcywgaWYgdGhlIG1hbiBwYWdlIGRlZmluZXMgdGhlIHN0cnVjdHVyZSAt
+IGl0IG5lZWRzIHRvDQpjb250YWluIGl0cyBkZWZpbml0aW9uLg0KSWYgdGhlb3J5IHRoZSBtYW4g
+cGFnZSBvdWdodCB0byBiZSB0aGUgZGVmaW5pdGlvbiwgYW5kIHRoZSBjb2RlDQpkbyB3aGF0IHRo
+ZSBtYW4gcGFnZSBzYXlzIGhhcHBlbnMuDQoNCkFuIGFsdGVybmF0aXZlIGlzIGZvciB0aGUgbWFu
+IHBhZ2UgdG8gc2F5IHRoYXQgdGhlIHN0cnVjdHVyZQ0KY29udGFpbnMgc29tZSBmaWVsZHMgLSB3
+aXRob3V0IHByZXNjcmliaW5nIHRoZSBvcmRlciwgb3INCnN0b3BwaW5nIHRoZSBpbXBsZW1lbnRh
+dGlvbiBhZGRpbmcgYWRkaXRpb25hbCBmaWVsZHMgKG9yIGV2ZW4NCmNoYW5naW5nIHRoZSBhY3R1
+YWwgbnVtZXJpYyB0eXBlKS4NClRoaXMgaXMgbW9yZSBjb21tb24gaW4gdGhlIHN0YW5kYXJkcyBk
+b2N1bWVudHMuDQpJTUhPIFRoZSBMaW51eCBwYWdlcyByZWFsbHkgb3VnaHQgdG8gc2F5IGhvdyBs
+aW51eCBkb2VzIHRoaW5ncy4NCihXaXRoIG5vdGVzIGFib3V0IHBvcnRhYmlsaXR5LikNCg0KCURh
+dmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3Vu
+dCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3
+Mzg2IChXYWxlcykNCg==
 
-Is it actually necessary to mention the alignment overrides at all in
-the manpages?  They are only relevant to people working at the level
-of physical layout of the data in RAM, and those people are probably
-going to have to consult the header file anyway.
-
-zw
