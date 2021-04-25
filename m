@@ -2,94 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6301D36A961
-	for <lists+bpf@lfdr.de>; Sun, 25 Apr 2021 23:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 872A836A9CF
+	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 01:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231247AbhDYVKG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 25 Apr 2021 17:10:06 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:54202 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231207AbhDYVKF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 25 Apr 2021 17:10:05 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-264-PkwKK9X8NdyBSIEz6JCoUA-1; Sun, 25 Apr 2021 22:09:22 +0100
-X-MC-Unique: PkwKK9X8NdyBSIEz6JCoUA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Sun, 25 Apr 2021 22:09:21 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Sun, 25 Apr 2021 22:09:21 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Zack Weinberg' <zackw@panix.com>
-CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alejandro Colomar <alx.manpages@gmail.com>,
-        bpf <bpf@vger.kernel.org>, linux-man <linux-man@vger.kernel.org>,
-        "gcc-patches@gcc.gnu.org" <gcc-patches@gcc.gnu.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC] bpf.2: Use standard types and attributes
-Thread-Topic: [RFC] bpf.2: Use standard types and attributes
-Thread-Index: AQHXOJdJ6YNcCKeqkEK6KUcQdn8TZarEIdzggAFrTACAAC7GAA==
-Date:   Sun, 25 Apr 2021 21:09:21 +0000
-Message-ID: <600f0f5de9ff4bc887eec42d38113a8c@AcuMS.aculab.com>
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
- <CAADnVQLf4qe3Hj7cjBUCY4wXb9t2ZjUt=Z=JuygRY0LNNHWAoA@mail.gmail.com>
- <78af3c302dd5447887f4a14cd4629119@AcuMS.aculab.com>
- <CAKCAbMgJBRKc+kszT-foDtOQC6Q1veOuxC_a1aX_Qt4PTCpEkg@mail.gmail.com>
-In-Reply-To: <CAKCAbMgJBRKc+kszT-foDtOQC6Q1veOuxC_a1aX_Qt4PTCpEkg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S231331AbhDYXKd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 25 Apr 2021 19:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231247AbhDYXKd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 25 Apr 2021 19:10:33 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B03CC061574;
+        Sun, 25 Apr 2021 16:09:51 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id n2so81620916ejy.7;
+        Sun, 25 Apr 2021 16:09:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=u7D/ojmJZ37qasgr7Ko9GU5a0zvdevz01nK5apvh4RE=;
+        b=BE3Y2Z28M//i3DE+n3QnN7qhcdrchjDJ/Pv3aW0o99XTAmwCFw/PGw/2oEl6zGMwxL
+         xkZcoX3Sest8iNkheQVme90JoU9NwzN02iFbH5YR5t0NOMtB4p5p3c+APfGyxGNjCTPP
+         DUm7P/0713KSwig6wcsmuotI70bFZvUp1slzyORM8+zdkTF91uF2RU4zI0lgUH/dPFUd
+         yBe7IREVK56fDG2a6unOfPqnTQenPTHNIKj1X6HsYUNoynyflGw4xwp1dynib90/ZZNE
+         gbkyoy9SfRFVHfdUn4bMUOfOp2/22keHljw9srrTSV2Js2BMHgpKmz0S5QBH9x7o/tm7
+         Md3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=u7D/ojmJZ37qasgr7Ko9GU5a0zvdevz01nK5apvh4RE=;
+        b=DwRwacdvPlNaSS9E4yDJHZ1w50R43OD4RXdhSkpJ/FkweqeYodojaK/yfxLaPgdMxd
+         FAKaM4KMbSI3tC17KOC7y/FnDcZZdSUpOTOmmLeYF506DZCR2xy33AcZiisS1KhsFIIG
+         InTbPV+JSErfciuxfIDB4Whmd5j/SvSzS5p7ohR+DKqZ3bOSB8Y1yIqt6KmWO9VwzsFp
+         FJuqWkXvN9PJxNL7P+Fe++MY1asJEwyKczXU1c7TOQsTlVjf7SJvLcL+wc1K7e0hIuYc
+         exni8+MVzgiZbWdLr1CDmZlQFSmQ947i0y0nyKNO8KzZ+8YCi7d5VFJa/ENspNvREO1g
+         jctQ==
+X-Gm-Message-State: AOAM5311uudB+htX+R9S2iu1OMsWK6y1gnoEk7pjsYzi+7YirtZuGOO3
+        BseueX9yKsglEmg44VjBnWrIfE6GabafR4beMTU=
+X-Google-Smtp-Source: ABdhPJzJNB3O+udew+sU1cP/HJky7rP4GyPFYzmHeDq+GBtvoStPTFQZQr2EtgHNhUgfT/fAxcDxdDh63rTCCM0TLoc=
+X-Received: by 2002:a17:906:a449:: with SMTP id cb9mr15461269ejb.118.1619392189843;
+ Sun, 25 Apr 2021 16:09:49 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+From:   Tyler S <tylerjstachecki@gmail.com>
+Date:   Sun, 25 Apr 2021 19:09:39 -0400
+Message-ID: <CAMfj=-YEh1ZnLB8zye7i-5Y2S015n0qat+FQ6JW7bFKwBUHBPg@mail.gmail.com>
+Subject: Re: [PATCH net v2] igb: Fix XDP with PTP enabled
+To:     kurt@linutronix.de
+Cc:     alexander.duyck@gmail.com, anthony.l.nguyen@intel.com,
+        ast@kernel.org, bigeasy@linutronix.de, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        ilias.apalodimas@linaro.org, intel-wired-lan@lists.osuosl.org,
+        jesse.brandeburg@intel.com, john.fastabend@gmail.com,
+        kuba@kernel.org, lorenzo@kernel.org, netdev@vger.kernel.org,
+        richardcochran@gmail.com, sven.auhagen@voleatech.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RnJvbTogWmFjayBXZWluYmVyZw0KPiBTZW50OiAyNSBBcHJpbCAyMDIxIDIwOjE3DQo+IA0KPiBP
-biBTYXQsIEFwciAyNCwgMjAyMSBhdCA0OjQzIFBNIERhdmlkIExhaWdodCB2aWEgTGliYy1hbHBo
-YQ0KPiA8bGliYy1hbHBoYUBzb3VyY2V3YXJlLm9yZz4gd3JvdGU6DQo+ID4gRnJvbTogQWxleGVp
-IFN0YXJvdm9pdG92DQo+ID4gPiBPbiBGcmksIEFwciAyMywgMjAyMSBhdCA0OjE1IFBNIEFsZWph
-bmRybyBDb2xvbWFyIDxhbHgubWFucGFnZXNAZ21haWwuY29tPiB3cm90ZToNCj4gLi4uDQo+ID4g
-PiA+IFNvbWUgcGFnZXMgYWxzbyBkb2N1bWVudCBhdHRyaWJ1dGVzLCB1c2luZyBHTlUgc3ludGF4
-DQo+ID4gPiA+ICdfX2F0dHJpYnV0ZV9fKCh4eHgpKScuICBVcGRhdGUgdGhvc2UgdG8gdXNlIHRo
-ZSBzaG9ydGVyIGFuZCBtb3JlDQo+ID4gPiA+IHBvcnRhYmxlIEMyeCBzeW50YXgsIHdoaWNoIGhh
-c24ndCBiZWVuIHN0YW5kYXJkaXplZCB5ZXQsIGJ1dCBpcw0KPiA+ID4gPiBhbHJlYWR5IGltcGxl
-bWVudGVkIGluIEdDQywgYW5kIGF2YWlsYWJsZSB0aHJvdWdoIGVpdGhlciAtLXN0ZD1jMngNCj4g
-PiA+ID4gb3IgYW55IG9mIHRoZSAtLXN0ZD1nbnUuLi4gb3B0aW9ucy4NCj4gLi4NCj4gPiBBbmQg
-dGhlIGNvZGUgYmVsb3cgaXMgbm8gbW9yZSBwb3J0YWJsZSB0aGF0IGEgI3ByYWdtYScuDQo+ID4g
-SXQgaXMgcHJvYmFibHkgd29yc2UgdGhhbiBfX2F0dHJpYnV0ZV9fKChhbGlnbmVkKDgpKSkNCj4g
-PiArICAgICAgICAgICAgdWludDY0X3QgW1tnbnU6OmFsaWduZWQoOCldXSB2YWx1ZTsNCj4gPiBU
-aGUgc3RhbmRhcmRzIGNvbW1pdHRlZSBhcmUgc21va2luZyBkb3BlIGFnYWluLg0KPiA+IEF0IGxl
-YXN0IHRoZSAnX19hbGlnbmVkX3U2NCB2YWx1ZTsnIGZvcm0gc3RhbmRzIGEgcmVhc29uYWJsZQ0K
-PiA+IGNoYW5jZSBvZiBiZWluZyBjb252ZXJ0ZWQgYnkgY3BwIGludG8gd2hhdGV2ZXIgeW91ciBj
-b21waWxlciBzdXBwb3J0cy4NCj4gDQo+IElzIGl0IGFjdHVhbGx5IG5lY2Vzc2FyeSB0byBtZW50
-aW9uIHRoZSBhbGlnbm1lbnQgb3ZlcnJpZGVzIGF0IGFsbCBpbg0KPiB0aGUgbWFucGFnZXM/ICBU
-aGV5IGFyZSBvbmx5IHJlbGV2YW50IHRvIHBlb3BsZSB3b3JraW5nIGF0IHRoZSBsZXZlbA0KPiBv
-ZiBwaHlzaWNhbCBsYXlvdXQgb2YgdGhlIGRhdGEgaW4gUkFNLCBhbmQgdGhvc2UgcGVvcGxlIGFy
-ZSBwcm9iYWJseQ0KPiBnb2luZyB0byBoYXZlIHRvIGNvbnN1bHQgdGhlIGhlYWRlciBmaWxlIGFu
-eXdheS4NCg0KRGVwZW5kcywgaWYgdGhlIG1hbiBwYWdlIGRlZmluZXMgdGhlIHN0cnVjdHVyZSAt
-IGl0IG5lZWRzIHRvDQpjb250YWluIGl0cyBkZWZpbml0aW9uLg0KSWYgdGhlb3J5IHRoZSBtYW4g
-cGFnZSBvdWdodCB0byBiZSB0aGUgZGVmaW5pdGlvbiwgYW5kIHRoZSBjb2RlDQpkbyB3aGF0IHRo
-ZSBtYW4gcGFnZSBzYXlzIGhhcHBlbnMuDQoNCkFuIGFsdGVybmF0aXZlIGlzIGZvciB0aGUgbWFu
-IHBhZ2UgdG8gc2F5IHRoYXQgdGhlIHN0cnVjdHVyZQ0KY29udGFpbnMgc29tZSBmaWVsZHMgLSB3
-aXRob3V0IHByZXNjcmliaW5nIHRoZSBvcmRlciwgb3INCnN0b3BwaW5nIHRoZSBpbXBsZW1lbnRh
-dGlvbiBhZGRpbmcgYWRkaXRpb25hbCBmaWVsZHMgKG9yIGV2ZW4NCmNoYW5naW5nIHRoZSBhY3R1
-YWwgbnVtZXJpYyB0eXBlKS4NClRoaXMgaXMgbW9yZSBjb21tb24gaW4gdGhlIHN0YW5kYXJkcyBk
-b2N1bWVudHMuDQpJTUhPIFRoZSBMaW51eCBwYWdlcyByZWFsbHkgb3VnaHQgdG8gc2F5IGhvdyBs
-aW51eCBkb2VzIHRoaW5ncy4NCihXaXRoIG5vdGVzIGFib3V0IHBvcnRhYmlsaXR5LikNCg0KCURh
-dmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3Vu
-dCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3
-Mzg2IChXYWxlcykNCg==
+Thanks for this work; I was having trouble using XDP on my I354 NIC until this.
 
+Hopefully I have not err'd backporting it to 5.10 -- but I'm seeing
+jumbo frames dropped after applying this (though as previously
+mentioned, non-skb/full driver XDP programs do now work).
+
+Looking at the code, I'm not sure why that is.
+
+- Tyler
