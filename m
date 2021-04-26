@@ -2,140 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FD136B9DD
-	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 21:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E9436BA09
+	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 21:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240170AbhDZTRg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Apr 2021 15:17:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35061 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240168AbhDZTRf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 26 Apr 2021 15:17:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619464613;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+m/OUrHh3g4mK0h/qw2Ncm9r9mZhHFjbsMaT14s9/xM=;
-        b=gkUwvFIZomzmSzXgwpgTcQ66qlmAYi+5S6v+K0sCsFE0lG+OTWEAVAdPYi20kzjwMYUAS4
-        yBfxPbuneJWgUAGNxELx5M2R3L71LU8wZHsEJO/mjXfeIfny18QjkcIrC4Q0ii9jhsIw8G
-        ECfnjRw+W9suul6QHnYf0C7jgZM0jXw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-131-UX4RxFe9MxCdOK3I904KJQ-1; Mon, 26 Apr 2021 15:16:47 -0400
-X-MC-Unique: UX4RxFe9MxCdOK3I904KJQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6137801814;
-        Mon, 26 Apr 2021 19:16:44 +0000 (UTC)
-Received: from krava (unknown [10.40.193.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B75985D9F0;
-        Mon, 26 Apr 2021 19:16:37 +0000 (UTC)
-Date:   Mon, 26 Apr 2021 21:16:36 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
-        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-Message-ID: <YIcRlHQWWKbOlcXr@krava>
-References: <20210423130530.GA6564@kitsune.suse.cz>
- <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
- <20210423175528.GF6564@kitsune.suse.cz>
- <20210425111545.GL15381@kitsune.suse.cz>
- <20210426113215.GM15381@kitsune.suse.cz>
- <20210426121220.GN15381@kitsune.suse.cz>
- <20210426121401.GO15381@kitsune.suse.cz>
- <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com>
- <YIbkR6z6mxdNSzGO@krava>
+        id S240377AbhDZTar convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 26 Apr 2021 15:30:47 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9658 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240334AbhDZTap (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 26 Apr 2021 15:30:45 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13QJOHFR012989
+        for <bpf@vger.kernel.org>; Mon, 26 Apr 2021 12:30:03 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3860wrh5ms-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 26 Apr 2021 12:30:03 -0700
+Received: from intmgw002.06.ash9.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 26 Apr 2021 12:30:01 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 073BD2ED6122; Mon, 26 Apr 2021 12:29:51 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: [PATCH v2 bpf-next 0/5] CO-RE relocation selftests fixes
+Date:   Mon, 26 Apr 2021 12:29:44 -0700
+Message-ID: <20210426192949.416837-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YIbkR6z6mxdNSzGO@krava>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: ePcvqacil215NUZP2g90s0kNHy4dWgJT
+X-Proofpoint-ORIG-GUID: ePcvqacil215NUZP2g90s0kNHy4dWgJT
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-26_09:2021-04-26,2021-04-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ spamscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
+ impostorscore=0 phishscore=0 priorityscore=1501 clxscore=1015 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104260149
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 06:03:19PM +0200, Jiri Olsa wrote:
-> On Mon, Apr 26, 2021 at 08:41:49AM -0700, Yonghong Song wrote:
-> > 
-> > 
-> > On 4/26/21 5:14 AM, Michal Suchánek wrote:
-> > > On Mon, Apr 26, 2021 at 02:12:20PM +0200, Michal Suchánek wrote:
-> > > > On Mon, Apr 26, 2021 at 01:32:15PM +0200, Michal Suchánek wrote:
-> > > > > On Sun, Apr 25, 2021 at 01:15:45PM +0200, Michal Suchánek wrote:
-> > > > > > On Fri, Apr 23, 2021 at 07:55:28PM +0200, Michal Suchánek wrote:
-> > > > > > > On Fri, Apr 23, 2021 at 07:41:29AM -0700, Yonghong Song wrote:
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > On 4/23/21 6:05 AM, Michal Suchánek wrote:
-> > > > > > > > > Hello,
-> > > > > > > > > 
-> > > > > > > > > I see this build error in linux-next (config attached).
-> > > > > > > > > 
-> > > > > > > > > [ 4939s]   LD      vmlinux
-> > > > > > > > > [ 4959s]   BTFIDS  vmlinux
-> > > > > > > > > [ 4959s] FAILED unresolved symbol cubictcp_state
-> > > > > > > > > [ 4960s] make[1]: ***
-> > > > > > > > > [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12~rc8.next.20210422/linux-5.12-rc8-next-20210422/Makefile:1277:
-> > > > > > > > > vmlinux] Error 255
-> > > > > > > > > [ 4960s] make: *** [../Makefile:222: __sub-make] Error 2
-> 
-> this one was reported by Jesper and was fixed by upgrading pahole
-> that contains the new function generation fixes (v1.19)
-> 
-> > > > > > > > 
-> > > > > > > > Looks like you have DYNAMIC_FTRACE config option enabled already.
-> > > > > > > > Could you try a later version of pahole?
-> > > > > > > 
-> > > > > > > Is this requireent new?
-> > > > > > > 
-> > > > > > > I have pahole 1.20, and master does build without problems.
-> > > > > > > 
-> > > > > > > If newer version is needed can a check be added?
-> > > > > > 
-> > > > > > With dwarves 1.21 some architectures are fixed and some report other
-> > > > > > missing symbol. Definitely an improvenent.
-> > > > > > 
-> > > > > > I see some new type support was added so it makes sense if that type is
-> > > > > > used the new dwarves are needed.
-> > > > > 
-> > > > > Ok, here is the current failure with dwarves 1.21 on 5.12:
-> > > > > 
-> > > > > [ 2548s]   LD      vmlinux
-> > > > > [ 2557s]   BTFIDS  vmlinux
-> > > > > [ 2557s] FAILED unresolved symbol vfs_truncate
-> > > > > [ 2558s] make[1]: ***
-> > > > > [/home/abuild/rpmbuild/BUILD/kernel-kvmsmall-5.12.0/linux-5.12/Makefile:1213:
-> > > > > vmlinux] Error 255
-> > 
-> > This is PPC64, from attached config:
-> >   CONFIG_PPC64=y
-> > I don't have environment to cross-compile for PPC64.
-> > Jiri, could you take a look? Thanks!
-> 
-> looks like vfs_truncate did not get into BTF data,
-> I'll try to reproduce
+Lorenz Bauer noticed that core_reloc selftest has two inverted CHECK()
+conditions, allowing failing tests to pass unnoticed. Fixing that opened up
+few long-standing (field existence and direct memory bitfields) and one recent
+failures (BTF_KIND_FLOAT relos).
 
-I can't reproduce the problem, in both cross build and native ppc,
-but the .config attached does not see complete, could you pelase
-resend?
+This patch set fixes core_reloc selftest to capture such failures reliably in
+the future. It also fixes all the newly failing tests. See individual patches
+for details.
 
-thanks,
-jirka
+This patch set also completes a set of ASSERT_xxx() macros, so now there
+should be a very little reason to use verbose and error-prone generic CHECK()
+macro.
+
+v1->v2:
+  - updated bpf_core_fields_are_compat() comment to mention FLOAT (Lorenz).
+
+Cc: Lorenz Bauer <lmb@cloudflare.com>
+
+Andrii Nakryiko (5):
+  selftests/bpf: add remaining ASSERT_xxx() variants
+  libbpf: support BTF_KIND_FLOAT during type compatibility checks in
+    CO-RE
+  selftests/bpf: fix BPF_CORE_READ_BITFIELD() macro
+  selftests/bpf: fix field existence CO-RE reloc tests
+  selftests/bpf: fix core_reloc test runner
+
+ tools/lib/bpf/bpf_core_read.h                 | 16 ++++--
+ tools/lib/bpf/libbpf.c                        |  6 ++-
+ .../selftests/bpf/prog_tests/btf_dump.c       |  2 +-
+ .../selftests/bpf/prog_tests/btf_endian.c     |  4 +-
+ .../selftests/bpf/prog_tests/cgroup_link.c    |  2 +-
+ .../selftests/bpf/prog_tests/core_reloc.c     | 51 +++++++++++--------
+ .../selftests/bpf/prog_tests/kfree_skb.c      |  2 +-
+ .../selftests/bpf/prog_tests/resolve_btfids.c |  7 +--
+ .../selftests/bpf/prog_tests/snprintf_btf.c   |  4 +-
+ ...ore_reloc_existence___err_wrong_arr_kind.c |  3 --
+ ...loc_existence___err_wrong_arr_value_type.c |  3 --
+ ...ore_reloc_existence___err_wrong_int_kind.c |  3 --
+ ..._core_reloc_existence___err_wrong_int_sz.c |  3 --
+ ...ore_reloc_existence___err_wrong_int_type.c |  3 --
+ ..._reloc_existence___err_wrong_struct_type.c |  3 --
+ ..._core_reloc_existence___wrong_field_defs.c |  3 ++
+ .../selftests/bpf/progs/core_reloc_types.h    | 20 +-------
+ tools/testing/selftests/bpf/test_progs.h      | 50 +++++++++++++++++-
+ 18 files changed, 108 insertions(+), 77 deletions(-)
+ delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_existence___err_wrong_arr_kind.c
+ delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_existence___err_wrong_arr_value_type.c
+ delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_existence___err_wrong_int_kind.c
+ delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_existence___err_wrong_int_sz.c
+ delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_existence___err_wrong_int_type.c
+ delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_existence___err_wrong_struct_type.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_existence___wrong_field_defs.c
+
+-- 
+2.30.2
 
