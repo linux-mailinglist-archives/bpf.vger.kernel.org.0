@@ -2,116 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B65836BC07
-	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 01:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA31436BC1D
+	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 01:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbhDZX1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Apr 2021 19:27:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53146 "EHLO
+        id S237344AbhDZXiN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Apr 2021 19:38:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232022AbhDZX1G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Apr 2021 19:27:06 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2048C061574;
-        Mon, 26 Apr 2021 16:26:22 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 130so23227084ybd.10;
-        Mon, 26 Apr 2021 16:26:22 -0700 (PDT)
+        with ESMTP id S237340AbhDZXiM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Apr 2021 19:38:12 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA52C061574;
+        Mon, 26 Apr 2021 16:37:30 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id p17so3914570plf.12;
+        Mon, 26 Apr 2021 16:37:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=A2SiQIyo4hvRrgZvT9+3elzY2NurWPOQ84hTpTx/mOI=;
-        b=qSvchFfBqTvPetH+6AbfQTtL3URnd4+U3V2aLgfVYrg1MiRIOITthJcS8SUYRJQOOu
-         NGGSCERCRCzxK6/k5n5vdefwXA+bwRzz+t6GvImtA6rLRYjX/lrkiPH6qZjbJHiUHMdS
-         t0Pyxqc3SdVYZ3tBCBlSL5fHhrrdP9WsjqSKWFJHkWyA8u74JDz3igrf33bLBewC27ai
-         Z91ofW55kffitvHjotb6WuQWtbfG9ES5q1AGgyJF6yrZMrsUHSH9fivc+Py05vjuOT4W
-         hy2u6S5+OAyMGRIeLCSwtisLkYwM8Khh44wDa6xiPXfWl8injZXsLhO8SAc7125qRm18
-         ErCg==
+        bh=X0op96Qd3v8XRVqIRIAuS/vAfP3V+wXGZaLSB8+cQF0=;
+        b=RZSnR8eKOogb+NWaRG5k9Mzhbe99u16baMxD55e0g5nYMqkfuQgOGQeJMYSX+9ztNX
+         uA17P54a7dbtOAX2LTWsX3raOCSYlr82GHXbw363667kaMXl6hMBtr7D8eks9Hl3iEtT
+         0GcSAxkkNhNAn+6QMD4Bm6fgwNeNPFLnxWs+7DxnHCc/ukQEGYy5yy4aELJ/7p2brFUM
+         qpkDgQhqqS+curxRVoEz/ZqpX8ZGpHfEBHVMHF/6XqYjuqL/Od/auZzdnDZlAz3omDY3
+         /itnfFaEL2O1Z17YJuJHAkCgCH78Zy5yEBI8jGTHDR+CCf+TXXHxyBVw1FyGWqcJmhId
+         iGCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=A2SiQIyo4hvRrgZvT9+3elzY2NurWPOQ84hTpTx/mOI=;
-        b=M4eD+EEL+MxJoH4/BIQ34BdrCv90i4h4I15/D7Q4MMmF7lm0WtGoLFYLRai44JRqq/
-         IBDbryB/YDk8Bh26P//4vkTqnDzmLgqKAA9c9Ha20K5fnDg2ig+TtbtFV4ze+bNH+MB4
-         S/TLhaseF67ISuP0+hA3PKfm29DL6ypK0MzCAWVDhut0lk5674aTV7/aUmkdhdKzLP2L
-         Wvs68fkdsaOejPUbTIRgO1I8hGwanalZ41nF63Cv0VkYron60U7fG4L1d2A4WySvnh4R
-         Rrw0cxiJ1+adQC6u40umcrPjHwI6gFOmfnkFp6KXqA5htd0ENbyU0pWaVgijTbsvjSp3
-         zdCQ==
-X-Gm-Message-State: AOAM531Txi/dKpr/w/qP7s291/N4fmoY8J2tS31ZjUlt6hq7dsfQpij+
-        76mkxrHpWraWfg3dED+m3G/gquQg9zn2WW1oh40=
-X-Google-Smtp-Source: ABdhPJzn2RP5+aJ17mulwvz8Ouj6oUBRo//R6AMFHhjue1v8ToKT8O+GHcVnlYS5PDbBgUm9YL3F4en8T7qI7yqoyOw=
-X-Received: by 2002:a25:3357:: with SMTP id z84mr28144598ybz.260.1619479581915;
- Mon, 26 Apr 2021 16:26:21 -0700 (PDT)
+        bh=X0op96Qd3v8XRVqIRIAuS/vAfP3V+wXGZaLSB8+cQF0=;
+        b=T5whUw71m5sESFoqFUBuIby2Y3NCardqFZL4jFOPrPIzxv9vESMHdxSt6FpqXGiYd1
+         kcNt3QmI7KUQzS5Ugz88bV0gCA/r/F06vsU3WQD4QYI7ANFfEHWdPNotL6lXtgdnL+oF
+         uFyOAmKs5XK6IgTM20san0m75R3U/sD6ChFnw4HWUh26b2irr8ZeaKOUyx3nQ5QXCSsL
+         OgxJCgsgCc53kNH2gSQ7XP7v1Ry+1Vkjs3U7vepUWsIkJadCHDJ6NDJTP2CaEXg4HYty
+         quaX1qWd9LEZS6U/rfcvA+BmNrbgj81VnlCmV5+X00eyuyAgqpEbrAz/Oxx424zLN3Op
+         5b4Q==
+X-Gm-Message-State: AOAM533iLgm8Up6gz7RjTgHQt2pFGTNgzsXAKv3F0Zd7KLv3mpvc8FOX
+        jfOb6EzS2dKUnPDz07tkrAHSuPrAXoiR18Z7jIU=
+X-Google-Smtp-Source: ABdhPJwqDx8SWyd3BneHjbrGz+a22dhLwPfUWgCly3/ewyvx9UH8zJbIy6dCPDofWL30d3tM0+yMSaF/6PrlUk66qg0=
+X-Received: by 2002:a17:90a:d347:: with SMTP id i7mr16864621pjx.231.1619480250105;
+ Mon, 26 Apr 2021 16:37:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210423213728.3538141-1-kafai@fb.com>
-In-Reply-To: <20210423213728.3538141-1-kafai@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 26 Apr 2021 16:26:11 -0700
-Message-ID: <CAEf4BzY16ziMkOMdNGNjQOmiACF3E5nFn2LhtUUQbo-y-AP7Tg@mail.gmail.com>
-Subject: Re: [PATCH dwarves] btf: Generate btf for functions in the .BTF_ids section
-To:     Martin KaFai Lau <kafai@fb.com>, Jiri Olsa <jolsa@kernel.org>
-Cc:     dwarves@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
+References: <20210401042635.19768-1-xiyou.wangcong@gmail.com>
+ <20210402192823.bqwgipmky3xsucs5@ast-mbp> <CAM_iQpUfv7c19zFN1Y5-cSUiVwpk0bmtBMSxZoELgDOFCQ=qAw@mail.gmail.com>
+ <20210402234500.by3wigegeluy5w7j@ast-mbp> <CAM_iQpWf2aYbY=tKejb=nx7LWBLo1woTp-n4wOLhkUuDCz8u-Q@mail.gmail.com>
+ <20210412230151.763nqvaadrrg77kd@ast-mbp.dhcp.thefacebook.com>
+ <CAM_iQpWePmmpr0RKqCrQ=NPiGrq2Tx9OU9y3e4CTzFjvh5t47w@mail.gmail.com>
+ <CAADnVQLsmULxJYq9rHS4xyg=VAUeexJTh35vTWTVgjeqwX4D6g@mail.gmail.com>
+ <CAM_iQpVtxgZNeqh4_Pqftc3D163JnRvP3AZRuFrYNeyWLgVBVA@mail.gmail.com> <CAADnVQLFehCeQRbwEQ9VM-=Y3V3es2Ze8gFPs6cZHwNH0Ct7vw@mail.gmail.com>
+In-Reply-To: <CAADnVQLFehCeQRbwEQ9VM-=Y3V3es2Ze8gFPs6cZHwNH0Ct7vw@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Mon, 26 Apr 2021 16:37:19 -0700
+Message-ID: <CAM_iQpWDhoY_msU=AowHFq3N3OuQpvxd2ADP_Z+gxBfGduhrPA@mail.gmail.com>
+Subject: Re: [RFC Patch bpf-next] bpf: introduce bpf timer
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 2:37 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Mon, Apr 26, 2021 at 4:05 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> BTF is currently generated for functions that are in ftrace list
-> or extern.
+> On Mon, Apr 26, 2021 at 4:00 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> >
+> > Hi, Alexei
+> >
+> > On Wed, Apr 14, 2021 at 9:25 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Wed, Apr 14, 2021 at 9:02 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > > >
+> > > > Then how do you prevent prog being unloaded when the timer callback
+> > > > is still active?
+> > >
+> > > As I said earlier:
+> > > "
+> > > If prog refers such hmap as above during prog free the kernel does
+> > > for_each_map_elem {if (elem->opaque) del_timer().}
+> > > "
+> >
+> > I have discussed this with my colleagues, sharing timers among different
+> > eBPF programs is a must-have feature for conntrack.
+> >
+> > For conntrack, we need to attach two eBPF programs, one on egress and
+> > one on ingress. They share a conntrack table (an eBPF map), and no matter
+> > we use a per-map or per-entry timer, updating the timer(s) could happen
+> > on both sides, hence timers must be shared for both.
+> >
+> > So, your proposal we discussed does not work well for this scenario.
 >
-> A recent use case also needs BTF generated for functions included in
-> allowlist.  In particular, the kernel
-> commit e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc")
-> allows bpf program to directly call a few tcp cc kernel functions.  Those
-> functions are specified under an ELF section .BTF_ids.  The symbols
-> in this ELF section is like __BTF_ID__func__<kernel_func>__[digit]+.
-> For example, __BTF_ID__func__cubictcp_init__1.  Those kernel
-> functions are currently allowed only if CONFIG_DYNAMIC_FTRACE is
-> set to ensure they are in the ftrace list but this kconfig dependency
-> is unnecessary.
->
-> pahole can generate BTF for those kernel functions if it knows they
-> are in the allowlist.  This patch is to capture those symbols
-> in the .BTF_ids section and generate BTF for them.
->
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> ---
+> why? The timer inside the map element will be shared just fine.
+> Just like different progs can see the same map value.
 
-I wonder if we just record all functions how bad that would be. Jiri,
-do you remember from the time you were experimenting with static
-functions how much more functions we'd be recording if we didn't do
-ftrace filtering?
+Hmm? In the above quotes from you, you suggested removing all the
+timers installed by one eBPF program when it is freed, but they could be
+still running independent of which program installs them.
 
->  btf_encoder.c | 136 +++++++++++++++++++++++++++++++++++++++++++++++---
->  libbtf.c      |  10 ++++
->  libbtf.h      |   2 +
->  3 files changed, 142 insertions(+), 6 deletions(-)
+In other words, timers are independent of other eBPF programs, so
+they should not have an owner. With your proposal, the owner of a timer
+is the program which contains the subprog (or callback) of the timer.
+With my proposal, the timer callback is a standalone program hence has
+no owner.
+
 >
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 80e896961d4e..48c183915ddd 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -106,6 +106,121 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
->         return 0;
->  }
->
-> +#define BTF_ID_FUNC_PREFIX "__BTF_ID__func__"
-> +#define BTF_ID_FUNC_PREFIX_LEN (sizeof(BTF_ID_FUNC_PREFIX) - 1)
-> +
-> +static char **listed_functions;
-> +static int listed_functions_alloc;
-> +static int listed_functions_cnt;
+> Also if your colleagues have something to share they should be
+> posting to the mailing list. Right now you're acting as a broken phone
+> passing info back and forth and the knowledge gets lost.
+> Please ask your colleagues to participate online.
 
-maybe just use struct btf as a container of strings, which is what you
-need here? You can do btf__add_str() and btf__find_str(), which are
-both fast and memory-efficient, and you won't have to manage all the
-memory and do sorting, etc, etc.
+They are already in CC from the very beginning. And our use case is
+public, it is Cilium conntrack:
+https://github.com/cilium/cilium/blob/master/bpf/lib/conntrack.h
 
-[...]
+The entries of the code are:
+https://github.com/cilium/cilium/blob/master/bpf/bpf_lxc.c
+
+The maps for conntrack are:
+https://github.com/cilium/cilium/blob/master/bpf/lib/conntrack_map.h
+
+Thanks.
