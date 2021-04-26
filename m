@@ -2,113 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81C936B2C0
-	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 14:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6A636B3AD
+	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 15:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232492AbhDZMNG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Apr 2021 08:13:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47536 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231550AbhDZMNF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Apr 2021 08:13:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 89E3CAB87;
-        Mon, 26 Apr 2021 12:12:22 +0000 (UTC)
-Date:   Mon, 26 Apr 2021 14:12:20 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S233043AbhDZNBP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Apr 2021 09:01:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26931 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233378AbhDZNBN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 26 Apr 2021 09:01:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619442032;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GEpTRPy40MEBUFi+Yc9OsnLT4rHJGc3ZMP0bWoETgcw=;
+        b=YXrJz8OwA0AdoY9e+hLoyZqWS02RTjpgkuVBAYqMiBPPLvCb4JDC8DhtH6tqjvBbZEtc1+
+        FqadQAUTy8q9aPhMHS0L38AHxdQs5tULQ2pXb1htRt/g9Eg9hcpIK3r8i9oyjrV5+xtCy1
+        7nMFds3D3knyAr5J5LS6Ddl76Q3oE2M=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-PMLn48OAMUmwcU9eo7cpiQ-1; Mon, 26 Apr 2021 09:00:30 -0400
+X-MC-Unique: PMLn48OAMUmwcU9eo7cpiQ-1
+Received: by mail-ej1-f72.google.com with SMTP id n13-20020a170906b30db029038ec026319aso745902ejz.1
+        for <bpf@vger.kernel.org>; Mon, 26 Apr 2021 06:00:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=GEpTRPy40MEBUFi+Yc9OsnLT4rHJGc3ZMP0bWoETgcw=;
+        b=O5w9m8sSAB86Qqhk/VHEl+dZoPDs3tmZj/KHBjZpLJ6HIWZxmarij+LUNP/IgdFkpj
+         5e3R+/APzpI3ZyiyVIV9gBJqxyU5L/QsWlXRJmtJaDRxqgs08vYVsrKQ9vdriu8udyH9
+         30eazBJA8DP+GZLDBBuczUaTy2NxvNOUDKeK28eOOzuSf+YCXcmCkXX9K7aaWMHhapp3
+         xiJcHJ0Ytr8lUloZED9ZPPXn4quPycfHewqnF3Jmws5x4jEtCrNvDRoNFD9KaHwrHpDQ
+         ez2h7FXGl1vkbQLk8r02Y6lzlS+CDqCxXSoIjox0aPNIkDf4z0sZG4x7GN7/tda0MP2j
+         ZJPw==
+X-Gm-Message-State: AOAM530oPZLHo4nJXR+ajwQj+rcxMcCln45jKVUgO2nDP9RKPujkQ+/j
+        tNVemzvjNryro9x7atzvgwMgHRU2DOlUbvifjatvHSnWp6qhYud3+Vl6dQSplx8KKDLO8/1ywum
+        ux56zqnehz+WQ
+X-Received: by 2002:a17:906:705:: with SMTP id y5mr5385179ejb.261.1619442029031;
+        Mon, 26 Apr 2021 06:00:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwW5GJog/3Xe6Vg8Ay+d+x8d9ImPS5ZLoGu+i/a9SCGKNx6PtLiRE2Wddn0nTzXKDs+QO8CMQ==
+X-Received: by 2002:a17:906:705:: with SMTP id y5mr5385168ejb.261.1619442028894;
+        Mon, 26 Apr 2021 06:00:28 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id t1sm11525390eju.88.2021.04.26.06.00.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 06:00:28 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id C6614180615; Mon, 26 Apr 2021 15:00:27 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-Message-ID: <20210426121220.GN15381@kitsune.suse.cz>
-References: <20210423130530.GA6564@kitsune.suse.cz>
- <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
- <20210423175528.GF6564@kitsune.suse.cz>
- <20210425111545.GL15381@kitsune.suse.cz>
- <20210426113215.GM15381@kitsune.suse.cz>
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?utf-8?B?QmrDtnJuIFQ=?= =?utf-8?B?w7ZwZWw=?= 
+        <bjorn.topel@gmail.com>, Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCHv10 bpf-next 2/4] xdp: extend xdp_redirect_map with
+ broadcast support
+In-Reply-To: <20210426114742.GU3465@Leo-laptop-t470s>
+References: <20210423020019.2333192-1-liuhangbin@gmail.com>
+ <20210423020019.2333192-3-liuhangbin@gmail.com>
+ <20210426115350.501cef2a@carbon> <20210426114014.GT3465@Leo-laptop-t470s>
+ <20210426114742.GU3465@Leo-laptop-t470s>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 26 Apr 2021 15:00:27 +0200
+Message-ID: <87eeexciac.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="osDK9TLjxFScVI/L"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210426113215.GM15381@kitsune.suse.cz>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hangbin Liu <liuhangbin@gmail.com> writes:
 
---osDK9TLjxFScVI/L
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+> On Mon, Apr 26, 2021 at 07:40:28PM +0800, Hangbin Liu wrote:
+>> On Mon, Apr 26, 2021 at 11:53:50AM +0200, Jesper Dangaard Brouer wrote:
+>> > Decode: perf_trace_xdp_redirect_template+0xba
+>> >  ./scripts/faddr2line vmlinux perf_trace_xdp_redirect_template+0xba
+>> > perf_trace_xdp_redirect_template+0xba/0x130:
+>> > perf_trace_xdp_redirect_template at include/trace/events/xdp.h:89 (discriminator 13)
+>> > 
+>> > less -N net/core/filter.c
+>> >  [...]
+>> >    3993         if (unlikely(err))
+>> >    3994                 goto err;
+>> >    3995 
+>> > -> 3996         _trace_xdp_redirect_map(dev, xdp_prog, fwd, map_type, map_id, ri->tgt_index);
+>> 
+>> Oh, the fwd in xdp xdp_redirect_map broadcast is NULL...
+>> 
+>> I will see how to fix it. Maybe assign the ingress interface to fwd?
+>
+> Er, sorry for the flood message. I just checked the trace point code, fwd
+> in xdp trace event means to_ifindex. So we can't assign the ingress interface
+> to fwd.
+>
+> In xdp_redirect_map broadcast case, there is no specific to_ifindex.
+> So how about just ignore it... e.g.
 
-On Mon, Apr 26, 2021 at 01:32:15PM +0200, Michal Suchánek wrote:
-> On Sun, Apr 25, 2021 at 01:15:45PM +0200, Michal Suchánek wrote:
-> > On Fri, Apr 23, 2021 at 07:55:28PM +0200, Michal Suchánek wrote:
-> > > On Fri, Apr 23, 2021 at 07:41:29AM -0700, Yonghong Song wrote:
-> > > > 
-> > > > 
-> > > > On 4/23/21 6:05 AM, Michal Suchánek wrote:
-> > > > > Hello,
-> > > > > 
-> > > > > I see this build error in linux-next (config attached).
-> > > > > 
-> > > > > [ 4939s]   LD      vmlinux
-> > > > > [ 4959s]   BTFIDS  vmlinux
-> > > > > [ 4959s] FAILED unresolved symbol cubictcp_state
-> > > > > [ 4960s] make[1]: ***
-> > > > > [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12~rc8.next.20210422/linux-5.12-rc8-next-20210422/Makefile:1277:
-> > > > > vmlinux] Error 255
-> > > > > [ 4960s] make: *** [../Makefile:222: __sub-make] Error 2
-> > > > 
-> > > > Looks like you have DYNAMIC_FTRACE config option enabled already.
-> > > > Could you try a later version of pahole?
-> > > 
-> > > Is this requireent new?
-> > > 
-> > > I have pahole 1.20, and master does build without problems.
-> > > 
-> > > If newer version is needed can a check be added?
-> > 
-> > With dwarves 1.21 some architectures are fixed and some report other
-> > missing symbol. Definitely an improvenent.
-> > 
-> > I see some new type support was added so it makes sense if that type is
-> > used the new dwarves are needed.
-> 
-> Ok, here is the current failure with dwarves 1.21 on 5.12:
-> 
-> [ 2548s]   LD      vmlinux
-> [ 2557s]   BTFIDS  vmlinux
-> [ 2557s] FAILED unresolved symbol vfs_truncate
-> [ 2558s] make[1]: ***
-> [/home/abuild/rpmbuild/BUILD/kernel-kvmsmall-5.12.0/linux-5.12/Makefile:1213:
-> vmlinux] Error 255
-> 
-> Any idea where this one is coming from?
-Attaching a complete config
-> 
-> Thanks
-> 
-> Michal
+Yeah, just leaving the ifindex as 0 when tgt is unset is fine :)
 
---osDK9TLjxFScVI/L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=vanilla
+-Toke
 
-CONFIG_LOCALVERSION="-vanilla"
-CONFIG_MODULES=y
-CONFIG_MODULE_SIG=y
-
---osDK9TLjxFScVI/L--
