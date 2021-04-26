@@ -2,147 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB0036B68F
-	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 18:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB67E36B6A2
+	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 18:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234221AbhDZQQB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Apr 2021 12:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42262 "EHLO
+        id S234526AbhDZQUb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Apr 2021 12:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234243AbhDZQQB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Apr 2021 12:16:01 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFC6C061756;
-        Mon, 26 Apr 2021 09:15:19 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id y2so63452097ybq.13;
-        Mon, 26 Apr 2021 09:15:19 -0700 (PDT)
+        with ESMTP id S234522AbhDZQUa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Apr 2021 12:20:30 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FC7C061761;
+        Mon, 26 Apr 2021 09:19:49 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id t94so12338838ybi.3;
+        Mon, 26 Apr 2021 09:19:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=W65HWO1I953FJT0oew5Q6Epp76YslztrF5/Kg4s+QXs=;
-        b=IwnBJ6EfAm6CaKDcSVDAyYtaC2RTVaE3dg84Z+dRajs42JT0Cvae71/M+Goes8Jze9
-         Fga1dTUD+oxGru+4K78VEgKVS5E2A5mi5n66G+GnrhZpIFapD4ioyRJfg9MS0L7tFvHO
-         4Ikag1Cncg9jg3vIwRpGiIYSEJKqZKO9FZUFW5QiQ8tBdrHcDPHaXw8INJr+UJRXdZEh
-         RyF7gaNMLfAS9VxpsRxPX1pI0v5a7jluTKWS80fZHwXtMHAh513SfTYu1fLi5hBYuxes
-         2E4+5rzCYTQ1mC7qnlf/lVqPgSA9YTwI+R9KbWYAECd8vVdbfiDfK6JtQxSEdFlvepqx
-         pzpw==
+         :cc;
+        bh=zB5UUN9aIWEV/M+iyVZwKW588IZlytVSoODrnO05GKQ=;
+        b=j9nhxF2N7XbYLtXuUscJpuvD6NJ+HDHCcvH8g2Tde6dBxDBi+2SM3d0nvPi0SCY5BC
+         Gr9WivVU7OTUylJEiRML0NwfQBF6vOOh8N+1rMv31oPpWhIcuKlGpagSakHvDgEVA0UU
+         hKG4Z/sT3SmPBXHZRNrV977PRntLQQxLDw9qF4jut7L1Q2J2RXZgV6Y/YN430rWZ8dFr
+         Lv9rvH85SeKXmAeUyZdYiAj3BxVvZ17UzwwpQNR46vwIfWaFaV42zQQRyZBQQkZywmmv
+         mTT3ERQovVWHrtvJDlEz/dw3sQERgsdTcUF8s+Ttqhf5iGqEadDlO8XRl7iIHBRIp0ql
+         G9SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=W65HWO1I953FJT0oew5Q6Epp76YslztrF5/Kg4s+QXs=;
-        b=Hjs7jkaWIcQUM8MlP4w9BUtVCoVvA+hZiUMDbbiq06kHRYMl/D01NIApZBjxbVtuZt
-         sbU6W+nOswAcvnmvgUfvfTp5I8an1UgYX2EIOmuFlBFnOG1VeVAlIDrL3g9UYlAt0IzD
-         Ob7hocBH58s6CEzXdvzp9Ajsnqswc7pXfiJD77z4BekWox54ahV8CmZGLoAbZh/9f/WE
-         yvs6Z6Jwo/1uVz8Iqj4tuIraHyjm+eghx3nnHvqdudti4eLdwwsapfQ0kFBvhsR0l0S5
-         1n1OwZVMDPLhE3KikGb6FiAtd00UXisXZtuyz60LkgTSKT2h2cs0QWdWyCNZ4/O2ap0L
-         0kKQ==
-X-Gm-Message-State: AOAM533P+IhwMGf3J/en4HH/uOcndJChj5Q7HcOGgVKywyu1t7HHpVom
-        dn87/tO46wtbywhofsues8nvxZrOqa6zWqou8pY=
-X-Google-Smtp-Source: ABdhPJxjPN8kmRNvhkkFsU2SbTAaxd++0qaqqsTTwByHj5HYGpTFFh+fM6egisdTw4+a9HRK5s42xhC4Eom5elOtjR4=
-X-Received: by 2002:a25:2441:: with SMTP id k62mr25266843ybk.347.1619453718576;
- Mon, 26 Apr 2021 09:15:18 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=zB5UUN9aIWEV/M+iyVZwKW588IZlytVSoODrnO05GKQ=;
+        b=fVW4ItDzYbyiqU05lSsqgvRxRlNwYzllw4geBcoMqVBO/kGX0LKWStxwu/OEYPSl1l
+         TIIpQI6Pdf0cmuifYDGoXKgNrTksx7IfjB6x2vu60ozC73ITw7Hj+ChuN75dzwFz3ryw
+         uVFH68Q4TvC9a8hSPDTcUu+C1krMS8r/CZpBTyRFDvZG9Q4Kjlftt1a9tArr2GoThyPd
+         nnsxAf2SGWLhychvLDEnzneS49qokMkDvxjjgenwf58/xuqVk6AJpCN6zQccRDcUGwDq
+         OIatIiVj+UT6siCNiaPzo8oHo+NYEi6YxwSteFfkrQKsexhK7brrQErpxt6ssq2gaGIf
+         yA0A==
+X-Gm-Message-State: AOAM533ylSP0fkh4qH2Ze7coHnifyf+xbJSd8F1iqxJBKENPaq8EFpT1
+        4mOJnwgpA/ObwcLIkq0qmm/c4dnJH/jK2kQWg+ythN+QhTU=
+X-Google-Smtp-Source: ABdhPJxBK0Xn43mxEb9uP3oocJCmZKhM1BXNFc+/ZeFYg08qsHDGnsh4lhdJ10W/f3kz5hzADv7g2iUxlfSNsM4NkYY=
+X-Received: by 2002:a25:3357:: with SMTP id z84mr25805007ybz.260.1619453988319;
+ Mon, 26 Apr 2021 09:19:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210423233058.3386115-1-andrii@kernel.org> <20210423233058.3386115-2-andrii@kernel.org>
- <CACAyw985JaDmA6n3c_sLDn3Ltwndc_zkNWu84b-cMh2NqjVeNA@mail.gmail.com>
- <CAEf4BzYQZCYZ7aXeSW2xJKLeQTvObiO5eabA5XvX34wF1NTBhw@mail.gmail.com> <875z09ca0p.fsf@toke.dk>
-In-Reply-To: <875z09ca0p.fsf@toke.dk>
+References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-7-revest@chromium.org>
+ <CAEf4BzZUM4hb9owhompwARabRvRbCYxBrpgXSdXM8RRm42tU1A@mail.gmail.com> <CABRcYm+=XSt_U-19eYXU8+XwDUXoBGQMROMbm6xk9P9OHnUW_A@mail.gmail.com>
+In-Reply-To: <CABRcYm+=XSt_U-19eYXU8+XwDUXoBGQMROMbm6xk9P9OHnUW_A@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 26 Apr 2021 09:15:07 -0700
-Message-ID: <CAEf4BzYixzoqzE_c+sd7QoQDg8dGaKf_UBf06AqTmCdUagoJvg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] selftests/bpf: add remaining ASSERT_xxx() variants
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Lorenz Bauer <lmb@cloudflare.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+Date:   Mon, 26 Apr 2021 09:19:37 -0700
+Message-ID: <CAEf4BzZnkYDAm2R+5R9u4YEdZLj=C8XQmpT=iS6Qv0Ne7cRBGw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 8:59 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
+On Mon, Apr 26, 2021 at 3:10 AM Florent Revest <revest@chromium.org> wrote:
 >
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
-> > On Mon, Apr 26, 2021 at 1:06 AM Lorenz Bauer <lmb@cloudflare.com> wrote=
-:
-> >>
-> >> On Sat, 24 Apr 2021 at 00:36, Andrii Nakryiko <andrii@kernel.org> wrot=
-e:
-> >> >
-> >> > Add ASSERT_TRUE/ASSERT_FALSE for conditions calculated with custom l=
-ogic to
-> >> > true/false. Also add remaining arithmetical assertions:
-> >> >   - ASSERT_LE -- less than or equal;
-> >> >   - ASSERT_GT -- greater than;
-> >> >   - ASSERT_GE -- greater than or equal.
-> >> > This should cover most scenarios where people fall back to error-pro=
-ne
-> >> > CHECK()s.
-> >> >
-> >> > Also extend ASSERT_ERR() to print out errno, in addition to direct e=
-rror.
-> >> >
-> >> > Also convert few CHECK() instances to ensure new ASSERT_xxx() varian=
-ts work as
-> >> > expected. Subsequent patch will also use ASSERT_TRUE/ASSERT_FALSE mo=
-re
-> >> > extensively.
-> >> >
-> >> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> >> > ---
-> >> >  .../selftests/bpf/prog_tests/btf_dump.c       |  2 +-
-> >> >  .../selftests/bpf/prog_tests/btf_endian.c     |  4 +-
-> >> >  .../selftests/bpf/prog_tests/cgroup_link.c    |  2 +-
-> >> >  .../selftests/bpf/prog_tests/kfree_skb.c      |  2 +-
-> >> >  .../selftests/bpf/prog_tests/resolve_btfids.c |  7 +--
-> >> >  .../selftests/bpf/prog_tests/snprintf_btf.c   |  4 +-
-> >> >  tools/testing/selftests/bpf/test_progs.h      | 50 ++++++++++++++++=
-++-
-> >> >  7 files changed, 56 insertions(+), 15 deletions(-)
-> >> >
-> >> > diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/too=
-ls/testing/selftests/bpf/prog_tests/btf_dump.c
-> >> > index c60091ee8a21..5e129dc2073c 100644
-> >> > --- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-> >> > +++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-> >> > @@ -77,7 +77,7 @@ static int test_btf_dump_case(int n, struct btf_du=
-mp_test_case *t)
-> >> >
-> >> >         snprintf(out_file, sizeof(out_file), "/tmp/%s.output.XXXXXX"=
-, t->file);
-> >> >         fd =3D mkstemp(out_file);
-> >> > -       if (CHECK(fd < 0, "create_tmp", "failed to create file: %d\n=
-", fd)) {
-> >> > +       if (!ASSERT_GE(fd, 0, "create_tmp")) {
-> >>
-> >> Nit: I would find ASSERT_LE easier to read here. Inverting boolean
-> >> conditions is easy to get wrong.
+> On Sat, Apr 24, 2021 at 12:38 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > You mean if (ASSERT_LE(fd, -1, "create_tmp")) { err =3D fd; goto done; =
-} ?
+> > On Mon, Apr 19, 2021 at 8:52 AM Florent Revest <revest@chromium.org> wrote:
+> > >
+> > > The "positive" part tests all format specifiers when things go well.
+> > >
+> > > The "negative" part makes sure that incorrect format strings fail at
+> > > load time.
+> > >
+> > > Signed-off-by: Florent Revest <revest@chromium.org>
+> > > ---
+> > >  .../selftests/bpf/prog_tests/snprintf.c       | 125 ++++++++++++++++++
+> > >  .../selftests/bpf/progs/test_snprintf.c       |  73 ++++++++++
+> > >  .../bpf/progs/test_snprintf_single.c          |  20 +++
+> > >  3 files changed, 218 insertions(+)
+> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
+> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
+> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf_single.c
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
+> > > new file mode 100644
+> > > index 000000000000..a958c22aec75
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
+> > > @@ -0,0 +1,125 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/* Copyright (c) 2021 Google LLC. */
+> > > +
+> > > +#include <test_progs.h>
+> > > +#include "test_snprintf.skel.h"
+> > > +#include "test_snprintf_single.skel.h"
+> > > +
+> > > +#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
+> > > +#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
+> > > +
+> > > +#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
+> > > +#define EXP_IP_RET   sizeof(EXP_IP_OUT)
+> > > +
+> > > +/* The third specifier, %pB, depends on compiler inlining so don't check it */
+> > > +#define EXP_SYM_OUT  "schedule schedule+0x0/"
+> > > +#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
+> > > +
+> > > +/* The third specifier, %p, is a hashed pointer which changes on every reboot */
+> > > +#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
+> > > +#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
+> > > +
+> > > +#define EXP_STR_OUT  "str1 longstr"
+> > > +#define EXP_STR_RET  sizeof(EXP_STR_OUT)
+> > > +
+> > > +#define EXP_OVER_OUT "%over"
+> > > +#define EXP_OVER_RET 10
+> > > +
+> > > +#define EXP_PAD_OUT "    4 000"
 > >
-> > That will mark the test failing if fd >=3D 0, which is exactly opposite
-> > to what we wan't. It's confusing because CHECK() checks invalid
-> > conditions and returns "true" if it holds. But ASSERT_xxx() checks
-> > *valid* condition and returns whether valid condition holds. So the
-> > pattern is always
+> > Roughly 50% of the time I get failure for this test case:
+> >
+> > test_snprintf_positive:FAIL:pad_out unexpected pad_out: actual '    4
+> > 0000' != expected '    4 000'
+> >
+> > Re-running this test case immediately passes. Running again most
+> > probably fails. Please take a look.
 >
-> There's already an ASSERT_OK_PTR(), so maybe a corresponding
-> ASSERT_OK_FD() would be handy?
+> Do you have more information on how to reproduce this ?
+> I spinned up a VM at 87bd9e602 with ./vmtest -s and then run this script:
+>
+> #!/bin/sh
+> for i in `seq 1000`
+> do
+>   ./test_progs -t snprintf
+>   if [ $? -ne 0 ];
+>   then
+>     echo FAILURE
+>     exit 1
+>   fi
+> done
+>
+> The thousand executions passed.
+>
+> This is a bit concerning because your unexpected_pad_out seems to have
+> an extra '0' so it ends up with strlen(pad_out)=11 but
+> sizeof(pad_out)=10. The actual string writing is not really done by
+> our helper code but by the snprintf implementation (str and str_size
+> are only given to snprintf()) so I'd expect the truncation to work
+> well there. I'm a bit puzzled
 
-I honestly don't see the point. OK_PTR is special, it checks NULL and
-the special ERR_PTR() variants, which is a lot of hassle to check
-manually. While for FD doing ASSERT_GE(fd, 0) seems to be fine and
-just mostly natural. Also for some APIs valid FD is > 0 and for other
-cases valid FD is plain >=3D 0, so that just adds to the confusion.
+I'm puzzled too, have no idea. I also can't repro this with vmtest.sh.
+But I can quite reliably reproduce with my local ArchLinux-based qemu
+image with different config (see [0] for config itself). So please try
+with my config and see if that helps to repro. If not, I'll have to
+debug it on my own later.
 
->
-> -Toke
->
+  [0] https://gist.github.com/anakryiko/4b6ae21680842bdeacca8fa99d378048
