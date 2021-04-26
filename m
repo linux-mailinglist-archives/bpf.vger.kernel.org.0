@@ -2,112 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3713436BC02
-	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 01:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B65836BC07
+	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 01:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232235AbhDZXVA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Apr 2021 19:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51854 "EHLO
+        id S232116AbhDZX1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Apr 2021 19:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232022AbhDZXU7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Apr 2021 19:20:59 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BB3C061574;
-        Mon, 26 Apr 2021 16:20:16 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id p202so23357953ybg.8;
-        Mon, 26 Apr 2021 16:20:16 -0700 (PDT)
+        with ESMTP id S232022AbhDZX1G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Apr 2021 19:27:06 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2048C061574;
+        Mon, 26 Apr 2021 16:26:22 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 130so23227084ybd.10;
+        Mon, 26 Apr 2021 16:26:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ragf3pBBuOEv+S1+l8phR3UOvi6C6PkqHckvqRYzvXY=;
-        b=UK7IhNV1heUyIiPLGQUdXqP1iNOhkcz769U45fdE85RdnUk2FAjb8aW+W1AmVMSvuf
-         EZiT5yhc9Jtm4IHvlZAiHGqo+ugl8OS3FiXv6MkU6dLvmif+V5Qjr0M+P2ZK8dkPLC0+
-         6cHoINCbovh6Y/r0IiKjijjnw/+wWXPdGNABIN0n6lniXrXHKWfEkSFgKhTeWuzBduHt
-         Y1ZMWNBzrPlOgcPp4TUp5eftd3GAnnthHKBN6BYwtV4ZQ9+6nn/en0CcXYQCJrGveY+S
-         o/nTPRsqLtTvNJsGAynEak50S3Kc3E8cBtiRbwPfZMa40wGoHvRaOaHCOxCUZpQMQqWB
-         8Iig==
+        bh=A2SiQIyo4hvRrgZvT9+3elzY2NurWPOQ84hTpTx/mOI=;
+        b=qSvchFfBqTvPetH+6AbfQTtL3URnd4+U3V2aLgfVYrg1MiRIOITthJcS8SUYRJQOOu
+         NGGSCERCRCzxK6/k5n5vdefwXA+bwRzz+t6GvImtA6rLRYjX/lrkiPH6qZjbJHiUHMdS
+         t0Pyxqc3SdVYZ3tBCBlSL5fHhrrdP9WsjqSKWFJHkWyA8u74JDz3igrf33bLBewC27ai
+         Z91ofW55kffitvHjotb6WuQWtbfG9ES5q1AGgyJF6yrZMrsUHSH9fivc+Py05vjuOT4W
+         hy2u6S5+OAyMGRIeLCSwtisLkYwM8Khh44wDa6xiPXfWl8injZXsLhO8SAc7125qRm18
+         ErCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ragf3pBBuOEv+S1+l8phR3UOvi6C6PkqHckvqRYzvXY=;
-        b=b41xCATx9kPMrhwd5GYwm41PN5vhHK0Q7x4uxa71y44FrFgfOEnWlR3SvEAxBFfvrM
-         cIv0Q2JFoNcphdkxiCmnrDcGYMwdoQ/jGuVvxdVH5lbptdYBpnRauIApMlT//Z2SMS++
-         CW1SHhHstUqcYSi4/xh1khT+171IZVxJGaKenOEFq6Ucw+Zyy14F7ZCbqUnXPEZg9GIX
-         jWIMgnK3ZoAhi1uEjVBQPt6LTURoYdRAiZID2yQLh9DDJzVpFJ+h+HK6/YX0quxB+UX1
-         3NYzQH4SNhNjjW9Qyq4QOTxwY9LnYZylhhBsIlc7Bs10o6Dh1Zlu4hPATKlZAhzDJtiB
-         JUgg==
-X-Gm-Message-State: AOAM531+Nj5gEMBLEQgi869fPVLMtEfx567G+Yj2HkvH6KL/HPUERw92
-        iFqMCBgo9Nmzocgv+UW1cYf8ZQoNB8nnK5SQxgc=
-X-Google-Smtp-Source: ABdhPJxxx6uaPeIb83QO/9C/e3b9O2PSHVMqC27f7E+0oQ3+5OTLmYpDmFNq+ECvYhiV9fWDhEuc4qgvehmposIQaYU=
-X-Received: by 2002:a25:c4c5:: with SMTP id u188mr28538624ybf.425.1619479216354;
- Mon, 26 Apr 2021 16:20:16 -0700 (PDT)
+        bh=A2SiQIyo4hvRrgZvT9+3elzY2NurWPOQ84hTpTx/mOI=;
+        b=M4eD+EEL+MxJoH4/BIQ34BdrCv90i4h4I15/D7Q4MMmF7lm0WtGoLFYLRai44JRqq/
+         IBDbryB/YDk8Bh26P//4vkTqnDzmLgqKAA9c9Ha20K5fnDg2ig+TtbtFV4ze+bNH+MB4
+         S/TLhaseF67ISuP0+hA3PKfm29DL6ypK0MzCAWVDhut0lk5674aTV7/aUmkdhdKzLP2L
+         Wvs68fkdsaOejPUbTIRgO1I8hGwanalZ41nF63Cv0VkYron60U7fG4L1d2A4WySvnh4R
+         Rrw0cxiJ1+adQC6u40umcrPjHwI6gFOmfnkFp6KXqA5htd0ENbyU0pWaVgijTbsvjSp3
+         zdCQ==
+X-Gm-Message-State: AOAM531Txi/dKpr/w/qP7s291/N4fmoY8J2tS31ZjUlt6hq7dsfQpij+
+        76mkxrHpWraWfg3dED+m3G/gquQg9zn2WW1oh40=
+X-Google-Smtp-Source: ABdhPJzn2RP5+aJ17mulwvz8Ouj6oUBRo//R6AMFHhjue1v8ToKT8O+GHcVnlYS5PDbBgUm9YL3F4en8T7qI7yqoyOw=
+X-Received: by 2002:a25:3357:: with SMTP id z84mr28144598ybz.260.1619479581915;
+ Mon, 26 Apr 2021 16:26:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210426202240.518961-1-memxor@gmail.com>
-In-Reply-To: <20210426202240.518961-1-memxor@gmail.com>
+References: <20210423213728.3538141-1-kafai@fb.com>
+In-Reply-To: <20210423213728.3538141-1-kafai@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 26 Apr 2021 16:20:04 -0700
-Message-ID: <CAEf4BzaDbVpLvbOnkTKtzHVGq74TfBprLuZ6fJtYqJ+jFZN+Gw@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: export inline helpers as symbols for xsk
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>
+Date:   Mon, 26 Apr 2021 16:26:11 -0700
+Message-ID: <CAEf4BzY16ziMkOMdNGNjQOmiACF3E5nFn2LhtUUQbo-y-AP7Tg@mail.gmail.com>
+Subject: Re: [PATCH dwarves] btf: Generate btf for functions in the .BTF_ids section
+To:     Martin KaFai Lau <kafai@fb.com>, Jiri Olsa <jolsa@kernel.org>
+Cc:     dwarves@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 1:22 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Fri, Apr 23, 2021 at 2:37 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> This helps people writing language bindings to not have to rewrite C
-> wrappers for inline functions in the headers. We force inline the
-> definition from the header for C and C++ consumers, but also export a
-> symbol in the library for others. This keeps the performance
-> advantages similar to using static inline, while also allowing tools
-> like Rust's bindgen to generate wrappers for the functions.
+> BTF is currently generated for functions that are in ftrace list
+> or extern.
 >
-> Also see
-> https://lore.kernel.org/bpf/CAJ8uoz0QqR97qEYYK=VVCE9A=V=k2tKnH6wNM48jeak2RAmL0A@mail.gmail.com/
-> for some context.
+> A recent use case also needs BTF generated for functions included in
+> allowlist.  In particular, the kernel
+> commit e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc")
+> allows bpf program to directly call a few tcp cc kernel functions.  Those
+> functions are specified under an ELF section .BTF_ids.  The symbols
+> in this ELF section is like __BTF_ID__func__<kernel_func>__[digit]+.
+> For example, __BTF_ID__func__cubictcp_init__1.  Those kernel
+> functions are currently allowed only if CONFIG_DYNAMIC_FTRACE is
+> set to ensure they are in the ftrace list but this kconfig dependency
+> is unnecessary.
 >
-> Also see https://github.com/xdp-project/xdp-tools/pull/97 for more
-> discussion on the same.
+> pahole can generate BTF for those kernel functions if it knows they
+> are in the allowlist.  This patch is to capture those symbols
+> in the .BTF_ids section and generate BTF for them.
 >
-> extern inline is used as it's slightly better since it warns when an
-> inline definition is missing.
->
-> The fvisibility attribute goes on the inline definition, as essentially
-> it acts as a declaration for the function, while the extern inline
-> declaration ends up acting as a definition.
->
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 > ---
 
-xsk is moving into libxdp, why not do this there, instead of exporting
-a lot of symbols that we'll be deprecating very soon. It will also
-incentivise customers to make a move more promptly.
+I wonder if we just record all functions how bad that would be. Jiri,
+do you remember from the time you were experimenting with static
+functions how much more functions we'd be recording if we didn't do
+ftrace filtering?
 
-Bjorn, Magnus, what's the status of libxsk in libxdp?
-
->  tools/lib/bpf/libbpf.map | 16 ++++++++++++++
->  tools/lib/bpf/xsk.c      | 24 +++++++++++++++++++++
->  tools/lib/bpf/xsk.h      | 45 +++++++++++++++++++++++-----------------
->  3 files changed, 66 insertions(+), 19 deletions(-)
+>  btf_encoder.c | 136 +++++++++++++++++++++++++++++++++++++++++++++++---
+>  libbtf.c      |  10 ++++
+>  libbtf.h      |   2 +
+>  3 files changed, 142 insertions(+), 6 deletions(-)
 >
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 80e896961d4e..48c183915ddd 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -106,6 +106,121 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
+>         return 0;
+>  }
+>
+> +#define BTF_ID_FUNC_PREFIX "__BTF_ID__func__"
+> +#define BTF_ID_FUNC_PREFIX_LEN (sizeof(BTF_ID_FUNC_PREFIX) - 1)
+> +
+> +static char **listed_functions;
+> +static int listed_functions_alloc;
+> +static int listed_functions_cnt;
+
+maybe just use struct btf as a container of strings, which is what you
+need here? You can do btf__add_str() and btf__find_str(), which are
+both fast and memory-efficient, and you won't have to manage all the
+memory and do sorting, etc, etc.
 
 [...]
