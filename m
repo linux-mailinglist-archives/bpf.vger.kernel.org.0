@@ -2,146 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B4136B14B
-	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 12:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B52236B177
+	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 12:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbhDZKK7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Apr 2021 06:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
+        id S232266AbhDZKUf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Apr 2021 06:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232278AbhDZKK7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Apr 2021 06:10:59 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F6DEC061756
-        for <bpf@vger.kernel.org>; Mon, 26 Apr 2021 03:10:16 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id l21so12170569iob.1
-        for <bpf@vger.kernel.org>; Mon, 26 Apr 2021 03:10:16 -0700 (PDT)
+        with ESMTP id S232253AbhDZKUf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Apr 2021 06:20:35 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8731C061574;
+        Mon, 26 Apr 2021 03:19:53 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d124so38580037pfa.13;
+        Mon, 26 Apr 2021 03:19:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+fN1CnJTyw4SnuzW6DBA9Vu0o0I1yNjEi0kq9D/Z/LQ=;
-        b=VC5Jbt1mUZhRJa1ZD/9L/LbwQ5aW97mMI1TZ/3Td6ktOlGoYQVNPE7WaGDo/cTgrhG
-         rHXRlzfr2sRQoAkwwC78WuaYeYATWmQLvI/7Yk6UnCohEEtwLG429skjYJI7Fm3yqlO6
-         AK38rjEuSzLGwA50eHF516Yiu234Il1D7XIys=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TMUYLOMPKfiyNVH9R9syHPSncS85mDZLJ69XxngYkXM=;
+        b=p/T+P+Z3nNh+ICNzkff0+aA5sRrWUA7FjjwNBZum+2SkLOk6ezWwAbhqtvlmKlJ6AW
+         Bz+wofyyn5ZHqcIOuK/eTmoNs9gKO/tepGQyFa/9/+KdmMN5JSz0lJAjRohHkx1BUvOE
+         SJi5Qeka+aL0S0Yqpghap9imxXI2z3g9oMuwcXSCeXxdKtmMsYexJHkL4o9pKKC83jor
+         ptV9hI5q5ZQDWyfQAWTBiuwG9YTC9doJbAvxMg9NySslsJnEd9NTFgT6MhR+rGYXwX5G
+         FIb7JmWBSM+O5vGkSt8IxR4wCD/h856Xq3y8GruVZrIbaRFXinnT5v4UdngXKHlUd/4Z
+         TC7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+fN1CnJTyw4SnuzW6DBA9Vu0o0I1yNjEi0kq9D/Z/LQ=;
-        b=I3sVx6bMXhY06MPGB3QOR1qhmkGQngP5muU2BFwFGVHaCFQB55kzSD29tPXwzb5Swv
-         Ueoggnwt6CdzfX+I8ugh4quCkOIpCNYNkLxwcBVjjcgZkJtqog6Eciu2K6im6LWm3Ljy
-         FB+T+WjPLm+2MSGJTWiGaRTN/y+5XBgqdYS/2/SnPUXbREryZoEGp1N2wjF65mdPqLKU
-         c9cl2G58iCbjD/flWYPwzKv8WwdG24s8gO61Bg1O/84WGCcD5/0Ra9EEq+0w75ZnkWfF
-         x2FOSouiMAWEI76oAqyoJM7vl6BETcLkiazO57GLpNLCJszfIym1z5Rp2iKwWs14K634
-         e2pQ==
-X-Gm-Message-State: AOAM532RlZ9FVhNAlkRXYSOz5gLLb4v5DvhY1lpNjSziElGa0PnE6GZD
-        cGkyZs3HprV6es2WbWecWXbILQksMhDGYFCEknr1YQ==
-X-Google-Smtp-Source: ABdhPJwgriBQCSHOjdrO17+KXCZW2qXNmeiV/x6yOVr2f5eCl0JJpBSIeqFLUiV7xldi2fX/95tSgAQ+2QJx3f1w2Y0=
-X-Received: by 2002:a05:6602:218a:: with SMTP id b10mr13945010iob.122.1619431815692;
- Mon, 26 Apr 2021 03:10:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-7-revest@chromium.org>
- <CAEf4BzZUM4hb9owhompwARabRvRbCYxBrpgXSdXM8RRm42tU1A@mail.gmail.com>
-In-Reply-To: <CAEf4BzZUM4hb9owhompwARabRvRbCYxBrpgXSdXM8RRm42tU1A@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Mon, 26 Apr 2021 12:10:04 +0200
-Message-ID: <CABRcYm+=XSt_U-19eYXU8+XwDUXoBGQMROMbm6xk9P9OHnUW_A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TMUYLOMPKfiyNVH9R9syHPSncS85mDZLJ69XxngYkXM=;
+        b=lqrS5GdPCNBTSwH1SIHMIcEx84ok42/0mG/YMFRn7TttUBn1/gHYNRjbpfIU84c5Nc
+         4asZirnKlKuMBcpvjar3+Sm4yEX6FFvq57b2qTswMg/d0K91ejKFiWuM9XSpiHLEOv2K
+         WjG5GV61dPPMxi7Kt6XmKnzZW2XYKBw1WrmfcWuhKIRU6aVDtYQFrXVRNr+pVPlwgMes
+         y6lexCDTZMChVqqhjdkeEcg9c9Sji96z3Q6/ROMDjB/jYZ4+OVG/60sZMVCjI+2TzshL
+         JBThYvacdne+HQvssTath1r56d/j2gOY5P1vaUnRfiDejDpI1r3USCgi40KmfOopfidk
+         yyGQ==
+X-Gm-Message-State: AOAM533w+BnMCHEiTWvIhb3CPu9n9LYsCYLgtjdSeN+g3t3oXEw0JBbG
+        q3qqmIsPHhAcxLPFeFbWaQ8=
+X-Google-Smtp-Source: ABdhPJxWFNCYnPaEmjp/nkrRGy8IE00cJ6xOqefmGDs6u14tD/3HgEQcAWZ9y5NBGRehfNYu2KNs9A==
+X-Received: by 2002:a62:2c46:0:b029:245:6391:b631 with SMTP id s67-20020a622c460000b02902456391b631mr16682125pfs.67.1619432393497;
+        Mon, 26 Apr 2021 03:19:53 -0700 (PDT)
+Received: from Leo-laptop-t470s ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id k20sm10870556pfa.34.2021.04.26.03.19.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 03:19:53 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 18:19:40 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCHv9 bpf-next 4/4] selftests/bpf: add xdp_redirect_multi test
+Message-ID: <20210426101940.GP3465@Leo-laptop-t470s>
+References: <20210422071454.2023282-1-liuhangbin@gmail.com>
+ <20210422071454.2023282-5-liuhangbin@gmail.com>
+ <20210426112832.0b746447@carbon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210426112832.0b746447@carbon>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Apr 24, 2021 at 12:38 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, Apr 19, 2021 at 8:52 AM Florent Revest <revest@chromium.org> wrote:
-> >
-> > The "positive" part tests all format specifiers when things go well.
-> >
-> > The "negative" part makes sure that incorrect format strings fail at
-> > load time.
-> >
-> > Signed-off-by: Florent Revest <revest@chromium.org>
-> > ---
-> >  .../selftests/bpf/prog_tests/snprintf.c       | 125 ++++++++++++++++++
-> >  .../selftests/bpf/progs/test_snprintf.c       |  73 ++++++++++
-> >  .../bpf/progs/test_snprintf_single.c          |  20 +++
-> >  3 files changed, 218 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf_single.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> > new file mode 100644
-> > index 000000000000..a958c22aec75
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> > @@ -0,0 +1,125 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2021 Google LLC. */
-> > +
-> > +#include <test_progs.h>
-> > +#include "test_snprintf.skel.h"
-> > +#include "test_snprintf_single.skel.h"
-> > +
-> > +#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
-> > +#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
-> > +
-> > +#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
-> > +#define EXP_IP_RET   sizeof(EXP_IP_OUT)
-> > +
-> > +/* The third specifier, %pB, depends on compiler inlining so don't check it */
-> > +#define EXP_SYM_OUT  "schedule schedule+0x0/"
-> > +#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
-> > +
-> > +/* The third specifier, %p, is a hashed pointer which changes on every reboot */
-> > +#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
-> > +#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
-> > +
-> > +#define EXP_STR_OUT  "str1 longstr"
-> > +#define EXP_STR_RET  sizeof(EXP_STR_OUT)
-> > +
-> > +#define EXP_OVER_OUT "%over"
-> > +#define EXP_OVER_RET 10
-> > +
-> > +#define EXP_PAD_OUT "    4 000"
->
-> Roughly 50% of the time I get failure for this test case:
->
-> test_snprintf_positive:FAIL:pad_out unexpected pad_out: actual '    4
-> 0000' != expected '    4 000'
->
-> Re-running this test case immediately passes. Running again most
-> probably fails. Please take a look.
+On Mon, Apr 26, 2021 at 11:28:32AM +0200, Jesper Dangaard Brouer wrote:
+> On Thu, 22 Apr 2021 15:14:54 +0800
+> Hangbin Liu <liuhangbin@gmail.com> wrote:
+> 
+> > Add a bpf selftest for new helper xdp_redirect_map_multi(). In this
+> > test there are 3 forward groups and 1 exclude group. The test will
+> > redirect each interface's packets to all the interfaces in the forward
+> > group, and exclude the interface in exclude map.
+> > 
+> > Two maps (DEVMAP, DEVMAP_HASH) and two xdp modes (generic, drive) will
+> > be tested. XDP egress program will also be tested by setting pkt src MAC
+> > to egress interface's MAC address.
+> > 
+> > For more test details, you can find it in the test script. Here is
+> > the test result.
+> > ]# ./test_xdp_redirect_multi.sh
+> 
+> Running this test takes a long time around 3 minutes.
 
-Do you have more information on how to reproduce this ?
-I spinned up a VM at 87bd9e602 with ./vmtest -s and then run this script:
+Yes, there are some sleeps, ping tests. Don't know if I missed
+anything, is there a time limit for the selftest?
 
-#!/bin/sh
-for i in `seq 1000`
-do
-  ./test_progs -t snprintf
-  if [ $? -ne 0 ];
-  then
-    echo FAILURE
-    exit 1
-  fi
-done
-
-The thousand executions passed.
-
-This is a bit concerning because your unexpected_pad_out seems to have
-an extra '0' so it ends up with strlen(pad_out)=11 but
-sizeof(pad_out)=10. The actual string writing is not really done by
-our helper code but by the snprintf implementation (str and str_size
-are only given to snprintf()) so I'd expect the truncation to work
-well there. I'm a bit puzzled
+Thanks
+hangbin
+> 
+> $ sudo time -v ./test_xdp_redirect_multi.sh
+> Pass: xdpgeneric arp ns1-2
+> Pass: xdpgeneric arp ns1-3
+> Pass: xdpgeneric arp ns1-4
+> Pass: xdpgeneric ping ns1-2
+> Pass: xdpgeneric ping ns1-3
+> Pass: xdpgeneric ping ns1-4
+> Pass: xdpgeneric ping6 ns1-2
+> Pass: xdpgeneric ping6 ns1-1 number
+> Pass: xdpgeneric ping6 ns1-2 number
+> Pass: xdpdrv arp ns1-2
+> Pass: xdpdrv arp ns1-3
+> Pass: xdpdrv arp ns1-4
+> Pass: xdpdrv ping ns1-2
+> Pass: xdpdrv ping ns1-3
+> Pass: xdpdrv ping ns1-4
+> Pass: xdpdrv ping6 ns1-2
+> Pass: xdpdrv ping6 ns1-1 number
+> Pass: xdpdrv ping6 ns1-2 number
+> Pass: xdpegress mac ns1-2
+> Pass: xdpegress mac ns1-3
+> Pass: xdpegress mac ns1-4
+> Summary: PASS 21, FAIL 0
+> 	Command being timed: "./test_xdp_redirect_multi.sh"
+> 	User time (seconds): 0.15
+> 	System time (seconds): 0.51
+> 	Percent of CPU this job got: 0%
+> 	Elapsed (wall clock) time (h:mm:ss or m:ss): 3:09.68
+> 	Average shared text size (kbytes): 0
+> 	Average unshared data size (kbytes): 0
+> 	Average stack size (kbytes): 0
+> 	Average total size (kbytes): 0
+> 	Maximum resident set size (kbytes): 6904
+> 	Average resident set size (kbytes): 0
+> 	Major (requiring I/O) page faults: 13
+> 	Minor (reclaiming a frame) page faults: 46316
+> 	Voluntary context switches: 1907
+> 	Involuntary context switches: 371
+> 	Swaps: 0
+> 	File system inputs: 0
+> 	File system outputs: 0
+> 	Socket messages sent: 0
+> 	Socket messages received: 0
+> 	Signals delivered: 0
+> 	Page size (bytes): 4096
+> 	Exit status: 0
+> 
+> -- 
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+> 
