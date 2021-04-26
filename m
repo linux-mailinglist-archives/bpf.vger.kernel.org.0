@@ -2,69 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872A836A9CF
-	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 01:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE8836AAC6
+	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 04:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbhDYXKd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 25 Apr 2021 19:10:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42562 "EHLO
+        id S231699AbhDZCux (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 25 Apr 2021 22:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231247AbhDYXKd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 25 Apr 2021 19:10:33 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B03CC061574;
-        Sun, 25 Apr 2021 16:09:51 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id n2so81620916ejy.7;
-        Sun, 25 Apr 2021 16:09:51 -0700 (PDT)
+        with ESMTP id S231502AbhDZCux (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 25 Apr 2021 22:50:53 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87537C061574;
+        Sun, 25 Apr 2021 19:50:12 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id 8so21507246qkv.8;
+        Sun, 25 Apr 2021 19:50:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=u7D/ojmJZ37qasgr7Ko9GU5a0zvdevz01nK5apvh4RE=;
-        b=BE3Y2Z28M//i3DE+n3QnN7qhcdrchjDJ/Pv3aW0o99XTAmwCFw/PGw/2oEl6zGMwxL
-         xkZcoX3Sest8iNkheQVme90JoU9NwzN02iFbH5YR5t0NOMtB4p5p3c+APfGyxGNjCTPP
-         DUm7P/0713KSwig6wcsmuotI70bFZvUp1slzyORM8+zdkTF91uF2RU4zI0lgUH/dPFUd
-         yBe7IREVK56fDG2a6unOfPqnTQenPTHNIKj1X6HsYUNoynyflGw4xwp1dynib90/ZZNE
-         gbkyoy9SfRFVHfdUn4bMUOfOp2/22keHljw9srrTSV2Js2BMHgpKmz0S5QBH9x7o/tm7
-         Md3A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AJ3dF91pArmJ3E1d8CGtHfJCvWP+o57MUIRfsQ3HzRc=;
+        b=KHjyum/ANu6+os6IkYv+fCho0hAaPbfHDgpjkCDbrrAAmNz0xAxLorTtmIGr8qRJgB
+         X9sBgsCUk+zzur+vdn27jFxm7I5lytM+FhqSpEE6yJaMYJ6Sri6x8RlehIWLvMa3aide
+         hytRbkwPM24X7nJtoxCFc7cyMh6KKANg3BHMVW0mU1kDfGo/oqfi4Xd4NddKptzWozt6
+         G+TtaL3ZccnY4WmtxXMixxGZ/c4xCiwbvNYx3xMPCcdTtxO2swSbG0zVEKjU7ZM4r1Gb
+         olLASJwvgojhgtAvFFpVTUeYICxgVgL7vkC9n/4w99P2ee0sxnF5JTCUAZnvRdRN4dTi
+         0Lng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=u7D/ojmJZ37qasgr7Ko9GU5a0zvdevz01nK5apvh4RE=;
-        b=DwRwacdvPlNaSS9E4yDJHZ1w50R43OD4RXdhSkpJ/FkweqeYodojaK/yfxLaPgdMxd
-         FAKaM4KMbSI3tC17KOC7y/FnDcZZdSUpOTOmmLeYF506DZCR2xy33AcZiisS1KhsFIIG
-         InTbPV+JSErfciuxfIDB4Whmd5j/SvSzS5p7ohR+DKqZ3bOSB8Y1yIqt6KmWO9VwzsFp
-         FJuqWkXvN9PJxNL7P+Fe++MY1asJEwyKczXU1c7TOQsTlVjf7SJvLcL+wc1K7e0hIuYc
-         exni8+MVzgiZbWdLr1CDmZlQFSmQ947i0y0nyKNO8KzZ+8YCi7d5VFJa/ENspNvREO1g
-         jctQ==
-X-Gm-Message-State: AOAM5311uudB+htX+R9S2iu1OMsWK6y1gnoEk7pjsYzi+7YirtZuGOO3
-        BseueX9yKsglEmg44VjBnWrIfE6GabafR4beMTU=
-X-Google-Smtp-Source: ABdhPJzJNB3O+udew+sU1cP/HJky7rP4GyPFYzmHeDq+GBtvoStPTFQZQr2EtgHNhUgfT/fAxcDxdDh63rTCCM0TLoc=
-X-Received: by 2002:a17:906:a449:: with SMTP id cb9mr15461269ejb.118.1619392189843;
- Sun, 25 Apr 2021 16:09:49 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AJ3dF91pArmJ3E1d8CGtHfJCvWP+o57MUIRfsQ3HzRc=;
+        b=aQptqIjPYvOb8P6hZZVlMD0BMHiJEgUytY5fPhOl9Nl5ww8koeykeOLPqXtsOtMbX+
+         34ELvWDF3uxPgVIYGYlnrgkjIDL0oRUFb4B+T8gaIkoppIv3tVsIM8tgnRMFa8dzAeF8
+         kVsSwT8y3p/Qmptpgjo22w9IbRkPqFMvzQnerNSwLawQtkOMTofZ5DgxbgiQqGYsgBO5
+         XqDMOdf+brwhB0j5PQW6FjONs9EsxkyIheY3a3C1pg2VAzRIljUNkKBUuy4m3w5nNXix
+         PZAsb5NRvWLRdokulJHH6653mSXR1hsXeEWb01C82iJ6/Du5xarsKVGAStjoNJnREc8i
+         QtwA==
+X-Gm-Message-State: AOAM533NNWMIgsvqxtggBF6d+LDIh3ZckCU2SxDuj23K0T1ZFRauIHYT
+        oOTwRUVWvdY7qsTUT0Wfidc6UgNjxClcsg==
+X-Google-Smtp-Source: ABdhPJybC1Lxz5To6LhGymSeCuFxqv/IhL/zzJyTq4P6g3dPUaNzzEtH6DLPzwCMTVJFj52lK2G6qg==
+X-Received: by 2002:a37:7685:: with SMTP id r127mr14834999qkc.359.1619405411520;
+        Sun, 25 Apr 2021 19:50:11 -0700 (PDT)
+Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:9050:63f8:875d:8edf])
+        by smtp.gmail.com with ESMTPSA id e15sm9632969qkm.129.2021.04.25.19.50.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Apr 2021 19:50:11 -0700 (PDT)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, jiang.wang@bytedance.com,
+        duanxiongchun@bytedance.com, wangdongdong.6@bytedance.com,
+        Cong Wang <cong.wang@bytedance.com>
+Subject: [Patch bpf-next v3 00/10] sockmap: add sockmap support to Unix datagram socket
+Date:   Sun, 25 Apr 2021 19:49:51 -0700
+Message-Id: <20210426025001.7899-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From:   Tyler S <tylerjstachecki@gmail.com>
-Date:   Sun, 25 Apr 2021 19:09:39 -0400
-Message-ID: <CAMfj=-YEh1ZnLB8zye7i-5Y2S015n0qat+FQ6JW7bFKwBUHBPg@mail.gmail.com>
-Subject: Re: [PATCH net v2] igb: Fix XDP with PTP enabled
-To:     kurt@linutronix.de
-Cc:     alexander.duyck@gmail.com, anthony.l.nguyen@intel.com,
-        ast@kernel.org, bigeasy@linutronix.de, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        ilias.apalodimas@linaro.org, intel-wired-lan@lists.osuosl.org,
-        jesse.brandeburg@intel.com, john.fastabend@gmail.com,
-        kuba@kernel.org, lorenzo@kernel.org, netdev@vger.kernel.org,
-        richardcochran@gmail.com, sven.auhagen@voleatech.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks for this work; I was having trouble using XDP on my I354 NIC until this.
+From: Cong Wang <cong.wang@bytedance.com>
 
-Hopefully I have not err'd backporting it to 5.10 -- but I'm seeing
-jumbo frames dropped after applying this (though as previously
-mentioned, non-skb/full driver XDP programs do now work).
+This is the last patchset of the original large patchset. In the
+previous patchset, a new BPF sockmap program BPF_SK_SKB_VERDICT
+was introduced and UDP began to support it too. In this patchset,
+we add BPF_SK_SKB_VERDICT support to Unix datagram socket, so that
+we can finally splice Unix datagram socket and UDP socket. Please
+check each patch description for more details.
 
-Looking at the code, I'm not sure why that is.
+To see the big picture, the previous patchsets are available:
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=1e0ab70778bd86a90de438cc5e1535c115a7c396
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=89d69c5d0fbcabd8656459bc8b1a476d6f1efee4
+this patchset is also available:
+https://github.com/congwang/linux/tree/sockmap3
 
-- Tyler
+---
+v3: fix Kconfig dependency
+    make unix_read_sock() static
+    fix a UAF in unix_release()
+    add a missing header unix_bpf.c
+    
+v2: separate out from the original large patchset
+    rebase to the latest bpf-next
+    clean up unix_read_sock()
+    export sock_map_close()
+    factor out some helpers in selftests for code reuse
+
+Cong Wang (10):
+  sock_map: relax config dependency to CONFIG_NET
+  af_unix: implement ->read_sock() for sockmap
+  af_unix: implement ->psock_update_sk_prot()
+  af_unix: set TCP_ESTABLISHED for datagram sockets too
+  af_unix: implement unix_dgram_bpf_recvmsg()
+  sock_map: update sock type checks for AF_UNIX
+  selftests/bpf: factor out udp_socketpair()
+  selftests/bpf: factor out add_to_sockmap()
+  selftests/bpf: add a test case for unix sockmap
+  selftests/bpf: add test cases for redirection between udp and unix
+
+ MAINTAINERS                                   |   1 +
+ include/linux/bpf.h                           |  38 +-
+ include/net/af_unix.h                         |  13 +
+ init/Kconfig                                  |   2 +-
+ net/core/Makefile                             |   2 -
+ net/core/sock_map.c                           |   9 +
+ net/unix/Makefile                             |   1 +
+ net/unix/af_unix.c                            |  83 +++-
+ net/unix/unix_bpf.c                           |  96 +++++
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 386 ++++++++++++++----
+ 10 files changed, 528 insertions(+), 103 deletions(-)
+ create mode 100644 net/unix/unix_bpf.c
+
+-- 
+2.25.1
+
