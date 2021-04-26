@@ -2,146 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA7E36AF9C
-	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 10:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFB736B07A
+	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 11:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbhDZIRp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Apr 2021 04:17:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232235AbhDZIRp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Apr 2021 04:17:45 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF89FC061574
-        for <bpf@vger.kernel.org>; Mon, 26 Apr 2021 01:17:03 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id a5so26055839ljk.0
-        for <bpf@vger.kernel.org>; Mon, 26 Apr 2021 01:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dci0jTaPQ1LF1SOSCmVyqguDpETXX8VuY92wwVPe54s=;
-        b=u4BTT3cU0McS0gmu59hAKHH3pVQZU9S0WFQLxKND0zPErSxUTRjusDpfhyzG+9TyO+
-         hs7Cb0K6hNb6xeaQO72fbppnnz4n0ui7BECnUl/eqrE+rZiFDsFm4FXO7P01bM/lJ7Ym
-         6waFflFgSH4FdUJMJHnwdOTwRy1/X1Hoek7C8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dci0jTaPQ1LF1SOSCmVyqguDpETXX8VuY92wwVPe54s=;
-        b=YW+GG3rFKVPu9hSDRCRItNOnh/ZwECMuLDx2lHfgy1gokV25gVaSh9kijLH51hnKEo
-         UV3Vg5a6exikjI9fTGc0rjpzGSIDB5qxD0KC6GQs+zxwZqLQqhLcqImFHd6v7zKcOeLV
-         z1G4esZYW9Y9XqSmQ5xXY4NrjjP87N7hdbDLbEYkn79dxEsfyNdd/0oaQZ2Il4KRbomY
-         rB9+9Q9pqIuNRNw4xN+crfQbeWnD1VxCOVKrNFUqZYhj2rP4C77tCUX4k+g0LGTzdMof
-         zgZPdokv1D77ZVjkA+93liHtU2pMQF1C3XZIM1sl2WgRdsSHEBLz4913r29hfw0FCLUv
-         kcFw==
-X-Gm-Message-State: AOAM533SxHSW3zeHSj1UNeG8Ix6RMOnaehOTQMiZZUlmdMI9WfCNZ1BR
-        U3ZMuYbxePF5SVKnhlDap78yhrCvwIu891QwYXBLDA==
-X-Google-Smtp-Source: ABdhPJyNQSLJH4nRXzN26rXQvYHYhTUIBUff3vIk1Dxj6TdISJUCOZ2OlWvcJbCK/fb4jvjb6T5WIa+1MwI7gT3423E=
-X-Received: by 2002:a2e:9913:: with SMTP id v19mr12344993lji.426.1619425022503;
- Mon, 26 Apr 2021 01:17:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210423233058.3386115-1-andrii@kernel.org> <20210423233058.3386115-6-andrii@kernel.org>
-In-Reply-To: <20210423233058.3386115-6-andrii@kernel.org>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Mon, 26 Apr 2021 09:16:51 +0100
-Message-ID: <CACAyw98cvRe6rE8XOBZfd7v=_5X45U=Qb0AtWJi5Kw2hWccpFQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: fix core_reloc test runner
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S232116AbhDZJYM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Apr 2021 05:24:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23576 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232080AbhDZJYK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 26 Apr 2021 05:24:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619429008;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NNwDXTMHR5xSsbdj83YsrR/X8gyfJkCkZcm5vtKcoOM=;
+        b=ftxgKRXao57Ov2mXIc1b6hsD/6QYtczNPblxNrXyFKX48OyFT1AVlUyFF44jZNzbDwXymf
+        KtdrX1NGBoV2fFg6IXZi2TGj+hHXRCjj7C71cEfunYySNAQ8X1/ooruM1ZNWj5UcBRPp2P
+        EPslwEkbvchWTOZqnRkKv/V8qWMzdzQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-402-o2QUL4IBMAu4_4lC9RJnXg-1; Mon, 26 Apr 2021 05:23:26 -0400
+X-MC-Unique: o2QUL4IBMAu4_4lC9RJnXg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4CC1783DD25;
+        Mon, 26 Apr 2021 09:23:24 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C759459454;
+        Mon, 26 Apr 2021 09:23:09 +0000 (UTC)
+Date:   Mon, 26 Apr 2021 11:23:08 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFQ=?= =?UTF-8?B?w7ZwZWw=?= 
+        <bjorn.topel@gmail.com>, Martin KaFai Lau <kafai@fb.com>,
+        brouer@redhat.com
+Subject: Re: [PATCHv9 bpf-next 2/4] xdp: extend xdp_redirect_map with
+ broadcast support
+Message-ID: <20210426112308.580cf98e@carbon>
+In-Reply-To: <20210426060117.GN3465@Leo-laptop-t470s>
+References: <20210422071454.2023282-1-liuhangbin@gmail.com>
+        <20210422071454.2023282-3-liuhangbin@gmail.com>
+        <20210422185332.3199ca2e@carbon>
+        <87a6pqfb9x.fsf@toke.dk>
+        <20210423185429.126492d0@carbon>
+        <20210424010925.GG3465@Leo-laptop-t470s>
+        <20210424090129.1b8fe377@carbon>
+        <20210426060117.GN3465@Leo-laptop-t470s>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 24 Apr 2021 at 00:36, Andrii Nakryiko <andrii@kernel.org> wrote:
->
-> Fix failed tests checks in core_reloc test runner, which allowed failing tests
-> to pass quietly. Also add extra check to make sure that expected to fail test cases with
-> invalid names are caught as test failure anyway, as this is not an expected
-> failure mode. Also fix mislabeled probed vs direct bitfield test cases.
->
-> Fixes: 124a892d1c41 ("selftests/bpf: Test TYPE_EXISTS and TYPE_SIZE CO-RE relocations")
-> Reported-by: Lorenz Bauer <lmb@cloudflare.com>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  .../selftests/bpf/prog_tests/core_reloc.c     | 20 +++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> index 385fd7696a2e..607710826dca 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> @@ -217,7 +217,7 @@ static int duration = 0;
->
->  #define BITFIELDS_CASE(name, ...) {                                    \
->         BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_probed.o",     \
-> -                             "direct:", name),                         \
-> +                             "probed:", name),                         \
->         .input = STRUCT_TO_CHAR_PTR(core_reloc_##name) __VA_ARGS__,     \
->         .input_len = sizeof(struct core_reloc_##name),                  \
->         .output = STRUCT_TO_CHAR_PTR(core_reloc_bitfields_output)       \
-> @@ -225,7 +225,7 @@ static int duration = 0;
->         .output_len = sizeof(struct core_reloc_bitfields_output),       \
->  }, {                                                                   \
->         BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_direct.o",     \
-> -                             "probed:", name),                         \
-> +                             "direct:", name),                         \
->         .input = STRUCT_TO_CHAR_PTR(core_reloc_##name) __VA_ARGS__,     \
->         .input_len = sizeof(struct core_reloc_##name),                  \
->         .output = STRUCT_TO_CHAR_PTR(core_reloc_bitfields_output)       \
-> @@ -546,8 +546,7 @@ static struct core_reloc_test_case test_cases[] = {
->         ARRAYS_ERR_CASE(arrays___err_too_small),
->         ARRAYS_ERR_CASE(arrays___err_too_shallow),
->         ARRAYS_ERR_CASE(arrays___err_non_array),
-> -       ARRAYS_ERR_CASE(arrays___err_wrong_val_type1),
-> -       ARRAYS_ERR_CASE(arrays___err_wrong_val_type2),
-> +       ARRAYS_ERR_CASE(arrays___err_wrong_val_type),
->         ARRAYS_ERR_CASE(arrays___err_bad_zero_sz_arr),
->
->         /* enum/ptr/int handling scenarios */
-> @@ -865,13 +864,20 @@ void test_core_reloc(void)
->                           "prog '%s' not found\n", probe_name))
->                         goto cleanup;
->
-> +
-> +               if (test_case->btf_src_file) {
-> +                       err = access(test_case->btf_src_file, R_OK);
-> +                       if (!ASSERT_OK(err, "btf_src_file"))
-> +                               goto cleanup;
-> +               }
-> +
->                 load_attr.obj = obj;
->                 load_attr.log_level = 0;
->                 load_attr.target_btf_path = test_case->btf_src_file;
->                 err = bpf_object__load_xattr(&load_attr);
->                 if (err) {
->                         if (!test_case->fails)
-> -                               CHECK(false, "obj_load", "failed to load prog '%s': %d\n", probe_name, err);
-> +                               ASSERT_OK(err, "obj_load");
->                         goto cleanup;
->                 }
->
-> @@ -910,10 +916,8 @@ void test_core_reloc(void)
->                         goto cleanup;
->                 }
->
-> -               if (test_case->fails) {
-> -                       CHECK(false, "obj_load_fail", "should fail to load prog '%s'\n", probe_name);
-> +               if (!ASSERT_FALSE(test_case->fails, "obj_load_should_fail"))
+On Mon, 26 Apr 2021 14:01:17 +0800
+Hangbin Liu <liuhangbin@gmail.com> wrote:
 
-Similar to my other comment, I find it difficult to tell when this
-triggers. Maybe it makes sense to return the status of the
-assertion (not the original value)? So if (assertion()) will be
-executed when the assertion fails? Not sure.
+> On Sat, Apr 24, 2021 at 09:01:29AM +0200, Jesper Dangaard Brouer wrote:
+> > > > > >> @@ -3942,7 +3960,12 @@ int xdp_do_redirect(struct net_device *=
+dev, struct xdp_buff *xdp,
+> > > > > >>  	case BPF_MAP_TYPE_DEVMAP:
+> > > > > >>  		fallthrough;
+> > > > > >>  	case BPF_MAP_TYPE_DEVMAP_HASH:
+> > > > > >> -		err =3D dev_map_enqueue(fwd, xdp, dev);
+> > > > > >> +		map =3D xchg(&ri->map, NULL);     =20
+> > > > > >
+> > > > > > Hmm, this looks dangerous for performance to have on this fast-=
+path.
+> > > > > > The xchg call can be expensive, AFAIK this is an atomic operati=
+on.     =20
+> > > > >=20
+> > > > > Ugh, you're right. That's my bad, I suggested replacing the
+> > > > > READ_ONCE()/WRITE_ONCE() pair with the xchg() because an exchange=
+ is
+> > > > > what it's doing, but I failed to consider the performance implica=
+tions
+> > > > > of the atomic operation. Sorry about that, Hangbin! I guess this =
+should
+> > > > > be changed to:
+> > > > >=20
+> > > > > +		map =3D READ_ONCE(ri->map);
+> > > > > +		if (map) {
+> > > > > +			WRITE_ONCE(ri->map, NULL);
+> > > > > +			err =3D dev_map_enqueue_multi(xdp, dev, map,
+> > > > > +						    ri->flags & BPF_F_EXCLUDE_INGRESS);
+> > > > > +		} else {
+> > > > > +			err =3D dev_map_enqueue(fwd, xdp, dev);
+> > > > > +		}   =20
+> > > >=20
+> > > > This is highly sensitive fast-path code, as you saw Bj=C3=B8rn have=
+ been
+> > > > hunting nanosec in this area.  The above code implicitly have "map"=
+ as
+> > > > the likely option, which I don't think it is.   =20
+> > >=20
+> > > Hi Jesper,
+> > >=20
+> > > From the performance data, there is only a slightly impact. Do we sti=
+ll need
+> > > to block the whole patch on this? Or if you have a better solution? =
+=20
+> >=20
+> > I'm basically just asking you to add an unlikely() annotation:
+> >=20
+> > 	map =3D READ_ONCE(ri->map);
+> > 	if (unlikely(map)) {
+> > 		WRITE_ONCE(ri->map, NULL);
+> > 		err =3D dev_map_enqueue_multi(xdp, dev, map, [...]
+> >=20
+> > For XDP, performance is the single most important factor!  You say your
+> > performance data, there is only a slightly impact, there must be ZERO
+> > impact (when your added features is not in use).
+> >=20
+> > You data:
+> >  Version          | Test                                | Generic | Nat=
+ive
+> >  5.12 rc4         | redirect_map        i40e->i40e      |    1.9M |  9.=
+6M
+> >  5.12 rc4 + patch | redirect_map        i40e->i40e      |    1.9M |  9.=
+3M
+> >=20
+> > The performance difference 9.6M -> 9.3M is a slowdown of 3.36 nanosec.
+> > Bj=C3=B8rn and others have been working really hard to optimize the cod=
+e and
+> > remove down to 1.5 nanosec overheads.  Thus, introducing 3.36 nanosec
+> > added overhead to the fast-path is significant. =20
+>=20
+> I re-check the performance data. The data
+> > Version          | Test                                | Generic | Nati=
+ve
+> > 5.12 rc4         | redirect_map        i40e->i40e      |    1.9M |  9.6M
+> > 5.12 rc4 + patch | redirect_map        i40e->i40e      |    1.9M |  9.3=
+M =20
+>=20
+> is done on version 5.
+>=20
+> Today I re-did the test, on version 10, with xchg() changed to
+> READ_ONCE/WRITE_ONCE. Here is the new data (Generic path data was omitted
+> as there is no change)
+>=20
+> Version          | Test                                | Generic | Native
+> 5.12 rc4         | redirect_map        i40e->i40e      |  9.7M
+> 5.12 rc4         | redirect_map        i40e->veth      | 11.8M
+>=20
+> 5.12 rc4 + patch | redirect_map        i40e->i40e      |  9.6M
 
-Acked-by: Lorenz Bauer <lmb@cloudflare.com>
+Great to see the baseline redirect_map (i40e->i40e) have almost no
+impact, only 1.07 ns ((1/9.7-1/9.6)*1000), which is what we want to
+see.  (It might be zero as measurements can fluctuate when diff is
+below 2ns)
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-www.cloudflare.com
+> 5.12 rc4 + patch | redirect_map        i40e->veth      | 11.6M
+
+What XDP program are you running on the inner veth?
+
+> 5.12 rc4 + patch | redirect_map multi  i40e->i40e      |  9.5M
+
+I'm very surprised to see redirect_map multi being so fast (9.5M vs.
+9.6M normal map-redir).  I was expecting to see larger overhead, as the
+code dev_map_enqueue_clone() would clone the packet in xdpf_clone() via
+allocating a new page (dev_alloc_page) and then doing a memcpy().
+
+Looking closer at this patchset, I realize that the test
+'redirect_map-multi' is testing an optimization, and will never call
+dev_map_enqueue_clone() + xdpf_clone().  IMHO trying to optimize
+'redirect_map-multi' to be just as fast as base 'redirect_map' doesn't
+make much sense.  If the 'broadcast' call only send a single packet,
+then there isn't any reason to call the 'multi' variant.
+
+Does the 'selftests/bpf' make sure to activate the code path that does
+cloning?
+
+> 5.12 rc4 + patch | redirect_map multi  i40e->veth      | 11.5M
+> 5.12 rc4 + patch | redirect_map multi  i40e->mlx4+veth |  3.9M
+>=20
+> And after add unlikely() in the check path, the new data looks like
+>=20
+> Version          | Test                                | Native
+> 5.12 rc4 + patch | redirect_map        i40e->i40e      |  9.6M
+> 5.12 rc4 + patch | redirect_map        i40e->veth      | 11.7M
+> 5.12 rc4 + patch | redirect_map multi  i40e->i40e      |  9.4M
+> 5.12 rc4 + patch | redirect_map multi  i40e->veth      | 11.4M
+> 5.12 rc4 + patch | redirect_map multi  i40e->mlx4+veth |  3.8M
+>=20
+> So with unlikely(), the redirect_map is a slightly up, while redirect_map
+> broadcast has a little drawback. But for the total data it looks this time
+> there is no much gap compared with no this patch for redirect_map.
+>=20
+> Do you think we still need the unlikely() in check path?
+
+Yes.  The call to redirect_map multi is allowed (and expected) to be
+slower, because when using it to broadcast packets we expect that
+dev_map_enqueue_clone() + xdpf_clone() will get activated, which will
+be the dominating overhead.
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
