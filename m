@@ -2,51 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE1336AF7C
-	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 10:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E6C36AF8E
+	for <lists+bpf@lfdr.de>; Mon, 26 Apr 2021 10:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbhDZIL2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Apr 2021 04:11:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46856 "EHLO
+        id S232235AbhDZINm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Apr 2021 04:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232411AbhDZILP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Apr 2021 04:11:15 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DBAC061760
-        for <bpf@vger.kernel.org>; Mon, 26 Apr 2021 01:10:34 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 12so86674557lfq.13
-        for <bpf@vger.kernel.org>; Mon, 26 Apr 2021 01:10:34 -0700 (PDT)
+        with ESMTP id S232147AbhDZINm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Apr 2021 04:13:42 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB51BC061574
+        for <bpf@vger.kernel.org>; Mon, 26 Apr 2021 01:13:00 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id l22so55656621ljc.9
+        for <bpf@vger.kernel.org>; Mon, 26 Apr 2021 01:13:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/3PTK86IuJli8BfpofGbB9edK2Z13Oa5858Hm/N4QK0=;
-        b=oy+0CEP5bH/GdhzT03FTFfJO2XHlB/fzTwUcVb3//T2XcLhq4DPwAcdFISF4m23nuI
-         rTCZivvUUZbZlUDEEWEMychSOYJDYim+VEGOSSo8fq41PgydcvwBIpcCdcl1Q15mpMM9
-         I53nlUSlQqVNK5NPw1eD3iy6gL3j/hrMMScQI=
+        bh=/5sZfAWMd+ikiAV3bLd2cK6LOqVMDPgtaZ3fFQ7MIjo=;
+        b=cFcaMvZYSdjF2f34XTseTA7smvlQAITftRJQdb51QRoTJ8TNFudos3QdbLm/1nfZOF
+         DrrppnG6FuhBd6RYaaFUjCSnlCLHSgMbpgHzt6215bGkj/O4pbymcb6VVyV0mMGPc1Yb
+         YYlfnxmetIahF53kLJ6xeYsaBNv3Vw52VYLDQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/3PTK86IuJli8BfpofGbB9edK2Z13Oa5858Hm/N4QK0=;
-        b=hbh/80V+IfOOKoDq6rMraHc9doEye6avvP3tZOc7M1q1/OklemCnlliYurLWTxnWZy
-         9x/SI5jcMqToQLHOnXCwnDvwrFftisdUnOM8l6C2OvmXEvEmDqRI+o1eIE8Rzl9IE2tU
-         S4F4f6FdGQzmjxVqI/T7bbGr+MAYqm67cfeeMglaqTL6gKdumcRmKep06NtZjHl8ALMV
-         iw3kdM+PuL0duJ7aJcM85v1vSruaUwt8rZx0/CnxXFrfh8ybrhrvis16E0k2SxGEyhDj
-         TG7nuB0CMlt0acZ7sD3IZ6oqUb52gXtFSKI3UTJeACib9+uIroKE0QP0/yZyCy9gIfm5
-         Tgdg==
-X-Gm-Message-State: AOAM5310+dGHkUmbQiDSsxYRtXF3nVti3Mb14jE284MIfMP3lZ4UoF8H
-        kCk8yFhRwkvBKQG5fGtPLtMyZ9dxV2dvUgw9Fxw1xQ==
-X-Google-Smtp-Source: ABdhPJx6TCWPc2SEfCzteJpHau5fVeFAzpu3/woWXjCJTPJXWczLcVQJTlq8TdaOEjMoEQ2RyqR3+qZ1JA5rfPuXVbA=
-X-Received: by 2002:a19:480f:: with SMTP id v15mr11890068lfa.13.1619424632825;
- Mon, 26 Apr 2021 01:10:32 -0700 (PDT)
+        bh=/5sZfAWMd+ikiAV3bLd2cK6LOqVMDPgtaZ3fFQ7MIjo=;
+        b=WQiv4igbvbcBYlCR4bVmdj3EhjDfU2vpamL81FbRFg962+kFd+wXzLzs6L8geBuvfH
+         Cd+69xlWHihlWoiRYtCabcj5PTygassoGDS8W37Km+TsSZ2jdhHU/fTztUmYA48LnsIw
+         i38ewv2mTCkdf1yE4BRcriIqCAIBQcyhMOKDRdYrD6V7V8IZ8ikD1Cm0hnSu9+80brqK
+         isjm/yvApVa9/1jJL2pRD7VLr2l911Ro0CtziTa/RxCxSEaRIVXGd7H/SjdQk5fsiQU5
+         ZGcLNiXZGF8LMWkrug8BTzGOl63vKCtHddzeIHlcgDv1ZBaz6KHqkaIH90DRoBPykA52
+         SfGw==
+X-Gm-Message-State: AOAM531oqzRKdPpGetFCAwvQm8kpRaQjPQSRTJsUNwoPe7WlTJuGpI1T
+        bAhQX2sAbO9IviZqyYc5MzkcTw4BBi6kawNZGz42MA==
+X-Google-Smtp-Source: ABdhPJxEHRXvZWbIteNosiutZAq75uXJOWKFpitGwuYHp/kosW/z13xxA/NMtqpkwsMIHDFFPNPU7u/7oSW2baD3snk=
+X-Received: by 2002:a2e:b4ba:: with SMTP id q26mr11866288ljm.223.1619424779352;
+ Mon, 26 Apr 2021 01:12:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210423233058.3386115-1-andrii@kernel.org> <20210423233058.3386115-4-andrii@kernel.org>
-In-Reply-To: <20210423233058.3386115-4-andrii@kernel.org>
+References: <20210423233058.3386115-1-andrii@kernel.org> <20210423233058.3386115-5-andrii@kernel.org>
+In-Reply-To: <20210423233058.3386115-5-andrii@kernel.org>
 From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Mon, 26 Apr 2021 09:10:22 +0100
-Message-ID: <CACAyw98yy6K_TPRs2Q7E8FbW2tocfFWRgRRoEM15NTBcRFV2+Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/5] selftests/bpf: fix BPF_CORE_READ_BITFIELD() macro
+Date:   Mon, 26 Apr 2021 09:12:48 +0100
+Message-ID: <CACAyw9_RqR9m8zBTTO+qKzs9K86sthbHRjGH2m0yyE7zvNFYSg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/5] selftests/bpf: fix field existence CO-RE
+ reloc tests
 To:     Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
@@ -59,11 +60,25 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Sat, 24 Apr 2021 at 00:36, Andrii Nakryiko <andrii@kernel.org> wrote:
 >
-> Fix BPF_CORE_READ_BITFIELD() macro used for reading CO-RE-relocatable
-> bitfields. Missing breaks in a switch caused 8-byte reads always. This can
-> confuse libbpf because it does strict checks that memory load size corresponds
-> to the original size of the field, which in this case quite often would be
-> wrong.
+> Negative field existence cases for have a broken assumption that FIELD_EXISTS
+> CO-RE relo will fail for fields that match the name but have incompatible type
+> signature. That's not how CO-RE relocations generally behave. Types and fields
+> that match by name but not by expected type are treated as non-matching
+> candidates and are skipped. Error later is reported if no matching candidate
+> was found. That's what happens for most relocations, but existence relocations
+> (FIELD_EXISTS and TYPE_EXISTS) are more permissive and they are designed to
+> return 0 or 1, depending if a match is found. This allows to handle
+> name-conflicting but incompatible types in BPF code easily. Combined with
+> ___flavor suffixes, it's possible to handle pretty much any structural type
+> changes in kernel within the compiled once BPF source code.
+>
+> So, long story short, negative field existence test cases are invalid in their
+> assumptions, so this patch reworks them into a single consolidated positive
+> case that doesn't match any of the fields.
+>
+> Fixes: c7566a69695c ("selftests/bpf: Add field existence CO-RE relocs tests")
+> Reported-by: Lorenz Bauer <lmb@cloudflare.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
 Acked-by: Lorenz Bauer <lmb@cloudflare.com>
 
