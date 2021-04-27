@@ -2,247 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99FF736C9B7
-	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 18:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2F436CA13
+	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 19:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236169AbhD0Qsc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Apr 2021 12:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57518 "EHLO
+        id S235647AbhD0RKT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Apr 2021 13:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237147AbhD0Qsb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Apr 2021 12:48:31 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84C02C061756;
-        Tue, 27 Apr 2021 09:47:47 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id y2so68068872ybq.13;
-        Tue, 27 Apr 2021 09:47:47 -0700 (PDT)
+        with ESMTP id S235593AbhD0RKR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Apr 2021 13:10:17 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5177C061574
+        for <bpf@vger.kernel.org>; Tue, 27 Apr 2021 10:09:31 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id q18-20020adfc5120000b029010c2bdd72adso3080733wrf.16
+        for <bpf@vger.kernel.org>; Tue, 27 Apr 2021 10:09:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ETQT6lTAq70f0FB6uQPtu9Igo0Ar8bHMDLmR+eEFm7Y=;
-        b=ueH3RppL4qFWbHTh5hG8EecMFINQKMooJXgFDDK0ZmVEFO6vr0Cxrxlgio5T8tvCR0
-         jXw2Lxpcbtq+SZj9Cjm47UagqljS/qqtBdQ16RR6YViFI6lk99JSrhkYyBpvugfvt0Xi
-         3qH7BVh/v1mo+XzJGWm2oUMPKgNoeIcZRgBoejYc9VcerbOs8SA7uuULGa3VaxrwnLxJ
-         UTfho0HXv+GROc8rwlWYZ0AwoNW0gN4E76uIfG6alwO9TvwBRoxK1Vqpvh6NjbZWWDKN
-         2RP8+5aq6sbHvb2kkyZUA8JA1iZ6kmfxy39SEVXR6aqKe69XvyJMg62vbc4n5oIWpy+u
-         /8Gw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=mu8pX+qKetUtW12TmI9eJNbJjh/oUdlMUUsluEXLfvw=;
+        b=WCpOjzlkH6FzzoyCziZGd4rXEDGbXBj/lLhRUgVLmERfRaWHFdc+72dNdyUlitF6ya
+         Nh8THY92dUXL/RvjEgqfQZ9SErCn8xmPd3WWoYF+5/4Rra53oi45hgR/ApWgIePwMj55
+         ysdigqlMn0S1XDUQBMGGBjgKFgl4WU13YwTB3jrJ62wP35NPLYqeb0tZ75jA0bTU1xLw
+         DCiMn9dWs10Ozf9ohr0Ciwl4AFL37PuqEvcTkXuXcrRVdmsvTXuX1P/7hgR83jRv9f3x
+         rv8y0fNjNI53NJp90tYLcd4w+M1F8i4BUZrlucc/19+VxwtTC5OuMonAPcACXvOsshed
+         ArNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ETQT6lTAq70f0FB6uQPtu9Igo0Ar8bHMDLmR+eEFm7Y=;
-        b=MM7EA4oSYPwoFoeONqv/ax5/YtssXWFe+xJuMdl/+HltBUjHw9WrqMdAIztD5K3uvF
-         QKP0SjcgG5EX75KbiYW5P0XT3hpnP0PARK7rg+LNfJ9PHG3fEdy6+ffjgIP1myXnz847
-         QNLdBL+gBR7SMVtm+eV6EQNQIwmzOR5vNSMDv/P0ZjSRZrcxx05Xz+0nWj1eRnMb40Zc
-         ys/C0rQLlmoLgPEPX8siIbNfTm7qwb9kUmEiOLOGkp1YlHhqZUyzSN1fUYZOtdVTEZRg
-         bATbFS9TedcQ7BrFykAxXiGPQzbQlOrzqUmGk8kseVjSqwZBbPi5LUHtAHuDNMB/lS9F
-         wt3w==
-X-Gm-Message-State: AOAM532do81SUWAyvTopZASoGvyuZmwxCrp0hoOay6bRW//aHp9epGct
-        jOz/wMLg/7mYbVnAz8NpFEALjspbR0UDkLGP4dg=
-X-Google-Smtp-Source: ABdhPJx1oCpbHV4bPAtF5RERGPMrrFNrsJNU5fWXq7Uuhj9iUENFDPfK4OjcjzILmnD8x4NjDFPq9NoW8ChkBvuqbhI=
-X-Received: by 2002:a25:7507:: with SMTP id q7mr13428956ybc.27.1619542066787;
- Tue, 27 Apr 2021 09:47:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210423002646.35043-1-alexei.starovoitov@gmail.com>
- <20210423002646.35043-13-alexei.starovoitov@gmail.com> <CAEf4BzZofcwskPQXRpV4ZEiVbrzg296t+fSpezFxDLF3ueQBWg@mail.gmail.com>
- <20210427030016.54l2azit7mn2t4ji@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210427030016.54l2azit7mn2t4ji@ast-mbp.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 27 Apr 2021 09:47:35 -0700
-Message-ID: <CAEf4BzZCHatwKGwXNVy3XPx9D2YgnTKa6NUCm3Y90T_oxhAQ7g@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 12/16] libbpf: Change the order of data and
- text relocations.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=mu8pX+qKetUtW12TmI9eJNbJjh/oUdlMUUsluEXLfvw=;
+        b=MvL1GhU4aWiERcnb2R6RBS/NSoo4z2jz2bSujkbAb2x/aMBDk1+5arJpr9mW2RXH00
+         oZIB7RGbdlcKEnaOy5gs/M0HHkM/ESRw8x5kzznCK+KJJfo7P5bSRSB42djHccpn1Se8
+         koK+/TD7UO2iVfhVjYqeRcS35C9aAeJR9y/PQZYRIyI/y4aaitmUMMca5cfxOgiUA6MR
+         yQr/iS+go0QvGe7CevLYE6RoqSW5EhdvlFdaHy8SltA9t4akAF/ATrSvLx6gVThhdN9H
+         WYlADK/tg3XNRecbsPuzt6wMg4kiH1TKuZpHtRuG+aMaevqbqcvTGaBn/8PQ6OvAwls3
+         qcog==
+X-Gm-Message-State: AOAM530oG3sK9S9YBwv3e0Cxc5QmJoIi7mI3eh1Q9WJhMyaDPILMHvqy
+        qeJTWH8pGE+EEFkP8nhmo7eUuH/j33jtDU9jQy2E22e47KXRXCvVLXZJOg502QledoccCRD5p//
+        8UKOY55eQUOJEFLLUiXIfzkE4B73u04ld7wD6U3wOjGXEmLknDrZR4OOpBgppacA=
+X-Google-Smtp-Source: ABdhPJyefHhcmwYReiM2A2TwzgIWtD0xJux9CmXCPPb97LV9WTjsEUBW+WDFYB4DSs6Bi2ggVQYpKTRblq6tYg==
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a7b:c5c1:: with SMTP id
+ n1mr5257391wmk.83.1619543369004; Tue, 27 Apr 2021 10:09:29 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 17:08:59 +0000
+Message-Id: <20210427170859.579924-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+Subject: [PATCH bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 8:00 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Apr 26, 2021 at 10:29:09AM -0700, Andrii Nakryiko wrote:
-> > On Thu, Apr 22, 2021 at 5:27 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > From: Alexei Starovoitov <ast@kernel.org>
-> > >
-> > > In order to be able to generate loader program in the later
-> > > patches change the order of data and text relocations.
-> > > Also improve the test to include data relos.
-> > >
-> > > If the kernel supports "FD array" the map_fd relocations can be processed
-> > > before text relos since generated loader program won't need to manually
-> > > patch ld_imm64 insns with map_fd.
-> > > But ksym and kfunc relocations can only be processed after all calls
-> > > are relocated, since loader program will consist of a sequence
-> > > of calls to bpf_btf_find_by_name_kind() followed by patching of btf_id
-> > > and btf_obj_fd into corresponding ld_imm64 insns. The locations of those
-> > > ld_imm64 insns are specified in relocations.
-> > > Hence process all data relocations (maps, ksym, kfunc) together after call relos.
-> > >
-> > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > > ---
-> > >  tools/lib/bpf/libbpf.c                        | 86 +++++++++++++++----
-> > >  .../selftests/bpf/progs/test_subprogs.c       | 13 +++
-> > >  2 files changed, 80 insertions(+), 19 deletions(-)
-> > >
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > index 17cfc5b66111..c73a85b97ca5 100644
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> > > @@ -6379,11 +6379,15 @@ bpf_object__relocate_data(struct bpf_object *obj, struct bpf_program *prog)
-> > >                         insn[0].imm = ext->ksym.kernel_btf_id;
-> > >                         break;
-> > >                 case RELO_SUBPROG_ADDR:
-> > > -                       insn[0].src_reg = BPF_PSEUDO_FUNC;
-> > > -                       /* will be handled as a follow up pass */
-> > > +                       if (insn[0].src_reg != BPF_PSEUDO_FUNC) {
-> > > +                               pr_warn("prog '%s': relo #%d: bad insn\n",
-> > > +                                       prog->name, i);
-> > > +                               return -EINVAL;
-> > > +                       }
-> >
-> > given SUBPROG_ADDR is now handled similarly to RELO_CALL in a
-> > different place, I'd probably drop this error check and just combine
-> > RELO_SUBPROG_ADDR and RELO_CALL cases with just a /* handled already
-> > */ comment.
->
-> I prefer to keep them separate. I've hit this pr_warn couple times
-> while messing with relos and it saved my time.
-> I bet it will save time to the next developer too.
+One of our benchmarks running in (Google-internal) CI pushes data
+through the ringbuf faster than userspace is able to consume
+it. In this case it seems we're actually able to get >INT_MAX entries
+in a single ringbuf_buffer__consume call. ASAN detected that cnt
+overflows in this case.
 
-hmm.. ok, not critical to me
+Fix by just setting a limit on the number of entries that can be
+consumed.
 
->
-> > > +                       /* handled already */
-> > >                         break;
-> > >                 case RELO_CALL:
-> > > -                       /* will be handled as a follow up pass */
-> > > +                       /* handled already */
-> > >                         break;
-> > >                 default:
-> > >                         pr_warn("prog '%s': relo #%d: bad relo type %d\n",
-> > > @@ -6552,6 +6556,31 @@ static struct reloc_desc *find_prog_insn_relo(const struct bpf_program *prog, si
-> > >                        sizeof(*prog->reloc_desc), cmp_relo_by_insn_idx);
-> > >  }
-> > >
-> > > +static int append_subprog_relos(struct bpf_program *main_prog, struct bpf_program *subprog)
-> > > +{
-> > > +       int new_cnt = main_prog->nr_reloc + subprog->nr_reloc;
-> > > +       struct reloc_desc *relos;
-> > > +       size_t off = subprog->sub_insn_off;
-> > > +       int i;
-> > > +
-> > > +       if (main_prog == subprog)
-> > > +               return 0;
-> > > +       relos = libbpf_reallocarray(main_prog->reloc_desc, new_cnt, sizeof(*relos));
-> > > +       if (!relos)
-> > > +               return -ENOMEM;
-> > > +       memcpy(relos + main_prog->nr_reloc, subprog->reloc_desc,
-> > > +              sizeof(*relos) * subprog->nr_reloc);
-> > > +
-> > > +       for (i = main_prog->nr_reloc; i < new_cnt; i++)
-> > > +               relos[i].insn_idx += off;
-> >
-> > nit: off is used only here, so there is little point in having it as a
-> > separate var, inline?
->
-> sure.
->
-> > > +       /* After insn_idx adjustment the 'relos' array is still sorted
-> > > +        * by insn_idx and doesn't break bsearch.
-> > > +        */
-> > > +       main_prog->reloc_desc = relos;
-> > > +       main_prog->nr_reloc = new_cnt;
-> > > +       return 0;
-> > > +}
-> > > +
-> > >  static int
-> > >  bpf_object__reloc_code(struct bpf_object *obj, struct bpf_program *main_prog,
-> > >                        struct bpf_program *prog)
-> > > @@ -6560,18 +6589,32 @@ bpf_object__reloc_code(struct bpf_object *obj, struct bpf_program *main_prog,
-> > >         struct bpf_program *subprog;
-> > >         struct bpf_insn *insns, *insn;
-> > >         struct reloc_desc *relo;
-> > > -       int err;
-> > > +       int err, i;
-> > >
-> > >         err = reloc_prog_func_and_line_info(obj, main_prog, prog);
-> > >         if (err)
-> > >                 return err;
-> > >
-> > > +       for (i = 0; i < prog->nr_reloc; i++) {
-> > > +               relo = &prog->reloc_desc[i];
-> > > +               insn = &main_prog->insns[prog->sub_insn_off + relo->insn_idx];
-> > > +
-> > > +               if (relo->type == RELO_SUBPROG_ADDR)
-> > > +                       /* mark the insn, so it becomes insn_is_pseudo_func() */
-> > > +                       insn[0].src_reg = BPF_PSEUDO_FUNC;
-> > > +       }
-> > > +
-> >
-> > This will do the same work over and over each time we append a subprog
-> > to main_prog. This should logically follow append_subprog_relos(), but
-> > you wanted to do it for main_prog with the same code, right?
->
-> It cannot follow append_subprog_relos.
-> It has to be done before the loop below.
-> Otherwise !insn_is_pseudo_func() won't catch it and all ld_imm64 insns
-> will be considered which will make the loop below more complex and slower.
-> The find_prog_insn_relo() will be called a lot more times.
-> !relo condition would be treated different ld_imm64 vs call insn, etc.
+Fixes: bf99c936f947 (libbpf: Add BPF ring buffer support)
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
+---
+ tools/lib/bpf/ringbuf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-if you process main_prog->insns first all the calls to subprogs would
-be updated, then it recursively would do this right before a new
-subprog is added (initial call is bpf_object__reloc_code(obj, prog,
-prog) where prog is entry-point program). But either way I'm not
-suggesting doing this and splitting this logic into two places.
+diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+index e7a8d847161f..445a21df0934 100644
+--- a/tools/lib/bpf/ringbuf.c
++++ b/tools/lib/bpf/ringbuf.c
+@@ -213,8 +213,8 @@ static int ringbuf_process_ring(struct ring* r)
+ 	do {
+ 		got_new_data = false;
+ 		prod_pos = smp_load_acquire(r->producer_pos);
+-		while (cons_pos < prod_pos) {
++		/* Don't read more than INT_MAX, or the return vale won't make sense. */
++		while (cons_pos < prod_pos && cnt < INT_MAX) {
+ 			len_ptr = r->data + (cons_pos & r->mask);
+ 			len = smp_load_acquire(len_ptr);
 
->
-> > How about instead doing this before we start appending subprogs to
-> > main_progs? I.e., do it explicitly in bpf_object__relocate() before
-> > you start code relocation loop.
->
-> Not sure I follow.
-> Do another loop:
->  for (i = 0; i < obj->nr_programs; i++)
->     for (i = 0; i < prog->nr_reloc; i++)
->       if (relo->type == RELO_SUBPROG_ADDR)
->       ?
-> That's an option too.
-> I can do that if you prefer.
-> It felt cleaner to do this mark here right before the loop below that needs it.
+--
+2.31.1.498.g6c1eba8ee3d-goog
 
-Yes, I'm proposing to do another loop in bpf_object__relocate() before
-we start adding subprogs to main_progs. The reason is that
-bpf_object__reloc_code() is called recursively many times for the same
-main_prog, so doing that here is O(N^2) in the number of total
-instructions in main_prog. It processes the same (already processed)
-instructions many times unnecessarily. It's wasteful and unclean.
-
->
-> > >         for (insn_idx = 0; insn_idx < prog->sec_insn_cnt; insn_idx++) {
-> > >                 insn = &main_prog->insns[prog->sub_insn_off + insn_idx];
-> > >                 if (!insn_is_subprog_call(insn) && !insn_is_pseudo_func(insn))
-> > >                         continue;
-> > >
-> > >                 relo = find_prog_insn_relo(prog, insn_idx);
-> > > +               if (relo && relo->type == RELO_EXTERN_FUNC)
-> > > +                       /* kfunc relocations will be handled later
-> > > +                        * in bpf_object__relocate_data()
-> > > +                        */
-> > > +                       continue;
-> > >                 if (relo && relo->type != RELO_CALL && relo->type != RELO_SUBPROG_ADDR) {
-> > >                         pr_warn("prog '%s': unexpected relo for insn #%zu, type %d\n",
-> > >                                 prog->name, insn_idx, relo->type);
-> >
-> > [...]
->
-> --
