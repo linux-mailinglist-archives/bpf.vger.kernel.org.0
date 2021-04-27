@@ -2,92 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F28636C899
-	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 17:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC7536C8D0
+	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 17:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236501AbhD0PYp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Apr 2021 11:24:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235974AbhD0PYp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Apr 2021 11:24:45 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2316C061574;
-        Tue, 27 Apr 2021 08:24:01 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2so1583992lft.4;
-        Tue, 27 Apr 2021 08:24:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lNaL2ah9NrBs3NDJvQ4orDYg/Cctii97cMTyLokVUCg=;
-        b=Kd62gvXLZUR2IXlsCrX1HKZGYfrGx72EWmaB1FFh5h6NlYYZZ83k1vWhGN8xgbqKxd
-         Rje0uad3OiRr22xFme2GDS7eyS58bRN1BJxnJMsz5ymZ+i726AIRgBCSj3NSQ6gDJv5f
-         jL5dzh9hj/KKfsJs+tbHPjxCVilkQY/J4pHstHvchVp++BznEhgQYwWK2tN398cd5A2M
-         vBq/OM9sleEDS09P9Cl+pV7yqP/dGbNMr/lWV2DS5IcfQJ4r/1IGJzDEYQh7xM8R5jG0
-         9OKHwYVCUFL2+5azg6So7AapqhdaEEfGQlh1U+iJM5nHB1L4uVN4/8x4vZ2s1zY0RyVP
-         wTLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lNaL2ah9NrBs3NDJvQ4orDYg/Cctii97cMTyLokVUCg=;
-        b=rVnnFH/g/cRpr+eDC37TuuZBuKUmEHu+wpE+BQwzxLMAPcuYJM/lBq0uzpIjKLUtvp
-         46W7WJwTJTzKFh/M+eUcuZXUyMpsI1hCzudM+fywS8+mifRitdRpxvc/1f0u4Mx+DzNq
-         TG1MFyTqJbSYPHS5XZe64wTOKGRBglk9lFuBIziM/LknbFs506E87jM7327htjIJSIOP
-         wWXezmEBUbvBjr1tkD5v0xiGktL+Q2hz6rgNFlOWO/MotztZ8c6e2yVwTAikLgiB8EFC
-         1jHx+Sh8hV//2km2hJogr3Y50x9JQIKNt5ygit/8boW9kYPmAcO+IyB2NUUg+TEF+oxe
-         II6g==
-X-Gm-Message-State: AOAM5319aFTeXOvrdhNFfHST6KKjrPnE510MnyzoqgHjF9y3cUGD4yoy
-        mUW4gG22WnwVsm+rpWDEbl5v7rpEWaliqTZyaP8=
-X-Google-Smtp-Source: ABdhPJw14yxccZCo8NYGNc8jPl6BevtjVSDyr8P+MPJE0WXuVms8XC7tO81Hkf7WAUBK9rdTHBLpTqF64okpoePAdBk=
-X-Received: by 2002:a19:f615:: with SMTP id x21mr17900348lfe.540.1619537040146;
- Tue, 27 Apr 2021 08:24:00 -0700 (PDT)
+        id S230091AbhD0Pkw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Apr 2021 11:40:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229571AbhD0Pkw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Apr 2021 11:40:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8FB806115C;
+        Tue, 27 Apr 2021 15:40:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619538008;
+        bh=Zh4YL3p6gNj3osIPMmgJqkZIDPqOgtBo+K5Ovvj2gVE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ElcobintHHdqAJ/RN28iD4mKuWsAVH4aapg7Oj9vvCGiAi2HHtUduv/O7Fp6l9NGi
+         BdK0STuBu7wUn/IFFG1oiwHlml7vwgNHseBFl20a6nxYcxBLrDq4VWHEyjyg2aRKDs
+         jM69HJElW9H9uNfrO2midWQioeGpf2S8mFSmv6vy36qm39MdOGokd8gK7YN/RugGEr
+         Win2dUMnmx/1QLcp+Yh/H+Pu/sQwPQJZsgq7ovH8a8fyao6WxNLAu3fLEXu8eWWHdt
+         +BgdnA+ZKVZF7eJmMLNEHO8ONhWLJFjp919fv0bhHSM7BoAnCe92zapqZKjG7NTVcJ
+         V85nEFjncPs1Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 84789609CC;
+        Tue, 27 Apr 2021 15:40:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210427112958.773132-1-revest@chromium.org> <CAADnVQJGMU2OAA4cRuD=LmfF3Wn5z0hqo1Uz9nx-K_KWuCA70A@mail.gmail.com>
- <CABRcYmLphttpFGdwq6YCboc_=dwkgpVAOf+Ni9NRiPioqRCokw@mail.gmail.com>
-In-Reply-To: <CABRcYmLphttpFGdwq6YCboc_=dwkgpVAOf+Ni9NRiPioqRCokw@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 27 Apr 2021 08:23:48 -0700
-Message-ID: <CAADnVQKimq9NGvpO3_Nrwa6YRHcPdXvtx5BHbvYsfHnW+wkgBw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Lock bpf_trace_printk's tmp buf before it
- is written to
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] docs: bpf: Fix literal block
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161953800853.25842.5867813619345155071.git-patchwork-notify@kernel.org>
+Date:   Tue, 27 Apr 2021 15:40:08 +0000
+References: <20210424021208.832116-1-hengqi.chen@gmail.com>
+In-Reply-To: <20210424021208.832116-1-hengqi.chen@gmail.com>
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        linux-doc@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 8:20 AM Florent Revest <revest@chromium.org> wrote:
->
-> On Tue, Apr 27, 2021 at 5:08 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Apr 27, 2021 at 4:30 AM Florent Revest <revest@chromium.org> wrote:
-> > >
-> > > bpf_trace_printk uses a shared static buffer to hold strings before they
-> > > are printed. A recent refactoring moved the locking of that buffer after
-> > > it gets filled by mistake.
-> > >
-> > > Fixes: d9c9e4db186a ("bpf: Factorize bpf_trace_printk and bpf_seq_printf")
-> > > Reported-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> > > Signed-off-by: Florent Revest <revest@chromium.org>
-> >
-> > Applied.
->
-> Thanks!
->
-> > Pls send v2 of bstr_printf series as soon as possible. Thanks!
->
-> Sure, I just assumed there would be more reviews on v1. The feedback
-> I'll address is only about the commit description wording but I can
-> send a v2 today.
+Hello:
 
-Yes. Please.
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Sat, 24 Apr 2021 10:12:08 +0800 you wrote:
+> Add a missing colon so that the code block followed can be rendered
+> properly.
+> 
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+>  Documentation/networking/filter.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Here is the summary with links:
+  - [bpf-next] docs: bpf: Fix literal block
+    https://git.kernel.org/bpf/bpf-next/c/2551c2d19c04
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
