@@ -2,111 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F2636CADE
-	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 20:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFE136CAF6
+	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 20:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237442AbhD0SG2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Apr 2021 14:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236552AbhD0SG1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Apr 2021 14:06:27 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A47C061574;
-        Tue, 27 Apr 2021 11:05:44 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 124so14025785lff.5;
-        Tue, 27 Apr 2021 11:05:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=voehpRrgPSUyKAUYqMCooYCC9snBLdd6zp79y1bt9aU=;
-        b=LXUImeXNzzBi3a2W//2YnoQbN9d8sMAeTW8gAjiIk0GVXqo1YUx3iMua+u/ZY4vg3N
-         DCf5T6XxXeebuGhZk9sujNmaemA9YRIob4U8GPmvP7EYTo71DLFzs2Nz2gYZjrR7n2oS
-         v6ywlfFAYrlyWbWiV1zGb3NH1Z/0sixxh5Vy867684O0ohAzOX2rSg8ZB9IVT+a2ylsB
-         fjkNIlzemow8mRzubWbpcGNaZaGEz/a4xjUDo+/15dSKCW5yXMrA/GgvKAFTW48rH0aH
-         MbdY8J7DsBsj4sILhSFQIhazG9O1ojPRbViKLHPk1MbbJi5IkiRiL6Fs0wowRHPZHeF6
-         +WgQ==
+        id S236776AbhD0SQc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Apr 2021 14:16:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28099 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230219AbhD0SQc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 27 Apr 2021 14:16:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619547348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tBv0uUVPXgndSKwcI/R1EYyP8Vi9i5g8yF8CVU5/x80=;
+        b=MVZanwX7Mn3GoLvFWFvIe4Expp0pLN7xFOw2xO/aHtZ9Cl0TE4ELu/d1FV4McO4WwG8LZ7
+        edDoITzvoPP54gm1XFpJ/Z5fewfqH3AXLXxtba/GhKgvNKBNxlTODRirUQniWFj4RI+9lq
+        vh8tHWnM2CfnXMAWFrFLFifW7Lb/2I4=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-fdMypkMZPaWC-WpM32wHAg-1; Tue, 27 Apr 2021 14:15:46 -0400
+X-MC-Unique: fdMypkMZPaWC-WpM32wHAg-1
+Received: by mail-ej1-f69.google.com with SMTP id ne22-20020a1709077b96b02903803a047edeso10221043ejc.3
+        for <bpf@vger.kernel.org>; Tue, 27 Apr 2021 11:15:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=voehpRrgPSUyKAUYqMCooYCC9snBLdd6zp79y1bt9aU=;
-        b=HodtMskljA7eHJJLsziFVFTsKHLpLA1mdy/Ptopiy6PRxdzwho4GXX4KuUOx79AI8M
-         5UOiZt4cYRVD9sjsPXCutMG4Q7VJgPyYybwda6MEQljthHH5hb/gcE6TWbu/KGfoH2p+
-         JbPcQstIX6ubZgCyek1bB41HxSg2l2+3dUPAtlxjGiHzfACzewrJM7Dgb8swDhyYiQlm
-         hpMX2a8dHU/pBGu9YTVMqKM9OS1nzMHP9plVLncEHj0ob8EhIeF1MMfpWnY/TJTsqtKk
-         dsu6oCGPs20FScxzVl8zGxyb4NvXdaCN2k0Uu3dm6hfv9d97TOkVQN7teCkesRWOQJkZ
-         DAFQ==
-X-Gm-Message-State: AOAM532BaVnDtX3jx/wBnWfiopTxs+HB100US4vEAB4Cfzvcv9krtJaX
-        ndZCGCfisKH+F2kaoIrdt7POI6cxLSfjQSMH13E=
-X-Google-Smtp-Source: ABdhPJzw72zeE2/7nP38aq6iRM+kP7rwVWlTw2BFQDLCGuSlHWkgR+cxnHReunB+w6mVyCpN1/L+jYKxKRLjFJ8WRwU=
-X-Received: by 2002:ac2:510d:: with SMTP id q13mr18081232lfb.75.1619546742689;
- Tue, 27 Apr 2021 11:05:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=tBv0uUVPXgndSKwcI/R1EYyP8Vi9i5g8yF8CVU5/x80=;
+        b=GA51DJUa757KewKfEsvlwZwgLmZssN3/VvwxLi/wCfL3mmNNBBKK/uq4TF7cuDBw7c
+         vPKfMl83+qUzOObSsTPczN59iORw4iegfjj0SdPPekjlx+Y9My7Z3wkNLZRG/UJ9unNw
+         eARBC2yac9i5BmnYZwk1gVPG7vTXKHmFV2Fn5DOYFterhh9Gs1OF3vMfsCigf7nkUJPZ
+         GAMp9VfSo1j3jY+T10L/sTbrun28/JQc7GZEHPCB6Vj6dzSM09jRFix8k8IsGCnrMi9O
+         zqQ82bIxRbQ6Ye7LjGz5bUQnTPN6GpH5j7uBzLQSRgJXOVPrudUoTDlT+CLZ4maQeBwp
+         kC2Q==
+X-Gm-Message-State: AOAM530os8ZKQXQGLntuuIROfzEAyb9G5xwUOyw+mq84bVEfrrbVyR2Z
+        q7jv4SKET0GN5SekStTgdydCMcWr0Gsu91sw6oqpUZkL0bCsoORUD3g0u62aVQbBJVaW5MtVMMJ
+        +jwvVAB7dJ3He
+X-Received: by 2002:a17:906:6b89:: with SMTP id l9mr24220367ejr.249.1619547345087;
+        Tue, 27 Apr 2021 11:15:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyn9fTqS18DCoCBMGZsR0vbk8EoFLp4CL4/Yk8hpfKhrBVt3NA+6igTuf6REozJLYJCOdMpkA==
+X-Received: by 2002:a17:906:6b89:: with SMTP id l9mr24220340ejr.249.1619547344857;
+        Tue, 27 Apr 2021 11:15:44 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id z14sm2915754edc.62.2021.04.27.11.15.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Apr 2021 11:15:44 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 82ED4180615; Tue, 27 Apr 2021 20:15:43 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 2/3] libbpf: add low level TC-BPF API
+In-Reply-To: <20210427180202.pepa2wdbhhap3vyg@apollo>
+References: <20210423150600.498490-1-memxor@gmail.com>
+ <20210423150600.498490-3-memxor@gmail.com>
+ <5811eb10-bc93-0b81-2ee4-10490388f238@iogearbox.net>
+ <20210427180202.pepa2wdbhhap3vyg@apollo>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 27 Apr 2021 20:15:43 +0200
+Message-ID: <87fszba90w.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-67-gregkh@linuxfoundation.org> <YIhQsRZ9LgZKlkPw@kroah.com>
-In-Reply-To: <YIhQsRZ9LgZKlkPw@kroah.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 27 Apr 2021 11:05:30 -0700
-Message-ID: <CAADnVQKrsue+0tCCjU9wzGALPqWZXF2vxUH1hJuF7uJkf5x+oQ@mail.gmail.com>
-Subject: Re: [PATCH 066/190] Revert "bpf: Remove unnecessary assertion on fp_old"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 10:59 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Apr 21, 2021 at 02:59:01PM +0200, Greg Kroah-Hartman wrote:
-> > This reverts commit 5bf2fc1f9c88397b125d5ec5f65b1ed9300ba59d.
-> >
-> > Commits from @umn.edu addresses have been found to be submitted in "bad
-> > faith" to try to test the kernel community's ability to review "known
-> > malicious" changes.  The result of these submissions can be found in a
-> > paper published at the 42nd IEEE Symposium on Security and Privacy
-> > entitled, "Open Source Insecurity: Stealthily Introducing
-> > Vulnerabilities via Hypocrite Commits" written by Qiushi Wu (University
-> > of Minnesota) and Kangjie Lu (University of Minnesota).
-> >
-> > Because of this, all submissions from this group must be reverted from
-> > the kernel tree and will need to be re-reviewed again to determine if
-> > they actually are a valid fix.  Until that work is complete, remove this
-> > change to ensure that no problems are being introduced into the
-> > codebase.
-> >
-> > Cc: Aditya Pakki <pakki001@umn.edu>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: https
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >  kernel/bpf/core.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> > index 75244ecb2389..da29211ea5d8 100644
-> > --- a/kernel/bpf/core.c
-> > +++ b/kernel/bpf/core.c
-> > @@ -230,6 +230,8 @@ struct bpf_prog *bpf_prog_realloc(struct bpf_prog *fp_old, unsigned int size,
-> >       struct bpf_prog *fp;
-> >       u32 pages;
-> >
-> > +     BUG_ON(fp_old == NULL);
-> > +
-> >       size = round_up(size, PAGE_SIZE);
-> >       pages = size / PAGE_SIZE;
-> >       if (pages <= fp_old->pages)
-> > --
-> > 2.31.1
-> >
->
-> The original commit here is correct, I'll drop this revert.
+Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
 
-Yes. No need to revert. The original commit removed BUG_ON and it's fine.
-Thanks for checking.
+> On Tue, Apr 27, 2021 at 08:34:30PM IST, Daniel Borkmann wrote:
+>> On 4/23/21 5:05 PM, Kumar Kartikeya Dwivedi wrote:
+>> [...]
+>> >   tools/lib/bpf/libbpf.h   |  92 ++++++++
+>> >   tools/lib/bpf/libbpf.map |   5 +
+>> >   tools/lib/bpf/netlink.c  | 478 ++++++++++++++++++++++++++++++++++++++-
+>> >   3 files changed, 574 insertions(+), 1 deletion(-)
+>> >
+>> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+>> > index bec4e6a6e31d..1c717c07b66e 100644
+>> > --- a/tools/lib/bpf/libbpf.h
+>> > +++ b/tools/lib/bpf/libbpf.h
+>> > @@ -775,6 +775,98 @@ LIBBPF_API int bpf_linker__add_file(struct bpf_linker *linker, const char *filen
+>> >   LIBBPF_API int bpf_linker__finalize(struct bpf_linker *linker);
+>> >   LIBBPF_API void bpf_linker__free(struct bpf_linker *linker);
+>> >
+>> > +enum bpf_tc_attach_point {
+>> > +	BPF_TC_INGRESS,
+>> > +	BPF_TC_EGRESS,
+>> > +	BPF_TC_CUSTOM_PARENT,
+>> > +	_BPF_TC_PARENT_MAX,
+>>
+>> I don't think we need to expose _BPF_TC_PARENT_MAX as part of the API, I would drop
+>> the latter.
+>>
+>
+> Ok, will drop.
+>
+>> > +};
+>> > +
+>> > +/* The opts structure is also used to return the created filters attributes
+>> > + * (e.g. in case the user left them unset). Some of the options that were left
+>> > + * out default to a reasonable value, documented below.
+>> > + *
+>> > + *	protocol - ETH_P_ALL
+>> > + *	chain index - 0
+>> > + *	class_id - 0 (can be set by bpf program using skb->tc_classid)
+>> > + *	bpf_flags - TCA_BPF_FLAG_ACT_DIRECT (direct action mode)
+>> > + *	bpf_flags_gen - 0
+>> > + *
+>> > + *	The user must fulfill documented requirements for each function.
+>>
+>> Not sure if this is overly relevant as part of the bpf_tc_opts in here. For the
+>> 2nd part, I would probably just mention that libbpf internally attaches the bpf
+>> programs with direct action mode. The hw offload may be future todo, and the other
+>> bits are little used anyway; mentioning them here, what value does it have to
+>> libbpf users? I'd rather just drop the 2nd part and/or simplify this paragraph
+>> just stating that the progs are attached in direct action mode.
+>>
+>
+> The goal was to just document whatever attributes were set to by default, but I can see
+> your point. I'll trim it.
+>
+>> > + */
+>> > +struct bpf_tc_opts {
+>> > +	size_t sz;
+>> > +	__u32 handle;
+>> > +	__u32 parent;
+>> > +	__u16 priority;
+>> > +	__u32 prog_id;
+>> > +	bool replace;
+>> > +	size_t :0;
+>> > +};
+>> > +
+>> > +#define bpf_tc_opts__last_field replace
+>> > +
+>> > +struct bpf_tc_ctx;
+>> > +
+>> > +struct bpf_tc_ctx_opts {
+>> > +	size_t sz;
+>> > +};
+>> > +
+>> > +#define bpf_tc_ctx_opts__last_field sz
+>> > +
+>> > +/* Requirements */
+>> > +/*
+>> > + * @ifindex: Must be > 0.
+>> > + * @parent: Must be one of the enum constants < _BPF_TC_PARENT_MAX
+>> > + * @opts: Can be NULL, currently no options are supported.
+>> > + */
+>>
+>> Up to Andrii, but we don't have such API doc in general inside libbpf.h, I
+>> would drop it for the time being to be consistent with the rest (same for
+>> others below).
+>>
+>
+> I think we need to keep this somewhere. We dropped bpf_tc_info since it wasn't
+> really serving any purpose, but that meant we would put the only extra thing it
+> returned (prog_id) into bpf_tc_opts. That means we also need to take care that
+> it is unset (along with replace) in functions where it isn't used, to allow for
+> reuse for some future purpose. If we don't document that the user needs to unset
+> them whenever working with bpf_tc_query and bpf_tc_detach, how are they supposed
+> to know?
+>
+> Maybe a man page and/or a blog post would be better? Just putting it above the
+> function seemed best for now.
+
+You could document it together with the struct definition instead of for
+each function? See the inline comments in bpf_object_open_opts for instance...
+
+-Toke
+
