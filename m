@@ -2,82 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241C336BCFC
-	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 03:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D123136BD13
+	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 04:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233916AbhD0BoH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Apr 2021 21:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55400 "EHLO
+        id S232295AbhD0CCs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Apr 2021 22:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbhD0BoG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Apr 2021 21:44:06 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04B5C061574;
-        Mon, 26 Apr 2021 18:43:22 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id a13so12555029ljp.2;
-        Mon, 26 Apr 2021 18:43:22 -0700 (PDT)
+        with ESMTP id S231128AbhD0CCr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Apr 2021 22:02:47 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE72C061574;
+        Mon, 26 Apr 2021 19:02:03 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id gq23-20020a17090b1057b0290151869af68bso6259722pjb.4;
+        Mon, 26 Apr 2021 19:02:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zp0vZK1HOIEnCaF1j4QvP3uhz9HZEqcrRabmR9n6JD4=;
-        b=eaWccpH9BeLVn3z4vXUXlTDN+aKp6mlukx5GQob5DxJJzEmg7grjS8rnh8bgYIQbzw
-         WPVkHu002LsPhDGIhgFlmGiZtnJ6ufDKMk2jJZvM4znqrYI178KGaKtv4Wd8SmziGgQi
-         Fa5oFh2ObVO1oHGNHq/ncrk6tbbQuzWEtBCp4O5+6MPW9YriWf+Ag9By6Lwu/wNoAyMQ
-         CUeTfaq+T6aHtBFsnBhWRN8NPc349grBBY+OVoCcF7wzLs6CPBO7bJ9eZh8Hn+1R0FwF
-         m4ZcUkq5ZJze7luZ0irSF9mcwXZxy64AbqQ59LXW5wGIbMRQfS2vdVMtt2CxtELWQVFo
-         bYAQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tbj9VKgVn6Bk4ORNiBYwvlVORz9AgJEtk02rBGpSXq0=;
+        b=C1r6ovIfavI2g/TCNgHOM+JGeChWgb/QnZhBY3CvVRLCANF0jZpnCVllNDiOqoe4eO
+         RHnsEy91ZX1udA0A8wkMmwwoy3ciQfz+tSMyqIyiClGaKB8dLvQ392zX2rK7uVq0Sb0j
+         sSIaZmPkeq8k5EsyyD1OsFXCXUOspP6+alCCpjI58OPXn3mvT8DUuvsbkVJaCxhiXtNN
+         hz0a/IaXN9sjGc1StXW/7WEag10oT3dundo3/blZwmf3OsLwAMw1OocJTVBGzqkEdhwg
+         sWWJmr8XX2tIv6oqlLaNJGoXYTAatWyFH7SbUH1d9stBfJ8D8W/V+DME9qXTS8xw+J2S
+         bTyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zp0vZK1HOIEnCaF1j4QvP3uhz9HZEqcrRabmR9n6JD4=;
-        b=U76S6TwlP/ZoNOhwENi5zZSeVz+P0DgueR/iyRAUyp50ZWmRAgwbs/Mhe9YeqmaL+t
-         dwuHIsK7woO/bXt3zAXsgxkmkkr3iUtofHz98K4lLnzSa7O57pf+D860g6w3ZBT12oLN
-         hNB/M7Kvy8/BT5Iklq7eA1NOI8zisyg39HqB5WrW6t235+WiFhC9DjuBCFrKz847kIvr
-         EM2w+ern0xgypC5L913u/x9mJR0GNAV/pQi7HqgzijeT3cVQ7AtfKoM41uaNnjJPFKG9
-         hpj8hGfUjLTa0h02aNInkJiy7D2moxj3H97n5u7rXHCeGVdDqSBcbpsTRVl6OQxgAMCo
-         7Tzg==
-X-Gm-Message-State: AOAM531fWTPqeMUwuZy/eMkZsHWomu8EmfJVYAIU5dzqc2rMS5aG0FWc
-        ZY2xJJFmdpFeIFJRyz8J2egkIrFtG8xb3O8zFZ/J7rYw
-X-Google-Smtp-Source: ABdhPJwCLbshQTHyEWRT0gUh1x20EkOdO830vSTIjRPVP1Af7CrOmvyGmkgu+wLMXNVteMtkAtQsMGS/xW6wDMePeWs=
-X-Received: by 2002:a2e:6c0d:: with SMTP id h13mr14532313ljc.486.1619487800633;
- Mon, 26 Apr 2021 18:43:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210426192949.416837-1-andrii@kernel.org>
-In-Reply-To: <20210426192949.416837-1-andrii@kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tbj9VKgVn6Bk4ORNiBYwvlVORz9AgJEtk02rBGpSXq0=;
+        b=ChUOsuvJCnrQZwzdLysyN4AcRiB2Yb8S7kINUz4LRluS22gb4sV326wCCYQ0p046fN
+         R5skNfrpzyB42+FfdN/kKszCcbZW0vFCbiCPz47ScqH6xLN7+osCxZdMlL2w1jniTuEG
+         ly48pmcYiTosF1BTlZLdYgcz00eobhxi1sM/TsXutT6RQ6CTn2cC4wjXJX5A/fnhVqir
+         kI8VJQX2b4i4KOWHUOEGLS5JKVF876QZua6EfMuztuJMauXW+Nne7COl3MpQmQ9TJvU8
+         yS0oatAxXIOdo6vikRs8z0uZ22lS56Z35MC5blnWpTv6Ieky1mSrWU3NG5+v2vv0sDCQ
+         QjqQ==
+X-Gm-Message-State: AOAM531c38aW3BIXs6TvNTelH2v5ShT5VVXHZT0ezK9qX4yOS6ZjrLFz
+        d7r3sfSPUO+ffGVATgvdBhA=
+X-Google-Smtp-Source: ABdhPJy2C4Gr3ACDAf/4sEH3KZ51qDv9lXN6X5ZUB7aaC5DdWxz3o7FApQ5HkEHcz87mw1mIVzvXSQ==
+X-Received: by 2002:a17:902:d706:b029:e6:90aa:24e0 with SMTP id w6-20020a170902d706b02900e690aa24e0mr21952513ply.42.1619488923403;
+        Mon, 26 Apr 2021 19:02:03 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:1ad0])
+        by smtp.gmail.com with ESMTPSA id g14sm546883pjh.28.2021.04.26.19.02.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Apr 2021 19:02:02 -0700 (PDT)
+Date:   Mon, 26 Apr 2021 19:01:59 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 26 Apr 2021 18:43:09 -0700
-Message-ID: <CAADnVQKQ5ZddWKtEbWf16xbN-QXuLP8DZJbHg48y=RyHJ2v8EA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 0/5] CO-RE relocation selftests fixes
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: Re: [RFC Patch bpf-next] bpf: introduce bpf timer
+Message-ID: <20210427020159.hhgyfkjhzjk3lxgs@ast-mbp.dhcp.thefacebook.com>
+References: <20210402192823.bqwgipmky3xsucs5@ast-mbp>
+ <CAM_iQpUfv7c19zFN1Y5-cSUiVwpk0bmtBMSxZoELgDOFCQ=qAw@mail.gmail.com>
+ <20210402234500.by3wigegeluy5w7j@ast-mbp>
+ <CAM_iQpWf2aYbY=tKejb=nx7LWBLo1woTp-n4wOLhkUuDCz8u-Q@mail.gmail.com>
+ <20210412230151.763nqvaadrrg77kd@ast-mbp.dhcp.thefacebook.com>
+ <CAM_iQpWePmmpr0RKqCrQ=NPiGrq2Tx9OU9y3e4CTzFjvh5t47w@mail.gmail.com>
+ <CAADnVQLsmULxJYq9rHS4xyg=VAUeexJTh35vTWTVgjeqwX4D6g@mail.gmail.com>
+ <CAM_iQpVtxgZNeqh4_Pqftc3D163JnRvP3AZRuFrYNeyWLgVBVA@mail.gmail.com>
+ <CAADnVQLFehCeQRbwEQ9VM-=Y3V3es2Ze8gFPs6cZHwNH0Ct7vw@mail.gmail.com>
+ <CAM_iQpWDhoY_msU=AowHFq3N3OuQpvxd2ADP_Z+gxBfGduhrPA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM_iQpWDhoY_msU=AowHFq3N3OuQpvxd2ADP_Z+gxBfGduhrPA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 12:30 PM Andrii Nakryiko <andrii@kernel.org> wrote:
->
-> Lorenz Bauer noticed that core_reloc selftest has two inverted CHECK()
-> conditions, allowing failing tests to pass unnoticed. Fixing that opened up
-> few long-standing (field existence and direct memory bitfields) and one recent
-> failures (BTF_KIND_FLOAT relos).
->
-> This patch set fixes core_reloc selftest to capture such failures reliably in
-> the future. It also fixes all the newly failing tests. See individual patches
-> for details.
->
-> This patch set also completes a set of ASSERT_xxx() macros, so now there
-> should be a very little reason to use verbose and error-prone generic CHECK()
-> macro.
->
-> v1->v2:
->   - updated bpf_core_fields_are_compat() comment to mention FLOAT (Lorenz).
+On Mon, Apr 26, 2021 at 04:37:19PM -0700, Cong Wang wrote:
+> On Mon, Apr 26, 2021 at 4:05 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Apr 26, 2021 at 4:00 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > >
+> > > Hi, Alexei
+> > >
+> > > On Wed, Apr 14, 2021 at 9:25 PM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Wed, Apr 14, 2021 at 9:02 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > > > >
+> > > > > Then how do you prevent prog being unloaded when the timer callback
+> > > > > is still active?
+> > > >
+> > > > As I said earlier:
+> > > > "
+> > > > If prog refers such hmap as above during prog free the kernel does
+> > > > for_each_map_elem {if (elem->opaque) del_timer().}
+> > > > "
+> > >
+> > > I have discussed this with my colleagues, sharing timers among different
+> > > eBPF programs is a must-have feature for conntrack.
+> > >
+> > > For conntrack, we need to attach two eBPF programs, one on egress and
+> > > one on ingress. They share a conntrack table (an eBPF map), and no matter
+> > > we use a per-map or per-entry timer, updating the timer(s) could happen
+> > > on both sides, hence timers must be shared for both.
+> > >
+> > > So, your proposal we discussed does not work well for this scenario.
+> >
+> > why? The timer inside the map element will be shared just fine.
+> > Just like different progs can see the same map value.
+> 
+> Hmm? In the above quotes from you, you suggested removing all the
+> timers installed by one eBPF program when it is freed, but they could be
+> still running independent of which program installs them.
 
-Applied.
+Right. That was before the office hours chat where we discussed an approach
+to remove timers installed by this particular prog only.
+The timers armed by other progs in the same map would be preserved.
+
+> In other words, timers are independent of other eBPF programs, so
+> they should not have an owner. With your proposal, the owner of a timer
+> is the program which contains the subprog (or callback) of the timer.
+
+right. so?
+How is this anything to do with "sharing timers among different eBPF programs"?
+
+> >
+> > Also if your colleagues have something to share they should be
+> > posting to the mailing list. Right now you're acting as a broken phone
+> > passing info back and forth and the knowledge gets lost.
+> > Please ask your colleagues to participate online.
+> 
+> They are already in CC from the very beginning. And our use case is
+> public, it is Cilium conntrack:
+> https://github.com/cilium/cilium/blob/master/bpf/lib/conntrack.h
+> 
+> The entries of the code are:
+> https://github.com/cilium/cilium/blob/master/bpf/bpf_lxc.c
+> 
+> The maps for conntrack are:
+> https://github.com/cilium/cilium/blob/master/bpf/lib/conntrack_map.h
+
+If that's the only goal then kernel timers are not needed.
+cilium conntrack works well as-is.
