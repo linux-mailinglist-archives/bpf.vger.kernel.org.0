@@ -2,114 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0682436CF3C
-	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 01:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5FF436CF43
+	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 01:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239185AbhD0XGm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Apr 2021 19:06:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238340AbhD0XGm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Apr 2021 19:06:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D8E661404
-        for <bpf@vger.kernel.org>; Tue, 27 Apr 2021 23:05:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619564758;
-        bh=bFq91+wLKJQRSGqSZUDMiKbKQv489DmBnnoPHMaipC0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=F9g7ogeuaeGuK8E6M4wsY/KsStsmoCvnPTUbJxNEnBWJ/hbepbbxwg7rklNeKZay5
-         y69N2IeNEHdmcvMQuWNRzVInKLsg9eUVyD5uyfvRTuoSbu5707hOsIPY+LvtfPlAJK
-         0+GJuQCk+K+GJcKcpklvO/0tUkhfDQYrcSKYi/cOiUg+nwtOKTHbFkRLDmAuoQe5ZC
-         XOdQkNdztiqwenZI/2yMVqKq6qlKcI407Qmk55uJj9/vDZRhrVbKchXXWWP4NX7B/J
-         2H/hFN/ywykL9UE3y7Lbl9CtRTXL9YM+tiigSU266+hhpz6Y/5bk6egP5CLm+MCRC1
-         2hiA4c6pFprnA==
-Received: by mail-lf1-f41.google.com with SMTP id 124so15129489lff.5
-        for <bpf@vger.kernel.org>; Tue, 27 Apr 2021 16:05:58 -0700 (PDT)
-X-Gm-Message-State: AOAM531bD4GJCtoUktnGZ7LoljsifhyY9A+NmK0cFt4HQN6bMOr13kuG
-        7JJws72+/v01r4KSxpELiYBGZ93ewEtaeTr9QbITaA==
-X-Google-Smtp-Source: ABdhPJxsZ6v+mxsUFoXzh/FT+O/MG75upEAO8bufMjCXZ7qFIi7idLgKAL2HtVk+t5jLV9YS690ht3reB3J1AkFH/04=
-X-Received: by 2002:a05:6512:21c2:: with SMTP id d2mr17768323lft.424.1619564756699;
- Tue, 27 Apr 2021 16:05:56 -0700 (PDT)
+        id S235703AbhD0XMa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Apr 2021 19:12:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236547AbhD0XMa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Apr 2021 19:12:30 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21ED8C061574;
+        Tue, 27 Apr 2021 16:11:45 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id h10so71919359edt.13;
+        Tue, 27 Apr 2021 16:11:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8MeAGMfgeHTcQrWCgz7DMd0TFO2Z0W2VrqifAfSumtY=;
+        b=YElXGtLO0eaPVfSw7qtth17uaWiS3c0e27OcmZ/qifGI8BGUtgjFYV45BkoTXp6RPw
+         Ykzi7Wb+LIJjXb4c08wB+4Q0yUKCWEOJ+THzFtDk4gCLNhAcNCgIEaAhC16E46BIzIST
+         9ZyLe43IEyZw5Voy/TRAx7WPi3qxwwCeHZlcPfufanPsrS8dHB4U3OT00c3WERTT+LEb
+         ZMmVhqE+tlOj+QCH0krNUq2y7AFQOfnzazCC6RqHWmJO6R4GZpOFS7JP60rFz4RgBBta
+         LH9w4WTWc+8GuU0PzyMO1kipFfMZFRe8vvAVm4MN18ttIjtMNq3ol2aaEb7oAwpTLoGz
+         W1rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8MeAGMfgeHTcQrWCgz7DMd0TFO2Z0W2VrqifAfSumtY=;
+        b=gMf6UNkLbE02/fY8WSSZm+EAQPbiuGIJ4BeM00eHKvTKDfiXzyIjUcpADSuhquyBPI
+         ytUlTJp11XuavApvjanvSU62wWA/Zc4NkwofR9kNqcEdZWYLeQnwPGRlwMR9e4/t99RW
+         8pr1C5MzGpUVtjKCmLaAQBk27fo1KHjFENwrgqH+yX6ukSMqs1n9yBIUXkiOQsjsMscH
+         oz8r1+Ir7RN3CEB3vVmxcSMI0CM2xOBQsjJYtvYPbEA3vyz2rnfpqRqAHkmoNEuHnwWg
+         GGfw82TEJwOtMoMdbwoiVBnhz+bAG3ozBiKnSp0a/3mCHoaV4wBF1IeNwS6fwzxmPMth
+         5tpg==
+X-Gm-Message-State: AOAM531o4KHZbNmhTgFyKiD53hee8dF+s4gPi7vXcnx3vd+I5UcSG1ib
+        aLldv3SR/tsIsPwCt6uDxrrsGkO4lpc/L7xV9yQ=
+X-Google-Smtp-Source: ABdhPJy1gAiGY7j2SqdaeZxWCcUiGKuryp/um0G4op6vO3r/nLkSv2PhTkJ16EnwwSEisg8Rc8OBTbLND1RBmGYd3J4=
+X-Received: by 2002:a05:6402:447:: with SMTP id p7mr7183878edw.89.1619565103532;
+ Tue, 27 Apr 2021 16:11:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210427170859.579924-1-jackmanb@google.com> <CAEf4BzZimYsgp3AS72U8nOXfryB6dVxQKetT_6yE3xzztdTyZg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZimYsgp3AS72U8nOXfryB6dVxQKetT_6yE3xzztdTyZg@mail.gmail.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Wed, 28 Apr 2021 01:05:45 +0200
-X-Gmail-Original-Message-ID: <CACYkzJ57LqsDBgJpTZ6X-mEabgNK60J=2CJEhUWoQU6wALvQVw@mail.gmail.com>
-Message-ID: <CACYkzJ57LqsDBgJpTZ6X-mEabgNK60J=2CJEhUWoQU6wALvQVw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Brendan Jackman <jackmanb@google.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <CAMfj=-YEh1ZnLB8zye7i-5Y2S015n0qat+FQ6JW7bFKwBUHBPg@mail.gmail.com>
+ <871rax9loz.fsf@kurt>
+In-Reply-To: <871rax9loz.fsf@kurt>
+From:   Tyler S <tylerjstachecki@gmail.com>
+Date:   Tue, 27 Apr 2021 19:11:32 -0400
+Message-ID: <CAMfj=-ZzOLog6NQvgpThSOy_5od_dY4KHd0uojxRxaWQA9kKJg@mail.gmail.com>
+Subject: Re: [PATCH net v2] igb: Fix XDP with PTP enabled
+To:     Kurt Kanzenbach <kurt@linutronix.de>
+Cc:     alexander.duyck@gmail.com, anthony.l.nguyen@intel.com,
+        ast@kernel.org, bigeasy@linutronix.de, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        ilias.apalodimas@linaro.org, intel-wired-lan@lists.osuosl.org,
+        jesse.brandeburg@intel.com, john.fastabend@gmail.com,
+        kuba@kernel.org, lorenzo@kernel.org, netdev@vger.kernel.org,
+        richardcochran@gmail.com, sven.auhagen@voleatech.de,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 11:34 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Mon, Apr 26, 2021 at 10:15 AM Kurt Kanzenbach <kurt@linutronix.de> wrote:
 >
-> On Tue, Apr 27, 2021 at 10:09 AM Brendan Jackman <jackmanb@google.com> wrote:
+> On Sun Apr 25 2021, Tyler S wrote:
+> > Thanks for this work; I was having trouble using XDP on my I354 NIC until this.
 > >
-> > One of our benchmarks running in (Google-internal) CI pushes data
-> > through the ringbuf faster than userspace is able to consume
-> > it. In this case it seems we're actually able to get >INT_MAX entries
-> > in a single ringbuf_buffer__consume call. ASAN detected that cnt
-> > overflows in this case.
+> > Hopefully I have not err'd backporting it to 5.10 -- but I'm seeing
+> > jumbo frames dropped after applying this (though as previously
+> > mentioned, non-skb/full driver XDP programs do now work).
 > >
-> > Fix by just setting a limit on the number of entries that can be
-> > consumed.
-> >
-> > Fixes: bf99c936f947 (libbpf: Add BPF ring buffer support)
-> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> > ---
-> >  tools/lib/bpf/ringbuf.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> > index e7a8d847161f..445a21df0934 100644
-> > --- a/tools/lib/bpf/ringbuf.c
-> > +++ b/tools/lib/bpf/ringbuf.c
-> > @@ -213,8 +213,8 @@ static int ringbuf_process_ring(struct ring* r)
-> >         do {
-> >                 got_new_data = false;
-> >                 prod_pos = smp_load_acquire(r->producer_pos);
-> > -               while (cons_pos < prod_pos) {
-> > +               /* Don't read more than INT_MAX, or the return vale won't make sense. */
-> > +               while (cons_pos < prod_pos && cnt < INT_MAX) {
+> > Looking at the code, I'm not sure why that is.
 >
-> ring_buffer__pool() is assumed to not return until all the enqueued
-> messages are consumed. That's the requirement for the "adaptive"
-> notification scheme to work properly. So this will break that and
-> cause the next ring_buffer__pool() to never wake up.
+> I'm also not sure, yet.
 >
-> We could use __u64 internally and then cap it to INT_MAX on return
-> maybe? But honestly, this sounds like an artificial corner case, if
-> you are producing data faster than you can consume it and it goes
-> beyond INT_MAX, something is seriously broken in your application and
-
-Disclaimer: I don't know what Brendan's benchmark is actually doing
-
-That said, I have seen similar boundaries being reached when
-doing process monitoring and then a kernel gets compiled (esp. with ccache)
-and generates a large amount of process events in a very short span of time.
-Another example is when someone runs a short process in a tight while loop.
-
-I agree it's a matter of tuning, but since these corner cases can be
-easily triggered
-even on real (non CI) systems no matter how much one tunes, I wouldn't
-really call it artificial :)
-
-- KP
-
-> you have more important things to handle :)
+> Can you try with version 3 of this patch [1] and see if there are still
+> issues with jumbo frames? Can you also share the backported patch for
+> v5.10?
 >
-> >                         len_ptr = r->data + (cons_pos & r->mask);
-> >                         len = smp_load_acquire(len_ptr);
-> >
-> > --
-> > 2.31.1.498.g6c1eba8ee3d-goog
-> >
+> Thanks,
+> Kurt
+>
+> [1] - https://lkml.kernel.org/netdev/20210422052617.17267-1-kurt@linutronix.de/
+
+Sorry, I didn't see v3.  I can confirm that v3 fixes the issue I was
+seeing with jumbo frames.
+
+The only part of the patch that differs for 5.10 is the hunk I'll
+include inline.  Thanks again for your work!
+
+Cheers,
+Tyler
+@@ -8720,11 +8716,22 @@ static int igb_clean_rx_irq(struct
+igb_q_vector *q_vector, const int budget)
+                dma_rmb();
+
+                rx_buffer = igb_get_rx_buffer(rx_ring, size, &rx_buf_pgcnt);
++               pktbuf = page_address(rx_buffer->page) + rx_buffer->page_offset;
++
++               /* pull rx packet timestamp if available and valid */
++               if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
++                       timestamp = igb_ptp_rx_pktstamp(rx_ring->q_vector,
++                                                       pktbuf);
++
++                       if (timestamp) {
++                               pkt_offset += IGB_TS_HDR_LEN;
++                               size -= IGB_TS_HDR_LEN;
++                       }
++               }
+
+                /* retrieve a buffer from the ring */
+                if (!skb) {
+-                       xdp.data = page_address(rx_buffer->page) +
+-                                  rx_buffer->page_offset;
++                       xdp.data = pktbuf + pkt_offset;
+                        xdp.data_meta = xdp.data;
+                        xdp.data_hard_start = xdp.data -
+                                              igb_rx_offset(rx_ring);
