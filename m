@@ -2,436 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D7536C761
-	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 15:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCDE36C83D
+	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 17:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236342AbhD0N4v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Apr 2021 09:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236074AbhD0N4n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Apr 2021 09:56:43 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD78C061574
-        for <bpf@vger.kernel.org>; Tue, 27 Apr 2021 06:55:59 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id a22-20020a05600c2256b0290142870824e9so1114442wmm.0
-        for <bpf@vger.kernel.org>; Tue, 27 Apr 2021 06:55:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6nPFpTlkuCJlhgN+yJCTcFtqy6aXIl58iF6VVRx1Jsg=;
-        b=SCzVaTea+5XmVjh3JZ/kP2Q5AE1PUWff/sOL0BXRTKt48H3neP3C7Wuz0XNqopECqs
-         0+PXy6LXAVll3s0hJfv/dII7OciRLH+Mh95MCHHv3Xa5VIgYYlSgRn0hQjwmbiMkJm+I
-         gcGdnrGrYhTNnp263RF61hydr6Fgw8OMg3AulsG7EN9Cxi8PHBeWezylQVdIaFkfv3+P
-         UOFn1FVeM+l7/WX2GXa1vZaEsipb6yACGPZykpZXgODVlchwCkiRbZAiOMJ0V7JFAWu/
-         50WeLNRK8ypbpp1wbHOGvjMejMYif6MwKIcuEuNpQk3uli1wYINC9xRyicYIst+u6Qjk
-         1dyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6nPFpTlkuCJlhgN+yJCTcFtqy6aXIl58iF6VVRx1Jsg=;
-        b=craZidyWkJRJgR9ziTHXa17eLiagGVc5oN675iwHEyMv109s6fjmDgQuUmjdwmR23I
-         BC8u1WJdbxcrvY6zcET6TbpOpwaBlb40eK3S+m/z4wndCoh3qZVJlQejNFb9TQa0gIgK
-         yh3oy15z+nMisxPpDvEysqRIhy41gorZkvvd8eWnERikRuYItIs7sF9WjH6Z+RTm/gei
-         Ujq3BgTRU6PvSo84ei6UvvcZmWwRAx5pQ1qTljCTEvkiKaARmhpzGuYTSOarsWfkdqfU
-         yWvmduJttfskl14HPvYGcSiJN+NZW5Ofz3jbCGtAhFqrKFcnRxCW6oZS1BTjr6iXbAXe
-         DcwA==
-X-Gm-Message-State: AOAM530E3IxoA7QxREydkbSsjlVaWZUrTj3fe9r7Wlx1R82ZlXtN7KgI
-        iphSfa3wUPq1pXL+0fjAtVfykXe5MedB
-X-Google-Smtp-Source: ABdhPJzV68F8OXHG+JsiAAsh3GOnADREol3mXBi1TRc/3IGE7X/3MMJ/v2bSjziLEx6lVI0YZ/90rw==
-X-Received: by 2002:a1c:7fcd:: with SMTP id a196mr4570320wmd.180.1619531757280;
-        Tue, 27 Apr 2021 06:55:57 -0700 (PDT)
-Received: from balnab.. (212-51-151-38.fiber7.init7.net. [212.51.151.38])
-        by smtp.gmail.com with ESMTPSA id t7sm1086991wrw.60.2021.04.27.06.55.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 06:55:56 -0700 (PDT)
-From:   Jussi Maki <joamaki@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     daniel@iogearbox.net, Jussi Maki <joamaki@gmail.com>
-Subject: [PATCH bpf 2/2] selftests/bpf: Add test for bpf_skb_change_head
-Date:   Tue, 27 Apr 2021 13:55:50 +0000
-Message-Id: <20210427135550.807355-2-joamaki@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210427135550.807355-1-joamaki@gmail.com>
-References: <20210427135550.807355-1-joamaki@gmail.com>
+        id S235508AbhD0PFR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Apr 2021 11:05:17 -0400
+Received: from www62.your-server.de ([213.133.104.62]:59814 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235659AbhD0PFR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Apr 2021 11:05:17 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lbPGJ-000DeM-Tf; Tue, 27 Apr 2021 17:04:31 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lbPGJ-000Nub-K3; Tue, 27 Apr 2021 17:04:31 +0200
+Subject: Re: [PATCH bpf-next v4 2/3] libbpf: add low level TC-BPF API
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org
+References: <20210423150600.498490-1-memxor@gmail.com>
+ <20210423150600.498490-3-memxor@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5811eb10-bc93-0b81-2ee4-10490388f238@iogearbox.net>
+Date:   Tue, 27 Apr 2021 17:04:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210423150600.498490-3-memxor@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26153/Tue Apr 27 13:09:27 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adds test to check that bpf_skb_change_head can be used
-in combination with bpf_redirect_peer to redirect a packet
-from L3 device to veth.
+On 4/23/21 5:05 PM, Kumar Kartikeya Dwivedi wrote:
+[...]
+>   tools/lib/bpf/libbpf.h   |  92 ++++++++
+>   tools/lib/bpf/libbpf.map |   5 +
+>   tools/lib/bpf/netlink.c  | 478 ++++++++++++++++++++++++++++++++++++++-
+>   3 files changed, 574 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> index bec4e6a6e31d..1c717c07b66e 100644
+> --- a/tools/lib/bpf/libbpf.h
+> +++ b/tools/lib/bpf/libbpf.h
+> @@ -775,6 +775,98 @@ LIBBPF_API int bpf_linker__add_file(struct bpf_linker *linker, const char *filen
+>   LIBBPF_API int bpf_linker__finalize(struct bpf_linker *linker);
+>   LIBBPF_API void bpf_linker__free(struct bpf_linker *linker);
+> 
+> +enum bpf_tc_attach_point {
+> +	BPF_TC_INGRESS,
+> +	BPF_TC_EGRESS,
+> +	BPF_TC_CUSTOM_PARENT,
+> +	_BPF_TC_PARENT_MAX,
 
-Fixes: a426d97e970d ("bpf: Set mac_len in bpf_skb_change_head")
-Signed-off-by: Jussi Maki <joamaki@gmail.com>
----
- tools/testing/selftests/bpf/.gitignore        |   1 +
- tools/testing/selftests/bpf/Makefile          |   2 +-
- .../selftests/bpf/progs/test_tc_peer.c        |  24 ++++
- .../testing/selftests/bpf/test_tc_peer_user.c | 127 ++++++++++++++++++
- .../testing/selftests/bpf/test_tc_redirect.sh |  95 ++++++++++---
- 5 files changed, 233 insertions(+), 16 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/test_tc_peer_user.c
+I don't think we need to expose _BPF_TC_PARENT_MAX as part of the API, I would drop
+the latter.
 
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index 4866f6a21901..49f3f050be4d 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -27,6 +27,7 @@ test_tcpnotify_user
- test_libbpf
- test_tcp_check_syncookie_user
- test_sysctl
-+test_tc_peer_user
- xdping
- test_cpp
- *.skel.h
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 283e5ad8385e..0e05fefe2333 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -84,7 +84,7 @@ TEST_PROGS_EXTENDED := with_addr.sh \
- TEST_GEN_PROGS_EXTENDED = test_sock_addr test_skb_cgroup_id_user \
- 	flow_dissector_load test_flow_dissector test_tcp_check_syncookie_user \
- 	test_lirc_mode2_user xdping test_cpp runqslower bench bpf_testmod.ko \
--	xdpxceiver
-+	xdpxceiver test_tc_peer_user
- 
- TEST_CUSTOM_PROGS = $(OUTPUT)/urandom_read
- 
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_peer.c b/tools/testing/selftests/bpf/progs/test_tc_peer.c
-index fc84a7685aa2..49f0eefd58e7 100644
---- a/tools/testing/selftests/bpf/progs/test_tc_peer.c
-+++ b/tools/testing/selftests/bpf/progs/test_tc_peer.c
-@@ -5,8 +5,11 @@
- #include <linux/bpf.h>
- #include <linux/stddef.h>
- #include <linux/pkt_cls.h>
-+#include <linux/if_ether.h>
-+#include <linux/ip.h>
- 
- #include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
- 
- enum {
- 	dev_src,
-@@ -42,4 +45,25 @@ SEC("src_ingress") int tc_src(struct __sk_buff *skb)
- 	return bpf_redirect_peer(get_dev_ifindex(dev_dst), 0);
- }
- 
-+SEC("src_ingress_l3") int tc_src_l3(struct __sk_buff *skb)
-+{
-+	__u16 proto = skb->protocol;
-+
-+	if (bpf_skb_change_head(skb, ETH_HLEN, 0) != 0)
-+		return TC_ACT_SHOT;
-+
-+	__u8 src_mac[] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55};
-+	if (bpf_skb_store_bytes(skb, 0, &src_mac, ETH_ALEN, 0) != 0)
-+		return TC_ACT_SHOT;
-+
-+	__u8 dst_mac[] = {0x00, 0x22, 0x33, 0x44, 0x55, 0x66};
-+	if (bpf_skb_store_bytes(skb, ETH_ALEN, &dst_mac, ETH_ALEN, 0) != 0)
-+		return TC_ACT_SHOT;
-+
-+	if (bpf_skb_store_bytes(skb, ETH_ALEN + ETH_ALEN, &proto, sizeof(__u16), 0) != 0)
-+		return TC_ACT_SHOT;
-+
-+	return bpf_redirect_peer(get_dev_ifindex(dev_dst), 0);
-+}
-+
- char __license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_tc_peer_user.c b/tools/testing/selftests/bpf/test_tc_peer_user.c
-new file mode 100644
-index 000000000000..bdecf2bd1cc1
---- /dev/null
-+++ b/tools/testing/selftests/bpf/test_tc_peer_user.c
-@@ -0,0 +1,127 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * Networking across two network namespaces based on TUN/TAP.
-+ * Like veth, but slow and L3. Used for testing BPF redirect_peer
-+ * from L3 to L2 veth device.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <linux/if.h>
-+#include <linux/if_tun.h>
-+#include <linux/limits.h>
-+#include <sched.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/ioctl.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+
-+int tun_alloc(char *name) {
-+	struct ifreq ifr;
-+	int fd, err;
-+	char cmd[512];
-+
-+	if ((fd = open("/dev/net/tun", O_RDWR)) < 0)
-+		return -1;
-+
-+	memset(&ifr, 0, sizeof(ifr));
-+
-+	ifr.ifr_flags = IFF_TUN | IFF_NO_PI;
-+	if (*name)
-+		strncpy(ifr.ifr_name, name, IFNAMSIZ);
-+
-+	if ((err = ioctl(fd, TUNSETIFF, (void *) &ifr)) < 0) {
-+		close(fd);
-+		return err;
-+	}
-+
-+	snprintf(cmd, sizeof(cmd), "ip link set dev %s up", name);
-+	system(cmd);
-+
-+	return fd;
-+}
-+
-+#define MAX(a, b) ((a) > (b) ? (a) : (b))
-+
-+enum {
-+	SRC_TO_TARGET = 0,
-+	TARGET_TO_SRC = 1,
-+};
-+
-+void setns_by_name(char *name) {
-+	int nsfd;
-+	char nspath[PATH_MAX];
-+
-+        snprintf(nspath, sizeof(nspath), "%s/%s", "/var/run/netns", name);
-+        nsfd = open(nspath, O_RDONLY | O_CLOEXEC);
-+        if (nsfd < 0) {
-+		fprintf(stderr, "failed to open net namespace %s: %s\n", name, strerror(errno));
-+		exit(1);
-+        }
-+	setns(nsfd, CLONE_NEWNET);
-+	close(nsfd);
-+}
-+
-+int main(int argc, char **argv) {
-+	char *src_ns, *src_tun, *target_ns, *target_tun;
-+	int srcfd, targetfd;
-+
-+	if (argc != 5) {
-+		fprintf(stderr, "usage: %s <source namespace> <source tun device name> <target namespace> <target tun device name>\n", argv[0]);
-+		return 1;
-+	}
-+
-+	src_ns = argv[1];
-+	src_tun = argv[2];
-+	target_ns = argv[3];
-+	target_tun = argv[4];
-+
-+	setns_by_name(src_ns);
-+	srcfd = tun_alloc(src_tun);
-+	if (srcfd < 0) {
-+		fprintf(stderr, "failed to allocate tun device\n");
-+		return 1;
-+	}
-+
-+	setns_by_name(target_ns); 
-+	targetfd = tun_alloc(target_tun);
-+	if (srcfd < 0) {
-+		fprintf(stderr, "failed to allocate tun device\n");
-+		return 1;
-+	}
-+
-+	fd_set rfds, wfds;
-+	FD_ZERO(&rfds);
-+	FD_ZERO(&wfds);
-+
-+	for (;;) {
-+	        char buf[4096];
-+	        int direction, nread, nwrite;
-+		FD_SET(srcfd, &rfds);
-+		FD_SET(targetfd, &rfds);
-+
-+		if (select(1 + MAX(srcfd, targetfd), &rfds, NULL, NULL, NULL) < 0) {
-+		       fprintf(stderr, "select failed: %s\n", strerror(errno));
-+		       return 1;
-+	        }
-+
-+	        direction = FD_ISSET(srcfd, &rfds) ? SRC_TO_TARGET : TARGET_TO_SRC;
-+
-+	        nread = read(direction == SRC_TO_TARGET ? srcfd : targetfd, buf, sizeof(buf));
-+	        if (nread < 0) {
-+		       fprintf(stderr, "read failed: %s\n", strerror(errno));
-+		       return 1;
-+	        }
-+
-+	        nwrite = write(direction == SRC_TO_TARGET ? targetfd : srcfd, buf, nread);
-+	        if (nwrite != nread) {
-+		       fprintf(stderr, "write failed: %s\n", strerror(errno));
-+		       return 1;
-+	        }
-+	}
-+}
-diff --git a/tools/testing/selftests/bpf/test_tc_redirect.sh b/tools/testing/selftests/bpf/test_tc_redirect.sh
-index 8868aa1ca902..469e1dc13f03 100755
---- a/tools/testing/selftests/bpf/test_tc_redirect.sh
-+++ b/tools/testing/selftests/bpf/test_tc_redirect.sh
-@@ -50,15 +50,32 @@ readonly IP4_DST="172.16.2.100"
- readonly IP6_SRC="::1:dead:beef:cafe"
- readonly IP6_DST="::2:dead:beef:cafe"
- 
-+readonly IP4_TUN_SRC="172.17.1.100"
-+readonly IP4_TUN_FWD="172.17.1.200"
-+
-+readonly IP6_TUN_SRC="1::dead:beef:0"
-+readonly IP6_TUN_FWD="1::dead:beef:1"
-+
- readonly IP4_SLL="169.254.0.1"
- readonly IP4_DLL="169.254.0.2"
- readonly IP4_NET="169.254.0.0"
- 
-+readonly MAC_DST_FWD="00:11:22:33:44:55"
-+readonly MAC_DST="00:22:33:44:55:66"
-+
-+TEST_TC_PEER_USER_PID=""
-+NC4_PID=""
-+NC6_PID=""
-+
- netns_cleanup()
- {
- 	ip netns del ${NS_SRC}
- 	ip netns del ${NS_FWD}
- 	ip netns del ${NS_DST}
-+
-+	[ -n "$TEST_TC_PEER_USER_PID" ] && kill ${TEST_TC_PEER_USER_PID} || true
-+	[ -n "${NC4_PID}" ] && kill ${NC4_PID} || true
-+	[ -n "${NC6_PID}" ] && kill ${NC6_PID} || true
- }
- 
- netns_setup()
-@@ -70,6 +87,9 @@ netns_setup()
- 	ip link add veth_src type veth peer name veth_src_fwd
- 	ip link add veth_dst type veth peer name veth_dst_fwd
- 
-+	ip link set veth_dst_fwd address ${MAC_DST_FWD}
-+	ip link set veth_dst address ${MAC_DST}
-+
- 	ip link set veth_src netns ${NS_SRC}
- 	ip link set veth_src_fwd netns ${NS_FWD}
- 
-@@ -117,14 +137,20 @@ netns_setup()
- 
- 	ip -netns ${NS_SRC} neigh add ${IP6_DST} dev veth_src lladdr $fmac_src
- 	ip -netns ${NS_DST} neigh add ${IP6_SRC} dev veth_dst lladdr $fmac_dst
-+
-+	ip -netns ${NS_DST} neigh add ${IP4_TUN_SRC} dev veth_dst lladdr $fmac_dst
-+	ip -netns ${NS_DST} neigh add ${IP6_TUN_SRC} dev veth_dst lladdr $fmac_dst
-+	ip -netns ${NS_DST} neigh add ${IP6_TUN_FWD} dev veth_dst lladdr $fmac_dst
- }
- 
- netns_test_connectivity()
- {
- 	set +e
- 
--	ip netns exec ${NS_DST} bash -c "nc -4 -l -p 9004 &"
--	ip netns exec ${NS_DST} bash -c "nc -6 -l -p 9006 &"
-+	ip netns exec ${NS_DST} nc -4 -l -p 9004 &
-+	NC4_PID=$!
-+	ip netns exec ${NS_DST} nc -6 -l -p 9006 &
-+	NC6_PID=$!
- 
- 	TEST="TCPv4 connectivity test"
- 	ip netns exec ${NS_SRC} bash -c "timeout ${TIMEOUT} dd if=/dev/zero bs=1000 count=100 > /dev/tcp/${IP4_DST}/9004"
-@@ -170,14 +196,52 @@ netns_setup_bpf()
- {
- 	local obj=$1
- 	local use_forwarding=${2:-0}
-+	local use_tuntap=${3:-0}
-+
-+	if [ "$use_tuntap" -eq "1" ]; then
-+		# Set up tuntap based tunnel between src and fwd namespaces.
-+		./test_tc_peer_user ${NS_SRC} tun_src ${NS_FWD} tun_fwd &
-+		TEST_TC_PEER_USER_PID=$!
-+
-+		while ! ip -netns ${NS_SRC} link show tun_src; do echo "Waiting for tun_src to appear..."; sleep 0.5; done
-+		while ! ip -netns ${NS_FWD} link show tun_fwd; do echo "Waiting for tun_fwd to appoar..."; sleep 0.5; done
-+
-+		ip -netns ${NS_SRC} addr add dev tun_src ${IP4_TUN_SRC}/24
-+		ip -netns ${NS_FWD} addr add dev tun_fwd ${IP4_TUN_FWD}/24
- 
--	ip netns exec ${NS_FWD} tc qdisc add dev veth_src_fwd clsact
--	ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd ingress bpf da obj $obj sec src_ingress
--	ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd egress  bpf da obj $obj sec chk_egress
-+		ip -netns ${NS_SRC} addr add dev tun_src ${IP6_TUN_SRC}/64 nodad
-+		ip -netns ${NS_FWD} addr add dev tun_fwd ${IP6_TUN_FWD}/64 nodad
- 
--	ip netns exec ${NS_FWD} tc qdisc add dev veth_dst_fwd clsact
--	ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd ingress bpf da obj $obj sec dst_ingress
--	ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd egress  bpf da obj $obj sec chk_egress
-+		ip -netns ${NS_SRC} route del ${IP4_DST}/32 dev veth_src scope global
-+		ip -netns ${NS_SRC} route add ${IP4_DST}/32 via ${IP4_TUN_FWD} dev tun_src scope global
-+		ip -netns ${NS_DST} route add ${IP4_TUN_SRC}/32 dev veth_dst scope global
-+
-+		ip -netns ${NS_SRC} route del ${IP6_DST}/128 dev veth_src scope global
-+		ip -netns ${NS_SRC} route add ${IP6_DST}/128 via ${IP6_TUN_FWD} dev tun_src scope global
-+		ip -netns ${NS_DST} route add ${IP6_TUN_SRC}/128 dev veth_dst scope global
-+		ip -netns ${NS_DST} route add ${IP6_TUN_FWD}/128 dev veth_dst scope global
-+
-+		ip netns exec ${NS_FWD} tc qdisc add dev tun_fwd clsact
-+		ip netns exec ${NS_FWD} tc filter add dev tun_fwd ingress bpf da obj $obj sec src_ingress_l3
-+
-+		# Enable forwarding back towards src, but not for packets coming from the tunnel.
-+		ip netns exec ${NS_FWD} sysctl -w net.ipv4.ip_forward=1
-+		ip netns exec ${NS_FWD} sysctl -w net.ipv6.conf.all.forwarding=1
-+		ip netns exec ${NS_FWD} sysctl -w net.ipv4.conf.veth_dst_fwd.forwarding=1
-+		ip netns exec ${NS_FWD} sysctl -w net.ipv4.conf.veth_src_fwd.forwarding=0
-+		ip netns exec ${NS_FWD} sysctl -w net.ipv4.conf.tun_fwd.forwarding=0
-+		ip netns exec ${NS_FWD} sysctl -w net.ipv6.conf.veth_src_fwd.forwarding=0
-+		ip netns exec ${NS_FWD} sysctl -w net.ipv6.conf.veth_dst_fwd.forwarding=1
-+		ip netns exec ${NS_FWD} sysctl -w net.ipv6.conf.tun_fwd.forwarding=0
-+	else
-+		ip netns exec ${NS_FWD} tc qdisc add dev veth_src_fwd clsact
-+		ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd ingress bpf da obj $obj sec src_ingress
-+		ip netns exec ${NS_FWD} tc filter add dev veth_src_fwd egress  bpf da obj $obj sec chk_egress
-+
-+		ip netns exec ${NS_FWD} tc qdisc add dev veth_dst_fwd clsact
-+		ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd ingress bpf da obj $obj sec dst_ingress
-+		ip netns exec ${NS_FWD} tc filter add dev veth_dst_fwd egress  bpf da obj $obj sec chk_egress
-+	fi
- 
- 	if [ "$use_forwarding" -eq "1" ]; then
- 		# bpf_fib_lookup() checks if forwarding is enabled
-@@ -190,13 +254,10 @@ netns_setup_bpf()
- 	veth_src=$(ip netns exec ${NS_FWD} cat /sys/class/net/veth_src_fwd/ifindex)
- 	veth_dst=$(ip netns exec ${NS_FWD} cat /sys/class/net/veth_dst_fwd/ifindex)
- 
--	progs=$(ip netns exec ${NS_FWD} bpftool net --json | jq -r '.[] | .tc | map(.id) | .[]')
--	for prog in $progs; do
--		map=$(bpftool prog show id $prog --json | jq -r '.map_ids | .? | .[]')
--		if [ ! -z "$map" ]; then
--			bpftool map update id $map key hex $(hex_mem_str 0) value hex $(hex_mem_str $veth_src)
--			bpftool map update id $map key hex $(hex_mem_str 1) value hex $(hex_mem_str $veth_dst)
--		fi
-+ 	maps=$(bpftool map list --json | jq -r '.[] | select(.name == "ifindex_map") | .id')
-+	for map in $maps; do
-+		bpftool map update id $map key hex $(hex_mem_str 0) value hex $(hex_mem_str $veth_src)
-+		bpftool map update id $map key hex $(hex_mem_str 1) value hex $(hex_mem_str $veth_dst)
- 	done
- }
- 
-@@ -214,3 +275,7 @@ netns_cleanup
- netns_setup
- netns_setup_bpf test_tc_peer.o
- netns_test_connectivity
-+netns_cleanup
-+netns_setup
-+netns_setup_bpf test_tc_peer.o 0 1
-+netns_test_connectivity
--- 
-2.30.2
+> +};
+> +
+> +/* The opts structure is also used to return the created filters attributes
+> + * (e.g. in case the user left them unset). Some of the options that were left
+> + * out default to a reasonable value, documented below.
+> + *
+> + *	protocol - ETH_P_ALL
+> + *	chain index - 0
+> + *	class_id - 0 (can be set by bpf program using skb->tc_classid)
+> + *	bpf_flags - TCA_BPF_FLAG_ACT_DIRECT (direct action mode)
+> + *	bpf_flags_gen - 0
+> + *
+> + *	The user must fulfill documented requirements for each function.
 
+Not sure if this is overly relevant as part of the bpf_tc_opts in here. For the
+2nd part, I would probably just mention that libbpf internally attaches the bpf
+programs with direct action mode. The hw offload may be future todo, and the other
+bits are little used anyway; mentioning them here, what value does it have to
+libbpf users? I'd rather just drop the 2nd part and/or simplify this paragraph
+just stating that the progs are attached in direct action mode.
+
+> + */
+> +struct bpf_tc_opts {
+> +	size_t sz;
+> +	__u32 handle;
+> +	__u32 parent;
+> +	__u16 priority;
+> +	__u32 prog_id;
+> +	bool replace;
+> +	size_t :0;
+> +};
+> +
+> +#define bpf_tc_opts__last_field replace
+> +
+> +struct bpf_tc_ctx;
+> +
+> +struct bpf_tc_ctx_opts {
+> +	size_t sz;
+> +};
+> +
+> +#define bpf_tc_ctx_opts__last_field sz
+> +
+> +/* Requirements */
+> +/*
+> + * @ifindex: Must be > 0.
+> + * @parent: Must be one of the enum constants < _BPF_TC_PARENT_MAX
+> + * @opts: Can be NULL, currently no options are supported.
+> + */
+
+Up to Andrii, but we don't have such API doc in general inside libbpf.h, I
+would drop it for the time being to be consistent with the rest (same for
+others below).
+
+> +LIBBPF_API struct bpf_tc_ctx *bpf_tc_ctx_init(__u32 ifindex,
+
+nit: in user space s/__u32 ifindex/int ifindex/
+
+> +					      enum bpf_tc_attach_point parent,
+> +					      struct bpf_tc_ctx_opts *opts);
+
+Should we enforce opts being NULL or non-NULL here, or drop the arg from here
+for now altogether? (And if later versions of the functions show up this could
+be mapped to the right one?)
+
+> +/*
+> + * @ctx: Can be NULL, if not, must point to a valid object.
+> + *	 If the qdisc was attached during ctx_init, it will be deleted if no
+> + *	 filters are attached to it.
+> + *	 When ctx == NULL, this is a no-op.
+> + */
+> +LIBBPF_API int bpf_tc_ctx_destroy(struct bpf_tc_ctx *ctx);
+> +/*
+> + * @ctx: Cannot be NULL.
+> + * @fd: Must be >= 0.
+> + * @opts: Cannot be NULL, prog_id must be unset, all other fields can be
+> + *	  optionally set. All fields except replace  will be set as per created
+> + *        filter's attributes. parent must only be set when attach_point of ctx is
+> + *        BPF_TC_CUSTOM_PARENT, otherwise parent must be unset.
+> + *
+> + * Fills the following fields in opts:
+> + *	handle
+> + *	parent
+> + *	priority
+> + *	prog_id
+> + */
+> +LIBBPF_API int bpf_tc_attach(struct bpf_tc_ctx *ctx, int fd,
+> +			     struct bpf_tc_opts *opts);
+> +/*
+> + * @ctx: Cannot be NULL.
+> + * @opts: Cannot be NULL, replace and prog_id must be unset, all other fields
+> + *	  must be set.
+> + */
+> +LIBBPF_API int bpf_tc_detach(struct bpf_tc_ctx *ctx,
+> +			     const struct bpf_tc_opts *opts);
+
+One thing that I find a bit odd from this API is that BPF_TC_INGRESS / BPF_TC_EGRESS
+needs to be set each time via bpf_tc_ctx_init(). So whenever a specific program would
+be attached to both we need to 're-init' in between just to change from hook a to b,
+whereas when you have BPF_TC_CUSTOM_PARENT, you could just use a different opts->parent
+without going this detour (unless the clsact wasn't loaded there in the first place).
+
+Could we add a BPF_TC_UNSPEC to enum bpf_tc_attach_point, which the user would pass to
+bpf_tc_ctx_init(), so that opts.direction = BPF_TC_INGRESS with subsequent bpf_tc_attach()
+can be called, and same opts.direction = BPF_TC_EGRESS with bpf_tc_attach() for different
+fd. The only thing we cared about in bpf_tc_ctx_init() resp. the ctx was that qdisc was
+ready.
+
+> +/*
+> + * @ctx: Cannot be NULL.
+> + * @opts: Cannot be NULL, replace and prog_id must be unset, all other fields
+> + *	  must be set.
+> + *
+> + * Fills the following fields in opts:
+> + *	handle
+> + *	parent
+> + *	priority
+> + *	prog_id
+> + */
+> +LIBBPF_API int bpf_tc_query(struct bpf_tc_ctx *ctx,
+> +			    struct bpf_tc_opts *opts);
+> +
+>   #ifdef __cplusplus
+>   } /* extern "C" */
+>   #endif
