@@ -2,257 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFF736CAD4
-	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 20:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D39736CADB
+	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 20:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238333AbhD0SEa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Apr 2021 14:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
+        id S236848AbhD0SGT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Apr 2021 14:06:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237634AbhD0SE2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Apr 2021 14:04:28 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0BDC061574;
-        Tue, 27 Apr 2021 11:03:43 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 130so26649863ybd.10;
-        Tue, 27 Apr 2021 11:03:43 -0700 (PDT)
+        with ESMTP id S236740AbhD0SGS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Apr 2021 14:06:18 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF60C061574;
+        Tue, 27 Apr 2021 11:05:35 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id z1so70439936ybf.6;
+        Tue, 27 Apr 2021 11:05:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=iE0Swjr1Aj6+bOUe7NqE4bb/En2P6kGs3Fyx7kqH9kE=;
-        b=Xa0T2VIffFZ+upfCxkvL46v6K49zaumIwbQW5f62sr/kAqZCPgT9h7CoMSvzqu0AXF
-         QRQDihKusTdQdmrc5P++Va5PYWwZGpwZ5NlAN6XLNnGjL1eXRo6oCI49upS8c8pm2ATx
-         3AzqwjUp8PVEDg/TeMbrrZBZM/QfWwvIIZwe5BVwzVcalbXTalneIo79Ayts/3w9/qo8
-         s88XhitASerxUvRLLg5viQXxb35ScQNMn6UfdJFRovFEg0+wHkQPE1XSWyhPyTHclGHe
-         aLMhTrpk3u9fWBBHS8TU0ylno9qEFbLg0y1SFLCTuo0QnXRhgyrutXTrYA1XpwXjCL8p
-         Qz3A==
+        bh=4k51v4ojf3lxF5zVb1zpsehG3xYQSt5SLFt1Yt10P9M=;
+        b=UTwqXVHLOaKcwBipWncQtnPzb7FDuWhSq/vu3Ou8nDgonX6CVVDIQ6izS6pWkWTcBK
+         y4fewkY1Y3hh+XVwzvpN2i79jNuE+P511KRL3Q4yCBInzHLAwVG8OZfTYfpgmcAtn53R
+         GKfPHh/3z7wCaRWt3+tqt928O3otA+xhTAtevCscNDs9wu3PjVnYxU8Fw3UHm2QdV8b3
+         9dHGnHA2ILz9aNXT+CMkro8wt28LNHOSuCZ33y2SccdON+Auy1R75mtL519/SzUnGpX6
+         SYiTHkgbbhjwlLXaI5H2g4Y4iwcD7r3gh128kwYDfKf5bmuw7tKFUoFAZpIW7FATLREu
+         eNzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iE0Swjr1Aj6+bOUe7NqE4bb/En2P6kGs3Fyx7kqH9kE=;
-        b=iBcGZC4uRnvbRVnD0Lrxp2qpBLuJRayrIZd1Nl/Fz3IK0mGA+GBAL94tpHWnTzgdUZ
-         1QulTenY703do2H4HKyZ7JNlFsxeBodt547RdH0sHncIcvlcMjZlK7uHxuio48p/o+Bu
-         BwXV7lNbPnEXyzo0HsqaZ3+hMPBFVF6Yd2cROxdrx4NpWJNmX49b6w+qEN736AUoGocy
-         Du8qJBbWQYtJ3C75oJLMYJW/xQ8fwDTD/KZ6YDWavEyFMAFLQRmZNP5HwmE9LAFZsCfp
-         jcqfi+ZsHiF51rjKnzcS2XnN9CZx3QH3H8MBsqMfRYJS9JWTo++mKLhERLWNvU3ZNSqh
-         ebyQ==
-X-Gm-Message-State: AOAM531qrgju3C3wcIEencUL9yCRmT+jJlePmSN6pSMVhzpRpyuqLWb8
-        oGFpOCVh9HSpMpJabterzx+uB84RJGfJP6PSppk=
-X-Google-Smtp-Source: ABdhPJxM8/vsNsjDPIiYOhpatZds3oSCky1ZvTjXkh87OakPAkV6fTesNgIEaFzTM7eru+GL8+fOjRqBBq3u6RdrBEk=
-X-Received: by 2002:a25:3357:: with SMTP id z84mr34103990ybz.260.1619546622575;
- Tue, 27 Apr 2021 11:03:42 -0700 (PDT)
+        bh=4k51v4ojf3lxF5zVb1zpsehG3xYQSt5SLFt1Yt10P9M=;
+        b=Y4pwmrE+9Jl24bXqyzkeMiKcOlj0RyBiQ4ExQguas6UeGe7eNzxpqpMiOLFb14hOTj
+         QLY4EZ4lWERa+ZEEIlPgGvST63HlnOg4rqdoFe5Q5OOkTTBdb/a1ls5Ds+xz6XV5zez0
+         mMTt47NXgTIqcxsn2raJi8cD+VBbL4YgLzQZUW/8PbAMKYZ/OvOJoL+qJLjGXbrpRRGO
+         ZVeAGMlPpIQ7KlGTCk8VCKM/fBCgNPCuB8iiT94ya7rOMmspVZUIgx2IIG3Bx6ZDlcZX
+         ub7nOCyc6oMJC0n4UAvFL3xDRtefCUyglhhl53b+GsYNuIsorSbGyGp+d0mXmdxYnusf
+         PtUg==
+X-Gm-Message-State: AOAM5303ExY9fY6/T6yb3pvutKMnp0Xih9pvMYP21LI5R6KLkT47Jiid
+        vkw3gYha+xFadkkYVtcx9HyD0+tUM1ECP7dKsnk=
+X-Google-Smtp-Source: ABdhPJwzdibhX4camMkiEeaTT8bDcf8WnBJmyIpYRFWFFgEqmwwKK0Qdvljs/3+u1CRxx6Ix/SFQG/3Yheo1XO7cfmI=
+X-Received: by 2002:a25:3357:: with SMTP id z84mr34116107ybz.260.1619546734454;
+ Tue, 27 Apr 2021 11:05:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-7-revest@chromium.org>
- <CAEf4BzZUM4hb9owhompwARabRvRbCYxBrpgXSdXM8RRm42tU1A@mail.gmail.com>
- <CABRcYm+=XSt_U-19eYXU8+XwDUXoBGQMROMbm6xk9P9OHnUW_A@mail.gmail.com>
- <CAEf4BzZnkYDAm2R+5R9u4YEdZLj=C8XQmpT=iS6Qv0Ne7cRBGw@mail.gmail.com>
- <CABRcYmLn2S2g-QTezy8qECsU2QNSQ6wyjhuaHpuM9dzq97mZ7g@mail.gmail.com>
- <2db39f1c-cedd-b9e7-2a15-aef203f068eb@rasmusvillemoes.dk> <CABRcYmJdTZAhdD_2OVAu-hOnYX-bgvrrbnUjaV23tzp-c+9_8w@mail.gmail.com>
-In-Reply-To: <CABRcYmJdTZAhdD_2OVAu-hOnYX-bgvrrbnUjaV23tzp-c+9_8w@mail.gmail.com>
+References: <20210426202240.518961-1-memxor@gmail.com> <CAEf4BzaDbVpLvbOnkTKtzHVGq74TfBprLuZ6fJtYqJ+jFZN+Gw@mail.gmail.com>
+ <CAJ8uoz2s9ieED4hs_2weHCRkcW5M8JgOdj1ORntqJzxTdCHa9w@mail.gmail.com>
+In-Reply-To: <CAJ8uoz2s9ieED4hs_2weHCRkcW5M8JgOdj1ORntqJzxTdCHa9w@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 27 Apr 2021 11:03:31 -0700
-Message-ID: <CAEf4BzaHqvxuosYP32WLSs_wxeJ9FfR2wGRKqsocXHCJUXVycw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
-To:     Florent Revest <revest@chromium.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+Date:   Tue, 27 Apr 2021 11:05:23 -0700
+Message-ID: <CAEf4Bza_nRJVbRZj0NJhc6vvg5vOua5hKxpRRw86FL=Bj2rgaw@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: export inline helpers as symbols for xsk
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 2:51 AM Florent Revest <revest@chromium.org> wrote:
+On Mon, Apr 26, 2021 at 11:49 PM Magnus Karlsson
+<magnus.karlsson@gmail.com> wrote:
 >
-> On Tue, Apr 27, 2021 at 8:35 AM Rasmus Villemoes
-> <linux@rasmusvillemoes.dk> wrote:
+> On Tue, Apr 27, 2021 at 1:20 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > On 26/04/2021 23.08, Florent Revest wrote:
-> > > On Mon, Apr 26, 2021 at 6:19 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > >>
-> > >> On Mon, Apr 26, 2021 at 3:10 AM Florent Revest <revest@chromium.org> wrote:
-> > >>>
-> > >>> On Sat, Apr 24, 2021 at 12:38 AM Andrii Nakryiko
-> > >>> <andrii.nakryiko@gmail.com> wrote:
-> > >>>>
-> > >>>> On Mon, Apr 19, 2021 at 8:52 AM Florent Revest <revest@chromium.org> wrote:
-> > >>>>>
-> > >>>>> The "positive" part tests all format specifiers when things go well.
-> > >>>>>
-> > >>>>> The "negative" part makes sure that incorrect format strings fail at
-> > >>>>> load time.
-> > >>>>>
-> > >>>>> Signed-off-by: Florent Revest <revest@chromium.org>
-> > >>>>> ---
-> > >>>>>  .../selftests/bpf/prog_tests/snprintf.c       | 125 ++++++++++++++++++
-> > >>>>>  .../selftests/bpf/progs/test_snprintf.c       |  73 ++++++++++
-> > >>>>>  .../bpf/progs/test_snprintf_single.c          |  20 +++
-> > >>>>>  3 files changed, 218 insertions(+)
-> > >>>>>  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
-> > >>>>>  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
-> > >>>>>  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf_single.c
-> > >>>>>
-> > >>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> > >>>>> new file mode 100644
-> > >>>>> index 000000000000..a958c22aec75
-> > >>>>> --- /dev/null
-> > >>>>> +++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> > >>>>> @@ -0,0 +1,125 @@
-> > >>>>> +// SPDX-License-Identifier: GPL-2.0
-> > >>>>> +/* Copyright (c) 2021 Google LLC. */
-> > >>>>> +
-> > >>>>> +#include <test_progs.h>
-> > >>>>> +#include "test_snprintf.skel.h"
-> > >>>>> +#include "test_snprintf_single.skel.h"
-> > >>>>> +
-> > >>>>> +#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
-> > >>>>> +#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
-> > >>>>> +
-> > >>>>> +#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
-> > >>>>> +#define EXP_IP_RET   sizeof(EXP_IP_OUT)
-> > >>>>> +
-> > >>>>> +/* The third specifier, %pB, depends on compiler inlining so don't check it */
-> > >>>>> +#define EXP_SYM_OUT  "schedule schedule+0x0/"
-> > >>>>> +#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
-> > >>>>> +
-> > >>>>> +/* The third specifier, %p, is a hashed pointer which changes on every reboot */
-> > >>>>> +#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
-> > >>>>> +#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
-> > >>>>> +
-> > >>>>> +#define EXP_STR_OUT  "str1 longstr"
-> > >>>>> +#define EXP_STR_RET  sizeof(EXP_STR_OUT)
-> > >>>>> +
-> > >>>>> +#define EXP_OVER_OUT "%over"
-> > >>>>> +#define EXP_OVER_RET 10
-> > >>>>> +
-> > >>>>> +#define EXP_PAD_OUT "    4 000"
-> > >>>>
-> > >>>> Roughly 50% of the time I get failure for this test case:
-> > >>>>
-> > >>>> test_snprintf_positive:FAIL:pad_out unexpected pad_out: actual '    4
-> > >>>> 0000' != expected '    4 000'
-> > >>>>
-> > >>>> Re-running this test case immediately passes. Running again most
-> > >>>> probably fails. Please take a look.
-> > >>>
-> > >>> Do you have more information on how to reproduce this ?
-> > >>> I spinned up a VM at 87bd9e602 with ./vmtest -s and then run this script:
-> > >>>
-> > >>> #!/bin/sh
-> > >>> for i in `seq 1000`
-> > >>> do
-> > >>>   ./test_progs -t snprintf
-> > >>>   if [ $? -ne 0 ];
-> > >>>   then
-> > >>>     echo FAILURE
-> > >>>     exit 1
-> > >>>   fi
-> > >>> done
-> > >>>
-> > >>> The thousand executions passed.
-> > >>>
-> > >>> This is a bit concerning because your unexpected_pad_out seems to have
-> > >>> an extra '0' so it ends up with strlen(pad_out)=11 but
-> > >>> sizeof(pad_out)=10. The actual string writing is not really done by
-> > >>> our helper code but by the snprintf implementation (str and str_size
-> > >>> are only given to snprintf()) so I'd expect the truncation to work
-> > >>> well there. I'm a bit puzzled
-> > >>
-> > >> I'm puzzled too, have no idea. I also can't repro this with vmtest.sh.
-> > >> But I can quite reliably reproduce with my local ArchLinux-based qemu
-> > >> image with different config (see [0] for config itself). So please try
-> > >> with my config and see if that helps to repro. If not, I'll have to
-> > >> debug it on my own later.
-> > >>
-> > >>   [0] https://gist.github.com/anakryiko/4b6ae21680842bdeacca8fa99d378048
+> > On Mon, Apr 26, 2021 at 1:22 PM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
 > > >
-> > > I tried that config on the same commit 87bd9e602 (bpf-next/master)
-> > > with my debian-based qemu image and I still can't reproduce the issue
-> > > :| If I can be of any help let me know, I'd be happy to help
+> > > This helps people writing language bindings to not have to rewrite C
+> > > wrappers for inline functions in the headers. We force inline the
+> > > definition from the header for C and C++ consumers, but also export a
+> > > symbol in the library for others. This keeps the performance
+> > > advantages similar to using static inline, while also allowing tools
+> > > like Rust's bindgen to generate wrappers for the functions.
+> > >
+> > > Also see
+> > > https://lore.kernel.org/bpf/CAJ8uoz0QqR97qEYYK=VVCE9A=V=k2tKnH6wNM48jeak2RAmL0A@mail.gmail.com/
+> > > for some context.
+> > >
+> > > Also see https://github.com/xdp-project/xdp-tools/pull/97 for more
+> > > discussion on the same.
+> > >
+> > > extern inline is used as it's slightly better since it warns when an
+> > > inline definition is missing.
+> > >
+> > > The fvisibility attribute goes on the inline definition, as essentially
+> > > it acts as a declaration for the function, while the extern inline
+> > > declaration ends up acting as a definition.
+> > >
+> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > ---
+> >
+> > xsk is moving into libxdp, why not do this there, instead of exporting
+> > a lot of symbols that we'll be deprecating very soon. It will also
+> > incentivise customers to make a move more promptly.
+> >
+> > Bjorn, Magnus, what's the status of libxsk in libxdp?
+>
+> There is a branch in the repo with the xsk support of libbpf
+> integrated into libxdp. But it has not been merged yet. Toke might
+> still have some comments on it, do not know, but we have been fixing a
+> number of issue during the past months (including one in Linux) so it
+> is stable and performs well now. A simple sample and some tests are
+> still missing. But the above Rust support is in that branch.
+>
+> What is your current time plan on the libbpf 1.0 release? Before that
+> happens, I need to make the Linux samples and selftests self-contained
+> and not reliant on the xsk support in libbpf since it will be
+> disappearing. This basically amounts to moving the xsk libbpf
+> functionality into a separate file and using that from the samples and
+> tests. At this point in time, relying on the user having libxdp
+> installed would not be a good idea since if they do not (the majority
+> of people at this point I believe) it would break the build of
+> samples/bpf and selftests/bpf. Please let me know what you think?
+
+I'm hoping to finish BPF static linker work and then will start doing
+libbpf 1.0 work. xsk.c stuff is not going away in at least next few
+months. My objection is to keep extending that functionality in libbpf
+if we are actively working on having all of that in libxdp.
+
+>
+> > >  tools/lib/bpf/libbpf.map | 16 ++++++++++++++
+> > >  tools/lib/bpf/xsk.c      | 24 +++++++++++++++++++++
+> > >  tools/lib/bpf/xsk.h      | 45 +++++++++++++++++++++++-----------------
+> > >  3 files changed, 66 insertions(+), 19 deletions(-)
 > > >
 > >
-> > It's not really clear to me if this is before or after the rewrite to
-> > use bprintf, but regardless, in those two patches this caught my attention:
->
-> I tried to reproduce Andrii's bug both before and after the bprintf
-> rewrite but I think he meant before.
-
-I'm running on the latest bpf-next master, but I don't think it's
-related to bprintf change.
-
->
-> >         u64 args[MAX_TRACE_PRINTK_VARARGS] = { arg1, arg2, arg3 };
-> > -       enum bpf_printf_mod_type mod[MAX_TRACE_PRINTK_VARARGS];
-> > +       u32 *bin_args;
-> >         static char buf[BPF_TRACE_PRINTK_SIZE];
-> >         unsigned long flags;
-> >         int ret;
-> >
-> > -       ret = bpf_printf_prepare(fmt, fmt_size, args, args, mod,
-> > -                                MAX_TRACE_PRINTK_VARARGS);
-> > +       ret = bpf_bprintf_prepare(fmt, fmt_size, args, &bin_args,
-> > +                                 MAX_TRACE_PRINTK_VARARGS);
-> >         if (ret < 0)
-> >                 return ret;
-> >
-> > -       ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args, mod),
-> > -               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod));
-> > -       /* snprintf() will not append null for zero-length strings */
-> > -       if (ret == 0)
-> > -               buf[0] = '\0';
-> > +       ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
-> >
-> >         raw_spin_lock_irqsave(&trace_printk_lock, flags);
-> >         trace_bpf_trace_printk(buf);
-> >         raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
-> >
-> > Why isn't the write to buf[] protected by that spinlock? Or put another
-> > way, what protects buf[] from concurrent writes?
->
-> You're right, that is a bug, I missed that buf was static and thought
-> it was just on the stack. That snprintf call should be after the
-> raw_spin_lock_irqsave. I'll send a patch. Thank you Rasmus. (before my
-> snprintf series, there was a vsprintf after the raw_spin_lock_irqsave)
-
-Can you please also clean up unnecessary ()s you added in at least a
-few places. Thanks.
-
->
-> > Probably the test cases are not run in parallel, but this is the kind of
-> > thing that would give those symptoms.
->
-> I think it's a separate issue from what Andrii reported though because
-> the flaky test exercises the bpf_snprintf helper and this buf spinlock
-> bug you just found only affects the bpf_trace_printk helper.
->
-> That being said, it does smell a little bit like a concurrency issue
-> too, indeed. The bpf_snprintf test program is a raw_tp/sys_enter so it
-> attaches to all syscall entries and most likely gets executed many
-> more times than necessary and probably on parallel CPUs. The "pad_out"
-> buffer they write to is unique and not locked so maybe the test's
-> userspace reads pad_out while another CPU is writing on it and if the
-> string output goes through a stage where it is "    4 0000" before
-> being "    4 000", we might read at the wrong time. That being said, I
-> would find it weird that this happens as much as 50% of the time and
-> always specifically on that test case.
->
-> Andrii could you maybe try changing the prog type to
-> "tp/syscalls/sys_enter_nanosleep" on the machine where you can
-> reproduce this bug ?
-
-Yes, it helps. I can't repro it easily anymore. I think the right fix,
-though, should be to filter by tid, not change the tracepoint.
-
-I think what's happening is we see the string right before bstr_printf
-does zero-termination with end[-1] = '\0'; So in some cases we see
-truncated string, in others we see untruncated one.
-
->
-> > Rasmus
+> > [...]
