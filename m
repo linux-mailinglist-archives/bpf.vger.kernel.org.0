@@ -2,93 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD4536C517
-	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 13:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541CC36C555
+	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 13:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235631AbhD0Lay (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Apr 2021 07:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhD0Lau (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Apr 2021 07:30:50 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B76C061756
-        for <bpf@vger.kernel.org>; Tue, 27 Apr 2021 04:30:06 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id a4so59118727wrr.2
-        for <bpf@vger.kernel.org>; Tue, 27 Apr 2021 04:30:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4t3fwu407mErMmjxG6jssxxaD8OTJLeJVELqfTsXsW4=;
-        b=X5gtZi3PonClOX9mpJRZO2m9QL6bXITgK2KAn4xLSC32/vbkx9DhT2H+eq4jjq8ybG
-         eOqlhyuqN/sFkTtls21q6EcLYufp95g1dVJqcAcx5AbicTZjfyB/hk92gffzULZEHLjU
-         c7+7LHRFl4Ra8g5XnPLtHQoBMs2W6XGuIWyz4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4t3fwu407mErMmjxG6jssxxaD8OTJLeJVELqfTsXsW4=;
-        b=V9H3f016HVTmj5vfua5hsAs0GeR0oykqJGH45gfxZann/Vk58/QMVQ3tv8GLou1PaS
-         lY/UW4LV4ctDz3gXmIH+7xhtFbIEXY1N2I/ekpDbpT63E4gdl7iOSu7/EZqqDowWHVyq
-         DdoSZHzpXFwqjOVhKafScI2oUGlEC3f3VtiqRZ84lpgMPQRWw0KAr3k6tpuZoJ7g+OCX
-         AyKRFm53JbkmK6sQUybmp1ZRkX27wpesd5ktnygzrXkg8J92r7Gm7nopgL34z64DeSxt
-         LYJGWPtlQwwdozX4NnGQudDWcTewAuhkr9xSzcUIBsPAeGnWssSbJ89FRENjxOQrOuwP
-         yefA==
-X-Gm-Message-State: AOAM5316GmKWt53eb4fSH685zE1jdtsznzjyI4lxkOS953szSg1HH87R
-        IUJqONnCqoSt3ZgPuv7Huid+7Por/0JNgA==
-X-Google-Smtp-Source: ABdhPJzljCvKmxwUWLOFfiuC7lqbL3FbUzmKBuU2Je2HB9tXIPa/wjpsFO96TOH0sWRkUqwqiv7kJw==
-X-Received: by 2002:a05:6000:110d:: with SMTP id z13mr13163489wrw.92.1619523005399;
-        Tue, 27 Apr 2021 04:30:05 -0700 (PDT)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:28bf:825e:e514:98a1])
-        by smtp.gmail.com with ESMTPSA id b12sm4320984wrn.18.2021.04.27.04.30.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 04:30:04 -0700 (PDT)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@kernel.org, jackmanb@google.com, linux@rasmusvillemoes.dk,
-        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next] bpf: Lock bpf_trace_printk's tmp buf before it is written to
-Date:   Tue, 27 Apr 2021 13:29:58 +0200
-Message-Id: <20210427112958.773132-1-revest@chromium.org>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+        id S235428AbhD0LjU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Apr 2021 07:39:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51220 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237966AbhD0LjK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 27 Apr 2021 07:39:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619523507;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hnFEYH2ir5X1i0lkoWLMXh/bSKWjZ05zbFcheXKiHLo=;
+        b=UCvnqM9aQjc2HLzch22OwuTZgKj7liZ7Fq7cVD7B0+G8geuGd1CVXqzum+H7EE1ZJbbZwW
+        pyT3PUKwK1BOjkbHHNB720Xtai1ldDsRtH6qjg6kRbOsQeNdR5B4pQCgkEl16jJXFrf0ej
+        /g0prMApisl3OrHq7jhfZnlkthY+5c8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-265-dG4WkvbnO2q6rE-GMwNdBg-1; Tue, 27 Apr 2021 07:38:24 -0400
+X-MC-Unique: dG4WkvbnO2q6rE-GMwNdBg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37BD480ED8B;
+        Tue, 27 Apr 2021 11:38:23 +0000 (UTC)
+Received: from krava (unknown [10.40.192.237])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6835F62AF7;
+        Tue, 27 Apr 2021 11:38:21 +0000 (UTC)
+Date:   Tue, 27 Apr 2021 13:38:20 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        dwarves@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH dwarves] btf: Generate btf for functions in the .BTF_ids
+ section
+Message-ID: <YIf3rHTLqW7yZxFJ@krava>
+References: <20210423213728.3538141-1-kafai@fb.com>
+ <CAEf4BzY16ziMkOMdNGNjQOmiACF3E5nFn2LhtUUQbo-y-AP7Tg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzY16ziMkOMdNGNjQOmiACF3E5nFn2LhtUUQbo-y-AP7Tg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_trace_printk uses a shared static buffer to hold strings before they
-are printed. A recent refactoring moved the locking of that buffer after
-it gets filled by mistake.
+On Mon, Apr 26, 2021 at 04:26:11PM -0700, Andrii Nakryiko wrote:
+> On Fri, Apr 23, 2021 at 2:37 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> >
+> > BTF is currently generated for functions that are in ftrace list
+> > or extern.
+> >
+> > A recent use case also needs BTF generated for functions included in
+> > allowlist.  In particular, the kernel
+> > commit e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc")
+> > allows bpf program to directly call a few tcp cc kernel functions.  Those
+> > functions are specified under an ELF section .BTF_ids.  The symbols
+> > in this ELF section is like __BTF_ID__func__<kernel_func>__[digit]+.
+> > For example, __BTF_ID__func__cubictcp_init__1.  Those kernel
+> > functions are currently allowed only if CONFIG_DYNAMIC_FTRACE is
+> > set to ensure they are in the ftrace list but this kconfig dependency
+> > is unnecessary.
+> >
+> > pahole can generate BTF for those kernel functions if it knows they
+> > are in the allowlist.  This patch is to capture those symbols
+> > in the .BTF_ids section and generate BTF for them.
+> >
+> > Cc: Andrii Nakryiko <andrii@kernel.org>
+> > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> > ---
+> 
+> I wonder if we just record all functions how bad that would be. Jiri,
+> do you remember from the time you were experimenting with static
+> functions how much more functions we'd be recording if we didn't do
+> ftrace filtering?
 
-Fixes: d9c9e4db186a ("bpf: Factorize bpf_trace_printk and bpf_seq_printf")
-Reported-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- kernel/trace/bpf_trace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+hum, I can't find that.. but should be just matter of removing
+that is_ftrace_func check
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 2a8bcdc927c7..0e67d12a8f40 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -391,13 +391,13 @@ BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
- 	if (ret < 0)
- 		return ret;
- 
-+	raw_spin_lock_irqsave(&trace_printk_lock, flags);
- 	ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args, mod),
- 		BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod));
- 	/* snprintf() will not append null for zero-length strings */
- 	if (ret == 0)
- 		buf[0] = '\0';
- 
--	raw_spin_lock_irqsave(&trace_printk_lock, flags);
- 	trace_bpf_trace_printk(buf);
- 	raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
- 
--- 
-2.31.1.498.g6c1eba8ee3d-goog
+if we decided to do that, maybe we could add some bit indicating
+that the function is traceable? it would save us check with
+available_filter_functions file
+
+jirka
+
+> 
+> >  btf_encoder.c | 136 +++++++++++++++++++++++++++++++++++++++++++++++---
+> >  libbtf.c      |  10 ++++
+> >  libbtf.h      |   2 +
+> >  3 files changed, 142 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/btf_encoder.c b/btf_encoder.c
+> > index 80e896961d4e..48c183915ddd 100644
+> > --- a/btf_encoder.c
+> > +++ b/btf_encoder.c
+> > @@ -106,6 +106,121 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
+> >         return 0;
+> >  }
+> >
+> > +#define BTF_ID_FUNC_PREFIX "__BTF_ID__func__"
+> > +#define BTF_ID_FUNC_PREFIX_LEN (sizeof(BTF_ID_FUNC_PREFIX) - 1)
+> > +
+> > +static char **listed_functions;
+> > +static int listed_functions_alloc;
+> > +static int listed_functions_cnt;
+> 
+> maybe just use struct btf as a container of strings, which is what you
+> need here? You can do btf__add_str() and btf__find_str(), which are
+> both fast and memory-efficient, and you won't have to manage all the
+> memory and do sorting, etc, etc.
+> 
+> [...]
+> 
 
