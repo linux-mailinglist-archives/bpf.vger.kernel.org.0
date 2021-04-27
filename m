@@ -2,125 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0446A36CF7B
-	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 01:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B60C336CF7D
+	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 01:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236015AbhD0XUD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Apr 2021 19:20:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59612 "EHLO
+        id S236792AbhD0XUN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Apr 2021 19:20:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235423AbhD0XUC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Apr 2021 19:20:02 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0268EC061574;
-        Tue, 27 Apr 2021 16:19:19 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id f6-20020a17090a6546b029015088cf4a1eso8086667pjs.2;
-        Tue, 27 Apr 2021 16:19:18 -0700 (PDT)
+        with ESMTP id S235423AbhD0XUN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Apr 2021 19:20:13 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A908C061574;
+        Tue, 27 Apr 2021 16:19:28 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id p202so27810772ybg.8;
+        Tue, 27 Apr 2021 16:19:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=7Wv20ZDMGbYNHC9aSlg9hjol9w8rXAxwJ2DXVd7fRS0=;
-        b=NZSDx9segpXXD1bosNnZFPerWUayaD8gjugGprFa8vSEXcYkyiR/2xGQyau9+d1sKm
-         bh215pdZhbQPjQ+d4ayYZC/yNWNeLu5gfvcttu+rdqIR71Mh4GwpmHMmPbbBxE167j54
-         61nhqTroPq6OwnAf/ccvyoFIKL0k72CPibx+HQJ4IxbJHXb1UyA8aVaaFPDOsNWlu6YA
-         p5vyDBUWBMDcnY77ybFxLZkBRlh6Ds3A0FC6DdrZozuT+mPiQLSRtCDelcUqax42wauH
-         VMVPvLhFA2Z2Mzpzd9nVezliCuhVrR1zEy8M8TuDFMww2jDUBjtQ6RBuiiXXGCKIJgGM
-         c6JQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5FfFOfy+ipYphXgdKrdbLv2yDmO7+UBL+r3kaZKExys=;
+        b=BqunpMpUdebAz3Oqv7/e76j2n6S3wAmHDZAiBOtrNLeZHtlAQM80yoLE3peA1naDp9
+         EKmDMv04qo2kXwSACbacX1tLsqsKigafLGdQX5cGR0WNHIinY92//mAQd740DhKNNy0p
+         CdSLYgVPOm8NJeNH+w6tPmr9j7fV+BfHU+JGPuH0nY5Z/qFIEEXfk/wkmiikMwv9gvd5
+         3/ny/NA5dm6Ah6mGoiyExexBDrbdPUq6SfgpbBLrR3an5W52jIoMkQGxOn6Y+I3I2rH/
+         IwYSzd+EU2CZmTS/MIyfOdiiM7jQrDAl3buakEkIIa2kD2MCSnkHT6UYpPScZLCsi5B4
+         8sNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=7Wv20ZDMGbYNHC9aSlg9hjol9w8rXAxwJ2DXVd7fRS0=;
-        b=KKRKac/D3ZQH/r1Kxqu2GiGpixkHKXCB4DakdXoBqUYz2j+rR5BwAiqEjJGB9Wo9Xw
-         H1Brtr1mo5yVUA3lbRKHDUKxqWqhq+Hf9z+EMLs8EwSx1kTkVI+tQY5lEkCzsRh6265J
-         AQ9Yke2F34BLhCf0j/pmZHv1vPhOATpkEtx8bZ7OE51kcHrRU8rncFOiTkK+XhndA76S
-         Z/k/E19w29ya7FQYUsFg7igA4cItoy2VPuGfRfxMzLFj54Is5YzRRQU1sH36siW1uumQ
-         BK1ygBHr4upMRaf0OSb4zFAuZkNXLeCOthG01AMsQnfHoQGX3boVMEe25N5DOh5eOE0H
-         TRUw==
-X-Gm-Message-State: AOAM533F82nEM4+zp7pzA/BaOAMk7fvZE1P3dpneHB5BLXRl5rrfhoAe
-        +3JSLvlG7HdckNbA7iJBHO26PwYLYdo=
-X-Google-Smtp-Source: ABdhPJzpYBk+oYOsdkqdChopP3djnr73oHXwKqkPG9R9Ibz5333kqUxJdrXVX3yNziCjE1fddN/b2A==
-X-Received: by 2002:a17:90b:1c0f:: with SMTP id oc15mr30814984pjb.228.1619565558552;
-        Tue, 27 Apr 2021 16:19:18 -0700 (PDT)
-Received: from localhost ([47.15.118.129])
-        by smtp.gmail.com with ESMTPSA id u20sm675545pgl.27.2021.04.27.16.19.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 16:19:18 -0700 (PDT)
-Date:   Wed, 28 Apr 2021 04:49:15 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v4 2/3] libbpf: add low level TC-BPF API
-Message-ID: <20210427231915.4tz4fs6hmthatufm@apollo>
-References: <20210423150600.498490-1-memxor@gmail.com>
- <20210423150600.498490-3-memxor@gmail.com>
- <5811eb10-bc93-0b81-2ee4-10490388f238@iogearbox.net>
- <20210427180202.pepa2wdbhhap3vyg@apollo>
- <9985fe91-76ea-7c09-c285-1006168f1c27@iogearbox.net>
- <7a75062e-b439-68b3-afa3-44ea519624c7@iogearbox.net>
- <87sg3b8idy.fsf@toke.dk>
- <8e6d24fa-d3ef-af20-b2a5-dbdc9a284f6d@iogearbox.net>
- <87pmyf8hp1.fsf@toke.dk>
- <b1a576ad-5c34-a6e6-6ab0-0ac07356f9ea@iogearbox.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5FfFOfy+ipYphXgdKrdbLv2yDmO7+UBL+r3kaZKExys=;
+        b=pv5rlq7Ubugyp8/P4bUReFFpYH1c8pffWrQLVqyCLAoyt8Bj0Al/HwFUq+F/NEBw7U
+         Ar6l+GpYKhpSdlb3ZnApKiHf61LesgMn9bxg1tgQtDqil1LNYjIVr81rDQqhmmjEM1su
+         JpZTbOceLc/jsZ1M5yBRBdl+xVcChuPWLr4nnKswafcZdyuj6wc6IaCeFhq6kw6qCg3y
+         +87NARFfAienXh/4TiINFAtET7mtcECjBmYTP5WYtAMbjjcSFaWKXdcEenBh8bgFE4n8
+         pOWh+kFfdSGnk0rfcA8x9L9UC52ZYSwAZaZg3u2gUh9R0uUOiAtZrFXhhviwi7bq8Pt1
+         I/gg==
+X-Gm-Message-State: AOAM530IL692x1xkB1Uxk8/ACjj92Lc6++ouPZJmfBu5QeyJyItdyjcF
+        Q5O+ih1j0KXqLYZ3aSBM6nEtSaF7drI4WdV+dm4=
+X-Google-Smtp-Source: ABdhPJxWaRis+6CDZk0WoubzO6mVsrmCgwWXwf9YZ7QhUng27ECRea07WG0f8A9aSvzBQnc/tpEOkXZeLoW1ltUwDDk=
+X-Received: by 2002:a25:ba06:: with SMTP id t6mr33806610ybg.459.1619565567743;
+ Tue, 27 Apr 2021 16:19:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b1a576ad-5c34-a6e6-6ab0-0ac07356f9ea@iogearbox.net>
+References: <20210427170859.579924-1-jackmanb@google.com> <CAEf4BzZimYsgp3AS72U8nOXfryB6dVxQKetT_6yE3xzztdTyZg@mail.gmail.com>
+ <CACYkzJ57LqsDBgJpTZ6X-mEabgNK60J=2CJEhUWoQU6wALvQVw@mail.gmail.com>
+In-Reply-To: <CACYkzJ57LqsDBgJpTZ6X-mEabgNK60J=2CJEhUWoQU6wALvQVw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 27 Apr 2021 16:19:16 -0700
+Message-ID: <CAEf4Bzb+OGZrvmgLk3C1bGtmyLU9JiJKp2WfgGkWq0nW0Tq32g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     Brendan Jackman <jackmanb@google.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 04:44:23AM IST, Daniel Borkmann wrote:
-> On 4/28/21 12:51 AM, Toke Høiland-Jørgensen wrote:
-> > Daniel Borkmann <daniel@iogearbox.net> writes:
-> > > On 4/28/21 12:36 AM, Toke Høiland-Jørgensen wrote:
-> > > > Daniel Borkmann <daniel@iogearbox.net> writes:
-> > > [...]
-> > > > > Small addendum:
-> > > > >
-> > > > >        DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .ifindex = 42, .which = BPF_TC_INGRESS|BPF_TC_EGRESS);
-> > > > >
-> > > > >        err = bpf_tc_hook_create(&hook);
-> > > > >        [...]
-> > > > >
-> > > > > ... is also possible, of course, and then both bpf_tc_hook_{create,destroy}() are symmetric.
-> > > >
-> > > > It should be allowed, but it wouldn't actually make any difference which
-> > > > combination of TC_INGRESS and TC_EGRESS you specify, as long as one of
-> > > > them is set, right? I.e., we just attach the clsact qdisc in both
-> > > > cases...
-> > >
-> > > Yes, that is correct, for the bpf_tc_hook_create() whether you pass in BPF_TC_INGRESS,
-> > > BPF_TC_EGRESS or BPF_TC_INGRESS|BPF_TC_EGRESS, you'll end up creating clsact qdisc in
-> > > either of the three cases. Only the bpf_tc_hook_destroy() differs
-> > > between all of them.
+On Tue, Apr 27, 2021 at 4:05 PM KP Singh <kpsingh@kernel.org> wrote:
+>
+> On Tue, Apr 27, 2021 at 11:34 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > Right, just checking. Other than that, I like your proposal; it loses
-> > the "automatic removal of qdisc if we added it" feature, but that's
-> > probably OK: less magic is good. And as long as bpf_tc_hook_create()
-> > returns EEXIST if the qdisc already exists, the caller can do the same
-> > thing if they want.
+> > On Tue, Apr 27, 2021 at 10:09 AM Brendan Jackman <jackmanb@google.com> wrote:
+> > >
+> > > One of our benchmarks running in (Google-internal) CI pushes data
+> > > through the ringbuf faster than userspace is able to consume
+> > > it. In this case it seems we're actually able to get >INT_MAX entries
+> > > in a single ringbuf_buffer__consume call. ASAN detected that cnt
+> > > overflows in this case.
+> > >
+> > > Fix by just setting a limit on the number of entries that can be
+> > > consumed.
+> > >
+> > > Fixes: bf99c936f947 (libbpf: Add BPF ring buffer support)
+> > > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> > > ---
+> > >  tools/lib/bpf/ringbuf.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> > > index e7a8d847161f..445a21df0934 100644
+> > > --- a/tools/lib/bpf/ringbuf.c
+> > > +++ b/tools/lib/bpf/ringbuf.c
+> > > @@ -213,8 +213,8 @@ static int ringbuf_process_ring(struct ring* r)
+> > >         do {
+> > >                 got_new_data = false;
+> > >                 prod_pos = smp_load_acquire(r->producer_pos);
+> > > -               while (cons_pos < prod_pos) {
+> > > +               /* Don't read more than INT_MAX, or the return vale won't make sense. */
+> > > +               while (cons_pos < prod_pos && cnt < INT_MAX) {
+> >
+> > ring_buffer__pool() is assumed to not return until all the enqueued
+> > messages are consumed. That's the requirement for the "adaptive"
+> > notification scheme to work properly. So this will break that and
+> > cause the next ring_buffer__pool() to never wake up.
+> >
+> > We could use __u64 internally and then cap it to INT_MAX on return
+> > maybe? But honestly, this sounds like an artificial corner case, if
+> > you are producing data faster than you can consume it and it goes
+> > beyond INT_MAX, something is seriously broken in your application and
 >
-> Yes exactly. Less magic the better, especially given this has global effect.
+> Disclaimer: I don't know what Brendan's benchmark is actually doing
 >
+> That said, I have seen similar boundaries being reached when
+> doing process monitoring and then a kernel gets compiled (esp. with ccache)
+> and generates a large amount of process events in a very short span of time.
+> Another example is when someone runs a short process in a tight while loop.
+>
+> I agree it's a matter of tuning, but since these corner cases can be
+> easily triggered
+> even on real (non CI) systems no matter how much one tunes, I wouldn't
+> really call it artificial :)
 
-Everything sounds good. I'll do a resend.
+Well of course, given sufficiently active kernel sample producer and
+sufficiently slow consumer you can keep consuming forever.
 
-> Thanks,
-> Daniel
+I think we have two alternatives here:
+1) consume all but cap return to INT_MAX
+2) consume all but return long long as return result
 
---
-Kartikeya
+Third alternative is to have another API with maximum number of
+samples to consume. But then user needs to know what they are doing
+(e.g., they do FORCE on BPF side, or they do their own epoll_wait, or
+they do ring_buffer__poll with timeout = 0, etc).
+
+I'm just not sure anyone would want to understand all the
+implications. And it's easy to miss those implications. So maybe let's
+do long long (or __s64) return type instead?
+
+>
+> - KP
+>
+> > you have more important things to handle :)
+> >
+> > >                         len_ptr = r->data + (cons_pos & r->mask);
+> > >                         len = smp_load_acquire(len_ptr);
+> > >
+> > > --
+> > > 2.31.1.498.g6c1eba8ee3d-goog
+> > >
