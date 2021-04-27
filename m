@@ -2,168 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8ED36CF96
-	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 01:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3099A36CFA8
+	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 01:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236015AbhD0Xi0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Apr 2021 19:38:26 -0400
-Received: from www62.your-server.de ([213.133.104.62]:47896 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235423AbhD0Xi0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Apr 2021 19:38:26 -0400
-Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lbXGu-0006Bv-NO; Wed, 28 Apr 2021 01:37:40 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: pull-request: bpf-next 2021-04-28
-Date:   Wed, 28 Apr 2021 01:37:40 +0200
-Message-Id: <20210427233740.22238-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S236547AbhD0Xre (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Apr 2021 19:47:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236015AbhD0Xre (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Apr 2021 19:47:34 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C326C061574;
+        Tue, 27 Apr 2021 16:46:50 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id h36so42117635lfv.7;
+        Tue, 27 Apr 2021 16:46:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B4EfuXadedAI5OOJEbOozmGvcL48B3b8Lsu25+BolLQ=;
+        b=IBIjrv0b40KrnIR8zJSk8PYHxxPvKDHJfmdH2yFvSMcnBsd4qWi9VCeI+l28sjIZHw
+         0l/lbLYXZ/O0oodn+aaLU0hPLAub/RPMfpl55fDpSBtf1ngOKEs1r/Y6hzydPV32woUn
+         0jC7BKS+ozHgKIV+ugSJnptJY9tc+O0qhTYRBgQ0+sO1zH9w2tf0xkdhsr6OIKIh2FkX
+         Jdw/LQTTPHAkdCvVSWoreCdHPYmCSvDsrcrUopkF+IenrfQRoOzW0q7TSgHapuB6nlWh
+         dw+M+zVj0rCmcg7T5nWT4UjiA49M9aWeet4mCfo/ZmR0L2ywiCFy98WhiYV5NzN7tonx
+         SELA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B4EfuXadedAI5OOJEbOozmGvcL48B3b8Lsu25+BolLQ=;
+        b=dwydKLYffRAycH4zCx2aMqF/t5V+D4Bx9HuQv68riYNQgMb6AMyjl/jBzqZMxDCpvb
+         4UlqdqGQkMPDdrhkdq2imNSr53gHiWDMvwK5MZUeayFJp+cbWTHvm6goETkllkQSu2iz
+         0IsdGVAvaAZaV8tRc24FtXpmx+h8R57aUKuaIenes4nhiwrSajM9z9BfKSC6mD5SjPYK
+         Vh/aUrAoQmSKTpLweR2b2NhsjD/m93FEpbiTLd9xI0SoC+nsmaMG4i/mfDEwqlZAkBj2
+         i2QWQVkkZwqwnilP8iyyYH/TvCBpT1vQklEFQKlyZ8IN/0oPv5UNPVsvbgHh7d7MhSMv
+         Nvlg==
+X-Gm-Message-State: AOAM533xYSQ+cVLnvCfbP6LJCpRUXz0E7V1P62oewxGrYj5ciKKYMskJ
+        PDGxLikJzaFF84vcRvj8bJ6lUKI44qC7rZf9Ntw=
+X-Google-Smtp-Source: ABdhPJxqkpsCVjkxn9UyzNt1BR0ab9wgPdXenUswScfwV+OUsgxaOLQfXPqBcms8IH1teKJ6Wq0WGxFALVWMDy2xFEs=
+X-Received: by 2002:a05:6512:3984:: with SMTP id j4mr18858318lfu.38.1619567208718;
+ Tue, 27 Apr 2021 16:46:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26153/Tue Apr 27 13:09:27 2021)
+References: <20210427174313.860948-1-revest@chromium.org> <20210427174313.860948-3-revest@chromium.org>
+In-Reply-To: <20210427174313.860948-3-revest@chromium.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 27 Apr 2021 16:46:37 -0700
+Message-ID: <CAADnVQLQmt0-D_e=boXoK=FLRoXv9xzkCwM24zpbZERrEexLCw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf: Implement formatted output helpers
+ with bstr_printf
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+On Tue, Apr 27, 2021 at 10:43 AM Florent Revest <revest@chromium.org> wrote:
+> +                       if (fmt[i + 1] == 'B') {
+> +                               if (tmp_buf)  {
+> +                                       err = snprintf(tmp_buf,
+> +                                                      (tmp_buf_end - tmp_buf),
+> +                                                      "%pB",
+...
+> +                       if ((tmp_buf_end - tmp_buf) < sizeof_cur_ip) {
 
-The following pull-request contains BPF updates for your *net-next* tree.
+I removed a few redundant () like above and applied.
 
-We've added 19 non-merge commits during the last 2 day(s) which contain
-a total of 36 files changed, 494 insertions(+), 313 deletions(-).
+>                 if (fmt[i] == 'l') {
+> -                       cur_mod = BPF_PRINTF_LONG;
+> +                       sizeof_cur_arg = sizeof(long);
+>                         i++;
+>                 }
+>                 if (fmt[i] == 'l') {
+> -                       cur_mod = BPF_PRINTF_LONG_LONG;
+> +                       sizeof_cur_arg = sizeof(long long);
+>                         i++;
+>                 }
 
-The main changes are:
-
-1) Add link detach and following re-attach for trampolines, from Jiri Olsa.
-
-2) Use kernel's "binary printf" lib for formatted output BPF helpers (which
-   avoids the needs for variadic argument handling), from Florent Revest.
-
-3) Fix verifier 64 to 32 bit min/max bound propagation, from Daniel Borkmann.
-
-4) Convert cpumap to use netif_receive_skb_list(), from Lorenzo Bianconi.
-
-5) Add generic batched-ops support to percpu array map, from Pedro Tammela.
-
-6) Various CO-RE relocation BPF selftests fixes, from Andrii Nakryiko.
-
-7) Misc doc rst fixes, from Hengqi Chen.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Alexei Starovoitov, Andrii Nakryiko, Jesper Dangaard Brouer, John 
-Fastabend, Julia Lawall, kernel test robot, KP Singh, Lorenz Bauer, 
-Rasmus Villemoes, Toke Høiland-Jørgensen
-
-----------------------------------------------------------------
-
-The following changes since commit 0ea1041bfa3aa2971f858edd9e05477c2d3d54a0:
-
-  Merge branch 'bnxt_en-next' (2021-04-25 18:37:39 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
-
-for you to fetch changes up to 3733bfbbdd28f7a65340d0058d15d15190a4944a:
-
-  bpf, selftests: Update array map tests for per-cpu batched ops (2021-04-28 01:18:12 +0200)
-
-----------------------------------------------------------------
-Alexei Starovoitov (3):
-      Merge branch 'bpf: Tracing and lsm programs re-attach'
-      Merge branch 'CO-RE relocation selftests fixes'
-      Merge branch 'Implement formatted output helpers with bstr_printf'
-
-Andrii Nakryiko (5):
-      selftests/bpf: Add remaining ASSERT_xxx() variants
-      libbpf: Support BTF_KIND_FLOAT during type compatibility checks in CO-RE
-      selftests/bpf: Fix BPF_CORE_READ_BITFIELD() macro
-      selftests/bpf: Fix field existence CO-RE reloc tests
-      selftests/bpf: Fix core_reloc test runner
-
-Daniel Borkmann (1):
-      bpf: Fix propagation of 32 bit unsigned bounds from 64 bit bounds
-
-Florent Revest (3):
-      bpf: Lock bpf_trace_printk's tmp buf before it is written to
-      seq_file: Add a seq_bprintf function
-      bpf: Implement formatted output helpers with bstr_printf
-
-Hengqi Chen (1):
-      bpf, docs: Fix literal block for example code
-
-Jiri Olsa (6):
-      bpf: Allow trampoline re-attach for tracing and lsm programs
-      selftests/bpf: Add re-attach test to fentry_test
-      selftests/bpf: Add re-attach test to fexit_test
-      selftests/bpf: Add re-attach test to lsm test
-      selftests/bpf: Test that module can't be unloaded with attached trampoline
-      selftests/bpf: Use ASSERT macros in lsm test
-
-Lorenzo Bianconi (1):
-      bpf, cpumap: Bulk skb using netif_receive_skb_list
-
-Pedro Tammela (2):
-      bpf: Add batched ops support for percpu array
-      bpf, selftests: Update array map tests for per-cpu batched ops
-
- Documentation/networking/filter.rst                |   2 +-
- fs/seq_file.c                                      |  18 ++
- include/linux/bpf.h                                |  22 +--
- include/linux/seq_file.h                           |   4 +
- init/Kconfig                                       |   1 +
- kernel/bpf/arraymap.c                              |   2 +
- kernel/bpf/cpumap.c                                |  18 +-
- kernel/bpf/helpers.c                               | 188 +++++++++++----------
- kernel/bpf/syscall.c                               |  23 ++-
- kernel/bpf/trampoline.c                            |   4 +-
- kernel/bpf/verifier.c                              |  10 +-
- kernel/trace/bpf_trace.c                           |  36 ++--
- tools/lib/bpf/bpf_core_read.h                      |  16 +-
- tools/lib/bpf/libbpf.c                             |   6 +-
- .../selftests/bpf/map_tests/array_map_batch_ops.c  | 104 ++++++++----
- tools/testing/selftests/bpf/prog_tests/btf_dump.c  |   2 +-
- .../testing/selftests/bpf/prog_tests/btf_endian.c  |   4 +-
- .../testing/selftests/bpf/prog_tests/cgroup_link.c |   2 +-
- .../testing/selftests/bpf/prog_tests/core_reloc.c  |  51 +++---
- .../testing/selftests/bpf/prog_tests/fentry_test.c |  52 ++++--
- .../testing/selftests/bpf/prog_tests/fexit_test.c  |  52 ++++--
- tools/testing/selftests/bpf/prog_tests/kfree_skb.c |   2 +-
- .../selftests/bpf/prog_tests/module_attach.c       |  23 +++
- .../selftests/bpf/prog_tests/resolve_btfids.c      |   7 +-
- .../selftests/bpf/prog_tests/snprintf_btf.c        |   4 +-
- tools/testing/selftests/bpf/prog_tests/test_lsm.c  |  61 ++++---
- ...tf__core_reloc_existence___err_wrong_arr_kind.c |   3 -
- ...re_reloc_existence___err_wrong_arr_value_type.c |   3 -
- ...tf__core_reloc_existence___err_wrong_int_kind.c |   3 -
- .../btf__core_reloc_existence___err_wrong_int_sz.c |   3 -
- ...tf__core_reloc_existence___err_wrong_int_type.c |   3 -
- ..._core_reloc_existence___err_wrong_struct_type.c |   3 -
- .../btf__core_reloc_existence___wrong_field_defs.c |   3 +
- .../testing/selftests/bpf/progs/core_reloc_types.h |  20 +--
- tools/testing/selftests/bpf/test_progs.h           |  50 +++++-
- .../testing/selftests/bpf/verifier/array_access.c  |   2 +-
- 36 files changed, 494 insertions(+), 313 deletions(-)
- delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_existence___err_wrong_arr_kind.c
- delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_existence___err_wrong_arr_value_type.c
- delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_existence___err_wrong_int_kind.c
- delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_existence___err_wrong_int_sz.c
- delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_existence___err_wrong_int_type.c
- delete mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_existence___err_wrong_struct_type.c
- create mode 100644 tools/testing/selftests/bpf/progs/btf__core_reloc_existence___wrong_field_defs.c
+This bit got me thinking.
+I understand that this is how bpf_trace_printk behaved
+and the sprintf continued the tradition, but I think it will
+surprise bpf users.
+The bpf progs are always 64-bit. The sizeof(long) == 8
+inside any bpf program. So printf("%ld") matches that long.
+The clang could even do type checking to make sure the prog
+is passing the right type into printf() if we add
+__attribute__ ((format (printf))) to bpf_helper_defs.h
+But this sprintf() implementation will trim the value to 32-bit
+to satisfy 'fmt' string on 32-bit archs.
+So bpf program behavior would be different on 32 and 64-bit archs.
+I think that would be confusing, since the rest of bpf prog is
+portable. The progs work the same way on all archs
+(except endianess, of course).
+I'm not sure how to fix it though.
+The sprintf cannot just pass 64-bit unconditionally, since
+bstr_printf on 32-bit archs will process %ld incorrectly.
+The verifier could replace %ld with %Ld.
+The fmt string is a read only string for bpf_snprintf,
+but for bpf_trace_printk it's not and messing with it at run-time
+is not good. Copying the fmt string is not great either.
+Messing with internals of bstr_printf is ugly too.
+Maybe we just have to live with this quirk ?
+Just add a doc to uapi/bpf.h to discourage %ld and be done?
