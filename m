@@ -2,155 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84EA36BDC9
-	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 05:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA31236BDDC
+	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 05:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbhD0Dhx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 26 Apr 2021 23:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234038AbhD0Dhx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 26 Apr 2021 23:37:53 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A949BC061574;
-        Mon, 26 Apr 2021 20:37:10 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so6483415pjv.1;
-        Mon, 26 Apr 2021 20:37:10 -0700 (PDT)
+        id S234409AbhD0Drv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 26 Apr 2021 23:47:51 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:33976 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234406AbhD0Dru (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 26 Apr 2021 23:47:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1C9CVPJr3BySELErdByj88ox5WCaDH+ROiGvIWTc27Q=;
-        b=X1bxRQr92MujTxcXWxK6ARS9RokTQ9kEjBttRd8OBiEJV+EEDjf3jOdq1HUAh9BXrc
-         qn2jDca9by0UVF17jj9d86GrfqnyI2VgrmZbmX5d9XYMLtEp9gtgh/8v+24fpPKn9bcN
-         f+xmW3vYAuckDxFRfpEmdIstsvr/CcSTmiLlbnN+QQdxrJdiwRbICnxgO+kEM9smz5Ch
-         wRqchw3S7Zs5beuwzuBZYoHcGiuN5O83yCvU0FXYc/MdOPQssUtECj7JtMW+m7ksi3H8
-         FhwfFiMi2tfuIgdu84j17fVpbZUfjb5bp53Ig29l8JSUzUz0sAPm586CRCotvWuhbP9K
-         X/9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1C9CVPJr3BySELErdByj88ox5WCaDH+ROiGvIWTc27Q=;
-        b=J7LVmMxKdzyQ/X7EuormpT52sX2Ry6m9r6FGYANoSv2lNd2hE2n2io6PM8Hch1DiXb
-         N/E3EiFkSkd578i/YhoMTR6wfoR/w/6AtadPSb0qxZfIWapoh0kA9N8eQoQXIiOXgXoB
-         nNj7oUpE+cFOC81pvYxtKgrFshdUsZG5Wn9YAoQ+c8Fnqz81CmJcdtc1oys0VPCxajGS
-         W0sfPN7xy5kCWn596jhj/Tfv5/4RnwJsm1EiaBHiZZ/IwJmKEPADohw9lSenHT/hvQqz
-         gAnP9omPLXeABN7kj7GWqKPu3Fvss9SK59nugb7ASCvpgUYObOvKxPZVoKSIPZkiI6eu
-         XBeg==
-X-Gm-Message-State: AOAM533HJCptEZ5iDqDk0+alRFNhBj1VYGB09VV//OKToFwY7vbZabdZ
-        QeIItBkn4YKG3GsIvWivJocviuALhfo=
-X-Google-Smtp-Source: ABdhPJxJ300vI7i9A7zptPhLn24TUYRntVEoo0cEeDSnT8lAIjvcpK4vBggEilQFSgWwt/T631MVtA==
-X-Received: by 2002:a17:90a:6282:: with SMTP id d2mr2519701pjj.168.1619494630141;
-        Mon, 26 Apr 2021 20:37:10 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:1ad0])
-        by smtp.gmail.com with ESMTPSA id q26sm970476pfg.146.2021.04.26.20.37.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Apr 2021 20:37:09 -0700 (PDT)
-Date:   Mon, 26 Apr 2021 20:37:07 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1619495229; x=1651031229;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=t6tAdQlIpp9W88atuV8CyB0mCSqcS0sDQQjhTKNSrN0=;
+  b=D4AmW5SNIONMVO24ueSTVJa2Vvv41gnDsArL2tdW4TkgAuZ3DoBLfF6W
+   rXkvXa6XbQv0lgDwhJc2tynzhd6C5GfkkkaORIYiZSBZmFtofgClS8f+g
+   Mxcf/UlE0ez3IBKjDCWpOX6WYH+fTKdGoYMwtPI/tZmoM3Dvuie6aM8eg
+   M=;
+X-IronPort-AV: E=Sophos;i="5.82,254,1613433600"; 
+   d="scan'208";a="108548899"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-cc689b93.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 27 Apr 2021 03:47:07 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-cc689b93.us-west-2.amazon.com (Postfix) with ESMTPS id B02E61201AF;
+        Tue, 27 Apr 2021 03:47:05 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 27 Apr 2021 03:47:05 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.162.93) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 27 Apr 2021 03:47:00 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 10/16] bpf: Add bpf_btf_find_by_name_kind()
- helper.
-Message-ID: <20210427033707.fu7hsm6xi5ayx6he@ast-mbp.dhcp.thefacebook.com>
-References: <20210423002646.35043-1-alexei.starovoitov@gmail.com>
- <20210423002646.35043-11-alexei.starovoitov@gmail.com>
- <CAEf4BzYkzzN=ZD2X1bOg8U39Whbe6oTPuUEMOpACw6NPEW69NA@mail.gmail.com>
+        Martin KaFai Lau <kafai@fb.com>
+CC:     Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Tue, 27 Apr 2021 12:46:12 +0900
+Message-ID: <20210427034623.46528-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYkzzN=ZD2X1bOg8U39Whbe6oTPuUEMOpACw6NPEW69NA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.93]
+X-ClientProxiedBy: EX13D18UWC002.ant.amazon.com (10.43.162.88) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 03:46:29PM -0700, Andrii Nakryiko wrote:
-> On Thu, Apr 22, 2021 at 5:27 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > Add new helper:
-> >
-> > long bpf_btf_find_by_name_kind(u32 btf_fd, char *name, u32 kind, int flags)
-> >         Description
-> >                 Find given name with given type in BTF pointed to by btf_fd.
-> >                 If btf_fd is zero look for the name in vmlinux BTF and in module's BTFs.
-> >         Return
-> >                 Returns btf_id and btf_obj_fd in lower and upper 32 bits.
-> >
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > ---
-> >  include/linux/bpf.h            |  1 +
-> >  include/uapi/linux/bpf.h       |  8 ++++
-> >  kernel/bpf/btf.c               | 68 ++++++++++++++++++++++++++++++++++
-> >  kernel/bpf/syscall.c           |  2 +
-> >  tools/include/uapi/linux/bpf.h |  8 ++++
-> >  5 files changed, 87 insertions(+)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 0f841bd0cb85..4cf361eb6a80 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -1972,6 +1972,7 @@ extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto;
-> >  extern const struct bpf_func_proto bpf_task_storage_get_proto;
-> >  extern const struct bpf_func_proto bpf_task_storage_delete_proto;
-> >  extern const struct bpf_func_proto bpf_for_each_map_elem_proto;
-> > +extern const struct bpf_func_proto bpf_btf_find_by_name_kind_proto;
-> >
-> >  const struct bpf_func_proto *bpf_tracing_func_proto(
-> >         enum bpf_func_id func_id, const struct bpf_prog *prog);
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index de58a714ed36..253f5f031f08 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -4748,6 +4748,13 @@ union bpf_attr {
-> >   *             Execute bpf syscall with given arguments.
-> >   *     Return
-> >   *             A syscall result.
-> > + *
-> > + * long bpf_btf_find_by_name_kind(u32 btf_fd, char *name, u32 kind, int flags)
-> > + *     Description
-> > + *             Find given name with given type in BTF pointed to by btf_fd.
-> 
-> "Find BTF type with given name"? Should the limits on name length be
+The SO_REUSEPORT option allows sockets to listen on the same port and to
+accept connections evenly. However, there is a defect in the current
+implementation [1]. When a SYN packet is received, the connection is tied
+to a listening socket. Accordingly, when the listener is closed, in-flight
+requests during the three-way handshake and child sockets in the accept
+queue are dropped even if other listeners on the same port could accept
+such connections.
 
-+1
+This situation can happen when various server management tools restart
+server (such as nginx) processes. For instance, when we change nginx
+configurations and restart it, it spins up new workers that respect the new
+configuration and closes all listeners on the old workers, resulting in the
+in-flight ACK of 3WHS is responded by RST.
 
-> specified? KSYM_NAME_LEN is a pretty arbitrary restriction.
+To avoid such a situation, users have to know deeply how the kernel handles
+SYN packets and implement connection draining by eBPF [2]:
 
-that's implementation detail that shouldn't leak into uapi.
+  1. Stop routing SYN packets to the listener by eBPF.
+  2. Wait for all timers to expire to complete requests
+  3. Accept connections until EAGAIN, then close the listener.
 
-> Also,
-> would it still work fine if the caller provides a pointer to a much
-> shorter piece of memory?
-> 
-> Why not add name_sz right after name, as we do with a lot of other
-> arguments like this?
+  or
 
-That's an option too, but then the helper will have 5 args and 'flags'
-would be likely useless. I mean unlikely it will help extending it.
-I was thinking about ARG_PTR_TO_CONST_STR, but it doesn't work,
-since blob is writeable by the prog. It's read only from user space.
-I'm fine with name, name_sz though.
+  1. Start counting SYN packets and accept syscalls using the eBPF map.
+  2. Stop routing SYN packets.
+  3. Accept connections up to the count, then close the listener.
 
-> 
-> > + *             If btf_fd is zero look for the name in vmlinux BTF and in module's BTFs.
-> > + *     Return
-> > + *             Returns btf_id and btf_obj_fd in lower and upper 32 bits.
-> 
-> Mention that for vmlinux BTF btf_obj_fd will be zero? Also who "owns"
-> the FD? If the BPF program doesn't close it, when are they going to be
-> cleaned up?
+In either way, we cannot close a listener immediately. However, ideally,
+the application need not drain the not yet accepted sockets because 3WHS
+and tying a connection to a listener are just the kernel behaviour. The
+root cause is within the kernel, so the issue should be addressed in kernel
+space and should not be visible to user space. This patchset fixes it so
+that users need not take care of kernel implementation and connection
+draining. With this patchset, the kernel redistributes requests and
+connections from a listener to the others in the same reuseport group
+at/after close or shutdown syscalls.
 
-just like bpf_sys_bpf. Who owns returned FD? The program that called
-the helper, of course.
-In the current shape of loader prog these btf fds are cleaned up correctly
-in success and in error case.
-Not all FDs though. map fds will stay around if bpf_sys_bpf(prog_load) fails to load.
-Tweaking loader prog to close all FDs in error case is on todo list.
+Although some software does connection draining, there are still merits in
+migration. For some security reasons, such as replacing TLS certificates,
+we may want to apply new settings as soon as possible and/or we may not be
+able to wait for connection draining. The sockets in the accept queue have
+not started application sessions yet. So, if we do not drain such sockets,
+they can be handled by the newer listeners and could have a longer
+lifetime. It is difficult to drain all connections in every case, but we
+can decrease such aborted connections by migration. In that sense,
+migration is always better than draining. 
+
+Moreover, auto-migration simplifies user space logic and also works well in
+a case where we cannot modify and build a server program to implement the
+workaround.
+
+Note that the source and destination listeners MUST have the same settings
+at the socket API level; otherwise, applications may face inconsistency and
+cause errors. In such a case, we have to use the eBPF program to select a
+specific listener or to cancel migration.
+
+Special thanks to Martin KaFai Lau for bouncing ideas and exchanging code
+snippets along the way.
+
+
+Link:
+ [1] The SO_REUSEPORT socket option
+ https://lwn.net/Articles/542629/
+
+ [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
+ https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
+
+
+Changelog:
+ v4:
+  * Make some functions and variables 'static' in selftest
+  * Remove 'scalability' from the cover letter because it is not
+    primarily reason to use SO_REUSEPORT
+
+ v3:
+ https://lore.kernel.org/bpf/20210420154140.80034-1-kuniyu@amazon.co.jp/
+  * Add sysctl back for reuseport_grow()
+  * Add helper functions to manage socks[]
+  * Separate migration related logic into functions: reuseport_resurrect(),
+    reuseport_stop_listen_sock(), reuseport_migrate_sock()
+  * Clone request_sock to be migrated
+  * Migrate request one by one
+  * Pass child socket to eBPF prog
+
+ v2:
+ https://lore.kernel.org/netdev/20201207132456.65472-1-kuniyu@amazon.co.jp/
+  * Do not save closed sockets in socks[]
+  * Revert 607904c357c61adf20b8fd18af765e501d61a385
+  * Extract inet_csk_reqsk_queue_migrate() into a single patch
+  * Change the spin_lock order to avoid lockdep warning
+  * Add static to __reuseport_select_sock
+  * Use refcount_inc_not_zero() in reuseport_select_migrated_sock()
+  * Set the default attach type in bpf_prog_load_check_attach()
+  * Define new proto of BPF_FUNC_get_socket_cookie
+  * Fix test to be compiled successfully
+  * Update commit messages
+
+ v1:
+ https://lore.kernel.org/netdev/20201201144418.35045-1-kuniyu@amazon.co.jp/
+  * Remove the sysctl option
+  * Enable migration if eBPF progam is not attached
+  * Add expected_attach_type to check if eBPF program can migrate sockets
+  * Add a field to tell migration type to eBPF program
+  * Support BPF_FUNC_get_socket_cookie to get the cookie of sk
+  * Allocate an empty skb if skb is NULL
+  * Pass req_to_sk(req)->sk_hash because listener's hash is zero
+  * Update commit messages and coverletter
+
+ RFC:
+ https://lore.kernel.org/netdev/20201117094023.3685-1-kuniyu@amazon.co.jp/
+
+
+Kuniyuki Iwashima (11):
+  net: Introduce net.ipv4.tcp_migrate_req.
+  tcp: Add num_closed_socks to struct sock_reuseport.
+  tcp: Keep TCP_CLOSE sockets in the reuseport group.
+  tcp: Add reuseport_migrate_sock() to select a new listener.
+  tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+  tcp: Migrate TCP_NEW_SYN_RECV requests at retransmitting SYN+ACKs.
+  tcp: Migrate TCP_NEW_SYN_RECV requests at receiving the final ACK.
+  bpf: Support BPF_FUNC_get_socket_cookie() for
+    BPF_PROG_TYPE_SK_REUSEPORT.
+  bpf: Support socket migration by eBPF.
+  libbpf: Set expected_attach_type for BPF_PROG_TYPE_SK_REUSEPORT.
+  bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
+
+ Documentation/networking/ip-sysctl.rst        |  20 +
+ include/linux/bpf.h                           |   1 +
+ include/linux/filter.h                        |   2 +
+ include/net/netns/ipv4.h                      |   1 +
+ include/net/request_sock.h                    |   2 +
+ include/net/sock_reuseport.h                  |   9 +-
+ include/uapi/linux/bpf.h                      |  16 +
+ kernel/bpf/syscall.c                          |  13 +
+ net/core/filter.c                             |  23 +-
+ net/core/request_sock.c                       |  38 ++
+ net/core/sock_reuseport.c                     | 337 ++++++++++--
+ net/ipv4/inet_connection_sock.c               | 147 +++++-
+ net/ipv4/inet_hashtables.c                    |   2 +-
+ net/ipv4/sysctl_net_ipv4.c                    |   9 +
+ net/ipv4/tcp_ipv4.c                           |  20 +-
+ net/ipv6/tcp_ipv6.c                           |  14 +-
+ tools/include/uapi/linux/bpf.h                |  16 +
+ tools/lib/bpf/libbpf.c                        |   5 +-
+ tools/testing/selftests/bpf/network_helpers.c |   2 +-
+ tools/testing/selftests/bpf/network_helpers.h |   1 +
+ .../bpf/prog_tests/migrate_reuseport.c        | 484 ++++++++++++++++++
+ .../bpf/progs/test_migrate_reuseport.c        |  51 ++
+ 22 files changed, 1151 insertions(+), 62 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
+
+-- 
+2.30.2
+
