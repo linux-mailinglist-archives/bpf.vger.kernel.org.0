@@ -2,188 +2,230 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239A336CC1E
-	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 22:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0490636CC65
+	for <lists+bpf@lfdr.de>; Tue, 27 Apr 2021 22:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238822AbhD0UId (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Apr 2021 16:08:33 -0400
-Received: from mga01.intel.com ([192.55.52.88]:12800 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235416AbhD0UI0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Apr 2021 16:08:26 -0400
-IronPort-SDR: Qt+IQONfMW0y9/T9M+OFoR0jpQS9gmlnthHmS1UHsTDPEFKGNk2CLQF4KujN5iWAYnOljQme7D
- bt0dXnXAdcHA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9967"; a="217296735"
-X-IronPort-AV: E=Sophos;i="5.82,255,1613462400"; 
-   d="scan'208";a="217296735"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Apr 2021 13:07:42 -0700
-IronPort-SDR: dyJtXgdVxUzopuzm7aCr5SPvoKWguazBoN877XW5E382hN5wxO4ar/nmp3TuaZBJaATgFz5ieG
- 4SUzsGs0uv4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,255,1613462400"; 
-   d="scan'208";a="429951385"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga008.jf.intel.com with ESMTP; 27 Apr 2021 13:07:39 -0700
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        anthony.l.nguyen@intel.com, kuba@kernel.org, bjorn@kernel.org,
-        magnus.karlsson@intel.com,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH intel-net] ice: track AF_XDP ZC enabled queues in bitmap
-Date:   Tue, 27 Apr 2021 21:52:09 +0200
-Message-Id: <20210427195209.54217-1-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.20.1
+        id S238953AbhD0UhI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 27 Apr 2021 16:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237009AbhD0UhI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 27 Apr 2021 16:37:08 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A5B3C061574;
+        Tue, 27 Apr 2021 13:36:24 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id 82so71037340yby.7;
+        Tue, 27 Apr 2021 13:36:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TX+ocx5m+B3mBT8f6FXxNCukxTMN/uZAeQddLGbGz4U=;
+        b=kQubP+kelKlfLKP/IJh4xrm3h745FkzDr5Jp6I4Attv+LqBhWrI902uaZo34+bESb0
+         aV3E6fOrs6qeGydQ04/VmGJ/fI80zAgBQyjcPFKt391kwsqc5dUBK0YwrFY5jQsvmBuJ
+         GsIOZ4MmEe4BmVdjBHZSypLsU97oUW38XXtDjqIIm7RGXQAk/VJDqJln+vBfTQbGVJ5F
+         ZrhhyxI1jpd93D+Kpt0P2CE80Bn+M+VCwc5nYr9x83fnFknjuFKM+WgOUMXlApy4F2of
+         nDW7/kx1F/P+DEzfI/GiCUhK1AFXLWRJPUAUq6AacSqTfDYzVUo2DZu9dFwyD8Esc+M7
+         ho5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TX+ocx5m+B3mBT8f6FXxNCukxTMN/uZAeQddLGbGz4U=;
+        b=eaQyKWLt2DwQ3RGKsYMqrA4xaCceMyWwku/uwjI78wgonC3dNkcm8UKEFhdt3/HuPt
+         UEhoCnXYKTcjYtIUOoNCPtzYUNbro7E9F2mfcB1WXNuLaDx1LYsBhRSPGNvRKFxDJrnf
+         REAfX/RcHMZMdTUn5iowfHbYUhgesDB2nnJPsp7YziXcGiEQ/Z2Dp2epUxvJAOYmRaHY
+         xwFCQvoy2BExXWfMWZNxfN0iVzfU/nrZaGgnRoQ/hfposH4f5C/B97zKI8pzcxQB0/dM
+         wfktTjiY5AtZhhrr5PE+tVzDRxbk/DF8BgLvwidDV6roeX+sUXIfILc16FaBqdVHUsF/
+         BAEQ==
+X-Gm-Message-State: AOAM5321GIqUiyEh2a0/O7uE8WdrSzVB/EPgWmMNQZUoQJMJMpUhnWsB
+        ONQnq7s4p5fEWJmaHDSF9kmexSXxjCzgj4Ad10s=
+X-Google-Smtp-Source: ABdhPJxFVuH+Pyd502vLIn81FK30BXHWqjOpRldxj2C5cKILBPk/UHwAlTstxqZRz4HESSxe2LAoiIcJ2qzohrut5Ow=
+X-Received: by 2002:a25:c4c5:: with SMTP id u188mr35348801ybf.425.1619555783301;
+ Tue, 27 Apr 2021 13:36:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210423150600.498490-1-memxor@gmail.com> <20210423150600.498490-3-memxor@gmail.com>
+ <5811eb10-bc93-0b81-2ee4-10490388f238@iogearbox.net>
+In-Reply-To: <5811eb10-bc93-0b81-2ee4-10490388f238@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 27 Apr 2021 13:36:12 -0700
+Message-ID: <CAEf4BzZzJQ+bewwYBtbacCv+x-hjstvQtEGO3jt+0Y4NK_7V=w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/3] libbpf: add low level TC-BPF API
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit c7a219048e45 ("ice: Remove xsk_buff_pool from VSI structure")
-silently introduced a regression and broke the Tx side of AF_XDP in copy
-mode. xsk_pool on ice_ring is set only based on the existence of the XDP
-prog on the VSI which in turn picks ice_clean_tx_irq_zc to be executed.
-That is not something that should happen for copy mode as it should use
-the regular data path ice_clean_tx_irq.
+On Tue, Apr 27, 2021 at 8:04 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 4/23/21 5:05 PM, Kumar Kartikeya Dwivedi wrote:
+> [...]
+> >   tools/lib/bpf/libbpf.h   |  92 ++++++++
+> >   tools/lib/bpf/libbpf.map |   5 +
+> >   tools/lib/bpf/netlink.c  | 478 ++++++++++++++++++++++++++++++++++++++-
+> >   3 files changed, 574 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+> > index bec4e6a6e31d..1c717c07b66e 100644
+> > --- a/tools/lib/bpf/libbpf.h
+> > +++ b/tools/lib/bpf/libbpf.h
+> > @@ -775,6 +775,98 @@ LIBBPF_API int bpf_linker__add_file(struct bpf_linker *linker, const char *filen
+> >   LIBBPF_API int bpf_linker__finalize(struct bpf_linker *linker);
+> >   LIBBPF_API void bpf_linker__free(struct bpf_linker *linker);
+> >
+> > +enum bpf_tc_attach_point {
+> > +     BPF_TC_INGRESS,
+> > +     BPF_TC_EGRESS,
+> > +     BPF_TC_CUSTOM_PARENT,
+> > +     _BPF_TC_PARENT_MAX,
+>
+> I don't think we need to expose _BPF_TC_PARENT_MAX as part of the API, I would drop
+> the latter.
+>
+> > +};
+> > +
+> > +/* The opts structure is also used to return the created filters attributes
+> > + * (e.g. in case the user left them unset). Some of the options that were left
+> > + * out default to a reasonable value, documented below.
+> > + *
+> > + *   protocol - ETH_P_ALL
+> > + *   chain index - 0
+> > + *   class_id - 0 (can be set by bpf program using skb->tc_classid)
+> > + *   bpf_flags - TCA_BPF_FLAG_ACT_DIRECT (direct action mode)
+> > + *   bpf_flags_gen - 0
+> > + *
+> > + *   The user must fulfill documented requirements for each function.
+>
+> Not sure if this is overly relevant as part of the bpf_tc_opts in here. For the
+> 2nd part, I would probably just mention that libbpf internally attaches the bpf
+> programs with direct action mode. The hw offload may be future todo, and the other
+> bits are little used anyway; mentioning them here, what value does it have to
+> libbpf users? I'd rather just drop the 2nd part and/or simplify this paragraph
+> just stating that the progs are attached in direct action mode.
+>
+> > + */
+> > +struct bpf_tc_opts {
+> > +     size_t sz;
+> > +     __u32 handle;
+> > +     __u32 parent;
+> > +     __u16 priority;
+> > +     __u32 prog_id;
+> > +     bool replace;
+> > +     size_t :0;
+> > +};
+> > +
+> > +#define bpf_tc_opts__last_field replace
+> > +
+> > +struct bpf_tc_ctx;
+> > +
+> > +struct bpf_tc_ctx_opts {
+> > +     size_t sz;
+> > +};
+> > +
+> > +#define bpf_tc_ctx_opts__last_field sz
+> > +
+> > +/* Requirements */
+> > +/*
+> > + * @ifindex: Must be > 0.
+> > + * @parent: Must be one of the enum constants < _BPF_TC_PARENT_MAX
+> > + * @opts: Can be NULL, currently no options are supported.
+> > + */
+>
+> Up to Andrii, but we don't have such API doc in general inside libbpf.h, I
+> would drop it for the time being to be consistent with the rest (same for
+> others below).
 
-This results in a following splat when xdpsock is run in txonly or l2fwd
-scenarios in copy mode:
++1
 
-<snip>
-[  106.050195] BUG: kernel NULL pointer dereference, address: 0000000000000030
-[  106.057269] #PF: supervisor read access in kernel mode
-[  106.062493] #PF: error_code(0x0000) - not-present page
-[  106.067709] PGD 0 P4D 0
-[  106.070293] Oops: 0000 [#1] PREEMPT SMP NOPTI
-[  106.074721] CPU: 61 PID: 0 Comm: swapper/61 Not tainted 5.12.0-rc2+ #45
-[  106.081436] Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
-[  106.092027] RIP: 0010:xp_raw_get_dma+0x36/0x50
-[  106.096551] Code: 74 14 48 b8 ff ff ff ff ff ff 00 00 48 21 f0 48 c1 ee 30 48 01 c6 48 8b 87 90 00 00 00 48 89 f2 81 e6 ff 0f 00 00 48 c1 ea 0c <48> 8b 04 d0 48 83 e0 fe 48 01 f0 c3 66 66 2e 0f 1f 84 00 00 00 00
-[  106.115588] RSP: 0018:ffffc9000d694e50 EFLAGS: 00010206
-[  106.120893] RAX: 0000000000000000 RBX: ffff88984b8c8a00 RCX: ffff889852581800
-[  106.128137] RDX: 0000000000000006 RSI: 0000000000000000 RDI: ffff88984cd8b800
-[  106.135383] RBP: ffff888123b50001 R08: ffff889896800000 R09: 0000000000000800
-[  106.142628] R10: 0000000000000000 R11: ffffffff826060c0 R12: 00000000000000ff
-[  106.149872] R13: 0000000000000000 R14: 0000000000000040 R15: ffff888123b50018
-[  106.157117] FS:  0000000000000000(0000) GS:ffff8897e0f40000(0000) knlGS:0000000000000000
-[  106.165332] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  106.171163] CR2: 0000000000000030 CR3: 000000000560a004 CR4: 00000000007706e0
-[  106.178408] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  106.185653] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  106.192898] PKRU: 55555554
-[  106.195653] Call Trace:
-[  106.198143]  <IRQ>
-[  106.200196]  ice_clean_tx_irq_zc+0x183/0x2a0 [ice]
-[  106.205087]  ice_napi_poll+0x3e/0x590 [ice]
-[  106.209356]  __napi_poll+0x2a/0x160
-[  106.212911]  net_rx_action+0xd6/0x200
-[  106.216634]  __do_softirq+0xbf/0x29b
-[  106.220274]  irq_exit_rcu+0x88/0xc0
-[  106.223819]  common_interrupt+0x7b/0xa0
-[  106.227719]  </IRQ>
-[  106.229857]  asm_common_interrupt+0x1e/0x40
-</snip>
+>
+> > +LIBBPF_API struct bpf_tc_ctx *bpf_tc_ctx_init(__u32 ifindex,
+>
+> nit: in user space s/__u32 ifindex/int ifindex/
+>
+> > +                                           enum bpf_tc_attach_point parent,
+> > +                                           struct bpf_tc_ctx_opts *opts);
+>
+> Should we enforce opts being NULL or non-NULL here, or drop the arg from here
+> for now altogether? (And if later versions of the functions show up this could
+> be mapped to the right one?)
+>
 
-Fix this by introducing the bitmap of queues that are zero-copy enabled,
-where each bit, corresponding to a queue id that xsk pool is being
-configured on, will be set/cleared within ice_xsk_pool_{en,dis}able and
-checked within ice_xsk_pool(). The latter is a function used for
-deciding which napi poll routine is executed.
-Idea is being taken from our other drivers such as i40e and ixbge.
+OPTS_VALID check handles all the cases. Opts are always allowed to be
+NULL. If it's not null, all the bytes beyond what current libbpf
+version supports should be zero. All that is handled by OPTS_VALID, so
+I don't think anything extra needs to be checked.
 
-Fixes: c7a219048e45 ("ice: Remove xsk_buff_pool from VSI structure")
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- drivers/net/ethernet/intel/ice/ice.h     |  8 +++++---
- drivers/net/ethernet/intel/ice/ice_lib.c | 10 ++++++++++
- drivers/net/ethernet/intel/ice/ice_xsk.c |  3 +++
- 3 files changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-index 02badaaf818c..a63a13edf365 100644
---- a/drivers/net/ethernet/intel/ice/ice.h
-+++ b/drivers/net/ethernet/intel/ice/ice.h
-@@ -331,6 +331,7 @@ struct ice_vsi {
- 	struct ice_tc_cfg tc_cfg;
- 	struct bpf_prog *xdp_prog;
- 	struct ice_ring **xdp_rings;	 /* XDP ring array */
-+	unsigned long *af_xdp_zc_qps;	 /* tracks AF_XDP ZC enabled qps */
- 	u16 num_xdp_txq;		 /* Used XDP queues */
- 	u8 xdp_mapping_mode;		 /* ICE_MAP_MODE_[CONTIG|SCATTER] */
- 
-@@ -540,15 +541,16 @@ static inline void ice_set_ring_xdp(struct ice_ring *ring)
-  */
- static inline struct xsk_buff_pool *ice_xsk_pool(struct ice_ring *ring)
- {
-+	struct ice_vsi *vsi = ring->vsi;
- 	u16 qid = ring->q_index;
- 
- 	if (ice_ring_is_xdp(ring))
--		qid -= ring->vsi->num_xdp_txq;
-+		qid -= vsi->num_xdp_txq;
- 
--	if (!ice_is_xdp_ena_vsi(ring->vsi))
-+	if (!ice_is_xdp_ena_vsi(vsi) || !test_bit(qid, vsi->af_xdp_zc_qps))
- 		return NULL;
- 
--	return xsk_get_pool_from_qid(ring->vsi->netdev, qid);
-+	return xsk_get_pool_from_qid(vsi->netdev, qid);
- }
- 
- /**
-diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
-index 6041ca2830de..44e1233e1e28 100644
---- a/drivers/net/ethernet/intel/ice/ice_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_lib.c
-@@ -105,8 +105,14 @@ static int ice_vsi_alloc_arrays(struct ice_vsi *vsi)
- 	if (!vsi->q_vectors)
- 		goto err_vectors;
- 
-+	vsi->af_xdp_zc_qps = bitmap_zalloc(max_t(int, vsi->alloc_txq, vsi->alloc_rxq), GFP_KERNEL);
-+	if (!vsi->af_xdp_zc_qps)
-+		goto err_zc_qps;
-+
- 	return 0;
- 
-+err_zc_qps:
-+	devm_kfree(dev, vsi->q_vectors);
- err_vectors:
- 	devm_kfree(dev, vsi->rxq_map);
- err_rxq_map:
-@@ -286,6 +292,10 @@ static void ice_vsi_free_arrays(struct ice_vsi *vsi)
- 
- 	dev = ice_pf_to_dev(pf);
- 
-+	if (vsi->af_xdp_zc_qps) {
-+		bitmap_free(vsi->af_xdp_zc_qps);
-+		vsi->af_xdp_zc_qps = NULL;
-+	}
- 	/* free the ring and vector containers */
- 	if (vsi->q_vectors) {
- 		devm_kfree(dev, vsi->q_vectors);
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 17ab8ef024ad..adb2f12bcb87 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -273,6 +273,7 @@ static int ice_xsk_pool_disable(struct ice_vsi *vsi, u16 qid)
- 	if (!pool)
- 		return -EINVAL;
- 
-+	clear_bit(qid, vsi->af_xdp_zc_qps);
- 	xsk_pool_dma_unmap(pool, ICE_RX_DMA_ATTR);
- 
- 	return 0;
-@@ -303,6 +304,8 @@ ice_xsk_pool_enable(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
- 	if (err)
- 		return err;
- 
-+	set_bit(qid, vsi->af_xdp_zc_qps);
-+
- 	return 0;
- }
- 
--- 
-2.20.1
-
+> > +/*
+> > + * @ctx: Can be NULL, if not, must point to a valid object.
+> > + *    If the qdisc was attached during ctx_init, it will be deleted if no
+> > + *    filters are attached to it.
+> > + *    When ctx == NULL, this is a no-op.
+> > + */
+> > +LIBBPF_API int bpf_tc_ctx_destroy(struct bpf_tc_ctx *ctx);
+> > +/*
+> > + * @ctx: Cannot be NULL.
+> > + * @fd: Must be >= 0.
+> > + * @opts: Cannot be NULL, prog_id must be unset, all other fields can be
+> > + *     optionally set. All fields except replace  will be set as per created
+> > + *        filter's attributes. parent must only be set when attach_point of ctx is
+> > + *        BPF_TC_CUSTOM_PARENT, otherwise parent must be unset.
+> > + *
+> > + * Fills the following fields in opts:
+> > + *   handle
+> > + *   parent
+> > + *   priority
+> > + *   prog_id
+> > + */
+> > +LIBBPF_API int bpf_tc_attach(struct bpf_tc_ctx *ctx, int fd,
+> > +                          struct bpf_tc_opts *opts);
+> > +/*
+> > + * @ctx: Cannot be NULL.
+> > + * @opts: Cannot be NULL, replace and prog_id must be unset, all other fields
+> > + *     must be set.
+> > + */
+> > +LIBBPF_API int bpf_tc_detach(struct bpf_tc_ctx *ctx,
+> > +                          const struct bpf_tc_opts *opts);
+>
+> One thing that I find a bit odd from this API is that BPF_TC_INGRESS / BPF_TC_EGRESS
+> needs to be set each time via bpf_tc_ctx_init(). So whenever a specific program would
+> be attached to both we need to 're-init' in between just to change from hook a to b,
+> whereas when you have BPF_TC_CUSTOM_PARENT, you could just use a different opts->parent
+> without going this detour (unless the clsact wasn't loaded there in the first place).
+>
+> Could we add a BPF_TC_UNSPEC to enum bpf_tc_attach_point, which the user would pass to
+> bpf_tc_ctx_init(), so that opts.direction = BPF_TC_INGRESS with subsequent bpf_tc_attach()
+> can be called, and same opts.direction = BPF_TC_EGRESS with bpf_tc_attach() for different
+> fd. The only thing we cared about in bpf_tc_ctx_init() resp. the ctx was that qdisc was
+> ready.
+>
+> > +/*
+> > + * @ctx: Cannot be NULL.
+> > + * @opts: Cannot be NULL, replace and prog_id must be unset, all other fields
+> > + *     must be set.
+> > + *
+> > + * Fills the following fields in opts:
+> > + *   handle
+> > + *   parent
+> > + *   priority
+> > + *   prog_id
+> > + */
+> > +LIBBPF_API int bpf_tc_query(struct bpf_tc_ctx *ctx,
+> > +                         struct bpf_tc_opts *opts);
+> > +
+> >   #ifdef __cplusplus
+> >   } /* extern "C" */
+> >   #endif
