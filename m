@@ -2,66 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134FF36E082
-	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 22:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A93236E0D9
+	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 23:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhD1Ur4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Apr 2021 16:47:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhD1Urz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Apr 2021 16:47:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F83361026;
-        Wed, 28 Apr 2021 20:47:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619642829;
-        bh=MbOb2Pbxyp+AJJ6Ht72OYsybaRAs6aTQt/GQEr5hdBA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ab8bvbYicwuepAfCcnKNJqE+BePqvJcbIDH23GhNKE77uejV3GqDFlLluIV55+DmC
-         GnxNhcvt3p9ADwTtBDKSnJe4xXYDOM22o/ynHsBMusqlk/Brwg4h9/E/9iIFKccSPM
-         dk0JBAiG6j+6J7KmKJ7IEfKREpVfppcHiUEBxfdpPxUlJNWDwGV3dfHuJeOtEKyZlM
-         kz0EPfVtIm2xvUmcPCFllRhFGUELR6iNzH27kzjaUoHCmgJCgEiifAPBtOh/ul52kP
-         R/PMp5h7dJ5V/4hJe4nFwY9AbVHZIZmUAFbSmaTOro2exohI8ZDHbINZR9H+FRob6C
-         47/XDaeoZcCDg==
-Date:   Wed, 28 Apr 2021 13:47:08 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     davem@davemloft.net, ast@kernel.org, andrii.nakryiko@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: pull-request: bpf-next 2021-04-28
-Message-ID: <20210428134708.5dc0a300@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210427233740.22238-1-daniel@iogearbox.net>
-References: <20210427233740.22238-1-daniel@iogearbox.net>
+        id S229691AbhD1VQQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Apr 2021 17:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhD1VQP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Apr 2021 17:16:15 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7626BC06138A
+        for <bpf@vger.kernel.org>; Wed, 28 Apr 2021 14:15:30 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id j6so8032073ybh.11
+        for <bpf@vger.kernel.org>; Wed, 28 Apr 2021 14:15:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bIyO61YISM11+b/ct8CD54XRnrE2EiAcB3X911CPmqk=;
+        b=qz0ZFOu1yFMgGEs/KL/T+VGfZvVwcZgYe3/GVAGkIVPrjvJPninWWkWyU9qQ8l6JdJ
+         4/MNhh0/+09D81yDMvUtv5Za4YFUedKxqMP0LZ4FEmFk2a1ho/83VxQmbmganOhhajrM
+         WtfgsEvbJ/Xde1HClGijkhoXDx7vkYjXAcFroS9uEg4e1XIEe1HOKsDA+ZO8f5eduzCC
+         mUi4XB3AN7V7TezYqYW589O6BTNkeGy8HK+kRf0BJ3oVJFy0GYERp1uTOPThiDhfcEc/
+         bQnlegjUHj5NPUMZNgxaAdLdDsZybdXXzXzEvVZihNJXR9N7JtfxnvfjkHp+U5vkgLfb
+         IbWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bIyO61YISM11+b/ct8CD54XRnrE2EiAcB3X911CPmqk=;
+        b=KAl0Mw/duCi7QTl22rpoj1Ip55LRPJrK32aH7pToB6QKj0e8SBd3RUZ/a12BHMwOVh
+         qygNNYSJESgXSUqmy8QsMPiMGFYyQ7Dd/Ksh+jNQjN1IxBMBwVqtwEPnyP6W639w6WMK
+         S67genTnN0BZCVXGqgZpwefiSz63Xnw0cEt2riEOkqLBsDcXGCPAvIzl/ROzsdyngwWL
+         l9yKZYwBqJ3qnIYPGtlPbxKxm8dSiBOJVxCWwGub6sXCQMSDgyPat04fi/mu0Z9eqaV4
+         LJbYnRTh6XVNwzmeSIKkqyOTN2JQkZSYgtZe08RrmAFKONirwJI6/A5/f/JaNMAs6hG9
+         vmTw==
+X-Gm-Message-State: AOAM532iDIxwWZWjstsgmX3iROqe/Xwrd1iK1np+OmYmZGvSUI9mnJ9g
+        0UeDJ6P9qXYOXhHntTUH3QghaQKp593J3+nZxg4=
+X-Google-Smtp-Source: ABdhPJw+LVl5lB3vljTEwjamtKwPdnPuPL+MfSsFHU0K7Hfk0eJlzl8y4Co+WIlxrCFudpBTRUAttyNfV0289EjBuy4=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr43704786ybo.230.1619644529732;
+ Wed, 28 Apr 2021 14:15:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAO658oV9AAcMMbVhjkoq5PtpvbVf41Cd_TBLCORTcf3trtwHfw@mail.gmail.com>
+In-Reply-To: <CAO658oV9AAcMMbVhjkoq5PtpvbVf41Cd_TBLCORTcf3trtwHfw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 28 Apr 2021 14:15:18 -0700
+Message-ID: <CAEf4Bzayxgt3P+kz36t6C8jp-MUTuwuKvwHWWsd2qrCs3-RHXA@mail.gmail.com>
+Subject: Re: Typical way to handle missing macros in vmlinux.h
+To:     Grant Seltzer Richman <grantseltzer@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 28 Apr 2021 01:37:40 +0200 Daniel Borkmann wrote:
-> Hi David, hi Jakub,
-> 
-> The following pull-request contains BPF updates for your *net-next* tree.
-> 
-> We've added 19 non-merge commits during the last 2 day(s) which contain
-> a total of 36 files changed, 494 insertions(+), 313 deletions(-).
-> 
-> The main changes are:
-> 
-> 1) Add link detach and following re-attach for trampolines, from Jiri Olsa.
-> 
-> 2) Use kernel's "binary printf" lib for formatted output BPF helpers (which
->    avoids the needs for variadic argument handling), from Florent Revest.
-> 
-> 3) Fix verifier 64 to 32 bit min/max bound propagation, from Daniel Borkmann.
-> 
-> 4) Convert cpumap to use netif_receive_skb_list(), from Lorenzo Bianconi.
-> 
-> 5) Add generic batched-ops support to percpu array map, from Pedro Tammela.
-> 
-> 6) Various CO-RE relocation BPF selftests fixes, from Andrii Nakryiko.
-> 
-> 7) Misc doc rst fixes, from Hengqi Chen.
+On Wed, Apr 28, 2021 at 1:53 PM Grant Seltzer Richman
+<grantseltzer@gmail.com> wrote:
+>
+> Hi all,
+>
+> I'm working on enabling CO:RE in a project I work on, tracee, and am
+> running into the dilemma of missing macros that we previously were
+> able to import from their various header files. I understand that
+> macros don't make their way into BTF and therefore the generated
+> vmlinux.h won't have them. However I can't import the various header
+> files because of multiple-definition issues.
 
-Pulled, thanks!
+Sadly, copy/pasting has been the only way so far.
+
+>
+> Do people typically redefine each of these macros for their project?
+> If so is there anything I should be careful of, such as architectural
+> differences. Does anyone have creative ideas, even if not developed
+> fully yet that I can possibly contribute to libbpf?
+
+We've discussed adding Clang built-in to detect if a specific type is
+already defined and doing something like this in vmlinux.h:
+
+#if !__builtin_is_type_defined(struct task_struct)
+struct task_struct {
+     ...
+}
+#endif
+
+And just do that for every struct, union, typedef. That would allow
+vmlinux.h to co-exist (somewhat) with other types.
+
+Another alternative is to not use vmlinux.h and use just linux
+headers, but mark necessary types with
+__attribute__((preserve_access_index)) to make them CO-RE relocatable.
+You can add that to existing types with the same pragma that vmlinux.h
+uses.
+
+>
+> Thanks so much,
+> Grant Seltzer
