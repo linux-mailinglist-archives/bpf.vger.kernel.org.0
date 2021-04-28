@@ -2,87 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD6636D4EE
-	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 11:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F0636D5E0
+	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 12:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhD1JpM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Apr 2021 05:45:12 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:47080 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238148AbhD1JpL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 28 Apr 2021 05:45:11 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UX3IEJP_1619603064;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UX3IEJP_1619603064)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 28 Apr 2021 17:44:24 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     bpf@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH bpf v2] xsk: fix for xp_aligned_validate_desc() when len == chunk_size
-Date:   Wed, 28 Apr 2021 17:44:24 +0800
-Message-Id: <20210428094424.54435-1-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.0
+        id S236176AbhD1Kkh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Apr 2021 06:40:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229772AbhD1Kkh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Apr 2021 06:40:37 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E4C5C061574
+        for <bpf@vger.kernel.org>; Wed, 28 Apr 2021 03:39:51 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id q4so17956854qtn.5
+        for <bpf@vger.kernel.org>; Wed, 28 Apr 2021 03:39:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qUelH6eDva+cnXl8LepYIVYPnxHmV2Csm8CjEXGPO5U=;
+        b=tum0xtwSRFoNKdJECk2Hjf4s52z3nPfIPgoBgFw9RKsO2Aq0UftJwvtxwTZaSirWWq
+         C/TQDPiwttP1zcF+6DRJGVxKrxROSSrCuQOXu7QAtUUyQwuPoH1/7JEOK2KJojf1TbA5
+         BSIbjK6Z2a0ZnJmSlV59Lxzx3zF2wiucDd1h7rnGvnwqaIqNDNHxOpwuVst+GlPy66Da
+         B5atf2n/yYnaSyn4Jqa/PaBavDy5wS5ONv9OpCVqUSuF/wgBbS/twhMwifrHXA7lFHCS
+         /y7wNwxOKe+T5ub7myD+0adxVsLl1l8UM2fdP0Y8Vl3zGhenp19rZkU+n1YNb3GYpYyP
+         prig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qUelH6eDva+cnXl8LepYIVYPnxHmV2Csm8CjEXGPO5U=;
+        b=osF1nzXZirOeKUHXgX0DeEM7zmOixEBXo6zMSSIi5u9voU4+ywgRr5I88BkU4eUET1
+         WHa1giA/m3Z2a19ycV+Uh+i9QoIRZdIRvFFNaZTi4HQauQHYdKLxrgrGf6mh3NvnuysK
+         r/XA8pBMXrMKL8Dlmr020fzCvEN/XD0EWAFiBa8D2HGdlq4VPwb7khZ90yrBgd2sbkwj
+         6ErCbeG15lom1R6y249PJ+ZVyYAMV+kLEU0QJTozB5YLAzOisEqyFiSphbUMvlBEEUbM
+         Xr6bBuViyEUjxihb088TYzoKliS7Umh0kjadZDsKqi8RAppamA9U+SwMeEldsBXIGSXE
+         kl3w==
+X-Gm-Message-State: AOAM530qewr82uAV81wx7DYYnRwzKqRWVF92QVLtdnBYfaOKH5Vets+g
+        xV/bE1sJEjvN3UE3G2Zo88QLOPEg5Up7BZI8iA==
+X-Google-Smtp-Source: ABdhPJy9O4X+8r1AUDJQlcsKQqr9GuMmWGUjDwzA0ojawSFgZYSo+yb8VmpHmME+N4tPGPLvx3Nc5S4czWbA0qaEDMs=
+X-Received: by 2002:ac8:5283:: with SMTP id s3mr16265328qtn.66.1619606389780;
+ Wed, 28 Apr 2021 03:39:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210427135550.807355-1-joamaki@gmail.com> <20210427135550.807355-2-joamaki@gmail.com>
+ <CAEf4BzZ8iQ=ewupN0COpV78k+fhGvPZ4NHcqckZcQcmV=A6QXw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ8iQ=ewupN0COpV78k+fhGvPZ4NHcqckZcQcmV=A6QXw@mail.gmail.com>
+From:   Jussi Maki <joamaki@gmail.com>
+Date:   Wed, 28 Apr 2021 12:39:39 +0200
+Message-ID: <CAHn8xckARwp_yK477xTvzFCwU9oBwAoZ4D2erg6HRmoe5in3Xg@mail.gmail.com>
+Subject: Re: [PATCH bpf 2/2] selftests/bpf: Add test for bpf_skb_change_head
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When desc->len is equal to chunk_size, it is legal. But
-xp_aligned_validate_desc() got "chunk_end" by desc->addr + desc->len
-pointing to the next chunk during the check, which caused the check to
-fail.
+On Tue, Apr 27, 2021 at 11:41 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> > ...
+> > +test_tc_peer_user
+>
+> can we make it into a reasonable test inside test_progs? that way it
+> will be executed regularly
 
-Related commit:
-commit 2b43470add8c ("xsk: Introduce AF_XDP buffer allocation API")
-commit 26062b185eee ("xsk: Explicitly inline functions and move
-                    definitions")
+There doesn't seem to be any tests yet for redirect_peer in test_progs and I'd
+like this test to live next to them. Would it make sense to rework
+test_tc_redirect.sh
+into the test_progs framework?
 
-This problem was first introduced in "bbff2f321a86". Later in
-"2b43470add8c" this piece of code was moved into the new function
-xp_aligned_validate_desc(). Later this function was moved into the file
-xsk_queue.h in "26062b185eee".
+What's your thoughts on this Daniel?
 
-Fixes: bbff2f321a86 ("xsk: new descriptor addressing scheme")
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- net/xdp/xsk_queue.h | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+> >
+> > +SEC("src_ingress_l3") int tc_src_l3(struct __sk_buff *skb)
+>
+> please keep SEC() on separate line
+>
+> also, is this a BPF_PROG_TYPE_SCHED_CLS program? Can you usee libbpf's
+> "classifier/src_ingress_l3" naming convention?
 
-diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-index 2823b7c3302d..40f359bf2044 100644
---- a/net/xdp/xsk_queue.h
-+++ b/net/xdp/xsk_queue.h
-@@ -128,13 +128,12 @@ static inline bool xskq_cons_read_addr_unchecked(struct xsk_queue *q, u64 *addr)
- static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
- 					    struct xdp_desc *desc)
- {
--	u64 chunk, chunk_end;
-+	u64 chunk;
- 
--	chunk = xp_aligned_extract_addr(pool, desc->addr);
--	chunk_end = xp_aligned_extract_addr(pool, desc->addr + desc->len);
--	if (chunk != chunk_end)
-+	if (desc->len > pool->chunk_size)
- 		return false;
- 
-+	chunk = xp_aligned_extract_addr(pool, desc->addr);
- 	if (chunk >= pool->addrs_cnt)
- 		return false;
- 
--- 
-2.31.0
+I'm following the conventions in that file. Should they all be
+changed? Happy to do that.
 
+> > +{
+> > +       __u16 proto = skb->protocol;
+> > +
+> > +       if (bpf_skb_change_head(skb, ETH_HLEN, 0) != 0)
+> > +               return TC_ACT_SHOT;
+> > +
+> > +       __u8 src_mac[] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55};
+>
+> we try to keep BPF code compliant with C89, so please move all the
+> variable declaration into a single block at the top of a function
+
+Will fix, thanks.
+
+> > +void setns_by_name(char *name) {
+>
+>
+> { should be on a new line
+>
+> please run scripts/checkpatch.pl on these files, it will point out
+> trivial issues like this
+
+Sorry about that. Will make sure I'll run it on all future submissions.
+
+> > +       int nsfd;
+> > +       char nspath[PATH_MAX];
+> > +
+> > +        snprintf(nspath, sizeof(nspath), "%s/%s", "/var/run/netns", name);
+> > +        nsfd = open(nspath, O_RDONLY | O_CLOEXEC);
+> > +        if (nsfd < 0) {
+> > +               fprintf(stderr, "failed to open net namespace %s: %s\n", name, strerror(errno));
+> > +               exit(1);
+> > +        }
+>
+> here seems to be a mix of tabs and spaces
+
+Thanks, will fix it and my editor's settings ;-).
