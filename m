@@ -2,100 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A20D36DFD7
-	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 21:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134FF36E082
+	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 22:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239953AbhD1TqJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Apr 2021 15:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232284AbhD1TqI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Apr 2021 15:46:08 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC7EC061573;
-        Wed, 28 Apr 2021 12:45:22 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id y2so73346793ybq.13;
-        Wed, 28 Apr 2021 12:45:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UP6/zlQsB9dpz1gBGDQSIq5aIV4UhU6jWhHp88ZVcuA=;
-        b=R8EXNRbG2nVs1wF7m0KwzI6kVTtwXh8Cdymb/qNLYuJHHJDBm93i1xOwFu2Qf2xzi7
-         sJVxErcpvWk866QVjkle0BM9UVjmzsDuVVh+LSEBlBjEIvyvDCXd+A+f7M7TSuLg/vm2
-         eAhGRm/JQQgSujodE8aJdZjd9vv3E9SW801s3KmubKxRXsfRM1LB+jJHRx2TmTssJnGb
-         Fj5VcjF14HXrONEUx1QxfTO3ytR10TKEtMLhC9ipG2eTufdJufArJ41q1WKByopZBSOc
-         sUSc5O/9+4BWeoWHQ2EM3WJW1i/lEEbo9rZshbW6zXOpet5aGx0OCA+AeElUtMPDc1lB
-         acSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UP6/zlQsB9dpz1gBGDQSIq5aIV4UhU6jWhHp88ZVcuA=;
-        b=XivLaM5FdRiAHO5Gs0Dal7Oq7qAqyNGN+XaCVJbrbAIEC2A/OtKNKDbgNqe1JycIqs
-         Oz3PZtDXHCplRFXyCfFyna6mfHWFEELpoA2vgl4pBn7WghF8t8YkE8Fps/4p/9v6W/4X
-         39/P5e0gwgQz1ufNfsM603AvuvHsHMjHVCjIXTM3GuhxDS3Lnl1UX2opWd8sdlBssYbZ
-         5OkHFN1kynabfy5y7+kxBTT4jOf7gXTs3LbIOUayVy+1pv8+akJIyEeyYTgyA5I2lP8g
-         KA4fsssSDlIRrpDZeWo7C5k8uWIEb9D+0ftw3EcdMVJ8F8BKV/KCV9rcRmfohPfHy2fu
-         jUWA==
-X-Gm-Message-State: AOAM530mdfTpAIfObtair07HiXk14G91TfY95hZGbOZmW3rg4UaPefkd
-        JD4sd0Xf+y2aVav27tbDGENFTZodhOdHjuSQPUQ=
-X-Google-Smtp-Source: ABdhPJzXiQPL1oYucRiMtrwiGFyw1wTlIdwqrI+kH2FcjGdB78zL8+UAwIOE+zmM4r2SWg96LtJezMN5G/UX7XRg9v0=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr274657ybu.403.1619639121840;
- Wed, 28 Apr 2021 12:45:21 -0700 (PDT)
+        id S229890AbhD1Ur4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Apr 2021 16:47:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229549AbhD1Urz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Apr 2021 16:47:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F83361026;
+        Wed, 28 Apr 2021 20:47:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619642829;
+        bh=MbOb2Pbxyp+AJJ6Ht72OYsybaRAs6aTQt/GQEr5hdBA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ab8bvbYicwuepAfCcnKNJqE+BePqvJcbIDH23GhNKE77uejV3GqDFlLluIV55+DmC
+         GnxNhcvt3p9ADwTtBDKSnJe4xXYDOM22o/ynHsBMusqlk/Brwg4h9/E/9iIFKccSPM
+         dk0JBAiG6j+6J7KmKJ7IEfKREpVfppcHiUEBxfdpPxUlJNWDwGV3dfHuJeOtEKyZlM
+         kz0EPfVtIm2xvUmcPCFllRhFGUELR6iNzH27kzjaUoHCmgJCgEiifAPBtOh/ul52kP
+         R/PMp5h7dJ5V/4hJe4nFwY9AbVHZIZmUAFbSmaTOro2exohI8ZDHbINZR9H+FRob6C
+         47/XDaeoZcCDg==
+Date:   Wed, 28 Apr 2021 13:47:08 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, ast@kernel.org, andrii.nakryiko@gmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: pull-request: bpf-next 2021-04-28
+Message-ID: <20210428134708.5dc0a300@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210427233740.22238-1-daniel@iogearbox.net>
+References: <20210427233740.22238-1-daniel@iogearbox.net>
 MIME-Version: 1.0
-References: <20210423213728.3538141-1-kafai@fb.com> <CAEf4BzY16ziMkOMdNGNjQOmiACF3E5nFn2LhtUUQbo-y-AP7Tg@mail.gmail.com>
- <YIf3rHTLqW7yZxFJ@krava> <YIgE1hAaa3Hzwni8@kernel.org> <CAEf4Bzbh7+WJ502J_MQKiHDZ_Ab-Vb_ysHO6NNuZwNfThKCAKw@mail.gmail.com>
- <YIle2kdR4IniQnbN@kernel.org>
-In-Reply-To: <YIle2kdR4IniQnbN@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 28 Apr 2021 12:45:10 -0700
-Message-ID: <CAEf4BzbzYeG9fWPe=Vugq8WG6bK79dk3byjWV9gtCX_v7L0XLw@mail.gmail.com>
-Subject: Re: [PATCH dwarves] btf: Generate btf for functions in the .BTF_ids section
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Martin KaFai Lau <kafai@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 6:10 AM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
-> Em Tue, Apr 27, 2021 at 01:38:51PM -0700, Andrii Nakryiko escreveu:
-> > On Tue, Apr 27, 2021 at 5:34 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
->
-> > > And tools that expect to trace a function can get that information from
-> > > the BTF info instead of getting some failure when trying to trace those
-> > > functions, right?
->
-> > I don't think it belongs in BTF, though.
->
-> My thinking was that since BTF is used when tracing, one would be
-> interested in knowing if some functions can't be used for that.
->
-> > Plus there are additional limitations enforced by BPF verifier that
-> > will prevent some functions to be attached. So just because the
-> > function is in BTF doesn't mean it's 100% attachable.
->
-> Well, at least we would avoid some that can't for sure be used for
-> tracing. But, a bit in there is precious, so probably geting a NACK from
-> the kernel should be a good enough capability query. :-)
->
-> Tools should just silently prune things in wildcards provided by the
-> user that aren't traceable, silently, and provide an error message when
-> the user explicitely asks for tracing a verbotten function.
+On Wed, 28 Apr 2021 01:37:40 +0200 Daniel Borkmann wrote:
+> Hi David, hi Jakub,
+> 
+> The following pull-request contains BPF updates for your *net-next* tree.
+> 
+> We've added 19 non-merge commits during the last 2 day(s) which contain
+> a total of 36 files changed, 494 insertions(+), 313 deletions(-).
+> 
+> The main changes are:
+> 
+> 1) Add link detach and following re-attach for trampolines, from Jiri Olsa.
+> 
+> 2) Use kernel's "binary printf" lib for formatted output BPF helpers (which
+>    avoids the needs for variadic argument handling), from Florent Revest.
+> 
+> 3) Fix verifier 64 to 32 bit min/max bound propagation, from Daniel Borkmann.
+> 
+> 4) Convert cpumap to use netif_receive_skb_list(), from Lorenzo Bianconi.
+> 
+> 5) Add generic batched-ops support to percpu array map, from Pedro Tammela.
+> 
+> 6) Various CO-RE relocation BPF selftests fixes, from Andrii Nakryiko.
+> 
+> 7) Misc doc rst fixes, from Hengqi Chen.
 
-Yep, that's what I'm doing in my retsnoop tool (I both filter by
-available kprobes [0], and have extra blacklist [1]). Loading kprobes
-is pretty simple and fast enough, shouldn't be a problem.
-
-  [0] https://github.com/anakryiko/retsnoop/blob/master/src/mass_attacher.c#L495
-  [1] https://github.com/anakryiko/retsnoop/blob/master/src/mass_attacher.c#L41
-
-
->
-> - Arnaldo
+Pulled, thanks!
