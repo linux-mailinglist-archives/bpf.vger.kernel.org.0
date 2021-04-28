@@ -2,68 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 516EF36DC5B
-	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 17:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C42A36DC7B
+	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 17:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhD1PuP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Apr 2021 11:50:15 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:10856 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240307AbhD1PuO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:50:14 -0400
+        id S240317AbhD1Pxl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Apr 2021 11:53:41 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:63948 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240737AbhD1Pxi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Apr 2021 11:53:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1619624970; x=1651160970;
+  s=amazon201209; t=1619625174; x=1651161174;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=5gP6+mSSbZLik9ZO6F1dwO2PMgMAiYMMtpZswuKhD34=;
-  b=lDfvjQFeCtZc8XscOVIe3n2E6kKWTOFHlBK+APs1ak4OXKtgJDoN1TUX
-   M5RIKuTmRcgmZdjxzqrei78VPZ8fmK8NXt4WCZ4DzSXY7p9bQlGWOrRnH
-   wQKhveYqpVT5vGylJNVmPox28TrT7xxnhvlJNRqLytTSJb6uGI1uuE5Qh
-   s=;
+  bh=FnCAkov60OO7Dxf0WEMBA9HQ3rKhJnjcWSSFi9gB2V8=;
+  b=t+vRPr8+sM854VmJM24YqiBkqCEB8HL8sxQIGENvrNeQlmgqn7s9QIsy
+   ZFuOVcK5QE9+bdzGthjaiMrsl2trIjLjKo4nJy5OPjtn+zjGoaT7+zpPW
+   arzWfI4daSkF8N+wIRFfPSYpLFo3lecb5tuSrtckP2IczDXz+40R2VsCM
+   Q=;
 X-IronPort-AV: E=Sophos;i="5.82,258,1613433600"; 
-   d="scan'208";a="131515488"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1e-57e1d233.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 28 Apr 2021 15:49:29 +0000
+   d="scan'208";a="104526758"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-2c665b5d.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-4101.iad4.amazon.com with ESMTP; 28 Apr 2021 15:52:16 +0000
 Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1e-57e1d233.us-east-1.amazon.com (Postfix) with ESMTPS id 02007140B58;
-        Wed, 28 Apr 2021 15:49:24 +0000 (UTC)
+        by email-inbound-relay-1d-2c665b5d.us-east-1.amazon.com (Postfix) with ESMTPS id 66924A1CD9;
+        Wed, 28 Apr 2021 15:52:13 +0000 (UTC)
 Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
  EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 28 Apr 2021 15:49:24 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.162.53) by
+ id 15.0.1497.2; Wed, 28 Apr 2021 15:52:12 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.160.26) by
  EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 28 Apr 2021 15:49:19 +0000
+ id 15.0.1497.2; Wed, 28 Apr 2021 15:52:07 +0000
 From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <eric.dumazet@gmail.com>
+To:     <jbaron@akamai.com>
 CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
         <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <edumazet@google.com>, <jbaron@akamai.com>,
-        <kafai@fb.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>
+        <davem@davemloft.net>, <edumazet@google.com>, <kafai@fb.com>,
+        <kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
 Subject: Re: [PATCH v4 bpf-next 00/11] Socket migration for SO_REUSEPORT.
-Date:   Thu, 29 Apr 2021 00:49:15 +0900
-Message-ID: <20210428154915.39653-1-kuniyu@amazon.co.jp>
+Date:   Thu, 29 Apr 2021 00:52:03 +0900
+Message-ID: <20210428155203.39974-1-kuniyu@amazon.co.jp>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <2f4b2039-1144-f26f-4ee7-2fbec7eb415b@gmail.com>
-References: <2f4b2039-1144-f26f-4ee7-2fbec7eb415b@gmail.com>
+In-Reply-To: <fabd0598-c62e-ea88-f340-050136bb8266@akamai.com>
+References: <fabd0598-c62e-ea88-f340-050136bb8266@akamai.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.43.162.53]
+X-Originating-IP: [10.43.160.26]
 X-ClientProxiedBy: EX13D38UWC002.ant.amazon.com (10.43.162.46) To
  EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Date:   Wed, 28 Apr 2021 16:18:30 +0200
-> On 4/28/21 3:27 AM, Martin KaFai Lau wrote:
-> > On Tue, Apr 27, 2021 at 12:38:58PM -0400, Jason Baron wrote:
-> >>
-> >>
+From:   Jason Baron <jbaron@akamai.com>
+Date:   Wed, 28 Apr 2021 10:44:12 -0400
+> On 4/28/21 4:13 AM, Kuniyuki Iwashima wrote:
+> > From:   Jason Baron <jbaron@akamai.com>
+> > Date:   Tue, 27 Apr 2021 12:38:58 -0400
 > >> On 4/26/21 11:46 PM, Kuniyuki Iwashima wrote:
 > >>> The SO_REUSEPORT option allows sockets to listen on the same port and to
 > >>> accept connections evenly. However, there is a defect in the current
@@ -106,27 +104,39 @@ Date:   Wed, 28 Apr 2021 16:18:30 +0200
 > >> Thus, the old and new webservers do not have to run concurrently. This doesn't
 > >> involve any changes to the tcp layer and can be used to pass any type of fd.
 > >> not sure if it's actually useful for anything else though.
-> > We also used to do tcp-listen(/udp) fd transfer because the new process can not
-> > bind to the same IP:PORT in the old kernel without SO_REUSEPORT.  Some of the
-> > services listen to many different IP:PORT(s).  Transferring all of them
-> > was ok-ish but the old and new process do not necessary listen to the same set
-> > of IP:PORT(s) (e.g. the config may have changed during restart) and it further
-> > complicates the fd transfer logic in the userspace.
+> >>
+> >> I'm not sure if this solves your use-case or not but I thought I'd share it.
+> >> One can also inherit the fds like in systemd's socket activation model, but
+> >> that again requires another process to hold open the listen fd.
 > > 
-> > It was then moved to SO_REUSEPORT.  The new process can create its listen fds
-> > without depending on the old process.  It pretty much starts as if there is
-> > no old process.  There is no need to transfer the fds, simplified the userspace
-> > logic.  The old and new process can work independently.  The old and new process
-> > still run concurrently for a brief time period to avoid service disruption.
+> > Thank you for sharing code.
+> > 
+> > It seems bit more crash-tolerant than normal fd passing, but it can still
+> > suffer if the process dies before passing fds. With this patch set, we can
+> > migrate children sockets even if the process dies.
 > > 
 > 
+> I don't think crashing should be much of an issue. The old server can setup the
+> unix socket patch '/sockets' when it starts up and queue the listen sockets
+> there from the start. When it dies it will close all its fds, and the new
+> server can pick anything up any fds that are in the '/sockets' queue.
 > 
-> Note that another technique is to force syncookies during the switch of old/new servers.
 > 
-> echo 2 >/proc/sys/net/ipv4/tcp_syncookies
+> > Also, as Martin said, fd passing tends to make application complicated.
+> > 
 > 
-> If there is interest, we could add a socket option to override the sysctl on a per-socket basis.
+> It may be but perhaps its more flexible? It gives the new server the
+> chance to re-use the existing listen fds, close, drain and/or start new
+> ones. It also addresses the non-REUSEPORT case where you can't bind right
+> away.
 
-It can be a work-around but syncookies has its own downside. Forcing it may
-lose some valuable TCP options. If there is an approach without syncookies,
-it is better.
+If the flexibility is really worth the complexity, we do not care about it.
+But, SO_REUSEPORT can give enough flexibility we want.
+
+With socket migration, there is no need to reuse listener (fd passing),
+drain children (incoming connections are automatically migrated if there is
+already another listener bind()ed), and of course another listener can
+close itself and migrated children.
+
+If two different approaches resolves the same issue and one does not need
+complexity in userspace, we select the simpler one.
