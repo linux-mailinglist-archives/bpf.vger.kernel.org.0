@@ -2,135 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CE436D391
-	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 10:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACCFD36D3BF
+	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 10:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230317AbhD1IBa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Apr 2021 04:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbhD1IB3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:01:29 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75499C061574;
-        Wed, 28 Apr 2021 01:00:45 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id s15so3940154plg.6;
-        Wed, 28 Apr 2021 01:00:45 -0700 (PDT)
+        id S236730AbhD1IOq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Apr 2021 04:14:46 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:30260 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229643AbhD1IOp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Apr 2021 04:14:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eufsFB+S24G/unfRfydnL4H9u1yNCzVjk0IokgKRUiI=;
-        b=JOah+FPFTGcu+RHTWSDG1UpKCDTjyBZbQ7+gW9gPxivcyiPotTdUgohHgBDPcC2IOa
-         ySnC0wj6PHwhCl2uEZT3KDkyAe7+HqkQk+nWpBYHRZSMuYcTqwZb/4+7GCdpsagDd1/U
-         duSKT9Gn7g2VSs3QcCGrt+Uhg9nIBY1WwDkyFbGg64PM1ZUk8y2OHIOkkQHaXMPcAOQU
-         I8P/FrerSG/v1dEpIzbOJv773BdIi//MYQchPq1I6JVpFInbNKe6KdRkufiIFJSs/Sno
-         0wxZfKcGkyh0ItTQ9AjEOOH7yJlwkG81Ba8n/09GAvoquqWyZ2J3q8trIr+vSeCrQGdW
-         rwww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eufsFB+S24G/unfRfydnL4H9u1yNCzVjk0IokgKRUiI=;
-        b=SPwXUUOWQ8iyN491bc7bURgLjNVlqw6q124TkzJrhIxbjKDYprhiipVnXJ5gRMhLe2
-         ghpecVppUo6qUpriLEIXuUU8PL7fbXORQNmvAtpVYK3Sv42KLKLg8jMeopEkZrcCDWBh
-         ojCzICFjeynnlxGvkABM6l75XS6YTfyVQWHhANJTGLgxdb7C6GIlJjXZRr0lED74cqeF
-         ecDLaXxvbI25bv95bAeoz6cyUNaASC0zQIjuKddVZ84zqaDuDuyu4mUkdcfGEA6YaOLa
-         CqvqqeMN//nrISZWCPPV6OUSltaBSV2CEAT+CuoEkxUqHeAp9ph38rgVPXMVLETMydOm
-         Ufeg==
-X-Gm-Message-State: AOAM5320JMThnArE5Z5MrftbCXtISujFlQGDkl/BDt+y01gmz56Ng9+g
-        Vxh2Wls6uCNK/HuFnZpplo6y7iD9KA2ZuJ+A90k=
-X-Google-Smtp-Source: ABdhPJwQwjXljH6I0hk9H1ANsV+D67h79AzDUrQ+DqFIcjXt68IrZfNDkL2S6BW8bF+jbUCuqBk4Fq7rWa9TOe32q80=
-X-Received: by 2002:a17:902:b494:b029:e7:36be:9ce7 with SMTP id
- y20-20020a170902b494b02900e736be9ce7mr28836917plr.43.1619596844874; Wed, 28
- Apr 2021 01:00:44 -0700 (PDT)
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1619597641; x=1651133641;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=lH6gKKzDnBLSLUiWoNNJ7pa+DrbTroJokx0jp1w2ygo=;
+  b=pJ9gQYtRZZO4HbZ2zvhIiVekNZLY58axq4rYS2S1nMSVXJyRXOlJUiqw
+   C0VMPJOAEF1l1tsdDzJCWGcBuG8RtFAEUgaaa1wrljduRF6idicekj5En
+   3RIhSrr0OwDLNv9iafh9kcNlOziilSl/bq0e9M5bJAJUx09SQguTur2j2
+   w=;
+X-IronPort-AV: E=Sophos;i="5.82,257,1613433600"; 
+   d="scan'208";a="131388202"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2b-55156cd4.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 28 Apr 2021 08:14:00 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-55156cd4.us-west-2.amazon.com (Postfix) with ESMTPS id 414CFA212E;
+        Wed, 28 Apr 2021 08:14:00 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 28 Apr 2021 08:13:58 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.160.81) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 28 Apr 2021 08:13:47 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <jbaron@akamai.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kafai@fb.com>,
+        <kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v4 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Wed, 28 Apr 2021 17:13:42 +0900
+Message-ID: <20210428081342.1944-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <a10fdca5-7772-6edb-cbe6-c3fe66f57391@akamai.com>
+References: <a10fdca5-7772-6edb-cbe6-c3fe66f57391@akamai.com>
 MIME-Version: 1.0
-References: <20210427121903.76556-1-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20210427121903.76556-1-xuanzhuo@linux.alibaba.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 28 Apr 2021 10:00:33 +0200
-Message-ID: <CAJ8uoz3fphwV9115NLpOi94w2N0j1Cn3DRJFJ2NvwA91zf+uBw@mail.gmail.com>
-Subject: Re: [PATCH bpf] xsk: fix for xp_aligned_validate_desc() when len == chunk_size
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.81]
+X-ClientProxiedBy: EX13D27UWB003.ant.amazon.com (10.43.161.195) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 2:19 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->
-> When desc->len is equal to chunk_size, it is legal. But
-> xp_aligned_validate_desc() got "chunk_end" by desc->addr + desc->len
-> pointing to the next chunk during the check, which caused the check to
-> fail.
+From:   Jason Baron <jbaron@akamai.com>
+Date:   Tue, 27 Apr 2021 12:38:58 -0400
+> On 4/26/21 11:46 PM, Kuniyuki Iwashima wrote:
+> > The SO_REUSEPORT option allows sockets to listen on the same port and to
+> > accept connections evenly. However, there is a defect in the current
+> > implementation [1]. When a SYN packet is received, the connection is tied
+> > to a listening socket. Accordingly, when the listener is closed, in-flight
+> > requests during the three-way handshake and child sockets in the accept
+> > queue are dropped even if other listeners on the same port could accept
+> > such connections.
+> > 
+> > This situation can happen when various server management tools restart
+> > server (such as nginx) processes. For instance, when we change nginx
+> > configurations and restart it, it spins up new workers that respect the new
+> > configuration and closes all listeners on the old workers, resulting in the
+> > in-flight ACK of 3WHS is responded by RST.
+> 
+> Hi Kuniyuki,
+> 
+> I had implemented a different approach to this that I wanted to get your
+> thoughts about. The idea is to use unix sockets and SCM_RIGHTS to pass the
+> listen fd (or any other fd) around. Currently, if you have an 'old' webserver
+> that you want to replace with a 'new' webserver, you would need a separate
+> process to receive the listen fd and then have that process send the fd to
+> the new webserver, if they are not running con-currently. So instead what
+> I'm proposing is a 'delayed close' for a unix socket. That is, one could do:
+> 
+> 1) bind unix socket with path '/sockets'
+> 2) sendmsg() the listen fd via the unix socket
+> 2) setsockopt() some 'timeout' on the unix socket (maybe 10 seconds or so)
+> 3) exit/close the old webserver and the listen socket
+> 4) start the new webserver
+> 5) create new unix socket and bind to '/sockets' (if has MAY_WRITE file permissions)
+> 6) recvmsg() the listen fd
+> 
+> So the idea is that we set a timeout on the unix socket. If the new process
+> does not start and bind to the unix socket, it simply closes, thus releasing
+> the listen socket. However, if it does bind it can now call recvmsg() and
+> use the listen fd as normal. It can then simply continue to use the old listen
+> fds and/or create new ones and drain the old ones.
+> 
+> Thus, the old and new webservers do not have to run concurrently. This doesn't
+> involve any changes to the tcp layer and can be used to pass any type of fd.
+> not sure if it's actually useful for anything else though.
+> 
+> I'm not sure if this solves your use-case or not but I thought I'd share it.
+> One can also inherit the fds like in systemd's socket activation model, but
+> that again requires another process to hold open the listen fd.
 
-Thanks Xuan for the fix. Off-by-one error. A classic unfortunately.
+Thank you for sharing code.
 
-Think your fix also makes it easier to understand the code too, so good.
+It seems bit more crash-tolerant than normal fd passing, but it can still
+suffer if the process dies before passing fds. With this patch set, we can
+migrate children sockets even if the process dies.
 
-> Fixes: 35fcde7f8deb ("xsk: support for Tx")
-> Fixes: bbff2f321a86 ("xsk: new descriptor addressing scheme")
+Also, as Martin said, fd passing tends to make application complicated.
 
-Just did some quick research and it seems the bug was introduced in
-the bbff2f321a86 commit above, not the first one 35fcde7f8deb. Or am I
-mistaken?
+If we do not mind these points, your approach could be an option.
 
-> Fixes: 2b43470add8c ("xsk: Introduce AF_XDP buffer allocation API")
-> Fixes: 26062b185eee ("xsk: Explicitly inline functions and move definitions")
 
-And in these two, the code was moved around first to a new function in
-2b43470add8c, then this function was moved to a new file in
-26062b185eee. I believe documenting this in your commit message would
-make life simpler for the nice people backporting this fix. Or is this
-implicit in the multiple Fixes tags? Could someone with more
-experience in these things comment please.
-
-Thank you: Magnus
-
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  net/xdp/xsk_queue.h | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
->
-> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> index 2823b7c3302d..40f359bf2044 100644
-> --- a/net/xdp/xsk_queue.h
-> +++ b/net/xdp/xsk_queue.h
-> @@ -128,13 +128,12 @@ static inline bool xskq_cons_read_addr_unchecked(struct xsk_queue *q, u64 *addr)
->  static inline bool xp_aligned_validate_desc(struct xsk_buff_pool *pool,
->                                             struct xdp_desc *desc)
->  {
-> -       u64 chunk, chunk_end;
-> +       u64 chunk;
->
-> -       chunk = xp_aligned_extract_addr(pool, desc->addr);
-> -       chunk_end = xp_aligned_extract_addr(pool, desc->addr + desc->len);
-> -       if (chunk != chunk_end)
-> +       if (desc->len > pool->chunk_size)
->                 return false;
->
-> +       chunk = xp_aligned_extract_addr(pool, desc->addr);
->         if (chunk >= pool->addrs_cnt)
->                 return false;
->
-> --
-> 2.31.0
->
+> 
+> I have a very rough patch (emphasis on rough), that implements this idea that
+> I'm attaching below to explain it better. It would need a bunch of fixups and
+> it's against an older kernel, but hopefully gives this direction a better
+> explanation.
+> 
+> Thanks,
+> 
+> -Jason
