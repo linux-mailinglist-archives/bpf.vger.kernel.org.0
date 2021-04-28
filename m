@@ -2,112 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C8736D079
-	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 04:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5929636D17A
+	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 06:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235422AbhD1CLJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 27 Apr 2021 22:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40070 "EHLO
+        id S235289AbhD1E4e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Apr 2021 00:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhD1CLJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 27 Apr 2021 22:11:09 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E8FC061574;
-        Tue, 27 Apr 2021 19:10:25 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id p17so4039116pjz.3;
-        Tue, 27 Apr 2021 19:10:25 -0700 (PDT)
+        with ESMTP id S232124AbhD1E4d (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Apr 2021 00:56:33 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77452C061574;
+        Tue, 27 Apr 2021 21:55:49 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id q2so10948702pfk.9;
+        Tue, 27 Apr 2021 21:55:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=zcsDC9Mw8JIr79BrdQ+rOkT4hbkqTfsC+ofCHV93cV8=;
-        b=VlUWOHN0t/FnWnvoXyxxwle1pbAmjAYzYzNzOcDI0rteQ4gSdBIjconQoPVJuqgvez
-         N/6SMbHxEBQZzqbzHGLfTQtIL/cydW9l/PKjKfNqv8y0C0Q6NeX2LTuwdZRKFmvqyFxI
-         97IMHY0zJzIjuM1UXlSN44admD9qX7stOy2HG6cUwelvT1eItG1QN0cCyBSR0g8BiQ6e
-         o06ap34dX/7uLCYIWMUUr5n6Ult9tja0Mujhm7Doz8xQyTfo20UuObL0ZEZy8CKuPKlt
-         2B9lPj9ayA6mgHhLlRVBBbx+CYnBahW1/uRKkQFE6qwYfyVg1HbD568I2/9Inos+rumS
-         Pr2g==
+        bh=CcYTOu1b38ebGLUtlhSKV6S0IeT5NY2d5w6ckQphKY8=;
+        b=EYXa48VdS+lLz9y1e0otzrgt0rC6y4tNVQgJXB1hJ/IJJyK/Y7hfgJA2cZwAVeOVQL
+         w+GXpapZ3De8n/lLDovRzZFmMmqTFRJJyYaZa9OQEjKGfsYrLt0MxeIUPFq2KFtta+eQ
+         7IfCH+ylhCOu2H2vfQtjXdF1oJLKJeHKFKjeuvECHXkb1+gKRXOXNIxIOrhkQI6C9EGn
+         SgNUKs0fJf5+SSf2BeymaVopI1fqQicF56UshX2A7vhTnoyB4rbs82OP4kooTWH1kLy2
+         XST8eXLjCThbeS9Ko+BqknWwaHhTTEuUq4IfVv+AaGUS5PKIpW3s/YQ1lOL5Fg0/w6jt
+         yl1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=zcsDC9Mw8JIr79BrdQ+rOkT4hbkqTfsC+ofCHV93cV8=;
-        b=QsAd/UdV67L3nihgL3i5KxnqQSYFTtPQtdHhOYLrNc2RTRZle7gZasejP2sV7EwybZ
-         cWlHveuAsD/D93ExlI3CCPRQGOuQhGk/RTjgzaPKTGDsyMJQzMAyiz+5M+gPwbOaRUdV
-         9YBiztkWhLnSHHIpBSzOmlRBa20pOJ4IXK1HgaEfRpX9KNP6rHa16RTdkxMuKNgG0LG/
-         rSxNIQmZhUBoNWLbzptwID62CM2X0X+XyG5N3cH+PajiG+BTYynaVhtn20QckHlYWjUt
-         9vR4Y7epUeBpEsTTycdpoe5tyEWdM445Ci9iBAcgAQ4aN8aG1QL5KNZr5jIROTnDchCo
-         3RFQ==
-X-Gm-Message-State: AOAM531HY8EsZLu+PaP7RgsImzOZLhiercEsnPYFNF9To0LjHvGdc+BE
-        pDzkq5O1XShoA68EN2RDYQY=
-X-Google-Smtp-Source: ABdhPJzYnNQ8OQjCsmw1cVsjtPxl6eOnzg6eNXPdSPaasl7YpuWsORuWWG7bohybX/5AGBPhiNhsVg==
-X-Received: by 2002:a17:902:9f88:b029:ed:2b48:3a2c with SMTP id g8-20020a1709029f88b02900ed2b483a2cmr14542695plq.45.1619575824882;
-        Tue, 27 Apr 2021 19:10:24 -0700 (PDT)
+        bh=CcYTOu1b38ebGLUtlhSKV6S0IeT5NY2d5w6ckQphKY8=;
+        b=nADCqK1Z0WNwP09/V4XC12ZEr4iFcXk4xLJquCleOwsNqNPS033wEKeoRMY76eHybO
+         yH4qwbZEjpJzCcEl0b5M3lzuv5zFxsQkwep8sGVRXBB5h/a9HFx/ZUnpxFEPyKnhRYNb
+         AD33HeshMGsUKmNUaCHiW6JwYAekcKv42ibRzHQJ8+9Y06RhkCWEWMZnOyiHX6CMWy0r
+         Nka3GGB/HVl1Vh/+bAcLXr03WzHejKFZZGU9/zeAmjqW0mJ9+9W8Ph5STBIArzYDTIhQ
+         hBD6xVpADeewaqMb5HudCFQt6b+UsOtg2F3QxlMXHvwkkrgDIX/9ezRXJJnRCNeMnyOz
+         2aXw==
+X-Gm-Message-State: AOAM530GpSElbC7IyDoMpRJnSzBaBdJl4vwul6rOV2J/O2HylGgApVtk
+        2UxO//eyRdGDixupI/bMCL0=
+X-Google-Smtp-Source: ABdhPJy92USbNyCB9VcnQ/WHghasuwComnzkt8vnZuLKWx+cnVnecXyUskcKtMWNbOEvQ7jnWvCvTQ==
+X-Received: by 2002:a63:40c1:: with SMTP id n184mr24957590pga.219.1619585748857;
+        Tue, 27 Apr 2021 21:55:48 -0700 (PDT)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:2e71])
-        by smtp.gmail.com with ESMTPSA id j24sm3392237pjy.1.2021.04.27.19.10.23
+        by smtp.gmail.com with ESMTPSA id 3sm3776575pff.132.2021.04.27.21.55.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Apr 2021 19:10:24 -0700 (PDT)
-Date:   Tue, 27 Apr 2021 19:10:22 -0700
+        Tue, 27 Apr 2021 21:55:48 -0700 (PDT)
+Date:   Tue, 27 Apr 2021 21:55:45 -0700
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 10/16] bpf: Add bpf_btf_find_by_name_kind()
- helper.
-Message-ID: <20210428021022.h3ihowtncydpsahp@ast-mbp.dhcp.thefacebook.com>
-References: <20210423002646.35043-1-alexei.starovoitov@gmail.com>
- <20210423002646.35043-11-alexei.starovoitov@gmail.com>
- <60887b7ba5bba_12319208a5@john-XPS-13-9370.notmuch>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next 2/6] libbpf: rename static variables during
+ linking
+Message-ID: <20210428045545.egqvhyulr4ybbad6@ast-mbp.dhcp.thefacebook.com>
+References: <CAADnVQ+h9eS0P9Jb0QZQ374WxNSF=jhFAiBV7czqhnJxV51m6A@mail.gmail.com>
+ <CAEf4BzadCR+QFy4UY8NSVFjGJF4CszhjjZ48XeeqrfX3aYTnkA@mail.gmail.com>
+ <CAADnVQKo+efxMvgrqYqVvUEgiz_GXgBVOt4ddPTw_mLuvr2HUw@mail.gmail.com>
+ <CAEf4BzZifOFHr4gozUuSFTh7rTWu2cE_-L4H1shLV5OKyQ92uw@mail.gmail.com>
+ <CAADnVQ+h78QijAjbkNqAWn+TAFxrd6vE=mXqWRcy815hkTFvOw@mail.gmail.com>
+ <CAEf4BzZOmCgmbYDUGA-s5AF6XJFkT1xKinY3Jax3Zm2OLNmguA@mail.gmail.com>
+ <20210426223449.5njjmcjpu63chqbb@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYZX9YJcoragK20cvQvr_tPTWYBQSRh7diKc1KoCtu4Dg@mail.gmail.com>
+ <20210427022231.pbgtrdbxpgdx2zrw@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzZOwTp4vQxvCSXaS4-94fz_eZ7Q4n6uQfkAnMQnLRaTbQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <60887b7ba5bba_12319208a5@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAEf4BzZOwTp4vQxvCSXaS4-94fz_eZ7Q4n6uQfkAnMQnLRaTbQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 02:00:43PM -0700, John Fastabend wrote:
-> Alexei Starovoitov wrote:
-> > From: Alexei Starovoitov <ast@kernel.org>
-> > 
-> > Add new helper:
-> > 
-> > long bpf_btf_find_by_name_kind(u32 btf_fd, char *name, u32 kind, int flags)
-> > 	Description
-> > 		Find given name with given type in BTF pointed to by btf_fd.
-> > 		If btf_fd is zero look for the name in vmlinux BTF and in module's BTFs.
-> > 	Return
-> > 		Returns btf_id and btf_obj_fd in lower and upper 32 bits.
-> > 
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > ---
+On Tue, Apr 27, 2021 at 02:27:26PM -0700, Andrii Nakryiko wrote:
 > 
-> I'm missing some high-level concept on how this would be used? Where does btf_fd come
-> from and how is it used so that it doesn't break sig-check?
+> It's static for the purposes of BPF code, so no naming collisions in
+> BPF code and no intentional or unintentional accesses beyond a single
+> .bpf.c file. That's what we want. We don't want BPF library writers to
+> worry about names colliding with some other library or user code. 
 
-you mean that one that is being returned or the one passed in?
-The one that is passed in I only tested locally. No patches use that. Sorry.
-It's to support PROG_EXT. That btf_fd points to BTF of the prog that is being extended.
-The signed extension prog will have the name of subprog covered by the signature,
-but target btf_fd of the prog won't be known at signing time.
-It will be supplied via struct bpf_prog_desc. That's what attach_prog_fd is there for.
-I can remove all that stuff for now.
-The name of target prog doesn't have to be part of the signature.
-All of these details are to be discussed.
-We can make signature as tight as we want or more flexible.
+Who is 'we' ?
+The skel gen by accident (probably) extended 'static' visibility
+from .bpf.c into user space .c.
+My point that it was a bad accident and I only realized it now.
+The naming conflict in linking exposed this problem.
+The selftests are relying on this 'feature' now.
+Potentially some user could have used it as well.
+Do I want to break that use case? Not really, but that's still an option.
 
-> A use-case I'm trying to fit into this series is how to pass down a BTF fd/object
-> with the program. 
+I agree that library writers shouldn't worry about
+naming conflicts in *.bpf.c space.
+If they're exporting a static from .bpf.c into .c I think it's ok
+to make them do extra steps.
+Such 'static in .bpf.c' but 'extern into .c' should somehow work
+without requiring people rename their vars.
+I mean that the user of the library shouldn't need to do renames,
+but the library author shouldn't rely on 'all statics are visible
+in skel'.
+In that sense what I proposed earlier to allow linking, but fail
+skel gen is a step towards such development process.
+Something like attr(alias()) or some other way hopefully can
+help library authors create such library where static+something
+is visible to library's skeleton, but users of the library
+don't see its statics.
+I think the static handling logic needs to be discussed
+with your sub-skeleton idea.
+If I got it correctly there will be something like this:
+- lib.bpf.c compiled into lib.bpf.o
+- main.bpf.c that links with lib.bpf.o
+  It's all in *.bpf.c space and static has normal C scope.
+  The static vars and maps in lib.bpf.c are not
+  visible in main.bpf.c
+- there is lib.c that works with lib.bpf.c via lib.skel.h
+  that was generated out of lib.bpf.o
+- main.c that links with lib.o
+  main.c works with main.bpf.c via main.skel.h
 
-I'm not sure I follow.
-struct bpf_prog_desc will have more fields that can be populated to tweak
-particular prog before running the loader.
+I think lib.skel.h you were calling sub-skeleton.
+pls correct me.
+Since main.bpf.o was linked with lib.bpf.o
+the main.skel.h will include the things from it.
+But main.c shouldn't be accessing them, since that's the
+point of the library.
 
-> I know its not doing CO-RE yet but we would want it to use the
-> BTF object being passed down for CO-RE eventually. Will there be someway to do
-> that here? That looks like the btf_fd here.
+At the same time lib.bpf.c and main.bpf.c could have been
+just two files of the same project. If lib.bpf.o isn't a library
+then main.skel.h should access it just fine.
+So what is bpf library? How should it be defined?
+And what is the scope and visibility of its vars/maps/funcs?
+Unlike traditional C the bpf has two worlds .bpf.c and .c
+So traditional 'static' doesn't cover these cases.
 
-I've started hacking on CO-RE. So far I'm thinking to pass spec string to
-the kernel in another section of btf.ext. Similar to line_info and func_info.
-As an orthogonal discussion I think CO-RE should be able to relocate
-against already loaded bpf progs too (and not only kernel and modules).
+> And
+> from the perspective of a user of two BPF libraries that have
+> colliding names it's not great to have to somehow rename those
+> libraries' internal variables through source code changes.
+
+It's not great. That's why I'm trying to provoke a discussion
+of more options and pick the best considering all + and -.
+
+> 
+> Omitting static variables from skeleton is a regression and will
+> surprise existing users, we already went over this with you and
+> Yonghong in previous emails.
+
+Do I want to suffer this regression? No, but it could be the only option.
+
+> Beyond that, it's not clear what exactly you are proposing. 
+
+To discuss all options as a whole and hopefully you and others
+can come up with more than what I proposed.
+
+> For
+> alias() seems like another variable with that "external_name" has to
+> be already defined and you can't initialize var, it has to be just a
+> declaration. And BTF doesn't capture attributes right now as well. And
+> overall it sounds like an overly complicated approach both for users
+> and for libbpf.
+
+yes. supporting alias() would mean more work in clang, libbpf and
+maybe new bits in BTF.
+
+> As for the extra SEC() annotation. It's both not supported by libbpf
+> right now, and it's not exactly clear how it helps with name conflicts
+> (see example above with two libraries colliding). In that regard a
+> prefix and ability to override it by user gives them an opportunity to
+> resolve such naming conflicts. I know it's kind of ugly, but name
+> overrides should hopefully be rarely needed.
+
+Yes. it's not supported today. All I'm saying it's one of the options.
+
+> What can I do to unblock BPF static linker work, though?
+
+I believe that the way bpf toolchain interprets static is
+a critical long term decision that shouldn't be done lightly.
+There is no rush to define it quickly as an automatic prefix of filename
+to all statics only because it's trivial to implement and sort-of works.
+It's not something we can undo later. Today there are no libraries
+and static definition of maps doesn't really work.
+So the only regression (if we decide to change) would be the way skeleton
+emits statics.
+
+> I don't think we'll find an ideal solution that will satisfy everyone.
+
+I think we didn't even start looking for that solution.
+At least I'm only starting to grasp the complexity of the problem.
