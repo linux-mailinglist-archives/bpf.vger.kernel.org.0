@@ -2,137 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DD436D3C6
-	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 10:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1026F36D3CF
+	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 10:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229643AbhD1IS6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Apr 2021 04:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230456AbhD1IS5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Apr 2021 04:18:57 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C8EAC06138A
-        for <bpf@vger.kernel.org>; Wed, 28 Apr 2021 01:18:12 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id k25so62305323oic.4
-        for <bpf@vger.kernel.org>; Wed, 28 Apr 2021 01:18:12 -0700 (PDT)
+        id S237166AbhD1IU1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Apr 2021 04:20:27 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:39094 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237012AbhD1IU0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Apr 2021 04:20:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+YTrfob6P6zzC8aXEunzXLUOwk7qpHbcRbQ3sHEGAGI=;
-        b=KcF92B5WtEXaqweynQ3beawG/4jC+fJUKiBJErUOLSrVTR7P/T3+noJZGR9sfZHfeE
-         rCwoFVOXaUuPdSFjs9G0zBF8QlI9brCPN1jHJlCgIfJjdW13hPkhOjBepQ0F6vblyosE
-         Fi6wuv6B7QP1SfQqh12985hzP7/bGDMx1inwfrQxdVMibui/oBYRbpNzeSJLx8l4eDPj
-         w8AZfzOhhUryHMsaVuP9Eom4CuoZ4wTSHeft1SzuEEzau6shOwyZohMWsC0p/jR57Vm5
-         xQCrM0paYd31A7UOQNIverysqYeuCeiYjAv4C84AG5TfuQ81/QN1TuJPOCNmgPNXiore
-         f5IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+YTrfob6P6zzC8aXEunzXLUOwk7qpHbcRbQ3sHEGAGI=;
-        b=qObKNPm1wg23pi48UoLgakGXXcH8fhtuZwgtxWjSMMMEBLEqkqC5hhqAlrIHEq4Cwh
-         KiA2rXxEqs/tAimgK7PQ1YBOLWirEpJMUaXBDt0A3ibpSLF3n++ex0WLSFQs5AyLb/0L
-         G85MVf1uL5taFPqoz8JnDCcs2XK21OSCVc3cwd46DFBbCfaMP0ciCoEjePcWKuE/qxyU
-         5l+AS6n8o4wnWmMeZKDcCos4yAZZhLGzLwI24AJB/JP+b8OH4/c+ubUJ/r+gLx2C9uCI
-         CPRG23tl9v+L7cdyYmg49UKr8o2lVKK+vX/c8rOGCSfTQ4Yas9+4ErB4e8IeYozPUKE0
-         ffzg==
-X-Gm-Message-State: AOAM5309HJ2xi6sTqm0MTEGNq+t/MyDHhFOlZPsk56VBl62MMAykXGeI
-        dBErf7gvPk14xO22AKAwTWyB+sNGK1gMTD5tn34KebSnyaGSCA==
-X-Google-Smtp-Source: ABdhPJxgVKIvTbSoIhoIhmCiQYRpY9snoNmhchOKqCzYss7z2RuFwwa/Rhr/Dp9oFpDYlCTffC2s96FRGc3rZsRselU=
-X-Received: by 2002:a54:4704:: with SMTP id k4mr1876288oik.127.1619597891309;
- Wed, 28 Apr 2021 01:18:11 -0700 (PDT)
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1619597982; x=1651133982;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=j9QWlAsK1jnUHugihgPpWh5yTZzPwnYSGQNZKz7LMek=;
+  b=B0G9aWgpcXbc/bt2hMA2eewi3S8ZhBPwdgphMLlSU0DmygEwCj2R1Pcw
+   Z60cFyfYLW4Cd80uLQdeo3eExGG79KJ5hRx3b1nTbhsR+Qx1h/50Nj9bD
+   3igZCPjE0GLgkb7bN04xnUJctiJrRx5uHoNGfJZdvYTDV2W9ycLA7d5cq
+   s=;
+X-IronPort-AV: E=Sophos;i="5.82,257,1613433600"; 
+   d="scan'208";a="104432491"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-4101.iad4.amazon.com with ESMTP; 28 Apr 2021 08:18:42 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id 2EBAEA2242;
+        Wed, 28 Apr 2021 08:18:40 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 28 Apr 2021 08:18:39 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.160.209) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 28 Apr 2021 08:18:34 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <zenczykowski@gmail.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kafai@fb.com>,
+        <kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v4 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Wed, 28 Apr 2021 17:18:30 +0900
+Message-ID: <20210428081830.2292-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CAHo-Ooz252rnWZ=9k6nO0vjGKFkQDoaLxZ1jxiTomtckq9DbYA@mail.gmail.com>
+References: <CAHo-Ooz252rnWZ=9k6nO0vjGKFkQDoaLxZ1jxiTomtckq9DbYA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210427170859.579924-1-jackmanb@google.com> <CAEf4BzZimYsgp3AS72U8nOXfryB6dVxQKetT_6yE3xzztdTyZg@mail.gmail.com>
- <CACYkzJ57LqsDBgJpTZ6X-mEabgNK60J=2CJEhUWoQU6wALvQVw@mail.gmail.com> <CAEf4Bzb+OGZrvmgLk3C1bGtmyLU9JiJKp2WfgGkWq0nW0Tq32g@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb+OGZrvmgLk3C1bGtmyLU9JiJKp2WfgGkWq0nW0Tq32g@mail.gmail.com>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Wed, 28 Apr 2021 10:18:00 +0200
-Message-ID: <CA+i-1C2bNk0Mx_9KkuyOjvQh_y7KFrHBU-869P+8oTFq8HdVcw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.160.209]
+X-ClientProxiedBy: EX13D23UWA001.ant.amazon.com (10.43.160.68) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 28 Apr 2021 at 01:19, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Apr 27, 2021 at 4:05 PM KP Singh <kpsingh@kernel.org> wrote:
+From:   Maciej Żenczykowski <zenczykowski@gmail.com>
+Date:   Tue, 27 Apr 2021 15:00:12 -0700
+> On Tue, Apr 27, 2021 at 2:55 PM Maciej Żenczykowski
+> <zenczykowski@gmail.com> wrote:
+> > On Mon, Apr 26, 2021 at 8:47 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
+> > > The SO_REUSEPORT option allows sockets to listen on the same port and to
+> > > accept connections evenly. However, there is a defect in the current
+> > > implementation [1]. When a SYN packet is received, the connection is tied
+> > > to a listening socket. Accordingly, when the listener is closed, in-flight
+> > > requests during the three-way handshake and child sockets in the accept
+> > > queue are dropped even if other listeners on the same port could accept
+> > > such connections.
+> > >
+> > > This situation can happen when various server management tools restart
+> > > server (such as nginx) processes. For instance, when we change nginx
+> > > configurations and restart it, it spins up new workers that respect the new
+> > > configuration and closes all listeners on the old workers, resulting in the
+> > > in-flight ACK of 3WHS is responded by RST.
 > >
-> > On Tue, Apr 27, 2021 at 11:34 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Tue, Apr 27, 2021 at 10:09 AM Brendan Jackman <jackmanb@google.com> wrote:
-> > > >
-> > > > One of our benchmarks running in (Google-internal) CI pushes data
-> > > > through the ringbuf faster than userspace is able to consume
-> > > > it. In this case it seems we're actually able to get >INT_MAX entries
-> > > > in a single ringbuf_buffer__consume call. ASAN detected that cnt
-> > > > overflows in this case.
-> > > >
-> > > > Fix by just setting a limit on the number of entries that can be
-> > > > consumed.
-> > > >
-> > > > Fixes: bf99c936f947 (libbpf: Add BPF ring buffer support)
-> > > > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> > > > ---
-> > > >  tools/lib/bpf/ringbuf.c | 3 ++-
-> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> > > > index e7a8d847161f..445a21df0934 100644
-> > > > --- a/tools/lib/bpf/ringbuf.c
-> > > > +++ b/tools/lib/bpf/ringbuf.c
-> > > > @@ -213,8 +213,8 @@ static int ringbuf_process_ring(struct ring* r)
-> > > >         do {
-> > > >                 got_new_data = false;
-> > > >                 prod_pos = smp_load_acquire(r->producer_pos);
-> > > > -               while (cons_pos < prod_pos) {
-> > > > +               /* Don't read more than INT_MAX, or the return vale won't make sense. */
-> > > > +               while (cons_pos < prod_pos && cnt < INT_MAX) {
-> > >
-> > > ring_buffer__pool() is assumed to not return until all the enqueued
-> > > messages are consumed. That's the requirement for the "adaptive"
-> > > notification scheme to work properly. So this will break that and
-> > > cause the next ring_buffer__pool() to never wake up.
+> > This is IMHO a userspace bug.
 
-Ah yes, good point, thanks.
+I do not think so.
 
-> > > We could use __u64 internally and then cap it to INT_MAX on return
-> > > maybe? But honestly, this sounds like an artificial corner case, if
-> > > you are producing data faster than you can consume it and it goes
-> > > beyond INT_MAX, something is seriously broken in your application and
+If the kernel selected another listener for incoming connections, they
+could be accept()ed. There is no room for usersapce to change the behaviour
+without an in-kernel tool, eBPF. A feature that can cause failure
+stochastically due to kernel behaviour cannot be a userspace bug.
 
-Yes it's certainly artificial but IMO it's still highly desirable for
-libbpf to hold up its side of the bargain even when the application is
-behaving very strangely like this.
 
-[...]
+> >
+> > You should never be closing or creating new SO_REUSEPORT sockets on a
+> > running server (listening port).
+> >
+> > There's at least 3 ways to accomplish this.
+> >
+> > One involves a shim parent process that takes care of creating the
+> > sockets (without close-on-exec),
+> > then fork-exec's the actual server process[es] (which will use the
+> > already opened listening fds),
+> > and can thus re-fork-exec a new child while using the same set of sockets.
+> > Here the old server can terminate before the new one starts.
+> >
+> > (one could even envision systemd being modified to support this...)
+> >
+> > The second involves the old running server fork-execing the new server
+> > and handing off the non-CLOEXEC sockets that way.
+> 
+> (this doesn't even need to be fork-exec -- can just be exec -- and is
+> potentially easier)
+> 
+> > The third approach involves unix fd passing of sockets to hand off the
+> > listening sockets from the old process/thread(s) to the new
+> > process/thread(s).  Once handed off the old server can stop accept'ing
+> > on the listening sockets and close them (the real copies are in the
+> > child), finish processing any still active connections (or time them
+> 
+> (this doesn't actually need to be a child, in can be an entirely new
+> parallel instance of the server,
+> potentially running in an entirely new container/cgroup setup, though
+> in the same network namespace)
+> 
+> > out) and terminate.
+> >
+> > Either way you're never creating new SO_REUSEPORT sockets (dup doesn't
+> > count), nor closing the final copy of a given socket.
 
-> I think we have two alternatives here:
-> 1) consume all but cap return to INT_MAX
-> 2) consume all but return long long as return result
->
-> Third alternative is to have another API with maximum number of
-> samples to consume. But then user needs to know what they are doing
-> (e.g., they do FORCE on BPF side, or they do their own epoll_wait, or
-> they do ring_buffer__poll with timeout = 0, etc).
->
-> I'm just not sure anyone would want to understand all the
-> implications. And it's easy to miss those implications. So maybe let's
-> do long long (or __s64) return type instead?
+Indeed each approach can be an option, but it makes application more
+complicated. Also what if the process holding the listener fd died, there
+could be down time.
 
-Wouldn't changing the API to 64 bit return type break existing users
-on some ABIs?
+I do not think every approach works well in everywhere for everyone.
 
-I think capping the return value to INT_MAX and adding a note to the
-function definition comment would also be fine, it doesn't feel like a
-very complex thing for the user to understand: "Returns number of
-records consumed (or INT_MAX, whichever is less)".
+
+> >
+> > This is basically the same thing that was needed not to lose incoming
+> > connections in a pre-SO_REUSEPORT world.
+> > (no SO_REUSEADDR by itself doesn't prevent an incoming SYN from
+> > triggering a RST during the server restart, it just makes the window
+> > when RSTs happen shorter)
+
+SO_REUSEPORT makes each process/listener independent, and we need not pass
+fds. So, it makes application much simpler. Even with SO_REUSEPORT, one
+listener might crash, but it is more tolerant than losing all connections
+at once.
+
+To enjoy such merits, isn't it natural to improve the existing feature in
+this post-SO_REUSEPORT world?
+
+
+> >
+> > This was from day one (I reported to Tom and worked with him on the
+> > very initial distribution function) envisioned to work like this,
+> > and we (Google) have always used it with unix fd handoff to support
+> > transparent restart.
