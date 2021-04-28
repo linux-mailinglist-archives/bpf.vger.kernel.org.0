@@ -2,87 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BD836D969
-	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 16:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC7836D9C1
+	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 16:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhD1OTU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Apr 2021 10:19:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59666 "EHLO
+        id S236837AbhD1OpX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Apr 2021 10:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbhD1OTT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Apr 2021 10:19:19 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950B8C061573;
-        Wed, 28 Apr 2021 07:18:33 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id n127so22108544wmb.5;
-        Wed, 28 Apr 2021 07:18:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sA44iSBVTRPE1/+y8eq3P54Y7wYSKijWIbljnB3TKwo=;
-        b=WJ1sA+C+IeMDOgw3O7uaHmSvOd/BNDKf7ULbdIZ+JyfxDdJvzDuN4Ulpo3WKHUGYsD
-         mLLePGcuFSLRm0HoScTdwxL0iRkSGr47TjzwojSmUzUm+9WT9er9KATD9UF01VRSTzHn
-         a91kqkWAu0ulcYjUj2h19HIuxrE5u/3fDApdepMmScAGia+OsgwhuraIyS5qo5LbAqU/
-         DfGSvMnBhI0KYLQZwb6qXFWIhxblKGlu3yJALsXvkQ2oRA3zacEa9Y9VCERzwQd049rB
-         HP+h5S6U/T+FhLRZqkzTb0/ZsBoOVX1WKT87AVMmZKK5BMSeKe3QWENknEmzDhmOpXvQ
-         e2cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sA44iSBVTRPE1/+y8eq3P54Y7wYSKijWIbljnB3TKwo=;
-        b=YfJ2TOhWvbHgo1SGtQS7EvP+OiyrjjKb0giMUIL+cMVfqav0bcSX5uSM7wt39Kb5ve
-         juQ8MUcaUL22//IiijStk0a9oqUlt2m7SZD1iqxosbILM6hCXSI8++Wmc6ZJ11Shculp
-         4k0t5ygHtTb3teqEP9OX7WcyP7g1coEdtOWPGVl4knRRZJVu49nr7WH/pgm7o6ibtIAb
-         uuT4L8gWWb3g4d29ilMx9CFbKaYGgr1a/NbWAQ3Q1zRKSnn8pAmKSyzhJtPDhJz1iey6
-         VYzQXsQzSuJVv/XKBL59hbf415iWKSOyjuMS6pnoymmtPRnDA9bENowosOLEqcLabMvU
-         XqpQ==
-X-Gm-Message-State: AOAM5327dSr5OW0cV36U2du3Br0ZvxCuQsRZVXo6KcwXejqw3PLcKZjZ
-        mhs+kYHiQJhaoON5wo9DzmWVD5QSJxM=
-X-Google-Smtp-Source: ABdhPJyGVF4Ulrt4rBUjS5QW2tkc8y29t9BdZsE78bdd56ms63rAN06zlX9oGR97cNsFGxaEvUpJew==
-X-Received: by 2002:a05:600c:4fd4:: with SMTP id o20mr4951276wmq.166.1619619512068;
-        Wed, 28 Apr 2021 07:18:32 -0700 (PDT)
-Received: from [192.168.1.102] ([37.168.62.78])
-        by smtp.gmail.com with ESMTPSA id p10sm93896wre.84.2021.04.28.07.18.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Apr 2021 07:18:31 -0700 (PDT)
+        with ESMTP id S229794AbhD1OpW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Apr 2021 10:45:22 -0400
+Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [IPv6:2620:100:9001:583::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F995C061573;
+        Wed, 28 Apr 2021 07:44:36 -0700 (PDT)
+Received: from pps.filterd (m0122333.ppops.net [127.0.0.1])
+        by mx0a-00190b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13SEeCWO013027;
+        Wed, 28 Apr 2021 15:44:14 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=D3uFryjwCLkO4aqyFoGkzGIDW5ZA22t8YWLsstLrK50=;
+ b=MU1gH8Oebps7MqC3AoqbWxS5q8OHaBFquK2a5hKA3df83DJ+RNHnHdp01v+F6ZIOgVQI
+ s0XjB8h8i81fYrPaE9AMEi0HzlahDi6ayUuBwZVxlnf/BYIpOdCFK2f/DXMAeCndLN/D
+ M4kUx/fNyPGfRdb+FmzElCxaki4E4dGToVjuviW79Hk+FvL18oWq/JBwpUkO3bNozgNY
+ QYXmo7AIicy9ZTBdqXMua8NHSj1WP8yi1htn9sOsDiLN91cyL9iQUSRWS8ce/86n2m3+
+ rzzDrVfVYuUCW5ixItPvMY0JwOCYgkttpyA37WvluN2d+JztD8Ox93QCqAIZOpfaZ+jt Rw== 
+Received: from prod-mail-ppoint3 (a72-247-45-31.deploy.static.akamaitechnologies.com [72.247.45.31] (may be forged))
+        by mx0a-00190b01.pphosted.com with ESMTP id 3873my2rs7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 28 Apr 2021 15:44:14 +0100
+Received: from pps.filterd (prod-mail-ppoint3.akamai.com [127.0.0.1])
+        by prod-mail-ppoint3.akamai.com (8.16.1.2/8.16.1.2) with SMTP id 13SEJsMl005286;
+        Wed, 28 Apr 2021 10:44:13 -0400
+Received: from prod-mail-relay18.dfw02.corp.akamai.com ([172.27.165.172])
+        by prod-mail-ppoint3.akamai.com with ESMTP id 3877g611e5-1;
+        Wed, 28 Apr 2021 10:44:13 -0400
+Received: from [0.0.0.0] (unknown [172.27.119.138])
+        by prod-mail-relay18.dfw02.corp.akamai.com (Postfix) with ESMTP id 9F7845A7;
+        Wed, 28 Apr 2021 14:44:12 +0000 (GMT)
 Subject: Re: [PATCH v4 bpf-next 00/11] Socket migration for SO_REUSEPORT.
-To:     Martin KaFai Lau <kafai@fb.com>, Jason Baron <jbaron@akamai.com>
-Cc:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210427034623.46528-1-kuniyu@amazon.co.jp>
- <a10fdca5-7772-6edb-cbe6-c3fe66f57391@akamai.com>
- <20210428012734.cbzie3ihf6fbx5kp@kafai-mbp.dhcp.thefacebook.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <2f4b2039-1144-f26f-4ee7-2fbec7eb415b@gmail.com>
-Date:   Wed, 28 Apr 2021 16:18:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Cc:     andrii@kernel.org, ast@kernel.org, benh@amazon.com,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        edumazet@google.com, kafai@fb.com, kuba@kernel.org,
+        kuni1840@gmail.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <a10fdca5-7772-6edb-cbe6-c3fe66f57391@akamai.com>
+ <20210428081342.1944-1-kuniyu@amazon.co.jp>
+From:   Jason Baron <jbaron@akamai.com>
+Message-ID: <fabd0598-c62e-ea88-f340-050136bb8266@akamai.com>
+Date:   Wed, 28 Apr 2021 10:44:12 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210428012734.cbzie3ihf6fbx5kp@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210428081342.1944-1-kuniyu@amazon.co.jp>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-28_09:2021-04-28,2021-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 adultscore=0 bulkscore=0 spamscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104280098
+X-Proofpoint-ORIG-GUID: Q-5AMRCt-IDEfH9fOxWkItnpW_TB25eD
+X-Proofpoint-GUID: Q-5AMRCt-IDEfH9fOxWkItnpW_TB25eD
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-28_09:2021-04-28,2021-04-28 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 spamscore=0
+ impostorscore=0 priorityscore=1501 adultscore=0 mlxscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 lowpriorityscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104280099
+X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 72.247.45.31)
+ smtp.mailfrom=jbaron@akamai.com smtp.helo=prod-mail-ppoint3
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 4/28/21 3:27 AM, Martin KaFai Lau wrote:
-> On Tue, Apr 27, 2021 at 12:38:58PM -0400, Jason Baron wrote:
->>
->>
+On 4/28/21 4:13 AM, Kuniyuki Iwashima wrote:
+> From:   Jason Baron <jbaron@akamai.com>
+> Date:   Tue, 27 Apr 2021 12:38:58 -0400
 >> On 4/26/21 11:46 PM, Kuniyuki Iwashima wrote:
 >>> The SO_REUSEPORT option allows sockets to listen on the same port and to
 >>> accept connections evenly. However, there is a defect in the current
@@ -125,24 +126,36 @@ On 4/28/21 3:27 AM, Martin KaFai Lau wrote:
 >> Thus, the old and new webservers do not have to run concurrently. This doesn't
 >> involve any changes to the tcp layer and can be used to pass any type of fd.
 >> not sure if it's actually useful for anything else though.
-> We also used to do tcp-listen(/udp) fd transfer because the new process can not
-> bind to the same IP:PORT in the old kernel without SO_REUSEPORT.  Some of the
-> services listen to many different IP:PORT(s).  Transferring all of them
-> was ok-ish but the old and new process do not necessary listen to the same set
-> of IP:PORT(s) (e.g. the config may have changed during restart) and it further
-> complicates the fd transfer logic in the userspace.
+>>
+>> I'm not sure if this solves your use-case or not but I thought I'd share it.
+>> One can also inherit the fds like in systemd's socket activation model, but
+>> that again requires another process to hold open the listen fd.
 > 
-> It was then moved to SO_REUSEPORT.  The new process can create its listen fds
-> without depending on the old process.  It pretty much starts as if there is
-> no old process.  There is no need to transfer the fds, simplified the userspace
-> logic.  The old and new process can work independently.  The old and new process
-> still run concurrently for a brief time period to avoid service disruption.
+> Thank you for sharing code.
+> 
+> It seems bit more crash-tolerant than normal fd passing, but it can still
+> suffer if the process dies before passing fds. With this patch set, we can
+> migrate children sockets even if the process dies.
 > 
 
+I don't think crashing should be much of an issue. The old server can setup the
+unix socket patch '/sockets' when it starts up and queue the listen sockets
+there from the start. When it dies it will close all its fds, and the new
+server can pick anything up any fds that are in the '/sockets' queue.
 
-Note that another technique is to force syncookies during the switch of old/new servers.
 
-echo 2 >/proc/sys/net/ipv4/tcp_syncookies
+> Also, as Martin said, fd passing tends to make application complicated.
+> 
 
-If there is interest, we could add a socket option to override the sysctl on a per-socket basis.
+It may be but perhaps its more flexible? It gives the new server the
+chance to re-use the existing listen fds, close, drain and/or start new
+ones. It also addresses the non-REUSEPORT case where you can't bind right
+away.
 
+Thanks,
+
+-Jason
+
+> If we do not mind these points, your approach could be an option.
+> 
+> 
