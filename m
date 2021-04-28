@@ -2,119 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875C536DB7A
-	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 17:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516EF36DC5B
+	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 17:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbhD1PZ5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Apr 2021 11:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbhD1PZ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Apr 2021 11:25:56 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B5AC061574
-        for <bpf@vger.kernel.org>; Wed, 28 Apr 2021 08:25:10 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id p6-20020a05600c3586b029014131bbe5c7so6244758wmq.3
-        for <bpf@vger.kernel.org>; Wed, 28 Apr 2021 08:25:10 -0700 (PDT)
+        id S229961AbhD1PuP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Apr 2021 11:50:15 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:10856 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240307AbhD1PuO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Apr 2021 11:50:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/AVZoGgHHG5L2/L0aYz6MwosCvu+AQ1gWRwjr/PIhwY=;
-        b=dMRxeJPOeBuBiCyg+Tzyqg4F48X2Pcri1aTdKqz6Fm4a2q7C75mzKuobgRNLBh2Llb
-         vTjjSJLMRwFXXI+eID6fLhCFc8lz7NOkesvdTrWITUofipbRUZKSqKjzCSow5HqPbM2W
-         aUlbXxZuI16x4lZyXi+ndH2l+qxnNoipaR0Rs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/AVZoGgHHG5L2/L0aYz6MwosCvu+AQ1gWRwjr/PIhwY=;
-        b=D85r12d3GtWFvFnBHATVHzFvqgkZQlfm+IcGIXWdFY7bzkPEaYIMEBNoJE6wHdY5UV
-         qVQtNLPDBANujq0TWPaF4UlwXjWOqe9Y1xL/p15bEYrGZeeVpZFGPxE5yKsep/GWpr1s
-         7og89XaMqi11z06Q+yXMj2XeebdJVUFo1Veb61Z7SVyOqEo+QsfWhLEESTq0kn48ebYQ
-         scTzlV9FlzdLBs9YPgItYleTBXlSPT50Ok9N7D7zT8kJZyz02OFi/R58IaFAOK3LwUZ6
-         h5UTMQbZG2HDXrysHYd65Ki3okmHfQUWd54Ys7RYIb6Hjz4c0KTzy9SqHFTigORgMcBa
-         UMIQ==
-X-Gm-Message-State: AOAM530aVwgJjNkjzb0wOr2YFcuWOT3EqB4Q8ryyfOL1PXp8vr96p7tc
-        h0KsKVvy43WLSyyIR4Ed6U3i0n5fxHylmA==
-X-Google-Smtp-Source: ABdhPJxxtzzldycl1Z+eZPKNnM8aZoaDbV3OSCdmjz83Qp+UE83ke43vSEURLyyLxbRsKhrbBn6DtA==
-X-Received: by 2002:a1c:1bcc:: with SMTP id b195mr18849024wmb.108.1619623508762;
-        Wed, 28 Apr 2021 08:25:08 -0700 (PDT)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:61:302:e04e:f47f:2641:7707])
-        by smtp.gmail.com with ESMTPSA id d2sm91471wrs.10.2021.04.28.08.25.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Apr 2021 08:25:08 -0700 (PDT)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@kernel.org, jackmanb@google.com,
-        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next] selftests/bpf: Fix the snprintf test
-Date:   Wed, 28 Apr 2021 17:25:01 +0200
-Message-Id: <20210428152501.1024509-1-revest@chromium.org>
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1619624970; x=1651160970;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=5gP6+mSSbZLik9ZO6F1dwO2PMgMAiYMMtpZswuKhD34=;
+  b=lDfvjQFeCtZc8XscOVIe3n2E6kKWTOFHlBK+APs1ak4OXKtgJDoN1TUX
+   M5RIKuTmRcgmZdjxzqrei78VPZ8fmK8NXt4WCZ4DzSXY7p9bQlGWOrRnH
+   wQKhveYqpVT5vGylJNVmPox28TrT7xxnhvlJNRqLytTSJb6uGI1uuE5Qh
+   s=;
+X-IronPort-AV: E=Sophos;i="5.82,258,1613433600"; 
+   d="scan'208";a="131515488"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1e-57e1d233.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 28 Apr 2021 15:49:29 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1e-57e1d233.us-east-1.amazon.com (Postfix) with ESMTPS id 02007140B58;
+        Wed, 28 Apr 2021 15:49:24 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 28 Apr 2021 15:49:24 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.162.53) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 28 Apr 2021 15:49:19 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <eric.dumazet@gmail.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <jbaron@akamai.com>,
+        <kafai@fb.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
+        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+Subject: Re: [PATCH v4 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Thu, 29 Apr 2021 00:49:15 +0900
+Message-ID: <20210428154915.39653-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <2f4b2039-1144-f26f-4ee7-2fbec7eb415b@gmail.com>
+References: <2f4b2039-1144-f26f-4ee7-2fbec7eb415b@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.53]
+X-ClientProxiedBy: EX13D38UWC002.ant.amazon.com (10.43.162.46) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The BPF program for the snprintf selftest runs on all syscall entries.
-On busy multicore systems this can cause concurrency issues.
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Date:   Wed, 28 Apr 2021 16:18:30 +0200
+> On 4/28/21 3:27 AM, Martin KaFai Lau wrote:
+> > On Tue, Apr 27, 2021 at 12:38:58PM -0400, Jason Baron wrote:
+> >>
+> >>
+> >> On 4/26/21 11:46 PM, Kuniyuki Iwashima wrote:
+> >>> The SO_REUSEPORT option allows sockets to listen on the same port and to
+> >>> accept connections evenly. However, there is a defect in the current
+> >>> implementation [1]. When a SYN packet is received, the connection is tied
+> >>> to a listening socket. Accordingly, when the listener is closed, in-flight
+> >>> requests during the three-way handshake and child sockets in the accept
+> >>> queue are dropped even if other listeners on the same port could accept
+> >>> such connections.
+> >>>
+> >>> This situation can happen when various server management tools restart
+> >>> server (such as nginx) processes. For instance, when we change nginx
+> >>> configurations and restart it, it spins up new workers that respect the new
+> >>> configuration and closes all listeners on the old workers, resulting in the
+> >>> in-flight ACK of 3WHS is responded by RST.
+> >>
+> >> Hi Kuniyuki,
+> >>
+> >> I had implemented a different approach to this that I wanted to get your
+> >> thoughts about. The idea is to use unix sockets and SCM_RIGHTS to pass the
+> >> listen fd (or any other fd) around. Currently, if you have an 'old' webserver
+> >> that you want to replace with a 'new' webserver, you would need a separate
+> >> process to receive the listen fd and then have that process send the fd to
+> >> the new webserver, if they are not running con-currently. So instead what
+> >> I'm proposing is a 'delayed close' for a unix socket. That is, one could do:
+> >>
+> >> 1) bind unix socket with path '/sockets'
+> >> 2) sendmsg() the listen fd via the unix socket
+> >> 2) setsockopt() some 'timeout' on the unix socket (maybe 10 seconds or so)
+> >> 3) exit/close the old webserver and the listen socket
+> >> 4) start the new webserver
+> >> 5) create new unix socket and bind to '/sockets' (if has MAY_WRITE file permissions)
+> >> 6) recvmsg() the listen fd
+> >>
+> >> So the idea is that we set a timeout on the unix socket. If the new process
+> >> does not start and bind to the unix socket, it simply closes, thus releasing
+> >> the listen socket. However, if it does bind it can now call recvmsg() and
+> >> use the listen fd as normal. It can then simply continue to use the old listen
+> >> fds and/or create new ones and drain the old ones.
+> >>
+> >> Thus, the old and new webservers do not have to run concurrently. This doesn't
+> >> involve any changes to the tcp layer and can be used to pass any type of fd.
+> >> not sure if it's actually useful for anything else though.
+> > We also used to do tcp-listen(/udp) fd transfer because the new process can not
+> > bind to the same IP:PORT in the old kernel without SO_REUSEPORT.  Some of the
+> > services listen to many different IP:PORT(s).  Transferring all of them
+> > was ok-ish but the old and new process do not necessary listen to the same set
+> > of IP:PORT(s) (e.g. the config may have changed during restart) and it further
+> > complicates the fd transfer logic in the userspace.
+> > 
+> > It was then moved to SO_REUSEPORT.  The new process can create its listen fds
+> > without depending on the old process.  It pretty much starts as if there is
+> > no old process.  There is no need to transfer the fds, simplified the userspace
+> > logic.  The old and new process can work independently.  The old and new process
+> > still run concurrently for a brief time period to avoid service disruption.
+> > 
+> 
+> 
+> Note that another technique is to force syncookies during the switch of old/new servers.
+> 
+> echo 2 >/proc/sys/net/ipv4/tcp_syncookies
+> 
+> If there is interest, we could add a socket option to override the sysctl on a per-socket basis.
 
-For example it was observed that sometimes the userspace part of the
-test reads "    4 0000" instead of "    4 000" (extra '0' at the end)
-which seems to happen just before snprintf on another core sets
-end[-1] = '\0'.
-
-This patch adds a pid filter to the test to ensure that no
-bpf_snprintf() will write over the test's output buffers while the
-userspace reads the values.
-
-Fixes: c2e39c6bdc7e ("selftests/bpf: Add a series of tests for bpf_snprintf")
-Reported-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- tools/testing/selftests/bpf/prog_tests/snprintf.c | 2 ++
- tools/testing/selftests/bpf/progs/test_snprintf.c | 5 +++++
- 2 files changed, 7 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-index a958c22aec75..dffbcaa1ec98 100644
---- a/tools/testing/selftests/bpf/prog_tests/snprintf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-@@ -43,6 +43,8 @@ void test_snprintf_positive(void)
- 	if (!ASSERT_OK_PTR(skel, "skel_open"))
- 		return;
- 
-+	skel->bss->pid = getpid();
-+
- 	if (!ASSERT_OK(test_snprintf__attach(skel), "skel_attach"))
- 		goto cleanup;
- 
-diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
-index 951a0301c553..e35129bea0a0 100644
---- a/tools/testing/selftests/bpf/progs/test_snprintf.c
-+++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
-@@ -5,6 +5,8 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
- 
-+__u32 pid = 0;
-+
- char num_out[64] = {};
- long num_ret = 0;
- 
-@@ -42,6 +44,9 @@ int handler(const void *ctx)
- 	static const char str1[] = "str1";
- 	static const char longstr[] = "longstr";
- 
-+	if ((int)bpf_get_current_pid_tgid() != pid)
-+		return 0;
-+
- 	/* Integer types */
- 	num_ret  = BPF_SNPRINTF(num_out, sizeof(num_out),
- 				"%d %u %x %li %llu %lX",
--- 
-2.31.1.498.g6c1eba8ee3d-goog
-
+It can be a work-around but syncookies has its own downside. Forcing it may
+lose some valuable TCP options. If there is an approach without syncookies,
+it is better.
