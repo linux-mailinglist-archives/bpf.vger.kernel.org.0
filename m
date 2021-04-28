@@ -2,132 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C49436D25A
-	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 08:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D0236D2F0
+	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 09:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231578AbhD1GpO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Apr 2021 02:45:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30141 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230504AbhD1GpN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 28 Apr 2021 02:45:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619592269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GcFLtrZTQ66M/cACjXXXvITRn+EI9P5exiJyCgqz4Dc=;
-        b=Ec9Rpuqfn2PLAKcwAGkBf4Dyb7H7vlRoc6U0SjajLCViXpjUdtZcUxEllNQG1rgpXAyrz0
-        /PsOsmriEiUtLRMBqXpW/uFLuWRv8LiYSWeEgq7fB4I6cOJSlC/2ww26pZgIHNhL+jS/LZ
-        DaZSpx10mhhisuZMHC24CzlqWiD0Ttg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-DQ9ABm1wMruripj_9_KIhQ-1; Wed, 28 Apr 2021 02:44:26 -0400
-X-MC-Unique: DQ9ABm1wMruripj_9_KIhQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 566B4818400;
-        Wed, 28 Apr 2021 06:44:25 +0000 (UTC)
-Received: from krava (unknown [10.40.193.167])
-        by smtp.corp.redhat.com (Postfix) with SMTP id B2D2B6BF6B;
-        Wed, 28 Apr 2021 06:44:22 +0000 (UTC)
-Date:   Wed, 28 Apr 2021 08:44:21 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S236343AbhD1HUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Apr 2021 03:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231635AbhD1HUT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Apr 2021 03:20:19 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F33C061574;
+        Wed, 28 Apr 2021 00:19:34 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id 10so572238pfl.1;
+        Wed, 28 Apr 2021 00:19:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZN6v01nLBVJ0ad4GxkSUaJKljEm1LGYVTZQy0/N2Pbw=;
+        b=HmTvGdUp42KsrWsBLhwqbS8WBwT9AuetXe6q1JLubCOo+sr9j/D4wlMikVf5iHGblD
+         1pg5pRlDPz3pxbUPduJ/7MJDK3G+tLA9vUOuDyDzkfjQSaCg6ZY5j/qtxGs31T94mar1
+         6S2N2754Soh7AlUQ2NhhTE0f8hCuRe6NtbsJtd1c3EjMIFSM+rrctEDt/QZ+rbOycIXW
+         IVaav0K02taq7ba38G75ST664HQLqPhZTsqiR6OwMXafls61DGHiVmDbKCDWEY42QHo4
+         Jc95ITTKTEW1fYJve1rYMAv3rxtNK3hQ+45tmoWIHERJHUjqh1fiM+EG7k1wqPnLBWl9
+         TMQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZN6v01nLBVJ0ad4GxkSUaJKljEm1LGYVTZQy0/N2Pbw=;
+        b=MSz9DkK6p2vTfxQNoQq9sT2EQ1lzPQxIc93MXXaW4xFo4vhAPkxb0sm8fCkm97muop
+         aWtH+iExbiT157JZ6bn1j9ryIBVYDQWLTf5E9VXD72p47cj4e5pcosAWs7ZUU101gsbx
+         9iDNSP5E3inB9NOVUE58e3EztajW2GSE/aKDBaAnDo/IeSZJLMT6JAxVVwW8FsqFdJ8e
+         OUR5Ox5WDA0Se/ObJ9iTnwW+vXe3tEd0XQlCrPWbS0/3hV3R/WCj1M08rm92peKRfMEk
+         YjCq59NRKrN6bYzjAScK4xKamG2lrF2l9NPTbtbq2YP5hgXg8GxEr9OeXpVo9+Q7nqZ1
+         Co6A==
+X-Gm-Message-State: AOAM531P6pfo9su28L2ZcH5qxmGWBxp/tGqm1dhEIVBQtS5JYX8iv1Ho
+        lANGynB4eWpJwBuJTnwyZH1g3p5e6Gdniw==
+X-Google-Smtp-Source: ABdhPJxCJiuhn6AAb7HPv6MH11ooD464/EYvQnk33r8SPZk4JI0mRpWVNwnMVooq/kGBleZe4WPWAQ==
+X-Received: by 2002:a05:6a00:2389:b029:261:abe:184 with SMTP id f9-20020a056a002389b02902610abe0184mr27390159pfc.52.1619594374077;
+        Wed, 28 Apr 2021 00:19:34 -0700 (PDT)
+Received: from Leo-laptop-t470s.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id jv12sm4152491pjb.56.2021.04.28.00.19.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Apr 2021 00:19:33 -0700 (PDT)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH] bpf: Fix recursion check in trampoline
-Message-ID: <YIkERXWzxGCZDCRc@krava>
-References: <20210427224156.708231-1-jolsa@kernel.org>
- <CAADnVQKuBOc-jqaK1H5Usb6PKFWdbBoo8tzVOU2jzXwa1ENd0g@mail.gmail.com>
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv11 bpf-next 0/4] xdp: extend xdp_redirect_map with broadcast support
+Date:   Wed, 28 Apr 2021 15:19:12 +0800
+Message-Id: <20210428071916.204820-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQKuBOc-jqaK1H5Usb6PKFWdbBoo8tzVOU2jzXwa1ENd0g@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 06:10:32PM -0700, Alexei Starovoitov wrote:
-> On Tue, Apr 27, 2021 at 3:42 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > The recursion check in __bpf_prog_enter and __bpf_prog_exit leaves
-> > some (not inlined) functions unprotected:
-> >
-> > In __bpf_prog_enter:
-> >   - migrate_disable is called before prog->active is checked
-> >
-> > In __bpf_prog_exit:
-> >   - migrate_enable,rcu_read_unlock_strict are called after
-> >     prog->active is decreased
-> >
-> > When attaching trampoline to them we get panic like:
-> >
-> >   traps: PANIC: double fault, error_code: 0x0
-> >   double fault: 0000 [#1] SMP PTI
-> >   RIP: 0010:__bpf_prog_enter+0x4/0x50
-> >   ...
-> >   Call Trace:
-> >    <IRQ>
-> >    bpf_trampoline_6442466513_0+0x18/0x1000
-> >    migrate_disable+0x5/0x50
-> >    __bpf_prog_enter+0x9/0x50
-> >    bpf_trampoline_6442466513_0+0x18/0x1000
-> >    migrate_disable+0x5/0x50
-> >    __bpf_prog_enter+0x9/0x50
-> >    bpf_trampoline_6442466513_0+0x18/0x1000
-> >    migrate_disable+0x5/0x50
-> >    __bpf_prog_enter+0x9/0x50
-> >    bpf_trampoline_6442466513_0+0x18/0x1000
-> >    migrate_disable+0x5/0x50
-> >    ...
-> >
-> > Making the recursion check before the rest of the calls
-> > in __bpf_prog_enter and as last call in __bpf_prog_exit.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  kernel/bpf/trampoline.c | 12 +++++++-----
-> >  1 file changed, 7 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> > index 4aa8b52adf25..301735f7e88e 100644
-> > --- a/kernel/bpf/trampoline.c
-> > +++ b/kernel/bpf/trampoline.c
-> > @@ -558,12 +558,12 @@ static void notrace inc_misses_counter(struct bpf_prog *prog)
-> >  u64 notrace __bpf_prog_enter(struct bpf_prog *prog)
-> >         __acquires(RCU)
-> >  {
-> > -       rcu_read_lock();
-> > -       migrate_disable();
-> >         if (unlikely(__this_cpu_inc_return(*(prog->active)) != 1)) {
-> >                 inc_misses_counter(prog);
-> >                 return 0;
-> >         }
-> > +       rcu_read_lock();
-> > +       migrate_disable();
-> 
-> That obviously doesn't work.
-> After cpu_inc the task can migrate and cpu_dec
-> will happen on a different cpu likely underflowing
-> the counter into negative.
+Hi,
 
-ugh right
+This patchset is a new implementation for XDP multicast support based
+on my previous 2 maps implementation[1]. The reason is that Daniel thinks
+the exclude map implementation is missing proper bond support in XDP
+context. And there is a plan to add native XDP bonding support. Adding a
+exclude map in the helper also increases the complexity of verifier and has
+drawback of performance.
 
-> We can either mark migrate_disable as nokprobe/notrace or have bpf
-> trampoline specific denylist.
-> 
+The new implementation just add two new flags BPF_F_BROADCAST and
+BPF_F_EXCLUDE_INGRESS to extend xdp_redirect_map for broadcast support.
 
-I was using notrace to disable that, but that would limit
-other tracers.. I'll add bpf denylist
+With BPF_F_BROADCAST the packet will be broadcasted to all the interfaces
+in the map. with BPF_F_EXCLUDE_INGRESS the ingress interface will be
+excluded when do broadcasting.
 
-jirka
+The patchv10 link is here[2].
+
+[1] https://lore.kernel.org/bpf/20210223125809.1376577-1-liuhangbin@gmail.com
+[2] https://lore.kernel.org/bpf/20210423020019.2333192-1-liuhangbin@gmail.com
+
+v11:
+a) Use unlikely() when checking if this is for broadcast redirecting.
+b) Fix a tracepoint NULL pointer issue Jesper found
+c) Remove BPF_F_REDIR_MASK and just use OR flags to make the reader more
+   clear about what's flags we are using
+d) Add the performace number with multi veth interfaces in patch 01
+   description.
+e) remove some sleeps to reduce the testing time in patch04. Re-struct the
+   test and make clear what flags we are testing.
+
+v10: use READ/WRITE_ONCE when read/write map instead of xchg()
+v9: Update patch 01 commit description
+v8: use hlist_for_each_entry_rcu() when looping the devmap hash ojbs
+v7: No need to free xdpf in dev_map_enqueue_clone() if xdpf_clone failed.
+v6: Fix a skb leak in the error path for generic XDP
+v5: Just walk the map directly to get interfaces as get_next_key() of devmap
+    hash may restart looping from the first key if the device get removed.
+    After update the performace has improved 10% compired with v4.
+v4: Fix flags never cleared issue in patch 02. Update selftest to cover this.
+v3: Rebase the code based on latest bpf-next
+v2: fix flag renaming issue in patch 02
+
+Hangbin Liu (3):
+  xdp: extend xdp_redirect_map with broadcast support
+  sample/bpf: add xdp_redirect_map_multi for redirect_map broadcast test
+  selftests/bpf: add xdp_redirect_multi test
+
+Jesper Dangaard Brouer (1):
+  bpf: run devmap xdp_prog on flush instead of bulk enqueue
+
+ include/linux/bpf.h                           |  20 ++
+ include/linux/filter.h                        |  18 +-
+ include/net/xdp.h                             |   1 +
+ include/trace/events/xdp.h                    |   6 +-
+ include/uapi/linux/bpf.h                      |  16 +-
+ kernel/bpf/cpumap.c                           |   3 +-
+ kernel/bpf/devmap.c                           | 306 +++++++++++++++---
+ net/core/filter.c                             |  37 ++-
+ net/core/xdp.c                                |  29 ++
+ net/xdp/xskmap.c                              |   3 +-
+ samples/bpf/Makefile                          |   3 +
+ samples/bpf/xdp_redirect_map_multi_kern.c     |  88 +++++
+ samples/bpf/xdp_redirect_map_multi_user.c     | 302 +++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |  16 +-
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../bpf/progs/xdp_redirect_multi_kern.c       |  94 ++++++
+ .../selftests/bpf/test_xdp_redirect_multi.sh  | 204 ++++++++++++
+ .../selftests/bpf/xdp_redirect_multi.c        | 226 +++++++++++++
+ 18 files changed, 1310 insertions(+), 65 deletions(-)
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_kern.c
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_user.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
+ create mode 100755 tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
+ create mode 100644 tools/testing/selftests/bpf/xdp_redirect_multi.c
+
+-- 
+2.26.3
 
