@@ -2,149 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B3836DFCD
-	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 21:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A20D36DFD7
+	for <lists+bpf@lfdr.de>; Wed, 28 Apr 2021 21:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237232AbhD1Tmd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Apr 2021 15:42:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
+        id S239953AbhD1TqJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Apr 2021 15:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232284AbhD1Tmc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Apr 2021 15:42:32 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF5EC061573;
-        Wed, 28 Apr 2021 12:41:45 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id g38so75413399ybi.12;
-        Wed, 28 Apr 2021 12:41:45 -0700 (PDT)
+        with ESMTP id S232284AbhD1TqI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Apr 2021 15:46:08 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC7EC061573;
+        Wed, 28 Apr 2021 12:45:22 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id y2so73346793ybq.13;
+        Wed, 28 Apr 2021 12:45:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dP37V867+l0+fx9YYXY81zIb0jg1dOgMN32/euUAirQ=;
-        b=reHWh8TxLSpb/ZFxBKrmi4kou14LdfyLHm7aBhMhg+g2tpQ9+HjtRlmJr9H6/P2M33
-         I3zo+zbpbbNwMRtSVNTI7Pn1HrjmqsNClA/xRzgPUOZKNtEfkaM4vgP2BzLCE7lPkaBJ
-         ATRxPtvHMPRO0DALvOeduyVWJrlKPjQ24ZlicaWLa0QPiIfC4cxfCMzbtRAMmPlTCk1u
-         3kC9Ohvc8Z+ATeTRAHcoZui4hch0nF5POMWi7lXC9Rk1xPCzorQCMiYILpjkY/pmHjJJ
-         oCuK7OukFCmpO32OAfuYMuUPWNkMq8j1LSPhtD1HHqy/k9zryXulWtZ8aef5zaVaEP/x
-         pNkQ==
+        bh=UP6/zlQsB9dpz1gBGDQSIq5aIV4UhU6jWhHp88ZVcuA=;
+        b=R8EXNRbG2nVs1wF7m0KwzI6kVTtwXh8Cdymb/qNLYuJHHJDBm93i1xOwFu2Qf2xzi7
+         sJVxErcpvWk866QVjkle0BM9UVjmzsDuVVh+LSEBlBjEIvyvDCXd+A+f7M7TSuLg/vm2
+         eAhGRm/JQQgSujodE8aJdZjd9vv3E9SW801s3KmubKxRXsfRM1LB+jJHRx2TmTssJnGb
+         Fj5VcjF14HXrONEUx1QxfTO3ytR10TKEtMLhC9ipG2eTufdJufArJ41q1WKByopZBSOc
+         sUSc5O/9+4BWeoWHQ2EM3WJW1i/lEEbo9rZshbW6zXOpet5aGx0OCA+AeElUtMPDc1lB
+         acSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dP37V867+l0+fx9YYXY81zIb0jg1dOgMN32/euUAirQ=;
-        b=hL1GA7bSNnV/4qfaB3ZlTujkbI+6dkjHExo3hS/r/gG/iUyz1fGFgclPQ9ZhebxZnz
-         UAIfGsfoCMM8+Qvcp0tgIO9/ODTs3yNBV1+06+yDQCbqa+6MiNCxGs/0+PDEVn/PnXmL
-         36nvuliWDtahaA8itapTK5JTdfjPSYA0nEd3+e2TDrAtyaWZNZ4HtyoldFw9Qi1/1LbX
-         woSqTVUN5Mk2HGWD/HF+/6RKNaFjzIKiHIR0/W9/W330aDTUKZEk9YSGhSY2llNdAvND
-         CohrXW1MgAX7sXTha2SDUJP/SFlMfom8QF7r90rGDo6iJZ7v137zhtNRJWWik8frXmVR
-         A2JQ==
-X-Gm-Message-State: AOAM5313D5xHVOk4IgaHVUBnyBV5vwVg/5SvgM/yH9QjGBBad2OsIX8Z
-        p4/FQI7zPCkplD+KyjwYV4vS7xM/z8NowzSfj+NGr3OH
-X-Google-Smtp-Source: ABdhPJz+m9UEslTAzX8cho5PS0Tkqj4e36n/rDl9Plh88d1/H1iDUrx3jnDQ4qBXHvtIZS+S79boAB0TTg9scPiVhwM=
-X-Received: by 2002:a25:c4c5:: with SMTP id u188mr42572328ybf.425.1619638904916;
- Wed, 28 Apr 2021 12:41:44 -0700 (PDT)
+        bh=UP6/zlQsB9dpz1gBGDQSIq5aIV4UhU6jWhHp88ZVcuA=;
+        b=XivLaM5FdRiAHO5Gs0Dal7Oq7qAqyNGN+XaCVJbrbAIEC2A/OtKNKDbgNqe1JycIqs
+         Oz3PZtDXHCplRFXyCfFyna6mfHWFEELpoA2vgl4pBn7WghF8t8YkE8Fps/4p/9v6W/4X
+         39/P5e0gwgQz1ufNfsM603AvuvHsHMjHVCjIXTM3GuhxDS3Lnl1UX2opWd8sdlBssYbZ
+         5OkHFN1kynabfy5y7+kxBTT4jOf7gXTs3LbIOUayVy+1pv8+akJIyEeyYTgyA5I2lP8g
+         KA4fsssSDlIRrpDZeWo7C5k8uWIEb9D+0ftw3EcdMVJ8F8BKV/KCV9rcRmfohPfHy2fu
+         jUWA==
+X-Gm-Message-State: AOAM530mdfTpAIfObtair07HiXk14G91TfY95hZGbOZmW3rg4UaPefkd
+        JD4sd0Xf+y2aVav27tbDGENFTZodhOdHjuSQPUQ=
+X-Google-Smtp-Source: ABdhPJzXiQPL1oYucRiMtrwiGFyw1wTlIdwqrI+kH2FcjGdB78zL8+UAwIOE+zmM4r2SWg96LtJezMN5G/UX7XRg9v0=
+X-Received: by 2002:a25:1455:: with SMTP id 82mr274657ybu.403.1619639121840;
+ Wed, 28 Apr 2021 12:45:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210428161802.771519-1-jolsa@kernel.org>
-In-Reply-To: <20210428161802.771519-1-jolsa@kernel.org>
+References: <20210423213728.3538141-1-kafai@fb.com> <CAEf4BzY16ziMkOMdNGNjQOmiACF3E5nFn2LhtUUQbo-y-AP7Tg@mail.gmail.com>
+ <YIf3rHTLqW7yZxFJ@krava> <YIgE1hAaa3Hzwni8@kernel.org> <CAEf4Bzbh7+WJ502J_MQKiHDZ_Ab-Vb_ysHO6NNuZwNfThKCAKw@mail.gmail.com>
+ <YIle2kdR4IniQnbN@kernel.org>
+In-Reply-To: <YIle2kdR4IniQnbN@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 28 Apr 2021 12:41:34 -0700
-Message-ID: <CAEf4BzY8m5v0LY7eC1p-_xHg8yZms5HCS6D5AyRL7uFZfbKkKw@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Add deny list of btf ids check for tracing and ext programs
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
+Date:   Wed, 28 Apr 2021 12:45:10 -0700
+Message-ID: <CAEf4BzbzYeG9fWPe=Vugq8WG6bK79dk3byjWV9gtCX_v7L0XLw@mail.gmail.com>
+Subject: Re: [PATCH dwarves] btf: Generate btf for functions in the .BTF_ids section
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Martin KaFai Lau <kafai@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 9:19 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Wed, Apr 28, 2021 at 6:10 AM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
 >
-> The recursion check in __bpf_prog_enter and __bpf_prog_exit
-> leaves some (not inlined) functions unprotected:
+> Em Tue, Apr 27, 2021 at 01:38:51PM -0700, Andrii Nakryiko escreveu:
+> > On Tue, Apr 27, 2021 at 5:34 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 >
-> In __bpf_prog_enter:
->   - migrate_disable is called before prog->active is checked
+> > > And tools that expect to trace a function can get that information from
+> > > the BTF info instead of getting some failure when trying to trace those
+> > > functions, right?
 >
-> In __bpf_prog_exit:
->   - migrate_enable,rcu_read_unlock_strict are called after
->     prog->active is decreased
+> > I don't think it belongs in BTF, though.
 >
-> When attaching trampoline to them we get panic like:
+> My thinking was that since BTF is used when tracing, one would be
+> interested in knowing if some functions can't be used for that.
 >
->   traps: PANIC: double fault, error_code: 0x0
->   double fault: 0000 [#1] SMP PTI
->   RIP: 0010:__bpf_prog_enter+0x4/0x50
->   ...
->   Call Trace:
->    <IRQ>
->    bpf_trampoline_6442466513_0+0x18/0x1000
->    migrate_disable+0x5/0x50
->    __bpf_prog_enter+0x9/0x50
->    bpf_trampoline_6442466513_0+0x18/0x1000
->    migrate_disable+0x5/0x50
->    __bpf_prog_enter+0x9/0x50
->    bpf_trampoline_6442466513_0+0x18/0x1000
->    migrate_disable+0x5/0x50
->    __bpf_prog_enter+0x9/0x50
->    bpf_trampoline_6442466513_0+0x18/0x1000
->    migrate_disable+0x5/0x50
->    ...
+> > Plus there are additional limitations enforced by BPF verifier that
+> > will prevent some functions to be attached. So just because the
+> > function is in BTF doesn't mean it's 100% attachable.
 >
-> Fixing this by adding deny list of btf ids for tracing
-> and ext programs and checking btf id during program
-> verification. Adding above functions to this list.
+> Well, at least we would avoid some that can't for sure be used for
+> tracing. But, a bit in there is precious, so probably geting a NACK from
+> the kernel should be a good enough capability query. :-)
 >
-> Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  kernel/bpf/verifier.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 2579f6fbb5c3..4ffd64eaffda 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -13112,6 +13112,17 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
->         return 0;
->  }
->
-> +BTF_SET_START(btf_id_deny)
-> +BTF_ID_UNUSED
-> +#ifdef CONFIG_SMP
-> +BTF_ID(func, migrate_disable)
-> +BTF_ID(func, migrate_enable)
-> +#endif
-> +#if !defined CONFIG_PREEMPT_RCU && !defined CONFIG_TINY_RCU
-> +BTF_ID(func, rcu_read_unlock_strict)
-> +#endif
-> +BTF_SET_END(btf_id_deny)
-> +
->  static int check_attach_btf_id(struct bpf_verifier_env *env)
->  {
->         struct bpf_prog *prog = env->prog;
-> @@ -13171,6 +13182,10 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
->                 ret = bpf_lsm_verify_prog(&env->log, prog);
->                 if (ret < 0)
->                         return ret;
-> +       } else if ((prog->type == BPF_PROG_TYPE_TRACING ||
-> +                   prog->type == BPF_PROG_TYPE_EXT) &&
+> Tools should just silently prune things in wildcards provided by the
+> user that aren't traceable, silently, and provide an error message when
+> the user explicitely asks for tracing a verbotten function.
 
-BPF_PROG_TYP_EXT can only replace other BPF programs/subprograms, it
-can't replace kernel functions, so the deny list shouldn't be checked
-for them.
+Yep, that's what I'm doing in my retsnoop tool (I both filter by
+available kprobes [0], and have extra blacklist [1]). Loading kprobes
+is pretty simple and fast enough, shouldn't be a problem.
 
-> +                  btf_id_set_contains(&btf_id_deny, btf_id)) {
-> +               return -EINVAL;
->         }
+  [0] https://github.com/anakryiko/retsnoop/blob/master/src/mass_attacher.c#L495
+  [1] https://github.com/anakryiko/retsnoop/blob/master/src/mass_attacher.c#L41
+
+
 >
->         key = bpf_trampoline_compute_key(tgt_prog, prog->aux->attach_btf, btf_id);
-> --
-> 2.30.2
->
+> - Arnaldo
