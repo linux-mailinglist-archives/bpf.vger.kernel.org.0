@@ -2,124 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 700F936F203
-	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 23:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D7E36F230
+	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 23:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237137AbhD2V3e convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 29 Apr 2021 17:29:34 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:32617 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233293AbhD2V3d (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 29 Apr 2021 17:29:33 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-27-wdsMpYtLOA2JuJj_M98MmA-1; Thu, 29 Apr 2021 17:28:40 -0400
-X-MC-Unique: wdsMpYtLOA2JuJj_M98MmA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 188ED8042A6;
-        Thu, 29 Apr 2021 21:28:38 +0000 (UTC)
-Received: from krava.cust.in.nbox.cz (unknown [10.40.195.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A77DA36DE;
-        Thu, 29 Apr 2021 21:28:35 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: [PATCH RFC] bpf: Fix trampoline for functions with variable arguments
-Date:   Thu, 29 Apr 2021 23:28:34 +0200
-Message-Id: <20210429212834.82621-1-jolsa@kernel.org>
+        id S237290AbhD2Vlr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Apr 2021 17:41:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237204AbhD2Vlq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Apr 2021 17:41:46 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BA3C06138B
+        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 14:40:58 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id q127so9612323qkb.1
+        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 14:40:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rn0CmnefdhrS2EmYI8qB4KGZJ2aWwAPzSLVHIcPUm4Y=;
+        b=hQ45zGMt2zyS8dM6KsO4c13sO1V9/9cFuwpEJSjh1WSNej4KjKEg5QwvIDG67iXlBm
+         HBBQf/Jr6RZIiAMrmwfQy/Ja1UJ7bx5+d8eh5KOnjPwc6GOVEhxFYQUljA45Dw2gJHRM
+         z3GvyFkdMVpxCef8lGbEBByGrdha26yCGD63cF/dXbpaSAFA+N3JmSn0UPgm5LWtiQWb
+         rhsQiYyCf5jNmJ7B8etg3f+9GzCRFuPAUjwpx2kmJFItD55MqqIzeKxELxbR2rMVfK5p
+         slRlST8QYOEB2PLzmWbXG+RyildEbTWbOmYgmnwfgs6WIqi+s3YAIwMMUXCj2ZD20x/+
+         PJBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rn0CmnefdhrS2EmYI8qB4KGZJ2aWwAPzSLVHIcPUm4Y=;
+        b=CDBXl+Abxk37ypYGFfcXlq8QCQ9GnqFFhjB1zYcnt0JlPcMWGPmGC0hESdMU9UBNv8
+         KUZx7+7cVNKw3PVTiidPP28KpBH8VslxRZRcePfdoUs7yOEONOhWvhg8azv/9sEK8M5C
+         NMyxcY7j1dD8aQfm8aeZVvxSP/ksqFJPYHv+8mgo92nT3EBfHeLBSLNKW1GznQx495TZ
+         NLtRrRhmOnqiUfBV1A/nFggSF2fvBiMXSPRx7AxyJRTqnPjy8lhZn4ksCngXoWOvDmEX
+         JXyuYHYS6cdKnSL9n9F7GVuHTBlPYwrfXuKfAabDCY+3d+TEPnobXDd66YtIuy/q9d9y
+         qFPA==
+X-Gm-Message-State: AOAM530Z4fwhTMbO6qJiP3RdyBDvzJzjE9dAAGzuL3VNazWwIbugDoqF
+        i3GVkyRLWGGdLsBpD01hlhE=
+X-Google-Smtp-Source: ABdhPJxOe/1w5v/uAQSTzw/bSep6kOy5aHAgZIZ8MTiMincZ55G7+tLs+Z0OgEqnBY/6E8fw5Qii7w==
+X-Received: by 2002:a37:7701:: with SMTP id s1mr1902755qkc.291.1619732457991;
+        Thu, 29 Apr 2021 14:40:57 -0700 (PDT)
+Received: from localhost.localdomain (pool-100-33-2-40.nycmny.fios.verizon.net. [100.33.2.40])
+        by smtp.gmail.com with ESMTPSA id m16sm2993869qkm.100.2021.04.29.14.40.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 14:40:57 -0700 (PDT)
+From:   grantseltzer <grantseltzer@gmail.com>
+To:     andrii@kernel.org, daniel@iogearbox.net
+Cc:     grantseltzer@gmail.com, bpf@vger.kernel.org
+Subject: [PATCH bpf-next 0/3] Autogenerating API documentation
+Date:   Thu, 29 Apr 2021 05:47:31 +0000
+Message-Id: <20210429054734.53264-1-grantseltzer@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For functions with variable arguments like:
+This series of patches is meant to start the initiative to document libbpf.
+It includes .rst files which are text documentation describing building, 
+API naming convention, as well as an index to generated API documentation.
 
-  void set_worker_desc(const char *fmt, ...)
+The generated API documentation is enabled by Doxygen, which actually 
+parses the code for documentation comment strings and generates XML.
+A tool called Sphinx then reads this XML with the help of the breathe
+plugin, as well as the above mentioned .rst files and generates beautiful
+HTML output.
 
-the BTF data contains void argument at the end:
+The goal of this is for readthedocs.io to be able to pick up that generated
+documentation which will be made possible with the help of readthedoc's 
+github integration and libbpf's official github mirror. Minor setup 
+is required in that mirror once this patch series is merged.
 
-[4061] FUNC_PROTO '(anon)' ret_type_id=0 vlen=2
-        'fmt' type_id=3
-        '(anon)' type_id=0
+grantseltzer (3):
+  bpf: Add sphinx documentation build files
+  bpf: Add doxygen configuration file
+  bpf: Add rst docs for libbpf
 
-When attaching function with this void argument the btf_distill_func_proto
-will set last btf_func_model's argument with size 0 and that
-will cause extra loop in save_regs/restore_regs functions and
-generate trampoline code like:
+ tools/lib/bpf/docs/api.rst                    |  60 ++++
+ tools/lib/bpf/docs/build.rst                  |  39 +++
+ tools/lib/bpf/docs/conf.py                    |  38 +++
+ tools/lib/bpf/docs/index.rst                  |  21 ++
+ .../naming_convention.rst}                    |  18 +-
+ tools/lib/bpf/docs/sphinx/Makefile            |   9 +
+ tools/lib/bpf/docs/sphinx/doxygen/Doxyfile    | 320 ++++++++++++++++++
+ tools/lib/bpf/docs/sphinx/requirements.txt    |   1 +
+ 8 files changed, 499 insertions(+), 7 deletions(-)
+ create mode 100644 tools/lib/bpf/docs/api.rst
+ create mode 100644 tools/lib/bpf/docs/build.rst
+ create mode 100644 tools/lib/bpf/docs/conf.py
+ create mode 100644 tools/lib/bpf/docs/index.rst
+ rename tools/lib/bpf/{README.rst => docs/naming_convention.rst} (97%)
+ create mode 100644 tools/lib/bpf/docs/sphinx/Makefile
+ create mode 100644 tools/lib/bpf/docs/sphinx/doxygen/Doxyfile
+ create mode 100644 tools/lib/bpf/docs/sphinx/requirements.txt
 
-  55             push   %rbp
-  48 89 e5       mov    %rsp,%rbp
-  48 83 ec 10    sub    $0x10,%rsp
-  53             push   %rbx
-  48 89 7d f0    mov    %rdi,-0x10(%rbp)
-  75 f8          jne    0xffffffffa00cf007
-                 ^^^ extra jump
-
-It's causing soft lockups/crashes probably depends on what context
-is the attached function called, like for set_worker_desc:
-
-  watchdog: BUG: soft lockup - CPU#16 stuck for 22s! [kworker/u40:4:239]
-  CPU: 16 PID: 239 Comm: kworker/u40:4 Not tainted 5.12.0-rc4qemu+ #178
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1.fc33 04/01/2014
-  Workqueue: writeback wb_workfn
-  RIP: 0010:bpf_trampoline_6442464853_0+0xa/0x1000
-  Code: Unable to access opcode bytes at RIP 0xffffffffa3597fe0.
-  RSP: 0018:ffffc90000687da8 EFLAGS: 00000217
-  Call Trace:
-   set_worker_desc+0x5/0xb0
-   wb_workfn+0x48/0x4d0
-   ? psi_group_change+0x41/0x210
-   ? __bpf_prog_exit+0x15/0x20
-   ? bpf_trampoline_6442458903_0+0x3b/0x1000
-   ? update_pasid+0x5/0x90
-   ? __switch_to+0x187/0x450
-   process_one_work+0x1e7/0x380
-   worker_thread+0x50/0x3b0
-   ? rescuer_thread+0x380/0x380
-   kthread+0x11b/0x140
-   ? __kthread_bind_mask+0x60/0x60
-   ret_from_fork+0x22/0x30
-
-This patch is removing the void argument from struct btf_func_model
-in btf_distill_func_proto, but perhaps we should also check for this
-in JIT's save_regs/restore_regs functions.
-
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- kernel/bpf/btf.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index b1a76fe046cb..017a80324139 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -5133,6 +5133,11 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
- 				tname, i, btf_kind_str[BTF_INFO_KIND(t->info)]);
- 			return -EINVAL;
- 		}
-+		/* void at the end of args means '...' argument, skip it */
-+		if (!ret && (i + 1 == nargs)) {
-+			nargs--;
-+			break;
-+		}
- 		m->arg_size[i] = ret;
- 	}
- 	m->nr_args = nargs;
 -- 
-2.30.2
+2.29.2
 
