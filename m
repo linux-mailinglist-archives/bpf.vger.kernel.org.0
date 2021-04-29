@@ -2,102 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D7E36F230
-	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 23:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332AF36F232
+	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 23:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237290AbhD2Vlr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Apr 2021 17:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51736 "EHLO
+        id S234837AbhD2Vlv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Apr 2021 17:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237204AbhD2Vlq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Apr 2021 17:41:46 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BA3C06138B
-        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 14:40:58 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id q127so9612323qkb.1
-        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 14:40:58 -0700 (PDT)
+        with ESMTP id S237191AbhD2Vlu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Apr 2021 17:41:50 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2371C06138B
+        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 14:41:01 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id v23so16752033qkj.13
+        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 14:41:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rn0CmnefdhrS2EmYI8qB4KGZJ2aWwAPzSLVHIcPUm4Y=;
-        b=hQ45zGMt2zyS8dM6KsO4c13sO1V9/9cFuwpEJSjh1WSNej4KjKEg5QwvIDG67iXlBm
-         HBBQf/Jr6RZIiAMrmwfQy/Ja1UJ7bx5+d8eh5KOnjPwc6GOVEhxFYQUljA45Dw2gJHRM
-         z3GvyFkdMVpxCef8lGbEBByGrdha26yCGD63cF/dXbpaSAFA+N3JmSn0UPgm5LWtiQWb
-         rhsQiYyCf5jNmJ7B8etg3f+9GzCRFuPAUjwpx2kmJFItD55MqqIzeKxELxbR2rMVfK5p
-         slRlST8QYOEB2PLzmWbXG+RyildEbTWbOmYgmnwfgs6WIqi+s3YAIwMMUXCj2ZD20x/+
-         PJBA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Bh3Tiv9fi414wqxwp/rVd3VoQ2MHmty+9gktKiecaBk=;
+        b=FC+xn6iG4nXGDv0NBTzvGTIhiOb1XXZhanFyUVZx9uGJP6BqVx33iLwEbFEjlMclXf
+         ATl9FPvh/zmasN/hhBLL4dnKh9KKJZKKv4205cOkmvXsSzAAJIY1RvPU1WfLfogIRFVl
+         +7nZv9cm5HvacMNMlxX9ciaST2B59bue8zMGYn4Pbt5pwYQ2P/oyL89TduLaStnHusXr
+         /o11I23VxefXqeei+WBF8fNPBekwOfNqiLKwnVRrYSIm+pKZxxYtMjZf3eK5Kv20BLM3
+         pX29L9lO7G9znX2dDFpLOtQ3fT3f3L7LBvqOfzQzNhLhwP4hb0k11VCTLe0b49OB8CZ0
+         BWuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rn0CmnefdhrS2EmYI8qB4KGZJ2aWwAPzSLVHIcPUm4Y=;
-        b=CDBXl+Abxk37ypYGFfcXlq8QCQ9GnqFFhjB1zYcnt0JlPcMWGPmGC0hESdMU9UBNv8
-         KUZx7+7cVNKw3PVTiidPP28KpBH8VslxRZRcePfdoUs7yOEONOhWvhg8azv/9sEK8M5C
-         NMyxcY7j1dD8aQfm8aeZVvxSP/ksqFJPYHv+8mgo92nT3EBfHeLBSLNKW1GznQx495TZ
-         NLtRrRhmOnqiUfBV1A/nFggSF2fvBiMXSPRx7AxyJRTqnPjy8lhZn4ksCngXoWOvDmEX
-         JXyuYHYS6cdKnSL9n9F7GVuHTBlPYwrfXuKfAabDCY+3d+TEPnobXDd66YtIuy/q9d9y
-         qFPA==
-X-Gm-Message-State: AOAM530Z4fwhTMbO6qJiP3RdyBDvzJzjE9dAAGzuL3VNazWwIbugDoqF
-        i3GVkyRLWGGdLsBpD01hlhE=
-X-Google-Smtp-Source: ABdhPJxOe/1w5v/uAQSTzw/bSep6kOy5aHAgZIZ8MTiMincZ55G7+tLs+Z0OgEqnBY/6E8fw5Qii7w==
-X-Received: by 2002:a37:7701:: with SMTP id s1mr1902755qkc.291.1619732457991;
-        Thu, 29 Apr 2021 14:40:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Bh3Tiv9fi414wqxwp/rVd3VoQ2MHmty+9gktKiecaBk=;
+        b=O1+7XuRt9t6hNWFf21k6DOkkkohnxqj1xfp1IY29xfgoSCwoVP+OqYP21zm8HTkFQb
+         JhSMy5l+73xsx4O8gYvkZN3iSNDZwnyOjqs02kpBY8W9I7ciYwNMPIIgSAQpb8jEnMXf
+         rtsNm1feY96W0VovNXSmYvbbaL3Dee6AKS50dKMZIZ2mVXRIOFiZ8fX6m8N+EhGT/VAf
+         wiTKQzvH4XbQU2/ZdKIy7LIkU3P9jRDHRGL5oqE4TJSUZ3xfyDHv0Xqp3KOo2ABkthPo
+         h/PTHlXSbmWiC4I7ds5tDRdlaKpcgB7yu3EC41IlfD9MBO84e9OlXlF9XQmvQT2PWaSc
+         GZ9g==
+X-Gm-Message-State: AOAM531l5sW87RcOIB/nURaVlvBQm9pGfPCdSvzL+XAiFH9rnYnLdTBv
+        EtQqzZSf6AlPC3fm3hPX9Pw=
+X-Google-Smtp-Source: ABdhPJzqt9sxhsYLQjSjxLY7rPI7f/Z4rSJjaj5ln6b5mZ6YnwENObrdiaKym4NHzGzukRTqSlYlcw==
+X-Received: by 2002:a37:9b02:: with SMTP id d2mr1926612qke.207.1619732460961;
+        Thu, 29 Apr 2021 14:41:00 -0700 (PDT)
 Received: from localhost.localdomain (pool-100-33-2-40.nycmny.fios.verizon.net. [100.33.2.40])
-        by smtp.gmail.com with ESMTPSA id m16sm2993869qkm.100.2021.04.29.14.40.57
+        by smtp.gmail.com with ESMTPSA id m16sm2993869qkm.100.2021.04.29.14.41.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 14:40:57 -0700 (PDT)
+        Thu, 29 Apr 2021 14:41:00 -0700 (PDT)
 From:   grantseltzer <grantseltzer@gmail.com>
 To:     andrii@kernel.org, daniel@iogearbox.net
 Cc:     grantseltzer@gmail.com, bpf@vger.kernel.org
-Subject: [PATCH bpf-next 0/3] Autogenerating API documentation
-Date:   Thu, 29 Apr 2021 05:47:31 +0000
-Message-Id: <20210429054734.53264-1-grantseltzer@gmail.com>
+Subject: [PATCH bpf-next 1/3] bpf: Add sphinx documentation build files
+Date:   Thu, 29 Apr 2021 05:47:32 +0000
+Message-Id: <20210429054734.53264-2-grantseltzer@gmail.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210429054734.53264-1-grantseltzer@gmail.com>
+References: <20210429054734.53264-1-grantseltzer@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This series of patches is meant to start the initiative to document libbpf.
-It includes .rst files which are text documentation describing building, 
-API naming convention, as well as an index to generated API documentation.
+This adds the ability for sphinx, a tool for creating html documentation
+to read in .rst documentation files. It also enables it to use the breathe
+plugin to read in xml files that are generated by doxygen, a code
+documentation tool.
 
-The generated API documentation is enabled by Doxygen, which actually 
-parses the code for documentation comment strings and generates XML.
-A tool called Sphinx then reads this XML with the help of the breathe
-plugin, as well as the above mentioned .rst files and generates beautiful
-HTML output.
+Sphinx pulls in rst or xml documentation and generates pretty html
+which also conveniently can be hosted by readthedocs.org.
 
-The goal of this is for readthedocs.io to be able to pick up that generated
-documentation which will be made possible with the help of readthedoc's 
-github integration and libbpf's official github mirror. Minor setup 
-is required in that mirror once this patch series is merged.
+The requirements.txt file tells sphinx that it requires the 'breathe'
+plugin to be installed. breathe is a plugin that acts as the translation
+layer between doxygen and sphinx.
 
-grantseltzer (3):
-  bpf: Add sphinx documentation build files
-  bpf: Add doxygen configuration file
-  bpf: Add rst docs for libbpf
-
- tools/lib/bpf/docs/api.rst                    |  60 ++++
- tools/lib/bpf/docs/build.rst                  |  39 +++
- tools/lib/bpf/docs/conf.py                    |  38 +++
- tools/lib/bpf/docs/index.rst                  |  21 ++
- .../naming_convention.rst}                    |  18 +-
- tools/lib/bpf/docs/sphinx/Makefile            |   9 +
- tools/lib/bpf/docs/sphinx/doxygen/Doxyfile    | 320 ++++++++++++++++++
- tools/lib/bpf/docs/sphinx/requirements.txt    |   1 +
- 8 files changed, 499 insertions(+), 7 deletions(-)
- create mode 100644 tools/lib/bpf/docs/api.rst
- create mode 100644 tools/lib/bpf/docs/build.rst
+Signed-off-by: grantseltzer <grantseltzer@gmail.com>
+---
+ tools/lib/bpf/docs/conf.py                 | 38 ++++++++++++++++++++++
+ tools/lib/bpf/docs/index.rst               | 15 +++++++++
+ tools/lib/bpf/docs/sphinx/Makefile         |  9 +++++
+ tools/lib/bpf/docs/sphinx/requirements.txt |  1 +
+ 4 files changed, 63 insertions(+)
  create mode 100644 tools/lib/bpf/docs/conf.py
  create mode 100644 tools/lib/bpf/docs/index.rst
- rename tools/lib/bpf/{README.rst => docs/naming_convention.rst} (97%)
  create mode 100644 tools/lib/bpf/docs/sphinx/Makefile
- create mode 100644 tools/lib/bpf/docs/sphinx/doxygen/Doxyfile
  create mode 100644 tools/lib/bpf/docs/sphinx/requirements.txt
 
+diff --git a/tools/lib/bpf/docs/conf.py b/tools/lib/bpf/docs/conf.py
+new file mode 100644
+index 000000000..a67dff0dd
+--- /dev/null
++++ b/tools/lib/bpf/docs/conf.py
+@@ -0,0 +1,38 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: GPL-2.0
++# Configuration file for the Sphinx documentation builder.
++#
++# This file only contains a selection of the most common options. For a full
++# list see the documentation:
++# https://www.sphinx-doc.org/en/master/usage/configuration.html
++
++import os
++import subprocess
++
++extensions = [
++    'sphinx.ext.autodoc',
++    'sphinx.ext.doctest',
++    'sphinx.ext.mathjax',
++    'sphinx.ext.viewcode',
++    'sphinx.ext.imgmath',
++    'sphinx.ext.todo',
++    'breathe',
++]
++
++# List of patterns, relative to source directory, that match files and
++# directories to ignore when looking for source files.
++# This pattern also affects html_static_path and html_extra_path.
++exclude_patterns = []
++
++read_the_docs_build = os.environ.get('READTHEDOCS', None) == 'True'
++
++if read_the_docs_build:
++    subprocess.call('make clean', shell=True)
++    subprocess.call('cd sphinx/doxygen ; doxygen', shell=True)
++
++html_theme = 'sphinx_rtd_theme'
++
++breathe_projects = { "libbpf": "./sphinx/doxygen/build/xml/" }
++breathe_default_project = "libbpf"
++breathe_show_define_initializer = True
++breathe_show_enumvalue_initializer = True
+diff --git a/tools/lib/bpf/docs/index.rst b/tools/lib/bpf/docs/index.rst
+new file mode 100644
+index 000000000..31a6ecfab
+--- /dev/null
++++ b/tools/lib/bpf/docs/index.rst
+@@ -0,0 +1,15 @@
++libbpf documentation
++=======================================
++
++This is documentation for libbpf, a userspace library for loading and
++interacting with bpf programs.
++
++All general BPF questions, including kernel functionality, libbpf APIs and
++their application, should be sent to bpf@vger.kernel.org mailing list.
++You can subscribe to it `here <http://vger.kernel.org/vger-lists.html#bpf>`_
++and search its archive `here <https://lore.kernel.org/bpf/>`_.
++Please search the archive before asking new questions. It very well might
++be that this was already addressed or answered before.
++
++.. toctree::
++   :caption: Documentation:
+diff --git a/tools/lib/bpf/docs/sphinx/Makefile b/tools/lib/bpf/docs/sphinx/Makefile
+new file mode 100644
+index 000000000..69305958f
+--- /dev/null
++++ b/tools/lib/bpf/docs/sphinx/Makefile
+@@ -0,0 +1,9 @@
++SPHINXBUILD   ?= sphinx-build
++SOURCEDIR     = ..
++BUILDDIR      = build
++
++help:
++	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)"
++
++%:
++	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)"
+diff --git a/tools/lib/bpf/docs/sphinx/requirements.txt b/tools/lib/bpf/docs/sphinx/requirements.txt
+new file mode 100644
+index 000000000..188f51e62
+--- /dev/null
++++ b/tools/lib/bpf/docs/sphinx/requirements.txt
+@@ -0,0 +1 @@
++breathe
+\ No newline at end of file
 -- 
 2.29.2
 
