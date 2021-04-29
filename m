@@ -2,152 +2,355 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D91D36E38D
-	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 05:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB9E36E705
+	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 10:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232702AbhD2DRL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Apr 2021 23:17:11 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:35080 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232429AbhD2DRG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Apr 2021 23:17:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1619666181; x=1651202181;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=fukReMX57yCvRyMZa3sHIls68y/6z8ZvfyLr2w6V5Ws=;
-  b=N9ubxjCt0IsrPlRdLA8+SsHtRu/NzGh1GfWYVSqBzEFtteWs4ydk6YDr
-   I/VgndarEwrMO5FJK3jSbXvZb7zr5hEkXA7clZbdnVu+nHtM0waW76EFL
-   Nt/NFnv1lNgrSrQFCA6UNjWlqUsMjjg8cfLoHlLhG9kVr5hLzI7COAD0E
-   4=;
-X-IronPort-AV: E=Sophos;i="5.82,258,1613433600"; 
-   d="scan'208";a="109072914"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-c5104f52.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 29 Apr 2021 03:16:19 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2a-c5104f52.us-west-2.amazon.com (Postfix) with ESMTPS id 23573A1B40;
-        Thu, 29 Apr 2021 03:16:18 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 29 Apr 2021 03:16:17 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.160.81) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 29 Apr 2021 03:16:12 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <edumazet@google.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <jbaron@akamai.com>, <kafai@fb.com>,
-        <kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v4 bpf-next 00/11] Socket migration for SO_REUSEPORT.
-Date:   Thu, 29 Apr 2021 12:16:09 +0900
-Message-ID: <20210429031609.1398-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CANn89iK2Wy5WJB+57Y9JU24boy=bb4YQCk6DWD4BvhsM3ZVSdQ@mail.gmail.com>
-References: <CANn89iK2Wy5WJB+57Y9JU24boy=bb4YQCk6DWD4BvhsM3ZVSdQ@mail.gmail.com>
+        id S232455AbhD2I2L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Apr 2021 04:28:11 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3346 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232734AbhD2I2L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Apr 2021 04:28:11 -0400
+Received: from dggeml711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FW7mr14SHz19JR5;
+        Thu, 29 Apr 2021 16:23:24 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggeml711-chm.china.huawei.com (10.3.17.122) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 29 Apr 2021 16:27:22 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 29 Apr
+ 2021 16:27:21 +0800
+Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
+To:     Matteo Croce <mcroce@linux.microsoft.com>,
+        <netdev@vger.kernel.org>, <linux-mm@kvack.org>
+CC:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
+Date:   Thu, 29 Apr 2021 16:27:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
+In-Reply-To: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.81]
-X-ClientProxiedBy: EX13D30UWC004.ant.amazon.com (10.43.162.4) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 28 Apr 2021 18:33:32 +0200
-> On Wed, Apr 28, 2021 at 5:52 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
-> >
-> > From:   Jason Baron <jbaron@akamai.com>
-> > Date:   Wed, 28 Apr 2021 10:44:12 -0400
-> > > On 4/28/21 4:13 AM, Kuniyuki Iwashima wrote:
-> > > > From:   Jason Baron <jbaron@akamai.com>
-> > > > Date:   Tue, 27 Apr 2021 12:38:58 -0400
-> > > >> On 4/26/21 11:46 PM, Kuniyuki Iwashima wrote:
-> > > >>> The SO_REUSEPORT option allows sockets to listen on the same port and to
-> > > >>> accept connections evenly. However, there is a defect in the current
-> > > >>> implementation [1]. When a SYN packet is received, the connection is tied
-> > > >>> to a listening socket. Accordingly, when the listener is closed, in-flight
-> > > >>> requests during the three-way handshake and child sockets in the accept
-> > > >>> queue are dropped even if other listeners on the same port could accept
-> > > >>> such connections.
-> > > >>>
-> > > >>> This situation can happen when various server management tools restart
-> > > >>> server (such as nginx) processes. For instance, when we change nginx
-> > > >>> configurations and restart it, it spins up new workers that respect the new
-> > > >>> configuration and closes all listeners on the old workers, resulting in the
-> > > >>> in-flight ACK of 3WHS is responded by RST.
-> > > >>
-> > > >> Hi Kuniyuki,
-> > > >>
-> > > >> I had implemented a different approach to this that I wanted to get your
-> > > >> thoughts about. The idea is to use unix sockets and SCM_RIGHTS to pass the
-> > > >> listen fd (or any other fd) around. Currently, if you have an 'old' webserver
-> > > >> that you want to replace with a 'new' webserver, you would need a separate
-> > > >> process to receive the listen fd and then have that process send the fd to
-> > > >> the new webserver, if they are not running con-currently. So instead what
-> > > >> I'm proposing is a 'delayed close' for a unix socket. That is, one could do:
-> > > >>
-> > > >> 1) bind unix socket with path '/sockets'
-> > > >> 2) sendmsg() the listen fd via the unix socket
-> > > >> 2) setsockopt() some 'timeout' on the unix socket (maybe 10 seconds or so)
-> > > >> 3) exit/close the old webserver and the listen socket
-> > > >> 4) start the new webserver
-> > > >> 5) create new unix socket and bind to '/sockets' (if has MAY_WRITE file permissions)
-> > > >> 6) recvmsg() the listen fd
-> > > >>
-> > > >> So the idea is that we set a timeout on the unix socket. If the new process
-> > > >> does not start and bind to the unix socket, it simply closes, thus releasing
-> > > >> the listen socket. However, if it does bind it can now call recvmsg() and
-> > > >> use the listen fd as normal. It can then simply continue to use the old listen
-> > > >> fds and/or create new ones and drain the old ones.
-> > > >>
-> > > >> Thus, the old and new webservers do not have to run concurrently. This doesn't
-> > > >> involve any changes to the tcp layer and can be used to pass any type of fd.
-> > > >> not sure if it's actually useful for anything else though.
-> > > >>
-> > > >> I'm not sure if this solves your use-case or not but I thought I'd share it.
-> > > >> One can also inherit the fds like in systemd's socket activation model, but
-> > > >> that again requires another process to hold open the listen fd.
-> > > >
-> > > > Thank you for sharing code.
-> > > >
-> > > > It seems bit more crash-tolerant than normal fd passing, but it can still
-> > > > suffer if the process dies before passing fds. With this patch set, we can
-> > > > migrate children sockets even if the process dies.
-> > > >
-> > >
-> > > I don't think crashing should be much of an issue. The old server can setup the
-> > > unix socket patch '/sockets' when it starts up and queue the listen sockets
-> > > there from the start. When it dies it will close all its fds, and the new
-> > > server can pick anything up any fds that are in the '/sockets' queue.
-> > >
-> > >
-> > > > Also, as Martin said, fd passing tends to make application complicated.
-> > > >
-> > >
-> > > It may be but perhaps its more flexible? It gives the new server the
-> > > chance to re-use the existing listen fds, close, drain and/or start new
-> > > ones. It also addresses the non-REUSEPORT case where you can't bind right
-> > > away.
-> >
-> > If the flexibility is really worth the complexity, we do not care about it.
-> > But, SO_REUSEPORT can give enough flexibility we want.
-> >
-> > With socket migration, there is no need to reuse listener (fd passing),
-> > drain children (incoming connections are automatically migrated if there is
-> > already another listener bind()ed), and of course another listener can
-> > close itself and migrated children.
-> >
-> > If two different approaches resolves the same issue and one does not need
-> > complexity in userspace, we select the simpler one.
+On 2021/4/10 6:37, Matteo Croce wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
 > 
-> Kernel bloat and complexity is _not_ the simplest choice.
+> This is a respin of [1]
 > 
-> Touching a complex part of TCP stack is quite risky.
+> This  patchset shows the plans for allowing page_pool to handle and
+> maintain DMA map/unmap of the pages it serves to the driver.  For this
+> to work a return hook in the network core is introduced.
+> 
+> The overall purpose is to simplify drivers, by providing a page
+> allocation API that does recycling, such that each driver doesn't have
+> to reinvent its own recycling scheme.  Using page_pool in a driver
+> does not require implementing XDP support, but it makes it trivially
+> easy to do so.  Instead of allocating buffers specifically for SKBs
+> we now allocate a generic buffer and either wrap it on an SKB
+> (via build_skb) or create an XDP frame.
+> The recycling code leverages the XDP recycle APIs.
+> 
+> The Marvell mvpp2 and mvneta drivers are used in this patchset to
+> demonstrate how to use the API, and tested on a MacchiatoBIN
+> and EspressoBIN boards respectively.
+> 
 
-Yes, we understand that is not a simple decision and your concern. So many
-reviews are needed to see if our approach is really risky or not.
+Hi, Matteo
+     I added the skb frag page recycling in hns3 based on this patchset,
+and it has above 10%~20% performance improvement for one thread iperf
+TCP flow(IOMMU is off, there may be more performance improvement if
+considering the DMA map/unmap avoiding for IOMMU), thanks for the job.
+
+    The skb frag page recycling support in hns3 driver is not so simple
+as the mvpp2 and mvneta driver, because:
+
+1. the hns3 driver do not have XDP support yet, so "struct xdp_rxq_info"
+   is added to assist relation binding between the "struct page" and
+   "struct page_pool".
+
+2. the hns3 driver has already a page reusing based on page spliting and
+   page reference count, but it may not work if the upper stack can not
+   handle skb and release the corresponding page fast enough.
+
+3. the hns3 driver support page reference count updating batching, see:
+   aeda9bf87a45 ("net: hns3: batch the page reference count updates")
+
+So it would be better if：
+
+1. skb frag page recycling do not need "struct xdp_rxq_info" or
+   "struct xdp_mem_info" to bond the relation between "struct page" and
+   "struct page_pool", which seems uncessary at this point if bonding
+   a "struct page_pool" pointer directly in "struct page" does not cause
+   space increasing.
+
+2. it would be good to do the page reference count updating batching
+   in page pool instead of specific driver.
+
+
+page_pool_atomic_sub_if_positive() is added to decide who can call
+page_pool_put_full_page(), because the driver and stack may hold
+reference to the same page, only if last one which hold complete
+reference to a page can call page_pool_put_full_page() to decide if
+recycling is possible, if not, the page is released, so I am wondering
+if a similar page_pool_atomic_sub_if_positive() can added to specific
+user space address unmapping path to allow skb recycling for RX zerocopy
+too?
+
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+index c21dd11..8b01a7d 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -2566,7 +2566,10 @@ static int hns3_alloc_buffer(struct hns3_enet_ring *ring,
+        unsigned int order = hns3_page_order(ring);
+        struct page *p;
+
+-       p = dev_alloc_pages(order);
++       if (ring->page_pool)
++               p = page_pool_dev_alloc_pages(ring->page_pool);
++       else
++               p = dev_alloc_pages(order);
+        if (!p)
+                return -ENOMEM;
+
+@@ -2582,13 +2585,32 @@ static int hns3_alloc_buffer(struct hns3_enet_ring *ring,
+        return 0;
+ }
+
++static void hns3_page_frag_cache_drain(struct hns3_enet_ring *ring,
++                                      struct hns3_desc_cb *cb)
++{
++       if (ring->page_pool) {
++               struct page *p = cb->priv;
++
++               if (page_pool_atomic_sub_if_positive(p, cb->pagecnt_bias))
++                       return;
++
++               if (cb->pagecnt_bias > 1)
++                       page_ref_sub(p, cb->pagecnt_bias - 1);
++
++               page_pool_put_full_page(ring->page_pool, p, false);
++               return;
++       }
++
++       __page_frag_cache_drain(cb->priv, cb->pagecnt_bias);
++}
++
+ static void hns3_free_buffer(struct hns3_enet_ring *ring,
+                             struct hns3_desc_cb *cb, int budget)
+ {
+        if (cb->type == DESC_TYPE_SKB)
+                napi_consume_skb(cb->priv, budget);
+        else if (!HNAE3_IS_TX_RING(ring) && cb->pagecnt_bias)
+-               __page_frag_cache_drain(cb->priv, cb->pagecnt_bias);
++               hns3_page_frag_cache_drain(ring, cb);
+        memset(cb, 0, sizeof(*cb));
+ }
+
+@@ -2892,13 +2914,15 @@ static void hns3_nic_reuse_page(struct sk_buff *skb, int i,
+        skb_add_rx_frag(skb, i, desc_cb->priv, desc_cb->page_offset + pull_len,
+                        size - pull_len, truesize);
+
++       skb_mark_for_recycle(skb, desc_cb->priv, &ring->rxq_info.mem);
++
+        /* Avoid re-using remote and pfmemalloc pages, or the stack is still
+         * using the page when page_offset rollback to zero, flag default
+         * unreuse
+         */
+        if (!dev_page_is_reusable(desc_cb->priv) ||
+            (!desc_cb->page_offset && !hns3_can_reuse_page(desc_cb))) {
+-               __page_frag_cache_drain(desc_cb->priv, desc_cb->pagecnt_bias);
++               hns3_page_frag_cache_drain(ring, desc_cb);
+                return;
+        }
+
+@@ -2911,7 +2935,7 @@ static void hns3_nic_reuse_page(struct sk_buff *skb, int i,
+                desc_cb->reuse_flag = 1;
+                desc_cb->page_offset = 0;
+        } else if (desc_cb->pagecnt_bias) {
+-               __page_frag_cache_drain(desc_cb->priv, desc_cb->pagecnt_bias);
++               hns3_page_frag_cache_drain(ring, desc_cb);
+                return;
+        }
+
+@@ -3156,8 +3180,7 @@ static int hns3_alloc_skb(struct hns3_enet_ring *ring, unsigned int length,
+                if (dev_page_is_reusable(desc_cb->priv))
+                        desc_cb->reuse_flag = 1;
+                else /* This page cannot be reused so discard it */
+-                       __page_frag_cache_drain(desc_cb->priv,
+-                                               desc_cb->pagecnt_bias);
++                       hns3_page_frag_cache_drain(ring, desc_cb);
+
+                hns3_rx_ring_move_fw(ring);
+                return 0;
+@@ -4028,6 +4051,33 @@ static int hns3_alloc_ring_memory(struct hns3_enet_ring *ring)
+                goto out_with_desc_cb;
+
+        if (!HNAE3_IS_TX_RING(ring)) {
++               struct page_pool_params pp_params = {
++               /* internal DMA mapping in page_pool */
++               .flags = 0,
++               .order = 0,
++               .pool_size = 1024,
++               .nid = dev_to_node(ring_to_dev(ring)),
++               .dev = ring_to_dev(ring),
++               .dma_dir = DMA_FROM_DEVICE,
++               .offset = 0,
++               .max_len = 0,
++               };
++
++               ring->page_pool = page_pool_create(&pp_params);
++               if (IS_ERR(ring->page_pool)) {
++                       dev_err(ring_to_dev(ring), "page pool creation failed\n");
++                       ring->page_pool = NULL;
++               }
++
++               ret = xdp_rxq_info_reg(&ring->rxq_info, ring_to_netdev(ring), ring->queue_index, 0);
++               if (ret)
++                       dev_err(ring_to_dev(ring), "xdp_rxq_info_reg failed\n");
++
++               ret = xdp_rxq_info_reg_mem_model(&ring->rxq_info, MEM_TYPE_PAGE_POOL,
++                                                ring->page_pool);
++               if (ret)
++                       dev_err(ring_to_dev(ring), "xdp_rxq_info_reg_mem_model failed\n");
++
+                ret = hns3_alloc_ring_buffers(ring);
+                if (ret)
+                        goto out_with_desc;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
+index daa04ae..fd53fcc 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.h
+@@ -6,6 +6,9 @@
+
+ #include <linux/if_vlan.h>
+
++#include <net/page_pool.h>
++#include <net/xdp.h>
++
+ #include "hnae3.h"
+
+ enum hns3_nic_state {
+@@ -408,6 +411,8 @@ struct hns3_enet_ring {
+        struct hnae3_queue *tqp;
+        int queue_index;
+        struct device *dev; /* will be used for DMA mapping of descriptors */
++       struct page_pool *page_pool;
+        struct hnae3_queue *tqp;
+        int queue_index;
+        struct device *dev; /* will be used for DMA mapping of descriptors */
++       struct page_pool *page_pool;
++       struct xdp_rxq_info rxq_info;
+
+        /* statistic */
+        struct ring_stats stats;
+diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+index 75fffc1..70c310e 100644
+--- a/include/net/page_pool.h
++++ b/include/net/page_pool.h
+@@ -195,6 +195,8 @@ static inline void page_pool_put_full_page(struct page_pool *pool,
+ #endif
+ }
+
++bool page_pool_atomic_sub_if_positive(struct page *page, int i);
++
+ /* Same as above but the caller must guarantee safe context. e.g NAPI */
+ static inline void page_pool_recycle_direct(struct page_pool *pool,
+                                            struct page *page)
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index 43bfd2e..8bc8b7e 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -596,6 +596,26 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
+ }
+ EXPORT_SYMBOL(page_pool_update_nid);
+
++bool page_pool_atomic_sub_if_positive(struct page *page, int i)
++{
++       atomic_t *v = &page->_refcount;
++       int dec, c;
++
++       do {
++               c = atomic_read(v);
++
++               dec = c - i;
++               if (unlikely(dec == 0))
++                       return false;
++               else if (unlikely(dec < 0)) {
++                       pr_err("c: %d, dec: %d, i: %d\n", c, dec, i);
++                       return false;
++               }
++       } while (!atomic_try_cmpxchg(v, &c, dec));
++
++       return true;
++}
++
+ bool page_pool_return_skb_page(void *data)
+ {
+        struct xdp_mem_info mem_info;
+@@ -606,6 +626,9 @@ bool page_pool_return_skb_page(void *data)
+        if (unlikely(page->signature != PP_SIGNATURE))
+                return false;
+
++       if (page_pool_atomic_sub_if_positive(page, 1))
++               return true;
++
+        info.raw = page_private(page);
+        mem_info = info.mem_info;
+
+
