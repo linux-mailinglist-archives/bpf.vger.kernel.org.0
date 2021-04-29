@@ -2,125 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84EA936EB19
-	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 15:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFF936EB66
+	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 15:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237249AbhD2NGJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Apr 2021 09:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233701AbhD2NGJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Apr 2021 09:06:09 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB357C06138C
-        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 06:05:21 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id i201-20020a25d1d20000b02904ed4c01f82bso23641217ybg.20
-        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 06:05:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=dBDPUd6OEZUbveW3fcmwIajvKcq5g8Z72TTKCSfESO0=;
-        b=nRh86q6+YSD5vdlfgm97OOyL3sWvNGVQZuU5Fp4lJkrtv8saGQ537qpzdPmQ6mzJN9
-         W+wyyUPl1emjGz5Sce2KO1DNGkXGVECrq6hgD9uelgFh81LrPnc7C+ukhgsV9lfNlOdr
-         N5br/ybBGs+90Kg0AQK76eExLy8eZCBNb3p7wVqDE7rw73TkGMKF4Iny6vETrv1o/9wl
-         8JJFUA6PpqOHobLIkG2cNZrJptP0Jxl3bDTkYUAkRO+Fg33dO5qCAdJDmY5NRMuU/tGU
-         FZlvUPZJk/C/VlLDXCrGzsDkRmqIsnwiNXwhVAz2Or2ZYju8ZS7taBx6ne4pDe6YmvS1
-         aiTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=dBDPUd6OEZUbveW3fcmwIajvKcq5g8Z72TTKCSfESO0=;
-        b=V/Ko60ffEgzxJ640mi3wJWXlR/hM8VggKKAuUlvqf3iSWpLV4RwILid7RyvoS8iT74
-         +HupJtARXatTR83NuYk6V7+K/deDJPrmDzRLL+quQIzksCrlcvC/9efjokDWckBB3gm3
-         Obb3POj1FxOqv69WmnwUlOoPSpby4akuZev6IRDXPmwbpjCIT6DzdnR7gc9XDcOo5M7x
-         tncREQ3Oqeo8cbu4X0iTLCWL2v+b8vDV6IqyufOdUBUvYhMo6OFqhph/Vugx+MmCWMSH
-         wDOpoZ9oh43jmygiQCiEKP1v80RJYWZij8ZoDd2KWxn3U9DYQYtrura37g9mt3Qadnza
-         zyjQ==
-X-Gm-Message-State: AOAM530yWWu/DP3KkNeQF1Swi//xkswgwRmdJJPAktfUfZVRUSzuYYIs
-        nWmXGZ754a3cpb29kpLVW1+fqHAyzDmk93JmK/7+LlDZijDzy47npLIcRfx8andmDEtZFKf6xBB
-        cH4LRjD28aEKcY2yEDSLJzqObXXE08SACDaGws36H0IWwABIU2Jw2HM+l7aNvFCE=
-X-Google-Smtp-Source: ABdhPJy8mvO1vCbW824a5Lt9RNNd1uTOm5bVBNwdxx+J9QO0FZuPU3BUQs4IO5oNUEfhO0AmL4+Ajj8PvP0A/g==
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a05:6902:4e2:: with SMTP id
- w2mr17353469ybs.79.1619701520798; Thu, 29 Apr 2021 06:05:20 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 13:05:10 +0000
-Message-Id: <20210429130510.1621665-1-jackmanb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.498.g6c1eba8ee3d-goog
-Subject: [PATCH v2 bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        linux-kernel@vger.kernel.org, kpsingh@kernel.org,
-        revest@chromium.org, Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S233651AbhD2NiA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Apr 2021 09:38:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42763 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232867AbhD2Nh7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 29 Apr 2021 09:37:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619703432;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oDboRQkOzoCD9h6z3QO2oVzBnaw62Fl9cTjPsbU5PWo=;
+        b=h5Z6y+VCHi9u//ilLFaspbedE26cBoqfBS3QQeg8dQtJM0LcyGp9G1ha/PjkZTBSczbjLH
+        WoNHr0/yBRihBOukw/cBMkFdE18DgkgFsZEGwEw1lOers6kfz4Ou8gy6se03s28O7REeLp
+        P9YuMJl5hsuWuEL0E5+zmJ6okhVnKzQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-312-thv4uJWtNTeCgLW6A6SJmA-1; Thu, 29 Apr 2021 09:37:10 -0400
+X-MC-Unique: thv4uJWtNTeCgLW6A6SJmA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 856F9102C803;
+        Thu, 29 Apr 2021 13:37:08 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7B1E660C17;
+        Thu, 29 Apr 2021 13:36:30 +0000 (UTC)
+Date:   Thu, 29 Apr 2021 15:36:29 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        sameehj@amazon.com, john.fastabend@gmail.com, dsahern@kernel.org,
+        echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, brouer@redhat.com
+Subject: Re: [PATCH v8 bpf-next 01/14] xdp: introduce mb in
+ xdp_buff/xdp_frame
+Message-ID: <20210429153629.1fef2386@carbon>
+In-Reply-To: <eef58418ab78408f4a5fbd3d3b0071f30ece2ccd.1617885385.git.lorenzo@kernel.org>
+References: <cover.1617885385.git.lorenzo@kernel.org>
+        <eef58418ab78408f4a5fbd3d3b0071f30ece2ccd.1617885385.git.lorenzo@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-One of our benchmarks running in (Google-internal) CI pushes data
-through the ringbuf faster htan than userspace is able to consume
-it. In this case it seems we're actually able to get >INT_MAX entries
-in a single ringbuf_buffer__consume call. ASAN detected that cnt
-overflows in this case.
+On Thu,  8 Apr 2021 14:50:53 +0200
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-Fix by using 64-bit counter internally and then capping the result to
-INT_MAX before converting to the int return type.
+> Introduce multi-buffer bit (mb) in xdp_frame/xdp_buffer data structure
+> in order to specify if this is a linear buffer (mb = 0) or a multi-buffer
+> frame (mb = 1). In the latter case the shared_info area at the end of the
+> first buffer will be properly initialized to link together subsequent
+> buffers.
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  include/net/xdp.h | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index a5bc214a49d9..842580a61563 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -73,7 +73,10 @@ struct xdp_buff {
+>  	void *data_hard_start;
+>  	struct xdp_rxq_info *rxq;
+>  	struct xdp_txq_info *txq;
+> -	u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom*/
+> +	u32 frame_sz:31; /* frame size to deduce data_hard_end/reserved
+> +			  * tailroom
+> +			  */
+> +	u32 mb:1; /* xdp non-linear buffer */
+>  };
+>  
+>  static __always_inline void
+> @@ -81,6 +84,7 @@ xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
+>  {
+>  	xdp->frame_sz = frame_sz;
+>  	xdp->rxq = rxq;
+> +	xdp->mb = 0;
+>  }
+>  
+>  static __always_inline void
+> @@ -116,7 +120,8 @@ struct xdp_frame {
+>  	u16 len;
+>  	u16 headroom;
+>  	u32 metasize:8;
+> -	u32 frame_sz:24;
+> +	u32 frame_sz:23;
+> +	u32 mb:1; /* xdp non-linear frame */
+>  	/* Lifetime of xdp_rxq_info is limited to NAPI/enqueue time,
+>  	 * while mem info is valid on remote CPU.
+>  	 */
 
-Fixes: bf99c936f947 (libbpf: Add BPF ring buffer support)
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
+So, it seems that these bitfield's are the root-cause of the
+performance regression.  Credit to Alexei whom wisely already point
+this out[1] in V2 ;-)
 
-diff v1->v2: Now we don't break the loop at INT_MAX, we just cap the reported
-entry count.
+[1] https://lore.kernel.org/netdev/20200904010705.jm6dnuyj3oq4cpjd@ast-mbp.dhcp.thefacebook.com/
 
-Note: I feel a bit guilty about the fact that this makes the reader
-think about implicit conversions. Nobody likes thinking about that.
 
-But explicit casts don't really help with clarity:
+> @@ -179,6 +184,7 @@ void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
+>  	xdp->data_end = frame->data + frame->len;
+>  	xdp->data_meta = frame->data - frame->metasize;
+>  	xdp->frame_sz = frame->frame_sz;
+> +	xdp->mb = frame->mb;
+>  }
+>  
+>  static inline
+> @@ -205,6 +211,7 @@ int xdp_update_frame_from_buff(struct xdp_buff *xdp,
+>  	xdp_frame->headroom = headroom - sizeof(*xdp_frame);
+>  	xdp_frame->metasize = metasize;
+>  	xdp_frame->frame_sz = xdp->frame_sz;
+> +	xdp_frame->mb = xdp->mb;
+>  
+>  	return 0;
+>  }
 
-  return (int)min(cnt, (int64_t)INT_MAX); // ugh
-
-shrug..
-
- tools/lib/bpf/ringbuf.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-index e7a8d847161f..2e114c2d0047 100644
---- a/tools/lib/bpf/ringbuf.c
-+++ b/tools/lib/bpf/ringbuf.c
-@@ -204,7 +204,9 @@ static inline int roundup_len(__u32 len)
-
- static int ringbuf_process_ring(struct ring* r)
- {
--	int *len_ptr, len, err, cnt = 0;
-+	int *len_ptr, len, err;
-+	/* 64-bit to avoid overflow in case of extreme application behavior */
-+	int64_t cnt = 0;
- 	unsigned long cons_pos, prod_pos;
- 	bool got_new_data;
- 	void *sample;
-@@ -240,7 +242,7 @@ static int ringbuf_process_ring(struct ring* r)
- 		}
- 	} while (got_new_data);
- done:
--	return cnt;
-+	return min(cnt, INT_MAX);
- }
-
- /* Consume available ring buffer(s) data without event polling.
-@@ -263,8 +265,8 @@ int ring_buffer__consume(struct ring_buffer *rb)
- }
-
- /* Poll for available data and consume records, if any are available.
-- * Returns number of records consumed, or negative number, if any of the
-- * registered callbacks returned error.
-+ * Returns number of records consumed (or INT_MAX, whichever is less), or
-+ * negative number, if any of the registered callbacks returned error.
-  */
- int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
- {
---
-2.31.1.498.g6c1eba8ee3d-goog
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
