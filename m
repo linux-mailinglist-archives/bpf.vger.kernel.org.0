@@ -2,148 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76FD36E89B
-	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 12:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5F336E8C4
+	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 12:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240356AbhD2KWe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Apr 2021 06:22:34 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:19460 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232858AbhD2KWd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:22:33 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210429102145epoutp03e9373bcb0836d38442486d780cf532a4~6TQZjAZBX2956629566epoutp03L
-        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 10:21:45 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210429102145epoutp03e9373bcb0836d38442486d780cf532a4~6TQZjAZBX2956629566epoutp03L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1619691705;
-        bh=qvvGTSpuXSrZtizggQL76UqiLnmybbPMcVCYW4PRp8U=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=OI+QhfWleKdc3NdMtqWVlNv/raS3+0xkQ9/78OuyB9muuNA7NIdUFXnZ2o2L8zl3e
-         y0AVdrFVhak6hZrmzmt/trKbnk1lfv0CHDmmlE6H+3lfTVxnrAB2ofY5AUIcuhF1Ht
-         R7iiroTcXdPVoB/mSG+inMEvIGFh7EeJzM50pCh0=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210429102145epcas2p1527c0ca6f17df83a2ea754dd54b36dce~6TQY7zRHr0094500945epcas2p1T;
-        Thu, 29 Apr 2021 10:21:45 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.190]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4FWBPM5nFxz4x9Q3; Thu, 29 Apr
-        2021 10:21:43 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        0A.D4.09433.7B88A806; Thu, 29 Apr 2021 19:21:43 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210429102143epcas2p4c8747c09a9de28f003c20389c050394a~6TQXNHUkO1667016670epcas2p40;
-        Thu, 29 Apr 2021 10:21:43 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210429102143epsmtrp1e70eec154bd490fe7419c00b0a701a1b~6TQXLU3Q22489024890epsmtrp1_;
-        Thu, 29 Apr 2021 10:21:43 +0000 (GMT)
-X-AuditID: b6c32a47-f61ff700000024d9-3f-608a88b7e43d
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        93.23.08637.7B88A806; Thu, 29 Apr 2021 19:21:43 +0900 (KST)
-Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210429102143epsmtip2a518c690a833daf0b90c4ca5b2986392~6TQW7ko2V1939219392epsmtip25;
-        Thu, 29 Apr 2021 10:21:43 +0000 (GMT)
-From:   Dongseok Yi <dseok.yi@samsung.com>
-To:     bpf@vger.kernel.org
-Cc:     Dongseok Yi <dseok.yi@samsung.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf] bpf: check for data_len before upgrading mss when 6 to
- 4
-Date:   Thu, 29 Apr 2021 19:08:23 +0900
-Message-Id: <1619690903-1138-1-git-send-email-dseok.yi@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNKsWRmVeSWpSXmKPExsWy7bCmhe72jq4EgxlHtS2+/57NbPHl5212
-        i89HjrNZLF74jdlizvkWFosr0/4wWjTtWMFk8eLDE0aL5/t6mSwubOtjtbi8aw6bxbEFYhY/
-        D59htnixZAajA5/HlpU3mTwmNr9j99g56y67R9eNS8wem1Z1snn0bVnF6PF5k1wAe1SOTUZq
-        YkpqkUJqXnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7QyUoKZYk5pUCh
-        gMTiYiV9O5ui/NKSVIWM/OISW6XUgpScAkPDAr3ixNzi0rx0veT8XCtDAwMjU6DKhJyM7dPm
-        shUc5qzYcW4hUwPjffYuRg4OCQETiVPzHbsYuTiEBHYwSmzvOMMO4XxilFj6cxILhPONUWLW
-        3CNMXYycYB2LV/+CSuxllFjxYB1Uyw9GiQMvW1lAqtgENCT2v3vBCmKLCIhLLDi2gQmkiFng
-        HLPEpflzGEESwgL+ErMfvGQGsVkEVCV+XPsE1sAr4Cyx7P9vdoh1chI3z3UygzRLCHxll1jb
-        0M0CkXCR2LF5ExuELSzx6vgWqAYpiZf9bVDf1Uu0dsdA9PYwSlzZ9wSq11hi1rN2RpAaZgFN
-        ifW79CHKlSWO3AKrYBbgk+g4/BdqCq9ER5sQhKkkMfFLPMQMCYkXJydDzfOQmH21E+wWIYFY
-        if/vT7NPYJSdhTB+ASPjKkax1ILi3PTUYqMCY+Q42sQIToVa7jsYZ7z9oHeIkYmD8RCjBAez
-        kgjv73WdCUK8KYmVValF+fFFpTmpxYcYTYGhNZFZSjQ5H5iM80riDU2NzMwMLE0tTM2MLJTE
-        eX+m1iUICaQnlqRmp6YWpBbB9DFxcEo1MNneCf2+dpnwtCcxOmp/FV6bC7CK/XJykHbawpi/
-        TuN2j1QWj+tCnbNXqvX8dUQ99E/1K5rpiOheffbSii3FYtGVK89kTkj4bvMXYHitXNbnfmfd
-        g0Ld54cnmyzkYUv6ZLrsy0MDo7uMZqHbmrnszr0vy3Vh0+yYzvd01cc+lUnF6rXnnM6+abyg
-        1Pgt7wfjrS/b+fcmbtO7rpAipbXrpPKH3sOv70b11ATmRS/gKjgQet/9T/OTKi+txbvv5ihu
-        sTqw3N72TVykwBS7F1OLZ6+6l67baMjW9s/Po+GkZbJk4rNe/WUyfLfTpk04nDBLYL/6pMvn
-        fi00ne9Qa2smGZO34KKviZzUkVNTtaLKlViKMxINtZiLihMBRryFlQ4EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNLMWRmVeSWpSXmKPExsWy7bCSvO72jq4Eg43buCy+/57NbPHl5212
-        i89HjrNZLF74jdlizvkWFosr0/4wWjTtWMFk8eLDE0aL5/t6mSwubOtjtbi8aw6bxbEFYhY/
-        D59htnixZAajA5/HlpU3mTwmNr9j99g56y67R9eNS8wem1Z1snn0bVnF6PF5k1wAexSXTUpq
-        TmZZapG+XQJXxvZpc9kKDnNW7Di3kKmB8T57FyMnh4SAicTi1b9Yuhi5OIQEdjNKNPffZO1i
-        5ABKSEjs2uwKUSMscb/lCCtEzTdGiak7X7GAJNgENCT2v3vBCmKLCIhLLDi2gQmkiFngFrNE
-        98k5jCAJYQFfiYaZ38G2sQioSvy49gmsgVfAWWLZ/99QV8hJ3DzXyTyBkWcBI8MqRsnUguLc
-        9NxiwwLDvNRyveLE3OLSvHS95PzcTYzg8NTS3MG4fdUHvUOMTByMhxglOJiVRHh/r+tMEOJN
-        SaysSi3Kjy8qzUktPsQozcGiJM57oetkvJBAemJJanZqakFqEUyWiYNTqoHJrCna96D0zSvH
-        ufolTp7banuD5/ObwPZX7w6YanoZvXE7sCnzPKO+xtqfj5UfWDye7XjnVN6Hv3tns7+QT0le
-        9uO01Uafxqe6z47Fql6bHn/g8qPTW5tu8tutzsyIStp4/1l+q+cd1t8x8w2ieQp8Lfouvda+
-        v5x3H4+tierR4Cu/vnmfFbH6kfpTTTVg2l2L6gkxa2esPvW2b4Ig/9cmbeuSXe0vHl+MulRQ
-        vnvBT4XNKUzBO5447Np40aPn9epN1/YdaOf1ml7oqF9cctv6QN26Ta633543ZXdvEfM48D2c
-        T1GqPb2fN+bEtSi5+rDpuqZ34pXjFs4pL3W6p8usPHlR8KkDP0OS+14FnGBhUGIpzkg01GIu
-        Kk4EANEaXsW+AgAA
-X-CMS-MailID: 20210429102143epcas2p4c8747c09a9de28f003c20389c050394a
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210429102143epcas2p4c8747c09a9de28f003c20389c050394a
-References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
+        id S234709AbhD2Kai (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Apr 2021 06:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232858AbhD2Kah (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Apr 2021 06:30:37 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3C5C06138B
+        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 03:29:50 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id a13so21997514ljp.2
+        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 03:29:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=z0WL9mbep7R2yKJjW7W085saQFdlDJbJ49j9X1pYJPQ=;
+        b=eVyF9rlp4J40CT2wcdLb+qlo+fbdBGkekbXWCCR/BQGQlHFhSWwEMOwntirPeCS6E0
+         NUhO3yv3fovlXDv44wj2dKms1c6IKhqlneZWK0jAz/uE0q91xo+AvJLqtvwB//Zv/zg1
+         goR37ejE0B1xbWZqUdN4BMmQSx1UEYWwfGTYY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=z0WL9mbep7R2yKJjW7W085saQFdlDJbJ49j9X1pYJPQ=;
+        b=GkQqJSealUj8fSjrqPWBImeztMZi9+1ok8cU4BRNORNiH/kpi/oXnTEx+WZgspYDW2
+         5xUVK1PIqvb3P6cKoKIf9N8DFUQLANYnyYxu/f463vVaACVgur87grzzfjMhXKzvEWqf
+         6P1TuH7knMtSuFtTtetVmw0uhkGPtGFQsoN345QNjxsRYyynE0Ze2gYhOfrAOwvF6gCf
+         GAHEr/pY3huarc8t/kZzgqRVw/9DfP5WQm1foEdQsjyTmLrE2ieLe3FSXEZl+pqnMEmx
+         x5loGhAcX9VExtLgGGNW9SkSyv4qLbA2OnXgQ/z0cu+YcIXgb4kMORIggLXyVG/tVj+E
+         lMHQ==
+X-Gm-Message-State: AOAM533VOgzHaqr8MNvdmyZ6VnucratloBt9y+KjCg4fTJg1DjmbMvU+
+        ZHIm4hq4ygCYOHNIriIqkciGC2EMry2aFTzBsbH61g==
+X-Google-Smtp-Source: ABdhPJwG3yUOvsC4xo/X1ZXnxCZHgVzHsD5qF7vSQoNKpsV1ogHDXJaRaUtvFh6O2YVbzSpeSDJmEvDs5e5CJGHJ7Xo=
+X-Received: by 2002:a2e:9741:: with SMTP id f1mr24144895ljj.226.1619692189249;
+ Thu, 29 Apr 2021 03:29:49 -0700 (PDT)
+MIME-Version: 1.0
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Thu, 29 Apr 2021 11:29:38 +0100
+Message-ID: <CACAyw99n-cMEtVst7aK-3BfHb99GMEChmRLCvhrjsRpHhPrtvA@mail.gmail.com>
+Subject: CO-RE: Weird immediate for bpf_core_field_exists
+To:     Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-tcp_gso_segment check for the size of GROed payload if it is bigger
-than the mss. bpf_skb_proto_6_to_4 increases mss, but the mss can be
-bigger than the size of GROed payload unexpectedly if data_len is not
-big enough.
+Hi Andrii and Yonghong,
 
-Assume that skb gso_size = 1372 and data_len = 8. bpf_skb_proto_6_to_4
-would increse the gso_size to 1392. tcp_gso_segment will get an error
-with 1380 <= 1392.
+This is probably a case of me holding it wrong, but I figured I would
+share this nonetheless. Given the following C:
 
-Check for the size of GROed payload if it is really bigger than target
-mss when increase mss.
+struct s {
+    int _1;
+    char _2;
+};
 
-Fixes: 6578171a7ff0 (bpf: add bpf_skb_change_proto helper)
-Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
----
- net/core/filter.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+typedef struct s s_t;
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 9323d34..3f79e3c 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3308,7 +3308,9 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
- 		}
- 
- 		/* Due to IPv4 header, MSS can be upgraded. */
--		skb_increase_gso_size(shinfo, len_diff);
-+		if (skb->data_len > len_diff)
-+			skb_increase_gso_size(shinfo, len_diff);
-+
- 		/* Header must be checked, and gso_segs recomputed. */
- 		shinfo->gso_type |= SKB_GSO_DODGY;
- 		shinfo->gso_segs = 0;
+union u {
+    int *_1;
+    char *_2;
+};
+
+__section("socket_filter/fields") int fields() {
+    struct t {
+        union {
+            s_t s[10];
+        };
+        struct {
+            union u u;
+        };
+    } bar;
+    return bpf_core_field_exists((&bar)[1]);
+}
+
+clang-12 generates the following instructions:
+
+0000000000000000 <fields>:
+;     return bpf_core_field_exists((&bar)[1]);
+       0:    b7 00 00 00 58 00 00 00    r0 = 88
+       1:    95 00 00 00 00 00 00 00    exit
+
+The weird bit is that the immediate for instruction 0 isn't 1 but 88.
+Coincidentally sizeof(bar) is also 88 bytes.
+
+$ clang-12 --version
+Ubuntu clang version
+12.0.0-++20210126113614+510b3d4b3e02-1~exp1~20210126104320.178
+
+I've tried clang-13 as well, same result.
+
+Best,
+Lorenz
+
 -- 
-2.7.4
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
