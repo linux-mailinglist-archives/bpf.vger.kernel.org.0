@@ -2,283 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 000B736F233
-	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 23:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B63AE36F26C
+	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 00:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237254AbhD2Vlw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Apr 2021 17:41:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237191AbhD2Vlv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Apr 2021 17:41:51 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE164C06138B
-        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 14:41:04 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id j19so10000963qtx.13
-        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 14:41:04 -0700 (PDT)
+        id S229725AbhD2WJb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Apr 2021 18:09:31 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:34365 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhD2WJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Apr 2021 18:09:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iYJ7E1heEgvxDeqLZnL4sn6H/CCcIRlNBxrxvMONl3o=;
-        b=NZkk/evOKyx6ICNq6FDsC7XW9ZgERmufjyIg9vMpv3N2dUVcKIluOV6Ez4/1fSOAw0
-         sktsd1L8N6Vq2EYcTBPrTIiDHFBfjiQ9IfYQyhLTPeA85EHYFSYK5JKxZ3MnXshcHq/5
-         gyf7/rXknjp9j+YA5cqPkHr4QG13bZC6Tf8w4qL0N1uGWbj3oHjJm8GnJhjU9MToVbpS
-         XHsdAtpwCvHK8LLn/GE05kjWpE9Wm/fdnwqWulBOT4PheQRhNRfvqnLid1939CkY2Bhp
-         ht5MbGR9AzbGO3s5mTIhOt00bQakxyeprk0aAVHCEAYwO/XJxKrXBWuLH9aPN7YGrWbO
-         Tp3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iYJ7E1heEgvxDeqLZnL4sn6H/CCcIRlNBxrxvMONl3o=;
-        b=taHzn0iCy0/CQaPtLaBuZE/dwj3p2g2by2GGuf6H3JMVTMwN6calSTDobl8oE8jOqO
-         wytcLdC8Fd2GWxOJcfp8BrgrjGYVGOi/qV3QeA5VvDsgtxwtudi/3NewNFXeDXNBnrxK
-         ghzMacVxWHLMDzL9XGSv1M/cEAPX/1klbH5vqUS4//6HRFUQh8DW0CkJt1/L53US/RsS
-         dUkbOb/Iq0D4/MO7iXyoCSwFt4MzpFGbZjwtu/d0/EDZdw/TStC8ZNgGS96A3qUmUonE
-         eHE90VRljR3XZa86Tt22gk2ka1tt+2Rkoh4IA7VoP96z2JV8rz1RKFEUvYiw+Cy6q9Y8
-         USrw==
-X-Gm-Message-State: AOAM5338l5u1sx27EodYqH9QrBslFEvvA2nHqOvQhR8RdTaOLbSQLJLJ
-        Z+y0LN1r5RkyLz2lf/6/0yU=
-X-Google-Smtp-Source: ABdhPJwyQExJmDprSPeKzZKCwtugNowKT+nL1xNjTAK6WQN0GUsTtkPJaiLpigfwm283YcXGiamEwQ==
-X-Received: by 2002:ac8:530f:: with SMTP id t15mr1487250qtn.189.1619732463922;
-        Thu, 29 Apr 2021 14:41:03 -0700 (PDT)
-Received: from localhost.localdomain (pool-100-33-2-40.nycmny.fios.verizon.net. [100.33.2.40])
-        by smtp.gmail.com with ESMTPSA id m16sm2993869qkm.100.2021.04.29.14.41.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 14:41:03 -0700 (PDT)
-From:   grantseltzer <grantseltzer@gmail.com>
-To:     andrii@kernel.org, daniel@iogearbox.net
-Cc:     grantseltzer@gmail.com, bpf@vger.kernel.org
-Subject: [PATCH bpf-next 3/3] bpf: Add rst docs for libbpf
-Date:   Thu, 29 Apr 2021 05:47:34 +0000
-Message-Id: <20210429054734.53264-4-grantseltzer@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210429054734.53264-1-grantseltzer@gmail.com>
-References: <20210429054734.53264-1-grantseltzer@gmail.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1619734122; x=1651270122;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6x0SPSCEr/f131JyzJyPkVBXVVcIa5vjOG3O9JgFU0E=;
+  b=FrT4tGyTNkg2NAwICReoIEQEExyF69xco9Bgk+QAlK9342JMmRY2aBQ0
+   p97M21AwNMXXUZ9k4g+9HKyU399FhvaJYhGhdU3Bz1+p9PTo373yJUpi7
+   KOPJtzQ7SPTi7HryhiIaw4p1dJjkkyWSaGsodEn2vgf0HolSr66xK+fnL
+   Y=;
+X-IronPort-AV: E=Sophos;i="5.82,260,1613433600"; 
+   d="scan'208";a="122750292"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-33001.sea14.amazon.com with ESMTP; 29 Apr 2021 22:08:41 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com (Postfix) with ESMTPS id DC7D4C01A0;
+        Thu, 29 Apr 2021 22:08:40 +0000 (UTC)
+Received: from EX13D31UWC001.ant.amazon.com (10.43.162.152) by
+ EX13MTAUWC001.ant.amazon.com (10.43.162.135) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 29 Apr 2021 22:08:40 +0000
+Received: from EX13MTAUWC001.ant.amazon.com (10.43.162.135) by
+ EX13D31UWC001.ant.amazon.com (10.43.162.152) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 29 Apr 2021 22:08:39 +0000
+Received: from dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com
+ (172.19.206.175) by mail-relay.amazon.com (10.43.162.232) with Microsoft SMTP
+ Server id 15.0.1497.2 via Frontend Transport; Thu, 29 Apr 2021 22:08:40 +0000
+Received: by dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com (Postfix, from userid 6262777)
+        id CF67C98E; Thu, 29 Apr 2021 22:08:39 +0000 (UTC)
+From:   Frank van der Linden <fllinden@amazon.com>
+To:     <stable@vger.kernel.org>
+CC:     <bpf@vger.kernel.org>
+Subject: [PATCH 5.4 0/8] BPF backports for CVE-2021-29155
+Date:   Thu, 29 Apr 2021 22:08:31 +0000
+Message-ID: <20210429220839.15667-1-fllinden@amazon.com>
+X-Mailer: git-send-email 2.23.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds rst files containg documentation files relevant for
-libbpf development. naming_convention.rst is pulled from the
-previous README.rst file. api.rst is an index page that links
-to the api documentation generationg from doxygen+breathe.
+This is a backport of the BPF verifier fixes for CVE-2021-29155. Original
+series was part of the pull request here: https://lore.kernel.org/bpf/20210416223700.15611-1-daniel@iogearbox.net/T/
 
-Signed-off-by: grantseltzer <grantseltzer@gmail.com>
----
- tools/lib/bpf/docs/api.rst                    | 60 +++++++++++++++++++
- tools/lib/bpf/docs/build.rst                  | 39 ++++++++++++
- tools/lib/bpf/docs/index.rst                  |  6 ++
- .../naming_convention.rst}                    | 18 +++---
- 4 files changed, 116 insertions(+), 7 deletions(-)
- create mode 100644 tools/lib/bpf/docs/api.rst
- create mode 100644 tools/lib/bpf/docs/build.rst
- rename tools/lib/bpf/{README.rst => docs/naming_convention.rst} (97%)
+This wasn't a complicated backport, but copying bpf@ to see if
+there are any concerns.
 
-diff --git a/tools/lib/bpf/docs/api.rst b/tools/lib/bpf/docs/api.rst
-new file mode 100644
-index 000000000..36bac417b
---- /dev/null
-+++ b/tools/lib/bpf/docs/api.rst
-@@ -0,0 +1,60 @@
-+.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-+
-+.. _api:
-+
-+.. contents:: Table of Contents
-+   :local:
-+   :depth: 1
-+
-+LIBBPF API
-+==================
-+
-+
-+libbpf.h
-+------------------
-+
-+.. doxygenfile:: libbpf.h
-+   :project: libbpf
-+
-+bpf_core_read.h
-+------------------
-+
-+.. doxygenfile:: bpf_core_read.h
-+   :project: libbpf
-+
-+btf.h
-+------------------
-+
-+.. doxygenfile:: btf.h
-+   :project: libbpf
-+
-+bpf_endian.h
-+------------------
-+
-+.. doxygenfile:: bpf_endian.h
-+   :project: libbpf
-+
-+libbpf_common.h
-+------------------
-+
-+.. doxygenfile:: libbpf_common.h
-+   :project: libbpf
-+
-+hashmap.h
-+------------------
-+
-+.. doxygenfile:: hashmap.h
-+   :project: libbpf
-+
-+
-+bpf_helpers.h
-+------------------
-+
-+.. doxygenfile:: bpf_helpers.h
-+   :project: libbpf
-+
-+bpf_helper_defs.h
-+------------------
-+
-+.. doxygenfile:: hashmap.h
-+   :project: libbpf
-diff --git a/tools/lib/bpf/docs/build.rst b/tools/lib/bpf/docs/build.rst
-new file mode 100644
-index 000000000..749f96dd2
---- /dev/null
-+++ b/tools/lib/bpf/docs/build.rst
-@@ -0,0 +1,39 @@
-+.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-+
-+.. _build:
-+
-+Building libbpf
-+=======================================
-+
-+libelf is an internal dependency of libbpf and thus it is required to link
-+against and must be installed on the system for applications to work.
-+pkg-config is used by default to find libelf, and the program called
-+can be overridden with PKG_CONFIG.
-+
-+If using pkg-config at build time is not desired, it can be disabled by
-+setting NO_PKG_CONFIG=1 when calling make.
-+
-+To build both static libbpf.a and shared libbpf.so:
-+
-+.. code-block:: bash
-+
-+    $ cd src
-+    $ make
-+
-+To build only static libbpf.a library in directory build/ and install them
-+together with libbpf headers in a staging directory root/:
-+
-+.. code-block:: bash
-+
-+    $ cd src
-+    $ mkdir build root
-+    $ BUILD_STATIC_ONLY=y OBJDIR=build DESTDIR=root make install
-+
-+To build both static libbpf.a and shared libbpf.so against a custom libelf
-+dependency installed in /build/root/ and install them together with libbpf
-+headers in a build directory /build/root/:
-+
-+.. code-block:: bash
-+
-+    $ cd src
-+    $ PKG_CONFIG_PATH=/build/root/lib64/pkgconfig DESTDIR=/build/root make
-\ No newline at end of file
-diff --git a/tools/lib/bpf/docs/index.rst b/tools/lib/bpf/docs/index.rst
-index 31a6ecfab..76bb93580 100644
---- a/tools/lib/bpf/docs/index.rst
-+++ b/tools/lib/bpf/docs/index.rst
-@@ -1,3 +1,5 @@
-+.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-+
- libbpf documentation
- =======================================
- 
-@@ -13,3 +15,7 @@ be that this was already addressed or answered before.
- 
- .. toctree::
-    :caption: Documentation:
-+
-+   api
-+   naming_convention
-+   build
-\ No newline at end of file
-diff --git a/tools/lib/bpf/README.rst b/tools/lib/bpf/docs/naming_convention.rst
-similarity index 97%
-rename from tools/lib/bpf/README.rst
-rename to tools/lib/bpf/docs/naming_convention.rst
-index 8928f7787..6b9ae9701 100644
---- a/tools/lib/bpf/README.rst
-+++ b/tools/lib/bpf/docs/naming_convention.rst
-@@ -1,6 +1,8 @@
- .. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
- 
--libbpf API naming convention
-+.. _naming_convention:
-+
-+API naming convention
- ============================
- 
- libbpf API provides access to a few logically separated groups of
-@@ -76,7 +78,7 @@ Please take a look at Documentation/networking/af_xdp.rst in the Linux
- kernel source tree on how to use XDP sockets and for some common
- mistakes in case you do not get any traffic up to user space.
- 
--libbpf ABI
-+ABI
- ==========
- 
- libbpf can be both linked statically or used as DSO. To avoid possible
-@@ -116,7 +118,8 @@ This bump in ABI version is at most once per kernel development cycle.
- 
- For example, if current state of ``libbpf.map`` is:
- 
--.. code-block::
-+.. code-block:: c
-+
-         LIBBPF_0.0.1 {
-         	global:
-                         bpf_func_a;
-@@ -128,7 +131,8 @@ For example, if current state of ``libbpf.map`` is:
- , and a new symbol ``bpf_func_c`` is being introduced, then
- ``libbpf.map`` should be changed like this:
- 
--.. code-block::
-+.. code-block:: c
-+
-         LIBBPF_0.0.1 {
-         	global:
-                         bpf_func_a;
-@@ -148,7 +152,7 @@ Format of version script and ways to handle ABI changes, including
- incompatible ones, described in details in [1].
- 
- Stand-alone build
--=================
-+-------------------
- 
- Under https://github.com/libbpf/libbpf there is a (semi-)automated
- mirror of the mainline's version of libbpf for a stand-alone build.
-@@ -157,12 +161,12 @@ However, all changes to libbpf's code base must be upstreamed through
- the mainline kernel tree.
- 
- License
--=======
-+-------------------
- 
- libbpf is dual-licensed under LGPL 2.1 and BSD 2-Clause.
- 
- Links
--=====
-+-------------------
- 
- [1] https://www.akkadia.org/drepper/dsohowto.pdf
-     (Chapter 3. Maintaining APIs and ABIs).
+5.4 verifier selftests are clean with this backport:
+	Summary: 1566 PASSED, 0 SKIPPED, 0 FAILED
+
+The individual commits:
+
+960114839252 ("bpf: Use correct permission flag for mixed signed bounds arithmetic")
+	* Not applicable to 5.4, as 5.4 does not have
+	  2c78ee898d8f ("bpf: Implement CAP_BPF").
+
+6f55b2f2a117 ("bpf: Move off_reg into sanitize_ptr_alu")
+	* Clean cherry-pick.
+
+24c109bb1537 ("bpf: Ensure off_reg has no mixed signed bounds for all types")
+	* Conflict: allow_ptr_leaks was replaced by bypass_spec_v1 in the
+	  deleted PTR_TO_MAP_VALUE switch case by
+	  2c78ee898d8f ("bpf: Implement CAP_BPF"). Resolution is easy,
+	  the case statement gets deleted either way.
+
+b658bbb844e2 ("bpf: Rework ptr_limit into alu_limit and add common error path")
+	* Clean cherry-pick.
+
+a6aaece00a57 ("bpf: Improve verifier error messages for users")
+	* Resolved simple contextual conflict in adjust_scalar_min_max_vals().
+	  because of a var declaration that was added by this post-5.4 commit:
+	  3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking").
+
+073815b756c5 ("bpf: Refactor and streamline bounds check into helper")
+	* Conflict: another allow_ptr_leaks that was replaced with
+	  bypass_spec_v1 after 2c78ee898d8f.
+	* Conflict: Post-5.4 commit
+	  01f810ace9ed ("bpf: Allow variable-offset stack access")
+	  changed the call to check_stack_access to a new function,
+	  check_stack_access_for_ptr_arithmetic(), and moved/changed an
+	  error message.
+	* Since this commit just factors out some code from
+	  adjust_ptr_min_max_vals() in to a new function, do the same
+  	  with the corresponding block in 5.4 that doesn't have the
+	  changes listed above from post-5.4 commits.
+	
+f528819334 ("bpf: Move sanitize_val_alu out of op switch")
+	* Contextual conflict from post-5.4 commit
+	  3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking"),
+	  that added a comment on top of the switch referenced in the commit
+	  message.
+
+7fedb63a8307 ("bpf: Tighten speculative pointer arithmetic mask")
+	* Contextual conflict post-5.4 commit:
+	  3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking")
+	  added a call to a new function just above the switch statement in
+	  adjust_ptr_min_max_vals. This doesn't affect the lines that were
+	  actually changed.
+
+d7a509135175 ("bpf: Update selftests to reflect new error states")
+	* The bounds.c tests have undergone several changes since 5.4, related
+	  to commits that were not backported (like e.g. the ALU32 changes).
+	  The error messages for those tests will remain the same on 5.4.
+
+=====
+
+Daniel Borkmann (8):
+  bpf: Move off_reg into sanitize_ptr_alu
+  bpf: Ensure off_reg has no mixed signed bounds for all types
+  bpf: Rework ptr_limit into alu_limit and add common error path
+  bpf: Improve verifier error messages for users
+  bpf: Refactor and streamline bounds check into helper
+  bpf: Move sanitize_val_alu out of op switch
+  bpf: Tighten speculative pointer arithmetic mask
+  bpf: Update selftests to reflect new error states
+
+ kernel/bpf/verifier.c                         | 233 ++++++++++++------
+ .../selftests/bpf/verifier/bounds_deduction.c |  21 +-
+ .../bpf/verifier/bounds_mix_sign_unsign.c     |  13 -
+ tools/testing/selftests/bpf/verifier/unpriv.c |   2 +-
+ .../selftests/bpf/verifier/value_ptr_arith.c  |   6 +-
+ 5 files changed, 173 insertions(+), 102 deletions(-)
+
 -- 
-2.29.2
+2.23.3
 
