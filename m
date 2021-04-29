@@ -2,123 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF2936EF33
-	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 19:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D6E36EFC2
+	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 20:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241138AbhD2RxZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Apr 2021 13:53:25 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:38708 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241133AbhD2RxY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Apr 2021 13:53:24 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lcAq4-00Aa8v-FA; Thu, 29 Apr 2021 11:52:36 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lcAq3-0005kg-Mk; Thu, 29 Apr 2021 11:52:36 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Liam Howlett <liam.howlett@oracle.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Julien Grall <julien.grall@arm.com>,
+        id S241437AbhD2SwJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Apr 2021 14:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241481AbhD2SwJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 29 Apr 2021 14:52:09 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E49C06138D
+        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 11:51:22 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id b19-20020a05600c06d3b029014258a636e8so328157wmn.2
+        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 11:51:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=G4T1feCRX4TLasSulNlD/YXTM3T/mKWHa/HALOMBqRE=;
+        b=QgKZ8ydzf6oyIPPQVVElrlAAvUXvjeCV+LfNBolAT+qNEs5bCdKySk/51s6GcjTh7t
+         ovdL6T/AM2Nkgg5ip/MPERs7HrwjK6whXjusJTKQBirU38Le3ua964zPqfnGVFInrfki
+         dozXtZTFfbrP2a1OWFjGiIkaoGl5mZbzF29SDm7ScjoYHqoAtQ6i4E3sIAQ1FUNmcTao
+         SN2rujJoPBg8W4pa95XN2MQQ3giTSA2MZQ+KlsaJxTh6JNvb+T3aj7OtYTo6Gd3rFOWZ
+         L+LbZLzP7MjYMe1dsmUCxwzIQL6rtGAXICqqxWZY3TSPtLnmSoUAyqk4wM5CUMiPMf/H
+         kDfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=G4T1feCRX4TLasSulNlD/YXTM3T/mKWHa/HALOMBqRE=;
+        b=j/Lk1EIgfmSpXNiULhb8Sf/A3eQeudw0nagMXsnsvlh3V2uUtZ7RGzV30FcyQzdnKy
+         1odnZw+TzoDb7SwtjWFj+tEAXCYIfNRfP6981zDINxgnqJVuuQhZb2VOVVAHYVYne+m6
+         f94Ej9r8Xzdg8A++HYqcgRXOB/dMZ+xbIRKhGp9LKdyDHm8TcswwvhlSpWJemDwy9EW+
+         Bs0lbyC4sHQT3+B7+mKVfcNEdUO8x2LGuA9BSLTqTJUurt6XwCiQvh8REDsvEg/lYOso
+         vJKobB/TdyHy+iiYwTui/OZl3UBEgicjnpQf+InUVMksMidqZx8c4gNcSxFLU7rPtn2F
+         48Ug==
+X-Gm-Message-State: AOAM532gHbX/C7OrzLEhGigSZMuhi8r3NU5Z7oCQvEe8CM1kp9ODbgLY
+        LiFxDnJJh03Hh+u24efHbm2/3A==
+X-Google-Smtp-Source: ABdhPJz4cwum8Vt8KBIxLHSQujxRWtkwfsaB3lSFdUguV+8XNNJCFG1SSDkBNsPkbHC0XADsdUSIEQ==
+X-Received: by 2002:a1c:228a:: with SMTP id i132mr1768594wmi.10.1619722280823;
+        Thu, 29 Apr 2021 11:51:20 -0700 (PDT)
+Received: from apalos.home ([94.69.77.156])
+        by smtp.gmail.com with ESMTPSA id m11sm5596997wri.44.2021.04.29.11.51.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Apr 2021 11:51:20 -0700 (PDT)
+Date:   Thu, 29 Apr 2021 21:51:15 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "linux-arm-kernel\@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>
-References: <20210420165001.3790670-1-Liam.Howlett@Oracle.com>
-        <20210420165001.3790670-2-Liam.Howlett@Oracle.com>
-        <20210422124849.GA1521@willie-the-truck>
-        <m1v98egoxf.fsf@fess.ebiederm.org>
-        <20210422192349.ekpinkf3wxnmywe3@revolver>
-        <m1y2d8dfx8.fsf@fess.ebiederm.org>
-        <20210423200126.otleormmjh22joj3@revolver>
-Date:   Thu, 29 Apr 2021 12:52:31 -0500
-In-Reply-To: <20210423200126.otleormmjh22joj3@revolver> (Liam Howlett's
-        message of "Fri, 23 Apr 2021 20:03:17 +0000")
-Message-ID: <m1czud6krk.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
+Message-ID: <YIsAIzecktXXBlxn@apalos.home>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lcAq3-0005kg-Mk;;;mid=<m1czud6krk.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19EXfnu02KZWm8B3o5WSHeiqcMyaK11Fy8=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.2 required=8.0 tests=ALL_TRUSTED,BAYES_20,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,T_TooManySym_03,XMNoVowels,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.0532]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_03 6+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Liam Howlett <liam.howlett@oracle.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 402 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 13 (3.3%), b_tie_ro: 11 (2.8%), parse: 1.37
-        (0.3%), extract_message_metadata: 4.5 (1.1%), get_uri_detail_list:
-        1.51 (0.4%), tests_pri_-1000: 6 (1.6%), tests_pri_-950: 1.74 (0.4%),
-        tests_pri_-900: 1.49 (0.4%), tests_pri_-90: 71 (17.6%), check_bayes:
-        68 (17.0%), b_tokenize: 8 (2.0%), b_tok_get_all: 6 (1.6%),
-        b_comp_prob: 2.6 (0.6%), b_tok_touch_all: 47 (11.8%), b_finish: 1.13
-        (0.3%), tests_pri_0: 281 (69.9%), check_dkim_signature: 0.70 (0.2%),
-        check_dkim_adsp: 3.0 (0.8%), poll_dns_idle: 0.67 (0.2%), tests_pri_10:
-        2.1 (0.5%), tests_pri_500: 7 (1.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 2/3] arm64: signal: sigreturn() and rt_sigreturn() sometime returns the wrong signals
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Yunsheng,
 
-This entire discussion seems to come down to what are the expected
-semantics of arm64_notify_segfault.  The use of this helper in
-swp_handler and user_cache_main_handler is clearly for the purposes of
-instruction emulation.  With instruction emulation it is a bug if the
-emulated instruction behaves differently than a real instruction in
-the same circumstances.
+On Thu, Apr 29, 2021 at 04:27:21PM +0800, Yunsheng Lin wrote:
+> On 2021/4/10 6:37, Matteo Croce wrote:
+> > From: Matteo Croce <mcroce@microsoft.com>
+> > 
+> > This is a respin of [1]
+> > 
+> > This  patchset shows the plans for allowing page_pool to handle and
+> > maintain DMA map/unmap of the pages it serves to the driver.  For this
+> > to work a return hook in the network core is introduced.
+> > 
+> > The overall purpose is to simplify drivers, by providing a page
+> > allocation API that does recycling, such that each driver doesn't have
+> > to reinvent its own recycling scheme.  Using page_pool in a driver
+> > does not require implementing XDP support, but it makes it trivially
+> > easy to do so.  Instead of allocating buffers specifically for SKBs
+> > we now allocate a generic buffer and either wrap it on an SKB
+> > (via build_skb) or create an XDP frame.
+> > The recycling code leverages the XDP recycle APIs.
+> > 
+> > The Marvell mvpp2 and mvneta drivers are used in this patchset to
+> > demonstrate how to use the API, and tested on a MacchiatoBIN
+> > and EspressoBIN boards respectively.
+> > 
+> 
+> Hi, Matteo
+>      I added the skb frag page recycling in hns3 based on this patchset,
+> and it has above 10%~20% performance improvement for one thread iperf
+> TCP flow(IOMMU is off, there may be more performance improvement if
+> considering the DMA map/unmap avoiding for IOMMU), thanks for the job.
+> 
+>     The skb frag page recycling support in hns3 driver is not so simple
+> as the mvpp2 and mvneta driver, because:
+> 
+> 1. the hns3 driver do not have XDP support yet, so "struct xdp_rxq_info"
+>    is added to assist relation binding between the "struct page" and
+>    "struct page_pool".
+> 
+> 2. the hns3 driver has already a page reusing based on page spliting and
+>    page reference count, but it may not work if the upper stack can not
+>    handle skb and release the corresponding page fast enough.
+> 
+> 3. the hns3 driver support page reference count updating batching, see:
+>    aeda9bf87a45 ("net: hns3: batch the page reference count updates")
+> 
+> So it would be better if：
+> 
+> 1. skb frag page recycling do not need "struct xdp_rxq_info" or
+>    "struct xdp_mem_info" to bond the relation between "struct page" and
+>    "struct page_pool", which seems uncessary at this point if bonding
+>    a "struct page_pool" pointer directly in "struct page" does not cause
+>    space increasing.
 
-To properly fix the instruction emulation in arm64_notify_segfault it
-looks to me that the proper solution is to call __do_page_fault or
-handle_mm_fault the way do_page_fault does and them parse the VM_FAULT
-code for which signal to generate.
+We can't do that. The reason we need those structs is that we rely on the
+existing XDP code, which already recycles it's buffers, to enable
+recycling.  Since we allocate a page per packet when using page_pool for a
+driver , the same ideas apply to an SKB and XDP frame. We just recycle the
+payload and we don't really care what's in that.  We could rename the functions
+to something more generic in the future though ?
 
-I would probably rename arm64_notify_segfault to arm64_emulate_fault, or
-possibly arm64_notify_fault while fixing the emulation so that it
-can return different signals and so that people don't have to guess
-what the function is supposed to do.
+> 
+> 2. it would be good to do the page reference count updating batching
+>    in page pool instead of specific driver.
+> 
+> 
+> page_pool_atomic_sub_if_positive() is added to decide who can call
+> page_pool_put_full_page(), because the driver and stack may hold
+> reference to the same page, only if last one which hold complete
+> reference to a page can call page_pool_put_full_page() to decide if
+> recycling is possible, if not, the page is released, so I am wondering
+> if a similar page_pool_atomic_sub_if_positive() can added to specific
+> user space address unmapping path to allow skb recycling for RX zerocopy
+> too?
+> 
 
-For the specific case of sigreturn and rt_sigreturn it looks sufficient
-to use the fixed arm64_notify_segfault.  As it appears the that the code
-is attempting to act like it is emulating an instruction that does not
-exist.
+I would prefer a different page pool type if we wanted to support the split
+page model.  The changes as is are quite intrusive, since they change the 
+entire skb return path.  So I would prefer introducing the changes one at a 
+time. 
+
+The fundamental difference between having the recycling in the driver vs
+having it in a generic API is pretty straightforward.  When a driver holds
+the extra page references he is free to decide what to reuse, when he is about
+to refill his Rx descriptors.  So TCP zerocopy might work even if the
+userspace applications hold the buffers for an X amount of time.
+On this proposal though we *need* to decide what to do with the buffer when we
+are about to free the skb.
+
+[...]
 
 
-There is an argument that sigreturn and rt_sigreturn do a poor enough
-job of acting like the fault was caused by an instruction, as well
-as failing for other reasons it might make more sense to just have
-sigreturn and rt_sigreturn call "force_sig(SIGSEGV);"  But that seems
-out of scope of what you are trying to fix right now so I would not
-worry about it.
-
-Eric
+Cheers
+/Ilias
