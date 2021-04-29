@@ -2,203 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D6E36EFC2
-	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 20:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 700F936F203
+	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 23:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241437AbhD2SwJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Apr 2021 14:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241481AbhD2SwJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Apr 2021 14:52:09 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E49C06138D
-        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 11:51:22 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id b19-20020a05600c06d3b029014258a636e8so328157wmn.2
-        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 11:51:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=G4T1feCRX4TLasSulNlD/YXTM3T/mKWHa/HALOMBqRE=;
-        b=QgKZ8ydzf6oyIPPQVVElrlAAvUXvjeCV+LfNBolAT+qNEs5bCdKySk/51s6GcjTh7t
-         ovdL6T/AM2Nkgg5ip/MPERs7HrwjK6whXjusJTKQBirU38Le3ua964zPqfnGVFInrfki
-         dozXtZTFfbrP2a1OWFjGiIkaoGl5mZbzF29SDm7ScjoYHqoAtQ6i4E3sIAQ1FUNmcTao
-         SN2rujJoPBg8W4pa95XN2MQQ3giTSA2MZQ+KlsaJxTh6JNvb+T3aj7OtYTo6Gd3rFOWZ
-         L+LbZLzP7MjYMe1dsmUCxwzIQL6rtGAXICqqxWZY3TSPtLnmSoUAyqk4wM5CUMiPMf/H
-         kDfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=G4T1feCRX4TLasSulNlD/YXTM3T/mKWHa/HALOMBqRE=;
-        b=j/Lk1EIgfmSpXNiULhb8Sf/A3eQeudw0nagMXsnsvlh3V2uUtZ7RGzV30FcyQzdnKy
-         1odnZw+TzoDb7SwtjWFj+tEAXCYIfNRfP6981zDINxgnqJVuuQhZb2VOVVAHYVYne+m6
-         f94Ej9r8Xzdg8A++HYqcgRXOB/dMZ+xbIRKhGp9LKdyDHm8TcswwvhlSpWJemDwy9EW+
-         Bs0lbyC4sHQT3+B7+mKVfcNEdUO8x2LGuA9BSLTqTJUurt6XwCiQvh8REDsvEg/lYOso
-         vJKobB/TdyHy+iiYwTui/OZl3UBEgicjnpQf+InUVMksMidqZx8c4gNcSxFLU7rPtn2F
-         48Ug==
-X-Gm-Message-State: AOAM532gHbX/C7OrzLEhGigSZMuhi8r3NU5Z7oCQvEe8CM1kp9ODbgLY
-        LiFxDnJJh03Hh+u24efHbm2/3A==
-X-Google-Smtp-Source: ABdhPJz4cwum8Vt8KBIxLHSQujxRWtkwfsaB3lSFdUguV+8XNNJCFG1SSDkBNsPkbHC0XADsdUSIEQ==
-X-Received: by 2002:a1c:228a:: with SMTP id i132mr1768594wmi.10.1619722280823;
-        Thu, 29 Apr 2021 11:51:20 -0700 (PDT)
-Received: from apalos.home ([94.69.77.156])
-        by smtp.gmail.com with ESMTPSA id m11sm5596997wri.44.2021.04.29.11.51.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Apr 2021 11:51:20 -0700 (PDT)
-Date:   Thu, 29 Apr 2021 21:51:15 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S237137AbhD2V3e convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 29 Apr 2021 17:29:34 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:32617 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233293AbhD2V3d (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 29 Apr 2021 17:29:33 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-27-wdsMpYtLOA2JuJj_M98MmA-1; Thu, 29 Apr 2021 17:28:40 -0400
+X-MC-Unique: wdsMpYtLOA2JuJj_M98MmA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 188ED8042A6;
+        Thu, 29 Apr 2021 21:28:38 +0000 (UTC)
+Received: from krava.cust.in.nbox.cz (unknown [10.40.195.102])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A77DA36DE;
+        Thu, 29 Apr 2021 21:28:35 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
-Message-ID: <YIsAIzecktXXBlxn@apalos.home>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
+        KP Singh <kpsingh@chromium.org>
+Subject: [PATCH RFC] bpf: Fix trampoline for functions with variable arguments
+Date:   Thu, 29 Apr 2021 23:28:34 +0200
+Message-Id: <20210429212834.82621-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Yunsheng,
+For functions with variable arguments like:
 
-On Thu, Apr 29, 2021 at 04:27:21PM +0800, Yunsheng Lin wrote:
-> On 2021/4/10 6:37, Matteo Croce wrote:
-> > From: Matteo Croce <mcroce@microsoft.com>
-> > 
-> > This is a respin of [1]
-> > 
-> > This  patchset shows the plans for allowing page_pool to handle and
-> > maintain DMA map/unmap of the pages it serves to the driver.  For this
-> > to work a return hook in the network core is introduced.
-> > 
-> > The overall purpose is to simplify drivers, by providing a page
-> > allocation API that does recycling, such that each driver doesn't have
-> > to reinvent its own recycling scheme.  Using page_pool in a driver
-> > does not require implementing XDP support, but it makes it trivially
-> > easy to do so.  Instead of allocating buffers specifically for SKBs
-> > we now allocate a generic buffer and either wrap it on an SKB
-> > (via build_skb) or create an XDP frame.
-> > The recycling code leverages the XDP recycle APIs.
-> > 
-> > The Marvell mvpp2 and mvneta drivers are used in this patchset to
-> > demonstrate how to use the API, and tested on a MacchiatoBIN
-> > and EspressoBIN boards respectively.
-> > 
-> 
-> Hi, Matteo
->      I added the skb frag page recycling in hns3 based on this patchset,
-> and it has above 10%~20% performance improvement for one thread iperf
-> TCP flow(IOMMU is off, there may be more performance improvement if
-> considering the DMA map/unmap avoiding for IOMMU), thanks for the job.
-> 
->     The skb frag page recycling support in hns3 driver is not so simple
-> as the mvpp2 and mvneta driver, because:
-> 
-> 1. the hns3 driver do not have XDP support yet, so "struct xdp_rxq_info"
->    is added to assist relation binding between the "struct page" and
->    "struct page_pool".
-> 
-> 2. the hns3 driver has already a page reusing based on page spliting and
->    page reference count, but it may not work if the upper stack can not
->    handle skb and release the corresponding page fast enough.
-> 
-> 3. the hns3 driver support page reference count updating batching, see:
->    aeda9bf87a45 ("net: hns3: batch the page reference count updates")
-> 
-> So it would be better if：
-> 
-> 1. skb frag page recycling do not need "struct xdp_rxq_info" or
->    "struct xdp_mem_info" to bond the relation between "struct page" and
->    "struct page_pool", which seems uncessary at this point if bonding
->    a "struct page_pool" pointer directly in "struct page" does not cause
->    space increasing.
+  void set_worker_desc(const char *fmt, ...)
 
-We can't do that. The reason we need those structs is that we rely on the
-existing XDP code, which already recycles it's buffers, to enable
-recycling.  Since we allocate a page per packet when using page_pool for a
-driver , the same ideas apply to an SKB and XDP frame. We just recycle the
-payload and we don't really care what's in that.  We could rename the functions
-to something more generic in the future though ?
+the BTF data contains void argument at the end:
 
-> 
-> 2. it would be good to do the page reference count updating batching
->    in page pool instead of specific driver.
-> 
-> 
-> page_pool_atomic_sub_if_positive() is added to decide who can call
-> page_pool_put_full_page(), because the driver and stack may hold
-> reference to the same page, only if last one which hold complete
-> reference to a page can call page_pool_put_full_page() to decide if
-> recycling is possible, if not, the page is released, so I am wondering
-> if a similar page_pool_atomic_sub_if_positive() can added to specific
-> user space address unmapping path to allow skb recycling for RX zerocopy
-> too?
-> 
+[4061] FUNC_PROTO '(anon)' ret_type_id=0 vlen=2
+        'fmt' type_id=3
+        '(anon)' type_id=0
 
-I would prefer a different page pool type if we wanted to support the split
-page model.  The changes as is are quite intrusive, since they change the 
-entire skb return path.  So I would prefer introducing the changes one at a 
-time. 
+When attaching function with this void argument the btf_distill_func_proto
+will set last btf_func_model's argument with size 0 and that
+will cause extra loop in save_regs/restore_regs functions and
+generate trampoline code like:
 
-The fundamental difference between having the recycling in the driver vs
-having it in a generic API is pretty straightforward.  When a driver holds
-the extra page references he is free to decide what to reuse, when he is about
-to refill his Rx descriptors.  So TCP zerocopy might work even if the
-userspace applications hold the buffers for an X amount of time.
-On this proposal though we *need* to decide what to do with the buffer when we
-are about to free the skb.
+  55             push   %rbp
+  48 89 e5       mov    %rsp,%rbp
+  48 83 ec 10    sub    $0x10,%rsp
+  53             push   %rbx
+  48 89 7d f0    mov    %rdi,-0x10(%rbp)
+  75 f8          jne    0xffffffffa00cf007
+                 ^^^ extra jump
 
-[...]
+It's causing soft lockups/crashes probably depends on what context
+is the attached function called, like for set_worker_desc:
 
+  watchdog: BUG: soft lockup - CPU#16 stuck for 22s! [kworker/u40:4:239]
+  CPU: 16 PID: 239 Comm: kworker/u40:4 Not tainted 5.12.0-rc4qemu+ #178
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1.fc33 04/01/2014
+  Workqueue: writeback wb_workfn
+  RIP: 0010:bpf_trampoline_6442464853_0+0xa/0x1000
+  Code: Unable to access opcode bytes at RIP 0xffffffffa3597fe0.
+  RSP: 0018:ffffc90000687da8 EFLAGS: 00000217
+  Call Trace:
+   set_worker_desc+0x5/0xb0
+   wb_workfn+0x48/0x4d0
+   ? psi_group_change+0x41/0x210
+   ? __bpf_prog_exit+0x15/0x20
+   ? bpf_trampoline_6442458903_0+0x3b/0x1000
+   ? update_pasid+0x5/0x90
+   ? __switch_to+0x187/0x450
+   process_one_work+0x1e7/0x380
+   worker_thread+0x50/0x3b0
+   ? rescuer_thread+0x380/0x380
+   kthread+0x11b/0x140
+   ? __kthread_bind_mask+0x60/0x60
+   ret_from_fork+0x22/0x30
 
-Cheers
-/Ilias
+This patch is removing the void argument from struct btf_func_model
+in btf_distill_func_proto, but perhaps we should also check for this
+in JIT's save_regs/restore_regs functions.
+
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ kernel/bpf/btf.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index b1a76fe046cb..017a80324139 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -5133,6 +5133,11 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+ 				tname, i, btf_kind_str[BTF_INFO_KIND(t->info)]);
+ 			return -EINVAL;
+ 		}
++		/* void at the end of args means '...' argument, skip it */
++		if (!ret && (i + 1 == nargs)) {
++			nargs--;
++			break;
++		}
+ 		m->arg_size[i] = ret;
+ 	}
+ 	m->nr_args = nargs;
+-- 
+2.30.2
+
