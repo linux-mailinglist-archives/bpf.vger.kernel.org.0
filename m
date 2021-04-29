@@ -2,104 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5F336E8C4
-	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 12:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E8236E983
+	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 13:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234709AbhD2Kai (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 29 Apr 2021 06:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232858AbhD2Kah (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 29 Apr 2021 06:30:37 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3C5C06138B
-        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 03:29:50 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id a13so21997514ljp.2
-        for <bpf@vger.kernel.org>; Thu, 29 Apr 2021 03:29:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=z0WL9mbep7R2yKJjW7W085saQFdlDJbJ49j9X1pYJPQ=;
-        b=eVyF9rlp4J40CT2wcdLb+qlo+fbdBGkekbXWCCR/BQGQlHFhSWwEMOwntirPeCS6E0
-         NUhO3yv3fovlXDv44wj2dKms1c6IKhqlneZWK0jAz/uE0q91xo+AvJLqtvwB//Zv/zg1
-         goR37ejE0B1xbWZqUdN4BMmQSx1UEYWwfGTYY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=z0WL9mbep7R2yKJjW7W085saQFdlDJbJ49j9X1pYJPQ=;
-        b=GkQqJSealUj8fSjrqPWBImeztMZi9+1ok8cU4BRNORNiH/kpi/oXnTEx+WZgspYDW2
-         5xUVK1PIqvb3P6cKoKIf9N8DFUQLANYnyYxu/f463vVaACVgur87grzzfjMhXKzvEWqf
-         6P1TuH7knMtSuFtTtetVmw0uhkGPtGFQsoN345QNjxsRYyynE0Ze2gYhOfrAOwvF6gCf
-         GAHEr/pY3huarc8t/kZzgqRVw/9DfP5WQm1foEdQsjyTmLrE2ieLe3FSXEZl+pqnMEmx
-         x5loGhAcX9VExtLgGGNW9SkSyv4qLbA2OnXgQ/z0cu+YcIXgb4kMORIggLXyVG/tVj+E
-         lMHQ==
-X-Gm-Message-State: AOAM533VOgzHaqr8MNvdmyZ6VnucratloBt9y+KjCg4fTJg1DjmbMvU+
-        ZHIm4hq4ygCYOHNIriIqkciGC2EMry2aFTzBsbH61g==
-X-Google-Smtp-Source: ABdhPJwG3yUOvsC4xo/X1ZXnxCZHgVzHsD5qF7vSQoNKpsV1ogHDXJaRaUtvFh6O2YVbzSpeSDJmEvDs5e5CJGHJ7Xo=
-X-Received: by 2002:a2e:9741:: with SMTP id f1mr24144895ljj.226.1619692189249;
- Thu, 29 Apr 2021 03:29:49 -0700 (PDT)
+        id S231708AbhD2LZV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 29 Apr 2021 07:25:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33562 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230148AbhD2LZU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 29 Apr 2021 07:25:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619695474;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Hrmp60pTQWrZ956xjnp/+jusKgysHgdmxCB+fDAXuY=;
+        b=dwrZZUats37oYtFfUlWBy5c/AfDPGgerz7HPu3gDmJ9Oi41/9tEDXNy9mumtsBVbCWi10e
+        joWsD8r1UzxfwFd4M0oqb7JfZq18tAIQ04HMIkYKR1z7BJkSlVciDQr0fJ2lSHyjpPfaNH
+        Z6lWu2LLerg8EESbT01Dx7b1g3RV/FU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-cP75KLOLOPOBAS6YB3g0RQ-1; Thu, 29 Apr 2021 07:24:30 -0400
+X-MC-Unique: cP75KLOLOPOBAS6YB3g0RQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A41538189C3;
+        Thu, 29 Apr 2021 11:24:28 +0000 (UTC)
+Received: from krava (unknown [10.40.195.102])
+        by smtp.corp.redhat.com (Postfix) with SMTP id F2265100164C;
+        Thu, 29 Apr 2021 11:24:25 +0000 (UTC)
+Date:   Thu, 29 Apr 2021 13:24:25 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH] bpf: Add deny list of btf ids check for tracing and ext
+ programs
+Message-ID: <YIqXaet5A1TqtIOD@krava>
+References: <20210428161802.771519-1-jolsa@kernel.org>
+ <CAEf4BzY8m5v0LY7eC1p-_xHg8yZms5HCS6D5AyRL7uFZfbKkKw@mail.gmail.com>
 MIME-Version: 1.0
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Thu, 29 Apr 2021 11:29:38 +0100
-Message-ID: <CACAyw99n-cMEtVst7aK-3BfHb99GMEChmRLCvhrjsRpHhPrtvA@mail.gmail.com>
-Subject: CO-RE: Weird immediate for bpf_core_field_exists
-To:     Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzY8m5v0LY7eC1p-_xHg8yZms5HCS6D5AyRL7uFZfbKkKw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Andrii and Yonghong,
+On Wed, Apr 28, 2021 at 12:41:34PM -0700, Andrii Nakryiko wrote:
+> On Wed, Apr 28, 2021 at 9:19 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > The recursion check in __bpf_prog_enter and __bpf_prog_exit
+> > leaves some (not inlined) functions unprotected:
+> >
+> > In __bpf_prog_enter:
+> >   - migrate_disable is called before prog->active is checked
+> >
+> > In __bpf_prog_exit:
+> >   - migrate_enable,rcu_read_unlock_strict are called after
+> >     prog->active is decreased
+> >
+> > When attaching trampoline to them we get panic like:
+> >
+> >   traps: PANIC: double fault, error_code: 0x0
+> >   double fault: 0000 [#1] SMP PTI
+> >   RIP: 0010:__bpf_prog_enter+0x4/0x50
+> >   ...
+> >   Call Trace:
+> >    <IRQ>
+> >    bpf_trampoline_6442466513_0+0x18/0x1000
+> >    migrate_disable+0x5/0x50
+> >    __bpf_prog_enter+0x9/0x50
+> >    bpf_trampoline_6442466513_0+0x18/0x1000
+> >    migrate_disable+0x5/0x50
+> >    __bpf_prog_enter+0x9/0x50
+> >    bpf_trampoline_6442466513_0+0x18/0x1000
+> >    migrate_disable+0x5/0x50
+> >    __bpf_prog_enter+0x9/0x50
+> >    bpf_trampoline_6442466513_0+0x18/0x1000
+> >    migrate_disable+0x5/0x50
+> >    ...
+> >
+> > Fixing this by adding deny list of btf ids for tracing
+> > and ext programs and checking btf id during program
+> > verification. Adding above functions to this list.
+> >
+> > Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  kernel/bpf/verifier.c | 15 +++++++++++++++
+> >  1 file changed, 15 insertions(+)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 2579f6fbb5c3..4ffd64eaffda 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -13112,6 +13112,17 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+> >         return 0;
+> >  }
+> >
+> > +BTF_SET_START(btf_id_deny)
+> > +BTF_ID_UNUSED
+> > +#ifdef CONFIG_SMP
+> > +BTF_ID(func, migrate_disable)
+> > +BTF_ID(func, migrate_enable)
+> > +#endif
+> > +#if !defined CONFIG_PREEMPT_RCU && !defined CONFIG_TINY_RCU
+> > +BTF_ID(func, rcu_read_unlock_strict)
+> > +#endif
+> > +BTF_SET_END(btf_id_deny)
+> > +
+> >  static int check_attach_btf_id(struct bpf_verifier_env *env)
+> >  {
+> >         struct bpf_prog *prog = env->prog;
+> > @@ -13171,6 +13182,10 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
+> >                 ret = bpf_lsm_verify_prog(&env->log, prog);
+> >                 if (ret < 0)
+> >                         return ret;
+> > +       } else if ((prog->type == BPF_PROG_TYPE_TRACING ||
+> > +                   prog->type == BPF_PROG_TYPE_EXT) &&
+> 
+> BPF_PROG_TYP_EXT can only replace other BPF programs/subprograms, it
+> can't replace kernel functions, so the deny list shouldn't be checked
+> for them.
 
-This is probably a case of me holding it wrong, but I figured I would
-share this nonetheless. Given the following C:
+right, will send new version
 
-struct s {
-    int _1;
-    char _2;
-};
+jirka
 
-typedef struct s s_t;
+> 
+> > +                  btf_id_set_contains(&btf_id_deny, btf_id)) {
+> > +               return -EINVAL;
+> >         }
+> >
+> >         key = bpf_trampoline_compute_key(tgt_prog, prog->aux->attach_btf, btf_id);
+> > --
+> > 2.30.2
+> >
+> 
 
-union u {
-    int *_1;
-    char *_2;
-};
-
-__section("socket_filter/fields") int fields() {
-    struct t {
-        union {
-            s_t s[10];
-        };
-        struct {
-            union u u;
-        };
-    } bar;
-    return bpf_core_field_exists((&bar)[1]);
-}
-
-clang-12 generates the following instructions:
-
-0000000000000000 <fields>:
-;     return bpf_core_field_exists((&bar)[1]);
-       0:    b7 00 00 00 58 00 00 00    r0 = 88
-       1:    95 00 00 00 00 00 00 00    exit
-
-The weird bit is that the immediate for instruction 0 isn't 1 but 88.
-Coincidentally sizeof(bar) is also 88 bytes.
-
-$ clang-12 --version
-Ubuntu clang version
-12.0.0-++20210126113614+510b3d4b3e02-1~exp1~20210126104320.178
-
-I've tried clang-13 as well, same result.
-
-Best,
-Lorenz
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
