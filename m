@@ -2,90 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDD936E15C
-	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 00:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D91D36E38D
+	for <lists+bpf@lfdr.de>; Thu, 29 Apr 2021 05:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229965AbhD1WGB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 28 Apr 2021 18:06:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229488AbhD1WGA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 28 Apr 2021 18:06:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 191F961352;
-        Wed, 28 Apr 2021 22:05:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1619647515;
-        bh=FGs86d/LbRhfYZZhsLqUx+A4yXtI4DHMtl9ILbHTC3E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UEzHubqR+m7QG1aXffYAgFrz0w5mve6G+A5ppTPBxuiB5o4awjNLU+9iXyxUhtcgK
-         CGQcQZIv9h0rJXnGSvgcPFmSHs+FqW/9eZQ9+2F1vuRCBH+q1JmCIXV2QugbiXPU5F
-         0/5qguK5ESy1LyRh2E0GWbhgKep6BhGDfMkntJL2Q4qFLnsiA8tIdVDiXNCf7PWpqX
-         /+/5/B/BUVOOSmKPlUufujKiAq2IJfHx97VsKq2pFyaeE2A1qBYhvl3jGANdlY0gTL
-         fTaBRlr0FArzvM5JRrgQ2Tv3n2IjbAgXZ0Qh/3QV88tEeOUAj/TrkCXo4si87guxbg
-         m/6AhDImFNZpA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3A0394034C; Wed, 28 Apr 2021 19:05:12 -0300 (-03)
-Date:   Wed, 28 Apr 2021 19:05:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>, Martin KaFai Lau <kafai@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH dwarves] btf: Generate btf for functions in the .BTF_ids
- section
-Message-ID: <YIncGM/9BsB8h7PW@kernel.org>
-References: <20210423213728.3538141-1-kafai@fb.com>
- <CAEf4BzY16ziMkOMdNGNjQOmiACF3E5nFn2LhtUUQbo-y-AP7Tg@mail.gmail.com>
- <YIf3rHTLqW7yZxFJ@krava>
- <YIgE1hAaa3Hzwni8@kernel.org>
- <CAEf4Bzbh7+WJ502J_MQKiHDZ_Ab-Vb_ysHO6NNuZwNfThKCAKw@mail.gmail.com>
- <YIle2kdR4IniQnbN@kernel.org>
- <CAEf4BzbzYeG9fWPe=Vugq8WG6bK79dk3byjWV9gtCX_v7L0XLw@mail.gmail.com>
+        id S232702AbhD2DRL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 28 Apr 2021 23:17:11 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:35080 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232429AbhD2DRG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 28 Apr 2021 23:17:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1619666181; x=1651202181;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=fukReMX57yCvRyMZa3sHIls68y/6z8ZvfyLr2w6V5Ws=;
+  b=N9ubxjCt0IsrPlRdLA8+SsHtRu/NzGh1GfWYVSqBzEFtteWs4ydk6YDr
+   I/VgndarEwrMO5FJK3jSbXvZb7zr5hEkXA7clZbdnVu+nHtM0waW76EFL
+   Nt/NFnv1lNgrSrQFCA6UNjWlqUsMjjg8cfLoHlLhG9kVr5hLzI7COAD0E
+   4=;
+X-IronPort-AV: E=Sophos;i="5.82,258,1613433600"; 
+   d="scan'208";a="109072914"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-c5104f52.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 29 Apr 2021 03:16:19 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-c5104f52.us-west-2.amazon.com (Postfix) with ESMTPS id 23573A1B40;
+        Thu, 29 Apr 2021 03:16:18 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 29 Apr 2021 03:16:17 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.160.81) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 29 Apr 2021 03:16:12 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <edumazet@google.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <jbaron@akamai.com>, <kafai@fb.com>,
+        <kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v4 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Thu, 29 Apr 2021 12:16:09 +0900
+Message-ID: <20210429031609.1398-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CANn89iK2Wy5WJB+57Y9JU24boy=bb4YQCk6DWD4BvhsM3ZVSdQ@mail.gmail.com>
+References: <CANn89iK2Wy5WJB+57Y9JU24boy=bb4YQCk6DWD4BvhsM3ZVSdQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbzYeG9fWPe=Vugq8WG6bK79dk3byjWV9gtCX_v7L0XLw@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.81]
+X-ClientProxiedBy: EX13D30UWC004.ant.amazon.com (10.43.162.4) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Apr 28, 2021 at 12:45:10PM -0700, Andrii Nakryiko escreveu:
-> On Wed, Apr 28, 2021 at 6:10 AM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
-> > Em Tue, Apr 27, 2021 at 01:38:51PM -0700, Andrii Nakryiko escreveu:
-> > > On Tue, Apr 27, 2021 at 5:34 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 28 Apr 2021 18:33:32 +0200
+> On Wed, Apr 28, 2021 at 5:52 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
+> >
+> > From:   Jason Baron <jbaron@akamai.com>
+> > Date:   Wed, 28 Apr 2021 10:44:12 -0400
+> > > On 4/28/21 4:13 AM, Kuniyuki Iwashima wrote:
+> > > > From:   Jason Baron <jbaron@akamai.com>
+> > > > Date:   Tue, 27 Apr 2021 12:38:58 -0400
+> > > >> On 4/26/21 11:46 PM, Kuniyuki Iwashima wrote:
+> > > >>> The SO_REUSEPORT option allows sockets to listen on the same port and to
+> > > >>> accept connections evenly. However, there is a defect in the current
+> > > >>> implementation [1]. When a SYN packet is received, the connection is tied
+> > > >>> to a listening socket. Accordingly, when the listener is closed, in-flight
+> > > >>> requests during the three-way handshake and child sockets in the accept
+> > > >>> queue are dropped even if other listeners on the same port could accept
+> > > >>> such connections.
+> > > >>>
+> > > >>> This situation can happen when various server management tools restart
+> > > >>> server (such as nginx) processes. For instance, when we change nginx
+> > > >>> configurations and restart it, it spins up new workers that respect the new
+> > > >>> configuration and closes all listeners on the old workers, resulting in the
+> > > >>> in-flight ACK of 3WHS is responded by RST.
+> > > >>
+> > > >> Hi Kuniyuki,
+> > > >>
+> > > >> I had implemented a different approach to this that I wanted to get your
+> > > >> thoughts about. The idea is to use unix sockets and SCM_RIGHTS to pass the
+> > > >> listen fd (or any other fd) around. Currently, if you have an 'old' webserver
+> > > >> that you want to replace with a 'new' webserver, you would need a separate
+> > > >> process to receive the listen fd and then have that process send the fd to
+> > > >> the new webserver, if they are not running con-currently. So instead what
+> > > >> I'm proposing is a 'delayed close' for a unix socket. That is, one could do:
+> > > >>
+> > > >> 1) bind unix socket with path '/sockets'
+> > > >> 2) sendmsg() the listen fd via the unix socket
+> > > >> 2) setsockopt() some 'timeout' on the unix socket (maybe 10 seconds or so)
+> > > >> 3) exit/close the old webserver and the listen socket
+> > > >> 4) start the new webserver
+> > > >> 5) create new unix socket and bind to '/sockets' (if has MAY_WRITE file permissions)
+> > > >> 6) recvmsg() the listen fd
+> > > >>
+> > > >> So the idea is that we set a timeout on the unix socket. If the new process
+> > > >> does not start and bind to the unix socket, it simply closes, thus releasing
+> > > >> the listen socket. However, if it does bind it can now call recvmsg() and
+> > > >> use the listen fd as normal. It can then simply continue to use the old listen
+> > > >> fds and/or create new ones and drain the old ones.
+> > > >>
+> > > >> Thus, the old and new webservers do not have to run concurrently. This doesn't
+> > > >> involve any changes to the tcp layer and can be used to pass any type of fd.
+> > > >> not sure if it's actually useful for anything else though.
+> > > >>
+> > > >> I'm not sure if this solves your use-case or not but I thought I'd share it.
+> > > >> One can also inherit the fds like in systemd's socket activation model, but
+> > > >> that again requires another process to hold open the listen fd.
+> > > >
+> > > > Thank you for sharing code.
+> > > >
+> > > > It seems bit more crash-tolerant than normal fd passing, but it can still
+> > > > suffer if the process dies before passing fds. With this patch set, we can
+> > > > migrate children sockets even if the process dies.
+> > > >
+> > >
+> > > I don't think crashing should be much of an issue. The old server can setup the
+> > > unix socket patch '/sockets' when it starts up and queue the listen sockets
+> > > there from the start. When it dies it will close all its fds, and the new
+> > > server can pick anything up any fds that are in the '/sockets' queue.
+> > >
+> > >
+> > > > Also, as Martin said, fd passing tends to make application complicated.
+> > > >
+> > >
+> > > It may be but perhaps its more flexible? It gives the new server the
+> > > chance to re-use the existing listen fds, close, drain and/or start new
+> > > ones. It also addresses the non-REUSEPORT case where you can't bind right
+> > > away.
+> >
+> > If the flexibility is really worth the complexity, we do not care about it.
+> > But, SO_REUSEPORT can give enough flexibility we want.
+> >
+> > With socket migration, there is no need to reuse listener (fd passing),
+> > drain children (incoming connections are automatically migrated if there is
+> > already another listener bind()ed), and of course another listener can
+> > close itself and migrated children.
+> >
+> > If two different approaches resolves the same issue and one does not need
+> > complexity in userspace, we select the simpler one.
+> 
+> Kernel bloat and complexity is _not_ the simplest choice.
+> 
+> Touching a complex part of TCP stack is quite risky.
 
-> > > > And tools that expect to trace a function can get that information from
-> > > > the BTF info instead of getting some failure when trying to trace those
-> > > > functions, right?
-
-> > > I don't think it belongs in BTF, though.
-
-> > My thinking was that since BTF is used when tracing, one would be
-> > interested in knowing if some functions can't be used for that.
-
-> > > Plus there are additional limitations enforced by BPF verifier that
-> > > will prevent some functions to be attached. So just because the
-> > > function is in BTF doesn't mean it's 100% attachable.
-
-> > Well, at least we would avoid some that can't for sure be used for
-> > tracing. But, a bit in there is precious, so probably geting a NACK from
-> > the kernel should be a good enough capability query. :-)
-
-> > Tools should just silently prune things in wildcards provided by the
-> > user that aren't traceable, silently, and provide an error message when
-> > the user explicitely asks for tracing a verbotten function.
-
-> Yep, that's what I'm doing in my retsnoop tool (I both filter by
-> available kprobes [0], and have extra blacklist [1]). Loading kprobes
-> is pretty simple and fast enough, shouldn't be a problem.
-
->   [0] https://github.com/anakryiko/retsnoop/blob/master/src/mass_attacher.c#L495
->   [1] https://github.com/anakryiko/retsnoop/blob/master/src/mass_attacher.c#L41
-
-Oh my, one more tool to download, build, try, have updated, etc. Will
-look at it, thanks for the pointer.
-
-- Arnaldo
+Yes, we understand that is not a simple decision and your concern. So many
+reviews are needed to see if our approach is really risky or not.
