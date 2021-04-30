@@ -2,88 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837AB36FEBE
-	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 18:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726C236FF87
+	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 19:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhD3QjU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Apr 2021 12:39:20 -0400
-Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:26776 "EHLO
-        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhD3QjT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Apr 2021 12:39:19 -0400
+        id S230229AbhD3Rb5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Apr 2021 13:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229750AbhD3Rb5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Apr 2021 13:31:57 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40286C06174A
+        for <bpf@vger.kernel.org>; Fri, 30 Apr 2021 10:31:08 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id b131so8608893ybg.5
+        for <bpf@vger.kernel.org>; Fri, 30 Apr 2021 10:31:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1619800711; x=1651336711;
-  h=from:to:cc:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version:subject;
-  bh=dyHTRrmMKeQMW5NnwS4hH6SwPusdNgVTJayFnKa1DvM=;
-  b=Rxy/w0piMbT3eMkTLV1M28Dk+erRKAFHhY9EJh8Oq1A957xBr/sBkEb6
-   8UyhEF/Z3IrLAYYt0bpBrOxZQmqJ1mkC1da2xI6iwo0wdmgBM8NYnOKqD
-   9o4OHiqCZdcbt3G5Oht8N9IqLNvm8a/Cgcr4zDJiZNXdVgfG3NKO1I7fB
-   8=;
-X-IronPort-AV: E=Sophos;i="5.82,263,1613433600"; 
-   d="scan'208";a="930430958"
-Subject: Re: [PATCH 5.4 0/8] BPF backports for CVE-2021-29155
-Thread-Topic: [PATCH 5.4 0/8] BPF backports for CVE-2021-29155
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 30 Apr 2021 16:38:30 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id 35CDBA1CA4;
-        Fri, 30 Apr 2021 16:38:29 +0000 (UTC)
-Received: from EX13D13UWB004.ant.amazon.com (10.43.161.218) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 30 Apr 2021 16:38:29 +0000
-Received: from EX13D13UWB003.ant.amazon.com (10.43.161.233) by
- EX13D13UWB004.ant.amazon.com (10.43.161.218) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 30 Apr 2021 16:38:29 +0000
-Received: from EX13D13UWB003.ant.amazon.com ([10.43.161.233]) by
- EX13D13UWB003.ant.amazon.com ([10.43.161.233]) with mapi id 15.00.1497.015;
- Fri, 30 Apr 2021 16:38:29 +0000
-From:   "van der Linden, Frank" <fllinden@amazon.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Thread-Index: AQHXPcZG0+zluwfS4Ui0HteGWjdqGKrMzZkA
-Date:   Fri, 30 Apr 2021 16:38:29 +0000
-Message-ID: <275977B4-72C4-4B86-9B94-47054AAA8067@amazon.com>
-References: <20210429220839.15667-1-fllinden@amazon.com>
- <YIwIX2mB/+tR0AuG@kroah.com>
-In-Reply-To: <YIwIX2mB/+tR0AuG@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.43.160.17]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A829820E73BC564CB00676E50A999E4C@amazon.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wIVgTpDzC2LJOPNC1YMi/4UBALGtaH8FG8n3+mHuD+4=;
+        b=B3PYRj1Dhu75AnMFjY20muHOBRlIzI67tHX22UtjO9pqEajmA/lgKqEOQX/ijGoRXf
+         P3x+TXUGQPp4Av5fGuK6GzrpzRgwZahmYAgkissJkoab8g89j47Cblr7q9IBVAajYzRQ
+         WBOf240HqVn6iyCu9hvVlDiTlzx4xEM7RIu0dkdi5/Uuou+H2xTD4t9T1f2bMdZClarS
+         soy8nfBBnwl0mRB7d1gn8k1MpV4QFoqlQ8TsX/4lOPN+PaAS0VTDNd4u9xbEHFDqLff/
+         P4XNz0sLNaYYVH6Qy7LPak2c4bg7gLgGce/YYOvnYF6DYurEYYFIshzo5j6kcri5ivCU
+         Sg4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wIVgTpDzC2LJOPNC1YMi/4UBALGtaH8FG8n3+mHuD+4=;
+        b=WRPXVKXGo5MUrQ7idAVmyNIUwk6lJ6OlbjjLE46ImCZqJQjgEMHxs1OObCin9bu5iQ
+         PH+TYc5Y+4TKK8t1B9A1t3T14lug4i05ubOd8N8MXOyhQYRMMpB7PXrGS5Q7Uh8YHi+g
+         WLKTXasANPLHdJPvuVagvZ1S+znfiROdwdPii/sYPeEu4VyVEBM3nBDyPSJ5p33e+Wfm
+         hzAjA3pE0p4sf41m1lm/A4tFFFsFY5hPa4Bdj+NuxvVCBJ/trR/8nWrNF3vQiPM6IaZK
+         GNZ/77oUpFN1Ok+QFFgPhdBgCwfkjgdNnB19b6uqcG0swd08AlkZ+lRFKFSeSRuDAK7c
+         xMxw==
+X-Gm-Message-State: AOAM531Ox6DWJs9RBQh3hoAQJOHr61NnbjadYoUDwK7tw47CjR7Le78E
+        4x7CitVtWX9AARIhn/atqnDTAkVC/lz0VcldY5E=
+X-Google-Smtp-Source: ABdhPJyOmiON3UZmFHsKMyn5lodSnzJoB2RBE/yq2krv/ImHLORGArlw2+NiEVfzb7rovNnlw5sEfpENVKbLwY2V5ls=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr8863646ybo.230.1619803867434;
+ Fri, 30 Apr 2021 10:31:07 -0700 (PDT)
 MIME-Version: 1.0
+References: <20210429054734.53264-1-grantseltzer@gmail.com>
+ <877dkkd7gp.fsf@meer.lwn.net> <CAO658oV2vJ0O=D3HWXyCUztsHD5GzDY_5p3jaAicEqqj+2-i+Q@mail.gmail.com>
+ <87tunnc0oj.fsf@meer.lwn.net> <CAO658oUMkxR7VO1i3wCYHp7hMC3exP3ccHqeA-2BGnL4bPwfPA@mail.gmail.com>
+In-Reply-To: <CAO658oUMkxR7VO1i3wCYHp7hMC3exP3ccHqeA-2BGnL4bPwfPA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 30 Apr 2021 10:30:56 -0700
+Message-ID: <CAEf4BzZJUtPiGn+8mkzNd2k+-3EEE85_xezab3RYy9ZW4zqANQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] Autogenerating API documentation
+To:     Grant Seltzer Richman <grantseltzer@gmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-U3VyZS4gSSBoYXZlIGEgNC4xNCBvbmUgY29taW5nIHVwIHRvbywgYnV0IHRoYXQgb25lIHdhcyBq
-dXN0IGEgbGl0dGxlIGhhcmRlciwgYW5kIGl0IGFsc28gY29ycmVjdHMgYSBwcmV2aW91cyBiYWNr
-cG9ydCBlcnJvciB0aGF0IHdhcyBtYWRlIChjb3JyZWN0aW9uIHdhcyBhbHJlYWR5IGFja2VkKSwg
-YW5kIHBpY2tzIHNvbWUgb3RoZXIgY29tbWl0cyB0byBnZXQgc2VsZnRlc3RzIGNsZWFuLiBTbyBJ
-J2xsIHByb2JhYmx5IHNlbmQgaXQgdG8ganVzdCBicGZAIGZpcnN0Lg0KDQpPdGhlcnMgd2lsbCBo
-YXZlIHRvIHRha2UgY2FyZSBvZiA0LjE5IG9yIG9sZGVyIGtlcm5lbHMsIHRob3VnaCwganVzdCBm
-bGFnZ2luZyB0aGF0IEkgaGF2ZSBkb25lIHRoZSA0LjE0IGJhY2twb3J0IGZvciB0aGVzZS4NCg0K
-RnJhbmsNCg0K77u/T24gNC8zMC8yMSwgNjozOSBBTSwgIkdyZWcgS0giIDxncmVna2hAbGludXhm
-b3VuZGF0aW9uLm9yZz4gd3JvdGU6DQoNCiAgICBDQVVUSU9OOiBUaGlzIGVtYWlsIG9yaWdpbmF0
-ZWQgZnJvbSBvdXRzaWRlIG9mIHRoZSBvcmdhbml6YXRpb24uIERvIG5vdCBjbGljayBsaW5rcyBv
-ciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3UgY2FuIGNvbmZpcm0gdGhlIHNlbmRlciBhbmQg
-a25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0KDQoNCg0KICAgIE9uIFRodSwgQXByIDI5LCAyMDIx
-IGF0IDEwOjA4OjMxUE0gKzAwMDAsIEZyYW5rIHZhbiBkZXIgTGluZGVuIHdyb3RlOg0KICAgID4g
-VGhpcyBpcyBhIGJhY2twb3J0IG9mIHRoZSBCUEYgdmVyaWZpZXIgZml4ZXMgZm9yIENWRS0yMDIx
-LTI5MTU1LiBPcmlnaW5hbA0KICAgID4gc2VyaWVzIHdhcyBwYXJ0IG9mIHRoZSBwdWxsIHJlcXVl
-c3QgaGVyZTogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYnBmLzIwMjEwNDE2MjIzNzAwLjE1NjEx
-LTEtZGFuaWVsQGlvZ2VhcmJveC5uZXQvVC8NCiAgICA+DQogICAgPiBUaGlzIHdhc24ndCBhIGNv
-bXBsaWNhdGVkIGJhY2twb3J0LCBidXQgY29weWluZyBicGZAIHRvIHNlZSBpZg0KICAgID4gdGhl
-cmUgYXJlIGFueSBjb25jZXJucy4NCiAgICA+DQogICAgPiA1LjQgdmVyaWZpZXIgc2VsZnRlc3Rz
-IGFyZSBjbGVhbiB3aXRoIHRoaXMgYmFja3BvcnQ6DQogICAgPiAgICAgICBTdW1tYXJ5OiAxNTY2
-IFBBU1NFRCwgMCBTS0lQUEVELCAwIEZBSUxFRA0KICAgID4NCiAgICA+IFRoZSBpbmRpdmlkdWFs
-IGNvbW1pdHM6DQoNCiAgICBNYW55IHRoYW5rcyBmb3IgdGhlc2UsIG5vdyBxdWV1ZWQgdXAuDQoN
-CiAgICBncmVnIGstaA0KDQo=
+On Fri, Apr 30, 2021 at 7:27 AM Grant Seltzer Richman
+<grantseltzer@gmail.com> wrote:
+>
+> On Fri, Apr 30, 2021 at 10:22 AM Jonathan Corbet <corbet@lwn.net> wrote:
+> >
+> > Grant Seltzer Richman <grantseltzer@gmail.com> writes:
+> >
+> > > Hm, yes I do agree that it'd be nice to use existing tooling but I
+> > > just have a couple concerns for this but please point me in the right
+> > > direction because i'm sure i'm missing something. I was told to ask on
+> > > the linux-doc mailing list because you'd have valuable input anway.
+> > > This is based on reading
+> > > https://www.kernel.org/doc/html/v4.9/kernel-documentation.html#including-kernel-doc-comments
+> > >
+> > > 1. We'd want the ability to pull documentation from the code itself to
+> > > make it so documentation never falls out of date with code. Based on
+> > > the docs on kernel.org/doc it seems that we'd have to be explicit with
+> > > specifying which functions/types are included in an .rst file and
+> > > submit a patch to update the documentation everytime the libbpf api
+> > > changes. Perhaps if this isn't a thing already I can figure out how to
+> > > contribute it.
+> >
+> > No, you can tell it to pull out docs for all of the functions in a given
+> > file.  You only need to name things if you want to narrow things down.
+>
+> Alright, I will figure out how to do this and adjust the patch
+> accordingly. My biggest overall goal is making it as easy as possible
+> to contribute documentation. I think even adding just one doc string
+> above an API function is a great opportunity for new contributors to
+> familiarize themselves with the mailing list/patch process.
+>
+> >
+> > > 2. Would it be possible (or necessary) to separate libbpf
+> > > documentation from the kernel readthedocs page since libbpf isn't part
+> > > of the kernel?
+> >
+> > It could certainly be built as a separate "book", as are many of the
+> > kernel books now.  I could see it as something that gets pulled into the
+> > user-space API book, but there could also perhaps be an argument made
+> > for creating a new "libraries" book instead.
+>
+> Yea if I can figure this out for the libbpf API it'd be great to
+> replicate it for any API!
+
+It would be great if it was possible to have this libbpf
+auto-generated documentation as part of the kernel documentation, but
+also be able to generate and export it into our Github mirror to be
+pulled by readthedocs.io. If that can be done, it would be the best of
+both kernel and external worlds. We have a sync script that already
+auto-generates and checks in BPF helpers header, so we have a
+precedent of checking in auto-generated stuff into Github. So it's
+mostly about figuring out the mechanics of doc generation.
+
+>
+> >
+> > Thanks,
+> >
+> > jon
