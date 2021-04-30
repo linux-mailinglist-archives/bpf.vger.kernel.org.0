@@ -2,190 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA663701AC
-	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 22:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DBC3701AE
+	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 22:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbhD3T5m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Apr 2021 15:57:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234028AbhD3T5m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Apr 2021 15:57:42 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1CEC06138B
-        for <bpf@vger.kernel.org>; Fri, 30 Apr 2021 12:56:53 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id l7so9341766ybf.8
-        for <bpf@vger.kernel.org>; Fri, 30 Apr 2021 12:56:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HbEmOqMF76+lIsfZxE61tYrDP/Zpn+fS34D1/jbNcu0=;
-        b=FrQZFX/lpx+Wkrnpq8NIzluifqsniVo/ISshA9Hvq2LS72r/tXDZsTV/A0uFXUiY0t
-         Jw0O9d66YKeqcJHJBKp7fQ126MVe0buZEqakslLEmH/r03NrGvVV46MzIEhjJf7GsETs
-         tCf61vlU+brLKIICBiJq8kLB2qh+CV3WlbCtlw/ofJy28caVgvd6HzkSTuml867FAqZm
-         fESqK+AzVCZzBhx0SDzQ1dlJqHpRo9lJTVBSZL6XleIClzmuwAI1WLPZcmGmdCncyIh9
-         ZZiC0MSRBg8iHICwP/ipXsdERg3H0NkfrHN4+HttUnLFPSZX4GcJTGqzFtcCHGeB9wVY
-         YEDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HbEmOqMF76+lIsfZxE61tYrDP/Zpn+fS34D1/jbNcu0=;
-        b=BnevLKqMGAwiCYS8e6MorhusEqXkF9XBISgoOCRj+jFw2jATN3gpGqKKJo+uPJm53v
-         ns/YNE5PZ5PUU50SAExZNfw9b5Z5p5XBJ8SslGuWEdHxZduL9Ez4ifycy6P83snXQ9Mx
-         mz6cd43ArT88pcfH2lQV+HIrS5WU4W7+YxMfcaQYB5fnwlTxmVNh7dopmdwD0PZpggm7
-         cELRqQZQmvUVqRd1h5GJ7/4Oy2dEX2rjJdtqhbjmr5fNbVZwmR+8onSxLCoD9KlfU3OX
-         zi//+CKWYC6AYHORzV01ts7LynSBVecNykeItd1QjmXsCEhNIvOZA65zJRBg0sTSTZZu
-         zdAg==
-X-Gm-Message-State: AOAM5326tg7zKVQTZRjbP8CjbkiKaD+F4uhkFzYyVU7t332qHc/USl/X
-        o72udEM66vOErDYie6zALooz8Q44J39YSYNdpmNshaGf
-X-Google-Smtp-Source: ABdhPJzW2/h615L4bfG4mMAlw27WpC6OCUgWPcWj+Je0gRq44VAUrFmUYeru9eoP3aiGADNhnDDUwJjvhG1wnW3b2PA=
-X-Received: by 2002:a5b:645:: with SMTP id o5mr10184953ybq.347.1619812612729;
- Fri, 30 Apr 2021 12:56:52 -0700 (PDT)
+        id S234441AbhD3T6m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Apr 2021 15:58:42 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:52964 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234102AbhD3T6i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Apr 2021 15:58:38 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lcZGl-00CbjW-SR; Fri, 30 Apr 2021 13:57:47 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lcZGk-006rml-TA; Fri, 30 Apr 2021 13:57:47 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Julien Grall <julien.grall@arm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "linux-arm-kernel\@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev\@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf\@vger.kernel.org" <bpf@vger.kernel.org>
+References: <20210420165001.3790670-1-Liam.Howlett@Oracle.com>
+        <20210420165001.3790670-2-Liam.Howlett@Oracle.com>
+        <20210422124849.GA1521@willie-the-truck>
+        <m1v98egoxf.fsf@fess.ebiederm.org>
+        <20210422192349.ekpinkf3wxnmywe3@revolver>
+        <m1y2d8dfx8.fsf@fess.ebiederm.org>
+        <20210423200126.otleormmjh22joj3@revolver>
+        <m1czud6krk.fsf@fess.ebiederm.org>
+        <20210430184757.mez7ujmyzm43g6z2@revolver>
+Date:   Fri, 30 Apr 2021 14:57:43 -0500
+In-Reply-To: <20210430184757.mez7ujmyzm43g6z2@revolver> (Liam Howlett's
+        message of "Fri, 30 Apr 2021 18:48:08 +0000")
+Message-ID: <m1y2cztuiw.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210429153043.3145478-1-joamaki@gmail.com>
-In-Reply-To: <20210429153043.3145478-1-joamaki@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Apr 2021 12:56:42 -0700
-Message-ID: <CAEf4BzbQPE=oQ1UUhMc8d6HOmvrpmhg7kOHUtFHENN7Ux6P9OA@mail.gmail.com>
-Subject: Re: [PATCH bpf] selftests/bpf: Rewrite test_tc_redirect.sh as prog_tests/tc_redirect.c
-To:     Jussi Maki <joamaki@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1lcZGk-006rml-TA;;;mid=<m1y2cztuiw.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX193jyYvw9ExaIXEwhjbHkEscuNo2S9lCZ8=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.4 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,T_TooManySym_03,XMNoVowels,XMSubLong,XM_B_SpammyWords
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.2570]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_03 6+ unique symbols in subject
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Liam Howlett <liam.howlett@oracle.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 404 ms - load_scoreonly_sql: 0.11 (0.0%),
+        signal_user_changed: 11 (2.8%), b_tie_ro: 9 (2.3%), parse: 2.1 (0.5%),
+        extract_message_metadata: 7 (1.6%), get_uri_detail_list: 2.5 (0.6%),
+        tests_pri_-1000: 7 (1.6%), tests_pri_-950: 2.0 (0.5%), tests_pri_-900:
+        1.57 (0.4%), tests_pri_-90: 92 (22.7%), check_bayes: 90 (22.3%),
+        b_tokenize: 11 (2.6%), b_tok_get_all: 8 (2.1%), b_comp_prob: 3.2
+        (0.8%), b_tok_touch_all: 65 (16.0%), b_finish: 0.81 (0.2%),
+        tests_pri_0: 256 (63.3%), check_dkim_signature: 0.65 (0.2%),
+        check_dkim_adsp: 2.5 (0.6%), poll_dns_idle: 0.68 (0.2%), tests_pri_10:
+        2.3 (0.6%), tests_pri_500: 10 (2.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 2/3] arm64: signal: sigreturn() and rt_sigreturn() sometime returns the wrong signals
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 8:32 AM Jussi Maki <joamaki@gmail.com> wrote:
->
-> Ports test_tc_redirect.sh to the test_progs framework and removes the
-> old test. This makes it more in line with rest of the tests and makes
-> it possible to run this test with vmtest.sh and under the bpf CI.
->
-> Signed-off-by: Jussi Maki <joamaki@gmail.com>
-> ---
+Liam Howlett <liam.howlett@oracle.com> writes:
 
-Aren't there any Makefile changes that need to be done as well, given
-you are removing "old style" test script?
+> This is way out of scope for what I'm doing.  I'm trying to fix a call
+> to the wrong mm API.  I was trying to clean up any obvious errors in
+> calling functions which were exposed by fixing that error.  If you want
+> this fixed differently, then please go ahead and tackle the problems you
+> see.
 
->  tools/testing/selftests/bpf/network_helpers.c |   2 +-
->  tools/testing/selftests/bpf/network_helpers.h |   1 +
->  .../selftests/bpf/prog_tests/tc_redirect.c    | 481 ++++++++++++++++++
->  .../selftests/bpf/progs/test_tc_neigh.c       |  33 +-
->  .../selftests/bpf/progs/test_tc_neigh_fib.c   |   9 +-
->  .../selftests/bpf/progs/test_tc_peer.c        |  33 +-
->  .../testing/selftests/bpf/test_tc_redirect.sh | 216 --------
->  7 files changed, 509 insertions(+), 266 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_redirect.c
->  delete mode 100755 tools/testing/selftests/bpf/test_tc_redirect.sh
->
+I was asked by the arm maintainers to describe what the code should be
+doing here.  I hope I have done that.
 
-[...]
+What is very interesting is that the code in __do_page_fault does not
+use find_vma_intersection it uses find_vma.  Which suggests that
+find_vma_intersection may not be the proper mm api.
 
-> +
-> +#define TIMEOUT_MILLIS 10000
-> +
-> +static const char * const namespaces[] = {NS_SRC, NS_FWD, NS_DST, NULL};
-> +static int root_netns_fd = -1;
-> +static __u32 duration;
-> +
-> +static void restore_root_netns(void)
-> +{
-> +       CHECK_FAIL(setns(root_netns_fd, CLONE_NEWNET));
+The logic is:
 
-can you please also switch to ASSERT_xxx() macros while converting
-this selftest? Thanks!
+From __do_page_fault:
+	struct vm_area_struct *vma = find_vma(mm, addr);
 
-> +}
-> +
-> +int setns_by_name(const char *name)
+	if (unlikely(!vma))
+		return VM_FAULT_BADMAP;
 
-static?
+	/*
+	 * Ok, we have a good vm_area for this memory access, so we can handle
+	 * it.
+	 */
+	if (unlikely(vma->vm_start > addr)) {
+		if (!(vma->vm_flags & VM_GROWSDOWN))
+			return VM_FAULT_BADMAP;
+		if (expand_stack(vma, addr))
+			return VM_FAULT_BADMAP;
+	}
 
-> +{
-> +       int nsfd;
-> +       char nspath[PATH_MAX];
-> +       int err;
-> +
-> +       snprintf(nspath, sizeof(nspath), "%s/%s", "/var/run/netns", name);
-> +       nsfd = open(nspath, O_RDONLY | O_CLOEXEC);
-> +       if (CHECK(nsfd < 0, nspath, "failed to open\n"))
-> +               return -EINVAL;
-> +
-> +       err = setns(nsfd, CLONE_NEWNET);
-> +       close(nsfd);
-> +
-> +       if (CHECK(err, name, "failed to setns\n"))
-> +               return -1;
-> +
-> +       return 0;
-> +}
-> +
+	/*
+	 * Check that the permissions on the VMA allow for the fault which
+	 * occurred.
+	 */
+	if (!(vma->vm_flags & vm_flags))
+		return VM_FAULT_BADACCESS;
 
-[...]
+From do_page_fault:
 
-> +
-> +#define SYS(fmt, ...)                                          \
-> +       ({                                                      \
-> +               char cmd[1024];                                 \
-> +               snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__); \
-> +               if (CHECK(system(cmd), cmd, "failed\n"))        \
-> +                       goto fail;                              \
-> +       })
-> +
-> +static int netns_setup_links_and_routes(struct netns_setup_result *result)
-> +{
-> +       char veth_src_fwd_addr[IFADDR_STR_LEN+1] = {0,};
-> +       char veth_dst_fwd_addr[IFADDR_STR_LEN+1] = {0,};
-> +
-> +       SYS("ip link add veth_src type veth peer name veth_src_fwd");
-> +       SYS("ip link add veth_dst type veth peer name veth_dst_fwd");
-> +       if (CHECK_FAIL(get_ifaddr("veth_src_fwd", veth_src_fwd_addr)))
+	arm64_force_sig_fault(SIGSEGV,
+			      fault == VM_FAULT_BADACCESS ? SEGV_ACCERR : SEGV_MAPERR,
+			      far, inf->name);
 
-please no CHECK_FAIL, they are invisible in test_progs logs, so it's
-harder to debug any failures (and use ASSERT_xxx() instead of CHECK).
 
-> +               goto fail;
-> +       if (CHECK_FAIL(get_ifaddr("veth_dst_fwd", veth_dst_fwd_addr)))
-> +               goto fail;
-> +
-> +       result->ifindex_veth_src_fwd = get_ifindex("veth_src_fwd");
-> +       if (CHECK_FAIL(result->ifindex_veth_src_fwd < 0))
-> +               goto fail;
-> +       result->ifindex_veth_dst_fwd = get_ifindex("veth_dst_fwd");
-> +       if (CHECK_FAIL(result->ifindex_veth_dst_fwd < 0))
-> +               goto fail;
-> +
+Hmm.  If the expand_stack step is skipped. Does is the logic equivalent
+to find_vma_intersection?
 
-[...]
+	static inline struct vm_area_struct *find_vma_intersection(
+        	struct mm_struct * mm,
+                unsigned long start_addr,
+                unsigned long end_addr)
+	{
+		struct vm_area_struct * vma = find_vma(mm,start_addr);
+	
+		if (vma && end_addr <= vma->vm_start)
+			vma = NULL;
+		return vma;
+	}
 
-> +
-> +       /* bpf_fib_lookup() checks if forwarding is enabled */
-> +       system("ip netns exec " NS_FWD " sysctl -q -w "
-> +              "net.ipv4.ip_forward=1 "
-> +              "net.ipv6.conf.veth_src_fwd.forwarding=1 "
-> +              "net.ipv6.conf.veth_dst_fwd.forwarding=1");
+Yes. It does look that way.  VM_FAULT_BADMAP is returned when a vma
+covering the specified address is not found.  And VM_FAULT_BADACCESS is
+returned when there is a vma and there is a permission problem.
 
-no SYS() and/or error checking?
-> +
-> +       test_connectivity();
-> +done:
-> +       system("ip netns exec " NS_FWD " sysctl -q -w "
-> +              "net.ipv4.ip_forward=0 "
-> +              "net.ipv6.conf.veth_src_fwd.forwarding=0 "
-> +              "net.ipv6.conf.veth_dst_fwd.forwarding=0");
-> +
+There are also two SIGBUS cases that arm64_notify_segfault does not
+handle.
 
-same?
+So it appears changing arm64_notify_segfault to use
+find_vma_intersection instead of find_vma would be a correct but
+incomplete fix.
 
-> +       bpf_program__unpin(skel->progs.tc_src, SRC_PROG_PIN_FILE);
-> +       bpf_program__unpin(skel->progs.tc_chk, CHK_PROG_PIN_FILE);
-> +       bpf_program__unpin(skel->progs.tc_dst, DST_PROG_PIN_FILE);
-> +       test_tc_neigh_fib__destroy(skel);
-> +       netns_unload_bpf();
-> +       restore_root_netns();
-> +}
-> +
+I don't see a point in changing sigerturn or rt_sigreturn.
 
-[...]
+Eric
