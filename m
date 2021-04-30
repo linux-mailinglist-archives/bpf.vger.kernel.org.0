@@ -2,121 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726C236FF87
-	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 19:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E409036FF8F
+	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 19:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhD3Rb5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Apr 2021 13:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59448 "EHLO
+        id S231217AbhD3Rdf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Apr 2021 13:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbhD3Rb5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:31:57 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40286C06174A
-        for <bpf@vger.kernel.org>; Fri, 30 Apr 2021 10:31:08 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id b131so8608893ybg.5
-        for <bpf@vger.kernel.org>; Fri, 30 Apr 2021 10:31:08 -0700 (PDT)
+        with ESMTP id S230446AbhD3Rdd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Apr 2021 13:33:33 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 496D9C06138B
+        for <bpf@vger.kernel.org>; Fri, 30 Apr 2021 10:32:44 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id x131so3069348ybg.11
+        for <bpf@vger.kernel.org>; Fri, 30 Apr 2021 10:32:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wIVgTpDzC2LJOPNC1YMi/4UBALGtaH8FG8n3+mHuD+4=;
-        b=B3PYRj1Dhu75AnMFjY20muHOBRlIzI67tHX22UtjO9pqEajmA/lgKqEOQX/ijGoRXf
-         P3x+TXUGQPp4Av5fGuK6GzrpzRgwZahmYAgkissJkoab8g89j47Cblr7q9IBVAajYzRQ
-         WBOf240HqVn6iyCu9hvVlDiTlzx4xEM7RIu0dkdi5/Uuou+H2xTD4t9T1f2bMdZClarS
-         soy8nfBBnwl0mRB7d1gn8k1MpV4QFoqlQ8TsX/4lOPN+PaAS0VTDNd4u9xbEHFDqLff/
-         P4XNz0sLNaYYVH6Qy7LPak2c4bg7gLgGce/YYOvnYF6DYurEYYFIshzo5j6kcri5ivCU
-         Sg4g==
+        bh=w28WRBH0pxau981XEZacM0SFQfgpPmWMOWl6GXZOO88=;
+        b=kfJ5pYSRxCrK5Nv1bBw8qk3WW1/R6t3ZWXvwh2SCPInbHVO+J37aD4srPrqba1setk
+         Cc61N7btKFWPhmutzj9hF8aspJhNZ7b8b54leYMnAN4XxlPdQ1XniKMMdMHrDbI0Ru1f
+         37v6DU4S18qC8KiOVRJEMtO3wsYgc+KtADjBjo53d50pPRkIRp7Zy6yhQAvvOaj8RaGd
+         xMsMvjv3ybgm3J5Z1XHt5EAb8hMqTzjUXuHk8332nfpk0IEGTcyfVHaOZDYuhRFxukhl
+         C4F6fAi4lAnJyRbK3wBs57fY4cQjLNui2hOEyA6whg2dQv6lpl23OJLFh5iItymg3ks5
+         PA2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wIVgTpDzC2LJOPNC1YMi/4UBALGtaH8FG8n3+mHuD+4=;
-        b=WRPXVKXGo5MUrQ7idAVmyNIUwk6lJ6OlbjjLE46ImCZqJQjgEMHxs1OObCin9bu5iQ
-         PH+TYc5Y+4TKK8t1B9A1t3T14lug4i05ubOd8N8MXOyhQYRMMpB7PXrGS5Q7Uh8YHi+g
-         WLKTXasANPLHdJPvuVagvZ1S+znfiROdwdPii/sYPeEu4VyVEBM3nBDyPSJ5p33e+Wfm
-         hzAjA3pE0p4sf41m1lm/A4tFFFsFY5hPa4Bdj+NuxvVCBJ/trR/8nWrNF3vQiPM6IaZK
-         GNZ/77oUpFN1Ok+QFFgPhdBgCwfkjgdNnB19b6uqcG0swd08AlkZ+lRFKFSeSRuDAK7c
-         xMxw==
-X-Gm-Message-State: AOAM531Ox6DWJs9RBQh3hoAQJOHr61NnbjadYoUDwK7tw47CjR7Le78E
-        4x7CitVtWX9AARIhn/atqnDTAkVC/lz0VcldY5E=
-X-Google-Smtp-Source: ABdhPJyOmiON3UZmFHsKMyn5lodSnzJoB2RBE/yq2krv/ImHLORGArlw2+NiEVfzb7rovNnlw5sEfpENVKbLwY2V5ls=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr8863646ybo.230.1619803867434;
- Fri, 30 Apr 2021 10:31:07 -0700 (PDT)
+        bh=w28WRBH0pxau981XEZacM0SFQfgpPmWMOWl6GXZOO88=;
+        b=kmAMqLwBrlR+2+xjCNVhkUhTogCjm1QCux8uEZM0dGTZc8E9eQjZSM3rY3GFiYrDsJ
+         fsId2JOyLGgU4dOCkPpW4VcTIox0gmzhA+Xy8GQg/B4fAaKEmEKay5NWrUAJvOTfdSHs
+         Y0yllse6g7WBNCzu5gfiqNNsCFW0PjZJNGT85zEsa7oZALMYS8E6Csgp4uztAIABlHvz
+         RSTv/KsmQ5MGv1m6WkdZ1Qpv+AgZuqGiUXYB9mJHBeUU0giRdzXFFFu3qlvRqf22CjJU
+         NeSU/kG43kwwf+nNe+85AGPSlCNYp9WgiT9LX97Vk1pccjyR4GCMFCa3iQH7sfDEL2/u
+         pBwQ==
+X-Gm-Message-State: AOAM531CX+l/0IfRwDfOjz0Hij8DQEuDObfCmgqTX8Dl5i9NQ7bpm8jn
+        KxWIDID/daVWRon7Kbg4uozdXl+s+gBif2HMAa2E4w==
+X-Google-Smtp-Source: ABdhPJwf0ba4S4CAR8YlNz7JkqPcbsCFRtXCKlAg7b5ghE/jYJhnWaG4CkTeyEP02aqCI06O8itXJGcSbVdNnpOLHlI=
+X-Received: by 2002:a25:3c3:: with SMTP id 186mr8860593ybd.408.1619803963458;
+ Fri, 30 Apr 2021 10:32:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210429054734.53264-1-grantseltzer@gmail.com>
- <877dkkd7gp.fsf@meer.lwn.net> <CAO658oV2vJ0O=D3HWXyCUztsHD5GzDY_5p3jaAicEqqj+2-i+Q@mail.gmail.com>
- <87tunnc0oj.fsf@meer.lwn.net> <CAO658oUMkxR7VO1i3wCYHp7hMC3exP3ccHqeA-2BGnL4bPwfPA@mail.gmail.com>
-In-Reply-To: <CAO658oUMkxR7VO1i3wCYHp7hMC3exP3ccHqeA-2BGnL4bPwfPA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Apr 2021 10:30:56 -0700
-Message-ID: <CAEf4BzZJUtPiGn+8mkzNd2k+-3EEE85_xezab3RYy9ZW4zqANQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] Autogenerating API documentation
-To:     Grant Seltzer Richman <grantseltzer@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com> <YIsAIzecktXXBlxn@apalos.home>
+ <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com> <YIwvI5/ygBvZG5sy@apalos.home>
+In-Reply-To: <YIwvI5/ygBvZG5sy@apalos.home>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Fri, 30 Apr 2021 20:32:07 +0300
+Message-ID: <CAC_iWj+wkjcGjwbVqEFXFyUi_zgn4-uYhQKKHKk84jkgo1sxRw@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
+        Networking <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 7:27 AM Grant Seltzer Richman
-<grantseltzer@gmail.com> wrote:
->
-> On Fri, Apr 30, 2021 at 10:22 AM Jonathan Corbet <corbet@lwn.net> wrote:
-> >
-> > Grant Seltzer Richman <grantseltzer@gmail.com> writes:
-> >
-> > > Hm, yes I do agree that it'd be nice to use existing tooling but I
-> > > just have a couple concerns for this but please point me in the right
-> > > direction because i'm sure i'm missing something. I was told to ask on
-> > > the linux-doc mailing list because you'd have valuable input anway.
-> > > This is based on reading
-> > > https://www.kernel.org/doc/html/v4.9/kernel-documentation.html#including-kernel-doc-comments
+(-cc invalid emails)
+Replying to my self here but....
+
+[...]
 > > >
-> > > 1. We'd want the ability to pull documentation from the code itself to
-> > > make it so documentation never falls out of date with code. Based on
-> > > the docs on kernel.org/doc it seems that we'd have to be explicit with
-> > > specifying which functions/types are included in an .rst file and
-> > > submit a patch to update the documentation everytime the libbpf api
-> > > changes. Perhaps if this isn't a thing already I can figure out how to
-> > > contribute it.
+> > > We can't do that. The reason we need those structs is that we rely on the
+> > > existing XDP code, which already recycles it's buffers, to enable
+> > > recycling.  Since we allocate a page per packet when using page_pool for a
+> > > driver , the same ideas apply to an SKB and XDP frame. We just recycle the
 > >
-> > No, you can tell it to pull out docs for all of the functions in a given
-> > file.  You only need to name things if you want to narrow things down.
->
-> Alright, I will figure out how to do this and adjust the patch
-> accordingly. My biggest overall goal is making it as easy as possible
-> to contribute documentation. I think even adding just one doc string
-> above an API function is a great opportunity for new contributors to
-> familiarize themselves with the mailing list/patch process.
->
+> > I am not really familar with XDP here, but a packet from hw is either a
+> > "struct xdp_frame/xdp_buff" for XDP or a "struct sk_buff" for TCP/IP stack,
+> > a packet can not be both "struct xdp_frame/xdp_buff" and "struct sk_buff" at
+> > the same time, right?
 > >
-> > > 2. Would it be possible (or necessary) to separate libbpf
-> > > documentation from the kernel readthedocs page since libbpf isn't part
-> > > of the kernel?
-> >
-> > It could certainly be built as a separate "book", as are many of the
-> > kernel books now.  I could see it as something that gets pulled into the
-> > user-space API book, but there could also perhaps be an argument made
-> > for creating a new "libraries" book instead.
 >
-> Yea if I can figure this out for the libbpf API it'd be great to
-> replicate it for any API!
+> Yes, but the payload is irrelevant in both cases and that's what we use
+> page_pool for.  You can't use this patchset unless your driver usues
+> build_skb().  So in both cases you just allocate memory for the payload and
+> decide what the wrap the buffer with (XDP or SKB) later.
+>
+> > What does not really make sense to me is that the page has to be from page
+> > pool when a skb's frag page can be recycled, right? If it is ture, the switch
+> > case in __xdp_return() does not really make sense for skb recycling, why go
+> > all the trouble of checking the mem->type and mem->id to find the page_pool
+> > pointer when recyclable page for skb can only be from page pool?
+>
+> In any case you need to find in which pool the buffer you try to recycle
+> belongs.  In order to make the whole idea generic and be able to recycle skb
+> fragments instead of just the skb head you need to store some information on
+> struct page.  That's the fundamental difference of this patchset compared to
+> the RFC we sent a few years back [1] which was just storing information on the
+> skb.  The way this is done on the current patchset is that we store the
+> struct xdp_mem_info in page->private and then look it up on xdp_return().
+>
+> Now that being said Matthew recently reworked struct page, so we could see if
+> we can store the page pool pointer directly instead of the struct
+> xdp_mem_info. That would allow us to call into page pool functions directly.
+> But we'll have to agree if that makes sense to go into struct page to begin
+> with and make sure the pointer is still valid when we take the recycling path.
+>
 
-It would be great if it was possible to have this libbpf
-auto-generated documentation as part of the kernel documentation, but
-also be able to generate and export it into our Github mirror to be
-pulled by readthedocs.io. If that can be done, it would be the best of
-both kernel and external worlds. We have a sync script that already
-auto-generates and checks in BPF helpers header, so we have a
-precedent of checking in auto-generated stuff into Github. So it's
-mostly about figuring out the mechanics of doc generation.
+Thinking more about it the reason that prevented us from storing a
+page pool pointer directly is not there anymore. Jesper fixed that
+already a while back. So we might as well store the page_pool ptr in
+page->private and call into the functions directly.  I'll have a look
+before v4.
 
->
-> >
-> > Thanks,
-> >
-> > jon
+[...]
+
+Thanks
+/Ilias
