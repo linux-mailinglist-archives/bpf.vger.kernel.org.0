@@ -2,232 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4079536FC56
-	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 16:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC9D36FC5C
+	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 16:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhD3O1e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Apr 2021 10:27:34 -0400
-Received: from mga17.intel.com ([192.55.52.151]:60848 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232744AbhD3O1d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Apr 2021 10:27:33 -0400
-IronPort-SDR: nWJsUSrtVaaARLB4GEm82EqfMHw4wCQpoTOTZbE6gAa3tUIXidN0nPCyoWzfChQiP5DR0IsRoL
- Zz3r4Ihyrw7A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9970"; a="177445031"
-X-IronPort-AV: E=Sophos;i="5.82,262,1613462400"; 
-   d="scan'208";a="177445031"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2021 07:26:44 -0700
-IronPort-SDR: FpLhH5+6gPxNJ4wUipHQWI3uUhKQf+RYGfkXYsiU3KmMeCV/wIMQ27smUjSKWiazWhA7kUCBFZ
- 2bxM7AWFfdgw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,262,1613462400"; 
-   d="scan'208";a="466836089"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga001.jf.intel.com with ESMTP; 30 Apr 2021 07:26:39 -0700
-Received: from alobakin-mobl.ger.corp.intel.com (jficek-mobl.ger.corp.intel.com [10.213.24.214])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 13UEQbtf016736;
-        Fri, 30 Apr 2021 15:26:37 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
-        "Joseph, Jithu" <jithu.joseph@intel.com>,
-        "Desouza, Ederson" <ederson.desouza@intel.com>,
-        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        "Gomes, Vinicius" <vinicius.gomes@intel.com>,
-        "Machnikowski, Maciej" <maciej.machnikowski@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        David Ahern <dsahern@gmail.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jens Steen Krogh <jskro@vestas.com>,
-        Joao Pedro Barros Silva <jopbs@vestas.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: PTP RX & TX time-stamp and TX Time in XDP ZC socket
-Date:   Fri, 30 Apr 2021 16:26:35 +0200
-Message-Id: <20210430142635.3791-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210423183731.7279808a@carbon>
-References: <DM6PR11MB27800045D6EE4A69B1A65C45CA479@DM6PR11MB2780.namprd11.prod.outlook.com> <20210421103948.5a453e6d@carbon> <DM6PR11MB2780B29F0045B76119AFC388CA469@DM6PR11MB2780.namprd11.prod.outlook.com> <20210423183731.7279808a@carbon>
+        id S232840AbhD3O2U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Apr 2021 10:28:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232618AbhD3O2Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Apr 2021 10:28:16 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F82CC06174A
+        for <bpf@vger.kernel.org>; Fri, 30 Apr 2021 07:27:26 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id b4so3522099vst.13
+        for <bpf@vger.kernel.org>; Fri, 30 Apr 2021 07:27:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p35HMelGMsZIEYttmbIOcneApR/xbqhfMO29nZlCehE=;
+        b=XwMVU4JxTySE96o4dREpbxLPGl1hhfO197TAgkRhEKkJsZ10toPCy2ZYHhkHU+LuAQ
+         m8FEFLyd2x3p6jDvvOx7PU4JFpxR+TVbWhaqtvw3EHPr3jW5ER0Q/ApeZpnzEXWlpr0X
+         Kxau1JmcGRF891gbGZ5FjDZ0k8qyLITE/sFegQ84BW2+rDjggG+LE6QjLNbWADyETFQs
+         u4svkxvFA/L6xOvgQCE3mc4DxUtiGo9xDvKQlYbQnQNoRKQ3kKlvKkVEKrWcAstwtiSy
+         DcWQ5ANDDLQHGvBrpen65iFbxQeicla3Nl/XV3weIAGV6pl0Y3SUgmX7UnBXEBIjq3dO
+         C3Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p35HMelGMsZIEYttmbIOcneApR/xbqhfMO29nZlCehE=;
+        b=k1RyBK0DWfFDhS0EEmCi2PSuJQOCk8lY++HqtHG6S+Xj1ncnfctdTZ176TE3b3nyR5
+         2RNoWZOp3SbP4quRsBb8sfu0rUbK+8tWLvKgGmfJdlqErRwgAk+T2csbdxEmA3lmO4Jo
+         qFfKojS8WndqlFH0KVvrbXLcCSuVTF3/xVYpvOF9dB10XY67EEqmj+rsenyLBISiz3Gz
+         nuopcpq1GNPA4vOfyySVVfCGNXLqXZMFUm7Q13ZAu9S2e7CvjoCDlDtjx4lhJFziMP5j
+         svt7LPEP3s0iwILI5+sjS2MrUaLDrmhedQYJaWJx1AOoG+9uuc87MK5irnpfASk37JnP
+         NTVQ==
+X-Gm-Message-State: AOAM53253WOTL1T91b+TA9jnl6DQPHvbUicDmZvCdGUKXb7YJRqQC/Dt
+        +u+xu5DaYL/3TlthzkQ1DLNaD2NjdnuCMlYeh0wUJaUVhJo2EnFz
+X-Google-Smtp-Source: ABdhPJy7GOt7MlpvSBvD+oPyClfJysR0Ef95BtTWe8UdkxC7QBDFFMB08NAM/b2BHMhJQkfl535L4VEj9HjcgkEAyhA=
+X-Received: by 2002:a05:6102:38d:: with SMTP id m13mr6425876vsq.25.1619792845783;
+ Fri, 30 Apr 2021 07:27:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210429054734.53264-1-grantseltzer@gmail.com>
+ <877dkkd7gp.fsf@meer.lwn.net> <CAO658oV2vJ0O=D3HWXyCUztsHD5GzDY_5p3jaAicEqqj+2-i+Q@mail.gmail.com>
+ <87tunnc0oj.fsf@meer.lwn.net>
+In-Reply-To: <87tunnc0oj.fsf@meer.lwn.net>
+From:   Grant Seltzer Richman <grantseltzer@gmail.com>
+Date:   Fri, 30 Apr 2021 10:27:14 -0400
+Message-ID: <CAO658oUMkxR7VO1i3wCYHp7hMC3exP3ccHqeA-2BGnL4bPwfPA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] Autogenerating API documentation
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Date: Fri, 23 Apr 2021 18:37:31 +0200
-
-> Cc, netdev, as I think we get upstream feedback as early as possible.
-> (Maybe Alexei will be critique my idea of storing btf_id in struct?)
-> 
-> 
-> On Thu, 22 Apr 2021 07:34:23 +0000
-> "Ong, Boon Leong" <boon.leong.ong@intel.com> wrote:
-> 
-> > >> Now that stmmac driver has been added with XDP ZC, we would like
-> > >> to know if there is any on-going POC or discussion on XDP ZC
-> > >> socket for adding below:
-> > >>
-> > >> 1) PTP RX & TX time-stamp
-> > >> 2) Per-packet TX transmit time (similar to SO_TXTIME)  
-> > >
-> > > Well, this is actually perfect timing! (pun intended)
-> > >
-> > > I'm actually going to work on adding this to XDP.  I was reading igc
-> > > driver and i225 sw datasheet last night, trying to figure out a design
-> > > based on what hardware can do. My design ideas obviously involve BTF,
-> > > but a lot of missing pieces like an XDP TX hook is also missing.  
-> > 
-> > Currently, we are using a non-standard/not elegant way to provide for 
-> > internal real-time KPI measurement purpose as follow 
+On Fri, Apr 30, 2021 at 10:22 AM Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> Grant Seltzer Richman <grantseltzer@gmail.com> writes:
+>
+> > Hm, yes I do agree that it'd be nice to use existing tooling but I
+> > just have a couple concerns for this but please point me in the right
+> > direction because i'm sure i'm missing something. I was told to ask on
+> > the linux-doc mailing list because you'd have valuable input anway.
+> > This is based on reading
+> > https://www.kernel.org/doc/html/v4.9/kernel-documentation.html#including-kernel-doc-comments
 > >
-> > 1) TX time stored in a newly introduced 64-bit timestamp in XDP descriptor.
-> 
-> Did you create a separate XDP descriptor?
-> If so what memory is backing that?
-> 
-> My idea[1] is to use the meta-data area (xdp_buff->data_meta), that is
-> located in-front of the packet headers.  Or the area in top of the
-> "packet" memory, which is already used by struct xdp_frame, except that
-> zero-copy AF_XDP don't have the xdp_frame.  Due to AF_XDP limits I'm
-> leaning towards using xdp_buff->data_meta area.
-> 
-> [1] https://people.netfilter.org/hawk/presentations/KernelRecipes2019/xdp-netstack-concert.pdf
-> 
-> I should mention that I want a generic solution (based on BTF), that can
-> support many types of hardware hints.  Like existing RX-hash, VLAN,
-> checksum, mark and timestamps.  And newer HW hints that netstack
-> doesn't support yet, e.g. I know mlx5 can assign unique (64-bit)
-> flow-marks.
-> 
-> I should also mention that I also want the solution to work for (struct)
-> xdp_frame packets that gets redirected from RX to TX.  And work when/if
-> an xdp_frame gets converted to an SKB (happens for veth and cpumap)
-> then the RX-hash, VLAN, checksum, mark, timestamp should be transferred
-> to the SKB.
+> > 1. We'd want the ability to pull documentation from the code itself to
+> > make it so documentation never falls out of date with code. Based on
+> > the docs on kernel.org/doc it seems that we'd have to be explicit with
+> > specifying which functions/types are included in an .rst file and
+> > submit a patch to update the documentation everytime the libbpf api
+> > changes. Perhaps if this isn't a thing already I can figure out how to
+> > contribute it.
+>
+> No, you can tell it to pull out docs for all of the functions in a given
+> file.  You only need to name things if you want to narrow things down.
 
-Hi, just to let you know,
-We at Intel are currently working on flexible XDP hints that include
-both generic (i.e. that every single driver/HW has) and custom
-hints/metadata and are planning to publish a first RFC soon.
-Feel free to join if you wish, we could cooperate and work together.
+Alright, I will figure out how to do this and adjust the patch
+accordingly. My biggest overall goal is making it as easy as possible
+to contribute documentation. I think even adding just one doc string
+above an API function is a great opportunity for new contributors to
+familiarize themselves with the mailing list/patch process.
 
-> > 2) RX T/S is stored in the meta-data of the RX frame.
-> 
-> Yes, I also want to store the RX-timestamp the meta-data area.  This
-> means that RX-timestamp is stored memory-wise just before the packet
-> header starts.
-> 
-> For AF_XDP how does the userspace program know that info is stored in
-> this area(?).  As you know, it might only be some packets that contain
-> the timestamp, e.g. for some NIC is it only the PTP packets.
-> 
-> I've discussed this with OVS VMware people before (they requested
-> RX-hash), and in that discussion Bjørn came up with the idea, that the
-> "-32 bit" could contain the BTF-id number.  Meaning the last u32 member
-> of the metadata is btf_id (example below).
-> 
->  struct my_metadata {
-> 	u64 rx_timestamp;
-> 	u32 rx_hash32;
-> 	u32 btf_id;
->  };
-> 
-> When having the btf_id then the memory layout basically becomes self
-> describing.  I guess, we still need a single bit in the AF_XDP
-> RX-descriptor telling us that meta-data area is populated, or perhaps
-> we should store the btf_id in the AF_XDP RX-descriptor?
-> 
-> Same goes for xdp_frame, should it store btf_id or have a single bit
-> that says, btf_id is located in data_meta area.
-> 
-> > 3) TX T/S is simply trace_printk out as there is missing XDP TX hook
-> >    like you pointed out.
-> 
-> Again I want to use BTF to describe that a driver supports of
-> TX-timestamp features.  Like Saeed did for RX, the driver should export
-> (a number) of BTF-id's that it support.
-> 
-> E.g when the LaunchTime features is configured;
-> 
->  struct my_metadata_tx {
-> 	u64 LaunchTime_ktime;
-> 	u32 btf_id;
->  };
-> 
-> When AF_XDP (or xdp_frame) want to transmit a frame as a specific time,
-> e.g. via LaunchTime feature in i210 (igb) and i225 (igc).
-> 
-> I've read up on i210 and i225 capabilities, and I think this will help
-> us guide our design choices.  We need to support different BTF-desc per
-> TX queue basis, because the LaunchTime is configured per TX queue, and
-> further more, i210 only support this on queue 0 and 1.
-> 
-> Currently the LaunchTime config happens via TC config when attaching a
-> ETF qdisc and doing TC-offloading.  For now, I'm not suggesting
-> changing that.  Instead we can simply export/expose that the driver now
-> support LaunchTime BTF-desc, when the config gets enabled.
-> 
-> 
-> > So, if there is some ready work that we can evaluate, it will have us
-> > greatly in extending it to stmmac driver. 
-> 
-> Saeed have done a number of different implementation attempts on RX
-> side with BTF.  We might be able to leverage some of that work.  That
-> said, the kernels BTF API have become more advanced since Saeed worked
-> on this. Thus, I expect that we might be able to leverage some of this
-> to simplify the approach.
-> 
-> 
-> > >I have a practical project with a wind-turbine producer Vestas (they
-> > >have even approved we can say this publicly on mailing lists). Thus, I
-> > >can actually dedicate some time for this.
-> > >
-> > >You also have a practical project that needs this? (And I/we can keep it
-> > >off the mailing lists if you prefer/need-to).  
-> > 
-> > Yes, we are about to start a a 3-way joint-development project that is
-> > evaluating the suitability of using preempt-RT + XDP ZC + TSN for
-> > integrating high level Industrial Ethernet stack on-top of Linux mainline
-> > interface. So, there is couple of area that we will be looking into and
-> > above two capabilities are foundational in adding "time-aware" to
-> > XDP ZC interface.  But, our current focus on getting the Linux mainline
-> > capability ready, so we can discuss in ML.
-> 
-> It sounds like our projects align very well! :-)))
-> My customer also want the combination preempt-RT + XDP ZC + TSN.
-> 
-> > >My plans: I will try to understand the hardware and drivers better, and
-> > >then I will work on a design proposal that I will share with you for
-> > >review.
-> > >
-> > >What are your plans?  
-> > 
-> > Siang and myself are looking into this area starting next week and
-> > hopefully our time is aligned and we are hopeful to get this
-> > capability available in stmmac for next RC cycles. Is the time-line
-> > aligned to yours?
-> 
-> Yes, this aligns with my time-line.  I want to start prototyping some
-> things next week, so I can start to run experiments with TSN.  The
-> TSN capable hardware for our PoC is being shipped to my house and
-> should arrive next week.
-> 
-> Looking forward to collaborate with all of you.  You can let me know
-> (offlist) if you prefer not getting Cc'ed on these mails. Some of you
-> are bcc'ed and you have to opt-in if you are interested in collaborating.
-> -- 
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
+>
+> > 2. Would it be possible (or necessary) to separate libbpf
+> > documentation from the kernel readthedocs page since libbpf isn't part
+> > of the kernel?
+>
+> It could certainly be built as a separate "book", as are many of the
+> kernel books now.  I could see it as something that gets pulled into the
+> user-space API book, but there could also perhaps be an argument made
+> for creating a new "libraries" book instead.
 
-Thanks,
-Al
+Yea if I can figure this out for the libbpf API it'd be great to
+replicate it for any API!
+
+>
+> Thanks,
+>
+> jon
