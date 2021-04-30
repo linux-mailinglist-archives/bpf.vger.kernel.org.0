@@ -2,356 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B73370165
-	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 21:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA663701AC
+	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 22:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231769AbhD3Tms (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Apr 2021 15:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60090 "EHLO
+        id S232480AbhD3T5m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Apr 2021 15:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230508AbhD3Tmr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Apr 2021 15:42:47 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F3EC06174A;
-        Fri, 30 Apr 2021 12:41:58 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id b131so9078448ybg.5;
-        Fri, 30 Apr 2021 12:41:58 -0700 (PDT)
+        with ESMTP id S234028AbhD3T5m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Apr 2021 15:57:42 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1CEC06138B
+        for <bpf@vger.kernel.org>; Fri, 30 Apr 2021 12:56:53 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id l7so9341766ybf.8
+        for <bpf@vger.kernel.org>; Fri, 30 Apr 2021 12:56:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wSELs6NBgvMIddhFoNrSxwcWgSk/FcA26NAMH1K7Hx4=;
-        b=EB6JvCzUN2/PKBHP9LZUIx2KF5A4+2k9wH1IjMcg3+TH8Zz5PTTD3Ifp5TmiORfNch
-         r7wPB2mRZHwfcPiqDlzDDf9IyI0YVY+7116DLsmA9vBdIhnoMhzT0lnACBlWKmruhhpC
-         BGu//znfBSO8J/MHZz+n2p6oeRXwp//ZjyTDh543jT6iXxjhWxaQwofme/sZvDENxSCC
-         w5j7Y6ThehBrSuVN/FkUTOuaBKsF7/5dzdBYD/0d7ULjd2d/3ymy2xe6UcXt6L8aibBH
-         hIKAABOzsCURWH0/I3UjLYe/qG5GW+khivcRwQbW59aOZE0VIr1kHtvSXz5k8qrfR0IA
-         gLFA==
+         :cc;
+        bh=HbEmOqMF76+lIsfZxE61tYrDP/Zpn+fS34D1/jbNcu0=;
+        b=FrQZFX/lpx+Wkrnpq8NIzluifqsniVo/ISshA9Hvq2LS72r/tXDZsTV/A0uFXUiY0t
+         Jw0O9d66YKeqcJHJBKp7fQ126MVe0buZEqakslLEmH/r03NrGvVV46MzIEhjJf7GsETs
+         tCf61vlU+brLKIICBiJq8kLB2qh+CV3WlbCtlw/ofJy28caVgvd6HzkSTuml867FAqZm
+         fESqK+AzVCZzBhx0SDzQ1dlJqHpRo9lJTVBSZL6XleIClzmuwAI1WLPZcmGmdCncyIh9
+         ZZiC0MSRBg8iHICwP/ipXsdERg3H0NkfrHN4+HttUnLFPSZX4GcJTGqzFtcCHGeB9wVY
+         YEDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wSELs6NBgvMIddhFoNrSxwcWgSk/FcA26NAMH1K7Hx4=;
-        b=jY4bffBm5RwZW5QAWAB/oC37mZrt99mSDkinVNcSIxJLHhXlVOf+RJ+iTALKWOCfnR
-         V/lLcEjReDa4vs/Rdl8cv8AjFE5mOBlKmSVFXWmMpAU9uLwO+WX0HJuiYvyfkUgFYMFm
-         QA1g999x0a+XvKAGMhmdvJHYuK1Dk+HWJj531RQU+R/PVsKAzorH0DGTOEov7VLHeX4U
-         BaRY1PDa7j5NH9wwRLRLkG0vf/vebdeMwZ7M8Q/9QNOs0VDSR1omQk+Bt4XDMgT9tIVk
-         OFy4i0RgFpBksiVL1tS7+GmjpAmlpa3Gq+pYrItxL8Xz1l+8hgv7coMIykxj1I/YCZR2
-         hG/w==
-X-Gm-Message-State: AOAM530ZB56shz5+qGBa6q4fIwwyv2uPheUHzL9AA7jU4VoqfXi950Qp
-        LSpW/pkLQ10Q4yUrUiKBpBczP1lekFXWEsOqFxU=
-X-Google-Smtp-Source: ABdhPJzfR0TtXO1ds2g8fSb2y6SlvFoFeumdCmFDdmyZgJ/S1jirzJFnZzREOTRtv54lBb7cmkMy9Ui0De/Or9hBDko=
-X-Received: by 2002:a05:6902:1144:: with SMTP id p4mr9313109ybu.510.1619811718095;
- Fri, 30 Apr 2021 12:41:58 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=HbEmOqMF76+lIsfZxE61tYrDP/Zpn+fS34D1/jbNcu0=;
+        b=BnevLKqMGAwiCYS8e6MorhusEqXkF9XBISgoOCRj+jFw2jATN3gpGqKKJo+uPJm53v
+         ns/YNE5PZ5PUU50SAExZNfw9b5Z5p5XBJ8SslGuWEdHxZduL9Ez4ifycy6P83snXQ9Mx
+         mz6cd43ArT88pcfH2lQV+HIrS5WU4W7+YxMfcaQYB5fnwlTxmVNh7dopmdwD0PZpggm7
+         cELRqQZQmvUVqRd1h5GJ7/4Oy2dEX2rjJdtqhbjmr5fNbVZwmR+8onSxLCoD9KlfU3OX
+         zi//+CKWYC6AYHORzV01ts7LynSBVecNykeItd1QjmXsCEhNIvOZA65zJRBg0sTSTZZu
+         zdAg==
+X-Gm-Message-State: AOAM5326tg7zKVQTZRjbP8CjbkiKaD+F4uhkFzYyVU7t332qHc/USl/X
+        o72udEM66vOErDYie6zALooz8Q44J39YSYNdpmNshaGf
+X-Google-Smtp-Source: ABdhPJzW2/h615L4bfG4mMAlw27WpC6OCUgWPcWj+Je0gRq44VAUrFmUYeru9eoP3aiGADNhnDDUwJjvhG1wnW3b2PA=
+X-Received: by 2002:a5b:645:: with SMTP id o5mr10184953ybq.347.1619812612729;
+ Fri, 30 Apr 2021 12:56:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210428162553.719588-1-memxor@gmail.com> <20210428162553.719588-4-memxor@gmail.com>
-In-Reply-To: <20210428162553.719588-4-memxor@gmail.com>
+References: <20210429153043.3145478-1-joamaki@gmail.com>
+In-Reply-To: <20210429153043.3145478-1-joamaki@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Apr 2021 12:41:47 -0700
-Message-ID: <CAEf4BzYp1uN4E_=0N7DpwkEQOxntP0riz__yUzz3xu=k4yJ4sw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 3/3] libbpf: add selftests for TC-BPF API
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Shaun Crampton <shaun@tigera.io>,
-        Networking <netdev@vger.kernel.org>
+Date:   Fri, 30 Apr 2021 12:56:42 -0700
+Message-ID: <CAEf4BzbQPE=oQ1UUhMc8d6HOmvrpmhg7kOHUtFHENN7Ux6P9OA@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftests/bpf: Rewrite test_tc_redirect.sh as prog_tests/tc_redirect.c
+To:     Jussi Maki <joamaki@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 9:26 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Thu, Apr 29, 2021 at 8:32 AM Jussi Maki <joamaki@gmail.com> wrote:
 >
-> This adds some basic tests for the low level bpf_tc_* API.
+> Ports test_tc_redirect.sh to the test_progs framework and removes the
+> old test. This makes it more in line with rest of the tests and makes
+> it possible to run this test with vmtest.sh and under the bpf CI.
 >
-> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> Signed-off-by: Jussi Maki <joamaki@gmail.com>
 > ---
->  .../testing/selftests/bpf/prog_tests/tc_bpf.c | 467 ++++++++++++++++++
->  .../testing/selftests/bpf/progs/test_tc_bpf.c |  12 +
->  2 files changed, 479 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_bpf.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_tc_bpf.c
+
+Aren't there any Makefile changes that need to be done as well, given
+you are removing "old style" test script?
+
+>  tools/testing/selftests/bpf/network_helpers.c |   2 +-
+>  tools/testing/selftests/bpf/network_helpers.h |   1 +
+>  .../selftests/bpf/prog_tests/tc_redirect.c    | 481 ++++++++++++++++++
+>  .../selftests/bpf/progs/test_tc_neigh.c       |  33 +-
+>  .../selftests/bpf/progs/test_tc_neigh_fib.c   |   9 +-
+>  .../selftests/bpf/progs/test_tc_peer.c        |  33 +-
+>  .../testing/selftests/bpf/test_tc_redirect.sh | 216 --------
+>  7 files changed, 509 insertions(+), 266 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+>  delete mode 100755 tools/testing/selftests/bpf/test_tc_redirect.sh
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/tc_bpf.c b/tools/test=
-ing/selftests/bpf/prog_tests/tc_bpf.c
-> new file mode 100644
-> index 000000000000..40441f4e23e2
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
-> @@ -0,0 +1,467 @@
-> +// SPDX-License-Identifier: GPL-2.0
+
+[...]
+
 > +
-> +#include <test_progs.h>
-> +#include <linux/pkt_cls.h>
+> +#define TIMEOUT_MILLIS 10000
 > +
-> +#include "test_tc_bpf.skel.h"
+> +static const char * const namespaces[] = {NS_SRC, NS_FWD, NS_DST, NULL};
+> +static int root_netns_fd = -1;
+> +static __u32 duration;
 > +
-> +#define LO_IFINDEX 1
-> +
-> +static int test_tc_internal(const struct bpf_tc_hook *hook, int fd)
+> +static void restore_root_netns(void)
 > +{
-> +       DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts, .handle =3D 1, .priority =
-=3D 1,
-> +                           .prog_fd =3D fd);
+> +       CHECK_FAIL(setns(root_netns_fd, CLONE_NEWNET));
 
-we have 100 characters, if needed, use it to keep it on the single line
+can you please also switch to ASSERT_xxx() macros while converting
+this selftest? Thanks!
 
-> +       struct bpf_prog_info info =3D {};
-> +       int ret;
+> +}
 > +
-> +       ret =3D bpf_obj_get_info_by_fd(fd, &info, &(__u32){sizeof(info)})=
-;
+> +int setns_by_name(const char *name)
 
-as in previous patch, don't do this
+static?
 
-> +       if (!ASSERT_OK(ret, "bpf_obj_get_info_by_fd"))
-> +               return ret;
+> +{
+> +       int nsfd;
+> +       char nspath[PATH_MAX];
+> +       int err;
 > +
-> +       ret =3D bpf_tc_attach(hook, &opts, 0);
-> +       if (!ASSERT_OK(ret, "bpf_tc_attach"))
-> +               return ret;
+> +       snprintf(nspath, sizeof(nspath), "%s/%s", "/var/run/netns", name);
+> +       nsfd = open(nspath, O_RDONLY | O_CLOEXEC);
+> +       if (CHECK(nsfd < 0, nspath, "failed to open\n"))
+> +               return -EINVAL;
 > +
-> +       if (!ASSERT_EQ(opts.handle, 1, "handle set") ||
-> +           !ASSERT_EQ(opts.priority, 1, "priority set") ||
-> +           !ASSERT_EQ(opts.prog_id, info.id, "prog_id set"))
-> +               goto end;
+> +       err = setns(nsfd, CLONE_NEWNET);
+> +       close(nsfd);
 > +
-> +       DECLARE_LIBBPF_OPTS(bpf_tc_opts, info_opts, .prog_fd =3D fd);
-
-this is not C89, please move variable declarations to the top
-
-> +       ret =3D bpf_tc_query(hook, &info_opts);
-> +       if (!ASSERT_OK(ret, "bpf_tc_query"))
-> +               goto end;
+> +       if (CHECK(err, name, "failed to setns\n"))
+> +               return -1;
 > +
-> +       DECLARE_LIBBPF_OPTS(bpf_tc_opts, info_opts2, .prog_id =3D info.id=
-);
-
-and here
-
-> +       ret =3D bpf_tc_query(hook, &info_opts2);
-> +       if (!ASSERT_OK(ret, "bpf_tc_query"))
-> +               goto end;
-> +
-> +       if (!ASSERT_EQ(opts.handle, 1, "handle set") ||
-> +           !ASSERT_EQ(opts.priority, 1, "priority set") ||
-> +           !ASSERT_EQ(opts.prog_id, info.id, "prog_id set"))
-> +               goto end;
-> +
-> +       opts.prog_id =3D 0;
-> +       ret =3D bpf_tc_attach(hook, &opts, BPF_TC_F_REPLACE);
-> +       if (!ASSERT_OK(ret, "bpf_tc_attach replace mode"))
-> +               return ret;
-
-goto end?
-
-> +
-> +end:
-> +       opts.prog_fd =3D opts.prog_id =3D 0;
-> +       ret =3D bpf_tc_detach(hook, &opts);
-> +       ASSERT_OK(ret, "bpf_tc_detach");
-> +       return ret;
+> +       return 0;
 > +}
 > +
 
 [...]
 
 > +
-> +       /* attach */
-> +       ret =3D bpf_tc_attach(NULL, &attach_opts, 0);
-> +       if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid hook =3D NULL=
-"))
-> +               return -EINVAL;
-> +       ret =3D bpf_tc_attach(hook, &attach_opts, 42);
-> +       if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid flags"))
-> +               return -EINVAL;
-> +       attach_opts.prog_fd =3D 0;
-> +       ret =3D bpf_tc_attach(hook, &attach_opts, 0);
-> +       if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid prog_fd unset=
-"))
-> +               return -EINVAL;
-> +       attach_opts.prog_fd =3D fd;
-> +       attach_opts.prog_id =3D 42;
-> +       ret =3D bpf_tc_attach(hook, &attach_opts, 0);
-> +       if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid prog_id set")=
-)
-> +               return -EINVAL;
-> +       attach_opts.prog_id =3D 0;
-> +       attach_opts.handle =3D 0;
-> +       ret =3D bpf_tc_attach(hook, &attach_opts, 0);
-> +       if (!ASSERT_OK(ret, "bpf_tc_attach valid handle unset"))
-> +               return -EINVAL;
-> +       attach_opts.prog_fd =3D attach_opts.prog_id =3D 0;
-> +       ASSERT_OK(bpf_tc_detach(hook, &attach_opts), "bpf_tc_detach");
-
-this code is quite hard to follow, maybe sprinkle empty lines between
-logical groups of statements (i.e., prepare inputs + call bpf_tc_xxx +
-assert is one group that goes together)
-
-> +       attach_opts.prog_fd =3D fd;
-> +       attach_opts.handle =3D 1;
-> +       attach_opts.priority =3D 0;
-> +       ret =3D bpf_tc_attach(hook, &attach_opts, 0);
-> +       if (!ASSERT_OK(ret, "bpf_tc_attach valid priority unset"))
-> +               return -EINVAL;
-> +       attach_opts.prog_fd =3D attach_opts.prog_id =3D 0;
-> +       ASSERT_OK(bpf_tc_detach(hook, &attach_opts), "bpf_tc_detach");
-> +       attach_opts.prog_fd =3D fd;
-> +       attach_opts.priority =3D UINT16_MAX + 1;
-> +       ret =3D bpf_tc_attach(hook, &attach_opts, 0);
-> +       if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid priority > UI=
-NT16_MAX"))
-> +               return -EINVAL;
-> +       attach_opts.priority =3D 0;
-> +       attach_opts.handle =3D attach_opts.priority =3D 0;
-> +       ret =3D bpf_tc_attach(hook, &attach_opts, 0);
-> +       if (!ASSERT_OK(ret, "bpf_tc_attach valid both handle and priority=
- unset"))
-> +               return -EINVAL;
-> +       attach_opts.prog_fd =3D attach_opts.prog_id =3D 0;
-> +       ASSERT_OK(bpf_tc_detach(hook, &attach_opts), "bpf_tc_detach");
-> +       ret =3D bpf_tc_attach(hook, NULL, 0);
-> +       if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid opts =3D NULL=
-"))
-> +               return -EINVAL;
+> +#define SYS(fmt, ...)                                          \
+> +       ({                                                      \
+> +               char cmd[1024];                                 \
+> +               snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__); \
+> +               if (CHECK(system(cmd), cmd, "failed\n"))        \
+> +                       goto fail;                              \
+> +       })
 > +
-> +       return 0;
-> +}
-> +
-> +static int test_tc_query(const struct bpf_tc_hook *hook, int fd)
+> +static int netns_setup_links_and_routes(struct netns_setup_result *result)
 > +{
-> +       struct test_tc_bpf *skel =3D NULL;
-> +       int new_fd, ret, i =3D 0;
+> +       char veth_src_fwd_addr[IFADDR_STR_LEN+1] = {0,};
+> +       char veth_dst_fwd_addr[IFADDR_STR_LEN+1] = {0,};
 > +
-> +       skel =3D test_tc_bpf__open_and_load();
-> +       if (!ASSERT_OK_PTR(skel, "test_tc_bpf__open_and_load"))
-> +               return -EINVAL;
-> +
-> +       new_fd =3D bpf_program__fd(skel->progs.cls);
-> +
-> +       /* make sure no other filters are attached */
-> +       ret =3D bpf_tc_query(hook, NULL);
-> +       if (!ASSERT_EQ(ret, -ENOENT, "bpf_tc_query =3D=3D -ENOENT"))
-> +               goto end_destroy;
-> +
-> +       for (i =3D 0; i < 5; i++) {
-> +               DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts, .prog_fd =3D fd);
+> +       SYS("ip link add veth_src type veth peer name veth_src_fwd");
+> +       SYS("ip link add veth_dst type veth peer name veth_dst_fwd");
+> +       if (CHECK_FAIL(get_ifaddr("veth_src_fwd", veth_src_fwd_addr)))
 
-empty line after variable declaration
+please no CHECK_FAIL, they are invisible in test_progs logs, so it's
+harder to debug any failures (and use ASSERT_xxx() instead of CHECK).
 
-> +               ret =3D bpf_tc_attach(hook, &opts, 0);
-> +               if (!ASSERT_OK(ret, "bpf_tc_attach"))
-> +                       goto end;
-> +       }
-> +       DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts, .handle =3D 1, .priority =
-=3D 1,
-> +                           .prog_fd =3D new_fd);
-> +       ret =3D bpf_tc_attach(hook, &opts, 0);
-> +       if (!ASSERT_OK(ret, "bpf_tc_attach"))
-> +               goto end;
-> +       i++;
+> +               goto fail;
+> +       if (CHECK_FAIL(get_ifaddr("veth_dst_fwd", veth_dst_fwd_addr)))
+> +               goto fail;
 > +
-> +       ASSERT_EQ(opts.handle, 1, "handle match");
-> +       ASSERT_EQ(opts.priority, 1, "priority match");
-> +       ASSERT_NEQ(opts.prog_id, 0, "prog_id set");
+> +       result->ifindex_veth_src_fwd = get_ifindex("veth_src_fwd");
+> +       if (CHECK_FAIL(result->ifindex_veth_src_fwd < 0))
+> +               goto fail;
+> +       result->ifindex_veth_dst_fwd = get_ifindex("veth_dst_fwd");
+> +       if (CHECK_FAIL(result->ifindex_veth_dst_fwd < 0))
+> +               goto fail;
 > +
-> +       opts.prog_fd =3D 0;
-> +       /* search with handle, priority, prog_id */
-> +       ret =3D bpf_tc_query(hook, &opts);
-> +       if (!ASSERT_OK(ret, "bpf_tc_query"))
-> +               goto end;
-> +
-> +       ASSERT_EQ(opts.handle, 1, "handle match");
-> +       ASSERT_EQ(opts.priority, 1, "priority match");
-> +       ASSERT_NEQ(opts.prog_id, 0, "prog_id set");
-> +
-> +       opts.priority =3D opts.prog_fd =3D 0;
-> +       /* search with handle, prog_id */
-> +       ret =3D bpf_tc_query(hook, &opts);
-> +       if (!ASSERT_OK(ret, "bpf_tc_query"))
-> +               goto end;
-> +
-> +       ASSERT_EQ(opts.handle, 1, "handle match");
-> +       ASSERT_EQ(opts.priority, 1, "priority match");
-> +       ASSERT_NEQ(opts.prog_id, 0, "prog_id set");
-> +
-> +       opts.handle =3D opts.prog_fd =3D 0;
-> +       /* search with priority, prog_id */
-> +       ret =3D bpf_tc_query(hook, &opts);
-> +       if (!ASSERT_OK(ret, "bpf_tc_query"))
-> +               goto end;
-> +
-> +       ASSERT_EQ(opts.handle, 1, "handle match");
-> +       ASSERT_EQ(opts.priority, 1, "priority match");
-> +       ASSERT_NEQ(opts.prog_id, 0, "prog_id set");
-> +
-> +       opts.handle =3D opts.priority =3D opts.prog_fd =3D 0;
-> +       /* search with prog_id */
-> +       ret =3D bpf_tc_query(hook, &opts);
-> +       if (!ASSERT_OK(ret, "bpf_tc_query"))
-> +               goto end;
-> +
-> +       ASSERT_EQ(opts.handle, 1, "handle match");
-> +       ASSERT_EQ(opts.priority, 1, "priority match");
-> +       ASSERT_NEQ(opts.prog_id, 0, "prog_id set");
-> +
-> +       while (i !=3D 1) {
-> +               DECLARE_LIBBPF_OPTS(bpf_tc_opts, del_opts, .prog_fd =3D f=
-d);
 
-empty line here
+[...]
 
-> +               ret =3D bpf_tc_query(hook, &del_opts);
-> +               if (!ASSERT_OK(ret, "bpf_tc_query"))
-> +                       goto end;
-> +               ASSERT_NEQ(del_opts.prog_id, opts.prog_id, "prog_id shoul=
-d not be same");
-> +               ASSERT_NEQ(del_opts.priority, 1, "priority should not be =
-1");
-> +               del_opts.prog_fd =3D del_opts.prog_id =3D 0;
-> +               ret =3D bpf_tc_detach(hook, &del_opts);
-> +               if (!ASSERT_OK(ret, "bpf_tc_detach"))
-> +                       goto end;
-> +               i--;
-> +       }
 > +
-> +       opts.handle =3D opts.priority =3D opts.prog_id =3D 0;
-> +       opts.prog_fd =3D fd;
-> +       ret =3D bpf_tc_query(hook, &opts);
-> +       ASSERT_EQ(ret, -ENOENT, "bpf_tc_query =3D=3D -ENOENT");
+> +       /* bpf_fib_lookup() checks if forwarding is enabled */
+> +       system("ip netns exec " NS_FWD " sysctl -q -w "
+> +              "net.ipv4.ip_forward=1 "
+> +              "net.ipv6.conf.veth_src_fwd.forwarding=1 "
+> +              "net.ipv6.conf.veth_dst_fwd.forwarding=1");
+
+no SYS() and/or error checking?
 > +
-> +end:
-> +       while (i--) {
-> +               DECLARE_LIBBPF_OPTS(bpf_tc_opts, del_opts, 0);
+> +       test_connectivity();
+> +done:
+> +       system("ip netns exec " NS_FWD " sysctl -q -w "
+> +              "net.ipv4.ip_forward=0 "
+> +              "net.ipv6.conf.veth_src_fwd.forwarding=0 "
+> +              "net.ipv6.conf.veth_dst_fwd.forwarding=0");
+> +
 
-you get the idea by now
+same?
 
-> +               ret =3D bpf_tc_query(hook, &del_opts);
-> +               if (!ASSERT_OK(ret, "bpf_tc_query"))
-> +                       break;
-> +               del_opts.prog_id =3D 0;
-> +               ret =3D bpf_tc_detach(hook, &del_opts);
-> +               if (!ASSERT_OK(ret, "bpf_tc_detach"))
-> +                       break;
-> +       }
-> +       ASSERT_EQ(bpf_tc_query(hook, NULL), -ENOENT, "bpf_tc_query =3D=3D=
- -ENOENT");
-> +end_destroy:
-> +       test_tc_bpf__destroy(skel);
-> +       return ret;
+> +       bpf_program__unpin(skel->progs.tc_src, SRC_PROG_PIN_FILE);
+> +       bpf_program__unpin(skel->progs.tc_chk, CHK_PROG_PIN_FILE);
+> +       bpf_program__unpin(skel->progs.tc_dst, DST_PROG_PIN_FILE);
+> +       test_tc_neigh_fib__destroy(skel);
+> +       netns_unload_bpf();
+> +       restore_root_netns();
 > +}
 > +
 
