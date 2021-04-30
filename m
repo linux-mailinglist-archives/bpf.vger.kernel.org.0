@@ -2,127 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D9F36FFE0
-	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 19:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A06736FFE3
+	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 19:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbhD3RrI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Apr 2021 13:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhD3RrH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:47:07 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF20C06174A;
-        Fri, 30 Apr 2021 10:46:18 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 130so40342936ybd.10;
-        Fri, 30 Apr 2021 10:46:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=62+jAKHL3iRdRP5891cITslrAksunRH6DgJafoyqJ/0=;
-        b=j3FJa11YfEHoJDoQmpb5RK4rezGBYA4RhTplCHBXsyAGgmHADcZZaZKucjcpgwIkFy
-         kiJ9M22Z9rJePC/wrSGmQq9aZlivtKetXtlq5Q+OUjCZz0SUmDYBBJSbLpnJlh8kgsyc
-         SVy2DEEqrPQM5b6583u5smqhxnABC7Mrmssg1ntcJyDxKl3T5S2FfB2xt9llebVk+boE
-         QTlfeIQhwBee688zLcrXOhc5+p2Jjl6xd4x6ipo64nwg2/waOk05QWFxaDGlXCgntRry
-         A2ppA54gxR5i2tEdLgWxxOm88EHVfBEmqeWkjt3FhgCrcmZvIigHfyQULkbUSrUyEU3F
-         F+Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=62+jAKHL3iRdRP5891cITslrAksunRH6DgJafoyqJ/0=;
-        b=LiPXsH63pSZf+wILTgqMNKMwAgkrSp09mvcIx2ypAWVdK8vB1iEZ9z9IBNb2L7yOUP
-         kg7feACdJqJWt5gxmN1RTjCijxKnP8PXvsOhPaAQSJloZ7d59UDNMCfp7uC0V66vvOBS
-         DvMtcJq3nYi88IMblYU/m8F9vgwUVWGJSsrpmVBOFVLQjjh48PFvTBjf3Q3oLvCCWfZE
-         c5z25ulr523TacM5G/NoFcGQab/0j5DI2kdAy+DWQ/n9Eujcd4DoiFXu7tgwfXX2GFhB
-         mOGSUrJIoHHDI5ED6lW3VUiQS/ldWFzgVrhoCtD3KoWGmdvLQ1dSPRmsMQ/8CGjvt7kG
-         o8Ew==
-X-Gm-Message-State: AOAM533+xp4cp5v1QOLn+XOECupB7RDhmpIe+tT92E+3y5dEmd/clg1B
-        4vk3SmRGh2aDOwzAiSppy80JTzLRf0eUog+OhRE=
-X-Google-Smtp-Source: ABdhPJz0E+/fzP97L86dhtM5otyrPY8toYlEVj4ynTLivX0Cl7sY4OkIn//Dsbn/lE18s04jQmFtBGpEtJmNUtj6VKw=
-X-Received: by 2002:a25:c4c5:: with SMTP id u188mr8116760ybf.425.1619804778138;
- Fri, 30 Apr 2021 10:46:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210428152501.1024509-1-revest@chromium.org>
-In-Reply-To: <20210428152501.1024509-1-revest@chromium.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 30 Apr 2021 10:46:07 -0700
-Message-ID: <CAEf4BzbXqSDL84j3Cb5WOCcghqN=C7eUEPKmw-h8bmN6EyyPwQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix the snprintf test
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S230106AbhD3RsS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Apr 2021 13:48:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51692 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229750AbhD3RsR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Apr 2021 13:48:17 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C7C9EB0BD;
+        Fri, 30 Apr 2021 17:47:25 +0000 (UTC)
+Date:   Fri, 30 Apr 2021 19:47:23 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>, jslaby@suse.com
+Subject: Re: linux-next failing build due to missing cubictcp_state symbol
+Message-ID: <20210430174723.GP15381@kitsune.suse.cz>
+References: <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
+ <20210423175528.GF6564@kitsune.suse.cz>
+ <20210425111545.GL15381@kitsune.suse.cz>
+ <20210426113215.GM15381@kitsune.suse.cz>
+ <20210426121220.GN15381@kitsune.suse.cz>
+ <20210426121401.GO15381@kitsune.suse.cz>
+ <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com>
+ <YIbkR6z6mxdNSzGO@krava>
+ <YIcRlHQWWKbOlcXr@krava>
+ <20210427121237.GK6564@kitsune.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210427121237.GK6564@kitsune.suse.cz>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 8:25 AM Florent Revest <revest@chromium.org> wrote:
->
-> The BPF program for the snprintf selftest runs on all syscall entries.
-> On busy multicore systems this can cause concurrency issues.
->
-> For example it was observed that sometimes the userspace part of the
-> test reads "    4 0000" instead of "    4 000" (extra '0' at the end)
-> which seems to happen just before snprintf on another core sets
-> end[-1] = '\0'.
->
-> This patch adds a pid filter to the test to ensure that no
-> bpf_snprintf() will write over the test's output buffers while the
-> userspace reads the values.
->
-> Fixes: c2e39c6bdc7e ("selftests/bpf: Add a series of tests for bpf_snprintf")
-> Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Florent Revest <revest@chromium.org>
-> ---
+CC another Jiri
 
-Applied to bpf tree. Thanks.
+On Tue, Apr 27, 2021 at 02:12:37PM +0200, Michal Suchánek wrote:
+> On Mon, Apr 26, 2021 at 09:16:36PM +0200, Jiri Olsa wrote:
+> > On Mon, Apr 26, 2021 at 06:03:19PM +0200, Jiri Olsa wrote:
+> > > On Mon, Apr 26, 2021 at 08:41:49AM -0700, Yonghong Song wrote:
+> > > > 
+> > > > 
+> > > > On 4/26/21 5:14 AM, Michal Suchánek wrote:
+> > > > > On Mon, Apr 26, 2021 at 02:12:20PM +0200, Michal Suchánek wrote:
+> > > > > > On Mon, Apr 26, 2021 at 01:32:15PM +0200, Michal Suchánek wrote:
+> > > > > > > On Sun, Apr 25, 2021 at 01:15:45PM +0200, Michal Suchánek wrote:
+> > > > > > > > On Fri, Apr 23, 2021 at 07:55:28PM +0200, Michal Suchánek wrote:
+> > > > > > > > > On Fri, Apr 23, 2021 at 07:41:29AM -0700, Yonghong Song wrote:
+> > > > > > > > > > 
+> > > > > > > > > > 
+> > > > > > > > > > On 4/23/21 6:05 AM, Michal Suchánek wrote:
+> > > > > > > > > > > Hello,
+> > > > > > > > > > > 
+> > > > > > > > > > > I see this build error in linux-next (config attached).
+> > > > > > > > > > > 
+> > > > > > > > > > > [ 4939s]   LD      vmlinux
+> > > > > > > > > > > [ 4959s]   BTFIDS  vmlinux
+> > > > > > > > > > > [ 4959s] FAILED unresolved symbol cubictcp_state
+> > > > > > > > > > > [ 4960s] make[1]: ***
+> > > > > > > > > > > [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12~rc8.next.20210422/linux-5.12-rc8-next-20210422/Makefile:1277:
+> > > > > > > > > > > vmlinux] Error 255
+> > > > > > > > > > > [ 4960s] make: *** [../Makefile:222: __sub-make] Error 2
+> > > 
+> > > this one was reported by Jesper and was fixed by upgrading pahole
+> > > that contains the new function generation fixes (v1.19)
+> > > 
+> > > > > > > > > > 
+> > > > > > > > > > Looks like you have DYNAMIC_FTRACE config option enabled already.
+> > > > > > > > > > Could you try a later version of pahole?
+> > > > > > > > > 
+> > > > > > > > > Is this requireent new?
+> > > > > > > > > 
+> > > > > > > > > I have pahole 1.20, and master does build without problems.
+> > > > > > > > > 
+> > > > > > > > > If newer version is needed can a check be added?
+> > > > > > > > 
+> > > > > > > > With dwarves 1.21 some architectures are fixed and some report other
+> > > > > > > > missing symbol. Definitely an improvenent.
+> > > > > > > > 
+> > > > > > > > I see some new type support was added so it makes sense if that type is
+> > > > > > > > used the new dwarves are needed.
+> > > > > > > 
+> > > > > > > Ok, here is the current failure with dwarves 1.21 on 5.12:
+> > > > > > > 
+> > > > > > > [ 2548s]   LD      vmlinux
+> > > > > > > [ 2557s]   BTFIDS  vmlinux
+> > > > > > > [ 2557s] FAILED unresolved symbol vfs_truncate
+> > > > > > > [ 2558s] make[1]: ***
+> > > > > > > [/home/abuild/rpmbuild/BUILD/kernel-kvmsmall-5.12.0/linux-5.12/Makefile:1213:
+> > > > > > > vmlinux] Error 255
+> > > > 
+> > > > This is PPC64, from attached config:
+> > > >   CONFIG_PPC64=y
+> > > > I don't have environment to cross-compile for PPC64.
+> > > > Jiri, could you take a look? Thanks!
+> > > 
+> > > looks like vfs_truncate did not get into BTF data,
+> > > I'll try to reproduce
+> > 
+> > I can't reproduce the problem, in both cross build and native ppc,
+> > but the .config attached does not see complete, could you pelase
+> > resend?
+> 
+> I can't reproduce outside of the build service either. There is probably
+> some other tool missing that is commonly available and there is no check
+> for it.
 
->  tools/testing/selftests/bpf/prog_tests/snprintf.c | 2 ++
->  tools/testing/selftests/bpf/progs/test_snprintf.c | 5 +++++
->  2 files changed, 7 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> index a958c22aec75..dffbcaa1ec98 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-> @@ -43,6 +43,8 @@ void test_snprintf_positive(void)
->         if (!ASSERT_OK_PTR(skel, "skel_open"))
->                 return;
->
-> +       skel->bss->pid = getpid();
-> +
->         if (!ASSERT_OK(test_snprintf__attach(skel), "skel_attach"))
->                 goto cleanup;
->
-> diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
-> index 951a0301c553..e35129bea0a0 100644
-> --- a/tools/testing/selftests/bpf/progs/test_snprintf.c
-> +++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
-> @@ -5,6 +5,8 @@
->  #include <bpf/bpf_helpers.h>
->  #include <bpf/bpf_tracing.h>
->
-> +__u32 pid = 0;
-> +
->  char num_out[64] = {};
->  long num_ret = 0;
->
-> @@ -42,6 +44,9 @@ int handler(const void *ctx)
->         static const char str1[] = "str1";
->         static const char longstr[] = "longstr";
->
-> +       if ((int)bpf_get_current_pid_tgid() != pid)
-> +               return 0;
-> +
->         /* Integer types */
->         num_ret  = BPF_SNPRINTF(num_out, sizeof(num_out),
->                                 "%d %u %x %li %llu %lX",
-> --
-> 2.31.1.498.g6c1eba8ee3d-goog
->
+Looks like pahole or some library are miscompiled on ppc64.
+
+Using the native ppc64 tools is broken and using cross-tools works.
+
+Thanks
+
+Michal
