@@ -2,135 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A06736FFE3
-	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 19:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE7136FFF0
+	for <lists+bpf@lfdr.de>; Fri, 30 Apr 2021 19:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhD3RsS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Apr 2021 13:48:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51692 "EHLO mx2.suse.de"
+        id S230387AbhD3Ru7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 30 Apr 2021 13:50:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229750AbhD3RsR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 30 Apr 2021 13:48:17 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C7C9EB0BD;
-        Fri, 30 Apr 2021 17:47:25 +0000 (UTC)
-Date:   Fri, 30 Apr 2021 19:47:23 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>, jslaby@suse.com
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-Message-ID: <20210430174723.GP15381@kitsune.suse.cz>
-References: <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
- <20210423175528.GF6564@kitsune.suse.cz>
- <20210425111545.GL15381@kitsune.suse.cz>
- <20210426113215.GM15381@kitsune.suse.cz>
- <20210426121220.GN15381@kitsune.suse.cz>
- <20210426121401.GO15381@kitsune.suse.cz>
- <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com>
- <YIbkR6z6mxdNSzGO@krava>
- <YIcRlHQWWKbOlcXr@krava>
- <20210427121237.GK6564@kitsune.suse.cz>
+        id S229954AbhD3Ru6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 30 Apr 2021 13:50:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1AD5B61469;
+        Fri, 30 Apr 2021 17:50:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1619805010;
+        bh=AdWLSndMqQFHqoM9FWpxZlFSvWn281z5vS6Un2mfVg8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=bU7tIYfTNI8XVUpj2IEmxFRIeeHWVDaaczWEUQ8QoG3YRUuHumKMqNyyjjsyJrUNf
+         RldO/5uhhHTckztAb5sAhI7FeciItrh6PMA6gxCRlZJSirhya0vR5v3rFwMcU4cXuD
+         DRGuhZUsZFUpNW8ES+05/lOynzQDDQrnlfPG/pIK/T9F1k8bdBu9ONmygwx5ZtxebR
+         0lWSXOAim7vHhR5/qwxkH2+M1F1pKa58Uc7SPX+JrkH8/sXK5m86UM/wlf5HuJjSx1
+         I8qHt8qKkRX3suTriD8quQWN8qnl7Le5NNxAvhsVkQF1p9UaCbD4r/jEJQ7RMBxwZ8
+         XLrckqISionnw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0AE4360A72;
+        Fri, 30 Apr 2021 17:50:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210427121237.GK6564@kitsune.suse.cz>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix the snprintf test
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161980501003.20779.4607601411037423780.git-patchwork-notify@kernel.org>
+Date:   Fri, 30 Apr 2021 17:50:10 +0000
+References: <20210428152501.1024509-1-revest@chromium.org>
+In-Reply-To: <20210428152501.1024509-1-revest@chromium.org>
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@kernel.org, jackmanb@google.com,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-CC another Jiri
+Hello:
 
-On Tue, Apr 27, 2021 at 02:12:37PM +0200, Michal Suchánek wrote:
-> On Mon, Apr 26, 2021 at 09:16:36PM +0200, Jiri Olsa wrote:
-> > On Mon, Apr 26, 2021 at 06:03:19PM +0200, Jiri Olsa wrote:
-> > > On Mon, Apr 26, 2021 at 08:41:49AM -0700, Yonghong Song wrote:
-> > > > 
-> > > > 
-> > > > On 4/26/21 5:14 AM, Michal Suchánek wrote:
-> > > > > On Mon, Apr 26, 2021 at 02:12:20PM +0200, Michal Suchánek wrote:
-> > > > > > On Mon, Apr 26, 2021 at 01:32:15PM +0200, Michal Suchánek wrote:
-> > > > > > > On Sun, Apr 25, 2021 at 01:15:45PM +0200, Michal Suchánek wrote:
-> > > > > > > > On Fri, Apr 23, 2021 at 07:55:28PM +0200, Michal Suchánek wrote:
-> > > > > > > > > On Fri, Apr 23, 2021 at 07:41:29AM -0700, Yonghong Song wrote:
-> > > > > > > > > > 
-> > > > > > > > > > 
-> > > > > > > > > > On 4/23/21 6:05 AM, Michal Suchánek wrote:
-> > > > > > > > > > > Hello,
-> > > > > > > > > > > 
-> > > > > > > > > > > I see this build error in linux-next (config attached).
-> > > > > > > > > > > 
-> > > > > > > > > > > [ 4939s]   LD      vmlinux
-> > > > > > > > > > > [ 4959s]   BTFIDS  vmlinux
-> > > > > > > > > > > [ 4959s] FAILED unresolved symbol cubictcp_state
-> > > > > > > > > > > [ 4960s] make[1]: ***
-> > > > > > > > > > > [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12~rc8.next.20210422/linux-5.12-rc8-next-20210422/Makefile:1277:
-> > > > > > > > > > > vmlinux] Error 255
-> > > > > > > > > > > [ 4960s] make: *** [../Makefile:222: __sub-make] Error 2
-> > > 
-> > > this one was reported by Jesper and was fixed by upgrading pahole
-> > > that contains the new function generation fixes (v1.19)
-> > > 
-> > > > > > > > > > 
-> > > > > > > > > > Looks like you have DYNAMIC_FTRACE config option enabled already.
-> > > > > > > > > > Could you try a later version of pahole?
-> > > > > > > > > 
-> > > > > > > > > Is this requireent new?
-> > > > > > > > > 
-> > > > > > > > > I have pahole 1.20, and master does build without problems.
-> > > > > > > > > 
-> > > > > > > > > If newer version is needed can a check be added?
-> > > > > > > > 
-> > > > > > > > With dwarves 1.21 some architectures are fixed and some report other
-> > > > > > > > missing symbol. Definitely an improvenent.
-> > > > > > > > 
-> > > > > > > > I see some new type support was added so it makes sense if that type is
-> > > > > > > > used the new dwarves are needed.
-> > > > > > > 
-> > > > > > > Ok, here is the current failure with dwarves 1.21 on 5.12:
-> > > > > > > 
-> > > > > > > [ 2548s]   LD      vmlinux
-> > > > > > > [ 2557s]   BTFIDS  vmlinux
-> > > > > > > [ 2557s] FAILED unresolved symbol vfs_truncate
-> > > > > > > [ 2558s] make[1]: ***
-> > > > > > > [/home/abuild/rpmbuild/BUILD/kernel-kvmsmall-5.12.0/linux-5.12/Makefile:1213:
-> > > > > > > vmlinux] Error 255
-> > > > 
-> > > > This is PPC64, from attached config:
-> > > >   CONFIG_PPC64=y
-> > > > I don't have environment to cross-compile for PPC64.
-> > > > Jiri, could you take a look? Thanks!
-> > > 
-> > > looks like vfs_truncate did not get into BTF data,
-> > > I'll try to reproduce
-> > 
-> > I can't reproduce the problem, in both cross build and native ppc,
-> > but the .config attached does not see complete, could you pelase
-> > resend?
+This patch was applied to bpf/bpf.git (refs/heads/master):
+
+On Wed, 28 Apr 2021 17:25:01 +0200 you wrote:
+> The BPF program for the snprintf selftest runs on all syscall entries.
+> On busy multicore systems this can cause concurrency issues.
 > 
-> I can't reproduce outside of the build service either. There is probably
-> some other tool missing that is commonly available and there is no check
-> for it.
+> For example it was observed that sometimes the userspace part of the
+> test reads "    4 0000" instead of "    4 000" (extra '0' at the end)
+> which seems to happen just before snprintf on another core sets
+> end[-1] = '\0'.
+> 
+> [...]
 
-Looks like pahole or some library are miscompiled on ppc64.
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: Fix the snprintf test
+    https://git.kernel.org/bpf/bpf/c/f80f88f0e2f2
 
-Using the native ppc64 tools is broken and using cross-tools works.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Thanks
 
-Michal
