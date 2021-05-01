@@ -2,176 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 547AA370855
-	for <lists+bpf@lfdr.de>; Sat,  1 May 2021 20:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7857537092E
+	for <lists+bpf@lfdr.de>; Sun,  2 May 2021 00:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhEASGB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 1 May 2021 14:06:01 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:29908 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230522AbhEASGA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 1 May 2021 14:06:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1619892311; x=1651428311;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=mlEVsC/MgixL1++qUxUO5VczIeZsu1kDac0ReqIV0Ek=;
-  b=A0j0Gxksa1kcz01TijNO9vFsdrFIZ4EVwEwZIhYl0QzG96P3EBJuOCSQ
-   GRtwS8sAw5CF47omMU3UH5eNKyn3Jvca5lg8LMmbWBjmPAJwN2HgflSUK
-   2ko1ycKmXyAKquFbUd87VPozmQDzD4CRRXdOlKOdGVKUhm/+t5NspN9FH
-   0=;
-X-IronPort-AV: E=Sophos;i="5.82,266,1613433600"; 
-   d="scan'208";a="105149223"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-821c648d.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-4101.iad4.amazon.com with ESMTP; 01 May 2021 18:05:10 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-821c648d.us-east-1.amazon.com (Postfix) with ESMTPS id 6489BA1C89;
-        Sat,  1 May 2021 18:05:09 +0000 (UTC)
-Received: from EX13D01UWA003.ant.amazon.com (10.43.160.107) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.118) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sat, 1 May 2021 18:05:08 +0000
-Received: from EX13MTAUEE002.ant.amazon.com (10.43.62.24) by
- EX13d01UWA003.ant.amazon.com (10.43.160.107) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sat, 1 May 2021 18:05:08 +0000
-Received: from dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com
- (172.19.206.175) by mail-relay.amazon.com (10.43.62.224) with Microsoft SMTP
- Server id 15.0.1497.2 via Frontend Transport; Sat, 1 May 2021 18:05:07 +0000
-Received: by dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com (Postfix, from userid 6262777)
-        id 27144A6; Sat,  1 May 2021 18:05:06 +0000 (UTC)
-From:   Frank van der Linden <fllinden@amazon.com>
-To:     <stable@vger.kernel.org>
-CC:     <bpf@vger.kernel.org>, <samjonas@amazon.com>
-Subject: [PATCH 4.14 2/2] bpf: fix up selftests after backports were fixed
-Date:   Sat, 1 May 2021 18:05:06 +0000
-Message-ID: <20210501180506.19154-3-fllinden@amazon.com>
-X-Mailer: git-send-email 2.23.4
-In-Reply-To: <20210501180506.19154-1-fllinden@amazon.com>
-References: <20210501180506.19154-1-fllinden@amazon.com>
+        id S231603AbhEAWYu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 1 May 2021 18:24:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32757 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231556AbhEAWYu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 1 May 2021 18:24:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619907839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+MedoDODyMEto3dKCGmECCaYVpeBj8F55MahbTKAz34=;
+        b=ADx6katHOogtOUAfJYqYkOKmE6xgCP1iLzc3YsAElMsE/XesdetWkGPxoe7j5lJ31dSEs3
+        L3Akq3FnszCGJtFiTfyW3sdNXWqUgH+bThAeLM+QVXToTOfpjP33Kp3pfXl01eJpaPeVpu
+        4AyEKKcPe8B/Z5qrhhJi/q69ouxmUic=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-Mca2dzhaOTikoG9ICueiBQ-1; Sat, 01 May 2021 18:23:56 -0400
+X-MC-Unique: Mca2dzhaOTikoG9ICueiBQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D06C0501FE;
+        Sat,  1 May 2021 22:23:54 +0000 (UTC)
+Received: from krava (unknown [10.40.192.65])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 25FA0501DD;
+        Sat,  1 May 2021 22:23:52 +0000 (UTC)
+Date:   Sun, 2 May 2021 00:23:52 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH dwarves] btf: Generate btf for functions in the .BTF_ids
+ section
+Message-ID: <YI3U+Ffh9O1VFsOW@krava>
+References: <20210423213728.3538141-1-kafai@fb.com>
+ <CAEf4BzY16ziMkOMdNGNjQOmiACF3E5nFn2LhtUUQbo-y-AP7Tg@mail.gmail.com>
+ <YIf3rHTLqW7yZxFJ@krava>
+ <20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-After the backport of the changes to fix CVE 2019-7308, the
-selftests also need to be fixed up, as was done originally
-in mainline 80c9b2fae87b ("bpf: add various test cases to selftests").
+On Fri, Apr 30, 2021 at 05:16:53PM -0700, Martin KaFai Lau wrote:
+> On Tue, Apr 27, 2021 at 01:38:20PM +0200, Jiri Olsa wrote:
+> > On Mon, Apr 26, 2021 at 04:26:11PM -0700, Andrii Nakryiko wrote:
+> > > On Fri, Apr 23, 2021 at 2:37 PM Martin KaFai Lau <kafai@fb.com> wrote:
+> > > >
+> > > > BTF is currently generated for functions that are in ftrace list
+> > > > or extern.
+> > > >
+> > > > A recent use case also needs BTF generated for functions included in
+> > > > allowlist.  In particular, the kernel
+> > > > commit e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc")
+> > > > allows bpf program to directly call a few tcp cc kernel functions.  Those
+> > > > functions are specified under an ELF section .BTF_ids.  The symbols
+> > > > in this ELF section is like __BTF_ID__func__<kernel_func>__[digit]+.
+> > > > For example, __BTF_ID__func__cubictcp_init__1.  Those kernel
+> > > > functions are currently allowed only if CONFIG_DYNAMIC_FTRACE is
+> > > > set to ensure they are in the ftrace list but this kconfig dependency
+> > > > is unnecessary.
+> > > >
+> > > > pahole can generate BTF for those kernel functions if it knows they
+> > > > are in the allowlist.  This patch is to capture those symbols
+> > > > in the .BTF_ids section and generate BTF for them.
+> > > >
+> > > > Cc: Andrii Nakryiko <andrii@kernel.org>
+> > > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> > > > ---
+> > > 
+> > > I wonder if we just record all functions how bad that would be. Jiri,
+> > > do you remember from the time you were experimenting with static
+> > > functions how much more functions we'd be recording if we didn't do
+> > > ftrace filtering?
+> > 
+> > hum, I can't find that.. but should be just matter of removing
+> > that is_ftrace_func check
+> In my kconfig, by ignoring is_ftrace_func(),
+> number of FUNC: 40643 vs 46225
+> 
+> I would say skip the ftrace filtering instead of my current patch.  Thoughts?
+> 
 
-4.14 commit 03f11a51a19 ("bpf: Fix selftests are changes for CVE 2019-7308")
-did that, but since there was an error in the backport, some
-selftests did not change output. So, add them now that this error
-has been fixed, and their output has actually changed as expected.
+I tested on arm and got 25022 vs 55812 ;-)
+and of course it fixes the compilation issue with cubictcp_state
 
-This adds the rest of the changed test outputs from 80c9b2fae87b.
+I checked the pahole changelog and the original idea was to have only
+traceable functions in BTF, but we need more than that now, so I'm ok
+to skip the ftrace filter
 
-Fixes: 03f11a51a19 ("bpf: Fix selftests are changes for CVE 2019-7308")
-Signed-off-by: Frank van der Linden <fllinden@amazon.com>
----
- tools/testing/selftests/bpf/test_verifier.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 9babb3fef8e2..9f7fc30d247d 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -6207,6 +6207,7 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
-+		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -6231,6 +6232,7 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
-+		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -6257,6 +6259,7 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
-+		.errstr_unpriv = "R8 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -6282,6 +6285,7 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
-+		.errstr_unpriv = "R8 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -6330,6 +6334,7 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
-+		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -6401,6 +6406,7 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
-+		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -6452,6 +6458,7 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
-+		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -6479,6 +6486,7 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
-+		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -6505,6 +6513,7 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
-+		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -6534,6 +6543,7 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
-+		.errstr_unpriv = "R7 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -6592,6 +6602,7 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
-+		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 		.result_unpriv = REJECT,
- 	},
-@@ -6644,6 +6655,7 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "R0 min value is negative, either use unsigned index or do a if (index >=0) check.",
-+		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
--- 
-2.23.3
+jirka
 
