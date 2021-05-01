@@ -2,170 +2,250 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E91370456
-	for <lists+bpf@lfdr.de>; Sat,  1 May 2021 02:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F237137057E
+	for <lists+bpf@lfdr.de>; Sat,  1 May 2021 06:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhEAARy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 30 Apr 2021 20:17:54 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:48408 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229915AbhEAARx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 30 Apr 2021 20:17:53 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14108S0N021203;
-        Fri, 30 Apr 2021 17:16:59 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=E+LHO26TfNbQfOG50LqX79g3a2wzSae90G2ZSzsZkbM=;
- b=J9+09cbvbCZEyfo6CGe+B/NrRV1xi5ezKtuZNxHnSwK9Vkrlpp7ZjieKPJQrNTEANQfU
- QRKh1a2csAjIfDRH3rwl4S8k5hT7eJAAyyb1/yg4PL8bcibNRNWsjU0Aj1mijTcqi3Se
- yzRbjLPngc03QJXOoePmbeKQPF1/+fuXG74= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3883fqynhy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 30 Apr 2021 17:16:59 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 30 Apr 2021 17:16:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g0IpdAlmnSQRUdAAopFY4SikxQ/tQWJVOwVRDRlUujjPHkUrpPMdWQ7s34PBUhwpTyAEGUG0XBcgHOUPW29mpcg6MK+PyXcCtyHjhmuTmlddVE9OfIoLUenqtiFD0S8IZh0aJK7VtbFH5g171PR4Mr688KPhH1uf7I6zc4FSGXtwZKUK9wt4ekCRP95ijfHw+Qy79fAM5zJdWE27qzrKxNaboJju3r4pp58Pok5ktEWYDW0S0TSPFycpWsR6gsDSl6CyG8UrolKpIgucLNRnywENA4i9ee4Ox/i/YxnXR+7K5rf69jpcXj1XOTv3shbrJE3fXPDALtIn/bvlAQ/DmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E+LHO26TfNbQfOG50LqX79g3a2wzSae90G2ZSzsZkbM=;
- b=KjPWCyRoMwWGCbcyFtXmSiEoCmoVz+kIOb59XdkUXNhHR97aLcd8WoVo3KIgLT+bVqrO327W2S6AZ9nlO9+fNL20a52CyCP3jZYa3ihSsQWGJpBOvVQ/gP6gO7sl6BnuHqxDpQrwmj81RcbGSVSMFTab1PUOeHv28D2eXks2GijoUgDL1Paf4sgOtz1DohFbx9a4o+QbqTgqv89EJe6a4NCImsJAD0rXO4kei+J2aqsgIY3uGiCogsbyn/rjy/qWF6jk+ozz/T1i9DyQHeaejQRWvufrP7PwbJMvgdiqqHeU5FwqorqjQVh4GefCbfYpOhskbEy15PI+L8e/tu2RVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by SJ0PR15MB4679.namprd15.prod.outlook.com (2603:10b6:a03:37c::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.24; Sat, 1 May
- 2021 00:16:57 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::718a:4142:4c92:732f]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::718a:4142:4c92:732f%6]) with mapi id 15.20.4087.035; Sat, 1 May 2021
- 00:16:57 +0000
-Date:   Fri, 30 Apr 2021 17:16:53 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>
-CC:     Jiri Olsa <jolsa@kernel.org>, <dwarves@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH dwarves] btf: Generate btf for functions in the .BTF_ids
- section
-Message-ID: <20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com>
-References: <20210423213728.3538141-1-kafai@fb.com>
- <CAEf4BzY16ziMkOMdNGNjQOmiACF3E5nFn2LhtUUQbo-y-AP7Tg@mail.gmail.com>
- <YIf3rHTLqW7yZxFJ@krava>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YIf3rHTLqW7yZxFJ@krava>
-X-Originating-IP: [2620:10d:c090:400::5:a9e1]
-X-ClientProxiedBy: MW3PR06CA0006.namprd06.prod.outlook.com
- (2603:10b6:303:2a::11) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        id S231254AbhEAEbI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 1 May 2021 00:31:08 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:40401 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229546AbhEAEbH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 1 May 2021 00:31:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1619843419; x=1651379419;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=q8KnDGCNyaKah2NYt0qV8VgMyEEJbRRR6DrI23f80eA=;
+  b=gksP0CAjf60Cu6WzTxWY6pWTvPsO6RBRBqfyL5HHE3ELNhKYTiDo7hVJ
+   Xc1yDX9LAXnjoVTwAkAZvNyzWs7WEMvn0qM00YNL4/aQU0Y0A5Vph0C0P
+   hAP3C0W4+yZfIarLENKv8Ca/vTQN10R7xrHGAAEobcW2gj+MlCQcugojo
+   s=;
+X-IronPort-AV: E=Sophos;i="5.82,264,1613433600"; 
+   d="scan'208";a="110970697"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-57e1d233.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 01 May 2021 04:30:18 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1e-57e1d233.us-east-1.amazon.com (Postfix) with ESMTPS id D187A140AD4;
+        Sat,  1 May 2021 04:30:15 +0000 (UTC)
+Received: from EX13D01UWB004.ant.amazon.com (10.43.161.157) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sat, 1 May 2021 04:30:15 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
+ EX13d01UWB004.ant.amazon.com (10.43.161.157) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sat, 1 May 2021 04:30:15 +0000
+Received: from dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com
+ (172.19.206.175) by mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP
+ Server id 15.0.1497.2 via Frontend Transport; Sat, 1 May 2021 04:30:15 +0000
+Received: by dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com (Postfix, from userid 6262777)
+        id 3D108DE2; Sat,  1 May 2021 04:30:14 +0000 (UTC)
+From:   Frank van der Linden <fllinden@amazon.com>
+To:     <stable@vger.kernel.org>
+CC:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <samjonas@amazon.com>
+Subject: [PATCH 4.14 00/15] fix backports, add CVE-2021-29155 fixes
+Date:   Sat, 1 May 2021 04:29:59 +0000
+Message-ID: <20210501043014.33300-1-fllinden@amazon.com>
+X-Mailer: git-send-email 2.23.4
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:a9e1) by MW3PR06CA0006.namprd06.prod.outlook.com (2603:10b6:303:2a::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.32 via Frontend Transport; Sat, 1 May 2021 00:16:56 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2123aa41-6eb9-437c-ed05-08d90c366e79
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4679:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB4679F3B241A2F09B95CC7827D55D9@SJ0PR15MB4679.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0bnfQNBlS7c3mzZ0Y3NotMzuvsOMCj1SnBGIWSzlzrgh2M+PcjztTh0fJlX8lhJRLHeSQy9BVy+KkU0y55VYzJrtNgtaumQOmqFAxmwpqD4mZlIY7V6/u6Fk5dHFeGg97YY9qs3LBD6AiIlia/R9IZahmoy4sX1nsrZaY45teqT55RfsR9HcObg8g7Lidy5Ekl4OWVWqjepnKrbT/cn+ib14scuAg68nuNsmsBitDzF3nMNWGg1erpm0VkvwoAJn8VB9WAzwEhcWJ+wnu38nAK1Tf01UWppVss4lWyedxAi2PcBrRqjiqu/oYXbWYV4bG1WXUr7DcR97bmQNRnU0rYVtENR5tnSDEEsM+7VoqI8pTzyGT7vOJrDV2s050AYZfQ2u5QgnEiCQSYy387+fEXqxQEpqXf9J02Aq2S5bT+DrjxHtH/QCkeOASctT7sbDfSqD9Kykj5OZV9V74nhEmvF3Rg6pCwFelbX1j27SJUHGt7ssm2hbti3oZasG5v17f+TWtJgdsd3Lz3oPo1HlAXqEDcdOYYuLqbnTcFepoOmYn8jltBnxH8fv1TQluNmYAI+tOfJmbesIw/PWBS2lZT4ICU3MpwJn2jnFgzKlQK09IlxDlCUVGzPE50ICT8EGr/CqA4MLglcFHT2Rl+vzlA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(346002)(396003)(39860400002)(366004)(9686003)(186003)(1076003)(8936002)(66946007)(66476007)(55016002)(4326008)(5660300002)(8676002)(6666004)(16526019)(6506007)(52116002)(478600001)(7696005)(316002)(86362001)(66556008)(53546011)(110136005)(54906003)(38100700002)(2906002)(142923001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?9rLVRDRShu9JXgncBq0Zz3IaQeTsJ7JMy+ScjY/RzW2PtQykbRvhV5wYmRee?=
- =?us-ascii?Q?N1ZSYAyrpbZ+0VHiBM0Idplk6Sit4K+ieIidMvJ1pJVUORgfb22A17QB+AYd?=
- =?us-ascii?Q?sIgZMJrX/WjkXPLU+W4qSXjC7iKv3C1z3Dav0D11IomTeQF3jR8GKP+x2xY/?=
- =?us-ascii?Q?iUjOWl0Ec88dEekjd7G3MPUHK+1PlJFImIQCPuPixaIe0YOF8XAQ4KSSqD0f?=
- =?us-ascii?Q?YZ52vYh6rb96rxlAQdQYDMq5jSe3DU2kmaYidFFinWsc382LCxjXvkS0marM?=
- =?us-ascii?Q?Elk4XDIQWVnnfY+5d6ntkL+ZidwQeq3Vmi+059YCKqnCR+Tti3nc7MNrBDs4?=
- =?us-ascii?Q?Rc3unUGpYMd84fQvbBSHVzBC8qPFAZogWEZFmaejWcfgAPHZVaqMEzHfE0Xo?=
- =?us-ascii?Q?3UZo+l9/Jy9s6fJL5CGKjADLUG6bmW3wYkY32Vyj75OeJ4zL3hyTP3KAK/J7?=
- =?us-ascii?Q?WPCeKQYpq1IMHT8MUIqfEB7OU9i8UVRoOFHtZ9BMch+GlOG5A2sbiyxtqOtm?=
- =?us-ascii?Q?LrTnO7FTpkzGO4xNO5GNy7q3ec7qR7HzdJUOMK7O15ocXxbq3jM0/DIhOE5n?=
- =?us-ascii?Q?NDhxWh+ZCvp/SVknTh+ezk+dlIjQU1rn7emeKTXDeuTaJJjgBKqRRrgYK+cq?=
- =?us-ascii?Q?f3TLu04FDvdfpAvHxAHgyVouv068dhZM8fOxsLI3YVJUDawBBKlvJ8+Rk5sH?=
- =?us-ascii?Q?04ShNOvVs/2hIAxMwKRt0X5DexCt8mqnAaRKmZX/XmzXrtHAqtunSukT3anb?=
- =?us-ascii?Q?65HIslNWq5yY/vRhfLmf9iwGQ/cMOB2aINk8z6t19tohsGyLV6ESPUoqmud6?=
- =?us-ascii?Q?OIQhMXgkHL9oI9e/aFG0vQmZBI2hEVDRZlLAgqt4Jd9RzP0zF/H4Zg5GYuR2?=
- =?us-ascii?Q?aMYQD9JIiDForftE0U2iwN/Njb8MFaVS6O/DS8EiAHTCyVSby55v8ux3Se/Q?=
- =?us-ascii?Q?iQ8chdXM4T2IbAIqk3NNYI1y9pt8txlRS50Qaq2OBxov+ifTM3b/kfIG+C92?=
- =?us-ascii?Q?eg4F20AtdD1rAzNbdad2P71Q5YcPSVZ7kQ3kqHQKoX23EHwY+T1bgLgwI+4O?=
- =?us-ascii?Q?jhCElcX2LmVd4OC2S9rjgp1j3wZrxrz1914AzK5wgbN/rGPXVbXcL3r167A0?=
- =?us-ascii?Q?PtjkzB6JC6WGaxu4hNu4jpQsRVoyyEuo3w/Q5rrAx7dUqK+lr8eYygSuPppt?=
- =?us-ascii?Q?tpZN5DUT9CLwSGu2Z2loz+MnNgZ09FLcVdF5tBxWGLYcr2OBX4H79mBYkDd4?=
- =?us-ascii?Q?vbcuMK8Td5FzDFn/ExB+lwDJYbi7AEgec8LyaqqJojChFiZ2U22DNWmccCKb?=
- =?us-ascii?Q?h1RTpW5hO0pJETBR+ORVnFYudcvy+pNG4GS2v6YVdnaMEQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2123aa41-6eb9-437c-ed05-08d90c366e79
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 May 2021 00:16:57.4115
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OIrHS9m6Mehd4DX/YCWJTOA3RZ2UiyZxyS/9fpGc6DFNfSVk6LKmUy65MuUozmqo
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4679
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: DdB61IIT_lw7v7F9YWx4XpbOte8ur4oC
-X-Proofpoint-GUID: DdB61IIT_lw7v7F9YWx4XpbOte8ur4oC
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-30_15:2021-04-30,2021-04-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- priorityscore=1501 suspectscore=0 clxscore=1015 spamscore=0 bulkscore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 mlxlogscore=830
- impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105010000
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 01:38:20PM +0200, Jiri Olsa wrote:
-> On Mon, Apr 26, 2021 at 04:26:11PM -0700, Andrii Nakryiko wrote:
-> > On Fri, Apr 23, 2021 at 2:37 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > >
-> > > BTF is currently generated for functions that are in ftrace list
-> > > or extern.
-> > >
-> > > A recent use case also needs BTF generated for functions included in
-> > > allowlist.  In particular, the kernel
-> > > commit e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc")
-> > > allows bpf program to directly call a few tcp cc kernel functions.  Those
-> > > functions are specified under an ELF section .BTF_ids.  The symbols
-> > > in this ELF section is like __BTF_ID__func__<kernel_func>__[digit]+.
-> > > For example, __BTF_ID__func__cubictcp_init__1.  Those kernel
-> > > functions are currently allowed only if CONFIG_DYNAMIC_FTRACE is
-> > > set to ensure they are in the ftrace list but this kconfig dependency
-> > > is unnecessary.
-> > >
-> > > pahole can generate BTF for those kernel functions if it knows they
-> > > are in the allowlist.  This patch is to capture those symbols
-> > > in the .BTF_ids section and generate BTF for them.
-> > >
-> > > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > > ---
-> > 
-> > I wonder if we just record all functions how bad that would be. Jiri,
-> > do you remember from the time you were experimenting with static
-> > functions how much more functions we'd be recording if we didn't do
-> > ftrace filtering?
-> 
-> hum, I can't find that.. but should be just matter of removing
-> that is_ftrace_func check
-In my kconfig, by ignoring is_ftrace_func(),
-number of FUNC: 40643 vs 46225
+This series contains backports for BPF commits for 4.14, except two commits
+that are 4.14-only commits. One 4.14-only commit was already acked by
+a BPF maintainer (see below). The other one is a selftest follow-up.
 
-I would say skip the ftrace filtering instead of my current patch.  Thoughts?
+The backports were not complicated. But, copying to bpf@ and BPF
+maintainers for a sanity check.
+
+What the series does is:
+
+* Fix errors in an older bpf 4.14 backport (this fix was sent in earlier
+  to bpf@, and acked).
+* Fix selftests after recent bpf backports to 4.14 (but before the
+  fixes for CVE-2021-29155).
+* Backport fixes for CVE-2021-29155, including selftests changes.
+* Backport commits that disallow the mangling of valid pointers by root
+  (one commit that came in shortly after 4.14, one follow-up fix). This
+  also means that 5 verifier selftests that always failed on the 4.14
+  branch are OK again.
+* Backport selftest commits to adapt alignment selftests after the previous.
+
+Verifier/alignment selftests are now clean on the 4.14 branch, which should
+help prevent further backporting errors.
+
+Listed by their mainline commit id (except when 4.14 only):
+
+<4.14 only> ("bpf: Fix backport of "bpf: restrict unknown scalars of mixed signed bounds for unprivileged")
+	This was sent in by Sam to bpf@ earlier, and acked by Yonghong Song,
+	https://lore.kernel.org/bpf/20210419235641.5442-1-samjonas@amazon.com/T/#u
+
+	I am including it so that it is 'formally' submitted it
+	to -stable.
+
+<4.14 only> ("bpf: fix up selftests after backports were fixed")
+	This is a follow-up to the previous by me, to fix selftests. It's
+	from 80c9b2fae87b ("bpf: add various test cases to selftests"), but
+	since that one was already partially added to the 4.14 branch
+	in 03f11a51a196 ("bpf: Fix selftests are changes for CVE 2019-7308"),
+	it's not a "backport" as such. To avoid confusion, I created a
+	separate commit for it, referencing the original commit
+	in the message. I examined each individual changed test, and
+	went through the history to see that the error message was indeed
+	as expected.
+
+
+0a13e3537ea6 ("bpf, selftests: Fix up some test_verifier cases for unprivileged")
+	After some recent backports of bpf fixes to 4.14 (separate from this
+	series), there are some selftests that need to be modified. This
+	backported commit does that. No major conflicts/issues. For 4.14,
+	some tests do not exist yet, so they were skipped.
+
+
+
+The next ones  are a backport of the BPF verifier fixes for CVE-2021-29155.
+Original series was part of the pull request here: https://lore.kernel.org/bpf/20210416223700.15611-1-daniel@iogearbox.net/T/
+
+
+960114839252 ("bpf: Use correct permission flag for mixed signed bounds arithmetic")
+	* Not applicable for 4.14, as it does not have
+	  2c78ee898d8f ("bpf: Implement CAP_BPF").
+
+6f55b2f2a117 ("bpf: Move off_reg into sanitize_ptr_alu")
+	* Minor contextual conflict: verbose() does not have the env
+	  argument in 4.14.
+
+24c109bb1537 ("bpf: Ensure off_reg has no mixed signed bounds for all types")
+	* This deletes a switch() case in adjust_ptr_min_max_vals, since
+	  it moves the check in it to retrieve_ptr_limit. For 4.14, that
+	  switch() statement was still 2 if() statements, since it does not
+	  have aad2eeaf4697 ("bpf: Simplify ptr_min_max_vals adjustment").
+
+	  The equivalent change for 4.14 is to delete the PTR_TO_MAP_VALUE
+	  if().
+
+b658bbb844e2 ("bpf: Rework ptr_limit into alu_limit and add common error path")
+	* Clean cherry-pick.
+
+a6aaece00a57 ("bpf: Improve verifier error messages for users")
+	* Simple contextual conflict in adjust_scalar_min_max_vals().
+	  because of a var declaration that was added by this post-5.4 commit:
+	  3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking").
+	* Additional simple contextual conflict: verbose() does not have
+	  the env argument in 4.14.
+
+073815b756c5 ("bpf: Refactor and streamline bounds check into helper")
+	* This factors out the bounds check in adjust_ptr_min_max_vals
+	  in to a separate function. In 4.14, the bounds check block
+	  in question looks a little different, because:
+		* 4.14 still uses allow_ptr_leaks, not bypass_spec_v1.
+		* 01f810ace9ed ("bpf: Allow variable-offset stack access")
+		  changed the call to check_stack_access to a new function,
+		  check_stack_access_for_ptr_arithmetic(), and moved/changed
+		  an error message.
+	* Since this commit just factors out some code from
+	  adjust_ptr_min_max_vals() in to a new function, do the same
+  	  with the corresponding block in 4.14 that doesn't have the
+	  changes listed above from post-4.14 commits.
+	
+f528819334 ("bpf: Move sanitize_val_alu out of op switch")
+	* Resolved contextual conflict from post-4.14 commit
+	  3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking"),
+	  that added a comment on top of the switch referenced in the commit
+	  message.
+
+7fedb63a8307 ("bpf: Tighten speculative pointer arithmetic mask")
+	* Resolved contextual conflict post-4.14 commit:
+	  3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking")
+	  added a call to a new function just above the switch statement in
+	  adjust_ptr_min_max_vals. This doesn't affect the lines that were
+	  actually changed.
+	* Resolved contextual conflict:
+	  01f810ace9ed ("bpf: Allow variable-offset stack access") added
+	  a comment to the PTR_TO_STACK case in retrieve_ptr_limit. This
+	  comment is not present in 4.14, but the code is the same.
+
+d7a509135175 ("bpf: Update selftests to reflect new error states")
+	* Post-4.14, the verifier tests were split in to different
+	  files, in 4.14 they are still all in test_verifier.c.
+	* The bounds.c tests have undergone several changes since 4.14,
+	  related to commits that were not backported (like e.g. the
+	  ALU32 changes). The error message will remain the same on 4.14.
+	* 4f7b3e82589e ("bpf: improve verifier branch analysis") changed
+	  the error message for the "bounds checks mixing signed and
+	  unsigned, variant 14" test. Since 4.14 does not have that commit,
+	  this test will still produce the original error message ("R0
+	  invalid mem access 'inv'").
+
+The rest of the commits are to pull in a few commits that get the number
+of verifier/align selftest errors on the 4.14 branch down to 0. This is
+mainly about the first one:
+
+82abbf8d2fc4 ("bpf: do not allow root to mangle valid pointers")
+	* This commit has a follow-up that must be added as well,
+	  see the next commit.
+	* As the commit message states, this mostly disallows
+	  pointer mangling that was allowed by
+	  f1174f77b50c ("bpf/verifier: rework value tracking").
+	  Allowing root to mangle valid pointers also results
+	  in the unexpected successful loading of some selftests,
+	  so backporting this fixes that.
+	* Resolved contextual conflict: 4.14 does not have the
+	  env argument to verbose
+
+dd066823db2a ("bpf/verifier: disallow pointer subtraction")
+	* Fixes the above.
+	* Minor contextual conflict: mark_reg_unknown does not
+	  have an env argument on 4.14.
+
+2b36047e7889 ("selftests/bpf: fix test_align")
+	* Selftest follow-up to
+	  82abbf8d2fc4 ("bpf: do not allow root to mangle valid pointers")
+	* Clean cherry-pick.
+
+31e95b61e172 ("selftests/bpf: make 'dubious pointer arithmetic' test useful")
+	* Selftest follow-up to the above.
+	* Conflict: 4.14 does not have 'liveness' of registers in the
+	  output, so adjust the expected output to match.
+
+
+
+=====
+
+Alexei Starovoitov (4):
+  bpf: do not allow root to mangle valid pointers
+  bpf/verifier: disallow pointer subtraction
+  selftests/bpf: fix test_align
+  selftests/bpf: make 'dubious pointer arithmetic' test useful
+
+Daniel Borkmann (8):
+  bpf: Move off_reg into sanitize_ptr_alu
+  bpf: Ensure off_reg has no mixed signed bounds for all types
+  bpf: Rework ptr_limit into alu_limit and add common error path
+  bpf: Improve verifier error messages for users
+  bpf: Refactor and streamline bounds check into helper
+  bpf: Move sanitize_val_alu out of op switch
+  bpf: Tighten speculative pointer arithmetic mask
+  bpf: Update selftests to reflect new error states
+
+Frank van der Linden (1):
+  bpf: fix up selftests after backports were fixed
+
+Piotr Krysiuk (1):
+  bpf, selftests: Fix up some test_verifier cases for unprivileged
+
+Samuel Mendoza-Jonas (1):
+  bpf: Fix backport of "bpf: restrict unknown scalars of mixed signed
+    bounds for unprivileged"
+
+ kernel/bpf/verifier.c                       | 330 ++++++++++++--------
+ tools/testing/selftests/bpf/test_align.c    |  26 +-
+ tools/testing/selftests/bpf/test_verifier.c | 104 +++---
+ 3 files changed, 269 insertions(+), 191 deletions(-)
+
+-- 
+2.23.3
+
