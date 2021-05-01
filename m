@@ -2,135 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8863706FB
-	for <lists+bpf@lfdr.de>; Sat,  1 May 2021 12:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9268737084F
+	for <lists+bpf@lfdr.de>; Sat,  1 May 2021 19:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231912AbhEAKyy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 1 May 2021 06:54:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39988 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231893AbhEAKyx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 1 May 2021 06:54:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B6469AFDC;
-        Sat,  1 May 2021 10:54:02 +0000 (UTC)
-Date:   Sat, 1 May 2021 12:54:00 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Jiri Slaby <jslaby@suse.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-Message-ID: <20210501105400.GG6564@kitsune.suse.cz>
-References: <20210425111545.GL15381@kitsune.suse.cz>
- <20210426113215.GM15381@kitsune.suse.cz>
- <20210426121220.GN15381@kitsune.suse.cz>
- <20210426121401.GO15381@kitsune.suse.cz>
- <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com>
- <YIbkR6z6mxdNSzGO@krava>
- <YIcRlHQWWKbOlcXr@krava>
- <20210427121237.GK6564@kitsune.suse.cz>
- <20210430174723.GP15381@kitsune.suse.cz>
- <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
+        id S230522AbhEARz3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 1 May 2021 13:55:29 -0400
+Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:11558 "EHLO
+        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230450AbhEARz3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 1 May 2021 13:55:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1619891679; x=1651427679;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version:subject;
+  bh=vYzlsLsafZsT2f+P/qHzBl3cDiuePRZPFVQIgCtULm4=;
+  b=vYX/VSbxND2avjQzP0pZ+n78bP+ZAsvCA3GhiTlWsQmShUTdtRxbx9hb
+   0SPUdU40OFePQ1zByq84hxPvAnH4zsJ/8bzIz4l9vGr44ofZVx7WIJKsu
+   HotrkrTxmZTJxaPoyJnVIZnsgS0LxT2cvl1Okvo62c+8gV/pzNkvL0R7B
+   4=;
+X-IronPort-AV: E=Sophos;i="5.82,266,1613433600"; 
+   d="scan'208";a="930594499"
+Subject: Re: [PATCH 5.4 0/8] BPF backports for CVE-2021-29155
+Thread-Topic: [PATCH 5.4 0/8] BPF backports for CVE-2021-29155
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 01 May 2021 17:54:38 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2b-8cc5d68b.us-west-2.amazon.com (Postfix) with ESMTPS id 8901DA014B;
+        Sat,  1 May 2021 17:54:38 +0000 (UTC)
+Received: from EX13D13UWB003.ant.amazon.com (10.43.161.233) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sat, 1 May 2021 17:54:38 +0000
+Received: from EX13D13UWB003.ant.amazon.com (10.43.161.233) by
+ EX13D13UWB003.ant.amazon.com (10.43.161.233) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sat, 1 May 2021 17:54:37 +0000
+Received: from EX13D13UWB003.ant.amazon.com ([10.43.161.233]) by
+ EX13D13UWB003.ant.amazon.com ([10.43.161.233]) with mapi id 15.00.1497.015;
+ Sat, 1 May 2021 17:54:37 +0000
+From:   "van der Linden, Frank" <fllinden@amazon.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Thread-Index: AQHXPcZG0+zluwfS4Ui0HteGWjdqGKrMzZkAgAFWsoCAAFDpgA==
+Date:   Sat, 1 May 2021 17:54:37 +0000
+Message-ID: <E91B1B83-B606-4342-B273-B0990EF54B94@amazon.com>
+References: <20210429220839.15667-1-fllinden@amazon.com>
+ <YIwIX2mB/+tR0AuG@kroah.com>
+ <275977B4-72C4-4B86-9B94-47054AAA8067@amazon.com>
+ <YIzvjSU6xAHsNOkd@kroah.com>
+In-Reply-To: <YIzvjSU6xAHsNOkd@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.161.253]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <05324E7490688C4A914A40AC6C73BE93@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, May 01, 2021 at 08:45:50AM +0200, Jiri Slaby wrote:
-> On 30. 04. 21, 19:47, Michal Suchánek wrote:
-> > CC another Jiri
-> > 
-> > On Tue, Apr 27, 2021 at 02:12:37PM +0200, Michal Suchánek wrote:
-> > > On Mon, Apr 26, 2021 at 09:16:36PM +0200, Jiri Olsa wrote:
-> > > > On Mon, Apr 26, 2021 at 06:03:19PM +0200, Jiri Olsa wrote:
-> > > > > On Mon, Apr 26, 2021 at 08:41:49AM -0700, Yonghong Song wrote:
-> > > > > > 
-> > > > > > 
-> > > > > > On 4/26/21 5:14 AM, Michal Suchánek wrote:
-> > > > > > > On Mon, Apr 26, 2021 at 02:12:20PM +0200, Michal Suchánek wrote:
-> > > > > > > > On Mon, Apr 26, 2021 at 01:32:15PM +0200, Michal Suchánek wrote:
-> > > > > > > > > On Sun, Apr 25, 2021 at 01:15:45PM +0200, Michal Suchánek wrote:
-> > > > > > > > > > On Fri, Apr 23, 2021 at 07:55:28PM +0200, Michal Suchánek wrote:
-> > > > > > > > > > > On Fri, Apr 23, 2021 at 07:41:29AM -0700, Yonghong Song wrote:
-> > > > > > > > > > > > 
-> > > > > > > > > > > > 
-> > > > > > > > > > > > On 4/23/21 6:05 AM, Michal Suchánek wrote:
-> > > > > > > > > > > > > Hello,
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > I see this build error in linux-next (config attached).
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > [ 4939s]   LD      vmlinux
-> > > > > > > > > > > > > [ 4959s]   BTFIDS  vmlinux
-> > > > > > > > > > > > > [ 4959s] FAILED unresolved symbol cubictcp_state
-> > > > > > > > > > > > > [ 4960s] make[1]: ***
-> > > > > > > > > > > > > [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12~rc8.next.20210422/linux-5.12-rc8-next-20210422/Makefile:1277:
-> > > > > > > > > > > > > vmlinux] Error 255
-> > > > > > > > > > > > > [ 4960s] make: *** [../Makefile:222: __sub-make] Error 2
-> > > > > 
-> > > > > this one was reported by Jesper and was fixed by upgrading pahole
-> > > > > that contains the new function generation fixes (v1.19)
-> > > > > 
-> > > > > > > > > > > > 
-> > > > > > > > > > > > Looks like you have DYNAMIC_FTRACE config option enabled already.
-> > > > > > > > > > > > Could you try a later version of pahole?
-> > > > > > > > > > > 
-> > > > > > > > > > > Is this requireent new?
-> > > > > > > > > > > 
-> > > > > > > > > > > I have pahole 1.20, and master does build without problems.
-> > > > > > > > > > > 
-> > > > > > > > > > > If newer version is needed can a check be added?
-> > > > > > > > > > 
-> > > > > > > > > > With dwarves 1.21 some architectures are fixed and some report other
-> > > > > > > > > > missing symbol. Definitely an improvenent.
-> > > > > > > > > > 
-> > > > > > > > > > I see some new type support was added so it makes sense if that type is
-> > > > > > > > > > used the new dwarves are needed.
-> > > > > > > > > 
-> > > > > > > > > Ok, here is the current failure with dwarves 1.21 on 5.12:
-> > > > > > > > > 
-> > > > > > > > > [ 2548s]   LD      vmlinux
-> > > > > > > > > [ 2557s]   BTFIDS  vmlinux
-> > > > > > > > > [ 2557s] FAILED unresolved symbol vfs_truncate
-> > > > > > > > > [ 2558s] make[1]: ***
-> > > > > > > > > [/home/abuild/rpmbuild/BUILD/kernel-kvmsmall-5.12.0/linux-5.12/Makefile:1213:
-> > > > > > > > > vmlinux] Error 255
-> > > > > > 
-> > > > > > This is PPC64, from attached config:
-> > > > > >    CONFIG_PPC64=y
-> > > > > > I don't have environment to cross-compile for PPC64.
-> > > > > > Jiri, could you take a look? Thanks!
-> > > > > 
-> > > > > looks like vfs_truncate did not get into BTF data,
-> > > > > I'll try to reproduce
-> 
-> _None_ of the functions are generated by pahole -J from debuginfo on ppc64.
-> debuginfo appears to be correct. Neither pahole -J fs/open.o works
-> correctly. collect_functions in dwarves seems to be defunct on ppc64...
-> "functions" array is bogus (so find_function -- the bsearch -- fails). I
-> didn't have more time to continue debugging. This is where I stopped.
-
-A workaround is to apply
-https://lore.kernel.org/linuxppc-dev/20200428112517.1402927-1-npiggin@gmail.com/
-and build as ABI v2
-
-Thanks
-
-Michal
+T2ssIHRoYXQncyBmaW5lLiBJIGNhbid0IHJlYWxseSBkbyA0LjE5IHJpZ2h0IG5vdywgc29tZW9u
+ZSBlbHNlIHdpbGwgaGF2ZSB0byB0YWtlIGNhcmUgb2YgdGhhdCBvbmUuDQoNCkluIHRoZSBtZWFu
+dGltZSwgSSdsbCByZS1zZW5kIG15IDQuMTQgc2VyaWVzIHdpdGgganVzdCB0aGUgZmlyc3QgdHdv
+IHBhdGNoZXMsIHRoYXQgZml4IGEgNC4xNC1zcGVjaWZpYyBiYWNrcG9ydCBlcnJvci4NCg0KRnJh
+bmsNCg0K77u/T24gNC8zMC8yMSwgMTE6MDUgUE0sICJHcmVnIEtIIiA8Z3JlZ2toQGxpbnV4Zm91
+bmRhdGlvbi5vcmc+IHdyb3RlOg0KDQogICAgQ0FVVElPTjogVGhpcyBlbWFpbCBvcmlnaW5hdGVk
+IGZyb20gb3V0c2lkZSBvZiB0aGUgb3JnYW5pemF0aW9uLiBEbyBub3QgY2xpY2sgbGlua3Mgb3Ig
+b3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IGNhbiBjb25maXJtIHRoZSBzZW5kZXIgYW5kIGtu
+b3cgdGhlIGNvbnRlbnQgaXMgc2FmZS4NCg0KDQoNCiAgICBPbiBGcmksIEFwciAzMCwgMjAyMSBh
+dCAwNDozODoyOVBNICswMDAwLCB2YW4gZGVyIExpbmRlbiwgRnJhbmsgd3JvdGU6DQogICAgPiBT
+dXJlLiBJIGhhdmUgYSA0LjE0IG9uZSBjb21pbmcgdXAgdG9vLCBidXQgdGhhdCBvbmUgd2FzIGp1
+c3QgYSBsaXR0bGUgaGFyZGVyLCBhbmQgaXQgYWxzbyBjb3JyZWN0cyBhIHByZXZpb3VzIGJhY2tw
+b3J0IGVycm9yIHRoYXQgd2FzIG1hZGUgKGNvcnJlY3Rpb24gd2FzIGFscmVhZHkgYWNrZWQpLCBh
+bmQgcGlja3Mgc29tZSBvdGhlciBjb21taXRzIHRvIGdldCBzZWxmdGVzdHMgY2xlYW4uIFNvIEkn
+bGwgcHJvYmFibHkgc2VuZCBpdCB0byBqdXN0IGJwZkAgZmlyc3QuDQogICAgPg0KICAgID4gT3Ro
+ZXJzIHdpbGwgaGF2ZSB0byB0YWtlIGNhcmUgb2YgNC4xOSBvciBvbGRlciBrZXJuZWxzLCB0aG91
+Z2gsIGp1c3QgZmxhZ2dpbmcgdGhhdCBJIGhhdmUgZG9uZSB0aGUgNC4xNCBiYWNrcG9ydCBmb3Ig
+dGhlc2UuDQoNCiAgICBJIGNhbiBub3QgdGFrZSBmaXhlcyBmb3IgNC4xNCB0aGF0IGFyZSBub3Qg
+YWxzbyBpbiA0LjE5LCBzb3JyeSwgYXMgd2UNCiAgICBjYW4gbm90IGhhdmUgcGVvcGxlIHVwZ3Jh
+ZGluZyB0byBuZXdlciBrZXJuZWxzIGFuZCBoYXZlIHJlZ3Jlc3Npb25zLg0KDQogICAgdGhhbmtz
+LA0KDQogICAgZ3JlZyBrLWgNCg0K
