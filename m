@@ -2,72 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF5D370D63
-	for <lists+bpf@lfdr.de>; Sun,  2 May 2021 16:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8DB370F4A
+	for <lists+bpf@lfdr.de>; Sun,  2 May 2021 23:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233810AbhEBOLn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 May 2021 10:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233633AbhEBOLj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 2 May 2021 10:11:39 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BDDC0611CC
-        for <bpf@vger.kernel.org>; Sun,  2 May 2021 07:09:44 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id a11so1442670plh.3
-        for <bpf@vger.kernel.org>; Sun, 02 May 2021 07:09:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=/B3EkmiRzBjy3tnFB7ygn8CunneH73qG5mGA67K5zOU=;
-        b=T14ANBYbhOZJqSYJb+xYMKescZHX1DgD0H/E5q6Pjo2O+GQdi2ZtDPXv/KIrHkJjQo
-         +sTsVjJL+3szMzTTUZLLibM2gH9aCiP9+PtdIRwBvRGnNWD+0I3rrY30xplqFyuNV6Db
-         ToWqHYbt6fgQscEXePhtn6k7Vjs6lbZNhH8mUuhgVZiggNBpSnf2EIkSWzCCUnMwR1wC
-         fe8jDM8ptTrUHrOA+8xx+MVpBQOG9mwCuXgUN1CfoecZzMmwaJp0DxZ1f34WTkB8liMZ
-         EpKG6iiu/tZgZwML1/oMIHjAgFKPAfYuZV8jUZv4AJleB/6u03bvWnS9yZv5AURKThGY
-         J9gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=/B3EkmiRzBjy3tnFB7ygn8CunneH73qG5mGA67K5zOU=;
-        b=aviHl65DJ7bV3nyGT46AUTiN9CPka9yciVKJKQOmNuBirkBfGmD1/i1JVXqOj9IcZB
-         +mgukusrv/pN1RpdgC436YdD4opDE5vFO03U3UMGaeWoKF3JeMeYLBzT3A5CagcWxFmi
-         JoH1hx7gqFTqKP/YzYr4VQxfqgFMiewjria/6bWc3WQIBhRzpFLkLp1A41PjvCaV4/gZ
-         NFoxbIPRV9Ntsrt4TYoAxlkLXhNhkB4CAfoIOvAQwa+lKGcxfzHL+a05uwcNFRgKA/hs
-         +XJto5JobOAQmADcvS6+4mhmxDvvV40CtN+Iy+j0vFWEmv9s4odEJTZZSgkbELA8vLJC
-         gbhw==
-X-Gm-Message-State: AOAM530iS5I+//NkoN/aD8H7wwYXPbQbYWzB7rqR3kemM9qzCXGb5eCP
-        qDp9em9gO/W7NRoLJmGtLN0VTCrvoIIHOVyOMgY=
-X-Google-Smtp-Source: ABdhPJwPMLuMw3wFfKqTebor912YAQZb/W06zKBaf6KLWMaSECyYX+vcvO1pETMBlHpxL6eoatQ5H05GDZGlJEKhY8M=
-X-Received: by 2002:a17:902:d884:b029:ec:9fcd:2311 with SMTP id
- b4-20020a170902d884b02900ec9fcd2311mr15209073plz.80.1619964584055; Sun, 02
- May 2021 07:09:44 -0700 (PDT)
+        id S232584AbhEBVRT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 May 2021 17:17:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55542 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232338AbhEBVRS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 2 May 2021 17:17:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1619990184;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9vKw5hk7tIYDtjcdPoLMlQVBcmuTSreBiYjqIbG38g8=;
+        b=VZKwH3Dx4NghOOYvJyLlyauxe48Ov5cJ7pJRJ9V34cHGmH2CjZZB8nHlQzo6nnHZnB183Q
+        noJJQlV+7gL9iwtp+Yop1d38xgFZHvOa9NbYGxyZ6TxrOaEJzZupiVhcIex0en4pgSIuOB
+        pTP9eMMI+gLBjaYw61ETD443Tskgxvw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-416-RoziS3rEM7K2iJ5mKypHqQ-1; Sun, 02 May 2021 17:16:23 -0400
+X-MC-Unique: RoziS3rEM7K2iJ5mKypHqQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97D5F8015BA;
+        Sun,  2 May 2021 21:16:21 +0000 (UTC)
+Received: from krava (unknown [10.40.192.83])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 3F499687E4;
+        Sun,  2 May 2021 21:16:19 +0000 (UTC)
+Date:   Sun, 2 May 2021 23:16:18 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH RFC] bpf: Fix trampoline for functions with variable
+ arguments
+Message-ID: <YI8WokIxTkZvzVuP@krava>
+References: <20210429212834.82621-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Reply-To: zinahamza139@gmail.com
-Sender: mrkaboreisa20@gmail.com
-Received: by 2002:a05:6a10:454:0:0:0:0 with HTTP; Sun, 2 May 2021 07:09:43
- -0700 (PDT)
-From:   Zina Hamza <zinahamza139@gmail.com>
-Date:   Sun, 2 May 2021 14:09:43 +0000
-X-Google-Sender-Auth: 8YnsMEk7ZtEtJAmrfg5G0AipLaQ
-Message-ID: <CADqnB4sBgDfQEL06RyjbS15H1pXJCxNE=zem0mzznyd6+buE2w@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429212834.82621-1-jolsa@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Thu, Apr 29, 2021 at 11:28:34PM +0200, Jiri Olsa wrote:
+> For functions with variable arguments like:
+> 
+>   void set_worker_desc(const char *fmt, ...)
+> 
+> the BTF data contains void argument at the end:
+> 
+> [4061] FUNC_PROTO '(anon)' ret_type_id=0 vlen=2
+>         'fmt' type_id=3
+>         '(anon)' type_id=0
+> 
+> When attaching function with this void argument the btf_distill_func_proto
+> will set last btf_func_model's argument with size 0 and that
+> will cause extra loop in save_regs/restore_regs functions and
+> generate trampoline code like:
+> 
+>   55             push   %rbp
+>   48 89 e5       mov    %rsp,%rbp
+>   48 83 ec 10    sub    $0x10,%rsp
+>   53             push   %rbx
+>   48 89 7d f0    mov    %rdi,-0x10(%rbp)
+>   75 f8          jne    0xffffffffa00cf007
+>                  ^^^ extra jump
+> 
+> It's causing soft lockups/crashes probably depends on what context
+> is the attached function called, like for set_worker_desc:
+> 
+>   watchdog: BUG: soft lockup - CPU#16 stuck for 22s! [kworker/u40:4:239]
+>   CPU: 16 PID: 239 Comm: kworker/u40:4 Not tainted 5.12.0-rc4qemu+ #178
+>   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1.fc33 04/01/2014
+>   Workqueue: writeback wb_workfn
+>   RIP: 0010:bpf_trampoline_6442464853_0+0xa/0x1000
+>   Code: Unable to access opcode bytes at RIP 0xffffffffa3597fe0.
+>   RSP: 0018:ffffc90000687da8 EFLAGS: 00000217
+>   Call Trace:
+>    set_worker_desc+0x5/0xb0
+>    wb_workfn+0x48/0x4d0
+>    ? psi_group_change+0x41/0x210
+>    ? __bpf_prog_exit+0x15/0x20
+>    ? bpf_trampoline_6442458903_0+0x3b/0x1000
+>    ? update_pasid+0x5/0x90
+>    ? __switch_to+0x187/0x450
+>    process_one_work+0x1e7/0x380
+>    worker_thread+0x50/0x3b0
+>    ? rescuer_thread+0x380/0x380
+>    kthread+0x11b/0x140
+>    ? __kthread_bind_mask+0x60/0x60
+>    ret_from_fork+0x22/0x30
+> 
+> This patch is removing the void argument from struct btf_func_model
+> in btf_distill_func_proto, but perhaps we should also check for this
+> in JIT's save_regs/restore_regs functions.
 
-How are you today? I feel like communicating with you, my name is Zina
-single marital status, i am 25 years old. I will send my photo at
-least for you to see who is writing to you. I will give you a full
-explanation about myself, my reasons and purposes to contact you.
+actualy looks like we need to disable functions with variable arguments
+completely, because we don't know how many arguments to save
 
-Feel free to write back to me, please.
+I tried to disable them in pahole and it's easy fix, will post new fix
 
-Sincerely,
+jirka
 
-Zina
