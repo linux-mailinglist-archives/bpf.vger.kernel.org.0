@@ -2,106 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7857537092E
-	for <lists+bpf@lfdr.de>; Sun,  2 May 2021 00:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A344370B3B
+	for <lists+bpf@lfdr.de>; Sun,  2 May 2021 13:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbhEAWYu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 1 May 2021 18:24:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32757 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231556AbhEAWYu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 1 May 2021 18:24:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619907839;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+MedoDODyMEto3dKCGmECCaYVpeBj8F55MahbTKAz34=;
-        b=ADx6katHOogtOUAfJYqYkOKmE6xgCP1iLzc3YsAElMsE/XesdetWkGPxoe7j5lJ31dSEs3
-        L3Akq3FnszCGJtFiTfyW3sdNXWqUgH+bThAeLM+QVXToTOfpjP33Kp3pfXl01eJpaPeVpu
-        4AyEKKcPe8B/Z5qrhhJi/q69ouxmUic=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-Mca2dzhaOTikoG9ICueiBQ-1; Sat, 01 May 2021 18:23:56 -0400
-X-MC-Unique: Mca2dzhaOTikoG9ICueiBQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D06C0501FE;
-        Sat,  1 May 2021 22:23:54 +0000 (UTC)
-Received: from krava (unknown [10.40.192.65])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 25FA0501DD;
-        Sat,  1 May 2021 22:23:52 +0000 (UTC)
-Date:   Sun, 2 May 2021 00:23:52 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH dwarves] btf: Generate btf for functions in the .BTF_ids
- section
-Message-ID: <YI3U+Ffh9O1VFsOW@krava>
-References: <20210423213728.3538141-1-kafai@fb.com>
- <CAEf4BzY16ziMkOMdNGNjQOmiACF3E5nFn2LhtUUQbo-y-AP7Tg@mail.gmail.com>
- <YIf3rHTLqW7yZxFJ@krava>
- <20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com>
+        id S231468AbhEBLIk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 2 May 2021 07:08:40 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:59025 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229676AbhEBLIk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 2 May 2021 07:08:40 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id B052C5C0139;
+        Sun,  2 May 2021 07:07:48 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sun, 02 May 2021 07:07:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=WskG/OD6iDGM3tGuVuHnDVnPhSz
+        HnoKfmrpeNdwCzlA=; b=dwspbK951drYhLhUPzplAdCyEBbw/GjYinHyKIT6OEO
+        FmsNpqdMJx4lttBPW3pbouapYLxhcqQ1sHhmlr+chEje+bVmeS3vHqRl8iao0ZSE
+        E6/S8+YyA/SZUQrpsTRtoY4OJATRTgjQI8QbL+UBrTuYxzMVX4aw9b4Z3r+e+HU2
+        K28x0a5Q0cQczPNMCboF4hkvnpvPN0QNncnQgwGvA1lc5SBUK53BrfcVw0VyQ5Vg
+        JEspFrODZwCOD0MDvWr9QsdzhZJCjKoelQhU3/fnSirDZoa3si4lMEjtEu1Qyi99
+        lDjpu/r383BUBhJI3q+jQv9frM9A2/2cFwN7wDxpolw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=WskG/O
+        D6iDGM3tGuVuHnDVnPhSzHnoKfmrpeNdwCzlA=; b=fB1ZpLARnxb0q/3EAa72MK
+        e4L0/boZieVzFshTlotI9tRq6JJ1ABBvBRRnftZ8qgjeAsn+qVjzTPbK79IVI2RZ
+        9k17ZK3SF6mYkeEVeKJPfzeDY7obwPxAa9DPW9Afny3ztxYbard26ViPC5HG712c
+        m7X947YKTZYbY8PA+/OCmW7l6ZWssuEKR5jxhKEvlg4Fu88NiW4C8esE2X8nqFdJ
+        gSL+kcr2VmFUdxlYCqEhsummyS3kCwl84FoOSK64ondvOxPnAJLGp/jgOmE7hILi
+        RfaxinGqlvTfjqFNjnuG0x2EZtip2GlyYUloxUkPhwH6rzaXtiCB+frBj9l3W7ww
+        ==
+X-ME-Sender: <xms:BIiOYGHBEVGUOYBB8zfVUfY34Bu-f9PCRdb4Ed7HGwxgjKCPQkEIYw>
+    <xme:BIiOYHWYriO28C0TcmL3WK6_ZgwzQaT-m_n7of50i9SQMpX1qOpDc1ZGbe264AJzv
+    XekZtqIbqKOiA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefuddgkeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
+    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
+    nhepkhgvrhhnvghlrdhorhhgnecukfhppeekfedrkeeirdejgedrieegnecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghh
+    rdgtohhm
+X-ME-Proxy: <xmx:BIiOYAJgjAct-T6L1dKCbOqiUwiRo-je9b5iGs1QF9vxy62lH5cfSg>
+    <xmx:BIiOYAEZwtdKj8YJREZ8zjmSWtDg28k3aDvebWFZ3OPcg6Jnua3GCg>
+    <xmx:BIiOYMVPS2cfwVaBzkCbjbiWDcGz3m4hDWODxtbgSmNEL1f4NrKjDQ>
+    <xmx:BIiOYGcKR6ragtr6ToVnryfomHEnBczOZntaorCxS_mX5EnhsRW-Wg>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Sun,  2 May 2021 07:07:48 -0400 (EDT)
+Date:   Sun, 2 May 2021 13:07:46 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Frank van der Linden <fllinden@amazon.com>
+Cc:     stable@vger.kernel.org, bpf@vger.kernel.org, samjonas@amazon.com
+Subject: Re: [PATCH 4.14 0/2] fix BPF backports
+Message-ID: <YI6IAifGT+uieF+g@kroah.com>
+References: <20210501180506.19154-1-fllinden@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210501180506.19154-1-fllinden@amazon.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 05:16:53PM -0700, Martin KaFai Lau wrote:
-> On Tue, Apr 27, 2021 at 01:38:20PM +0200, Jiri Olsa wrote:
-> > On Mon, Apr 26, 2021 at 04:26:11PM -0700, Andrii Nakryiko wrote:
-> > > On Fri, Apr 23, 2021 at 2:37 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > >
-> > > > BTF is currently generated for functions that are in ftrace list
-> > > > or extern.
-> > > >
-> > > > A recent use case also needs BTF generated for functions included in
-> > > > allowlist.  In particular, the kernel
-> > > > commit e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc")
-> > > > allows bpf program to directly call a few tcp cc kernel functions.  Those
-> > > > functions are specified under an ELF section .BTF_ids.  The symbols
-> > > > in this ELF section is like __BTF_ID__func__<kernel_func>__[digit]+.
-> > > > For example, __BTF_ID__func__cubictcp_init__1.  Those kernel
-> > > > functions are currently allowed only if CONFIG_DYNAMIC_FTRACE is
-> > > > set to ensure they are in the ftrace list but this kconfig dependency
-> > > > is unnecessary.
-> > > >
-> > > > pahole can generate BTF for those kernel functions if it knows they
-> > > > are in the allowlist.  This patch is to capture those symbols
-> > > > in the .BTF_ids section and generate BTF for them.
-> > > >
-> > > > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > > > ---
-> > > 
-> > > I wonder if we just record all functions how bad that would be. Jiri,
-> > > do you remember from the time you were experimenting with static
-> > > functions how much more functions we'd be recording if we didn't do
-> > > ftrace filtering?
-> > 
-> > hum, I can't find that.. but should be just matter of removing
-> > that is_ftrace_func check
-> In my kconfig, by ignoring is_ftrace_func(),
-> number of FUNC: 40643 vs 46225
+On Sat, May 01, 2021 at 06:05:04PM +0000, Frank van der Linden wrote:
+> These are the first two patches in https://lore.kernel.org/stable/20210501043014.33300-1-fllinden@amazon.com/
 > 
-> I would say skip the ftrace filtering instead of my current patch.  Thoughts?
+> I will re-send the rest of that series as soon as the other bpf backports
+> hit the 4.19 branch.
 > 
+> This fixes errors in earlier bpf 4.14 backports. The verifier fix was
+> sent in earlier to bpf@ by Sam, and acked. I added the selftests
+> fix.
 
-I tested on arm and got 25022 vs 55812 ;-)
-and of course it fixes the compilation issue with cubictcp_state
+Both of these here now queued up, thanks.
 
-I checked the pahole changelog and the original idea was to have only
-traceable functions in BTF, but we need more than that now, so I'm ok
-to skip the ftrace filter
-
-jirka
-
+greg k-h
