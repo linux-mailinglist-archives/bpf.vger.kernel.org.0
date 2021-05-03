@@ -2,116 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E8DB370F4A
-	for <lists+bpf@lfdr.de>; Sun,  2 May 2021 23:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BAE371183
+	for <lists+bpf@lfdr.de>; Mon,  3 May 2021 08:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232584AbhEBVRT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 2 May 2021 17:17:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55542 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232338AbhEBVRS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 2 May 2021 17:17:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1619990184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9vKw5hk7tIYDtjcdPoLMlQVBcmuTSreBiYjqIbG38g8=;
-        b=VZKwH3Dx4NghOOYvJyLlyauxe48Ov5cJ7pJRJ9V34cHGmH2CjZZB8nHlQzo6nnHZnB183Q
-        noJJQlV+7gL9iwtp+Yop1d38xgFZHvOa9NbYGxyZ6TxrOaEJzZupiVhcIex0en4pgSIuOB
-        pTP9eMMI+gLBjaYw61ETD443Tskgxvw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-416-RoziS3rEM7K2iJ5mKypHqQ-1; Sun, 02 May 2021 17:16:23 -0400
-X-MC-Unique: RoziS3rEM7K2iJ5mKypHqQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97D5F8015BA;
-        Sun,  2 May 2021 21:16:21 +0000 (UTC)
-Received: from krava (unknown [10.40.192.83])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 3F499687E4;
-        Sun,  2 May 2021 21:16:19 +0000 (UTC)
-Date:   Sun, 2 May 2021 23:16:18 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S229817AbhECGMs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 May 2021 02:12:48 -0400
+Received: from mail-ed1-f46.google.com ([209.85.208.46]:33345 "EHLO
+        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhECGMr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 May 2021 02:12:47 -0400
+Received: by mail-ed1-f46.google.com with SMTP id b17so1942843ede.0;
+        Sun, 02 May 2021 23:11:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=u6dllkfTunOmmWDlfdYLQPlhXcmW/nhP0re3VgLHi0A=;
+        b=jDSMUfI8NTtT+j1QpJp26a3hx/sZUCgQIpXFs1CjL0bNPp3dyh1MxOtqNi6NInX/Tg
+         HdPDb3XbFVBe4JcxhkKMi+IHkGW9H7KFGSLxH32mtoyyuVjDn8d942TswljNKP2jbVuE
+         jvJAGo5ShM6pBF+O7nLVUfrWwYeGpnKqEo7oaoTe33iUcVY3AQrQPbkSBtSw7Mq1o6bM
+         Oh655AZLgiY3MpU+M3m5HD9WhqSXVgkGNfZ30gTdEf8XPf240BdMPDB1WXJTj3gy6wY6
+         7U3UKhnjwYXWiQfy4JKoIhLur698z0UuHdNfd3xRnnZAMCQEKb+OQRdR7eAU3bsNFiOt
+         +cJw==
+X-Gm-Message-State: AOAM533TVUi0oTf5C3ZORonITUgBkuJCX8k2uw/XJ4fnWGrzLCcNTPn2
+        LNC1EbRLrhA2Wp9Xu4nfwYc=
+X-Google-Smtp-Source: ABdhPJwujS7TKACTBSJsGznqtoH6PAnWwtS/tVhuGvBvHrh9s48flAss/rGF3MYieOY1O+/CbbRWMQ==
+X-Received: by 2002:aa7:c789:: with SMTP id n9mr18514262eds.352.1620022312298;
+        Sun, 02 May 2021 23:11:52 -0700 (PDT)
+Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id r15sm7525253edp.62.2021.05.02.23.11.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 02 May 2021 23:11:51 -0700 (PDT)
+Subject: Re: linux-next failing build due to missing cubictcp_state symbol
+From:   Jiri Slaby <jirislaby@kernel.org>
+To:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH RFC] bpf: Fix trampoline for functions with variable
- arguments
-Message-ID: <YI8WokIxTkZvzVuP@krava>
-References: <20210429212834.82621-1-jolsa@kernel.org>
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+References: <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
+ <20210423175528.GF6564@kitsune.suse.cz>
+ <20210425111545.GL15381@kitsune.suse.cz>
+ <20210426113215.GM15381@kitsune.suse.cz>
+ <20210426121220.GN15381@kitsune.suse.cz>
+ <20210426121401.GO15381@kitsune.suse.cz>
+ <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com> <YIbkR6z6mxdNSzGO@krava>
+ <YIcRlHQWWKbOlcXr@krava> <20210427121237.GK6564@kitsune.suse.cz>
+ <20210430174723.GP15381@kitsune.suse.cz>
+ <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
+Message-ID: <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
+Date:   Mon, 3 May 2021 08:11:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429212834.82621-1-jolsa@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 11:28:34PM +0200, Jiri Olsa wrote:
-> For functions with variable arguments like:
+On 01. 05. 21, 8:45, Jiri Slaby wrote:
+> On 30. 04. 21, 19:47, Michal Suchánek wrote:
+>> CC another Jiri
+>>
+>> On Tue, Apr 27, 2021 at 02:12:37PM +0200, Michal Suchánek wrote:
+>>> On Mon, Apr 26, 2021 at 09:16:36PM +0200, Jiri Olsa wrote:
+>>>> On Mon, Apr 26, 2021 at 06:03:19PM +0200, Jiri Olsa wrote:
+>>>>> On Mon, Apr 26, 2021 at 08:41:49AM -0700, Yonghong Song wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 4/26/21 5:14 AM, Michal Suchánek wrote:
+>>>>>>> On Mon, Apr 26, 2021 at 02:12:20PM +0200, Michal Suchánek wrote:
+>>>>>>>> On Mon, Apr 26, 2021 at 01:32:15PM +0200, Michal Suchánek wrote:
+>>>>>>>>> On Sun, Apr 25, 2021 at 01:15:45PM +0200, Michal Suchánek wrote:
+>>>>>>>>>> On Fri, Apr 23, 2021 at 07:55:28PM +0200, Michal Suchánek wrote:
+>>>>>>>>>>> On Fri, Apr 23, 2021 at 07:41:29AM -0700, Yonghong Song wrote:
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> On 4/23/21 6:05 AM, Michal Suchánek wrote:
+>>>>>>>>>>>>> Hello,
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> I see this build error in linux-next (config attached).
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> [ 4939s]   LD      vmlinux
+>>>>>>>>>>>>> [ 4959s]   BTFIDS  vmlinux
+>>>>>>>>>>>>> [ 4959s] FAILED unresolved symbol cubictcp_state
+>>>>>>>>>>>>> [ 4960s] make[1]: ***
+>>>>>>>>>>>>> [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12~rc8.next.20210422/linux-5.12-rc8-next-20210422/Makefile:1277: 
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> vmlinux] Error 255
+>>>>>>>>>>>>> [ 4960s] make: *** [../Makefile:222: __sub-make] Error 2
+>>>>>
+>>>>> this one was reported by Jesper and was fixed by upgrading pahole
+>>>>> that contains the new function generation fixes (v1.19)
+>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> Looks like you have DYNAMIC_FTRACE config option enabled 
+>>>>>>>>>>>> already.
+>>>>>>>>>>>> Could you try a later version of pahole?
+>>>>>>>>>>>
+>>>>>>>>>>> Is this requireent new?
+>>>>>>>>>>>
+>>>>>>>>>>> I have pahole 1.20, and master does build without problems.
+>>>>>>>>>>>
+>>>>>>>>>>> If newer version is needed can a check be added?
+>>>>>>>>>>
+>>>>>>>>>> With dwarves 1.21 some architectures are fixed and some report 
+>>>>>>>>>> other
+>>>>>>>>>> missing symbol. Definitely an improvenent.
+>>>>>>>>>>
+>>>>>>>>>> I see some new type support was added so it makes sense if 
+>>>>>>>>>> that type is
+>>>>>>>>>> used the new dwarves are needed.
+>>>>>>>>>
+>>>>>>>>> Ok, here is the current failure with dwarves 1.21 on 5.12:
+>>>>>>>>>
+>>>>>>>>> [ 2548s]   LD      vmlinux
+>>>>>>>>> [ 2557s]   BTFIDS  vmlinux
+>>>>>>>>> [ 2557s] FAILED unresolved symbol vfs_truncate
+>>>>>>>>> [ 2558s] make[1]: ***
+>>>>>>>>> [/home/abuild/rpmbuild/BUILD/kernel-kvmsmall-5.12.0/linux-5.12/Makefile:1213: 
+>>>>>>>>>
+>>>>>>>>> vmlinux] Error 255
+>>>>>>
+>>>>>> This is PPC64, from attached config:
+>>>>>>    CONFIG_PPC64=y
+>>>>>> I don't have environment to cross-compile for PPC64.
+>>>>>> Jiri, could you take a look? Thanks!
+>>>>>
+>>>>> looks like vfs_truncate did not get into BTF data,
+>>>>> I'll try to reproduce
 > 
->   void set_worker_desc(const char *fmt, ...)
-> 
-> the BTF data contains void argument at the end:
-> 
-> [4061] FUNC_PROTO '(anon)' ret_type_id=0 vlen=2
->         'fmt' type_id=3
->         '(anon)' type_id=0
-> 
-> When attaching function with this void argument the btf_distill_func_proto
-> will set last btf_func_model's argument with size 0 and that
-> will cause extra loop in save_regs/restore_regs functions and
-> generate trampoline code like:
-> 
->   55             push   %rbp
->   48 89 e5       mov    %rsp,%rbp
->   48 83 ec 10    sub    $0x10,%rsp
->   53             push   %rbx
->   48 89 7d f0    mov    %rdi,-0x10(%rbp)
->   75 f8          jne    0xffffffffa00cf007
->                  ^^^ extra jump
-> 
-> It's causing soft lockups/crashes probably depends on what context
-> is the attached function called, like for set_worker_desc:
-> 
->   watchdog: BUG: soft lockup - CPU#16 stuck for 22s! [kworker/u40:4:239]
->   CPU: 16 PID: 239 Comm: kworker/u40:4 Not tainted 5.12.0-rc4qemu+ #178
->   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1.fc33 04/01/2014
->   Workqueue: writeback wb_workfn
->   RIP: 0010:bpf_trampoline_6442464853_0+0xa/0x1000
->   Code: Unable to access opcode bytes at RIP 0xffffffffa3597fe0.
->   RSP: 0018:ffffc90000687da8 EFLAGS: 00000217
->   Call Trace:
->    set_worker_desc+0x5/0xb0
->    wb_workfn+0x48/0x4d0
->    ? psi_group_change+0x41/0x210
->    ? __bpf_prog_exit+0x15/0x20
->    ? bpf_trampoline_6442458903_0+0x3b/0x1000
->    ? update_pasid+0x5/0x90
->    ? __switch_to+0x187/0x450
->    process_one_work+0x1e7/0x380
->    worker_thread+0x50/0x3b0
->    ? rescuer_thread+0x380/0x380
->    kthread+0x11b/0x140
->    ? __kthread_bind_mask+0x60/0x60
->    ret_from_fork+0x22/0x30
-> 
-> This patch is removing the void argument from struct btf_func_model
-> in btf_distill_func_proto, but perhaps we should also check for this
-> in JIT's save_regs/restore_regs functions.
+> _None_ of the functions are generated by pahole -J from debuginfo on 
+> ppc64. debuginfo appears to be correct. Neither pahole -J fs/open.o 
+> works correctly. collect_functions in dwarves seems to be defunct on 
+> ppc64... "functions" array is bogus (so find_function -- the bsearch -- 
+> fails).
 
-actualy looks like we need to disable functions with variable arguments
-completely, because we don't know how many arguments to save
+It's not that bogus. I forgot an asterisk:
+> #0  find_function (btfe=0x100269f80, name=0x10024631c "stream_open") at /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
+> (gdb) p (*functions)@84
+> $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr = 75232, size = 72, sh_addr = 65536, generated = false}, {
+>     name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592, size = 216, sh_addr = 65536, generated = false}, {
+>     name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr = 80816, size = 232, sh_addr = 65536, generated = false}, {
+>     name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr = 74304, size = 100, sh_addr = 65536, generated = false}, {
+...
+>     name = 0x7ffff68e0808 ".stream_open", addr = 65824, size = 72, sh_addr = 65536, generated = false}, {
+...
+>     name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size = 544, sh_addr = 65536, generated = false}}
 
-I tried to disable them in pahole and it's easy fix, will post new fix
+The dot makes the difference, of course. The question is why is it 
+there? I keep looking into it. Only if someone has an immediate idea...
 
-jirka
-
+thanks,
+-- 
+js
+suse labs
