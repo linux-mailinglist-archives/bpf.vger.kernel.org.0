@@ -2,158 +2,290 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7D23711E3
-	for <lists+bpf@lfdr.de>; Mon,  3 May 2021 09:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53ACA3711F4
+	for <lists+bpf@lfdr.de>; Mon,  3 May 2021 09:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229820AbhECHOT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 May 2021 03:14:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55218 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229817AbhECHOS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 May 2021 03:14:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B87ADB048;
-        Mon,  3 May 2021 07:13:24 +0000 (UTC)
-Date:   Mon, 3 May 2021 09:13:18 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        id S232906AbhECH3P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 May 2021 03:29:15 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45504 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230137AbhECH3O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 May 2021 03:29:14 -0400
+From:   Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620026901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lnMA+OUmhXXkHcV6xf3HncT31uRT6aehtZ0J5kcXNQM=;
+        b=bS90ZGhQIUrklvSXyJ6u/helnbvMKBJCTg/fprbeMoAWwVVlOjB4JskGb2Vm+UJFeIPPi6
+        Ay6vDf7ZgG8jKlCo6o9LJFo9ONrmDPpjnExRps9lePDdIWy6MzVAoEdb8oE1ebAdSxKFp0
+        NJFCv47ZWAmTCmyDy6Bqj45JkY8PoJfTGYTjRBWBW4+6Mlwh9XAjlYPBetkNg0Va7d8KmZ
+        i/WdlJ/N6ZxAc2LxGzlKFHApSc24XXrzplHb+lMgLSakAXFQQ8tYijmyH6fJFAQStL8kIT
+        fT4Q0sVxwVSh84938G75W9Euqo1xEIGlJqoJGETaXxwmGHCRXsv45p0xaDsqtA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620026901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lnMA+OUmhXXkHcV6xf3HncT31uRT6aehtZ0J5kcXNQM=;
+        b=OhOOP6la9yQ1YKHpRb41rAsqcuYwtaM9a5mLlJyQswVhTawlH+o/sEne4fEHTTnCfiCYHu
+        M0gIYgjv02/NHGCA==
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-Message-ID: <20210503071318.GJ6564@kitsune.suse.cz>
-References: <20210426113215.GM15381@kitsune.suse.cz>
- <20210426121220.GN15381@kitsune.suse.cz>
- <20210426121401.GO15381@kitsune.suse.cz>
- <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com>
- <YIbkR6z6mxdNSzGO@krava>
- <YIcRlHQWWKbOlcXr@krava>
- <20210427121237.GK6564@kitsune.suse.cz>
- <20210430174723.GP15381@kitsune.suse.cz>
- <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
- <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
+        Sven Auhagen <sven.auhagen@voleatech.de>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Tyler S <tylerjstachecki@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>
+Subject: [PATCH net v4] igb: Fix XDP with PTP enabled
+Date:   Mon,  3 May 2021 09:28:00 +0200
+Message-Id: <20210503072800.79936-1-kurt@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
-User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 03, 2021 at 08:11:50AM +0200, Jiri Slaby wrote:
-> On 01. 05. 21, 8:45, Jiri Slaby wrote:
-> > On 30. 04. 21, 19:47, Michal Suchánek wrote:
-> > > CC another Jiri
-> > > 
-> > > On Tue, Apr 27, 2021 at 02:12:37PM +0200, Michal Suchánek wrote:
-> > > > On Mon, Apr 26, 2021 at 09:16:36PM +0200, Jiri Olsa wrote:
-> > > > > On Mon, Apr 26, 2021 at 06:03:19PM +0200, Jiri Olsa wrote:
-> > > > > > On Mon, Apr 26, 2021 at 08:41:49AM -0700, Yonghong Song wrote:
-> > > > > > > 
-> > > > > > > 
-> > > > > > > On 4/26/21 5:14 AM, Michal Suchánek wrote:
-> > > > > > > > On Mon, Apr 26, 2021 at 02:12:20PM +0200, Michal Suchánek wrote:
-> > > > > > > > > On Mon, Apr 26, 2021 at 01:32:15PM +0200, Michal Suchánek wrote:
-> > > > > > > > > > On Sun, Apr 25, 2021 at 01:15:45PM +0200, Michal Suchánek wrote:
-> > > > > > > > > > > On Fri, Apr 23, 2021 at 07:55:28PM +0200, Michal Suchánek wrote:
-> > > > > > > > > > > > On Fri, Apr 23, 2021 at 07:41:29AM -0700, Yonghong Song wrote:
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > On 4/23/21 6:05 AM, Michal Suchánek wrote:
-> > > > > > > > > > > > > > Hello,
-> > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > I see this build error in linux-next (config attached).
-> > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > [ 4939s]   LD      vmlinux
-> > > > > > > > > > > > > > [ 4959s]   BTFIDS  vmlinux
-> > > > > > > > > > > > > > [ 4959s] FAILED unresolved symbol cubictcp_state
-> > > > > > > > > > > > > > [ 4960s] make[1]: ***
-> > > > > > > > > > > > > > [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12~rc8.next.20210422/linux-5.12-rc8-next-20210422/Makefile:1277:
-> > > > > > > > > > > > > > 
-> > > > > > > > > > > > > > vmlinux] Error 255
-> > > > > > > > > > > > > > [ 4960s] make: *** [../Makefile:222: __sub-make] Error 2
-> > > > > > 
-> > > > > > this one was reported by Jesper and was fixed by upgrading pahole
-> > > > > > that contains the new function generation fixes (v1.19)
-> > > > > > 
-> > > > > > > > > > > > > 
-> > > > > > > > > > > > > Looks like you have
-> > > > > > > > > > > > > DYNAMIC_FTRACE config option
-> > > > > > > > > > > > > enabled already.
-> > > > > > > > > > > > > Could you try a later version of pahole?
-> > > > > > > > > > > > 
-> > > > > > > > > > > > Is this requireent new?
-> > > > > > > > > > > > 
-> > > > > > > > > > > > I have pahole 1.20, and master does build without problems.
-> > > > > > > > > > > > 
-> > > > > > > > > > > > If newer version is needed can a check be added?
-> > > > > > > > > > > 
-> > > > > > > > > > > With dwarves 1.21 some architectures
-> > > > > > > > > > > are fixed and some report other
-> > > > > > > > > > > missing symbol. Definitely an improvenent.
-> > > > > > > > > > > 
-> > > > > > > > > > > I see some new type support was
-> > > > > > > > > > > added so it makes sense if that type
-> > > > > > > > > > > is
-> > > > > > > > > > > used the new dwarves are needed.
-> > > > > > > > > > 
-> > > > > > > > > > Ok, here is the current failure with dwarves 1.21 on 5.12:
-> > > > > > > > > > 
-> > > > > > > > > > [ 2548s]   LD      vmlinux
-> > > > > > > > > > [ 2557s]   BTFIDS  vmlinux
-> > > > > > > > > > [ 2557s] FAILED unresolved symbol vfs_truncate
-> > > > > > > > > > [ 2558s] make[1]: ***
-> > > > > > > > > > [/home/abuild/rpmbuild/BUILD/kernel-kvmsmall-5.12.0/linux-5.12/Makefile:1213:
-> > > > > > > > > > 
-> > > > > > > > > > vmlinux] Error 255
-> > > > > > > 
-> > > > > > > This is PPC64, from attached config:
-> > > > > > >    CONFIG_PPC64=y
-> > > > > > > I don't have environment to cross-compile for PPC64.
-> > > > > > > Jiri, could you take a look? Thanks!
-> > > > > > 
-> > > > > > looks like vfs_truncate did not get into BTF data,
-> > > > > > I'll try to reproduce
-> > 
-> > _None_ of the functions are generated by pahole -J from debuginfo on
-> > ppc64. debuginfo appears to be correct. Neither pahole -J fs/open.o
-> > works correctly. collect_functions in dwarves seems to be defunct on
-> > ppc64... "functions" array is bogus (so find_function -- the bsearch --
-> > fails).
-> 
-> It's not that bogus. I forgot an asterisk:
-> > #0  find_function (btfe=0x100269f80, name=0x10024631c "stream_open") at /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
-> > (gdb) p (*functions)@84
-> > $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr = 75232, size = 72, sh_addr = 65536, generated = false}, {
-> >     name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592, size = 216, sh_addr = 65536, generated = false}, {
-> >     name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr = 80816, size = 232, sh_addr = 65536, generated = false}, {
-> >     name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr = 74304, size = 100, sh_addr = 65536, generated = false}, {
-> ...
-> >     name = 0x7ffff68e0808 ".stream_open", addr = 65824, size = 72, sh_addr = 65536, generated = false}, {
-> ...
-> >     name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size = 544, sh_addr = 65536, generated = false}}
-> 
-> The dot makes the difference, of course. The question is why is it there? I
-> keep looking into it. Only if someone has an immediate idea...
+When using native XDP with the igb driver, the XDP frame data doesn't point to
+the beginning of the packet. It's off by 16 bytes. Everything works as expected
+with XDP skb mode.
 
-Thanks for looking into it. That's probably expected. I vaguely recall
-there is a mocro for adding a dot to assembly symbols depending on the
-ABI.
+Actually these 16 bytes are used to store the packet timestamps. Therefore, pull
+the timestamp before executing any XDP operations and adjust all other code
+accordingly. The igc driver does it like that as well.
 
-Thanks
+Tested with Intel i210 card and AF_XDP sockets.
 
-Michal
+Fixes: 9cbc948b5a20 ("igb: add XDP support")
+Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
+---
+
+Changes since v3:
+
+ * Get rid of timestamp check in hot path (Maciej Fijalkowski)
+
+Changes since v2:
+
+ * Check timestamp for validity (Nguyen, Anthony L)
+
+Changes since v1:
+
+ * Use xdp_prepare_buff() (Lorenzo Bianconi)
+
+Changes since RFC:
+
+ * Removed unused return value definitions (Alexander Duyck)
+
+Previous versions:
+
+ * https://lkml.kernel.org/netdev/20210422052617.17267-1-kurt@linutronix.de/
+ * https://lkml.kernel.org/netdev/20210419072332.7246-1-kurt@linutronix.de/
+ * https://lkml.kernel.org/netdev/20210415092145.27322-1-kurt@linutronix.de/
+ * https://lkml.kernel.org/netdev/20210412101713.15161-1-kurt@linutronix.de/
+
+ drivers/net/ethernet/intel/igb/igb.h      |  2 +-
+ drivers/net/ethernet/intel/igb/igb_main.c | 45 +++++++++++++----------
+ drivers/net/ethernet/intel/igb/igb_ptp.c  | 23 +++++-------
+ 3 files changed, 37 insertions(+), 33 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/igb/igb.h b/drivers/net/ethernet/intel/igb/igb.h
+index 7bda8c5edea5..2d3daf022651 100644
+--- a/drivers/net/ethernet/intel/igb/igb.h
++++ b/drivers/net/ethernet/intel/igb/igb.h
+@@ -749,7 +749,7 @@ void igb_ptp_rx_hang(struct igb_adapter *adapter);
+ void igb_ptp_tx_hang(struct igb_adapter *adapter);
+ void igb_ptp_rx_rgtstamp(struct igb_q_vector *q_vector, struct sk_buff *skb);
+ int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+-			struct sk_buff *skb);
++			ktime_t *timestamp);
+ int igb_ptp_set_ts_config(struct net_device *netdev, struct ifreq *ifr);
+ int igb_ptp_get_ts_config(struct net_device *netdev, struct ifreq *ifr);
+ void igb_set_flag_queue_pairs(struct igb_adapter *, const u32);
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 038a9fd1af44..0123285029fa 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -8280,7 +8280,7 @@ static void igb_add_rx_frag(struct igb_ring *rx_ring,
+ static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
+ 					 struct igb_rx_buffer *rx_buffer,
+ 					 struct xdp_buff *xdp,
+-					 union e1000_adv_rx_desc *rx_desc)
++					 ktime_t timestamp)
+ {
+ #if (PAGE_SIZE < 8192)
+ 	unsigned int truesize = igb_rx_pg_size(rx_ring) / 2;
+@@ -8300,12 +8300,8 @@ static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
+ 	if (unlikely(!skb))
+ 		return NULL;
+ 
+-	if (unlikely(igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP))) {
+-		if (!igb_ptp_rx_pktstamp(rx_ring->q_vector, xdp->data, skb)) {
+-			xdp->data += IGB_TS_HDR_LEN;
+-			size -= IGB_TS_HDR_LEN;
+-		}
+-	}
++	if (timestamp)
++		skb_hwtstamps(skb)->hwtstamp = timestamp;
+ 
+ 	/* Determine available headroom for copy */
+ 	headlen = size;
+@@ -8336,7 +8332,7 @@ static struct sk_buff *igb_construct_skb(struct igb_ring *rx_ring,
+ static struct sk_buff *igb_build_skb(struct igb_ring *rx_ring,
+ 				     struct igb_rx_buffer *rx_buffer,
+ 				     struct xdp_buff *xdp,
+-				     union e1000_adv_rx_desc *rx_desc)
++				     ktime_t timestamp)
+ {
+ #if (PAGE_SIZE < 8192)
+ 	unsigned int truesize = igb_rx_pg_size(rx_ring) / 2;
+@@ -8363,11 +8359,8 @@ static struct sk_buff *igb_build_skb(struct igb_ring *rx_ring,
+ 	if (metasize)
+ 		skb_metadata_set(skb, metasize);
+ 
+-	/* pull timestamp out of packet data */
+-	if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
+-		if (!igb_ptp_rx_pktstamp(rx_ring->q_vector, skb->data, skb))
+-			__skb_pull(skb, IGB_TS_HDR_LEN);
+-	}
++	if (timestamp)
++		skb_hwtstamps(skb)->hwtstamp = timestamp;
+ 
+ 	/* update buffer offset */
+ #if (PAGE_SIZE < 8192)
+@@ -8682,7 +8675,10 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
+ 	while (likely(total_packets < budget)) {
+ 		union e1000_adv_rx_desc *rx_desc;
+ 		struct igb_rx_buffer *rx_buffer;
++		ktime_t timestamp = 0;
++		int pkt_offset = 0;
+ 		unsigned int size;
++		void *pktbuf;
+ 
+ 		/* return some buffers to hardware, one at a time is too slow */
+ 		if (cleaned_count >= IGB_RX_BUFFER_WRITE) {
+@@ -8702,14 +8698,24 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
+ 		dma_rmb();
+ 
+ 		rx_buffer = igb_get_rx_buffer(rx_ring, size, &rx_buf_pgcnt);
++		pktbuf = page_address(rx_buffer->page) + rx_buffer->page_offset;
++
++		/* pull rx packet timestamp if available and valid */
++		if (igb_test_staterr(rx_desc, E1000_RXDADV_STAT_TSIP)) {
++			int ts_hdr_len;
++
++			ts_hdr_len = igb_ptp_rx_pktstamp(rx_ring->q_vector,
++							 pktbuf, &timestamp);
++
++			pkt_offset += ts_hdr_len;
++			size -= ts_hdr_len;
++		}
+ 
+ 		/* retrieve a buffer from the ring */
+ 		if (!skb) {
+-			unsigned int offset = igb_rx_offset(rx_ring);
+-			unsigned char *hard_start;
++			unsigned char *hard_start = pktbuf - igb_rx_offset(rx_ring);
++			unsigned int offset = pkt_offset + igb_rx_offset(rx_ring);
+ 
+-			hard_start = page_address(rx_buffer->page) +
+-				     rx_buffer->page_offset - offset;
+ 			xdp_prepare_buff(&xdp, hard_start, offset, size, true);
+ #if (PAGE_SIZE > 4096)
+ 			/* At larger PAGE_SIZE, frame_sz depend on len size */
+@@ -8732,10 +8738,11 @@ static int igb_clean_rx_irq(struct igb_q_vector *q_vector, const int budget)
+ 		} else if (skb)
+ 			igb_add_rx_frag(rx_ring, rx_buffer, skb, size);
+ 		else if (ring_uses_build_skb(rx_ring))
+-			skb = igb_build_skb(rx_ring, rx_buffer, &xdp, rx_desc);
++			skb = igb_build_skb(rx_ring, rx_buffer, &xdp,
++					    timestamp);
+ 		else
+ 			skb = igb_construct_skb(rx_ring, rx_buffer,
+-						&xdp, rx_desc);
++						&xdp, timestamp);
+ 
+ 		/* exit if we failed to retrieve a buffer */
+ 		if (!skb) {
+diff --git a/drivers/net/ethernet/intel/igb/igb_ptp.c b/drivers/net/ethernet/intel/igb/igb_ptp.c
+index ba61fe9bfaf4..d68cd4466a54 100644
+--- a/drivers/net/ethernet/intel/igb/igb_ptp.c
++++ b/drivers/net/ethernet/intel/igb/igb_ptp.c
+@@ -856,30 +856,28 @@ static void igb_ptp_tx_hwtstamp(struct igb_adapter *adapter)
+ 	dev_kfree_skb_any(skb);
+ }
+ 
+-#define IGB_RET_PTP_DISABLED 1
+-#define IGB_RET_PTP_INVALID 2
+-
+ /**
+  * igb_ptp_rx_pktstamp - retrieve Rx per packet timestamp
+  * @q_vector: Pointer to interrupt specific structure
+  * @va: Pointer to address containing Rx buffer
+- * @skb: Buffer containing timestamp and packet
++ * @timestamp: Pointer where timestamp will be stored
+  *
+  * This function is meant to retrieve a timestamp from the first buffer of an
+  * incoming frame.  The value is stored in little endian format starting on
+  * byte 8
+  *
+- * Returns: 0 if success, nonzero if failure
++ * Returns: The timestamp header length or 0 if not available
+  **/
+ int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+-			struct sk_buff *skb)
++			ktime_t *timestamp)
+ {
+ 	struct igb_adapter *adapter = q_vector->adapter;
++	struct skb_shared_hwtstamps ts;
+ 	__le64 *regval = (__le64 *)va;
+ 	int adjust = 0;
+ 
+ 	if (!(adapter->ptp_flags & IGB_PTP_ENABLED))
+-		return IGB_RET_PTP_DISABLED;
++		return 0;
+ 
+ 	/* The timestamp is recorded in little endian format.
+ 	 * DWORD: 0        1        2        3
+@@ -888,10 +886,9 @@ int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+ 
+ 	/* check reserved dwords are zero, be/le doesn't matter for zero */
+ 	if (regval[0])
+-		return IGB_RET_PTP_INVALID;
++		return 0;
+ 
+-	igb_ptp_systim_to_hwtstamp(adapter, skb_hwtstamps(skb),
+-				   le64_to_cpu(regval[1]));
++	igb_ptp_systim_to_hwtstamp(adapter, &ts, le64_to_cpu(regval[1]));
+ 
+ 	/* adjust timestamp for the RX latency based on link speed */
+ 	if (adapter->hw.mac.type == e1000_i210) {
+@@ -907,10 +904,10 @@ int igb_ptp_rx_pktstamp(struct igb_q_vector *q_vector, void *va,
+ 			break;
+ 		}
+ 	}
+-	skb_hwtstamps(skb)->hwtstamp =
+-		ktime_sub_ns(skb_hwtstamps(skb)->hwtstamp, adjust);
+ 
+-	return 0;
++	*timestamp = ktime_sub_ns(ts.hwtstamp, adjust);
++
++	return IGB_TS_HDR_LEN;
+ }
+ 
+ /**
+-- 
+2.30.2
+
