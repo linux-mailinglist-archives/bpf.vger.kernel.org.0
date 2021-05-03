@@ -2,195 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3E8372135
-	for <lists+bpf@lfdr.de>; Mon,  3 May 2021 22:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6FB3721CB
+	for <lists+bpf@lfdr.de>; Mon,  3 May 2021 22:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229497AbhECUVg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 May 2021 16:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhECUVg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 May 2021 16:21:36 -0400
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE242C06174A
-        for <bpf@vger.kernel.org>; Mon,  3 May 2021 13:20:42 -0700 (PDT)
-Received: by mail-vs1-xe29.google.com with SMTP id o192so3603767vsd.7
-        for <bpf@vger.kernel.org>; Mon, 03 May 2021 13:20:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qMOwLFmz6GugapCkf5uuvpANHBPJMCc9AvAkHonn0cI=;
-        b=EPyWrLgtgQ5Ac9pBZ4rDSsyGEtWwgI6tTyNPRVrT+e6rilJXLzNmcKGEeHtBgv0vcd
-         FOuii4RFjbLeOsUVsh77gG8AmPal82W9KpZ8k0nLMbAoZauKggL+891xUqIFK6aQALSt
-         eY2oUqPf63XsC4l2PVYZTjLUDbFnW5hbNzxFf3abbrlionp+rfA7NBizBt74eTdHHy70
-         m0N3rzQ0iyhwQdUL7dToYJcwJDr5o0jLVbMHbEqPEF2qKRkt7VCIrkeBBLVssMPLOxpb
-         jhqzvZMhbTvr0hcaa2j+M7LOBkrLOrM/qvt6EeUKWOZzKLbajMsigMw/50HSDn3zjAds
-         ZrZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qMOwLFmz6GugapCkf5uuvpANHBPJMCc9AvAkHonn0cI=;
-        b=rhWH+5J3LaRE8LcqDDD0ghZjOgRVtxH6pXpdLTetPhgRDk+dWPbVK/AL4EaFj7eBbC
-         wjrfKR5jtWkqsdumivHTdxfKc6M5piLSwZvkokeCweHGjRYFxLjEskCDq1FtHtgnKrNG
-         oZIjieBJdj3VB1NGQtVd8tMrw0DN9rXPkV6IgRdXG5eQSZ26nukqWDhoOmGkY7faVjWG
-         jldrd2bzTdblBpighuKc8dGgg8K+PnVHZY1+MdhwqwFh6tZY8uSfEzIgAHY+rXpsKXkR
-         h+8MDbrKaW/PJHz/vBX7irZySWrYrAywMz0fHBulR097gF7Cvwv8V9FdG2g4UIvxCNfZ
-         FMQw==
-X-Gm-Message-State: AOAM5314w9ENNZDGsy1WdW/SO5jFykPDNwsxf+MCpSZop37sEymaDAmd
-        bm/xWSHsNl4jJiqUqCHncdVO/+96fpYeoV9q9QM=
-X-Google-Smtp-Source: ABdhPJwySJgTSEPWJbAV2OIo7bhWgyXetlNblSTZMYM2NtZvvph+hfcLpGksz8aCP7Kx6Pitst4Ygq7yIYgikpMcNxU=
-X-Received: by 2002:a05:6102:507:: with SMTP id l7mr4227499vsa.25.1620073241795;
- Mon, 03 May 2021 13:20:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAO658oV9AAcMMbVhjkoq5PtpvbVf41Cd_TBLCORTcf3trtwHfw@mail.gmail.com>
- <CAEf4Bzayxgt3P+kz36t6C8jp-MUTuwuKvwHWWsd2qrCs3-RHXA@mail.gmail.com>
- <CAO658oUpqOHmSAif+6zor1XTruDqHeTzAQHrCXOSPRo6oTp5vg@mail.gmail.com> <CAEf4BzYfn0SonnH=R-kA8eeYD5yBrAFQTsEMDtuOX=MaadTJsA@mail.gmail.com>
-In-Reply-To: <CAEf4BzYfn0SonnH=R-kA8eeYD5yBrAFQTsEMDtuOX=MaadTJsA@mail.gmail.com>
-From:   Grant Seltzer Richman <grantseltzer@gmail.com>
-Date:   Mon, 3 May 2021 16:20:30 -0400
-Message-ID: <CAO658oWY3QK0A3U=NeDzXJRPsydCFWCrx1kdAfSdtq9CpNj0ow@mail.gmail.com>
-Subject: Re: Typical way to handle missing macros in vmlinux.h
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S229628AbhECUqp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 May 2021 16:46:45 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:44716 "EHLO
+        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhECUqp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 May 2021 16:46:45 -0400
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 4D3194D0B0F95;
+        Mon,  3 May 2021 13:45:45 -0700 (PDT)
+Date:   Mon, 03 May 2021 13:45:39 -0700 (PDT)
+Message-Id: <20210503.134539.1344269109528145336.davem@davemloft.net>
+To:     shubhankarvk@gmail.com
+Cc:     kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, willemb@google.com,
+        xie.he.0141@gmail.com, edumazet@google.com,
+        john.ogness@linutronix.de, eyal.birger@gmail.com,
+        wanghai38@huawei.com, colin.king@canonical.com,
+        tannerlove@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] net: packet: af_packet.c: Add new line after
+ declaration
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20210503170309.63r2mtupzn5ne6zt@kewl-virtual-machine>
+References: <20210503170309.63r2mtupzn5ne6zt@kewl-virtual-machine>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Mon, 03 May 2021 13:45:49 -0700 (PDT)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 3, 2021 at 2:43 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, May 3, 2021 at 11:32 AM Grant Seltzer Richman
-> <grantseltzer@gmail.com> wrote:
-> >
-> > On Wed, Apr 28, 2021 at 5:15 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Wed, Apr 28, 2021 at 1:53 PM Grant Seltzer Richman
-> > > <grantseltzer@gmail.com> wrote:
-> > > >
-> > > > Hi all,
-> > > >
-> > > > I'm working on enabling CO:RE in a project I work on, tracee, and am
-> > > > running into the dilemma of missing macros that we previously were
-> > > > able to import from their various header files. I understand that
-> > > > macros don't make their way into BTF and therefore the generated
-> > > > vmlinux.h won't have them. However I can't import the various header
-> > > > files because of multiple-definition issues.
-> > >
-> > > Sadly, copy/pasting has been the only way so far.
-> > >
-> > > >
-> > > > Do people typically redefine each of these macros for their project?
-> > > > If so is there anything I should be careful of, such as architectural
-> > > > differences. Does anyone have creative ideas, even if not developed
-> > > > fully yet that I can possibly contribute to libbpf?
-> > >
-> > > We've discussed adding Clang built-in to detect if a specific type is
-> > > already defined and doing something like this in vmlinux.h:
-> > >
-> > > #if !__builtin_is_type_defined(struct task_struct)
-> > > struct task_struct {
-> > >      ...
-> > > }
-> > > #endif
-> > >
-> > > And just do that for every struct, union, typedef. That would allow
-> > > vmlinux.h to co-exist (somewhat) with other types.
-> > >
-> > > Another alternative is to not use vmlinux.h and use just linux
-> > > headers, but mark necessary types with
-> > > __attribute__((preserve_access_index)) to make them CO-RE relocatable.
-> > > You can add that to existing types with the same pragma that vmlinux.h
-> > > uses.
-> >
-> > I'm attempting to try doing the above. I'm just replacing
-> > bpf_probe_read with bpf_core_read and not importing vmlinux.h, just
-> > all the kernel headers I need.
->
-> Yes, that will work, bpf_core_read() uses preserve_access_index
-> built-in to achieve the same effect.
->
-> >
-> > When you say "Add that to existing types with the same pragma that
-> > vmlinux.h uses", Should I be able to add the following to my bpf
-> > source file before importing my headers?
-> >
-> > ifndef BPF_NO_PRESERVE_ACCESS_INDEX
-> > #pragma clang attribute push (__attribute__((preserve_access_index)),
-> > apply_to = record)
-> > #endif
-> >
-> > and then pop the attribute at the bottom of the file, or after the
-> > header includes.
->
-> Yeah, that's the idea and that's what vmlinux.h does for all its
-> structs. It doesn't add __attribute__((preserve_access_index)) after
-> each struct/union. So I wonder why you are getting those unknown
-> attribute errors. Can you paste an example?
+From: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
+Date: Mon, 3 May 2021 22:33:09 +0530
 
-Here's a couple examples of the warnings:
+> New line added after declaration
+> Tabs have been used instead of spaces for indentation
+> Each subsequent line of block commment start with a *
+> This is done to maintain code uniformity
+> 
+> Signed-off-by: Shubhankar Kuranagatti <shubhankarvk@gmail.com>
 
-```
-tracee/tracee.bpf.c:5:46: warning: unknown attribute
-'preserve_access_index' ignored [-Wunknown-attributes]
-#pragma clang attribute push (__attribute__((preserve_access_index)),
-apply_to = record)
-                                             ^
-/lib/modules/5.10.21-200.fc33.x86_64/source/include/linux/ipv6.h:185:1:
-note: when applied to this declaration
-struct ipv6_fl_socklist;
-^
-tracee/tracee.bpf.c:5:46: warning: unknown attribute
-'preserve_access_index' ignored [-Wunknown-attributes]
-#pragma clang attribute push (__attribute__((preserve_access_index)),
-apply_to = record)
-                                             ^
-/lib/modules/5.10.21-200.fc33.x86_64/source/include/linux/ipv6.h:187:1:
-note: when applied to this declaration
-struct inet6_cork {
-```
-
-after these warnings are emitted (it seems as if there's one for every
-data type, though I can't confirm), I get errors that look like this:
-
-```
-tracee/tracee.bpf.c:445:22: error: nested
-builtin_preserve_access_index() not supported
-    return READ_KERN(READ_KERN(task->thread_pid)->numbers[level].nr);
-                     ^
-tracee/tracee.bpf.c:206:27: note: expanded from macro 'READ_KERN'
-                          bpf_core_read(&_val, sizeof(_val), &ptr); \
-```
-I believe this is just a result of the warnings above, but if you're
-curious it's what i'm doing here:
-https://github.com/aquasecurity/tracee/blob/core-experiment/tracee-ebpf/tracee/tracee.bpf.c#L204-L208
-
->
-> Also check that you use Clang that supports preserve_access_index, of course.
-
-I'm using clang 11.0 on Fedora 33. All dependencies appear properly
-installed (libelf, zlib, dwarves [provides pahole], llvm, llc,
-llvm-devel,...)
-
->
-> >
-> > I've tried this and get a whole bunch of 'unknown attribute' warnings,
-> > leading me to believe that I either have something installed
-> > incorrectly or don't understand how to use clang attributes. Do I need
-> > to edit the types in the actual header files?
->
-> No, the whole idea is to not touch original headers.
-
-Got it - that's good to know.
-
->
-> >
-> > Thank you very very much for the help!
-> > - Grant
-> > >
-> > > >
-> > > > Thanks so much,
-> > > > Grant Seltzer
+Please resubmit this when net-next opens back up, thank you.
