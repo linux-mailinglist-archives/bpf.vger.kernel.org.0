@@ -2,88 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF0B371202
-	for <lists+bpf@lfdr.de>; Mon,  3 May 2021 09:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CD6371230
+	for <lists+bpf@lfdr.de>; Mon,  3 May 2021 09:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232752AbhECHcG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 May 2021 03:32:06 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45538 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231605AbhECHcF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 May 2021 03:32:05 -0400
-From:   Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620027071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZLl/dfE5xGtjKVTqlZm9ProhV0dqNjr3HBIdv3mpY+E=;
-        b=QGo0GBcVd0Y+oycY/Z6pdt7/a5a6DD402Z6Jc+q5cTYOz3lheOh8ce8VAOmo/i1OIJbt6o
-        L9xjArLVZSC3rJBBg3sKGGJHfViKqYUiJ4H7XsQp6oIbYJQLhWDooKE2U7KWE4KSC42eeE
-        itYF2QDZ6OEX/ApSRfs4OMATOQI1XgNnKMaSEx6bU9LTb+pzkXc9rNdIbuLQXVc4Vwstjq
-        gcgXAtsWpUTknQ7LKvhCiYPvm/gSMQX4kPUv8pwAz+GZZS8N4bZYO28f5nyyGW/i8yuLRl
-        RMxuyvuI3yiLoHVLaBtcZti28mYZFtmwk+Q6qFanU6TsbSklN1VyVh4AseAA+w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620027071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZLl/dfE5xGtjKVTqlZm9ProhV0dqNjr3HBIdv3mpY+E=;
-        b=4CARGnMWYGR+PeCtsOsjrCI3vwN8VEk1LVoI2yWsHE7RvRKDOVE1k0vsNXWfpOC9/LRc1W
-        g0uhd2f7t73KGEAA==
-To:     Tyler S <tylerjstachecki@gmail.com>
-Cc:     alexander.duyck@gmail.com, anthony.l.nguyen@intel.com,
-        ast@kernel.org, bigeasy@linutronix.de, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        ilias.apalodimas@linaro.org, intel-wired-lan@lists.osuosl.org,
-        jesse.brandeburg@intel.com, john.fastabend@gmail.com,
-        kuba@kernel.org, lorenzo@kernel.org, netdev@vger.kernel.org,
-        richardcochran@gmail.com, sven.auhagen@voleatech.de,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: Re: [PATCH net v2] igb: Fix XDP with PTP enabled
-In-Reply-To: <CAMfj=-ZzOLog6NQvgpThSOy_5od_dY4KHd0uojxRxaWQA9kKJg@mail.gmail.com>
-References: <CAMfj=-YEh1ZnLB8zye7i-5Y2S015n0qat+FQ6JW7bFKwBUHBPg@mail.gmail.com>
- <871rax9loz.fsf@kurt>
- <CAMfj=-ZzOLog6NQvgpThSOy_5od_dY4KHd0uojxRxaWQA9kKJg@mail.gmail.com>
-Date:   Mon, 03 May 2021 09:31:10 +0200
-Message-ID: <87sg34clz5.fsf@kurt>
+        id S232880AbhECIAd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 May 2021 04:00:33 -0400
+Received: from mail-ej1-f46.google.com ([209.85.218.46]:34519 "EHLO
+        mail-ej1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhECIAc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 May 2021 04:00:32 -0400
+Received: by mail-ej1-f46.google.com with SMTP id a4so6542638ejk.1;
+        Mon, 03 May 2021 00:59:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5wQ58QmE9rd2XQ2cySSLGBm/LraaVfP/exkFVcgYCBo=;
+        b=czHH6Y9Yv16rQcpHt/8cv7o1GALW6ggM/m7sqI7fvovTQaS3ajLvIiC7pr4rI0h7IY
+         oQrbE+ZNl4SOMjDWo8Oi7upRb6fikb5ECbLwXybYlYHeOturg/UEH63erQ+ZsBvtoQ9L
+         IdgWNeIYpeS8880NN/ogI5P1g+gx8wKizd9aPmK9vQH8jjuzWKflc8HsnoA5GGI2gg0h
+         tWCZpRinNlZzXyB2cRKhpAE4Oz1m9r+5TatXCEsfERiw94GJdrWlwpvL9ku4NccQhZ1E
+         rhjrQa8vvrsXEMDJiYSBZLWrb064edShb8ywRQJ5j677dwxJSNBeXLEYsy2qBPn3yxkb
+         rR6Q==
+X-Gm-Message-State: AOAM533b8fys9zA+k/QhnvC73+UrbVahH+QExFEYTJ9K1/tGodJqxOGy
+        3aPEWJoRUH4jXv4fzp8X8zCDfjc+kM6ufg==
+X-Google-Smtp-Source: ABdhPJzZn5P+RvRABpxkhWuS8v8YFl2b/lIXQbQ+OWi7dMXF7ZzEpJw0BrP/34q8QDEp358leOt85Q==
+X-Received: by 2002:a17:906:5855:: with SMTP id h21mr15685833ejs.522.1620028778847;
+        Mon, 03 May 2021 00:59:38 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id a22sm11793899edu.14.2021.05.03.00.59.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 00:59:38 -0700 (PDT)
+Subject: Re: linux-next failing build due to missing cubictcp_state symbol
+From:   Jiri Slaby <jirislaby@kernel.org>
+To:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+References: <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
+ <20210423175528.GF6564@kitsune.suse.cz>
+ <20210425111545.GL15381@kitsune.suse.cz>
+ <20210426113215.GM15381@kitsune.suse.cz>
+ <20210426121220.GN15381@kitsune.suse.cz>
+ <20210426121401.GO15381@kitsune.suse.cz>
+ <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com> <YIbkR6z6mxdNSzGO@krava>
+ <YIcRlHQWWKbOlcXr@krava> <20210427121237.GK6564@kitsune.suse.cz>
+ <20210430174723.GP15381@kitsune.suse.cz>
+ <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
+ <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
+Message-ID: <4e051459-8532-7b61-c815-f3435767f8a0@kernel.org>
+Date:   Mon, 3 May 2021 09:59:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+In-Reply-To: <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+On 03. 05. 21, 8:11, Jiri Slaby wrote:
+>>>>>> looks like vfs_truncate did not get into BTF data,
+>>>>>> I'll try to reproduce
+>>
+>> _None_ of the functions are generated by pahole -J from debuginfo on 
+>> ppc64. debuginfo appears to be correct. Neither pahole -J fs/open.o 
+>> works correctly. collect_functions in dwarves seems to be defunct on 
+>> ppc64... "functions" array is bogus (so find_function -- the bsearch 
+>> -- fails).
+> 
+> It's not that bogus. I forgot an asterisk:
+>> #0  find_function (btfe=0x100269f80, name=0x10024631c "stream_open") 
+>> at /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
+>> (gdb) p (*functions)@84
+>> $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr = 
+>> 75232, size = 72, sh_addr = 65536, generated = false}, {
+>>     name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592, size 
+>> = 216, sh_addr = 65536, generated = false}, {
+>>     name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr = 80816, 
+>> size = 232, sh_addr = 65536, generated = false}, {
+>>     name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr = 74304, 
+>> size = 100, sh_addr = 65536, generated = false}, {
+> ...
+>>     name = 0x7ffff68e0808 ".stream_open", addr = 65824, size = 72, 
+>> sh_addr = 65536, generated = false}, {
+> ...
+>>     name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size = 544, 
+>> sh_addr = 65536, generated = false}}
+> 
+> The dot makes the difference, of course. The question is why is it 
+> there? I keep looking into it. Only if someone has an immediate idea...
 
-On Tue Apr 27 2021, Tyler S wrote:
-> Sorry, I didn't see v3.  I can confirm that v3 fixes the issue I was
-> seeing with jumbo frames.
+Well, .vfs_truncate is in .text (and contains an ._mcount call). And 
+vfs_truncate is in .opd (w/o an ._mcount call). Since setup_functions 
+excludes all functions without the ._mcount call, is_ftrace_func later 
+returns false for such functions and they are filtered before the BTF 
+processing.
 
-Great :). I just sent v4 and added you to Cc.
+Technically, get_vmlinux_addrs looks at a list of functions between 
+__start_mcount_loc and __stop_mcount_loc and considers only the listed.
 
-Thanks,
-Kurt
+I don't know what the correct fix is (exclude .opd functions from the 
+filter?). Neither why cross compiler doesn't fail, nor why ebi v2 avoids 
+this too.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJHBAEBCgAxFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAmCPpr4THGt1cnRAbGlu
-dXRyb25peC5kZQAKCRB5KluBy5jwpr8WEACLqLQ0XIqiUfor1L1SPbilVfAKGf1m
-QFbdFXnpozIxX0Jmg4ywOwRJYNfGZDBGy6hE9O1Huu+CS//PQiVh7hmemhIF/JjB
-pUsURIwly5FbYi1LEVS9poAxlo1mseMoSvWS/sEzoYcVHj2cKSOel4/B+4LAZTot
-rOEs/qLxIuUoA36DGZMZQbCp8StmuR2fYb+P2qOwapqMdzcpQ4I8eXnLK6FLofLg
-Gcm4c+vCbKzGWQld89+w0u9VTS5GAGRO517ATqGitNMtv4JujzNLnB5NpmVK6OFN
-J2IyO3MElTya22VLfdqEpj9Lu4uRtSQ3JN0WNXYj9znyVsQaIdbST7yvRmX5mNP5
-XGCQrIQ6nR57G8YLZzAYGDb1mbgLL2agKaXJ9ag1svkJXlUW6r+lGC4ImToKh16w
-t+bnyqVa1O0AGs/jGdHUj2sT0dIiRWxb2BUnpaFu76CdwE0WWP5oSHc9DKIqFVrq
-k8iknnNgq5/ft2mMYJyMp2FWOoqZca/Vkgr1vllOwoYEpx9EgtwH4mNYhMRQA+Ct
-UFbVuTOtSqGrE8vvJbm95y7iLzmRiOqVAtHZd5A37K4SWKrm1OVXWC52w7TCT4tH
-OiaY607cqn3QD4Orb2hyJlALRmuUMtojhn/vELb46W6jcSsZq2WdlYV/fot7Tj3j
-3TeIoZsTjn9egg==
-=11Dq
------END PGP SIGNATURE-----
---=-=-=--
+regards,
+-- 
+js
