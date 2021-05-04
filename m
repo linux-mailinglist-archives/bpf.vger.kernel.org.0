@@ -2,155 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B265F372B18
-	for <lists+bpf@lfdr.de>; Tue,  4 May 2021 15:32:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF30372BBD
+	for <lists+bpf@lfdr.de>; Tue,  4 May 2021 16:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhEDNdu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 May 2021 09:33:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34698 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231175AbhEDNdt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 4 May 2021 09:33:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620135174;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5cJAfRgHy9tFb0zjDG5tK5B9uOLPoWSyku8A/zwyYlw=;
-        b=gh3dcaRXnDkikk4p9bj6Sqc5vAGvsqhcwgK+nlT/fAAcbFmRqIIca2C3PiuRAKVop7nd3m
-        WzEURymsURcJ4Q2ghHXTuupES6bGBtsrCnpGbfFvpRC+C0Uf2H/pBG0Gawf8lf7/ySl080
-        ZNCpxgeQoh+HCirjUXa/9eSnpANHyC0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-64-UQMyl3wyMGyB5QFjTxaOQg-1; Tue, 04 May 2021 09:32:51 -0400
-X-MC-Unique: UQMyl3wyMGyB5QFjTxaOQg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7DD9C1898299;
-        Tue,  4 May 2021 13:32:49 +0000 (UTC)
-Received: from krava (unknown [10.40.192.136])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 2928E421F;
-        Tue,  4 May 2021 13:32:47 +0000 (UTC)
-Date:   Tue, 4 May 2021 15:32:46 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [RFC] bpf: Fix crash on mm_init trampoline attachment
-Message-ID: <YJFM/iLKb1EWCYEx@krava>
-References: <20210430134754.179242-1-jolsa@kernel.org>
- <CAEf4BzbEjvccUDabpTiPOiXK=vfcmHaXjeaTL8gCr08=6fBqhg@mail.gmail.com>
+        id S231411AbhEDONL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 May 2021 10:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231393AbhEDONK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 May 2021 10:13:10 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF305C061574;
+        Tue,  4 May 2021 07:12:14 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id c3so9443444lfs.7;
+        Tue, 04 May 2021 07:12:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QTDqIV7/k9DScfd/QwCSAXbGgOt4/aGNOklhhuChvNM=;
+        b=AGnjSPU5vDFxQnP8n3dvBczS1CaaMqkCegNn25+aOcgU4QpTmICPVDdvKTeZJ6jWWH
+         +WMoy1CGZRZvKA1ikD3Bil0OWgQWEHLezy0CKQu6uS3CK43m6h0u9jZiG7HEp0be0nc+
+         B72MtZmPSNnBNk5S9QaZJ0Vs092yUmcvClwaIxWBVtrcxLson1ZAdKj/opFc/m3g+ycD
+         wZChMvdDXsN9kFQADbEil59mFFjAixQZ1QkirXOGCd0zbHgrqdhTKVzd8epAp7eJB2EU
+         U8o9Y96Dy7AQnU1zL+Np1A/ZEuukct3tJPkQDPP2G2dj/uSgOQCSlRcSDW0T6V46QuzO
+         1U5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QTDqIV7/k9DScfd/QwCSAXbGgOt4/aGNOklhhuChvNM=;
+        b=QmOOZODvaqhfxVKvEUC+lX6JSTdURm/OuH5K8G5myKRq3hDTdqTkNaaYWTrFlv9DRM
+         bI67Cy7BVS+A+OqxsErgzygiI6HinjwgXFuzcYtLvFhkyf1YvW546MwVGUUU0c11ryBo
+         TOxJUhHEW/NOXtl8l4pngiZkUwEoGdIaiCLUCnzUxDZRd09kM+176NmuUZS+VPOOKoFe
+         7HcMKWMNY50km3ttaAsSejXsm0Rmytg0SeOW+4o08DY2B/iySh+wbYUMlDiWq+Lmbcmx
+         oMxs0uonGAVVPixFkPQlExA06NTGfvxSf6CDgGPBEtuU+ySaE9p8Q+SFc9trPpnC7BkN
+         R2kQ==
+X-Gm-Message-State: AOAM530frRiQGxt/SSYc++k7UyMpghEVCXsmDO9pJcr1LEQ4c975zGmZ
+        GTEI8hxISp32qKbbBuvsUFJfARw0xnEteouhsFk=
+X-Google-Smtp-Source: ABdhPJxQFkUhvT82spmdlrtrb+tk7HQF+yOJcDpm93nb5OLIvaQOCU9vjN7QJ8uZh4g1UFv1A19bsALcRpiHSZY9B7Q=
+X-Received: by 2002:ac2:5b1a:: with SMTP id v26mr4491543lfn.534.1620137532998;
+ Tue, 04 May 2021 07:12:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbEjvccUDabpTiPOiXK=vfcmHaXjeaTL8gCr08=6fBqhg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20210423230609.13519-1-alx.manpages@gmail.com> <20210504110519.16097-1-alx.manpages@gmail.com>
+In-Reply-To: <20210504110519.16097-1-alx.manpages@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 4 May 2021 07:12:01 -0700
+Message-ID: <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
+Subject: Re: [RFC v2] bpf.2: Use standard types and attributes
+To:     Alejandro Colomar <alx.manpages@gmail.com>
+Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
+        bpf <bpf@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Zack Weinberg <zackw@panix.com>,
+        Joseph Myers <joseph@codesourcery.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 03, 2021 at 03:45:28PM -0700, Andrii Nakryiko wrote:
-> On Fri, Apr 30, 2021 at 6:48 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > There are 2 mm_init functions in kernel.
-> >
-> > One in kernel/fork.c:
-> >   static struct mm_struct *mm_init(struct mm_struct *mm,
-> >                                    struct task_struct *p,
-> >                                    struct user_namespace *user_ns)
-> >
-> > And another one in init/main.c:
-> >   static void __init mm_init(void)
-> >
-> > The BTF data will get the first one, which is most likely
-> > (in my case) mm_init from init/main.c without arguments.
-> >
-> > Then in runtime when we want to attach to 'mm_init' the
-> > kalsyms contains address of the one from kernel/fork.c.
-> >
-> > So we have function model with no arguments and using it
-> > to attach function with 3 arguments.. as result the trampoline
-> > will not save function's arguments and we get crash because
-> > trampoline changes argument registers:
-> >
-> >   BUG: unable to handle page fault for address: 0000607d87a1d558
-> >   #PF: supervisor write access in kernel mode
-> >   #PF: error_code(0x0002) - not-present page
-> >   PGD 0 P4D 0
-> >   Oops: 0002 [#1] SMP PTI
-> >   CPU: 6 PID: 936 Comm: systemd Not tainted 5.12.0-rc4qemu+ #191
-> >   RIP: 0010:mm_init+0x223/0x2a0
-> >   ...
-> >   Call Trace:
-> >    ? bpf_trampoline_6442453476_0+0x3b/0x1000
-> >    dup_mm+0x66/0x5f0
-> >    ? __lock_task_sighand+0x3a/0x70
-> >    copy_process+0x17d0/0x1b50
-> >    kernel_clone+0x97/0x3c0
-> >    __do_sys_clone+0x60/0x80
-> >    do_syscall_64+0x33/0x40
-> >    entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >   RIP: 0033:0x7f1dc9b3201f
-> >
-> > I think there might be more cases like this, but I don't have
-> > an idea yet how to solve this in generic way. The rename in
-> > this change fix it for this instance.
-> 
-> Just retroactively renaming functions and waiting for someone else to
-> report similar issues is probably not the best strategy. Should
-> resolve_btfids detect all name duplicates and emit warnings for them?
-> It would be good to also remove such name-conflicting FUNCs from BTF
-> (though currently it's not easy). And fail if such a function is
-> referenced from .BTF_ids section.
-> 
-> Thoughts?
+On Tue, May 4, 2021 at 4:05 AM Alejandro Colomar <alx.manpages@gmail.com> wrote:
+>
+> Some manual pages are already using C99 syntax for integral
+> types 'uint32_t', but some aren't.  There are some using kernel
+> syntax '__u32'.  Fix those.
+>
+> Some pages also document attributes, using GNU syntax
+> '__attribute__((xxx))'.  Update those to use the shorter and more
+> portable C11 keywords such as 'alignas()' when possible, and C2x
+> syntax '[[gnu::xxx]]' elsewhere, which hasn't been standardized
+> yet, but is already implemented in GCC, and available through
+> either --std=c2x or any of the --std=gnu... options.
+>
+> The standard isn't very clear on how to use alignas() or
+> [[]]-style attributes, so the following link is useful in the case
+> of 'alignas()' and '[[gnu::aligned()]]':
+> <https://stackoverflow.com/q/67271825/6872717>
+>
+> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+> Cc: LKML <linux-kernel@vger.kernel.org>
+> Cc: glibc <libc-alpha@sourceware.org>
+> Cc: GCC <gcc-patches@gcc.gnu.org>
+> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Cc: bpf <bpf@vger.kernel.org>
+> Cc: David Laight <David.Laight@ACULAB.COM>
+> Cc: Zack Weinberg <zackw@panix.com>
+> Cc: Joseph Myers <joseph@codesourcery.com>
+> ---
+>  man2/bpf.2 | 49 ++++++++++++++++++++++++-------------------------
+>  1 file changed, 24 insertions(+), 25 deletions(-)
+>
+> diff --git a/man2/bpf.2 b/man2/bpf.2
+> index 6e1ffa198..04b8fbcef 100644
+> --- a/man2/bpf.2
+> +++ b/man2/bpf.2
+> @@ -186,41 +186,40 @@ commands:
+>  .PP
+>  .in +4n
+>  .EX
+> -union bpf_attr {
+> +union [[gnu::aligned(8)]] bpf_attr {
+>      struct {    /* Used by BPF_MAP_CREATE */
+> -        __u32         map_type;
+> -        __u32         key_size;    /* size of key in bytes */
+> -        __u32         value_size;  /* size of value in bytes */
+> -        __u32         max_entries; /* maximum number of entries
+> -                                      in a map */
+> +        uint32_t    map_type;
+> +        uint32_t    key_size;    /* size of key in bytes */
+> +        uint32_t    value_size;  /* size of value in bytes */
+> +        uint32_t    max_entries; /* maximum number of entries
+> +                                    in a map */
 
-I guess we can do more checks, but I think the problem is the BTF
-data vs address we get from kallsyms based on function name
-
-we can easily get conflict address for another function with
-different args
-
-not sure how to ensure we have the proper address..  storing the
-address in BTF data?
-
-> 
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  init/main.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/init/main.c b/init/main.c
-> > index 53b278845b88..bc1bfe57daf7 100644
-> > --- a/init/main.c
-> > +++ b/init/main.c
-> > @@ -818,7 +818,7 @@ static void __init report_meminit(void)
-> >  /*
-> >   * Set up kernel memory allocators
-> >   */
-> > -static void __init mm_init(void)
-> > +static void __init init_mem(void)
-> >  {
-> >         /*
-> >          * page_ext requires contiguous pages,
-> > @@ -905,7 +905,7 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
-> >         vfs_caches_init_early();
-> >         sort_main_extable();
-> >         trap_init();
-> > -       mm_init();
-> > +       init_mem();
-> 
-> nit: given trap_init and ftrace_init, mem_init probably would be a better name?
-
-it's taken ;-)
-
-jirka
-
+For the same reasons as explained earlier:
+Nacked-by: Alexei Starovoitov <ast@kernel.org>
