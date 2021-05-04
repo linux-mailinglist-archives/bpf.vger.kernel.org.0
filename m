@@ -2,494 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F523725E7
-	for <lists+bpf@lfdr.de>; Tue,  4 May 2021 08:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 896B7372738
+	for <lists+bpf@lfdr.de>; Tue,  4 May 2021 10:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229861AbhEDGmq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 May 2021 02:42:46 -0400
-Received: from mail-ej1-f50.google.com ([209.85.218.50]:39544 "EHLO
-        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229724AbhEDGmp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 May 2021 02:42:45 -0400
-Received: by mail-ej1-f50.google.com with SMTP id f24so11444224ejc.6;
-        Mon, 03 May 2021 23:41:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language;
-        bh=Di3skEk5y7vZ/aW8oQoeIdwL0Pobr8PBPO/bQgtIcrc=;
-        b=ILsweTASyOgbDxzmuN63m8P+Cr1Lf6+IWwvsd1IBYSPnaLajZe5mgEEHDHjHHUE/fF
-         tBhrVBBEEyI8szxIHtwHAqKW1LZCwRcjkcZFPHKYQvJUaivxfSPvbRdz1Rg/SiRNYE57
-         2DBYsNLu+0xtaKOvCHW7IonRktUy8aKaASjE1YA6qIR6+1m+HN+z5gTzPfctAzZlZVl3
-         hvlYxvdgV4UInrjOCMyYneF1nxetcTkc5qvAvnXHzZkltahD0VgHXYPju4AD00bpgWcN
-         ReK55dN0H6Tp/Istek+21Rz6KBB2VU6fZPCkhY5oIZAVDEPpI8RSizVFaOC0VFR2QXd9
-         m8ag==
-X-Gm-Message-State: AOAM53086Ib8Ggvfjvi4JoDwAI/a9B8EnBEEEQNWcW4e9R8kDxSa+KU/
-        peAyi0nZuK3YipuVLPai9xuel73Fi8pz4Q==
-X-Google-Smtp-Source: ABdhPJwQtp60Ze255Q6DdfRdIB/Jor8t+PUxPIO4v+HOVJH6cGQgIgdPAhE1K2k4Y9uzuYFAN4WM+A==
-X-Received: by 2002:a17:906:abcc:: with SMTP id kq12mr3816495ejb.97.1620110509941;
-        Mon, 03 May 2021 23:41:49 -0700 (PDT)
-Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id z4sm12910440edb.97.2021.05.03.23.41.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 23:41:48 -0700 (PDT)
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
-        Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
+        id S229927AbhEDI3l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 May 2021 04:29:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42107 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230043AbhEDI3k (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 4 May 2021 04:29:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620116926;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oCGIoq+q2yEHekhzcWTEQd9G0dS+82wyYCm9Ec+BzMk=;
+        b=hGVdYvBWuYmK5wU5iIBaVCIxraRFbRPlcbRmo4ujHJA8jgJ3nKZ1UOH2ks6GtoTidmuUp4
+        8RMb/TMXKTdiLan/mrnvZfrPJJmgSgi8rjxn5KEnH1LD7ULbmehh2QTovbLaR/+c4FW91z
+        bzZ4CY9U1KMIdooYYb6KzS0whLvz6rk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-532-O1LMVxDONsGykzhE3i_Ffw-1; Tue, 04 May 2021 04:28:42 -0400
+X-MC-Unique: O1LMVxDONsGykzhE3i_Ffw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 741838030D5;
+        Tue,  4 May 2021 08:28:39 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 091EA1A866;
+        Tue,  4 May 2021 08:28:28 +0000 (UTC)
+Date:   Tue, 4 May 2021 10:28:27 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Kurt Kanzenbach <kurt@linutronix.de>
+Cc:     brouer@redhat.com, Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        dwarves@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
-References: <20210426121401.GO15381@kitsune.suse.cz>
- <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com> <YIbkR6z6mxdNSzGO@krava>
- <YIcRlHQWWKbOlcXr@krava> <20210427121237.GK6564@kitsune.suse.cz>
- <20210430174723.GP15381@kitsune.suse.cz>
- <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
- <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
- <4e051459-8532-7b61-c815-f3435767f8a0@kernel.org>
- <cbaf50c3-c85d-9239-0b37-c88e8cbed8c8@kernel.org> <YI/LgjLxo9VCN/d+@krava>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <8c3cbd22-eb26-ea8b-c8bb-35a629d6d2d8@kernel.org>
-Date:   Tue, 4 May 2021 08:41:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Sven Auhagen <sven.auhagen@voleatech.de>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Tyler S <tylerjstachecki@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCH net v4] igb: Fix XDP with PTP enabled
+Message-ID: <20210504102827.342f6302@carbon>
+In-Reply-To: <20210503072800.79936-1-kurt@linutronix.de>
+References: <20210503072800.79936-1-kurt@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <YI/LgjLxo9VCN/d+@krava>
-Content-Type: multipart/mixed;
- boundary="------------2F0676AC09266ADBA754999C"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------2F0676AC09266ADBA754999C
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Transfer-Encoding: 8bit
+On Mon,  3 May 2021 09:28:00 +0200
+Kurt Kanzenbach <kurt@linutronix.de> wrote:
 
-On 03. 05. 21, 12:08, Jiri Olsa wrote:
-> On Mon, May 03, 2021 at 10:59:44AM +0200, Jiri Slaby wrote:
->> CCing pahole people.
->>
->> On 03. 05. 21, 9:59, Jiri Slaby wrote:
->>> On 03. 05. 21, 8:11, Jiri Slaby wrote:
->>>>>>>>> looks like vfs_truncate did not get into BTF data,
->>>>>>>>> I'll try to reproduce
->>>>>
->>>>> _None_ of the functions are generated by pahole -J from
->>>>> debuginfo on ppc64. debuginfo appears to be correct. Neither
->>>>> pahole -J fs/open.o works correctly. collect_functions in
->>>>> dwarves seems to be defunct on ppc64... "functions" array is
->>>>> bogus (so find_function -- the bsearch -- fails).
->>>>
->>>> It's not that bogus. I forgot an asterisk:
->>>>> #0  find_function (btfe=0x100269f80, name=0x10024631c
->>>>> "stream_open") at
->>>>> /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
->>>>> (gdb) p (*functions)@84
->>>>> $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr
->>>>> = 75232, size = 72, sh_addr = 65536, generated = false}, {
->>>>>      name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592,
->>>>> size = 216, sh_addr = 65536, generated = false}, {
->>>>>      name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr =
->>>>> 80816, size = 232, sh_addr = 65536, generated = false}, {
->>>>>      name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr =
->>>>> 74304, size = 100, sh_addr = 65536, generated = false}, {
->>>> ...
->>>>>      name = 0x7ffff68e0808 ".stream_open", addr = 65824, size =
->>>>> 72, sh_addr = 65536, generated = false}, {
->>>> ...
->>>>>      name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size =
->>>>> 544, sh_addr = 65536, generated = false}}
->>>>
->>>> The dot makes the difference, of course. The question is why is it
->>>> there? I keep looking into it. Only if someone has an immediate
->>>> idea...
->>>
->>> Well, .vfs_truncate is in .text (and contains an ._mcount call). And
->>> vfs_truncate is in .opd (w/o an ._mcount call). Since setup_functions
->>> excludes all functions without the ._mcount call, is_ftrace_func later
->>> returns false for such functions and they are filtered before the BTF
->>> processing.
->>>
->>> Technically, get_vmlinux_addrs looks at a list of functions between
->>> __start_mcount_loc and __stop_mcount_loc and considers only the listed.
->>>
->>> I don't know what the correct fix is (exclude .opd functions from the
->>> filter?). Neither why cross compiler doesn't fail, nor why ebi v2 avoids
->>> this too.
->>
->> Attaching a patch for pahole which fixes the issue, but I have no idea
->> whether it is the right fix at all.
+> When using native XDP with the igb driver, the XDP frame data doesn't point to
+> the beginning of the packet. It's off by 16 bytes. Everything works as expected
+> with XDP skb mode.
 > 
-> hi,
-> we're considering to disable ftrace filter completely,
-> I guess that would solve this issue for ppc as well
+> Actually these 16 bytes are used to store the packet timestamps. Therefore, pull
+> the timestamp before executing any XDP operations and adjust all other code
+> accordingly. The igc driver does it like that as well.
 > 
->    https://lore.kernel.org/bpf/20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com/
+> Tested with Intel i210 card and AF_XDP sockets.
+> 
+> Fixes: 9cbc948b5a20 ("igb: add XDP support")
+> Signed-off-by: Kurt Kanzenbach <kurt@linutronix.de>
 
-Right, the attached patch fixes it for me too.
+Thanks for fixing this!
 
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
+I expect that we/I will (soon) play with getting this area that is
+stored in front of the packet (the XDP data_meta area) described via
+BTF.  This way both xdp_frame and AF_XDP can get structured access (e.g.
+to the PTP timestamp in this case).
+
+I'll be adding my notes on this project here:
+ https://github.com/xdp-project/xdp-project/blob/master/areas/tsn/
+
+Looking forward to collaborate on this with you :-)
 -- 
-js
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
---------------2F0676AC09266ADBA754999C
-Content-Type: text/x-patch; charset=UTF-8;
- name="0001-remove-ftrace-filter.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="0001-remove-ftrace-filter.patch"
-
-From b0128f1ec6a234c5b40c40d73d55708d34f1a428 Mon Sep 17 00:00:00 2001
-From: Jiri Slaby <jslaby@suse.cz>
-Date: Tue, 4 May 2021 08:09:50 +0200
-Subject: [PATCH] remove ftrace filter
-
-Functions in the .opd section on ppc64 are currently ignored as they
-don't contain mcount calls -- they are excluded by the ftrace filter.
-Therefore, pahole cannot produce a .BTF section from vmlinux and kernel
-build fails on ppc64.
-
-Remove the ftrace filter completely as was discussed:
- https://lore.kernel.org/bpf/20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com/
- https://lore.kernel.org/bpf/YI%2FLgjLxo9VCN%2Fd+@krava/
----
- btf_encoder.c | 272 +-------------------------------------------------
- 1 file changed, 5 insertions(+), 267 deletions(-)
-
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 80e896961d4e..ba83bb088efa 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -27,17 +27,8 @@
-  */
- #define KSYM_NAME_LEN 128
- 
--struct funcs_layout {
--	unsigned long mcount_start;
--	unsigned long mcount_stop;
--	unsigned long mcount_sec_idx;
--};
--
- struct elf_function {
- 	const char	*name;
--	unsigned long	 addr;
--	unsigned long	 size;
--	unsigned long	 sh_addr;
- 	bool		 generated;
- };
- 
-@@ -98,250 +89,11 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
- 	}
- 
- 	functions[functions_cnt].name = name;
--	functions[functions_cnt].addr = elf_sym__value(sym);
--	functions[functions_cnt].size = elf_sym__size(sym);
--	functions[functions_cnt].sh_addr = sh.sh_addr;
- 	functions[functions_cnt].generated = false;
- 	functions_cnt++;
- 	return 0;
- }
- 
--static int addrs_cmp(const void *_a, const void *_b)
--{
--	const __u64 *a = _a;
--	const __u64 *b = _b;
--
--	if (*a == *b)
--		return 0;
--	return *a < *b ? -1 : 1;
--}
--
--static int get_vmlinux_addrs(struct btf_elf *btfe, struct funcs_layout *fl,
--			     __u64 **paddrs, __u64 *pcount)
--{
--	__u64 *addrs, count, offset;
--	unsigned int addr_size, i;
--	Elf_Data *data;
--	GElf_Shdr shdr;
--	Elf_Scn *sec;
--
--	/* Initialize for the sake of all error paths below. */
--	*paddrs = NULL;
--	*pcount = 0;
--
--	if (!fl->mcount_start || !fl->mcount_stop)
--		return 0;
--
--	/*
--	 * Find mcount addressed marked by __start_mcount_loc
--	 * and __stop_mcount_loc symbols and load them into
--	 * sorted array.
--	 */
--	sec = elf_getscn(btfe->elf, fl->mcount_sec_idx);
--	if (!sec || !gelf_getshdr(sec, &shdr)) {
--		fprintf(stderr, "Failed to get section(%lu) header.\n",
--			fl->mcount_sec_idx);
--		return -1;
--	}
--
--	/* Get address size from processed file's ELF class. */
--	addr_size = gelf_getclass(btfe->elf) == ELFCLASS32 ? 4 : 8;
--
--	offset = fl->mcount_start - shdr.sh_addr;
--	count  = (fl->mcount_stop - fl->mcount_start) / addr_size;
--
--	data = elf_getdata(sec, 0);
--	if (!data) {
--		fprintf(stderr, "Failed to get section(%lu) data.\n",
--			fl->mcount_sec_idx);
--		return -1;
--	}
--
--	addrs = malloc(count * sizeof(addrs[0]));
--	if (!addrs) {
--		fprintf(stderr, "Failed to allocate memory for ftrace addresses.\n");
--		return -1;
--	}
--
--	if (addr_size == sizeof(__u64)) {
--		memcpy(addrs, data->d_buf + offset, count * addr_size);
--	} else {
--		for (i = 0; i < count; i++)
--			addrs[i] = (__u64) *((__u32 *) (data->d_buf + offset + i * addr_size));
--	}
--
--	*paddrs = addrs;
--	*pcount = count;
--	return 0;
--}
--
--static int
--get_kmod_addrs(struct btf_elf *btfe, __u64 **paddrs, __u64 *pcount)
--{
--	__u64 *addrs, count;
--	unsigned int addr_size, i;
--	GElf_Shdr shdr_mcount;
--	Elf_Data *data;
--	Elf_Scn *sec;
--
--	/* Initialize for the sake of all error paths below. */
--	*paddrs = NULL;
--	*pcount = 0;
--
--	/* get __mcount_loc */
--	sec = elf_section_by_name(btfe->elf, &btfe->ehdr, &shdr_mcount,
--				  "__mcount_loc", NULL);
--	if (!sec) {
--		if (btf_elf__verbose) {
--			printf("%s: '%s' doesn't have __mcount_loc section\n", __func__,
--			       btfe->filename);
--		}
--		return 0;
--	}
--
--	data = elf_getdata(sec, NULL);
--	if (!data) {
--		fprintf(stderr, "Failed to data for __mcount_loc section.\n");
--		return -1;
--	}
--
--	/* Get address size from processed file's ELF class. */
--	addr_size = gelf_getclass(btfe->elf) == ELFCLASS32 ? 4 : 8;
--
--	count = data->d_size / addr_size;
--
--	addrs = malloc(count * sizeof(addrs[0]));
--	if (!addrs) {
--		fprintf(stderr, "Failed to allocate memory for ftrace addresses.\n");
--		return -1;
--	}
--
--	if (addr_size == sizeof(__u64)) {
--		memcpy(addrs, data->d_buf, count * addr_size);
--	} else {
--		for (i = 0; i < count; i++)
--			addrs[i] = (__u64) *((__u32 *) (data->d_buf + i * addr_size));
--	}
--
--	/*
--	 * We get Elf object from dwfl_module_getelf function,
--	 * which performs all possible relocations, including
--	 * __mcount_loc section.
--	 *
--	 * So addrs array now contains relocated values, which
--	 * we need take into account when we compare them to
--	 * functions values, see comment in setup_functions
--	 * function.
--	 */
--	*paddrs = addrs;
--	*pcount = count;
--	return 0;
--}
--
--static int is_ftrace_func(struct elf_function *func, __u64 *addrs, __u64 count)
--{
--	__u64 start = func->addr;
--	__u64 addr, end = func->addr + func->size;
--
--	/*
--	 * The invariant here is addr[r] that is the smallest address
--	 * that is >= than function start addr. Except the corner case
--	 * where there is no such r, but for that we have a final check
--	 * in the return.
--	 */
--	size_t l = 0, r = count - 1, m;
--
--	/* make sure we don't use invalid r */
--	if (count == 0)
--		return false;
--
--	while (l < r) {
--		m = l + (r - l) / 2;
--		addr = addrs[m];
--
--		if (addr >= start) {
--			/* we satisfy invariant, so tighten r */
--			r = m;
--		} else {
--			/* m is not good enough as l, maybe m + 1 will be */
--			l = m + 1;
--		}
--	}
--
--	return start <= addrs[r] && addrs[r] < end;
--}
--
--static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
--{
--	__u64 *addrs, count, i;
--	int functions_valid = 0;
--	bool kmod = false;
--
--	/*
--	 * Check if we are processing vmlinux image and
--	 * get mcount data if it's detected.
--	 */
--	if (get_vmlinux_addrs(btfe, fl, &addrs, &count))
--		return -1;
--
--	/*
--	 * Check if we are processing kernel module and
--	 * get mcount data if it's detected.
--	 */
--	if (!addrs) {
--		if (get_kmod_addrs(btfe, &addrs, &count))
--			return -1;
--		kmod = true;
--	}
--
--	if (!addrs) {
--		if (btf_elf__verbose)
--			printf("ftrace symbols not detected, falling back to DWARF data\n");
--		delete_functions();
--		return 0;
--	}
--
--	qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
--	qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
--
--	/*
--	 * Let's got through all collected functions and filter
--	 * out those that are not in ftrace.
--	 */
--	for (i = 0; i < functions_cnt; i++) {
--		struct elf_function *func = &functions[i];
--		/*
--		 * For vmlinux image both addrs[x] and functions[x]::addr
--		 * values are final address and are comparable.
--		 *
--		 * For kernel module addrs[x] is final address, but
--		 * functions[x]::addr is relative address within section
--		 * and needs to be relocated by adding sh_addr.
--		 */
--		if (kmod)
--			func->addr += func->sh_addr;
--
--		/* Make sure function is within ftrace addresses. */
--		if (is_ftrace_func(func, addrs, count)) {
--			/*
--			 * We iterate over sorted array, so we can easily skip
--			 * not valid item and move following valid field into
--			 * its place, and still keep the 'new' array sorted.
--			 */
--			if (i != functions_valid)
--				functions[functions_valid] = functions[i];
--			functions_valid++;
--		}
--	}
--
--	functions_cnt = functions_valid;
--	free(addrs);
--
--	if (btf_elf__verbose)
--		printf("Found %d functions!\n", functions_cnt);
--	return 0;
--}
--
- static struct elf_function *find_function(const struct btf_elf *btfe,
- 					  const char *name)
- {
-@@ -620,23 +372,8 @@ static int collect_percpu_var(struct btf_elf *btfe, GElf_Sym *sym,
- 	return 0;
- }
- 
--static void collect_symbol(GElf_Sym *sym, struct funcs_layout *fl,
--			   size_t sym_sec_idx)
--{
--	if (!fl->mcount_start &&
--	    !strcmp("__start_mcount_loc", elf_sym__name(sym, btfe->symtab))) {
--		fl->mcount_start = sym->st_value;
--		fl->mcount_sec_idx = sym_sec_idx;
--	}
--
--	if (!fl->mcount_stop &&
--	    !strcmp("__stop_mcount_loc", elf_sym__name(sym, btfe->symtab)))
--		fl->mcount_stop = sym->st_value;
--}
--
- static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
- {
--	struct funcs_layout fl = { };
- 	Elf32_Word sym_sec_idx;
- 	uint32_t core_id;
- 	GElf_Sym sym;
-@@ -650,7 +387,6 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
- 			return -1;
- 		if (collect_function(btfe, &sym, sym_sec_idx))
- 			return -1;
--		collect_symbol(&sym, &fl, sym_sec_idx);
- 	}
- 
- 	if (collect_percpu_vars) {
-@@ -661,9 +397,11 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
- 			printf("Found %d per-CPU variables!\n", percpu_var_cnt);
- 	}
- 
--	if (functions_cnt && setup_functions(btfe, &fl)) {
--		fprintf(stderr, "Failed to filter DWARF functions\n");
--		return -1;
-+	if (functions_cnt) {
-+		qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
-+
-+		if (btf_elf__verbose)
-+			printf("Found %d functions!\n", functions_cnt);
- 	}
- 
- 	return 0;
--- 
-2.31.1
-
-
---------------2F0676AC09266ADBA754999C--
