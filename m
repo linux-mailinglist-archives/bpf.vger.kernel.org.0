@@ -2,168 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E04AE373286
-	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 00:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC6A3732E5
+	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 01:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbhEDWiU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 May 2021 18:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
+        id S230502AbhEDXuN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 May 2021 19:50:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231464AbhEDWiT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 May 2021 18:38:19 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FB0C061574;
-        Tue,  4 May 2021 15:37:22 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id r8so134914ybb.9;
-        Tue, 04 May 2021 15:37:22 -0700 (PDT)
+        with ESMTP id S230431AbhEDXuM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 May 2021 19:50:12 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7018C061761
+        for <bpf@vger.kernel.org>; Tue,  4 May 2021 16:49:15 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id i8-20020a0569020688b02904ef3bd00ce7so359948ybt.7
+        for <bpf@vger.kernel.org>; Tue, 04 May 2021 16:49:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/rcOxPodICfG9N9CM3OcwHXOlg6CyM6WBBBB3GXGalc=;
-        b=pIYKtvpQre6fXnjVXh0hX1f7LJLo2zPgC0EvkSYFBhApXePYfGAHWAmOe6sycm1gBj
-         I8wctKSVe6+HF4BmWH2jMlIFWS2sUF4TgviZvRiTBqeTyb9FjpOGWOBfb5P+hxI6mLa2
-         3e6P/yp7B5AnLoXCJtsLthoEuG7/GvJMRxh+861Kbvs3LDe0cHeVZ3+g3ctMDuySivf8
-         IN42PqxHZ7Xi6z75sDEdp9UBQMl+0hdtILXw/32jiJjONmXY+1f99FHN84OIDyOLpTRM
-         VtTHuGTEX4lh5BUA/ww4/uRJjeH4isUVgiu5le4SOAVQUJhry2G5mDwrrjCbi8XE0CsC
-         Re1g==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=ZdSRGJLzb4KjpNs25266npb7NX9+fIrv6tE6wKvXYkQ=;
+        b=TbcwiLSGdUbbez0BgZKkedibJSJsyIkWQCaGjpCvgPzp1faOhRee83iTV3WJ1tkt0P
+         1NtcurmNCHILH6lbYDiAUMltldG88Al9R+PiAixGpalQSiYQIi8zHHeVVbb6H/h+XthT
+         fOqHea9tWE3GfNXtmJhLP/Z6xzK8AfvRefkcihq34e5gxYWRODFANVtlEaWL+20nCXMw
+         f4jJbQMjX569oq4jYirvY5sKDN/CuQcWPFK1G2Q5qUNDSPSngoRvGqdycVb03MlblhZD
+         /tZJLUdbpbiQvBIdMjgkfZqv0XF4g11pCPetHasOOyie0YssKHVdN6Btkzl9fUSPTsK7
+         tvIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/rcOxPodICfG9N9CM3OcwHXOlg6CyM6WBBBB3GXGalc=;
-        b=k3dVeBYWnNp78bz6jBDkbyUrilifoTElI3/DynMiCFNAMjPoetSnyYF7YDhVrwVIDO
-         4mVfPYVlKji2EYHQUVoL1pOKbmh6ZpdSRmp4nKgezDGJfT1ixuXtkBM7OZ6wK8ulNqpR
-         K1d6+9BDYVRzmmhqzx46ocC8A45r5W07LmYgcLzCb3VzH4j2K/aHH+OerHh+MnCOOA+c
-         g2RUy1Q+TZz2+3h6V1e/81RCRZHIy2OhK3VFe4BMhnFixFqWAwFgMBYzhbcvGW9u1r5h
-         NfFqm2+FlZVot5bwanVLaaWPRrAlldoQ0apk1FXAZ9Aa4vikHGC2EcsSj2OOoWfYLU22
-         rhzA==
-X-Gm-Message-State: AOAM530ZV5ezrODCmA40uJOjzU9y+j0FnlFJA5sZ6WBI7Wp1b2rprvGE
-        qKnlzy/am6mVfS4zBQIBaDEviqlkfnGQ80NLfvA=
-X-Google-Smtp-Source: ABdhPJzCk/CVV637ag7i3mlzcM39x4Lj5FcYXY7Gj5G8Wj90vxrNn9hx49htDsH1V2jYO436s5pIyQM4bEi24rSwWsY=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr39337234ybo.230.1620167842180;
- Tue, 04 May 2021 15:37:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210429212834.82621-1-jolsa@kernel.org> <YI8WokIxTkZvzVuP@krava>
- <CAEf4BzZjtU1hicc8dK1M9Mqf3wanU2AJFDtZJzUfQdwCsC6cGg@mail.gmail.com> <YJFLpAbUiwIu0I4H@krava>
-In-Reply-To: <YJFLpAbUiwIu0I4H@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 4 May 2021 15:37:11 -0700
-Message-ID: <CAEf4BzYz3G4aRWT4YTrnKaVCsE_A2UGGn6jVvqOuK8ZLU-sN8g@mail.gmail.com>
-Subject: Re: [PATCH RFC] bpf: Fix trampoline for functions with variable arguments
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=ZdSRGJLzb4KjpNs25266npb7NX9+fIrv6tE6wKvXYkQ=;
+        b=Lc386X6eaVSkJsMK7q8nsD3pZVNn0bJFqqH7vQPFIOn29TT3nfivzOIPuERFDwKmmN
+         +Fza2UX5HrQ6vv9OE27OoZQmeIHSFnkcLcFxGcwLLrqzHPlMCd9VRakwSRCOLoE/98R0
+         n4Oph05aaDzPSn/lrU0B3sai5z6SjHPSkgypyS0gCOBzJT1s7ry3x7o4ysFAcs3pesjQ
+         RmC9rAPZy5Tc3jlYIlPS2FU0Ahe0MdJgurFl1/Khji9dlu379PCoXNkGwUHCbP6nBau6
+         9bjyBCZla86eyZFTvqAbn0czwqmD6F/PZJ9z9+JGOuSS0AjGSYRXpXPwZvAssZ57eXyJ
+         OVYw==
+X-Gm-Message-State: AOAM532TcPnTpAZRUaJZfm2n7Iwl+yvaO7MBbqPf2XVv2WTqNAymodb+
+        AQit+yvfDG3IftIIBrjg38MAlSGUpPVj
+X-Google-Smtp-Source: ABdhPJyUv29soiibo57/StwdT9oVQMlRMvGiEoQ0bn2rIkk4rM06sZg1XXWYdzwYlLtQ7azM31DxhCn5528F
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:6f05:c90a:7892:8680])
+ (user=irogers job=sendgmr) by 2002:a25:6c8a:: with SMTP id
+ h132mr38310085ybc.454.1620172154818; Tue, 04 May 2021 16:49:14 -0700 (PDT)
+Date:   Tue,  4 May 2021 16:49:10 -0700
+Message-Id: <20210504234910.976501-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
+Subject: [PATCH] libbpf: Add NULL check to add_dummy_ksym_var
+From:   Ian Rogers <irogers@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
+        KP Singh <kpsingh@chromium.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ian Rogers <irogers@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Petar Penkov <ppenkov@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 4, 2021 at 6:27 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Mon, May 03, 2021 at 03:32:34PM -0700, Andrii Nakryiko wrote:
-> > On Sun, May 2, 2021 at 2:17 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > On Thu, Apr 29, 2021 at 11:28:34PM +0200, Jiri Olsa wrote:
-> > > > For functions with variable arguments like:
-> > > >
-> > > >   void set_worker_desc(const char *fmt, ...)
-> > > >
-> > > > the BTF data contains void argument at the end:
-> > > >
-> > > > [4061] FUNC_PROTO '(anon)' ret_type_id=0 vlen=2
-> > > >         'fmt' type_id=3
-> > > >         '(anon)' type_id=0
-> > > >
-> > > > When attaching function with this void argument the btf_distill_func_proto
-> > > > will set last btf_func_model's argument with size 0 and that
-> > > > will cause extra loop in save_regs/restore_regs functions and
-> > > > generate trampoline code like:
-> > > >
-> > > >   55             push   %rbp
-> > > >   48 89 e5       mov    %rsp,%rbp
-> > > >   48 83 ec 10    sub    $0x10,%rsp
-> > > >   53             push   %rbx
-> > > >   48 89 7d f0    mov    %rdi,-0x10(%rbp)
-> > > >   75 f8          jne    0xffffffffa00cf007
-> > > >                  ^^^ extra jump
-> > > >
-> > > > It's causing soft lockups/crashes probably depends on what context
-> > > > is the attached function called, like for set_worker_desc:
-> > > >
-> > > >   watchdog: BUG: soft lockup - CPU#16 stuck for 22s! [kworker/u40:4:239]
-> > > >   CPU: 16 PID: 239 Comm: kworker/u40:4 Not tainted 5.12.0-rc4qemu+ #178
-> > > >   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1.fc33 04/01/2014
-> > > >   Workqueue: writeback wb_workfn
-> > > >   RIP: 0010:bpf_trampoline_6442464853_0+0xa/0x1000
-> > > >   Code: Unable to access opcode bytes at RIP 0xffffffffa3597fe0.
-> > > >   RSP: 0018:ffffc90000687da8 EFLAGS: 00000217
-> > > >   Call Trace:
-> > > >    set_worker_desc+0x5/0xb0
-> > > >    wb_workfn+0x48/0x4d0
-> > > >    ? psi_group_change+0x41/0x210
-> > > >    ? __bpf_prog_exit+0x15/0x20
-> > > >    ? bpf_trampoline_6442458903_0+0x3b/0x1000
-> > > >    ? update_pasid+0x5/0x90
-> > > >    ? __switch_to+0x187/0x450
-> > > >    process_one_work+0x1e7/0x380
-> > > >    worker_thread+0x50/0x3b0
-> > > >    ? rescuer_thread+0x380/0x380
-> > > >    kthread+0x11b/0x140
-> > > >    ? __kthread_bind_mask+0x60/0x60
-> > > >    ret_from_fork+0x22/0x30
-> > > >
-> > > > This patch is removing the void argument from struct btf_func_model
-> > > > in btf_distill_func_proto, but perhaps we should also check for this
-> > > > in JIT's save_regs/restore_regs functions.
-> > >
-> > > actualy looks like we need to disable functions with variable arguments
-> > > completely, because we don't know how many arguments to save
-> > >
-> > > I tried to disable them in pahole and it's easy fix, will post new fix
-> >
-> > Can we still allow access to fixed arguments for such functions and
-> > just disallow the vararg ones?
->
-> the problem is that we should save all the registers for arguments,
-> which is probably doable.. but if caller uses more than 6 arguments,
-> we need stack data, which will be wrong because of the extra stack
-> frame we do in bpf trampoline.. so we could crash
->
-> the patch below prevents to attach these functions directly in kernel,
-> so we could keep these functions in BTF
->
-> jirka
->
->
-> ---
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 0600ed325fa0..f9709dc08c44 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -5213,6 +5213,13 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
->                                 tname, i, btf_kind_str[BTF_INFO_KIND(t->info)]);
->                         return -EINVAL;
->                 }
-> +               if (ret == 0) {
-> +                       bpf_log(log,
-> +                               "The function %s has variable args, it's unsupported.\n",
-> +                               tname);
-> +                       return -EINVAL;
-> +
-> +               }
+Avoids a segv if btf isn't present. Seen on the call path
+__bpf_object__open calling bpf_object__collect_externs.
 
-this will work, but the explicit check for vararg should be `i ==
-nargs - 1 && args[i].type == 0`. Everything else (if it happens) is
-probably a bad BTF data.
+Fixes: 5bd022ec01f0 (libbpf: Support extern kernel function)
+Suggested-by: Stanislav Fomichev <sdf@google.com>
+Suggested-by: Petar Penkov <ppenkov@google.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/lib/bpf/libbpf.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
->                 m->arg_size[i] = ret;
->         }
->         m->nr_args = nargs;
->
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index de9a5b0118fe..97d9a1c2d680 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3216,6 +3216,9 @@ static int add_dummy_ksym_var(struct btf *btf)
+ 	const struct btf_var_secinfo *vs;
+ 	const struct btf_type *sec;
+ 
++	if (!btf)
++		return 0;
++
+ 	sec_btf_id = btf__find_by_name_kind(btf, KSYMS_SEC,
+ 					    BTF_KIND_DATASEC);
+ 	if (sec_btf_id < 0)
+-- 
+2.31.1.607.g51e8a6a459-goog
+
