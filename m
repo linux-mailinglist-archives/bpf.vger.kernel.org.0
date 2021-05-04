@@ -2,250 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CEF372E4D
-	for <lists+bpf@lfdr.de>; Tue,  4 May 2021 18:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BCA372FD5
+	for <lists+bpf@lfdr.de>; Tue,  4 May 2021 20:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhEDQ6I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 May 2021 12:58:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230285AbhEDQ6I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 May 2021 12:58:08 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5379EC061574
-        for <bpf@vger.kernel.org>; Tue,  4 May 2021 09:57:13 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id j13so5129535vsf.2
-        for <bpf@vger.kernel.org>; Tue, 04 May 2021 09:57:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nkFvfyJ9VI2OgQ89vUiSm4qF+7y//eLI+wKJF3FKDJM=;
-        b=N1CjTIV3/ARvPxL7jMpjstv7BQ/hc7un8B72DldOVaDkL8dzNoDDCuf5EZ5U5PhnWI
-         B5yolPfbSAsex0vhatpnTUNJTz72E4O4yatJXBoxInYq07c4Mk7rxPFIWZo6TM2UEU6r
-         f5z4lEy5Q0wdlF2/seYUQTVHSo9/FDApH1oEjQebWrdqnJZgT43yoii6OTL2ffd+Vtzo
-         38+AEtkg4xkKXITL4rY+ILpvmWp4gXJHDl0LVnuKpqOG4jAAzpQiMho8e3Jj4ZXVhL1+
-         7AVcUEUz6teH/+m9f6GI/OGk4j94tayCbKGvuEx6uJTlawcXTMLRodTk3IKZwml5sDas
-         XE0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nkFvfyJ9VI2OgQ89vUiSm4qF+7y//eLI+wKJF3FKDJM=;
-        b=P9X3wIi1OpkToatdicbN8lyLn/LGDeYjfLLgFtmSeIw4NYWxY27/pB/GUn4jyUxxyx
-         dJKg184j/kYWQK7uGh94lfapYtqFQzPpM99WdFPudNy7vXZG1hK/ey8k1pebA6a9c1Of
-         rlqmBrQZJSvmxxl+6AzibGKVNfAc24QFubc/nI4BAeJ1ePV6SCrnwHboNra2b8KH5uw3
-         /QjhHfOZYoX30qTh3mB7SXo3EKN7/6r1VGXeWiLIBJdmzaejtlF976FyNziAChAPkzAr
-         43wo8CXkDGgft3hmLoRhk2HHtyzOA1mDhYxUU/j4RKlP5pRzjCZGLyAd2CQzxVFjb4U2
-         N09w==
-X-Gm-Message-State: AOAM533DCGnTdY5wU8PKgc+4M/AZFrWz/vgqG7Tl3alHVvnqyaMv2657
-        vXLbAGHt6rR+fuGyx4KZUwy8UCr5zq1AER09nEs=
-X-Google-Smtp-Source: ABdhPJx1C7swSqo1F6lNAQMMzf7n9Vst2AiVZb719PDLl+Y/QJmZhUC9tS1nZwLdp9XSo2cIWY5KxQ4P3AEGRl8YhEs=
-X-Received: by 2002:a67:f146:: with SMTP id t6mr20919290vsm.22.1620147432072;
- Tue, 04 May 2021 09:57:12 -0700 (PDT)
+        id S230385AbhEDSi3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 May 2021 14:38:29 -0400
+Received: from mailbackend.panix.com ([166.84.1.89]:33091 "EHLO
+        mailbackend.panix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230086AbhEDSi2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 May 2021 14:38:28 -0400
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+        by mailbackend.panix.com (Postfix) with ESMTPSA id 4FZT981qdjz23wL;
+        Tue,  4 May 2021 14:37:32 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=panix.com; s=panix;
+        t=1620153452; bh=6hZEbCz9pLVG1Juo29+y3XUezTwzfWrbH9RvIsLfcoo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc;
+        b=LquIxEHA/iFAS5hUtC8wK8rXXjzTNILhmxmXsNbWhp/zOwnSlfIDLuUAJRDxn7E8Q
+         TkzRiehkjUpwkXiKG6V4xMMQ4ulHB6gy/lS+fGAJZWRYBqTwcSIzofySvcUE8f+rt1
+         P1QN4Mn71eW9jBDkBeBTgnPAnnOyjFRyjyRzx4yQ=
+Received: by mail-yb1-f177.google.com with SMTP id r8so13471020ybb.9;
+        Tue, 04 May 2021 11:37:32 -0700 (PDT)
+X-Gm-Message-State: AOAM531qF5cIiYnwvnUhhOkLFDnA19oeR6Yc5kK4NfLO+l/oiFMUhWrZ
+        8FZQLm5hKhEPoreBsYr3MuXVQVX4r3Ij+vRKewY=
+X-Google-Smtp-Source: ABdhPJzAtel3Wjk4eFZrc/WMEdVxWLfDG8PgEo5dUpee4xL8hswSsjwHJ7QmuV+aRCkJcqQx4KVXGIYAeHMUaO2Go6Y=
+X-Received: by 2002:a25:7355:: with SMTP id o82mr37025773ybc.368.1620153451776;
+ Tue, 04 May 2021 11:37:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAO658oV9AAcMMbVhjkoq5PtpvbVf41Cd_TBLCORTcf3trtwHfw@mail.gmail.com>
- <CAEf4Bzayxgt3P+kz36t6C8jp-MUTuwuKvwHWWsd2qrCs3-RHXA@mail.gmail.com>
- <CAO658oUpqOHmSAif+6zor1XTruDqHeTzAQHrCXOSPRo6oTp5vg@mail.gmail.com>
- <CAEf4BzYfn0SonnH=R-kA8eeYD5yBrAFQTsEMDtuOX=MaadTJsA@mail.gmail.com>
- <CAO658oWY3QK0A3U=NeDzXJRPsydCFWCrx1kdAfSdtq9CpNj0ow@mail.gmail.com>
- <CAEf4BzbRTuYQtzSScqCkM8dLfLLDzRs2BPKrHbrx3=joFr5YPw@mail.gmail.com>
- <CAO658oX7_b18Q4OxZ_PxAPhBjQPXv4+dQsQzH1-TWKhozikWiA@mail.gmail.com> <294a5f06-19dd-d649-a000-c40f1fdbd299@fb.com>
-In-Reply-To: <294a5f06-19dd-d649-a000-c40f1fdbd299@fb.com>
-From:   Grant Seltzer Richman <grantseltzer@gmail.com>
-Date:   Tue, 4 May 2021 12:57:00 -0400
-Message-ID: <CAO658oX64YmV_qnR=zx5yhcmBP=WEdigkjopDuRF0sPaCV-UqQ@mail.gmail.com>
-Subject: Re: Typical way to handle missing macros in vmlinux.h
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+ <20210504110519.16097-1-alx.manpages@gmail.com> <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
+ <YJFZHW2afbAMVOmE@kroah.com> <69fb22e0-84bd-47fb-35b5-537a7d39c692@gmail.com> <YJFxArfp8wN3ILJb@kroah.com>
+In-Reply-To: <YJFxArfp8wN3ILJb@kroah.com>
+From:   Zack Weinberg <zackw@panix.com>
+Date:   Tue, 4 May 2021 14:37:20 -0400
+X-Gmail-Original-Message-ID: <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com>
+Message-ID: <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com>
+Subject: Re: [RFC v2] bpf.2: Use standard types and attributes
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
+        bpf <bpf@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Joseph Myers <joseph@codesourcery.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 4, 2021 at 12:25 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 5/4/21 8:31 AM, Grant Seltzer Richman wrote:
-> > On Mon, May 3, 2021 at 5:22 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >>
-> >> On Mon, May 3, 2021 at 1:20 PM Grant Seltzer Richman
-> >> <grantseltzer@gmail.com> wrote:
-> >>>
-> >>> On Mon, May 3, 2021 at 2:43 PM Andrii Nakryiko
-> >>> <andrii.nakryiko@gmail.com> wrote:
-> >>>>
-> >>>> On Mon, May 3, 2021 at 11:32 AM Grant Seltzer Richman
-> >>>> <grantseltzer@gmail.com> wrote:
-> >>>>>
-> >>>>> On Wed, Apr 28, 2021 at 5:15 PM Andrii Nakryiko
-> >>>>> <andrii.nakryiko@gmail.com> wrote:
-> >>>>>>
-> >>>>>> On Wed, Apr 28, 2021 at 1:53 PM Grant Seltzer Richman
-> >>>>>> <grantseltzer@gmail.com> wrote:
-> >>>>>>>
-> >>>>>>> Hi all,
-> >>>>>>>
-> >>>>>>> I'm working on enabling CO:RE in a project I work on, tracee, and am
-> >>>>>>> running into the dilemma of missing macros that we previously were
-> >>>>>>> able to import from their various header files. I understand that
-> >>>>>>> macros don't make their way into BTF and therefore the generated
-> >>>>>>> vmlinux.h won't have them. However I can't import the various header
-> >>>>>>> files because of multiple-definition issues.
-> >>>>>>
-> >>>>>> Sadly, copy/pasting has been the only way so far.
-> >>>>>>
-> >>>>>>>
-> >>>>>>> Do people typically redefine each of these macros for their project?
-> >>>>>>> If so is there anything I should be careful of, such as architectural
-> >>>>>>> differences. Does anyone have creative ideas, even if not developed
-> >>>>>>> fully yet that I can possibly contribute to libbpf?
-> >>>>>>
-> >>>>>> We've discussed adding Clang built-in to detect if a specific type is
-> >>>>>> already defined and doing something like this in vmlinux.h:
-> >>>>>>
-> >>>>>> #if !__builtin_is_type_defined(struct task_struct)
-> >>>>>> struct task_struct {
-> >>>>>>       ...
-> >>>>>> }
-> >>>>>> #endif
-> >>>>>>
-> >>>>>> And just do that for every struct, union, typedef. That would allow
-> >>>>>> vmlinux.h to co-exist (somewhat) with other types.
-> >>>>>>
-> >>>>>> Another alternative is to not use vmlinux.h and use just linux
-> >>>>>> headers, but mark necessary types with
-> >>>>>> __attribute__((preserve_access_index)) to make them CO-RE relocatable.
-> >>>>>> You can add that to existing types with the same pragma that vmlinux.h
-> >>>>>> uses.
-> >>>>>
-> >>>>> I'm attempting to try doing the above. I'm just replacing
-> >>>>> bpf_probe_read with bpf_core_read and not importing vmlinux.h, just
-> >>>>> all the kernel headers I need.
-> >>>>
-> >>>> Yes, that will work, bpf_core_read() uses preserve_access_index
-> >>>> built-in to achieve the same effect.
-> >>>>
-> >>>>>
-> >>>>> When you say "Add that to existing types with the same pragma that
-> >>>>> vmlinux.h uses", Should I be able to add the following to my bpf
-> >>>>> source file before importing my headers?
-> >>>>>
-> >>>>> ifndef BPF_NO_PRESERVE_ACCESS_INDEX
-> >>>>> #pragma clang attribute push (__attribute__((preserve_access_index)),
-> >>>>> apply_to = record)
-> >>>>> #endif
-> >>>>>
-> >>>>> and then pop the attribute at the bottom of the file, or after the
-> >>>>> header includes.
-> >>>>
-> >>>> Yeah, that's the idea and that's what vmlinux.h does for all its
-> >>>> structs. It doesn't add __attribute__((preserve_access_index)) after
-> >>>> each struct/union. So I wonder why you are getting those unknown
-> >>>> attribute errors. Can you paste an example?
-> >>>
-> >>> Here's a couple examples of the warnings:
-> >>>
-> >>> ```
-> >>> tracee/tracee.bpf.c:5:46: warning: unknown attribute
-> >>> 'preserve_access_index' ignored [-Wunknown-attributes]
-> >>> #pragma clang attribute push (__attribute__((preserve_access_index)),
-> >>> apply_to = record)
-> >>>                                               ^
-> >>> /lib/modules/5.10.21-200.fc33.x86_64/source/include/linux/ipv6.h:185:1:
-> >>> note: when applied to this declaration
-> >>> struct ipv6_fl_socklist;
-> >>> ^
-> >>> tracee/tracee.bpf.c:5:46: warning: unknown attribute
-> >>> 'preserve_access_index' ignored [-Wunknown-attributes]
-> >>> #pragma clang attribute push (__attribute__((preserve_access_index)),
-> >>> apply_to = record)
-> >>>                                               ^
-> >>> /lib/modules/5.10.21-200.fc33.x86_64/source/include/linux/ipv6.h:187:1:
-> >>> note: when applied to this declaration
-> >>> struct inet6_cork {
-> >>> ```
-> >>>
-> >>> after these warnings are emitted (it seems as if there's one for every
-> >>> data type, though I can't confirm), I get errors that look like this:
-> >>>
-> >>> ```
-> >>> tracee/tracee.bpf.c:445:22: error: nested
-> >>> builtin_preserve_access_index() not supported
-> >>>      return READ_KERN(READ_KERN(task->thread_pid)->numbers[level].nr);
-> >>>                       ^
-> >>> tracee/tracee.bpf.c:206:27: note: expanded from macro 'READ_KERN'
-> >>>                            bpf_core_read(&_val, sizeof(_val), &ptr); \
-> >>> ```
-> >>> I believe this is just a result of the warnings above, but if you're
-> >>> curious it's what i'm doing here:
-> >>> https://github.com/aquasecurity/tracee/blob/core-experiment/tracee-ebpf/tracee/tracee.bpf.c#L204-L208
-> >>>
-> >>
-> >> Looking at your Makefile, you are not using `clang -target bpf` to
-> >> compile BPF object files, which is probably what causes you trouble.
-> >> preserve_access_index is a BPF target-only attribute. There is no need
-> >> to do the legacy clang -emit-llvm | llc, especially when you are using
-> >> CO-RE.
+On Tue, May 4, 2021 at 12:06 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> On Tue, May 04, 2021 at 05:53:29PM +0200, Alejandro Colomar (man-pages) wrote:
+> > On 5/4/21 4:24 PM, Greg KH wrote:
+> > > I agree, the two are not the same type at all, this change should not be
+> > > accepted.
 > >
-> > Got it. Funny enough, it turns out this is just a continuation of a
-> > conversation you had with my coworker Yaniv last year:
-> > https://lore.kernel.org/bpf/CAEf4BzbshRMCX1T1ooAtYGYuUGefbbo2=ProkMg5iOtUKh3YtQ@mail.gmail.com/
+> > I get that in the kernel you don't use the standard fixed-width types (with
+> > some exceptions), probably not to mess with code that relies on <stdint.h>
+> > not being included (I hope there's not much code that relies on this in
+> > 2021, but who knows).
 > >
-> > But to summarize our continued challenge: Adding the
-> > `preserve_access_index` attribute, compiling with `-target bpf`, and
-> > using the same kernel headers we used (not vmlinux.h) causes issues
-> > because of architecture specific asm errors (likely stemming from
-> > headers we include). Unless there's a way to get around those we're
-> > going to need to include "vmlinux.h", change our Makefile to `-target
-> > bpf`, and redefine macros and/or functions that vmlinux.h does not
-> > provide.
-> >
-> > I think this is a pretty significant usability challenge. The idea you
-> > mentioned of having a built-in to detect if a type is defined would be
-> > a huge step forward. Has any progress been made towards this?
+> > But, there is zero difference between these types, from the point of view of
+> > the compiler.  There's 100% compatibility between those types, and you're
+> > able to mix'n'match them.  See some example below.
+...
+> There's a very old post from Linus where he describes the difference
+> between things like __u32 and uint32_t.  They are not the same, they
+> live in different namespaces, and worlds, and can not always be swapped
+> out for each other on all arches.
 >
-> I briefly looked at this probably one and half years ago.
-> It will involve tweak clang frontend cpp side. Now I haven't
-> done any concrete work yet. But will look at it in the future.
+> Dig it up if you are curious, but for user/kernel apis you HAVE to use
+> the __uNN and can not use uintNN_t variants, so don't try to mix/match
+> them, it's good to just follow the kernel standard please.
+...
+> Nacked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Got it - thanks for the info. Also any advice you or anyone else has
-to avoid having to redefine functions would be very much appreciated!
+Speaking from the C library's perspective, I'm going to push back
+pretty hard on this NAK, for several reasons.
 
->
-> >
-> > Another thought is having vmlinux.h include function definitions,
-> > aren't they included in DWARF/BTF?
-> >
-> > Thanks for your help, as always, Andrii!
-> >
-> >>
-> >>>>
-> >>>> Also check that you use Clang that supports preserve_access_index, of course.
-> >>>
-> >>> I'm using clang 11.0 on Fedora 33. All dependencies appear properly
-> >>> installed (libelf, zlib, dwarves [provides pahole], llvm, llc,
-> >>> llvm-devel,...)
-> >>>
-> >>>>
-> >>>>>
-> >>>>> I've tried this and get a whole bunch of 'unknown attribute' warnings,
-> >>>>> leading me to believe that I either have something installed
-> >>>>> incorrectly or don't understand how to use clang attributes. Do I need
-> >>>>> to edit the types in the actual header files?
-> >>>>
-> >>>> No, the whole idea is to not touch original headers.
-> >>>
-> >>> Got it - that's good to know.
-> >>>
-> >>>>
-> >>>>>
-> >>>>> Thank you very very much for the help!
-> >>>>> - Grant
-> >>>>>>
-> >>>>>>>
-> >>>>>>> Thanks so much,
-> >>>>>>> Grant Seltzer
+First, this is a proposed change to the manpages, not the headers
+themselves.  Manpage documentation of C structs is *not* expected to
+match the actual declaration in the headers.  The documented field
+type is usually assignment-compatible with the actual type, but not
+always.  There's no guarantee whatsoever that the fields are in the
+same order as the header, or that the listed set of fields is
+complete.
+
+I would say that as long as any value of type __u32 can be stored in a
+variable of type uint32_t without data loss, and vice versa, there is
+no reason why manpages should *have to* use __u32 in preference to
+uint32_t, and that in the absence of such a reason, the standard type
+should be used.
+
+Second, it's true that __u32 and uint32_t are in different namespaces,
+and it may well be necessary for uapi <linux/*.h> headers to use the
+__uNN names in order to preserve the C standard's distinction between
+the program and the implementation, but that's *not* a reason for
+documentation aimed at writers of user-space programs to use the
+__uNN names.  In fact, it is exactly the opposite!  User space program
+authors should, all else equal, be *discouraged* from using the __uNN
+names, and avoiding their use in manpages is one way to do that.
+
+Third, if there does in fact exist a situation where __uNN and
+uintNN_t are *not* assignment compatible, THAT IS A BUG IN THE KERNEL.
+Frankly, it would be such a catastrophic bug that I think Linus has to
+have been *wrong*.  We would have noticed the problems long ago if he
+were right.
+
+I'm going to have to ask you to produce hard evidence for your claim
+that __uNN and uintNN_t are not (always) assignment compatible, and
+hard evidence why that can't be fixed within the kernel, or else
+withdraw your objection.
+
+zw
