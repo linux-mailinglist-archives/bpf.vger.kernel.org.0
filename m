@@ -2,111 +2,286 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA37B3727B0
-	for <lists+bpf@lfdr.de>; Tue,  4 May 2021 11:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B923727D6
+	for <lists+bpf@lfdr.de>; Tue,  4 May 2021 11:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbhEDJCl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 May 2021 05:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbhEDJCk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 May 2021 05:02:40 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B97FC061574
-        for <bpf@vger.kernel.org>; Tue,  4 May 2021 02:01:46 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id m12so12029858eja.2
-        for <bpf@vger.kernel.org>; Tue, 04 May 2021 02:01:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/BEtiHEyLUH0pHUzx4+zlxAJRANLxFJIE2T50Nx0vuQ=;
-        b=eEhoA9OgAL3QwPqmzGoQ5J/vgDLmh59eBzeVStjZNQFW1WVZ7zmwHYS4bHjqXROkTJ
-         oz9wR9HvE5nssKpODv77U8N+v1YdmKuEaYFNpob0ThWN/GzKV0lGeB4Q6e52PnxfV4k2
-         Utlh6DJhVA+lhxwTqFyi88TlVxIIfwnm/io1tuMqEFrzApTRouEvUi1tJZ+CJZoXmEIR
-         SUh43X7p+a1UL5HScIFnrFISbnOvhM1nvBXBcHv/pNgv1t84V0N5MuRleVz4X98zWEHE
-         /E+vfo6TZ2AVLoLOIreuY5fkfEm/6FMoskfOlT/YIL/fXNZg0Nh0uu7KWEe7Vt0Svbg6
-         C45w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/BEtiHEyLUH0pHUzx4+zlxAJRANLxFJIE2T50Nx0vuQ=;
-        b=n/7mSgZiuC3ZGatvERE4jTLIKw0bK2LMhPU1MDZTmWZ2Q/sE9mLwJ0a/A6GyTqbSTR
-         ACNXk2YQnkzxtnXZqjkktzx+VNfUTIW9ce8UoR4Rz/q5Y+p8Xj3t+JrGVg1wkhGlYN8J
-         1NF12Zuq/bwZgqcEhSZ1Ag8vw3ZGt2hfi8gG5RZr126FXK8jnI8YY2sWRuVNAwO18C9z
-         RKsRgsiencpzw67De9EustbYJKD7g4mMbX7Lux54Lj17ENfT3Q0DR/W0DXN8p7ka5yys
-         Hk4MNdAG9XEN7xpeWotlsUvDp1WZ0AqnIi2Azb6CIUsNeTDy/Jh2xii5xvp2FFJ/g40k
-         lWqw==
-X-Gm-Message-State: AOAM533sejmDCjvlnDQ66oZkTKL9tG9clgXAKktxiBO8aIbntdo3z9cI
-        plWGW9hS4+UC7ByvUvmETN8ui79Lrx0uGfVcXUhs1mfvMd5wDw==
-X-Google-Smtp-Source: ABdhPJwYCCkP7QeC+gMHOoz7QkyDAFfSnVjkkSq44sDb0VpvaWMaw/HktvAxD5fp5zv08oi0tdNeJzF2poAgNO49GpE=
-X-Received: by 2002:a17:906:2559:: with SMTP id j25mr20412002ejb.42.1620118904443;
- Tue, 04 May 2021 02:01:44 -0700 (PDT)
+        id S230137AbhEDJK1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 May 2021 05:10:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38652 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229980AbhEDJKZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 4 May 2021 05:10:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620119370;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LUsKHmziCSi5JNXUl60FZbloFw8P9ckc/ChGpQzCJ+o=;
+        b=c1Ah+dJdUmfAU83OPIZns2rWbrEEa0v5ifDDN6NZxrOHx3OLV757HpovRgtFGEROfGJFsq
+        V9U+ce+rDgprQiWwA3KP/LrnlpTMrbQh7IHHyq21UjrEkbSIH2SgTHC5JSy3N8Enxz6uDH
+        Ai7CSlVkqwroyhGeveFhR6ZdAXdvCB4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-450-oEWd_9DiP56wuvTBuvGUEA-1; Tue, 04 May 2021 05:09:23 -0400
+X-MC-Unique: oEWd_9DiP56wuvTBuvGUEA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC5F28049C5;
+        Tue,  4 May 2021 09:09:21 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7490D421F;
+        Tue,  4 May 2021 09:09:10 +0000 (UTC)
+Date:   Tue, 4 May 2021 11:09:09 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        "Joseph, Jithu" <jithu.joseph@intel.com>,
+        "Desouza, Ederson" <ederson.desouza@intel.com>,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        "Gomes, Vinicius" <vinicius.gomes@intel.com>,
+        "Machnikowski, Maciej" <maciej.machnikowski@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        David Ahern <dsahern@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jens Steen Krogh <jskro@vestas.com>,
+        Joao Pedro Barros Silva <jopbs@vestas.com>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brouer@redhat.com, Kurt Kanzenbach <kurt@linutronix.de>
+Subject: Re: PTP RX & TX time-stamp and TX Time in XDP ZC socket
+Message-ID: <20210504110909.4a6e44ac@carbon>
+In-Reply-To: <20210430142635.3791-1-alexandr.lobakin@intel.com>
+References: <DM6PR11MB27800045D6EE4A69B1A65C45CA479@DM6PR11MB2780.namprd11.prod.outlook.com>
+        <20210421103948.5a453e6d@carbon>
+        <DM6PR11MB2780B29F0045B76119AFC388CA469@DM6PR11MB2780.namprd11.prod.outlook.com>
+        <20210423183731.7279808a@carbon>
+        <20210430142635.3791-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-References: <20210429130510.1621665-1-jackmanb@google.com> <CAEf4BzY7sx0gW=o5rM8WDzW1J0U_Yep3MMuJScoMg-hBAeBPCg@mail.gmail.com>
- <CA+i-1C2+Lt7kmwsZOEw6D8B_Lc+aJdZoUmPDh08+7y_uMNW+kA@mail.gmail.com> <CAEf4BzY1bftPAj_hjE4SBVv2P1U7twW3FdRsvNP9kPCMe_NOjA@mail.gmail.com>
-In-Reply-To: <CAEf4BzY1bftPAj_hjE4SBVv2P1U7twW3FdRsvNP9kPCMe_NOjA@mail.gmail.com>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Tue, 4 May 2021 11:01:33 +0200
-Message-ID: <CA+i-1C1V4b3LvB+pwDn5zomGG1ehSppX=r6TMfPutbgaoG_53Q@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Florent Revest <revest@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 3 May 2021 at 19:46, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, May 3, 2021 at 5:01 AM Brendan Jackman <jackmanb@google.com> wrote:
-> >
-> > On Fri, 30 Apr 2021 at 18:31, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-> So while doing that I noticed that you didn't fix ring_buffer__poll(),
-> so I had to fix it up a bit more extensively. Please check the end
-> result in bpf tree and let me know if there are any problems with it:
->
-> 2a30f9440640 ("libbpf: Fix signed overflow in ringbuf_process_ring")
+On Fri, 30 Apr 2021 16:26:35 +0200
+Alexander Lobakin <alexandr.lobakin@intel.com> wrote:
 
-Ah, thanks for that. Yep, the additional fix looks good to me.
+> Hi, just to let you know,
+> We at Intel are currently working on flexible XDP hints that include
+> both generic (i.e. that every single driver/HW has) and custom
+> hints/metadata and are planning to publish a first RFC soon.
+> Feel free to join if you wish, we could cooperate and work together.
 
-I think it actually fixes another very niche issue:
+I'm eager to join. I'm really looking forward to see the RFC and
+collaborate with you. Lets all work together on this RFC and the
+design of these flexible XDP hints.
 
- int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
- {
--       int i, cnt, err, res = 0;
-+       int i, cnt;
-+       int64_t err, res = 0;
+I'm keeping my notes on this projects here:
+ https://github.com/xdp-project/xdp-project/tree/master/areas/tsn
 
-        cnt = epoll_wait(rb->epoll_fd, rb->events, rb->ring_cnt, timeout_ms);
-+       if (cnt < 0)
-+               return -errno;
-+
-        for (i = 0; i < cnt; i++) {
-                __u32 ring_id = rb->events[i].data.fd;
-                struct ring *ring = &rb->rings[ring_id];
-@@ -280,7 +290,9 @@ int ring_buffer__poll(struct ring_buffer *rb, int
-timeout_ms)
-                        return err;
-                res += err;
-        }
--       return cnt < 0 ? -errno : res;
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-If the callback returns an error but errno is 0 this fails to report the error.
+(No inlined comments below, just kept full quote for history)
 
-errno(3) says "the value of errno is never set to zero by any system
-call or library function" but then describes a scenario where an
-application might usefully set it to zero itself. Maybe it can also be
-0 in new threads, depending on your metaphysical interpretation of "by
-a system call or library function".
+On Fri, 30 Apr 2021 16:26:35 +0200
+Alexander Lobakin <alexandr.lobakin@intel.com> wrote:
 
-+       if (res > INT_MAX)
-+               return INT_MAX;
-+       return res;
+> From: Jesper Dangaard Brouer <brouer@redhat.com>
+> Date: Fri, 23 Apr 2021 18:37:31 +0200
+>=20
+> > Cc, netdev, as I think we get upstream feedback as early as possible.
+> > (Maybe Alexei will be critique my idea of storing btf_id in struct?)
+> >=20
+> >=20
+> > On Thu, 22 Apr 2021 07:34:23 +0000
+> > "Ong, Boon Leong" <boon.leong.ong@intel.com> wrote:
+> >  =20
+> > > >> Now that stmmac driver has been added with XDP ZC, we would like
+> > > >> to know if there is any on-going POC or discussion on XDP ZC
+> > > >> socket for adding below:
+> > > >>
+> > > >> 1) PTP RX & TX time-stamp
+> > > >> 2) Per-packet TX transmit time (similar to SO_TXTIME)   =20
+> > > >
+> > > > Well, this is actually perfect timing! (pun intended)
+> > > >
+> > > > I'm actually going to work on adding this to XDP.  I was reading igc
+> > > > driver and i225 sw datasheet last night, trying to figure out a des=
+ign
+> > > > based on what hardware can do. My design ideas obviously involve BT=
+F,
+> > > > but a lot of missing pieces like an XDP TX hook is also missing.   =
+=20
+> > >=20
+> > > Currently, we are using a non-standard/not elegant way to provide for=
+=20
+> > > internal real-time KPI measurement purpose as follow=20
+> > >
+> > > 1) TX time stored in a newly introduced 64-bit timestamp in XDP descr=
+iptor. =20
+> >=20
+> > Did you create a separate XDP descriptor?
+> > If so what memory is backing that?
+> >=20
+> > My idea[1] is to use the meta-data area (xdp_buff->data_meta), that is
+> > located in-front of the packet headers.  Or the area in top of the
+> > "packet" memory, which is already used by struct xdp_frame, except that
+> > zero-copy AF_XDP don't have the xdp_frame.  Due to AF_XDP limits I'm
+> > leaning towards using xdp_buff->data_meta area.
+> >=20
+> > [1] https://people.netfilter.org/hawk/presentations/KernelRecipes2019/x=
+dp-netstack-concert.pdf
+> >=20
+> > I should mention that I want a generic solution (based on BTF), that can
+> > support many types of hardware hints.  Like existing RX-hash, VLAN,
+> > checksum, mark and timestamps.  And newer HW hints that netstack
+> > doesn't support yet, e.g. I know mlx5 can assign unique (64-bit)
+> > flow-marks.
+> >=20
+> > I should also mention that I also want the solution to work for (struct)
+> > xdp_frame packets that gets redirected from RX to TX.  And work when/if
+> > an xdp_frame gets converted to an SKB (happens for veth and cpumap)
+> > then the RX-hash, VLAN, checksum, mark, timestamp should be transferred
+> > to the SKB. =20
+>=20
+> Hi, just to let you know,
+> We at Intel are currently working on flexible XDP hints that include
+> both generic (i.e. that every single driver/HW has) and custom
+> hints/metadata and are planning to publish a first RFC soon.
+> Feel free to join if you wish, we could cooperate and work together.
+>=20
+> > > 2) RX T/S is stored in the meta-data of the RX frame. =20
+> >=20
+> > Yes, I also want to store the RX-timestamp the meta-data area.  This
+> > means that RX-timestamp is stored memory-wise just before the packet
+> > header starts.
+> >=20
+> > For AF_XDP how does the userspace program know that info is stored in
+> > this area(?).  As you know, it might only be some packets that contain
+> > the timestamp, e.g. for some NIC is it only the PTP packets.
+> >=20
+> > I've discussed this with OVS VMware people before (they requested
+> > RX-hash), and in that discussion Bj=C3=B8rn came up with the idea, that=
+ the
+> > "-32 bit" could contain the BTF-id number.  Meaning the last u32 member
+> > of the metadata is btf_id (example below).
+> >=20
+> >  struct my_metadata {
+> > 	u64 rx_timestamp;
+> > 	u32 rx_hash32;
+> > 	u32 btf_id;
+> >  };
+> >=20
+> > When having the btf_id then the memory layout basically becomes self
+> > describing.  I guess, we still need a single bit in the AF_XDP
+> > RX-descriptor telling us that meta-data area is populated, or perhaps
+> > we should store the btf_id in the AF_XDP RX-descriptor?
+> >=20
+> > Same goes for xdp_frame, should it store btf_id or have a single bit
+> > that says, btf_id is located in data_meta area.
+> >  =20
+> > > 3) TX T/S is simply trace_printk out as there is missing XDP TX hook
+> > >    like you pointed out. =20
+> >=20
+> > Again I want to use BTF to describe that a driver supports of
+> > TX-timestamp features.  Like Saeed did for RX, the driver should export
+> > (a number) of BTF-id's that it support.
+> >=20
+> > E.g when the LaunchTime features is configured;
+> >=20
+> >  struct my_metadata_tx {
+> > 	u64 LaunchTime_ktime;
+> > 	u32 btf_id;
+> >  };
+> >=20
+> > When AF_XDP (or xdp_frame) want to transmit a frame as a specific time,
+> > e.g. via LaunchTime feature in i210 (igb) and i225 (igc).
+> >=20
+> > I've read up on i210 and i225 capabilities, and I think this will help
+> > us guide our design choices.  We need to support different BTF-desc per
+> > TX queue basis, because the LaunchTime is configured per TX queue, and
+> > further more, i210 only support this on queue 0 and 1.
+> >=20
+> > Currently the LaunchTime config happens via TC config when attaching a
+> > ETF qdisc and doing TC-offloading.  For now, I'm not suggesting
+> > changing that.  Instead we can simply export/expose that the driver now
+> > support LaunchTime BTF-desc, when the config gets enabled.
+> >=20
+> >  =20
+> > > So, if there is some ready work that we can evaluate, it will have us
+> > > greatly in extending it to stmmac driver.  =20
+> >=20
+> > Saeed have done a number of different implementation attempts on RX
+> > side with BTF.  We might be able to leverage some of that work.  That
+> > said, the kernels BTF API have become more advanced since Saeed worked
+> > on this. Thus, I expect that we might be able to leverage some of this
+> > to simplify the approach.
+> >=20
+> >  =20
+> > > >I have a practical project with a wind-turbine producer Vestas (they
+> > > >have even approved we can say this publicly on mailing lists). Thus,=
+ I
+> > > >can actually dedicate some time for this.
+> > > >
+> > > >You also have a practical project that needs this? (And I/we can kee=
+p it
+> > > >off the mailing lists if you prefer/need-to).   =20
+> > >=20
+> > > Yes, we are about to start a a 3-way joint-development project that is
+> > > evaluating the suitability of using preempt-RT + XDP ZC + TSN for
+> > > integrating high level Industrial Ethernet stack on-top of Linux main=
+line
+> > > interface. So, there is couple of area that we will be looking into a=
+nd
+> > > above two capabilities are foundational in adding "time-aware" to
+> > > XDP ZC interface.  But, our current focus on getting the Linux mainli=
+ne
+> > > capability ready, so we can discuss in ML. =20
+> >=20
+> > It sounds like our projects align very well! :-)))
+> > My customer also want the combination preempt-RT + XDP ZC + TSN.
+> >  =20
+> > > >My plans: I will try to understand the hardware and drivers better, =
+and
+> > > >then I will work on a design proposal that I will share with you for
+> > > >review.
+> > > >
+> > > >What are your plans?   =20
+> > >=20
+> > > Siang and myself are looking into this area starting next week and
+> > > hopefully our time is aligned and we are hopeful to get this
+> > > capability available in stmmac for next RC cycles. Is the time-line
+> > > aligned to yours? =20
+> >=20
+> > Yes, this aligns with my time-line.  I want to start prototyping some
+> > things next week, so I can start to run experiments with TSN.  The
+> > TSN capable hardware for our PoC is being shipped to my house and
+> > should arrive next week.
+> >=20
+> > Looking forward to collaborate with all of you.  You can let me know
+> > (offlist) if you prefer not getting Cc'ed on these mails. Some of you
+> > are bcc'ed and you have to opt-in if you are interested in collaboratin=
+g.
+> > --=20
+> > Best regards,
+> >   Jesper Dangaard Brouer
+> >   MSc.CS, Principal Kernel Engineer at Red Hat
+> >   LinkedIn: http://www.linkedin.com/in/brouer =20
+>=20
+> Thanks,
+> Al
+>=20
+
+
