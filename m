@@ -2,227 +2,494 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A058937252B
-	for <lists+bpf@lfdr.de>; Tue,  4 May 2021 06:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F523725E7
+	for <lists+bpf@lfdr.de>; Tue,  4 May 2021 08:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229722AbhEDEnE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 May 2021 00:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbhEDEnC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 May 2021 00:43:02 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC65CC061574;
-        Mon,  3 May 2021 21:42:07 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id p12so5624866pgj.10;
-        Mon, 03 May 2021 21:42:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KW+fRCA3KF3M2uynkFKhiTgzVKXGI2fDAmROBsgOsPo=;
-        b=cTZW4NU7wHKUxWOHXurIVemWzCJ1mQa7Yvb3DkpdWtGL8gEMrOnVLMyXOHg6m8td7N
-         TdJR4J2l7bBv3v+rdhPT+w72ebLNuwsaVMlF7/frMSoriIYprZHRNa4ARIUCkxgorKOX
-         DkggLV7OvW37xegGSDfJmCdLr+nJ+sCmZ6F1mu+uM8ccFyNoxAcCRg8o8EDOzhRHJaSF
-         mXfjuwFvVESVERx8NRTs19RRxauyw/AalvuNPqZUznMFiByKN8qwK9c65UcUHHM98GH6
-         toCA3Q0ylFNNOIkbqFG/Z2BFpgu/AOFQZJM0ePMHsKVkxr5IMGFIQzVO7BA175ohxSo1
-         uICg==
+        id S229861AbhEDGmq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 May 2021 02:42:46 -0400
+Received: from mail-ej1-f50.google.com ([209.85.218.50]:39544 "EHLO
+        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229724AbhEDGmp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 May 2021 02:42:45 -0400
+Received: by mail-ej1-f50.google.com with SMTP id f24so11444224ejc.6;
+        Mon, 03 May 2021 23:41:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KW+fRCA3KF3M2uynkFKhiTgzVKXGI2fDAmROBsgOsPo=;
-        b=ni1ODhf15uUkUKrJtwLKaUGyGsyKdLtN8B7AhlMTevKfQCgasfMjIPJfDRGysUZI84
-         20CQJjKwc1vx1yVLo6lsls8bNfx/CDzeNNhee2Br5I9VRmUB7No76AwcR0JinCBW5Jjn
-         NSn1rE1+AxUSFZFJE9TzRsg1M+7fXMrRyS9k9YJvY+M/FFWIarHiInBBNuXQh1zbsxdh
-         uiZ4JysL4BmdfWeNBfjmCJmY70lG4mpFQ5q2y2pDtLN5BS7o+i1nYf+JBuCwli02ITuZ
-         +ehDHXyKovCmEv7o6lm3OgKHbnnkdoEMWwE43+LBXX/5Ff9orU++IxWcmn6V1Qoqb8S9
-         5Uwg==
-X-Gm-Message-State: AOAM53225EE/MKYc7PPNYK901jvrPRm/Q1nsFnCjNvM+xZh5rSoer6Zt
-        Lm7ngpUqRxuvgE/dvzHiq7c=
-X-Google-Smtp-Source: ABdhPJzSX6auQGtgL+iG86nB3dJtMcePmetW+eFimTAhMv3HYS0rafv0wNtaCFH9khrRbjhVk1WMVQ==
-X-Received: by 2002:a17:90b:e07:: with SMTP id ge7mr24967944pjb.204.1620103327121;
-        Mon, 03 May 2021 21:42:07 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:c859])
-        by smtp.gmail.com with ESMTPSA id v18sm1514508pgl.94.2021.05.03.21.42.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 May 2021 21:42:06 -0700 (PDT)
-Date:   Mon, 3 May 2021 21:42:04 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language;
+        bh=Di3skEk5y7vZ/aW8oQoeIdwL0Pobr8PBPO/bQgtIcrc=;
+        b=ILsweTASyOgbDxzmuN63m8P+Cr1Lf6+IWwvsd1IBYSPnaLajZe5mgEEHDHjHHUE/fF
+         tBhrVBBEEyI8szxIHtwHAqKW1LZCwRcjkcZFPHKYQvJUaivxfSPvbRdz1Rg/SiRNYE57
+         2DBYsNLu+0xtaKOvCHW7IonRktUy8aKaASjE1YA6qIR6+1m+HN+z5gTzPfctAzZlZVl3
+         hvlYxvdgV4UInrjOCMyYneF1nxetcTkc5qvAvnXHzZkltahD0VgHXYPju4AD00bpgWcN
+         ReK55dN0H6Tp/Istek+21Rz6KBB2VU6fZPCkhY5oIZAVDEPpI8RSizVFaOC0VFR2QXd9
+         m8ag==
+X-Gm-Message-State: AOAM53086Ib8Ggvfjvi4JoDwAI/a9B8EnBEEEQNWcW4e9R8kDxSa+KU/
+        peAyi0nZuK3YipuVLPai9xuel73Fi8pz4Q==
+X-Google-Smtp-Source: ABdhPJwQtp60Ze255Q6DdfRdIB/Jor8t+PUxPIO4v+HOVJH6cGQgIgdPAhE1K2k4Y9uzuYFAN4WM+A==
+X-Received: by 2002:a17:906:abcc:: with SMTP id kq12mr3816495ejb.97.1620110509941;
+        Mon, 03 May 2021 23:41:49 -0700 (PDT)
+Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id z4sm12910440edb.97.2021.05.03.23.41.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 23:41:48 -0700 (PDT)
+Subject: Re: linux-next failing build due to missing cubictcp_state symbol
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
+        Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, lmb@cloudflare.com,
-        john.fastabend@gmail.com
-Subject: bpf libraries and static variables. Was: [PATCH v2 bpf-next 2/6]
- libbpf: rename static variables during linking
-Message-ID: <20210504044204.kpt6t5kaomj7oivq@ast-mbp>
-References: <CAADnVQKo+efxMvgrqYqVvUEgiz_GXgBVOt4ddPTw_mLuvr2HUw@mail.gmail.com>
- <CAEf4BzZifOFHr4gozUuSFTh7rTWu2cE_-L4H1shLV5OKyQ92uw@mail.gmail.com>
- <CAADnVQ+h78QijAjbkNqAWn+TAFxrd6vE=mXqWRcy815hkTFvOw@mail.gmail.com>
- <CAEf4BzZOmCgmbYDUGA-s5AF6XJFkT1xKinY3Jax3Zm2OLNmguA@mail.gmail.com>
- <20210426223449.5njjmcjpu63chqbb@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzYZX9YJcoragK20cvQvr_tPTWYBQSRh7diKc1KoCtu4Dg@mail.gmail.com>
- <20210427022231.pbgtrdbxpgdx2zrw@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzZOwTp4vQxvCSXaS4-94fz_eZ7Q4n6uQfkAnMQnLRaTbQ@mail.gmail.com>
- <20210428045545.egqvhyulr4ybbad6@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzZo7_r-hsNvJt3w3kyrmmBJj7ghGY8+k4nvKF0KLjma=w@mail.gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        dwarves@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
+References: <20210426121401.GO15381@kitsune.suse.cz>
+ <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com> <YIbkR6z6mxdNSzGO@krava>
+ <YIcRlHQWWKbOlcXr@krava> <20210427121237.GK6564@kitsune.suse.cz>
+ <20210430174723.GP15381@kitsune.suse.cz>
+ <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
+ <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
+ <4e051459-8532-7b61-c815-f3435767f8a0@kernel.org>
+ <cbaf50c3-c85d-9239-0b37-c88e8cbed8c8@kernel.org> <YI/LgjLxo9VCN/d+@krava>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <8c3cbd22-eb26-ea8b-c8bb-35a629d6d2d8@kernel.org>
+Date:   Tue, 4 May 2021 08:41:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZo7_r-hsNvJt3w3kyrmmBJj7ghGY8+k4nvKF0KLjma=w@mail.gmail.com>
+In-Reply-To: <YI/LgjLxo9VCN/d+@krava>
+Content-Type: multipart/mixed;
+ boundary="------------2F0676AC09266ADBA754999C"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 12:33:36PM -0700, Andrii Nakryiko wrote:
-> > At least I'm only starting to grasp the complexity of the problem.
+This is a multi-part message in MIME format.
+--------------2F0676AC09266ADBA754999C
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Transfer-Encoding: 8bit
+
+On 03. 05. 21, 12:08, Jiri Olsa wrote:
+> On Mon, May 03, 2021 at 10:59:44AM +0200, Jiri Slaby wrote:
+>> CCing pahole people.
+>>
+>> On 03. 05. 21, 9:59, Jiri Slaby wrote:
+>>> On 03. 05. 21, 8:11, Jiri Slaby wrote:
+>>>>>>>>> looks like vfs_truncate did not get into BTF data,
+>>>>>>>>> I'll try to reproduce
+>>>>>
+>>>>> _None_ of the functions are generated by pahole -J from
+>>>>> debuginfo on ppc64. debuginfo appears to be correct. Neither
+>>>>> pahole -J fs/open.o works correctly. collect_functions in
+>>>>> dwarves seems to be defunct on ppc64... "functions" array is
+>>>>> bogus (so find_function -- the bsearch -- fails).
+>>>>
+>>>> It's not that bogus. I forgot an asterisk:
+>>>>> #0  find_function (btfe=0x100269f80, name=0x10024631c
+>>>>> "stream_open") at
+>>>>> /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
+>>>>> (gdb) p (*functions)@84
+>>>>> $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr
+>>>>> = 75232, size = 72, sh_addr = 65536, generated = false}, {
+>>>>>      name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592,
+>>>>> size = 216, sh_addr = 65536, generated = false}, {
+>>>>>      name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr =
+>>>>> 80816, size = 232, sh_addr = 65536, generated = false}, {
+>>>>>      name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr =
+>>>>> 74304, size = 100, sh_addr = 65536, generated = false}, {
+>>>> ...
+>>>>>      name = 0x7ffff68e0808 ".stream_open", addr = 65824, size =
+>>>>> 72, sh_addr = 65536, generated = false}, {
+>>>> ...
+>>>>>      name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size =
+>>>>> 544, sh_addr = 65536, generated = false}}
+>>>>
+>>>> The dot makes the difference, of course. The question is why is it
+>>>> there? I keep looking into it. Only if someone has an immediate
+>>>> idea...
+>>>
+>>> Well, .vfs_truncate is in .text (and contains an ._mcount call). And
+>>> vfs_truncate is in .opd (w/o an ._mcount call). Since setup_functions
+>>> excludes all functions without the ._mcount call, is_ftrace_func later
+>>> returns false for such functions and they are filtered before the BTF
+>>> processing.
+>>>
+>>> Technically, get_vmlinux_addrs looks at a list of functions between
+>>> __start_mcount_loc and __stop_mcount_loc and considers only the listed.
+>>>
+>>> I don't know what the correct fix is (exclude .opd functions from the
+>>> filter?). Neither why cross compiler doesn't fail, nor why ebi v2 avoids
+>>> this too.
+>>
+>> Attaching a patch for pahole which fixes the issue, but I have no idea
+>> whether it is the right fix at all.
 > 
-> I did and didn't find anything satisfactory. But I think we are coming
-> at this from two different angles, which is why we can't agree on
-> anything. So just a reminder, static is about two properties:
->     1) access protection
->     2) naming collisions.
+> hi,
+> we're considering to disable ftrace filter completely,
+> I guess that would solve this issue for ppc as well
 > 
-> I'm trying to let name collisions on BPF side happen and be allowed
-> *while* also allowing access to those same name-collisioned entities
-> (maps and vars, both) from user-space in some non-random fashion. That
-> inevitably requires some compromises/conventions on the user-space
-> side. Such an approach preserves both 1) and 2).
-> 
-> You are trying to enforce unique names (or at least aliases) for
-> static variables, if I understand correctly, which preserves 1) at the
-> expense of 2). It seems to be a similar idea with custom SEC(), though
-> you ignored my request to elaborate on how you see that used, so I'm
-> guessing here a bit.
-> 
-> But I think we can get just 1) with global variables with custom
-> visibilities. E.g., just marking map/variable as __hidden would
-> disallow extern'ing it from other files. That's obviously limiting for
-> extern'ing within the library, so we can keep digging deeper and
-> define __internal (STV_INTERNAL) that would be "upgraded" to
-> STV_HIDDEN after the initial linking pass. So you'd compile your BPF
-> library with __internal, but your lib.bpf.o will have those global
-> variables as STV_HIDDEN and thus inaccessible from other libraries and
-> BPF app itself.
-> 
-> So if we are ok breaking existing static variable users, then just
-> dropping statics from BPF skeleton and supporting extra __hidden and
-> __internal semantics for variables and maps would bypass these issues.
-> I wanted statics mostly for property 2), but if I can't get it, then
-> I'd drop statics from skeletons altogether.
-> 
-> If I could drop statics for skeletons that were statically linked,
-> that wouldn't be a regression. It's impossible to do right now, but we
-> can also add a new SHT_NOTE section, which we can use to detect
-> statically linked vs Clang-generated .bpf.o. Certainly more ELF
-> fussing around than I'd like, but not the end of the world either.
-> 
-> Thoughts? Did that summarize the issue well enough?
+>    https://lore.kernel.org/bpf/20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com/
 
-Background for all:
+Right, the attached patch fixes it for me too.
 
-Until Nov 2019 libbpf didn't support global variables, so bpf programs
-contained code like 'static volatile const int var = 1;'
-Then the skeleton was introduced which went through BTF of a given
-datasec and emitted all variables from that section into .skel.h.
-It didn't bother filtering static vs global variables, so
-static vars in *.bpf.c world became visible into user space *.c world.
-While libbpf supported single bpf.o file such extern-ing of statics
-was fine, but with support of linking multiple *.bpf.o there
-is a question of what to do with static variables with the same names
-in different files.
+-- 
+js
 
-Consider the following scenario:
-One bpf developer creates a library conntrack. It has
-impl.bpf.c
-ct_api.bpf.c
-and corresponding user space ct.c that uses skel.h to access
-data in these two bpf files.
+--------------2F0676AC09266ADBA754999C
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-remove-ftrace-filter.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-remove-ftrace-filter.patch"
 
-Another bpf developer creates a library for lru. It has
-impl.bpf.c
-lru_api.bpf.c
-and corresponding user space lru.c.
+From b0128f1ec6a234c5b40c40d73d55708d34f1a428 Mon Sep 17 00:00:00 2001
+From: Jiri Slaby <jslaby@suse.cz>
+Date: Tue, 4 May 2021 08:09:50 +0200
+Subject: [PATCH] remove ftrace filter
 
-Now the 3rd developer is writing its main.bpf.c and wants to use these libs.
+Functions in the .opd section on ppc64 are currently ignored as they
+don't contain mcount calls -- they are excluded by the ftrace filter.
+Therefore, pahole cannot produce a .BTF section from vmlinux and kernel
+build fails on ppc64.
 
-The libs should be usable in pre-compiled form. The availability of
-the source code is nice, but it shouldn't be mandatory.
+Remove the ftrace filter completely as was discussed:
+ https://lore.kernel.org/bpf/20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com/
+ https://lore.kernel.org/bpf/YI%2FLgjLxo9VCN%2Fd+@krava/
+---
+ btf_encoder.c | 272 +-------------------------------------------------
+ 1 file changed, 5 insertions(+), 267 deletions(-)
 
-So there is libct.a (with user space) and libct.bpf.a (with bpf code)
-and liblru.a (user) and liblru.bpf.a (bpf code).
+diff --git a/btf_encoder.c b/btf_encoder.c
+index 80e896961d4e..ba83bb088efa 100644
+--- a/btf_encoder.c
++++ b/btf_encoder.c
+@@ -27,17 +27,8 @@
+  */
+ #define KSYM_NAME_LEN 128
+ 
+-struct funcs_layout {
+-	unsigned long mcount_start;
+-	unsigned long mcount_stop;
+-	unsigned long mcount_sec_idx;
+-};
+-
+ struct elf_function {
+ 	const char	*name;
+-	unsigned long	 addr;
+-	unsigned long	 size;
+-	unsigned long	 sh_addr;
+ 	bool		 generated;
+ };
+ 
+@@ -98,250 +89,11 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
+ 	}
+ 
+ 	functions[functions_cnt].name = name;
+-	functions[functions_cnt].addr = elf_sym__value(sym);
+-	functions[functions_cnt].size = elf_sym__size(sym);
+-	functions[functions_cnt].sh_addr = sh.sh_addr;
+ 	functions[functions_cnt].generated = false;
+ 	functions_cnt++;
+ 	return 0;
+ }
+ 
+-static int addrs_cmp(const void *_a, const void *_b)
+-{
+-	const __u64 *a = _a;
+-	const __u64 *b = _b;
+-
+-	if (*a == *b)
+-		return 0;
+-	return *a < *b ? -1 : 1;
+-}
+-
+-static int get_vmlinux_addrs(struct btf_elf *btfe, struct funcs_layout *fl,
+-			     __u64 **paddrs, __u64 *pcount)
+-{
+-	__u64 *addrs, count, offset;
+-	unsigned int addr_size, i;
+-	Elf_Data *data;
+-	GElf_Shdr shdr;
+-	Elf_Scn *sec;
+-
+-	/* Initialize for the sake of all error paths below. */
+-	*paddrs = NULL;
+-	*pcount = 0;
+-
+-	if (!fl->mcount_start || !fl->mcount_stop)
+-		return 0;
+-
+-	/*
+-	 * Find mcount addressed marked by __start_mcount_loc
+-	 * and __stop_mcount_loc symbols and load them into
+-	 * sorted array.
+-	 */
+-	sec = elf_getscn(btfe->elf, fl->mcount_sec_idx);
+-	if (!sec || !gelf_getshdr(sec, &shdr)) {
+-		fprintf(stderr, "Failed to get section(%lu) header.\n",
+-			fl->mcount_sec_idx);
+-		return -1;
+-	}
+-
+-	/* Get address size from processed file's ELF class. */
+-	addr_size = gelf_getclass(btfe->elf) == ELFCLASS32 ? 4 : 8;
+-
+-	offset = fl->mcount_start - shdr.sh_addr;
+-	count  = (fl->mcount_stop - fl->mcount_start) / addr_size;
+-
+-	data = elf_getdata(sec, 0);
+-	if (!data) {
+-		fprintf(stderr, "Failed to get section(%lu) data.\n",
+-			fl->mcount_sec_idx);
+-		return -1;
+-	}
+-
+-	addrs = malloc(count * sizeof(addrs[0]));
+-	if (!addrs) {
+-		fprintf(stderr, "Failed to allocate memory for ftrace addresses.\n");
+-		return -1;
+-	}
+-
+-	if (addr_size == sizeof(__u64)) {
+-		memcpy(addrs, data->d_buf + offset, count * addr_size);
+-	} else {
+-		for (i = 0; i < count; i++)
+-			addrs[i] = (__u64) *((__u32 *) (data->d_buf + offset + i * addr_size));
+-	}
+-
+-	*paddrs = addrs;
+-	*pcount = count;
+-	return 0;
+-}
+-
+-static int
+-get_kmod_addrs(struct btf_elf *btfe, __u64 **paddrs, __u64 *pcount)
+-{
+-	__u64 *addrs, count;
+-	unsigned int addr_size, i;
+-	GElf_Shdr shdr_mcount;
+-	Elf_Data *data;
+-	Elf_Scn *sec;
+-
+-	/* Initialize for the sake of all error paths below. */
+-	*paddrs = NULL;
+-	*pcount = 0;
+-
+-	/* get __mcount_loc */
+-	sec = elf_section_by_name(btfe->elf, &btfe->ehdr, &shdr_mcount,
+-				  "__mcount_loc", NULL);
+-	if (!sec) {
+-		if (btf_elf__verbose) {
+-			printf("%s: '%s' doesn't have __mcount_loc section\n", __func__,
+-			       btfe->filename);
+-		}
+-		return 0;
+-	}
+-
+-	data = elf_getdata(sec, NULL);
+-	if (!data) {
+-		fprintf(stderr, "Failed to data for __mcount_loc section.\n");
+-		return -1;
+-	}
+-
+-	/* Get address size from processed file's ELF class. */
+-	addr_size = gelf_getclass(btfe->elf) == ELFCLASS32 ? 4 : 8;
+-
+-	count = data->d_size / addr_size;
+-
+-	addrs = malloc(count * sizeof(addrs[0]));
+-	if (!addrs) {
+-		fprintf(stderr, "Failed to allocate memory for ftrace addresses.\n");
+-		return -1;
+-	}
+-
+-	if (addr_size == sizeof(__u64)) {
+-		memcpy(addrs, data->d_buf, count * addr_size);
+-	} else {
+-		for (i = 0; i < count; i++)
+-			addrs[i] = (__u64) *((__u32 *) (data->d_buf + i * addr_size));
+-	}
+-
+-	/*
+-	 * We get Elf object from dwfl_module_getelf function,
+-	 * which performs all possible relocations, including
+-	 * __mcount_loc section.
+-	 *
+-	 * So addrs array now contains relocated values, which
+-	 * we need take into account when we compare them to
+-	 * functions values, see comment in setup_functions
+-	 * function.
+-	 */
+-	*paddrs = addrs;
+-	*pcount = count;
+-	return 0;
+-}
+-
+-static int is_ftrace_func(struct elf_function *func, __u64 *addrs, __u64 count)
+-{
+-	__u64 start = func->addr;
+-	__u64 addr, end = func->addr + func->size;
+-
+-	/*
+-	 * The invariant here is addr[r] that is the smallest address
+-	 * that is >= than function start addr. Except the corner case
+-	 * where there is no such r, but for that we have a final check
+-	 * in the return.
+-	 */
+-	size_t l = 0, r = count - 1, m;
+-
+-	/* make sure we don't use invalid r */
+-	if (count == 0)
+-		return false;
+-
+-	while (l < r) {
+-		m = l + (r - l) / 2;
+-		addr = addrs[m];
+-
+-		if (addr >= start) {
+-			/* we satisfy invariant, so tighten r */
+-			r = m;
+-		} else {
+-			/* m is not good enough as l, maybe m + 1 will be */
+-			l = m + 1;
+-		}
+-	}
+-
+-	return start <= addrs[r] && addrs[r] < end;
+-}
+-
+-static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+-{
+-	__u64 *addrs, count, i;
+-	int functions_valid = 0;
+-	bool kmod = false;
+-
+-	/*
+-	 * Check if we are processing vmlinux image and
+-	 * get mcount data if it's detected.
+-	 */
+-	if (get_vmlinux_addrs(btfe, fl, &addrs, &count))
+-		return -1;
+-
+-	/*
+-	 * Check if we are processing kernel module and
+-	 * get mcount data if it's detected.
+-	 */
+-	if (!addrs) {
+-		if (get_kmod_addrs(btfe, &addrs, &count))
+-			return -1;
+-		kmod = true;
+-	}
+-
+-	if (!addrs) {
+-		if (btf_elf__verbose)
+-			printf("ftrace symbols not detected, falling back to DWARF data\n");
+-		delete_functions();
+-		return 0;
+-	}
+-
+-	qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
+-	qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
+-
+-	/*
+-	 * Let's got through all collected functions and filter
+-	 * out those that are not in ftrace.
+-	 */
+-	for (i = 0; i < functions_cnt; i++) {
+-		struct elf_function *func = &functions[i];
+-		/*
+-		 * For vmlinux image both addrs[x] and functions[x]::addr
+-		 * values are final address and are comparable.
+-		 *
+-		 * For kernel module addrs[x] is final address, but
+-		 * functions[x]::addr is relative address within section
+-		 * and needs to be relocated by adding sh_addr.
+-		 */
+-		if (kmod)
+-			func->addr += func->sh_addr;
+-
+-		/* Make sure function is within ftrace addresses. */
+-		if (is_ftrace_func(func, addrs, count)) {
+-			/*
+-			 * We iterate over sorted array, so we can easily skip
+-			 * not valid item and move following valid field into
+-			 * its place, and still keep the 'new' array sorted.
+-			 */
+-			if (i != functions_valid)
+-				functions[functions_valid] = functions[i];
+-			functions_valid++;
+-		}
+-	}
+-
+-	functions_cnt = functions_valid;
+-	free(addrs);
+-
+-	if (btf_elf__verbose)
+-		printf("Found %d functions!\n", functions_cnt);
+-	return 0;
+-}
+-
+ static struct elf_function *find_function(const struct btf_elf *btfe,
+ 					  const char *name)
+ {
+@@ -620,23 +372,8 @@ static int collect_percpu_var(struct btf_elf *btfe, GElf_Sym *sym,
+ 	return 0;
+ }
+ 
+-static void collect_symbol(GElf_Sym *sym, struct funcs_layout *fl,
+-			   size_t sym_sec_idx)
+-{
+-	if (!fl->mcount_start &&
+-	    !strcmp("__start_mcount_loc", elf_sym__name(sym, btfe->symtab))) {
+-		fl->mcount_start = sym->st_value;
+-		fl->mcount_sec_idx = sym_sec_idx;
+-	}
+-
+-	if (!fl->mcount_stop &&
+-	    !strcmp("__stop_mcount_loc", elf_sym__name(sym, btfe->symtab)))
+-		fl->mcount_stop = sym->st_value;
+-}
+-
+ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+ {
+-	struct funcs_layout fl = { };
+ 	Elf32_Word sym_sec_idx;
+ 	uint32_t core_id;
+ 	GElf_Sym sym;
+@@ -650,7 +387,6 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+ 			return -1;
+ 		if (collect_function(btfe, &sym, sym_sec_idx))
+ 			return -1;
+-		collect_symbol(&sym, &fl, sym_sec_idx);
+ 	}
+ 
+ 	if (collect_percpu_vars) {
+@@ -661,9 +397,11 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+ 			printf("Found %d per-CPU variables!\n", percpu_var_cnt);
+ 	}
+ 
+-	if (functions_cnt && setup_functions(btfe, &fl)) {
+-		fprintf(stderr, "Failed to filter DWARF functions\n");
+-		return -1;
++	if (functions_cnt) {
++		qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
++
++		if (btf_elf__verbose)
++			printf("Found %d functions!\n", functions_cnt);
+ 	}
+ 
+ 	return 0;
+-- 
+2.31.1
 
-The developer should be able to link
-main.bpf.o liblru.bpf.a libct.bpf.a
-into final_main.bpf.o
-And link main.o liblru.a libct.a with user space bits into a.out.
 
-The lru.skel.h and ct.skel.h used by these libs were generated
-out of corresponding *.bpf.o and independent of each other.
-There should be no need to recompile user space lru.c and ct.c after
-linking of final_main.bpf.o and generating final skeleton.
-
-I think all three developers should be able to use static variables
-in their .bpf.c files without worrying about conflicts across three
-projects.
-They can use global vars with __attribute__("hidden"),
-but it's not equivalent to static. The linker will complain of
-redefinition if the same name is used across multiple files
-or multiple libs.
-So doing 'int var __attribute__("hidden");' in libct.bpf.a and
-in liblru.bpf.a will prevent linking together.
-That's traditional static linking semantics.
-
-Using file name as a prefix for static vars doesn't work in general,
-since file names can be the same.
-What can work is the library name. The library name is guaranteed to be
-unique in the final linking phase.
-I think we can use it to namespace static variables across
-three sets of bpf programs.
-Also I think it's ok to require a single developer to enforce
-uniqueness of static vars within a project.
-
-In other words 'static int a;' in impl.bpf.c will conflict
-with 'static int a;' in ct_api.bpf.c
-But the static variable in ct_api.bpf.c will not conflict
-with the same variable in lru_api.bpf.c and will not conflict
-with such var in main.bpf.c because they're in a different namespaces.
-
-Here are few ways for the programmer to indicate the library namespaces:
-
-- similar to 'char license[]' use 'char library[]="lru";' in *.bpf.c
-The static linker will handle this reserved name specially just like
-it does 'license' and 'version'.
-
-- #pragma clang attribute push (__attribute__((annotate("lib=lru"))), apply_to = variable)
-
-- #pragma comment(lib, "lru")
-
-I think it's important to define namespaces within *.bpf.c.
-Defining them outside on linker command line or linker script is cumbersome.
-
-I think combining *.o into .a can happen with traditional 'ar'. No need for
-extra checks for now.
-The linking of main.bpf.o liblru.bpf.a libct.bpf.a
-will fail if static vars with the same name are present within the same library.
-The library namespaces will prevent name conflicts across libs and main.bpf.o
-If namespace is not specified it means it's empty, so the existing
-hacks of 'static volatile const int var;' will continue working.
-
-The skeleton can have library name as anon struct in skel.h.
-All vars can be prefixed too, but scoping them into single struct is cleaner.
-
-I think it doesn't hurt if final_main.skel.h includes all bpf vars from lru and
-ct libraries, but I think it's cleaner to omit them.
-
-It's not clear to me yet how final_main__open() and final_main__load() skeleton
-methods will work since lru and ct libs might need their specific initialization
-that is done by user space lru.c and ct.c.
-Also the whole scheme should work with upcoming light skeleton too.
-The design for bpf libraries should accommodate signed libraries.
-
-All of the above is up for discussion. I'd love to hear what golang folks
-are thinking, since above proposal is C centric.
+--------------2F0676AC09266ADBA754999C--
