@@ -2,172 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF79C372967
-	for <lists+bpf@lfdr.de>; Tue,  4 May 2021 13:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE047372AF1
+	for <lists+bpf@lfdr.de>; Tue,  4 May 2021 15:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbhEDLGm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 May 2021 07:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbhEDLGl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 May 2021 07:06:41 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF01BC061574;
-        Tue,  4 May 2021 04:05:45 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id x5so8889332wrv.13;
-        Tue, 04 May 2021 04:05:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jBexOv/slXZrUqoBk/6dME5LyTQkC5h8UHzK8vFSGV0=;
-        b=bGw0TUolt0fr1Mj/tO4Z5l3OL2UgcNPGr5SjtE9TQZdOFF6P1HHwvvcuDxmHzR7TWH
-         25W1zF8pIkB+Tkn8NFWnS2mumdQfeYiE83ef8+GV09LsjFxmkE2Ypc8k4c+PhM6xSDea
-         ffdmjvsvJeyiPxeZb9Zg9sGhG/JnI2i+vsv8mFYq5UiDBfSSBqccXMb7ItNFnzrb3BOB
-         CES3h4j4wznLfngqRZpc0k5hOcRV0bOLLgaqhE347rqF/49d06QkPgD559LR1boDmBSz
-         V5Z5KTrUAtDbV99yQXkpEBJyT7Gjc/EwVTm3iwwIKtDJtAocjgFSXqsEfZwT11+TDXgq
-         bBbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jBexOv/slXZrUqoBk/6dME5LyTQkC5h8UHzK8vFSGV0=;
-        b=TAbQojzZrSrbHGTKYjv/6YgN9gW60wHp38iERkT3YBuJ04AfTkBwO/HfZ9piQMaVs7
-         cnn697ZiiF6HMhZHSVGbd9dN15UOncjpyLrJQj+9QYisM0n8+hXWsDKbAFEsuWd8sq3V
-         G/8p+elDyDkmrbvgLYEJ44yb3iTDahXgG1yrl+HVMRzrFqy3djWJDhlLxQqxBlYMLjhY
-         c7MVaNaBv1SWBAXRR+QTzk7PNRTpWRjl/WHEG2Qc6fR945QHfAyk0wo6cHU49JJBpKnK
-         ZlaiXsgjbXlBP3UIX3g6vx+uzs+oSb6v3tN97PqukYVIhIjOUadCzuJmLy5eCalQ967b
-         mAEQ==
-X-Gm-Message-State: AOAM530rrNWNMn+vOxL1aG1g8ceG0xFsrKJ2UvB4en6mvaCJGmP00ngR
-        ah5M1/WzP6r5UUyJA1sXBfM=
-X-Google-Smtp-Source: ABdhPJw47QkoJpJSP1YPM0MC+fPhs/05hHrWzAdxeUw5qEExJJXq+uqU1z5Qjad2cZ6BA+EyTVcMTw==
-X-Received: by 2002:adf:e811:: with SMTP id o17mr14669020wrm.71.1620126344302;
-        Tue, 04 May 2021 04:05:44 -0700 (PDT)
-Received: from sqli.sqli.com ([195.53.121.100])
-        by smtp.googlemail.com with ESMTPSA id o17sm16769939wrs.48.2021.05.04.04.05.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 04:05:43 -0700 (PDT)
-From:   Alejandro Colomar <alx.manpages@gmail.com>
-To:     mtk.manpages@gmail.com, linux-man@vger.kernel.org
-Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Zack Weinberg <zackw@panix.com>,
-        Joseph Myers <joseph@codesourcery.com>
-Subject: [RFC v2] bpf.2: Use standard types and attributes
-Date:   Tue,  4 May 2021 13:05:20 +0200
-Message-Id: <20210504110519.16097-1-alx.manpages@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210423230609.13519-1-alx.manpages@gmail.com>
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
+        id S231135AbhEDN2G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 May 2021 09:28:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59204 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230413AbhEDN2G (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 4 May 2021 09:28:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620134831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=r6jEV0+MR5VFM9+ohpe8WFHPD4y/Vv8hPlbXKlAqSbQ=;
+        b=NdEot7NSuvwhNjdGFIO6dbACNdvPHsvrOQEKs2MWH7z41CXqD74+7byRENdINFDfMnGqx2
+        B+9kLCN11asp7393C36ufcRRVfp2M3ss6f1g0m38juwrsUArnj+Ncu5jmxftgZOz23YwB4
+        JWfQeLgEsR2iMeGTO6mJH+vW2L/HKxw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-235-gprCdgvgPYCXpnhDlSoEnQ-1; Tue, 04 May 2021 09:27:07 -0400
+X-MC-Unique: gprCdgvgPYCXpnhDlSoEnQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 355CB802958;
+        Tue,  4 May 2021 13:27:04 +0000 (UTC)
+Received: from krava (unknown [10.40.192.136])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A34FC5E7B3;
+        Tue,  4 May 2021 13:27:01 +0000 (UTC)
+Date:   Tue, 4 May 2021 15:27:00 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH RFC] bpf: Fix trampoline for functions with variable
+ arguments
+Message-ID: <YJFLpAbUiwIu0I4H@krava>
+References: <20210429212834.82621-1-jolsa@kernel.org>
+ <YI8WokIxTkZvzVuP@krava>
+ <CAEf4BzZjtU1hicc8dK1M9Mqf3wanU2AJFDtZJzUfQdwCsC6cGg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZjtU1hicc8dK1M9Mqf3wanU2AJFDtZJzUfQdwCsC6cGg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Some manual pages are already using C99 syntax for integral
-types 'uint32_t', but some aren't.  There are some using kernel
-syntax '__u32'.  Fix those.
+On Mon, May 03, 2021 at 03:32:34PM -0700, Andrii Nakryiko wrote:
+> On Sun, May 2, 2021 at 2:17 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Thu, Apr 29, 2021 at 11:28:34PM +0200, Jiri Olsa wrote:
+> > > For functions with variable arguments like:
+> > >
+> > >   void set_worker_desc(const char *fmt, ...)
+> > >
+> > > the BTF data contains void argument at the end:
+> > >
+> > > [4061] FUNC_PROTO '(anon)' ret_type_id=0 vlen=2
+> > >         'fmt' type_id=3
+> > >         '(anon)' type_id=0
+> > >
+> > > When attaching function with this void argument the btf_distill_func_proto
+> > > will set last btf_func_model's argument with size 0 and that
+> > > will cause extra loop in save_regs/restore_regs functions and
+> > > generate trampoline code like:
+> > >
+> > >   55             push   %rbp
+> > >   48 89 e5       mov    %rsp,%rbp
+> > >   48 83 ec 10    sub    $0x10,%rsp
+> > >   53             push   %rbx
+> > >   48 89 7d f0    mov    %rdi,-0x10(%rbp)
+> > >   75 f8          jne    0xffffffffa00cf007
+> > >                  ^^^ extra jump
+> > >
+> > > It's causing soft lockups/crashes probably depends on what context
+> > > is the attached function called, like for set_worker_desc:
+> > >
+> > >   watchdog: BUG: soft lockup - CPU#16 stuck for 22s! [kworker/u40:4:239]
+> > >   CPU: 16 PID: 239 Comm: kworker/u40:4 Not tainted 5.12.0-rc4qemu+ #178
+> > >   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1.fc33 04/01/2014
+> > >   Workqueue: writeback wb_workfn
+> > >   RIP: 0010:bpf_trampoline_6442464853_0+0xa/0x1000
+> > >   Code: Unable to access opcode bytes at RIP 0xffffffffa3597fe0.
+> > >   RSP: 0018:ffffc90000687da8 EFLAGS: 00000217
+> > >   Call Trace:
+> > >    set_worker_desc+0x5/0xb0
+> > >    wb_workfn+0x48/0x4d0
+> > >    ? psi_group_change+0x41/0x210
+> > >    ? __bpf_prog_exit+0x15/0x20
+> > >    ? bpf_trampoline_6442458903_0+0x3b/0x1000
+> > >    ? update_pasid+0x5/0x90
+> > >    ? __switch_to+0x187/0x450
+> > >    process_one_work+0x1e7/0x380
+> > >    worker_thread+0x50/0x3b0
+> > >    ? rescuer_thread+0x380/0x380
+> > >    kthread+0x11b/0x140
+> > >    ? __kthread_bind_mask+0x60/0x60
+> > >    ret_from_fork+0x22/0x30
+> > >
+> > > This patch is removing the void argument from struct btf_func_model
+> > > in btf_distill_func_proto, but perhaps we should also check for this
+> > > in JIT's save_regs/restore_regs functions.
+> >
+> > actualy looks like we need to disable functions with variable arguments
+> > completely, because we don't know how many arguments to save
+> >
+> > I tried to disable them in pahole and it's easy fix, will post new fix
+> 
+> Can we still allow access to fixed arguments for such functions and
+> just disallow the vararg ones?
 
-Some pages also document attributes, using GNU syntax
-'__attribute__((xxx))'.  Update those to use the shorter and more
-portable C11 keywords such as 'alignas()' when possible, and C2x
-syntax '[[gnu::xxx]]' elsewhere, which hasn't been standardized
-yet, but is already implemented in GCC, and available through
-either --std=c2x or any of the --std=gnu... options.
+the problem is that we should save all the registers for arguments,
+which is probably doable.. but if caller uses more than 6 arguments,
+we need stack data, which will be wrong because of the extra stack
+frame we do in bpf trampoline.. so we could crash
 
-The standard isn't very clear on how to use alignas() or
-[[]]-style attributes, so the following link is useful in the case
-of 'alignas()' and '[[gnu::aligned()]]':
-<https://stackoverflow.com/q/67271825/6872717>
+the patch below prevents to attach these functions directly in kernel,
+so we could keep these functions in BTF
 
-Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: glibc <libc-alpha@sourceware.org>
-Cc: GCC <gcc-patches@gcc.gnu.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>
-Cc: David Laight <David.Laight@ACULAB.COM>
-Cc: Zack Weinberg <zackw@panix.com>
-Cc: Joseph Myers <joseph@codesourcery.com>
+jirka
+
+
 ---
- man2/bpf.2 | 49 ++++++++++++++++++++++++-------------------------
- 1 file changed, 24 insertions(+), 25 deletions(-)
-
-diff --git a/man2/bpf.2 b/man2/bpf.2
-index 6e1ffa198..04b8fbcef 100644
---- a/man2/bpf.2
-+++ b/man2/bpf.2
-@@ -186,41 +186,40 @@ commands:
- .PP
- .in +4n
- .EX
--union bpf_attr {
-+union [[gnu::aligned(8)]] bpf_attr {
-     struct {    /* Used by BPF_MAP_CREATE */
--        __u32         map_type;
--        __u32         key_size;    /* size of key in bytes */
--        __u32         value_size;  /* size of value in bytes */
--        __u32         max_entries; /* maximum number of entries
--                                      in a map */
-+        uint32_t    map_type;
-+        uint32_t    key_size;    /* size of key in bytes */
-+        uint32_t    value_size;  /* size of value in bytes */
-+        uint32_t    max_entries; /* maximum number of entries
-+                                    in a map */
-     };
- 
--    struct {    /* Used by BPF_MAP_*_ELEM and BPF_MAP_GET_NEXT_KEY
--                   commands */
--        __u32         map_fd;
--        __aligned_u64 key;
-+    struct {    /* Used by BPF_MAP_*_ELEM and BPF_MAP_GET_NEXT_KEY commands */
-+        uint32_t            map_fd;
-+        uint64_t alignas(8) key;
-         union {
--            __aligned_u64 value;
--            __aligned_u64 next_key;
-+            uint64_t alignas(8) value;
-+            uint64_t alignas(8) next_key;
-         };
--        __u64         flags;
-+        uint64_t            flags;
-     };
- 
-     struct {    /* Used by BPF_PROG_LOAD */
--        __u32         prog_type;
--        __u32         insn_cnt;
--        __aligned_u64 insns;      /* \(aqconst struct bpf_insn *\(aq */
--        __aligned_u64 license;    /* \(aqconst char *\(aq */
--        __u32         log_level;  /* verbosity level of verifier */
--        __u32         log_size;   /* size of user buffer */
--        __aligned_u64 log_buf;    /* user supplied \(aqchar *\(aq
--                                     buffer */
--        __u32         kern_version;
--                                  /* checked when prog_type=kprobe
--                                     (since Linux 4.1) */
-+        uint32_t            prog_type;
-+        uint32_t            insn_cnt;
-+        uint64_t alignas(8) insns;     /* \(aqconst struct bpf_insn *\(aq */
-+        uint64_t alignas(8) license;   /* \(aqconst char *\(aq */
-+        uint32_t            log_level; /* verbosity level of verifier */
-+        uint32_t            log_size;  /* size of user buffer */
-+        uint64_t alignas(8) log_buf;   /* user supplied \(aqchar *\(aq
-+                                          buffer */
-+        uint32_t            kern_version;
-+                                       /* checked when prog_type=kprobe
-+                                          (since Linux 4.1) */
- .\"                 commit 2541517c32be2531e0da59dfd7efc1ce844644f5
-     };
--} __attribute__((aligned(8)));
-+};
- .EE
- .in
- .\"
--- 
-2.31.1
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 0600ed325fa0..f9709dc08c44 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -5213,6 +5213,13 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+ 				tname, i, btf_kind_str[BTF_INFO_KIND(t->info)]);
+ 			return -EINVAL;
+ 		}
++		if (ret == 0) {
++			bpf_log(log,
++				"The function %s has variable args, it's unsupported.\n",
++				tname);
++			return -EINVAL;
++
++		}
+ 		m->arg_size[i] = ret;
+ 	}
+ 	m->nr_args = nargs;
 
