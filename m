@@ -2,242 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3049373282
-	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 00:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04AE373286
+	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 00:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbhEDWdx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 May 2021 18:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52890 "EHLO
+        id S231733AbhEDWiU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 May 2021 18:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbhEDWds (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 May 2021 18:33:48 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0DA7C061352
-        for <bpf@vger.kernel.org>; Tue,  4 May 2021 15:32:07 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id g38so103097ybi.12
-        for <bpf@vger.kernel.org>; Tue, 04 May 2021 15:32:07 -0700 (PDT)
+        with ESMTP id S231464AbhEDWiT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 May 2021 18:38:19 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FB0C061574;
+        Tue,  4 May 2021 15:37:22 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id r8so134914ybb.9;
+        Tue, 04 May 2021 15:37:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/D3xfOMBtfFqiQhB4S/kEHKMnmQay9PQwry7qoljWRE=;
-        b=gzPR1SVVwMGCvJRdvEnTWW7vTC5Z66ldrDK5BFFft0NmXjZdxuCh1+tIbfj6d34XQK
-         gH3GXQmpS+aUWQrukwhb9hI/WFxp2XqqhzOfDHQdPxP6YpprcZR6hbDvYmPqnG8xlGJM
-         lvyf1QwLZFhun4SnnwDk+mvxbbLzYCHf8geyvXiiZnTf5XxYgWJ2BTvdBKsUyxv0fqc0
-         KSID7ocNJIu63n4piGFMcd3w7TM8jV6/KcuePQHtJWF1P7uL2BlefVaUBMcMQ0id7Lch
-         q2YejeMnC7/QapX5vpBiV05y3p+oBKVaHTTWexYoP2GqHA2AgDnW4XvFk0Ub7FzxW1mt
-         W5GA==
+        bh=/rcOxPodICfG9N9CM3OcwHXOlg6CyM6WBBBB3GXGalc=;
+        b=pIYKtvpQre6fXnjVXh0hX1f7LJLo2zPgC0EvkSYFBhApXePYfGAHWAmOe6sycm1gBj
+         I8wctKSVe6+HF4BmWH2jMlIFWS2sUF4TgviZvRiTBqeTyb9FjpOGWOBfb5P+hxI6mLa2
+         3e6P/yp7B5AnLoXCJtsLthoEuG7/GvJMRxh+861Kbvs3LDe0cHeVZ3+g3ctMDuySivf8
+         IN42PqxHZ7Xi6z75sDEdp9UBQMl+0hdtILXw/32jiJjONmXY+1f99FHN84OIDyOLpTRM
+         VtTHuGTEX4lh5BUA/ww4/uRJjeH4isUVgiu5le4SOAVQUJhry2G5mDwrrjCbi8XE0CsC
+         Re1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/D3xfOMBtfFqiQhB4S/kEHKMnmQay9PQwry7qoljWRE=;
-        b=EtPRT3GnZzLOtNYQ0PSs+Bt7agU02VuHTuKqBs8sQ5bUP2yKmkjW4YJsAsVDzyJuEX
-         ZnNDiHnH+vK8JBjym4XhNddeqBDWnrg0lFCUA9UWy3HSMG2RJ2y20LmR01WqazsaxKXJ
-         gMw4s2L2wUcG9gTRQZfC9c5jCnRxJNxisrXSMm6pNpeXR05manhNe3/gWlbKQ71Xncid
-         5WOUxGWSa3EtkivEZLiPiw+vf1undF9lFJUpTIvN7KeXszhURdNyaZyfsDPI/biWT5YE
-         g5a6V6nNBNtmFsi0zZs/0sppIRXWTqOhE0rIa9Xsxpb3nl7TMJ+OKgTeaDQA75vyDf/4
-         Hqsw==
-X-Gm-Message-State: AOAM530Scf7i8nPOiGSAf2Zi3hdSCYAa74YunZBd6+MdC2aVBuKmsP47
-        fTMVIQ/o3HNqMxvdcsEPhPFENaylDZhEv4tPG9UGwEIE
-X-Google-Smtp-Source: ABdhPJyBamjze9UDWIpmJvwNiaNVBq5IOmkvRp1VAFRVOY7aQlz/zgeq+jeu6BQJ5RHcUnQMn6gtAzpmezi/JlpZnI8=
-X-Received: by 2002:a5b:286:: with SMTP id x6mr2423198ybl.347.1620167526731;
- Tue, 04 May 2021 15:32:06 -0700 (PDT)
+        bh=/rcOxPodICfG9N9CM3OcwHXOlg6CyM6WBBBB3GXGalc=;
+        b=k3dVeBYWnNp78bz6jBDkbyUrilifoTElI3/DynMiCFNAMjPoetSnyYF7YDhVrwVIDO
+         4mVfPYVlKji2EYHQUVoL1pOKbmh6ZpdSRmp4nKgezDGJfT1ixuXtkBM7OZ6wK8ulNqpR
+         K1d6+9BDYVRzmmhqzx46ocC8A45r5W07LmYgcLzCb3VzH4j2K/aHH+OerHh+MnCOOA+c
+         g2RUy1Q+TZz2+3h6V1e/81RCRZHIy2OhK3VFe4BMhnFixFqWAwFgMBYzhbcvGW9u1r5h
+         NfFqm2+FlZVot5bwanVLaaWPRrAlldoQ0apk1FXAZ9Aa4vikHGC2EcsSj2OOoWfYLU22
+         rhzA==
+X-Gm-Message-State: AOAM530ZV5ezrODCmA40uJOjzU9y+j0FnlFJA5sZ6WBI7Wp1b2rprvGE
+        qKnlzy/am6mVfS4zBQIBaDEviqlkfnGQ80NLfvA=
+X-Google-Smtp-Source: ABdhPJzCk/CVV637ag7i3mlzcM39x4Lj5FcYXY7Gj5G8Wj90vxrNn9hx49htDsH1V2jYO436s5pIyQM4bEi24rSwWsY=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr39337234ybo.230.1620167842180;
+ Tue, 04 May 2021 15:37:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAO658oV9AAcMMbVhjkoq5PtpvbVf41Cd_TBLCORTcf3trtwHfw@mail.gmail.com>
- <CAEf4Bzayxgt3P+kz36t6C8jp-MUTuwuKvwHWWsd2qrCs3-RHXA@mail.gmail.com>
- <CAO658oUpqOHmSAif+6zor1XTruDqHeTzAQHrCXOSPRo6oTp5vg@mail.gmail.com>
- <CAEf4BzYfn0SonnH=R-kA8eeYD5yBrAFQTsEMDtuOX=MaadTJsA@mail.gmail.com>
- <CAO658oWY3QK0A3U=NeDzXJRPsydCFWCrx1kdAfSdtq9CpNj0ow@mail.gmail.com>
- <CAEf4BzbRTuYQtzSScqCkM8dLfLLDzRs2BPKrHbrx3=joFr5YPw@mail.gmail.com> <CAO658oX7_b18Q4OxZ_PxAPhBjQPXv4+dQsQzH1-TWKhozikWiA@mail.gmail.com>
-In-Reply-To: <CAO658oX7_b18Q4OxZ_PxAPhBjQPXv4+dQsQzH1-TWKhozikWiA@mail.gmail.com>
+References: <20210429212834.82621-1-jolsa@kernel.org> <YI8WokIxTkZvzVuP@krava>
+ <CAEf4BzZjtU1hicc8dK1M9Mqf3wanU2AJFDtZJzUfQdwCsC6cGg@mail.gmail.com> <YJFLpAbUiwIu0I4H@krava>
+In-Reply-To: <YJFLpAbUiwIu0I4H@krava>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 4 May 2021 15:31:55 -0700
-Message-ID: <CAEf4Bzb7ZvkKBVorCeu2qVv0Xc7UmNr2Bz27r831+O3wwtgywQ@mail.gmail.com>
-Subject: Re: Typical way to handle missing macros in vmlinux.h
-To:     Grant Seltzer Richman <grantseltzer@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
+Date:   Tue, 4 May 2021 15:37:11 -0700
+Message-ID: <CAEf4BzYz3G4aRWT4YTrnKaVCsE_A2UGGn6jVvqOuK8ZLU-sN8g@mail.gmail.com>
+Subject: Re: [PATCH RFC] bpf: Fix trampoline for functions with variable arguments
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 4, 2021 at 8:32 AM Grant Seltzer Richman
-<grantseltzer@gmail.com> wrote:
+On Tue, May 4, 2021 at 6:27 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> On Mon, May 3, 2021 at 5:22 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On Mon, May 03, 2021 at 03:32:34PM -0700, Andrii Nakryiko wrote:
+> > On Sun, May 2, 2021 at 2:17 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> > >
+> > > On Thu, Apr 29, 2021 at 11:28:34PM +0200, Jiri Olsa wrote:
+> > > > For functions with variable arguments like:
+> > > >
+> > > >   void set_worker_desc(const char *fmt, ...)
+> > > >
+> > > > the BTF data contains void argument at the end:
+> > > >
+> > > > [4061] FUNC_PROTO '(anon)' ret_type_id=0 vlen=2
+> > > >         'fmt' type_id=3
+> > > >         '(anon)' type_id=0
+> > > >
+> > > > When attaching function with this void argument the btf_distill_func_proto
+> > > > will set last btf_func_model's argument with size 0 and that
+> > > > will cause extra loop in save_regs/restore_regs functions and
+> > > > generate trampoline code like:
+> > > >
+> > > >   55             push   %rbp
+> > > >   48 89 e5       mov    %rsp,%rbp
+> > > >   48 83 ec 10    sub    $0x10,%rsp
+> > > >   53             push   %rbx
+> > > >   48 89 7d f0    mov    %rdi,-0x10(%rbp)
+> > > >   75 f8          jne    0xffffffffa00cf007
+> > > >                  ^^^ extra jump
+> > > >
+> > > > It's causing soft lockups/crashes probably depends on what context
+> > > > is the attached function called, like for set_worker_desc:
+> > > >
+> > > >   watchdog: BUG: soft lockup - CPU#16 stuck for 22s! [kworker/u40:4:239]
+> > > >   CPU: 16 PID: 239 Comm: kworker/u40:4 Not tainted 5.12.0-rc4qemu+ #178
+> > > >   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1.fc33 04/01/2014
+> > > >   Workqueue: writeback wb_workfn
+> > > >   RIP: 0010:bpf_trampoline_6442464853_0+0xa/0x1000
+> > > >   Code: Unable to access opcode bytes at RIP 0xffffffffa3597fe0.
+> > > >   RSP: 0018:ffffc90000687da8 EFLAGS: 00000217
+> > > >   Call Trace:
+> > > >    set_worker_desc+0x5/0xb0
+> > > >    wb_workfn+0x48/0x4d0
+> > > >    ? psi_group_change+0x41/0x210
+> > > >    ? __bpf_prog_exit+0x15/0x20
+> > > >    ? bpf_trampoline_6442458903_0+0x3b/0x1000
+> > > >    ? update_pasid+0x5/0x90
+> > > >    ? __switch_to+0x187/0x450
+> > > >    process_one_work+0x1e7/0x380
+> > > >    worker_thread+0x50/0x3b0
+> > > >    ? rescuer_thread+0x380/0x380
+> > > >    kthread+0x11b/0x140
+> > > >    ? __kthread_bind_mask+0x60/0x60
+> > > >    ret_from_fork+0x22/0x30
+> > > >
+> > > > This patch is removing the void argument from struct btf_func_model
+> > > > in btf_distill_func_proto, but perhaps we should also check for this
+> > > > in JIT's save_regs/restore_regs functions.
+> > >
+> > > actualy looks like we need to disable functions with variable arguments
+> > > completely, because we don't know how many arguments to save
+> > >
+> > > I tried to disable them in pahole and it's easy fix, will post new fix
 > >
-> > On Mon, May 3, 2021 at 1:20 PM Grant Seltzer Richman
-> > <grantseltzer@gmail.com> wrote:
-> > >
-> > > On Mon, May 3, 2021 at 2:43 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Mon, May 3, 2021 at 11:32 AM Grant Seltzer Richman
-> > > > <grantseltzer@gmail.com> wrote:
-> > > > >
-> > > > > On Wed, Apr 28, 2021 at 5:15 PM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > >
-> > > > > > On Wed, Apr 28, 2021 at 1:53 PM Grant Seltzer Richman
-> > > > > > <grantseltzer@gmail.com> wrote:
-> > > > > > >
-> > > > > > > Hi all,
-> > > > > > >
-> > > > > > > I'm working on enabling CO:RE in a project I work on, tracee, and am
-> > > > > > > running into the dilemma of missing macros that we previously were
-> > > > > > > able to import from their various header files. I understand that
-> > > > > > > macros don't make their way into BTF and therefore the generated
-> > > > > > > vmlinux.h won't have them. However I can't import the various header
-> > > > > > > files because of multiple-definition issues.
-> > > > > >
-> > > > > > Sadly, copy/pasting has been the only way so far.
-> > > > > >
-> > > > > > >
-> > > > > > > Do people typically redefine each of these macros for their project?
-> > > > > > > If so is there anything I should be careful of, such as architectural
-> > > > > > > differences. Does anyone have creative ideas, even if not developed
-> > > > > > > fully yet that I can possibly contribute to libbpf?
-> > > > > >
-> > > > > > We've discussed adding Clang built-in to detect if a specific type is
-> > > > > > already defined and doing something like this in vmlinux.h:
-> > > > > >
-> > > > > > #if !__builtin_is_type_defined(struct task_struct)
-> > > > > > struct task_struct {
-> > > > > >      ...
-> > > > > > }
-> > > > > > #endif
-> > > > > >
-> > > > > > And just do that for every struct, union, typedef. That would allow
-> > > > > > vmlinux.h to co-exist (somewhat) with other types.
-> > > > > >
-> > > > > > Another alternative is to not use vmlinux.h and use just linux
-> > > > > > headers, but mark necessary types with
-> > > > > > __attribute__((preserve_access_index)) to make them CO-RE relocatable.
-> > > > > > You can add that to existing types with the same pragma that vmlinux.h
-> > > > > > uses.
-> > > > >
-> > > > > I'm attempting to try doing the above. I'm just replacing
-> > > > > bpf_probe_read with bpf_core_read and not importing vmlinux.h, just
-> > > > > all the kernel headers I need.
-> > > >
-> > > > Yes, that will work, bpf_core_read() uses preserve_access_index
-> > > > built-in to achieve the same effect.
-> > > >
-> > > > >
-> > > > > When you say "Add that to existing types with the same pragma that
-> > > > > vmlinux.h uses", Should I be able to add the following to my bpf
-> > > > > source file before importing my headers?
-> > > > >
-> > > > > ifndef BPF_NO_PRESERVE_ACCESS_INDEX
-> > > > > #pragma clang attribute push (__attribute__((preserve_access_index)),
-> > > > > apply_to = record)
-> > > > > #endif
-> > > > >
-> > > > > and then pop the attribute at the bottom of the file, or after the
-> > > > > header includes.
-> > > >
-> > > > Yeah, that's the idea and that's what vmlinux.h does for all its
-> > > > structs. It doesn't add __attribute__((preserve_access_index)) after
-> > > > each struct/union. So I wonder why you are getting those unknown
-> > > > attribute errors. Can you paste an example?
-> > >
-> > > Here's a couple examples of the warnings:
-> > >
-> > > ```
-> > > tracee/tracee.bpf.c:5:46: warning: unknown attribute
-> > > 'preserve_access_index' ignored [-Wunknown-attributes]
-> > > #pragma clang attribute push (__attribute__((preserve_access_index)),
-> > > apply_to = record)
-> > >                                              ^
-> > > /lib/modules/5.10.21-200.fc33.x86_64/source/include/linux/ipv6.h:185:1:
-> > > note: when applied to this declaration
-> > > struct ipv6_fl_socklist;
-> > > ^
-> > > tracee/tracee.bpf.c:5:46: warning: unknown attribute
-> > > 'preserve_access_index' ignored [-Wunknown-attributes]
-> > > #pragma clang attribute push (__attribute__((preserve_access_index)),
-> > > apply_to = record)
-> > >                                              ^
-> > > /lib/modules/5.10.21-200.fc33.x86_64/source/include/linux/ipv6.h:187:1:
-> > > note: when applied to this declaration
-> > > struct inet6_cork {
-> > > ```
-> > >
-> > > after these warnings are emitted (it seems as if there's one for every
-> > > data type, though I can't confirm), I get errors that look like this:
-> > >
-> > > ```
-> > > tracee/tracee.bpf.c:445:22: error: nested
-> > > builtin_preserve_access_index() not supported
-> > >     return READ_KERN(READ_KERN(task->thread_pid)->numbers[level].nr);
-> > >                      ^
-> > > tracee/tracee.bpf.c:206:27: note: expanded from macro 'READ_KERN'
-> > >                           bpf_core_read(&_val, sizeof(_val), &ptr); \
-> > > ```
-> > > I believe this is just a result of the warnings above, but if you're
-> > > curious it's what i'm doing here:
-> > > https://github.com/aquasecurity/tracee/blob/core-experiment/tracee-ebpf/tracee/tracee.bpf.c#L204-L208
-> > >
-> >
-> > Looking at your Makefile, you are not using `clang -target bpf` to
-> > compile BPF object files, which is probably what causes you trouble.
-> > preserve_access_index is a BPF target-only attribute. There is no need
-> > to do the legacy clang -emit-llvm | llc, especially when you are using
-> > CO-RE.
+> > Can we still allow access to fixed arguments for such functions and
+> > just disallow the vararg ones?
 >
-> Got it. Funny enough, it turns out this is just a continuation of a
-> conversation you had with my coworker Yaniv last year:
-> https://lore.kernel.org/bpf/CAEf4BzbshRMCX1T1ooAtYGYuUGefbbo2=ProkMg5iOtUKh3YtQ@mail.gmail.com/
+> the problem is that we should save all the registers for arguments,
+> which is probably doable.. but if caller uses more than 6 arguments,
+> we need stack data, which will be wrong because of the extra stack
+> frame we do in bpf trampoline.. so we could crash
 >
-> But to summarize our continued challenge: Adding the
-> `preserve_access_index` attribute, compiling with `-target bpf`, and
-> using the same kernel headers we used (not vmlinux.h) causes issues
-> because of architecture specific asm errors (likely stemming from
-> headers we include). Unless there's a way to get around those we're
-> going to need to include "vmlinux.h", change our Makefile to `-target
-> bpf`, and redefine macros and/or functions that vmlinux.h does not
-> provide.
+> the patch below prevents to attach these functions directly in kernel,
+> so we could keep these functions in BTF
 >
-> I think this is a pretty significant usability challenge. The idea you
-> mentioned of having a built-in to detect if a type is defined would be
-> a huge step forward. Has any progress been made towards this?
+> jirka
 >
-> Another thought is having vmlinux.h include function definitions,
-> aren't they included in DWARF/BTF?
+>
+> ---
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 0600ed325fa0..f9709dc08c44 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -5213,6 +5213,13 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+>                                 tname, i, btf_kind_str[BTF_INFO_KIND(t->info)]);
+>                         return -EINVAL;
+>                 }
+> +               if (ret == 0) {
+> +                       bpf_log(log,
+> +                               "The function %s has variable args, it's unsupported.\n",
+> +                               tname);
+> +                       return -EINVAL;
+> +
+> +               }
 
-DWARF might have some #defines recorded if one enables some extra
-DWARF subsets (which I don't think are enabled by default). BTF
-definitely doesn't have anything like that.
+this will work, but the explicit check for vararg should be `i ==
+nargs - 1 && args[i].type == 0`. Everything else (if it happens) is
+probably a bad BTF data.
 
+>                 m->arg_size[i] = ret;
+>         }
+>         m->nr_args = nargs;
 >
-> Thanks for your help, as always, Andrii!
->
-> >
-> > > >
-> > > > Also check that you use Clang that supports preserve_access_index, of course.
-> > >
-> > > I'm using clang 11.0 on Fedora 33. All dependencies appear properly
-> > > installed (libelf, zlib, dwarves [provides pahole], llvm, llc,
-> > > llvm-devel,...)
-> > >
-> > > >
-> > > > >
-> > > > > I've tried this and get a whole bunch of 'unknown attribute' warnings,
-> > > > > leading me to believe that I either have something installed
-> > > > > incorrectly or don't understand how to use clang attributes. Do I need
-> > > > > to edit the types in the actual header files?
-> > > >
-> > > > No, the whole idea is to not touch original headers.
-> > >
-> > > Got it - that's good to know.
-> > >
-> > > >
-> > > > >
-> > > > > Thank you very very much for the help!
-> > > > > - Grant
-> > > > > >
-> > > > > > >
-> > > > > > > Thanks so much,
-> > > > > > > Grant Seltzer
