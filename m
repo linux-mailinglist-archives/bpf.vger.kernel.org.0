@@ -2,118 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1968373342
-	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 02:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66E44373425
+	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 06:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbhEEAij (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 May 2021 20:38:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
+        id S230216AbhEEEMi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 May 2021 00:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbhEEAij (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 May 2021 20:38:39 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CBAC061574;
-        Tue,  4 May 2021 17:37:42 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id z1so466741ybf.6;
-        Tue, 04 May 2021 17:37:42 -0700 (PDT)
+        with ESMTP id S230442AbhEEEMh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 May 2021 00:12:37 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF10C061574;
+        Tue,  4 May 2021 21:11:39 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id z13so675938lft.1;
+        Tue, 04 May 2021 21:11:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qZ6UQO/t/anayyvxHYL8y/BSgNgKydNeCjijU78LDB0=;
-        b=hTrd2XUlYhsfMMGGIx5klGnci50oDrRl0xMOhc7gSeBJ6JyUSZSgBRRcYDumzNziIN
-         EW5jBXVq223SV2a2bUU3WoIC2DwuDg5vWWm5sxYcwOcg1nDU3F/lctBBfvTbHTFoxASa
-         ULAT2IF1dTAC+zmX7fZNwTcLNckpJtwUJ4+wntOO3gx/MlKWZgPbwVDAEtAcwEMesfWu
-         p/H9/NmzXx0tqku0UN23HP3r4o/La/tBByaHFsGTe5yFG6uoXGnqmdXYAyYWVzKSBE61
-         x8EXnsRW67ETjsqK/6yFzR8w7Z5BICLypDRkgtNRZg6RuYY1nGehmrqkvHgApzUrVEtp
-         MSaw==
+        bh=5RR5Vc88Zj1z28YE7L3aCNr6ylannrTjJ3Q79VqD2Ag=;
+        b=E6eVhLViQTcJOVu6h1Q+3qdwREjKqb3Jt8uC7CetwDD3NL4gtlrIWMKdEbjpghfgfp
+         OnimFyORtcrBvFMxULg8TreP2Sm+Bq8bgR6O6l0v/H1vyPK0eGcGFuFzbDdQ69uEd2NW
+         Q2urbha38GRPdyqN8hq8IYHb5hUKTJn8yoRT8ZRiUEVGdZx1U+P5hCyA1P430qgy6lKq
+         mWkKvaMnj3Fi/lDiNnfAAVtCVy34MFQiVmMovUnDEm9VUg4cHIgjv3qMqINxbfSA3K8c
+         zy4bNznURr+0lt/Lmu25qYoM9cFtsFljco7EzENCBLDRZXHw+t9+UvmPSKORpyy4nGFn
+         5raA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qZ6UQO/t/anayyvxHYL8y/BSgNgKydNeCjijU78LDB0=;
-        b=PS2LyAhrRBXCR9FTkdVfGzfh1IG0e7iVCHVWQz4R4uDsVE3U1vrUb+SOzSc+hyDNrN
-         QZcGK97UTR9m2STN45Z/AixGG8j3iIXTaUO/9RY7AHyB85akUtW0UoTwBoXn1tqAqizn
-         8zrUm13bMxc+BZEQ/57h1Y2zisPQiYb215CodhU5JfFMr9y9qXLgqd6eV7QYzNQTvnh+
-         XCKDPhE06livCavy/2D5NZ9DRQEY8/cDRKUmAhohSdmcajx+maI35JmmTGVUdrLhWT6q
-         zO0vgrmo6gaJgw1ipXdgTCK6/0BwUwqjgHMk0joVA7z2+Jm134ejP4rv0EhwKJaquOBX
-         zsvg==
-X-Gm-Message-State: AOAM531LGCR5RcL8NfPWU5AiDEj0hGc+wc7VbSpDB6lP7v/BhJxlth9y
-        6abGEQLiQRpOxO2DkB1G7IG50Zl4PzJGwO739J7rhma1
-X-Google-Smtp-Source: ABdhPJyyONDl3K01zcGdj6oYMRlUtnCxG36FjryB+ubEE2VbFeOxgGehiFhaGcrhhos2lFw5JA54ckYwgpAgywOogj0=
-X-Received: by 2002:a25:c4c5:: with SMTP id u188mr36960466ybf.425.1620175062113;
- Tue, 04 May 2021 17:37:42 -0700 (PDT)
+        bh=5RR5Vc88Zj1z28YE7L3aCNr6ylannrTjJ3Q79VqD2Ag=;
+        b=NuBgkS4q4wkPJpc469T87XH7KmK+mm9yYQ7KVWKx+soC1JOl1tG2JDvFyGVOZ/fVHP
+         1LtaoXY+atXHrJYqBCAaW559pD7nBYlBxAKE9d+g2opuPOYowRMLmnrG2P2M8QYswxp6
+         jo18Ro/zim2+BB85wzbnY65Ka9t3kQNr5wy3gYqt6/qAwDrprlBDSOYNi4qBbZAMVyNA
+         L2ySUfHiQnC+z5bQM/aH2xcek4fsieFeXEzS+6v82ivTjaODNDUfzDo/7eZOU8bTgm8Y
+         nIq4eth4KY57TKOj07QdNUdLD+6euapiUbW46X0hab4OYQHbcUdDH2fDWDYD67uXRvPX
+         /CRQ==
+X-Gm-Message-State: AOAM532oOThWnmGwpLB/9JSgwhYY6F/TNnYaNCQRhLNSiePTIJrq3VBB
+        52OMCokrNc43z8A3wtHPr7fkxN4kH7Y8+nK0dpE=
+X-Google-Smtp-Source: ABdhPJyTgtlMa/FY4BYgSmG+QueEQksq2SsNHvnaTZ6Qb16c/NnH/sOSEBTkceKH1smPl4WBeeh2G3yVzEwjnT6NHgs=
+X-Received: by 2002:a05:6512:2036:: with SMTP id s22mr17883193lfs.540.1620187897959;
+ Tue, 04 May 2021 21:11:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210429130510.1621665-1-jackmanb@google.com> <CAEf4BzY7sx0gW=o5rM8WDzW1J0U_Yep3MMuJScoMg-hBAeBPCg@mail.gmail.com>
- <CA+i-1C2+Lt7kmwsZOEw6D8B_Lc+aJdZoUmPDh08+7y_uMNW+kA@mail.gmail.com>
- <CAEf4BzY1bftPAj_hjE4SBVv2P1U7twW3FdRsvNP9kPCMe_NOjA@mail.gmail.com> <CA+i-1C1V4b3LvB+pwDn5zomGG1ehSppX=r6TMfPutbgaoG_53Q@mail.gmail.com>
-In-Reply-To: <CA+i-1C1V4b3LvB+pwDn5zomGG1ehSppX=r6TMfPutbgaoG_53Q@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 4 May 2021 17:37:31 -0700
-Message-ID: <CAEf4BzZ-qxd9Xb11zWetKaPpG+sYiF6D1c9+gc3L3BevBrhTYg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <20210429212834.82621-1-jolsa@kernel.org> <YI8WokIxTkZvzVuP@krava>
+ <CAEf4BzZjtU1hicc8dK1M9Mqf3wanU2AJFDtZJzUfQdwCsC6cGg@mail.gmail.com>
+ <YJFLpAbUiwIu0I4H@krava> <CAEf4BzYz3G4aRWT4YTrnKaVCsE_A2UGGn6jVvqOuK8ZLU-sN8g@mail.gmail.com>
+In-Reply-To: <CAEf4BzYz3G4aRWT4YTrnKaVCsE_A2UGGn6jVvqOuK8ZLU-sN8g@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 4 May 2021 21:11:26 -0700
+Message-ID: <CAADnVQ+V=2qOqkVMaC72uhQKEbC=2uFa80J57xdF_4ffoZHYNQ@mail.gmail.com>
+Subject: Re: [PATCH RFC] bpf: Fix trampoline for functions with variable arguments
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Florent Revest <revest@chromium.org>
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 4, 2021 at 2:01 AM Brendan Jackman <jackmanb@google.com> wrote:
+On Tue, May 4, 2021 at 3:37 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Mon, 3 May 2021 at 19:46, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> On Tue, May 4, 2021 at 6:27 AM Jiri Olsa <jolsa@redhat.com> wrote:
 > >
-> > On Mon, May 3, 2021 at 5:01 AM Brendan Jackman <jackmanb@google.com> wrote:
+> > On Mon, May 03, 2021 at 03:32:34PM -0700, Andrii Nakryiko wrote:
+> > > On Sun, May 2, 2021 at 2:17 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > On Thu, Apr 29, 2021 at 11:28:34PM +0200, Jiri Olsa wrote:
+> > > > > For functions with variable arguments like:
+> > > > >
+> > > > >   void set_worker_desc(const char *fmt, ...)
+> > > > >
+> > > > > the BTF data contains void argument at the end:
+> > > > >
+> > > > > [4061] FUNC_PROTO '(anon)' ret_type_id=0 vlen=2
+> > > > >         'fmt' type_id=3
+> > > > >         '(anon)' type_id=0
+> > > > >
+> > > > > When attaching function with this void argument the btf_distill_func_proto
+> > > > > will set last btf_func_model's argument with size 0 and that
+> > > > > will cause extra loop in save_regs/restore_regs functions and
+> > > > > generate trampoline code like:
+> > > > >
+> > > > >   55             push   %rbp
+> > > > >   48 89 e5       mov    %rsp,%rbp
+> > > > >   48 83 ec 10    sub    $0x10,%rsp
+> > > > >   53             push   %rbx
+> > > > >   48 89 7d f0    mov    %rdi,-0x10(%rbp)
+> > > > >   75 f8          jne    0xffffffffa00cf007
+> > > > >                  ^^^ extra jump
+> > > > >
+> > > > > It's causing soft lockups/crashes probably depends on what context
+> > > > > is the attached function called, like for set_worker_desc:
+> > > > >
+> > > > >   watchdog: BUG: soft lockup - CPU#16 stuck for 22s! [kworker/u40:4:239]
+> > > > >   CPU: 16 PID: 239 Comm: kworker/u40:4 Not tainted 5.12.0-rc4qemu+ #178
+> > > > >   Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1.fc33 04/01/2014
+> > > > >   Workqueue: writeback wb_workfn
+> > > > >   RIP: 0010:bpf_trampoline_6442464853_0+0xa/0x1000
+> > > > >   Code: Unable to access opcode bytes at RIP 0xffffffffa3597fe0.
+> > > > >   RSP: 0018:ffffc90000687da8 EFLAGS: 00000217
+> > > > >   Call Trace:
+> > > > >    set_worker_desc+0x5/0xb0
+> > > > >    wb_workfn+0x48/0x4d0
+> > > > >    ? psi_group_change+0x41/0x210
+> > > > >    ? __bpf_prog_exit+0x15/0x20
+> > > > >    ? bpf_trampoline_6442458903_0+0x3b/0x1000
+> > > > >    ? update_pasid+0x5/0x90
+> > > > >    ? __switch_to+0x187/0x450
+> > > > >    process_one_work+0x1e7/0x380
+> > > > >    worker_thread+0x50/0x3b0
+> > > > >    ? rescuer_thread+0x380/0x380
+> > > > >    kthread+0x11b/0x140
+> > > > >    ? __kthread_bind_mask+0x60/0x60
+> > > > >    ret_from_fork+0x22/0x30
+> > > > >
+> > > > > This patch is removing the void argument from struct btf_func_model
+> > > > > in btf_distill_func_proto, but perhaps we should also check for this
+> > > > > in JIT's save_regs/restore_regs functions.
+> > > >
+> > > > actualy looks like we need to disable functions with variable arguments
+> > > > completely, because we don't know how many arguments to save
+> > > >
+> > > > I tried to disable them in pahole and it's easy fix, will post new fix
 > > >
-> > > On Fri, 30 Apr 2021 at 18:31, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> > So while doing that I noticed that you didn't fix ring_buffer__poll(),
-> > so I had to fix it up a bit more extensively. Please check the end
-> > result in bpf tree and let me know if there are any problems with it:
+> > > Can we still allow access to fixed arguments for such functions and
+> > > just disallow the vararg ones?
 > >
-> > 2a30f9440640 ("libbpf: Fix signed overflow in ringbuf_process_ring")
+> > the problem is that we should save all the registers for arguments,
+> > which is probably doable.. but if caller uses more than 6 arguments,
+> > we need stack data, which will be wrong because of the extra stack
+> > frame we do in bpf trampoline.. so we could crash
+> >
+> > the patch below prevents to attach these functions directly in kernel,
+> > so we could keep these functions in BTF
+> >
+> > jirka
+> >
+> >
+> > ---
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 0600ed325fa0..f9709dc08c44 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -5213,6 +5213,13 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+> >                                 tname, i, btf_kind_str[BTF_INFO_KIND(t->info)]);
+> >                         return -EINVAL;
+> >                 }
+> > +               if (ret == 0) {
+> > +                       bpf_log(log,
+> > +                               "The function %s has variable args, it's unsupported.\n",
+> > +                               tname);
+> > +                       return -EINVAL;
+> > +
+> > +               }
 >
-> Ah, thanks for that. Yep, the additional fix looks good to me.
->
-> I think it actually fixes another very niche issue:
->
->  int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
->  {
-> -       int i, cnt, err, res = 0;
-> +       int i, cnt;
-> +       int64_t err, res = 0;
->
->         cnt = epoll_wait(rb->epoll_fd, rb->events, rb->ring_cnt, timeout_ms);
-> +       if (cnt < 0)
-> +               return -errno;
-> +
->         for (i = 0; i < cnt; i++) {
->                 __u32 ring_id = rb->events[i].data.fd;
->                 struct ring *ring = &rb->rings[ring_id];
-> @@ -280,7 +290,9 @@ int ring_buffer__poll(struct ring_buffer *rb, int
-> timeout_ms)
->                         return err;
->                 res += err;
->         }
-> -       return cnt < 0 ? -errno : res;
->
-> If the callback returns an error but errno is 0 this fails to report the error.
+> this will work, but the explicit check for vararg should be `i ==
+> nargs - 1 && args[i].type == 0`. Everything else (if it happens) is
+> probably a bad BTF data.
 
-Yeah, there was no need to be clever about that. Explicit if (cnt < 0)
-check is obvious and correct.
-
->
-> errno(3) says "the value of errno is never set to zero by any system
-> call or library function" but then describes a scenario where an
-> application might usefully set it to zero itself. Maybe it can also be
-> 0 in new threads, depending on your metaphysical interpretation of "by
-> a system call or library function".
->
-> +       if (res > INT_MAX)
-> +               return INT_MAX;
-> +       return res;
+Jiri,
+could you please resubmit with the check like Andrii suggested?
+Thanks!
