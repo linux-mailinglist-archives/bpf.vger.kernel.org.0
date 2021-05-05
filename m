@@ -2,39 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA9B3741B2
-	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 18:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8988E3741FF
+	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 18:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234008AbhEEQkh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 May 2021 12:40:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37174 "EHLO mail.kernel.org"
+        id S235124AbhEEQnU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 May 2021 12:43:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234530AbhEEQiJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 May 2021 12:38:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E3D761462;
-        Wed,  5 May 2021 16:33:35 +0000 (UTC)
+        id S235173AbhEEQlP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 May 2021 12:41:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41E8F61404;
+        Wed,  5 May 2021 16:34:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232416;
-        bh=l6JtpswOXURGtwYZ5hYYWOergdQEDDoc8UI/xd6dLdg=;
+        s=k20201202; t=1620232472;
+        bh=pA65frvz9Je2dhxeBGvonLp1FZJzdusgRI1gUhk9gCk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aKPpwxkJff/IxUzdXzdC9ixUW53zu4rEEWcvylTtXxlY+LRmIkSxoYI1XHXcHsyDE
-         rSktGxhiJcKRRscn9ZFElo/W1n/z5zvFl2ElHclAmWv2k1lVtJvCsr0DkJRDvsmhnP
-         ZBCCUkbVrXw+AyM2AtuWblsIhfokts2OpHpmFSkZvjQRl52McDHh2VocsYUhIJ6Wik
-         qLa3x5x+Mlp9AXLabiQtPLIVTAAgjUSybGPAQ1/kM3ktoH3Rq8kRG6Q62OdEgT7R+7
-         K7qCNrNVHkqj2tiBeEu5B5kRx94cG3e1eF7AYg87e0DAJVMhZigJs3HF9DQbeHezb3
-         dvV352BjjWWnw==
+        b=GKN48+hSNfxp8sl0V2MrMsD6kKVrrRsct/PCUrI2CqH07TDe2GcTffkgUjeZgjfr0
+         IGZG7b21Wn1wNJKI2jgAow0HOFFjtrglJjwYRLccF7CGnUlLREMvAgI5S0uVTtd3E7
+         7UMom1VUqm9w62N7UDUKJDUOk4UxYqmqtLIjcmPFRkMRMm/G7Kr4jy/beODVw3dB5t
+         zuMe0w9+8XdF3r+ggXZZW8I1dPYpYQilh8EpFyw4hJC/iqjNbQnQ0BMkE1vV+6BYM/
+         zUMADg7PhY5v8k9ngSZanCKwtfJ1wbOn9CqWIt+p+BdIfeT8awYvNVsqORnW3DhsiO
+         2MmD6ckzu1Z2g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yaqi Chen <chendotjs@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 093/116] samples/bpf: Fix broken tracex1 due to kprobe argument change
-Date:   Wed,  5 May 2021 12:31:01 -0400
-Message-Id: <20210505163125.3460440-93-sashal@kernel.org>
+Cc:     Maxim Mikityanskiy <maximmi@mellanox.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 013/104] net/mlx5e: Use net_prefetchw instead of prefetchw in MPWQE TX datapath
+Date:   Wed,  5 May 2021 12:32:42 -0400
+Message-Id: <20210505163413.3461611-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210505163125.3460440-1-sashal@kernel.org>
-References: <20210505163125.3460440-1-sashal@kernel.org>
+In-Reply-To: <20210505163413.3461611-1-sashal@kernel.org>
+References: <20210505163413.3461611-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,47 +44,43 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yaqi Chen <chendotjs@gmail.com>
+From: Maxim Mikityanskiy <maximmi@mellanox.com>
 
-[ Upstream commit 137733d08f4ab14a354dacaa9a8fc35217747605 ]
+[ Upstream commit 991b2654605b455a94dac73e14b23480e7e20991 ]
 
->From commit c0bbbdc32feb ("__netif_receive_skb_core: pass skb by
-reference"), the first argument passed into __netif_receive_skb_core
-has changed to reference of a skb pointer.
+Commit e20f0dbf204f ("net/mlx5e: RX, Add a prefetch command for small
+L1_CACHE_BYTES") switched to using net_prefetchw at all places in mlx5e.
+In the same time frame, commit 5af75c747e2a ("net/mlx5e: Enhanced TX
+MPWQE for SKBs") added one more usage of prefetchw. When these two
+changes were merged, this new occurrence of prefetchw wasn't replaced
+with net_prefetchw.
 
-This commit fixes by using bpf_probe_read_kernel.
+This commit fixes this last occurrence of prefetchw in
+mlx5e_tx_mpwqe_session_start, making the same change that was done in
+mlx5e_xdp_mpwqe_session_start.
 
-Signed-off-by: Yaqi Chen <chendotjs@gmail.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20210416154803.37157-1-chendotjs@gmail.com
+Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
+Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/bpf/tracex1_kern.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_tx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/samples/bpf/tracex1_kern.c b/samples/bpf/tracex1_kern.c
-index 3f4599c9a202..ef30d2b353b0 100644
---- a/samples/bpf/tracex1_kern.c
-+++ b/samples/bpf/tracex1_kern.c
-@@ -26,7 +26,7 @@
- SEC("kprobe/__netif_receive_skb_core")
- int bpf_prog1(struct pt_regs *ctx)
- {
--	/* attaches to kprobe netif_receive_skb,
-+	/* attaches to kprobe __netif_receive_skb_core,
- 	 * looks for packets on loobpack device and prints them
- 	 */
- 	char devname[IFNAMSIZ];
-@@ -35,7 +35,7 @@ int bpf_prog1(struct pt_regs *ctx)
- 	int len;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+index 61ed671fe741..1b3c93c3fd23 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
+@@ -553,7 +553,7 @@ static void mlx5e_tx_mpwqe_session_start(struct mlx5e_txqsq *sq,
  
- 	/* non-portable! works for the given kernel only */
--	skb = (struct sk_buff *) PT_REGS_PARM1(ctx);
-+	bpf_probe_read_kernel(&skb, sizeof(skb), (void *)PT_REGS_PARM1(ctx));
- 	dev = _(skb->dev);
- 	len = _(skb->len);
+ 	pi = mlx5e_txqsq_get_next_pi(sq, MLX5E_TX_MPW_MAX_WQEBBS);
+ 	wqe = MLX5E_TX_FETCH_WQE(sq, pi);
+-	prefetchw(wqe->data);
++	net_prefetchw(wqe->data);
  
+ 	*session = (struct mlx5e_tx_mpwqe) {
+ 		.wqe = wqe,
 -- 
 2.30.2
 
