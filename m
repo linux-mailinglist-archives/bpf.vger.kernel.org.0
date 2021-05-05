@@ -2,37 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2025D37466F
-	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 19:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06857374671
+	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 19:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237664AbhEERS0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 May 2021 13:18:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47766 "EHLO mail.kernel.org"
+        id S237786AbhEERSc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 May 2021 13:18:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235399AbhEEQ6g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 May 2021 12:58:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75B43619AE;
-        Wed,  5 May 2021 16:39:41 +0000 (UTC)
+        id S237166AbhEEQ7R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 May 2021 12:59:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BCC0619BE;
+        Wed,  5 May 2021 16:39:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232782;
-        bh=9HH75c4v++9Tbx5W9V2lcph7xGqf9m1pgli5cM/gmFM=;
+        s=k20201202; t=1620232789;
+        bh=RoA7G0ZmY5hKYB+MBB4C21QqDWguMEVxPPx+ofxXPxg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iZOkjfZ8aTv0dZNTakFXT3FjSRhef+ZeYTuV6o1W05hUTOp3G42omqMS1BLXVHOlH
-         lD3/FbV2FMkTPSQVz+CTOaeV/deC15D24WeXtTiuDx2B9x91bBWHGV1ItyyERSQNxO
-         mXv3a2lGAm0n7ex0thgEjelB7iZGCJPtcjR7YoOs4X3AmllUnggk/W9qhiVejQBaF1
-         9rUyxMQYbzI5V95HUpJ/4CnvQ9p8iwKFgql3j0ziN09+TdPAH8CpUvSrRxZEkyXsRS
-         r8YAzAoCJsZOdtvbrxGRxsurD56vwkhUzfxzHrY6skIS3mr4BA9xobulc/7JbxE1bo
-         WPwiKlGyynWbg==
+        b=CglrP78+8oQZ0/ADs/vB7jmKoPIKk0qGGLtP7x4E8MjDutVdwPFeZ85HTYcIOi0bx
+         2j4AdIGqr9XERYX+ilfZz4qBEZULB4zfBfp7bLad10tmtrH50HWRoAvM9fEnnxAFeo
+         zVH6384MXNLkr4/VgVRKVrEiftW48keFbJH3J+iy7JKmwZblcWChEhidVaYVrmxfyH
+         2GAUSgsiwTdJ0dD6G/yYfu8u69XtseLc4BXFBtG6ZmS4xWkuLih2rD7zaxwKYFYm7O
+         TmAPItuOj5IsPvn5882CHYDwP61kDuf4FvfMEvxMDSXy8CMZ3x1sUvXSb0213KYEA+
+         XwhgfM+jqMfbw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 31/46] flow_dissector: Fix out-of-bounds warning in __skb_flow_bpf_to_target()
-Date:   Wed,  5 May 2021 12:38:41 -0400
-Message-Id: <20210505163856.3463279-31-sashal@kernel.org>
+Cc:     Yaqi Chen <chendotjs@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 36/46] samples/bpf: Fix broken tracex1 due to kprobe argument change
+Date:   Wed,  5 May 2021 12:38:46 -0400
+Message-Id: <20210505163856.3463279-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163856.3463279-1-sashal@kernel.org>
 References: <20210505163856.3463279-1-sashal@kernel.org>
@@ -44,49 +43,46 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+From: Yaqi Chen <chendotjs@gmail.com>
 
-[ Upstream commit 1e3d976dbb23b3fce544752b434bdc32ce64aabc ]
+[ Upstream commit 137733d08f4ab14a354dacaa9a8fc35217747605 ]
 
-Fix the following out-of-bounds warning:
+>From commit c0bbbdc32feb ("__netif_receive_skb_core: pass skb by
+reference"), the first argument passed into __netif_receive_skb_core
+has changed to reference of a skb pointer.
 
-net/core/flow_dissector.c:835:3: warning: 'memcpy' offset [33, 48] from the object at 'flow_keys' is out of the bounds of referenced subobject 'ipv6_src' with type '__u32[4]' {aka 'unsigned int[4]'} at offset 16 [-Warray-bounds]
+This commit fixes by using bpf_probe_read_kernel.
 
-The problem is that the original code is trying to copy data into a
-couple of struct members adjacent to each other in a single call to
-memcpy().  So, the compiler legitimately complains about it. As these
-are just a couple of members, fix this by copying each one of them in
-separate calls to memcpy().
-
-This helps with the ongoing efforts to globally enable -Warray-bounds
-and get us closer to being able to tighten the FORTIFY_SOURCE routines
-on memcpy().
-
-Link: https://github.com/KSPP/linux/issues/109
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Yaqi Chen <chendotjs@gmail.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20210416154803.37157-1-chendotjs@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/flow_dissector.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ samples/bpf/tracex1_kern.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
-index da86c0e1b677..96957a7c732f 100644
---- a/net/core/flow_dissector.c
-+++ b/net/core/flow_dissector.c
-@@ -811,8 +811,10 @@ static void __skb_flow_bpf_to_target(const struct bpf_flow_keys *flow_keys,
- 		key_addrs = skb_flow_dissector_target(flow_dissector,
- 						      FLOW_DISSECTOR_KEY_IPV6_ADDRS,
- 						      target_container);
--		memcpy(&key_addrs->v6addrs, &flow_keys->ipv6_src,
--		       sizeof(key_addrs->v6addrs));
-+		memcpy(&key_addrs->v6addrs.src, &flow_keys->ipv6_src,
-+		       sizeof(key_addrs->v6addrs.src));
-+		memcpy(&key_addrs->v6addrs.dst, &flow_keys->ipv6_dst,
-+		       sizeof(key_addrs->v6addrs.dst));
- 		key_control->addr_type = FLOW_DISSECTOR_KEY_IPV6_ADDRS;
- 	}
+diff --git a/samples/bpf/tracex1_kern.c b/samples/bpf/tracex1_kern.c
+index 107da148820f..9c74b45c5720 100644
+--- a/samples/bpf/tracex1_kern.c
++++ b/samples/bpf/tracex1_kern.c
+@@ -20,7 +20,7 @@
+ SEC("kprobe/__netif_receive_skb_core")
+ int bpf_prog1(struct pt_regs *ctx)
+ {
+-	/* attaches to kprobe netif_receive_skb,
++	/* attaches to kprobe __netif_receive_skb_core,
+ 	 * looks for packets on loobpack device and prints them
+ 	 */
+ 	char devname[IFNAMSIZ];
+@@ -29,7 +29,7 @@ int bpf_prog1(struct pt_regs *ctx)
+ 	int len;
+ 
+ 	/* non-portable! works for the given kernel only */
+-	skb = (struct sk_buff *) PT_REGS_PARM1(ctx);
++	bpf_probe_read_kernel(&skb, sizeof(skb), (void *)PT_REGS_PARM1(ctx));
+ 	dev = _(skb->dev);
+ 	len = _(skb->len);
  
 -- 
 2.30.2
