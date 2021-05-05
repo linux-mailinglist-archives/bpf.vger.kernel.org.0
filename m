@@ -2,37 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09730374669
-	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 19:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2025D37466F
+	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 19:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237293AbhEERQ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 May 2021 13:16:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46458 "EHLO mail.kernel.org"
+        id S237664AbhEERS0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 May 2021 13:18:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236683AbhEEQ6J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 May 2021 12:58:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A056619A8;
-        Wed,  5 May 2021 16:39:35 +0000 (UTC)
+        id S235399AbhEEQ6g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 May 2021 12:58:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75B43619AE;
+        Wed,  5 May 2021 16:39:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232776;
-        bh=hRkWyVwECxJrACDvgrt+TQxmgiORLhFnvePP7UIObDw=;
+        s=k20201202; t=1620232782;
+        bh=9HH75c4v++9Tbx5W9V2lcph7xGqf9m1pgli5cM/gmFM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=duiIkXNocQ8r9Q3vXPxll2yqda78pkZT/zdGzcOuEC5TepxFeCXY4hw42iZT6Rto2
-         93jN9BGiqHpAcVmQBvg/eVrKKQewLRgOS2byb4hmNaqe0Xwe/8xmGprtdRHaAjqdkY
-         5WhCx5UfO2JHszHAqsqtr6D+q2ECAr7TPmFT9SvEr62zGMlakGKZ9ndQiVAi9JOFCy
-         pA7L7BphYx69QnQDBEIusW6fcOL4Z30LfcCOlVsqpZ430C5kAgbTskeXinzwepe5Hs
-         RKqlgBDhRy8UE8scSpjuLmQJyETOVOwRkU1zvFKl0KrnqssRPZDWxHd8kyXPFnU/Vt
-         bGsHa59o3KTIw==
+        b=iZOkjfZ8aTv0dZNTakFXT3FjSRhef+ZeYTuV6o1W05hUTOp3G42omqMS1BLXVHOlH
+         lD3/FbV2FMkTPSQVz+CTOaeV/deC15D24WeXtTiuDx2B9x91bBWHGV1ItyyERSQNxO
+         mXv3a2lGAm0n7ex0thgEjelB7iZGCJPtcjR7YoOs4X3AmllUnggk/W9qhiVejQBaF1
+         9rUyxMQYbzI5V95HUpJ/4CnvQ9p8iwKFgql3j0ziN09+TdPAH8CpUvSrRxZEkyXsRS
+         r8YAzAoCJsZOdtvbrxGRxsurD56vwkhUzfxzHrY6skIS3mr4BA9xobulc/7JbxE1bo
+         WPwiKlGyynWbg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.4 27/46] selftests: Set CC to clang in lib.mk if LLVM is set
-Date:   Wed,  5 May 2021 12:38:37 -0400
-Message-Id: <20210505163856.3463279-27-sashal@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 31/46] flow_dissector: Fix out-of-bounds warning in __skb_flow_bpf_to_target()
+Date:   Wed,  5 May 2021 12:38:41 -0400
+Message-Id: <20210505163856.3463279-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163856.3463279-1-sashal@kernel.org>
 References: <20210505163856.3463279-1-sashal@kernel.org>
@@ -44,40 +44,50 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
 
-[ Upstream commit 26e6dd1072763cd5696b75994c03982dde952ad9 ]
+[ Upstream commit 1e3d976dbb23b3fce544752b434bdc32ce64aabc ]
 
-selftests/bpf/Makefile includes lib.mk. With the following command
-  make -j60 LLVM=1 LLVM_IAS=1  <=== compile kernel
-  make -j60 -C tools/testing/selftests/bpf LLVM=1 LLVM_IAS=1 V=1
-some files are still compiled with gcc. This patch
-fixed lib.mk issue which sets CC to gcc in all cases.
+Fix the following out-of-bounds warning:
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210413153413.3027426-1-yhs@fb.com
+net/core/flow_dissector.c:835:3: warning: 'memcpy' offset [33, 48] from the object at 'flow_keys' is out of the bounds of referenced subobject 'ipv6_src' with type '__u32[4]' {aka 'unsigned int[4]'} at offset 16 [-Warray-bounds]
+
+The problem is that the original code is trying to copy data into a
+couple of struct members adjacent to each other in a single call to
+memcpy().  So, the compiler legitimately complains about it. As these
+are just a couple of members, fix this by copying each one of them in
+separate calls to memcpy().
+
+This helps with the ongoing efforts to globally enable -Warray-bounds
+and get us closer to being able to tighten the FORTIFY_SOURCE routines
+on memcpy().
+
+Link: https://github.com/KSPP/linux/issues/109
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/lib.mk | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/core/flow_dissector.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-index 3ed0134a764d..67386aa3f31d 100644
---- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -1,6 +1,10 @@
- # This mimics the top-level Makefile. We do it explicitly here so that this
- # Makefile can operate with or without the kbuild infrastructure.
-+ifneq ($(LLVM),)
-+CC := clang
-+else
- CC := $(CROSS_COMPILE)gcc
-+endif
+diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+index da86c0e1b677..96957a7c732f 100644
+--- a/net/core/flow_dissector.c
++++ b/net/core/flow_dissector.c
+@@ -811,8 +811,10 @@ static void __skb_flow_bpf_to_target(const struct bpf_flow_keys *flow_keys,
+ 		key_addrs = skb_flow_dissector_target(flow_dissector,
+ 						      FLOW_DISSECTOR_KEY_IPV6_ADDRS,
+ 						      target_container);
+-		memcpy(&key_addrs->v6addrs, &flow_keys->ipv6_src,
+-		       sizeof(key_addrs->v6addrs));
++		memcpy(&key_addrs->v6addrs.src, &flow_keys->ipv6_src,
++		       sizeof(key_addrs->v6addrs.src));
++		memcpy(&key_addrs->v6addrs.dst, &flow_keys->ipv6_dst,
++		       sizeof(key_addrs->v6addrs.dst));
+ 		key_control->addr_type = FLOW_DISSECTOR_KEY_IPV6_ADDRS;
+ 	}
  
- ifeq (0,$(MAKELEVEL))
-     ifeq ($(OUTPUT),)
 -- 
 2.30.2
 
