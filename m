@@ -2,39 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06857374671
+	by mail.lfdr.de (Postfix) with ESMTP id 4FD22374672
 	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 19:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237786AbhEERSc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 May 2021 13:18:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44946 "EHLO mail.kernel.org"
+        id S237136AbhEERSg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 May 2021 13:18:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237166AbhEEQ7R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 May 2021 12:59:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BCC0619BE;
-        Wed,  5 May 2021 16:39:48 +0000 (UTC)
+        id S237783AbhEERBL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 May 2021 13:01:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A58F7619D4;
+        Wed,  5 May 2021 16:40:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232789;
-        bh=RoA7G0ZmY5hKYB+MBB4C21QqDWguMEVxPPx+ofxXPxg=;
+        s=k20201202; t=1620232833;
+        bh=BL17qdYNvhRbXc2x+eIW3WQXHQEb1ZqoUWBm5fXP+Ts=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CglrP78+8oQZ0/ADs/vB7jmKoPIKk0qGGLtP7x4E8MjDutVdwPFeZ85HTYcIOi0bx
-         2j4AdIGqr9XERYX+ilfZz4qBEZULB4zfBfp7bLad10tmtrH50HWRoAvM9fEnnxAFeo
-         zVH6384MXNLkr4/VgVRKVrEiftW48keFbJH3J+iy7JKmwZblcWChEhidVaYVrmxfyH
-         2GAUSgsiwTdJ0dD6G/yYfu8u69XtseLc4BXFBtG6ZmS4xWkuLih2rD7zaxwKYFYm7O
-         TmAPItuOj5IsPvn5882CHYDwP61kDuf4FvfMEvxMDSXy8CMZ3x1sUvXSb0213KYEA+
-         XwhgfM+jqMfbw==
+        b=QOQmoaUoHwMaaMs5MnyoCBOoILJC6G1rBTEVzuL8gPCnDNXW1lvbn1Ld417HWWEZN
+         eXwFT0sXvYUwYcwx/CUlTuyZ7hPZ9vGOiYITYVz8N669XmSWnR8W+vScZKSJkSD0Kw
+         myHj4KwBFTYFAEYGNjHnZ4iN36k1BRVEaLeMTUlmGt5mwF8p+R70yrwmpzETXODKtr
+         oSWDUQ9WsZWGz7ISrOmR8xAbzgCy2UkVlSrsvEfsBfMYCrGpXdhHIZfG9vWWMVdycC
+         C4s3O4DMieesMiMCwCeVzh1QglIM/0r1fTRfl6oxK00HlDcon4x1xM8scq3H1rS6/J
+         r1IN/F0fczRgw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yaqi Chen <chendotjs@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 36/46] samples/bpf: Fix broken tracex1 due to kprobe argument change
-Date:   Wed,  5 May 2021 12:38:46 -0400
-Message-Id: <20210505163856.3463279-36-sashal@kernel.org>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH AUTOSEL 4.19 20/32] selftests: Set CC to clang in lib.mk if LLVM is set
+Date:   Wed,  5 May 2021 12:39:52 -0400
+Message-Id: <20210505164004.3463707-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210505163856.3463279-1-sashal@kernel.org>
-References: <20210505163856.3463279-1-sashal@kernel.org>
+In-Reply-To: <20210505164004.3463707-1-sashal@kernel.org>
+References: <20210505164004.3463707-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -43,47 +44,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yaqi Chen <chendotjs@gmail.com>
+From: Yonghong Song <yhs@fb.com>
 
-[ Upstream commit 137733d08f4ab14a354dacaa9a8fc35217747605 ]
+[ Upstream commit 26e6dd1072763cd5696b75994c03982dde952ad9 ]
 
->From commit c0bbbdc32feb ("__netif_receive_skb_core: pass skb by
-reference"), the first argument passed into __netif_receive_skb_core
-has changed to reference of a skb pointer.
+selftests/bpf/Makefile includes lib.mk. With the following command
+  make -j60 LLVM=1 LLVM_IAS=1  <=== compile kernel
+  make -j60 -C tools/testing/selftests/bpf LLVM=1 LLVM_IAS=1 V=1
+some files are still compiled with gcc. This patch
+fixed lib.mk issue which sets CC to gcc in all cases.
 
-This commit fixes by using bpf_probe_read_kernel.
-
-Signed-off-by: Yaqi Chen <chendotjs@gmail.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20210416154803.37157-1-chendotjs@gmail.com
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210413153413.3027426-1-yhs@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/bpf/tracex1_kern.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/lib.mk | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/samples/bpf/tracex1_kern.c b/samples/bpf/tracex1_kern.c
-index 107da148820f..9c74b45c5720 100644
---- a/samples/bpf/tracex1_kern.c
-+++ b/samples/bpf/tracex1_kern.c
-@@ -20,7 +20,7 @@
- SEC("kprobe/__netif_receive_skb_core")
- int bpf_prog1(struct pt_regs *ctx)
- {
--	/* attaches to kprobe netif_receive_skb,
-+	/* attaches to kprobe __netif_receive_skb_core,
- 	 * looks for packets on loobpack device and prints them
- 	 */
- 	char devname[IFNAMSIZ];
-@@ -29,7 +29,7 @@ int bpf_prog1(struct pt_regs *ctx)
- 	int len;
+diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+index 0ef203ec59fd..a5d40653a921 100644
+--- a/tools/testing/selftests/lib.mk
++++ b/tools/testing/selftests/lib.mk
+@@ -1,6 +1,10 @@
+ # This mimics the top-level Makefile. We do it explicitly here so that this
+ # Makefile can operate with or without the kbuild infrastructure.
++ifneq ($(LLVM),)
++CC := clang
++else
+ CC := $(CROSS_COMPILE)gcc
++endif
  
- 	/* non-portable! works for the given kernel only */
--	skb = (struct sk_buff *) PT_REGS_PARM1(ctx);
-+	bpf_probe_read_kernel(&skb, sizeof(skb), (void *)PT_REGS_PARM1(ctx));
- 	dev = _(skb->dev);
- 	len = _(skb->len);
- 
+ ifeq (0,$(MAKELEVEL))
+ OUTPUT := $(shell pwd)
 -- 
 2.30.2
 
