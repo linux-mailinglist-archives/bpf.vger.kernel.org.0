@@ -2,181 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C0C373518
-	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 08:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE004373521
+	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 08:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbhEEGzj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 May 2021 02:55:39 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:50478 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229482AbhEEGzj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 5 May 2021 02:55:39 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1456p7B4004911;
-        Tue, 4 May 2021 23:54:24 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=92wK79h1yjyq8+eBNcYyYKAiSTXACcmP1TGuqzvPBW8=;
- b=RjnAC3RzLeteDBY/pREPI/nTNKSYAjfXqp9lZ6AcPJVOwTQnqArw60p+ax8stB5rdCZ/
- 1RDSCzYJloayb8VFJISBoDdgscu4Yz2A01MWZoFyD52c/GyaW/eHJMlOaIaEMR+8kMw9
- RbYJSOPpBOEQYAQrnC+9tUJhbdCBi4gV4yk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 38bebdj08d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 04 May 2021 23:54:23 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 4 May 2021 23:54:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HrfSrCAYyaC8j6Or8n9kMaMWk20kxr3o1ACfcR815BUvcjwbakH64FVCvh2eK4n7SzWW0ODFfSm5vv83ofGuY3Ok+eKXXhed7NZHzgQLB8nbqAmWXKbtIjXI1HbztV3pO6gpDgThlDz65cQyMMbpE4qAY5rXy8PzbuB1XIRpGkwWXf2eDS0ZaPuyKfY6mY3gWoIZUbEEEqawmU47FT3QjjHqJ7ycTjQ35qulVD8HcjYZm37m+qhFAtptJBKjOtcRfuTfigdHIsKLNFmUHVKo917ULxV9ZmdN2mEkgB3+ngA5xlLh2MBBFlnb02jzpK0Nf7/z2uRwlptRwSTLQmbstw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=92wK79h1yjyq8+eBNcYyYKAiSTXACcmP1TGuqzvPBW8=;
- b=SBxMWWEStAbR39KSxRR0GTzuf8FIDVRPpEdMDKviGZonHkhx/1XNxQHlnOH0ylPnpf0fnxuM1gMRhw8p/X2z8SnUy6yVQ5K01GrbSPybgTV42XPsgibwz9kc2CRwBDacwWK4tYHsSHTdq4q6SiTmhHP6wd5eRmL96tLrcoUR/GrCo71YHbnmryZYNgRv/1ovIssxAGXtygMtoutCrdtvTbvbFl2nk4dQm4/QrNLCjUa9ujwjBzDDEIbpjydhvg51IYKiaRvMOHzk4iK0mU/p5lZBstNu+Brgpkje12YqBSBd530bMWlaeP6xKCTQI/E94MCQSvunvfqW2tZKBYo8yw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: amazon.co.jp; dkim=none (message not signed)
- header.d=none;amazon.co.jp; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BY5PR15MB3716.namprd15.prod.outlook.com (2603:10b6:a03:1b4::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25; Wed, 5 May
- 2021 06:54:22 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::718a:4142:4c92:732f]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::718a:4142:4c92:732f%6]) with mapi id 15.20.4087.044; Wed, 5 May 2021
- 06:54:22 +0000
-Date:   Tue, 4 May 2021 23:54:18 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>, <edumazet@google.com>,
-        <jbaron@akamai.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v4 bpf-next 00/11] Socket migration for SO_REUSEPORT.
-Message-ID: <20210505065418.uqfmyy5es3y5zw2d@kafai-mbp.dhcp.thefacebook.com>
-References: <CANn89iK2Wy5WJB+57Y9JU24boy=bb4YQCk6DWD4BvhsM3ZVSdQ@mail.gmail.com>
- <20210429031609.1398-1-kuniyu@amazon.co.jp>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210429031609.1398-1-kuniyu@amazon.co.jp>
-X-Originating-IP: [2620:10d:c090:400::5:5bbb]
-X-ClientProxiedBy: MW4PR03CA0009.namprd03.prod.outlook.com
- (2603:10b6:303:8f::14) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        id S231452AbhEEG4k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 May 2021 02:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231253AbhEEG4j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 May 2021 02:56:39 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A00C061574
+        for <bpf@vger.kernel.org>; Tue,  4 May 2021 23:55:42 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id t4so1170534ejo.0
+        for <bpf@vger.kernel.org>; Tue, 04 May 2021 23:55:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UcWpgxZF5ZX5UQ00Ioz0ZVTWucpn0MOFfGqU54veXFI=;
+        b=RKGTB09CGhwWkJg1JtI0lfM4Tn77i0e7zGoxbV1chMfUwsVXBPHIS8SUnvHLY5mJ1o
+         HDXZ0yradP3eLM4eX0KoXeRT6RjbP10pYtOzv8URjzddtsAlSesjO9fG0InuT8ht61Jx
+         ano4h8aM+2GAYQb7rfhsTyH8hWtwprsBeRazE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UcWpgxZF5ZX5UQ00Ioz0ZVTWucpn0MOFfGqU54veXFI=;
+        b=MQ4OSd3hp5Tdpvyw5rM7ilDKxeLCkd42ubA9+Q6EuwbtetdR5IIKk3kjyrpXWnPbKS
+         cj7tyBcWsR7f77VS9NJ7yAunUw6jah2Vwsj/NBu/BYPfsgBPPBiW3C0tknI+XyYgO8/i
+         YUkynAMCI3+nwA2YZVLNzS5nnV8dvyFr04gdB1C3YnM9fctMEXjeXXW0Jyo+N4YcpKse
+         CMbp9zMGXW3ZNrPeIx5hJBHFjQEbxVXjt42BuwJiyQiGPlMNU3JY9siD9HwlIEwo2hyk
+         pYT8lBRy+KkHkP4roDNPKoPqLueIybUbAmOQknhMqkW0N53hFy6T9otG1LQlYhkRPfdU
+         Zc2g==
+X-Gm-Message-State: AOAM533JHVBDC2fXlHOgJu1OxuchKDMiqolN6xrIOtTwVy+4I6wVWvFH
+        G/wBSq1baLXuav4cWAssezT2Qw==
+X-Google-Smtp-Source: ABdhPJxpv8VwGBkzlzGVvEsotr19c5syvUBduuZjs3WuZ2/gJRcc+M2mJozQzLmoGOWYZd3l8lQwyw==
+X-Received: by 2002:a17:906:8693:: with SMTP id g19mr22654025ejx.270.1620197740883;
+        Tue, 04 May 2021 23:55:40 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id z22sm2387789ejo.113.2021.05.04.23.55.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 23:55:40 -0700 (PDT)
+Subject: Re: [PATCH bpf-next v5 6/6] selftests/bpf: Add a series of tests for
+ bpf_snprintf
+To:     Florent Revest <revest@chromium.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210419155243.1632274-1-revest@chromium.org>
+ <20210419155243.1632274-7-revest@chromium.org>
+ <CAEf4BzZUM4hb9owhompwARabRvRbCYxBrpgXSdXM8RRm42tU1A@mail.gmail.com>
+ <CABRcYm+=XSt_U-19eYXU8+XwDUXoBGQMROMbm6xk9P9OHnUW_A@mail.gmail.com>
+ <CAEf4BzZnkYDAm2R+5R9u4YEdZLj=C8XQmpT=iS6Qv0Ne7cRBGw@mail.gmail.com>
+ <CABRcYmLn2S2g-QTezy8qECsU2QNSQ6wyjhuaHpuM9dzq97mZ7g@mail.gmail.com>
+ <2db39f1c-cedd-b9e7-2a15-aef203f068eb@rasmusvillemoes.dk>
+ <CABRcYmJdTZAhdD_2OVAu-hOnYX-bgvrrbnUjaV23tzp-c+9_8w@mail.gmail.com>
+ <CAEf4BzaHqvxuosYP32WLSs_wxeJ9FfR2wGRKqsocXHCJUXVycw@mail.gmail.com>
+ <CABRcYm+pO94dFW83SZCtKQE8x6PkRicr+exGD3CNwGwQUYmFcw@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <f0888d2a-3a31-e454-001c-e46cc21b1664@rasmusvillemoes.dk>
+Date:   Wed, 5 May 2021 08:55:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:5bbb) by MW4PR03CA0009.namprd03.prod.outlook.com (2603:10b6:303:8f::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Wed, 5 May 2021 06:54:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c989ac5d-565d-4650-bd7c-08d90f929c5f
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3716:
-X-Microsoft-Antispam-PRVS: <BY5PR15MB37168388762152615EC71751D5599@BY5PR15MB3716.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r6QaAWDowuFuSeOlibLSCz7prVmkpWOnYu9ragfC7lS/ngBzU1GbWGLLAZF9PolvxBqqtdmvF6Xc86yMXIlXVAaj/dF6tWeTfaYmAtK9zYtjIuz99wI4ROdk9ube5BY9jcMlNgcDVRTfEFTCMVwQ1zUQDMcdyE0CxIs6BMYIKuRs1dFtw9fc4TysWaQJ8j3Voueo9+DjSw33BtiW9z8ungZJmYo5qKTh4mun3qUUdFqiMxaunKXsyWCY5EUj6k29EYMKPI5fHgbyPRzOsaAYpPkc7OveHF/A1c6If48hCwAUR5QQWZ0XcXuhsY0LqiKPPERBOkg1sa0UMLCVNHguasmN2ZhayZIZ7RP0AkoyUGclu/nMb7YxKle2MJyYe/Y3czt86DZlkSZZq90H9jltFFkaxt+qEGuhovMk9xBuFQNvRAvpcXdOVoTW2cTIv+mmqN+2aOITtHo10YF1OfEpltjWVsE5YddJCHYoJ4PUF8TBSdb/1c0vx797gy7NSTJykYYs8KBy5psIqJjTUYwn34TxnLUXyzp2Qk1cNf/xSx2k3Aj7H133ExVz8O14EHQtzryEsheOwyMAmHm/yittFGTjU+TKEomtO4hcHsuG/30=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(39860400002)(366004)(376002)(316002)(6506007)(52116002)(7696005)(86362001)(186003)(38100700002)(7416002)(2906002)(55016002)(9686003)(66476007)(5660300002)(16526019)(4326008)(1076003)(83380400001)(66556008)(478600001)(8676002)(66946007)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?NW5fZ4mNdLFPLWWUHpgLyn269jV83DwStsGKgnyyYAFo3mxOJuMrq9w4cLr3?=
- =?us-ascii?Q?kzawfRI2B4bUMr6YXJTfNIzao9KTNt/O4HQGOnlb4uIzAZ5LCI7Sjh1qJddE?=
- =?us-ascii?Q?7V62JyGi0r9hPUZM0uS3mtJq4hbVg5c8HMGfuR+riwxcN2Y5wHy1zqgTEzS7?=
- =?us-ascii?Q?+mV65oKM0dpLSqUsEAuHBfLrwJJZ37KEYd8B40QurIgPU5ZU4j5/M6tjESee?=
- =?us-ascii?Q?TwZcJHN0xYKoPe/JISIpPyuj9e5i5Z/rqabFdMmTovCHEi8OZeBkxv+sTMmS?=
- =?us-ascii?Q?oh8h/1LA3Z/+1abE0+GObMnSCMhoSxXO5KmVUYfViiNhvbQijP9xvpo4axqw?=
- =?us-ascii?Q?oMzZkVA1hTwCGPkiZ/yUhG8e3PAb3ThtB79xtwfdUf7RRV8dOuf213lIRmfl?=
- =?us-ascii?Q?kHhUEm2ig5G2vEmrv8XFhxc/ZvHctKFcEIQ9EWU9e5rSW85rXjpwQ1NsgdsT?=
- =?us-ascii?Q?gZm/glj3SoyXvstcNlEJPy7vnCYCw8cim38SF4A3sIdj/2Ilj3J6CcPpcIXR?=
- =?us-ascii?Q?yIXggwz2Zo7IpbaBhKhIQWaTqU7lXY04w2Iglf2OCGaf+LR0wQ2D5Xh2z1kM?=
- =?us-ascii?Q?xIYKD/nol4WSfZyaM+2AKHkRRFJcKwOyQDgy/xDM9dsCIaxVCPHFwR47ZHv7?=
- =?us-ascii?Q?m5EgueP9xoZOCJO7WrbiE7OWi5hJb59nQZ/0Kuetw4RtTCGOkWl81v7oQGbS?=
- =?us-ascii?Q?Tg81fzj5cJxomRHObBNoes3a5/FLWmz39JPHUIhZ6Dov7gpNvLOBm0eDksKo?=
- =?us-ascii?Q?ecQVWZ9aIURE9Gmc3Q+ocQrXKNKU927jRTahOZX1JwyW9h9ReizCmRiGo54s?=
- =?us-ascii?Q?Jo95NF3H2VyPsqLN95kOnR4DjMpoTlLwe1insYWEjNLwK4cilABBz9znya55?=
- =?us-ascii?Q?epDn6h7qkzu/miyxY26b8+gg4HzpAUwEftOed/f6StqDV3W10k2ggi6hdwr3?=
- =?us-ascii?Q?RXPqVtKSVvq3VD2nQK28dE1gGn32CM72k3BjGYqQyo0iGZ+NMaMnvCQmxPNo?=
- =?us-ascii?Q?QhDR7u0buGyRZJoBTE1MfgnyzSBdcNQUQVIGBWvfCDyDGHNaRxkaFp/YrEJt?=
- =?us-ascii?Q?VdW/U1+eJmRxkhXRMbGDU4MyG1oI3KjIIhna6emcoZlUaqPX+ay+NxVz/7PJ?=
- =?us-ascii?Q?8U+QtEqm+AmV9wj7NpUMS8GFdSBgTqfOZOlP6xUuOG613ToRykUbQfjaMiko?=
- =?us-ascii?Q?1Z+6yZ8R1PlaYKK4xcQr2jOhiCMR/qV3rv5nIOym+/yRSCt4Z0QvLBlQo13n?=
- =?us-ascii?Q?+qNTm18XsD6q5NtZg1W4/XDvgf/HAGcb2U9BxeyS34pQYL/K0hNFR9pNArF0?=
- =?us-ascii?Q?yKGvcDDs4o/9dEKYlkm10RmlV8ck4x6/M8nBTlSM3jLJbQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c989ac5d-565d-4650-bd7c-08d90f929c5f
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2021 06:54:21.9633
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 13X8DarATIzpYBghXRbbUfXM5ZFIbI/63wjEX9gSlG3la3LN2vBTOkpfvP/8z20Y
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3716
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: 6sLbz50zmzH8521vnR0dZkG6bVOH22_i
-X-Proofpoint-GUID: 6sLbz50zmzH8521vnR0dZkG6bVOH22_i
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-05_02:2021-05-04,2021-05-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0 mlxscore=0
- spamscore=0 clxscore=1015 priorityscore=1501 lowpriorityscore=0
- suspectscore=0 phishscore=0 mlxlogscore=999 impostorscore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105050048
-X-FB-Internal: deliver
+In-Reply-To: <CABRcYm+pO94dFW83SZCtKQE8x6PkRicr+exGD3CNwGwQUYmFcw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 12:16:09PM +0900, Kuniyuki Iwashima wrote:
-[ ... ]
-
-> > > > It may be but perhaps its more flexible? It gives the new server the
-> > > > chance to re-use the existing listen fds, close, drain and/or start new
-> > > > ones. It also addresses the non-REUSEPORT case where you can't bind right
-> > > > away.
-
-> > > If the flexibility is really worth the complexity, we do not care about it.
-> > > But, SO_REUSEPORT can give enough flexibility we want.
-> > >
-> > > With socket migration, there is no need to reuse listener (fd passing),
-> > > drain children (incoming connections are automatically migrated if there is
-> > > already another listener bind()ed), and of course another listener can
-> > > close itself and migrated children.
-> > >
-> > > If two different approaches resolves the same issue and one does not need
-> > > complexity in userspace, we select the simpler one.
-
-> > 
-> > Kernel bloat and complexity is _not_ the simplest choice.
-> > 
-> > Touching a complex part of TCP stack is quite risky.
-
+On 28/04/2021 16.59, Florent Revest wrote:
+> On Tue, Apr 27, 2021 at 8:03 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>>
+>> On Tue, Apr 27, 2021 at 2:51 AM Florent Revest <revest@chromium.org> wrote:
+>>>
+>>> On Tue, Apr 27, 2021 at 8:35 AM Rasmus Villemoes
+>>> <linux@rasmusvillemoes.dk> wrote:
+>>>>         u64 args[MAX_TRACE_PRINTK_VARARGS] = { arg1, arg2, arg3 };
+>>>> -       enum bpf_printf_mod_type mod[MAX_TRACE_PRINTK_VARARGS];
+>>>> +       u32 *bin_args;
+>>>>         static char buf[BPF_TRACE_PRINTK_SIZE];
+>>>>         unsigned long flags;
+>>>>         int ret;
+>>>>
+>>>> -       ret = bpf_printf_prepare(fmt, fmt_size, args, args, mod,
+>>>> -                                MAX_TRACE_PRINTK_VARARGS);
+>>>> +       ret = bpf_bprintf_prepare(fmt, fmt_size, args, &bin_args,
+>>>> +                                 MAX_TRACE_PRINTK_VARARGS);
+>>>>         if (ret < 0)
+>>>>                 return ret;
+>>>>
+>>>> -       ret = snprintf(buf, sizeof(buf), fmt, BPF_CAST_FMT_ARG(0, args, mod),
+>>>> -               BPF_CAST_FMT_ARG(1, args, mod), BPF_CAST_FMT_ARG(2, args, mod));
+>>>> -       /* snprintf() will not append null for zero-length strings */
+>>>> -       if (ret == 0)
+>>>> -               buf[0] = '\0';
+>>>> +       ret = bstr_printf(buf, sizeof(buf), fmt, bin_args);
+>>>>
+>>>>         raw_spin_lock_irqsave(&trace_printk_lock, flags);
+>>>>         trace_bpf_trace_printk(buf);
+>>>>         raw_spin_unlock_irqrestore(&trace_printk_lock, flags);
+>>>>
+>>>> Why isn't the write to buf[] protected by that spinlock? Or put another
+>>>> way, what protects buf[] from concurrent writes?
+>>>
+>>> You're right, that is a bug, I missed that buf was static and thought
+>>> it was just on the stack. That snprintf call should be after the
+>>> raw_spin_lock_irqsave. I'll send a patch. Thank you Rasmus. (before my
+>>> snprintf series, there was a vsprintf after the raw_spin_lock_irqsave)
 > 
-> Yes, we understand that is not a simple decision and your concern. So many
-> reviews are needed to see if our approach is really risky or not.
+> Solved now
+> 
+>> Can you please also clean up unnecessary ()s you added in at least a
+>> few places. Thanks.
+> 
+> Alexei said he took care of this .:)
+> 
+>>>> Probably the test cases are not run in parallel, but this is the kind of
+>>>> thing that would give those symptoms.
+>>>
+>>> I think it's a separate issue from what Andrii reported though because
+>>> the flaky test exercises the bpf_snprintf helper and this buf spinlock
+>>> bug you just found only affects the bpf_trace_printk helper.
+>>>
+>>> That being said, it does smell a little bit like a concurrency issue
+>>> too, indeed. The bpf_snprintf test program is a raw_tp/sys_enter so it
+>>> attaches to all syscall entries and most likely gets executed many
+>>> more times than necessary and probably on parallel CPUs. The "pad_out"
+>>> buffer they write to is unique and not locked so maybe the test's
+>>> userspace reads pad_out while another CPU is writing on it and if the
+>>> string output goes through a stage where it is "    4 0000" before
+>>> being "    4 000", we might read at the wrong time. That being said, I
+>>> would find it weird that this happens as much as 50% of the time and
+>>> always specifically on that test case.
+>>>
+>>> Andrii could you maybe try changing the prog type to
+>>> "tp/syscalls/sys_enter_nanosleep" on the machine where you can
+>>> reproduce this bug ?
+>>
+>> Yes, it helps. I can't repro it easily anymore.
+> 
+> Good, so it does sound like a concurrency issue indeed
+> 
+>> I think the right fix, though, should be to filter by tid, not change the tracepoint.
+> 
+> Agreed, I'll send a patch for that today. :)
+> 
+>> I think what's happening is we see the string right before bstr_printf
+>> does zero-termination with end[-1] = '\0'; So in some cases we see
+>> truncated string, in others we see untruncated one.
+> 
+> Makes sense but I still wonder why it happens so often (50% of the
+> time is really a lot) and why it is consistently that one test case
+> that fails and not the "overflow" case for example. But I'm confident
+> that this is not a bug in the helper now and that the tid filter will
+> fix the test.
+> 
 
-If fd passing is sufficient for a set of use cases, it is great.
+If the caller, or one of its sibling threads, inspects the buffer before
+(v)snprintf has returned it's very obviously a bug in the caller. As for
+why that particular case exposes the race: It seems to be the only one
+that "expects" an insanely long result, and it takes a very very long
+time (several cycles per byte I'd assume) for the vsnprintf code to very
+carefully go through the
 
-However, it does not work well for everyone.  We are not saying
-the SO_REUSEPORT(+ optional bpf) is better in all cases also.
+  if (buf < end)
+     *buf = /* '0' or ' ' or whatever it is it is emitting here */
+  buf++;
 
-After SO_REUSEPORT was added, some people had moved from fd-passing
-to SO_REUSEPORT instead and have one bpf policy to select for both
-TCP and UDP sk.
+900k times. So there's simply a very large window where the buffer
+contents is "    4 0000" while number() is still 'emitting' 0s until
+control returns to vsnprintf() which does that final end[-1] = '\0'.
 
-Since SO_REUSEPORT was first added, there has been multiple contributions
-from different people and companies.  For example, first adding bpf
-support to UDP, then to TCP, then a much more flexible way to select sk
-from reuseport_array, and then sock_map/sock_hash support.  That is another
-perspective showing that people find it useful.  Each of the contributions
-changed the kernel code also for practical use cases.
+Rasmus
 
-This set is an extension/improvement to address a lacking in SO_REUSEPORT
-when some of the sk is closed.  Patch 2 to 4 are the prep work
-in sock_reuseport.c and they have the most changes in this set.
-Patch 5 to 7 are the changes in tcp.  The code has been structured
-to be as isolated as possible.  It will be most useful to at least
-review and getting feedback in this part.  The remaining is bpf
-related.
