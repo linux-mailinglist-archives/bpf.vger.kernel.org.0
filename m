@@ -2,101 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5C83749BB
-	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 22:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83231374A05
+	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 23:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234208AbhEEU4L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 May 2021 16:56:11 -0400
-Received: from www62.your-server.de ([213.133.104.62]:54246 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231224AbhEEU4L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 May 2021 16:56:11 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1leOY3-000GTl-Hv; Wed, 05 May 2021 22:55:11 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1leOY3-000Xhw-9R; Wed, 05 May 2021 22:55:11 +0200
-Subject: Re: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
- to 4
-To:     Dongseok Yi <dseok.yi@samsung.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        id S229964AbhEEVTd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 May 2021 17:19:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43164 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229900AbhEEVT3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 5 May 2021 17:19:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620249512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=klrjlzRftn/OLDoz6CbNP764fYwi7ksJGFLpycvEPzA=;
+        b=gQVC3B/+ZbXPhjFaPK7GJG69wGySeumFE4HgJLJufjmLdLXLtCW39lXwJigrk9VtLTUiXy
+        6FhMxjZddLho2Qz6KvMMeR1oAukcV5X19WInQ3cecUDMonGLxOadEyuYXgAhO2iXU4ivH6
+        opPksVU57/4Gw9Lu8P/g8l3dB7vTldI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-BsUKAOmOP5CS8yXUw9pwDw-1; Wed, 05 May 2021 17:18:28 -0400
+X-MC-Unique: BsUKAOmOP5CS8yXUw9pwDw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 89AC18042A8;
+        Wed,  5 May 2021 21:18:26 +0000 (UTC)
+Received: from krava (unknown [10.40.192.93])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 09A5B10246F1;
+        Wed,  5 May 2021 21:18:23 +0000 (UTC)
+Date:   Wed, 5 May 2021 23:18:23 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, willemdebruijn.kernel@gmail.com
-References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
- <1619690903-1138-1-git-send-email-dseok.yi@samsung.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
-Date:   Wed, 5 May 2021 22:55:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [RFC] bpf: Fix crash on mm_init trampoline attachment
+Message-ID: <YJMLn/xaybHKyA+r@krava>
+References: <20210430134754.179242-1-jolsa@kernel.org>
+ <CAEf4BzbEjvccUDabpTiPOiXK=vfcmHaXjeaTL8gCr08=6fBqhg@mail.gmail.com>
+ <YJFM/iLKb1EWCYEx@krava>
+ <CAEf4BzbY24gFqCORLiAFpSjrv_TUPMwvGzn96hGtk+eYVDnbSQ@mail.gmail.com>
+ <CAADnVQKE-jXi22mrOvEX_PpjK5vxNrb6m6-G71iP5ih+R5svqA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1619690903-1138-1-git-send-email-dseok.yi@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26161/Wed May  5 13:06:38 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKE-jXi22mrOvEX_PpjK5vxNrb6m6-G71iP5ih+R5svqA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 4/29/21 12:08 PM, Dongseok Yi wrote:
-> tcp_gso_segment check for the size of GROed payload if it is bigger
-> than the mss. bpf_skb_proto_6_to_4 increases mss, but the mss can be
-> bigger than the size of GROed payload unexpectedly if data_len is not
-> big enough.
+On Tue, May 04, 2021 at 09:42:49PM -0700, Alexei Starovoitov wrote:
+> On Tue, May 4, 2021 at 5:36 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Tue, May 4, 2021 at 6:32 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > >
+> > > On Mon, May 03, 2021 at 03:45:28PM -0700, Andrii Nakryiko wrote:
+> > > > On Fri, Apr 30, 2021 at 6:48 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > > > >
+> > > > > There are 2 mm_init functions in kernel.
+> > > > >
+> > > > > One in kernel/fork.c:
+> > > > >   static struct mm_struct *mm_init(struct mm_struct *mm,
+> > > > >                                    struct task_struct *p,
+> > > > >                                    struct user_namespace *user_ns)
+> > > > >
+> > > > > And another one in init/main.c:
+> > > > >   static void __init mm_init(void)
+> > > > >
+> > > > > The BTF data will get the first one, which is most likely
+> > > > > (in my case) mm_init from init/main.c without arguments.
 > 
-> Assume that skb gso_size = 1372 and data_len = 8. bpf_skb_proto_6_to_4
-> would increse the gso_size to 1392. tcp_gso_segment will get an error
-> with 1380 <= 1392.
-> 
-> Check for the size of GROed payload if it is really bigger than target
-> mss when increase mss.
-> 
-> Fixes: 6578171a7ff0 (bpf: add bpf_skb_change_proto helper)
-> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
-> ---
->   net/core/filter.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 9323d34..3f79e3c 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -3308,7 +3308,9 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
->   		}
->   
->   		/* Due to IPv4 header, MSS can be upgraded. */
-> -		skb_increase_gso_size(shinfo, len_diff);
-> +		if (skb->data_len > len_diff)
+> did you hack pahole in some way to get to this point?
+> I don't see this with pahole master.
+> mm_init in BTF matches the one in init/main.c. The void one.
+> Do you have two static mm_init-s in BTF somehow?
 
-Could you elaborate some more on what this has to do with data_len specifically
-here? I'm not sure I follow exactly your above commit description. Are you saying
-that you're hitting in tcp_gso_segment():
+I have only one mm_init in BTF from init/main.c like you,
+but the address in kallsyms is for the mm_init from kernel/fork.c
 
-         [...]
-         mss = skb_shinfo(skb)->gso_size;
-         if (unlikely(skb->len <= mss))
-                 goto out;
-         [...]
+so we attach mm_init from kernel/fork.c with prototype from init/main.c
 
-Please provide more context on the bug, thanks!
+I'm seeing same problem also for 'receive_buf' function, which I did not post
 
-> +			skb_increase_gso_size(shinfo, len_diff);
-> +
->   		/* Header must be checked, and gso_segs recomputed. */
->   		shinfo->gso_type |= SKB_GSO_DODGY;
->   		shinfo->gso_segs = 0;
 > 
+> In general it's possible to have different static funcs with the same
+> name in kallsyms. I found 3 'seq_start' in my .config.
+> So renaming static funcs is not an option.
+> The simplest approach for now is to avoid emitting BTF
+> if there is more than one func (that will prevent attaching because
+> there won't be any BTF for that func).
+
+sounds good.. will prepare the pahole change
+
+> Long term I think BTF can store the .text offset and the verifier
+> can avoid kallsym lookup.
+> We do store insn_off in bpf_func_info for bpf progs.
+> Something like this could be done for kernel and module funcs.
+> But that's long term.
+> 
+
+ok, will check on this
+
+jirka
 
