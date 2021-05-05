@@ -2,148 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8719374712
-	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 19:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770123747F5
+	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 20:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236151AbhEERnF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 May 2021 13:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51904 "EHLO
+        id S230395AbhEES1P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 May 2021 14:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238962AbhEERlD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 May 2021 13:41:03 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80C6C061260
-        for <bpf@vger.kernel.org>; Wed,  5 May 2021 10:14:09 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id x5so2646710wrv.13
-        for <bpf@vger.kernel.org>; Wed, 05 May 2021 10:14:09 -0700 (PDT)
+        with ESMTP id S229901AbhEES1O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 May 2021 14:27:14 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF743C061574;
+        Wed,  5 May 2021 11:26:17 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id m9so3953875ybm.3;
+        Wed, 05 May 2021 11:26:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=1lz9G0fat8v7fxuPl5XJxBj6PYvQw7R7TVkQuwMcYKk=;
-        b=O1oYab4uSWeF+UBj62kKyA/0KHUMMO0pprTdGMTBXnB/Y8JRCZPV4O9SDfvygljUjs
-         NrEEHgz2a/83/FFPL9A73YbErzKityvYYmMQVaPndFiuQaUlKaQlu2pCPc0THfI+J3Ko
-         h4Kn+U2hjn8m2xXWg1Q4O9VdkAdT7/MwYRlRw=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y+l/giID162YkmfJhZa5buIKPUEhcQTCmhJqvDXiCWU=;
+        b=S6YYNa4uBmZgAuD9X1mr3pbPH53S/sC583SU1p2o8oP8ZoUpfpigeS+CCkawRs5ZYT
+         U21XIrMtZfP6q0CAsy4IC23fF5IwBwhY5uE0g0K6BYpNetNOmIlxmoC8Qc9qP8cRhzz5
+         Rn5FchgDdx/OqXVvkPU+oEJFJ40YC8cuYVbd7tmEWYB6KwJHD49XSwHVusEu+NYxeuOC
+         QoztqmMc6B1x4ZufLLeuKQSw9ql+HmekAz7YpKRbKXsaEPfkAsSEJwyvgQHBVvOnSyfP
+         QiwEkRfwFEq61E1X3XJ/V8woEPo4soKeC2qIpDjt0Tv1n9++0q7gkGRebULZgE1UhNmi
+         jptA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=1lz9G0fat8v7fxuPl5XJxBj6PYvQw7R7TVkQuwMcYKk=;
-        b=ebODev50hyd7qNKZTW1ZUGFzFifTIM1ds5R8hzotK2SxSOeFOI/V5gJnk60msOzXhU
-         10GyutJs1DbJEUFCRO4XHZetMiS48IwIETFJ395ttyEU4gacvKNhpdDLAtgz2MRmap4l
-         Uh1QlWI/lH8l4btQ8JgCQqKfduLHfysh9fSTXoPwewQEgecYBLNa6FBV5eja9VYWInA3
-         Rc8PHVTMkQjwHCANkKx98LeaMRSp5PKA2n9dfKT4QYW1NE7eMf1sy/qvmVCgpJ4uxVu4
-         uNpJOV2sAWB6Agkz6NUrhIBSferitg7ikeCC9QCh9fFt9NNqQd0X988OLU7z2aSyUaUS
-         +dnw==
-X-Gm-Message-State: AOAM532A/TVg/ILhoVn3vxUV47gAvfY+E6cJd/XevXN+MtN3O6vQ+R0W
-        jM3fzd0syyOFsADKKAxgwduifg==
-X-Google-Smtp-Source: ABdhPJwGyyhGwULxQhCFpC+UDgsTbWEgaJuojBmfGu1ve7YoZyxqzOG3wmWB8puqHuy8WXOautFHSg==
-X-Received: by 2002:a5d:4e0b:: with SMTP id p11mr105069wrt.220.1620234848397;
-        Wed, 05 May 2021 10:14:08 -0700 (PDT)
-Received: from cloudflare.com (83.31.64.64.ipv4.supernova.orange.pl. [83.31.64.64])
-        by smtp.gmail.com with ESMTPSA id m16sm10482036wru.68.2021.05.05.10.14.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 10:14:07 -0700 (PDT)
-References: <20210426025001.7899-1-xiyou.wangcong@gmail.com>
- <20210426025001.7899-3-xiyou.wangcong@gmail.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        jiang.wang@bytedance.com, duanxiongchun@bytedance.com,
-        wangdongdong.6@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: Re: [Patch bpf-next v3 02/10] af_unix: implement ->read_sock() for
- sockmap
-In-reply-to: <20210426025001.7899-3-xiyou.wangcong@gmail.com>
-Date:   Wed, 05 May 2021 19:14:06 +0200
-Message-ID: <87pmy5umqp.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y+l/giID162YkmfJhZa5buIKPUEhcQTCmhJqvDXiCWU=;
+        b=GuJUxinm+PGwno0c9KVLU9KXFmvRs9mY2O2EwhWvvCkAvFWRflyWlYYz5AUCHdzeA3
+         pK/uxvkJql7VkP7iDX1Cb5ffXVwpewV2RkVGEnxmlbF5F2uh+catu9zmEdlpSz3tIhdY
+         a35vmGWoijmwaF5xLjb1UtGpH4CsX8rsxBRd/d3U+NR2yjdcy2Ub3E5A74U1xZZ85hnA
+         CC5AwvZpMBpT0vOaZ/A3vAewJ1BHSP4Md0LhVurCicD+y4o2ivpXBB4UrDJhXvFE7Vle
+         iXKWYuX04xhCj1ibSd4bDwqrrPjzX7SKN+XFM9KoOH1GLqgd7O/TFxhDPtstSMUHbAxl
+         QsKA==
+X-Gm-Message-State: AOAM530eferNNQamCmG9V3lJb6jEAOxAqcP0Y/wD1d8nscOLufYIb078
+        sRTjF6ltV7n5q2ZnaUNM+w5D7Ela2uHyyHW0Jbk5tKgUV5c=
+X-Google-Smtp-Source: ABdhPJw/o+nlKC+GGXdAhIGw1+unQmrpjLJJpj/6uKgyVkzVkRMjOvyTSRimzl7rekkF6KlYtplLknFVkbzx28WTlUY=
+X-Received: by 2002:a5b:286:: with SMTP id x6mr71494ybl.347.1620239177095;
+ Wed, 05 May 2021 11:26:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <161731427139.68884.1934993103507544474.stgit@john-XPS-13-9370>
+In-Reply-To: <161731427139.68884.1934993103507544474.stgit@john-XPS-13-9370>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 5 May 2021 11:26:06 -0700
+Message-ID: <CAEf4BzYSDv17nWRPd0RfnjuUsJSwQOx_79ubrGvX6aGyGzA1Ow@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 0/2] bpf, sockmap fixes
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 04:49 AM CEST, Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
+On Thu, Apr 1, 2021 at 3:00 PM John Fastabend <john.fastabend@gmail.com> wrote:
 >
-> Implement ->read_sock() for AF_UNIX datagram socket, it is
-> pretty much similar to udp_read_sock().
+> This addresses an issue found while reviewing latest round of sock
+> map patches and an issue reported from CI via Andrii. After this
+> CI ./test_maps is stable for me.
 >
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> The CI discovered issue was introduced by over correcting our
+> previously broken memory accounting. After the fix, "bpf, sockmap:
+> Avoid returning unneeded EAGAIN when redirecting to self" we fixed
+> a dropped packet and a missing fwd_alloc calculations, but pushed
+> it too far back into the packet pipeline creating an issue in the
+> unlikely case socket tear down happens with an enqueued skb. See
+> patch for details.
+>
+> Tested with usual suspects: test_sockmap, test_maps, test_progs
+> and test_progs-no_alu32.
+>
+> v2: drop skb_orphan its not necessary and use sk directly instead
+>     of using psock->sk both suggested by Cong
+>
 > ---
->  net/unix/af_unix.c | 38 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
->
-> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-> index 5a31307ceb76..f4dc22db371d 100644
-> --- a/net/unix/af_unix.c
-> +++ b/net/unix/af_unix.c
-> @@ -661,6 +661,8 @@ static ssize_t unix_stream_splice_read(struct socket *,  loff_t *ppos,
->  				       unsigned int flags);
->  static int unix_dgram_sendmsg(struct socket *, struct msghdr *, size_t);
->  static int unix_dgram_recvmsg(struct socket *, struct msghdr *, size_t, int);
-> +static int unix_read_sock(struct sock *sk, read_descriptor_t *desc,
-> +			  sk_read_actor_t recv_actor);
->  static int unix_dgram_connect(struct socket *, struct sockaddr *,
->  			      int, int);
->  static int unix_seqpacket_sendmsg(struct socket *, struct msghdr *, size_t);
-> @@ -738,6 +740,7 @@ static const struct proto_ops unix_dgram_ops = {
->  	.listen =	sock_no_listen,
->  	.shutdown =	unix_shutdown,
->  	.sendmsg =	unix_dgram_sendmsg,
-> +	.read_sock =	unix_read_sock,
->  	.recvmsg =	unix_dgram_recvmsg,
->  	.mmap =		sock_no_mmap,
->  	.sendpage =	sock_no_sendpage,
-> @@ -2183,6 +2186,41 @@ static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
->  	return err;
->  }
->
-> +static int unix_read_sock(struct sock *sk, read_descriptor_t *desc,
-> +			  sk_read_actor_t recv_actor)
-> +{
-> +	int copied = 0;
-> +
-> +	while (1) {
-> +		struct unix_sock *u = unix_sk(sk);
-> +		struct sk_buff *skb;
-> +		int used, err;
-> +
-> +		mutex_lock(&u->iolock);
-> +		skb = skb_recv_datagram(sk, 0, 1, &err);
-> +		if (!skb) {
-> +			mutex_unlock(&u->iolock);
-> +			return err;
-> +		}
-> +
-> +		used = recv_actor(desc, skb, 0, skb->len);
-> +		if (used <= 0) {
-> +			if (!copied)
-> +				copied = used;
-> +			mutex_unlock(&u->iolock);
-> +			break;
-> +		} else if (used <= skb->len) {
-> +			copied += used;
-> +		}
-> +		mutex_unlock(&u->iolock);
 
-Do we need hold the mutex for recv_actor to process the skb?
+It might be that this didn't fix all the issues. We just got another
+sockmap timeout in test_maps ([0]).
 
-> +
-> +		if (!desc->count)
-> +			break;
-> +	}
-> +
-> +	return copied;
-> +}
-> +
->  /*
->   *	Sleep until more data has arrived. But check for races..
->   */
+  [0] https://travis-ci.com/github/kernel-patches/bpf/builds/224971212
+
+>
+> John Fastabend (2):
+>       bpf, sockmap: fix sk->prot unhash op reset
+>       bpf, sockmap: fix incorrect fwd_alloc accounting
+>
+>
+>  net/core/skmsg.c | 12 +++++-------
+>  1 file changed, 5 insertions(+), 7 deletions(-)
+>
+> --
+>
