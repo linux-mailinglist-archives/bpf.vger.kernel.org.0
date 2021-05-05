@@ -2,118 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CD4373BA0
-	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 14:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB40E373C52
+	for <lists+bpf@lfdr.de>; Wed,  5 May 2021 15:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhEEMnw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 May 2021 08:43:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50383 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233308AbhEEMnw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 5 May 2021 08:43:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620218575;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mACDaNKuFsQiSrOafQEeeFQZn+8+UCkvYXgXRovm9Yw=;
-        b=ZoHGEJaIvZZpmjBX84VzOYseLynb97sFDVaqDA8i/eCu7pEeiMUjWnOHhtx1xIS8JwaYiI
-        kPI8pry7pnYCjBg/SIgEgOhRR+cfdX95cEAJqW+8eY0UzluKphvg09jYVvSuyTMWrQJL0A
-        RARvY1BVMaRb/pHn4qXg/Eacr3OSY1Q=
+        id S233541AbhEEN0l convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 5 May 2021 09:26:41 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:27420 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233535AbhEEN0k (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 5 May 2021 09:26:40 -0400
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-247-8f8kTu8APFeAHM60J5fjhw-1; Wed, 05 May 2021 08:42:53 -0400
-X-MC-Unique: 8f8kTu8APFeAHM60J5fjhw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-300-FAzjf175OqW2qSZ0s4nKyw-1; Wed, 05 May 2021 09:25:39 -0400
+X-MC-Unique: FAzjf175OqW2qSZ0s4nKyw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 850888049C5;
-        Wed,  5 May 2021 12:42:51 +0000 (UTC)
-Received: from krava (unknown [10.40.195.238])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 8FB2D1062249;
-        Wed,  5 May 2021 12:42:48 +0000 (UTC)
-Date:   Wed, 5 May 2021 14:42:47 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4978E91164;
+        Wed,  5 May 2021 13:25:38 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.195.238])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E32FE5D703;
+        Wed,  5 May 2021 13:25:35 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH RFC] bpf: Fix trampoline for functions with variable
- arguments
-Message-ID: <YJKSx9qLB432dCWs@krava>
-References: <20210429212834.82621-1-jolsa@kernel.org>
- <YI8WokIxTkZvzVuP@krava>
- <CAEf4BzZjtU1hicc8dK1M9Mqf3wanU2AJFDtZJzUfQdwCsC6cGg@mail.gmail.com>
- <YJFLpAbUiwIu0I4H@krava>
- <CAEf4BzYz3G4aRWT4YTrnKaVCsE_A2UGGn6jVvqOuK8ZLU-sN8g@mail.gmail.com>
- <CAADnVQ+V=2qOqkVMaC72uhQKEbC=2uFa80J57xdF_4ffoZHYNQ@mail.gmail.com>
+Subject: [PATCH] bpf: Forbid trampoline attach for functions with variable arguments
+Date:   Wed,  5 May 2021 15:25:29 +0200
+Message-Id: <20210505132529.401047-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+V=2qOqkVMaC72uhQKEbC=2uFa80J57xdF_4ffoZHYNQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 04, 2021 at 09:11:26PM -0700, Alexei Starovoitov wrote:
+We can't currently allow to attach functions with variable arguments.
+The problem is that we should save all the registers for arguments,
+which is probably doable, but if caller uses more than 6 arguments,
+we need stack data, which will be wrong, because of the extra stack
+frame we do in bpf trampoline, so we could crash.
 
-SNIP
+Also currently there's malformed trampoline code generated for such
+functions at the moment as described in:
+  https://lore.kernel.org/bpf/20210429212834.82621-1-jolsa@kernel.org/
 
-> > > > >
-> > > > > actualy looks like we need to disable functions with variable arguments
-> > > > > completely, because we don't know how many arguments to save
-> > > > >
-> > > > > I tried to disable them in pahole and it's easy fix, will post new fix
-> > > >
-> > > > Can we still allow access to fixed arguments for such functions and
-> > > > just disallow the vararg ones?
-> > >
-> > > the problem is that we should save all the registers for arguments,
-> > > which is probably doable.. but if caller uses more than 6 arguments,
-> > > we need stack data, which will be wrong because of the extra stack
-> > > frame we do in bpf trampoline.. so we could crash
-> > >
-> > > the patch below prevents to attach these functions directly in kernel,
-> > > so we could keep these functions in BTF
-> > >
-> > > jirka
-> > >
-> > >
-> > > ---
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index 0600ed325fa0..f9709dc08c44 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -5213,6 +5213,13 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
-> > >                                 tname, i, btf_kind_str[BTF_INFO_KIND(t->info)]);
-> > >                         return -EINVAL;
-> > >                 }
-> > > +               if (ret == 0) {
-> > > +                       bpf_log(log,
-> > > +                               "The function %s has variable args, it's unsupported.\n",
-> > > +                               tname);
-> > > +                       return -EINVAL;
-> > > +
-> > > +               }
-> >
-> > this will work, but the explicit check for vararg should be `i ==
-> > nargs - 1 && args[i].type == 0`. Everything else (if it happens) is
-> > probably a bad BTF data.
-> 
-> Jiri,
-> could you please resubmit with the check like Andrii suggested?
-> Thanks!
-> 
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ kernel/bpf/btf.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-yes, will send it later today
-
-jirka
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 0600ed325fa0..161511bb3e51 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -5206,6 +5206,13 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+ 	m->ret_size = ret;
+ 
+ 	for (i = 0; i < nargs; i++) {
++		if (i == nargs - 1 && args[i].type == 0) {
++			bpf_log(log,
++				"The function %s with variable args is unsupported.\n",
++				tname);
++			return -EINVAL;
++
++		}
+ 		ret = __get_type_size(btf, args[i].type, &t);
+ 		if (ret < 0) {
+ 			bpf_log(log,
+@@ -5213,6 +5220,12 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+ 				tname, i, btf_kind_str[BTF_INFO_KIND(t->info)]);
+ 			return -EINVAL;
+ 		}
++		if (ret == 0) {
++			bpf_log(log,
++				"The function %s has malformed void argument.\n",
++				tname);
++			return -EINVAL;
++		}
+ 		m->arg_size[i] = ret;
+ 	}
+ 	m->nr_args = nargs;
+-- 
+2.30.2
 
