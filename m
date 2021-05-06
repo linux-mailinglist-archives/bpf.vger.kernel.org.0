@@ -2,225 +2,309 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B67A374E0B
+	by mail.lfdr.de (Postfix) with ESMTP id 84D91374E0C
 	for <lists+bpf@lfdr.de>; Thu,  6 May 2021 05:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbhEFDqI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 May 2021 23:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45366 "EHLO
+        id S229872AbhEFDqL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 May 2021 23:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbhEFDqG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 May 2021 23:46:06 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF5FC061574
-        for <bpf@vger.kernel.org>; Wed,  5 May 2021 20:45:08 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id p4so4169176pfo.3
-        for <bpf@vger.kernel.org>; Wed, 05 May 2021 20:45:08 -0700 (PDT)
+        with ESMTP id S230078AbhEFDqH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 May 2021 23:46:07 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B537C06174A
+        for <bpf@vger.kernel.org>; Wed,  5 May 2021 20:45:09 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id t22so3866326pgu.0
+        for <bpf@vger.kernel.org>; Wed, 05 May 2021 20:45:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=tCE+nrk4c6X2nXSDXkPt4XK7iZjN+clTdyMs163182c=;
-        b=hKPInIhYAz84agr2zU9Qg87+QGI0Pu0mFB3zcaN+cQWeqBWqWlk1S0EjK5dCl7H3Hg
-         VaUSn5BUQYtkXf5ErYIkUanNfDPcJj/yYQkDpTrS1IUzFlQmmLqsdlz4o0dt5DcVRDL6
-         /kIUmaaPJpr0MYthIssSd9fHRGrqu7CyZQgDjz/AfsxVxag6NXuVscNz/4t9H/lRKF8L
-         SzoZG0QroIuWmX67THY/ZE7nMu8jGLJ072qmXRTX5xpQBERW5UP+Pr7rYKxlZCETCvD4
-         jYPKeuZ2WXoyppTE997klksJDOXybsNKo45ilOJzrULkWiYsjRhBs/KMLOVKO+4IL/Nw
-         1lTw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=BA9QqVRtcHD5cBI6JhsVjoVUs7HqHlCvKlG5/cL5wjk=;
+        b=Xc1EQp6cM03L2ZEgCzwTOcn3A1tdoxbTbDpx5l1Mhf3v6MorHeuX7wEnXAJH3OC8tJ
+         qpdeZWtMBBsAvXaN7TCr735La/rFLLpEKjbu7b5Js8vWeSpuMhsICjWyFsh9AJTq1wmL
+         JkDpbM+QeO7riWjstZeaYpHmtoPW4ZpWHCprMNHSeNwAJEkmg+I9oKeiPPKCl6uquzXm
+         N/7YT/yRvp3zoFX63gyi8Gs+U1+VDNw1SgZ7iQxoM1W5BPRX4w5HSeQCXsPcIS1kZQIF
+         5szxgn3Cp/Io13FWvMjD3jZ4tsiqNqYaibY/glVvsY7YGGyjLL3vPXOL4r0PSribV/tX
+         unPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=tCE+nrk4c6X2nXSDXkPt4XK7iZjN+clTdyMs163182c=;
-        b=EsTMC3EZn3SKOiEwHboQ4U8PMfXYwtg9+Iy6g3gNKICefoaUQR+tZQD5eGBlIlIt0X
-         lwdPBXJzBRXu/bOy2bO23rGzmHA2VLPTzM3GeZz4AIDN8EQRrNS4IrWnQaeyZSwGIh9K
-         niNxOF+feH/KWyZu1jVEyqjkjen4V24RpzPrlhEixAWXO11yIedKk+rcE9sNuQ/cTpiP
-         LKJ+b4HPBCo4FAitcOBhqc85APaoJqSG1us0TDjBvxCgcsPBv3rdbKDNS6zfOm38jqy4
-         AQEDWq5U5hFciTE3fg8cgx/8G7kI0SIgRT6f2EwhkU6kjnYJ61S/sNtTuOoKsyvU6AIF
-         Qf8A==
-X-Gm-Message-State: AOAM5337oEW+Yx0es4p2eSo0KWVu3h0O3eXao4pNbZdAYnnbE6uCh9F1
-        7Q1vwCiMBCG39KVwpgrijnE=
-X-Google-Smtp-Source: ABdhPJy3nBu9BxHcaewOyoebhweGAY6aKlPrzQM6loC2mM51HvgPjnVS7JutrWQtnhBEegIwOxDxpg==
-X-Received: by 2002:a62:16d2:0:b029:27f:3dbf:a466 with SMTP id 201-20020a6216d20000b029027f3dbfa466mr2327034pfw.11.1620272707483;
-        Wed, 05 May 2021 20:45:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=BA9QqVRtcHD5cBI6JhsVjoVUs7HqHlCvKlG5/cL5wjk=;
+        b=Lrz/wG1ZoH0r5hZOqnuCslWOB1xpGgge1Ejr7adyJ7wdKsz/jeA040mjomeLH2ht90
+         6WxAt9rjWVIvL+s6kICLCtCO2UDSxhZA9zOswvIKr+lH9cglq13lQLF/SBd8CA4c2jzh
+         tvEjgQe6/yqqeGy1iDOfBGrbU3som/0nRyCKv4GvL1bcw2DfYHpWiB+z5Gpf/Fel4lIz
+         neQBq16cO5q2ZkCMQTbDqqQqvZ3oCGQDq2n4yWWgOww6vT41ZmZdCBU5MJVu2JEFk3vQ
+         JHBzhfX9K+mWotu+Qpc/tJg0eeE4jF2aByQsywv1lOmBC88/P79+UWX3pAcmpOKNWsbT
+         LD3w==
+X-Gm-Message-State: AOAM530TdX3CFho08k0uXXBFA4ZebYrwPTOmwTm55hr+FY0FQkHvSUMj
+        VYDlp8qIjaurRUhoGh1CRK8=
+X-Google-Smtp-Source: ABdhPJyhw/fI570Q3lG4K6/+kPvjTWUzAHhaV2PNzibRJSzWefdXaRd4Kfkr/JHKe7FRW8SJOZyr+A==
+X-Received: by 2002:a62:f947:0:b029:288:f432:c0e6 with SMTP id g7-20020a62f9470000b0290288f432c0e6mr2383237pfm.10.1620272709019;
+        Wed, 05 May 2021 20:45:09 -0700 (PDT)
 Received: from ast-mbp.thefacebook.com ([163.114.132.7])
-        by smtp.gmail.com with ESMTPSA id r22sm578997pgr.1.2021.05.05.20.45.06
+        by smtp.gmail.com with ESMTPSA id r22sm578997pgr.1.2021.05.05.20.45.07
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 05 May 2021 20:45:06 -0700 (PDT)
+        Wed, 05 May 2021 20:45:08 -0700 (PDT)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, john.fastabend@gmail.com,
         bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v3 bpf-next 00/17] bpf: syscall program, FD array, loader program, light skeleton.
-Date:   Wed,  5 May 2021 20:44:48 -0700
-Message-Id: <20210506034505.25979-1-alexei.starovoitov@gmail.com>
+Subject: [PATCH v3 bpf-next 01/17] bpf: Introduce bpf_sys_bpf() helper and program type.
+Date:   Wed,  5 May 2021 20:44:49 -0700
+Message-Id: <20210506034505.25979-2-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.13.5
+In-Reply-To: <20210506034505.25979-1-alexei.starovoitov@gmail.com>
+References: <20210506034505.25979-1-alexei.starovoitov@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-v2->v3: Addressed comments from Andrii and John.
-- added support for setting max_entries after signature verification
-  and used it in ringbuf test, since ringbuf's max_entries has to be updated
-  after skeleton open() and before load(). See patch 17.
-- bpf_btf_find_by_name_kind doesn't take btf_fd anymore.
-  Because of that removed attach_prog_fd from bpf_prog_desc in lskel.
-  Both features to be added later.
-- cleaned up closing of fd==0 during loader gen by resetting fds back to -1.
-- converted loader gen to use memset(&attr, cmd_specific_attr_size).
-  would love to see this optimization in the rest of libbpf.
-- fixed memory leak during loader_gen in case of enomem.
-- support for fd_array kernel feature is added in patch 9 to have
-  exhaustive testing across all selftests and then partially reverted
-  in patch 15 to keep old style map_fd patching tested as well.
-- since fentry_test/fexit_tests were extended with re-attach had to add
-  support for per-program attach method in lskel and use it in the tests.
-- cleanup closing of fds in lskel in case of partial failures.
-- fixed numerous small nits.
+Add placeholders for bpf_sys_bpf() helper and new program type.
+Make sure to check that expected_attach_type is zero for future extensibility.
+Allow tracing helper functions to be used in this program type, since they will
+only execute from user context via bpf_prog_test_run.
 
-v1->v2: Addressed comments from Al, Yonghong and Andrii.
-- documented sys_close fdget/fdput requirement and non-recursion check.
-- reduced internal api leaks between libbpf and bpftool.
-  Now bpf_object__gen_loader() is the only new libbf api with minimal fields.
-- fixed light skeleton __destroy() method to munmap and close maps and progs.
-- refactored bpf_btf_find_by_name_kind to return btf_id | (btf_obj_fd << 32).
-- refactored use of bpf_btf_find_by_name_kind from loader prog.
-- moved auto-gen like code into skel_internal.h that is used by *.lskel.h
-  It has minimal static inline bpf_load_and_run() method used by lskel.
-- added lksel.h example in patch 15.
-- replaced union bpf_map_prog_desc with struct bpf_map_desc and struct bpf_prog_desc.
-- removed mark_feat_supported and added a patch to pass 'obj' into kernel_supports.
-- added proper tracking of temporary FDs in loader prog and their cleanup via bpf_sys_close.
-- rename gen_trace.c into gen_loader.c to better align the naming throughout.
-- expanded number of available helpers in new prog type.
-- added support for raw_tp attaching in lskel.
-  lskel supports tracing and raw_tp progs now.
-  It correctly loads all networking prog types too, but __attach() method is tbd.
-- converted progs/test_ksyms_module.c to lskel.
-- minor feedback fixes all over.
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ include/linux/bpf.h            | 10 +++++++
+ include/linux/bpf_types.h      |  2 ++
+ include/uapi/linux/bpf.h       |  8 +++++
+ kernel/bpf/syscall.c           | 53 ++++++++++++++++++++++++++++++++++
+ net/bpf/test_run.c             | 43 +++++++++++++++++++++++++++
+ tools/include/uapi/linux/bpf.h |  8 +++++
+ 6 files changed, 124 insertions(+)
 
-The description of V1 set is still valid:
-----
-This is a first step towards signed bpf programs and the third approach of that kind.
-The first approach was to bring libbpf into the kernel as a user-mode-driver.
-The second approach was to invent a new file format and let kernel execute
-that format as a sequence of syscalls that create maps and load programs.
-This third approach is using new type of bpf program instead of inventing file format.
-1st and 2nd approaches had too many downsides comparing to this 3rd and were discarded
-after months of work.
-
-To make it work the following new concepts are introduced:
-1. syscall bpf program type
-A kind of bpf program that can do sys_bpf and sys_close syscalls.
-It can only execute in user context.
-
-2. FD array or FD index.
-Traditionally BPF instructions are patched with FDs.
-What it means that maps has to be created first and then instructions modified
-which breaks signature verification if the program is signed.
-Instead of patching each instruction with FD patch it with an index into array of FDs.
-That makes the program signature stable if it uses maps.
-
-3. loader program that is generated as "strace of libbpf".
-When libbpf is loading bpf_file.o it does a bunch of sys_bpf() syscalls to
-load BTF, create maps, populate maps and finally load programs.
-Instead of actually doing the syscalls generate a trace of what libbpf
-would have done and represent it as the "loader program".
-The "loader program" consists of single map and single bpf program that
-does those syscalls.
-Executing such "loader program" via bpf_prog_test_run() command will
-replay the sequence of syscalls that libbpf would have done which will result
-the same maps created and programs loaded as specified in the elf file.
-The "loader program" removes libelf and majority of libbpf dependency from
-program loading process.
-
-4. light skeleton
-Instead of embedding the whole elf file into skeleton and using libbpf
-to parse it later generate a loader program and embed it into "light skeleton".
-Such skeleton can load the same set of elf files, but it doesn't need
-libbpf and libelf to do that. It only needs few sys_bpf wrappers.
-
-Future steps:
-- support CO-RE in the kernel. This patch set is already too big,
-so that critical feature is left for the next step.
-- generate light skeleton in golang to allow such users use BTF and
-all other features provided by libbpf
-- generate light skeleton for kernel, so that bpf programs can be embeded
-in the kernel module. The UMD usage in bpf_preload will be replaced with
-such skeleton, so bpf_preload would become a standard kernel module
-without user space dependency.
-- finally do the signing of the loader program.
-
-The patches are work in progress with few rough edges.
-
-Alexei Starovoitov (17):
-  bpf: Introduce bpf_sys_bpf() helper and program type.
-  bpf: Introduce bpfptr_t user/kernel pointer.
-  bpf: Prepare bpf syscall to be used from kernel and user space.
-  libbpf: Support for syscall program type
-  selftests/bpf: Test for syscall program type
-  bpf: Make btf_load command to be bpfptr_t compatible.
-  selftests/bpf: Test for btf_load command.
-  bpf: Introduce fd_idx
-  libbpf: Support for fd_idx
-  bpf: Add bpf_btf_find_by_name_kind() helper.
-  bpf: Add bpf_sys_close() helper.
-  libbpf: Change the order of data and text relocations.
-  libbpf: Add bpf_object pointer to kernel_supports().
-  libbpf: Generate loader program out of BPF ELF file.
-  libbpf: Use fd_array only with gen_loader.
-  bpftool: Use syscall/loader program in "prog load" and "gen skeleton"
-    command.
-  selftests/bpf: Convert few tests to light skeleton.
-
- include/linux/bpf.h                           |  19 +-
- include/linux/bpf_types.h                     |   2 +
- include/linux/bpf_verifier.h                  |   1 +
- include/linux/bpfptr.h                        |  81 +++
- include/linux/btf.h                           |   2 +-
- include/uapi/linux/bpf.h                      |  38 +-
- kernel/bpf/bpf_iter.c                         |  13 +-
- kernel/bpf/btf.c                              |  70 +-
- kernel/bpf/syscall.c                          | 194 ++++--
- kernel/bpf/verifier.c                         |  81 ++-
- net/bpf/test_run.c                            |  45 +-
- tools/bpf/bpftool/Makefile                    |   2 +-
- tools/bpf/bpftool/gen.c                       | 330 ++++++++-
- tools/bpf/bpftool/main.c                      |   7 +-
- tools/bpf/bpftool/main.h                      |   1 +
- tools/bpf/bpftool/prog.c                      |  81 +++
- tools/bpf/bpftool/xlated_dumper.c             |   3 +
- tools/include/uapi/linux/bpf.h                |  38 +-
- tools/lib/bpf/Build                           |   2 +-
- tools/lib/bpf/bpf.c                           |   1 +
- tools/lib/bpf/bpf_gen_internal.h              |  40 ++
- tools/lib/bpf/gen_loader.c                    | 643 ++++++++++++++++++
- tools/lib/bpf/libbpf.c                        | 404 +++++++++--
- tools/lib/bpf/libbpf.h                        |  12 +
- tools/lib/bpf/libbpf.map                      |   1 +
- tools/lib/bpf/libbpf_internal.h               |   3 +
- tools/lib/bpf/skel_internal.h                 | 106 +++
- tools/testing/selftests/bpf/.gitignore        |   1 +
- tools/testing/selftests/bpf/Makefile          |  16 +-
- .../selftests/bpf/prog_tests/fentry_fexit.c   |   6 +-
- .../selftests/bpf/prog_tests/fentry_test.c    |  10 +-
- .../selftests/bpf/prog_tests/fexit_sleep.c    |   6 +-
- .../selftests/bpf/prog_tests/fexit_test.c     |  10 +-
- .../selftests/bpf/prog_tests/kfunc_call.c     |   6 +-
- .../selftests/bpf/prog_tests/ksyms_module.c   |   2 +-
- .../selftests/bpf/prog_tests/ringbuf.c        |   8 +-
- .../selftests/bpf/prog_tests/syscall.c        |  49 ++
- tools/testing/selftests/bpf/progs/syscall.c   | 119 ++++
- .../selftests/bpf/progs/test_ringbuf.c        |   4 +-
- .../selftests/bpf/progs/test_subprogs.c       |  13 +
- 40 files changed, 2254 insertions(+), 216 deletions(-)
- create mode 100644 include/linux/bpfptr.h
- create mode 100644 tools/lib/bpf/bpf_gen_internal.h
- create mode 100644 tools/lib/bpf/gen_loader.c
- create mode 100644 tools/lib/bpf/skel_internal.h
- create mode 100644 tools/testing/selftests/bpf/prog_tests/syscall.c
- create mode 100644 tools/testing/selftests/bpf/progs/syscall.c
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 02b02cb29ce2..04a2bf41ae72 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1826,6 +1826,9 @@ static inline bool bpf_map_is_dev_bound(struct bpf_map *map)
+ 
+ struct bpf_map *bpf_map_offload_map_alloc(union bpf_attr *attr);
+ void bpf_map_offload_map_free(struct bpf_map *map);
++int bpf_prog_test_run_syscall(struct bpf_prog *prog,
++			      const union bpf_attr *kattr,
++			      union bpf_attr __user *uattr);
+ #else
+ static inline int bpf_prog_offload_init(struct bpf_prog *prog,
+ 					union bpf_attr *attr)
+@@ -1851,6 +1854,13 @@ static inline struct bpf_map *bpf_map_offload_map_alloc(union bpf_attr *attr)
+ static inline void bpf_map_offload_map_free(struct bpf_map *map)
+ {
+ }
++
++static inline int bpf_prog_test_run_syscall(struct bpf_prog *prog,
++					    const union bpf_attr *kattr,
++					    union bpf_attr __user *uattr)
++{
++	return -ENOTSUPP;
++}
+ #endif /* CONFIG_NET && CONFIG_BPF_SYSCALL */
+ 
+ #if defined(CONFIG_INET) && defined(CONFIG_BPF_SYSCALL)
+diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+index f883f01a5061..a9db1eae6796 100644
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -77,6 +77,8 @@ BPF_PROG_TYPE(BPF_PROG_TYPE_LSM, lsm,
+ 	       void *, void *)
+ #endif /* CONFIG_BPF_LSM */
+ #endif
++BPF_PROG_TYPE(BPF_PROG_TYPE_SYSCALL, bpf_syscall,
++	      void *, void *)
+ 
+ BPF_MAP_TYPE(BPF_MAP_TYPE_ARRAY, array_map_ops)
+ BPF_MAP_TYPE(BPF_MAP_TYPE_PERCPU_ARRAY, percpu_array_map_ops)
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index ec6d85a81744..c92648f38144 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -937,6 +937,7 @@ enum bpf_prog_type {
+ 	BPF_PROG_TYPE_EXT,
+ 	BPF_PROG_TYPE_LSM,
+ 	BPF_PROG_TYPE_SK_LOOKUP,
++	BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
+ };
+ 
+ enum bpf_attach_type {
+@@ -4735,6 +4736,12 @@ union bpf_attr {
+  *		be zero-terminated except when **str_size** is 0.
+  *
+  *		Or **-EBUSY** if the per-CPU memory copy buffer is busy.
++ *
++ * long bpf_sys_bpf(u32 cmd, void *attr, u32 attr_size)
++ * 	Description
++ * 		Execute bpf syscall with given arguments.
++ * 	Return
++ * 		A syscall result.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -4903,6 +4910,7 @@ union bpf_attr {
+ 	FN(check_mtu),			\
+ 	FN(for_each_map_elem),		\
+ 	FN(snprintf),			\
++	FN(sys_bpf),			\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 941ca06d9dfa..b1e7352919cb 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2014,6 +2014,7 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
+ 		if (expected_attach_type == BPF_SK_LOOKUP)
+ 			return 0;
+ 		return -EINVAL;
++	case BPF_PROG_TYPE_SYSCALL:
+ 	case BPF_PROG_TYPE_EXT:
+ 		if (expected_attach_type)
+ 			return -EINVAL;
+@@ -4508,3 +4509,55 @@ SYSCALL_DEFINE3(bpf, int, cmd, union bpf_attr __user *, uattr, unsigned int, siz
+ 
+ 	return err;
+ }
++
++static bool syscall_prog_is_valid_access(int off, int size,
++					 enum bpf_access_type type,
++					 const struct bpf_prog *prog,
++					 struct bpf_insn_access_aux *info)
++{
++	if (off < 0 || off >= U16_MAX)
++		return false;
++	if (off % size != 0)
++		return false;
++	return true;
++}
++
++BPF_CALL_3(bpf_sys_bpf, int, cmd, void *, attr, u32, attr_size)
++{
++	return -EINVAL;
++}
++
++const struct bpf_func_proto bpf_sys_bpf_proto = {
++	.func		= bpf_sys_bpf,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_ANYTHING,
++	.arg2_type	= ARG_PTR_TO_MEM,
++	.arg3_type	= ARG_CONST_SIZE,
++};
++
++const struct bpf_func_proto * __weak
++tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
++{
++	return bpf_base_func_proto(func_id);
++}
++
++static const struct bpf_func_proto *
++syscall_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
++{
++	switch (func_id) {
++	case BPF_FUNC_sys_bpf:
++		return &bpf_sys_bpf_proto;
++	default:
++		return tracing_prog_func_proto(func_id, prog);
++	}
++}
++
++const struct bpf_verifier_ops bpf_syscall_verifier_ops = {
++	.get_func_proto  = syscall_prog_func_proto,
++	.is_valid_access = syscall_prog_is_valid_access,
++};
++
++const struct bpf_prog_ops bpf_syscall_prog_ops = {
++	.test_run = bpf_prog_test_run_syscall,
++};
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index a5d72c48fb66..a6972d7ddf80 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -918,3 +918,46 @@ int bpf_prog_test_run_sk_lookup(struct bpf_prog *prog, const union bpf_attr *kat
+ 	kfree(user_ctx);
+ 	return ret;
+ }
++
++int bpf_prog_test_run_syscall(struct bpf_prog *prog,
++			      const union bpf_attr *kattr,
++			      union bpf_attr __user *uattr)
++{
++	void __user *ctx_in = u64_to_user_ptr(kattr->test.ctx_in);
++	__u32 ctx_size_in = kattr->test.ctx_size_in;
++	void *ctx = NULL;
++	u32 retval;
++	int err = 0;
++
++	/* doesn't support data_in/out, ctx_out, duration, or repeat or flags */
++	if (kattr->test.data_in || kattr->test.data_out ||
++	    kattr->test.ctx_out || kattr->test.duration ||
++	    kattr->test.repeat || kattr->test.flags)
++		return -EINVAL;
++
++	if (ctx_size_in < prog->aux->max_ctx_offset ||
++	    ctx_size_in > U16_MAX)
++		return -EINVAL;
++
++	if (ctx_size_in) {
++		ctx = kzalloc(ctx_size_in, GFP_USER);
++		if (!ctx)
++			return -ENOMEM;
++		if (copy_from_user(ctx, ctx_in, ctx_size_in)) {
++			err = -EFAULT;
++			goto out;
++		}
++	}
++	retval = bpf_prog_run_pin_on_cpu(prog, ctx);
++
++	if (copy_to_user(&uattr->test.retval, &retval, sizeof(u32))) {
++		err = -EFAULT;
++		goto out;
++	}
++	if (ctx_size_in)
++		if (copy_to_user(ctx_in, ctx, ctx_size_in))
++			err = -EFAULT;
++out:
++	kfree(ctx);
++	return err;
++}
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index ec6d85a81744..0c13016d3d2c 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -937,6 +937,7 @@ enum bpf_prog_type {
+ 	BPF_PROG_TYPE_EXT,
+ 	BPF_PROG_TYPE_LSM,
+ 	BPF_PROG_TYPE_SK_LOOKUP,
++	BPF_PROG_TYPE_SYSCALL,
+ };
+ 
+ enum bpf_attach_type {
+@@ -4735,6 +4736,12 @@ union bpf_attr {
+  *		be zero-terminated except when **str_size** is 0.
+  *
+  *		Or **-EBUSY** if the per-CPU memory copy buffer is busy.
++ *
++ * long bpf_sys_bpf(u32 cmd, void *attr, u32 attr_size)
++ * 	Description
++ * 		Execute bpf syscall with given arguments.
++ * 	Return
++ * 		A syscall result.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -4903,6 +4910,7 @@ union bpf_attr {
+ 	FN(check_mtu),			\
+ 	FN(for_each_map_elem),		\
+ 	FN(snprintf),			\
++	FN(sys_bpf),			\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
 -- 
 2.30.2
 
