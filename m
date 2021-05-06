@@ -2,71 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6785375D6A
-	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 01:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B458A375D74
+	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 01:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232084AbhEFXbN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 May 2021 19:31:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231802AbhEFXbI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 May 2021 19:31:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D6F95613B5;
-        Thu,  6 May 2021 23:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620343809;
-        bh=mZ+MIQdIM3mzSl3Io6Yg/GSU0sdnx0Cwcr96d5Tp+ds=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=kEI5Uhr/dk+s28rxK9rFJWwsXTtJjW84Ae5WI0udMOnnDkoyoya6FyTFM7a4dE7iW
-         7ST+ZVNsoNZmx+QmXMFsNfOGwEJYtcUGoP1gwddiGcjwR2El2tgP3tIeSS3jHLZ1Iq
-         8h6dgF9alOWzP2RLxc17VyK3tqfB+NYWLmo/i9pTiHksvHWgBLb+Yku/M3yyGsj18O
-         SgF0yRlfbX8MkuJJgZdoNTBT3gghmXhRIKgUUUVArDrJdqYM27qpkIIDBFWM+41d7f
-         kAaVWj9YusUERsTl+krHQp+ipaMg5HeKsLLlydIf1+wT+D38n8H6uXUHQYmDXQF6ua
-         B7VAiG/Q4iCgA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C66F260982;
-        Thu,  6 May 2021 23:30:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232209AbhEFXc6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 May 2021 19:32:58 -0400
+Received: from www62.your-server.de ([213.133.104.62]:33950 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231976AbhEFXc5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 May 2021 19:32:57 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lenTG-0002pG-OF; Fri, 07 May 2021 01:31:54 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lenTG-000KXC-G4; Fri, 07 May 2021 01:31:54 +0200
+Subject: Re: [PATCH] bpf: Forbid trampoline attach for functions with variable
+ arguments
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+References: <20210505132529.401047-1-jolsa@kernel.org>
+ <CAEf4BzazQgrPVqKOGP8z=MPZhjZHCZDdcWQB0xBuudXbxXwaXg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c21b54a6-8d6e-f76d-e6c1-95abd8544d9d@iogearbox.net>
+Date:   Fri, 7 May 2021 01:31:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] samples/bpf: consider frame size in tx_only of xdpsock
- sample
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162034380980.14975.13507815656502362582.git-patchwork-notify@kernel.org>
-Date:   Thu, 06 May 2021 23:30:09 +0000
-References: <20210506124349.6666-1-magnus.karlsson@gmail.com>
-In-Reply-To: <20210506124349.6666-1-magnus.karlsson@gmail.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, bpf@vger.kernel.org,
-        maciej.fijalkowski@intel.com
+In-Reply-To: <CAEf4BzazQgrPVqKOGP8z=MPZhjZHCZDdcWQB0xBuudXbxXwaXg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26162/Thu May  6 13:11:07 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf.git (refs/heads/master):
-
-On Thu,  6 May 2021 14:43:49 +0200 you wrote:
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
+On 5/5/21 8:45 PM, Andrii Nakryiko wrote:
+> On Wed, May 5, 2021 at 6:42 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>>
+>> We can't currently allow to attach functions with variable arguments.
+>> The problem is that we should save all the registers for arguments,
+>> which is probably doable, but if caller uses more than 6 arguments,
+>> we need stack data, which will be wrong, because of the extra stack
+>> frame we do in bpf trampoline, so we could crash.
+>>
+>> Also currently there's malformed trampoline code generated for such
+>> functions at the moment as described in:
+>>    https://lore.kernel.org/bpf/20210429212834.82621-1-jolsa@kernel.org/
+>>
+>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+>> ---
 > 
-> Fix the tx_only micro-benchmark in xdpsock to take frame size into
-> consideration. It was hardcoded to the default value of frame_size
-> which is 4K. Changing this on the command line to 2K made half of the
-> packets illegal as they were outside the umem and were therefore
-> discarded by the kernel.
+> LGTM.
 > 
-> [...]
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+>>   kernel/bpf/btf.c | 13 +++++++++++++
+>>   1 file changed, 13 insertions(+)
+>>
+>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+>> index 0600ed325fa0..161511bb3e51 100644
+>> --- a/kernel/bpf/btf.c
+>> +++ b/kernel/bpf/btf.c
+>> @@ -5206,6 +5206,13 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+>>          m->ret_size = ret;
+>>
+>>          for (i = 0; i < nargs; i++) {
+>> +               if (i == nargs - 1 && args[i].type == 0) {
+>> +                       bpf_log(log,
+>> +                               "The function %s with variable args is unsupported.\n",
+>> +                               tname);
+>> +                       return -EINVAL;
+>> +
 
-Here is the summary with links:
-  - [bpf] samples/bpf: consider frame size in tx_only of xdpsock sample
-    https://git.kernel.org/bpf/bpf/c/3b80d106e110
+(Jiri, fyi, I removed this extra newline while applying. Please scan for such
+things before submitting.)
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+>> +               }
+>>                  ret = __get_type_size(btf, args[i].type, &t);
+>>                  if (ret < 0) {
+>>                          bpf_log(log,
+>> @@ -5213,6 +5220,12 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+>>                                  tname, i, btf_kind_str[BTF_INFO_KIND(t->info)]);
+>>                          return -EINVAL;
+>>                  }
+>> +               if (ret == 0) {
+>> +                       bpf_log(log,
+>> +                               "The function %s has malformed void argument.\n",
+>> +                               tname);
+>> +                       return -EINVAL;
+>> +               }
+>>                  m->arg_size[i] = ret;
+>>          }
+>>          m->nr_args = nargs;
+>> --
+>> 2.30.2
+>>
 
