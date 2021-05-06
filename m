@@ -2,50 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F225F375D06
-	for <lists+bpf@lfdr.de>; Thu,  6 May 2021 23:57:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FE9375D42
+	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 00:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhEFV6M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 May 2021 17:58:12 -0400
-Received: from www62.your-server.de ([213.133.104.62]:43308 "EHLO
+        id S230348AbhEFWz7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 May 2021 18:55:59 -0400
+Received: from www62.your-server.de ([213.133.104.62]:54396 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229894AbhEFV6L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 May 2021 17:58:11 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
+        with ESMTP id S230283AbhEFWz7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 May 2021 18:55:59 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1lelzb-000ASc-Fw; Thu, 06 May 2021 23:57:11 +0200
+        id 1lemtV-000FoT-Bv; Fri, 07 May 2021 00:54:57 +0200
 Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1lelzb-000Wpm-6N; Thu, 06 May 2021 23:57:11 +0200
-Subject: Re: [PATCH bpf-next v6 2/3] libbpf: add low level TC-BPF API
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Shaun Crampton <shaun@tigera.io>, netdev@vger.kernel.org
-References: <20210504005023.1240974-1-memxor@gmail.com>
- <20210504005023.1240974-3-memxor@gmail.com>
- <eb6aada2-0de8-3adf-4b69-898a1c31c4e6@iogearbox.net>
- <20210506023753.7hkzo3xxrqighcm2@apollo>
+        id 1lemtV-000BdN-4C; Fri, 07 May 2021 00:54:57 +0200
+Subject: Re: bpf libraries and static variables. Was: [PATCH v2 bpf-next 2/6]
+ libbpf: rename static variables during linking
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>
+References: <CAADnVQKo+efxMvgrqYqVvUEgiz_GXgBVOt4ddPTw_mLuvr2HUw@mail.gmail.com>
+ <CAEf4BzZifOFHr4gozUuSFTh7rTWu2cE_-L4H1shLV5OKyQ92uw@mail.gmail.com>
+ <CAADnVQ+h78QijAjbkNqAWn+TAFxrd6vE=mXqWRcy815hkTFvOw@mail.gmail.com>
+ <CAEf4BzZOmCgmbYDUGA-s5AF6XJFkT1xKinY3Jax3Zm2OLNmguA@mail.gmail.com>
+ <20210426223449.5njjmcjpu63chqbb@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYZX9YJcoragK20cvQvr_tPTWYBQSRh7diKc1KoCtu4Dg@mail.gmail.com>
+ <20210427022231.pbgtrdbxpgdx2zrw@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzZOwTp4vQxvCSXaS4-94fz_eZ7Q4n6uQfkAnMQnLRaTbQ@mail.gmail.com>
+ <20210428045545.egqvhyulr4ybbad6@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzZo7_r-hsNvJt3w3kyrmmBJj7ghGY8+k4nvKF0KLjma=w@mail.gmail.com>
+ <20210504044204.kpt6t5kaomj7oivq@ast-mbp>
+ <CAADnVQ+WV8xZqJfWx8em5Ch8aKA8xcPqR0wT0BdFf9M==W5_FQ@mail.gmail.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <70213fce-858e-5384-1614-919c4eced8ba@iogearbox.net>
-Date:   Thu, 6 May 2021 23:57:10 +0200
+Message-ID: <bd55064c-5641-d71e-8d1a-317f6a9f49ba@iogearbox.net>
+Date:   Fri, 7 May 2021 00:54:56 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20210506023753.7hkzo3xxrqighcm2@apollo>
+In-Reply-To: <CAADnVQ+WV8xZqJfWx8em5Ch8aKA8xcPqR0wT0BdFf9M==W5_FQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -55,261 +59,228 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/6/21 4:37 AM, Kumar Kartikeya Dwivedi wrote:
-> On Thu, May 06, 2021 at 03:12:01AM IST, Daniel Borkmann wrote:
->> On 5/4/21 2:50 AM, Kumar Kartikeya Dwivedi wrote:
->>> This adds functions that wrap the netlink API used for adding,
->>> manipulating, and removing traffic control filters.
+On 5/5/21 7:22 AM, Alexei Starovoitov wrote:
+> On Mon, May 3, 2021 at 9:42 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>> On Wed, Apr 28, 2021 at 12:33:36PM -0700, Andrii Nakryiko wrote:
+>>>> At least I'm only starting to grasp the complexity of the problem.
 >>>
->>> An API summary:
+>>> I did and didn't find anything satisfactory. But I think we are coming
+>>> at this from two different angles, which is why we can't agree on
+>>> anything. So just a reminder, static is about two properties:
+>>>      1) access protection
+>>>      2) naming collisions.
+>>>
+>>> I'm trying to let name collisions on BPF side happen and be allowed
+>>> *while* also allowing access to those same name-collisioned entities
+>>> (maps and vars, both) from user-space in some non-random fashion. That
+>>> inevitably requires some compromises/conventions on the user-space
+>>> side. Such an approach preserves both 1) and 2).
+>>>
+>>> You are trying to enforce unique names (or at least aliases) for
+>>> static variables, if I understand correctly, which preserves 1) at the
+>>> expense of 2). It seems to be a similar idea with custom SEC(), though
+>>> you ignored my request to elaborate on how you see that used, so I'm
+>>> guessing here a bit.
+>>>
+>>> But I think we can get just 1) with global variables with custom
+>>> visibilities. E.g., just marking map/variable as __hidden would
+>>> disallow extern'ing it from other files. That's obviously limiting for
+>>> extern'ing within the library, so we can keep digging deeper and
+>>> define __internal (STV_INTERNAL) that would be "upgraded" to
+>>> STV_HIDDEN after the initial linking pass. So you'd compile your BPF
+>>> library with __internal, but your lib.bpf.o will have those global
+>>> variables as STV_HIDDEN and thus inaccessible from other libraries and
+>>> BPF app itself.
+>>>
+>>> So if we are ok breaking existing static variable users, then just
+>>> dropping statics from BPF skeleton and supporting extra __hidden and
+>>> __internal semantics for variables and maps would bypass these issues.
+>>> I wanted statics mostly for property 2), but if I can't get it, then
+>>> I'd drop statics from skeletons altogether.
+>>>
+>>> If I could drop statics for skeletons that were statically linked,
+>>> that wouldn't be a regression. It's impossible to do right now, but we
+>>> can also add a new SHT_NOTE section, which we can use to detect
+>>> statically linked vs Clang-generated .bpf.o. Certainly more ELF
+>>> fussing around than I'd like, but not the end of the world either.
+>>>
+>>> Thoughts? Did that summarize the issue well enough?
 >>
->> Looks better, few minor comments below:
+>> Background for all:
 >>
->>> A bpf_tc_hook represents a location where a TC-BPF filter can be
->>> attached. This means that creating a hook leads to creation of the
->>> backing qdisc, while destruction either removes all filters attached to
->>> a hook, or destroys qdisc if requested explicitly (as discussed below).
->>>
->>> The TC-BPF API functions operate on this bpf_tc_hook to attach, replace,
->>> query, and detach tc filters.
->>>
->>> All functions return 0 on success, and a negative error code on failure.
->>>
->>> bpf_tc_hook_create - Create a hook
->>> Parameters:
->>> 	@hook - Cannot be NULL, ifindex > 0, attach_point must be set to
->>> 		proper enum constant. Note that parent must be unset when
->>> 		attach_point is one of BPF_TC_INGRESS or BPF_TC_EGRESS. Note
->>> 		that as an exception BPF_TC_INGRESS|BPF_TC_EGRESS is also a
->>> 		valid value for attach_point.
->>>
->>> 		Returns -EOPNOTSUPP when hook has attach_point as BPF_TC_CUSTOM.
->>>
->>> 		hook's flags member can be BPF_TC_F_REPLACE, which
->>> 		creates qdisc in non-exclusive mode (i.e. an existing
->>> 		qdisc will be replaced instead of this function failing
->>> 		with -EEXIST).
+>> Until Nov 2019 libbpf didn't support global variables, so bpf programs
+>> contained code like 'static volatile const int var = 1;'
+>> Then the skeleton was introduced which went through BTF of a given
+>> datasec and emitted all variables from that section into .skel.h.
+>> It didn't bother filtering static vs global variables, so
+>> static vars in *.bpf.c world became visible into user space *.c world.
+>> While libbpf supported single bpf.o file such extern-ing of statics
+>> was fine, but with support of linking multiple *.bpf.o there
+>> is a question of what to do with static variables with the same names
+>> in different files.
 >>
->> Why supporting BPF_TC_F_REPLACE here? It's not changing any qdisc parameters
->> given clsact doesn't have any, no? Iow, what effect are you expecting on this
->> with BPF_TC_F_REPLACE & why supporting it? I'd probably just require flags to
->> be 0 here, and if hook exists return sth like -EEXIST.
-> 
-> Ok, will change.
-> 
->>> bpf_tc_hook_destroy - Destroy the hook
->>> Parameters:
->>>           @hook - Cannot be NULL. The behaviour depends on value of
->>> 		attach_point.
->>>
->>> 		If BPF_TC_INGRESS, all filters attached to the ingress
->>> 		hook will be detached.
->>> 		If BPF_TC_EGRESS, all filters attached to the egress hook
->>> 		will be detached.
->>> 		If BPF_TC_INGRESS|BPF_TC_EGRESS, the clsact qdisc will be
->>> 		deleted, also detaching all filters.
->>>
->>> 		As before, parent must be unset for these attach_points,
->>> 		and set for BPF_TC_CUSTOM. flags must also be unset.
->>>
->>> 		It is advised that if the qdisc is operated on by many programs,
->>> 		then the program at least check that there are no other existing
->>> 		filters before deleting the clsact qdisc. An example is shown
->>> 		below:
->>>
->>> 		DECLARE_LIBBPF_OPTS(bpf_tc_hook, .ifindex = if_nametoindex("lo"),
->>> 				    .attach_point = BPF_TC_INGRESS);
->>> 		/* set opts as NULL, as we're not really interested in
->>> 		 * getting any info for a particular filter, but just
->>> 	 	 * detecting its presence.
->>> 		 */
->>> 		r = bpf_tc_query(&hook, NULL);
->>> 		if (r == -ENOENT) {
->>> 			/* no filters */
->>> 			hook.attach_point = BPF_TC_INGRESS|BPF_TC_EGREESS;
->>> 			return bpf_tc_hook_destroy(&hook);
->>> 		} else {
->>> 			/* failed or r == 0, the latter means filters do exist */
->>> 			return r;
->>> 		}
->>>
->>> 		Note that there is a small race between checking for no
->>> 		filters and deleting the qdisc. This is currently unavoidable.
->>>
->>> 		Returns -EOPNOTSUPP when hook has attach_point as BPF_TC_CUSTOM.
->>>
->>> bpf_tc_attach - Attach a filter to a hook
->>> Parameters:
->>> 	@hook - Cannot be NULL. Represents the hook the filter will be
->>> 		attached to. Requirements for ifindex and attach_point are
->>> 		same as described in bpf_tc_hook_create, but BPF_TC_CUSTOM
->>> 		is also supported.  In that case, parent must be set to the
->>> 		handle where the filter will be attached (using TC_H_MAKE).
->>> 		flags member must be unset.
->>>
->>> 		E.g. To set parent to 1:16 like in tc command line,
->>> 		     the equivalent would be TC_H_MAKE(1 << 16, 16)
+>> Consider the following scenario:
+>> One bpf developer creates a library conntrack. It has
+>> impl.bpf.c
+>> ct_api.bpf.c
+>> and corresponding user space ct.c that uses skel.h to access
+>> data in these two bpf files.
 >>
->> Small nit: I wonder whether from libbpf side we should just support a more
->> user friendly TC_H_MAKE, so you'd have: BPF_TC_CUSTOM + BPF_TC_PARENT(1, 16).
-> 
-> Something like this was there in v1. I'll add this macro again (I guess the most surprising part of
-> TC_H_MAKE is that it won't shift the major number).
-
-Agree, weird one. :)
-
-[...]
->>> bpf_tc_detach
->>> Parameters:
->>> 	@hook: Cannot be NULL. Represents the hook the filter will be
->>> 		detached from. Requirements are same as described above
->>> 		in bpf_tc_attach.
->>>
->>> 	@opts:	Cannot be NULL.
->>>
->>> 		The following opts must be set:
->>> 			handle
->>> 			priority
->>> 		The following opts must be unset:
->>> 			prog_fd
->>> 			prog_id
->>> 			flags
->>>
->>> bpf_tc_query
->>> Parameters:
->>> 	@hook: Cannot be NULL. Represents the hook where the filter
->>> 	       lookup will be performed. Requires are same as described
->>> 	       above in bpf_tc_attach.
->>>
->>> 	@opts: Can be NULL.
+>> Another bpf developer creates a library for lru. It has
+>> impl.bpf.c
+>> lru_api.bpf.c
+>> and corresponding user space lru.c.
 >>
->> Shouldn't it be: Cannot be NULL?
-> 
-> This allows you to check the existence of a filter. If set to NULL we skip writing anything to opts,
-
-You mean in this case s/filter/hook/, right?
-
-> but we still return -ENOENT or 0 depending on whether atleast one filter exists (based on the
-> default attributes that we choose). This is used in multiple places in the test, to determine
-> whether no filters exists.
-
-In other words, it's same as bpf_tc_hook_create() which would return -EEXIST just that
-we do /not/ create the hook if it does not exist, right?
-
->>> 	       The following opts are optional:
->>> 			handle
->>> 			priority
->>> 			prog_fd
->>> 			prog_id
+>> Now the 3rd developer is writing its main.bpf.c and wants to use these libs.
 >>
->> What is the use case to set prog_fd here?
-> 
-> It allows you to search with the prog_id of the program represented by fd. It's just a convenience
-> thing, we end up doing a call to get the prog_id for you, and since the parameter is already there,
-> it seemed ok to support this.
-
-I would drop that part and have prog_fd forced to 0, given libbpf already has other means to
-retrieve it from fd, and if non-convenient, then lets add a simple/generic libbpf API.
-
->>> 	       The following opts must be unset:
->>> 			flags
->>>
->>> 	       However, only one of prog_fd and prog_id must be
->>> 	       set. Setting both leads to an error. Setting none is
->>> 	       allowed.
->>>
->>> 	       The following fields will be filled by bpf_tc_query on a
->>> 	       successful lookup if they are unset:
->>> 			handle
->>> 			priority
->>> 			prog_id
->>>
->>> 	       Based on the specified optional parameters, the matching
->>> 	       data for the first matching filter is filled in and 0 is
->>> 	       returned. When setting prog_fd, the prog_id will be
->>> 	       matched against prog_id of the loaded SCHED_CLS prog
->>> 	       represented by prog_fd.
->>>
->>> 	       To uniquely identify a filter, e.g. to detect its presence,
->>> 	       it is recommended to set both handle and priority fields.
+>> The libs should be usable in pre-compiled form. The availability of
+>> the source code is nice, but it shouldn't be mandatory.
 >>
->> What if prog_id is not unique, but part of multiple instances? Do we need
->> to support this case?
-> 
-> We return the first filter that matches on the prog_id. I think it is worthwhile to support this, as
-> long as the kernel's sequence of returning filters is stable (which it is), we keep returning the
-> same filter's handle/priority, so you can essentially pop filters attached to a hook one by one by
-> passing in unset opts and getting its details (or setting one of the parameters and making the
-> lookup domain smaller).
-> 
-> In simple words, setting one of the parameters that will be filled leads to only returning an entry
-> that matches them. This is similar to what tc filter show's dump allows you to do.
-
-I think this is rather a bit weird/hacky/unintuitive. If we need such API, then lets add a
-proper one which returns all handle/priority combinations that match for a given prog_id
-for the provided hook, but I don't think this needs to be in the initial set; could be done
-as follow-up. (*)
-
->> Why not just bpf_tc_query() with non-NULL hook and non-NULL opts where
->> handle and priority is required to be set, and rest must be 0?
-> 
-> There is also a usecase for us where we need to query the existing filter on a hook without knowing
-> its handle/priority. Shaun also mentioned something similar, where they then go on to check the tag
-> they get from the returned prog_id to determine what to do next.
-
-See (*).
-
->>> Some usage examples (using bpf skeleton infrastructure):
->>>
->>> BPF program (test_tc_bpf.c):
->>>
->>> 	#include <linux/bpf.h>
->>> 	#include <bpf/bpf_helpers.h>
->>>
->>> 	SEC("classifier")
->>> 	int cls(struct __sk_buff *skb)
->>> 	{
->>> 		return 0;
->>> 	}
->>>
->>> Userspace loader:
->>>
->>> 	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts, 0);
->>> 	struct test_tc_bpf *skel = NULL;
->>> 	int fd, r;
->>>
->>> 	skel = test_tc_bpf__open_and_load();
->>> 	if (!skel)
->>> 		return -ENOMEM;
->>>
->>> 	fd = bpf_program__fd(skel->progs.cls);
->>>
->>> 	DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .ifindex =
->>> 			    if_nametoindex("lo"), .attach_point =
->>> 			    BPF_TC_INGRESS);
->>> 	/* Create clsact qdisc */
->>> 	r = bpf_tc_hook_create(&hook);
->>> 	if (r < 0)
->>> 		goto end;
->>>
->>> 	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts, .prog_fd = fd);
+>> So there is libct.a (with user space) and libct.bpf.a (with bpf code)
+>> and liblru.a (user) and liblru.bpf.a (bpf code).
 >>
->> Given we had DECLARE_LIBBPF_OPTS earlier, can't we just set:
->> opts.prog_fd = fd here?
-> 
-> Right, will fix.
-> 
+>> The developer should be able to link
+>> main.bpf.o liblru.bpf.a libct.bpf.a
+>> into final_main.bpf.o
+>> And link main.o liblru.a libct.a with user space bits into a.out.
 >>
->>> 	r = bpf_tc_attach(&hook, &opts);
->>> 	if (r < 0)
->>> 		goto end;
->>> 	/* Print the auto allocated handle and priority */
->>> 	printf("Handle=%u", opts.handle);
->>> 	printf("Priority=%u", opts.priority);
->>>
->>> 	opts.prog_fd = opts.prog_id = 0;
->>> 	bpf_tc_detach(&hook, &opts);
+>> The lru.skel.h and ct.skel.h used by these libs were generated
+>> out of corresponding *.bpf.o and independent of each other.
+>> There should be no need to recompile user space lru.c and ct.c after
+>> linking of final_main.bpf.o and generating final skeleton.
 >>
+>> I think all three developers should be able to use static variables
+>> in their .bpf.c files without worrying about conflicts across three
+>> projects.
+>> They can use global vars with __attribute__("hidden"),
+>> but it's not equivalent to static. The linker will complain of
+>> redefinition if the same name is used across multiple files
+>> or multiple libs.
+>> So doing 'int var __attribute__("hidden");' in libct.bpf.a and
+>> in liblru.bpf.a will prevent linking together.
+>> That's traditional static linking semantics.
+>>
+>> Using file name as a prefix for static vars doesn't work in general,
+>> since file names can be the same.
+>> What can work is the library name. The library name is guaranteed to be
+>> unique in the final linking phase.
+>> I think we can use it to namespace static variables across
+>> three sets of bpf programs.
+>> Also I think it's ok to require a single developer to enforce
+>> uniqueness of static vars within a project.
+>>
+>> In other words 'static int a;' in impl.bpf.c will conflict
+>> with 'static int a;' in ct_api.bpf.c
+>> But the static variable in ct_api.bpf.c will not conflict
+>> with the same variable in lru_api.bpf.c and will not conflict
+>> with such var in main.bpf.c because they're in a different namespaces.
+>>
+>> Here are few ways for the programmer to indicate the library namespaces:
+>>
+>> - similar to 'char license[]' use 'char library[]="lru";' in *.bpf.c
+>> The static linker will handle this reserved name specially just like
+>> it does 'license' and 'version'.
+>>
+>> - #pragma clang attribute push (__attribute__((annotate("lib=lru"))), apply_to = variable)
+>>
+>> - #pragma comment(lib, "lru")
+>>
+>> I think it's important to define namespaces within *.bpf.c.
+>> Defining them outside on linker command line or linker script is cumbersome.
+>>
+>> I think combining *.o into .a can happen with traditional 'ar'. No need for
+>> extra checks for now.
+>> The linking of main.bpf.o liblru.bpf.a libct.bpf.a
+>> will fail if static vars with the same name are present within the same library.
+>> The library namespaces will prevent name conflicts across libs and main.bpf.o
+>> If namespace is not specified it means it's empty, so the existing
+>> hacks of 'static volatile const int var;' will continue working.
+>>
+>> The skeleton can have library name as anon struct in skel.h.
+>> All vars can be prefixed too, but scoping them into single struct is cleaner.
+>>
+>> I think it doesn't hurt if final_main.skel.h includes all bpf vars from lru and
+>> ct libraries, but I think it's cleaner to omit them.
+>>
+>> It's not clear to me yet how final_main__open() and final_main__load() skeleton
+>> methods will work since lru and ct libs might need their specific initialization
+>> that is done by user space lru.c and ct.c.
+>> Also the whole scheme should work with upcoming light skeleton too.
+>> The design for bpf libraries should accommodate signed libraries.
+>>
+>> All of the above is up for discussion. I'd love to hear what golang folks
+>> are thinking, since above proposal is C centric.
+> 
+> I want to clarify a few things that were brought up in offline discussions.
+> There are several options:
+> 1. don't emit statics at all.
+> That will break some skeleton users and doesn't solve the name conflict issue.
+> The library authors would need to be careful and use a unique enough
+> prefix for all global vars (including attribute("hidden") ones).
+> That's no different with traditional static linking in C.
+> bpf static linker already rejects linking if file1.bpf.c is trying to
+> 'extern int foo()'
+> when it was '__hidden int foo();' in file2.bpf.c
+> That's safer than traditional linker and the same approach can be
+> applied to vars.
+> So externing of __hidden vars won't be possible, but they will name conflict.
+> 
+> 2. emit statics when they don't conflict and fail skel gen where there
+> is a naming conflict.
+> That helps a bit, but library authors still have to be careful with
+> both static and global names.
+> Which is more annoying than traditional C.
+> 
+> 3. do #2 style of failing skel gen if there is a naming conflict, but
+> also introduce namespacing concept, so that both global and static
+> vars can be automatically namespaced.
+> That's the proposal above.
+> This way, I'm guessing, some libraries will use namespaces to avoid
+> prefixing everything.
+> The folks that hate namespaces and #pragmas will do manual prefixes for
+> both static and global vars.
+> 
+> For approaches
+> char library[]="lru";'
+> and
+> #pragma comment(lib, "lru")
+> the scope of namespace is the whole .bpf.c file.
+> The clang/llvm already support it, so the job of name mangling would
+> belong to linker.
+> 
+> For __attribute__((annotate("lib=lru"))) the scope could be any number
+> of lines in C files between pragma push/pop and can be nested.
+> This attribute is supported by clang, but not in the bpf backend.
+> The llvm would prefix both global and static names
+> in elf file and in btf.
+> If another file.bpf.c needs to call a function from namespace "lru"
+> it would need to prefix such a call.
+> The skel gen job would be #2 above (emit both static and globals if
+> they don't conflict).
+> Such namespacing concept would be the closest to c++ namespaces.
+> 
+> If I understood what folks were saying no one is excited about namespaces in C.
+> So probably #3 is out and sounds like 1 is prefered?
+> So don't emit statics ?
+> 
+> Daniel, Lorenz, John,
+> 
+> what's your take ?
+
+Hmm, if it wasn't for the breakage, I would be in strong favour of 1), mainly
+because it's the most _natural/closest_ to C, so developers wouldn't have to
+worry about statics. Less hidden magic.
+
+Even with 3) it's an unexpected extra step that developers have to be aware of
+for the case of statics at least. Presumably if it's for the whole .bpf.c file
+something like __library(lru) whether pragma or char might be okay given devs
+already have extra annotations like license.
+
+The __attribute__ sounds also okay but needs explanation to users overall. If
+we need to go that road, we probably need to have both, meaning, pragma or char
+/and/ the attribute one. I'm thinking the former mainly so that users don't have
+to worry about stumbling into the statics conflicts later on.
 
 Thanks,
 Daniel
