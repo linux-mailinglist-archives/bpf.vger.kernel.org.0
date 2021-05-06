@@ -2,151 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4D8375486
-	for <lists+bpf@lfdr.de>; Thu,  6 May 2021 15:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB456375A1F
+	for <lists+bpf@lfdr.de>; Thu,  6 May 2021 20:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233521AbhEFNRu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 May 2021 09:17:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54494 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232985AbhEFNRu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 6 May 2021 09:17:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620307011;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aFyoCh/Cvv5uFlEu/CTPouwkWlGfZVHzYvmAxhYjM4o=;
-        b=Tq4etUMlv9rWYGwy9kI5cjv3WwB15vNRm49Wql4asSLCGzzz9uaBQPwlNUaXlIFn+AdiaY
-        xJawyPBEdlUqnHXPaPTdguIQyE0q6VJU78bpEA0rF/TzefrkIDTQA190Oeibe0tZnrT9/d
-        fenSHH3aEsanSELP9xE6HOoe3RWg0KI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-luWD0peDPHCz8cVEamg4ww-1; Thu, 06 May 2021 09:16:49 -0400
-X-MC-Unique: luWD0peDPHCz8cVEamg4ww-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C931F1008063;
-        Thu,  6 May 2021 13:16:44 +0000 (UTC)
-Received: from krava (unknown [10.40.193.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C6728620DE;
-        Thu,  6 May 2021 13:16:36 +0000 (UTC)
-Date:   Thu, 6 May 2021 15:16:35 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
-        Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        dwarves@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-Message-ID: <YJPsM0McnVgsHS15@krava>
-References: <YIcRlHQWWKbOlcXr@krava>
- <20210427121237.GK6564@kitsune.suse.cz>
- <20210430174723.GP15381@kitsune.suse.cz>
- <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
- <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
- <4e051459-8532-7b61-c815-f3435767f8a0@kernel.org>
- <cbaf50c3-c85d-9239-0b37-c88e8cbed8c8@kernel.org>
- <YI/LgjLxo9VCN/d+@krava>
- <8c3cbd22-eb26-ea8b-c8bb-35a629d6d2d8@kernel.org>
- <20210506053152.e5rnv44zsitob3sn@kafai-mbp.dhcp.thefacebook.com>
+        id S234305AbhEFSXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 May 2021 14:23:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231839AbhEFSXU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 May 2021 14:23:20 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CF4C061574
+        for <bpf@vger.kernel.org>; Thu,  6 May 2021 11:22:22 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id g14so7252291edy.6
+        for <bpf@vger.kernel.org>; Thu, 06 May 2021 11:22:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BRQHRkFwEmoQQH23N9E0XGi4S2KTprSInvxvTybpRDo=;
+        b=cupWVeZ/u7+KYnd0pZbmw0V8kpVJFidtNQmJJndcFVQDm7Mz9sH12+Lvq5d+q2lORZ
+         askoFNLFB+ul/jNYyOaXg2Tc8PAwEkqUta+zAbfyeEtDr204q+upO7tiLAh5wdB9o0aH
+         Yb9MtWshSqoRLpE7C2Uc8CPKDNJXhWVFj2EP7zwBz1bdSM1Xiz30uMjFperBXrK3WRdL
+         TvwUA8q18G7J4cNgZYHBhFczEjy1UgA0lCqYBSYOIHI9yjJU+kALAz20Y3jyLLnqIuWg
+         SSOWEKIM2+jJSkFl8wOFPlyNTFJ8/0LbyLSHTGF3hAHXE3YCmz0LpQKySvdn/GYfM0XB
+         2x/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BRQHRkFwEmoQQH23N9E0XGi4S2KTprSInvxvTybpRDo=;
+        b=kC+ZcsMVIiJe9UEO7qw2VC4lvdqNVzpOnGFin94g/Ejoev+pyvdK980QO1aA8l7kXh
+         IZ3SAIBoVTQI6aTNaVtn9SiN1vI6ngoUcf0TD28XrE8UTeMbYwTsFCxvEphh3lYr5d78
+         zDQmEUSAWTgRFJ/5acogincA1f4uzyLZ7AKzA86BlA6Gv8cUxKM2k/jXko+nW603TIxv
+         U2A1Ej/hMExJ2ck029jy0QRgGK5ghohWD1ZH8jJ2L6T0A+H0iQkbbsFYodlHGjG3eoM5
+         S6Qc9zyN9Rgwf7xFhVZH4YJSmMkzy0ZFBgtDqvqSBCW98p7tHhdAuK6gNDdhCPg0BysF
+         zc0A==
+X-Gm-Message-State: AOAM532GMTxySMymmJJCz3IQqb9ia//ZIF+zAvvyiMZNphFsKprGbhQe
+        vQgFD/ErekzVcB0axQJ1zZce5R/pPQleOkVc
+X-Google-Smtp-Source: ABdhPJwalz14LVIofjsxwLlYtE/wH1FhQ2wiaFgnlmeUSpjNBiWtaPkSLjYl+lXNSPgeTr3vE6XNeQ==
+X-Received: by 2002:a05:6402:d05:: with SMTP id eb5mr6853199edb.6.1620325340281;
+        Thu, 06 May 2021 11:22:20 -0700 (PDT)
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com. [209.85.221.51])
+        by smtp.gmail.com with ESMTPSA id z12sm2205663edr.17.2021.05.06.11.22.16
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 May 2021 11:22:17 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id l13so6598080wru.11
+        for <bpf@vger.kernel.org>; Thu, 06 May 2021 11:22:16 -0700 (PDT)
+X-Received: by 2002:a05:6000:188b:: with SMTP id a11mr6776251wri.275.1620325335877;
+ Thu, 06 May 2021 11:22:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210506053152.e5rnv44zsitob3sn@kafai-mbp.dhcp.thefacebook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
+ <1619690903-1138-1-git-send-email-dseok.yi@samsung.com> <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
+ <02bf01d74211$0ff4aed0$2fde0c70$@samsung.com> <CA+FuTScC96R5o24c-sbY-CEV4EYOVFepFR85O4uGtCLwOjnzEw@mail.gmail.com>
+ <02c801d7421f$65287a90$2f796fb0$@samsung.com>
+In-Reply-To: <02c801d7421f$65287a90$2f796fb0$@samsung.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Thu, 6 May 2021 14:21:37 -0400
+X-Gmail-Original-Message-ID: <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
+Message-ID: <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
+ to 4
+To:     Dongseok Yi <dseok.yi@samsung.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 05, 2021 at 10:31:52PM -0700, Martin KaFai Lau wrote:
-> On Tue, May 04, 2021 at 08:41:47AM +0200, Jiri Slaby wrote:
-> > On 03. 05. 21, 12:08, Jiri Olsa wrote:
-> > > On Mon, May 03, 2021 at 10:59:44AM +0200, Jiri Slaby wrote:
-> > > > CCing pahole people.
-> > > > 
-> > > > On 03. 05. 21, 9:59, Jiri Slaby wrote:
-> > > > > On 03. 05. 21, 8:11, Jiri Slaby wrote:
-> > > > > > > > > > > looks like vfs_truncate did not get into BTF data,
-> > > > > > > > > > > I'll try to reproduce
-> > > > > > > 
-> > > > > > > _None_ of the functions are generated by pahole -J from
-> > > > > > > debuginfo on ppc64. debuginfo appears to be correct. Neither
-> > > > > > > pahole -J fs/open.o works correctly. collect_functions in
-> > > > > > > dwarves seems to be defunct on ppc64... "functions" array is
-> > > > > > > bogus (so find_function -- the bsearch -- fails).
-> > > > > > 
-> > > > > > It's not that bogus. I forgot an asterisk:
-> > > > > > > #0  find_function (btfe=0x100269f80, name=0x10024631c
-> > > > > > > "stream_open") at
-> > > > > > > /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
-> > > > > > > (gdb) p (*functions)@84
-> > > > > > > $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr
-> > > > > > > = 75232, size = 72, sh_addr = 65536, generated = false}, {
-> > > > > > >      name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592,
-> > > > > > > size = 216, sh_addr = 65536, generated = false}, {
-> > > > > > >      name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr =
-> > > > > > > 80816, size = 232, sh_addr = 65536, generated = false}, {
-> > > > > > >      name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr =
-> > > > > > > 74304, size = 100, sh_addr = 65536, generated = false}, {
-> > > > > > ...
-> > > > > > >      name = 0x7ffff68e0808 ".stream_open", addr = 65824, size =
-> > > > > > > 72, sh_addr = 65536, generated = false}, {
-> > > > > > ...
-> > > > > > >      name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size =
-> > > > > > > 544, sh_addr = 65536, generated = false}}
-> > > > > > 
-> > > > > > The dot makes the difference, of course. The question is why is it
-> > > > > > there? I keep looking into it. Only if someone has an immediate
-> > > > > > idea...
-> > > > > 
-> > > > > Well, .vfs_truncate is in .text (and contains an ._mcount call). And
-> > > > > vfs_truncate is in .opd (w/o an ._mcount call). Since setup_functions
-> > > > > excludes all functions without the ._mcount call, is_ftrace_func later
-> > > > > returns false for such functions and they are filtered before the BTF
-> > > > > processing.
-> > > > > 
-> > > > > Technically, get_vmlinux_addrs looks at a list of functions between
-> > > > > __start_mcount_loc and __stop_mcount_loc and considers only the listed.
-> > > > > 
-> > > > > I don't know what the correct fix is (exclude .opd functions from the
-> > > > > filter?). Neither why cross compiler doesn't fail, nor why ebi v2 avoids
-> > > > > this too.
-> > > > 
-> > > > Attaching a patch for pahole which fixes the issue, but I have no idea
-> > > > whether it is the right fix at all.
-> > > 
-> > > hi,
-> > > we're considering to disable ftrace filter completely,
-> > > I guess that would solve this issue for ppc as well
-> > > 
-> > >    https://lore.kernel.org/bpf/20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com/
-> > 
-> > Right, the attached patch fixes it for me too.
-> Ah, I just noticed the attachment while replying an earlier message in
-> this thread.
-> 
-> Please feel free to add SOB to mine or
-> repost yours and toss mine.  Either way works for me.
-> 
+On Wed, May 5, 2021 at 10:27 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
+>
+> On Wed, May 05, 2021 at 09:45:37PM -0400, Willem de Bruijn wrote:
+> > On Wed, May 5, 2021 at 8:45 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
+> > >
+> > > On Wed, May 05, 2021 at 10:55:10PM +0200, Daniel Borkmann wrote:
+> > > > On 4/29/21 12:08 PM, Dongseok Yi wrote:
+> > > > > tcp_gso_segment check for the size of GROed payload if it is bigger
+> > > > > than the mss. bpf_skb_proto_6_to_4 increases mss, but the mss can be
+> > > > > bigger than the size of GROed payload unexpectedly if data_len is not
+> > > > > big enough.
+> > > > >
+> > > > > Assume that skb gso_size = 1372 and data_len = 8. bpf_skb_proto_6_to_4
+> >
+> > Is this a typo and is this intended to read skb->data_len = 1380?
+>
+> This is not a typo. I intended skb->data_len = 8.
+>
+> >
+> > The issue is that payload length (1380) is greater than mss with ipv6
+> > (1372), but less than mss with ipv4 (1392).
+> >
+> > I don't understand data_len = 8 or why the patch compares
+> > skb->data_len to len_diff (20).
+>
+> skb_gro_receive():
+>         unsigned int len = skb_gro_len(skb);
+>         [...]
+> done:
+>         NAPI_GRO_CB(p)->count++;
+>         p->data_len += len;
+>
+> head_skb's data_len is the sum of skb_gro_len for each skb of the frags.
+> data_len could be 8 if server sent a small size packet and it is GROed
+> to head_skb.
+>
+> Please let me know if I am missing something.
 
-I think this patch is missing the same removal I just commented
-on your patch.. either way is ok for me
+This is my understanding of the data path. This is a forwarding path
+for TCP traffic.
 
-jirka
+GRO is enabled and will coalesce multiple segments into a single large
+packet. In bad cases, the coalesced packet payload is > MSS, but < MSS
++ 20.
 
+Somewhere between GRO and GSO you have a BPF program that converts the
+IPv6 address to IPv4.
+
+There is no concept of head_skb at the time of this BPF program. It is
+a single SKB, with an skb linear part and multiple data items in the
+frags (no frag_list).
+
+When entering the GSO stack, this single skb now has a payload length
+< MSS. So it would just make a valid TCP packet on its own?
+
+skb_gro_len is only relevant inside the GRO stack. It internally casts
+the skb->cb[] to NAPI_GRO_CB. This field is a scratch area that may be
+reused for other purposes later by other layers of the datapath. It is
+not safe to read this inside bpf_skb_proto_6_to_4.
+
+
+> >
+> > One simple solution if this packet no longer needs to be segmented
+> > might be to reset the gso_type completely.
+>
+> I am not sure gso_type can be cleared even when GSO is needed.
+>
+> >
+> > In general, I would advocate using BPF_F_ADJ_ROOM_FIXED_GSO. When
+> > converting from IPv6 to IPv4, fixed gso will end up building packets
+> > that are slightly below the MTU. That opportunity cost is negligible
+> > (especially with TSO). Unfortunately, I see that that flag is
+> > available for bpf_skb_adjust_room but not for bpf_skb_proto_6_to_4.
+> >
+> >
+> > > > > would increse the gso_size to 1392. tcp_gso_segment will get an error
+> > > > > with 1380 <= 1392.
+> > > > >
+> > > > > Check for the size of GROed payload if it is really bigger than target
+> > > > > mss when increase mss.
+> > > > >
+> > > > > Fixes: 6578171a7ff0 (bpf: add bpf_skb_change_proto helper)
+> > > > > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+> > > > > ---
+> > > > >   net/core/filter.c | 4 +++-
+> > > > >   1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > > > index 9323d34..3f79e3c 100644
+> > > > > --- a/net/core/filter.c
+> > > > > +++ b/net/core/filter.c
+> > > > > @@ -3308,7 +3308,9 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
+> > > > >             }
+> > > > >
+> > > > >             /* Due to IPv4 header, MSS can be upgraded. */
+> > > > > -           skb_increase_gso_size(shinfo, len_diff);
+> > > > > +           if (skb->data_len > len_diff)
+> > > >
+> > > > Could you elaborate some more on what this has to do with data_len specifically
+> > > > here? I'm not sure I follow exactly your above commit description. Are you saying
+> > > > that you're hitting in tcp_gso_segment():
+> > > >
+> > > >          [...]
+> > > >          mss = skb_shinfo(skb)->gso_size;
+> > > >          if (unlikely(skb->len <= mss))
+> > > >                  goto out;
+> > > >          [...]
+> > >
+> > > Yes, right
+> > >
+> > > >
+> > > > Please provide more context on the bug, thanks!
+> > >
+> > > tcp_gso_segment():
+> > >         [...]
+> > >         __skb_pull(skb, thlen);
+> > >
+> > >         mss = skb_shinfo(skb)->gso_size;
+> > >         if (unlikely(skb->len <= mss))
+> > >         [...]
+> > >
+> > > skb->len will have total GROed TCP payload size after __skb_pull.
+> > > skb->len <= mss will not be happened in a normal GROed situation. But
+> > > bpf_skb_proto_6_to_4 would upgrade MSS by increasing gso_size, it can
+> > > hit an error condition.
+> > >
+> > > We should ensure the following condition.
+> > > total GROed TCP payload > the original mss + (IPv6 size - IPv4 size)
+> > >
+> > > Due to
+> > > total GROed TCP payload = the original mss + skb->data_len
+> > > IPv6 size - IPv4 size = len_diff
+> > >
+> > > Finally, we can get the condition.
+> > > skb->data_len > len_diff
+> > >
+> > > >
+> > > > > +                   skb_increase_gso_size(shinfo, len_diff);
+> > > > > +
+> > > > >             /* Header must be checked, and gso_segs recomputed. */
+> > > > >             shinfo->gso_type |= SKB_GSO_DODGY;
+> > > > >             shinfo->gso_segs = 0;
+> > > > >
+> > >
+> > >
+>
