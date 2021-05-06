@@ -2,420 +2,246 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1C3374D32
-	for <lists+bpf@lfdr.de>; Thu,  6 May 2021 03:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FFAD374D82
+	for <lists+bpf@lfdr.de>; Thu,  6 May 2021 04:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhEFB70 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 May 2021 21:59:26 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:52648 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229872AbhEFB7Z (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 5 May 2021 21:59:25 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1461t7JJ028641
-        for <bpf@vger.kernel.org>; Wed, 5 May 2021 18:58:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=VabUxpeL9TvsdfxUYvCnEXej/ISHJ37h+Ds28xrUsZY=;
- b=HsE7zhVjylfOGFslU0Lkq7q56pK5xB4s/VsyLoq0FWbJP+VKuQWl68U0ReL3Anp6Idv5
- jQfLZ1/e0BSvAtX2PeqywkFxC+Uh69WRCemXHk6rGLvA8ngJhXRF2Uappm02EbAPSB7h
- i5yA6390pWPb7ZkKlvauAnjjjfnNXBjpYHY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 38bee0qa26-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 05 May 2021 18:58:27 -0700
-Received: from intmgw006.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 5 May 2021 18:58:26 -0700
-Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id 73D1C2941C79; Wed,  5 May 2021 18:58:24 -0700 (PDT)
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     <dwarves@vger.kernel.org>
-CC:     Arnaldo Carvalho de Melo <acme@kernel.org>, <bpf@vger.kernel.org>,
-        <kernel-team@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCH dwarves] btf: Remove ftrace filter
-Date:   Wed, 5 May 2021 18:58:24 -0700
-Message-ID: <20210506015824.2335125-1-kafai@fb.com>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: r3NG5kXrbVpv7NMKIJ-VHILfAga-ZiKj
-X-Proofpoint-GUID: r3NG5kXrbVpv7NMKIJ-VHILfAga-ZiKj
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S231419AbhEFC2s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 May 2021 22:28:48 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:64928 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231376AbhEFC2s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 May 2021 22:28:48 -0400
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210506022749epoutp02aab32a22a7c928c5f3590e07268ea1f6~8WTlzhQDc0433004330epoutp02N
+        for <bpf@vger.kernel.org>; Thu,  6 May 2021 02:27:49 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210506022749epoutp02aab32a22a7c928c5f3590e07268ea1f6~8WTlzhQDc0433004330epoutp02N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1620268069;
+        bh=u/oFc+RysAcbNw7YBahwmspRG76JwCdAvRU5YZymBtQ=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=mv72/qx6upbyf+Ci1uVmZupfffIgESs0Yx2cPbh6PLqRedP0DDybU17fFGDHp2WsK
+         OYlRrCJQRwI37I4NCC7JXYObRGD8l36dgvzwCMV19r7XGIQrECL/faENtmUTv199MZ
+         Bd1IMuNag5zEPyA9RLqmze721vp0tUCuqgc3g9ig=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20210506022748epcas2p1610e9e45315dba4e420e0e5ec7537405~8WTlPMEpu1397613976epcas2p1B;
+        Thu,  6 May 2021 02:27:48 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.189]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4FbHYG2K7Zz4x9Py; Thu,  6 May
+        2021 02:27:46 +0000 (GMT)
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A7.6F.09694.12453906; Thu,  6 May 2021 11:27:45 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210506022744epcas2p1207466493a0e0da9d4ee6c14e1182242~8WThDuF8-1656616566epcas2p10;
+        Thu,  6 May 2021 02:27:44 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210506022744epsmtrp11024c10fdd7d1a791bd0e1c772001a60~8WThCwYcr2275722757epsmtrp1a;
+        Thu,  6 May 2021 02:27:44 +0000 (GMT)
+X-AuditID: b6c32a46-e17ff700000025de-73-609354217f03
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E6.85.08163.F1453906; Thu,  6 May 2021 11:27:43 +0900 (KST)
+Received: from KORDO035731 (unknown [12.36.185.47]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210506022743epsmtip10680df7c93430fe8d7f9f3eff2744b4d~8WTgzxUwN2316123161epsmtip1S;
+        Thu,  6 May 2021 02:27:43 +0000 (GMT)
+From:   "Dongseok Yi" <dseok.yi@samsung.com>
+To:     "'Willem de Bruijn'" <willemdebruijn.kernel@gmail.com>
+Cc:     "'Daniel Borkmann'" <daniel@iogearbox.net>,
+        "'bpf'" <bpf@vger.kernel.org>,
+        "'Alexei Starovoitov'" <ast@kernel.org>,
+        "'Andrii Nakryiko'" <andrii@kernel.org>,
+        "'Martin KaFai Lau'" <kafai@fb.com>,
+        "'Song Liu'" <songliubraving@fb.com>,
+        "'Yonghong Song'" <yhs@fb.com>,
+        "'John Fastabend'" <john.fastabend@gmail.com>,
+        "'KP Singh'" <kpsingh@kernel.org>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Jakub Kicinski'" <kuba@kernel.org>,
+        "'Network Development'" <netdev@vger.kernel.org>,
+        "'linux-kernel'" <linux-kernel@vger.kernel.org>
+In-Reply-To: <CA+FuTScC96R5o24c-sbY-CEV4EYOVFepFR85O4uGtCLwOjnzEw@mail.gmail.com>
+Subject: RE: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
+ to 4
+Date:   Thu, 6 May 2021 11:27:43 +0900
+Message-ID: <02c801d7421f$65287a90$2f796fb0$@samsung.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-05_11:2021-05-05,2021-05-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 bulkscore=0
- mlxscore=0 impostorscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 adultscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105060011
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: ko
+Thread-Index: AQKypHYW3xad5/j2XvChPebQmKG2owG+YoocAqFpyMsBZavlXQIxNaIYqN8+O7A=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFJsWRmVeSWpSXmKPExsWy7bCmqa5iyOQEg9NdEhbff89mtvjy8za7
+        xecjx9ksFi/8xmwx53wLi0XTjhVMFi8+PGG0eL6vl8niwrY+VovLu+awWRxbIGbx8/AZZovF
+        PzcAVSyZwejA57Fl5U0mj4nN79g9ds66y+7RdeMSs8emVZ1sHp83yQWwReXYZKQmpqQWKaTm
+        JeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl5gBdq6RQlphTChQKSCwuVtK3
+        synKLy1JVcjILy6xVUotSMkpMDQs0CtOzC0uzUvXS87PtTI0MDAyBapMyMm4cr2PuWCBUsW5
+        HSsYGxgnSnYxcnJICJhIPF47k72LkYtDSGAHo8SsGQvYQBJCAp8YJea9d4VIfGaUODtpOjtM
+        R+u0LYwQiV2MEn/XTWCBcF4wSmxd0QpWxSagJfFmVjsriC0iYCXxf/YJsDizwDwWibZTIiA2
+        p0CgxO5ZP5hBbGGBYImnk5qYuhg5OFgEVCQ2XHUBCfMKWEp0b97MDmELSpyc+YQFYoy8xPa3
+        c5ghDlKQ+Pl0GStEXERidmcbM8RaP4nHjz5CHX2BQ+Lb2giQ8RICLhIHlrBAhIUlXh3fAlUi
+        JfGyv40doqReorU7BuQrCYEeRokr+55A1RtLzHrWzghSwyygKbF+lz5EubLEkVtQh/FJdBz+
+        CzWFV6KjTQjCVJKY+CUeYoaExIuTk1kmMCrNQvLVLCRfzULyySyEVQsYWVYxiqUWFOempxYb
+        FRghx/MmRnAi1nLbwTjl7Qe9Q4xMHIyHGCU4mJVEeAvW9icI8aYkVlalFuXHF5XmpBYfYjQF
+        BvNEZinR5HxgLsgriTc0NTIzM7A0tTA1M7JQEuf9mVqXICSQnliSmp2aWpBaBNPHxMEp1cBk
+        t3RFp/ouzwIxxXMHhPPuKmzuYvXbpxp7miMhzG/WWdesJ7+4jl/U1ZGYVGAwx9H2rfPJEM3X
+        jxvYe2xEHuczS7UzTH/RlaoaqXvIdpHM3x0H3zLOSb853TRfgDH19+MPEX4+OXJvZs99u1Ty
+        2NQdAapvWp/dm3nUyJrTdkP61WiZZy/Ktk0Q40/2c+N4sjV+9pIdZetuswh6/q1Ouy9wIPbk
+        JsOZb+WtZV6s9Z0acnjpdJsnW040NbZdsVphrr/76sNCw/dKQQXv/nVLzfs50XahQ/+2k99/
+        rF7A+/dfoj/z+xvLryakHv4VFuOu1lYqmcgpPUVGxlhkw94e3wm83BW/bc9+lV115MYeGdFa
+        JZbijERDLeai4kQA79dojU0EAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBIsWRmVeSWpSXmKPExsWy7bCSnK5CyOQEg/fqFt9/z2a2+PLzNrvF
+        5yPH2SwWL/zGbDHnfAuLRdOOFUwWLz48YbR4vq+XyeLCtj5Wi8u75rBZHFsgZvHz8Blmi8U/
+        NwBVLJnB6MDnsWXlTSaPic3v2D12zrrL7tF14xKzx6ZVnWwenzfJBbBFcdmkpOZklqUW6dsl
+        cGVcud7HXLBAqeLcjhWMDYwTJbsYOTkkBEwkWqdtYQSxhQR2MErs73LoYuQAiktI7NrsClEi
+        LHG/5QhrFyMXUMkzoJLVm1lAEmwCWhJvZrWzgtgiAlYS/2efYAcpYhZYwSJxoOM9O0THXiaJ
+        K1c/g1VxCgRK7J71gxnEFgay+//dYgTZxiKgIrHhqgtImFfAUqJ782Z2CFtQ4uTMJ2DLmAW0
+        JXoftjJC2PIS29/OYYa4TkHi59NlrBBxEYnZnW3MEAf5STx+9JF9AqPwLCSjZiEZNQvJqFlI
+        2hcwsqxilEwtKM5Nzy02LDDKSy3XK07MLS7NS9dLzs/dxAiOTC2tHYx7Vn3QO8TIxMF4iFGC
+        g1lJhLdgbX+CEG9KYmVValF+fFFpTmrxIUZpDhYlcd4LXSfjhQTSE0tSs1NTC1KLYLJMHJxS
+        DUzunKIp6Y2Mia6LOrPfOtxWNebcetf1TuWCtGqjiwzTps7cV+mb5fpkY3UEK+uU7mlqbb8/
+        bluz4+SvfVl+PK+vvzG9GzT/vOTfDdYO7FeNfte1J+3WUNv2VcU+1D1tk5z0pFuO1Yxf120z
+        a35h91cvy/6WEuf9JuuyadzTPV9POijOr/Jcx2/17Zc1FoXXtva93GzvvmN78pF4rxuiilPv
+        iGg/Ob7EKdHtSnnJjFuVwkrqBzbdUWgQ7mmdb8HGLxJ1ri5x85pp/OdCrrClbpQMjm248mid
+        2bYU84Wtk9lYJjPyas24EdPJ9mBuot35y1PNeAJv1c7kPur7bOrLlQfmLvxRKhce/vClbEed
+        QpMSS3FGoqEWc1FxIgAgod7UOwMAAA==
+X-CMS-MailID: 20210506022744epcas2p1207466493a0e0da9d4ee6c14e1182242
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210429102143epcas2p4c8747c09a9de28f003c20389c050394a
+References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
+        <1619690903-1138-1-git-send-email-dseok.yi@samsung.com>
+        <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
+        <02bf01d74211$0ff4aed0$2fde0c70$@samsung.com>
+        <CA+FuTScC96R5o24c-sbY-CEV4EYOVFepFR85O4uGtCLwOjnzEw@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BTF is currently generated for functions that are in ftrace list
-or extern.
+On Wed, May 05, 2021 at 09:45:37PM -0400, Willem de Bruijn wrote:
+> On Wed, May 5, 2021 at 8:45 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
+> >
+> > On Wed, May 05, 2021 at 10:55:10PM +0200, Daniel Borkmann wrote:
+> > > On 4/29/21 12:08 PM, Dongseok Yi wrote:
+> > > > tcp_gso_segment check for the size of GROed payload if it is bigger
+> > > > than the mss. bpf_skb_proto_6_to_4 increases mss, but the mss can be
+> > > > bigger than the size of GROed payload unexpectedly if data_len is not
+> > > > big enough.
+> > > >
+> > > > Assume that skb gso_size = 1372 and data_len = 8. bpf_skb_proto_6_to_4
+> 
+> Is this a typo and is this intended to read skb->data_len = 1380?
 
-A recent use case also needs BTF generated for functions included in
-allowlist.  In particular, the kernel
-commit e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist fo=
-r bpf-tcp-cc")
-allows bpf program to directly call a few tcp cc kernel functions. Those
-kernel functions are currently allowed only if CONFIG_DYNAMIC_FTRACE
-is set to ensure they are in the ftrace list but this kconfig dependency
-is unnecessary.
+This is not a typo. I intended skb->data_len = 8.
 
-Those kernel functions are specified under an ELF section .BTF_ids.
-There was an earlier attempt [0] to add another filter for the functions in
-the .BTF_ids section.  That discussion concluded that the ftrace filter
-should be removed instead.
+> 
+> The issue is that payload length (1380) is greater than mss with ipv6
+> (1372), but less than mss with ipv4 (1392).
+> 
+> I don't understand data_len = 8 or why the patch compares
+> skb->data_len to len_diff (20).
 
-This patch is to remove the ftrace filter and its related functions.
+skb_gro_receive():
+        unsigned int len = skb_gro_len(skb);
+        [...]
+done:
+        NAPI_GRO_CB(p)->count++;
+        p->data_len += len;
 
-Number of BTF FUNC with and without is_ftrace_func():
-My kconfig in x86: 40643 vs 46225
-Jiri reported on arm: 25022 vs 55812
+head_skb's data_len is the sum of skb_gro_len for each skb of the frags.
+data_len could be 8 if server sent a small size packet and it is GROed
+to head_skb.
 
-[0]: https://lore.kernel.org/dwarves/20210423213728.3538141-1-kafai@fb.com/
+Please let me know if I am missing something.
 
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
----
- btf_encoder.c | 272 +-------------------------------------------------
- 1 file changed, 5 insertions(+), 267 deletions(-)
+> 
+> One simple solution if this packet no longer needs to be segmented
+> might be to reset the gso_type completely.
 
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 80e896961d4e..55c5f8e30cac 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -27,17 +27,8 @@
-  */
- #define KSYM_NAME_LEN 128
-=20
--struct funcs_layout {
--	unsigned long mcount_start;
--	unsigned long mcount_stop;
--	unsigned long mcount_sec_idx;
--};
--
- struct elf_function {
- 	const char	*name;
--	unsigned long	 addr;
--	unsigned long	 size;
--	unsigned long	 sh_addr;
- 	bool		 generated;
- };
-=20
-@@ -98,250 +89,11 @@ static int collect_function(struct btf_elf *btfe, GElf=
-_Sym *sym,
- 	}
-=20
- 	functions[functions_cnt].name =3D name;
--	functions[functions_cnt].addr =3D elf_sym__value(sym);
--	functions[functions_cnt].size =3D elf_sym__size(sym);
--	functions[functions_cnt].sh_addr =3D sh.sh_addr;
- 	functions[functions_cnt].generated =3D false;
- 	functions_cnt++;
- 	return 0;
- }
-=20
--static int addrs_cmp(const void *_a, const void *_b)
--{
--	const __u64 *a =3D _a;
--	const __u64 *b =3D _b;
--
--	if (*a =3D=3D *b)
--		return 0;
--	return *a < *b ? -1 : 1;
--}
--
--static int get_vmlinux_addrs(struct btf_elf *btfe, struct funcs_layout *fl,
--			     __u64 **paddrs, __u64 *pcount)
--{
--	__u64 *addrs, count, offset;
--	unsigned int addr_size, i;
--	Elf_Data *data;
--	GElf_Shdr shdr;
--	Elf_Scn *sec;
--
--	/* Initialize for the sake of all error paths below. */
--	*paddrs =3D NULL;
--	*pcount =3D 0;
--
--	if (!fl->mcount_start || !fl->mcount_stop)
--		return 0;
--
--	/*
--	 * Find mcount addressed marked by __start_mcount_loc
--	 * and __stop_mcount_loc symbols and load them into
--	 * sorted array.
--	 */
--	sec =3D elf_getscn(btfe->elf, fl->mcount_sec_idx);
--	if (!sec || !gelf_getshdr(sec, &shdr)) {
--		fprintf(stderr, "Failed to get section(%lu) header.\n",
--			fl->mcount_sec_idx);
--		return -1;
--	}
--
--	/* Get address size from processed file's ELF class. */
--	addr_size =3D gelf_getclass(btfe->elf) =3D=3D ELFCLASS32 ? 4 : 8;
--
--	offset =3D fl->mcount_start - shdr.sh_addr;
--	count  =3D (fl->mcount_stop - fl->mcount_start) / addr_size;
--
--	data =3D elf_getdata(sec, 0);
--	if (!data) {
--		fprintf(stderr, "Failed to get section(%lu) data.\n",
--			fl->mcount_sec_idx);
--		return -1;
--	}
--
--	addrs =3D malloc(count * sizeof(addrs[0]));
--	if (!addrs) {
--		fprintf(stderr, "Failed to allocate memory for ftrace addresses.\n");
--		return -1;
--	}
--
--	if (addr_size =3D=3D sizeof(__u64)) {
--		memcpy(addrs, data->d_buf + offset, count * addr_size);
--	} else {
--		for (i =3D 0; i < count; i++)
--			addrs[i] =3D (__u64) *((__u32 *) (data->d_buf + offset + i * addr_size)=
-);
--	}
--
--	*paddrs =3D addrs;
--	*pcount =3D count;
--	return 0;
--}
--
--static int
--get_kmod_addrs(struct btf_elf *btfe, __u64 **paddrs, __u64 *pcount)
--{
--	__u64 *addrs, count;
--	unsigned int addr_size, i;
--	GElf_Shdr shdr_mcount;
--	Elf_Data *data;
--	Elf_Scn *sec;
--
--	/* Initialize for the sake of all error paths below. */
--	*paddrs =3D NULL;
--	*pcount =3D 0;
--
--	/* get __mcount_loc */
--	sec =3D elf_section_by_name(btfe->elf, &btfe->ehdr, &shdr_mcount,
--				  "__mcount_loc", NULL);
--	if (!sec) {
--		if (btf_elf__verbose) {
--			printf("%s: '%s' doesn't have __mcount_loc section\n", __func__,
--			       btfe->filename);
--		}
--		return 0;
--	}
--
--	data =3D elf_getdata(sec, NULL);
--	if (!data) {
--		fprintf(stderr, "Failed to data for __mcount_loc section.\n");
--		return -1;
--	}
--
--	/* Get address size from processed file's ELF class. */
--	addr_size =3D gelf_getclass(btfe->elf) =3D=3D ELFCLASS32 ? 4 : 8;
--
--	count =3D data->d_size / addr_size;
--
--	addrs =3D malloc(count * sizeof(addrs[0]));
--	if (!addrs) {
--		fprintf(stderr, "Failed to allocate memory for ftrace addresses.\n");
--		return -1;
--	}
--
--	if (addr_size =3D=3D sizeof(__u64)) {
--		memcpy(addrs, data->d_buf, count * addr_size);
--	} else {
--		for (i =3D 0; i < count; i++)
--			addrs[i] =3D (__u64) *((__u32 *) (data->d_buf + i * addr_size));
--	}
--
--	/*
--	 * We get Elf object from dwfl_module_getelf function,
--	 * which performs all possible relocations, including
--	 * __mcount_loc section.
--	 *
--	 * So addrs array now contains relocated values, which
--	 * we need take into account when we compare them to
--	 * functions values, see comment in setup_functions
--	 * function.
--	 */
--	*paddrs =3D addrs;
--	*pcount =3D count;
--	return 0;
--}
--
--static int is_ftrace_func(struct elf_function *func, __u64 *addrs, __u64 c=
-ount)
--{
--	__u64 start =3D func->addr;
--	__u64 addr, end =3D func->addr + func->size;
--
--	/*
--	 * The invariant here is addr[r] that is the smallest address
--	 * that is >=3D than function start addr. Except the corner case
--	 * where there is no such r, but for that we have a final check
--	 * in the return.
--	 */
--	size_t l =3D 0, r =3D count - 1, m;
--
--	/* make sure we don't use invalid r */
--	if (count =3D=3D 0)
--		return false;
--
--	while (l < r) {
--		m =3D l + (r - l) / 2;
--		addr =3D addrs[m];
--
--		if (addr >=3D start) {
--			/* we satisfy invariant, so tighten r */
--			r =3D m;
--		} else {
--			/* m is not good enough as l, maybe m + 1 will be */
--			l =3D m + 1;
--		}
--	}
--
--	return start <=3D addrs[r] && addrs[r] < end;
--}
--
--static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
--{
--	__u64 *addrs, count, i;
--	int functions_valid =3D 0;
--	bool kmod =3D false;
--
--	/*
--	 * Check if we are processing vmlinux image and
--	 * get mcount data if it's detected.
--	 */
--	if (get_vmlinux_addrs(btfe, fl, &addrs, &count))
--		return -1;
--
--	/*
--	 * Check if we are processing kernel module and
--	 * get mcount data if it's detected.
--	 */
--	if (!addrs) {
--		if (get_kmod_addrs(btfe, &addrs, &count))
--			return -1;
--		kmod =3D true;
--	}
--
--	if (!addrs) {
--		if (btf_elf__verbose)
--			printf("ftrace symbols not detected, falling back to DWARF data\n");
--		delete_functions();
--		return 0;
--	}
--
--	qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
--	qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
--
--	/*
--	 * Let's got through all collected functions and filter
--	 * out those that are not in ftrace.
--	 */
--	for (i =3D 0; i < functions_cnt; i++) {
--		struct elf_function *func =3D &functions[i];
--		/*
--		 * For vmlinux image both addrs[x] and functions[x]::addr
--		 * values are final address and are comparable.
--		 *
--		 * For kernel module addrs[x] is final address, but
--		 * functions[x]::addr is relative address within section
--		 * and needs to be relocated by adding sh_addr.
--		 */
--		if (kmod)
--			func->addr +=3D func->sh_addr;
--
--		/* Make sure function is within ftrace addresses. */
--		if (is_ftrace_func(func, addrs, count)) {
--			/*
--			 * We iterate over sorted array, so we can easily skip
--			 * not valid item and move following valid field into
--			 * its place, and still keep the 'new' array sorted.
--			 */
--			if (i !=3D functions_valid)
--				functions[functions_valid] =3D functions[i];
--			functions_valid++;
--		}
--	}
--
--	functions_cnt =3D functions_valid;
--	free(addrs);
--
--	if (btf_elf__verbose)
--		printf("Found %d functions!\n", functions_cnt);
--	return 0;
--}
--
- static struct elf_function *find_function(const struct btf_elf *btfe,
- 					  const char *name)
- {
-@@ -620,23 +372,8 @@ static int collect_percpu_var(struct btf_elf *btfe, GE=
-lf_Sym *sym,
- 	return 0;
- }
-=20
--static void collect_symbol(GElf_Sym *sym, struct funcs_layout *fl,
--			   size_t sym_sec_idx)
--{
--	if (!fl->mcount_start &&
--	    !strcmp("__start_mcount_loc", elf_sym__name(sym, btfe->symtab))) {
--		fl->mcount_start =3D sym->st_value;
--		fl->mcount_sec_idx =3D sym_sec_idx;
--	}
--
--	if (!fl->mcount_stop &&
--	    !strcmp("__stop_mcount_loc", elf_sym__name(sym, btfe->symtab)))
--		fl->mcount_stop =3D sym->st_value;
--}
--
- static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
- {
--	struct funcs_layout fl =3D { };
- 	Elf32_Word sym_sec_idx;
- 	uint32_t core_id;
- 	GElf_Sym sym;
-@@ -650,7 +387,6 @@ static int collect_symbols(struct btf_elf *btfe, bool c=
-ollect_percpu_vars)
- 			return -1;
- 		if (collect_function(btfe, &sym, sym_sec_idx))
- 			return -1;
--		collect_symbol(&sym, &fl, sym_sec_idx);
- 	}
-=20
- 	if (collect_percpu_vars) {
-@@ -661,9 +397,11 @@ static int collect_symbols(struct btf_elf *btfe, bool =
-collect_percpu_vars)
- 			printf("Found %d per-CPU variables!\n", percpu_var_cnt);
- 	}
-=20
--	if (functions_cnt && setup_functions(btfe, &fl)) {
--		fprintf(stderr, "Failed to filter DWARF functions\n");
--		return -1;
-+	if (functions_cnt) {
-+		qsort(functions, functions_cnt, sizeof(functions[0]),
-+		      functions_cmp);
-+		if (btf_elf__verbose)
-+			printf("Found %d functions!\n", functions_cnt);
- 	}
-=20
- 	return 0;
---=20
-2.30.2
+I am not sure gso_type can be cleared even when GSO is needed.
+
+> 
+> In general, I would advocate using BPF_F_ADJ_ROOM_FIXED_GSO. When
+> converting from IPv6 to IPv4, fixed gso will end up building packets
+> that are slightly below the MTU. That opportunity cost is negligible
+> (especially with TSO). Unfortunately, I see that that flag is
+> available for bpf_skb_adjust_room but not for bpf_skb_proto_6_to_4.
+> 
+> 
+> > > > would increse the gso_size to 1392. tcp_gso_segment will get an error
+> > > > with 1380 <= 1392.
+> > > >
+> > > > Check for the size of GROed payload if it is really bigger than target
+> > > > mss when increase mss.
+> > > >
+> > > > Fixes: 6578171a7ff0 (bpf: add bpf_skb_change_proto helper)
+> > > > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+> > > > ---
+> > > >   net/core/filter.c | 4 +++-
+> > > >   1 file changed, 3 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > > index 9323d34..3f79e3c 100644
+> > > > --- a/net/core/filter.c
+> > > > +++ b/net/core/filter.c
+> > > > @@ -3308,7 +3308,9 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
+> > > >             }
+> > > >
+> > > >             /* Due to IPv4 header, MSS can be upgraded. */
+> > > > -           skb_increase_gso_size(shinfo, len_diff);
+> > > > +           if (skb->data_len > len_diff)
+> > >
+> > > Could you elaborate some more on what this has to do with data_len specifically
+> > > here? I'm not sure I follow exactly your above commit description. Are you saying
+> > > that you're hitting in tcp_gso_segment():
+> > >
+> > >          [...]
+> > >          mss = skb_shinfo(skb)->gso_size;
+> > >          if (unlikely(skb->len <= mss))
+> > >                  goto out;
+> > >          [...]
+> >
+> > Yes, right
+> >
+> > >
+> > > Please provide more context on the bug, thanks!
+> >
+> > tcp_gso_segment():
+> >         [...]
+> >         __skb_pull(skb, thlen);
+> >
+> >         mss = skb_shinfo(skb)->gso_size;
+> >         if (unlikely(skb->len <= mss))
+> >         [...]
+> >
+> > skb->len will have total GROed TCP payload size after __skb_pull.
+> > skb->len <= mss will not be happened in a normal GROed situation. But
+> > bpf_skb_proto_6_to_4 would upgrade MSS by increasing gso_size, it can
+> > hit an error condition.
+> >
+> > We should ensure the following condition.
+> > total GROed TCP payload > the original mss + (IPv6 size - IPv4 size)
+> >
+> > Due to
+> > total GROed TCP payload = the original mss + skb->data_len
+> > IPv6 size - IPv4 size = len_diff
+> >
+> > Finally, we can get the condition.
+> > skb->data_len > len_diff
+> >
+> > >
+> > > > +                   skb_increase_gso_size(shinfo, len_diff);
+> > > > +
+> > > >             /* Header must be checked, and gso_segs recomputed. */
+> > > >             shinfo->gso_type |= SKB_GSO_DODGY;
+> > > >             shinfo->gso_segs = 0;
+> > > >
+> >
+> >
 
