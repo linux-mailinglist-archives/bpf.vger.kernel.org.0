@@ -2,50 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA58375CEA
-	for <lists+bpf@lfdr.de>; Thu,  6 May 2021 23:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F225F375D06
+	for <lists+bpf@lfdr.de>; Thu,  6 May 2021 23:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbhEFVjk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 May 2021 17:39:40 -0400
-Received: from www62.your-server.de ([213.133.104.62]:39980 "EHLO
+        id S230257AbhEFV6M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 May 2021 17:58:12 -0400
+Received: from www62.your-server.de ([213.133.104.62]:43308 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbhEFVjj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 May 2021 17:39:39 -0400
+        with ESMTP id S229894AbhEFV6L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 May 2021 17:58:11 -0400
 Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1lelhf-0009JR-Fh; Thu, 06 May 2021 23:38:39 +0200
+        id 1lelzb-000ASc-Fw; Thu, 06 May 2021 23:57:11 +0200
 Received: from [85.7.101.30] (helo=linux.home)
         by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1lelhf-000GZv-7s; Thu, 06 May 2021 23:38:39 +0200
-Subject: Re: [PATCH bpf] bpf: Don't WARN_ON_ONCE in bpf_bprintf_prepare
-To:     Florent Revest <revest@chromium.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id 1lelzb-000Wpm-6N; Thu, 06 May 2021 23:57:11 +0200
+Subject: Re: [PATCH bpf-next v6 2/3] libbpf: add low level TC-BPF API
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        syzbot <syzbot@syzkaller.appspotmail.com>
-References: <20210505162307.2545061-1-revest@chromium.org>
- <CAEf4BzZiK1ncN7RzeJ-62e=itekn34VuFf7WNhUF=9OoznMP6Q@mail.gmail.com>
- <fe37ff8f-ebf0-25ec-4f3c-df3373944efa@iogearbox.net>
- <CAEf4BzYsAXQ1t6GUJ4f8c0qGLdnO4NLDVJLRMhAY2oaiarDd6g@mail.gmail.com>
- <CAEf4BzYqUxgj28p7e1ng_5gfebXdVdrCVyPK4bjA31O4wgppeA@mail.gmail.com>
- <CABRcYmJBxY5AQMzO2vuuhVN7hs=1h+ursEnVAXpCPJ3DrkRrUA@mail.gmail.com>
- <CAEf4BzY4a6R-apnS0AZsb_Mtht2N8be1HvEN9hD9aSByoD1EHQ@mail.gmail.com>
- <CABRcYm+3AjHa3zO5AHSk6SbyFK6o6dLd8Fbz_sOznchWL2dumQ@mail.gmail.com>
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Shaun Crampton <shaun@tigera.io>, netdev@vger.kernel.org
+References: <20210504005023.1240974-1-memxor@gmail.com>
+ <20210504005023.1240974-3-memxor@gmail.com>
+ <eb6aada2-0de8-3adf-4b69-898a1c31c4e6@iogearbox.net>
+ <20210506023753.7hkzo3xxrqighcm2@apollo>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <875174b0-c0f1-8a41-ef00-3f0fe0396288@iogearbox.net>
-Date:   Thu, 6 May 2021 23:38:38 +0200
+Message-ID: <70213fce-858e-5384-1614-919c4eced8ba@iogearbox.net>
+Date:   Thu, 6 May 2021 23:57:10 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <CABRcYm+3AjHa3zO5AHSk6SbyFK6o6dLd8Fbz_sOznchWL2dumQ@mail.gmail.com>
+In-Reply-To: <20210506023753.7hkzo3xxrqighcm2@apollo>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -55,100 +55,261 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/6/21 10:17 PM, Florent Revest wrote:
-> On Thu, May 6, 2021 at 8:52 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
->> On Wed, May 5, 2021 at 3:29 PM Florent Revest <revest@chromium.org> wrote:
->>> On Wed, May 5, 2021 at 10:52 PM Andrii Nakryiko
->>> <andrii.nakryiko@gmail.com> wrote:
->>>> On Wed, May 5, 2021 at 1:48 PM Andrii Nakryiko
->>>> <andrii.nakryiko@gmail.com> wrote:
->>>>> On Wed, May 5, 2021 at 1:00 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>>>> On 5/5/21 8:55 PM, Andrii Nakryiko wrote:
->>>>>>> On Wed, May 5, 2021 at 9:23 AM Florent Revest <revest@chromium.org> wrote:
->>>>>>>>
->>>>>>>> The bpf_seq_printf, bpf_trace_printk and bpf_snprintf helpers share one
->>>>>>>> per-cpu buffer that they use to store temporary data (arguments to
->>>>>>>> bprintf). They "get" that buffer with try_get_fmt_tmp_buf and "put" it
->>>>>>>> by the end of their scope with bpf_bprintf_cleanup.
->>>>>>>>
->>>>>>>> If one of these helpers gets called within the scope of one of these
->>>>>>>> helpers, for example: a first bpf program gets called, uses
->>>>>>>
->>>>>>> Can we afford having few struct bpf_printf_bufs? They are just 512
->>>>>>> bytes, so can we have 3-5 of them? Tracing low-level stuff isn't the
->>>>>>> only situation where this can occur, right? If someone is doing
->>>>>>> bpf_snprintf() and interrupt occurs and we run another BPF program, it
->>>>>>> will be impossible to do bpf_snprintf() or bpf_trace_printk() from the
->>>>>>> second BPF program, etc. We can't eliminate the probability, but
->>>>>>> having a small stack of buffers would make the probability so
->>>>>>> miniscule as to not worry about it at all.
->>>>>>>
->>>>>>> Good thing is that try_get_fmt_tmp_buf() abstracts all the details, so
->>>>>>> the changes are minimal. Nestedness property is preserved for
->>>>>>> non-sleepable BPF programs, right? If we want this to work for
->>>>>>> sleepable we'd need to either: 1) disable migration or 2) instead of
->>>>>
->>>>> oh wait, we already disable migration for sleepable BPF progs, so it
->>>>> should be good to do nestedness level only
->>>>
->>>> actually, migrate_disable() might not be enough. Unless it is
->>>> impossible for some reason I miss, worst case it could be that two
->>>> sleepable programs (A and B) can be intermixed on the same CPU: A
->>>> starts&sleeps - B starts&sleeps - A continues&returns - B continues
->>>> and nestedness doesn't work anymore. So something like "reserving a
->>>> slot" would work better.
+On 5/6/21 4:37 AM, Kumar Kartikeya Dwivedi wrote:
+> On Thu, May 06, 2021 at 03:12:01AM IST, Daniel Borkmann wrote:
+>> On 5/4/21 2:50 AM, Kumar Kartikeya Dwivedi wrote:
+>>> This adds functions that wrap the netlink API used for adding,
+>>> manipulating, and removing traffic control filters.
 >>>
->>> Iiuc try_get_fmt_tmp_buf does preempt_enable to avoid that situation ?
->>>
->>>>>>> assuming a stack of buffers, do a loop to find unused one. Should be
->>>>>>> acceptable performance-wise, as it's not the fastest code anyway
->>>>>>> (printf'ing in general).
->>>>>>>
->>>>>>> In any case, re-using the same buffer for sort-of-optional-to-work
->>>>>>> bpf_trace_printk() and probably-important-to-work bpf_snprintf() is
->>>>>>> suboptimal, so seems worth fixing this.
->>>>>>>
->>>>>>> Thoughts?
->>>>>>
->>>>>> Yes, agree, it would otherwise be really hard to debug. I had the same
->>>>>> thought on why not allowing nesting here given users very likely expect
->>>>>> these helpers to just work for all the contexts.
->>>>>>
->>>>>> Thanks,
->>>>>> Daniel
->>>
->>> What would you think of just letting the helpers own these 512 bytes
->>> buffers as local variables on their stacks ? Then bpf_prepare_bprintf
->>> would only need to write there, there would be no acquire semantic
->>> (like try_get_fmt_tmp_buf) and the stack frame would just be freed on
->>> the helper return so there would be no bpf_printf_cleanup either. We
->>> would also not pre-reserve static memory for all CPUs and it becomes
->>> trivial to handle re-entrant helper calls.
->>>
->>> I inherited this per-cpu buffer from the pre-existing bpf_seq_printf
->>> code but I've not been convinced of its necessity.
+>>> An API summary:
 >>
->> I got the impression that extra 512 bytes on the kernel stack is quite
->> a lot and that's why we have per-cpu buffers. Especially that
->> bpf_trace_printk() can be called from any context, including NMI.
+>> Looks better, few minor comments below:
+>>
+>>> A bpf_tc_hook represents a location where a TC-BPF filter can be
+>>> attached. This means that creating a hook leads to creation of the
+>>> backing qdisc, while destruction either removes all filters attached to
+>>> a hook, or destroys qdisc if requested explicitly (as discussed below).
+>>>
+>>> The TC-BPF API functions operate on this bpf_tc_hook to attach, replace,
+>>> query, and detach tc filters.
+>>>
+>>> All functions return 0 on success, and a negative error code on failure.
+>>>
+>>> bpf_tc_hook_create - Create a hook
+>>> Parameters:
+>>> 	@hook - Cannot be NULL, ifindex > 0, attach_point must be set to
+>>> 		proper enum constant. Note that parent must be unset when
+>>> 		attach_point is one of BPF_TC_INGRESS or BPF_TC_EGRESS. Note
+>>> 		that as an exception BPF_TC_INGRESS|BPF_TC_EGRESS is also a
+>>> 		valid value for attach_point.
+>>>
+>>> 		Returns -EOPNOTSUPP when hook has attach_point as BPF_TC_CUSTOM.
+>>>
+>>> 		hook's flags member can be BPF_TC_F_REPLACE, which
+>>> 		creates qdisc in non-exclusive mode (i.e. an existing
+>>> 		qdisc will be replaced instead of this function failing
+>>> 		with -EEXIST).
+>>
+>> Why supporting BPF_TC_F_REPLACE here? It's not changing any qdisc parameters
+>> given clsact doesn't have any, no? Iow, what effect are you expecting on this
+>> with BPF_TC_F_REPLACE & why supporting it? I'd probably just require flags to
+>> be 0 here, and if hook exists return sth like -EEXIST.
 > 
-> Ok, I understand.
+> Ok, will change.
 > 
-> What about having one buffer per helper, synchronized with a spinlock?
-> Actually, bpf_trace_printk already has that, not for the bprintf
-> arguments but for the bprintf output so this wouldn't change much to
-> the performance of the helpers anyway:
-> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/trace/bpf_trace.c?id=9d31d2338950293ec19d9b095fbaa9030899dcb4#n385
+>>> bpf_tc_hook_destroy - Destroy the hook
+>>> Parameters:
+>>>           @hook - Cannot be NULL. The behaviour depends on value of
+>>> 		attach_point.
+>>>
+>>> 		If BPF_TC_INGRESS, all filters attached to the ingress
+>>> 		hook will be detached.
+>>> 		If BPF_TC_EGRESS, all filters attached to the egress hook
+>>> 		will be detached.
+>>> 		If BPF_TC_INGRESS|BPF_TC_EGRESS, the clsact qdisc will be
+>>> 		deleted, also detaching all filters.
+>>>
+>>> 		As before, parent must be unset for these attach_points,
+>>> 		and set for BPF_TC_CUSTOM. flags must also be unset.
+>>>
+>>> 		It is advised that if the qdisc is operated on by many programs,
+>>> 		then the program at least check that there are no other existing
+>>> 		filters before deleting the clsact qdisc. An example is shown
+>>> 		below:
+>>>
+>>> 		DECLARE_LIBBPF_OPTS(bpf_tc_hook, .ifindex = if_nametoindex("lo"),
+>>> 				    .attach_point = BPF_TC_INGRESS);
+>>> 		/* set opts as NULL, as we're not really interested in
+>>> 		 * getting any info for a particular filter, but just
+>>> 	 	 * detecting its presence.
+>>> 		 */
+>>> 		r = bpf_tc_query(&hook, NULL);
+>>> 		if (r == -ENOENT) {
+>>> 			/* no filters */
+>>> 			hook.attach_point = BPF_TC_INGRESS|BPF_TC_EGREESS;
+>>> 			return bpf_tc_hook_destroy(&hook);
+>>> 		} else {
+>>> 			/* failed or r == 0, the latter means filters do exist */
+>>> 			return r;
+>>> 		}
+>>>
+>>> 		Note that there is a small race between checking for no
+>>> 		filters and deleting the qdisc. This is currently unavoidable.
+>>>
+>>> 		Returns -EOPNOTSUPP when hook has attach_point as BPF_TC_CUSTOM.
+>>>
+>>> bpf_tc_attach - Attach a filter to a hook
+>>> Parameters:
+>>> 	@hook - Cannot be NULL. Represents the hook the filter will be
+>>> 		attached to. Requirements for ifindex and attach_point are
+>>> 		same as described in bpf_tc_hook_create, but BPF_TC_CUSTOM
+>>> 		is also supported.  In that case, parent must be set to the
+>>> 		handle where the filter will be attached (using TC_H_MAKE).
+>>> 		flags member must be unset.
+>>>
+>>> 		E.g. To set parent to 1:16 like in tc command line,
+>>> 		     the equivalent would be TC_H_MAKE(1 << 16, 16)
+>>
+>> Small nit: I wonder whether from libbpf side we should just support a more
+>> user friendly TC_H_MAKE, so you'd have: BPF_TC_CUSTOM + BPF_TC_PARENT(1, 16).
 > 
-> These helpers are not performance sensitive so a per-cpu stack of
-> buffers feels over-engineered to me (and is also complexity I feel a
-> bit uncomfortable with).
+> Something like this was there in v1. I'll add this macro again (I guess the most surprising part of
+> TC_H_MAKE is that it won't shift the major number).
 
-But wouldn't this have same potential of causing a deadlock? Simple example
-would be if you have a tracing prog attached to bstr_printf(), and one of
-the other helpers using the same lock called from a non-tracing prog. If
-it can be avoided fairly easily, I'd also opt for per-cpu buffers as Andrii
-mentioned earlier. We've had few prior examples with similar issues [0].
+Agree, weird one. :)
 
-   [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9594dc3c7e71b9f52bee1d7852eb3d4e3aea9e99
+[...]
+>>> bpf_tc_detach
+>>> Parameters:
+>>> 	@hook: Cannot be NULL. Represents the hook the filter will be
+>>> 		detached from. Requirements are same as described above
+>>> 		in bpf_tc_attach.
+>>>
+>>> 	@opts:	Cannot be NULL.
+>>>
+>>> 		The following opts must be set:
+>>> 			handle
+>>> 			priority
+>>> 		The following opts must be unset:
+>>> 			prog_fd
+>>> 			prog_id
+>>> 			flags
+>>>
+>>> bpf_tc_query
+>>> Parameters:
+>>> 	@hook: Cannot be NULL. Represents the hook where the filter
+>>> 	       lookup will be performed. Requires are same as described
+>>> 	       above in bpf_tc_attach.
+>>>
+>>> 	@opts: Can be NULL.
+>>
+>> Shouldn't it be: Cannot be NULL?
+> 
+> This allows you to check the existence of a filter. If set to NULL we skip writing anything to opts,
+
+You mean in this case s/filter/hook/, right?
+
+> but we still return -ENOENT or 0 depending on whether atleast one filter exists (based on the
+> default attributes that we choose). This is used in multiple places in the test, to determine
+> whether no filters exists.
+
+In other words, it's same as bpf_tc_hook_create() which would return -EEXIST just that
+we do /not/ create the hook if it does not exist, right?
+
+>>> 	       The following opts are optional:
+>>> 			handle
+>>> 			priority
+>>> 			prog_fd
+>>> 			prog_id
+>>
+>> What is the use case to set prog_fd here?
+> 
+> It allows you to search with the prog_id of the program represented by fd. It's just a convenience
+> thing, we end up doing a call to get the prog_id for you, and since the parameter is already there,
+> it seemed ok to support this.
+
+I would drop that part and have prog_fd forced to 0, given libbpf already has other means to
+retrieve it from fd, and if non-convenient, then lets add a simple/generic libbpf API.
+
+>>> 	       The following opts must be unset:
+>>> 			flags
+>>>
+>>> 	       However, only one of prog_fd and prog_id must be
+>>> 	       set. Setting both leads to an error. Setting none is
+>>> 	       allowed.
+>>>
+>>> 	       The following fields will be filled by bpf_tc_query on a
+>>> 	       successful lookup if they are unset:
+>>> 			handle
+>>> 			priority
+>>> 			prog_id
+>>>
+>>> 	       Based on the specified optional parameters, the matching
+>>> 	       data for the first matching filter is filled in and 0 is
+>>> 	       returned. When setting prog_fd, the prog_id will be
+>>> 	       matched against prog_id of the loaded SCHED_CLS prog
+>>> 	       represented by prog_fd.
+>>>
+>>> 	       To uniquely identify a filter, e.g. to detect its presence,
+>>> 	       it is recommended to set both handle and priority fields.
+>>
+>> What if prog_id is not unique, but part of multiple instances? Do we need
+>> to support this case?
+> 
+> We return the first filter that matches on the prog_id. I think it is worthwhile to support this, as
+> long as the kernel's sequence of returning filters is stable (which it is), we keep returning the
+> same filter's handle/priority, so you can essentially pop filters attached to a hook one by one by
+> passing in unset opts and getting its details (or setting one of the parameters and making the
+> lookup domain smaller).
+> 
+> In simple words, setting one of the parameters that will be filled leads to only returning an entry
+> that matches them. This is similar to what tc filter show's dump allows you to do.
+
+I think this is rather a bit weird/hacky/unintuitive. If we need such API, then lets add a
+proper one which returns all handle/priority combinations that match for a given prog_id
+for the provided hook, but I don't think this needs to be in the initial set; could be done
+as follow-up. (*)
+
+>> Why not just bpf_tc_query() with non-NULL hook and non-NULL opts where
+>> handle and priority is required to be set, and rest must be 0?
+> 
+> There is also a usecase for us where we need to query the existing filter on a hook without knowing
+> its handle/priority. Shaun also mentioned something similar, where they then go on to check the tag
+> they get from the returned prog_id to determine what to do next.
+
+See (*).
+
+>>> Some usage examples (using bpf skeleton infrastructure):
+>>>
+>>> BPF program (test_tc_bpf.c):
+>>>
+>>> 	#include <linux/bpf.h>
+>>> 	#include <bpf/bpf_helpers.h>
+>>>
+>>> 	SEC("classifier")
+>>> 	int cls(struct __sk_buff *skb)
+>>> 	{
+>>> 		return 0;
+>>> 	}
+>>>
+>>> Userspace loader:
+>>>
+>>> 	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts, 0);
+>>> 	struct test_tc_bpf *skel = NULL;
+>>> 	int fd, r;
+>>>
+>>> 	skel = test_tc_bpf__open_and_load();
+>>> 	if (!skel)
+>>> 		return -ENOMEM;
+>>>
+>>> 	fd = bpf_program__fd(skel->progs.cls);
+>>>
+>>> 	DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .ifindex =
+>>> 			    if_nametoindex("lo"), .attach_point =
+>>> 			    BPF_TC_INGRESS);
+>>> 	/* Create clsact qdisc */
+>>> 	r = bpf_tc_hook_create(&hook);
+>>> 	if (r < 0)
+>>> 		goto end;
+>>>
+>>> 	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts, .prog_fd = fd);
+>>
+>> Given we had DECLARE_LIBBPF_OPTS earlier, can't we just set:
+>> opts.prog_fd = fd here?
+> 
+> Right, will fix.
+> 
+>>
+>>> 	r = bpf_tc_attach(&hook, &opts);
+>>> 	if (r < 0)
+>>> 		goto end;
+>>> 	/* Print the auto allocated handle and priority */
+>>> 	printf("Handle=%u", opts.handle);
+>>> 	printf("Priority=%u", opts.priority);
+>>>
+>>> 	opts.prog_fd = opts.prog_id = 0;
+>>> 	bpf_tc_detach(&hook, &opts);
+>>
+
+Thanks,
+Daniel
