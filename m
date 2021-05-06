@@ -2,81 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C209F375498
-	for <lists+bpf@lfdr.de>; Thu,  6 May 2021 15:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C8D375482
+	for <lists+bpf@lfdr.de>; Thu,  6 May 2021 15:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233561AbhEFNWD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 May 2021 09:22:03 -0400
-Received: from mga18.intel.com ([134.134.136.126]:10337 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233521AbhEFNWD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 May 2021 09:22:03 -0400
-IronPort-SDR: 1qH6MEVIW1gAxtx2d4efHl5ILZSZecKMICOaXrlG5CLcfV9vIxRBERtUc2EO42hLTcYaNXltck
- bZ3HWG+CUAGw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="185931916"
-X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
-   d="scan'208";a="185931916"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 06:21:04 -0700
-IronPort-SDR: HokasF0R6+a764meRX7gHb+y1YCkNe5C+nSQd3vLZ2pI0srsSryW5UKqcQmLznOs03p+jUaxGc
- gHxN7/83oYGQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
-   d="scan'208";a="434346838"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga008.jf.intel.com with ESMTP; 06 May 2021 06:21:02 -0700
-Date:   Thu, 6 May 2021 15:09:07 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf] samples/bpf: consider frame size in tx_only of
- xdpsock sample
-Message-ID: <20210506130907.GA5728@ranger.igk.intel.com>
-References: <20210506124349.6666-1-magnus.karlsson@gmail.com>
+        id S233656AbhEFNQU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 May 2021 09:16:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55216 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233657AbhEFNQU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 6 May 2021 09:16:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620306921;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HSykd6n/65Sjb55CSej9S2o/ufmOt8gnzMkL6wg4Mek=;
+        b=NU3YgyLroJjXcsUJsI2RVddRYwTTsNsHEzmFg4KRCZB/MuzCJAEQ1WY+boSfe2u1+kNUNq
+        t1P+wt6FOx1k3PhzrNnOHC/A/qc1qo+ArHuP8aOmd8vJTfqivU/R/0FfRIwd0lMFtHE54W
+        6p/GfI3wl87p1lGXWTW01sT3Jy+LbVA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-WdcQisQaNEqlPYJespYRzQ-1; Thu, 06 May 2021 09:15:19 -0400
+X-MC-Unique: WdcQisQaNEqlPYJespYRzQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED05FEC1A0;
+        Thu,  6 May 2021 13:15:17 +0000 (UTC)
+Received: from krava (unknown [10.40.193.227])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 56F7460C25;
+        Thu,  6 May 2021 13:15:16 +0000 (UTC)
+Date:   Thu, 6 May 2021 15:15:15 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     dwarves@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf@vger.kernel.org, kernel-team@fb.com,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH dwarves] btf: Remove ftrace filter
+Message-ID: <YJPr4ykRPCCQ4s0P@krava>
+References: <20210506015824.2335125-1-kafai@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210506124349.6666-1-magnus.karlsson@gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20210506015824.2335125-1-kafai@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 06, 2021 at 02:43:49PM +0200, Magnus Karlsson wrote:
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
+On Wed, May 05, 2021 at 06:58:24PM -0700, Martin KaFai Lau wrote:
+> BTF is currently generated for functions that are in ftrace list
+> or extern.
 > 
-> Fix the tx_only micro-benchmark in xdpsock to take frame size into
-> consideration. It was hardcoded to the default value of frame_size
-> which is 4K. Changing this on the command line to 2K made half of the
-> packets illegal as they were outside the umem and were therefore
-> discarded by the kernel.
+> A recent use case also needs BTF generated for functions included in
+> allowlist.  In particular, the kernel
+> commit e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc")
+> allows bpf program to directly call a few tcp cc kernel functions. Those
+> kernel functions are currently allowed only if CONFIG_DYNAMIC_FTRACE
+> is set to ensure they are in the ftrace list but this kconfig dependency
+> is unnecessary.
 > 
-> Fixes: 46738f73ea4f ("samples/bpf: add use of need_wakeup flag in xdpsock")
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-
-Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-
+> Those kernel functions are specified under an ELF section .BTF_ids.
+> There was an earlier attempt [0] to add another filter for the functions in
+> the .BTF_ids section.  That discussion concluded that the ftrace filter
+> should be removed instead.
+> 
+> This patch is to remove the ftrace filter and its related functions.
+> 
+> Number of BTF FUNC with and without is_ftrace_func():
+> My kconfig in x86: 40643 vs 46225
+> Jiri reported on arm: 25022 vs 55812
+> 
+> [0]: https://lore.kernel.org/dwarves/20210423213728.3538141-1-kafai@fb.com/
+> 
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 > ---
->  samples/bpf/xdpsock_user.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  btf_encoder.c | 272 +-------------------------------------------------
+>  1 file changed, 5 insertions(+), 267 deletions(-)
 > 
-> diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
-> index aa696854be78..53e300f860bb 100644
-> --- a/samples/bpf/xdpsock_user.c
-> +++ b/samples/bpf/xdpsock_user.c
-> @@ -1255,7 +1255,7 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frame_nb, int batch_size)
->  	for (i = 0; i < batch_size; i++) {
->  		struct xdp_desc *tx_desc = xsk_ring_prod__tx_desc(&xsk->tx,
->  								  idx + i);
-> -		tx_desc->addr = (*frame_nb + i) << XSK_UMEM__DEFAULT_FRAME_SHIFT;
-> +		tx_desc->addr = (*frame_nb + i) * opt_xsk_frame_size;
->  		tx_desc->len = PKT_SIZE;
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 80e896961d4e..55c5f8e30cac 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -27,17 +27,8 @@
+>   */
+>  #define KSYM_NAME_LEN 128
+>  
+> -struct funcs_layout {
+> -	unsigned long mcount_start;
+> -	unsigned long mcount_stop;
+> -	unsigned long mcount_sec_idx;
+> -};
+> -
+>  struct elf_function {
+>  	const char	*name;
+> -	unsigned long	 addr;
+> -	unsigned long	 size;
+> -	unsigned long	 sh_addr;
+>  	bool		 generated;
+>  };
+>  
+> @@ -98,250 +89,11 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
 >  	}
 >  
-> 
-> base-commit: 9683e5775c75097c46bd24e65411b16ac6c6cbb3
-> -- 
-> 2.29.0
-> 
+
+we could also remove sym_sec_idx/last_idx right?
+it's there for the sh.sh_addr, which got removed
+
+jirka
+
+>  	functions[functions_cnt].name = name;
+> -	functions[functions_cnt].addr = elf_sym__value(sym);
+> -	functions[functions_cnt].size = elf_sym__size(sym);
+> -	functions[functions_cnt].sh_addr = sh.sh_addr;
+>  	functions[functions_cnt].generated = false;
+>  	functions_cnt++;
+>  	return 0;
+>  }
+>  
+
+SNIP
+
