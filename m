@@ -2,316 +2,431 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB237375EBC
-	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 04:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC4C375EE7
+	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 04:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234316AbhEGCNH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 May 2021 22:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbhEGCNG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 May 2021 22:13:06 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81038C061574;
-        Thu,  6 May 2021 19:12:07 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id i190so6495642pfc.12;
-        Thu, 06 May 2021 19:12:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=woV0wfis6Vgu/oe2Wn7/IaCbTJSmSO5eOeZoubzs3Z0=;
-        b=sAuu+8O4+6LTbW60qp+nv5TMbRD1Qd8N/3wL4UVKl4Vdkf03y1xAtcdVDp7sKSreQn
-         Ds+V+hOKLAjazSfS+/JksfS7idhnxTfRBn/D+EOw5jmqqbqGKXqkxBN/++zFisY593yy
-         Udm3Ed8TJDtSMiU5zNTYPeI6uzcKYF9hmceSq4z7YpfwyYst6hijBwAHt6NAhMJLUJyL
-         xIHxGDrieVb0u/vxF3TEhoyHEdxZL9nGdQCSNPI/OUrIgg9wQsf1G4cfzxhS7/+rQmtz
-         1GP9K1PMn8BHHlXsXKBwc/DGmWOWGx2TrQgxEaM0/w4MEsLI86rINm45BlrJ6MNDZbxv
-         DJcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=woV0wfis6Vgu/oe2Wn7/IaCbTJSmSO5eOeZoubzs3Z0=;
-        b=Nw1fkSSPd0V/RRTzxLAkdXVJhCpbWABN1wikvMlBPNEWnJE32OOt16O3ZM9Xq5hUrt
-         3Xi0D/V7+q59Ee4n446rpEGanaWLL9deBKbF4GATPQ0JhMC8GoEIHDjALwFpZK24uP39
-         DAlRT+1Ji3zsUDNrRNwwDQrZNU+yCTqrw+3i6BBKsy0G0M0bMY2UlBZd2PFtnj6Pyxnl
-         o0n+QoKxKQZX/ZHkPSmDWTXsYr6JQQLHyaUvclsjQGXsg2otE8OH42O/a5pFAXh+DJ7v
-         JZ155RL+SOkmBh/IwakV6UGnOcnZemC9QM3W41gEuD9jqfAOgI+srZEGt6fszDF6dobY
-         ZHdA==
-X-Gm-Message-State: AOAM531UQinYrilrgYxIgCMGQCF2WlVGENoy7mAox/WokaPP90K3fypo
-        XqpzyO4bPcpp5kRXiPPeJZw=
-X-Google-Smtp-Source: ABdhPJxbGIpJcDOePaM5Gfd1kkCmWXyafldXjALuO3QnZ/q2rVXtIncIvo8kCW5sylrwDKP7EZ2yHQ==
-X-Received: by 2002:a63:490:: with SMTP id 138mr7223630pge.99.1620353526869;
-        Thu, 06 May 2021 19:12:06 -0700 (PDT)
-Received: from localhost ([2409:4063:4307:f74c:aad7:c605:3fd2:aff3])
-        by smtp.gmail.com with ESMTPSA id o127sm3389359pfd.147.2021.05.06.19.12.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 19:12:06 -0700 (PDT)
-Date:   Fri, 7 May 2021 07:41:55 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Shaun Crampton <shaun@tigera.io>, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v6 2/3] libbpf: add low level TC-BPF API
-Message-ID: <20210507021155.ma2ogd25so5rgobg@apollo>
-References: <20210504005023.1240974-1-memxor@gmail.com>
- <20210504005023.1240974-3-memxor@gmail.com>
- <eb6aada2-0de8-3adf-4b69-898a1c31c4e6@iogearbox.net>
- <20210506023753.7hkzo3xxrqighcm2@apollo>
- <70213fce-858e-5384-1614-919c4eced8ba@iogearbox.net>
+        id S234137AbhEGCzm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 May 2021 22:55:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234097AbhEGCzl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 May 2021 22:55:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFE9861164;
+        Fri,  7 May 2021 02:54:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620356082;
+        bh=K+WO4gcRMkhlHYIHQmTai/D4kzrb/mPICLZtObMTlpw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e+PulsrhK88Mz1AixvPYNxyKanN3khD8BU+60inkDGMZLeW3F5aTsxwp0KH4QZ05E
+         2Fuxu7JeZ4M4TcJWLTU2pGSCzpd2WUbIun9hb1kZfG537cl626sf6b3eKo6GWXwssz
+         sAs2UElTOhGfn3I3uUihxPi24Gty/HbmF6r38FOxyKxxPlMnXwAfJZTbfxuX3fpNfK
+         FI4rhhu1Iu7Ujn04OqOuZWOd/lwwAF56h0JT2/Ld/NNBC13ghkxi04aXly1Zp7NeHK
+         PWNTZBeAmgViL8COxYpLO14j6ZtSh5Ezsm+007hy/uTI3bv5iFv2rp2nhnaF3sdcWp
+         Up0+9NogeSS0w==
+Date:   Thu, 6 May 2021 19:54:37 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     dwarves@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        kernel-team@fb.com, Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH v2 dwarves] btf: Remove ftrace filter
+Message-ID: <YJSr7S7dRty3K8Wd@archlinux-ax161>
+References: <20210506205622.3663956-1-kafai@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <70213fce-858e-5384-1614-919c4eced8ba@iogearbox.net>
+In-Reply-To: <20210506205622.3663956-1-kafai@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 07, 2021 at 03:27:10AM IST, Daniel Borkmann wrote:
-> On 5/6/21 4:37 AM, Kumar Kartikeya Dwivedi wrote:
-> > On Thu, May 06, 2021 at 03:12:01AM IST, Daniel Borkmann wrote:
-> > > On 5/4/21 2:50 AM, Kumar Kartikeya Dwivedi wrote:
-> > > > This adds functions that wrap the netlink API used for adding,
-> > > > manipulating, and removing traffic control filters.
-> > > >
-> > > > An API summary:
-> > >
-> > > Looks better, few minor comments below:
-> > >
-> > > > A bpf_tc_hook represents a location where a TC-BPF filter can be
-> > > > attached. This means that creating a hook leads to creation of the
-> > > > backing qdisc, while destruction either removes all filters attached to
-> > > > a hook, or destroys qdisc if requested explicitly (as discussed below).
-> > > >
-> > > > The TC-BPF API functions operate on this bpf_tc_hook to attach, replace,
-> > > > query, and detach tc filters.
-> > > >
-> > > > All functions return 0 on success, and a negative error code on failure.
-> > > >
-> > > > bpf_tc_hook_create - Create a hook
-> > > > Parameters:
-> > > > 	@hook - Cannot be NULL, ifindex > 0, attach_point must be set to
-> > > > 		proper enum constant. Note that parent must be unset when
-> > > > 		attach_point is one of BPF_TC_INGRESS or BPF_TC_EGRESS. Note
-> > > > 		that as an exception BPF_TC_INGRESS|BPF_TC_EGRESS is also a
-> > > > 		valid value for attach_point.
-> > > >
-> > > > 		Returns -EOPNOTSUPP when hook has attach_point as BPF_TC_CUSTOM.
-> > > >
-> > > > 		hook's flags member can be BPF_TC_F_REPLACE, which
-> > > > 		creates qdisc in non-exclusive mode (i.e. an existing
-> > > > 		qdisc will be replaced instead of this function failing
-> > > > 		with -EEXIST).
-> > >
-> > > Why supporting BPF_TC_F_REPLACE here? It's not changing any qdisc parameters
-> > > given clsact doesn't have any, no? Iow, what effect are you expecting on this
-> > > with BPF_TC_F_REPLACE & why supporting it? I'd probably just require flags to
-> > > be 0 here, and if hook exists return sth like -EEXIST.
-> >
-> > Ok, will change.
-> >
-> > > > bpf_tc_hook_destroy - Destroy the hook
-> > > > Parameters:
-> > > >           @hook - Cannot be NULL. The behaviour depends on value of
-> > > > 		attach_point.
-> > > >
-> > > > 		If BPF_TC_INGRESS, all filters attached to the ingress
-> > > > 		hook will be detached.
-> > > > 		If BPF_TC_EGRESS, all filters attached to the egress hook
-> > > > 		will be detached.
-> > > > 		If BPF_TC_INGRESS|BPF_TC_EGRESS, the clsact qdisc will be
-> > > > 		deleted, also detaching all filters.
-> > > >
-> > > > 		As before, parent must be unset for these attach_points,
-> > > > 		and set for BPF_TC_CUSTOM. flags must also be unset.
-> > > >
-> > > > 		It is advised that if the qdisc is operated on by many programs,
-> > > > 		then the program at least check that there are no other existing
-> > > > 		filters before deleting the clsact qdisc. An example is shown
-> > > > 		below:
-> > > >
-> > > > 		DECLARE_LIBBPF_OPTS(bpf_tc_hook, .ifindex = if_nametoindex("lo"),
-> > > > 				    .attach_point = BPF_TC_INGRESS);
-> > > > 		/* set opts as NULL, as we're not really interested in
-> > > > 		 * getting any info for a particular filter, but just
-> > > > 	 	 * detecting its presence.
-> > > > 		 */
-> > > > 		r = bpf_tc_query(&hook, NULL);
-> > > > 		if (r == -ENOENT) {
-> > > > 			/* no filters */
-> > > > 			hook.attach_point = BPF_TC_INGRESS|BPF_TC_EGREESS;
-> > > > 			return bpf_tc_hook_destroy(&hook);
-> > > > 		} else {
-> > > > 			/* failed or r == 0, the latter means filters do exist */
-> > > > 			return r;
-> > > > 		}
-> > > >
-> > > > 		Note that there is a small race between checking for no
-> > > > 		filters and deleting the qdisc. This is currently unavoidable.
-> > > >
-> > > > 		Returns -EOPNOTSUPP when hook has attach_point as BPF_TC_CUSTOM.
-> > > >
-> > > > bpf_tc_attach - Attach a filter to a hook
-> > > > Parameters:
-> > > > 	@hook - Cannot be NULL. Represents the hook the filter will be
-> > > > 		attached to. Requirements for ifindex and attach_point are
-> > > > 		same as described in bpf_tc_hook_create, but BPF_TC_CUSTOM
-> > > > 		is also supported.  In that case, parent must be set to the
-> > > > 		handle where the filter will be attached (using TC_H_MAKE).
-> > > > 		flags member must be unset.
-> > > >
-> > > > 		E.g. To set parent to 1:16 like in tc command line,
-> > > > 		     the equivalent would be TC_H_MAKE(1 << 16, 16)
-> > >
-> > > Small nit: I wonder whether from libbpf side we should just support a more
-> > > user friendly TC_H_MAKE, so you'd have: BPF_TC_CUSTOM + BPF_TC_PARENT(1, 16).
-> >
-> > Something like this was there in v1. I'll add this macro again (I guess the most surprising part of
-> > TC_H_MAKE is that it won't shift the major number).
->
-> Agree, weird one. :)
->
-> [...]
-> > > > bpf_tc_detach
-> > > > Parameters:
-> > > > 	@hook: Cannot be NULL. Represents the hook the filter will be
-> > > > 		detached from. Requirements are same as described above
-> > > > 		in bpf_tc_attach.
-> > > >
-> > > > 	@opts:	Cannot be NULL.
-> > > >
-> > > > 		The following opts must be set:
-> > > > 			handle
-> > > > 			priority
-> > > > 		The following opts must be unset:
-> > > > 			prog_fd
-> > > > 			prog_id
-> > > > 			flags
-> > > >
-> > > > bpf_tc_query
-> > > > Parameters:
-> > > > 	@hook: Cannot be NULL. Represents the hook where the filter
-> > > > 	       lookup will be performed. Requires are same as described
-> > > > 	       above in bpf_tc_attach.
-> > > >
-> > > > 	@opts: Can be NULL.
-> > >
-> > > Shouldn't it be: Cannot be NULL?
-> >
-> > This allows you to check the existence of a filter. If set to NULL we skip writing anything to opts,
->
-> You mean in this case s/filter/hook/, right?
->
+On Thu, May 06, 2021 at 01:56:22PM -0700, Martin KaFai Lau wrote:
+> BTF is currently generated for functions that are in ftrace list
+> or extern.
+> 
+> A recent use case also needs BTF generated for functions included in
+> allowlist.  In particular, the kernel
+> commit e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc")
+> allows bpf program to directly call a few tcp cc kernel functions. Those
+> kernel functions are currently allowed only if CONFIG_DYNAMIC_FTRACE
+> is set to ensure they are in the ftrace list but this kconfig dependency
+> is unnecessary.
+> 
+> Those kernel functions are specified under an ELF section .BTF_ids.
+> There was an earlier attempt [0] to add another filter for the functions in
+> the .BTF_ids section.  That discussion concluded that the ftrace filter
+> should be removed instead.
+> 
+> This patch is to remove the ftrace filter and its related functions.
+> 
+> Number of BTF FUNC with and without is_ftrace_func():
+> My kconfig in x86: 40643 vs 46225
+> Jiri reported on arm: 25022 vs 55812
+> 
+> [0]: https://lore.kernel.org/dwarves/20210423213728.3538141-1-kafai@fb.com/
+> 
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 
-Hm? I do mean filter. Since there is nothing to fill, we just cut short reading any more and return
-early (but set info->processed) indicating there is (atleast) a filter attached.
+This fixes an issue with Fedora's s390x config that CKI noticed:
 
-It also allows you to implement the if (zero_filters()) del_qdisc(); logic on your own.
+https://groups.google.com/g/clang-built-linux/c/IzthpckBJvc/m/MPWGDmXiAwAJ
 
-> > but we still return -ENOENT or 0 depending on whether atleast one filter exists (based on the
-> > default attributes that we choose). This is used in multiple places in the test, to determine
-> > whether no filters exists.
->
-> In other words, it's same as bpf_tc_hook_create() which would return -EEXIST just that
-> we do /not/ create the hook if it does not exist, right?
->
+Tested-by: Nathan Chancellor <nathan@kernel.org> # build
 
-It really has nothing to do with bpf_tc_hook, that is only for obtaining ifindex/parent. With opts
-as NULL you can just determine if there is any filter that is attached to the hook or not. In case
-you do pass in opts but leave everything unset, we then return the first match.
-
-> > > > 	       The following opts are optional:
-> > > > 			handle
-> > > > 			priority
-> > > > 			prog_fd
-> > > > 			prog_id
-> > >
-> > > What is the use case to set prog_fd here?
-> >
-> > It allows you to search with the prog_id of the program represented by fd. It's just a convenience
-> > thing, we end up doing a call to get the prog_id for you, and since the parameter is already there,
-> > it seemed ok to support this.
->
-> I would drop that part and have prog_fd forced to 0, given libbpf already has other means to
-> retrieve it from fd, and if non-convenient, then lets add a simple/generic libbpf API.
->
-
-Ok, will drop.
-
-> > > > 	       The following opts must be unset:
-> > > > 			flags
-> > > >
-> > > > 	       However, only one of prog_fd and prog_id must be
-> > > > 	       set. Setting both leads to an error. Setting none is
-> > > > 	       allowed.
-> > > >
-> > > > 	       The following fields will be filled by bpf_tc_query on a
-> > > > 	       successful lookup if they are unset:
-> > > > 			handle
-> > > > 			priority
-> > > > 			prog_id
-> > > >
-> > > > 	       Based on the specified optional parameters, the matching
-> > > > 	       data for the first matching filter is filled in and 0 is
-> > > > 	       returned. When setting prog_fd, the prog_id will be
-> > > > 	       matched against prog_id of the loaded SCHED_CLS prog
-> > > > 	       represented by prog_fd.
-> > > >
-> > > > 	       To uniquely identify a filter, e.g. to detect its presence,
-> > > > 	       it is recommended to set both handle and priority fields.
-> > >
-> > > What if prog_id is not unique, but part of multiple instances? Do we need
-> > > to support this case?
-> >
-> > We return the first filter that matches on the prog_id. I think it is worthwhile to support this, as
-> > long as the kernel's sequence of returning filters is stable (which it is), we keep returning the
-> > same filter's handle/priority, so you can essentially pop filters attached to a hook one by one by
-> > passing in unset opts and getting its details (or setting one of the parameters and making the
-> > lookup domain smaller).
-> >
-> > In simple words, setting one of the parameters that will be filled leads to only returning an entry
-> > that matches them. This is similar to what tc filter show's dump allows you to do.
->
-> I think this is rather a bit weird/hacky/unintuitive. If we need such API, then lets add a
-> proper one which returns all handle/priority combinations that match for a given prog_id
-> for the provided hook, but I don't think this needs to be in the initial set; could be done
-> as follow-up. (*)
->
-
-Initially when adding this me and Toke did discuss the possibility of a query API that returns all
-matches instead of the first one, but there were a few questions around how this would be returned.
-
-One of the ways would be to require the caller to provide a buffer, and then provide some way to
-iterate over this. The latter part is easy, but it is hard to predict how big the buffer should be
-from the calling end. If it is smaller than needed, we will have to leave out entries and indicate
-that in some way, and we also cannot return them in a subsequent call as that would break atomicity
-(and we would have to know where to seek forward to in the netlink reply the next time).
-
-The other way is making bpf_tc_query return an allocated buffer. This is better, as we can keep
-doing realloc to grow it as needed, but again it seems like there must be a cap on the maximum size
-to avoid unbounded growth (as there can be potentially many, many matching filters, especially on
-use of NLM_F_DUMP).
-
-A completely different idea would be to take a callback pointer from the user and invoke it for each
-matching entry, allowing the user to do whatever they want with it (and have a void *userdata
-parameter which we pass in). This sounds nice and has many benefits, but is potentially slower as
-far as iteration is concerned (which might be a valid concern depending on how this interface is
-used in the future).
-
-It would be nice to have some more input on how this should be done before I get to writing the
-code.
-
-> [...]
-
---
-Kartikeya
+> ---
+> v2: Remove sym_sec_idx, last_idx, and sh. (Jiri Olsa)
+> 
+>  btf_encoder.c | 285 ++------------------------------------------------
+>  1 file changed, 7 insertions(+), 278 deletions(-)
+> 
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 80e896961d4e..c711f124b31e 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -27,17 +27,8 @@
+>   */
+>  #define KSYM_NAME_LEN 128
+>  
+> -struct funcs_layout {
+> -	unsigned long mcount_start;
+> -	unsigned long mcount_stop;
+> -	unsigned long mcount_sec_idx;
+> -};
+> -
+>  struct elf_function {
+>  	const char	*name;
+> -	unsigned long	 addr;
+> -	unsigned long	 size;
+> -	unsigned long	 sh_addr;
+>  	bool		 generated;
+>  };
+>  
+> @@ -64,12 +55,9 @@ static void delete_functions(void)
+>  #define max(x, y) ((x) < (y) ? (y) : (x))
+>  #endif
+>  
+> -static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
+> -			    size_t sym_sec_idx)
+> +static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
+>  {
+>  	struct elf_function *new;
+> -	static GElf_Shdr sh;
+> -	static size_t last_idx;
+>  	const char *name;
+>  
+>  	if (elf_sym__type(sym) != STT_FUNC)
+> @@ -91,257 +79,12 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
+>  		functions = new;
+>  	}
+>  
+> -	if (sym_sec_idx != last_idx) {
+> -		if (!elf_section_by_idx(btfe->elf, &sh, sym_sec_idx))
+> -			return 0;
+> -		last_idx = sym_sec_idx;
+> -	}
+> -
+>  	functions[functions_cnt].name = name;
+> -	functions[functions_cnt].addr = elf_sym__value(sym);
+> -	functions[functions_cnt].size = elf_sym__size(sym);
+> -	functions[functions_cnt].sh_addr = sh.sh_addr;
+>  	functions[functions_cnt].generated = false;
+>  	functions_cnt++;
+>  	return 0;
+>  }
+>  
+> -static int addrs_cmp(const void *_a, const void *_b)
+> -{
+> -	const __u64 *a = _a;
+> -	const __u64 *b = _b;
+> -
+> -	if (*a == *b)
+> -		return 0;
+> -	return *a < *b ? -1 : 1;
+> -}
+> -
+> -static int get_vmlinux_addrs(struct btf_elf *btfe, struct funcs_layout *fl,
+> -			     __u64 **paddrs, __u64 *pcount)
+> -{
+> -	__u64 *addrs, count, offset;
+> -	unsigned int addr_size, i;
+> -	Elf_Data *data;
+> -	GElf_Shdr shdr;
+> -	Elf_Scn *sec;
+> -
+> -	/* Initialize for the sake of all error paths below. */
+> -	*paddrs = NULL;
+> -	*pcount = 0;
+> -
+> -	if (!fl->mcount_start || !fl->mcount_stop)
+> -		return 0;
+> -
+> -	/*
+> -	 * Find mcount addressed marked by __start_mcount_loc
+> -	 * and __stop_mcount_loc symbols and load them into
+> -	 * sorted array.
+> -	 */
+> -	sec = elf_getscn(btfe->elf, fl->mcount_sec_idx);
+> -	if (!sec || !gelf_getshdr(sec, &shdr)) {
+> -		fprintf(stderr, "Failed to get section(%lu) header.\n",
+> -			fl->mcount_sec_idx);
+> -		return -1;
+> -	}
+> -
+> -	/* Get address size from processed file's ELF class. */
+> -	addr_size = gelf_getclass(btfe->elf) == ELFCLASS32 ? 4 : 8;
+> -
+> -	offset = fl->mcount_start - shdr.sh_addr;
+> -	count  = (fl->mcount_stop - fl->mcount_start) / addr_size;
+> -
+> -	data = elf_getdata(sec, 0);
+> -	if (!data) {
+> -		fprintf(stderr, "Failed to get section(%lu) data.\n",
+> -			fl->mcount_sec_idx);
+> -		return -1;
+> -	}
+> -
+> -	addrs = malloc(count * sizeof(addrs[0]));
+> -	if (!addrs) {
+> -		fprintf(stderr, "Failed to allocate memory for ftrace addresses.\n");
+> -		return -1;
+> -	}
+> -
+> -	if (addr_size == sizeof(__u64)) {
+> -		memcpy(addrs, data->d_buf + offset, count * addr_size);
+> -	} else {
+> -		for (i = 0; i < count; i++)
+> -			addrs[i] = (__u64) *((__u32 *) (data->d_buf + offset + i * addr_size));
+> -	}
+> -
+> -	*paddrs = addrs;
+> -	*pcount = count;
+> -	return 0;
+> -}
+> -
+> -static int
+> -get_kmod_addrs(struct btf_elf *btfe, __u64 **paddrs, __u64 *pcount)
+> -{
+> -	__u64 *addrs, count;
+> -	unsigned int addr_size, i;
+> -	GElf_Shdr shdr_mcount;
+> -	Elf_Data *data;
+> -	Elf_Scn *sec;
+> -
+> -	/* Initialize for the sake of all error paths below. */
+> -	*paddrs = NULL;
+> -	*pcount = 0;
+> -
+> -	/* get __mcount_loc */
+> -	sec = elf_section_by_name(btfe->elf, &btfe->ehdr, &shdr_mcount,
+> -				  "__mcount_loc", NULL);
+> -	if (!sec) {
+> -		if (btf_elf__verbose) {
+> -			printf("%s: '%s' doesn't have __mcount_loc section\n", __func__,
+> -			       btfe->filename);
+> -		}
+> -		return 0;
+> -	}
+> -
+> -	data = elf_getdata(sec, NULL);
+> -	if (!data) {
+> -		fprintf(stderr, "Failed to data for __mcount_loc section.\n");
+> -		return -1;
+> -	}
+> -
+> -	/* Get address size from processed file's ELF class. */
+> -	addr_size = gelf_getclass(btfe->elf) == ELFCLASS32 ? 4 : 8;
+> -
+> -	count = data->d_size / addr_size;
+> -
+> -	addrs = malloc(count * sizeof(addrs[0]));
+> -	if (!addrs) {
+> -		fprintf(stderr, "Failed to allocate memory for ftrace addresses.\n");
+> -		return -1;
+> -	}
+> -
+> -	if (addr_size == sizeof(__u64)) {
+> -		memcpy(addrs, data->d_buf, count * addr_size);
+> -	} else {
+> -		for (i = 0; i < count; i++)
+> -			addrs[i] = (__u64) *((__u32 *) (data->d_buf + i * addr_size));
+> -	}
+> -
+> -	/*
+> -	 * We get Elf object from dwfl_module_getelf function,
+> -	 * which performs all possible relocations, including
+> -	 * __mcount_loc section.
+> -	 *
+> -	 * So addrs array now contains relocated values, which
+> -	 * we need take into account when we compare them to
+> -	 * functions values, see comment in setup_functions
+> -	 * function.
+> -	 */
+> -	*paddrs = addrs;
+> -	*pcount = count;
+> -	return 0;
+> -}
+> -
+> -static int is_ftrace_func(struct elf_function *func, __u64 *addrs, __u64 count)
+> -{
+> -	__u64 start = func->addr;
+> -	__u64 addr, end = func->addr + func->size;
+> -
+> -	/*
+> -	 * The invariant here is addr[r] that is the smallest address
+> -	 * that is >= than function start addr. Except the corner case
+> -	 * where there is no such r, but for that we have a final check
+> -	 * in the return.
+> -	 */
+> -	size_t l = 0, r = count - 1, m;
+> -
+> -	/* make sure we don't use invalid r */
+> -	if (count == 0)
+> -		return false;
+> -
+> -	while (l < r) {
+> -		m = l + (r - l) / 2;
+> -		addr = addrs[m];
+> -
+> -		if (addr >= start) {
+> -			/* we satisfy invariant, so tighten r */
+> -			r = m;
+> -		} else {
+> -			/* m is not good enough as l, maybe m + 1 will be */
+> -			l = m + 1;
+> -		}
+> -	}
+> -
+> -	return start <= addrs[r] && addrs[r] < end;
+> -}
+> -
+> -static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+> -{
+> -	__u64 *addrs, count, i;
+> -	int functions_valid = 0;
+> -	bool kmod = false;
+> -
+> -	/*
+> -	 * Check if we are processing vmlinux image and
+> -	 * get mcount data if it's detected.
+> -	 */
+> -	if (get_vmlinux_addrs(btfe, fl, &addrs, &count))
+> -		return -1;
+> -
+> -	/*
+> -	 * Check if we are processing kernel module and
+> -	 * get mcount data if it's detected.
+> -	 */
+> -	if (!addrs) {
+> -		if (get_kmod_addrs(btfe, &addrs, &count))
+> -			return -1;
+> -		kmod = true;
+> -	}
+> -
+> -	if (!addrs) {
+> -		if (btf_elf__verbose)
+> -			printf("ftrace symbols not detected, falling back to DWARF data\n");
+> -		delete_functions();
+> -		return 0;
+> -	}
+> -
+> -	qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
+> -	qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
+> -
+> -	/*
+> -	 * Let's got through all collected functions and filter
+> -	 * out those that are not in ftrace.
+> -	 */
+> -	for (i = 0; i < functions_cnt; i++) {
+> -		struct elf_function *func = &functions[i];
+> -		/*
+> -		 * For vmlinux image both addrs[x] and functions[x]::addr
+> -		 * values are final address and are comparable.
+> -		 *
+> -		 * For kernel module addrs[x] is final address, but
+> -		 * functions[x]::addr is relative address within section
+> -		 * and needs to be relocated by adding sh_addr.
+> -		 */
+> -		if (kmod)
+> -			func->addr += func->sh_addr;
+> -
+> -		/* Make sure function is within ftrace addresses. */
+> -		if (is_ftrace_func(func, addrs, count)) {
+> -			/*
+> -			 * We iterate over sorted array, so we can easily skip
+> -			 * not valid item and move following valid field into
+> -			 * its place, and still keep the 'new' array sorted.
+> -			 */
+> -			if (i != functions_valid)
+> -				functions[functions_valid] = functions[i];
+> -			functions_valid++;
+> -		}
+> -	}
+> -
+> -	functions_cnt = functions_valid;
+> -	free(addrs);
+> -
+> -	if (btf_elf__verbose)
+> -		printf("Found %d functions!\n", functions_cnt);
+> -	return 0;
+> -}
+> -
+>  static struct elf_function *find_function(const struct btf_elf *btfe,
+>  					  const char *name)
+>  {
+> @@ -620,23 +363,8 @@ static int collect_percpu_var(struct btf_elf *btfe, GElf_Sym *sym,
+>  	return 0;
+>  }
+>  
+> -static void collect_symbol(GElf_Sym *sym, struct funcs_layout *fl,
+> -			   size_t sym_sec_idx)
+> -{
+> -	if (!fl->mcount_start &&
+> -	    !strcmp("__start_mcount_loc", elf_sym__name(sym, btfe->symtab))) {
+> -		fl->mcount_start = sym->st_value;
+> -		fl->mcount_sec_idx = sym_sec_idx;
+> -	}
+> -
+> -	if (!fl->mcount_stop &&
+> -	    !strcmp("__stop_mcount_loc", elf_sym__name(sym, btfe->symtab)))
+> -		fl->mcount_stop = sym->st_value;
+> -}
+> -
+>  static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+>  {
+> -	struct funcs_layout fl = { };
+>  	Elf32_Word sym_sec_idx;
+>  	uint32_t core_id;
+>  	GElf_Sym sym;
+> @@ -648,9 +376,8 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+>  	elf_symtab__for_each_symbol_index(btfe->symtab, core_id, sym, sym_sec_idx) {
+>  		if (collect_percpu_vars && collect_percpu_var(btfe, &sym, sym_sec_idx))
+>  			return -1;
+> -		if (collect_function(btfe, &sym, sym_sec_idx))
+> +		if (collect_function(btfe, &sym))
+>  			return -1;
+> -		collect_symbol(&sym, &fl, sym_sec_idx);
+>  	}
+>  
+>  	if (collect_percpu_vars) {
+> @@ -661,9 +388,11 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+>  			printf("Found %d per-CPU variables!\n", percpu_var_cnt);
+>  	}
+>  
+> -	if (functions_cnt && setup_functions(btfe, &fl)) {
+> -		fprintf(stderr, "Failed to filter DWARF functions\n");
+> -		return -1;
+> +	if (functions_cnt) {
+> +		qsort(functions, functions_cnt, sizeof(functions[0]),
+> +		      functions_cmp);
+> +		if (btf_elf__verbose)
+> +			printf("Found %d functions!\n", functions_cnt);
+>  	}
+>  
+>  	return 0;
+> -- 
+> 2.30.2
+> 
