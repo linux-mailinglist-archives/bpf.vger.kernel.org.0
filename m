@@ -2,106 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BAD3761BC
-	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 10:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED43A3761C3
+	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 10:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236012AbhEGIOW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 May 2021 04:14:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33051 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235320AbhEGIOW (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 7 May 2021 04:14:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620375202;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T0d4hOYJJ2KsxgrDpZv9ZxzDfxdUKbxXUPpS8SZAfUg=;
-        b=cFLZI37E5ZVRQquLGA834D1+HSR6RwrzTXeLpZMf/uf70M94wTZ/CdeWpSgZu11j9kEyPl
-        e8BaPpd+ko6RNmboZukJSEk6DPO+Lu1ndrtv3i7xfAg8cDLvUIhw8SiTZtNUED+FlA829k
-        7g7WfN1PiInfTmjjIjYLdMJSW+mEHFI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-509-XUGdYxIWPnW_gUR-Efp8Hw-1; Fri, 07 May 2021 04:13:18 -0400
-X-MC-Unique: XUGdYxIWPnW_gUR-Efp8Hw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44E8618982A4;
-        Fri,  7 May 2021 08:13:16 +0000 (UTC)
-Received: from krava (unknown [10.40.194.249])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C188A5D745;
-        Fri,  7 May 2021 08:13:13 +0000 (UTC)
-Date:   Fri, 7 May 2021 10:13:09 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        id S234484AbhEGIUA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 May 2021 04:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236023AbhEGIUA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 May 2021 04:20:00 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DB4FC061574
+        for <bpf@vger.kernel.org>; Fri,  7 May 2021 01:18:58 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id b21so10466498ljf.11
+        for <bpf@vger.kernel.org>; Fri, 07 May 2021 01:18:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=MWUVk7yj4646QDn77Qt6hcagY8Hi56LhWTAfIF7pdMg=;
+        b=DbVZ6yH9o0FYTy0CiT+ADnreY6dYlUSWyGcLtWbjKd3sAAUljty/16PHsUoM/pi12a
+         mJKhcbvaKymrnjtvRMMXSuzu1n5LorL4FJIQkfVtDsDzcYqQtzVWn7NnvRHydCJp02Um
+         fSw4gPpR5hxX/GwrFhcYlhl6xT2NpCApEXp/8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=MWUVk7yj4646QDn77Qt6hcagY8Hi56LhWTAfIF7pdMg=;
+        b=mWqA4F0oT/nQiXUD7i9zJR6ERpezT4QOE+TbbTrOBo2izAK+lrti+jjsdJcqTOf7QQ
+         MkDt12H445vIquMpCUxkAGD/crzpJqC8lNfvSDEc1hHHcnaBquFbYhq+cB/0vOgUdj9Y
+         AJxRKwjLxdprk4d0rCdjyHpkP+3G6CckuEK1hXGxoO6Lpj0b3VQqWTpErPn3TFVv00Wn
+         tmKYbMdlglzA0aLCKyU9fHG0wKxAtuNHOEN2J05jXhcG2Wsvpugwym9jWGoxZHCgQwvb
+         Xy7haNfwTLL7Ggfi6ZUIPr8fZtsNg0JjETJkeNK+QR6bO3Z2fn8kzAS4ZfnUXbUoJGih
+         NdhQ==
+X-Gm-Message-State: AOAM531P+kdsB4mpR9h6p42XoXz0bhW9dYFnq2yIB/fvRQ0F2N8OvKQP
+        XRmm9UotBZ1ZRALknJTCt7zaog==
+X-Google-Smtp-Source: ABdhPJypd6aRbK0rSSS+jySi5DZGTAj8XBKj+Bp2XKwZBIBwOv4W4kOyj8SEKhV5o/W7k41GbM3zzA==
+X-Received: by 2002:a2e:581a:: with SMTP id m26mr6768114ljb.493.1620375536887;
+        Fri, 07 May 2021 01:18:56 -0700 (PDT)
+Received: from cloudflare.com (83.31.64.64.ipv4.supernova.orange.pl. [83.31.64.64])
+        by smtp.gmail.com with ESMTPSA id n20sm1284526lfq.186.2021.05.07.01.18.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 01:18:56 -0700 (PDT)
+References: <20210426025001.7899-1-xiyou.wangcong@gmail.com>
+ <20210426025001.7899-5-xiyou.wangcong@gmail.com>
+User-agent: mu4e 1.1.0; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        jiang.wang@bytedance.com, duanxiongchun@bytedance.com,
+        wangdongdong.6@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: Re: [PATCH] bpf: Forbid trampoline attach for functions with
- variable arguments
-Message-ID: <YJT2lbKUCRo90MQV@krava>
-References: <20210505132529.401047-1-jolsa@kernel.org>
- <CAEf4BzazQgrPVqKOGP8z=MPZhjZHCZDdcWQB0xBuudXbxXwaXg@mail.gmail.com>
- <c21b54a6-8d6e-f76d-e6c1-95abd8544d9d@iogearbox.net>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: Re: [Patch bpf-next v3 04/10] af_unix: set TCP_ESTABLISHED for
+ datagram sockets too
+In-reply-to: <20210426025001.7899-5-xiyou.wangcong@gmail.com>
+Date:   Fri, 07 May 2021 10:18:54 +0200
+Message-ID: <87mtt7ufbl.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c21b54a6-8d6e-f76d-e6c1-95abd8544d9d@iogearbox.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 07, 2021 at 01:31:54AM +0200, Daniel Borkmann wrote:
-> On 5/5/21 8:45 PM, Andrii Nakryiko wrote:
-> > On Wed, May 5, 2021 at 6:42 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > 
-> > > We can't currently allow to attach functions with variable arguments.
-> > > The problem is that we should save all the registers for arguments,
-> > > which is probably doable, but if caller uses more than 6 arguments,
-> > > we need stack data, which will be wrong, because of the extra stack
-> > > frame we do in bpf trampoline, so we could crash.
-> > > 
-> > > Also currently there's malformed trampoline code generated for such
-> > > functions at the moment as described in:
-> > >    https://lore.kernel.org/bpf/20210429212834.82621-1-jolsa@kernel.org/
-> > > 
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > 
-> > LGTM.
-> > 
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > 
-> > >   kernel/bpf/btf.c | 13 +++++++++++++
-> > >   1 file changed, 13 insertions(+)
-> > > 
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index 0600ed325fa0..161511bb3e51 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -5206,6 +5206,13 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
-> > >          m->ret_size = ret;
-> > > 
-> > >          for (i = 0; i < nargs; i++) {
-> > > +               if (i == nargs - 1 && args[i].type == 0) {
-> > > +                       bpf_log(log,
-> > > +                               "The function %s with variable args is unsupported.\n",
-> > > +                               tname);
-> > > +                       return -EINVAL;
-> > > +
-> 
-> (Jiri, fyi, I removed this extra newline while applying. Please scan for such
-> things before submitting.)
+On Mon, Apr 26, 2021 at 04:49 AM CEST, Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+>
+> Currently only unix stream socket sets TCP_ESTABLISHED,
+> datagram socket can set this too when they connect to its
+> peer socket. At least __ip4_datagram_connect() does the same.
+>
+> This will be used by the next patch to determine whether an
+> AF_UNIX datagram socket can be redirected in sockmap.
+>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+>  net/unix/af_unix.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+> index 8968ed44a89f..c4afc5fbe137 100644
+> --- a/net/unix/af_unix.c
+> +++ b/net/unix/af_unix.c
+> @@ -1206,6 +1206,8 @@ static int unix_dgram_connect(struct socket *sock, struct sockaddr *addr,
+>  		unix_peer(sk) = other;
+>  		unix_state_double_unlock(sk, other);
+>  	}
+> +
+> +	sk->sk_state = other->sk_state = TCP_ESTABLISHED;
 
-sorry, will do
+`other` can be NULL. In such case we're back to UNCONNECTED state.
 
-jirka
+>  	return 0;
+>  
+>  out_unlock:
 
+[...]
