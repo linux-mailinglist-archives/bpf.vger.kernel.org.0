@@ -2,81 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F74376C81
-	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 00:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876D8376C7B
+	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 00:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbhEGWZo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 May 2021 18:25:44 -0400
-Received: from bosmailout03.eigbox.net ([66.96.186.3]:45669 "EHLO
-        bosmailout03.eigbox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhEGWZo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 May 2021 18:25:44 -0400
-X-Greylist: delayed 1816 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 May 2021 18:25:34 EDT
-Received: from bosmailscan08.eigbox.net ([10.20.15.8])
-        by bosmailout03.eigbox.net with esmtp (Exim)
-        id 1lf8QM-0003Fa-7M; Fri, 07 May 2021 17:54:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=godsofu4.com; s=dkim; h=Sender:Content-Transfer-Encoding:Content-Type:
-        Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=aM9bUFGSTpfnep8zAVAJMnojqhcwpuHDFPgQnPqW4M4=; b=I+6Bb1DJY/YYTRas0wZTN+AC1D
-        vtIg40M7SDAM/b29+/wY3GjGjzug9/OzX2aPoevJgNlEKSTs0SrEPfP3WhSQM0PCLHlkQfkyX8QT9
-        UZ7TTwAz03WtyNGtE+DdqqC0pYUcPkHvqE4MDSKlo5Vm1z1vJqGpkJRtWe2MFWIr6++JBuHOfV7Fd
-        34Die1lJ1lpPfDh70Zq++IiTaMjdlcGGo7pbn4hVn1WweIC9h772TR5+6npXCISSeeyCgPsBbikdE
-        ZWIrJkpukBwvBgblKKCxDugovauKoCEDbS56mNadJP+sg7ztteNlHrnEQFJYYsCNrcdD1v8ilxnSi
-        f8nqykSw==;
-Received: from [10.115.3.32] (helo=bosimpout12)
-        by bosmailscan08.eigbox.net with esmtp (Exim)
-        id 1lf8QK-0002fP-Rn; Fri, 07 May 2021 17:54:16 -0400
-Received: from boswebmail06.eigbox.net ([10.20.16.6])
-        by bosimpout12 with 
-        id 1xuC2500D07qujN01xuFUj; Fri, 07 May 2021 17:54:16 -0400
-X-EN-SP-DIR: OUT
-X-EN-SP-SQ: 1
-Received: from [127.0.0.1] (helo=homestead)
-        by boswebmail06.eigbox.net with esmtp (Exim)
-        id 1lf8PX-0006IT-Ae; Fri, 07 May 2021 17:53:27 -0400
-Received: from [197.239.81.229]
- by emailmg.homestead.com
- with HTTP (HTTP/1.1 POST); Fri, 07 May 2021 17:53:27 -0400
+        id S229791AbhEGWYp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 May 2021 18:24:45 -0400
+Received: from mga02.intel.com ([134.134.136.20]:49034 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229470AbhEGWYp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 May 2021 18:24:45 -0400
+IronPort-SDR: pxGI/b5jc5C+UB/X2s9zski/IIzudOx/MWp8feNNbAG2gcMaz4XbO99DThgieXSQbc6p1CRV03
+ JH8loTJyjqug==
+X-IronPort-AV: E=McAfee;i="6200,9189,9977"; a="185955807"
+X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
+   d="scan'208";a="185955807"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 15:23:43 -0700
+IronPort-SDR: wu49lprSn5yTXAGJGa/jXtNxLz73g2TkT2oI8klxsHLSzVmhpbbVNNwUFcg88TjEQZjkucXt0c
+ BjWEO+1v3GSA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
+   d="scan'208";a="533849261"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by fmsmga001.fm.intel.com with ESMTP; 07 May 2021 15:23:41 -0700
+Date:   Sat, 8 May 2021 00:11:35 +0200
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Cristian Dumitrescu <cristian.dumitrescu@intel.com>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        edwin.verplanke@intel.com
+Subject: Re: [PATCH net-next 0/4] i40e: small improvements on XDP path
+Message-ID: <20210507221135.GB18159@ranger.igk.intel.com>
+References: <20210114143318.2171-1-cristian.dumitrescu@intel.com>
+ <CAJ8uoz3YSuPj6F+GHkk6yXHryUEOUhVSg2pDVEVrFA6b8Hgu6g@mail.gmail.com>
+ <20210118103233.49bfd205@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Date:   Fri, 07 May 2021 21:53:27 +0000
-From:   Mrs Suzara Maling Wan <fast65@godsofu4.com>
-To:     undisclosed-recipients:;
-Subject: URGENT REPLY NEEDED
-Reply-To: suzara2017malingwan@gmail.com
-Mail-Reply-To: suzara2017malingwan@gmail.com
-Message-ID: <4c6a48748f6731dac9b66cce1916443b@godsofu4.com>
-X-Sender: fast65@godsofu4.com
-User-Agent: Roundcube Webmail/1.3.14
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-EN-AuthUser: fast65@godsofu4.com
-Sender:  Mrs Suzara Maling Wan <fast65@godsofu4.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118103233.49bfd205@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Jan 18, 2021 at 10:32:33AM -0800, Jakub Kicinski wrote:
+> On Mon, 18 Jan 2021 08:31:23 +0100 Magnus Karlsson wrote:
+> > On Thu, Jan 14, 2021 at 3:34 PM Cristian Dumitrescu
+> > <cristian.dumitrescu@intel.com> wrote:
+> > >
+> > > This patchset introduces some small and straightforward improvements
+> > > to the Intel i40e driver XDP path. Each improvement is fully described
+> > > in its associated patch.
+> > 
+> > Thank you for these clean ups Cristian!
+> > 
+> > For the series:
+> > 
+> > Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> 
+> FWIW since this series is 100% driver code I'm expecting it will 
+> come downstream via Tony's tree. Please LMK if that's not the case.
 
-
-My names are Mrs Suzara Maling Wan, I am a Nationality of the Republic
-of the Philippine presently base in West Africa B/F, dealing with
-exportation of Gold, I was diagnose of blood Causal decease, and my
-doctor have announce to me that I have few days to leave due to the
-condition of my sickness.
-
-I have a desire to build an orphanage home in your country of which i
-cannot execute the project myself due to my present health condition,
-I am willing to hand over the project under your care for you to help
-me fulfill my dreams and desire of building an orphanage home in your
-country.
-
-Reply in you are will to help so that I can direct you to my bank for
-the urgent transfer of the fund/money require for the project to your
-account as I have already made the fund/money available.
-
-With kind regards
-Mrs Suzara Maling Wan
+I just realized that this set got somewhat abandonded. Tony, can you pick
+this? I wouldn't be surprised if it wouldn't apply cleanly anymore since
+it has been almost 4 months since the initial submission, but let's see...
+Otherwise we probably would have to ask Cristian to re-submit directly to
+IWL I guess.
