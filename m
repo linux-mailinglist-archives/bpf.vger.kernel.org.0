@@ -2,137 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21162376D79
-	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 01:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A6F376D87
+	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 01:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbhEGXqi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 May 2021 19:46:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbhEGXqi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 May 2021 19:46:38 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CE0C061574;
-        Fri,  7 May 2021 16:45:36 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id o1so7907523qta.1;
-        Fri, 07 May 2021 16:45:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rk5ZF5O3eDY1kMqyU3TfWHx2sPsSACItLLAgyKze1w4=;
-        b=WRCthpiWBtHfvBKo/T251l8U1FYDhxXo7foPARg3JjejHTmSQOooowsVGhiLNOMcQq
-         SEsxajIMgeAvkewvQIU3xgrOHNPR0Z9w1zSYWr8ZUs70zgkyMRMXPTpFsGKP4SdyAs1h
-         gYDTlKwwBVwPfauLYsM/53bjt3mahmc4GsVenCC96iwSpELZA/54Bf6QYhKIYwdbb5z2
-         AHAhzCo2p1w9E/No1NNALqOx7P42N3Pl5AwOysmoxj/mh3p8uYsuFodkyDeZIk0AsCsU
-         MYajtRBmN8d9BC+YYXawJbrQNPVvtBq3Yp3ek+8RBg3AlU9ogvuprYYPRsriM88vgmM3
-         SzVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=rk5ZF5O3eDY1kMqyU3TfWHx2sPsSACItLLAgyKze1w4=;
-        b=Lc98UuAgRdI5t1E/0ConFTVDSgK/Ao7nxdbffvWgnrvuz++emiLEOT+kN+OEopUoJg
-         Dd+jaCh9hAkHVbFgTFnQ7o6UxcZrUrptxQLvjxdlQ717u3l6vB51QdkqpyCroEkEEO8F
-         uB1k81OtO5UHgtOJdsvLBbbpBRPD3geLiv10myyhNGND4fl2kf5a2dmv+luM7wY6aISx
-         tqlRIJjUs05n76Y2pJtvmqhN8bNjp32WSsx0V7EdjCdqW62NUca1lbPEkqlMHNE2DZPO
-         Teji3UhECt/hBX4aK7c4B5HHI1lHr7PrDZs8V8bTxnjXH6ebSSsLyhzcSoucCgC/vgkC
-         Y2Wg==
-X-Gm-Message-State: AOAM532cdmM9/FvpcMd9cxmqzfZyacu/d2KFSC6EsMAWWkLCyqm0J/Kt
-        pjt7iiheLetBQ0xHbLf/0jA=
-X-Google-Smtp-Source: ABdhPJzjTDnhrKBnwYTKzTK+SPBDjhjdMBkHM07M5oIZGhHtKq0iDeDFE/rmPDemNN2JQXfuLxum5Q==
-X-Received: by 2002:ac8:7cb0:: with SMTP id z16mr12236002qtv.157.1620431135577;
-        Fri, 07 May 2021 16:45:35 -0700 (PDT)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id 2sm4492640qko.28.2021.05.07.16.45.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 16:45:34 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Fri, 7 May 2021 19:45:33 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Kenny Ho <y2kenny@gmail.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kenny Ho <Kenny.Ho@amd.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Brian Welty <brian.welty@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Network Development <netdev@vger.kernel.org>,
-        KP Singh <kpsingh@chromium.org>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>, Dave Airlie <airlied@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: Re: [RFC] Add BPF_PROG_TYPE_CGROUP_IOCTL
-Message-ID: <YJXRHXIykyEBdnTF@slm.duckdns.org>
-References: <YJVnO+TCRW83S6w4@phenom.ffwll.local>
- <CADnq5_Pvtj1vb0bak_gUkv9J3+vfsMZxVKTKYeUvwQCajAWoVQ@mail.gmail.com>
- <YJVqL4c6SJc8wdkK@phenom.ffwll.local>
- <CADnq5_PHjiHy=Su_1VKr5ycdnXN-OuSXw0X_TeNqSj+TJs2MGA@mail.gmail.com>
- <CADnq5_OjaPw5iF_82bjNPt6v-7OcRmXmXECcN+Gdg1NcucJiHA@mail.gmail.com>
- <YJVwtS9XJlogZRqv@phenom.ffwll.local>
- <YJWWByISHSPqF+aN@slm.duckdns.org>
- <CADnq5_Mwd-xHZQ4pt34=FPk2Gq3ij1FNHWsEz1LdS7_Dyo00iQ@mail.gmail.com>
- <YJWqIVnX9giaKMTG@slm.duckdns.org>
- <CADnq5_PudV4ufQW=DqrDow_vvMQDCJVxjqZeXeTvM=6Xp+a_RQ@mail.gmail.com>
+        id S229970AbhEGX6H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 May 2021 19:58:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229959AbhEGX6H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 May 2021 19:58:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63197601FA;
+        Fri,  7 May 2021 23:57:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620431826;
+        bh=75/UCOvPi5A/3+VxLXqhJqocyY02+9r1OPTzZlGM5fU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PGa9HZz2Ejb6ioHTOtFfaUy9BjfK1W122wYXztFvfEo+hqw+qBEq1Ao8LFIwD2ffN
+         5NSP27QmgXe/Bd9owAOZwh0Y+yJs1WkWBNlsA1kBR3kaHFUT7IPvNsejtQdtGkMO8Z
+         PLt2RIbR/lJb43KZeV6pUme3lsvqvkVIylBKv0mAHaj8/s6vDvQC/T6uqDptcs+yjR
+         6wpyyllIKCZxSa0HuuIxXLCarqM0e+N/Bc8tvrCwsCARAUzkfBp3q71p+/vTZThdrh
+         bRkcdfjtLG85DL5Ym0KssfzDEYsJ03D/dteGVuy9r+xki1dv3SaA8xEx/4XbOvT+VB
+         IQ9eB+++myZlA==
+Date:   Fri, 7 May 2021 16:57:03 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
+        <weiwan@google.com>, <cong.wang@bytedance.com>,
+        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
+        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>
+Subject: Re: [PATCH net v5 1/3] net: sched: fix packet stuck problem for
+ lockless qdisc
+Message-ID: <20210507165703.70771c55@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1620266264-48109-2-git-send-email-linyunsheng@huawei.com>
+References: <1620266264-48109-1-git-send-email-linyunsheng@huawei.com>
+        <1620266264-48109-2-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADnq5_PudV4ufQW=DqrDow_vvMQDCJVxjqZeXeTvM=6Xp+a_RQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Thu, 6 May 2021 09:57:42 +0800 Yunsheng Lin wrote:
+> @@ -159,8 +160,37 @@ static inline bool qdisc_is_empty(const struct Qdisc *qdisc)
+>  static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+>  {
+>  	if (qdisc->flags & TCQ_F_NOLOCK) {
+> +		bool dont_retry = test_bit(__QDISC_STATE_MISSED,
+> +					   &qdisc->state);
+> +
+> +		if (spin_trylock(&qdisc->seqlock))
+> +			goto nolock_empty;
+> +
+> +		/* If the flag is set before doing the spin_trylock() and
+> +		 * the above spin_trylock() return false, it means other cpu
+> +		 * holding the lock will do dequeuing for us, or it wil see
 
-On Fri, May 07, 2021 at 06:30:56PM -0400, Alex Deucher wrote:
-> Maybe we are speaking past each other.  I'm not following.  We got
-> here because a device specific cgroup didn't make sense.  With my
-> Linux user hat on, that makes sense.  I don't want to write code to a
-> bunch of device specific interfaces if I can avoid it.  But as for
-> temporal vs spatial partitioning of the GPU, the argument seems to be
-> a sort of hand-wavy one that both spatial and temporal partitioning
-> make sense on CPUs, but only temporal partitioning makes sense on
-> GPUs.  I'm trying to understand that assertion.  There are some GPUs
+s/wil/will/
 
-Spatial partitioning as implemented in cpuset isn't a desirable model. It's
-there partly because it has historically been there. It doesn't really
-require dynamic hierarchical distribution of anything and is more of a way
-to batch-update per-task configuration, which is how it's actually
-implemented. It's broken too in that it interferes with per-task affinity
-settings. So, not exactly a good example to follow. In addition, this sort
-of partitioning requires more hardware knowledge and GPUs are worse than
-CPUs in that hardwares differ more.
+> +		 * the flag set after releasing lock and reschedule the
+> +		 * net_tx_action() to do the dequeuing.
 
-Features like this are trivial to implement from userland side by making
-per-process settings inheritable and restricting who can update the
-settings.
+I don't understand why MISSED is checked before the trylock.
+Could you explain why it can't be tested directly here?
 
-> that can more easily be temporally partitioned and some that can be
-> more easily spatially partitioned.  It doesn't seem any different than
-> CPUs.
+> +		 */
+> +		if (dont_retry)
+> +			return false;
+> +
+> +		/* We could do set_bit() before the first spin_trylock(),
+> +		 * and avoid doing second spin_trylock() completely, then
+> +		 * we could have multi cpus doing the set_bit(). Here use
+> +		 * dont_retry to avoid doing the set_bit() and the second
+> +		 * spin_trylock(), which has 5% performance improvement than
+> +		 * doing the set_bit() before the first spin_trylock().
+> +		 */
+> +		set_bit(__QDISC_STATE_MISSED, &qdisc->state);
+> +
+> +		/* Retry again in case other CPU may not see the new flag
+> +		 * after it releases the lock at the end of qdisc_run_end().
+> +		 */
+>  		if (!spin_trylock(&qdisc->seqlock))
+>  			return false;
+> +
+> +nolock_empty:
+>  		WRITE_ONCE(qdisc->empty, false);
+>  	} else if (qdisc_is_running(qdisc)) {
+>  		return false;
+> @@ -176,8 +206,13 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+>  static inline void qdisc_run_end(struct Qdisc *qdisc)
+>  {
+>  	write_seqcount_end(&qdisc->running);
+> -	if (qdisc->flags & TCQ_F_NOLOCK)
+> +	if (qdisc->flags & TCQ_F_NOLOCK) {
+>  		spin_unlock(&qdisc->seqlock);
+> +
+> +		if (unlikely(test_bit(__QDISC_STATE_MISSED,
+> +				      &qdisc->state)))
+> +			__netif_schedule(qdisc);
+> +	}
+>  }
+>  
+>  static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
+> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+> index 44991ea..9bc73ea 100644
+> --- a/net/sched/sch_generic.c
+> +++ b/net/sched/sch_generic.c
+> @@ -640,8 +640,10 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+>  {
+>  	struct pfifo_fast_priv *priv = qdisc_priv(qdisc);
+>  	struct sk_buff *skb = NULL;
+> +	bool need_retry = true;
+>  	int band;
+>  
+> +retry:
+>  	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
+>  		struct skb_array *q = band2list(priv, band);
+>  
+> @@ -652,6 +654,16 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+>  	}
+>  	if (likely(skb)) {
+>  		qdisc_update_stats_at_dequeue(qdisc, skb);
+> +	} else if (need_retry &&
+> +		   test_and_clear_bit(__QDISC_STATE_MISSED,
+> +				      &qdisc->state)) {
 
-Right, it doesn't really matter how the resource is distributed. What
-matters is how granular and generic the distribution can be. If gpus can
-implement work-conserving proportional distribution, that's something which
-is widely useful and inherently requires dynamic scheduling from kernel
-side. If it's about setting per-vendor affinities, this is way too much
-cgroup interface for a feature which can be easily implemented outside
-cgroup. Just do per-process (or whatever handles gpus use) and confine their
-configurations from cgroup side however way.
+Why test_and_clear_bit() here? AFAICT this is the only place the bit 
+is cleared. So the test and clear do not have to be atomic.
 
-While the specific theme changes a bit, we're basically having the same
-discussion with the same conclusion over the past however many months.
-Hopefully, the point is clear by now.
+To my limited understanding on x86 test_bit() is never a locked
+operation, while test_and_clear_bit() is always locked. So we'd save
+an atomic operation in un-contended case if we tested first and then
+cleared.
 
-Thanks.
+> +		/* do another dequeuing after clearing the flag to
+> +		 * avoid calling __netif_schedule().
+> +		 */
+> +		smp_mb__after_atomic();
 
--- 
-tejun
+test_and_clear_bit() which returned true implies a memory barrier,
+AFAIU, so the barrier is not needed with the code as is. It will be
+needed if we switch to test_bit() + clear_bit(), but please clarify
+what it is paring with.
+
+> +		need_retry = false;
+> +
+> +		goto retry;
+>  	} else {
+>  		WRITE_ONCE(qdisc->empty, true);
+>  	}
+
