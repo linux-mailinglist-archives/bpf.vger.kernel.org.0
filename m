@@ -2,229 +2,443 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1BC375FCC
-	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 07:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 939C3376007
+	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 08:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234006AbhEGFmj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 7 May 2021 01:42:39 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:39808 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233971AbhEGFmi (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 7 May 2021 01:42:38 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1475ZDes028889
-        for <bpf@vger.kernel.org>; Thu, 6 May 2021 22:41:38 -0700
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 38cswg982y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 06 May 2021 22:41:38 -0700
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 6 May 2021 22:41:37 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 4AB1F2ED7617; Thu,  6 May 2021 22:41:37 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [RFC PATCH bpf-next 7/7] libbpf: convert STV_HIDDEN symbols into STV_INTERNAL after linking
-Date:   Thu, 6 May 2021 22:41:19 -0700
-Message-ID: <20210507054119.270888-8-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210507054119.270888-1-andrii@kernel.org>
-References: <20210507054119.270888-1-andrii@kernel.org>
+        id S233574AbhEGGGU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 May 2021 02:06:20 -0400
+Received: from mail-wm1-f41.google.com ([209.85.128.41]:36765 "EHLO
+        mail-wm1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEGGGT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 May 2021 02:06:19 -0400
+Received: by mail-wm1-f41.google.com with SMTP id l24-20020a7bc4580000b029014ac3b80020so6466058wmi.1;
+        Thu, 06 May 2021 23:05:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+auSOnJQ2CrA4YlqKVPbLrG0Z3GqrzFTzKF1Viv4fs0=;
+        b=prpsnLH0w/4oUvMm+zy96vWz8Egwci52KXM91GyQMaj6p7rN+sJlAt+7XYmtVGFGgE
+         0lxC1fgARyPQAglqapPFS81Y0+gS9OSuUV64fZne/EgfDLv3Vcf6/c/SOJctZ1/fxDJJ
+         pB4uQ3BVhVG/h+pnHHl35f3gTRWYYywQ2jO7hpEQDVjMGC2fUTLXR2WW0RSV+LbPP7X/
+         UCadMfZ7pv/+ZZlaWhcJSKT8MggF+WfRfQm2SIFNMm4ce5Qa02ZXN8Po/3zQs6iFtPpv
+         x9fjcEgBolfEVeHaXjZ99YzVHwVweWpYFeOBgWayqkjmOPr00bmdp90N0qMtPStHLR/z
+         w/pg==
+X-Gm-Message-State: AOAM533M4tpSWFXH22GcKCjUOuMR1q0vb47WcHJJcG9ECup1Xux59c0h
+        dbtClrG/UkibobMT0Xk84T8=
+X-Google-Smtp-Source: ABdhPJyc+LSa7+hMqsBgaZ0Am+pclhbX/PaLgoKcWTatcsZ6vrU8yqw4RPLRBvriVcf45ppQ685P4g==
+X-Received: by 2002:a05:600c:4ba3:: with SMTP id e35mr19449209wmp.16.1620367519389;
+        Thu, 06 May 2021 23:05:19 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id u9sm6188083wmc.38.2021.05.06.23.05.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 May 2021 23:05:18 -0700 (PDT)
+Subject: Re: [PATCH v2 dwarves] btf: Remove ftrace filter
+To:     Martin KaFai Lau <kafai@fb.com>, dwarves@vger.kernel.org
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>, bpf@vger.kernel.org,
+        kernel-team@fb.com, Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>
+References: <20210506205622.3663956-1-kafai@fb.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <bbf2d599-48d1-7470-2903-cbae5c14c24d@kernel.org>
+Date:   Fri, 7 May 2021 08:05:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: -B9F41iquZeDYoR8Bem2Lp7AmrIAri7g
-X-Proofpoint-ORIG-GUID: -B9F41iquZeDYoR8Bem2Lp7AmrIAri7g
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-07_01:2021-05-06,2021-05-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0 mlxscore=0
- bulkscore=0 impostorscore=0 clxscore=1015 suspectscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105070041
-X-FB-Internal: deliver
+In-Reply-To: <20210506205622.3663956-1-kafai@fb.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add logic to "upgrade" STV_HIDDEN symbols into STV_INTERNAL ones once static
-linking is complete. From BPF static linker perspective, the difference
-between STV_HIDDEN and STV_INTERNAL is that STV_HIDDEN allows resolving
-externs references between multiple BPF object files statically linked
-together in the same operation. STV_INTERNAL is stricter and prevents any
-other object files to reference such symbol (function, variable, map).
+On 06. 05. 21, 22:56, Martin KaFai Lau wrote:
+> BTF is currently generated for functions that are in ftrace list
+> or extern.
+> 
+> A recent use case also needs BTF generated for functions included in
+> allowlist.  In particular, the kernel
+> commit e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc")
+> allows bpf program to directly call a few tcp cc kernel functions. Those
+> kernel functions are currently allowed only if CONFIG_DYNAMIC_FTRACE
+> is set to ensure they are in the ftrace list but this kconfig dependency
+> is unnecessary.
+> 
+> Those kernel functions are specified under an ELF section .BTF_ids.
+> There was an earlier attempt [0] to add another filter for the functions in
+> the .BTF_ids section.  That discussion concluded that the ftrace filter
+> should be removed instead.
+> 
+> This patch is to remove the ftrace filter and its related functions.
+> 
+> Number of BTF FUNC with and without is_ftrace_func():
+> My kconfig in x86: 40643 vs 46225
+> Jiri reported on arm: 25022 vs 55812
+> 
+> [0]: https://lore.kernel.org/dwarves/20210423213728.3538141-1-kafai@fb.com/
+> 
+> Cc: Andrii Nakryiko <andrii@kernel.org>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 
-Here's why such property and behavior is important and desirable and how it
-relates to user-space linker behavior.
+Today, I missed you submission :). So:
 
-In user-space, STV_HIDDEN symbols are resolvable during static linking between
-all the object files linked together. If such object files are linked into
-a shared library (.so), linker is converting such hidden global variables into
-STB_LOCAL (static) ones. This has two implications, one of which is desirable
-for BPF static linking and one is not.
+Acked-by: Jiri Slaby <jirislaby@kernel.org>
 
-The desirable one is that such hidden symbols are effectively unresolvable
-outside of the shared library. This is exactly the property we are looking for
-for BPF libraries (ignoring the fact that we have static BPF libraries, not
-dynamic ones).
+> ---
+> v2: Remove sym_sec_idx, last_idx, and sh. (Jiri Olsa)
+> 
+>   btf_encoder.c | 285 ++------------------------------------------------
+>   1 file changed, 7 insertions(+), 278 deletions(-)
+> 
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 80e896961d4e..c711f124b31e 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -27,17 +27,8 @@
+>    */
+>   #define KSYM_NAME_LEN 128
+>   
+> -struct funcs_layout {
+> -	unsigned long mcount_start;
+> -	unsigned long mcount_stop;
+> -	unsigned long mcount_sec_idx;
+> -};
+> -
+>   struct elf_function {
+>   	const char	*name;
+> -	unsigned long	 addr;
+> -	unsigned long	 size;
+> -	unsigned long	 sh_addr;
+>   	bool		 generated;
+>   };
+>   
+> @@ -64,12 +55,9 @@ static void delete_functions(void)
+>   #define max(x, y) ((x) < (y) ? (y) : (x))
+>   #endif
+>   
+> -static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
+> -			    size_t sym_sec_idx)
+> +static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
+>   {
+>   	struct elf_function *new;
+> -	static GElf_Shdr sh;
+> -	static size_t last_idx;
+>   	const char *name;
+>   
+>   	if (elf_sym__type(sym) != STT_FUNC)
+> @@ -91,257 +79,12 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
+>   		functions = new;
+>   	}
+>   
+> -	if (sym_sec_idx != last_idx) {
+> -		if (!elf_section_by_idx(btfe->elf, &sh, sym_sec_idx))
+> -			return 0;
+> -		last_idx = sym_sec_idx;
+> -	}
+> -
+>   	functions[functions_cnt].name = name;
+> -	functions[functions_cnt].addr = elf_sym__value(sym);
+> -	functions[functions_cnt].size = elf_sym__size(sym);
+> -	functions[functions_cnt].sh_addr = sh.sh_addr;
+>   	functions[functions_cnt].generated = false;
+>   	functions_cnt++;
+>   	return 0;
+>   }
+>   
+> -static int addrs_cmp(const void *_a, const void *_b)
+> -{
+> -	const __u64 *a = _a;
+> -	const __u64 *b = _b;
+> -
+> -	if (*a == *b)
+> -		return 0;
+> -	return *a < *b ? -1 : 1;
+> -}
+> -
+> -static int get_vmlinux_addrs(struct btf_elf *btfe, struct funcs_layout *fl,
+> -			     __u64 **paddrs, __u64 *pcount)
+> -{
+> -	__u64 *addrs, count, offset;
+> -	unsigned int addr_size, i;
+> -	Elf_Data *data;
+> -	GElf_Shdr shdr;
+> -	Elf_Scn *sec;
+> -
+> -	/* Initialize for the sake of all error paths below. */
+> -	*paddrs = NULL;
+> -	*pcount = 0;
+> -
+> -	if (!fl->mcount_start || !fl->mcount_stop)
+> -		return 0;
+> -
+> -	/*
+> -	 * Find mcount addressed marked by __start_mcount_loc
+> -	 * and __stop_mcount_loc symbols and load them into
+> -	 * sorted array.
+> -	 */
+> -	sec = elf_getscn(btfe->elf, fl->mcount_sec_idx);
+> -	if (!sec || !gelf_getshdr(sec, &shdr)) {
+> -		fprintf(stderr, "Failed to get section(%lu) header.\n",
+> -			fl->mcount_sec_idx);
+> -		return -1;
+> -	}
+> -
+> -	/* Get address size from processed file's ELF class. */
+> -	addr_size = gelf_getclass(btfe->elf) == ELFCLASS32 ? 4 : 8;
+> -
+> -	offset = fl->mcount_start - shdr.sh_addr;
+> -	count  = (fl->mcount_stop - fl->mcount_start) / addr_size;
+> -
+> -	data = elf_getdata(sec, 0);
+> -	if (!data) {
+> -		fprintf(stderr, "Failed to get section(%lu) data.\n",
+> -			fl->mcount_sec_idx);
+> -		return -1;
+> -	}
+> -
+> -	addrs = malloc(count * sizeof(addrs[0]));
+> -	if (!addrs) {
+> -		fprintf(stderr, "Failed to allocate memory for ftrace addresses.\n");
+> -		return -1;
+> -	}
+> -
+> -	if (addr_size == sizeof(__u64)) {
+> -		memcpy(addrs, data->d_buf + offset, count * addr_size);
+> -	} else {
+> -		for (i = 0; i < count; i++)
+> -			addrs[i] = (__u64) *((__u32 *) (data->d_buf + offset + i * addr_size));
+> -	}
+> -
+> -	*paddrs = addrs;
+> -	*pcount = count;
+> -	return 0;
+> -}
+> -
+> -static int
+> -get_kmod_addrs(struct btf_elf *btfe, __u64 **paddrs, __u64 *pcount)
+> -{
+> -	__u64 *addrs, count;
+> -	unsigned int addr_size, i;
+> -	GElf_Shdr shdr_mcount;
+> -	Elf_Data *data;
+> -	Elf_Scn *sec;
+> -
+> -	/* Initialize for the sake of all error paths below. */
+> -	*paddrs = NULL;
+> -	*pcount = 0;
+> -
+> -	/* get __mcount_loc */
+> -	sec = elf_section_by_name(btfe->elf, &btfe->ehdr, &shdr_mcount,
+> -				  "__mcount_loc", NULL);
+> -	if (!sec) {
+> -		if (btf_elf__verbose) {
+> -			printf("%s: '%s' doesn't have __mcount_loc section\n", __func__,
+> -			       btfe->filename);
+> -		}
+> -		return 0;
+> -	}
+> -
+> -	data = elf_getdata(sec, NULL);
+> -	if (!data) {
+> -		fprintf(stderr, "Failed to data for __mcount_loc section.\n");
+> -		return -1;
+> -	}
+> -
+> -	/* Get address size from processed file's ELF class. */
+> -	addr_size = gelf_getclass(btfe->elf) == ELFCLASS32 ? 4 : 8;
+> -
+> -	count = data->d_size / addr_size;
+> -
+> -	addrs = malloc(count * sizeof(addrs[0]));
+> -	if (!addrs) {
+> -		fprintf(stderr, "Failed to allocate memory for ftrace addresses.\n");
+> -		return -1;
+> -	}
+> -
+> -	if (addr_size == sizeof(__u64)) {
+> -		memcpy(addrs, data->d_buf, count * addr_size);
+> -	} else {
+> -		for (i = 0; i < count; i++)
+> -			addrs[i] = (__u64) *((__u32 *) (data->d_buf + i * addr_size));
+> -	}
+> -
+> -	/*
+> -	 * We get Elf object from dwfl_module_getelf function,
+> -	 * which performs all possible relocations, including
+> -	 * __mcount_loc section.
+> -	 *
+> -	 * So addrs array now contains relocated values, which
+> -	 * we need take into account when we compare them to
+> -	 * functions values, see comment in setup_functions
+> -	 * function.
+> -	 */
+> -	*paddrs = addrs;
+> -	*pcount = count;
+> -	return 0;
+> -}
+> -
+> -static int is_ftrace_func(struct elf_function *func, __u64 *addrs, __u64 count)
+> -{
+> -	__u64 start = func->addr;
+> -	__u64 addr, end = func->addr + func->size;
+> -
+> -	/*
+> -	 * The invariant here is addr[r] that is the smallest address
+> -	 * that is >= than function start addr. Except the corner case
+> -	 * where there is no such r, but for that we have a final check
+> -	 * in the return.
+> -	 */
+> -	size_t l = 0, r = count - 1, m;
+> -
+> -	/* make sure we don't use invalid r */
+> -	if (count == 0)
+> -		return false;
+> -
+> -	while (l < r) {
+> -		m = l + (r - l) / 2;
+> -		addr = addrs[m];
+> -
+> -		if (addr >= start) {
+> -			/* we satisfy invariant, so tighten r */
+> -			r = m;
+> -		} else {
+> -			/* m is not good enough as l, maybe m + 1 will be */
+> -			l = m + 1;
+> -		}
+> -	}
+> -
+> -	return start <= addrs[r] && addrs[r] < end;
+> -}
+> -
+> -static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+> -{
+> -	__u64 *addrs, count, i;
+> -	int functions_valid = 0;
+> -	bool kmod = false;
+> -
+> -	/*
+> -	 * Check if we are processing vmlinux image and
+> -	 * get mcount data if it's detected.
+> -	 */
+> -	if (get_vmlinux_addrs(btfe, fl, &addrs, &count))
+> -		return -1;
+> -
+> -	/*
+> -	 * Check if we are processing kernel module and
+> -	 * get mcount data if it's detected.
+> -	 */
+> -	if (!addrs) {
+> -		if (get_kmod_addrs(btfe, &addrs, &count))
+> -			return -1;
+> -		kmod = true;
+> -	}
+> -
+> -	if (!addrs) {
+> -		if (btf_elf__verbose)
+> -			printf("ftrace symbols not detected, falling back to DWARF data\n");
+> -		delete_functions();
+> -		return 0;
+> -	}
+> -
+> -	qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
+> -	qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
+> -
+> -	/*
+> -	 * Let's got through all collected functions and filter
+> -	 * out those that are not in ftrace.
+> -	 */
+> -	for (i = 0; i < functions_cnt; i++) {
+> -		struct elf_function *func = &functions[i];
+> -		/*
+> -		 * For vmlinux image both addrs[x] and functions[x]::addr
+> -		 * values are final address and are comparable.
+> -		 *
+> -		 * For kernel module addrs[x] is final address, but
+> -		 * functions[x]::addr is relative address within section
+> -		 * and needs to be relocated by adding sh_addr.
+> -		 */
+> -		if (kmod)
+> -			func->addr += func->sh_addr;
+> -
+> -		/* Make sure function is within ftrace addresses. */
+> -		if (is_ftrace_func(func, addrs, count)) {
+> -			/*
+> -			 * We iterate over sorted array, so we can easily skip
+> -			 * not valid item and move following valid field into
+> -			 * its place, and still keep the 'new' array sorted.
+> -			 */
+> -			if (i != functions_valid)
+> -				functions[functions_valid] = functions[i];
+> -			functions_valid++;
+> -		}
+> -	}
+> -
+> -	functions_cnt = functions_valid;
+> -	free(addrs);
+> -
+> -	if (btf_elf__verbose)
+> -		printf("Found %d functions!\n", functions_cnt);
+> -	return 0;
+> -}
+> -
+>   static struct elf_function *find_function(const struct btf_elf *btfe,
+>   					  const char *name)
+>   {
+> @@ -620,23 +363,8 @@ static int collect_percpu_var(struct btf_elf *btfe, GElf_Sym *sym,
+>   	return 0;
+>   }
+>   
+> -static void collect_symbol(GElf_Sym *sym, struct funcs_layout *fl,
+> -			   size_t sym_sec_idx)
+> -{
+> -	if (!fl->mcount_start &&
+> -	    !strcmp("__start_mcount_loc", elf_sym__name(sym, btfe->symtab))) {
+> -		fl->mcount_start = sym->st_value;
+> -		fl->mcount_sec_idx = sym_sec_idx;
+> -	}
+> -
+> -	if (!fl->mcount_stop &&
+> -	    !strcmp("__stop_mcount_loc", elf_sym__name(sym, btfe->symtab)))
+> -		fl->mcount_stop = sym->st_value;
+> -}
+> -
+>   static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+>   {
+> -	struct funcs_layout fl = { };
+>   	Elf32_Word sym_sec_idx;
+>   	uint32_t core_id;
+>   	GElf_Sym sym;
+> @@ -648,9 +376,8 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+>   	elf_symtab__for_each_symbol_index(btfe->symtab, core_id, sym, sym_sec_idx) {
+>   		if (collect_percpu_vars && collect_percpu_var(btfe, &sym, sym_sec_idx))
+>   			return -1;
+> -		if (collect_function(btfe, &sym, sym_sec_idx))
+> +		if (collect_function(btfe, &sym))
+>   			return -1;
+> -		collect_symbol(&sym, &fl, sym_sec_idx);
+>   	}
+>   
+>   	if (collect_percpu_vars) {
+> @@ -661,9 +388,11 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+>   			printf("Found %d per-CPU variables!\n", percpu_var_cnt);
+>   	}
+>   
+> -	if (functions_cnt && setup_functions(btfe, &fl)) {
+> -		fprintf(stderr, "Failed to filter DWARF functions\n");
+> -		return -1;
+> +	if (functions_cnt) {
+> +		qsort(functions, functions_cnt, sizeof(functions[0]),
+> +		      functions_cmp);
+> +		if (btf_elf__verbose)
+> +			printf("Found %d functions!\n", functions_cnt);
+>   	}
+>   
+>   	return 0;
+> 
 
-The undesirable behavior is that after shared library is linked, application
-can define "conflicting" symbol with the same name and they will happily
-co-exists, because shared library's symbol is now STB_LOCAL. This patch set's
-assumption is that static variables are not exposed to BPF skeleton and static
-maps are explicitly not supported by libbpf. Both for reasons of avoiding
-naming conflicts.
 
-So, if we were to follow user-space behavior exactly, we'd end up with static
-maps and variables, which are invisible to BPF skeleton and (for maps) looking
-up by name becomes ambiguous.
-
-To avoid such issues, it was decided to convert STV_HIDDEN symbols to
-STV_INTERNAL with the semantics that prevents any extern references to
-STV_INTERNAL symbols. STV_INTERNAL is not defined for user-space applications
-and is reserved for future uses. So in this case BPF static linker is
-defining its own semantics.
-
-Having STV_INTERNAL visibility is useful/important for one more reason. With
-BPF skeleton not supporting static variables, with just STV_HIDDEN it's
-impossible to declare a global variable that will be accessible from
-user-space, but not resolvable from other BPF object files. STV_INTERNAL allow
-to specify just such behavior:
-
-__attribute__((visibility("internal"))) int user_space_var;
-
-user_space_var is global, but no `extern int user_space_var;` is allowed. Yet,
-user-space will be able to read/write such variable with BPF skeleton.
-
-The initial idea was to use only STV_HIDDEN to restrict symbol resolution
-outside of BPF library and treat it as STV_INTERNAL described above (i.e., no
-other files can extern such symbol). But unfortunately this works only for
-single-file BPF libraries, which is quite limiting. Making STV_HIDDEN so
-restrictive also prevents having global functions, resolvable withing BPF
-library, but treated as static by BPF verification logic. STV_HIDDEN and
-STV_INTERNAL resolves all such discrepancies.
-
-Note that currently Clang generates STV_PROTECTED instead of STV_INTERNAL for
-__attribute__((visibility("internal"))) for BPF target. Once this bug is
-fixed, I'll add new selftests with extra validations.
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/linker.c | 44 +++++++++++++++++++++++++++++++++++-------
- 1 file changed, 37 insertions(+), 7 deletions(-)
-
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index b594a88620ce..38e9ac3dfa8c 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -175,6 +175,7 @@ static int linker_append_elf_relos(struct bpf_linker *linker, struct src_obj *ob
- static int linker_append_btf(struct bpf_linker *linker, struct src_obj *obj);
- static int linker_append_btf_ext(struct bpf_linker *linker, struct src_obj *obj);
- 
-+static void finalize_elf_syms(struct bpf_linker *linker);
- static int finalize_btf(struct bpf_linker *linker);
- static int finalize_btf_ext(struct bpf_linker *linker);
- 
-@@ -809,7 +810,7 @@ static int linker_sanity_check_elf_symtab(struct src_obj *obj, struct src_sec *s
- 				i, sec->sec_idx, sym_bind);
- 			return -EINVAL;
- 		}
--		if (sym_vis != STV_DEFAULT && sym_vis != STV_HIDDEN) {
-+		if (sym_vis != STV_DEFAULT && sym_vis != STV_HIDDEN && sym_vis != STV_INTERNAL) {
- 			pr_warn("ELF sym #%d in section #%zu has unsupported symbol visibility %d\n",
- 				i, sec->sec_idx, sym_vis);
- 			return -EINVAL;
-@@ -1783,6 +1784,15 @@ static void sym_update_type(Elf64_Sym *sym, int sym_type)
- 	sym->st_info = ELF64_ST_INFO(ELF64_ST_BIND(sym->st_info), sym_type);
- }
- 
-+static bool sym_visibility_is_stricter(int src_vis, int dst_vis)
-+{
-+	if (src_vis == STV_INTERNAL)
-+		return dst_vis != STV_INTERNAL;
-+	if (src_vis == STV_HIDDEN)
-+		return dst_vis == STV_DEFAULT;
-+	return false;
-+}
-+
- static void sym_update_visibility(Elf64_Sym *sym, int sym_vis)
- {
- 	/* libelf doesn't provide setters for ST_VISIBILITY,
-@@ -1798,7 +1808,7 @@ static int linker_append_elf_sym(struct bpf_linker *linker, struct src_obj *obj,
- 	struct src_sec *src_sec = NULL;
- 	struct dst_sec *dst_sec = NULL;
- 	struct glob_sym *glob_sym = NULL;
--	int name_off, sym_type, sym_bind, sym_vis, err;
-+	int name_off, sym_type, sym_bind, sym_vis, dst_vis, err;
- 	int btf_sec_id = 0, btf_id = 0;
- 	size_t dst_sym_idx;
- 	Elf64_Sym *dst_sym;
-@@ -1877,10 +1887,16 @@ static int linker_append_elf_sym(struct bpf_linker *linker, struct src_obj *obj,
- 			return -EINVAL;
- 		}
- 
--		if (!glob_syms_match(sym_name, linker, glob_sym, obj, sym, src_sym_idx, btf_id))
-+		dst_sym = get_sym_by_idx(linker, glob_sym->sym_idx);
-+		dst_vis = ELF64_ST_VISIBILITY(dst_sym->st_other);
-+		if (sym_vis == STV_INTERNAL || dst_vis == STV_INTERNAL) {
-+			pr_warn("conflicting non-resolvable symbol #%d (%s) definition in '%s'\n",
-+				src_sym_idx, sym_name, obj->filename);
- 			return -EINVAL;
-+		}
- 
--		dst_sym = get_sym_by_idx(linker, glob_sym->sym_idx);
-+		if (!glob_syms_match(sym_name, linker, glob_sym, obj, sym, src_sym_idx, btf_id))
-+			return -EINVAL;
- 
- 		/* If new symbol is strong, then force dst_sym to be strong as
- 		 * well; this way a mix of weak and non-weak extern
-@@ -1898,10 +1914,10 @@ static int linker_append_elf_sym(struct bpf_linker *linker, struct src_obj *obj,
- 		/* Non-default visibility is "contaminating", with stricter
- 		 * visibility overwriting more permissive ones, even if more
- 		 * permissive visibility comes from just an extern definition.
--		 * Currently only STV_DEFAULT and STV_HIDDEN are allowed and
--		 * ensured by ELF symbol sanity checks above.
-+		 * Currently only STV_DEFAULT, STV_HIDDEN, and STV_INTERNAL
-+		 * are allowed and ensured by ELF symbol sanity checks above.
- 		 */
--		if (sym_vis > ELF64_ST_VISIBILITY(dst_sym->st_other))
-+		if (sym_visibility_is_stricter(sym_vis, ELF64_ST_VISIBILITY(dst_sym->st_other)))
- 			sym_update_visibility(dst_sym, sym_vis);
- 
- 		/* If the new symbol is extern, then regardless if
-@@ -2549,6 +2565,8 @@ int bpf_linker__finalize(struct bpf_linker *linker)
- 	if (!linker->elf)
- 		return -EINVAL;
- 
-+	finalize_elf_syms(linker);
-+
- 	err = finalize_btf(linker);
- 	if (err)
- 		return err;
-@@ -2602,6 +2620,18 @@ int bpf_linker__finalize(struct bpf_linker *linker)
- 	return 0;
- }
- 
-+static void finalize_elf_syms(struct bpf_linker *linker)
-+{
-+	struct dst_sec *symtab = &linker->secs[linker->symtab_sec_idx];
-+	Elf64_Sym *sym = symtab->raw_data;
-+	int i, n = symtab->shdr->sh_size / symtab->shdr->sh_entsize;
-+
-+	for (i = 0; i < n; i++, sym++) {
-+		if (ELF64_ST_VISIBILITY(sym->st_other) == STV_HIDDEN)
-+			sym_update_visibility(sym, STV_INTERNAL);
-+	}
-+}
-+
- static int emit_elf_data_sec(struct bpf_linker *linker, const char *sec_name,
- 			     size_t align, const void *raw_data, size_t raw_sz)
- {
 -- 
-2.30.2
-
+js
