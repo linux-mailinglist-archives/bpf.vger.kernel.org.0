@@ -2,271 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C4937649B
-	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 13:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09D637662B
+	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 15:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234776AbhEGLmA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 May 2021 07:42:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53832 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234817AbhEGLl6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 7 May 2021 07:41:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620387658;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=LspZM+MkqQ3DiGR0xkhvj8Q5WxoRLe1cqgKeSBtf40g=;
-        b=cooX+78g5to/Ua+ttrR/SJ2+dITSLGsQqwLsQ/pkpA5gaHHWiKNHTbR0qsJ8c2PzfM1HIl
-        N2GJpKETc4xDIS8OX6KcO0wVrmG3/O3f8Yu/oDDMdCJfDNmtlEUtUdIorkLjCD4VIEhDE9
-        GybCNMhCPRBHdryfCDFmGDxQcyLyFao=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-r-IWckuSNDGV7nxp1HlMzA-1; Fri, 07 May 2021 07:40:54 -0400
-X-MC-Unique: r-IWckuSNDGV7nxp1HlMzA-1
-Received: by mail-ed1-f72.google.com with SMTP id y19-20020a0564022713b029038a9f36060dso4308492edd.4
-        for <bpf@vger.kernel.org>; Fri, 07 May 2021 04:40:54 -0700 (PDT)
+        id S234784AbhEGNar (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 May 2021 09:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234390AbhEGNar (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 May 2021 09:30:47 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D3BAC061761
+        for <bpf@vger.kernel.org>; Fri,  7 May 2021 06:29:47 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id c11so12742577lfi.9
+        for <bpf@vger.kernel.org>; Fri, 07 May 2021 06:29:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=oiGRomdXyAyLnDStIv6nJ+7p0wfVS+USRZDAubzLhPs=;
+        b=AJxD8LVjZKL0QCu/MFxLSB0AOHsJN4Wxk3jHOuin9tGgIvw5iokwQ2RKF/Ov4vptl1
+         Z1oO6iVoL0qdywfzFdf9dxiSwnBgm5lPozWDJer/oLTP7gIDNLfytG6BDPTV9Q7V82W/
+         +q9KIVPOt67Hxlg1Wnwtr9joLQWo6G70th/ZI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LspZM+MkqQ3DiGR0xkhvj8Q5WxoRLe1cqgKeSBtf40g=;
-        b=tbWQOz5HpHoIwINyt+KLp2y7AtEJi7inzAjYGSwVyvbDo2qXoTwck7iH3+Lol6vIpq
-         9ZG2pNZF3lfI7vB5W3m2O2HNQhv8UgMZY2uIkFziY6+nNMGpgiEsS+IC/wr7qqO9ISkL
-         471Q848qSnXPQOem7+49lFw1fEAs6eqR1t1bWExafL5jENSpDUbPeyB4B9uT4ExGXirx
-         BuZ8R4R9LjZDLZBkaVNL5iX3zbj14i2JJqs4E61lxDx6CDxGhKJwBSiUzocBrHXvQrV2
-         qnaCzrMVERmOxuDV31mOxo4Yx4Vis2KnouHKtuyBob9O3fZgZ+rGwGbPcxpcV16cnr3E
-         gANw==
-X-Gm-Message-State: AOAM530ZngQVeY80MOrQv5TS3e+P+oeF2+GRyIDddxlG79f5lp9HZZBO
-        rAhQYqtJ/iUHNUcFJQgDcW5uGs2eORpo1obz4NdKzL3x1pHU2+MH6bsHMrgVZVTnbmYHJoDIK24
-        /RVtTfBfNXP16
-X-Received: by 2002:a17:906:a103:: with SMTP id t3mr9641317ejy.334.1620387653040;
-        Fri, 07 May 2021 04:40:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJywdR6MRssJqrq0gs7f9Bj2ljf47LHUQteWxO5byrxHZ0BFN+xLVaNVcjuKxvdjBE/ZCBSWWw==
-X-Received: by 2002:a17:906:a103:: with SMTP id t3mr9641289ejy.334.1620387652773;
-        Fri, 07 May 2021 04:40:52 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8308:b105:dd00:277b:6436:24db:9466])
-        by smtp.gmail.com with ESMTPSA id l26sm3349312ejz.27.2021.05.07.04.40.51
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=oiGRomdXyAyLnDStIv6nJ+7p0wfVS+USRZDAubzLhPs=;
+        b=H+0qjLXK6BPXmKKxQqUoFIyxLUBKHwcm0sCH2tGVpMPzgUj9wxYdiWbZkJxHIaAnmw
+         28iX1YwzcRwHlW6RRpGV+B4KjpQvx21oIAgsk4/2f8wtWFjffTdxLGV24/WA5pjToIqh
+         M7RepW32CqeQYJcjybUrmlvoJUNFFSooqQffkUFxxyEBc1Wu6qiGuPw28fJciBR4ppBm
+         qJYkmmJtnAMXOXLMoNKW6t5SiIXYeex/G0J2MeLGnqtJBdur3AsLpOITdMVyBg8nfSjz
+         E8Xn4fcsR2lcXGRfZL7sD6iK0zPHx9ftLtmcU/hGw2/SzBqOmMEGc085RWYwV+v9i7j0
+         rXKw==
+X-Gm-Message-State: AOAM532GiB6D6PhwxFQLkSa7Bbi1PoqRcLHjwO35N9R1FRJD52JbqRS0
+        c1QaDv6++VThxvvH5VIYyxzIyA==
+X-Google-Smtp-Source: ABdhPJxbszf8YkS6e1D6r4abNBbOzr5xjEuZYqK29u39aXgWaE/+X06riJSO/EuLb5K2aRN9OCLXHA==
+X-Received: by 2002:a19:c317:: with SMTP id t23mr6630909lff.5.1620394185722;
+        Fri, 07 May 2021 06:29:45 -0700 (PDT)
+Received: from cloudflare.com (83.31.64.64.ipv4.supernova.orange.pl. [83.31.64.64])
+        by smtp.gmail.com with ESMTPSA id e11sm1897855ljk.128.2021.05.07.06.29.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 04:40:52 -0700 (PDT)
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-To:     linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] lockdown,selinux: fix bogus SELinux lockdown permission checks
-Date:   Fri,  7 May 2021 13:40:48 +0200
-Message-Id: <20210507114048.138933-1-omosnace@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 07 May 2021 06:29:45 -0700 (PDT)
+References: <20210426025001.7899-1-xiyou.wangcong@gmail.com>
+ <20210426025001.7899-6-xiyou.wangcong@gmail.com>
+User-agent: mu4e 1.1.0; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        jiang.wang@bytedance.com, duanxiongchun@bytedance.com,
+        wangdongdong.6@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Subject: Re: [Patch bpf-next v3 05/10] af_unix: implement
+ unix_dgram_bpf_recvmsg()
+In-reply-to: <20210426025001.7899-6-xiyou.wangcong@gmail.com>
+Date:   Fri, 07 May 2021 15:29:43 +0200
+Message-ID: <87lf8qvfi0.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
-lockdown") added an implementation of the locked_down LSM hook to
-SELinux, with the aim to restrict which domains are allowed to perform
-operations that would breach lockdown.
+On Mon, Apr 26, 2021 at 04:49 AM CEST, Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+>
+> We have to implement unix_dgram_bpf_recvmsg() to replace the
+> original ->recvmsg() to retrieve skmsg from ingress_msg.
+>
+> AF_UNIX is again special here because the lack of
+> sk_prot->recvmsg(). I simply add a special case inside
+> unix_dgram_recvmsg() to call sk->sk_prot->recvmsg() directly.
+>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+>  include/net/af_unix.h |  3 +++
+>  net/unix/af_unix.c    | 21 ++++++++++++++++---
+>  net/unix/unix_bpf.c   | 49 +++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 70 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/net/af_unix.h b/include/net/af_unix.h
+> index cca645846af1..e524c82794c9 100644
+> --- a/include/net/af_unix.h
+> +++ b/include/net/af_unix.h
+> @@ -82,6 +82,9 @@ static inline struct unix_sock *unix_sk(const struct sock *sk)
+>  long unix_inq_len(struct sock *sk);
+>  long unix_outq_len(struct sock *sk);
+>  
+> +int __unix_dgram_recvmsg(struct sock *sk, struct msghdr *msg, size_t size,
+> +			 int nonblock, int flags, int *addr_len);
+> +
+>  #ifdef CONFIG_SYSCTL
+>  int unix_sysctl_register(struct net *net);
+>  void unix_sysctl_unregister(struct net *net);
+> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+> index c4afc5fbe137..08458fa9f48b 100644
+> --- a/net/unix/af_unix.c
+> +++ b/net/unix/af_unix.c
+> @@ -2088,11 +2088,11 @@ static void unix_copy_addr(struct msghdr *msg, struct sock *sk)
+>  	}
+>  }
+>  
+> -static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+> -			      size_t size, int flags)
+> +int __unix_dgram_recvmsg(struct sock *sk, struct msghdr *msg, size_t size,
+> +			 int nonblock, int flags, int *addr_len)
+>  {
+>  	struct scm_cookie scm;
+> -	struct sock *sk = sock->sk;
+> +	struct socket *sock = sk->sk_socket;
+>  	struct unix_sock *u = unix_sk(sk);
+>  	struct sk_buff *skb, *last;
+>  	long timeo;
+> @@ -2195,6 +2195,21 @@ static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+>  	return err;
+>  }
+>  
+> +static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+> +			      int flags)
+> +{
+> +	struct sock *sk = sock->sk;
+> +	int addr_len = 0;
+> +
+> +#ifdef CONFIG_BPF_SYSCALL
+> +	if (sk->sk_prot != &unix_proto)
+> +		return sk->sk_prot->recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
+> +					    flags & ~MSG_DONTWAIT, &addr_len);
+> +#endif
+> +	return __unix_dgram_recvmsg(sk, msg, size, flags & MSG_DONTWAIT,
+> +				    flags, &addr_len);
+> +}
+> +
 
-However, in several places the security_locked_down() hook is called in
-situations where the current task isn't doing any action that would
-directly breach lockdown, leading to SELinux checks that are basically
-bogus.
+Nit: We can just pass NULL instead of &addr_len here it seems.
 
-Since in most of these situations converting the callers such that
-security_locked_down() is called in a context where the current task
-would be meaningful for SELinux is impossible or very non-trivial (and
-could lead to TOCTOU issues for the classic Lockdown LSM
-implementation), fix this by adding a separate hook
-security_locked_down_globally() that is to be used in such situations
-and convert all these problematic callers to call this hook instead. The
-new hook is then left unimplemented in SELinux and in Lockdown LSM it is
-backed by the same implementation as the locked_down hook.
-
-The callers migrated to the new hook are:
-1. arch/powerpc/xmon/xmon.c
-     Here the hook seems to be called from non-task context and is only
-     used for redacting some sensitive values from output sent to
-     userspace.
-2. fs/tracefs/inode.c:tracefs_create_file()
-     Here the call is used to prevent creating new tracefs entries when
-     the kernel is locked down. Assumes that locking down is one-way -
-     i.e. if the hook returns non-zero once, it will never return zero
-     again, thus no point in creating these files.
-3. kernel/trace/bpf_trace.c:bpf_probe_read_kernel{,_str}_common()
-     Called when a BPF program calls a helper that could leak kernel
-     memory. The task context is not relevant here, since the program
-     may very well be run in the context of a different task than the
-     consumer of the data.
-     See: https://bugzilla.redhat.com/show_bug.cgi?id=1955585
-4. net/xfrm/xfrm_user.c:copy_to_user_*()
-     Here a cryptographic secret is redacted based on the value returned
-     from the hook. There are two possible actions that may lead here:
-     a) A netlink message XFRM_MSG_GETSA with NLM_F_DUMP set - here the
-        task context is relevant, since the dumped data is sent back to
-        the current task.
-     b) When deleting an SA via XFRM_MSG_DELSA, the dumped SAs are
-        broadcasted to tasks subscribed to XFRM events - here the
-        SELinux check is not meningful as the current task's creds do
-        not represent the tasks that could potentially see the secret.
-     It really doesn't seem worth it to try to preserve the check in the
-     a) case, since the eventual leak can be circumvented anyway via b),
-     plus there is no way for the task to indicate that it doesn't care
-     about the actual key value, so the check could generate a lot of
-     noise.
-
-Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
----
- arch/powerpc/xmon/xmon.c      | 4 ++--
- fs/tracefs/inode.c            | 2 +-
- include/linux/lsm_hook_defs.h | 1 +
- include/linux/security.h      | 5 +++++
- kernel/trace/bpf_trace.c      | 4 ++--
- net/xfrm/xfrm_user.c          | 2 +-
- security/lockdown/lockdown.c  | 1 +
- security/security.c           | 6 ++++++
- 8 files changed, 19 insertions(+), 6 deletions(-)
-
-diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
-index 3fe37495f63d..a4bad825d424 100644
---- a/arch/powerpc/xmon/xmon.c
-+++ b/arch/powerpc/xmon/xmon.c
-@@ -298,7 +298,7 @@ static bool xmon_is_locked_down(void)
- 	static bool lockdown;
- 
- 	if (!lockdown) {
--		lockdown = !!security_locked_down(LOCKDOWN_XMON_RW);
-+		lockdown = !!security_locked_down_globally(LOCKDOWN_XMON_RW);
- 		if (lockdown) {
- 			printf("xmon: Disabled due to kernel lockdown\n");
- 			xmon_is_ro = true;
-@@ -306,7 +306,7 @@ static bool xmon_is_locked_down(void)
- 	}
- 
- 	if (!xmon_is_ro) {
--		xmon_is_ro = !!security_locked_down(LOCKDOWN_XMON_WR);
-+		xmon_is_ro = !!security_locked_down_globally(LOCKDOWN_XMON_WR);
- 		if (xmon_is_ro)
- 			printf("xmon: Read-only due to kernel lockdown\n");
- 	}
-diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-index 4b83cbded559..07241435efec 100644
---- a/fs/tracefs/inode.c
-+++ b/fs/tracefs/inode.c
-@@ -396,7 +396,7 @@ struct dentry *tracefs_create_file(const char *name, umode_t mode,
- 	struct dentry *dentry;
- 	struct inode *inode;
- 
--	if (security_locked_down(LOCKDOWN_TRACEFS))
-+	if (security_locked_down_globally(LOCKDOWN_TRACEFS))
- 		return NULL;
- 
- 	if (!(mode & S_IFMT))
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index 477a597db013..d6e2a6b59277 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -390,6 +390,7 @@ LSM_HOOK(void, LSM_RET_VOID, bpf_prog_free_security, struct bpf_prog_aux *aux)
- #endif /* CONFIG_BPF_SYSCALL */
- 
- LSM_HOOK(int, 0, locked_down, enum lockdown_reason what)
-+LSM_HOOK(int, 0, locked_down_globally, enum lockdown_reason what)
- 
- #ifdef CONFIG_PERF_EVENTS
- LSM_HOOK(int, 0, perf_event_open, struct perf_event_attr *attr, int type)
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 8aeebd6646dc..e683dee84f46 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -468,6 +468,7 @@ int security_inode_notifysecctx(struct inode *inode, void *ctx, u32 ctxlen);
- int security_inode_setsecctx(struct dentry *dentry, void *ctx, u32 ctxlen);
- int security_inode_getsecctx(struct inode *inode, void **ctx, u32 *ctxlen);
- int security_locked_down(enum lockdown_reason what);
-+int security_locked_down_globally(enum lockdown_reason what);
- #else /* CONFIG_SECURITY */
- 
- static inline int call_blocking_lsm_notifier(enum lsm_event event, void *data)
-@@ -1329,6 +1330,10 @@ static inline int security_locked_down(enum lockdown_reason what)
- {
- 	return 0;
- }
-+static inline int security_locked_down_globally(enum lockdown_reason what)
-+{
-+	return 0;
-+}
- #endif	/* CONFIG_SECURITY */
- 
- #if defined(CONFIG_SECURITY) && defined(CONFIG_WATCH_QUEUE)
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index b0c45d923f0f..f43bca95b261 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -215,7 +215,7 @@ const struct bpf_func_proto bpf_probe_read_user_str_proto = {
- static __always_inline int
- bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr)
- {
--	int ret = security_locked_down(LOCKDOWN_BPF_READ);
-+	int ret = security_locked_down_globally(LOCKDOWN_BPF_READ);
- 
- 	if (unlikely(ret < 0))
- 		goto fail;
-@@ -246,7 +246,7 @@ const struct bpf_func_proto bpf_probe_read_kernel_proto = {
- static __always_inline int
- bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr)
- {
--	int ret = security_locked_down(LOCKDOWN_BPF_READ);
-+	int ret = security_locked_down_globally(LOCKDOWN_BPF_READ);
- 
- 	if (unlikely(ret < 0))
- 		goto fail;
-diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
-index 5a0ef4361e43..5a56f74262d8 100644
---- a/net/xfrm/xfrm_user.c
-+++ b/net/xfrm/xfrm_user.c
-@@ -851,7 +851,7 @@ static int copy_user_offload(struct xfrm_state_offload *xso, struct sk_buff *skb
- static bool xfrm_redact(void)
- {
- 	return IS_ENABLED(CONFIG_SECURITY) &&
--		security_locked_down(LOCKDOWN_XFRM_SECRET);
-+		security_locked_down_globally(LOCKDOWN_XFRM_SECRET);
- }
- 
- static int copy_to_user_auth(struct xfrm_algo_auth *auth, struct sk_buff *skb)
-diff --git a/security/lockdown/lockdown.c b/security/lockdown/lockdown.c
-index 87cbdc64d272..4ac172eaa4b7 100644
---- a/security/lockdown/lockdown.c
-+++ b/security/lockdown/lockdown.c
-@@ -73,6 +73,7 @@ static int lockdown_is_locked_down(enum lockdown_reason what)
- 
- static struct security_hook_list lockdown_hooks[] __lsm_ro_after_init = {
- 	LSM_HOOK_INIT(locked_down, lockdown_is_locked_down),
-+	LSM_HOOK_INIT(locked_down_globally, lockdown_is_locked_down),
- };
- 
- static int __init lockdown_lsm_init(void)
-diff --git a/security/security.c b/security/security.c
-index 5ac96b16f8fa..b9b990681ae9 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -2547,6 +2547,12 @@ int security_locked_down(enum lockdown_reason what)
- }
- EXPORT_SYMBOL(security_locked_down);
- 
-+int security_locked_down_globally(enum lockdown_reason what)
-+{
-+	return call_int_hook(locked_down_globally, 0, what);
-+}
-+EXPORT_SYMBOL(security_locked_down_globally);
-+
- #ifdef CONFIG_PERF_EVENTS
- int security_perf_event_open(struct perf_event_attr *attr, int type)
- {
--- 
-2.31.1
-
+[...]
