@@ -2,97 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEB63760F9
-	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 09:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4BAD3761BC
+	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 10:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235132AbhEGHLJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 May 2021 03:11:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26360 "EHLO
+        id S236012AbhEGIOW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 May 2021 04:14:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33051 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235146AbhEGHK7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 7 May 2021 03:10:59 -0400
+        by vger.kernel.org with ESMTP id S235320AbhEGIOW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 7 May 2021 04:14:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620371400;
+        s=mimecast20190719; t=1620375202;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=mHFmcONkXExZESpq4UoLZEwTMca0lsijd9NH0tbhjEQ=;
-        b=YG/OQ0FYKVUHhw42GnjO0zgLIIpu9DhLpkkx4awuvxJlXGU7D76oPScrEr0ZXukopEyWPC
-        gM6nIYUhrOUTxf4osLbP4cj4lVZMFyvh6LJWgr+moFZhgPaldHeUmV/Lf6DrMvnTI3lCxy
-        tBqlaksmyzweH2RwRCE6O+yKCX6YZ+k=
+        bh=T0d4hOYJJ2KsxgrDpZv9ZxzDfxdUKbxXUPpS8SZAfUg=;
+        b=cFLZI37E5ZVRQquLGA834D1+HSR6RwrzTXeLpZMf/uf70M94wTZ/CdeWpSgZu11j9kEyPl
+        e8BaPpd+ko6RNmboZukJSEk6DPO+Lu1ndrtv3i7xfAg8cDLvUIhw8SiTZtNUED+FlA829k
+        7g7WfN1PiInfTmjjIjYLdMJSW+mEHFI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-408-m_5erc8tN4OfX8b4AaS8ng-1; Fri, 07 May 2021 03:09:56 -0400
-X-MC-Unique: m_5erc8tN4OfX8b4AaS8ng-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-509-XUGdYxIWPnW_gUR-Efp8Hw-1; Fri, 07 May 2021 04:13:18 -0400
+X-MC-Unique: XUGdYxIWPnW_gUR-Efp8Hw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 485B31008060;
-        Fri,  7 May 2021 07:09:54 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (ovpn-112-137.ams2.redhat.com [10.36.112.137])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6449E10016F9;
-        Fri,  7 May 2021 07:09:45 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>,
-        Jiri Olsa <jolsa@redhat.com>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44E8618982A4;
+        Fri,  7 May 2021 08:13:16 +0000 (UTC)
+Received: from krava (unknown [10.40.194.249])
+        by smtp.corp.redhat.com (Postfix) with SMTP id C188A5D745;
+        Fri,  7 May 2021 08:13:13 +0000 (UTC)
+Date:   Fri, 7 May 2021 10:13:09 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-References: <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
-        <20210423175528.GF6564@kitsune.suse.cz>
-        <20210425111545.GL15381@kitsune.suse.cz>
-        <20210426113215.GM15381@kitsune.suse.cz>
-        <20210426121220.GN15381@kitsune.suse.cz>
-        <20210426121401.GO15381@kitsune.suse.cz>
-        <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com> <YIbkR6z6mxdNSzGO@krava>
-        <YIcRlHQWWKbOlcXr@krava> <20210427121237.GK6564@kitsune.suse.cz>
-        <20210430174723.GP15381@kitsune.suse.cz>
-        <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
-        <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
-Date:   Fri, 07 May 2021 09:10:05 +0200
-In-Reply-To: <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org> (Jiri Slaby's
-        message of "Mon, 3 May 2021 08:11:50 +0200")
-Message-ID: <87lf8rf29e.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH] bpf: Forbid trampoline attach for functions with
+ variable arguments
+Message-ID: <YJT2lbKUCRo90MQV@krava>
+References: <20210505132529.401047-1-jolsa@kernel.org>
+ <CAEf4BzazQgrPVqKOGP8z=MPZhjZHCZDdcWQB0xBuudXbxXwaXg@mail.gmail.com>
+ <c21b54a6-8d6e-f76d-e6c1-95abd8544d9d@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c21b54a6-8d6e-f76d-e6c1-95abd8544d9d@iogearbox.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-* Jiri Slaby:
+On Fri, May 07, 2021 at 01:31:54AM +0200, Daniel Borkmann wrote:
+> On 5/5/21 8:45 PM, Andrii Nakryiko wrote:
+> > On Wed, May 5, 2021 at 6:42 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > > 
+> > > We can't currently allow to attach functions with variable arguments.
+> > > The problem is that we should save all the registers for arguments,
+> > > which is probably doable, but if caller uses more than 6 arguments,
+> > > we need stack data, which will be wrong, because of the extra stack
+> > > frame we do in bpf trampoline, so we could crash.
+> > > 
+> > > Also currently there's malformed trampoline code generated for such
+> > > functions at the moment as described in:
+> > >    https://lore.kernel.org/bpf/20210429212834.82621-1-jolsa@kernel.org/
+> > > 
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > 
+> > LGTM.
+> > 
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > 
+> > >   kernel/bpf/btf.c | 13 +++++++++++++
+> > >   1 file changed, 13 insertions(+)
+> > > 
+> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > index 0600ed325fa0..161511bb3e51 100644
+> > > --- a/kernel/bpf/btf.c
+> > > +++ b/kernel/bpf/btf.c
+> > > @@ -5206,6 +5206,13 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+> > >          m->ret_size = ret;
+> > > 
+> > >          for (i = 0; i < nargs; i++) {
+> > > +               if (i == nargs - 1 && args[i].type == 0) {
+> > > +                       bpf_log(log,
+> > > +                               "The function %s with variable args is unsupported.\n",
+> > > +                               tname);
+> > > +                       return -EINVAL;
+> > > +
+> 
+> (Jiri, fyi, I removed this extra newline while applying. Please scan for such
+> things before submitting.)
 
-> The dot makes the difference, of course. The question is why is it
-> there? I keep looking into it. Only if someone has an immediate
-> idea...
+sorry, will do
 
-We see the failure on aarch64 as well, with 8404c9fbc84b741
-(from Linus' tree).
-
-As far as I can tell, the core issue is that BTF_ID is applied to a
-symbol which is defined as static on the C side (and even in a different
-translation unit, but this aspect doesn't really matter).  The compiler
-can and will change symbol names, calling conventions and data layout
-for static functions/variables, so this is never going to work reliably.
-It is possible to inhibit these optimizations by using __attribute__
-((used)).  But I'm pretty sure that BTF generation fails to work
-properly if there are symbol name collisions, so I think it's better to
-drop the static and rely on duplicate symbol checks from the linker
-(which of course does not happen for C entities declared static).
-
-Thanks,
-Florian
+jirka
 
