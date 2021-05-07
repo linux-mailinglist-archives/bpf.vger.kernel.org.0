@@ -2,268 +2,392 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913CC37637D
-	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 12:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20323763EB
+	for <lists+bpf@lfdr.de>; Fri,  7 May 2021 12:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234370AbhEGKV1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 May 2021 06:21:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33410 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233599AbhEGKV0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 7 May 2021 06:21:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620382826;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lIcQ3aWusFoyx+p+lHe/DqMeu83D/lp8hQ/FOvNZ4aQ=;
-        b=LyiHmNN5uSpMDh3xPC97mGKnQn4vz5NXoNWZ6f4/N6Svq9t9ZdMGj29wE1ThRuYWXZSFuw
-        0HAI2nEWMl5+KWajeLEwRoTjkAuVtc+9y7prpcVDJKdttf4VLC/p8W4AXPkL3ALNLHWzUp
-        h5y53q9BdUdU2YwwOdI15TklEEvXGsE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-598-rwKCCF0BNc2mnP7N5eRQ8A-1; Fri, 07 May 2021 06:20:24 -0400
-X-MC-Unique: rwKCCF0BNc2mnP7N5eRQ8A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CB6756D4E3;
-        Fri,  7 May 2021 10:20:18 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7C736687C2;
-        Fri,  7 May 2021 10:19:55 +0000 (UTC)
-Date:   Fri, 7 May 2021 12:19:53 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     brouer@redhat.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        "Vinay Kumar Yadav" <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        "Tariq Toukan" <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
-Message-ID: <20210507121953.59e22aa8@carbon>
-In-Reply-To: <bdd97ac5-f932-beec-109e-ace9cd62f661@huawei.com>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
-        <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
-        <YIsAIzecktXXBlxn@apalos.home>
-        <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com>
-        <YIwvI5/ygBvZG5sy@apalos.home>
-        <33b02220-cc50-f6b2-c436-f4ec041d6bc4@huawei.com>
-        <YJPn5t2mdZKC//dp@apalos.home>
-        <75a332fa-74e4-7b7b-553e-3a1a6cb85dff@huawei.com>
-        <YJTm4uhvqCy2lJH8@apalos.home>
-        <bdd97ac5-f932-beec-109e-ace9cd62f661@huawei.com>
+        id S236923AbhEGKhZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 May 2021 06:37:25 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:44825 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236920AbhEGKhV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 May 2021 06:37:21 -0400
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210507103619epoutp046042f2a669225feb14f806c0337a152d~8wnZF-l222316323163epoutp04M
+        for <bpf@vger.kernel.org>; Fri,  7 May 2021 10:36:19 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210507103619epoutp046042f2a669225feb14f806c0337a152d~8wnZF-l222316323163epoutp04M
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1620383779;
+        bh=+KFwL554FiUYsQuDiwrbpamm8pEVQzumGw8EbUUwLus=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=NlMq+jV80XchRUV1LZA5hK+9j7Se2VJtKeW1l6E4MZWodjXKPQJXB8K0DLmSRGz5F
+         upLToYKwlA2zjOQs8Mbrsj0k0Ij0CDClOpSnBc4PXXX6shtKSuP8DTPSNTRFYw0G3w
+         yDtwAYCSJHRoz5jejQtPbo6GTsOziX3lJyyxra6M=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20210507103618epcas2p2af58c0c639c48450bf8d47b35bb6de1a~8wnYAIjxX2373523735epcas2p26;
+        Fri,  7 May 2021 10:36:18 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.183]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4Fc6LS0RBgz4x9Pp; Fri,  7 May
+        2021 10:36:16 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D1.0E.09433.F1815906; Fri,  7 May 2021 19:36:15 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210507103615epcas2p420f76362ca61282a6ac26ee7d42fb347~8wnVpLACs0064300643epcas2p4m;
+        Fri,  7 May 2021 10:36:15 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210507103615epsmtrp111794de89e8f0967055fc952da34ef79~8wnVn_76V0947109471epsmtrp1t;
+        Fri,  7 May 2021 10:36:15 +0000 (GMT)
+X-AuditID: b6c32a47-f61ff700000024d9-7f-6095181f07dc
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D9.7C.08163.F1815906; Fri,  7 May 2021 19:36:15 +0900 (KST)
+Received: from KORDO035731 (unknown [12.36.185.47]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210507103615epsmtip2dedeaa9f15a3819b0f451d230ad54195~8wnVU0YfC1119311193epsmtip2i;
+        Fri,  7 May 2021 10:36:15 +0000 (GMT)
+From:   "Dongseok Yi" <dseok.yi@samsung.com>
+To:     "'Yunsheng Lin'" <linyunsheng@huawei.com>,
+        "'Willem de Bruijn'" <willemdebruijn.kernel@gmail.com>
+Cc:     "'Daniel Borkmann'" <daniel@iogearbox.net>,
+        "'bpf'" <bpf@vger.kernel.org>,
+        "'Alexei Starovoitov'" <ast@kernel.org>,
+        "'Andrii Nakryiko'" <andrii@kernel.org>,
+        "'Martin KaFai Lau'" <kafai@fb.com>,
+        "'Song Liu'" <songliubraving@fb.com>,
+        "'Yonghong Song'" <yhs@fb.com>,
+        "'John Fastabend'" <john.fastabend@gmail.com>,
+        "'KP Singh'" <kpsingh@kernel.org>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Jakub Kicinski'" <kuba@kernel.org>,
+        "'Network Development'" <netdev@vger.kernel.org>,
+        "'linux-kernel'" <linux-kernel@vger.kernel.org>
+In-Reply-To: <5824b2ab-46a2-a70c-0ac9-8c5eb0a9665a@huawei.com>
+Subject: RE: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
+ to 4
+Date:   Fri, 7 May 2021 19:36:15 +0900
+Message-ID: <008101d7432c$ce733e00$6b59ba00$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKypHYW3xad5/j2XvChPebQmKG2owG+YoocAqFpyMsBZavlXQIxNaIYAiru3ucBq8RF2QKY6vTDAm6kVlUBadK04AMaqQ3GARiLayQCOMjohahbuIog
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJJsWRmVeSWpSXmKPExsWy7bCmma68xNQEg4f3rC2+/57NbPHl5212
+        i89HjrNZLF74jdlizvkWFoumHSuYLF58eMJo8XxfL5PFhW19rBaXd81hs2h4y2VxbIGYxc/D
+        Z5gtFv/cAFS1ZAajA7/HlpU3mTwmNr9j99g56y67R8uRt6weXTcuMXtsWtXJ5vF5k1wAe1SO
+        TUZqYkpqkUJqXnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7Q2UoKZYk5
+        pUChgMTiYiV9O5ui/NKSVIWM/OISW6XUgpScAkPDAr3ixNzi0rx0veT8XCtDAwMjU6DKhJyM
+        b0cfMxY0hlbs6JjA1sD41bGLkZNDQsBE4vKDe2xdjFwcQgI7GCU23L0D5XwCch5eYIVwPjNK
+        LNh9nBWmpX3RPqjELkaJ9y/nsEM4LxglGt5MYASpYhPQkngzqx2sQ0QgXWJuy2FGkCJmgXks
+        EleXtYAlOAXsJD6/2s8CYgsLBEs8ndTEBGKzCKhIHH17EGwQr4ClxNHj65khbEGJkzOfgNUz
+        C8hLbH87hxniJAWJn0+XgZ0kItDEKLF41yRWiCIRidmdbcwgCQmBBxwSj84uZYHocJF4e286
+        I4QtLPHq+BZ2CFtK4mV/G5DNAWTXS7R2x0D09jBKXNn3BKrXWGLWs3ZGkBpmAU2J9bv0IcqV
+        JY7cgrqNT6Lj8F+oKbwSHW1CEKaSxMQv8RAzJCRenJzMMoFRaRaSx2YheWwWkvtnIaxawMiy
+        ilEstaA4Nz212KjAGDm2NzGC07SW+w7GGW8/6B1iZOJgPMQowcGsJMJ7etHkBCHelMTKqtSi
+        /Pii0pzU4kOMpsCgnsgsJZqcD8wUeSXxhqZGZmYGlqYWpmZGFkrivD9T6xKEBNITS1KzU1ML
+        Uotg+pg4OKUamJZ2L2vm/t7uMJlB79wLQ7lL7/3qv62Ydz356/oovetBa7Z3Cb5yWi74PUpk
+        sVCr+TeWTRwa+ydsa/XymmCt0f0i+79XbqtOWSBvwGKHZQGXBeJXPV3t+ZS7Y/vdaV4ra184
+        sx9mtVMpOLHn9tRjvAt39mkyMbB/LF2lyMBlvEOS6ULULxajuav02W/m3XPLrwhz6dh9+suL
+        2xO33NjheGu6mhFnd8KHawVLdLRkprF+SF+8dp9pPI/pR6Fb5QLmPStbLe5nWLmGe86v6WX0
+        N3Pi4HDdkB/19htjTWXbTM3yoHl93F9/vdmaIbN2n65YiIP7si3zo313fg1Ndat1PSddUXxO
+        QkozNGdf694gJZbijERDLeai4kQA4NBxLFwEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCIsWRmVeSWpSXmKPExsWy7bCSvK68xNQEgxvzBC2+/57NbPHl5212
+        i89HjrNZLF74jdlizvkWFoumHSuYLF58eMJo8XxfL5PFhW19rBaXd81hs2h4y2VxbIGYxc/D
+        Z5gtFv/cAFS1ZAajA7/HlpU3mTwmNr9j99g56y67R8uRt6weXTcuMXtsWtXJ5vF5k1wAexSX
+        TUpqTmZZapG+XQJXxrejjxkLGkMrdnRMYGtg/OrYxcjJISFgItG+aB9rFyMXh5DADkaJl5uf
+        sXUxcgAlJCR2bXaFqBGWuN9yhBXEFhJ4xiix8nE5iM0moCXxZlY7WFxEIF3iyt+n7CBzmAVW
+        sEhcWH+RHWLoL1aJFc3vWUCqOAXsJD6/2g9mCwsESvT/u8UIYrMIqEgcfXsQzOYVsJQ4enw9
+        M4QtKHFy5hOwemYBbYneh62MELa8xPa3c5ghrlOQ+Pl0GdgHIgJNjBKLd01ihSgSkZjd2cY8
+        gVF4FpJZs5DMmoVk1iwkLQsYWVYxSqYWFOem5xYbFhjlpZbrFSfmFpfmpesl5+duYgRHrJbW
+        DsY9qz7oHWJk4mA8xCjBwawkwnt60eQEId6UxMqq1KL8+KLSnNTiQ4zSHCxK4rwXuk7GCwmk
+        J5akZqemFqQWwWSZODilGpjys4QXpKzb/3PJ+0OxYQm197pWfao33VpsFHQ78YadZMTugOye
+        FecNlcXZXtrdWhpbMPfbqzS+x7G5QVYSS1QZHFYvib8gUSLXLuy/7bzkdrZHskxLap7oZ/W1
+        86bwsh9c3hwTJWxZtcE8f2Zr0ItNTCdfhh5sTeQ68IMtjOvqulj+rUabZx8/+Otq1mkv9scx
+        HH2yWx3W3SueLu559n3Xh2e56o7deqtWGDUI+X86yzEzStsxrLnTg6/55x1mFw65m2Lh84Ly
+        FtTe0Wk/nTgrj8VrHuOb+Gqf1INOiwxeGemzNdzWUjj2b3Lud/XDnte1tWJEjHbENV9jnbW/
+        +MUmmSV+Nv2NzgwPVDZUK7EUZyQaajEXFScCAO7RlS9HAwAA
+X-CMS-MailID: 20210507103615epcas2p420f76362ca61282a6ac26ee7d42fb347
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210429102143epcas2p4c8747c09a9de28f003c20389c050394a
+References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
+        <1619690903-1138-1-git-send-email-dseok.yi@samsung.com>
+        <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
+        <02bf01d74211$0ff4aed0$2fde0c70$@samsung.com>
+        <CA+FuTScC96R5o24c-sbY-CEV4EYOVFepFR85O4uGtCLwOjnzEw@mail.gmail.com>
+        <02c801d7421f$65287a90$2f796fb0$@samsung.com>
+        <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
+        <001801d742db$68ab8060$3a028120$@samsung.com>
+        <CAF=yD-KtJvyjHgGVwscoQpFX3e+DmQCYeO_HVGwyGAp3ote00A@mail.gmail.com>
+        <436dbc62-451b-9b29-178d-9da28f47ef24@huawei.com>
+        <CAF=yD-+d0QYj+812joeuEx1HKPzDyhMpkZP5aP=yNBzrQT5usw@mail.gmail.com>
+        <007001d7431a$96281960$c2784c20$@samsung.com>
+        <5824b2ab-46a2-a70c-0ac9-8c5eb0a9665a@huawei.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 7 May 2021 16:28:30 +0800
-Yunsheng Lin <linyunsheng@huawei.com> wrote:
-
-> On 2021/5/7 15:06, Ilias Apalodimas wrote:
-> > On Fri, May 07, 2021 at 11:23:28AM +0800, Yunsheng Lin wrote:  
-> >> On 2021/5/6 20:58, Ilias Apalodimas wrote:  
-> >>>>>>  
+On Fri, May 07, 2021 at 05:11:20PM +0800, Yunsheng Lin wrote:
+> On 2021/5/7 16:25, Dongseok Yi wrote:
+> > On Thu, May 06, 2021 at 09:53:45PM -0400, Willem de Bruijn wrote:
+> >> On Thu, May 6, 2021 at 9:45 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+> >>>
+> >>> On 2021/5/7 9:25, Willem de Bruijn wrote:
+> >>>>>>> head_skb's data_len is the sum of skb_gro_len for each skb of the frags.
+> >>>>>>> data_len could be 8 if server sent a small size packet and it is GROed
+> >>>>>>> to head_skb.
+> >>>>>>>
+> >>>>>>> Please let me know if I am missing something.
+> >>>>>>
+> >>>>>> This is my understanding of the data path. This is a forwarding path
+> >>>>>> for TCP traffic.
+> >>>>>>
+> >>>>>> GRO is enabled and will coalesce multiple segments into a single large
+> >>>>>> packet. In bad cases, the coalesced packet payload is > MSS, but < MSS
+> >>>>>> + 20.
+> >>>>>>
+> >>>>>> Somewhere between GRO and GSO you have a BPF program that converts the
+> >>>>>> IPv6 address to IPv4.
 > >>>>>
-> >>>>> Not really, the opposite is happening here. If the pp_recycle bit is set we
-> >>>>> will always call page_pool_return_skb_page().  If the page signature matches
-> >>>>> the 'magic' set by page pool we will always call xdp_return_skb_frame() will
-> >>>>> end up calling __page_pool_put_page(). If the refcnt is 1 we'll try
-> >>>>> to recycle the page.  If it's not we'll release it from page_pool (releasing
-> >>>>> some internal references we keep) unmap the buffer and decrement the refcnt.  
+> >>>>> Your understanding is right. The data path is GRO -> BPF 6 to 4 ->
+> >>>>> GSO.
+> >>>>>
+> >>>>>>
+> >>>>>> There is no concept of head_skb at the time of this BPF program. It is
+> >>>>>> a single SKB, with an skb linear part and multiple data items in the
+> >>>>>> frags (no frag_list).
+> >>>>>
+> >>>>> Sorry for the confusion. head_skb what I mentioned was a skb linear
+> >>>>> part. I'm considering a single SKB with frags too.
+> >>>>>
+> >>>>>>
+> >>>>>> When entering the GSO stack, this single skb now has a payload length
+> >>>>>> < MSS. So it would just make a valid TCP packet on its own?
+> >>>>>>
+> >>>>>> skb_gro_len is only relevant inside the GRO stack. It internally casts
+> >>>>>> the skb->cb[] to NAPI_GRO_CB. This field is a scratch area that may be
+> >>>>>> reused for other purposes later by other layers of the datapath. It is
+> >>>>>> not safe to read this inside bpf_skb_proto_6_to_4.
+> >>>>>
+> >>>>> The condition what I made uses skb->data_len not skb_gro_len. Does
+> >>>>> skb->data_len have a different meaning on each layer? As I know,
+> >>>>> data_len indicates the amount of frags or frag_list. skb->data_len
+> >>>>> should be > 20 in the sample case because the payload size of the skb
+> >>>>> linear part is the same with mss.
 > >>>>
-> >>>> Yes, I understood the above is what the page pool do now.
+> >>>> Ah, got it.
 > >>>>
-> >>>> But the question is who is still holding an extral reference to the page when
-> >>>> kfree_skb()? Perhaps a cloned and pskb_expand_head()'ed skb is holding an extral
-> >>>> reference to the same page? So why not just do a page_ref_dec() if the orginal skb
-> >>>> is freed first, and call __page_pool_put_page() when the cloned skb is freed later?
-> >>>> So that we can always reuse the recyclable page from a recyclable skb. This may
-> >>>> make the page_pool_destroy() process delays longer than before, I am supposed the
-> >>>> page_pool_destroy() delaying for cloned skb case does not really matters here.
+> >>>> data_len is the length of the skb minus the length in the skb linear
+> >>>> section (as seen in skb_headlen).
 > >>>>
-> >>>> If the above works, I think the samiliar handling can be added to RX zerocopy if
-> >>>> the RX zerocopy also hold extral references to the recyclable page from a recyclable
-> >>>> skb too?
-> >>>>  
+> >>>> So this gso skb consists of two segments, the first one entirely
+> >>>> linear, the payload of the second is in skb_shinfo(skb)->frags[0].
+> >>>>
+> >>>> It is not guaranteed that gso skbs built from two individual skbs end
+> >>>> up looking like that. Only protocol headers in the linear segment and
+> >>>> the payload of both in frags is common.
+> >>>>
+> >>>>> We can modify netif_needs_gso as another option to hit
+> >>>>> skb_needs_linearize in validate_xmit_skb. But I think we should compare
+> >>>>> skb->gso_size and skb->data_len too to check if mss exceed a payload
+> >>>>> size.
+> >>>>
+> >>>> The rest of the stack does not build such gso packets with payload len
+> >>>> < mss, so we should not have to add workarounds in the gso hot path
+> >>>> for this.
+> >>>>
+> >>>> Also no need to linearize this skb. I think that if the bpf program
+> >>>> would just clear the gso type, the packet would be sent correctly.
+> >>>> Unless I'm missing something.
 > >>>
-> >>> Right, this sounds doable, but I'll have to go back code it and see if it
-> >>> really makes sense.  However I'd still prefer the support to go in as-is
-> >>> (including the struct xdp_mem_info in struct page, instead of a page_pool
-> >>> pointer).
+> >>> Does the checksum/len field in ip and tcp/udp header need adjusting
+> >>> before clearing gso type as the packet has became bigger?
+> >>
+> >> gro takes care of this. see for instance inet_gro_complete for updates
+> >> to the ip header.
+> >
+> > I think clearing the gso type will get an error at tcp4_gso_segment
+> > because netif_needs_gso returns true in validate_xmit_skb.
+> 
+> So the bpf_skb_proto_6_to_4() is called after validate_xmit_skb() and
+> before tcp4_gso_segment()?
+> If Yes, clearing the gso type here does not seem to help.
+
+The order what I checked is bpf_skb_proto_6_to_4() ->
+validate_xmit_skb() -> tcp4_gso_segment().
+
+> 
+> >
+> >>
+> >>> Also, instead of testing skb->data_len, may test the skb->len?
 > >>>
-> >>> There's a couple of reasons for that.  If we keep the struct xdp_mem_info we
-> >>> can in the future recycle different kind of buffers using __xdp_return().
-> >>> And this is a non intrusive change if we choose to store the page pool address
-> >>> directly in the future.  It just affects the internal contract between the
-> >>> page_pool code and struct page.  So it won't affect any drivers that already
-> >>> use the feature.  
+> >>> skb->len - (mac header + ip/ipv6 header + udp/tcp header) > mss + len_diff
 > >>
-> >> This patchset has embeded a signature field in "struct page", and xdp_mem_info
-> >> is stored in page_private(), which seems not considering the case for associating
-> >> the page pool with "struct page" directly yet?   
-> > 
-> > Correct
-> >   
-> >> Is the page pool also stored in
-> >> page_private() and a different signature is used to indicate that?  
-> > 
-> > No only struct xdp_mem_info as you mentioned before
-> >   
+> >> Yes. Essentially doing the same calculation as the gso code that is
+> >> causing the packet to be dropped.
+> >
+> > BPF program is usually out of control. Can we take a general approach?
+> > The below 2 cases has no issue when mss upgrading.
+> > 1) skb->data_len > mss + 20
+> > 2) skb->data_len < mss && skb->data_len > 20
+> > The corner case is when
+> > 3) skb->data_len > mss && skb->data_len < mss + 20
+> 
+> As my understanding:
+> 
+> Usually skb_headlen(skb) >= (mac header + ip/ipv6 header + udp/tcp header),
+> other than that, there is no other guarantee as long as:
+> skb->len = skb_headlen(skb) + skb->data_len
+> 
+> So the cases should be:
+> 1. skb->len - (mac header + ip/ipv6 header + udp/tcp header) > mss + len_diff
+> 2. skb->len - (mac header + ip/ipv6 header + udp/tcp header) <= mss + len_diff
+> 
+> The corner case is case 2.
+
+I agree. In addition,
+skbs which hits skb_increase_gso_size in bpf_skb_proto_6_to_4 are all
+IPv6 + TCP by (skb_is_gso(skb) && !skb_is_gso_tcp(skb)) condition. So
+(mac header + ip/ipv6 header + udp/tcp header) can be
+(mac header + ipv6 header + tcp header). But I thick Willem de Bruijn
+would not want to check such network payloads in the BPF step.
+
+> 
+> >
+> > But to cover #3 case, we should check the condition Yunsheng Lin said.
+> > What if we do mss upgrading for both #1 and #2 cases only?
+> >
+> > +               unsigned short off_len = skb->data_len > shinfo->gso_size ?
+> > +                       shinfo->gso_size : 0;
+> > [...]
+> >                 /* Due to IPv4 header, MSS can be upgraded. */
+> > -               skb_increase_gso_size(shinfo, len_diff);
+> > +               if (skb->data_len - off_len > len_diff)
+> > +                       skb_increase_gso_size(shinfo, len_diff);
+> >
 > >>
-> >> I am not saying we have to do it in this patchset, but we have to consider it
-> >> while we are adding new signature field to "struct page", right?  
-> > 
-> > We won't need a new signature.  The signature in both cases is there to 
-> > guarantee the page you are trying to recycle was indeed allocated by page_pool.
-> > 
-> > Basically we got two design choices here: 
-> > - We store the page_pool ptr address directly in page->private and then,
-> >   we call into page_pool APIs directly to do the recycling.
-> >   That would eliminate the lookup through xdp_mem_info and the
-> >   XDP helpers to locate page pool pointer (through __xdp_return).
-> > - You store the xdp_mem_info on page_private.  In that case you need to go
-> >   through __xdp_return()  to locate the page_pool pointer. Although we might
-> >   loose some performance that would allow us to recycle additional memory types
-> >   and not only MEM_TYPE_PAGE_POOL (in case we ever need it).  
->
-> So the signature field  in "struct page" is used to only indicate a page is
-> from a page pool, then how do we tell the content of page_private() if both of
-> the above choices are needed, we might still need an extra indicator to tell
-> page_private() is page_pool ptr or xdp_mem_info.
+> >>>>
+> >>>> But I don't mean to argue that it should do that in production.
+> >>>> Instead, not playing mss games would solve this and stay close to the
+> >>>> original datapath if no bpf program had been present. Including
+> >>>> maintaining the GSO invariant of sending out the same chain of packets
+> >>>> as received (bar the IPv6 to IPv4 change).
+> >>>>
+> >>>> This could be achieved by adding support for the flag
+> >>>> BPF_F_ADJ_ROOM_FIXED_GSO in the flags field of bpf_skb_change_proto.
+> >>>> And similar to bpf_skb_net_shrink:
+> >>>>
+> >>>>                 /* Due to header shrink, MSS can be upgraded. */
+> >>>>                 if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
+> >>>>                         skb_increase_gso_size(shinfo, len_diff);
+> >>>>
+> >>>> The other case, from IPv4 to IPv6 is more difficult to address, as not
+> >>>> reducing the MSS will result in packets exceeding MTU. That calls for
+> >>>> workarounds like MSS clamping. Anyway, that is out of scope here.
+> >>>>
+> >>>>
+> >>>>
+> >>>>>>
+> >>>>>>
+> >>>>>>>>
+> >>>>>>>> One simple solution if this packet no longer needs to be segmented
+> >>>>>>>> might be to reset the gso_type completely.
+> >>>>>>>
+> >>>>>>> I am not sure gso_type can be cleared even when GSO is needed.
+> >>>>>>>
+> >>>>>>>>
+> >>>>>>>> In general, I would advocate using BPF_F_ADJ_ROOM_FIXED_GSO. When
+> >>>>>>>> converting from IPv6 to IPv4, fixed gso will end up building packets
+> >>>>>>>> that are slightly below the MTU. That opportunity cost is negligible
+> >>>>>>>> (especially with TSO). Unfortunately, I see that that flag is
+> >>>>>>>> available for bpf_skb_adjust_room but not for bpf_skb_proto_6_to_4.
+> >>>>>>>>
+> >>>>>>>>
+> >>>>>>>>>>> would increse the gso_size to 1392. tcp_gso_segment will get an error
+> >>>>>>>>>>> with 1380 <= 1392.
+> >>>>>>>>>>>
+> >>>>>>>>>>> Check for the size of GROed payload if it is really bigger than target
+> >>>>>>>>>>> mss when increase mss.
+> >>>>>>>>>>>
+> >>>>>>>>>>> Fixes: 6578171a7ff0 (bpf: add bpf_skb_change_proto helper)
+> >>>>>>>>>>> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+> >>>>>>>>>>> ---
+> >>>>>>>>>>>   net/core/filter.c | 4 +++-
+> >>>>>>>>>>>   1 file changed, 3 insertions(+), 1 deletion(-)
+> >>>>>>>>>>>
+> >>>>>>>>>>> diff --git a/net/core/filter.c b/net/core/filter.c
+> >>>>>>>>>>> index 9323d34..3f79e3c 100644
+> >>>>>>>>>>> --- a/net/core/filter.c
+> >>>>>>>>>>> +++ b/net/core/filter.c
+> >>>>>>>>>>> @@ -3308,7 +3308,9 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
+> >>>>>>>>>>>             }
+> >>>>>>>>>>>
+> >>>>>>>>>>>             /* Due to IPv4 header, MSS can be upgraded. */
+> >>>>>>>>>>> -           skb_increase_gso_size(shinfo, len_diff);
+> >>>>>>>>>>> +           if (skb->data_len > len_diff)
+> >>>>>>>>>>
+> >>>>>>>>>> Could you elaborate some more on what this has to do with data_len specifically
+> >>>>>>>>>> here? I'm not sure I follow exactly your above commit description. Are you saying
+> >>>>>>>>>> that you're hitting in tcp_gso_segment():
+> >>>>>>>>>>
+> >>>>>>>>>>          [...]
+> >>>>>>>>>>          mss = skb_shinfo(skb)->gso_size;
+> >>>>>>>>>>          if (unlikely(skb->len <= mss))
+> >>>>>>>>>>                  goto out;
+> >>>>>>>>>>          [...]
+> >>>>>>>>>
+> >>>>>>>>> Yes, right
+> >>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>>>> Please provide more context on the bug, thanks!
+> >>>>>>>>>
+> >>>>>>>>> tcp_gso_segment():
+> >>>>>>>>>         [...]
+> >>>>>>>>>         __skb_pull(skb, thlen);
+> >>>>>>>>>
+> >>>>>>>>>         mss = skb_shinfo(skb)->gso_size;
+> >>>>>>>>>         if (unlikely(skb->len <= mss))
+> >>>>>>>>>         [...]
+> >>>>>>>>>
+> >>>>>>>>> skb->len will have total GROed TCP payload size after __skb_pull.
+> >>>>>>>>> skb->len <= mss will not be happened in a normal GROed situation. But
+> >>>>>>>>> bpf_skb_proto_6_to_4 would upgrade MSS by increasing gso_size, it can
+> >>>>>>>>> hit an error condition.
+> >>>>>>>>>
+> >>>>>>>>> We should ensure the following condition.
+> >>>>>>>>> total GROed TCP payload > the original mss + (IPv6 size - IPv4 size)
+> >>>>>>>>>
+> >>>>>>>>> Due to
+> >>>>>>>>> total GROed TCP payload = the original mss + skb->data_len
+> >>>>>>>>> IPv6 size - IPv4 size = len_diff
+> >>>>>>>>>
+> >>>>>>>>> Finally, we can get the condition.
+> >>>>>>>>> skb->data_len > len_diff
+> >>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>>>>> +                   skb_increase_gso_size(shinfo, len_diff);
+> >>>>>>>>>>> +
+> >>>>>>>>>>>             /* Header must be checked, and gso_segs recomputed. */
+> >>>>>>>>>>>             shinfo->gso_type |= SKB_GSO_DODGY;
+> >>>>>>>>>>>             shinfo->gso_segs = 0;
+> >>>>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>>
+> >>>>>>>
+> >>>>>
+> >>>>
+> >>>> .
+> >>>>
+> >>>
+> >
+> >
+> > .
+> >
 
-The signature field in "struct page" and "xdp_mem_info" is a double
-construct that was introduced in this patchset.  AFAIK Matteo took the
-idea from Jonathan's patchset.  I'm not convinced we need both, maybe
-later we do (when someone introduce a new mem model ala NetGPU).
-
-I think Jonathan's use-case was NetGPU[1] (which got shutdown due to
-Nvidia[2] being involved which I think was unfair).  The general idea
-behind NetGPU makes sense to me, to allow packet headers to live in
-first page, and second page belongs to hardware.  This implies that an
-SKB can can point to two different pages with different memory types,
-which need to be handled correctly when freeing the SKB and the pages it
-points to.  Thus, placing (xdp_)mem_info in SKB is wrong as it implies
-all pages belong the same mem_info.type.
-
-The point is, when designing this I want us to think about how our
-design can handle other memory models than just page_pool.
-
-In this patchset design, we use a single bit in SKB to indicate that
-the pages pointed comes from another memory model, in this case
-page_pool is the only user of this bit.  The remaining info about the
-memory model (page_pool) is stored in struct-page, which we look at
-when freeing the pages that the SKB points to (that is at the layer
-above the MM-calls that would free the page for real).
-
-
-[1] https://linuxplumbersconf.org/event/7/contributions/670/
-[2] https://lwn.net/Articles/827596/
-
-> It seems storing the page pool ptr in page_private() is clear for recyclable
-> page from a recyclable skb use case, and the use case for storing xdp_mem_info
-> in page_private() is unclear yet? As XDP seems to have the xdp_mem_info in the
-> "struct xdp_frame", so it does not need the xdp_mem_info from page_private().
-> 
-> If the above is true, what does not really makes sense to me here is that:
-> why do we first implement a unclear use case for storing xdp_mem_info in
-> page_private(), why not implement the clear use case for storing page pool ptr
-> in page_private() first?
-
-I'm actually not against storing page_pool object ptr directly in
-struct-page.  It is a nice optimization.  Perhaps we should implement
-this optimization outside this patchset first, and let __xdp_return()
-for XDP-redirected packets also take advantage to this optimization?
-
-Then it would feel more natural to also used this optimization in this
-patchset, right?
-
-> > 
-> > 
-> > I think both choices are sane.  What I am trying to explain here, is
-> > regardless of what we choose now, we can change it in the future without
-> > affecting the API consumers at all.  What will change internally is the way we
-> > lookup the page pool pointer we are trying to recycle.  
-> 
-> It seems the below API need changing?
-> +static inline void skb_mark_for_recycle(struct sk_buff *skb, struct page *page,
-> +					struct xdp_mem_info *mem)
-
-I don't think we need to change this API, to support future memory
-models.  Notice that xdp_mem_info have a 'type' member.
-
-Naming in Computer Science is a hard problem ;-). Something that seems
-to confuse a lot of people is the naming of the struct "xdp_mem_info".  
-Maybe we should have named it "mem_info" instead or "net_mem_info", as
-it doesn't indicate that the device is running XDP.
-
-I see XDP as the RX-layer before the network stack, that helps drivers
-to support different memory models, also for handling normal packets
-that doesn't get process by XDP, and the drivers doesn't even need to
-support XDP to use the "xdp_mem_info" type.
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
-struct xdp_mem_info {
-	u32 type; /* enum xdp_mem_type, but known size type */
-	u32 id;
-};
-
-enum xdp_mem_type {
-	MEM_TYPE_PAGE_SHARED = 0, /* Split-page refcnt based model */
-	MEM_TYPE_PAGE_ORDER0,     /* Orig XDP full page model */
-	MEM_TYPE_PAGE_POOL,
-	MEM_TYPE_XSK_BUFF_POOL,
-	MEM_TYPE_MAX,
-};
 
