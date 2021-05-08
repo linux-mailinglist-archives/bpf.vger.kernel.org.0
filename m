@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDA2E376F43
-	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 05:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA1C376F44
+	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 05:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbhEHDuQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 May 2021 23:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34458 "EHLO
+        id S231166AbhEHDuT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 May 2021 23:50:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbhEHDuQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 May 2021 23:50:16 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9CFC061574
-        for <bpf@vger.kernel.org>; Fri,  7 May 2021 20:49:14 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id gq14-20020a17090b104eb029015be008ab0fso6532564pjb.1
-        for <bpf@vger.kernel.org>; Fri, 07 May 2021 20:49:14 -0700 (PDT)
+        with ESMTP id S231167AbhEHDuR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 May 2021 23:50:17 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FD7C061574
+        for <bpf@vger.kernel.org>; Fri,  7 May 2021 20:49:16 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id k19so9276764pfu.5
+        for <bpf@vger.kernel.org>; Fri, 07 May 2021 20:49:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=LBlNClTdqNIVb9EuhEQguHdvy8XMHoWsMd/kS+HTaPQ=;
-        b=t1S6RMVbnaZkM7XASlU3qaEtL+tKvEOISkutDOvuZQcPHGzmbs5aAIaRNej2CcnLGu
-         lyRLBuWLZJaEY3BOamjRmQ8ydA7O+vg2guL8tOsnlcDFOBI4BfuIiPc/jvibIywG2hW1
-         aCGzfk374k1cqeCbCLxd7nPJkcjEnZlvH8cYTL0rIQpkBYj/7Ya8saOzHrt3HqBXx31x
-         OQrz5+Cr2Mwt7eopPBSnTxp2wsWetQvzDDu0fFLrimeg+fYgoJu373NhdSlAU49OAm/G
-         qxQEZmgOVchZoTxv7+aY9VpNoiYALUZILfHNt4WD71GE6YlBii7DlNttV5ARvNZEB8AT
-         Ua3w==
+        bh=H57421thi6qtesr0E3pXjP5Fr7Nvukgag48Z35U1Gpg=;
+        b=dhTlogD0DeWWcRjofQWGobwyV9Y13bZuQbzpq1AImZRntGNWXGGyZVzqdv/46gG9b+
+         hyd2ZVztoP6NbDmd2+c/51QpFjZjIyhAz6GXroF7DBLugan3L76uHOtJYTkKgoyAnefD
+         bAGleKE3Swn1Q08m0IGoccDITq003oCARXd8eXluj21H4kdw7I23z77SyOFmij5dUlvA
+         dMk5cNV+x1ceX1bu5H45q/8oDRmnFX/hznVVNH7o7cqNGwadVfe0zk2nh3nEZ+0PCkVc
+         LlQSu6juPrsiEJeXJdism2UWnHAqmTBXpv7NPU3qIR3T/GWNya6yRmOvG+pyjQhiNmuM
+         yJSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=LBlNClTdqNIVb9EuhEQguHdvy8XMHoWsMd/kS+HTaPQ=;
-        b=ejCvCx4/bS3tEQJflbfEP5vqNcwqsCQ2UwWc1WmQrRs2/vUA2hUEOUQgHXHUOaEwRN
-         z//+7z1QerUkRABHAHWBbKNqONTQD2hdU1YSJapm6RSCL9iAHn0eSC6C9ihRnJrlRIU5
-         Em/7eX6IaBvTr40a+6dk/2QuaNGBKFiAMDdzOlVFy71Ne1ToZR2Y4WEcUbxEpY42UADN
-         olgmXgp2JbCniyL91uXsu6L0BwNvutxdtgaSseJnUmKNrUahPTBBk3ZO90d+KfQ9zIvz
-         bbP0KSbIBHvQdDpnTI0TvfbaCUxnaFpmuHCj5kkIRBuD+3OEd9Qf8ZmYaknGsw7K6YRP
-         VIcw==
-X-Gm-Message-State: AOAM5300MZPGTVCpZV3FXaDYwHWZhi+m2G7+YwUSW1A/Y0EUzsvmHmJ2
-        FuRuQdLa2CpVyALnNSnqzBk=
-X-Google-Smtp-Source: ABdhPJytLbowQ9ZsWSaQ6jB0Cluwjs3ddVAuAt4j6OmYOphNErOhHj2baFZDhki4+dA+O5W9PG57CA==
-X-Received: by 2002:a17:90a:bf0c:: with SMTP id c12mr13669918pjs.206.1620445754146;
-        Fri, 07 May 2021 20:49:14 -0700 (PDT)
+        bh=H57421thi6qtesr0E3pXjP5Fr7Nvukgag48Z35U1Gpg=;
+        b=MnRcCyo6L654ce7bOS4Slehuz0CP7HP4K/Lx4qz6Fateq/CoL0hrisTeLXIjHfBbb6
+         8Deg54s060DQM8LG09bb7NtM/h9RFZqWwgnpyzGvzTUOTX76IeVO5C4k1Z5bsPrqZ682
+         b+XIakybjMi917jjx2EDKv3GcTORM6OL8L4sax6k1ZKHbwwTSSsXib5K3nYvfwaT5A9U
+         xCKvpYAvM9C4YPW1RiWhYjqz5WxguHoffNNEgijwEUxDqPupCwHNwuQisos7DZ+oXd+X
+         DL4ESOejSih0UNDA2zd9+e68YSCuKnQokBYi1qA6msD3UUre8N0u/8yN2T42dtYbv5YO
+         VrUA==
+X-Gm-Message-State: AOAM530TXTz+jNeAVAH8gFG+W0V6vrePQIqygz4UsLsOT0YQhZ0wmsp/
+        AtCRNDVJajfGWfYqgw6XALE=
+X-Google-Smtp-Source: ABdhPJw923RzhB+gBj3fhPzFUAH66O3J/MZQvgLX263qCe2dRG1u4AnYrSPJsMO1jL5NM08Jf50/kg==
+X-Received: by 2002:a63:a62:: with SMTP id z34mr13168597pgk.189.1620445756113;
+        Fri, 07 May 2021 20:49:16 -0700 (PDT)
 Received: from ast-mbp.thefacebook.com ([163.114.132.1])
-        by smtp.gmail.com with ESMTPSA id u12sm5784606pfh.122.2021.05.07.20.49.12
+        by smtp.gmail.com with ESMTPSA id u12sm5784606pfh.122.2021.05.07.20.49.14
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 07 May 2021 20:49:13 -0700 (PDT)
+        Fri, 07 May 2021 20:49:15 -0700 (PDT)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, john.fastabend@gmail.com,
         bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v4 bpf-next 18/22] bpftool: Use syscall/loader program in "prog load" and "gen skeleton" command.
-Date:   Fri,  7 May 2021 20:48:33 -0700
-Message-Id: <20210508034837.64585-19-alexei.starovoitov@gmail.com>
+Subject: [PATCH v4 bpf-next 19/22] selftests/bpf: Convert few tests to light skeleton.
+Date:   Fri,  7 May 2021 20:48:34 -0700
+Message-Id: <20210508034837.64585-20-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.13.5
 In-Reply-To: <20210508034837.64585-1-alexei.starovoitov@gmail.com>
 References: <20210508034837.64585-1-alexei.starovoitov@gmail.com>
@@ -62,710 +62,303 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Add -L flag to bpftool to use libbpf gen_trace facility and syscall/loader program
-for skeleton generation and program loading.
-
-"bpftool gen skeleton -L" command will generate a "light skeleton" or "loader skeleton"
-that is similar to existing skeleton, but has one major difference:
-$ bpftool gen skeleton lsm.o > lsm.skel.h
-$ bpftool gen skeleton -L lsm.o > lsm.lskel.h
-$ diff lsm.skel.h lsm.lskel.h
-@@ -5,34 +4,34 @@
- #define __LSM_SKEL_H__
-
- #include <stdlib.h>
--#include <bpf/libbpf.h>
-+#include <bpf/bpf.h>
-
-The light skeleton does not use majority of libbpf infrastructure.
-It doesn't need libelf. It doesn't parse .o file.
-It only needs few sys_bpf wrappers. All of them are in bpf/bpf.h file.
-In future libbpf/bpf.c can be inlined into bpf.h, so not even libbpf.a would be
-needed to work with light skeleton.
-
-"bpftool prog load -L file.o" command is introduced for debugging of syscall/loader
-program generation. Just like the same command without -L it will try to load
-the programs from file.o into the kernel. It won't even try to pin them.
-
-"bpftool prog load -L -d file.o" command will provide additional debug messages
-on how syscall/loader program was generated.
-Also the execution of syscall/loader program will use bpf_trace_printk() for
-each step of loading BTF, creating maps, and loading programs.
-The user can do "cat /.../trace_pipe" for further debug.
-
-An example of fexit_sleep.lskel.h generated from progs/fexit_sleep.c:
-struct fexit_sleep {
-	struct bpf_loader_ctx ctx;
-	struct {
-		struct bpf_map_desc bss;
-	} maps;
-	struct {
-		struct bpf_prog_desc nanosleep_fentry;
-		struct bpf_prog_desc nanosleep_fexit;
-	} progs;
-	struct {
-		int nanosleep_fentry_fd;
-		int nanosleep_fexit_fd;
-	} links;
-	struct fexit_sleep__bss {
-		int pid;
-		int fentry_cnt;
-		int fexit_cnt;
-	} *bss;
-};
+Convert few tests that don't use CO-RE to light skeleton.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- tools/bpf/bpftool/Makefile        |   2 +-
- tools/bpf/bpftool/gen.c           | 362 ++++++++++++++++++++++++++++--
- tools/bpf/bpftool/main.c          |   7 +-
- tools/bpf/bpftool/main.h          |   1 +
- tools/bpf/bpftool/prog.c          | 104 +++++++++
- tools/bpf/bpftool/xlated_dumper.c |   3 +
- 6 files changed, 456 insertions(+), 23 deletions(-)
+ tools/testing/selftests/bpf/.gitignore           |  1 +
+ tools/testing/selftests/bpf/Makefile             | 16 +++++++++++++++-
+ .../selftests/bpf/prog_tests/fentry_fexit.c      |  6 +++---
+ .../selftests/bpf/prog_tests/fentry_test.c       | 10 +++++-----
+ .../selftests/bpf/prog_tests/fexit_sleep.c       |  6 +++---
+ .../selftests/bpf/prog_tests/fexit_test.c        | 10 +++++-----
+ .../selftests/bpf/prog_tests/kfunc_call.c        |  6 +++---
+ .../selftests/bpf/prog_tests/ksyms_module.c      |  2 +-
+ tools/testing/selftests/bpf/prog_tests/ringbuf.c |  8 +++-----
+ tools/testing/selftests/bpf/progs/test_ringbuf.c |  4 ++--
+ 10 files changed, 41 insertions(+), 28 deletions(-)
 
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index b3073ae84018..d16d289ade7a 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -136,7 +136,7 @@ endif
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+index 4866f6a21901..a030aa4a8a9e 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -30,6 +30,7 @@ test_sysctl
+ xdping
+ test_cpp
+ *.skel.h
++*.lskel.h
+ /no_alu32
+ /bpf_gcc
+ /tools
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 283e5ad8385e..f794f16c79b8 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -312,6 +312,10 @@ SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
+ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
+ 		linked_vars.skel.h linked_maps.skel.h
  
- BPFTOOL_BOOTSTRAP := $(BOOTSTRAP_OUTPUT)bpftool
++LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
++	test_ksyms_module.c test_ringbuf.c
++SKEL_BLACKLIST += $$(LSKELS)
++
+ test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
+ linked_funcs.skel.h-deps := linked_funcs1.o linked_funcs2.o
+ linked_vars.skel.h-deps := linked_vars1.o linked_vars2.o
+@@ -339,6 +343,7 @@ TRUNNER_BPF_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o, $$(TRUNNER_BPF_SRCS)
+ TRUNNER_BPF_SKELS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.skel.h,	\
+ 				 $$(filter-out $(SKEL_BLACKLIST) $(LINKED_BPF_SRCS),\
+ 					       $$(TRUNNER_BPF_SRCS)))
++TRUNNER_BPF_LSKELS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.lskel.h, $$(LSKELS))
+ TRUNNER_BPF_SKELS_LINKED := $$(addprefix $$(TRUNNER_OUTPUT)/,$(LINKED_SKELS))
+ TEST_GEN_FILES += $$(TRUNNER_BPF_OBJS)
  
--BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o)
-+BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o xlated_dumper.o btf_dumper.o) $(OUTPUT)disasm.o
- OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
+@@ -380,6 +385,14 @@ $(TRUNNER_BPF_SKELS): %.skel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
+ 	$(Q)diff $$(<:.o=.linked2.o) $$(<:.o=.linked3.o)
+ 	$(Q)$$(BPFTOOL) gen skeleton $$(<:.o=.linked3.o) name $$(notdir $$(<:.o=)) > $$@
  
- VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 31ade77f5ef8..7a3e343f31db 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -18,6 +18,7 @@
- #include <sys/stat.h>
++$(TRUNNER_BPF_LSKELS): %.lskel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
++	$$(call msg,GEN-SKEL,$(TRUNNER_BINARY),$$@)
++	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked1.o) $$<
++	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked2.o) $$(<:.o=.linked1.o)
++	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked3.o) $$(<:.o=.linked2.o)
++	$(Q)diff $$(<:.o=.linked2.o) $$(<:.o=.linked3.o)
++	$(Q)$$(BPFTOOL) gen skeleton -L $$(<:.o=.linked3.o) name $$(notdir $$(<:.o=)) > $$@
++
+ $(TRUNNER_BPF_SKELS_LINKED): $(TRUNNER_BPF_OBJS) $(BPFTOOL) | $(TRUNNER_OUTPUT)
+ 	$$(call msg,LINK-BPF,$(TRUNNER_BINARY),$$(@:.skel.h=.o))
+ 	$(Q)$$(BPFTOOL) gen object $$(@:.skel.h=.linked1.o) $$(addprefix $(TRUNNER_OUTPUT)/,$$($$(@F)-deps))
+@@ -409,6 +422,7 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:			\
+ 		      $(TRUNNER_EXTRA_HDRS)				\
+ 		      $(TRUNNER_BPF_OBJS)				\
+ 		      $(TRUNNER_BPF_SKELS)				\
++		      $(TRUNNER_BPF_LSKELS)				\
+ 		      $(TRUNNER_BPF_SKELS_LINKED)			\
+ 		      $$(BPFOBJ) | $(TRUNNER_OUTPUT)
+ 	$$(call msg,TEST-OBJ,$(TRUNNER_BINARY),$$@)
+@@ -516,6 +530,6 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o $(OUTPUT)/testing_helpers.o \
+ EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)	\
+ 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
+ 	feature								\
+-	$(addprefix $(OUTPUT)/,*.o *.skel.h no_alu32 bpf_gcc bpf_testmod.ko)
++	$(addprefix $(OUTPUT)/,*.o *.skel.h *.lskel.h no_alu32 bpf_gcc bpf_testmod.ko)
+ 
+ .PHONY: docs docs-clean
+diff --git a/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c b/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
+index 109d0345a2be..91154c2ba256 100644
+--- a/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
++++ b/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
+@@ -1,8 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2019 Facebook */
+ #include <test_progs.h>
+-#include "fentry_test.skel.h"
+-#include "fexit_test.skel.h"
++#include "fentry_test.lskel.h"
++#include "fexit_test.lskel.h"
+ 
+ void test_fentry_fexit(void)
+ {
+@@ -26,7 +26,7 @@ void test_fentry_fexit(void)
+ 	if (CHECK(err, "fexit_attach", "fexit attach failed: %d\n", err))
+ 		goto close_prog;
+ 
+-	prog_fd = bpf_program__fd(fexit_skel->progs.test1);
++	prog_fd = fexit_skel->progs.test1.prog_fd;
+ 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
+ 				NULL, NULL, &retval, &duration);
+ 	CHECK(err || retval, "ipv6",
+diff --git a/tools/testing/selftests/bpf/prog_tests/fentry_test.c b/tools/testing/selftests/bpf/prog_tests/fentry_test.c
+index 7cb111b11995..174c89e7456e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/fentry_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/fentry_test.c
+@@ -1,13 +1,13 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2019 Facebook */
+ #include <test_progs.h>
+-#include "fentry_test.skel.h"
++#include "fentry_test.lskel.h"
+ 
+ static int fentry_test(struct fentry_test *fentry_skel)
+ {
+ 	int err, prog_fd, i;
+ 	__u32 duration = 0, retval;
+-	struct bpf_link *link;
++	int link_fd;
+ 	__u64 *result;
+ 
+ 	err = fentry_test__attach(fentry_skel);
+@@ -15,11 +15,11 @@ static int fentry_test(struct fentry_test *fentry_skel)
+ 		return err;
+ 
+ 	/* Check that already linked program can't be attached again. */
+-	link = bpf_program__attach(fentry_skel->progs.test1);
+-	if (!ASSERT_ERR_PTR(link, "fentry_attach_link"))
++	link_fd = fentry_test__test1__attach(fentry_skel);
++	if (!ASSERT_LT(link_fd, 0, "fentry_attach_link"))
+ 		return -1;
+ 
+-	prog_fd = bpf_program__fd(fentry_skel->progs.test1);
++	prog_fd = fentry_skel->progs.test1.prog_fd;
+ 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
+ 				NULL, NULL, &retval, &duration);
+ 	ASSERT_OK(err, "test_run");
+diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_sleep.c b/tools/testing/selftests/bpf/prog_tests/fexit_sleep.c
+index ccc7e8a34ab6..4e7f4b42ea29 100644
+--- a/tools/testing/selftests/bpf/prog_tests/fexit_sleep.c
++++ b/tools/testing/selftests/bpf/prog_tests/fexit_sleep.c
+@@ -6,7 +6,7 @@
+ #include <time.h>
  #include <sys/mman.h>
- #include <bpf/btf.h>
-+#include <bpf/bpf_gen_internal.h>
- 
- #include "json_writer.h"
- #include "main.h"
-@@ -268,6 +269,303 @@ static void codegen(const char *template, ...)
- 	free(s);
- }
- 
-+static void print_hex(const char *obj_data, int file_sz)
-+{
-+	int i, len;
-+
-+	for (i = 0, len = 0; i < file_sz; i++) {
-+		int w = obj_data[i] ? 4 : 2;
-+
-+		len += w;
-+		if (len > 78) {
-+			printf("\\\n");
-+			len = w;
-+		}
-+		if (!obj_data[i])
-+			printf("\\0");
-+		else
-+			printf("\\x%02x", (unsigned char)obj_data[i]);
-+	}
-+}
-+
-+static size_t bpf_map_mmap_sz(const struct bpf_map *map)
-+{
-+	long page_sz = sysconf(_SC_PAGE_SIZE);
-+	size_t map_sz;
-+
-+	map_sz = (size_t)roundup(bpf_map__value_size(map), 8) * bpf_map__max_entries(map);
-+	map_sz = roundup(map_sz, page_sz);
-+	return map_sz;
-+}
-+
-+static void codegen_attach_detach(struct bpf_object *obj, const char *obj_name)
-+{
-+	struct bpf_program *prog;
-+
-+	bpf_object__for_each_program(prog, obj) {
-+		codegen("\
-+			\n\
-+			\n\
-+			static inline int					    \n\
-+			%1$s__%2$s__attach(struct %1$s *skel)			    \n\
-+			{							    \n\
-+				int fd = bpf_raw_tracepoint_open(		    \
-+			", obj_name, bpf_program__name(prog));
-+
-+		switch (bpf_program__get_type(prog)) {
-+		case BPF_PROG_TYPE_RAW_TRACEPOINT:
-+			putchar('"');
-+			fputs(strchr(bpf_program__section_name(prog), '/') + 1, stdout);
-+			putchar('"');
-+			break;
-+		default:
-+			fputs("NULL", stdout);
-+			break;
-+		}
-+		codegen("\
-+			\n\
-+			, skel->progs.%1$s.prog_fd);				    \n\
-+				if (fd > 0) skel->links.%1$s_fd = fd;		    \n\
-+				return fd;					    \n\
-+			}							    \n\
-+			", bpf_program__name(prog));
-+	}
-+
-+	codegen("\
-+		\n\
-+									    \n\
-+		static inline int					    \n\
-+		%1$s__attach(struct %1$s *skel)				    \n\
-+		{							    \n\
-+			int ret = 0;					    \n\
-+		", obj_name);
-+
-+	bpf_object__for_each_program(prog, obj) {
-+		codegen("\
-+			\n\
-+				ret = ret < 0 ? ret : %1$s__%2$s__attach(skel);   \n\
-+			", obj_name, bpf_program__name(prog));
-+	}
-+
-+	codegen("\
-+		\n\
-+			return ret < 0 ? ret : 0;			    \n\
-+		}							    \n\
-+									    \n\
-+		static inline void					    \n\
-+		%1$s__detach(struct %1$s *skel)				    \n\
-+		{							    \n\
-+		", obj_name);
-+	bpf_object__for_each_program(prog, obj) {
-+		printf("\tif (skel->links.%1$s_fd > 0) close(skel->links.%1$s_fd);\n",
-+		       bpf_program__name(prog));
-+	}
-+	codegen("\
-+		\n\
-+		}							    \n\
-+		");
-+}
-+
-+static void codegen_destroy(struct bpf_object *obj, const char *obj_name)
-+{
-+	struct bpf_program *prog;
-+	struct bpf_map *map;
-+
-+	codegen("\
-+		\n\
-+		static void						    \n\
-+		%1$s__destroy(struct %1$s *skel)			    \n\
-+		{							    \n\
-+			if (!skel)					    \n\
-+				return;					    \n\
-+			%1$s__detach(skel);				    \n\
-+		",
-+		obj_name);
-+	bpf_object__for_each_program(prog, obj) {
-+		printf("\tif (skel->progs.%1$s.prog_fd > 0) close(skel->progs.%1$s.prog_fd);\n",
-+		       bpf_program__name(prog));
-+	}
-+	bpf_object__for_each_map(map, obj) {
-+		const char * ident;
-+
-+		ident = get_map_ident(map);
-+		if (!ident)
-+			continue;
-+		if (bpf_map__is_internal(map) &&
-+		    (bpf_map__def(map)->map_flags & BPF_F_MMAPABLE))
-+			printf("\tmunmap(skel->%1$s, %2$zd);\n",
-+			       ident, bpf_map_mmap_sz(map));
-+		printf("\tif (skel->maps.%1$s.map_fd > 0) close(skel->maps.%1$s.map_fd);\n", ident);
-+	}
-+	codegen("\
-+		\n\
-+			free(skel);					    \n\
-+		}							    \n\
-+		",
-+		obj_name);
-+}
-+
-+static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *header_guard)
-+{
-+	struct bpf_object_load_attr load_attr = {};
-+	DECLARE_LIBBPF_OPTS(gen_loader_opts, opts);
-+	struct bpf_map *map;
-+	int err = 0;
-+
-+	err = bpf_object__gen_loader(obj, &opts);
-+	if (err)
-+		return err;
-+
-+	load_attr.obj = obj;
-+	if (verifier_logs)
-+		/* log_level1 + log_level2 + stats, but not stable UAPI */
-+		load_attr.log_level = 1 + 2 + 4;
-+
-+	err = bpf_object__load_xattr(&load_attr);
-+	if (err) {
-+		p_err("failed to load object file");
-+		goto out;
-+	}
-+	/* If there was no error during load then gen_loader_opts
-+	 * are populated with the loader program.
-+	 */
-+
-+	/* finish generating 'struct skel' */
-+	codegen("\
-+		\n\
-+		};							    \n\
-+		", obj_name);
-+
-+
-+	codegen_attach_detach(obj, obj_name);
-+
-+	codegen_destroy(obj, obj_name);
-+
-+	codegen("\
-+		\n\
-+		static inline struct %1$s *				    \n\
-+		%1$s__open(void)					    \n\
-+		{							    \n\
-+			struct %1$s *skel;				    \n\
-+									    \n\
-+			skel = calloc(sizeof(*skel), 1);		    \n\
-+			if (!skel)					    \n\
-+				return NULL;				    \n\
-+			skel->ctx.sz = (void *)&skel->links - (void *)skel; \n\
-+		",
-+		obj_name, opts.data_sz);
-+	bpf_object__for_each_map(map, obj) {
-+		const char *ident;
-+		const void *mmap_data = NULL;
-+		size_t mmap_size = 0;
-+
-+		ident = get_map_ident(map);
-+		if (!ident)
-+			continue;
-+
-+		if (!bpf_map__is_internal(map) ||
-+		    !(bpf_map__def(map)->map_flags & BPF_F_MMAPABLE))
-+			continue;
-+
-+		printf("\tskel->%1$s =\n"
-+		       "\t\tmmap(NULL, %2$zd, PROT_READ | PROT_WRITE,\n"
-+		       "\t\t\tMAP_SHARED | MAP_ANONYMOUS, -1, 0);\n"
-+		       "\tmemcpy(skel->%1$s, (void *)\"",
-+		       ident, bpf_map_mmap_sz(map));
-+		bpf_map__get_initial_value(map, &mmap_data, &mmap_size);
-+		print_hex(mmap_data, mmap_size);
-+		printf("\", %2$zd);\n"
-+		       "\tskel->maps.%1$s.initial_value = (__u64)(long)skel->%1$s;\n",
-+		       ident, mmap_size);
-+	}
-+	codegen("\
-+		\n\
-+			return skel;					    \n\
-+		}							    \n\
-+									    \n\
-+		static inline int					    \n\
-+		%1$s__load(struct %1$s *skel)				    \n\
-+		{							    \n\
-+			struct bpf_load_and_run_opts opts = {};		    \n\
-+			int err;					    \n\
-+									    \n\
-+			opts.ctx = (struct bpf_loader_ctx *)skel;	    \n\
-+			opts.data_sz = %2$d;				    \n\
-+			opts.data = (void *)\"\\			    \n\
-+		",
-+		obj_name, opts.data_sz);
-+	print_hex(opts.data, opts.data_sz);
-+	codegen("\
-+		\n\
-+		\";							    \n\
-+		");
-+
-+	codegen("\
-+		\n\
-+			opts.insns_sz = %d;				    \n\
-+			opts.insns = (void *)\"\\			    \n\
-+		",
-+		opts.insns_sz);
-+	print_hex(opts.insns, opts.insns_sz);
-+	codegen("\
-+		\n\
-+		\";							    \n\
-+			err = bpf_load_and_run(&opts);			    \n\
-+			if (err < 0)					    \n\
-+				return err;				    \n\
-+		", obj_name);
-+	bpf_object__for_each_map(map, obj) {
-+		const char *ident, *mmap_flags;
-+
-+		ident = get_map_ident(map);
-+		if (!ident)
-+			continue;
-+
-+		if (!bpf_map__is_internal(map) ||
-+		    !(bpf_map__def(map)->map_flags & BPF_F_MMAPABLE))
-+			continue;
-+		if (bpf_map__def(map)->map_flags & BPF_F_RDONLY_PROG)
-+			mmap_flags = "PROT_READ";
-+		else
-+			mmap_flags = "PROT_READ | PROT_WRITE";
-+
-+		printf("\tskel->%1$s =\n"
-+		       "\t\tmmap(skel->%1$s, %2$zd, %3$s, MAP_SHARED | MAP_FIXED,\n"
-+		       "\t\t\tskel->maps.%1$s.map_fd, 0);\n",
-+		       ident, bpf_map_mmap_sz(map), mmap_flags);
-+	}
-+	codegen("\
-+		\n\
-+			return 0;					    \n\
-+		}							    \n\
-+									    \n\
-+		static inline struct %1$s *				    \n\
-+		%1$s__open_and_load(void)				    \n\
-+		{							    \n\
-+			struct %1$s *skel;				    \n\
-+									    \n\
-+			skel = %1$s__open();				    \n\
-+			if (!skel)					    \n\
-+				return NULL;				    \n\
-+			if (%1$s__load(skel)) {				    \n\
-+				%1$s__destroy(skel);			    \n\
-+				return NULL;				    \n\
-+			}						    \n\
-+			return skel;					    \n\
-+		}							    \n\
-+		", obj_name);
-+
-+	codegen("\
-+		\n\
-+									    \n\
-+		#endif /* %s */						    \n\
-+		",
-+		header_guard);
-+	err = 0;
-+out:
-+	return err;
-+}
-+
- static int do_skeleton(int argc, char **argv)
- {
- 	char header_guard[MAX_OBJ_NAME_LEN + sizeof("__SKEL_H__")];
-@@ -277,7 +575,7 @@ static int do_skeleton(int argc, char **argv)
- 	struct bpf_object *obj = NULL;
- 	const char *file, *ident;
- 	struct bpf_program *prog;
--	int fd, len, err = -1;
-+	int fd, err = -1;
- 	struct bpf_map *map;
- 	struct btf *btf;
- 	struct stat st;
-@@ -359,7 +657,25 @@ static int do_skeleton(int argc, char **argv)
- 	}
- 
- 	get_header_guard(header_guard, obj_name);
--	codegen("\
-+	if (use_loader) {
-+		codegen("\
-+		\n\
-+		/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */   \n\
-+		/* THIS FILE IS AUTOGENERATED! */			    \n\
-+		#ifndef %2$s						    \n\
-+		#define %2$s						    \n\
-+									    \n\
-+		#include <stdlib.h>					    \n\
-+		#include <bpf/bpf.h>					    \n\
-+		#include <bpf/skel_internal.h>				    \n\
-+									    \n\
-+		struct %1$s {						    \n\
-+			struct bpf_loader_ctx ctx;			    \n\
-+		",
-+		obj_name, header_guard
-+		);
-+	} else {
-+		codegen("\
- 		\n\
- 		/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */   \n\
- 									    \n\
-@@ -375,7 +691,8 @@ static int do_skeleton(int argc, char **argv)
- 			struct bpf_object *obj;				    \n\
- 		",
- 		obj_name, header_guard
--	);
-+		);
-+	}
- 
- 	if (map_cnt) {
- 		printf("\tstruct {\n");
-@@ -383,7 +700,10 @@ static int do_skeleton(int argc, char **argv)
- 			ident = get_map_ident(map);
- 			if (!ident)
- 				continue;
--			printf("\t\tstruct bpf_map *%s;\n", ident);
-+			if (use_loader)
-+				printf("\t\tstruct bpf_map_desc %s;\n", ident);
-+			else
-+				printf("\t\tstruct bpf_map *%s;\n", ident);
- 		}
- 		printf("\t} maps;\n");
- 	}
-@@ -391,14 +711,22 @@ static int do_skeleton(int argc, char **argv)
- 	if (prog_cnt) {
- 		printf("\tstruct {\n");
- 		bpf_object__for_each_program(prog, obj) {
--			printf("\t\tstruct bpf_program *%s;\n",
--			       bpf_program__name(prog));
-+			if (use_loader)
-+				printf("\t\tstruct bpf_prog_desc %s;\n",
-+				       bpf_program__name(prog));
-+			else
-+				printf("\t\tstruct bpf_program *%s;\n",
-+				       bpf_program__name(prog));
- 		}
- 		printf("\t} progs;\n");
- 		printf("\tstruct {\n");
- 		bpf_object__for_each_program(prog, obj) {
--			printf("\t\tstruct bpf_link *%s;\n",
--			       bpf_program__name(prog));
-+			if (use_loader)
-+				printf("\t\tint %s_fd;\n",
-+				       bpf_program__name(prog));
-+			else
-+				printf("\t\tstruct bpf_link *%s;\n",
-+				       bpf_program__name(prog));
- 		}
- 		printf("\t} links;\n");
- 	}
-@@ -409,6 +737,10 @@ static int do_skeleton(int argc, char **argv)
- 		if (err)
- 			goto out;
- 	}
-+	if (use_loader) {
-+		err = gen_trace(obj, obj_name, header_guard);
-+		goto out;
-+	}
- 
- 	codegen("\
- 		\n\
-@@ -578,19 +910,7 @@ static int do_skeleton(int argc, char **argv)
- 		file_sz);
- 
- 	/* embed contents of BPF object file */
--	for (i = 0, len = 0; i < file_sz; i++) {
--		int w = obj_data[i] ? 4 : 2;
--
--		len += w;
--		if (len > 78) {
--			printf("\\\n");
--			len = w;
--		}
--		if (!obj_data[i])
--			printf("\\0");
--		else
--			printf("\\x%02x", (unsigned char)obj_data[i]);
--	}
-+	print_hex(obj_data, file_sz);
- 
- 	codegen("\
- 		\n\
-diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
-index d9afb730136a..7f2817d97079 100644
---- a/tools/bpf/bpftool/main.c
-+++ b/tools/bpf/bpftool/main.c
-@@ -29,6 +29,7 @@ bool show_pinned;
- bool block_mount;
- bool verifier_logs;
- bool relaxed_maps;
-+bool use_loader;
- struct btf *base_btf;
- struct pinned_obj_table prog_table;
- struct pinned_obj_table map_table;
-@@ -392,6 +393,7 @@ int main(int argc, char **argv)
- 		{ "mapcompat",	no_argument,	NULL,	'm' },
- 		{ "nomount",	no_argument,	NULL,	'n' },
- 		{ "debug",	no_argument,	NULL,	'd' },
-+		{ "use-loader",	no_argument,	NULL,	'L' },
- 		{ "base-btf",	required_argument, NULL, 'B' },
- 		{ 0 }
- 	};
-@@ -409,7 +411,7 @@ int main(int argc, char **argv)
- 	hash_init(link_table.table);
- 
- 	opterr = 0;
--	while ((opt = getopt_long(argc, argv, "VhpjfmndB:",
-+	while ((opt = getopt_long(argc, argv, "VhpjfLmndB:",
- 				  options, NULL)) >= 0) {
- 		switch (opt) {
- 		case 'V':
-@@ -452,6 +454,9 @@ int main(int argc, char **argv)
- 				return -1;
- 			}
- 			break;
-+		case 'L':
-+			use_loader = true;
-+			break;
- 		default:
- 			p_err("unrecognized option '%s'", argv[optind - 1]);
- 			if (json_output)
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 76e91641262b..c1cf29798b99 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -90,6 +90,7 @@ extern bool show_pids;
- extern bool block_mount;
- extern bool verifier_logs;
- extern bool relaxed_maps;
-+extern bool use_loader;
- extern struct btf *base_btf;
- extern struct pinned_obj_table prog_table;
- extern struct pinned_obj_table map_table;
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 3f067d2d7584..55401b65815a 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -16,6 +16,7 @@
- #include <sys/types.h>
- #include <sys/stat.h>
  #include <sys/syscall.h>
-+#include <dirent.h>
+-#include "fexit_sleep.skel.h"
++#include "fexit_sleep.lskel.h"
  
- #include <linux/err.h>
- #include <linux/perf_event.h>
-@@ -24,6 +25,8 @@
- #include <bpf/bpf.h>
- #include <bpf/btf.h>
- #include <bpf/libbpf.h>
-+#include <bpf/bpf_gen_internal.h>
-+#include <bpf/skel_internal.h>
- 
- #include "cfg.h"
- #include "main.h"
-@@ -1645,8 +1648,109 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 	return -1;
- }
- 
-+static int count_open_fds(void)
-+{
-+	DIR *dp = opendir("/proc/self/fd");
-+	struct dirent *de;
-+	int cnt = -3;
-+
-+	if (!dp)
-+		return -1;
-+
-+	while ((de = readdir(dp)))
-+		cnt++;
-+
-+	closedir(dp);
-+	return cnt;
-+}
-+
-+static int try_loader(struct gen_loader_opts *gen)
-+{
-+	struct bpf_load_and_run_opts opts = {};
-+	struct bpf_loader_ctx *ctx;
-+	int ctx_sz = sizeof(*ctx) + 64 * max(sizeof(struct bpf_map_desc), sizeof(struct bpf_prog_desc));
-+	int log_buf_sz = (1u << 24) - 1;
-+	int err, fds_before, fd_delta;
-+	char *log_buf;
-+
-+	ctx = alloca(ctx_sz);
-+	memset(ctx, 0, ctx_sz);
-+	ctx->sz = ctx_sz;
-+	ctx->log_level = 1;
-+	ctx->log_size = log_buf_sz;
-+	log_buf = malloc(log_buf_sz);
-+	if (!log_buf)
-+		return -ENOMEM;
-+	ctx->log_buf = (long) log_buf;
-+	opts.ctx = ctx;
-+	opts.data = gen->data;
-+	opts.data_sz = gen->data_sz;
-+	opts.insns = gen->insns;
-+	opts.insns_sz = gen->insns_sz;
-+	fds_before = count_open_fds();
-+	err = bpf_load_and_run(&opts);
-+	fd_delta = count_open_fds() - fds_before;
-+	if (err < 0) {
-+		fprintf(stderr, "err %d\n%s\n%s", err, opts.errstr, log_buf);
-+		if (fd_delta)
-+			fprintf(stderr, "loader prog leaked %d FDs\n",
-+				fd_delta);
-+	}
-+	free(log_buf);
-+	return err;
-+}
-+
-+static int do_loader(int argc, char **argv)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts);
-+	DECLARE_LIBBPF_OPTS(gen_loader_opts, gen);
-+	struct bpf_object_load_attr load_attr = {};
-+	struct bpf_object *obj;
-+	const char *file;
-+	int err = 0;
-+
-+	if (!REQ_ARGS(1))
-+		return -1;
-+	file = GET_ARG();
-+
-+	obj = bpf_object__open_file(file, &open_opts);
-+	if (IS_ERR_OR_NULL(obj)) {
-+		p_err("failed to open object file");
-+		goto err_close_obj;
-+	}
-+
-+	err = bpf_object__gen_loader(obj, &gen);
-+	if (err)
-+		goto err_close_obj;
-+
-+	load_attr.obj = obj;
-+	if (verifier_logs)
-+		/* log_level1 + log_level2 + stats, but not stable UAPI */
-+		load_attr.log_level = 1 + 2 + 4;
-+
-+	err = bpf_object__load_xattr(&load_attr);
-+	if (err) {
-+		p_err("failed to load object file");
-+		goto err_close_obj;
-+	}
-+
-+	if (verifier_logs) {
-+		struct dump_data dd = {};
-+
-+		kernel_syms_load(&dd);
-+		dump_xlated_plain(&dd, (void *)gen.insns, gen.insns_sz, false, false);
-+		kernel_syms_destroy(&dd);
-+	}
-+	err = try_loader(&gen);
-+err_close_obj:
-+	bpf_object__close(obj);
-+	return err;
-+}
-+
- static int do_load(int argc, char **argv)
+ static int do_sleep(void *skel)
  {
-+	if (use_loader)
-+		return do_loader(argc, argv);
- 	return load_with_options(argc, argv, true);
- }
+@@ -58,8 +58,8 @@ void test_fexit_sleep(void)
+ 	 * waiting for percpu_ref_kill to confirm). The other one
+ 	 * will be freed quickly.
+ 	 */
+-	close(bpf_program__fd(fexit_skel->progs.nanosleep_fentry));
+-	close(bpf_program__fd(fexit_skel->progs.nanosleep_fexit));
++	close(fexit_skel->progs.nanosleep_fentry.prog_fd);
++	close(fexit_skel->progs.nanosleep_fexit.prog_fd);
+ 	fexit_sleep__detach(fexit_skel);
  
-diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
-index 6fc3e6f7f40c..f1f32e21d5cd 100644
---- a/tools/bpf/bpftool/xlated_dumper.c
-+++ b/tools/bpf/bpftool/xlated_dumper.c
-@@ -196,6 +196,9 @@ static const char *print_imm(void *private_data,
- 	else if (insn->src_reg == BPF_PSEUDO_MAP_VALUE)
- 		snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
- 			 "map[id:%u][0]+%u", insn->imm, (insn + 1)->imm);
-+	else if (insn->src_reg == BPF_PSEUDO_MAP_IDX_VALUE)
-+		snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
-+			 "map[idx:%u]+%u", insn->imm, (insn + 1)->imm);
- 	else if (insn->src_reg == BPF_PSEUDO_FUNC)
- 		snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
- 			 "subprog[%+d]", insn->imm);
+ 	/* kill the thread to unwind sys_nanosleep stack through the trampoline */
+diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_test.c b/tools/testing/selftests/bpf/prog_tests/fexit_test.c
+index 6792e41f7f69..af3dba726701 100644
+--- a/tools/testing/selftests/bpf/prog_tests/fexit_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/fexit_test.c
+@@ -1,13 +1,13 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2019 Facebook */
+ #include <test_progs.h>
+-#include "fexit_test.skel.h"
++#include "fexit_test.lskel.h"
+ 
+ static int fexit_test(struct fexit_test *fexit_skel)
+ {
+ 	int err, prog_fd, i;
+ 	__u32 duration = 0, retval;
+-	struct bpf_link *link;
++	int link_fd;
+ 	__u64 *result;
+ 
+ 	err = fexit_test__attach(fexit_skel);
+@@ -15,11 +15,11 @@ static int fexit_test(struct fexit_test *fexit_skel)
+ 		return err;
+ 
+ 	/* Check that already linked program can't be attached again. */
+-	link = bpf_program__attach(fexit_skel->progs.test1);
+-	if (!ASSERT_ERR_PTR(link, "fexit_attach_link"))
++	link_fd = fexit_test__test1__attach(fexit_skel);
++	if (!ASSERT_LT(link_fd, 0, "fexit_attach_link"))
+ 		return -1;
+ 
+-	prog_fd = bpf_program__fd(fexit_skel->progs.test1);
++	prog_fd = fexit_skel->progs.test1.prog_fd;
+ 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
+ 				NULL, NULL, &retval, &duration);
+ 	ASSERT_OK(err, "test_run");
+diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
+index 7fc0951ee75f..30a7b9b837bf 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
++++ b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
+@@ -2,7 +2,7 @@
+ /* Copyright (c) 2021 Facebook */
+ #include <test_progs.h>
+ #include <network_helpers.h>
+-#include "kfunc_call_test.skel.h"
++#include "kfunc_call_test.lskel.h"
+ #include "kfunc_call_test_subprog.skel.h"
+ 
+ static void test_main(void)
+@@ -14,13 +14,13 @@ static void test_main(void)
+ 	if (!ASSERT_OK_PTR(skel, "skel"))
+ 		return;
+ 
+-	prog_fd = bpf_program__fd(skel->progs.kfunc_call_test1);
++	prog_fd = skel->progs.kfunc_call_test1.prog_fd;
+ 	err = bpf_prog_test_run(prog_fd, 1, &pkt_v4, sizeof(pkt_v4),
+ 				NULL, NULL, (__u32 *)&retval, NULL);
+ 	ASSERT_OK(err, "bpf_prog_test_run(test1)");
+ 	ASSERT_EQ(retval, 12, "test1-retval");
+ 
+-	prog_fd = bpf_program__fd(skel->progs.kfunc_call_test2);
++	prog_fd = skel->progs.kfunc_call_test2.prog_fd;
+ 	err = bpf_prog_test_run(prog_fd, 1, &pkt_v4, sizeof(pkt_v4),
+ 				NULL, NULL, (__u32 *)&retval, NULL);
+ 	ASSERT_OK(err, "bpf_prog_test_run(test2)");
+diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_module.c b/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
+index 4c232b456479..2cd5cded543f 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
++++ b/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
+@@ -4,7 +4,7 @@
+ #include <test_progs.h>
+ #include <bpf/libbpf.h>
+ #include <bpf/btf.h>
+-#include "test_ksyms_module.skel.h"
++#include "test_ksyms_module.lskel.h"
+ 
+ static int duration;
+ 
+diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+index de78617f6550..80c11ac0ffb1 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
++++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+@@ -12,7 +12,7 @@
+ #include <sys/sysinfo.h>
+ #include <linux/perf_event.h>
+ #include <linux/ring_buffer.h>
+-#include "test_ringbuf.skel.h"
++#include "test_ringbuf.lskel.h"
+ 
+ #define EDONE 7777
+ 
+@@ -93,9 +93,7 @@ void test_ringbuf(void)
+ 	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
+ 		return;
+ 
+-	err = bpf_map__set_max_entries(skel->maps.ringbuf, page_size);
+-	if (CHECK(err != 0, "bpf_map__set_max_entries", "bpf_map__set_max_entries failed\n"))
+-		goto cleanup;
++	skel->maps.ringbuf.max_entries = page_size;
+ 
+ 	err = test_ringbuf__load(skel);
+ 	if (CHECK(err != 0, "skel_load", "skeleton load failed\n"))
+@@ -104,7 +102,7 @@ void test_ringbuf(void)
+ 	/* only trigger BPF program for current process */
+ 	skel->bss->pid = getpid();
+ 
+-	ringbuf = ring_buffer__new(bpf_map__fd(skel->maps.ringbuf),
++	ringbuf = ring_buffer__new(skel->maps.ringbuf.map_fd,
+ 				   process_sample, NULL, NULL);
+ 	if (CHECK(!ringbuf, "ringbuf_create", "failed to create ringbuf\n"))
+ 		goto cleanup;
+diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf.c b/tools/testing/selftests/bpf/progs/test_ringbuf.c
+index 6b3f288b7c63..eaa7d9dba0be 100644
+--- a/tools/testing/selftests/bpf/progs/test_ringbuf.c
++++ b/tools/testing/selftests/bpf/progs/test_ringbuf.c
+@@ -35,7 +35,7 @@ long prod_pos = 0;
+ /* inner state */
+ long seq = 0;
+ 
+-SEC("tp/syscalls/sys_enter_getpgid")
++SEC("fentry/__x64_sys_getpgid")
+ int test_ringbuf(void *ctx)
+ {
+ 	int cur_pid = bpf_get_current_pid_tgid() >> 32;
+@@ -48,7 +48,7 @@ int test_ringbuf(void *ctx)
+ 	sample = bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
+ 	if (!sample) {
+ 		__sync_fetch_and_add(&dropped, 1);
+-		return 1;
++		return 0;
+ 	}
+ 
+ 	sample->pid = pid;
 -- 
 2.30.2
 
