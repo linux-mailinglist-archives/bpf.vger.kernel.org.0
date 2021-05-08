@@ -2,70 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB86E377293
-	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 17:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4051B37740A
+	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 22:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbhEHPXR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 May 2021 11:23:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229544AbhEHPXR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 8 May 2021 11:23:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9919061155;
-        Sat,  8 May 2021 15:22:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620487335;
-        bh=1Jpp0mNVX3vrMiyD9zJICNyxEYv/4w8Z8fZcO/gNx2U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=T8WSCXLHwM8iEN0msYdUaxbDh7VSzM+7QLwfdwtbfiXn/Wd76/YBnF26qnCU6pvDO
-         Gcqt8UXBRCiUwGetS3XJ5dXVw+83t1Qz5c4fWrW/xTSUexfCkYVGr7LgMgPri004DE
-         A3TXFV4NW9sdcwQSZwdJyR/CpFwtON5zBF4tOJqybxtSZPUgnqritUPHYZAEkXtLEz
-         l2vhmd+V8/oUtQG9FbJ2Q7QRMywLGj8DOTLe5ProKZLE1iVh6Mnt2vbBQwGjSBZXnj
-         d6mtlEz5qQhOLjJX47P9RwsxHeGpqYsMb0aGwgurKSpJVgZB9tMzERtkmJ8SGYKH3N
-         yGrKuSJamUSAQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id AE1C24034C; Sat,  8 May 2021 12:22:12 -0300 (-03)
-Date:   Sat, 8 May 2021 12:22:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        David Miller <davem@davemloft.net>, bpf@vger.kernel.org
-Subject: [PATCH 1/1] libbpf: Provide GELF_ST_VISIBILITY() define for older
- libelf
-Message-ID: <YJaspEh0qZr4LYOc@kernel.org>
+        id S229523AbhEHUmc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 May 2021 16:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhEHUmc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 May 2021 16:42:32 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F55CC061574;
+        Sat,  8 May 2021 13:41:29 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id ge1so7621774pjb.2;
+        Sat, 08 May 2021 13:41:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NRPHusgi1pQtuzZNcISMSpWg+CEKh/yMry5lbQzE+s8=;
+        b=DC4XHcPSH0LGQwi2Ry7p7T140RMGMBZYYI5fZk3wfObatqYjYGtefitYilrxKph+Kg
+         /C4tbLm8MbLwIZUOmprOOAx8EsfATkG0AUqiwborO6USUJvGE4ENFOOoR9fZi8tYysWu
+         N4MHgvQEHa0IMMBdvwsl0TombHDRGhj3UDvOEZvytaGPMm4inBA+oXDjVhoN7z6/PglN
+         0US4S+3iNxUrGZ3N50PdpF/ph7ui8usB5SpFju9Wp33cyx5VyXta2ZDu5qB+ti3CMQTF
+         B6YC6KfRqnKvWKnn/q44cXKZC4k4Pr0cOaYCZDKmH6gp/MvLencEh//470mPNBI6+RXa
+         fJbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NRPHusgi1pQtuzZNcISMSpWg+CEKh/yMry5lbQzE+s8=;
+        b=RnFvB3sgbTJXhrNTHX93Ga5zEep8Fg8+xI+9ENu+yzWLKdgWxQewXQNN+H0AfbaRlg
+         33lKIl824GPV/IndARrKH1i1PSfgT7xyWrTACS3IE1tSUzUvbWRC8vNG9Bm+yDa5krG0
+         Uyk554iUbYOWqdzFgUGfWbPglmGavhmcUpCLXp+Ma8imiWZG8LoBBrNYgTE22WI/kjDi
+         HjK1a0ckn0kjGa1VyksoX51ylh+CnbijYfe9WTWF+3Hz29NAHZhYGTmc6Ne/hmSEyKKn
+         YrrZivU33y3mx4WQh39QL7omc2Cognllb9lErwPir5DH6CdexX+Kf/45NIOp5FDXoi6r
+         d7oQ==
+X-Gm-Message-State: AOAM532Sq6Qg2LhxNNzEKCn1UX2I6FuVML5oFCmH881j2KcXDvRgXfCc
+        YZoWAwK7q5zJ2Dj4cSKNu4vMFYnxT81BbOrt/eU=
+X-Google-Smtp-Source: ABdhPJz/fX3iasS9h4PGjkXBR6cJrV70/xBEBGpTSFIG11vf6kqtS01ZkW6tnqruQ4i0ix9AFXuT2CdF9Vb8Pb1jx0A=
+X-Received: by 2002:a17:90b:1d8a:: with SMTP id pf10mr31117544pjb.145.1620506489121;
+ Sat, 08 May 2021 13:41:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210426025001.7899-1-xiyou.wangcong@gmail.com>
+ <20210426025001.7899-5-xiyou.wangcong@gmail.com> <87mtt7ufbl.fsf@cloudflare.com>
+In-Reply-To: <87mtt7ufbl.fsf@cloudflare.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Sat, 8 May 2021 13:41:18 -0700
+Message-ID: <CAM_iQpU_JR8ntXBYO0ReQLtXE8CCPoCOJtPTXfY8JQav1C-kDw@mail.gmail.com>
+Subject: Re: [Patch bpf-next v3 04/10] af_unix: set TCP_ESTABLISHED for
+ datagram sockets too
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jiang Wang <jiang.wang@bytedance.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Where that macro isn't available.
+On Fri, May 7, 2021 at 1:18 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>
+> On Mon, Apr 26, 2021 at 04:49 AM CEST, Cong Wang wrote:
+> > diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+> > index 8968ed44a89f..c4afc5fbe137 100644
+> > --- a/net/unix/af_unix.c
+> > +++ b/net/unix/af_unix.c
+> > @@ -1206,6 +1206,8 @@ static int unix_dgram_connect(struct socket *sock, struct sockaddr *addr,
+> >               unix_peer(sk) = other;
+> >               unix_state_double_unlock(sk, other);
+> >       }
+> > +
+> > +     sk->sk_state = other->sk_state = TCP_ESTABLISHED;
+>
+> `other` can be NULL. In such case we're back to UNCONNECTED state.
 
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/lib/bpf/libbpf_internal.h | 5 +++++
- 1 file changed, 5 insertions(+)
+Right, we also need to move the sk_state back to TCP_CLOSE
+after disconnecting.
 
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index ee426226928f1283..acbcf6c7bdf82cf2 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -41,6 +41,11 @@
- #define ELF_C_READ_MMAP ELF_C_READ
- #endif
- 
-+/* Older libelf all end up in this expression, for both 32 and 64 bit */
-+#ifndef GELF_ST_VISIBILITY
-+#define GELF_ST_VISIBILITY(o) ((o) & 0x03)
-+#endif
-+
- #define BTF_INFO_ENC(kind, kind_flag, vlen) \
- 	((!!(kind_flag) << 31) | ((kind) << 24) | ((vlen) & BTF_MAX_VLEN))
- #define BTF_TYPE_ENC(name, info, size_or_type) (name), (info), (size_or_type)
--- 
-2.26.3
-
+Thanks.
