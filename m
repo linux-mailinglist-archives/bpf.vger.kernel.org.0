@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF58F376F45
-	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 05:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD45376F46
+	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 05:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbhEHDuV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 May 2021 23:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
+        id S231168AbhEHDuW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 May 2021 23:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231168AbhEHDuT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 May 2021 23:50:19 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60069C061761
-        for <bpf@vger.kernel.org>; Fri,  7 May 2021 20:49:18 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id z18so2645617plg.8
-        for <bpf@vger.kernel.org>; Fri, 07 May 2021 20:49:18 -0700 (PDT)
+        with ESMTP id S231174AbhEHDuV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 May 2021 23:50:21 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14308C061574
+        for <bpf@vger.kernel.org>; Fri,  7 May 2021 20:49:20 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id t21so6242279plo.2
+        for <bpf@vger.kernel.org>; Fri, 07 May 2021 20:49:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=GqMwLc8bZDgAdQd/jqEc6DeFkm+cdgyoPkr6k8iE7nM=;
-        b=VbrKA3+0i4+Oho5UKudks7y7KAY02+CFOZBkFB/qFiigY0eMCPH8nDKWeVy4Q4ativ
-         EqzvTHLX3Uz+jxIrt7mOKGTLnBNB+tAH/JRelu8MVW8TliN/E2zGeEOYKtU4ghFqLklo
-         +XaOJUW7k9yka2NHbrsgwXZk/s2QCtP+hmAS1rlwJmz4aapUmqUS8rukBEZ9dEQDhPU8
-         CmbETiSo2wE8C3HWCz1XF9R5s8/OyxBUIQBPzMzb6UQUujZcPP2TwbZ9f5ywSOzHX52x
-         5CQtVrdE5n5mIq8WMe97unD5X1sOIL4yoU4b2Dhst33qgkskrODAI88VyxNE956rnZA/
-         W7jw==
+        bh=sTXESP1aSicDhTl1UsNmdxVoNAuNzTa1c5MFyG0wCi8=;
+        b=Lwxu5lPsGhldyHfYS0BbETtP8YJNhBlg21PeqEzJ02IzFlDNKneCHVhFDewE06bpzf
+         brPGYh+CDzuv+uarAwZqzyPtL87GO/cEEafaU1PRLR1wLQWzU6HBTuKHH6HcTpYdtV1C
+         YHUeKrrGbBNY8lgOwFGaaasx28091cPpMalqoGPclvXqZ+WcrNNgEQR14Ao7IXbuUTpR
+         tNxCkjFLSV7Rf2xZk8My9wkeogb993js7XF9A4Ozg1e7HMI2Gj1/QisISLEf0aeT920j
+         ydTwGoVNtqRI7igWOUnsJeFPrHJ9FsgJSVrYthwfv4STzRJ1CxMKx0LkAPbv6PwtxEwl
+         ux8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=GqMwLc8bZDgAdQd/jqEc6DeFkm+cdgyoPkr6k8iE7nM=;
-        b=jkUdMhyw6ddg/etpkPKkaXz2AN//361+FnWRukxPTBIAQha64WcWJYw3qkyWF+EaKK
-         zv0UL1Bf2R/+Bs5yv4E/gaPDMoCt5EiR7Vvax8RLIyV6sY6csBFN8oULZt390i6XpaNt
-         cZt/oRZf5JVHOi0V2lMCjM6YMfFO7EGb9t13yJej7/ahEwMZdm+nUPkR5NyMHFAVOEoZ
-         vBaKY6JKEMMKk23d1vRngcdH1hz/Vvnw46zwax+ku7J9+ccbsUjmOxq4Oi5sYFC2p8Up
-         2XgBoXCI4IoJ3Z0iHmcV6PS2JrzIBAmy8WARo1LfiInFyjGWgWp9nCi+xyaTmthmmM8J
-         otIA==
-X-Gm-Message-State: AOAM5331aPpTVJuuD9w0YZHf5fyn4iC98yLnGZV/PCCaJNWK1z5HvUzC
-        w6nhkVmvDG75enIizSVuVtA=
-X-Google-Smtp-Source: ABdhPJxvKzeUGFf3kcL0oZeaMg5XIhtvCmshGosZcxUOeYnK9tSsmTlrcA17gBSYHU9K/ktws4GsCQ==
-X-Received: by 2002:a17:90a:590d:: with SMTP id k13mr15081797pji.68.1620445757946;
-        Fri, 07 May 2021 20:49:17 -0700 (PDT)
+        bh=sTXESP1aSicDhTl1UsNmdxVoNAuNzTa1c5MFyG0wCi8=;
+        b=lKcPOhiSVjkWO/uWXYGthWxOW9du78j2ZC4Wy18rYxstPye+YQ9MN+PrCcn6BVV7y3
+         gDNFdhJyZHB78lRFZpVqovbr4Qb55v+J1vf4sOziThFxYpt+f+64K7Ap1xbz9dk2SOEG
+         YYjHLdRkBTbOi8BLgi+TLPrJc9/1BED+6nZyLP9R+SbJSKCX8lqz3H1asqDGNheUXd9z
+         wdz2CoGi/cnXvQet8U9tzB/fKmydypqFs3h4INKPtNeUM76yQ47AM16pJnwRP/zRlusZ
+         W4N1l4g0mjEfnW4W6AjHOmY++y9/vlaujwevcEM58o0cH9o5Upy8iHS04lELMM1r+EJK
+         Excg==
+X-Gm-Message-State: AOAM531h0IlisoLczSVh+43hXOEK9KDdK1XO4gkpV2QvAdBm2iLdOpB8
+        XGJSgnEa+P4RlqsBOvRW2BY=
+X-Google-Smtp-Source: ABdhPJzueRBUuCiNJOTWU315bBhasntU/ifUfEXiDrso2x36ibZm9jKPU44Cr8voaByYuO/wDW52Sw==
+X-Received: by 2002:a17:902:b104:b029:ee:beb3:ef0a with SMTP id q4-20020a170902b104b02900eebeb3ef0amr13430572plr.80.1620445759604;
+        Fri, 07 May 2021 20:49:19 -0700 (PDT)
 Received: from ast-mbp.thefacebook.com ([163.114.132.1])
-        by smtp.gmail.com with ESMTPSA id u12sm5784606pfh.122.2021.05.07.20.49.16
+        by smtp.gmail.com with ESMTPSA id u12sm5784606pfh.122.2021.05.07.20.49.18
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 07 May 2021 20:49:17 -0700 (PDT)
+        Fri, 07 May 2021 20:49:19 -0700 (PDT)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, john.fastabend@gmail.com,
         bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v4 bpf-next 20/22] selftests/bpf: Convert atomics test to light skeleton.
-Date:   Fri,  7 May 2021 20:48:35 -0700
-Message-Id: <20210508034837.64585-21-alexei.starovoitov@gmail.com>
+Subject: [PATCH v4 bpf-next 21/22] selftests/bpf: Convert test printk to use rodata.
+Date:   Fri,  7 May 2021 20:48:36 -0700
+Message-Id: <20210508034837.64585-22-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.13.5
 In-Reply-To: <20210508034837.64585-1-alexei.starovoitov@gmail.com>
 References: <20210508034837.64585-1-alexei.starovoitov@gmail.com>
@@ -62,223 +62,45 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Convert prog_tests/atomics.c to lskel.h
+Convert test trace_printk to more aggressively validate and use rodata.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- tools/testing/selftests/bpf/Makefile          |  2 +-
- .../selftests/bpf/prog_tests/atomics.c        | 73 ++++++++++---------
- 2 files changed, 38 insertions(+), 37 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/trace_printk.c | 3 +++
+ tools/testing/selftests/bpf/progs/trace_printk.c      | 4 ++--
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index f794f16c79b8..4f50e4367e42 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -313,7 +313,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
- 		linked_vars.skel.h linked_maps.skel.h
- 
- LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
--	test_ksyms_module.c test_ringbuf.c
-+	test_ksyms_module.c test_ringbuf.c atomics.c
- SKEL_BLACKLIST += $$(LSKELS)
- 
- test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
-diff --git a/tools/testing/selftests/bpf/prog_tests/atomics.c b/tools/testing/selftests/bpf/prog_tests/atomics.c
-index 21efe7bbf10d..b5b139ee5614 100644
---- a/tools/testing/selftests/bpf/prog_tests/atomics.c
-+++ b/tools/testing/selftests/bpf/prog_tests/atomics.c
-@@ -2,19 +2,19 @@
- 
- #include <test_progs.h>
- 
--#include "atomics.skel.h"
-+#include "atomics.lskel.h"
- 
- static void test_add(struct atomics *skel)
- {
- 	int err, prog_fd;
- 	__u32 duration = 0, retval;
--	struct bpf_link *link;
-+	int link_fd;
- 
--	link = bpf_program__attach(skel->progs.add);
--	if (CHECK(IS_ERR(link), "attach(add)", "err: %ld\n", PTR_ERR(link)))
-+	link_fd = atomics__add__attach(skel);
-+	if (!ASSERT_GT(link_fd, 0, "attach(add)"))
+diff --git a/tools/testing/selftests/bpf/prog_tests/trace_printk.c b/tools/testing/selftests/bpf/prog_tests/trace_printk.c
+index 39b0decb1bb2..60c2347a3181 100644
+--- a/tools/testing/selftests/bpf/prog_tests/trace_printk.c
++++ b/tools/testing/selftests/bpf/prog_tests/trace_printk.c
+@@ -21,6 +21,9 @@ void test_trace_printk(void)
+ 	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
  		return;
  
--	prog_fd = bpf_program__fd(skel->progs.add);
-+	prog_fd = skel->progs.add.prog_fd;
- 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
- 				NULL, NULL, &retval, &duration);
- 	if (CHECK(err || retval, "test_run add",
-@@ -32,21 +32,22 @@ static void test_add(struct atomics *skel)
- 
- 	ASSERT_EQ(skel->data->add_noreturn_value, 3, "add_noreturn_value");
- 
++	ASSERT_EQ(skel->rodata->sys_enter_fmt[0], 'T', "invalid printk fmt string");
++	skel->rodata->sys_enter_fmt[0] = 't';
 +
- cleanup:
--	bpf_link__destroy(link);
-+	close(link_fd);
- }
+ 	err = trace_printk__load(skel);
+ 	if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
+ 		goto cleanup;
+diff --git a/tools/testing/selftests/bpf/progs/trace_printk.c b/tools/testing/selftests/bpf/progs/trace_printk.c
+index 8ca7f399b670..18c8baaf1143 100644
+--- a/tools/testing/selftests/bpf/progs/trace_printk.c
++++ b/tools/testing/selftests/bpf/progs/trace_printk.c
+@@ -10,10 +10,10 @@ char _license[] SEC("license") = "GPL";
+ int trace_printk_ret = 0;
+ int trace_printk_ran = 0;
  
- static void test_sub(struct atomics *skel)
+-SEC("tp/raw_syscalls/sys_enter")
++SEC("fentry/__x64_sys_nanosleep")
+ int sys_enter(void *ctx)
  {
- 	int err, prog_fd;
- 	__u32 duration = 0, retval;
--	struct bpf_link *link;
-+	int link_fd;
+-	static const char fmt[] = "testing,testing %d\n";
++	static const char fmt[] = "Testing,testing %d\n";
  
--	link = bpf_program__attach(skel->progs.sub);
--	if (CHECK(IS_ERR(link), "attach(sub)", "err: %ld\n", PTR_ERR(link)))
-+	link_fd = atomics__sub__attach(skel);
-+	if (!ASSERT_GT(link_fd, 0, "attach(sub)"))
- 		return;
- 
--	prog_fd = bpf_program__fd(skel->progs.sub);
-+	prog_fd = skel->progs.sub.prog_fd;
- 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
- 				NULL, NULL, &retval, &duration);
- 	if (CHECK(err || retval, "test_run sub",
-@@ -66,20 +67,20 @@ static void test_sub(struct atomics *skel)
- 	ASSERT_EQ(skel->data->sub_noreturn_value, -1, "sub_noreturn_value");
- 
- cleanup:
--	bpf_link__destroy(link);
-+	close(link_fd);
- }
- 
- static void test_and(struct atomics *skel)
- {
- 	int err, prog_fd;
- 	__u32 duration = 0, retval;
--	struct bpf_link *link;
-+	int link_fd;
- 
--	link = bpf_program__attach(skel->progs.and);
--	if (CHECK(IS_ERR(link), "attach(and)", "err: %ld\n", PTR_ERR(link)))
-+	link_fd = atomics__and__attach(skel);
-+	if (!ASSERT_GT(link_fd, 0, "attach(and)"))
- 		return;
- 
--	prog_fd = bpf_program__fd(skel->progs.and);
-+	prog_fd = skel->progs.and.prog_fd;
- 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
- 				NULL, NULL, &retval, &duration);
- 	if (CHECK(err || retval, "test_run and",
-@@ -94,20 +95,20 @@ static void test_and(struct atomics *skel)
- 
- 	ASSERT_EQ(skel->data->and_noreturn_value, 0x010ull << 32, "and_noreturn_value");
- cleanup:
--	bpf_link__destroy(link);
-+	close(link_fd);
- }
- 
- static void test_or(struct atomics *skel)
- {
- 	int err, prog_fd;
- 	__u32 duration = 0, retval;
--	struct bpf_link *link;
-+	int link_fd;
- 
--	link = bpf_program__attach(skel->progs.or);
--	if (CHECK(IS_ERR(link), "attach(or)", "err: %ld\n", PTR_ERR(link)))
-+	link_fd = atomics__or__attach(skel);
-+	if (!ASSERT_GT(link_fd, 0, "attach(or)"))
- 		return;
- 
--	prog_fd = bpf_program__fd(skel->progs.or);
-+	prog_fd = skel->progs.or.prog_fd;
- 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
- 				NULL, NULL, &retval, &duration);
- 	if (CHECK(err || retval, "test_run or",
-@@ -123,20 +124,20 @@ static void test_or(struct atomics *skel)
- 
- 	ASSERT_EQ(skel->data->or_noreturn_value, 0x111ull << 32, "or_noreturn_value");
- cleanup:
--	bpf_link__destroy(link);
-+	close(link_fd);
- }
- 
- static void test_xor(struct atomics *skel)
- {
- 	int err, prog_fd;
- 	__u32 duration = 0, retval;
--	struct bpf_link *link;
-+	int link_fd;
- 
--	link = bpf_program__attach(skel->progs.xor);
--	if (CHECK(IS_ERR(link), "attach(xor)", "err: %ld\n", PTR_ERR(link)))
-+	link_fd = atomics__xor__attach(skel);
-+	if (!ASSERT_GT(link_fd, 0, "attach(xor)"))
- 		return;
- 
--	prog_fd = bpf_program__fd(skel->progs.xor);
-+	prog_fd = skel->progs.xor.prog_fd;
- 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
- 				NULL, NULL, &retval, &duration);
- 	if (CHECK(err || retval, "test_run xor",
-@@ -151,20 +152,20 @@ static void test_xor(struct atomics *skel)
- 
- 	ASSERT_EQ(skel->data->xor_noreturn_value, 0x101ull << 32, "xor_nxoreturn_value");
- cleanup:
--	bpf_link__destroy(link);
-+	close(link_fd);
- }
- 
- static void test_cmpxchg(struct atomics *skel)
- {
- 	int err, prog_fd;
- 	__u32 duration = 0, retval;
--	struct bpf_link *link;
-+	int link_fd;
- 
--	link = bpf_program__attach(skel->progs.cmpxchg);
--	if (CHECK(IS_ERR(link), "attach(cmpxchg)", "err: %ld\n", PTR_ERR(link)))
-+	link_fd = atomics__cmpxchg__attach(skel);
-+	if (!ASSERT_GT(link_fd, 0, "attach(cmpxchg)"))
- 		return;
- 
--	prog_fd = bpf_program__fd(skel->progs.cmpxchg);
-+	prog_fd = skel->progs.cmpxchg.prog_fd;
- 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
- 				NULL, NULL, &retval, &duration);
- 	if (CHECK(err || retval, "test_run add",
-@@ -180,20 +181,20 @@ static void test_cmpxchg(struct atomics *skel)
- 	ASSERT_EQ(skel->bss->cmpxchg32_result_succeed, 1, "cmpxchg_result_succeed");
- 
- cleanup:
--	bpf_link__destroy(link);
-+	close(link_fd);
- }
- 
- static void test_xchg(struct atomics *skel)
- {
- 	int err, prog_fd;
- 	__u32 duration = 0, retval;
--	struct bpf_link *link;
-+	int link_fd;
- 
--	link = bpf_program__attach(skel->progs.xchg);
--	if (CHECK(IS_ERR(link), "attach(xchg)", "err: %ld\n", PTR_ERR(link)))
-+	link_fd = atomics__xchg__attach(skel);
-+	if (!ASSERT_GT(link_fd, 0, "attach(xchg)"))
- 		return;
- 
--	prog_fd = bpf_program__fd(skel->progs.xchg);
-+	prog_fd = skel->progs.xchg.prog_fd;
- 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
- 				NULL, NULL, &retval, &duration);
- 	if (CHECK(err || retval, "test_run add",
-@@ -207,7 +208,7 @@ static void test_xchg(struct atomics *skel)
- 	ASSERT_EQ(skel->bss->xchg32_result, 1, "xchg32_result");
- 
- cleanup:
--	bpf_link__destroy(link);
-+	close(link_fd);
- }
- 
- void test_atomics(void)
+ 	trace_printk_ret = bpf_trace_printk(fmt, sizeof(fmt),
+ 					    ++trace_printk_ran);
 -- 
 2.30.2
 
