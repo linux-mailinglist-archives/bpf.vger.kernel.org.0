@@ -2,84 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF11377278
-	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 16:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB86E377293
+	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 17:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbhEHOmp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 May 2021 10:42:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44872 "EHLO mail.kernel.org"
+        id S229552AbhEHPXR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 May 2021 11:23:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhEHOmo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 8 May 2021 10:42:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E02861057;
-        Sat,  8 May 2021 14:41:42 +0000 (UTC)
+        id S229544AbhEHPXR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 May 2021 11:23:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9919061155;
+        Sat,  8 May 2021 15:22:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620484902;
-        bh=BfD8EGeWghfBZ+pVItr/slgBUaFTI6OrxXcMxGIcHrQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SznXgKwsVmqPZEIcEW0BAOPYRWlZUTiONIkf5Fa2NmvS/8rUNbrzu+VdJgw51oNP1
-         Z7HSO7ivW8eMc2mfKoapv7G5v8XuiRQejDxJ6kQViA3JZl3A6dGn5k+qi+TgUV48PL
-         zxorbNNRyZZDs6vvY55CeIuqJNJmfdm+nGh39PypO+pdU10KJ+hpiCMwsJikgfHFgT
-         +qtlHmd/H7x4SjdgYzbSuRYjE8/wLWnJAF1XjlxwZh9EkBudZzRfWF/KSg1/oFgn4b
-         YSSfLuc+dQZTSwXePH8SKCaRLzaBDV2KqG/FgehlrIyXW7bANUqzgsY0BL1PJxVsVE
-         WCtLYn741jhOg==
+        s=k20201202; t=1620487335;
+        bh=1Jpp0mNVX3vrMiyD9zJICNyxEYv/4w8Z8fZcO/gNx2U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=T8WSCXLHwM8iEN0msYdUaxbDh7VSzM+7QLwfdwtbfiXn/Wd76/YBnF26qnCU6pvDO
+         Gcqt8UXBRCiUwGetS3XJ5dXVw+83t1Qz5c4fWrW/xTSUexfCkYVGr7LgMgPri004DE
+         A3TXFV4NW9sdcwQSZwdJyR/CpFwtON5zBF4tOJqybxtSZPUgnqritUPHYZAEkXtLEz
+         l2vhmd+V8/oUtQG9FbJ2Q7QRMywLGj8DOTLe5ProKZLE1iVh6Mnt2vbBQwGjSBZXnj
+         d6mtlEz5qQhOLjJX47P9RwsxHeGpqYsMb0aGwgurKSpJVgZB9tMzERtkmJ8SGYKH3N
+         yGrKuSJamUSAQ==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C208C4034C; Sat,  8 May 2021 11:41:39 -0300 (-03)
-Date:   Sat, 8 May 2021 11:41:39 -0300
+        id AE1C24034C; Sat,  8 May 2021 12:22:12 -0300 (-03)
+Date:   Sat, 8 May 2021 12:22:12 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, dwarves@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        kernel-team@fb.com, Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH v2 dwarves] btf: Remove ftrace filter
-Message-ID: <YJajI/hrfQZ0+6SZ@kernel.org>
-References: <20210506205622.3663956-1-kafai@fb.com>
- <YJUY+OvPLWwpj6oA@krava>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        David Miller <davem@davemloft.net>, bpf@vger.kernel.org
+Subject: [PATCH 1/1] libbpf: Provide GELF_ST_VISIBILITY() define for older
+ libelf
+Message-ID: <YJaspEh0qZr4LYOc@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJUY+OvPLWwpj6oA@krava>
-X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, May 07, 2021 at 12:39:52PM +0200, Jiri Olsa escreveu:
-> On Thu, May 06, 2021 at 01:56:22PM -0700, Martin KaFai Lau wrote:
-> > BTF is currently generated for functions that are in ftrace list
-> > or extern.
-> > 
-> > A recent use case also needs BTF generated for functions included in
-> > allowlist.  In particular, the kernel
-> > commit e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc")
-> > allows bpf program to directly call a few tcp cc kernel functions. Those
-> > kernel functions are currently allowed only if CONFIG_DYNAMIC_FTRACE
-> > is set to ensure they are in the ftrace list but this kconfig dependency
-> > is unnecessary.
-> > 
-> > Those kernel functions are specified under an ELF section .BTF_ids.
-> > There was an earlier attempt [0] to add another filter for the functions in
-> > the .BTF_ids section.  That discussion concluded that the ftrace filter
-> > should be removed instead.
-> > 
-> > This patch is to remove the ftrace filter and its related functions.
-> > 
-> > Number of BTF FUNC with and without is_ftrace_func():
-> > My kconfig in x86: 40643 vs 46225
-> > Jiri reported on arm: 25022 vs 55812
-> > 
-> > [0]: https://lore.kernel.org/dwarves/20210423213728.3538141-1-kafai@fb.com/
-> > 
-> > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > Cc: Jiri Olsa <jolsa@kernel.org>
-> > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > ---
-> > v2: Remove sym_sec_idx, last_idx, and sh. (Jiri Olsa)
-> 
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
+Where that macro isn't available.
 
-Thanks, applied.
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/lib/bpf/libbpf_internal.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-- Arnaldo
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index ee426226928f1283..acbcf6c7bdf82cf2 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -41,6 +41,11 @@
+ #define ELF_C_READ_MMAP ELF_C_READ
+ #endif
+ 
++/* Older libelf all end up in this expression, for both 32 and 64 bit */
++#ifndef GELF_ST_VISIBILITY
++#define GELF_ST_VISIBILITY(o) ((o) & 0x03)
++#endif
++
+ #define BTF_INFO_ENC(kind, kind_flag, vlen) \
+ 	((!!(kind_flag) << 31) | ((kind) << 24) | ((vlen) & BTF_MAX_VLEN))
+ #define BTF_TYPE_ENC(name, info, size_or_type) (name), (info), (size_or_type)
+-- 
+2.26.3
 
