@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA1C376F44
+	by mail.lfdr.de (Postfix) with ESMTP id BF58F376F45
 	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 05:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhEHDuT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 May 2021 23:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34470 "EHLO
+        id S231167AbhEHDuV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 May 2021 23:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbhEHDuR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 May 2021 23:50:17 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FD7C061574
-        for <bpf@vger.kernel.org>; Fri,  7 May 2021 20:49:16 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id k19so9276764pfu.5
-        for <bpf@vger.kernel.org>; Fri, 07 May 2021 20:49:16 -0700 (PDT)
+        with ESMTP id S231168AbhEHDuT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 May 2021 23:50:19 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60069C061761
+        for <bpf@vger.kernel.org>; Fri,  7 May 2021 20:49:18 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id z18so2645617plg.8
+        for <bpf@vger.kernel.org>; Fri, 07 May 2021 20:49:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=H57421thi6qtesr0E3pXjP5Fr7Nvukgag48Z35U1Gpg=;
-        b=dhTlogD0DeWWcRjofQWGobwyV9Y13bZuQbzpq1AImZRntGNWXGGyZVzqdv/46gG9b+
-         hyd2ZVztoP6NbDmd2+c/51QpFjZjIyhAz6GXroF7DBLugan3L76uHOtJYTkKgoyAnefD
-         bAGleKE3Swn1Q08m0IGoccDITq003oCARXd8eXluj21H4kdw7I23z77SyOFmij5dUlvA
-         dMk5cNV+x1ceX1bu5H45q/8oDRmnFX/hznVVNH7o7cqNGwadVfe0zk2nh3nEZ+0PCkVc
-         LlQSu6juPrsiEJeXJdism2UWnHAqmTBXpv7NPU3qIR3T/GWNya6yRmOvG+pyjQhiNmuM
-         yJSQ==
+        bh=GqMwLc8bZDgAdQd/jqEc6DeFkm+cdgyoPkr6k8iE7nM=;
+        b=VbrKA3+0i4+Oho5UKudks7y7KAY02+CFOZBkFB/qFiigY0eMCPH8nDKWeVy4Q4ativ
+         EqzvTHLX3Uz+jxIrt7mOKGTLnBNB+tAH/JRelu8MVW8TliN/E2zGeEOYKtU4ghFqLklo
+         +XaOJUW7k9yka2NHbrsgwXZk/s2QCtP+hmAS1rlwJmz4aapUmqUS8rukBEZ9dEQDhPU8
+         CmbETiSo2wE8C3HWCz1XF9R5s8/OyxBUIQBPzMzb6UQUujZcPP2TwbZ9f5ywSOzHX52x
+         5CQtVrdE5n5mIq8WMe97unD5X1sOIL4yoU4b2Dhst33qgkskrODAI88VyxNE956rnZA/
+         W7jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=H57421thi6qtesr0E3pXjP5Fr7Nvukgag48Z35U1Gpg=;
-        b=MnRcCyo6L654ce7bOS4Slehuz0CP7HP4K/Lx4qz6Fateq/CoL0hrisTeLXIjHfBbb6
-         8Deg54s060DQM8LG09bb7NtM/h9RFZqWwgnpyzGvzTUOTX76IeVO5C4k1Z5bsPrqZ682
-         b+XIakybjMi917jjx2EDKv3GcTORM6OL8L4sax6k1ZKHbwwTSSsXib5K3nYvfwaT5A9U
-         xCKvpYAvM9C4YPW1RiWhYjqz5WxguHoffNNEgijwEUxDqPupCwHNwuQisos7DZ+oXd+X
-         DL4ESOejSih0UNDA2zd9+e68YSCuKnQokBYi1qA6msD3UUre8N0u/8yN2T42dtYbv5YO
-         VrUA==
-X-Gm-Message-State: AOAM530TXTz+jNeAVAH8gFG+W0V6vrePQIqygz4UsLsOT0YQhZ0wmsp/
-        AtCRNDVJajfGWfYqgw6XALE=
-X-Google-Smtp-Source: ABdhPJw923RzhB+gBj3fhPzFUAH66O3J/MZQvgLX263qCe2dRG1u4AnYrSPJsMO1jL5NM08Jf50/kg==
-X-Received: by 2002:a63:a62:: with SMTP id z34mr13168597pgk.189.1620445756113;
-        Fri, 07 May 2021 20:49:16 -0700 (PDT)
+        bh=GqMwLc8bZDgAdQd/jqEc6DeFkm+cdgyoPkr6k8iE7nM=;
+        b=jkUdMhyw6ddg/etpkPKkaXz2AN//361+FnWRukxPTBIAQha64WcWJYw3qkyWF+EaKK
+         zv0UL1Bf2R/+Bs5yv4E/gaPDMoCt5EiR7Vvax8RLIyV6sY6csBFN8oULZt390i6XpaNt
+         cZt/oRZf5JVHOi0V2lMCjM6YMfFO7EGb9t13yJej7/ahEwMZdm+nUPkR5NyMHFAVOEoZ
+         vBaKY6JKEMMKk23d1vRngcdH1hz/Vvnw46zwax+ku7J9+ccbsUjmOxq4Oi5sYFC2p8Up
+         2XgBoXCI4IoJ3Z0iHmcV6PS2JrzIBAmy8WARo1LfiInFyjGWgWp9nCi+xyaTmthmmM8J
+         otIA==
+X-Gm-Message-State: AOAM5331aPpTVJuuD9w0YZHf5fyn4iC98yLnGZV/PCCaJNWK1z5HvUzC
+        w6nhkVmvDG75enIizSVuVtA=
+X-Google-Smtp-Source: ABdhPJxvKzeUGFf3kcL0oZeaMg5XIhtvCmshGosZcxUOeYnK9tSsmTlrcA17gBSYHU9K/ktws4GsCQ==
+X-Received: by 2002:a17:90a:590d:: with SMTP id k13mr15081797pji.68.1620445757946;
+        Fri, 07 May 2021 20:49:17 -0700 (PDT)
 Received: from ast-mbp.thefacebook.com ([163.114.132.1])
-        by smtp.gmail.com with ESMTPSA id u12sm5784606pfh.122.2021.05.07.20.49.14
+        by smtp.gmail.com with ESMTPSA id u12sm5784606pfh.122.2021.05.07.20.49.16
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 07 May 2021 20:49:15 -0700 (PDT)
+        Fri, 07 May 2021 20:49:17 -0700 (PDT)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, john.fastabend@gmail.com,
         bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v4 bpf-next 19/22] selftests/bpf: Convert few tests to light skeleton.
-Date:   Fri,  7 May 2021 20:48:34 -0700
-Message-Id: <20210508034837.64585-20-alexei.starovoitov@gmail.com>
+Subject: [PATCH v4 bpf-next 20/22] selftests/bpf: Convert atomics test to light skeleton.
+Date:   Fri,  7 May 2021 20:48:35 -0700
+Message-Id: <20210508034837.64585-21-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.13.5
 In-Reply-To: <20210508034837.64585-1-alexei.starovoitov@gmail.com>
 References: <20210508034837.64585-1-alexei.starovoitov@gmail.com>
@@ -62,303 +62,223 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Convert few tests that don't use CO-RE to light skeleton.
+Convert prog_tests/atomics.c to lskel.h
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- tools/testing/selftests/bpf/.gitignore           |  1 +
- tools/testing/selftests/bpf/Makefile             | 16 +++++++++++++++-
- .../selftests/bpf/prog_tests/fentry_fexit.c      |  6 +++---
- .../selftests/bpf/prog_tests/fentry_test.c       | 10 +++++-----
- .../selftests/bpf/prog_tests/fexit_sleep.c       |  6 +++---
- .../selftests/bpf/prog_tests/fexit_test.c        | 10 +++++-----
- .../selftests/bpf/prog_tests/kfunc_call.c        |  6 +++---
- .../selftests/bpf/prog_tests/ksyms_module.c      |  2 +-
- tools/testing/selftests/bpf/prog_tests/ringbuf.c |  8 +++-----
- tools/testing/selftests/bpf/progs/test_ringbuf.c |  4 ++--
- 10 files changed, 41 insertions(+), 28 deletions(-)
+ tools/testing/selftests/bpf/Makefile          |  2 +-
+ .../selftests/bpf/prog_tests/atomics.c        | 73 ++++++++++---------
+ 2 files changed, 38 insertions(+), 37 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index 4866f6a21901..a030aa4a8a9e 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -30,6 +30,7 @@ test_sysctl
- xdping
- test_cpp
- *.skel.h
-+*.lskel.h
- /no_alu32
- /bpf_gcc
- /tools
 diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 283e5ad8385e..f794f16c79b8 100644
+index f794f16c79b8..4f50e4367e42 100644
 --- a/tools/testing/selftests/bpf/Makefile
 +++ b/tools/testing/selftests/bpf/Makefile
-@@ -312,6 +312,10 @@ SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
- LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
+@@ -313,7 +313,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
  		linked_vars.skel.h linked_maps.skel.h
  
-+LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
-+	test_ksyms_module.c test_ringbuf.c
-+SKEL_BLACKLIST += $$(LSKELS)
-+
+ LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
+-	test_ksyms_module.c test_ringbuf.c
++	test_ksyms_module.c test_ringbuf.c atomics.c
+ SKEL_BLACKLIST += $$(LSKELS)
+ 
  test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
- linked_funcs.skel.h-deps := linked_funcs1.o linked_funcs2.o
- linked_vars.skel.h-deps := linked_vars1.o linked_vars2.o
-@@ -339,6 +343,7 @@ TRUNNER_BPF_OBJS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.o, $$(TRUNNER_BPF_SRCS)
- TRUNNER_BPF_SKELS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.skel.h,	\
- 				 $$(filter-out $(SKEL_BLACKLIST) $(LINKED_BPF_SRCS),\
- 					       $$(TRUNNER_BPF_SRCS)))
-+TRUNNER_BPF_LSKELS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.lskel.h, $$(LSKELS))
- TRUNNER_BPF_SKELS_LINKED := $$(addprefix $$(TRUNNER_OUTPUT)/,$(LINKED_SKELS))
- TEST_GEN_FILES += $$(TRUNNER_BPF_OBJS)
+diff --git a/tools/testing/selftests/bpf/prog_tests/atomics.c b/tools/testing/selftests/bpf/prog_tests/atomics.c
+index 21efe7bbf10d..b5b139ee5614 100644
+--- a/tools/testing/selftests/bpf/prog_tests/atomics.c
++++ b/tools/testing/selftests/bpf/prog_tests/atomics.c
+@@ -2,19 +2,19 @@
  
-@@ -380,6 +385,14 @@ $(TRUNNER_BPF_SKELS): %.skel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
- 	$(Q)diff $$(<:.o=.linked2.o) $$(<:.o=.linked3.o)
- 	$(Q)$$(BPFTOOL) gen skeleton $$(<:.o=.linked3.o) name $$(notdir $$(<:.o=)) > $$@
+ #include <test_progs.h>
  
-+$(TRUNNER_BPF_LSKELS): %.lskel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
-+	$$(call msg,GEN-SKEL,$(TRUNNER_BINARY),$$@)
-+	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked1.o) $$<
-+	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked2.o) $$(<:.o=.linked1.o)
-+	$(Q)$$(BPFTOOL) gen object $$(<:.o=.linked3.o) $$(<:.o=.linked2.o)
-+	$(Q)diff $$(<:.o=.linked2.o) $$(<:.o=.linked3.o)
-+	$(Q)$$(BPFTOOL) gen skeleton -L $$(<:.o=.linked3.o) name $$(notdir $$(<:.o=)) > $$@
+-#include "atomics.skel.h"
++#include "atomics.lskel.h"
+ 
+ static void test_add(struct atomics *skel)
+ {
+ 	int err, prog_fd;
+ 	__u32 duration = 0, retval;
+-	struct bpf_link *link;
++	int link_fd;
+ 
+-	link = bpf_program__attach(skel->progs.add);
+-	if (CHECK(IS_ERR(link), "attach(add)", "err: %ld\n", PTR_ERR(link)))
++	link_fd = atomics__add__attach(skel);
++	if (!ASSERT_GT(link_fd, 0, "attach(add)"))
+ 		return;
+ 
+-	prog_fd = bpf_program__fd(skel->progs.add);
++	prog_fd = skel->progs.add.prog_fd;
+ 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
+ 				NULL, NULL, &retval, &duration);
+ 	if (CHECK(err || retval, "test_run add",
+@@ -32,21 +32,22 @@ static void test_add(struct atomics *skel)
+ 
+ 	ASSERT_EQ(skel->data->add_noreturn_value, 3, "add_noreturn_value");
+ 
 +
- $(TRUNNER_BPF_SKELS_LINKED): $(TRUNNER_BPF_OBJS) $(BPFTOOL) | $(TRUNNER_OUTPUT)
- 	$$(call msg,LINK-BPF,$(TRUNNER_BINARY),$$(@:.skel.h=.o))
- 	$(Q)$$(BPFTOOL) gen object $$(@:.skel.h=.linked1.o) $$(addprefix $(TRUNNER_OUTPUT)/,$$($$(@F)-deps))
-@@ -409,6 +422,7 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:			\
- 		      $(TRUNNER_EXTRA_HDRS)				\
- 		      $(TRUNNER_BPF_OBJS)				\
- 		      $(TRUNNER_BPF_SKELS)				\
-+		      $(TRUNNER_BPF_LSKELS)				\
- 		      $(TRUNNER_BPF_SKELS_LINKED)			\
- 		      $$(BPFOBJ) | $(TRUNNER_OUTPUT)
- 	$$(call msg,TEST-OBJ,$(TRUNNER_BINARY),$$@)
-@@ -516,6 +530,6 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o $(OUTPUT)/testing_helpers.o \
- EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)	\
- 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
- 	feature								\
--	$(addprefix $(OUTPUT)/,*.o *.skel.h no_alu32 bpf_gcc bpf_testmod.ko)
-+	$(addprefix $(OUTPUT)/,*.o *.skel.h *.lskel.h no_alu32 bpf_gcc bpf_testmod.ko)
+ cleanup:
+-	bpf_link__destroy(link);
++	close(link_fd);
+ }
  
- .PHONY: docs docs-clean
-diff --git a/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c b/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
-index 109d0345a2be..91154c2ba256 100644
---- a/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
-@@ -1,8 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2019 Facebook */
- #include <test_progs.h>
--#include "fentry_test.skel.h"
--#include "fexit_test.skel.h"
-+#include "fentry_test.lskel.h"
-+#include "fexit_test.lskel.h"
- 
- void test_fentry_fexit(void)
+ static void test_sub(struct atomics *skel)
  {
-@@ -26,7 +26,7 @@ void test_fentry_fexit(void)
- 	if (CHECK(err, "fexit_attach", "fexit attach failed: %d\n", err))
- 		goto close_prog;
- 
--	prog_fd = bpf_program__fd(fexit_skel->progs.test1);
-+	prog_fd = fexit_skel->progs.test1.prog_fd;
- 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
- 				NULL, NULL, &retval, &duration);
- 	CHECK(err || retval, "ipv6",
-diff --git a/tools/testing/selftests/bpf/prog_tests/fentry_test.c b/tools/testing/selftests/bpf/prog_tests/fentry_test.c
-index 7cb111b11995..174c89e7456e 100644
---- a/tools/testing/selftests/bpf/prog_tests/fentry_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fentry_test.c
-@@ -1,13 +1,13 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2019 Facebook */
- #include <test_progs.h>
--#include "fentry_test.skel.h"
-+#include "fentry_test.lskel.h"
- 
- static int fentry_test(struct fentry_test *fentry_skel)
- {
- 	int err, prog_fd, i;
+ 	int err, prog_fd;
  	__u32 duration = 0, retval;
 -	struct bpf_link *link;
 +	int link_fd;
- 	__u64 *result;
  
- 	err = fentry_test__attach(fentry_skel);
-@@ -15,11 +15,11 @@ static int fentry_test(struct fentry_test *fentry_skel)
- 		return err;
+-	link = bpf_program__attach(skel->progs.sub);
+-	if (CHECK(IS_ERR(link), "attach(sub)", "err: %ld\n", PTR_ERR(link)))
++	link_fd = atomics__sub__attach(skel);
++	if (!ASSERT_GT(link_fd, 0, "attach(sub)"))
+ 		return;
  
- 	/* Check that already linked program can't be attached again. */
--	link = bpf_program__attach(fentry_skel->progs.test1);
--	if (!ASSERT_ERR_PTR(link, "fentry_attach_link"))
-+	link_fd = fentry_test__test1__attach(fentry_skel);
-+	if (!ASSERT_LT(link_fd, 0, "fentry_attach_link"))
- 		return -1;
- 
--	prog_fd = bpf_program__fd(fentry_skel->progs.test1);
-+	prog_fd = fentry_skel->progs.test1.prog_fd;
+-	prog_fd = bpf_program__fd(skel->progs.sub);
++	prog_fd = skel->progs.sub.prog_fd;
  	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
  				NULL, NULL, &retval, &duration);
- 	ASSERT_OK(err, "test_run");
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_sleep.c b/tools/testing/selftests/bpf/prog_tests/fexit_sleep.c
-index ccc7e8a34ab6..4e7f4b42ea29 100644
---- a/tools/testing/selftests/bpf/prog_tests/fexit_sleep.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_sleep.c
-@@ -6,7 +6,7 @@
- #include <time.h>
- #include <sys/mman.h>
- #include <sys/syscall.h>
--#include "fexit_sleep.skel.h"
-+#include "fexit_sleep.lskel.h"
+ 	if (CHECK(err || retval, "test_run sub",
+@@ -66,20 +67,20 @@ static void test_sub(struct atomics *skel)
+ 	ASSERT_EQ(skel->data->sub_noreturn_value, -1, "sub_noreturn_value");
  
- static int do_sleep(void *skel)
+ cleanup:
+-	bpf_link__destroy(link);
++	close(link_fd);
+ }
+ 
+ static void test_and(struct atomics *skel)
  {
-@@ -58,8 +58,8 @@ void test_fexit_sleep(void)
- 	 * waiting for percpu_ref_kill to confirm). The other one
- 	 * will be freed quickly.
- 	 */
--	close(bpf_program__fd(fexit_skel->progs.nanosleep_fentry));
--	close(bpf_program__fd(fexit_skel->progs.nanosleep_fexit));
-+	close(fexit_skel->progs.nanosleep_fentry.prog_fd);
-+	close(fexit_skel->progs.nanosleep_fexit.prog_fd);
- 	fexit_sleep__detach(fexit_skel);
- 
- 	/* kill the thread to unwind sys_nanosleep stack through the trampoline */
-diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_test.c b/tools/testing/selftests/bpf/prog_tests/fexit_test.c
-index 6792e41f7f69..af3dba726701 100644
---- a/tools/testing/selftests/bpf/prog_tests/fexit_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_test.c
-@@ -1,13 +1,13 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2019 Facebook */
- #include <test_progs.h>
--#include "fexit_test.skel.h"
-+#include "fexit_test.lskel.h"
- 
- static int fexit_test(struct fexit_test *fexit_skel)
- {
- 	int err, prog_fd, i;
+ 	int err, prog_fd;
  	__u32 duration = 0, retval;
 -	struct bpf_link *link;
 +	int link_fd;
- 	__u64 *result;
  
- 	err = fexit_test__attach(fexit_skel);
-@@ -15,11 +15,11 @@ static int fexit_test(struct fexit_test *fexit_skel)
- 		return err;
+-	link = bpf_program__attach(skel->progs.and);
+-	if (CHECK(IS_ERR(link), "attach(and)", "err: %ld\n", PTR_ERR(link)))
++	link_fd = atomics__and__attach(skel);
++	if (!ASSERT_GT(link_fd, 0, "attach(and)"))
+ 		return;
  
- 	/* Check that already linked program can't be attached again. */
--	link = bpf_program__attach(fexit_skel->progs.test1);
--	if (!ASSERT_ERR_PTR(link, "fexit_attach_link"))
-+	link_fd = fexit_test__test1__attach(fexit_skel);
-+	if (!ASSERT_LT(link_fd, 0, "fexit_attach_link"))
- 		return -1;
- 
--	prog_fd = bpf_program__fd(fexit_skel->progs.test1);
-+	prog_fd = fexit_skel->progs.test1.prog_fd;
+-	prog_fd = bpf_program__fd(skel->progs.and);
++	prog_fd = skel->progs.and.prog_fd;
  	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
  				NULL, NULL, &retval, &duration);
- 	ASSERT_OK(err, "test_run");
-diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-index 7fc0951ee75f..30a7b9b837bf 100644
---- a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-+++ b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
-@@ -2,7 +2,7 @@
- /* Copyright (c) 2021 Facebook */
- #include <test_progs.h>
- #include <network_helpers.h>
--#include "kfunc_call_test.skel.h"
-+#include "kfunc_call_test.lskel.h"
- #include "kfunc_call_test_subprog.skel.h"
+ 	if (CHECK(err || retval, "test_run and",
+@@ -94,20 +95,20 @@ static void test_and(struct atomics *skel)
  
- static void test_main(void)
-@@ -14,13 +14,13 @@ static void test_main(void)
- 	if (!ASSERT_OK_PTR(skel, "skel"))
- 		return;
+ 	ASSERT_EQ(skel->data->and_noreturn_value, 0x010ull << 32, "and_noreturn_value");
+ cleanup:
+-	bpf_link__destroy(link);
++	close(link_fd);
+ }
  
--	prog_fd = bpf_program__fd(skel->progs.kfunc_call_test1);
-+	prog_fd = skel->progs.kfunc_call_test1.prog_fd;
- 	err = bpf_prog_test_run(prog_fd, 1, &pkt_v4, sizeof(pkt_v4),
- 				NULL, NULL, (__u32 *)&retval, NULL);
- 	ASSERT_OK(err, "bpf_prog_test_run(test1)");
- 	ASSERT_EQ(retval, 12, "test1-retval");
- 
--	prog_fd = bpf_program__fd(skel->progs.kfunc_call_test2);
-+	prog_fd = skel->progs.kfunc_call_test2.prog_fd;
- 	err = bpf_prog_test_run(prog_fd, 1, &pkt_v4, sizeof(pkt_v4),
- 				NULL, NULL, (__u32 *)&retval, NULL);
- 	ASSERT_OK(err, "bpf_prog_test_run(test2)");
-diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_module.c b/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-index 4c232b456479..2cd5cded543f 100644
---- a/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-@@ -4,7 +4,7 @@
- #include <test_progs.h>
- #include <bpf/libbpf.h>
- #include <bpf/btf.h>
--#include "test_ksyms_module.skel.h"
-+#include "test_ksyms_module.lskel.h"
- 
- static int duration;
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-index de78617f6550..80c11ac0ffb1 100644
---- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-@@ -12,7 +12,7 @@
- #include <sys/sysinfo.h>
- #include <linux/perf_event.h>
- #include <linux/ring_buffer.h>
--#include "test_ringbuf.skel.h"
-+#include "test_ringbuf.lskel.h"
- 
- #define EDONE 7777
- 
-@@ -93,9 +93,7 @@ void test_ringbuf(void)
- 	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
- 		return;
- 
--	err = bpf_map__set_max_entries(skel->maps.ringbuf, page_size);
--	if (CHECK(err != 0, "bpf_map__set_max_entries", "bpf_map__set_max_entries failed\n"))
--		goto cleanup;
-+	skel->maps.ringbuf.max_entries = page_size;
- 
- 	err = test_ringbuf__load(skel);
- 	if (CHECK(err != 0, "skel_load", "skeleton load failed\n"))
-@@ -104,7 +102,7 @@ void test_ringbuf(void)
- 	/* only trigger BPF program for current process */
- 	skel->bss->pid = getpid();
- 
--	ringbuf = ring_buffer__new(bpf_map__fd(skel->maps.ringbuf),
-+	ringbuf = ring_buffer__new(skel->maps.ringbuf.map_fd,
- 				   process_sample, NULL, NULL);
- 	if (CHECK(!ringbuf, "ringbuf_create", "failed to create ringbuf\n"))
- 		goto cleanup;
-diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf.c b/tools/testing/selftests/bpf/progs/test_ringbuf.c
-index 6b3f288b7c63..eaa7d9dba0be 100644
---- a/tools/testing/selftests/bpf/progs/test_ringbuf.c
-+++ b/tools/testing/selftests/bpf/progs/test_ringbuf.c
-@@ -35,7 +35,7 @@ long prod_pos = 0;
- /* inner state */
- long seq = 0;
- 
--SEC("tp/syscalls/sys_enter_getpgid")
-+SEC("fentry/__x64_sys_getpgid")
- int test_ringbuf(void *ctx)
+ static void test_or(struct atomics *skel)
  {
- 	int cur_pid = bpf_get_current_pid_tgid() >> 32;
-@@ -48,7 +48,7 @@ int test_ringbuf(void *ctx)
- 	sample = bpf_ringbuf_reserve(&ringbuf, sizeof(*sample), 0);
- 	if (!sample) {
- 		__sync_fetch_and_add(&dropped, 1);
--		return 1;
-+		return 0;
- 	}
+ 	int err, prog_fd;
+ 	__u32 duration = 0, retval;
+-	struct bpf_link *link;
++	int link_fd;
  
- 	sample->pid = pid;
+-	link = bpf_program__attach(skel->progs.or);
+-	if (CHECK(IS_ERR(link), "attach(or)", "err: %ld\n", PTR_ERR(link)))
++	link_fd = atomics__or__attach(skel);
++	if (!ASSERT_GT(link_fd, 0, "attach(or)"))
+ 		return;
+ 
+-	prog_fd = bpf_program__fd(skel->progs.or);
++	prog_fd = skel->progs.or.prog_fd;
+ 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
+ 				NULL, NULL, &retval, &duration);
+ 	if (CHECK(err || retval, "test_run or",
+@@ -123,20 +124,20 @@ static void test_or(struct atomics *skel)
+ 
+ 	ASSERT_EQ(skel->data->or_noreturn_value, 0x111ull << 32, "or_noreturn_value");
+ cleanup:
+-	bpf_link__destroy(link);
++	close(link_fd);
+ }
+ 
+ static void test_xor(struct atomics *skel)
+ {
+ 	int err, prog_fd;
+ 	__u32 duration = 0, retval;
+-	struct bpf_link *link;
++	int link_fd;
+ 
+-	link = bpf_program__attach(skel->progs.xor);
+-	if (CHECK(IS_ERR(link), "attach(xor)", "err: %ld\n", PTR_ERR(link)))
++	link_fd = atomics__xor__attach(skel);
++	if (!ASSERT_GT(link_fd, 0, "attach(xor)"))
+ 		return;
+ 
+-	prog_fd = bpf_program__fd(skel->progs.xor);
++	prog_fd = skel->progs.xor.prog_fd;
+ 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
+ 				NULL, NULL, &retval, &duration);
+ 	if (CHECK(err || retval, "test_run xor",
+@@ -151,20 +152,20 @@ static void test_xor(struct atomics *skel)
+ 
+ 	ASSERT_EQ(skel->data->xor_noreturn_value, 0x101ull << 32, "xor_nxoreturn_value");
+ cleanup:
+-	bpf_link__destroy(link);
++	close(link_fd);
+ }
+ 
+ static void test_cmpxchg(struct atomics *skel)
+ {
+ 	int err, prog_fd;
+ 	__u32 duration = 0, retval;
+-	struct bpf_link *link;
++	int link_fd;
+ 
+-	link = bpf_program__attach(skel->progs.cmpxchg);
+-	if (CHECK(IS_ERR(link), "attach(cmpxchg)", "err: %ld\n", PTR_ERR(link)))
++	link_fd = atomics__cmpxchg__attach(skel);
++	if (!ASSERT_GT(link_fd, 0, "attach(cmpxchg)"))
+ 		return;
+ 
+-	prog_fd = bpf_program__fd(skel->progs.cmpxchg);
++	prog_fd = skel->progs.cmpxchg.prog_fd;
+ 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
+ 				NULL, NULL, &retval, &duration);
+ 	if (CHECK(err || retval, "test_run add",
+@@ -180,20 +181,20 @@ static void test_cmpxchg(struct atomics *skel)
+ 	ASSERT_EQ(skel->bss->cmpxchg32_result_succeed, 1, "cmpxchg_result_succeed");
+ 
+ cleanup:
+-	bpf_link__destroy(link);
++	close(link_fd);
+ }
+ 
+ static void test_xchg(struct atomics *skel)
+ {
+ 	int err, prog_fd;
+ 	__u32 duration = 0, retval;
+-	struct bpf_link *link;
++	int link_fd;
+ 
+-	link = bpf_program__attach(skel->progs.xchg);
+-	if (CHECK(IS_ERR(link), "attach(xchg)", "err: %ld\n", PTR_ERR(link)))
++	link_fd = atomics__xchg__attach(skel);
++	if (!ASSERT_GT(link_fd, 0, "attach(xchg)"))
+ 		return;
+ 
+-	prog_fd = bpf_program__fd(skel->progs.xchg);
++	prog_fd = skel->progs.xchg.prog_fd;
+ 	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
+ 				NULL, NULL, &retval, &duration);
+ 	if (CHECK(err || retval, "test_run add",
+@@ -207,7 +208,7 @@ static void test_xchg(struct atomics *skel)
+ 	ASSERT_EQ(skel->bss->xchg32_result, 1, "xchg32_result");
+ 
+ cleanup:
+-	bpf_link__destroy(link);
++	close(link_fd);
+ }
+ 
+ void test_atomics(void)
 -- 
 2.30.2
 
