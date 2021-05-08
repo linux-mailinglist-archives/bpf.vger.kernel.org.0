@@ -2,119 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0DB376DF1
-	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 02:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 192EA376EFD
+	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 04:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhEHAvQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 May 2021 20:51:16 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:38016 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229970AbhEHAvP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 7 May 2021 20:51:15 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1480dKMS025668
-        for <bpf@vger.kernel.org>; Fri, 7 May 2021 17:50:14 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=/6dBoZ4Ptb1cVlTcUL9MBk10I9K2L40jILV4exYzOfg=;
- b=E5H2du6x3ktQSar0F9/zgdfl2n6u1zqQfBE3qTuSg1zakFtDILI9srVGjZyNMDO1m5Bk
- VozYJalnnzQAJD78QB4jQq1XWuV89lLn5JBs4OgixnuDCMS+fy/bFbGdqVYCM1F2RZoU
- kTn15iS+Oh7evvnytsogr5RYOmI3FMdmAGY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 38cswge7c1-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 07 May 2021 17:50:14 -0700
-Received: from intmgw002.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 7 May 2021 17:50:13 -0700
-Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id 484AA29428F7; Fri,  7 May 2021 17:50:11 -0700 (PDT)
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <netdev@vger.kernel.org>,
-        =?UTF-8?q?Michal=20Such=C3=A1nek?= <msuchanek@suse.de>,
-        Jiri Slaby <jslaby@suse.com>, Jiri Olsa <jolsa@redhat.com>
-Subject: [PATCH bpf] bpf: Limit static tcp-cc functions in the .BTF_ids list to x86
-Date:   Fri, 7 May 2021 17:50:11 -0700
-Message-ID: <20210508005011.3863757-1-kafai@fb.com>
-X-Mailer: git-send-email 2.30.2
-Content-Type: text/plain; charset="UTF-8"
-X-FB-Internal: Safe
-X-Proofpoint-GUID: FIOmXrp07xPgM6KQbk2tOyXyCiKgYl2e
-X-Proofpoint-ORIG-GUID: FIOmXrp07xPgM6KQbk2tOyXyCiKgYl2e
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S230267AbhEHC4X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 May 2021 22:56:23 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3544 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhEHC4X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 May 2021 22:56:23 -0400
+Received: from dggeml754-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FcWzL5GbXzWf0d;
+        Sat,  8 May 2021 10:51:10 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggeml754-chm.china.huawei.com (10.1.199.153) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sat, 8 May 2021 10:55:20 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Sat, 8 May 2021
+ 10:55:20 +0800
+Subject: Re: [PATCH net v5 1/3] net: sched: fix packet stuck problem for
+ lockless qdisc
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
+        <weiwan@google.com>, <cong.wang@bytedance.com>,
+        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
+        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>
+References: <1620266264-48109-1-git-send-email-linyunsheng@huawei.com>
+ <1620266264-48109-2-git-send-email-linyunsheng@huawei.com>
+ <20210507165703.70771c55@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <83ff1619-5ca3-1e60-3a41-0faff1566569@huawei.com>
+Date:   Sat, 8 May 2021 10:55:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-07_10:2021-05-06,2021-05-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 mlxlogscore=632 lowpriorityscore=0 phishscore=0 mlxscore=0
- bulkscore=0 impostorscore=0 clxscore=1015 suspectscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105080001
-X-FB-Internal: deliver
+In-Reply-To: <20210507165703.70771c55@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-During the discussion in [0].  It was pointed out that static functions
-in ppc64 is prefixed with ".".  For example, the 'readelf -s vmlinux.ppc':
+On 2021/5/8 7:57, Jakub Kicinski wrote:
+> On Thu, 6 May 2021 09:57:42 +0800 Yunsheng Lin wrote:
+>> @@ -159,8 +160,37 @@ static inline bool qdisc_is_empty(const struct Qdisc *qdisc)
+>>  static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+>>  {
+>>  	if (qdisc->flags & TCQ_F_NOLOCK) {
+>> +		bool dont_retry = test_bit(__QDISC_STATE_MISSED,
+>> +					   &qdisc->state);
+>> +
+>> +		if (spin_trylock(&qdisc->seqlock))
+>> +			goto nolock_empty;
+>> +
+>> +		/* If the flag is set before doing the spin_trylock() and
+>> +		 * the above spin_trylock() return false, it means other cpu
+>> +		 * holding the lock will do dequeuing for us, or it wil see
+> 
+> s/wil/will/
 
-89326: c000000001383280    24 NOTYPE  LOCAL  DEFAULT   31 cubictcp_init
-89327: c000000000c97c50   168 FUNC    LOCAL  DEFAULT    2 .cubictcp_init
+Thanks.
 
-The one with FUNC type is ".cubictcp_init" instead of "cubictcp_init".
-The "." seems to be done by arch/powerpc/include/asm/ppc_asm.h.
+> 
+>> +		 * the flag set after releasing lock and reschedule the
+>> +		 * net_tx_action() to do the dequeuing.
+> 
+> I don't understand why MISSED is checked before the trylock.
+> Could you explain why it can't be tested directly here?
+The initial thinking was:
+Just like the set_bit() before the second trylock, If MISSED is set
+before first trylock, it means other thread has set the MISSED flag
+for this thread before doing the first trylock, so that this thread
+does not need to do the set_bit().
 
-This caused the pahole cannot generate the BTF for these tcp-cc kernel
-functions because pahole only captures the FUNC type and "cubictcp_init"
-is not.  It then failed the kernel compilation in ppc64.
+But the initial thinking seems over thinking, as thread 3' setting the
+MISSED before the second trylock has ensure either thread 3' second
+trylock returns ture or thread 2 holding the lock will see the MISSED
+flag, so thread 1 can do the test_bit() before or after the first
+trylock, as below:
 
-This behavior is only reported in ppc64 so far.  I tried arm64, s390,
-and sparc64 and did not observe this "." prefix and NOTYPE behavior.
+    thread 1                thread 2                    thread 3
+                         holding q->seqlock
+first trylock failed                              first trylock failed
+                         unlock q->seqlock
+                                               test_bit(MISSED) return false
+                   test_bit(MISSED) return false
+                          and not reschedule
+                                                      set_bit(MISSED)
+						      trylock success
+test_bit(MISSED) retun ture
+and not retry second trylock
 
-Since the kfunc call is only supported in the x86_64 and x86_32 jit,
-this patch limits those tcp-cc functions to x86 only to avoid unnecessary
-compilation issue in other ARCHs.  In the future, we can examine
-if it is better to change all those functions from static to
-extern.
+If the above is correct, it seems we could:
+1. do test_bit(MISSED) before the first trylock to avoid doing the
+   first trylock for contended case.
+or
+2. do test_bit(MISSED) after the first trylock to avoid doing the
+   test_bit() for un-contended case.
 
-[0]: https://lore.kernel.org/bpf/4e051459-8532-7b61-c815-f3435767f8a0@kerne=
-l.org/
+Which one do you prefer?
 
-Fixes: e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist fo=
-r bpf-tcp-cc")
-Cc: Michal Such=C3=A1nek <msuchanek@suse.de>
-Cc: Jiri Slaby <jslaby@suse.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
----
- net/ipv4/bpf_tcp_ca.c | 2 ++
- 1 file changed, 2 insertions(+)
+> 
+>> +		 */
+>> +		if (dont_retry)
+>> +			return false;
+>> +
+>> +		/* We could do set_bit() before the first spin_trylock(),
+>> +		 * and avoid doing second spin_trylock() completely, then
+>> +		 * we could have multi cpus doing the set_bit(). Here use
+>> +		 * dont_retry to avoid doing the set_bit() and the second
+>> +		 * spin_trylock(), which has 5% performance improvement than
+>> +		 * doing the set_bit() before the first spin_trylock().
+>> +		 */
+>> +		set_bit(__QDISC_STATE_MISSED, &qdisc->state);
+>> +
+>> +		/* Retry again in case other CPU may not see the new flag
+>> +		 * after it releases the lock at the end of qdisc_run_end().
+>> +		 */
+>>  		if (!spin_trylock(&qdisc->seqlock))
+>>  			return false;
+>> +
+>> +nolock_empty:
+>>  		WRITE_ONCE(qdisc->empty, false);
+>>  	} else if (qdisc_is_running(qdisc)) {
+>>  		return false;
+>> @@ -176,8 +206,13 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
+>>  static inline void qdisc_run_end(struct Qdisc *qdisc)
+>>  {
+>>  	write_seqcount_end(&qdisc->running);
+>> -	if (qdisc->flags & TCQ_F_NOLOCK)
+>> +	if (qdisc->flags & TCQ_F_NOLOCK) {
+>>  		spin_unlock(&qdisc->seqlock);
+>> +
+>> +		if (unlikely(test_bit(__QDISC_STATE_MISSED,
+>> +				      &qdisc->state)))
+>> +			__netif_schedule(qdisc);
+>> +	}
+>>  }
+>>  
+>>  static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
+>> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+>> index 44991ea..9bc73ea 100644
+>> --- a/net/sched/sch_generic.c
+>> +++ b/net/sched/sch_generic.c
+>> @@ -640,8 +640,10 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+>>  {
+>>  	struct pfifo_fast_priv *priv = qdisc_priv(qdisc);
+>>  	struct sk_buff *skb = NULL;
+>> +	bool need_retry = true;
+>>  	int band;
+>>  
+>> +retry:
+>>  	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
+>>  		struct skb_array *q = band2list(priv, band);
+>>  
+>> @@ -652,6 +654,16 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
+>>  	}
+>>  	if (likely(skb)) {
+>>  		qdisc_update_stats_at_dequeue(qdisc, skb);
+>> +	} else if (need_retry &&
+>> +		   test_and_clear_bit(__QDISC_STATE_MISSED,
+>> +				      &qdisc->state)) {
+> 
+> Why test_and_clear_bit() here? AFAICT this is the only place the bit 
+> is cleared. So the test and clear do not have to be atomic.
 
-diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
-index dff4f0eb96b0..9e41eff4a685 100644
---- a/net/ipv4/bpf_tcp_ca.c
-+++ b/net/ipv4/bpf_tcp_ca.c
-@@ -185,6 +185,7 @@ BTF_ID(func, tcp_reno_cong_avoid)
- BTF_ID(func, tcp_reno_undo_cwnd)
- BTF_ID(func, tcp_slow_start)
- BTF_ID(func, tcp_cong_avoid_ai)
-+#ifdef CONFIG_X86
- #ifdef CONFIG_DYNAMIC_FTRACE
- #if IS_BUILTIN(CONFIG_TCP_CONG_CUBIC)
- BTF_ID(func, cubictcp_init)
-@@ -213,6 +214,7 @@ BTF_ID(func, bbr_min_tso_segs)
- BTF_ID(func, bbr_set_state)
- #endif
- #endif  /* CONFIG_DYNAMIC_FTRACE */
-+#endif	/* CONFIG_X86 */
- BTF_SET_END(bpf_tcp_ca_kfunc_ids)
-=20
- static bool bpf_tcp_ca_check_kfunc_call(u32 kfunc_btf_id)
---=20
-2.30.2
+The the bit is also cleared in other place in patch 2/3, but within the
+protection of q->seqlock too, so yes, the test and clear do not have to
+be atomic for performance sake.
+
+> 
+> To my limited understanding on x86 test_bit() is never a locked
+> operation, while test_and_clear_bit() is always locked. So we'd save
+> an atomic operation in un-contended case if we tested first and then
+> cleared.
+> 
+>> +		/* do another dequeuing after clearing the flag to
+>> +		 * avoid calling __netif_schedule().
+>> +		 */
+>> +		smp_mb__after_atomic();
+> 
+> test_and_clear_bit() which returned true implies a memory barrier,
+> AFAIU, so the barrier is not needed with the code as is. It will be
+> needed if we switch to test_bit() + clear_bit(), but please clarify
+> what it is paring with.
+
+Ok.
+Thanks for the reviewing.
+
+> 
+>> +		need_retry = false;
+>> +
+>> +		goto retry;
+>>  	} else {
+>>  		WRITE_ONCE(qdisc->empty, true);
+>>  	}
+> 
+> 
+> .
+> 
 
