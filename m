@@ -2,51 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0437A377065
-	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 09:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE3D9377138
+	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 12:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbhEHH10 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 May 2021 03:27:26 -0400
-Received: from [118.97.107.102] ([118.97.107.102]:39011 "EHLO mail1.igm.co.id"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S229583AbhEHH1Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 8 May 2021 03:27:25 -0400
-X-Greylist: delayed 4824 seconds by postgrey-1.27 at vger.kernel.org; Sat, 08 May 2021 03:27:25 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail1.igm.co.id (Postfix) with ESMTP id 3C58B20489E;
-        Sat,  8 May 2021 12:30:18 +0700 (WIT)
-X-Virus-Scanned: amavisd-new at igm.co.id
-Received: from mail1.igm.co.id ([127.0.0.1])
-        by localhost (mail1.igm.co.id [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id SHx1U5EJpBGH; Sat,  8 May 2021 12:30:12 +0700 (WIT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail1.igm.co.id (Postfix) with ESMTP id 549072048B0;
-        Sat,  8 May 2021 12:28:53 +0700 (WIT)
-X-Virus-Scanned: amavisd-new at igm.co.id
-Received: from mail1.igm.co.id ([127.0.0.1])
-        by localhost (mail1.igm.co.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id WDiQGbDJqKRI; Sat,  8 May 2021 12:28:45 +0700 (WIT)
-Received: from mail1.igm.co.id (mail1.igm.co.id [192.168.2.20])
-        by mail1.igm.co.id (Postfix) with ESMTP id 5D90520481D;
-        Sat,  8 May 2021 12:27:13 +0700 (WIT)
-Date:   Sat, 8 May 2021 12:27:13 +0700 (WIT)
-From:   pedro hills <postmailing1@igm.co.id>
-Reply-To: "hillsp625@gmail.com" <hillsp625@gmail.com>
-Message-ID: <4301412.3494884.1620451633034.JavaMail.root@igm.co.id>
-Subject: (DONATION) $2 Million Has Been Donated
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [188.241.82.27]
-X-Mailer: Zimbra 8.0.2_GA_5569 (zclient/8.0.2_GA_5569)
-Thread-Topic: (DONATION) $2 Million Has Been Donated
-Thread-Index: IHMWsscQXll2+aLnVWB6uf6O4pEmFw==
-To:     unlisted-recipients:; (no To-header on input)
+        id S230343AbhEHKe1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 May 2021 06:34:27 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:41574 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230234AbhEHKe0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 8 May 2021 06:34:26 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UY8toTC_1620469992;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UY8toTC_1620469992)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 08 May 2021 18:33:23 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     mcgrof@kernel.org
+Cc:     keescook@chromium.org, yzaikin@google.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH v2] sysctl: Remove redundant assignment to first
+Date:   Sat,  8 May 2021 18:33:10 +0800
+Message-Id: <1620469990-22182-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Variable first is set to '0', but this value is never read as it is
+not used later on, hence it is a redundant assignment and can be
+removed.
 
+Clean up the following clang-analyzer warning:
 
-$2 Million Has Been Donated To You,By PEDRO due to the covid-19 pandemia this is Real For More Info Contact PEDRO immediately for your clame This Email: hillsp625@gmail.com Contact whatsapp phone number 0034632232897 Send Your Response To: hillsp625@gmail.com    ________________________________________________________________________________________________________     Aufgrund der Covid-19-Pand&auml;mie wurden Ihnen von PEDRO 2 Millionen US-Dollar gespendet. Dies ist Real For More Info Wenden Sie sich umgehend an PEDRO. hillsp625@gmail.com Kontakt WhatsApp Telefonnummer 0034632232897 Senden Sie Ihre Antwort an: hillsp625@gmail.com
+kernel/sysctl.c:1562:4: warning: Value stored to 'first' is never read
+[clang-analyzer-deadcode.DeadStores].
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+Changes in v2:
+  -For the follow advice: https://lore.kernel.org/patchwork/patch/1422497/
+
+ kernel/sysctl.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 14edf84..23de0d9 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -1474,7 +1474,6 @@ int proc_do_large_bitmap(struct ctl_table *table, int write,
+ 			 void *buffer, size_t *lenp, loff_t *ppos)
+ {
+ 	int err = 0;
+-	bool first = 1;
+ 	size_t left = *lenp;
+ 	unsigned long bitmap_len = table->maxlen;
+ 	unsigned long *bitmap = *(unsigned long **) table->data;
+@@ -1559,12 +1558,12 @@ int proc_do_large_bitmap(struct ctl_table *table, int write,
+ 			}
+ 
+ 			bitmap_set(tmp_bitmap, val_a, val_b - val_a + 1);
+-			first = 0;
+ 			proc_skip_char(&p, &left, '\n');
+ 		}
+ 		left += skipped;
+ 	} else {
+ 		unsigned long bit_a, bit_b = 0;
++		bool first = 1;
+ 
+ 		while (left) {
+ 			bit_a = find_next_bit(bitmap, bitmap_len, bit_b);
+-- 
+1.8.3.1
 
