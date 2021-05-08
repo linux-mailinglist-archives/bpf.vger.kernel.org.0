@@ -2,80 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3D9377138
-	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 12:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F8F37714A
+	for <lists+bpf@lfdr.de>; Sat,  8 May 2021 12:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhEHKe1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 May 2021 06:34:27 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:41574 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230234AbhEHKe0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 8 May 2021 06:34:26 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UY8toTC_1620469992;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UY8toTC_1620469992)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 08 May 2021 18:33:23 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     mcgrof@kernel.org
-Cc:     keescook@chromium.org, yzaikin@google.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH v2] sysctl: Remove redundant assignment to first
-Date:   Sat,  8 May 2021 18:33:10 +0800
-Message-Id: <1620469990-22182-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S230257AbhEHKyH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 May 2021 06:54:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48114 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230326AbhEHKyF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 May 2021 06:54:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A4623ADD7;
+        Sat,  8 May 2021 10:53:02 +0000 (UTC)
+Date:   Sat, 8 May 2021 12:53:01 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v2 dwarves] btf: Remove ftrace filter
+Message-ID: <20210508105301.GD12700@kitsune.suse.cz>
+References: <20210506205622.3663956-1-kafai@fb.com>
+ <YJSr7S7dRty3K8Wd@archlinux-ax161>
+ <20210508050321.2qrmkzq7zjpphqo7@kafai-mbp.dhcp.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210508050321.2qrmkzq7zjpphqo7@kafai-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Variable first is set to '0', but this value is never read as it is
-not used later on, hence it is a redundant assignment and can be
-removed.
+On Fri, May 07, 2021 at 10:03:21PM -0700, Martin KaFai Lau wrote:
+> On Thu, May 06, 2021 at 07:54:37PM -0700, Nathan Chancellor wrote:
+> > On Thu, May 06, 2021 at 01:56:22PM -0700, Martin KaFai Lau wrote:
+> > > BTF is currently generated for functions that are in ftrace list
+> > > or extern.
+> > > 
+> > > A recent use case also needs BTF generated for functions included in
+> > > allowlist.  In particular, the kernel
+> > > commit e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc")
+> > > allows bpf program to directly call a few tcp cc kernel functions. Those
+> > > kernel functions are currently allowed only if CONFIG_DYNAMIC_FTRACE
+> > > is set to ensure they are in the ftrace list but this kconfig dependency
+> > > is unnecessary.
+> > > 
+> > > Those kernel functions are specified under an ELF section .BTF_ids.
+> > > There was an earlier attempt [0] to add another filter for the functions in
+> > > the .BTF_ids section.  That discussion concluded that the ftrace filter
+> > > should be removed instead.
+> > > 
+> > > This patch is to remove the ftrace filter and its related functions.
+> > > 
+> > > Number of BTF FUNC with and without is_ftrace_func():
+> > > My kconfig in x86: 40643 vs 46225
+> > > Jiri reported on arm: 25022 vs 55812
+> > > 
+> > > [0]: https://lore.kernel.org/dwarves/20210423213728.3538141-1-kafai@fb.com/
+> > > 
+> > > Cc: Andrii Nakryiko <andrii@kernel.org>
+> > > Cc: Jiri Olsa <jolsa@kernel.org>
+> > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> > 
+> > This fixes an issue with Fedora's s390x config that CKI noticed:
+> > 
+> > https://groups.google.com/g/clang-built-linux/c/IzthpckBJvc/m/MPWGDmXiAwAJ 
+> > 
+> > Tested-by: Nathan Chancellor <nathan@kernel.org> # build
+> Thanks all for reviewing and testing.
+> 
+> In my cross compile ppc64 test, it does not solve the issue.
+> The problem is the tcp-cc functions (e.g. "cublictcp_*")
+> are not STT_FUNC in ppc64, so they are not collected in collect_function().
+> The ".cubictcp_*" is STT_FUNC though.
+> 
+> Since only the x86 (64 and 32) bpf jit can call these tcp-cc functions now
+> and there is no usage for adding them to .BTF_ids for other ARCHs,
+> I have post a patch to limit them to x86:
+> https://lore.kernel.org/bpf/20210508005011.3863757-1-kafai@fb.com/
 
-Clean up the following clang-analyzer warning:
+That's probably not the way to go. If function symbols start with a dot
+in ppc64 elfv1 abi then pahole should learn to add a dot for ppc64 elfv1
+abi.
 
-kernel/sysctl.c:1562:4: warning: Value stored to 'first' is never read
-[clang-analyzer-deadcode.DeadStores].
+Or we can build ppc64 BE using the elfv2 abi and depend on elfv2 abi for
+BTF on ppc64. The patch for enabling elfv2 for BE is currently under
+discussion and I have the patch that adds the dependency ready as well.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
-Changes in v2:
-  -For the follow advice: https://lore.kernel.org/patchwork/patch/1422497/
+Thanks
 
- kernel/sysctl.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 14edf84..23de0d9 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -1474,7 +1474,6 @@ int proc_do_large_bitmap(struct ctl_table *table, int write,
- 			 void *buffer, size_t *lenp, loff_t *ppos)
- {
- 	int err = 0;
--	bool first = 1;
- 	size_t left = *lenp;
- 	unsigned long bitmap_len = table->maxlen;
- 	unsigned long *bitmap = *(unsigned long **) table->data;
-@@ -1559,12 +1558,12 @@ int proc_do_large_bitmap(struct ctl_table *table, int write,
- 			}
- 
- 			bitmap_set(tmp_bitmap, val_a, val_b - val_a + 1);
--			first = 0;
- 			proc_skip_char(&p, &left, '\n');
- 		}
- 		left += skipped;
- 	} else {
- 		unsigned long bit_a, bit_b = 0;
-+		bool first = 1;
- 
- 		while (left) {
- 			bit_a = find_next_bit(bitmap, bitmap_len, bit_b);
--- 
-1.8.3.1
-
+Michal
