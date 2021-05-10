@@ -2,114 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194283796D1
-	for <lists+bpf@lfdr.de>; Mon, 10 May 2021 20:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D17DD37989D
+	for <lists+bpf@lfdr.de>; Mon, 10 May 2021 22:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232156AbhEJSKG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 May 2021 14:10:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45148 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230357AbhEJSKG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 May 2021 14:10:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5C4F9ADDC;
-        Mon, 10 May 2021 18:09:00 +0000 (UTC)
-Date:   Mon, 10 May 2021 20:08:58 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2 dwarves] btf: Remove ftrace filter
-Message-ID: <20210510180858.GI12700@kitsune.suse.cz>
-References: <20210506205622.3663956-1-kafai@fb.com>
- <YJSr7S7dRty3K8Wd@archlinux-ax161>
- <20210508050321.2qrmkzq7zjpphqo7@kafai-mbp.dhcp.thefacebook.com>
- <20210508105301.GD12700@kitsune.suse.cz>
- <20210510180059.tz527zrb6bcqjrl7@kafai-mbp.dhcp.thefacebook.com>
+        id S232632AbhEJU42 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 May 2021 16:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232376AbhEJU41 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 May 2021 16:56:27 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8998BC06175F
+        for <bpf@vger.kernel.org>; Mon, 10 May 2021 13:55:22 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id a22so16228378qkl.10
+        for <bpf@vger.kernel.org>; Mon, 10 May 2021 13:55:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RGWzCQVatHggFsYh9q34QYS59ND04ThXP8WgUV/pEQo=;
+        b=NvqNlQ+DDbdBm4PQsI9Rf18EL3NQ1+HDnh2o5Ho0fmEFDCCvjwj/BAyVm/e9Y1Hatb
+         qGaYbRKBo7W75jC+Ns6BFLrYDKh5Vm1YG4PK2ilLONCNhke1OFkzjZ3uQcsiZQ2GvuAd
+         QqWp9uli1ij9jb8LSszRHsVS/dosPcXNiVJjc/+6iEN1ugrSbxYbJB6yCNuekL2IQZh2
+         /7Yv6iZBFbLlpNP17hMdShVm7zscu5lDJah4eWA46/opLyMRyUSImEXln4tAprvCqIun
+         XHSRBjFTlNgfxDJq6TnxVDZa9mXq9mJ7Uex0s+EoTPUSvO1+b+n9WJ8eV7/pd5S0uL5z
+         8gHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RGWzCQVatHggFsYh9q34QYS59ND04ThXP8WgUV/pEQo=;
+        b=QuC8sIfSGDkHKW1iN1JUym9iXMVoCnrxRNJwCGqwx0OUvSIO1cQttbuJvCR8+fMXMo
+         UDzb7CDl9JhKrzF9TrwZwsv5fi5MfP+Um32CKC/Mh6qRZzKzXsac+9QUp3wjQjfXiEhD
+         tPEZy3ZEqnR1OMVDNeQmMuSni/nBXdMHPd5iH3760g5xs8Ew8s8F92DtdbEwF1XS3A2L
+         EmHZPZcGSNig3nVJwR8WTVL4jHeb1M/5M4HF5NcqMuuWFxWw/fL/EC3ZUSaBZyuztSdJ
+         2ewCOnN1iKI51l2UCbM3C+hqrnA7TDAmqLcP9aVzM7ojQ3vMm6bUiO+PE6apVtz7Pj4m
+         z3kw==
+X-Gm-Message-State: AOAM533zJudjhcXDA/zLW5ZtGZ+/5JUuVZOAtNnPA/98UXQxHSUY4FcW
+        Amw08UdquHpUQ8jwelBhQPiuug==
+X-Google-Smtp-Source: ABdhPJx8UMhHJ3bftanNqNCxlCjWbLJKkAg4Vh55zf374HWPYLhBC2zUqqg5AJQmlGhETIl6tik3qA==
+X-Received: by 2002:a37:9281:: with SMTP id u123mr21499190qkd.447.1620680121729;
+        Mon, 10 May 2021 13:55:21 -0700 (PDT)
+Received: from [192.168.1.79] (bras-base-kntaon1617w-grc-25-174-95-97-70.dsl.bell.ca. [174.95.97.70])
+        by smtp.googlemail.com with ESMTPSA id r10sm12788024qke.9.2021.05.10.13.55.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 13:55:20 -0700 (PDT)
+Subject: Re: [RFC Patch bpf-next] bpf: introduce bpf timer
+To:     Cong Wang <xiyou.wangcong@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        Joe Stringer <joe@cilium.io>
+References: <20210402192823.bqwgipmky3xsucs5@ast-mbp>
+ <CAM_iQpUfv7c19zFN1Y5-cSUiVwpk0bmtBMSxZoELgDOFCQ=qAw@mail.gmail.com>
+ <20210402234500.by3wigegeluy5w7j@ast-mbp>
+ <CAM_iQpWf2aYbY=tKejb=nx7LWBLo1woTp-n4wOLhkUuDCz8u-Q@mail.gmail.com>
+ <20210412230151.763nqvaadrrg77kd@ast-mbp.dhcp.thefacebook.com>
+ <CAM_iQpWePmmpr0RKqCrQ=NPiGrq2Tx9OU9y3e4CTzFjvh5t47w@mail.gmail.com>
+ <CAADnVQLsmULxJYq9rHS4xyg=VAUeexJTh35vTWTVgjeqwX4D6g@mail.gmail.com>
+ <CAM_iQpVtxgZNeqh4_Pqftc3D163JnRvP3AZRuFrYNeyWLgVBVA@mail.gmail.com>
+ <CAADnVQLFehCeQRbwEQ9VM-=Y3V3es2Ze8gFPs6cZHwNH0Ct7vw@mail.gmail.com>
+ <CAM_iQpWDhoY_msU=AowHFq3N3OuQpvxd2ADP_Z+gxBfGduhrPA@mail.gmail.com>
+ <20210427020159.hhgyfkjhzjk3lxgs@ast-mbp.dhcp.thefacebook.com>
+ <CAM_iQpVE4XG7SPAVBmV2UtqUANg3X-1ngY7COYC03NrT6JkZ+g@mail.gmail.com>
+ <CAADnVQK9BgguVorziWgpMktLHuPCgEaKa4fz-KCfhcZtT46teQ@mail.gmail.com>
+ <CAM_iQpWBrxuT=Y3CbhxYpE5a+QSk-O=Vj4euegggXAAKTHRBqw@mail.gmail.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <d38c7ccf-bc66-9b71-ef96-7fe196ac5c09@mojatatu.com>
+Date:   Mon, 10 May 2021 16:55:19 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210510180059.tz527zrb6bcqjrl7@kafai-mbp.dhcp.thefacebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAM_iQpWBrxuT=Y3CbhxYpE5a+QSk-O=Vj4euegggXAAKTHRBqw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 10, 2021 at 11:00:59AM -0700, Martin KaFai Lau wrote:
-> On Sat, May 08, 2021 at 12:53:01PM +0200, Michal Suchánek wrote:
-> > On Fri, May 07, 2021 at 10:03:21PM -0700, Martin KaFai Lau wrote:
-> > > On Thu, May 06, 2021 at 07:54:37PM -0700, Nathan Chancellor wrote:
-> > > > On Thu, May 06, 2021 at 01:56:22PM -0700, Martin KaFai Lau wrote:
-> > > > > BTF is currently generated for functions that are in ftrace list
-> > > > > or extern.
-> > > > > 
-> > > > > A recent use case also needs BTF generated for functions included in
-> > > > > allowlist.  In particular, the kernel
-> > > > > commit e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc")
-> > > > > allows bpf program to directly call a few tcp cc kernel functions. Those
-> > > > > kernel functions are currently allowed only if CONFIG_DYNAMIC_FTRACE
-> > > > > is set to ensure they are in the ftrace list but this kconfig dependency
-> > > > > is unnecessary.
-> > > > > 
-> > > > > Those kernel functions are specified under an ELF section .BTF_ids.
-> > > > > There was an earlier attempt [0] to add another filter for the functions in
-> > > > > the .BTF_ids section.  That discussion concluded that the ftrace filter
-> > > > > should be removed instead.
-> > > > > 
-> > > > > This patch is to remove the ftrace filter and its related functions.
-> > > > > 
-> > > > > Number of BTF FUNC with and without is_ftrace_func():
-> > > > > My kconfig in x86: 40643 vs 46225
-> > > > > Jiri reported on arm: 25022 vs 55812
-> > > > > 
-> > > > > [0]: https://lore.kernel.org/dwarves/20210423213728.3538141-1-kafai@fb.com/
-> > > > > 
-> > > > > Cc: Andrii Nakryiko <andrii@kernel.org>
-> > > > > Cc: Jiri Olsa <jolsa@kernel.org>
-> > > > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > > > 
-> > > > This fixes an issue with Fedora's s390x config that CKI noticed:
-> > > > 
-> > > > https://groups.google.com/g/clang-built-linux/c/IzthpckBJvc/m/MPWGDmXiAwAJ  
-> > > > 
-> > > > Tested-by: Nathan Chancellor <nathan@kernel.org> # build
-> > > Thanks all for reviewing and testing.
-> > > 
-> > > In my cross compile ppc64 test, it does not solve the issue.
-> > > The problem is the tcp-cc functions (e.g. "cublictcp_*")
-> > > are not STT_FUNC in ppc64, so they are not collected in collect_function().
-> > > The ".cubictcp_*" is STT_FUNC though.
-> > > 
-> > > Since only the x86 (64 and 32) bpf jit can call these tcp-cc functions now
-> > > and there is no usage for adding them to .BTF_ids for other ARCHs,
-> > > I have post a patch to limit them to x86:
-> > > https://lore.kernel.org/bpf/20210508005011.3863757-1-kafai@fb.com/
-> > 
-> > That's probably not the way to go. If function symbols start with a dot
-> > in ppc64 elfv1 abi then pahole should learn to add a dot for ppc64 elfv1
-> > abi.
-> > 
-> > Or we can build ppc64 BE using the elfv2 abi and depend on elfv2 abi for
-> > BTF on ppc64. The patch for enabling elfv2 for BE is currently under
-> > discussion and I have the patch that adds the dependency ready as well.
-> ic.  I just learned the elfv2/LE vs elfv1/BE difference in ppc64.
-> elfv2 BE ppc64 support is on its way, so it is better to have DEBUG_INFO_BTF
-> depending on the ppc64-elfv2 related kconfig(s) instead of making an exception
-> handling in pahole.
+On 2021-05-09 1:37 a.m., Cong Wang wrote:
+> On Tue, Apr 27, 2021 at 11:34 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+
+
+[..]
+> I am pretty sure I showed the original report to you when I sent
+> timeout hashmap patch, in case you forgot here it is again:
+> https://github.com/cilium/cilium/issues/5048
 > 
-> If you have the	BTF ppc64-elfv2 dependency patch ready, does it make
-> sense to land this patch first independent of the ppc64 elfv2/BE
-> effort?
+> and let me quote the original report here:
+> 
+> "The current implementation (as of v1.2) for managing the contents of
+> the datapath connection tracking map leaves something to be desired:
+> Once per minute, the userspace cilium-agent makes a series of calls to
+> the bpf() syscall to fetch all of the entries in the map to determine
+> whether they should be deleted. For each entry in the map, 2-3 calls
+> must be made: One to fetch the next key, one to fetch the value, and
+> perhaps one to delete the entry. The maximum size of the map is 1
+> million entries, and if the current count approaches this size then
+> the garbage collection goroutine may spend a significant number of CPU
+> cycles iterating and deleting elements from the conntrack map."
+> 
 
-It kind of depends on the result of the config option name bikeshedding
-so it has to be merged after.
+That cilium PR was a good read of the general issues.
+Our use case involves anywhere between 4-16M cached entries.
 
-Thanks
+Like i mentioned earlier:
+we want to periodically, if some condition is met in the
+kernel on a map entry, to cleanup, update or send unsolicited
+housekeeping events to user space.
+Polling in order to achieve this for that many entries is expensive.
 
-Michal
+I would argue, again, timers generally are useful for a variety
+of house keeping purposes and they are currently missing from ebpf.
+Again, this despite Cong's use case.
+Currently things in the ebpf datapath are triggered by either packets
+showing up or from a control plane perspective by user space polling.
+We need the timers for completion.
+
+cheers,
+jamal
