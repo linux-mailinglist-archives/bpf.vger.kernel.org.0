@@ -2,250 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D543379569
-	for <lists+bpf@lfdr.de>; Mon, 10 May 2021 19:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0F237963B
+	for <lists+bpf@lfdr.de>; Mon, 10 May 2021 19:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232768AbhEJRYq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 May 2021 13:24:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46586 "EHLO
+        id S231652AbhEJRnY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 May 2021 13:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232822AbhEJRYP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 May 2021 13:24:15 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335FEC06175F;
-        Mon, 10 May 2021 10:23:09 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id c10so2684237qtx.10;
-        Mon, 10 May 2021 10:23:09 -0700 (PDT)
+        with ESMTP id S231591AbhEJRnY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 May 2021 13:43:24 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418EAC061763
+        for <bpf@vger.kernel.org>; Mon, 10 May 2021 10:42:19 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id c20so5172788qkm.3
+        for <bpf@vger.kernel.org>; Mon, 10 May 2021 10:42:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5/rwXY3Tz97DG7RI33m/7eYmkIHu/XikiymKc76hRuI=;
-        b=Qoor7W8OoHJh8YFJwaDNYg1EhzPV+XmZZTxmIbK8xsOopphUxHRO+5slKwOBJQsxbB
-         Ig1Em/YJCGj0gQIgKNbEvqsRN99g0dxRQP7xB1Nlb1l+talVrXYw83g7AoiJZndYjJWb
-         RoauFxCt9kJiLqVvhi4ZPmj3J2HEYIWm3TAvEIR2YaFvOTGt+Da3DvynvW1VdZfLwRVL
-         reXVfLFNd7Hs8jGhbbq8hZ5I53DE0OyVE9APlZR6pjJKWV0GLjIlBCWh6yj/YWyM7AYb
-         BwqFa47yZICJI86OMu4z7Nt0B0UT91cZqaab6CLdOVLg/oHqXwW72BI543Lw/8JOgrbt
-         ZZ9A==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:from:to:cc:subject;
+        bh=n5gxQcJcWf8uN8nViJiC2oY2o4qpc3D4xM0tKR6YYWA=;
+        b=IWPeC1KeCJWcRYiMi/iOkteNjl3MP0cQx6RWg3IG/lTEXG+OBFqZJ84ZKty0x0V1hA
+         wWO4vZplz7tfGCQg2OV6cRT9D03LcQnDGInItUJ4R/NYr5RJY0QI0bdszTf6qKkkqmOd
+         1FQRKCKPAl8QMuzpFRSg48xlfhpQZpTIn6LIuK5Aq4lKpQwysWDGQ0/UmFsPQY7/dhZ3
+         5CpfDXUDx7eDnAHO3sKNFZJ/xSRpZSVO6nWf0LwZ1DH9rk2V9jdLBAm1mbcl9qMeLeGP
+         3OhD1lZ8+lKsbnJZjS62/KlPRlCzHUt/lHTnk/S4rjJQjyFjLwdIYFrLUFpmLfO/tthm
+         WHhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5/rwXY3Tz97DG7RI33m/7eYmkIHu/XikiymKc76hRuI=;
-        b=B1W7MwkdcMsaomcEcN5Mky+OcPLccLAHoa1FpgN0Qsz3ml3S7D+/ISk30RquqQgALj
-         MqPUvctoOvIraFPxZnEIsi5M2DBsRvJC8kt7Cj5onYG0oM79Wa/t01Brx3Tri1JGdWpD
-         2/chLGi22pSOtxKvRC1kOnYik+mGr1O0ma/Li2q82wEIX5s2ecJoukYFxYt6k2wcTsqU
-         +tzywtGYU/F16Rx+EybnPH/ksShEfZM44eSyX4iA/9kQfuqUy/zsHrs8B5rZsiNU/lVs
-         vuK4B38OtLUvvzhhdHsN6CRda1gPM8Vj3mTE0HTzVCoGMLqnwrEYP8UyzHtt/GYh3GEp
-         CEOQ==
-X-Gm-Message-State: AOAM530vTnMFZ4jhbMhk/MB7BF2zyE1wOn8ooQ+bQUl8pnH85fl5wmuV
-        UGIM8/Reg0FDTzXZIrqj1PM=
-X-Google-Smtp-Source: ABdhPJzZxsGB9ozvYjpJmRg62FFX02uOjGCBLcBwlLpOtloL9dHrxHJL0pVdAzZwU8U1raciHQh7vg==
-X-Received: by 2002:a05:622a:15c9:: with SMTP id d9mr6841464qty.103.1620667388424;
-        Mon, 10 May 2021 10:23:08 -0700 (PDT)
-Received: from localhost.localdomain (host-173-230-99-154.tnkngak.clients.pavlovmedia.com. [173.230.99.154])
-        by smtp.gmail.com with ESMTPSA id q7sm11924367qki.17.2021.05.10.10.23.07
+        h=x-gm-message-state:message-id:date:from:to:cc:subject;
+        bh=n5gxQcJcWf8uN8nViJiC2oY2o4qpc3D4xM0tKR6YYWA=;
+        b=mHemqe17W2k/dDZdya0QKY6cv4LRN4wAUUtDkfqR57MD/3bgiliralGTdnLdeN9UXt
+         Ha8kbIdC0AkHHVkL/zfeUTi5W5yPq4aJp/dn1IL0+J76Oym9BoORj0nNxR/uTmVqjKAx
+         uiJXH0ZtLEpPatBXltIVwa/wxV24RzpvSEs6Rj4bMXsEjuUyFBoZVwzm67/wr98eSoxm
+         X3KOfp2JAHFhWqH/Xy0RttVAEbHZdrDyWXEA5c387eVHDNfQDYimQKV6SddQ/LFPgB7W
+         yZ19A19dLURpZJ2CbE2hxaZLDowCksbB998yGDPW5DSTceQuFB0+muAZGv8qA8VEZbP6
+         fyVw==
+X-Gm-Message-State: AOAM531Xk6HQBYs7za99rEkvGQj1lrbSREebbKsGHG3VGqBx+ZxPqqJc
+        eljVJ9gjm2djFTAGnnvKtK/JBvM7z/1SDg==
+X-Google-Smtp-Source: ABdhPJxQFETD6GAmxPhza4gO2s5UxBFf1tocdyjImVzCAogXWQ07nVOtv38yIho+4lIEBuKwJZC63w==
+X-Received: by 2002:a37:a2d5:: with SMTP id l204mr22524422qke.331.1620668538377;
+        Mon, 10 May 2021 10:42:18 -0700 (PDT)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id z30sm12740561qtm.11.2021.05.10.10.42.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 10:23:08 -0700 (PDT)
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-To:     containers@lists.linux.dev, bpf@vger.kernel.org
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
-        linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Austin Kuo <hckuo2@illinois.edu>,
-        Claudio Canella <claudio.canella@iaik.tugraz.at>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Daniel Gruss <daniel.gruss@iaik.tugraz.at>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jann Horn <jannh@google.com>,
-        Jinghao Jia <jinghao7@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tom Hromatka <tom.hromatka@oracle.com>,
-        Will Drewry <wad@chromium.org>
-Subject: [RFC PATCH bpf-next seccomp 12/12] seccomp-ebpf: support task storage from BPF-LSM, defaulting to group leader
-Date:   Mon, 10 May 2021 12:22:49 -0500
-Message-Id: <db41ad3924d01374d08984d20ad6678f91b82cde.1620499942.git.yifeifz2@illinois.edu>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1620499942.git.yifeifz2@illinois.edu>
-References: <cover.1620499942.git.yifeifz2@illinois.edu>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 10 May 2021 10:42:17 -0700 (PDT)
+Message-ID: <60997079.1c69fb81.77f3f.a045@mx.google.com>
+Date:   Mon, 10 May 2021 13:42:16 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     lsf-pc@lists.linuxfoundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvme@lists.infradead.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RESEND] LSF/MM/BPF: 2021: Call for Proposals
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: YiFei Zhu <yifeifz2@illinois.edu>
+[apologies, 2021 and email is still my nemesis]
 
-This enables seccomp-eBPF filters to have per-process state even when
-the filter is loaded by an unprivileged process. Without CAP_BPF &&
-CAP_PERFMON no access to ptr to BTF ID is possible, so the only valid
-task the verifier will accept is NULL, and the helper implementation
-fallbacks to the group leader to have a per-process storage.
+The annual Linux Storage, Filesystem, Memory Management, and BPF
+(LSF/MM/BPF) Summit for 2021 will be held from December 6 to December 8
+at The Margaritaville Resort Palm Springs in Palm Springs, California.
+LSF/MM/BPF is an invitation-only technical workshop to map out
+improvements to the Linux storage, filesystem, BPF, and memory
+management subsystems that will make their way into the mainline kernel
+within the coming years.
 
-Filters loaded by privileged processes may still access the storage
-of arbitrary tasks via a valid task_struct ptr to BTF ID.
+COVID is at the front of our minds as we attempt to put together the
+best and safest conference we can arrange.  The logistics of how to hold
+an in person event will change and evolve as we get closer to the actual
+date, but rest assured we will do everything recommended by public
+health officials.
 
-Since task storage require rcu being locked. We lock and unlock
-rcu before every seccomp-eBPF filter execution.
+LSF/MM/BPF 2021 will be a three day, stand-alone conference with four
+subsystem-specific tracks, cross-track discussions, as well as BoF and
+hacking sessions.
 
-I'm not sure if this is the best way to do this. One, this introduces
-a dependency on BPF-LSM. Two, per-thread storage is not accessible
-to unprivileged filter loaders; it has to be per-process.
+On behalf of the committee I am issuing a call for agenda proposals
+that are suitable for cross-track discussion as well as technical
+subjects for the breakout sessions.
 
-Signed-off-by: YiFei Zhu <yifeifz2@illinois.edu>
----
- include/linux/bpf.h           |  2 ++
- kernel/bpf/bpf_task_storage.c | 64 ++++++++++++++++++++++++++++++-----
- kernel/seccomp.c              |  4 +++
- 3 files changed, 61 insertions(+), 9 deletions(-)
+If advance notice is required for visa applications then please point
+that out in your proposal or request to attend, and submit the topic as
+soon as possible.
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index efa6444b88d3..7c9755802275 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1964,7 +1964,9 @@ extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
- extern const struct bpf_func_proto bpf_sock_from_file_proto;
- extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto;
- extern const struct bpf_func_proto bpf_task_storage_get_proto;
-+extern const struct bpf_func_proto bpf_task_storage_get_default_leader_proto;
- extern const struct bpf_func_proto bpf_task_storage_delete_proto;
-+extern const struct bpf_func_proto bpf_task_storage_delete_default_leader_proto;
- extern const struct bpf_func_proto bpf_for_each_map_elem_proto;
- extern const struct bpf_func_proto bpf_probe_read_user_proto;
- extern const struct bpf_func_proto bpf_probe_read_user_dumpable_proto;
-diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.c
-index 3ce75758d394..5ddf3a92d359 100644
---- a/kernel/bpf/bpf_task_storage.c
-+++ b/kernel/bpf/bpf_task_storage.c
-@@ -224,19 +224,19 @@ static int bpf_pid_task_storage_delete_elem(struct bpf_map *map, void *key)
- 	return err;
- }
- 
--BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, map, struct task_struct *,
--	   task, void *, value, u64, flags)
-+static void *_bpf_task_storage_get(struct bpf_map *map, struct task_struct *task,
-+				   void *value, u64 flags)
- {
- 	struct bpf_local_storage_data *sdata;
- 
- 	if (flags & ~(BPF_LOCAL_STORAGE_GET_F_CREATE))
--		return (unsigned long)NULL;
-+		return NULL;
- 
- 	if (!task)
--		return (unsigned long)NULL;
-+		return NULL;
- 
- 	if (!bpf_task_storage_trylock())
--		return (unsigned long)NULL;
-+		return NULL;
- 
- 	sdata = task_storage_lookup(task, map, true);
- 	if (sdata)
-@@ -251,12 +251,24 @@ BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, map, struct task_struct *,
- 
- unlock:
- 	bpf_task_storage_unlock();
--	return IS_ERR_OR_NULL(sdata) ? (unsigned long)NULL :
--		(unsigned long)sdata->data;
-+	return IS_ERR_OR_NULL(sdata) ? NULL : sdata->data;
- }
- 
--BPF_CALL_2(bpf_task_storage_delete, struct bpf_map *, map, struct task_struct *,
--	   task)
-+BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, map, struct task_struct *,
-+	   task, void *, value, u64, flags)
-+{
-+	return (unsigned long)_bpf_task_storage_get(map, task, value, flags);
-+}
-+
-+BPF_CALL_4(bpf_task_storage_get_default_leader, struct bpf_map *, map,
-+	   struct task_struct *, task, void *, value, u64, flags)
-+{
-+	if (!task)
-+		task = current->group_leader;
-+	return (unsigned long)_bpf_task_storage_get(map, task, value, flags);
-+}
-+
-+static int _bpf_task_storage_delete(struct bpf_map *map, struct task_struct *task)
- {
- 	int ret;
- 
-@@ -275,6 +287,20 @@ BPF_CALL_2(bpf_task_storage_delete, struct bpf_map *, map, struct task_struct *,
- 	return ret;
- }
- 
-+BPF_CALL_2(bpf_task_storage_delete, struct bpf_map *, map, struct task_struct *,
-+	   task)
-+{
-+	return _bpf_task_storage_delete(map, task);
-+}
-+
-+BPF_CALL_2(bpf_task_storage_delete_default_leader, struct bpf_map *, map,
-+	   struct task_struct *, task)
-+{
-+	if (!task)
-+		task = current->group_leader;
-+	return _bpf_task_storage_delete(map, task);
-+}
-+
- static int notsupp_get_next_key(struct bpf_map *map, void *key, void *next_key)
- {
- 	return -ENOTSUPP;
-@@ -330,6 +356,17 @@ const struct bpf_func_proto bpf_task_storage_get_proto = {
- 	.arg4_type = ARG_ANYTHING,
- };
- 
-+const struct bpf_func_proto bpf_task_storage_get_default_leader_proto = {
-+	.func = bpf_task_storage_get_default_leader,
-+	.gpl_only = false,
-+	.ret_type = RET_PTR_TO_MAP_VALUE_OR_NULL,
-+	.arg1_type = ARG_CONST_MAP_PTR,
-+	.arg2_type = ARG_PTR_TO_BTF_ID_OR_NULL,
-+	.arg2_btf_id = &bpf_task_storage_btf_ids[0],
-+	.arg3_type = ARG_PTR_TO_MAP_VALUE_OR_NULL,
-+	.arg4_type = ARG_ANYTHING,
-+};
-+
- const struct bpf_func_proto bpf_task_storage_delete_proto = {
- 	.func = bpf_task_storage_delete,
- 	.gpl_only = false,
-@@ -338,3 +375,12 @@ const struct bpf_func_proto bpf_task_storage_delete_proto = {
- 	.arg2_type = ARG_PTR_TO_BTF_ID,
- 	.arg2_btf_id = &bpf_task_storage_btf_ids[0],
- };
-+
-+const struct bpf_func_proto bpf_task_storage_delete_default_leader_proto = {
-+	.func = bpf_task_storage_delete_default_leader,
-+	.gpl_only = false,
-+	.ret_type = RET_INTEGER,
-+	.arg1_type = ARG_CONST_MAP_PTR,
-+	.arg2_type = ARG_PTR_TO_BTF_ID_OR_NULL,
-+	.arg2_btf_id = &bpf_task_storage_btf_ids[0],
-+};
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 330e9c365cdc..5b41b2aee39c 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -2457,6 +2457,10 @@ seccomp_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return ns_capable(current_user_ns(), CAP_SYS_PTRACE) ?
- 			&bpf_probe_read_user_str_proto :
- 			&bpf_probe_read_user_dumpable_str_proto;
-+	case BPF_FUNC_task_storage_get:
-+		return &bpf_task_storage_get_default_leader_proto;
-+	case BPF_FUNC_task_storage_delete:
-+		return &bpf_task_storage_delete_default_leader_proto;
- 	default:
- 		break;
- 	}
--- 
-2.31.1
+This years instructions are similar to our 2020 attempt.  We're asking
+that you please let us know you want to be invited by June 15th, 2021.
+We realize that travel is an ever changing target, but it helps us get
+an idea of possible attendance numbers.  Clearly things can and will, so
+consider the request to attend deadline more about planning and less
+about concrete plans.
 
+1) Fill out the following Google form to request attendance and
+suggest any topics
+
+	https://forms.gle/Dms7xYPXLrriFkcXA
+
+In previous years we have accidentally missed people's attendance
+requests because they either didn't cc lsf-pc@ or we simply missed them
+in the flurry of emails we get.  Our community is large and our
+volunteers are busy, filling this out will help us make sure we don't
+miss anybody.
+
+2) Proposals for agenda topics should still be sent to the following
+lists to allow for discussion among your peers.  This will help us
+figure out which topics are important for the agenda.
+
+        lsf-pc@lists.linux-foundation.org
+
+and CC the mailing lists that are relevant for the topic in question:
+
+        FS:     linux-fsdevel@vger.kernel.org
+        MM:     linux-mm@kvack.org
+        Block:  linux-block@vger.kernel.org
+        ATA:    linux-ide@vger.kernel.org
+        SCSI:   linux-scsi@vger.kernel.org
+        NVMe:   linux-nvme@lists.infradead.org
+        BPF:    bpf@vger.kernel.org
+
+Please tag your proposal with [LSF/MM/BPF TOPIC] to make it easier to
+track. In addition, please make sure to start a new thread for each
+topic rather than following up to an existing one. Agenda topics and
+attendees will be selected by the program committee, but the final
+agenda will be formed by consensus of the attendees on the day.
+
+We will try to cap attendance at around 25-30 per track to facilitate
+discussions although the final numbers will depend on the room sizes
+at the venue.
+
+For discussion leaders, slides and visualizations are encouraged to
+outline the subject matter and focus the discussions. Please refrain
+from lengthy presentations and talks; the sessions are supposed to be
+interactive, inclusive discussions.
+
+There will be no recording or audio bridge. However, we expect that
+written minutes will be published as we did in previous years:
+
+2019: https://lwn.net/Articles/lsfmm2019/
+
+2018: https://lwn.net/Articles/lsfmm2018/
+
+2017: https://lwn.net/Articles/lsfmm2017/
+
+2016: https://lwn.net/Articles/lsfmm2016/
+
+2015: https://lwn.net/Articles/lsfmm2015/
+
+2014: http://lwn.net/Articles/LSFMM2014/
+
+3) If you have feedback on last year's meeting that we can use to
+improve this year's, please also send that to:
+
+        lsf-pc@lists.linux-foundation.org
+
+Thank you on behalf of the program committee:
+
+        Josef Bacik (Filesystems)
+        Amir Goldstein (Filesystems)
+        Martin K. Petersen (Storage)
+        Omar Sandoval (Storage)
+        Michal Hocko (MM)
+        Dan Williams (MM)
+        Alexei Starovoitov (BPF)
+        Daniel Borkmann (BPF)
