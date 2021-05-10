@@ -2,276 +2,222 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE3C377A1A
-	for <lists+bpf@lfdr.de>; Mon, 10 May 2021 04:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB0A377AA8
+	for <lists+bpf@lfdr.de>; Mon, 10 May 2021 05:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhEJCXr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 9 May 2021 22:23:47 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:21836 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhEJCXr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 9 May 2021 22:23:47 -0400
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210510022241epoutp04caabb6e95fc16b18a69ea5ba5a2efe10~9k0QRPhgc0857108571epoutp04P
-        for <bpf@vger.kernel.org>; Mon, 10 May 2021 02:22:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210510022241epoutp04caabb6e95fc16b18a69ea5ba5a2efe10~9k0QRPhgc0857108571epoutp04P
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1620613361;
-        bh=cPButctKmrrZXM/6u9WU7erJpLUuP4/V9hThU/X1pcU=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=WK3X8wUS0oRqQlvvVz5rrb6okq+kXl7Nb+DsaZMml8bNUvd61msx9IfXMdoV3bG/y
-         OXn90UIoqzsVyfuDpDAnEylq8uOX28jDYSsGDPY9Zw8JZiQ18K80isvS1nbHl36nNR
-         L+NYg9v/MXDYocR8CyCUugqwSXTyF/5iqu7T24zg=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210510022240epcas2p4b1b66080c026374e399ed3a45f178eaa~9k0P0M0Hh2259022590epcas2p4X;
-        Mon, 10 May 2021 02:22:40 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.187]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4FdlFW0zMrz4x9QV; Mon, 10 May
-        2021 02:22:39 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        45.F3.09717.DE898906; Mon, 10 May 2021 11:22:38 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210510022237epcas2p2a55d3ec5b401627a2d82d60d31949618~9k0MhsQMi1757817578epcas2p2u;
-        Mon, 10 May 2021 02:22:37 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210510022237epsmtrp1d35fec293ebcf05e6e8a39faa111129e~9k0MfqTfn2202122021epsmtrp1B;
-        Mon, 10 May 2021 02:22:37 +0000 (GMT)
-X-AuditID: b6c32a48-4e5ff700000025f5-45-609898ed183d
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FE.D8.08637.DE898906; Mon, 10 May 2021 11:22:37 +0900 (KST)
-Received: from KORDO035731 (unknown [12.36.185.47]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210510022237epsmtip1e337501ffcf70dc947e708fac3265eed~9k0MM2Qny2865128651epsmtip1L;
-        Mon, 10 May 2021 02:22:37 +0000 (GMT)
-From:   "Dongseok Yi" <dseok.yi@samsung.com>
-To:     "'Willem de Bruijn'" <willemdebruijn.kernel@gmail.com>
-Cc:     "'Yunsheng Lin'" <linyunsheng@huawei.com>,
-        "'Daniel Borkmann'" <daniel@iogearbox.net>,
-        "'bpf'" <bpf@vger.kernel.org>,
-        "'Alexei Starovoitov'" <ast@kernel.org>,
-        "'Andrii Nakryiko'" <andrii@kernel.org>,
-        "'Martin KaFai Lau'" <kafai@fb.com>,
-        "'Song Liu'" <songliubraving@fb.com>,
-        "'Yonghong Song'" <yhs@fb.com>,
-        "'John Fastabend'" <john.fastabend@gmail.com>,
-        "'KP Singh'" <kpsingh@kernel.org>,
-        "'David S. Miller'" <davem@davemloft.net>,
-        "'Jakub Kicinski'" <kuba@kernel.org>,
-        "'Network Development'" <netdev@vger.kernel.org>,
-        "'linux-kernel'" <linux-kernel@vger.kernel.org>
-In-Reply-To: <CAF=yD-L9pxAFoT+c1Xk5YS42ZaJ+YLVQVnV+fvtqn-gLxq9ENg@mail.gmail.com>
-Subject: RE: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
- to 4
-Date:   Mon, 10 May 2021 11:22:36 +0900
-Message-ID: <00c901d74543$57fa3620$07eea260$@samsung.com>
+        id S230047AbhEJDqP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 9 May 2021 23:46:15 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:37648 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230029AbhEJDqP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 9 May 2021 23:46:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1620618312; x=1652154312;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=TLoGDHR/7ed9C1dlUyjesN0+jaql1ZFyM7ZqZzd2gM0=;
+  b=pu+UjYZGRGtutGgz0GF9mKybt1auNnSWPPIFNzXbcZO0xu/16WaOjG5/
+   mmA9XrIU6pGblpOnAY1/ucndqVR3mNOIowwHSRymVHC+FbDxYNdb3mQ28
+   x4adGUkdrnKb8sbalZqmFGWrl3kkYn9CDnwPt6V+uzkwYvnA1tr1uKFXF
+   0=;
+X-IronPort-AV: E=Sophos;i="5.82,286,1613433600"; 
+   d="scan'208";a="111126515"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-28209b7b.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 10 May 2021 03:45:11 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1e-28209b7b.us-east-1.amazon.com (Postfix) with ESMTPS id DE54AC3BAD;
+        Mon, 10 May 2021 03:45:07 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 10 May 2021 03:45:07 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.160.17) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Mon, 10 May 2021 03:45:02 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+CC:     Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v5 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Mon, 10 May 2021 12:44:22 +0900
+Message-ID: <20210510034433.52818-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKypHYW3xad5/j2XvChPebQmKG2owG+YoocAqFpyMsBZavlXQIxNaIYAiru3ucBq8RF2QKY6vTDAm6kVlUBadK04AMaqQ3GARiLayQDE+caW6hZCGpw
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrBJsWRmVeSWpSXmKPExsWy7bCmue67GTMSDH7tZbT4/ns2s8WXn7fZ
-        LT4fOc5msXjhN2aLOedbWCyadqxgsnjx4QmjxfN9vUwWF7b1sVpc3jWHzaLhLZfFsQViFj8P
-        n2G2WPxzA1DVkhmMDvweW1beZPKY2PyO3WPnrLvsHi1H3rJ6dN24xOyxaVUnm8fnTXIB7FE5
-        NhmpiSmpRQqpecn5KZl56bZK3sHxzvGmZgaGuoaWFuZKCnmJuam2Si4+AbpumTlAZysplCXm
-        lAKFAhKLi5X07WyK8ktLUhUy8otLbJVSC1JyCgwNC/SKE3OLS/PS9ZLzc60MDQyMTIEqE3Iy
-        7jyYxlzwzahi8cU+9gbGDrUuRk4OCQETiZ/zH7B2MXJxCAnsYJR4PeU2I4TziVHi783PUM43
-        RokrXVPZYFr2NjWyQCT2MkpcmzyXDcJ5wSgx69ZaFpAqNgEtiTez2llBbBEBK4n/s0+wgxQx
-        C5xmkXiy+hsTSIJTIFDi369P7CC2sECwxNNJTWBxFgFVifObJ4E18wpYSkxt2cAMYQtKnJz5
-        BGwBs4C8xPa3c5ghTlKQ+Pl0GdgXIgJNjBLTW6czQRSJSMzubIMqesAhse87H4TtInG/4Skj
-        hC0s8er4FnYIW0riZX8bkM0BZNdLtHbHgMyUEOgB+n8fxGIJAWOJWc/aGUFqmAU0Jdbv0oco
-        V5Y4cgvqND6JjsN/oabwSnS0CUGYShITv8RDzJCQeHFyMssERqVZSP6aheSvWUjOn4WwagEj
-        yypGsdSC4tz01GKjAhPkyN7ECE7SWh47GGe//aB3iJGJg/EQowQHs5IIr2jHtAQh3pTEyqrU
-        ovz4otKc1OJDjKbAkJ7ILCWanA/ME3kl8YamRmZmBpamFqZmRhZK4rw/U+sShATSE0tSs1NT
-        C1KLYPqYODilGpgU/fa/dDnx2N2zS7z6p/3HaNFSK57AeROkPtrNv+01Wzup/P6HHXyfdNkl
-        Qu+1bg1a13xwwQzXw+81UmrFmEyEWlTen5Bc9fVE5if7n3XuZ1Yvcg13v5Pd4hK72/4oj2O+
-        peDvgLJTMmsPrFMQD3ztt+FM+AepJ7Vsm7xPzQ/ijdy79dM31lmSZ39eaCo8/WO92tMreauN
-        FQQuJFaWMixP2X4n/O/V4terHbsMmwoZPhyM+vNhQ1e33PdDz76wPdlyNO/Z1lVBpzJOf32Q
-        L8p8dbHb1reBmne2ywjYn5F+XuZ3m/3aLSUmtncpvk83HWqbeTju8+I5Ts+mlPfM6l/nIPs+
-        LXheFcvxh9aJcyZdVWIpzkg01GIuKk4EAE8RZyNbBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKIsWRmVeSWpSXmKPExsWy7bCSnO7bGTMSDE5+47f4/ns2s8WXn7fZ
-        LT4fOc5msXjhN2aLOedbWCyadqxgsnjx4QmjxfN9vUwWF7b1sVpc3jWHzaLhLZfFsQViFj8P
-        n2G2WPxzA1DVkhmMDvweW1beZPKY2PyO3WPnrLvsHi1H3rJ6dN24xOyxaVUnm8fnTXIB7FFc
-        NimpOZllqUX6dglcGXceTGMu+GZUsfhiH3sDY4daFyMnh4SAicTepkaWLkYuDiGB3YwSWw8t
-        Zexi5ABKSEjs2uwKUSMscb/lCCtEzTNGiY8H17GCJNgEtCTezGoHs0UErCT+zz7BDlLELHCV
-        RWLzj2/MEB29bBJntk9hAqniFAiU+PfrEzuILQxk9/+7xQhiswioSpzfPAlsEq+ApcTUlg3M
-        ELagxMmZT1hAbGYBbYneh62MELa8xPa3c5ghzlOQ+Pl0Gdh5IgJNjBLTW6czQRSJSMzubGOe
-        wCg8C8msWUhmzUIyaxaSlgWMLKsYJVMLinPTc4sNCwzzUsv1ihNzi0vz0vWS83M3MYJjVktz
-        B+P2VR/0DjEycTAeYpTgYFYS4RXtmJYgxJuSWFmVWpQfX1Sak1p8iFGag0VJnPdC18l4IYH0
-        xJLU7NTUgtQimCwTB6dUA9OewCt2DFpS8x/2Tj3v9FOW/+LZprV9j25Nj/S8e0KGub83eslJ
-        LbNMlf4TXN28hXY1qhoSKxXDVCJWX7AU0WovW93dXqWqZpl78cnhpOzyP7r3XScGqVy8qy1/
-        aLrJi5PnrZeLpkYGZFYKbar0e5a/6jIP61PZ65aqUUEiR14HsSuLMBhYX2fxTCsWy/prdOuc
-        JrtbQNTjK8a8PNf/iEzuKqw1a32puLrlf+rJ4Ifvv/jGbfA+FxhyzX9dmPW2WsPPQZeNn7G9
-        /Or+bE/v8cn9Dv+YXvn/NPQ8wbZTq/PzqY8ZU74yT1IPvF9ePG/iBheXiSvmJOoE5J/2VtY9
-        06C8eBHrLiu2Twee8KnWKLEUZyQaajEXFScCAJ1amGxIAwAA
-X-CMS-MailID: 20210510022237epcas2p2a55d3ec5b401627a2d82d60d31949618
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210429102143epcas2p4c8747c09a9de28f003c20389c050394a
-References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
-        <1619690903-1138-1-git-send-email-dseok.yi@samsung.com>
-        <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
-        <02bf01d74211$0ff4aed0$2fde0c70$@samsung.com>
-        <CA+FuTScC96R5o24c-sbY-CEV4EYOVFepFR85O4uGtCLwOjnzEw@mail.gmail.com>
-        <02c801d7421f$65287a90$2f796fb0$@samsung.com>
-        <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
-        <001801d742db$68ab8060$3a028120$@samsung.com>
-        <CAF=yD-KtJvyjHgGVwscoQpFX3e+DmQCYeO_HVGwyGAp3ote00A@mail.gmail.com>
-        <436dbc62-451b-9b29-178d-9da28f47ef24@huawei.com>
-        <CAF=yD-+d0QYj+812joeuEx1HKPzDyhMpkZP5aP=yNBzrQT5usw@mail.gmail.com>
-        <007001d7431a$96281960$c2784c20$@samsung.com>
-        <CAF=yD-L9pxAFoT+c1Xk5YS42ZaJ+YLVQVnV+fvtqn-gLxq9ENg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.17]
+X-ClientProxiedBy: EX13D18UWC001.ant.amazon.com (10.43.162.105) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 07, 2021 at 09:50:03AM -0400, Willem de Bruijn wrote:
-> On Fri, May 7, 2021 at 4:25 AM Dongseok Yi <dseok.yi@samsung.com> wrote:
-> >
-> > On Thu, May 06, 2021 at 09:53:45PM -0400, Willem de Bruijn wrote:
-> > > On Thu, May 6, 2021 at 9:45 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> > > >
-> > > > On 2021/5/7 9:25, Willem de Bruijn wrote:
-> > > > >>>> head_skb's data_len is the sum of skb_gro_len for each skb of the frags.
-> > > > >>>> data_len could be 8 if server sent a small size packet and it is GROed
-> > > > >>>> to head_skb.
-> > > > >>>>
-> > > > >>>> Please let me know if I am missing something.
-> > > > >>>
-> > > > >>> This is my understanding of the data path. This is a forwarding path
-> > > > >>> for TCP traffic.
-> > > > >>>
-> > > > >>> GRO is enabled and will coalesce multiple segments into a single large
-> > > > >>> packet. In bad cases, the coalesced packet payload is > MSS, but < MSS
-> > > > >>> + 20.
-> > > > >>>
-> > > > >>> Somewhere between GRO and GSO you have a BPF program that converts the
-> > > > >>> IPv6 address to IPv4.
-> > > > >>
-> > > > >> Your understanding is right. The data path is GRO -> BPF 6 to 4 ->
-> > > > >> GSO.
-> > > > >>
-> > > > >>>
-> > > > >>> There is no concept of head_skb at the time of this BPF program. It is
-> > > > >>> a single SKB, with an skb linear part and multiple data items in the
-> > > > >>> frags (no frag_list).
-> > > > >>
-> > > > >> Sorry for the confusion. head_skb what I mentioned was a skb linear
-> > > > >> part. I'm considering a single SKB with frags too.
-> > > > >>
-> > > > >>>
-> > > > >>> When entering the GSO stack, this single skb now has a payload length
-> > > > >>> < MSS. So it would just make a valid TCP packet on its own?
-> > > > >>>
-> > > > >>> skb_gro_len is only relevant inside the GRO stack. It internally casts
-> > > > >>> the skb->cb[] to NAPI_GRO_CB. This field is a scratch area that may be
-> > > > >>> reused for other purposes later by other layers of the datapath. It is
-> > > > >>> not safe to read this inside bpf_skb_proto_6_to_4.
-> > > > >>
-> > > > >> The condition what I made uses skb->data_len not skb_gro_len. Does
-> > > > >> skb->data_len have a different meaning on each layer? As I know,
-> > > > >> data_len indicates the amount of frags or frag_list. skb->data_len
-> > > > >> should be > 20 in the sample case because the payload size of the skb
-> > > > >> linear part is the same with mss.
-> > > > >
-> > > > > Ah, got it.
-> > > > >
-> > > > > data_len is the length of the skb minus the length in the skb linear
-> > > > > section (as seen in skb_headlen).
-> > > > >
-> > > > > So this gso skb consists of two segments, the first one entirely
-> > > > > linear, the payload of the second is in skb_shinfo(skb)->frags[0].
-> > > > >
-> > > > > It is not guaranteed that gso skbs built from two individual skbs end
-> > > > > up looking like that. Only protocol headers in the linear segment and
-> > > > > the payload of both in frags is common.
-> > > > >
-> > > > >> We can modify netif_needs_gso as another option to hit
-> > > > >> skb_needs_linearize in validate_xmit_skb. But I think we should compare
-> > > > >> skb->gso_size and skb->data_len too to check if mss exceed a payload
-> > > > >> size.
-> > > > >
-> > > > > The rest of the stack does not build such gso packets with payload len
-> > > > > < mss, so we should not have to add workarounds in the gso hot path
-> > > > > for this.
-> > > > >
-> > > > > Also no need to linearize this skb. I think that if the bpf program
-> > > > > would just clear the gso type, the packet would be sent correctly.
-> > > > > Unless I'm missing something.
-> > > >
-> > > > Does the checksum/len field in ip and tcp/udp header need adjusting
-> > > > before clearing gso type as the packet has became bigger?
-> > >
-> > > gro takes care of this. see for instance inet_gro_complete for updates
-> > > to the ip header.
-> >
-> > I think clearing the gso type will get an error at tcp4_gso_segment
-> > because netif_needs_gso returns true in validate_xmit_skb.
-> 
-> Oh right. Whether a packet is gso is defined by gso_size being
-> non-zero, not by gso_type.
-> 
-> > >
-> > > > Also, instead of testing skb->data_len, may test the skb->len?
-> > > >
-> > > > skb->len - (mac header + ip/ipv6 header + udp/tcp header) > mss + len_diff
-> > >
-> > > Yes. Essentially doing the same calculation as the gso code that is
-> > > causing the packet to be dropped.
-> >
-> > BPF program is usually out of control. Can we take a general approach?
-> > The below 2 cases has no issue when mss upgrading.
-> > 1) skb->data_len > mss + 20
-> > 2) skb->data_len < mss && skb->data_len > 20
-> > The corner case is when
-> > 3) skb->data_len > mss && skb->data_len < mss + 20
-> 
-> Again, you cannot use skb->data_len alone to make inferences about the
-> size of the second packet.
+The SO_REUSEPORT option allows sockets to listen on the same port and to
+accept connections evenly. However, there is a defect in the current
+implementation [1]. When a SYN packet is received, the connection is tied
+to a listening socket. Accordingly, when the listener is closed, in-flight
+requests during the three-way handshake and child sockets in the accept
+queue are dropped even if other listeners on the same port could accept
+such connections.
 
-This approach is oriented a general way that does not make inferences
-about the size of the second packet.
+This situation can happen when various server management tools restart
+server (such as nginx) processes. For instance, when we change nginx
+configurations and restart it, it spins up new workers that respect the new
+configuration and closes all listeners on the old workers, resulting in the
+in-flight ACK of 3WHS is responded by RST.
 
-We can obviously increase the mss size when
-1) skb->data_len > mss + 20
-The issue will be fixed even if we consider the #1 condition.
+To avoid such a situation, users have to know deeply how the kernel handles
+SYN packets and implement connection draining by eBPF [2]:
 
-But there is a precondition that mss < skb payload. If skb->data_len <
-mss then skb_headlen(skb) contains the size of mss. So, we can check
-the #2 condition too.
-2) skb->data_len < mss && skb->data_len > 20
+  1. Stop routing SYN packets to the listener by eBPF.
+  2. Wait for all timers to expire to complete requests
+  3. Accept connections until EAGAIN, then close the listener.
 
-> 
-> >
-> > But to cover #3 case, we should check the condition Yunsheng Lin said.
-> > What if we do mss upgrading for both #1 and #2 cases only?
-> >
-> > +               unsigned short off_len = skb->data_len > shinfo->gso_size ?
-> > +                       shinfo->gso_size : 0;
-> > [...]
-> >                 /* Due to IPv4 header, MSS can be upgraded. */
-> > -               skb_increase_gso_size(shinfo, len_diff);
-> > +               if (skb->data_len - off_len > len_diff)
-> > +                       skb_increase_gso_size(shinfo, len_diff);
-> 
-> That generates TCP packets with different MSS within the same stream.
-> 
-> My suggestion remains to just not change MSS at all. But this has to
-> be a new flag to avoid changing established behavior.
+  or
 
-I don't understand why the mss size should be kept in GSO step. Will
-there be any issue with different mss?
+  1. Start counting SYN packets and accept syscalls using the eBPF map.
+  2. Stop routing SYN packets.
+  3. Accept connections up to the count, then close the listener.
 
-In general, upgrading mss make sense when 6 to 4. The new flag would be
-set by user to not change mss. What happened if user does not set the
-flag? I still think we should fix the issue with a general approach. Or
-can we remove the skb_increase_gso_size line?
+In either way, we cannot close a listener immediately. However, ideally,
+the application need not drain the not yet accepted sockets because 3WHS
+and tying a connection to a listener are just the kernel behaviour. The
+root cause is within the kernel, so the issue should be addressed in kernel
+space and should not be visible to user space. This patchset fixes it so
+that users need not take care of kernel implementation and connection
+draining. With this patchset, the kernel redistributes requests and
+connections from a listener to the others in the same reuseport group
+at/after close or shutdown syscalls.
+
+Although some software does connection draining, there are still merits in
+migration. For some security reasons, such as replacing TLS certificates,
+we may want to apply new settings as soon as possible and/or we may not be
+able to wait for connection draining. The sockets in the accept queue have
+not started application sessions yet. So, if we do not drain such sockets,
+they can be handled by the newer listeners and could have a longer
+lifetime. It is difficult to drain all connections in every case, but we
+can decrease such aborted connections by migration. In that sense,
+migration is always better than draining. 
+
+Moreover, auto-migration simplifies user space logic and also works well in
+a case where we cannot modify and build a server program to implement the
+workaround.
+
+Note that the source and destination listeners MUST have the same settings
+at the socket API level; otherwise, applications may face inconsistency and
+cause errors. In such a case, we have to use the eBPF program to select a
+specific listener or to cancel migration.
+
+Special thanks to Martin KaFai Lau for bouncing ideas and exchanging code
+snippets along the way.
+
+
+Link:
+ [1] The SO_REUSEPORT socket option
+ https://lwn.net/Articles/542629/
+
+ [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
+ https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
+
+
+Changelog:
+ v5:
+  * Move initializtion of sk_node from 6th to 5th patch
+  * Initialize sk_refcnt in reqsk_clone()
+  * Modify some definitions in reqsk_timer_handler()
+  * Validate in which path/state migration happens in selftest
+
+ v4:
+ https://lore.kernel.org/bpf/20210427034623.46528-1-kuniyu@amazon.co.jp/
+  * Make some functions and variables 'static' in selftest
+  * Remove 'scalability' from the cover letter
+
+ v3:
+ https://lore.kernel.org/bpf/20210420154140.80034-1-kuniyu@amazon.co.jp/
+  * Add sysctl back for reuseport_grow()
+  * Add helper functions to manage socks[]
+  * Separate migration related logic into functions: reuseport_resurrect(),
+    reuseport_stop_listen_sock(), reuseport_migrate_sock()
+  * Clone request_sock to be migrated
+  * Migrate request one by one
+  * Pass child socket to eBPF prog
+
+ v2:
+ https://lore.kernel.org/netdev/20201207132456.65472-1-kuniyu@amazon.co.jp/
+  * Do not save closed sockets in socks[]
+  * Revert 607904c357c61adf20b8fd18af765e501d61a385
+  * Extract inet_csk_reqsk_queue_migrate() into a single patch
+  * Change the spin_lock order to avoid lockdep warning
+  * Add static to __reuseport_select_sock
+  * Use refcount_inc_not_zero() in reuseport_select_migrated_sock()
+  * Set the default attach type in bpf_prog_load_check_attach()
+  * Define new proto of BPF_FUNC_get_socket_cookie
+  * Fix test to be compiled successfully
+  * Update commit messages
+
+ v1:
+ https://lore.kernel.org/netdev/20201201144418.35045-1-kuniyu@amazon.co.jp/
+  * Remove the sysctl option
+  * Enable migration if eBPF progam is not attached
+  * Add expected_attach_type to check if eBPF program can migrate sockets
+  * Add a field to tell migration type to eBPF program
+  * Support BPF_FUNC_get_socket_cookie to get the cookie of sk
+  * Allocate an empty skb if skb is NULL
+  * Pass req_to_sk(req)->sk_hash because listener's hash is zero
+  * Update commit messages and coverletter
+
+ RFC:
+ https://lore.kernel.org/netdev/20201117094023.3685-1-kuniyu@amazon.co.jp/
+
+
+Kuniyuki Iwashima (11):
+  net: Introduce net.ipv4.tcp_migrate_req.
+  tcp: Add num_closed_socks to struct sock_reuseport.
+  tcp: Keep TCP_CLOSE sockets in the reuseport group.
+  tcp: Add reuseport_migrate_sock() to select a new listener.
+  tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+  tcp: Migrate TCP_NEW_SYN_RECV requests at retransmitting SYN+ACKs.
+  tcp: Migrate TCP_NEW_SYN_RECV requests at receiving the final ACK.
+  bpf: Support BPF_FUNC_get_socket_cookie() for
+    BPF_PROG_TYPE_SK_REUSEPORT.
+  bpf: Support socket migration by eBPF.
+  libbpf: Set expected_attach_type for BPF_PROG_TYPE_SK_REUSEPORT.
+  bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
+
+ Documentation/networking/ip-sysctl.rst        |  20 +
+ include/linux/bpf.h                           |   1 +
+ include/linux/filter.h                        |   2 +
+ include/net/netns/ipv4.h                      |   1 +
+ include/net/request_sock.h                    |   2 +
+ include/net/sock_reuseport.h                  |   9 +-
+ include/uapi/linux/bpf.h                      |  16 +
+ kernel/bpf/syscall.c                          |  13 +
+ net/core/filter.c                             |  23 +-
+ net/core/request_sock.c                       |  39 ++
+ net/core/sock_reuseport.c                     | 337 +++++++++--
+ net/ipv4/inet_connection_sock.c               | 146 ++++-
+ net/ipv4/inet_hashtables.c                    |   2 +-
+ net/ipv4/sysctl_net_ipv4.c                    |   9 +
+ net/ipv4/tcp_ipv4.c                           |  20 +-
+ net/ipv6/tcp_ipv6.c                           |  14 +-
+ tools/include/uapi/linux/bpf.h                |  16 +
+ tools/lib/bpf/libbpf.c                        |   5 +-
+ tools/testing/selftests/bpf/network_helpers.c |   2 +-
+ tools/testing/selftests/bpf/network_helpers.h |   1 +
+ .../bpf/prog_tests/migrate_reuseport.c        | 532 ++++++++++++++++++
+ .../bpf/progs/test_migrate_reuseport.c        |  67 +++
+ 22 files changed, 1217 insertions(+), 60 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
+
+-- 
+2.30.2
 
