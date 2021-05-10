@@ -2,163 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD0237943B
-	for <lists+bpf@lfdr.de>; Mon, 10 May 2021 18:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C278A379550
+	for <lists+bpf@lfdr.de>; Mon, 10 May 2021 19:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhEJQk3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 May 2021 12:40:29 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:46841 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231408AbhEJQk2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 May 2021 12:40:28 -0400
-Received: by mail-il1-f199.google.com with SMTP id p3-20020a92c6030000b02901a4787c24f7so14336451ilm.13
-        for <bpf@vger.kernel.org>; Mon, 10 May 2021 09:39:23 -0700 (PDT)
+        id S232719AbhEJRX7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 May 2021 13:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231381AbhEJRX7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 May 2021 13:23:59 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0EE3C061574;
+        Mon, 10 May 2021 10:22:53 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id c20so5108072qkm.3;
+        Mon, 10 May 2021 10:22:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iG5ORSr0tp4Kp2mLVlTS2Pl/UeKyobnaxc6VNZQHUqM=;
+        b=GxNnVmiZo/F5Mb/Q/FprCJSVUHvBh9nTwGKOYNHjIlmCzZ8LJYZDJCwWMc7bntzll9
+         hmB75LtmlUqcv7EXNQQc4EShaV9xaixq1QrXkfjGXtD4+wwNKeZQaz3dHV/jvK69v58N
+         KS2091VjWgjXtytJ7GHj+OkhAotbYJ/46j/E32vz6w+zjn4w+5Ao6mWWnkleKijPFsps
+         Dvkc++WuHLEkMV9xIwg22QaK0Z7nA4OyqiJVSRR4YytIbcmQqqpZQEbFwJaldQzQKGUD
+         I4yqlmzGBpVkPGPWxphWurbtRRH8cISCPCW00VDYgQ7aCk+b/VY007ZzvW/I6RuoUlkc
+         Rf8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=2wly/O+HvIt0rcClz5QNHA4b+xTsdGSZCsHQi9If7BI=;
-        b=jfivvI3Tucq0GOVMeyhk9fNAy0vS9eLMSWRQJfOE1sD56KwWawlkoCTw7xM6y+ei59
-         T90q8pYTXThBYD9v+EwP8au/BS4CgQAqnF4XEBc/QphkcP3Sfyv7orSX7OXlNAqbzh8R
-         gA+7YKOuZ4zBUgQ6hHtVW0731zi4AiSI7LoMduCU8xNh8TIhpe9KVh1AD2taP1iGWyc/
-         lWh7Kekwe0w+AuP7ilbqe4jNaPTU/LYD3K4DuyCFOJLj2qc64WYtOHponaLJmP+8ltDQ
-         nU8quWacAJQiQO0W9PoniGBXqsJAl4Kd79/MS5f/PaJVWsMIgXqp65a/f/1Xpw/tLBR1
-         XWag==
-X-Gm-Message-State: AOAM531AmOx2Hzie7QQc8WVyB8P4SHnrpvtZFDN7y3jqGTZcrAGf6KNu
-        RAEAoMfJZYd08Qe4axMWu1VoKo+Ia708CfICTPDITR2UNAJZ
-X-Google-Smtp-Source: ABdhPJwX+GObqgnDBGYuMWbTWtPFCcAasaSVoz9SeDUx4T3ejVOiT8Wlf626BLrgqT2Ocqr+1HiFl/L8cDcoEXStGwd/6VDTrsXV
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iG5ORSr0tp4Kp2mLVlTS2Pl/UeKyobnaxc6VNZQHUqM=;
+        b=SNjQ2BfarHqbORlsrc8cJbFwhk7+IFk/oquu1eeKgzLzLzrN06fnFT22IdADUJ2sB6
+         0xRwDJKHy9SP05LOFA0ZnG1enmSk8XcDS0d9k4SjKHaU/kkqQqPXf2rnNcDipYM+lw4D
+         uKmkjvfaVh/0AN12qGAB+fDBsT1zoh1ygsmTe8NpGBYctzc8M6OMRrNO+mR4EFS7UH0t
+         EpJwuRbzYsoB/KTIl2BOutPFDutNSBeKpYjUrGI7HNZU+KnEaGavvs2vdZO7I381tYHo
+         cxRc1a2XPB5fNEuqMIVgC0Ki5Z3cyriU4/aFEBt89EyjMFze8mmepvdwcIzHMu+boamj
+         ea0w==
+X-Gm-Message-State: AOAM533w2Tzgf0NYQffa4p7rp0yoBlk0y5myd2qrRU6bzqvmEgqbQ0XT
+        X/Fhb++sjPcswMmZYHPUC8Q=
+X-Google-Smtp-Source: ABdhPJyu5NVCx2/cSF+kf8FXQ5H/89SQH7HfJwdpOgLjGbA+VbP2nCMJgZvMOvRlrY15XVF1eqJfrQ==
+X-Received: by 2002:a37:43d4:: with SMTP id q203mr24177461qka.124.1620667373115;
+        Mon, 10 May 2021 10:22:53 -0700 (PDT)
+Received: from localhost.localdomain (host-173-230-99-154.tnkngak.clients.pavlovmedia.com. [173.230.99.154])
+        by smtp.gmail.com with ESMTPSA id q7sm11924367qki.17.2021.05.10.10.22.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 10:22:52 -0700 (PDT)
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+To:     containers@lists.linux.dev, bpf@vger.kernel.org
+Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
+        linux-security-module@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Austin Kuo <hckuo2@illinois.edu>,
+        Claudio Canella <claudio.canella@iaik.tugraz.at>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Daniel Gruss <daniel.gruss@iaik.tugraz.at>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jann Horn <jannh@google.com>,
+        Jinghao Jia <jinghao7@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tom Hromatka <tom.hromatka@oracle.com>,
+        Will Drewry <wad@chromium.org>
+Subject: [RFC PATCH bpf-next seccomp 00/12] eBPF seccomp filters
+Date:   Mon, 10 May 2021 12:22:37 -0500
+Message-Id: <cover.1620499942.git.yifeifz2@illinois.edu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d88:: with SMTP id h8mr22800400ila.66.1620664763394;
- Mon, 10 May 2021 09:39:23 -0700 (PDT)
-Date:   Mon, 10 May 2021 09:39:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000085afae05c1fc6b07@google.com>
-Subject: [syzbot] WARNING in bpf_bprintf_prepare
-From:   syzbot <syzbot+63122d0bc347f18c1884@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+From: YiFei Zhu <yifeifz2@illinois.edu>
 
-syzbot found the following issue on:
+Based on: https://lists.linux-foundation.org/pipermail/containers/2018-February/038571.html
 
-HEAD commit:    3733bfbb bpf, selftests: Update array map tests for per-cp..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=126c1a1ed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7668018815a66138
-dashboard link: https://syzkaller.appspot.com/bug?extid=63122d0bc347f18c1884
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=149d83e1d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d157a3d00000
+This patchset enables seccomp filters to be written in eBPF.
+Supporting eBPF filters has been proposed a few times in the past.
+The main concerns were (1) use cases and (2) security. We have
+identified many use cases that can benefit from advanced eBPF
+filters, such as:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+63122d0bc347f18c1884@syzkaller.appspotmail.com
+  * exec-only-once filter / apply filter after exec
+  * syscall logging (eg. via maps)
+  * expressiveness & better tooling (no need for DSLs like easyseccomp)
+  * contained syscall fault injection
+  * Temporal System Call Specialization [1] with restrictive
+    initialization phases (serving phase syscalls are filtered)
+  * possible future extensions such as syscall serialization and
+    argument rewriting
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8388 at kernel/bpf/helpers.c:712 try_get_fmt_tmp_buf kernel/bpf/helpers.c:712 [inline]
-WARNING: CPU: 1 PID: 8388 at kernel/bpf/helpers.c:712 bpf_bprintf_prepare+0xeba/0x10b0 kernel/bpf/helpers.c:760
-Modules linked in:
-CPU: 1 PID: 8388 Comm: syz-executor545 Not tainted 5.12.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:try_get_fmt_tmp_buf kernel/bpf/helpers.c:712 [inline]
-RIP: 0010:bpf_bprintf_prepare+0xeba/0x10b0 kernel/bpf/helpers.c:760
-Code: c6 e8 3a 4d 5e 02 83 c0 01 48 98 48 01 c5 48 89 6c 24 08 e8 78 0a ed ff 8d 6b 02 83 44 24 10 01 e9 d6 f5 ff ff e8 66 0a ed ff <0f> 0b 65 ff 0d fd 12 7c 7e bf 01 00 00 00 41 bc f0 ff ff ff e8 dd
-RSP: 0018:ffffc90000dc0290 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000002 RCX: 0000000000000100
-RDX: ffff888013b88000 RSI: ffffffff8186ebfa RDI: 0000000000000003
-RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffffff8186e794 R11: 0000000000000000 R12: ffffc90000dc03c0
-R13: 0000000000000100 R14: ffffc90000dc0478 R15: 0000000000000003
-FS:  00000000013d1300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004b00f0 CR3: 0000000014d6b000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- ____bpf_trace_printk kernel/trace/bpf_trace.c:389 [inline]
- bpf_trace_printk+0xab/0x3a0 kernel/trace/bpf_trace.c:380
- bpf_prog_0605f9f479290f07+0x2f/0xfd8
- bpf_dispatcher_nop_func include/linux/bpf.h:684 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:1788 [inline]
- bpf_trace_run2+0x12f/0x390 kernel/trace/bpf_trace.c:1825
- __bpf_trace_net_dev_start_xmit+0xb1/0xe0 include/trace/events/tcp.h:238
- trace_net_dev_start_xmit include/trace/events/net.h:14 [inline]
- xmit_one net/core/dev.c:3653 [inline]
- dev_hard_start_xmit+0x57b/0x920 net/core/dev.c:3670
- sch_direct_xmit+0x2e1/0xbd0 net/sched/sch_generic.c:313
- qdisc_restart net/sched/sch_generic.c:376 [inline]
- __qdisc_run+0x4ba/0x15f0 net/sched/sch_generic.c:384
- qdisc_run include/net/pkt_sched.h:136 [inline]
- qdisc_run include/net/pkt_sched.h:128 [inline]
- __dev_xmit_skb net/core/dev.c:3856 [inline]
- __dev_queue_xmit+0x142e/0x2e30 net/core/dev.c:4213
- neigh_hh_output include/net/neighbour.h:499 [inline]
- neigh_output include/net/neighbour.h:508 [inline]
- ip6_finish_output2+0x911/0x1700 net/ipv6/ip6_output.c:117
- __ip6_finish_output net/ipv6/ip6_output.c:182 [inline]
- __ip6_finish_output+0x4c1/0xe10 net/ipv6/ip6_output.c:161
- ip6_finish_output+0x35/0x200 net/ipv6/ip6_output.c:192
- NF_HOOK_COND include/linux/netfilter.h:290 [inline]
- ip6_output+0x1e4/0x530 net/ipv6/ip6_output.c:215
- dst_output include/net/dst.h:448 [inline]
- NF_HOOK include/linux/netfilter.h:301 [inline]
- ndisc_send_skb+0xa99/0x1750 net/ipv6/ndisc.c:508
- ndisc_send_rs+0x12e/0x6f0 net/ipv6/ndisc.c:702
- addrconf_rs_timer+0x3f2/0x820 net/ipv6/addrconf.c:3877
- call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1431
- expire_timers kernel/time/timer.c:1476 [inline]
- __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1745
- __run_timers kernel/time/timer.c:1726 [inline]
- run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1758
- __do_softirq+0x29b/0x9f6 kernel/softirq.c:345
- invoke_softirq kernel/softirq.c:221 [inline]
- __irq_exit_rcu kernel/softirq.c:422 [inline]
- irq_exit_rcu+0x134/0x200 kernel/softirq.c:434
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:632
-RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:161 [inline]
-RIP: 0010:_raw_spin_unlock_irqrestore+0x38/0x70 kernel/locking/spinlock.c:191
-Code: 74 24 10 e8 6a bd 4d f8 48 89 ef e8 a2 73 4e f8 81 e3 00 02 00 00 75 25 9c 58 f6 c4 02 75 2d 48 85 db 74 01 fb bf 01 00 00 00 <e8> 83 41 42 f8 65 8b 05 4c 07 f6 76 85 c0 74 0a 5b 5d c3 e8 f0 fc
-RSP: 0018:ffffc9000111f9e8 EFLAGS: 00000206
-RAX: 0000000000000002 RBX: 0000000000000200 RCX: 1ffffffff1b8bb31
-RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000001
-RBP: ffffffff8bfef320 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffffff8179e5a8 R11: 0000000000000000 R12: 0000000000000002
-R13: 0000000000000293 R14: ffff888013b88000 R15: 0000000000000003
- ____bpf_trace_printk kernel/trace/bpf_trace.c:398 [inline]
- bpf_trace_printk+0x172/0x3a0 kernel/trace/bpf_trace.c:380
- bpf_prog_0605f9f479290f07+0x2f/0x7e8
- bpf_dispatcher_nop_func include/linux/bpf.h:684 [inline]
- bpf_test_run+0x45f/0xaa0 net/bpf/test_run.c:117
- bpf_prog_test_run_skb+0xabc/0x1c70 net/bpf/test_run.c:656
- bpf_prog_test_run kernel/bpf/syscall.c:3149 [inline]
- __do_sys_bpf+0x218b/0x4f40 kernel/bpf/syscall.c:4428
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ff49
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fffdb8cfd68 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000011ca4 RCX: 000000000043ff49
-RDX: 0000000000000048 RSI: 0000000020000180 RDI: 000000000000000a
-RBP: 0000000000000000 R08: 00007fffdb8cff08 R09: 00007fffdb8cff08
-R10: 00007fffdb8cff08 R11: 0000000000000246 R12: 00007fffdb8cfd7c
-R13: 431bde82d7b634db R14: 00000000004b0018 R15: 0000000000400488
+These features can also be achieved by user notifier + ptrace but
+unfortunately user notifier is a lot of context switches (see the
+benchmark results below), and hence much less efficient than eBPF.
 
+For security, for an unprivileged caller, our implementation is as
+restrictive as user notifier + ptrace, in regards to capabilities.
+eBPF helpers follow the privilege model of original eBPF helpers.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Advanced eBPF feature (maps & helpers) is restricted by a new LSM
+hook seccomp_extended. If LSM permits these features, then all standard
+bpf helpers are permitted, and tracing helpers are permitted too if the
+loader is bpf_capable and perfmon_capable. Mutable privileges should
+not be a concern because if seccomp-eBPF is used to implement a mutable
+policy of privileges, such policy can be implemented using user
+notifier anyhow (which does not require seccomp-eBPF).
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Moreover, a mechanism for reading user memory is added. The same
+prototypes of bpf_probe_read_user{,str} from tracing are used. However,
+when the loader of bpf program does not have CAP_PTRACE, the helper
+will return -EPERM if the task under seccomp filter is non-dumpable.
+The reason for this is that if we perform reduction from seccomp-eBPF
+to user notifier + ptrace, ptrace requires CAP_PTRACE to read from
+a non-dumpable process. However, eBPF does not solve the TOCTOU problem
+of user notifier, so users should not use this to enforce a policy
+based on memory contents.
+
+In addition, a mechanism for storing process states between filter runs
+is added. This uses the BPF-LSM task storage. However, since
+unprivileged bpf loaders do not have access to ptr to BTF ID for use as
+the task parameter to the helpers, the workaround is to use NULL as the
+parameter, and the helper will fallback to current's group leader. This
+is insufficient, unfortunately, because of the BTF enforcement in
+bpf_local_storage_map_alloc_check, and the fact that tasks without
+bpf_capable cannot load map BTFs. (Can I ask why this is restricted
+this way?)
+
+Giuseppe Scrivano shows how to support eBPF filters in crun [2], based
+on which we have tested a number of stateful filters.
+
+Performance wise, Jinghao did a test of 1,000,000 getpid() calls on an
+Intel i7-9700K, with stock Ubuntu config. The syscalls are half EPERM
+and half passthrough to the getpid() syscall handler [3]. The tests
+are done recording a median of 10:
+
+                user notif      eBPF            ratio
+QEMU            6808104 us      80508.5 us      84.6
+Bare Metal      3403667.5 us    80316 us        42.4
+
+[1] https://www.usenix.org/conference/usenixsecurity20/presentation/ghavamnia
+[2] https://github.com/giuseppe/crun/commit/3906b4fbcb671f8f188deef08c94ceae86a80120
+[3] https://github.com/xlab-uiuc/seccomp-ebpf-upstream/tree/perf-test
+
+Patch 1 moves no_new_privs check in filter loading.
+Patch 2 implements basic support for seccomp-eBPF in the kernel.
+Patch 3 enables a ptracer to get a fd to the eBPF for CRIU.
+Patch 4 enables libbpf to recognize the section "seccomp".
+Patch 5 adds a sample program test_seccomp to samples/bpf.
+
+Patch 6 adds an LSM hook seccomp_extended.
+Patch 7 allows bpf verifier hooks to restrict direct map access.
+Patch 8 implements restrictions for eBPF filters depending on LSM hooks.
+Patch 9 lets Yama LSM restrict seccomp-ebpf based on ptrace_scope.
+
+Patch 10 enables seccomp-ebpf to read user memory.
+Patch 11 allows bpf helpers to have nullable ptr to BTF ID as argument.
+Patch 12 implements process storage using BPF-LSM task storage.
+
+Sargun Dhillon (3):
+  bpf, seccomp: Add eBPF filter capabilities
+  seccomp, ptrace: Add a mechanism to retrieve attached eBPF seccomp
+    filters
+  samples/bpf: Add eBPF seccomp sample programs
+
+YiFei Zhu (9):
+  seccomp: Move no_new_privs check to after prepare_filter
+  libbpf: recognize section "seccomp"
+  lsm: New hook seccomp_extended
+  bpf/verifier: allow restricting direct map access
+  seccomp-ebpf: restrict filter to almost cBPF if LSM request such
+  yama: (concept) restrict seccomp-eBPF with ptrace_scope
+  seccomp-ebpf: Add ability to read user memory
+  bpf/verifier: support NULL-able ptr to BTF ID as helper argument
+  seccomp-ebpf: support task storage from BPF-LSM, defaulting to group
+    leader
+
+ arch/Kconfig                    |   7 +
+ include/linux/bpf.h             |   8 ++
+ include/linux/bpf_types.h       |   4 +
+ include/linux/lsm_hook_defs.h   |   4 +
+ include/linux/seccomp.h         |  15 +-
+ include/linux/security.h        |  13 ++
+ include/uapi/linux/bpf.h        |   1 +
+ include/uapi/linux/ptrace.h     |   2 +
+ include/uapi/linux/seccomp.h    |   1 +
+ kernel/bpf/bpf_task_storage.c   |  64 +++++++--
+ kernel/bpf/syscall.c            |   1 +
+ kernel/bpf/verifier.c           |  15 +-
+ kernel/ptrace.c                 |   4 +
+ kernel/seccomp.c                | 235 ++++++++++++++++++++++++++++----
+ kernel/trace/bpf_trace.c        |  42 ++++++
+ samples/bpf/Makefile            |   3 +
+ samples/bpf/test_seccomp_kern.c |  41 ++++++
+ samples/bpf/test_seccomp_user.c |  49 +++++++
+ security/security.c             |   8 ++
+ security/yama/yama_lsm.c        |  30 ++++
+ tools/include/uapi/linux/bpf.h  |   1 +
+ tools/lib/bpf/libbpf.c          |   1 +
+ 22 files changed, 511 insertions(+), 38 deletions(-)
+ create mode 100644 samples/bpf/test_seccomp_kern.c
+ create mode 100644 samples/bpf/test_seccomp_user.c
+
+--
+2.31.1
