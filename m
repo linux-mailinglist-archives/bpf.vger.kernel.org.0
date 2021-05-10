@@ -2,68 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19413378F62
-	for <lists+bpf@lfdr.de>; Mon, 10 May 2021 15:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 367E4378F5E
+	for <lists+bpf@lfdr.de>; Mon, 10 May 2021 15:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbhEJNlO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 May 2021 09:41:14 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:2673 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241419AbhEJMol (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 May 2021 08:44:41 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Ff0yn6n6Cz1BKPR;
-        Mon, 10 May 2021 20:40:49 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 10 May 2021 20:43:19 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
+        id S234914AbhEJNlT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 May 2021 09:41:19 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:56454 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241723AbhEJMx2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 May 2021 08:53:28 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxH+9wLJlguH4UAA--.15168S2;
+        Mon, 10 May 2021 20:52:00 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] libbpf: Delete an unneeded bool conversion
-Date:   Mon, 10 May 2021 20:43:15 +0800
-Message-ID: <20210510124315.3854-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-CFilter-Loop: Reflected
+        KP Singh <kpsingh@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next] bpf: arm64: Replace STACK_ALIGN() with round_up() to align stack size
+Date:   Mon, 10 May 2021 20:51:59 +0800
+Message-Id: <1620651119-5663-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxH+9wLJlguH4UAA--.15168S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xr4UCF1UAFy3WF4rAFWfGrg_yoWkWwb_tw
+        1SkF97Gwn8CrsY9r18Ca15JryIk3ykGa4kXryagr12y343Xw4fAry09ryxur1UXr4DKFWr
+        ZFs7GFy2vw42gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbsxYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z2
+        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
+        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx
+        8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7
+        MxkIecxEwVAFwVW5JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2
+        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0x
+        ZFpf9x07j7sqXUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The result of an expression consisting of a single relational operator is
-already of the bool type and does not need to be evaluated explicitly.
+Use the common function round_up() directly to show the align size
+explicitly, the function STACK_ALIGN() is needless, remove it.
 
-No functional change.
-
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/net/bpf_jit_comp.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index e2a3cf4378140f2..fa02213c451f4d2 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1504,7 +1504,7 @@ static int set_kcfg_value_tri(struct extern_desc *ext, void *ext_val,
- 				ext->name, value);
- 			return -EINVAL;
- 		}
--		*(bool *)ext_val = value == 'y' ? true : false;
-+		*(bool *)ext_val = value == 'y';
- 		break;
- 	case KCFG_TRISTATE:
- 		if (value == 'y')
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index f7b1948..81c380f 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -178,9 +178,6 @@ static bool is_addsub_imm(u32 imm)
+ 	return !(imm & ~0xfff) || !(imm & ~0xfff000);
+ }
+ 
+-/* Stack must be multiples of 16B */
+-#define STACK_ALIGN(sz) (((sz) + 15) & ~15)
+-
+ /* Tail call offset to jump into */
+ #if IS_ENABLED(CONFIG_ARM64_BTI_KERNEL)
+ #define PROLOGUE_OFFSET 8
+@@ -255,7 +252,7 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
+ 			emit(A64_BTI_J, ctx);
+ 	}
+ 
+-	ctx->stack_size = STACK_ALIGN(prog->aux->stack_depth);
++	ctx->stack_size = round_up(prog->aux->stack_depth, 16);
+ 
+ 	/* Set up function call stack */
+ 	emit(A64_SUB_I(1, A64_SP, A64_SP, ctx->stack_size), ctx);
 -- 
-2.26.0.106.g9fadedd
-
+2.1.0
 
