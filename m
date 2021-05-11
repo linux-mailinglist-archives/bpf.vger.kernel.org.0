@@ -2,108 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F4537A800
-	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 15:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898E137A86D
+	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 16:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229921AbhEKNq7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 May 2021 09:46:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbhEKNq6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 May 2021 09:46:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44459C06174A;
-        Tue, 11 May 2021 06:45:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FVA5wqZqu8qiAE18h5kq9MiEIAMhp9EbfMLzX4fyri0=; b=qXaafalpgCsxtOTMTKsFr32oAl
-        Ey4Pn5q26OmCtYaucXBxnIc0nTRX90wkfOgcbYJ5B9wESM8C0n7F3PTXHnwa4/4MY5QSTyVNzOt2w
-        w0LE/RGFPT2Iwwi983+WJrOchbqG2Z/ZhzM+nFrlyFr/Yd475x75jCjPe0Kbh06tm93HqeyDPJ7SS
-        39BS3YUqzv/AbpzCUfG8+HXbylR9cj/X15Ad3l0g9OfyanhsU7zCJw8gAxfCVgsxRaDJ1igUR85M6
-        CriaKnychXfPzkvEMBUYFiJI1YXfFtIFEjJMyv/0jqIWfCze7IKMWonff8JCfJMI48b3ANGJBXgfp
-        R6vqWoeA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lgShY-007K8j-G2; Tue, 11 May 2021 13:45:33 +0000
-Date:   Tue, 11 May 2021 14:45:32 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S231540AbhEKOHI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 10:07:08 -0400
+Received: from m12-14.163.com ([220.181.12.14]:55369 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231489AbhEKOHH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 10:07:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=8DEIr7JHMWWcTKNdor
+        0P0+DA4ax1L12j+Rr59qjm03M=; b=YPvxBtNaHTVC1S9nSMfdlTZ+BBpD7kqRVd
+        h1YSaIMhDgmwYh59IZctCD06huiXicyGWPTA3o9JKhseJS3a+prKU1BUfSHvLrRC
+        54X6uWnBxUlcRvp1hmTATpP+v0zoa3/I+eAAYxoKBw9cymRfLF7+53YcqKdwPSMU
+        Wa1HWqcFk=
+Received: from localhost.localdomain (unknown [117.139.248.194])
+        by smtp10 (Coremail) with SMTP id DsCowADXj20Lj5pgIgswIQ--.31375S2;
+        Tue, 11 May 2021 22:05:00 +0800 (CST)
+From:   Hailong Liu <liuhailongg6@163.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     Yonghong Song <yhs@fb.com>, Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v4 1/4] mm: add a signature in struct page
-Message-ID: <YJqKfNh6l3yY2daM@casper.infradead.org>
-References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
- <20210511133118.15012-2-mcroce@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210511133118.15012-2-mcroce@linux.microsoft.com>
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hailong Liu <liu.hailong6@zte.com.cn>
+Subject: [PATCH] samples, bpf: suppress compiler warning
+Date:   Tue, 11 May 2021 22:04:29 +0800
+Message-Id: <20210511140429.89426-1-liuhailongg6@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: DsCowADXj20Lj5pgIgswIQ--.31375S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Zr1xZF47AFykur1rAr1DZFb_yoW8XFW8pa
+        1kt347KFZayF1Y9ry3Xr9rK34Fv34kGFyUGFZ7Jry3J3Waq3ykWayYyFZ8Wr45Gr95KF4S
+        vw1Sgry8G3WUCaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jnID7UUUUU=
+X-Originating-IP: [117.139.248.194]
+X-CM-SenderInfo: xolxxtxlor0wjjw6il2tof0z/xtbBChePYF3l-XpMDQAAsM
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 11, 2021 at 03:31:15PM +0200, Matteo Croce wrote:
-> @@ -101,6 +101,7 @@ struct page {
->  			 * 32-bit architectures.
->  			 */
->  			unsigned long dma_addr[2];
-> +			unsigned long signature;
->  		};
->  		struct {	/* slab, slob and slub */
->  			union {
+From: Hailong Liu <liu.hailong6@zte.com.cn>
 
-No.  Signature now aliases with page->mapping, which is going to go
-badly wrong for drivers which map this page into userspace.
+While cross compiling on ARM32 , the casting from pointer to __u64 will
+cause warnings:
 
-I had this as:
+samples/bpf/task_fd_query_user.c: In function 'main':
+samples/bpf/task_fd_query_user.c:399:23: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+399 | uprobe_file_offset = (__u64)main - (__u64)&__executable_start;
+| ^
+samples/bpf/task_fd_query_user.c:399:37: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+399 | uprobe_file_offset = (__u64)main - (__u64)&__executable_start;
 
-+                       unsigned long pp_magic;
-+                       unsigned long xmi;
-+                       unsigned long _pp_mapping_pad;
-                        unsigned long dma_addr[2];
+Workaround this by using "unsigned long" to adapt to different ARCHs.
 
-and pp_magic needs to be set to something with bits 0&1 clear and
-clearly isn't a pointer.  I went with POISON_POINTER_DELTA + 0x40.
+Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
+---
+ samples/bpf/task_fd_query_user.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/samples/bpf/task_fd_query_user.c b/samples/bpf/task_fd_query_user.c
+index a78025b0026b..c9a0ca8351fd 100644
+--- a/samples/bpf/task_fd_query_user.c
++++ b/samples/bpf/task_fd_query_user.c
+@@ -396,7 +396,7 @@ int main(int argc, char **argv)
+ 	 * on different systems with different compilers. The right way is
+ 	 * to parse the ELF file. We took a shortcut here.
+ 	 */
+-	uprobe_file_offset = (__u64)main - (__u64)&__executable_start;
++	uprobe_file_offset = (unsigned long)main - (unsigned long)&__executable_start;
+ 	CHECK_AND_RET(test_nondebug_fs_probe("uprobe", (char *)argv[0],
+ 					     uprobe_file_offset, 0x0, false,
+ 					     BPF_FD_TYPE_UPROBE,
+-- 
+2.25.1
+
