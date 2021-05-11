@@ -2,171 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A1C37B01B
-	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 22:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45ACF37B06B
+	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 23:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhEKUgq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 May 2021 16:36:46 -0400
-Received: from www62.your-server.de ([213.133.104.62]:42888 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhEKUgp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 May 2021 16:36:45 -0400
-Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lgZ6P-000427-Qn; Tue, 11 May 2021 22:35:37 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     alexei.starovoitov@gmail.com
-Cc:     andrii@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        id S229848AbhEKVCs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 17:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEKVCs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 17:02:48 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDC7C061574
+        for <bpf@vger.kernel.org>; Tue, 11 May 2021 14:01:40 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id v5so13439328edc.8
+        for <bpf@vger.kernel.org>; Tue, 11 May 2021 14:01:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2DmwvoWnFxFsnWV8zB+SFUg55UC+pgsHUrCupFbSUPw=;
+        b=ahgPcIgM4JgGZE+ikgfs+tgOSJqrkx7jZZ8ZXorADrPvudnnruXsSnoAJcJfPEpXV6
+         yIB6nKhDMxGQy3+D0P6069J7whK5I3rF+rJwcXIeX2NZbB1s5A567dJP8sD2pBIh0kdY
+         gZCGRhI6kO4visan3/DQrrtgU8YBR8a3Hob8Xui8eWlpP+rdvTeYiuDTmUI6PZZ0yLy9
+         9UW8zPxiUZfqq84Uhsk1o/1nLRzXn3ifG33c/LEFsqA7feFQSx9mtAHbg0QDADj87v4C
+         uWCPCAj9oNO7P30iJUDpoPD3AXWTQk9H/EqdCLrmTsYJht6tOMQMnqfrDiNwP3sKn6TI
+         8mZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2DmwvoWnFxFsnWV8zB+SFUg55UC+pgsHUrCupFbSUPw=;
+        b=s2gsDbdM3i2kftc/2y7Gk7ELzTiMHz01q2HzL6XwfzUln7YEPHBLSsYipUoodot9hF
+         B0F9yRYGGSmkskx2LZL55iObuYubVDEfP0NKUknwK3IQ69IhF1CperwhdF4ibTqgZpjs
+         R6a8dPX7ifhatFEpE0qIcDpq+YnmMsjDgQndhY5vEiSeuxANDnlfVMqn3HKLBgEdVPVW
+         p+wZ/CG7qTSVnf6rU5hBxYrxfIic5YHWAl8vtvhDGXFNzJZOTp+XdL9et352qohsbiZS
+         Tlol8FVCwzcTcPCLnDZctqPXuoc3HQl2TCmGV4CylgLxQCz4aSWfu1lZIrEkKHN2zN9F
+         AZbg==
+X-Gm-Message-State: AOAM531IZLXPDXGsSFvsxtgZ4H4lsWIaOa6LQUAbZqxtQV4mcT4coEu2
+        OEfC7OTuQ6VGPp5Bm9OWkkTpqgYjec8IYOZEUELQelbio+2brXPVdG85TmyCOrgqndH6+/FJQ8H
+        Yo/k6B0QmVR1rphGhio9dEgrTAiWGJ9YGtXCIWSGDwsLI1OWCdN9ro/1L4Y+l5RCYIxQJSREV
+X-Google-Smtp-Source: ABdhPJzxpu6jmTwsF0sG06ui+etjzT7o+JdmMGb0pdcwZRd/kjHQ7P6H2QX6BK1UplsZRE+eSxD/Jg==
+X-Received: by 2002:a05:6402:4251:: with SMTP id g17mr38051043edb.205.1620766899012;
+        Tue, 11 May 2021 14:01:39 -0700 (PDT)
+Received: from localhost.localdomain ([93.140.9.82])
+        by smtp.gmail.com with ESMTPSA id k9sm13206569eje.102.2021.05.11.14.01.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 14:01:38 -0700 (PDT)
+From:   Denis Salopek <denis.salopek@sartura.hr>
+To:     bpf@vger.kernel.org
+Cc:     Denis Salopek <denis.salopek@sartura.hr>,
+        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>,
+        Luka Oreskovic <luka.oreskovic@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf 2/2] bpf: Add kconfig knob for disabling unpriv bpf by default
-Date:   Tue, 11 May 2021 22:35:17 +0200
-Message-Id: <74ec548079189e4e4dffaeb42b8987bb3c852eee.1620765074.git.daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <f23f58765a4d59244ebd8037da7b6a6b2fb58446.1620765074.git.daniel@iogearbox.net>
-References: <f23f58765a4d59244ebd8037da7b6a6b2fb58446.1620765074.git.daniel@iogearbox.net>
+Subject: [PATCH v7 bpf-next 0/3] Add lookup_and_delete_elem support to BPF hash map types
+Date:   Tue, 11 May 2021 23:00:03 +0200
+Message-Id: <cover.1620763117.git.denis.salopek@sartura.hr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26167/Tue May 11 13:12:12 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a kconfig knob which allows for unprivileged bpf to be disabled by default.
-If set, the knob sets /proc/sys/kernel/unprivileged_bpf_disabled to value of 2.
+This patch series extends the existing bpf_map_lookup_and_delete_elem()
+functionality with 4 more map types:
+ - BPF_MAP_TYPE_HASH,
+ - BPF_MAP_TYPE_PERCPU_HASH,
+ - BPF_MAP_TYPE_LRU_HASH and
+ - BPF_MAP_TYPE_LRU_PERCPU_HASH.
 
-This still allows a transition of 2 -> {0,1} through an admin. Similarly,
-this also still keeps 1 -> {1} behavior intact, so that once set to permanently
-disabled, it cannot be undone aside from a reboot.
+Patch 1 adds most of its functionality and logic as well as
+documentation.
 
-We've also added extra2 with max of 2 for the procfs handler, so that an admin
-still has a chance to toggle between 0 <-> 2.
+As it was previously limited to only stacks and queues which do not
+support the BPF_F_LOCK flag, patch 2 enables its usage by adding a new
+libbpf API bpf_map_lookup_and_delete_elem_flags() based on the existing
+bpf_map_lookup_elem_flags().
 
-Either way, as an additional alternative, applications can make use of CAP_BPF
-that we added a while ago.
+Patch 3 adds selftests for lookup_and_delete_elem().
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- Documentation/admin-guide/sysctl/kernel.rst | 17 +++++++++---
- kernel/bpf/Kconfig                          | 10 +++++++
- kernel/bpf/syscall.c                        |  3 ++-
- kernel/sysctl.c                             | 29 +++++++++++++++++----
- 4 files changed, 50 insertions(+), 9 deletions(-)
+Changes in patch 1:
+v7: Minor formating nits, add Acked-by.
+v6: Remove unneeded flag check, minor code/format fixes.
+v5: Split patch to 3 patches. Extend BPF_MAP_LOOKUP_AND_DELETE_ELEM
+documentation with this changes.
+v4: Fix the return value for unsupported map types.
+v3: Add bpf_map_lookup_and_delete_elem_flags() and enable BPF_F_LOCK
+flag, change CHECKs to ASSERT_OKs, initialize variables to 0.
+v2: Add functionality for LRU/per-CPU, add test_progs tests.
 
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index 1d56a6b73a4e..24ab20d7a50a 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -1457,11 +1457,22 @@ unprivileged_bpf_disabled
- =========================
- 
- Writing 1 to this entry will disable unprivileged calls to ``bpf()``;
--once disabled, calling ``bpf()`` without ``CAP_SYS_ADMIN`` will return
--``-EPERM``.
-+once disabled, calling ``bpf()`` without ``CAP_SYS_ADMIN`` or ``CAP_BPF``
-+will return ``-EPERM``. Once set to 1, this can't be cleared from the
-+running kernel anymore.
- 
--Once set, this can't be cleared.
-+Writing 2 to this entry will also disable unprivileged calls to ``bpf()``,
-+however, an admin can still change this setting later on, if needed, by
-+writing 0 or 1 to this entry.
- 
-+If ``BPF_UNPRIV_DEFAULT_OFF`` is enabled in the kernel config, then this
-+entry will default to 2 instead of 0.
-+
-+= =============================================================
-+0 Unprivileged calls to ``bpf()`` are enabled
-+1 Unprivileged calls to ``bpf()`` are disabled without recovery
-+2 Unprivileged calls to ``bpf()`` are disabled
-+= =============================================================
- 
- watchdog
- ========
-diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-index b4edaefc6255..26b591e23f16 100644
---- a/kernel/bpf/Kconfig
-+++ b/kernel/bpf/Kconfig
-@@ -61,6 +61,16 @@ config BPF_JIT_DEFAULT_ON
- 	def_bool ARCH_WANT_DEFAULT_BPF_JIT || BPF_JIT_ALWAYS_ON
- 	depends on HAVE_EBPF_JIT && BPF_JIT
- 
-+config BPF_UNPRIV_DEFAULT_OFF
-+	bool "Disable unprivileged BPF by default"
-+	depends on BPF_SYSCALL
-+	help
-+	  Disables unprivileged BPF by default by setting the corresponding
-+	  /proc/sys/kernel/unprivileged_bpf_disabled knob to 2. An admin can
-+	  still reenable it by setting it to 0 later on, or permanently
-+	  disable it by setting it to 1 (from which no other transition to
-+	  0 is possible anymore).
-+
- source "kernel/bpf/preload/Kconfig"
- 
- config BPF_LSM
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 941ca06d9dfa..ea04b0deb5ce 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -50,7 +50,8 @@ static DEFINE_SPINLOCK(map_idr_lock);
- static DEFINE_IDR(link_idr);
- static DEFINE_SPINLOCK(link_idr_lock);
- 
--int sysctl_unprivileged_bpf_disabled __read_mostly;
-+int sysctl_unprivileged_bpf_disabled __read_mostly =
-+	IS_BUILTIN(CONFIG_BPF_UNPRIV_DEFAULT_OFF) ? 2 : 0;
- 
- static const struct bpf_map_ops * const bpf_map_types[] = {
- #define BPF_PROG_TYPE(_id, _name, prog_ctx_type, kern_ctx_type)
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index f91d327273c1..6df7c81f7cdd 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -225,7 +225,27 @@ static int bpf_stats_handler(struct ctl_table *table, int write,
- 	mutex_unlock(&bpf_stats_enabled_mutex);
- 	return ret;
- }
--#endif
-+
-+static int bpf_unpriv_handler(struct ctl_table *table, int write,
-+			      void *buffer, size_t *lenp, loff_t *ppos)
-+{
-+	int ret, unpriv_enable = *(int *)table->data;
-+	bool locked_state = unpriv_enable == 1;
-+	struct ctl_table tmp = *table;
-+
-+	if (write && !capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	tmp.data = &unpriv_enable;
-+	ret = proc_dointvec_minmax(&tmp, write, buffer, lenp, ppos);
-+	if (write && !ret) {
-+		if (locked_state && unpriv_enable != 1)
-+			return -EPERM;
-+		*(int *)table->data = unpriv_enable;
-+	}
-+	return ret;
-+}
-+#endif /* CONFIG_BPF_SYSCALL && CONFIG_SYSCTL */
- 
- /*
-  * /proc/sys support
-@@ -2600,10 +2620,9 @@ static struct ctl_table kern_table[] = {
- 		.data		= &sysctl_unprivileged_bpf_disabled,
- 		.maxlen		= sizeof(sysctl_unprivileged_bpf_disabled),
- 		.mode		= 0644,
--		/* only handle a transition from default "0" to "1" */
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ONE,
--		.extra2		= SYSCTL_ONE,
-+		.proc_handler	= bpf_unpriv_handler,
-+		.extra1		= SYSCTL_ZERO,
-+		.extra2		= &two,
- 	},
- 	{
- 		.procname	= "bpf_stats_enabled",
+Changes in patch 2:
+v7: No change.
+v6: Add Acked-by.
+v5: Move to the newest libbpf version (0.4.0).
+
+Changes in patch 3:
+v7: Remove ASSERT_GE macro which is already added in some other commit,
+change ASSERT_OK to ASSERT_OK_PTR, add Acked-by.
+v6: Remove PERCPU macros, add ASSERT_GE macro to test_progs.h, remove
+leftover code.
+v5: Use more appropriate macros. Better check for changed value.
+
+Denis Salopek (3):
+  bpf: add lookup_and_delete_elem support to hashtab
+  bpf: extend libbpf with bpf_map_lookup_and_delete_elem_flags
+  selftests/bpf: add bpf_lookup_and_delete_elem tests
+
+ include/linux/bpf.h                           |   2 +
+ include/uapi/linux/bpf.h                      |  13 +
+ kernel/bpf/hashtab.c                          |  98 ++++++
+ kernel/bpf/syscall.c                          |  34 ++-
+ tools/include/uapi/linux/bpf.h                |  13 +
+ tools/lib/bpf/bpf.c                           |  13 +
+ tools/lib/bpf/bpf.h                           |   2 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../bpf/prog_tests/lookup_and_delete.c        | 288 ++++++++++++++++++
+ .../bpf/progs/test_lookup_and_delete.c        |  26 ++
+ tools/testing/selftests/bpf/test_lru_map.c    |   8 +
+ tools/testing/selftests/bpf/test_maps.c       |  17 ++
+ 12 files changed, 511 insertions(+), 4 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_lookup_and_delete.c
+
 -- 
-2.21.0
+2.26.2
 
