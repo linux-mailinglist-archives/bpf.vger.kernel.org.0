@@ -2,168 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FD237A65B
-	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 14:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD5D37A7A2
+	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 15:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231352AbhEKMPI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 May 2021 08:15:08 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2486 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbhEKMPH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 May 2021 08:15:07 -0400
-Received: from dggeml710-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FfcGV1S42zYd8s;
-        Tue, 11 May 2021 20:11:30 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggeml710-chm.china.huawei.com (10.3.17.140) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 11 May 2021 20:13:57 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 11 May
- 2021 20:13:57 +0800
-Subject: Re: Re: [PATCH net v6 3/3] net: sched: fix tx action reschedule issue
- with stopped queue
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
-        <weiwan@google.com>, <cong.wang@bytedance.com>,
-        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
-        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-References: <1620610956-56306-1-git-send-email-linyunsheng@huawei.com>
- <1620610956-56306-4-git-send-email-linyunsheng@huawei.com>
- <20210510212232.3386c5b4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <c676404c-f210-b0cb-ced3-5449676055a8@huawei.com>
-Message-ID: <8db8e594-9606-2c93-7274-1c180afaadb2@huawei.com>
-Date:   Tue, 11 May 2021 20:13:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S231506AbhEKNct (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 09:32:49 -0400
+Received: from mail-ed1-f43.google.com ([209.85.208.43]:36530 "EHLO
+        mail-ed1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231305AbhEKNcq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 09:32:46 -0400
+Received: by mail-ed1-f43.google.com with SMTP id u13so22893147edd.3;
+        Tue, 11 May 2021 06:31:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oIa86m56V7D9OxvaRCpHAzJ1pFfZnNHw5kUPaITumU0=;
+        b=C+S3ihU08qAh15hEvssLpVKhYNfESpgjVG1huNuXKUjmOR2CrF+lxBF6lxn0hxLxWs
+         EE0DURJJiSBjF6O1AIoryrV4ZXJ+1zdqVu+/p8HtI7TpFUPCzeQhZqe9BZW5sjQjPGlF
+         n6QaS8V3K5sUXMExOdEUky4z/Zlcwp6duTLFfJMxcdFURLye1TFDNrgywC1D2zbcGmM0
+         icwJoCt4Bqv5pYE75l40DNqE4ZvwrPKei8jAiVdJFB+QHr6d4ZTClW48KY9MD9+QbAfI
+         865glb6LkUoyw463DJOHvDVjc78ZRktQ/nPcNkkhUDreOUeVS1NypL8Gq8je51nNDzo2
+         BlLg==
+X-Gm-Message-State: AOAM531EkmMC2DcZMiGMA6ZOyf9F8Knhf6Kltme0Hq7TTF03PDe0msWf
+        yIPJ9YY1ajYa4BGabvmURXlUkFZhE05+Oy1v
+X-Google-Smtp-Source: ABdhPJxdcawn9TncpLMKVjYBQqwkA4w+GCL74vYFB+ERi6r8YHQrSwr9ybTvxZ/U/SAq58/0humi3g==
+X-Received: by 2002:a05:6402:2712:: with SMTP id y18mr37816019edd.41.1620739897451;
+        Tue, 11 May 2021 06:31:37 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-5-94-253-60.cust.vodafonedsl.it. [5.94.253.60])
+        by smtp.gmail.com with ESMTPSA id b12sm14577136eds.23.2021.05.11.06.31.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 06:31:36 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     netdev@vger.kernel.org, linux-mm@kvack.org
+Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: [PATCH net-next v4 0/4] page_pool: recycle buffers
+Date:   Tue, 11 May 2021 15:31:14 +0200
+Message-Id: <20210511133118.15012-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <c676404c-f210-b0cb-ced3-5449676055a8@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme713-chm.china.huawei.com (10.1.199.109) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/5/11 17:04, Yunsheng Lin wrote:
-> On 2021/5/11 12:22, Jakub Kicinski wrote:
->> On Mon, 10 May 2021 09:42:36 +0800 Yunsheng Lin wrote:
->>> The netdev qeueue might be stopped when byte queue limit has
->>> reached or tx hw ring is full, net_tx_action() may still be
->>> rescheduled endlessly if STATE_MISSED is set, which consumes
->>> a lot of cpu without dequeuing and transmiting any skb because
->>> the netdev queue is stopped, see qdisc_run_end().
->>>
->>> This patch fixes it by checking the netdev queue state before
->>> calling qdisc_run() and clearing STATE_MISSED if netdev queue is
->>> stopped during qdisc_run(), the net_tx_action() is recheduled
->>> again when netdev qeueue is restarted, see netif_tx_wake_queue().
->>>
->>> Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
->>> Reported-by: Michal Kubecek <mkubecek@suse.cz>
->>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->>
->> Patches 1 and 2 look good to me but this one I'm not 100% sure.
->>
->>> @@ -251,8 +253,10 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
->>>  	*validate = true;
->>>  
->>>  	if ((q->flags & TCQ_F_ONETXQUEUE) &&
->>> -	    netif_xmit_frozen_or_stopped(txq))
->>> +	    netif_xmit_frozen_or_stopped(txq)) {
->>> +		clear_bit(__QDISC_STATE_MISSED, &q->state);
->>>  		return skb;
->>> +	}
->>
->> The queues are woken asynchronously without holding any locks via
->> netif_tx_wake_queue(). Theoretically we can have a situation where:
->>
->> CPU 0                            CPU 1   
->>   .                                .
->> dequeue_skb()                      .
->>   netif_xmit_frozen..() # true     .
->>   .                              [IRQ]
->>   .                              netif_tx_wake_queue()
->>   .                              <end of IRQ>
->>   .                              netif_tx_action()
->>   .                              set MISSED
->>   clear MISSED
->>   return NULL
->> ret from qdisc_restart()
->> ret from __qdisc_run()
->> qdisc_run_end()
->> -> MISSED not set
-> 
-> Yes, the above does seems to have the above data race.
-> 
-> As my understanding, there is two ways to fix the above data race:
-> 1. do not clear the STATE_MISSED for netif_xmit_frozen_or_stopped()
->    case, just check the netif_xmit_frozen_or_stopped() before
->    calling __netif_schedule() at the end of qdisc_run_end(). This seems
->    to only work with qdisc with TCQ_F_ONETXQUEUE flag because it seems
->    we can only check the netif_xmit_frozen_or_stopped() with q->dev_queue,
->    I am not sure q->dev_queue is pointint to which netdev queue when qdisc
->    is not set with TCQ_F_ONETXQUEUE flag.
-> 
-> 2. clearing the STATE_MISSED for netif_xmit_frozen_or_stopped() case
->    as this patch does, and protect the __netif_schedule() with q->seqlock
->    for netif_tx_wake_queue(), which might bring unnecessary overhead for
->    non-stopped queue case
-> 
-> Any better idea?
+From: Matteo Croce <mcroce@microsoft.com>
 
-3. Or check the netif_xmit_frozen_or_stopped() again after clearing
-   STATE_MISSED, like below:
+This is a respin of [1]
 
-   if (netif_xmit_frozen_or_stopped(txq)) {
-	  clear_bit(__QDISC_STATE_MISSED, &q->state);
+This patchset shows the plans for allowing page_pool to handle and
+maintain DMA map/unmap of the pages it serves to the driver. For this
+to work a return hook in the network core is introduced.
 
-	  /* Make sure the below netif_xmit_frozen_or_stopped()
-	   * checking happens after clearing STATE_MISSED.
-	   */
-	  smp_mb__after_atomic();
+The overall purpose is to simplify drivers, by providing a page
+allocation API that does recycling, such that each driver doesn't have
+to reinvent its own recycling scheme. Using page_pool in a driver
+does not require implementing XDP support, but it makes it trivially
+easy to do so. Instead of allocating buffers specifically for SKBs
+we now allocate a generic buffer and either wrap it on an SKB
+(via build_skb) or create an XDP frame.
+The recycling code leverages the XDP recycle APIs.
 
-	  /* Checking netif_xmit_frozen_or_stopped() again to
-	   * make sure __QDISC_STATE_MISSED is set if the
-	   * __QDISC_STATE_MISSED set by netif_tx_wake_queue()'s
-	   * rescheduling of net_tx_action() is cleared by the
-	   * above clear_bit().
-	   */
-	  if (!netif_xmit_frozen_or_stopped(txq))
-	  	set_bit(__QDISC_STATE_MISSED, &q->state);
-  }
+The Marvell mvpp2 and mvneta drivers are used in this patchset to
+demonstrate how to use the API, and tested on a MacchiatoBIN
+and EspressoBIN boards respectively.
 
-  It is kind of ugly, but it does seem to fix the above data race too.
-  And it seems like a common pattern to deal with the concurrency between
-  xmit and NAPI polling, as below:
+Please let this going in on a future -rc1 so to allow enough time
+to have wider tests.
 
-https://elixir.bootlin.com/linux/v5.12-rc2/source/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c#L1409
+Note that this series depends on the change "mm: fix struct page layout
+on 32-bit systems"[2] which is not yet in master.
 
+[1] https://lore.kernel.org/netdev/154413868810.21735.572808840657728172.stgit@firesoul/
+[2] https://lore.kernel.org/linux-mm/20210510153211.1504886-1-willy@infradead.org/
 
-> 
->>
->> .
->>
-> _______________________________________________
-> Linuxarm mailing list -- linuxarm@openeuler.org
-> To unsubscribe send an email to linuxarm-leave@openeuler.org
-> 
+Ilias Apalodimas (1):
+  page_pool: Allow drivers to hint on SKB recycling
+
+Matteo Croce (3):
+  mm: add a signature in struct page
+  mvpp2: recycle buffers
+  mvneta: recycle buffers
+
+ drivers/net/ethernet/marvell/mvneta.c         | 11 +++---
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 17 +++++-----
+ drivers/net/ethernet/marvell/sky2.c           |  2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
+ include/linux/mm_types.h                      |  1 +
+ include/linux/skbuff.h                        | 34 ++++++++++++++++---
+ include/net/page_pool.h                       | 11 ++++++
+ net/core/page_pool.c                          | 27 +++++++++++++++
+ net/core/skbuff.c                             | 20 +++++++++--
+ net/tls/tls_device.c                          |  2 +-
+ 10 files changed, 105 insertions(+), 22 deletions(-)
+
+-- 
+2.31.1
 
