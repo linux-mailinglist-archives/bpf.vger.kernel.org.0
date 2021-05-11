@@ -2,154 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F08C37B07B
-	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 23:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DF337B080
+	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 23:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbhEKVHU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 May 2021 17:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54426 "EHLO
+        id S229920AbhEKVIk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 17:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhEKVHP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 May 2021 17:07:15 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6565EC061574;
-        Tue, 11 May 2021 14:06:07 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id c3so30627216lfs.7;
-        Tue, 11 May 2021 14:06:07 -0700 (PDT)
+        with ESMTP id S229736AbhEKVIj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 17:08:39 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC35C061574;
+        Tue, 11 May 2021 14:07:32 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id i9so24080832lfe.13;
+        Tue, 11 May 2021 14:07:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=T7H5DSMQGmthW/fFcIa05CsgiLo9R8DRtxiNNmTCJeQ=;
-        b=miaEpzr0DuO8TgZDyFi33zhnTchkhu5xxUbi+cRZzdwu9Sx++Q4OV8tNUm8ujAD18a
-         x1KLQBLm4R6Ysas+j9yfNdYIgRp6PQjZxOb/QWwTkLMjJbTpXr0KrxL0vH2B4571SHV6
-         Y5cVaJ+kjeKAtcuZ9R982RmOvI2JCRDd8HUPWSBA4H6fBQcqfuwF3OjUXlGziDjkw3VO
-         cn1kqOVGS4zkYDVauSSKzyeTbx7biFIae+LjzmB4a7oQpQUbCtoKBgM5uZu1GpxBD1nv
-         Kb9NaA4WXZcLcBO9jBsVvJceugqMMIfjLfUm91ClKcCACZP1uJhEBXqpuWW415jRZKAE
-         0JRg==
+        bh=CxkCjpyVTgAvYrFtnrZrEueuxhsHKne885eSCkZ9jts=;
+        b=At5yBczqo8f9k+X/AaeWpNzVia95KOdYlw3S2nIBmrJrmUFE+ExVwCMMHMxwlVC9h5
+         jMOmFVvSY6G5bdAk8OC+Krk1ciP+5s+w4x5s9R4m7mhxHS1wQ6K/VP9vCedM/6dMoBd+
+         GqeApr1rJ2tHJIuAJCrbSeNgGeK4s0qsMnzZKEevXmBBqAPO0drgwmsLk5ItxQ+H7iEQ
+         EXjQ/YnQzJLhlQwiHOnNeM2uah9QZyeB4OlLegEIo5rP1/vqNPlZUSMRHWU0Rly6rfoK
+         OOL6TA27ayR+BjxivLhYy0svr2xPW3vqonNDBNS0KuaKZyssR1a/cHN5t5lC4HX/Ct6J
+         Rhdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=T7H5DSMQGmthW/fFcIa05CsgiLo9R8DRtxiNNmTCJeQ=;
-        b=DeAA6ulxOIxQmJ9ZG6wb4fDeM+BTqxEzF/o6DjeyLD+ZFIE3pP5u3pRKjiywQM94Ie
-         CRyTi6axy5NLDdWVJ98QvMy2k5ngVlLguKGI8X4v1eUMgeHJZoBP3Q2gnldCXf7PYi9i
-         /6ALWyL6bI7D3MavFbaJ9Hx8Gew5Uv3bz/Iu5j5Uf07a0sL46M+jjVZoCGiQ0dXx5bWx
-         1EqSEcOXR/diWW5coJDl6qAqB1hACT2vDPlZQv2IRIsMi44huxkY3DBDh4mMR/6wJb49
-         MfvrY4MAj5XoOyCKzXsvA643zhGmIDGuIZSgAFVd9LpII1xz4kIYiJUMAWYPbzUTDqmV
-         X00g==
-X-Gm-Message-State: AOAM532Ypxqd6rZ8Cofui+E7mpiJ2LzXG5hfvcRDvHXbldVWJfa+G9E1
-        daWduF4w+C0tdXzvMSDDnN3MyqlQdp76WqPITF6sjcmT
-X-Google-Smtp-Source: ABdhPJyBX4PDMF3y34uLZfIpe95NLQvi6O34yulCDJF2inA1vhXel3l8cKsTkZypi27YMedd6sCOVJT4Bu6Pxqunpdw=
-X-Received: by 2002:a05:6512:3f93:: with SMTP id x19mr22127695lfa.182.1620767165858;
- Tue, 11 May 2021 14:06:05 -0700 (PDT)
+        bh=CxkCjpyVTgAvYrFtnrZrEueuxhsHKne885eSCkZ9jts=;
+        b=f5hO2gSUM8vQ4q9GbTsI8xU+SvQ4hGfdJMaeH0PhAEpnj0BSXZ6HNzWLWqtpuOmNcC
+         RD9Apwziz1JGy2Ur6kWS5EnWXNm+R+9i6cJUzfNUEyL87I0gPjRHgLtYgFpMsrv45NwK
+         KQm30mk7b06yk0rHcJJELa09IMkiptrHskTGQy2LvbWpZqUZyqA6HZ2XD2YbNrXuxWLz
+         s9j3TnH5JA3RWaBLZqLHEHX9cb0ZBJmUg+QSId3Nizht4F815AEdpzUoTXpCsLn/z4aX
+         0147kpsI3gvVq+spLVNvLTkdJYKZ5AAn1URzsnXByzWd+kEa5PcYFvok9uEyLxFSqpyd
+         r4EA==
+X-Gm-Message-State: AOAM530sCh9gMLBa4VpHe9BrDb2aM5uT/xSgmVZkJ6F3ADlf+IPJPMsP
+        MwL5V7/hfzijbyNHSp8YkaUBUrrxPZEbGR7A5jc=
+X-Google-Smtp-Source: ABdhPJzn602oVRfm9+oMv9sUiaslUHsTAnEEoDBmCvqlhSv4t2eIY934073yVXcbciePrir/wRIFwwOAVk9AziwTLwc=
+X-Received: by 2002:ac2:5b1a:: with SMTP id v26mr22697382lfn.534.1620767250846;
+ Tue, 11 May 2021 14:07:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210429114712.43783-1-jolsa@kernel.org> <CAADnVQLDwjE8KFcqbzB5op5b=fC2941tnnWOtQ+X1DYi6Yw1xA@mail.gmail.com>
- <YJkByQ4bGa7jrvWR@krava>
-In-Reply-To: <YJkByQ4bGa7jrvWR@krava>
+References: <20210511081054.2125874-1-revest@chromium.org>
+In-Reply-To: <20210511081054.2125874-1-revest@chromium.org>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 11 May 2021 14:05:54 -0700
-Message-ID: <CAADnVQLJzJinUhWM4eFd1=GEjgNT-25y_bCx7LOjhpSXumKcHw@mail.gmail.com>
-Subject: Re: [PATCHv2] bpf: Add deny list of btf ids check for tracing programs
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Tue, 11 May 2021 14:07:19 -0700
+Message-ID: <CAADnVQKq+b7uJb0J32swWEZmoDfdrUfx=f8ndSM4vicTCtYebA@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] bpf: Fix nested bpf_bprintf_prepare with more
+ per-cpu buffers
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzbot+63122d0bc347f18c1884@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 10, 2021 at 2:50 AM Jiri Olsa <jolsa@redhat.com> wrote:
+On Tue, May 11, 2021 at 1:12 AM Florent Revest <revest@chromium.org> wrote:
 >
-> On Thu, May 06, 2021 at 06:36:38PM -0700, Alexei Starovoitov wrote:
-> > On Thu, Apr 29, 2021 at 4:47 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > The recursion check in __bpf_prog_enter and __bpf_prog_exit
-> > > leaves some (not inlined) functions unprotected:
-> > >
-> > > In __bpf_prog_enter:
-> > >   - migrate_disable is called before prog->active is checked
-> > >
-> > > In __bpf_prog_exit:
-> > >   - migrate_enable,rcu_read_unlock_strict are called after
-> > >     prog->active is decreased
-> > >
-> > > When attaching trampoline to them we get panic like:
-> > >
-> > >   traps: PANIC: double fault, error_code: 0x0
-> > >   double fault: 0000 [#1] SMP PTI
-> > >   RIP: 0010:__bpf_prog_enter+0x4/0x50
-> > >   ...
-> > >   Call Trace:
-> > >    <IRQ>
-> > >    bpf_trampoline_6442466513_0+0x18/0x1000
-> > >    migrate_disable+0x5/0x50
-> > >    __bpf_prog_enter+0x9/0x50
-> > >    bpf_trampoline_6442466513_0+0x18/0x1000
-> > >    migrate_disable+0x5/0x50
-> > >    __bpf_prog_enter+0x9/0x50
-> > >    bpf_trampoline_6442466513_0+0x18/0x1000
-> > >    migrate_disable+0x5/0x50
-> > >    __bpf_prog_enter+0x9/0x50
-> > >    bpf_trampoline_6442466513_0+0x18/0x1000
-> > >    migrate_disable+0x5/0x50
-> > >    ...
-> > >
-> > > Fixing this by adding deny list of btf ids for tracing
-> > > programs and checking btf id during program verification.
-> > > Adding above functions to this list.
-> > >
-> > > Suggested-by: Alexei Starovoitov <ast@kernel.org>
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > > v2 changes:
-> > >   - drop check for EXT programs [Andrii]
-> > >
-> > >  kernel/bpf/verifier.c | 14 ++++++++++++++
-> > >  1 file changed, 14 insertions(+)
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 2579f6fbb5c3..42311e51ac71 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -13112,6 +13112,17 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
-> > >         return 0;
-> > >  }
-> > >
-> > > +BTF_SET_START(btf_id_deny)
-> > > +BTF_ID_UNUSED
-> > > +#ifdef CONFIG_SMP
-> > > +BTF_ID(func, migrate_disable)
-> > > +BTF_ID(func, migrate_enable)
-> > > +#endif
-> > > +#if !defined CONFIG_PREEMPT_RCU && !defined CONFIG_TINY_RCU
-> > > +BTF_ID(func, rcu_read_unlock_strict)
-> > > +#endif
-> > > +BTF_SET_END(btf_id_deny)
-> >
-> > I was wondering whether it makes sense to do this on pahole side instead ?
-> > It can do more flexible regex matching and excluding all such functions
-> > from vmlinux btf without the kernel having to do a maze of #ifdef
-> > depending on config.
-> > On one side we will lose BTF info about such functions, but what do we
-> > need it for?
-> > On the other side it will be a tiny reduction in vmlinux btf :)
-> > Thoughts?
+> The bpf_seq_printf, bpf_trace_printk and bpf_snprintf helpers share one
+> per-cpu buffer that they use to store temporary data (arguments to
+> bprintf). They "get" that buffer with try_get_fmt_tmp_buf and "put" it
+> by the end of their scope with bpf_bprintf_cleanup.
 >
-> we just removed the ftrace filter so BTF will have 'all' functions
+> If one of these helpers gets called within the scope of one of these
+> helpers, for example: a first bpf program gets called, uses
+> bpf_trace_printk which calls raw_spin_lock_irqsave which is traced by
+> another bpf program that calls bpf_snprintf, then the second "get"
+> fails. Essentially, these helpers are not re-entrant. They would return
+> -EBUSY and print a warning message once.
 >
-> I think the filtering on pahole side could cause problems like
-> the recent one with cubictcp_state.. it's just 3 functions, but
-> what if they rename? this way we at least get compilation error ;-)
+> This patch triples the number of bprintf buffers to allow three levels
+> of nesting. This is very similar to what was done for tracepoints in
+> "9594dc3c7e7 bpf: fix nested bpf tracepoints with per-cpu data"
 >
-> I'd go with all functions in BTF and restrict attachment for those
-> that cause problems
+> Fixes: d9c9e4db186a ("bpf: Factorize bpf_trace_printk and bpf_seq_printf")
+> Reported-by: syzbot+63122d0bc347f18c1884@syzkaller.appspotmail.com
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> ---
+>  kernel/bpf/helpers.c | 27 ++++++++++++++-------------
+>  1 file changed, 14 insertions(+), 13 deletions(-)
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 544773970dbc..ef658a9ea5c9 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -696,34 +696,35 @@ static int bpf_trace_copy_string(char *buf, void *unsafe_ptr, char fmt_ptype,
+>   */
+>  #define MAX_PRINTF_BUF_LEN     512
+>
+> -struct bpf_printf_buf {
+> -       char tmp_buf[MAX_PRINTF_BUF_LEN];
+> +/* Support executing three nested bprintf helper calls on a given CPU */
+> +struct bpf_bprintf_buffers {
+> +       char tmp_bufs[3][MAX_PRINTF_BUF_LEN];
+>  };
+> -static DEFINE_PER_CPU(struct bpf_printf_buf, bpf_printf_buf);
+> -static DEFINE_PER_CPU(int, bpf_printf_buf_used);
+> +static DEFINE_PER_CPU(struct bpf_bprintf_buffers, bpf_bprintf_bufs);
+> +static DEFINE_PER_CPU(int, bpf_bprintf_nest_level);
+>
+>  static int try_get_fmt_tmp_buf(char **tmp_buf)
+>  {
+> -       struct bpf_printf_buf *bufs;
+> -       int used;
+> +       struct bpf_bprintf_buffers *bufs;
+> +       int nest_level;
+>
+>         preempt_disable();
+> -       used = this_cpu_inc_return(bpf_printf_buf_used);
+> -       if (WARN_ON_ONCE(used > 1)) {
+> -               this_cpu_dec(bpf_printf_buf_used);
+> +       nest_level = this_cpu_inc_return(bpf_bprintf_nest_level);
+> +       if (WARN_ON_ONCE(nest_level > ARRAY_SIZE(bufs->tmp_bufs))) {
+> +               this_cpu_dec(bpf_bprintf_nest_level);
 
-Ok. Let's see how it will work in practice.
 Applied to bpf tree.
+I think at the end the fix is simple enough and much better than an
+on-stack buffer.
