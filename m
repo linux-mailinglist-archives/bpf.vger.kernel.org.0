@@ -2,189 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF0C37A257
-	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 10:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A488337A2EF
+	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 11:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbhEKImh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 May 2021 04:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbhEKImg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 May 2021 04:42:36 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69BBAC061574
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 01:41:30 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id l7so21917205edb.1
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 01:41:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DBeVQ+DbzVOqheKpDE6b/l8xGHNgrrKmzCyeg4MY9MM=;
-        b=H3Vh0QtHbME6isjyak/fqgO1goM8VONv7XU0YXMAPQLdU6UuWv+3oBPI7jY4t2CneN
-         SMOLlmHljBNrs5MNsFp9KmTtTgcZjgAILR6/z0e9S+esC5zunVNqcbjGbksG5i9kfqXY
-         rvoSyY0KFxeVSUWRAMZlfhOOPc5ZgRVGbosfSdzAyX+Al6QmkNZbpVgfycj18NeTncEg
-         I6LAlWymuOFttSd3GMTry/9cWsWU/pTXXw8FKcbou7hoGgzDuzEA7Tdswuy6o3EcNH3T
-         lSDrAwZIAkrCgJd1FkzdDnpFdMBSK/w+j2AjZ6QJkgnqvZi5kcqPY+tEWFr2jycq0CfH
-         7h6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DBeVQ+DbzVOqheKpDE6b/l8xGHNgrrKmzCyeg4MY9MM=;
-        b=TLAPfEL9YhMhz/9qajFTIAXXs1JJg9n5vXfYZOhfJsmG6bYm0OlZYy8Zrax1/S6QZY
-         3uENsYkvBTcY7kFVThlNKSVZvDQVBt4FHD1s3g1TR22Ci9dMTEipRsimHdI438eESE6i
-         nyq1VBwtZ6upQckT8TZxq/0r15Tl0E0TADQXCUCbMOtL5yCuLgFXJlhWbdNRNeOoC7+/
-         i9jxPVSx/PKbEiJGRJLP1HDqs2H/6cAhWa0UqAFDJpxDaKQEGiR+WA+oDmIkQulWvq4o
-         +nfOkyjtp0v/Dvt7wVC3rT/Xe59Pm7vmdEHgYqo40NRzIotGIncRodcZrquRQafMRh+V
-         tlhw==
-X-Gm-Message-State: AOAM532Hm5ks06KpshSoPNEVLuyKZm3/IxpahtTNZDHLew+98km258Tf
-        rcaWnetwT3NLOLukKl2kFI7aYQ==
-X-Google-Smtp-Source: ABdhPJyk1DjUXXkr6mF3j2Ysv/fMzGsrok8fiyPMtBUheYMHXlhk4hlvbY3ypUShk/aetQ5cK9agQA==
-X-Received: by 2002:aa7:c390:: with SMTP id k16mr31251270edq.97.1620722489173;
-        Tue, 11 May 2021 01:41:29 -0700 (PDT)
-Received: from apalos.home ([94.69.77.156])
-        by smtp.gmail.com with ESMTPSA id w6sm8263246edc.25.2021.05.11.01.41.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 01:41:28 -0700 (PDT)
-Date:   Tue, 11 May 2021 11:41:23 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Shay Agroskin <shayagr@amazon.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
-Message-ID: <YJpDMwhX3OJrdjDd@apalos.home>
-References: <YIsAIzecktXXBlxn@apalos.home>
- <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com>
- <YIwvI5/ygBvZG5sy@apalos.home>
- <33b02220-cc50-f6b2-c436-f4ec041d6bc4@huawei.com>
- <YJPn5t2mdZKC//dp@apalos.home>
- <75a332fa-74e4-7b7b-553e-3a1a6cb85dff@huawei.com>
- <YJTm4uhvqCy2lJH8@apalos.home>
- <bdd97ac5-f932-beec-109e-ace9cd62f661@huawei.com>
- <20210507121953.59e22aa8@carbon>
- <pj41zl4kfclce0.fsf@u570694869fb251.ant.amazon.com>
+        id S230442AbhEKJGK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 05:06:10 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2298 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230445AbhEKJGJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 05:06:09 -0400
+Received: from dggeml712-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FfX2Q6vYWz19NB4;
+        Tue, 11 May 2021 17:00:46 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggeml712-chm.china.huawei.com (10.3.17.123) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 11 May 2021 17:05:00 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 11 May
+ 2021 17:05:00 +0800
+Subject: Re: [PATCH net v6 3/3] net: sched: fix tx action reschedule issue
+ with stopped queue
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
+        <weiwan@google.com>, <cong.wang@bytedance.com>,
+        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
+        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
+        <alobakin@pm.me>
+References: <1620610956-56306-1-git-send-email-linyunsheng@huawei.com>
+ <1620610956-56306-4-git-send-email-linyunsheng@huawei.com>
+ <20210510212232.3386c5b4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <c676404c-f210-b0cb-ced3-5449676055a8@huawei.com>
+Date:   Tue, 11 May 2021 17:04:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <pj41zl4kfclce0.fsf@u570694869fb251.ant.amazon.com>
+In-Reply-To: <20210510212232.3386c5b4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme719-chm.china.huawei.com (10.1.199.115) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Shay,
+On 2021/5/11 12:22, Jakub Kicinski wrote:
+> On Mon, 10 May 2021 09:42:36 +0800 Yunsheng Lin wrote:
+>> The netdev qeueue might be stopped when byte queue limit has
+>> reached or tx hw ring is full, net_tx_action() may still be
+>> rescheduled endlessly if STATE_MISSED is set, which consumes
+>> a lot of cpu without dequeuing and transmiting any skb because
+>> the netdev queue is stopped, see qdisc_run_end().
+>>
+>> This patch fixes it by checking the netdev queue state before
+>> calling qdisc_run() and clearing STATE_MISSED if netdev queue is
+>> stopped during qdisc_run(), the net_tx_action() is recheduled
+>> again when netdev qeueue is restarted, see netif_tx_wake_queue().
+>>
+>> Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
+>> Reported-by: Michal Kubecek <mkubecek@suse.cz>
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> 
+> Patches 1 and 2 look good to me but this one I'm not 100% sure.
+> 
+>> @@ -251,8 +253,10 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
+>>  	*validate = true;
+>>  
+>>  	if ((q->flags & TCQ_F_ONETXQUEUE) &&
+>> -	    netif_xmit_frozen_or_stopped(txq))
+>> +	    netif_xmit_frozen_or_stopped(txq)) {
+>> +		clear_bit(__QDISC_STATE_MISSED, &q->state);
+>>  		return skb;
+>> +	}
+> 
+> The queues are woken asynchronously without holding any locks via
+> netif_tx_wake_queue(). Theoretically we can have a situation where:
+> 
+> CPU 0                            CPU 1   
+>   .                                .
+> dequeue_skb()                      .
+>   netif_xmit_frozen..() # true     .
+>   .                              [IRQ]
+>   .                              netif_tx_wake_queue()
+>   .                              <end of IRQ>
+>   .                              netif_tx_action()
+>   .                              set MISSED
+>   clear MISSED
+>   return NULL
+> ret from qdisc_restart()
+> ret from __qdisc_run()
+> qdisc_run_end()
+> -> MISSED not set
 
-On Sun, May 09, 2021 at 08:11:35AM +0300, Shay Agroskin wrote:
-> 
-> Jesper Dangaard Brouer <brouer@redhat.com> writes:
-> 
-> > On Fri, 7 May 2021 16:28:30 +0800
-> > Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> > 
-> > > On 2021/5/7 15:06, Ilias Apalodimas wrote:
-> > > > On Fri, May 07, 2021 at 11:23:28AM +0800, Yunsheng Lin wrote:  >>
-> > > On 2021/5/6 20:58, Ilias Apalodimas wrote:  >>>>>>  >>>>>
-> > ...
-> > > > > > I think both choices are sane.  What I am trying to explain >
-> > > here, is
-> > > > regardless of what we choose now, we can change it in the > future
-> > > without
-> > > > affecting the API consumers at all.  What will change > internally
-> > > is the way we
-> > > > lookup the page pool pointer we are trying to recycle.
-> > > 
-> > > It seems the below API need changing?
-> > > +static inline void skb_mark_for_recycle(struct sk_buff *skb, struct
-> > > page *page,
-> > > +					struct xdp_mem_info *mem)
-> > 
-> > I don't think we need to change this API, to support future memory
-> > models.  Notice that xdp_mem_info have a 'type' member.
-> 
-> Hi,
-> Providing that we will (possibly as a future optimization) store the pointer
-> to the page pool in struct page instead of strcut xdp_mem_info, passing
-> xdp_mem_info * instead of struct page_pool * would mean that for every
-> packet we'll need to call
->             xa = rhashtable_lookup(mem_id_ht, &mem->id,
-> mem_id_rht_params);
->             xa->page_pool;
-> 
-> which might pressure the Dcache to fetch a pointer that might be present
-> already in cache as part of driver's data-structures.
-> 
-> I tend to agree with Yunsheng that it makes more sense to adjust the API for
-> the clear use-case now rather than using xdp_mem_info indirection. It seems
-> to me like
-> the page signature provides the same information anyway and allows to
-> support different memory types.
+Yes, the above does seems to have the above data race.
 
-We've switched the patches already.  We didn't notice any performance boost
-by doing so (tested on a machiattobin), but I agree as well.  As I
-explained the only thing that will change if we ever the need the struct
-xdp_mem_info in struct page is the internal contract between struct page
-and the recycling function, so let's start clean and see if we ever need
-that.
+As my understanding, there is two ways to fix the above data race:
+1. do not clear the STATE_MISSED for netif_xmit_frozen_or_stopped()
+   case, just check the netif_xmit_frozen_or_stopped() before
+   calling __netif_schedule() at the end of qdisc_run_end(). This seems
+   to only work with qdisc with TCQ_F_ONETXQUEUE flag because it seems
+   we can only check the netif_xmit_frozen_or_stopped() with q->dev_queue,
+   I am not sure q->dev_queue is pointint to which netdev queue when qdisc
+   is not set with TCQ_F_ONETXQUEUE flag.
 
+2. clearing the STATE_MISSED for netif_xmit_frozen_or_stopped() case
+   as this patch does, and protect the __netif_schedule() with q->seqlock
+   for netif_tx_wake_queue(), which might bring unnecessary overhead for
+   non-stopped queue case
 
-Cheers
-/Ilias
+Any better idea?
+
 > 
-> Shay
+> .
 > 
-> > 
-> > Naming in Computer Science is a hard problem ;-). Something that seems
-> > to confuse a lot of people is the naming of the struct "xdp_mem_info".
-> > Maybe we should have named it "mem_info" instead or "net_mem_info", as
-> > it doesn't indicate that the device is running XDP.
-> > 
-> > I see XDP as the RX-layer before the network stack, that helps drivers
-> > to support different memory models, also for handling normal packets
-> > that doesn't get process by XDP, and the drivers doesn't even need to
-> > support XDP to use the "xdp_mem_info" type.
-> 
+
