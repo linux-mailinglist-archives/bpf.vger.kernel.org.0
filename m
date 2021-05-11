@@ -2,102 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29094379E5B
-	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 06:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00225379EF9
+	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 07:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbhEKEXl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 May 2021 00:23:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229745AbhEKEXk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 May 2021 00:23:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED9946191F;
-        Tue, 11 May 2021 04:22:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620706954;
-        bh=YwtDo3LeR3JmT4NhxeAjnRuwPnLFemK+gI6XznEvRuU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qf5ZA9kI5amR23oIRR7F81z2D0LxmAnmoLwxO2OyLSFJFYWjuYQORJ2YWtTJmCpHJ
-         iGoa6+lsQh291Chp3pTo125Jwjhu90Js32+fMFn+AqFywBpCnH/cCpnXhDqKnTqL5V
-         xmj6ak1pAZnCPCqvWmm7ciI4MZUf7c0b72bDlvsnUPKXM1UvyDpYQFo28guHAF6ZKu
-         oQL4xWvfOjssqtBBO8oaoCpkayKPK38sedLFCRLOjtRGkAAQkduELVY70xu3p0nwyO
-         pp5/y9lh1kQ295Dvdl9pxry8WGlr3Wv4bAmGRc8+wm4lllYnXrgoW63BWBaQDnVo4L
-         /VOv3PsisNa5g==
-Date:   Mon, 10 May 2021 21:22:32 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
-        <weiwan@google.com>, <cong.wang@bytedance.com>,
-        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
-        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-Subject: Re: [PATCH net v6 3/3] net: sched: fix tx action reschedule issue
- with stopped queue
-Message-ID: <20210510212232.3386c5b4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1620610956-56306-4-git-send-email-linyunsheng@huawei.com>
-References: <1620610956-56306-1-git-send-email-linyunsheng@huawei.com>
-        <1620610956-56306-4-git-send-email-linyunsheng@huawei.com>
+        id S230332AbhEKFHW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 01:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229920AbhEKFHV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 01:07:21 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31883C061574
+        for <bpf@vger.kernel.org>; Mon, 10 May 2021 22:06:16 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id c11so13689679qth.2
+        for <bpf@vger.kernel.org>; Mon, 10 May 2021 22:06:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cilium-io.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lNONBfM9DvnwbpKJFTuj1RNSLW5/OK2eghETZOp56NY=;
+        b=bzYt6X+0sbzhk8VKKB6Tdf9MFO/wndyHNbq6g8Hs65j0M96XfS5+4UqKlH2jGOGOiz
+         qZEuQLOkjJ8wADD+flDlpR//ioqbQAnVLOwHr++QV3LTMZ4hVLqftoORSl42ZriTdLU6
+         cFe7DbULckXk+Y21aLWuuNsDDSjP0r2nBG+a5HpM4sud8NfZwi9Yez35Hj3nB5JDKM0b
+         WpVMntdPKYgsNsmW3LUwthbvj6INK5ejhMdFZgU7ekSy4LVdcve3NbOzw/SlSYmF74zr
+         h2JDdWv4I9nWtwiwKhh1qJ6Bgny6qCld6Mn/ykp1Ax95a00TD8WrNh2uK2ueEZWdyrk0
+         TIXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lNONBfM9DvnwbpKJFTuj1RNSLW5/OK2eghETZOp56NY=;
+        b=OTbZF66558GaT+BcfN6tNp/K3iWbDpduFGzdTDRcuMcJEejkIsMj2xfarMKL+7rn8G
+         fqkr+TAPTWpjmk36X0m5W4g2Clwzwygtv7R6sQJcXx+yUCMh/w1sQDAd2RUxNxFrP2HO
+         k+eLuV1ABjA//r/lFvNFmUJaplWj0vMAhehEa9QdOibbG5YYWQ1vtc7w9olgVX70T46d
+         SXtVS98o7OA17G4yE3pAtI5cZcSonjCfK0iPfLcKvRisjlUJUtO4RCJmix1C7ogHph4b
+         cKrHSod9P8c0hz91iVJTJbz7jAh2U+D7orFeUHNczqUqP9OhdswILTFNSZXtnmv7J21k
+         uYKg==
+X-Gm-Message-State: AOAM533wNUmjK0NB2JFnTHVzaRby59EgYyv/QTxEWdmLrwUub8LohABr
+        lD91U+32bqStHVuAdDCBV+2L62dldhYxM/uH
+X-Google-Smtp-Source: ABdhPJyhrcL3dTo4PTMKag28yBV9+Nkbkl7mze1h7zv5FIvf4VN2CF2G69aT1XGfxMr+Dh881qqb2A==
+X-Received: by 2002:ac8:45c6:: with SMTP id e6mr22659964qto.67.1620709575433;
+        Mon, 10 May 2021 22:06:15 -0700 (PDT)
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
+        by smtp.gmail.com with ESMTPSA id l65sm6314877qke.7.2021.05.10.22.06.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 10 May 2021 22:06:14 -0700 (PDT)
+Received: by mail-yb1-f172.google.com with SMTP id v188so24711717ybe.1;
+        Mon, 10 May 2021 22:06:14 -0700 (PDT)
+X-Received: by 2002:a25:8803:: with SMTP id c3mr4494302ybl.115.1620709574185;
+ Mon, 10 May 2021 22:06:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210402192823.bqwgipmky3xsucs5@ast-mbp> <CAM_iQpUfv7c19zFN1Y5-cSUiVwpk0bmtBMSxZoELgDOFCQ=qAw@mail.gmail.com>
+ <20210402234500.by3wigegeluy5w7j@ast-mbp> <CAM_iQpWf2aYbY=tKejb=nx7LWBLo1woTp-n4wOLhkUuDCz8u-Q@mail.gmail.com>
+ <20210412230151.763nqvaadrrg77kd@ast-mbp.dhcp.thefacebook.com>
+ <CAM_iQpWePmmpr0RKqCrQ=NPiGrq2Tx9OU9y3e4CTzFjvh5t47w@mail.gmail.com>
+ <CAADnVQLsmULxJYq9rHS4xyg=VAUeexJTh35vTWTVgjeqwX4D6g@mail.gmail.com>
+ <CAM_iQpVtxgZNeqh4_Pqftc3D163JnRvP3AZRuFrYNeyWLgVBVA@mail.gmail.com>
+ <CAADnVQLFehCeQRbwEQ9VM-=Y3V3es2Ze8gFPs6cZHwNH0Ct7vw@mail.gmail.com>
+ <CAM_iQpWDhoY_msU=AowHFq3N3OuQpvxd2ADP_Z+gxBfGduhrPA@mail.gmail.com>
+ <20210427020159.hhgyfkjhzjk3lxgs@ast-mbp.dhcp.thefacebook.com>
+ <CAM_iQpVE4XG7SPAVBmV2UtqUANg3X-1ngY7COYC03NrT6JkZ+g@mail.gmail.com>
+ <CAADnVQK9BgguVorziWgpMktLHuPCgEaKa4fz-KCfhcZtT46teQ@mail.gmail.com> <CAM_iQpWBrxuT=Y3CbhxYpE5a+QSk-O=Vj4euegggXAAKTHRBqw@mail.gmail.com>
+In-Reply-To: <CAM_iQpWBrxuT=Y3CbhxYpE5a+QSk-O=Vj4euegggXAAKTHRBqw@mail.gmail.com>
+From:   Joe Stringer <joe@cilium.io>
+Date:   Mon, 10 May 2021 22:05:59 -0700
+X-Gmail-Original-Message-ID: <CAOftzPh0cj_XRES8mrNWnyKFZDLpRez09NAofmu1F1JAZf43Cw@mail.gmail.com>
+Message-ID: <CAOftzPh0cj_XRES8mrNWnyKFZDLpRez09NAofmu1F1JAZf43Cw@mail.gmail.com>
+Subject: Re: [RFC Patch bpf-next] bpf: introduce bpf timer
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 10 May 2021 09:42:36 +0800 Yunsheng Lin wrote:
-> The netdev qeueue might be stopped when byte queue limit has
-> reached or tx hw ring is full, net_tx_action() may still be
-> rescheduled endlessly if STATE_MISSED is set, which consumes
-> a lot of cpu without dequeuing and transmiting any skb because
-> the netdev queue is stopped, see qdisc_run_end().
-> 
-> This patch fixes it by checking the netdev queue state before
-> calling qdisc_run() and clearing STATE_MISSED if netdev queue is
-> stopped during qdisc_run(), the net_tx_action() is recheduled
-> again when netdev qeueue is restarted, see netif_tx_wake_queue().
-> 
-> Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
-> Reported-by: Michal Kubecek <mkubecek@suse.cz>
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Hi Cong,
 
-Patches 1 and 2 look good to me but this one I'm not 100% sure.
+On Sat, May 8, 2021 at 10:39 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> On Tue, Apr 27, 2021 at 11:34 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Tue, Apr 27, 2021 at 9:36 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > >
+> > > We don't go back to why user-space cleanup is inefficient again,
+> > > do we? ;)
+> >
+> > I remain unconvinced that cilium conntrack _needs_ timer apis.
+> > It works fine in production and I don't hear any complaints
+> > from cilium users. So 'user space cleanup inefficiencies' is
+> > very subjective and cannot be the reason to add timer apis.
+>
+> I am pretty sure I showed the original report to you when I sent
+> timeout hashmap patch, in case you forgot here it is again:
+> https://github.com/cilium/cilium/issues/5048
+>
+> and let me quote the original report here:
+>
+> "The current implementation (as of v1.2) for managing the contents of
+> the datapath connection tracking map leaves something to be desired:
+> Once per minute, the userspace cilium-agent makes a series of calls to
+> the bpf() syscall to fetch all of the entries in the map to determine
+> whether they should be deleted. For each entry in the map, 2-3 calls
+> must be made: One to fetch the next key, one to fetch the value, and
+> perhaps one to delete the entry. The maximum size of the map is 1
+> million entries, and if the current count approaches this size then
+> the garbage collection goroutine may spend a significant number of CPU
+> cycles iterating and deleting elements from the conntrack map."
 
-> @@ -251,8 +253,10 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
->  	*validate = true;
->  
->  	if ((q->flags & TCQ_F_ONETXQUEUE) &&
-> -	    netif_xmit_frozen_or_stopped(txq))
-> +	    netif_xmit_frozen_or_stopped(txq)) {
-> +		clear_bit(__QDISC_STATE_MISSED, &q->state);
->  		return skb;
-> +	}
+I'm also curious to hear more details as I haven't seen any recent
+discussion in the common Cilium community channels (GitHub / Slack)
+around deficiencies in the conntrack garbage collection since we
+addressed the LRU issues upstream and switched back to LRU maps.
+There's an update to the report quoted from the same link above:
 
-The queues are woken asynchronously without holding any locks via
-netif_tx_wake_queue(). Theoretically we can have a situation where:
+"In recent releases, we've moved back to LRU for management of the CT
+maps so the core problem is not as bad; furthermore we have
+implemented a backoff for GC depending on the size and number of
+entries in the conntrack table, so that in active environments the
+userspace GC is frequent enough to prevent issues but in relatively
+passive environments the userspace GC is only rarely run (to minimize
+CPU impact)."
 
-CPU 0                            CPU 1   
-  .                                .
-dequeue_skb()                      .
-  netif_xmit_frozen..() # true     .
-  .                              [IRQ]
-  .                              netif_tx_wake_queue()
-  .                              <end of IRQ>
-  .                              netif_tx_action()
-  .                              set MISSED
-  clear MISSED
-  return NULL
-ret from qdisc_restart()
-ret from __qdisc_run()
-qdisc_run_end()
--> MISSED not set
+By "core problem is not as bad", I would have been referring to the
+way that failing to garbage collect hashtables in a timely manner can
+lead to rejecting new connections due to lack of available map space.
+Switching back to LRU mitigated this concern. With a reduced frequency
+of running the garbage collection logic, the CPU impact is lower as
+well. I don't think we've explored batched map ops for this use case
+yet either, which would already serve to improve the CPU usage
+situation without extending the kernel.
+
+The main outstanding issue I'm aware of is that we will often have a
+1:1 mapping of entries in the CT map and the NAT map, and ideally we'd
+like them to have tied fates but currently we have no mechanism to do
+this with LRU. When LRU eviction occurs, the entries can get out of
+sync until the next GC. I could imagine timers helping with this if we
+were to switch back to hash maps since we could handle this problem in
+custom eviction logic, but that would reintroduce the entry management
+problem above. So then we'd still need more work to figure out how to
+address that with a timers approach. If I were to guess right now, the
+right solution for this particular problem is probably associating
+programs with map entry lifecycle events (like LRU eviction) rather
+than adding timers to trigger the logic we want, but that's a whole
+different discussion.
+
+Cheers,
+Joe
