@@ -2,202 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216EF37A003
-	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 08:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8909237A07B
+	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 09:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbhEKGwH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 May 2021 02:52:07 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:59571 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229984AbhEKGwH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 May 2021 02:52:07 -0400
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210511065059epoutp016fc31fadb469cf9a015e798bf61d17d1~98Hy9jdtN0716307163epoutp01W
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 06:50:59 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210511065059epoutp016fc31fadb469cf9a015e798bf61d17d1~98Hy9jdtN0716307163epoutp01W
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1620715859;
-        bh=1ZZQwBOGeu8uekno2BLelsyca/RkRfVZ3WSZ6YzujrU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FYJbrrDwSm7hXgRCG/QXstKBSsaSp59HoLuhyCylpoGYoF29S9GsaCrBSRWK2Fffz
-         b6hk4jm0gDDzrTDNRfXyTakLbDCbHeVxZbXhcpGPcWKYmlcUnpTiEUyMMzuArG+FzR
-         cilrNRFZNIFxQRh4VH9Pc1UNrMQ9uuE1wnj6Z+3U=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210511065058epcas2p1474564a69434b88d4767e643ad2e08b4~98HyNkJnm1838818388epcas2p1D;
-        Tue, 11 May 2021 06:50:58 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.181]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4FfT8d4L6fz4x9Pq; Tue, 11 May
-        2021 06:50:57 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        81.D1.09717.0592A906; Tue, 11 May 2021 15:50:57 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210511065056epcas2p1788505019deb274f5c57650a2f5d7ef0~98HvxZexz1537715377epcas2p1V;
-        Tue, 11 May 2021 06:50:56 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210511065056epsmtrp1154f42734008e77b75124006a195c029~98HvvtR5r2914829148epsmtrp1b;
-        Tue, 11 May 2021 06:50:56 +0000 (GMT)
-X-AuditID: b6c32a48-4e5ff700000025f5-6c-609a295067c4
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        3A.96.08637.F492A906; Tue, 11 May 2021 15:50:55 +0900 (KST)
-Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210511065055epsmtip23f9a9e7dd8a093cde3a8a426606b3c7f~98HvfyhHp0092600926epsmtip2E;
-        Tue, 11 May 2021 06:50:55 +0000 (GMT)
-From:   Dongseok Yi <dseok.yi@samsung.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Dongseok Yi <dseok.yi@samsung.com>,
+        id S230355AbhEKHPU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 03:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229945AbhEKHPT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 03:15:19 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA40C061574;
+        Tue, 11 May 2021 00:14:13 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id q15so10873159pgg.12;
+        Tue, 11 May 2021 00:14:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OCE0VDemWP3Un3BUBubMOTJqKvhb1dlengItxJN9kCg=;
+        b=dvWBVFkDpMFMjORmV6mBzC0CLWkszPaXOBWqcbLFzQzTFGR8V382LPXY3RSt47PSwJ
+         PriWUdBlYzxBgzlQNm5VRwrDBalYJyi4uPr4uNiM03Hhrk0iVoYWwKNMrXEF3QPf4kZn
+         8mYO91HE02cfwkoVfsLEemXRhNo12BIrGCV1CBSxLmQzPP/OPv/cCQbJE999w5QZlFVP
+         MgNjN52ICxRoOyOdkf4lNyAbxXiGrRk5UJKx0PXf3/2shlFSiB1fC/qgalaGcR4ze6SW
+         drEy294gra5n6N4J3H0s4FAXsbsORpig3yHGOau0FvDpSHnDDbNCwvpGF3DpsAxtIaGv
+         +KoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OCE0VDemWP3Un3BUBubMOTJqKvhb1dlengItxJN9kCg=;
+        b=UQMTrBcBvMzJhXbXeJokqGtvicvRdYJZu5pYatms8MUzK1XRkVnYbTGqvbMiTnT4sv
+         zRJ4ehqtE+K7TNvVpa9BOWIvFWjYuWj7MNmcdem9nK/vDjP6aXEhbu6rYZPrBAtBa+4y
+         YJGUPfpOw1zw5R8EuI8wt27aUrGxc7bYQW0TXVBHI5tjjmPMkIkm5Ry0g85aKaMcnKqS
+         YuG1eAbAkoA5BON0JCtXhq2KSnD3J0A+BgN9a2Ymhi0CsIVK0NtVWpKnOlkhW6C3Lppa
+         k7018rrU2qKP4Mxrswm0kGBXjcGknvbMXMCggaghqG1d48dlFUDPWa8+0eQOdnGA0vHj
+         h5fA==
+X-Gm-Message-State: AOAM532qpWn6fL8LdNJvVs1EAvULlUoTiOBNuQeXalE1bMsBbVTBgRol
+        AtYgCb1iyag5OvuIyT+D5VMWpu6D5/eVoyM20i8=
+X-Google-Smtp-Source: ABdhPJzB5dBcRqYw4ILOKKlWtRmv2VdjzfR/h5MVREf5B3Yicsh7OXee7jd9MFZwwpcPeUm13xty8co8o8PTnZYrbzw=
+X-Received: by 2002:a05:6a00:139a:b029:2a1:2e2d:5924 with SMTP id
+ t26-20020a056a00139ab02902a12e2d5924mr25069886pfg.15.1620717252935; Tue, 11
+ May 2021 00:14:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1620499942.git.yifeifz2@illinois.edu> <53db70ed544928d227df7e3f3a1f8c53e3665c65.1620499942.git.yifeifz2@illinois.edu>
+ <20210511020425.54nygajvrpxqnfsh@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210511020425.54nygajvrpxqnfsh@ast-mbp.dhcp.thefacebook.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Tue, 11 May 2021 02:14:01 -0500
+Message-ID: <CABqSeAT8iz-VhWjWqABqGbF7ydkoT7LmzJ5Do8K1ANQvQK=FJQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next seccomp 10/12] seccomp-ebpf: Add ability to
+ read user memory
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     containers@lists.linux.dev, bpf <bpf@vger.kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        LSM List <linux-security-module@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Austin Kuo <hckuo2@illinois.edu>,
+        Claudio Canella <claudio.canella@iaik.tugraz.at>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf v2] bpf: check BPF_F_ADJ_ROOM_FIXED_GSO when upgrading
- mss in 6 to 4
-Date:   Tue, 11 May 2021 15:36:37 +0900
-Message-Id: <1620714998-120657-1-git-send-email-dseok.yi@samsung.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1619690903-1138-1-git-send-email-dseok.yi@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplk+LIzCtJLcpLzFFi42LZdljTQjdQc1aCwYnfjBbff89mtvjy8za7
-        xecjx9ksFi/8xmwx53wLi8WVaX8YLZp2rGCyePHhCaPF8329TBYXtvWxWlzeNYfN4tgCMYuf
-        h88wWyz+uQGoYskMRgd+jy0rbzJ5TGx+x+6xc9Zddo+uG5eYPTat6mTz6NuyitHj8ya5APao
-        HJuM1MSU1CKF1Lzk/JTMvHRbJe/geOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoLuVFMoS
-        c0qBQgGJxcVK+nY2RfmlJakKGfnFJbZKqQUpOQWGhgV6xYm5xaV56XrJ+blWhgYGRqZAlQk5
-        GQsXLGMq+CRW0dC8nrGBcalQFyMnh4SAicSjJ0vZQWwhgR2MEr2rnLoYuYDsT0D226WMEM43
-        Ron29ReZYTomTz/FDJHYyygxY+IEqKofjBJ9jUdYQarYBDQk9r97AWaLCJhJbDxygwWkiFng
-        MbNEz57lLCAJYYEoiYOPDoGNZRFQlWjZdwCsgVfAVWLahitMEOvkJG6e6wSr4RRwkfg04wPY
-        agmBiRwSzVM/skAUuUicfbefFcIWlnh1fAs7hC0l8bK/DcjmALLrJVq7YyB6exglrux7AtVr
-        LDHrWTsjSA2zgKbE+l36EOXKEkdugVUwC/BJdBz+CzWFV6KjTQjCVJKY+CUeYoaExIuTk6Hm
-        eUj8nXKRFRIk0xklZnV0MU9glJuFMH8BI+MqRrHUguLc9NRiowIT5AjbxAhOl1oeOxhnv/2g
-        d4iRiYPxEKMEB7OSCK9ox7QEId6UxMqq1KL8+KLSnNTiQ4ymwKCbyCwlmpwPTNh5JfGGpkZm
-        ZgaWphamZkYWSuK8P1PrEoQE0hNLUrNTUwtSi2D6mDg4pRqYUk/8FVAx3Zi4vX239/qiwvaV
-        LK/UN3mWV3v80086nyzxsN6o2mrt1cIp3/runWQSaGmeJrFc4GT0uvJNs7X7/qdej/5gM2XJ
-        lTvidtM1Pro1G4v/vmcbxzRp3dabx7zdb2/W33rv4e5urV+/D6iZi1sdCxGyTSo6VP5FOGH9
-        ++vMyW8+cc1MzbaaLDfR/dei6R6LmBdlxf0Xf1Tu3P4mwTiieEGO4dJ9Kdtdj+Wcc7l2hXW1
-        2+9XLH+dbh1r3937vftl4e+UmnuZTqe9NOUu2bJ+WLxdbJWy+YobZvNTvQ5M7Vu4yUdm58+g
-        fYZZM6LLTbTXrBBivL7KYMOnZ/efepyy3HJ0gV1a+a1ljcE3ryuxFGckGmoxFxUnAgChS3g1
-        IAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrOLMWRmVeSWpSXmKPExsWy7bCSvK6/5qwEgytfTS2+/57NbPHl5212
-        i89HjrNZLF74jdlizvkWFosr0/4wWjTtWMFk8eLDE0aL5/t6mSwubOtjtbi8aw6bxbEFYhY/
-        D59htlj8cwNQxZIZjA78HltW3mTymNj8jt1j56y77B5dNy4xe2xa1cnm0bdlFaPH501yAexR
-        XDYpqTmZZalF+nYJXBkLFyxjKvgkVtHQvJ6xgXGpUBcjJ4eEgInE5OmnmEFsIYHdjBJHd7B2
-        MXIAxSUkdm12hSgRlrjfcgQozAVU8o1R4viGZ2D1bAIaEvvfvWAFsUUEzCQ2HrnBAlLELPCR
-        WeLotbdMIAlhgQiJkx2zGEFsFgFViZZ9B8AaeAVcJaZtuMIEsUFO4ua5TrChnAIuEp9mfIA6
-        yFni3eFPLBMY+RYwMqxilEwtKM5Nzy02LDDMSy3XK07MLS7NS9dLzs/dxAgOay3NHYzbV33Q
-        O8TIxMF4iFGCg1lJhFe0Y1qCEG9KYmVValF+fFFpTmrxIUZpDhYlcd4LXSfjhQTSE0tSs1NT
-        C1KLYLJMHJxSDUyrGz/fDuk7b/SkfckdEfeeGefX58ytvZ9nZroxfaeMgrLJE6ZEGdM7t0qU
-        N99deb/vyXvRlBzjOx2Ns573ZWk0/g6JcNw3i6n4uI/Fik/6l88kp1x7bnu4cMeJH7y2v6Zd
-        3Xq58kGselWJ5Gmup3cYL3Nc6NKVa7IKO2nOvYF19q2qLC+pcvP9e/9/+bQqmHHLDmkOldby
-        Ns3XQrOPTLvEdVM2dtHFFIfHtXzRH+pXXr78cifrhZpK/nXrkpQDZ082j+yf845FJGvaEelL
-        abc25LpNn71xWqA6z2NlP7n/1RxTjqwJWDjD8bPHBd0VTyM+XnHLdOFMWXhhluZV9wUBr6fM
-        aKxqTcn13cV+++Q3JZbijERDLeai4kQAE3Jh69oCAAA=
-X-CMS-MailID: 20210511065056epcas2p1788505019deb274f5c57650a2f5d7ef0
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210511065056epcas2p1788505019deb274f5c57650a2f5d7ef0
-References: <1619690903-1138-1-git-send-email-dseok.yi@samsung.com>
-        <CGME20210511065056epcas2p1788505019deb274f5c57650a2f5d7ef0@epcas2p1.samsung.com>
+        Daniel Gruss <daniel.gruss@iaik.tugraz.at>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jann Horn <jannh@google.com>,
+        Jinghao Jia <jinghao7@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tom Hromatka <tom.hromatka@oracle.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In the forwarding path GRO -> BPF 6 to 4 -> GSO for TCP traffic, the
-coalesced packet payload can be > MSS, but < MSS + 20.
-bpf_skb_proto_6_to_4 will increase the MSS and it can be > the payload
-length. After then tcp_gso_segment checks for the payload length if it
-is <= MSS. The condition is causing the packet to be dropped.
+On Mon, May 10, 2021 at 9:04 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, May 10, 2021 at 12:22:47PM -0500, YiFei Zhu wrote:
+> >
+> > +BPF_CALL_3(bpf_probe_read_user_dumpable, void *, dst, u32, size,
+> > +        const void __user *, unsafe_ptr)
+> > +{
+> > +     int ret = -EPERM;
+> > +
+> > +     if (get_dumpable(current->mm))
+> > +             ret = copy_from_user_nofault(dst, unsafe_ptr, size);
+>
+> Could you explain a bit more how dumpable flag makes it safe for unpriv?
+> The unpriv prog is attached to the children tasks only, right?
+> and dumpable gets cleared if euid changes?
 
-tcp_gso_segment():
-        [...]
-        mss = skb_shinfo(skb)->gso_size;
-        if (unlikely(skb->len <= mss))
-                goto out;
-        [...]
+This is the "reduction to ptrace". The model here is that the eBPF
+seccomp filter is doing the equivalent of ptracing the user process
+using the privileges of the task at the time of loading the seccomp
+filter.
 
-Allow to increase MSS when BPF_F_ADJ_ROOM_FIXED_GSO is not set.
+ptrace access control is governed by ptrace.c:__ptrace_may_access. The
+requirements are:
+* always allow thread group introspection -- assume false so we are
+more restrictive than ptrace.
+* tracer has CAP_PTRACE in the target user namespace or tracer
+r/fsu/gidid equal target resu/gid -- discuss below
+* tracer has CAP_PTRACE in the target user namespace or target is
+SUID_DUMP_USER (I realized I should probably change the condition to
+== SUID_DUMP_USER).
+* passes LSM checks (eg yama ptrace_scope) -- we expose a hook to LSM
+but it's more of a "disable all advanced seccomp-eBPF features". How
+would a better interface to LSM look like?
 
-Fixes: 6578171a7ff0 (bpf: add bpf_skb_change_proto helper)
-Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
----
- net/core/filter.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+The dumpable check handles the "target is SUID_DUMP_USER" condition,
+in the circumstance that the loader does not have CAP_PTRACE in its
+namespace at the time of load. Why would this imply its CAP_PTRACE
+capability in target namespace? This is based on my understanding on
+how capabilities and user namespaces interact:
+For the sake of simplicity, let's first assume that loader is the same
+task as the task that attaches the filter (via prctl or seccomp
+syscall).
+* Case 1: target and loader are the same user namespace. Trivial case,
+the two operations are the same.
+* Case 2: target is loader's parent namespace. Can't happen under
+assumption. Seccomp affects itself and children only, and it is only
+possible to join a descendant user ns.
+* Case 3: target is loader's descendant namespace. Loader would have
+full CAP_PTRACE on target. We are more restrictive than ptrace.
+* Case 4: target and loader are on unrelated namespace branches. Can't
+happen under assumption. Same as case 2.
 
-v2:
-per Willem de Bruijn request,
-checked the flag instead of a generic approach.
+Let's break this assumption and see what happens if the loader and
+attacher are in different contexts:
+* Case 1: attacher is less capable (as a general term of "what it can
+do") than loader then all of the above applies, since the model
+concerns and checks the capabilities of the loader.
+* Case 2: attacher is more capable than loader. The attacher would
+need an fd to the prog to attach it:
+  * subcase 1: attacher inherited the fd after an exec and became more
+capable. uh... why is it trusting fds from a less capable context?
+  * subcase 2: attacher has CAP_SYS_ADMIN and gets the fd via
+BPF_PROG_GET_FD_BY_ID. uh... why is it trusting random fds and
+attaching it?
+  * subcase 3: attacher received the fd via a domain socket from a
+process which may be in a different user namespace. On my first
+thought, I thought, why is it trusting random fds from a less capable
+context? Except I just thought of an adversary could:
+    * Clone into new userns,
+    * Load filter in child, which has CAP_PTRACE in new userns
+    * Send filter to the parent which doesn't have CAP_PTRACE in its userns
+    * It's broken :(
+We'll think more about this case. One way is to check against init
+namespace, which means unpriv container runtimes won't have the
+non-dumpable override. Though, it shouldn't be affecting most of the
+use cases. Alternatively we can store which userns it was loaded from
+and reject attaching from a different userns.
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index cae56d0..a98b28d 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3276,7 +3276,7 @@ static int bpf_skb_proto_4_to_6(struct sk_buff *skb)
- 	return 0;
- }
- 
--static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
-+static int bpf_skb_proto_6_to_4(struct sk_buff *skb, u64 flags)
- {
- 	const u32 len_diff = sizeof(struct ipv6hdr) - sizeof(struct iphdr);
- 	u32 off = skb_mac_header_len(skb);
-@@ -3305,7 +3305,8 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
- 		}
- 
- 		/* Due to IPv4 header, MSS can be upgraded. */
--		skb_increase_gso_size(shinfo, len_diff);
-+		if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
-+			skb_increase_gso_size(shinfo, len_diff);
- 		/* Header must be checked, and gso_segs recomputed. */
- 		shinfo->gso_type |= SKB_GSO_DODGY;
- 		shinfo->gso_segs = 0;
-@@ -3317,7 +3318,7 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
- 	return 0;
- }
- 
--static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto)
-+static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto, u64 flags)
- {
- 	__be16 from_proto = skb->protocol;
- 
-@@ -3327,7 +3328,7 @@ static int bpf_skb_proto_xlat(struct sk_buff *skb, __be16 to_proto)
- 
- 	if (from_proto == htons(ETH_P_IPV6) &&
- 	      to_proto == htons(ETH_P_IP))
--		return bpf_skb_proto_6_to_4(skb);
-+		return bpf_skb_proto_6_to_4(skb, flags);
- 
- 	return -ENOTSUPP;
- }
-@@ -3337,7 +3338,7 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
- {
- 	int ret;
- 
--	if (unlikely(flags))
-+	if (unlikely(flags & ~(BPF_F_ADJ_ROOM_FIXED_GSO)))
- 		return -EINVAL;
- 
- 	/* General idea is that this helper does the basic groundwork
-@@ -3357,7 +3358,7 @@ BPF_CALL_3(bpf_skb_change_proto, struct sk_buff *, skb, __be16, proto,
- 	 * that. For offloads, we mark packet as dodgy, so that headers
- 	 * need to be verified first.
- 	 */
--	ret = bpf_skb_proto_xlat(skb, proto);
-+	ret = bpf_skb_proto_xlat(skb, proto, flags);
- 	bpf_compute_data_pointers(skb);
- 	return ret;
- }
--- 
-2.7.4
+Regarding u/gids, for an attacher to attach a seccomp filter, whether
+cBPF or eBPF, if it doesn't have CAP_SYS_ADMIN in its current ns, it
+will have to set no_new_privs on itself before it can attach. (Unlike
+the previous discussion, this check is done at attach time rather than
+load.) With no_new_privs the target's privs is a subset of the
+attacher's, so the attacher should have a way to match the target's
+resuid, so this condition is not a concern.
 
+YiFei Zhu
