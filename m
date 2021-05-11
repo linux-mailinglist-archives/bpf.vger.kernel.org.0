@@ -2,129 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A5837AB13
-	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 17:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D44537AD33
+	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 19:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231769AbhEKPt2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 May 2021 11:49:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
+        id S231848AbhEKRk3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 13:40:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbhEKPt2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 May 2021 11:49:28 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93BBC061574;
-        Tue, 11 May 2021 08:48:21 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id e7-20020a4ad2470000b02902088d0512ceso1459943oos.8;
-        Tue, 11 May 2021 08:48:21 -0700 (PDT)
+        with ESMTP id S231459AbhEKRk3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 13:40:29 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE0CC061574;
+        Tue, 11 May 2021 10:39:18 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id l129so19563752qke.8;
+        Tue, 11 May 2021 10:39:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5G3X0SsMYoBRSudd4/RxfVXt3YIGObL1pFXwXeHxFjA=;
-        b=ergBPEMz0eajaLPXgWUA6rjor17KYhfwTmK2sOuzzDbXqsPIWtVRKjfxbIfzY9OkIc
-         q0L2k0bcDQHmQnOLvySuWkGTMFVDa41heYsNZzJu0POZhOZPPGT8MDgenaetDOwBDhCO
-         JZWEsqDG+G1ALmEIReIrhqYUxm/ZrRY7aAZPIYjXQJCm15gyHomQlJ2mOncSfwLSnUUn
-         x2ltw4rw0iutyooHA0z3ND6QaxqyQb28rLR3pop34okjpBS4V5vtmt+PSopxAYHRWt8h
-         +pljNqMcTsAXw3aWT6x7hsB4OHac8L/kKUSbwPj5bGCzHiu9F6Sx1u0g/8NXmUgau1Xk
-         QhAA==
+        bh=cBzI0fFJVl7rkeGxSkI1T6aieyqCHfIsXgSNZWy3sII=;
+        b=ZMmEprcMtj68TGu/kofxqBTpQBBblASy5MxIJyZAe1O/39gvjjNl0Uvcz756irQIVR
+         o2TiCjkkMaPqakbvJUAACNYKL/mU7Ycxo68reRSzMvDy1DznH+4F+RM31nUGKN6cLfR3
+         Q6h4PnFhwMyDMcHLRtZz/M4MRU6XkOWwxFgM8ArOFf9AM23Br86g1Pg3xe0pd+mrfcuz
+         gOifHqO2nHPBFc+6Tm2hUT/Ttv4JxCxTQLqF8ehf1rDOwO6yEEU8Iburin7o7zxtUG5K
+         6Aj04Vwp1R81o+L5ullSyt4tXo0wppL+7hiYNiwCUI/VEX4IQNXOniEmUViVnO+aRhJo
+         78fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5G3X0SsMYoBRSudd4/RxfVXt3YIGObL1pFXwXeHxFjA=;
-        b=acGR549tbPP/qgYb2blIGz706W1bLxZXNWHCEN43aHlhy1ITzDY6/j6E4U+vrB3oLX
-         LDUXDatV7ATfm0Sur33yQZX3hImEtzWizQhdIw/jJEOBRxf3BzbDVypn0To/xlPPQ7Jd
-         j24UBx6FfEWVtf0uBIPk0SYkEqQRBYfHePOTHtq0kuyYalqXsSS/UZ/thMIYmDoXbbKk
-         9b779wQJ5vOEHJFtutlNTIQhWp3BCLSz5pnFbbWge60Tk2CPDbF+tUStPNkTLhZw9neN
-         ZhEKEudry+9sdwmImXtKeJtXbBiTi08eotjo/RI5qy4eF5zaCtJsKiY92aiCwS/GlY+k
-         MMZw==
-X-Gm-Message-State: AOAM532i7K5wkM2I1xZI8uFqiNZBOkZdqB9CJGyy5yFytHBLdpqyrcq2
-        N7iPJ5nwrvhGAKjqceN4R5wBMl/n8lQ1XiehnJscNKZ98Hc=
-X-Google-Smtp-Source: ABdhPJzACYbQ8TvRjv21GKdTUAKZG5wgcKKCL8UftacLyBzooNVzwknDRupMyFB2bQaOxgOZJU1/+G22G6kfIOv1RJs=
-X-Received: by 2002:a4a:d085:: with SMTP id i5mr23978147oor.61.1620748101287;
- Tue, 11 May 2021 08:48:21 -0700 (PDT)
+        bh=cBzI0fFJVl7rkeGxSkI1T6aieyqCHfIsXgSNZWy3sII=;
+        b=JMyRdrmZZ+m/WHZkzBQ5HW17DS+AnV6xp9F7nqT8UH16iigUpqy+4ibKPySJKN7/QU
+         WI42gT7C440QCGUCfoKXWkEUHbHekPl+wiWKZWjWiFYqhW9QBgrLIxNF/5V3a7mSMG0A
+         NCbp/6rbeWCbyjTKo3bIGNFAjXui4WRwXKVL1foZjbjVVKu6XKcTn0R3WhKl68eA4LoY
+         Qf1x8P079xWTg6XMFMkwFKkGt0GdbxKPfCeqB48oeeXA7qgSdLMBNMDFxR4qY7sApPvW
+         dqRLuV2Ywn0piEqyK710HWl0ndor+P+Mf8KWW6sRcvBPUs1Bu9HVeGpTc5IUGb6VsP0x
+         VmQA==
+X-Gm-Message-State: AOAM532/FLJJDTLsxasP4v5BjQUJt1+FUXeTntkdoEQOAQxLckhaohXv
+        ZPLHCCvJV0487AaEAU6QkOJXTTFoLyPEXlWr8A8=
+X-Google-Smtp-Source: ABdhPJzb78m/Bx93OXl1S3XKrRFKVVrRBm8yG+xUh1UMHLfr+s9GXBuPKZBqHAEbxD/rxFj6Q+nS3YIfB1xS7riiesM=
+X-Received: by 2002:a05:620a:158c:: with SMTP id d12mr26777380qkk.127.1620754757565;
+ Tue, 11 May 2021 10:39:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <YJVnO+TCRW83S6w4@phenom.ffwll.local> <CADnq5_Pvtj1vb0bak_gUkv9J3+vfsMZxVKTKYeUvwQCajAWoVQ@mail.gmail.com>
- <YJVqL4c6SJc8wdkK@phenom.ffwll.local> <CADnq5_PHjiHy=Su_1VKr5ycdnXN-OuSXw0X_TeNqSj+TJs2MGA@mail.gmail.com>
- <CADnq5_OjaPw5iF_82bjNPt6v-7OcRmXmXECcN+Gdg1NcucJiHA@mail.gmail.com>
- <YJVwtS9XJlogZRqv@phenom.ffwll.local> <YJWWByISHSPqF+aN@slm.duckdns.org>
- <CADnq5_Mwd-xHZQ4pt34=FPk2Gq3ij1FNHWsEz1LdS7_Dyo00iQ@mail.gmail.com>
- <YJWqIVnX9giaKMTG@slm.duckdns.org> <CADnq5_PudV4ufQW=DqrDow_vvMQDCJVxjqZeXeTvM=6Xp+a_RQ@mail.gmail.com>
- <YJXRHXIykyEBdnTF@slm.duckdns.org>
-In-Reply-To: <YJXRHXIykyEBdnTF@slm.duckdns.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 11 May 2021 11:48:10 -0400
-Message-ID: <CADnq5_MDvhJiA2rd6ELAx87x2RdXJ_Am6N=xZQdtsG_KCubAtw@mail.gmail.com>
-Subject: Re: [RFC] Add BPF_PROG_TYPE_CGROUP_IOCTL
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Kenny Ho <y2kenny@gmail.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
+References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
+ <1619690903-1138-1-git-send-email-dseok.yi@samsung.com> <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
+ <02bf01d74211$0ff4aed0$2fde0c70$@samsung.com> <CA+FuTScC96R5o24c-sbY-CEV4EYOVFepFR85O4uGtCLwOjnzEw@mail.gmail.com>
+ <02c801d7421f$65287a90$2f796fb0$@samsung.com> <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
+ <001801d742db$68ab8060$3a028120$@samsung.com> <CAF=yD-KtJvyjHgGVwscoQpFX3e+DmQCYeO_HVGwyGAp3ote00A@mail.gmail.com>
+ <436dbc62-451b-9b29-178d-9da28f47ef24@huawei.com> <CAF=yD-+d0QYj+812joeuEx1HKPzDyhMpkZP5aP=yNBzrQT5usw@mail.gmail.com>
+ <007001d7431a$96281960$c2784c20$@samsung.com> <CAF=yD-L9pxAFoT+c1Xk5YS42ZaJ+YLVQVnV+fvtqn-gLxq9ENg@mail.gmail.com>
+ <00c901d74543$57fa3620$07eea260$@samsung.com> <CA+FuTSepShKoXUJo7ELMMJ4La11J6CsZggJWsQ5MB2_uhAi+OQ@mail.gmail.com>
+ <CA+FuTSeyuUvKC==Mo7L+u3PS0BQyea+EdLLYjhGFrP7FQZsbEQ@mail.gmail.com> <015101d74602$86442210$92cc6630$@samsung.com>
+In-Reply-To: <015101d74602$86442210$92cc6630$@samsung.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Tue, 11 May 2021 13:38:41 -0400
+Message-ID: <CAF=yD-+ncxKY28h8ch8kcJmSXfqdnBrBELKFBPmfP7RzNsWoTg@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
+ to 4
+To:     Dongseok Yi <dseok.yi@samsung.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kenny Ho <Kenny.Ho@amd.com>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Brian Welty <brian.welty@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        KP Singh <kpsingh@chromium.org>, Yonghong Song <yhs@fb.com>,
-        bpf <bpf@vger.kernel.org>, Dave Airlie <airlied@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 7, 2021 at 7:45 PM Tejun Heo <tj@kernel.org> wrote:
+On Mon, May 10, 2021 at 9:11 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
 >
-> Hello,
+> On Mon, May 10, 2021 at 09:46:25AM -0400, Willem de Bruijn wrote:
+> > On Mon, May 10, 2021 at 9:19 AM Willem de Bruijn
+> > <willemdebruijn.kernel@gmail.com> wrote:
+> > >
+> > > > > That generates TCP packets with different MSS within the same stream.
+> > > > >
+> > > > > My suggestion remains to just not change MSS at all. But this has to
+> > > > > be a new flag to avoid changing established behavior.
+> > > >
+> > > > I don't understand why the mss size should be kept in GSO step. Will
+> > > > there be any issue with different mss?
+> > >
+> > > This issue has come up before and that has been the feedback from
+> > > TCP experts at one point.
+> > >
+> > > > In general, upgrading mss make sense when 6 to 4. The new flag would be
+> > > > set by user to not change mss. What happened if user does not set the
+> > > > flag? I still think we should fix the issue with a general approach. Or
+> > > > can we remove the skb_increase_gso_size line?
+> > >
+> > > Admins that insert such BPF packets should be aware of these issues.
+> > > And likely be using clamping. This is a known issue.
+> > >
+> > > We arrived that the flag approach in bpf_skb_net_shrink. Extending
+> > > that  to bpf_skb_change_proto would be consistent.
+> >
+> > As for more generic approach: does downgrading to non-TSO by clearing
+> > gso_size work for this edge case?
 >
-> On Fri, May 07, 2021 at 06:30:56PM -0400, Alex Deucher wrote:
-> > Maybe we are speaking past each other.  I'm not following.  We got
-> > here because a device specific cgroup didn't make sense.  With my
-> > Linux user hat on, that makes sense.  I don't want to write code to a
-> > bunch of device specific interfaces if I can avoid it.  But as for
-> > temporal vs spatial partitioning of the GPU, the argument seems to be
-> > a sort of hand-wavy one that both spatial and temporal partitioning
-> > make sense on CPUs, but only temporal partitioning makes sense on
-> > GPUs.  I'm trying to understand that assertion.  There are some GPUs
->
-> Spatial partitioning as implemented in cpuset isn't a desirable model. It's
-> there partly because it has historically been there. It doesn't really
-> require dynamic hierarchical distribution of anything and is more of a way
-> to batch-update per-task configuration, which is how it's actually
-> implemented. It's broken too in that it interferes with per-task affinity
-> settings. So, not exactly a good example to follow. In addition, this sort
-> of partitioning requires more hardware knowledge and GPUs are worse than
-> CPUs in that hardwares differ more.
->
-> Features like this are trivial to implement from userland side by making
-> per-process settings inheritable and restricting who can update the
-> settings.
->
-> > that can more easily be temporally partitioned and some that can be
-> > more easily spatially partitioned.  It doesn't seem any different than
-> > CPUs.
->
-> Right, it doesn't really matter how the resource is distributed. What
-> matters is how granular and generic the distribution can be. If gpus can
-> implement work-conserving proportional distribution, that's something which
-> is widely useful and inherently requires dynamic scheduling from kernel
-> side. If it's about setting per-vendor affinities, this is way too much
-> cgroup interface for a feature which can be easily implemented outside
-> cgroup. Just do per-process (or whatever handles gpus use) and confine their
-> configurations from cgroup side however way.
->
-> While the specific theme changes a bit, we're basically having the same
-> discussion with the same conclusion over the past however many months.
-> Hopefully, the point is clear by now.
+> It can hit __skb_linearize in validate_xmit_skb and frags will be
+> copied to a linear part. The linear part size can exceed the MTU of
+> skb->dev unexpectedly.
 
-Thanks, that helps a lot.
+When does skb_needs_linearize return true here (besides lack of
+scatter-gather support, which would also preclude TSO)?
 
-Alex
+> I will make another patch with the flag approach.
+>
