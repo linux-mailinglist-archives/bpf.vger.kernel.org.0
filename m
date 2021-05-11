@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45ACF37B06B
-	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 23:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EA537B06C
+	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 23:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhEKVCs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 May 2021 17:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53448 "EHLO
+        id S229916AbhEKVCz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 17:02:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKVCs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 May 2021 17:02:48 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDC7C061574
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 14:01:40 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id v5so13439328edc.8
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 14:01:40 -0700 (PDT)
+        with ESMTP id S229637AbhEKVCy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 17:02:54 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C174C061574
+        for <bpf@vger.kernel.org>; Tue, 11 May 2021 14:01:46 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id s20so26279825ejr.9
+        for <bpf@vger.kernel.org>; Tue, 11 May 2021 14:01:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2DmwvoWnFxFsnWV8zB+SFUg55UC+pgsHUrCupFbSUPw=;
-        b=ahgPcIgM4JgGZE+ikgfs+tgOSJqrkx7jZZ8ZXorADrPvudnnruXsSnoAJcJfPEpXV6
-         yIB6nKhDMxGQy3+D0P6069J7whK5I3rF+rJwcXIeX2NZbB1s5A567dJP8sD2pBIh0kdY
-         gZCGRhI6kO4visan3/DQrrtgU8YBR8a3Hob8Xui8eWlpP+rdvTeYiuDTmUI6PZZ0yLy9
-         9UW8zPxiUZfqq84Uhsk1o/1nLRzXn3ifG33c/LEFsqA7feFQSx9mtAHbg0QDADj87v4C
-         uWCPCAj9oNO7P30iJUDpoPD3AXWTQk9H/EqdCLrmTsYJht6tOMQMnqfrDiNwP3sKn6TI
-         8mZg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WjdR4lx9fyvS9YO0hZnMNL+Z/pjyrNm7xsG3BHU2QOQ=;
+        b=bWKFThuKBQtOH5lKK8kIfFpd51m/Kq32/5QnY5omjKElIuFlHbTWHEwQaqBBWssiQt
+         SSkluPm/8JBrMoMPgBfd1nWQXcM0Rlm2hEvUijNRbPQG/j3g5jLBf/nHnbeDebNEzn5k
+         zkO6N6XBaxnyvES6HVLv2Rs581xcwQcoJQE+Q3vGUE3/00RDBCXKHX0Fn7KwAkrZwdhx
+         czsisIirhBx8TE1xxlKZIVuwRybPUUGCux765EAx/5mS0bTLCsaKgzkBdMowDs626XWQ
+         qPYC2j1qIdMpuQAOZ7VlISJuovXpNLkbvAEE1uUnAztnkdANjyRQLYahuGOhQRxSNqPa
+         XZGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2DmwvoWnFxFsnWV8zB+SFUg55UC+pgsHUrCupFbSUPw=;
-        b=s2gsDbdM3i2kftc/2y7Gk7ELzTiMHz01q2HzL6XwfzUln7YEPHBLSsYipUoodot9hF
-         B0F9yRYGGSmkskx2LZL55iObuYubVDEfP0NKUknwK3IQ69IhF1CperwhdF4ibTqgZpjs
-         R6a8dPX7ifhatFEpE0qIcDpq+YnmMsjDgQndhY5vEiSeuxANDnlfVMqn3HKLBgEdVPVW
-         p+wZ/CG7qTSVnf6rU5hBxYrxfIic5YHWAl8vtvhDGXFNzJZOTp+XdL9et352qohsbiZS
-         Tlol8FVCwzcTcPCLnDZctqPXuoc3HQl2TCmGV4CylgLxQCz4aSWfu1lZIrEkKHN2zN9F
-         AZbg==
-X-Gm-Message-State: AOAM531IZLXPDXGsSFvsxtgZ4H4lsWIaOa6LQUAbZqxtQV4mcT4coEu2
-        OEfC7OTuQ6VGPp5Bm9OWkkTpqgYjec8IYOZEUELQelbio+2brXPVdG85TmyCOrgqndH6+/FJQ8H
-        Yo/k6B0QmVR1rphGhio9dEgrTAiWGJ9YGtXCIWSGDwsLI1OWCdN9ro/1L4Y+l5RCYIxQJSREV
-X-Google-Smtp-Source: ABdhPJzxpu6jmTwsF0sG06ui+etjzT7o+JdmMGb0pdcwZRd/kjHQ7P6H2QX6BK1UplsZRE+eSxD/Jg==
-X-Received: by 2002:a05:6402:4251:: with SMTP id g17mr38051043edb.205.1620766899012;
-        Tue, 11 May 2021 14:01:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WjdR4lx9fyvS9YO0hZnMNL+Z/pjyrNm7xsG3BHU2QOQ=;
+        b=rIqTUiv0lDb6OPg93Hwhjzf9PJqHXjsHN3t12q72oK7mBUfJdtmSa1Wv3faAW6u4vv
+         ujGPldcbTETMnK4qIdn+wpEnxMGaCGVvqXX6w6a3yg/5yr0+9hAGmUEGGytYq5oJmRXT
+         Rs39e0TP0thIXbexSHWVqGKNwVVoBJCIsjziJxoHaTp6TUN2h17XO/iK9xcqF8PIpuDx
+         EQJy+9f97Oe2YVT34Kko9i3U0YtrDSylYVJZ1Dq0i0TVZRd2+n43fzTohc/biMYsoap+
+         i+EAXoznp9F4yATxD3sQub3aI7SLGZ51E1uyQqcbfJMyLWBWnsYlr/mjlXxnEExmznxL
+         +vLg==
+X-Gm-Message-State: AOAM530kzEQEwZUluTjFgqctYsUkMyjkf1dXOezO4tWnTtXSWfr2K+P+
+        +4bYxMTobE4Up7jcRrg0FmAa9Mh6f5GN5+LZjKYymuV6OhkI6C+9wqZBrDbh76hMBC2t+2Q2L3X
+        yECS+RPLKUNvLXUvXka2WJGvS+jB557VKX6vA3vN2O1CFAVrQnyHTOA4vLXtfEWk8sg7jUn10
+X-Google-Smtp-Source: ABdhPJxWqeODwff5n8IKMbbzTDrQ4eDOevAx1o9ArbS8HTwfs5gBcEC8nMrl6osO0orfopuUln908g==
+X-Received: by 2002:a17:907:628d:: with SMTP id nd13mr33449341ejc.299.1620766904705;
+        Tue, 11 May 2021 14:01:44 -0700 (PDT)
 Received: from localhost.localdomain ([93.140.9.82])
-        by smtp.gmail.com with ESMTPSA id k9sm13206569eje.102.2021.05.11.14.01.37
+        by smtp.gmail.com with ESMTPSA id k9sm13206569eje.102.2021.05.11.14.01.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 May 2021 14:01:38 -0700 (PDT)
+        Tue, 11 May 2021 14:01:44 -0700 (PDT)
 From:   Denis Salopek <denis.salopek@sartura.hr>
 To:     bpf@vger.kernel.org
 Cc:     Denis Salopek <denis.salopek@sartura.hr>,
@@ -57,76 +57,326 @@ Cc:     Denis Salopek <denis.salopek@sartura.hr>,
         Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH v7 bpf-next 0/3] Add lookup_and_delete_elem support to BPF hash map types
-Date:   Tue, 11 May 2021 23:00:03 +0200
-Message-Id: <cover.1620763117.git.denis.salopek@sartura.hr>
+Subject: [PATCH v7 bpf-next 1/3] bpf: add lookup_and_delete_elem support to hashtab
+Date:   Tue, 11 May 2021 23:00:04 +0200
+Message-Id: <4d18480a3e990ffbf14751ddef0325eed3be2966.1620763117.git.denis.salopek@sartura.hr>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1620763117.git.denis.salopek@sartura.hr>
+References: <cover.1620763117.git.denis.salopek@sartura.hr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch series extends the existing bpf_map_lookup_and_delete_elem()
-functionality with 4 more map types:
- - BPF_MAP_TYPE_HASH,
- - BPF_MAP_TYPE_PERCPU_HASH,
- - BPF_MAP_TYPE_LRU_HASH and
- - BPF_MAP_TYPE_LRU_PERCPU_HASH.
+Extend the existing bpf_map_lookup_and_delete_elem() functionality to
+hashtab map types, in addition to stacks and queues.
+Create a new hashtab bpf_map_ops function that does lookup and deletion
+of the element under the same bucket lock and add the created map_ops to
+bpf.h.
 
-Patch 1 adds most of its functionality and logic as well as
-documentation.
+Cc: Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+Cc: Luka Oreskovic <luka.oreskovic@sartura.hr>
+Cc: Luka Perkov <luka.perkov@sartura.hr>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Denis Salopek <denis.salopek@sartura.hr>
+Acked-by: Yonghong Song <yhs@fb.com>
+---
+ include/linux/bpf.h            |  2 +
+ include/uapi/linux/bpf.h       | 13 +++++
+ kernel/bpf/hashtab.c           | 98 ++++++++++++++++++++++++++++++++++
+ kernel/bpf/syscall.c           | 34 ++++++++++--
+ tools/include/uapi/linux/bpf.h | 13 +++++
+ 5 files changed, 156 insertions(+), 4 deletions(-)
 
-As it was previously limited to only stacks and queues which do not
-support the BPF_F_LOCK flag, patch 2 enables its usage by adding a new
-libbpf API bpf_map_lookup_and_delete_elem_flags() based on the existing
-bpf_map_lookup_elem_flags().
-
-Patch 3 adds selftests for lookup_and_delete_elem().
-
-Changes in patch 1:
-v7: Minor formating nits, add Acked-by.
-v6: Remove unneeded flag check, minor code/format fixes.
-v5: Split patch to 3 patches. Extend BPF_MAP_LOOKUP_AND_DELETE_ELEM
-documentation with this changes.
-v4: Fix the return value for unsupported map types.
-v3: Add bpf_map_lookup_and_delete_elem_flags() and enable BPF_F_LOCK
-flag, change CHECKs to ASSERT_OKs, initialize variables to 0.
-v2: Add functionality for LRU/per-CPU, add test_progs tests.
-
-Changes in patch 2:
-v7: No change.
-v6: Add Acked-by.
-v5: Move to the newest libbpf version (0.4.0).
-
-Changes in patch 3:
-v7: Remove ASSERT_GE macro which is already added in some other commit,
-change ASSERT_OK to ASSERT_OK_PTR, add Acked-by.
-v6: Remove PERCPU macros, add ASSERT_GE macro to test_progs.h, remove
-leftover code.
-v5: Use more appropriate macros. Better check for changed value.
-
-Denis Salopek (3):
-  bpf: add lookup_and_delete_elem support to hashtab
-  bpf: extend libbpf with bpf_map_lookup_and_delete_elem_flags
-  selftests/bpf: add bpf_lookup_and_delete_elem tests
-
- include/linux/bpf.h                           |   2 +
- include/uapi/linux/bpf.h                      |  13 +
- kernel/bpf/hashtab.c                          |  98 ++++++
- kernel/bpf/syscall.c                          |  34 ++-
- tools/include/uapi/linux/bpf.h                |  13 +
- tools/lib/bpf/bpf.c                           |  13 +
- tools/lib/bpf/bpf.h                           |   2 +
- tools/lib/bpf/libbpf.map                      |   1 +
- .../bpf/prog_tests/lookup_and_delete.c        | 288 ++++++++++++++++++
- .../bpf/progs/test_lookup_and_delete.c        |  26 ++
- tools/testing/selftests/bpf/test_lru_map.c    |   8 +
- tools/testing/selftests/bpf/test_maps.c       |  17 ++
- 12 files changed, 511 insertions(+), 4 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/lookup_and_delete.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_lookup_and_delete.c
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 02b02cb29ce2..9da98d98db25 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -69,6 +69,8 @@ struct bpf_map_ops {
+ 	void *(*map_lookup_elem_sys_only)(struct bpf_map *map, void *key);
+ 	int (*map_lookup_batch)(struct bpf_map *map, const union bpf_attr *attr,
+ 				union bpf_attr __user *uattr);
++	int (*map_lookup_and_delete_elem)(struct bpf_map *map, void *key,
++					  void *value, u64 flags);
+ 	int (*map_lookup_and_delete_batch)(struct bpf_map *map,
+ 					   const union bpf_attr *attr,
+ 					   union bpf_attr __user *uattr);
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index ec6d85a81744..c10ba06af69e 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -527,6 +527,15 @@ union bpf_iter_link_info {
+  *		Look up an element with the given *key* in the map referred to
+  *		by the file descriptor *fd*, and if found, delete the element.
+  *
++ *		For **BPF_MAP_TYPE_QUEUE** and **BPF_MAP_TYPE_STACK** map
++ *		types, the *flags* argument needs to be set to 0, but for other
++ *		map types, it may be specified as:
++ *
++ *		**BPF_F_LOCK**
++ *			Look up and delete the value of a spin-locked map
++ *			without returning the lock. This must be specified if
++ *			the elements contain a spinlock.
++ *
+  *		The **BPF_MAP_TYPE_QUEUE** and **BPF_MAP_TYPE_STACK** map types
+  *		implement this command as a "pop" operation, deleting the top
+  *		element rather than one corresponding to *key*.
+@@ -536,6 +545,10 @@ union bpf_iter_link_info {
+  *		This command is only valid for the following map types:
+  *		* **BPF_MAP_TYPE_QUEUE**
+  *		* **BPF_MAP_TYPE_STACK**
++ *		* **BPF_MAP_TYPE_HASH**
++ *		* **BPF_MAP_TYPE_PERCPU_HASH**
++ *		* **BPF_MAP_TYPE_LRU_HASH**
++ *		* **BPF_MAP_TYPE_LRU_PERCPU_HASH**
+  *
+  *	Return
+  *		Returns zero on success. On error, -1 is returned and *errno*
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index d7ebb12ffffc..9da0a0413a53 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -1401,6 +1401,100 @@ static void htab_map_seq_show_elem(struct bpf_map *map, void *key,
+ 	rcu_read_unlock();
+ }
+ 
++static int __htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
++					     void *value, bool is_lru_map,
++					     bool is_percpu, u64 flags)
++{
++	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
++	struct hlist_nulls_head *head;
++	unsigned long bflags;
++	struct htab_elem *l;
++	u32 hash, key_size;
++	struct bucket *b;
++	int ret;
++
++	key_size = map->key_size;
++
++	hash = htab_map_hash(key, key_size, htab->hashrnd);
++	b = __select_bucket(htab, hash);
++	head = &b->head;
++
++	ret = htab_lock_bucket(htab, b, hash, &bflags);
++	if (ret)
++		return ret;
++
++	l = lookup_elem_raw(head, hash, key, key_size);
++	if (!l) {
++		ret = -ENOENT;
++	} else {
++		if (is_percpu) {
++			u32 roundup_value_size = round_up(map->value_size, 8);
++			void __percpu *pptr;
++			int off = 0, cpu;
++
++			pptr = htab_elem_get_ptr(l, key_size);
++			for_each_possible_cpu(cpu) {
++				bpf_long_memcpy(value + off,
++						per_cpu_ptr(pptr, cpu),
++						roundup_value_size);
++				off += roundup_value_size;
++			}
++		} else {
++			u32 roundup_key_size = round_up(map->key_size, 8);
++
++			if (flags & BPF_F_LOCK)
++				copy_map_value_locked(map, value, l->key +
++						      roundup_key_size,
++						      true);
++			else
++				copy_map_value(map, value, l->key +
++					       roundup_key_size);
++			check_and_init_map_lock(map, value);
++		}
++
++		hlist_nulls_del_rcu(&l->hash_node);
++		if (!is_lru_map)
++			free_htab_elem(htab, l);
++	}
++
++	htab_unlock_bucket(htab, b, hash, bflags);
++
++	if (is_lru_map && l)
++		bpf_lru_push_free(&htab->lru, &l->lru_node);
++
++	return ret;
++}
++
++static int htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
++					   void *value, u64 flags)
++{
++	return __htab_map_lookup_and_delete_elem(map, key, value, false, false,
++						 flags);
++}
++
++static int htab_percpu_map_lookup_and_delete_elem(struct bpf_map *map,
++						  void *key, void *value,
++						  u64 flags)
++{
++	return __htab_map_lookup_and_delete_elem(map, key, value, false, true,
++						 flags);
++}
++
++static int htab_lru_map_lookup_and_delete_elem(struct bpf_map *map, void *key,
++					       void *value, u64 flags)
++{
++	return __htab_map_lookup_and_delete_elem(map, key, value, true, false,
++						 flags);
++}
++
++static int htab_lru_percpu_map_lookup_and_delete_elem(struct bpf_map *map,
++						      void *key, void *value,
++						      u64 flags)
++{
++	return __htab_map_lookup_and_delete_elem(map, key, value, true, true,
++						 flags);
++}
++
+ static int
+ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+ 				   const union bpf_attr *attr,
+@@ -1934,6 +2028,7 @@ const struct bpf_map_ops htab_map_ops = {
+ 	.map_free = htab_map_free,
+ 	.map_get_next_key = htab_map_get_next_key,
+ 	.map_lookup_elem = htab_map_lookup_elem,
++	.map_lookup_and_delete_elem = htab_map_lookup_and_delete_elem,
+ 	.map_update_elem = htab_map_update_elem,
+ 	.map_delete_elem = htab_map_delete_elem,
+ 	.map_gen_lookup = htab_map_gen_lookup,
+@@ -1954,6 +2049,7 @@ const struct bpf_map_ops htab_lru_map_ops = {
+ 	.map_free = htab_map_free,
+ 	.map_get_next_key = htab_map_get_next_key,
+ 	.map_lookup_elem = htab_lru_map_lookup_elem,
++	.map_lookup_and_delete_elem = htab_lru_map_lookup_and_delete_elem,
+ 	.map_lookup_elem_sys_only = htab_lru_map_lookup_elem_sys,
+ 	.map_update_elem = htab_lru_map_update_elem,
+ 	.map_delete_elem = htab_lru_map_delete_elem,
+@@ -2077,6 +2173,7 @@ const struct bpf_map_ops htab_percpu_map_ops = {
+ 	.map_free = htab_map_free,
+ 	.map_get_next_key = htab_map_get_next_key,
+ 	.map_lookup_elem = htab_percpu_map_lookup_elem,
++	.map_lookup_and_delete_elem = htab_percpu_map_lookup_and_delete_elem,
+ 	.map_update_elem = htab_percpu_map_update_elem,
+ 	.map_delete_elem = htab_map_delete_elem,
+ 	.map_seq_show_elem = htab_percpu_map_seq_show_elem,
+@@ -2096,6 +2193,7 @@ const struct bpf_map_ops htab_lru_percpu_map_ops = {
+ 	.map_free = htab_map_free,
+ 	.map_get_next_key = htab_map_get_next_key,
+ 	.map_lookup_elem = htab_lru_percpu_map_lookup_elem,
++	.map_lookup_and_delete_elem = htab_lru_percpu_map_lookup_and_delete_elem,
+ 	.map_update_elem = htab_lru_percpu_map_update_elem,
+ 	.map_delete_elem = htab_lru_map_delete_elem,
+ 	.map_seq_show_elem = htab_percpu_map_seq_show_elem,
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 941ca06d9dfa..d1c51da2f477 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1468,7 +1468,7 @@ int generic_map_lookup_batch(struct bpf_map *map,
+ 	return err;
+ }
+ 
+-#define BPF_MAP_LOOKUP_AND_DELETE_ELEM_LAST_FIELD value
++#define BPF_MAP_LOOKUP_AND_DELETE_ELEM_LAST_FIELD flags
+ 
+ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+ {
+@@ -1484,6 +1484,9 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+ 	if (CHECK_ATTR(BPF_MAP_LOOKUP_AND_DELETE_ELEM))
+ 		return -EINVAL;
+ 
++	if (attr->flags & ~BPF_F_LOCK)
++		return -EINVAL;
++
+ 	f = fdget(ufd);
+ 	map = __bpf_map_get(f);
+ 	if (IS_ERR(map))
+@@ -1494,24 +1497,47 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+ 		goto err_put;
+ 	}
+ 
++	if (attr->flags &&
++	    (map->map_type == BPF_MAP_TYPE_QUEUE ||
++	     map->map_type == BPF_MAP_TYPE_STACK)) {
++		err = -EINVAL;
++		goto err_put;
++	}
++
++	if ((attr->flags & BPF_F_LOCK) &&
++	    !map_value_has_spin_lock(map)) {
++		err = -EINVAL;
++		goto err_put;
++	}
++
+ 	key = __bpf_copy_key(ukey, map->key_size);
+ 	if (IS_ERR(key)) {
+ 		err = PTR_ERR(key);
+ 		goto err_put;
+ 	}
+ 
+-	value_size = map->value_size;
++	value_size = bpf_map_value_size(map);
+ 
+ 	err = -ENOMEM;
+ 	value = kmalloc(value_size, GFP_USER | __GFP_NOWARN);
+ 	if (!value)
+ 		goto free_key;
+ 
++	err = -ENOTSUPP;
+ 	if (map->map_type == BPF_MAP_TYPE_QUEUE ||
+ 	    map->map_type == BPF_MAP_TYPE_STACK) {
+ 		err = map->ops->map_pop_elem(map, value);
+-	} else {
+-		err = -ENOTSUPP;
++	} else if (map->map_type == BPF_MAP_TYPE_HASH ||
++		   map->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
++		   map->map_type == BPF_MAP_TYPE_LRU_HASH ||
++		   map->map_type == BPF_MAP_TYPE_LRU_PERCPU_HASH) {
++		if (!bpf_map_is_dev_bound(map)) {
++			bpf_disable_instrumentation();
++			rcu_read_lock();
++			err = map->ops->map_lookup_and_delete_elem(map, key, value, attr->flags);
++			rcu_read_unlock();
++			bpf_enable_instrumentation();
++		}
+ 	}
+ 
+ 	if (err)
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index ec6d85a81744..c10ba06af69e 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -527,6 +527,15 @@ union bpf_iter_link_info {
+  *		Look up an element with the given *key* in the map referred to
+  *		by the file descriptor *fd*, and if found, delete the element.
+  *
++ *		For **BPF_MAP_TYPE_QUEUE** and **BPF_MAP_TYPE_STACK** map
++ *		types, the *flags* argument needs to be set to 0, but for other
++ *		map types, it may be specified as:
++ *
++ *		**BPF_F_LOCK**
++ *			Look up and delete the value of a spin-locked map
++ *			without returning the lock. This must be specified if
++ *			the elements contain a spinlock.
++ *
+  *		The **BPF_MAP_TYPE_QUEUE** and **BPF_MAP_TYPE_STACK** map types
+  *		implement this command as a "pop" operation, deleting the top
+  *		element rather than one corresponding to *key*.
+@@ -536,6 +545,10 @@ union bpf_iter_link_info {
+  *		This command is only valid for the following map types:
+  *		* **BPF_MAP_TYPE_QUEUE**
+  *		* **BPF_MAP_TYPE_STACK**
++ *		* **BPF_MAP_TYPE_HASH**
++ *		* **BPF_MAP_TYPE_PERCPU_HASH**
++ *		* **BPF_MAP_TYPE_LRU_HASH**
++ *		* **BPF_MAP_TYPE_LRU_PERCPU_HASH**
+  *
+  *	Return
+  *		Returns zero on success. On error, -1 is returned and *errno*
 -- 
 2.26.2
 
