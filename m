@@ -2,99 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7250F379C69
-	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 04:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29094379E5B
+	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 06:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbhEKCFg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 May 2021 22:05:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230362AbhEKCFf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 May 2021 22:05:35 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67689C061574;
-        Mon, 10 May 2021 19:04:30 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id b21so10096734plz.0;
-        Mon, 10 May 2021 19:04:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FAkiD+F8EGFEXXB2wgPC00kKeAj+LDr86VTrzLzFEYM=;
-        b=p7LuOMJl2G+UZBBm+HhjKOVm76lvDOdsIWSW/cYMWu0z6PHY0hc3Aa7YV8IeMB5QLt
-         H63sUljAjiHlcpDSs5mRDgommAXeT0/EcWhJBiNPYUtB5OG/K41MoIQo9mc2Z4/Iy42L
-         xP173fp5Kwp68chlsCq8U50/RDPkbtyVPHUdWRaf2yyappL41w1hu6uNYoqHCihrjWQC
-         ctxh9pNr8miGwCBJU6RNexFkka16l8R5Y21VYgT5GbL819/WAhXu4qnlAuSuOe2OIlsq
-         JpVxj0e6Y9WOqfLUpIFlr/vCwMT20gIHL+9fUZdwCOXqszRdAqun2d01KhHCy8Htk0Im
-         ognQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FAkiD+F8EGFEXXB2wgPC00kKeAj+LDr86VTrzLzFEYM=;
-        b=tBKhI/PXXPBfolI0ZqsOGBZdtWe8++KV8R0HM7Nc/9n/bYg9/zFURaw4xccBrqzr7O
-         HWHbevxlZmXzTG8g44p4B93vWl11Kba49ZiHwOOtwMVz0AKI18CmYDdWpYEeR2e/JGlA
-         iS0Qg3xUDzUZKKinWpQiFDBv1ESKXzukTwJMRF8U9hPHVNnERYiaFKKJmhwVKoPKwTL7
-         blDBo/upX9koXTFtd5kLUm2JuXE7N9w/grJJBT65dT4F311QLtKRfg+XGsigL2F96VcS
-         /aVRAlDGpLZhVmvUR5e7D+C9wk9NxbXO6yF37f8m4hrnOo943xpF0H2rZ/z7IPMLCdk5
-         hSww==
-X-Gm-Message-State: AOAM530BzMsbqcSxzyjdQ2zLBsMVPgWirqrKpDuvVU4N+q0qlSyUKW7j
-        Y3Ywt4CfbxvrxZYmXqjL9Rg=
-X-Google-Smtp-Source: ABdhPJzw0a/aGm3KCJqbO5MTeJ4kjEBU3TYGUedRrBJzPTq1fVBie3ydBnx4UvkFYdAMJIPNP49puA==
-X-Received: by 2002:a17:90b:2393:: with SMTP id mr19mr2284042pjb.24.1620698669870;
-        Mon, 10 May 2021 19:04:29 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:bba4])
-        by smtp.gmail.com with ESMTPSA id a18sm12541979pgg.51.2021.05.10.19.04.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 May 2021 19:04:29 -0700 (PDT)
-Date:   Mon, 10 May 2021 19:04:25 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     containers@lists.linux.dev, bpf@vger.kernel.org,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        linux-security-module@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Austin Kuo <hckuo2@illinois.edu>,
-        Claudio Canella <claudio.canella@iaik.tugraz.at>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Daniel Gruss <daniel.gruss@iaik.tugraz.at>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jann Horn <jannh@google.com>,
-        Jinghao Jia <jinghao7@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tom Hromatka <tom.hromatka@oracle.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [RFC PATCH bpf-next seccomp 10/12] seccomp-ebpf: Add ability to
- read user memory
-Message-ID: <20210511020425.54nygajvrpxqnfsh@ast-mbp.dhcp.thefacebook.com>
-References: <cover.1620499942.git.yifeifz2@illinois.edu>
- <53db70ed544928d227df7e3f3a1f8c53e3665c65.1620499942.git.yifeifz2@illinois.edu>
+        id S229920AbhEKEXl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 00:23:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229745AbhEKEXk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 00:23:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED9946191F;
+        Tue, 11 May 2021 04:22:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620706954;
+        bh=YwtDo3LeR3JmT4NhxeAjnRuwPnLFemK+gI6XznEvRuU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qf5ZA9kI5amR23oIRR7F81z2D0LxmAnmoLwxO2OyLSFJFYWjuYQORJ2YWtTJmCpHJ
+         iGoa6+lsQh291Chp3pTo125Jwjhu90Js32+fMFn+AqFywBpCnH/cCpnXhDqKnTqL5V
+         xmj6ak1pAZnCPCqvWmm7ciI4MZUf7c0b72bDlvsnUPKXM1UvyDpYQFo28guHAF6ZKu
+         oQL4xWvfOjssqtBBO8oaoCpkayKPK38sedLFCRLOjtRGkAAQkduELVY70xu3p0nwyO
+         pp5/y9lh1kQ295Dvdl9pxry8WGlr3Wv4bAmGRc8+wm4lllYnXrgoW63BWBaQDnVo4L
+         /VOv3PsisNa5g==
+Date:   Mon, 10 May 2021 21:22:32 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
+        <weiwan@google.com>, <cong.wang@bytedance.com>,
+        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
+        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
+        <alobakin@pm.me>
+Subject: Re: [PATCH net v6 3/3] net: sched: fix tx action reschedule issue
+ with stopped queue
+Message-ID: <20210510212232.3386c5b4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1620610956-56306-4-git-send-email-linyunsheng@huawei.com>
+References: <1620610956-56306-1-git-send-email-linyunsheng@huawei.com>
+        <1620610956-56306-4-git-send-email-linyunsheng@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <53db70ed544928d227df7e3f3a1f8c53e3665c65.1620499942.git.yifeifz2@illinois.edu>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:22:47PM -0500, YiFei Zhu wrote:
->  
-> +BPF_CALL_3(bpf_probe_read_user_dumpable, void *, dst, u32, size,
-> +	   const void __user *, unsafe_ptr)
-> +{
-> +	int ret = -EPERM;
-> +
-> +	if (get_dumpable(current->mm))
-> +		ret = copy_from_user_nofault(dst, unsafe_ptr, size);
+On Mon, 10 May 2021 09:42:36 +0800 Yunsheng Lin wrote:
+> The netdev qeueue might be stopped when byte queue limit has
+> reached or tx hw ring is full, net_tx_action() may still be
+> rescheduled endlessly if STATE_MISSED is set, which consumes
+> a lot of cpu without dequeuing and transmiting any skb because
+> the netdev queue is stopped, see qdisc_run_end().
+> 
+> This patch fixes it by checking the netdev queue state before
+> calling qdisc_run() and clearing STATE_MISSED if netdev queue is
+> stopped during qdisc_run(), the net_tx_action() is recheduled
+> again when netdev qeueue is restarted, see netif_tx_wake_queue().
+> 
+> Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
+> Reported-by: Michal Kubecek <mkubecek@suse.cz>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 
-Could you explain a bit more how dumpable flag makes it safe for unpriv?
-The unpriv prog is attached to the children tasks only, right?
-and dumpable gets cleared if euid changes?
+Patches 1 and 2 look good to me but this one I'm not 100% sure.
+
+> @@ -251,8 +253,10 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
+>  	*validate = true;
+>  
+>  	if ((q->flags & TCQ_F_ONETXQUEUE) &&
+> -	    netif_xmit_frozen_or_stopped(txq))
+> +	    netif_xmit_frozen_or_stopped(txq)) {
+> +		clear_bit(__QDISC_STATE_MISSED, &q->state);
+>  		return skb;
+> +	}
+
+The queues are woken asynchronously without holding any locks via
+netif_tx_wake_queue(). Theoretically we can have a situation where:
+
+CPU 0                            CPU 1   
+  .                                .
+dequeue_skb()                      .
+  netif_xmit_frozen..() # true     .
+  .                              [IRQ]
+  .                              netif_tx_wake_queue()
+  .                              <end of IRQ>
+  .                              netif_tx_action()
+  .                              set MISSED
+  clear MISSED
+  return NULL
+ret from qdisc_restart()
+ret from __qdisc_run()
+qdisc_run_end()
+-> MISSED not set
