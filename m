@@ -2,229 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654FC379F0F
-	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 07:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1726F379F36
+	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 07:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbhEKFWg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 May 2021 01:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38036 "EHLO
+        id S229925AbhEKFfr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 01:35:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbhEKFWf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 May 2021 01:22:35 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0CE7C061574;
-        Mon, 10 May 2021 22:21:29 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id gj14so11033113pjb.5;
-        Mon, 10 May 2021 22:21:29 -0700 (PDT)
+        with ESMTP id S229885AbhEKFfq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 01:35:46 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF821C061574;
+        Mon, 10 May 2021 22:34:39 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id n40so1285770ioz.4;
+        Mon, 10 May 2021 22:34:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=caF/eq5CvK+86qA7I6X4w/ANOi8/0zsUMt7O4FtGC4A=;
-        b=TTRILg4heD84x2HzdgreC8IX/InWXGMAJ7Wd7w4LOT3egaAqfkqCFUJLDlMq91IQha
-         aSqmTWETGdCQqkOoZjrFbDM7lJNKYyuf0MgZzo/3gTBl4lhnLG7cMOOqzQLqSyCFUDf8
-         6+TeG6s6jm42HY7mjEW0SFTwXc7iSp8+lXhHm2y7hznHM725tfNZWWSM25rmvSIoQ+UF
-         bO/g9Uoy09IjzE1/S7AKdDMZrE9Q/s1JCa4A02S2T0HH/ysUit7Pj4dbMfLV3Pj6RlJn
-         /jerHTIMPGyDlXDsk32uvFSZ11QD3u5t+3k6Bq1SZtTUs9XwZQl799CIDM+FrR6WIlJh
-         VoVQ==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=uQWk7HphOi8JaZQ9rKhZ3FNjobByMHuBC/zeBOelz30=;
+        b=iTtErxT+5SBiDTAGyl+fRso5STMEz25OBWQjCGMUFFWEEfzsJxmBgEbhWX06vK27M7
+         ZBWM204QBg00GAfDUBOc2gbMlBOiqEXU2pBpcN71pjn4+nGYD6hAnvaX8zgFRElpz5rQ
+         7/sK1uIM+NvERYPB118KVUGoZupHleA06jfkkys75Rn/gjexceTqGwHb13i/nBaV4qte
+         vRsxWS2rnnSiP9zXlhXxdhud/7gttfD4X/DTPVQSYiMUWXnaD5rCJfIul0MwiTz4Bqpu
+         hXzx7SWYDCKnvH0XG8XTjiKapQ0It4JdiVfZ82DflUdXozYZxN2a2f/nGleIvTYAzGB7
+         qvAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=caF/eq5CvK+86qA7I6X4w/ANOi8/0zsUMt7O4FtGC4A=;
-        b=nOG15lUYWLXWZlDd8qHc0NFU4TNvBwNsM4uRsvm+vkIvTbGvvL/xn5qQQeAktRUc09
-         GBGmxw5abfb0qXoIrrzByYYzWAeLt3oNUXK7hyuUJVhBmcPsd39rLmrjAAmZC5gt+MZC
-         gPO0/ZLeQkhT4hESRfjID/mb9TmFL+z1yLzS+w5vwo5SUB1wzBB0v98VuxeoI6av+5P+
-         uEAGIpFQ6aiip2b8gfFVqkBIk69FfR1xWFx6e/aSbfa2lY/50xOOFAjGCsND76UfSjsO
-         uxKCeHOcy84elFW9MrfXEX8CQvwHcMG117ZFeAJinrN8HNdLwaqScQT9Ab0v/uGwIBIS
-         SgPQ==
-X-Gm-Message-State: AOAM533XypSUuuGulUwK+CrOo/yYwDpw4jvTI7gQTgu+JJphn7rGWHoI
-        g686cS0gHpK46XOPb6nPVLoZHPY0FB5kAfqFqAc=
-X-Google-Smtp-Source: ABdhPJz7DqIjKAj/p67LK4bNp1O0568mtcXcGoJyFm8AAHL3JTQZX+EJrydjwfg/iik+nuMwDe7HVWnlcgT5ViFkL04=
-X-Received: by 2002:a17:902:f686:b029:ee:fa93:95af with SMTP id
- l6-20020a170902f686b02900eefa9395afmr27928376plg.83.1620710489110; Mon, 10
- May 2021 22:21:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1620499942.git.yifeifz2@illinois.edu> <CALCETrUQBonh5BC4eomTLpEOFHVcQSz9SPcfOqNFTf2TPht4-Q@mail.gmail.com>
-In-Reply-To: <CALCETrUQBonh5BC4eomTLpEOFHVcQSz9SPcfOqNFTf2TPht4-Q@mail.gmail.com>
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Tue, 11 May 2021 00:21:17 -0500
-Message-ID: <CABqSeASYRXMwTQwLfm_Tapg45VUy9sPfV7BeeV8p7XJrDoLf+Q@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next seccomp 00/12] eBPF seccomp filters
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     containers@lists.linux.dev, bpf <bpf@vger.kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Austin Kuo <hckuo2@illinois.edu>,
-        Claudio Canella <claudio.canella@iaik.tugraz.at>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=uQWk7HphOi8JaZQ9rKhZ3FNjobByMHuBC/zeBOelz30=;
+        b=TcNN2vkZ2Kejvc9YrLB8/ALEu1MOJgJB8A40/7OJphmh5rz3pOBxDIzGN/LqqZutPL
+         +n79FRGdlpwkYgBbv5Emvo3pbFnCcZ6rJ4GYG3IrRLtQGFqa6EGVr4lo0gOsHGSP76pm
+         EVa/8ZFwxroanvIaSWG0/Bm3RlbMkZIdFEuAwWpkRhahQiv2K7u1gkgvpblC7A5m2TzE
+         ImVBJmbHx1QAPOvt5dFtTrx0GcrtQAuJKiMBKiAFCgfc29JvTy//a+sMq/wD/wrCVszd
+         EIUJunbUU9SzaJVM+5STmUrvuamZFRfjBGrijWDkKUeibD28+/42cI9sN5eGsx0wahp1
+         Ml5Q==
+X-Gm-Message-State: AOAM530BPThXICC+Sb/2vTScoZJuo5timRuvkZuTbK3R6KyhjmPyXzL+
+        dicaoNLlallQu3eFVw1zAcY=
+X-Google-Smtp-Source: ABdhPJz9V2soDps2wgveW5Yz++nuERQ8ApaaxGTW26K6zULD9kvJ2Sf3HG0X1Oy401CpvGadrMfG9g==
+X-Received: by 2002:a5e:8a08:: with SMTP id d8mr21349962iok.192.1620711279251;
+        Mon, 10 May 2021 22:34:39 -0700 (PDT)
+Received: from localhost ([172.242.244.146])
+        by smtp.gmail.com with ESMTPSA id x13sm9084654ilq.85.2021.05.10.22.34.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 May 2021 22:34:38 -0700 (PDT)
+Date:   Mon, 10 May 2021 22:34:29 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, jiang.wang@bytedance.com,
+        duanxiongchun@bytedance.com, wangdongdong.6@bytedance.com,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Daniel Gruss <daniel.gruss@iaik.tugraz.at>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jann Horn <jannh@google.com>,
-        Jinghao Jia <jinghao7@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tom Hromatka <tom.hromatka@oracle.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Message-ID: <609a1765cf6d7_876892080@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210426025001.7899-3-xiyou.wangcong@gmail.com>
+References: <20210426025001.7899-1-xiyou.wangcong@gmail.com>
+ <20210426025001.7899-3-xiyou.wangcong@gmail.com>
+Subject: RE: [Patch bpf-next v3 02/10] af_unix: implement ->read_sock() for
+ sockmap
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 10, 2021 at 12:47 PM Andy Lutomirski <luto@kernel.org> wrote:
-> On Mon, May 10, 2021 at 10:22 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote=
-:
-> >
-> > From: YiFei Zhu <yifeifz2@illinois.edu>
-> >
-> > Based on: https://lists.linux-foundation.org/pipermail/containers/2018-=
-February/038571.html
-> >
-> > This patchset enables seccomp filters to be written in eBPF.
-> > Supporting eBPF filters has been proposed a few times in the past.
-> > The main concerns were (1) use cases and (2) security. We have
-> > identified many use cases that can benefit from advanced eBPF
-> > filters, such as:
->
-> I haven't reviewed this carefully, but I think we need to distinguish
-> a few things:
->
-> 1. Using the eBPF *language*.
->
-> 2. Allowing the use of stateful / non-pure eBPF features.
->
-> 3. Allowing the eBPF programs to read the target process' memory.
->
-> I'm generally in favor of (1).  I'm not at all sure about (2), and I'm
-> even less convinced by (3).
->
-> >
-> >   * exec-only-once filter / apply filter after exec
->
-> This is (2).  I'm not sure it's a good idea.
+Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+> 
+> Implement ->read_sock() for AF_UNIX datagram socket, it is
+> pretty much similar to udp_read_sock().
+> 
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+>  net/unix/af_unix.c | 38 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+> 
+> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+> index 5a31307ceb76..f4dc22db371d 100644
+> --- a/net/unix/af_unix.c
+> +++ b/net/unix/af_unix.c
+> @@ -661,6 +661,8 @@ static ssize_t unix_stream_splice_read(struct socket *,  loff_t *ppos,
+>  				       unsigned int flags);
+>  static int unix_dgram_sendmsg(struct socket *, struct msghdr *, size_t);
+>  static int unix_dgram_recvmsg(struct socket *, struct msghdr *, size_t, int);
+> +static int unix_read_sock(struct sock *sk, read_descriptor_t *desc,
+> +			  sk_read_actor_t recv_actor);
+>  static int unix_dgram_connect(struct socket *, struct sockaddr *,
+>  			      int, int);
+>  static int unix_seqpacket_sendmsg(struct socket *, struct msghdr *, size_t);
+> @@ -738,6 +740,7 @@ static const struct proto_ops unix_dgram_ops = {
+>  	.listen =	sock_no_listen,
+>  	.shutdown =	unix_shutdown,
+>  	.sendmsg =	unix_dgram_sendmsg,
+> +	.read_sock =	unix_read_sock,
+>  	.recvmsg =	unix_dgram_recvmsg,
+>  	.mmap =		sock_no_mmap,
+>  	.sendpage =	sock_no_sendpage,
+> @@ -2183,6 +2186,41 @@ static int unix_dgram_recvmsg(struct socket *sock, struct msghdr *msg,
+>  	return err;
+>  }
+>  
+> +static int unix_read_sock(struct sock *sk, read_descriptor_t *desc,
+> +			  sk_read_actor_t recv_actor)
+> +{
+> +	int copied = 0;
+> +
+> +	while (1) {
+> +		struct unix_sock *u = unix_sk(sk);
+> +		struct sk_buff *skb;
+> +		int used, err;
+> +
+> +		mutex_lock(&u->iolock);
+> +		skb = skb_recv_datagram(sk, 0, 1, &err);
+> +		if (!skb) {
+> +			mutex_unlock(&u->iolock);
+> +			return err;
 
-The basic idea is that for a container runtime it may wait to execute
-a program in a container without that program being able to execve
-another program, stopping any attack that involves loading another
-binary. The container runtime can block any syscall but execve in the
-exec-ed process by using only cBPF.
+Here we should check copied and break if copied is >0. Sure the caller here
+has desc.count = 1 but its still fairly fragile.
 
-The use case is suggested by Andrea Arcangeli and Giuseppe Scrivano.
-@Andrea and @Giuseppe, could you clarify more in case I missed
-something?
+> +		}
+> +
+> +		used = recv_actor(desc, skb, 0, skb->len);
+> +		if (used <= 0) {
+> +			if (!copied)
+> +				copied = used;
+> +			mutex_unlock(&u->iolock);
+> +			break;
+> +		} else if (used <= skb->len) {
+> +			copied += used;
+> +		}
+> +		mutex_unlock(&u->iolock);
+> +
+> +		if (!desc->count)
+> +			break;
+> +	}
+> +
+> +	return copied;
+> +}
+> +
+>  /*
+>   *	Sleep until more data has arrived. But check for races..
+>   */
+> -- 
+> 2.25.1
+> 
 
-> >   * syscall logging (eg. via maps)
->
-> This is (2).  Probably useful, but doesn't obviously belong in
-> seccomp, or at least not as part of the same seccomp feature as
-> regular filtering.
->
-> >   * expressiveness & better tooling (no need for DSLs like easyseccomp)
->
-> (1).  Sounds good.
->
-> >   * contained syscall fault injection
->
-> (2)?  We can already do this with notifiers.
 
-To clarify, =E2=80=9Cwe can already do with notifiers=E2=80=9D isn=E2=80=99=
-t the point here.
-We can do almost everything if you have notifiers and ptrace, but it
-may impose significant overhead (see the microbenchmark results).
-
-The reason I=E2=80=99m saying the overhead is important is for the
-reproduction / testing of certain race conditions. A syscall failing
-quickly in a userspace application could, from a race condition, have
-a completely different trace as a syscall failing after a few context
-switches. eBPF makes quick fault injection possible.
-
-> > For security, for an unprivileged caller, our implementation is as
-> > restrictive as user notifier + ptrace, in regards to capabilities.
-> > eBPF helpers follow the privilege model of original eBPF helpers.
->
-> eBPF doesn't really have a privilege model yet.  There was a long and
-> disappointing thread about this awhile back.
-
-The idea is that =E2=80=9Cseccomp-eBPF does not make life easier for an
-adversary=E2=80=9D. Any attack an adversary could potentially utilize
-seccomp-eBPF, they can do the same with other eBPF features, i.e. it
-would be an issue with eBPF in general rather than specifically
-seccomp=E2=80=99s use of eBPF.
-
-Here it is referring to the helpers goes to the base
-bpf_base_func_proto if the caller is unprivileged (!bpf_capable ||
-!perfmon_capable). In this case, if the adversary would utilize eBPF
-helpers to perform an attack, they could do it via another
-unprivileged prog type.
-
-That said, there are a few additional helpers this patchset is adding:
-* get_current_uid_gid
-* get_current_pid_tgid
-  These two provide public information (are namespaces a concern?). I
-have no idea what kind of exploit it could add unless the adversary
-somehow side-channels the task_struct? But in that case, how is the
-reading of task_struct different from how the rest of the kernel is
-reading task_struct?
-  Though, if knowing the global uid / pid is a concern then the eBPF
-progs will need to keep track of namespaces, and that might not be
-trivial.
-* probe_read_user
-* probe_read_user_str
-  Reduction to ptrace. The privilege model of reading another
-process=E2=80=99s data (via process_vm_readv or
-ptrace(PTRACE_PEEK{TEXT,DATA})) is guarded by
-PTRACE_MODE_ATTACH_REALCREDS. However, unprivileged seccomp is
-safeguarded by no_new_privs, so, unless the caller have a non-uniform
-resuid & fsuid, in which case it=E2=80=99s the caller=E2=80=99s failure to =
-relinquish
-privileges, ruid of the seccomp-eBPF executor (which is task whose
-syscalls is being filtered) would be the save as the ruid of the
-applier (the task that set the seccomp mode, at the time of setting
-it).
-  The main concern here is LSMs. LSMs can further restrict the scope
-of ptrace hence I also allow LSMs to deny all =E2=80=9Cthe use of stateful =
-/
-non-pure eBPF features=E2=80=9D.
-  As for side channels... the copy_from_user_nofault may allow an
-adversary to observe what=E2=80=99s in resident memory and what=E2=80=99s s=
-wapped out,
-but the adversary can already do this by observing the timing of
-memory accesses. The non-nofault variant copy_from_user is used
-everywhere in the kernel, so if an adversary were to side channel the
-kernel by copy_from_user against an address, they can already do it by
-using a syscall with a pointer that would be used by copy_from_user.
-* task_storage_get
-* task_storage_delete
-  This is what I=E2=80=99m least sure about. The implementation of
-task_storage is more complex than the other helpers, and also assumes
-a privileged eBPF loader. It would slightly extend the attack surface.
-If this is a big issue then eBPF can emulate such a map by using some
-hashmap and having PID as key...
-
-> > Moreover, a mechanism for reading user memory is added. The same
-> > prototypes of bpf_probe_read_user{,str} from tracing are used. However,
-> > when the loader of bpf program does not have CAP_PTRACE, the helper
-> > will return -EPERM if the task under seccomp filter is non-dumpable.
-> > The reason for this is that if we perform reduction from seccomp-eBPF
-> > to user notifier + ptrace, ptrace requires CAP_PTRACE to read from
-> > a non-dumpable process. However, eBPF does not solve the TOCTOU problem
-> > of user notifier, so users should not use this to enforce a policy
-> > based on memory contents.
->
-> What is this for?
-
-Memory reading opens up lots of use cases. For example, logging what
-files are being opened without imposing too much performance penalty
-from strace. Or as an accelerator for user notify emulation, where
-syscalls can be rejected on a fast path if we know the memory contents
-does not satisfy certain conditions that user notify will check.
-
-YiFei Zhu
