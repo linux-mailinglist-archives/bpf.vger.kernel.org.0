@@ -2,157 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FDF37B12F
-	for <lists+bpf@lfdr.de>; Tue, 11 May 2021 23:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8941237B197
+	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 00:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbhEKWA5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 May 2021 18:00:57 -0400
-Received: from www62.your-server.de ([213.133.104.62]:60114 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhEKWA5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 May 2021 18:00:57 -0400
-Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lgaPq-000AFW-Ln; Tue, 11 May 2021 23:59:46 +0200
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: pull-request: bpf 2021-05-11
-Date:   Tue, 11 May 2021 23:59:46 +0200
-Message-Id: <20210511215946.15578-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S229714AbhEKWYV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 18:24:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhEKWYV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 18:24:21 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE47C061574
+        for <bpf@vger.kernel.org>; Tue, 11 May 2021 15:23:14 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id r8so28370267ybb.9
+        for <bpf@vger.kernel.org>; Tue, 11 May 2021 15:23:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Isx1vL7wiG8GrWoWhjdURZIQr4CTuuHLR/9WfXw8Bbs=;
+        b=ijGGuKw91g7K9HqV9Av5Z3h8KLFh/wmsRp1xBReql8wqVLfYZoIckvSRTguuAnVvqy
+         JusISI0czkHM9EhSfaOHSxENx2KR63/eRqno18IQdSLV8Xkej08scca3uSc8KvZlO5SL
+         TsT8Pagn9/w8cKLXD7YtRwHFPg3Qgu5Mk5SkCI++2jsoykVdXs0RK7fophrYf+BZjJ/X
+         5Y+l2A6BvrqvObiaSsOa2PBTIj8fUt8Ffg8kpHe7dai6oe9yzqVhbetV+H0RBkyderFD
+         1tLAoX6/Ylzw5GjP9UhdS19r96YM67iBBU8nlzeHJm3zwqGi6aGObmPmOJSMmyz8Itid
+         FNlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Isx1vL7wiG8GrWoWhjdURZIQr4CTuuHLR/9WfXw8Bbs=;
+        b=RzQ69usDxF1aTBWf2pdDI7Q/KX6s+LcXfvOVtTlle3MaNsrv7cfDRVOgtxMCJ0wv5n
+         QwBeVDQCFDqF2hne7xDGQnaBL+kn3zf1F0us1wSiOfSczq9ThTZhZn+rysCpWvUYS2Wd
+         vvwHdLjOkF0sUbQJEbV//+AVYfO+gXh28wPO7ucztzD5uEpoyCvGfILQ+LPabvWIVp6C
+         WYR7avgalupZE0eVx60ygrlgdPHMJsMOaQPc8gCrYn47Dt+WshtjvDDp9cqN0DnPE1+F
+         II/XUW4LThhK72s3PU2tN/M6pEWfMti9iVvXIYLQ8IYzHqpXo6pfG56USp8bqo24b3wJ
+         1jag==
+X-Gm-Message-State: AOAM533XJwV1WDVAIHH76hWg54GiKX1sI9jwC7xmGSajk9TN75qenzZi
+        1iZeK84QToPTI/hVPoFP0DRGY4dvRrmbg6brD2SHeD5Po5c=
+X-Google-Smtp-Source: ABdhPJxKzhungp/cdGa4/hhqIZQ44D0TShJlGvyxjQiAAr9V070brH0q32ZwHM+kAXwdOBeNZgVayZZaoD4DArxEVHA=
+X-Received: by 2002:a5b:d4c:: with SMTP id f12mr19370031ybr.510.1620771793495;
+ Tue, 11 May 2021 15:23:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26167/Tue May 11 13:12:12 2021)
+References: <20210508034837.64585-1-alexei.starovoitov@gmail.com> <20210508034837.64585-3-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210508034837.64585-3-alexei.starovoitov@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 11 May 2021 15:23:02 -0700
+Message-ID: <CAEf4BzbF7-R3sd7ftRf8MJk0mWZg4E0=bYzn8Qb3Bk9jxFmkZQ@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 02/22] bpf: Introduce bpfptr_t user/kernel pointer.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+On Fri, May 7, 2021 at 8:48 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> Similar to sockptr_t introduce bpfptr_t with few additions:
+> make_bpfptr() creates new user/kernel pointer in the same address space as
+> existing user/kernel pointer.
+> bpfptr_add() advances the user/kernel pointer.
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
 
-The following pull-request contains BPF updates for your *net* tree.
+LGTM, see minor comment below.
 
-We've added 13 non-merge commits during the last 8 day(s) which contain
-a total of 21 files changed, 817 insertions(+), 382 deletions(-).
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-The main changes are:
+>  include/linux/bpfptr.h | 81 ++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 81 insertions(+)
+>  create mode 100644 include/linux/bpfptr.h
+>
+> diff --git a/include/linux/bpfptr.h b/include/linux/bpfptr.h
+> new file mode 100644
+> index 000000000000..e370acb04977
+> --- /dev/null
+> +++ b/include/linux/bpfptr.h
+> @@ -0,0 +1,81 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/* A pointer that can point to either kernel or userspace memory. */
+> +#ifndef _LINUX_BPFPTR_H
+> +#define _LINUX_BPFPTR_H
+> +
+> +#include <linux/sockptr.h>
+> +
+> +typedef sockptr_t bpfptr_t;
+> +
+> +static inline bool bpfptr_is_kernel(bpfptr_t bpfptr)
+> +{
+> +       return bpfptr.is_kernel;
+> +}
+> +
+> +static inline bpfptr_t KERNEL_BPFPTR(void *p)
+> +{
+> +       return (bpfptr_t) { .kernel = p, .is_kernel = true };
+> +}
+> +
+> +static inline bpfptr_t USER_BPFPTR(void __user *p)
+> +{
+> +       return (bpfptr_t) { .user = p };
+> +}
+> +
+> +static inline bpfptr_t make_bpfptr(u64 addr, bool is_kernel)
+> +{
+> +       if (is_kernel)
+> +               return (bpfptr_t) {
+> +                       .kernel = (void*) (uintptr_t) addr,
+> +                       .is_kernel = true,
+> +               };
+> +       else
+> +               return (bpfptr_t) {
+> +                       .user = u64_to_user_ptr(addr),
+> +                       .is_kernel = false,
+> +               };
 
-1) Fix multiple ringbuf bugs in particular to prevent writable mmap of
-   read-only pages, from Andrii Nakryiko & Thadeu Lima de Souza Cascardo.
+Given there are KERNEL_BPFPTR and USER_BPFPTR constructors, any reason
+to not use them here?
 
-2) Fix verifier alu32 known-const subregister bound tracking for bitwise
-   operations and/or/xor, from Daniel Borkmann.
+> +}
+> +
 
-3) Reject trampoline attachment for functions with variable arguments,
-   and also add a deny list of other forbidden functions, from Jiri Olsa.
-
-4) Fix nested bpf_bprintf_prepare() calls used by various helpers by
-   switching to per-CPU buffers, from Florent Revest.
-
-5) Fix kernel compilation with BTF debug info on ppc64 due to pahole
-   missing TCP-CC functions like cubictcp_init, from Martin KaFai Lau.
-
-6) Add a kconfig entry to provide an option to disallow unprivileged
-   BPF by default, from Daniel Borkmann.
-
-7) Fix libbpf compilation for older libelf when GELF_ST_VISIBILITY()
-   macro is not available, from Arnaldo Carvalho de Melo.
-
-8) Migrate test_tc_redirect to test_progs framework as prep work
-   for upcoming skb_change_head() fix & selftest, from Jussi Maki.
-
-9) Fix a libbpf segfault in add_dummy_ksym_var() if BTF is not
-   present, from Ian Rogers.
-
-10) Fix tx_only micro-benchmark in xdpsock BPF sample with proper frame
-    size, from Magnus Karlsson.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Alexei Starovoitov, Andrii Nakryiko, John Fastabend, Maciej Fijalkowski, 
-Ryota Shiga, Manfred Paul, Thadeu Lima de Souza Cascardo
-
-----------------------------------------------------------------
-
-The following changes since commit 1682d8df20aa505f6ab12c76e934b26ede39c529:
-
-  Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf (2021-05-03 18:40:17 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 569c484f9995f489f2b80dd134269fe07d2b900d:
-
-  bpf: Limit static tcp-cc functions in the .BTF_ids list to x86 (2021-05-11 23:23:07 +0200)
-
-----------------------------------------------------------------
-Andrii Nakryiko (1):
-      bpf: Prevent writable memory-mapping of read-only ringbuf pages
-
-Arnaldo Carvalho de Melo (1):
-      libbpf: Provide GELF_ST_VISIBILITY() define for older libelf
-
-Daniel Borkmann (3):
-      bpf: Fix alu32 const subreg bound tracking on bitwise operations
-      bpf, kconfig: Add consolidated menu entry for bpf with core options
-      bpf: Add kconfig knob for disabling unpriv bpf by default
-
-Florent Revest (1):
-      bpf: Fix nested bpf_bprintf_prepare with more per-cpu buffers
-
-Ian Rogers (1):
-      libbpf: Add NULL check to add_dummy_ksym_var
-
-Jiri Olsa (2):
-      bpf: Forbid trampoline attach for functions with variable arguments
-      bpf: Add deny list of btf ids check for tracing programs
-
-Jussi Maki (1):
-      selftests/bpf: Rewrite test_tc_redirect.sh as prog_tests/tc_redirect.c
-
-Magnus Karlsson (1):
-      samples/bpf: Consider frame size in tx_only of xdpsock sample
-
-Martin KaFai Lau (1):
-      bpf: Limit static tcp-cc functions in the .BTF_ids list to x86
-
-Thadeu Lima de Souza Cascardo (1):
-      bpf, ringbuf: Deny reserve of buffers larger than ringbuf
-
- Documentation/admin-guide/sysctl/kernel.rst        |  17 +-
- init/Kconfig                                       |  41 +-
- kernel/bpf/Kconfig                                 |  88 +++
- kernel/bpf/btf.c                                   |  12 +
- kernel/bpf/helpers.c                               |  27 +-
- kernel/bpf/ringbuf.c                               |  24 +-
- kernel/bpf/syscall.c                               |   3 +-
- kernel/bpf/verifier.c                              |  36 +-
- kernel/sysctl.c                                    |  29 +-
- net/Kconfig                                        |  27 -
- net/ipv4/bpf_tcp_ca.c                              |   2 +
- samples/bpf/xdpsock_user.c                         |   2 +-
- tools/lib/bpf/libbpf.c                             |   3 +
- tools/lib/bpf/libbpf_internal.h                    |   5 +
- tools/testing/selftests/bpf/network_helpers.c      |   2 +-
- tools/testing/selftests/bpf/network_helpers.h      |   1 +
- .../testing/selftests/bpf/prog_tests/tc_redirect.c | 589 +++++++++++++++++++++
- tools/testing/selftests/bpf/progs/test_tc_neigh.c  |  33 +-
- .../selftests/bpf/progs/test_tc_neigh_fib.c        |   9 +-
- tools/testing/selftests/bpf/progs/test_tc_peer.c   |  33 +-
- tools/testing/selftests/bpf/test_tc_redirect.sh    | 216 --------
- 21 files changed, 817 insertions(+), 382 deletions(-)
- create mode 100644 kernel/bpf/Kconfig
- create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_redirect.c
- delete mode 100755 tools/testing/selftests/bpf/test_tc_redirect.sh
+[...]
