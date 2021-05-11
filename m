@@ -2,93 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77CDB37B211
-	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 01:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0767E37B220
+	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 01:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhEKXDq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 May 2021 19:03:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
+        id S229714AbhEKXGW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 19:06:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbhEKXDq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 May 2021 19:03:46 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0F4C061574
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 16:02:38 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id e190so28426284ybb.10
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 16:02:38 -0700 (PDT)
+        with ESMTP id S229980AbhEKXGW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 19:06:22 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF9CC061574;
+        Tue, 11 May 2021 16:05:15 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id b15so5385628plh.10;
+        Tue, 11 May 2021 16:05:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nRJJvXZONAxXa3vxLWepTCjyWKXh1YzMxgTEyyRGq64=;
-        b=pjIxkmiuKuR+bnOt583ZyMaiZ6wHsY64V87D/UwGqKwRflZirCngp1hJXqvNaEfQPn
-         54ryu0RJ1E+KYGray03C+1KbjquDitVKGFl8N5rmetxU7D3h4vHjbgJEp7UBj49Nxkin
-         dmLhQDcUbx+pvsyu3T2QiSYx2C5pW4tJcwNV5GUhaQ5lfdVVYrZfhPt2VfVXuCvVsv1H
-         uUxS49uG9cev4atTG3yzFPzxb0WKEmVzYWcAvd4uY6RaYPMevpB5bNqto9WdWxRGkXEm
-         1UlYFgblC1YkTWn3OJW1G7d2yPiJI5Jgo2aAEV+uO7pnHRGrBHGxgT/FFBJelfjUqLK5
-         HKDQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mZ04Cdi1Q+iZSR9td6ccoqa0ATxHeCbWNy7peeaFY2I=;
+        b=hCNWboKRcRvHv34X4VY3Kf/5XLiv+njGQyG7Od1lWrabsw4BTwlsiXqTEYEfP52jIs
+         dwfmSDJb/NVzRdKrPRMZYElJ4g+Yr4/eDNXvri1CNl4ces2jthrtCHlSZz4+KCjaPook
+         bf+P4cU9Qx6F7nVw/wd+HBLuWwmTWqwvb+dzG4Z6ne8TM2cF1g3Rhxlic8vPcWS2P23u
+         1CbYfO2lDMneMZU0UPoDa9bGriOa4amMXha0Wnia8g/dFDeEHxEa2tZl8ouPSMg/kqm/
+         pmg6WtQapsmEF8AE6+JPXcFT/M5lFYZzlCVdiid+zDg70h8sYohTeeMJb2PoapwdXcJG
+         DnRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nRJJvXZONAxXa3vxLWepTCjyWKXh1YzMxgTEyyRGq64=;
-        b=HWZPvUjIjbCL3bbDoRKywXNr1m4d61MkTf82eCKfhNNrZbZRI5GiUPiTSeF/NJtwiG
-         4O6nzlyuwTZBXzJ9JDkuZc9ZNgzPRjeJjW56jUxQdqO5xtgvyVe79EdNg7wPcwRbFwoK
-         GxXBmP8LNx26zhHDueEQizw3qn5+w0Q4ksZSQJcpzxsHwa2cte3ewy7zVKBMNLp+kCIg
-         KXo+j5GBNfYC8fd8NuVa9N0ZFTWRoW2BR/goyuROD+69sOWiN0FjSeJnsqcEe9U8bGLK
-         RoY4Wh09ImEgvamOY65ZMbw5j01TB4a5SJNmn/DgizrRRF9v5peDMFJyuXyzgIXmVhAg
-         6row==
-X-Gm-Message-State: AOAM533qiW07QyNuXsCP8b5GpCZly5hUpJ1bZn/IYeP+FshlH5h1OFqh
-        qtoEh0JwTP44RvDY+jNjAeCzg0qFq6Ts4BhGmhg=
-X-Google-Smtp-Source: ABdhPJxOwhgTClwENHh90OEUiZAJ3rQ3ZsrbuhO9uJG4yC61WJ8mU8bwvG12r10lewQA//9+4Qw3QSnfN9Gso+VUg2s=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr45890923ybo.230.1620774158152;
- Tue, 11 May 2021 16:02:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210508034837.64585-1-alexei.starovoitov@gmail.com> <20210508034837.64585-11-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210508034837.64585-11-alexei.starovoitov@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 11 May 2021 16:02:27 -0700
-Message-ID: <CAEf4BzapxD-p49cPEtRveiWYa8CFC=zp6C2WLJmDROAwbJX2fA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 10/22] bpf: Add bpf_btf_find_by_name_kind() helper.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mZ04Cdi1Q+iZSR9td6ccoqa0ATxHeCbWNy7peeaFY2I=;
+        b=Ds7Gg/qOFBzbDeKlS8zI+ayTEUozOyhVYl8gm7wdJXYvGMCq83D1XCS43EHVRLARGr
+         2K+BeYbCTZqSOZdZvLqwYCN8QI/LjqGr7tTCtZNHb0MKfJb+7FU2Mmd8/y1dL4YL3O6v
+         SOb8tY/h33F/pZB1ssP7gEFCAEdOUcajvNN3b0eR3l81Q8zTj+IM8XFnFlLTq49U/okW
+         fVrsWv/ZuVc24busHsWHEEH1LCDAeVZSekXr2GBx9jaV8e/KofD7JRSxK3s6KVFMjXTy
+         t5vrt9CLLaELIWBHT7kZaUlwFHVQ5aRVKV/Gj5v4mMOQDYDctQTKvbnGLhzBq4nfPwpV
+         mEhA==
+X-Gm-Message-State: AOAM530ES3T6+Iaz3O8m9VyhIqmVoRp0SfJDpSMozdVtVABnYfMCxhEX
+        qtH56+AHhomTxcit27hYQoI=
+X-Google-Smtp-Source: ABdhPJzg69bAEHAQkG3RWJuFv6jaj+opmRV5orf412RfIvmAyhHbBHY5hEjvbU12TZ8o9WY/DKlwlA==
+X-Received: by 2002:a17:90a:ea13:: with SMTP id w19mr4871692pjy.215.1620774309966;
+        Tue, 11 May 2021 16:05:09 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:eb4c])
+        by smtp.gmail.com with ESMTPSA id x35sm14156364pfu.209.2021.05.11.16.05.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 May 2021 16:05:09 -0700 (PDT)
+Date:   Tue, 11 May 2021 16:05:05 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Kernel Team <kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: bpf libraries and static variables. Was: [PATCH v2 bpf-next 2/6]
+ libbpf: rename static variables during linking
+Message-ID: <20210511230505.z3rdnppplk3v3jce@ast-mbp.dhcp.thefacebook.com>
+References: <CAEf4BzZOmCgmbYDUGA-s5AF6XJFkT1xKinY3Jax3Zm2OLNmguA@mail.gmail.com>
+ <20210426223449.5njjmcjpu63chqbb@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYZX9YJcoragK20cvQvr_tPTWYBQSRh7diKc1KoCtu4Dg@mail.gmail.com>
+ <20210427022231.pbgtrdbxpgdx2zrw@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzZOwTp4vQxvCSXaS4-94fz_eZ7Q4n6uQfkAnMQnLRaTbQ@mail.gmail.com>
+ <20210428045545.egqvhyulr4ybbad6@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzZo7_r-hsNvJt3w3kyrmmBJj7ghGY8+k4nvKF0KLjma=w@mail.gmail.com>
+ <20210504044204.kpt6t5kaomj7oivq@ast-mbp>
+ <CAADnVQ+WV8xZqJfWx8em5Ch8aKA8xcPqR0wT0BdFf9M==W5_FQ@mail.gmail.com>
+ <CAEf4BzY2z+oh=N0X26RBLEWw0t9pT7_fN0mWyDqfGcwuK8A-kg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzY2z+oh=N0X26RBLEWw0t9pT7_fN0mWyDqfGcwuK8A-kg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 7, 2021 at 8:49 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> Add new helper:
-> long bpf_btf_find_by_name_kind(char *name, int name_sz, u32 kind, int flags)
-> Description
->         Find BTF type with given name and kind in vmlinux BTF or in module's BTFs.
-> Return
->         Returns btf_id and btf_obj_fd in lower and upper 32 bits.
->
-> It will be used by loader program to find btf_id to attach the program to
-> and to find btf_ids of ksyms.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
+On Tue, May 11, 2021 at 11:59:01AM -0700, Andrii Nakryiko wrote:
+> >
+> > If I understood what folks were saying no one is excited about namespaces in C.
+> > So probably #3 is out and sounds like 1 is prefered?
+> > So don't emit statics ?
+> >
+> 
+> I'm in favor of not emitting statics. They just seem to cause more
+> problems than providing any extra benefits. Given it's trivial to just
+> use globals instead and global vs static is already an explicit signal
+> of what has to be in BPF skeleton and what's not. See my RFC about
+> __internal + __hidden semantics, but even if we supported nothing but
+> STV_DEFAULT globals wouldn't be horrible. Clearly we'd expect users to
+> just not mess with BPF library's internal state with not way to
+> enforce that, so I'd still like to have some enforceability.
 
-LGTM.
+I'm glad that with Daniel and Lorenz we have a strong consensus here.
+So I've applied first 6 patches from your RFC that stop exposing static
+in skeleton and fix tests.
+I'm only not 100% sure whether
+commit 31332ccb7562 ("bpftool: Stop emitting static variables in BPF skeleton")
+is enough to skip them reliably.
+I think 'char __pad[N]' logic would do the rigth thing when
+statics and globals are interleaved, but would be good to have a test.
+In one .o file clang emits all globals first and then all statics,
+so even without __pad it would have been enough,
+but I don't know how .o-s with statics+global look after static linker combines them.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+I skipped patch 7, since without llvm part it cannot be used and it's
+not clear yet whether llvm will ever be able to emit __internal.
 
->  include/linux/bpf.h            |  1 +
->  include/uapi/linux/bpf.h       |  7 ++++
->  kernel/bpf/btf.c               | 62 ++++++++++++++++++++++++++++++++++
->  kernel/bpf/syscall.c           |  2 ++
->  tools/include/uapi/linux/bpf.h |  7 ++++
->  5 files changed, 79 insertions(+)
->
+> So my proposal is to allow having a special "library identifier"
+> variable, e.g., something like:
+> 
+> SEC(".lib") static char[] lib_name = "my_fancy_lib"; (let's not
+> bikeshed naming for now)
 
-[...]
+without 'static' probably? since license and version are without?
+
+and at will be optional (mostly ignored by toolchain) for libs that
+don't need sub-skeleton and mandatory for sub-skeleton?
+
+> With such library identifiers, BPF static linker will:
+>   1) enforce uniqueness of library names when linking together
+> multiple libraries
+
+you're not proposing for lib name to do namespacing of globals, right?
+Only to indicate that liblru.o and libct.o (as normal elf files)
+are bpf libraries as can be seen in their 'lib_name' strings
+instead of regular .o files.
+(that would be a definition of bpf library).
+So linker can rely on explicit library names given by users in .bpf.c
+(and corresponding dependency on sub-skel) instead of relying
+on file names?
+If so, I agree that it's necessary.
+Such 'char lib_name[]' is probably better than elf note.
+
+>   2) append zero-size markers to the very beginning and the very end
+> of each BPF library's DATASECS, something like
+> 
+> DATASEC .data:
+> 
+>    void *___my_fancy_lib__start[0];
+>    /* here goes .data variables */
+>    void *___my_fancy_lib__end[0];
+> 
+> And so on for each DATASEC. What those markers provide? Two things:
+> 
+> 1). It makes it much easier for sub-skeleton to find where a
+> particular BPF library's .data/.rodata/.bss starts within the final
+> BPF application's  .data/.rodata/.bss section. All that without
+> storing local BTF and doing type comparisons. Only a simple loop over
+> DATASECs and its variables is needed.
+
+indeed. some lib name or rather sub-skeleton name is needed.
+Since progs can have extern funcs in the lib I see no clean way to
+reliably split prog loading between main skeleton and sub-skeletons.
+Meaning that prog loading and map creation can only be done
+by the main skeleton.
+After that is done and mmap-ing of data/rodata/bss is done
+the main skeleton will init sub-skeleton with offsets to their
+corresponding data based on these offsets?
+I think that will work for light skel.
+I don't see a use case for __end marker yet, but I guess it's good
+for consistency.
+rodata init is tricky.
+Since the main skel and sub-skels will init their parts independently.
+But I think it can be managed.
+
+> 2). (optionally) we can exclude everything between ___<libname>__start
+> and ___<libname>__end from BPF application's skeleton.
+
+So that's leaning towards namespacing ideas?
+The lib_name doesn't hide any names and globals will conflict during
+the linking as usual.
+But with this optional hiding (inside .bpf.c it will have special name?)
+the partial namespacing can happen. And the lib can hide the stuff
+from its users.
+The concept is nice, but lib scope maybe too big.
+
+> It's a pretty long email already and there are a lot things to unpack,
+> and still more nuances to discuss. So I'll put up BPF static linking +
+> BPF libraries topic for this week's BPF office hours for anyone
+> interested to join the live discussion. It would hopefully allow
+> everyone to get more up to speed and onto the same page on this topic.
+> But still curious WDYT?
+
+Sounds great to me. I hope more folks can join the discussion.
