@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5165837B1BA
-	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 00:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D947B37B1BB
+	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 00:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhEKWqt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 May 2021 18:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48570 "EHLO
+        id S229714AbhEKWtF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 18:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbhEKWqs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 May 2021 18:46:48 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE85C061574
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 15:45:40 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id m9so28454057ybm.3
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 15:45:40 -0700 (PDT)
+        with ESMTP id S229637AbhEKWtF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 18:49:05 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5848DC061574
+        for <bpf@vger.kernel.org>; Tue, 11 May 2021 15:47:58 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id e190so28389571ybb.10
+        for <bpf@vger.kernel.org>; Tue, 11 May 2021 15:47:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1ER/hymdriwYsotFQHbExyXVOw+A2RjH7yZCn5D1jGg=;
-        b=u4QRiwJLjlWm+a5YoilrbqFyNEPw8/TCT+IvZ8mOeAe+TycEfOPcxCgdxz/VX43Q5x
-         CTFSZeKakP448Id2I/vnAuSMKyNoAm4juLgVD2dYMbRycZiVP8t7uAoIAfwTipWWZdC2
-         xpsm8VMXZBq0eX3wJLBO6R0NYxpfj7tfLD6I0ZvKKuaIxsiIYsP+BdEEM4+sLOq2eKME
-         bhdvc6X84VtRhYzW/hSPEc0FL1yJDHJPtxB7dFW43xCFzyx/b01i0mDXyvnE7g1HR90t
-         GTmcmiGwvT6ZNmGxw7XpyZdOKZf7yiAEjhmvJZKdBN3TGMgu/lJu+azgDpiXLjEZrOLj
-         4PqQ==
+        bh=WbamoN6Sj/reLeeB02eyzNwzl2x3pUKQzro1Y46eDTg=;
+        b=Ynr+GxVsh5SHb0HwnZP9pr1Y5PSEt1/Vcoo+iihyqlmSIhBtihtxGuJ7wymf9W/C9x
+         KN6fhFqsugJSPr9UDne4W+xtC4LwbFnPiBbhNGM89OfA6xX8boB5hGaYsfvRlsl8gxtg
+         vlMGkp8bUVloOWn738DtF7MvIMyYwbDd6Aw8DptFPrWBt63W6qZOIXFqShBHmhRrsoRH
+         /xdyFcDTvdmxqAvwcu5uhAkyAGS0g+j/zTr2oBiJZBwiwg+b/+SAP7Kjw6/l5XCU5wRf
+         C2Rx7DdL54K3Oy6TQltmV2YDuM5DZ0ANPwvVd++tyM2qN5v7AO3LNDAwn5NIgMrUfZDp
+         c9+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1ER/hymdriwYsotFQHbExyXVOw+A2RjH7yZCn5D1jGg=;
-        b=UAYoX5Ct8NssO7RkXiQTvz+AuDVVx2YXdLcZSv3ENpZ6ivL6GdGPgVxpKDWHusMjcE
-         tBT0BOIKViVYFIamVP0+TuQaXILacriPJ6IFGdECamNmtYsVyNHzYbdsMmSl/dMuGbPo
-         0TipLCdzm9p+pc8qLP9eGmS0wagRhxUJy7JtO91zw0tl30j/muvkA73PVFSblYjtbAj+
-         sk12nd81lj+xnFEzP7xTE+FLDGz7VZVQsgBGgQKMIvvHnz+DA5D1dSZw0VOqn5roQ9YF
-         9cn/Ufz2QPL64IO7raIp4SmB8Zrq384quqlfy8f3TwlyIjKUwhMhtfq8ozwD1iCxWB1S
-         n3Uw==
-X-Gm-Message-State: AOAM531hdGkx7Yh6/SU6g/QNeL+1+dUzU0frTbmvTOHOqlg4BOP/r5vW
-        /syxNsV6691pNBLvX1DqJcCftzswNLusq5t+bzw=
-X-Google-Smtp-Source: ABdhPJxpCvqvpwf4GogSqAScHfvUDpU+tcK+yNioj8T3yladYu9zld2mIDgqmgO20GNQSel8/WHIHvStIilbGflwXkQ=
-X-Received: by 2002:a5b:d4c:: with SMTP id f12mr19477488ybr.510.1620773140150;
- Tue, 11 May 2021 15:45:40 -0700 (PDT)
+        bh=WbamoN6Sj/reLeeB02eyzNwzl2x3pUKQzro1Y46eDTg=;
+        b=h/mTmOLbLNmUoUIUZe5oiazoshMUc022Ta2pEp0JeBoT15lJIujwd9JCRhrOkVJaQL
+         KF5FY1wY0iZFgSHkAv3990R7wVwgfovGLGSKoEDTkXxWVS+jMV17oswhiVraE1TOKLmA
+         KkK1oSA7y0LPrMA0RAPKDj8h6etQ7pnZT7Ngkt2hAPSbsa94/FdYKIje+N3XiXvKDnG8
+         FrzEQk/4yOMZPiB+FFk/kX0rTVDDToNzdbRHY0pz0rTPbO5b2jUVYcUojSlE/Psf8RQW
+         smX5D1yQoQ7xvfHmxNqsHoXwuWmRQ+b73ZOXjQphvBVgM9mc4dGdh8VyAO+e9kAi+EHR
+         oJ6w==
+X-Gm-Message-State: AOAM530pUGaNbTv4dKr2ZRJwq6nAhzVvKSrL9H5xqvUezV6Nx5afD4Ms
+        q4FVnOFzOyp5BadA2t3nFNfw+9wN7WgY6aGAPjk=
+X-Google-Smtp-Source: ABdhPJx3zxD29M44qaWbo4oyHxvSjcRnsp+SpE0u2dGbKFBLiZ4kJAia3GIS1V1Kq5Go8RpM5o1tojcI5Bep2OKY8BQ=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr45817581ybo.230.1620773277644;
+ Tue, 11 May 2021 15:47:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210508034837.64585-1-alexei.starovoitov@gmail.com> <20210508034837.64585-8-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210508034837.64585-8-alexei.starovoitov@gmail.com>
+References: <20210508034837.64585-1-alexei.starovoitov@gmail.com> <20210508034837.64585-9-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210508034837.64585-9-alexei.starovoitov@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 11 May 2021 15:45:28 -0700
-Message-ID: <CAEf4BzbJDRAVmjPSk6XWcfxuLUvymouN4G+-UYM1G9f=2pX-yA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 07/22] selftests/bpf: Test for btf_load command.
+Date:   Tue, 11 May 2021 15:47:46 -0700
+Message-ID: <CAEf4BzbyiFcrCzVOUQTLs0nuh7LCsEN+V4vrEMVXaLAVFeyLVw@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 08/22] bpf: Introduce fd_idx
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -66,49 +66,26 @@ On Fri, May 7, 2021 at 8:48 PM Alexei Starovoitov
 >
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> Improve selftest to check that btf_load is working from bpf program.
+> Typical program loading sequence involves creating bpf maps and applying
+> map FDs into bpf instructions in various places in the bpf program.
+> This job is done by libbpf that is using compiler generated ELF relocations
+> to patch certain instruction after maps are created and BTFs are loaded.
+> The goal of fd_idx is to allow bpf instructions to stay immutable
+> after compilation. At load time the libbpf would still create maps as usual,
+> but it wouldn't need to patch instructions. It would store map_fds into
+> __u32 fd_array[] and would pass that pointer to sys_bpf(BPF_PROG_LOAD).
 >
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
->  tools/testing/selftests/bpf/progs/syscall.c | 48 +++++++++++++++++++++
->  1 file changed, 48 insertions(+)
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  include/linux/bpf_verifier.h   |  1 +
+>  include/uapi/linux/bpf.h       | 16 ++++++++----
+>  kernel/bpf/syscall.c           |  2 +-
+>  kernel/bpf/verifier.c          | 47 ++++++++++++++++++++++++++--------
+>  tools/include/uapi/linux/bpf.h | 16 ++++++++----
+>  5 files changed, 61 insertions(+), 21 deletions(-)
 >
 
 [...]
-
->  SEC("syscall")
->  int bpf_prog(struct args *ctx)
->  {
-> @@ -33,6 +73,8 @@ int bpf_prog(struct args *ctx)
->                 .map_type = BPF_MAP_TYPE_HASH,
->                 .key_size = 8,
->                 .value_size = 8,
-> +               .btf_key_type_id = 1,
-> +               .btf_value_type_id = 2,
->         };
->         static union bpf_attr map_update_attr = { .map_fd = 1, };
->         static __u64 key = 12;
-> @@ -43,7 +85,13 @@ int bpf_prog(struct args *ctx)
->         };
->         int ret;
->
-> +       ret = btf_load();
-
-Maybe let's move patch #11 (bpf_sys_close() helper) in front of these
-selftests and call bpf_sys_close() appropriately on error and (if
-success) after map is created?
-
-
-
-> +       if (ret < 0)
-> +               return ret;
-> +
->         map_create_attr.max_entries = ctx->max_entries;
-> +       map_create_attr.btf_fd = ret;
-> +
->         prog_load_attr.license = (long) license;
->         prog_load_attr.insns = (long) insns;
->         prog_load_attr.log_buf = ctx->log_buf;
-> --
-> 2.30.2
->
