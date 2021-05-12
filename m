@@ -2,161 +2,324 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 714E837EE17
+	by mail.lfdr.de (Postfix) with ESMTP id B9D3937EE18
 	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 00:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236425AbhELVJQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 17:09:16 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:31278 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243882AbhELSpa (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 12 May 2021 14:45:30 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14CIhktx032740;
-        Wed, 12 May 2021 11:44:00 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=kWucB2jK9LpvZ1Q67+NuHqsBmPRU5ZP6Tq9pUz4VtOU=;
- b=OsBk8vOk3JKOJ6dIZaXqkQ31raXIcgWjmwwa5vPJwqhS2i6k/eZdiSzV4SNHIzUJg4kA
- cKzejxS7bk31y01YXhL4DSUTMTZEiwt30DI/jWCt7dudB/RJLjC+pM+LFEOkYEEh4uUZ
- sDOJXMdp8271oJSIcUGyuT28xB5bLxhR6ZE= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 38fahjwkch-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 12 May 2021 11:44:00 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 12 May 2021 11:43:59 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lLUVv8TPz97SAC5nvsDe9rRMoSywBUjJCS+yoITlQheSf0aacyEMQ/pohlE8SU/YAVzcUPnoG2UHfOjEOI93nlb+lBAllGMAggjRZh+/rGGMwprRfhtrMX4nOim0ibcFPYLZ/flsRlcC0a1Ot+tpQL0UjwRh/M+/hywbuM/Y9S9zhuTA2dvGPM5eAT2aKfFudWY6uFaf8pijYyxasg0tUJk4Ywri1aU1HO90waK2kv6qWq7tcrN06gKgnxmU/mBhHwsbE5un/EfQ0Xd4LDzZBRomguvo0P+95XQWGvaJzwcbOebcBUAwfiGky4hRj6Lt1uhqwVKeKpwXONKCih8tjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kWucB2jK9LpvZ1Q67+NuHqsBmPRU5ZP6Tq9pUz4VtOU=;
- b=YTAJ8PLg4sBIVnl6Lm2TbDU7eiou2/DfWEfL7A0gPQbM08B6N0MgjgR3JiNVm4y12DruO72ZvgKNf7X5FlHs7l7RwA2qnqaTk6+XQjL19w6t8SM2AIQj4Rl2OkKTI/aNL2QX8rYHtuPPaI7IwGg7gwND2+yxTbuSQHcrrOyqTIdi5M9/X1LMRWcl65bnW9f2fEU9PIA61iOVWfu4p5r02nuH5od1+HhGNFz6/XA0YAyStAswLmc1G3zL2Hw2FXtyL6ItNOMtk6ZI3mLnYF98WqJ8fVJd0261cnMwXH0xkVCeazi36AaesJTMpOHaHUUuJqyXT515Vfc6D1mid/QT+Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from BN8PR15MB3282.namprd15.prod.outlook.com (2603:10b6:408:a8::32)
- by BN8PR15MB3489.namprd15.prod.outlook.com (2603:10b6:408:a0::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.40; Wed, 12 May
- 2021 18:43:54 +0000
-Received: from BN8PR15MB3282.namprd15.prod.outlook.com
- ([fe80::d427:8d86:1023:b6b5]) by BN8PR15MB3282.namprd15.prod.outlook.com
- ([fe80::d427:8d86:1023:b6b5%6]) with mapi id 15.20.4108.032; Wed, 12 May 2021
- 18:43:53 +0000
-Subject: Re: [PATCH v4 bpf-next 18/22] bpftool: Use syscall/loader program in
- "prog load" and "gen skeleton" command.
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-References: <20210508034837.64585-1-alexei.starovoitov@gmail.com>
- <20210508034837.64585-19-alexei.starovoitov@gmail.com>
- <CAEf4BzZYZ9i+pJ_aBzkhCLX9fVjUbOF_1=xvykk93TL5yQZieA@mail.gmail.com>
-From:   Alexei Starovoitov <ast@fb.com>
-Message-ID: <fc8d6e6b-cd31-5fcb-ff22-e3030b3f68a8@fb.com>
-Date:   Wed, 12 May 2021 11:43:47 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
-In-Reply-To: <CAEf4BzZYZ9i+pJ_aBzkhCLX9fVjUbOF_1=xvykk93TL5yQZieA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:18fd]
-X-ClientProxiedBy: MW3PR06CA0023.namprd06.prod.outlook.com
- (2603:10b6:303:2a::28) To BN8PR15MB3282.namprd15.prod.outlook.com
- (2603:10b6:408:a8::32)
+        id S237383AbhELVJn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 17:09:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1359640AbhELSxo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 May 2021 14:53:44 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF18C06174A;
+        Wed, 12 May 2021 11:50:33 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id 82so31964693yby.7;
+        Wed, 12 May 2021 11:50:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZxyM0HpMwe0lQC00HHaHZaHSaC5XVEVqlMr7GZzCwqY=;
+        b=Gj30vjccDQoBSEsE+RfMrjqRHFHxMCuyPE0qlJKW6YxuMm+AmDOWmT+vMXkSVBxig/
+         uetcWCr/oodsdfwduT7cyKogK0ghO1KwF16Xc90qSuLeSgvgFMBmwwms5ugSqwYGZocA
+         XjgekmG7CKPJ1H9OsDa6f5BDMv17xN1Recou+PFa51r9A+3MUMpo2JYe5cS8ES5sKNXk
+         +xkRovV1Rjr3wEp29zaem0407YdDqbSujrev2TqjpqX5Bxa1Mevx6kChqb75MHUhdVW5
+         Lq4tsd7Naxo8G+MNmBmPtsJ/i9jp3byxyesCOPjY7N32jCUnAK0y0bKoN4/qZE1RMAgt
+         KbEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZxyM0HpMwe0lQC00HHaHZaHSaC5XVEVqlMr7GZzCwqY=;
+        b=sMQIP79jLwAI03NAKPkLYD4JLX2kV14pC5PKa5PvHpH+6hxIoU8v6dJulVZBIvEXZ/
+         8GXVNQfyUk9rzXYiPiP63rSLrpYqhHNUWFLp5yyJoO1lgN0Gj5a/7mnw12fwSItyRk9J
+         z04Mv7JSDdeRveT9ThgdtB3QG9TU5+YP/0VB8PnnSQSEPzocbpEYK8pgc+66M+sI4OT6
+         VpcgjWmVk1bZWgPSVdmpzj9HbdaRGJw4wcFhH0P2AFh2YdaFTlwOd+RNjkvIWXCe1aA9
+         dM6VSI74LFdHmtBh/DaPjBWdzbDXdHxZ4WKrUNbagWrzQPIkPH8gtajgmTAnOPbiCXBI
+         FV1g==
+X-Gm-Message-State: AOAM5308ewcIPV75PuRJkClI3H1OdSLwrM22O4Q2kuCHIZ6xiZTYRhAi
+        fXS6gohvLbwdKJrHxQNcDOe2PRzUpQDxOLFN0JM=
+X-Google-Smtp-Source: ABdhPJyIjGOzyu/qFT6otrXOfpXNUkgx9bwlkNhdf2+NtisAo1VF1SGriGE13RZXzbGREVyTxuiseJ+/JsfHrclWcJs=
+X-Received: by 2002:a25:ba06:: with SMTP id t6mr48373192ybg.459.1620845430785;
+ Wed, 12 May 2021 11:50:30 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::1acd] (2620:10d:c090:400::5:18fd) by MW3PR06CA0023.namprd06.prod.outlook.com (2603:10b6:303:2a::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26 via Frontend Transport; Wed, 12 May 2021 18:43:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bf94ef53-3d70-4e32-29b0-08d91575e437
-X-MS-TrafficTypeDiagnostic: BN8PR15MB3489:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN8PR15MB348927F0D708C6C4199D8708D7529@BN8PR15MB3489.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:346;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hTpXU5smlKyaswLV4leGOON1t5fUMnjaOh5xdAGoOFjjYJ6AljCTWoxldpR7rfR/AqqKBY7GWohbe/44YxLO+H+9SNZm/OkrpwQiBtyY1JJ25GbeNjDU5CALHacopx1GrW9zWkzElMIcsIdMUn4G4sBd35K7o+lOjqPQYz+o7dYtORtik9EJf+N4Sxc+sBkF6wCKpOve9C1ALZenYIF8JAoddhsNckJJWs+MdH33tI9DazcxodN9ui/IfG4cpkL+Znejz7KDk6XuDBImYMUwM6WA47F2SNp7XKn78dQLonbgG+zSzuGJkXBcdEzNCc9LrLV0jW7uDh3Iv4y8sB8vq4L5I5sLcAbjmwYMm5Fcd72EXxwd9FGBsoiaT4rC2qXWqR8XjL4b+Fr6W1lEJagkGR4kTS6qaFgfZ7CsMEPfqXtjR3+VyWvzyuixGcZHKe3ktkac1MjS46r487utThnotzN7U0A9vCXLUYZDO5/vLG7fdFKQ75EeStE1ub36adJ1bkcoZ9mA1TowZcMvr44QsqTIHiSYrJkOjEYmdXkfsGEhvob/tutNFwOAnFVXqwJzycdEYMfQn4kuDoz5mNvAwFDOj3Zf56p5RLQsYaD00eo2uP+chzg6uB24C0q6ubJnPlSsZVVLMoegksxUnZxaZY7BdpObv6M8g76eN1J92k+f9aYp69uxMyus+RjRxKJe
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR15MB3282.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(396003)(376002)(366004)(136003)(8936002)(2616005)(4326008)(6666004)(2906002)(52116002)(110136005)(53546011)(54906003)(316002)(6486002)(36756003)(83380400001)(8676002)(16526019)(66946007)(86362001)(31686004)(478600001)(5660300002)(186003)(38100700002)(66476007)(66556008)(4744005)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dDZsemRQdDRmYTd6UlFwUmVjVVgvMEx5UGsxejBTYmJVNVdzYUJXUXNLSXVm?=
- =?utf-8?B?NXBEYU5vZ080VWlzRCtMT2dXRHdPOXdWek1tVDNRcmQ3YnAra0ZObDhSVmhQ?=
- =?utf-8?B?azgwdGFkdFJjcjhvdUlCZHdXNFVWTzh5VnNXR3M4SEtOclBMUmtZN2w3dFI5?=
- =?utf-8?B?VjNGQWd1d2FocFBQMEI3KzlGSXloZzdOK2tqaUUxN3p6QTBhdnJCaHc2dTFi?=
- =?utf-8?B?Y3NYKzhBVnZkblF3ZjA0THFRZmNtUzNkRU9ta0lEUVNTQ0F4dWRYV3JENWs0?=
- =?utf-8?B?MUFpbHlRQ01ENDZCcHkzMWFobWgrNFRsemZ2S0prMDErUktUdTNQRTE3cjRZ?=
- =?utf-8?B?TVlHcWF0aG0zUDFMQnFJYXZkQUF4T2pHUnNveEVMWUFZdnM3b0JrVGw1dFRY?=
- =?utf-8?B?a0t5ZElsMDlEUmdJd285ZkJIUnFzWjZVdEdWcU05Wmpwdk04NitvajdIam1v?=
- =?utf-8?B?UndaRGFnY0hkNndZMy9uMzF2VUp1T3RhNEZqRGNCOFFtN0tvb0VjbGxMRHV4?=
- =?utf-8?B?OVNCR2ZLaEJRTGw1UDYvUzZWVUo5ZFFOVVNrcVRWTmFVS09ZVEtVOFRxVFFQ?=
- =?utf-8?B?SHJlQ0JIbnRORm1KNUwrZHE4dSs0QUVzWkpLSlB6N0FwU0hqWUFKK29kczVV?=
- =?utf-8?B?RTBqaTUranNaUFVjOFFPSDAzSVZRYzJiZGM1Z0dlVFVVdjMxMFltRG0wWTZz?=
- =?utf-8?B?ZjZZWldpc2VVT2VGUE9pSExWQ0dIUnhGVEVZMHVWay9wMGtiVzNpK1hhMEw5?=
- =?utf-8?B?ZUpaYXV2RDVYYW5xVnBXanBZaTBrMFc5ZkxlVXFUZWFlLy8yN080WTV5bzF0?=
- =?utf-8?B?MDAwOEdma0duM0ZMUGhuQ2w2SXJxMjlnZlhvZGtPWmxMb3JIdkd1aTBuVjBS?=
- =?utf-8?B?akpmMFJQRVR0U0pDbWVHYWUrM1hCYTN4RTJsSVUvWFc3bEE5QVdENzdxeGlt?=
- =?utf-8?B?SDVRQ1FJbGdMMmRkSDFSTkllUEdXSFJiWHEwdXB0RWE0cFZvVDJrQ05LY245?=
- =?utf-8?B?MUEwR2ZOeWVGYjRyWndNa29HODlYYUZTcEIvY0g1b0hhYlVuaHFSa2gvUXdW?=
- =?utf-8?B?UTVGbDJZRmdXcS8vVG9KUkFYeUE4ZlMxUzlna3hMQUVPM2RtVVY0TlpFTUZD?=
- =?utf-8?B?T28yVEdYazYxeHVkMlVhMytqekRvRUxhaVJ4bFNxaWFINHVQaU9GSGhoUW1u?=
- =?utf-8?B?bVY5R05YM3ZOV1FZNnlLMmtJN1pPckJvTUYyMFZFUUh4WTlaR1dUOW1uV09x?=
- =?utf-8?B?R2oyaW9EWFBqNlVDLzQzUEQ0TzFYSEluZS9FL3R5Z3FOYWR3Z24wUHRhSU5N?=
- =?utf-8?B?OUh3QVNCZGt5U2VPUnZ3eVh3ZVNlaXZZR0xJVVZLT21FVUdFRDc0cG10Ny9k?=
- =?utf-8?B?a2JLSC9mcXdWVjdCUXlVWU9FdVhNcDk4ZmhCM0QyTkFUY003WW5ZbXVIZ2Uw?=
- =?utf-8?B?RHFsM0ZsZXJjVk82b0plNUxDTHpwOGJDcWp4UVh1a3lTaXp4MjlmRjFmZDJ3?=
- =?utf-8?B?Q1N5bHFNNFpxQ3hVMkN0cGpSVHlBZmFmT25oY084clBFbVVzVDV2dDRLOHNt?=
- =?utf-8?B?SU1qaFB3TzU3MVhUU281ZDZsdkNueWVTYVFQemRCVm9HdXU1NGlTbmJNSmFl?=
- =?utf-8?B?UEkvT3doUlNTMTQxWkJpbm5WbHU2U2JuOTdoNnIxU00wRmlBY2RsMEI1NWFK?=
- =?utf-8?B?UmdtalB5TlJOTkNVeXF1WlJvMmRDUWVQNHUvbEFnYjVlUkNFZEVlMVl1TUNY?=
- =?utf-8?B?UzQrUFV6TUc1Z2ZCaDJoZ0d5a1BOVldqNTNvT3hNeU1sQ0FTRTUzOStpSXFM?=
- =?utf-8?B?ejhFWW5Kc3dtall0N0xFQT09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf94ef53-3d70-4e32-29b0-08d91575e437
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR15MB3282.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2021 18:43:53.6781
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: J0B5hRJp0QwdNYmNrvbN4z9X4iHvvXujcYm99g8KcjTguAsWJZVWnDDN39285QEB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB3489
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: n5Z0PIrsGXYtLEU-8P_e4n97SEsZLCGJ
-X-Proofpoint-ORIG-GUID: n5Z0PIrsGXYtLEU-8P_e4n97SEsZLCGJ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-12_09:2021-05-12,2021-05-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
- phishscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
- lowpriorityscore=0 priorityscore=1501 suspectscore=0 spamscore=0
- clxscore=1015 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2105120121
-X-FB-Internal: deliver
+References: <CAEf4BzZOmCgmbYDUGA-s5AF6XJFkT1xKinY3Jax3Zm2OLNmguA@mail.gmail.com>
+ <20210426223449.5njjmcjpu63chqbb@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzYZX9YJcoragK20cvQvr_tPTWYBQSRh7diKc1KoCtu4Dg@mail.gmail.com>
+ <20210427022231.pbgtrdbxpgdx2zrw@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzZOwTp4vQxvCSXaS4-94fz_eZ7Q4n6uQfkAnMQnLRaTbQ@mail.gmail.com>
+ <20210428045545.egqvhyulr4ybbad6@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzZo7_r-hsNvJt3w3kyrmmBJj7ghGY8+k4nvKF0KLjma=w@mail.gmail.com>
+ <20210504044204.kpt6t5kaomj7oivq@ast-mbp> <CAADnVQ+WV8xZqJfWx8em5Ch8aKA8xcPqR0wT0BdFf9M==W5_FQ@mail.gmail.com>
+ <CAEf4BzY2z+oh=N0X26RBLEWw0t9pT7_fN0mWyDqfGcwuK8A-kg@mail.gmail.com> <20210511230505.z3rdnppplk3v3jce@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210511230505.z3rdnppplk3v3jce@ast-mbp.dhcp.thefacebook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 12 May 2021 11:50:19 -0700
+Message-ID: <CAEf4BzbJ==4iUFp4pYpkgbKy40+Q6+RTPJVh0gUANHajs88ZTg@mail.gmail.com>
+Subject: Re: bpf libraries and static variables. Was: [PATCH v2 bpf-next 2/6]
+ libbpf: rename static variables during linking
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/11/21 9:17 PM, Andrii Nakryiko wrote:
->> +       bpf_object__for_each_program(prog, obj) {
->> +               printf("\tif (skel->links.%1$s_fd > 0) close(skel->links.%1$s_fd);\n",
->> +                      bpf_program__name(prog));
-> 
-> you use bpf_program__name(prog) in so many place that it will be much
-> simpler if you have a dedicated variable for it
+On Tue, May 11, 2021 at 4:05 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, May 11, 2021 at 11:59:01AM -0700, Andrii Nakryiko wrote:
+> > >
+> > > If I understood what folks were saying no one is excited about namespaces in C.
+> > > So probably #3 is out and sounds like 1 is prefered?
+> > > So don't emit statics ?
+> > >
+> >
+> > I'm in favor of not emitting statics. They just seem to cause more
+> > problems than providing any extra benefits. Given it's trivial to just
+> > use globals instead and global vs static is already an explicit signal
+> > of what has to be in BPF skeleton and what's not. See my RFC about
+> > __internal + __hidden semantics, but even if we supported nothing but
+> > STV_DEFAULT globals wouldn't be horrible. Clearly we'd expect users to
+> > just not mess with BPF library's internal state with not way to
+> > enforce that, so I'd still like to have some enforceability.
+>
+> I'm glad that with Daniel and Lorenz we have a strong consensus here.
+> So I've applied first 6 patches from your RFC that stop exposing static
+> in skeleton and fix tests.
+> I'm only not 100% sure whether
+> commit 31332ccb7562 ("bpftool: Stop emitting static variables in BPF skeleton")
+> is enough to skip them reliably.
+> I think 'char __pad[N]' logic would do the rigth thing when
+> statics and globals are interleaved, but would be good to have a test.
 
-Every time it's in the different loop over all progs.
+Yeah, it should because current offset is re-calculated based on last
+processed variable and its size, so it doesn't matter if we skip extra
+variables. We can test it in test_static_linked selftest, if we switch
+zero-initialized var1 and var2 to be non-zero initialized, so that
+they share .data with static variables. I tested locally and they
+work, I'll send an update to selftests with a follow up patch set.
 
->> +       obj = bpf_object__open_file(file, &open_opts);
->> +       if (IS_ERR_OR_NULL(obj)) {
-> 
-> please use libbpf_get_error() instead of IS_ERR_OR_NULL()
+> In one .o file clang emits all globals first and then all statics,
+> so even without __pad it would have been enough,
+> but I don't know how .o-s with statics+global look after static linker combines them.
 
-That was copy-pasted from another place in the same file.
-Fixed both and the rest of comments.
+Static linker preserves relative order across .o's, so you'll have
+globals1, statics1, globals2, statics2, which is why proposed above
+adjustment to test_static_linked will validate the logic.
+
+>
+> I skipped patch 7, since without llvm part it cannot be used and it's
+> not clear yet whether llvm will ever be able to emit __internal.
+
+__internal cannot be used explicitly to isolate global variable from
+other files, but STV_HIDDEN -> STV_INTERNAL translation would allow to
+protect BPF library globals from BPF application, which is still a
+desirable feature. But whatever, we can wait and see the resolution of
+the Clang bug/feature discussion.
+
+>
+> > So my proposal is to allow having a special "library identifier"
+> > variable, e.g., something like:
+> >
+> > SEC(".lib") static char[] lib_name = "my_fancy_lib"; (let's not
+> > bikeshed naming for now)
+>
+> without 'static' probably? since license and version are without?
+
+It's not so clear. static allows to have different library names for
+different files. Currently we enforce that version and license
+contents match. It's part of what I said earlier that it feels like we
+need two separate linking commands: one for building BPF libraries and
+one for linking BPF applications. Which is not that far from
+user-space, where you linked shared libraries with a special options.
+We just want BPF static libraries to have properties of user-space BPF
+shared libraries (w.r.t. protection at least). We can discuss it at
+office hours, though.
+
+>
+> and at will be optional (mostly ignored by toolchain) for libs that
+> don't need sub-skeleton and mandatory for sub-skeleton?
+
+yep
+
+>
+> > With such library identifiers, BPF static linker will:
+> >   1) enforce uniqueness of library names when linking together
+> > multiple libraries
+>
+> you're not proposing for lib name to do namespacing of globals, right?
+> Only to indicate that liblru.o and libct.o (as normal elf files)
+> are bpf libraries as can be seen in their 'lib_name' strings
+> instead of regular .o files.
+> (that would be a definition of bpf library).
+
+yes, globals are not namespaced
+
+> So linker can rely on explicit library names given by users in .bpf.c
+> (and corresponding dependency on sub-skel) instead of relying
+> on file names?
+
+yes, stable unique identifier
+
+> If so, I agree that it's necessary.
+> Such 'char lib_name[]' is probably better than elf note.
+>
+> >   2) append zero-size markers to the very beginning and the very end
+> > of each BPF library's DATASECS, something like
+> >
+> > DATASEC .data:
+> >
+> >    void *___my_fancy_lib__start[0];
+> >    /* here goes .data variables */
+> >    void *___my_fancy_lib__end[0];
+> >
+> > And so on for each DATASEC. What those markers provide? Two things:
+> >
+> > 1). It makes it much easier for sub-skeleton to find where a
+> > particular BPF library's .data/.rodata/.bss starts within the final
+> > BPF application's  .data/.rodata/.bss section. All that without
+> > storing local BTF and doing type comparisons. Only a simple loop over
+> > DATASECs and its variables is needed.
+>
+> indeed. some lib name or rather sub-skeleton name is needed.
+> Since progs can have extern funcs in the lib I see no clean way to
+> reliably split prog loading between main skeleton and sub-skeletons.
+> Meaning that prog loading and map creation can only be done
+> by the main skeleton.
+
+Yes, opening and loading can be done by main skeleton only. But
+between opening and loading a sub-skeleton can be instantiated from
+bpf_object (or whatever equivalent way for lskel) and further
+pre-setup stuff (map definition adjustments, rodata and other vars
+setting up, etc). Then main skeleton loads, and if necessary,
+user-space part of BPF library can still perform after-load
+adjustments before final attachment happens.
+
+> After that is done and mmap-ing of data/rodata/bss is done
+> the main skeleton will init sub-skeleton with offsets to their
+> corresponding data based on these offsets?
+> I think that will work for light skel.
+
+What I had in mind kept skeleton completely isolated from
+sub-skeleton. Think about this, when BPF library author is compiling
+it's user-space parts that use sub-skeleton, they don't and generally
+speaking can't know anything about the final BPF application, so they
+can't have any access to the final skeleton. But they need
+code-generated sub-skeleton header file, similarly to BPF skeleton
+today. So at least for BPF skeleton, the flow I was imagining would be
+like this.
+
+1. BPF library abc consists of abc1.bpf.c and abc2.bpf.c. It also has
+user-space component in abc.c.
+2. BPF app uses abs library and has its own app1.bpf.c and app2.bpf.c
+and app.c for user-space.
+3. BPF library author sets up its Makefile to do
+  a. clang -target bpf -g -O2 -c abc1.bpf.c -o abc1.bpf.o
+  b. clang -target bpf -g -O2 -c abc2.bpf.c -o abc2.bpf.o
+  c. bpftool gen lib libabc.bpf.o abc1.bpf.o abc2.bpf.o
+  d. bpftool gen subskeleton libabc.bpf.o > libabc.subskel.h
+  e. abc.c (user-space library) is of the form
+
+#include "libabc.subskel.h"
+
+static struct libabc_bpf *subskel;
+
+int libabc__init(struct bpf_object *obj)
+{
+    subskel = libabc_bpf__open_subskel(obj);
+
+    subskel->data->abc_my_var = 123;
+}
+
+int libabc__attach()
+{
+    libabc_bpf__attach(subskel);
+}
+
+  f. cc abc.c into libabc.a and then libabc.a and libabc.bpf.o are
+distributed to end user
+
+3. Now, from BPF application author side:
+  a. clang -target bpf -g -O2 -c app1.bpf.c -o app1.bpf.o
+  b. clang -target bpf -g -O2 -c app2.bpf.c -o app2.bpf.o
+  c. bpftool gen object app.bpf.o app1.bpf.o app2.bpf.o libabc.bpf.o
+  d. on user-space side of app in app.c
+
+#include "app.skel.h"
+
+int main()
+{
+    struct app_bpf *skel;
+
+    skel = app_bpf__open();
+    skel->rodata->app_var = 123;
+
+    libabc__init(skel->obj);
+
+    app_bpf__load(skel);
+
+    libabc__attach();
+
+    /* probably shouldn't auto-attach library progs, but don't know
+yet how to prevent that */
+    app_bpf__attach(skel);
+
+    /* do some useful logic now */
+}
+
+  e. cc app.c -o app && sudo ./app
+
+
+So, app author doesn't need and doesn't have direct access to
+subskeleton header. And sub-skeleton header is generated by BPF
+library way before the library is linked into the final application.
+
+> I don't see a use case for __end marker yet, but I guess it's good
+> for consistency.
+
+Good for knowing whole range of BPF library's data. Can be used for
+some extra sanity checking. And can be used to omit parts of variables
+from the final skeleton.
+
+> rodata init is tricky.
+> Since the main skel and sub-skels will init their parts independently.
+> But I think it can be managed.
+
+See above, I showed rodata initialization as well. It works because we
+have mmap()'ed memory right after skeleton's open and all the memory
+addresses stay fixed.
+
+>
+> > 2). (optionally) we can exclude everything between ___<libname>__start
+> > and ___<libname>__end from BPF application's skeleton.
+>
+> So that's leaning towards namespacing ideas?
+
+Not really, because globals are not namespaced and statics are not
+exposed to user-space, so there is no need for namespacing. This is to
+find data location and, if necessary, filter out library state from
+application skeleton.
+
+> The lib_name doesn't hide any names and globals will conflict during
+> the linking as usual.
+> But with this optional hiding (inside .bpf.c it will have special name?)
+> the partial namespacing can happen. And the lib can hide the stuff
+> from its users.
+> The concept is nice, but lib scope maybe too big.
+>
+> > It's a pretty long email already and there are a lot things to unpack,
+> > and still more nuances to discuss. So I'll put up BPF static linking +
+> > BPF libraries topic for this week's BPF office hours for anyone
+> > interested to join the live discussion. It would hopefully allow
+> > everyone to get more up to speed and onto the same page on this topic.
+> > But still curious WDYT?
+>
+> Sounds great to me. I hope more folks can join the discussion.
