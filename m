@@ -2,157 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB1037B516
-	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 06:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D24937B584
+	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 07:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbhELEfW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 00:35:22 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:39356 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229495AbhELEfV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 12 May 2021 00:35:21 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14C4VIPS022128;
-        Tue, 11 May 2021 21:34:02 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=unw5P7yJf/1biWAQuGXc6QETxMJCvRsIWg53HDXPJc8=;
- b=KFuq88Y0ebLCde8tBoQQV9s0y7iLZdyx9uzv1Mo+SaBe44sYB6vsUri27DWxAUvL2ncm
- NoO56Acc5WyV93rMIcd2UUdzLEqD1tp+H+INoqPvxtQkKHVPYsfvkaJrCWe5oPmUJJR4
- JEO7mt0yohaJ6gvGR3n6y2fG1Cg6hkTEpIc= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 38fap79197-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 11 May 2021 21:34:01 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 11 May 2021 21:34:00 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cmcwUQ+pn2hrg5yLBWxobFxWuAWv7QVRsixmYfi70XptxzEWERVNWANVcUCR0pFFk0DEwrfR8zuFFAGKSRDRP23X4QomoPik/Qm2Bpnv06Zsxm2iZJM9pI0AWxY61GysAvurtgHkP/p7EXnWJAuvPYquU31GDAw+OPYrc/f5XWGUJgl5YWy8MdnZmycg4U7YbJh3xnGDDZnHSjUu87zw8ZFDBmJ/fOcblhZluSMZuEQH9LNkPlFQUEdJeOmLY/crraWrKLOiqZXH5pmaJzBycRV87nPbwzB3cW5wHtLjmbal4k2E4BzhH1EaJYzIv+pk5mJgqXk9+Dn3FydD7gJsxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=unw5P7yJf/1biWAQuGXc6QETxMJCvRsIWg53HDXPJc8=;
- b=koTUicKXBo5A+xP4h88z6lK3IK+/ZeF92F+rVGc1bnwSV7IhdYVheGOgGN71imYQ4pGg0ogN7zvgnX7Xjq9AfnLqXbVQYGT9/ecYznMG8bVb8fG8Whmzpy/dyN1elOeDiogocMioJMCbLm3bIWTf+IBP8cWNUthVdInvrSrSt52HhwaevYirDAsodV5N/JFn1CL8+EPvhGdNUCpOe3BwrzrNbzr8L2OTxDRyELnX9r3FzWA1H+w+QyQRqjwndSoo3klxU16GP7/0KEFUcgFC5xtuZWSaFdlSFhidF0C4qI4Q4JN3o/A2G2iVEKdjjv+g0XCl9LTPJRt4PZKysqzzAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from BN8PR15MB3282.namprd15.prod.outlook.com (2603:10b6:408:a8::32)
- by BN8PR15MB3364.namprd15.prod.outlook.com (2603:10b6:408:a5::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Wed, 12 May
- 2021 04:33:57 +0000
-Received: from BN8PR15MB3282.namprd15.prod.outlook.com
- ([fe80::d427:8d86:1023:b6b5]) by BN8PR15MB3282.namprd15.prod.outlook.com
- ([fe80::d427:8d86:1023:b6b5%6]) with mapi id 15.20.4108.032; Wed, 12 May 2021
- 04:33:57 +0000
-Subject: Re: [PATCH v4 bpf-next 16/22] libbpf: Cleanup temp FDs when
- intermediate sys_bpf fails.
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-References: <20210508034837.64585-1-alexei.starovoitov@gmail.com>
- <20210508034837.64585-17-alexei.starovoitov@gmail.com>
- <CAEf4BzYPHBeK3vfwFm7oUru5Qb2MFq+sfnFV+=J-duevxXeryA@mail.gmail.com>
-From:   Alexei Starovoitov <ast@fb.com>
-Message-ID: <de6e783e-229f-cb16-add1-f12f58367e09@fb.com>
-Date:   Tue, 11 May 2021 21:33:52 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
-In-Reply-To: <CAEf4BzYPHBeK3vfwFm7oUru5Qb2MFq+sfnFV+=J-duevxXeryA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:aafc]
-X-ClientProxiedBy: MWHPR11CA0006.namprd11.prod.outlook.com
- (2603:10b6:301:1::16) To BN8PR15MB3282.namprd15.prod.outlook.com
- (2603:10b6:408:a8::32)
+        id S229580AbhELFgd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 01:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229626AbhELFgd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 May 2021 01:36:33 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C6CC061574
+        for <bpf@vger.kernel.org>; Tue, 11 May 2021 22:35:26 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id bo23-20020a17090b0917b029015cb1f2fd59so376289pjb.2
+        for <bpf@vger.kernel.org>; Tue, 11 May 2021 22:35:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IfUQPgDJlW2Do2oxkhPyrMOtLHgkYhezO9CMsgNLTfQ=;
+        b=EeWnA/PgNFGP1GLXuVZXnjd/6YZIAO4re2AwR4dhI5MrPvu0VOxMYaXgk5miZ1sMfX
+         tUyQZ1dK4jyN6ROMaFFAzrvBwGMxF8crY8MNry+NizxC919oOGIab8TIQ7gCEqvHrVFK
+         DQbOChKekq2sxao103Uo5E3NBXMcsEFlva4FyHbHGNIqYkAAbkp/393IWz3dz6/S5Aep
+         XRRHIcaFpGYy/k7yXf+A5oSvfSF7uYUoKn9HF+BD+at5KKTzPDaqWF6I1kjvb0dRFhOc
+         DxwWNjwsiQ37Ai6mKXknDLhdXCdzMpyVilUN/6xt5tNc8yHQsr74Q9l1VTLCeBGOwmPf
+         h/Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IfUQPgDJlW2Do2oxkhPyrMOtLHgkYhezO9CMsgNLTfQ=;
+        b=DkXT7LNaZ/lBjCZDgI/UdHzM3Vl7QNxrW4mHFIjux46yFusoVkHz9jp6cEfIp1cijj
+         e78UnEbF7ZA27NnpujhRYF7Pr9AzMqmKfV98G2LJASaFn1KHH+S8H6HG7+JoDOKUPtk8
+         KpqHJlZNDEWEiut5U7YdS5NZBxOauncJIMiQrGdyTgTSjGGahjMg9Wct0nEsJUZWJabo
+         BTTg7uBlSVNThSKM4WIPnlWIR/h1ySf7y2j+xOrz/OKPolKCXLlorpHtMz/p2g9qDDvi
+         xoLqym0eW1dYKaDplkPOp5oUiv49I+2kn35e67vl0yO1mjb6Z22WwgGcEwcN72ga/Jqt
+         ERHQ==
+X-Gm-Message-State: AOAM530O04GGgU4AEohF8FqdGZhehUKxxkqnv30EJF1tPL+7OJhp+YNq
+        0M3jV+Mn/RyWKmoTf6GVsS6prhNhXv4G9lMSkjIvl/oSw9+dJA==
+X-Google-Smtp-Source: ABdhPJzVvizZx9J62L5HM4LbMmdeExYhI5/CHpoR/SAHUORfeOB7qHf+Lw5WVZNssHexwVO1hs/noS2FEdXVgz5zxMA=
+X-Received: by 2002:a17:902:b412:b029:ef:1737:ed with SMTP id
+ x18-20020a170902b412b02900ef173700edmr24632284plr.43.1620797725269; Tue, 11
+ May 2021 22:35:25 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::1acd] (2620:10d:c090:400::5:aafc) by MWHPR11CA0006.namprd11.prod.outlook.com (2603:10b6:301:1::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25 via Frontend Transport; Wed, 12 May 2021 04:33:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 237421f5-e8c0-4a0e-a94d-08d914ff27fa
-X-MS-TrafficTypeDiagnostic: BN8PR15MB3364:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN8PR15MB3364B2D82202332955CDCFABD7529@BN8PR15MB3364.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bfpSGTB5IpSKvq5XM0gkX0fImH7NXMuJpXOjNsi4fCo7gq/ZXTpMU/aUOuWDyfddY8x1YDj+gvl5hrPwF6RhLyOmPxnbbaoS9p/iQ5alS/6MKW6ZmpmsqMi4CvQr/W9vPLqZUzu/Qp0freEec0WH9/YBrqE0Vk1GvYOC//jfGwdLq6nVbB8VZHAkYFTWTcB33oVtAP2d7ljgqY2sW84xNC+Q/eD+7622cPMACw8F+Z0OaHzgQ0ev/0Jzt2ugKrvv0F10ceLcWrIhY/IJfNDK6FzXpU4+AegC68dvuOqR/qfR4K2qVtHhi1fVci5NSBPiUcHeWnobkuMU9UsmUi29Z4JyPmAPpMmZ4MgVbKBftuC0XUETHZ5MEh96iqmjW8AWXHudxYKUPBFZ5T3jEr4mtlutKf8TYLb9hoXNxCtlj5mzu+SKCIzXrrOsBpyu59w39fnZuIJlkKc7nxMU6/Sl5Of1ddCe39P0XtUmwJukLEFzsTEo21Zyl0AJYmjyiHqtxhYbGmMFsdYOXtdJCdIhvMXdliZ0CIww0cFDqFZAgSDOd/JsecCpzWk6wAGY0TRGeFU4PbQxdn20jYKDPiVb9Y3jQVPoJJpv/gVqZBi4H02G/Ah7AiI5ntYoNhjWCF7h/yu25mMtEPfJ1QlqtrHUGPZwftD2yhf7pc8nOt3pVGKERviHhCpBGtkSJlNTVpCQ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR15MB3282.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(396003)(136003)(366004)(52116002)(2616005)(186003)(478600001)(8936002)(5660300002)(31696002)(4744005)(86362001)(8676002)(66946007)(6666004)(36756003)(110136005)(54906003)(316002)(66556008)(38100700002)(53546011)(4326008)(6486002)(2906002)(31686004)(66476007)(16526019)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VTlZR3FqSTFEcEJqR1hLQUI0VzFqUXMxc1VWZTZ1dk02enZ5UmNpZDZPVkRi?=
- =?utf-8?B?bjhkdEpSWFZoQ1YxSkFYdkpNSExlcDJNZ0p4eEQzV05BRTA4LytNL1dOYkRQ?=
- =?utf-8?B?WHVxckl0Nk5xK2kwNFY1cFFkWmxvMHdBRVd4TC9VbkE3MGNKR0F4RGZhbmRI?=
- =?utf-8?B?SXBTU1NrVmdYbG1ONWxCZlNtbmNrTmM0ZXM2b0YrY3lHbnQyc0pFMXQzNzl6?=
- =?utf-8?B?Yzl0a2Jibk01ZUI0RDJhb0tiZXV1cDBBVkRWaHJXVmtwS2NHSWVEbkhQZHZa?=
- =?utf-8?B?RHA2QldoUEErQjRmekxMQUtUckZzQlhRZFNrZ2FkTys5VVIwTGxPemg4Y05J?=
- =?utf-8?B?c1pld0hHNkc5VjNUaTU4ekY5WVM4MmZYSVZjU2gzTmJFdDgzY0Z4dnkzZVA3?=
- =?utf-8?B?SXNOT3VvU2JSRzJrM2NLL20zdjNJQTJTbWdiSVlNamRKdUhGWkEvaFZXSHl6?=
- =?utf-8?B?VDVBd2FqOUtDVEd1dFVVR2ttSG9PamFHSEFndWhqMU9FVUJVQVgzZWpuY01V?=
- =?utf-8?B?ZlREYm1KRTBXeWlvZWlvSFlCdjUwVHNEaTQ4MFZZeTJWYmNKV0FoK0tCUGhI?=
- =?utf-8?B?MzBibCtHV2pZYlRCN0craldkdm1NdTlNZVdIODljSWJ1UmcxVkdscEhIcWdv?=
- =?utf-8?B?WFlqVjA2NDdUYjlPNnhPUnZLeTlmeVNUd0N6TFYzd1FTaWQwYVpQSmQvZFFt?=
- =?utf-8?B?by8ycWU3a3V5R2pQalEwb094ci94TjFPbVNHQ1IxZmF1M3JmME5LQSs3MFQ5?=
- =?utf-8?B?NFhCaFdRN3dDOUF1SWx0UnlVUmFGR3RMVDJhN2h6cDFvLzdTRkhvMmdKaWd3?=
- =?utf-8?B?UUJDbGk2d0M5MXh3bjk1V0xrL3J4a3pnTXZKSEwwdFpMRStleW95S0lkQWlP?=
- =?utf-8?B?SDVNZ3drRHkzV0NROEsrTjFrMEU4Y3lPSE56Ri9iZU5EY0kzMDYwUW0xUXFt?=
- =?utf-8?B?OHlTZW9pcVovVGczTzhuRUdkUWNlcmtuUzRhbXljSmFxbytSVHFBQ25vajlS?=
- =?utf-8?B?cTM2QXFKbUtOK2MzRm1MQ3JLYVFYZzZKUjF5Zk5MdEpUZDZDRlVZTE5LaklP?=
- =?utf-8?B?NzJrSXZwWEZMeGpRdFdOS0hVUlI1UlJ0cWhrcXplL3NnVkRMTUJyMnZzQmhs?=
- =?utf-8?B?S0twbEFvVUx6NngzS2Vyb2xneXJCdWdsbjc0SzcvZ2hRcmY2d2Vyb1lDMlVa?=
- =?utf-8?B?Y1dhQTRaQk14dVo2YTBxRXZBbmU2YldhMXkzLzZBbWcrNGJ3MkttTE1ZM3Ru?=
- =?utf-8?B?cmtQZUw2SzdnUm5za3QxTFpKSkk3WWJxZHN3Tnh1YmpURi9BZHA0aWNONkxo?=
- =?utf-8?B?QlFKMU1pdEZ1VHNlVFNucUxxbm5mNEROTE93WTNzL1JSUTB1L09EZ3c5dFVS?=
- =?utf-8?B?SVJwQkpGSThsK09yU3BIZ3ZUdTJ2Q3BUNXMxWGtKdG4xanpjVFlPUE1kRTBB?=
- =?utf-8?B?THVCeVVpc0Z4VWJYUnp3VTgzU1UxRDVpMThGWkk5dG0xLytLdjJ4Wk9NY1pi?=
- =?utf-8?B?TzVHRDRLNjJ5UTBpL01hZVhJeVBlSEdsZXMvMXVvQ0JvUjU1bStUNFlHa3hu?=
- =?utf-8?B?UUJmZERlaUZXTk9TbDBMQmVIeXE4Z3VBYi9NSHlsZ1VCOFY1NXptMUdnNVZj?=
- =?utf-8?B?NWw1dzI3UGt6ZUd6YzhqamJNTmRjSXN5emQxQnFpd3hTQjZ2NkhzY3pOelVM?=
- =?utf-8?B?dFRlTlljOVJqOTNQZTVXb04xSE12eDVNVzBINSsrbWZKUmRMZUtQa1lScHpx?=
- =?utf-8?B?OENpZkVGcHNFTHdrWGJ0UkJsSXJWRm9wMHNKZUhYWmZjeCsvYWZ0VjBlRXVM?=
- =?utf-8?Q?4lUq+bcyKGhisYk7U/I33vsTVjDA/ZRVw0fHU=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 237421f5-e8c0-4a0e-a94d-08d914ff27fa
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR15MB3282.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2021 04:33:57.1139
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kuIsRFZYxhJltk3e4Kx72ftRD7kf0bAQbELgRL2kYXvY3bfsp7JK3cr8Ikp2E30R
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB3364
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: i9oMkDD_W9UAYM7PwhWgzVcg7CbXuLFo
-X-Proofpoint-GUID: i9oMkDD_W9UAYM7PwhWgzVcg7CbXuLFo
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-12_01:2021-05-11,2021-05-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- impostorscore=0 mlxlogscore=999 spamscore=0 suspectscore=0 adultscore=0
- mlxscore=0 phishscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105120032
-X-FB-Internal: deliver
+References: <BYAPR11MB365382C5DB1E5FCC53242609C1549@BYAPR11MB3653.namprd11.prod.outlook.com>
+In-Reply-To: <BYAPR11MB365382C5DB1E5FCC53242609C1549@BYAPR11MB3653.namprd11.prod.outlook.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 12 May 2021 07:35:14 +0200
+Message-ID: <CAJ8uoz16WLwqP+=dtphm7KWh=c9QYiU25k33hNrAg8ciaGe9vw@mail.gmail.com>
+Subject: Re: AF_XDP poll() / sendmsg() race + headroom changes
+To:     "Benoit Ganne (bganne)" <bganne@cisco.com>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/11/21 4:34 PM, Andrii Nakryiko wrote:
->> +       bpf_gen__emit(gen, BPF_JMP_IMM(BPF_JSGE, BPF_REG_7, 0, 1));
->> +       bpf_gen__emit(gen, BPF_JMP_IMM(BPF_JA, 0, 0,
->> +                                      -(gen->insn_cur - gen->insn_start - gen->cleanup_label) / 8 - 1));
-> Just curious, why not a single BPF_JSLT straight to the cleanup label?
-> 
+On Mon, May 10, 2021 at 7:53 PM Benoit Ganne (bganne) <bganne@cisco.com> wr=
+ote:
+>
+> Hi everyone,
+>
+> Please CC me as I am not subscribed to the list.
+> I am the maintainer of the AF_XDP driver for VPP, an open-source userspac=
+e networking stack, and I ran into an issue recently with kernels < 5.6 (in=
+cluding LTS kernel 5.4 which is shipped in eg. Ubuntu 20.04 LTS): it seems =
+like one cannot call poll() and sendmsg() concurrently on the same AF_XDP s=
+ocket. Is this a supported usecase? I know the rings are single producer/si=
+ngle consumer and I use them like this, but can I have one thread doing RX =
+(and poll) while another thread is doing TX (and sendmsg)?
+> A typical usecase is when using more processing threads than AF_XDP queue=
+s for an interface, eg. because I use several interfaces: each thread can p=
+oll its own set of RX queues from different NICs, but depending of the pack=
+et processing decisions, I must be able to send through any other interface=
+ - hence TX queues can be shared. In this case they are protected with a lo=
+ck, but rx and tx can still happen in parallel.
+> The problem has been fixed with commit 11cc2d21499cabe7e7964389634ed1de3e=
+e91d33 "xsk: Simplify detection of empty and full rings" [1] but it looks l=
+ike pure luck.
+> From what I can see the issue stems that prior to this patch, poll() will=
+ update the cached txq prod_tail while sendmsg() is running and doing the s=
+ame and because of that the txq cons_head can moved back, causing AF_XDP to=
+ process the same descriptor twice.
+>
+> I hit a 2nd issue with kernel >=3D 5.9, where the headroom on rx for copy=
+ mode has grown from 0 to XDP_PACKET_HEADROOM (256-bytes). This change of b=
+ehavior was introduced by commit 2b43470add8c8ff1e1ee28dffc5c5df97e955d09 "=
+xsk: Introduce AF_XDP buffer allocation API" [2].
+> Previously, the headroom in copy mode was set to "configured headroom + 0=
+" whereas the headroom in 0-copy mode was set to "configured headroom + XDP=
+_PACKET_HEADROOM". This patch changed copy mode headroom to "configured hea=
+droom + XDP_PACKET_HEADROOM", identical to 0-copy.
+> I agree the previous behavior was a bit weird, but is there a way to dete=
+ct old vs new behavior? Otherwise it is difficult to run the same code befo=
+re/after this patch.
+>
+> Thanks in advance for your help,
+> ben
 
-ohh. I still didn't fix JA. I kept thinking to make it use imm32 to
-address long standing issue with large programs. It was on my mind
-for so long now that it became false reality :(
-So above I did to avoid doing simm16 check. That's what llvm
-will eventually generate. Once JA supports imm32, of course.
-Thanks for asking. Will fix.
+Hi Benoit. Thank you for reporting, I will take a look at this and get
+back to you. Next time, please add me and Bj=C3=B6rn on the to line so that
+you get a quicker response.
+
+> [1] https://lore.kernel.org/bpf/1576759171-28550-3-git-send-email-magnus.=
+karlsson@intel.com/
+> [2] https://lore.kernel.org/bpf/20200520192103.355233-6-bjorn.topel@gmail=
+.com
