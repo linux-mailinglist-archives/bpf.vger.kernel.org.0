@@ -2,126 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590B237EF54
-	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 01:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9333837F037
+	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 02:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347746AbhELXE5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 19:04:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34078 "EHLO
+        id S233243AbhEMAFj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 20:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241455AbhELW6N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 May 2021 18:58:13 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D65C06138A
-        for <bpf@vger.kernel.org>; Wed, 12 May 2021 15:56:06 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id i67so23929794qkc.4
-        for <bpf@vger.kernel.org>; Wed, 12 May 2021 15:56:06 -0700 (PDT)
+        with ESMTP id S1352660AbhEMAB1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 May 2021 20:01:27 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87064C061379;
+        Wed, 12 May 2021 16:39:13 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id q15so15313467pgg.12;
+        Wed, 12 May 2021 16:39:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8IPURGtEFzuEgj+t7YYPcm0/W4cVT5eQQ0tWFffsI14=;
-        b=HvAIsfV0UlzqOabx+lDWlSq85I/ucVUl4mpIIvnw2GWbuRUnMOdj+6QmmbhFZoNsUF
-         MuO2GTrChTCxEJ2y2R2CTUqhPGI/WFnG275gsyLeJOiwPgFyMJgstAJPZf0Bpj+Hmbhn
-         CDSLVr3ga28zxAa38HgOmS6PvuaBr2N+GUeUNT8p+78vW8eFyNbhbq4bdoTvEWF5dEoI
-         7jyoqeEYudle+D29hhosWhBJzg37f4dAKUHHUQ+kG8E+oZ/w4tjc/QXeA/vQHyUGi2MK
-         X7dgevSUDFYVnL9PeOd+L/9g7cXwvMcwy4zr9g+0gbta1/iZW7aT2eJwBQAD1vSB7KZC
-         gv+g==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aGfzMiuiCCtvZswOkm4Od1Y3YxVLjQnaUsfjgGWQ9Wg=;
+        b=LHw5pvZdaxJVwSpYjcuiyTtUim9nCjJyqH5aMSX75v53AlSlmQIfaGijq5S45PhmUK
+         K7VE2xHkUcOYkmshJea5ud2Xhb2cmBnRS1AzPLuHlcqT/QiKOrrGhCQP+CC793Bd4PeL
+         qFHV0IOgiJeSVhLie81mfHjc+h/OGd3W1Q3HVIcr6V2iLL605aTthXs6VuUSyR+XWxEx
+         i5hh0yybNBD38zo0PeB+vMyjD0rkeOrlapoCvOIhD97qMTo2XMCjYS1k1auFuH2NInRY
+         qCaReSw3tA7PA0te1xSmq52u4/pGYj1e8U93cWF8lRTx+OyOxgjsGVaksZk1cwpDy6cm
+         m+hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8IPURGtEFzuEgj+t7YYPcm0/W4cVT5eQQ0tWFffsI14=;
-        b=hxuOjX3ixAg9RMdJ7Af5cW0KLWS91j8suSjfOwoXnxPKVMLsYROS8sSMtkhBdaQ3HF
-         iDO6Tui88VSyJVerAn0rghp5KF+L/tXu8XEMPqVD8XZroH03hK2G2/Fvb1Tsbx/Vgejo
-         0yLc0uvQ4Q5KWwsc7hQpGxIAauVFwAYkokZljFe/XPrUUR956Ja0CdupVb0X4kLi91P1
-         h81YXU/guuoN7EqYgx078AfWLqQ8mb16b6ZWnOv7AJxQ8WuSU6vA0h0Hg3UQ093uVamx
-         Qix+nTWLb8LUGMOMsiQQJah9CrZa2C2x1u4WbdtEQ9w4djDShpLz+mnJ3unF82yoTnmn
-         DqTA==
-X-Gm-Message-State: AOAM5325Zb8byhzMTxWgvyqwlOvlH9EJQ8crgUK7xmgO+VspGWoKAlr1
-        oOytHVnyzHaezSYW+VxrNFaaWg==
-X-Google-Smtp-Source: ABdhPJwSFEe2ZpnWeLqlZVF63LuaqBvBIvDB06fVD4y4d3nkAHVrcmB+1fyGFxvUV3y4dzwBc3hpvg==
-X-Received: by 2002:a05:620a:1223:: with SMTP id v3mr35465656qkj.470.1620860166046;
-        Wed, 12 May 2021 15:56:06 -0700 (PDT)
-Received: from [192.168.1.79] (bras-base-kntaon1617w-grc-25-174-95-97-70.dsl.bell.ca. [174.95.97.70])
-        by smtp.googlemail.com with ESMTPSA id w7sm1007322qtn.91.2021.05.12.15.56.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 May 2021 15:56:05 -0700 (PDT)
-Subject: Re: [RFC Patch bpf-next] bpf: introduce bpf timer
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aGfzMiuiCCtvZswOkm4Od1Y3YxVLjQnaUsfjgGWQ9Wg=;
+        b=QnZrGOWzOQxzB6sdJnivVDrct0TJuN1P9f6PLX/h3fwGrjN2T6syxCCXAan66iq52W
+         vjavV1M631daABF4Zlmg2AXMziOY/5qFG7v3fksngQsS5VwWzgEL7004ido1bN6pCJIX
+         DsG7C4Od2tix3QFMd6Wf3LoAx6dTa5wi2+QbOhCvC6nk0eHSSluo/g6v0PmR962IsbAk
+         E3Bf1d1ndZddBXFMeA2FugB+qmPL7EwHwen312jFJXUWeX+Dfer1eoYGYe/Z74vyg4t0
+         ShFljdwJHxlFE2l7Pyt9CYsrqQV0Wo1y7U3QbSsvoJJUiJ6aC65+fDTcwR1V/LOwJXh+
+         kgiw==
+X-Gm-Message-State: AOAM532ii4SJyTHHOrpAKUQwvG264x5+SQYubgtKksUvEJaN8FRHnMJd
+        nNM0Ih1TDccThDJWNxHC+EZdX3v1rPw=
+X-Google-Smtp-Source: ABdhPJy47cGeqyWRgxLkYY1gQw6rrRnoQTBgO64E1847V4Zn9evccGm4GPgsEQo47L5KmoFqqdla4A==
+X-Received: by 2002:a63:ff66:: with SMTP id s38mr38340713pgk.154.1620862753048;
+        Wed, 12 May 2021 16:39:13 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:c6f4])
+        by smtp.gmail.com with ESMTPSA id gb9sm5316253pjb.7.2021.05.12.16.39.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 16:39:12 -0700 (PDT)
+Date:   Wed, 12 May 2021 16:39:07 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Pedro Tammela <pctammela@mojatatu.com>,
-        Joe Stringer <joe@cilium.io>
-References: <20210402192823.bqwgipmky3xsucs5@ast-mbp>
- <20210402234500.by3wigegeluy5w7j@ast-mbp>
- <CAM_iQpWf2aYbY=tKejb=nx7LWBLo1woTp-n4wOLhkUuDCz8u-Q@mail.gmail.com>
- <20210412230151.763nqvaadrrg77kd@ast-mbp.dhcp.thefacebook.com>
- <CAM_iQpWePmmpr0RKqCrQ=NPiGrq2Tx9OU9y3e4CTzFjvh5t47w@mail.gmail.com>
- <CAADnVQLsmULxJYq9rHS4xyg=VAUeexJTh35vTWTVgjeqwX4D6g@mail.gmail.com>
- <CAM_iQpVtxgZNeqh4_Pqftc3D163JnRvP3AZRuFrYNeyWLgVBVA@mail.gmail.com>
- <CAADnVQLFehCeQRbwEQ9VM-=Y3V3es2Ze8gFPs6cZHwNH0Ct7vw@mail.gmail.com>
- <CAM_iQpWDhoY_msU=AowHFq3N3OuQpvxd2ADP_Z+gxBfGduhrPA@mail.gmail.com>
- <20210427020159.hhgyfkjhzjk3lxgs@ast-mbp.dhcp.thefacebook.com>
- <CAM_iQpVE4XG7SPAVBmV2UtqUANg3X-1ngY7COYC03NrT6JkZ+g@mail.gmail.com>
- <CAADnVQK9BgguVorziWgpMktLHuPCgEaKa4fz-KCfhcZtT46teQ@mail.gmail.com>
- <CAM_iQpWBrxuT=Y3CbhxYpE5a+QSk-O=Vj4euegggXAAKTHRBqw@mail.gmail.com>
- <d38c7ccf-bc66-9b71-ef96-7fe196ac5c09@mojatatu.com>
- <CAM_iQpXLcpga=DF+ateBk1jiiCx2mPJW=WHT+j3JrS8kuPS4Zw@mail.gmail.com>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Message-ID: <59378178-57e2-c278-02cd-d58f9973b638@mojatatu.com>
-Date:   Wed, 12 May 2021 18:56:04 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Kernel Team <kernel-team@fb.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: bpf libraries and static variables. Was: [PATCH v2 bpf-next 2/6]
+ libbpf: rename static variables during linking
+Message-ID: <20210512233907.skhbwmbnwaajnscm@ast-mbp.dhcp.thefacebook.com>
+References: <CAEf4BzYZX9YJcoragK20cvQvr_tPTWYBQSRh7diKc1KoCtu4Dg@mail.gmail.com>
+ <20210427022231.pbgtrdbxpgdx2zrw@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzZOwTp4vQxvCSXaS4-94fz_eZ7Q4n6uQfkAnMQnLRaTbQ@mail.gmail.com>
+ <20210428045545.egqvhyulr4ybbad6@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzZo7_r-hsNvJt3w3kyrmmBJj7ghGY8+k4nvKF0KLjma=w@mail.gmail.com>
+ <20210504044204.kpt6t5kaomj7oivq@ast-mbp>
+ <CAADnVQ+WV8xZqJfWx8em5Ch8aKA8xcPqR0wT0BdFf9M==W5_FQ@mail.gmail.com>
+ <CAEf4BzY2z+oh=N0X26RBLEWw0t9pT7_fN0mWyDqfGcwuK8A-kg@mail.gmail.com>
+ <20210511230505.z3rdnppplk3v3jce@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzbJ==4iUFp4pYpkgbKy40+Q6+RTPJVh0gUANHajs88ZTg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAM_iQpXLcpga=DF+ateBk1jiiCx2mPJW=WHT+j3JrS8kuPS4Zw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbJ==4iUFp4pYpkgbKy40+Q6+RTPJVh0gUANHajs88ZTg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021-05-11 5:29 p.m., Cong Wang wrote:
-> On Mon, May 10, 2021 at 1:55 PM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
-
->>
->> That cilium PR was a good read of the general issues.
->> Our use case involves anywhere between 4-16M cached entries.
->>
->> Like i mentioned earlier:
->> we want to periodically, if some condition is met in the
->> kernel on a map entry, to cleanup, update or send unsolicited
->> housekeeping events to user space.
->> Polling in order to achieve this for that many entries is expensive.
+On Wed, May 12, 2021 at 11:50:19AM -0700, Andrii Nakryiko wrote:
 > 
-> Thanks for sharing your use case. As we discussed privately, please
-> also share the performance numbers you have.
+> It's not so clear. static allows to have different library names for
+> different files. Currently we enforce that version and license
+> contents match. It's part of what I said earlier that it feels like we
+> need two separate linking commands: one for building BPF libraries and
+> one for linking BPF applications. Which is not that far from
+> user-space, where you linked shared libraries with a special options.
+> We just want BPF static libraries to have properties of user-space BPF
+> shared libraries (w.r.t. protection at least). We can discuss it at
+> office hours, though.
+
+If we're saying "no" to .a archives (which is user space definition
+of static library) then we can reuse the name "BPF static library"
+to mean linked .o that is intermediate step towards bpf application .o.
+We also need to distinguish BPF static and dynamic libraries.
+The dynamic libs would be already loaded in the kernel.
+They will be seen by the kernel as partially verified bpf programs.
+We can support both global and static style of
+the verification for such dynamic libs. The global entry functions
+will be verified as global funcs and static funcs can be loaded
+without verification if they're not called.
+The static funcs wouldn't be static in C file, of course,
+since we've put a stop on static visibility.
+They would probably need to be global __hidden similar to what
+we already do in libbpf with static linking.
+The rules we pick should be consistent for dynamic and static libs.
+The workflow of loading bpf dynamic library into the kernel and using
+it from the application can be made to look very similar to
+using bpf static library.
+
+> > After that is done and mmap-ing of data/rodata/bss is done
+> > the main skeleton will init sub-skeleton with offsets to their
+> > corresponding data based on these offsets?
+> > I think that will work for light skel.
 > 
+> What I had in mind kept skeleton completely isolated from
+> sub-skeleton. Think about this, when BPF library author is compiling
+> it's user-space parts that use sub-skeleton, they don't and generally
+> speaking can't know anything about the final BPF application, so they
+> can't have any access to the final skeleton. But they need
+> code-generated sub-skeleton header file, similarly to BPF skeleton
+> today. So at least for BPF skeleton, the flow I was imagining would be
+> like this.
+> 
+> 1. BPF library abc consists of abc1.bpf.c and abc2.bpf.c. It also has
+> user-space component in abc.c.
+> 2. BPF app uses abs library and has its own app1.bpf.c and app2.bpf.c
+> and app.c for user-space.
+> 3. BPF library author sets up its Makefile to do
+>   a. clang -target bpf -g -O2 -c abc1.bpf.c -o abc1.bpf.o
+>   b. clang -target bpf -g -O2 -c abc2.bpf.c -o abc2.bpf.o
+>   c. bpftool gen lib libabc.bpf.o abc1.bpf.o abc2.bpf.o
+>   d. bpftool gen subskeleton libabc.bpf.o > libabc.subskel.h
+>   e. abc.c (user-space library) is of the form
+> 
+> #include "libabc.subskel.h"
+> 
+> static struct libabc_bpf *subskel;
+> 
+> int libabc__init(struct bpf_object *obj)
+> {
+>     subskel = libabc_bpf__open_subskel(obj);
 
-The earlier tests i mentioned to you were in regards to LRU.
-I can share those as well - but seems for what we are discussing
-here testing cost of batch vs nobatch is more important.
-Our LRU tests indicate that it is better to use global as opposed
-to per-CPU LRU. We didnt dig deeper but it seemed gc/alloc - which was
-happening under some lock gets very expensive regardless if you
-are sending sufficient number of flows/sec (1M flows/sec in our
-case).
-We cannot use LRU (for reasons stated earlier). It has to be hash
-table with aging under our jurisdiction. I will post numbers for
-sending the entries to user space for gc.
+right. I was thinking the same for lskel except
+there is no 'bpf_object'.
+Either subskel_open will receive already adjusted addresses
+from the main skel or they will be grouped into aux struct.
 
-cheers,
-jamal
+>     subskel->data->abc_my_var = 123;
 
+and then library's custom init can do exactly this line.
+
+> }
+> 
+> int libabc__attach()
+> {
+>     libabc_bpf__attach(subskel);
+> }
+> 
+>   f. cc abc.c into libabc.a and then libabc.a and libabc.bpf.o are
+> distributed to end user
+> 
+> 3. Now, from BPF application author side:
+>   a. clang -target bpf -g -O2 -c app1.bpf.c -o app1.bpf.o
+>   b. clang -target bpf -g -O2 -c app2.bpf.c -o app2.bpf.o
+>   c. bpftool gen object app.bpf.o app1.bpf.o app2.bpf.o libabc.bpf.o
+>   d. on user-space side of app in app.c
+> 
+> #include "app.skel.h"
+> 
+> int main()
+> {
+>     struct app_bpf *skel;
+> 
+>     skel = app_bpf__open();
+>     skel->rodata->app_var = 123;
+> 
+>     libabc__init(skel->obj);
+> 
+>     app_bpf__load(skel);
+> 
+>     libabc__attach();
+> 
+>     /* probably shouldn't auto-attach library progs, but don't know
+> yet how to prevent that */
+>     app_bpf__attach(skel);
+> 
+>     /* do some useful logic now */
+> }
+> 
+>   e. cc app.c -o app && sudo ./app
+
+right. That's a necessary workflow.
+
+> So, app author doesn't need and doesn't have direct access to
+> subskeleton header. And sub-skeleton header is generated by BPF
+> library way before the library is linked into the final application.
+
+right. We certainly need that for dynamic and static bpf libs.
