@@ -2,509 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDF437BABE
-	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 12:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A0737BE1D
+	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 15:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbhELKgh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 06:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230334AbhELKgg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 May 2021 06:36:36 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F15C06174A;
-        Wed, 12 May 2021 03:35:27 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id h16so5432763pfk.0;
-        Wed, 12 May 2021 03:35:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vGWJ24v/McpgEUyugnvW/tCwpGA5iy0kPXE8+MGE2i0=;
-        b=gDgtQi/s9O0YfV/+7rh+q/tp5JGaeGxdKWp1V4YatNkWbNe7SwKoA3LR94NARpEs2I
-         hZVBi67/mS6iIEEwCa1M6gq+fEg1azjwjTG5JPx4KKd3/K3H/uVp5GXkFBE8sKIeqxfn
-         9pEVMsft1cNPWt//UR7oli/gYpVaBUsMIYLJJWGQDhUh94wP93EjC3veZ9McAooHSw3c
-         lhEYREuAzfjSPeKiIv5tkkbIWrhO26ZC/3jrR5eJkS0x8MtwEBVe3EhFNhYavJ/QRAnD
-         4VsYARIBzAANjY41uP/zu5/Lz84Fpb15LkX6pAHTvgh5YcAo/v2KF+KzzEfSu1O5fR2M
-         rfJw==
+        id S230149AbhELNXA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 09:23:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40160 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230202AbhELNW7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 12 May 2021 09:22:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620825711;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dtvrIv0gd9IsJeuZT9VIJXOOFa9yzPvKusGPJfLQ7f4=;
+        b=A9HOWi9KmzFFBTNqyY4ed5tNzt6Z/G0TAo1zXJQ+9ORQz1SNXSd6gmCqma9xc6OSYNDqmh
+        9QWsaMp1odA6cfPYSDGeRB3et+tqYOA0Ql6EFRefzo9/O0Ge/5sDJ8igY2qZ3+vNqXLV+F
+        YeaGoGlJv7AFYoY30h7ZGxBft5bGNvY=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-470-InVRgqXDPDG087gLFEL2Eg-1; Wed, 12 May 2021 09:21:49 -0400
+X-MC-Unique: InVRgqXDPDG087gLFEL2Eg-1
+Received: by mail-yb1-f197.google.com with SMTP id c15-20020a25a28f0000b02904f8c4864c90so13361298ybi.8
+        for <bpf@vger.kernel.org>; Wed, 12 May 2021 06:21:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vGWJ24v/McpgEUyugnvW/tCwpGA5iy0kPXE8+MGE2i0=;
-        b=XKEJlwVUVKU3PlwKmvDaIUeLYbwn4FSY0dHC96GB3FZFNvDfZZRttMlUqh7GkFleiv
-         tZX5BtnG1xkByvW52tNVZ88uIzaLpH6PrC/z2W+0IejLzXYETHDy9Z7rHhrQ+gl393VP
-         ZTeDJ6gJqoKdrZsWZQ6/TkNyiZC1mruRy/wgmM7315YN61N6CjC2Fj7FrMSZvWgbBMmv
-         TbFIPdO8cSJySYSH2++d1J+uJRJiTpseDwxxXPorQU7+6prvNe3gVOL72Hu+cTKvv1Xh
-         YIHEKbvUtfFYc2rVyDY2ZgyZFt+CW4h1yEzK7QhWxhRBh7f/cn6nBdrLXG+6ppIaB8Cq
-         HxHQ==
-X-Gm-Message-State: AOAM532au2aLly71d7G+o26mg4yMYWZ+tcwD2Wk4i6ALWv6sg1ORDq0N
-        WG5BLg9abE2MsRC576bbCnjns7+MmjDGAw==
-X-Google-Smtp-Source: ABdhPJzy3a5TxbepDc18DWsgA6LvWNbbwIigSFdpjOXCzB64dAJTq3XHNuvXep5CMlr52ct5OAqnjg==
-X-Received: by 2002:a63:6f81:: with SMTP id k123mr35156345pgc.230.1620815726593;
-        Wed, 12 May 2021 03:35:26 -0700 (PDT)
-Received: from localhost ([2402:3a80:11c3:45ac:887c:70aa:e004:d014])
-        by smtp.gmail.com with ESMTPSA id s3sm17388368pgs.62.2021.05.12.03.35.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 03:35:26 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Shaun Crampton <shaun@tigera.io>, netdev@vger.kernel.org
-Subject: [PATCH bpf-next v7 3/3] libbpf: add selftests for TC-BPF API
-Date:   Wed, 12 May 2021 16:04:51 +0530
-Message-Id: <20210512103451.989420-4-memxor@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210512103451.989420-1-memxor@gmail.com>
-References: <20210512103451.989420-1-memxor@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dtvrIv0gd9IsJeuZT9VIJXOOFa9yzPvKusGPJfLQ7f4=;
+        b=K2rndN16r3p9aLbJMBZH5N4CF6P/ngK3HeNRyVoZcovHe9GqJXbh1vloO0lD+UEdJV
+         Yw/VKskIflC9fjIRNjOxR3ZtOrpFYO4uMHs+TP2cQKFZc2eUtDsCabhsw92MU2vRJSVc
+         Zkz9HVJdEzrWkk+XzEqd6Y9omD+AD4x9HmMwW4yh971UPh287a+gQL4rp+7UxeX8MDyb
+         PuGs1HaoGgpEphC6JhEu0MP6vgpqGgTm+FVsxS6Sr7tB4jZwY8Ee8YIdLNuU2B8+2M3n
+         lPGzCZJz4L0R7sOlZLVg9Mb+equL69Pz1jE8iP7+KdG4X+JE5BRUOteMMOlgctJzSquK
+         jGuA==
+X-Gm-Message-State: AOAM530samDQmfv0duVYAOhErkv7WxQtTdIfive19dvdftelITiwKQB1
+        jiG7Wh9niSnTwaUevj7gQy/sIFQWCtY0PMbuMTz/FZxa50YvuD9exzHNChdtA3yTfY+qZr86Ov9
+        vFf1a7umQXGYer6p4i2v3NNacK+3a
+X-Received: by 2002:a25:6983:: with SMTP id e125mr46782753ybc.81.1620825709170;
+        Wed, 12 May 2021 06:21:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxmv2Qjn6VYEo9c/oXPEmu6i04CA+M1aunHQiWM6u48mJ31LcpQnTbka787MtlSpRVc8GFLI9xcdcVeHkvyMsg=
+X-Received: by 2002:a25:6983:: with SMTP id e125mr46782731ybc.81.1620825708981;
+ Wed, 12 May 2021 06:21:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210507114048.138933-1-omosnace@redhat.com> <a8d138a6-1d34-1457-9266-4abeddb6fdba@schaufler-ca.com>
+In-Reply-To: <a8d138a6-1d34-1457-9266-4abeddb6fdba@schaufler-ca.com>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Wed, 12 May 2021 15:21:37 +0200
+Message-ID: <CAFqZXNtr1YjzRg7fTm+j=0oZF+7C5xEu5J0mCZynP-dgEzvyUg@mail.gmail.com>
+Subject: Re: [PATCH] lockdown,selinux: fix bogus SELinux lockdown permission checks
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, network dev <netdev@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds some basic tests for the low level bpf_tc_* API.
+On Sat, May 8, 2021 at 12:17 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> On 5/7/2021 4:40 AM, Ondrej Mosnacek wrote:
+> > Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+> > lockdown") added an implementation of the locked_down LSM hook to
+> > SELinux, with the aim to restrict which domains are allowed to perform
+> > operations that would breach lockdown.
+> >
+> > However, in several places the security_locked_down() hook is called in
+> > situations where the current task isn't doing any action that would
+> > directly breach lockdown, leading to SELinux checks that are basically
+> > bogus.
+> >
+> > Since in most of these situations converting the callers such that
+> > security_locked_down() is called in a context where the current task
+> > would be meaningful for SELinux is impossible or very non-trivial (and
+> > could lead to TOCTOU issues for the classic Lockdown LSM
+> > implementation), fix this by adding a separate hook
+> > security_locked_down_globally()
+>
+> This is a poor solution to the stated problem. Rather than adding
+> a new hook you should add the task as a parameter to the existing hook
+> and let the security modules do as they will based on its value.
+> If the caller does not have an appropriate task it should pass NULL.
+> The lockdown LSM can ignore the task value and SELinux can make its
+> own decision based on the task value passed.
 
-Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../testing/selftests/bpf/prog_tests/tc_bpf.c | 395 ++++++++++++++++++
- .../testing/selftests/bpf/progs/test_tc_bpf.c |  12 +
- 2 files changed, 407 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/tc_bpf.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_tc_bpf.c
+The problem with that approach is that all callers would then need to
+be updated and I intended to keep the patch small as I'd like it to go
+to stable kernels as well.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_bpf.c b/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
-new file mode 100644
-index 000000000000..4fc2b9984a28
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_bpf.c
-@@ -0,0 +1,395 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include <linux/pkt_cls.h>
-+
-+#include "test_tc_bpf.skel.h"
-+
-+#define LO_IFINDEX 1
-+
-+#define TEST_DECLARE_OPTS(__fd)                                                                   \
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts_h, .handle = 1);                                     \
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts_p, .priority = 1);                                   \
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts_f, .prog_fd = __fd);                                 \
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts_hp, .handle = 1, .priority = 1);                     \
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts_hf, .handle = 1, .prog_fd = __fd);                   \
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts_pf, .priority = 1, .prog_fd = __fd);                 \
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts_hpf, .handle = 1, .priority = 1, .prog_fd = __fd);   \
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts_hpi, .handle = 1, .priority = 1, .prog_id = 42);     \
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts_hpr, .handle = 1, .priority = 1,                     \
-+			    .flags = BPF_TC_F_REPLACE);                                            \
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts_hpfi, .handle = 1, .priority = 1, .prog_fd = __fd,   \
-+			    .prog_id = 42);                                                        \
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts_prio_max, .handle = 1, .priority = UINT16_MAX + 1);
-+
-+static int test_tc_bpf_basic(const struct bpf_tc_hook *hook, int fd)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts, .handle = 1, .priority = 1, .prog_fd = fd);
-+	struct bpf_prog_info info = {};
-+	__u32 info_len = sizeof(info);
-+	int ret;
-+
-+	ret = bpf_obj_get_info_by_fd(fd, &info, &info_len);
-+	if (!ASSERT_OK(ret, "bpf_obj_get_info_by_fd"))
-+		return ret;
-+
-+	ret = bpf_tc_attach(hook, &opts);
-+	if (!ASSERT_OK(ret, "bpf_tc_attach"))
-+		return ret;
-+
-+	if (!ASSERT_EQ(opts.handle, 1, "handle set") ||
-+	    !ASSERT_EQ(opts.priority, 1, "priority set") ||
-+	    !ASSERT_EQ(opts.prog_id, info.id, "prog_id set"))
-+		goto end;
-+
-+	opts.prog_id = 0;
-+	opts.flags = BPF_TC_F_REPLACE;
-+	ret = bpf_tc_attach(hook, &opts);
-+	if (!ASSERT_OK(ret, "bpf_tc_attach replace mode"))
-+		goto end;
-+
-+	opts.flags = opts.prog_fd = opts.prog_id = 0;
-+	ret = bpf_tc_query(hook, &opts);
-+	if (!ASSERT_OK(ret, "bpf_tc_query"))
-+		goto end;
-+
-+	if (!ASSERT_EQ(opts.handle, 1, "handle set") ||
-+	    !ASSERT_EQ(opts.priority, 1, "priority set") ||
-+	    !ASSERT_EQ(opts.prog_id, info.id, "prog_id set"))
-+		goto end;
-+
-+end:
-+	opts.flags = opts.prog_fd = opts.prog_id = 0;
-+	ret = bpf_tc_detach(hook, &opts);
-+	ASSERT_OK(ret, "bpf_tc_detach");
-+	return ret;
-+}
-+
-+static int test_tc_bpf_api(struct bpf_tc_hook *hook, int fd)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, attach_opts, .handle = 1, .priority = 1, .prog_fd = fd);
-+	DECLARE_LIBBPF_OPTS(bpf_tc_hook, inv_hook, .attach_point = BPF_TC_INGRESS);
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts, .handle = 1, .priority = 1);
-+	int ret;
-+
-+	ret = bpf_tc_hook_create(NULL);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_hook_create invalid hook = NULL"))
-+		return -EINVAL;
-+
-+	/* hook ifindex = 0 */
-+	ret = bpf_tc_hook_create(&inv_hook);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_hook_create invalid hook ifindex == 0"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_hook_destroy(&inv_hook);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_hook_destroy invalid hook ifindex == 0"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_attach(&inv_hook, &attach_opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid hook ifindex == 0"))
-+		return -EINVAL;
-+	attach_opts.prog_id = 0;
-+
-+	ret = bpf_tc_detach(&inv_hook, &opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_detach invalid hook ifindex == 0"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_query(&inv_hook, &opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_query invalid hook ifindex == 0"))
-+		return -EINVAL;
-+
-+	/* hook ifindex < 0 */
-+	inv_hook.ifindex = -1;
-+
-+	ret = bpf_tc_hook_create(&inv_hook);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_hook_create invalid hook ifindex < 0"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_hook_destroy(&inv_hook);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_hook_destroy invalid hook ifindex < 0"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_attach(&inv_hook, &attach_opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid hook ifindex < 0"))
-+		return -EINVAL;
-+	attach_opts.prog_id = 0;
-+
-+	ret = bpf_tc_detach(&inv_hook, &opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_detach invalid hook ifindex < 0"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_query(&inv_hook, &opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_query invalid hook ifindex < 0"))
-+		return -EINVAL;
-+
-+	inv_hook.ifindex = LO_IFINDEX;
-+
-+	/* hook.attach_point invalid */
-+	inv_hook.attach_point = 0xabcd;
-+	ret = bpf_tc_hook_create(&inv_hook);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_hook_create invalid hook.attach_point"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_hook_destroy(&inv_hook);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_hook_destroy invalid hook.attach_point"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_attach(&inv_hook, &attach_opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid hook.attach_point"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_detach(&inv_hook, &opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_detach invalid hook.attach_point"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_query(&inv_hook, &opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_query invalid hook.attach_point"))
-+		return -EINVAL;
-+
-+	inv_hook.attach_point = BPF_TC_INGRESS;
-+
-+	/* hook.attach_point valid, but parent invalid */
-+	inv_hook.parent = TC_H_MAKE(1UL << 16, 10);
-+	ret = bpf_tc_hook_create(&inv_hook);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_hook_create invalid hook parent"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_hook_destroy(&inv_hook);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_hook_destroy invalid hook parent"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_attach(&inv_hook, &attach_opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid hook parent"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_detach(&inv_hook, &opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_detach invalid hook parent"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_query(&inv_hook, &opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_query invalid hook parent"))
-+		return -EINVAL;
-+
-+	inv_hook.attach_point = BPF_TC_CUSTOM;
-+	inv_hook.parent = 0;
-+	/* These return EOPNOTSUPP instead of EINVAL as parent is checked after
-+	 * attach_point of the hook.
-+	 */
-+	ret = bpf_tc_hook_create(&inv_hook);
-+	if (!ASSERT_EQ(ret, -EOPNOTSUPP, "bpf_tc_hook_create invalid hook parent"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_hook_destroy(&inv_hook);
-+	if (!ASSERT_EQ(ret, -EOPNOTSUPP, "bpf_tc_hook_destroy invalid hook parent"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_attach(&inv_hook, &attach_opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid hook parent"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_detach(&inv_hook, &opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_detach invalid hook parent"))
-+		return -EINVAL;
-+
-+	ret = bpf_tc_query(&inv_hook, &opts);
-+	if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_query invalid hook parent"))
-+		return -EINVAL;
-+
-+	inv_hook.attach_point = BPF_TC_INGRESS;
-+
-+	/* detach */
-+	{
-+		TEST_DECLARE_OPTS(fd);
-+
-+		ret = bpf_tc_detach(NULL, &opts_hp);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_detach invalid hook = NULL"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_detach(hook, NULL);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_detach invalid opts = NULL"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_detach(hook, &opts_hpr);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_detach invalid flags set"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_detach(hook, &opts_hpf);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_detach invalid prog_fd set"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_detach(hook, &opts_hpi);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_detach invalid prog_id set"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_detach(hook, &opts_p);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_detach invalid handle unset"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_detach(hook, &opts_h);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_detach invalid priority unset"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_detach(hook, &opts_prio_max);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_detach invalid priority > UINT16_MAX"))
-+			return -EINVAL;
-+	}
-+
-+	/* query */
-+	{
-+		TEST_DECLARE_OPTS(fd);
-+
-+		ret = bpf_tc_query(NULL, &opts);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_query invalid hook = NULL"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_query(hook, NULL);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_query invalid opts = NULL"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_query(hook, &opts_hpr);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_query invalid flags set"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_query(hook, &opts_hpf);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_query invalid prog_fd set"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_query(hook, &opts_hpi);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_query invalid prog_id set"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_query(hook, &opts_p);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_query invalid handle unset"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_query(hook, &opts_h);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_query invalid priority unset"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_query(hook, &opts_prio_max);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_query invalid priority > UINT16_MAX"))
-+			return -EINVAL;
-+
-+		/* when chain is not present, kernel returns -EINVAL */
-+		ret = bpf_tc_query(hook, &opts_hp);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_query valid handle, priority set"))
-+			return -EINVAL;
-+	}
-+
-+	/* attach */
-+	{
-+		TEST_DECLARE_OPTS(fd);
-+
-+		ret = bpf_tc_attach(NULL, &opts_hp);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid hook = NULL"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_attach(hook, NULL);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid opts = NULL"))
-+			return -EINVAL;
-+
-+		opts_hp.flags = 42;
-+		ret = bpf_tc_attach(hook, &opts_hp);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid flags"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_attach(hook, NULL);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid prog_fd unset"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_attach(hook, &opts_hpi);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid prog_id set"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_attach(hook, &opts_pf);
-+		if (!ASSERT_OK(ret, "bpf_tc_attach valid handle unset"))
-+			return -EINVAL;
-+		opts_pf.prog_fd = opts_pf.prog_id = 0;
-+		ASSERT_OK(bpf_tc_detach(hook, &opts_pf), "bpf_tc_detach");
-+
-+		ret = bpf_tc_attach(hook, &opts_hf);
-+		if (!ASSERT_OK(ret, "bpf_tc_attach valid priority unset"))
-+			return -EINVAL;
-+		opts_hf.prog_fd = opts_hf.prog_id = 0;
-+		ASSERT_OK(bpf_tc_detach(hook, &opts_hf), "bpf_tc_detach");
-+
-+		ret = bpf_tc_attach(hook, &opts_prio_max);
-+		if (!ASSERT_EQ(ret, -EINVAL, "bpf_tc_attach invalid priority > UINT16_MAX"))
-+			return -EINVAL;
-+
-+		ret = bpf_tc_attach(hook, &opts_f);
-+		if (!ASSERT_OK(ret, "bpf_tc_attach valid both handle and priority unset"))
-+			return -EINVAL;
-+		opts_f.prog_fd = opts_f.prog_id = 0;
-+		ASSERT_OK(bpf_tc_detach(hook, &opts_f), "bpf_tc_detach");
-+	}
-+
-+	return 0;
-+}
-+
-+void test_tc_bpf(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .ifindex = LO_IFINDEX,
-+			    .attach_point = BPF_TC_INGRESS);
-+	struct test_tc_bpf *skel = NULL;
-+	bool hook_created = false;
-+	int cls_fd, ret;
-+
-+	skel = test_tc_bpf__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_tc_bpf__open_and_load"))
-+		return;
-+
-+	cls_fd = bpf_program__fd(skel->progs.cls);
-+
-+	ret = bpf_tc_hook_create(&hook);
-+	if (ret == 0)
-+		hook_created = true;
-+
-+	ret = ret == -EEXIST ? 0 : ret;
-+	if (!ASSERT_OK(ret, "bpf_tc_hook_create(BPF_TC_INGRESS)"))
-+		goto end;
-+
-+	hook.attach_point = BPF_TC_CUSTOM;
-+	hook.parent = TC_H_MAKE(TC_H_CLSACT, TC_H_MIN_INGRESS);
-+	ret = bpf_tc_hook_create(&hook);
-+	if (!ASSERT_EQ(ret, -EOPNOTSUPP, "bpf_tc_hook_create invalid hook.attach_point"))
-+		goto end;
-+
-+	ret = test_tc_bpf_basic(&hook, cls_fd);
-+	if (!ASSERT_OK(ret, "test_tc_internal ingress"))
-+		goto end;
-+
-+	ret = bpf_tc_hook_destroy(&hook);
-+	if (!ASSERT_EQ(ret, -EOPNOTSUPP, "bpf_tc_hook_destroy invalid hook.attach_point"))
-+		goto end;
-+
-+	hook.attach_point = BPF_TC_INGRESS;
-+	hook.parent = 0;
-+	bpf_tc_hook_destroy(&hook);
-+
-+	ret = test_tc_bpf_basic(&hook, cls_fd);
-+	if (!ASSERT_OK(ret, "test_tc_internal ingress"))
-+		goto end;
-+
-+	bpf_tc_hook_destroy(&hook);
-+
-+	hook.attach_point = BPF_TC_EGRESS;
-+	ret = test_tc_bpf_basic(&hook, cls_fd);
-+	if (!ASSERT_OK(ret, "test_tc_internal egress"))
-+		goto end;
-+
-+	bpf_tc_hook_destroy(&hook);
-+
-+	ret = test_tc_bpf_api(&hook, cls_fd);
-+	if (!ASSERT_OK(ret, "test_tc_bpf_api"))
-+		goto end;
-+
-+	bpf_tc_hook_destroy(&hook);
-+
-+end:
-+	if (hook_created) {
-+		hook.attach_point = BPF_TC_INGRESS | BPF_TC_EGRESS;
-+		bpf_tc_hook_destroy(&hook);
-+	}
-+	test_tc_bpf__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_bpf.c b/tools/testing/selftests/bpf/progs/test_tc_bpf.c
-new file mode 100644
-index 000000000000..18a3a7ed924a
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_tc_bpf.c
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+/* Dummy prog to test TC-BPF API */
-+
-+SEC("classifier")
-+int cls(struct __sk_buff *skb)
-+{
-+	return 0;
-+}
+But it does seem to be a better long-term solution - would it work for
+you (and whichever maintainer would be taking the patch(es)) if I just
+added another patch that refactors it to use the task parameter?
+
 --
-2.31.1
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
 
