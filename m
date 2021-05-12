@@ -2,57 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B140B37C068
-	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 16:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2C837CF14
+	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 19:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhELOku (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 10:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
+        id S239579AbhELRIU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 13:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbhELOkt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 May 2021 10:40:49 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E3EC06174A
-        for <bpf@vger.kernel.org>; Wed, 12 May 2021 07:39:40 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id x8so1592122wrq.9
-        for <bpf@vger.kernel.org>; Wed, 12 May 2021 07:39:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Rfei5MEg9bMEdOxZz3i9gp/4Xf63nRd6sW81/rNWaPA=;
-        b=zkeeqiVHma3XJR/YrkY21U3s61+aPn20UKjLvK2B6kIuhVHYPMLf+YCIAZYOV2cOwA
-         GCgI9Iac036xWy7Ttp1TDN5cXN2sFNjE1DBNA6/3sokb7tEXhvTjVxhfdpOH1/PUHIvs
-         iJqiIzJ7sTSwwNgkCAwMRI+pHWYdLA1e53lomjMrZPFdBg0ENDrUoo0IxnlaUWGALyeJ
-         gDCUwT0IoJ6hnLYeIs3/GdcDVteMS9mmUc0AuillQR8knPOjzmpuZiZ/kldaw1b4hjb5
-         hZoHP0FJK5G4bZ8L8afAbmJ9y6WG5t5gxL1ak3NvCE5Ts3cPtUzH+nlUKLGJ5SfS+6yZ
-         3lrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Rfei5MEg9bMEdOxZz3i9gp/4Xf63nRd6sW81/rNWaPA=;
-        b=M3MT8XQuxNop4Z5haf77Tgcy3ON3mYraD9IXEoYJ1vf0NHNTRHzCSA0dQ2pkYYKups
-         srpavHO72UAC5v5iQd97JugZMgj5X4EMI+XZdehDPKkCBDufW2V/lHg/sRmSeL49PIvS
-         ose2RfMBqEgHa9PX5a+6JFUIt8d0Hdu4hsnwFFtYCdxs3YTXgGyPYAWOpNQX+3P2DTiT
-         Ea7TBS/1J/ypqyUDBWtG244eOJPNpXk2prIoZyfqTtNdvUA7SMoKSfDrg8dTSF/K3Iut
-         08a375Wo9vrmVtKQLG7XIA3HoH3VgNsvWLXGVWGY+IwVL3dB6YozOx+zgQBrdzHbjIAy
-         o3fg==
-X-Gm-Message-State: AOAM533OE5uO3wLsPP9BHQq1XHp51rdIahtPAOaW7uBZn+rYGOkxHXXl
-        uUnehSoF+Hy2MPqbAhj5D8Z5OA==
-X-Google-Smtp-Source: ABdhPJyVfNFYYeNQ4AG+yp0IlLCFS0VkZrtKFW3E+38v4QOFOQ28Vij61Om2GuDVOc7ydR2EYbR9cA==
-X-Received: by 2002:adf:d1c6:: with SMTP id b6mr42542657wrd.110.1620830379358;
-        Wed, 12 May 2021 07:39:39 -0700 (PDT)
-Received: from apalos.home ([94.69.77.156])
-        by smtp.gmail.com with ESMTPSA id v17sm29739475wrd.89.2021.05.12.07.39.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 07:39:38 -0700 (PDT)
-Date:   Wed, 12 May 2021 17:39:33 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        with ESMTP id S241655AbhELQ1p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 May 2021 12:27:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF87C08C5CF;
+        Wed, 12 May 2021 08:59:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Z1jNLB3wLDcskPEVKoXrAy/b8V7AtuVo4deTvSz6LE0=; b=looSmVpFwooxSHE41z5+W6DarB
+        4mZTmUC995jRMx1vQRTbvFcv/3hV6YZkO/Dp/fTu2cqaZz9MnTOwTjeb0nmzENEfgSgktJSCpuqO2
+        Dg0G8N4LOmf7F0bRoS9mji4i+JDRXHfpEjgbAx7EAU0XZ9exEtk37hAqicHS6P4MBszbn/l+zFJDG
+        dwvymKbSTKvTQsMHTV2zqoZrlOMq+ww+eEbaMCd91adNlcDL0/eZZ/0CW9BQjneU5esQPqEIuhvQG
+        2GKfMKdKLdBiHOGUxZOJR6YG6g39tp+HQ/q6DkTIy0Q/Scc4+Kfu0PCQAFSn3TE1lQy9DAlNvN7li
+        uDwlSgzg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lgrEj-008T5g-IY; Wed, 12 May 2021 15:58:01 +0000
+Date:   Wed, 12 May 2021 16:57:25 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
+        Networking <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
         Ayush Sawal <ayush.sawal@chelsio.com>,
         Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
         Rohit Maheshwari <rohitm@chelsio.com>,
@@ -88,105 +67,108 @@ Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
         Miaohe Lin <linmiaohe@huawei.com>,
         Yunsheng Lin <linyunsheng@huawei.com>,
         Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
         David Ahern <dsahern@gmail.com>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
         Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v4 2/4] page_pool: Allow drivers to hint on SKB
- recycling
-Message-ID: <YJvopUsZHcGb7q24@apalos.home>
+Subject: Re: [PATCH net-next v4 1/4] mm: add a signature in struct page
+Message-ID: <YJv65eER2qgaP9Ib@casper.infradead.org>
 References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
- <20210511133118.15012-3-mcroce@linux.microsoft.com>
- <fa93976a-3460-0f7f-7af4-e78bfe55900a@gmail.com>
- <YJuk3o6CezbVrT+P@apalos.home>
- <CANn89iLkq0zcbVeRRPGfeb5ZRcnz+e7dR1BCj-RGehNYE1Hzkw@mail.gmail.com>
+ <20210511133118.15012-2-mcroce@linux.microsoft.com>
+ <YJqKfNh6l3yY2daM@casper.infradead.org>
+ <YJqQgYSWH2qan1GS@apalos.home>
+ <YJqSM79sOk1PRFPT@casper.infradead.org>
+ <CAC_iWj+Tw9DzzzVj-F9AwzBN_OJV_HN2miJT4KTBH_Uei_V2ZA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANn89iLkq0zcbVeRRPGfeb5ZRcnz+e7dR1BCj-RGehNYE1Hzkw@mail.gmail.com>
+In-Reply-To: <CAC_iWj+Tw9DzzzVj-F9AwzBN_OJV_HN2miJT4KTBH_Uei_V2ZA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Eric,
+On Tue, May 11, 2021 at 05:25:36PM +0300, Ilias Apalodimas wrote:
+> Nope not at all, either would work. we'll switch to that
 
-[...]
-> > > > +   if (skb->pp_recycle && page_pool_return_skb_page(head))
-> > >
-> > > This probably should be attempted only in the (skb->head_frag) case ?
-> >
-> > I think the extra check makes sense.
-> 
-> What do you mean here ?
-> 
+You'll need something like this because of the current use of
+page->index to mean "pfmemalloc".
 
-I thought you wanted an extra check in the if statement above.  So move the
-block under the existing if. Something like
+From ecd6d912056a21bbe55d997c01f96b0b8b9fbc31 Mon Sep 17 00:00:00 2001
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Date: Fri, 16 Apr 2021 18:12:33 -0400
+Subject: [PATCH] mm: Indicate pfmemalloc pages in compound_head
 
-	if (skb->head_frag) {
-		#ifdef (CONFIG_PAGE_POOL)
-			if (skb->pp_recycle && page_pool_return_skb_page(head))
-			return;
-		#endif
-        skb_free_frag(head);
-	} else {
-	.....
+The net page_pool wants to use a magic value to identify page pool pages.
+The best place to put it is in the first word where it can be clearly a
+non-pointer value.  That means shifting dma_addr up to alias with ->index,
+which means we need to find another way to indicate page_is_pfmemalloc().
+Since page_pool doesn't want to set its magic value on pages which are
+pfmemalloc, we can use bit 1 of compound_head to indicate that the page
+came from the memory reserves.
 
-> >
-> > >
-> > > Also this patch misses pskb_expand_head()
-> >
-> > I am not sure I am following. Misses what? pskb_expand_head() will either
-> > call skb_release_data() or skb_free_head(), which would either recycle or
-> > unmap the buffer for us (depending on the page refcnt)
-> 
->  pskb_expand_head() allocates a new skb->head, from slab.
-> 
-> We should clear skb->pp_recycle for consistency of the skb->head_frag
-> clearing we perform there.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ include/linux/mm.h       | 12 +++++++-----
+ include/linux/mm_types.h |  7 +++----
+ 2 files changed, 10 insertions(+), 9 deletions(-)
 
-Ah right, good catch. I was mostly worried we are not freeing/unmapping
-buffers and I completely missed that.  I think nothing bad will happen even
-if we don't, since the signature will eventually protect us, but it's
-definitely the right thing to do.
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index bd21864449bf..4f9b2007efad 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1670,10 +1670,12 @@ struct address_space *page_mapping(struct page *page);
+ static inline bool page_is_pfmemalloc(const struct page *page)
+ {
+ 	/*
+-	 * Page index cannot be this large so this must be
+-	 * a pfmemalloc page.
++	 * This is not a tail page; compound_head of a head page is unused
++	 * at return from the page allocator, and will be overwritten
++	 * by callers who do not care whether the page came from the
++	 * reserves.
+ 	 */
+-	return page->index == -1UL;
++	return page->compound_head & 2;
+ }
+ 
+ /*
+@@ -1682,12 +1684,12 @@ static inline bool page_is_pfmemalloc(const struct page *page)
+  */
+ static inline void set_page_pfmemalloc(struct page *page)
+ {
+-	page->index = -1UL;
++	page->compound_head = 2;
+ }
+ 
+ static inline void clear_page_pfmemalloc(struct page *page)
+ {
+-	page->index = 0;
++	page->compound_head = 0;
+ }
+ 
+ /*
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 5aacc1c10a45..1352e278939b 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -96,10 +96,9 @@ struct page {
+ 			unsigned long private;
+ 		};
+ 		struct {	/* page_pool used by netstack */
+-			/**
+-			 * @dma_addr: might require a 64-bit value on
+-			 * 32-bit architectures.
+-			 */
++			unsigned long pp_magic;
++			struct page_pool *pp;
++			unsigned long _pp_mapping_pad;
+ 			unsigned long dma_addr[2];
+ 		};
+ 		struct {	/* slab, slob and slub */
+-- 
+2.30.2
 
-> 
-> But then, I now realize you use skb->pp_recycle bit for both skb->head
-> and fragments,
-> and rely on this PP_SIGNATURE thing (I note that patch 1 changelog
-> does not describe why a random page will _not_ have this signature by
-> bad luck)
-
-Correct.  I've tried to explain in the previous posting as well, but that's
-the big difference compared to the initial RFC we sent a few years ago (the
-ability to recycle frags as well).
-
-> 
-> Please document/describe which struct page fields are aliased with
-> page->signature ?
-> 
-
-Sure, any preference on this? Right above page_pool_return_skb_page() ?
-
-Keep in mind the current [1/4] patch is wrong, since it will overlap
-pp_signature with mapping.  So we'll have interesting results if a page
-gets mapped to userspace :).
-What Matthew proposed makes sense, we can add something along the lines of: 
-
-+ unsigned long pp_magic;
-+ struct page_pool *pp;
-+ unsigned long _pp_mapping_pad;
-+ unsigned long dma_addr[2];
-
-in struct page. In this case page->mapping aliases to pa->_pp_mapping_pad
-
-The first word (that we'll now be using) is used for a pointer or a
-compound_head.  So as long as pp_magic doesn't resemble a pointer and has 
-bits 0/1 set to 0 we should be safe.
-
-Thanks!
-/Ilias
