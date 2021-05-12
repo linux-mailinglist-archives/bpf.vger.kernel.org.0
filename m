@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F6D37B4E5
-	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 06:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44AA037B4E6
+	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 06:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbhELEY1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 00:24:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39340 "EHLO
+        id S229580AbhELEZX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 00:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbhELEY1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 May 2021 00:24:27 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35601C061574
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 21:23:19 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id v188so29160622ybe.1
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 21:23:19 -0700 (PDT)
+        with ESMTP id S229447AbhELEZX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 May 2021 00:25:23 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0457FC061574
+        for <bpf@vger.kernel.org>; Tue, 11 May 2021 21:24:16 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id y2so29095909ybq.13
+        for <bpf@vger.kernel.org>; Tue, 11 May 2021 21:24:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=j4pF86lQzDYxhregwGWynE9Nf75s4QdGNFDKRkAomes=;
-        b=OVcrZtlV8NdKkiX+txVravIE0ru73hGB5igmrV7NWglKwLHa1tiDGcVqOcvXIL3Hhg
-         YkxQc5RvcH1ScByxuU8ZVT73OlQzUDN5PBObjvBSLIodA5FiyssXfZZPg5AkDjDVeamz
-         5bTpoG5juJZCuNWlVTUzGs27DAHRLEXZNqvqD/cLcJWr7ZUAXTGlvjWpClj35tfWNX54
-         sCtFlWMBzqj/dkptE8kZoCzepfoH9f2DdCZopkojHeGtzgg2DuWwCHMvNBfit97/7K/s
-         bB93pL2e5KZKEdfNw69POE0dpefRdZDG7WIjQKSOdsIFD+fMa3XCYOmGt1mN45PE/k8o
-         16Wg==
+        bh=80I0ZhRDGI/2egsa3DtWH/1YV8Pw7fH/27cxaE0FKxk=;
+        b=YER3DXkOfljxYAdg4mUKJjQCah97RTB8npC3k1wqywFjpmbCK692OxhCFmgb1RjbTS
+         d3UeVehHb5CYM9rIO9/NzW/64QrGezSyY1umTu9E7Ap1PJs0+KSRTdEeKTAn/SYhXxx+
+         lz6Y7M235j+eNfxl+1Tt/3CdAhLcWZsvgYTg/KCvrnrT/4f3dRdhIdIEUrlO88Y4aUtH
+         XJLm/pm6RxqWkiQqL0udLcggnEw2up5+eEBQPzhjU9bk2gVn36F5eehxcazshXLeGCMT
+         J8Eft1jUgZwG08m2HF8Mgng4ZjvSW5G+IKYfsUQLPZRNdZJKWboXdssZmNjE91vP6CTt
+         JwLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=j4pF86lQzDYxhregwGWynE9Nf75s4QdGNFDKRkAomes=;
-        b=fdurq69rUtxDLpKLvzaNmR8NJ1nABtT1eZ+UPN0PNR7yojliW3E8cRaNUkCa5MhEoZ
-         dOP+BxleRIijTj+PlaGoQTU/Q6qxeYNy4jk08P3qGehqydAWzbTyNmoDpHFrY4U9UBtc
-         VKbMumBKI9vjlNcMMQgLZsxzEKKojRhFJqL6He1TIPqM61z09xDYCSnRd+d/LhCwmXiu
-         3Y9xb37D46sMFlTH44qWcqP0zsslTE4xH69ZkEtE7o3GJ/a29TvhtIvQ4vbMZ2OSLlGZ
-         xs1M0+aQkpWhzj7f+YdBA1N3c31YJrJrsfpmYHzrULKq5Jl1soQjHsKmWnLMqZHNix1j
-         3nEA==
-X-Gm-Message-State: AOAM531k3mWK4t8Zxdpgr6Rg82GfYHSsA/lD4Uco1++fcDfqeFQa/AXI
-        SpKML+Oe1Utd7Pc/yhnTVrLUO+l0n7P4Ir7VonaElpzv
-X-Google-Smtp-Source: ABdhPJy/lzoevRCadJ94jSXDTYUmVgspFq76WeoG+5b4PjuE4SDCp04zJGyvmL+nIML3yifqh2UqHJZ2kXLCbJNZym0=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr44935826ybu.403.1620793398526;
- Tue, 11 May 2021 21:23:18 -0700 (PDT)
+        bh=80I0ZhRDGI/2egsa3DtWH/1YV8Pw7fH/27cxaE0FKxk=;
+        b=BPiGD+Ad14uyod3RmvCodWpMUAaFfu2xHyhXwAUdupwLfHBAYg7wG4Tw6iCApZAV7l
+         QbWCp2ngFPClRSJiw1iNZMgLVyrmKPzj3rXaKAD9Iky8PEEl0WrTvkup1Fh1EyoijT/I
+         Nn86IsUgXFq8a7Q3fXGehQ8TljpLvavXPeDB4QzuBB92vU/2hp0VuDyssePLjsyU/fUg
+         IxF7R6K7vyFFpxsEPPtj4kCFAfYrv4JnprfEKNLW3aifvlwbiZdUZSMwM2xvI9MjgSVp
+         0yH0lNqVJZNhP/jeXYGOoOx+SdjAFP36R0NunANdhAOJNvuYQRaqsW5wqc4/vPG3ZYHk
+         EEWQ==
+X-Gm-Message-State: AOAM5313f+vvKzkEUhQXtLDeyi6IN1i3HcSk9mWqfuPtDSVha29rAz1v
+        0aVN5vs2vfw6t3QYsFSETArtQanAmMdcob6sHB8=
+X-Google-Smtp-Source: ABdhPJz+zqmwgMgkxdY3Ht83K0JNKha3kd10FgnZMEObboJ4VqWMjwDW3kQhnXA5HWlBeqrrbYib//pVFmOCqG0x7r4=
+X-Received: by 2002:a5b:f05:: with SMTP id x5mr1952048ybr.425.1620793455382;
+ Tue, 11 May 2021 21:24:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210508034837.64585-1-alexei.starovoitov@gmail.com> <20210508034837.64585-22-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210508034837.64585-22-alexei.starovoitov@gmail.com>
+References: <20210508034837.64585-1-alexei.starovoitov@gmail.com> <20210508034837.64585-23-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210508034837.64585-23-alexei.starovoitov@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 11 May 2021 21:23:07 -0700
-Message-ID: <CAEf4BzYzDkVuWn4SzKwfw01sLWBbdV=Bpd9sZB=moyQvZKa=hQ@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 21/22] selftests/bpf: Convert test printk to
- use rodata.
+Date:   Tue, 11 May 2021 21:24:04 -0700
+Message-ID: <CAEf4BzYG4J=A0J4m4KHFfdE4iTP9nZzdsJsbT61WUTs1hppmsA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 22/22] selftests/bpf: Convert test
+ trace_printk to lskel.
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -67,51 +67,44 @@ On Fri, May 7, 2021 at 8:49 PM Alexei Starovoitov
 >
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> Convert test trace_printk to more aggressively validate and use rodata.
+> Convert test trace_printk to light skeleton to check
+> rodata support in lskel.
 >
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
->  tools/testing/selftests/bpf/prog_tests/trace_printk.c | 3 +++
->  tools/testing/selftests/bpf/progs/trace_printk.c      | 4 ++--
->  2 files changed, 5 insertions(+), 2 deletions(-)
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  tools/testing/selftests/bpf/Makefile                  | 2 +-
+>  tools/testing/selftests/bpf/prog_tests/trace_printk.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 >
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 4f50e4367e42..8d252238b005 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -313,7 +313,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h               \
+>                 linked_vars.skel.h linked_maps.skel.h
+>
+>  LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
+> -       test_ksyms_module.c test_ringbuf.c atomics.c
+> +       test_ksyms_module.c test_ringbuf.c atomics.c trace_printk.c
+>  SKEL_BLACKLIST += $$(LSKELS)
+>
+>  test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
 > diff --git a/tools/testing/selftests/bpf/prog_tests/trace_printk.c b/tools/testing/selftests/bpf/prog_tests/trace_printk.c
-> index 39b0decb1bb2..60c2347a3181 100644
+> index 60c2347a3181..e67268e929bd 100644
 > --- a/tools/testing/selftests/bpf/prog_tests/trace_printk.c
 > +++ b/tools/testing/selftests/bpf/prog_tests/trace_printk.c
-> @@ -21,6 +21,9 @@ void test_trace_printk(void)
->         if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
->                 return;
+> @@ -3,7 +3,7 @@
 >
-> +       ASSERT_EQ(skel->rodata->sys_enter_fmt[0], 'T', "invalid printk fmt string");
-> +       skel->rodata->sys_enter_fmt[0] = 't';
-
-sys_enter.fmt is no more, need to make it into a global variable.
-
-> +
->         err = trace_printk__load(skel);
->         if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
->                 goto cleanup;
-> diff --git a/tools/testing/selftests/bpf/progs/trace_printk.c b/tools/testing/selftests/bpf/progs/trace_printk.c
-> index 8ca7f399b670..18c8baaf1143 100644
-> --- a/tools/testing/selftests/bpf/progs/trace_printk.c
-> +++ b/tools/testing/selftests/bpf/progs/trace_printk.c
-> @@ -10,10 +10,10 @@ char _license[] SEC("license") = "GPL";
->  int trace_printk_ret = 0;
->  int trace_printk_ran = 0;
+>  #include <test_progs.h>
 >
-> -SEC("tp/raw_syscalls/sys_enter")
-> +SEC("fentry/__x64_sys_nanosleep")
-
-this will break on non-x64 systems, can more stable raw_tp be used here?
-
->  int sys_enter(void *ctx)
->  {
-> -       static const char fmt[] = "testing,testing %d\n";
-> +       static const char fmt[] = "Testing,testing %d\n";
+> -#include "trace_printk.skel.h"
+> +#include "trace_printk.lskel.h"
 >
->         trace_printk_ret = bpf_trace_printk(fmt, sizeof(fmt),
->                                             ++trace_printk_ran);
+>  #define TRACEBUF       "/sys/kernel/debug/tracing/trace_pipe"
+>  #define SEARCHMSG      "testing,testing"
 > --
 > 2.30.2
 >
