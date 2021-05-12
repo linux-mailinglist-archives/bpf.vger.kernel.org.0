@@ -2,191 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A0537CF18
-	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 19:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85FA37CF15
+	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 19:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241545AbhELRIh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 13:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242222AbhELQds (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 May 2021 12:33:48 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89588C061375
-        for <bpf@vger.kernel.org>; Wed, 12 May 2021 09:09:33 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id m9so31409552ybm.3
-        for <bpf@vger.kernel.org>; Wed, 12 May 2021 09:09:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UC4aC5rKOriDRQF1zIVhdKtGPifq2qAliEYO7aR2x28=;
-        b=rrS1iwzAJWorMpKRze1NjTj7ufj1heKJGnQIaVNstsWjj2rI1eZKyEhY3iOu/RQ6kN
-         QH0tWFoc6fEIcq9sMgGxsfHo1r1kuQvg7AFAh3E7MyQ4FvzX7Bzy2U5BzfD5ZJmTiWrV
-         bCJM9xBIkVOyqEGvqsVOSGVkKcUBBB3h0VRH8Or6l0RbemnbJac1Wlewr50oXkx3npjq
-         I7LLflLWXrJqeTyXvuNSvVvvmHC10ZnEiRKks+pSfewpZLHC4MWCL9ovovcs+aQQRTMX
-         AMLe8Eg+EoRF8yp9lykmieUzfGeDPWIq0PNi1+gr08HWbeNRTqWX1qqnM39qhebpVy4i
-         jCIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UC4aC5rKOriDRQF1zIVhdKtGPifq2qAliEYO7aR2x28=;
-        b=TI4VHtB9RuWSDpTyUMrdBJY8kDvZbRcArBGl36bgW1dt2RlO2TtcpVJV8ex8VhARk3
-         vsb0BROrhwPWrqgc3FCYoyil2JtirBN5ACflDtDQiv6go9bN0hffAZNRj+1bCfVJAs3k
-         UAeeGeoFLX5SLaGmIs4cHD91IX2tebJuoXfVfPaTjYlRoM3vCt7iicec3NzQlsaYRK4G
-         /jtjP1c+3xYHSsLlPPEecC03SLhDgP32plIaQvd8d01do6QPHtHLYN4aVzhVtmygN83O
-         pUEWl/VfW3k63TITDeTHO44dq5rtMO1GLPfsEu1KMnpkErqJk0S/jRQKKAhfgaFVXWV4
-         9TUg==
-X-Gm-Message-State: AOAM530tm9KfcdXtAa9rs5vIJYyYtBxg9+iNo2WXTBQX4shh1ZAKof9p
-        G7izRgSfKCVKn9lKiJnDOTEDHXJm8ticcoWRb9htPA==
-X-Google-Smtp-Source: ABdhPJz15erT5HR/MU873lFrI6uDCwAq/V4gwb4hiYtUdYYMsRI/fihk2Q+OcXomoYZbpgym9Jb5/VArkhk/zjpBdwI=
-X-Received: by 2002:a25:4641:: with SMTP id t62mr52622502yba.253.1620835772321;
- Wed, 12 May 2021 09:09:32 -0700 (PDT)
+        id S239583AbhELRIc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 13:08:32 -0400
+Received: from sonic307-15.consmr.mail.ne1.yahoo.com ([66.163.190.38]:40599
+        "EHLO sonic307-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241894AbhELQbE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 12 May 2021 12:31:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1620836995; bh=sTgvXuL0QyV3DWP7rJnz73UM1noGLdd9LQiIFFkdesM=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=lgPSfM6bYtI5PktsEWaZOwNYwAVD2DSNVSSZUbkRR+VuucVtaGYOQvJ9zNhCoDMxUUq5Z+jnosmDTN3aCpfo68iU/8helLi555kxUELIHnI2XxFMQn+dj8ZWJ3cNGSPslXbWsNUKxz3PvzeKY0UqQGUKnudeRR6gch42aejT7NDZMf3aLkG24ztLncXJiwmhT+yM+dzBHvGbzZzRycMqIq4mpfpZHI2QosdLITqc/vF/T1CyFhsgVBUnNXyH0ANfmPqivzxayrY0a6ibd9CHyOdVsA6rbcuqGAeQTKaBVsWoiBe0MEmvoUHiLtYT29Xh8jdNNfUMRs0BVMifqAjrnA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1620836995; bh=+5dQI5KqtRBOLiVFOwJOSbsMzUI0Cffoq0T7hm6msAm=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=ULaIWEVvKRqrPsM330J5GvxDKEIutI3oGstgzvNDTXRgvQVZ3PGzzTcchh83s0pRuCSIMeujNZyj9UAbv1yLw68jA6XZ9uTBEGcHV2Oc4/iPmP4ajd+jr/FeL61kS288+uBB3VtRM8uFLrwbjBak6YeK0/XhE1aoQKeRfjWcWiZvNGZ95kycJvl+K6TbNA209ZLl7zkaWKIcxrEIb3bxk7cqHHqfPPXjKEQj5j//phTNkcTBMlS5066EzWaBbvgaJWO86vs4hulKJvbyxJaTLPNOCaSuioo0qH3aN+CcuQLZGuJWcc1rPcqgrlzT95vTnvBBZIa5OiiIQT/vwNo/XA==
+X-YMail-OSG: u3eIsq0VM1mrdWqd1ddc3yi2FSJAQ4ntlInGeECmzJrk_SDLHdW6J_k8ZCquxd7
+ OiYa2lX6SplN0e2K9uf4CqoloD2.5_D5zwfJAcWjJAmAFq_I84XSvl.77YdT9abn2hvpYoa8.ch9
+ jaiJg5aqvOFCiWKdn_.BsERkiiqL16HqSVhYX.1CXskeVX5.0Zgo.74vkVLxKHvcELAg2nOHDQDy
+ BdeexdMuHABDfG0wVOBFgTuS.VpFcMcYh70AHl2bN6vy8QfUaamWMGHjwuXY1kspO8lr_exoj0vG
+ Mp.HZRJ7gMra3c6stz.XSR6K32tQNckEFyVZDdGkBBnoSXINRnk1UhJNyqXAPnvF05f6oj1orQHA
+ NO59mWNhg1De8R3lsGqO_yQEb8GDJcrfdxnBm7QN4T_QfZ4gSUMj9sIFop84ygypmGVWLIFwiUqb
+ Orqi4pESN2KWdBAy6cTa7m._I7UPOtOVACdlM26nX3A.WsAUtWM6KSSRfI6DpKAumnDJEGBXVWAq
+ hpb4Do.gq3pBvz9Wr3D1prsZ2RSkvD2LzYCUx1PhaqDCPAQyDv8Ju15ffbuXcD9SMZtQbFZWw5Xo
+ gdHq.AtO.4IFfsKqvnG7K0Rgw.WJCNCOvg0g3bJo2Cx.h20PPgl9oEpoTxEuzG1IEumou.SYbRNR
+ Lmc3nWhEQ8SdYV049qNpogc8rW1skTTaxlMf8xQfk9_EOdFXXRKxW06F5epGkZlkk4ZTgaf3sBtp
+ 9jV.FiKz0yilKFKqtuHS.vkwKK4IGBkLUoTZeGiAVocYLhIgi6.JjYPhWMCY8XUFWkDgTzJTb13W
+ cAHOWSZHlPc_mxADVWFRpL8_6lG.0mzqEw0RdqUahWpVuQqU_cK9n.ymtf8u2hF1wmMlU3QzYM0c
+ CQkZvblKkuY2XihwwZH87P8.XFIkgRpgLZEGj_eUJlEAM30Y02f7UeB1gTbt.oR5psmaz35ApPmH
+ DfDejf6dgeIkrB1B_V.ThE2el.agVt4TP7VXg.xGRDygYAQFn1hSeH6PuwiVQECYrKQlBNgqnLY5
+ xYpZGddZzG3nL7xK._Gmm4w3FYRCPSxDsH8.qlfM7pvRGoyK2XYU_KfeMJ_M_qMe7jzU.nLxijLd
+ O3xhcZTrKcgbUCv9Kkw23O6xOCBbMshXeyoLrVEyrTlT_rRoo.0PUGGtFq0ZTY6UOufDSVlle0az
+ kZ4ZO97WgSyuUjhuCYy.vzHjkEv7aWk1hHpa_Kb.xuZ7e6BgisQFmOhtMBoVX.t4hKPvSGJv2qSI
+ 8g7n7nNgKBRbt.woahmI2bwwHmUSCi1IZg60fv0Z8BJ5vqz1Eb2EY4kYvn8mpgz4phcRVsQz582G
+ CGr_9Ik6oO2WqQxJ9MwPquC5OlFDDz3x6331kD1MmTlu0mhVeamp1vvUmRiVxukUKGoOCkCJmMxv
+ 9b1B09fYbT7fC1.JGF9GFxr1_pR06EhI7gumLwQVJuw4YZae3Ag0cm2Y5U6Hv6Y.Hw6L9wvhLY7V
+ sIl_qV2lMaJTWCw2a4vzGEDWezx2Y7bsFBRnEK0FtT9Yg9sArVPVbGlv5xp_QTu63ULo5qqaOPCI
+ JoCw3GNvYwCDX0_8aFj0bHZVcQ.sKzv98ZRCw6Q5tqdNoTURUG5BPtl7kVQMA.spaaxoxwxkPot5
+ cRGZDyBulQSULXf3L8Tw113evFWAxZs_Ms1AynP81S_dJTNG64ZRzuNf2IDvURhnmi9nTsVGPDM8
+ flIpwTscFYGSWqWr6G6GVzisfkEte1GiVj_70RydDPB38ay0hieyTwfOUzeIl5RI0nuq7Z4zR6s4
+ SMtXXnKI9oXWi7JgdKR5_w9feK3WUAQTMvPwjYohdgFgG.l4RfrbSbdVtPXKI7XIsdeamQIoqBcV
+ WlY5vmwcD0fxEGZ5H7tFR171rmBaZgBUBRL3Ug9YkP88TJ.YWPtQsfJIQ9BUYzKKKIZ5hWNiIycF
+ mlHe8CqUpycYWLCQzZf.08VQ0YdcicsvC87Ti6NBC127Eq2hVj9jQBClunBpfVxZU5MFkM5UOTbn
+ vXX9C.L92BHWxZD9XV0uRwjQo7DRuGjRIryoWtvJaO7xEavh82BDA_INEbu.aE4rhovJT_K_XBtH
+ heEZIA68O4PM1aFV6MicyFjsWR.8TadXZm03IbQ6HGf8ti5EyCNMlATI1hPy7QI9yG56uwHg4_9J
+ ygk3dF2gyRwnedbZ_TWL5yx5hHW1yj0hwP3vRRAEDzcZVjdj4x5MgQQ6UknN25w3WejJaz4Du73H
+ WjM29DUunllmfHDR0uJDZB2dMLnJnZ7VcOa4_JAwcRbjcEhslkDYRSgVc1jEfSssT4z6u8PVHJNG
+ fhxXKzWjrLTV4Nv_wnExV8l3wyT9wF5x_i6.5QGUrzGbu2Rug7KaP.iX9USns6LwPaY8l3x7dPR5
+ iRc_Py7GOzpdSNtTMEtm5PnTWu_Pvh8PGuZSovSqxaSp3O18yTT70Q4LM_Te8yFCr279_pQ643kG
+ 17LeZHGngeoCcTYaI_53Z8Z3xZ9bkKZanq8FYJN9TwmHZdjIZCrZfYawR_ClUkijR8NUsZMa1E55
+ wSndKvXCxwTRcHzD1I4yKH1gOzA24NLTtKQ.vbJMQl9vzdovn.4nlIPVDhk1N_MfcgLv9W0MBwcc
+ i47JMxCHExhPtMndnfQzIe47vbd_n7N9CjODTLhpeoyxeUXZjrdMpVB9mz4MFBrZqzdyp.zK7BFV
+ iN_zLvOD4L5oDvnYnebFDsnA.fdhh5K9yfRKmDa7KrS50TqXY4VB661xASPjXj5fDOZdjH_7flhM
+ n6tXczhGkJ6_FP2ucySIDAfxqvLxBC.2B0mbOed8ZTGYlS2FfdiEy4PHAvXw0wFSl._.0A.ybGzK
+ 9zFunST1.TFXwoPhARYYSN.Fd6KXs.U.uUuXloJbsx3M8QjAsgPgV3plULiJq_a34jAQKHzMr2G5
+ FwNNCStb4KkYO4iWxfGT7alhLjbZPZFZHypY5XXBZWodGFOYViXjxtQQQu4WErUIAbkHuDF.5yhX
+ kEBkbUk2KzXv9i6fleXOb9dEN.B4NbJOUB3fwQqg.tT8I1Sy_BuVpM53_UPxSWaUaME20WT8ycYi
+ WBrUb80dAKq6gYEId_towkkqZoOmFtdReA9SuK8A.XKPMlnn7U0DZHoDkSDQdWEupmUenOZFSvlO
+ CYW0D.pl8nsE2xeDYvtbywONuTFTbaXIO6xlfDiRyWdoiSEVJccNe7D1JnwB7qw1fpLtBx30kVma
+ XLaBND1Ym.0.zhtr4bSeVD6njYOwh0sNyzZKSCtkVqC.OKRaG73BjWZJTIcfzhMxD6162r77CnUd
+ WgDWHBUbUJ4sgDqhGyeZZy5mXtN64kDlIA7R6Nhy1r4waHr.twbsBRL1UpOgVBQhL5P5t_cgWPTq
+ OOYmB5JUP8eL0gGdXauAb1ToPk02T8WFObZHBaHeuPozUwCPOdNqvwgaQLv1eN6ThTOTOCFK3k6V
+ wZqbsvUYwokjwCxMq.WcQDMtGlC.j_n55PxgXmXfunkwsS_vq6dV0RjBfIoZAcyekEe4oGR2Nepu
+ 9JBe_dM13xK1MCoU-
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.ne1.yahoo.com with HTTP; Wed, 12 May 2021 16:29:55 +0000
+Received: by kubenode575.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID aeedecbba43991c93baefb338f58092f;
+          Wed, 12 May 2021 16:17:51 +0000 (UTC)
+Subject: Re: [PATCH] lockdown,selinux: fix bogus SELinux lockdown permission
+ checks
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, network dev <netdev@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20210507114048.138933-1-omosnace@redhat.com>
+ <a8d138a6-1d34-1457-9266-4abeddb6fdba@schaufler-ca.com>
+ <CAFqZXNtr1YjzRg7fTm+j=0oZF+7C5xEu5J0mCZynP-dgEzvyUg@mail.gmail.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <24a61ff1-e415-adf8-17e8-d212364d4b97@schaufler-ca.com>
+Date:   Wed, 12 May 2021 09:17:50 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
- <20210511133118.15012-2-mcroce@linux.microsoft.com> <YJqKfNh6l3yY2daM@casper.infradead.org>
- <YJqQgYSWH2qan1GS@apalos.home> <YJqSM79sOk1PRFPT@casper.infradead.org>
- <CAC_iWj+Tw9DzzzVj-F9AwzBN_OJV_HN2miJT4KTBH_Uei_V2ZA@mail.gmail.com> <YJv65eER2qgaP9Ib@casper.infradead.org>
-In-Reply-To: <YJv65eER2qgaP9Ib@casper.infradead.org>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 12 May 2021 18:09:21 +0200
-Message-ID: <CANn89iJ7j4-rm+i58RMcB8Fahe6yEao7jhDUe_M9U6L67nZ1gA@mail.gmail.com>
-Subject: Re: [PATCH net-next v4 1/4] mm: add a signature in struct page
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Networking <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAFqZXNtr1YjzRg7fTm+j=0oZF+7C5xEu5J0mCZynP-dgEzvyUg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Mailer: WebService/1.1.18295 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/16)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 12, 2021 at 6:03 PM Matthew Wilcox <willy@infradead.org> wrote:
+On 5/12/2021 6:21 AM, Ondrej Mosnacek wrote:
+> On Sat, May 8, 2021 at 12:17 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
+>> On 5/7/2021 4:40 AM, Ondrej Mosnacek wrote:
+>>> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+>>> lockdown") added an implementation of the locked_down LSM hook to
+>>> SELinux, with the aim to restrict which domains are allowed to perform
+>>> operations that would breach lockdown.
+>>>
+>>> However, in several places the security_locked_down() hook is called in
+>>> situations where the current task isn't doing any action that would
+>>> directly breach lockdown, leading to SELinux checks that are basically
+>>> bogus.
+>>>
+>>> Since in most of these situations converting the callers such that
+>>> security_locked_down() is called in a context where the current task
+>>> would be meaningful for SELinux is impossible or very non-trivial (and
+>>> could lead to TOCTOU issues for the classic Lockdown LSM
+>>> implementation), fix this by adding a separate hook
+>>> security_locked_down_globally()
+>> This is a poor solution to the stated problem. Rather than adding
+>> a new hook you should add the task as a parameter to the existing hook
+>> and let the security modules do as they will based on its value.
+>> If the caller does not have an appropriate task it should pass NULL.
+>> The lockdown LSM can ignore the task value and SELinux can make its
+>> own decision based on the task value passed.
+> The problem with that approach is that all callers would then need to
+> be updated and I intended to keep the patch small as I'd like it to go
+> to stable kernels as well.
 >
-> On Tue, May 11, 2021 at 05:25:36PM +0300, Ilias Apalodimas wrote:
-> > Nope not at all, either would work. we'll switch to that
->
-> You'll need something like this because of the current use of
-> page->index to mean "pfmemalloc".
->
-> From ecd6d912056a21bbe55d997c01f96b0b8b9fbc31 Mon Sep 17 00:00:00 2001
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> Date: Fri, 16 Apr 2021 18:12:33 -0400
-> Subject: [PATCH] mm: Indicate pfmemalloc pages in compound_head
->
-> The net page_pool wants to use a magic value to identify page pool pages.
-> The best place to put it is in the first word where it can be clearly a
-> non-pointer value.  That means shifting dma_addr up to alias with ->index,
-> which means we need to find another way to indicate page_is_pfmemalloc().
-> Since page_pool doesn't want to set its magic value on pages which are
-> pfmemalloc, we can use bit 1 of compound_head to indicate that the page
-> came from the memory reserves.
->
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  include/linux/mm.h       | 12 +++++++-----
->  include/linux/mm_types.h |  7 +++----
->  2 files changed, 10 insertions(+), 9 deletions(-)
->
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index bd21864449bf..4f9b2007efad 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -1670,10 +1670,12 @@ struct address_space *page_mapping(struct page *page);
->  static inline bool page_is_pfmemalloc(const struct page *page)
->  {
->         /*
-> -        * Page index cannot be this large so this must be
-> -        * a pfmemalloc page.
-> +        * This is not a tail page; compound_head of a head page is unused
-> +        * at return from the page allocator, and will be overwritten
-> +        * by callers who do not care whether the page came from the
-> +        * reserves.
->          */
-> -       return page->index == -1UL;
-> +       return page->compound_head & 2;
->  }
->
->  /*
-> @@ -1682,12 +1684,12 @@ static inline bool page_is_pfmemalloc(const struct page *page)
->   */
->  static inline void set_page_pfmemalloc(struct page *page)
->  {
-> -       page->index = -1UL;
-> +       page->compound_head = 2;
->  }
->
->  static inline void clear_page_pfmemalloc(struct page *page)
->  {
-> -       page->index = 0;
-> +       page->compound_head = 0;
->  }
->
->  /*
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 5aacc1c10a45..1352e278939b 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -96,10 +96,9 @@ struct page {
->                         unsigned long private;
->                 };
->                 struct {        /* page_pool used by netstack */
-> -                       /**
-> -                        * @dma_addr: might require a 64-bit value on
-> -                        * 32-bit architectures.
-> -                        */
-> +                       unsigned long pp_magic;
-> +                       struct page_pool *pp;
-> +                       unsigned long _pp_mapping_pad;
->                         unsigned long dma_addr[2];
->                 };
->                 struct {        /* slab, slob and slub */
-> --
-> 2.30.2
->
+> But it does seem to be a better long-term solution - would it work for
+> you (and whichever maintainer would be taking the patch(es)) if I just
+> added another patch that refactors it to use the task parameter?
 
-This would break compound_head() ?
+I can't figure out what you're suggesting. Are you saying that you
+want to add a new hook *and* add the task parameter?
+
+>
+> --
+> Ondrej Mosnacek
+> Software Engineer, Linux Security - SELinux kernel
+> Red Hat, Inc.
+>
