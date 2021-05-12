@@ -2,140 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC2437B2B8
-	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 01:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9475F37B324
+	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 02:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhEKXlL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 May 2021 19:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbhEKXlK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 May 2021 19:41:10 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B23C061574
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 16:40:02 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 82so28547936yby.7
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 16:40:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y5ylpITsmPvdln2bAynqbr/Of+R9Ntiiz3wsT/Rk9FY=;
-        b=h0je6PY6DXbBq2ZAPO0D1rV0z7W63SBnmNCupBkPIKmFmlfmqxVAHSRE8DepS1CH3B
-         UWuLWAxGqAhtgRGtTBfaQIcSjyBdscCI4pBVLySyBxHifyk2nggR/mMmJwl2NCXa5aj9
-         FQaLNhS22n44cGxHNsK8XQNOTiOdtVD8sSpYYD0xyjz3Yxw56HTlqmbMMSQ3wE44Bdsv
-         yZJF351T3eHnI1EblFRyiCmMacL73k7GoKPQqnVhNr1O7J53pSNEtttBt58lAZ20SdcT
-         CYZKzV7eODmm64f/PVH/uGFTkyhZBj0sGlQn2edKCu7hK4CfvcDIavGzfWSAOLBotODQ
-         xuVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y5ylpITsmPvdln2bAynqbr/Of+R9Ntiiz3wsT/Rk9FY=;
-        b=Vipk3yGbw4CUXqxKanVbdzQWbWSTFWAp/wwZdEBhTdkuS/vfy2gO/VVNY2PrcuP5RL
-         +S77WUhA2PuPCuCoHoF1BDjvs3JK6U5YeIB9M61Ey3aCNHZvhDQ1I+hkU7pXAmhbdnn1
-         f8vp/R+tZGDu9BJ40kOddhaAsX8TwEzjRor+2X34PeW4N2HezQQMNA/5PirsLyXfYu8n
-         kzk5ABwimOkoskn/877tzTQVOv8Y/oIIAQjG3FHtbji6XCKU20QWfWUU4wK6eRhesL6v
-         FmB4W5mU2Ak8UUn1lF24sYcRtflBgGy4MER8FZ3W7ohJROoQdg0xcb3GAxiTx7Q0ee8E
-         DoVw==
-X-Gm-Message-State: AOAM530rwuvnAL3NeNaxPmR9U94Ymtq92di45Cfrw2e4fckJV2tlbinW
-        ZNlY7W2GU2k/MvikVvFHryJLbz7d+nhT3rh7T20=
-X-Google-Smtp-Source: ABdhPJx2L6EQDchnwuW52iDWkJDR9sZnVUWMlPM1vY0KnQqOj+X9KzI1jamsCUNAMkBr7OtSnzYn7HXXru38LI+sPnI=
-X-Received: by 2002:a5b:d4c:: with SMTP id f12mr19733221ybr.510.1620776401589;
- Tue, 11 May 2021 16:40:01 -0700 (PDT)
+        id S229948AbhELAqR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 May 2021 20:46:17 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:46131 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229932AbhELAqQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 May 2021 20:46:16 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210512004507epoutp045ec9fa6990f0ea322af95e93856ab33d~_KxpJ3Xob2752227522epoutp04W
+        for <bpf@vger.kernel.org>; Wed, 12 May 2021 00:45:07 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210512004507epoutp045ec9fa6990f0ea322af95e93856ab33d~_KxpJ3Xob2752227522epoutp04W
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1620780307;
+        bh=dfggp+4g/zAr9O+AzcgFCwUClokaZu0+FQs1KqAJUDg=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=XA9RW9j343EQGsDvb6I7Pk2hS9Qmu1HOB3WvJHzaFcSlz+fsSm425BMgXqzaJQnb2
+         f9n34GdW7IjPPaCLNROsKWB7kLOclO12Ae3r61zGUds5ponfBplwUZDEg3z4K6BaDp
+         koUf7dc0ZJMeXgmVx0CUysUhca+xjYwkwDkasOWs=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20210512004507epcas2p268219b25083295c943dd87ba0e8fdf02~_KxoumdM70700007000epcas2p2c;
+        Wed, 12 May 2021 00:45:07 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.184]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4Ffx0167Gfz4x9Q2; Wed, 12 May
+        2021 00:45:05 +0000 (GMT)
+Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        30.68.09433.0152B906; Wed, 12 May 2021 09:45:04 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210512004504epcas2p3e3dc9b5dc5df6ea16fb887e0fb23718c~_Kxl9Kbhf1310913109epcas2p3Z;
+        Wed, 12 May 2021 00:45:04 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210512004504epsmtrp2c27fee30e1107570bdf11cc1e6972289~_Kxl8Bl4H0559905599epsmtrp2E;
+        Wed, 12 May 2021 00:45:04 +0000 (GMT)
+X-AuditID: b6c32a47-f61ff700000024d9-1e-609b2510bf9e
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1C.05.08637.0152B906; Wed, 12 May 2021 09:45:04 +0900 (KST)
+Received: from KORDO035731 (unknown [12.36.185.47]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210512004504epsmtip15aec5dec4cde3de0795bff4ac6ee4d6f~_KxloXrmK0154401544epsmtip1Y;
+        Wed, 12 May 2021 00:45:04 +0000 (GMT)
+From:   "Dongseok Yi" <dseok.yi@samsung.com>
+To:     "'Willem de Bruijn'" <willemdebruijn.kernel@gmail.com>
+Cc:     "'Yunsheng Lin'" <linyunsheng@huawei.com>,
+        "'Daniel Borkmann'" <daniel@iogearbox.net>,
+        "'bpf'" <bpf@vger.kernel.org>,
+        "'Alexei Starovoitov'" <ast@kernel.org>,
+        "'Andrii Nakryiko'" <andrii@kernel.org>,
+        "'Martin KaFai Lau'" <kafai@fb.com>,
+        "'Song Liu'" <songliubraving@fb.com>,
+        "'Yonghong Song'" <yhs@fb.com>,
+        "'John Fastabend'" <john.fastabend@gmail.com>,
+        "'KP Singh'" <kpsingh@kernel.org>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Jakub Kicinski'" <kuba@kernel.org>,
+        "'Network Development'" <netdev@vger.kernel.org>,
+        "'linux-kernel'" <linux-kernel@vger.kernel.org>
+In-Reply-To: <CAF=yD-+ncxKY28h8ch8kcJmSXfqdnBrBELKFBPmfP7RzNsWoTg@mail.gmail.com>
+Subject: RE: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
+ to 4
+Date:   Wed, 12 May 2021 09:45:03 +0900
+Message-ID: <01b701d746c8$0c15ae70$24410b50$@samsung.com>
 MIME-Version: 1.0
-References: <20210508034837.64585-1-alexei.starovoitov@gmail.com> <20210508034837.64585-18-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210508034837.64585-18-alexei.starovoitov@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 11 May 2021 16:39:50 -0700
-Message-ID: <CAEf4Bzbfihb6JTQ7zyLBJfbHV6Y-ai28vL+TSmGEX3K5tH=FNA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 17/22] libbpf: Introduce bpf_map__get_initial_value().
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQKypHYW3xad5/j2XvChPebQmKG2owG+YoocAqFpyMsBZavlXQIxNaIYAiru3ucBq8RF2QKY6vTDAm6kVlUBadK04AMaqQ3GARiLayQDE+caWwJJGwtFAeZKb9QDLW923AHUONYWAfw9g6SoAqstYA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrKJsWRmVeSWpSXmKPExsWy7bCmma6A6uwEg43TzSy+/57NbPHl5212
+        i89HjrNZLF74jdlizvkWFoumHSuYLF58eMJo8XxfL5PFhW19rBaXd81hs2h4y2VxbIGYxc/D
+        Z5gtFv/cAFS1ZAajA7/HlpU3mTwmNr9j99g56y67R8uRt6weXTcuMXtsWtXJ5vF5k1wAe1SO
+        TUZqYkpqkUJqXnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7Q2UoKZYk5
+        pUChgMTiYiV9O5ui/NKSVIWM/OISW6XUgpScAkPDAr3ixNzi0rx0veT8XCtDAwMjU6DKhJyM
+        CdMOsRScF6z4eyuxgXE9bxcjJ4eEgInE5F1PmEFsIYEdjBLzb/l0MXIB2Z8YJf6v3sAC4Xxj
+        lNh7q48JpqNryis2iI69jBITbhRBFL1glDh0bhJYEZuAlsSbWe2sILaIgJXE/9kn2EGKmAVO
+        s0g8Wf0NrIhTIFBic98BsCJhgWCJp5OawOIsAqoSS3tBVnNy8ApYSvzbNJsJwhaUODnzCVic
+        WUBeYvvbOcwQFylI/Hy6jBVkgYjAMkaJaX+nMUIUiUjM7myDKnrAIbHoiRGE7SJxecJ1dghb
+        WOLV8S1QtpTE53d7gV7jALLrJVq7Y0BmSgj0MEpc2QexWELAWGLWs3ZGkBpmAU2J9bv0IcqV
+        JY7cgjqNT6Lj8F92iDCvREebEISpJDHxSzzEDAmJFycns0xgVJqF5K9ZSP6aheT8WQirFjCy
+        rGIUSy0ozk1PLTYqMEaO6U2M4PSs5b6DccbbD3qHGJk4GA8xSnAwK4nwzq2flSDEm5JYWZVa
+        lB9fVJqTWnyI0RQY0hOZpUST84EZIq8k3tDUyMzMwNLUwtTMyEJJnPdnal2CkEB6Yklqdmpq
+        QWoRTB8TB6dUA1N9Ln/Gh6fXjetYd/SUnNz3nUtY1u+F9hx3V0mThhOMW97f28Nq1l/5dXkp
+        J+supxfJJ5XmHpO9EaYRVTvFTsZ77Zar7N+myF5xLroYPu2J0/3VT/7Ob6m76vvGVKrMXtmj
+        N6J+SvwL39crnrcJ7I/buPBu9wL7rNu/C0X/Tt/D536I7ebvuNeLpsjZf4v0Z+r55mNfflEv
+        271tcaz23sCIa285m/YIsRtJabz22/Q+9XDKm9iC1VYfLqVbtGoaiHkdWuj88P+PFGUWzZ2p
+        11UNuKOO8ZX/6Oa/8Iypa9JuVofy2Uma3rn/Fx3tL/GImvxr8ymlCnFZo6QnDI8ULUU6OT+u
+        FhecO1Vyqkb6OyWW4oxEQy3mouJEAKIla6xYBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCIsWRmVeSWpSXmKPExsWy7bCSnK6A6uwEgzUHuCy+/57NbPHl5212
+        i89HjrNZLF74jdlizvkWFoumHSuYLF58eMJo8XxfL5PFhW19rBaXd81hs2h4y2VxbIGYxc/D
+        Z5gtFv/cAFS1ZAajA7/HlpU3mTwmNr9j99g56y67R8uRt6weXTcuMXtsWtXJ5vF5k1wAexSX
+        TUpqTmZZapG+XQJXxoRph1gKzgtW/L2V2MC4nreLkZNDQsBEomvKK7YuRi4OIYHdjBLTT+0F
+        cjiAEhISuza7QtQIS9xvOcIKUfOMUeLj76csIAk2AS2JN7PaWUFsEQErif+zT7CDFDELXGWR
+        2PzjGzNExz4OiQsn3zCBVHEKBEps7jsA1iEMZPf/u8UIYrMIqEos7d0ANpVXwFLi36bZTBC2
+        oMTJmU/A4swC2hK9D1sZIWx5ie1v5zBDnKcg8fPpMrDzRASWMUpM+zsNqkhEYnZnG/MERuFZ
+        SGbNQjJrFpJZs5C0LGBkWcUomVpQnJueW2xYYJiXWq5XnJhbXJqXrpecn7uJERyxWpo7GLev
+        +qB3iJGJg/EQowQHs5II79z6WQlCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeS90nYwXEkhPLEnN
+        Tk0tSC2CyTJxcEo1MLWpmM/aENMXZ55f5eKU9r+wrWXjEaOaEz+8e1I3Vy+zdlws1bbkh+Pj
+        4yk51+o7fkvUMMx7uzVdQTdaVlKZJ8Xqbu3Jtl/Tzhy5pvTv5cfgC88erBe88MxiwVqmc9cS
+        v95+HF91Vqq3y2NOYcH1f3Y9Gvef7Jv4/RxjU9bDv7Lue/5aW094EWrMsTV/+nLRHTtfLgxO
+        6fr26GQX0wZphUMzzp9ZIFzyvk+lqnTj1fmFcy+WdTxnDJ4VIuv233yDn2jGu8iz+nMeTLnw
+        d2bUfJV6uf1Zli2O1Z8E5/5P+PpDQG71kc9bVoWH2oZOX/D7+M9lB84zq/LN2ud5zOfJjXZZ
+        14nmp6tf6wZX/Xy8VKdeiaU4I9FQi7moOBEAVTXzjEcDAAA=
+X-CMS-MailID: 20210512004504epcas2p3e3dc9b5dc5df6ea16fb887e0fb23718c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210429102143epcas2p4c8747c09a9de28f003c20389c050394a
+References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
+        <1619690903-1138-1-git-send-email-dseok.yi@samsung.com>
+        <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
+        <02bf01d74211$0ff4aed0$2fde0c70$@samsung.com>
+        <CA+FuTScC96R5o24c-sbY-CEV4EYOVFepFR85O4uGtCLwOjnzEw@mail.gmail.com>
+        <02c801d7421f$65287a90$2f796fb0$@samsung.com>
+        <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
+        <001801d742db$68ab8060$3a028120$@samsung.com>
+        <CAF=yD-KtJvyjHgGVwscoQpFX3e+DmQCYeO_HVGwyGAp3ote00A@mail.gmail.com>
+        <436dbc62-451b-9b29-178d-9da28f47ef24@huawei.com>
+        <CAF=yD-+d0QYj+812joeuEx1HKPzDyhMpkZP5aP=yNBzrQT5usw@mail.gmail.com>
+        <007001d7431a$96281960$c2784c20$@samsung.com>
+        <CAF=yD-L9pxAFoT+c1Xk5YS42ZaJ+YLVQVnV+fvtqn-gLxq9ENg@mail.gmail.com>
+        <00c901d74543$57fa3620$07eea260$@samsung.com>
+        <CA+FuTSepShKoXUJo7ELMMJ4La11J6CsZggJWsQ5MB2_uhAi+OQ@mail.gmail.com>
+        <CA+FuTSeyuUvKC==Mo7L+u3PS0BQyea+EdLLYjhGFrP7FQZsbEQ@mail.gmail.com>
+        <015101d74602$86442210$92cc6630$ @samsung.com> 
+        <CAF=yD-+ncxKY28h8ch8kcJmSXfqdnBrBELKFBPmfP7RzNsWoTg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 7, 2021 at 8:49 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> Introduce bpf_map__get_initial_value() to read initial contents
-> of rodata/bss maps. Note only mmaped maps qualify.
-> Just as bpf_map__set_initial_value() works only for mmaped kconfig.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
->  tools/lib/bpf/libbpf.c   | 10 ++++++++++
->  tools/lib/bpf/libbpf.h   |  2 ++
->  tools/lib/bpf/libbpf.map |  1 +
->  3 files changed, 13 insertions(+)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 24a659448782..f7cdbb0e1faf 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -9763,6 +9763,16 @@ int bpf_map__set_initial_value(struct bpf_map *map,
->         return 0;
->  }
->
-> +int bpf_map__get_initial_value(struct bpf_map *map,
-> +                              const void **pdata, size_t *psize)
+On Tue, May 11, 2021 at 01:38:41PM -0400, Willem de Bruijn wrote:
+> On Mon, May 10, 2021 at 9:11 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
+> >
+> > On Mon, May 10, 2021 at 09:46:25AM -0400, Willem de Bruijn wrote:
+> > > On Mon, May 10, 2021 at 9:19 AM Willem de Bruijn
+> > > <willemdebruijn.kernel@gmail.com> wrote:
+> > > >
+> > > > > > That generates TCP packets with different MSS within the same stream.
+> > > > > >
+> > > > > > My suggestion remains to just not change MSS at all. But this has to
+> > > > > > be a new flag to avoid changing established behavior.
+> > > > >
+> > > > > I don't understand why the mss size should be kept in GSO step. Will
+> > > > > there be any issue with different mss?
+> > > >
+> > > > This issue has come up before and that has been the feedback from
+> > > > TCP experts at one point.
+> > > >
+> > > > > In general, upgrading mss make sense when 6 to 4. The new flag would be
+> > > > > set by user to not change mss. What happened if user does not set the
+> > > > > flag? I still think we should fix the issue with a general approach. Or
+> > > > > can we remove the skb_increase_gso_size line?
+> > > >
+> > > > Admins that insert such BPF packets should be aware of these issues.
+> > > > And likely be using clamping. This is a known issue.
+> > > >
+> > > > We arrived that the flag approach in bpf_skb_net_shrink. Extending
+> > > > that  to bpf_skb_change_proto would be consistent.
+> > >
+> > > As for more generic approach: does downgrading to non-TSO by clearing
+> > > gso_size work for this edge case?
+> >
+> > It can hit __skb_linearize in validate_xmit_skb and frags will be
+> > copied to a linear part. The linear part size can exceed the MTU of
+> > skb->dev unexpectedly.
+> 
+> When does skb_needs_linearize return true here (besides lack of
+> scatter-gather support, which would also preclude TSO)?
 
-the general patterns (there are legacy exceptions) for getters is to
-not have "get_" in the name. Please rename it to just
-bpf_map__initial_value().
+As I know not every netdev support NETIF_F_SG. TSO requires SG.
 
-Also btf__get_raw_data() (note the legacy naming) follows a slightly
-different pattern of returning NULL on error or valid pointer on
-success. And then the size is returned as outer param. Unless there is
-a good reason not to, let's be consistent with that pattern?
+    /* TSO requires that SG is present as well. */
+    if ((features & NETIF_F_ALL_TSO) && !(features & NETIF_F_SG)) {
+        netdev_dbg(dev, "Dropping TSO features since no SG feature.\n");
+        features &= ~NETIF_F_ALL_TSO;
+    }
 
-> +{
-> +       if (!map->mmaped)
-> +               return -EINVAL;
-> +       *psize = map->def.value_size;
-> +       *pdata = map->mmaped;
-> +       return 0;
-> +}
-> +
->  bool bpf_map__is_offload_neutral(const struct bpf_map *map)
->  {
->         return map->def.type == BPF_MAP_TYPE_PERF_EVENT_ARRAY;
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index fb291b4529e8..f8976a30586f 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -471,6 +471,8 @@ LIBBPF_API int bpf_map__set_priv(struct bpf_map *map, void *priv,
->  LIBBPF_API void *bpf_map__priv(const struct bpf_map *map);
->  LIBBPF_API int bpf_map__set_initial_value(struct bpf_map *map,
->                                           const void *data, size_t size);
-> +LIBBPF_API int bpf_map__get_initial_value(struct bpf_map *map,
-> +                                         const void **pdata, size_t *psize);
->  LIBBPF_API bool bpf_map__is_offload_neutral(const struct bpf_map *map);
->  LIBBPF_API bool bpf_map__is_internal(const struct bpf_map *map);
->  LIBBPF_API int bpf_map__set_pin_path(struct bpf_map *map, const char *path);
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 889ee2f3611c..44285045ddf4 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -360,6 +360,7 @@ LIBBPF_0.4.0 {
->                 bpf_linker__free;
->                 bpf_linker__new;
->                 bpf_map__inner_map;
-> +               bpf_map__get_initial_value;
+> 
+> > I will make another patch with the flag approach.
+> >
 
-nit: g < i, and as bpf_map__initial_value will still go before inner_map getter
-
->                 bpf_object__gen_loader;
->                 bpf_object__set_kversion;
->  } LIBBPF_0.3.0;
-> --
-> 2.30.2
->
