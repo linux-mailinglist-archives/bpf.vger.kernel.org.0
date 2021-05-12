@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B7037B4DB
-	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 06:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E4637B4E1
+	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 06:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229625AbhELEUs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 00:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38540 "EHLO
+        id S229495AbhELEXK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 00:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhELEUr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 May 2021 00:20:47 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BCF5C061574
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 21:19:40 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id h202so29092854ybg.11
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 21:19:40 -0700 (PDT)
+        with ESMTP id S229447AbhELEXJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 May 2021 00:23:09 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7268FC061574
+        for <bpf@vger.kernel.org>; Tue, 11 May 2021 21:22:02 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id s37so4643342ybi.6
+        for <bpf@vger.kernel.org>; Tue, 11 May 2021 21:22:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Qpd8syiGfNziwL90v7//Caol0qt1VKnCxoi2zr8xTLM=;
-        b=PrC1XSEg2POjqHQyY1wQSGwFOrZ1de5Kw1FPbJAz0ePPTUB8KeIpYAfS3V/nlEgbrw
-         4cVfelIhsB8WLMckZA7gOyEoGYt3eAvrR8IqDXeNc5+Yek+MhD19VQkftyjpR0N84gAp
-         sGtx7q3JLsJ/1rXEVWPst9S4Ws8tI3j6E7e+lFCkeNiPiIQFHIaK2zH2UgqQsKJ3R4eX
-         A2b27YL9kbCtSyTiOv5w3S8UwVbh74JEJYnBAeJGIg9tD2aCPfL0fyAkUksA4WFyun/s
-         T6Ealez538c97tjNj2v3O9v/oHZB5ZHoIxf2oPWabin7R8e93rCgGMVYO2KWVRg2SiGy
-         4ybA==
+        bh=8d0XDPwFIj54BXo6dkfnDE/6p30uLh/h62cl+kG4PAw=;
+        b=OYdmO2U36IkPmuEX32jMuFS5qtGNsfguwVqyZgBWN6hleHWriNZVrutcV9An3H1wlK
+         pCDgXrRVjh2LLRKh54aMWVpJIeuaT/2wThO58Z0/xhCtkFpUcEpw5mDU+oYw6ZJnbfB9
+         GEh1+Y/5TuStcRRPIhrVmGiRgMrxBxUOykeqbh8+NZUBR5G83Wm7GfzfffcV1hon3aOq
+         +3A8itsFvaKOIEttmC4Ne6IPq8ae5NbkTEI+wHzfAIUg/N7RWSPO5irdTpFHH68uagqD
+         WGTY/3ISjmM+XRxsMzXybspodBIJiPbirqxjGMCx/8WR+0pSVU/sHJ4jKYR5kae5La2D
+         hZCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Qpd8syiGfNziwL90v7//Caol0qt1VKnCxoi2zr8xTLM=;
-        b=eRQXlfdo0JXuyYuAg8WJ+tvEd+LDEaKDnWhYajFT4yOOWq8H901nGX3w59ZwVdeI10
-         Ls3spuchE+FBqUsEIGaD0NfrrGimKslN2BcXegjoA98eyCWyoEWcIGEhVJb5oVDPMdBA
-         zppqaDlUL0ywuRyhlmKtqa4L2MzPnqEYLD2orLLj5/xjx3NC2EioNTHBIZ8taHdu6vHd
-         S8hUD5Z77nloJG/y6VdQrdwGBzKtUYjvfFwK61LErf2TAlhoQEtMtfsnAor/I+HIY5wT
-         Y2CzSri/UWPd9m7cFjP16jE+Qk5M4qTxXXcsyiHCau4k5rwEJnNBjKagN4n83HCd8xJB
-         24qg==
-X-Gm-Message-State: AOAM532gqt45wu/tehTPQK3tl0LnDo4w7exbMI9BbZUBWCe5XNp5i5vX
-        Hr3n5hakPe/KhV93orMXG+itEvpw0SekFQ+nKnc=
-X-Google-Smtp-Source: ABdhPJxW00PPs4OPcCvsDshgfzQzM00JpxucpMyFyIT+d2V3OEoag7Evx3mI3EwD/FsDHt4f13nTckDyViogSg3B1eQ=
-X-Received: by 2002:a25:ba06:: with SMTP id t6mr43806729ybg.459.1620793179953;
- Tue, 11 May 2021 21:19:39 -0700 (PDT)
+        bh=8d0XDPwFIj54BXo6dkfnDE/6p30uLh/h62cl+kG4PAw=;
+        b=iNyvsTc4ddkHp/y1Txh3w8+mhoyYXkyFrp/2RYhb1PAyojP5diQpVTeK0rJi9Ulhsh
+         qq5pK4Ssxj8UixnuNtI+aWw1LA9MlUmSW+u9tHTzZdchly5JRDYYvs343pnMV7MTNYv6
+         CNeZbD5vOFt43A2AMfERLiPjap9jHmGMwXwQ4tqkUHylgj5yTI7mBCnq4BnmmcK+L1pB
+         GyKiletIDmYCwKt4BvDCQUSIa2d8c7H0HRvZytjqzwa70AtyAamAehh0xjLWdcTpqdZl
+         BMRtzptSMJ/QgzUqzue7/nrxyGA1RSOk70GlfdjWSiRp8hVd0G5rPo0QHWl4WjSTobGr
+         kFNg==
+X-Gm-Message-State: AOAM530YKXzypZGKGRbV/VYIuDWhXba1+VYOP0AJEtCS2JQSxdSPuA+J
+        /wgTttf6apVGxmu1kjwlCMur54L6jkMKFZJt9Yo=
+X-Google-Smtp-Source: ABdhPJx6rBfpwfe9qJlUy5ovop/Lt8v/dl83gsAhYhlbz731LgzX4IS2nkYAXD3FWE2PbD08LBMD/77Ai4J7xGByB50=
+X-Received: by 2002:a25:ba06:: with SMTP id t6mr43815701ybg.459.1620793321573;
+ Tue, 11 May 2021 21:22:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210508034837.64585-1-alexei.starovoitov@gmail.com> <20210508034837.64585-20-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210508034837.64585-20-alexei.starovoitov@gmail.com>
+References: <20210508034837.64585-1-alexei.starovoitov@gmail.com> <20210508034837.64585-21-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210508034837.64585-21-alexei.starovoitov@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 11 May 2021 21:19:28 -0700
-Message-ID: <CAEf4BzYdYhaNes0Fmgk=wXQ8f+L_JCVkW8qesN8ib6R6O3-_8g@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 19/22] selftests/bpf: Convert few tests to
+Date:   Tue, 11 May 2021 21:21:50 -0700
+Message-ID: <CAEf4BzafK=Mgpupr6JFUWOCvsE-CxdXqprt8NTGqW6A4Ym6V8Q@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 20/22] selftests/bpf: Convert atomics test to
  light skeleton.
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -67,26 +67,34 @@ On Fri, May 7, 2021 at 8:49 PM Alexei Starovoitov
 >
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> Convert few tests that don't use CO-RE to light skeleton.
+> Convert prog_tests/atomics.c to lskel.h
 >
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
 
-LGTM.
+Less CHECK()s, yay.
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  tools/testing/selftests/bpf/.gitignore           |  1 +
->  tools/testing/selftests/bpf/Makefile             | 16 +++++++++++++++-
->  .../selftests/bpf/prog_tests/fentry_fexit.c      |  6 +++---
->  .../selftests/bpf/prog_tests/fentry_test.c       | 10 +++++-----
->  .../selftests/bpf/prog_tests/fexit_sleep.c       |  6 +++---
->  .../selftests/bpf/prog_tests/fexit_test.c        | 10 +++++-----
->  .../selftests/bpf/prog_tests/kfunc_call.c        |  6 +++---
->  .../selftests/bpf/prog_tests/ksyms_module.c      |  2 +-
->  tools/testing/selftests/bpf/prog_tests/ringbuf.c |  8 +++-----
->  tools/testing/selftests/bpf/progs/test_ringbuf.c |  4 ++--
->  10 files changed, 41 insertions(+), 28 deletions(-)
+>  tools/testing/selftests/bpf/Makefile          |  2 +-
+>  .../selftests/bpf/prog_tests/atomics.c        | 73 ++++++++++---------
+>  2 files changed, 38 insertions(+), 37 deletions(-)
+>
+
+[...]
+
+> @@ -32,21 +32,22 @@ static void test_add(struct atomics *skel)
+>
+>         ASSERT_EQ(skel->data->add_noreturn_value, 3, "add_noreturn_value");
+>
+> +
+
+why extra empty line?
+
+>  cleanup:
+> -       bpf_link__destroy(link);
+> +       close(link_fd);
+>  }
 >
 
 [...]
