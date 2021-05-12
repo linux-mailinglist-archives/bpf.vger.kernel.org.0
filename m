@@ -2,105 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9860937EF52
-	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 01:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590B237EF54
+	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 01:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347513AbhELXEp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 19:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33898 "EHLO
+        id S1347746AbhELXE5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 19:04:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239747AbhELW51 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 May 2021 18:57:27 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD9BC06135A;
-        Wed, 12 May 2021 15:55:09 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id m190so19500718pga.2;
-        Wed, 12 May 2021 15:55:09 -0700 (PDT)
+        with ESMTP id S241455AbhELW6N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 May 2021 18:58:13 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D65C06138A
+        for <bpf@vger.kernel.org>; Wed, 12 May 2021 15:56:06 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id i67so23929794qkc.4
+        for <bpf@vger.kernel.org>; Wed, 12 May 2021 15:56:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=U6Yw/aST6fr+ZgDp8ejO8NenUGdJg/UmhmI/pM7yQvE=;
-        b=OBMINBawBSAXl5ymaYMRHcQ7jBGlJX8tbkO+VDxVWQFkkMqUmGwpUW/EI8uwfC35Af
-         7jrxzoUCEKD+RVwXcId53ScX0ROrj4stQcBLQdt7DOeIcGksJ4RewjD/XsYkc1CxeW9C
-         YMAmVQJC9F67Fm7IUt8bDpgAnKweWXaUCWpDPjG4pGmvYCdOnMQXUSsP7X11psFmjjZ6
-         7iZJgFV8qKb8kXGB6vAqaJP1xwP9ExtIwn5BhDax1NFeDSSVjZXyriZnadAjUDlX8uPN
-         9lsw0ve/FlR/wmzqIPINV1FURx/IR613DoOLN063LoDxA6cJtf0LBLy4TfORhgsqjkty
-         sFhQ==
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8IPURGtEFzuEgj+t7YYPcm0/W4cVT5eQQ0tWFffsI14=;
+        b=HvAIsfV0UlzqOabx+lDWlSq85I/ucVUl4mpIIvnw2GWbuRUnMOdj+6QmmbhFZoNsUF
+         MuO2GTrChTCxEJ2y2R2CTUqhPGI/WFnG275gsyLeJOiwPgFyMJgstAJPZf0Bpj+Hmbhn
+         CDSLVr3ga28zxAa38HgOmS6PvuaBr2N+GUeUNT8p+78vW8eFyNbhbq4bdoTvEWF5dEoI
+         7jyoqeEYudle+D29hhosWhBJzg37f4dAKUHHUQ+kG8E+oZ/w4tjc/QXeA/vQHyUGi2MK
+         X7dgevSUDFYVnL9PeOd+L/9g7cXwvMcwy4zr9g+0gbta1/iZW7aT2eJwBQAD1vSB7KZC
+         gv+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=U6Yw/aST6fr+ZgDp8ejO8NenUGdJg/UmhmI/pM7yQvE=;
-        b=IuoNWs0RlR9EKYhhjVB/RJ6EHXMCh4EftKzHRQyaXb2D7HBL4USwBemZJ+SMHKppbS
-         nEmAkIEx/xBHxGZrfi+bDQdWj9kZl8N6mPK7GJ6/MmOVD81VaY9FC3MUkpMQ9ln+4hd6
-         5MZgBv8pOUNtlcvucEKbFKwHWLfsCLi9G15pk/v02oWsTYTcnqr/1iu7clVahkp8GaMo
-         0h3Uf0AL7vsBvnmBaBt7AD+/XOtazafoW3FV2iMxGZakum2cEb4NMAEUW9GS4ob52D2j
-         7NTcY6Ae+SMyAEt4yYXikyKthT8ScOLdpyMM5kQIwfTKBQo7kPlKnTBBqELxLWH7qq/l
-         KPug==
-X-Gm-Message-State: AOAM531Vu/Xv0EydsZsCiL8pv8cWQIVbMJihKSZX1R5LCcOgV+Pbm4z6
-        AQytvUmWMgNRG0ITBY0ZZx8=
-X-Google-Smtp-Source: ABdhPJx7mjAd5lZDATnx+mICrKQl/DuyOhr4TIbBH8Fq3HOgYrji+F7V3/xAsrmyf0Nhzbl9imJ1bw==
-X-Received: by 2002:a63:4f4a:: with SMTP id p10mr886589pgl.384.1620860109475;
-        Wed, 12 May 2021 15:55:09 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:c6f4])
-        by smtp.gmail.com with ESMTPSA id p11sm642052pjo.19.2021.05.12.15.55.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 May 2021 15:55:08 -0700 (PDT)
-Date:   Wed, 12 May 2021 15:55:04 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
-Cc:     kpsingh@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, revest@chromium.org,
-        jackmanb@chromium.org, yhs@fb.com, songliubraving@fb.com,
-        kafai@fb.com, john.fastabend@gmail.com, joe@cilium.io,
-        quentin@isovalent.com
-Subject: Re: [RFC] [PATCH bpf-next 1/1] bpf: Add a BPF helper for getting the
- cgroup path of current task
-Message-ID: <20210512225504.3kt6ij4xqzbtyej5@ast-mbp.dhcp.thefacebook.com>
-References: <20210512095823.99162-1-yunbo.xufeng@linux.alibaba.com>
- <20210512095823.99162-2-yunbo.xufeng@linux.alibaba.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8IPURGtEFzuEgj+t7YYPcm0/W4cVT5eQQ0tWFffsI14=;
+        b=hxuOjX3ixAg9RMdJ7Af5cW0KLWS91j8suSjfOwoXnxPKVMLsYROS8sSMtkhBdaQ3HF
+         iDO6Tui88VSyJVerAn0rghp5KF+L/tXu8XEMPqVD8XZroH03hK2G2/Fvb1Tsbx/Vgejo
+         0yLc0uvQ4Q5KWwsc7hQpGxIAauVFwAYkokZljFe/XPrUUR956Ja0CdupVb0X4kLi91P1
+         h81YXU/guuoN7EqYgx078AfWLqQ8mb16b6ZWnOv7AJxQ8WuSU6vA0h0Hg3UQ093uVamx
+         Qix+nTWLb8LUGMOMsiQQJah9CrZa2C2x1u4WbdtEQ9w4djDShpLz+mnJ3unF82yoTnmn
+         DqTA==
+X-Gm-Message-State: AOAM5325Zb8byhzMTxWgvyqwlOvlH9EJQ8crgUK7xmgO+VspGWoKAlr1
+        oOytHVnyzHaezSYW+VxrNFaaWg==
+X-Google-Smtp-Source: ABdhPJwSFEe2ZpnWeLqlZVF63LuaqBvBIvDB06fVD4y4d3nkAHVrcmB+1fyGFxvUV3y4dzwBc3hpvg==
+X-Received: by 2002:a05:620a:1223:: with SMTP id v3mr35465656qkj.470.1620860166046;
+        Wed, 12 May 2021 15:56:06 -0700 (PDT)
+Received: from [192.168.1.79] (bras-base-kntaon1617w-grc-25-174-95-97-70.dsl.bell.ca. [174.95.97.70])
+        by smtp.googlemail.com with ESMTPSA id w7sm1007322qtn.91.2021.05.12.15.56.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 May 2021 15:56:05 -0700 (PDT)
+Subject: Re: [RFC Patch bpf-next] bpf: introduce bpf timer
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        Joe Stringer <joe@cilium.io>
+References: <20210402192823.bqwgipmky3xsucs5@ast-mbp>
+ <20210402234500.by3wigegeluy5w7j@ast-mbp>
+ <CAM_iQpWf2aYbY=tKejb=nx7LWBLo1woTp-n4wOLhkUuDCz8u-Q@mail.gmail.com>
+ <20210412230151.763nqvaadrrg77kd@ast-mbp.dhcp.thefacebook.com>
+ <CAM_iQpWePmmpr0RKqCrQ=NPiGrq2Tx9OU9y3e4CTzFjvh5t47w@mail.gmail.com>
+ <CAADnVQLsmULxJYq9rHS4xyg=VAUeexJTh35vTWTVgjeqwX4D6g@mail.gmail.com>
+ <CAM_iQpVtxgZNeqh4_Pqftc3D163JnRvP3AZRuFrYNeyWLgVBVA@mail.gmail.com>
+ <CAADnVQLFehCeQRbwEQ9VM-=Y3V3es2Ze8gFPs6cZHwNH0Ct7vw@mail.gmail.com>
+ <CAM_iQpWDhoY_msU=AowHFq3N3OuQpvxd2ADP_Z+gxBfGduhrPA@mail.gmail.com>
+ <20210427020159.hhgyfkjhzjk3lxgs@ast-mbp.dhcp.thefacebook.com>
+ <CAM_iQpVE4XG7SPAVBmV2UtqUANg3X-1ngY7COYC03NrT6JkZ+g@mail.gmail.com>
+ <CAADnVQK9BgguVorziWgpMktLHuPCgEaKa4fz-KCfhcZtT46teQ@mail.gmail.com>
+ <CAM_iQpWBrxuT=Y3CbhxYpE5a+QSk-O=Vj4euegggXAAKTHRBqw@mail.gmail.com>
+ <d38c7ccf-bc66-9b71-ef96-7fe196ac5c09@mojatatu.com>
+ <CAM_iQpXLcpga=DF+ateBk1jiiCx2mPJW=WHT+j3JrS8kuPS4Zw@mail.gmail.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <59378178-57e2-c278-02cd-d58f9973b638@mojatatu.com>
+Date:   Wed, 12 May 2021 18:56:04 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210512095823.99162-2-yunbo.xufeng@linux.alibaba.com>
+In-Reply-To: <CAM_iQpXLcpga=DF+ateBk1jiiCx2mPJW=WHT+j3JrS8kuPS4Zw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 12, 2021 at 05:58:23PM +0800, Xufeng Zhang wrote:
-> To implement security rules for application containers by utilizing
-> bpf LSM, the container to which the current running task belongs need
-> to be known in bpf context. Think about this scenario: kubernetes
-> schedules a pod into one host, before the application container can run,
-> the security rules for this application need to be loaded into bpf
-> maps firstly, so that LSM bpf programs can make decisions based on
-> this rule maps.
-> 
-> However, there is no effective bpf helper to achieve this goal,
-> especially for cgroup v1. In the above case, the only available information
-> from user side is container-id, and the cgroup path for this container
-> is certain based on container-id, so in order to make a bridge between
-> user side and bpf programs, bpf programs also need to know the current
-> cgroup path of running task.
-...
-> +#ifdef CONFIG_CGROUPS
-> +BPF_CALL_2(bpf_get_current_cpuset_cgroup_path, char *, buf, u32, buf_len)
-> +{
-> +	struct cgroup_subsys_state *css;
-> +	int retval;
-> +
-> +	css = task_get_css(current, cpuset_cgrp_id);
-> +	retval = cgroup_path_ns(css->cgroup, buf, buf_len, &init_cgroup_ns);
-> +	css_put(css);
-> +	if (retval >= buf_len)
-> +		retval = -ENAMETOOLONG;
+On 2021-05-11 5:29 p.m., Cong Wang wrote:
+> On Mon, May 10, 2021 at 1:55 PM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
 
-Manipulating string path to check the hierarchy will be difficult to do
-inside bpf prog. It seems to me this helper will be useful only for
-simplest cgroup setups where there is no additional cgroup nesting
-within containers.
-Have you looked at *ancestor_cgroup_id and *cgroup_id helpers?
-They're a bit more flexible when dealing with hierarchy and
-can be used to achieve the same correlation between kernel and user cgroup ids.
+>>
+>> That cilium PR was a good read of the general issues.
+>> Our use case involves anywhere between 4-16M cached entries.
+>>
+>> Like i mentioned earlier:
+>> we want to periodically, if some condition is met in the
+>> kernel on a map entry, to cleanup, update or send unsolicited
+>> housekeeping events to user space.
+>> Polling in order to achieve this for that many entries is expensive.
+> 
+> Thanks for sharing your use case. As we discussed privately, please
+> also share the performance numbers you have.
+> 
+
+The earlier tests i mentioned to you were in regards to LRU.
+I can share those as well - but seems for what we are discussing
+here testing cost of batch vs nobatch is more important.
+Our LRU tests indicate that it is better to use global as opposed
+to per-CPU LRU. We didnt dig deeper but it seemed gc/alloc - which was
+happening under some lock gets very expensive regardless if you
+are sending sufficient number of flows/sec (1M flows/sec in our
+case).
+We cannot use LRU (for reasons stated earlier). It has to be hash
+table with aging under our jurisdiction. I will post numbers for
+sending the entries to user space for gc.
+
+cheers,
+jamal
+
