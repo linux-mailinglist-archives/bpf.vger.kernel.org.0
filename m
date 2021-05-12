@@ -2,91 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B8137BE5D
-	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 15:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9920537BF6A
+	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 16:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbhELNlf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 09:41:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
+        id S230500AbhELOLK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 10:11:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbhELNle (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 May 2021 09:41:34 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778C3C06174A
-        for <bpf@vger.kernel.org>; Wed, 12 May 2021 06:40:26 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id v5so29612077ljg.12
-        for <bpf@vger.kernel.org>; Wed, 12 May 2021 06:40:26 -0700 (PDT)
+        with ESMTP id S230329AbhELOLJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 May 2021 10:11:09 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44019C06174A
+        for <bpf@vger.kernel.org>; Wed, 12 May 2021 07:10:00 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id g38so30877566ybi.12
+        for <bpf@vger.kernel.org>; Wed, 12 May 2021 07:10:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8LIyfshQU/8yQNnJrZxiYbeec8RPvd1zV0izLRjzdEM=;
-        b=x6UdDyTdjf0smNcVgVNK04/0pGGLotfOjtei+KBIpEvw8WpqbMegKlbbmX2SJycUDE
-         /Z+NQHCnwGfnCCEZNXXJPMnmNCRMlzKIaF0qQHSxyRh+PGBQqHhlK9QvCAq/5S78+7lZ
-         Z0JAp4uGYEdT07vHLlX2LFtil5viaFpoP9r7o=
+        bh=ZMqb9pDlPkxQxt7DO3JSQX2FDPEZa9Tg1uyg9iwkb3w=;
+        b=OV7yj3NQQdF7FlfLdQEdonq710miiphHYoEQVNeNZ/aiBaF4QduqoFFT+PXWILPjkX
+         3lLKurAgxyUo4GVwvrLvBheX30QVU+hvIwSwo0XJOk9i6RCZk2lFYq4cfVn8gyMZcCpj
+         0FRw/iy/24u2PDncsePYn6l0Rj8jfq5YN5I2LIey4wp0seVSlh2HD5eVdLyVPNxYGaz9
+         i4ClNAwgNx1rLyC2Au/6hAjL1MYoriYfm4dd70BhFeDJnXG2VxqDvFekWkaKcfju6DmF
+         TOUNPilaGx7Sod94c+dOHZgvHtrzjtHLOlD6Rx6V+8gI/3vJGfZI4gD2mjvfjOheQiCC
+         qqcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8LIyfshQU/8yQNnJrZxiYbeec8RPvd1zV0izLRjzdEM=;
-        b=SvG4Jmh2CiXp40tGcq2fEJudOkLZNvWbAERD7fZpftn87W8BsqRsBnQqaZse9SksG5
-         zKrTAJB3XRg4pDAG8rKd0axc2jkow446oLZjIDaHv0+J+JqnI/Mwby9Dep5cPbJI1OSM
-         kB25f1DOw7IrpNHsU6wXtOmsBaxVJ72uTGYipNGfoDMKu6WZhKg03vqjeQrh+jfZEu8f
-         gBqOdY/uZxW0v1DylG73lbUuK719zttOhL5qPUCCMC1C85ph4fMR13D+9Hpskh82ZX2m
-         DLXPNx6UHQvbN0mU83fyNYjqYrrRvIywOTHuPAN+NsTL0PTyAmAdW1rp++Tc27byEJg0
-         sw/Q==
-X-Gm-Message-State: AOAM532i3vvcds9yDhqS1FBkcmbPmoRFGjyQDAGo3naKMw3xzva35Np5
-        ypoj1+zc/5ji1gtuO6RsuIrjtNIwtw/TMCZBC5m/4A==
-X-Google-Smtp-Source: ABdhPJxEvZ7tF7fllIIAdJE82qM93y08u9nNpwObsXmV4ToOWKvfujrvvYFVeHRj0WzvNymbue9sPIsj2faUCqSkGHQ=
-X-Received: by 2002:a2e:91cb:: with SMTP id u11mr24602570ljg.83.1620826824452;
- Wed, 12 May 2021 06:40:24 -0700 (PDT)
+        bh=ZMqb9pDlPkxQxt7DO3JSQX2FDPEZa9Tg1uyg9iwkb3w=;
+        b=fGioV/O8VA55FTPh2CaJGFX0u3P4jDNFiiAkVLQnMHo+5AapptfFbLPLHZIXV9CkHE
+         Py7OBFS8HQKSd4/kx0zIZRSFEoRlBbiHw91+9HfXWfC+76ATWzRrCj05+A7jjUM7leOW
+         mdsqOtdcRVSuYKsR8eHWrhUDiKFoEPY+3CKo6GXsgkwr3pNUO2VvclJjclXXxjZAS3PV
+         WYrOsmsep83b7MerHPTCPHGph/d3CA6G5jwdHj1jWWxqZzzcKrT2mfS4Nn5xPYrGzA0s
+         Udp2wG6lldYKSa1fAaLNMFLvS3bR+MjNnHqgvaLUinLwKDrNH5zWoGQAwmAUFJMU5+su
+         sG2w==
+X-Gm-Message-State: AOAM530J+06tdswYm2ODw+s5hzMhvG7H9jo7t/oTb3FtZ3oL+O7qocNR
+        lVHQ+rNSGFNHpCFBbogSK7M/mFbV/NN1kSachBQn4Q==
+X-Google-Smtp-Source: ABdhPJxHpb6RWithEu2vmhMDoaI9be2NUJek9rc1e/+bPZxqSoTLthtREkjsSfQchD2N3oC1udEzZ0LIqBewSkPZWUI=
+X-Received: by 2002:a25:7ac5:: with SMTP id v188mr27529673ybc.132.1620828599169;
+ Wed, 12 May 2021 07:09:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAEf4BzZOmCgmbYDUGA-s5AF6XJFkT1xKinY3Jax3Zm2OLNmguA@mail.gmail.com>
- <20210426223449.5njjmcjpu63chqbb@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzYZX9YJcoragK20cvQvr_tPTWYBQSRh7diKc1KoCtu4Dg@mail.gmail.com>
- <20210427022231.pbgtrdbxpgdx2zrw@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzZOwTp4vQxvCSXaS4-94fz_eZ7Q4n6uQfkAnMQnLRaTbQ@mail.gmail.com>
- <20210428045545.egqvhyulr4ybbad6@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzZo7_r-hsNvJt3w3kyrmmBJj7ghGY8+k4nvKF0KLjma=w@mail.gmail.com>
- <20210504044204.kpt6t5kaomj7oivq@ast-mbp> <CAADnVQ+WV8xZqJfWx8em5Ch8aKA8xcPqR0wT0BdFf9M==W5_FQ@mail.gmail.com>
- <CAEf4BzY2z+oh=N0X26RBLEWw0t9pT7_fN0mWyDqfGcwuK8A-kg@mail.gmail.com> <20210511230505.z3rdnppplk3v3jce@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210511230505.z3rdnppplk3v3jce@ast-mbp.dhcp.thefacebook.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 12 May 2021 14:40:13 +0100
-Message-ID: <CACAyw9-pYpZO81W+vzEGv1+DmfapDjzco0QgZakfE7giisay6Q@mail.gmail.com>
-Subject: Re: bpf libraries and static variables. Was: [PATCH v2 bpf-next 2/6]
- libbpf: rename static variables during linking
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
+ <20210511133118.15012-3-mcroce@linux.microsoft.com> <fa93976a-3460-0f7f-7af4-e78bfe55900a@gmail.com>
+ <YJuk3o6CezbVrT+P@apalos.home>
+In-Reply-To: <YJuk3o6CezbVrT+P@apalos.home>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 12 May 2021 16:09:47 +0200
+Message-ID: <CANn89iLkq0zcbVeRRPGfeb5ZRcnz+e7dR1BCj-RGehNYE1Hzkw@mail.gmail.com>
+Subject: Re: [PATCH net-next v4 2/4] page_pool: Allow drivers to hint on SKB recycling
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 12 May 2021 at 00:05, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, May 12, 2021 at 11:50 AM Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
 >
+> [...]
+> > > Since we added an extra argument on __skb_frag_unref() to handle
+> > > recycling, update the current users of the function with that.
+> >
+> > This part could be done with a preliminary patch, only adding this
+> > extra boolean, this would keep the 'complex' patch smaller.
 >
-> > It's a pretty long email already and there are a lot things to unpack,
-> > and still more nuances to discuss. So I'll put up BPF static linking +
-> > BPF libraries topic for this week's BPF office hours for anyone
-> > interested to join the live discussion. It would hopefully allow
-> > everyone to get more up to speed and onto the same page on this topic.
-> > But still curious WDYT?
+> Sure
 >
-> Sounds great to me. I hope more folks can join the discussion.
+> [...]
+> > >  #include <linux/uaccess.h>
+> > >  #include <trace/events/skb.h>
+> > > @@ -645,6 +648,11 @@ static void skb_free_head(struct sk_buff *skb)
+> > >  {
+> > >     unsigned char *head = skb->head;
+> > >
+> > > +#if IS_BUILTIN(CONFIG_PAGE_POOL)
+> >
+> > Why IS_BUILTIN() ?
+>
+> No reason, we'll replace it with an ifdef
+>
+> >
+> > PAGE_POOL is either y or n
+> >
+> > IS_ENABLED() would look better, since we use IS_BUILTIN() for the cases where a module might be used.
+> >
+> > Or simply #ifdef CONFIG_PAGE_POOL
+> >
+> > > +   if (skb->pp_recycle && page_pool_return_skb_page(head))
+> >
+> > This probably should be attempted only in the (skb->head_frag) case ?
+>
+> I think the extra check makes sense.
 
-I'll be there, but can only stay for the first half hour. Talk to you then!
+What do you mean here ?
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+>
+> >
+> > Also this patch misses pskb_expand_head()
+>
+> I am not sure I am following. Misses what? pskb_expand_head() will either
+> call skb_release_data() or skb_free_head(), which would either recycle or
+> unmap the buffer for us (depending on the page refcnt)
 
-www.cloudflare.com
+ pskb_expand_head() allocates a new skb->head, from slab.
+
+We should clear skb->pp_recycle for consistency of the skb->head_frag
+clearing we perform there.
+
+But then, I now realize you use skb->pp_recycle bit for both skb->head
+and fragments,
+and rely on this PP_SIGNATURE thing (I note that patch 1 changelog
+does not describe why a random page will _not_ have this signature by
+bad luck)
+
+Please document/describe which struct page fields are aliased with
+page->signature ?
+
+Thanks !
