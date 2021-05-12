@@ -2,119 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EACDF37CF1A
-	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 19:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD2D37CF1E
+	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 19:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241568AbhELRIi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 13:08:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40093 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244359AbhELQpq (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 12 May 2021 12:45:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620837876;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1wT9y/+CUxpw2t+GrCY0Qp+nfyUTGHKVjJx14ixlaYw=;
-        b=XzcW+h7FZZt+OkHxpxIsfqmMxRzF+v/BpzsKYx5mnjzowbigVKijhTMLzdcr1fEP9FU8Px
-        AfRmRoLR2+KEF6BHuo3a/8J4sWuxECABjpy3Xlo9+dvNEPb34OSITSeOe+4RBm2/eGf0/k
-        jRIOuT5OLNvi9Zp+Twx9X9fwotrBtOU=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-549-T_6AGsWBOxWE1rKvmJcv-g-1; Wed, 12 May 2021 12:44:33 -0400
-X-MC-Unique: T_6AGsWBOxWE1rKvmJcv-g-1
-Received: by mail-yb1-f199.google.com with SMTP id w80-20020a25df530000b02904f953b5241bso3589710ybg.18
-        for <bpf@vger.kernel.org>; Wed, 12 May 2021 09:44:33 -0700 (PDT)
+        id S236625AbhELRIq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 13:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343570AbhELQxS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 May 2021 12:53:18 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D748C034617
+        for <bpf@vger.kernel.org>; Wed, 12 May 2021 09:47:51 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so81116wmk.1
+        for <bpf@vger.kernel.org>; Wed, 12 May 2021 09:47:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bDKYc6juyaymxPVjFoz4H55W1iGwXmuC+dG6aoLf7OA=;
+        b=oYirGOrNIcNwMpkAHzcPYl0Qh5mhW1k7/1qO+qzT05aC765M6Vsg9BuZtavalWCBO4
+         o0QFswgOc95tPHp89yndOoxlZuw/0PdSI92mJB+WH7RbEltI1ssXo8LnPWsjipjaUxDk
+         zU7GzUCqM+wMOsQSQfe0hfqEA6EwcKRXkr5EipMQ3f2eGD+NfX7ZFw3a50AXswFhUYWK
+         yhuezdiXWJFTiSqM7Rq1vNWZ3erRdlRa6DfSFrGgIEAGl6M4KcuKaH7Yr9vq6BjeuAxR
+         yi8+3GK4WThFGnMUvhKKqAgImphjXzMWiWeHz9bUnHWmnabS4XKRe88d/uG97oFfql2n
+         lr3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1wT9y/+CUxpw2t+GrCY0Qp+nfyUTGHKVjJx14ixlaYw=;
-        b=HAsE+v9Cs/ZCvEq0RtGdfri0UyHtzBuwJ+IPDHkRTfIBQ1X98FZ8OymqbvmCa3M53N
-         yizzkRTRAxHYNZx/QOrnfWra+GD0wmT7f1JF9z1J03NbKn1SG+CW5HDQ5i+HRXDrnVM1
-         iueClM7ZBBIIuA8yJG41bEBko2egSNalpuTFvhl9YhFY8vio/2PhDI1EB/9UVAM9FKCL
-         HOFLizJ/5mOCts3DI8c4dGfCkuJ+LZTGl8ryovVf85i8NgJQByXexnXq0esieb8y618g
-         Y+fbycCIpy336/miVJhWWuRTMVwH0OnMgNqDiWKGC7xoHWTQ8d46cgqThTxceYnew5Vu
-         0bVQ==
-X-Gm-Message-State: AOAM530vJxorhDAEBRZeN3vka5VH96WI7ldrhAtNKblVV7VofgxGvg+R
-        3E1bS2eaT4nghCcTQRIXkeQPVmzeKtj70R4Cfnx4ArCdB/AO75kLRirw3N+gAZjjbPwtKZwPbfu
-        OEU3ehgyG5/80oSDDVCGnyJXwp814
-X-Received: by 2002:a25:6886:: with SMTP id d128mr49884188ybc.227.1620837872714;
-        Wed, 12 May 2021 09:44:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJziai7GI5a1DWeJt0YlXK6570k2N9+Sy1G9tLOxLGUvPGU+rPfrJ8aFA1k+I7x/KZgli19pSgP+PzUsymRQT9M=
-X-Received: by 2002:a25:6886:: with SMTP id d128mr49884143ybc.227.1620837872433;
- Wed, 12 May 2021 09:44:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bDKYc6juyaymxPVjFoz4H55W1iGwXmuC+dG6aoLf7OA=;
+        b=rLfvhWDBKCM4M/SoP5Yd28jmAhv92e8TDEoAQhfNN95QDawiKqCYqSFdnPQ2kc8zPP
+         mZiso7NaN3kjfv0E/NortHsDvNQLalxrDLkU5mFNuDV5Q3FQorAYmjCHDOkMLwsYtHvI
+         sqr9rQSduy4TAMJRLDYXiH4L4oTrLqIdmQE1kb3ZLyoSW8YshrPM7Hj+ut7lycnAtn0l
+         b7JBLZ9grltn5ZGONAAfFR6cnlxb88YZxzt/jnwQZE+v/EFM2wH/N8zmwFlYxMOTFTFd
+         wKmp+p1al7V0pyoNkut15U9Vwdx93bvrpVQmivLFYEsXiew6A/2tGXOGnZLr0xnVrFU5
+         X/ww==
+X-Gm-Message-State: AOAM532NMKXJDe5K8CiGWzFQcOL89nnDDSXDKQePzPkDc8RyMJxnoPpR
+        CYRUaRmNBRVd1d3AV7+qs4YFEw==
+X-Google-Smtp-Source: ABdhPJzDMlMeT7C3maJdPrl7Y+VmQFC0wDQfotNCrVBtjxuloaDP335rfrwZkK1gstgOHCj/mFuZ5w==
+X-Received: by 2002:a7b:c841:: with SMTP id c1mr39895803wml.123.1620838070248;
+        Wed, 12 May 2021 09:47:50 -0700 (PDT)
+Received: from apalos.home ([94.69.77.156])
+        by smtp.gmail.com with ESMTPSA id d9sm210203wrp.47.2021.05.12.09.47.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 May 2021 09:47:49 -0700 (PDT)
+Date:   Wed, 12 May 2021 19:47:44 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>,
+        Networking <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: Re: [PATCH net-next v4 1/4] mm: add a signature in struct page
+Message-ID: <YJwGsPq7M1eA9f+S@apalos.home>
+References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
+ <20210511133118.15012-2-mcroce@linux.microsoft.com>
+ <YJqKfNh6l3yY2daM@casper.infradead.org>
+ <YJqQgYSWH2qan1GS@apalos.home>
+ <YJqSM79sOk1PRFPT@casper.infradead.org>
+ <CAC_iWj+Tw9DzzzVj-F9AwzBN_OJV_HN2miJT4KTBH_Uei_V2ZA@mail.gmail.com>
+ <YJv65eER2qgaP9Ib@casper.infradead.org>
 MIME-Version: 1.0
-References: <20210507114048.138933-1-omosnace@redhat.com> <a8d138a6-1d34-1457-9266-4abeddb6fdba@schaufler-ca.com>
- <CAFqZXNtr1YjzRg7fTm+j=0oZF+7C5xEu5J0mCZynP-dgEzvyUg@mail.gmail.com> <24a61ff1-e415-adf8-17e8-d212364d4b97@schaufler-ca.com>
-In-Reply-To: <24a61ff1-e415-adf8-17e8-d212364d4b97@schaufler-ca.com>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Wed, 12 May 2021 18:44:21 +0200
-Message-ID: <CAFqZXNvB-EyPz1Qz3cCRTr1u1+D+xT-dp7cUxFocYM1AOYSuxw@mail.gmail.com>
-Subject: Re: [PATCH] lockdown,selinux: fix bogus SELinux lockdown permission checks
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, network dev <netdev@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJv65eER2qgaP9Ib@casper.infradead.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 12, 2021 at 6:18 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> On 5/12/2021 6:21 AM, Ondrej Mosnacek wrote:
-> > On Sat, May 8, 2021 at 12:17 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> >> On 5/7/2021 4:40 AM, Ondrej Mosnacek wrote:
-> >>> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
-> >>> lockdown") added an implementation of the locked_down LSM hook to
-> >>> SELinux, with the aim to restrict which domains are allowed to perform
-> >>> operations that would breach lockdown.
-> >>>
-> >>> However, in several places the security_locked_down() hook is called in
-> >>> situations where the current task isn't doing any action that would
-> >>> directly breach lockdown, leading to SELinux checks that are basically
-> >>> bogus.
-> >>>
-> >>> Since in most of these situations converting the callers such that
-> >>> security_locked_down() is called in a context where the current task
-> >>> would be meaningful for SELinux is impossible or very non-trivial (and
-> >>> could lead to TOCTOU issues for the classic Lockdown LSM
-> >>> implementation), fix this by adding a separate hook
-> >>> security_locked_down_globally()
-> >> This is a poor solution to the stated problem. Rather than adding
-> >> a new hook you should add the task as a parameter to the existing hook
-> >> and let the security modules do as they will based on its value.
-> >> If the caller does not have an appropriate task it should pass NULL.
-> >> The lockdown LSM can ignore the task value and SELinux can make its
-> >> own decision based on the task value passed.
-> > The problem with that approach is that all callers would then need to
-> > be updated and I intended to keep the patch small as I'd like it to go
-> > to stable kernels as well.
-> >
-> > But it does seem to be a better long-term solution - would it work for
-> > you (and whichever maintainer would be taking the patch(es)) if I just
-> > added another patch that refactors it to use the task parameter?
->
-> I can't figure out what you're suggesting. Are you saying that you
-> want to add a new hook *and* add the task parameter?
+On Wed, May 12, 2021 at 04:57:25PM +0100, Matthew Wilcox wrote:
+> On Tue, May 11, 2021 at 05:25:36PM +0300, Ilias Apalodimas wrote:
+> > Nope not at all, either would work. we'll switch to that
+> 
+> You'll need something like this because of the current use of
+> page->index to mean "pfmemalloc".
+> 
 
-No, just to keep this patch as-is (and let it go to stable in this
-form) and post another (non-stable) patch on top of it that undoes the
-new hook and re-implements the fix using your suggestion. (Yeah, it'll
-look weird, but I'm not sure how better to handle such situation - I'm
-open to doing it whatever different way the maintainers prefer.)
+Yes, I was somehow under the impression that was already merged.
+We'll include it in the series, with your Co-developed-by tag.
 
--- 
-Ondrej Mosnacek
-Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
+Thanks
+/Ilias
 
+> From ecd6d912056a21bbe55d997c01f96b0b8b9fbc31 Mon Sep 17 00:00:00 2001
+> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> Date: Fri, 16 Apr 2021 18:12:33 -0400
+> Subject: [PATCH] mm: Indicate pfmemalloc pages in compound_head
+> 
+> The net page_pool wants to use a magic value to identify page pool pages.
+> The best place to put it is in the first word where it can be clearly a
+> non-pointer value.  That means shifting dma_addr up to alias with ->index,
+> which means we need to find another way to indicate page_is_pfmemalloc().
+> Since page_pool doesn't want to set its magic value on pages which are
+> pfmemalloc, we can use bit 1 of compound_head to indicate that the page
+> came from the memory reserves.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  include/linux/mm.h       | 12 +++++++-----
+>  include/linux/mm_types.h |  7 +++----
+>  2 files changed, 10 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index bd21864449bf..4f9b2007efad 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1670,10 +1670,12 @@ struct address_space *page_mapping(struct page *page);
+>  static inline bool page_is_pfmemalloc(const struct page *page)
+>  {
+>  	/*
+> -	 * Page index cannot be this large so this must be
+> -	 * a pfmemalloc page.
+> +	 * This is not a tail page; compound_head of a head page is unused
+> +	 * at return from the page allocator, and will be overwritten
+> +	 * by callers who do not care whether the page came from the
+> +	 * reserves.
+>  	 */
+> -	return page->index == -1UL;
+> +	return page->compound_head & 2;
+>  }
+>  
+>  /*
+> @@ -1682,12 +1684,12 @@ static inline bool page_is_pfmemalloc(const struct page *page)
+>   */
+>  static inline void set_page_pfmemalloc(struct page *page)
+>  {
+> -	page->index = -1UL;
+> +	page->compound_head = 2;
+>  }
+>  
+>  static inline void clear_page_pfmemalloc(struct page *page)
+>  {
+> -	page->index = 0;
+> +	page->compound_head = 0;
+>  }
+>  
+>  /*
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 5aacc1c10a45..1352e278939b 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -96,10 +96,9 @@ struct page {
+>  			unsigned long private;
+>  		};
+>  		struct {	/* page_pool used by netstack */
+> -			/**
+> -			 * @dma_addr: might require a 64-bit value on
+> -			 * 32-bit architectures.
+> -			 */
+> +			unsigned long pp_magic;
+> +			struct page_pool *pp;
+> +			unsigned long _pp_mapping_pad;
+>  			unsigned long dma_addr[2];
+>  		};
+>  		struct {	/* slab, slob and slub */
+> -- 
+> 2.30.2
+> 
