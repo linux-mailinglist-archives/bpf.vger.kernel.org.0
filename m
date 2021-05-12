@@ -2,435 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D87C37B4D7
-	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 06:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FBC037B4DA
+	for <lists+bpf@lfdr.de>; Wed, 12 May 2021 06:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhELESd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 00:18:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhELESc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 May 2021 00:18:32 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72A5C061574
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 21:17:24 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 15so29184031ybc.0
-        for <bpf@vger.kernel.org>; Tue, 11 May 2021 21:17:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nfnhfncKREMhTBaSORYjz8LcmwpBU3YZsB+kL4446qo=;
-        b=aWFkqMUNpTImJpZEeIpvSBtPu2FMiUUXgHnKS38izM/U01iaVGRPKsknZQG8fFRXIF
-         jaWJ1Zjktxc0QpaRiRXrvUpX7lJ5KvgUiJaSbj6CQGreKcqBnk+8jtTIQdjWK593658O
-         2PNb71iOT0ScvuPAyOVRJ4AAhWrdaPxGWCEMXn7rbZbltw3oh88C+zH/yU+fUzWf846z
-         4UQDQqsh3fE5NDzFxwLRpxMcevjW9XX3f/Ib8Do7gvm2ZhRyGHDdy2oULJkc/Zabg1Lz
-         Jw738xrVS7eUdfJJuIoopKXHOqL/PfAJsbRtVR5pnqWY6ju526v2GXsVXftPMYwIBbK9
-         H/Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nfnhfncKREMhTBaSORYjz8LcmwpBU3YZsB+kL4446qo=;
-        b=aLqVPykog0+JGt6N7DxurahjJM/Eu9pOSHCTWtUuFTz2Jkb9zHamihHjAx5uCcDdL+
-         cRf+U/YGYzJIPJhJDC0DRgv42giaqvG060uOwvs0L4V4C5qJCaaNXgj+mDRfelUqK6O2
-         WAj7Zb0RMgzT7gAPf5n6st41gR3BwNRuhkUvUQa7Wughm4tb4oGHZ3GZ8133Yt3Qs0+Q
-         c5RSoehXEagifDqi8P3zjXD+jpYV/tRTqxhvxG1ZcaSKTDcVCE/UobvRSKIWcVhqU+GU
-         CdlF/SUAstBbIs6fFomimq0PoHNhwN7nBI0dimPv8i7chAjO8aupfdVueL98hRt0ncmr
-         YQ1A==
-X-Gm-Message-State: AOAM53116hdgWEhV+DK1AFsCXtwo8W+NUKAnEIpvd2JgIkyUA3I0WjRX
-        SVfFpIyNlJ1yuqAJpF4Os+Zw1lvZzMqQ2HwxtSE=
-X-Google-Smtp-Source: ABdhPJz5uWAcwBgI0omtkDe34lmrRGJu6vd4stUQwh0zVKGG16FaLX7kA14n1GEpdqPrdY+gnokYRfL6eT8XbiAbsG4=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr44912646ybu.403.1620793044083;
- Tue, 11 May 2021 21:17:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210508034837.64585-1-alexei.starovoitov@gmail.com> <20210508034837.64585-19-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210508034837.64585-19-alexei.starovoitov@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 11 May 2021 21:17:12 -0700
-Message-ID: <CAEf4BzZYZ9i+pJ_aBzkhCLX9fVjUbOF_1=xvykk93TL5yQZieA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 18/22] bpftool: Use syscall/loader program in
- "prog load" and "gen skeleton" command.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        id S229850AbhELETM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 00:19:12 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22364 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229626AbhELETM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 12 May 2021 00:19:12 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14C4GM3x011607;
+        Tue, 11 May 2021 21:17:51 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=FwsVcxIaG68dNDOjmShWnH458cGkcfrtRzNkFNDrP5U=;
+ b=TCAwzGd2HI5nH8SQIFBtLfvMy0gDFvyqaIM1NwMP/k2VUvJuYDBEWER8tgsxglH4sdxf
+ aqOq80RP0TxyOmlne0NnDE03PCykNQoChFaulIo0i9qkYnTvWk/lVfUBhtWhH1gpLj7Y
+ mlrR3twAcprIHWIvBdce+ADlRU+TfMn7GLs= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 38fajvs7x6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 11 May 2021 21:17:51 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 11 May 2021 21:17:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QTi/85Q1biysVtX55qteWkUyYKB8CSQv7claBzn5u4WGziamxiRd0oFyMxf4qRDrUqP+u4/cQvFdgeYwfIwfKQUWoqpCCrsyYmPzoW0JgHEtR1weEnNQJ2F8MHGmlTmUdpuy2SlSp7JqBtkj/o+8JyIY7UKY/cx9WoLcYdQsig1qgc/vUmqFwLLRkKScpVJZGt4JiwYXTRiw95xRw1XtruJVt06DM4/l91Q9+QVz2Of9Btw8BpxjnWfgJmVkpBOiJZoiy1TF/pt/2hJodHbanVaNnLEqWTCYIhMmDEqEysi0OS/Nqr8EGar/AEFEbTedxJ+9AJ3pLkK/JwbjmPwh2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FwsVcxIaG68dNDOjmShWnH458cGkcfrtRzNkFNDrP5U=;
+ b=Jt5/PVSRMrAzjGLG5hiUL/qV/+vD2yxLnGtWz4Vg9gCMjxzIhWF3hO8E+odEImTsDEZsF77YSL8OjhgNdkhS6tJunUvsJvTSsJipXs2hFi42t2YF/qtN192dadg5MccxvsjKJcweF8bySxdYtmDYRv9tcfJb6zcnp4il+EtwdwX50kXg3POv+tGd+D4bT0aMxMVyDi+LaEIQmcuX/lNBxc+rp7QZ1TagxaiGNYt0QDHFAShUf/7Uq4oERFb3kTSsOl8DkIXOlxYr1LZaQC6bnu5BqvAr2YvbwRc28HfuhY0R/LMm9fJYDzErqoiv//bnfNJK0DPY90x5mk6rn8UZ6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from BN8PR15MB3282.namprd15.prod.outlook.com (2603:10b6:408:a8::32)
+ by BN6PR15MB1587.namprd15.prod.outlook.com (2603:10b6:404:c6::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.29; Wed, 12 May
+ 2021 04:17:47 +0000
+Received: from BN8PR15MB3282.namprd15.prod.outlook.com
+ ([fe80::d427:8d86:1023:b6b5]) by BN8PR15MB3282.namprd15.prod.outlook.com
+ ([fe80::d427:8d86:1023:b6b5%6]) with mapi id 15.20.4108.032; Wed, 12 May 2021
+ 04:17:47 +0000
+Subject: Re: [PATCH v4 bpf-next 15/22] libbpf: Use fd_array only with
+ gen_loader.
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         john fastabend <john.fastabend@gmail.com>,
         bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+References: <20210508034837.64585-1-alexei.starovoitov@gmail.com>
+ <20210508034837.64585-16-alexei.starovoitov@gmail.com>
+ <CAEf4BzaBS4hhiSvsLcdZvSQv598+ODAyXstLcFgEhzEmzmj2yw@mail.gmail.com>
+From:   Alexei Starovoitov <ast@fb.com>
+Message-ID: <8122c5c0-1429-9f2d-c73a-9d8ada4f318e@fb.com>
+Date:   Tue, 11 May 2021 21:17:41 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
+In-Reply-To: <CAEf4BzaBS4hhiSvsLcdZvSQv598+ODAyXstLcFgEhzEmzmj2yw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:aafc]
+X-ClientProxiedBy: CO2PR04CA0168.namprd04.prod.outlook.com
+ (2603:10b6:104:4::22) To BN8PR15MB3282.namprd15.prod.outlook.com
+ (2603:10b6:408:a8::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21d6::1acd] (2620:10d:c090:400::5:aafc) by CO2PR04CA0168.namprd04.prod.outlook.com (2603:10b6:104:4::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Wed, 12 May 2021 04:17:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ead23442-e535-4ffd-5eee-08d914fce602
+X-MS-TrafficTypeDiagnostic: BN6PR15MB1587:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN6PR15MB15879DCDC23A7AB031974E80D7529@BN6PR15MB1587.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CPDT0hVTJaX457RGE/QgLFYxZaoJ3RqqxNLK7Jt/ILJmHyVmi/FtgEtRKJ3Ohulix+IgplilsMV8PhZQuwV03OnNbljbXO1W84j5jFLpioypB7fBZi2CjjbJQwzd0GUvyU1CWW0fjOS3CslfKSwebIkSWmePC97Z8ZKxjxYQ9jsTemlveuNmifyzqD+hfFP/E8NUyzQjURlLxQx0qCJBN68Oy4XtK2T5qzeC7PGLsNP9hZvPKQLTAZt4bnL5sx2HoVnFzE5cpZF4DpKhS0x4OFQPfjM2J6rhLsJR4GP1bukX43WQ483kzRlzu2BGyODWXOqNTGmK7iO0IgBywoL/xy24GEfk530siqMq80KHk2naUM8LNcyVJW7YliIQ8b/hbVNLVZVdrWGkqEYpMdldkcAkGgulF8n0vSQ8OyWw/bwP0kYnzkuiyCZfotdk+8UZD+nCrtS52TDXz6Aezarahdv0lQnfboKahBYirOJWC7r9jp37ikmWu//uYqZ7No7S8jfHQK0RGY2J0sPg3Cygs38pnrJ73/rZLdFLn7tTcTeQ+puk3QVWo9eTe7TGQtsV4z/pZK7r9ayiQ/XYNgopJM7m9DuBI5GItJxTnn+zKFpVijvk/nknmYvKRpo6R3BBCrlmdgO9nS/Yaf5Nfh1a0B4XvJ6ctPEXh98WUFeqVmH7LEk2LxWwV7bWP21lpsFE
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR15MB3282.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(39860400002)(376002)(396003)(8676002)(38100700002)(31696002)(66946007)(53546011)(66476007)(4326008)(86362001)(36756003)(316002)(8936002)(186003)(16526019)(2616005)(31686004)(6486002)(6666004)(54906003)(83380400001)(110136005)(2906002)(5660300002)(478600001)(52116002)(66556008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TzJhb1hwZnNPS0x1YklEN292WUwrb2FpemV0WU9XRDJkYnFUemNyTzJHSEhz?=
+ =?utf-8?B?eWIxeU9ZOE1uL291NjY4YndjbkVHd1hnTWZNdWNCeGQzREl4TFBSWkVyRk15?=
+ =?utf-8?B?cXdiUVlRQXB2djdwMWdIcXdSei9WT2dSTVVrUzVZd3g4RlpPa2tyenJFdXFK?=
+ =?utf-8?B?SW5nNkUvamczQUhFanlrTHJGckJ0eVNZL1RSN2MvYW5qeFk0OXdHTGx1YlhL?=
+ =?utf-8?B?eHVYMmFONTc1a0ozT2R0amJjYUh3MUlycG03V0Zxc1hhQXM4L0J3RFNrb2ls?=
+ =?utf-8?B?bCs0aTU4MGZQZlFBTS9idHlYbzNWTmpqWDJ5RzVlajlYUk1jLzVMVnZXOEx0?=
+ =?utf-8?B?anpWY0RXY0hTK2FieXdMYlErOWN0YmQ1MEpnaTNHcGZGRklSVUdlUU1Nditr?=
+ =?utf-8?B?djVHeTNuaTkzQjN2azk1RDJ5THc4U2lMZ3ZyUVlneU5OT0lXck1WOFVXeFdQ?=
+ =?utf-8?B?empucHhUclNBa2srYVVyNjVsVzdDbVMyMVNBOWNnRnlsdjhDeG1kWHQ1NW1H?=
+ =?utf-8?B?R2lVRjBYQVpveTFJUktKbk5tYmJSaEhVUTA5ajNscDNCeXorWExOV0RhbWZF?=
+ =?utf-8?B?aWlMNnI5OVRFbS9nOGM1ZUVhQXlDcHRLdnNKQWpSMCtJSTNmbnRYOUYzenh6?=
+ =?utf-8?B?cW8yWHZONjlVRmY5VnplbjhlajlUT2MxckF5eG40bm1WWXlaR1k4NVZPcWNL?=
+ =?utf-8?B?VG1hbjhraUZ1MmREb01UaUlqaGVUS0JlNENmc2NxVnExc1JraWlwWE4yWlBw?=
+ =?utf-8?B?UGxNWmZwODQxVURKMEdQWnRCOXBOKzZHQTVpN2h3TUIwWlJiYjRteldGaXBG?=
+ =?utf-8?B?ajdjNlF5N2dhMkJiV0p3Qnp3U2tOYkpvUEFDZU1zckV2N3hKRjZNMUM4ZGFZ?=
+ =?utf-8?B?VEVPYklGd2lzNVpKL0xHaWlrQllSdFlZeWtTM1RVTDF0OXljYnp1MkRPcEZY?=
+ =?utf-8?B?aFdhZzdyWnRRNHhiRGJjbVJ4ZW0xMDNrUGVURWhwMlptU2Q3Nk5MNy9VTTly?=
+ =?utf-8?B?aHJSYmoyazhteWdNK1pWeDZscUo1TlJ2NUo4WlpvVjlLWHg3TzRwclFHOWlU?=
+ =?utf-8?B?RlVSVnNhMUpxK3ZDR0lONTVlSjFtaTl5QzJlQ3hiUUF6V2N1VEZwdDc3Qk5k?=
+ =?utf-8?B?SWgydUtlKzMxcVV4dGYzSzdMd0ROOFpWc2wrWGJoMkRiVlBuc0F2a2o3OFhR?=
+ =?utf-8?B?K05ad1pqeFo5OGVkeXdQSjBlaE1leGNxRE1YUS9UUzhUZWVmYXRlUWZlSitP?=
+ =?utf-8?B?Q1EralVCRVpMZHY0dnlaZ2Z1a0l6b2N3VlNYV2lYenRIZWVQVHJJOVVsUmFJ?=
+ =?utf-8?B?YVR5U0xjRzNnNnpHM1BjZXVrUnJLb2pxbU5EU3k2T3l6aTNSUmkrRzhXNWxL?=
+ =?utf-8?B?dGUvUWNNU2RpcVhHLzBSL0lLaXZKeVJ0WXRNUnZ3c3RuWjlTT24xUXVVYlAv?=
+ =?utf-8?B?a0x3VGlaQlBqMmsyaXRTQTdIaFlwV1oxQUNpYXBLd1BOZW85UE5TcC9qWER4?=
+ =?utf-8?B?K21qUUpqMU1OSUErdUNrZU9YaW15a0p3NmYxdDBBSEE1QkhWbFRSSXJzd0Zj?=
+ =?utf-8?B?UXBkc2NSQmgzQ1Z2NFp6eWpkSUdrbnhFZEhnU1V5bUVXK2M0N3Ztd3pqLzBG?=
+ =?utf-8?B?VVJoa3BDMDZ6REZIckVFWGJMTUN0V3JrRytNd09JRkZNR2dSMU1PZWpxL2tj?=
+ =?utf-8?B?dDhlUjJpRitWK0tIcWxtb3VLRDdEWVNpSUtMWWZCQnBrakRlWG14ZEVUYjF5?=
+ =?utf-8?B?Wk83VTk2MkZ5ckc0MS9tbGErREVaWndLK3huelJ2dlcyTzBENlVacnJkR2dJ?=
+ =?utf-8?Q?NQlkNT0B7fFTNq12bYamOEKsXO761jYM2HEqc=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ead23442-e535-4ffd-5eee-08d914fce602
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR15MB3282.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 May 2021 04:17:47.4414
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xLM1bJUs3RWIszRigiix7/Xpmk4tuJea3iNAJmZZuIiDz45txpROCSOdXVAKFAVv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR15MB1587
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: uJ0CpXvJIY9TPpHlRFXDtCHd0LxAagDN
+X-Proofpoint-GUID: uJ0CpXvJIY9TPpHlRFXDtCHd0LxAagDN
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-12_01:2021-05-11,2021-05-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 spamscore=0
+ adultscore=0 priorityscore=1501 lowpriorityscore=0 malwarescore=0
+ suspectscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105120030
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 7, 2021 at 8:49 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> Add -L flag to bpftool to use libbpf gen_trace facility and syscall/loader program
-> for skeleton generation and program loading.
->
-> "bpftool gen skeleton -L" command will generate a "light skeleton" or "loader skeleton"
-> that is similar to existing skeleton, but has one major difference:
-> $ bpftool gen skeleton lsm.o > lsm.skel.h
-> $ bpftool gen skeleton -L lsm.o > lsm.lskel.h
-> $ diff lsm.skel.h lsm.lskel.h
-> @@ -5,34 +4,34 @@
->  #define __LSM_SKEL_H__
->
->  #include <stdlib.h>
-> -#include <bpf/libbpf.h>
-> +#include <bpf/bpf.h>
->
-> The light skeleton does not use majority of libbpf infrastructure.
-> It doesn't need libelf. It doesn't parse .o file.
-> It only needs few sys_bpf wrappers. All of them are in bpf/bpf.h file.
-> In future libbpf/bpf.c can be inlined into bpf.h, so not even libbpf.a would be
-> needed to work with light skeleton.
->
-> "bpftool prog load -L file.o" command is introduced for debugging of syscall/loader
-> program generation. Just like the same command without -L it will try to load
-> the programs from file.o into the kernel. It won't even try to pin them.
->
-> "bpftool prog load -L -d file.o" command will provide additional debug messages
-> on how syscall/loader program was generated.
-> Also the execution of syscall/loader program will use bpf_trace_printk() for
-> each step of loading BTF, creating maps, and loading programs.
-> The user can do "cat /.../trace_pipe" for further debug.
->
-> An example of fexit_sleep.lskel.h generated from progs/fexit_sleep.c:
-> struct fexit_sleep {
->         struct bpf_loader_ctx ctx;
->         struct {
->                 struct bpf_map_desc bss;
->         } maps;
->         struct {
->                 struct bpf_prog_desc nanosleep_fentry;
->                 struct bpf_prog_desc nanosleep_fexit;
->         } progs;
->         struct {
->                 int nanosleep_fentry_fd;
->                 int nanosleep_fexit_fd;
->         } links;
->         struct fexit_sleep__bss {
->                 int pid;
->                 int fentry_cnt;
->                 int fexit_cnt;
->         } *bss;
-> };
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
+On 5/11/21 4:24 PM, Andrii Nakryiko wrote:
+> On Fri, May 7, 2021 at 8:49 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> From: Alexei Starovoitov <ast@kernel.org>
+>>
+>> Rely on fd_array kernel feature only to generate loader program,
+>> since it's mandatory for it.
+>> Avoid using fd_array by default to preserve test coverage
+>> for old style map_fd patching.
+>>
+>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+>> ---
+> 
+> As mentioned in the previous patch, this is almost a complete undo of
+> one of the earlier patches, but it also leaves FEAT_FD_IDX and
+> probe_kern_fd_idx() around. Can you please try to combine them?
 
-After you applied my patchset removing static variables from BPF
-skeleton, trace_printk selftests doesn't compile anymore, you'll need
-to move out fmt outside of the function and make it non-static. With
-that everything compiles locally.
-
-But CI reports different errors still, not sure what's going on there, see [0].
-
-https://travis-ci.com/github/kernel-patches/bpf/builds/225675119
-
-My main complaint for this patch is that the generated .lskel.h header
-file looks quite sloppy and doesn't follow kernel code style. It would
-be good to try to clean this up a bit.
-
-E.g., we don't write
-
-        if (skel->maps.ringbuf.map_fd > 0) close(skel->maps.ringbuf.map_fd);
-
-but instead
-
-        if (skel->maps.ringbuf.map_fd > 0)
-                close(skel->maps.ringbuf.map_fd);
-
-And instead of
-
-        int ret = 0;
-        ret = ret < 0 ? ret : test_ringbuf__test_ringbuf__attach(skel);
-
-we'd have an empty line
-
-        int ret = 0;
-
-        ret = ret < 0 ? ret : test_ringbuf__test_ringbuf__attach(skel);
-
-It's auto-generated code, of course, but people might want/need to
-read it, so would be good to have it look clean.
-
->  tools/bpf/bpftool/Makefile        |   2 +-
->  tools/bpf/bpftool/gen.c           | 362 ++++++++++++++++++++++++++++--
->  tools/bpf/bpftool/main.c          |   7 +-
->  tools/bpf/bpftool/main.h          |   1 +
->  tools/bpf/bpftool/prog.c          | 104 +++++++++
->  tools/bpf/bpftool/xlated_dumper.c |   3 +
->  6 files changed, 456 insertions(+), 23 deletions(-)
->
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index b3073ae84018..d16d289ade7a 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -136,7 +136,7 @@ endif
->
->  BPFTOOL_BOOTSTRAP := $(BOOTSTRAP_OUTPUT)bpftool
->
-> -BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o)
-> +BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o xlated_dumper.o btf_dumper.o) $(OUTPUT)disasm.o
->  OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
->
->  VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)                           \
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index 31ade77f5ef8..7a3e343f31db 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -18,6 +18,7 @@
->  #include <sys/stat.h>
->  #include <sys/mman.h>
->  #include <bpf/btf.h>
-> +#include <bpf/bpf_gen_internal.h>
->
->  #include "json_writer.h"
->  #include "main.h"
-> @@ -268,6 +269,303 @@ static void codegen(const char *template, ...)
->         free(s);
->  }
->
-> +static void print_hex(const char *obj_data, int file_sz)
-
-nit: obj_data -> data, file_sz -> data_sz (it's multi-purpose now)
-
-> +{
-> +       int i, len;
-> +
-> +       for (i = 0, len = 0; i < file_sz; i++) {
-> +               int w = obj_data[i] ? 4 : 2;
-> +
-> +               len += w;
-> +               if (len > 78) {
-> +                       printf("\\\n");
-> +                       len = w;
-> +               }
-> +               if (!obj_data[i])
-> +                       printf("\\0");
-> +               else
-> +                       printf("\\x%02x", (unsigned char)obj_data[i]);
-> +       }
-> +}
-> +
-> +static size_t bpf_map_mmap_sz(const struct bpf_map *map)
-> +{
-> +       long page_sz = sysconf(_SC_PAGE_SIZE);
-> +       size_t map_sz;
-> +
-> +       map_sz = (size_t)roundup(bpf_map__value_size(map), 8) * bpf_map__max_entries(map);
-> +       map_sz = roundup(map_sz, page_sz);
-> +       return map_sz;
-> +}
-> +
-> +static void codegen_attach_detach(struct bpf_object *obj, const char *obj_name)
-> +{
-> +       struct bpf_program *prog;
-> +
-> +       bpf_object__for_each_program(prog, obj) {
-> +               codegen("\
-> +                       \n\
-> +                       \n\
-> +                       static inline int                                           \n\
-> +                       %1$s__%2$s__attach(struct %1$s *skel)                       \n\
-> +                       {                                                           \n\
-> +                               int fd = bpf_raw_tracepoint_open(                   \
-> +                       ", obj_name, bpf_program__name(prog));
-> +
-> +               switch (bpf_program__get_type(prog)) {
-> +               case BPF_PROG_TYPE_RAW_TRACEPOINT:
-> +                       putchar('"');
-> +                       fputs(strchr(bpf_program__section_name(prog), '/') + 1, stdout);
-> +                       putchar('"');
-
-we use codegen() and printf(), let's not add fputs() to the mix, it's
-doesn't add much and in this case, I think printf is even a bit easier
-to follow:
-
-tp_name = strchr(bpf_program__section_name(prog), '/') + 1;
-printf("\"%s\", tp_name);
-
-But also it seems like this code assumes that every program type can
-be attached with bpf_raw_tracepoint_open() which is definitely not the
-case for a lot of programs. When in the future you support, say, BPF
-iterator, you'll do that with bpf_link_create(), so not sure why you
-chose this code pattern instead of something like:
-
-printf("\tint prog_fd = skel->progs.%s.prog_fd;\n", bpf_program__name(prog));
-
-switch (bpf_program__get_type(prog)) {
-case BPF_PROG_TYPE_RAW_TRACEPOINT:
-    tp_name = ...;
-    printf("\tint fd = bpf_raw_tracepoint_open(\"%s\", prog_fd);\n", tp_name);
-    break;
-case BPF_PROG_TYPE_TRACING:
-    printf("\tint fd = bpf_raw_tracepoint_open(NULL, prog_fd);\n");
-    break;
-default:
-    printf("int fd = 0; /* auto-attach not supported */\n");
-    break;
-}
-
-Then you have a common if (fd > 0) /* set fd */; return fd; piece of code.
-
-This is much clearer to follow, it's more easily extensible and it
-doesn't pretend that every program is a fentry/fexit or raw_tp and
-fails to auto-attach, rather just skipping auto-attaching.
-
-> +                       break;
-> +               default:
-> +                       fputs("NULL", stdout);
-> +                       break;
-> +               }
-> +               codegen("\
-> +                       \n\
-> +                       , skel->progs.%1$s.prog_fd);                                \n\
-> +                               if (fd > 0) skel->links.%1$s_fd = fd;               \n\
-> +                               return fd;                                          \n\
-> +                       }                                                           \n\
-> +                       ", bpf_program__name(prog));
-> +       }
-> +
-> +       codegen("\
-> +               \n\
-> +                                                                           \n\
-> +               static inline int                                           \n\
-> +               %1$s__attach(struct %1$s *skel)                             \n\
-> +               {                                                           \n\
-> +                       int ret = 0;                                        \n\
-
-codegen empty line here, as one example of what I've talked about above
-
-> +               ", obj_name);
-> +
-> +       bpf_object__for_each_program(prog, obj) {
-> +               codegen("\
-> +                       \n\
-> +                               ret = ret < 0 ? ret : %1$s__%2$s__attach(skel);   \n\
-> +                       ", obj_name, bpf_program__name(prog));
-> +       }
-> +
-> +       codegen("\
-> +               \n\
-> +                       return ret < 0 ? ret : 0;                           \n\
-> +               }                                                           \n\
-> +                                                                           \n\
-> +               static inline void                                          \n\
-> +               %1$s__detach(struct %1$s *skel)                             \n\
-> +               {                                                           \n\
-> +               ", obj_name);
-> +       bpf_object__for_each_program(prog, obj) {
-> +               printf("\tif (skel->links.%1$s_fd > 0) close(skel->links.%1$s_fd);\n",
-> +                      bpf_program__name(prog));
-
-you use bpf_program__name(prog) in so many place that it will be much
-simpler if you have a dedicated variable for it
-
-> +       }
-> +       codegen("\
-> +               \n\
-> +               }                                                           \n\
-> +               ");
-> +}
-> +
-> +static void codegen_destroy(struct bpf_object *obj, const char *obj_name)
-> +{
-> +       struct bpf_program *prog;
-> +       struct bpf_map *map;
-> +
-> +       codegen("\
-> +               \n\
-> +               static void                                                 \n\
-> +               %1$s__destroy(struct %1$s *skel)                            \n\
-> +               {                                                           \n\
-> +                       if (!skel)                                          \n\
-> +                               return;                                     \n\
-> +                       %1$s__detach(skel);                                 \n\
-> +               ",
-> +               obj_name);
-
-please use some separator empty lines between logical blocks/steps
-(here and in many other places), it's quite hard to follow these dense
-blocks of code
-
-> +       bpf_object__for_each_program(prog, obj) {
-> +               printf("\tif (skel->progs.%1$s.prog_fd > 0) close(skel->progs.%1$s.prog_fd);\n",
-> +                      bpf_program__name(prog));
-> +       }
-
-[...]
-
-> +               if (!bpf_map__is_internal(map) ||
-> +                   !(bpf_map__def(map)->map_flags & BPF_F_MMAPABLE))
-> +                       continue;
-> +
-> +               printf("\tskel->%1$s =\n"
-> +                      "\t\tmmap(NULL, %2$zd, PROT_READ | PROT_WRITE,\n"
-> +                      "\t\t\tMAP_SHARED | MAP_ANONYMOUS, -1, 0);\n"
-> +                      "\tmemcpy(skel->%1$s, (void *)\"",
-
-add \\ after (void *)" so that long hex dump starts on a new line?
-
-> +                      ident, bpf_map_mmap_sz(map));
-
-this printf is also very unreadable. If you insist on doing this as
-multi-line code, I think it deserves codegen, but I'd probably
-generate mmap() invocation on a single line
-
-But also, mmap() can fail, it would be good to handle this instead of
-having (void *)-1 happily stored and getting sigsegv on memcpy().
-
-> +               bpf_map__get_initial_value(map, &mmap_data, &mmap_size);
-> +               print_hex(mmap_data, mmap_size);
-> +               printf("\", %2$zd);\n"
-> +                      "\tskel->maps.%1$s.initial_value = (__u64)(long)skel->%1$s;\n",
-> +                      ident, mmap_size);
-> +       }
-
-[...]
-
-> +
-> +static int try_loader(struct gen_loader_opts *gen)
-> +{
-> +       struct bpf_load_and_run_opts opts = {};
-> +       struct bpf_loader_ctx *ctx;
-> +       int ctx_sz = sizeof(*ctx) + 64 * max(sizeof(struct bpf_map_desc), sizeof(struct bpf_prog_desc));
-
-this is quite a long line...
-
-> +       int log_buf_sz = (1u << 24) - 1;
-> +       int err, fds_before, fd_delta;
-> +       char *log_buf;
-> +
-
-[...]
-
-> +static int do_loader(int argc, char **argv)
-> +{
-> +       DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts);
-> +       DECLARE_LIBBPF_OPTS(gen_loader_opts, gen);
-> +       struct bpf_object_load_attr load_attr = {};
-> +       struct bpf_object *obj;
-> +       const char *file;
-> +       int err = 0;
-> +
-> +       if (!REQ_ARGS(1))
-> +               return -1;
-> +       file = GET_ARG();
-> +
-> +       obj = bpf_object__open_file(file, &open_opts);
-> +       if (IS_ERR_OR_NULL(obj)) {
-
-please use libbpf_get_error() instead of IS_ERR_OR_NULL()
-
-
-> +               p_err("failed to open object file");
-> +               goto err_close_obj;
-> +       }
-> +
-
-[...]
+I cannot combine 9 and this 15, because then 14 will be broken.
+I'd have to combine all 3, but then the fd_idx won't get its own
+test coverage.
+With patches 1 through 9 I've tested the whole test_progs
+and that gives the confidence that kernel and libbpf side
+are doing it correctly.
+Then with the rest of patches and without 15 I test everything again.
+Such testing approach covers lskel and fd_idx together.
+I think this patch 15 is rather unnecessary. It's here only because
+you didn't like patch 9.
+I think patch 9 is a good default for libbpf to take.
+Eventually llvm can emit .o with fd_idx style.
+The libbpf would just call probe_kern_fd_idx() and won't need
+to massage the .text after llvm if kernel supports it.
+It would need to sanitize back to BPF_PSEUDO_MAP_FD only on older kernels.
+That's the reason I'm not deleting probe_kern_fd_idx() in this patch,
+because I think it will be used fairly soon.
+But I can delete it too if you insist.
+But combining 9,14,15 into one I'd like to avoid.
+I think there is a value to have this in git to easily go back later
+to test everything in fd_idx mode by reverting this patch 15.
