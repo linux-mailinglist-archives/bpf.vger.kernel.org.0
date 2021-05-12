@@ -2,95 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B2037EE1D
-	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 00:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F48037EE20
+	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 00:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237515AbhELVJy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 17:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
+        id S238626AbhELVKE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 17:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243458AbhELTAE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 May 2021 15:00:04 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0DAC06137F
-        for <bpf@vger.kernel.org>; Wed, 12 May 2021 11:55:49 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id i4so31994580ybe.2
-        for <bpf@vger.kernel.org>; Wed, 12 May 2021 11:55:49 -0700 (PDT)
+        with ESMTP id S1377527AbhELTEP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 May 2021 15:04:15 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D57C061760;
+        Wed, 12 May 2021 12:02:23 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id c14so434699ybr.5;
+        Wed, 12 May 2021 12:02:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ni2rDVSZd62hK7RvjUtltYrU0nSL/K6ogWoKRE8gpTY=;
-        b=N6yGaS9Dt4Ax5NhLLkE5H6LisOyI0QxLO2wHljBA90UbWn4a2awjiNV8CPUWyFdSu4
-         Qszm0lyW71szdK7zntd/etqXahT8a+gcnaAN/vsBTcKfujoIgvMCDrEWQe0JYpcHgbhQ
-         aYxLGEi0ky5ZJbCeOiLUH6pdibUeh4eTvhKrWd52+Px2d+2t6Eif+TPHD2To9eZyMNVZ
-         PgPGDtUKphvSgUzgkT2fNmTWF/Xbz1LFVWRGLSSC/x3islSDH2H3iRfbr95Z409BWrUf
-         6hTySYC6iiCtMwq5TLe+W6IvfThwHiwMaeQKpoP+LzX1joNQYMpBmKOPWCvfO7j1UlKg
-         zORw==
+        bh=NAb00qPjcyT4ExQTqahgYMnlB8I9W8Nq9hR7/8NZNH8=;
+        b=rJGsV3E2vvzzmcvEDo/Z6AY4zdWaqzgKm0+XrzkHp9ELPNmNEbq+NeyUB8HewLwvnc
+         y+X8wMb9B+AdPjKZboYdtFF6Fzcdec+8CSsnlSL4bs+dSt1mU2qfmro81QIyg/QwOx6t
+         TMw0xDPr+KUvSZUQYFUQkeOHJcqLvon3wBq64H1uwK337iGVQ+iR+vvJVagC4TmIZGru
+         /4tMZVTxbPd0Eexfj78DM5eN6bgCrwAXqNQrpUaUdqDs5KXKCk+dpPmBQve1BMSpa/vt
+         OvAeKVjfGLwm4VBvfCTXFAHj1nJhLVba4SX5k6VSpB8D1JhVb/4lwoSJwtcuJlWv+FUB
+         ucRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ni2rDVSZd62hK7RvjUtltYrU0nSL/K6ogWoKRE8gpTY=;
-        b=perFtowfZQiH8cK/803LMs0F4NITF38WLgTDvUJzA0DYIeUPcb150wG3C+OMRu7KyB
-         JoMtpWB0l5HCBumDEAjD9RDI/VnDh5M53eS07/o54RuBfBF65qO9cF2HJxCHxv0y65Qb
-         jTjbCWVp/15YjrzhiFRpZdJs+YG1wRBRD9fLZhzRL/NlCSftkwtf2Vk5t3mFqv25OPSf
-         1myMSr3HL6DlXCSFSqAaOw1P/aAWBAxJpKFRu9KOlcGj+arNuwZqUADHGS24Q3k40IZ3
-         jtdkxmHQ03gAdqxa8Akt2vrI85QnguMDW0LdyjAIZ+2IC+u5ltvATJKvQxSv9PhrvNpf
-         w/XA==
-X-Gm-Message-State: AOAM533mHy+4oC4FqCwRq0Ha9H7ddxpCBk9qpME8HSy7pFsYHsfauH49
-        H+rvyZnJ0wObLZzZpjPnUWuDI2SF1/RAsR3NCuY=
-X-Google-Smtp-Source: ABdhPJwNQDyWLBL3WPUs93lEHokr08bHH8poqdkHpQeh+anyFft+UkD9ascZMuNIP9oj3ThaavDuh3XdAxopM9Pp0wQ=
-X-Received: by 2002:a25:3357:: with SMTP id z84mr49435640ybz.260.1620845749047;
- Wed, 12 May 2021 11:55:49 -0700 (PDT)
+        bh=NAb00qPjcyT4ExQTqahgYMnlB8I9W8Nq9hR7/8NZNH8=;
+        b=KKjP5D/DNXeO0Tyh1SpFH0PPllnnwgZ5T9M2lbaBzKd2qndCIJlhZnmPljrEGf3k0Z
+         NkpGnoV8N73/2Yk5nxExY4s+xYFrcAEFS63yFpHBa2dnNT4aq73CNdXTyAet0zNEJ94V
+         /RPL8P/5vwmwB0eycqrXKa+YGoE4Jmisj7uZTgXSqM7QAucTrNnwmTG8q55PJHkw9OCZ
+         yjADcIIw4jPrzMOcJOoZ6n4nnrvhlgSxyqmy7uiQc95jaAFusQh3YzGfVnd1UcGBkHyd
+         hkPtDzbdQiXuhGvuJ4vxDxG08o17DhzqSUJIoih0i+5Wly+NIenRqkkUUG7tg/Hnn7ke
+         i9AA==
+X-Gm-Message-State: AOAM532/91qnhzll6mbDkD+UIFN8pzNVWT09Eiaj+Chg9exlbDlhL3Iu
+        oOVxjoiekGF5Ew3QxXgh7SSXkZNmfAuqMWHq3CFkUCHc
+X-Google-Smtp-Source: ABdhPJzF2ScQEqkGJ1MPuqJeczN70mN7VGzaph1Io9kbrh3UzmCpNldbTkUW6suJQKJslYT+gFrPukj58cJNOM6kOS0=
+X-Received: by 2002:a25:3357:: with SMTP id z84mr49477847ybz.260.1620846142481;
+ Wed, 12 May 2021 12:02:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210508034837.64585-1-alexei.starovoitov@gmail.com>
- <20210508034837.64585-19-alexei.starovoitov@gmail.com> <CAEf4BzZYZ9i+pJ_aBzkhCLX9fVjUbOF_1=xvykk93TL5yQZieA@mail.gmail.com>
- <fc8d6e6b-cd31-5fcb-ff22-e3030b3f68a8@fb.com>
-In-Reply-To: <fc8d6e6b-cd31-5fcb-ff22-e3030b3f68a8@fb.com>
+References: <20210510124315.3854-1-thunder.leizhen@huawei.com>
+ <CAEf4BzaADXguVoh0KXxGYhzG68eA1bqfKH1T1SWyPvkE5BHa5g@mail.gmail.com> <YJoRd4reWa1viW76@unreal>
+In-Reply-To: <YJoRd4reWa1viW76@unreal>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 12 May 2021 11:55:38 -0700
-Message-ID: <CAEf4BzbMR21TH_qhGBs8Qb_uY82wK5AacOMkg1jfmO4aantYAw@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 18/22] bpftool: Use syscall/loader program in
- "prog load" and "gen skeleton" command.
-To:     Alexei Starovoitov <ast@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+Date:   Wed, 12 May 2021 12:02:11 -0700
+Message-ID: <CAEf4BzaYsjWh_10a4yeSVpAAwC-f=zUNANb10VN2xZ1b5dsY-A@mail.gmail.com>
+Subject: Re: [PATCH 1/1] libbpf: Delete an unneeded bool conversion
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 12, 2021 at 11:44 AM Alexei Starovoitov <ast@fb.com> wrote:
+On Mon, May 10, 2021 at 10:09 PM Leon Romanovsky <leon@kernel.org> wrote:
 >
-> On 5/11/21 9:17 PM, Andrii Nakryiko wrote:
-> >> +       bpf_object__for_each_program(prog, obj) {
-> >> +               printf("\tif (skel->links.%1$s_fd > 0) close(skel->links.%1$s_fd);\n",
-> >> +                      bpf_program__name(prog));
+> On Mon, May 10, 2021 at 11:00:29AM -0700, Andrii Nakryiko wrote:
+> > On Mon, May 10, 2021 at 5:43 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+> > >
+> > > The result of an expression consisting of a single relational operator is
+> > > already of the bool type and does not need to be evaluated explicitly.
+> > >
+> > > No functional change.
+> > >
+> > > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> > > ---
 > >
-> > you use bpf_program__name(prog) in so many place that it will be much
-> > simpler if you have a dedicated variable for it
->
-> Every time it's in the different loop over all progs.
-
-ok, it's no big deal, using variable is always an option to shorten
-printf if necessary
-
->
-> >> +       obj = bpf_object__open_file(file, &open_opts);
-> >> +       if (IS_ERR_OR_NULL(obj)) {
+> > See [0] and [1].
 > >
-> > please use libbpf_get_error() instead of IS_ERR_OR_NULL()
+> >   [0] https://lore.kernel.org/bpf/CAEf4BzYgLf5g3oztbA-CJR4gQ7AVKQAGrsHWCOgTtUMUM-Mxfg@mail.gmail.com/
+> >   [1] https://lore.kernel.org/bpf/CAEf4BzZQ6=-h3g1duXFwDLr92z7nE6ajv8Rz_Zv=qx=-F3sRVA@mail.gmail.com/
 >
-> That was copy-pasted from another place in the same file.
-> Fixed both and the rest of comments.
+> How long do you plan to fight with such patches?
 
-The reason to use libbpf_get_error() is because we'll be changing how
-error is reported for APIs like bpf_object__open_file and
-libbpf_get_error() will handle that transition automatically, so not
-having IS_ERR or IS_ERR_OR_NULL reduces amount of clean up we'll need
-to do.
+As long as necessary. There are better ways to contribute to libbpf
+than doing cosmetic changes to the perfectly correct code.
+
+>
+> Thanks
+>
+> >
+> > >  tools/lib/bpf/libbpf.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > index e2a3cf4378140f2..fa02213c451f4d2 100644
+> > > --- a/tools/lib/bpf/libbpf.c
+> > > +++ b/tools/lib/bpf/libbpf.c
+> > > @@ -1504,7 +1504,7 @@ static int set_kcfg_value_tri(struct extern_desc *ext, void *ext_val,
+> > >                                 ext->name, value);
+> > >                         return -EINVAL;
+> > >                 }
+> > > -               *(bool *)ext_val = value == 'y' ? true : false;
+> > > +               *(bool *)ext_val = value == 'y';
+> > >                 break;
+> > >         case KCFG_TRISTATE:
+> > >                 if (value == 'y')
+> > > --
+> > > 2.26.0.106.g9fadedd
+> > >
+> > >
