@@ -2,114 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F48037EE20
+	by mail.lfdr.de (Postfix) with ESMTP id D84D837EE21
 	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 00:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238626AbhELVKE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 17:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38000 "EHLO
+        id S1346072AbhELVK7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 17:10:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377527AbhELTEP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 May 2021 15:04:15 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D57C061760;
-        Wed, 12 May 2021 12:02:23 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id c14so434699ybr.5;
-        Wed, 12 May 2021 12:02:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NAb00qPjcyT4ExQTqahgYMnlB8I9W8Nq9hR7/8NZNH8=;
-        b=rJGsV3E2vvzzmcvEDo/Z6AY4zdWaqzgKm0+XrzkHp9ELPNmNEbq+NeyUB8HewLwvnc
-         y+X8wMb9B+AdPjKZboYdtFF6Fzcdec+8CSsnlSL4bs+dSt1mU2qfmro81QIyg/QwOx6t
-         TMw0xDPr+KUvSZUQYFUQkeOHJcqLvon3wBq64H1uwK337iGVQ+iR+vvJVagC4TmIZGru
-         /4tMZVTxbPd0Eexfj78DM5eN6bgCrwAXqNQrpUaUdqDs5KXKCk+dpPmBQve1BMSpa/vt
-         OvAeKVjfGLwm4VBvfCTXFAHj1nJhLVba4SX5k6VSpB8D1JhVb/4lwoSJwtcuJlWv+FUB
-         ucRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NAb00qPjcyT4ExQTqahgYMnlB8I9W8Nq9hR7/8NZNH8=;
-        b=KKjP5D/DNXeO0Tyh1SpFH0PPllnnwgZ5T9M2lbaBzKd2qndCIJlhZnmPljrEGf3k0Z
-         NkpGnoV8N73/2Yk5nxExY4s+xYFrcAEFS63yFpHBa2dnNT4aq73CNdXTyAet0zNEJ94V
-         /RPL8P/5vwmwB0eycqrXKa+YGoE4Jmisj7uZTgXSqM7QAucTrNnwmTG8q55PJHkw9OCZ
-         yjADcIIw4jPrzMOcJOoZ6n4nnrvhlgSxyqmy7uiQc95jaAFusQh3YzGfVnd1UcGBkHyd
-         hkPtDzbdQiXuhGvuJ4vxDxG08o17DhzqSUJIoih0i+5Wly+NIenRqkkUUG7tg/Hnn7ke
-         i9AA==
-X-Gm-Message-State: AOAM532/91qnhzll6mbDkD+UIFN8pzNVWT09Eiaj+Chg9exlbDlhL3Iu
-        oOVxjoiekGF5Ew3QxXgh7SSXkZNmfAuqMWHq3CFkUCHc
-X-Google-Smtp-Source: ABdhPJzF2ScQEqkGJ1MPuqJeczN70mN7VGzaph1Io9kbrh3UzmCpNldbTkUW6suJQKJslYT+gFrPukj58cJNOM6kOS0=
-X-Received: by 2002:a25:3357:: with SMTP id z84mr49477847ybz.260.1620846142481;
- Wed, 12 May 2021 12:02:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210510124315.3854-1-thunder.leizhen@huawei.com>
- <CAEf4BzaADXguVoh0KXxGYhzG68eA1bqfKH1T1SWyPvkE5BHa5g@mail.gmail.com> <YJoRd4reWa1viW76@unreal>
-In-Reply-To: <YJoRd4reWa1viW76@unreal>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 12 May 2021 12:02:11 -0700
-Message-ID: <CAEf4BzaYsjWh_10a4yeSVpAAwC-f=zUNANb10VN2xZ1b5dsY-A@mail.gmail.com>
-Subject: Re: [PATCH 1/1] libbpf: Delete an unneeded bool conversion
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        with ESMTP id S1381218AbhELTdq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 May 2021 15:33:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFD2C061760;
+        Wed, 12 May 2021 12:26:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=LHg4QUj5UkmNjZ90ZWWzvd65Yq2JWCT78FpIYI4LQ20=; b=fnUNWfD3iiuAeVKX3ZVuYcF/z8
+        qF1eDicZVrUDZDt6/BmbAPQCqqPgkQlAxmFUFs3AxjUxK4usArXTnbazf7HbwcZ0f56C6b3hS6jNK
+        krjmT7Xt74OrAP2MD+hYUf4BIMq6xECmTGvBCQqFd1kp0xolVYgrALedajmCKaMk1RJ1Z62wqZol6
+        SckgUULmPTz0u0Qeo8DLSL4/nIJuNyDwUTToCcuqugdXwdOjZ4klcjWg3yKC9UperQvU+hobf47Xw
+        63lv9/QZfl/I5s99cqlrmTh7s57OYOqFb6bUKxurD4S4x3cX3imSdNF4KT29DX7HvNJ0UVcRVnN8d
+        LjllBMPg==;
+Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.253])
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lguUn-00AlF6-1D; Wed, 12 May 2021 19:26:13 +0000
+Subject: Re: linux-next: Tree for May 12 (arch/x86/net/bpf_jit_comp32.o)
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <20210512175623.2687ac6f@canb.auug.org.au>
+ <08f677a5-7634-b5d2-a532-ea6d3f35200c@infradead.org>
+ <daf46ee7-1a18-9d5a-c3b3-7fc55ec23b30@iogearbox.net>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <751025d2-9c46-a4b9-4f54-fbe5fa7a2564@infradead.org>
+Date:   Wed, 12 May 2021 12:26:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <daf46ee7-1a18-9d5a-c3b3-7fc55ec23b30@iogearbox.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 10, 2021 at 10:09 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Mon, May 10, 2021 at 11:00:29AM -0700, Andrii Nakryiko wrote:
-> > On Mon, May 10, 2021 at 5:43 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> > >
-> > > The result of an expression consisting of a single relational operator is
-> > > already of the bool type and does not need to be evaluated explicitly.
-> > >
-> > > No functional change.
-> > >
-> > > Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> > > ---
-> >
-> > See [0] and [1].
-> >
-> >   [0] https://lore.kernel.org/bpf/CAEf4BzYgLf5g3oztbA-CJR4gQ7AVKQAGrsHWCOgTtUMUM-Mxfg@mail.gmail.com/
-> >   [1] https://lore.kernel.org/bpf/CAEf4BzZQ6=-h3g1duXFwDLr92z7nE6ajv8Rz_Zv=qx=-F3sRVA@mail.gmail.com/
->
-> How long do you plan to fight with such patches?
+On 5/12/21 11:53 AM, Daniel Borkmann wrote:
+> Hi Randy,
+> 
+> On 5/12/21 8:01 PM, Randy Dunlap wrote:
+>> On 5/12/21 12:56 AM, Stephen Rothwell wrote:
+>>> Hi all,
+>>>
+>>> Changes since 20210511:
+>>>
+>>
+>> on i386:
+>>
+>> ld: arch/x86/net/bpf_jit_comp32.o: in function `do_jit':
+>> bpf_jit_comp32.c:(.text+0x28c9): undefined reference to `__bpf_call_base'
+>> ld: arch/x86/net/bpf_jit_comp32.o: in function `bpf_int_jit_compile':
+>> bpf_jit_comp32.c:(.text+0x3694): undefined reference to `bpf_jit_blind_constants'
+>> ld: bpf_jit_comp32.c:(.text+0x3719): undefined reference to `bpf_jit_binary_free'
+>> ld: bpf_jit_comp32.c:(.text+0x3745): undefined reference to `bpf_jit_binary_alloc'
+>> ld: bpf_jit_comp32.c:(.text+0x37d3): undefined reference to `bpf_jit_prog_release_other'
+>> ld: kernel/extable.o: in function `search_exception_tables':
+>> extable.c:(.text+0x42): undefined reference to `search_bpf_extables'
+>> ld: kernel/extable.o: in function `kernel_text_address':
+>> extable.c:(.text+0xee): undefined reference to `is_bpf_text_address'
+>> ld: kernel/kallsyms.o: in function `kallsyms_lookup_size_offset':
+>> kallsyms.c:(.text+0x254): undefined reference to `__bpf_address_lookup'
+>> ld: kernel/kallsyms.o: in function `kallsyms_lookup_buildid':
+>> kallsyms.c:(.text+0x2ee): undefined reference to `__bpf_address_lookup'
+> 
+> Thanks for reporting, could you double check the following diff:
+> 
+> diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
+> index 26b591e23f16..bd04f4a44c01 100644
+> --- a/kernel/bpf/Kconfig
+> +++ b/kernel/bpf/Kconfig
+> @@ -37,6 +37,7 @@ config BPF_SYSCALL
+> 
+> config BPF_JIT
+>     bool "Enable BPF Just In Time compiler"
+> +    depends on BPF
+>     depends on HAVE_CBPF_JIT || HAVE_EBPF_JIT
+>     depends on MODULES
+>     help
 
-As long as necessary. There are better ways to contribute to libbpf
-than doing cosmetic changes to the perfectly correct code.
+That's good. Thanks.
 
->
-> Thanks
->
-> >
-> > >  tools/lib/bpf/libbpf.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > index e2a3cf4378140f2..fa02213c451f4d2 100644
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> > > @@ -1504,7 +1504,7 @@ static int set_kcfg_value_tri(struct extern_desc *ext, void *ext_val,
-> > >                                 ext->name, value);
-> > >                         return -EINVAL;
-> > >                 }
-> > > -               *(bool *)ext_val = value == 'y' ? true : false;
-> > > +               *(bool *)ext_val = value == 'y';
-> > >                 break;
-> > >         case KCFG_TRISTATE:
-> > >                 if (value == 'y')
-> > > --
-> > > 2.26.0.106.g9fadedd
-> > >
-> > >
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+
+-- 
+~Randy
+
