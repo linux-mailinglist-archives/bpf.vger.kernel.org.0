@@ -2,39 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A4D37F164
-	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 04:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCEB37F1A4
+	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 05:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhEMCiq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 22:38:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230326AbhEMCio (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 May 2021 22:38:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C14C061574;
-        Wed, 12 May 2021 19:37:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TenrWiIkYtVAh+YSG9ppJcEvQ+ICO0xNa6eESJHAhgA=; b=oY3n65PbfkVv41I70t6lqq9DW7
-        Nc49YFeX1YsxjnKc0EHtgpu4GUOsOwCB4Bh/AhPUTFuUZe5ZZ23q++8CBxNxQ/SJwzyxVqsccpHxl
-        Vss0GOdtaPNnC5HQvhuiBrMv/ZyXU1Cn1UCgS1RqKmE4JumRPEArf0t8OfD01+5KetSMt25D9C6So
-        gkURYhk+BRL3RNHclDOJbCSiqhC6yp82vfs6onbn8EfZFgPcmpcpSnwSUPKfKZkQvS54ISzuWSkvP
-        2nyFXSKgI+RE0q+lu9vHxXIzurzEOYVFSDhGIWg/1Ld4oWEChi48USDfO7D135gwPtJNdpOAO4tTK
-        O1V2RKqg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lh1Bw-0097Bt-GN; Thu, 13 May 2021 02:35:24 +0000
-Date:   Thu, 13 May 2021 03:35:12 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        id S230501AbhEMD0l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 23:26:41 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5105 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230247AbhEMD0k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 May 2021 23:26:40 -0400
+Received: from dggeml758-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FgcRg0mnMzYhMM;
+        Thu, 13 May 2021 11:22:55 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggeml758-chm.china.huawei.com (10.1.199.159) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 13 May 2021 11:25:23 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 13 May
+ 2021 11:25:23 +0800
+Subject: Re: [PATCH net-next v4 1/4] mm: add a signature in struct page
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Matteo Croce <mcroce@linux.microsoft.com>,
         Networking <netdev@vger.kernel.org>,
         Linux-MM <linux-mm@kvack.org>,
         Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        "Vinay Kumar Yadav" <vinay.yadav@chelsio.com>,
         Rohit Maheshwari <rohitm@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -43,11 +38,11 @@ Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Russell King <linux@armlinux.org.uk>,
         Mirko Lindner <mlindner@marvell.com>,
         Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
+        "Tariq Toukan" <tariqt@nvidia.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        "Alexei Starovoitov" <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
+        "John Fastabend" <john.fastabend@gmail.com>,
         Boris Pismenny <borisp@nvidia.com>,
         Arnd Bergmann <arnd@arndb.de>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -68,83 +63,105 @@ Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Miaohe Lin <linmiaohe@huawei.com>,
         Guillaume Nault <gnault@redhat.com>,
         open list <linux-kernel@vger.kernel.org>,
-        linux-rdma@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Eric Dumazet <edumazet@google.com>,
         David Ahern <dsahern@gmail.com>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
         Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v4 1/4] mm: add a signature in struct page
-Message-ID: <YJyQYCj3UUk5Sp4Z@casper.infradead.org>
 References: <20210511133118.15012-1-mcroce@linux.microsoft.com>
  <20210511133118.15012-2-mcroce@linux.microsoft.com>
- <YJqKfNh6l3yY2daM@casper.infradead.org>
- <YJqQgYSWH2qan1GS@apalos.home>
+ <YJqKfNh6l3yY2daM@casper.infradead.org> <YJqQgYSWH2qan1GS@apalos.home>
  <YJqSM79sOk1PRFPT@casper.infradead.org>
  <CAC_iWj+Tw9DzzzVj-F9AwzBN_OJV_HN2miJT4KTBH_Uei_V2ZA@mail.gmail.com>
  <YJv65eER2qgaP9Ib@casper.infradead.org>
  <3f9a0fb0-9cb9-686d-e89b-ea589d88ab58@huawei.com>
+ <YJyQYCj3UUk5Sp4Z@casper.infradead.org>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <8f815871-e384-3e65-56a8-39e379dea4ce@huawei.com>
+Date:   Thu, 13 May 2021 11:25:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3f9a0fb0-9cb9-686d-e89b-ea589d88ab58@huawei.com>
+In-Reply-To: <YJyQYCj3UUk5Sp4Z@casper.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 13, 2021 at 10:15:26AM +0800, Yunsheng Lin wrote:
-> On 2021/5/12 23:57, Matthew Wilcox wrote:
-> > You'll need something like this because of the current use of
-> > page->index to mean "pfmemalloc".
-> >
-> > @@ -1682,12 +1684,12 @@ static inline bool page_is_pfmemalloc(const struct page *page)
-> >   */
-> >  static inline void set_page_pfmemalloc(struct page *page)
-> >  {
-> > -	page->index = -1UL;
-> > +	page->compound_head = 2;
+On 2021/5/13 10:35, Matthew Wilcox wrote:
+> On Thu, May 13, 2021 at 10:15:26AM +0800, Yunsheng Lin wrote:
+>> On 2021/5/12 23:57, Matthew Wilcox wrote:
+>>> You'll need something like this because of the current use of
+>>> page->index to mean "pfmemalloc".
+>>>
+>>> @@ -1682,12 +1684,12 @@ static inline bool page_is_pfmemalloc(const struct page *page)
+>>>   */
+>>>  static inline void set_page_pfmemalloc(struct page *page)
+>>>  {
+>>> -	page->index = -1UL;
+>>> +	page->compound_head = 2;
+>>
+>> Is there any reason why not use "page->compound_head |= 2"? as
+>> corresponding to the "page->compound_head & 2" in the above
+>> page_is_pfmemalloc()?
+>>
+>> Also, this may mean we need to make sure to pass head page or
+>> base page to set_page_pfmemalloc() if using
+>> "page->compound_head = 2", because it clears the bit 0 and head
+>> page ptr for tail page too, right?
 > 
-> Is there any reason why not use "page->compound_head |= 2"? as
-> corresponding to the "page->compound_head & 2" in the above
-> page_is_pfmemalloc()?
+> I think what you're missing here is that this page is freshly allocated.
+> This is information being passed from the page allocator to any user
+> who cares to look at it.  By definition, it's set on the head/base page, and
+> there is nothing else present in the page->compound_head.  Doing an OR
+> is more expensive than just setting it to 2.
+
+Thanks for clarifying.
+
 > 
-> Also, this may mean we need to make sure to pass head page or
-> base page to set_page_pfmemalloc() if using
-> "page->compound_head = 2", because it clears the bit 0 and head
-> page ptr for tail page too, right?
-
-I think what you're missing here is that this page is freshly allocated.
-This is information being passed from the page allocator to any user
-who cares to look at it.  By definition, it's set on the head/base page, and
-there is nothing else present in the page->compound_head.  Doing an OR
-is more expensive than just setting it to 2.
-
-I'm not really sure why set/clear page_pfmemalloc are defined in mm.h.
-They should probably be in mm/page_alloc.c where nobody else would ever
-think that they could or should be calling them.
-
-> >  		struct {	/* page_pool used by netstack */
-> > -			/**
-> > -			 * @dma_addr: might require a 64-bit value on
-> > -			 * 32-bit architectures.
-> > -			 */
-> > +			unsigned long pp_magic;
-> > +			struct page_pool *pp;
-> > +			unsigned long _pp_mapping_pad;
-> >  			unsigned long dma_addr[2];
+> I'm not really sure why set/clear page_pfmemalloc are defined in mm.h.
+> They should probably be in mm/page_alloc.c where nobody else would ever
+> think that they could or should be calling them.>
+>>>  		struct {	/* page_pool used by netstack */
+>>> -			/**
+>>> -			 * @dma_addr: might require a 64-bit value on
+>>> -			 * 32-bit architectures.
+>>> -			 */
+>>> +			unsigned long pp_magic;
+>>> +			struct page_pool *pp;
+>>> +			unsigned long _pp_mapping_pad;
+>>>  			unsigned long dma_addr[2];
+>>
+>> It seems the dma_addr[1] aliases with page->private, and
+>> page_private() is used in skb_copy_ubufs()?
+>>
+>> It seems we can avoid using page_private() in skb_copy_ubufs()
+>> by using a dynamic allocated array to store the page ptr?
 > 
-> It seems the dma_addr[1] aliases with page->private, and
-> page_private() is used in skb_copy_ubufs()?
+> This is why I hate it when people use page_private() instead of
+> documenting what they're doing in struct page.  There is no way to know
+> (as an outsider to networking) whether the page in skb_copy_ubufs()
+> comes from page_pool.  I looked at it, and thought it didn't:
 > 
-> It seems we can avoid using page_private() in skb_copy_ubufs()
-> by using a dynamic allocated array to store the page ptr?
+>                 page = alloc_page(gfp_mask);
+> 
+> but if you say those pages can come from page_pool, I believe you.
 
-This is why I hate it when people use page_private() instead of
-documenting what they're doing in struct page.  There is no way to know
-(as an outsider to networking) whether the page in skb_copy_ubufs()
-comes from page_pool.  I looked at it, and thought it didn't:
+page_private() using in skb_copy_ubufs() does indeed seem ok here.
+the page_private() is used on the page which is freshly allocated
+from alloc_page().
 
-                page = alloc_page(gfp_mask);
+Sorry for the confusion.
 
-but if you say those pages can come from page_pool, I believe you.
+> 
+> .
+> 
+
