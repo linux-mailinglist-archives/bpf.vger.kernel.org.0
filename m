@@ -2,133 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD61637FC39
-	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 19:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E284737FD2A
+	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 20:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbhEMRRR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 May 2021 13:17:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230235AbhEMRRQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 May 2021 13:17:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 029DC61444
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 17:16:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620926167;
-        bh=Ry2wjIVSYj1t6KKG93LfA7nqkdFhgjKLx802ZbZeA0A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mEkE7LLBXRwRAGqz9BaFjjMCPBb9Eq4M/yjSpJDZJX30xdkOJKuw4d7dcrfA40tmh
-         Wpt0YLo+ULypdIyBtvkKq3gSNhR7zjv3/1qlImNgpQs3geDVtNAqfye/vAaqhEHa76
-         UO6Q8bfZaZin+mfljCfQwBiQ2Tk/NahMUgS+2a0XV9jEh9+tusx6TAxnNY3nb/mIhx
-         z8sAbcgyCwUaly5pYkX7CXvi7LaTz+s82Dg17iaTdj09kVBsI22ydnVEZa9HIANf8c
-         QInpIhNp2cj8MJZXhFQJW8kunB4hRDgggudLvfFGMZyv45tywHvDz8zd16IXfoflFG
-         lQIhE3ZS/90mQ==
-Received: by mail-ed1-f48.google.com with SMTP id i13so1867165edb.9
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 10:16:06 -0700 (PDT)
-X-Gm-Message-State: AOAM531vvKU6c+vDKI9ViaDviq0DCtkJNtwH0LNLVdHEBxt0d6GHSfeF
-        iyq+++RedulA3yna/GOTprkOcXixTJusZjv1MGWvcw==
-X-Google-Smtp-Source: ABdhPJzXLGCnTkj2E/00lNqydWmiYxjCYe6O+PIcMnjIWu8EnTQzfh9BwwyDPhJVG7WJp8KKqPul2wugt7zsXVQjzI4=
-X-Received: by 2002:a05:6402:cac:: with SMTP id cn12mr53201537edb.238.1620926165459;
- Thu, 13 May 2021 10:16:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <CABqSeAR9rgARxYGYUVZQgZ0a-wqZxy-qeoVpu495XHxpj0Ku=A@mail.gmail.com>
- <B541CF0E-3410-4CA3-93E4-670052C5FC11@amacapital.net> <CABqSeAT1OeiW69RipcY6U4drPtJ+GaygZqXfd8aL8uX4d4Wp=A@mail.gmail.com>
-In-Reply-To: <CABqSeAT1OeiW69RipcY6U4drPtJ+GaygZqXfd8aL8uX4d4Wp=A@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 13 May 2021 10:15:54 -0700
-X-Gmail-Original-Message-ID: <CALCETrWfV0C8c9erk-imRrndsY8dEffT=W4mJZnoKYP8-Dxojg@mail.gmail.com>
-Message-ID: <CALCETrWfV0C8c9erk-imRrndsY8dEffT=W4mJZnoKYP8-Dxojg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next seccomp 10/12] seccomp-ebpf: Add ability to
- read user memory
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        containers@lists.linux.dev, bpf <bpf@vger.kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        LSM List <linux-security-module@vger.kernel.org>,
+        id S229889AbhEMSWg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 May 2021 14:22:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhEMSWb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 May 2021 14:22:31 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F081C061574;
+        Thu, 13 May 2021 11:21:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=6uuUzWl9VoRjV4bYv78VUB4CdgmlKH2pNJlIUhKulm8=; b=NXExP0SppRPIfcFl8xuZPZ/8q
+        hwe9BNAHh1LWQyN8f0WG69abeL20BRHNjHdIWBAjV562Qz8kygXokRSvmaIxpdQpF04UxzIgbhBpV
+        B5p1PSXFWaqwaP5yH3k0LOOVEvLH+nxjQEY/xus4sZ8FKQkm4jpcMJeNLulqReZ4HYDNdR0KF2hzt
+        1CBVDHmCo5F246dT7ExCUYhyYq8lWeBWGm12AJNvpE7JHDHKxqrygJ01jdF99yF1qGvkNcL76dtN7
+        Ns+FC/97V1uJuX4o159qH2rJMbhddBqoxIu5AJnL/zBFfnWz/2CeM0vrrZ4AnpO6SYI1Zfmujx//g
+        nc9kMlz+w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43946)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lhFxE-0006az-P5; Thu, 13 May 2021 19:21:00 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lhFx2-0003ED-8H; Thu, 13 May 2021 19:20:48 +0100
+Date:   Thu, 13 May 2021 19:20:48 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Austin Kuo <hckuo2@illinois.edu>,
-        Claudio Canella <claudio.canella@iaik.tugraz.at>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Daniel Gruss <daniel.gruss@iaik.tugraz.at>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jann Horn <jannh@google.com>,
-        Jinghao Jia <jinghao7@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tom Hromatka <tom.hromatka@oracle.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: Re: [PATCH net-next v5 4/5] mvpp2: recycle buffers
+Message-ID: <20210513182048.GA12395@shell.armlinux.org.uk>
+References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
+ <20210513165846.23722-5-mcroce@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513165846.23722-5-mcroce@linux.microsoft.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 13, 2021 at 10:13 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
->
-> On Thu, May 13, 2021 at 9:53 AM Andy Lutomirski <luto@amacapital.net> wro=
-te:
-> > > On May 12, 2021, at 10:26 PM, YiFei Zhu <zhuyifei1999@gmail.com> wrot=
-e:
-> > >
-> > > =EF=BB=BFOn Wed, May 12, 2021 at 5:36 PM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > >> Typically the verifier does all the checks at load time to avoid
-> > >> run-time overhead during program execution. Then at attach time we
-> > >> check that attach parameters provided at load time match exactly
-> > >> to those at attach time. ifindex, attach_btf_id, etc fall into this =
-category.
-> > >> Doing something similar it should be possible to avoid
-> > >> doing get_dumpable() at run-time.
-> > >
-> > > Do you mean to move the check of dumpable to load time instead of
-> > > runtime? I do not think that makes sense. A process may arbitrarily
-> > > set its dumpable attribute during execution via prctl. A process coul=
-d
-> > > do set itself to non-dumpable, before interacting with sensitive
-> > > information that would better not be possible to be dumped (eg.
-> > > ssh-agent does this [1]). Therefore, being dumpable at one point in
-> > > time does not indicate anything about whether it stays dumpable at a
-> > > later point in time. Besides, seccomp filters are inherited across
-> > > clone and exec, attaching to many tasks with no option to detach. Wha=
-t
-> > > should the load-time check of task dump-ability be against? The
-> > > current task may only be the tip of an iceburg.
-> > >
-> > > [1] https://github.com/openssh/openssh-portable/blob/2dc328023f60212c=
-d29504fc05d849133ae47355/ssh-agent.c#L1398
-> > >
-> > >
-> >
-> > First things first: why are you checking dumpable at all?  Once you fig=
-ure out why and whether it=E2=80=99s needed, you may learn something about =
-what task to check.
-> >
-> > I don=E2=80=99t think checking dumpable makes any sense.
->
-> ptrace. We don't want to extend one's ability to read another
-> process's memory if they could not read it via ptrace
-> (process_vm_readv or ptrace(PTRACE_PEEK{TEXT,DATA})). The constraints
-> for ptrace to access a target's memory I've written down earlier [1],
-> but tl;dr: to be at least as restrictive as ptrace, a tracer without
-> CAP_PTRACE cannot trace a non-dumpable process. What's the target
-> process (i.e. the process whose memory is being read) in the context
-> of a seccomp filter? The current task. Does that answer your
-> questions?
->
-> [1] https://lore.kernel.org/bpf/CABqSeAT8iz-VhWjWqABqGbF7ydkoT7LmzJ5Do8K1=
-ANQvQK=3DFJQ@mail.gmail.com/
+On Thu, May 13, 2021 at 06:58:45PM +0200, Matteo Croce wrote:
+> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> index b2259bf1d299..9dceabece56c 100644
+> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> @@ -3847,6 +3847,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
+>  	struct mvpp2_pcpu_stats ps = {};
+>  	enum dma_data_direction dma_dir;
+>  	struct bpf_prog *xdp_prog;
+> +	struct xdp_rxq_info *rxqi;
+>  	struct xdp_buff xdp;
+>  	int rx_received;
+>  	int rx_done = 0;
+> @@ -3912,15 +3913,15 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
+>  		else
+>  			frag_size = bm_pool->frag_size;
+>  
+> +		if (bm_pool->pkt_size == MVPP2_BM_SHORT_PKT_SIZE)
+> +			rxqi = &rxq->xdp_rxq_short;
+> +		else
+> +			rxqi = &rxq->xdp_rxq_long;
+>  
+> +		if (xdp_prog) {
+> +			xdp.rxq = rxqi;
+>  
+> +			xdp_init_buff(&xdp, PAGE_SIZE, rxqi);
+>  			xdp_prepare_buff(&xdp, data,
+>  					 MVPP2_MH_SIZE + MVPP2_SKB_HEADROOM,
+>  					 rx_bytes, false);
+> @@ -3964,7 +3965,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
+>  		}
+>  
+>  		if (pp)
+> +			skb_mark_for_recycle(skb, virt_to_page(data), pp);
+>  		else
+>  			dma_unmap_single_attrs(dev->dev.parent, dma_addr,
+>  					       bm_pool->buf_size, DMA_FROM_DEVICE,
 
-The whole seccomp model is based on the assumption that the filter
-installer completely controls the filtered task.  Reading memory is
-not qualitatively different.
+Looking at the above, which I've only quoted the _resulting_ code after
+your patch above, I don't see why you have moved the
+"bm_pool->pkt_size == MVPP2_BM_SHORT_PKT_SIZE" conditional outside of
+the test for xdp_prog - I don't see rxqi being used except within that
+conditional. Please can you explain the reasoning there?
 
-To be clear, this is not to be interpreted as an ack to allowing
-seccomp to read process memory.  I'm saying that, if seccomp gains the
-ability to read process memory, I don't think a dumpable or ptrace
-check is needed.
+Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
