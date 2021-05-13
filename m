@@ -2,120 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28EAD37FA12
-	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 16:54:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F97C37FA93
+	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 17:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234756AbhEMOzR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 May 2021 10:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234851AbhEMOy2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 May 2021 10:54:28 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB2AC06138C
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 07:53:17 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id h16so9237563pfk.0
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 07:53:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=3Q3G7UFAS/HZlfXSpy2j5hYo1FB3/TVxpPwfbdZ4cOA=;
-        b=zZiuChDcorTWPtlQXsQlK0vCNOiL+pcmY/j1Ms9VNDWMmTDHOsAxzqf12ePiEl6js4
-         UX3eOLPvgoG2RfeVs2ZG3dthcCC0p1THPrh2m1gEwiQ5gG7DT+/l938lNx2GPkmy68cZ
-         dWPKBf3jZ6FCCNcHcU3Z0SLalStQZvJwMFKPaDb0SZ2wBuuEZiKSoBlZHOOtxX2RjR7W
-         +7B+H9z44QGKCdM+Ozf10eqAgyNt6mjjE0gNxR1bxyszYWdOBqO+U3Wkn1qfK9DunKf6
-         YuXR5XCQMS5IbcOd4LWukvNJwmEIIpPP3NYHOhTP8/Vi87NLd6vSVUv4j92a2pXtON6b
-         zBqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=3Q3G7UFAS/HZlfXSpy2j5hYo1FB3/TVxpPwfbdZ4cOA=;
-        b=h1dAQY5BKoWFTqSFSQnCW6fNkAtZnC98ddp74KZW2kt8BXForT+Kzrwdb0oRhGbNpB
-         ECZVJh+DNEjCFWtQIiZOwVkEaVmVxRZGgenhke3n/nkMCATi8fBaaUy+tOHg0TaFLc+B
-         yVGRgS8aLtUk7+4piGImci+2VU7bJJ8EXKIUqEPT8Iy25QrZLIQpz+LLiKwLTYz5oB9O
-         XyE3OhEokt5JerKjs9CHUY0PLpLrD9ApochGIa8PeSUkeB2eAsic0fami/wFQrP0Z+V2
-         CmTGzGjgdm6dUStPm8yxD4l94vAU46azSwRY+8cWGp7VOPiulPC0ktAanXfSHEAewtpq
-         AOrQ==
-X-Gm-Message-State: AOAM532nCV3mwHqPXQbAeF2Gth0xZFGLm/AelGN0ahezb/PrkEbR7/eo
-        IaokMSFKLZQ2epqy392+sw4A1Q==
-X-Google-Smtp-Source: ABdhPJzSuz21HzHkRIZwlmWxyLSlEHrN4uwpzI2y/aZz/zNThtrhPQTk9PMtQAHHmaK1U9Jt5G6HVQ==
-X-Received: by 2002:a65:638e:: with SMTP id h14mr27198087pgv.108.1620917597311;
-        Thu, 13 May 2021 07:53:17 -0700 (PDT)
-Received: from smtpclient.apple ([2601:646:c200:1ef2:59b7:4731:1e3c:b03f])
-        by smtp.gmail.com with ESMTPSA id z23sm2722135pjh.44.2021.05.13.07.53.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 May 2021 07:53:16 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC PATCH bpf-next seccomp 10/12] seccomp-ebpf: Add ability to read user memory
-Date:   Thu, 13 May 2021 07:53:15 -0700
-Message-Id: <B541CF0E-3410-4CA3-93E4-670052C5FC11@amacapital.net>
-References: <CABqSeAR9rgARxYGYUVZQgZ0a-wqZxy-qeoVpu495XHxpj0Ku=A@mail.gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        containers@lists.linux.dev, bpf <bpf@vger.kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Austin Kuo <hckuo2@illinois.edu>,
-        Claudio Canella <claudio.canella@iaik.tugraz.at>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Daniel Gruss <daniel.gruss@iaik.tugraz.at>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jann Horn <jannh@google.com>,
-        Jinghao Jia <jinghao7@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tom Hromatka <tom.hromatka@oracle.com>,
-        Will Drewry <wad@chromium.org>
-In-Reply-To: <CABqSeAR9rgARxYGYUVZQgZ0a-wqZxy-qeoVpu495XHxpj0Ku=A@mail.gmail.com>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-X-Mailer: iPhone Mail (18E212)
+        id S234783AbhEMPXh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 May 2021 11:23:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39558 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232548AbhEMPXe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 May 2021 11:23:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3684F61182;
+        Thu, 13 May 2021 15:22:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620919344;
+        bh=/M7gWU9HaLG6QbJqmridKAEJyvcI1IJcmogeYbUoJ+U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iukByoWv+Aaq41EUuIYacG4iI7RjoJH+Dv+T3aIsAibxD6+BWgk/crbhd2LbCde7a
+         lQJuVfSIJjjW+ha/iQ90zSXeJ24s6SuZdG4+KYs7mRYRuMVqUAw2zjZ5ddvv5ixI5c
+         akmBnutSNwWueOUI9l5d+0c14qkd5ZK75Z2eJDUIDu/oI3G76zjdm5bL1QfZA+LvtR
+         VwivSTFOzL3OanSzxBaJmVXsEPpXK87m5GbwriuVV7ClD48vvVyDjDXP5MsTCIfYli
+         vV65c/PLopqhwV7E3xueEGqoiJ75yUY2i4tawdqBSK0g4AfKEVb6McH6ii7aXsRqLc
+         +RBpqtIo2cf2w==
+Date:   Thu, 13 May 2021 08:22:22 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
+        <weiwan@google.com>, <cong.wang@bytedance.com>,
+        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
+        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
+        <alobakin@pm.me>
+Subject: Re: [PATCH net v7 3/3] net: sched: fix tx action reschedule issue
+ with stopped queue
+Message-ID: <20210513082222.3b23d3a3@kicinski-fedora-PC1C0HJN>
+In-Reply-To: <1620868260-32984-4-git-send-email-linyunsheng@huawei.com>
+References: <1620868260-32984-1-git-send-email-linyunsheng@huawei.com>
+        <1620868260-32984-4-git-send-email-linyunsheng@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, 13 May 2021 09:11:00 +0800 Yunsheng Lin wrote:
+> The netdev qeueue might be stopped when byte queue limit has
+> reached or tx hw ring is full, net_tx_action() may still be
+> rescheduled endlessly if STATE_MISSED is set, which consumes
+> a lot of cpu without dequeuing and transmiting any skb because
+> the netdev queue is stopped, see qdisc_run_end().
+> 
+> This patch fixes it by checking the netdev queue state before
+> calling qdisc_run() and clearing STATE_MISSED if netdev queue is
+> stopped during qdisc_run(), the net_tx_action() is recheduled
+> again when netdev qeueue is restarted, see netif_tx_wake_queue().
+> 
+> As there is time window betewwn netif_xmit_frozen_or_stopped()
+> checking and STATE_MISSED clearing, between which STATE_MISSED
+> is set by net_tx_action() scheduled by netif_tx_wake_queue(),
+> so set the STATE_MISSED again if netdev queue is restarted.
+> 
+> Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
+> Reported-by: Michal Kubecek <mkubecek@suse.cz>
+> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 
-> On May 12, 2021, at 10:26 PM, YiFei Zhu <zhuyifei1999@gmail.com> wrote:
->=20
-> =EF=BB=BFOn Wed, May 12, 2021 at 5:36 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->> Typically the verifier does all the checks at load time to avoid
->> run-time overhead during program execution. Then at attach time we
->> check that attach parameters provided at load time match exactly
->> to those at attach time. ifindex, attach_btf_id, etc fall into this categ=
-ory.
->> Doing something similar it should be possible to avoid
->> doing get_dumpable() at run-time.
->=20
-> Do you mean to move the check of dumpable to load time instead of
-> runtime? I do not think that makes sense. A process may arbitrarily
-> set its dumpable attribute during execution via prctl. A process could
-> do set itself to non-dumpable, before interacting with sensitive
-> information that would better not be possible to be dumped (eg.
-> ssh-agent does this [1]). Therefore, being dumpable at one point in
-> time does not indicate anything about whether it stays dumpable at a
-> later point in time. Besides, seccomp filters are inherited across
-> clone and exec, attaching to many tasks with no option to detach. What
-> should the load-time check of task dump-ability be against? The
-> current task may only be the tip of an iceburg.
->=20
-> [1] https://github.com/openssh/openssh-portable/blob/2dc328023f60212cd2950=
-4fc05d849133ae47355/ssh-agent.c#L1398
->=20
->=20
+> @@ -35,6 +35,25 @@
+>  const struct Qdisc_ops *default_qdisc_ops = &pfifo_fast_ops;
+>  EXPORT_SYMBOL(default_qdisc_ops);
+>  
+> +static void qdisc_maybe_stop_tx(struct Qdisc *q,
 
-First things first: why are you checking dumpable at all?  Once you figure o=
-ut why and whether it=E2=80=99s needed, you may learn something about what t=
-ask to check.
-
-I don=E2=80=99t think checking dumpable makes any sense.=
+nit: qdisc_maybe_clear_missed()?
