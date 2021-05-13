@@ -2,190 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6499C37FAEE
-	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 17:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8340837FBE8
+	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 18:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234919AbhEMPmc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 May 2021 11:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234869AbhEMPmc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 May 2021 11:42:32 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135DEC061574;
-        Thu, 13 May 2021 08:41:21 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id b21so14631400plz.0;
-        Thu, 13 May 2021 08:41:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S0rCpDWqFzFb2Ye8JF/HqVeJjki9WL5JCSxIfaPJ7d4=;
-        b=Se6FrICKBH34M680HsymP1FwYlvdLDaEftfCZui4fskbMIb/9w1PRa/9BwVqJ1dXqT
-         tnE8aBtQF9GOVkB5JGX5cBbHTfv4LW/oJNajgdoa5vDpWa1F1s32YznsRwyFcq4oJTqr
-         W5AQbPqcZgxAFyBOsDmaRzNqGl6R0DPYvWZwQU742sjgBXGVmcPaF5/2TzSgkB911Y1s
-         R+Avg4DOg39cyNV2tELTJet8GOj73RVK4B0NCVoJoc1Rvlh7FmjwB6hmN6Q2EH0jGsWL
-         65OXc/yi1y9KDYteEiGALzSOJok+hkGOob68fFl5vPiaVbaQpzSpeK+cjK9syU2NMhTi
-         /ByA==
+        id S229888AbhEMRAU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 May 2021 13:00:20 -0400
+Received: from mail-ed1-f48.google.com ([209.85.208.48]:40538 "EHLO
+        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhEMRAT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 May 2021 13:00:19 -0400
+Received: by mail-ed1-f48.google.com with SMTP id c22so31733471edn.7;
+        Thu, 13 May 2021 09:59:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S0rCpDWqFzFb2Ye8JF/HqVeJjki9WL5JCSxIfaPJ7d4=;
-        b=PSslszv/dMWKXrS5v67FCXhk8snuzlqpyUNRe6/3CoPY29nn9aEe8bS15dX83xqrWM
-         l0dZdHyIA2eWEh8u8Cs7V1v8MUuC7VBOurIV/sWn88quhX7VLwWiZ2pZtnHLIRGPtZef
-         go9zxJ3tQaImlV1OhiCzhBeCNUtGmU/cFoT2ip3L+kGZWqTWQpVT/4eZttgWzH9X0M3D
-         Vb/i5q+C/3/lanKwSNdq2WJy+/Cc7Nl7SBCIZyqb1iI015J3x+arg7Sfuh89/Qqws4Et
-         b7RDcE9r5FFEg/rQYALJgCWMGDBrVJjN3tTc4miv94zvahSGy6sGm+pWJp8prp2sKIxo
-         ydZg==
-X-Gm-Message-State: AOAM533p6LuW67cjofG/eYI1MP+jsb8U/EtS6Ks5zA6h7/yROX0FjMsN
-        o3+VGTGAUUH73IXtxL/7lg0=
-X-Google-Smtp-Source: ABdhPJyomL+EZYnJZdhLQIkr100kUS27b8B98fm+aUM4WURr0SgB6mFhRZt+fhAaDDtjU02Iko3AOQ==
-X-Received: by 2002:a17:902:a401:b029:ef:4ee:6a7e with SMTP id p1-20020a170902a401b02900ef04ee6a7emr34938984plq.65.1620920480559;
-        Thu, 13 May 2021 08:41:20 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:9b6b])
-        by smtp.gmail.com with ESMTPSA id t19sm2422622pfg.70.2021.05.13.08.41.17
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SuYo0v4Sspk+YrS82KRsmWvE9J4qLdnDJDZ/tX57c60=;
+        b=ecnwKAVIbbraP0IO97BXrIeROzHiFIyfFjQpuUIND3uocS8OJV8aqGsokPZIXX1nnb
+         dDFbPQp5qVSEQy1bVdPyw3TxBTxfXslSbD+d5UG+16K5+saySpteEoICCbkzOFo2b0Xf
+         H4AxlDpOKsKm+mVhpA1bYBfFHc7OKzVsNkyp7uoM7y3RYbJUcahrPBuJj/TmkRFkjU4J
+         KUuaCliQxE7MCIQF4eKDDj09CGnlO2mdSeKMp6FApAWWSoSePjCT7H7s5TcxppykMrzj
+         UvLFGhBQsQTm0WxFEN4Psj171MEpAq7M76Ws8vU7Auu4e8PMwWCFAfd+f1piiw6Ufr3S
+         8eGQ==
+X-Gm-Message-State: AOAM5302FfRGmOAbTPtjL8laKmeaNT7tV2UYiFDKT+kJq7M09u4tPhuI
+        7v1ea64+lZPqYnrz04iMrGbqBiR6PeuKNcCL
+X-Google-Smtp-Source: ABdhPJxDK3pB3PY/rvI4wpNPRfdEYs654cpLUafAO8s3rWQ+yENAmMzQGxTHm01qJ30+vbCBmmirnQ==
+X-Received: by 2002:a05:6402:284:: with SMTP id l4mr52310910edv.299.1620925146948;
+        Thu, 13 May 2021 09:59:06 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-5-94-253-60.cust.vodafonedsl.it. [5.94.253.60])
+        by smtp.gmail.com with ESMTPSA id w11sm2959431ede.54.2021.05.13.09.59.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 08:41:19 -0700 (PDT)
-Date:   Thu, 13 May 2021 08:41:15 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        Thu, 13 May 2021 09:59:06 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     netdev@vger.kernel.org, linux-mm@kvack.org
+Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: bpf libraries and static variables. Was: [PATCH v2 bpf-next 2/6]
- libbpf: rename static variables during linking
-Message-ID: <20210513154115.kzbyrhsmsqp6exjr@ast-mbp.dhcp.thefacebook.com>
-References: <20210427022231.pbgtrdbxpgdx2zrw@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzZOwTp4vQxvCSXaS4-94fz_eZ7Q4n6uQfkAnMQnLRaTbQ@mail.gmail.com>
- <20210428045545.egqvhyulr4ybbad6@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzZo7_r-hsNvJt3w3kyrmmBJj7ghGY8+k4nvKF0KLjma=w@mail.gmail.com>
- <20210504044204.kpt6t5kaomj7oivq@ast-mbp>
- <CAADnVQ+WV8xZqJfWx8em5Ch8aKA8xcPqR0wT0BdFf9M==W5_FQ@mail.gmail.com>
- <CAEf4BzY2z+oh=N0X26RBLEWw0t9pT7_fN0mWyDqfGcwuK8A-kg@mail.gmail.com>
- <20210511230505.z3rdnppplk3v3jce@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzbJ==4iUFp4pYpkgbKy40+Q6+RTPJVh0gUANHajs88ZTg@mail.gmail.com>
- <CACAyw9-9CwzMPzZGOOs6RD5Rz4X+MsBkDE-y3FZuLCw1znSUEQ@mail.gmail.com>
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: [PATCH net-next v5 0/5] page_pool: recycle buffers
+Date:   Thu, 13 May 2021 18:58:41 +0200
+Message-Id: <20210513165846.23722-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACAyw9-9CwzMPzZGOOs6RD5Rz4X+MsBkDE-y3FZuLCw1znSUEQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 13, 2021 at 09:37:13AM +0100, Lorenz Bauer wrote:
-> On Wed, 12 May 2021 at 19:50, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> >
-> 
-> ...
-> 
-> > So at least for BPF skeleton, the flow I was imagining would be
-> > like this.
-> 
-> Thank you for the worked out example, it's really helpful.
-> 
-> >
-> > 1. BPF library abc consists of abc1.bpf.c and abc2.bpf.c. It also has
-> > user-space component in abc.c.
-> > 2. BPF app uses abs library and has its own app1.bpf.c and app2.bpf.c
-> > and app.c for user-space.
-> > 3. BPF library author sets up its Makefile to do
-> >   a. clang -target bpf -g -O2 -c abc1.bpf.c -o abc1.bpf.o
-> >   b. clang -target bpf -g -O2 -c abc2.bpf.c -o abc2.bpf.o
-> >   c. bpftool gen lib libabc.bpf.o abc1.bpf.o abc2.bpf.o
-> 
-> I think we can plug this into bpf2go [1] on our side in the best case,
-> which would avoid duplicating the static linker.
-> 
-> >   d. bpftool gen subskeleton libabc.bpf.o > libabc.subskel.h
-> >   e. abc.c (user-space library) is of the form
-> >
-> > #include "libabc.subskel.h"
-> >
-> > static struct libabc_bpf *subskel;
-> >
-> > int libabc__init(struct bpf_object *obj)
-> > {
-> >     subskel = libabc_bpf__open_subskel(obj);
-> >
-> >     subskel->data->abc_my_var = 123;
-> > }
-> >
-> > int libabc__attach()
-> > {
-> >     libabc_bpf__attach(subskel);
-> > }
-> >
-> >   f. cc abc.c into libabc.a and then libabc.a and libabc.bpf.o are
-> > distributed to end user
-> >
-> > 3. Now, from BPF application author side:
-> >   a. clang -target bpf -g -O2 -c app1.bpf.c -o app1.bpf.o
-> >   b. clang -target bpf -g -O2 -c app2.bpf.c -o app2.bpf.o
-> >   c. bpftool gen object app.bpf.o app1.bpf.o app2.bpf.o libabc.bpf.o
-> 
-> I haven't worked out exactly how things would work, but on the Go side
-> it might be possible to distribute libabc.bpf.o plus the Go "library"
-> code as a package. So the Go toolchain would never create this merged
-> object, but instead do
-> 
->     bpftool gen object app.bpf.o app1.bpf.o app2.bpf.o
-> 
-> and later link app.bpf.o and libabc.bpf.o at runtime. It would be
-> simpler from our side if bpftool gen object could link both libraries
-> and "programs", maybe we can discuss the details of this during office
-> hours.
-> 
-> 1: https://pkg.go.dev/github.com/cilium/ebpf/cmd/bpf2go
+From: Matteo Croce <mcroce@microsoft.com>
 
-This is really cool! Looks like libbpf C skeleton that embeds the full
-elf file as a string into golang object, but it doesn't support
-direct data/rodata/bss variable access yet? Looks like only progs and maps
-are natively exposed into golang?
+This is a respin of [1]
 
-Have you seen the light skeleton yet?
-https://patchwork.kernel.org/project/netdevbpf/patch/20210512213256.31203-18-alexei.starovoitov@gmail.com/
-It's design centered on supporting languages like golang that
-cannot take libbpf in C as-is. I think reimplementation of everything
-in every other language that doesn't have clean binding to C is going
-to hurt BPF ecosystem long term. The light skeleton is designed to address that.
-It's libbpf-less. We're going to teach bpftool to emit golang equivalent of .lskel.h
-Here is trace_printk.lskel.h example:
-https://gist.github.com/4ast/774ea58f8286abac6aa8e3bf3bf3b903
-The hex string dumps in there are not elf file anymore.
-They're blobs directly interpreted by the kernel.
-Note the headers:
-#include <bpf/bpf.h>
-#include <bpf/skel_internal.h>
-The light skeleton is using only three sys_bpf wrappers (map_create, prog_load, test_run).
-While the end result looks and feels like existing skeleton.
-It doesn't need libelf and doesn't need all of libbpf to load and attach progs.
-The plan is to take cilium bpf progs and represent them lskel.h tests in selftests/bpf
-to demonstrate the feature richness.
+This patchset shows the plans for allowing page_pool to handle and
+maintain DMA map/unmap of the pages it serves to the driver. For this
+to work a return hook in the network core is introduced.
 
-The work on llvm's ld.lld linker is in progress as well:
-https://reviews.llvm.org/D101336
-The users will be able to:
-clang -target bpf -flto -O2 -g -c t1.c -o t1.bc
-clang -target bpf -flto -O2 -g -c t2.c -o t2.bc
-ld.lld -r t1.bc t2.bc -o final.o
+The overall purpose is to simplify drivers, by providing a page
+allocation API that does recycling, such that each driver doesn't have
+to reinvent its own recycling scheme. Using page_pool in a driver
+does not require implementing XDP support, but it makes it trivially
+easy to do so. Instead of allocating buffers specifically for SKBs
+we now allocate a generic buffer and either wrap it on an SKB
+(via build_skb) or create an XDP frame.
+The recycling code leverages the XDP recycle APIs.
 
-Such llvm linking step can only happen once, since it's an LTO compilation.
-To use it with libraries the users would need to:
-// compile lib files
-clang -target bpf -flto -g -O2 -c abc1.bpf.c -o abc1.bpf.o
-clang -target bpf -flto -g -O2 -c abc2.bpf.c -o abc2.bpf.o
-// compile app files
-clang -target bpf -flto -g -O2 -c app1.bpf.c -o app1.bpf.o
-clang -target bpf -flto -g -O2 -c app2.bpf.c -o app2.bpf.o
-// link and LTO-compile everything
-ld.lld -r abc1.bpf.o abc2.bpf.o app1.bpf.o app2.bpf.o -o final.o
+The Marvell mvpp2 and mvneta drivers are used in this patchset to
+demonstrate how to use the API, and tested on a MacchiatoBIN
+and EspressoBIN boards respectively.
 
-Obviously we still need libbpf static linker for linking true .o-s
-when LTO is not suitable.
+Please let this going in on a future -rc1 so to allow enough time
+to have wider tests.
+
+Note that this series depends on the change "mm: fix struct page layout
+on 32-bit systems"[2] which is not yet in master.
+
+v4 -> v5:
+- move the signature so it doesn't alias with page->mapping
+- use an invalid pointer as magic
+- incorporate Matthew Wilcox's changes for pfmemalloc pages
+- move the __skb_frag_unref() changes to a preliminary patch
+- refactor some cpp directives
+- only attempt recycling if skb->head_frag
+- clear skb->pp_recycle in pskb_expand_head()
+
+v3 -> v4:
+- store a pointer to page_pool instead of xdp_mem_info
+- drop a patch which reduces xdp_mem_info size
+- do the recycling in the page_pool code instead of xdp_return
+- remove some unused headers include
+- remove some useless forward declaration
+
+v2 -> v3:
+- added missing SOBs
+- CCed the MM people
+
+v1 -> v2:
+- fix a commit message
+- avoid setting pp_recycle multiple times on mvneta
+- squash two patches to avoid breaking bisect
+
+[1] https://lore.kernel.org/netdev/154413868810.21735.572808840657728172.stgit@firesoul/
+[2] https://lore.kernel.org/linux-mm/20210510153211.1504886-1-willy@infradead.org/
+
+Ilias Apalodimas (1):
+  page_pool: Allow drivers to hint on SKB recycling
+
+Matteo Croce (4):
+  mm: add a signature in struct page
+  skbuff: add a parameter to __skb_frag_unref
+  mvpp2: recycle buffers
+  mvneta: recycle buffers
+
+ drivers/net/ethernet/marvell/mvneta.c         | 11 +++---
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 17 +++++-----
+ drivers/net/ethernet/marvell/sky2.c           |  2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
+ include/linux/mm.h                            | 12 ++++---
+ include/linux/mm_types.h                      | 12 +++++++
+ include/linux/skbuff.h                        | 34 ++++++++++++++++---
+ include/net/page_pool.h                       | 11 ++++++
+ net/core/page_pool.c                          | 27 +++++++++++++++
+ net/core/skbuff.c                             | 25 +++++++++++---
+ net/tls/tls_device.c                          |  2 +-
+ 11 files changed, 126 insertions(+), 29 deletions(-)
+
+-- 
+2.31.1
+
