@@ -2,164 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964E837F0CF
-	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 03:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0B637F12F
+	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 04:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239249AbhEMBM0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 May 2021 21:12:26 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2572 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235029AbhEMBMX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 May 2021 21:12:23 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FgYSc1ybVzsRNF;
-        Thu, 13 May 2021 09:08:32 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 13 May 2021 09:10:59 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-Subject: [PATCH net v7 3/3] net: sched: fix tx action reschedule issue with stopped queue
-Date:   Thu, 13 May 2021 09:11:00 +0800
-Message-ID: <1620868260-32984-4-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620868260-32984-1-git-send-email-linyunsheng@huawei.com>
-References: <1620868260-32984-1-git-send-email-linyunsheng@huawei.com>
+        id S230017AbhEMCPS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 May 2021 22:15:18 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5104 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229813AbhEMCPR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 May 2021 22:15:17 -0400
+Received: from dggeml706-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FgZsL4G5SzYgKH;
+        Thu, 13 May 2021 10:11:34 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggeml706-chm.china.huawei.com (10.3.17.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 13 May 2021 10:14:02 +0800
+Received: from [127.0.0.1] (10.174.177.72) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 13 May
+ 2021 10:14:02 +0800
+Subject: Re: [PATCH 1/1] libbpf: Delete an unneeded bool conversion
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Leon Romanovsky <leon@kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+References: <20210510124315.3854-1-thunder.leizhen@huawei.com>
+ <CAEf4BzaADXguVoh0KXxGYhzG68eA1bqfKH1T1SWyPvkE5BHa5g@mail.gmail.com>
+ <YJoRd4reWa1viW76@unreal>
+ <CAEf4BzaYsjWh_10a4yeSVpAAwC-f=zUNANb10VN2xZ1b5dsY-A@mail.gmail.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <f82343ec-9d67-d033-dd07-813e7d981c4f@huawei.com>
+Date:   Thu, 13 May 2021 10:14:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
+In-Reply-To: <CAEf4BzaYsjWh_10a4yeSVpAAwC-f=zUNANb10VN2xZ1b5dsY-A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.72]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The netdev qeueue might be stopped when byte queue limit has
-reached or tx hw ring is full, net_tx_action() may still be
-rescheduled endlessly if STATE_MISSED is set, which consumes
-a lot of cpu without dequeuing and transmiting any skb because
-the netdev queue is stopped, see qdisc_run_end().
 
-This patch fixes it by checking the netdev queue state before
-calling qdisc_run() and clearing STATE_MISSED if netdev queue is
-stopped during qdisc_run(), the net_tx_action() is recheduled
-again when netdev qeueue is restarted, see netif_tx_wake_queue().
 
-As there is time window betewwn netif_xmit_frozen_or_stopped()
-checking and STATE_MISSED clearing, between which STATE_MISSED
-is set by net_tx_action() scheduled by netif_tx_wake_queue(),
-so set the STATE_MISSED again if netdev queue is restarted.
+On 2021/5/13 3:02, Andrii Nakryiko wrote:
+> On Mon, May 10, 2021 at 10:09 PM Leon Romanovsky <leon@kernel.org> wrote:
+>>
+>> On Mon, May 10, 2021 at 11:00:29AM -0700, Andrii Nakryiko wrote:
+>>> On Mon, May 10, 2021 at 5:43 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>>>>
+>>>> The result of an expression consisting of a single relational operator is
+>>>> already of the bool type and does not need to be evaluated explicitly.
+>>>>
+>>>> No functional change.
+>>>>
+>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>> ---
+>>>
+>>> See [0] and [1].
+>>>
+>>>   [0] https://lore.kernel.org/bpf/CAEf4BzYgLf5g3oztbA-CJR4gQ7AVKQAGrsHWCOgTtUMUM-Mxfg@mail.gmail.com/
+>>>   [1] https://lore.kernel.org/bpf/CAEf4BzZQ6=-h3g1duXFwDLr92z7nE6ajv8Rz_Zv=qx=-F3sRVA@mail.gmail.com/
+>>
+>> How long do you plan to fight with such patches?
+> 
+> As long as necessary. There are better ways to contribute to libbpf
+> than doing cosmetic changes to the perfectly correct code.
 
-Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
-Reported-by: Michal Kubecek <mkubecek@suse.cz>
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
-V7: Fix the netif_tx_wake_queue() data race noted by Jakub.
-V6: Drop NET_XMIT_DROP checking for it is not really relevant
-    to this patch, and it may cause performance performance
-    regression with multi pktgen threads on dummy netdev with
-    pfifo_fast qdisc case.
----
- net/core/dev.c          |  3 ++-
- net/sched/sch_generic.c | 27 ++++++++++++++++++++++++++-
- 2 files changed, 28 insertions(+), 2 deletions(-)
+No small stream, no river and sea.
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index d596cd7..ef8cf76 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -3853,7 +3853,8 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
- 
- 	if (q->flags & TCQ_F_NOLOCK) {
- 		rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
--		qdisc_run(q);
-+		if (likely(!netif_xmit_frozen_or_stopped(txq)))
-+			qdisc_run(q);
- 
- 		if (unlikely(to_free))
- 			kfree_skb_list(to_free);
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index d86c4cc..b129d9b 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -35,6 +35,25 @@
- const struct Qdisc_ops *default_qdisc_ops = &pfifo_fast_ops;
- EXPORT_SYMBOL(default_qdisc_ops);
- 
-+static void qdisc_maybe_stop_tx(struct Qdisc *q,
-+				const struct netdev_queue *txq)
-+{
-+	clear_bit(__QDISC_STATE_MISSED, &q->state);
-+
-+	/* Make sure the below netif_xmit_frozen_or_stopped()
-+	 * checking happens after clearing STATE_MISSED.
-+	 */
-+	smp_mb__after_atomic();
-+
-+	/* Checking netif_xmit_frozen_or_stopped() again to
-+	 * make sure STATE_MISSED is set if the STATE_MISSED
-+	 * set by netif_tx_wake_queue()'s rescheduling of
-+	 * net_tx_action() is cleared by the above clear_bit().
-+	 */
-+	if (!netif_xmit_frozen_or_stopped(txq))
-+		set_bit(__QDISC_STATE_MISSED, &q->state);
-+}
-+
- /* Main transmission queue. */
- 
- /* Modifications to data participating in scheduling must be protected with
-@@ -74,6 +93,7 @@ static inline struct sk_buff *__skb_dequeue_bad_txq(struct Qdisc *q)
- 			}
- 		} else {
- 			skb = SKB_XOFF_MAGIC;
-+			qdisc_maybe_stop_tx(q, txq);
- 		}
- 	}
- 
-@@ -242,6 +262,7 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
- 			}
- 		} else {
- 			skb = NULL;
-+			qdisc_maybe_stop_tx(q, txq);
- 		}
- 		if (lock)
- 			spin_unlock(lock);
-@@ -251,8 +272,10 @@ static struct sk_buff *dequeue_skb(struct Qdisc *q, bool *validate,
- 	*validate = true;
- 
- 	if ((q->flags & TCQ_F_ONETXQUEUE) &&
--	    netif_xmit_frozen_or_stopped(txq))
-+	    netif_xmit_frozen_or_stopped(txq)) {
-+		qdisc_maybe_stop_tx(q, txq);
- 		return skb;
-+	}
- 
- 	skb = qdisc_dequeue_skb_bad_txq(q);
- 	if (unlikely(skb)) {
-@@ -311,6 +334,8 @@ bool sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
- 		HARD_TX_LOCK(dev, txq, smp_processor_id());
- 		if (!netif_xmit_frozen_or_stopped(txq))
- 			skb = dev_hard_start_xmit(skb, dev, txq, &ret);
-+		else
-+			qdisc_maybe_stop_tx(q, txq);
- 
- 		HARD_TX_UNLOCK(dev, txq);
- 	} else {
--- 
-2.7.4
+There are no improvements to functionality, but may slightly speed up compilation.
+With more such accumulations, it is possible that the compilation of allmodconfig
+results in a second-level improvement.
+
+I don't know if you agree, at least I think so.
+
+> 
+>>
+>> Thanks
+>>
+>>>
+>>>>  tools/lib/bpf/libbpf.c | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>>>> index e2a3cf4378140f2..fa02213c451f4d2 100644
+>>>> --- a/tools/lib/bpf/libbpf.c
+>>>> +++ b/tools/lib/bpf/libbpf.c
+>>>> @@ -1504,7 +1504,7 @@ static int set_kcfg_value_tri(struct extern_desc *ext, void *ext_val,
+>>>>                                 ext->name, value);
+>>>>                         return -EINVAL;
+>>>>                 }
+>>>> -               *(bool *)ext_val = value == 'y' ? true : false;
+>>>> +               *(bool *)ext_val = value == 'y';
+>>>>                 break;
+>>>>         case KCFG_TRISTATE:
+>>>>                 if (value == 'y')
+>>>> --
+>>>> 2.26.0.106.g9fadedd
+>>>>
+>>>>
+> 
+> .
+> 
 
