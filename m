@@ -2,179 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939BA37FC05
-	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 19:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7038F37FC2B
+	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 19:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhEMRCL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 May 2021 13:02:11 -0400
-Received: from mail-ej1-f51.google.com ([209.85.218.51]:41581 "EHLO
-        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbhEMRBo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 May 2021 13:01:44 -0400
-Received: by mail-ej1-f51.google.com with SMTP id k10so9606994ejj.8;
-        Thu, 13 May 2021 10:00:33 -0700 (PDT)
+        id S229906AbhEMROM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 May 2021 13:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229877AbhEMROL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 May 2021 13:14:11 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E26C061574;
+        Thu, 13 May 2021 10:13:00 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id l19so815638plk.11;
+        Thu, 13 May 2021 10:13:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zrMfwFzDodhHwykTLD1Kq9ONATU2N5C73AJT1XjPvZA=;
+        b=l6FD1RQ6xxKveg6UUyO2wxrYw52YI5kT4mdjir0NlJc6rJU7OuUyUK8HNEoD1+M2Ki
+         sD1w2nkC9b4PB922KUmVXDWMBzFAzzesvBbZU50Feo644wrDAQJkyHPYEDuZovwCj3QY
+         V2/ffS+jjzoZUfBmj/u06vhVxhy5Inp4UyQXbmafMTzHJR59ayQw8Sqk2lDkjmzltK7l
+         xRlv/JrmHed8Cy/p5UyHQMwDdmX+bDEXRTdXz7OUhOGxGwaNXky+qQbQHtEz+1HIp7VE
+         IyQv9qZRZVIgl6Heh70GO+r03kTCqAUFPLugJH2bpukHmE2gG2SNkkYRBuK3Z/bmbJx+
+         JwQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=opbCv80kZO0WR00E8CvyXu7JXQ2Kf6zwvEyZ//vM1Tw=;
-        b=VAhfWFA8nFT24eDiZTRNa5rnd8SHDkpJBG8BTofyDiXvoPQPYgU8lvYF+WICxw5TOx
-         cv0NBNEZj2PQ4C2hGb7aD6B5b9k/R0pInqszK1N2d8ddvaXw8OGcZ6ArYMgTtIdxySP4
-         SdktQEF4ZnL1DhnoDlVfRzQDuaPQSzRwjwZStT1ohhEaChVG0QGRKa1MxdHaj8IEzxhH
-         JId9Qo3vRsSZ9YGeup2Y22ibbJXndMQHXPvkzMQBk4I3ghhv9jlGpu6FFC0RuAmmWueQ
-         7uf+Lppgm3OJxgdRwczm+BJZLHcxViheM5uOYy/KB1aucF4MhK9swtwv888Lg9no8oQf
-         1KeA==
-X-Gm-Message-State: AOAM530NWIdzo6EeMu6qlrDHN7T6SteVMJt67BW/bHk6l+/cKymjdCrg
-        y5/RAz5YE043KV3SDQIGHz/oVg+eMp2G5uTY
-X-Google-Smtp-Source: ABdhPJxImITrQc7A7BC8YrzU/gQf+8smgk/vcbRtFyyFBWomH5/JFH9j16xBhSt71cMxnuAzH2+gFA==
-X-Received: by 2002:a17:906:3bca:: with SMTP id v10mr12852999ejf.121.1620925232961;
-        Thu, 13 May 2021 10:00:32 -0700 (PDT)
-Received: from msft-t490s.teknoraver.net (net-5-94-253-60.cust.vodafonedsl.it. [5.94.253.60])
-        by smtp.gmail.com with ESMTPSA id w11sm2959431ede.54.2021.05.13.10.00.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 May 2021 10:00:32 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     netdev@vger.kernel.org, linux-mm@kvack.org
-Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: [PATCH net-next v5 5/5] mvneta: recycle buffers
-Date:   Thu, 13 May 2021 18:58:46 +0200
-Message-Id: <20210513165846.23722-6-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210513165846.23722-1-mcroce@linux.microsoft.com>
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zrMfwFzDodhHwykTLD1Kq9ONATU2N5C73AJT1XjPvZA=;
+        b=J84cm8q9I6kbU1LTZMGxoebICA5zBNvTVatKbNcQd9jzQDDA0JmMSg5GCx+7VVEz2C
+         zXZ3jOjZ+Pc0aSUjZRbz3Eg2ZQMMJTvR8D8lbVxFlTtjbcdQAyZ2uJwQ58WtRPJk1ZE6
+         V0Zbqc0k301Gh7gZ71+FBZV9AMwmVoSHjzdNAW5DsQFVAgOcVpi6Xr7sQ6MFbqMyIKXb
+         rvhVtZDam9iVf5kwWAR8mGaiuCvXwMFWHw8zHLF+vivoUsu9tyyz7HaUW7RYi8T7Ng1k
+         UClVlXuj5aWnJwrWLR1qqNbrIVk5TeorO+7jNGo/ga2rgK6jpiSHDG8vh1A+NQRYdT0P
+         nTBQ==
+X-Gm-Message-State: AOAM530qvpczqRm34vmm2Jf8B2T9Pbl6eT87aaRKiPBJ8Q1aIg69z+o1
+        YV19gITC4uL3FcRXXj8lBi1YyH4KRgxeptNcSGM=
+X-Google-Smtp-Source: ABdhPJyt6icEb19FHIyWgBfJo/GScqbX27AWZXJeoucbJApQUi9/ZSvw8D1WlSTRl33U7rU93hkqQoz5O3MY7tAJY4U=
+X-Received: by 2002:a17:902:b485:b029:ee:d5c0:841c with SMTP id
+ y5-20020a170902b485b02900eed5c0841cmr40423107plr.57.1620925979839; Thu, 13
+ May 2021 10:12:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CABqSeAR9rgARxYGYUVZQgZ0a-wqZxy-qeoVpu495XHxpj0Ku=A@mail.gmail.com>
+ <B541CF0E-3410-4CA3-93E4-670052C5FC11@amacapital.net>
+In-Reply-To: <B541CF0E-3410-4CA3-93E4-670052C5FC11@amacapital.net>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Thu, 13 May 2021 12:12:48 -0500
+Message-ID: <CABqSeAT1OeiW69RipcY6U4drPtJ+GaygZqXfd8aL8uX4d4Wp=A@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next seccomp 10/12] seccomp-ebpf: Add ability to
+ read user memory
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        containers@lists.linux.dev, bpf <bpf@vger.kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Austin Kuo <hckuo2@illinois.edu>,
+        Claudio Canella <claudio.canella@iaik.tugraz.at>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Daniel Gruss <daniel.gruss@iaik.tugraz.at>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jann Horn <jannh@google.com>,
+        Jinghao Jia <jinghao7@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tom Hromatka <tom.hromatka@oracle.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+On Thu, May 13, 2021 at 9:53 AM Andy Lutomirski <luto@amacapital.net> wrote=
+:
+> > On May 12, 2021, at 10:26 PM, YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> >
+> > =EF=BB=BFOn Wed, May 12, 2021 at 5:36 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> >> Typically the verifier does all the checks at load time to avoid
+> >> run-time overhead during program execution. Then at attach time we
+> >> check that attach parameters provided at load time match exactly
+> >> to those at attach time. ifindex, attach_btf_id, etc fall into this ca=
+tegory.
+> >> Doing something similar it should be possible to avoid
+> >> doing get_dumpable() at run-time.
+> >
+> > Do you mean to move the check of dumpable to load time instead of
+> > runtime? I do not think that makes sense. A process may arbitrarily
+> > set its dumpable attribute during execution via prctl. A process could
+> > do set itself to non-dumpable, before interacting with sensitive
+> > information that would better not be possible to be dumped (eg.
+> > ssh-agent does this [1]). Therefore, being dumpable at one point in
+> > time does not indicate anything about whether it stays dumpable at a
+> > later point in time. Besides, seccomp filters are inherited across
+> > clone and exec, attaching to many tasks with no option to detach. What
+> > should the load-time check of task dump-ability be against? The
+> > current task may only be the tip of an iceburg.
+> >
+> > [1] https://github.com/openssh/openssh-portable/blob/2dc328023f60212cd2=
+9504fc05d849133ae47355/ssh-agent.c#L1398
+> >
+> >
+>
+> First things first: why are you checking dumpable at all?  Once you figur=
+e out why and whether it=E2=80=99s needed, you may learn something about wh=
+at task to check.
+>
+> I don=E2=80=99t think checking dumpable makes any sense.
 
-Use the new recycling API for page_pool.
-In a drop rate test, the packet rate increased di 10%,
-from 269 Kpps to 296 Kpps.
+ptrace. We don't want to extend one's ability to read another
+process's memory if they could not read it via ptrace
+(process_vm_readv or ptrace(PTRACE_PEEK{TEXT,DATA})). The constraints
+for ptrace to access a target's memory I've written down earlier [1],
+but tl;dr: to be at least as restrictive as ptrace, a tracer without
+CAP_PTRACE cannot trace a non-dumpable process. What's the target
+process (i.e. the process whose memory is being read) in the context
+of a seccomp filter? The current task. Does that answer your
+questions?
 
-perf top on a stock system shows:
+[1] https://lore.kernel.org/bpf/CABqSeAT8iz-VhWjWqABqGbF7ydkoT7LmzJ5Do8K1AN=
+QvQK=3DFJQ@mail.gmail.com/
 
-Overhead  Shared Object     Symbol
-  21.78%  [kernel]          [k] __pi___inval_dcache_area
-  21.66%  [mvneta]          [k] mvneta_rx_swbm
-   7.00%  [kernel]          [k] kmem_cache_alloc
-   6.05%  [kernel]          [k] eth_type_trans
-   4.44%  [kernel]          [k] kmem_cache_free.part.0
-   3.80%  [kernel]          [k] __netif_receive_skb_core
-   3.68%  [kernel]          [k] dev_gro_receive
-   3.65%  [kernel]          [k] get_page_from_freelist
-   3.43%  [kernel]          [k] page_pool_release_page
-   3.35%  [kernel]          [k] free_unref_page
-
-And this is the same output with recycling enabled:
-
-Overhead  Shared Object     Symbol
-  24.10%  [kernel]          [k] __pi___inval_dcache_area
-  23.02%  [mvneta]          [k] mvneta_rx_swbm
-   7.19%  [kernel]          [k] kmem_cache_alloc
-   6.50%  [kernel]          [k] eth_type_trans
-   4.93%  [kernel]          [k] __netif_receive_skb_core
-   4.77%  [kernel]          [k] kmem_cache_free.part.0
-   3.93%  [kernel]          [k] dev_gro_receive
-   3.03%  [kernel]          [k] build_skb
-   2.91%  [kernel]          [k] page_pool_put_page
-   2.85%  [kernel]          [k] __xdp_return
-
-The test was done with mausezahn on the TX side with 64 byte raw
-ethernet frames.
-
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- drivers/net/ethernet/marvell/mvneta.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index 7d5cd9bc6c99..6d2f8dce4900 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -2320,7 +2320,7 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
- }
- 
- static struct sk_buff *
--mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
-+mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
- 		      struct xdp_buff *xdp, u32 desc_status)
- {
- 	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-@@ -2331,7 +2331,7 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
- 	if (!skb)
- 		return ERR_PTR(-ENOMEM);
- 
--	page_pool_release_page(rxq->page_pool, virt_to_page(xdp->data));
-+	skb_mark_for_recycle(skb, virt_to_page(xdp->data), pool);
- 
- 	skb_reserve(skb, xdp->data - xdp->data_hard_start);
- 	skb_put(skb, xdp->data_end - xdp->data);
-@@ -2343,7 +2343,10 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct mvneta_rx_queue *rxq,
- 		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
- 				skb_frag_page(frag), skb_frag_off(frag),
- 				skb_frag_size(frag), PAGE_SIZE);
--		page_pool_release_page(rxq->page_pool, skb_frag_page(frag));
-+		/* We don't need to reset pp_recycle here. It's already set, so
-+		 * just mark fragments for recycling.
-+		 */
-+		page_pool_store_mem_info(skb_frag_page(frag), pool);
- 	}
- 
- 	return skb;
-@@ -2425,7 +2428,7 @@ static int mvneta_rx_swbm(struct napi_struct *napi,
- 		    mvneta_run_xdp(pp, rxq, xdp_prog, &xdp_buf, frame_sz, &ps))
- 			goto next;
- 
--		skb = mvneta_swbm_build_skb(pp, rxq, &xdp_buf, desc_status);
-+		skb = mvneta_swbm_build_skb(pp, pp, &xdp_buf, desc_status);
- 		if (IS_ERR(skb)) {
- 			struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
- 
--- 
-2.31.1
-
+YiFei Zhu
