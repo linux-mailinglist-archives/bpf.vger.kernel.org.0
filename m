@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE0137FFB5
-	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 23:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DCC37FFC2
+	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 23:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233371AbhEMVRb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 May 2021 17:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49736 "EHLO
+        id S233349AbhEMVXx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 May 2021 17:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233360AbhEMVRb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 May 2021 17:17:31 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D8AC061574
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 14:16:21 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id v188so36403134ybe.1
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 14:16:21 -0700 (PDT)
+        with ESMTP id S230252AbhEMVXw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 May 2021 17:23:52 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61504C061574
+        for <bpf@vger.kernel.org>; Thu, 13 May 2021 14:22:42 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id h202so36356507ybg.11
+        for <bpf@vger.kernel.org>; Thu, 13 May 2021 14:22:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=K10rAsBlRmHikt6SPsf8yyocVr8Lx6rqR8erIq5nF8U=;
-        b=MkkWv26e14oSTrNxZpkBpuJZT4JzEP3EzYLmdZfLiBJoBhtOiZ2/4adRaZVYKb1nIT
-         SHu+TQRbVLoDAU/HLMB1D7B/vHA4WQv9mxDlaEoJb29gmaKNe8+zS6lvX3c7/h42Asjg
-         1iZNLe6jq13eIP0olvh9/MXysUebdDpvq9DkZ7lrKJOW27ho3DANBL+an3yQZDd1fCNL
-         vXkjLuGm/awl0pF0D9jErIsiq/hUjYGPz/8IrffbuHQPu8IbWH0qQ4oMzKdCJUEKKsZR
-         tqGXJCKFGkUK4he6oZ5vvwcYwnZXabUQEQq/umQNExmSs9FnakMaA+z2Gpjv2666CvSS
-         LkDg==
+        bh=jwqqAgXpuJZWOXJXwsJMiGPYPZjwnWxuzvJIpc46848=;
+        b=Yq8hh1WBqXL6fbQgySjPlvK1+5hU6P4S4XxCz7GWGQn0w0yxwLMx5esJQEZyZK9+j4
+         28d3nFmD6Msw841/OoodLu/JNzJO+wIpNDozOynzGhpRBE/t7ZuWBi+P6Ujda4pIsiJh
+         Fx6y6mp6oE2r5Cuce5oLiSsIokRuPpKtRzcAijlWsQY/N5H3KmoGpD6WiADHN/ZWqS3w
+         Ss3QhCNeTp2+vCRiqkPPayACyb3i1frn+jDW+OLqClAfrYbhIJXoW7AeumEPv93Xt7ly
+         FUTXRrPSkAcOjHm0LZf0Sw2ZWRDimxvjS92ykbtZ2GRf3K+mmvasM5UaniQXfTb6PXIX
+         5AQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=K10rAsBlRmHikt6SPsf8yyocVr8Lx6rqR8erIq5nF8U=;
-        b=BkdMFsYCzdZj8IPrp/AkYrV7oUoBbLWiIJht6w4xebMk9j0qy7CTaamLiDNwQVRNK6
-         rfCEGt3tFMe4mys62dXb5kc5NY41NiuyxJtAhZbOT/h9ybcY5L+H70IZl0JCgknTYTGf
-         tkEi22zndytaOm4CTMduWMUj7dU/FKV6/4VqwmeP85gcIc4pd8eglGpPRtjhci0Up2as
-         OetSArjyEFWpyAseyWkOmOuc93VVpPCufp/YscROgbSprT1uRtTlZZgqVlORCtZEXj/T
-         pJQ/tbcW4p/Fy0YDq5piz7G6kOdvra7lIrbgdkrNexZytMazCFk6O6ebht0ykkAF+KZ5
-         7iig==
-X-Gm-Message-State: AOAM530siZTAiNCEL/Uw+pKokpv/R+Doo0L3eyCjEp7T5fLpdv5CmP31
-        f2GqZbGU++KTiQm8cGNnI1EMZlSgJdhWNA0QTsE=
-X-Google-Smtp-Source: ABdhPJzwweyku60OaWoELGas6PUoSnZGu4Msa/F4pnwAIVR3LdS0Hb1oeDCseNUXsLqhUK4IhWPoEEJqd5SR+wczfSI=
-X-Received: by 2002:a25:7507:: with SMTP id q7mr59031955ybc.27.1620940580386;
- Thu, 13 May 2021 14:16:20 -0700 (PDT)
+        bh=jwqqAgXpuJZWOXJXwsJMiGPYPZjwnWxuzvJIpc46848=;
+        b=Weio0sKmpb9TgnqPy5vaHFo1R+gsKdymWWxn6poLBacnbTTzHfTPtMfBqTv4Hqmav5
+         EODDeGYE2qzrDJBsRsef+QP5/at5OyGTqHC2q0X3BY8e36ouxQQQBUjx5sP+mbuSNKwd
+         4E35KlAldH7B14mbHRNSfESLXA3bbnMIRdvIB53zhu1+ewUDIfJjlLKpClZ5yy4jEdck
+         qLsmhceCBvlcPxxc210ABuQrMzzIqoN2mItz1MPV8N5iD6OPAhWVUi+LW+uIkfdWA+Vr
+         PSzOCndZHYg7Fn16xMZUfzEA5SKO1XntmmoK3mkQ4y7sPZeXmn0o5Ab4Vp51obbg6mFs
+         hdUw==
+X-Gm-Message-State: AOAM532/91ngGvG+j0c7LgNtz4VEn/trxu4htFnI7FK0b/PqwSG0Jhsv
+        5b7P5HfxHIU3so39XQOR2W1lb3qk8D6ICvRWndM=
+X-Google-Smtp-Source: ABdhPJxsh4j+TUBWfTMAYAqoae4Bwg32EUcVfsh1f665CzR0abfIAhMS+sI1jyKNZHLuLD0tf9ZqMeqCAM9Ga/xsOis=
+X-Received: by 2002:a25:da82:: with SMTP id n124mr86715ybf.510.1620940961744;
+ Thu, 13 May 2021 14:22:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210512213256.31203-1-alexei.starovoitov@gmail.com> <20210512213256.31203-17-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210512213256.31203-17-alexei.starovoitov@gmail.com>
+References: <20210512213256.31203-1-alexei.starovoitov@gmail.com> <20210512213256.31203-18-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210512213256.31203-18-alexei.starovoitov@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 13 May 2021 14:16:07 -0700
-Message-ID: <CAEf4Bzb=L0LH0OfEqe+uMq0rd8=zaHzPdWV5-Qf5_CQFkKT8pw@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 16/21] libbpf: Introduce bpf_map__initial_value().
+Date:   Thu, 13 May 2021 14:22:30 -0700
+Message-ID: <CAEf4BzbJsk3WXX90xBGH00jJq6UYMsPk+9Xn1LOuB976pfws9g@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 17/21] bpftool: Use syscall/loader program in
+ "prog load" and "gen skeleton" command.
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -66,67 +67,72 @@ On Wed, May 12, 2021 at 2:33 PM Alexei Starovoitov
 >
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> Introduce bpf_map__initial_value() to read initial contents
-> of rodata/bss maps. Note only mmaped maps qualify.
-> Just as bpf_map__set_initial_value() works only for mmaped kconfig.
-
-This sentence is confusing. bpf_map__set_initial_value() rejects
-LIBBPF_MAP_KCONFIG, so it *doesn't* work for kconfig. But your
-implementation will return non-NULL pointer for kconfig (it will be
-all zeroes before load). So did you intend to match
-set_initial_value() semantics or not?
-
+> Add -L flag to bpftool to use libbpf gen_trace facility and syscall/loader program
+> for skeleton generation and program loading.
+>
+> "bpftool gen skeleton -L" command will generate a "light skeleton" or "loader skeleton"
+> that is similar to existing skeleton, but has one major difference:
+> $ bpftool gen skeleton lsm.o > lsm.skel.h
+> $ bpftool gen skeleton -L lsm.o > lsm.lskel.h
+> $ diff lsm.skel.h lsm.lskel.h
+> @@ -5,34 +4,34 @@
+>  #define __LSM_SKEL_H__
+>
+>  #include <stdlib.h>
+> -#include <bpf/libbpf.h>
+> +#include <bpf/bpf.h>
+>
+> The light skeleton does not use majority of libbpf infrastructure.
+> It doesn't need libelf. It doesn't parse .o file.
+> It only needs few sys_bpf wrappers. All of them are in bpf/bpf.h file.
+> In future libbpf/bpf.c can be inlined into bpf.h, so not even libbpf.a would be
+> needed to work with light skeleton.
+>
+> "bpftool prog load -L file.o" command is introduced for debugging of syscall/loader
+> program generation. Just like the same command without -L it will try to load
+> the programs from file.o into the kernel. It won't even try to pin them.
+>
+> "bpftool prog load -L -d file.o" command will provide additional debug messages
+> on how syscall/loader program was generated.
+> Also the execution of syscall/loader program will use bpf_trace_printk() for
+> each step of loading BTF, creating maps, and loading programs.
+> The user can do "cat /.../trace_pipe" for further debug.
+>
+> An example of fexit_sleep.lskel.h generated from progs/fexit_sleep.c:
+> struct fexit_sleep {
+>         struct bpf_loader_ctx ctx;
+>         struct {
+>                 struct bpf_map_desc bss;
+>         } maps;
+>         struct {
+>                 struct bpf_prog_desc nanosleep_fentry;
+>                 struct bpf_prog_desc nanosleep_fexit;
+>         } progs;
+>         struct {
+>                 int nanosleep_fentry_fd;
+>                 int nanosleep_fexit_fd;
+>         } links;
+>         struct fexit_sleep__bss {
+>                 int pid;
+>                 int fentry_cnt;
+>                 int fexit_cnt;
+>         } *bss;
+> };
 >
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
->  tools/lib/bpf/libbpf.c   | 8 ++++++++
->  tools/lib/bpf/libbpf.h   | 1 +
->  tools/lib/bpf/libbpf.map | 1 +
->  3 files changed, 10 insertions(+)
+
+LGTM.
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  tools/bpf/bpftool/Makefile        |   2 +-
+>  tools/bpf/bpftool/gen.c           | 386 ++++++++++++++++++++++++++++--
+>  tools/bpf/bpftool/main.c          |   7 +-
+>  tools/bpf/bpftool/main.h          |   1 +
+>  tools/bpf/bpftool/prog.c          | 107 ++++++++-
+>  tools/bpf/bpftool/xlated_dumper.c |   3 +
+>  6 files changed, 482 insertions(+), 24 deletions(-)
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 8fd70f0592ad..8d3b136c6b29 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -9736,6 +9736,14 @@ int bpf_map__set_initial_value(struct bpf_map *map,
->         return 0;
->  }
->
-> +const void *bpf_map__initial_value(struct bpf_map *map, size_t *psize)
-> +{
-> +       if (!map->mmaped)
-> +               return NULL;
-> +       *psize = map->def.value_size;
-> +       return map->mmaped;
-> +}
-> +
->  bool bpf_map__is_offload_neutral(const struct bpf_map *map)
->  {
->         return map->def.type == BPF_MAP_TYPE_PERF_EVENT_ARRAY;
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 8cf168f3717c..a50eab5fec0a 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -471,6 +471,7 @@ LIBBPF_API int bpf_map__set_priv(struct bpf_map *map, void *priv,
->  LIBBPF_API void *bpf_map__priv(const struct bpf_map *map);
->  LIBBPF_API int bpf_map__set_initial_value(struct bpf_map *map,
->                                           const void *data, size_t size);
-> +LIBBPF_API const void *bpf_map__initial_value(struct bpf_map *map, size_t *psize);
->  LIBBPF_API bool bpf_map__is_offload_neutral(const struct bpf_map *map);
->  LIBBPF_API bool bpf_map__is_internal(const struct bpf_map *map);
->  LIBBPF_API int bpf_map__set_pin_path(struct bpf_map *map, const char *path);
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 889ee2f3611c..dd0f24370939 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -359,6 +359,7 @@ LIBBPF_0.4.0 {
->                 bpf_linker__finalize;
->                 bpf_linker__free;
->                 bpf_linker__new;
-> +               bpf_map__initial_value;
->                 bpf_map__inner_map;
->                 bpf_object__gen_loader;
->                 bpf_object__set_kversion;
-> --
-> 2.30.2
->
+
+[...]
