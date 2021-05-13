@@ -2,132 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC00D3800AB
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 01:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3EA3800E6
+	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 01:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbhEMXGP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 13 May 2021 19:06:15 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46238 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229986AbhEMXGO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 13 May 2021 19:06:14 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14DMwrrw001879
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 16:05:03 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 38gpn47bxe-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 16:05:03 -0700
-Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 13 May 2021 16:05:02 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 17B492ED6483; Thu, 13 May 2021 16:04:49 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 2/2] libbpf: reject static maps
-Date:   Thu, 13 May 2021 15:55:52 -0700
-Message-ID: <20210513225552.4180025-2-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210513225552.4180025-1-andrii@kernel.org>
-References: <20210513225552.4180025-1-andrii@kernel.org>
+        id S229471AbhEMXbp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 May 2021 19:31:45 -0400
+Received: from gateway31.websitewelcome.com ([192.185.144.94]:22681 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229460AbhEMXbo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 13 May 2021 19:31:44 -0400
+X-Greylist: delayed 1468 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 May 2021 19:31:44 EDT
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id 5B9616A5A
+        for <bpf@vger.kernel.org>; Thu, 13 May 2021 18:06:04 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id hKP6lg0sI8uM0hKP6lzNAi; Thu, 13 May 2021 18:06:04 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=P/DOzPKGp6J3WJCwGHyjpqer5CmLgvUAudqD0ateSBw=; b=x9c5/ZCt1KdADTYIlOge0eVWZ+
+        HX9ICIrVZTe50m/NQeax/gIV5mvFhlO0Ze6Inhq27CJFpCCEoPBlC043pQVvnt6td4TV7Bv9eajon
+        PP4ux726262s5A7khx7hsTKwvzea3bD7/VvKgz7ajvg6SvQPuNz0+Rbd48HufhUEaiyr2/LNIkJwy
+        Zq8YE1BbQtjdB0Hg1O2IGpCsLyOdx4qFVjdBCNlk4TGW8zWpG6+IL/eqczFhWNCvZJGGQhso979kF
+        aICgyBsoxdlRDfCE6SjiRyhmGRQDOA2wWRV/kDqzrB2H9CUdTaQJXa0K/hB2x4Pmm9rtcaSk9QxjL
+        6pD/Zk9w==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:35730 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lhKOz-004AGP-CY; Thu, 13 May 2021 18:05:57 -0500
+Subject: Re: [PATCH][next] bpf: Use struct_size() in kzalloc()
+To:     patchwork-bot+netdevbpf@kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210513215049.GA215271@embeddedor>
+ <162094681128.5074.13510794749219416919.git-patchwork-notify@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <481dc1e0-4313-7b77-2456-ebcebed296d9@embeddedor.com>
+Date:   Thu, 13 May 2021 18:06:24 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: oAqoMBQxJnJK0pv2JqrhOUbue31JoAJj
-X-Proofpoint-ORIG-GUID: oAqoMBQxJnJK0pv2JqrhOUbue31JoAJj
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-13_16:2021-05-12,2021-05-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 spamscore=0
- bulkscore=0 suspectscore=0 phishscore=0 lowpriorityscore=0 adultscore=0
- impostorscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105130161
-X-FB-Internal: deliver
+In-Reply-To: <162094681128.5074.13510794749219416919.git-patchwork-notify@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lhKOz-004AGP-CY
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:35730
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 14
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Static maps never really worked with libbpf, because all such maps were always
-silently resolved to the very first map. Detect static maps (both legacy and
-BTF-defined) and report user-friendly error.
 
-Tested locally by switching few maps (legacy and BTF-defined) in selftests to
-static ones and verifying that now libbpf rejects them loudly.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf.c | 25 ++++++++++++++++++++-----
- 1 file changed, 20 insertions(+), 5 deletions(-)
+On 5/13/21 18:00, patchwork-bot+netdevbpf@kernel.org wrote:
+> Hello:
+> 
+> This patch was applied to netdev/net-next.git (refs/heads/master):
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index b8cf93fa1b4d..ac5ab903d42b 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1795,7 +1795,6 @@ static int bpf_object__init_user_maps(struct bpf_object *obj, bool strict)
- 	if (!symbols)
- 		return -EINVAL;
- 
--
- 	scn = elf_sec_by_idx(obj, obj->efile.maps_shndx);
- 	data = elf_sec_data(obj, scn);
- 	if (!scn || !data) {
-@@ -1848,6 +1847,7 @@ static int bpf_object__init_user_maps(struct bpf_object *obj, bool strict)
- 		if (IS_ERR(map))
- 			return PTR_ERR(map);
- 
-+
- 		map_name = elf_sym_str(obj, sym.st_name);
- 		if (!map_name) {
- 			pr_warn("failed to get map #%d name sym string for obj %s\n",
-@@ -1855,6 +1855,12 @@ static int bpf_object__init_user_maps(struct bpf_object *obj, bool strict)
- 			return -LIBBPF_ERRNO__FORMAT;
- 		}
- 
-+		if (GELF_ST_TYPE(sym.st_info) == STT_SECTION
-+		    || GELF_ST_BIND(sym.st_info) == STB_LOCAL) {
-+			pr_warn("map '%s' (legacy): static maps are not supported\n", map_name);
-+			return -ENOTSUP;
-+		}
-+
- 		map->libbpf_type = LIBBPF_MAP_UNSPEC;
- 		map->sec_idx = sym.st_shndx;
- 		map->sec_offset = sym.st_value;
-@@ -2262,6 +2268,16 @@ static void fill_map_from_def(struct bpf_map *map, const struct btf_map_def *def
- 		pr_debug("map '%s': found inner map definition.\n", map->name);
- }
- 
-+static const char *btf_var_linkage_str(__u32 linkage)
-+{
-+	switch (linkage) {
-+	case BTF_VAR_STATIC: return "static";
-+	case BTF_VAR_GLOBAL_ALLOCATED: return "global";
-+	case BTF_VAR_GLOBAL_EXTERN: return "extern";
-+	default: return "unknown";
-+	}
-+}
-+
- static int bpf_object__init_user_btf_map(struct bpf_object *obj,
- 					 const struct btf_type *sec,
- 					 int var_idx, int sec_idx,
-@@ -2294,10 +2310,9 @@ static int bpf_object__init_user_btf_map(struct bpf_object *obj,
- 			map_name, btf_kind_str(var));
- 		return -EINVAL;
- 	}
--	if (var_extra->linkage != BTF_VAR_GLOBAL_ALLOCATED &&
--	    var_extra->linkage != BTF_VAR_STATIC) {
--		pr_warn("map '%s': unsupported var linkage %u.\n",
--			map_name, var_extra->linkage);
-+	if (var_extra->linkage != BTF_VAR_GLOBAL_ALLOCATED) {
-+		pr_warn("map '%s': unsupported map linkage %s.\n",
-+			map_name, btf_var_linkage_str(var_extra->linkage));
- 		return -EOPNOTSUPP;
- 	}
- 
--- 
-2.30.2
+[..]
 
+> Here is the summary with links:
+>   - [next] bpf: Use struct_size() in kzalloc()
+>     https://git.kernel.org/netdev/net-next/c/fe0bdaec8dea
+
+Awesome. :)
+
+Thanks, Dave.
+--
+Gustavo
