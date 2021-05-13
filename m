@@ -2,96 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3EA3800E6
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 01:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 631C73800C7
+	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 01:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229471AbhEMXbp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 May 2021 19:31:45 -0400
-Received: from gateway31.websitewelcome.com ([192.185.144.94]:22681 "EHLO
-        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229460AbhEMXbo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 13 May 2021 19:31:44 -0400
-X-Greylist: delayed 1468 seconds by postgrey-1.27 at vger.kernel.org; Thu, 13 May 2021 19:31:44 EDT
-Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
-        by gateway31.websitewelcome.com (Postfix) with ESMTP id 5B9616A5A
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 18:06:04 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id hKP6lg0sI8uM0hKP6lzNAi; Thu, 13 May 2021 18:06:04 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=P/DOzPKGp6J3WJCwGHyjpqer5CmLgvUAudqD0ateSBw=; b=x9c5/ZCt1KdADTYIlOge0eVWZ+
-        HX9ICIrVZTe50m/NQeax/gIV5mvFhlO0Ze6Inhq27CJFpCCEoPBlC043pQVvnt6td4TV7Bv9eajon
-        PP4ux726262s5A7khx7hsTKwvzea3bD7/VvKgz7ajvg6SvQPuNz0+Rbd48HufhUEaiyr2/LNIkJwy
-        Zq8YE1BbQtjdB0Hg1O2IGpCsLyOdx4qFVjdBCNlk4TGW8zWpG6+IL/eqczFhWNCvZJGGQhso979kF
-        aICgyBsoxdlRDfCE6SjiRyhmGRQDOA2wWRV/kDqzrB2H9CUdTaQJXa0K/hB2x4Pmm9rtcaSk9QxjL
-        6pD/Zk9w==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:35730 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lhKOz-004AGP-CY; Thu, 13 May 2021 18:05:57 -0500
-Subject: Re: [PATCH][next] bpf: Use struct_size() in kzalloc()
-To:     patchwork-bot+netdevbpf@kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210513215049.GA215271@embeddedor>
- <162094681128.5074.13510794749219416919.git-patchwork-notify@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <481dc1e0-4313-7b77-2456-ebcebed296d9@embeddedor.com>
-Date:   Thu, 13 May 2021 18:06:24 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231221AbhEMXY0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 May 2021 19:24:26 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:10341 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhEMXYX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 May 2021 19:24:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1620948194; x=1652484194;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=5SJBpI8xr+qMRBkIHhCmRmUBPGxcsbJp1rEQpocKtJY=;
+  b=fcmdxZjfrXz8IdpKayKpGW/PtQLITvpGegd+A/svQKbPAhcK/aw6I4TV
+   +RplO83QQi4fcEwZoWq1EW9ZF7zcH1v+rKgKNRKAdmc4FjN/liI0wb9sA
+   ZVCv+lkcGGI5ZPJ1nyLRlV10FeAaKO7M2QneYhMdxvymBXMp66O+7JoYz
+   c=;
+X-IronPort-AV: E=Sophos;i="5.82,296,1613433600"; 
+   d="scan'208";a="113546482"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 13 May 2021 23:23:13 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id B225EA2291;
+        Thu, 13 May 2021 23:23:09 +0000 (UTC)
+Received: from EX13D04ANB001.ant.amazon.com (10.43.156.100) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 13 May 2021 23:23:09 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.160.137) by
+ EX13D04ANB001.ant.amazon.com (10.43.156.100) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 13 May 2021 23:23:04 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <andrii.nakryiko@gmail.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kafai@fb.com>,
+        <kuba@kernel.org>, <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v5 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Fri, 14 May 2021 08:23:00 +0900
+Message-ID: <20210513232300.30772-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CAEf4BzYumt7BO1BgN8kLXZmbYXuJweH0bWiT-CiDRQfvaRg0kQ@mail.gmail.com>
+References: <CAEf4BzYumt7BO1BgN8kLXZmbYXuJweH0bWiT-CiDRQfvaRg0kQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <162094681128.5074.13510794749219416919.git-patchwork-notify@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lhKOz-004AGP-CY
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:35730
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 14
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.137]
+X-ClientProxiedBy: EX13D06UWC002.ant.amazon.com (10.43.162.205) To
+ EX13D04ANB001.ant.amazon.com (10.43.156.100)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 5/13/21 18:00, patchwork-bot+netdevbpf@kernel.org wrote:
-> Hello:
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 13 May 2021 14:27:13 -0700
+> On Sun, May 9, 2021 at 8:45 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
+> >
+> > The SO_REUSEPORT option allows sockets to listen on the same port and to
+> > accept connections evenly. However, there is a defect in the current
+> > implementation [1]. When a SYN packet is received, the connection is tied
+> > to a listening socket. Accordingly, when the listener is closed, in-flight
+> > requests during the three-way handshake and child sockets in the accept
+> > queue are dropped even if other listeners on the same port could accept
+> > such connections.
+[...]
 > 
-> This patch was applied to netdev/net-next.git (refs/heads/master):
+> One test is failing in CI ([0]), please take a look.
+> 
+>   [0] https://travis-ci.com/github/kernel-patches/bpf/builds/225784969
 
-[..]
+Thank you for checking.
 
-> Here is the summary with links:
->   - [next] bpf: Use struct_size() in kzalloc()
->     https://git.kernel.org/netdev/net-next/c/fe0bdaec8dea
+The test needs to drop SYN+ACK and currently it is done by iptables or
+ip6tables. But it seems that I should not use them. Should this be done
+by XDP?
 
-Awesome. :)
+---8<---
+iptables v1.8.5 (legacy): can't initialize iptables table `filter': Table does not exist (do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
+ip6tables v1.8.5 (legacy): can't initialize ip6tables table `filter': Table does not exist (do you need to insmod?)
+Perhaps ip6tables or your kernel needs to be upgraded.
+---8<---
 
-Thanks, Dave.
---
-Gustavo
