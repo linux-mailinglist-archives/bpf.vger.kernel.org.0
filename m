@@ -2,128 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC443800ED
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 01:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 921E9380100
+	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 01:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhEMXiA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 13 May 2021 19:38:00 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:24658 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229460AbhEMXiA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 13 May 2021 19:38:00 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14DNXqU9020911
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 16:36:49 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 38gpr1fgfu-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 16:36:49 -0700
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 13 May 2021 16:36:49 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 600632ED8CFC; Thu, 13 May 2021 16:36:47 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v2 bpf-next 2/2] libbpf: reject static maps
-Date:   Thu, 13 May 2021 16:36:43 -0700
-Message-ID: <20210513233643.194711-2-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210513233643.194711-1-andrii@kernel.org>
-References: <20210513233643.194711-1-andrii@kernel.org>
+        id S230472AbhEMXyq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 May 2021 19:54:46 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:41922 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230363AbhEMXyq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 May 2021 19:54:46 -0400
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7CF4820B8016;
+        Thu, 13 May 2021 16:53:35 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7CF4820B8016
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1620950015;
+        bh=74exrwhdEAndba6EEggC6xPKpjQILxDdAehUL/iquxA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=b+KNMoqREIqx46idPfncLneexiy4iBoRpX+ChVNjqQut8RgcoeIYL/Fr8YAzPM9Pl
+         8Q4UJxhtfLzV3UIgEYqHWDn3E4uA/Lx5Y4VxiElQtCIhrpnjXSq5rX7NzvCORGjsx2
+         rsXmVsFci83Av+jB5KeQ0yDsNC+cjPAS9Vl24ucU=
+Received: by mail-pf1-f171.google.com with SMTP id c13so9689377pfv.4;
+        Thu, 13 May 2021 16:53:35 -0700 (PDT)
+X-Gm-Message-State: AOAM532KIWaY7e3iGbrAU6ndgwW8IXyTIm+r+LnfNkFgMSJ8o6qhHN2Y
+        PyN/AhM6zSR67k/Efxr/fxe+vrC91IA1talfOu0=
+X-Google-Smtp-Source: ABdhPJzRgCD5ObQcFpxCY7nlnqj1S/fiXzXBQfzUBfVXg2LuiGUoPmo/XFxC3ZhAJ3P7tq1jlOZ0eCMvsl0hXlFkOhw=
+X-Received: by 2002:a63:4d22:: with SMTP id a34mr16258481pgb.421.1620950014935;
+ Thu, 13 May 2021 16:53:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: brnOlxbASaM79vjA4I22U7hQ0UfeCYn2
-X-Proofpoint-GUID: brnOlxbASaM79vjA4I22U7hQ0UfeCYn2
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-13_16:2021-05-12,2021-05-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- spamscore=0 priorityscore=1501 adultscore=0 suspectscore=0
- lowpriorityscore=0 bulkscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
- mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105130166
-X-FB-Internal: deliver
+References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
+ <20210513165846.23722-5-mcroce@linux.microsoft.com> <20210513182048.GA12395@shell.armlinux.org.uk>
+In-Reply-To: <20210513182048.GA12395@shell.armlinux.org.uk>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Fri, 14 May 2021 01:52:58 +0200
+X-Gmail-Original-Message-ID: <CAFnufp2HP1e7hg_bKpWwASDLhK+jgAtZX+mQGJg08nSVzxgioA@mail.gmail.com>
+Message-ID: <CAFnufp2HP1e7hg_bKpWwASDLhK+jgAtZX+mQGJg08nSVzxgioA@mail.gmail.com>
+Subject: Re: [PATCH net-next v5 4/5] mvpp2: recycle buffers
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Static maps never really worked with libbpf, because all such maps were always
-silently resolved to the very first map. Detect static maps (both legacy and
-BTF-defined) and report user-friendly error.
+On Thu, May 13, 2021 at 8:21 PM Russell King (Oracle)
+<linux@armlinux.org.uk> wrote:
+>
+> On Thu, May 13, 2021 at 06:58:45PM +0200, Matteo Croce wrote:
+> > diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> > index b2259bf1d299..9dceabece56c 100644
+> > --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> > +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> > @@ -3847,6 +3847,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
+> >       struct mvpp2_pcpu_stats ps = {};
+> >       enum dma_data_direction dma_dir;
+> >       struct bpf_prog *xdp_prog;
+> > +     struct xdp_rxq_info *rxqi;
+> >       struct xdp_buff xdp;
+> >       int rx_received;
+> >       int rx_done = 0;
+> > @@ -3912,15 +3913,15 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
+> >               else
+> >                       frag_size = bm_pool->frag_size;
+> >
+> > +             if (bm_pool->pkt_size == MVPP2_BM_SHORT_PKT_SIZE)
+> > +                     rxqi = &rxq->xdp_rxq_short;
+> > +             else
+> > +                     rxqi = &rxq->xdp_rxq_long;
+> >
+> > +             if (xdp_prog) {
+> > +                     xdp.rxq = rxqi;
+> >
+> > +                     xdp_init_buff(&xdp, PAGE_SIZE, rxqi);
+> >                       xdp_prepare_buff(&xdp, data,
+> >                                        MVPP2_MH_SIZE + MVPP2_SKB_HEADROOM,
+> >                                        rx_bytes, false);
+> > @@ -3964,7 +3965,7 @@ static int mvpp2_rx(struct mvpp2_port *port, struct napi_struct *napi,
+> >               }
+> >
+> >               if (pp)
+> > +                     skb_mark_for_recycle(skb, virt_to_page(data), pp);
+> >               else
+> >                       dma_unmap_single_attrs(dev->dev.parent, dma_addr,
+> >                                              bm_pool->buf_size, DMA_FROM_DEVICE,
+>
+> Looking at the above, which I've only quoted the _resulting_ code after
+> your patch above, I don't see why you have moved the
+> "bm_pool->pkt_size == MVPP2_BM_SHORT_PKT_SIZE" conditional outside of
+> the test for xdp_prog - I don't see rxqi being used except within that
+> conditional. Please can you explain the reasoning there?
+>
 
-Tested locally by switching few maps (legacy and BTF-defined) in selftests to
-static ones and verifying that now libbpf rejects them loudly.
+Back in v3, skb_mark_for_recycle() was accepting an xdp_mem_info*, so
+I needed rxqi out of that conditional scope to get that pointer.
+Now we just need a page_pool*, so I can restore the original chunk.
+Nice catch.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
-
-v1->v2:
-  - remove accidentally added empty line; the deleted empty line on line 1798 is good.
-
- tools/lib/bpf/libbpf.c | 24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index b8cf93fa1b4d..182bd3d3f728 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1795,7 +1795,6 @@ static int bpf_object__init_user_maps(struct bpf_object *obj, bool strict)
- 	if (!symbols)
- 		return -EINVAL;
- 
--
- 	scn = elf_sec_by_idx(obj, obj->efile.maps_shndx);
- 	data = elf_sec_data(obj, scn);
- 	if (!scn || !data) {
-@@ -1855,6 +1854,12 @@ static int bpf_object__init_user_maps(struct bpf_object *obj, bool strict)
- 			return -LIBBPF_ERRNO__FORMAT;
- 		}
- 
-+		if (GELF_ST_TYPE(sym.st_info) == STT_SECTION
-+		    || GELF_ST_BIND(sym.st_info) == STB_LOCAL) {
-+			pr_warn("map '%s' (legacy): static maps are not supported\n", map_name);
-+			return -ENOTSUP;
-+		}
-+
- 		map->libbpf_type = LIBBPF_MAP_UNSPEC;
- 		map->sec_idx = sym.st_shndx;
- 		map->sec_offset = sym.st_value;
-@@ -2262,6 +2267,16 @@ static void fill_map_from_def(struct bpf_map *map, const struct btf_map_def *def
- 		pr_debug("map '%s': found inner map definition.\n", map->name);
- }
- 
-+static const char *btf_var_linkage_str(__u32 linkage)
-+{
-+	switch (linkage) {
-+	case BTF_VAR_STATIC: return "static";
-+	case BTF_VAR_GLOBAL_ALLOCATED: return "global";
-+	case BTF_VAR_GLOBAL_EXTERN: return "extern";
-+	default: return "unknown";
-+	}
-+}
-+
- static int bpf_object__init_user_btf_map(struct bpf_object *obj,
- 					 const struct btf_type *sec,
- 					 int var_idx, int sec_idx,
-@@ -2294,10 +2309,9 @@ static int bpf_object__init_user_btf_map(struct bpf_object *obj,
- 			map_name, btf_kind_str(var));
- 		return -EINVAL;
- 	}
--	if (var_extra->linkage != BTF_VAR_GLOBAL_ALLOCATED &&
--	    var_extra->linkage != BTF_VAR_STATIC) {
--		pr_warn("map '%s': unsupported var linkage %u.\n",
--			map_name, var_extra->linkage);
-+	if (var_extra->linkage != BTF_VAR_GLOBAL_ALLOCATED) {
-+		pr_warn("map '%s': unsupported map linkage %s.\n",
-+			map_name, btf_var_linkage_str(var_extra->linkage));
- 		return -EOPNOTSUPP;
- 	}
- 
+Thanks,
 -- 
-2.30.2
-
+per aspera ad upstream
