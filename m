@@ -2,141 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445F537F43D
-	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 10:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF12F37F487
+	for <lists+bpf@lfdr.de>; Thu, 13 May 2021 10:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbhEMIig (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 May 2021 04:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232034AbhEMIif (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 May 2021 04:38:35 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65681C061574
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 01:37:26 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id z13so37528461lft.1
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 01:37:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PHaCWgEE6c4TCqnr20Y2Tb/elcO/UUWT8003QZ9uRCI=;
-        b=LuOJKvNiAT8kHzQImtibnuxjXNT2Ftq34giDbSM3s+GbkMD+01nvAuPIr8cqgEqMZa
-         PP0jbr9fUlYEvPQ5JzoZ+nu7Jq0hEni2K7zzLN7F2lZHj+GPsFZ07YHnNY9YWz6sg1tV
-         UO3PX9KHVUBYDVJW39/Q13+Xp2/Q1IOqdLMgE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PHaCWgEE6c4TCqnr20Y2Tb/elcO/UUWT8003QZ9uRCI=;
-        b=jSJAHjwjsSSBhAiNJKmQ9o9r+VIyaYdh58IRXiqtmwmaeRbuz58etBS9sDiq5LFtIM
-         eXpPPdAnnRom6+k6resRt1bFC5gAjeVdGyXaSAXDZJj2uw2bSqEhrAbFLhuNQOFAbU0N
-         nDUaT/Cs3jTAix+9sM1GbDlVvJ2Eh0X4gToa4340YEcV8bbdKc3kMoJReUG+Co0iBZ9T
-         Z6VeSb6UTO8EK6aDNmNXZJ8qMDVU2QzS0DlnD2c7j7UZw6EHNMy6vb/7njobkJSD3jkj
-         DOnnsQkXcSIqHWLWPnoKFK9BX78hP6/kEePEvSW5T1YJKhfgKZcbFHeaoMmgUJYINofN
-         8c1Q==
-X-Gm-Message-State: AOAM530JoV67shLjN/vAO4HVyy4MIASS4LvIyzwh7mftEJrb0DdfOeA1
-        u5BcKsOPq5cTF/S/meo/gJFrpUBKO1DjvS6kxfDofQ==
-X-Google-Smtp-Source: ABdhPJzeRRycic2njXDn3pfCDB1CZHgy1g/M5uvhqHrDC3Ae39xKnZg0dj+/8raTcyBd/2FHcnwYd1v3KZ6CBxNySvE=
-X-Received: by 2002:a05:6512:3618:: with SMTP id f24mr28416584lfs.34.1620895044869;
- Thu, 13 May 2021 01:37:24 -0700 (PDT)
+        id S232249AbhEMI6e (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 May 2021 04:58:34 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:59664 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232234AbhEMI6d (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 13 May 2021 04:58:33 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=yunbo.xufeng@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0UYk7TrO_1620896240;
+Received: from IT-C02XP11YJHD2.local(mailfrom:yunbo.xufeng@linux.alibaba.com fp:SMTPD_---0UYk7TrO_1620896240)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 13 May 2021 16:57:22 +0800
+Subject: Re: [RFC] [PATCH bpf-next 1/1] bpf: Add a BPF helper for getting the
+ cgroup path of current task
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     kpsingh@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, revest@chromium.org,
+        jackmanb@chromium.org, yhs@fb.com, songliubraving@fb.com,
+        kafai@fb.com, john.fastabend@gmail.com, joe@cilium.io,
+        quentin@isovalent.com
+References: <20210512095823.99162-1-yunbo.xufeng@linux.alibaba.com>
+ <20210512095823.99162-2-yunbo.xufeng@linux.alibaba.com>
+ <20210512225504.3kt6ij4xqzbtyej5@ast-mbp.dhcp.thefacebook.com>
+From:   xufeng zhang <yunbo.xufeng@linux.alibaba.com>
+Message-ID: <9ae7e503-8f49-a7a4-3e18-0288c7989484@linux.alibaba.com>
+Date:   Thu, 13 May 2021 16:57:20 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <CAEf4BzZOmCgmbYDUGA-s5AF6XJFkT1xKinY3Jax3Zm2OLNmguA@mail.gmail.com>
- <20210426223449.5njjmcjpu63chqbb@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzYZX9YJcoragK20cvQvr_tPTWYBQSRh7diKc1KoCtu4Dg@mail.gmail.com>
- <20210427022231.pbgtrdbxpgdx2zrw@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzZOwTp4vQxvCSXaS4-94fz_eZ7Q4n6uQfkAnMQnLRaTbQ@mail.gmail.com>
- <20210428045545.egqvhyulr4ybbad6@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzZo7_r-hsNvJt3w3kyrmmBJj7ghGY8+k4nvKF0KLjma=w@mail.gmail.com>
- <20210504044204.kpt6t5kaomj7oivq@ast-mbp> <CAADnVQ+WV8xZqJfWx8em5Ch8aKA8xcPqR0wT0BdFf9M==W5_FQ@mail.gmail.com>
- <CAEf4BzY2z+oh=N0X26RBLEWw0t9pT7_fN0mWyDqfGcwuK8A-kg@mail.gmail.com>
- <20210511230505.z3rdnppplk3v3jce@ast-mbp.dhcp.thefacebook.com> <CAEf4BzbJ==4iUFp4pYpkgbKy40+Q6+RTPJVh0gUANHajs88ZTg@mail.gmail.com>
-In-Reply-To: <CAEf4BzbJ==4iUFp4pYpkgbKy40+Q6+RTPJVh0gUANHajs88ZTg@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Thu, 13 May 2021 09:37:13 +0100
-Message-ID: <CACAyw9-9CwzMPzZGOOs6RD5Rz4X+MsBkDE-y3FZuLCw1znSUEQ@mail.gmail.com>
-Subject: Re: bpf libraries and static variables. Was: [PATCH v2 bpf-next 2/6]
- libbpf: rename static variables during linking
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210512225504.3kt6ij4xqzbtyej5@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 12 May 2021 at 19:50, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
+ÔÚ 2021/5/13 ÉÏÎç6:55, Alexei Starovoitov Ð´µÀ:
 
-...
+> On Wed, May 12, 2021 at 05:58:23PM +0800, Xufeng Zhang wrote:
+>> To implement security rules for application containers by utilizing
+>> bpf LSM, the container to which the current running task belongs need
+>> to be known in bpf context. Think about this scenario: kubernetes
+>> schedules a pod into one host, before the application container can run,
+>> the security rules for this application need to be loaded into bpf
+>> maps firstly, so that LSM bpf programs can make decisions based on
+>> this rule maps.
+>>
+>> However, there is no effective bpf helper to achieve this goal,
+>> especially for cgroup v1. In the above case, the only available information
+>> from user side is container-id, and the cgroup path for this container
+>> is certain based on container-id, so in order to make a bridge between
+>> user side and bpf programs, bpf programs also need to know the current
+>> cgroup path of running task.
+> ...
+>> +#ifdef CONFIG_CGROUPS
+>> +BPF_CALL_2(bpf_get_current_cpuset_cgroup_path, char *, buf, u32, buf_len)
+>> +{
+>> +	struct cgroup_subsys_state *css;
+>> +	int retval;
+>> +
+>> +	css = task_get_css(current, cpuset_cgrp_id);
+>> +	retval = cgroup_path_ns(css->cgroup, buf, buf_len, &init_cgroup_ns);
+>> +	css_put(css);
+>> +	if (retval >= buf_len)
+>> +		retval = -ENAMETOOLONG;
+> Manipulating string path to check the hierarchy will be difficult to do
+> inside bpf prog. It seems to me this helper will be useful only for
+> simplest cgroup setups where there is no additional cgroup nesting
+> within containers.
+> Have you looked at *ancestor_cgroup_id and *cgroup_id helpers?
+> They're a bit more flexible when dealing with hierarchy and
+> can be used to achieve the same correlation between kernel and user cgroup ids.
 
-> So at least for BPF skeleton, the flow I was imagining would be
-> like this.
 
-Thank you for the worked out example, it's really helpful.
+Thanks for your timely reply, Alexei!
 
->
-> 1. BPF library abc consists of abc1.bpf.c and abc2.bpf.c. It also has
-> user-space component in abc.c.
-> 2. BPF app uses abs library and has its own app1.bpf.c and app2.bpf.c
-> and app.c for user-space.
-> 3. BPF library author sets up its Makefile to do
->   a. clang -target bpf -g -O2 -c abc1.bpf.c -o abc1.bpf.o
->   b. clang -target bpf -g -O2 -c abc2.bpf.c -o abc2.bpf.o
->   c. bpftool gen lib libabc.bpf.o abc1.bpf.o abc2.bpf.o
+Yes, this helper is not so common, it does not works for nesting cgroup 
+within containers.
 
-I think we can plug this into bpf2go [1] on our side in the best case,
-which would avoid duplicating the static linker.
+About your suggestion, the *cgroup_id helpers only works for cgroup v2, 
+however, we're still using cgroup v1 in product£¬and even for cgroup v2, 
+I'm not sure if there is any way for user space to get this cgroup id 
+timely(after container created, but before container start to run)¡£
 
->   d. bpftool gen subskeleton libabc.bpf.o > libabc.subskel.h
->   e. abc.c (user-space library) is of the form
->
-> #include "libabc.subskel.h"
->
-> static struct libabc_bpf *subskel;
->
-> int libabc__init(struct bpf_object *obj)
-> {
->     subskel = libabc_bpf__open_subskel(obj);
->
->     subskel->data->abc_my_var = 123;
-> }
->
-> int libabc__attach()
-> {
->     libabc_bpf__attach(subskel);
-> }
->
->   f. cc abc.c into libabc.a and then libabc.a and libabc.bpf.o are
-> distributed to end user
->
-> 3. Now, from BPF application author side:
->   a. clang -target bpf -g -O2 -c app1.bpf.c -o app1.bpf.o
->   b. clang -target bpf -g -O2 -c app2.bpf.c -o app2.bpf.o
->   c. bpftool gen object app.bpf.o app1.bpf.o app2.bpf.o libabc.bpf.o
+So if there is any effective way works for cgroup v1?
 
-I haven't worked out exactly how things would work, but on the Go side
-it might be possible to distribute libabc.bpf.o plus the Go "library"
-code as a package. So the Go toolchain would never create this merged
-object, but instead do
 
-    bpftool gen object app.bpf.o app1.bpf.o app2.bpf.o
+Many thanks!
 
-and later link app.bpf.o and libabc.bpf.o at runtime. It would be
-simpler from our side if bpftool gen object could link both libraries
-and "programs", maybe we can discuss the details of this during office
-hours.
+Xufeng
 
-1: https://pkg.go.dev/github.com/cilium/ebpf/cmd/bpf2go
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
