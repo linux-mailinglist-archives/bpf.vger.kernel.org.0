@@ -2,104 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37393380F6A
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 20:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 433DA380F6C
+	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 20:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbhENSIl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 May 2021 14:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231394AbhENSIk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 May 2021 14:08:40 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829FCC061574;
-        Fri, 14 May 2021 11:07:28 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id f9so162063ybo.6;
-        Fri, 14 May 2021 11:07:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F+bB2SlwmXAbGko5eMsle0FPLI0dLitYqgCywht6E24=;
-        b=Vs/2boPWCvpNFM3Vj85vK2A+AfiEkNUoQvYX3TYEbljhDi+EZSL5EN8iOP+J7xDiet
-         DkA7ml5iNwcpIx4AmoCuQ0rNQTMP77swG1m9GNNud+Kq+AzwyECZpPoHBc/78dGhfjd9
-         FSIPbWD6MI3k9togpmoIVZCZAxRIhLzBZfT0LdHWf/5QwL0W/0OwpUCcC74nOlt8h9Ye
-         r8iuBXyEpjcw91Pfqqd6uuAm+9ZeLRJioHLbU9Q6GOJC184QGFYhUKrmtxlPiFe52BJC
-         lhdotSiuVGxbjfI6aAMTZZKu8XTy9yzXEvN9gFEv90urFCe634ndfck14Ssyqr0iN9yh
-         u0Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F+bB2SlwmXAbGko5eMsle0FPLI0dLitYqgCywht6E24=;
-        b=UtqZZSunEQ4ln+L3JnM782YpQHTZ2rDNCTxi2EbApCko3SYhw6O/+8qBK0FAVgBLTu
-         kmjPI59zCf/ggB7PttGhEfldv+1YqLwPPNz+47efwvjcCyguvJh7xdPQq/TT9IbrZGa2
-         Wl/Z4HZgyd/PDsL9I0Y3AbvjPWTgBuJ3OleHmEdP/t4Jyf5RDalyAtn4dpK0FUDA+2T3
-         Fav0BR9NsrTcT1bKcQZ6e2srGym0ZK5IckXt5ySUyORCKcwnzBzWgLDlVR+o6RazAX0E
-         TEas3bYMRkJPk9alAGH9CTkjURs1wPgBOlkPjMWZoJS6YAwHgRkMGt8uumMIZ97vwXNW
-         wjBg==
-X-Gm-Message-State: AOAM530JfWDij5CQCSwZEWpvKELw+0D5zhB6Lx69nMM5COUKkVtmmIy6
-        9CCuwzEyD3qYeRQUFO6rRijGjqwIRan7FuCsarY=
-X-Google-Smtp-Source: ABdhPJz1AicHvZdtmJHyzn+7fW9n0cpyvFocIjMBo+2uSTMczuKBc9XD/PQKxru4tWWWWOKDr1JMYE7vx2Bu2Dkxak4=
-X-Received: by 2002:a25:7507:: with SMTP id q7mr65257173ybc.27.1621015647823;
- Fri, 14 May 2021 11:07:27 -0700 (PDT)
+        id S231394AbhENSIx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 14 May 2021 14:08:53 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:30654 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232913AbhENSIx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 14 May 2021 14:08:53 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14EI41Xf015816
+        for <bpf@vger.kernel.org>; Fri, 14 May 2021 11:07:41 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 38gpr1kxdv-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 14 May 2021 11:07:41 -0700
+Received: from intmgw001.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 14 May 2021 11:07:39 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 95AF82ED8EB5; Fri, 14 May 2021 11:07:36 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Subject: [PATCH bpf] selftests/bpf: test ringbuf mmap read-only and read-write restrictions
+Date:   Fri, 14 May 2021 11:07:26 -0700
+Message-ID: <20210514180726.843157-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210514012306.39020-1-cascardo@canonical.com>
-In-Reply-To: <20210514012306.39020-1-cascardo@canonical.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 14 May 2021 11:07:17 -0700
-Message-ID: <CAEf4BzZoQSq2=YXMFBomack=1Y86rn04Aa594dGACw+nDmMhFQ@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: only munmap the mmaped ringbuf pages
-To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: nDUU0Am-Gt8EAazYqDTVyIG0_03R5zsk
+X-Proofpoint-GUID: nDUU0Am-Gt8EAazYqDTVyIG0_03R5zsk
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-14_08:2021-05-12,2021-05-14 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ spamscore=0 priorityscore=1501 adultscore=0 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
+ mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105140142
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 13, 2021 at 6:23 PM Thadeu Lima de Souza Cascardo
-<cascardo@canonical.com> wrote:
->
-> One the mmap tests will map a single page, then try to extend the
-> mapping by use of mremap, which should fail. Right after that, it unmaps
-> the extended area, which may end up unmapping other valid mapped areas,
-> this causing a segfault.
->
-> Only unmap the area that is expected to be mapped.
->
-> Fixes: b2fb299c9aa4 ("selftests/bpf: test ringbuf mmap read-only and read-write restrictions")
+Extend ringbuf selftest to validate read/write and read-only restrictions on
+memory mapping consumer/producer/data pages. Ensure no "escalations" from
+PROT_READ to PROT_WRITE/PROT_EXEC is allowed. And test that mremap() fails to
+expand mmap()'ed area.
 
-We backed out this patch because it was causing our CI to crash on the
-ringbuf test. I think you found out why :)
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ .../selftests/bpf/prog_tests/ringbuf.c        | 49 ++++++++++++++++++-
+ 1 file changed, 48 insertions(+), 1 deletion(-)
 
-I'm going to incorporate your fix into my patch and leave your and
-mine Signed-off-by and post it upstream. Hope that works fine for
-attribution? And thanks for catching this!
+diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+index de78617f6550..f9a8ae331963 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
++++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+@@ -86,8 +86,9 @@ void test_ringbuf(void)
+ 	const size_t rec_sz = BPF_RINGBUF_HDR_SZ + sizeof(struct sample);
+ 	pthread_t thread;
+ 	long bg_ret = -1;
+-	int err, cnt;
++	int err, cnt, rb_fd;
+ 	int page_size = getpagesize();
++	void *mmap_ptr, *tmp_ptr;
+ 
+ 	skel = test_ringbuf__open();
+ 	if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
+@@ -101,6 +102,52 @@ void test_ringbuf(void)
+ 	if (CHECK(err != 0, "skel_load", "skeleton load failed\n"))
+ 		goto cleanup;
+ 
++	rb_fd = bpf_map__fd(skel->maps.ringbuf);
++	/* good read/write cons_pos */
++	mmap_ptr = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, rb_fd, 0);
++	ASSERT_OK_PTR(mmap_ptr, "rw_cons_pos");
++	tmp_ptr = mremap(mmap_ptr, page_size, 2 * page_size, MREMAP_MAYMOVE);
++	if (!ASSERT_ERR_PTR(tmp_ptr, "rw_extend"))
++		goto cleanup;
++	ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_EXEC), "exec_cons_pos_protect");
++	ASSERT_OK(munmap(mmap_ptr, page_size), "unmap_rw");
++
++	/* bad writeable prod_pos */
++	mmap_ptr = mmap(NULL, page_size, PROT_WRITE, MAP_SHARED, rb_fd, page_size);
++	err = -errno;
++	ASSERT_ERR_PTR(mmap_ptr, "wr_prod_pos");
++	ASSERT_EQ(err, -EPERM, "wr_prod_pos_err");
++
++	/* bad writeable data pages */
++	mmap_ptr = mmap(NULL, page_size, PROT_WRITE, MAP_SHARED, rb_fd, 2 * page_size);
++	err = -errno;
++	ASSERT_ERR_PTR(mmap_ptr, "wr_data_page_one");
++	ASSERT_EQ(err, -EPERM, "wr_data_page_one_err");
++	mmap_ptr = mmap(NULL, page_size, PROT_WRITE, MAP_SHARED, rb_fd, 3 * page_size);
++	ASSERT_ERR_PTR(mmap_ptr, "wr_data_page_two");
++	mmap_ptr = mmap(NULL, 2 * page_size, PROT_WRITE, MAP_SHARED, rb_fd, 2 * page_size);
++	ASSERT_ERR_PTR(mmap_ptr, "wr_data_page_all");
++
++	/* good read-only pages */
++	mmap_ptr = mmap(NULL, 4 * page_size, PROT_READ, MAP_SHARED, rb_fd, 0);
++	if (!ASSERT_OK_PTR(mmap_ptr, "ro_prod_pos"))
++		goto cleanup;
++
++	ASSERT_ERR(mprotect(mmap_ptr, 4 * page_size, PROT_WRITE), "write_protect");
++	ASSERT_ERR(mprotect(mmap_ptr, 4 * page_size, PROT_EXEC), "exec_protect");
++	ASSERT_ERR_PTR(mremap(mmap_ptr, 0, 4 * page_size, MREMAP_MAYMOVE), "ro_remap");
++	ASSERT_OK(munmap(mmap_ptr, 4 * page_size), "unmap_ro");
++
++	/* good read-only pages with initial offset */
++	mmap_ptr = mmap(NULL, page_size, PROT_READ, MAP_SHARED, rb_fd, page_size);
++	if (!ASSERT_OK_PTR(mmap_ptr, "ro_prod_pos"))
++		goto cleanup;
++
++	ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_WRITE), "write_protect");
++	ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_EXEC), "exec_protect");
++	ASSERT_ERR_PTR(mremap(mmap_ptr, 0, 3 * page_size, MREMAP_MAYMOVE), "ro_remap");
++	ASSERT_OK(munmap(mmap_ptr, page_size), "unmap_ro");
++
+ 	/* only trigger BPF program for current process */
+ 	skel->bss->pid = getpid();
+ 
+-- 
+2.30.2
 
-
-> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/ringbuf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> index 197e30b83298..f9a8ae331963 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-> @@ -146,7 +146,7 @@ void test_ringbuf(void)
->         ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_WRITE), "write_protect");
->         ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_EXEC), "exec_protect");
->         ASSERT_ERR_PTR(mremap(mmap_ptr, 0, 3 * page_size, MREMAP_MAYMOVE), "ro_remap");
-> -       ASSERT_OK(munmap(mmap_ptr, 3 * page_size), "unmap_ro");
-> +       ASSERT_OK(munmap(mmap_ptr, page_size), "unmap_ro");
->
->         /* only trigger BPF program for current process */
->         skel->bss->pid = getpid();
-> --
-> 2.30.2
->
