@@ -2,189 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C613805FF
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 11:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEB438085B
+	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 13:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231860AbhENJTL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 May 2021 05:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbhENJTK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 May 2021 05:19:10 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5AEC061756
-        for <bpf@vger.kernel.org>; Fri, 14 May 2021 02:17:57 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id m12so43780453eja.2
-        for <bpf@vger.kernel.org>; Fri, 14 May 2021 02:17:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=KpUWkUumoCfSvMpSBUUJEGaD2Gr/qdkOSMbFvxzdrIs=;
-        b=wOVTnfZj32G+M9YPoPGwNSJl3x2VMEEDdWxCWvw3KCnTNmhxbmAr2LphAYMvK9rotD
-         0iqItIiOPagYPG2tNmBId2QaztuDBpgz+SyfPCCKBPUKwDH+uSN8Xhf3dmU/orKKupfP
-         lHDei2hgUfFvCLXDvmB6XJQv6OvXTT6QMv1nPeYaVAOpRQA97jrLd448+nGbh/EOW8Ki
-         fidWFFcC7TzGuU73oCdA8/xEoF9kecR8Bkkwj9bEWzyyH+F+ywO31BlqLSUvTqvSSBgp
-         edFAYgN6oKtQB0xW4wuna7uGatVbp0Ai9v7v90MM0nWYCwAeNkkH2zPRWWDrlenHUNjT
-         RUbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KpUWkUumoCfSvMpSBUUJEGaD2Gr/qdkOSMbFvxzdrIs=;
-        b=Ppi4EQRKiE2WUDphuBxgNuYhGt0G8N8KVQURdgIippmHK04ykm9dHvcVV/tsBkn/2T
-         G5O10se4jf9V4oxW1wk3fr4rzof3PMACboYqxaZcs1OpWrhZGThgII72BS0XMQtv9gdR
-         wTmrKlOobugLpl5tiON7ErbLiw/jaTJQ7phVghKEFDUJ9IZVxUFbUmz5f9f287PECo3C
-         /qhgHAxOUdRh59iZmh8oof7nf7N/HkiuNT4D7Q6QJauLbwdB6jnuhpgE5VAWfhV+3he3
-         2dXky6AtB76XZGuO6hjAW7W6jX1tFN/agWMFr+xcuwB+3smpV7mn+hu6tMdEzoN9II5+
-         xDHQ==
-X-Gm-Message-State: AOAM5302rUxJ5f4SxozbXWfPISope08bHXDv9bctt8nj5VCEWXyD0ZxW
-        JIuSF2FfnKLQHW3EQd/giSSUHw==
-X-Google-Smtp-Source: ABdhPJy7u0vp54IwPd698tdL4ob3exH4UZJnsi9nd6zWe+32A7rELSgshx9as+boeH8h/FE7Srq6yw==
-X-Received: by 2002:a17:906:9bf3:: with SMTP id de51mr1246754ejc.394.1620983876468;
-        Fri, 14 May 2021 02:17:56 -0700 (PDT)
-Received: from apalos.home ([94.69.77.156])
-        by smtp.gmail.com with ESMTPSA id rs8sm3298538ejb.17.2021.05.14.02.17.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 02:17:56 -0700 (PDT)
-Date:   Fri, 14 May 2021 12:17:50 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-Message-ID: <YJ5APhzabmAKIKCE@apalos.home>
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-4-mcroce@linux.microsoft.com>
- <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
- <YJ4ocslvURa/H+6f@apalos.home>
- <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
+        id S230059AbhENLV5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 May 2021 07:21:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229516AbhENLV5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 May 2021 07:21:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFEF261462
+        for <bpf@vger.kernel.org>; Fri, 14 May 2021 11:20:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620991245;
+        bh=d1QDAQZ60obWUxgQJmiEA+FKlikVqoTz4eCnAtLMGx8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RXWMpTEthVDf7TGL2KFsH80ibKBqS3kz8Z6qJZZUpP74QytGTgJ9nUN9CbTefIMeD
+         QuAiWjvUsOYDq3yX4NOZXalN2a/ImEwO0vUE24RQvDUywCRYL8vZXozs6pyPpFwnqm
+         TVZoV0pnxvEkE24YKaLz27gdpVBkb0Aj52hZ6dP/+gdcHETwurNmeq1CQIqcqfpWbZ
+         jDBFLgVFkQ4P4lIdKRSl5d/2knY1Mb7MvbfCGBTa0bgnM0X7zd6Ab7DO6S1dV0FySt
+         g2gdUbjs61xI4x/IMGXw8I3r/xJT6vjGc+44RJkriurANq7XqGyfb1/6doQGvEadXb
+         4GH1ghIah6Rhg==
+Received: by mail-lj1-f182.google.com with SMTP id v6so37428524ljj.5
+        for <bpf@vger.kernel.org>; Fri, 14 May 2021 04:20:45 -0700 (PDT)
+X-Gm-Message-State: AOAM533wqqqO50mZof5DWegtQdPlN43TXpuU/Fhm/LicE5BEaFZ5Cy8r
+        vhk5puwP2hY39Hnkml9RJcFwMXpI03/GSkUZKI4vkw==
+X-Google-Smtp-Source: ABdhPJywbIYJiOtwQcK9q0jpN9m/0wYFMB5SNRaut5ZEvlsGQDditQu2Uw4BAYelJKJGGVykhgGgnILgiBVJbxw3PAs=
+X-Received: by 2002:a05:651c:285:: with SMTP id b5mr23795422ljo.348.1620991244001;
+ Fri, 14 May 2021 04:20:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
+References: <20210512095823.99162-1-yunbo.xufeng@linux.alibaba.com>
+ <20210512095823.99162-2-yunbo.xufeng@linux.alibaba.com> <20210512225504.3kt6ij4xqzbtyej5@ast-mbp.dhcp.thefacebook.com>
+ <1b6dfe61-29ed-5d4d-fa1f-1bd46a4f5860@linux.alibaba.com>
+In-Reply-To: <1b6dfe61-29ed-5d4d-fa1f-1bd46a4f5860@linux.alibaba.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Fri, 14 May 2021 13:20:32 +0200
+X-Gmail-Original-Message-ID: <CACYkzJ5vq_PtoeMx5x+-j6eiBfa16C-Cq9Pv6PzuTXjat7MySQ@mail.gmail.com>
+Message-ID: <CACYkzJ5vq_PtoeMx5x+-j6eiBfa16C-Cq9Pv6PzuTXjat7MySQ@mail.gmail.com>
+Subject: Re: [RFC] [PATCH bpf-next 1/1] bpf: Add a BPF helper for getting the
+ cgroup path of current task
+To:     xufeng zhang <yunbo.xufeng@linux.alibaba.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, joe@cilium.io,
+        quentin@isovalent.com,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 14, 2021 at 04:31:50PM +0800, Yunsheng Lin wrote:
-> On 2021/5/14 15:36, Ilias Apalodimas wrote:
-> > [...]
-> >>> +		return false;
-> >>> +
-> >>> +	pp = (struct page_pool *)page->pp;
-> >>> +
-> >>> +	/* Driver set this to memory recycling info. Reset it on recycle.
-> >>> +	 * This will *not* work for NIC using a split-page memory model.
-> >>> +	 * The page will be returned to the pool here regardless of the
-> >>> +	 * 'flipped' fragment being in use or not.
-> >>> +	 */
-> >>> +	page->pp = NULL;
+On Fri, May 14, 2021 at 6:06 AM xufeng zhang
+<yunbo.xufeng@linux.alibaba.com> wrote:
+>
+>
+> =E5=9C=A8 2021/5/13 =E4=B8=8A=E5=8D=886:55, Alexei Starovoitov =E5=86=99=
+=E9=81=93:
+> > On Wed, May 12, 2021 at 05:58:23PM +0800, Xufeng Zhang wrote:
+> >> To implement security rules for application containers by utilizing
+> >> bpf LSM, the container to which the current running task belongs need
+> >> to be known in bpf context. Think about this scenario: kubernetes
+> >> schedules a pod into one host, before the application container can ru=
+n,
+> >> the security rules for this application need to be loaded into bpf
+> >> maps firstly, so that LSM bpf programs can make decisions based on
+> >> this rule maps.
 > >>
-> >> Why not only clear the page->pp when the page can not be recycled
-> >> by the page pool? so that we do not need to set and clear it every
-> >> time the page is recycled。
-> >>
-> > 
-> > If the page cannot be recycled, page->pp will not probably be set to begin
-> > with. Since we don't embed the feature in page_pool and we require the
-> > driver to explicitly enable it, as part of the 'skb flow', I'd rather keep 
-> > it as is.  When we set/clear the page->pp, the page is probably already in 
-> > cache, so I doubt this will have any measurable impact.
-> 
-> The point is that we already have the skb->pp_recycle to let driver to
-> explicitly enable recycling, as part of the 'skb flow, if the page pool keep
-> the page->pp while it owns the page, then the driver may only need to call
-> one skb_mark_for_recycle() for a skb, instead of call skb_mark_for_recycle()
-> for each page frag of a skb.
-> 
+> >> However, there is no effective bpf helper to achieve this goal,
+> >> especially for cgroup v1. In the above case, the only available inform=
+ation
+> >> from user side is container-id, and the cgroup path for this container
+> >> is certain based on container-id, so in order to make a bridge between
+> >> user side and bpf programs, bpf programs also need to know the current
+> >> cgroup path of running task.
+> > ...
+> >> +#ifdef CONFIG_CGROUPS
+> >> +BPF_CALL_2(bpf_get_current_cpuset_cgroup_path, char *, buf, u32, buf_=
+len)
+> >> +{
+> >> +    struct cgroup_subsys_state *css;
+> >> +    int retval;
+> >> +
+> >> +    css =3D task_get_css(current, cpuset_cgrp_id);
+> >> +    retval =3D cgroup_path_ns(css->cgroup, buf, buf_len, &init_cgroup=
+_ns);
+> >> +    css_put(css);
+> >> +    if (retval >=3D buf_len)
+> >> +            retval =3D -ENAMETOOLONG;
+> > Manipulating string path to check the hierarchy will be difficult to do
+> > inside bpf prog. It seems to me this helper will be useful only for
+> > simplest cgroup setups where there is no additional cgroup nesting
+> > within containers.
+> > Have you looked at *ancestor_cgroup_id and *cgroup_id helpers?
+> > They're a bit more flexible when dealing with hierarchy and
+> > can be used to achieve the same correlation between kernel and user cgr=
+oup ids.
+>
+>
+> KP,
+>
+> do you have any suggestion?
 
-The driver is meant to call skb_mark_for_recycle for the skb and
-page_pool_store_mem_info() for the fragments (in order to store page->pp).
-Nothing bad will happen if you call skb_mark_for_recycle on a frag though,
-but in any case you need to store the page_pool pointer of each frag to
-struct page.
+I haven't really tried this yet, but have you considered using task local
+storage to identify the container?
 
-> Maybe we can add a parameter in "struct page_pool_params" to let driver
-> to decide if the page pool ptr is stored in page->pp while the page pool
-> owns the page?
+- Add a task local storage with container ID somewhere in the container
+  manager
+- Propagate this ID to all the tasks within a container using task security
+  blob management hooks (like task_alloc and task_free) etc.
 
-Then you'd have to check the page pool config before saving the meta-data,
-and you would have to make the skb path aware of that as well (I assume you
-mean replace pp_recycle with this?).
-If not and you just want to add an extra flag on page_pool_params and be able 
-to enable recycling depending on that flag, we just add a patch afterwards.
-I am not sure we need an extra if for each packet though.
-
-> 
-> Another thing accured to me is that if the driver use page from the
-> page pool to form a skb, and it does not call skb_mark_for_recycle(),
-> then there will be resource leaking, right? if yes, it seems the
-> skb_mark_for_recycle() call does not seems to add any value?
-> 
-
-Not really, the driver has 2 choices:
-- call page_pool_release_page() once it receives the payload. That will
-  clean up dma mappings (if page pool is responsible for them) and free the
-  buffer
-- call skb_mark_for_recycle(). Which will end up recycling the buffer.
-
-If you call none of those, you'd leak a page, but that's a driver bug.
-patches [4/5, 5/5] do that for two marvell drivers.
-I really want to make drivers opt-in in the feature instead of always
-enabling it.
-
-Thanks
-/Ilias
-> 
-> > 
-> >>> +	page_pool_put_full_page(pp, virt_to_head_page(data), false);
-> >>> +
-> >>>  	C(end);
-> > 
-> > [...]
-> 
-> 
+>
+> what I am thinking is the internal kernel object(cgroup id or ns.inum)
+> is not so user friendly, we can get the container-context from them for
+> tracing scenario, but not for LSM blocking cases, I'm not sure how
+> Google internally resolve similar issue.
+>
+>
+> Thanks!
+>
+> Xufeng
+>
