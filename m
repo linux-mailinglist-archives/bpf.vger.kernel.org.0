@@ -2,140 +2,296 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1603803C4
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 08:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A2738046B
+	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 09:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhENGvQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 May 2021 02:51:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21746 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231741AbhENGvQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 14 May 2021 02:51:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620975004;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WryXNKzHBf+U+FRAhkOnw8sHZGpDGcdZ7IuPAI0tQ+s=;
-        b=RAoSETStX1LQKQRwglDZXMgkCVgA9cvnB8LtExG1h5A9pvwUfOATz0YanULb8ihPWfGQe3
-        CpuKSDegD5FjVyRam3Kgu5guQ1zxAjbC0pHL68lbTvUS6R2d5+t3j2rgdIAtFHuFwS4lsk
-        tKZrTUMISlL58JoYo+hE77xeN/cp6ug=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-xlw6VoJYNaOK-LsVZslTEA-1; Fri, 14 May 2021 02:50:02 -0400
-X-MC-Unique: xlw6VoJYNaOK-LsVZslTEA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44CB46D4E0;
-        Fri, 14 May 2021 06:50:01 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3AB7560BF1;
-        Fri, 14 May 2021 06:49:57 +0000 (UTC)
-Date:   Fri, 14 May 2021 08:49:56 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Toke =?UTF-8?B?SMO4aWxh?= =?UTF-8?B?bmQtSsO4cmdlbnNlbg==?= 
-        <toke@redhat.com>, Jiri Benc <jbenc@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        id S233009AbhENHhi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 May 2021 03:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230427AbhENHhg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 May 2021 03:37:36 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3FAC061574
+        for <bpf@vger.kernel.org>; Fri, 14 May 2021 00:36:25 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id df21so6427606edb.3
+        for <bpf@vger.kernel.org>; Fri, 14 May 2021 00:36:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=S47bnTENAfz6udhQttejkJkRPmPHYthUy5L+Sbi1l+g=;
+        b=Pozo8VEmGUmlZKt9niO8/JKRXDFrjRtmcu1ld/2/dJ9w7KeDp5EOJ2DlbmoPetEW5n
+         /mTdLQE3RtyCRgWcMgCZnPa8f/4TTLm1UenFGJY9GewlhaiDUiFXz/7nV9MOH0srBwY8
+         pHa0EJb5M1mnk7LdAFN6ukSOV+mQkKKkhq5kNM/B2zbO+OBwMcrP8BxGgC84lU1RG7t1
+         5w2FP1K467aR4iMeGI5BpzBVgTmJq4ge6l05gtr18uyT/Eiy8A4klRLW0igwKbxEztp6
+         hfPs5dxkU8pBRftlsfRU8kLsrr/MGe7XTw39l6YDzNFrRFjEov9J1hjgv992gQi7Oi8f
+         TZ2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=S47bnTENAfz6udhQttejkJkRPmPHYthUy5L+Sbi1l+g=;
+        b=VgAd3vWyYdBhwD8EpvWy/8LG+Z/16F6sA6S2qDMJbv8iDp4S17xyRNnnvkAG9apRnm
+         Wez267jkV/rf/TCJYp89xLy27Hbws8UxN3EnHysetnom3k+rlnJJpES/vaev6kOPNFsL
+         gNvlkKjQ/p2fGQ5gEFDX892Cl3HmQpAwlFv/gT9kXPjkBuavpuG4pUwp95u+CxUaD04z
+         9ScSAnoFA+KZTWK8xiaS+YmCnJnYDYmlnAHI1rw8T1I5qj04cls3yZlfo5C8CnW1EwaU
+         12fbnuKhnZaJ4NUH9MiAAPmOFNP7NKrND+IqE4R275pFN9DQwtvuUd5sdYyB45iq5WO5
+         WaFw==
+X-Gm-Message-State: AOAM531HsqNW6ukMcul2A7NNSM21/cf+85tfkwmiLL2by2eGtWaQDcyi
+        Td3XCNIKjvJRquZq+QB0pbYInQ==
+X-Google-Smtp-Source: ABdhPJy6Zo4JHgaVaixpB+IZmKoXaAbTmSjnJttVn13YEvEcyewCues80W+Z2OjksFxyItJCWyNKBw==
+X-Received: by 2002:a05:6402:152:: with SMTP id s18mr2423019edu.221.1620977783937;
+        Fri, 14 May 2021 00:36:23 -0700 (PDT)
+Received: from apalos.home ([94.69.77.156])
+        by smtp.gmail.com with ESMTPSA id k12sm3860693edo.50.2021.05.14.00.36.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 May 2021 00:36:23 -0700 (PDT)
+Date:   Fri, 14 May 2021 10:36:18 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFQ=?= =?UTF-8?B?w7ZwZWw=?= 
-        <bjorn.topel@gmail.com>, Martin KaFai Lau <kafai@fb.com>,
-        brouer@redhat.com
-Subject: Re: [PATCH RESEND v11 1/4] bpf: run devmap xdp_prog on flush
- instead of bulk enqueue
-Message-ID: <20210514084956.2e41f3dd@carbon>
-In-Reply-To: <20210513070447.1878448-2-liuhangbin@gmail.com>
-References: <20210513070447.1878448-1-liuhangbin@gmail.com>
-        <20210513070447.1878448-2-liuhangbin@gmail.com>
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
+ recycling
+Message-ID: <YJ4ocslvURa/H+6f@apalos.home>
+References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
+ <20210513165846.23722-4-mcroce@linux.microsoft.com>
+ <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 13 May 2021 15:04:44 +0800
-Hangbin Liu <liuhangbin@gmail.com> wrote:
+[...]
+> >  	 * using a single memcpy() in __copy_skb_header()
+> >  	 */
+> > @@ -3088,7 +3095,13 @@ static inline void skb_frag_ref(struct sk_buff *skb, int f)
+> >   */
+> >  static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
+> 
+> Does it make sure to define a new function like recyclable_skb_frag_unref()
+> instead of adding the recycle parameter? This way we may avoid checking
+> skb->pp_recycle for head data and every frag?
+> 
 
-> From: Jesper Dangaard Brouer <brouer@redhat.com>
->=20
-> This changes the devmap XDP program support to run the program when the
-> bulk queue is flushed instead of before the frame is enqueued. This has
-> a couple of benefits:
->=20
-> - It "sorts" the packets by destination devmap entry, and then runs the
->   same BPF program on all the packets in sequence. This ensures that we
->   keep the XDP program and destination device properties hot in I-cache.
->=20
-> - It makes the multicast implementation simpler because it can just
->   enqueue packets using bq_enqueue() without having to deal with the
->   devmap program at all.
->=20
-> The drawback is that if the devmap program drops the packet, the enqueue
-> step is redundant. However, arguably this is mostly visible in a
-> micro-benchmark, and with more mixed traffic the I-cache benefit should
-> win out. The performance impact of just this patch is as follows:
->=20
-> Using 2 10Gb i40e NIC, redirecting one to another, or into a veth interfa=
-ce,
-> which do XDP_DROP on veth peer. With xdp_redirect_map in sample/bpf, send
-> pkts via pktgen cmd:
-> ./pktgen_sample03_burst_single_flow.sh -i eno1 -d $dst_ip -m $dst_mac -t =
-10 -s 64
->=20
-> There are about +/- 0.1M deviation for native testing, the performance
-> improved for the base-case, but some drop back with xdp devmap prog attac=
-hed.
->=20
-> Version          | Test                           | Generic | Native | Na=
-tive + 2nd xdp_prog
-> 5.12 rc4         | xdp_redirect_map   i40e->i40e  |    1.9M |   9.6M |  8=
-.4M
-> 5.12 rc4         | xdp_redirect_map   i40e->veth  |    1.7M |  11.7M |  9=
-.8M
-> 5.12 rc4 + patch | xdp_redirect_map   i40e->i40e  |    1.9M |   9.8M |  8=
-.0M
-> 5.12 rc4 + patch | xdp_redirect_map   i40e->veth  |    1.7M |  12.0M |  9=
-.4M
->=20
-> When bq_xmit_all() is called from bq_enqueue(), another packet will
-> always be enqueued immediately after, so clearing dev_rx, xdp_prog and
-> flush_node in bq_xmit_all() is redundant. Move the clear to __dev_flush(),
-> and only check them once in bq_enqueue() since they are all modified
-> together.
->=20
-> This change also has the side effect of extending the lifetime of the
-> RCU-protected xdp_prog that lives inside the devmap entries: Instead of
-> just living for the duration of the XDP program invocation, the
-> reference now lives all the way until the bq is flushed. This is safe
-> because the bq flush happens at the end of the NAPI poll loop, so
-> everything happens between a local_bh_disable()/local_bh_enable() pair.
-> However, this is by no means obvious from looking at the call sites; in
-> particular, some drivers have an additional rcu_read_lock() around only
-> the XDP program invocation, which only confuses matters further.
-> Cleaning this up will be done in a separate patch series.
->=20
-> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+We'd still have to check when to run __skb_frag_unref or
+recyclable_skb_frag_unref so I am not sure we can avoid that.
+In any case I'll have a look 
 
-For the sake of good order
+> >  {
+> > -	put_page(skb_frag_page(frag));
+> > +	struct page *page = skb_frag_page(frag);
+> > +
+> > +#ifdef CONFIG_PAGE_POOL
+> > +	if (recycle && page_pool_return_skb_page(page_address(page)))
+> > +		return;
+> > +#endif
+> > +	put_page(page);
+> >  }
+> >  
+> >  /**
+> > @@ -3100,7 +3113,7 @@ static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
+> >   */
+> >  static inline void skb_frag_unref(struct sk_buff *skb, int f)
+> >  {
+> > -	__skb_frag_unref(&skb_shinfo(skb)->frags[f], false);
+> > +	__skb_frag_unref(&skb_shinfo(skb)->frags[f], skb->pp_recycle);
+> >  }
+> >  
+> >  /**
+> > @@ -4699,5 +4712,14 @@ static inline u64 skb_get_kcov_handle(struct sk_buff *skb)
+> >  #endif
+> >  }
+> >  
+> > +#ifdef CONFIG_PAGE_POOL
+> > +static inline void skb_mark_for_recycle(struct sk_buff *skb, struct page *page,
+> > +					struct page_pool *pp)
+> > +{
+> > +	skb->pp_recycle = 1;
+> > +	page_pool_store_mem_info(page, pp);
+> > +}
+> > +#endif
+> > +
+> >  #endif	/* __KERNEL__ */
+> >  #endif	/* _LINUX_SKBUFF_H */
+> > diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> > index 24b3d42c62c0..ce75abeddb29 100644
+> > --- a/include/net/page_pool.h
+> > +++ b/include/net/page_pool.h
+> > @@ -148,6 +148,8 @@ inline enum dma_data_direction page_pool_get_dma_dir(struct page_pool *pool)
+> >  	return pool->p.dma_dir;
+> >  }
+> >  
+> > +bool page_pool_return_skb_page(void *data);
+> > +
+> >  struct page_pool *page_pool_create(const struct page_pool_params *params);
+> >  
+> >  #ifdef CONFIG_PAGE_POOL
+> > @@ -253,4 +255,11 @@ static inline void page_pool_ring_unlock(struct page_pool *pool)
+> >  		spin_unlock_bh(&pool->ring.producer_lock);
+> >  }
+> >  
+> > +/* Store mem_info on struct page and use it while recycling skb frags */
+> > +static inline
+> > +void page_pool_store_mem_info(struct page *page, struct page_pool *pp)
+> > +{
+> > +	page->pp = pp;
+> > +}
+> > +
+> >  #endif /* _NET_PAGE_POOL_H */
+> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> > index 9de5d8c08c17..fa9f17db7c48 100644
+> > --- a/net/core/page_pool.c
+> > +++ b/net/core/page_pool.c
+> > @@ -626,3 +626,26 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
+> >  	}
+> >  }
+> >  EXPORT_SYMBOL(page_pool_update_nid);
+> > +
+> > +bool page_pool_return_skb_page(void *data)
+> > +{
+> > +	struct page_pool *pp;
+> > +	struct page *page;
+> > +
+> > +	page = virt_to_head_page(data);
+> > +	if (unlikely(page->pp_magic != PP_SIGNATURE))
+> 
+> we have checked the skb->pp_recycle before checking the page->pp_magic,
+> so the above seems like a likely() instead of unlikely()?
+> 
 
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+The check here is ! = PP_SIGNATURE. So since we already checked for
+pp_recycle, it's unlikely the signature won't match.
 
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+> > +		return false;
+> > +
+> > +	pp = (struct page_pool *)page->pp;
+> > +
+> > +	/* Driver set this to memory recycling info. Reset it on recycle.
+> > +	 * This will *not* work for NIC using a split-page memory model.
+> > +	 * The page will be returned to the pool here regardless of the
+> > +	 * 'flipped' fragment being in use or not.
+> > +	 */
+> > +	page->pp = NULL;
+> 
+> Why not only clear the page->pp when the page can not be recycled
+> by the page pool? so that we do not need to set and clear it every
+> time the page is recycled。
+> 
 
+If the page cannot be recycled, page->pp will not probably be set to begin
+with. Since we don't embed the feature in page_pool and we require the
+driver to explicitly enable it, as part of the 'skb flow', I'd rather keep 
+it as is.  When we set/clear the page->pp, the page is probably already in 
+cache, so I doubt this will have any measurable impact.
+
+> > +	page_pool_put_full_page(pp, virt_to_head_page(data), false);
+> > +
+> >  	C(end);
+
+[...]
+
+> > @@ -1725,6 +1734,7 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
+> >  	skb->cloned   = 0;
+> >  	skb->hdr_len  = 0;
+> >  	skb->nohdr    = 0;
+> > +	skb->pp_recycle = 0;
+> 
+> I am not sure why we clear the skb->pp_recycle here.
+> As my understanding, the pskb_expand_head() only allocate new head
+> data, the old frag page in skb_shinfo()->frags still could be from
+> page pool， right?
+> 
+
+Ah correct! In that case we must not clear skb->pp_recycle.  The new head
+will fail on the signature check and end up being freed, while the
+remaining frags will be recycled. The *original* head will be
+unmapped/recycled (based of the page refcnt)  on the pskb_expand_head()
+itself.
+
+> >  	atomic_set(&skb_shinfo(skb)->dataref, 1);
+> >  
+> >  	skb_metadata_clear(skb);
+> > @@ -3495,7 +3505,7 @@ int skb_shift(struct sk_buff *tgt, struct sk_buff *skb, int shiftlen)
+> >  		fragto = &skb_shinfo(tgt)->frags[merge];
+> >  
+> >  		skb_frag_size_add(fragto, skb_frag_size(fragfrom));
+> > -		__skb_frag_unref(fragfrom, false);
+> > +		__skb_frag_unref(fragfrom, skb->pp_recycle);
+> >  	}
+> >  
+> >  	/* Reposition in the original skb */
+> > @@ -5285,6 +5295,13 @@ bool skb_try_coalesce(struct sk_buff *to, struct sk_buff *from,
+> >  	if (skb_cloned(to))
+> >  		return false;
+> >  
+> > +	/* We can't coalesce skb that are allocated from slab and page_pool
+> > +	 * The recycle mark is on the skb, so that might end up trying to
+> > +	 * recycle slab allocated skb->head
+> > +	 */
+> > +	if (to->pp_recycle != from->pp_recycle)
+> > +		return false;
+> 
+> Since we are also depending on page->pp_magic to decide whether to
+> recycle a page, we could just set the to->pp_recycle according to
+> from->pp_recycle and do the coalesce?
+
+So I was think about this myself.  This check is a 'leftover' from my
+initial version, were I only had the pp_recycle bit + struct page
+meta-data (without the signature).  Since that version didn't have the
+signature you could not coalesce 2 skb's coming from page_pool/slab. 
+We could now do what you suggest, but honestly I can't think of many use
+cases that this can happen to begin with.  I think I'd prefer leaving it as
+is and adjusting the comment.  If we can somehow prove this happens
+oftenly and has a performance impact, we can go ahead and remove it.
+
+[...]
+
+Thanks
+/Ilias
