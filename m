@@ -2,94 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF99380FEF
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 20:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8FF38112B
+	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 21:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhENSm2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 May 2021 14:42:28 -0400
-Received: from mail-ej1-f46.google.com ([209.85.218.46]:36488 "EHLO
-        mail-ej1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbhENSm2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 May 2021 14:42:28 -0400
-Received: by mail-ej1-f46.google.com with SMTP id c20so127971ejm.3;
-        Fri, 14 May 2021 11:41:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gPu3JhIKExQczwKARwj2go99YLQAcb+tX8q8d0+CLrs=;
-        b=IRhnxiNFs4rhtOcDPhilDB/M7RDi1YjJ7fRyPHpVEV0TDpsuwQud3UAKsOx8MJYmPT
-         pBInW92wCHW6xfynwJR6Om+PYyaTgZC2m0WsvekjVOMamctBCOvsKDMuxqN8Ln2nzaCN
-         qhEu6FbfKTt1orfjEOx/LHRz6zITZm1/jYlRXhLgEVf6klZLmTmOjrkcP+3Tw5CQswRD
-         BZWrhqSegQE+J3M4MLPsZOMlLd9z+0+NgKeH7pnM+KlGxJMgKiZTgcZBPOSnviCoYWbx
-         SHq8tU/f8k1XwjQ0klzouPCKPabsPL4LPXVDJx4vXNSnRyCTa/F0SU6VfmO900/VXFM7
-         2CPQ==
-X-Gm-Message-State: AOAM5331ZeMcroTGnlUHqukhEVO75QKvKYZxoOWEsCvBA6n0Bc5XXaSH
-        fFUoP8o4A/P9ts4zpqoXiY/vC4rP82i3bg0y
-X-Google-Smtp-Source: ABdhPJw/bzz+edLEyA47WDc1rrEAXftvdXlwn8/p6LzoZoO4/o+QryD11sVkSt7P+ExsEP3oTa1Mxg==
-X-Received: by 2002:a17:906:6a93:: with SMTP id p19mr50865392ejr.319.1621017675225;
-        Fri, 14 May 2021 11:41:15 -0700 (PDT)
-Received: from turbo.teknoraver.net (net-5-94-253-60.cust.vodafonedsl.it. [5.94.253.60])
-        by smtp.gmail.com with ESMTPSA id dj17sm5081505edb.7.2021.05.14.11.41.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 May 2021 11:41:14 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org,
-        linux-stm32@st-md-mailman.stormreply.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
-Subject: [PATCH net-next 3/3] vhost_net: use XDP helpers
-Date:   Fri, 14 May 2021 20:39:54 +0200
-Message-Id: <20210514183954.7129-4-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210514183954.7129-1-mcroce@linux.microsoft.com>
-References: <20210514183954.7129-1-mcroce@linux.microsoft.com>
+        id S232802AbhENT5J convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 14 May 2021 15:57:09 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:58360 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232197AbhENT5J (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 14 May 2021 15:57:09 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14EJtWAm022943
+        for <bpf@vger.kernel.org>; Fri, 14 May 2021 12:55:57 -0700
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 38hvbks9kc-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 14 May 2021 12:55:57 -0700
+Received: from intmgw001.05.ash9.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 14 May 2021 12:55:40 -0700
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id C737E2ED8F9A; Fri, 14 May 2021 12:55:35 -0700 (PDT)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] libbpf: reject static entry-point BPF programs
+Date:   Fri, 14 May 2021 12:55:34 -0700
+Message-ID: <20210514195534.1440970-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: ItliMht1-6Y8SWInF6jpeYT6FaBU4E8F
+X-Proofpoint-GUID: ItliMht1-6Y8SWInF6jpeYT6FaBU4E8F
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-14_10:2021-05-12,2021-05-14 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 impostorscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
+ suspectscore=0 adultscore=0 priorityscore=1501 clxscore=1015 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105140158
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+Detect use of static entry-point BPF programs (those with SEC() markings) and
+emit error message. This is similar to
+c1cccec9c636 ("libbpf: Reject static maps") but for BPF programs.
 
-Make use of the xdp_{init,prepare}_buff() helpers instead of
-an open-coded version.
-
-Also, the field xdp->rxq was never set, so pass NULL to xdp_init_buff()
-to clear it.
-
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- drivers/vhost/net.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ tools/lib/bpf/libbpf.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-index df82b124170e..6414bd5741b8 100644
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -744,11 +744,9 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
- 	if (copied != len)
- 		return -EFAULT;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 182bd3d3f728..e58f51b24574 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -677,6 +677,11 @@ bpf_object__add_programs(struct bpf_object *obj, Elf_Data *sec_data,
+ 			return -LIBBPF_ERRNO__FORMAT;
+ 		}
  
--	xdp->data_hard_start = buf;
--	xdp->data = buf + pad;
--	xdp->data_end = xdp->data + len;
-+	xdp_init_buff(xdp, buflen, NULL);
-+	xdp_prepare_buff(xdp, buf, pad, len, true);
- 	hdr->buflen = buflen;
--	xdp->frame_sz = buflen;
++		if (sec_idx != obj->efile.text_shndx && GELF_ST_BIND(sym.st_info) == STB_LOCAL) {
++			pr_warn("sec '%s': program '%s' is static and not supported\n", sec_name, name);
++			return -ENOTSUP;
++		}
++
+ 		pr_debug("sec '%s': found program '%s' at insn offset %zu (%zu bytes), code size %zu insns (%zu bytes)\n",
+ 			 sec_name, name, sec_off / BPF_INSN_SZ, sec_off, prog_sz / BPF_INSN_SZ, prog_sz);
  
- 	--net->refcnt_bias;
- 	alloc_frag->offset += buflen;
 -- 
-2.31.1
+2.30.2
 
