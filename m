@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE80B380138
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 02:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E988380139
+	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 02:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231752AbhENAiF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 May 2021 20:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37162 "EHLO
+        id S231756AbhENAiH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 May 2021 20:38:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231723AbhENAiF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 May 2021 20:38:05 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A67C061574
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 17:36:54 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id k15so10058601pgb.10
-        for <bpf@vger.kernel.org>; Thu, 13 May 2021 17:36:54 -0700 (PDT)
+        with ESMTP id S231723AbhENAiG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 May 2021 20:38:06 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F31C061574
+        for <bpf@vger.kernel.org>; Thu, 13 May 2021 17:36:56 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id v11-20020a17090a6b0bb029015cba7c6bdeso463040pjj.0
+        for <bpf@vger.kernel.org>; Thu, 13 May 2021 17:36:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=A82fnCpRlRpNCPZoeOc9LjoJQoPv+rtdjruUrM2K2YQ=;
-        b=DW4bXQ3ms8AEI/l5onaTJR/t78M/18ROXVIFAkjMKAjFYp9QJyou7rODebY3498LVj
-         0x9MkUldKWqfpMPbQGiVFEqRS6C+IwUiR3a57KuHTx6ucrH7wfBE+moUX7teO2ueVp5L
-         GMCBp6Qh63zcN0PbZS75q5z2efsOi20smEeaSJsQpC418pmMXZg8zXSwITpejwaS7PpW
-         scsLmxWtTPbWMDsbKw6/5FXH0veRpusqwR3hG+JsGKfUS2U+QA0PE61iw6g76qEPvRpo
-         Lp/G9ziqz4rOUNOh1zwhEwHLfrNctbCqn3vbxLZxFSs45/c8jSNUV4RMDRBhDxW7wnXx
-         iflw==
+        bh=fhS6f0TBVhBSteU8T+tVYe7ZhZP7o6mZ2Kg9sIpgYK4=;
+        b=Aqki5JNj4WrAqiNyqo+rhP9GBE5XxVww/oSQtp/gmDXw7nvxdFosyv46h2S7aJiRmB
+         NLkF2SKlO5uxbXn0/Raxz44wJdJgXv/IqNIZn6hbAZi3TJ+Et25NOiYrjCu1E8ilpJoy
+         tDrdaO/sHG2pqWRtE6jMnFvN9so+q5DvDu+eUdNZWYHP6FhxW65gqrJgxIHYM2DaeumI
+         z0xi/Pj8YBI8MgtaGRzIktY5e9ckYwK7EZYO2PI9fvYv5P0ZTslGVPirZ8/6GRGLE0EQ
+         M9HqcPWKAy6jQw8Hw+6jl07yo+5K6UDmxe3PUlnwoamdY6voOr3mW3QQN9Tjfn1yrnmg
+         BoJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=A82fnCpRlRpNCPZoeOc9LjoJQoPv+rtdjruUrM2K2YQ=;
-        b=tZM/oUkLho2e8qVEopiK+w+xtYOqOE1KZvscHhqdiRJy48IVuU7dgF9261QQ4ttmfZ
-         CyfcDkqFhZVIrn/wCbCe5s1dAxb7AEegBaLenB9PUs500OhKj1z2IKm8jwzz0lwH8HKP
-         Kmp0Rj2iuH5vB97ZEVYKjlsvldbaxsa2zqEDivmnjcsq7z1L2sU99hNJhnlWoDyI/fhH
-         7Cl/28SuGxiMy7lqUHsX3R/HflmmoTkuAO8jNO+ksydBYfkrw228fa2sK1hkHHCO9ZqK
-         h7pgXPGkJz//6YPrYlgfZkPaQtJfTpTdqLRA6Litj5qBPJB/yJ9CCs1zcjeUMyzwWPNz
-         296A==
-X-Gm-Message-State: AOAM531+kY6EtLTb0GlL8WGr0LgCspT2Ji1YaoscMROb6YhPVlA/19Lz
-        7Bggypv3QM41plcN3e7fow0=
-X-Google-Smtp-Source: ABdhPJxNdANeXDToSYhm4QALaXs2HUlGt1AAY25BUzVnSMBNV32VbaL07EOFMyoKeSFfiF3gpPhREw==
-X-Received: by 2002:a63:b102:: with SMTP id r2mr22486071pgf.254.1620952614331;
-        Thu, 13 May 2021 17:36:54 -0700 (PDT)
+        bh=fhS6f0TBVhBSteU8T+tVYe7ZhZP7o6mZ2Kg9sIpgYK4=;
+        b=lbWtSHYJwyU09hhxRAoH5HtMJ9dcu8nXj4oiL/GwwRZTqAiyFa8pNC5fNgGxt8MWcN
+         ACnkLClW9SOG/fMzcWSzyOFHyKY+9o4xC8Jnk00C/BQShEz9c+L93s5Wq2tOkDVPDPcL
+         w7s6r3eaTyoP7WxCHrMSoLCCYOOSiD7bqdEfb4S8Z53G7lroDD/sPuXRwNwz5C1EdeW4
+         FeX9664FsG+WcbGWfiTUYl3Yutqf/sLtsUzFycvoLcXZqQCDL7MhkZW3JRxDSGKLlpHu
+         8Qnc8qBqV9Xs0ETuvXzLEy0slb6Q7g7qMFUK7akFU311LorxqYtJs8APh8d6aQVXLxyn
+         JiAw==
+X-Gm-Message-State: AOAM533tsAGwSf9TNJd1MzIFpQFziNRhvKEyOhZKRc9gsq9lMkbBEGEr
+        ww9JomOdJZUwodWHNo1WhD8=
+X-Google-Smtp-Source: ABdhPJzcYh0L5UJMJ8y7PIa/QUDJPZ+04f9wBMVPWdJYihtg3aVaTDrs6Gb88XTRR7t5Joy9X/v59A==
+X-Received: by 2002:a17:90a:a40a:: with SMTP id y10mr10682753pjp.151.1620952616149;
+        Thu, 13 May 2021 17:36:56 -0700 (PDT)
 Received: from ast-mbp.thefacebook.com ([163.114.132.4])
-        by smtp.gmail.com with ESMTPSA id b9sm302336pfo.107.2021.05.13.17.36.52
+        by smtp.gmail.com with ESMTPSA id b9sm302336pfo.107.2021.05.13.17.36.54
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 13 May 2021 17:36:53 -0700 (PDT)
+        Thu, 13 May 2021 17:36:55 -0700 (PDT)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, john.fastabend@gmail.com,
         bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v6 bpf-next 15/21] libbpf: Cleanup temp FDs when intermediate sys_bpf fails.
-Date:   Thu, 13 May 2021 17:36:17 -0700
-Message-Id: <20210514003623.28033-16-alexei.starovoitov@gmail.com>
+Subject: [PATCH v6 bpf-next 16/21] libbpf: Introduce bpf_map__initial_value().
+Date:   Thu, 13 May 2021 17:36:18 -0700
+Message-Id: <20210514003623.28033-17-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.13.5
 In-Reply-To: <20210514003623.28033-1-alexei.starovoitov@gmail.com>
 References: <20210514003623.28033-1-alexei.starovoitov@gmail.com>
@@ -62,98 +62,62 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Fix loader program to close temporary FDs when intermediate
-sys_bpf command fails.
+Introduce bpf_map__initial_value() to read initial contents
+of mmaped data/rodata/bss maps.
+Note that bpf_map__set_initial_value() doesn't allow modifying
+kconfig map while bpf_map__initial_value() allows reading
+its values.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/bpf_gen_internal.h |  1 +
- tools/lib/bpf/gen_loader.c       | 48 +++++++++++++++++++++++++++++---
- 2 files changed, 45 insertions(+), 4 deletions(-)
+ tools/lib/bpf/libbpf.c   | 8 ++++++++
+ tools/lib/bpf/libbpf.h   | 1 +
+ tools/lib/bpf/libbpf.map | 1 +
+ 3 files changed, 10 insertions(+)
 
-diff --git a/tools/lib/bpf/bpf_gen_internal.h b/tools/lib/bpf/bpf_gen_internal.h
-index f42a55efd559..615400391e57 100644
---- a/tools/lib/bpf/bpf_gen_internal.h
-+++ b/tools/lib/bpf/bpf_gen_internal.h
-@@ -15,6 +15,7 @@ struct bpf_gen {
- 	void *data_cur;
- 	void *insn_start;
- 	void *insn_cur;
-+	ssize_t cleanup_label;
- 	__u32 nr_progs;
- 	__u32 nr_maps;
- 	int log_level;
-diff --git a/tools/lib/bpf/gen_loader.c b/tools/lib/bpf/gen_loader.c
-index 0fc54b1ca311..8df718a6b142 100644
---- a/tools/lib/bpf/gen_loader.c
-+++ b/tools/lib/bpf/gen_loader.c
-@@ -101,8 +101,36 @@ static void emit2(struct bpf_gen *gen, struct bpf_insn insn1, struct bpf_insn in
- 
- void bpf_gen__init(struct bpf_gen *gen, int log_level)
- {
-+	size_t stack_sz = sizeof(struct loader_stack);
-+	int i;
-+
- 	gen->log_level = log_level;
-+	/* save ctx pointer into R6 */
- 	emit(gen, BPF_MOV64_REG(BPF_REG_6, BPF_REG_1));
-+
-+	/* bzero stack */
-+	emit(gen, BPF_MOV64_REG(BPF_REG_1, BPF_REG_10));
-+	emit(gen, BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -stack_sz));
-+	emit(gen, BPF_MOV64_IMM(BPF_REG_2, stack_sz));
-+	emit(gen, BPF_MOV64_IMM(BPF_REG_3, 0));
-+	emit(gen, BPF_EMIT_CALL(BPF_FUNC_probe_read_kernel));
-+
-+	/* jump over cleanup code */
-+	emit(gen, BPF_JMP_IMM(BPF_JA, 0, 0,
-+			      /* size of cleanup code below */
-+			      (stack_sz / 4) * 3 + 2));
-+
-+	/* remember the label where all error branches will jump to */
-+	gen->cleanup_label = gen->insn_cur - gen->insn_start;
-+	/* emit cleanup code: close all temp FDs */
-+	for (i = 0; i < stack_sz; i += 4) {
-+		emit(gen, BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_10, -stack_sz + i));
-+		emit(gen, BPF_JMP_IMM(BPF_JSLE, BPF_REG_1, 0, 1));
-+		emit(gen, BPF_EMIT_CALL(BPF_FUNC_sys_close));
-+	}
-+	/* R7 contains the error code from sys_bpf. Copy it into R0 and exit. */
-+	emit(gen, BPF_MOV64_REG(BPF_REG_0, BPF_REG_7));
-+	emit(gen, BPF_EXIT_INSN());
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 3f7d184c7e3a..a8089e3e4da4 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9750,6 +9750,14 @@ int bpf_map__set_initial_value(struct bpf_map *map,
+ 	return 0;
  }
  
- static int add_data(struct bpf_gen *gen, const void *data, __u32 size)
-@@ -187,12 +215,24 @@ static void emit_sys_bpf(struct bpf_gen *gen, int cmd, int attr, int attr_size)
- 	emit(gen, BPF_MOV64_REG(BPF_REG_7, BPF_REG_0));
- }
- 
-+static bool is_simm16(__s64 value)
++const void *bpf_map__initial_value(struct bpf_map *map, size_t *psize)
 +{
-+	return value == (__s64)(__s16)value;
++	if (!map->mmaped)
++		return NULL;
++	*psize = map->def.value_size;
++	return map->mmaped;
 +}
 +
- static void emit_check_err(struct bpf_gen *gen)
+ bool bpf_map__is_offload_neutral(const struct bpf_map *map)
  {
--	emit(gen, BPF_JMP_IMM(BPF_JSGE, BPF_REG_7, 0, 2));
--	emit(gen, BPF_MOV64_REG(BPF_REG_0, BPF_REG_7));
--	/* TODO: close intermediate FDs in case of error */
--	emit(gen, BPF_EXIT_INSN());
-+	__s64 off = -(gen->insn_cur - gen->insn_start - gen->cleanup_label) / 8 - 1;
-+
-+	/* R7 contains result of last sys_bpf command.
-+	 * if (R7 < 0) goto cleanup;
-+	 */
-+	if (is_simm16(off)) {
-+		emit(gen, BPF_JMP_IMM(BPF_JSLT, BPF_REG_7, 0, off));
-+	} else {
-+		gen->error = -ERANGE;
-+		emit(gen, BPF_JMP_IMM(BPF_JA, 0, 0, -1));
-+	}
- }
- 
- /* reg1 and reg2 should not be R1 - R5. They can be R0, R6 - R10 */
+ 	return map->def.type == BPF_MAP_TYPE_PERF_EVENT_ARRAY;
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 8cf168f3717c..a50eab5fec0a 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -471,6 +471,7 @@ LIBBPF_API int bpf_map__set_priv(struct bpf_map *map, void *priv,
+ LIBBPF_API void *bpf_map__priv(const struct bpf_map *map);
+ LIBBPF_API int bpf_map__set_initial_value(struct bpf_map *map,
+ 					  const void *data, size_t size);
++LIBBPF_API const void *bpf_map__initial_value(struct bpf_map *map, size_t *psize);
+ LIBBPF_API bool bpf_map__is_offload_neutral(const struct bpf_map *map);
+ LIBBPF_API bool bpf_map__is_internal(const struct bpf_map *map);
+ LIBBPF_API int bpf_map__set_pin_path(struct bpf_map *map, const char *path);
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 889ee2f3611c..dd0f24370939 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -359,6 +359,7 @@ LIBBPF_0.4.0 {
+ 		bpf_linker__finalize;
+ 		bpf_linker__free;
+ 		bpf_linker__new;
++		bpf_map__initial_value;
+ 		bpf_map__inner_map;
+ 		bpf_object__gen_loader;
+ 		bpf_object__set_kversion;
 -- 
 2.30.2
 
