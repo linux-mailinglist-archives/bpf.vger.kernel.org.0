@@ -2,77 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198343813C3
-	for <lists+bpf@lfdr.de>; Sat, 15 May 2021 00:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177FC38141D
+	for <lists+bpf@lfdr.de>; Sat, 15 May 2021 01:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233722AbhENWbX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 May 2021 18:31:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53480 "EHLO mail.kernel.org"
+        id S233403AbhENXNB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 May 2021 19:13:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233666AbhENWbW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 May 2021 18:31:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 864A561453;
-        Fri, 14 May 2021 22:30:10 +0000 (UTC)
+        id S230371AbhENXNB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 May 2021 19:13:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30F3C61106;
+        Fri, 14 May 2021 23:11:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621031410;
-        bh=qrJLP/r3A3y/0MyfEURktG+DB4zmp3lLFDGbBMOKB8A=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=P0zgoaprDJvd98bH2YsY9oRsUbNpX6X8rgv/5veHPFVbyZwKiayQ+lnPqhh61onti
-         /qgzqCR38fonvkdjL5sUGDu2+AaxoIKOXMHXvG+q91G5ZwsLOu9QuvS8gOKseqEoa3
-         z+j6b7QjwOBdcIG9bzVNluyZQdJux6OLi8vkxm4MLMCTm9UIzH1AAdtgAvaBTo4nSv
-         hQ+1vvNZrSlA75KQ7SJ39pc3U2qCIIWPc2M+mHWXdka1QFkfvnRxKEGL4xqNVJVFfy
-         ysPhyEIXgQa/RHfOIy2Bzug07IMfmVNyvc6h8nsBhO0+MK64/mbSpbRNFHk76WQPnt
-         CNBQlmO82/NXg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 788F260A02;
-        Fri, 14 May 2021 22:30:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1621033909;
+        bh=5gdw4ZcDsWSlOI6RP0IAEfHaCZQwRhBzAJ3Y3Km3FmU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DhGyjuejftNAwkLGkMJ+BxirSBqCMogD7h1dHwh+MIIN+XCHLRGwTtzgxTjICunzr
+         oYBzWtiwBpnuqkbsOLBKkyeOp8Rx/WKZPTc9bMWT9Ab50ksQvtBQEuyDAywqTs3k/0
+         MFdMN5Ih+ZV9CJnUenGOd/ZW4REq0h9n5KP8slLNVLQ8KJT7zZWlObHrdESmAz7x/7
+         KHEACi6/MJVGmSMhrE0o+N2jkIMwazjFTKgcTyYUYyuyH6+QcmjFALcTkdmWSOSDtB
+         6Z45aBO4hrXAZIYERYY/gm3jHB1AQVZjpv72NfxDT3zl9V5+IT1A8Dpg4kGqdvAQLB
+         69rc9g1r8T4ag==
+Received: by mail-lf1-f48.google.com with SMTP id j10so548959lfb.12;
+        Fri, 14 May 2021 16:11:49 -0700 (PDT)
+X-Gm-Message-State: AOAM5334WGLRH/BSbGXiVZ+3Q+qFyppMDagWeHrl8X+ISmyLL7LU5voZ
+        uae0D9qACU4990rASFjMCfQGulfq0ACOulzflOE=
+X-Google-Smtp-Source: ABdhPJxuh7GzAxFz5Y7IZ7T7krZp6Y3hl8x19DpVpT+XEQ/pnHDJgCCYw66D/KshiDqyKadZnOQJwS6k3ksG7ElCxRg=
+X-Received: by 2002:a19:5208:: with SMTP id m8mr34206146lfb.372.1621033907578;
+ Fri, 14 May 2021 16:11:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/3] net: use XDP helpers
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162103141048.10202.7043185141593053010.git-patchwork-notify@kernel.org>
-Date:   Fri, 14 May 2021 22:30:10 +0000
-References: <20210514183954.7129-1-mcroce@linux.microsoft.com>
-In-Reply-To: <20210514183954.7129-1-mcroce@linux.microsoft.com>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org,
-        linux-stm32@st-md-mailman.stormreply.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        mst@redhat.com, jasowang@redhat.com
+References: <20210514180726.843157-1-andrii@kernel.org>
+In-Reply-To: <20210514180726.843157-1-andrii@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 14 May 2021 16:11:36 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7typcvUU+Hot_eCKsXVPru4Sc4q+oVO30=UQx8QBiSHg@mail.gmail.com>
+Message-ID: <CAPhsuW7typcvUU+Hot_eCKsXVPru4Sc4q+oVO30=UQx8QBiSHg@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftests/bpf: test ringbuf mmap read-only and
+ read-write restrictions
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, May 14, 2021 at 1:11 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+>
+> Extend ringbuf selftest to validate read/write and read-only restrictions on
+> memory mapping consumer/producer/data pages. Ensure no "escalations" from
+> PROT_READ to PROT_WRITE/PROT_EXEC is allowed. And test that mremap() fails to
+> expand mmap()'ed area.
+>
+> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Fri, 14 May 2021 20:39:51 +0200 you wrote:
-> From: Matteo Croce <mcroce@microsoft.com>
-> 
-> The commit 43b5169d8355 ("net, xdp: Introduce xdp_init_buff utility
-> routine") and commit be9df4aff65f ("net, xdp: Introduce xdp_prepare_buff
-> utility routine") introduces two useful helpers to populate xdp_buff.
-> Use it in drivers which still open codes that routines.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,1/3] stmmac: use XDP helpers
-    https://git.kernel.org/netdev/net-next/c/d172268f93cf
-  - [net-next,2/3] igc: use XDP helpers
-    https://git.kernel.org/netdev/net-next/c/082294f294f6
-  - [net-next,3/3] vhost_net: use XDP helpers
-    https://git.kernel.org/netdev/net-next/c/224bf7db5518
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Acked-by: Song Liu <songliubraving@fb.com>
