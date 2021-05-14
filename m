@@ -2,124 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77094380181
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 03:43:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 530E63801F5
+	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 04:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbhENBfu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 May 2021 21:35:50 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54226 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231768AbhENBfu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 May 2021 21:35:50 -0400
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 5934620B8025;
-        Thu, 13 May 2021 18:34:39 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5934620B8025
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620956079;
-        bh=F6CQz2+nsZGJ/pzdpTT9AQzTkNqlEEh7RPiPcleWx28=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=faO6iLDAO28ixLe7L/yD0bTgdHVbHQHH50nT/E3+H29jlY0+SVN74BpEWL4SVttz+
-         wuvfaSxvKIiZcbfU+jVF8zBSuexAOEpHzli9Ff3FWUP6k0OiPAYdxjursVIaAYLIAs
-         Ni9UufA/1lWZPwE49CKBP3hzHElj5Pw7+EuFbpLg=
-Received: by mail-pj1-f48.google.com with SMTP id v11-20020a17090a6b0bb029015cba7c6bdeso552619pjj.0;
-        Thu, 13 May 2021 18:34:39 -0700 (PDT)
-X-Gm-Message-State: AOAM532otodcctuWU3lw48HRbKRSAiBIj8MZngqydIMqtH3qHU6hLtsQ
-        hGGbciP+sujzLQCILdLXc+a+Pwl9Ssw7AugyK+I=
-X-Google-Smtp-Source: ABdhPJwv/YtlK8W/E0i23QQxf4xSLtEBhJx0WbxP9KKGOfWRVCcDM1mjk/0uCIMlC94A0zbVcQof5us1WWyA5xLHK40=
-X-Received: by 2002:a17:90a:174e:: with SMTP id 14mr11885116pjm.187.1620956078745;
- Thu, 13 May 2021 18:34:38 -0700 (PDT)
+        id S231387AbhENC2Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 May 2021 22:28:16 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:3667 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231199AbhENC2N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 May 2021 22:28:13 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FhC5b03L7z1BMNh;
+        Fri, 14 May 2021 10:24:19 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 14 May 2021 10:26:56 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
+        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
+        <alobakin@pm.me>
+Subject: [PATCH net v8 0/3] fix packet stuck problem for lockless qdisc
+Date:   Fri, 14 May 2021 10:26:55 +0800
+Message-ID: <1620959218-17250-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-2-mcroce@linux.microsoft.com> <YJ3Lrdx1oIm/MDV8@casper.infradead.org>
-In-Reply-To: <YJ3Lrdx1oIm/MDV8@casper.infradead.org>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 14 May 2021 03:34:02 +0200
-X-Gmail-Original-Message-ID: <CAFnufp3pCrywDFXZqDSw+-2K7p9yHfYY9C5WveaXMWDJ_oViAA@mail.gmail.com>
-Message-ID: <CAFnufp3pCrywDFXZqDSw+-2K7p9yHfYY9C5WveaXMWDJ_oViAA@mail.gmail.com>
-Subject: Re: [PATCH net-next v5 1/5] mm: add a signature in struct page
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 14, 2021 at 3:01 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Thu, May 13, 2021 at 06:58:42PM +0200, Matteo Croce wrote:
-> >               struct {        /* page_pool used by netstack */
-> > +                     /**
-> > +                      * @pp_magic: magic value to avoid recycling non
-> > +                      * page_pool allocated pages.
-> > +                      * It aliases with page->lru.next
->
-> I'm not really keen on documenting what aliases with what.
-> pp_magic also aliases with compound_head, 'next' (for slab),
-> and dev_pagemap.  This is an O(n^2) documentation problem ...
->
+This patchset fixes the packet stuck problem mentioned in [1].
 
-Eric asked to document what page->signature aliases, so I did it in
-the commit message and in a comment.
-I can drop the code comment and leave it just the commit message.
+Patch 1: Add STATE_MISSED flag to fix packet stuck problem.
+Patch 2: Fix a tx_action rescheduling problem after STATE_MISSED
+         flag is added in patch 1.
+Patch 3: Fix the significantly higher CPU consumption problem when
+         multiple threads are competing on a saturated outgoing
+         device.
 
-> I feel like I want to document the pfmemalloc bit in mm_types.h,
-> but I don't have a concrete suggestion yet.
->
-> > +++ b/include/net/page_pool.h
-> > @@ -63,6 +63,8 @@
-> >   */
-> >  #define PP_ALLOC_CACHE_SIZE  128
-> >  #define PP_ALLOC_CACHE_REFILL        64
-> > +#define PP_SIGNATURE         (POISON_POINTER_DELTA + 0x40)
->
-> I wonder if this wouldn't be better in linux/poison.h?
->
+V8: Change function name in patch 3 as suggested by Jakub, adjust
+    commit log in patch 2, and add Acked-by from Jakub.
+V7: Fix netif_tx_wake_queue() data race noted by Jakub.
+V6: Some performance optimization in patch 1 suggested by Jakub
+    and drop NET_XMIT_DROP checking in patch 3.
+V5: add patch 3 to fix the problem reported by Michal Kubecek.
+V4: Change STATE_NEED_RESCHEDULE to STATE_MISSED and add patch 2.
 
-I was thinking the same, I'll do it in the v6.
+[1]. https://lkml.org/lkml/2019/10/9/42
 
-Regards,
+Yunsheng Lin (3):
+  net: sched: fix packet stuck problem for lockless qdisc
+  net: sched: fix tx action rescheduling issue during deactivation
+  net: sched: fix tx action reschedule issue with stopped queue
+
+ include/net/pkt_sched.h   |  7 +------
+ include/net/sch_generic.h | 35 ++++++++++++++++++++++++++++++++-
+ net/core/dev.c            | 29 ++++++++++++++++++++++-----
+ net/sched/sch_generic.c   | 50 +++++++++++++++++++++++++++++++++++++++++++++--
+ 4 files changed, 107 insertions(+), 14 deletions(-)
+
 -- 
-per aspera ad upstream
+2.7.4
+
