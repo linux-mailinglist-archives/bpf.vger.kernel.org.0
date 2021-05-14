@@ -2,159 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF943803B0
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 08:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1603803C4
+	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 08:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhENGfZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 May 2021 02:35:25 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:37459 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230329AbhENGfY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 May 2021 02:35:24 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4FhJdv1Shwz9sZK;
-        Fri, 14 May 2021 08:34:11 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id T1_jWZQjZv-c; Fri, 14 May 2021 08:34:11 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4FhJdv0Rs5z9sZJ;
-        Fri, 14 May 2021 08:34:11 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E2D018B7F7;
-        Fri, 14 May 2021 08:34:10 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id mVreRObY4o1i; Fri, 14 May 2021 08:34:10 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D62098B7F6;
-        Fri, 14 May 2021 08:34:07 +0200 (CEST)
-Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Will Deacon <will@kernel.org>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>, paulburton@kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        linux-mips@vger.kernel.org, grantseltzer@gmail.com,
-        Xi Wang <xi.wang@gmail.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        KP Singh <kpsingh@kernel.org>, iecedge@gmail.com,
-        Simon Horman <horms@verge.net.au>,
-        Borislav Petkov <bp@alien8.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Yonghong Song <yhs@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Dmitry Vyukov <dvyukov@google.com>, tsbogend@alpha.franken.de,
+        id S230186AbhENGvQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 May 2021 02:51:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21746 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231741AbhENGvQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 14 May 2021 02:51:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620975004;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WryXNKzHBf+U+FRAhkOnw8sHZGpDGcdZ7IuPAI0tQ+s=;
+        b=RAoSETStX1LQKQRwglDZXMgkCVgA9cvnB8LtExG1h5A9pvwUfOATz0YanULb8ihPWfGQe3
+        CpuKSDegD5FjVyRam3Kgu5guQ1zxAjbC0pHL68lbTvUS6R2d5+t3j2rgdIAtFHuFwS4lsk
+        tKZrTUMISlL58JoYo+hE77xeN/cp6ug=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-194-xlw6VoJYNaOK-LsVZslTEA-1; Fri, 14 May 2021 02:50:02 -0400
+X-MC-Unique: xlw6VoJYNaOK-LsVZslTEA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44CB46D4E0;
+        Fri, 14 May 2021 06:50:01 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3AB7560BF1;
+        Fri, 14 May 2021 06:49:57 +0000 (UTC)
+Date:   Fri, 14 May 2021 08:49:56 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Toke =?UTF-8?B?SMO4aWxh?= =?UTF-8?B?bmQtSsO4cmdlbnNlbg==?= 
+        <toke@redhat.com>, Jiri Benc <jbenc@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Network Development <netdev@vger.kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Wang YanQing <udknight@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, bpf <bpf@vger.kernel.org>,
-        Jianlin Lv <Jianlin.Lv@arm.com>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
- <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
- <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com>
- <CAADnVQJ2oHbYfgY9jqM_JMxUsoZxaNrxKSVFYfgCXuHVpDehpQ@mail.gmail.com>
- <0dea05ba-9467-0d84-4515-b8766f60318e@csgroup.eu>
- <CAADnVQ+oQT6C7Qv7P5TV-x7im54omKoCYYKtYhcnhb1Uv3LPMQ@mail.gmail.com>
- <be132117-f267-5817-136d-e1aeb8409c2a@csgroup.eu>
- <58296f87-ad00-a0f5-954b-2150aa84efc4@isovalent.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <52171382-1eca-58e2-b3d1-b2cc6b431e27@csgroup.eu>
-Date:   Fri, 14 May 2021 08:34:07 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFQ=?= =?UTF-8?B?w7ZwZWw=?= 
+        <bjorn.topel@gmail.com>, Martin KaFai Lau <kafai@fb.com>,
+        brouer@redhat.com
+Subject: Re: [PATCH RESEND v11 1/4] bpf: run devmap xdp_prog on flush
+ instead of bulk enqueue
+Message-ID: <20210514084956.2e41f3dd@carbon>
+In-Reply-To: <20210513070447.1878448-2-liuhangbin@gmail.com>
+References: <20210513070447.1878448-1-liuhangbin@gmail.com>
+        <20210513070447.1878448-2-liuhangbin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <58296f87-ad00-a0f5-954b-2150aa84efc4@isovalent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, 13 May 2021 15:04:44 +0800
+Hangbin Liu <liuhangbin@gmail.com> wrote:
 
+> From: Jesper Dangaard Brouer <brouer@redhat.com>
+>=20
+> This changes the devmap XDP program support to run the program when the
+> bulk queue is flushed instead of before the frame is enqueued. This has
+> a couple of benefits:
+>=20
+> - It "sorts" the packets by destination devmap entry, and then runs the
+>   same BPF program on all the packets in sequence. This ensures that we
+>   keep the XDP program and destination device properties hot in I-cache.
+>=20
+> - It makes the multicast implementation simpler because it can just
+>   enqueue packets using bq_enqueue() without having to deal with the
+>   devmap program at all.
+>=20
+> The drawback is that if the devmap program drops the packet, the enqueue
+> step is redundant. However, arguably this is mostly visible in a
+> micro-benchmark, and with more mixed traffic the I-cache benefit should
+> win out. The performance impact of just this patch is as follows:
+>=20
+> Using 2 10Gb i40e NIC, redirecting one to another, or into a veth interfa=
+ce,
+> which do XDP_DROP on veth peer. With xdp_redirect_map in sample/bpf, send
+> pkts via pktgen cmd:
+> ./pktgen_sample03_burst_single_flow.sh -i eno1 -d $dst_ip -m $dst_mac -t =
+10 -s 64
+>=20
+> There are about +/- 0.1M deviation for native testing, the performance
+> improved for the base-case, but some drop back with xdp devmap prog attac=
+hed.
+>=20
+> Version          | Test                           | Generic | Native | Na=
+tive + 2nd xdp_prog
+> 5.12 rc4         | xdp_redirect_map   i40e->i40e  |    1.9M |   9.6M |  8=
+.4M
+> 5.12 rc4         | xdp_redirect_map   i40e->veth  |    1.7M |  11.7M |  9=
+.8M
+> 5.12 rc4 + patch | xdp_redirect_map   i40e->i40e  |    1.9M |   9.8M |  8=
+.0M
+> 5.12 rc4 + patch | xdp_redirect_map   i40e->veth  |    1.7M |  12.0M |  9=
+.4M
+>=20
+> When bq_xmit_all() is called from bq_enqueue(), another packet will
+> always be enqueued immediately after, so clearing dev_rx, xdp_prog and
+> flush_node in bq_xmit_all() is redundant. Move the clear to __dev_flush(),
+> and only check them once in bq_enqueue() since they are all modified
+> together.
+>=20
+> This change also has the side effect of extending the lifetime of the
+> RCU-protected xdp_prog that lives inside the devmap entries: Instead of
+> just living for the duration of the XDP program invocation, the
+> reference now lives all the way until the bq is flushed. This is safe
+> because the bq flush happens at the end of the NAPI poll loop, so
+> everything happens between a local_bh_disable()/local_bh_enable() pair.
+> However, this is by no means obvious from looking at the call sites; in
+> particular, some drivers have an additional rcu_read_lock() around only
+> the XDP program invocation, which only confuses matters further.
+> Cleaning this up will be done in a separate patch series.
+>=20
+> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 
-Le 23/04/2021 à 12:26, Quentin Monnet a écrit :
-> 2021-04-23 09:19 UTC+0200 ~ Christophe Leroy <christophe.leroy@csgroup.eu>
-> 
-> [...]
-> 
->> I finally managed to cross compile bpftool with libbpf, libopcodes,
->> readline, ncurses, libcap, libz and all needed stuff. Was not easy but I
->> made it.
-> 
-> Libcap is optional and bpftool does not use readline or ncurses. May I
-> ask how you tried to build it?
-> 
->>
->> Now, how do I use it ?
->>
->> Let say I want to dump the jitted code generated from a call to
->> 'tcpdump'. How do I do that with 'bpftool prog dump jited' ?
->>
->> I thought by calling this line I would then get programs dumped in a way
->> or another just like when setting 'bpf_jit_enable=2', but calling that
->> line just provides me some bpftool help text.
-> 
-> Well the purpose of this text is to help you find the way to call
-> bpftool to do what you want :). For dumping your programs' instructions,
-> you need to tell bpftool what program to dump: Bpftool isn't waiting
-> until you load a program to dump it, instead you need to load your
-> program first and then tell bpftool to retrieve the instructions from
-> the kernel. To reference your program you could use a pinned path, or
-> first list the programs on your system with "bpftool prog show":
-> 
-> 
->      # bpftool prog show
->      138: tracing  name foo  tag e54c922dfa54f65f  gpl
->              loaded_at 2021-02-25T01:32:30+0000  uid 0
->              xlated 256B  jited 154B  memlock 4096B  map_ids 64
->              btf_id 235
+For the sake of good order
 
-Got the following error:
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
-root@vgoip:~# ./bpftool prog show
-libbpf: elf: endianness mismatch in pid_iter_bpf.
-libbpf: failed to initialize skeleton BPF object 'pid_iter_bpf': -4003
-Error: failed to open PID iterator skeleton
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-
-Christophe
