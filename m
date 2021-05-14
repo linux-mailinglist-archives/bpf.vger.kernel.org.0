@@ -2,86 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6E7380F62
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 20:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37393380F6A
+	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 20:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbhENSEM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 May 2021 14:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43948 "EHLO
+        id S232764AbhENSIl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 May 2021 14:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235318AbhENSEM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 May 2021 14:04:12 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B694C061574
-        for <bpf@vger.kernel.org>; Fri, 14 May 2021 11:03:00 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id v188so180587ybe.1
-        for <bpf@vger.kernel.org>; Fri, 14 May 2021 11:03:00 -0700 (PDT)
+        with ESMTP id S231394AbhENSIk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 May 2021 14:08:40 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829FCC061574;
+        Fri, 14 May 2021 11:07:28 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id f9so162063ybo.6;
+        Fri, 14 May 2021 11:07:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2hLyw2uR+bfkbeaBMZ+iWGrPj1WFcMPPzB+aALMIchE=;
-        b=lnzqsBz+04yvfbwIiF+owjLvSS6Z1nhpCnR5hLOgAGaFWJNz+1NIdi9Gma5vKJTaB6
-         7twMyL3ruBIlZKGlF/wFgENNVp+E0Vc0A+BhlCR2UTw/0BzQsj9SUGjkaY0pwTe8vxaY
-         gmAHLzn1m4epgac0lcCoA8herNsYMusW54vKCJbuTmV0mb8HZOhh/wEuM/DsOw7qO/TD
-         9AaIOWSBaQZTSQJDd+Z6qnfRIBVd6gLagPp2CzCLxzCRAUaHYADS1RxYt2jZQGmiAg5A
-         HTL8jZhTehFt8Dfw9i5Wf7HsCMFJTXUUf6VXjPS6FRZQdyZuApIA06HJWX9RMRoHXECC
-         Af4A==
+        bh=F+bB2SlwmXAbGko5eMsle0FPLI0dLitYqgCywht6E24=;
+        b=Vs/2boPWCvpNFM3Vj85vK2A+AfiEkNUoQvYX3TYEbljhDi+EZSL5EN8iOP+J7xDiet
+         DkA7ml5iNwcpIx4AmoCuQ0rNQTMP77swG1m9GNNud+Kq+AzwyECZpPoHBc/78dGhfjd9
+         FSIPbWD6MI3k9togpmoIVZCZAxRIhLzBZfT0LdHWf/5QwL0W/0OwpUCcC74nOlt8h9Ye
+         r8iuBXyEpjcw91Pfqqd6uuAm+9ZeLRJioHLbU9Q6GOJC184QGFYhUKrmtxlPiFe52BJC
+         lhdotSiuVGxbjfI6aAMTZZKu8XTy9yzXEvN9gFEv90urFCe634ndfck14Ssyqr0iN9yh
+         u0Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2hLyw2uR+bfkbeaBMZ+iWGrPj1WFcMPPzB+aALMIchE=;
-        b=OhvBCbuZW1hwt8ki47V0kh9LfJ8be1IW1VMS5x02b/i2NDYtVqBg4Ag27ZFt54GZhB
-         HNVHUcGWWbrNmz3fahld3RXnNzrHjKx97enmHOyMvY2aRwfRBXCDmSmS1lO+1yPIV3FE
-         rNZCSasJGyngjL3iIcnySG6nFiGBJyFse8G+77y+G8uNWSIx5qPwKBbMGDWSMsN1Kxhb
-         JeWwE5Oau35zAGZj+k5BOIPcbZqgInjG6l0abx2iCu86bobvYamAbS2EhY6+RYfDcB2Q
-         N8Tm9o5yQciKUbHoLUnR4tzjfGkETDQBc6+UW98PP2Vrl1sUBJ2FZbs5xW4EMHvcRzUs
-         DjMQ==
-X-Gm-Message-State: AOAM532tjYwqt4Yt4GsO6Ug6vOl1cI/quW+lF1jstAnjmZbXnTXuZ6dS
-        zkHtGBHVnnMIogAHqyBQGvu2CcIS2oMk4MAlD9o=
-X-Google-Smtp-Source: ABdhPJzBZJm1IBD7GHmp6MCeCCpvKIU7pKZmgR/loEvy83PJuWOjGtmGHTCfXu8g3tkE/DnzgIV0idxmdmXYKV5aW20=
-X-Received: by 2002:a5b:f05:: with SMTP id x5mr20875527ybr.425.1621015379776;
- Fri, 14 May 2021 11:02:59 -0700 (PDT)
+        bh=F+bB2SlwmXAbGko5eMsle0FPLI0dLitYqgCywht6E24=;
+        b=UtqZZSunEQ4ln+L3JnM782YpQHTZ2rDNCTxi2EbApCko3SYhw6O/+8qBK0FAVgBLTu
+         kmjPI59zCf/ggB7PttGhEfldv+1YqLwPPNz+47efwvjcCyguvJh7xdPQq/TT9IbrZGa2
+         Wl/Z4HZgyd/PDsL9I0Y3AbvjPWTgBuJ3OleHmEdP/t4Jyf5RDalyAtn4dpK0FUDA+2T3
+         Fav0BR9NsrTcT1bKcQZ6e2srGym0ZK5IckXt5ySUyORCKcwnzBzWgLDlVR+o6RazAX0E
+         TEas3bYMRkJPk9alAGH9CTkjURs1wPgBOlkPjMWZoJS6YAwHgRkMGt8uumMIZ97vwXNW
+         wjBg==
+X-Gm-Message-State: AOAM530JfWDij5CQCSwZEWpvKELw+0D5zhB6Lx69nMM5COUKkVtmmIy6
+        9CCuwzEyD3qYeRQUFO6rRijGjqwIRan7FuCsarY=
+X-Google-Smtp-Source: ABdhPJz1AicHvZdtmJHyzn+7fW9n0cpyvFocIjMBo+2uSTMczuKBc9XD/PQKxru4tWWWWOKDr1JMYE7vx2Bu2Dkxak4=
+X-Received: by 2002:a25:7507:: with SMTP id q7mr65257173ybc.27.1621015647823;
+ Fri, 14 May 2021 11:07:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210514003623.28033-1-alexei.starovoitov@gmail.com> <20210514003623.28033-17-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210514003623.28033-17-alexei.starovoitov@gmail.com>
+References: <20210514012306.39020-1-cascardo@canonical.com>
+In-Reply-To: <20210514012306.39020-1-cascardo@canonical.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 14 May 2021 11:02:48 -0700
-Message-ID: <CAEf4BzZuO+JpTEk13i-LRD+9C0JscUvChdqh0JKDzef0tvNXBw@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 16/21] libbpf: Introduce bpf_map__initial_value().
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Fri, 14 May 2021 11:07:17 -0700
+Message-ID: <CAEf4BzZoQSq2=YXMFBomack=1Y86rn04Aa594dGACw+nDmMhFQ@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: only munmap the mmaped ringbuf pages
+To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 13, 2021 at 5:36 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Thu, May 13, 2021 at 6:23 PM Thadeu Lima de Souza Cascardo
+<cascardo@canonical.com> wrote:
 >
-> From: Alexei Starovoitov <ast@kernel.org>
+> One the mmap tests will map a single page, then try to extend the
+> mapping by use of mremap, which should fail. Right after that, it unmaps
+> the extended area, which may end up unmapping other valid mapped areas,
+> this causing a segfault.
 >
-> Introduce bpf_map__initial_value() to read initial contents
-> of mmaped data/rodata/bss maps.
-> Note that bpf_map__set_initial_value() doesn't allow modifying
-> kconfig map while bpf_map__initial_value() allows reading
-> its values.
+> Only unmap the area that is expected to be mapped.
 >
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Fixes: b2fb299c9aa4 ("selftests/bpf: test ringbuf mmap read-only and read-write restrictions")
+
+We backed out this patch because it was causing our CI to crash on the
+ringbuf test. I think you found out why :)
+
+I'm going to incorporate your fix into my patch and leave your and
+mine Signed-off-by and post it upstream. Hope that works fine for
+attribution? And thanks for catching this!
+
+
+> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
 > ---
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-
->  tools/lib/bpf/libbpf.c   | 8 ++++++++
->  tools/lib/bpf/libbpf.h   | 1 +
->  tools/lib/bpf/libbpf.map | 1 +
->  3 files changed, 10 insertions(+)
+>  tools/testing/selftests/bpf/prog_tests/ringbuf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-
-[...]
+> diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> index 197e30b83298..f9a8ae331963 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+> @@ -146,7 +146,7 @@ void test_ringbuf(void)
+>         ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_WRITE), "write_protect");
+>         ASSERT_ERR(mprotect(mmap_ptr, page_size, PROT_EXEC), "exec_protect");
+>         ASSERT_ERR_PTR(mremap(mmap_ptr, 0, 3 * page_size, MREMAP_MAYMOVE), "ro_remap");
+> -       ASSERT_OK(munmap(mmap_ptr, 3 * page_size), "unmap_ro");
+> +       ASSERT_OK(munmap(mmap_ptr, page_size), "unmap_ro");
+>
+>         /* only trigger BPF program for current process */
+>         skel->bss->pid = getpid();
+> --
+> 2.30.2
+>
