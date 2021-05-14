@@ -2,69 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5149B380F6F
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 20:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15265380F71
+	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 20:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbhENSMB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 May 2021 14:12:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55916 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232649AbhENSMA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 May 2021 14:12:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E38996141F;
-        Fri, 14 May 2021 18:10:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621015848;
-        bh=Jz/NOP16I0D/Krpn+zHrYeoD0G+Qq6veqSnBLjN2j7k=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=COmnAaqO9OnlocmmzT5MM5R5Hs8LsFBIHGynwygthzbUEQ11eU3ZIXDOwVTQY28AS
-         2e8FdvCTfBrYhg4jhavVODwP78WYxCVsicg75eDL1XwkRXCW/L68+NBGtyD+BFdxxA
-         Zq2zcIH5Ft5DsJd/pRwg+3aRBiPQtRWXbW+GJajSTvqkW1A/zLpgc47y6t/YdsFIEO
-         Qrr7dPYPs4FfOzDvJIels/jiR9ypvvmmjsWIA2VVxMjIHmkj3j8hTgan+R8aQxW6Kz
-         9h9qxxcpBxoW0RG/hsw31j0qNxJX7+kQx9lcEwAhhv9skrtkWoFRluV86YTQPJ/nSJ
-         jpUHMebimhr5g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D767B60A2F;
-        Fri, 14 May 2021 18:10:48 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231687AbhENSN6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 May 2021 14:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231454AbhENSN5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 May 2021 14:13:57 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B120C061574
+        for <bpf@vger.kernel.org>; Fri, 14 May 2021 11:12:46 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id m9so201798ybm.3
+        for <bpf@vger.kernel.org>; Fri, 14 May 2021 11:12:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9oT4wtVWFX0wa+r3uIhpOxKpmW+jcLy+4FqkDOmmLo0=;
+        b=Cq/qywe0LsYYFsCgeY2g7J7IAydQi8CZBNGj9NiNMO9zkEyZ3cq3an1I95W2VbNeNu
+         pFdbjtx2fQSMEBEUuH+VLmYk463aIkMai7I3BmsTlSNqSRJPi74+x03EBHfrDd61ZcGO
+         4WbnUbWyZe/v8rtJgnfje6S7VqRD/Rh0fm1SeoD4A4TXKJFDJn3yor8MSa16sVG5+Fj0
+         13rdpD1+zrkuyniXA6BXsyu2VA9fxq9UqrzCjUa4kCMFnxDnpHV3ID0eD6UgtRU3Liuu
+         lh6MUE3axFF0BUc5x3HK29SpuE80ukYw5qa/m8q8232DPGib5lH1qMn1lGPGpw7K2uYR
+         63Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9oT4wtVWFX0wa+r3uIhpOxKpmW+jcLy+4FqkDOmmLo0=;
+        b=ovm+8x6E1ojoOB3rTIE9kUP+FvHjXuns2MKWCGb6WpEr/h5jXXiv7d4eYsSgRoWIXL
+         vp+QJld6P+q58X9rBxeX5Hl4ScZJtp7KLDx9zvdnPPtumXqPTZFVAR5+lm97xL7E35gt
+         uH/Z9rqWan3TNuv/mud7WvqgI0wV0zM7lbGAqw1I9Ma/4CX5VTwDmuWJh0XhlLqDvR5r
+         3Rn0ss3MmZ4+drqhGXMaafp6GQJLEDdJebHvrgnfur7ki9sL85e7E9y/Z7TCUK+GU0iJ
+         U/AERrJbPOEWtVTdW8+CHEwUPdR/pnya3c4guGN+lvaFibHhmb9abXalBD9ZaNcZ2+zB
+         LpVA==
+X-Gm-Message-State: AOAM532PmOsbCX8Tt8dPdhtzbIW9l3VTfx8bS2YDCC18fxmMJUPJzYCM
+        zRa7Y/GWwJpuzp4lxS7r5fWpFRZuKpwAlHVbrlo=
+X-Google-Smtp-Source: ABdhPJz/907Hmmtf5hTuXoUMSx3toVWzQH5BSUKdZGRHc6sJPZHz8plpNJWIiKQkd6lqmLUVZx4DTV5/VMDso5ELDmo=
+X-Received: by 2002:a5b:f05:: with SMTP id x5mr20934132ybr.425.1621015965686;
+ Fri, 14 May 2021 11:12:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] selftests/bpf: convert static to global in tc_redirect
- progs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162101584887.1840.15055012966734973391.git-patchwork-notify@kernel.org>
-Date:   Fri, 14 May 2021 18:10:48 +0000
-References: <20210514170528.3750250-1-sdf@google.com>
-In-Reply-To: <20210514170528.3750250-1-sdf@google.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
+References: <20210514003623.28033-1-alexei.starovoitov@gmail.com> <20210514003623.28033-8-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210514003623.28033-8-alexei.starovoitov@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 14 May 2021 11:12:34 -0700
+Message-ID: <CAEf4BzZmRsjY3MEw5rK-xD61EHn_gVZfN_kWA9b948C+ZR=84w@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 07/21] selftests/bpf: Test for btf_load command.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf.git (refs/heads/master):
-
-On Fri, 14 May 2021 10:05:28 -0700 you wrote:
-> Both IFINDEX_SRC and IFINDEX_DST are set from the userspace
-> and it won't work once bpf merges with bpf-next.
-> 
-> Fixes: 096eccdef0b3 ("selftests/bpf: Rewrite test_tc_redirect.sh as prog_tests/tc_redirect.c")
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+On Thu, May 13, 2021 at 5:36 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> Improve selftest to check that btf_load is working from bpf program.
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
->  tools/testing/selftests/bpf/progs/test_tc_neigh.c | 4 ++--
->  tools/testing/selftests/bpf/progs/test_tc_peer.c  | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
 
-Here is the summary with links:
-  - [bpf] selftests/bpf: convert static to global in tc_redirect progs
-    https://git.kernel.org/bpf/bpf/c/c9a7c013569d
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+>  .../selftests/bpf/prog_tests/syscall.c        |  3 ++
+>  tools/testing/selftests/bpf/progs/syscall.c   | 50 +++++++++++++++++++
+>  2 files changed, 53 insertions(+)
+>
 
-
+[...]
