@@ -2,167 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228A638039E
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 08:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF943803B0
+	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 08:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbhENG2C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 May 2021 02:28:02 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:16202 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230059AbhENG2B (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 14 May 2021 02:28:01 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 14E6O5XB013923;
-        Thu, 13 May 2021 23:26:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=C4tq7LtSbdwa89O7zK7jKIvDhnJxt7iI5RVcO6yu7Go=;
- b=OaAUh+ZQPSZthThYX1zfLniS9eHHG3W4zgY6JgUdzFRtXRiYMMZi2MbpYCK46FoqMvFV
- DtnnrXs8uotscOTo32fklD6zBUZ2OT53EE4NnFJaFQbQTdEsds9hCFpcPE2Wh+LRvvvh
- kVnXmp49VLS6vpSSYnRcBxc4eai60vj4axc= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 38gpnhrvc9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 13 May 2021 23:26:32 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 13 May 2021 23:26:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HsOBBaWH0MbqwL9evn6JNe4oEXjRuj6DkcDEzhh2LIUVOmlaxCxdiZn4CO8mCOCCj95WFy1VyrpwI7twmqcfF8x+U2NOS8QCQEZimSc6tY5rYaEQOj5bkqMHgSbaQXHM+0z8UqJV13T/sWX8igrZcamIsHSpYGaCnsSkYZY8X62dnYo3yNH9EWFixgXIhzojO1sS+UpmO6seqFHMWJVGWEJQ5ZKAzJNMuuwFsIXlR+bbDDkb4XUIleZdSIcnur8R0RC4eYqAEmonVD+PKWNCN0oH3Kkg7hEjIlqQXpF11Yr7fnmD8/ZmRlLUujM4F3E/tfIm2K5OP4uYkoV+OHBnyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R1WmiBKQFB076qV6YnSgtLTRPbYO10P60cSKHGiGTuA=;
- b=SwTIUtUbS+1LdjWvARKJ/TL1ZgFoVYx8DF0z3/1gCHFQft1hck9t6qNLMSFovtYdFZV5NYgeP+OzrnZ7ULfXfwl5JdyNwlfiuO+IMV6vFqS5SHazA/c1AF/qG/6hq9RYNMzod2cOxMRyg/VG3wL34Sx7qO52POv6cpepDVK84DfnBi2vvlA+hHgFXKMOP0Ga7sIeMyYOj4fZIlbJuK70W0A0R+Q2IG/583Ck/d/iegurH55cSjbpfQ/3yjDkMUkZJWK7ZBVZJZ1IdCSbwArGPwbikZEYT7WiAL461zvAzmxy2TOr824S+HfG9r12mMqXRmxCN3+dIAm5C+Z/yZSOrQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: amazon.co.jp; dkim=none (message not signed)
- header.d=none;amazon.co.jp; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by SJ0PR15MB4677.namprd15.prod.outlook.com (2603:10b6:a03:37a::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Fri, 14 May
- 2021 06:26:30 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::718a:4142:4c92:732f]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::718a:4142:4c92:732f%6]) with mapi id 15.20.4129.028; Fri, 14 May 2021
- 06:26:29 +0000
-Date:   Thu, 13 May 2021 23:26:25 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-CC:     <andrii.nakryiko@gmail.com>, <andrii@kernel.org>, <ast@kernel.org>,
-        <benh@amazon.com>, <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <kuni1840@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH v5 bpf-next 00/11] Socket migration for SO_REUSEPORT.
-Message-ID: <20210514062625.5zg626xquffvmrr7@kafai-mbp>
-References: <CAEf4BzYumt7BO1BgN8kLXZmbYXuJweH0bWiT-CiDRQfvaRg0kQ@mail.gmail.com>
- <20210513232300.30772-1-kuniyu@amazon.co.jp>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210513232300.30772-1-kuniyu@amazon.co.jp>
-X-Originating-IP: [2620:10d:c090:400::5:8b18]
-X-ClientProxiedBy: CO2PR04CA0004.namprd04.prod.outlook.com
- (2603:10b6:102:1::14) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:400::5:8b18) by CO2PR04CA0004.namprd04.prod.outlook.com (2603:10b6:102:1::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Fri, 14 May 2021 06:26:28 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 444c82cf-3f08-4e9f-ac12-08d916a13591
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4677:
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB46772EEB43A22EBC60B3A7B2D5509@SJ0PR15MB4677.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: beYL2xSkncl4Y5pGgD8FG37GJt5ilv4UX7rsHQN5FdCPaGMhDRCc3PjLBODD26AGuj21LUruiAU6KfZRhAXwpZSV8xx17OD2yrjzMztlGleQbD0nJ4v9YA+CUlsffeewpNoyaR4TBSWLc2n3Xe/f8abgWpL5DNCcJc6dU0To8y18Ksxd6/FxrR1C9OdqEdJK/yDPyZZ38XSYrLzIMw4EGRdfrMWkEnrpiKO77/nNL+KxGeoJv+KswjOq4sD7bZQokAXfMYujsqZmlsQ7htvtu73JVelH0mwwZk3ky3d8e/JED70rYNmmuLsxKrg6LCWxdd4B3TeVM0Jr0kI9s09X464ksknePiIlucdsVP3hd9fAaAJyyy8bOrFwI+64xJuOmFhtp3VvSQh6/gxO5W5fW5DHRtK0SjgLHuJyB01wrqGP2GIRm15TI6i9gk6a1JisID4AI6cpjURbuGDcvxp+TUGGlekL05JGzdQPpyNkeUDixvRVnui/F1Z2UnRwprSfT/uZIJcDQ8GOt2kn8lEsvanKM8ev9B+hJe/RCUL6JaJxQA9xs1xLtHE36c76e14w10+4XRzxYdIHuXNDhm42uh6Yv/+ThzUyDnCWRljGAXVi2HwXb93GDN9OJ9dn+Yvknhn7Jqmho5CRdNLvK9SBcpNePoiO5T8ge7yfIFeeq7k=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(136003)(346002)(376002)(316002)(38100700002)(6496006)(1076003)(6916009)(53546011)(83380400001)(52116002)(55016002)(9686003)(66476007)(66556008)(2906002)(66946007)(966005)(7416002)(478600001)(33716001)(6666004)(8936002)(5660300002)(86362001)(8676002)(4326008)(186003)(16526019);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Z5O1PXgL5J2uF8W4SVXJ+RkMjhcByfhuW/uy8V1nji6Pl9A5T7n/XPDRmzkL?=
- =?us-ascii?Q?h7XnZCU0wWi40WNTuSKH5s0cxBu+Du96IE8WMnAiRjg92sq+lPwmZm0b1NYi?=
- =?us-ascii?Q?AAunUrBaG2Oox0QlbXwI7crmOgFnqvKvHXmx4+7TqVUJ7Or45eHNMrSMaQaV?=
- =?us-ascii?Q?noIr7amU5uVprdJ+cPCdFVXgH8p73GPhv+k0DdMM3i2Y53HPxSTpOO18Grw0?=
- =?us-ascii?Q?zIwCddblW0IPd7wb/1NFVUAzb4qSG3EI23xkVnzqwE67vGEZ/9ds7whK/rC1?=
- =?us-ascii?Q?KlK43Lr1/kiG+aTmyLr2kTMCqM2ymaQN/rhG04Uczgcf+qhliKr/cgXYu0hi?=
- =?us-ascii?Q?DNn0dsq6YVIq4rGmXd5T6XMzYoUUZmLscpNzH6Lr1/a7iSK1dJ5EM5Nbjs5J?=
- =?us-ascii?Q?1liyhQSnJUj1HdlRUXkMgaMjTbioPG87+HXOuiOW7dwGNd3FpiSUhEByZyzi?=
- =?us-ascii?Q?TXTC+iUE8YArbXo0vHEx3+6dB7FA4E4UwnpLuRnRBB2bbto7PysyhQt7cLIr?=
- =?us-ascii?Q?JX1ZO81QCu6fyuWFj2mFTnzlgWnxR51oYa6mKg7SLIGgwMccqZChw7bA6Sbz?=
- =?us-ascii?Q?C4xZ/j4lmiJjLad7JA2yWTdE27jrSSQPyjOmzbExLMIb5i8Njek8PlrJlEta?=
- =?us-ascii?Q?fcFBrcdEYlmg3c73ChDmpshpM1KDFkz0/1H2pZSKMDcQBwJG8xSq06xAUQE4?=
- =?us-ascii?Q?fnyvPfPS9NOWKL4GIi+SbnCfhVyYMg3AhPLPQnfP1qENWKhXmSJtRy+aanNP?=
- =?us-ascii?Q?+Xaj5DrUnMtTP5yywQdckFYWObN7AHcfwZ8PkAHhFQkWLO9Jv70EMSO9eZPj?=
- =?us-ascii?Q?srI2iCFENkxJ3hfI6ArRwgf7Ta2+0lnQQRoESDagIJYulxJOq46UxyNdHCtx?=
- =?us-ascii?Q?tib1CZQ59kB7r+iVSLI4xktrL3iCmPQ6RUMAtparQyk330S60VB6rp0BHNeQ?=
- =?us-ascii?Q?Cuo7nE0VJ5rRzTPmLhLKWINn32XD1PKV4KtT0YGtTyT9qvYYjq9bjZYqXz8o?=
- =?us-ascii?Q?HhGPaHDy/lYVYNtFBJOKsJOWkzvVM4DN0MoRWBFyxWwJQkjSl2M1NKvkTYyr?=
- =?us-ascii?Q?xiFCocTTbARxW1KhgyA65MdXG5PVevMTTB96bXdF3fYUG7MHk8MJKwLK3SuX?=
- =?us-ascii?Q?X9B5KK8WSTz44ok7WqKDmZTURbhuX9euopkTXd/65lhqxlkOD4uC6oyEy3Wu?=
- =?us-ascii?Q?3qUVO2BJ+Rbo3JPF40//Eu8Wqa+rYOslFGObizykktMQeONQwRO1TL97pfiL?=
- =?us-ascii?Q?FxR3rC/aNM6vcQUF4rKaO7MUMAS2vEbIuyMCdEtCXitwg8XxaeVtP48fzWa8?=
- =?us-ascii?Q?RY4HUw9bjUzF5GnKOn6yogmBduWO5VCTXQR4Qd/jYMO2tg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 444c82cf-3f08-4e9f-ac12-08d916a13591
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 May 2021 06:26:29.6969
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ft+gekZ0OM1UIgpdan2pzb3HXU3RKJA8JkHmveVpcM4882+RCPqIhg1WM6tFHqmk
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4677
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: VPiWDNhANzK2sakD6rFFOWxd0TcJR2IQ
-X-Proofpoint-ORIG-GUID: VPiWDNhANzK2sakD6rFFOWxd0TcJR2IQ
-X-Proofpoint-UnRewURL: 1 URL was un-rewritten
+        id S231180AbhENGfZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 May 2021 02:35:25 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:37459 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230329AbhENGfY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 May 2021 02:35:24 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4FhJdv1Shwz9sZK;
+        Fri, 14 May 2021 08:34:11 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id T1_jWZQjZv-c; Fri, 14 May 2021 08:34:11 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4FhJdv0Rs5z9sZJ;
+        Fri, 14 May 2021 08:34:11 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E2D018B7F7;
+        Fri, 14 May 2021 08:34:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id mVreRObY4o1i; Fri, 14 May 2021 08:34:10 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D62098B7F6;
+        Fri, 14 May 2021 08:34:07 +0200 (CEST)
+Subject: Re: [PATCH bpf-next 1/2] bpf: Remove bpf_jit_enable=2 debugging mode
+To:     Quentin Monnet <quentin@isovalent.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>, Song Liu <songliubraving@fb.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Mahesh Bandewar <maheshb@google.com>,
+        Will Deacon <will@kernel.org>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Ilya Leoshkevich <iii@linux.ibm.com>, paulburton@kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        linux-mips@vger.kernel.org, grantseltzer@gmail.com,
+        Xi Wang <xi.wang@gmail.com>, Albert Ou <aou@eecs.berkeley.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        ppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        KP Singh <kpsingh@kernel.org>, iecedge@gmail.com,
+        Simon Horman <horms@verge.net.au>,
+        Borislav Petkov <bp@alien8.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Yonghong Song <yhs@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Vyukov <dvyukov@google.com>, tsbogend@alpha.franken.de,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Network Development <netdev@vger.kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Wang YanQing <udknight@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>, bpf <bpf@vger.kernel.org>,
+        Jianlin Lv <Jianlin.Lv@arm.com>,
+        "David S. Miller" <davem@davemloft.net>
+References: <20210415093250.3391257-1-Jianlin.Lv@arm.com>
+ <9c4a78d2-f73c-832a-e6e2-4b4daa729e07@iogearbox.net>
+ <d3949501-8f7d-57c4-b3fe-bcc3b24c09d8@isovalent.com>
+ <CAADnVQJ2oHbYfgY9jqM_JMxUsoZxaNrxKSVFYfgCXuHVpDehpQ@mail.gmail.com>
+ <0dea05ba-9467-0d84-4515-b8766f60318e@csgroup.eu>
+ <CAADnVQ+oQT6C7Qv7P5TV-x7im54omKoCYYKtYhcnhb1Uv3LPMQ@mail.gmail.com>
+ <be132117-f267-5817-136d-e1aeb8409c2a@csgroup.eu>
+ <58296f87-ad00-a0f5-954b-2150aa84efc4@isovalent.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <52171382-1eca-58e2-b3d1-b2cc6b431e27@csgroup.eu>
+Date:   Fri, 14 May 2021 08:34:07 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-14_02:2021-05-12,2021-05-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 impostorscore=0 malwarescore=0
- lowpriorityscore=0 clxscore=1015 spamscore=0 adultscore=0 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105140046
-X-FB-Internal: deliver
+In-Reply-To: <58296f87-ad00-a0f5-954b-2150aa84efc4@isovalent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 14, 2021 at 08:23:00AM +0900, Kuniyuki Iwashima wrote:
-> From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Date:   Thu, 13 May 2021 14:27:13 -0700
-> > On Sun, May 9, 2021 at 8:45 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
-> > >
-> > > The SO_REUSEPORT option allows sockets to listen on the same port and to
-> > > accept connections evenly. However, there is a defect in the current
-> > > implementation [1]. When a SYN packet is received, the connection is tied
-> > > to a listening socket. Accordingly, when the listener is closed, in-flight
-> > > requests during the three-way handshake and child sockets in the accept
-> > > queue are dropped even if other listeners on the same port could accept
-> > > such connections.
+
+
+Le 23/04/2021 à 12:26, Quentin Monnet a écrit :
+> 2021-04-23 09:19 UTC+0200 ~ Christophe Leroy <christophe.leroy@csgroup.eu>
+> 
 > [...]
-> > 
-> > One test is failing in CI ([0]), please take a look.
-> > 
-> >   [0] https://travis-ci.com/github/kernel-patches/bpf/builds/225784969 
 > 
-> Thank you for checking.
+>> I finally managed to cross compile bpftool with libbpf, libopcodes,
+>> readline, ncurses, libcap, libz and all needed stuff. Was not easy but I
+>> made it.
 > 
-> The test needs to drop SYN+ACK and currently it is done by iptables or
-> ip6tables. But it seems that I should not use them. Should this be done
-> by XDP?
-or drop it at a bpf_prog@tc-egress.
+> Libcap is optional and bpftool does not use readline or ncurses. May I
+> ask how you tried to build it?
+> 
+>>
+>> Now, how do I use it ?
+>>
+>> Let say I want to dump the jitted code generated from a call to
+>> 'tcpdump'. How do I do that with 'bpftool prog dump jited' ?
+>>
+>> I thought by calling this line I would then get programs dumped in a way
+>> or another just like when setting 'bpf_jit_enable=2', but calling that
+>> line just provides me some bpftool help text.
+> 
+> Well the purpose of this text is to help you find the way to call
+> bpftool to do what you want :). For dumping your programs' instructions,
+> you need to tell bpftool what program to dump: Bpftool isn't waiting
+> until you load a program to dump it, instead you need to load your
+> program first and then tell bpftool to retrieve the instructions from
+> the kernel. To reference your program you could use a pinned path, or
+> first list the programs on your system with "bpftool prog show":
+> 
+> 
+>      # bpftool prog show
+>      138: tracing  name foo  tag e54c922dfa54f65f  gpl
+>              loaded_at 2021-02-25T01:32:30+0000  uid 0
+>              xlated 256B  jited 154B  memlock 4096B  map_ids 64
+>              btf_id 235
 
-I also don't have iptables in my kconfig and I had to add them
-to run this test.  None of the test_progs depends on iptables also.
+Got the following error:
 
-> 
-> ---8<---
-> iptables v1.8.5 (legacy): can't initialize iptables table `filter': Table does not exist (do you need to insmod?)
-> Perhaps iptables or your kernel needs to be upgraded.
-> ip6tables v1.8.5 (legacy): can't initialize ip6tables table `filter': Table does not exist (do you need to insmod?)
-> Perhaps ip6tables or your kernel needs to be upgraded.
-> ---8<---
-> 
+root@vgoip:~# ./bpftool prog show
+libbpf: elf: endianness mismatch in pid_iter_bpf.
+libbpf: failed to initialize skeleton BPF object 'pid_iter_bpf': -4003
+Error: failed to open PID iterator skeleton
+
+
+Christophe
