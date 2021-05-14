@@ -2,82 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5AE381216
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 22:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5042A3813AA
+	for <lists+bpf@lfdr.de>; Sat, 15 May 2021 00:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232440AbhENUx0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 May 2021 16:53:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42080 "EHLO mail.kernel.org"
+        id S233731AbhENWVW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 May 2021 18:21:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232359AbhENUxZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 May 2021 16:53:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DF886145A;
-        Fri, 14 May 2021 20:52:13 +0000 (UTC)
+        id S230096AbhENWVW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 May 2021 18:21:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5480461440;
+        Fri, 14 May 2021 22:20:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621025533;
-        bh=zWWTwQ5r9iKwmxhjPvmmkDnHWBuHLQJUtN28LFiusYQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lZlP2gEDB38oN5yezlICkgWFEBt229fwsBYr7LChT/POAsSD1V1mqR1A0fzMDfruI
-         8tfpqz2odciprrNyx1eyPZzts8ioNCVlplKxAQPyTth/+DfoxE/uPQ7do4mIJu13FF
-         cJa1S/TuBvJ7c+Ezh3a8Kd46/ghjJ4uaazCfEZFrVOgr+3EPuBfNjFFlKoqcD4cYBF
-         lrZQMTD+vswaOWZv2qxvEdrSO9uv5e1zm1nyRRgXDYP3adKKfJdMv5xiFLSX7fmc9y
-         R9W3631ovsprcavhohgWVLEsUPRXTDuyUvbX2GSaAcZL9crL4cnkcUcGf0X3a0LohZ
-         xbvBzJiWIb0EA==
-Received: by mail-lj1-f180.google.com with SMTP id o8so73055ljp.0;
-        Fri, 14 May 2021 13:52:13 -0700 (PDT)
-X-Gm-Message-State: AOAM5315KdztE60me2bblV7CLdNPqzLXAcBjJgzTYaYtYcLxhMERRwRR
-        onqInCX3dod90mPS8wfDQ+ZobuIck4IikAFgk9g=
-X-Google-Smtp-Source: ABdhPJz7ViHSfY1xU3aHdHxh84clQV4One8+yEweAGd0+dvAi8U3tXc+Br99xv5vTprqPZ96ErtQjQdg82pGhIzYRgo=
-X-Received: by 2002:a05:651c:39d:: with SMTP id e29mr40249496ljp.97.1621025531560;
- Fri, 14 May 2021 13:52:11 -0700 (PDT)
+        s=k20201202; t=1621030810;
+        bh=bN6ZhnJyMojIp9seq7zVzzHT/C7j3keiCK+LEFp2cOQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=YAZEd86fnNFL+tBmNptR7uPbSwB6PZ1AlkBwQsfsdYg48WQ2cw43sdbPugnCH2umN
+         KoTCz1f3EdDesA3By+NnuU2P6owvhqGZDhUhFx+Tim1BUBKYHKROWKFxvFVC0x5IxB
+         I0bf5oyn+ruzdKT1YY0ErUvOZPqndfOVR1UjxyMXrFabWuF0GFwMtAs7meZhyA2Vwu
+         JjHxtLnzHJoTtNNMmr39a4BilVNHXz2SuhBNG6U8rkTeFy7MxvjwgiJhsgL3wH4zbO
+         fEaSBj2jRxLK1QkbQQg+t7qdAUsIhxCSFVXG1qOQd90efQqfo/d3GTRb8jAWZjC46F
+         6bEcwmE4EuZZg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 43AD060972;
+        Fri, 14 May 2021 22:20:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210514195534.1440970-1-andrii@kernel.org>
-In-Reply-To: <20210514195534.1440970-1-andrii@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 14 May 2021 13:52:00 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4qaXuUR0AnOxNie14O_76TYVhe8DoXk9Hs7poZ0WJ=sQ@mail.gmail.com>
-Message-ID: <CAPhsuW4qaXuUR0AnOxNie14O_76TYVhe8DoXk9Hs7poZ0WJ=sQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: reject static entry-point BPF programs
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v8 0/3] fix packet stuck problem for lockless qdisc
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162103081027.6483.17994151706527065595.git-patchwork-notify@kernel.org>
+Date:   Fri, 14 May 2021 22:20:10 +0000
+References: <1620962221-40131-1-git-send-email-linyunsheng@huawei.com>
+In-Reply-To: <1620962221-40131-1-git-send-email-linyunsheng@huawei.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, olteanv@gmail.com,
+        ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
+        edumazet@google.com, weiwan@google.com, cong.wang@bytedance.com,
+        ap420073@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
+        mkl@pengutronix.de, linux-can@vger.kernel.org, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
+        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
+        a.fatoum@pengutronix.de, atenart@kernel.org,
+        alexander.duyck@gmail.com, hdanton@sina.com, jgross@suse.com,
+        JKosina@suse.com, mkubecek@suse.cz, bjorn@kernel.org,
+        alobakin@pm.me
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 14, 2021 at 1:33 PM Andrii Nakryiko <andrii@kernel.org> wrote:
->
-> Detect use of static entry-point BPF programs (those with SEC() markings) and
-> emit error message. This is similar to
-> c1cccec9c636 ("libbpf: Reject static maps") but for BPF programs.
->
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Hello:
 
-Acked-by: Song Liu <songliubraving@fb.com>
+This series was applied to netdev/net.git (refs/heads/master):
 
-> ---
->  tools/lib/bpf/libbpf.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 182bd3d3f728..e58f51b24574 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -677,6 +677,11 @@ bpf_object__add_programs(struct bpf_object *obj, Elf_Data *sec_data,
->                         return -LIBBPF_ERRNO__FORMAT;
->                 }
->
-> +               if (sec_idx != obj->efile.text_shndx && GELF_ST_BIND(sym.st_info) == STB_LOCAL) {
-> +                       pr_warn("sec '%s': program '%s' is static and not supported\n", sec_name, name);
-> +                       return -ENOTSUP;
-> +               }
-> +
->                 pr_debug("sec '%s': found program '%s' at insn offset %zu (%zu bytes), code size %zu insns (%zu bytes)\n",
->                          sec_name, name, sec_off / BPF_INSN_SZ, sec_off, prog_sz / BPF_INSN_SZ, prog_sz);
->
-> --
-> 2.30.2
->
+On Fri, 14 May 2021 11:16:58 +0800 you wrote:
+> This patchset fixes the packet stuck problem mentioned in [1].
+> 
+> Patch 1: Add STATE_MISSED flag to fix packet stuck problem.
+> Patch 2: Fix a tx_action rescheduling problem after STATE_MISSED
+>          flag is added in patch 1.
+> Patch 3: Fix the significantly higher CPU consumption problem when
+>          multiple threads are competing on a saturated outgoing
+>          device.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,v8,1/3] net: sched: fix packet stuck problem for lockless qdisc
+    https://git.kernel.org/netdev/net/c/a90c57f2cedd
+  - [net,v8,2/3] net: sched: fix tx action rescheduling issue during deactivation
+    https://git.kernel.org/netdev/net/c/102b55ee92f9
+  - [net,v8,3/3] net: sched: fix tx action reschedule issue with stopped queue
+    https://git.kernel.org/netdev/net/c/dcad9ee9e066
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
