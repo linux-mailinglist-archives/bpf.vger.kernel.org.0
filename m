@@ -2,79 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8FF38112B
-	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 21:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5AE381216
+	for <lists+bpf@lfdr.de>; Fri, 14 May 2021 22:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232802AbhENT5J convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 14 May 2021 15:57:09 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:58360 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232197AbhENT5J (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 14 May 2021 15:57:09 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14EJtWAm022943
-        for <bpf@vger.kernel.org>; Fri, 14 May 2021 12:55:57 -0700
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 38hvbks9kc-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 14 May 2021 12:55:57 -0700
-Received: from intmgw001.05.ash9.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 14 May 2021 12:55:40 -0700
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id C737E2ED8F9A; Fri, 14 May 2021 12:55:35 -0700 (PDT)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] libbpf: reject static entry-point BPF programs
-Date:   Fri, 14 May 2021 12:55:34 -0700
-Message-ID: <20210514195534.1440970-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S232440AbhENUx0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 May 2021 16:53:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232359AbhENUxZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 May 2021 16:53:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DF886145A;
+        Fri, 14 May 2021 20:52:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621025533;
+        bh=zWWTwQ5r9iKwmxhjPvmmkDnHWBuHLQJUtN28LFiusYQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lZlP2gEDB38oN5yezlICkgWFEBt229fwsBYr7LChT/POAsSD1V1mqR1A0fzMDfruI
+         8tfpqz2odciprrNyx1eyPZzts8ioNCVlplKxAQPyTth/+DfoxE/uPQ7do4mIJu13FF
+         cJa1S/TuBvJ7c+Ezh3a8Kd46/ghjJ4uaazCfEZFrVOgr+3EPuBfNjFFlKoqcD4cYBF
+         lrZQMTD+vswaOWZv2qxvEdrSO9uv5e1zm1nyRRgXDYP3adKKfJdMv5xiFLSX7fmc9y
+         R9W3631ovsprcavhohgWVLEsUPRXTDuyUvbX2GSaAcZL9crL4cnkcUcGf0X3a0LohZ
+         xbvBzJiWIb0EA==
+Received: by mail-lj1-f180.google.com with SMTP id o8so73055ljp.0;
+        Fri, 14 May 2021 13:52:13 -0700 (PDT)
+X-Gm-Message-State: AOAM5315KdztE60me2bblV7CLdNPqzLXAcBjJgzTYaYtYcLxhMERRwRR
+        onqInCX3dod90mPS8wfDQ+ZobuIck4IikAFgk9g=
+X-Google-Smtp-Source: ABdhPJz7ViHSfY1xU3aHdHxh84clQV4One8+yEweAGd0+dvAi8U3tXc+Br99xv5vTprqPZ96ErtQjQdg82pGhIzYRgo=
+X-Received: by 2002:a05:651c:39d:: with SMTP id e29mr40249496ljp.97.1621025531560;
+ Fri, 14 May 2021 13:52:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: ItliMht1-6Y8SWInF6jpeYT6FaBU4E8F
-X-Proofpoint-GUID: ItliMht1-6Y8SWInF6jpeYT6FaBU4E8F
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-14_10:2021-05-12,2021-05-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- phishscore=0 impostorscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- suspectscore=0 adultscore=0 priorityscore=1501 clxscore=1015 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105140158
-X-FB-Internal: deliver
+References: <20210514195534.1440970-1-andrii@kernel.org>
+In-Reply-To: <20210514195534.1440970-1-andrii@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 14 May 2021 13:52:00 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4qaXuUR0AnOxNie14O_76TYVhe8DoXk9Hs7poZ0WJ=sQ@mail.gmail.com>
+Message-ID: <CAPhsuW4qaXuUR0AnOxNie14O_76TYVhe8DoXk9Hs7poZ0WJ=sQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: reject static entry-point BPF programs
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Detect use of static entry-point BPF programs (those with SEC() markings) and
-emit error message. This is similar to
-c1cccec9c636 ("libbpf: Reject static maps") but for BPF programs.
+On Fri, May 14, 2021 at 1:33 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+>
+> Detect use of static entry-point BPF programs (those with SEC() markings) and
+> emit error message. This is similar to
+> c1cccec9c636 ("libbpf: Reject static maps") but for BPF programs.
+>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/libbpf.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Acked-by: Song Liu <songliubraving@fb.com>
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 182bd3d3f728..e58f51b24574 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -677,6 +677,11 @@ bpf_object__add_programs(struct bpf_object *obj, Elf_Data *sec_data,
- 			return -LIBBPF_ERRNO__FORMAT;
- 		}
- 
-+		if (sec_idx != obj->efile.text_shndx && GELF_ST_BIND(sym.st_info) == STB_LOCAL) {
-+			pr_warn("sec '%s': program '%s' is static and not supported\n", sec_name, name);
-+			return -ENOTSUP;
-+		}
-+
- 		pr_debug("sec '%s': found program '%s' at insn offset %zu (%zu bytes), code size %zu insns (%zu bytes)\n",
- 			 sec_name, name, sec_off / BPF_INSN_SZ, sec_off, prog_sz / BPF_INSN_SZ, prog_sz);
- 
--- 
-2.30.2
-
+> ---
+>  tools/lib/bpf/libbpf.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 182bd3d3f728..e58f51b24574 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -677,6 +677,11 @@ bpf_object__add_programs(struct bpf_object *obj, Elf_Data *sec_data,
+>                         return -LIBBPF_ERRNO__FORMAT;
+>                 }
+>
+> +               if (sec_idx != obj->efile.text_shndx && GELF_ST_BIND(sym.st_info) == STB_LOCAL) {
+> +                       pr_warn("sec '%s': program '%s' is static and not supported\n", sec_name, name);
+> +                       return -ENOTSUP;
+> +               }
+> +
+>                 pr_debug("sec '%s': found program '%s' at insn offset %zu (%zu bytes), code size %zu insns (%zu bytes)\n",
+>                          sec_name, name, sec_off / BPF_INSN_SZ, sec_off, prog_sz / BPF_INSN_SZ, prog_sz);
+>
+> --
+> 2.30.2
+>
