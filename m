@@ -2,82 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5042A3813AA
-	for <lists+bpf@lfdr.de>; Sat, 15 May 2021 00:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 198343813C3
+	for <lists+bpf@lfdr.de>; Sat, 15 May 2021 00:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233731AbhENWVW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 May 2021 18:21:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48450 "EHLO mail.kernel.org"
+        id S233722AbhENWbX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 May 2021 18:31:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230096AbhENWVW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 May 2021 18:21:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5480461440;
-        Fri, 14 May 2021 22:20:10 +0000 (UTC)
+        id S233666AbhENWbW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 May 2021 18:31:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 864A561453;
+        Fri, 14 May 2021 22:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621030810;
-        bh=bN6ZhnJyMojIp9seq7zVzzHT/C7j3keiCK+LEFp2cOQ=;
+        s=k20201202; t=1621031410;
+        bh=qrJLP/r3A3y/0MyfEURktG+DB4zmp3lLFDGbBMOKB8A=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=YAZEd86fnNFL+tBmNptR7uPbSwB6PZ1AlkBwQsfsdYg48WQ2cw43sdbPugnCH2umN
-         KoTCz1f3EdDesA3By+NnuU2P6owvhqGZDhUhFx+Tim1BUBKYHKROWKFxvFVC0x5IxB
-         I0bf5oyn+ruzdKT1YY0ErUvOZPqndfOVR1UjxyMXrFabWuF0GFwMtAs7meZhyA2Vwu
-         JjHxtLnzHJoTtNNMmr39a4BilVNHXz2SuhBNG6U8rkTeFy7MxvjwgiJhsgL3wH4zbO
-         fEaSBj2jRxLK1QkbQQg+t7qdAUsIhxCSFVXG1qOQd90efQqfo/d3GTRb8jAWZjC46F
-         6bEcwmE4EuZZg==
+        b=P0zgoaprDJvd98bH2YsY9oRsUbNpX6X8rgv/5veHPFVbyZwKiayQ+lnPqhh61onti
+         /qgzqCR38fonvkdjL5sUGDu2+AaxoIKOXMHXvG+q91G5ZwsLOu9QuvS8gOKseqEoa3
+         z+j6b7QjwOBdcIG9bzVNluyZQdJux6OLi8vkxm4MLMCTm9UIzH1AAdtgAvaBTo4nSv
+         hQ+1vvNZrSlA75KQ7SJ39pc3U2qCIIWPc2M+mHWXdka1QFkfvnRxKEGL4xqNVJVFfy
+         ysPhyEIXgQa/RHfOIy2Bzug07IMfmVNyvc6h8nsBhO0+MK64/mbSpbRNFHk76WQPnt
+         CNBQlmO82/NXg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 43AD060972;
-        Fri, 14 May 2021 22:20:10 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 788F260A02;
+        Fri, 14 May 2021 22:30:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v8 0/3] fix packet stuck problem for lockless qdisc
+Subject: Re: [PATCH net-next 0/3] net: use XDP helpers
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162103081027.6483.17994151706527065595.git-patchwork-notify@kernel.org>
-Date:   Fri, 14 May 2021 22:20:10 +0000
-References: <1620962221-40131-1-git-send-email-linyunsheng@huawei.com>
-In-Reply-To: <1620962221-40131-1-git-send-email-linyunsheng@huawei.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, olteanv@gmail.com,
-        ast@kernel.org, daniel@iogearbox.net, andriin@fb.com,
-        edumazet@google.com, weiwan@google.com, cong.wang@bytedance.com,
-        ap420073@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
-        mkl@pengutronix.de, linux-can@vger.kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
-        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
-        a.fatoum@pengutronix.de, atenart@kernel.org,
-        alexander.duyck@gmail.com, hdanton@sina.com, jgross@suse.com,
-        JKosina@suse.com, mkubecek@suse.cz, bjorn@kernel.org,
-        alobakin@pm.me
+Message-Id: <162103141048.10202.7043185141593053010.git-patchwork-notify@kernel.org>
+Date:   Fri, 14 May 2021 22:30:10 +0000
+References: <20210514183954.7129-1-mcroce@linux.microsoft.com>
+In-Reply-To: <20210514183954.7129-1-mcroce@linux.microsoft.com>
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org,
+        linux-stm32@st-md-mailman.stormreply.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        mst@redhat.com, jasowang@redhat.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net.git (refs/heads/master):
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Fri, 14 May 2021 11:16:58 +0800 you wrote:
-> This patchset fixes the packet stuck problem mentioned in [1].
+On Fri, 14 May 2021 20:39:51 +0200 you wrote:
+> From: Matteo Croce <mcroce@microsoft.com>
 > 
-> Patch 1: Add STATE_MISSED flag to fix packet stuck problem.
-> Patch 2: Fix a tx_action rescheduling problem after STATE_MISSED
->          flag is added in patch 1.
-> Patch 3: Fix the significantly higher CPU consumption problem when
->          multiple threads are competing on a saturated outgoing
->          device.
+> The commit 43b5169d8355 ("net, xdp: Introduce xdp_init_buff utility
+> routine") and commit be9df4aff65f ("net, xdp: Introduce xdp_prepare_buff
+> utility routine") introduces two useful helpers to populate xdp_buff.
+> Use it in drivers which still open codes that routines.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v8,1/3] net: sched: fix packet stuck problem for lockless qdisc
-    https://git.kernel.org/netdev/net/c/a90c57f2cedd
-  - [net,v8,2/3] net: sched: fix tx action rescheduling issue during deactivation
-    https://git.kernel.org/netdev/net/c/102b55ee92f9
-  - [net,v8,3/3] net: sched: fix tx action reschedule issue with stopped queue
-    https://git.kernel.org/netdev/net/c/dcad9ee9e066
+  - [net-next,1/3] stmmac: use XDP helpers
+    https://git.kernel.org/netdev/net-next/c/d172268f93cf
+  - [net-next,2/3] igc: use XDP helpers
+    https://git.kernel.org/netdev/net-next/c/082294f294f6
+  - [net-next,3/3] vhost_net: use XDP helpers
+    https://git.kernel.org/netdev/net-next/c/224bf7db5518
 
 You are awesome, thank you!
 --
