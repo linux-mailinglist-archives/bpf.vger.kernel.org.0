@@ -2,130 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AF7381526
-	for <lists+bpf@lfdr.de>; Sat, 15 May 2021 04:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5344D381596
+	for <lists+bpf@lfdr.de>; Sat, 15 May 2021 05:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235453AbhEOC0k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 May 2021 22:26:40 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:2986 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232297AbhEOC0k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 May 2021 22:26:40 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fhq1s0Z3Vzlbrx;
-        Sat, 15 May 2021 10:23:13 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 15 May 2021 10:25:26 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Sat, 15 May
- 2021 10:25:25 +0800
-Subject: Re: [PATCH net v8 1/3] net: sched: fix packet stuck problem for
- lockless qdisc
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-CC:     David Miller <davem@davemloft.net>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "Wei Wang" <weiwan@google.com>,
-        "Cong Wang ." <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jonas Bonn <jonas.bonn@netrounds.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Michael Zhivich <mzhivich@akamai.com>,
-        Josh Hunt <johunt@akamai.com>, Jike Song <albcamus@gmail.com>,
-        Kehuan Feng <kehuan.feng@gmail.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        "Hillf Danton" <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, "Michal Kubecek" <mkubecek@suse.cz>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Alexander Lobakin <alobakin@pm.me>
-References: <1620959218-17250-1-git-send-email-linyunsheng@huawei.com>
- <1620959218-17250-2-git-send-email-linyunsheng@huawei.com>
- <CAM_iQpXWgYQxf8Ba-D4JQJMPUaR9MBfQFTLFCHWJMVq9PcUWRg@mail.gmail.com>
- <20210514163923.53f39888@kicinski-fedora-PC1C0HJN>
- <CAM_iQpXZNASp7+kA=OoCVbXuReAtOzHnqMn8kFUVfi9_qWe_kw@mail.gmail.com>
- <20210514171759.5572c8f0@kicinski-fedora-PC1C0HJN>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <def859b3-b6ea-7338-38eb-3f18ec3d60c2@huawei.com>
-Date:   Sat, 15 May 2021 10:25:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S230004AbhEODtq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 May 2021 23:49:46 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:49126 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229898AbhEODtp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 May 2021 23:49:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1621050514; x=1652586514;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=sx6X6iGWIuUFegawsI8UjhCFW9TvkVrGkXDiyldSErQ=;
+  b=IpmIQJsYYgTq/G/LqqWQX8RrgIFQO84NU/6WdGVq3DxYQPlrX+6gCYV3
+   oU7rYQDOvYZp0qz0YQLedBOomACCS5c67Y9UviJ2QFdPC0vawgRqbOkhN
+   ul9YeE10KQCM8a5zzuYmgGjfHagfFgXaWUMnU6QiqYpJsj0iiIBVpeYTH
+   U=;
+X-IronPort-AV: E=Sophos;i="5.82,300,1613433600"; 
+   d="scan'208";a="107902101"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-397e131e.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-4101.iad4.amazon.com with ESMTP; 15 May 2021 03:48:32 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-397e131e.us-west-2.amazon.com (Postfix) with ESMTPS id CBE48A25C0;
+        Sat, 15 May 2021 03:48:30 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Sat, 15 May 2021 03:48:30 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.162.239) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Sat, 15 May 2021 03:48:25 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <kafai@fb.com>
+CC:     <andrii.nakryiko@gmail.com>, <andrii@kernel.org>, <ast@kernel.org>,
+        <benh@amazon.com>, <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v5 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Sat, 15 May 2021 12:48:21 +0900
+Message-ID: <20210515034821.79264-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210514062625.5zg626xquffvmrr7@kafai-mbp>
+References: <20210514062625.5zg626xquffvmrr7@kafai-mbp>
 MIME-Version: 1.0
-In-Reply-To: <20210514171759.5572c8f0@kicinski-fedora-PC1C0HJN>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme718-chm.china.huawei.com (10.1.199.114) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.239]
+X-ClientProxiedBy: EX13D07UWA004.ant.amazon.com (10.43.160.32) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/5/15 8:17, Jakub Kicinski wrote:
-> On Fri, 14 May 2021 16:57:29 -0700 Cong Wang wrote:
->> On Fri, May 14, 2021 at 4:39 PM Jakub Kicinski <kuba@kernel.org> wrote:
->>>
->>> On Fri, 14 May 2021 16:36:16 -0700 Cong Wang wrote:  
->>  [...]  
->>>>
->>>> We have test_and_clear_bit() which is atomic, test_bit()+clear_bit()
->>>> is not.  
->>>
->>> It doesn't have to be atomic, right? I asked to split the test because
->>> test_and_clear is a locked op on x86, test by itself is not.  
->>
->> It depends on whether you expect the code under the true condition
->> to run once or multiple times, something like:
->>
->> if (test_bit()) {
->>   clear_bit();
->>   // this code may run multiple times
->> }
->>
->> With the atomic test_and_clear_bit(), it only runs once:
->>
->> if (test_and_clear_bit()) {
->>   // this code runs once
->> }
+From:   Martin KaFai Lau <kafai@fb.com>
+Date:   Thu, 13 May 2021 23:26:25 -0700
+> On Fri, May 14, 2021 at 08:23:00AM +0900, Kuniyuki Iwashima wrote:
+> > From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > Date:   Thu, 13 May 2021 14:27:13 -0700
+> > > On Sun, May 9, 2021 at 8:45 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
+> > > >
+> > > > The SO_REUSEPORT option allows sockets to listen on the same port and to
+> > > > accept connections evenly. However, there is a defect in the current
+> > > > implementation [1]. When a SYN packet is received, the connection is tied
+> > > > to a listening socket. Accordingly, when the listener is closed, in-flight
+> > > > requests during the three-way handshake and child sockets in the accept
+> > > > queue are dropped even if other listeners on the same port could accept
+> > > > such connections.
+> > [...]
+> > > 
+> > > One test is failing in CI ([0]), please take a look.
+> > > 
+> > >   [0] https://travis-ci.com/github/kernel-patches/bpf/builds/225784969 
+> > 
+> > Thank you for checking.
+> > 
+> > The test needs to drop SYN+ACK and currently it is done by iptables or
+                           ^^^^^^^
+                           the final ACK of 3WHS
+Sorry, this was typo.
 
-I am not sure if the above really matter when the test and clear
-does not need to be atomic.
 
-In order for the above to happens, the MISSED has to set between
-test and clear, right?
+> > ip6tables. But it seems that I should not use them. Should this be done
+> > by XDP?
+> or drop it at a bpf_prog@tc-egress.
+> 
+> I also don't have iptables in my kconfig and I had to add them
+> to run this test.  None of the test_progs depends on iptables also.
 
->>
->> This is why __netif_schedule() uses test_and_set_bit() instead of
->> test_bit()+set_bit().
+I'll rewrite the dropping part with XDP or TC.
+Thank you.
 
-I think test_and_set_bit() is needed in __netif_schedule() mainly
-because STATE_SCHED is also used to indicate if the qdisc is in
-sd->output_queue, so it has to be atomic.
 
 > 
-> Thanks, makes sense, so hopefully the MISSED-was-set case is not common
-> and we can depend on __netif_schedule() to DTRT, avoiding the atomic op
-> in the common case.
-> 
-> .
-> 
-
+> > 
+> > ---8<---
+> > iptables v1.8.5 (legacy): can't initialize iptables table `filter': Table does not exist (do you need to insmod?)
+> > Perhaps iptables or your kernel needs to be upgraded.
+> > ip6tables v1.8.5 (legacy): can't initialize ip6tables table `filter': Table does not exist (do you need to insmod?)
+> > Perhaps ip6tables or your kernel needs to be upgraded.
+> > ---8<---
