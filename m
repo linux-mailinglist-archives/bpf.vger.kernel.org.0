@@ -2,75 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798FF38160E
-	for <lists+bpf@lfdr.de>; Sat, 15 May 2021 07:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2C53819AD
+	for <lists+bpf@lfdr.de>; Sat, 15 May 2021 17:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbhEOF1X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 May 2021 01:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbhEOF1X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 May 2021 01:27:23 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B57C06174A;
-        Fri, 14 May 2021 22:26:10 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id y2so1672535ybq.13;
-        Fri, 14 May 2021 22:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3qC/HEtqoIJGROP6iKnL5XKtySpCPC8sBZ3oZgPSb2o=;
-        b=YS6AL4E9YEoTcTaGqW8QD69+yniVavqR+wfxH1ILWdY8MCsDal2aj27Iyxw2CcqP5L
-         rB1xOlq2C75wrjZQpWh2fUn2MdK/bCpo01LVb17BfSyQUaO3PlIDM+rr3JRPGZsrX0a4
-         FrOo2tH2m5kxzT+zoZ4VOwc017tfdFZ0QInAnvwoObOEiawDNVz9kSBwBtwVYNS+e6Hz
-         UhIR6sjWlNgNpend+vuqhEPq2Hx9SnApsOHSn93EU0EXnMocJPyFCiDr0Ge3GaUtzpXH
-         Z4vWa1eorn4NSPV2Z9B3fzc6sl/uLYi+b43S2o++O8HUfOhYE22Wu17pdxPYX0Jadm32
-         SXGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3qC/HEtqoIJGROP6iKnL5XKtySpCPC8sBZ3oZgPSb2o=;
-        b=CZ6JLw1Ww+D1ukeCEp6OWvonX1z2pzmDom+E5WxzE5S8dONtwy3PjRztXMSlEjA6QU
-         eZTsCDz0HKRZHWPPv0YsQHNNEdq5TZWaJHzQoc/89JrpSnRS3NQntbIcO50Gz5L7lATs
-         zsZUj6qwf1g5xBVKqBW7EdXkwOUU1p5iTaW5E3s9O9DyvuYX564Wld2vZZe6es3l8N5I
-         ahM4ZCrADZtmH7y55WuPVgHmABKNFrqrIzWz3RJQtNMjRyeGRvIVI394XPlpVB9Do5Vk
-         t27HAMPZpzVZ6gbWj6krq04B+18bLFdk1wCzAYUB19Oa8Hb8FTES/KBRE2ZP8uj5A6kP
-         h3tw==
-X-Gm-Message-State: AOAM532gHFWGqEBEBd8gufwy841smJuety3ngZrdC3UaUDpZJb3567Ra
-        7uvVgiXXQ35vJSr9LfDRKiiM7vnWaN3s9Zs7u+M=
-X-Google-Smtp-Source: ABdhPJwOgutSNIwen1bh3ICH32d1zZF/Am7UP2GmI1G6PjPKp1RG2ZnCANI1oBUsW2Nn6wzUZailDEBbEoDe9wwx1Fo=
-X-Received: by 2002:a25:3357:: with SMTP id z84mr67444368ybz.260.1621056369263;
- Fri, 14 May 2021 22:26:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210514195534.1440970-1-andrii@kernel.org> <CAADnVQJEWUJ68SQG=bDHG007384xsbPzH5-hdXuZYpDR-txBBA@mail.gmail.com>
-In-Reply-To: <CAADnVQJEWUJ68SQG=bDHG007384xsbPzH5-hdXuZYpDR-txBBA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 14 May 2021 22:25:58 -0700
-Message-ID: <CAEf4BzbBJgcD-QOyWPLWdMf+CZHFnpyLd-F9-eiZ-4fGsS_y6A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: reject static entry-point BPF programs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+        id S232927AbhEOPuT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 May 2021 11:50:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230204AbhEOPuR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 May 2021 11:50:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C79A61377;
+        Sat, 15 May 2021 15:49:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621093742;
+        bh=9ko5ujwWSKEVrSBOJZLnsjRLIRjeY6NbE+C84Janp6A=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=VplB6vOb81I15gaP96w7NAfJVwBNSo74K+pZrkTh2byuCeMxQS4KLu9HwfPChFwSS
+         zoZtyHDfitTCrovGL8PqPXzzrnGc3OGQqZoXCuKpIG2PkswHTt+S6HVNiq3ToKpM1i
+         vLeYc7r42NQKcHhTVtK7T9Sd6hbBw2kPZtcRS0zPhAv78fiMN/i02hJM+tlwyJiVI3
+         Po6rRsz0HhWInqitj82tjWdkLVZgD+byf2Zo55BMthAbYP3sRdozcMZUjZ4U3Mu6Ol
+         rn3vG6O8S4W2QtP7cEHXROW8fC1R6u3t9Fd+cJA8illFbq1x/5yDbu/WLzVyCkbSj+
+         aeYm1tq2x25fQ==
+Subject: Re: [RFC PATCH bpf-next seccomp 00/12] eBPF seccomp filters
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     containers@lists.linux.dev, bpf <bpf@vger.kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Austin Kuo <hckuo2@illinois.edu>,
+        Claudio Canella <claudio.canella@iaik.tugraz.at>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Gruss <daniel.gruss@iaik.tugraz.at>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jann Horn <jannh@google.com>,
+        Jinghao Jia <jinghao7@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tom Hromatka <tom.hromatka@oracle.com>,
+        Will Drewry <wad@chromium.org>
+References: <cover.1620499942.git.yifeifz2@illinois.edu>
+ <CALCETrUQBonh5BC4eomTLpEOFHVcQSz9SPcfOqNFTf2TPht4-Q@mail.gmail.com>
+ <CABqSeASYRXMwTQwLfm_Tapg45VUy9sPfV7BeeV8p7XJrDoLf+Q@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <b3a1684b-86e4-74c4-184b-7700613aa838@kernel.org>
+Date:   Sat, 15 May 2021 08:49:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <CABqSeASYRXMwTQwLfm_Tapg45VUy9sPfV7BeeV8p7XJrDoLf+Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 14, 2021 at 4:14 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, May 14, 2021 at 1:34 PM Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > Detect use of static entry-point BPF programs (those with SEC() markings) and
-> > emit error message.
->
-> Applied. I was wondering whether you've seen such combinations ?
+On 5/10/21 10:21 PM, YiFei Zhu wrote:
+> On Mon, May 10, 2021 at 12:47 PM Andy Lutomirski <luto@kernel.org> wrote:
+>> On Mon, May 10, 2021 at 10:22 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+>>>
+>>> From: YiFei Zhu <yifeifz2@illinois.edu>
+>>>
+>>> Based on: https://lists.linux-foundation.org/pipermail/containers/2018-February/038571.html
+>>>
+>>> This patchset enables seccomp filters to be written in eBPF.
+>>> Supporting eBPF filters has been proposed a few times in the past.
+>>> The main concerns were (1) use cases and (2) security. We have
+>>> identified many use cases that can benefit from advanced eBPF
+>>> filters, such as:
+>>
+>> I haven't reviewed this carefully, but I think we need to distinguish
+>> a few things:
+>>
+>> 1. Using the eBPF *language*.
+>>
+>> 2. Allowing the use of stateful / non-pure eBPF features.
+>>
+>> 3. Allowing the eBPF programs to read the target process' memory.
+>>
+>> I'm generally in favor of (1).  I'm not at all sure about (2), and I'm
+>> even less convinced by (3).
+>>
+>>>
+>>>   * exec-only-once filter / apply filter after exec
+>>
+>> This is (2).  I'm not sure it's a good idea.
+> 
+> The basic idea is that for a container runtime it may wait to execute
+> a program in a container without that program being able to execve
+> another program, stopping any attack that involves loading another
+> binary. The container runtime can block any syscall but execve in the
+> exec-ed process by using only cBPF.
+> 
+> The use case is suggested by Andrea Arcangeli and Giuseppe Scrivano.
+> @Andrea and @Giuseppe, could you clarify more in case I missed
+> something?
 
-Haven't seen this anywhere in the real code, only tested locally by
-adding static to one of selftests. Unlikely to break anyone, but good
-to be as strict as with maps.
+We've discussed having a notifier-using filter be able to replace its
+filter.  This would allow this and other use cases without any
+additional eBPF or cBPF code.
+
+>> eBPF doesn't really have a privilege model yet.  There was a long and
+>> disappointing thread about this awhile back.
+> 
+> The idea is that “seccomp-eBPF does not make life easier for an
+> adversary”. Any attack an adversary could potentially utilize
+> seccomp-eBPF, they can do the same with other eBPF features, i.e. it
+> would be an issue with eBPF in general rather than specifically
+> seccomp’s use of eBPF.
+> 
+> Here it is referring to the helpers goes to the base
+> bpf_base_func_proto if the caller is unprivileged (!bpf_capable ||
+> !perfmon_capable). In this case, if the adversary would utilize eBPF
+> helpers to perform an attack, they could do it via another
+> unprivileged prog type.
+> 
+> That said, there are a few additional helpers this patchset is adding:
+> * get_current_uid_gid
+> * get_current_pid_tgid
+>   These two provide public information (are namespaces a concern?). I
+> have no idea what kind of exploit it could add unless the adversary
+> somehow side-channels the task_struct? But in that case, how is the
+> reading of task_struct different from how the rest of the kernel is
+> reading task_struct?
+
+Yes, namespaces are a concern.  This idea got mostly shot down for kdbus
+(what ever happened to that?), and it likely has the same problems for
+seccomp.
+
+>>
+>> What is this for?
+> 
+> Memory reading opens up lots of use cases. For example, logging what
+> files are being opened without imposing too much performance penalty
+> from strace. Or as an accelerator for user notify emulation, where
+> syscalls can be rejected on a fast path if we know the memory contents
+> does not satisfy certain conditions that user notify will check.
+> 
+
+This has all kinds of race conditions.
+
+
+I hate to be a party pooper, but this patchset is going to very high bar
+to acceptance.  Right now, seccomp has a couple of excellent properties:
+
+First, while it has limited expressiveness, it is simple enough that the
+implementation can be easily understood and the scope for
+vulnerabilities that fall through the cracks of the seccomp sandbox
+model is low.  Compare this to Windows' low-integrity/high-integrity
+sandbox system: there is a never ending string of sandbox escapes due to
+token misuse, unexpected things at various integrity levels, etc.
+Seccomp doesn't have tokens or integrity levels, and these bugs don't
+happen.
+
+Second, seccomp works, almost unchanged, in a completely unprivileged
+context.  The last time making eBPF work sensibly in a less- or
+-unprivileged context, the maintainers mostly rejected the idea of
+developing/debugging a permission model for maps, cleaning up the bpf
+object id system, etc.  You are going to have a very hard time
+convincing the seccomp maintainers to let any of these mechanism
+interact with seccomp until the underlying permission model is in place.
+
+--Andy
