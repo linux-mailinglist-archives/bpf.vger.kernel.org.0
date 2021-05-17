@@ -2,156 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D943837EF
-	for <lists+bpf@lfdr.de>; Mon, 17 May 2021 17:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D797E3837F4
+	for <lists+bpf@lfdr.de>; Mon, 17 May 2021 17:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244898AbhEQPrU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 May 2021 11:47:20 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:35969 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343758AbhEQPmF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 17 May 2021 11:42:05 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 27C19273;
-        Mon, 17 May 2021 11:40:32 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 17 May 2021 11:40:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=wst7L607Txv7R6hkiDuGqcVCA4a
-        4080QIuIbxzlHCcU=; b=vdWhaeQ8Ry88uZH2ZQx7NTjdu982iHmRxpRteix8qpH
-        q8OidQcWzX9HF68eMo5a6DuPvSLtXiz9pe1n+xpUQ/s7KyQZoV+d3JdXLgbeqbZ5
-        km38NOqL2Y0bvgMYBKGIZYS/Mk5M73Np2qewnaeXNMWiL/FTBtxaXN9kCnyZNGHd
-        TBS67A8rMpZZb/gFsmHA5zjeMj4K4EK6N6X5/f2jWTTJBeJFGsgYwTRpMnl1IEjL
-        3Kl73TGQmgKdEhW568XKsrJ3eXd04pCCWsqbpPeIvJmfgBZ9+hS6Os8osWpbDo0y
-        iw9gtqnPKPd4kV2VlO81LBWdEGuChuciXfpZsBvCIeQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=wst7L6
-        07Txv7R6hkiDuGqcVCA4a4080QIuIbxzlHCcU=; b=gsOQPxbTg6IkY5X0kjex4H
-        GYEIJDZrSrb8/WrmXu6/RhfHgoCo1jhYNxNhY5/7wnUi+hyPTf2rkQbEvzpuzlQv
-        /g3yd3hlSKHY+/SDpY/wB+f9hZYZ63j+XGKXzci7jE1tLvEPGMvgAslxzfjI32A3
-        xd2JuZsZXAvZfhFIpt5ZLJYuXSy9U3rCVIJSBcvOe+wZa7qrqzRdQVOO9FksjGVE
-        hwvHU0iSc/eH04VV0f4T3Z0qjq5CUnV09p09hsagRubYNPbjS4TzI8g+PmK1aobH
-        bjUtnDLlb4NqQ9jvjGfR9MFnPS7UzcOKNrb2ZPS2R11gE9h15SX0ESZXnqN337bA
-        ==
-X-ME-Sender: <xms:bo6iYKvN-acJkgM1LrBFpFo8Uvu0L9UYI1QgZEzBoLfjgFm6HDES2w>
-    <xme:bo6iYPdPvh-GHCmDpFdx9-UcUa8A8BMRdt604NE1vRAdgYdTWhxO-0fzJ5XWiNPlv
-    SP38q0KUtMV5WlZMBg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeihedgledvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
-    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
-    htthgvrhhnpedttdeljeetiedthfetueevudegudfgjedvvdeifeehgfeuhfeileeihfej
-    veduveenucffohhmrghinhepuhhrlhguvghfvghnshgvrdgtohhmnecukfhppeduvdekrd
-    dutdejrddvgedurddukedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepthihtghhohesthihtghhohdrphhiiiiirg
-X-ME-Proxy: <xmx:bo6iYFxO9GBF_VOTjiIC81q_-53fpwmmv0TirqPNjFSC1Sec9p8rZw>
-    <xmx:bo6iYFNxHxDdGYtBqSGGv4QBkgREYKL5Hxp0rIn26tpOPXWCGoPBrQ>
-    <xmx:bo6iYK-W-8vvBB5e-GzqJzmx-8HiqDH-hmvtV9tcOepHFH4StdaW5A>
-    <xmx:b46iYAndTQNYU9J2HasiQmBT3hX_Q1Fe4y2z3tFw10ie5SViaccYCKVn7ks>
-Received: from cisco (unknown [128.107.241.182])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon, 17 May 2021 11:40:25 -0400 (EDT)
-Date:   Mon, 17 May 2021 09:40:24 -0600
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     Tianyin Xu <tyxu@illinois.edu>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        YiFei Zhu <zhuyifei1999@gmail.com>,
-        "containers@lists.linux.dev" <containers@lists.linux.dev>,
-        bpf <bpf@vger.kernel.org>, "Zhu, YiFei" <yifeifz2@illinois.edu>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Kuo, Hsuan-Chi" <hckuo2@illinois.edu>,
-        Claudio Canella <claudio.canella@iaik.tugraz.at>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Daniel Gruss <daniel.gruss@iaik.tugraz.at>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jann Horn <jannh@google.com>,
-        "Jia, Jinghao" <jinghao7@illinois.edu>,
-        "Torrellas, Josep" <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tom Hromatka <tom.hromatka@oracle.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [RFC PATCH bpf-next seccomp 00/12] eBPF seccomp filters
-Message-ID: <20210517154024.GE1964106@cisco>
-References: <cover.1620499942.git.yifeifz2@illinois.edu>
- <CALCETrUQBonh5BC4eomTLpEOFHVcQSz9SPcfOqNFTf2TPht4-Q@mail.gmail.com>
- <CABqSeASYRXMwTQwLfm_Tapg45VUy9sPfV7BeeV8p7XJrDoLf+Q@mail.gmail.com>
- <fffbea8189794a8da539f6082af3de8e@DM5PR11MB1692.namprd11.prod.outlook.com>
- <CAGMVDEGzGB4+6gJPTw6Tdng5ur9Jua+mCbqwPoNZ16EFaDcmjA@mail.gmail.com>
+        id S235874AbhEQPrs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 May 2021 11:47:48 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:48077 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344864AbhEQPpu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 May 2021 11:45:50 -0400
+Received: by mail-io1-f70.google.com with SMTP id q187-20020a6b8ec40000b0290431cccd987fso3683420iod.14
+        for <bpf@vger.kernel.org>; Mon, 17 May 2021 08:44:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to:cc;
+        bh=mrMkioD6vzRM2yujSYnUXKviNRlAqk6XqzwbtXOea+E=;
+        b=OvXBh8Zv8adVcvlG2BLVUMyb7sUSDWAgDihVVMEn2iSlVcdoyek7qq5ijJiGmVw0wc
+         jGUJSwcxuOUBU90GEil9yKLn/cOzayMi2wusx5pWAGnMlOJFYIop+M4o/RRduV3HRQ4P
+         VuQGFk7ZHAp7CzUHVbdW9bfJQWrFjqR68tIALSfOgeL7il3KRbN6ECRBIYNHv9VdNEEN
+         H6sY2o290wYvbSONGx6uV8VrEQuGSX+Vgm+8Tf58eEk2fgYQcSLVae91MvkArsdJPxx4
+         Ug5vLCJb/hfrigzCHSbTvzi98YxA/4e6J3cvrxiQY8ncDiFqADMTeConKNvjQ0Ai708p
+         S3xA==
+X-Gm-Message-State: AOAM533tuRd0JmHNujMpQnGE9ZeBzueKymSVjTKHjFwVSJdun5RUjmyu
+        13TeuZlqfyNVNn5u/FkfNkM8F8rlD6v+nMjvzIf1bKfD9Qli
+X-Google-Smtp-Source: ABdhPJx7kbgg5SvchWqwdM8rKoTdxZY9XnSePVnH5SXoaosvpgPhr54ajFNYu/0NmuPEzWPK1L//gTi2QEmup+/CDD/QTk6NMaXW
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGMVDEGzGB4+6gJPTw6Tdng5ur9Jua+mCbqwPoNZ16EFaDcmjA@mail.gmail.com>
+X-Received: by 2002:a05:6e02:1809:: with SMTP id a9mr291275ilv.184.1621266272712;
+ Mon, 17 May 2021 08:44:32 -0700 (PDT)
+Date:   Mon, 17 May 2021 08:44:32 -0700
+In-Reply-To: <CACT4Y+afi_p-w1BYHZNdkuz-Cnp0aScdoQQj1yEyxR3ZKd3HnA@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000457cb105c28878fd@google.com>
+Subject: Re: [syzbot] KMSAN: uninit-value in virtio_net_hdr_to_skb
+From:   syzbot <syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, dvyukov@google.com,
+        glider@google.com, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tannerlove@google.com,
+        willemdebruijn.kernel@gmail.com, xie.he.0141@gmail.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, May 16, 2021 at 03:38:00AM -0500, Tianyin Xu wrote:
-> On Sat, May 15, 2021 at 10:49 AM Andy Lutomirski <luto@kernel.org> wrote:
-> >
-> > On 5/10/21 10:21 PM, YiFei Zhu wrote:
-> > > On Mon, May 10, 2021 at 12:47 PM Andy Lutomirski <luto@kernel.org> wrote:
-> > >> On Mon, May 10, 2021 at 10:22 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> > >>>
-> > >>> From: YiFei Zhu <yifeifz2@illinois.edu>
-> > >>>
-> > >>> Based on: https://urldefense.com/v3/__https://lists.linux-foundation.org/pipermail/containers/2018-February/038571.html__;!!DZ3fjg!thbAoRgmCeWjlv0qPDndNZW1j6Y2Kl_huVyUffr4wVbISf-aUiULaWHwkKJrNJyo$
-> > >>>
-> > >>> This patchset enables seccomp filters to be written in eBPF.
-> > >>> Supporting eBPF filters has been proposed a few times in the past.
-> > >>> The main concerns were (1) use cases and (2) security. We have
-> > >>> identified many use cases that can benefit from advanced eBPF
-> > >>> filters, such as:
-> > >>
-> > >> I haven't reviewed this carefully, but I think we need to distinguish
-> > >> a few things:
-> > >>
-> > >> 1. Using the eBPF *language*.
-> > >>
-> > >> 2. Allowing the use of stateful / non-pure eBPF features.
-> > >>
-> > >> 3. Allowing the eBPF programs to read the target process' memory.
-> > >>
-> > >> I'm generally in favor of (1).  I'm not at all sure about (2), and I'm
-> > >> even less convinced by (3).
-> > >>
-> > >>>
-> > >>>   * exec-only-once filter / apply filter after exec
-> > >>
-> > >> This is (2).  I'm not sure it's a good idea.
-> > >
-> > > The basic idea is that for a container runtime it may wait to execute
-> > > a program in a container without that program being able to execve
-> > > another program, stopping any attack that involves loading another
-> > > binary. The container runtime can block any syscall but execve in the
-> > > exec-ed process by using only cBPF.
-> > >
-> > > The use case is suggested by Andrea Arcangeli and Giuseppe Scrivano.
-> > > @Andrea and @Giuseppe, could you clarify more in case I missed
-> > > something?
-> >
-> > We've discussed having a notifier-using filter be able to replace its
-> > filter.  This would allow this and other use cases without any
-> > additional eBPF or cBPF code.
-> >
-> 
-> A notifier is not always a solution (even ignoring its perf overhead).
-> 
-> One problem, pointed out by Andrea Arcangeli, is that notifiers need
-> userspace daemons. So, it can hardly be used by daemonless container
-> engines like Podman.
+> On Mon, May 17, 2021 at 5:13 PM Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+>>
+>> On Mon, May 17, 2021 at 10:57 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>> >
+>> > On Mon, May 17, 2021 at 4:06 PM Willem de Bruijn
+>> > <willemdebruijn.kernel@gmail.com> wrote:
+>> > >
+>> > > On Mon, May 17, 2021 at 7:27 AM syzbot
+>> > > <syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com> wrote:
+>> > > >
+>> > > > Hello,
+>> > > >
+>> > > > syzbot found the following issue on:
+>> > > >
+>> > > > HEAD commit:    4ebaab5f kmsan: drop unneeded references to kmsan_context_..
+>> > > > git tree:       https://github.com/google/kmsan.git master
+>> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=17ac508ed00000
+>> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ab8076fe8508c0d3
+>> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=106457891e3cf3b273a9
+>> > > > compiler:       Debian clang version 11.0.1-2
+>> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138f4972d00000
+>> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1624ffced00000
+>> > > >
+>> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> > > > Reported-by: syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com
+>> > > >
+>> > > > =====================================================
+>> > > > BUG: KMSAN: uninit-value in virtio_net_hdr_to_skb+0x1414/0x14f0 include/linux/virtio_net.h:86
+>> > >
+>> > > No answer/fix, just initial investigation.
+>> > >
+>> > > This is an odd location. Line 86 is the inner if statement. Both
+>> > > protocol and skb->protocol are clearly initialized by then. But, that
+>> > > is also not the allocation that MSAN reports, see below.
+>> > >
+>> > >                         if (!skb->protocol) {
+>> > >                                 __be16 protocol =
+>> > > dev_parse_header_protocol(skb);
+>> > >
+>> > >                                 virtio_net_hdr_set_proto(skb, hdr);
+>> > >                                 if (protocol && protocol != skb->protocol)
+>> > >                                         return -EINVAL;
+>> > >                         }
+>> > >
+>> > > The repro itself seems mostly straightforward:
+>> > >
+>> > > - create a packet socket
+>> > > - enable PACKET_VNET_HDR with setsockopt(r3, 0x107, 0xf ..)
+>> > > - bind to AF_PACKET (0x11)
+>> > >
+>> > > - create a pipe
+>> > > - write to pipe[1]
+>> > > - splice pipe[0] to the packet socket
+>> > >
+>> > > there are a few other calls that I think are irrelevant and/or would fail.
+>> > >
+>> > > Perhaps there is some race condition in device refcounting, as bind
+>> > > operates on that?
+>> > >
+>> > > > CPU: 0 PID: 8426 Comm: syz-executor777 Not tainted 5.12.0-rc6-syzkaller #0
+>> > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>> > > > Call Trace:
+>> > > >  __dump_stack lib/dump_stack.c:79 [inline]
+>> > > >  dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+>> > > >  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+>> > > >  __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+>> > > >  virtio_net_hdr_to_skb+0x1414/0x14f0 include/linux/virtio_net.h:86
+>> > > >  packet_snd net/packet/af_packet.c:2994 [inline]
+>> > > >  packet_sendmsg+0x85b8/0x99d0 net/packet/af_packet.c:3031
+>> > > >  sock_sendmsg_nosec net/socket.c:654 [inline]
+>> > > >  sock_sendmsg net/socket.c:674 [inline]
+>> > > >  kernel_sendmsg+0x22c/0x2f0 net/socket.c:694
+>> > > >  sock_no_sendpage+0x205/0x2b0 net/core/sock.c:2860
+>> > > >  kernel_sendpage+0x47a/0x590 net/socket.c:3631
+>> > > >  sock_sendpage+0x161/0x1a0 net/socket.c:947
+>> > > >  pipe_to_sendpage+0x3e4/0x520 fs/splice.c:364
+>> > > >  splice_from_pipe_feed fs/splice.c:418 [inline]
+>> > > >  __splice_from_pipe+0x5e3/0xff0 fs/splice.c:562
+>> > > >  splice_from_pipe fs/splice.c:597 [inline]
+>> > > >  generic_splice_sendpage+0x1d5/0x2c0 fs/splice.c:746
+>> > > >  do_splice_from fs/splice.c:767 [inline]
+>> > > >  do_splice+0x23c3/0x2c10 fs/splice.c:1079
+>> > > >  __do_splice fs/splice.c:1144 [inline]
+>> > > >  __do_sys_splice fs/splice.c:1350 [inline]
+>> > > >  __se_sys_splice+0x8fa/0xb50 fs/splice.c:1332
+>> > > >  __x64_sys_splice+0x6e/0x90 fs/splice.c:1332
+>> > > >  do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+>> > > >  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>> > > > RIP: 0033:0x449a39
+>> > > > Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+>> > > > RSP: 002b:00007f8ed790b2f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
+>> > > > RAX: ffffffffffffffda RBX: 00000000004cf518 RCX: 0000000000449a39
+>> > > > RDX: 0000000000000005 RSI: 0000000000000000 RDI: 0000000000000003
+>> > > > RBP: 00000000004cf510 R08: 000000000004ffe0 R09: 0000000000000000
+>> > > > R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004cf51c
+>> > > > R13: 000000000049e46c R14: 6d32cc5e8ead0600 R15: 0000000000022000
+>> > > >
+>> > > > Uninit was created at:
+>> > > >  kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:121
+>> > > >  kmsan_alloc_page+0xd0/0x1e0 mm/kmsan/kmsan_shadow.c:274
+>> > > >  __alloc_pages_nodemask+0x827/0xf90 mm/page_alloc.c:5044
+>> > > >  alloc_pages_current+0x7b6/0xb60 mm/mempolicy.c:2277
+>> > > >  alloc_pages include/linux/gfp.h:561 [inline]
+>> > > >  alloc_slab_page mm/slub.c:1653 [inline]
+>> > > >  allocate_slab+0x364/0x1260 mm/slub.c:1793
+>> > > >  new_slab mm/slub.c:1856 [inline]
+>> > > >  new_slab_objects mm/slub.c:2602 [inline]
+>> > > >  ___slab_alloc+0xd42/0x1930 mm/slub.c:2765
+>> > > >  __slab_alloc mm/slub.c:2805 [inline]
+>> > > >  slab_alloc_node mm/slub.c:2886 [inline]
+>> > > >  slab_alloc mm/slub.c:2931 [inline]
+>> > > >  kmem_cache_alloc_trace+0xc53/0x1030 mm/slub.c:2948
+>> > > >  kmalloc include/linux/slab.h:554 [inline]
+>> > > >  kzalloc include/linux/slab.h:684 [inline]
+>> > > >  ____ip_mc_inc_group+0x4d7/0x10b0 net/ipv4/igmp.c:1435
+>> > >
+>> > > This allocates ip_mc_list, but it uses kzalloc. Can that ever count as
+>> > > uninitialized?
+>> >
+>> > Yes, kzalloc should never be a source of uninitialized-ness.
+>> > But it's not actually this kzalloc, it's underlying page allocation
+>> > (that is allocated uninitialized, so can be source of
+>> > uninitialized-ness).
+>> > If it would be this kzalloc, then stack would be shorter, along the
+>> > lines of kzalloc->kmem_cache_alloc_trace->kmsan_save_stack_with_flags.
+>> >
+>> > This smells like a wild access in virtio_net_hdr_to_skb, which just
+>> > hit a random uninit somewhere.
+>> > Searching for virtio_net_hdr_to_skb I found this:
+>> >
+>> > KASAN: use-after-free Read in eth_header_parse_protocol
+>> > https://syzkaller.appspot.com/bug?id=a486048b63065fd224f57b16d5a2fdece2b40eca
+>> >
+>> > Can it be a dup of that bug?
+>>
+>> Great find.
+>>
+>> That commit is not yet present at kmsan.git at 4ebaab5fb428.
+>>
+>> Certainly sounds plausible.
+>
+> Then let's consider:
+>
+> #syz dup: KASAN: use-after-free Read in eth_header_parse_protocol
 
-I'm not sure I buy this argument. Podman already has a conmon instance
-for each container, this could be a child of that conmon process, or
-live inside conmon itself.
+Can't dup bug to a bug in different reporting (upstream->internal).Please dup syzbot bugs only onto syzbot bugs for the same kernel/reporting.
 
-Tycho
