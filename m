@@ -2,199 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D797E3837F4
-	for <lists+bpf@lfdr.de>; Mon, 17 May 2021 17:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CE03839CB
+	for <lists+bpf@lfdr.de>; Mon, 17 May 2021 18:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235874AbhEQPrs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 May 2021 11:47:48 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:48077 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344864AbhEQPpu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 May 2021 11:45:50 -0400
-Received: by mail-io1-f70.google.com with SMTP id q187-20020a6b8ec40000b0290431cccd987fso3683420iod.14
-        for <bpf@vger.kernel.org>; Mon, 17 May 2021 08:44:34 -0700 (PDT)
+        id S1343508AbhEQQ3K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 May 2021 12:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245164AbhEQQ3A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 May 2021 12:29:00 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F43FC08EAE8;
+        Mon, 17 May 2021 08:10:11 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id t4so3305728plc.6;
+        Mon, 17 May 2021 08:10:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=chSInzVZxBkEohiqw1SSneAq3KAzecc9iWecdDSIEps=;
+        b=VGGER6JsFStjVyWTnshPBgAuAJjHuNWUX/Hz1O7f+PfPU8XV/SouDJW7etR8Uol357
+         kmnIeerL2eABoTYqwUcpLymGda6wjOTfL7h/27yKTauBT2onRFlJl79u2nbm80aDgSU2
+         0ti5XZrWLNLpW7qvkcjlxjqL1xwU9teHhn0f0QIbk0ZiNxviiIZsW0idt8LqX/Qq6QWa
+         ZAGjSXBCmhN55RsXQ7OzkEUdCxsY181ciSge1KaNttuKeTisW4mANDEzmnlCl3Gro5Wf
+         fzbx3I5ebVNsasqngkJU4F0AE+As5cGRZJRu6H9jKmGEvSaJBGvoF1Ofb/zvG/GommpR
+         Z59Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:cc;
-        bh=mrMkioD6vzRM2yujSYnUXKviNRlAqk6XqzwbtXOea+E=;
-        b=OvXBh8Zv8adVcvlG2BLVUMyb7sUSDWAgDihVVMEn2iSlVcdoyek7qq5ijJiGmVw0wc
-         jGUJSwcxuOUBU90GEil9yKLn/cOzayMi2wusx5pWAGnMlOJFYIop+M4o/RRduV3HRQ4P
-         VuQGFk7ZHAp7CzUHVbdW9bfJQWrFjqR68tIALSfOgeL7il3KRbN6ECRBIYNHv9VdNEEN
-         H6sY2o290wYvbSONGx6uV8VrEQuGSX+Vgm+8Tf58eEk2fgYQcSLVae91MvkArsdJPxx4
-         Ug5vLCJb/hfrigzCHSbTvzi98YxA/4e6J3cvrxiQY8ncDiFqADMTeConKNvjQ0Ai708p
-         S3xA==
-X-Gm-Message-State: AOAM533tuRd0JmHNujMpQnGE9ZeBzueKymSVjTKHjFwVSJdun5RUjmyu
-        13TeuZlqfyNVNn5u/FkfNkM8F8rlD6v+nMjvzIf1bKfD9Qli
-X-Google-Smtp-Source: ABdhPJx7kbgg5SvchWqwdM8rKoTdxZY9XnSePVnH5SXoaosvpgPhr54ajFNYu/0NmuPEzWPK1L//gTi2QEmup+/CDD/QTk6NMaXW
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=chSInzVZxBkEohiqw1SSneAq3KAzecc9iWecdDSIEps=;
+        b=hnVuIEbtOfHFhDz3YHTw9Qx7Pc9hU1V+i58McN7qiXXBbYAD0nSyBeWIltdyRewpEO
+         nGfdm9VRfboIsV3mWEpSALK7v98pEM14lA5mW/nCrnKjvThydy/nDu7z/aE5SDF70gaQ
+         N1Fny/2xoQktGB7tkOj3SPG5e2PHnBMnngGwDn9pRsxkxS5pCyYxJosk3jwyeF82L9/H
+         lpwAOz4OY+q2SVrTtFVhfyj9d/cqJM2P2rTBZAfWZFGatFGBVxQTVSP9yCmyUp99q+3u
+         prCDFzkCi3g2RgE/dm+O7JRstd6qycr2Ww4Ya7G9oKgVy7+27m5uJQZTZRDrd0961QPo
+         HG0w==
+X-Gm-Message-State: AOAM531j3XrGKkBb9IXOt7yqVOmbpXT+JRmtOQANFk6q4O8wwsUrc9uI
+        fgJc+CONee/Cjs27PDHtR2Zxyao5ZZuWXOe8
+X-Google-Smtp-Source: ABdhPJzWj8Pj1VUZhjA/v60Rr8+P7a/bSwobTKIblHiZc9umGQHLN0J3fHj0IXKRF+sMRTGJD3J0LQ==
+X-Received: by 2002:a17:90b:1b4f:: with SMTP id nv15mr424297pjb.56.1621264210688;
+        Mon, 17 May 2021 08:10:10 -0700 (PDT)
+Received: from [192.168.0.111] ([113.172.200.89])
+        by smtp.gmail.com with ESMTPSA id j27sm11328508pgb.54.2021.05.17.08.10.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 08:10:10 -0700 (PDT)
+Subject: Re: [PATCH] bpf: Fix integer overflow in argument calculation for
+ bpf_map_area_alloc
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, hawk@kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210126082606.3183-1-minhquangbui99@gmail.com>
+ <CACAyw99bEYWJCSGqfLiJ9Jp5YE1ZsZSiJxb4RFUTwbofipf0dA@mail.gmail.com>
+ <20210127042341.GA4948@ubuntu>
+ <f4d20d92-2370-a8d3-d56c-408819a5f7f4@iogearbox.net>
+From:   Bui Quang Minh <minhquangbui99@gmail.com>
+Message-ID: <728b238e-a481-eb50-98e9-b0f430ab01e7@gmail.com>
+Date:   Mon, 17 May 2021 22:10:03 +0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1809:: with SMTP id a9mr291275ilv.184.1621266272712;
- Mon, 17 May 2021 08:44:32 -0700 (PDT)
-Date:   Mon, 17 May 2021 08:44:32 -0700
-In-Reply-To: <CACT4Y+afi_p-w1BYHZNdkuz-Cnp0aScdoQQj1yEyxR3ZKd3HnA@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000457cb105c28878fd@google.com>
-Subject: Re: [syzbot] KMSAN: uninit-value in virtio_net_hdr_to_skb
-From:   syzbot <syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dvyukov@google.com,
-        glider@google.com, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tannerlove@google.com,
-        willemdebruijn.kernel@gmail.com, xie.he.0141@gmail.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f4d20d92-2370-a8d3-d56c-408819a5f7f4@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> On Mon, May 17, 2021 at 5:13 PM Willem de Bruijn
-> <willemdebruijn.kernel@gmail.com> wrote:
+On 1/28/21 7:41 AM, Daniel Borkmann wrote:
+> On 1/27/21 5:23 AM, Bui Quang Minh wrote:
+>> On Tue, Jan 26, 2021 at 09:36:57AM +0000, Lorenz Bauer wrote:
+>>> On Tue, 26 Jan 2021 at 08:26, Bui Quang Minh 
+>>> <minhquangbui99@gmail.com> wrote:
+>>>>
+>>>> In 32-bit architecture, the result of sizeof() is a 32-bit integer so
+>>>> the expression becomes the multiplication between 2 32-bit integer 
+>>>> which
+>>>> can potentially leads to integer overflow. As a result,
+>>>> bpf_map_area_alloc() allocates less memory than needed.
+>>>>
+>>>> Fix this by casting 1 operand to u64.
+>>>
+>>> Some quick thoughts:
+>>> * Should this have a Fixes tag?
 >>
->> On Mon, May 17, 2021 at 10:57 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->> >
->> > On Mon, May 17, 2021 at 4:06 PM Willem de Bruijn
->> > <willemdebruijn.kernel@gmail.com> wrote:
->> > >
->> > > On Mon, May 17, 2021 at 7:27 AM syzbot
->> > > <syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com> wrote:
->> > > >
->> > > > Hello,
->> > > >
->> > > > syzbot found the following issue on:
->> > > >
->> > > > HEAD commit:    4ebaab5f kmsan: drop unneeded references to kmsan_context_..
->> > > > git tree:       https://github.com/google/kmsan.git master
->> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=17ac508ed00000
->> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=ab8076fe8508c0d3
->> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=106457891e3cf3b273a9
->> > > > compiler:       Debian clang version 11.0.1-2
->> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138f4972d00000
->> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1624ffced00000
->> > > >
->> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> > > > Reported-by: syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com
->> > > >
->> > > > =====================================================
->> > > > BUG: KMSAN: uninit-value in virtio_net_hdr_to_skb+0x1414/0x14f0 include/linux/virtio_net.h:86
->> > >
->> > > No answer/fix, just initial investigation.
->> > >
->> > > This is an odd location. Line 86 is the inner if statement. Both
->> > > protocol and skb->protocol are clearly initialized by then. But, that
->> > > is also not the allocation that MSAN reports, see below.
->> > >
->> > >                         if (!skb->protocol) {
->> > >                                 __be16 protocol =
->> > > dev_parse_header_protocol(skb);
->> > >
->> > >                                 virtio_net_hdr_set_proto(skb, hdr);
->> > >                                 if (protocol && protocol != skb->protocol)
->> > >                                         return -EINVAL;
->> > >                         }
->> > >
->> > > The repro itself seems mostly straightforward:
->> > >
->> > > - create a packet socket
->> > > - enable PACKET_VNET_HDR with setsockopt(r3, 0x107, 0xf ..)
->> > > - bind to AF_PACKET (0x11)
->> > >
->> > > - create a pipe
->> > > - write to pipe[1]
->> > > - splice pipe[0] to the packet socket
->> > >
->> > > there are a few other calls that I think are irrelevant and/or would fail.
->> > >
->> > > Perhaps there is some race condition in device refcounting, as bind
->> > > operates on that?
->> > >
->> > > > CPU: 0 PID: 8426 Comm: syz-executor777 Not tainted 5.12.0-rc6-syzkaller #0
->> > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> > > > Call Trace:
->> > > >  __dump_stack lib/dump_stack.c:79 [inline]
->> > > >  dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
->> > > >  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
->> > > >  __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
->> > > >  virtio_net_hdr_to_skb+0x1414/0x14f0 include/linux/virtio_net.h:86
->> > > >  packet_snd net/packet/af_packet.c:2994 [inline]
->> > > >  packet_sendmsg+0x85b8/0x99d0 net/packet/af_packet.c:3031
->> > > >  sock_sendmsg_nosec net/socket.c:654 [inline]
->> > > >  sock_sendmsg net/socket.c:674 [inline]
->> > > >  kernel_sendmsg+0x22c/0x2f0 net/socket.c:694
->> > > >  sock_no_sendpage+0x205/0x2b0 net/core/sock.c:2860
->> > > >  kernel_sendpage+0x47a/0x590 net/socket.c:3631
->> > > >  sock_sendpage+0x161/0x1a0 net/socket.c:947
->> > > >  pipe_to_sendpage+0x3e4/0x520 fs/splice.c:364
->> > > >  splice_from_pipe_feed fs/splice.c:418 [inline]
->> > > >  __splice_from_pipe+0x5e3/0xff0 fs/splice.c:562
->> > > >  splice_from_pipe fs/splice.c:597 [inline]
->> > > >  generic_splice_sendpage+0x1d5/0x2c0 fs/splice.c:746
->> > > >  do_splice_from fs/splice.c:767 [inline]
->> > > >  do_splice+0x23c3/0x2c10 fs/splice.c:1079
->> > > >  __do_splice fs/splice.c:1144 [inline]
->> > > >  __do_sys_splice fs/splice.c:1350 [inline]
->> > > >  __se_sys_splice+0x8fa/0xb50 fs/splice.c:1332
->> > > >  __x64_sys_splice+0x6e/0x90 fs/splice.c:1332
->> > > >  do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
->> > > >  entry_SYSCALL_64_after_hwframe+0x44/0xae
->> > > > RIP: 0033:0x449a39
->> > > > Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
->> > > > RSP: 002b:00007f8ed790b2f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
->> > > > RAX: ffffffffffffffda RBX: 00000000004cf518 RCX: 0000000000449a39
->> > > > RDX: 0000000000000005 RSI: 0000000000000000 RDI: 0000000000000003
->> > > > RBP: 00000000004cf510 R08: 000000000004ffe0 R09: 0000000000000000
->> > > > R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004cf51c
->> > > > R13: 000000000049e46c R14: 6d32cc5e8ead0600 R15: 0000000000022000
->> > > >
->> > > > Uninit was created at:
->> > > >  kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:121
->> > > >  kmsan_alloc_page+0xd0/0x1e0 mm/kmsan/kmsan_shadow.c:274
->> > > >  __alloc_pages_nodemask+0x827/0xf90 mm/page_alloc.c:5044
->> > > >  alloc_pages_current+0x7b6/0xb60 mm/mempolicy.c:2277
->> > > >  alloc_pages include/linux/gfp.h:561 [inline]
->> > > >  alloc_slab_page mm/slub.c:1653 [inline]
->> > > >  allocate_slab+0x364/0x1260 mm/slub.c:1793
->> > > >  new_slab mm/slub.c:1856 [inline]
->> > > >  new_slab_objects mm/slub.c:2602 [inline]
->> > > >  ___slab_alloc+0xd42/0x1930 mm/slub.c:2765
->> > > >  __slab_alloc mm/slub.c:2805 [inline]
->> > > >  slab_alloc_node mm/slub.c:2886 [inline]
->> > > >  slab_alloc mm/slub.c:2931 [inline]
->> > > >  kmem_cache_alloc_trace+0xc53/0x1030 mm/slub.c:2948
->> > > >  kmalloc include/linux/slab.h:554 [inline]
->> > > >  kzalloc include/linux/slab.h:684 [inline]
->> > > >  ____ip_mc_inc_group+0x4d7/0x10b0 net/ipv4/igmp.c:1435
->> > >
->> > > This allocates ip_mc_list, but it uses kzalloc. Can that ever count as
->> > > uninitialized?
->> >
->> > Yes, kzalloc should never be a source of uninitialized-ness.
->> > But it's not actually this kzalloc, it's underlying page allocation
->> > (that is allocated uninitialized, so can be source of
->> > uninitialized-ness).
->> > If it would be this kzalloc, then stack would be shorter, along the
->> > lines of kzalloc->kmem_cache_alloc_trace->kmsan_save_stack_with_flags.
->> >
->> > This smells like a wild access in virtio_net_hdr_to_skb, which just
->> > hit a random uninit somewhere.
->> > Searching for virtio_net_hdr_to_skb I found this:
->> >
->> > KASAN: use-after-free Read in eth_header_parse_protocol
->> > https://syzkaller.appspot.com/bug?id=a486048b63065fd224f57b16d5a2fdece2b40eca
->> >
->> > Can it be a dup of that bug?
+>> Ok, I will add Fixes tag in later version patch.
 >>
->> Great find.
+>>> * Seems like there are quite a few similar calls scattered around
+>>> (cpumap, etc.). Did you audit these as well?
 >>
->> That commit is not yet present at kmsan.git at 4ebaab5fb428.
+> [...]
+>> In cpumap,
 >>
->> Certainly sounds plausible.
->
-> Then let's consider:
->
-> #syz dup: KASAN: use-after-free Read in eth_header_parse_protocol
+>>     static struct bpf_map *cpu_map_alloc(union bpf_attr *attr)
+>>     {
+>>         cmap->cpu_map = bpf_map_area_alloc(cmap->map.max_entries *
+>>                            sizeof(struct bpf_cpu_map_entry *),
+>>                            cmap->map.numa_node);
+>>     }
+>>
+>> I think this is safe because max_entries is not permitted to be larger 
+>> than NR_CPUS.
+> 
+> Yes.
+> 
+>> In stackmap, there is a place that I'm not very sure about
+>>
+>>     static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
+>>     {
+>>         u32 elem_size = sizeof(struct stack_map_bucket) + 
+>> smap->map.value_size;
+>>         smap->elems = bpf_map_area_alloc(elem_size * 
+>> smap->map.max_entries,
+>>                          smap->map.numa_node);
+>>     }
+>>
+>> This is called after another bpf_map_area_alloc in stack_map_alloc(). 
+>> In the first
+>> bpf_map_area_alloc() the argument is calculated in an u64 variable; so 
+>> if in the second
+>> one, there is an integer overflow then the first one must be called 
+>> with size > 4GB. I
+>> think the first one will probably fail (I am not sure about the actual 
+>> limit of vmalloc()),
+>> so the second one might not be called.
+> 
+> I would sanity check this as well. Looks like k*alloc()/v*alloc() call 
+> sites typically
+> use array_size() which returns SIZE_MAX on overflow, 610b15c50e86 
+> ("overflow.h: Add
+> allocation size calculation helpers").
 
-Can't dup bug to a bug in different reporting (upstream->internal).Please dup syzbot bugs only onto syzbot bugs for the same kernel/reporting.
+Hi,
 
+I almost forget about this patch, I have checked the bpf_map_area_alloc 
+in in stackmap.c and I can see that integer overflow cannot happen in 
+this stackmap.c case.
+
+In stack_map_alloc(),
+
+	u64 cost;
+	...
+	cost = n_buckets * sizeof(struct stack_map_bucket *) + sizeof(*smap);
+	cost += n_buckets * (value_size + sizeof(struct stack_map_bucket));
+	smap = bpf_map_area_alloc(cost, bpf_map_attr_numa_node(attr)); (1)
+	...
+	prealloc_elems_and_freelist(smap);
+
+In prealloc_elems_and_freelist(),
+
+	u32 elem_size = sizeof(struct stack_map_bucket) + smap->map.value_size;
+	smap->elems = bpf_map_area_alloc(elem_size * smap->map.max_entries, 
+smap->map.numa_node); (2)
+
+Argument calculation at (1) is safe. Argument calculation at (2) can 
+potentially result in an integer overflow in 32-bit architecture. 
+However, if the integer overflow happens, it means argument at (1) must 
+be 2**32, which cannot pass the SIZE_MAX check in __bpf_map_area_alloc()
+
+In __bpf_map_area_alloc()
+
+	if (size >= SIZE_MAX)
+		return NULL;
+
+So I think the original patch has fixed instances of this bug pattern.
+
+Thank you,
+Quang Minh.
