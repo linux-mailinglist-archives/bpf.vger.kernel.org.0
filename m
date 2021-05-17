@@ -2,129 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D82382A9B
-	for <lists+bpf@lfdr.de>; Mon, 17 May 2021 13:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC52B382AB9
+	for <lists+bpf@lfdr.de>; Mon, 17 May 2021 13:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236593AbhEQLL3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 May 2021 07:11:29 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3569 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236528AbhEQLL3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 May 2021 07:11:29 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FkGYp48QHzmVSc;
-        Mon, 17 May 2021 19:07:26 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 19:10:10 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 17 May
- 2021 19:10:10 +0800
-Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Matteo Croce <mcroce@linux.microsoft.com>,
-        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        "Vinay Kumar Yadav" <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        "Tariq Toukan" <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-4-mcroce@linux.microsoft.com>
- <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
- <YJ4ocslvURa/H+6f@apalos.home>
- <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
- <YJ5APhzabmAKIKCE@apalos.home>
- <cd0c0a2b-986e-a672-de7e-798ab2843d76@huawei.com>
- <YKIPcF9ACNmFtksz@enceladus>
- <fade4bc7-c1c7-517e-a775-0a5bb2e66be6@huawei.com>
- <YKI5JxG2rw2y6C1P@apalos.home>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <074b0d1d-9531-57f3-8e0e-a447387478d1@huawei.com>
-Date:   Mon, 17 May 2021 19:10:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S236650AbhEQLSf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 May 2021 07:18:35 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:50960 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236651AbhEQLSe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 May 2021 07:18:34 -0400
+Received: by mail-io1-f70.google.com with SMTP id 196-20020a6b01cd0000b029043732390d37so3039659iob.17
+        for <bpf@vger.kernel.org>; Mon, 17 May 2021 04:17:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=qIutiLp9e5u0sv/usbcappwKIGrnGatmcx89TkEPFE4=;
+        b=W0AUVScxQKesWRH6MvV1JNjgp3r008yyH47s38bCay7zU25djud0iGbs0qCq5nx36V
+         K88x74zfjB1QHKq+ivqfPxBc6KUlG8hugEVwJ5ggtqMdm6jXZ3dMb6wzgaCYeLKiFIwX
+         YgSiYkewI+Q5t08WVhMBdKpHphgzG2Mu2cJwYrX5bX4tKMeZ0pI19uNqRAe80gzKuGFB
+         WLsWqFP84FFWNzkNVwXLVE1xgLnJ1wSI//+JZ3N6uYuPVD7pGqQvcDlTWcHNtu+P72Cn
+         skIVBTT0aUBuSZKtPzKG8WVOLvYkX0QA1v4JCKti60vnurNCX6zTBuVsqKl4CFmgePDJ
+         gaHA==
+X-Gm-Message-State: AOAM532U/asryAcSBmQvVmxtfROq6Tvh5tHC4JhOsiNxrcaCwmvzhB/x
+        cqJZTcTj58YRyZ8N5zlZiz3DDbiMJRJmzPcDeBWGg6Y4wUKn
+X-Google-Smtp-Source: ABdhPJxOhm03SLf1ALtQKySO9NNJtuefl9PBO/B8SXL7UJ8j7d9r82MkIZ5orlVsqYvzYCHsG3Hk7woOGaJIR2m7qUGDxaSwZswo
 MIME-Version: 1.0
-In-Reply-To: <YKI5JxG2rw2y6C1P@apalos.home>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a05:6602:2289:: with SMTP id d9mr40957824iod.198.1621250237426;
+ Mon, 17 May 2021 04:17:17 -0700 (PDT)
+Date:   Mon, 17 May 2021 04:17:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007e727005c284bc8e@google.com>
+Subject: [syzbot] possible deadlock in perf_event_ctx_lock_nested (2)
+From:   syzbot <syzbot+4b71bb3365e7d5228913@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
+        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
+        mingo@redhat.com, namhyung@kernel.org, netdev@vger.kernel.org,
+        peterz@infradead.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/5/17 17:36, Ilias Apalodimas wrote:
- >>
->> Even if when skb->pp_recycle is 1, pages allocated from page allocator directly
->> or page pool are both supported, so it seems page->signature need to be reliable
->> to indicate a page is indeed owned by a page pool, which means the skb->pp_recycle
->> is used mainly to short cut the code path for skb->pp_recycle is 0 case, so that
->> the page->signature does not need checking?
-> 
-> Yes, the idea for the recycling bit, is that you don't have to fetch the page
-> in cache do do more processing (since freeing is asynchronous and we
-> can't have any guarantees on what the cache will have at that point).  So we
-> are trying to affect the existing release path a less as possible. However it's
-> that new skb bit that triggers the whole path.
-> 
-> What you propose could still be doable though.  As you said we can add the
-> page pointer to struct page when we allocate a page_pool page and never
-> reset it when we recycle the buffer. But I don't think there will be any
-> performance impact whatsoever. So I prefer the 'visible' approach, at least for
+Hello,
 
-setting and unsetting the page_pool ptr every time the page is recycled may
-cause a cache bouncing problem when rx cleaning and skb releasing is not
-happening on the same cpu.
+syzbot found the following issue on:
 
-> the first iteration.
-> 
-> Thanks
-> /Ilias
->  
-> 
-> .
-> 
+HEAD commit:    88b06399 Merge tag 'for-5.13-rc1-part2-tag' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15552e1bd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=807beec6b4d66bf1
+dashboard link: https://syzkaller.appspot.com/bug?extid=4b71bb3365e7d5228913
 
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4b71bb3365e7d5228913@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.13.0-rc1-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.0/26566 is trying to acquire lock:
+ffff88808aa32b58 (&mm->mmap_lock#2){++++}-{3:3}, at: __might_fault+0xa3/0x180 mm/memory.c:5069
+
+but task is already holding lock:
+ffff8880b9c3a4b0 (&cpuctx_mutex){+.+.}-{3:3}, at: perf_event_ctx_lock_nested+0x26c/0x480 kernel/events/core.c:1356
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #3 (&cpuctx_mutex){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:949 [inline]
+       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
+       perf_event_init_cpu+0x172/0x3e0 kernel/events/core.c:13236
+       perf_event_init+0x39d/0x408 kernel/events/core.c:13283
+       start_kernel+0x2b6/0x496 init/main.c:1001
+       secondary_startup_64_no_verify+0xb0/0xbb
+
+-> #2 (pmus_lock){+.+.}-{3:3}:
+       __mutex_lock_common kernel/locking/mutex.c:949 [inline]
+       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
+       perf_event_init_cpu+0xc4/0x3e0 kernel/events/core.c:13230
+       cpuhp_invoke_callback+0x3b5/0x9a0 kernel/cpu.c:179
+       cpuhp_invoke_callback_range kernel/cpu.c:654 [inline]
+       cpuhp_up_callbacks kernel/cpu.c:682 [inline]
+       _cpu_up+0x3ab/0x6b0 kernel/cpu.c:1301
+       cpu_up kernel/cpu.c:1336 [inline]
+       cpu_up+0xfe/0x1a0 kernel/cpu.c:1308
+       bringup_nonboot_cpus+0xfe/0x130 kernel/cpu.c:1398
+       smp_init+0x2e/0x145 kernel/smp.c:1090
+       kernel_init_freeable+0x402/0x6cc init/main.c:1552
+       kernel_init+0xd/0x1b8 init/main.c:1447
+       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+-> #1 (cpu_hotplug_lock){++++}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       cpus_read_lock+0x40/0x130 kernel/cpu.c:297
+       __static_key_slow_dec kernel/jump_label.c:254 [inline]
+       static_key_slow_dec+0x4f/0xc0 kernel/jump_label.c:270
+       sw_perf_event_destroy+0x99/0x140 kernel/events/core.c:9544
+       _free_event+0x2ee/0x1380 kernel/events/core.c:4949
+       put_event kernel/events/core.c:5043 [inline]
+       perf_mmap_close+0x572/0xe10 kernel/events/core.c:6088
+       remove_vma+0xae/0x170 mm/mmap.c:186
+       remove_vma_list mm/mmap.c:2659 [inline]
+       __do_munmap+0x74f/0x11a0 mm/mmap.c:2915
+       do_munmap mm/mmap.c:2923 [inline]
+       munmap_vma_range mm/mmap.c:604 [inline]
+       mmap_region+0x85a/0x1730 mm/mmap.c:1756
+       do_mmap+0xcff/0x11d0 mm/mmap.c:1587
+       vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
+       ksys_mmap_pgoff+0x4a8/0x620 mm/mmap.c:1638
+       do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #0 (&mm->mmap_lock#2){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2938 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3061 [inline]
+       validate_chain kernel/locking/lockdep.c:3676 [inline]
+       __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4902
+       lock_acquire kernel/locking/lockdep.c:5512 [inline]
+       lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
+       __might_fault mm/memory.c:5070 [inline]
+       __might_fault+0x106/0x180 mm/memory.c:5055
+       _copy_to_user+0x27/0x150 lib/usercopy.c:28
+       copy_to_user include/linux/uaccess.h:200 [inline]
+       _perf_ioctl+0x882/0x2650 kernel/events/core.c:5603
+       perf_ioctl+0x76/0xb0 kernel/events/core.c:5683
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:1069 [inline]
+       __se_sys_ioctl fs/ioctl.c:1055 [inline]
+       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+       do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+other info that might help us debug this:
+
+Chain exists of:
+  &mm->mmap_lock#2 --> pmus_lock --> &cpuctx_mutex
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&cpuctx_mutex);
+                               lock(pmus_lock);
+                               lock(&cpuctx_mutex);
+  lock(&mm->mmap_lock#2);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor.0/26566:
+ #0: ffff8880b9c3a4b0 (&cpuctx_mutex){+.+.}-{3:3}, at: perf_event_ctx_lock_nested+0x26c/0x480 kernel/events/core.c:1356
+
+stack backtrace:
+CPU: 1 PID: 26566 Comm: syz-executor.0 Not tainted 5.13.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2129
+ check_prev_add kernel/locking/lockdep.c:2938 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3061 [inline]
+ validate_chain kernel/locking/lockdep.c:3676 [inline]
+ __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4902
+ lock_acquire kernel/locking/lockdep.c:5512 [inline]
+ lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
+ __might_fault mm/memory.c:5070 [inline]
+ __might_fault+0x106/0x180 mm/memory.c:5055
+ _copy_to_user+0x27/0x150 lib/usercopy.c:28
+ copy_to_user include/linux/uaccess.h:200 [inline]
+ _perf_ioctl+0x882/0x2650 kernel/events/core.c:5603
+ perf_ioctl+0x76/0xb0 kernel/events/core.c:5683
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:1069 [inline]
+ __se_sys_ioctl fs/ioctl.c:1055 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f021b976188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 00000000004665f9
+RDX: 0000000020000000 RSI: 0000000080082407 RDI: 0000000000000003
+RBP: 00000000004bfce1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007ffdd1a9f15f R14: 00007f021b976300 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
