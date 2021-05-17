@@ -2,47 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC52B382AB9
-	for <lists+bpf@lfdr.de>; Mon, 17 May 2021 13:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B3E382AFC
+	for <lists+bpf@lfdr.de>; Mon, 17 May 2021 13:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236650AbhEQLSf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 May 2021 07:18:35 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:50960 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236651AbhEQLSe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 May 2021 07:18:34 -0400
-Received: by mail-io1-f70.google.com with SMTP id 196-20020a6b01cd0000b029043732390d37so3039659iob.17
-        for <bpf@vger.kernel.org>; Mon, 17 May 2021 04:17:17 -0700 (PDT)
+        id S236772AbhEQL2i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 May 2021 07:28:38 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:44966 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236750AbhEQL2h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 May 2021 07:28:37 -0400
+Received: by mail-il1-f200.google.com with SMTP id p6-20020a92d6860000b02901bb4be9e3c1so6059233iln.11
+        for <bpf@vger.kernel.org>; Mon, 17 May 2021 04:27:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=qIutiLp9e5u0sv/usbcappwKIGrnGatmcx89TkEPFE4=;
-        b=W0AUVScxQKesWRH6MvV1JNjgp3r008yyH47s38bCay7zU25djud0iGbs0qCq5nx36V
-         K88x74zfjB1QHKq+ivqfPxBc6KUlG8hugEVwJ5ggtqMdm6jXZ3dMb6wzgaCYeLKiFIwX
-         YgSiYkewI+Q5t08WVhMBdKpHphgzG2Mu2cJwYrX5bX4tKMeZ0pI19uNqRAe80gzKuGFB
-         WLsWqFP84FFWNzkNVwXLVE1xgLnJ1wSI//+JZ3N6uYuPVD7pGqQvcDlTWcHNtu+P72Cn
-         skIVBTT0aUBuSZKtPzKG8WVOLvYkX0QA1v4JCKti60vnurNCX6zTBuVsqKl4CFmgePDJ
-         gaHA==
-X-Gm-Message-State: AOAM532U/asryAcSBmQvVmxtfROq6Tvh5tHC4JhOsiNxrcaCwmvzhB/x
-        cqJZTcTj58YRyZ8N5zlZiz3DDbiMJRJmzPcDeBWGg6Y4wUKn
-X-Google-Smtp-Source: ABdhPJxOhm03SLf1ALtQKySO9NNJtuefl9PBO/B8SXL7UJ8j7d9r82MkIZ5orlVsqYvzYCHsG3Hk7woOGaJIR2m7qUGDxaSwZswo
+        bh=phWGX5D48i6duaIRhXo6DP/xmvEEcuuIMR6IgKKz4xc=;
+        b=lNlnR4r7XW/FLbvaGvAoBMwzvhTC3YU7qTOFDsLEdcm5yVz9R2K4EqxGptw3Aw71ml
+         /EisGGvWGWo6LXNF72IMg676jtqpUScYvhnbeHu1T73CfAf6/sIT4MN1kJeMvptSEyZN
+         zagjLQ//hq6Zmv3rQClveBcv0ye8/YP35cqGYZysByiSvT2yNm0T0b0iOisR//dbVqxZ
+         kYjRFiRY6HX/1co6kAX5tcmrcoSpechiu9WzjYlEF9jGygTUDvIrJwHvUQsaPIXzpv5d
+         uuu7qC0IAV3YCMjDk7gaTF2gQJFXK64NtafW2eZQ5olFExMQUQMe7ZK/XoEWG23AfRrz
+         DfHg==
+X-Gm-Message-State: AOAM532GS39sN30w+cZXOPuA2byeyF+JnS+Y547KtXh7Vagmeu3zjU3L
+        HDV/LeqsUDGpfRHVcnMy84UVAaJtSHzB4U41DQ/CincO+4Eu
+X-Google-Smtp-Source: ABdhPJwRcMNlRBHcNqOaealrKrgBweS8+VDPtypmMK9pTCYzqPIYDK/ygpir3G/uhypQW46GB5bhX7+JJOqTCDTV7aLn2gZqu7wE
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2289:: with SMTP id d9mr40957824iod.198.1621250237426;
- Mon, 17 May 2021 04:17:17 -0700 (PDT)
-Date:   Mon, 17 May 2021 04:17:17 -0700
+X-Received: by 2002:a05:6e02:1aa7:: with SMTP id l7mr51973435ilv.307.1621250840097;
+ Mon, 17 May 2021 04:27:20 -0700 (PDT)
+Date:   Mon, 17 May 2021 04:27:20 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007e727005c284bc8e@google.com>
-Subject: [syzbot] possible deadlock in perf_event_ctx_lock_nested (2)
-From:   syzbot <syzbot+4b71bb3365e7d5228913@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
-        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
-        mingo@redhat.com, namhyung@kernel.org, netdev@vger.kernel.org,
-        peterz@infradead.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Message-ID: <0000000000006a77d205c284e0d2@google.com>
+Subject: [syzbot] KMSAN: uninit-value in virtio_net_hdr_to_skb
+From:   syzbot <syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, glider@google.com,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tannerlove@google.com,
+        willemb@google.com, xie.he.0141@gmail.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -52,149 +51,102 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    88b06399 Merge tag 'for-5.13-rc1-part2-tag' of git://git.k..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15552e1bd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=807beec6b4d66bf1
-dashboard link: https://syzkaller.appspot.com/bug?extid=4b71bb3365e7d5228913
-
-Unfortunately, I don't have any reproducer for this issue yet.
+HEAD commit:    4ebaab5f kmsan: drop unneeded references to kmsan_context_..
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=17ac508ed00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ab8076fe8508c0d3
+dashboard link: https://syzkaller.appspot.com/bug?extid=106457891e3cf3b273a9
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138f4972d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1624ffced00000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4b71bb3365e7d5228913@syzkaller.appspotmail.com
+Reported-by: syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com
 
-======================================================
-WARNING: possible circular locking dependency detected
-5.13.0-rc1-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor.0/26566 is trying to acquire lock:
-ffff88808aa32b58 (&mm->mmap_lock#2){++++}-{3:3}, at: __might_fault+0xa3/0x180 mm/memory.c:5069
-
-but task is already holding lock:
-ffff8880b9c3a4b0 (&cpuctx_mutex){+.+.}-{3:3}, at: perf_event_ctx_lock_nested+0x26c/0x480 kernel/events/core.c:1356
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #3 (&cpuctx_mutex){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:949 [inline]
-       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
-       perf_event_init_cpu+0x172/0x3e0 kernel/events/core.c:13236
-       perf_event_init+0x39d/0x408 kernel/events/core.c:13283
-       start_kernel+0x2b6/0x496 init/main.c:1001
-       secondary_startup_64_no_verify+0xb0/0xbb
-
--> #2 (pmus_lock){+.+.}-{3:3}:
-       __mutex_lock_common kernel/locking/mutex.c:949 [inline]
-       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
-       perf_event_init_cpu+0xc4/0x3e0 kernel/events/core.c:13230
-       cpuhp_invoke_callback+0x3b5/0x9a0 kernel/cpu.c:179
-       cpuhp_invoke_callback_range kernel/cpu.c:654 [inline]
-       cpuhp_up_callbacks kernel/cpu.c:682 [inline]
-       _cpu_up+0x3ab/0x6b0 kernel/cpu.c:1301
-       cpu_up kernel/cpu.c:1336 [inline]
-       cpu_up+0xfe/0x1a0 kernel/cpu.c:1308
-       bringup_nonboot_cpus+0xfe/0x130 kernel/cpu.c:1398
-       smp_init+0x2e/0x145 kernel/smp.c:1090
-       kernel_init_freeable+0x402/0x6cc init/main.c:1552
-       kernel_init+0xd/0x1b8 init/main.c:1447
-       ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
--> #1 (cpu_hotplug_lock){++++}-{0:0}:
-       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
-       cpus_read_lock+0x40/0x130 kernel/cpu.c:297
-       __static_key_slow_dec kernel/jump_label.c:254 [inline]
-       static_key_slow_dec+0x4f/0xc0 kernel/jump_label.c:270
-       sw_perf_event_destroy+0x99/0x140 kernel/events/core.c:9544
-       _free_event+0x2ee/0x1380 kernel/events/core.c:4949
-       put_event kernel/events/core.c:5043 [inline]
-       perf_mmap_close+0x572/0xe10 kernel/events/core.c:6088
-       remove_vma+0xae/0x170 mm/mmap.c:186
-       remove_vma_list mm/mmap.c:2659 [inline]
-       __do_munmap+0x74f/0x11a0 mm/mmap.c:2915
-       do_munmap mm/mmap.c:2923 [inline]
-       munmap_vma_range mm/mmap.c:604 [inline]
-       mmap_region+0x85a/0x1730 mm/mmap.c:1756
-       do_mmap+0xcff/0x11d0 mm/mmap.c:1587
-       vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
-       ksys_mmap_pgoff+0x4a8/0x620 mm/mmap.c:1638
-       do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
--> #0 (&mm->mmap_lock#2){++++}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:2938 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3061 [inline]
-       validate_chain kernel/locking/lockdep.c:3676 [inline]
-       __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4902
-       lock_acquire kernel/locking/lockdep.c:5512 [inline]
-       lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
-       __might_fault mm/memory.c:5070 [inline]
-       __might_fault+0x106/0x180 mm/memory.c:5055
-       _copy_to_user+0x27/0x150 lib/usercopy.c:28
-       copy_to_user include/linux/uaccess.h:200 [inline]
-       _perf_ioctl+0x882/0x2650 kernel/events/core.c:5603
-       perf_ioctl+0x76/0xb0 kernel/events/core.c:5683
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:1069 [inline]
-       __se_sys_ioctl fs/ioctl.c:1055 [inline]
-       __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
-       do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-       entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-other info that might help us debug this:
-
-Chain exists of:
-  &mm->mmap_lock#2 --> pmus_lock --> &cpuctx_mutex
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&cpuctx_mutex);
-                               lock(pmus_lock);
-                               lock(&cpuctx_mutex);
-  lock(&mm->mmap_lock#2);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor.0/26566:
- #0: ffff8880b9c3a4b0 (&cpuctx_mutex){+.+.}-{3:3}, at: perf_event_ctx_lock_nested+0x26c/0x480 kernel/events/core.c:1356
-
-stack backtrace:
-CPU: 1 PID: 26566 Comm: syz-executor.0 Not tainted 5.13.0-rc1-syzkaller #0
+=====================================================
+BUG: KMSAN: uninit-value in virtio_net_hdr_to_skb+0x1414/0x14f0 include/linux/virtio_net.h:86
+CPU: 0 PID: 8426 Comm: syz-executor777 Not tainted 5.12.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2129
- check_prev_add kernel/locking/lockdep.c:2938 [inline]
- check_prevs_add kernel/locking/lockdep.c:3061 [inline]
- validate_chain kernel/locking/lockdep.c:3676 [inline]
- __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4902
- lock_acquire kernel/locking/lockdep.c:5512 [inline]
- lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
- __might_fault mm/memory.c:5070 [inline]
- __might_fault+0x106/0x180 mm/memory.c:5055
- _copy_to_user+0x27/0x150 lib/usercopy.c:28
- copy_to_user include/linux/uaccess.h:200 [inline]
- _perf_ioctl+0x882/0x2650 kernel/events/core.c:5603
- perf_ioctl+0x76/0xb0 kernel/events/core.c:5683
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:1069 [inline]
- __se_sys_ioctl fs/ioctl.c:1055 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ virtio_net_hdr_to_skb+0x1414/0x14f0 include/linux/virtio_net.h:86
+ packet_snd net/packet/af_packet.c:2994 [inline]
+ packet_sendmsg+0x85b8/0x99d0 net/packet/af_packet.c:3031
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ kernel_sendmsg+0x22c/0x2f0 net/socket.c:694
+ sock_no_sendpage+0x205/0x2b0 net/core/sock.c:2860
+ kernel_sendpage+0x47a/0x590 net/socket.c:3631
+ sock_sendpage+0x161/0x1a0 net/socket.c:947
+ pipe_to_sendpage+0x3e4/0x520 fs/splice.c:364
+ splice_from_pipe_feed fs/splice.c:418 [inline]
+ __splice_from_pipe+0x5e3/0xff0 fs/splice.c:562
+ splice_from_pipe fs/splice.c:597 [inline]
+ generic_splice_sendpage+0x1d5/0x2c0 fs/splice.c:746
+ do_splice_from fs/splice.c:767 [inline]
+ do_splice+0x23c3/0x2c10 fs/splice.c:1079
+ __do_splice fs/splice.c:1144 [inline]
+ __do_sys_splice fs/splice.c:1350 [inline]
+ __se_sys_splice+0x8fa/0xb50 fs/splice.c:1332
+ __x64_sys_splice+0x6e/0x90 fs/splice.c:1332
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
  entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f021b976188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 00000000004665f9
-RDX: 0000000020000000 RSI: 0000000080082407 RDI: 0000000000000003
-RBP: 00000000004bfce1 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
-R13: 00007ffdd1a9f15f R14: 00007f021b976300 R15: 0000000000022000
+RIP: 0033:0x449a39
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f8ed790b2f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
+RAX: ffffffffffffffda RBX: 00000000004cf518 RCX: 0000000000449a39
+RDX: 0000000000000005 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 00000000004cf510 R08: 000000000004ffe0 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004cf51c
+R13: 000000000049e46c R14: 6d32cc5e8ead0600 R15: 0000000000022000
+
+Uninit was created at:
+ kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:121
+ kmsan_alloc_page+0xd0/0x1e0 mm/kmsan/kmsan_shadow.c:274
+ __alloc_pages_nodemask+0x827/0xf90 mm/page_alloc.c:5044
+ alloc_pages_current+0x7b6/0xb60 mm/mempolicy.c:2277
+ alloc_pages include/linux/gfp.h:561 [inline]
+ alloc_slab_page mm/slub.c:1653 [inline]
+ allocate_slab+0x364/0x1260 mm/slub.c:1793
+ new_slab mm/slub.c:1856 [inline]
+ new_slab_objects mm/slub.c:2602 [inline]
+ ___slab_alloc+0xd42/0x1930 mm/slub.c:2765
+ __slab_alloc mm/slub.c:2805 [inline]
+ slab_alloc_node mm/slub.c:2886 [inline]
+ slab_alloc mm/slub.c:2931 [inline]
+ kmem_cache_alloc_trace+0xc53/0x1030 mm/slub.c:2948
+ kmalloc include/linux/slab.h:554 [inline]
+ kzalloc include/linux/slab.h:684 [inline]
+ ____ip_mc_inc_group+0x4d7/0x10b0 net/ipv4/igmp.c:1435
+ __ip_mc_inc_group net/ipv4/igmp.c:1470 [inline]
+ ip_mc_inc_group net/ipv4/igmp.c:1476 [inline]
+ ip_mc_up+0x1ec/0x410 net/ipv4/igmp.c:1775
+ inetdev_event+0x2036/0x20e0 net/ipv4/devinet.c:1573
+ notifier_call_chain kernel/notifier.c:83 [inline]
+ raw_notifier_call_chain+0x123/0x290 kernel/notifier.c:410
+ __dev_notify_flags+0x5ac/0xba0 net/core/dev.c:2075
+ dev_change_flags+0x1f8/0x280 net/core/dev.c:8762
+ do_setlink+0x17f6/0x7890 net/core/rtnetlink.c:2708
+ __rtnl_newlink net/core/rtnetlink.c:3376 [inline]
+ rtnl_newlink+0x2fc4/0x3d80 net/core/rtnetlink.c:3491
+ rtnetlink_rcv_msg+0x143b/0x18e0 net/core/rtnetlink.c:5553
+ netlink_rcv_skb+0x6fa/0x810 net/netlink/af_netlink.c:2502
+ rtnetlink_rcv+0x50/0x60 net/core/rtnetlink.c:5571
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x11d6/0x14a0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x1740/0x1840 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ __sys_sendto+0x9ea/0xc60 net/socket.c:1977
+ __do_sys_sendto net/socket.c:1989 [inline]
+ __se_sys_sendto+0x107/0x130 net/socket.c:1985
+ __x64_sys_sendto+0x6e/0x90 net/socket.c:1985
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+=====================================================
 
 
 ---
@@ -204,3 +156,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
