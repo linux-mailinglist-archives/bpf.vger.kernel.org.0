@@ -2,196 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8423826F0
-	for <lists+bpf@lfdr.de>; Mon, 17 May 2021 10:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA5C7382721
+	for <lists+bpf@lfdr.de>; Mon, 17 May 2021 10:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235628AbhEQI1E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 May 2021 04:27:04 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2995 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235423AbhEQI1D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 May 2021 04:27:03 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FkBvF2f8lzQpPG;
-        Mon, 17 May 2021 16:22:17 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 17 May 2021 16:25:45 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 17 May
- 2021 16:25:44 +0800
-Subject: Re: [PATCH net-next v5 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Matteo Croce <mcroce@linux.microsoft.com>,
-        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        "Vinay Kumar Yadav" <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        "Tariq Toukan" <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
-        Sven Auhagen <sven.auhagen@voleatech.de>
-References: <20210513165846.23722-1-mcroce@linux.microsoft.com>
- <20210513165846.23722-4-mcroce@linux.microsoft.com>
- <798d6dad-7950-91b2-46a5-3535f44df4e2@huawei.com>
- <YJ4ocslvURa/H+6f@apalos.home>
- <212498cf-376b-2dac-e1cd-12c7cc7910c6@huawei.com>
- <YJ5APhzabmAKIKCE@apalos.home>
- <cd0c0a2b-986e-a672-de7e-798ab2843d76@huawei.com>
- <YKIPcF9ACNmFtksz@enceladus>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <fade4bc7-c1c7-517e-a775-0a5bb2e66be6@huawei.com>
-Date:   Mon, 17 May 2021 16:25:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S235698AbhEQIfo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 May 2021 04:35:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31647 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235658AbhEQIfn (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 17 May 2021 04:35:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621240467;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=H0rIkLZVSWvcw5d0SRX5kn9M8zHvErYPyZMfehLrUnc=;
+        b=hQJu/Q9DiIwDZsPigFsECdGZgI7dhLjR8o5xX89/y1TC1IZINiym/UUegzE+cTRD3GG0ol
+        l5keOYQNMBqPJiGpSoxICfmnsvkyfuOpV0pEuZoKIXMoAm0nou/uRfyLt8+UPCIgDvn8iH
+        5SvCP6MyCUSGpL35pJQ38LbggjfzmUQ=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-348--AuhyOUQMlqTMrpEEGp6Ww-1; Mon, 17 May 2021 04:34:25 -0400
+X-MC-Unique: -AuhyOUQMlqTMrpEEGp6Ww-1
+Received: by mail-yb1-f197.google.com with SMTP id z132-20020a25658a0000b02904feea2ae2acso8544366ybb.10
+        for <bpf@vger.kernel.org>; Mon, 17 May 2021 01:34:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H0rIkLZVSWvcw5d0SRX5kn9M8zHvErYPyZMfehLrUnc=;
+        b=mZ9DyFKLYi6longmfQ/7blIMgw//kgZXfqUqBokLqKwi/yClJuygvtopPZKwHIgj2j
+         mdc500x6YokHzi06hE2oq/XiHI+5caoiI0x9L98d4HUZIx9oyfP9wWJXjfn8otC12vfY
+         aG8oUjnaWbGhqx82H2J2X48DvZdXZeN4XCUpiFc8tBXJBUg/3e+tCs1w+rHdf+nRVVFn
+         AW00mikF95hZVWyqAsLLL/6aaLLJQw4KBTbb/pQ7d5KD8V0cGnr1PE+I/9HeqozM5mLO
+         sLrvFN68RdSa6WkXbdZ9iGTxW/AEQpclyfCK+FwCzr+MY+cZF+EoYqRUWXs18ByXpn9k
+         iNJQ==
+X-Gm-Message-State: AOAM532RcORByTzDTmcnkuM8z+Yv7Kupzf7s8x3KhFiI49m0MTkjFBwm
+        e3S3WGzBzX3TptWtCgsHaEI+DvzxYhU/n5z23zpxlL9vJwymBuZ4wUtwBWsgvhJaEw2snybEPUG
+        thQFlbX6cagfV60hIjAMKXkiRfpke
+X-Received: by 2002:a25:7451:: with SMTP id p78mr10684343ybc.227.1621240465228;
+        Mon, 17 May 2021 01:34:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzG+xOt2sI6iuR2d62PUilNKaHp2d8mDgxkq88vNwwlef+ekCp0Xow3HwXFMFBuMiPNKcW/vJ9jupOWJKiZWFg=
+X-Received: by 2002:a25:7451:: with SMTP id p78mr10684322ybc.227.1621240465001;
+ Mon, 17 May 2021 01:34:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YKIPcF9ACNmFtksz@enceladus>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+References: <20210507114048.138933-1-omosnace@redhat.com> <a8d138a6-1d34-1457-9266-4abeddb6fdba@schaufler-ca.com>
+ <CAFqZXNtr1YjzRg7fTm+j=0oZF+7C5xEu5J0mCZynP-dgEzvyUg@mail.gmail.com>
+ <24a61ff1-e415-adf8-17e8-d212364d4b97@schaufler-ca.com> <CAFqZXNvB-EyPz1Qz3cCRTr1u1+D+xT-dp7cUxFocYM1AOYSuxw@mail.gmail.com>
+ <e8d60664-c7ad-61de-bece-8ab3316f77bc@schaufler-ca.com> <CAFqZXNu_DW1FgnVvtA+CnBMtdRDrzYo5B3_=SzKV7-o1CaV0RA@mail.gmail.com>
+ <94486043-322f-74bd-dc33-83e43b531068@schaufler-ca.com>
+In-Reply-To: <94486043-322f-74bd-dc33-83e43b531068@schaufler-ca.com>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Mon, 17 May 2021 10:34:12 +0200
+Message-ID: <CAFqZXNucQhcYTZPGmi0MeHOvwCTsxxBSwzZ+W_MODX0_5WgcPg@mail.gmail.com>
+Subject: Re: [PATCH] lockdown,selinux: fix bogus SELinux lockdown permission checks
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, network dev <netdev@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/5/17 14:38, Ilias Apalodimas wrote:
-> [...]
->>
->>>
->>>> Maybe we can add a parameter in "struct page_pool_params" to let driver
->>>> to decide if the page pool ptr is stored in page->pp while the page pool
->>>> owns the page?
->>>
->>> Then you'd have to check the page pool config before saving the meta-data,
->>
->> I am not sure what the "saving the meta-data" meant?
-> 
-> I was referring to struct page_pool* and the signature we store in struct
-> page.
-> 
->>
->>> and you would have to make the skb path aware of that as well (I assume you
->>> mean replace pp_recycle with this?).
->>
->> I meant we could set the in page->pp when the page is allocated from
->> alloc_pages() in __page_pool_alloc_pages_slow() unconditionally or
->> according to a newly add filed in pool->p, and only clear it in
->> page_pool_release_page(), between which the page is owned by page pool,
->> right?
->>
->>> If not and you just want to add an extra flag on page_pool_params and be able 
->>> to enable recycling depending on that flag, we just add a patch afterwards.
->>> I am not sure we need an extra if for each packet though.
->>
->> In that case, the skb_mark_for_recycle() could only set the skb->pp_recycle,
->> but not the pool->p.
->>
->>>
->>>>
->>>> Another thing accured to me is that if the driver use page from the
->>>> page pool to form a skb, and it does not call skb_mark_for_recycle(),
->>>> then there will be resource leaking, right? if yes, it seems the
->>>> skb_mark_for_recycle() call does not seems to add any value?
->>>>
->>>
->>> Not really, the driver has 2 choices:
->>> - call page_pool_release_page() once it receives the payload. That will
->>>   clean up dma mappings (if page pool is responsible for them) and free the
->>>   buffer
->>
->> The is only needed before SKB recycling is supported or the driver does not
->> want the SKB recycling support explicitly, right?
->>
-> 
-> This is needed in general even before recycling.  It's used to unmap the
-> buffer, so once you free the SKB you don't leave any stale DMA mappings.  So
-> that's what all the drivers that use page_pool call today.
+On Sat, May 15, 2021 at 2:57 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> On 5/14/2021 8:12 AM, Ondrej Mosnacek wrote:
+> > On Wed, May 12, 2021 at 7:12 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >> On 5/12/2021 9:44 AM, Ondrej Mosnacek wrote:
+> >>> On Wed, May 12, 2021 at 6:18 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >>>> On 5/12/2021 6:21 AM, Ondrej Mosnacek wrote:
+> >>>>> On Sat, May 8, 2021 at 12:17 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >>>>>> On 5/7/2021 4:40 AM, Ondrej Mosnacek wrote:
+> >>>>>>> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+> >>>>>>> lockdown") added an implementation of the locked_down LSM hook to
+> >>>>>>> SELinux, with the aim to restrict which domains are allowed to perform
+> >>>>>>> operations that would breach lockdown.
+> >>>>>>>
+> >>>>>>> However, in several places the security_locked_down() hook is called in
+> >>>>>>> situations where the current task isn't doing any action that would
+> >>>>>>> directly breach lockdown, leading to SELinux checks that are basically
+> >>>>>>> bogus.
+> >>>>>>>
+> >>>>>>> Since in most of these situations converting the callers such that
+> >>>>>>> security_locked_down() is called in a context where the current task
+> >>>>>>> would be meaningful for SELinux is impossible or very non-trivial (and
+> >>>>>>> could lead to TOCTOU issues for the classic Lockdown LSM
+> >>>>>>> implementation), fix this by adding a separate hook
+> >>>>>>> security_locked_down_globally()
+> >>>>>> This is a poor solution to the stated problem. Rather than adding
+> >>>>>> a new hook you should add the task as a parameter to the existing hook
+> >>>>>> and let the security modules do as they will based on its value.
+> >>>>>> If the caller does not have an appropriate task it should pass NULL.
+> >>>>>> The lockdown LSM can ignore the task value and SELinux can make its
+> >>>>>> own decision based on the task value passed.
+> >>>>> The problem with that approach is that all callers would then need to
+> >>>>> be updated and I intended to keep the patch small as I'd like it to go
+> >>>>> to stable kernels as well.
+> >>>>>
+> >>>>> But it does seem to be a better long-term solution - would it work for
+> >>>>> you (and whichever maintainer would be taking the patch(es)) if I just
+> >>>>> added another patch that refactors it to use the task parameter?
+> >>>> I can't figure out what you're suggesting. Are you saying that you
+> >>>> want to add a new hook *and* add the task parameter?
+> >>> No, just to keep this patch as-is (and let it go to stable in this
+> >>> form) and post another (non-stable) patch on top of it that undoes the
+> >>> new hook and re-implements the fix using your suggestion. (Yeah, it'll
+> >>> look weird, but I'm not sure how better to handle such situation - I'm
+> >>> open to doing it whatever different way the maintainers prefer.)
+> >> James gets to make the call on this one. If it was my call I would
+> >> tell you to make the task parameter change and accept the backport
+> >> pain. I think that as a security developer community we spend way too
+> >> much time and effort trying to avoid being noticed in source trees.
+> > Hm... actually, what about this attached patch? It switches to a
+> > single hook with a cred argument (I figured cred makes more sense than
+> > task_struct, since the rest of task_struct should be irrelevant for
+> > the LSM, anyway...) right from the start and keeps the original
+> > security_locked_down() function only as a simple wrapper around the
+> > main hook.
+> >
+> > At that point I think converting the other callers to call
+> > security_cred_locked_down() directly isn't really worth it, since the
+> > resulting calls would just be more verbose without much benefit. So
+> > I'm tempted to just leave the security_locked_down() helper as is, so
+> > that the more common pattern can be still achieved with a simpler
+> > call.
+> >
+> > What do you think?
+>
+> It's still a bit kludgy, but a big improvement over the previous version.
+> I wouldn't object to this approach.
 
-As my understanding:
-1. If the driver is using page allocated from page allocator directly to
-   form a skb, let's say the page is owned by skb(or not owned by anyone:)),
-   when a skb is freed, the put_page() should be called.
+Ok, thanks. I'll post it as a v2 then.
 
-2. If the driver is using page allocated from page pool to form a skb, let's
-   say the page is owned by page pool, when a skb is freed, page_pool_put_page()
-   should be called.
-
-What page_pool_release_page() mainly do is to make page in case 2 return back
-to case 1.
-
-And page_pool_release_page() is replaced with skb_mark_for_recycle() in patch
-4/5 to avoid the above "case 2" -> "case 1" changing, so that the page is still
-owned by page pool, right?
-
-So the point is that skb_mark_for_recycle() does not really do anything about
-the owner of the page, it is still owned by page pool, so it makes more sense
-to keep the page pool ptr instead of setting it every time when
-skb_mark_for_recycle() is called?
-
-> 
->>> - call skb_mark_for_recycle(). Which will end up recycling the buffer.
->>
->> If the driver need to add extra flag to enable recycling based on skb
->> instead of page pool, then adding skb_mark_for_recycle() makes sense to
->> me too, otherwise it seems adding a field in pool->p to recycling based
->> on skb makes more sense?
->>
-> 
-> The recycling is essentially an SKB feature though isn't it?  You achieve the
-> SKB recycling with the help of page_pool API, not the other way around.  So I
-> think this should remain on the SKB and maybe in the future find ways to turn
-> in on/off?
-
-As above, does it not make more sense to call page_pool_release_page() if the
-driver does not need the SKB recycling?
-
-Even if when skb->pp_recycle is 1, pages allocated from page allocator directly
-or page pool are both supported, so it seems page->signature need to be reliable
-to indicate a page is indeed owned by a page pool, which means the skb->pp_recycle
-is used mainly to short cut the code path for skb->pp_recycle is 0 case, so that
-the page->signature does not need checking?
-
-> 
-> Thanks
-> /Ilias
+-- 
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
 
