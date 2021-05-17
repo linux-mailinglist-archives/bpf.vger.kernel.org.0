@@ -2,173 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454463822B2
-	for <lists+bpf@lfdr.de>; Mon, 17 May 2021 04:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1543822E5
+	for <lists+bpf@lfdr.de>; Mon, 17 May 2021 04:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232331AbhEQCZM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 16 May 2021 22:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231338AbhEQCZL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 16 May 2021 22:25:11 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69510C061573;
-        Sun, 16 May 2021 19:23:56 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id v4so3906216qtp.1;
-        Sun, 16 May 2021 19:23:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bEsPwwNFf32UFdaDZbxPaslRUti+w4Of7ShpBcFVMxQ=;
-        b=icqNTmpCYke5Nt06vWg3XWpHcmRPt2t56Fww1vFSxPN+bjleVaZ6n6VSqwEEimoBPB
-         h9kVaswXs1SYIRIWs0y5gOtEvIHfNwLb1gOah53nL+ZdyY5UHFjMsdnCcm7wTln3fRf+
-         r+FRRr88FqJTDTl15bwZcJHOlCDYGb4Skb1hQsxL8Reo5wCiaya+fdaekvuHR5sggM8o
-         QcklZTpaGnVMgLkIFATYRBBgf/1SPS6dHF0gwMbYRszwnPv+LKnQFjIdV5S6vdeBaCpH
-         9zCfk0vMWuBxRWPAQr2iBGHYA6xWBKWO/xXWnfdiDjYl7bUQT9r6Qr0FPKM26nq0Ymfy
-         sG2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bEsPwwNFf32UFdaDZbxPaslRUti+w4Of7ShpBcFVMxQ=;
-        b=li5rtzM2SOq86N4ldGkjZGIH8sIG639YTcQAn4WQ7WjDLqWMj+s3U+Ih/q/3vM4xT9
-         krWDTl5E/MRRydj3xwnefdHZZgxZbQsQ4yllXZhMkriE4uYnO45GDO5m9zVsXLwu9KR3
-         oiagK6fJyALkYtTTgePzfH8wd33GW14dQvTMk8geYfqNebyhuESFBEtscZqfF36QFLJc
-         mJi0yzWMfhBnRUl2M430uG6Ti3zSTJk1+UuLjQ/qh7RUf+7h4jHrpWug2mIfTwWfbpXZ
-         ErP/+vwcYsSddNzm1eTXuHCgR7fyueDc3qVQdLROjKuyRHEfnFV7RBToTbrHH5hK/dun
-         9UiA==
-X-Gm-Message-State: AOAM5303gWLYtmWyqR8+4fjHy9KPe115z0IFknmK8j2m43ORSBGZ62wD
-        OtWFr7RM5LPZambuyH7+JXqEsY/o698Qlg==
-X-Google-Smtp-Source: ABdhPJxRw3FXPCSRVoZ2YHmOnpTjR94MmvjEWSeIIwtiikuOu0eLAS7vlE7RxLQzbIxUMIZKYx/F/Q==
-X-Received: by 2002:ac8:7f13:: with SMTP id f19mr27843478qtk.202.1621218235494;
-        Sun, 16 May 2021 19:23:55 -0700 (PDT)
-Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:a15a:608b:20ec:867f])
-        by smtp.gmail.com with ESMTPSA id e128sm9495771qkd.127.2021.05.16.19.23.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 16 May 2021 19:23:55 -0700 (PDT)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: [Patch bpf] skmsg: remove unused parameters of sk_msg_wait_data()
-Date:   Sun, 16 May 2021 19:23:48 -0700
-Message-Id: <20210517022348.50555-1-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S233920AbhEQCwl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 16 May 2021 22:52:41 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:19062 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233907AbhEQCwk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 16 May 2021 22:52:40 -0400
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 14H2oqi6003301;
+        Mon, 17 May 2021 11:50:52 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 14H2oqi6003301
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1621219852;
+        bh=GgOSs8zrb6fLGJr3oX36VWe647ayOr3nv+9MJ33ntoU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=o2QF8k95BMd8yhaXpsSiR12h1WwoGQhuf6AogBWQhx0hd6uZim4vlBPqoOtsyyeQQ
+         cvU0I/NGzjEBHN6ahVL2tBSNez3Xr8xH1cByT+nQiwp6D+c1Mpzma1cjbVCZr1y7Gu
+         R8P1XgddxgdgdtWSQr8lt7ZNlxhUU4llODBzipDIkRQfGLvbhbxTEqZ41FzvrTbiou
+         tjJc4+JWh6kT6xsIxCIlpwHROtMNycDo9qyNZmTc+ocbbDrKhOsxW9ClbBljB9bgAq
+         EOEHueRbdgTkZhDFS4gjiCRwoGMR7btphCV3/DhLSS4IRaF5gAbXGyqcbfmWlWazIU
+         zbq0R1XRmUplg==
+X-Nifty-SrcIP: [209.85.210.182]
+Received: by mail-pf1-f182.google.com with SMTP id w1so1304944pfu.0;
+        Sun, 16 May 2021 19:50:52 -0700 (PDT)
+X-Gm-Message-State: AOAM530HiufWOQlo4/mOUIBiR9hP5Ukp/gRQPa40892Ft6NdoKl0+r1e
+        TeCLp/SbAlHhzHjKyYDWd2KW8i+HFMzc54G+Tow=
+X-Google-Smtp-Source: ABdhPJxHRD6T/mKjM2LPR3y2zbxRWMIy2ygj/8UQJQ2AC/w5yjA+g2CgCkcdSnelIqt5K0XEhroFgs1hNWdr3p9PtXM=
+X-Received: by 2002:aa7:94af:0:b029:28e:80ff:cc1d with SMTP id
+ a15-20020aa794af0000b029028e80ffcc1dmr57693078pfl.63.1621219851803; Sun, 16
+ May 2021 19:50:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210512065201.35268-1-masahiroy@kernel.org> <20210512065201.35268-2-masahiroy@kernel.org>
+ <CAEf4BzbsuivHaX0SHdBBV6+wpdtViFXOw=oWLyytzcRPiq+QSg@mail.gmail.com>
+In-Reply-To: <CAEf4BzbsuivHaX0SHdBBV6+wpdtViFXOw=oWLyytzcRPiq+QSg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 17 May 2021 11:50:14 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAThrg9BCCoyPwpxzha86DhjsHUFjzD_xMV7U+bsdpVXzg@mail.gmail.com>
+Message-ID: <CAK7LNAThrg9BCCoyPwpxzha86DhjsHUFjzD_xMV7U+bsdpVXzg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kbuild: remove libelf checks from top Makefile
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+(+CC: Josh, Peter)
 
-'err' and 'flags' are not used, we can just get rid of them.
+On Thu, May 13, 2021 at 4:36 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, May 11, 2021 at 11:52 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > I do not see a good reason why only the libelf development package must
+> > be so carefully checked.
+> >
+> > Kbuild generally does not check host tools or libraries.
+> >
+> > For example, x86_64 defconfig fails to build with no libssl development
+> > package installed.
+> >
+> > scripts/extract-cert.c:21:10: fatal error: openssl/bio.h: No such file or directory
+> >    21 | #include <openssl/bio.h>
+> >       |          ^~~~~~~~~~~~~~~
+> >
+> > To solve the build error, you need to install libssl-dev or openssl-devel
+> > package, depending on your distribution.
+> >
+> > 'apt-file search', 'dnf provides', etc. is your frined to find a proper
+> > package to install.
+> >
+> > This commit removes all the libelf checks from the top Makefile.
+> >
+> > If libelf is missing, objtool will fail to build in a similar pattern:
+> >
+> > .../linux/tools/objtool/include/objtool/elf.h:10:10: fatal error: gelf.h: No such file or directory
+> >    10 | #include <gelf.h>
+> >
+> > You need to install libelf-dev, libelf-devel, or elfutils-libelf-devel
+> > to proceed.
+> >
+> > Another remarkable change is, CONFIG_STACK_VALIDATION (without
+> > CONFIG_UNWINDER_ORC) previously continued to build with a warning,
+> > but now it will treat missing libelf as an error.
+> >
+> > This is just a one-time installation, so it should not matter to break
+> > a build and make a user install the package.
+> >
+> > BTW, the traditional way to handle such checks is autotool, but according
+> > to [1], I do not expect the kernel build would have similar scripting
+> > like './configure' does.
+> >
+> > [1]: https://lore.kernel.org/lkml/CA+55aFzr2HTZVOuzpHYDwmtRJLsVzE-yqg2DHpHi_9ePsYp5ug@mail.gmail.com/
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+>
+> resolve_btfids part looks good to me:
+>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> >  Makefile                  | 78 +++++++++++----------------------------
+> >  scripts/Makefile.build    |  2 -
+> >  scripts/Makefile.modfinal |  2 -
+> >  3 files changed, 22 insertions(+), 60 deletions(-)
+> >
+>
+> [...]
 
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- include/linux/skmsg.h | 3 +--
- net/core/skmsg.c      | 3 +--
- net/ipv4/tcp_bpf.c    | 9 ++-------
- net/ipv4/udp_bpf.c    | 8 ++------
- 4 files changed, 6 insertions(+), 17 deletions(-)
 
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index aba0f0f429be..fcaa9a7996c8 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -126,8 +126,7 @@ int sk_msg_zerocopy_from_iter(struct sock *sk, struct iov_iter *from,
- 			      struct sk_msg *msg, u32 bytes);
- int sk_msg_memcopy_from_iter(struct sock *sk, struct iov_iter *from,
- 			     struct sk_msg *msg, u32 bytes);
--int sk_msg_wait_data(struct sock *sk, struct sk_psock *psock, int flags,
--		     long timeo, int *err);
-+int sk_msg_wait_data(struct sock *sk, struct sk_psock *psock, long timeo);
- int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
- 		   int len, int flags);
- 
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 43ce17a6a585..f0b9decdf279 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -399,8 +399,7 @@ int sk_msg_memcopy_from_iter(struct sock *sk, struct iov_iter *from,
- }
- EXPORT_SYMBOL_GPL(sk_msg_memcopy_from_iter);
- 
--int sk_msg_wait_data(struct sock *sk, struct sk_psock *psock, int flags,
--		     long timeo, int *err)
-+int sk_msg_wait_data(struct sock *sk, struct sk_psock *psock, long timeo)
- {
- 	DEFINE_WAIT_FUNC(wait, woken_wake_function);
- 	int ret = 0;
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index ad9d17923fc5..a80de92ea3b6 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -184,11 +184,11 @@ static int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
- msg_bytes_ready:
- 	copied = sk_msg_recvmsg(sk, psock, msg, len, flags);
- 	if (!copied) {
--		int data, err = 0;
- 		long timeo;
-+		int data;
- 
- 		timeo = sock_rcvtimeo(sk, nonblock);
--		data = sk_msg_wait_data(sk, psock, flags, timeo, &err);
-+		data = sk_msg_wait_data(sk, psock, timeo);
- 		if (data) {
- 			if (!sk_psock_queue_empty(psock))
- 				goto msg_bytes_ready;
-@@ -196,14 +196,9 @@ static int tcp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
- 			sk_psock_put(sk, psock);
- 			return tcp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
- 		}
--		if (err) {
--			ret = err;
--			goto out;
--		}
- 		copied = -EAGAIN;
- 	}
- 	ret = copied;
--out:
- 	release_sock(sk);
- 	sk_psock_put(sk, psock);
- 	return ret;
-diff --git a/net/ipv4/udp_bpf.c b/net/ipv4/udp_bpf.c
-index 954c4591a6fd..b07e4b6dda25 100644
---- a/net/ipv4/udp_bpf.c
-+++ b/net/ipv4/udp_bpf.c
-@@ -43,21 +43,17 @@ static int udp_bpf_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
- msg_bytes_ready:
- 	copied = sk_msg_recvmsg(sk, psock, msg, len, flags);
- 	if (!copied) {
--		int data, err = 0;
- 		long timeo;
-+		int data;
- 
- 		timeo = sock_rcvtimeo(sk, nonblock);
--		data = sk_msg_wait_data(sk, psock, flags, timeo, &err);
-+		data = sk_msg_wait_data(sk, psock, timeo);
- 		if (data) {
- 			if (!sk_psock_queue_empty(psock))
- 				goto msg_bytes_ready;
- 			ret = sk_udp_recvmsg(sk, msg, len, nonblock, flags, addr_len);
- 			goto out;
- 		}
--		if (err) {
--			ret = err;
--			goto out;
--		}
- 		copied = -EAGAIN;
- 	}
- 	ret = copied;
+
 -- 
-2.25.1
-
+Best Regards
+Masahiro Yamada
