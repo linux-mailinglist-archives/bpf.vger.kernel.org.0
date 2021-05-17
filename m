@@ -2,107 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85AFC382C7F
-	for <lists+bpf@lfdr.de>; Mon, 17 May 2021 14:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174D4382EB7
+	for <lists+bpf@lfdr.de>; Mon, 17 May 2021 16:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbhEQMrm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 May 2021 08:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45786 "EHLO
+        id S238387AbhEQOKP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 May 2021 10:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbhEQMrm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 May 2021 08:47:42 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BD8C061573
-        for <bpf@vger.kernel.org>; Mon, 17 May 2021 05:46:25 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id o59so2996340qva.1
-        for <bpf@vger.kernel.org>; Mon, 17 May 2021 05:46:25 -0700 (PDT)
+        with ESMTP id S238134AbhEQOIV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 May 2021 10:08:21 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D12C06138D
+        for <bpf@vger.kernel.org>; Mon, 17 May 2021 07:06:35 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id k10so9391998ejj.8
+        for <bpf@vger.kernel.org>; Mon, 17 May 2021 07:06:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=US7LpJWCwtTmFe0Y8kLTeXtbSfCIEwq3UZFrYiM9u4c=;
-        b=SxM/7RVHpba+L5Xt5BhFbsOC3V88HhUnMKoyePQGE6WaILJzZDs+jWlR7fhVDQ5XoR
-         B9cWducwqElS89loGL8jnaLV88WhUg1mcik87unj2Zk1abJFRr1v70rv5senetfLqJjW
-         MJIYokWCm/v8sQldUk0uExPs8VQHs2hi53wxXAedDRZ/yDaosI96UTWsk7CZHeWRdYz8
-         OeuEO0EGu5TJSKVG+IO8bhzp6ZMi6N5CJI1BjV/JKHo8OZlDGJFi7abdDlbLfb3HfKLY
-         8rGTLw+ZYed+2hcAJTTBVwkCmUgOcPumTd8uJOF7CMXLqfNZQT3YufAAedU6ctJ0kB/v
-         wE1g==
+        bh=9MDvKFuNeKBbVJtpTdT+VCCnXSYI8q2AUbpXtXn6bxI=;
+        b=BPjMazyBYz3yHV3o34rZAOJDAJhpUlPL8FjVsDvP7Ln+a7NRGneDSsCr+qDbmKx83W
+         JdHZonp6kYuZ1d2VBTr0o301bjx9Y+xHlLsME+9XxD1RdN8KgTSUHs5aEB9kyYUxodoD
+         N+7LTv5vvCivo1wdLVlo9IFqGgqqBupS1N6vX1zelw0kH8ncbyaqiADLqeV2tDkHo0ew
+         iGLosVjwUILCxqKC8WLUNlJXz2fiECB1jdqNY6EY7sP1fX7fm+xvk4CvuJkVE8ClCkqp
+         /K0DWK1ZbQsUWKmMx6t7/05UViu3BZk8552x6tb965Cl3MPSh1OPA0iSLNS9b3NJzY6m
+         hS4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=US7LpJWCwtTmFe0Y8kLTeXtbSfCIEwq3UZFrYiM9u4c=;
-        b=Mc/031FMCG9p4a521LHL+C2IIZCuL8te47o2SaACXV4e+HPd0ODfu9Wri+VDlHNcy+
-         T8sgadnThNdy7tr1LV3JMuHJRHyl9w2R/QWQjGs0RxZI23trHqefEJ6k8wKxg0XndAi5
-         Nl4BAi1/Nmny4+Yjdwu6gcbT9G2aahtkxiY1jNKvfiyeqG1XXTq2swtZmv0MZC6lTQya
-         D3ANiXyB7Asb8/WRddK9d/7So8OPBXKkSJ44mn6lovTAU/MIlof4jO3LmHoczJkYtCZS
-         vSqlU5IDUE8PypVUkhTWO8sVpQkSteF1X8tlANPdW2kjnBCuD2c9Tfeb0oJu5ROMvx9m
-         b8Iw==
-X-Gm-Message-State: AOAM530Ida2pGqF2EIaNVbTxsldsxQajUWcT834YG8QmX0B1HQBk2E1l
-        W78jxXaEtw6IhxOADxRYuGw21QRmV3Vfd0SkJ7EEbw==
-X-Google-Smtp-Source: ABdhPJytLMaCWze97hp4sqs2640skpJNc9pqDB3xaTeoD8HOdx//AFSEpd4TYu6tRlbapl/3Thh/UDKpTCU/BJkFYVw=
-X-Received: by 2002:a05:6214:1705:: with SMTP id db5mr19714811qvb.13.1621255584959;
- Mon, 17 May 2021 05:46:24 -0700 (PDT)
+        bh=9MDvKFuNeKBbVJtpTdT+VCCnXSYI8q2AUbpXtXn6bxI=;
+        b=eK4RUFESslyqa107UNedUGXwerMyGgQDYQ4UAXB2tWWCUkd3aPmm3KU218Tce2M4an
+         YfUvVpNGzU/0xhjouhc5CgW8KE9pN/tA6WWNZYDajUO/UtXcrPibWK2MYKZ+O8QSXWFd
+         WCxpbHHx2onK0QJYRPpi0AodtE1pZ2Fm4lLak6OECEeky1Q81dNZMN19PXxExkuxf3pL
+         e3ZsZc480l99yo6fXbx4K2O0Ofj/c4Og/q01LS4nM8JZLSXrVn3q0c9cMBsR7ou2Y7Bz
+         BEJbp9GPEBFTGbtLFv51lLHNmqkojCNa5NA4vZEWHxIItSeF5XGXTq1ir4MnmBLKufX4
+         dKjQ==
+X-Gm-Message-State: AOAM531sO5Gm3qFe+rQHo/VzSrDRad7vV9ttOtcVGM17Ay8xL6D3ewnb
+        haTqt1fjIXjZV8oigrZY45FzmuvbZdQ=
+X-Google-Smtp-Source: ABdhPJxGOyB655ZAgGZLqTJ9meEeIDS8weEA0+HdwOoS7rlhdYiufads71RBxsxNC2FfK/UbQHP+6Q==
+X-Received: by 2002:a17:906:170a:: with SMTP id c10mr46087eje.493.1621260393221;
+        Mon, 17 May 2021 07:06:33 -0700 (PDT)
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com. [209.85.221.50])
+        by smtp.gmail.com with ESMTPSA id bh2sm7682245ejb.80.2021.05.17.07.06.31
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 May 2021 07:06:31 -0700 (PDT)
+Received: by mail-wr1-f50.google.com with SMTP id h4so6523502wrt.12
+        for <bpf@vger.kernel.org>; Mon, 17 May 2021 07:06:31 -0700 (PDT)
+X-Received: by 2002:a5d:6285:: with SMTP id k5mr39994754wru.50.1621260390837;
+ Mon, 17 May 2021 07:06:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <000000000000b3d89a05c284718f@google.com> <YKJTNcpqVN6gNIHV@hirez.programming.kicks-ass.net>
-In-Reply-To: <YKJTNcpqVN6gNIHV@hirez.programming.kicks-ass.net>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 17 May 2021 14:46:13 +0200
-Message-ID: <CACT4Y+bucS5_6=rcEEpe+t8p_m3PQVzU5U+u+++ZSVG8E9zzmg@mail.gmail.com>
-Subject: Re: [syzbot] WARNING in __perf_install_in_context
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Cc:     syzbot <syzbot+0fb24f56fa707081e4f2@syzkaller.appspotmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
+References: <0000000000006a77d205c284e0d2@google.com>
+In-Reply-To: <0000000000006a77d205c284e0d2@google.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 17 May 2021 10:05:52 -0400
+X-Gmail-Original-Message-ID: <CA+FuTSfjaqntvGGJAWc=QxWFkTPrXF+Ed9rkUKM8sor4=ZAK+Q@mail.gmail.com>
+Message-ID: <CA+FuTSfjaqntvGGJAWc=QxWFkTPrXF+Ed9rkUKM8sor4=ZAK+Q@mail.gmail.com>
+Subject: Re: [syzbot] KMSAN: uninit-value in virtio_net_hdr_to_skb
+To:     syzbot <syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Alexander Potapenko <glider@google.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>, Martin KaFai Lau <kafai@fb.com>,
-        kpsingh@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
+        Martin Lau <kafai@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
         Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
+        syzkaller-bugs@googlegroups.com,
+        Tanner Love <tannerlove@google.com>,
+        Xie He <xie.he.0141@gmail.com>, Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 17, 2021 at 1:28 PM Peter Zijlstra <peterz@infradead.org> wrote:
+On Mon, May 17, 2021 at 7:27 AM syzbot
+<syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com> wrote:
 >
-> On Mon, May 17, 2021 at 03:56:22AM -0700, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    18a3c5f7 Merge tag 'for_linus' of git://git.kernel.org/pub..
-> > git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=1662c153d00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=b8ac1fe5995f69d7
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=0fb24f56fa707081e4f2
-> > userspace arch: riscv64
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+0fb24f56fa707081e4f2@syzkaller.appspotmail.com
-> >
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 1 PID: 8643 at kernel/events/core.c:2781 __perf_install_in_context+0x1c0/0x47c kernel/events/core.c:2781
-> > Modules linked in:
-> > CPU: 1 PID: 8643 Comm: syz-executor.0 Not tainted 5.12.0-rc8-syzkaller-00011-g18a3c5f7abfd #0
-> > Hardware name: riscv-virtio,qemu (DT)
+> Hello,
 >
-> How serious should I take this thing? ARM64 and x86_64 don't show these
-> errors.
+> syzbot found the following issue on:
+>
+> HEAD commit:    4ebaab5f kmsan: drop unneeded references to kmsan_context_..
+> git tree:       https://github.com/google/kmsan.git master
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17ac508ed00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=ab8076fe8508c0d3
+> dashboard link: https://syzkaller.appspot.com/bug?extid=106457891e3cf3b273a9
+> compiler:       Debian clang version 11.0.1-2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=138f4972d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1624ffced00000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+106457891e3cf3b273a9@syzkaller.appspotmail.com
+>
+> =====================================================
+> BUG: KMSAN: uninit-value in virtio_net_hdr_to_skb+0x1414/0x14f0 include/linux/virtio_net.h:86
 
-+riscv mainters for this question
-Is perf on riscv considered stable?
+No answer/fix, just initial investigation.
+
+This is an odd location. Line 86 is the inner if statement. Both
+protocol and skb->protocol are clearly initialized by then. But, that
+is also not the allocation that MSAN reports, see below.
+
+                        if (!skb->protocol) {
+                                __be16 protocol =
+dev_parse_header_protocol(skb);
+
+                                virtio_net_hdr_set_proto(skb, hdr);
+                                if (protocol && protocol != skb->protocol)
+                                        return -EINVAL;
+                        }
+
+The repro itself seems mostly straightforward:
+
+- create a packet socket
+- enable PACKET_VNET_HDR with setsockopt(r3, 0x107, 0xf ..)
+- bind to AF_PACKET (0x11)
+
+- create a pipe
+- write to pipe[1]
+- splice pipe[0] to the packet socket
+
+there are a few other calls that I think are irrelevant and/or would fail.
+
+Perhaps there is some race condition in device refcounting, as bind
+operates on that?
+
+> CPU: 0 PID: 8426 Comm: syz-executor777 Not tainted 5.12.0-rc6-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+>  kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+>  __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+>  virtio_net_hdr_to_skb+0x1414/0x14f0 include/linux/virtio_net.h:86
+>  packet_snd net/packet/af_packet.c:2994 [inline]
+>  packet_sendmsg+0x85b8/0x99d0 net/packet/af_packet.c:3031
+>  sock_sendmsg_nosec net/socket.c:654 [inline]
+>  sock_sendmsg net/socket.c:674 [inline]
+>  kernel_sendmsg+0x22c/0x2f0 net/socket.c:694
+>  sock_no_sendpage+0x205/0x2b0 net/core/sock.c:2860
+>  kernel_sendpage+0x47a/0x590 net/socket.c:3631
+>  sock_sendpage+0x161/0x1a0 net/socket.c:947
+>  pipe_to_sendpage+0x3e4/0x520 fs/splice.c:364
+>  splice_from_pipe_feed fs/splice.c:418 [inline]
+>  __splice_from_pipe+0x5e3/0xff0 fs/splice.c:562
+>  splice_from_pipe fs/splice.c:597 [inline]
+>  generic_splice_sendpage+0x1d5/0x2c0 fs/splice.c:746
+>  do_splice_from fs/splice.c:767 [inline]
+>  do_splice+0x23c3/0x2c10 fs/splice.c:1079
+>  __do_splice fs/splice.c:1144 [inline]
+>  __do_sys_splice fs/splice.c:1350 [inline]
+>  __se_sys_splice+0x8fa/0xb50 fs/splice.c:1332
+>  __x64_sys_splice+0x6e/0x90 fs/splice.c:1332
+>  do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x449a39
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f8ed790b2f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
+> RAX: ffffffffffffffda RBX: 00000000004cf518 RCX: 0000000000449a39
+> RDX: 0000000000000005 RSI: 0000000000000000 RDI: 0000000000000003
+> RBP: 00000000004cf510 R08: 000000000004ffe0 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004cf51c
+> R13: 000000000049e46c R14: 6d32cc5e8ead0600 R15: 0000000000022000
+>
+> Uninit was created at:
+>  kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:121
+>  kmsan_alloc_page+0xd0/0x1e0 mm/kmsan/kmsan_shadow.c:274
+>  __alloc_pages_nodemask+0x827/0xf90 mm/page_alloc.c:5044
+>  alloc_pages_current+0x7b6/0xb60 mm/mempolicy.c:2277
+>  alloc_pages include/linux/gfp.h:561 [inline]
+>  alloc_slab_page mm/slub.c:1653 [inline]
+>  allocate_slab+0x364/0x1260 mm/slub.c:1793
+>  new_slab mm/slub.c:1856 [inline]
+>  new_slab_objects mm/slub.c:2602 [inline]
+>  ___slab_alloc+0xd42/0x1930 mm/slub.c:2765
+>  __slab_alloc mm/slub.c:2805 [inline]
+>  slab_alloc_node mm/slub.c:2886 [inline]
+>  slab_alloc mm/slub.c:2931 [inline]
+>  kmem_cache_alloc_trace+0xc53/0x1030 mm/slub.c:2948
+>  kmalloc include/linux/slab.h:554 [inline]
+>  kzalloc include/linux/slab.h:684 [inline]
+>  ____ip_mc_inc_group+0x4d7/0x10b0 net/ipv4/igmp.c:1435
+
+This allocates ip_mc_list, but it uses kzalloc. Can that ever count as
+uninitialized?
