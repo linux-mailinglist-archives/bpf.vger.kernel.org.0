@@ -2,111 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165753880D4
-	for <lists+bpf@lfdr.de>; Tue, 18 May 2021 21:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC753880D7
+	for <lists+bpf@lfdr.de>; Tue, 18 May 2021 21:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347729AbhERTz7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 May 2021 15:55:59 -0400
-Received: from www62.your-server.de ([213.133.104.62]:53646 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245553AbhERTz6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 May 2021 15:55:58 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lj5nU-0006tq-59; Tue, 18 May 2021 21:54:32 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lj5nT-0008vg-Vh; Tue, 18 May 2021 21:54:32 +0200
-Subject: Re: [PATCH v6 bpf-next 00/21] bpf: syscall program, FD array, loader
- program, light skeleton.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        davem@davemloft.net
-Cc:     andrii@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org,
-        kernel-team@fb.com
-References: <20210514003623.28033-1-alexei.starovoitov@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <4a843738-4eb1-d993-6b64-7f36144d2456@iogearbox.net>
-Date:   Tue, 18 May 2021 21:54:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20210514003623.28033-1-alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S239830AbhERT5t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 May 2021 15:57:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239073AbhERT5t (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 May 2021 15:57:49 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51279C061573;
+        Tue, 18 May 2021 12:56:30 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id e14so10179135ils.12;
+        Tue, 18 May 2021 12:56:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=43mVGV8KLvYFUDiQnFtuH1ChWfJqb7nYVult5qDl1Ak=;
+        b=lH6cehuYTAh4Q4jPgBZ/lS1XzoPHsDPbU56BgRtpZbXziUQ9sSju0Cv3yG3lZK02QZ
+         0VpSxZ28BZ5nshMB7j6U0xSA9Vwg4TzD8j85bvlAM4B12WdFO69sIiXy0F5oTjopom1H
+         O0m7OTFfwoAo6BeuGGGOUuiPxCVI/wY26qH1A6OHbt6ButPbpvmXHv5NOXgDLoxx3Ljk
+         9Nz4MGLjXr9ySFBWdwPKDHjWXAKd9zsLfqPGQHVeiwDxaFciB+eA1K6FxmzaoivNISeG
+         ieLnBLy/1k/xqqN/Cg5q0ryoeiNl0UOTFLjgwby1QK5bKmzc/1QYU6xMBNz3m1j3guam
+         mHww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=43mVGV8KLvYFUDiQnFtuH1ChWfJqb7nYVult5qDl1Ak=;
+        b=Ok6ryatnXNaUsTjBEqeunTM3vyiZtcvAzQeMc19xCQI+iX3PuK8yk7EPHBKfm+HYGc
+         kVNQlwNYiwygowb9vpAU1k0xtr0G/lC1Wd5cw30MvCm+h913BtTQF5pSsVr/1u2cr8u7
+         /WAr/j7nsOeVDo6X9RlXguEJgggguccTs8G8zjnz4kJTI5u23EF7AFMMYKQva7LaiaSF
+         uK13Gdf5TVVv2FIUPvRQmRJYOUGaxwKwdDJ8vsoOeKh6d+YsEQ7i3u1lSYMyE58Neqvj
+         07IiTqdOSxl6NOhMwkDtdX7PbKWNh0kvFs23sME1lGh4BdwYApa4sF35tsGo1/aojcss
+         e+Kg==
+X-Gm-Message-State: AOAM532cyepNhIzbvq8WfRP4A8VPvFa/bAYADH9e59S3NcQ5AF7wLHke
+        sGuQbaRsMU/elu+v0DXUPYo=
+X-Google-Smtp-Source: ABdhPJxnsagkUFpqIdNAocUkAX1MBBDgrvoe3+nGQacXitoGMVR+owbdXBoQL2k4sUtNqA2FH//oCw==
+X-Received: by 2002:a92:c243:: with SMTP id k3mr6361491ilo.81.1621367789838;
+        Tue, 18 May 2021 12:56:29 -0700 (PDT)
+Received: from localhost ([172.242.244.146])
+        by smtp.gmail.com with ESMTPSA id c11sm9544158ilo.61.2021.05.18.12.56.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 May 2021 12:56:29 -0700 (PDT)
+Date:   Tue, 18 May 2021 12:56:21 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Message-ID: <60a41be5629ab_10e7720815@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAM_iQpVCfGEA+TOfWvXYxJ1kk9z_thdbvRmZHxhWpuBMx9x2zg@mail.gmail.com>
+References: <20210517022322.50501-1-xiyou.wangcong@gmail.com>
+ <60a3525d188d9_18a5f208f5@john-XPS-13-9370.notmuch>
+ <CAM_iQpVCfGEA+TOfWvXYxJ1kk9z_thdbvRmZHxhWpuBMx9x2zg@mail.gmail.com>
+Subject: Re: [Patch bpf] udp: fix a memory leak in udp_read_sock()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26174/Tue May 18 13:09:02 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/14/21 2:36 AM, Alexei Starovoitov wrote:
-[...]
-> This is a first step towards signed bpf programs and the third approach of that kind.
-> The first approach was to bring libbpf into the kernel as a user-mode-driver.
-> The second approach was to invent a new file format and let kernel execute
-> that format as a sequence of syscalls that create maps and load programs.
-> This third approach is using new type of bpf program instead of inventing file format.
-> 1st and 2nd approaches had too many downsides comparing to this 3rd and were discarded
-> after months of work.
+Cong Wang wrote:
+> On Mon, May 17, 2021 at 10:36 PM John Fastabend
+> <john.fastabend@gmail.com> wrote:
+> >
+> > Cong Wang wrote:
+> > > From: Cong Wang <cong.wang@bytedance.com>
+> > >
+> > > sk_psock_verdict_recv() clones the skb and uses the clone
+> > > afterward, so udp_read_sock() should free the original skb after
+> > > done using it.
+> >
+> > The clone only happens if sk_psock_verdict_recv() returns >0.
 > 
-> To make it work the following new concepts are introduced:
-> 1. syscall bpf program type
-> A kind of bpf program that can do sys_bpf and sys_close syscalls.
-> It can only execute in user context.
-> 
-> 2. FD array or FD index.
-> Traditionally BPF instructions are patched with FDs.
-> What it means that maps has to be created first and then instructions modified
-> which breaks signature verification if the program is signed.
-> Instead of patching each instruction with FD patch it with an index into array of FDs.
-> That makes the program signature stable if it uses maps.
-> 
-> 3. loader program that is generated as "strace of libbpf".
-> When libbpf is loading bpf_file.o it does a bunch of sys_bpf() syscalls to
-> load BTF, create maps, populate maps and finally load programs.
-> Instead of actually doing the syscalls generate a trace of what libbpf
-> would have done and represent it as the "loader program".
-> The "loader program" consists of single map and single bpf program that
-> does those syscalls.
-> Executing such "loader program" via bpf_prog_test_run() command will
-> replay the sequence of syscalls that libbpf would have done which will result
-> the same maps created and programs loaded as specified in the elf file.
-> The "loader program" removes libelf and majority of libbpf dependency from
-> program loading process.
+> Sure, in case of error, no one uses the original skb either,
+> so still need to free it.
 
-More of a general question since afaik from prior discussion it didn't came up.
-I think conceptually, it's rather weird to only being able to execute the loader
-program which is later also supposed to do signing through the BPF_PROG_TEST_RUN
-aka our _testing_ infrastructure. Given it's not mentioned in future steps, is
-there anything planned before it becomes uapi and fixed part of skeleton (in
-particular the libbpf bpf_load_and_run() helper officially calling into the
-skel_sys_bpf(BPF_PROG_TEST_RUN, &attr, sizeof(attr))) on this regard or is the
-BPF_PROG_TEST_RUN really supposed to be the /main/ interface going forward;
-what's the plan on this?
+But the data is going to be dropped then. I'm questioning if this
+is the best we can do or not. Its simplest sure, but could we
+do a bit more work and peek those skbs or requeue them? Otherwise
+if you cross memory limits for a bit your likely to drop these
+unnecessarily.
 
-> 4. light skeleton
-> Instead of embedding the whole elf file into skeleton and using libbpf
-> to parse it later generate a loader program and embed it into "light skeleton".
-> Such skeleton can load the same set of elf files, but it doesn't need
-> libbpf and libelf to do that. It only needs few sys_bpf wrappers.
 > 
-> Future steps:
-> - support CO-RE in the kernel. This patch set is already too big,
-> so that critical feature is left for the next step.
-> - generate light skeleton in golang to allow such users use BTF and
-> all other features provided by libbpf
-> - generate light skeleton for kernel, so that bpf programs can be embeded
-> in the kernel module. The UMD usage in bpf_preload will be replaced with
-> such skeleton, so bpf_preload would become a standard kernel module
-> without user space dependency.
-> - finally do the signing of the loader program.
+> >
+> > >
+> > > Fixes: d7f571188ecf ("udp: Implement ->read_sock() for sockmap")
+> > > Cc: John Fastabend <john.fastabend@gmail.com>
+> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > > Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> > > Cc: Lorenz Bauer <lmb@cloudflare.com>
+> > > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > > ---
+> > >  net/ipv4/udp.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
+> > > index 15f5504adf5b..e31d67fd5183 100644
+> > > --- a/net/ipv4/udp.c
+> > > +++ b/net/ipv4/udp.c
+> > > @@ -1798,11 +1798,13 @@ int udp_read_sock(struct sock *sk, read_descriptor_t *desc,
+> > >               if (used <= 0) {
+> > >                       if (!copied)
+> > >                               copied = used;
+> > > +                     kfree_skb(skb);
+> >
+> > This case is different from the TCP side, if there is an error
+> > the sockmap side will also call kfree_skb(). In TCP side we peek
+> > the skb because we don't want to drop it. On UDP side this will
+> > just drop data on the floor. Its not super friendly, but its
+> > UDP so we are making the assumption this is ok? We've tried
+> > to remove all the drop data cases from TCP it would be nice
+> > to not drop data on UDP side if we can help it. Could we
+> > requeue or peek the UDP skb to avoid this?
 > 
-> The patches are work in progress with few rough edges.
+> TCP is special because it supports splice() where we can
+> do a partial read, so it needs to peek the skb, right? UDP only
+> supports sockmap, where we always read a whole skb, so we
+> do not need to peek here?
 
-Thanks a lot,
-Daniel
+Its also about not dropping data. In TCP we should not drop
+data at this point in the stack so if we get an error, ENOMEM
+or otherwise, we need to ensure we keep the original skb.
+
+> 
+> Thanks.
+
+
