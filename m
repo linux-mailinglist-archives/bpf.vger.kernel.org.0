@@ -2,79 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9593895BC
-	for <lists+bpf@lfdr.de>; Wed, 19 May 2021 20:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A269D389629
+	for <lists+bpf@lfdr.de>; Wed, 19 May 2021 21:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbhESStF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 May 2021 14:49:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230192AbhESStF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 May 2021 14:49:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04EFE6135F;
-        Wed, 19 May 2021 18:47:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621450065;
-        bh=pp5A433lvyiqKfm4cuGJF94wkrM49Tu27uTJcH/zrJA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PGE1pUFIZFvsWGGwwyGOud54Gs6jWGSJdb565EJlOv7xRvZKOcg/U/TVtq+7x1T/I
-         XkPy3yLoglV2/jI5fuj1tbapofJzY9dkL2sxtV5wScqhuPAok6yp8Kcku1ataKGw8U
-         h3cuIY4qlX4V6PiETEk5iCRj+iacURZXK4yNUJd1DVPoGl9xwMgymg9wxn4+YgeZc4
-         Krn2U2OCOm1iVEuwB3+BbqqT3KNFLwzOpRv7QVluIdmftX6Y4ojufqgllW2GQ7l0CE
-         5cAw1gf2IIcfmhzUJZ36jjoGjEfghap1mhTeXQL1x1obXRFb1rJPtVXvyiOxlK9LCt
-         ZckiYMQNR1Q9g==
-Received: by mail-lf1-f54.google.com with SMTP id w33so12672449lfu.7;
-        Wed, 19 May 2021 11:47:44 -0700 (PDT)
-X-Gm-Message-State: AOAM533NcouGW0yrR1wfoIWaHOqCmB2ViHFjxiUGBvI6wMVvL3+L4q42
-        5sM6JXVh2YGfspEQ/rPbvhIJowf/WZ8bpYQCsKU=
-X-Google-Smtp-Source: ABdhPJx9KtjbK06p9pon23X1IIzG0WmloUwgdGPWx5VcZsuruUW4LgqTOqC9RRwponyEhFFj5wXO2JvmPEavjBsX08c=
-X-Received: by 2002:ac2:5b12:: with SMTP id v18mr603220lfn.261.1621450063294;
- Wed, 19 May 2021 11:47:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210517225308.720677-1-me@ubique.spb.ru> <20210517225308.720677-4-me@ubique.spb.ru>
-In-Reply-To: <20210517225308.720677-4-me@ubique.spb.ru>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 19 May 2021 11:47:32 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6J3KR9Yy+avL3ayZ7G6ypJwK3Dg+wvhsG5wgP6_fL1CA@mail.gmail.com>
-Message-ID: <CAPhsuW6J3KR9Yy+avL3ayZ7G6ypJwK3Dg+wvhsG5wgP6_fL1CA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 03/11] bpfilter: Add IO functions
-To:     Dmitrii Banshchikov <me@ubique.spb.ru>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
+        id S230140AbhESTIA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 May 2021 15:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229863AbhESTH7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 May 2021 15:07:59 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC0CC06175F;
+        Wed, 19 May 2021 12:06:38 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id k4so9451627ili.4;
+        Wed, 19 May 2021 12:06:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=u+JB5CzqqD0vgr92eEb0p1bRL3UPNgHtHbJI4HxoI1Y=;
+        b=BOGD6udYKthVDYYZHuXrJxnmYI9E88BG9eqZELr4y88knJ7HMI6CeiEnbAsapk90ro
+         qKxh86I7eBBN77NhDFK1HHe3lK+9PQMN7yxrt08PK6skbSndQ8VtwOtqMz64ISt1IOn4
+         puZ5p3jLnLqSwS2wSxqyg+sl8cMYBlRoTqtT31319VPLdrD8idPyOnXdlBtQK4Db2i9w
+         hJbwZZpmIZJZBJDKrUfudww19/rlsFgY63W4OjvtTdtkozWwd2Bw2xF+LP9y8j+I2Qo0
+         UQuW3WbWNEyB9IvGI5tmxbszE9RMZigak41RBaj5u38bnJmcMLGGVeerpcvGeZTF8pSD
+         rnug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=u+JB5CzqqD0vgr92eEb0p1bRL3UPNgHtHbJI4HxoI1Y=;
+        b=l/PxxPas684lYycpA0Se8TRQPkl1isb5ViuWkzXrXT6rU/FDOd6jplc7D70BPwGly0
+         SHclNbsc1U8z4IIUo8V9q2nva+PJ8da4q4oyPm+akWw895mAdqv2aOdPf8Jdv0HTpn9A
+         0f0ut9voNspPYsBfdmZUVdRcWqEdAaOoe7hQ7rQtSI/ddFEBl9EVY6/v9ssEM1HLplYk
+         +ABAEOswnDcELPv7G6H+QkDEzyf7HLCwxfh3B1wQTtOEtmXbnpM4bZ3uDatnCeFOYDO8
+         Sc9/LDJ0NBwO2zF9IJkcfZL24vWw137AxkCBjbjrDwQIjqbG4Mhj24JTgvv9Yvb5yLv5
+         9+XA==
+X-Gm-Message-State: AOAM530DBbYsf1JDhy0BqG0JR/5HzV015Gn7VrfL17uoBmwipYuKKMfD
+        2igK18ESBiXJfKoNe5Cty8E=
+X-Google-Smtp-Source: ABdhPJywjpccI22JoICo0sFH3589ujRP6p6xWR0dNbE+Q8nvlqSe4fGxrDP4QeAKtbjm8saIw+fLlQ==
+X-Received: by 2002:a05:6e02:156d:: with SMTP id k13mr522555ilu.149.1621451197429;
+        Wed, 19 May 2021 12:06:37 -0700 (PDT)
+Received: from localhost ([172.242.244.146])
+        by smtp.gmail.com with ESMTPSA id q19sm351274ilc.70.2021.05.19.12.06.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 12:06:36 -0700 (PDT)
+Date:   Wed, 19 May 2021 12:06:30 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, Andrey Ignatov <rdna@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Message-ID: <60a561b63598a_22c462082f@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAM_iQpXkYsf=LF=g4aKLmas_9jHNqXGy-P2gi3R4eb65+ktz4A@mail.gmail.com>
+References: <20210517022322.50501-1-xiyou.wangcong@gmail.com>
+ <60a3525d188d9_18a5f208f5@john-XPS-13-9370.notmuch>
+ <CAM_iQpVCfGEA+TOfWvXYxJ1kk9z_thdbvRmZHxhWpuBMx9x2zg@mail.gmail.com>
+ <60a41be5629ab_10e7720815@john-XPS-13-9370.notmuch>
+ <CAM_iQpXkYsf=LF=g4aKLmas_9jHNqXGy-P2gi3R4eb65+ktz4A@mail.gmail.com>
+Subject: Re: [Patch bpf] udp: fix a memory leak in udp_read_sock()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 18, 2021 at 11:06 PM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
->
-> Introduce IO functions for:
-> 1) reading and writing data from a descriptor: read_exact(), write_exact(),
-> 2) reading and writing memory of other processes: pvm_read(), pvm_write().
->
-> read_exact() and write_exact() are wrappers over read(2)/write(2) with
-> correct handling of partial read/write. These functions are intended to
-> be used for communication over pipe with the kernel part of bpfilter.
->
-> pvm_read() and pvm_write() are wrappers over
-> process_vm_readv(2)/process_vm_writev(2) with an interface that uses a
-> single buffer instead of vectored form. These functions are intended to
-> be used for readining/writing memory buffers supplied to iptables ABI
-> setsockopt(2) from other processes.
->
-> Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
+Cong Wang wrote:
+> On Tue, May 18, 2021 at 12:56 PM John Fastabend
+> <john.fastabend@gmail.com> wrote:
+> >
+> > Cong Wang wrote:
+> > > On Mon, May 17, 2021 at 10:36 PM John Fastabend
+> > > <john.fastabend@gmail.com> wrote:
+> > > >
+> > > > Cong Wang wrote:
+> > > > > From: Cong Wang <cong.wang@bytedance.com>
+> > > > >
+> > > > > sk_psock_verdict_recv() clones the skb and uses the clone
+> > > > > afterward, so udp_read_sock() should free the original skb after
+> > > > > done using it.
+> > > >
+> > > > The clone only happens if sk_psock_verdict_recv() returns >0.
+> > >
+> > > Sure, in case of error, no one uses the original skb either,
+> > > so still need to free it.
+> >
+> > But the data is going to be dropped then. I'm questioning if this
+> > is the best we can do or not. Its simplest sure, but could we
+> > do a bit more work and peek those skbs or requeue them? Otherwise
+> > if you cross memory limits for a bit your likely to drop these
+> > unnecessarily.
+> 
+> What are the benefits of not dropping it? When sockmap takes
+> over sk->sk_data_ready() it should have total control over the skb's
+> in the receive queue. Otherwise user-space recvmsg() would race
+> with sockmap when they try to read the first skb at the same time,
+> therefore potentially user-space could get duplicated data (one via
+> recvmsg(), one via sockmap). I don't see any benefits but races here.
 
-The code looks correct, so
+The benefit of _not_ dropping it is the packet gets to the receiver
+side. We've spent a bit of effort to get a packet across the network,
+received on the stack, and then we drop it at the last point is not
+so friendly.
 
-Acked-by: Song Liu <songliubraving@fb.com>
+About races is the socket is locked by the caller here? Or is this
+not the case for UDP.
 
-However, I am not sure whether we really want these wrapper functions.
+Its OK in the end to say "its UDP and lossy" but ideally we don't
+make things worse by adding sockmap into the stack. We had these
+problems already on TCP side, where they are much more severe
+because sender believes retransmits will happen, and fixed them
+by now. It would be nice if UDP side also didn't introduce
+drops.
 
-[...]
+> 
+> Thanks.
+
+
