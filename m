@@ -2,114 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489F0389821
-	for <lists+bpf@lfdr.de>; Wed, 19 May 2021 22:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3C83898EE
+	for <lists+bpf@lfdr.de>; Wed, 19 May 2021 23:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229455AbhESUnA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 May 2021 16:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41886 "EHLO
+        id S229465AbhESVz6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 May 2021 17:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbhESUnA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 May 2021 16:43:00 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D737FC06175F;
-        Wed, 19 May 2021 13:41:39 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id g4so1681429qtb.12;
-        Wed, 19 May 2021 13:41:39 -0700 (PDT)
+        with ESMTP id S229455AbhESVz5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 May 2021 17:55:57 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FDA1C061574;
+        Wed, 19 May 2021 14:54:37 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id h11so13480624ili.9;
+        Wed, 19 May 2021 14:54:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mSwdcBYDgX5Py2pqUGi1oxPAvAmc7JVf4dX8rUfJ8wc=;
-        b=ldmiIuH2li4E4fXcxxJkXsKUmJ+qGAs03w+efQ0aR1ui/+LfKQLDBjTzSyaENrKEvk
-         zRgdg3xwEDTcFc2RJbKMA9PZyl1SyodSGlrvVjxSBvkkt3z/dkFfzSpa7n95PyZzWChv
-         2eDHJZ8aR2m3PXc8uV8u1ERpNViw6Kr2we2K877hIjLxlrAHqOGb1dcDjl/WnP+1rkIK
-         PB3Fc+urwrtpORcTEAwszPB46dkERdwZpDfaqcz/+YajfZZy4NSplBUBL6kyyZ7TLS5o
-         SJcb+7UTL3kaMM6EsVlqMbQTh2UDCTS1Mif1GpU1v+PUsinZiDlms10N3Jxsn6obY7So
-         0/yg==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=MwSVZiRfW96LTESPv/Lx6p2DSwYMHGNReB80Gg/XoCs=;
+        b=Jvh7NU4Hsp36HhGhaz3Zvu26RmqCuyT76ylX3JFyeb96DIQsIWAfi9Fu6k3SImryDS
+         QZ4rZBkg+wlPeZrWI/9jeO0/fuyQa+NVo6kgXJ9htGgTyaIVosEFgpcc+ptzr+oHa3E9
+         obUdCgD4ZDNoBKH4Yke77r2wKYcwVhwEdS9eY3a5rIwfOhJg5StZ44eDJl/l3hjTJt7i
+         LJrgLBaLjXRD1rqgrp0D4rSbt0868hgpC76nuf8dGwhvNV4m6csnR9gJ6HTQAgL/6if2
+         39hG6xila6lRJJhz4MCpyJJn1OVm3GhU4bgIXdbQg7EHwdX9WiqiavwcHZf58VBIIAE2
+         J4tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mSwdcBYDgX5Py2pqUGi1oxPAvAmc7JVf4dX8rUfJ8wc=;
-        b=bbKJeMQye3IgC8LOClwYngj48LlWscnjooSEr20qQ5lVmjmb1kgTrT0kQCuU+SDu5n
-         nvSYSgIPbyvh6eZ5o5L5E6sUPuMLNroAOnsA7GW8eRb+WdKPGI6qd4VqUHmXSNrLH++c
-         Xv2hEJTkNRpvZaKl5Z900kr3k4MeQvTTq9dy2WDSUVZljWO5iJDvdNad7PAkEPujoWAb
-         jnrNnelB+UIWPvsauP4XIEH1aYhbpq8XHs7xkvtjuoacVTmCB3wT5YvCfrs6vVa3V5EE
-         vp42kveXz/rHLkM08DDAbLpA4QVB1nbLgUU3pgiB5E29CGIyrnSkewRdJVyb0zNAPdtk
-         SdVg==
-X-Gm-Message-State: AOAM530Xe3WitzWfXpSpWBZwJamv/6tOzIwAlzWsryJbSaV7+Tvb+wNu
-        9Dyxg3etN7mdxI1FjIxTgj/G1Nr59Vzm0w==
-X-Google-Smtp-Source: ABdhPJxDgYB9wvg3XmPD0WP/zVlXn46RmyZb/jfRy6+S1Wnx+zxxYUxhgvXY5/WmAj7EFjZ9CKt5Mg==
-X-Received: by 2002:ac8:7146:: with SMTP id h6mr1525265qtp.17.1621456898739;
-        Wed, 19 May 2021 13:41:38 -0700 (PDT)
-Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:a15a:608b:20ec:867f])
-        by smtp.gmail.com with ESMTPSA id h3sm601905qkk.82.2021.05.19.13.41.37
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=MwSVZiRfW96LTESPv/Lx6p2DSwYMHGNReB80Gg/XoCs=;
+        b=FunXSOZyV1rRAZ5gkwky1AgvIaeMH2srrFhoRLb9983I4SbdYtMWf9mPx5i+gSAw4m
+         hs1P0+bXyFt4G3PrW2OOvodnVI6V0g7LQeLr/lk+JbbG0d1gO8HtJcruKKRvuHdfH/RU
+         7p+fu4OVsW1GFUhPMGx/YlPZFVQ1w7n7+FW1tQ2B2Z3/JA6dkt199r77GxsDNvRw1QA/
+         EMJzi7jo6c2UsWkqwks6BM6tCaCHfd8hIzU7UpheebBRqKwr4CfDagDang5hJi8GjnQH
+         tzxyYTGsKg/dMf02W87gOELrKISn1yje/pAso/meiC8WeH1LzVpEbt4sFRgq6uWEFub9
+         oW1Q==
+X-Gm-Message-State: AOAM533hC4oRcSqW/TEpseFZJdXWTIwRh2Qmijgvq7uPKAVAqUHvtLgy
+        KeP8pXk+dYAdQ+p/WyvxMdk=
+X-Google-Smtp-Source: ABdhPJx+hMUT9qCM9VlI52SXwMC3aJb7ha6AWEeBC5Y77eKnrskt8pajC4HvpEIgUvIlixSmz2g50g==
+X-Received: by 2002:a92:cc43:: with SMTP id t3mr1559713ilq.250.1621461276708;
+        Wed, 19 May 2021 14:54:36 -0700 (PDT)
+Received: from localhost ([172.242.244.146])
+        by smtp.gmail.com with ESMTPSA id h16sm690420ilr.56.2021.05.19.14.54.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 13:41:38 -0700 (PDT)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Wed, 19 May 2021 14:54:36 -0700 (PDT)
+Date:   Wed, 19 May 2021 14:54:27 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Jakub Sitnicki <jakub@cloudflare.com>,
         Lorenz Bauer <lmb@cloudflare.com>
-Subject: [Patch bpf] selftests/bpf: Retry for EAGAIN in udp_redir_to_connected()
-Date:   Wed, 19 May 2021 13:41:32 -0700
-Message-Id: <20210519204132.107247-1-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <60a58913d51e2_2aaa72084c@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAM_iQpV=XPW08hS3UyakLxPZrujS_HV-BB9bRbnZ1m+vWQytcQ@mail.gmail.com>
+References: <20210517022322.50501-1-xiyou.wangcong@gmail.com>
+ <60a3525d188d9_18a5f208f5@john-XPS-13-9370.notmuch>
+ <CAM_iQpVCfGEA+TOfWvXYxJ1kk9z_thdbvRmZHxhWpuBMx9x2zg@mail.gmail.com>
+ <60a41be5629ab_10e7720815@john-XPS-13-9370.notmuch>
+ <CAM_iQpXkYsf=LF=g4aKLmas_9jHNqXGy-P2gi3R4eb65+ktz4A@mail.gmail.com>
+ <60a561b63598a_22c462082f@john-XPS-13-9370.notmuch>
+ <CAM_iQpV=XPW08hS3UyakLxPZrujS_HV-BB9bRbnZ1m+vWQytcQ@mail.gmail.com>
+Subject: Re: [Patch bpf] udp: fix a memory leak in udp_read_sock()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+Cong Wang wrote:
+> On Wed, May 19, 2021 at 12:06 PM John Fastabend
+> <john.fastabend@gmail.com> wrote:
+> >
+> > Cong Wang wrote:
+> > > On Tue, May 18, 2021 at 12:56 PM John Fastabend
+> > > <john.fastabend@gmail.com> wrote:
+> > > >
+> > > > Cong Wang wrote:
+> > > > > On Mon, May 17, 2021 at 10:36 PM John Fastabend
+> > > > > <john.fastabend@gmail.com> wrote:
+> > > > > >
+> > > > > > Cong Wang wrote:
+> > > > > > > From: Cong Wang <cong.wang@bytedance.com>
+> > > > > > >
+> > > > > > > sk_psock_verdict_recv() clones the skb and uses the clone
+> > > > > > > afterward, so udp_read_sock() should free the original skb after
+> > > > > > > done using it.
+> > > > > >
+> > > > > > The clone only happens if sk_psock_verdict_recv() returns >0.
+> > > > >
+> > > > > Sure, in case of error, no one uses the original skb either,
+> > > > > so still need to free it.
+> > > >
+> > > > But the data is going to be dropped then. I'm questioning if this
+> > > > is the best we can do or not. Its simplest sure, but could we
+> > > > do a bit more work and peek those skbs or requeue them? Otherwise
+> > > > if you cross memory limits for a bit your likely to drop these
+> > > > unnecessarily.
+> > >
+> > > What are the benefits of not dropping it? When sockmap takes
+> > > over sk->sk_data_ready() it should have total control over the skb's
+> > > in the receive queue. Otherwise user-space recvmsg() would race
+> > > with sockmap when they try to read the first skb at the same time,
+> > > therefore potentially user-space could get duplicated data (one via
+> > > recvmsg(), one via sockmap). I don't see any benefits but races here.
+> >
+> > The benefit of _not_ dropping it is the packet gets to the receiver
+> > side. We've spent a bit of effort to get a packet across the network,
+> > received on the stack, and then we drop it at the last point is not
+> > so friendly.
+> 
+> Well, at least udp_recvmsg() could drop packets too in various
+> scenarios, for example, a copy error. So, I do not think sockmap
+> is special.
 
-We use non-blocking sockets for testing sockmap redirections,
-and got some random EAGAIN errors from UDP tests.
+OK I am at least convinced now that dropping packets is OK and likely
+a useful performance/complexity compromise.
 
-There is no guarantee the packet would be immediately available
-to receive as soon as it is sent out, even on the local host.
-For UDP, this is especially true because it does not lock the
-sock during BH (unlike the TCP path). This is probably why we
-only saw this error in UDP cases.
-
-No matter how hard we try to make the queue empty check accurate,
-it is always possible for recvmsg() to beat ->sk_data_ready().
-Therefore, we should just retry in case of EAGAIN.
-
-Fixes: d6378af615275 ("selftests/bpf: Add a test case for udp sockmap")
-Reported-by: Jiang Wang <jiang.wang@bytedance.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- tools/testing/selftests/bpf/prog_tests/sockmap_listen.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-index 648d9ae898d2..b1ed182c4720 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c
-@@ -1686,9 +1686,13 @@ static void udp_redir_to_connected(int family, int sotype, int sock_mapfd,
- 	if (pass != 1)
- 		FAIL("%s: want pass count 1, have %d", log_prefix, pass);
- 
-+again:
- 	n = read(mode == REDIR_INGRESS ? p0 : c0, &b, 1);
--	if (n < 0)
-+	if (n < 0) {
-+		if (errno == EAGAIN)
-+			goto again;
- 		FAIL_ERRNO("%s: read", log_prefix);
-+	}
- 	if (n == 0)
- 		FAIL("%s: incomplete read", log_prefix);
- 
--- 
-2.25.1
-
+But, at this point we wont have any visibility into these drops correct?
+Looks like the pattern in UDP stack to handle this is to increment
+sk_drops and UDP_MIB_INERRORS. How about we do that here as well?
