@@ -2,109 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57203892B8
-	for <lists+bpf@lfdr.de>; Wed, 19 May 2021 17:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393F93892EE
+	for <lists+bpf@lfdr.de>; Wed, 19 May 2021 17:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241537AbhESPfW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 May 2021 11:35:22 -0400
-Received: from www62.your-server.de ([213.133.104.62]:57508 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241453AbhESPfV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 May 2021 11:35:21 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ljOCu-000Fir-Gc; Wed, 19 May 2021 17:34:00 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ljOCu-000I7U-CQ; Wed, 19 May 2021 17:34:00 +0200
-Subject: Re: [PATCH bpf v3 2/2] selftests/bpf: Add test for l3 use of
- bpf_redirect_peer
-To:     Jussi Maki <joamaki@gmail.com>, bpf@vger.kernel.org
-Cc:     andrii.nakryiko@gmail.com
+        id S1346727AbhESPtJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 May 2021 11:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231948AbhESPtJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 May 2021 11:49:09 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B1DC06175F
+        for <bpf@vger.kernel.org>; Wed, 19 May 2021 08:47:48 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id z19-20020a7bc7d30000b029017521c1fb75so3748745wmk.0
+        for <bpf@vger.kernel.org>; Wed, 19 May 2021 08:47:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aTBUJY+N/o7ifFl7UqC9v292/yzVBDT+R1oIkU+0vXo=;
+        b=NeqeimpuSmstQSPg+NYzdBXSGNoX5YHqh9Qv+xbdnJ1ZsRIOHYEE3TuzQKvd5R3oJW
+         dcAjyhB1WWZ5SnZt0RMZTKJqpyCKBHB/CaQb9sGekXKXgOtbSWhJhK/xJwYHnG2Y/Eky
+         BI/8q8Ff8Jyma6YfHGyl2b/XHIFpzNhxke/6l7k+lRWgyCuch0Ff4bnp6JTftz7XOnxO
+         d+GRP5cofmkPCWOLs9a3CkajbAeIWWuWnFnX6H1+h8vxqCFfqezoHdo3RVlnc9M5G+yv
+         j1glZlTkmV4rqDqgOMr9nb2MTJbLt1CuQvUoT8hQOPxWak1hicEHYPp8d/jAzzmHNIjD
+         tkBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aTBUJY+N/o7ifFl7UqC9v292/yzVBDT+R1oIkU+0vXo=;
+        b=DiRbAsUxKDLlh0i8e3NRQnZ993xl4eD+4gSEnH/L8w87MdJTbxhSShoGqIP1vcV2VU
+         wysdAwG9MJbUREjZWvKiYSjJlVl/+Q+ChAkw11ENBYdlBe+rhqaMIEzgKsIFK9xGdB1p
+         puAkrnMKInhhWP/Cm7pLcQ0SAoTKqKUQ8mPGcVK1tgGVytEK7i+kOqZWB4kP4IIpuvAI
+         JHE0JbiTCiieqUGpGtcB2bhhOVBb+MTgKjBNfPchz3XrTiIfGywc2hxl6G8nZNR2Yehw
+         9/3Fhbrea5r/mbcSO8HDqCJUnCx3zFGnpswUXEX3aikThZh+OzdYu8YWF1uSTL4nIZ5y
+         /MFA==
+X-Gm-Message-State: AOAM531RO9WaIZ0TLnh2XCzuA+HNG0o/Ryuih/20LGa9IGX5IHTxyk1Z
+        sedZtPHvlr1jiebpwc1AllZyPPxrzL6l
+X-Google-Smtp-Source: ABdhPJyHAKXlWrtr6McOxWLyeK1dOGlP+x3Lpj8xqVushq33PdzNhhYMuRTQlhY+RDSIkT3C0hiWDQ==
+X-Received: by 2002:a1c:2b83:: with SMTP id r125mr6200669wmr.77.1621439266539;
+        Wed, 19 May 2021 08:47:46 -0700 (PDT)
+Received: from balnab.. ([37.17.237.224])
+        by smtp.gmail.com with ESMTPSA id y14sm6103722wmj.37.2021.05.19.08.47.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 08:47:46 -0700 (PDT)
+From:   Jussi Maki <joamaki@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     daniel@iogearbox.net, andrii.nakryiko@gmail.com
+Subject: [PATCH bpf v4 0/2] bpf: Fix l3 to l2 use of bpf_skb_change_head
+Date:   Wed, 19 May 2021 15:47:41 +0000
+Message-Id: <20210519154743.2554771-1-joamaki@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210427135550.807355-1-joamaki@gmail.com>
 References: <20210427135550.807355-1-joamaki@gmail.com>
- <20210518142356.1852779-1-joamaki@gmail.com>
- <20210518142356.1852779-3-joamaki@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <2dc37982-9889-c2e8-9fb4-17ba26c28da9@iogearbox.net>
-Date:   Wed, 19 May 2021 17:33:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20210518142356.1852779-3-joamaki@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26175/Wed May 19 13:10:37 2021)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/18/21 4:23 PM, Jussi Maki wrote:
-> Add a test case for using bpf_skb_change_head in combination with
-> bpf_redirect_peer to redirect a packet from a L3 device to veth and back.
-> 
-> The test uses a BPF program that adds L2 headers to the packet coming
-> from a L3 device and then calls bpf_redirect_peer to redirect the packet
-> to a veth device. The test fails as skb->mac_len is not set properly and
-> thus the ethernet headers are not properly skb_pull'd in cls_bpf_classify,
-> causing tcp_v4_rcv to point the TCP header into middle of the IP header.
-> 
-> Signed-off-by: Jussi Maki <joamaki@gmail.com>
-[...]
->   
->   /**
-> - * setns_by_name() - Set networks namespace by name
-> + * open_netns() - Switch to specified network namespace by name.
-> + *
-> + * Returns token with which to restore the original namespace
-> + * using close_netns().
->    */
-> -static int setns_by_name(const char *name)
-> +static struct nstoken *open_netns(const char *name)
->   {
->   	int nsfd;
->   	char nspath[PATH_MAX];
->   	int err;
-> +	struct nstoken *token;
-> +
-> +	token = malloc(sizeof(struct nstoken));
-> +	if (!ASSERT_OK_PTR(token, "malloc token"))
-> +		return NULL;
-> +
-> +	token->orig_netns_fd = open("/proc/self/ns/net", O_RDONLY);
-> +	if (!ASSERT_GE(token->orig_netns_fd, 0, "open /proc/self/ns/net"))
-> +		goto fail;
->   
->   	snprintf(nspath, sizeof(nspath), "%s/%s", "/var/run/netns", name);
->   	nsfd = open(nspath, O_RDONLY | O_CLOEXEC);
-> -	if (nsfd < 0)
-> -		return nsfd;
-> +	if (!ASSERT_GE(nsfd, 0, "open netns fd"))
-> +		goto fail;
->   
-> -	err = setns(nsfd, CLONE_NEWNET);
-> -	close(nsfd);
-> +	err = setns_by_fd(nsfd);
-> +	if (!ASSERT_OK(err, "setns_by_fd"))
-> +		goto fail;
->   
-> -	return err;
-> +	return token;
-> +fail:
-> +	free(token);
-> +	return NULL;
->   }
+This fixes an issue with using bpf_skb_change_head to redirect
+packet from l3 to l2 device. See commit messages for details.
 
-As discussed earlier, the selftest seems to be causing issues in the bpf CI [0] likely
-due to the setns() interaction/cleanup. Pls investigate and resubmit once fixed. Thanks
-a lot, Jussi!
+v3->v4:
+- Run the tc_redirect test in its own thread to isolate the network and
+  mount namespace modifications to the test thread. Fixes the failing CI
+  check in v3.
 
-Cheers,
-Daniel
+v2->v3:
+- Refactor test_tc_redirect_peer_l3 to use BPF for passing packets
+  to both directions instead of relying on forwarding on the way back.
+- Clean up of tc_redirect test. Setup and tear down namespaces for each
+  test case and avoid a more complex cleanup when tearing down the
+  namespace is enough.
 
-   [0] https://travis-ci.com/github/kernel-patches/bpf/builds/226213040
+v1->v2:
+- Port the test case to the newly refactored prog_tests/tc_redirect.c.
+
+
+
