@@ -2,190 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0218B3894AA
-	for <lists+bpf@lfdr.de>; Wed, 19 May 2021 19:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1913C3894B6
+	for <lists+bpf@lfdr.de>; Wed, 19 May 2021 19:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbhESReA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 May 2021 13:34:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229455AbhESRd6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 May 2021 13:33:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 243FC6124C;
-        Wed, 19 May 2021 17:32:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621445558;
-        bh=/ANZHSTBWpiTzot37Zi9F3VT6IQjor/GqsSYdMSaDMM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=swkc4oXXx9XDoO7GShyix4Pgo+/s9m9pFdyd55BFtpdFCTmOKLfp37bcCcWsjUaSj
-         JvmSmf0/rBjeCjQDJlNzBM0EIJUI73BoKAkDf+y7+6kAtjE3oYtGtrnGoTXf5uungm
-         6UldhuwcpK5BndMsDRUSQ2VPRa+onsxM1YUq007CSBXcUA/aaOxx39AqA+NDTtKXSu
-         NMREhLxGqwwIwdwZ2g9L4tERDJpkFO4W50LAwTTiD5FVqNV2pZODSqwPVt1oE4uzW7
-         0o8Ih0K34lLp1yCBOz8yz5e4SlFuZDUJlTiP4K1HY0ypBpGM7de00c60irxBs3vqVV
-         OnzCsXVxeIpog==
-Received: by mail-lf1-f49.google.com with SMTP id w33so12339631lfu.7;
-        Wed, 19 May 2021 10:32:38 -0700 (PDT)
-X-Gm-Message-State: AOAM530B3nG1Hf0vdqel1egKnmlYxZ3RBtmO5m+Q3rez+xTllkpl1kvB
-        ie62ooPpP5U8GCHpub+qzCtiVoDySGMiDiXu7MU=
-X-Google-Smtp-Source: ABdhPJxN3AM9ofn1xXzqEvplfdC0npmsRcbVngTo2wqwjoiWFXBCiPAdbCJk5DbGlI1Z8wt1wcnFN020zkIzbcTFSAk=
-X-Received: by 2002:ac2:5b12:: with SMTP id v18mr401062lfn.261.1621445556390;
- Wed, 19 May 2021 10:32:36 -0700 (PDT)
+        id S229519AbhESRjm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 May 2021 13:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229539AbhESRjl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 May 2021 13:39:41 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD80C06175F;
+        Wed, 19 May 2021 10:38:21 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id e15so3428125ybc.10;
+        Wed, 19 May 2021 10:38:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZF+ogBr+ZoCho+MfyFNrLvpNXGoVZjnSZVtBK1HfLnM=;
+        b=Jnl84FYP+jD+w4a1tDV6jB4ZB1sMq+d68AU+urNjDaofLORd3JfBPndb3H92oSxbwQ
+         bMyfZck42SW0NmelcxtD8I3FqCfLYOiOQX05uLyfMQ45qrjvI4qY0qdTJOC0n2PKnULW
+         qz22nhb+dPtZfZNUVjSegnHk533W0MK4yY45P90uj7JXAJ8bOr/yfHw0ymfn2Hu3ui1s
+         hMPCZn3VvyCRBi5EoK1tDiLIDSHiuW3vVvqdJ1QFVvbamuuJEhjYoXeOeKc3m1yz/RoW
+         MoGUQtbmU5yR9LLrXcnwG6ytJ1IUHNWO+a8HJex9Trpwa3jJl4ziDDorIAPIfW2GHssW
+         9lxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZF+ogBr+ZoCho+MfyFNrLvpNXGoVZjnSZVtBK1HfLnM=;
+        b=hWnjodh//AqBzhEPFpYxbLFY6loTlWIIaqMT3X2Co8vAO7Yfxw94iGNxKxqkwAPgrh
+         IDJm3ezR8iuQh978dD++1h7BK8r3bVWV1ecVFah7nQ4oOY/0NKrTOFjspbCaxukjF5q/
+         vEvaGbuJtk91XVtp1/RJNo+Jb9Z8chE18iF4UyqiPXJCNEKVavlQSN7OyBvve/6omydn
+         d00ecRYKv39IbLsROgew+51Da4aV8LTBKMRnQWxoAnYqIGPQCgs6SWDnu+VE74MEGEph
+         zkN5NCqMfp1Vk6jtzSc+mFspPNzU6+qvoPckeLNODGIud/Fe6ph35WyrwOx5cZle+7R9
+         /hJg==
+X-Gm-Message-State: AOAM530LN1334Jv2x4eXK6JI7l8dBFTXevpaHKnyg4lcar6YRpBL96HO
+        mfTvNsUhvLsvWlHfpYrzk/XKFqIUwf9p/oo8O5g=
+X-Google-Smtp-Source: ABdhPJzh1IbUJQsYMdZ46Kg4+03gx0aMuKhhQ4ikI0/VbmB56Z/VPcvCDMnYf9gZal8qtd0dGkyUMqYHT6a6xcqwsZg=
+X-Received: by 2002:a25:3357:: with SMTP id z84mr999463ybz.260.1621445900407;
+ Wed, 19 May 2021 10:38:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210517225308.720677-1-me@ubique.spb.ru> <20210517225308.720677-3-me@ubique.spb.ru>
-In-Reply-To: <20210517225308.720677-3-me@ubique.spb.ru>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 19 May 2021 10:32:25 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW4osuNOagPRwUB30tk3V=ECANktt9jzb+NK1mqOamouSQ@mail.gmail.com>
-Message-ID: <CAPhsuW4osuNOagPRwUB30tk3V=ECANktt9jzb+NK1mqOamouSQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 02/11] bpfilter: Add logging facility
-To:     Dmitrii Banshchikov <me@ubique.spb.ru>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
+References: <cover.1621424513.git.asml.silence@gmail.com> <94134844a6f4be2e0da2c518cb0e2e9ebb1d71b0.1621424513.git.asml.silence@gmail.com>
+In-Reply-To: <94134844a6f4be2e0da2c518cb0e2e9ebb1d71b0.1621424513.git.asml.silence@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 19 May 2021 10:38:09 -0700
+Message-ID: <CAEf4BzZU_QySZFHA1J0jr5Fi+gOFFKzTyxrvCUt1_Gn2H6hxLA@mail.gmail.com>
+Subject: Re: [PATCH 18/23] libbpf: support io_uring
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     io-uring@vger.kernel.org, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, Andrey Ignatov <rdna@fb.com>
+        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        "Franz-B . Tuneke" <franz-bernhard.tuneke@tu-dortmund.de>,
+        Christian Dietrich <stettberger@dokucode.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 18, 2021 at 11:05 PM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+On Wed, May 19, 2021 at 7:14 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
 >
-> There are three logging levels for messages: FATAL, NOTICE and DEBUG.
-> When a message is logged with FATAL level it results in bpfilter
-> usermode helper termination.
-
-Could you please explain why we choose to have 3 levels? Will we need
-more levels,
-like WARNING, ERROR, etc.?
-
->
-> Introduce struct context to avoid use of global objects and store there
-> the logging parameters: log level and log sink.
->
-> Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
+> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
 > ---
->  net/bpfilter/Makefile  |  2 +-
->  net/bpfilter/bflog.c   | 29 +++++++++++++++++++++++++++++
->  net/bpfilter/bflog.h   | 24 ++++++++++++++++++++++++
->  net/bpfilter/context.h | 16 ++++++++++++++++
-
-Maybe combine bflog.h and context.h into one file? And bflog() can
-probably fit in
-that file too.
-
-Thanks,
-Song
-
->  4 files changed, 70 insertions(+), 1 deletion(-)
->  create mode 100644 net/bpfilter/bflog.c
->  create mode 100644 net/bpfilter/bflog.h
->  create mode 100644 net/bpfilter/context.h
+>  tools/lib/bpf/libbpf.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 >
-> diff --git a/net/bpfilter/Makefile b/net/bpfilter/Makefile
-> index cdac82b8c53a..874d5ef6237d 100644
-> --- a/net/bpfilter/Makefile
-> +++ b/net/bpfilter/Makefile
-> @@ -4,7 +4,7 @@
->  #
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 4181d178ee7b..de5d1508f58e 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -13,6 +13,10 @@
+>  #ifndef _GNU_SOURCE
+>  #define _GNU_SOURCE
+>  #endif
+> +
+> +/* hack, use local headers instead of system-wide */
+> +#include "../../../include/uapi/linux/bpf.h"
+> +
+
+libbpf is already using the latest UAPI headers, so you don't need
+this hack. You just haven't synced include/uapi/linux/bpf.h into
+tools/include/uapi/linux/bpf.h
+
+>  #include <stdlib.h>
+>  #include <stdio.h>
+>  #include <stdarg.h>
+> @@ -8630,6 +8634,9 @@ static const struct bpf_sec_def section_defs[] = {
+>         BPF_PROG_SEC("struct_ops",              BPF_PROG_TYPE_STRUCT_OPS),
+>         BPF_EAPROG_SEC("sk_lookup/",            BPF_PROG_TYPE_SK_LOOKUP,
+>                                                 BPF_SK_LOOKUP),
+> +       SEC_DEF("iouring/",                     IOURING),
+> +       SEC_DEF("iouring.s/",                   IOURING,
+> +               .is_sleepable = true),
+>  };
 >
->  userprogs := bpfilter_umh
-> -bpfilter_umh-objs := main.o
-> +bpfilter_umh-objs := main.o bflog.o
->  userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
->
->  ifeq ($(CONFIG_BPFILTER_UMH), y)
-> diff --git a/net/bpfilter/bflog.c b/net/bpfilter/bflog.c
-> new file mode 100644
-> index 000000000000..2752e39060e4
-> --- /dev/null
-> +++ b/net/bpfilter/bflog.c
-> @@ -0,0 +1,29 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2021 Telegram FZ-LLC
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include "bflog.h"
-> +
-> +#include <stdarg.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +
-> +#include "context.h"
-> +
-> +void bflog(struct context *ctx, int level, const char *fmt, ...)
-> +{
-> +       if (ctx->log_file &&
-> +           (level == BFLOG_LEVEL_FATAL || (level & ctx->log_level))) {
-> +               va_list va;
-> +
-> +               va_start(va, fmt);
-> +               vfprintf(ctx->log_file, fmt, va);
-> +               va_end(va);
-> +       }
-> +
-> +       if (level == BFLOG_LEVEL_FATAL)
-> +               exit(EXIT_FAILURE);
-> +}
-> diff --git a/net/bpfilter/bflog.h b/net/bpfilter/bflog.h
-> new file mode 100644
-> index 000000000000..4ed12791cfa1
-> --- /dev/null
-> +++ b/net/bpfilter/bflog.h
-> @@ -0,0 +1,24 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2021 Telegram FZ-LLC
-> + */
-> +
-> +#ifndef NET_BPFILTER_BFLOG_H
-> +#define NET_BPFILTER_BFLOG_H
-> +
-> +struct context;
-> +
-> +#define BFLOG_IMPL(ctx, level, fmt, ...) bflog(ctx, level, "bpfilter: " fmt, ##__VA_ARGS__)
-> +
-> +#define BFLOG_LEVEL_FATAL (0)
-> +#define BFLOG_LEVEL_NOTICE (1)
-> +#define BFLOG_LEVEL_DEBUG (2)
-> +
-> +#define BFLOG_FATAL(ctx, fmt, ...)                                                                 \
-> +       BFLOG_IMPL(ctx, BFLOG_LEVEL_FATAL, "fatal error: " fmt, ##__VA_ARGS__)
-> +#define BFLOG_NOTICE(ctx, fmt, ...) BFLOG_IMPL(ctx, BFLOG_LEVEL_NOTICE, fmt, ##__VA_ARGS__)
-> +#define BFLOG_DEBUG(ctx, fmt, ...) BFLOG_IMPL(ctx, BFLOG_LEVEL_DEBUG, fmt, ##__VA_ARGS__)
-> +
-> +void bflog(struct context *ctx, int level, const char *fmt, ...);
-> +
-> +#endif // NET_BPFILTER_BFLOG_H
-> diff --git a/net/bpfilter/context.h b/net/bpfilter/context.h
-> new file mode 100644
-> index 000000000000..e85c97c3d010
-> --- /dev/null
-> +++ b/net/bpfilter/context.h
-> @@ -0,0 +1,16 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2021 Telegram FZ-LLC
-> + */
-> +
-> +#ifndef NET_BPFILTER_CONTEXT_H
-> +#define NET_BPFILTER_CONTEXT_H
-> +
-> +#include <stdio.h>
-> +
-> +struct context {
-> +       FILE *log_file;
-> +       int log_level;
-> +};
-> +
-> +#endif // NET_BPFILTER_CONTEXT_H
+>  #undef BPF_PROG_SEC_IMPL
 > --
-> 2.25.1
+> 2.31.1
 >
