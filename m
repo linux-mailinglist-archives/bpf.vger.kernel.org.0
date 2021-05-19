@@ -2,231 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8F5389082
-	for <lists+bpf@lfdr.de>; Wed, 19 May 2021 16:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57203892B8
+	for <lists+bpf@lfdr.de>; Wed, 19 May 2021 17:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354214AbhESORy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 May 2021 10:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354221AbhESOQb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 May 2021 10:16:31 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0ACC06135C;
-        Wed, 19 May 2021 07:14:19 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id y184-20020a1ce1c10000b02901769b409001so3432981wmg.3;
-        Wed, 19 May 2021 07:14:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iBBRv8iSs8vsCboxbXfrG1xclNCmAan+98X/JNnVwAg=;
-        b=XSBlrvEvMACuV/Mdl4wp5JepMkofpVjHeuZWupaz3AcrddBD9wrL9TmBdnkW2CJB7+
-         K0mlbLXjdCRUzD4ntkCCJpzNL6SMuLMkVs/fqUq7LSAvLn4OfqFzpaf9wqQmQUyI4rd6
-         G2kJqroWvHAhpBPrAfFTZHP2tNbSohWOK+pwu+dACKTH7naQqzpnfkP39nxfAjbKQrSf
-         aZQdBfFganrJ5aVynzXPA622Ya4kwRZTO/ec7N38veAZ79xHTC+PwdHLQdea/HvVfd/w
-         J16yGF0rVYI6s4j5eA/Bd5PriuILuvXBMGQNS4nGW2P89rkiDjMdlgp1FSlmwrlfpD7N
-         9pkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iBBRv8iSs8vsCboxbXfrG1xclNCmAan+98X/JNnVwAg=;
-        b=ClsF0h8t+KShvkVJ9tSIRj72ByBKg3GWb4Cn8QYNO6vyixfxvjBxjrLtwo3yk4nzy+
-         zFTwNz4wQcZ9Sdx6/ssv1ikxDbhYpLxo3/v2gvXYu8j9vxdENax6ePH3edDF1FhiDzS0
-         rcDloWTnWAMC/4wD2trixCHLHFMOhOgmSWOYwWR246pSvFfyIVHZg2SxVraPRuJ2WNRM
-         Iy8sgblC6+thQ9EZHSxGRVHprR+bHNV44jK3Thzqhjlxp5ymv8hQyNsTck46rXHORpSI
-         8o6SrZ1SRBXtdw0EwN5u3yvmiWqhONaStfWPlwZy4NLsvIcTcRM+wHGpLzq2IAFtlsTK
-         EuiQ==
-X-Gm-Message-State: AOAM532ZS1zeMQcadlBzmatBqQAysjPH8CXaalQAxJsEk6x7syO2xdUD
-        iWdEkrGrNQnjjhsHNlXTC28qZXa5bCeJzZdj
-X-Google-Smtp-Source: ABdhPJxTeznG7ssgz77rK45QH0UWDzr+22MRJzQlDRsOMhy7gqN2YgkFcLMkwwTtc7dXq4xaJzXiXw==
-X-Received: by 2002:a1c:4c10:: with SMTP id z16mr11517821wmf.134.1621433658304;
-        Wed, 19 May 2021 07:14:18 -0700 (PDT)
-Received: from localhost.localdomain ([85.255.235.154])
-        by smtp.gmail.com with ESMTPSA id z3sm6233569wrq.42.2021.05.19.07.14.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 07:14:17 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     io-uring@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        "Franz-B . Tuneke" <franz-bernhard.tuneke@tu-dortmund.de>,
-        Christian Dietrich <stettberger@dokucode.de>
-Subject: [PATCH 23/23] io_uring: enable bpf reqs to wait for CQs
-Date:   Wed, 19 May 2021 15:13:34 +0100
-Message-Id: <a3d5ac5539a8d9f0423fea051a038e8bbfe10c99.1621424513.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1621424513.git.asml.silence@gmail.com>
-References: <cover.1621424513.git.asml.silence@gmail.com>
+        id S241537AbhESPfW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 May 2021 11:35:22 -0400
+Received: from www62.your-server.de ([213.133.104.62]:57508 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241453AbhESPfV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 May 2021 11:35:21 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ljOCu-000Fir-Gc; Wed, 19 May 2021 17:34:00 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ljOCu-000I7U-CQ; Wed, 19 May 2021 17:34:00 +0200
+Subject: Re: [PATCH bpf v3 2/2] selftests/bpf: Add test for l3 use of
+ bpf_redirect_peer
+To:     Jussi Maki <joamaki@gmail.com>, bpf@vger.kernel.org
+Cc:     andrii.nakryiko@gmail.com
+References: <20210427135550.807355-1-joamaki@gmail.com>
+ <20210518142356.1852779-1-joamaki@gmail.com>
+ <20210518142356.1852779-3-joamaki@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2dc37982-9889-c2e8-9fb4-17ba26c28da9@iogearbox.net>
+Date:   Wed, 19 May 2021 17:33:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210518142356.1852779-3-joamaki@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26175/Wed May 19 13:10:37 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add experimental support for bpf requests waiting for a number of CQEs
-to in a specified CQ.
+On 5/18/21 4:23 PM, Jussi Maki wrote:
+> Add a test case for using bpf_skb_change_head in combination with
+> bpf_redirect_peer to redirect a packet from a L3 device to veth and back.
+> 
+> The test uses a BPF program that adds L2 headers to the packet coming
+> from a L3 device and then calls bpf_redirect_peer to redirect the packet
+> to a veth device. The test fails as skb->mac_len is not set properly and
+> thus the ethernet headers are not properly skb_pull'd in cls_bpf_classify,
+> causing tcp_v4_rcv to point the TCP header into middle of the IP header.
+> 
+> Signed-off-by: Jussi Maki <joamaki@gmail.com>
+[...]
+>   
+>   /**
+> - * setns_by_name() - Set networks namespace by name
+> + * open_netns() - Switch to specified network namespace by name.
+> + *
+> + * Returns token with which to restore the original namespace
+> + * using close_netns().
+>    */
+> -static int setns_by_name(const char *name)
+> +static struct nstoken *open_netns(const char *name)
+>   {
+>   	int nsfd;
+>   	char nspath[PATH_MAX];
+>   	int err;
+> +	struct nstoken *token;
+> +
+> +	token = malloc(sizeof(struct nstoken));
+> +	if (!ASSERT_OK_PTR(token, "malloc token"))
+> +		return NULL;
+> +
+> +	token->orig_netns_fd = open("/proc/self/ns/net", O_RDONLY);
+> +	if (!ASSERT_GE(token->orig_netns_fd, 0, "open /proc/self/ns/net"))
+> +		goto fail;
+>   
+>   	snprintf(nspath, sizeof(nspath), "%s/%s", "/var/run/netns", name);
+>   	nsfd = open(nspath, O_RDONLY | O_CLOEXEC);
+> -	if (nsfd < 0)
+> -		return nsfd;
+> +	if (!ASSERT_GE(nsfd, 0, "open netns fd"))
+> +		goto fail;
+>   
+> -	err = setns(nsfd, CLONE_NEWNET);
+> -	close(nsfd);
+> +	err = setns_by_fd(nsfd);
+> +	if (!ASSERT_OK(err, "setns_by_fd"))
+> +		goto fail;
+>   
+> -	return err;
+> +	return token;
+> +fail:
+> +	free(token);
+> +	return NULL;
+>   }
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- fs/io_uring.c                 | 80 +++++++++++++++++++++++++++++++++--
- include/uapi/linux/io_uring.h |  2 +
- 2 files changed, 79 insertions(+), 3 deletions(-)
+As discussed earlier, the selftest seems to be causing issues in the bpf CI [0] likely
+due to the setns() interaction/cleanup. Pls investigate and resubmit once fixed. Thanks
+a lot, Jussi!
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 805c10be7ea4..cf02389747b5 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -687,6 +687,12 @@ struct io_bpf {
- 	struct bpf_prog			*prog;
- };
- 
-+struct io_async_bpf {
-+	struct wait_queue_entry		wqe;
-+	unsigned int 			wait_nr;
-+	unsigned int 			wait_idx;
-+};
-+
- struct io_completion {
- 	struct file			*file;
- 	struct list_head		list;
-@@ -1050,7 +1056,9 @@ static const struct io_op_def io_op_defs[] = {
- 	},
- 	[IORING_OP_RENAMEAT] = {},
- 	[IORING_OP_UNLINKAT] = {},
--	[IORING_OP_BPF] = {},
-+	[IORING_OP_BPF] = {
-+		.async_size		= sizeof(struct io_async_bpf),
-+	},
- };
- 
- static bool io_disarm_next(struct io_kiocb *req);
-@@ -9148,6 +9156,7 @@ static void io_uring_try_cancel_requests(struct io_ring_ctx *ctx,
- 			}
- 		}
- 
-+		wake_up_all(&ctx->wait);
- 		ret |= io_cancel_defer_files(ctx, task, files);
- 		ret |= io_poll_remove_all(ctx, task, files);
- 		ret |= io_kill_timeouts(ctx, task, files);
-@@ -10492,6 +10501,10 @@ static bool io_bpf_is_valid_access(int off, int size,
- 	switch (off) {
- 	case offsetof(struct io_uring_bpf_ctx, user_data):
- 		return size == sizeof_field(struct io_uring_bpf_ctx, user_data);
-+	case offsetof(struct io_uring_bpf_ctx, wait_nr):
-+		return size == sizeof_field(struct io_uring_bpf_ctx, wait_nr);
-+	case offsetof(struct io_uring_bpf_ctx, wait_idx):
-+		return size == sizeof_field(struct io_uring_bpf_ctx, wait_idx);
- 	}
- 	return false;
- }
-@@ -10503,6 +10516,60 @@ const struct bpf_verifier_ops bpf_io_uring_verifier_ops = {
- 	.is_valid_access	= io_bpf_is_valid_access,
- };
- 
-+static inline bool io_bpf_need_wake(struct io_async_bpf *abpf)
-+{
-+	struct io_kiocb *req = abpf->wqe.private;
-+	struct io_ring_ctx *ctx = req->ctx;
-+
-+	if (unlikely(percpu_ref_is_dying(&ctx->refs)) ||
-+		     atomic_read(&req->task->io_uring->in_idle))
-+		return true;
-+	return __io_cqring_events(&ctx->cqs[abpf->wait_idx]) >= abpf->wait_nr;
-+}
-+
-+static int io_bpf_wait_func(struct wait_queue_entry *wqe, unsigned mode,
-+			       int sync, void *key)
-+{
-+	struct io_async_bpf *abpf = container_of(wqe, struct io_async_bpf, wqe);
-+	bool wake = io_bpf_need_wake(abpf);
-+
-+	if (wake) {
-+		list_del_init_careful(&wqe->entry);
-+		req_ref_get(wqe->private);
-+		io_queue_async_work(wqe->private);
-+	}
-+	return wake;
-+}
-+
-+static int io_bpf_wait_cq_async(struct io_kiocb *req, unsigned int nr,
-+				unsigned int idx)
-+{
-+	struct io_ring_ctx *ctx = req->ctx;
-+	struct wait_queue_head *wq;
-+	struct wait_queue_entry *wqe;
-+	struct io_async_bpf *abpf;
-+
-+	if (unlikely(idx >= ctx->cq_nr))
-+		return -EINVAL;
-+	if (!req->async_data && io_alloc_async_data(req))
-+		return -ENOMEM;
-+
-+	abpf = req->async_data;
-+	abpf->wait_nr = nr;
-+	abpf->wait_idx = idx;
-+	wqe = &abpf->wqe;
-+	init_waitqueue_func_entry(wqe, io_bpf_wait_func);
-+	wqe->private = req;
-+	wq = &ctx->wait;
-+
-+	spin_lock_irq(&wq->lock);
-+	__add_wait_queue(wq, wqe);
-+	smp_mb();
-+	io_bpf_wait_func(wqe, 0, 0, NULL);
-+	spin_unlock_irq(&wq->lock);
-+	return 0;
-+}
-+
- static void io_bpf_run(struct io_kiocb *req, unsigned int issue_flags)
- {
- 	struct io_ring_ctx *ctx = req->ctx;
-@@ -10512,8 +10579,8 @@ static void io_bpf_run(struct io_kiocb *req, unsigned int issue_flags)
- 
- 	lockdep_assert_held(&req->ctx->uring_lock);
- 
--	if (unlikely(percpu_ref_is_dying(&ctx->refs) ||
--		     atomic_read(&req->task->io_uring->in_idle)))
-+	if (unlikely(percpu_ref_is_dying(&ctx->refs)) ||
-+		     atomic_read(&req->task->io_uring->in_idle))
- 		goto done;
- 
- 	memset(&bpf_ctx.u, 0, sizeof(bpf_ctx.u));
-@@ -10531,6 +10598,13 @@ static void io_bpf_run(struct io_kiocb *req, unsigned int issue_flags)
- 	}
- 	io_submit_state_end(&ctx->submit_state, ctx);
- 	ret = 0;
-+
-+	if (bpf_ctx.u.wait_nr) {
-+		ret = io_bpf_wait_cq_async(req, bpf_ctx.u.wait_nr,
-+					   bpf_ctx.u.wait_idx);
-+		if (!ret)
-+			return;
-+	}
- done:
- 	__io_req_complete(req, issue_flags, ret, 0);
- }
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index d7b1713bcfb0..95c04af3afd4 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -405,6 +405,8 @@ struct io_uring_getevents_arg {
- 
- struct io_uring_bpf_ctx {
- 	__u64	user_data;
-+	__u32	wait_nr;
-+	__u32	wait_idx;
- };
- 
- #endif
--- 
-2.31.1
+Cheers,
+Daniel
 
+   [0] https://travis-ci.com/github/kernel-patches/bpf/builds/226213040
