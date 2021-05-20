@@ -2,185 +2,633 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1E638B5C1
-	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 20:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118F138B65B
+	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 20:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231747AbhETSIp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 May 2021 14:08:45 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:64368 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231648AbhETSIo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 20 May 2021 14:08:44 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14KI3XFU027486;
-        Thu, 20 May 2021 11:07:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=vVasmu8Zrv0IYprjPQzoYTN7vZVe4nNCwX5TpZXtn34=;
- b=j/RUcZttluAcsZ/YuVcG8bIOMtE3zawXp4WL6x2uxYaYhgK3+TXYevqmKK9b8vgLzRV6
- Zmkmi5KpRX4GJG/hJIcHjLRT6NCOsZAp/I/PSyQM8GBzHfdjLwMRZcIGqrMts2qJNJQS
- UZ5avSC86221MxmYO73DtZpesgDlnPraLiM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 38ndsw4xbm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 20 May 2021 11:07:09 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 20 May 2021 11:07:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D7U12qvUwDo/bFhdM8iDQhpOEWDCOdL+IXo7bHdfqbZ8zQ9yRQq8fspS9G7y7+0zMRi2+DGRj5ndQv8mD9Gh1LOkHW1zv9qkxGvZqs6dAqTKKC5ppiOB+Z8GUgtwvUdXnwFhgQgxLU1ZRM2kFUJcCIVe/NRa+n+hiL5dVofWkaraZcbCikClK9PMAv4CYU+Q4ei/J/rNib46W/PPj3BgUnXKGk2nQmmmHHQkXyAHXnK5FhnBBokA28DbAEp/9lzz9F4dCzgiQ6XPQUCoqBA8hf9cP7KMkWEKUv+mea8Va9/y5RbOvPENHuC0xHZIMVwZNmr1tT1AI7e9khWJSuySJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vVasmu8Zrv0IYprjPQzoYTN7vZVe4nNCwX5TpZXtn34=;
- b=Xc9NygbK3NYm4sxiMaYfF5h5Yp9FUBp43KepCP7fHjMQi/+EQfVdF9fBEMP+NfZ8lDLMbF8upmQGUUEbPNyTZAiR2aUN3f4qcfA74la6ayV4jN7HTxzRw3OIQOI3fXaEDQoSn7z/fXPZ/uYhHrwikAxtOjxRyM//qcx32507xo4HG4Mn+YiUrkfphp4QPsSxlasQwjopbcC+0UxNHnzKwopN3qe1Oagm6cNp/Z2dB7Fz2roqTLEmvNxK1cMEEcPCBXPPUs4FDm+URs9G3SZaJdYd12z/QfLwtQMiLXtvM5vUh3JF07sDkG3H7ljpRd43cbmm9IoHU+et+l2HIPMVSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by SJ0PR15MB4710.namprd15.prod.outlook.com (2603:10b6:a03:37b::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Thu, 20 May
- 2021 18:07:07 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::38d3:cc71:bca8:dd2a]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::38d3:cc71:bca8:dd2a%5]) with mapi id 15.20.4129.033; Thu, 20 May 2021
- 18:07:07 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Dmitrii Banshchikov <me@ubique.spb.ru>
-CC:     "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        "Yonghong Song" <yhs@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Andrey Ignatov <rdna@fb.com>
-Subject: Re: [PATCH bpf-next 09/11] bpfilter: Add struct table
-Thread-Topic: [PATCH bpf-next 09/11] bpfilter: Add struct table
-Thread-Index: AQHXS2+LXvXxXPN2KUCWbFtZ62Zc9KrsrwSA
-Date:   Thu, 20 May 2021 18:07:07 +0000
-Message-ID: <AAFF4E35-AD81-49C1-A1D1-250FF18AD126@fb.com>
-References: <20210517225308.720677-1-me@ubique.spb.ru>
- <20210517225308.720677-10-me@ubique.spb.ru>
-In-Reply-To: <20210517225308.720677-10-me@ubique.spb.ru>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.80.0.2.43)
-authentication-results: ubique.spb.ru; dkim=none (message not signed)
- header.d=none;ubique.spb.ru; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:fa93]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5a3706b2-9f30-49f4-23a0-08d91bba14f9
-x-ms-traffictypediagnostic: SJ0PR15MB4710:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR15MB4710DC6FEDDCF8E12CF28AA7B32A9@SJ0PR15MB4710.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:4125;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 42yinPvJo6hTPaCR+XIhGuoXg3/l/Cv7pa/UlhQs9dm+Q2oFT2E7krYKDmbDIiGXd00mAakwZYGoqEFbUzaE/AUK8vYlrDBL92ZWSDCavhgMc73KZtLNPkpRL44khYMAed5/FjJo5Z8F+/1lEpKcEp6yyV6adHBQIVaWRnJb2uSoQrnLUfSYaAqbiEdAfTm12WjxDHTO8vu1FJl62pKC5RTU7w9Bxbx1xS4uESN4N3EFbTIXpV2I6qGMlg0Km2gI3p5malHCWHaQ1wmQxsrqaz001Wa728ayC5C5NGI5X7GzmqWaQtfYHYU9noUFURGAltTKzD7YGJ/3MGDSFwjP38Lah2xcwQMUGCmYZeJaAYM45uOrO3YrwosASzCAt+zsyPv5+5Uvd5BO3tuWYK8CN05w6yzn/HqKrSYIdMySC0H83siLs2ul+HZKUixmlqSfqikW3fi1OlwbI9daAVeD3I7IF8ALkzig3if0gyHztneKmUzk2pnsXiklK5UTq3FdPoeWkSU3vy3swZLaJebQhc5Yn8JrrWhp54ghYupRFAViqopU14pckhQKT7gX9ND2bVuTM9nM4Hk1J+28RFHAHaWyHkz9tpSPj0fHZdCQF/yTOWIKIljcg06JBDk6DLmyCq/Rb0T30b+YmVlPH5q/0UY3E0HOXPY/RVAgKWiRSwI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(396003)(346002)(39860400002)(33656002)(54906003)(2906002)(316002)(38100700002)(53546011)(6506007)(122000001)(66946007)(6916009)(6512007)(76116006)(91956017)(66446008)(66556008)(66476007)(2616005)(64756008)(71200400001)(186003)(4326008)(8676002)(5660300002)(36756003)(478600001)(8936002)(6486002)(86362001)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?UcdHJ2xDREYoMS/TkDQVFYzqLfriHq/4Dj/9N2nQoTT66/Bn2r0jlNLP7QOY?=
- =?us-ascii?Q?JKRkAn3wSioMJySkaQ1mpsc734y4jFGRrMjxr6JTUTa1v4cbYeSk0iSsyBpZ?=
- =?us-ascii?Q?nSy5J8pcNfQfhY1GtE0rEp/IFVr+LEVMlD+wjG262xW64TSrgYdBohEXkl2L?=
- =?us-ascii?Q?Rlt5QG17W5uK60owSexTih716rOurw9RyyOyTmEbtehnvkAQDnSTR+ebXfrR?=
- =?us-ascii?Q?Lr9QMuMRWEnYVP/a1H25U+b8Y5QHwlydda9fKuaZuvRseWf+g0VBXbWM6sBq?=
- =?us-ascii?Q?bwLQwy7sh0JUKLCfDOb96cR9myAANrmumQpbc2PP+0QalP5ddelF98Daq9ix?=
- =?us-ascii?Q?Dcfpb38m7gqGf6mcjJZHkGtKpaDP2gwSD1DKYf2kCLYPMwFcq7aLk6akBFb6?=
- =?us-ascii?Q?54Ktxp5J5FIA3YSOf2dIQeGjMUd+rW4UbhLWakrMuIw1fppBOkYVhQ9ziNXg?=
- =?us-ascii?Q?7IRTag9v4iGs/qAWRnIzoQf/dDlehyahwJz7XAJu5zBhlFihQwfAtaHCxfJb?=
- =?us-ascii?Q?YrRtzzLDU9fewyGD4E/wByheu2w6XUlQtLJO++II+CWtfb9mjFjIwqpG4YYf?=
- =?us-ascii?Q?z1eFJkvTbbpJioKMbbCL2c+zG5d0memQgJ0XrqBjG/6QQF5zPqvIyrM8ByFN?=
- =?us-ascii?Q?H++2dVYQuG67qLLmlFLMeDrzwGeWLKg1EH8AwGur2DjDu81meCIjHNeWmcki?=
- =?us-ascii?Q?y/YyNbQK4vHsJ7XWD+2EJQM/J1n0wmhDVhB+GAVS5myWiJERTYgnrFORWO1h?=
- =?us-ascii?Q?aetTQxaf6ytBH29yAhVbhX2N0xqET8lzt83u9CTYer+L5FXXGuOwuQ/7UZIy?=
- =?us-ascii?Q?ada5S1Y2oNLsg9tVSJzLCq6YolesD551YFvcv6TSD481XVBXnEUogFda4ryg?=
- =?us-ascii?Q?cq+3S+owHPnHQkmFukC1Qn0+B+MMf6Lrkpli0hlLNkFEnKp1Wq7Nz0w7cZqE?=
- =?us-ascii?Q?fA0X9hgLNsFzy0WL/5Ol+G2jk/7BmT+C8/X8PgOAWSKe52WEg/n0gtZI3jRK?=
- =?us-ascii?Q?KCSCAD3ch6ibsJAcv84yxxENUIAggunmBrEzxhye3sOZFoJjiW66B7dmJkm/?=
- =?us-ascii?Q?KQBlBA6D80BLQWXMcGCT6nZd0vf2eADlNmx4j+Ua0f9QT+ZZ95Kqcze4wLyt?=
- =?us-ascii?Q?TT8OLqqcBDZAvt0z6tiZSzf0Foa5+01XOwISdWspFvrqD6SGnVEb7wU8WXRn?=
- =?us-ascii?Q?e62n6ZgQHmFX0DqLhsVdv0pi3yb1lNWACUxpl/cprj6Ou45/NOnQDrA5x9jJ?=
- =?us-ascii?Q?cDfcTYeB2oxNm9b9OdFMcj2Zk8MupZUwEs9OfUQtkhFPA11mSnMbiNrCLVtc?=
- =?us-ascii?Q?5+tCbxVLyT8zFFYu4WYY011v5ZbDotyExWVCoxb9rOl1G6GWY6ltEfY/szgz?=
- =?us-ascii?Q?XCJOSCA=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <C0329887E5A50041A473A2A75D7368D1@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a3706b2-9f30-49f4-23a0-08d91bba14f9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 May 2021 18:07:07.7785
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lCXlbR5w55EyFbgF8833NX4GMpxN+duxL1RnFBlx9HjB5sYypNmEpyvOSjK5/x9avc+ReiAegOvI+VzSQqxCbg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4710
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: n5bUL1DinOm3oK0Wdko8ZtWcAl9_UACl
-X-Proofpoint-GUID: n5bUL1DinOm3oK0Wdko8ZtWcAl9_UACl
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-20_05:2021-05-20,2021-05-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 suspectscore=0
- spamscore=0 phishscore=0 priorityscore=1501 adultscore=0 bulkscore=0
- impostorscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105200111
-X-FB-Internal: deliver
+        id S232552AbhETS5Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 May 2021 14:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236112AbhETS5P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 May 2021 14:57:15 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D6FC061574;
+        Thu, 20 May 2021 11:55:54 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 6so12497048pgk.5;
+        Thu, 20 May 2021 11:55:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=mZfYo4KWcXivOyuRQ2aD8zkqVkHBzMKa9UDSnSF7cBU=;
+        b=Jyx1zkmqnk59e0/a0BoVK2iO2oOiVwod78OomdTHIMbSf2f7vDCM76fYPXMhFXzk+A
+         hGBV1PRh0r6HrtJ/Pgn7yJUqCtxzoQgdGNGeImky/3WgqmDZJI8jylz6HWPZuyrAtq9e
+         QikGiFkBs68BU97HVGHxs0TSrc1+ecxIrL9lrk7iTskVZuc/GYtNz3uEVLX0ryEqdkX5
+         Fjl9z3NMS7TeH5lAU/Qtt6lE/xxFdjvpK74x+vyN3KkKTrMoy8hahTl47wsjspNA4K6e
+         AcPx2EbWSwDfgNpTfhDU1OwWiUZ47YbkBZwPLgcbIkicBUJ72TzGa28fEIXqgMUDt7Ja
+         Zoow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=mZfYo4KWcXivOyuRQ2aD8zkqVkHBzMKa9UDSnSF7cBU=;
+        b=tcoEXNncNAyUm6V+QZvdt6E/hxrUWn2jHQBUWm+FH58QZHb8+fvb9FOD6CpLxy7g9E
+         FmLVwFDXM2Mkn9UI5/C6v0GCDj5JTvQDEl59VCpq2FPmCV4bg0yIVLz91q7rSDG5unzK
+         L+5chy3y+KbFANd219bJcJTOgKRE76Er/U0gi2RUl4r09t88zRxCFWrbhxj+tXEg8edY
+         mrLGUzSxLDREOov36WcD+zMzFMQ53hu0hJJg7o26iYwTTGFCg/HustUlu321j1FKtlo2
+         GaGnMdSPoyUCdQVBS6SexvAkQ0yJT+fCldbec/vnjkDWflL/+JNe9ZO9/PRO9LvN55pp
+         nYEQ==
+X-Gm-Message-State: AOAM531kwGxv8TDmiS31fnrUQ6iiacRaqrvsu+27TKNsdgMG7jnM67Fc
+        fPXkpIRFO0P3qjrleSMZomC8zKI7Afc=
+X-Google-Smtp-Source: ABdhPJwE+8noCZb8TS5MyEQziN1EsytcPesmarnMkbiu4Ai+YHL6VIwCj8QFVYS5qsROu5dB6cAOpQ==
+X-Received: by 2002:a62:6491:0:b029:28e:8c90:6b16 with SMTP id y139-20020a6264910000b029028e8c906b16mr5704589pfb.24.1621536953580;
+        Thu, 20 May 2021 11:55:53 -0700 (PDT)
+Received: from ast-mbp.thefacebook.com ([163.114.132.4])
+        by smtp.gmail.com with ESMTPSA id o2sm1793073pfu.80.2021.05.20.11.55.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 May 2021 11:55:53 -0700 (PDT)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, andrii@kernel.org, john.fastabend@gmail.com,
+        lmb@cloudflare.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
+Date:   Thu, 20 May 2021 11:55:50 -0700
+Message-Id: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Alexei Starovoitov <ast@kernel.org>
 
+Introduce 'struct bpf_timer' that can be embedded in most BPF map types
+and helpers to operate on it:
+long bpf_timer_init(struct bpf_timer *timer, void *callback, int flags)
+long bpf_timer_mod(struct bpf_timer *timer, u64 msecs)
+long bpf_timer_del(struct bpf_timer *timer)
 
-> On May 17, 2021, at 3:53 PM, Dmitrii Banshchikov <me@ubique.spb.ru> wrote=
-:
->=20
-> A table keeps iptables' blob and an array of struct rule for this blob.
-> The array of rules provides more convenient way to interact with blob's
-> entries.
->=20
-> All tables are stored in table_ops_map map which is used for lookups.
-> Also all tables are linked into a list that is used for freeing them.
->=20
-> Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+This is work in progress, but gives an idea on how API will look.
+---
+ include/linux/bpf.h                           |   1 +
+ include/uapi/linux/bpf.h                      |  25 ++++
+ kernel/bpf/helpers.c                          | 106 +++++++++++++++++
+ kernel/bpf/verifier.c                         | 110 ++++++++++++++++++
+ kernel/trace/bpf_trace.c                      |   2 +-
+ scripts/bpf_doc.py                            |   2 +
+ tools/include/uapi/linux/bpf.h                |  25 ++++
+ .../testing/selftests/bpf/prog_tests/timer.c  |  42 +++++++
+ tools/testing/selftests/bpf/progs/timer.c     |  53 +++++++++
+ 9 files changed, 365 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/timer.c
+ create mode 100644 tools/testing/selftests/bpf/progs/timer.c
 
-[...]
-
-
-> diff --git a/net/bpfilter/context.h b/net/bpfilter/context.h
-> index c62c1ba4781c..2d9e3fafb0f8 100644
-> --- a/net/bpfilter/context.h
-> +++ b/net/bpfilter/context.h
-> @@ -10,12 +10,15 @@
->=20
-> #include "match-ops-map.h"
-> #include "target-ops-map.h"
-> +#include "table-map.h"
->=20
-> struct context {
-> 	FILE *log_file;
-> 	int log_level;
-> 	struct match_ops_map match_ops_map;
-> 	struct target_ops_map target_ops_map;
-> +	struct table_map table_map;
-> +	struct list_head table_list;
-
-How about we add table_list to struct table_map (and maybe rename it)?
-I suspect that will make the code a little cleaner.=20
-
-Thanks,
-Song
-
-[...]
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 9dc44ba97584..18e09cc0c410 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -312,6 +312,7 @@ enum bpf_arg_type {
+ 	ARG_PTR_TO_FUNC,	/* pointer to a bpf program function */
+ 	ARG_PTR_TO_STACK_OR_NULL,	/* pointer to stack or NULL */
+ 	ARG_PTR_TO_CONST_STR,	/* pointer to a null terminated read-only string */
++	ARG_PTR_TO_TIMER,	/* pointer to bpf_timer */
+ 	__BPF_ARG_TYPE_MAX,
+ };
+ 
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 418b9b813d65..c95d7854d9fb 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -4761,6 +4761,24 @@ union bpf_attr {
+  * 		Execute close syscall for given FD.
+  * 	Return
+  * 		A syscall result.
++ *
++ * long bpf_timer_init(struct bpf_timer *timer, void *callback, int flags)
++ *	Description
++ *		Initialize the timer to call given static function.
++ *	Return
++ *		zero
++ *
++ * long bpf_timer_mod(struct bpf_timer *timer, u64 msecs)
++ *	Description
++ *		Set the timer expiration N msecs from the current time.
++ *	Return
++ *		zero
++ *
++ * long bpf_timer_del(struct bpf_timer *timer)
++ *	Description
++ *		Deactivate the timer.
++ *	Return
++ *		zero
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -4932,6 +4950,9 @@ union bpf_attr {
+ 	FN(sys_bpf),			\
+ 	FN(btf_find_by_name_kind),	\
+ 	FN(sys_close),			\
++	FN(timer_init),			\
++	FN(timer_mod),			\
++	FN(timer_del),			\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+@@ -6038,6 +6059,10 @@ struct bpf_spin_lock {
+ 	__u32	val;
+ };
+ 
++struct bpf_timer {
++	__u64 opaque;
++};
++
+ struct bpf_sysctl {
+ 	__u32	write;		/* Sysctl is being read (= 0) or written (= 1).
+ 				 * Allows 1,2,4-byte read, but no write.
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 544773970dbc..8ef0ad23c991 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -985,6 +985,106 @@ const struct bpf_func_proto bpf_snprintf_proto = {
+ 	.arg5_type	= ARG_CONST_SIZE_OR_ZERO,
+ };
+ 
++struct bpf_timer_list {
++	struct timer_list tl;
++	struct bpf_map *map;
++	struct bpf_prog *prog;
++	void *callback_fn;
++	void *key;
++	void *value;
++};
++
++static void timer_cb(struct timer_list *timer)
++{
++	struct bpf_timer_list *tl = from_timer(tl, timer, tl);
++	struct bpf_map *map;
++	int ret;
++
++	ret = BPF_CAST_CALL(tl->callback_fn)((u64)(long)tl->map,
++					     (u64)(long)tl->key,
++					     (u64)(long)tl->value, 0, 0);
++	WARN_ON(ret != 0); /* todo: define 0 vs 1 or disallow 1 in the verifier */
++	bpf_prog_put(tl->prog);
++}
++
++BPF_CALL_5(bpf_timer_init, struct bpf_timer *, timer, void *, cb, int, flags,
++	   struct bpf_map *, map, struct bpf_prog *, prog)
++{
++	struct bpf_timer_list *tl;
++
++	if (timer->opaque)
++		return -EBUSY;
++	tl = kcalloc(1, sizeof(*tl), GFP_ATOMIC);
++	if (!tl)
++		return -ENOMEM;
++	tl->callback_fn = cb;
++	tl->value = (void *)timer /* - offset of bpf_timer inside elem */;
++	tl->key = tl->value - round_up(map->key_size, 8);
++	tl->map = map;
++	tl->prog = prog;
++	timer_setup(&tl->tl, timer_cb, 0);
++	timer->opaque = (long)tl;
++	return 0;
++}
++
++const struct bpf_func_proto bpf_timer_init_proto = {
++	.func		= bpf_timer_init,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_TIMER,
++	.arg2_type	= ARG_PTR_TO_FUNC,
++	.arg3_type	= ARG_ANYTHING,
++};
++
++BPF_CALL_2(bpf_timer_mod, struct bpf_timer *, timer, u64, msecs)
++{
++	struct bpf_timer_list *tl;
++
++	tl = (struct bpf_timer_list *)timer->opaque;
++	if (!tl)
++		return -EINVAL;
++	/* keep the prog alive until callback is invoked */
++	if (!mod_timer(&tl->tl, jiffies + msecs_to_jiffies(msecs))) {
++		/* The timer was inactive.
++		 * Keep the prog alive until callback is invoked
++		 */
++		bpf_prog_inc(tl->prog);
++	}
++	return 0;
++}
++
++const struct bpf_func_proto bpf_timer_mod_proto = {
++	.func		= bpf_timer_mod,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_TIMER,
++	.arg2_type	= ARG_ANYTHING,
++};
++
++BPF_CALL_1(bpf_timer_del, struct bpf_timer *, timer)
++{
++	struct bpf_timer_list *tl;
++
++	tl = (struct bpf_timer_list *)timer->opaque;
++	if (!tl)
++		return -EINVAL;
++	if (del_timer(&tl->tl)) {
++		/* The timer was active,
++		 * drop the prog refcnt, since callback
++		 * will not be invoked.
++		 */
++		bpf_prog_put(tl->prog);
++	}
++	return 0;
++}
++
++const struct bpf_func_proto bpf_timer_del_proto = {
++	.func		= bpf_timer_del,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_TIMER,
++};
++
+ const struct bpf_func_proto bpf_get_current_task_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_user_proto __weak;
+ const struct bpf_func_proto bpf_probe_read_user_str_proto __weak;
+@@ -1033,6 +1133,12 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+ 		return &bpf_ringbuf_query_proto;
+ 	case BPF_FUNC_for_each_map_elem:
+ 		return &bpf_for_each_map_elem_proto;
++	case BPF_FUNC_timer_init:
++		return &bpf_timer_init_proto;
++	case BPF_FUNC_timer_mod:
++		return &bpf_timer_mod_proto;
++	case BPF_FUNC_timer_del:
++		return &bpf_timer_del_proto;
+ 	default:
+ 		break;
+ 	}
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 9189eecb26dd..606c713be60a 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4656,6 +4656,35 @@ static int process_spin_lock(struct bpf_verifier_env *env, int regno,
+ 	return 0;
+ }
+ 
++static int process_timer_func(struct bpf_verifier_env *env, int regno,
++			      struct bpf_call_arg_meta *meta)
++{
++	struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
++	bool is_const = tnum_is_const(reg->var_off);
++	struct bpf_map *map = reg->map_ptr;
++	u64 val = reg->var_off.value;
++
++	if (!is_const) {
++		verbose(env,
++			"R%d doesn't have constant offset. bpf_timer has to be at the constant offset\n",
++			regno);
++		return -EINVAL;
++	}
++	if (!map->btf) {
++		verbose(env, "map '%s' has to have BTF in order to use bpf_timer\n",
++			map->name);
++		return -EINVAL;
++	}
++	if (val) {
++		/* todo: relax this requirement */
++		verbose(env, "bpf_timer field can only be first in the map value element\n");
++		return -EINVAL;
++	}
++	WARN_ON(meta->map_ptr);
++	meta->map_ptr = map;
++	return 0;
++}
++
+ static bool arg_type_is_mem_ptr(enum bpf_arg_type type)
+ {
+ 	return type == ARG_PTR_TO_MEM ||
+@@ -4788,6 +4817,7 @@ static const struct bpf_reg_types percpu_btf_ptr_types = { .types = { PTR_TO_PER
+ static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
+ static const struct bpf_reg_types stack_ptr_types = { .types = { PTR_TO_STACK } };
+ static const struct bpf_reg_types const_str_ptr_types = { .types = { PTR_TO_MAP_VALUE } };
++static const struct bpf_reg_types timer_types = { .types = { PTR_TO_MAP_VALUE } };
+ 
+ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
+ 	[ARG_PTR_TO_MAP_KEY]		= &map_key_value_types,
+@@ -4819,6 +4849,7 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
+ 	[ARG_PTR_TO_FUNC]		= &func_ptr_types,
+ 	[ARG_PTR_TO_STACK_OR_NULL]	= &stack_ptr_types,
+ 	[ARG_PTR_TO_CONST_STR]		= &const_str_ptr_types,
++	[ARG_PTR_TO_TIMER]		= &timer_types,
+ };
+ 
+ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+@@ -5000,6 +5031,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+ 			verbose(env, "verifier internal error\n");
+ 			return -EFAULT;
+ 		}
++	} else if (arg_type == ARG_PTR_TO_TIMER) {
++		if (process_timer_func(env, regno, meta))
++			return -EACCES;
+ 	} else if (arg_type == ARG_PTR_TO_FUNC) {
+ 		meta->subprogno = reg->subprogno;
+ 	} else if (arg_type_is_mem_ptr(arg_type)) {
+@@ -5742,6 +5776,43 @@ static int set_map_elem_callback_state(struct bpf_verifier_env *env,
+ 	return 0;
+ }
+ 
++static int set_timer_init_callback_state(struct bpf_verifier_env *env,
++					 struct bpf_func_state *caller,
++					 struct bpf_func_state *callee,
++					 int insn_idx)
++{
++	struct bpf_insn_aux_data *insn_aux = &env->insn_aux_data[insn_idx];
++	struct bpf_map *map_ptr;
++
++	if (bpf_map_ptr_poisoned(insn_aux)) {
++		verbose(env, "bpf_timer_init abusing map_ptr\n");
++		return -EINVAL;
++	}
++
++	map_ptr = BPF_MAP_PTR(insn_aux->map_ptr_state);
++
++	/* bpf_timer_init(struct bpf_timer *timer, void *callback_fn, u64 flags);
++	 * callback_fn(struct bpf_map *map, void *key, void *value);
++	 */
++	callee->regs[BPF_REG_1].type = CONST_PTR_TO_MAP;
++	__mark_reg_known_zero(&callee->regs[BPF_REG_1]);
++	callee->regs[BPF_REG_1].map_ptr = map_ptr;
++
++	callee->regs[BPF_REG_2].type = PTR_TO_MAP_KEY;
++	__mark_reg_known_zero(&callee->regs[BPF_REG_2]);
++	callee->regs[BPF_REG_2].map_ptr = map_ptr;
++
++	callee->regs[BPF_REG_3].type = PTR_TO_MAP_VALUE;
++	__mark_reg_known_zero(&callee->regs[BPF_REG_3]);
++	callee->regs[BPF_REG_3].map_ptr = map_ptr;
++
++	/* unused */
++	__mark_reg_not_init(env, &callee->regs[BPF_REG_4]);
++	__mark_reg_not_init(env, &callee->regs[BPF_REG_5]);
++	callee->in_callback_fn = true;
++	return 0;
++}
++
+ static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx)
+ {
+ 	struct bpf_verifier_state *state = env->cur_state;
+@@ -5837,6 +5908,7 @@ record_func_map(struct bpf_verifier_env *env, struct bpf_call_arg_meta *meta,
+ 	    func_id != BPF_FUNC_map_pop_elem &&
+ 	    func_id != BPF_FUNC_map_peek_elem &&
+ 	    func_id != BPF_FUNC_for_each_map_elem &&
++	    func_id != BPF_FUNC_timer_init &&
+ 	    func_id != BPF_FUNC_redirect_map)
+ 		return 0;
+ 
+@@ -6069,6 +6141,13 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
+ 			return -EINVAL;
+ 	}
+ 
++	if (func_id == BPF_FUNC_timer_init) {
++		err = __check_func_call(env, insn, insn_idx_p, meta.subprogno,
++					set_timer_init_callback_state);
++		if (err < 0)
++			return -EINVAL;
++	}
++
+ 	if (func_id == BPF_FUNC_snprintf) {
+ 		err = check_bpf_snprintf_call(env, regs);
+ 		if (err < 0)
+@@ -12526,6 +12605,37 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 			insn      = new_prog->insnsi + i + delta;
+ 			continue;
+ 		}
++		if (insn->imm == BPF_FUNC_timer_init) {
++
++			aux = &env->insn_aux_data[i + delta];
++			if (bpf_map_ptr_poisoned(aux)) {
++				verbose(env, "bpf_timer_init abusing map_ptr\n");
++				return -EINVAL;
++			}
++			map_ptr = BPF_MAP_PTR(aux->map_ptr_state);
++			{
++				struct bpf_insn ld_addrs[4] = {
++					BPF_LD_IMM64(BPF_REG_4, (long)map_ptr),
++					BPF_LD_IMM64(BPF_REG_5, (long)prog),
++				};
++
++				insn_buf[0] = ld_addrs[0];
++				insn_buf[1] = ld_addrs[1];
++				insn_buf[2] = ld_addrs[2];
++				insn_buf[3] = ld_addrs[3];
++			}
++			insn_buf[4] = *insn;
++			cnt = 5;
++
++			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
++			if (!new_prog)
++				return -ENOMEM;
++
++			delta    += cnt - 1;
++			env->prog = prog = new_prog;
++			insn      = new_prog->insnsi + i + delta;
++			goto patch_call_imm;
++		}
+ 
+ 		/* BPF_EMIT_CALL() assumptions in some of the map_gen_lookup
+ 		 * and other inlining handlers are currently limited to 64 bit
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index d2d7cf6cfe83..453a46c2d732 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1065,7 +1065,7 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	case BPF_FUNC_snprintf:
+ 		return &bpf_snprintf_proto;
+ 	default:
+-		return NULL;
++		return bpf_base_func_proto(func_id);
+ 	}
+ }
+ 
+diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+index 2d94025b38e9..00ac7b79cddb 100755
+--- a/scripts/bpf_doc.py
++++ b/scripts/bpf_doc.py
+@@ -547,6 +547,7 @@ COMMANDS
+             'struct inode',
+             'struct socket',
+             'struct file',
++            'struct bpf_timer',
+     ]
+     known_types = {
+             '...',
+@@ -594,6 +595,7 @@ COMMANDS
+             'struct inode',
+             'struct socket',
+             'struct file',
++            'struct bpf_timer',
+     }
+     mapped_types = {
+             'u8': '__u8',
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 418b9b813d65..c95d7854d9fb 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -4761,6 +4761,24 @@ union bpf_attr {
+  * 		Execute close syscall for given FD.
+  * 	Return
+  * 		A syscall result.
++ *
++ * long bpf_timer_init(struct bpf_timer *timer, void *callback, int flags)
++ *	Description
++ *		Initialize the timer to call given static function.
++ *	Return
++ *		zero
++ *
++ * long bpf_timer_mod(struct bpf_timer *timer, u64 msecs)
++ *	Description
++ *		Set the timer expiration N msecs from the current time.
++ *	Return
++ *		zero
++ *
++ * long bpf_timer_del(struct bpf_timer *timer)
++ *	Description
++ *		Deactivate the timer.
++ *	Return
++ *		zero
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -4932,6 +4950,9 @@ union bpf_attr {
+ 	FN(sys_bpf),			\
+ 	FN(btf_find_by_name_kind),	\
+ 	FN(sys_close),			\
++	FN(timer_init),			\
++	FN(timer_mod),			\
++	FN(timer_del),			\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+@@ -6038,6 +6059,10 @@ struct bpf_spin_lock {
+ 	__u32	val;
+ };
+ 
++struct bpf_timer {
++	__u64 opaque;
++};
++
+ struct bpf_sysctl {
+ 	__u32	write;		/* Sysctl is being read (= 0) or written (= 1).
+ 				 * Allows 1,2,4-byte read, but no write.
+diff --git a/tools/testing/selftests/bpf/prog_tests/timer.c b/tools/testing/selftests/bpf/prog_tests/timer.c
+new file mode 100644
+index 000000000000..6b7a16a54e70
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/timer.c
+@@ -0,0 +1,42 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2021 Facebook */
++#include <test_progs.h>
++#include "timer.skel.h"
++
++static int timer(struct timer *timer_skel)
++{
++	int err, prog_fd;
++	__u32 duration = 0, retval;
++
++	err = timer__attach(timer_skel);
++	if (!ASSERT_OK(err, "timer_attach"))
++		return err;
++
++	prog_fd = bpf_program__fd(timer_skel->progs.test1);
++	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
++				NULL, NULL, &retval, &duration);
++	ASSERT_OK(err, "test_run");
++	ASSERT_EQ(retval, 0, "test_run");
++
++	ASSERT_EQ(timer_skel->data->callback_check, 52, "callback_check1");
++	usleep(50 * 1000); /* 10 msecs should be enough, but give it extra */
++	ASSERT_EQ(timer_skel->data->callback_check, 42, "callback_check2");
++
++	timer__detach(timer_skel);
++	return 0;
++}
++
++void test_timer(void)
++{
++	struct timer *timer_skel = NULL;
++	int err;
++
++	timer_skel = timer__open_and_load();
++	if (!ASSERT_OK_PTR(timer_skel, "timer_skel_load"))
++		goto cleanup;
++
++	err = timer(timer_skel);
++	ASSERT_OK(err, "timer");
++cleanup:
++	timer__destroy(timer_skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/timer.c b/tools/testing/selftests/bpf/progs/timer.c
+new file mode 100644
+index 000000000000..2cf0634f10c9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/timer.c
+@@ -0,0 +1,53 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2021 Facebook */
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_tcp_helpers.h"
++
++char _license[] SEC("license") = "GPL";
++struct map_elem {
++	struct bpf_timer timer;
++	int counter;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 1000);
++	__type(key, int);
++	__type(value, struct map_elem);
++} hmap SEC(".maps");
++
++__u64 callback_check = 52;
++
++static int timer_cb(struct bpf_map *map, int *key, struct map_elem *val)
++{
++	callback_check--;
++	if (--val->counter)
++		/* re-arm the timer again to execute after 1 msec */
++		bpf_timer_mod(&val->timer, 1);
++	return 0;
++}
++
++int bpf_timer_test(void)
++{
++	struct map_elem *val;
++	int key = 0;
++
++	val = bpf_map_lookup_elem(&hmap, &key);
++	if (val) {
++		bpf_timer_init(&val->timer, timer_cb, 0);
++		bpf_timer_mod(&val->timer, 1);
++	}
++	return 0;
++}
++
++SEC("fentry/bpf_fentry_test1")
++int BPF_PROG(test1, int a)
++{
++	struct map_elem val = {};
++	int key = 0;
++
++	val.counter = 10, /* number of times to trigger timer_cb */
++	bpf_map_update_elem(&hmap, &key, &val, 0);
++	return bpf_timer_test();
++}
+-- 
+2.30.2
 
