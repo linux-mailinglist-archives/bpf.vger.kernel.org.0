@@ -2,152 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54146389EA3
-	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 09:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 300AA389EF2
+	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 09:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbhETHJj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 May 2021 03:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41198 "EHLO
+        id S229534AbhETHdK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 May 2021 03:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhETHJj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 May 2021 03:09:39 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E5EC06175F
-        for <bpf@vger.kernel.org>; Thu, 20 May 2021 00:08:17 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id p7so12707738wru.10
-        for <bpf@vger.kernel.org>; Thu, 20 May 2021 00:08:17 -0700 (PDT)
+        with ESMTP id S230469AbhETHdJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 May 2021 03:33:09 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B07C06175F
+        for <bpf@vger.kernel.org>; Thu, 20 May 2021 00:31:47 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id c10so12083536qtx.10
+        for <bpf@vger.kernel.org>; Thu, 20 May 2021 00:31:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=nvNvutw5U6lnRUPBURCHGGCHa2JEZhSNhVEi39PMdZ8=;
-        b=tCxQqsbYzVQEm011DO+lyzx7w+KGgEImTqonurjp5IVJQYfCV6mmWhyKPRneYZqryr
-         WCwER0ilrgnpv9m7l63j4bVceBrFZaaL4253a1x3h6xs1MWj+ZRDtSf1H2iQCL6WBuPj
-         m+BIiZQp93QLQnOTPRSDnkEViXcN0o17Z6i1AAF7KCtyx4qNmYnndxkUOJ0PsFWVR4Fs
-         5u4mPonLst22NHiANW1d2Y9SBo5QryFH3cNYu5lUg506yk9NouHrEsNRAhJW4V49kAwQ
-         Ke5VX1gBAdmDYAqTDVSNEumEI8oTgBHAtFscfO9LLP3t4YytJknuBOlVfbusPcbROA+F
-         eJHw==
+        bh=F5a9PIwJ6/SOxSd9jumI2LYg7K1A7JkU485pAj4J60o=;
+        b=U84k4LsgXt2JIDV40abt4rCN4gavM4D634P1RWFpVG8zDw+LB0Lb24wvQMk8UvMIG+
+         q19XN8/Wkodo7dQ0zyV40/IF1eO26v7aDQyKBeG1i1BrMyVf7jS1rhKyFMv4uGRk4s0h
+         BgOMUISxhiDGxlLPvr+Pinib9bjSyZ6sKTNzIKVDkfLHA8fWIiWCRITG5t9PIlEUXAnf
+         kKuxUEur8mcCm7+9iAKz75WwQrRm3SRdjZGFe7eUk2g7vhfms039bCEHMtsoZIsCGKS4
+         5+wPWFNPCPDTExTQiDZ7pD2pFxLYcqHR3SGpTr0P0F7vjB22kdAe2Nf15OC1Z/e+2UHR
+         Kj5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=nvNvutw5U6lnRUPBURCHGGCHa2JEZhSNhVEi39PMdZ8=;
-        b=OcEqBZFx/J7kYcePmuG5baf4IZjwVMOVb6V2Zh06qVmzP02FLN4ciCYKHmRbNOmEiT
-         woC2wC02+psGhzafGnzUnrS9OV8JAy9NnolLhf16f3sVsBFJESS1jzHzPRThGPe9Ik1M
-         RzAdpH4zrp3SDUwftDV0jjQGI7phff+L1DUtENjP3i0cdzOQXLkhyArWlG7kVhKBaSLC
-         6pYA0JTmNE52QL6suPGMPuCDwA/zvEXAOcLz32RwoIhkvkwmPkjqXsgIeFJsD9+thkyz
-         OQtDCJUM4yHqZF93pZB4+au5woYkOX3wR0SaZ0tTptidyL+NAspmUnRtYNycv0R7mE8p
-         Jhlg==
-X-Gm-Message-State: AOAM531iqxbmVCr95gYCvhAm6L4u7ylrbsgkPNdDGorTxZQwuhcgEYjV
-        0/QXJvoeT6SBsqYxIIKzYCrz4w==
-X-Google-Smtp-Source: ABdhPJyxKQ6svKMvsszD2eHww08+OJaqvwJG59ev+lZ+IPZHrRZigYzE5+Rk0HIDnB103F0UDnz27A==
-X-Received: by 2002:a5d:4d05:: with SMTP id z5mr2568820wrt.127.1621494495642;
-        Thu, 20 May 2021 00:08:15 -0700 (PDT)
+        bh=F5a9PIwJ6/SOxSd9jumI2LYg7K1A7JkU485pAj4J60o=;
+        b=tLoCLJC4wT88s8sKs/cfA17hWkaBz//sGcLYMvpmzfKSlR1vjG7Wop56LNPjE2zzB1
+         Hss8FD69pHhWy9PYisJB7up/OavypHwGqOGX4vlURMBO66zCtTKfdVLJJZYyG3r0pd7m
+         R2TOT8iLD7eERD3omNpIMJZDSZSFj124hzqUpWhanfVPIXw/18HHNl8GKejzoDjvgEvP
+         bMnARjKOf6c/3Jw5rRn7jxxp58P3Qkqg5VwwxNWW2XMrKxdl6dkEK6e6MFX1Zh5sTebF
+         a+RlDRh1dInU6DBW2634S3LYWLQWoxOgJrzESX+//o0cebtmmHEyGUVWPl3aI+zTwVl4
+         s0JA==
+X-Gm-Message-State: AOAM531jMbV61FKqXSDRGPMdM2QySg3EeT4sr7KTbis+/xG4kvxUKQS1
+        A2xdSgWMQ2fbdHU6shiHwJn4sw==
+X-Google-Smtp-Source: ABdhPJytbO97Rz1rvmGBKJ+8skiPWcrltBFUcHH1m9p8kk5rB+FdZW5iMHjJqDGV3STIfJTz3vsjPQ==
+X-Received: by 2002:ac8:7d02:: with SMTP id g2mr3732716qtb.208.1621495906246;
+        Thu, 20 May 2021 00:31:46 -0700 (PDT)
 Received: from localhost ([154.21.15.43])
-        by smtp.gmail.com with ESMTPSA id s7sm7939504wmh.35.2021.05.20.00.08.14
+        by smtp.gmail.com with ESMTPSA id u186sm1525689qkd.30.2021.05.20.00.31.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 00:08:14 -0700 (PDT)
-Date:   Thu, 20 May 2021 11:08:07 +0400
+        Thu, 20 May 2021 00:31:45 -0700 (PDT)
+Date:   Thu, 20 May 2021 11:31:35 +0400
 From:   Dmitrii Banshchikov <me@ubique.spb.ru>
-To:     Song Liu <song@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+To:     Song Liu <songliubraving@fb.com>
+Cc:     "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, Andrey Ignatov <rdna@fb.com>
-Subject: Re: [PATCH bpf-next 02/11] bpfilter: Add logging facility
-Message-ID: <20210520070807.cpmloff4urdsifuy@amnesia>
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <netdev@vger.kernel.org>, Andrey Ignatov <rdna@fb.com>
+Subject: Re: [PATCH bpf-next 06/11] bpfilter: Add struct match
+Message-ID: <20210520073135.bpdtlbryvbp2olkf@amnesia>
 References: <20210517225308.720677-1-me@ubique.spb.ru>
- <20210517225308.720677-3-me@ubique.spb.ru>
- <CAPhsuW4osuNOagPRwUB30tk3V=ECANktt9jzb+NK1mqOamouSQ@mail.gmail.com>
+ <20210517225308.720677-7-me@ubique.spb.ru>
+ <F674F162-FBC0-4F2C-B8A1-BCDD015FFA3F@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPhsuW4osuNOagPRwUB30tk3V=ECANktt9jzb+NK1mqOamouSQ@mail.gmail.com>
+In-Reply-To: <F674F162-FBC0-4F2C-B8A1-BCDD015FFA3F@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 19, 2021 at 10:32:25AM -0700, Song Liu wrote:
-> On Tue, May 18, 2021 at 11:05 PM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
-> >
-> > There are three logging levels for messages: FATAL, NOTICE and DEBUG.
-> > When a message is logged with FATAL level it results in bpfilter
-> > usermode helper termination.
+On Thu, May 20, 2021 at 04:26:28AM +0000, Song Liu wrote:
 > 
-> Could you please explain why we choose to have 3 levels? Will we need
-> more levels,
-> like WARNING, ERROR, etc.?
-
-
-I found that I need one level for development - to trace what
-goes rignt and wrong. At the same time as those messages go to
-dmesg this level is too verbose to be used under normal
-circumstances. That is why another level is introduced. And the
-last one exists to verify invariants or error condintions from
-which there is no right way to recover and they result in
-bpfilter termination.
-
-Probably we may have just two levels - DEBUG and NOTICE and some
-analogue of BUG_ON/WARN_ON/runtime assert that results in a
-message on NOTICE level and program termination if the checked
-condition is false.
-
-I don't think that we will need more levels - until we decide to
-utilize syslog facility. Even in that case I don't know how to
-differntiate between e.g. NOTICE and INFO messages.
-
 > 
-> >
-> > Introduce struct context to avoid use of global objects and store there
-> > the logging parameters: log level and log sink.
-> >
+> > On May 17, 2021, at 3:53 PM, Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+> > 
+> > struct match_ops defines polymorphic interface for matches. A match
+> > consists of pointers to struct match_ops and struct xt_entry_match which
+> > contains a payload for the match's type.
+> > 
+> > All match_ops are kept in map match_ops_map by their name.
+> > 
 > > Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
-> > ---
-> >  net/bpfilter/Makefile  |  2 +-
-> >  net/bpfilter/bflog.c   | 29 +++++++++++++++++++++++++++++
-> >  net/bpfilter/bflog.h   | 24 ++++++++++++++++++++++++
-> >  net/bpfilter/context.h | 16 ++++++++++++++++
+> > 
+> [...]
 > 
-> Maybe combine bflog.h and context.h into one file? And bflog() can
-> probably fit in
-> that file too.
-
-
-Sure.
-
-> 
-> Thanks,
-> Song
-> 
-> >  4 files changed, 70 insertions(+), 1 deletion(-)
-> >  create mode 100644 net/bpfilter/bflog.c
-> >  create mode 100644 net/bpfilter/bflog.h
-> >  create mode 100644 net/bpfilter/context.h
-> >
-> > diff --git a/net/bpfilter/Makefile b/net/bpfilter/Makefile
-> > index cdac82b8c53a..874d5ef6237d 100644
-> > --- a/net/bpfilter/Makefile
-> > +++ b/net/bpfilter/Makefile
-> > @@ -4,7 +4,7 @@
-> >  #
-> >
-> >  userprogs := bpfilter_umh
-> > -bpfilter_umh-objs := main.o
-> > +bpfilter_umh-objs := main.o bflog.o
-> >  userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
-> >
-> >  ifeq ($(CONFIG_BPFILTER_UMH), y)
-> > diff --git a/net/bpfilter/bflog.c b/net/bpfilter/bflog.c
+> > diff --git a/net/bpfilter/match-ops-map.h b/net/bpfilter/match-ops-map.h
 > > new file mode 100644
-> > index 000000000000..2752e39060e4
+> > index 000000000000..0ff57f2d8da8
 > > --- /dev/null
-> > +++ b/net/bpfilter/bflog.c
-> > @@ -0,0 +1,29 @@
+> > +++ b/net/bpfilter/match-ops-map.h
+> > @@ -0,0 +1,48 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright (c) 2021 Telegram FZ-LLC
+> > + */
+> > +
+> > +#ifndef NET_BPFILTER_MATCH_OPS_MAP_H
+> > +#define NET_BPFILTER_MATCH_OPS_MAP_H
+> > +
+> > +#include "map-common.h"
+> > +
+> > +#include <linux/err.h>
+> > +
+> > +#include <errno.h>
+> > +#include <string.h>
+> > +
+> > +#include "match.h"
+> > +
+> > +struct match_ops_map {
+> > +	struct hsearch_data index;
+> > +};
+> 
+> Do we plan to extend match_ops_map? Otherwise, we can just use 
+> hsearch_data in struct context. 
+
+Agreed.
+
+> 
+> > +
+> > +static inline int create_match_ops_map(struct match_ops_map *map, size_t nelem)
+> > +{
+> > +	return create_map(&map->index, nelem);
+> > +}
+> > +
+> > +static inline const struct match_ops *match_ops_map_find(struct match_ops_map *map,
+> > +							 const char *name)
+> > +{
+> > +	const size_t namelen = strnlen(name, BPFILTER_EXTENSION_MAXNAMELEN);
+> > +
+> > +	if (namelen < BPFILTER_EXTENSION_MAXNAMELEN)
+> > +		return map_find(&map->index, name);
+> > +
+> > +	return ERR_PTR(-EINVAL);
+> > +}
+> > +
+> > +static inline int match_ops_map_insert(struct match_ops_map *map, const struct match_ops *match_ops)
+> > +{
+> > +	return map_insert(&map->index, match_ops->name, (void *)match_ops);
+> > +}
+> > +
+> > +static inline void free_match_ops_map(struct match_ops_map *map)
+> > +{
+> > +	free_map(&map->index);
+> > +}
+> > +
+> > +#endif // NET_BPFILTER_MATCT_OPS_MAP_H
+> > diff --git a/net/bpfilter/match.c b/net/bpfilter/match.c
+> > new file mode 100644
+> > index 000000000000..aeca1b93cd2d
+> > --- /dev/null
+> > +++ b/net/bpfilter/match.c
+> > @@ -0,0 +1,73 @@
 > > +// SPDX-License-Identifier: GPL-2.0
 > > +/*
 > > + * Copyright (c) 2021 Telegram FZ-LLC
@@ -155,83 +162,134 @@ Sure.
 > > +
 > > +#define _GNU_SOURCE
 > > +
+> > +#include "match.h"
+> > +
+> > +#include <linux/err.h>
+> > +#include <linux/netfilter/xt_tcpudp.h>
+> 
+> Besides xt_ filters, do we plan to support others? If so, we probably 
+> want separate files for each of them. 
+
+Do you mean nft filters?
+They use nfilter API and currently we cannot hook into it - so
+probably eventually.
+
+
+> 
+> > +
+> > +#include <errno.h>
+> > +#include <string.h>
+> > +
 > > +#include "bflog.h"
-> > +
-> > +#include <stdarg.h>
-> > +#include <stdio.h>
-> > +#include <stdlib.h>
-> > +
 > > +#include "context.h"
+> > +#include "match-ops-map.h"
 > > +
-> > +void bflog(struct context *ctx, int level, const char *fmt, ...)
+> > +#define BPFILTER_ALIGN(__X) __ALIGN_KERNEL(__X, __alignof__(__u64))
+> > +#define MATCH_SIZE(type) (sizeof(struct bpfilter_ipt_match) + BPFILTER_ALIGN(sizeof(type)))
+> > +
+> > +static int udp_match_check(struct context *ctx, const struct bpfilter_ipt_match *ipt_match)
 > > +{
-> > +       if (ctx->log_file &&
-> > +           (level == BFLOG_LEVEL_FATAL || (level & ctx->log_level))) {
-> > +               va_list va;
+> > +	const struct xt_udp *udp;
 > > +
-> > +               va_start(va, fmt);
-> > +               vfprintf(ctx->log_file, fmt, va);
-> > +               va_end(va);
-> > +       }
+> > +	udp = (const struct xt_udp *)&ipt_match->data;
 > > +
-> > +       if (level == BFLOG_LEVEL_FATAL)
-> > +               exit(EXIT_FAILURE);
+> > +	if (udp->invflags & XT_UDP_INV_MASK) {
+> > +		BFLOG_DEBUG(ctx, "cannot check match 'udp': invalid flags\n");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	return 0;
 > > +}
-> > diff --git a/net/bpfilter/bflog.h b/net/bpfilter/bflog.h
+> > +
+> > +const struct match_ops udp_match_ops = { .name = "udp",
+> 
+> And maybe we should name this one "xt_udp"? 
+
+Agreed.
+
+
+> 
+> > +					 .size = MATCH_SIZE(struct xt_udp),
+> > +					 .revision = 0,
+> > +					 .check = udp_match_check };
+> > +
+> > +int init_match(struct context *ctx, const struct bpfilter_ipt_match *ipt_match, struct match *match)
+> > +{
+> > +	const size_t maxlen = sizeof(ipt_match->u.user.name);
+> > +	const struct match_ops *found;
+> > +	int err;
+> > +
+> > +	if (strnlen(ipt_match->u.user.name, maxlen) == maxlen) {
+> > +		BFLOG_DEBUG(ctx, "cannot init match: too long match name\n");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	found = match_ops_map_find(&ctx->match_ops_map, ipt_match->u.user.name);
+> > +	if (IS_ERR(found)) {
+> > +		BFLOG_DEBUG(ctx, "cannot find match by name: '%s'\n", ipt_match->u.user.name);
+> > +		return PTR_ERR(found);
+> > +	}
+> > +
+> > +	if (found->size != ipt_match->u.match_size ||
+> > +	    found->revision != ipt_match->u.user.revision) {
+> > +		BFLOG_DEBUG(ctx, "invalid match: '%s'\n", ipt_match->u.user.name);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	err = found->check(ctx, ipt_match);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	match->match_ops = found;
+> > +	match->ipt_match = ipt_match;
+> > +
+> > +	return 0;
+> > +}
+> > diff --git a/net/bpfilter/match.h b/net/bpfilter/match.h
 > > new file mode 100644
-> > index 000000000000..4ed12791cfa1
+> > index 000000000000..79b7c87016d4
 > > --- /dev/null
-> > +++ b/net/bpfilter/bflog.h
-> > @@ -0,0 +1,24 @@
+> > +++ b/net/bpfilter/match.h
+> > @@ -0,0 +1,34 @@
 > > +/* SPDX-License-Identifier: GPL-2.0 */
 > > +/*
 > > + * Copyright (c) 2021 Telegram FZ-LLC
 > > + */
 > > +
-> > +#ifndef NET_BPFILTER_BFLOG_H
-> > +#define NET_BPFILTER_BFLOG_H
+> > +#ifndef NET_BPFILTER_MATCH_H
+> > +#define NET_BPFILTER_MATCH_H
 > > +
+> > +#include "../../include/uapi/linux/bpfilter.h"
+> > +
+> > +#include <stdint.h>
+> > +
+> > +struct bpfilter_ipt_match;
 > > +struct context;
+> > +struct match_ops_map;
 > > +
-> > +#define BFLOG_IMPL(ctx, level, fmt, ...) bflog(ctx, level, "bpfilter: " fmt, ##__VA_ARGS__)
-> > +
-> > +#define BFLOG_LEVEL_FATAL (0)
-> > +#define BFLOG_LEVEL_NOTICE (1)
-> > +#define BFLOG_LEVEL_DEBUG (2)
-> > +
-> > +#define BFLOG_FATAL(ctx, fmt, ...)                                                                 \
-> > +       BFLOG_IMPL(ctx, BFLOG_LEVEL_FATAL, "fatal error: " fmt, ##__VA_ARGS__)
-> > +#define BFLOG_NOTICE(ctx, fmt, ...) BFLOG_IMPL(ctx, BFLOG_LEVEL_NOTICE, fmt, ##__VA_ARGS__)
-> > +#define BFLOG_DEBUG(ctx, fmt, ...) BFLOG_IMPL(ctx, BFLOG_LEVEL_DEBUG, fmt, ##__VA_ARGS__)
-> > +
-> > +void bflog(struct context *ctx, int level, const char *fmt, ...);
-> > +
-> > +#endif // NET_BPFILTER_BFLOG_H
-> > diff --git a/net/bpfilter/context.h b/net/bpfilter/context.h
-> > new file mode 100644
-> > index 000000000000..e85c97c3d010
-> > --- /dev/null
-> > +++ b/net/bpfilter/context.h
-> > @@ -0,0 +1,16 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (c) 2021 Telegram FZ-LLC
-> > + */
-> > +
-> > +#ifndef NET_BPFILTER_CONTEXT_H
-> > +#define NET_BPFILTER_CONTEXT_H
-> > +
-> > +#include <stdio.h>
-> > +
-> > +struct context {
-> > +       FILE *log_file;
-> > +       int log_level;
+> > +struct match_ops {
+> > +	char name[BPFILTER_EXTENSION_MAXNAMELEN];
+> 
+> BPFILTER_EXTENSION_MAXNAMELEN is 29, so "size" below is mis-aligned. I guess
+> we can swap size and revision. 
+
+Agreed.
+
+> 
+> > +	uint16_t size;
+> > +	uint8_t revision;
+> > +	int (*check)(struct context *ctx, const struct bpfilter_ipt_match *ipt_match);
 > > +};
 > > +
-> > +#endif // NET_BPFILTER_CONTEXT_H
-> > --
-> > 2.25.1
-> >
+> > +extern const struct match_ops udp_match_ops;
+> > +
+> > +struct match {
+> > +	const struct match_ops *match_ops;
+> > +	const struct bpfilter_ipt_match *ipt_match;
+> > +};
+> 
+> [...]
+> 
 
 -- 
 
