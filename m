@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64362389F14
-	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 09:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49829389F26
+	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 09:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbhETHqI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 May 2021 03:46:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49354 "EHLO
+        id S230102AbhETHyw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 May 2021 03:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhETHqH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 May 2021 03:46:07 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3ACC061574
-        for <bpf@vger.kernel.org>; Thu, 20 May 2021 00:44:44 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id p7so12814827wru.10
-        for <bpf@vger.kernel.org>; Thu, 20 May 2021 00:44:44 -0700 (PDT)
+        with ESMTP id S229534AbhETHyu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 May 2021 03:54:50 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73C0C061574
+        for <bpf@vger.kernel.org>; Thu, 20 May 2021 00:53:28 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id j14so14837551wrq.5
+        for <bpf@vger.kernel.org>; Thu, 20 May 2021 00:53:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=KW+8roUTdVOmsY9RcAiqqIiSxLAs6A0dbj/y6tBWrlw=;
-        b=zKAC7B/fnA9h/SxqWiTrgZAhs7oJUwif/YwoHg6dmPQ5jpo8p6psrI8lytgvBcmDuZ
-         fwGXp+UDLeHRis2xTwGY6lR0d6ZO821/h34aQjAm08jFgfAgYqIW0i1CGtZ58jyqpJCf
-         JDO/uOITu+/JP4drwb7bIi3ToV6wCrGDFVFn0ix9GSCTpS31t9B74OVkGMIp626VTcRd
-         5Kry5NCthBXx4vYTsVJirVD4ldNcfMTaMQEVbqc/1s2JAZhqR5HqqAhRZbXSZXLhAZOS
-         E6RqoG9OwQOPPP0ECljtg6MThuudcq0Ra4uqCjcQGQdAzkjnT367JKVyZAXMxQpmluP2
-         qsYQ==
+        bh=CQ67C6wCvhv4qqVS5QHyCWhSP9HxBopjqC+1soAMel8=;
+        b=FCoqFMfzT/I8cnTA3Ddr82z1z+OMj5RtiPe+sXDg5aF4g7LcBRbYNFPseCOaan/va3
+         hIimi0KCynqva4iIH7zAErqUfnGDNkMDlCEWRyqnBpYDlBouIdGYi4svDsN0cFymXcLK
+         0ATdhaOfD7OQIr9PqHmFY7u73wyJTejGQs0Ox9UjCjCbRHcGwDrwE20qRSwCrvwGlSZO
+         5s+wEfejm0x05yrmTL5JELMCxSyRZ8Emayq2z3udsrkVhgfOjxZ5sxp07723jQjw4f+u
+         VD0E6Xeljk7Vy0FO04tWvfn70b0DRHKVFNjPhLbaigXxDjtwcv5J8rINpPdmrF4fkxDA
+         IFXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=KW+8roUTdVOmsY9RcAiqqIiSxLAs6A0dbj/y6tBWrlw=;
-        b=m6ws83WHFrUK5PZ7kJmTakaZohDEizkyEOW0eEyMf2P+j7T+ZjBx9O1gNlktxEZmhg
-         34zNvP+B8+12EPR4JV0Ng2BI18rSuyk+VXCMx1/2l4ioPf4WnRPGTbfCcGCmShlaZA7b
-         G9QbnqRyjLnTJB2B+z4x7f644QNLW0GHaimeHd+OmZboCYKm6QrbBLh7Gnc7+cjA2syt
-         NQgEHTEqPsprKau0p2MBckKC28Icqp8VbFuwxQjvKMl05zooyO7QtXXqc38NVDBMvWRA
-         c76IjonKIrZBaUUB4umOxiAW5F5MPeIY03s4Bu+xrVVZ2w75Sz1dD+WkIsGDtl7TL19y
-         nKHg==
-X-Gm-Message-State: AOAM533LTZKv0TBz9G9uRkE0OxcwBwkkLegIn5/51dlyBr7YAwfCI0I1
-        zRjoZp/xj8DVnPQE0ocPsCCo6g==
-X-Google-Smtp-Source: ABdhPJwEty17jQXvpib2J3iXwokpkYZu8grNXSCEyCZqjBxlhM9jmQAa0HrL8D3paYQUyB/HNS6KgQ==
-X-Received: by 2002:a5d:40cd:: with SMTP id b13mr2840612wrq.356.1621496683283;
-        Thu, 20 May 2021 00:44:43 -0700 (PDT)
+        bh=CQ67C6wCvhv4qqVS5QHyCWhSP9HxBopjqC+1soAMel8=;
+        b=fjyeQcG3eN0uS1tEHzRKhi5XTxS2veI9P03Gy23unFPbDwsCVsmjHU9vrfL1gNg571
+         W+ZkzKgVv8oercrROG/iZ/HJTeKlcbq3fKlRY2MXiJsVFXBpAGfW+1EKQfY/HlvgBSpQ
+         SoHR/x8qkd1hfC6GTr4KshyU0anmzj1ADzr+GROXmEMzRpP06UEzKaoe/jKsmAK68U1N
+         7srd5FECquMnvGKpnYu1tjQYJAMiWP5bH3Lkx3fGNoxjTgBpgFi/DMjB57fAGfyyg4HR
+         s0NO7p00fQkhZOs5FxOY8Hi0/NNz3bUkqS2suW+auYuv+4DlP01Yzj716SbETccISmWw
+         utDA==
+X-Gm-Message-State: AOAM530+mxTeU+3CvplWw1HR2OqRP4tqqNIfnhD8a7c7cU5Hb5kbpm3+
+        9QLdqLaFEcsBUT2E82EsUgpwxw==
+X-Google-Smtp-Source: ABdhPJwTD6G55yCGUWMDJr4ZLmmIaNIsM7cVGKKByVmlmGCYY3Cj3d1jVcvnQ2onCDAwf0MSf4trDw==
+X-Received: by 2002:adf:cd0b:: with SMTP id w11mr2732687wrm.178.1621497207400;
+        Thu, 20 May 2021 00:53:27 -0700 (PDT)
 Received: from localhost ([154.21.15.43])
-        by smtp.gmail.com with ESMTPSA id z9sm1734793wmi.17.2021.05.20.00.44.42
+        by smtp.gmail.com with ESMTPSA id b81sm10148451wmd.18.2021.05.20.00.53.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 00:44:42 -0700 (PDT)
-Date:   Thu, 20 May 2021 11:44:36 +0400
+        Thu, 20 May 2021 00:53:27 -0700 (PDT)
+Date:   Thu, 20 May 2021 11:53:23 +0400
 From:   Dmitrii Banshchikov <me@ubique.spb.ru>
 To:     Song Liu <songliubraving@fb.com>
 Cc:     "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, "ast@kernel.org" <ast@kernel.org>,
+        <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         "davem@davemloft.net" <davem@davemloft.net>,
         "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "andrii@kernel.org" <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
@@ -60,329 +60,60 @@ Cc:     "open list:BPF (Safe dynamic programs and tools)"
         "kpsingh@kernel.org" <kpsingh@kernel.org>,
         "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
         Andrey Ignatov <rdna@fb.com>
-Subject: Re: [PATCH bpf-next 07/11] bpfilter: Add struct target
-Message-ID: <20210520074436.pxbqvwkvw4gihizj@amnesia>
+Subject: Re: [PATCH bpf-next 00/11] bpfilter
+Message-ID: <20210520075323.ehagaokfbazlhhfj@amnesia>
 References: <20210517225308.720677-1-me@ubique.spb.ru>
- <20210517225308.720677-8-me@ubique.spb.ru>
- <1B747351-8336-45FB-918D-5FC3DA18B47D@fb.com>
+ <7312CC5D-510B-4BFD-8099-BB754FBE9CDF@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1B747351-8336-45FB-918D-5FC3DA18B47D@fb.com>
+In-Reply-To: <7312CC5D-510B-4BFD-8099-BB754FBE9CDF@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 20, 2021 at 04:36:46AM +0000, Song Liu wrote:
+On Thu, May 20, 2021 at 04:54:45AM +0000, Song Liu wrote:
 > 
 > 
-> > On May 17, 2021, at 3:53 PM, Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+> > On May 17, 2021, at 3:52 PM, Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
 > > 
-> > struct target_ops defines polymorphic interface for targets. A target
-> > consists of pointers to struct target_ops and struct xt_entry_target
-> > which contains a payload for the target's type.
+> > The patchset is based on the patches from David S. Miller [1] and Daniel
+> > Borkmann [2].
 > > 
-> > All target_ops are kept in map target_ops_map by their name.
+> > The main goal of the patchset is to prepare bpfilter for iptables'
+> > configuration blob parsing and code generation.
 > > 
-> > Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
+> > The patchset introduces data structures and code for matches, targets, rules
+> > and tables.
+> > 
+> > It seems inconvenient to continue to use the same blob internally in bpfilter
+> > in parts other than the blob parsing. That is why a superstructure with native
+> > types is introduced. It provides a more convenient way to iterate over the blob
+> > and limit the crazy structs widespread in the bpfilter code.
 > > 
 > 
 > [...]
 > 
-> > index 000000000000..6b65241328da
-> > --- /dev/null
-> > +++ b/net/bpfilter/target-ops-map.h
-> > @@ -0,0 +1,49 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (c) 2021 Telegram FZ-LLC
-> > + */
-> > +
-> > +#ifndef NET_BPFILTER_TARGET_OPS_MAP_H
-> > +#define NET_BPFILTER_TARGET_OPS_MAP_H
-> > +
-> > +#include "map-common.h"
-> > +
-> > +#include <linux/err.h>
-> > +
-> > +#include <errno.h>
-> > +#include <string.h>
-> > +
-> > +#include "target.h"
-> > +
-> > +struct target_ops_map {
-> > +	struct hsearch_data index;
-> > +};
+> > 
+> > 
+> > 1. https://lore.kernel.org/patchwork/patch/902785/
 > 
-> Similar to 06/11, target_ops_map seems unnecessary. Also, do we need to 
-> support non-xt targets? 
+> [1] used bpfilter_ prefix on struct definitions, like "struct bpfilter_target"
+> I think we should do the same in this version. (Or were there discussions on
+> removing the prefix?). 
 
-As with nft matches - probably eventually but not now.
+There were no discussions about it.
+As those structs are private to bpfilter I assumed that it is
+safe to save some characters.
+I will add the prefix to all internal structs in the next
+iteration.
+
 
 > 
-> > +
-> > +static inline int create_target_ops_map(struct target_ops_map *map, size_t nelem)
-> > +{
-> > +	return create_map(&map->index, nelem);
-> > +}
-> > +
-> > +static inline const struct target_ops *target_ops_map_find(struct target_ops_map *map,
-> > +							   const char *name)
-> > +{
-> > +	const size_t namelen = strnlen(name, BPFILTER_EXTENSION_MAXNAMELEN);
-> > +
-> > +	if (namelen < BPFILTER_EXTENSION_MAXNAMELEN)
-> > +		return map_find(&map->index, name);
-> > +
-> > +	return ERR_PTR(-EINVAL);
-> > +}
-> > +
-> > +static inline int target_ops_map_insert(struct target_ops_map *map,
-> > +					const struct target_ops *target_ops)
-> > +{
-> > +	return map_insert(&map->index, target_ops->name, (void *)target_ops);
-> > +}
-> > +
-> > +static inline void free_target_ops_map(struct target_ops_map *map)
-> > +{
-> > +	free_map(&map->index);
-> > +}
-> > +
-> > +#endif // NET_BPFILTER_TARGET_OPS_MAP_H
-> > diff --git a/net/bpfilter/target.c b/net/bpfilter/target.c
-> > new file mode 100644
-> > index 000000000000..a18fe477f93c
-> > --- /dev/null
-> > +++ b/net/bpfilter/target.c
-> > @@ -0,0 +1,112 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (c) 2021 Telegram FZ-LLC
-> > + */
-> > +
-> > +#define _GNU_SOURCE
-> > +
-> > +#include "target.h"
-> > +
-> > +#include <linux/err.h>
-> > +#include <linux/netfilter/x_tables.h>
-> > +
-> > +#include <errno.h>
-> > +#include <string.h>
-> > +
-> > +#include "bflog.h"
-> > +#include "context.h"
-> > +#include "target-ops-map.h"
-> > +
+> Thanks,
+> Song
 > 
-> Please add some comments about convert_verdict. 
-> 
-> 
-> > +static int convert_verdict(int verdict)
-> > +{
-> > +	return -verdict - 1;
-> > +}
-> > +
-> > +static int standard_target_check(struct context *ctx, const struct bpfilter_ipt_target *ipt_target)
-> > +{
-> > +	const struct bpfilter_ipt_standard_target *standard_target;
-> > +
-> > +	standard_target = (const struct bpfilter_ipt_standard_target *)ipt_target;
-> > +
-> > +	if (standard_target->verdict > 0)
-> > +		return 0;
-> > +
-> > +	if (standard_target->verdict < 0) {
-> > +		if (standard_target->verdict == BPFILTER_RETURN)
-> > +			return 0;
-> > +
-> > +		switch (convert_verdict(standard_target->verdict)) {
-> > +		case BPFILTER_NF_ACCEPT:
-> > +		case BPFILTER_NF_DROP:
-> > +		case BPFILTER_NF_QUEUE:
-> > +			return 0;
-> > +		}
-> > +	}
-> > +
-> > +	BFLOG_DEBUG(ctx, "invalid verdict: %d\n", standard_target->verdict);
-> > +
-> > +	return -EINVAL;
-> > +}
-> > +
-> > +const struct target_ops standard_target_ops = {
-> > +	.name = "",
-> > +	.revision = 0,
-> > +	.size = sizeof(struct xt_standard_target),
-> > +	.check = standard_target_check,
-> > +};
-> > +
-> > +static int error_target_check(struct context *ctx, const struct bpfilter_ipt_target *ipt_target)
-> > +{
-> > +	const struct bpfilter_ipt_error_target *error_target;
-> > +	size_t maxlen;
-> > +
-> > +	error_target = (const struct bpfilter_ipt_error_target *)&ipt_target;
-> > +	maxlen = sizeof(error_target->error_name);
-> > +	if (strnlen(error_target->error_name, maxlen) == maxlen) {
-> > +		BFLOG_DEBUG(ctx, "cannot check error target: too long errorname\n");
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +const struct target_ops error_target_ops = {
-> > +	.name = "ERROR",
-> > +	.revision = 0,
-> > +	.size = sizeof(struct xt_error_target),
-> > +	.check = error_target_check,
-> > +};
-> > +
-> > +int init_target(struct context *ctx, const struct bpfilter_ipt_target *ipt_target,
-> > +		struct target *target)
-> > +{
-> > +	const size_t maxlen = sizeof(ipt_target->u.user.name);
-> > +	const struct target_ops *found;
-> > +	int err;
-> > +
-> > +	if (strnlen(ipt_target->u.user.name, maxlen) == maxlen) {
-> > +		BFLOG_DEBUG(ctx, "cannot init target: too long target name\n");
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	found = target_ops_map_find(&ctx->target_ops_map, ipt_target->u.user.name);
-> > +	if (IS_ERR(found)) {
-> > +		BFLOG_DEBUG(ctx, "cannot find target by name: '%s'\n", ipt_target->u.user.name);
-> > +		return PTR_ERR(found);
-> > +	}
-> > +
-> > +	if (found->size != ipt_target->u.target_size ||
-> > +	    found->revision != ipt_target->u.user.revision) {
-> > +		BFLOG_DEBUG(ctx, "invalid target: '%s'\n", ipt_target->u.user.name);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	err = found->check(ctx, ipt_target);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	target->target_ops = found;
-> > +	target->ipt_target = ipt_target;
-> > +
-> > +	return 0;
-> > +}
-> > diff --git a/net/bpfilter/target.h b/net/bpfilter/target.h
-> > new file mode 100644
-> > index 000000000000..5d9c4c459c05
-> > --- /dev/null
-> > +++ b/net/bpfilter/target.h
-> > @@ -0,0 +1,34 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (c) 2021 Telegram FZ-LLC
-> > + */
-> > +
-> > +#ifndef NET_BPFILTER_TARGET_H
-> > +#define NET_BPFILTER_TARGET_H
-> > +
-> > +#include "../../include/uapi/linux/bpfilter.h"
-> > +
-> > +#include <stdint.h>
-> > +
-> > +struct context;
-> > +struct target_ops_map;
-> > +
-> > +struct target_ops {
-> > +	char name[BPFILTER_EXTENSION_MAXNAMELEN];
-> > +	uint16_t size;
-> 
-> Mis-aligned "size". 
-> 
-> > +	uint8_t revision;
-> > +	int (*check)(struct context *ctx, const struct bpfilter_ipt_target *ipt_target);
-> > +};
-> > +
-> > +struct target {
-> > +	const struct target_ops *target_ops;
-> > +	const struct bpfilter_ipt_target *ipt_target;
-> > +};
-> > +
-> > +extern const struct target_ops standard_target_ops;
-> > +extern const struct target_ops error_target_ops;
-> > +
-> > +int init_target(struct context *ctx, const struct bpfilter_ipt_target *ipt_target,
-> > +		struct target *target);
-> > +
-> > +#endif // NET_BPFILTER_TARGET_H
-> > diff --git a/tools/testing/selftests/bpf/bpfilter/.gitignore b/tools/testing/selftests/bpf/bpfilter/.gitignore
-> > index e5073231f811..1856d0515f49 100644
-> > --- a/tools/testing/selftests/bpf/bpfilter/.gitignore
-> > +++ b/tools/testing/selftests/bpf/bpfilter/.gitignore
-> > @@ -2,3 +2,4 @@
-> > test_io
-> > test_map
-> > test_match
-> > +test_target
-> > diff --git a/tools/testing/selftests/bpf/bpfilter/Makefile b/tools/testing/selftests/bpf/bpfilter/Makefile
-> > index 362c9a28b88d..78da74b9ee68 100644
-> > --- a/tools/testing/selftests/bpf/bpfilter/Makefile
-> > +++ b/tools/testing/selftests/bpf/bpfilter/Makefile
-> > @@ -11,6 +11,7 @@ CFLAGS += -Wall -g -pthread -I$(TOOLSINCDIR) -I$(APIDIR) -I$(BPFILTERSRCDIR)
-> > TEST_GEN_PROGS += test_io
-> > TEST_GEN_PROGS += test_map
-> > TEST_GEN_PROGS += test_match
-> > +TEST_GEN_PROGS += test_target
-> > 
-> > KSFT_KHDR_INSTALL := 1
-> > 
-> > @@ -19,4 +20,6 @@ include ../../lib.mk
-> > $(OUTPUT)/test_io: test_io.c $(BPFILTERSRCDIR)/io.c
-> > $(OUTPUT)/test_map: test_map.c $(BPFILTERSRCDIR)/map-common.c
-> > $(OUTPUT)/test_match: test_match.c $(BPFILTERSRCDIR)/match.c $(BPFILTERSRCDIR)/map-common.c \
-> > -	$(BPFILTERSRCDIR)/context.c $(BPFILTERSRCDIR)/bflog.c
-> > +	$(BPFILTERSRCDIR)/context.c $(BPFILTERSRCDIR)/bflog.c $(BPFILTERSRCDIR)/target.c
-> > +$(OUTPUT)/test_target: test_target.c $(BPFILTERSRCDIR)/target.c $(BPFILTERSRCDIR)/map-common.c \
-> > +	$(BPFILTERSRCDIR)/context.c $(BPFILTERSRCDIR)/bflog.c $(BPFILTERSRCDIR)/match.c
-> > diff --git a/tools/testing/selftests/bpf/bpfilter/bpfilter_util.h b/tools/testing/selftests/bpf/bpfilter/bpfilter_util.h
-> > new file mode 100644
-> > index 000000000000..d82ff86f280e
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/bpfilter/bpfilter_util.h
-> > @@ -0,0 +1,31 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +
-> > +#ifndef BPFILTER_UTIL_H
-> > +#define BPFILTER_UTIL_H
-> > +
-> > +#include <linux/bpfilter.h>
-> > +#include <linux/netfilter/x_tables.h>
-> > +
-> > +#include <stdio.h>
-> > +
-> > +static inline void init_standard_target(struct xt_standard_target *ipt_target, int revision,
-> > +					int verdict)
-> > +{
-> > +	snprintf(ipt_target->target.u.user.name, sizeof(ipt_target->target.u.user.name), "%s",
-> > +		 BPFILTER_STANDARD_TARGET);
-> > +	ipt_target->target.u.user.revision = revision;
-> > +	ipt_target->target.u.user.target_size = sizeof(*ipt_target);
-> > +	ipt_target->verdict = verdict;
-> > +}
-> > +
-> > +static inline void init_error_target(struct xt_error_target *ipt_target, int revision,
-> > +				     const char *error_name)
-> > +{
-> > +	snprintf(ipt_target->target.u.user.name, sizeof(ipt_target->target.u.user.name), "%s",
-> > +		 BPFILTER_ERROR_TARGET);
-> > +	ipt_target->target.u.user.revision = revision;
-> > +	ipt_target->target.u.user.target_size = sizeof(*ipt_target);
-> > +	snprintf(ipt_target->errorname, sizeof(ipt_target->errorname), "%s", error_name);
-> > +}
-> > +
-> > +#endif // BPFILTER_UTIL_H
-> > 
 > [...]
-> > 
 > 
 
 -- 
