@@ -2,135 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5701138A17B
-	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 11:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6A738A400
+	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 11:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232544AbhETJbV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 May 2021 05:31:21 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:3621 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232374AbhETJ3V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 May 2021 05:29:21 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fm4906WpbzmX6w;
-        Thu, 20 May 2021 17:25:40 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 20 May 2021 17:27:57 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 20 May 2021 17:27:57 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-Subject: [PATCH RFC v4 3/3] net: sched: remove qdisc->empty for lockless qdisc
-Date:   Thu, 20 May 2021 17:27:53 +0800
-Message-ID: <1621502873-62720-4-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1621502873-62720-1-git-send-email-linyunsheng@huawei.com>
-References: <1621502873-62720-1-git-send-email-linyunsheng@huawei.com>
+        id S231934AbhETKAK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 May 2021 06:00:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235188AbhETJ5w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 May 2021 05:57:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50D4061411;
+        Thu, 20 May 2021 09:38:02 +0000 (UTC)
+Date:   Thu, 20 May 2021 11:37:59 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Tianyin Xu <tyxu@illinois.edu>
+Cc:     Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@kernel.org>,
+        YiFei Zhu <zhuyifei1999@gmail.com>,
+        "containers@lists.linux.dev" <containers@lists.linux.dev>,
+        bpf <bpf@vger.kernel.org>, "Zhu, YiFei" <yifeifz2@illinois.edu>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kuo, Hsuan-Chi" <hckuo2@illinois.edu>,
+        Claudio Canella <claudio.canella@iaik.tugraz.at>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Daniel Gruss <daniel.gruss@iaik.tugraz.at>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jann Horn <jannh@google.com>,
+        "Jia, Jinghao" <jinghao7@illinois.edu>,
+        "Torrellas, Josep" <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tom Hromatka <tom.hromatka@oracle.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [RFC PATCH bpf-next seccomp 00/12] eBPF seccomp filters
+Message-ID: <20210520093759.mj5diqjdmj2dekdr@wittgenstein>
+References: <cover.1620499942.git.yifeifz2@illinois.edu>
+ <CALCETrUQBonh5BC4eomTLpEOFHVcQSz9SPcfOqNFTf2TPht4-Q@mail.gmail.com>
+ <CABqSeASYRXMwTQwLfm_Tapg45VUy9sPfV7BeeV8p7XJrDoLf+Q@mail.gmail.com>
+ <fffbea8189794a8da539f6082af3de8e@DM5PR11MB1692.namprd11.prod.outlook.com>
+ <CAGMVDEGzGB4+6gJPTw6Tdng5ur9Jua+mCbqwPoNZ16EFaDcmjA@mail.gmail.com>
+ <108b4b9c2daa4123805d2b92cf51374b@DM5PR11MB1692.namprd11.prod.outlook.com>
+ <CAGMVDEEkDeUBcJAswpBjcQNWk7QDcO8BZR=uvVfm-+qe714tYg@mail.gmail.com>
+ <20210520085613.gvshk4jffmzggvsm@wittgenstein>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210520085613.gvshk4jffmzggvsm@wittgenstein>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As MISSED and DRAINING state are used to indicate a non-empty
-qdisc, qdisc->empty is not longer needed, so remove it.
+On Thu, May 20, 2021 at 10:56:13AM +0200, Christian Brauner wrote:
+> On Thu, May 20, 2021 at 03:16:10AM -0500, Tianyin Xu wrote:
+> > On Mon, May 17, 2021 at 10:40 AM Tycho Andersen <tycho@tycho.pizza> wrote:
+> > >
+> > > On Sun, May 16, 2021 at 03:38:00AM -0500, Tianyin Xu wrote:
+> > > > On Sat, May 15, 2021 at 10:49 AM Andy Lutomirski <luto@kernel.org> wrote:
+> > > > >
+> > > > > On 5/10/21 10:21 PM, YiFei Zhu wrote:
+> > > > > > On Mon, May 10, 2021 at 12:47 PM Andy Lutomirski <luto@kernel.org> wrote:
+> > > > > >> On Mon, May 10, 2021 at 10:22 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> > > > > >>>
+> > > > > >>> From: YiFei Zhu <yifeifz2@illinois.edu>
+> > > > > >>>
+> > > > > >>> Based on: https://urldefense.com/v3/__https://lists.linux-foundation.org/pipermail/containers/2018-February/038571.html__;!!DZ3fjg!thbAoRgmCeWjlv0qPDndNZW1j6Y2Kl_huVyUffr4wVbISf-aUiULaWHwkKJrNJyo$
+> > > > > >>>
+> > > > > >>> This patchset enables seccomp filters to be written in eBPF.
+> > > > > >>> Supporting eBPF filters has been proposed a few times in the past.
+> > > > > >>> The main concerns were (1) use cases and (2) security. We have
+> > > > > >>> identified many use cases that can benefit from advanced eBPF
+> > > > > >>> filters, such as:
+> > > > > >>
+> > > > > >> I haven't reviewed this carefully, but I think we need to distinguish
+> > > > > >> a few things:
+> > > > > >>
+> > > > > >> 1. Using the eBPF *language*.
+> > > > > >>
+> > > > > >> 2. Allowing the use of stateful / non-pure eBPF features.
+> > > > > >>
+> > > > > >> 3. Allowing the eBPF programs to read the target process' memory.
+> > > > > >>
+> > > > > >> I'm generally in favor of (1).  I'm not at all sure about (2), and I'm
+> > > > > >> even less convinced by (3).
+> > > > > >>
+> > > > > >>>
+> > > > > >>>   * exec-only-once filter / apply filter after exec
+> > > > > >>
+> > > > > >> This is (2).  I'm not sure it's a good idea.
+> > > > > >
+> > > > > > The basic idea is that for a container runtime it may wait to execute
+> > > > > > a program in a container without that program being able to execve
+> > > > > > another program, stopping any attack that involves loading another
+> > > > > > binary. The container runtime can block any syscall but execve in the
+> > > > > > exec-ed process by using only cBPF.
+> > > > > >
+> > > > > > The use case is suggested by Andrea Arcangeli and Giuseppe Scrivano.
+> > > > > > @Andrea and @Giuseppe, could you clarify more in case I missed
+> > > > > > something?
+> > > > >
+> > > > > We've discussed having a notifier-using filter be able to replace its
+> > > > > filter.  This would allow this and other use cases without any
+> > > > > additional eBPF or cBPF code.
+> > > > >
+> > > >
+> > > > A notifier is not always a solution (even ignoring its perf overhead).
+> > > >
+> > > > One problem, pointed out by Andrea Arcangeli, is that notifiers need
+> > > > userspace daemons. So, it can hardly be used by daemonless container
+> > > > engines like Podman.
+> > >
+> > > I'm not sure I buy this argument. Podman already has a conmon instance
+> > > for each container, this could be a child of that conmon process, or
+> > > live inside conmon itself.
+> > >
+> > > Tycho
+> > 
+> > I checked with Andrea Arcangeli and Giuseppe Scrivano who are working on Podman.
+> > 
+> > You are right that Podman is not completely daemonless. However, “the
+> > fact it's no entirely daemonless doesn't imply it's a good idea to
+> > make it worse and to add complexity to the background conmon daemon or
+> > to add more daemons.”
+> > 
+> > TL;DR. User notifiers are surely more flexible, but are also more
+> > expensive and complex to implement, compared with ebpf filters. /*
+> > I’ll reply to Sargun’s performance argument in a separate email */
+> > 
+> > I'm sure you know Podman well, but let me still move some jade from
+> > Andrea and Giuseppe (all credits on podmon/crun are theirs) to
+> > elaborate the point, for folks cced on the list who are not very
+> > familiar with Podman.
+> > 
+> > Basically, the current order goes as follows:
+> > 
+> >          podman -> conmon -> crun -> container_binary
+> >                                \
+> >                                 - seccomp done at crun level, not conmon
+> > 
+> > At runtime, what's left is:
+> > 
+> >          conmon -> container_binary  /* podman disappears; crun disappears */
+> > 
+> > So, to go through and use seccomp notify to block `exec`, we can
+> > either start the container_binary with a seccomp agent wrapper, or
+> > bloat the common binary (as pointed out by Tycho).
+> > 
+> > If we go with the first approach, we will have:
+> > 
+> >          podman -> conmon -> crun -> seccomp_agent -> container_binary
+> > 
+> > So, at runtime we'd be left with one more daemon:
+> > 
+> >         conmon -> seccomp_agent -> container_binary
+> 
+> That seems like a strawman. I don't see why this has to be out of
+> process or a separate daemon. Conmon uses a regular event loop. Adding
+> support for processing notifier syscall notifications is
+> straightforward. Moving it to a plugin as you mentioned below is a
+> design decision not a necessity.
+> 
+> > 
+> > Apparently, nobody likes one more daemon. So, the proposal from
+> 
+> I'm not sure such a blanket statements about an indeterminate group of
+> people's alleged preferences constitutes a technical argument wny we
+> need ebpf in seccomp.
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- include/net/sch_generic.h | 13 +++----------
- net/sched/sch_generic.c   |  3 ---
- 2 files changed, 3 insertions(+), 13 deletions(-)
+I was missing a :) here.
 
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index 0940ad56..51e74fc 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -117,8 +117,6 @@ struct Qdisc {
- 	spinlock_t		busylock ____cacheline_aligned_in_smp;
- 	spinlock_t		seqlock;
- 
--	/* for NOLOCK qdisc, true if there are no enqueued skbs */
--	bool			empty;
- 	struct rcu_head		rcu;
- 
- 	/* private data */
-@@ -160,7 +158,7 @@ static inline bool qdisc_is_percpu_stats(const struct Qdisc *q)
- static inline bool qdisc_is_empty(const struct Qdisc *qdisc)
- {
- 	if (qdisc_is_percpu_stats(qdisc))
--		return READ_ONCE(qdisc->empty);
-+		return !(READ_ONCE(qdisc->state) & QDISC_STATE_NON_EMPTY);
- 	return !READ_ONCE(qdisc->q.qlen);
- }
- 
-@@ -168,7 +166,7 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- {
- 	if (qdisc->flags & TCQ_F_NOLOCK) {
- 		if (spin_trylock(&qdisc->seqlock))
--			goto nolock_empty;
-+			return true;
- 
- 		/* If the MISSED flag is set, it means other thread has
- 		 * set the MISSED flag before second spin_trylock(), so
-@@ -190,12 +188,7 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- 		/* Retry again in case other CPU may not see the new flag
- 		 * after it releases the lock at the end of qdisc_run_end().
- 		 */
--		if (!spin_trylock(&qdisc->seqlock))
--			return false;
--
--nolock_empty:
--		WRITE_ONCE(qdisc->empty, false);
--		return true;
-+		return spin_trylock(&qdisc->seqlock);
- 	} else if (qdisc_is_running(qdisc)) {
- 		return false;
- 	}
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index 83d7f5f..1abd9c7 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -707,8 +707,6 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
- 		need_retry = false;
- 
- 		goto retry;
--	} else {
--		WRITE_ONCE(qdisc->empty, true);
- 	}
- 
- 	return skb;
-@@ -909,7 +907,6 @@ struct Qdisc *qdisc_alloc(struct netdev_queue *dev_queue,
- 	sch->enqueue = ops->enqueue;
- 	sch->dequeue = ops->dequeue;
- 	sch->dev_queue = dev_queue;
--	sch->empty = true;
- 	dev_hold(dev);
- 	refcount_set(&sch->refcnt, 1);
- 
--- 
-2.7.4
-
+> 
+> > Giuseppe was/is to use user notifiers as plugins (.so) loaded by
+> > conmon:
+> > https://github.com/containers/conmon/pull/190
+> > https://github.com/containers/crun/pull/438
+> > 
+> > Now, with the ebpf filter support, one can implement the same thing
+> > using an embarrassingly simple ebpf filter and, thanks to Giuseppe,
+> > this is well supported by crun.
+> 
+> So I think this is trying to jump the gun by saying "Look, the result
+> might be simpler.". That may even be the case - though I'm not yet
+> convinced - but Andy's point stands that this brings a slew of issues on
+> the table that need clear answers. Bringing stateful ebpf features into
+> seccomp is a pretty big step and especially around the
+> privilege/security model it looks pretty handwavy right now.
+> 
+> Christian
+> 
