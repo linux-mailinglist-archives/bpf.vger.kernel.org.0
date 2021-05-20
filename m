@@ -2,219 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689F938B8EB
-	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 23:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4053938B926
+	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 23:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbhETVXv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 May 2021 17:23:51 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:32054 "EHLO
+        id S230410AbhETVsg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 May 2021 17:48:36 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:25362 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229655AbhETVXv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 20 May 2021 17:23:51 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14KLF4k8032380;
-        Thu, 20 May 2021 14:22:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=Ww6VXUfs134oEvEPt1FmzgUpC4EIjqwaSV4UPfuRJY4=;
- b=Wx+4EJJEL9yujmki3r/+N0BlRp3aWlRsNJf449WqckO6Xee5NxAiW7lsGk9XEBHcu5QY
- Y8Q98w3UxrBbiI5tQgms2agaXVkEJ8utKSV5Z7PRN7BfgU6PKwy+lIW4TsV3TYCILuou
- zK/k5v1G6deQasmWm38/3BRgcLc2WWv8RVM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 38n48j1spw-1
+        by vger.kernel.org with ESMTP id S230343AbhETVsf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 20 May 2021 17:48:35 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14KLY0uL006346;
+        Thu, 20 May 2021 14:46:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=z6PcDwod4PDMdlhheGDlJbYaeMwSliXVnfyWPPyVrU0=;
+ b=adPeNp42IBppOI6hR3ONIT3BuiSyUOqZRi7DXrWBhv6LPmedJO/25vlNX8/9Erv5yNBo
+ YktBUM30M4sxLWVKmJz8T4+ZkZ+zD7FIJHVUg3odrm6Ukr6UIfzKifkBUGR/DWTC+Mkh
+ nHuuQfAVQByhv6MUOL6YwK6G7oKu6Fj99uI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 38n6p30ub5-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 20 May 2021 14:22:10 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+        Thu, 20 May 2021 14:46:52 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 20 May 2021 14:22:08 -0700
+ 15.1.2176.2; Thu, 20 May 2021 14:46:51 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JyhIZ7abmXMkpbuw2SBJhgfU4J5K39Sdk8HLjrzTH1bn6+9OB9IE3SbahbQBv/t6rshoraz9JN9JBTFiQ4DI08MRkigbAzczuXY3hxfMBrZbVR/6FLrrDiiWUE/2eZ06Lvq5ns1jdagjhf7stpfl37ZSFEIY2WZ9vvPzUuD5I0I7rY9/WnUR8OLe7tuSUH+lHjgIc1WW1OznWNur4TNzTyV88fz83R0T+wMzPB3vB2TTYqrDhKnC4RxsCQ98Nridt64v/ieQENjYE9dmHZu1cJZyyuULHKLKabB8/sDcImU3P7FZe6o4wSSzzfg4YUJGZq4H8ZgvNwuk/45e6Vu0ow==
+ b=od/Sk7mxPepH91sjJi03Y7bR17HTMG48akdXlzt7c0HbFaMwy1HM2HR7B0F5AHJY+O5R558dG4q3rteodG7iA0WYs21uu70I6UqKzWnGmUtGe4/LWNgq2zlTHVCGw9f0xjM53c9CLd+gWkzi07GwSiCgdK/zfblEI8KMHzrp6Xhco7rY+qI0MKcIBy4Ep8vUozBj5Ygbp+91OfXuA+Dwa8I/EIMJiWSFuMUchXvqqxsmS3spsLBERGY/ZVDrB+tb1vpXi7ejsvZvHROZvGQe6gb8I3qnE9wx1wkisK0Nk1q7Uof6P5j1ZwFpSj9SVE5eaiFm46O+ABWmPfo+eV0TyQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ww6VXUfs134oEvEPt1FmzgUpC4EIjqwaSV4UPfuRJY4=;
- b=cCDxWCFAEW+DhP5OrRy2cZfNJKGqNwOx6qBAOamFxOnxZfTdGScIioeThhOrMQcvC+rNgVVgLTCw930EOM1OVyF3yphIPxpfxzMoM741MsReH1jMN6A8xEH5nPlB+590e4QypMPU/CCXDrdzhfdcsA1OUWqpUjxxl7az5veIZtPKTqcb69hEFbLLeePUMg3ZoCJYQrgBaznNQlikdIa3IkfHRhr/x91dYuuvDpVkZO50o0rQCuGZyCQw69rPdgxkVQJvlSfG4o5B/M4jjHm+/FKCPkB47Rz7MFFt6+cKgaVv1YPidvZO+rIuJE0sMliBs7qMvQtqo5U3L5wnCSunUA==
+ bh=z6PcDwod4PDMdlhheGDlJbYaeMwSliXVnfyWPPyVrU0=;
+ b=h+H2rVqL2Zvvw+ZqvETxVD1tT/XEQ8uIlG4ZSJ4d27Kz9xpkV0iy24AbH81RnAK6n1lAYQ/I4eMVj01RPvJGJCd/CWNzwirGdvSW2ILOXRegPglzG/k1r5n0VsBldX7U+CGKOAQNEh7a975GDGwC2o9yQK77NboM5Zmli/PuTdRHjBxuPf7Bw4+1E662XqACdzo5JU7VsfxmZNZTac2PCFI9z3/TSU1ysZPX9tfCDrFtf2V9SY02JyF3DD2L+wSAETj3PKFQenZf7HsP3TCVnp/9PzK7OQzyrz2M3whJOqbSQGrViZhJJEnj6E2vK4YCjZQXsageeG7ixncgwWtwCA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Authentication-Results: amazon.co.jp; dkim=none (message not signed)
- header.d=none;amazon.co.jp; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by SJ0PR15MB4488.namprd15.prod.outlook.com (2603:10b6:a03:375::22) with
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB3256.namprd15.prod.outlook.com (2603:10b6:a03:10f::24) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Thu, 20 May
- 2021 21:22:07 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::718a:4142:4c92:732f]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::718a:4142:4c92:732f%6]) with mapi id 15.20.4150.023; Thu, 20 May 2021
- 21:22:07 +0000
-Date:   Thu, 20 May 2021 14:22:01 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <kuni1840@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH v6 bpf-next 03/11] tcp: Keep TCP_CLOSE sockets in the
- reuseport group.
-Message-ID: <20210520212201.zq3ozwx3vrobd2ua@kafai-mbp.dhcp.thefacebook.com>
-References: <20210520062648.ejqufb6m5wr6z7k2@kafai-mbp.dhcp.thefacebook.com>
- <20210520085117.48629-1-kuniyu@amazon.co.jp>
+ 2021 21:46:47 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::38d3:cc71:bca8:dd2a]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::38d3:cc71:bca8:dd2a%5]) with mapi id 15.20.4129.033; Thu, 20 May 2021
+ 21:46:47 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+CC:     "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        "Franz-B . Tuneke" <franz-bernhard.tuneke@tu-dortmund.de>,
+        Christian Dietrich <stettberger@dokucode.de>
+Subject: Re: [PATCH 01/23] io_uring: shuffle rarely used ctx fields
+Thread-Topic: [PATCH 01/23] io_uring: shuffle rarely used ctx fields
+Thread-Index: AQHXTLk17dWezJtB9kirPhycVh7qbKrs6dAA
+Date:   Thu, 20 May 2021 21:46:47 +0000
+Message-ID: <0339DB35-27AC-4A50-B807-968C72ABB698@fb.com>
+References: <cover.1621424513.git.asml.silence@gmail.com>
+ <485abb65cf032f4ddf13dcc0bd60e5475638efc2.1621424513.git.asml.silence@gmail.com>
+In-Reply-To: <485abb65cf032f4ddf13dcc0bd60e5475638efc2.1621424513.git.asml.silence@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.80.0.2.43)
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:fa93]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ff54c24f-fba8-4010-018b-08d91bd8c4ae
+x-ms-traffictypediagnostic: BYAPR15MB3256:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR15MB32565F979973DF008C09CFCBB32A9@BYAPR15MB3256.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:449;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qMTNp2qDnLAwy6LnyjbHTqSjhfFGj5jca17fYWf7GxuF9FHZnr3x+XgwDy3yJJKXw49Rsrfdm2VJEOQpgDjjKI4lUZTcHi+2L8H/VFJNqc3WxqrOpRrbEfdpG/tptjWNflXAHMidTq6rral3IPrYKVBkAnMywLi/t4a4I1rx5IDRkKvuINeG7kirWtWPLq0YVyapTCH2ID56h1PUm49YOrwYqJpwXttgFpIQaHpNnzBbOCOkz1W6FnZUnzo7hsGHS3whWWQXXcC3ZTCKsYgmWT8V/4t6zyUjkcCFzrldxQzFnju0CupM9+63ti1WO9BqTKHEu/00S5e5E5MiugdbE051w+ecc8xjwHlwwg+/CoObxDAgtviFW//kLOygVlXRZh8XBVJFOIbu2IkItIvNgMvOFjTuO7q/PHEyYm9N9jhcZAEqJnCMGPf5YHicenSI0MxQyYLH/pWkaDeb1/KyLS87pAk4TtJjCcz0okxkOSa7MtVg6cZZO73CkF4nAhSJBMidusVLIr8n6Eq0taQbAesIWlUms4XbsHniObx9FuXlYnhnxUJ1hJtLlCue9ctIdIw8SoF9/3p3q82tAGwMFZS54lT438bRWpgwynRoVhuNz8rDtspsJnbY0SblBqGQ8zDHTD5ts8TERH2w19ix/zM/rw0c06cuqgufrMLuwPc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(39860400002)(376002)(346002)(366004)(66556008)(64756008)(66476007)(66446008)(66946007)(478600001)(186003)(91956017)(4326008)(316002)(6486002)(5660300002)(6506007)(53546011)(76116006)(6512007)(6916009)(54906003)(2906002)(38100700002)(122000001)(33656002)(83380400001)(36756003)(86362001)(7416002)(8936002)(8676002)(71200400001)(2616005)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?UUBot7YMNVFYGsw3/POxiyR9z6GIoScv3Wz8FuHafXTc1UNar0fYgXOS0lIm?=
+ =?us-ascii?Q?ybX/o4rXWoiJz73CCnoh/yoqO+eLYeXtNahnA2PIUUF3cNBkBHqZcQ+vMNQt?=
+ =?us-ascii?Q?Tu7MRlUG2c9A+C2DMOE0FcOX5hUOYpkpZNccVgWcohaT7eZv+9Tojteo2hqB?=
+ =?us-ascii?Q?MCQ+rfGR/HykCx/ooXxkOSxq+1fN6dICDL/nrNEwNbd1k4blZTGCqq2a5lpX?=
+ =?us-ascii?Q?wKc41ly9vYKa3KKmSfvrxN/EPz8/KlvIb+N9jTIAiOGKcLqMg3p0O8Bao3/h?=
+ =?us-ascii?Q?1TIwrGqrTmazzAgii7og7UKGd5ToX6KRVqS6DhWjAW012vpmUuZ4E0BQZwjB?=
+ =?us-ascii?Q?T4aIOwyU0zFvRpiUuY2Whg5MGPQd0vqmPBS/PmcDptvKF4PwOCeL7r1l5uRW?=
+ =?us-ascii?Q?nGX2dTXaWj7x/NrL/Qg1Wto+ve0SULbZkPSQMOyHv2UHobf6ZZFt9a3985RS?=
+ =?us-ascii?Q?5QD1TWHzNYYd3TxdSAGrInNhaWnJskOc+QLCutLd4gD8fJ4YWkuSNJ5jEnaH?=
+ =?us-ascii?Q?0Dy1jeI8654DBDVCoXwBtNPWFalInQzprRAUo1LVPN3SPqOKaH0CdY6EImRB?=
+ =?us-ascii?Q?f4VXmJePRlQeXTYzsd8hgqivOgoz94DFAXE7wKFZMLcUGqT6QBhr72EP8c5y?=
+ =?us-ascii?Q?9wvnbNaYLGZ85kXy0hnXytF/z0xh/tJAGX7XLW3akzJJ0T/qH5cNnESqTi6/?=
+ =?us-ascii?Q?l27auUA9LL2N6g2k5tI9TCwUrjh26UoIwlN1QHzCaLfckZ2kgKjIkPmBi75y?=
+ =?us-ascii?Q?Z098/TcLYpcrNogrXZTmIV6S31bYwTS+1ybhluYIwtOgJX/lJNTuRoXk8r+p?=
+ =?us-ascii?Q?7wQ7+nzf5YINFxSewBNBdP46iRl0bzyomtg8YxFjJiQUjXuYYaAcW8ELi/SY?=
+ =?us-ascii?Q?0VvE4lImdunX/REoth+Aw/9wAW2dxXU/KIQeJD8or2zwVNi18AkGOZjjuge8?=
+ =?us-ascii?Q?HM6QMO3Bkf3vzrRLkgDB+D0vE4blWjuySRyJgXFMFhWojeAJlEzcHO4piEeY?=
+ =?us-ascii?Q?T8iHI0g6zSI/TZKAd9osRtUUOpiEMdq/rIlm/M+mELzXucRGDp/Wdlv+BBZj?=
+ =?us-ascii?Q?XKD8cZ6x0btKnJSMq1g7CwtmZ/UXUYibluJXJln3Q4i2pA+k55gS6+Dhw3a2?=
+ =?us-ascii?Q?eJtXpB8TMgL49LFCSZLX91XdV6mH51D7TMj53pzHC8U/6Ztk2cBGUwg6F0fc?=
+ =?us-ascii?Q?v2kPhU7uiwhROyHHB2edzBMaeoOePX3jR+blJG16boUyFYVdOsv42Sf5u2aC?=
+ =?us-ascii?Q?WG7P+7agGSFg+dKkZn0FVVvdp1Q/L/47enFRA9n2muJ5X5MYPlLMobUkIxTJ?=
+ =?us-ascii?Q?kuZemWuJ8X4CUuTRN9xxOGfTelZPKugRJd+U27Qs34suPCYRZsYQ6cHw73+y?=
+ =?us-ascii?Q?cBrBE/0=3D?=
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210520085117.48629-1-kuniyu@amazon.co.jp>
-X-Originating-IP: [2620:10d:c090:400::5:59da]
-X-ClientProxiedBy: MW4PR04CA0101.namprd04.prod.outlook.com
- (2603:10b6:303:83::16) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+Content-ID: <25B8C0346FCD994E878FBEE605F3887C@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:59da) by MW4PR04CA0101.namprd04.prod.outlook.com (2603:10b6:303:83::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Thu, 20 May 2021 21:22:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c8ef5a25-8a6e-4b9d-29d0-08d91bd5521b
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4488:
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB4488D675840CC44B9C488A33D52A9@SJ0PR15MB4488.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Qe3E/moT60xu+bm9gqaCiQsZrsfDQOGfxT2U2d7cQtVzQch99Lt68t6SDNrLkdkqg80SCBWLi4PPwywWp/Vgc48t/ssjw4sOddYD/q0ckncE2WJcA6LWdwWJ9wSRG9+ZHaQkYRtn2K/uqlp1+zo99LPnCzK0y+Ekof5aVDmqw5Pylt8e0XL2CuSdk5BZRZ/G4FTm+diosyU2m83M9F1EfzDwRqeEEAOdZwyi5PoxM2RIsSjvQSsFDL3+L4jKEElQuoYIgSJoaJe7yXEtUt09FONspFpeQw6cEvfe/anrfx5r2TusLBJS6RaEXLPu4bqEwQrOh4E6Q0/Ob6aip8DnEV6XSF8Mxqdu6ZGuFu8lKTUty2SpQsTx4tKO6xh03CUOgl5f0xGSexl7eG1mqbGsIPVdWrIIxeMGEIHo74Ukfkf+lk94mfSNTPeDYK0c+NXiu4SqFX78Pv/tC9lupUz+xPm/3wwSGrT6o9KdO+8ypXezMCJanZDUJ8JnrAH8HEAZoM7SKi3EhD1ykKEN0W5X0Tnc9eRqo02iyLd0U97EIk+6ZSpoHndMvRGMasYshuKVgjkNJFvmDvTRgEEkecrIk+3u2FLPFqYZ5BTR0OaSYMg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(366004)(346002)(376002)(39860400002)(478600001)(6666004)(316002)(38100700002)(1076003)(55016002)(7416002)(9686003)(86362001)(2906002)(7696005)(52116002)(4326008)(83380400001)(66556008)(8936002)(6506007)(16526019)(186003)(5660300002)(6916009)(66476007)(8676002)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Du5DXZ3HjO2j5CTy6FayB3azLqXQ7MdL0ZjvyDs2zomJVCphfRpyZ7NXENet?=
- =?us-ascii?Q?1TrYa7kmrv9m2PBavok6518V1Ixstqf/jVbOu9RBRqJRTaSH0hWtvV5/pJu5?=
- =?us-ascii?Q?90TcyAzWTF7L9iYusytBQioEz/QSNggk17pLhRq3V04lKOSgAuE7PqC490ru?=
- =?us-ascii?Q?4nzftmpCskQ29s+rB7sPtPdNBFdYaRwDbjxHr48Bk71ljX8iDncvduI66fMG?=
- =?us-ascii?Q?BfIoLgWFnUoM3Jk3SeRy2j7SFdQRW5ZOhor7pVFa+oSdx5NXryTIVAWsE0yC?=
- =?us-ascii?Q?YcJCzu3p2/eSScS7rHyEuXd/lfUQQK4XEWXc5Vreyu/fYv9gtJ++/XmThEZW?=
- =?us-ascii?Q?cFuyipTK6ozoiTPhsTetIcN9C287leWU+afEVnWa4kYhz4HI3ZC4ttwMjohQ?=
- =?us-ascii?Q?lj1aEXnAcXKD6I/dYEwstf4mhhZOvqLvjphkswCrHkNdjaSJmSTjOzVR0XwD?=
- =?us-ascii?Q?jONYNO64GoD7RyIPdiD2Bh5Kn9Sj/AkF8qbLYEw3zcB/M+/I2BATR4OKDOIt?=
- =?us-ascii?Q?aAkrpZF5+/MR9JJGb4iTDGQffk/LD8jTh8RDbInKV7Yfjs2ChFDVZhmE1UXY?=
- =?us-ascii?Q?qGGQ/nAiQ8hS4SzS6vslLqCdU/K/rCiyn8D3n7VvzW0HOMSxPWncV3PSG8BX?=
- =?us-ascii?Q?8DuZTVGis8tkBxIqIAnFBF9bRVwzDN9L8cf5N714PnU/2jeTwdNNr60b+7p/?=
- =?us-ascii?Q?GDzIa9O2W/r/2A2/3fcE5JnxwACebqBWyNSe+ULCQE+quevzXqaGlusP9pl6?=
- =?us-ascii?Q?EjUMK+9+mU0T2cokgt38kS25BvBPsbjT/3ZOM0PwpA21JSESPW8yfyfhI7Wm?=
- =?us-ascii?Q?oliDS9vJMhbQi6kmNvzLSnObx0tagGkycwcR5j9TCFS+VocQVAf/q0K7VSef?=
- =?us-ascii?Q?YaMQsc1yyaRb/dSHbJYcoaFzbo6AkSlA78Jddr96iRQS5aas5WEITuip3M9+?=
- =?us-ascii?Q?hssH9tGT0xUvq0UsFqmiBGds9yUbFPazboXRmDSDAfTP8jFAFT+/b8UleEEx?=
- =?us-ascii?Q?S6nOlcC8ZORgHCj87UK479q2c89s2Kr2wWF3039qZiocpxk3v/fRRYN4nP1G?=
- =?us-ascii?Q?JAXrvvhsvP/mqh4SSdlEb3NRbobzGGLZ710vZxDxWC6JF7AO126FwU53/YjK?=
- =?us-ascii?Q?YRyjtYdnFJI7+gO2wDAHXlBPdAzomhTRdpYW5W0JvYLevyZw4nGx+qByv/Eu?=
- =?us-ascii?Q?NxBccr+geTDOq/Ttq4Cx/huT1ua0lmpnBuHIN4jLnwd5/wt2c0uG/J2QAiLX?=
- =?us-ascii?Q?Vk5JSuXJDy1ZFZ5YY0DWikKrcxO0KCG1bFoRSTlSZiEKn7MxZH5mK1hq+mOG?=
- =?us-ascii?Q?TnaJaMPcnvS2a6dbKUtR0YtjW4gpYCWXmcFRB4vBOSioDg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8ef5a25-8a6e-4b9d-29d0-08d91bd5521b
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 21:22:07.4048
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff54c24f-fba8-4010-018b-08d91bd8c4ae
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 May 2021 21:46:47.4480
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FXqtElbuJa4bhXP7yHn89sYCUlofDxh+Bn5+7+QwdQMYSEVBWQx2M7zF8o45RJam
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4488
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: N19MRrij0jZlLjTltfObV+N1kMIoxVI8zymyqQuuzwvbb4ZyEKcOIJ5xmt8h6fuArzgz6Eag1lcLsf+uCYO5ig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3256
 X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: jn2lk0KCabJekkL1QsWK75jFKeux_J2p
-X-Proofpoint-GUID: jn2lk0KCabJekkL1QsWK75jFKeux_J2p
+X-Proofpoint-ORIG-GUID: IV8N-7d_jP2-O8BIySZAfN3M2q_xDKRm
+X-Proofpoint-GUID: IV8N-7d_jP2-O8BIySZAfN3M2q_xDKRm
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-05-20_06:2021-05-20,2021-05-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- malwarescore=0 phishscore=0 adultscore=0 suspectscore=0 mlxscore=0
- bulkscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 mlxlogscore=999
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105200135
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ lowpriorityscore=0 bulkscore=0 phishscore=0 clxscore=1011 mlxscore=0
+ mlxlogscore=999 priorityscore=1501 impostorscore=0 suspectscore=0
+ malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2105200136
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 20, 2021 at 05:51:17PM +0900, Kuniyuki Iwashima wrote:
-> From:   Martin KaFai Lau <kafai@fb.com>
-> Date:   Wed, 19 May 2021 23:26:48 -0700
-> > On Mon, May 17, 2021 at 09:22:50AM +0900, Kuniyuki Iwashima wrote:
-> > 
-> > > +static int reuseport_resurrect(struct sock *sk, struct sock_reuseport *old_reuse,
-> > > +			       struct sock_reuseport *reuse, bool bind_inany)
-> > > +{
-> > > +	if (old_reuse == reuse) {
-> > > +		/* If sk was in the same reuseport group, just pop sk out of
-> > > +		 * the closed section and push sk into the listening section.
-> > > +		 */
-> > > +		__reuseport_detach_closed_sock(sk, old_reuse);
-> > > +		__reuseport_add_sock(sk, old_reuse);
-> > > +		return 0;
-> > > +	}
-> > > +
-> > > +	if (!reuse) {
-> > > +		/* In bind()/listen() path, we cannot carry over the eBPF prog
-> > > +		 * for the shutdown()ed socket. In setsockopt() path, we should
-> > > +		 * not change the eBPF prog of listening sockets by attaching a
-> > > +		 * prog to the shutdown()ed socket. Thus, we will allocate a new
-> > > +		 * reuseport group and detach sk from the old group.
-> > > +		 */
-> > For the reuseport_attach_prog() path, I think it needs to consider
-> > the reuse->num_closed_socks != 0 case also and that should belong
-> > to the resurrect case.  For example, when
-> > sk_unhashed(sk) but sk->sk_reuseport == 0.
-> 
-> In the path, reuseport_resurrect() is called from reuseport_alloc() only
-> if reuse->num_closed_socks != 0.
-> 
-> 
-> > @@ -92,6 +117,14 @@ int reuseport_alloc(struct sock *sk, bool bind_inany)
-> >  	reuse = rcu_dereference_protected(sk->sk_reuseport_cb,
-> >  					  lockdep_is_held(&reuseport_lock));
-> >  	if (reuse) {
-> > +		if (reuse->num_closed_socks) {
-> 
-> But, should this be
-> 
-> 	if (sk->sk_state == TCP_CLOSE && reuse->num_closed_socks)
-> 
-> because we need not allocate a new group when we attach a bpf prog to
-> listeners?
-The reuseport_alloc() is fine as is.  No need to change.
 
-I should have copied reuseport_attach_prog() in the last reply and
-commented there instead.
 
-I meant reuseport_attach_prog() needs a change.  In reuseport_attach_prog(),
-iiuc, currently passing the "else if (!rcu_access_pointer(sk->sk_reuseport_cb))"
-check implies the sk was (and still is) hashed with sk_reuseport enabled
-because the current behavior would have set sk_reuseport_cb to NULL during
-unhash but it is no longer true now.  For example, this will break:
+> On May 19, 2021, at 7:13 AM, Pavel Begunkov <asml.silence@gmail.com> wrot=
+e:
+>=20
+> There is a bunch of scattered around ctx fields that are almost never
+> used, e.g. only on ring exit, plunge them to the end, better locality,
+> better aesthetically.
+>=20
+> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> ---
+> fs/io_uring.c | 36 +++++++++++++++++-------------------
+> 1 file changed, 17 insertions(+), 19 deletions(-)
+>=20
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 9ac5e278a91e..7e3410ce100a 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -367,9 +367,6 @@ struct io_ring_ctx {
+> 		unsigned		cached_cq_overflow;
+> 		unsigned long		sq_check_overflow;
+>=20
+> -		/* hashed buffered write serialization */
+> -		struct io_wq_hash	*hash_map;
+> -
+> 		struct list_head	defer_list;
+> 		struct list_head	timeout_list;
+> 		struct list_head	cq_overflow_list;
+> @@ -386,9 +383,6 @@ struct io_ring_ctx {
+>=20
+> 	struct io_rings	*rings;
+>=20
+> -	/* Only used for accounting purposes */
+> -	struct mm_struct	*mm_account;
+> -
+> 	const struct cred	*sq_creds;	/* cred used for __io_sq_thread() */
+> 	struct io_sq_data	*sq_data;	/* if using sq thread polling */
+>=20
+> @@ -409,14 +403,6 @@ struct io_ring_ctx {
+> 	unsigned		nr_user_bufs;
+> 	struct io_mapped_ubuf	**user_bufs;
+>=20
+> -	struct user_struct	*user;
+> -
+> -	struct completion	ref_comp;
+> -
+> -#if defined(CONFIG_UNIX)
+> -	struct socket		*ring_sock;
+> -#endif
+> -
+> 	struct xarray		io_buffers;
+>=20
+> 	struct xarray		personalities;
+> @@ -460,12 +446,24 @@ struct io_ring_ctx {
+>=20
+> 	struct io_restriction		restrictions;
+>=20
+> -	/* exit task_work */
+> -	struct callback_head		*exit_task_work;
+> -
+> 	/* Keep this last, we don't need it for the fast path */
+> -	struct work_struct		exit_work;
+> -	struct list_head		tctx_list;
+> +	struct {
 
-1. shutdown(lsk); /* lsk was bound with sk_reuseport enabled */
-2. setsockopt(lsk, ..., SO_REUSEPORT, &zero, ...); /* disable sk_reuseport */
-3. setsockopt(lsk, ..., SO_ATTACH_REUSEPORT_EBPF, &prog_fd, ...);
-   ^---- /* This will work now because sk_reuseport_cb is not NULL.
-          * However, it shouldn't be allowed.
-	  */
+Why do we need an anonymous struct here? For cache line alignment?
+Do we need ____cacheline_aligned_in_smp?
 
-I am thinking something like this (uncompiled code):
+> +		#if defined(CONFIG_UNIX)
+> +			struct socket		*ring_sock;
+> +		#endif
+> +		/* hashed buffered write serialization */
+> +		struct io_wq_hash		*hash_map;
+> +
+> +		/* Only used for accounting purposes */
+> +		struct user_struct		*user;
+> +		struct mm_struct		*mm_account;
+> +
+> +		/* ctx exit and cancelation */
+> +		struct callback_head		*exit_task_work;
+> +		struct work_struct		exit_work;
+> +		struct list_head		tctx_list;
+> +		struct completion		ref_comp;
+> +	};
+> };
+>=20
+> struct io_uring_task {
+> --=20
+> 2.31.1
+>=20
 
-int reuseport_attach_prog(struct sock *sk, struct bpf_prog *prog)
-{
-	struct sock_reuseport *reuse;
-	struct bpf_prog *old_prog;
-
-	if (sk_unhashed(sk)) {
-		int err;
-
-		if (!sk->sk_reuseport)
-			return -EINVAL;
-
-		err = reuseport_alloc(sk, false);
-		if (err)
-			return err;
-	} else if (!rcu_access_pointer(sk->sk_reuseport_cb)) {
-		/* The socket wasn't bound with SO_REUSEPORT */
-		return -EINVAL;
-	}
-
-	/* ... */
-}
-
-WDYT?
