@@ -2,152 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD96E389E2C
-	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 08:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54146389EA3
+	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 09:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbhETGs2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 May 2021 02:48:28 -0400
-Received: from mga17.intel.com ([192.55.52.151]:17784 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230450AbhETGs0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 May 2021 02:48:26 -0400
-IronPort-SDR: Wn1S3UowION+XjQC0+zy/fDyaoCN0SGKnxt5yVmGtOYY0G82MhfAs806v791bBnfWXiW9Mp4p8
- 07oFr6zCMM9g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="181437743"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="181437743"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 23:47:04 -0700
-IronPort-SDR: E7nubylZ5EOgdYOVEQ8JL+OoU6FAGuVdqamJ4WJEktq1Q3tMIYuHK1Yk0wZMRIDKkcZx8vZCQx
- WsAxpIPbgtmQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="543203148"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga001.fm.intel.com with ESMTP; 19 May 2021 23:47:02 -0700
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        anthony.l.nguyen@intel.com, kuba@kernel.org, bjorn@kernel.org,
-        magnus.karlsson@intel.com,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH v2 intel-net 2/2] ice: parametrize functions responsible for Tx ring management
-Date:   Thu, 20 May 2021 08:35:00 +0200
-Message-Id: <20210520063500.62037-3-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210520063500.62037-1-maciej.fijalkowski@intel.com>
-References: <20210520063500.62037-1-maciej.fijalkowski@intel.com>
+        id S229978AbhETHJj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 May 2021 03:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhETHJj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 May 2021 03:09:39 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E5EC06175F
+        for <bpf@vger.kernel.org>; Thu, 20 May 2021 00:08:17 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id p7so12707738wru.10
+        for <bpf@vger.kernel.org>; Thu, 20 May 2021 00:08:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nvNvutw5U6lnRUPBURCHGGCHa2JEZhSNhVEi39PMdZ8=;
+        b=tCxQqsbYzVQEm011DO+lyzx7w+KGgEImTqonurjp5IVJQYfCV6mmWhyKPRneYZqryr
+         WCwER0ilrgnpv9m7l63j4bVceBrFZaaL4253a1x3h6xs1MWj+ZRDtSf1H2iQCL6WBuPj
+         m+BIiZQp93QLQnOTPRSDnkEViXcN0o17Z6i1AAF7KCtyx4qNmYnndxkUOJ0PsFWVR4Fs
+         5u4mPonLst22NHiANW1d2Y9SBo5QryFH3cNYu5lUg506yk9NouHrEsNRAhJW4V49kAwQ
+         Ke5VX1gBAdmDYAqTDVSNEumEI8oTgBHAtFscfO9LLP3t4YytJknuBOlVfbusPcbROA+F
+         eJHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nvNvutw5U6lnRUPBURCHGGCHa2JEZhSNhVEi39PMdZ8=;
+        b=OcEqBZFx/J7kYcePmuG5baf4IZjwVMOVb6V2Zh06qVmzP02FLN4ciCYKHmRbNOmEiT
+         woC2wC02+psGhzafGnzUnrS9OV8JAy9NnolLhf16f3sVsBFJESS1jzHzPRThGPe9Ik1M
+         RzAdpH4zrp3SDUwftDV0jjQGI7phff+L1DUtENjP3i0cdzOQXLkhyArWlG7kVhKBaSLC
+         6pYA0JTmNE52QL6suPGMPuCDwA/zvEXAOcLz32RwoIhkvkwmPkjqXsgIeFJsD9+thkyz
+         OQtDCJUM4yHqZF93pZB4+au5woYkOX3wR0SaZ0tTptidyL+NAspmUnRtYNycv0R7mE8p
+         Jhlg==
+X-Gm-Message-State: AOAM531iqxbmVCr95gYCvhAm6L4u7ylrbsgkPNdDGorTxZQwuhcgEYjV
+        0/QXJvoeT6SBsqYxIIKzYCrz4w==
+X-Google-Smtp-Source: ABdhPJyxKQ6svKMvsszD2eHww08+OJaqvwJG59ev+lZ+IPZHrRZigYzE5+Rk0HIDnB103F0UDnz27A==
+X-Received: by 2002:a5d:4d05:: with SMTP id z5mr2568820wrt.127.1621494495642;
+        Thu, 20 May 2021 00:08:15 -0700 (PDT)
+Received: from localhost ([154.21.15.43])
+        by smtp.gmail.com with ESMTPSA id s7sm7939504wmh.35.2021.05.20.00.08.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 00:08:14 -0700 (PDT)
+Date:   Thu, 20 May 2021 11:08:07 +0400
+From:   Dmitrii Banshchikov <me@ubique.spb.ru>
+To:     Song Liu <song@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, Andrey Ignatov <rdna@fb.com>
+Subject: Re: [PATCH bpf-next 02/11] bpfilter: Add logging facility
+Message-ID: <20210520070807.cpmloff4urdsifuy@amnesia>
+References: <20210517225308.720677-1-me@ubique.spb.ru>
+ <20210517225308.720677-3-me@ubique.spb.ru>
+ <CAPhsuW4osuNOagPRwUB30tk3V=ECANktt9jzb+NK1mqOamouSQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPhsuW4osuNOagPRwUB30tk3V=ECANktt9jzb+NK1mqOamouSQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit ae15e0ba1b33 ("ice: Change number of XDP Tx queues to match
-number of Rx queues") tried to address the incorrect setting of XDP
-queue count that was based on the Tx queue count, whereas in theory we
-should provide the XDP queue per Rx queue. However, the routines that
-setup and destroy the set of Tx resources are still based on the
-vsi->num_txq.
+On Wed, May 19, 2021 at 10:32:25AM -0700, Song Liu wrote:
+> On Tue, May 18, 2021 at 11:05 PM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+> >
+> > There are three logging levels for messages: FATAL, NOTICE and DEBUG.
+> > When a message is logged with FATAL level it results in bpfilter
+> > usermode helper termination.
+> 
+> Could you please explain why we choose to have 3 levels? Will we need
+> more levels,
+> like WARNING, ERROR, etc.?
 
-Ice supports the asynchronous Tx/Rx queue count, so for a setup where
-vsi->num_txq > vsi->num_rxq, ice_vsi_stop_tx_rings and ice_vsi_cfg_txqs
-will be accessing the vsi->xdp_rings out of the bounds.
 
-Parametrize two mentioned functions so they get the size of Tx resources
-array as the input.
+I found that I need one level for development - to trace what
+goes rignt and wrong. At the same time as those messages go to
+dmesg this level is too verbose to be used under normal
+circumstances. That is why another level is introduced. And the
+last one exists to verify invariants or error condintions from
+which there is no right way to recover and they result in
+bpfilter termination.
 
-Fixes: ae15e0ba1b33 ("ice: Change number of XDP Tx queues to match number of Rx queues")
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_lib.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+Probably we may have just two levels - DEBUG and NOTICE and some
+analogue of BUG_ON/WARN_ON/runtime assert that results in a
+message on NOTICE level and program termination if the checked
+condition is false.
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
-index 4f8b29d6dcfd..3c8668d8b964 100644
---- a/drivers/net/ethernet/intel/ice/ice_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_lib.c
-@@ -1705,12 +1705,13 @@ int ice_vsi_cfg_rxqs(struct ice_vsi *vsi)
-  * ice_vsi_cfg_txqs - Configure the VSI for Tx
-  * @vsi: the VSI being configured
-  * @rings: Tx ring array to be configured
-+ * @count: number of Tx ring array elements
-  *
-  * Return 0 on success and a negative value on error
-  * Configure the Tx VSI for operation.
-  */
- static int
--ice_vsi_cfg_txqs(struct ice_vsi *vsi, struct ice_ring **rings)
-+ice_vsi_cfg_txqs(struct ice_vsi *vsi, struct ice_ring **rings, u16 count)
- {
- 	struct ice_aqc_add_tx_qgrp *qg_buf;
- 	u16 q_idx = 0;
-@@ -1722,7 +1723,7 @@ ice_vsi_cfg_txqs(struct ice_vsi *vsi, struct ice_ring **rings)
- 
- 	qg_buf->num_txqs = 1;
- 
--	for (q_idx = 0; q_idx < vsi->num_txq; q_idx++) {
-+	for (q_idx = 0; q_idx < count; q_idx++) {
- 		err = ice_vsi_cfg_txq(vsi, rings[q_idx], qg_buf);
- 		if (err)
- 			goto err_cfg_txqs;
-@@ -1742,7 +1743,7 @@ ice_vsi_cfg_txqs(struct ice_vsi *vsi, struct ice_ring **rings)
-  */
- int ice_vsi_cfg_lan_txqs(struct ice_vsi *vsi)
- {
--	return ice_vsi_cfg_txqs(vsi, vsi->tx_rings);
-+	return ice_vsi_cfg_txqs(vsi, vsi->tx_rings, vsi->num_txq);
- }
- 
- /**
-@@ -1757,7 +1758,7 @@ int ice_vsi_cfg_xdp_txqs(struct ice_vsi *vsi)
- 	int ret;
- 	int i;
- 
--	ret = ice_vsi_cfg_txqs(vsi, vsi->xdp_rings);
-+	ret = ice_vsi_cfg_txqs(vsi, vsi->xdp_rings, vsi->num_xdp_txq);
- 	if (ret)
- 		return ret;
- 
-@@ -1997,17 +1998,18 @@ int ice_vsi_stop_all_rx_rings(struct ice_vsi *vsi)
-  * @rst_src: reset source
-  * @rel_vmvf_num: Relative ID of VF/VM
-  * @rings: Tx ring array to be stopped
-+ * @count: number of Tx ring array elements
-  */
- static int
- ice_vsi_stop_tx_rings(struct ice_vsi *vsi, enum ice_disq_rst_src rst_src,
--		      u16 rel_vmvf_num, struct ice_ring **rings)
-+		      u16 rel_vmvf_num, struct ice_ring **rings, u16 count)
- {
- 	u16 q_idx;
- 
- 	if (vsi->num_txq > ICE_LAN_TXQ_MAX_QDIS)
- 		return -EINVAL;
- 
--	for (q_idx = 0; q_idx < vsi->num_txq; q_idx++) {
-+	for (q_idx = 0; q_idx < count; q_idx++) {
- 		struct ice_txq_meta txq_meta = { };
- 		int status;
- 
-@@ -2035,7 +2037,7 @@ int
- ice_vsi_stop_lan_tx_rings(struct ice_vsi *vsi, enum ice_disq_rst_src rst_src,
- 			  u16 rel_vmvf_num)
- {
--	return ice_vsi_stop_tx_rings(vsi, rst_src, rel_vmvf_num, vsi->tx_rings);
-+	return ice_vsi_stop_tx_rings(vsi, rst_src, rel_vmvf_num, vsi->tx_rings, vsi->num_txq);
- }
- 
- /**
-@@ -2044,7 +2046,7 @@ ice_vsi_stop_lan_tx_rings(struct ice_vsi *vsi, enum ice_disq_rst_src rst_src,
-  */
- int ice_vsi_stop_xdp_tx_rings(struct ice_vsi *vsi)
- {
--	return ice_vsi_stop_tx_rings(vsi, ICE_NO_RESET, 0, vsi->xdp_rings);
-+	return ice_vsi_stop_tx_rings(vsi, ICE_NO_RESET, 0, vsi->xdp_rings, vsi->num_xdp_txq);
- }
- 
- /**
+I don't think that we will need more levels - until we decide to
+utilize syslog facility. Even in that case I don't know how to
+differntiate between e.g. NOTICE and INFO messages.
+
+> 
+> >
+> > Introduce struct context to avoid use of global objects and store there
+> > the logging parameters: log level and log sink.
+> >
+> > Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
+> > ---
+> >  net/bpfilter/Makefile  |  2 +-
+> >  net/bpfilter/bflog.c   | 29 +++++++++++++++++++++++++++++
+> >  net/bpfilter/bflog.h   | 24 ++++++++++++++++++++++++
+> >  net/bpfilter/context.h | 16 ++++++++++++++++
+> 
+> Maybe combine bflog.h and context.h into one file? And bflog() can
+> probably fit in
+> that file too.
+
+
+Sure.
+
+> 
+> Thanks,
+> Song
+> 
+> >  4 files changed, 70 insertions(+), 1 deletion(-)
+> >  create mode 100644 net/bpfilter/bflog.c
+> >  create mode 100644 net/bpfilter/bflog.h
+> >  create mode 100644 net/bpfilter/context.h
+> >
+> > diff --git a/net/bpfilter/Makefile b/net/bpfilter/Makefile
+> > index cdac82b8c53a..874d5ef6237d 100644
+> > --- a/net/bpfilter/Makefile
+> > +++ b/net/bpfilter/Makefile
+> > @@ -4,7 +4,7 @@
+> >  #
+> >
+> >  userprogs := bpfilter_umh
+> > -bpfilter_umh-objs := main.o
+> > +bpfilter_umh-objs := main.o bflog.o
+> >  userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi
+> >
+> >  ifeq ($(CONFIG_BPFILTER_UMH), y)
+> > diff --git a/net/bpfilter/bflog.c b/net/bpfilter/bflog.c
+> > new file mode 100644
+> > index 000000000000..2752e39060e4
+> > --- /dev/null
+> > +++ b/net/bpfilter/bflog.c
+> > @@ -0,0 +1,29 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2021 Telegram FZ-LLC
+> > + */
+> > +
+> > +#define _GNU_SOURCE
+> > +
+> > +#include "bflog.h"
+> > +
+> > +#include <stdarg.h>
+> > +#include <stdio.h>
+> > +#include <stdlib.h>
+> > +
+> > +#include "context.h"
+> > +
+> > +void bflog(struct context *ctx, int level, const char *fmt, ...)
+> > +{
+> > +       if (ctx->log_file &&
+> > +           (level == BFLOG_LEVEL_FATAL || (level & ctx->log_level))) {
+> > +               va_list va;
+> > +
+> > +               va_start(va, fmt);
+> > +               vfprintf(ctx->log_file, fmt, va);
+> > +               va_end(va);
+> > +       }
+> > +
+> > +       if (level == BFLOG_LEVEL_FATAL)
+> > +               exit(EXIT_FAILURE);
+> > +}
+> > diff --git a/net/bpfilter/bflog.h b/net/bpfilter/bflog.h
+> > new file mode 100644
+> > index 000000000000..4ed12791cfa1
+> > --- /dev/null
+> > +++ b/net/bpfilter/bflog.h
+> > @@ -0,0 +1,24 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright (c) 2021 Telegram FZ-LLC
+> > + */
+> > +
+> > +#ifndef NET_BPFILTER_BFLOG_H
+> > +#define NET_BPFILTER_BFLOG_H
+> > +
+> > +struct context;
+> > +
+> > +#define BFLOG_IMPL(ctx, level, fmt, ...) bflog(ctx, level, "bpfilter: " fmt, ##__VA_ARGS__)
+> > +
+> > +#define BFLOG_LEVEL_FATAL (0)
+> > +#define BFLOG_LEVEL_NOTICE (1)
+> > +#define BFLOG_LEVEL_DEBUG (2)
+> > +
+> > +#define BFLOG_FATAL(ctx, fmt, ...)                                                                 \
+> > +       BFLOG_IMPL(ctx, BFLOG_LEVEL_FATAL, "fatal error: " fmt, ##__VA_ARGS__)
+> > +#define BFLOG_NOTICE(ctx, fmt, ...) BFLOG_IMPL(ctx, BFLOG_LEVEL_NOTICE, fmt, ##__VA_ARGS__)
+> > +#define BFLOG_DEBUG(ctx, fmt, ...) BFLOG_IMPL(ctx, BFLOG_LEVEL_DEBUG, fmt, ##__VA_ARGS__)
+> > +
+> > +void bflog(struct context *ctx, int level, const char *fmt, ...);
+> > +
+> > +#endif // NET_BPFILTER_BFLOG_H
+> > diff --git a/net/bpfilter/context.h b/net/bpfilter/context.h
+> > new file mode 100644
+> > index 000000000000..e85c97c3d010
+> > --- /dev/null
+> > +++ b/net/bpfilter/context.h
+> > @@ -0,0 +1,16 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright (c) 2021 Telegram FZ-LLC
+> > + */
+> > +
+> > +#ifndef NET_BPFILTER_CONTEXT_H
+> > +#define NET_BPFILTER_CONTEXT_H
+> > +
+> > +#include <stdio.h>
+> > +
+> > +struct context {
+> > +       FILE *log_file;
+> > +       int log_level;
+> > +};
+> > +
+> > +#endif // NET_BPFILTER_CONTEXT_H
+> > --
+> > 2.25.1
+> >
+
 -- 
-2.20.1
 
+Dmitrii Banshchikov
