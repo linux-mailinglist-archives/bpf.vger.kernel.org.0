@@ -2,109 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9BE38B4B0
-	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 18:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E20B38B51D
+	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 19:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233240AbhETQ5E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 May 2021 12:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60892 "EHLO
+        id S233360AbhETRYg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 May 2021 13:24:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbhETQ5E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 May 2021 12:57:04 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3675C061574;
-        Thu, 20 May 2021 09:55:42 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id o8so20677680ljp.0;
-        Thu, 20 May 2021 09:55:42 -0700 (PDT)
+        with ESMTP id S233209AbhETRYf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 May 2021 13:24:35 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC35C061574;
+        Thu, 20 May 2021 10:23:13 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id r8so23823770ybb.9;
+        Thu, 20 May 2021 10:23:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=DX5kfwEY++tWLEgIovywxWgnoHHrEkUMGi91clMC9j4=;
-        b=J7/KciBuAZz4srEnNnajNDID4n8DZdIWeVmnAsTNdjAGzuxIuiHcZjab2IbT8GAa7c
-         gxmNIRYS14432rY7WognRY6BJOUzt9m4WdhHdo120YA+ASOm+6jvirSmCow183SR7pY0
-         RW9ZLMIEjCMQDhKmmndhc1OCDWFvkP2I2aeshUOASKrvcttpiv3xbaGsrnsdq5i/la1v
-         Q2RTl5p9QGyfNk9cV0VY3IZuav/Z2e2QR07cvaNnOCICn0we9bCCETC+Y6MorOb7yQNy
-         Wi6L9IEXlBtjsB60Oln6mbYUd9kD09CqsN6Cg5PEunc413zy+SAE5Tyd/lGmWQ22IEbV
-         12Rw==
+        bh=4hrfGNdJQviYTDIwq5pUkBSs0ZaBMgTRXGDnod5Fzc0=;
+        b=KhegAMuT9sFAWj7axrgLKAaUtMgQ+9poV+P6OTsDOd7VrgwOJWp0EBjG8+p8BxYn5G
+         h8j0cXcY2I93Aa6G2hk2E/GORIpWWrFfVklKMhFv6iVvGp3qPw/5FdU/MICi01s8VDYl
+         QI+vLxMcYLDutOnZvETUeqMMAodNQDTuFbiJTZbeDzr0OttaWJ+jPyIZ8HEbIeU1PYm/
+         2hiobsJLWkL52pP7Tk5tQHoUpVYYnxVdKnNq0Ncfe+Lm8/l+MeHtKwV7A6MDCcAqQWJs
+         g6WZqaj4r4xLqFTT2qWCEZXMG8lWag3JPBKN2+q/mVMpFoWtdvpM74TS/gXI+Wq2+Gll
+         tsJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=DX5kfwEY++tWLEgIovywxWgnoHHrEkUMGi91clMC9j4=;
-        b=oS8D+hx8I3RQk5ZVldvvLpxp7BcEcRGFvQw+3DfVQ80W+VrAnkuHf93x3A42Gztry/
-         6QvI03Y+DndDFlKYg9R6x7zwn7zXVWb8vtP644KobtuWE5Y49kDKv8QQDpKv9jzdzlnZ
-         WfXmH1G/bPj5W8EF1siF/aVQRpUsERKW/R0NlHvzGVkkSsve/9SVWC77TSqDkAMJw2jW
-         DzVFaFvZ4iZFxXi8+m6Y6x5RmfbsOiRuOt+3qhjNKuqhuYK37RHfZJu2FMfssxoJ83Cc
-         53U5OIVFAlo0BE+68kMn+vgNbk7MiL3K3rjvRgUc5TGG90pJGJpU8BfgRFy/SRLNrNuY
-         ufAw==
-X-Gm-Message-State: AOAM530lXFsz0pX6+MoT7wFxT1pmW/sTQGdEPad5CqIRperzwJa7frnK
-        gCg0dZoVg+lWUsTmal1fe/ilVg3uEslROFYzcGI=
-X-Google-Smtp-Source: ABdhPJwgXSGvDn9Izyu4l5D+kOWJCOAw/2AIyJHNB9uFfwb1BUzocc9jhU5mKAtrV6So0yjZozRYJWkhf1jvYwJdY/8=
-X-Received: by 2002:a2e:5813:: with SMTP id m19mr3745793ljb.258.1621529741111;
- Thu, 20 May 2021 09:55:41 -0700 (PDT)
+        bh=4hrfGNdJQviYTDIwq5pUkBSs0ZaBMgTRXGDnod5Fzc0=;
+        b=pq9s5w3eTv/nKRXyPOkcZzBM9CAd+RjOTN8htq7KoDUqITSMlCPtTyAmISJu1GDM6M
+         u6VA5OURPxSHaOMANwzICBF5QKV3I1NplF1UWgjzZbwnyhkOq2hyZQ7Lm4IPx8t49Hnb
+         7n7Z128/kfUnJ8TKSGzI2Zc45ptN/HF+itSrsggGh6wg0vagrpa4oCnyheSA0KeVmWCq
+         Gf1ouFR1VwPjwokpzRkHIjQjnL/+gxx8rCuoPxKBVVLTJzx/y01i/EIfz6XO61vntyR+
+         LyzOJV82dPk9UTIb1j+5A3mK5GRjiDVv1YRwePWwAtTdeGLcNoVVAJzB0zQuKK9mUXdD
+         yfCw==
+X-Gm-Message-State: AOAM531tQhVoqbtPGlVh/egoCfqBh0SKWI6GFCjKn6Tvb8c8TzXcPC/0
+        THy3/lo85kEr6roeMH/r9Oqjq5tob6XOJGMGTv7w5EjE
+X-Google-Smtp-Source: ABdhPJzO32iRUOnxZkOFDn/AZEdv2T6RB6HUMeONEAaTqfy5AOpyGoZdXJGbe4j2onx6yFTAm3z61gyvGQ9BC5jpbdI=
+X-Received: by 2002:a25:7246:: with SMTP id n67mr8682179ybc.510.1621531392491;
+ Thu, 20 May 2021 10:23:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210517225308.720677-1-me@ubique.spb.ru> <7312CC5D-510B-4BFD-8099-BB754FBE9CDF@fb.com>
- <20210520075323.ehagaokfbazlhhfj@amnesia>
-In-Reply-To: <20210520075323.ehagaokfbazlhhfj@amnesia>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 20 May 2021 09:55:29 -0700
-Message-ID: <CAADnVQJbxTikruisH=nfsFrC1UZW5zTXr8bUrL+U0jMBSApTTw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 00/11] bpfilter
-To:     Dmitrii Banshchikov <me@ubique.spb.ru>
-Cc:     Song Liu <songliubraving@fb.com>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Andrey Ignatov <rdna@fb.com>
+References: <cover.1621424513.git.asml.silence@gmail.com> <94134844a6f4be2e0da2c518cb0e2e9ebb1d71b0.1621424513.git.asml.silence@gmail.com>
+ <CAEf4BzZU_QySZFHA1J0jr5Fi+gOFFKzTyxrvCUt1_Gn2H6hxLA@mail.gmail.com> <d86035d9-66f0-de37-42ef-8eaa4d849651@gmail.com>
+In-Reply-To: <d86035d9-66f0-de37-42ef-8eaa4d849651@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 20 May 2021 10:23:01 -0700
+Message-ID: <CAEf4BzbLPxNo--P7mCxS_miagFHF4fyoec1VOkpL=uY=oNqpVg@mail.gmail.com>
+Subject: Re: [PATCH 18/23] libbpf: support io_uring
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     io-uring@vger.kernel.org, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        "Franz-B . Tuneke" <franz-bernhard.tuneke@tu-dortmund.de>,
+        Christian Dietrich <stettberger@dokucode.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 20, 2021 at 12:53 AM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+On Thu, May 20, 2021 at 2:58 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
 >
-> On Thu, May 20, 2021 at 04:54:45AM +0000, Song Liu wrote:
+> On 5/19/21 6:38 PM, Andrii Nakryiko wrote:
+> > On Wed, May 19, 2021 at 7:14 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+> >>
+> >> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> >> ---
+> >>  tools/lib/bpf/libbpf.c | 7 +++++++
+> >>  1 file changed, 7 insertions(+)
+> >>
+> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> >> index 4181d178ee7b..de5d1508f58e 100644
+> >> --- a/tools/lib/bpf/libbpf.c
+> >> +++ b/tools/lib/bpf/libbpf.c
+> >> @@ -13,6 +13,10 @@
+> >>  #ifndef _GNU_SOURCE
+> >>  #define _GNU_SOURCE
+> >>  #endif
+> >> +
+> >> +/* hack, use local headers instead of system-wide */
+> >> +#include "../../../include/uapi/linux/bpf.h"
+> >> +
 > >
-> >
-> > > On May 17, 2021, at 3:52 PM, Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
-> > >
-> > > The patchset is based on the patches from David S. Miller [1] and Daniel
-> > > Borkmann [2].
-> > >
-> > > The main goal of the patchset is to prepare bpfilter for iptables'
-> > > configuration blob parsing and code generation.
-> > >
-> > > The patchset introduces data structures and code for matches, targets, rules
-> > > and tables.
-> > >
-> > > It seems inconvenient to continue to use the same blob internally in bpfilter
-> > > in parts other than the blob parsing. That is why a superstructure with native
-> > > types is introduced. It provides a more convenient way to iterate over the blob
-> > > and limit the crazy structs widespread in the bpfilter code.
-> > >
-> >
-> > [...]
-> >
-> > >
-> > >
-> > > 1. https://lore.kernel.org/patchwork/patch/902785/
-> >
-> > [1] used bpfilter_ prefix on struct definitions, like "struct bpfilter_target"
-> > I think we should do the same in this version. (Or were there discussions on
-> > removing the prefix?).
+> > libbpf is already using the latest UAPI headers, so you don't need
+> > this hack. You just haven't synced include/uapi/linux/bpf.h into
+> > tools/include/uapi/linux/bpf.h
 >
-> There were no discussions about it.
-> As those structs are private to bpfilter I assumed that it is
-> safe to save some characters.
-> I will add the prefix to all internal structs in the next
-> iteration.
+> It's more convenient to keep it local to me while RFC, surely will
+> drop it later.
+>
+> btw, I had a problem with find_sec_def() successfully matching
+> "iouring.s" string with "iouring", because section_defs[i].len
+> doesn't include final \0 and so does a sort of prefix comparison.
+> That's why "iouring/". Can we fix it? Are compatibility concerns?
 
-For internal types it's ok to skip the prefix otherwise it's too verbose.
-In libbpf we skip 'bpf_' prefix in such cases.
+If you put "iouring.s" before "iouring" it will be matched first,
+libbpf matches them in order, so more specific prefix should go first.
+It is currently always treated as a prefix, not exact match,
+unfortunately. I have a work planned to revamp this logic quite a bit
+for libbpf 1.0, so this should be improved as part of that work.
+
+
+
+>
+> >
+> >>  #include <stdlib.h>
+> >>  #include <stdio.h>
+> >>  #include <stdarg.h>
+> >> @@ -8630,6 +8634,9 @@ static const struct bpf_sec_def section_defs[] = {
+> >>         BPF_PROG_SEC("struct_ops",              BPF_PROG_TYPE_STRUCT_OPS),
+> >>         BPF_EAPROG_SEC("sk_lookup/",            BPF_PROG_TYPE_SK_LOOKUP,
+> >>                                                 BPF_SK_LOOKUP),
+> >> +       SEC_DEF("iouring/",                     IOURING),
+> >> +       SEC_DEF("iouring.s/",                   IOURING,
+> >> +               .is_sleepable = true),
+> >>  };
+> >>
+> >>  #undef BPF_PROG_SEC_IMPL
+> >> --
+> >> 2.31.1
+> >>
+>
+> --
+> Pavel Begunkov
