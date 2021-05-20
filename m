@@ -2,155 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD4A38A079
-	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 10:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 027A038A08B
+	for <lists+bpf@lfdr.de>; Thu, 20 May 2021 11:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhETJAX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 May 2021 05:00:23 -0400
-Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:4920 "EHLO
-        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbhETJAX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 May 2021 05:00:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1621501143; x=1653037143;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=no9PnC7ByGDo1gM/bT84lXIETBhtfnlKSpWwpRPaUhw=;
-  b=g2db0lf6nqHeZg2oyjCIuWps2pLvaniB7EPQHgoUZ0+5VkqJQP4mD72G
-   0aXDWjq9iMtmYVry/4Ozk/BI5xi9AABJauCNgz+txT1NLKsp3KRbSbz4h
-   JDpqO23DadXs3845RkLrNpwtp2X29Lw8UODCnaoVEbc35MINX+3dm3fOs
-   s=;
-X-IronPort-AV: E=Sophos;i="5.82,313,1613433600"; 
-   d="scan'208";a="2272361"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1e-28209b7b.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 20 May 2021 08:59:02 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-28209b7b.us-east-1.amazon.com (Postfix) with ESMTPS id 13B14A5FE4;
-        Thu, 20 May 2021 08:59:00 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Thu, 20 May 2021 08:58:59 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.160.137) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Thu, 20 May 2021 08:58:53 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v6 bpf-next 00/11] Socket migration for SO_REUSEPORT.
-Date:   Thu, 20 May 2021 17:58:49 +0900
-Message-ID: <20210520085849.49799-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210520063029.vrnv5eld6w4glea6@kafai-mbp.dhcp.thefacebook.com>
-References: <20210520063029.vrnv5eld6w4glea6@kafai-mbp.dhcp.thefacebook.com>
+        id S230505AbhETJHO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 May 2021 05:07:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47624 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230458AbhETJHO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 May 2021 05:07:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3C49610CB;
+        Thu, 20 May 2021 09:05:47 +0000 (UTC)
+Date:   Thu, 20 May 2021 11:05:43 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>, containers@lists.linux.dev,
+        bpf <bpf@vger.kernel.org>, YiFei Zhu <yifeifz2@illinois.edu>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Austin Kuo <hckuo2@illinois.edu>,
+        Claudio Canella <claudio.canella@iaik.tugraz.at>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Daniel Gruss <daniel.gruss@iaik.tugraz.at>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jann Horn <jannh@google.com>,
+        Jinghao Jia <jinghao7@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tom Hromatka <tom.hromatka@oracle.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [RFC PATCH bpf-next seccomp 00/12] eBPF seccomp filters
+Message-ID: <20210520090543.vay4guole7hkeaf3@wittgenstein>
+References: <cover.1620499942.git.yifeifz2@illinois.edu>
+ <CALCETrUQBonh5BC4eomTLpEOFHVcQSz9SPcfOqNFTf2TPht4-Q@mail.gmail.com>
+ <CABqSeASYRXMwTQwLfm_Tapg45VUy9sPfV7BeeV8p7XJrDoLf+Q@mail.gmail.com>
+ <b3a1684b-86e4-74c4-184b-7700613aa838@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.137]
-X-ClientProxiedBy: EX13D15UWA002.ant.amazon.com (10.43.160.218) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+In-Reply-To: <b3a1684b-86e4-74c4-184b-7700613aa838@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Wed, 19 May 2021 23:30:29 -0700
-> On Mon, May 17, 2021 at 09:22:47AM +0900, Kuniyuki Iwashima wrote:
-> > The SO_REUSEPORT option allows sockets to listen on the same port and to
-> > accept connections evenly. However, there is a defect in the current
-> > implementation [1]. When a SYN packet is received, the connection is tied
-> > to a listening socket. Accordingly, when the listener is closed, in-flight
-> > requests during the three-way handshake and child sockets in the accept
-> > queue are dropped even if other listeners on the same port could accept
-> > such connections.
+On Sat, May 15, 2021 at 08:49:01AM -0700, Andy Lutomirski wrote:
+> On 5/10/21 10:21 PM, YiFei Zhu wrote:
+> > On Mon, May 10, 2021 at 12:47 PM Andy Lutomirski <luto@kernel.org> wrote:
+> >> On Mon, May 10, 2021 at 10:22 AM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> >>>
+> >>> From: YiFei Zhu <yifeifz2@illinois.edu>
+> >>>
+> >>> Based on: https://lists.linux-foundation.org/pipermail/containers/2018-February/038571.html
+> >>>
+> >>> This patchset enables seccomp filters to be written in eBPF.
+> >>> Supporting eBPF filters has been proposed a few times in the past.
+> >>> The main concerns were (1) use cases and (2) security. We have
+> >>> identified many use cases that can benefit from advanced eBPF
+> >>> filters, such as:
+> >>
+> >> I haven't reviewed this carefully, but I think we need to distinguish
+> >> a few things:
+> >>
+> >> 1. Using the eBPF *language*.
+> >>
+> >> 2. Allowing the use of stateful / non-pure eBPF features.
+> >>
+> >> 3. Allowing the eBPF programs to read the target process' memory.
+> >>
+> >> I'm generally in favor of (1).  I'm not at all sure about (2), and I'm
+> >> even less convinced by (3).
+> >>
+> >>>
+> >>>   * exec-only-once filter / apply filter after exec
+> >>
+> >> This is (2).  I'm not sure it's a good idea.
 > > 
-> > This situation can happen when various server management tools restart
-> > server (such as nginx) processes. For instance, when we change nginx
-> > configurations and restart it, it spins up new workers that respect the new
-> > configuration and closes all listeners on the old workers, resulting in the
-> > in-flight ACK of 3WHS is responded by RST.
+> > The basic idea is that for a container runtime it may wait to execute
+> > a program in a container without that program being able to execve
+> > another program, stopping any attack that involves loading another
+> > binary. The container runtime can block any syscall but execve in the
+> > exec-ed process by using only cBPF.
 > > 
-> > To avoid such a situation, users have to know deeply how the kernel handles
-> > SYN packets and implement connection draining by eBPF [2]:
-> > 
-> >   1. Stop routing SYN packets to the listener by eBPF.
-> >   2. Wait for all timers to expire to complete requests
-> >   3. Accept connections until EAGAIN, then close the listener.
-> > 
-> >   or
-> > 
-> >   1. Start counting SYN packets and accept syscalls using the eBPF map.
-> >   2. Stop routing SYN packets.
-> >   3. Accept connections up to the count, then close the listener.
-> > 
-> > In either way, we cannot close a listener immediately. However, ideally,
-> > the application need not drain the not yet accepted sockets because 3WHS
-> > and tying a connection to a listener are just the kernel behaviour. The
-> > root cause is within the kernel, so the issue should be addressed in kernel
-> > space and should not be visible to user space. This patchset fixes it so
-> > that users need not take care of kernel implementation and connection
-> > draining. With this patchset, the kernel redistributes requests and
-> > connections from a listener to the others in the same reuseport group
-> > at/after close or shutdown syscalls.
-> > 
-> > Although some software does connection draining, there are still merits in
-> > migration. For some security reasons, such as replacing TLS certificates,
-> > we may want to apply new settings as soon as possible and/or we may not be
-> > able to wait for connection draining. The sockets in the accept queue have
-> > not started application sessions yet. So, if we do not drain such sockets,
-> > they can be handled by the newer listeners and could have a longer
-> > lifetime. It is difficult to drain all connections in every case, but we
-> > can decrease such aborted connections by migration. In that sense,
-> > migration is always better than draining. 
-> > 
-> > Moreover, auto-migration simplifies user space logic and also works well in
-> > a case where we cannot modify and build a server program to implement the
-> > workaround.
-> > 
-> > Note that the source and destination listeners MUST have the same settings
-> > at the socket API level; otherwise, applications may face inconsistency and
-> > cause errors. In such a case, we have to use the eBPF program to select a
-> > specific listener or to cancel migration.
-> > 
-> > Special thanks to Martin KaFai Lau for bouncing ideas and exchanging code
-> > snippets along the way.
-> > 
-> > 
-> > Link:
-> >  [1] The SO_REUSEPORT socket option
-> >  https://lwn.net/Articles/542629/ 
-> > 
-> >  [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
-> >  https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
-> > 
-> > 
-> > Changelog:
-> >  v6:
-> >   * Change description in ip-sysctl.rst
-> >   * Test IPPROTO_TCP before reading tfo_listener
-> >   * Move reqsk_clone() to inet_connection_sock.c and rename to
-> >     inet_reqsk_clone()
-> >   * Pass req->rsk_listener to inet_csk_reqsk_queue_drop() and
-> >     reqsk_queue_removed() in the migration path of receiving ACK
-> >   * s/ARG_PTR_TO_SOCKET/PTR_TO_SOCKET/ in sk_reuseport_is_valid_access()
-> >   * In selftest, use atomic ops to increment global vars, drop ACK by XDP,
-> >     enable force fastopen, use "skel->bss" instead of "skel->data"
-> Some commit messages need to be updated: s/reqsk_clone/inet_reqsk_clone/
+> > The use case is suggested by Andrea Arcangeli and Giuseppe Scrivano.
+> > @Andrea and @Giuseppe, could you clarify more in case I missed
+> > something?
+> 
+> We've discussed having a notifier-using filter be able to replace its
+> filter.  This would allow this and other use cases without any
+> additional eBPF or cBPF code.
 
-I'll fix them.
-
+Are you referring to sm like I sketched in
+https://lore.kernel.org/containers/20210301110907.2qoxmiy55gpkgwnq@wittgenstein/
+?
 
 > 
-> One thing needs to be addressed in patch 3.
-> 
-> Others lgtm.
-> 
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+> >> eBPF doesn't really have a privilege model yet.  There was a long and
+> >> disappointing thread about this awhile back.
+> > 
+> > The idea is that “seccomp-eBPF does not make life easier for an
+> > adversary”. Any attack an adversary could potentially utilize
+> > seccomp-eBPF, they can do the same with other eBPF features, i.e. it
+> > would be an issue with eBPF in general rather than specifically
+> > seccomp’s use of eBPF.
+> > 
+> > Here it is referring to the helpers goes to the base
+> > bpf_base_func_proto if the caller is unprivileged (!bpf_capable ||
+> > !perfmon_capable). In this case, if the adversary would utilize eBPF
+> > helpers to perform an attack, they could do it via another
+> > unprivileged prog type.
+> > 
+> > That said, there are a few additional helpers this patchset is adding:
+> > * get_current_uid_gid
+> > * get_current_pid_tgid
+> >   These two provide public information (are namespaces a concern?). I
 
-Thank you!!
+If they are seen from userspace in any way then these must be resolved
+relative to the caller's userns or caller's pidns. So yes, namespaces
+need to be taken into account.
 
-I'll respin after the discussion about 3rd patch.
+> > have no idea what kind of exploit it could add unless the adversary
+> > somehow side-channels the task_struct? But in that case, how is the
+> > reading of task_struct different from how the rest of the kernel is
+> > reading task_struct?
+> 
+> Yes, namespaces are a concern.  This idea got mostly shot down for kdbus
+> (what ever happened to that?), and it likely has the same problems for
+> seccomp.
+> 
+> >>
+> >> What is this for?
+> > 
+> > Memory reading opens up lots of use cases. For example, logging what
+> > files are being opened without imposing too much performance penalty
+> > from strace. Or as an accelerator for user notify emulation, where
+> > syscalls can be rejected on a fast path if we know the memory contents
+> > does not satisfy certain conditions that user notify will check.
+> > 
+> 
+> This has all kinds of race conditions.
+> 
+> 
+> I hate to be a party pooper, but this patchset is going to very high bar
+> to acceptance.  Right now, seccomp has a couple of excellent properties:
+> 
+> First, while it has limited expressiveness, it is simple enough that the
+> implementation can be easily understood and the scope for
+> vulnerabilities that fall through the cracks of the seccomp sandbox
+> model is low.  Compare this to Windows' low-integrity/high-integrity
+> sandbox system: there is a never ending string of sandbox escapes due to
+> token misuse, unexpected things at various integrity levels, etc.
+> Seccomp doesn't have tokens or integrity levels, and these bugs don't
+> happen.
+> 
+> Second, seccomp works, almost unchanged, in a completely unprivileged
+> context.  The last time making eBPF work sensibly in a less- or
+
+Yeah, which is pretty important.
