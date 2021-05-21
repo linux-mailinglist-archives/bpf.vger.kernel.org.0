@@ -2,166 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F3338BDE7
-	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 07:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D9338BECA
+	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 08:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbhEUFcy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 May 2021 01:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32802 "EHLO
+        id S230447AbhEUGCO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 May 2021 02:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhEUFcx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 May 2021 01:32:53 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17963C061574;
-        Thu, 20 May 2021 22:31:30 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id y36so9313297ybi.11;
-        Thu, 20 May 2021 22:31:30 -0700 (PDT)
+        with ESMTP id S230102AbhEUGCO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 May 2021 02:02:14 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A5FC061574
+        for <bpf@vger.kernel.org>; Thu, 20 May 2021 23:00:50 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id 82so7314864qki.8
+        for <bpf@vger.kernel.org>; Thu, 20 May 2021 23:00:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jvPYzY/XrELEm8iFWOXL9/Ix8RD17PPfttVLbzrKYec=;
-        b=lQ5tjhFo6xYnlzJbI640wMPyQRf1dqFxRemvkhjsAElJtQVm2U5iNU4AGipHhl2k3U
-         uz8YOl1OV72Cj9ZpLBYXKoDlnlu9dWo0/sN5IJi0p0MnjTHvWS0XFt2SgfMbPbB3ZJ+s
-         OqCzADLd1EN1DoimD0tj92fH8eyO0/bArNvFs6ezuujsETiQ/2LglZvGUd4K6gSEQFH8
-         5UbRXCUgDvsgCEG6YLh04NS6I8diOUOy/OlII9rLU5xmFKmvS0XwP0eIgibjMkj1wZLb
-         00IOiC7I+EzT512Xpb6CI/MkC8vgVD36P8OyfaaS2Dqhz8QhqVjufW39XC0B1TmpxiXL
-         lNQw==
+        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=T+EecFcPWBZeGeXQf/VDF6kV6mLEHDKfDljs1FpMWXA=;
+        b=vRUAmyqgKX+SbOLcbP+H13RzJCytdCZEes9PMhZV+p4nRlqCPxqnEU2MCUEr9s3NPK
+         /4aZBVJMvE0dsM6UjJohgr7J7fGqhMuEDYdlYclK7ZFJDrzMH3F3qw5ZFTVNaEPERN6P
+         NEV/zA4KkZnQm5rq6nv3cDO/hpsCr2dsxBiz8e4a3AICEcB8wRjc4P1yUMyeomMX/LUu
+         7z2UB++Hy3yf/KhZfAeekiYGLVLKHZLTAFAJgOp+4NzRlvOqzks+xluWxAY9+urBOD+C
+         8dCWsyxwEZO0VZacy2hZoXY3dP4sw3fP7rbj+m0sY6LjnSk7u44HhmhZwob/Kyr3BevR
+         e5/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jvPYzY/XrELEm8iFWOXL9/Ix8RD17PPfttVLbzrKYec=;
-        b=K4WtnVBL68hsD72Kt282zAXRb8dW2nRONTPy6J2lqc2JLD5RS+5q87NU6CMLHxf/Tt
-         CvDQ7Ix4dR9PjEUPRFErkir8DbYS/A5ksHuHy7MZRjRwQdjPZZxDygllcaeYDvUlmvsq
-         zePf0PbypY91zjouE0xDc/vy5jpTTK570RYwxhg+dgKmWVcEdtMRrVobe4WtGQ3DjkJM
-         o2EsrkoT3PGs2tuSyptJk75qrvEAYAySVXE0B+ZGP9iL4bMvkPKVTLqrkPdO+NQn/QRh
-         woUs1eo8/2i12D21YpSrSr7MXhTdrpF0MgBNyTFQgHh5Jbp/1h9+Vl/c7e3zsKkwvB55
-         qFGw==
-X-Gm-Message-State: AOAM531AkpImGZVwUrkv6CAPMYwvpWV9+v1dHkgTaEZRw0U1AzNfMEP3
-        AVjTd0XdeLGxxsdYBPf3nBv/LPdx37IerkZrPo4=
-X-Google-Smtp-Source: ABdhPJxlGn2A+LFevhEFgfWiXj276hp4bn0wK8a9PEU7IC9APYD3h1HL6ueNzCdq7ctUe4FUv481Ssq7WTzAnn0lbZE=
-X-Received: by 2002:a5b:286:: with SMTP id x6mr13291645ybl.347.1621575089244;
- Thu, 20 May 2021 22:31:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=T+EecFcPWBZeGeXQf/VDF6kV6mLEHDKfDljs1FpMWXA=;
+        b=JTKoXVLOeU9l7/tKqQkKt/wtSFM85ZBoaXzXTm3+ZNGdwXvSplysrCrhdPkON8OC4l
+         ImZleIXRP/eMdU/54IMs5yWnrIiPk4nz2oa88dYNJRO5WLjq/e+5DvJTJR45vxcMdqnb
+         WXxcw8xFHYnidEpPdLuZdp+/4ICH+TqjaryNIFW7q+oD6Sjd2JvJTPRdU/JyR7THn7vx
+         aODj8gXH3ZgtdVcnMl2zK2iIFYw1E1BWLgI5HRJBIU4cq5dfeemNZ2pnwFDnbkPvMAbY
+         YBjbY+AnXx/n17bACeVXrtyHyEVY7xob9Gymqbu1aNrwlKaRb7yFWP3OQNDjHohItCjB
+         Fk/w==
+X-Gm-Message-State: AOAM531FiRwFWZjh+bdfX5QbwMXGPn/NRCx3rKQew/IR0SMab646oAqu
+        IgKqWeYGrKXoeLDPhJQGfgNiDQ==
+X-Google-Smtp-Source: ABdhPJyWGhYeTawrb2iZh9Ih4jaPrXSO/th1mCCRBsrXwf165fBDV2d5M0QFUf/rq4I6yaT1KwCJbw==
+X-Received: by 2002:a05:620a:110d:: with SMTP id o13mr10179617qkk.348.1621576849968;
+        Thu, 20 May 2021 23:00:49 -0700 (PDT)
+Received: from localhost ([154.21.15.43])
+        by smtp.gmail.com with ESMTPSA id n18sm4049165qkh.13.2021.05.20.23.00.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 23:00:49 -0700 (PDT)
+Date:   Fri, 21 May 2021 10:00:45 +0400
+From:   Dmitrii Banshchikov <me@ubique.spb.ru>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "open list:BPF (Safe dynamic programs and tools)" 
+        <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Andrey Ignatov <rdna@fb.com>
+Subject: Re: [PATCH bpf-next 00/11] bpfilter
+Message-ID: <20210521060045.ldwluzdt3vyp5vfs@amnesia>
+References: <20210517225308.720677-1-me@ubique.spb.ru>
+ <7312CC5D-510B-4BFD-8099-BB754FBE9CDF@fb.com>
+ <20210520075323.ehagaokfbazlhhfj@amnesia>
+ <CAADnVQJbxTikruisH=nfsFrC1UZW5zTXr8bUrL+U0jMBSApTTw@mail.gmail.com>
+ <2D15A822-5BE1-4C4A-84B2-46FFA27AC32B@fb.com>
 MIME-Version: 1.0
-References: <20210519141936.GV8544@kitsune.suse.cz>
-In-Reply-To: <20210519141936.GV8544@kitsune.suse.cz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 20 May 2021 22:31:18 -0700
-Message-ID: <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
-Subject: Re: BPF: failed module verification on linux-next
-To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2D15A822-5BE1-4C4A-84B2-46FFA27AC32B@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 19, 2021 at 7:19 AM Michal Such=C3=A1nek <msuchanek@suse.de> wr=
-ote:
->
-> Hello,
->
-> linux-next fails to boot for me:
->
-> [    0.000000] Linux version 5.13.0-rc2-next-20210519-1.g3455ff8-vanilla =
-(geeko@buildhost) (gcc (SUSE Linux) 10.3.0, GNU ld (GNU Binutils;
-> openSUSE Tumbleweed) 2.36.1.20210326-3) #1 SMP Wed May 19 10:05:10 UTC 20=
-21 (3455ff8)
-> [    0.000000] Command line: BOOT_IMAGE=3D/boot/vmlinuz-5.13.0-rc2-next-2=
-0210519-1.g3455ff8-vanilla root=3DUUID=3Dec42c33e-a2c2-4c61-afcc-93e9527
-> 8f687 plymouth.enable=3D0 resume=3D/dev/disk/by-uuid/f1fe4560-a801-4faf-a=
-638-834c407027c7 mitigations=3Dauto earlyprintk initcall_debug nomodeset
->  earlycon ignore_loglevel console=3DttyS0,115200
-> ...
-> [   26.093364] calling  tracing_set_default_clock+0x0/0x62 @ 1
-> [   26.098937] initcall tracing_set_default_clock+0x0/0x62 returned 0 aft=
-er 0 usecs
-> [   26.106330] calling  acpi_gpio_handle_deferred_request_irqs+0x0/0x7c @=
- 1
-> [   26.113033] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0x7c r=
-eturned 0 after 3 usecs
-> [   26.121559] calling  clk_disable_unused+0x0/0x102 @ 1
-> [   26.126620] initcall clk_disable_unused+0x0/0x102 returned 0 after 0 u=
-secs
-> [   26.133491] calling  regulator_init_complete+0x0/0x25 @ 1
-> [   26.138890] initcall regulator_init_complete+0x0/0x25 returned 0 after=
- 0 usecs
-> [   26.147816] Freeing unused decrypted memory: 2036K
-> [   26.153682] Freeing unused kernel image (initmem) memory: 2308K
-> [   26.165776] Write protecting the kernel read-only data: 26624k
-> [   26.173067] Freeing unused kernel image (text/rodata gap) memory: 2036=
-K
-> [   26.180416] Freeing unused kernel image (rodata/data gap) memory: 1184=
-K
-> [   26.187031] Run /init as init process
-> [   26.190693]   with arguments:
-> [   26.193661]     /init
-> [   26.195933]   with environment:
-> [   26.199079]     HOME=3D/
-> [   26.201444]     TERM=3Dlinux
-> [   26.204152]     BOOT_IMAGE=3D/boot/vmlinuz-5.13.0-rc2-next-20210519-1.=
-g3455ff8-vanilla
-> [   26.254154] BPF:      type_id=3D35503 offset=3D178440 size=3D4
-> [   26.259125] BPF:
-> [   26.261054] BPF:Invalid offset
-> [   26.264119] BPF:
+On Thu, May 20, 2021 at 05:56:30PM +0000, Song Liu wrote:
+> 
+> 
+> > On May 20, 2021, at 9:55 AM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > 
+> > On Thu, May 20, 2021 at 12:53 AM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+> >> 
+> >> On Thu, May 20, 2021 at 04:54:45AM +0000, Song Liu wrote:
+> >>> 
+> >>> 
+> >>>> On May 17, 2021, at 3:52 PM, Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+> >>>> 
+> >>>> The patchset is based on the patches from David S. Miller [1] and Daniel
+> >>>> Borkmann [2].
+> >>>> 
+> >>>> The main goal of the patchset is to prepare bpfilter for iptables'
+> >>>> configuration blob parsing and code generation.
+> >>>> 
+> >>>> The patchset introduces data structures and code for matches, targets, rules
+> >>>> and tables.
+> >>>> 
+> >>>> It seems inconvenient to continue to use the same blob internally in bpfilter
+> >>>> in parts other than the blob parsing. That is why a superstructure with native
+> >>>> types is introduced. It provides a more convenient way to iterate over the blob
+> >>>> and limit the crazy structs widespread in the bpfilter code.
+> >>>> 
+> >>> 
+> >>> [...]
+> >>> 
+> >>>> 
+> >>>> 
+> >>>> 1. https://lore.kernel.org/patchwork/patch/902785/
+> >>> 
+> >>> [1] used bpfilter_ prefix on struct definitions, like "struct bpfilter_target"
+> >>> I think we should do the same in this version. (Or were there discussions on
+> >>> removing the prefix?).
+> >> 
+> >> There were no discussions about it.
+> >> As those structs are private to bpfilter I assumed that it is
+> >> safe to save some characters.
+> >> I will add the prefix to all internal structs in the next
+> >> iteration.
+> > 
+> > For internal types it's ok to skip the prefix otherwise it's too verbose.
+> > In libbpf we skip 'bpf_' prefix in such cases.
+> 
+> Do we have plan to put some of this logic in a library? If that is the case, the 
+> effort now may save some pain in the future. 
 
-It took me a while to reliably bisect this, but it clearly points to
-this commit:
+I cannot imagine a case when we need this logic in a library.
+Even if we eventually need it as these definitions are private to
+bpfilter - amount of pain should be minimal.
 
-e481fac7d80b ("mm/page_alloc: convert per-cpu list protection to local_lock=
-")
+> 
+> Thanks,
+> Song
+> 
 
-One commit before it, 676535512684 ("mm/page_alloc: split per cpu page
-lists and zone stats -fix"), works just fine.
+-- 
 
-I'll have to spend more time debugging what exactly is happening, but
-the immediate problem is two different definitions of numa_node
-per-cpu variable. They both are at the same offset within
-.data..percpu ELF section, they both have the same name, but one of
-them is marked as static and another as global. And one is int
-variable, while another is struct pagesets. I'll look some more
-tomorrow, but adding Jiri and Arnaldo for visibility.
-
-[110907] DATASEC '.data..percpu' size=3D178904 vlen=3D303
-...
-        type_id=3D27753 offset=3D163976 size=3D4 (VAR 'numa_node')
-        type_id=3D27754 offset=3D163976 size=3D4 (VAR 'numa_node')
-
-[27753] VAR 'numa_node' type_id=3D27556, linkage=3Dstatic
-[27754] VAR 'numa_node' type_id=3D20, linkage=3Dglobal
-
-[20] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED
-
-[27556] STRUCT 'pagesets' size=3D0 vlen=3D1
-        'lock' type_id=3D507 bits_offset=3D0
-
-[506] STRUCT '(anon)' size=3D0 vlen=3D0
-[507] TYPEDEF 'local_lock_t' type_id=3D506
-
-So also something weird about those zero-sized struct pagesets and
-local_lock_t inside it.
-
-> [   26.264119]
-> [   26.267437] failed to validate module [efivarfs] BTF: -22
-> [   26.316724] systemd[1]: systemd 246.13+suse.105.g14581e0120 running in=
- system mode. (+PAM +AUDIT +SELINUX -IMA +APPARMOR -SMACK +SYSVINI
-> T +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +ZSTD +SECCOMP +BLKI=
-D +ELFUTILS +KMOD +IDN2 -IDN +PCRE2 default-hierarchy=3Dunified)
-> [   26.357990] systemd[1]: Detected architecture x86-64.
-> [   26.363068] systemd[1]: Running in initial RAM disk.
->
-
-[...]
+Dmitrii Banshchikov
