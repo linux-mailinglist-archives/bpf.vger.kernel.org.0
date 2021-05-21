@@ -2,125 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3832D38BFF2
-	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 08:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598EC38C1E7
+	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 10:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhEUGsa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 May 2021 02:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
+        id S232316AbhEUIex (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 May 2021 04:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232261AbhEUGs2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 May 2021 02:48:28 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF212C061574
-        for <bpf@vger.kernel.org>; Thu, 20 May 2021 23:46:50 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id v18so9884999qvx.10
-        for <bpf@vger.kernel.org>; Thu, 20 May 2021 23:46:50 -0700 (PDT)
+        with ESMTP id S229581AbhEUIew (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 May 2021 04:34:52 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1725EC061574;
+        Fri, 21 May 2021 01:33:30 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id i17so20157147wrq.11;
+        Fri, 21 May 2021 01:33:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xkcqft7IFEvhd4rZvjQTycxIt/7SM6fwOYhfxgeUU/8=;
-        b=xo/iAwYxJFXLPRSYNkmZEM2ANcZrrcj3GAONNgnSnSC638ALOC9rea3BwxJKqqKR6K
-         Ihjuh9mP6DeDWgHlQnlSQbLRAIKzw2PQNax6T5QrU+BWLongmcDSf6GoT61qaIyD4nyF
-         QarSQPEdt0v+Bd1scWWrQMa6o2mX/3lQkT3oUfH5AXBDXB7R6IqdQHgnjfvmIZd4zk2Y
-         Ch9SKaPUM4gsnzec4VyjxS+MoVrMuCaC3qsBJFBlSGtrDcdIQTJu43Gc19+IBSjbgbLd
-         1LLnm8ApGBusoVOotvcMbsvXR81pQpUlJoCyI+T18FDepApOAnA0GOkojSssaB3jLMHv
-         n/tg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WaMvOvlMFartTSlXCuGI5oDB8r1cP0ShwB/1QsbOHFE=;
+        b=kEbWh2d5EFThb/znUlZNvo0e51WApWFRwJXV8ie7hfbdm+iDOY7T6sBPA3wf4G8o5h
+         mUZGUiaK4xkk4r7IhK9hyr4OGoPFHmZu5qLAyhw/raAUNu1Ku0w7f6BumGB5vp4gn6jz
+         vzxbpqRq2U1VpvP55MDSWO2j5G1l0QVAyN6wNieOQpf+cun/oyl8O0cIrAbt93KaTL3f
+         MnLz8dJE9El58tGjxYWNHh4dVpo01OSqNBaC/nkjUiBjkEIho1bS47jMul2wWZuRzUSt
+         UR+4wNAv4JXYbtV84Hosi9nUGaassmaOEL2NaTm8knTyunFjZuPo0IEwiASVpisYgNja
+         J/kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xkcqft7IFEvhd4rZvjQTycxIt/7SM6fwOYhfxgeUU/8=;
-        b=HJVRg0Xt1rWJOUu5oY0QWxjrwkArubEG8nEbTYhLQVmzqcMXhkhmbTP4hU2BRsy85T
-         ygiUHDaIia+R5jNLaTpQArbEvHVX66Jj16ldUEvdgJNvK6U2FU+KuyUqjkebbK11XZDl
-         nt4XcjfbSGty1FmUCLS5QJVZVSSYOy/gS48WvEujEQhbfBpqlBADj/rlsgu7RUCZOdQY
-         aM4LFEVWjq38xDo1DAgXjAUMWaGkG7hLvNS4jaxSmz2Tr6vmuNqExYtmWtJU0noD6mFv
-         +1XyOgvO+f0IA0L5gjTAfQL4RAJUGrOU1Nk4wIZHAZdF2h7ykWhYScIyp3U8Mrnn7uQz
-         wNgA==
-X-Gm-Message-State: AOAM533ecDgakhC4oC3WL6HTJ2wgEsG83RRqw7C02D+lnbuna8pVL7pz
-        gY7SyhIeB2rNvCqtECQU7egMHQ==
-X-Google-Smtp-Source: ABdhPJxcICEBMFCt1GiRkk4SvPNNmZMH+gOwPEnggK6FMXD6xNVIjbAMGMBB3NFDHXiMip3sLjpz6w==
-X-Received: by 2002:a0c:9c0f:: with SMTP id v15mr10879355qve.24.1621579610100;
-        Thu, 20 May 2021 23:46:50 -0700 (PDT)
-Received: from localhost ([154.21.15.43])
-        by smtp.gmail.com with ESMTPSA id h3sm4202813qkk.82.2021.05.20.23.46.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 23:46:49 -0700 (PDT)
-Date:   Fri, 21 May 2021 10:46:45 +0400
-From:   Dmitrii Banshchikov <me@ubique.spb.ru>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, Andrey Ignatov <rdna@fb.com>
-Subject: Re: [PATCH bpf-next 02/11] bpfilter: Add logging facility
-Message-ID: <20210521064645.xhligmlrremyva4q@amnesia>
-References: <20210517225308.720677-1-me@ubique.spb.ru>
- <20210517225308.720677-3-me@ubique.spb.ru>
- <CAPhsuW4osuNOagPRwUB30tk3V=ECANktt9jzb+NK1mqOamouSQ@mail.gmail.com>
- <20210520070807.cpmloff4urdsifuy@amnesia>
- <681F9A5A-63F0-432A-B188-CF4FC11AF2A8@fb.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WaMvOvlMFartTSlXCuGI5oDB8r1cP0ShwB/1QsbOHFE=;
+        b=CmMkGeOPZEtKPrZwp6xcPNYJr+o4YPlyWoso5GI0dAtatH/EQEaQYDyixSrKiQUGch
+         joGMoOCUCpydwTRlKjcvVhkBpiBDY1KWkFswjR992E279FDSJFvq4zfc4Lfagn7PybCx
+         HJsSEvmUR6wPLHJLfRnHH5G0kJYc0ANbES1H/KR7sV4V/mGFExXA+T/cXMbQ1rSgL+06
+         042tV7A6ClARbKgFXu50pFdZde/XffuEFujVAGIZ4ZnpSIFydRCCQ3Y3BdltQSx+rtqN
+         G+D+txAUmG6QZrQN/XCmuAoyVpnaNnS5vktxRrzlGwS4bPo3kAaYJ3QxWqvgR4S6fui9
+         vXEA==
+X-Gm-Message-State: AOAM530/pNHjvLZrixd2981pWICi7XIfG6MTNA7sBPHEls7HwHzClKGO
+        S4qI+T+q1OGG5sleiPV/WBY=
+X-Google-Smtp-Source: ABdhPJwHqbFY8xKHMjxiYie1AtD09LqOk6ROpGzKQ4wy3WD6T/H0NeSA7biLlETeV3ZUKrDhXkJs6Q==
+X-Received: by 2002:a5d:4c50:: with SMTP id n16mr7936264wrt.319.1621586008662;
+        Fri, 21 May 2021 01:33:28 -0700 (PDT)
+Received: from localhost.localdomain (h-46-59-47-246.A165.priv.bahnhof.se. [46.59.47.246])
+        by smtp.gmail.com with ESMTPSA id a17sm1231200wrt.53.2021.05.21.01.33.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 May 2021 01:33:28 -0700 (PDT)
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com
+Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org,
+        Dan Siemon <dan@coverfire.com>
+Subject: [PATCH bpf-next] xsk: use kvcalloc to support large umems
+Date:   Fri, 21 May 2021 10:33:01 +0200
+Message-Id: <20210521083301.26921-1-magnus.karlsson@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <681F9A5A-63F0-432A-B188-CF4FC11AF2A8@fb.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 20, 2021 at 04:35:45PM +0000, Song Liu wrote:
-> 
-> 
-> > On May 20, 2021, at 12:08 AM, Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
-> > 
-> > On Wed, May 19, 2021 at 10:32:25AM -0700, Song Liu wrote:
-> >> On Tue, May 18, 2021 at 11:05 PM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
-> >>> 
-> >>> There are three logging levels for messages: FATAL, NOTICE and DEBUG.
-> >>> When a message is logged with FATAL level it results in bpfilter
-> >>> usermode helper termination.
-> >> 
-> >> Could you please explain why we choose to have 3 levels? Will we need
-> >> more levels,
-> >> like WARNING, ERROR, etc.?
-> > 
-> > 
-> > I found that I need one level for development - to trace what
-> > goes rignt and wrong. At the same time as those messages go to
-> > dmesg this level is too verbose to be used under normal
-> > circumstances. That is why another level is introduced. And the
-> > last one exists to verify invariants or error condintions from
-> > which there is no right way to recover and they result in
-> > bpfilter termination.
-> 
-> /dev/kmsg supports specifying priority of the message. Like:
-> 
->    echo '<4> This message have priority of 4' > /dev/kmsg
-> 
-> Therefore, with proper priority settings, we can have more levels safely.
-> Does this make sense?
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Yes, it makes.
-BPFILTER_FATAL should be renamed to BPFILTER_EMERG to match
-printk() counterpart. All bpfilter log levels should match
-printk() levels. All bpfilter log messages should include log
-level. And BPFILTER_DEBUG should be easily turned on/off during
-compilation to enable tracing/debug.
+Use kvcalloc() instead of kcalloc() to support large umems with, on my
+server, one million pages or more in the umem.
 
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Reported-by: Dan Siemon <dan@coverfire.com>
+---
+ net/xdp/xdp_umem.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-> 
-> Thanks,
-> Song
-> 
-> [...]
-> 
+diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
+index 56a28a686988..f01ef6bda390 100644
+--- a/net/xdp/xdp_umem.c
++++ b/net/xdp/xdp_umem.c
+@@ -27,7 +27,7 @@ static void xdp_umem_unpin_pages(struct xdp_umem *umem)
+ {
+ 	unpin_user_pages_dirty_lock(umem->pgs, umem->npgs, true);
+ 
+-	kfree(umem->pgs);
++	kvfree(umem->pgs);
+ 	umem->pgs = NULL;
+ }
+ 
+@@ -99,8 +99,7 @@ static int xdp_umem_pin_pages(struct xdp_umem *umem, unsigned long address)
+ 	long npgs;
+ 	int err;
+ 
+-	umem->pgs = kcalloc(umem->npgs, sizeof(*umem->pgs),
+-			    GFP_KERNEL | __GFP_NOWARN);
++	umem->pgs = kvcalloc(umem->npgs, sizeof(*umem->pgs), GFP_KERNEL | __GFP_NOWARN);
+ 	if (!umem->pgs)
+ 		return -ENOMEM;
+ 
+@@ -123,7 +122,7 @@ static int xdp_umem_pin_pages(struct xdp_umem *umem, unsigned long address)
+ out_pin:
+ 	xdp_umem_unpin_pages(umem);
+ out_pgs:
+-	kfree(umem->pgs);
++	kvfree(umem->pgs);
+ 	umem->pgs = NULL;
+ 	return err;
+ }
 
+base-commit: a49e72b3bda73d36664a084e47da9727a31b8095
 -- 
+2.29.0
 
-Dmitrii Banshchikov
