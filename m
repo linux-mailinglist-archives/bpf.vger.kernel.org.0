@@ -2,119 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C338438BB46
-	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 03:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1513938BCDB
+	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 05:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236034AbhEUBJU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 May 2021 21:09:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58872 "EHLO
+        id S236831AbhEUDIS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 May 2021 23:08:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235398AbhEUBJT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 May 2021 21:09:19 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82EBCC061574;
-        Thu, 20 May 2021 18:07:57 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id h20-20020a17090aa894b029015db8f3969eso5635583pjq.3;
-        Thu, 20 May 2021 18:07:57 -0700 (PDT)
+        with ESMTP id S236727AbhEUDIS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 May 2021 23:08:18 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10938C061574
+        for <bpf@vger.kernel.org>; Thu, 20 May 2021 20:06:56 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id v184-20020a257ac10000b02904f84a5c5297so25354027ybc.16
+        for <bpf@vger.kernel.org>; Thu, 20 May 2021 20:06:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Oa6hJMFzuFqCtQAZfwRNzxo5sbxFFXAhEkw/QR9r+Mk=;
-        b=nrwHLxEacwqdNOhGw3z0aoEN8LXPfGaDDPdwOYD34CBAJ51Nui7G7f7/mtTKRPItHc
-         YiEY9PZ8Gg8LUHp3Lp8fnE6JXtmLxQa2S0Xcn+75TwibiSjT5umNgZdkxixd1+lJWXHR
-         0Of5dGcuVdmaWniyq51beWrf2tjYTGxUGejTyKjwv5t9biCA+3URvf339fbjTDJUwSWy
-         RPSjAX7sLVK6ftnmjgofIcLbm+4F67M0eZVZWpfViY5qEHB+2eKo45h3oRQYBtAMNYkn
-         ne454b2dEjrSkq9FBd6/mZlQiBDNBNG0NDgcc+leeWqk2vumD7dzSIpBt6PXwa0GpT0l
-         LnGg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=LCvhfrAF8R5mHZN7FS4R/Cp/wmIOcPcxTTJB/A0cLT4=;
+        b=DS7WbltlGi/2GwuM3anNh91eEOX13R8pcP8rgJfvN9o3kUTbIq4p5s33b39uNsH0CT
+         q76kT25ftwKth+AdhXBI6aGJOcmrGiYe/PIdePZ8Qyr2wfhlzU4OA7LXCVEsrsVKlTG3
+         CYb0Q9j10AhNHIx1BKSjOXXQXli+Dm2Oerrq3TabT5EROaW7h5BkiNuYszMTaUFv9nND
+         nftAyzZ+BA5T8hWM1vPIKb1esuMtfVwKAve8TKP7FBpe9QQDtqyk+rGDRxr7b0Qp9tkg
+         vrddLljI0BtwHKtLC6Fyfe3Mtwd5J/eqtLcz7IRjQ7CQtTeJZtbuP5D0Ff6okTG677nX
+         ugwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Oa6hJMFzuFqCtQAZfwRNzxo5sbxFFXAhEkw/QR9r+Mk=;
-        b=Kubf6GfDEBN/60KBFGRSPwdkvKw0aCRicmWZjJZd2ABpKfV+4YADXaGio6K/GvayIy
-         9ueGmg1OdjxgEeA3liJtANbYDM6fkai4wPlTLk5PZe5SqC3YsDLUZlwdSjYiU9K2iVPI
-         /zOBe9UyoA6LUBXZayaBvR3pG47HsA5lFZZMa9wGZFUFRozVTjDgNQyCUHe8F3Suo0Uv
-         CGUy011VDn0OIeDBB4zEu64jv+XbvNlMsxm3q7lwThdjG5NXxU0omb2Ju2A9KpmmpxfX
-         ytw6v8KsaevRzytgLuqqC+pHios6lPnd2UtHgmv2LASXp/yv63aezHdxXNvFr3vL4Qdl
-         8CfQ==
-X-Gm-Message-State: AOAM530Cj98EAjGtFjoH/bt3lkoxBeUqeY24npScvngpz35GkrYTprt7
-        B5q8NtVukhGal4tT0koKP1o=
-X-Google-Smtp-Source: ABdhPJz2ZjiO+mSkoD9oLIHAWomO95cyzkEKJfFxffCO8QRn5YF8CxDewxV2E+XpDVRJ3BXgCu0Bbg==
-X-Received: by 2002:a17:902:f291:b029:f0:ba5b:5c47 with SMTP id k17-20020a170902f291b02900f0ba5b5c47mr9251659plc.41.1621559277033;
-        Thu, 20 May 2021 18:07:57 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:3fe2])
-        by smtp.gmail.com with ESMTPSA id v15sm2824411pfm.187.2021.05.20.18.07.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 18:07:56 -0700 (PDT)
-Date:   Thu, 20 May 2021 18:07:52 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     io-uring@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        "Franz-B . Tuneke" <franz-bernhard.tuneke@tu-dortmund.de>,
-        Christian Dietrich <stettberger@dokucode.de>
-Subject: Re: [PATCH 15/23] io_uring: enable BPF to submit SQEs
-Message-ID: <20210521010752.lky4pz7zipefrfr7@ast-mbp>
-References: <cover.1621424513.git.asml.silence@gmail.com>
- <8ec8373d406d1fcb41719e641799dcc5c0455db3.1621424513.git.asml.silence@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8ec8373d406d1fcb41719e641799dcc5c0455db3.1621424513.git.asml.silence@gmail.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=LCvhfrAF8R5mHZN7FS4R/Cp/wmIOcPcxTTJB/A0cLT4=;
+        b=TGfaFv3f16VzVxefHHUdNZmh4IJ7Ux5vT4J5USuQK9aNklUwmWXSxA3IqEIlXrI+TB
+         aroTnou19CPqOAo8TtMFiolD5Z2vQu58d/ZpJWoOb2djfRZnClhD0lqbTDi9eRFs6nS+
+         ZKjKSYzrAeYBGEpuLHHRLagsMVrBpUUvTRsLVo9kIExCiMtJay9eV+LaPUcnMyEM9Oli
+         buOB9RUGPziBXY+Ap7EXth5q6kuK6ehMd6iotGFNhti5deD98TQPqYeQCVYcIqnKaBhS
+         4O5dSuHyJI+fgg7UqOMu1yjVSenVw+t22PsyRlCy7/sS27W1WYSQKR+Tua+ARx2HpdtI
+         JbbQ==
+X-Gm-Message-State: AOAM533XjASSf54Vz6BuTcWQ18n10IH509SYjoFD5jhqCKs5lhrUGMWR
+        NM0oYuBzPuna4Xr8Afmgnbjn3zM=
+X-Google-Smtp-Source: ABdhPJy3OyWHNakdyTykO6cwFh7DgXNHUnTio/6IB0a8KqgJtvcLm3ekljRvWXEXWWG5r3eNGHZ6hoQ=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:4909:ac09:6d2:d3a3])
+ (user=sdf job=sendgmr) by 2002:a25:410e:: with SMTP id o14mr7921617yba.122.1621566415220;
+ Thu, 20 May 2021 20:06:55 -0700 (PDT)
+Date:   Thu, 20 May 2021 20:06:53 -0700
+Message-Id: <20210521030653.2626513-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
+Subject: [PATCH bpf-next] libbpf: skip bpf_object__probe_loading for light skeleton
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 19, 2021 at 03:13:26PM +0100, Pavel Begunkov wrote:
->  
-> +BPF_CALL_3(io_bpf_queue_sqe, struct io_bpf_ctx *,		bpf_ctx,
-> +			     const struct io_uring_sqe *,	sqe,
-> +			     u32,				sqe_len)
-> +{
-> +	struct io_ring_ctx *ctx = bpf_ctx->ctx;
-> +	struct io_kiocb *req;
-> +
-> +	if (sqe_len != sizeof(struct io_uring_sqe))
-> +		return -EINVAL;
-> +
-> +	req = io_alloc_req(ctx);
+I'm getting the following error when running 'gen skeleton -L' as
+regular user:
 
-that is GFP_KERNEL allocation.
-It's only allowed from sleepable bpf progs and further down
-there is a correct check for it, so all good.
-But submitting sqe is a fundemntal io_uring operation,
-so what is the use case for non-sleepable?
-In other words why bother? Allow sleepable only and simplify the code?
+libbpf: Error in bpf_object__probe_loading():Operation not permitted(1).
+Couldn't load trivial BPF program. Make sure your kernel supports BPF
+(CONFIG_BPF_SYSCALL=y) and/or that RLIMIT_MEMLOCK is set to big enough
+value.
 
-> +	if (unlikely(!req))
-> +		return -ENOMEM;
-> +	if (!percpu_ref_tryget_many(&ctx->refs, 1)) {
-> +		kmem_cache_free(req_cachep, req);
-> +		return -EAGAIN;
-> +	}
-> +	percpu_counter_add(&current->io_uring->inflight, 1);
-> +	refcount_add(1, &current->usage);
-> +
-> +	/* returns number of submitted SQEs or an error */
-> +	return !io_submit_sqe(ctx, req, sqe);
+Fixes: 67234743736a ("libbpf: Generate loader program out of BPF ELF file.")
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/lib/bpf/libbpf.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-A buggy bpf prog will be able to pass junk sizeof(struct io_uring_sqe)
-as 'sqe' here.
-What kind of validation io_submit_sqe() does to avoid crashing the kernel?
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index dc4d5fe6d9d2..b396e45b17ea 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3971,6 +3971,9 @@ bpf_object__probe_loading(struct bpf_object *obj)
+ 	};
+ 	int ret;
+ 
++	if (obj->gen_loader)
++		return 0;
++
+ 	/* make sure basic loading works */
+ 
+ 	memset(&attr, 0, sizeof(attr));
+-- 
+2.31.1.818.g46aad6cb9e-goog
 
-General comments that apply to all patches:
-- commit logs are way too terse. Pls expand with details.
-- describe new bpf helpers in comments in bpf.h. Just adding them to an enum is not enough.
-- selftest/bpf are mandatory for all new bpf features.
-- consider bpf_link style of attaching bpf progs. We had enough issues with progs
-  that get stuck due to application bugs. Auto-detach saves the day more often than not.
