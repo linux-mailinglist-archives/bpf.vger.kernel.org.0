@@ -2,207 +2,239 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9227038CC28
-	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 19:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4F138CD2E
+	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 20:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233148AbhEURax (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 May 2021 13:30:53 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:57190 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbhEURaw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 May 2021 13:30:52 -0400
-Received: by mail-il1-f198.google.com with SMTP id 15-20020a920d0f0000b02901c54acae19eso2005925iln.23
-        for <bpf@vger.kernel.org>; Fri, 21 May 2021 10:29:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0aQfBt3ao0BTqd+st7XGC1jU2R3P5r17YU2qEOvxQvQ=;
-        b=q4OTsOqe8lmP3xEMFgAohhDgc9jhm6XBE+dvM306IQH06onzN0u1UGw2xglXEkBv99
-         P88d+yjOMoy7oWVOdqQNY0SsAIRPsv6IdNZ3xz3V14ZW774/+ZyF28ZH3rq0UmeY5jxx
-         d0ALLTSMfQPaRUbFn+Btsq/9jh9ymWFlNdftkN7aLUeyrL9G+PuoMF/ILcd0FX9zBTmR
-         xw+S90VRo6CBbw+6lKBUihtbVRb1Lnc0dr8Tv4fVunz92bmTIj5HQFWFerK3PIUBVKmu
-         rFzmhKV3Tp65O7lBwbalvk1Ew1mSxdXXX61ce1GJqjHlBzBx4PT5GqNsikq0r6C2iamo
-         PyhA==
-X-Gm-Message-State: AOAM530YHG+LlUqy6FsLJRVma2+p5p0XW5XlpRbO2af1bjxFaNn6dGKi
-        0liNzYAvmGIu/EUh7Hry23cc/ZEEdVMc/Cp6dLCp7UXad6t9
-X-Google-Smtp-Source: ABdhPJygau1mI+CKQEdNyLZZFC3bGz6FndKLoRLvKhYcNFQ/BnqVE/1xeoMOlm11MpKThV74uYLO7wBvKDGcszipiZOyQKFp2Ok6
+        id S238714AbhEUSXC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 May 2021 14:23:02 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:43782 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232502AbhEUSXB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 May 2021 14:23:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1621621298; x=1653157298;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1d4mzj1g3eyxKNgccyzK/7g9QiPzrhlgpkhehZnLoZ0=;
+  b=wEfiRTDOynU0RnfOcEm38m1XRwv8U4KAXODpSioWdfe7wcNzu1MExb9k
+   GUws6YtjiuVRciBTuu8m5igQCQ3Seta+3K266rX153Mm8iFl/gYVyE8EU
+   a5d2LBC0oGVw3RZDXqdkzcl5ULDyLE7EgqidetlQVo2nP3yJHXx27ZwUm
+   g=;
+X-IronPort-AV: E=Sophos;i="5.82,319,1613433600"; 
+   d="scan'208";a="113873802"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 21 May 2021 18:21:36 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-538b0bfb.us-west-2.amazon.com (Postfix) with ESMTPS id 7B453A1CD0;
+        Fri, 21 May 2021 18:21:35 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Fri, 21 May 2021 18:21:34 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.161.224) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Fri, 21 May 2021 18:21:30 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+CC:     Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v7 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Sat, 22 May 2021 03:20:53 +0900
+Message-ID: <20210521182104.18273-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:14c4:: with SMTP id b4mr12723587iow.82.1621618169228;
- Fri, 21 May 2021 10:29:29 -0700 (PDT)
-Date:   Fri, 21 May 2021 10:29:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f034fc05c2da6617@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in check_all_holdout_tasks_trace
-From:   syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, shakeelb@google.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.224]
+X-ClientProxiedBy: EX13D17UWB003.ant.amazon.com (10.43.161.42) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+The SO_REUSEPORT option allows sockets to listen on the same port and to
+accept connections evenly. However, there is a defect in the current
+implementation [1]. When a SYN packet is received, the connection is tied
+to a listening socket. Accordingly, when the listener is closed, in-flight
+requests during the three-way handshake and child sockets in the accept
+queue are dropped even if other listeners on the same port could accept
+such connections.
 
-syzbot found the following issue on:
+This situation can happen when various server management tools restart
+server (such as nginx) processes. For instance, when we change nginx
+configurations and restart it, it spins up new workers that respect the new
+configuration and closes all listeners on the old workers, resulting in the
+in-flight ACK of 3WHS is responded by RST.
 
-HEAD commit:    f18ba26d libbpf: Add selftests for TC-BPF management API
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17f50d1ed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8ff54addde0afb5d
-dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
+To avoid such a situation, users have to know deeply how the kernel handles
+SYN packets and implement connection draining by eBPF [2]:
 
-Unfortunately, I don't have any reproducer for this issue yet.
+  1. Stop routing SYN packets to the listener by eBPF.
+  2. Wait for all timers to expire to complete requests
+  3. Accept connections until EAGAIN, then close the listener.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
+  or
 
-==================================================================
-BUG: KASAN: use-after-free in check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
-Read of size 1 at addr ffff88802767a05c by task rcu_tasks_trace/12
+  1. Start counting SYN packets and accept syscalls using the eBPF map.
+  2. Stop routing SYN packets.
+  3. Accept connections up to the count, then close the listener.
 
-CPU: 0 PID: 12 Comm: rcu_tasks_trace Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
- __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
- check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
- rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
- rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+In either way, we cannot close a listener immediately. However, ideally,
+the application need not drain the not yet accepted sockets because 3WHS
+and tying a connection to a listener are just the kernel behaviour. The
+root cause is within the kernel, so the issue should be addressed in kernel
+space and should not be visible to user space. This patchset fixes it so
+that users need not take care of kernel implementation and connection
+draining. With this patchset, the kernel redistributes requests and
+connections from a listener to the others in the same reuseport group
+at/after close or shutdown syscalls.
 
-Allocated by task 8477:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:428 [inline]
- __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
- kasan_slab_alloc include/linux/kasan.h:236 [inline]
- slab_post_alloc_hook mm/slab.h:524 [inline]
- slab_alloc_node mm/slub.c:2912 [inline]
- kmem_cache_alloc_node+0x269/0x3e0 mm/slub.c:2948
- alloc_task_struct_node kernel/fork.c:171 [inline]
- dup_task_struct kernel/fork.c:865 [inline]
- copy_process+0x5c8/0x7120 kernel/fork.c:1947
- kernel_clone+0xe7/0xab0 kernel/fork.c:2503
- __do_sys_clone+0xc8/0x110 kernel/fork.c:2620
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+Although some software does connection draining, there are still merits in
+migration. For some security reasons, such as replacing TLS certificates,
+we may want to apply new settings as soon as possible and/or we may not be
+able to wait for connection draining. The sockets in the accept queue have
+not started application sessions yet. So, if we do not drain such sockets,
+they can be handled by the newer listeners and could have a longer
+lifetime. It is difficult to drain all connections in every case, but we
+can decrease such aborted connections by migration. In that sense,
+migration is always better than draining. 
 
-Freed by task 12:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
- ____kasan_slab_free mm/kasan/common.c:360 [inline]
- ____kasan_slab_free mm/kasan/common.c:325 [inline]
- __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
- kasan_slab_free include/linux/kasan.h:212 [inline]
- slab_free_hook mm/slub.c:1581 [inline]
- slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1606
- slab_free mm/slub.c:3166 [inline]
- kmem_cache_free+0x8a/0x740 mm/slub.c:3182
- __put_task_struct+0x26f/0x400 kernel/fork.c:747
- trc_wait_for_one_reader kernel/rcu/tasks.h:935 [inline]
- check_all_holdout_tasks_trace+0x179/0x420 kernel/rcu/tasks.h:1081
- rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
- rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Moreover, auto-migration simplifies user space logic and also works well in
+a case where we cannot modify and build a server program to implement the
+workaround.
 
-Last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
- __call_rcu kernel/rcu/tree.c:3038 [inline]
- call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
- put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
- release_task+0xca1/0x1690 kernel/exit.c:226
- wait_task_zombie kernel/exit.c:1108 [inline]
- wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
- do_wait_thread kernel/exit.c:1398 [inline]
- do_wait+0x724/0xd40 kernel/exit.c:1515
- kernel_wait4+0x14c/0x260 kernel/exit.c:1678
- __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+Note that the source and destination listeners MUST have the same settings
+at the socket API level; otherwise, applications may face inconsistency and
+cause errors. In such a case, we have to use the eBPF program to select a
+specific listener or to cancel migration.
 
-Second to last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
- __call_rcu kernel/rcu/tree.c:3038 [inline]
- call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
- put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
- context_switch kernel/sched/core.c:4342 [inline]
- __schedule+0x91e/0x23e0 kernel/sched/core.c:5147
- preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:5307
- preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:35
- try_to_wake_up+0xa12/0x14b0 kernel/sched/core.c:3489
- wake_up_process kernel/sched/core.c:3552 [inline]
- wake_up_q+0x96/0x100 kernel/sched/core.c:597
- futex_wake+0x3e9/0x490 kernel/futex.c:1634
- do_futex+0x326/0x1780 kernel/futex.c:3738
- __do_sys_futex+0x2a2/0x470 kernel/futex.c:3796
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff888027679c40
- which belongs to the cache task_struct of size 6976
-The buggy address is located 1052 bytes inside of
- 6976-byte region [ffff888027679c40, ffff88802767b780)
-The buggy address belongs to the page:
-page:ffffea00009d9e00 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88802767b880 pfn:0x27678
-head:ffffea00009d9e00 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000010200 ffffea000071e208 ffffea0000950808 ffff888140005140
-raw: ffff88802767b880 0000000000040003 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 243, ts 14372676818, free_ts 0
- prep_new_page mm/page_alloc.c:2358 [inline]
- get_page_from_freelist+0x1033/0x2b60 mm/page_alloc.c:3994
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5200
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
- alloc_slab_page mm/slub.c:1644 [inline]
- allocate_slab+0x2c5/0x4c0 mm/slub.c:1784
- new_slab mm/slub.c:1847 [inline]
- new_slab_objects mm/slub.c:2593 [inline]
- ___slab_alloc+0x44c/0x7a0 mm/slub.c:2756
- __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2796
- slab_alloc_node mm/slub.c:2878 [inline]
- kmem_cache_alloc_node+0x12f/0x3e0 mm/slub.c:2948
- alloc_task_struct_node kernel/fork.c:171 [inline]
- dup_task_struct kernel/fork.c:865 [inline]
- copy_process+0x5c8/0x7120 kernel/fork.c:1947
- kernel_clone+0xe7/0xab0 kernel/fork.c:2503
- kernel_thread+0xb5/0xf0 kernel/fork.c:2555
- call_usermodehelper_exec_work kernel/umh.c:174 [inline]
- call_usermodehelper_exec_work+0xcc/0x180 kernel/umh.c:160
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff888027679f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888027679f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88802767a000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                    ^
- ffff88802767a080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88802767a100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+Special thanks to Martin KaFai Lau for bouncing ideas and exchanging code
+snippets along the way.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Link:
+ [1] The SO_REUSEPORT socket option
+ https://lwn.net/Articles/542629/
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+ [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
+ https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
+
+
+Changelog:
+ v7:
+  * Prevent attaching/detaching a bpf prog via shutdowned socket
+  * Fix typo in commit messages
+  * Split selftest into subtests
+
+ v6:
+ https://lore.kernel.org/bpf/20210517002258.75019-1-kuniyu@amazon.co.jp/
+  * Change description in ip-sysctl.rst
+  * Test IPPROTO_TCP before reading tfo_listener
+  * Move reqsk_clone() to inet_connection_sock.c and rename to
+    inet_reqsk_clone()
+  * Pass req->rsk_listener to inet_csk_reqsk_queue_drop() and
+    reqsk_queue_removed() in the migration path of receiving ACK
+  * s/ARG_PTR_TO_SOCKET/PTR_TO_SOCKET/ in sk_reuseport_is_valid_access()
+  * In selftest, use atomic ops to increment global vars, drop ACK by XDP,
+    enable force fastopen, use "skel->bss" instead of "skel->data"
+
+ v5:
+ https://lore.kernel.org/bpf/20210510034433.52818-1-kuniyu@amazon.co.jp/
+  * Move initializtion of sk_node from 6th to 5th patch
+  * Initialize sk_refcnt in reqsk_clone()
+  * Modify some definitions in reqsk_timer_handler()
+  * Validate in which path/state migration happens in selftest
+
+ v4:
+ https://lore.kernel.org/bpf/20210427034623.46528-1-kuniyu@amazon.co.jp/
+  * Make some functions and variables 'static' in selftest
+  * Remove 'scalability' from the cover letter
+
+ v3:
+ https://lore.kernel.org/bpf/20210420154140.80034-1-kuniyu@amazon.co.jp/
+  * Add sysctl back for reuseport_grow()
+  * Add helper functions to manage socks[]
+  * Separate migration related logic into functions: reuseport_resurrect(),
+    reuseport_stop_listen_sock(), reuseport_migrate_sock()
+  * Clone request_sock to be migrated
+  * Migrate request one by one
+  * Pass child socket to eBPF prog
+
+ v2:
+ https://lore.kernel.org/netdev/20201207132456.65472-1-kuniyu@amazon.co.jp/
+  * Do not save closed sockets in socks[]
+  * Revert 607904c357c61adf20b8fd18af765e501d61a385
+  * Extract inet_csk_reqsk_queue_migrate() into a single patch
+  * Change the spin_lock order to avoid lockdep warning
+  * Add static to __reuseport_select_sock
+  * Use refcount_inc_not_zero() in reuseport_select_migrated_sock()
+  * Set the default attach type in bpf_prog_load_check_attach()
+  * Define new proto of BPF_FUNC_get_socket_cookie
+  * Fix test to be compiled successfully
+  * Update commit messages
+
+ v1:
+ https://lore.kernel.org/netdev/20201201144418.35045-1-kuniyu@amazon.co.jp/
+  * Remove the sysctl option
+  * Enable migration if eBPF progam is not attached
+  * Add expected_attach_type to check if eBPF program can migrate sockets
+  * Add a field to tell migration type to eBPF program
+  * Support BPF_FUNC_get_socket_cookie to get the cookie of sk
+  * Allocate an empty skb if skb is NULL
+  * Pass req_to_sk(req)->sk_hash because listener's hash is zero
+  * Update commit messages and coverletter
+
+ RFC:
+ https://lore.kernel.org/netdev/20201117094023.3685-1-kuniyu@amazon.co.jp/
+
+
+Kuniyuki Iwashima (11):
+  net: Introduce net.ipv4.tcp_migrate_req.
+  tcp: Add num_closed_socks to struct sock_reuseport.
+  tcp: Keep TCP_CLOSE sockets in the reuseport group.
+  tcp: Add reuseport_migrate_sock() to select a new listener.
+  tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+  tcp: Migrate TCP_NEW_SYN_RECV requests at retransmitting SYN+ACKs.
+  tcp: Migrate TCP_NEW_SYN_RECV requests at receiving the final ACK.
+  bpf: Support BPF_FUNC_get_socket_cookie() for
+    BPF_PROG_TYPE_SK_REUSEPORT.
+  bpf: Support socket migration by eBPF.
+  libbpf: Set expected_attach_type for BPF_PROG_TYPE_SK_REUSEPORT.
+  bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
+
+ Documentation/networking/ip-sysctl.rst        |  25 +
+ include/linux/bpf.h                           |   1 +
+ include/linux/filter.h                        |   2 +
+ include/net/netns/ipv4.h                      |   1 +
+ include/net/sock_reuseport.h                  |   9 +-
+ include/uapi/linux/bpf.h                      |  16 +
+ kernel/bpf/syscall.c                          |  13 +
+ net/core/filter.c                             |  23 +-
+ net/core/sock_reuseport.c                     | 362 ++++++++++--
+ net/ipv4/inet_connection_sock.c               | 190 +++++-
+ net/ipv4/inet_hashtables.c                    |   2 +-
+ net/ipv4/sysctl_net_ipv4.c                    |   9 +
+ net/ipv4/tcp_ipv4.c                           |  20 +-
+ net/ipv4/tcp_minisocks.c                      |   4 +-
+ net/ipv6/tcp_ipv6.c                           |  14 +-
+ tools/include/uapi/linux/bpf.h                |  16 +
+ tools/lib/bpf/libbpf.c                        |   5 +-
+ tools/testing/selftests/bpf/network_helpers.c |   2 +-
+ tools/testing/selftests/bpf/network_helpers.h |   1 +
+ .../bpf/prog_tests/migrate_reuseport.c        | 555 ++++++++++++++++++
+ .../bpf/progs/test_migrate_reuseport.c        | 135 +++++
+ 21 files changed, 1336 insertions(+), 69 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
+
+-- 
+2.30.2
+
