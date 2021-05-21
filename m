@@ -2,233 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B54A538BDD3
-	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 07:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F3338BDE7
+	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 07:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhEUFRX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 May 2021 01:17:23 -0400
-Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:20096 "EHLO
-        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbhEUFRX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 May 2021 01:17:23 -0400
+        id S232889AbhEUFcy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 May 2021 01:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhEUFcx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 May 2021 01:32:53 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17963C061574;
+        Thu, 20 May 2021 22:31:30 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id y36so9313297ybi.11;
+        Thu, 20 May 2021 22:31:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1621574161; x=1653110161;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HGhopqNit1CyoiAPFzXCxUVGqD+msanIlpljNJNwB4g=;
-  b=JGJYVRw0y/FPCKxENMAtlnwqSuSsVzu1tlInOdLcHS1boOHkkluBo90I
-   uFGixGs1Ihp8uEwiRZVG0ATBirXpftiNz4QatJWDOvXAa9mIxLEEtGu3h
-   NDwv9nYKkuUuphb78cNfOvveJxr7q8FpWteefcGvkz+aZ0Ty8Y4TwnU35
-   w=;
-X-IronPort-AV: E=Sophos;i="5.82,313,1613433600"; 
-   d="scan'208";a="2506590"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1a-807d4a99.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 21 May 2021 05:15:59 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-807d4a99.us-east-1.amazon.com (Postfix) with ESMTPS id C64BAA2005;
-        Fri, 21 May 2021 05:15:58 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Fri, 21 May 2021 05:15:58 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.162.239) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Fri, 21 May 2021 05:15:53 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v6 bpf-next 03/11] tcp: Keep TCP_CLOSE sockets in the reuseport group.
-Date:   Fri, 21 May 2021 14:15:48 +0900
-Message-ID: <20210521051548.48515-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210521044725.acvvp3qoj5tk4xts@kafai-mbp.dhcp.thefacebook.com>
-References: <20210521044725.acvvp3qoj5tk4xts@kafai-mbp.dhcp.thefacebook.com>
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jvPYzY/XrELEm8iFWOXL9/Ix8RD17PPfttVLbzrKYec=;
+        b=lQ5tjhFo6xYnlzJbI640wMPyQRf1dqFxRemvkhjsAElJtQVm2U5iNU4AGipHhl2k3U
+         uz8YOl1OV72Cj9ZpLBYXKoDlnlu9dWo0/sN5IJi0p0MnjTHvWS0XFt2SgfMbPbB3ZJ+s
+         OqCzADLd1EN1DoimD0tj92fH8eyO0/bArNvFs6ezuujsETiQ/2LglZvGUd4K6gSEQFH8
+         5UbRXCUgDvsgCEG6YLh04NS6I8diOUOy/OlII9rLU5xmFKmvS0XwP0eIgibjMkj1wZLb
+         00IOiC7I+EzT512Xpb6CI/MkC8vgVD36P8OyfaaS2Dqhz8QhqVjufW39XC0B1TmpxiXL
+         lNQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jvPYzY/XrELEm8iFWOXL9/Ix8RD17PPfttVLbzrKYec=;
+        b=K4WtnVBL68hsD72Kt282zAXRb8dW2nRONTPy6J2lqc2JLD5RS+5q87NU6CMLHxf/Tt
+         CvDQ7Ix4dR9PjEUPRFErkir8DbYS/A5ksHuHy7MZRjRwQdjPZZxDygllcaeYDvUlmvsq
+         zePf0PbypY91zjouE0xDc/vy5jpTTK570RYwxhg+dgKmWVcEdtMRrVobe4WtGQ3DjkJM
+         o2EsrkoT3PGs2tuSyptJk75qrvEAYAySVXE0B+ZGP9iL4bMvkPKVTLqrkPdO+NQn/QRh
+         woUs1eo8/2i12D21YpSrSr7MXhTdrpF0MgBNyTFQgHh5Jbp/1h9+Vl/c7e3zsKkwvB55
+         qFGw==
+X-Gm-Message-State: AOAM531AkpImGZVwUrkv6CAPMYwvpWV9+v1dHkgTaEZRw0U1AzNfMEP3
+        AVjTd0XdeLGxxsdYBPf3nBv/LPdx37IerkZrPo4=
+X-Google-Smtp-Source: ABdhPJxlGn2A+LFevhEFgfWiXj276hp4bn0wK8a9PEU7IC9APYD3h1HL6ueNzCdq7ctUe4FUv481Ssq7WTzAnn0lbZE=
+X-Received: by 2002:a5b:286:: with SMTP id x6mr13291645ybl.347.1621575089244;
+ Thu, 20 May 2021 22:31:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.239]
-X-ClientProxiedBy: EX13D25UWC003.ant.amazon.com (10.43.162.129) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+References: <20210519141936.GV8544@kitsune.suse.cz>
+In-Reply-To: <20210519141936.GV8544@kitsune.suse.cz>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 20 May 2021 22:31:18 -0700
+Message-ID: <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
+Subject: Re: BPF: failed module verification on linux-next
+To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Thu, 20 May 2021 21:47:25 -0700
-> On Fri, May 21, 2021 at 09:26:39AM +0900, Kuniyuki Iwashima wrote:
-> > From:   Martin KaFai Lau <kafai@fb.com>
-> > Date:   Thu, 20 May 2021 16:39:06 -0700
-> > > On Fri, May 21, 2021 at 07:54:48AM +0900, Kuniyuki Iwashima wrote:
-> > > > From:   Martin KaFai Lau <kafai@fb.com>
-> > > > Date:   Thu, 20 May 2021 14:22:01 -0700
-> > > > > On Thu, May 20, 2021 at 05:51:17PM +0900, Kuniyuki Iwashima wrote:
-> > > > > > From:   Martin KaFai Lau <kafai@fb.com>
-> > > > > > Date:   Wed, 19 May 2021 23:26:48 -0700
-> > > > > > > On Mon, May 17, 2021 at 09:22:50AM +0900, Kuniyuki Iwashima wrote:
-> > > > > > > 
-> > > > > > > > +static int reuseport_resurrect(struct sock *sk, struct sock_reuseport *old_reuse,
-> > > > > > > > +			       struct sock_reuseport *reuse, bool bind_inany)
-> > > > > > > > +{
-> > > > > > > > +	if (old_reuse == reuse) {
-> > > > > > > > +		/* If sk was in the same reuseport group, just pop sk out of
-> > > > > > > > +		 * the closed section and push sk into the listening section.
-> > > > > > > > +		 */
-> > > > > > > > +		__reuseport_detach_closed_sock(sk, old_reuse);
-> > > > > > > > +		__reuseport_add_sock(sk, old_reuse);
-> > > > > > > > +		return 0;
-> > > > > > > > +	}
-> > > > > > > > +
-> > > > > > > > +	if (!reuse) {
-> > > > > > > > +		/* In bind()/listen() path, we cannot carry over the eBPF prog
-> > > > > > > > +		 * for the shutdown()ed socket. In setsockopt() path, we should
-> > > > > > > > +		 * not change the eBPF prog of listening sockets by attaching a
-> > > > > > > > +		 * prog to the shutdown()ed socket. Thus, we will allocate a new
-> > > > > > > > +		 * reuseport group and detach sk from the old group.
-> > > > > > > > +		 */
-> > > > > > > For the reuseport_attach_prog() path, I think it needs to consider
-> > > > > > > the reuse->num_closed_socks != 0 case also and that should belong
-> > > > > > > to the resurrect case.  For example, when
-> > > > > > > sk_unhashed(sk) but sk->sk_reuseport == 0.
-> > > > > > 
-> > > > > > In the path, reuseport_resurrect() is called from reuseport_alloc() only
-> > > > > > if reuse->num_closed_socks != 0.
-> > > > > > 
-> > > > > > 
-> > > > > > > @@ -92,6 +117,14 @@ int reuseport_alloc(struct sock *sk, bool bind_inany)
-> > > > > > >  	reuse = rcu_dereference_protected(sk->sk_reuseport_cb,
-> > > > > > >  					  lockdep_is_held(&reuseport_lock));
-> > > > > > >  	if (reuse) {
-> > > > > > > +		if (reuse->num_closed_socks) {
-> > > > > > 
-> > > > > > But, should this be
-> > > > > > 
-> > > > > > 	if (sk->sk_state == TCP_CLOSE && reuse->num_closed_socks)
-> > > > > > 
-> > > > > > because we need not allocate a new group when we attach a bpf prog to
-> > > > > > listeners?
-> > > > > The reuseport_alloc() is fine as is.  No need to change.
-> > > > 
-> > > > I missed sk_unhashed(sk) prevents calling reuseport_alloc()
-> > > > if sk_state == TCP_LISTEN. I'll keep it as is.
-> > > > 
-> > > > 
-> > > > > 
-> > > > > I should have copied reuseport_attach_prog() in the last reply and
-> > > > > commented there instead.
-> > > > > 
-> > > > > I meant reuseport_attach_prog() needs a change.  In reuseport_attach_prog(),
-> > > > > iiuc, currently passing the "else if (!rcu_access_pointer(sk->sk_reuseport_cb))"
-> > > > > check implies the sk was (and still is) hashed with sk_reuseport enabled
-> > > > > because the current behavior would have set sk_reuseport_cb to NULL during
-> > > > > unhash but it is no longer true now.  For example, this will break:
-> > > > > 
-> > > > > 1. shutdown(lsk); /* lsk was bound with sk_reuseport enabled */
-> > > > > 2. setsockopt(lsk, ..., SO_REUSEPORT, &zero, ...); /* disable sk_reuseport */
-> > > > > 3. setsockopt(lsk, ..., SO_ATTACH_REUSEPORT_EBPF, &prog_fd, ...);
-> > > > >    ^---- /* This will work now because sk_reuseport_cb is not NULL.
-> > > > >           * However, it shouldn't be allowed.
-> > > > > 	  */
-> > > > 
-> > > > Thank you for explanation, I understood the case.
-> > > > 
-> > > > Exactly, I've confirmed that the case succeeded in the setsockopt() and I
-> > > > could change the active listeners' prog via a shutdowned socket.
-> > > > 
-> > > > 
-> > > > > 
-> > > > > I am thinking something like this (uncompiled code):
-> > > > > 
-> > > > > int reuseport_attach_prog(struct sock *sk, struct bpf_prog *prog)
-> > > > > {
-> > > > > 	struct sock_reuseport *reuse;
-> > > > > 	struct bpf_prog *old_prog;
-> > > > > 
-> > > > > 	if (sk_unhashed(sk)) {
-> > > > > 		int err;
-> > > > > 
-> > > > > 		if (!sk->sk_reuseport)
-> > > > > 			return -EINVAL;
-> > > > > 
-> > > > > 		err = reuseport_alloc(sk, false);
-> > > > > 		if (err)
-> > > > > 			return err;
-> > > > > 	} else if (!rcu_access_pointer(sk->sk_reuseport_cb)) {
-> > > > > 		/* The socket wasn't bound with SO_REUSEPORT */
-> > > > > 		return -EINVAL;
-> > > > > 	}
-> > > > > 
-> > > > > 	/* ... */
-> > > > > }
-> > > > > 
-> > > > > WDYT?
-> > > > 
-> > > > I tested this change worked fine. I think this change should be added in
-> > > > reuseport_detach_prog() also.
-> > > > 
-> > > > ---8<---
-> > > > int reuseport_detach_prog(struct sock *sk)
-> > > > {
-> > > >         struct sock_reuseport *reuse;
-> > > >         struct bpf_prog *old_prog;
-> > > > 
-> > > >         if (!rcu_access_pointer(sk->sk_reuseport_cb))
-> > > > 		return sk->sk_reuseport ? -ENOENT : -EINVAL;
-> > > > ---8<---
-> > > Right, a quick thought is something like this for detach:
-> > > 
-> > > 	spin_lock_bh(&reuseport_lock);
-> > > 	reuse = rcu_dereference_protected(sk->sk_reuseport_cb,
-> > > 					  lockdep_is_held(&reuseport_lock));
-> > 
-> > Is this necessary because reuseport_grow() can detach sk?
-> > 
-> >         if (!reuse) {
-> >                 spin_unlock_bh(&reuseport_lock);
-> >                 return -ENOENT;
-> >         }
-> Yes, it is needed.  Please add a comment for the reuseport_grow() case also.
+On Wed, May 19, 2021 at 7:19 AM Michal Such=C3=A1nek <msuchanek@suse.de> wr=
+ote:
+>
+> Hello,
+>
+> linux-next fails to boot for me:
+>
+> [    0.000000] Linux version 5.13.0-rc2-next-20210519-1.g3455ff8-vanilla =
+(geeko@buildhost) (gcc (SUSE Linux) 10.3.0, GNU ld (GNU Binutils;
+> openSUSE Tumbleweed) 2.36.1.20210326-3) #1 SMP Wed May 19 10:05:10 UTC 20=
+21 (3455ff8)
+> [    0.000000] Command line: BOOT_IMAGE=3D/boot/vmlinuz-5.13.0-rc2-next-2=
+0210519-1.g3455ff8-vanilla root=3DUUID=3Dec42c33e-a2c2-4c61-afcc-93e9527
+> 8f687 plymouth.enable=3D0 resume=3D/dev/disk/by-uuid/f1fe4560-a801-4faf-a=
+638-834c407027c7 mitigations=3Dauto earlyprintk initcall_debug nomodeset
+>  earlycon ignore_loglevel console=3DttyS0,115200
+> ...
+> [   26.093364] calling  tracing_set_default_clock+0x0/0x62 @ 1
+> [   26.098937] initcall tracing_set_default_clock+0x0/0x62 returned 0 aft=
+er 0 usecs
+> [   26.106330] calling  acpi_gpio_handle_deferred_request_irqs+0x0/0x7c @=
+ 1
+> [   26.113033] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0x7c r=
+eturned 0 after 3 usecs
+> [   26.121559] calling  clk_disable_unused+0x0/0x102 @ 1
+> [   26.126620] initcall clk_disable_unused+0x0/0x102 returned 0 after 0 u=
+secs
+> [   26.133491] calling  regulator_init_complete+0x0/0x25 @ 1
+> [   26.138890] initcall regulator_init_complete+0x0/0x25 returned 0 after=
+ 0 usecs
+> [   26.147816] Freeing unused decrypted memory: 2036K
+> [   26.153682] Freeing unused kernel image (initmem) memory: 2308K
+> [   26.165776] Write protecting the kernel read-only data: 26624k
+> [   26.173067] Freeing unused kernel image (text/rodata gap) memory: 2036=
+K
+> [   26.180416] Freeing unused kernel image (rodata/data gap) memory: 1184=
+K
+> [   26.187031] Run /init as init process
+> [   26.190693]   with arguments:
+> [   26.193661]     /init
+> [   26.195933]   with environment:
+> [   26.199079]     HOME=3D/
+> [   26.201444]     TERM=3Dlinux
+> [   26.204152]     BOOT_IMAGE=3D/boot/vmlinuz-5.13.0-rc2-next-20210519-1.=
+g3455ff8-vanilla
+> [   26.254154] BPF:      type_id=3D35503 offset=3D178440 size=3D4
+> [   26.259125] BPF:
+> [   26.261054] BPF:Invalid offset
+> [   26.264119] BPF:
 
-I see, I'll add this change in the next spin.
-Thank you!
+It took me a while to reliably bisect this, but it clearly points to
+this commit:
 
----8<---
-@@ -608,13 +612,24 @@ int reuseport_detach_prog(struct sock *sk)
-        struct sock_reuseport *reuse;
-        struct bpf_prog *old_prog;
- 
--       if (!rcu_access_pointer(sk->sk_reuseport_cb))
--               return sk->sk_reuseport ? -ENOENT : -EINVAL;
--
-        old_prog = NULL;
-        spin_lock_bh(&reuseport_lock);
-        reuse = rcu_dereference_protected(sk->sk_reuseport_cb,
-                                          lockdep_is_held(&reuseport_lock));
-+
-+       /* reuse must be checked after acquiring the reuseport_lock
-+        * because reuseport_grow() can detach a closed sk.
-+        */
-+       if (!reuse) {
-+               spin_unlock_bh(&reuseport_lock);
-+               return sk->sk_reuseport ? -ENOENT : -EINVAL;
-+       }
-+
-+       if (sk_unhashed(sk) && reuse->num_closed_socks) {
-+               spin_unlock_bh(&reuseport_lock);
-+               return -ENOENT;
-+       }
-+
-        old_prog = rcu_replace_pointer(reuse->prog, old_prog,
-                                       lockdep_is_held(&reuseport_lock));
-        spin_unlock_bh(&reuseport_lock);
----8<---
+e481fac7d80b ("mm/page_alloc: convert per-cpu list protection to local_lock=
+")
 
+One commit before it, 676535512684 ("mm/page_alloc: split per cpu page
+lists and zone stats -fix"), works just fine.
 
-> 
-> > 
-> > Then we can remove rcu_access_pointer() check and move sk_reuseport check
-> > here.
-> Make sense.
+I'll have to spend more time debugging what exactly is happening, but
+the immediate problem is two different definitions of numa_node
+per-cpu variable. They both are at the same offset within
+.data..percpu ELF section, they both have the same name, but one of
+them is marked as static and another as global. And one is int
+variable, while another is struct pagesets. I'll look some more
+tomorrow, but adding Jiri and Arnaldo for visibility.
+
+[110907] DATASEC '.data..percpu' size=3D178904 vlen=3D303
+...
+        type_id=3D27753 offset=3D163976 size=3D4 (VAR 'numa_node')
+        type_id=3D27754 offset=3D163976 size=3D4 (VAR 'numa_node')
+
+[27753] VAR 'numa_node' type_id=3D27556, linkage=3Dstatic
+[27754] VAR 'numa_node' type_id=3D20, linkage=3Dglobal
+
+[20] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED
+
+[27556] STRUCT 'pagesets' size=3D0 vlen=3D1
+        'lock' type_id=3D507 bits_offset=3D0
+
+[506] STRUCT '(anon)' size=3D0 vlen=3D0
+[507] TYPEDEF 'local_lock_t' type_id=3D506
+
+So also something weird about those zero-sized struct pagesets and
+local_lock_t inside it.
+
+> [   26.264119]
+> [   26.267437] failed to validate module [efivarfs] BTF: -22
+> [   26.316724] systemd[1]: systemd 246.13+suse.105.g14581e0120 running in=
+ system mode. (+PAM +AUDIT +SELINUX -IMA +APPARMOR -SMACK +SYSVINI
+> T +UTMP +LIBCRYPTSETUP +GCRYPT +GNUTLS +ACL +XZ +LZ4 +ZSTD +SECCOMP +BLKI=
+D +ELFUTILS +KMOD +IDN2 -IDN +PCRE2 default-hierarchy=3Dunified)
+> [   26.357990] systemd[1]: Detected architecture x86-64.
+> [   26.363068] systemd[1]: Running in initial RAM disk.
+>
+
+[...]
