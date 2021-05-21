@@ -2,89 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2809938C952
-	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 16:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B562338CABB
+	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 18:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231738AbhEUOkP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 May 2021 10:40:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhEUOkP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 May 2021 10:40:15 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE31EC061574;
-        Fri, 21 May 2021 07:38:51 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id e2so17903137ljk.4;
-        Fri, 21 May 2021 07:38:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LnMbFnk6wz2n1JsVYFaQb0lyltiyPAnw+oRXrYpUg/g=;
-        b=Rtj3ntl922b5w4Euk3yiJiVVDv/bytL2l0/oB1aZntdPBgNNflkrLRoxnHA7fomptw
-         slhVpFMQRzoDwTUxe366YBcUZIR0MAn7Xa/o0VOKGYETbFbjvcNj+p73zeDuPhOMYmVO
-         fpYWZJZfsIYEDbOpjSjOIAv8DeNY17xx6JLyUMNNzXdvDZoWULbXZQtkWRZSvKjN40p8
-         55EQtMpPq9r/f+QqivBajM6TyyXINfd5q+xLL+zU0x3T64X3I87zNek6VFabA0O4/4zQ
-         RcU/OAllej7N07ohyLx2o8DAcJwMNstqY4tap6E3YeKLeW+o7AY6zoNV6MuBzkLmZY3s
-         QLNw==
+        id S233449AbhEUQRB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 May 2021 12:17:01 -0400
+Received: from mail-ed1-f53.google.com ([209.85.208.53]:36782 "EHLO
+        mail-ed1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231995AbhEUQRA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 May 2021 12:17:00 -0400
+Received: by mail-ed1-f53.google.com with SMTP id df21so23938395edb.3;
+        Fri, 21 May 2021 09:15:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LnMbFnk6wz2n1JsVYFaQb0lyltiyPAnw+oRXrYpUg/g=;
-        b=WYsgBkMk0q3A4eIjgACipIDa8DAcRtS1dE1YB9tGLaLONwGbspCoirXJVanoA6VtKG
-         llNy+TQpbJ6tbcbU6Pr603WrphHuarjfwQ6fj+uCF+FLd8+xhq/Vb9khgVzhVUsoiBCT
-         vyixfuzuUveyWfHpybH7d92zZ5nTsuSDfkWRVqzrRvmzOeZBzZNU5KklMefie5mDmdyQ
-         DzCF0DbrcMi1SlZOfgDiB3OMtrPT2db0+tCCmerRsoLsXx/kiuR8CnOu4lUG2HRgCTPn
-         gah6UA3H5ELqa6i8oLHioter5jAtXwreaTbUHDiLHDep+4j9lizd6S16mx9ojcR4aljH
-         OoDQ==
-X-Gm-Message-State: AOAM530sJdKVcfk+IRou1mKFxc5Mc2Ops0fkP7DpTtPuoQAUHHQ/0m30
-        6LmaKJPCg+M+Du3JpPRQzJf02UpUlQR+O3dupTM=
-X-Google-Smtp-Source: ABdhPJw8wDOiaQN/WFq+bG1KRUj1zEim4GTbY/xN/ViFC1LMugdFhVrbR6DznmNfdTB5tgXrq2/Z3HDbgrjkJE6y8qI=
-X-Received: by 2002:a2e:5813:: with SMTP id m19mr7173417ljb.258.1621607929784;
- Fri, 21 May 2021 07:38:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 21 May 2021 07:38:38 -0700
-Message-ID: <CAADnVQKmZC_c_y=m1yv4eaQJ6Pyqgju=K4+v=8eR4wAMSfqoMQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
-To:     "David S. Miller" <davem@davemloft.net>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kXlRaBMJoWOhAWHALOYN55NWGuEBwklQq4V7CKcJSkA=;
+        b=SfWJar+FICff2TRIXpGloL9uOmNcsBMdLJTJ3/E9eDGPn8p6za2a3HQZIEnKG7iuR5
+         xzvT/EIeaNYSRVKFh48ZfXpUie9M3bnPPcN5zXboUk2HMGlwf15VJHOnL3d4FrX6ic7j
+         OwfAcs8NTlBb8dqbL6ZKb5JEtwSKgQEDfZeZcKkZAKOHCGVduG4mfxLJlOGroZOuirvg
+         NuYIjgY21+sI2JZJNCUuV1Yc9qiLpnEG9BqPBtIPiyPckkoDFklA9N7XYDS+C0jpybRi
+         acCrjYLkRX8ScL2MGu/2Z48TETF9N4O4HUvvjnlnxWIFMKDEQhX5nEy09iRnApu6TpYT
+         FR/g==
+X-Gm-Message-State: AOAM531klu8qbyfDyn7C7FyRtmJHXgETabRdxtQOIqG4fbwQEJdm0DgS
+        jctZ2+os88a26ueMKiegRtRKZyKv2WPsJj9m
+X-Google-Smtp-Source: ABdhPJwj4cSc9QZl/beB2hgQ9AcqcPq/X5efuEiyVneN+LuPycp9x16/jNvla0FZjjMcKfQZWZYRSw==
+X-Received: by 2002:aa7:cd6b:: with SMTP id ca11mr12064239edb.115.1621613735185;
+        Fri, 21 May 2021 09:15:35 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-5-94-253-60.cust.vodafonedsl.it. [5.94.253.60])
+        by smtp.gmail.com with ESMTPSA id f7sm3871644ejz.95.2021.05.21.09.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 09:15:34 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     netdev@vger.kernel.org, linux-mm@kvack.org
+Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Subject: [PATCH net-next v6 0/5] page_pool: recycle buffers
+Date:   Fri, 21 May 2021 18:15:22 +0200
+Message-Id: <20210521161527.34607-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 20, 2021 at 11:55 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> Introduce 'struct bpf_timer' that can be embedded in most BPF map types
-> and helpers to operate on it:
-> long bpf_timer_init(struct bpf_timer *timer, void *callback, int flags)
-> long bpf_timer_mod(struct bpf_timer *timer, u64 msecs)
-> long bpf_timer_del(struct bpf_timer *timer)
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
-> This is work in progress, but gives an idea on how API will look.
+From: Matteo Croce <mcroce@microsoft.com>
 
-Forgot to mention the todo list:
-- restrict to cap_bpf
-- kfree bpf_timer_list
-- verifier btf checks
-- restrict to array, hash, lru, lpm. per-cpu maps cannot be supported.
-- safe interaction with lookup/update/delete operations and iterator
-- relax the 'first field only' requirement to allow bpf_timerr in global data.
-  kinda without a map.
-- check prog_rdonly, frozen, mmaped flags
-- decide on a return value from the timer callback
-- more tests
+This is a respin of [1]
+
+This patchset shows the plans for allowing page_pool to handle and
+maintain DMA map/unmap of the pages it serves to the driver. For this
+to work a return hook in the network core is introduced.
+
+The overall purpose is to simplify drivers, by providing a page
+allocation API that does recycling, such that each driver doesn't have
+to reinvent its own recycling scheme. Using page_pool in a driver
+does not require implementing XDP support, but it makes it trivially
+easy to do so. Instead of allocating buffers specifically for SKBs
+we now allocate a generic buffer and either wrap it on an SKB
+(via build_skb) or create an XDP frame.
+The recycling code leverages the XDP recycle APIs.
+
+The Marvell mvpp2 and mvneta drivers are used in this patchset to
+demonstrate how to use the API, and tested on a MacchiatoBIN
+and EspressoBIN boards respectively.
+
+Please let this going in on a future -rc1 so to allow enough time
+to have wider tests.
+
+Note that this series depends on the change "mm: fix struct page layout
+on 32-bit systems"[2] which is not yet in master.
+
+v5 -> v6
+- preserve pfmemalloc bit when setting signature
+- fix typo in mvneta
+- rebase on next-next with the new cache
+- don't clear the skb->pp_recycle in pskb_expand_head()
+
+v4 -> v5:
+- move the signature so it doesn't alias with page->mapping
+- use an invalid pointer as magic
+- incorporate Matthew Wilcox's changes for pfmemalloc pages
+- move the __skb_frag_unref() changes to a preliminary patch
+- refactor some cpp directives
+- only attempt recycling if skb->head_frag
+- clear skb->pp_recycle in pskb_expand_head()
+
+v3 -> v4:
+- store a pointer to page_pool instead of xdp_mem_info
+- drop a patch which reduces xdp_mem_info size
+- do the recycling in the page_pool code instead of xdp_return
+- remove some unused headers include
+- remove some useless forward declaration
+
+v2 -> v3:
+- added missing SOBs
+- CCed the MM people
+
+v1 -> v2:
+- fix a commit message
+- avoid setting pp_recycle multiple times on mvneta
+- squash two patches to avoid breaking bisect
+
+[1] https://lore.kernel.org/netdev/154413868810.21735.572808840657728172.stgit@firesoul/
+[2] https://lore.kernel.org/linux-mm/20210510153211.1504886-1-willy@infradead.org/
+
+Ilias Apalodimas (1):
+  page_pool: Allow drivers to hint on SKB recycling
+
+Matteo Croce (4):
+  mm: add a signature in struct page
+  skbuff: add a parameter to __skb_frag_unref
+  mvpp2: recycle buffers
+  mvneta: recycle buffers
+
+ drivers/net/ethernet/marvell/mvneta.c         | 11 +++---
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |  2 +-
+ drivers/net/ethernet/marvell/sky2.c           |  2 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
+ include/linux/mm.h                            | 12 ++++---
+ include/linux/mm_types.h                      | 12 ++++++-
+ include/linux/poison.h                        |  3 ++
+ include/linux/skbuff.h                        | 34 ++++++++++++++++---
+ include/net/page_pool.h                       |  9 +++++
+ net/core/page_pool.c                          | 29 ++++++++++++++++
+ net/core/skbuff.c                             | 24 ++++++++++---
+ net/tls/tls_device.c                          |  2 +-
+ 12 files changed, 119 insertions(+), 23 deletions(-)
+
+-- 
+2.31.1
+
