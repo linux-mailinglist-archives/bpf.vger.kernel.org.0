@@ -2,116 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814CD38C901
-	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 16:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2809938C952
+	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 16:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236603AbhEUOPf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 May 2021 10:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
+        id S231738AbhEUOkP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 May 2021 10:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232170AbhEUOPe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 May 2021 10:15:34 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD775C061574;
-        Fri, 21 May 2021 07:14:10 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id lz27so30687757ejb.11;
-        Fri, 21 May 2021 07:14:10 -0700 (PDT)
+        with ESMTP id S230239AbhEUOkP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 May 2021 10:40:15 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE31EC061574;
+        Fri, 21 May 2021 07:38:51 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id e2so17903137ljk.4;
+        Fri, 21 May 2021 07:38:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nqRwQlClWrSCEOn0RjHe1V2/QBqk87xD6ByHv3kJbQY=;
-        b=oXrPFbj/F4QzgIwh7EPXBwVXmfNwLpxjxJ8zrD47PK9mL/aHImNzJakNOsj+lGlnC5
-         3uvms4VIUXbLD2/aJUKzTO+6SmVuoulZAZfLa5N1xjjxPcy2sK/uf4S+IRe3qhJILdlu
-         YjTA1/odtMmIxzvxB9P/5iRtIkrEfCTJP7Yuz8XL1rTjNriUSXwPmNGuKgYhxUrFe3DN
-         nIyLv/kpqyTzM0FaOgwdKS3byWirSTBnkxmy4pygSkYHlI38+MkO/2rRx/G6pamrlRxq
-         lCKtZE0xXNXtE4WWdgtADhO4iPu+fJZnfuWDcaDBxMC8jKiVRdHDKjKhEk+dcNUfPZBs
-         V+Tg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LnMbFnk6wz2n1JsVYFaQb0lyltiyPAnw+oRXrYpUg/g=;
+        b=Rtj3ntl922b5w4Euk3yiJiVVDv/bytL2l0/oB1aZntdPBgNNflkrLRoxnHA7fomptw
+         slhVpFMQRzoDwTUxe366YBcUZIR0MAn7Xa/o0VOKGYETbFbjvcNj+p73zeDuPhOMYmVO
+         fpYWZJZfsIYEDbOpjSjOIAv8DeNY17xx6JLyUMNNzXdvDZoWULbXZQtkWRZSvKjN40p8
+         55EQtMpPq9r/f+QqivBajM6TyyXINfd5q+xLL+zU0x3T64X3I87zNek6VFabA0O4/4zQ
+         RcU/OAllej7N07ohyLx2o8DAcJwMNstqY4tap6E3YeKLeW+o7AY6zoNV6MuBzkLmZY3s
+         QLNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nqRwQlClWrSCEOn0RjHe1V2/QBqk87xD6ByHv3kJbQY=;
-        b=oAKyS2WabClHUe3hBWwHdBKsPOG+yp/g1Ko/Tfi9jv5sMhBq6tAYHsOTgx2fRQkyHb
-         iSN6viIw4whQ5U3L2tz0aS77CqW+ktyq72ps7pjqG6wyVZvfscc+up+VUl5Q1AMcqzh6
-         avUFJ0mfBW3p63x5kat3RbNzu0wpmFvoOMhdKxkKfh4N7S3I+HoA0OFsSFCeojbWMLOo
-         1Y2qLoqUHrkUWh9X3D0PtbkJ4df3mWnS0RA8b2OEqUgfsh3vd39TksT6Ezc0QQ/XqbEn
-         Kb031jub8m3Fc+VBpl7yG+qSTz8KPg7t1swD99WHbJcyPzdKXVNrjhlHA9aRdyZD9IVV
-         Y/WQ==
-X-Gm-Message-State: AOAM531Gn+DzwpkO2dxKedVMAKhw9rx6zDjytyokGlkf+j0XsuWNTVzb
-        76sV4wyQGKjx/Gg/HtwT4SY=
-X-Google-Smtp-Source: ABdhPJxlz9dC5l2beVI0RR8Y4plsZ6zJ1KUqmT/4uqPHe135qkehopOjM9gv55t4tHtyvNX8lBqRuQ==
-X-Received: by 2002:a17:906:c9cf:: with SMTP id hk15mr10403984ejb.445.1621606449227;
-        Fri, 21 May 2021 07:14:09 -0700 (PDT)
-Received: from skbuf ([188.26.52.84])
-        by smtp.gmail.com with ESMTPSA id gu16sm3610416ejb.88.2021.05.21.07.14.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 07:14:08 -0700 (PDT)
-Date:   Fri, 21 May 2021 17:14:06 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, a.fatoum@pengutronix.de,
-        vladimir.oltean@nxp.com, ast@kernel.org, daniel@iogearbox.net,
-        andriin@fb.com, edumazet@google.com, weiwan@google.com,
-        cong.wang@bytedance.com, ap420073@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@openeuler.org, mkl@pengutronix.de,
-        linux-can@vger.kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
-        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
-        atenart@kernel.org, alexander.duyck@gmail.com, hdanton@sina.com,
-        jgross@suse.com, JKosina@suse.com, mkubecek@suse.cz,
-        bjorn@kernel.org, alobakin@pm.me
-Subject: Re: [Linuxarm] [PATCH RFC v4 0/3] Some optimization for lockless
- qdisc
-Message-ID: <20210521141406.mmxv4ikfp4zfkcwo@skbuf>
-References: <1621502873-62720-1-git-send-email-linyunsheng@huawei.com>
- <829cc4c1-46cc-c96c-47ba-438ae3534b94@huawei.com>
- <20210520134652.2sw6gzfdzsqeedzz@skbuf>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LnMbFnk6wz2n1JsVYFaQb0lyltiyPAnw+oRXrYpUg/g=;
+        b=WYsgBkMk0q3A4eIjgACipIDa8DAcRtS1dE1YB9tGLaLONwGbspCoirXJVanoA6VtKG
+         llNy+TQpbJ6tbcbU6Pr603WrphHuarjfwQ6fj+uCF+FLd8+xhq/Vb9khgVzhVUsoiBCT
+         vyixfuzuUveyWfHpybH7d92zZ5nTsuSDfkWRVqzrRvmzOeZBzZNU5KklMefie5mDmdyQ
+         DzCF0DbrcMi1SlZOfgDiB3OMtrPT2db0+tCCmerRsoLsXx/kiuR8CnOu4lUG2HRgCTPn
+         gah6UA3H5ELqa6i8oLHioter5jAtXwreaTbUHDiLHDep+4j9lizd6S16mx9ojcR4aljH
+         OoDQ==
+X-Gm-Message-State: AOAM530sJdKVcfk+IRou1mKFxc5Mc2Ops0fkP7DpTtPuoQAUHHQ/0m30
+        6LmaKJPCg+M+Du3JpPRQzJf02UpUlQR+O3dupTM=
+X-Google-Smtp-Source: ABdhPJw8wDOiaQN/WFq+bG1KRUj1zEim4GTbY/xN/ViFC1LMugdFhVrbR6DznmNfdTB5tgXrq2/Z3HDbgrjkJE6y8qI=
+X-Received: by 2002:a2e:5813:: with SMTP id m19mr7173417ljb.258.1621607929784;
+ Fri, 21 May 2021 07:38:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520134652.2sw6gzfdzsqeedzz@skbuf>
+References: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 21 May 2021 07:38:38 -0700
+Message-ID: <CAADnVQKmZC_c_y=m1yv4eaQJ6Pyqgju=K4+v=8eR4wAMSfqoMQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 20, 2021 at 04:46:52PM +0300, Vladimir Oltean wrote:
-> Hi Yunsheng,
-> 
-> On Thu, May 20, 2021 at 05:45:14PM +0800, Yunsheng Lin wrote:
-> > On 2021/5/20 17:27, Yunsheng Lin wrote:
-> > > Patch 1: remove unnecessary seqcount operation.
-> > > Patch 2: implement TCQ_F_CAN_BYPASS.
-> > > Patch 3: remove qdisc->empty.
-> > > 
-> > > RFC v4: Use STATE_MISSED and STATE_DRAINING to indicate non-empty
-> > >         qdisc, and add patch 1 and 3.
-> > 
-> > @Vladimir, Ahmad
-> > It would be good to run your testcase to see if there are any
-> > out of order for this version, because this version has used
-> > STATE_MISSED and STATE_DRAINING to indicate non-empty qdisc,
-> > thanks.
-> > 
-> > It is based on newest net branch with qdisc stuck patchset.
-> > 
-> > Some performance data as below:
-> > 
-> > pktgen + dummy netdev:
-> >  threads  without+this_patch   with+this_patch      delta
-> >     1       2.60Mpps            3.18Mpps             +22%
-> >     2       3.84Mpps            5.72Mpps             +48%
-> >     4       5.52Mpps            5.52Mpps             +0.0%
-> >     8       2.77Mpps            2.81Mpps             +1.4%
-> >    16       2.24Mpps            2.29Mpps             +2.2%
-> > 
-> > IP forward testing: 1.05Mpps increases to 1.15Mpps
-> 
-> I will start the regression test with the flexcan driver on LS1028A and
-> let you know tomorrow or so if there is any TX reordering issue.
+On Thu, May 20, 2021 at 11:55 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> Introduce 'struct bpf_timer' that can be embedded in most BPF map types
+> and helpers to operate on it:
+> long bpf_timer_init(struct bpf_timer *timer, void *callback, int flags)
+> long bpf_timer_mod(struct bpf_timer *timer, u64 msecs)
+> long bpf_timer_del(struct bpf_timer *timer)
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+> This is work in progress, but gives an idea on how API will look.
 
-14 million CAN frames later, I did not observe any TX reordering at all.
+Forgot to mention the todo list:
+- restrict to cap_bpf
+- kfree bpf_timer_list
+- verifier btf checks
+- restrict to array, hash, lru, lpm. per-cpu maps cannot be supported.
+- safe interaction with lookup/update/delete operations and iterator
+- relax the 'first field only' requirement to allow bpf_timerr in global data.
+  kinda without a map.
+- check prog_rdonly, frozen, mmaped flags
+- decide on a return value from the timer callback
+- more tests
