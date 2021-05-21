@@ -2,136 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D9338BECA
-	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 08:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3832D38BFF2
+	for <lists+bpf@lfdr.de>; Fri, 21 May 2021 08:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbhEUGCO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 May 2021 02:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39266 "EHLO
+        id S231504AbhEUGsa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 May 2021 02:48:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhEUGCO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 May 2021 02:02:14 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A5FC061574
-        for <bpf@vger.kernel.org>; Thu, 20 May 2021 23:00:50 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id 82so7314864qki.8
-        for <bpf@vger.kernel.org>; Thu, 20 May 2021 23:00:50 -0700 (PDT)
+        with ESMTP id S232261AbhEUGs2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 May 2021 02:48:28 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF212C061574
+        for <bpf@vger.kernel.org>; Thu, 20 May 2021 23:46:50 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id v18so9884999qvx.10
+        for <bpf@vger.kernel.org>; Thu, 20 May 2021 23:46:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=T+EecFcPWBZeGeXQf/VDF6kV6mLEHDKfDljs1FpMWXA=;
-        b=vRUAmyqgKX+SbOLcbP+H13RzJCytdCZEes9PMhZV+p4nRlqCPxqnEU2MCUEr9s3NPK
-         /4aZBVJMvE0dsM6UjJohgr7J7fGqhMuEDYdlYclK7ZFJDrzMH3F3qw5ZFTVNaEPERN6P
-         NEV/zA4KkZnQm5rq6nv3cDO/hpsCr2dsxBiz8e4a3AICEcB8wRjc4P1yUMyeomMX/LUu
-         7z2UB++Hy3yf/KhZfAeekiYGLVLKHZLTAFAJgOp+4NzRlvOqzks+xluWxAY9+urBOD+C
-         8dCWsyxwEZO0VZacy2hZoXY3dP4sw3fP7rbj+m0sY6LjnSk7u44HhmhZwob/Kyr3BevR
-         e5/g==
+        bh=xkcqft7IFEvhd4rZvjQTycxIt/7SM6fwOYhfxgeUU/8=;
+        b=xo/iAwYxJFXLPRSYNkmZEM2ANcZrrcj3GAONNgnSnSC638ALOC9rea3BwxJKqqKR6K
+         Ihjuh9mP6DeDWgHlQnlSQbLRAIKzw2PQNax6T5QrU+BWLongmcDSf6GoT61qaIyD4nyF
+         QarSQPEdt0v+Bd1scWWrQMa6o2mX/3lQkT3oUfH5AXBDXB7R6IqdQHgnjfvmIZd4zk2Y
+         Ch9SKaPUM4gsnzec4VyjxS+MoVrMuCaC3qsBJFBlSGtrDcdIQTJu43Gc19+IBSjbgbLd
+         1LLnm8ApGBusoVOotvcMbsvXR81pQpUlJoCyI+T18FDepApOAnA0GOkojSssaB3jLMHv
+         n/tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=T+EecFcPWBZeGeXQf/VDF6kV6mLEHDKfDljs1FpMWXA=;
-        b=JTKoXVLOeU9l7/tKqQkKt/wtSFM85ZBoaXzXTm3+ZNGdwXvSplysrCrhdPkON8OC4l
-         ImZleIXRP/eMdU/54IMs5yWnrIiPk4nz2oa88dYNJRO5WLjq/e+5DvJTJR45vxcMdqnb
-         WXxcw8xFHYnidEpPdLuZdp+/4ICH+TqjaryNIFW7q+oD6Sjd2JvJTPRdU/JyR7THn7vx
-         aODj8gXH3ZgtdVcnMl2zK2iIFYw1E1BWLgI5HRJBIU4cq5dfeemNZ2pnwFDnbkPvMAbY
-         YBjbY+AnXx/n17bACeVXrtyHyEVY7xob9Gymqbu1aNrwlKaRb7yFWP3OQNDjHohItCjB
-         Fk/w==
-X-Gm-Message-State: AOAM531FiRwFWZjh+bdfX5QbwMXGPn/NRCx3rKQew/IR0SMab646oAqu
-        IgKqWeYGrKXoeLDPhJQGfgNiDQ==
-X-Google-Smtp-Source: ABdhPJyWGhYeTawrb2iZh9Ih4jaPrXSO/th1mCCRBsrXwf165fBDV2d5M0QFUf/rq4I6yaT1KwCJbw==
-X-Received: by 2002:a05:620a:110d:: with SMTP id o13mr10179617qkk.348.1621576849968;
-        Thu, 20 May 2021 23:00:49 -0700 (PDT)
+        bh=xkcqft7IFEvhd4rZvjQTycxIt/7SM6fwOYhfxgeUU/8=;
+        b=HJVRg0Xt1rWJOUu5oY0QWxjrwkArubEG8nEbTYhLQVmzqcMXhkhmbTP4hU2BRsy85T
+         ygiUHDaIia+R5jNLaTpQArbEvHVX66Jj16ldUEvdgJNvK6U2FU+KuyUqjkebbK11XZDl
+         nt4XcjfbSGty1FmUCLS5QJVZVSSYOy/gS48WvEujEQhbfBpqlBADj/rlsgu7RUCZOdQY
+         aM4LFEVWjq38xDo1DAgXjAUMWaGkG7hLvNS4jaxSmz2Tr6vmuNqExYtmWtJU0noD6mFv
+         +1XyOgvO+f0IA0L5gjTAfQL4RAJUGrOU1Nk4wIZHAZdF2h7ykWhYScIyp3U8Mrnn7uQz
+         wNgA==
+X-Gm-Message-State: AOAM533ecDgakhC4oC3WL6HTJ2wgEsG83RRqw7C02D+lnbuna8pVL7pz
+        gY7SyhIeB2rNvCqtECQU7egMHQ==
+X-Google-Smtp-Source: ABdhPJxcICEBMFCt1GiRkk4SvPNNmZMH+gOwPEnggK6FMXD6xNVIjbAMGMBB3NFDHXiMip3sLjpz6w==
+X-Received: by 2002:a0c:9c0f:: with SMTP id v15mr10879355qve.24.1621579610100;
+        Thu, 20 May 2021 23:46:50 -0700 (PDT)
 Received: from localhost ([154.21.15.43])
-        by smtp.gmail.com with ESMTPSA id n18sm4049165qkh.13.2021.05.20.23.00.48
+        by smtp.gmail.com with ESMTPSA id h3sm4202813qkk.82.2021.05.20.23.46.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 23:00:49 -0700 (PDT)
-Date:   Fri, 21 May 2021 10:00:45 +0400
+        Thu, 20 May 2021 23:46:49 -0700 (PDT)
+Date:   Fri, 21 May 2021 10:46:45 +0400
 From:   Dmitrii Banshchikov <me@ubique.spb.ru>
 To:     Song Liu <songliubraving@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+Cc:     Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
         Yonghong Song <yhs@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Andrey Ignatov <rdna@fb.com>
-Subject: Re: [PATCH bpf-next 00/11] bpfilter
-Message-ID: <20210521060045.ldwluzdt3vyp5vfs@amnesia>
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, Andrey Ignatov <rdna@fb.com>
+Subject: Re: [PATCH bpf-next 02/11] bpfilter: Add logging facility
+Message-ID: <20210521064645.xhligmlrremyva4q@amnesia>
 References: <20210517225308.720677-1-me@ubique.spb.ru>
- <7312CC5D-510B-4BFD-8099-BB754FBE9CDF@fb.com>
- <20210520075323.ehagaokfbazlhhfj@amnesia>
- <CAADnVQJbxTikruisH=nfsFrC1UZW5zTXr8bUrL+U0jMBSApTTw@mail.gmail.com>
- <2D15A822-5BE1-4C4A-84B2-46FFA27AC32B@fb.com>
+ <20210517225308.720677-3-me@ubique.spb.ru>
+ <CAPhsuW4osuNOagPRwUB30tk3V=ECANktt9jzb+NK1mqOamouSQ@mail.gmail.com>
+ <20210520070807.cpmloff4urdsifuy@amnesia>
+ <681F9A5A-63F0-432A-B188-CF4FC11AF2A8@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2D15A822-5BE1-4C4A-84B2-46FFA27AC32B@fb.com>
+In-Reply-To: <681F9A5A-63F0-432A-B188-CF4FC11AF2A8@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 20, 2021 at 05:56:30PM +0000, Song Liu wrote:
+On Thu, May 20, 2021 at 04:35:45PM +0000, Song Liu wrote:
 > 
 > 
-> > On May 20, 2021, at 9:55 AM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > On May 20, 2021, at 12:08 AM, Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
 > > 
-> > On Thu, May 20, 2021 at 12:53 AM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+> > On Wed, May 19, 2021 at 10:32:25AM -0700, Song Liu wrote:
+> >> On Tue, May 18, 2021 at 11:05 PM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+> >>> 
+> >>> There are three logging levels for messages: FATAL, NOTICE and DEBUG.
+> >>> When a message is logged with FATAL level it results in bpfilter
+> >>> usermode helper termination.
 > >> 
-> >> On Thu, May 20, 2021 at 04:54:45AM +0000, Song Liu wrote:
-> >>> 
-> >>> 
-> >>>> On May 17, 2021, at 3:52 PM, Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
-> >>>> 
-> >>>> The patchset is based on the patches from David S. Miller [1] and Daniel
-> >>>> Borkmann [2].
-> >>>> 
-> >>>> The main goal of the patchset is to prepare bpfilter for iptables'
-> >>>> configuration blob parsing and code generation.
-> >>>> 
-> >>>> The patchset introduces data structures and code for matches, targets, rules
-> >>>> and tables.
-> >>>> 
-> >>>> It seems inconvenient to continue to use the same blob internally in bpfilter
-> >>>> in parts other than the blob parsing. That is why a superstructure with native
-> >>>> types is introduced. It provides a more convenient way to iterate over the blob
-> >>>> and limit the crazy structs widespread in the bpfilter code.
-> >>>> 
-> >>> 
-> >>> [...]
-> >>> 
-> >>>> 
-> >>>> 
-> >>>> 1. https://lore.kernel.org/patchwork/patch/902785/
-> >>> 
-> >>> [1] used bpfilter_ prefix on struct definitions, like "struct bpfilter_target"
-> >>> I think we should do the same in this version. (Or were there discussions on
-> >>> removing the prefix?).
-> >> 
-> >> There were no discussions about it.
-> >> As those structs are private to bpfilter I assumed that it is
-> >> safe to save some characters.
-> >> I will add the prefix to all internal structs in the next
-> >> iteration.
+> >> Could you please explain why we choose to have 3 levels? Will we need
+> >> more levels,
+> >> like WARNING, ERROR, etc.?
 > > 
-> > For internal types it's ok to skip the prefix otherwise it's too verbose.
-> > In libbpf we skip 'bpf_' prefix in such cases.
+> > 
+> > I found that I need one level for development - to trace what
+> > goes rignt and wrong. At the same time as those messages go to
+> > dmesg this level is too verbose to be used under normal
+> > circumstances. That is why another level is introduced. And the
+> > last one exists to verify invariants or error condintions from
+> > which there is no right way to recover and they result in
+> > bpfilter termination.
 > 
-> Do we have plan to put some of this logic in a library? If that is the case, the 
-> effort now may save some pain in the future. 
+> /dev/kmsg supports specifying priority of the message. Like:
+> 
+>    echo '<4> This message have priority of 4' > /dev/kmsg
+> 
+> Therefore, with proper priority settings, we can have more levels safely.
+> Does this make sense?
 
-I cannot imagine a case when we need this logic in a library.
-Even if we eventually need it as these definitions are private to
-bpfilter - amount of pain should be minimal.
+Yes, it makes.
+BPFILTER_FATAL should be renamed to BPFILTER_EMERG to match
+printk() counterpart. All bpfilter log levels should match
+printk() levels. All bpfilter log messages should include log
+level. And BPFILTER_DEBUG should be easily turned on/off during
+compilation to enable tracing/debug.
+
 
 > 
 > Thanks,
 > Song
+> 
+> [...]
 > 
 
 -- 
