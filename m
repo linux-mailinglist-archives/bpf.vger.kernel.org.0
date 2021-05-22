@@ -2,117 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9166638D2A6
-	for <lists+bpf@lfdr.de>; Sat, 22 May 2021 02:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9996738D2AA
+	for <lists+bpf@lfdr.de>; Sat, 22 May 2021 02:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhEVAsD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 May 2021 20:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39958 "EHLO
+        id S230280AbhEVAtx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 May 2021 20:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbhEVAsD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 May 2021 20:48:03 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68073C061574;
-        Fri, 21 May 2021 17:46:39 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id y2so29775761ybq.13;
-        Fri, 21 May 2021 17:46:39 -0700 (PDT)
+        with ESMTP id S230190AbhEVAtw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 May 2021 20:49:52 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94D9C061574;
+        Fri, 21 May 2021 17:48:27 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id g38so29780119ybi.12;
+        Fri, 21 May 2021 17:48:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RdygxSbSqsWz9BfeMNSc2FteZY17xkWEnp8K+VZHat0=;
-        b=Z7+ykzF+PSO7JYR0DUvVodmmpJz6jm5VoUJ0RbLpsMBuATAk+jZ0bjJIR7Pc2Ka7jb
-         xeJsQ5F3KHD04JO5Ts9MWuyhHOIWSE+z1fJSP3nAXXkhH7n/UUPz2vQb78MBApyglo2O
-         iqSxg+lVbFU8ryxbQEdHdod1DpEHwZ3hlUujZ3V9nsJx0UYAnAxfdKtlcyo/yhK22wjl
-         hFKr1+MATzRbJK714vVw7BMlqL0gh2AnHtHFUxKB1kl0ZiK8o5t1JOH0Zo8ZorbSHDi1
-         Y6gut9Mt+Lk8+xQT/Z2bC3Vj1ZlQbAGEHXS/cYtYO9lScf3DIye3fAHGIU6e+QYFGbFh
-         3gLQ==
+         :cc;
+        bh=Opkg+FRkVCkZvC29Z5nXDDi9OwE3akN5/fnsR1XnwUk=;
+        b=SOnbHgRZV2f41rzY5t4crajjI3gNTvwldOcKA1XcmNZ2cUf6WTUuVZKBIatlcvtiJP
+         FSCatGD3uGApFYmqaWChDLrkbR6ewXkthxmOh5Jv1FULPPFqLSSURFrtQP1hsE6pU/sx
+         VdLJwmZ1Pm9AEQcUNyd4vx3DltQZOUDKlhWz0R4MCZZV3FMwdOZbmUGslcmB/f3FzzGn
+         thGvkHQq3Hlpmsl8SERipF1IVJyuxw6NYH8Vv3PAbGF4iCUtgtmUaoHMQT1Dm3e0gSg0
+         iyz155SdlCcAL+3p2CdJO/l24/JhqFDj2VLL+uMUd/K68oFIbaKX8s+3Bx7wKdPn4r2v
+         276A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RdygxSbSqsWz9BfeMNSc2FteZY17xkWEnp8K+VZHat0=;
-        b=lquVT5asxXzcb7H6RWs2wONH2483PQhfr17wlEbo2NeAEfS7ycn8z5quK7hivy34ik
-         FJfX8C4DHmccXzDI051kLHjp1TN/37KDv7aV0CMahbf3DkPF1vVcDEQHtIS8TkUaw8fD
-         KpLFAHko+ZAyfioCaGMlaS0Q36lgmEodMJqGbbcBeQ6oXWIPjvr0hxBtoV+2O7CnFNKM
-         38nuIjGrmbRiAVGpPhNdp+2Mp/oed9y5/yas3zlExzFtDeLI1R7+3jCMNT9mvNdJx2+b
-         ZinlmzRq8ikGevOaC5lsgglg5DaGggX1QYOQ3RWqubz/yzogBg+gHox6R18mf5r3630+
-         5cTw==
-X-Gm-Message-State: AOAM533SaE/sUmUZh0DtRYGwiP+3WocvvGCRJNj43EcX1CF7xOvGtR2m
-        nSc9a0fK75LlsXD/vd6zlq9sSY1rV44zbDo/dfY=
-X-Google-Smtp-Source: ABdhPJzYYiVgQn2patbTAzQcchSjTQQ9r/3Qwi7eKoSsVjBQmDo3PdW6guUSdJPUpu5nEfJKa6lboM+iefQrSMUpwM8=
-X-Received: by 2002:a5b:f05:: with SMTP id x5mr18321502ybr.425.1621644398645;
- Fri, 21 May 2021 17:46:38 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=Opkg+FRkVCkZvC29Z5nXDDi9OwE3akN5/fnsR1XnwUk=;
+        b=lr0RsIEe45FCOxrHnDfhP7NIB73NTPYjsY4lm1Hma3ZcFt1sD7Oz43IPiW0XIBSM3b
+         XgzBo47JBpbdp4IzLFC1zp8lVsvrZ6AT9pYeijXYgd+ZDt3StydmZ8suKKy4qMF+/Pxj
+         /ucI3ImR9fwNyFQBfc2o6YRtMnb0/Fc+eqCiFqeHRVo3u7ncug4YCF7240Bmnrt86vTu
+         cf5rPZbHjJAkSy0/h+7BqP+El84hgQPCwGwv5/VO64gvoXVV5fjURfNAsTZKcOuPjUCv
+         IRMEWaRcC6xyUGObsMPbsccB9bDYAM9mCsFJ2ZeFriuKBWo6gD2+ehg5Qp9NInAy+Ya7
+         d2bQ==
+X-Gm-Message-State: AOAM530vSyUq8WBv5lbFep9b328eaO9ZZfpOoG/y9j331iCra6aplN//
+        z6TGDOS9O1HFuzwon5ezkD/er5VNKzkpqoEbz7S5TyNELrA=
+X-Google-Smtp-Source: ABdhPJzk0LWuA8tRdBb2Yf+xQAKzckkUS1DfLqahObkGHLlnGHkNnwJMQ3oer+07Mwu03Ugf0nk0bsaWOTX8LBINbIc=
+X-Received: by 2002:a25:1455:: with SMTP id 82mr18600079ybu.403.1621644507107;
+ Fri, 21 May 2021 17:48:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210521162041.GH8544@kitsune.suse.cz>
-In-Reply-To: <20210521162041.GH8544@kitsune.suse.cz>
+References: <CA+G9fYtvmr09BwE79QzNxiauQtUD7tZhCAbVVH3Vv=anaqt-yA@mail.gmail.com>
+In-Reply-To: <CA+G9fYtvmr09BwE79QzNxiauQtUD7tZhCAbVVH3Vv=anaqt-yA@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 May 2021 17:46:27 -0700
-Message-ID: <CAEf4BzbgJPgVmdS32nnzd8mBj3L=mib7D8JyP09Gq4bGdYpTyg@mail.gmail.com>
-Subject: Re: BTF: build failure on 32bit on linux-next
-To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 21 May 2021 17:48:16 -0700
+Message-ID: <CAEf4BzY8q9FZoudxan1aHoL0uw86-itfq0+QsSsn=Q_vRpKtNQ@mail.gmail.com>
+Subject: Re: bbpf_internal.h:102:22: error: format '%ld' expects argument of
+ type 'long int', but argument 3 has type 'int' [-Werror=format=]
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     bpf <bpf@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+        Yonghong Song <yhs@fb.com>,
+        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 21, 2021 at 9:20 AM Michal Such=C3=A1nek <msuchanek@suse.de> wr=
-ote:
+On Thu, May 20, 2021 at 6:51 AM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
 >
-> Hello,
->
-> looks like the TODO prints added in 67234743736a6 are not 32bit clean.
->
-> Do you plan to implement this functionality or should they be fixed?
+> The perf build failed on i386 on Linux next-20210519 and next-20210520 tag
+>  with gcc-7.3 due to below warnings / errors.
 
-They should be fixed regardless. Can you please re-submit as a proper
-patch to bpf@vger.kernel.org with [PATCH bpf-next] subj prefix?
+Thanks, being addressed in [0].
+
+  [0] https://lore.kernel.org/bpf/20210521162041.GH8544@kitsune.suse.cz/
 
 >
-> Thanks
+> In file included from libbpf.c:55:0:
+> libbpf.c: In function 'init_map_slots':
+> libbpf_internal.h:102:22: error: format '%ld' expects argument of type
+> 'long int', but argument 3 has type 'int' [-Werror=format=]
+>   libbpf_print(level, "libbpf: " fmt, ##__VA_ARGS__); \
+>                       ^
+> libbpf_internal.h:105:27: note: in expansion of macro '__pr'
+>  #define pr_warn(fmt, ...) __pr(LIBBPF_WARN, fmt, ##__VA_ARGS__)
+>                            ^~~~
+> libbpf.c:4568:4: note: in expansion of macro 'pr_warn'
+>     pr_warn("// TODO map_update_elem: idx %ld key %d value==map_idx %ld\n",
+>     ^~~~~~~
+> libbpf.c:4568:44: note: format string is defined here
+>     pr_warn("// TODO map_update_elem: idx %ld key %d value==map_idx %ld\n",
+>                                           ~~^
+>                                           %d
+> In file included from libbpf.c:55:0:
+> libbpf_internal.h:102:22: error: format '%ld' expects argument of type
+> 'long int', but argument 5 has type 'int' [-Werror=format=]
+>   libbpf_print(level, "libbpf: " fmt, ##__VA_ARGS__); \
+>                       ^
+> libbpf_internal.h:105:27: note: in expansion of macro '__pr'
+>  #define pr_warn(fmt, ...) __pr(LIBBPF_WARN, fmt, ##__VA_ARGS__)
+>                            ^~~~
+> libbpf.c:4568:4: note: in expansion of macro 'pr_warn'
+>     pr_warn("// TODO map_update_elem: idx %ld key %d value==map_idx %ld\n",
+>     ^~~~~~~
+> libbpf.c:4568:70: note: format string is defined here
+>     pr_warn("// TODO map_update_elem: idx %ld key %d value==map_idx %ld\n",
+>                                                                     ~~^
+>                                                                     %d
+>   CC      /srv/oe/build/tmp-lkft-glibc/work/intel_core2_32-linaro-linux/perf/1.0-r9/perf-1.0/cpu.o
+> In file included from libbpf.c:55:0:
+> libbpf.c: In function 'bpf_core_apply_relo':
+> libbpf_internal.h:102:22: error: format '%ld' expects argument of type
+> 'long int', but argument 3 has type 'int' [-Werror=format=]
+>   libbpf_print(level, "libbpf: " fmt, ##__VA_ARGS__); \
+>                       ^
+> libbpf_internal.h:105:27: note: in expansion of macro '__pr'
+>  #define pr_warn(fmt, ...) __pr(LIBBPF_WARN, fmt, ##__VA_ARGS__)
+>                            ^~~~
+> libbpf.c:6192:3: note: in expansion of macro 'pr_warn'
+>    pr_warn("// TODO core_relo: prog %ld insn[%d] %s %s kind %d\n",
+>    ^~~~~~~
+> libbpf.c:6192:38: note: format string is defined here
+>    pr_warn("// TODO core_relo: prog %ld insn[%d] %s %s kind %d\n",
+>                                     ~~^
+>                                     %d
 >
-> Michal
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 69cd1a835ebd..70a26af8d01f 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -4565,7 +4565,7 @@ static int init_map_slots(struct bpf_object *obj, s=
-truct bpf_map *map)
->                 targ_map =3D map->init_slots[i];
->                 fd =3D bpf_map__fd(targ_map);
->                 if (obj->gen_loader) {
-> -                       pr_warn("// TODO map_update_elem: idx %ld key %d =
-value=3D=3Dmap_idx %ld\n",
-> +                       pr_warn("// TODO map_update_elem: idx %td key %d =
-value=3D=3Dmap_idx %td\n",
->                                 map - obj->maps, i, targ_map - obj->maps)=
-;
->                         return -ENOTSUP;
->                 } else {
-> @@ -6189,7 +6189,7 @@ static int bpf_core_apply_relo(struct bpf_program *=
-prog,
->                 return -EINVAL;
+> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=lkft,MACHINE=intel-core2-32,label=docker-buster-lkft/1030/consoleText
 >
->         if (prog->obj->gen_loader) {
-> -               pr_warn("// TODO core_relo: prog %ld insn[%d] %s %s kind =
-%d\n",
-> +               pr_warn("// TODO core_relo: prog %td insn[%d] %s %s kind =
-%d\n",
->                         prog - prog->obj->programs, relo->insn_off / 8,
->                         local_name, spec_str, relo->kind);
->                 return -ENOTSUP;
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
