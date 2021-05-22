@@ -2,71 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515F638D743
-	for <lists+bpf@lfdr.de>; Sat, 22 May 2021 21:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9960C38D746
+	for <lists+bpf@lfdr.de>; Sat, 22 May 2021 21:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhEVTi1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 22 May 2021 15:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
+        id S231332AbhEVToB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 22 May 2021 15:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231376AbhEVTi1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 22 May 2021 15:38:27 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B15C061574;
-        Sat, 22 May 2021 12:36:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=J77Q+/00dHZROE3h+kG9CJ0WG5qNx1OHZMBspyoORGw=; b=Es2Tgm07Yj46PWzOmQ2R97Vbh9
-        R2XSBLdlIB9+ZK0s8DB8vkVx7vPhOhm0qC4BUfglWM/oIkY4Qqaen57IQ3fLUcfwkqMfCg7RCAfyo
-        ULd3UgcuvcZ86ZH1iVqr2eag+CkA3NwlO1erZocmGl4HGckOzS9iRc3cM2R6rSs/rLWWTpB2Xbl5y
-        ooDD6bMVAolFe2kMQKDP79PSOzyjWrF19ckes3VHgLs4TFdES63qK0eBy4BSbANlCIagMqhKtw1Jx
-        mA3dkY9/fyXjy0epWyoxK24Xo72f654W0L/w4eNdIILExLyOOVpZ0BKc6+E4o0RdRNrZoW7Bffnwg
-        WxYd70Pw==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lkXQ3-000BgY-Oi; Sat, 22 May 2021 19:36:19 +0000
-Subject: Re: Failed to start load kernel modules on 5.13.0-rc2-next-20210521
-To:     Hritik Vijay <hritikxx8@gmail.com>
-Cc:     linux-next@vger.kernel.org,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>
-References: <YKlWqLh61Rxid7l9@Journey.localdomain>
- <21727ead-5092-8900-74e9-ee73774b0b97@infradead.org>
- <YKlcxO3ofPEr6ak7@Journey.localdomain>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <52f77a79-5042-eca7-f80e-657ac1c515de@infradead.org>
-Date:   Sat, 22 May 2021 12:36:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        with ESMTP id S231310AbhEVToA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 22 May 2021 15:44:00 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09028C0613ED;
+        Sat, 22 May 2021 12:42:26 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id c17so17522443pfn.6;
+        Sat, 22 May 2021 12:42:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w2LkGXw1co1uLC2e7opfK/LAoCn1kUKAliH5vlwy4Ck=;
+        b=RRkxrcjr4PIDq5GFjgvVpv5LdWrp0PU6jzKd82xY2y1shGFHBpR3Q2MQxq392Yde6I
+         ICg+m8r21Uo+cLr2eECC6D9vPfuRgtu/o1wtfmNmjMNUo4LF/3nWyn/VrysTroCKMDeC
+         M7V/vf8S+Kb0aIRU5664ryPVAVnxwO1NXCo9/wL//rUXEJvcC8anui5oliLTgs4arEHZ
+         +jKN/bH3GpcH6T1EKOTGbqqGjMssp4BUrrn6Y/lOtGj9k027KBS0kzMEbAolCqCnZQc6
+         le+WTDdskIlGXX124Csy/crHyRq/vllw1ecRZkHmyfewvznFLnDmbJk4RxmiDnEw2F1V
+         WxXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w2LkGXw1co1uLC2e7opfK/LAoCn1kUKAliH5vlwy4Ck=;
+        b=UPtq6p6q8cTH42/vYP3F1X2kS3oNGqBrdZqJuG19ul/H9StF6sa2HIruHVoHVNbtj3
+         dYBfTBaAjLkj45DY8h1jAvQ4ITmas3Cf7QdjOV6DwTgKm8GN7bxbXSBK98rSL3sP/eRx
+         e+VXJTWtOODkO7WWybjMP5Qd9VD1k800jXGA/pK7cvblUDCN4mDKKBx1uFUX+UOaKpjy
+         aWXEU8abNXsFN5q8ZjkF7VPk9mAS3EjVY7jUhjl4u6f2pMLefT7wSd7h9gHqb0FsoY+C
+         enQs7l5gEFwzJyXCYnxp1OrkyIL3TJ/LsQQ6HIjf4x9XPZ732HgY7lBbFOLjp3uZJDL4
+         r8tg==
+X-Gm-Message-State: AOAM533GtkLVyLV6ukYNX8kRaLNYuG4ciMtb/O0biBXchjtUmk/YWZAy
+        ZyvXl0Vs3N+vc/3O50hcl24=
+X-Google-Smtp-Source: ABdhPJyKAj8Hcx+DP4nKVV1/FfWaVGT++MZzcpUUfKcx7wZZFX8CScbpGJsfsW1r7jyndTYcfEvJ5w==
+X-Received: by 2002:a63:5c01:: with SMTP id q1mr5527630pgb.447.1621712545430;
+        Sat, 22 May 2021 12:42:25 -0700 (PDT)
+Received: from Journey.localdomain ([223.226.180.251])
+        by smtp.gmail.com with ESMTPSA id 21sm6939398pfh.103.2021.05.22.12.42.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 May 2021 12:42:25 -0700 (PDT)
+Date:   Sun, 23 May 2021 01:12:18 +0530
+From:   Hritik Vijay <hritikxx8@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: BPF: failed module verification on linux-next
+Message-ID: <YKlemjCagqtru8i0@Journey.localdomain>
+References: <20210519141936.GV8544@kitsune.suse.cz>
+ <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YKlcxO3ofPEr6ak7@Journey.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/22/21 12:34 PM, Hritik Vijay wrote:
-> On Sat, May 22, 2021 at 12:28:25PM -0700, Randy Dunlap wrote:
->> Hi,
->> Here is a reply to a similar message/problem:
->> https://lore.kernel.org/lkml/CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com/
->>
->> so it looks like Andrii is still debugging this problem.
->>
->> -- 
->> ~Randy
+On Thu, May 20, 2021 at 10:31:18PM -0700, Andrii Nakryiko wrote:
+> It took me a while to reliably bisect this, but it clearly points to
+> this commit:
 > 
-> Hi Randy. Thank you so much. All this time I was wondering if I'm
-> messing up the compilation/boot somehow. I am not sure how to follow the
-> thread. Perhaps sending a reply to the linked mail should do the trick,
-> yes?
+> e481fac7d80b ("mm/page_alloc: convert per-cpu list protection to local_lock")
+> 
+> One commit before it, 676535512684 ("mm/page_alloc: split per cpu page
+> lists and zone stats -fix"), works just fine.
 
-It should, yes.
+Thank you for pointing this out. I'm facing the same issue.
+I've posted my logs in the following thread
+https://lore.kernel.org/linux-next/52f77a79-5042-eca7-f80e-657ac1c515de@infradead.org/T/#t
 
--- 
-~Randy
-
+Hrtk
