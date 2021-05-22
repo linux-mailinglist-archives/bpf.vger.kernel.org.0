@@ -2,132 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9996738D2AA
-	for <lists+bpf@lfdr.de>; Sat, 22 May 2021 02:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E99338D49C
+	for <lists+bpf@lfdr.de>; Sat, 22 May 2021 10:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbhEVAtx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 May 2021 20:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
+        id S230086AbhEVIqw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 22 May 2021 04:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbhEVAtw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 May 2021 20:49:52 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94D9C061574;
-        Fri, 21 May 2021 17:48:27 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id g38so29780119ybi.12;
-        Fri, 21 May 2021 17:48:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Opkg+FRkVCkZvC29Z5nXDDi9OwE3akN5/fnsR1XnwUk=;
-        b=SOnbHgRZV2f41rzY5t4crajjI3gNTvwldOcKA1XcmNZ2cUf6WTUuVZKBIatlcvtiJP
-         FSCatGD3uGApFYmqaWChDLrkbR6ewXkthxmOh5Jv1FULPPFqLSSURFrtQP1hsE6pU/sx
-         VdLJwmZ1Pm9AEQcUNyd4vx3DltQZOUDKlhWz0R4MCZZV3FMwdOZbmUGslcmB/f3FzzGn
-         thGvkHQq3Hlpmsl8SERipF1IVJyuxw6NYH8Vv3PAbGF4iCUtgtmUaoHMQT1Dm3e0gSg0
-         iyz155SdlCcAL+3p2CdJO/l24/JhqFDj2VLL+uMUd/K68oFIbaKX8s+3Bx7wKdPn4r2v
-         276A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Opkg+FRkVCkZvC29Z5nXDDi9OwE3akN5/fnsR1XnwUk=;
-        b=lr0RsIEe45FCOxrHnDfhP7NIB73NTPYjsY4lm1Hma3ZcFt1sD7Oz43IPiW0XIBSM3b
-         XgzBo47JBpbdp4IzLFC1zp8lVsvrZ6AT9pYeijXYgd+ZDt3StydmZ8suKKy4qMF+/Pxj
-         /ucI3ImR9fwNyFQBfc2o6YRtMnb0/Fc+eqCiFqeHRVo3u7ncug4YCF7240Bmnrt86vTu
-         cf5rPZbHjJAkSy0/h+7BqP+El84hgQPCwGwv5/VO64gvoXVV5fjURfNAsTZKcOuPjUCv
-         IRMEWaRcC6xyUGObsMPbsccB9bDYAM9mCsFJ2ZeFriuKBWo6gD2+ehg5Qp9NInAy+Ya7
-         d2bQ==
-X-Gm-Message-State: AOAM530vSyUq8WBv5lbFep9b328eaO9ZZfpOoG/y9j331iCra6aplN//
-        z6TGDOS9O1HFuzwon5ezkD/er5VNKzkpqoEbz7S5TyNELrA=
-X-Google-Smtp-Source: ABdhPJzk0LWuA8tRdBb2Yf+xQAKzckkUS1DfLqahObkGHLlnGHkNnwJMQ3oer+07Mwu03Ugf0nk0bsaWOTX8LBINbIc=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr18600079ybu.403.1621644507107;
- Fri, 21 May 2021 17:48:27 -0700 (PDT)
+        with ESMTP id S230043AbhEVIqv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 22 May 2021 04:46:51 -0400
+X-Greylist: delayed 485 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 22 May 2021 01:45:27 PDT
+Received: from smtp-190e.mail.infomaniak.ch (smtp-190e.mail.infomaniak.ch [IPv6:2001:1600:4:17::190e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1F3C061574
+        for <bpf@vger.kernel.org>; Sat, 22 May 2021 01:45:27 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4FnH0H2rnPzMpwvM;
+        Sat, 22 May 2021 10:37:19 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4FnH0B6q19zlmrrn;
+        Sat, 22 May 2021 10:37:14 +0200 (CEST)
+Subject: Re: [PATCH v26 02/25] LSM: Add the lsmblob data structure.
+To:     Casey Schaufler <casey@schaufler-ca.com>,
+        casey.schaufler@intel.com, jmorris@namei.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Cc:     linux-audit@redhat.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        paul@paul-moore.com, sds@tycho.nsa.gov,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20210513200807.15910-1-casey@schaufler-ca.com>
+ <20210513200807.15910-3-casey@schaufler-ca.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <206971d6-70c7-e217-299f-1884310afa15@digikod.net>
+Date:   Sat, 22 May 2021 10:39:01 +0200
+User-Agent: 
 MIME-Version: 1.0
-References: <CA+G9fYtvmr09BwE79QzNxiauQtUD7tZhCAbVVH3Vv=anaqt-yA@mail.gmail.com>
-In-Reply-To: <CA+G9fYtvmr09BwE79QzNxiauQtUD7tZhCAbVVH3Vv=anaqt-yA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 May 2021 17:48:16 -0700
-Message-ID: <CAEf4BzY8q9FZoudxan1aHoL0uw86-itfq0+QsSsn=Q_vRpKtNQ@mail.gmail.com>
-Subject: Re: bbpf_internal.h:102:22: error: format '%ld' expects argument of
- type 'long int', but argument 3 has type 'int' [-Werror=format=]
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     bpf <bpf@vger.kernel.org>, Netdev <netdev@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210513200807.15910-3-casey@schaufler-ca.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 20, 2021 at 6:51 AM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
->
-> The perf build failed on i386 on Linux next-20210519 and next-20210520 tag
->  with gcc-7.3 due to below warnings / errors.
+I like this design but there is an issue with Landlock though, see below.
 
-Thanks, being addressed in [0].
+On 13/05/2021 22:07, Casey Schaufler wrote:
+> When more than one security module is exporting data to
+> audit and networking sub-systems a single 32 bit integer
+> is no longer sufficient to represent the data. Add a
+> structure to be used instead.
+> 
+> The lsmblob structure is currently an array of
+> u32 "secids". There is an entry for each of the
+> security modules built into the system that would
+> use secids if active. The system assigns the module
+> a "slot" when it registers hooks. If modules are
+> compiled in but not registered there will be unused
+> slots.
+> 
+> A new lsm_id structure, which contains the name
+> of the LSM and its slot number, is created. There
+> is an instance for each LSM, which assigns the name
+> and passes it to the infrastructure to set the slot.
+> 
+> The audit rules data is expanded to use an array of
+> security module data rather than a single instance.
+> Because IMA uses the audit rule functions it is
+> affected as well.
+> 
+> Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
+> Acked-by: Paul Moore <paul@paul-moore.com>
+> Acked-by: John Johansen <john.johansen@canonical.com>
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> Cc: <bpf@vger.kernel.org>
+> Cc: linux-audit@redhat.com
+> Cc: linux-security-module@vger.kernel.org
+> Cc: selinux@vger.kernel.org
+> To: Mimi Zohar <zohar@linux.ibm.com>
+> To: Mickaël Salaün <mic@linux.microsoft.com>
+> ---
+>  include/linux/audit.h               |  4 +-
+>  include/linux/lsm_hooks.h           | 12 ++++-
+>  include/linux/security.h            | 67 +++++++++++++++++++++++++--
+>  kernel/auditfilter.c                | 24 +++++-----
+>  kernel/auditsc.c                    | 13 +++---
+>  security/apparmor/lsm.c             |  7 ++-
+>  security/bpf/hooks.c                | 12 ++++-
+>  security/commoncap.c                |  7 ++-
+>  security/integrity/ima/ima_policy.c | 40 +++++++++++-----
+>  security/landlock/cred.c            |  2 +-
+>  security/landlock/fs.c              |  2 +-
+>  security/landlock/ptrace.c          |  2 +-
+>  security/landlock/setup.c           |  4 ++
+>  security/landlock/setup.h           |  1 +
+>  security/loadpin/loadpin.c          |  8 +++-
+>  security/lockdown/lockdown.c        |  7 ++-
+>  security/safesetid/lsm.c            |  8 +++-
+>  security/security.c                 | 72 ++++++++++++++++++++++++-----
+>  security/selinux/hooks.c            |  8 +++-
+>  security/smack/smack_lsm.c          |  7 ++-
+>  security/tomoyo/tomoyo.c            |  8 +++-
+>  security/yama/yama_lsm.c            |  7 ++-
+>  22 files changed, 262 insertions(+), 60 deletions(-)
+> 
 
-  [0] https://lore.kernel.org/bpf/20210521162041.GH8544@kitsune.suse.cz/
+[...]
 
->
-> In file included from libbpf.c:55:0:
-> libbpf.c: In function 'init_map_slots':
-> libbpf_internal.h:102:22: error: format '%ld' expects argument of type
-> 'long int', but argument 3 has type 'int' [-Werror=format=]
->   libbpf_print(level, "libbpf: " fmt, ##__VA_ARGS__); \
->                       ^
-> libbpf_internal.h:105:27: note: in expansion of macro '__pr'
->  #define pr_warn(fmt, ...) __pr(LIBBPF_WARN, fmt, ##__VA_ARGS__)
->                            ^~~~
-> libbpf.c:4568:4: note: in expansion of macro 'pr_warn'
->     pr_warn("// TODO map_update_elem: idx %ld key %d value==map_idx %ld\n",
->     ^~~~~~~
-> libbpf.c:4568:44: note: format string is defined here
->     pr_warn("// TODO map_update_elem: idx %ld key %d value==map_idx %ld\n",
->                                           ~~^
->                                           %d
-> In file included from libbpf.c:55:0:
-> libbpf_internal.h:102:22: error: format '%ld' expects argument of type
-> 'long int', but argument 5 has type 'int' [-Werror=format=]
->   libbpf_print(level, "libbpf: " fmt, ##__VA_ARGS__); \
->                       ^
-> libbpf_internal.h:105:27: note: in expansion of macro '__pr'
->  #define pr_warn(fmt, ...) __pr(LIBBPF_WARN, fmt, ##__VA_ARGS__)
->                            ^~~~
-> libbpf.c:4568:4: note: in expansion of macro 'pr_warn'
->     pr_warn("// TODO map_update_elem: idx %ld key %d value==map_idx %ld\n",
->     ^~~~~~~
-> libbpf.c:4568:70: note: format string is defined here
->     pr_warn("// TODO map_update_elem: idx %ld key %d value==map_idx %ld\n",
->                                                                     ~~^
->                                                                     %d
->   CC      /srv/oe/build/tmp-lkft-glibc/work/intel_core2_32-linaro-linux/perf/1.0-r9/perf-1.0/cpu.o
-> In file included from libbpf.c:55:0:
-> libbpf.c: In function 'bpf_core_apply_relo':
-> libbpf_internal.h:102:22: error: format '%ld' expects argument of type
-> 'long int', but argument 3 has type 'int' [-Werror=format=]
->   libbpf_print(level, "libbpf: " fmt, ##__VA_ARGS__); \
->                       ^
-> libbpf_internal.h:105:27: note: in expansion of macro '__pr'
->  #define pr_warn(fmt, ...) __pr(LIBBPF_WARN, fmt, ##__VA_ARGS__)
->                            ^~~~
-> libbpf.c:6192:3: note: in expansion of macro 'pr_warn'
->    pr_warn("// TODO core_relo: prog %ld insn[%d] %s %s kind %d\n",
->    ^~~~~~~
-> libbpf.c:6192:38: note: format string is defined here
->    pr_warn("// TODO core_relo: prog %ld insn[%d] %s %s kind %d\n",
->                                     ~~^
->                                     %d
->
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
->
-> https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-next/DISTRO=lkft,MACHINE=intel-core2-32,label=docker-buster-lkft/1030/consoleText
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+> diff --git a/security/landlock/setup.c b/security/landlock/setup.c
+> index f8e8e980454c..4a12666a4090 100644
+> --- a/security/landlock/setup.c
+> +++ b/security/landlock/setup.c
+> @@ -23,6 +23,10 @@ struct lsm_blob_sizes landlock_blob_sizes __lsm_ro_after_init = {
+>  	.lbs_superblock = sizeof(struct landlock_superblock_security),
+>  };
+>  
+> +struct lsm_id landlock_lsmid __lsm_ro_after_init = {
+> +	.lsm = LANDLOCK_NAME,
+
+It is missing: .slot = LSMBLOB_NEEDED,
+
+You can run the Landlock tests please?
+make -C tools/testing/selftests TARGETS=landlock gen_tar
+tar -xf kselftest.tar.gz && ./run_kselftest.sh
+
+
+> +};
+> +
+>  static int __init landlock_init(void)
+>  {
+>  	landlock_add_cred_hooks();
+
+[...]
+
+> diff --git a/security/security.c b/security/security.c
+> index e12a7c463468..a3276deb1b8a 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -344,6 +344,7 @@ static void __init ordered_lsm_init(void)
+>  	init_debug("sock blob size       = %d\n", blob_sizes.lbs_sock);
+>  	init_debug("superblock blob size = %d\n", blob_sizes.lbs_superblock);
+>  	init_debug("task blob size       = %d\n", blob_sizes.lbs_task);
+> +	init_debug("lsmblob size         = %zu\n", sizeof(struct lsmblob));
+>  
+>  	/*
+>  	 * Create any kmem_caches needed for blobs
+> @@ -471,21 +472,36 @@ static int lsm_append(const char *new, char **result)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * Current index to use while initializing the lsmblob secid list.
+> + */
+> +static int lsm_slot __lsm_ro_after_init;
+> +
+>  /**
+>   * security_add_hooks - Add a modules hooks to the hook lists.
+>   * @hooks: the hooks to add
+>   * @count: the number of hooks to add
+> - * @lsm: the name of the security module
+> + * @lsmid: the identification information for the security module
+>   *
+>   * Each LSM has to register its hooks with the infrastructure.
+> + * If the LSM is using hooks that export secids allocate a slot
+> + * for it in the lsmblob.
+>   */
+>  void __init security_add_hooks(struct security_hook_list *hooks, int count,
+> -				char *lsm)
+> +			       struct lsm_id *lsmid)
+>  {
+>  	int i;
+>  
+
+Could you add a WARN_ON(!lsmid->slot || !lsmid->name) here?
+
+
+> +	if (lsmid->slot == LSMBLOB_NEEDED) {
+> +		if (lsm_slot >= LSMBLOB_ENTRIES)
+> +			panic("%s Too many LSMs registered.\n", __func__);
+> +		lsmid->slot = lsm_slot++;
+> +		init_debug("%s assigned lsmblob slot %d\n", lsmid->lsm,
+> +			   lsmid->slot);
+> +	}
+> +
+>  	for (i = 0; i < count; i++) {
+> -		hooks[i].lsm = lsm;
+> +		hooks[i].lsmid = lsmid;
+>  		hlist_add_tail_rcu(&hooks[i].list, hooks[i].head);
+>  	}
+>  
