@@ -2,124 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FEFC38D623
-	for <lists+bpf@lfdr.de>; Sat, 22 May 2021 16:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC49C38D678
+	for <lists+bpf@lfdr.de>; Sat, 22 May 2021 18:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbhEVONv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 22 May 2021 10:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbhEVONv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 22 May 2021 10:13:51 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F21AC061574;
-        Sat, 22 May 2021 07:12:25 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 62so11543876wmb.3;
-        Sat, 22 May 2021 07:12:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sWrTPvPYozr/f+12WltxM2mcxCA93yZQ2zbGh1apyJ0=;
-        b=fXGP5Nwz92mfVr539UiHVkdPj0lj67MjoE525tMxLI/v1MS3dszYb9dk0LgZb9GkW0
-         an2oiVSlae/hQNQtjatfplsyfod1n2st9R3ALuEJzQJNvriVe9G8/olnGJX8NJv1+kVK
-         LfRufcH7sNhFQymYdC3iYN9qfAWE/6qowA5V8G4xKY5I5WbYXczIsC8ySKgYpX9tojVw
-         xb01DLK1UCo1DgACxYO2s6kllJpOfvGKJTxXKDjTjzmPWQ+6mnRB7cYhwh+NUeGwwOuu
-         l/GIe5JbXqYNW0yFJCSHnucz5+1hC/K9ou30Wt17KpFJARW/eC2ecjs7pfzZGDY6CDjt
-         FHZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sWrTPvPYozr/f+12WltxM2mcxCA93yZQ2zbGh1apyJ0=;
-        b=Ds0g7QwMLKL9tOCnfaWmgQxBbrwkIyXNqK2eD4h26j65VPpCpbTTInEZ5naRysCN64
-         d3BfXa9OEwDebiqLsifb7YVHXFRe6vPxu5h359trJO8Xp+ZRXC3OVFpt63NJY7A13y7k
-         YHSUEd9KLaf3RNWmlUxbCQcjtgKlAwtQSgGcyv51SNalAg3srb7XOLK172AZHGDgZIYF
-         8Y6ko0ioQm1EGQg8ss5RwVQzQWfT+S7bc44AcYx01PIYicEP0TeLO7+mQXp7P56WQzYM
-         rSpAiRgY3Ie1CNaIKSe9OCkt02p0BZ2odWUnnwSLLkH4XVyqftuETLNTrImZuARyb8/+
-         n9ig==
-X-Gm-Message-State: AOAM5338uHywVLiPCny/4pkMYZJas/ROAbeETb03N4xn/szPd+nCIy3I
-        ZSphqr2H6mXTqrIRJU9HbBPnyB594gE6rWkz0nk=
-X-Google-Smtp-Source: ABdhPJytt/Nl2aIRQ7q2sftCVv5/7zYDggKaT7HoX1VEkwWETm5o+CBvk2owSSj8/xKv+ZY3Wp1IzPRKETRVQ8jN9Qk=
-X-Received: by 2002:a05:600c:2054:: with SMTP id p20mr13687013wmg.165.1621692744070;
- Sat, 22 May 2021 07:12:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210521083301.26921-1-magnus.karlsson@gmail.com>
-In-Reply-To: <20210521083301.26921-1-magnus.karlsson@gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Sat, 22 May 2021 16:12:12 +0200
-Message-ID: <CAJ+HfNjBwNjGwuT1jkkPO+n06GFnN4yornYpxb3M9MNg7+EYgg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] xsk: use kvcalloc to support large umems
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Dan Siemon <dan@coverfire.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231250AbhEVQZN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 22 May 2021 12:25:13 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:48892 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231249AbhEVQZN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 22 May 2021 12:25:13 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 14MGGRN5010607
+        for <bpf@vger.kernel.org>; Sat, 22 May 2021 09:23:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=5YaFX72k/CqL5jpzM08hox9RtAXH47ptO/mNAKLdRxA=;
+ b=kLQqoWq0WQWvTZeYfX/T3sanpxRNEx2TQf3HFYn65PAYD4zCUDfL6e04i4h9A2ADA1TW
+ +f6FqNuzpOBfcK6IQQ24kJbDG0gy+kMp3WWoqXcH+xBLJwqdP+W3TYKMD/X0r5HZCJDE
+ vzXFcBqEawimfPKRYXOjwi4khJqC8DA3h7o= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 38pwfbsck5-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Sat, 22 May 2021 09:23:47 -0700
+Received: from intmgw001.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 22 May 2021 09:23:47 -0700
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 3AAD42E9275C; Sat, 22 May 2021 09:23:41 -0700 (PDT)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] libbpf: add support for new llvm bpf relocations
+Date:   Sat, 22 May 2021 09:23:41 -0700
+Message-ID: <20210522162341.3687617-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: 9dxosDJ4cQeWYBTEYOWxfdNZu76wdrY9
+X-Proofpoint-ORIG-GUID: 9dxosDJ4cQeWYBTEYOWxfdNZu76wdrY9
 Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-22_08:2021-05-20,2021-05-22 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ mlxlogscore=845 priorityscore=1501 adultscore=0 spamscore=0
+ lowpriorityscore=0 phishscore=0 clxscore=1015 malwarescore=0 bulkscore=0
+ impostorscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2105220118
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 21 May 2021 at 10:33, Magnus Karlsson <magnus.karlsson@gmail.com> w=
-rote:
->
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
->
-> Use kvcalloc() instead of kcalloc() to support large umems with, on my
-> server, one million pages or more in the umem.
->
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> Reported-by: Dan Siemon <dan@coverfire.com>
+LLVM patch https://reviews.llvm.org/D102712
+narrowed the scope of existing R_BPF_64_64
+and R_BPF_64_32 relocations, and added three
+new relocations, R_BPF_64_ABS64, R_BPF_64_ABS32
+and R_BPF_64_NODYLD32. The main motivation is
+to make relocations linker friendly.
 
-Nice!
+This change, unfortunately, breaks libbpf build,
+and we will see errors like below:
+  libbpf: ELF relo #0 in section #6 has unexpected type 2 in
+     /home/yhs/work/bpf-next/tools/testing/selftests/bpf/bpf_tcp_nogpl.o
+  Error: failed to link
+     '/home/yhs/work/bpf-next/tools/testing/selftests/bpf/bpf_tcp_nogpl.o':
+     Unknown error -22 (-22)
+The new relocation R_BPF_64_ABS64 is generated
+and libbpf linker sanity check doesn't understand it.
+Relocation section '.rel.struct_ops' at offset 0x1410 contains 1 entries:
+    Offset             Info             Type               Symbol's Value  =
+Symbol's Name
+0000000000000018  0000000700000002 R_BPF_64_ABS64         0000000000000000 =
+nogpltcp_init
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+Look at the selftests/bpf/bpf_tcp_nogpl.c,
+  void BPF_STRUCT_OPS(nogpltcp_init, struct sock *sk)
+  {
+  }
 
-> ---
->  net/xdp/xdp_umem.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
->
-> diff --git a/net/xdp/xdp_umem.c b/net/xdp/xdp_umem.c
-> index 56a28a686988..f01ef6bda390 100644
-> --- a/net/xdp/xdp_umem.c
-> +++ b/net/xdp/xdp_umem.c
-> @@ -27,7 +27,7 @@ static void xdp_umem_unpin_pages(struct xdp_umem *umem)
->  {
->         unpin_user_pages_dirty_lock(umem->pgs, umem->npgs, true);
->
-> -       kfree(umem->pgs);
-> +       kvfree(umem->pgs);
->         umem->pgs =3D NULL;
->  }
->
-> @@ -99,8 +99,7 @@ static int xdp_umem_pin_pages(struct xdp_umem *umem, un=
-signed long address)
->         long npgs;
->         int err;
->
-> -       umem->pgs =3D kcalloc(umem->npgs, sizeof(*umem->pgs),
-> -                           GFP_KERNEL | __GFP_NOWARN);
-> +       umem->pgs =3D kvcalloc(umem->npgs, sizeof(*umem->pgs), GFP_KERNEL=
- | __GFP_NOWARN);
->         if (!umem->pgs)
->                 return -ENOMEM;
->
-> @@ -123,7 +122,7 @@ static int xdp_umem_pin_pages(struct xdp_umem *umem, =
-unsigned long address)
->  out_pin:
->         xdp_umem_unpin_pages(umem);
->  out_pgs:
-> -       kfree(umem->pgs);
-> +       kvfree(umem->pgs);
->         umem->pgs =3D NULL;
->         return err;
->  }
->
-> base-commit: a49e72b3bda73d36664a084e47da9727a31b8095
-> --
-> 2.29.0
->
+  SEC(".struct_ops")
+  struct tcp_congestion_ops bpf_nogpltcp =3D {
+          .init           =3D (void *)nogpltcp_init,
+          .name           =3D "bpf_nogpltcp",
+  };
+The new llvm relocation scheme categorizes 'nogpltcp_init' reference
+as R_BPF_64_ABS64 instead of R_BPF_64_64 which is used to specify
+ld_imm64 relocation in the new scheme.
+
+Let us fix the linker sanity checking by including
+R_BPF_64_ABS64 and R_BPF_64_ABS32. There is no need to
+check R_BPF_64_NODYLD32 which is used for .BTF and .BTF.ext.
+
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ tools/lib/bpf/libbpf_internal.h | 6 ++++++
+ tools/lib/bpf/linker.c          | 3 ++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_interna=
+l.h
+index 55d9b4dca64f..e2db08573bf0 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -28,6 +28,12 @@
+ #ifndef R_BPF_64_64
+ #define R_BPF_64_64 1
+ #endif
++#ifndef R_BPF_64_ABS64
++#define R_BPF_64_ABS64 2
++#endif
++#ifndef R_BPF_64_ABS32
++#define R_BPF_64_ABS32 3
++#endif
+ #ifndef R_BPF_64_32
+ #define R_BPF_64_32 10
+ #endif
+diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+index b594a88620ce..1dca41a24f75 100644
+--- a/tools/lib/bpf/linker.c
++++ b/tools/lib/bpf/linker.c
+@@ -892,7 +892,8 @@ static int linker_sanity_check_elf_relos(struct src_obj=
+ *obj, struct src_sec *se
+ 		size_t sym_idx =3D ELF64_R_SYM(relo->r_info);
+ 		size_t sym_type =3D ELF64_R_TYPE(relo->r_info);
+=20
+-		if (sym_type !=3D R_BPF_64_64 && sym_type !=3D R_BPF_64_32) {
++		if (sym_type !=3D R_BPF_64_64 && sym_type !=3D R_BPF_64_32 &&
++		    sym_type !=3D R_BPF_64_ABS64 && sym_type !=3D R_BPF_64_ABS32) {
+ 			pr_warn("ELF relo #%d in section #%zu has unexpected type %zu in %s\n",
+ 				i, sec->sec_idx, sym_type, obj->filename);
+ 			return -EINVAL;
+--=20
+2.30.2
+
