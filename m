@@ -2,111 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2562638DBCF
-	for <lists+bpf@lfdr.de>; Sun, 23 May 2021 18:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DE338DE1D
+	for <lists+bpf@lfdr.de>; Mon, 24 May 2021 01:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231817AbhEWQJY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 May 2021 12:09:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46154 "EHLO
+        id S232050AbhEWXrK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 May 2021 19:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231800AbhEWQJY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 May 2021 12:09:24 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282F1C061574;
-        Sun, 23 May 2021 09:07:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=YjMoxwr94CpOc6dJiHNAtzWBKsQW76MYcER0tgF7dRY=; b=L2/bywvmr7ZsZ1/cyT7PkdwupN
-        RGX3WtpVC2pg0i+Dq2HdrHNvkJGjMww5w/mRYeY/gy0uEzieVbO1govHtQsdcir4/Jyao0dx9Hpz+
-        tQ0EI5xejPMftoarc/gq7BpldSTZ6fRSapPYNSSvYeB0hnkQoF7csoPx8oMU9rFv8GRAEPIR8uuKl
-        9GYuuhcSPdhq8jWgoXftBTI3UPzd7XhvRAllRohxe3KQZJSlnioAIn5ayRm8i78dnuauRUyhvdRpi
-        hW2Sif7rQGvVp5/mxypsj8lUQ4G+y/1r/emgzQwfjMTE2HMSuEyx1tcI9o83+vNvGOpKNlLspY1VN
-        caGVyoJQ==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lkqdv-000UQ5-NX; Sun, 23 May 2021 16:07:55 +0000
-Subject: Re: [PATCH v2] samples: bpf: ix kernel-doc syntax in file header
-To:     Aditya Srivastava <yashsri421@gmail.com>, kafai@fb.com
-Cc:     lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, dledford@redhat.com, jgg@ziepe.ca,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20210523150917.21748-1-yashsri421@gmail.com>
- <20210523151408.22280-1-yashsri421@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <33cd99d5-8d4a-df36-8ab0-e68da879aa69@infradead.org>
-Date:   Sun, 23 May 2021 09:07:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        with ESMTP id S232021AbhEWXrK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 May 2021 19:47:10 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DE3C061574;
+        Sun, 23 May 2021 16:45:42 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id gb21-20020a17090b0615b029015d1a863a91so10227297pjb.2;
+        Sun, 23 May 2021 16:45:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t4U27o4bN+E4edMVs81xaohi1atx5g6UX4jkDMnrxlg=;
+        b=csfKvXBA2uho4nzAG162Ei7MseLwv3OLikn4kqxVPH7wNOWg+J/s9XyMtEPBEkHAxv
+         rKw3RGeSXEUKNUoZHq0U90I8lu7A5vcP5ujYEWM98a7tLPZhugyq6pLsoSz9usZyHv58
+         0hVAE6osdbHdcH8UmAbfael/DNjQZP4Yq9PNtUWwICveMf7ymoYrwFS4eDmI8E2bvaDo
+         uxf383bL514xsaeixuB81AxyGCjcpv58OoWHRTvTjVxcDPeIhkMAV32pA/4b+tE8drUm
+         D5/xBiZg/8XUIEyVhU8/02y7yNw5wmSLnqKC5q7OC5eVEf9MlkZRWAWnXBuPGclzLB1c
+         HvQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t4U27o4bN+E4edMVs81xaohi1atx5g6UX4jkDMnrxlg=;
+        b=JahEhr7W+RpfK2tf+RqCQnCAJtHrOvPQf7dWOFRNMVZm8WjfS+5r7l4In0Mzlwgl/6
+         JFbYt0QKpmYzW32neF+efPnF45yXo7lQr4nQCfa+sCugbSe1ZXmpQiXY33N5s8xYzuYL
+         lfukAI/oXvm7LMt79waevnlsHrfzwmTNjVYblZgItToTXwIcsBwqsPD99frFwF7EYrr+
+         isxcXejWfF3SJnmWL5uFd+bovenO6Z9qUfckuLBSgmw54e08TJ2D4WdAdy3px+fIGRQ6
+         OBbz0SLUgTOGASXoOiP+hbdMvqZv8EteWVz/Kdjq8YebggYSnwXAZ++0shbTJRiD+8M9
+         r/Jg==
+X-Gm-Message-State: AOAM53091raGrASyIcTmWAfJTHrTCHMuGTaM2i+9g5tEQTEopPobPDEY
+        7m4RbpAZiipOI2eVAfMd7NA=
+X-Google-Smtp-Source: ABdhPJyhwgIeLnBL7gK2ncjiVoho2lSly/lYt98V1CHuGo8Bw+ycH5+ysViFEMpms8K+m9um2wrAGA==
+X-Received: by 2002:a17:903:10a:b029:f4:109c:dc08 with SMTP id y10-20020a170903010ab02900f4109cdc08mr22278232plc.10.1621813541760;
+        Sun, 23 May 2021 16:45:41 -0700 (PDT)
+Received: from Journey.localdomain ([223.226.180.251])
+        by smtp.gmail.com with ESMTPSA id y26sm9817444pge.94.2021.05.23.16.45.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 May 2021 16:45:41 -0700 (PDT)
+Date:   Mon, 24 May 2021 05:15:34 +0530
+From:   Hritik Vijay <hritikxx8@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: BPF: failed module verification on linux-next
+Message-ID: <YKrpHqp0PlZDe5Q2@Journey.localdomain>
+References: <20210519141936.GV8544@kitsune.suse.cz>
+ <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210523151408.22280-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/23/21 8:14 AM, Aditya Srivastava wrote:
-> The opening comment mark '/**' is used for highlighting the beginning of
-> kernel-doc comments.
-> The header for samples/bpf/ibumad_kern.c follows this syntax, but
-> the content inside does not comply with kernel-doc.
+On Thu, May 20, 2021 at 10:31:18PM -0700, Andrii Nakryiko wrote:
+> It took me a while to reliably bisect this, but it clearly points to
+> this commit:
 > 
-> This line was probably not meant for kernel-doc parsing, but is parsed
-> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
-> causes unexpected warnings from kernel-doc:
-> warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->  * ibumad BPF sample kernel side
+> e481fac7d80b ("mm/page_alloc: convert per-cpu list protection to local_lock")
 > 
-> Provide a simple fix by replacing this occurrence with general comment
-> format, i.e. '/*', to prevent kernel-doc from parsing it.
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+I tried compiling 5.13.0-rc1-next-20210514 and observed the same error.
+5.13.0-rc1-next-20210513 boots fine for me though.
+Could there be that there's something more to this ?
+I could try to recompile 5.13.0-rc1-next-20210514 but I'm pretty sure
+that it didn't boot.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
-> Changes in v2: Include changes for both, samples/bpf/ibumad_kern.c and samples/bpf/ibumad_user.c in the same patch
-> 
->  samples/bpf/ibumad_kern.c | 2 +-
->  samples/bpf/ibumad_user.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/samples/bpf/ibumad_kern.c b/samples/bpf/ibumad_kern.c
-> index 26dcd4dde946..9b193231024a 100644
-> --- a/samples/bpf/ibumad_kern.c
-> +++ b/samples/bpf/ibumad_kern.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
->  
-> -/**
-> +/*
->   * ibumad BPF sample kernel side
->   *
->   * This program is free software; you can redistribute it and/or
-> diff --git a/samples/bpf/ibumad_user.c b/samples/bpf/ibumad_user.c
-> index d83d8102f489..0746ca516097 100644
-> --- a/samples/bpf/ibumad_user.c
-> +++ b/samples/bpf/ibumad_user.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
->  
-> -/**
-> +/*
->   * ibumad BPF sample user side
->   *
->   * This program is free software; you can redistribute it and/or
-> 
-
-
--- 
-~Randy
-
+Hrtk
