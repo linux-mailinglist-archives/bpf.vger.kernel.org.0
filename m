@@ -2,89 +2,243 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9960C38D746
-	for <lists+bpf@lfdr.de>; Sat, 22 May 2021 21:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A3538D958
+	for <lists+bpf@lfdr.de>; Sun, 23 May 2021 08:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbhEVToB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 22 May 2021 15:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
+        id S231658AbhEWGxi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 May 2021 02:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231310AbhEVToA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 22 May 2021 15:44:00 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09028C0613ED;
-        Sat, 22 May 2021 12:42:26 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id c17so17522443pfn.6;
-        Sat, 22 May 2021 12:42:26 -0700 (PDT)
+        with ESMTP id S231675AbhEWGxg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 May 2021 02:53:36 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 927CDC06138C
+        for <bpf@vger.kernel.org>; Sat, 22 May 2021 23:52:09 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id c20so24155004qkm.3
+        for <bpf@vger.kernel.org>; Sat, 22 May 2021 23:52:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w2LkGXw1co1uLC2e7opfK/LAoCn1kUKAliH5vlwy4Ck=;
-        b=RRkxrcjr4PIDq5GFjgvVpv5LdWrp0PU6jzKd82xY2y1shGFHBpR3Q2MQxq392Yde6I
-         ICg+m8r21Uo+cLr2eECC6D9vPfuRgtu/o1wtfmNmjMNUo4LF/3nWyn/VrysTroCKMDeC
-         M7V/vf8S+Kb0aIRU5664ryPVAVnxwO1NXCo9/wL//rUXEJvcC8anui5oliLTgs4arEHZ
-         +jKN/bH3GpcH6T1EKOTGbqqGjMssp4BUrrn6Y/lOtGj9k027KBS0kzMEbAolCqCnZQc6
-         le+WTDdskIlGXX124Csy/crHyRq/vllw1ecRZkHmyfewvznFLnDmbJk4RxmiDnEw2F1V
-         WxXA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3B98/YjFTPMLJUh0/1KRBVA8/76frlg1v110acGzMEg=;
+        b=vP9JMOrheZhsSQxdzHTPpsVLOx93NAsnpxVjx7qWDjqiPOA5sPxeKgqLRpH/YuB3hr
+         1qe60N79JPZxkEv0X6phzI4CifdnGlE+t6Nva9C3zQZovpMGOkVp5lmoGr777iNT03W0
+         v5F8fmk7Xq+CA6TOZstNVcgk9PqWhgYDqQBQfDPEEDpbdsZDINL7kkzeDTqoBYqnH6zs
+         sIYXQ+TeL+b7KMd+a72+xHzcSrboJGUiVE8RzEzhdLf1wC2DqY0uTNbNPFHzgYorXpOY
+         9raAazXFrPu6VKjQ1jxhlUBJEICMCHM7VJIPNiT7EKV+xi5+Qpw3AmZTtIcTUB3thFmP
+         lBAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=w2LkGXw1co1uLC2e7opfK/LAoCn1kUKAliH5vlwy4Ck=;
-        b=UPtq6p6q8cTH42/vYP3F1X2kS3oNGqBrdZqJuG19ul/H9StF6sa2HIruHVoHVNbtj3
-         dYBfTBaAjLkj45DY8h1jAvQ4ITmas3Cf7QdjOV6DwTgKm8GN7bxbXSBK98rSL3sP/eRx
-         e+VXJTWtOODkO7WWybjMP5Qd9VD1k800jXGA/pK7cvblUDCN4mDKKBx1uFUX+UOaKpjy
-         aWXEU8abNXsFN5q8ZjkF7VPk9mAS3EjVY7jUhjl4u6f2pMLefT7wSd7h9gHqb0FsoY+C
-         enQs7l5gEFwzJyXCYnxp1OrkyIL3TJ/LsQQ6HIjf4x9XPZ732HgY7lBbFOLjp3uZJDL4
-         r8tg==
-X-Gm-Message-State: AOAM533GtkLVyLV6ukYNX8kRaLNYuG4ciMtb/O0biBXchjtUmk/YWZAy
-        ZyvXl0Vs3N+vc/3O50hcl24=
-X-Google-Smtp-Source: ABdhPJyKAj8Hcx+DP4nKVV1/FfWaVGT++MZzcpUUfKcx7wZZFX8CScbpGJsfsW1r7jyndTYcfEvJ5w==
-X-Received: by 2002:a63:5c01:: with SMTP id q1mr5527630pgb.447.1621712545430;
-        Sat, 22 May 2021 12:42:25 -0700 (PDT)
-Received: from Journey.localdomain ([223.226.180.251])
-        by smtp.gmail.com with ESMTPSA id 21sm6939398pfh.103.2021.05.22.12.42.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 May 2021 12:42:25 -0700 (PDT)
-Date:   Sun, 23 May 2021 01:12:18 +0530
-From:   Hritik Vijay <hritikxx8@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: BPF: failed module verification on linux-next
-Message-ID: <YKlemjCagqtru8i0@Journey.localdomain>
-References: <20210519141936.GV8544@kitsune.suse.cz>
- <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3B98/YjFTPMLJUh0/1KRBVA8/76frlg1v110acGzMEg=;
+        b=Vqkp/MIik8P1WXFGqp2tHyBqn+LabRpaVmC3fwCd2libW71+CosoxmVAaRY7yxdAtE
+         RgURCFXUlEkBJQpf3IhJvue7RSlgYr9S41RF4j6HXCJ5xNKzJ6UotqFDU5aEGnqg1N+Z
+         hs5LRF2eNlXzaJL5WJ6AlSDxr1qHbZ9D7ppFG1MEwzmbP26/L+EtHidPcpsCGSckboA5
+         xcVeoaM41LtSLvifmB2rcu0NlFOVXHW9iI8GgO/PxwSDchnmK8wY2BgkcfOaQXVN9//l
+         4AjOghDlYjXbppejM2PBnlHKxUigNS7xV1pyFEHihTPbcHxhofc8lPP6exgV8qfEHSV6
+         WhTA==
+X-Gm-Message-State: AOAM533oI+YKOyfIFQFxViylcWNfU+/SapkV1xOtBqAKTfG0cOmiCmxV
+        ROxIkiamdgxuusf5fR+wC4Mw6w3fVQ78XAnD3dLDRQ==
+X-Google-Smtp-Source: ABdhPJybtfNNH0p75laysKYjeecXDAfkDnX74lkQEOtFjdMIaaxxvonlEZuLerS023UXGnaoGTPnypA/Te66B8HZiWU=
+X-Received: by 2002:a37:4694:: with SMTP id t142mr22939783qka.265.1621752727959;
+ Sat, 22 May 2021 23:52:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
+References: <000000000000f034fc05c2da6617@google.com>
+In-Reply-To: <000000000000f034fc05c2da6617@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sun, 23 May 2021 08:51:56 +0200
+Message-ID: <CACT4Y+ZGkye_MnNr92qQameXVEHNc1QkpmNrG3W8Yd1Xg_hfhw@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in check_all_holdout_tasks_trace
+To:     syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>,
+        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, bpf <bpf@vger.kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 20, 2021 at 10:31:18PM -0700, Andrii Nakryiko wrote:
-> It took me a while to reliably bisect this, but it clearly points to
-> this commit:
-> 
-> e481fac7d80b ("mm/page_alloc: convert per-cpu list protection to local_lock")
-> 
-> One commit before it, 676535512684 ("mm/page_alloc: split per cpu page
-> lists and zone stats -fix"), works just fine.
+On Fri, May 21, 2021 at 7:29 PM syzbot
+<syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    f18ba26d libbpf: Add selftests for TC-BPF management API
+> git tree:       bpf-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17f50d1ed00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8ff54addde0afb5d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
 
-Thank you for pointing this out. I'm facing the same issue.
-I've posted my logs in the following thread
-https://lore.kernel.org/linux-next/52f77a79-5042-eca7-f80e-657ac1c515de@infradead.org/T/#t
+This looks rcu-related. +rcu mailing list
 
-Hrtk
+> ==================================================================
+> BUG: KASAN: use-after-free in check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
+> Read of size 1 at addr ffff88802767a05c by task rcu_tasks_trace/12
+>
+> CPU: 0 PID: 12 Comm: rcu_tasks_trace Not tainted 5.12.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>  print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
+>  __kasan_report mm/kasan/report.c:419 [inline]
+>  kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
+>  check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
+>  rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
+>  rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:313
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+>
+> Allocated by task 8477:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track mm/kasan/common.c:46 [inline]
+>  set_alloc_info mm/kasan/common.c:428 [inline]
+>  __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
+>  kasan_slab_alloc include/linux/kasan.h:236 [inline]
+>  slab_post_alloc_hook mm/slab.h:524 [inline]
+>  slab_alloc_node mm/slub.c:2912 [inline]
+>  kmem_cache_alloc_node+0x269/0x3e0 mm/slub.c:2948
+>  alloc_task_struct_node kernel/fork.c:171 [inline]
+>  dup_task_struct kernel/fork.c:865 [inline]
+>  copy_process+0x5c8/0x7120 kernel/fork.c:1947
+>  kernel_clone+0xe7/0xab0 kernel/fork.c:2503
+>  __do_sys_clone+0xc8/0x110 kernel/fork.c:2620
+>  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> Freed by task 12:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+>  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+>  ____kasan_slab_free mm/kasan/common.c:360 [inline]
+>  ____kasan_slab_free mm/kasan/common.c:325 [inline]
+>  __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
+>  kasan_slab_free include/linux/kasan.h:212 [inline]
+>  slab_free_hook mm/slub.c:1581 [inline]
+>  slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1606
+>  slab_free mm/slub.c:3166 [inline]
+>  kmem_cache_free+0x8a/0x740 mm/slub.c:3182
+>  __put_task_struct+0x26f/0x400 kernel/fork.c:747
+>  trc_wait_for_one_reader kernel/rcu/tasks.h:935 [inline]
+>  check_all_holdout_tasks_trace+0x179/0x420 kernel/rcu/tasks.h:1081
+>  rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
+>  rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:313
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+>
+> Last potentially related work creation:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+>  __call_rcu kernel/rcu/tree.c:3038 [inline]
+>  call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+>  put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
+>  release_task+0xca1/0x1690 kernel/exit.c:226
+>  wait_task_zombie kernel/exit.c:1108 [inline]
+>  wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
+>  do_wait_thread kernel/exit.c:1398 [inline]
+>  do_wait+0x724/0xd40 kernel/exit.c:1515
+>  kernel_wait4+0x14c/0x260 kernel/exit.c:1678
+>  __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
+>  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> Second to last potentially related work creation:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+>  __call_rcu kernel/rcu/tree.c:3038 [inline]
+>  call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+>  put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
+>  context_switch kernel/sched/core.c:4342 [inline]
+>  __schedule+0x91e/0x23e0 kernel/sched/core.c:5147
+>  preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:5307
+>  preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:35
+>  try_to_wake_up+0xa12/0x14b0 kernel/sched/core.c:3489
+>  wake_up_process kernel/sched/core.c:3552 [inline]
+>  wake_up_q+0x96/0x100 kernel/sched/core.c:597
+>  futex_wake+0x3e9/0x490 kernel/futex.c:1634
+>  do_futex+0x326/0x1780 kernel/futex.c:3738
+>  __do_sys_futex+0x2a2/0x470 kernel/futex.c:3796
+>  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> The buggy address belongs to the object at ffff888027679c40
+>  which belongs to the cache task_struct of size 6976
+> The buggy address is located 1052 bytes inside of
+>  6976-byte region [ffff888027679c40, ffff88802767b780)
+> The buggy address belongs to the page:
+> page:ffffea00009d9e00 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88802767b880 pfn:0x27678
+> head:ffffea00009d9e00 order:3 compound_mapcount:0 compound_pincount:0
+> flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+> raw: 00fff00000010200 ffffea000071e208 ffffea0000950808 ffff888140005140
+> raw: ffff88802767b880 0000000000040003 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> page_owner tracks the page as allocated
+> page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 243, ts 14372676818, free_ts 0
+>  prep_new_page mm/page_alloc.c:2358 [inline]
+>  get_page_from_freelist+0x1033/0x2b60 mm/page_alloc.c:3994
+>  __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5200
+>  alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
+>  alloc_slab_page mm/slub.c:1644 [inline]
+>  allocate_slab+0x2c5/0x4c0 mm/slub.c:1784
+>  new_slab mm/slub.c:1847 [inline]
+>  new_slab_objects mm/slub.c:2593 [inline]
+>  ___slab_alloc+0x44c/0x7a0 mm/slub.c:2756
+>  __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2796
+>  slab_alloc_node mm/slub.c:2878 [inline]
+>  kmem_cache_alloc_node+0x12f/0x3e0 mm/slub.c:2948
+>  alloc_task_struct_node kernel/fork.c:171 [inline]
+>  dup_task_struct kernel/fork.c:865 [inline]
+>  copy_process+0x5c8/0x7120 kernel/fork.c:1947
+>  kernel_clone+0xe7/0xab0 kernel/fork.c:2503
+>  kernel_thread+0xb5/0xf0 kernel/fork.c:2555
+>  call_usermodehelper_exec_work kernel/umh.c:174 [inline]
+>  call_usermodehelper_exec_work+0xcc/0x180 kernel/umh.c:160
+>  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:313
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> page_owner free stack trace missing
+>
+> Memory state around the buggy address:
+>  ffff888027679f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff888027679f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> >ffff88802767a000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>                                                     ^
+>  ffff88802767a080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff88802767a100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> ==================================================================
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000f034fc05c2da6617%40google.com.
