@@ -2,243 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A3538D958
-	for <lists+bpf@lfdr.de>; Sun, 23 May 2021 08:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE7938D95D
+	for <lists+bpf@lfdr.de>; Sun, 23 May 2021 08:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbhEWGxi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 May 2021 02:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231675AbhEWGxg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 May 2021 02:53:36 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 927CDC06138C
-        for <bpf@vger.kernel.org>; Sat, 22 May 2021 23:52:09 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id c20so24155004qkm.3
-        for <bpf@vger.kernel.org>; Sat, 22 May 2021 23:52:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3B98/YjFTPMLJUh0/1KRBVA8/76frlg1v110acGzMEg=;
-        b=vP9JMOrheZhsSQxdzHTPpsVLOx93NAsnpxVjx7qWDjqiPOA5sPxeKgqLRpH/YuB3hr
-         1qe60N79JPZxkEv0X6phzI4CifdnGlE+t6Nva9C3zQZovpMGOkVp5lmoGr777iNT03W0
-         v5F8fmk7Xq+CA6TOZstNVcgk9PqWhgYDqQBQfDPEEDpbdsZDINL7kkzeDTqoBYqnH6zs
-         sIYXQ+TeL+b7KMd+a72+xHzcSrboJGUiVE8RzEzhdLf1wC2DqY0uTNbNPFHzgYorXpOY
-         9raAazXFrPu6VKjQ1jxhlUBJEICMCHM7VJIPNiT7EKV+xi5+Qpw3AmZTtIcTUB3thFmP
-         lBAQ==
+        id S231695AbhEWHAv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 May 2021 03:00:51 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:41880 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231621AbhEWHAu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 May 2021 03:00:50 -0400
+Received: by mail-il1-f197.google.com with SMTP id x13-20020a92d30d0000b02901bb45dfb5bfso27047920ila.8
+        for <bpf@vger.kernel.org>; Sat, 22 May 2021 23:59:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3B98/YjFTPMLJUh0/1KRBVA8/76frlg1v110acGzMEg=;
-        b=Vqkp/MIik8P1WXFGqp2tHyBqn+LabRpaVmC3fwCd2libW71+CosoxmVAaRY7yxdAtE
-         RgURCFXUlEkBJQpf3IhJvue7RSlgYr9S41RF4j6HXCJ5xNKzJ6UotqFDU5aEGnqg1N+Z
-         hs5LRF2eNlXzaJL5WJ6AlSDxr1qHbZ9D7ppFG1MEwzmbP26/L+EtHidPcpsCGSckboA5
-         xcVeoaM41LtSLvifmB2rcu0NlFOVXHW9iI8GgO/PxwSDchnmK8wY2BgkcfOaQXVN9//l
-         4AjOghDlYjXbppejM2PBnlHKxUigNS7xV1pyFEHihTPbcHxhofc8lPP6exgV8qfEHSV6
-         WhTA==
-X-Gm-Message-State: AOAM533oI+YKOyfIFQFxViylcWNfU+/SapkV1xOtBqAKTfG0cOmiCmxV
-        ROxIkiamdgxuusf5fR+wC4Mw6w3fVQ78XAnD3dLDRQ==
-X-Google-Smtp-Source: ABdhPJybtfNNH0p75laysKYjeecXDAfkDnX74lkQEOtFjdMIaaxxvonlEZuLerS023UXGnaoGTPnypA/Te66B8HZiWU=
-X-Received: by 2002:a37:4694:: with SMTP id t142mr22939783qka.265.1621752727959;
- Sat, 22 May 2021 23:52:07 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=u0Tmz6VnP41EIbBlF+WkQDt5H0ni5/whGKi6ixczT0k=;
+        b=YU0HqLXFpcHcUOo692rzgcnVF39uJPdYTRlHZnHwaHg075v+w33nKnFdqEbafSVcAO
+         U4ZKuysH79NJyFxbjE+V8dLBrCrRl4iovtNNSb1oXCeM+eUkKiNOtk4nfXCzI+pt34zy
+         zggbwb5vBuEVMyd1e1gwifw/iG4xJnZJXfm/HUR5LN4H79NjU1tE9hIhcqtiSPsVZ2nP
+         pOFo2ZSmkESxWeTCFyD9rjeBNoIxmk0+avMB7kGSfHUKq/sMXhRtpkCFiu6uJkEij1F+
+         pbppW6DAitXF4GV2iW4Vi6m308au/pz3B97Q4zO3ygOX5sSeB4oqtZCvO9ImsyZaVZ50
+         0G3w==
+X-Gm-Message-State: AOAM531kF4wcelC8iE57qv5hd/Z3gLlj2qRLrJFLRPxIYEmN5PnBqm1s
+        PvBiImEW9H84vVloix5Z4hX0rfuI/wA/dkkpl3x/eJYXr7XU
+X-Google-Smtp-Source: ABdhPJxI+cCwj3DbfqfpLhcnRyBGZEDoX41adShLA8Od/sAr6tNC1x/1oMUFMloHvIw6/yLK3qM7suLR/eJ61UepEGQ4VMj5oi5f
 MIME-Version: 1.0
-References: <000000000000f034fc05c2da6617@google.com>
-In-Reply-To: <000000000000f034fc05c2da6617@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sun, 23 May 2021 08:51:56 +0200
-Message-ID: <CACT4Y+ZGkye_MnNr92qQameXVEHNc1QkpmNrG3W8Yd1Xg_hfhw@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in check_all_holdout_tasks_trace
-To:     syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>,
-        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, bpf <bpf@vger.kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
+X-Received: by 2002:a6b:b4d8:: with SMTP id d207mr7801249iof.152.1621753163480;
+ Sat, 22 May 2021 23:59:23 -0700 (PDT)
+Date:   Sat, 22 May 2021 23:59:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000039084e05c2f9d507@google.com>
+Subject: [syzbot] riscv/fixes boot error: WARNING in vmap_small_pages_range_noflush
+From:   syzbot <syzbot+06b228c6b9c37dcd3d79@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, aou@eecs.berkeley.edu, ast@kernel.org,
+        bjorn@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        luke.r.nels@gmail.com, netdev@vger.kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, xi.wang@gmail.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 21, 2021 at 7:29 PM syzbot
-<syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    f18ba26d libbpf: Add selftests for TC-BPF management API
-> git tree:       bpf-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17f50d1ed00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=8ff54addde0afb5d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
+Hello,
 
-This looks rcu-related. +rcu mailing list
+syzbot found the following issue on:
 
-> ==================================================================
-> BUG: KASAN: use-after-free in check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
-> Read of size 1 at addr ffff88802767a05c by task rcu_tasks_trace/12
->
-> CPU: 0 PID: 12 Comm: rcu_tasks_trace Not tainted 5.12.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
->  print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
->  __kasan_report mm/kasan/report.c:419 [inline]
->  kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
->  check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
->  rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
->  rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
->  kthread+0x3b1/0x4a0 kernel/kthread.c:313
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->
-> Allocated by task 8477:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_set_track mm/kasan/common.c:46 [inline]
->  set_alloc_info mm/kasan/common.c:428 [inline]
->  __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
->  kasan_slab_alloc include/linux/kasan.h:236 [inline]
->  slab_post_alloc_hook mm/slab.h:524 [inline]
->  slab_alloc_node mm/slub.c:2912 [inline]
->  kmem_cache_alloc_node+0x269/0x3e0 mm/slub.c:2948
->  alloc_task_struct_node kernel/fork.c:171 [inline]
->  dup_task_struct kernel/fork.c:865 [inline]
->  copy_process+0x5c8/0x7120 kernel/fork.c:1947
->  kernel_clone+0xe7/0xab0 kernel/fork.c:2503
->  __do_sys_clone+0xc8/0x110 kernel/fork.c:2620
->  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> Freed by task 12:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
->  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
->  ____kasan_slab_free mm/kasan/common.c:360 [inline]
->  ____kasan_slab_free mm/kasan/common.c:325 [inline]
->  __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
->  kasan_slab_free include/linux/kasan.h:212 [inline]
->  slab_free_hook mm/slub.c:1581 [inline]
->  slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1606
->  slab_free mm/slub.c:3166 [inline]
->  kmem_cache_free+0x8a/0x740 mm/slub.c:3182
->  __put_task_struct+0x26f/0x400 kernel/fork.c:747
->  trc_wait_for_one_reader kernel/rcu/tasks.h:935 [inline]
->  check_all_holdout_tasks_trace+0x179/0x420 kernel/rcu/tasks.h:1081
->  rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
->  rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
->  kthread+0x3b1/0x4a0 kernel/kthread.c:313
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
->
-> Last potentially related work creation:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
->  __call_rcu kernel/rcu/tree.c:3038 [inline]
->  call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
->  put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
->  release_task+0xca1/0x1690 kernel/exit.c:226
->  wait_task_zombie kernel/exit.c:1108 [inline]
->  wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
->  do_wait_thread kernel/exit.c:1398 [inline]
->  do_wait+0x724/0xd40 kernel/exit.c:1515
->  kernel_wait4+0x14c/0x260 kernel/exit.c:1678
->  __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
->  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> Second to last potentially related work creation:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
->  __call_rcu kernel/rcu/tree.c:3038 [inline]
->  call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
->  put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
->  context_switch kernel/sched/core.c:4342 [inline]
->  __schedule+0x91e/0x23e0 kernel/sched/core.c:5147
->  preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:5307
->  preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:35
->  try_to_wake_up+0xa12/0x14b0 kernel/sched/core.c:3489
->  wake_up_process kernel/sched/core.c:3552 [inline]
->  wake_up_q+0x96/0x100 kernel/sched/core.c:597
->  futex_wake+0x3e9/0x490 kernel/futex.c:1634
->  do_futex+0x326/0x1780 kernel/futex.c:3738
->  __do_sys_futex+0x2a2/0x470 kernel/futex.c:3796
->  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> The buggy address belongs to the object at ffff888027679c40
->  which belongs to the cache task_struct of size 6976
-> The buggy address is located 1052 bytes inside of
->  6976-byte region [ffff888027679c40, ffff88802767b780)
-> The buggy address belongs to the page:
-> page:ffffea00009d9e00 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88802767b880 pfn:0x27678
-> head:ffffea00009d9e00 order:3 compound_mapcount:0 compound_pincount:0
-> flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-> raw: 00fff00000010200 ffffea000071e208 ffffea0000950808 ffff888140005140
-> raw: ffff88802767b880 0000000000040003 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 243, ts 14372676818, free_ts 0
->  prep_new_page mm/page_alloc.c:2358 [inline]
->  get_page_from_freelist+0x1033/0x2b60 mm/page_alloc.c:3994
->  __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5200
->  alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
->  alloc_slab_page mm/slub.c:1644 [inline]
->  allocate_slab+0x2c5/0x4c0 mm/slub.c:1784
->  new_slab mm/slub.c:1847 [inline]
->  new_slab_objects mm/slub.c:2593 [inline]
->  ___slab_alloc+0x44c/0x7a0 mm/slub.c:2756
->  __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2796
->  slab_alloc_node mm/slub.c:2878 [inline]
->  kmem_cache_alloc_node+0x12f/0x3e0 mm/slub.c:2948
->  alloc_task_struct_node kernel/fork.c:171 [inline]
->  dup_task_struct kernel/fork.c:865 [inline]
->  copy_process+0x5c8/0x7120 kernel/fork.c:1947
->  kernel_clone+0xe7/0xab0 kernel/fork.c:2503
->  kernel_thread+0xb5/0xf0 kernel/fork.c:2555
->  call_usermodehelper_exec_work kernel/umh.c:174 [inline]
->  call_usermodehelper_exec_work+0xcc/0x180 kernel/umh.c:160
->  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
->  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
->  kthread+0x3b1/0x4a0 kernel/kthread.c:313
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> page_owner free stack trace missing
->
-> Memory state around the buggy address:
->  ffff888027679f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->  ffff888027679f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >ffff88802767a000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                                                     ^
->  ffff88802767a080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->  ffff88802767a100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ==================================================================
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000f034fc05c2da6617%40google.com.
+HEAD commit:    bab0d47c riscv: kexec: Fix W=1 build warnings
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=10f59535d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e610cd256ee3a8
+dashboard link: https://syzkaller.appspot.com/bug?extid=06b228c6b9c37dcd3d79
+userspace arch: riscv64
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+06b228c6b9c37dcd3d79@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 2996 at mm/vmalloc.c:448 vmap_pages_pte_range mm/vmalloc.c:448 [inline]
+WARNING: CPU: 1 PID: 2996 at mm/vmalloc.c:448 vmap_pages_pmd_range mm/vmalloc.c:471 [inline]
+WARNING: CPU: 1 PID: 2996 at mm/vmalloc.c:448 vmap_pages_pud_range mm/vmalloc.c:489 [inline]
+WARNING: CPU: 1 PID: 2996 at mm/vmalloc.c:448 vmap_pages_p4d_range mm/vmalloc.c:507 [inline]
+WARNING: CPU: 1 PID: 2996 at mm/vmalloc.c:448 vmap_small_pages_range_noflush+0x2fa/0x38e mm/vmalloc.c:529
+Modules linked in:
+CPU: 1 PID: 2996 Comm: dhcpcd Not tainted 5.13.0-rc1-syzkaller-00629-gbab0d47c0ebb #0
+Hardware name: riscv-virtio,qemu (DT)
+epc : vmap_pages_pte_range mm/vmalloc.c:448 [inline]
+epc : vmap_pages_pmd_range mm/vmalloc.c:471 [inline]
+epc : vmap_pages_pud_range mm/vmalloc.c:489 [inline]
+epc : vmap_pages_p4d_range mm/vmalloc.c:507 [inline]
+epc : vmap_small_pages_range_noflush+0x2fa/0x38e mm/vmalloc.c:529
+ ra : vmap_pages_pte_range mm/vmalloc.c:448 [inline]
+ ra : vmap_pages_pmd_range mm/vmalloc.c:471 [inline]
+ ra : vmap_pages_pud_range mm/vmalloc.c:489 [inline]
+ ra : vmap_pages_p4d_range mm/vmalloc.c:507 [inline]
+ ra : vmap_small_pages_range_noflush+0x2fa/0x38e mm/vmalloc.c:529
+epc : ffffffff8036c3e4 ra : ffffffff8036c3e4 sp : ffffffe00984b900
+ gp : ffffffff845906e0 tp : ffffffe007d817c0 t0 : ffffffe008f1d000
+ t1 : ffffffc4011e39ff t2 : 0000004000010015 s0 : ffffffe00984b9b0
+ s1 : ffffffcf02244700 a0 : 0000000000000000 a1 : 00000000000f0000
+ a2 : 0000000000000002 a3 : ffffffff8036c3e4 a4 : ffffffe007d827c0
+ a5 : 0000000000000000 a6 : 0000000000f00000 a7 : f310d86cfc0c1a00
+ s2 : ffffffe005a00a28 s3 : ffffffff85b45000 s4 : ffffffff85b46000
+ s5 : 0000000000000000 s6 : 0000000000000200 s7 : ffffffe07fdfd168
+ s8 : ffffffe00e09f528 s9 : 0000003100000000 s10: ffffffe008eb8fa0
+ s11: 00000000000000c7 t3 : 0000000000000000 t4 : 0000000000000040
+ t5 : ffffffc4011e3a00 t6 : ffffffd00067e2d0
+status: 0000000000000120 badaddr: 0000000000000000 cause: 0000000000000003
+[<ffffffff8036c3e4>] vmap_pages_pte_range mm/vmalloc.c:448 [inline]
+[<ffffffff8036c3e4>] vmap_pages_pmd_range mm/vmalloc.c:471 [inline]
+[<ffffffff8036c3e4>] vmap_pages_pud_range mm/vmalloc.c:489 [inline]
+[<ffffffff8036c3e4>] vmap_pages_p4d_range mm/vmalloc.c:507 [inline]
+[<ffffffff8036c3e4>] vmap_small_pages_range_noflush+0x2fa/0x38e mm/vmalloc.c:529
+[<ffffffff80375a7a>] vmap_pages_range_noflush mm/vmalloc.c:558 [inline]
+[<ffffffff80375a7a>] vmap_pages_range mm/vmalloc.c:592 [inline]
+[<ffffffff80375a7a>] __vmalloc_area_node mm/vmalloc.c:2829 [inline]
+[<ffffffff80375a7a>] __vmalloc_node_range+0x396/0x582 mm/vmalloc.c:2915
+[<ffffffff80013c06>] bpf_jit_alloc_exec+0x46/0x52 arch/riscv/net/bpf_jit_core.c:171
+[<ffffffff801f3d2a>] bpf_jit_binary_alloc+0xac/0x172 kernel/bpf/core.c:872
+[<ffffffff80013a3a>] bpf_int_jit_compile+0x754/0x8da arch/riscv/net/bpf_jit_core.c:108
+[<ffffffff801f59e0>] bpf_prog_select_runtime+0x258/0x2e4 kernel/bpf/core.c:1867
+[<ffffffff821f9af2>] bpf_migrate_filter+0x1d6/0x23c net/core/filter.c:1294
+[<ffffffff82201854>] bpf_prepare_filter net/core/filter.c:1342 [inline]
+[<ffffffff82201854>] __get_filter+0x1d6/0x2d0 net/core/filter.c:1511
+[<ffffffff82202992>] sk_attach_filter+0x22/0x11a net/core/filter.c:1526
+[<ffffffff82154d82>] sock_setsockopt+0x18c4/0x1c2c net/core/sock.c:1068
+[<ffffffff82145172>] __sys_setsockopt+0x2de/0x33c net/socket.c:2113
+[<ffffffff8214520a>] __do_sys_setsockopt net/socket.c:2128 [inline]
+[<ffffffff8214520a>] sys_setsockopt+0x3a/0x4c net/socket.c:2125
+[<ffffffff8000562c>] ret_from_syscall+0x0/0x2
+irq event stamp: 946
+hardirqs last  enabled at (945): [<ffffffff8037e5e4>] rmqueue_pcplist mm/page_alloc.c:3506 [inline]
+hardirqs last  enabled at (945): [<ffffffff8037e5e4>] rmqueue mm/page_alloc.c:3529 [inline]
+hardirqs last  enabled at (945): [<ffffffff8037e5e4>] get_page_from_freelist+0xc50/0xf66 mm/page_alloc.c:3991
+hardirqs last disabled at (946): [<ffffffff80005570>] _save_context+0x80/0x90
+softirqs last  enabled at (942): [<ffffffff82b272a0>] softirq_handle_end kernel/softirq.c:402 [inline]
+softirqs last  enabled at (942): [<ffffffff82b272a0>] __do_softirq+0x5e0/0x8c4 kernel/softirq.c:588
+softirqs last disabled at (921): [<ffffffff80036760>] do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
+softirqs last disabled at (921): [<ffffffff80036760>] invoke_softirq kernel/softirq.c:440 [inline]
+softirqs last disabled at (921): [<ffffffff80036760>] __irq_exit_rcu kernel/softirq.c:637 [inline]
+softirqs last disabled at (921): [<ffffffff80036760>] irq_exit+0x1a0/0x1b6 kernel/softirq.c:661
+---[ end trace f164002e4a3f575f ]---
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 2996 at mm/vmalloc.c:305 vunmap_pte_range mm/vmalloc.c:305 [inline]
+WARNING: CPU: 1 PID: 2996 at mm/vmalloc.c:305 vunmap_pmd_range mm/vmalloc.c:329 [inline]
+WARNING: CPU: 1 PID: 2996 at mm/vmalloc.c:305 vunmap_pud_range mm/vmalloc.c:354 [inline]
+WARNING: CPU: 1 PID: 2996 at mm/vmalloc.c:305 vunmap_p4d_range mm/vmalloc.c:377 [inline]
+WARNING: CPU: 1 PID: 2996 at mm/vmalloc.c:305 vunmap_range_noflush+0x206/0x308 mm/vmalloc.c:408
+Modules linked in:
+CPU: 1 PID: 2996 Comm: dhcpcd Tainted: G        W         5.13.0-rc1-syzkaller-00629-gbab0d47c0ebb #0
+Hardware name: riscv-virtio,qemu (DT)
+epc : vunmap_pte_range mm/vmalloc.c:305 [inline]
+epc : vunmap_pmd_range mm/vmalloc.c:329 [inline]
+epc : vunmap_pud_range mm/vmalloc.c:354 [inline]
+epc : vunmap_p4d_range mm/vmalloc.c:377 [inline]
+epc : vunmap_range_noflush+0x206/0x308 mm/vmalloc.c:408
+ ra : vunmap_pte_range mm/vmalloc.c:305 [inline]
+ ra : vunmap_pmd_range mm/vmalloc.c:329 [inline]
+ ra : vunmap_pud_range mm/vmalloc.c:354 [inline]
+ ra : vunmap_p4d_range mm/vmalloc.c:377 [inline]
+ ra : vunmap_range_noflush+0x206/0x308 mm/vmalloc.c:408
+epc : ffffffff80372b18 ra : ffffffff80372b18 sp : ffffffe00984b820
+ gp : ffffffff845906e0 tp : ffffffe007d817c0 t0 : ffffffe008f1d000
+ t1 : 0000000000000001 t2 : 0000004000010015 s0 : ffffffe00984b8b0
+ s1 : ffffffe005a00a28 a0 : 0000000000000000 a1 : 00000000000f0000
+ a2 : 0000000000000002 a3 : ffffffff80372b18 a4 : ffffffe007d827c0
+ a5 : 0000000000000000 a6 : 0000000000f00000 a7 : ffffffff80374a74
+ s2 : ffffffff85b45000 s3 : ffffffff85b47000 s4 : 0000000000000000
+ s5 : ffffffe07fdfd168 s6 : 0000000000001000 s7 : ffffffff85b47000
+ s8 : ffffffff85b46fff s9 : 0000000000000000 s10: 0000000000000200
+ s11: ffffffff83858890 t3 : f310d86cfc0c1a00 t4 : 0000000000000040
+ t5 : ffffffc4011e3a00 t6 : ffffffd00067e2d0
+status: 0000000000000120 badaddr: 0000000000000000 cause: 0000000000000003
+[<ffffffff80372b18>] vunmap_pte_range mm/vmalloc.c:305 [inline]
+[<ffffffff80372b18>] vunmap_pmd_range mm/vmalloc.c:329 [inline]
+[<ffffffff80372b18>] vunmap_pud_range mm/vmalloc.c:354 [inline]
+[<ffffffff80372b18>] vunmap_p4d_range mm/vmalloc.c:377 [inline]
+[<ffffffff80372b18>] vunmap_range_noflush+0x206/0x308 mm/vmalloc.c:408
+[<ffffffff80372c4a>] free_unmap_vmap_area+0x30/0x68 mm/vmalloc.c:1722
+[<ffffffff80374b82>] remove_vm_area+0x150/0x152 mm/vmalloc.c:2462
+[<ffffffff80374dce>] vm_remove_mappings mm/vmalloc.c:2491 [inline]
+[<ffffffff80374dce>] __vunmap+0x24a/0x616 mm/vmalloc.c:2556
+[<ffffffff8037525a>] __vfree+0x70/0xf8 mm/vmalloc.c:2613
+[<ffffffff80375b9c>] __vmalloc_area_node mm/vmalloc.c:2840 [inline]
+[<ffffffff80375b9c>] __vmalloc_node_range+0x4b8/0x582 mm/vmalloc.c:2915
+[<ffffffff80013c06>] bpf_jit_alloc_exec+0x46/0x52 arch/riscv/net/bpf_jit_core.c:171
+[<ffffffff801f3d2a>] bpf_jit_binary_alloc+0xac/0x172 kernel/bpf/core.c:872
+[<ffffffff80013a3a>] bpf_int_jit_compile+0x754/0x8da arch/riscv/net/bpf_jit_core.c:108
+[<ffffffff801f59e0>] bpf_prog_select_runtime+0x258/0x2e4 kernel/bpf/core.c:1867
+[<ffffffff821f9af2>] bpf_migrate_filter+0x1d6/0x23c net/core/filter.c:1294
+[<ffffffff82201854>] bpf_prepare_filter net/core/filter.c:1342 [inline]
+[<ffffffff82201854>] __get_filter+0x1d6/0x2d0 net/core/filter.c:1511
+[<ffffffff82202992>] sk_attach_filter+0x22/0x11a net/core/filter.c:1526
+[<ffffffff82154d82>] sock_setsockopt+0x18c4/0x1c2c net/core/sock.c:1068
+[<ffffffff82145172>] __sys_setsockopt+0x2de/0x33c net/socket.c:2113
+[<ffffffff8214520a>] __do_sys_setsockopt net/socket.c:2128 [inline]
+[<ffffffff8214520a>] sys_setsockopt+0x3a/0x4c net/socket.c:2125
+[<ffffffff8000562c>] ret_from_syscall+0x0/0x2
+irq event stamp: 964
+hardirqs last  enabled at (963): [<ffffffff82b264ac>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
+hardirqs last  enabled at (963): [<ffffffff82b264ac>] _raw_spin_unlock_irqrestore+0x68/0x98 kernel/locking/spinlock.c:191
+hardirqs last disabled at (964): [<ffffffff80005570>] _save_context+0x80/0x90
+softirqs last  enabled at (956): [<ffffffff82b272a0>] softirq_handle_end kernel/softirq.c:402 [inline]
+softirqs last  enabled at (956): [<ffffffff82b272a0>] __do_softirq+0x5e0/0x8c4 kernel/softirq.c:588
+softirqs last disabled at (949): [<ffffffff80036760>] do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
+softirqs last disabled at (949): [<ffffffff80036760>] invoke_softirq kernel/softirq.c:440 [inline]
+softirqs last disabled at (949): [<ffffffff80036760>] __irq_exit_rcu kernel/softirq.c:637 [inline]
+softirqs last disabled at (949): [<ffffffff80036760>] irq_exit+0x1a0/0x1b6 kernel/softirq.c:661
+---[ end trace f164002e4a3f5760 ]---
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
