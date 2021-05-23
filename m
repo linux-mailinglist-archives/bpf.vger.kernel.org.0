@@ -2,116 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FBA38DB94
-	for <lists+bpf@lfdr.de>; Sun, 23 May 2021 17:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA97038DBBC
+	for <lists+bpf@lfdr.de>; Sun, 23 May 2021 17:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbhEWPPv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 May 2021 11:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34186 "EHLO
+        id S231821AbhEWQAN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 May 2021 12:00:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231776AbhEWPPv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 23 May 2021 11:15:51 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB503C061574;
-        Sun, 23 May 2021 08:14:23 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id p39so2408589pfw.8;
-        Sun, 23 May 2021 08:14:23 -0700 (PDT)
+        with ESMTP id S231789AbhEWQAN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 23 May 2021 12:00:13 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA856C061574;
+        Sun, 23 May 2021 08:58:45 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id s25so30224683ljo.11;
+        Sun, 23 May 2021 08:58:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=DYAJsKGaNMXlZ5z7Y202JilMErjhQXaG67fAc2NRRFU=;
-        b=qtR5tZ4xaAqfTOMolkHMLZoO2fh7YAnIoQIzMxo6UjgYqxugMF70cfTiTARj0xoHlq
-         5/vxi7JPoEHBBJpDH5Knx56c+wwpe0KpRgf8TAThPUxE+h21/gWNq4ob2p0+ywWnu2O8
-         30qkkFRGcWmB1jVBpC/UlKcSoNOvJbBHWNWS6ldXDSjujElT6a7gOHzpAlvjeLrDfLKz
-         sIBdlLJSIx2GeH4lvN22wtOhr6i9fPQZCLRR10YP215yfQy+bsaDsMaf3okCZT57URsH
-         dHvXXFNJcKsgDzQ/9kq66FSCt7tvLIiRg0XOp66gH6MgBilkCmYfxng2ht8JK9osXpab
-         gbsg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=oJfOL4jgQvwZZnmyB0vc7B8VulLXtFtfhhTh+z5Afbk=;
+        b=j4cOAYFODN57ON6QKvzV+NTYsYNm5nx1AZ//ukVBIS35+SL//crAkiwBBTlPrR8sds
+         EuZatLGb3YuIuBPX8Kf8OcgwlBOU1c1xfnsY3Ur0NRD6p3gtVCJphoGXpRIKsv4jtisi
+         691XYkHu67uJ3Uz9C22meiAIkdu/Kwi1IFkINUDNgODz7bMp5RYo9cmzQ3vPj7H0Kuz7
+         kX+tcsOss2RS45n86ZM7m2IRVmkYHolSgvEfAFSIBPVBpq5GWI9021OF1XHZ/Tqc3BC+
+         bxuKE39mfEajAjvs5Z0w3QX4W7456sxJfaDndMVkPFKWGk9lY/zxP9qmvMwapw5eovWj
+         hLTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=DYAJsKGaNMXlZ5z7Y202JilMErjhQXaG67fAc2NRRFU=;
-        b=RQvKpspM/Kt6l8PCCu/ffSsxlc6M5gD0ID1xEWwIrP4X0lN/yN/cIP7codUeuQaxjs
-         V34MIAjOZqfxbsNHA9cswhPYjSsLSLKNNW/3JAS56g5St1vcziXh7aa3ODG/fvGeAl3U
-         zpVU8hnEtLgG3cYsV4IM6E240WmuUYEy/RUKD9wYQ/qaip9U2z428nfvMM2tPOcNa/+7
-         nWeIM2MXtLzvmuKhTVsmlYsOcn8AtyIU3q+nv28WTn1ZL6ZDUzZT32poYf/qRM+9u3Is
-         je2kFXHrQZ8hEGWyqxOiWD1NH3ll2toJnPc3WQjbXu2D+1eiwJoVV3mfY7ErN2lEOUUB
-         YCsA==
-X-Gm-Message-State: AOAM532TPq/U+wj+H/6jYxCN+kpB2NjMUncJd5sjmYEsladwwX+nkI2T
-        92LU+9x6iBIbPMwTqoF0e0s=
-X-Google-Smtp-Source: ABdhPJxgYdsRVQ+3NZpShC24UhLHetz6ER6YC9eSr/QfIL4pfvSraMInmsI+F/aTBbSLDuJHLoqqoA==
-X-Received: by 2002:aa7:8d4a:0:b029:2e8:df53:cbd6 with SMTP id s10-20020aa78d4a0000b02902e8df53cbd6mr1537572pfe.13.1621782863096;
-        Sun, 23 May 2021 08:14:23 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:600d:a93f:c492:941f:bc2a:cc89])
-        by smtp.googlemail.com with ESMTPSA id c1sm5050383pfo.181.2021.05.23.08.14.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 08:14:22 -0700 (PDT)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     kafai@fb.com
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        rdunlap@infradead.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, dledford@redhat.com, jgg@ziepe.ca,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH v2] samples: bpf: ix kernel-doc syntax in file header
-Date:   Sun, 23 May 2021 20:44:08 +0530
-Message-Id: <20210523151408.22280-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210523150917.21748-1-yashsri421@gmail.com>
-References: <20210523150917.21748-1-yashsri421@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=oJfOL4jgQvwZZnmyB0vc7B8VulLXtFtfhhTh+z5Afbk=;
+        b=W79r2XJY7vG/ssP1k0/jUgRacVV3fbm1CPWBkIUmWy1ln6gQ+ThP9sWaNwrjtL0yIG
+         m96yQlzwsg67g7K1Ub9t3zXpIJN5L3pzAOPtqwrjlvfrozDLbSMLmH1DU55iXbqMeYYn
+         JXJgxzV0wjyjIOjbEwpA1/bAMjLb4rTofgz/3ByQOdCVJvMECOeVmmPU6McIEDKgBiC1
+         KkCWfVoo6Oatf3qJgZnUaG9ZpYgBiMkeH0uwshw+02coXrvTsqjz4VovuUHmq3o9uPmC
+         guGxeHNsfp2my7omcZb+AKH+HOiA6RN0ljXTPbLNM63iftYRqHRKjXj5vMvdv4JGPM8u
+         uc7w==
+X-Gm-Message-State: AOAM532AGWMlfEW2F2TcbNg3lvGle4+HpPsJtCy9bFGJsDLyRfTH2q5g
+        qcqwSOnQC07mpcFWTyQheo95UtyReGSuwb6qFu65u78M
+X-Google-Smtp-Source: ABdhPJws8VqhT0FGENFVXTh0aCBgBvYH0c8Qj6Dhq37na2KjcIGT92l5bbcmjREnlzlhS8LuECKG44iaurOuBplBr8g=
+X-Received: by 2002:a2e:575d:: with SMTP id r29mr13442811ljd.32.1621785524263;
+ Sun, 23 May 2021 08:58:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210520185550.13688-1-alexei.starovoitov@gmail.com> <87o8d1zn59.fsf@toke.dk>
+In-Reply-To: <87o8d1zn59.fsf@toke.dk>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 23 May 2021 08:58:33 -0700
+Message-ID: <CAADnVQL9xKcdCyR+-8irH07Ws7iKHjrE4XNb4OA7BkpBrkkEuA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The opening comment mark '/**' is used for highlighting the beginning of
-kernel-doc comments.
-The header for samples/bpf/ibumad_kern.c follows this syntax, but
-the content inside does not comply with kernel-doc.
+On Sun, May 23, 2021 at 4:48 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Still wrapping my head around this, but one thing immediately sprang to
+> mind:
+>
+> > + * long bpf_timer_mod(struct bpf_timer *timer, u64 msecs)
+> > + *   Description
+> > + *           Set the timer expiration N msecs from the current time.
+> > + *   Return
+> > + *           zero
+>
+> Could we make this use nanoseconds (and wire it up to hrtimers) instead?
+> I would like to eventually be able to use this for pacing out network
+> packets, and msec precision is way too coarse for that...
 
-This line was probably not meant for kernel-doc parsing, but is parsed
-due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
-causes unexpected warnings from kernel-doc:
-warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- * ibumad BPF sample kernel side
-
-Provide a simple fix by replacing this occurrence with general comment
-format, i.e. '/*', to prevent kernel-doc from parsing it.
-
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
-Changes in v2: Include changes for both, samples/bpf/ibumad_kern.c and samples/bpf/ibumad_user.c in the same patch
-
- samples/bpf/ibumad_kern.c | 2 +-
- samples/bpf/ibumad_user.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/samples/bpf/ibumad_kern.c b/samples/bpf/ibumad_kern.c
-index 26dcd4dde946..9b193231024a 100644
---- a/samples/bpf/ibumad_kern.c
-+++ b/samples/bpf/ibumad_kern.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
- 
--/**
-+/*
-  * ibumad BPF sample kernel side
-  *
-  * This program is free software; you can redistribute it and/or
-diff --git a/samples/bpf/ibumad_user.c b/samples/bpf/ibumad_user.c
-index d83d8102f489..0746ca516097 100644
---- a/samples/bpf/ibumad_user.c
-+++ b/samples/bpf/ibumad_user.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
- 
--/**
-+/*
-  * ibumad BPF sample user side
-  *
-  * This program is free software; you can redistribute it and/or
--- 
-2.17.1
-
+msecs are used to avoid exposing jiffies to bpf prog, since msec_to_jiffies
+isn't trivial to do in the bpf prog unlike the kernel.
+hrtimer would be great to support as well.
+It could be implemented via flags (which are currently zero only)
+but probably not as a full replacement for jiffies based timers.
+Like array vs hash. bpf_timer can support both.
