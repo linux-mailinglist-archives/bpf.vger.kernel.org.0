@@ -2,178 +2,287 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D235A38EC72
-	for <lists+bpf@lfdr.de>; Mon, 24 May 2021 17:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F1838F231
+	for <lists+bpf@lfdr.de>; Mon, 24 May 2021 19:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233346AbhEXPPc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 May 2021 11:15:32 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:54499 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234546AbhEXPIK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 24 May 2021 11:08:10 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14OF5a1M003941;
-        Mon, 24 May 2021 08:06:15 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=LaRdz4LlQ8MWphvuljDL+1HeFh4hcqMd91I0zxq+gLI=;
- b=jeZYVa6uQftDJVOPttJF3ScneUvwV6dADW7AOtaHkXeWGy8cDhVM5e2LtadTjDFyzTRe
- xxegoT6DMlNZadzEjEwdIZdgnKVZnmhn0FivRbqfJn0UfQpWscMhwnKvojNfiBjv1Jd3
- Fc5Y+cltTULVAynqpNcqvqGEWQXTgy6Lckk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 38qhq4e191-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 24 May 2021 08:06:15 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 24 May 2021 08:06:12 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OyvRBGZeWDWj4H5Wp/8dVkmGD4JtjrF6QsuiKurMWHgZ9ayf3aDZnAz8+XgovlzX/i7NmQ7H19t7HwzDgiaNE1chHz/3u4Buz9vYMzgOJRg23cJVNKhsqzc9z32FZ4vY2wzmhWypnMXWAjJsHRepugMWmUuQtFoMiDYTiDMgv4fdBLD3oy9cpPJWfr8404aR0UApOeJZ88vgIM45UA1OQImEm6gua0njBdH4zCodpcGFCMMdlHlXMygtwR9Bq7pxtAXnZI2jfhyeKW5xpw3vavnsokwGupEobVk09hM20rzUYVWFmDxfNGI+TcUduQAg9J+e+vci33XfoDucZ9n8wg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LaRdz4LlQ8MWphvuljDL+1HeFh4hcqMd91I0zxq+gLI=;
- b=PtMZ0+KvenYagO5Q5q2BFGADkkjgaom69zDIXpNTgFZpx/TLAkDgm655syJPnVSqCtdKfafo5acxAwec8ZHIZGJ9gRY2utkAPTrD5bYXx0KwH42Yxp1RekTs7aXzN1w724mMz52CraWhDFCrKy8Lmp68PJLrJvovT7X+P7IOzEtTTjesdKeuAC3VV7ckLLMQKCB29Cw2XDKq/HXu4THQb7ajq3rKkwtFpDsjl/Z3a40gv2bATe7MvCqNj/10m//niDkfIsQz671CkblHevLVEnJs/hQ1bIZeEHT2Psdi6dHGa+liBj6/QzddMBT6FtNnl782KOEFGFoYNpR40ShgSg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA1PR15MB4339.namprd15.prod.outlook.com (2603:10b6:806:1ae::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Mon, 24 May
- 2021 15:06:10 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::d886:b658:e2eb:a906]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::d886:b658:e2eb:a906%5]) with mapi id 15.20.4150.027; Mon, 24 May 2021
- 15:06:10 +0000
-Subject: Re: [PATCH bpf-next] docs/bpf: add llvm_reloc.rst to explain llvm bpf
- relocations
-To:     Lorenz Bauer <lmb@cloudflare.com>
-CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S233339AbhEXRY4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 May 2021 13:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232543AbhEXRY4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 May 2021 13:24:56 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3ECC061574
+        for <bpf@vger.kernel.org>; Mon, 24 May 2021 10:23:27 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id o18so1457833ybc.8
+        for <bpf@vger.kernel.org>; Mon, 24 May 2021 10:23:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JYL4yMkEhuYb305pUmtDEdKA2/cg+BBnV0Pf5XqJkxo=;
+        b=REH/4bxpRQSqgQEzzbrnKkxr5UvBymk/wF5Dz2vsbRDkauEG+F5bYfL7zLTczs7LxB
+         zxYT0+q5quv62pvml+FhjpOQ9EoRcCQmsmamijUuPuWAxfplcBCFk5vGooi5HkOjkdqm
+         je2gJ4N8IuOWhOxRzivUzQtjGCisgC1muUkFst3DTFU2/jEJqmSln29ZtefYKHddN3Z0
+         qiHAGelP1VDhQ9W9piqXdwA0j8p36KNzXW73OQaObOogPdQ+BPBIZLF2COYSOSG6O6ZJ
+         VUnzwoyIPVqyrsjCx2yB1inW0AjDzdJgbOdn9YQ6iBjq0QqAzNQEDZTTZ6se+HVFSNP1
+         skfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JYL4yMkEhuYb305pUmtDEdKA2/cg+BBnV0Pf5XqJkxo=;
+        b=ZjfMtQpcrzldfVZerplj1dWRSPUGOnHcO45vNCTwOkmkaisGyilP3iwRhaYt07f5vD
+         jZT1d6jYFjcGE52R6Cl33NmMtjV7hFi2f7E6qWbY2EiPZnTWyT6jd1g7zsxsLLKnqeg7
+         qClouFjbNBA45wcu+2IwgvJiVpyHYBNT9VfQj3se1hAfiyb96T+gjqK1eENBYZ9pD7tS
+         el8nc+EHGU/7FYJTut0X/68zM/ZjOzaYLX9PylgXL1UIfZjA4wob62n1Xz2wD5D5ZnM1
+         Q5ulZjZw5tsq5AiMLcBQk15hqiBjs9iycGVuA26b5T9oCWxIbkg3XeMkw4Pvk4ra0CqA
+         5OFw==
+X-Gm-Message-State: AOAM5332jrzmwDtFMy1GNJ789iaWa6vwQqw1mS1ir5e+sTaTvQFsVDes
+        2CAjPnUYtKvGWBOAulEG6tggnZkjuF8zIBkZJq7lO58q
+X-Google-Smtp-Source: ABdhPJz1YqJH80cKUkDSBuqmVzroLKbjWe23Q7cZ46MEJS+8XdDPq6aJGUuYoILuJ2zm7sVL0xdTUjU6xrB8suZq5Tc=
+X-Received: by 2002:a5b:286:: with SMTP id x6mr38288595ybl.347.1621877006463;
+ Mon, 24 May 2021 10:23:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210522163925.3757287-1-yhs@fb.com>
+In-Reply-To: <20210522163925.3757287-1-yhs@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 24 May 2021 10:23:15 -0700
+Message-ID: <CAEf4Bzb+gqH6aB72y+vCaHrq7HNNAROPV+2X0976CzCAmY8Jrw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] docs/bpf: add llvm_reloc.rst to explain llvm bpf relocations
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Kernel Team <kernel-team@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>
-References: <20210522163925.3757287-1-yhs@fb.com>
- <aae741ff-d609-5796-d860-d234884f5ea2@fb.com>
- <CACAyw9-G56AC5D_wqTi6wURk2BFrF-buuLS1S0F-ngDukb9qEQ@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <14599907-6a2c-d13b-2dcf-11fcf5f83219@fb.com>
-Date:   Mon, 24 May 2021 08:06:07 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.1
-In-Reply-To: <CACAyw9-G56AC5D_wqTi6wURk2BFrF-buuLS1S0F-ngDukb9qEQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-X-Originating-IP: [2620:10d:c090:400::5:ac27]
-X-ClientProxiedBy: MWHPR13CA0033.namprd13.prod.outlook.com
- (2603:10b6:300:95::19) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::1160] (2620:10d:c090:400::5:ac27) by MWHPR13CA0033.namprd13.prod.outlook.com (2603:10b6:300:95::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.11 via Frontend Transport; Mon, 24 May 2021 15:06:09 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 743f4c0f-b6f8-44fe-9a7f-08d91ec5770b
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4339:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA1PR15MB43391F66623533CF36EC745AD3269@SA1PR15MB4339.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /UInx10i2ux3CJ1NHwQKUI34gP1qGje6nYSA/bELeE34bZTsFvlGXqAXiggmiXN14diAfmhICQZW2iOEn2RyqTVUgc18MlAY2v27Lm1PfyHtn5FD9KZqLX/te509ksGwx6u83NKQQQGdy9hErLMKx1CHJLp/d8WLtRh/fdq0KF1x4yqBfhlmfvCM3BIwfFM0+7u7sD14Aupcr8qJr4ByJy577prDOH0lK/4FwojuSsQauiBsTIV5f36vG2EW6l0c6z+2JW/ErmPPnBGxt/qyrNwwIIwAhZhquFiq0TsWSe4pyCas/ubdEzCo3ZywTAgZ7MqaL4OCBmogCLleF7QUpzhR8AIiQMm2GAJPmIcDVLLg9/ql5pWQJmEB4p/La+BmV89b7GWPJG+PBXMFGY4KeFgHBhNpHXdT0oWBo0tG1gQ/Wo78vX9/udW+FFdsaO1EUWR1uIhfP/0sVOXdzM4jS5Owy7xvITHQGgp8abpjqFzoD5NjBlbFAp9v0f8b2uiK4xK+VCjMzkbsl/5Hv83fct1yaGJN4njJ3/NJOmR699VtFBm22iHVpYLSD3Afc8uTq7YYmc7Fs+oJCAUC5/F1rq7FORY5hn5g/7ZurkP99P8QACkGOnq6NZmMVPi7wEJMIvBdKvYQrnbhHVHRMnhfCnbTyPmfSK4LRq/peWF6to9qQl67ftDc0G0Wvw4iw568s5Je1c8zGkVmpBH5OOO/v1QXXfcZYV4/xZwD4AQVex+q2X9c7liR01O+dfMzlKw4kDimXLFBQ6ROE7ulerzfwdGVnfXuhaC7e3EmH7nMPr2w0AFJt0MIGjlxpj5uBY22
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39860400002)(366004)(396003)(38100700002)(2616005)(31686004)(83380400001)(8936002)(6916009)(36756003)(8676002)(66476007)(16526019)(966005)(4326008)(53546011)(54906003)(478600001)(86362001)(2906002)(31696002)(5660300002)(52116002)(66946007)(316002)(66556008)(186003)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZFNJTlNIVWF3N1NzZkxIR2hETVI0bTdwbXI5OWJiYU0rK2ptcnhGRlMyZDNS?=
- =?utf-8?B?UituUjltZ1BQcWl2M0dacnNxR1loVWZFYkRKVlFETDVJQ1RxKzlKSGNmKzRO?=
- =?utf-8?B?UTZicnhMdVNLcURadFVNc2xndVZ6aUthdE1rUHMvcmlWL2FoRHdsZGhQTkhm?=
- =?utf-8?B?bERYcHhzRHQwTUd1Smg0RWZmVzRuek12QlRjQkFiZCtxNGRsdXNUd3pDa3du?=
- =?utf-8?B?eUhVWGRieGlsa0xGRER5eGFITklqV1liK2FsbTFhZVUvbWpLR0hkcnZreXRr?=
- =?utf-8?B?S2ZrajI1YmVKTzRGOTZUYjhGcFh0dDB5TnZrNTdqOHdKa04yL2M3c1I3alhV?=
- =?utf-8?B?ckIvUlZ5elJIQnBlb1R6bm5Zd1gvbEF3b2dZUFBkZk5tTmZIeGgzdXBVVXhW?=
- =?utf-8?B?RWFYV0FRdEF2QTU3OUpMN1pxS2owd0hLeTRLRTgremRrc01FUU53WmxCaDBr?=
- =?utf-8?B?Um5ic2NSSHdvZ04vanp0aDA2eSswaE82OGV2dGlxdCtoTnRHNHk2RnJtRERV?=
- =?utf-8?B?bHdHSTlRUGZpSitpTThJSGRkRTRFc3QzcFFkZHZ4cG1BR2h4NWxXSEorYWRp?=
- =?utf-8?B?WXJ3OVZkb200cnoxbFNXamx1MDMyU0I1RkM4SVdkbGV4YWczeUV3RVZGa1Rp?=
- =?utf-8?B?L1d5YmZPSC9OWnZMTWo5K1MxTkYyeEFsZ0NpZlVlbTBTTWpkMHJoNXpIdjg3?=
- =?utf-8?B?WmxhZmJXOTBHbyt5bFhwVElhR29scnNtQzQvanFNRlFRblJVVFYwS0xhcU50?=
- =?utf-8?B?ZWVpYVJKSVpIT1lHbXBBUkRCUjhqN0w0UXRtdndJZTIvczdWY3VraUs2ZDVl?=
- =?utf-8?B?WnN1V2ZlUm1xaTJKaWRDNEgvbml1Umt6NlRjb08rR0gvUW9VbmV2RFhmdGYv?=
- =?utf-8?B?QXMxcmN0eG40ajZBU0JmQ2N1MUZnY2FwT0ppejUyOW02OFFwZEo4SlNLOGlO?=
- =?utf-8?B?RElUTy9DSVo1MnpoSzZHai9VMkpWVXNsZFBFTTNFNlF6T3laZHVmM3QrWTFW?=
- =?utf-8?B?MnFkSHFIcjZEblRmTHNZSXhTeGRRcXZzNk5VWHk3VDJxVy9FR24wVHhKK0JK?=
- =?utf-8?B?RnNoeTgwcldtWlNPYmV4VytZd2dVY3VDM0tFYXdOZVVEQnJISmdpUDI1UGtV?=
- =?utf-8?B?K1BtUFp0Mkdjb3cyenFVa3dvOERiT1hxaTBYa1QxVWJ0amoxbG1BcEJLc0tn?=
- =?utf-8?B?c3FnS3FlcldjR2crZEo5YlBNdUZ2MTBjUVp6dHNKdFo4N0NKRnRxd2paWFU5?=
- =?utf-8?B?YkN0Q3BQelNQbHpaV0JsV1hHdDYyMlZtQnRKWTE0SnlSZ05EZ2JXSWVsaDZO?=
- =?utf-8?B?Mk5zV1EwZjlZKzlVVUpYY1dqSHArN2FYbE5lT1kyMjVNNDJ6MFBhK3EzaFlt?=
- =?utf-8?B?c3E1Ry9INzVIRXVESStDNmdOU3VONmJhT2R1UWErdEVDNkRRZ1h6eW1kMytZ?=
- =?utf-8?B?b1BmWk54SWlKOGxFQnBlQko4VmdrdndvQ08wN2JzLzZmaUZEeWZWN2U0UHdY?=
- =?utf-8?B?VjFwcHBjTVhNVHduSWtDR0EwT0hWSUJTYW9FQ2Jta0hQYlZ4WTRHakxSdjVr?=
- =?utf-8?B?Qld2djFnZXRsYUN4R1JnQU5uOVVxYjBYWGNyNXhiVUwvYmdmeXFERUc4Qkw5?=
- =?utf-8?B?RXQyOFNFN3FSQ3liRDFlakhVbDhNbUdIZWZQeFlTdVRBbDVrSnZvOFdVZ1U5?=
- =?utf-8?B?aHYvYmN6NHArVkxJbUQ2TEZQMDlpZlJoRHl2aHRnUGVWem84ZXFudmtIQXZi?=
- =?utf-8?B?RFVkeGZPWTRxeUVHbmtnV04yQllCRm9mQ05pVmhUN2FleCtjQldTb0ZzK0M3?=
- =?utf-8?B?MXpsMnNYVStKVXhFZGNpdz09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 743f4c0f-b6f8-44fe-9a7f-08d91ec5770b
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2021 15:06:10.6174
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 96hjkUONpD7FkSTW3Nivdw7/l4Nmv5GY2yk/li9a3C80QPw5YNjfqUSEs/akPl3h
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4339
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: l09-hbvj25LrxTNlDCQbESN-O8slo15C
-X-Proofpoint-GUID: l09-hbvj25LrxTNlDCQbESN-O8slo15C
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-24_08:2021-05-24,2021-05-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- adultscore=0 malwarescore=0 impostorscore=0 lowpriorityscore=0
- phishscore=0 clxscore=1015 spamscore=0 bulkscore=0 mlxlogscore=999
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105240094
-X-FB-Internal: deliver
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sat, May 22, 2021 at 9:39 AM Yonghong Song <yhs@fb.com> wrote:
+>
+> LLVM upstream commit https://reviews.llvm.org/D102712
+> made some changes to bpf relocations to make them
+> llvm linker lld friendly. The scope of
+> existing relocations R_BPF_64_{64,32} is narrowed
+> and new relocations R_BPF_64_{ABS32,ABS64,NODYLD32}
+> are introduced.
+>
+> Let us add some documentation about llvm bpf
+> relocations so people can understand how to resolve
+> them properly in their respective tools.
+>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
+> ---
+>  Documentation/bpf/index.rst      |   1 +
+>  Documentation/bpf/llvm_reloc.rst | 168 +++++++++++++++++++++++++++++++
+>  2 files changed, 169 insertions(+)
+>  create mode 100644 Documentation/bpf/llvm_reloc.rst
+>
+> diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
+> index a702f67dd45f..93e8cf12a6d4 100644
+> --- a/Documentation/bpf/index.rst
+> +++ b/Documentation/bpf/index.rst
+> @@ -84,6 +84,7 @@ Other
+>     :maxdepth: 1
+>
+>     ringbuf
+> +   llvm_reloc
+>
+>  .. Links:
+>  .. _networking-filter: ../networking/filter.rst
+> diff --git a/Documentation/bpf/llvm_reloc.rst b/Documentation/bpf/llvm_reloc.rst
+> new file mode 100644
+> index 000000000000..bc62bce591b1
+> --- /dev/null
+> +++ b/Documentation/bpf/llvm_reloc.rst
+> @@ -0,0 +1,168 @@
+> +.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> +
+> +====================
+> +BPF LLVM Relocations
+> +====================
+> +
+> +This document describes LLVM BPF backend relocation types.
+> +
+> +Relocation Record
+> +=================
+> +
+> +LLVM BPF backend records each relocation with the following 16-byte
+> +ELF structure::
+> +
+> +  typedef struct
+> +  {
+> +    Elf64_Addr    r_offset;  // Offset from the beginning of section.
+> +    Elf64_Xword   r_info;    // Relocation type and symbol index.
+> +  } Elf64_Rel;
+> +
+> +For static function/variable references, the symbol often refers to
+> +the section itself which has a value of 0. To identify actual static
+> +function/variable, its section offset or some computation result
+> +based on section offset is written to the original insn/data buffer,
+> +which is called ``IA`` (implicit addend) below.  For global
+> +function/variables, the symbol refers to actual global and the implicit
+> +addend is 0.
+> +
+> +Different Relocation Types
+> +==========================
+> +
+> +Six relocation types are supported. The following is an overview and
+> +``S`` represents the value of the symbol in the symbol table::
+> +
+> +  Enum  ELF Reloc Type     Description      BitSize  Offset        Calculation
+> +  0     R_BPF_NONE         None
+> +  1     R_BPF_64_64        ld_imm64 insn    32       r_offset + 4  S + IA
 
+There are cases where we set all 64-bits of ld_imm64 (e.g., extern
+ksym, global variables). Or those will be a different relocation now
+(R_BPF_64_ABS64?). If not, I think BitSize 64 is more correct here.
 
-On 5/24/21 1:33 AM, Lorenz Bauer wrote:
-> On Sat, 22 May 2021 at 17:44, Yonghong Song <yhs@fb.com> wrote:
->>
->> Daniel, John and Lorenz,
->>
->> Could you help check how the new relocation scheme
->> may impact you? libbpf has a similar issue and is fixed by
->>     https://lore.kernel.org/bpf/20210522162341.3687617-1-yhs@fb.com/
->> In most cases, you should just change relocation enum number,
->> no relocation resolution is changed.
->>
->> Please let me know. Thanks!
-> 
-> Thank you for the heads up :) cilium/ebpf currently doesn't look at
-> relocation types at all for better or worse. We simply collect
-> "well-known" sections like maps, programs, etc. and only process
-> relocations for these. So your change won't break cilium/ebpf, but it
+Looking at LLVM diff I haven't found a test for global variables (at
+least I didn't realize it was there), so double-checking here (and it
+might be a good idea to have an explicit test for global variables?)
 
-Thanks for confirmation. So yes, you should be fine though.
+> +  2     R_BPF_64_ABS64     normal data      64       r_offset      S + IA
+> +  3     R_BPF_64_ABS32     normal data      32       r_offset      S + IA
+> +  4     R_BPF_64_NODYLD32  .BTF[.ext] data  32       r_offset      S + IA
+> +  10    R_BPF_64_32        call insn        32       r_offset + 4  (S + IA) / 8 - 1
+> +
+> +For example, ``R_BPF_64_64`` relocation type is used for ``ld_imm64`` instruction.
+> +The actual to-be-relocated data is stored at ``r_offset + 4`` and the read/write
+> +data bitsize is 32 (4 bytes). The relocation can be resolved with
+> +the symbol value plus implicit addend.
+> +
+> +In another case, ``R_BPF_64_ABS64`` relocation type is used for normal 64-bit data.
+> +The actual to-be-relocated data is stored at ``r_offset`` and the read/write data
+> +bitsize is 64 (8 bytes). The relocation can be resolved with
+> +the symbol value plus implicit addend.
+> +
+> +Both ``R_BPF_64_ABS32`` and ``R_BPF_64_NODYLD32`` types are for 32-bit data.
+> +But ``R_BPF_64_NODYLD32`` specifically refers to relocations in ``.BTF`` and
+> +``.BTF.ext`` sections. For cases like bcc where llvm ``ExecutionEngine RuntimeDyld``
+> +is involved, ``R_BPF_64_NODYLD32`` types of relocations should not be resolved
+> +to actual function/variable address. Otherwise, ``.BTF`` and ``.BTF.ext``
+> +become unusable by bcc and kernel.
+> +
+> +Type ``R_BPF_64_32`` is used for call instruction. The call target section
+> +offset is stored at ``r_offset + 4`` (32bit) and calculated as
+> +``(S + IA) / 8 - 1``.
+> +
+> +Examples
+> +========
+> +
+> +Types ``R_BPF_64_64`` and ``R_BPF_64_32`` are used to resolve ``ld_imm64``
+> +and ``call`` instructions. For example::
+> +
+> +  __attribute__((noinline)) __attribute__((section("sec1")))
+> +  int gfunc(int a, int b) {
+> +    return a * b;
+> +  }
+> +  static __attribute__((noinline)) __attribute__((section("sec1")))
+> +  int lfunc(int a, int b) {
+> +    return a + b;
+> +  }
+> +  int global __attribute__((section("sec2")));
+> +  int test(int a, int b) {
+> +    return gfunc(a, b) +  lfunc(a, b) + global;
+> +  }
+> +
+> +Compiled with ``clang -target bpf -O2 -c test.c``, we will have
+> +following code with `llvm-objdump -d test.o``::
 
-> makes me wonder whether we should check the relocation type.
+I recently learned about `llvm-objdump -dr test.o`, which shows
+relocations inline, it would be nice to use that output here.
 
-If the library is used in a control environment, e.g., the object
-file is generated by llvm, bpftool linker, etc. You should be fine.
-But yes, checking relocation types will make the library more robust.
-
-> 
-> Best
-> Lorenz
-> 
+> +
+> +  Disassembly of section .text:
+> +
+> +  0000000000000000 <test>:
+> +         0:       bf 26 00 00 00 00 00 00 r6 = r2
+> +         1:       bf 17 00 00 00 00 00 00 r7 = r1
+> +         2:       85 10 00 00 ff ff ff ff call -1
+> +         3:       bf 08 00 00 00 00 00 00 r8 = r0
+> +         4:       bf 71 00 00 00 00 00 00 r1 = r7
+> +         5:       bf 62 00 00 00 00 00 00 r2 = r6
+> +         6:       85 10 00 00 02 00 00 00 call 2
+> +         7:       0f 80 00 00 00 00 00 00 r0 += r8
+> +         8:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
+> +        10:       61 11 00 00 00 00 00 00 r1 = *(u32 *)(r1 + 0)
+> +        11:       0f 10 00 00 00 00 00 00 r0 += r1
+> +        12:       95 00 00 00 00 00 00 00 exit
+> +
+> +  Disassembly of section sec1:
+> +
+> +  0000000000000000 <gfunc>:
+> +         0:       bf 20 00 00 00 00 00 00 r0 = r2
+> +         1:       2f 10 00 00 00 00 00 00 r0 *= r1
+> +         2:       95 00 00 00 00 00 00 00 exit
+> +
+> +  0000000000000018 <lfunc>:
+> +         3:       bf 20 00 00 00 00 00 00 r0 = r2
+> +         4:       0f 10 00 00 00 00 00 00 r0 += r1
+> +         5:       95 00 00 00 00 00 00 00 exit
+> +
+> +Three relocations are generated with ``llvm-readelf -r test.o``::
+> +
+> +  Relocation section '.rel.text' at offset 0x188 contains 3 entries:
+> +      Offset             Info             Type               Symbol's Value  Symbol's Name
+> +  0000000000000010  000000040000000a R_BPF_64_32            0000000000000000 gfunc
+> +  0000000000000030  000000020000000a R_BPF_64_32            0000000000000000 sec1
+> +  0000000000000040  0000000600000001 R_BPF_64_64            0000000000000000 global
+> +
+> +The first relocation corresponds to ``gfunc(a, b)`` where ``gfunc`` has a value of 0,
+> +so the ``call`` instruction offset is ``(0 + 0)/8 - 1 = -1``.
+> +The second relocation corresponds to ``lfunc(a, b)`` where ``lfunc`` has a section
+> +offset ``0x18``, so the ``call`` instruction offset is ``(0 + 0x18)/8 - 1 = 2``.
+> +
+> +The following is an example to show how R_BPF_64_ABS64 could be generated::
+> +
+> +  int global() { return 0; }
+> +  struct t { void *g; } gbl = { global };
+> +
+> +Compiled with ``clang -target bpf -O2 -g -c test.c``, we will see a
+> +relocation below in ``.data`` section with command
+> +``llvm-readelf -r test.o``::
+> +
+> +  Relocation section '.rel.data' at offset 0x458 contains 1 entries:
+> +      Offset             Info             Type               Symbol's Value  Symbol's Name
+> +  0000000000000000  0000000700000002 R_BPF_64_ABS64         0000000000000000 global
+> +
+> +The relocation says the first 8-byte of ``.data`` section should be
+> +filled with address of ``global`` variable.
+> +
+> +With ``llvm-readelf`` output, we can see that dwarf sections have a bunch of
+> +``R_BPF_64_ABS32`` and ``R_BPF_64_ABS64`` relocations::
+> +
+> +  Relocation section '.rel.debug_info' at offset 0x468 contains 13 entries:
+> +      Offset             Info             Type               Symbol's Value  Symbol's Name
+> +  0000000000000006  0000000300000003 R_BPF_64_ABS32         0000000000000000 .debug_abbrev
+> +  000000000000000c  0000000400000003 R_BPF_64_ABS32         0000000000000000 .debug_str
+> +  0000000000000012  0000000400000003 R_BPF_64_ABS32         0000000000000000 .debug_str
+> +  0000000000000016  0000000600000003 R_BPF_64_ABS32         0000000000000000 .debug_line
+> +  000000000000001a  0000000400000003 R_BPF_64_ABS32         0000000000000000 .debug_str
+> +  000000000000001e  0000000200000002 R_BPF_64_ABS64         0000000000000000 .text
+> +  000000000000002b  0000000400000003 R_BPF_64_ABS32         0000000000000000 .debug_str
+> +  0000000000000037  0000000800000002 R_BPF_64_ABS64         0000000000000000 gbl
+> +  0000000000000040  0000000400000003 R_BPF_64_ABS32         0000000000000000 .debug_str
+> +  ......
+> +
+> +The .BTF/.BTF.ext sections has R_BPF_64_NODYLD32 relocations::
+> +
+> +  Relocation section '.rel.BTF' at offset 0x538 contains 1 entries:
+> +      Offset             Info             Type               Symbol's Value  Symbol's Name
+> +  0000000000000084  0000000800000004 R_BPF_64_NODYLD32      0000000000000000 gbl
+> +
+> +  Relocation section '.rel.BTF.ext' at offset 0x548 contains 2 entries:
+> +      Offset             Info             Type               Symbol's Value  Symbol's Name
+> +  000000000000002c  0000000200000004 R_BPF_64_NODYLD32      0000000000000000 .text
+> +  0000000000000040  0000000200000004 R_BPF_64_NODYLD32      0000000000000000 .text
+> --
+> 2.30.2
+>
