@@ -2,160 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133C138F37E
-	for <lists+bpf@lfdr.de>; Mon, 24 May 2021 21:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4459B38F387
+	for <lists+bpf@lfdr.de>; Mon, 24 May 2021 21:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233469AbhEXTLV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 May 2021 15:11:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
+        id S233298AbhEXTO5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 May 2021 15:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232983AbhEXTLT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 May 2021 15:11:19 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE302C061574
-        for <bpf@vger.kernel.org>; Mon, 24 May 2021 12:09:49 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id n10so28948016ion.8
-        for <bpf@vger.kernel.org>; Mon, 24 May 2021 12:09:49 -0700 (PDT)
+        with ESMTP id S233026AbhEXTO5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 May 2021 15:14:57 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C40C061574;
+        Mon, 24 May 2021 12:13:27 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id w1so28237349ybt.1;
+        Mon, 24 May 2021 12:13:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=+Guu9x1ZPLAivxm5q/M8ZHARPFU5YqRnu1JQkwy11us=;
-        b=ok4W1d73jlfRrPAhIZOY/RKGDwfK/tkcXfxF4Nd2BaiXnriRiOf3CzQITPMDOcAozH
-         4JMmpj8NrPMmAaKV/uXncG1THg1Km3R8L4LznB9QZlwOOZvIamoheOWdsff0hEqNfbrb
-         SigSxjjhR35123A4l3SIzxSIYMes+W4vG1WBJ+ORc/qIGWXdnR8uO88iLvbxDckPONMH
-         ORmbBQg+KDMvBxbVTJpeRUKpWdBX0K3xeFtQuNNF3s9+pl0skyK1CT2LZA/QnvmLCqcV
-         IopTa/S5Lc6JfybUk0CN31YrlaZ3UKRJsIL1mRUfxL7OSQQCt20e5xN0BpFN6MD0N5xu
-         N+Ag==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jW7c0XVzwPeVeUp6pAiTwyKDbuhnujwu7/emCVZNlHg=;
+        b=YKQrxghkSrQOBR7PLzYQSqtt8fDzd+Axu5Z7VkvmaeLW1dnpY4j8LwB6s0YtoE3FhK
+         M7g7w3u7Tg9H0r0/W3YkNVomRSWab3NpLQIWAeILrNRKGPws6We03qeLNve2zUAb24fN
+         0DguhjhSrC0zF0TyjomZhP0EBFzQROENVFpfRTij124krE4Sy+1KHWSLBnY++G3LKX4j
+         2NTa+yGYxT6j2GpSM5itBdpdG68A9adURXW8eCzhLffwP5uqEGOQHIgrHmy/g4qnlSBO
+         oKwrC4wnlqEzUoNlC75IvL1awfJgRMfjKRwRKMs0Dog7bst+veTEnushQUpFTOUhlKmg
+         sHAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=+Guu9x1ZPLAivxm5q/M8ZHARPFU5YqRnu1JQkwy11us=;
-        b=E2avKLc2QRvVA/2y85CxQM1n3b/X7CugXOvlGsPsDZ2xfeCdEnlRFhN/WtHhLqWXR4
-         GXxM4ET8pfKou1PmoEiTanCiErOWIfvaO2YFvjwe8+03JBC3+IYwqd656J/9yQiax+gH
-         nQCziaklUk8P88m5J2KciGQrU0BrtyKvZYmUnbKciZ7ys0E2kXSRAqvu1nlo7/lp6DfR
-         zbVbIjX86WY5rMjkzsb/BICFTMv1NFYRU1ivb+++e27NxqULECaOOmRUP2eIKR8mQutq
-         X/oA7LSBUtRbPIqZbsrmL/R6ipZPOBx44xMgC3lhMjTiBAUNhXez13oNvfOFR4Qp8J2k
-         uCmA==
-X-Gm-Message-State: AOAM532KrsvrTRUe9RyqGJOGcKlyZ/7Rp0xnq/T1IaLV+2i+1pRv4OEK
-        EwudW2f2m33ZiXndOGI3X+I=
-X-Google-Smtp-Source: ABdhPJyfzvmaeCkzQlKw6N2/geRsH+hVuNZ5ahe3YGjBu4hqUt2mdPWRcj9ave1VM7F7baQn2S0Skg==
-X-Received: by 2002:a5d:8481:: with SMTP id t1mr17515800iom.39.1621883389159;
-        Mon, 24 May 2021 12:09:49 -0700 (PDT)
-Received: from localhost ([172.242.244.146])
-        by smtp.gmail.com with ESMTPSA id t12sm11766337ilm.69.2021.05.24.12.09.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 12:09:48 -0700 (PDT)
-Date:   Mon, 24 May 2021 12:09:40 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jW7c0XVzwPeVeUp6pAiTwyKDbuhnujwu7/emCVZNlHg=;
+        b=faxM4h6hEDX7Hwgm3hv5hl0/Qw6IFOCv3YxODJicHWEW0/uKjEobpcF8EvTZHeP8Bw
+         vg1bAgeOSGc+9+9PV5SjjUzd6hK44Rq+P/GNq9a5tS77AwjB6S2UBhcWlZG/7fFaXMd2
+         gT0YXvTvRaectxFMcjgTXPRODv2Fi8uyKWyxBMDBuxh5+EgwwLgWSvNEYwbOEvW6xIUV
+         iUnyDakpRLoRUX6qCpcfR5rWVZ1XwPLHvHgZ9ryxWmg0RM70I2KW6Vy27WuyEqqCrjj/
+         rugLZEfCwamChJyVK9c8NtWH23c44Pdf1Zif2KNs0JNh5FQYooznlIfHSyQQasXo6rl/
+         ZLxw==
+X-Gm-Message-State: AOAM533BETH4qJUwIyBgUgr9FuHBGYmgsky89eoU/JsvuNYc6u2yda8K
+        OuGJe5OV35FkKahvJ1ayJuuscKf6qeLLmmcsnEo=
+X-Google-Smtp-Source: ABdhPJxwWqUz5py5wqgc/u6Ti1oEGx9AMqw9e/5uEL0oOVbxJaimE3UnEDuPvH8MBbftrDj03dqjM639g1s44k8JUN0=
+X-Received: by 2002:a5b:286:: with SMTP id x6mr38949959ybl.347.1621883606890;
+ Mon, 24 May 2021 12:13:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
+ <CACAyw9-7dPx1vLNQeYP9Zqx=OwNcd2t1VK3XGD_aUZZG-twrOg@mail.gmail.com> <CAADnVQLqa6skQKsUK=LO5JDZr8xM_rwZPOgA1F39UQRim1P8vw@mail.gmail.com>
+In-Reply-To: <CAADnVQLqa6skQKsUK=LO5JDZr8xM_rwZPOgA1F39UQRim1P8vw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 24 May 2021 12:13:15 -0700
+Message-ID: <CAEf4Bza2cupmVZZRx4yWOQBQ7fnaw5pwCQJx9j1HWp=0eUiA1A@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Lorenz Bauer <lmb@cloudflare.com>,
+        "David S . Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Kernel Team <kernel-team@fb.com>
-Message-ID: <60abf9f4acc78_135f620819@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4BzYSUzhhFC-wujFfXVPkWfv3cY9_c_12h2YLw=+uUtEpLg@mail.gmail.com>
-References: <20210522162341.3687617-1-yhs@fb.com>
- <CAEf4BzYSUzhhFC-wujFfXVPkWfv3cY9_c_12h2YLw=+uUtEpLg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: add support for new llvm bpf relocations
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Sat, May 22, 2021 at 9:23 AM Yonghong Song <yhs@fb.com> wrote:
+On Mon, May 24, 2021 at 7:56 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, May 24, 2021 at 4:50 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
 > >
-> > LLVM patch https://reviews.llvm.org/D102712
-> > narrowed the scope of existing R_BPF_64_64
-> > and R_BPF_64_32 relocations, and added three
-> > new relocations, R_BPF_64_ABS64, R_BPF_64_ABS32
-> > and R_BPF_64_NODYLD32. The main motivation is
-> > to make relocations linker friendly.
+> > On Thu, 20 May 2021 at 19:55, Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > From: Alexei Starovoitov <ast@kernel.org>
+> > >
+> > > Introduce 'struct bpf_timer' that can be embedded in most BPF map types
+> > > and helpers to operate on it:
+> > > long bpf_timer_init(struct bpf_timer *timer, void *callback, int flags)
+> > > long bpf_timer_mod(struct bpf_timer *timer, u64 msecs)
+> > > long bpf_timer_del(struct bpf_timer *timer)
 > >
-> > This change, unfortunately, breaks libbpf build,
-> > and we will see errors like below:
-> >   libbpf: ELF relo #0 in section #6 has unexpected type 2 in
-> >      /home/yhs/work/bpf-next/tools/testing/selftests/bpf/bpf_tcp_nogpl.o
-> >   Error: failed to link
-> >      '/home/yhs/work/bpf-next/tools/testing/selftests/bpf/bpf_tcp_nogpl.o':
-> >      Unknown error -22 (-22)
-> > The new relocation R_BPF_64_ABS64 is generated
-> > and libbpf linker sanity check doesn't understand it.
-> > Relocation section '.rel.struct_ops' at offset 0x1410 contains 1 entries:
-> >     Offset             Info             Type               Symbol's Value  Symbol's Name
-> > 0000000000000018  0000000700000002 R_BPF_64_ABS64         0000000000000000 nogpltcp_init
+> > I like invoking the callback with a pointer to the map element it was
+> > defined in, since it solves lifetime of the context and user space
+> > introspection of the same. I'm not so sure about being able to put it
+> > into all different kinds of maps, is that really going to be used?
+>
+> Certainly. At least in array and hash maps.
+> The global data is an array.
+> A single global timer is a simple and easy to use pattern.
+>
 > >
-> > Look at the selftests/bpf/bpf_tcp_nogpl.c,
-> >   void BPF_STRUCT_OPS(nogpltcp_init, struct sock *sk)
-> >   {
-> >   }
+> > It would be useful if Cong Wang could describe their use case, it's
+> > kind of hard to tell what the end goal is. Should user space be able
+> > to create and arm timers? Or just BPF? In the other thread it seems
+> > like a primitive for waiting on a timer is proposed. Why? It also begs
+> > the question how we would wait on multiple timers.
+>
+> In the proposed api the same callback can be invoked for multiple timers.
+> The user space can create/destroy timers via prog_run cmd.
+> It will also destroy timers by map_delete_elem cmd.
+>
+> > > + *
+> > > + * long bpf_timer_init(struct bpf_timer *timer, void *callback, int flags)
 > >
-> >   SEC(".struct_ops")
-> >   struct tcp_congestion_ops bpf_nogpltcp = {
-> >           .init           = (void *)nogpltcp_init,
-> >           .name           = "bpf_nogpltcp",
-> >   };
-> > The new llvm relocation scheme categorizes 'nogpltcp_init' reference
-> > as R_BPF_64_ABS64 instead of R_BPF_64_64 which is used to specify
-> > ld_imm64 relocation in the new scheme.
+> > In your selftest the callback has a type (int)(*callback)(struct
+> > bpf_map *map, int *key, struct map_elem *val).
+>
+> Correct. I'll update the comment.
+>
+> > > + *     Description
+> > > + *             Initialize the timer to call given static function.
+> > > + *     Return
+> > > + *             zero
+> > > + *
+> > > + * long bpf_timer_mod(struct bpf_timer *timer, u64 msecs)
+> > > + *     Description
+> > > + *             Set the timer expiration N msecs from the current time.
+> > > + *     Return
+> > > + *             zero
+> > > + *
+> > > + * long bpf_timer_del(struct bpf_timer *timer)
+> > > + *     Description
+> > > + *             Deactivate the timer.
+> > > + *     Return
+> > > + *             zero
+> > >   */
+> > >  #define __BPF_FUNC_MAPPER(FN)          \
+> > >         FN(unspec),                     \
+> > > @@ -4932,6 +4950,9 @@ union bpf_attr {
+> > >         FN(sys_bpf),                    \
+> > >         FN(btf_find_by_name_kind),      \
+> > >         FN(sys_close),                  \
+> > > +       FN(timer_init),                 \
+> > > +       FN(timer_mod),                  \
+> > > +       FN(timer_del),                  \
+> > >         /* */
 > >
-> > Let us fix the linker sanity checking by including
-> > R_BPF_64_ABS64 and R_BPF_64_ABS32. There is no need to
-> > check R_BPF_64_NODYLD32 which is used for .BTF and .BTF.ext.
-> >
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
-> > ---
+> > How can user space force stopping of timers (required IMO)?
+>
+> We can add new commands, of course, but I don't think it's
+> necessary, since test_run can be used to achieve the same
+> and map_delete_elem will stop them too.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+I second the use of BPF_PROG_TEST_RUN (a.k.a. BPF_PROG_RUN now) to
+"mirror" such APIs to user-space. We have so much BPF-side
+functionality and APIs that reflecting all of that with special
+user-space-facing BPF commands is becoming quite impractical. E.g., a
+long time ago there was a proposal to add commands to push data to BPF
+ringbuf from user-space for all kinds of testing scenarios. We never
+did that because no one bothered enough, but now I'd advocate that a
+small custom BPF program that is single-shot through BPF_PROG_RUN is a
+better way to do this. Similarly for timers and whatever other
+functionality. By doing everything from BPF program we also side-step
+potential subtle differences in semantics between BPF-side and
+user-space-side.
 
-> 
-> LGTM. Is there a chance that those relocations will get renamed or
-> expanded before LLVM diff lands? Or it's safe to apply now and LLVM
-> side won't change much?
-> 
-> >  tools/lib/bpf/libbpf_internal.h | 6 ++++++
-> >  tools/lib/bpf/linker.c          | 3 ++-
-> >  2 files changed, 8 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-> > index 55d9b4dca64f..e2db08573bf0 100644
-> > --- a/tools/lib/bpf/libbpf_internal.h
-> > +++ b/tools/lib/bpf/libbpf_internal.h
-> > @@ -28,6 +28,12 @@
-> >  #ifndef R_BPF_64_64
-> >  #define R_BPF_64_64 1
-> >  #endif
-> > +#ifndef R_BPF_64_ABS64
-> > +#define R_BPF_64_ABS64 2
-> > +#endif
-> > +#ifndef R_BPF_64_ABS32
-> > +#define R_BPF_64_ABS32 3
-> > +#endif
-> >  #ifndef R_BPF_64_32
-> >  #define R_BPF_64_32 10
-> >  #endif
-> > diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-> > index b594a88620ce..1dca41a24f75 100644
-> > --- a/tools/lib/bpf/linker.c
-> > +++ b/tools/lib/bpf/linker.c
-> > @@ -892,7 +892,8 @@ static int linker_sanity_check_elf_relos(struct src_obj *obj, struct src_sec *se
-> >                 size_t sym_idx = ELF64_R_SYM(relo->r_info);
-> >                 size_t sym_type = ELF64_R_TYPE(relo->r_info);
-> >
-> > -               if (sym_type != R_BPF_64_64 && sym_type != R_BPF_64_32) {
-> > +               if (sym_type != R_BPF_64_64 && sym_type != R_BPF_64_32 &&
-> > +                   sym_type != R_BPF_64_ABS64 && sym_type != R_BPF_64_ABS32) {
-> >                         pr_warn("ELF relo #%d in section #%zu has unexpected type %zu in %s\n",
-> >                                 i, sec->sec_idx, sym_type, obj->filename);
-> >                         return -EINVAL;
-> > --
-> > 2.30.2
-> >
+We just need to remember to enable all such functionality to
+BPF_PROG_TYPE_SYSCALL as it's sleepable and always runs from user
+context, so is most powerful in terms of what's safe to do through
+such program type. And, of course, ideally for other types of programs
+where it makes sense.
 
 
+>
+> > >
+> > >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> > > @@ -6038,6 +6059,10 @@ struct bpf_spin_lock {
+> > >         __u32   val;
+> > >  };
+> > >
+> > > +struct bpf_timer {
+> > > +       __u64 opaque;
+> > > +};
+> > > +
+> >
+> > This might be clear already, but we won't be able to modify the size
+> > of bpf_timer later since it would break uapi, right?
+>
+> Correct. The internal implementation can change. The 'opaque'
+> is just the pointer to the internal struct.
+> When do you think we'd need to change this uapi struct?
