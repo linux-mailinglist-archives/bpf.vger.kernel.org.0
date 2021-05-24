@@ -2,155 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4219638ECF6
-	for <lists+bpf@lfdr.de>; Mon, 24 May 2021 17:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9AD438EEF1
+	for <lists+bpf@lfdr.de>; Mon, 24 May 2021 17:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233255AbhEXPbD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 May 2021 11:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45262 "EHLO
+        id S234955AbhEXPzl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 May 2021 11:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233642AbhEXP3Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 May 2021 11:29:25 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9602C06138B;
-        Mon, 24 May 2021 07:56:21 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id f12so33988230ljp.2;
-        Mon, 24 May 2021 07:56:21 -0700 (PDT)
+        with ESMTP id S233735AbhEXPwe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 May 2021 11:52:34 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699EFC014DFE
+        for <bpf@vger.kernel.org>; Mon, 24 May 2021 08:05:18 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id q7so39784471lfr.6
+        for <bpf@vger.kernel.org>; Mon, 24 May 2021 08:05:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qRk6AqLkz1cLg+MPPtjVo9TuUA/8FO+AIctkgMZCtvY=;
-        b=JojCDPHSJR2G3TJGhyoTK8Akdo3XxsXrLNhkecZmcbUh337Yyzz02lrsW0GQVYMpp5
-         t6R2ZV5gmSS5nIqww4fFDtg2gYtR6kFOuRgizKFSU7nWjyfnFg++OftUE7LlSGW/vx00
-         pty5VkI3fqsCUrHonJl1O7zhWibr9RnX6bm0XTe7bna0UyIWDHZr7Fr6QG/jxp6AqNSU
-         1+tyq2zSQgGDc/ku3ZeKOemulFev2+RWNQ7ug+fSiV1xcDwWDYdGovGw+5iZo9dtoXfy
-         zGMIHA3WHqmeWXDHlTRqG/6otkGyEHy6p8PArN1OYG18ZSTrF+wTTw+IQeR6QIN6pP/l
-         JI0g==
+        d=cloudflare.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=kD1YgnfmVi1P0TqS21nqyM3dRTXHLqHyzYLii32DiYw=;
+        b=JGq486ZxwvTSM9BlKFHujpZmdlNJ2cB8kAa2tu9ppZqn1xvKH3DV37X1K/VBSvfzwH
+         cpl95nwTCtVn8DjzSJMxf/4FiOp/gb/Y+YaoetJ/5o4qJwZGGFmatPT8Kpjx7MuhNWVA
+         NyOq5TyFIWH//4iyM3M2hytb6YN1Yol/ODp2s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qRk6AqLkz1cLg+MPPtjVo9TuUA/8FO+AIctkgMZCtvY=;
-        b=IgdzTDLgRkDI5hrH5EltpTlnDTSKVCuXwswD9eBYVaBlMB7UFCITFFm//LlrI38tn4
-         AxdjLo9xDtSToagVq2YbFf8OtQJhktQmpK/m/GNubFVyCKgJOqj014q7dIOCcSSrMjhN
-         v1nJfDwrADav23GTnehQl/uSAUgsXzPaiS5obCXdTL/WPZe6+jdNNtXLJJgo+iPlMYSO
-         G4p8rhLxV4uyVb6bIKz6Of30LsHJI7+Iqi7eSvM+B0bkGhAjO+WkCvRBs/yjMl/Ov/Ph
-         opMwa86CZguLTn0WDWthg6kAxs08lE0kMME1zCki/JrXwtVsjXNdvv6K8hyGCv+YT8ZV
-         sWhg==
-X-Gm-Message-State: AOAM530jy7fS4FCMm3Tg+mbJI0kz6XBu8W5rVqCbWksjBi30SbnJMMji
-        XxPm4MVqNY4W9kPZ1DmBx3WKIDUluNvFgUOCNXA=
-X-Google-Smtp-Source: ABdhPJx/Lk5O8yir1fik+p/q8G2VZh5wx5CBLrIjRh6uHFDQo0yiluxTN2Yq1uI9d03caztC9oPuIQVLsvjuiRWBWGU=
-X-Received: by 2002:a2e:b610:: with SMTP id r16mr16812675ljn.486.1621868180328;
- Mon, 24 May 2021 07:56:20 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=kD1YgnfmVi1P0TqS21nqyM3dRTXHLqHyzYLii32DiYw=;
+        b=FH1PFuqbyRbbLJDHAVvC3OklSi9tJwZ7FfyNmlulcZrckpniJpS5qmyGHogmUxCkSe
+         Rc9tjvqdfXmI9gGhKsCr6OSjRPrcrcdGSJOCSVk5rSva7z3xBInj7QM42TRIHLeU/3EO
+         xs8Q4d5W7amQGaWRrnxhnCkIZsmIK69CvTNtbdhd/Gn0ys4pZZJ1MoTRhe7wI6fxjRpy
+         MWrcKsjEuzZA4vkhxY5kAmC3HCcDwK64nCqUNADuY6FTlIf5OxxCp6FwdLl7nr21PwN7
+         LGJ0zfUxSkSGeVgF1IE9iWq/KBf5uPo9cBwdgYF3DQLBj5l3QbCmu9NVfqzlutXneUFW
+         GX6A==
+X-Gm-Message-State: AOAM532gkMVj8EhornQfnDPKiZidcDSekV3Y46Tj776C0WPv3BXUwEOV
+        QXMVX6XqioLqs7DEdUjuA8Oo4L4Wr1YUokcPRuM7keYn1aa1PQ==
+X-Google-Smtp-Source: ABdhPJzdTKzILml37+0SG9DeCjGxWzDx2/RNAqdzIjz6UsWmoxgt9t5fBhYfyedL4Sde82x5EGRER5x5H8sAuCUijCU=
+X-Received: by 2002:a05:6512:10c8:: with SMTP id k8mr11205803lfg.325.1621868715609;
+ Mon, 24 May 2021 08:05:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210520185550.13688-1-alexei.starovoitov@gmail.com> <CACAyw9-7dPx1vLNQeYP9Zqx=OwNcd2t1VK3XGD_aUZZG-twrOg@mail.gmail.com>
-In-Reply-To: <CACAyw9-7dPx1vLNQeYP9Zqx=OwNcd2t1VK3XGD_aUZZG-twrOg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 24 May 2021 07:56:09 -0700
-Message-ID: <CAADnVQLqa6skQKsUK=LO5JDZr8xM_rwZPOgA1F39UQRim1P8vw@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Mon, 24 May 2021 16:05:04 +0100
+Message-ID: <CACAyw9-GQasDdE9m_f3qXCO1UrR49YuF_6K1tjGxyk+ZZGhM-Q@mail.gmail.com>
+Subject: Portability of bpf_tracing.h
+To:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 24, 2021 at 4:50 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
->
-> On Thu, 20 May 2021 at 19:55, Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > Introduce 'struct bpf_timer' that can be embedded in most BPF map types
-> > and helpers to operate on it:
-> > long bpf_timer_init(struct bpf_timer *timer, void *callback, int flags)
-> > long bpf_timer_mod(struct bpf_timer *timer, u64 msecs)
-> > long bpf_timer_del(struct bpf_timer *timer)
->
-> I like invoking the callback with a pointer to the map element it was
-> defined in, since it solves lifetime of the context and user space
-> introspection of the same. I'm not so sure about being able to put it
-> into all different kinds of maps, is that really going to be used?
+Hi Andrii,
 
-Certainly. At least in array and hash maps.
-The global data is an array.
-A single global timer is a simple and easy to use pattern.
+A user of bpf2go [1] recently ran into the problem of PT_REGS not
+being defined after including bpf_tracing.h. It turns out this is
+because we by default compile for bpfel / bpfeb so the logic in the
+header file doesn't kick in. I originally filed [2] as a quick fix,
+but looking at the issue some more made me wonder how to fit this into
+bpf2go better.
 
->
-> It would be useful if Cong Wang could describe their use case, it's
-> kind of hard to tell what the end goal is. Should user space be able
-> to create and arm timers? Or just BPF? In the other thread it seems
-> like a primitive for waiting on a timer is proposed. Why? It also begs
-> the question how we would wait on multiple timers.
+Basically, the convention of bpf2go is that the compiled BPF is
+checked into the source code repository to facilitate distributing BPF
+as part of Go packages (as opposed to libbpf tooling which doesn't
+include generated source). To make this portable, bpf2go by default
+generates both bpfel and bpfeb variants of the C.
 
-In the proposed api the same callback can be invoked for multiple timers.
-The user space can create/destroy timers via prog_run cmd.
-It will also destroy timers by map_delete_elem cmd.
+However, code using bpf_tracing.h is inherently non-portable since the
+fields of struct pt_regs differ in name between platforms. It seems
+like this forces one to compile to each possible __TARGET_ARCH
+separately. If that is correct, could we extend CO-RE somehow to cover
+this as well?
 
-> > + *
-> > + * long bpf_timer_init(struct bpf_timer *timer, void *callback, int flags)
->
-> In your selftest the callback has a type (int)(*callback)(struct
-> bpf_map *map, int *key, struct map_elem *val).
+If that isn't possible, I want to avoid compiling and shipping BPF for
+each possible __TARGET_ARCH_xxx by default. Instead I would like to
+achieve:
+* Code that doesn't use bpf_tracing.h is distributed in bpfel and bpfeb variants
+* Code that uses bpf_tracing.h has to explicitly opt into the
+supported platforms via a flag to bpf2go
 
-Correct. I'll update the comment.
+The latter point is because the go tooling has to know the target arch
+to be able to generate the correct Go wrappers. How would you feel
+about adding something like the following to bpf_tracing.h:
 
-> > + *     Description
-> > + *             Initialize the timer to call given static function.
-> > + *     Return
-> > + *             zero
-> > + *
-> > + * long bpf_timer_mod(struct bpf_timer *timer, u64 msecs)
-> > + *     Description
-> > + *             Set the timer expiration N msecs from the current time.
-> > + *     Return
-> > + *             zero
-> > + *
-> > + * long bpf_timer_del(struct bpf_timer *timer)
-> > + *     Description
-> > + *             Deactivate the timer.
-> > + *     Return
-> > + *             zero
-> >   */
-> >  #define __BPF_FUNC_MAPPER(FN)          \
-> >         FN(unspec),                     \
-> > @@ -4932,6 +4950,9 @@ union bpf_attr {
-> >         FN(sys_bpf),                    \
-> >         FN(btf_find_by_name_kind),      \
-> >         FN(sys_close),                  \
-> > +       FN(timer_init),                 \
-> > +       FN(timer_mod),                  \
-> > +       FN(timer_del),                  \
-> >         /* */
->
-> How can user space force stopping of timers (required IMO)?
+--- a/tools/lib/bpf/bpf_tracing.h
++++ b/tools/lib/bpf/bpf_tracing.h
+@@ -25,6 +25,9 @@
+        #define bpf_target_sparc
+        #define bpf_target_defined
+ #else
++       #if defined(BPF_REQUIRE_EXPLICIT_TARGET_ARCH)
++               #error BPF_REQUIRE_EXPLICIT_TARGET_ARCH set and no
+target arch defined
++       #endif
+        #undef bpf_target_defined
+ #endif
 
-We can add new commands, of course, but I don't think it's
-necessary, since test_run can be used to achieve the same
-and map_delete_elem will stop them too.
+bpf2go would always define BPF_REQUIRE_EXPLICIT_TARGET_ARCH. If the
+user included bpf_tracing.h they get this error. They can then add
+-target amd64, etc. and the tooling then defines __TARGET_ARCH_x86_64
 
-> >
-> >  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> > @@ -6038,6 +6059,10 @@ struct bpf_spin_lock {
-> >         __u32   val;
-> >  };
-> >
-> > +struct bpf_timer {
-> > +       __u64 opaque;
-> > +};
-> > +
->
-> This might be clear already, but we won't be able to modify the size
-> of bpf_timer later since it would break uapi, right?
+1: https://pkg.go.dev/github.com/cilium/ebpf/cmd/bpf2go
+2: https://github.com/cilium/ebpf/issues/305
 
-Correct. The internal implementation can change. The 'opaque'
-is just the pointer to the internal struct.
-When do you think we'd need to change this uapi struct?
+-- 
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
