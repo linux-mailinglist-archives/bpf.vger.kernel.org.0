@@ -2,86 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6547D38E27F
-	for <lists+bpf@lfdr.de>; Mon, 24 May 2021 10:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E7138E301
+	for <lists+bpf@lfdr.de>; Mon, 24 May 2021 11:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232442AbhEXIq4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 May 2021 04:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232462AbhEXIqx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 May 2021 04:46:53 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30B2C06138A
-        for <bpf@vger.kernel.org>; Mon, 24 May 2021 01:45:25 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id p20so32551661ljj.8
-        for <bpf@vger.kernel.org>; Mon, 24 May 2021 01:45:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V7Eot4reizRuUqmf0K/rkTFVGo7P8pVMLjLh6jyCFRA=;
-        b=jInJomWEJ28bqvyt64gfUqIqCzsBLfPEp0SuWcOA9hPgIacmJdJNeky6DMbwP8Wz+q
-         HDm6wLRis4iIKKkKF3NbsWrHYo2VBydUGn7Y2LAWpNbaA+Gc/NvqbfGoYIGcNOfV/cHA
-         M11srfGLNcSGaAlz//XUQdiuQPC77HjtAAUlE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V7Eot4reizRuUqmf0K/rkTFVGo7P8pVMLjLh6jyCFRA=;
-        b=kolXbYu6q7YiZPzg9lKVBNlnSv/It5j4vjsoLF7MAr8CVHaUtt6JRu9L9+PfkxeJIw
-         QLnb4o/ZXGY+pE9N7kNVAfL11VoiDWRN3PxP7Lo48UOy45bY7r6mmastpUa9rjjiEGVx
-         08m5ybE0iTNUIp0fdpy1v8mFu2WR8U1dQZwRbLijDpAudxEw4SmWNRIjQGc3M9eFtcQW
-         WJXBg6WWpjAL4mqTARezYq72bE9D/83MkS5Rh+pyvfXkcChRx8XZjpMzNAk94HG2aF5+
-         1DOzcFhk2gC2NNQd31g/xStazd2L3JOiRGKSweVRQ+9AI1eG4P38OUXYOh8wCyeusmZ+
-         u2Og==
-X-Gm-Message-State: AOAM533V8OMNzDch0bXX3mZ8kahQm/FOzlduTD+biDXTymlrIx16rvKE
-        ASJst09I/z3SUAywg8G6rkaUILJpdfr4z9TjwJbylg==
-X-Google-Smtp-Source: ABdhPJwA1x8pZHLOORWFrbzbiN4gz/ORPklgCSKn6iOCER1OtA5BndR6oypOHyH9f+eeYntk7OSUjehV0lu0suev7dE=
-X-Received: by 2002:a05:651c:38d:: with SMTP id e13mr16419494ljp.226.1621845924323;
- Mon, 24 May 2021 01:45:24 -0700 (PDT)
+        id S232479AbhEXJNW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 May 2021 05:13:22 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:3973 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232313AbhEXJNV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 May 2021 05:13:21 -0400
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FpWcX1h2szmZH5;
+        Mon, 24 May 2021 17:09:32 +0800 (CST)
+Received: from dggema722-chm.china.huawei.com (10.3.20.86) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 17:11:51 +0800
+Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
+ dggema722-chm.china.huawei.com (10.3.20.86) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Mon, 24 May 2021 17:11:50 +0800
+Received: from dggema772-chm.china.huawei.com ([10.9.128.138]) by
+ dggema772-chm.china.huawei.com ([10.9.128.138]) with mapi id 15.01.2176.012;
+ Mon, 24 May 2021 17:11:50 +0800
+From:   "liujian (CE)" <liujian56@huawei.com>
+To:     Quentin Monnet <quentin@isovalent.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "sdf@google.com" <sdf@google.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH v2] bpftool: Add sock_release help info for cgroup attach
+ command
+Thread-Topic: [PATCH v2] bpftool: Add sock_release help info for cgroup attach
+ command
+Thread-Index: AQHXUHL4/LJJkV64sUiBcYkLggyEearxxRWAgACJx4A=
+Date:   Mon, 24 May 2021 09:11:50 +0000
+Message-ID: <962a5d78efcb4c82a53b25c81f22433f@huawei.com>
+References: <20210524080313.326151-1-liujian56@huawei.com>
+ <f8b76c9d-9d92-4b46-eaa3-ba2ba546f91f@isovalent.com>
+In-Reply-To: <f8b76c9d-9d92-4b46-eaa3-ba2ba546f91f@isovalent.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.93]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
- <CAM_iQpWDgVTCnP3xC3=z7WCH05oDUuqxrw2OjjUC69rjSQG0qQ@mail.gmail.com> <CAADnVQ+V5o31-h-A+eNsHvHgOJrVfP4wVbyb+jL2J=-ionV0TA@mail.gmail.com>
-In-Reply-To: <CAADnVQ+V5o31-h-A+eNsHvHgOJrVfP4wVbyb+jL2J=-ionV0TA@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Mon, 24 May 2021 09:45:13 +0100
-Message-ID: <CACAyw9-aCgu5aApK4QKEJ-rdRTAEda5f8jdJDvmbnNod-RxP-Q@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 23 May 2021 at 17:01, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, May 21, 2021 at 2:37 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> >
-> > Hi, Alexei
-> >
-> > Why do you intentionally keep people in the original discussion
-> > out of your CC? Remember you are the one who objected the
-> > idea by questioning its usefulness no matter how I hard I tried
-> > to explain? I am glad you changed your mind, but it does not
-> > mean you should forget to credit other people.
->
-> I didn't change my mind and I still object to your stated
-> _reasons_ for timers.
-
-For others reading along, here is the original thread
-https://lore.kernel.org/bpf/CAM_iQpXJ4MWUhk-j+mC4ScsX12afcuUHT-64CpVj97QdQaNZZg@mail.gmail.com/
-
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
-
-www.cloudflare.com
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUXVlbnRpbiBNb25uZXQg
+W21haWx0bzpxdWVudGluQGlzb3ZhbGVudC5jb21dDQo+IFNlbnQ6IE1vbmRheSwgTWF5IDI0LCAy
+MDIxIDQ6MjMgUE0NCj4gVG86IGxpdWppYW4gKENFKSA8bGl1amlhbjU2QGh1YXdlaS5jb20+OyBh
+c3RAa2VybmVsLm9yZzsNCj4gZGFuaWVsQGlvZ2VhcmJveC5uZXQ7IGFuZHJpaUBrZXJuZWwub3Jn
+OyBrYWZhaUBmYi5jb207DQo+IHNvbmdsaXVicmF2aW5nQGZiLmNvbTsgeWhzQGZiLmNvbTsgam9o
+bi5mYXN0YWJlbmRAZ21haWwuY29tOw0KPiBrcHNpbmdoQGtlcm5lbC5vcmc7IHNkZkBnb29nbGUu
+Y29tOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOw0KPiBicGZAdmdlci5rZXJuZWwub3JnDQo+IFN1
+YmplY3Q6IFJlOiBbUEFUQ0ggdjJdIGJwZnRvb2w6IEFkZCBzb2NrX3JlbGVhc2UgaGVscCBpbmZv
+IGZvciBjZ3JvdXANCj4gYXR0YWNoIGNvbW1hbmQNCj4gDQo+IDIwMjEtMDUtMjQgMTY6MDMgVVRD
+KzA4MDAgfiBMaXUgSmlhbiA8bGl1amlhbjU2QGh1YXdlaS5jb20+DQo+ID4gVGhlIGhlbHAgaW5m
+b3JtYXRpb24gaXMgbm90IGFkZGVkIHdoZW4gdGhlIGZ1bmN0aW9uIGlzIGFkZGVkLg0KPiA+IEFk
+ZCB0aGUgbWlzc2luZyBoZWxwIGluZm9ybWF0aW9uLg0KPiA+DQo+ID4gRml4ZXM6IGRiOTRjYzBi
+NDgwNSAoImJwZnRvb2w6IEFkZCBzdXBwb3J0IGZvcg0KPiA+IEJQRl9DR1JPVVBfSU5FVF9TT0NL
+X1JFTEVBU0UiKQ0KPiA+IFNpZ25lZC1vZmYtYnk6IExpdSBKaWFuIDxsaXVqaWFuNTZAaHVhd2Vp
+LmNvbT4NCj4gPiAtLS0NCj4gPiB2MSAtPiB2MjoNCj4gPiAgICAgQWRkIGNoYW5nZWxvZyB0ZXh0
+Lg0KPiA+DQo+ID4gIHRvb2xzL2JwZi9icGZ0b29sL2Nncm91cC5jIHwgMyArKy0NCj4gPiAgMSBm
+aWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+DQo+ID4gZGlm
+ZiAtLWdpdCBhL3Rvb2xzL2JwZi9icGZ0b29sL2Nncm91cC5jIGIvdG9vbHMvYnBmL2JwZnRvb2wv
+Y2dyb3VwLmMNCj4gPiBpbmRleCBkOTAxY2MxYjkwNGEuLjZlNTNiMWQzOTNmNCAxMDA2NDQNCj4g
+PiAtLS0gYS90b29scy9icGYvYnBmdG9vbC9jZ3JvdXAuYw0KPiA+ICsrKyBiL3Rvb2xzL2JwZi9i
+cGZ0b29sL2Nncm91cC5jDQo+ID4gQEAgLTI4LDcgKzI4LDggQEANCj4gPiAgCSIgICAgICAgICAg
+ICAgICAgICAgICAgICBjb25uZWN0NiB8IGdldHBlZXJuYW1lNCB8IGdldHBlZXJuYW1lNiB8XG4i
+ICAgXA0KPiA+ICAJIiAgICAgICAgICAgICAgICAgICAgICAgIGdldHNvY2tuYW1lNCB8IGdldHNv
+Y2tuYW1lNiB8IHNlbmRtc2c0IHxcbiIgICBcDQo+ID4gIAkiICAgICAgICAgICAgICAgICAgICAg
+ICAgc2VuZG1zZzYgfCByZWN2bXNnNCB8IHJlY3Ztc2c2IHxcbiIgICAgICAgICAgIFwNCj4gPiAt
+CSIgICAgICAgICAgICAgICAgICAgICAgICBzeXNjdGwgfCBnZXRzb2Nrb3B0IHwgc2V0c29ja29w
+dCB9Ig0KPiA+ICsJIiAgICAgICAgICAgICAgICAgICAgICAgIHN5c2N0bCB8IGdldHNvY2tvcHQg
+fCBzZXRzb2Nrb3B0IHxcbiIJICAgICAgIFwNCj4gPiArCSIgICAgICAgICAgICAgICAgICAgICAg
+ICBzb2NrX3JlbGVhc2UgfSINCj4gPg0KPiA+ICBzdGF0aWMgdW5zaWduZWQgaW50IHF1ZXJ5X2Zs
+YWdzOw0KPiA+DQo+ID4NCj4gDQo+IFRoYW5rcyBhIGxvdCENCj4gDQo+IE5vdGUgdGhhdCB0aGVy
+ZSBhcmUgYSBmZXcgb3RoZXIgcGxhY2VzIGluIGJwZnRvb2wgd2hlcmUgdGhlIGF0dGFjaCBwb2lu
+dA0KPiBzaG91bGQgYmUgYWRkZWQsIHdvdWxkIHlvdSBtaW5kIHVwZGF0aW5nIHRoZW0gdG9vPyBU
+aGF0IHdvdWxkIGJlOiB0aGUNCj4gZG9jdW1lbnRhdGlvbiBwYWdlIGZvciBicGZ0b29sLWNncm91
+cCwgdGhlIG9uZSBmb3IgYnBmdG9vbC1wcm9nLCB0aGUgaGVscA0KPiBtZXNzYWdlIGluIHByb2cu
+YywgYW5kIHRoZSBiYXNoIGNvbXBsZXRpb24uIEl0IHNob3VsZCBhbGwgYmUgc3RyYWlnaHRmb3J3
+YXJkLg0KPiBZb3UgY2FuIHRyeSBzb21ldGhpbmcgbGlrZSAiZ3JlcCByZWN2bXNnNCB0b29scy9i
+cGYvYnBmdG9vbCIgdG8gZmluZCB0aGUNCj4gcmVsZXZhbnQgbG9jYXRpb25zLg0KDQpPSywgSSds
+bCBjaGFuZ2UgaXQgdG9nZXRoZXIuIFRoYW5rcyBmb3IgeW91ciByZXZpZXcuDQoNCj4gQmVzdCBy
+ZWdhcmRzLA0KPiBRdWVudGluDQo=
