@@ -2,267 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EA638F358
-	for <lists+bpf@lfdr.de>; Mon, 24 May 2021 20:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133C138F37E
+	for <lists+bpf@lfdr.de>; Mon, 24 May 2021 21:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233010AbhEXS5h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 May 2021 14:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36762 "EHLO
+        id S233469AbhEXTLV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 May 2021 15:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232983AbhEXS5g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 May 2021 14:57:36 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B8BC061756
-        for <bpf@vger.kernel.org>; Mon, 24 May 2021 11:56:06 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id z24so28892694ioi.3
-        for <bpf@vger.kernel.org>; Mon, 24 May 2021 11:56:06 -0700 (PDT)
+        with ESMTP id S232983AbhEXTLT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 May 2021 15:11:19 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE302C061574
+        for <bpf@vger.kernel.org>; Mon, 24 May 2021 12:09:49 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id n10so28948016ion.8
+        for <bpf@vger.kernel.org>; Mon, 24 May 2021 12:09:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kY5ODL09+MFOG0z0UW2n/UhvHutj9fmmLO3qpZTedGA=;
-        b=DU9Nb3d0eumYE6yPGePAk/liCz7kzb4TdqRZU3Q9TXKx1N0JT/l2RW1mQ5dVtqN8WV
-         RfLtOktNcAG2XTXy0wmJy59K9Kj9T2JgvzslsaBWDS8Dug081GxE3ql9gr8eG0H8i/8W
-         phWc3AWv+VY0QMEc1d8eIrsiprPFZogFOsvco=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=+Guu9x1ZPLAivxm5q/M8ZHARPFU5YqRnu1JQkwy11us=;
+        b=ok4W1d73jlfRrPAhIZOY/RKGDwfK/tkcXfxF4Nd2BaiXnriRiOf3CzQITPMDOcAozH
+         4JMmpj8NrPMmAaKV/uXncG1THg1Km3R8L4LznB9QZlwOOZvIamoheOWdsff0hEqNfbrb
+         SigSxjjhR35123A4l3SIzxSIYMes+W4vG1WBJ+ORc/qIGWXdnR8uO88iLvbxDckPONMH
+         ORmbBQg+KDMvBxbVTJpeRUKpWdBX0K3xeFtQuNNF3s9+pl0skyK1CT2LZA/QnvmLCqcV
+         IopTa/S5Lc6JfybUk0CN31YrlaZ3UKRJsIL1mRUfxL7OSQQCt20e5xN0BpFN6MD0N5xu
+         N+Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kY5ODL09+MFOG0z0UW2n/UhvHutj9fmmLO3qpZTedGA=;
-        b=F6XN1luzgR0lR0N/Uq4VXF5Oa4dCtjHeDa/yFW7kby5DnxyGHQqA4YG8GWCnsNNdQz
-         4nVbvrXnomtJ2ZgTa/2ddDCfNMR7o2nRQ2vLrUHKEAaMFXbtyp24xAuPO9sn+MftPlOx
-         X/q12bgJ8MeBsOAY/NnwMgO00lpdEC/WpEsWWVAeJPssmgVesu7lK1F1BwQdSP/oc3YN
-         cEN2gcClZGW0q23tOj4kB2wH05AEEh84F0WiysCywIhKdRKuvgy40SeTVyBTeVrZRTX/
-         4NTLaTdbRnckwqW4b19L6n4GgRPebejbQyqL1+Uwlv8W2YIVXQ0ID05acEUx9IBzABM1
-         qPRA==
-X-Gm-Message-State: AOAM530L0aDNNZgynVdtwKerhJIVtaDxYLXcurVxWdH316eNSsErzjWJ
-        qgWRE7oyfG8dwhQ21yho/pCwJ/TTsy6/PFNYG/PyVA==
-X-Google-Smtp-Source: ABdhPJyU5QTyR2R5Ov3SlHc+M44rspLop3d/kpVd20Xusxd9ECjmltvb99VG+PRGEuN4LJN9mjVBUZxMjMroEa/D55c=
-X-Received: by 2002:a05:6602:2d8f:: with SMTP id k15mr16960080iow.114.1621882565864;
- Mon, 24 May 2021 11:56:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1620499942.git.yifeifz2@illinois.edu> <CALCETrUQBonh5BC4eomTLpEOFHVcQSz9SPcfOqNFTf2TPht4-Q@mail.gmail.com>
- <CABqSeASYRXMwTQwLfm_Tapg45VUy9sPfV7BeeV8p7XJrDoLf+Q@mail.gmail.com>
- <fffbea8189794a8da539f6082af3de8e@DM5PR11MB1692.namprd11.prod.outlook.com>
- <CAGMVDEGzGB4+6gJPTw6Tdng5ur9Jua+mCbqwPoNZ16EFaDcmjA@mail.gmail.com>
- <eae2a0e5038b41c4af87edcb3d4cdc13@DM5PR11MB1692.namprd11.prod.outlook.com> <CAGMVDEFE8g5XKyQbB1xaK3ve58cENN2hZm3u=ktpGFgmBdQkeQ@mail.gmail.com>
-In-Reply-To: <CAGMVDEFE8g5XKyQbB1xaK3ve58cENN2hZm3u=ktpGFgmBdQkeQ@mail.gmail.com>
-From:   Sargun Dhillon <sargun@sargun.me>
-Date:   Mon, 24 May 2021 11:55:29 -0700
-Message-ID: <CAMp4zn9gAA4csoM=p75_hU_EfxMaw25yrjy0bFnn3gGhrksFhg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next seccomp 00/12] eBPF seccomp filters
-To:     Tianyin Xu <tyxu@illinois.edu>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        YiFei Zhu <zhuyifei1999@gmail.com>,
-        "containers@lists.linux.dev" <containers@lists.linux.dev>,
-        bpf <bpf@vger.kernel.org>, "Zhu, YiFei" <yifeifz2@illinois.edu>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Kuo, Hsuan-Chi" <hckuo2@illinois.edu>,
-        Claudio Canella <claudio.canella@iaik.tugraz.at>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=+Guu9x1ZPLAivxm5q/M8ZHARPFU5YqRnu1JQkwy11us=;
+        b=E2avKLc2QRvVA/2y85CxQM1n3b/X7CugXOvlGsPsDZ2xfeCdEnlRFhN/WtHhLqWXR4
+         GXxM4ET8pfKou1PmoEiTanCiErOWIfvaO2YFvjwe8+03JBC3+IYwqd656J/9yQiax+gH
+         nQCziaklUk8P88m5J2KciGQrU0BrtyKvZYmUnbKciZ7ys0E2kXSRAqvu1nlo7/lp6DfR
+         zbVbIjX86WY5rMjkzsb/BICFTMv1NFYRU1ivb+++e27NxqULECaOOmRUP2eIKR8mQutq
+         X/oA7LSBUtRbPIqZbsrmL/R6ipZPOBx44xMgC3lhMjTiBAUNhXez13oNvfOFR4Qp8J2k
+         uCmA==
+X-Gm-Message-State: AOAM532KrsvrTRUe9RyqGJOGcKlyZ/7Rp0xnq/T1IaLV+2i+1pRv4OEK
+        EwudW2f2m33ZiXndOGI3X+I=
+X-Google-Smtp-Source: ABdhPJyfzvmaeCkzQlKw6N2/geRsH+hVuNZ5ahe3YGjBu4hqUt2mdPWRcj9ave1VM7F7baQn2S0Skg==
+X-Received: by 2002:a5d:8481:: with SMTP id t1mr17515800iom.39.1621883389159;
+        Mon, 24 May 2021 12:09:49 -0700 (PDT)
+Received: from localhost ([172.242.244.146])
+        by smtp.gmail.com with ESMTPSA id t12sm11766337ilm.69.2021.05.24.12.09.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 12:09:48 -0700 (PDT)
+Date:   Mon, 24 May 2021 12:09:40 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Daniel Gruss <daniel.gruss@iaik.tugraz.at>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jann Horn <jannh@google.com>,
-        "Jia, Jinghao" <jinghao7@illinois.edu>,
-        "Torrellas, Josep" <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tom Hromatka <tom.hromatka@oracle.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Kernel Team <kernel-team@fb.com>
+Message-ID: <60abf9f4acc78_135f620819@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAEf4BzYSUzhhFC-wujFfXVPkWfv3cY9_c_12h2YLw=+uUtEpLg@mail.gmail.com>
+References: <20210522162341.3687617-1-yhs@fb.com>
+ <CAEf4BzYSUzhhFC-wujFfXVPkWfv3cY9_c_12h2YLw=+uUtEpLg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: add support for new llvm bpf relocations
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 20, 2021 at 1:22 AM Tianyin Xu <tyxu@illinois.edu> wrote:
->
-> On Mon, May 17, 2021 at 12:08 PM Sargun Dhillon <sargun@sargun.me> wrote:
+Andrii Nakryiko wrote:
+> On Sat, May 22, 2021 at 9:23 AM Yonghong Song <yhs@fb.com> wrote:
 > >
-> > While I agree with you that this is the case right now, there's no reas=
-on it
-> > has to be the case. There's a variety of mechanisms that can be employe=
-d
-> > to significantly speed up the performance of the notifier. For example,=
- right
-> > now the notifier is behind one large per-filter lock. That could be rem=
-oved
-> > allowing for better concurrency. There are a large number of mechanisms
-> > that scale O(n) with the outstanding notifications -- again, something
-> > that could be improved.
->
-> Thanks for the pointer! But, I don=E2=80=99t think this can fundamentally
-> eliminate the performance gap between the notifiers and the ebpf
-> filters. IMHO, the additional context switches of user notifiers make
-> the difference.
->
-I mean, I still think it can be closed. Or at least get better. I've
-thought about
-working on performance improvements, but they're lower on the list
-than functionality changes.
-
+> > LLVM patch https://reviews.llvm.org/D102712
+> > narrowed the scope of existing R_BPF_64_64
+> > and R_BPF_64_32 relocations, and added three
+> > new relocations, R_BPF_64_ABS64, R_BPF_64_ABS32
+> > and R_BPF_64_NODYLD32. The main motivation is
+> > to make relocations linker friendly.
 > >
-> > The other big improvement that could be made is being able to use somet=
-hing
-> > like io_uring with the notifier interface, but it would require a
-> > fairly significant
-> > user API change -- and a move away from ioctl. I'm not sure if people a=
-re
-> > excited about that idea at the moment.
+> > This change, unfortunately, breaks libbpf build,
+> > and we will see errors like below:
+> >   libbpf: ELF relo #0 in section #6 has unexpected type 2 in
+> >      /home/yhs/work/bpf-next/tools/testing/selftests/bpf/bpf_tcp_nogpl.o
+> >   Error: failed to link
+> >      '/home/yhs/work/bpf-next/tools/testing/selftests/bpf/bpf_tcp_nogpl.o':
+> >      Unknown error -22 (-22)
+> > The new relocation R_BPF_64_ABS64 is generated
+> > and libbpf linker sanity check doesn't understand it.
+> > Relocation section '.rel.struct_ops' at offset 0x1410 contains 1 entries:
+> >     Offset             Info             Type               Symbol's Value  Symbol's Name
+> > 0000000000000018  0000000700000002 R_BPF_64_ABS64         0000000000000000 nogpltcp_init
 > >
->
-> Apologize that I don=E2=80=99t fully understand your proposal. My
-> understanding about io_uring is that it allows you to amortize the
-> cost of context switch but not eliminate it, unless you are willing to
-> dedicate a core for it. I still believe that, even with io_uring, user
-> notifiers are going to be much slower than eBPF filters.
-The notifier gets significantly slower as a function of the notifications. =
-If
-you have a large number of notifications in flight, or if you're trying to
-concurrently handle a large number of notifications, it gets slower. This
-is where something like io_uring is super useful in terms of reducing
-wakeups.
+> > Look at the selftests/bpf/bpf_tcp_nogpl.c,
+> >   void BPF_STRUCT_OPS(nogpltcp_init, struct sock *sk)
+> >   {
+> >   }
+> >
+> >   SEC(".struct_ops")
+> >   struct tcp_congestion_ops bpf_nogpltcp = {
+> >           .init           = (void *)nogpltcp_init,
+> >           .name           = "bpf_nogpltcp",
+> >   };
+> > The new llvm relocation scheme categorizes 'nogpltcp_init' reference
+> > as R_BPF_64_ABS64 instead of R_BPF_64_64 which is used to specify
+> > ld_imm64 relocation in the new scheme.
+> >
+> > Let us fix the linker sanity checking by including
+> > R_BPF_64_ABS64 and R_BPF_64_ABS32. There is no need to
+> > check R_BPF_64_NODYLD32 which is used for .BTF and .BTF.ext.
+> >
+> > Signed-off-by: Yonghong Song <yhs@fb.com>
+> > ---
 
-Also, in the original futex2 patches, it had a mechanism to better handle
-(scheduling) of notifier like cases[1]. If the seccomp notifier did a simil=
-ar
-thing, we could see better performance.
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 
->
-> Btw, our patches are based on your patch set (thank you!). Are you
-> using user notifiers (with your improved version?) these days? It will
-> be nice to hear your opinions on ebpf filters.
->
-I'm so glad that someone is picking up the work on this.
+> 
+> LGTM. Is there a chance that those relocations will get renamed or
+> expanded before LLVM diff lands? Or it's safe to apply now and LLVM
+> side won't change much?
+> 
+> >  tools/lib/bpf/libbpf_internal.h | 6 ++++++
+> >  tools/lib/bpf/linker.c          | 3 ++-
+> >  2 files changed, 8 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> > index 55d9b4dca64f..e2db08573bf0 100644
+> > --- a/tools/lib/bpf/libbpf_internal.h
+> > +++ b/tools/lib/bpf/libbpf_internal.h
+> > @@ -28,6 +28,12 @@
+> >  #ifndef R_BPF_64_64
+> >  #define R_BPF_64_64 1
+> >  #endif
+> > +#ifndef R_BPF_64_ABS64
+> > +#define R_BPF_64_ABS64 2
+> > +#endif
+> > +#ifndef R_BPF_64_ABS32
+> > +#define R_BPF_64_ABS32 3
+> > +#endif
+> >  #ifndef R_BPF_64_32
+> >  #define R_BPF_64_32 10
+> >  #endif
+> > diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+> > index b594a88620ce..1dca41a24f75 100644
+> > --- a/tools/lib/bpf/linker.c
+> > +++ b/tools/lib/bpf/linker.c
+> > @@ -892,7 +892,8 @@ static int linker_sanity_check_elf_relos(struct src_obj *obj, struct src_sec *se
+> >                 size_t sym_idx = ELF64_R_SYM(relo->r_info);
+> >                 size_t sym_type = ELF64_R_TYPE(relo->r_info);
+> >
+> > -               if (sym_type != R_BPF_64_64 && sym_type != R_BPF_64_32) {
+> > +               if (sym_type != R_BPF_64_64 && sym_type != R_BPF_64_32 &&
+> > +                   sym_type != R_BPF_64_ABS64 && sym_type != R_BPF_64_ABS32) {
+> >                         pr_warn("ELF relo #%d in section #%zu has unexpected type %zu in %s\n",
+> >                                 i, sec->sec_idx, sym_type, obj->filename);
+> >                         return -EINVAL;
+> > --
+> > 2.30.2
+> >
 
-> > >
-> > >
-> > > > >> eBPF doesn't really have a privilege model yet.  There was a lon=
-g and
-> > > > >> disappointing thread about this awhile back.
-> > > > >
-> > > > > The idea is that =E2=80=9Cseccomp-eBPF does not make life easier =
-for an
-> > > > > adversary=E2=80=9D. Any attack an adversary could potentially uti=
-lize
-> > > > > seccomp-eBPF, they can do the same with other eBPF features, i.e.=
- it
-> > > > > would be an issue with eBPF in general rather than specifically
-> > > > > seccomp=E2=80=99s use of eBPF.
-> > > > >
-> > > > > Here it is referring to the helpers goes to the base
-> > > > > bpf_base_func_proto if the caller is unprivileged (!bpf_capable |=
-|
-> > > > > !perfmon_capable). In this case, if the adversary would utilize e=
-BPF
-> > > > > helpers to perform an attack, they could do it via another
-> > > > > unprivileged prog type.
-> > > > >
-> > > > > That said, there are a few additional helpers this patchset is ad=
-ding:
-> > > > > * get_current_uid_gid
-> > > > > * get_current_pid_tgid
-> > > > >   These two provide public information (are namespaces a concern?=
-). I
-> > > > > have no idea what kind of exploit it could add unless the adversa=
-ry
-> > > > > somehow side-channels the task_struct? But in that case, how is t=
-he
-> > > > > reading of task_struct different from how the rest of the kernel =
-is
-> > > > > reading task_struct?
-> > > >
-> > > > Yes, namespaces are a concern.  This idea got mostly shot down for =
-kdbus
-> > > > (what ever happened to that?), and it likely has the same problems =
-for
-> > > > seccomp.
-> > > >
-So, we actually have a case where we want to inspect an argument --
-We want to look at the FD number that's passed to the sendmsg syscall, and =
-then
-see if that's an AF_INET socket, and if it is, then pass back to
-notifier, otherwise
-allow it to continue through. This is an area where I can see eBPF being
-very useful.
 
-> > > > >>
-> > > > >> What is this for?
-> > > > >
-> > > > > Memory reading opens up lots of use cases. For example, logging w=
-hat
-> > > > > files are being opened without imposing too much performance pena=
-lty
-> > > > > from strace. Or as an accelerator for user notify emulation, wher=
-e
-> > > > > syscalls can be rejected on a fast path if we know the memory con=
-tents
-> > > > > does not satisfy certain conditions that user notify will check.
-> > > > >
-> > > >
-> > > > This has all kinds of race conditions.
-> > > >
-> > > >
-> > > > I hate to be a party pooper, but this patchset is going to very hig=
-h bar
-> > > > to acceptance.  Right now, seccomp has a couple of excellent proper=
-ties:
-> > > >
-> > > > First, while it has limited expressiveness, it is simple enough tha=
-t the
-> > > > implementation can be easily understood and the scope for
-> > > > vulnerabilities that fall through the cracks of the seccomp sandbox
-> > > > model is low.  Compare this to Windows' low-integrity/high-integrit=
-y
-> > > > sandbox system: there is a never ending string of sandbox escapes d=
-ue to
-> > > > token misuse, unexpected things at various integrity levels, etc.
-> > > > Seccomp doesn't have tokens or integrity levels, and these bugs don=
-'t
-> > > > happen.
-> > > >
-> > > > Second, seccomp works, almost unchanged, in a completely unprivileg=
-ed
-> > > > context.  The last time making eBPF work sensibly in a less- or
-> > > > -unprivileged context, the maintainers mostly rejected the idea of
-> > > > developing/debugging a permission model for maps, cleaning up the b=
-pf
-> > > > object id system, etc.  You are going to have a very hard time
-> > > > convincing the seccomp maintainers to let any of these mechanism
-> > > > interact with seccomp until the underlying permission model is in p=
-lace.
-> > > >
-> > > > --Andy
-> > >
-> > > Thanks for pointing out the tradeoff between expressiveness vs. simpl=
-icity.
-> > >
-> > > Note that we are _not_ proposing to replace cbpf, but propose to also
-> > > support ebpf filters. There certainly are use cases where cbpf is
-> > > sufficient, but there are also important use cases ebpf could make
-> > > life much easier.
-> > >
-> > > Most importantly, we strongly believe that ebpf filters can be
-> > > supported without reducing security.
-> > >
-> > > No worries about =E2=80=9Cparty pooping=E2=80=9D and we appreciate th=
-e feedback. We=E2=80=99d
-> > > love to hear concerns and collect feedback so we can address them to
-> > > hit that very high bar.
-> > >
-> > >
-> > > ~t
-> > >
-> > > --
-> > > Tianyin Xu
-> > > University of Illinois at Urbana-Champaign
-> > > https://urldefense.com/v3/__https://tianyin.github.io/__;!!DZ3fjg!o4_=
-_Ob32oapUDg9_f6hzksoFiX9517CJ5-w8qtG9i-WKFs_xWbGQfUHpLjHjCddw$
->
-
-[1]: https://lore.kernel.org/lkml/20210215152404.250281-1-andrealmeid@colla=
-bora.com/T/
