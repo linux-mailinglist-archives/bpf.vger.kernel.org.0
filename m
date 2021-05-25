@@ -2,76 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2B83903C6
-	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 16:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272223903CB
+	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 16:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233609AbhEYOVk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 May 2021 10:21:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42518 "EHLO mail.kernel.org"
+        id S233901AbhEYOWY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 May 2021 10:22:24 -0400
+Received: from mga17.intel.com ([192.55.52.151]:21725 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233401AbhEYOVj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 May 2021 10:21:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 02CEB6142B;
-        Tue, 25 May 2021 14:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621952410;
-        bh=uMnHa6ZOLtNxDi9gA1MQfUF6Bopn37EoixFRmu3Za54=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ktzuFqAwit63Hm/7sTyJr0S3+1+dkgjhVYBAawgMbJuoIfy8DpQX/+MaTZ3KmLfTP
-         Bg6iPsbLy7rzBgjA5tcEzonkwhQ/664Z8BByJNPYL++vcPPtE1HWyvoONdCkFaZUGZ
-         ZM/G6Ew13gBHGJkMmR3ZLbtgoLKIgO6K3SmNxsCv9jo8hVzwI6WcdW1exoZ3U6o5Dp
-         m8xP04EEC/h/i8P5kw6uj1thp2lZt9MNBHYtjLKNsHqnP0yXov/VnJTWF/ZQ9NCnzf
-         /bxIyveqSCnaOeJBJ/fLJriYi5VMv2LNWNUNeI0vwATLYxMVwxccwbUBcqSRnkKW59
-         m0JDQAZzmLHPg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E9B5260CD8;
-        Tue, 25 May 2021 14:20:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233401AbhEYOWV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 May 2021 10:22:21 -0400
+IronPort-SDR: KMRGm6+GbOz9S5ud2XrskwDHqHmbn9oAnk7iCFHp3ZFYXXcfLrx3EaNHPDmHQ4b8DOXtUJl3uo
+ yhbJb5+QvF7w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="182526074"
+X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
+   d="scan'208";a="182526074"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 07:20:49 -0700
+IronPort-SDR: a/ucslzu/pf29G3EpehzGiPIQpcK/YqozMsNAoZ0ndRCxzJiJe0gADLezjcWQj+gflG9z8X2Gr
+ 7RL6+ur7DfeQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
+   d="scan'208";a="546795089"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by orsmga004.jf.intel.com with ESMTP; 25 May 2021 07:20:44 -0700
+Received: from alobakin-mobl.ger.corp.intel.com (hskrzypc-MOBL.ger.corp.intel.com [10.213.6.192])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 14PEKgAb015423;
+        Tue, 25 May 2021 15:20:42 +0100
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Saeed Mahameed <saeed@kernel.org>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        "Raczynski, Piotr" <piotr.raczynski@intel.com>,
+        "Zhang, Jessica" <jessica.zhang@intel.com>,
+        "Kubiak, Marcin" <marcin.kubiak@intel.com>,
+        "Joseph, Jithu" <jithu.joseph@intel.com>,
+        "kurt@linutronix.de" <kurt@linutronix.de>,
+        "Maloor, Kishen" <kishen.maloor@intel.com>,
+        "Gomes, Vinicius" <vinicius.gomes@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Swiatkowski, Michal" <michal.swiatkowski@intel.com>,
+        "Plantykow, Marta A" <marta.a.plantykow@intel.com>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        "Desouza, Ederson" <ederson.desouza@intel.com>,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        "Czapnik, Lukasz" <lukasz.czapnik@intel.com>, bpf@vger.kernel.org
+Subject: Re: AF_XDP metadata/hints
+Date:   Tue, 25 May 2021 16:20:27 +0200
+Message-Id: <20210525142027.1432-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <87lf85zmuw.fsf@toke.dk>
+References: <dc2c38cdccfa5eca925cfc9d59b0674e208c9c9d.camel@intel.com> <DM6PR11MB2780A8C5410ECB3C9700EAB5CA579@DM6PR11MB2780.namprd11.prod.outlook.com> <PH0PR11MB487034313697F395BB5BA3C5E4579@PH0PR11MB4870.namprd11.prod.outlook.com> <DM4PR11MB5422733A87913EFF8904C17184579@DM4PR11MB5422.namprd11.prod.outlook.com> <20210507131034.5a62ce56@carbon> <DM4PR11MB5422FE9618B3692D48FCE4EA84549@DM4PR11MB5422.namprd11.prod.outlook.com> <20210510185029.1ca6f872@carbon> <DM4PR11MB54227C25DFD4E882CB03BD3884539@DM4PR11MB5422.namprd11.prod.outlook.com> <20210512102546.5c098483@carbon> <DM4PR11MB542273C9D8BF63505DC6E21784519@DM4PR11MB5422.namprd11.prod.outlook.com> <7b347a985e590e2a422f837971b30bd83f9c7ac3.camel@nvidia.com> <DM4PR11MB5422762E82C0531B92BDF09A842B9@DM4PR11MB5422.namprd11.prod.outlook.com> <DM4PR11MB5422269F6113268172B9E26A842A9@DM4PR11MB5422.namprd11.prod.outlook.com> <DM4PR11MB54224769926B06EE76635A6484299@DM4PR11MB5422.namprd11.prod.outlook.com> <20210521153110.207cb231@carbon> <1426bc91c6c6ee3aaf3d85c4291a12968634e521.camel@kernel.org> <87lf85zmuw.fsf@toke.dk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3] bpftool: Add sock_release help info for cgroup attach/prog
- load command
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162195240995.24888.15893741035233070045.git-patchwork-notify@kernel.org>
-Date:   Tue, 25 May 2021 14:20:09 +0000
-References: <20210525014139.323859-1-liujian56@huawei.com>
-In-Reply-To: <20210525014139.323859-1-liujian56@huawei.com>
-To:     Liu Jian <liujian56@huawei.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        quentin@isovalent.com, sdf@google.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+From: Toke Høiland-Jørgensen <toke@redhat.com>
+Date: Sun, 23 May 2021 13:54:47 +0200
 
-This patch was applied to bpf/bpf.git (refs/heads/master):
-
-On Tue, 25 May 2021 09:41:39 +0800 you wrote:
-> The help information is not added when the function is added.
-> Here add the missing information to its cli, documentation and bash completion.
+> Saeed Mahameed <saeed@kernel.org> writes:
 > 
-> Fixes: db94cc0b4805 ("bpftool: Add support for BPF_CGROUP_INET_SOCK_RELEASE")
-> Signed-off-by: Liu Jian <liujian56@huawei.com>
-> ---
-> v1 -> v2:
->      Add changelog text.
-> v2 -> v3:
->      Also change prog cli help info, documentation and bash completion mentioned by Quentin.
->      So the subject was also changed.
+> > On Fri, 2021-05-21 at 15:31 +0200, Jesper Dangaard Brouer wrote:
+> >> On Fri, 21 May 2021 10:53:40 +0000
+> >> "Lobakin, Alexandr" <alexandr.lobakin@intel.com> wrote:
+> >>
+> >> > I've opened two discussions at https://github.com/alobakin/linux,
+> >> > feel free to join them and/or create new ones to share your thoughts
+> >> > and concerns.
+> >>
+> >> Thanks Alexandr for keeping the thread/subject alive.
+> >>
+> >> I guess this is a new GitHub features "Discussions".  I've never used
+> >> that in a project before, lets see how this goes.  The usual approach
+> >> is discussions over email on netdev (Cc. netdev@vger.kernel.org).
+> >
+> > I agree we need full visibility and transparency, i actually recommend:
+> > bpf@vger.kernel.org
 > 
-> [...]
+> +1, please keep this on the list :)
 
-Here is the summary with links:
-  - [v3] bpftool: Add sock_release help info for cgroup attach/prog load command
-    https://git.kernel.org/bpf/bpf/c/a8deba8547e3
+Sure, let's keep it the classic way.
+I removed the netdev ML from the CCs and added bpf there.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Regarding the comments from GitHub discussions:
 
+alobakin:
 
+> Since 5.11, it's now possible to obtain a BTF not only for vmlinux,
+> but also for modules.
+> This will eliminate a need for manually composing and registering a
+> BTF inside the driver code, which is 100+ locs for ice for example.
+> 
+> That's obviously not the most straightforward and trivial way, but
+> could help a lot.
+
+saeedtx:
+
+> the point of registering BTF directly from the driver is to allow
+> "Flex metadata" meaning that meta data format can be constructed on
+> the fly according to user demand.
+> BTF for modules is constructed only at compilation time and
+> registered only on module load. so there is no way to implement flex
+> metadata with vmlinux BTF. we still need a dynamic registration API
+> for current and future HW where the HW will provide the BTF
+> dynamically.
+> 
+> I am sure we can find mutliple ways to reduce the 100+ LOC, but the
+> goal is to have the dynamic btf_register/unregister API
+
+We initially planned to register just one (or several) predefined
+BTF(s) per module/netdevice that would provide a full list of
+supported fields. The flexibility of metadata then is in that BPF
+core calls for netdevice's ndo_bpf() on BPF program setup and
+provides a metadata layout requested by that BPF prog to the driver,
+so it could configure its hotpath (current NICs) or a hardware
+(future NICs) to build metadata accordingly.
+Driver can declare several BTFs (e.g. a "generic" one with things
+like hashes and csums one and a custom one) and it would work either
+through dynamic registering or through /sys approach.
+
+This is all discussable anyways, we're happy to hear different
+opinions and thoughts to collectively choose the optimal way.
+
+> -Toke
+
+Thanks,
+Al
