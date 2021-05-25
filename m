@@ -2,155 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6689D38FF76
-	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 12:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D3438FFFB
+	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 13:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhEYKpX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 May 2021 06:45:23 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47417 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhEYKpX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 May 2021 06:45:23 -0400
-Received: from mail-pg1-f200.google.com ([209.85.215.200])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <po-hsu.lin@canonical.com>)
-        id 1llUXQ-0003F1-9i
-        for bpf@vger.kernel.org; Tue, 25 May 2021 10:43:52 +0000
-Received: by mail-pg1-f200.google.com with SMTP id 1-20020a6306010000b0290215c617f0f8so20748457pgg.8
-        for <bpf@vger.kernel.org>; Tue, 25 May 2021 03:43:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U7p+WdCrLEBx/FiI7skBf0U0P+IdeMCYAYyt9GXvbf4=;
-        b=aREgRHe3ukqrj7yRWxiQJf6Mq11gxfJH7qx/2glxqL2uxUv2ErdML0kNg5DxOfZt2X
-         NepgWFxP4mFSbXmz32r1PT7SAzqAej8OzodTVtkvwQb5YXrCyG2o9pzZCwhTpUr1S/ow
-         d9AzXfb6xKMCdJht6x66/pCXGORiSM8r618hm9d6tvdVdKJVV2Cc3L0pQKRJy4MyuZlc
-         IvlRsva+r6dxUR0K9GK5QOTSe7Eufk/RkpBRiryzm0iUix4wNSgnlAX0eHkveNls+fWg
-         9pjigsG1/lsyeSgQwNsT4iVRCxfWAMVoqQ/5mhYd9jj10xBqgzSz8KUAj2mw6nZ7eP7U
-         X00Q==
-X-Gm-Message-State: AOAM533yYE0oosP4QZJmrQZYQ0kCwFXknPZnStSJvYiX7E1SVED4dPli
-        TdrzuZK2RBeXJ4/JaNND5kCoAtJG9vZmI8XVZ28YV9wmqOu+K0RlvG3LoBhkE99rEf4dCqb7t9H
-        rxu4qV0/ZM8jK1VL8fPhQd9aBgoC95BYA0mESWwaqUMYr
-X-Received: by 2002:a17:90a:a395:: with SMTP id x21mr29859622pjp.63.1621939430967;
-        Tue, 25 May 2021 03:43:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJywHhaYkcm8fw4QivOp+4ibSJhb7az85BNgj13lNR58+4o7jczroKXrakihNHnjiG4KWZaVv+EJkjCk6vgwBtM=
-X-Received: by 2002:a17:90a:a395:: with SMTP id x21mr29859587pjp.63.1621939430616;
- Tue, 25 May 2021 03:43:50 -0700 (PDT)
+        id S231128AbhEYLbk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 May 2021 07:31:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230414AbhEYLbj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 May 2021 07:31:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C160D6101E;
+        Tue, 25 May 2021 11:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621942209;
+        bh=q4L5wdwBU28Rn8eJuB8RKAj1PXY+ccKhb8bNuIOc6W0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Rx7ad90rdMxi0ZEHJhA3h8YAhNoo/LJ6pMZXsTXa5HWtOXQIcbI39hxu0JA6ZJQJf
+         ak7DQuzqueVxA2XB/PM3oay7PZA+a7QgeyXQt5ptgEWLCQ67yyfjjx1EmIGJc94dxc
+         q6/AADt0e/d72zLtA7n7xYHnSCxEFSt5xeTDXVaGNS9DEqLzlnhF6SHBkago9lqPKR
+         uULYltDsYqR+C1MRZbU1qVuzwM8KPJuaOIQTFTGDuHNzy90/LAcefWKaYvjVNGdJmu
+         LaYpb/q94lO9YiySrZFgmIVRiQHlu/HVhvfWYHRCV9fkpJSBeC0nifs76LtHiNWHNf
+         mJpkLAFfx/v2g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B564C608B8;
+        Tue, 25 May 2021 11:30:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210525061724.13526-1-po-hsu.lin@canonical.com> <87lf83cdyj.fsf@nvidia.com>
-In-Reply-To: <87lf83cdyj.fsf@nvidia.com>
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date:   Tue, 25 May 2021 18:43:39 +0800
-Message-ID: <CAMy_GT9iCU+BJLp_mVALkyBwnzV8fCJQawRJqk_pFvKV=7TU1A@mail.gmail.com>
-Subject: Re: [PATCH] selftests: Use kselftest skip code for skipped tests
-To:     Petr Machata <petrm@nvidia.com>
-Cc:     linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shuah <shuah@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, hawk@kernel.org,
-        nikolay@nvidia.com, gnault@redhat.com, vladimir.oltean@nxp.com,
-        idosch@nvidia.com, baowen.zheng@corigine.com, danieller@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] xsk: use kvcalloc to support large umems
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162194220973.7286.14434533629445355511.git-patchwork-notify@kernel.org>
+Date:   Tue, 25 May 2021 11:30:09 +0000
+References: <20210521083301.26921-1-magnus.karlsson@gmail.com>
+In-Reply-To: <20210521083301.26921-1-magnus.karlsson@gmail.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        bpf@vger.kernel.org, dan@coverfire.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 25, 2021 at 6:20 PM Petr Machata <petrm@nvidia.com> wrote:
->
->
-> Po-Hsu Lin <po-hsu.lin@canonical.com> writes:
->
-> > diff --git a/tools/testing/selftests/net/forwarding/lib.sh b/tools/testing/selftests/net/forwarding/lib.sh
-> > index 42e28c9..eed9f08 100644
-> > --- a/tools/testing/selftests/net/forwarding/lib.sh
-> > +++ b/tools/testing/selftests/net/forwarding/lib.sh
-> > @@ -4,6 +4,9 @@
-> >  ##############################################################################
-> >  # Defines
-> >
-> > +# Kselftest framework requirement - SKIP code is 4.
-> > +ksft_skip=4
-> > +
-> >  # Can be overridden by the configuration file.
-> >  PING=${PING:=ping}
-> >  PING6=${PING6:=ping6}
-> > @@ -121,7 +124,7 @@ check_ethtool_lanes_support()
-> >
-> >  if [[ "$(id -u)" -ne 0 ]]; then
-> >       echo "SKIP: need root privileges"
-> > -     exit 0
-> > +     exit $ksft_skip
-> >  fi
-> >
-> >  if [[ "$CHECK_TC" = "yes" ]]; then
-> > diff --git a/tools/testing/selftests/net/forwarding/router_mpath_nh.sh b/tools/testing/selftests/net/forwarding/router_mpath_nh.sh
-> > index 76efb1f..bb7dc6d 100755
-> > --- a/tools/testing/selftests/net/forwarding/router_mpath_nh.sh
-> > +++ b/tools/testing/selftests/net/forwarding/router_mpath_nh.sh
-> > @@ -1,6 +1,9 @@
-> >  #!/bin/bash
-> >  # SPDX-License-Identifier: GPL-2.0
-> >
-> > +# Kselftest framework requirement - SKIP code is 4.
-> > +ksft_skip=4
-> > +
-> >  ALL_TESTS="
-> >       ping_ipv4
-> >       ping_ipv6
-> > @@ -411,7 +414,7 @@ ping_ipv6()
-> >  ip nexthop ls >/dev/null 2>&1
-> >  if [ $? -ne 0 ]; then
-> >       echo "Nexthop objects not supported; skipping tests"
-> > -     exit 0
-> > +     exit $ksft_skip
-> >  fi
-> >
-> >  trap cleanup EXIT
->
-> router_mpath_nh.sh sources lib.sh, which you changed above. This hunk
-> should not be necessary.
+Hello:
 
-Hello Petr,
-Nice catch, I will remove the following lines in those script that
-sources lib.sh:
- +# Kselftest framework requirement - SKIP code is 4.
- +ksft_skip=4
- +
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-Will prepare V2 later, thanks!
+On Fri, 21 May 2021 10:33:01 +0200 you wrote:
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
+> 
+> Use kvcalloc() instead of kcalloc() to support large umems with, on my
+> server, one million pages or more in the umem.
+> 
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> Reported-by: Dan Siemon <dan@coverfire.com>
+> 
+> [...]
 
->
-> > diff --git a/tools/testing/selftests/net/forwarding/router_mpath_nh_res.sh b/tools/testing/selftests/net/forwarding/router_mpath_nh_res.sh
-> > index 4898dd4..e7bb976 100755
-> > --- a/tools/testing/selftests/net/forwarding/router_mpath_nh_res.sh
-> > +++ b/tools/testing/selftests/net/forwarding/router_mpath_nh_res.sh
-> > @@ -1,6 +1,9 @@
-> >  #!/bin/bash
-> >  # SPDX-License-Identifier: GPL-2.0
-> >
-> > +# Kselftest framework requirement - SKIP code is 4.
-> > +ksft_skip=4
-> > +
-> >  ALL_TESTS="
-> >       ping_ipv4
-> >       ping_ipv6
-> > @@ -386,7 +389,7 @@ ping_ipv6()
-> >  ip nexthop ls >/dev/null 2>&1
-> >  if [ $? -ne 0 ]; then
-> >       echo "Nexthop objects not supported; skipping tests"
-> > -     exit 0
-> > +     exit $ksft_skip
-> >  fi
-> >
-> >  trap cleanup EXIT
->
-> Likewise.
->
-> Unless I'm missing some indirect dependency, no other selftests in your
-> patch have this problem.
+Here is the summary with links:
+  - [bpf-next] xsk: use kvcalloc to support large umems
+    https://git.kernel.org/bpf/bpf-next/c/a720a2a0ad6c
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
