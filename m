@@ -2,119 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFCC390A22
-	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 21:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A885390A47
+	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 22:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233040AbhEYT7z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 May 2021 15:59:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233037AbhEYT7z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 May 2021 15:59:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EA9A6124C;
-        Tue, 25 May 2021 19:58:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621972705;
-        bh=Meb9fHb3cskKYSqvNm4niTiFoKH3HRKPqKs6sNi+ehE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kmK8dqVIfYG86VyswdRWAYQBiKJW1uLi7K6dACnVnit0bz1bTBbsc/UsVOC6oY4pO
-         YV/TWurygReCKU79DazYRRJLx5o4NuFg/baRcZHumblOAq3bYetOfz+M9DGyfDJVjG
-         PRYbsTHerJWcfBnnH3W0LcXB6zUEUGoXwEWlEY/rRYNVaaY7zoOWXRmB9dp/Woh3p0
-         U1Dy4Rg4wDTr18nHlSKUI8dcoPJG/6kBb9WxIQI+TZqFMpWvExEUPcOzCL6vtqWqAf
-         KTGuoMDz8g0LiN0mce+eSLQuQqJXkUn+RqyfOPXxE5Djmea+k1BLxgvyETZ7Ugv/XE
-         X6ZMxI9CXo0Vw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D56624011C; Tue, 25 May 2021 16:58:22 -0300 (-03)
-Date:   Tue, 25 May 2021 16:58:22 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, jolsa@kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH dwarves] btf_encoder: fix and complete filtering out
- zero-sized per-CPU variables
-Message-ID: <YK1W3gpVp0m2LSvb@kernel.org>
-References: <20210524234222.278676-1-andrii@kernel.org>
+        id S233105AbhEYUFz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 May 2021 16:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231846AbhEYUFz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 May 2021 16:05:55 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E56C061574
+        for <bpf@vger.kernel.org>; Tue, 25 May 2021 13:04:23 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id b81so11094454iof.2
+        for <bpf@vger.kernel.org>; Tue, 25 May 2021 13:04:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gHa/jxf5ff+nHL/HwGVIpDxyxV41oUcj3iWDlxx7pRk=;
+        b=I3d89PmSYtAAmPdU4bYuuICwd51StJRpwGaGZM5j0MPCjYFxuA6KINZq2/qzt7J4rF
+         oEafMbx80NTxz6DzoGZ5vzJhjLTnJrv0LxpzcGDsGKQzAPvIu4be39dXnzUxM18gDITV
+         EWdnOICM7SBsjxTA0aNsqqY4lP0Q2GGT46PQg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gHa/jxf5ff+nHL/HwGVIpDxyxV41oUcj3iWDlxx7pRk=;
+        b=p8Yh0r9HUq99JEANZKXnGnGLaswLKwag91saZPOspBiqpt3SV5dqNIgPivu8HESfHX
+         fY76dp1hC9UV7PAeg/VWpNaFAU/Q0iOJrLebE87TsjJbaX7raX0ZdcVj7lu35Ljba0iW
+         74ZwfhdlXQ0AaCbGk80PK4DEln2wMNFMt/0yWnkj6digj3EszCwmvSai1qyKAxdZXv5I
+         B/wkxKAKDK9H/EkafL3GuPw3Nnfh1NG/0fYDxBi4H4Ucz4Y/j+VqyC449lU1XqSALhwE
+         asntnvPVRR33H0ST5fg3BMkRTTNjbU4rCHv62vOsuoMmr+hSTFV+5FtPLyHpmYKfVsJs
+         BFqA==
+X-Gm-Message-State: AOAM533eI6INSbB5kln23d8ZhoYnOTfuOL87BhKBuBoeenQ9bYO+vfxg
+        AIeZbEfW5SYuPUeYOYu13DRm770iUt5pR+xDo31hCWQRSV2wYg==
+X-Google-Smtp-Source: ABdhPJy3QhgMgsWlXogc866Fmq75XIDGlvh7LZ7Gyq9bY4J2KUcupEDm/5ORfhwskrxUR0LgDB+PVTF6FXqUzMIEOLY=
+X-Received: by 2002:a6b:e91a:: with SMTP id u26mr23484337iof.83.1621973062946;
+ Tue, 25 May 2021 13:04:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524234222.278676-1-andrii@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20210525113732.2648158-1-revest@chromium.org> <CAEf4BzYPbKYB4ky-A9x85OiMTrexV7oRkZ1rzNUErqz9nWNfLQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzYPbKYB4ky-A9x85OiMTrexV7oRkZ1rzNUErqz9nWNfLQ@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Tue, 25 May 2021 22:04:12 +0200
+Message-ID: <CABRcYmKv92Ko6rhjNcUG4sjkMQR+tEtxbTfTVGYL4JdKHCeYYA@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: Move BPF_SEQ_PRINTF and BPF_SNPRINTF to bpf_helpers.h
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, May 24, 2021 at 04:42:22PM -0700, Andrii Nakryiko escreveu:
-> btf_encoder is ignoring zero-sized per-CPU ELF symbols, but the same has to be
-> done for DWARF variables when matching them with ELF symbols. This is due to
-> zero-sized DWARF variables matching unrelated (non-zero-sized) variable that
-> happens to be allocated at the exact same address, leading to a lot of
-> confusion in BTF.
+On Tue, May 25, 2021 at 9:51 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, May 25, 2021 at 4:38 AM Florent Revest <revest@chromium.org> wrote:
+> > +#define ___bpf_concat(a, b) a ## b
+> > +#define ___bpf_apply(fn, n) ___bpf_concat(fn, n)
+> > +#define ___bpf_nth(_, _1, _2, _3, _4, _5, _6, _7, _8, _9, _a, _b, _c, N, ...) N
+> > +#define ___bpf_narg(...) \
+> > +       ___bpf_nth(_, ##__VA_ARGS__, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+>
+> wouldn't this conflict if both bpf_tracing.h and bpf_helpers.h are
+> included in the same file?
 
-I've been following this, just didn't got to process it, will do it
-soon.
+Oh, yeah, somehow I thought that double macro definitions wouldn't
+generate warnings but it would, indeed. Silly me :)
 
-- Arnaldo
- 
-> See [0] for when this causes big problems.
-> 
->   [0] https://lore.kernel.org/bpf/CAEf4BzZ0-sihSL-UAm21JcaCCY92CqfNxycHRZYXcoj8OYb=wA@mail.gmail.com/
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  btf_encoder.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index c711f124b31e..672b9943a4e2 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -538,6 +538,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
->  	cu__for_each_variable(cu, core_id, pos) {
->  		uint32_t size, type, linkage;
->  		const char *name, *dwarf_name;
-> +		const struct tag *tag;
->  		uint64_t addr;
->  		int id;
->  
-> @@ -550,6 +551,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
->  
->  		/* addr has to be recorded before we follow spec */
->  		addr = var->ip.addr;
-> +		dwarf_name = variable__name(var, cu);
->  
->  		/* DWARF takes into account .data..percpu section offset
->  		 * within its segment, which for vmlinux is 0, but for kernel
-> @@ -582,11 +584,9 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
->  		 *  modules per-CPU data section has non-zero offset so all
->  		 *  per-CPU symbols have non-zero values.
->  		 */
-> -		if (var->ip.addr == 0) {
-> -			dwarf_name = variable__name(var, cu);
-> +		if (var->ip.addr == 0)
->  			if (!dwarf_name || strcmp(dwarf_name, name))
->  				continue;
-> -		}
->  
->  		if (var->spec)
->  			var = var->spec;
-> @@ -600,6 +600,13 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
->  			break;
->  		}
->  
-> +		tag = cu__type(cu, var->ip.tag.type);
-> +		if (tag__size(tag, cu) == 0) {
-> +			if (btf_elf__verbose)
-> +				fprintf(stderr, "Ignoring zero-sized per-CPU variable '%s'...\n", dwarf_name ?: "<missing name>");
-> +			continue;
-> +		}
-> +
->  		type = var->ip.tag.type + type_id_off;
->  		linkage = var->external ? BTF_VAR_GLOBAL_ALLOCATED : BTF_VAR_STATIC;
->  
-> -- 
-> 2.30.2
-> 
+> We can probably guard this block with
+> custom #ifdef both in bpf_helpers.h and bpf_tracing.h to avoid
+> dependency on order of includes?
 
--- 
+Indeed, I think the cleanest would be:
+#ifndef ___bpf_concat
+#define ___bpf_concat(a, b) a ## b
+#endif
+#ifndef ___bpf_apply
+ etc...
 
-- Arnaldo
+I'm sending a v2.
