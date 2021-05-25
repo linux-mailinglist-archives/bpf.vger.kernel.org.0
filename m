@@ -2,297 +2,937 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D9438FEFF
-	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 12:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A40C38FF17
+	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 12:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhEYK0S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 May 2021 06:26:18 -0400
-Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:18166 "EHLO
-        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231423AbhEYK0R (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 25 May 2021 06:26:17 -0400
-Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14PAEQR2008759;
-        Tue, 25 May 2021 10:24:25 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
-        by mx0a-0064b401.pphosted.com with ESMTP id 38rgn50ftq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 25 May 2021 10:24:24 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d7nYOAAhWH3nsW0kppK+zI8CnEqhRMSPRfPwuKuOep3NwnqX0Nx0JCHdUZS0LLRr13aZL8FCime9+kPekTrPr0aEW9hJOb/ivsQ3oGuOgrp8CpVJtkM5NYARZBvISMao6Xkn8MeLNub3UxsmNVP/Vz38s3RX/aRx2/hB8EuRwYS4D9PpQel7TxGTQvb0cPK7cwRUzS9XGkb8R3gqNtkLKRaCMS2LqYer5Mgp8XVASGwhpyqiLYGZaYKaPt756fQ/aP8J7K8DXOh7KjUj8KewV8AUKrsoQ7WuFimH4Tt+kHS6PR3ZkhU1pZWqpSEw38FfNlYW0hs96ZmnUSFgZxsjfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YkZ9RUQhNp9GhdZFx3NlVqRnDd57EWuEFT8OvJo1nP8=;
- b=juomUxg7OqmF+x/XpHfDlQ+25j4MNRvqo9o5hTqwe32aV9OQj2qb+O/MyF76q4XGiYjfMiHv/0fdNW1H4spI9wzE5XjWQba2PSWWrzySRwK+f9uL6rY0EcbiCXaiM3pDTPcFGsretctbG0iCKMV+MEgFqbb6p1acfmaA+oDyUuevDbs549/2KhKPCSsbyts1Tf2IcYnkl25CATT00GNYiUWQ8pT5uyqbw+1OOBxrvXmy27pkQxXXoY6GSGrWA9ex1eDXRlNuP+OEqnaRRxdwz8cElTWHC0KIHx2LaeXa+ZewBVWtdnuebc6sP54mrxWZG6ZRamKDR6mfjCJUgicRZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S231839AbhEYKbb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 May 2021 06:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231809AbhEYKb3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 May 2021 06:31:29 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE1AC061574
+        for <bpf@vger.kernel.org>; Tue, 25 May 2021 03:29:59 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id f75-20020a1c1f4e0000b0290171001e7329so12509875wmf.1
+        for <bpf@vger.kernel.org>; Tue, 25 May 2021 03:29:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YkZ9RUQhNp9GhdZFx3NlVqRnDd57EWuEFT8OvJo1nP8=;
- b=gczVAqxd+o+ulFC6nBON3jwYaaNL/c82awsXgHWQle4Q9WixWu3vRSp7arxVjPzZomAdL6FU/z6S4kGfBuyX/cltnGrFcZvrw7yDVw1ehrUoenZwYAH6RgWFsWH2sp500wV6TjfkoNLmR+v3IWJ66w2w+wRRLUfcswADfDD/ARc=
-Authentication-Results: fb.com; dkim=none (message not signed)
- header.d=none;fb.com; dmarc=none action=none header.from=windriver.com;
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
- by BYAPR11MB3480.namprd11.prod.outlook.com (2603:10b6:a03:79::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Tue, 25 May
- 2021 10:24:21 +0000
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::34b3:17c2:b1ad:286c]) by BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::34b3:17c2:b1ad:286c%5]) with mapi id 15.20.4150.027; Tue, 25 May 2021
- 10:24:21 +0000
-Subject: Re: [syzbot] KASAN: use-after-free Read in
- check_all_holdout_tasks_trace
-To:     paulmck@kernel.org
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>,
-        rcu@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, bpf <bpf@vger.kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
-References: <000000000000f034fc05c2da6617@google.com>
- <CACT4Y+ZGkye_MnNr92qQameXVEHNc1QkpmNrG3W8Yd1Xg_hfhw@mail.gmail.com>
- <20210524041350.GJ4441@paulmck-ThinkPad-P17-Gen-1>
- <20210524224602.GA1963972@paulmck-ThinkPad-P17-Gen-1>
- <24f352fc-c01e-daa8-5138-1f89f75c7c16@windriver.com>
- <20210525033355.GN4441@paulmck-ThinkPad-P17-Gen-1>
-From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
-Message-ID: <4b98d598-8044-0254-9ee2-0c9814b0245a@windriver.com>
-Date:   Tue, 25 May 2021 18:24:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210525033355.GN4441@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2P15301CA0010.APCP153.PROD.OUTLOOK.COM
- (2603:1096:202:1::20) To BY5PR11MB4241.namprd11.prod.outlook.com
- (2603:10b6:a03:1ca::13)
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=vMS8iIdobCtaptRmgJD0nFF2xUY0oQ7PKnIbPcfyTR4=;
+        b=FoLikWWYbxDb1xjc9EE84QRkAfQGl6XLloGFgn+tmIep+UuE1sVPTiwVKqv+bVcS4P
+         aFr0FUdiKePCBEZI0WqexOIuz1w8H+ch0pm/0EZ1tgebBoobegkwSGULh7ZxOa2XnMXU
+         ZcXbJFvT07sp+QLhbdsZ1SWVNkE09bmcc/v0drNv+yeB/Wkp+R3z/GMkziyQwNXPMcDo
+         +HC3nQon3IsjSt/PJc2I2cWczodTRutXg/KANCBptop957V0nJXKKxmcF7cB1DskTMJP
+         ZWUbAVkodfb1wSe0s/ffQ+ddBm0onSHABfON8SjCENs4rJ76e6ASFZIho3dtzd/LY+iU
+         +pdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vMS8iIdobCtaptRmgJD0nFF2xUY0oQ7PKnIbPcfyTR4=;
+        b=XfGslzaerNf7IP5ob1wYDtvpzyLuSnYBBXPkcxhRnr8x7gXaN7cBn9Mks4OxMxM+Ge
+         CYogqMYXrH6PM88tKcEivbxPkX2Mz7xwt1a7l3+Od2vkgVBMsNMXp/68+x9fY02MwcLQ
+         hqkU92TwC/0IyxAsNkSE2lIvCEccM+SmjYZENIBQdLwr7HyxDnqd8ogoIw++WP0iUFci
+         tQrv74k04Vw+8egSYsLHQf569VVCwEStPNf+lf2Q0kP8qlj64jl3hi9VuA6oj/Fjj6Yz
+         yiOGPMEExoZjkSDBC4Vu616zkmVjPggneq8+KZgzNaHpOhud0eU8hbE3hEShv9Wes6IO
+         QLPw==
+X-Gm-Message-State: AOAM533getQfbKb/0KzIiqBFNev9bOV2CS2gOvdC1pJ4xtDpjkKWLstN
+        g74J+/WGIAdX98BJYRfxdEnHseRjQO6q
+X-Google-Smtp-Source: ABdhPJzjpGvMIpsFKktmpMerMa/9GF2wqJiqQasl5KndDadqsh4mMUsJch6Ss+suf8aCNbAOfkHBlA==
+X-Received: by 2002:a7b:c185:: with SMTP id y5mr22982139wmi.63.1621938597797;
+        Tue, 25 May 2021 03:29:57 -0700 (PDT)
+Received: from balnab.. ([37.17.237.224])
+        by smtp.gmail.com with ESMTPSA id u126sm2777353wmb.9.2021.05.25.03.29.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 May 2021 03:29:57 -0700 (PDT)
+From:   Jussi Maki <joamaki@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     daniel@iogearbox.net, Jussi Maki <joamaki@gmail.com>
+Subject: [PATCH bpf v5] selftests/bpf: Add test for l3 use of bpf_redirect_peer
+Date:   Tue, 25 May 2021 10:29:55 +0000
+Message-Id: <20210525102955.2811090-1-joamaki@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210427135550.807355-1-joamaki@gmail.com>
+References: <20210427135550.807355-1-joamaki@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.160] (60.247.85.82) by HK2P15301CA0010.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.2 via Frontend Transport; Tue, 25 May 2021 10:24:16 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 21e21b9b-fd1c-4123-f171-08d91f6742cc
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3480:
-X-Microsoft-Antispam-PRVS: <BYAPR11MB34809E23CF5AD7002484BDBDE4259@BYAPR11MB3480.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: n3MNeVA9hNX/QcKoWHoNPUjwuaHwhZ28fOigFf7KBwQuKwHyW/2nkdTBqX8Gc3aYeGXQeJLW+7cZ+UfNM8MZwgD3/Fk4bEtmv5BzEL7GKptY1eUxUM20NdMWBs6rR6pp5JEmnCTT2GBasXAizkP5ehc/E17/H7Qt98GmHJUvPubhCrHaHDKDEy9m4pVl9jrXmEK26RLeYwj9pKhQi2im5x1gZjxCw7Hm/EmJumc+Kq1y3MsO6LA/fFNEz2jErwwELbyhoT22yMzb8Ur1yPF0CkGkcwAvrm6pCMHEI5//2MfvypTaCKSVvhXRB5n5EJOHz2d5l4p55SIlSNMYF8NEqNrAtTTmbr5PdwsmATNqwBvtyypTzZx0Du2aEIRbw+7SEootnew97WiCexuhjJXv471YscS/B+3DBwh6fXZ/nwpVRoDKyGmaFEPk68gPCam6jI24VnjaE5OwumftrZK4cXNznJXgzxoRiwFhacNIgV0EwrN9OAW6oYGAguA/CFxL51MqUV9ac0SKDzc5OyLcI6/+3BtgpMbiANGk1iggUm/MJcAXnXa0oYYWrvNd1s40RGpY7jGdBOv69ZZqvmt/p80vth3GgJC5zD1FQ36/h2eHAnKDmTikxr0ZQcPxOSJCAdKAnjSC0z+9ESry0XhMfQKsvxcNc7Q/X8kLtnFEDFOQcP09MUC9YK2CFM7Dm5jF3SBWdG9Qb+W5787FGkDc5IHwVbgw1pwJQwq0vVzxmmUkpPd1YhoDe4y+2yn5yt7+zeitOY4pXA6e60MJWtSaz0V0ymwRL5TNltDEEVLAwEpAdpNJoxh5TlKjsZZTMRxdcI8X00TVRcE1pzGZqtB0FJOJ4SCkdDBTanM3ZC0DTdDs229bUgrutDc0p/CX0ILT
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39850400004)(396003)(346002)(376002)(31686004)(956004)(86362001)(66556008)(16526019)(186003)(2906002)(8936002)(4326008)(6486002)(6706004)(8676002)(83380400001)(53546011)(5660300002)(52116002)(2616005)(66946007)(6916009)(31696002)(36756003)(38350700002)(966005)(38100700002)(6666004)(16576012)(7416002)(26005)(478600001)(66476007)(316002)(54906003)(99710200001)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?azhmbVB0bURqWldkWFZyMXFFQ2o2Y2J2cVlyVG1oMGt4WkhyT1poSkttTTNn?=
- =?utf-8?B?bk4weWVoMWh5VktHaTU3NThncXJJTUR5L3V1V0ZhYTIwZ0tZSDJYV1NoTWZj?=
- =?utf-8?B?WUpKOTdEcXpGd3JNeVpuMlZxbi9aVDQxYWpPTmxVZE5wSjZ6SUFyOUxJck8v?=
- =?utf-8?B?SXpCeS83aTRPSUE1RTRoTWFjR0N0SmZyeUZQeDhwVjNid1VFdTNuOXFLSWp0?=
- =?utf-8?B?L1piZ2YvN2dVQkZlN29jWGlneVVkRzJTMDVHeExpTkNsMmhVNFJRSXNjMklJ?=
- =?utf-8?B?S05yb0RFc29HUHdMeWY2OEZncERNMFhCd1FQK2VSWGtreWFwVXpUdTZjMWRq?=
- =?utf-8?B?alZRVVI0dEFGeGlwZmEvdk1ZYkF2Qlc1KzV4VjBkN0Rvd3ZjOXp1VzduSTFN?=
- =?utf-8?B?MzF5L2RoZjVROFNZQnNzRE1Qa01mQkw4Z0gxSWdRZGMwYTVIbFJlN1kzbUlM?=
- =?utf-8?B?V0JsamQ5NkFrZnhETXRTY3MzWVMrSFBTM1BMdkZyKzcvRkZ1RVlHdFpTMjMr?=
- =?utf-8?B?SFdKSUpTMy9vOUdOTDN4RVJ6eklxaHJaUG56THluaVRoNTdqYlRHdVo3U3M2?=
- =?utf-8?B?ZExTemFRd2paN3RwVHduVnhYd0h4SWFQTFVMSDNhQ25pc3N1Y3M0N0VPaTNR?=
- =?utf-8?B?M3A4TSsvM0lRT3grU201SkkraGh3OCtwa1diM3hqcVAySjBpU3F1VTVCazNQ?=
- =?utf-8?B?dnhGMWgwSmtkSVo4UWNuaG5jM0hhVGt6WDMvSUJOTmxhTGlLQ3d3VTQrd3lw?=
- =?utf-8?B?ZDlBd1Z3c0Y2VmNxcWIzbTNuN3YwbDlwaUgvaTlNUVY0QmhONCs1a0h1aEhF?=
- =?utf-8?B?TklIL1VGY3hzN0hsZEp3aHErL1MwZkRCMTJka3VFYnFHSTZWRGpXbUNtK2sy?=
- =?utf-8?B?RnVIYlh3NS9MSE5JK1MyWmtKdWdENG4wZmNyTUI0NkpHWTB5bEF2Z2xFZHJz?=
- =?utf-8?B?TDVIamVPUVNUUWp2SUp3bmx5Z3ExbnA5N2hQbUpQTE9xYUFxTjhmdytHSTl4?=
- =?utf-8?B?WStFWVc4MEJDRUkwc01PZ3YxQnMyblBhb2FhMVJwSXpIT05mejlqZjdWYk9j?=
- =?utf-8?B?NzJiOTBuNlI0RmxJTlNlVGRvalFVMHpsUVBvRnl3YUYwN0JIY2xJaUVaWG5q?=
- =?utf-8?B?RkNhR2I3RUp4MXdBUGlvZ3c0VmdOSFZ5ejRSWTEvclhyYXN6eS8yU1h0ODZ5?=
- =?utf-8?B?K1VxMHQrWjl5b3FLRFlVUWdFczMyQUhsNzZzK3RaUlFHUWtjZjFOWTlzaG8r?=
- =?utf-8?B?dnFkdjFPMVVmSE9VeTIzc015UXozalUwSE5pMzNOcHJ6YXNtZlpLS0kvMmlC?=
- =?utf-8?B?eXV2N3U1d3E5c0JaenZMMTdBcEVCUDlrMkYxN1lQb2VhUytHRTlNRUhHTDlB?=
- =?utf-8?B?Qks0eU5zMHUrbnpET0N5ZER5dnVxM1dUUmw0YmNKNUxyTnZHdnB5TTI4ZURN?=
- =?utf-8?B?VWIzOHI1amErRmZZampLVzdsbnFMQ3ZjVmxXRXZHNTJkQWtuUy9Bc1VXNEZY?=
- =?utf-8?B?TVRrc0tuL3R4RVNncy9JM2VTVlk3RWVmYjI0NlAxOEMwTzA1bXFFTENLdVcw?=
- =?utf-8?B?KzRLRTlEK1lTRFR6T0dGcXM3TkNJMlJoc2RzMFhQUll4S3pNUytabVAra0No?=
- =?utf-8?B?VXFEcnpwcUpPSmlBZE1xeWhhcEx1Y0JTeXMzWUhFQVJqazJLelB1Rm1veG5E?=
- =?utf-8?B?Z3JOdjhkQitZU2Vab2ZkSU03dmJEUjRWa21SMlRLOVp3emk2Y215SWg4Nk1I?=
- =?utf-8?Q?k5KNqATYKfMp91HNrQXgipxFyqsD4HH62ymy286?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 21e21b9b-fd1c-4123-f171-08d91f6742cc
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2021 10:24:21.4914
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i5gPqpqpa2k0gB0jK5t96F1p5vcqRzbbtgaaSVD8nkROlcjUC8elxSnmPZ+cnRL5qmtDEZWoTpz+QQywXwfb3A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3480
-X-Proofpoint-GUID: rzraKglHO25zGJq8FzaBCZQXKS15_5cM
-X-Proofpoint-ORIG-GUID: rzraKglHO25zGJq8FzaBCZQXKS15_5cM
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-25_05:2021-05-25,2021-05-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
- phishscore=0 spamscore=0 mlxscore=0 suspectscore=0 clxscore=1015
- bulkscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2105250068
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Add a test case for using bpf_skb_change_head in combination with
+bpf_redirect_peer to redirect a packet from a L3 device to veth and back.
 
+The test uses a BPF program that adds L2 headers to the packet coming
+from a L3 device and then calls bpf_redirect_peer to redirect the packet
+to a veth device. The test fails as skb->mac_len is not set properly and
+thus the ethernet headers are not properly skb_pull'd in cls_bpf_classify,
+causing tcp_v4_rcv to point the TCP header into middle of the IP header.
 
-On 5/25/21 11:33 AM, Paul E. McKenney wrote:
-> [Please note: This e-mail is from an EXTERNAL e-mail address]
-> 
-> On Tue, May 25, 2021 at 10:31:55AM +0800, Xu, Yanfei wrote:
->>
->>
->> On 5/25/21 6:46 AM, Paul E. McKenney wrote:
->>> [Please note: This e-mail is from an EXTERNAL e-mail address]
->>>
->>> On Sun, May 23, 2021 at 09:13:50PM -0700, Paul E. McKenney wrote:
->>>> On Sun, May 23, 2021 at 08:51:56AM +0200, Dmitry Vyukov wrote:
->>>>> On Fri, May 21, 2021 at 7:29 PM syzbot
->>>>> <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com> wrote:
->>>>>>
->>>>>> Hello,
->>>>>>
->>>>>> syzbot found the following issue on:
->>>>>>
->>>>>> HEAD commit:    f18ba26d libbpf: Add selftests for TC-BPF management API
->>>>>> git tree:       bpf-next
->>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=17f50d1ed00000
->>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=8ff54addde0afb5d
->>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
->>>>>>
->>>>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>>>>
->>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>>>> Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
->>>>>
->>>>> This looks rcu-related. +rcu mailing list
->>>>
->>>> I think I see a possible cause for this, and will say more after some
->>>> testing and after becoming more awake Monday morning, Pacific time.
->>>
->>> No joy.  From what I can see, within RCU Tasks Trace, the calls to
->>> get_task_struct() are properly protected (either by RCU or by an earlier
->>> get_task_struct()), and the calls to put_task_struct() are balanced by
->>> those to get_task_struct().
->>>
->>> I could of course have missed something, but at this point I am suspecting
->>> an unbalanced put_task_struct() has been added elsewhere.
->>>
->>> As always, extra eyes on this code would be a good thing.
->>>
->>> If it were reproducible, I would of course suggest bisection.  :-/
->>>
->>>                                                           Thanx, Paul
->>>
->> Hi Paul,
->>
->> Could it be?
->>
->>         CPU1                                        CPU2
->> trc_add_holdout(t, bhp)
->> //t->usage==2
->>                                        release_task
->>                                          put_task_struct_rcu_user
->>                                            delayed_put_task_struct
->>                                              ......
->>                                              put_task_struct(t)
->>                                              //t->usage==1
->>
->> check_all_holdout_tasks_trace
->>    ->trc_wait_for_one_reader
->>      ->trc_del_holdout
->>        ->put_task_struct(t)
->>        //t->usage==0 and task_struct freed
->>    READ_ONCE(t->trc_reader_checked)
->>    //ops， t had been freed.
->>
->> So, after excuting trc_wait_for_one_reader（）, task might had been removed
->> from holdout list and the corresponding task_struct was freed.
->> And we shouldn't do READ_ONCE(t->trc_reader_checked).
-> 
-> I was suspicious of that call to trc_del_holdout() from within
-> trc_wait_for_one_reader(), but the only time it executes is in the
-> context of the current running task, which means that CPU 2 had better
-> not be invoking release_task() on it just yet.
-> 
-> Or am I missing your point?
+Signed-off-by: Jussi Maki <joamaki@gmail.com>
+---
+ .../selftests/bpf/prog_tests/tc_redirect.c    | 553 ++++++++++++------
+ .../selftests/bpf/progs/test_tc_peer.c        |  31 +
+ 2 files changed, 406 insertions(+), 178 deletions(-)
 
-Two times.
-1. the task is current.
+diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+index 95ef9fcd31d8..1b42b15c390e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
++++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+@@ -11,14 +11,17 @@
+  */
+ 
+ #define _GNU_SOURCE
+-#include <fcntl.h>
++
++#include <arpa/inet.h>
+ #include <linux/limits.h>
+ #include <linux/sysctl.h>
++#include <linux/if_tun.h>
++#include <linux/if.h>
+ #include <sched.h>
+ #include <stdbool.h>
+ #include <stdio.h>
+ #include <sys/stat.h>
+-#include <sys/types.h>
++#include <sys/mount.h>
+ 
+ #include "test_progs.h"
+ #include "network_helpers.h"
+@@ -32,18 +35,25 @@
+ 
+ #define IP4_SRC "172.16.1.100"
+ #define IP4_DST "172.16.2.100"
++#define IP4_TUN_SRC "172.17.1.100"
++#define IP4_TUN_FWD "172.17.1.200"
+ #define IP4_PORT 9004
+ 
+-#define IP6_SRC "::1:dead:beef:cafe"
+-#define IP6_DST "::2:dead:beef:cafe"
++#define IP6_SRC "0::1:dead:beef:cafe"
++#define IP6_DST "0::2:dead:beef:cafe"
++#define IP6_TUN_SRC "1::1:dead:beef:cafe"
++#define IP6_TUN_FWD "1::2:dead:beef:cafe"
+ #define IP6_PORT 9006
+ 
+ #define IP4_SLL "169.254.0.1"
+ #define IP4_DLL "169.254.0.2"
+ #define IP4_NET "169.254.0.0"
+ 
++#define MAC_DST_FWD "00:11:22:33:44:55"
++#define MAC_DST "00:22:33:44:55:66"
++
+ #define IFADDR_STR_LEN 18
+-#define PING_ARGS "-c 3 -w 10 -q"
++#define PING_ARGS "-i 0.2 -c 3 -w 10 -q"
+ 
+ #define SRC_PROG_PIN_FILE "/sys/fs/bpf/test_tc_src"
+ #define DST_PROG_PIN_FILE "/sys/fs/bpf/test_tc_dst"
+@@ -51,120 +61,104 @@
+ 
+ #define TIMEOUT_MILLIS 10000
+ 
+-#define MAX_PROC_MODS 128
+-#define MAX_PROC_VALUE_LEN 16
+-
+ #define log_err(MSG, ...) \
+ 	fprintf(stderr, "(%s:%d: errno: %s) " MSG "\n", \
+ 		__FILE__, __LINE__, strerror(errno), ##__VA_ARGS__)
+ 
+-struct proc_mod {
+-	char path[PATH_MAX];
+-	char oldval[MAX_PROC_VALUE_LEN];
+-	int oldlen;
+-};
+-
+ static const char * const namespaces[] = {NS_SRC, NS_FWD, NS_DST, NULL};
+-static int root_netns_fd = -1;
+-static int num_proc_mods;
+-static struct proc_mod proc_mods[MAX_PROC_MODS];
+ 
+-/**
+- * modify_proc() - Modify entry in /proc
+- *
+- * Modifies an entry in /proc and saves the original value for later
+- * restoration with restore_proc().
+- */
+-static int modify_proc(const char *path, const char *newval)
++static int write_file(const char *path, const char *newval)
+ {
+-	struct proc_mod *mod;
+ 	FILE *f;
+ 
+-	if (num_proc_mods + 1 > MAX_PROC_MODS)
+-		return -1;
+-
+ 	f = fopen(path, "r+");
+ 	if (!f)
+ 		return -1;
+-
+-	mod = &proc_mods[num_proc_mods];
+-	num_proc_mods++;
+-
+-	strncpy(mod->path, path, PATH_MAX);
+-
+-	if (!fread(mod->oldval, 1, MAX_PROC_VALUE_LEN, f)) {
+-		log_err("reading from %s failed", path);
+-		goto fail;
+-	}
+-	rewind(f);
+ 	if (fwrite(newval, strlen(newval), 1, f) != 1) {
+ 		log_err("writing to %s failed", path);
+-		goto fail;
++		fclose(f);
++		return -1;
+ 	}
+-
+ 	fclose(f);
+ 	return 0;
+-
+-fail:
+-	fclose(f);
+-	num_proc_mods--;
+-	return -1;
+ }
+ 
+-/**
+- * restore_proc() - Restore all /proc modifications
+- */
+-static void restore_proc(void)
++struct nstoken {
++	int orig_netns_fd;
++};
++
++static int setns_by_fd(int nsfd)
+ {
+-	int i;
++	int err;
+ 
+-	for (i = 0; i < num_proc_mods; i++) {
+-		struct proc_mod *mod = &proc_mods[i];
+-		FILE *f;
++	err = setns(nsfd, CLONE_NEWNET);
++	close(nsfd);
+ 
+-		f = fopen(mod->path, "w");
+-		if (!f) {
+-			log_err("fopen of %s failed", mod->path);
+-			continue;
+-		}
++	if (!ASSERT_OK(err, "setns"))
++		return err;
+ 
+-		if (fwrite(mod->oldval, mod->oldlen, 1, f) != 1)
+-			log_err("fwrite to %s failed", mod->path);
++	/* Switch /sys to the new namespace so that e.g. /sys/class/net
++	 * reflects the devices in the new namespace.
++	 */
++	err = unshare(CLONE_NEWNS);
++	if (!ASSERT_OK(err, "unshare"))
++		return err;
+ 
+-		fclose(f);
+-	}
+-	num_proc_mods = 0;
++	err = umount2("/sys", MNT_DETACH);
++	if (!ASSERT_OK(err, "umount2 /sys"))
++		return err;
++
++	err = mount("sysfs", "/sys", "sysfs", 0, NULL);
++	if (!ASSERT_OK(err, "mount /sys"))
++		return err;
++
++	err = mount("bpffs", "/sys/fs/bpf", "bpf", 0, NULL);
++	if (!ASSERT_OK(err, "mount /sys/fs/bpf"))
++		return err;
++
++	return 0;
+ }
+ 
+ /**
+- * setns_by_name() - Set networks namespace by name
++ * open_netns() - Switch to specified network namespace by name.
++ *
++ * Returns token with which to restore the original namespace
++ * using close_netns().
+  */
+-static int setns_by_name(const char *name)
++static struct nstoken *open_netns(const char *name)
+ {
+ 	int nsfd;
+ 	char nspath[PATH_MAX];
+ 	int err;
++	struct nstoken *token;
++
++	token = malloc(sizeof(struct nstoken));
++	if (!ASSERT_OK_PTR(token, "malloc token"))
++		return NULL;
++
++	token->orig_netns_fd = open("/proc/self/ns/net", O_RDONLY);
++	if (!ASSERT_GE(token->orig_netns_fd, 0, "open /proc/self/ns/net"))
++		goto fail;
+ 
+ 	snprintf(nspath, sizeof(nspath), "%s/%s", "/var/run/netns", name);
+ 	nsfd = open(nspath, O_RDONLY | O_CLOEXEC);
+-	if (nsfd < 0)
+-		return nsfd;
++	if (!ASSERT_GE(nsfd, 0, "open netns fd"))
++		goto fail;
+ 
+-	err = setns(nsfd, CLONE_NEWNET);
+-	close(nsfd);
++	err = setns_by_fd(nsfd);
++	if (!ASSERT_OK(err, "setns_by_fd"))
++		goto fail;
+ 
+-	return err;
++	return token;
++fail:
++	free(token);
++	return NULL;
+ }
+ 
+-/**
+- * setns_root() - Set network namespace to original (root) namespace
+- *
+- * Not expected to ever fail, so error not returned, but failure logged
+- * and test marked as failed.
+- */
+-static void setns_root(void)
++static void close_netns(struct nstoken *token)
+ {
+-	ASSERT_OK(setns(root_netns_fd, CLONE_NEWNET), "setns root");
++	ASSERT_OK(setns_by_fd(token->orig_netns_fd), "setns_by_fd");
++	free(token);
+ }
+ 
+ static int netns_setup_namespaces(const char *verb)
+@@ -237,15 +231,17 @@ static int get_ifindex(const char *name)
+ 
+ static int netns_setup_links_and_routes(struct netns_setup_result *result)
+ {
++	struct nstoken *nstoken = NULL;
+ 	char veth_src_fwd_addr[IFADDR_STR_LEN+1] = {};
+-	char veth_dst_fwd_addr[IFADDR_STR_LEN+1] = {};
+ 
+ 	SYS("ip link add veth_src type veth peer name veth_src_fwd");
+ 	SYS("ip link add veth_dst type veth peer name veth_dst_fwd");
++
++	SYS("ip link set veth_dst_fwd address " MAC_DST_FWD);
++	SYS("ip link set veth_dst address " MAC_DST);
++
+ 	if (get_ifaddr("veth_src_fwd", veth_src_fwd_addr))
+ 		goto fail;
+-	if (get_ifaddr("veth_dst_fwd", veth_dst_fwd_addr))
+-		goto fail;
+ 
+ 	result->ifindex_veth_src_fwd = get_ifindex("veth_src_fwd");
+ 	if (result->ifindex_veth_src_fwd < 0)
+@@ -260,7 +256,8 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
+ 	SYS("ip link set veth_dst netns " NS_DST);
+ 
+ 	/** setup in 'src' namespace */
+-	if (!ASSERT_OK(setns_by_name(NS_SRC), "setns src"))
++	nstoken = open_netns(NS_SRC);
++	if (!ASSERT_OK_PTR(nstoken, "setns src"))
+ 		goto fail;
+ 
+ 	SYS("ip addr add " IP4_SRC "/32 dev veth_src");
+@@ -276,8 +273,11 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
+ 	SYS("ip neigh add " IP6_DST " dev veth_src lladdr %s",
+ 	    veth_src_fwd_addr);
+ 
++	close_netns(nstoken);
++
+ 	/** setup in 'fwd' namespace */
+-	if (!ASSERT_OK(setns_by_name(NS_FWD), "setns fwd"))
++	nstoken = open_netns(NS_FWD);
++	if (!ASSERT_OK_PTR(nstoken, "setns fwd"))
+ 		goto fail;
+ 
+ 	/* The fwd netns automatically gets a v6 LL address / routes, but also
+@@ -294,8 +294,11 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
+ 	SYS("ip route add " IP4_DST "/32 dev veth_dst_fwd scope global");
+ 	SYS("ip route add " IP6_DST "/128 dev veth_dst_fwd scope global");
+ 
++	close_netns(nstoken);
++
+ 	/** setup in 'dst' namespace */
+-	if (!ASSERT_OK(setns_by_name(NS_DST), "setns dst"))
++	nstoken = open_netns(NS_DST);
++	if (!ASSERT_OK_PTR(nstoken, "setns dst"))
+ 		goto fail;
+ 
+ 	SYS("ip addr add " IP4_DST "/32 dev veth_dst");
+@@ -306,23 +309,20 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
+ 	SYS("ip route add " IP4_NET "/16 dev veth_dst scope global");
+ 	SYS("ip route add " IP6_SRC "/128 dev veth_dst scope global");
+ 
+-	SYS("ip neigh add " IP4_SRC " dev veth_dst lladdr %s",
+-	    veth_dst_fwd_addr);
+-	SYS("ip neigh add " IP6_SRC " dev veth_dst lladdr %s",
+-	    veth_dst_fwd_addr);
++	SYS("ip neigh add " IP4_SRC " dev veth_dst lladdr " MAC_DST_FWD);
++	SYS("ip neigh add " IP6_SRC " dev veth_dst lladdr " MAC_DST_FWD);
++
++	close_netns(nstoken);
+ 
+-	setns_root();
+ 	return 0;
+ fail:
+-	setns_root();
++	if (nstoken)
++		close_netns(nstoken);
+ 	return -1;
+ }
+ 
+ static int netns_load_bpf(void)
+ {
+-	if (!ASSERT_OK(setns_by_name(NS_FWD), "setns fwd"))
+-		return -1;
+-
+ 	SYS("tc qdisc add dev veth_src_fwd clsact");
+ 	SYS("tc filter add dev veth_src_fwd ingress bpf da object-pinned "
+ 	    SRC_PROG_PIN_FILE);
+@@ -335,42 +335,29 @@ static int netns_load_bpf(void)
+ 	SYS("tc filter add dev veth_dst_fwd egress bpf da object-pinned "
+ 	    CHK_PROG_PIN_FILE);
+ 
+-	setns_root();
+-	return -1;
+-fail:
+-	setns_root();
+-	return -1;
+-}
+-
+-static int netns_unload_bpf(void)
+-{
+-	if (!ASSERT_OK(setns_by_name(NS_FWD), "setns fwd"))
+-		goto fail;
+-	SYS("tc qdisc delete dev veth_src_fwd clsact");
+-	SYS("tc qdisc delete dev veth_dst_fwd clsact");
+-
+-	setns_root();
+ 	return 0;
+ fail:
+-	setns_root();
+ 	return -1;
+ }
+ 
+-
+ static void test_tcp(int family, const char *addr, __u16 port)
+ {
+ 	int listen_fd = -1, accept_fd = -1, client_fd = -1;
+ 	char buf[] = "testing testing";
+ 	int n;
++	struct nstoken *nstoken;
+ 
+-	if (!ASSERT_OK(setns_by_name(NS_DST), "setns dst"))
++	nstoken = open_netns(NS_DST);
++	if (!ASSERT_OK_PTR(nstoken, "setns dst"))
+ 		return;
+ 
+ 	listen_fd = start_server(family, SOCK_STREAM, addr, port, 0);
+ 	if (!ASSERT_GE(listen_fd, 0, "listen"))
+ 		goto done;
+ 
+-	if (!ASSERT_OK(setns_by_name(NS_SRC), "setns src"))
++	close_netns(nstoken);
++	nstoken = open_netns(NS_SRC);
++	if (!ASSERT_OK_PTR(nstoken, "setns src"))
+ 		goto done;
+ 
+ 	client_fd = connect_to_fd(listen_fd, TIMEOUT_MILLIS);
+@@ -392,7 +379,8 @@ static void test_tcp(int family, const char *addr, __u16 port)
+ 	ASSERT_EQ(n, sizeof(buf), "recv from server");
+ 
+ done:
+-	setns_root();
++	if (nstoken)
++		close_netns(nstoken);
+ 	if (listen_fd >= 0)
+ 		close(listen_fd);
+ 	if (accept_fd >= 0)
+@@ -405,7 +393,7 @@ static int test_ping(int family, const char *addr)
+ {
+ 	const char *ping = family == AF_INET6 ? "ping6" : "ping";
+ 
+-	SYS("ip netns exec " NS_SRC " %s " PING_ARGS " %s", ping, addr);
++	SYS("ip netns exec " NS_SRC " %s " PING_ARGS " %s > /dev/null", ping, addr);
+ 	return 0;
+ fail:
+ 	return -1;
+@@ -419,19 +407,37 @@ static void test_connectivity(void)
+ 	test_ping(AF_INET6, IP6_DST);
+ }
+ 
++static int set_forwarding(bool enable)
++{
++	int err;
++
++	err = write_file("/proc/sys/net/ipv4/ip_forward", enable ? "1" : "0");
++	if (!ASSERT_OK(err, "set ipv4.ip_forward=0"))
++		return err;
++
++	err = write_file("/proc/sys/net/ipv6/conf/all/forwarding", enable ? "1" : "0");
++	if (!ASSERT_OK(err, "set ipv6.forwarding=0"))
++		return err;
++
++	return 0;
++}
++
+ static void test_tc_redirect_neigh_fib(struct netns_setup_result *setup_result)
+ {
+-	struct test_tc_neigh_fib *skel;
++	struct nstoken *nstoken = NULL;
++	struct test_tc_neigh_fib *skel = NULL;
+ 	int err;
+ 
++	nstoken = open_netns(NS_FWD);
++	if (!ASSERT_OK_PTR(nstoken, "setns fwd"))
++		return;
++
+ 	skel = test_tc_neigh_fib__open();
+ 	if (!ASSERT_OK_PTR(skel, "test_tc_neigh_fib__open"))
+-		return;
++		goto done;
+ 
+-	if (!ASSERT_OK(test_tc_neigh_fib__load(skel), "test_tc_neigh_fib__load")) {
+-		test_tc_neigh_fib__destroy(skel);
+-		return;
+-	}
++	if (!ASSERT_OK(test_tc_neigh_fib__load(skel), "test_tc_neigh_fib__load"))
++		goto done;
+ 
+ 	err = bpf_program__pin(skel->progs.tc_src, SRC_PROG_PIN_FILE);
+ 	if (!ASSERT_OK(err, "pin " SRC_PROG_PIN_FILE))
+@@ -449,46 +455,37 @@ static void test_tc_redirect_neigh_fib(struct netns_setup_result *setup_result)
+ 		goto done;
+ 
+ 	/* bpf_fib_lookup() checks if forwarding is enabled */
+-	if (!ASSERT_OK(setns_by_name(NS_FWD), "setns fwd"))
++	if (!ASSERT_OK(set_forwarding(true), "enable forwarding"))
+ 		goto done;
+ 
+-	err = modify_proc("/proc/sys/net/ipv4/ip_forward", "1");
+-	if (!ASSERT_OK(err, "set ipv4.ip_forward"))
+-		goto done;
+-
+-	err = modify_proc("/proc/sys/net/ipv6/conf/all/forwarding", "1");
+-	if (!ASSERT_OK(err, "set ipv6.forwarding"))
+-		goto done;
+-	setns_root();
+-
+ 	test_connectivity();
++
+ done:
+-	bpf_program__unpin(skel->progs.tc_src, SRC_PROG_PIN_FILE);
+-	bpf_program__unpin(skel->progs.tc_chk, CHK_PROG_PIN_FILE);
+-	bpf_program__unpin(skel->progs.tc_dst, DST_PROG_PIN_FILE);
+-	test_tc_neigh_fib__destroy(skel);
+-	netns_unload_bpf();
+-	setns_root();
+-	restore_proc();
++	if (skel)
++		test_tc_neigh_fib__destroy(skel);
++	close_netns(nstoken);
+ }
+ 
+ static void test_tc_redirect_neigh(struct netns_setup_result *setup_result)
+ {
+-	struct test_tc_neigh *skel;
++	struct nstoken *nstoken = NULL;
++	struct test_tc_neigh *skel = NULL;
+ 	int err;
+ 
++	nstoken = open_netns(NS_FWD);
++	if (!ASSERT_OK_PTR(nstoken, "setns fwd"))
++		return;
++
+ 	skel = test_tc_neigh__open();
+ 	if (!ASSERT_OK_PTR(skel, "test_tc_neigh__open"))
+-		return;
++		goto done;
+ 
+ 	skel->rodata->IFINDEX_SRC = setup_result->ifindex_veth_src_fwd;
+ 	skel->rodata->IFINDEX_DST = setup_result->ifindex_veth_dst_fwd;
+ 
+ 	err = test_tc_neigh__load(skel);
+-	if (!ASSERT_OK(err, "test_tc_neigh__load")) {
+-		test_tc_neigh__destroy(skel);
+-		return;
+-	}
++	if (!ASSERT_OK(err, "test_tc_neigh__load"))
++		goto done;
+ 
+ 	err = bpf_program__pin(skel->progs.tc_src, SRC_PROG_PIN_FILE);
+ 	if (!ASSERT_OK(err, "pin " SRC_PROG_PIN_FILE))
+@@ -505,34 +502,37 @@ static void test_tc_redirect_neigh(struct netns_setup_result *setup_result)
+ 	if (netns_load_bpf())
+ 		goto done;
+ 
++	if (!ASSERT_OK(set_forwarding(false), "disable forwarding"))
++		goto done;
++
+ 	test_connectivity();
+ 
+ done:
+-	bpf_program__unpin(skel->progs.tc_src, SRC_PROG_PIN_FILE);
+-	bpf_program__unpin(skel->progs.tc_chk, CHK_PROG_PIN_FILE);
+-	bpf_program__unpin(skel->progs.tc_dst, DST_PROG_PIN_FILE);
+-	test_tc_neigh__destroy(skel);
+-	netns_unload_bpf();
+-	setns_root();
++	if (skel)
++		test_tc_neigh__destroy(skel);
++	close_netns(nstoken);
+ }
+ 
+ static void test_tc_redirect_peer(struct netns_setup_result *setup_result)
+ {
++	struct nstoken *nstoken;
+ 	struct test_tc_peer *skel;
+ 	int err;
+ 
++	nstoken = open_netns(NS_FWD);
++	if (!ASSERT_OK_PTR(nstoken, "setns fwd"))
++		return;
++
+ 	skel = test_tc_peer__open();
+ 	if (!ASSERT_OK_PTR(skel, "test_tc_peer__open"))
+-		return;
++		goto done;
+ 
+ 	skel->rodata->IFINDEX_SRC = setup_result->ifindex_veth_src_fwd;
+ 	skel->rodata->IFINDEX_DST = setup_result->ifindex_veth_dst_fwd;
+ 
+ 	err = test_tc_peer__load(skel);
+-	if (!ASSERT_OK(err, "test_tc_peer__load")) {
+-		test_tc_peer__destroy(skel);
+-		return;
+-	}
++	if (!ASSERT_OK(err, "test_tc_peer__load"))
++		goto done;
+ 
+ 	err = bpf_program__pin(skel->progs.tc_src, SRC_PROG_PIN_FILE);
+ 	if (!ASSERT_OK(err, "pin " SRC_PROG_PIN_FILE))
+@@ -549,41 +549,238 @@ static void test_tc_redirect_peer(struct netns_setup_result *setup_result)
+ 	if (netns_load_bpf())
+ 		goto done;
+ 
++	if (!ASSERT_OK(set_forwarding(false), "disable forwarding"))
++		goto done;
++
+ 	test_connectivity();
+ 
+ done:
+-	bpf_program__unpin(skel->progs.tc_src, SRC_PROG_PIN_FILE);
+-	bpf_program__unpin(skel->progs.tc_chk, CHK_PROG_PIN_FILE);
+-	bpf_program__unpin(skel->progs.tc_dst, DST_PROG_PIN_FILE);
+-	test_tc_peer__destroy(skel);
+-	netns_unload_bpf();
+-	setns_root();
++	if (skel)
++		test_tc_peer__destroy(skel);
++	close_netns(nstoken);
+ }
+ 
+-void test_tc_redirect(void)
++static int tun_open(char *name)
++{
++	struct ifreq ifr;
++	int fd, err;
++
++	fd = open("/dev/net/tun", O_RDWR);
++	if (!ASSERT_GE(fd, 0, "open /dev/net/tun"))
++		return -1;
++
++	memset(&ifr, 0, sizeof(ifr));
++
++	ifr.ifr_flags = IFF_TUN | IFF_NO_PI;
++	if (*name)
++		strncpy(ifr.ifr_name, name, IFNAMSIZ);
++
++	err = ioctl(fd, TUNSETIFF, &ifr);
++	if (!ASSERT_OK(err, "ioctl TUNSETIFF"))
++		goto fail;
++
++	SYS("ip link set dev %s up", name);
++
++	return fd;
++fail:
++	close(fd);
++	return -1;
++}
++
++#define MAX(a, b) ((a) > (b) ? (a) : (b))
++enum {
++	SRC_TO_TARGET = 0,
++	TARGET_TO_SRC = 1,
++};
++
++static int tun_relay_loop(int src_fd, int target_fd)
+ {
+-	struct netns_setup_result setup_result;
++	fd_set rfds, wfds;
++
++	FD_ZERO(&rfds);
++	FD_ZERO(&wfds);
+ 
+-	root_netns_fd = open("/proc/self/ns/net", O_RDONLY);
+-	if (!ASSERT_GE(root_netns_fd, 0, "open /proc/self/ns/net"))
++	for (;;) {
++		char buf[1500];
++		int direction, nread, nwrite;
++
++		FD_SET(src_fd, &rfds);
++		FD_SET(target_fd, &rfds);
++
++		if (select(1 + MAX(src_fd, target_fd), &rfds, NULL, NULL, NULL) < 0) {
++			log_err("select failed");
++			return 1;
++		}
++
++		direction = FD_ISSET(src_fd, &rfds) ? SRC_TO_TARGET : TARGET_TO_SRC;
++
++		nread = read(direction == SRC_TO_TARGET ? src_fd : target_fd, buf, sizeof(buf));
++		if (nread < 0) {
++			log_err("read failed");
++			return 1;
++		}
++
++		nwrite = write(direction == SRC_TO_TARGET ? target_fd : src_fd, buf, nread);
++		if (nwrite != nread) {
++			log_err("write failed");
++			return 1;
++		}
++	}
++}
++
++static void test_tc_redirect_peer_l3(struct netns_setup_result *setup_result)
++{
++	struct test_tc_peer *skel = NULL;
++	struct nstoken *nstoken = NULL;
++	int err;
++	int tunnel_pid = -1;
++	int src_fd, target_fd;
++	int ifindex;
++
++	/* Start a L3 TUN/TAP tunnel between the src and dst namespaces.
++	 * This test is using TUN/TAP instead of e.g. IPIP or GRE tunnel as those
++	 * expose the L2 headers encapsulating the IP packet to BPF and hence
++	 * don't have skb in suitable state for this test. Alternative to TUN/TAP
++	 * would be e.g. Wireguard which would appear as a pure L3 device to BPF,
++	 * but that requires much more complicated setup.
++	 */
++	nstoken = open_netns(NS_SRC);
++	if (!ASSERT_OK_PTR(nstoken, "setns " NS_SRC))
+ 		return;
+ 
+-	if (netns_setup_namespaces("add"))
+-		goto done;
++	src_fd = tun_open("tun_src");
++	if (!ASSERT_GE(src_fd, 0, "tun_open tun_src"))
++		goto fail;
+ 
+-	if (netns_setup_links_and_routes(&setup_result))
+-		goto done;
++	close_netns(nstoken);
++
++	nstoken = open_netns(NS_FWD);
++	if (!ASSERT_OK_PTR(nstoken, "setns " NS_FWD))
++		goto fail;
+ 
+-	if (test__start_subtest("tc_redirect_peer"))
+-		test_tc_redirect_peer(&setup_result);
++	target_fd = tun_open("tun_fwd");
++	if (!ASSERT_GE(target_fd, 0, "tun_open tun_fwd"))
++		goto fail;
+ 
+-	if (test__start_subtest("tc_redirect_neigh"))
+-		test_tc_redirect_neigh(&setup_result);
++	tunnel_pid = fork();
++	if (!ASSERT_GE(tunnel_pid, 0, "fork tun_relay_loop"))
++		goto fail;
+ 
+-	if (test__start_subtest("tc_redirect_neigh_fib"))
+-		test_tc_redirect_neigh_fib(&setup_result);
++	if (tunnel_pid == 0)
++		exit(tun_relay_loop(src_fd, target_fd));
+ 
+-done:
+-	close(root_netns_fd);
+-	netns_setup_namespaces("delete");
++	skel = test_tc_peer__open();
++	if (!ASSERT_OK_PTR(skel, "test_tc_peer__open"))
++		goto fail;
++
++	ifindex = get_ifindex("tun_fwd");
++	if (!ASSERT_GE(ifindex, 0, "get_ifindex tun_fwd"))
++		goto fail;
++
++	skel->rodata->IFINDEX_SRC = ifindex;
++	skel->rodata->IFINDEX_DST = setup_result->ifindex_veth_dst_fwd;
++
++	err = test_tc_peer__load(skel);
++	if (!ASSERT_OK(err, "test_tc_peer__load"))
++		goto fail;
++
++	err = bpf_program__pin(skel->progs.tc_src_l3, SRC_PROG_PIN_FILE);
++	if (!ASSERT_OK(err, "pin " SRC_PROG_PIN_FILE))
++		goto fail;
++
++	err = bpf_program__pin(skel->progs.tc_dst_l3, DST_PROG_PIN_FILE);
++	if (!ASSERT_OK(err, "pin " DST_PROG_PIN_FILE))
++		goto fail;
++
++	err = bpf_program__pin(skel->progs.tc_chk, CHK_PROG_PIN_FILE);
++	if (!ASSERT_OK(err, "pin " CHK_PROG_PIN_FILE))
++		goto fail;
++
++	/* Load "tc_src_l3" to the tun_fwd interface to redirect packets
++	 * towards dst, and "tc_dst" to redirect packets
++	 * and "tc_chk" on veth_dst_fwd to drop non-redirected packets.
++	 */
++	SYS("tc qdisc add dev tun_fwd clsact");
++	SYS("tc filter add dev tun_fwd ingress bpf da object-pinned "
++	    SRC_PROG_PIN_FILE);
++
++	SYS("tc qdisc add dev veth_dst_fwd clsact");
++	SYS("tc filter add dev veth_dst_fwd ingress bpf da object-pinned "
++	    DST_PROG_PIN_FILE);
++	SYS("tc filter add dev veth_dst_fwd egress bpf da object-pinned "
++	    CHK_PROG_PIN_FILE);
++
++	/* Setup route and neigh tables */
++	SYS("ip -netns " NS_SRC " addr add dev tun_src " IP4_TUN_SRC "/24");
++	SYS("ip -netns " NS_FWD " addr add dev tun_fwd " IP4_TUN_FWD "/24");
++
++	SYS("ip -netns " NS_SRC " addr add dev tun_src " IP6_TUN_SRC "/64 nodad");
++	SYS("ip -netns " NS_FWD " addr add dev tun_fwd " IP6_TUN_FWD "/64 nodad");
++
++	SYS("ip -netns " NS_SRC " route del " IP4_DST "/32 dev veth_src scope global");
++	SYS("ip -netns " NS_SRC " route add " IP4_DST "/32 via " IP4_TUN_FWD
++	    " dev tun_src scope global");
++	SYS("ip -netns " NS_DST " route add " IP4_TUN_SRC "/32 dev veth_dst scope global");
++	SYS("ip -netns " NS_SRC " route del " IP6_DST "/128 dev veth_src scope global");
++	SYS("ip -netns " NS_SRC " route add " IP6_DST "/128 via " IP6_TUN_FWD
++	    " dev tun_src scope global");
++	SYS("ip -netns " NS_DST " route add " IP6_TUN_SRC "/128 dev veth_dst scope global");
++
++	SYS("ip -netns " NS_DST " neigh add " IP4_TUN_SRC " dev veth_dst lladdr " MAC_DST_FWD);
++	SYS("ip -netns " NS_DST " neigh add " IP6_TUN_SRC " dev veth_dst lladdr " MAC_DST_FWD);
++
++	if (!ASSERT_OK(set_forwarding(false), "disable forwarding"))
++		goto fail;
++
++	test_connectivity();
++
++fail:
++	if (tunnel_pid > 0) {
++		kill(tunnel_pid, SIGTERM);
++		waitpid(tunnel_pid, NULL, 0);
++	}
++	if (src_fd >= 0)
++		close(src_fd);
++	if (target_fd >= 0)
++		close(target_fd);
++	if (skel)
++		test_tc_peer__destroy(skel);
++	if (nstoken)
++		close_netns(nstoken);
+ }
++
++#define RUN_TEST(name)                                                                      \
++	({                                                                                  \
++		struct netns_setup_result setup_result;                                     \
++		if (test__start_subtest(#name))                                             \
++			if (ASSERT_OK(netns_setup_namespaces("add"), "setup namespaces")) { \
++				if (ASSERT_OK(netns_setup_links_and_routes(&setup_result),  \
++					      "setup links and routes"))                    \
++					test_ ## name(&setup_result);                       \
++				netns_setup_namespaces("delete");                           \
++			}                                                                   \
++	})
++
++static void *test_tc_redirect_run_tests(void *arg)
++{
++	RUN_TEST(tc_redirect_peer);
++	RUN_TEST(tc_redirect_peer_l3);
++	RUN_TEST(tc_redirect_neigh);
++	RUN_TEST(tc_redirect_neigh_fib);
++	return NULL;
++}
++
++void test_tc_redirect(void)
++{
++	pthread_t test_thread;
++	int err;
++
++	/* Run the tests in their own thread to isolate the namespace changes
++	 * so they do not affect the environment of other tests.
++	 * (specifically needed because of unshare(CLONE_NEWNS) in open_netns())
++	 */
++	err = pthread_create(&test_thread, NULL, &test_tc_redirect_run_tests, NULL);
++	if (ASSERT_OK(err, "pthread_create"))
++		ASSERT_OK(pthread_join(test_thread, NULL), "pthread_join");
++}
++
+diff --git a/tools/testing/selftests/bpf/progs/test_tc_peer.c b/tools/testing/selftests/bpf/progs/test_tc_peer.c
+index ef264bced0e6..fe818cd5f010 100644
+--- a/tools/testing/selftests/bpf/progs/test_tc_peer.c
++++ b/tools/testing/selftests/bpf/progs/test_tc_peer.c
+@@ -5,12 +5,17 @@
+ #include <linux/bpf.h>
+ #include <linux/stddef.h>
+ #include <linux/pkt_cls.h>
++#include <linux/if_ether.h>
++#include <linux/ip.h>
+ 
+ #include <bpf/bpf_helpers.h>
+ 
+ volatile const __u32 IFINDEX_SRC;
+ volatile const __u32 IFINDEX_DST;
+ 
++static const __u8 src_mac[] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55};
++static const __u8 dst_mac[] = {0x00, 0x22, 0x33, 0x44, 0x55, 0x66};
++
+ SEC("classifier/chk_egress")
+ int tc_chk(struct __sk_buff *skb)
+ {
+@@ -29,4 +34,30 @@ int tc_src(struct __sk_buff *skb)
+ 	return bpf_redirect_peer(IFINDEX_DST, 0);
+ }
+ 
++SEC("classifier/dst_ingress_l3")
++int tc_dst_l3(struct __sk_buff *skb)
++{
++	return bpf_redirect(IFINDEX_SRC, 0);
++}
++
++SEC("classifier/src_ingress_l3")
++int tc_src_l3(struct __sk_buff *skb)
++{
++	__u16 proto = skb->protocol;
++
++	if (bpf_skb_change_head(skb, ETH_HLEN, 0) != 0)
++		return TC_ACT_SHOT;
++
++	if (bpf_skb_store_bytes(skb, 0, &src_mac, ETH_ALEN, 0) != 0)
++		return TC_ACT_SHOT;
++
++	if (bpf_skb_store_bytes(skb, ETH_ALEN, &dst_mac, ETH_ALEN, 0) != 0)
++		return TC_ACT_SHOT;
++
++	if (bpf_skb_store_bytes(skb, ETH_ALEN + ETH_ALEN, &proto, sizeof(__u16), 0) != 0)
++		return TC_ACT_SHOT;
++
++	return bpf_redirect_peer(IFINDEX_DST, 0);
++}
++
+ char __license[] SEC("license") = "GPL";
+-- 
+2.30.2
 
-                trc_wait_for_one_reader
-                  ->trc_del_holdout
-
-2. task isn't current.
-
-                trc_wait_for_one_reader
-                  ->get_task_struct
-                  ->try_invoke_on_locked_down_task（trc_inspect_reader）
-                    ->trc_del_holdout
-                  ->put_task_struct
-
-
-> 
-> Of course, if you can reproduce it, the following patch might be
-
-Sorry...I can't reproduce it, just analyse syzbot's log. :(
-
-
-Thanks,
-Yanfei
-
-> an interesting thing to try, my doubts notwithstanding.  But more
-> important, please check the patch to make sure that we are both
-> talking about the same call to trc_del_holdout()!
-> 
-> If we are talking about the same call to trc_del_holdout(), are you
-> actually seeing that code execute except when rcu_tasks_trace_pertask()
-> calls trc_wait_for_one_reader()?
-> 
->> I investigate the trc_wait_for_one_reader（） and found before we excute
->> trc_del_holdout, there is always set t->trc_reader_checked=true. How about
->> we just set the checked flag and unified excute trc_del_holdout()
->> in check_all_holdout_tasks_trace with checking the flag?
-> 
-> The problem is that we cannot execute trc_del_holdout() except in
-> the context of the RCU Tasks Trace grace-period kthread.  So it is
-> necessary to manipulate ->trc_reader_checked separately from the list
-> in order to safely synchronize with IPIs and with the exit code path
-> for any reader tasks, see for example trc_read_check_handler() and
-> exit_tasks_rcu_finish_trace().
-> 
-> Or are you thinking of some other approach?
-> 
->                                                          Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index efb8127f3a36..2a0d4bdd619a 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -987,7 +987,6 @@ static void trc_wait_for_one_reader(struct task_struct *t,
->          // The current task had better be in a quiescent state.
->          if (t == current) {
->                  t->trc_reader_checked = true;
-> -               trc_del_holdout(t);
->                  WARN_ON_ONCE(READ_ONCE(t->trc_reader_nesting));
->                  return;
->          }
-> 
