@@ -2,148 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1725390BEE
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 00:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A274390C56
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 00:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbhEYWJt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 May 2021 18:09:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231259AbhEYWJt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 May 2021 18:09:49 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCFF4C061574;
-        Tue, 25 May 2021 15:08:17 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id a4so25368078ljd.5;
-        Tue, 25 May 2021 15:08:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NFQ49N6qTWmXXrGPw3/fc7Xbi2xYT9elSH2AHt3mXAw=;
-        b=H+cp/bw/YxtakzZMG6Ghq9Ktkx83KHZBHBHLvdBv3AQTWf5ykBRurlCtp9XSsaXXy8
-         7Op2zkWjK5nz5/ndtQZW02C+9H2ljPxpOTNaUYjMyIObRmHKfCoKT1MUhmoLRNpqgBd/
-         W1MVaN++7gY1fjly7sE3LRCkYHMcEWiGkg367xtMGg3a1X70yezLBnyiw2NfaQ9cd0cx
-         gfr7DmX/stTvlHjA/VPRmzsnfvav0tEfpzZK1g7lMHRzhwOTU9sCIAVdZZ4pf2yaulzb
-         rFS0zokDQMmhtceJjCPmrC7+rYaSTZURKPYt94XcaN6HMNop8CkCInj3t28X1NIWjh3C
-         wkZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NFQ49N6qTWmXXrGPw3/fc7Xbi2xYT9elSH2AHt3mXAw=;
-        b=Rqn51tMjBppuoypqggChrVKNTO1h8Mm6ypox/NUlNG5+6DGtscewXrBInqsFZ/4iGB
-         L3/lv4dUU+JbOXJzJJ846jhtYhEKHrRJiVvKwVBcaQ1MRG75quYMBw7he/TP77TJJg+0
-         djVsB38KS7dwuVBTmFqCRpO4liZ4VfSMm1QAy/isjfNYYOSj4YIAg51l5tXB3+6bqt7s
-         Mna5japrV5dWf/e9zHxlP1+MOWzmgfcK7rLCSuWv4dKoJ5TgTjTLQfNjay7rzQVXFNkL
-         IgvhK9Cae0rBtFftmtrwPUnosuwQWJ8DoSmx9Ed4/J81ViNpUe11StGmE1iI64xQsmGU
-         pISA==
-X-Gm-Message-State: AOAM531XiZh8yQZD8GwJD9VqWky6MKbcHjyymbFBwxmD5mAHD5ZZq7OU
-        lKODsCFmGjDS9C/JVdsXsi+/MMlPDB1NLyLxonI=
-X-Google-Smtp-Source: ABdhPJycoM/bsQGaHQtbch9Vg1YSBr4FtbzK4fbCSBnD/XBUHiKCq+xf69aTxLh4A/pxBe9kb5z7pwOkrNhX82nOLP8=
-X-Received: by 2002:a2e:b610:: with SMTP id r16mr21718411ljn.486.1621980496071;
- Tue, 25 May 2021 15:08:16 -0700 (PDT)
+        id S229978AbhEYWlN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 May 2021 18:41:13 -0400
+Received: from www62.your-server.de ([213.133.104.62]:50492 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229952AbhEYWlN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 May 2021 18:41:13 -0400
+Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1llfi7-0004lJ-Q7; Wed, 26 May 2021 00:39:39 +0200
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        andrii.nakryiko@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: pull-request: bpf 2021-05-26
+Date:   Wed, 26 May 2021 00:39:39 +0200
+Message-Id: <20210525223939.3537-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
- <CAM_iQpWDgVTCnP3xC3=z7WCH05oDUuqxrw2OjjUC69rjSQG0qQ@mail.gmail.com>
- <CAADnVQ+V5o31-h-A+eNsHvHgOJrVfP4wVbyb+jL2J=-ionV0TA@mail.gmail.com>
- <CAM_iQpU-Cvpf-+9R0ZdZY+5Dv+stfodrH0MhvSgryv_tGiX7pA@mail.gmail.com>
- <CAM_iQpVYBNkjDeo+2CzD-qMnR4-2uW+QdMSf_7ohwr0NjgipaQ@mail.gmail.com>
- <CAADnVQJUHydpLwtj9hRWWNGx3bPbdk-+cQiSe3MDFQpwkKmkSw@mail.gmail.com>
- <bcbf76c3-34d4-d550-1648-02eda587ccd7@mojatatu.com> <CAADnVQLWj-=B2TfJp7HEsiUY3rqmd6-YMDAGdyL6RgZ=_b2CXg@mail.gmail.com>
- <27dae780-b66b-4ee9-cff1-a3257e42070e@mojatatu.com>
-In-Reply-To: <27dae780-b66b-4ee9-cff1-a3257e42070e@mojatatu.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 25 May 2021 15:08:04 -0700
-Message-ID: <CAADnVQJq37Xi2bHBG5L+DmMq6dJvFUCE3tt+uC-oAKX3WxcCQg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
-To:     Jamal Hadi Salim <jhs@mojatatu.com>
-Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
-        Pedro Tammela <pctammela@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26181/Tue May 25 13:17:38 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 25, 2021 at 2:09 PM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
->
-> On 2021-05-25 3:57 p.m., Alexei Starovoitov wrote:
-> > On Tue, May 25, 2021 at 12:35 PM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
->
-> [..]
-> > The outcome of the last bpf office hours was a general agreement
-> > that we need new hooks in map update/delete operations
-> > (including auto-delete by LRU) that will trigger a bpf subprog.
->
-> This is certainly a useful feature (for other reasons as well).
-> Does this include create/update/delete issued from user space?
+Hi David, hi Jakub,
 
-Right. Any kind of update/delete and create is a subset of update.
-The lookup is not included (yet or may be ever) since it doesn't
-have deterministic start/end points.
-The prog can do a lookup and update values in place while
-holding on the element until prog execution ends.
+The following pull-request contains BPF updates for your *net* tree.
 
-While update/delete have precise points in hash/lru/lpm maps.
-Array is a different story.
+We've added 14 non-merge commits during the last 14 day(s) which contain
+a total of 17 files changed, 513 insertions(+), 231 deletions(-).
 
-> > It might look very similar to the timer callback that is part of this patch,
-> > but instead of being called by the timer the LRU logic will call it.
-> > This way the subprog can transfer the data stored in the
-> > about-to-be-deleted map element into some other map or pass
-> > to user space via ringbuf or do any other logic.
-> >
->
-> The challenge we have in this case is LRU makes the decision
-> which entry to victimize. We do have some entries we want to
-> keep longer - even if they are not seeing a lot of activity.
+The main changes are:
 
-Right. That's certainly an argument to make LRU eviction
-logic programmable.
-John/Joe/Daniel proposed it as a concept long ago.
-Design ideas are in demand to make further progress here :)
+1) Fix bpf_skb_change_head() helper to reset mac_len, from Jussi Maki.
 
-> You could just notify user space to re-add the entry but then
-> you have sync challenges.
-> The timers do provide us a way to implement custom GC.
+2) Fix masking direction swap upon off-reg sign change, from Daniel Borkmann.
 
-My point is that time is always going to be a heuristic that will
-break under certain traffic conditions.
-I recommend to focus development effort on creating
-building blocks that are truly great instead of reimplementing
-old ideas in bpf with all of their shortcomings.
+3) Fix BPF offloads in verifier by reordering driver callback, from Yinjun Zhang.
 
-> So a question (which may have already been discussed),
-> assuming the following setup:
-> - 2 programs a) Ingress b) egress
-> - sharing a conntrack map which and said map pinned.
-> - a timer prog (with a map with just timers;
->     even a single timer would be enough in some cases).
->
-> ingress and egress do std stuff like create/update
-> timer prog does the deletes. For simplicity sake assume
-> we just have one timer that does a foreach and iterates
-> all entries.
->
-> What happens when both ingress and egress are ejected?
+4) BPF selftest for ringbuf mmap ro/rw restrictions, from Andrii Nakryiko.
 
-What is 'ejected'? Like a CD? ;)
-I think you mean 'detached' ?
-and then, I assume, the user space doesn't hold to prog FD?
-The kernel can choose to do different things with the timer here.
-One option is to cancel the outstanding timers and unload
-.text where the timer callback lives.
-Another option is to let the timer stay armed and auto unload
-.text of bpf function when it finishes executing.
-If timer callback decides to re-arm itself it can continue
-executing indefinitely.
-This patch is doing the latter.
-There could be a combination of both options.
-All options have their pros/cons.
+5) Follow-up fixes to nested bprintf per-cpu buffers, from Florent Revest.
+
+6) Fix bpftool sock_release attach point help info, from Liu Jian.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Alexei Starovoitov, kernel test robot, Piotr Krysiuk, Quentin Monnet, 
+Randy Dunlap, Song Liu
+
+----------------------------------------------------------------
+
+The following changes since commit 440c3247cba3d9433ac435d371dd7927d68772a7:
+
+  net: ipa: memory region array is variable size (2021-05-11 16:22:37 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 1bad6fd52be4ce12d207e2820ceb0f29ab31fc53:
+
+  bpf, selftests: Adjust few selftest result_unpriv outcomes (2021-05-25 22:08:53 +0200)
+
+----------------------------------------------------------------
+Andrii Nakryiko (1):
+      selftests/bpf: Test ringbuf mmap read-only and read-write restrictions
+
+Daniel Borkmann (6):
+      bpf: Fix BPF_JIT kconfig symbol dependency
+      bpf: Fix BPF_LSM kconfig symbol dependency
+      bpf: Wrap aux data inside bpf_sanitize_info container
+      bpf: Fix mask direction swap upon off reg sign change
+      bpf: No need to simulate speculative domain for immediates
+      bpf, selftests: Adjust few selftest result_unpriv outcomes
+
+Florent Revest (2):
+      bpf: Clarify a bpf_bprintf_prepare macro
+      bpf: Avoid using ARRAY_SIZE on an uninitialized pointer
+
+Jussi Maki (2):
+      bpf: Set mac_len in bpf_skb_change_head
+      selftests/bpf: Add test for l3 use of bpf_redirect_peer
+
+Liu Jian (1):
+      bpftool: Add sock_release help info for cgroup attach/prog load command
+
+Stanislav Fomichev (1):
+      selftests/bpf: Convert static to global in tc_redirect progs
+
+Yinjun Zhang (1):
+      bpf, offload: Reorder offload callback 'prepare' in verifier
+
+ arch/arm64/Kbuild                                  |   3 +-
+ kernel/bpf/Kconfig                                 |   1 +
+ kernel/bpf/bpf_lsm.c                               |   2 +
+ kernel/bpf/helpers.c                               |  12 +-
+ kernel/bpf/verifier.c                              |  58 ++-
+ net/core/filter.c                                  |   1 +
+ tools/bpf/bpftool/Documentation/bpftool-cgroup.rst |   4 +-
+ tools/bpf/bpftool/Documentation/bpftool-prog.rst   |   2 +-
+ tools/bpf/bpftool/bash-completion/bpftool          |   6 +-
+ tools/bpf/bpftool/cgroup.c                         |   3 +-
+ tools/bpf/bpftool/prog.c                           |   2 +-
+ tools/testing/selftests/bpf/prog_tests/ringbuf.c   |  49 +-
+ .../testing/selftests/bpf/prog_tests/tc_redirect.c | 552 ++++++++++++++-------
+ tools/testing/selftests/bpf/progs/test_tc_neigh.c  |   4 +-
+ tools/testing/selftests/bpf/progs/test_tc_peer.c   |  35 +-
+ tools/testing/selftests/bpf/verifier/stack_ptr.c   |   2 -
+ .../selftests/bpf/verifier/value_ptr_arith.c       |   8 -
+ 17 files changed, 513 insertions(+), 231 deletions(-)
