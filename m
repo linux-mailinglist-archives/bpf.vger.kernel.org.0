@@ -2,95 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8632B390A20
-	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 21:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFCC390A22
+	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 21:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232948AbhEYT7a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 May 2021 15:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhEYT73 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 May 2021 15:59:29 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB98C061574;
-        Tue, 25 May 2021 12:57:57 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id e2so33448135ljk.4;
-        Tue, 25 May 2021 12:57:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4s7vCGqH0XmF+l5T0ZZ65rm+cCf196bb9Q/4DckFJcg=;
-        b=cAXVMGYah5V9RlRZ3EBNnOceo2itK3w+IW+xPAMqU2D6u4YGXBqerZni5pcuJB+NxV
-         7rzC9482okTVr+e+0jqx8t12+aX91S5oT7hlD3fTWi9RSoF540Qti865/8QHLNLVjgE3
-         qMbhjuM7HChXgxfwLYlrPHVeOF5Mf8x60+tiGHN0fmyhTIHSRGnEhl1fdVo7/yL5zyp2
-         9pP7juyMcC5sD1V/oqVjfT0pMtPj1Cihv5U85a02M62ktAvOmETMLArADanADmwU6xdE
-         SwtB6I8jayKXQ3/8Ns91GK0jS9DIvgscpG1XjRx/qugGZiQbKIVXvhog2LawbWt5R/39
-         KnNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4s7vCGqH0XmF+l5T0ZZ65rm+cCf196bb9Q/4DckFJcg=;
-        b=XnY04Wo9j0g6azwHXWMytiG91y6uzBYOU12asRAoNiNzEIj6Z5PJiClEEXM+BT4Xox
-         Z78NjCrc4l8bfgiS+hWEx1dgQS3qAkrcBeaZA1/YyYlDXKpxkjs3sJEvM0o12Bhue+cv
-         ermF8/rLDFY6qWOBreZpjrwNh2QTsYAsutpHj19b2CMhz5LZz4/UfKFXjkQGD6T3MSqZ
-         n0hCBRYBcMTWDFHfyH1SWojUv4VSQ/6W/aAuR+qSfjIWwmnTiZ6y6HM8U00hHuS2GDon
-         4jZlM4IzFR6XD/ytyrF5tTjmWzlbWtQTJSqrAaKG6Ql8rZTPyBGWc3A5aNSok7oR1xY7
-         I2iA==
-X-Gm-Message-State: AOAM530jImx7qyT6PFIFTaw1lUTab6XPM0jhwoVcRcXngg3V0IBeVD63
-        yZnxNbd4i74MwzEVh8Lz7iqhPir/FMrKvJBigqq6WmaQ
-X-Google-Smtp-Source: ABdhPJwfnnuCdxpZ2xllj1yM84DF3TTXPxxxfJDxAdKeBGjipAsgTG83zCIv82LwvnK1Es0Klq+o/bMYZnfgEjV2LTk=
-X-Received: by 2002:a2e:a489:: with SMTP id h9mr22497417lji.21.1621972676337;
- Tue, 25 May 2021 12:57:56 -0700 (PDT)
+        id S233040AbhEYT7z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 May 2021 15:59:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233037AbhEYT7z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 May 2021 15:59:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EA9A6124C;
+        Tue, 25 May 2021 19:58:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621972705;
+        bh=Meb9fHb3cskKYSqvNm4niTiFoKH3HRKPqKs6sNi+ehE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kmK8dqVIfYG86VyswdRWAYQBiKJW1uLi7K6dACnVnit0bz1bTBbsc/UsVOC6oY4pO
+         YV/TWurygReCKU79DazYRRJLx5o4NuFg/baRcZHumblOAq3bYetOfz+M9DGyfDJVjG
+         PRYbsTHerJWcfBnnH3W0LcXB6zUEUGoXwEWlEY/rRYNVaaY7zoOWXRmB9dp/Woh3p0
+         U1Dy4Rg4wDTr18nHlSKUI8dcoPJG/6kBb9WxIQI+TZqFMpWvExEUPcOzCL6vtqWqAf
+         KTGuoMDz8g0LiN0mce+eSLQuQqJXkUn+RqyfOPXxE5Djmea+k1BLxgvyETZ7Ugv/XE
+         X6ZMxI9CXo0Vw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D56624011C; Tue, 25 May 2021 16:58:22 -0300 (-03)
+Date:   Tue, 25 May 2021 16:58:22 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org, jolsa@kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH dwarves] btf_encoder: fix and complete filtering out
+ zero-sized per-CPU variables
+Message-ID: <YK1W3gpVp0m2LSvb@kernel.org>
+References: <20210524234222.278676-1-andrii@kernel.org>
 MIME-Version: 1.0
-References: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
- <CAM_iQpWDgVTCnP3xC3=z7WCH05oDUuqxrw2OjjUC69rjSQG0qQ@mail.gmail.com>
- <CAADnVQ+V5o31-h-A+eNsHvHgOJrVfP4wVbyb+jL2J=-ionV0TA@mail.gmail.com>
- <CAM_iQpU-Cvpf-+9R0ZdZY+5Dv+stfodrH0MhvSgryv_tGiX7pA@mail.gmail.com>
- <CAM_iQpVYBNkjDeo+2CzD-qMnR4-2uW+QdMSf_7ohwr0NjgipaQ@mail.gmail.com>
- <CAADnVQJUHydpLwtj9hRWWNGx3bPbdk-+cQiSe3MDFQpwkKmkSw@mail.gmail.com> <bcbf76c3-34d4-d550-1648-02eda587ccd7@mojatatu.com>
-In-Reply-To: <bcbf76c3-34d4-d550-1648-02eda587ccd7@mojatatu.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 25 May 2021 12:57:45 -0700
-Message-ID: <CAADnVQLWj-=B2TfJp7HEsiUY3rqmd6-YMDAGdyL6RgZ=_b2CXg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
-To:     Jamal Hadi Salim <jhs@mojatatu.com>
-Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210524234222.278676-1-andrii@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 25, 2021 at 12:35 PM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
->
-> On 2021-05-25 2:21 p.m., Alexei Starovoitov wrote:
-> > On Mon, May 24, 2021 at 9:59 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
->
->
-> [..]
-> > In general the garbage collection in any form doesn't scale.
-> > The conntrack logic doesn't need it. The cillium conntrack is a great
-> > example of how to implement a conntrack without GC.
->
-> For our use case, we need to collect info on all the flows
-> for various reasons (one of which is accounting of every byte and
-> packet).
-> So as a consequence - built-in GC (such as imposed by LRU)
-> cant interfere without our consent.
+Em Mon, May 24, 2021 at 04:42:22PM -0700, Andrii Nakryiko escreveu:
+> btf_encoder is ignoring zero-sized per-CPU ELF symbols, but the same has to be
+> done for DWARF variables when matching them with ELF symbols. This is due to
+> zero-sized DWARF variables matching unrelated (non-zero-sized) variable that
+> happens to be allocated at the exact same address, leading to a lot of
+> confusion in BTF.
 
-The outcome of the last bpf office hours was a general agreement
-that we need new hooks in map update/delete operations
-(including auto-delete by LRU) that will trigger a bpf subprog.
-It might look very similar to the timer callback that is part of this patch,
-but instead of being called by the timer the LRU logic will call it.
-This way the subprog can transfer the data stored in the
-about-to-be-deleted map element into some other map or pass
-to user space via ringbuf or do any other logic.
+I've been following this, just didn't got to process it, will do it
+soon.
+
+- Arnaldo
+ 
+> See [0] for when this causes big problems.
+> 
+>   [0] https://lore.kernel.org/bpf/CAEf4BzZ0-sihSL-UAm21JcaCCY92CqfNxycHRZYXcoj8OYb=wA@mail.gmail.com/
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  btf_encoder.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index c711f124b31e..672b9943a4e2 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -538,6 +538,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+>  	cu__for_each_variable(cu, core_id, pos) {
+>  		uint32_t size, type, linkage;
+>  		const char *name, *dwarf_name;
+> +		const struct tag *tag;
+>  		uint64_t addr;
+>  		int id;
+>  
+> @@ -550,6 +551,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+>  
+>  		/* addr has to be recorded before we follow spec */
+>  		addr = var->ip.addr;
+> +		dwarf_name = variable__name(var, cu);
+>  
+>  		/* DWARF takes into account .data..percpu section offset
+>  		 * within its segment, which for vmlinux is 0, but for kernel
+> @@ -582,11 +584,9 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+>  		 *  modules per-CPU data section has non-zero offset so all
+>  		 *  per-CPU symbols have non-zero values.
+>  		 */
+> -		if (var->ip.addr == 0) {
+> -			dwarf_name = variable__name(var, cu);
+> +		if (var->ip.addr == 0)
+>  			if (!dwarf_name || strcmp(dwarf_name, name))
+>  				continue;
+> -		}
+>  
+>  		if (var->spec)
+>  			var = var->spec;
+> @@ -600,6 +600,13 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+>  			break;
+>  		}
+>  
+> +		tag = cu__type(cu, var->ip.tag.type);
+> +		if (tag__size(tag, cu) == 0) {
+> +			if (btf_elf__verbose)
+> +				fprintf(stderr, "Ignoring zero-sized per-CPU variable '%s'...\n", dwarf_name ?: "<missing name>");
+> +			continue;
+> +		}
+> +
+>  		type = var->ip.tag.type + type_id_off;
+>  		linkage = var->external ? BTF_VAR_GLOBAL_ALLOCATED : BTF_VAR_STATIC;
+>  
+> -- 
+> 2.30.2
+> 
+
+-- 
+
+- Arnaldo
