@@ -2,262 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D031E38F861
-	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 04:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325A838F8A5
+	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 05:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhEYC6o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 May 2021 22:58:44 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5694 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhEYC6o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 May 2021 22:58:44 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FpzFB3kB2z1BQQj;
-        Tue, 25 May 2021 10:54:22 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 25 May 2021 10:57:13 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 25 May 2021 10:57:12 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S229786AbhEYDSZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 May 2021 23:18:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230153AbhEYDSZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 May 2021 23:18:25 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C880C061756;
+        Mon, 24 May 2021 20:16:55 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id u7so7077649plq.4;
+        Mon, 24 May 2021 20:16:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5D5lClmoiHDN8GJXbRYmv5T/hyaUQszt2yF2BpoRw84=;
+        b=InUw0wx5KGLBzZXNtPZp9BEWAAwiVXzycBuWcX9DWd71iNgh2OUuQo0mqIiX73A+VG
+         hzcKlc2IKNwhppDVphDqTuzUzBXvhbxF94/D+SMLcpvgrVZU2dJuE6NOPPtvyvB+ZaLL
+         XWNFLdmGIM63Xpqk+8H9wZFyTYW0t/cG0fv4/IGb6wXalOys2OAmdHSdvdEQ0en4zxPL
+         6Pcxxxmm4rHu7CD2EbeGolEHZxHIgCSvsIpPhZg+K35eXIVCOQqTEYyI8NliD9EbvKvn
+         OmEhFErzBV79eC4m/q1EjKKQ794XucE+F4MKbI60DiUzO9TYUJZifCxzj1ZzVKIAA1SM
+         4eWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5D5lClmoiHDN8GJXbRYmv5T/hyaUQszt2yF2BpoRw84=;
+        b=YNaZW4/pTANkBUso/CYs0OPHL4bwaWuEfHSuPntNNs05fyctsff5jlpfmfvsRmnFdy
+         xcBK11Ou9OY2Tsw38wvg0GtKjngnT1RZEaF1NJuf1cSV8gbWAkQuDQ5zRM9NCYJ0FpDM
+         3gRue5QQTH5BTSeyYdhA32czPtzm5gehBJRspzQJyVr57/kMQXl9yNP6YVrCwnm59gy7
+         008GYaaEJCrQckAWnouNu3xpMFEzUZjxGv7sv+3BSrZtRkokwvVxfaJZ5aKwtTTnaEfo
+         /x7r/RC0vkbwRp+ZAWHwSkkgnhwA+K00Lz8bGt2LHfS5lnPnDpL79EbUt/t/25mmd6/u
+         jr6w==
+X-Gm-Message-State: AOAM532J69oenRwpnQ8E4uY7zDSqAvbHRKQEA6sfqHTYsSLCu3dmFF42
+        y9CPvD3Jf9s6kbNcOC941e2JKWwc47H8hM2uPkM=
+X-Google-Smtp-Source: ABdhPJxhV+/3jzN7SsR524ngafVuzLP4MjKZyjdL1CcMh3i9shkNs7Ce+C9LW8SaKXJqAWZjal6uXQaKT2v9nmquYaY=
+X-Received: by 2002:a17:90a:c38c:: with SMTP id h12mr2530177pjt.145.1621912615031;
+ Mon, 24 May 2021 20:16:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
+ <CAM_iQpWDgVTCnP3xC3=z7WCH05oDUuqxrw2OjjUC69rjSQG0qQ@mail.gmail.com> <CAADnVQ+V5o31-h-A+eNsHvHgOJrVfP4wVbyb+jL2J=-ionV0TA@mail.gmail.com>
+In-Reply-To: <CAADnVQ+V5o31-h-A+eNsHvHgOJrVfP4wVbyb+jL2J=-ionV0TA@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Mon, 24 May 2021 20:16:44 -0700
+Message-ID: <CAM_iQpU-Cvpf-+9R0ZdZY+5Dv+stfodrH0MhvSgryv_tGiX7pA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] bpf: fix spelling mistakes
-Date:   Tue, 25 May 2021 10:56:59 +0800
-Message-ID: <20210525025659.8898-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210525025659.8898-1-thunder.leizhen@huawei.com>
-References: <20210525025659.8898-1-thunder.leizhen@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix some spelling mistakes in comments:
-aother ==> another
-Netiher ==> Neither
-desribe ==> describe
-intializing ==> initializing
-funciton ==> function
-wont ==> won't		//Move the word 'the' at the end to the next line,
-			//because it's more than 80 columns
-accross ==> across
-pathes ==> paths
-triggerred ==> triggered
-excute ==> execute
-ether ==> either
-conervative ==> conservative
-convetion ==> convention
-markes ==> marks
-interpeter ==> interpreter
+On Sun, May 23, 2021 at 9:01 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, May 21, 2021 at 2:37 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> >
+> > Hi, Alexei
+> >
+> > On Thu, May 20, 2021 at 11:52 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > Why do you intentionally keep people in the original discussion
+> > out of your CC? Remember you are the one who objected the
+> > idea by questioning its usefulness no matter how I hard I tried
+> > to explain? I am glad you changed your mind, but it does not
+> > mean you should forget to credit other people.
+>
+> I didn't change my mind and I still object to your stated
+> _reasons_ for timers.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- include/linux/bpf_local_storage.h |  2 +-
- kernel/bpf/bpf_inode_storage.c    |  2 +-
- kernel/bpf/btf.c                  |  6 +++---
- kernel/bpf/devmap.c               |  4 ++--
- kernel/bpf/hashtab.c              |  4 ++--
- kernel/bpf/reuseport_array.c      |  2 +-
- kernel/bpf/trampoline.c           |  2 +-
- kernel/bpf/verifier.c             | 12 ++++++------
- 8 files changed, 17 insertions(+), 17 deletions(-)
-
-diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-index b902c580c48d..6915ba34d4a2 100644
---- a/include/linux/bpf_local_storage.h
-+++ b/include/linux/bpf_local_storage.h
-@@ -71,7 +71,7 @@ struct bpf_local_storage_elem {
- 	struct bpf_local_storage __rcu *local_storage;
- 	struct rcu_head rcu;
- 	/* 8 bytes hole */
--	/* The data is stored in aother cacheline to minimize
-+	/* The data is stored in another cacheline to minimize
- 	 * the number of cachelines access during a cache hit.
- 	 */
- 	struct bpf_local_storage_data sdata ____cacheline_aligned;
-diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
-index 2921ca39a93e..96ceed0e0fb5 100644
---- a/kernel/bpf/bpf_inode_storage.c
-+++ b/kernel/bpf/bpf_inode_storage.c
-@@ -72,7 +72,7 @@ void bpf_inode_storage_free(struct inode *inode)
- 		return;
- 	}
- 
--	/* Netiher the bpf_prog nor the bpf-map's syscall
-+	/* Neither the bpf_prog nor the bpf-map's syscall
- 	 * could be modifying the local_storage->list now.
- 	 * Thus, no elem can be added-to or deleted-from the
- 	 * local_storage->list by the bpf_prog or by the bpf-map's syscall.
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 0600ed325fa0..609d657d7943 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -51,7 +51,7 @@
-  * The BTF type section contains a list of 'struct btf_type' objects.
-  * Each one describes a C type.  Recall from the above section
-  * that a 'struct btf_type' object could be immediately followed by extra
-- * data in order to desribe some particular C types.
-+ * data in order to describe some particular C types.
-  *
-  * type_id:
-  * ~~~~~~~
-@@ -1143,7 +1143,7 @@ static void *btf_show_obj_safe(struct btf_show *show,
- 
- 	/*
- 	 * We need a new copy to our safe object, either because we haven't
--	 * yet copied and are intializing safe data, or because the data
-+	 * yet copied and are initializing safe data, or because the data
- 	 * we want falls outside the boundaries of the safe object.
- 	 */
- 	if (!safe) {
-@@ -3417,7 +3417,7 @@ static struct btf_kind_operations func_proto_ops = {
- 	 * BTF_KIND_FUNC_PROTO cannot be directly referred by
- 	 * a struct's member.
- 	 *
--	 * It should be a funciton pointer instead.
-+	 * It should be a function pointer instead.
- 	 * (i.e. struct's member -> BTF_KIND_PTR -> BTF_KIND_FUNC_PROTO)
- 	 *
- 	 * Hence, there is no btf_func_check_member().
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index aa516472ce46..d60d617ec0d7 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -382,8 +382,8 @@ void __dev_flush(void)
- }
- 
- /* rcu_read_lock (from syscall and BPF contexts) ensures that if a delete and/or
-- * update happens in parallel here a dev_put wont happen until after reading the
-- * ifindex.
-+ * update happens in parallel here a dev_put won't happen until after reading
-+ * the ifindex.
-  */
- static void *__dev_map_lookup_elem(struct bpf_map *map, u32 key)
- {
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index d7ebb12ffffc..055ae930bcd6 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -46,12 +46,12 @@
-  * events, kprobes and tracing to be invoked before the prior invocation
-  * from one of these contexts completed. sys_bpf() uses the same mechanism
-  * by pinning the task to the current CPU and incrementing the recursion
-- * protection accross the map operation.
-+ * protection across the map operation.
-  *
-  * This has subtle implications on PREEMPT_RT. PREEMPT_RT forbids certain
-  * operations like memory allocations (even with GFP_ATOMIC) from atomic
-  * contexts. This is required because even with GFP_ATOMIC the memory
-- * allocator calls into code pathes which acquire locks with long held lock
-+ * allocator calls into code paths which acquire locks with long held lock
-  * sections. To ensure the deterministic behaviour these locks are regular
-  * spinlocks, which are converted to 'sleepable' spinlocks on RT. The only
-  * true atomic contexts on an RT kernel are the low level hardware
-diff --git a/kernel/bpf/reuseport_array.c b/kernel/bpf/reuseport_array.c
-index 4838922f723d..93a55391791a 100644
---- a/kernel/bpf/reuseport_array.c
-+++ b/kernel/bpf/reuseport_array.c
-@@ -102,7 +102,7 @@ static void reuseport_array_free(struct bpf_map *map)
- 	/*
- 	 * ops->map_*_elem() will not be able to access this
- 	 * array now. Hence, this function only races with
--	 * bpf_sk_reuseport_detach() which was triggerred by
-+	 * bpf_sk_reuseport_detach() which was triggered by
- 	 * close() or disconnect().
- 	 *
- 	 * This function and bpf_sk_reuseport_detach() are
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 2d44b5aa0057..28a3630c48ee 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -552,7 +552,7 @@ static void notrace inc_misses_counter(struct bpf_prog *prog)
-  * __bpf_prog_enter returns:
-  * 0 - skip execution of the bpf prog
-  * 1 - execute bpf prog
-- * [2..MAX_U64] - excute bpf prog and record execution time.
-+ * [2..MAX_U64] - execute bpf prog and record execution time.
-  *     This is start time.
-  */
- u64 notrace __bpf_prog_enter(struct bpf_prog *prog)
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 757476c91c98..50b25ea7f5db 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -47,7 +47,7 @@ static const struct bpf_verifier_ops * const bpf_verifier_ops[] = {
-  * - unreachable insns exist (shouldn't be a forest. program = one function)
-  * - out of bounds or malformed jumps
-  * The second pass is all possible path descent from the 1st insn.
-- * Since it's analyzing all pathes through the program, the length of the
-+ * Since it's analyzing all paths through the program, the length of the
-  * analysis is limited to 64k insn, which may be hit even if total number of
-  * insn is less then 4K, but there are too many branches that change stack/regs.
-  * Number of 'branches to be analyzed' is limited to 1k
-@@ -132,7 +132,7 @@ static const struct bpf_verifier_ops * const bpf_verifier_ops[] = {
-  * If it's ok, then verifier allows this BPF_CALL insn and looks at
-  * .ret_type which is RET_PTR_TO_MAP_VALUE_OR_NULL, so it sets
-  * R0->type = PTR_TO_MAP_VALUE_OR_NULL which means bpf_map_lookup_elem() function
-- * returns ether pointer to map value or NULL.
-+ * returns either pointer to map value or NULL.
-  *
-  * When type PTR_TO_MAP_VALUE_OR_NULL passes through 'if (reg != 0) goto +off'
-  * insn, the register holding that pointer in the true branch changes state to
-@@ -2613,7 +2613,7 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
- 		if (dst_reg != BPF_REG_FP) {
- 			/* The backtracking logic can only recognize explicit
- 			 * stack slot address like [fp - 8]. Other spill of
--			 * scalar via different register has to be conervative.
-+			 * scalar via different register has to be conservative.
- 			 * Backtrack from here and mark all registers as precise
- 			 * that contributed into 'reg' being a constant.
- 			 */
-@@ -9049,7 +9049,7 @@ static int check_return_code(struct bpf_verifier_env *env)
- 	    !prog->aux->attach_func_proto->type)
- 		return 0;
- 
--	/* eBPF calling convetion is such that R0 is used
-+	/* eBPF calling convention is such that R0 is used
- 	 * to return the value from eBPF program.
- 	 * Make sure that it's readable at this time
- 	 * of bpf_exit, which means that program wrote
-@@ -9844,7 +9844,7 @@ static void clean_verifier_state(struct bpf_verifier_env *env,
-  * Since the verifier pushes the branch states as it sees them while exploring
-  * the program the condition of walking the branch instruction for the second
-  * time means that all states below this branch were already explored and
-- * their final liveness markes are already propagated.
-+ * their final liveness marks are already propagated.
-  * Hence when the verifier completes the search of state list in is_state_visited()
-  * we can call this clean_live_states() function to mark all liveness states
-  * as REG_LIVE_DONE to indicate that 'parent' pointers of 'struct bpf_reg_state'
-@@ -12449,7 +12449,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
- 			prog->aux->max_pkt_offset = MAX_PACKET_OFF;
- 
- 			/* mark bpf_tail_call as different opcode to avoid
--			 * conditional branch in the interpeter for every normal
-+			 * conditional branch in the interpreter for every normal
- 			 * call and to prevent accidental JITing by JIT compiler
- 			 * that doesn't support bpf_tail_call yet
- 			 */
--- 
-2.25.1
+What is _your reason_ to introduce timers? Clearly you provide
+absolutely nothing here. ;)
 
 
+>
+> > >
+> > > Introduce 'struct bpf_timer' that can be embedded in most BPF map types
+> > > and helpers to operate on it:
+> > > long bpf_timer_init(struct bpf_timer *timer, void *callback, int flags)
+> > > long bpf_timer_mod(struct bpf_timer *timer, u64 msecs)
+> > > long bpf_timer_del(struct bpf_timer *timer)
+> >
+> > Like we discussed, this approach would make the timer harder
+> > to be independent of other eBPF programs, which is a must-have
+> > for both of our use cases (mine and Jamal's). Like you explained,
+> > this requires at least another program array, a tail call, a mandatory
+> > prog pinning to work.
+>
+> That is simply not true.
+
+Which part is not true? The above is what I got from your explanation.
+
+Thanks.
