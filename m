@@ -2,90 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB8D38F6E6
-	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 02:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B62B38F79D
+	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 03:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhEYAQn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 May 2021 20:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbhEYAQn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 May 2021 20:16:43 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B58C061574;
-        Mon, 24 May 2021 17:15:13 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id g38so40452865ybi.12;
-        Mon, 24 May 2021 17:15:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tt2aCdeG1Qv4Av8IpO8EzxU0Ot8vSguISRVAzIEmy3c=;
-        b=bPdJGQFEk57nEGbD0hgdIlYJfgBUa8/woXSJt+g3KgrL2A1QwLu6WOWVLN8M6+OS9M
-         KCl4WG7N2FcSqBwSFRN+Lu8EjcSOF2s4StsziYH/u/vudm4UFY2hjOc0tgHmAk0n0Drl
-         ZIXrh8yiZgdyImfbwc96SnF/RqJsGiXp+ygSbkv/6+Y3541p9+EDTS6zm8utorP3t/TI
-         OkAIlhY6HmKcOc4iO8V1S3EeZ1uusumgxgJ75gdaK/1tdPKZ5x7z5DXe/8Kej4Y7yIH3
-         D9yKjdOTO+N3v6mFdPUDXgEwNO6KDlWG4C+O4aZ/AykW+vWLGFv48iO+1Qai8rNEhjsb
-         rckA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tt2aCdeG1Qv4Av8IpO8EzxU0Ot8vSguISRVAzIEmy3c=;
-        b=N4fWOohW8rqGP0dbx2zxM4RopOYcGDH5Kq0hPGn4kL322BT6fPVKemPcV2wUiTEucj
-         t5GTn9CgCpTFzU1bf9MVW3Tqn7GotFRqUrvjYOp9djpxKC5UjOiNLZ23ImjVPZ6OUelH
-         EybCjkShBiR2cXaxYBq6cNlGM7t63CfrVCAFlw9Q548sRIO8WWyRg87b/zLu/qYeeaKA
-         /dlE2qIG3jykXJnzzqvAk1B7z4G3k45tSN8ervNBhrJTwRsrM28tUrh8ULh8p4APvygA
-         DnBZcXA8auEH1GQ/wj0HBh9yfxBjihsz71m1WdkFOWUunsQsH0+m0oxsBuXixT0U/c3C
-         66YQ==
-X-Gm-Message-State: AOAM5322ZQ1x7UrGhOizqAHTmCd8CyOMz2AeRd8CI2rNdCHGQvBeMAle
-        kAdyxGJHpdtn++4E109sUAgJHJrjnlIxULhAGkU=
-X-Google-Smtp-Source: ABdhPJwU+an/8UWQ2Ts+SUkarp/G/GKMcd2SFsmxFPKesvi1mZEbSaSm/aF4QU5c6aFyiQTiDIUKvw2MOC/lWqTAURU=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr39907529ybo.230.1621901713044;
- Mon, 24 May 2021 17:15:13 -0700 (PDT)
+        id S229565AbhEYBlk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 May 2021 21:41:40 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3655 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229550AbhEYBlj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 May 2021 21:41:39 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FpxWN3CbZzNxF3;
+        Tue, 25 May 2021 09:36:32 +0800 (CST)
+Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 25 May 2021 09:40:08 +0800
+Received: from huawei.com (10.175.101.6) by dggema772-chm.china.huawei.com
+ (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 25
+ May 2021 09:40:07 +0800
+From:   Liu Jian <liujian56@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <quentin@isovalent.com>, <liujian56@huawei.com>, <sdf@google.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: [PATCH v3] bpftool: Add sock_release help info for cgroup attach/prog load command
+Date:   Tue, 25 May 2021 09:41:39 +0800
+Message-ID: <20210525014139.323859-1-liujian56@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210521234258.1289307-1-andrii@kernel.org> <20210524234905.n6ycfsmgqhn5ai3p@ast-mbp>
-In-Reply-To: <20210524234905.n6ycfsmgqhn5ai3p@ast-mbp>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 24 May 2021 17:15:02 -0700
-Message-ID: <CAEf4BzYQc+ijF78vX14CXi9My7hJ_+XNpnh1ZcMjpcdT1czHmA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/5] libbpf: streamline error reporting for
- high-level APIs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.175.101.6]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggema772-chm.china.huawei.com (10.1.198.214)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 24, 2021 at 4:49 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, May 21, 2021 at 04:42:58PM -0700, Andrii Nakryiko wrote:
-> >
-> > +/* this goes away in libbpf 1.0 */
-> > +enum libbpf_strict_mode libbpf_mode = LIBBPF_STRICT_NONE;
-> > +
-> > +int libbpf_set_strict_mode(enum libbpf_strict_mode mode)
-> > +{
-> > +     /* __LIBBPF_STRICT_LAST is the last power-of-2 value used + 1, so to
-> > +      * get all possible values we compensate last +1, and then (2*x - 1)
-> > +      * to get the bit mask
-> > +      */
-> > +     if (mode != LIBBPF_STRICT_ALL
-> > +         && mode & ~((__LIBBPF_STRICT_LAST - 1) * 2 - 1))
-> > +             return libbpf_err(-EINVAL);
-> > +
-> > +     libbpf_mode = mode;
-> > +     return 0;
-> > +}
->
-> This hunk should be in patch 1, right?
-> Otherwise bisection will be broken.
+The help information is not added when the function is added.
+Here add the missing information to its cli, documentation and bash completion.
 
-Yeah, I screwed up splitting those changes into patches :( Thanks for
-noticing, I'll send fixed v2 a bit later tonight.
+Fixes: db94cc0b4805 ("bpftool: Add support for BPF_CGROUP_INET_SOCK_RELEASE")
+Signed-off-by: Liu Jian <liujian56@huawei.com>
+---
+v1 -> v2:
+     Add changelog text.
+v2 -> v3:
+     Also change prog cli help info, documentation and bash completion mentioned by Quentin.
+     So the subject was also changed.
+
+ tools/bpf/bpftool/Documentation/bpftool-cgroup.rst | 4 +++-
+ tools/bpf/bpftool/Documentation/bpftool-prog.rst   | 2 +-
+ tools/bpf/bpftool/bash-completion/bpftool          | 6 +++---
+ tools/bpf/bpftool/cgroup.c                         | 3 ++-
+ tools/bpf/bpftool/prog.c                           | 2 +-
+ 5 files changed, 10 insertions(+), 7 deletions(-)
+
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
+index 790944c35602..baee8591ac76 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-cgroup.rst
+@@ -30,7 +30,8 @@ CGROUP COMMANDS
+ |	*ATTACH_TYPE* := { **ingress** | **egress** | **sock_create** | **sock_ops** | **device** |
+ |		**bind4** | **bind6** | **post_bind4** | **post_bind6** | **connect4** | **connect6** |
+ |               **getpeername4** | **getpeername6** | **getsockname4** | **getsockname6** | **sendmsg4** |
+-|               **sendmsg6** | **recvmsg4** | **recvmsg6** | **sysctl** | **getsockopt** | **setsockopt** }
++|               **sendmsg6** | **recvmsg4** | **recvmsg6** | **sysctl** | **getsockopt** | **setsockopt** |
++|               **sock_release** }
+ |	*ATTACH_FLAGS* := { **multi** | **override** }
+ 
+ DESCRIPTION
+@@ -106,6 +107,7 @@ DESCRIPTION
+ 		  **getpeername6** call to getpeername(2) for an inet6 socket (since 5.8);
+ 		  **getsockname4** call to getsockname(2) for an inet4 socket (since 5.8);
+ 		  **getsockname6** call to getsockname(2) for an inet6 socket (since 5.8).
++		  **sock_release** closing an userspace inet socket (since 5.9).
+ 
+ 	**bpftool cgroup detach** *CGROUP* *ATTACH_TYPE* *PROG*
+ 		  Detach *PROG* from the cgroup *CGROUP* and attach type
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-prog.rst b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+index 358c7309d419..fe1b38e7e887 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-prog.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-prog.rst
+@@ -44,7 +44,7 @@ PROG COMMANDS
+ |		**cgroup/connect4** | **cgroup/connect6** | **cgroup/getpeername4** | **cgroup/getpeername6** |
+ |               **cgroup/getsockname4** | **cgroup/getsockname6** | **cgroup/sendmsg4** | **cgroup/sendmsg6** |
+ |		**cgroup/recvmsg4** | **cgroup/recvmsg6** | **cgroup/sysctl** |
+-|		**cgroup/getsockopt** | **cgroup/setsockopt** |
++|		**cgroup/getsockopt** | **cgroup/setsockopt** | **cgroup/sock_release** |
+ |		**struct_ops** | **fentry** | **fexit** | **freplace** | **sk_lookup**
+ |	}
+ |       *ATTACH_TYPE* := {
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index d67518bcbd44..cc33c5824a2f 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -478,7 +478,7 @@ _bpftool()
+                                 cgroup/recvmsg4 cgroup/recvmsg6 \
+                                 cgroup/post_bind4 cgroup/post_bind6 \
+                                 cgroup/sysctl cgroup/getsockopt \
+-                                cgroup/setsockopt struct_ops \
++                                cgroup/setsockopt cgroup/sock_release struct_ops \
+                                 fentry fexit freplace sk_lookup" -- \
+                                                    "$cur" ) )
+                             return 0
+@@ -1021,7 +1021,7 @@ _bpftool()
+                         device bind4 bind6 post_bind4 post_bind6 connect4 connect6 \
+                         getpeername4 getpeername6 getsockname4 getsockname6 \
+                         sendmsg4 sendmsg6 recvmsg4 recvmsg6 sysctl getsockopt \
+-                        setsockopt'
++                        setsockopt sock_release'
+                     local ATTACH_FLAGS='multi override'
+                     local PROG_TYPE='id pinned tag name'
+                     case $prev in
+@@ -1032,7 +1032,7 @@ _bpftool()
+                         ingress|egress|sock_create|sock_ops|device|bind4|bind6|\
+                         post_bind4|post_bind6|connect4|connect6|getpeername4|\
+                         getpeername6|getsockname4|getsockname6|sendmsg4|sendmsg6|\
+-                        recvmsg4|recvmsg6|sysctl|getsockopt|setsockopt)
++                        recvmsg4|recvmsg6|sysctl|getsockopt|setsockopt|sock_release)
+                             COMPREPLY=( $( compgen -W "$PROG_TYPE" -- \
+                                 "$cur" ) )
+                             return 0
+diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
+index d901cc1b904a..6e53b1d393f4 100644
+--- a/tools/bpf/bpftool/cgroup.c
++++ b/tools/bpf/bpftool/cgroup.c
+@@ -28,7 +28,8 @@
+ 	"                        connect6 | getpeername4 | getpeername6 |\n"   \
+ 	"                        getsockname4 | getsockname6 | sendmsg4 |\n"   \
+ 	"                        sendmsg6 | recvmsg4 | recvmsg6 |\n"           \
+-	"                        sysctl | getsockopt | setsockopt }"
++	"                        sysctl | getsockopt | setsockopt |\n"	       \
++	"                        sock_release }"
+ 
+ static unsigned int query_flags;
+ 
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 3f067d2d7584..da4846c9856a 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -2138,7 +2138,7 @@ static int do_help(int argc, char **argv)
+ 		"                 cgroup/getpeername4 | cgroup/getpeername6 |\n"
+ 		"                 cgroup/getsockname4 | cgroup/getsockname6 | cgroup/sendmsg4 |\n"
+ 		"                 cgroup/sendmsg6 | cgroup/recvmsg4 | cgroup/recvmsg6 |\n"
+-		"                 cgroup/getsockopt | cgroup/setsockopt |\n"
++		"                 cgroup/getsockopt | cgroup/setsockopt | cgroup/sock_release |\n"
+ 		"                 struct_ops | fentry | fexit | freplace | sk_lookup }\n"
+ 		"       ATTACH_TYPE := { msg_verdict | stream_verdict | stream_parser |\n"
+ 		"                        flow_dissector }\n"
+-- 
+2.17.1
+
