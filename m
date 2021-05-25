@@ -2,132 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 272223903CB
-	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 16:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39FEC3903E4
+	for <lists+bpf@lfdr.de>; Tue, 25 May 2021 16:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233901AbhEYOWY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 May 2021 10:22:24 -0400
-Received: from mga17.intel.com ([192.55.52.151]:21725 "EHLO mga17.intel.com"
+        id S233943AbhEYOaJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 May 2021 10:30:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233401AbhEYOWV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 May 2021 10:22:21 -0400
-IronPort-SDR: KMRGm6+GbOz9S5ud2XrskwDHqHmbn9oAnk7iCFHp3ZFYXXcfLrx3EaNHPDmHQ4b8DOXtUJl3uo
- yhbJb5+QvF7w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9995"; a="182526074"
-X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
-   d="scan'208";a="182526074"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2021 07:20:49 -0700
-IronPort-SDR: a/ucslzu/pf29G3EpehzGiPIQpcK/YqozMsNAoZ0ndRCxzJiJe0gADLezjcWQj+gflG9z8X2Gr
- 7RL6+ur7DfeQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,328,1613462400"; 
-   d="scan'208";a="546795089"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga004.jf.intel.com with ESMTP; 25 May 2021 07:20:44 -0700
-Received: from alobakin-mobl.ger.corp.intel.com (hskrzypc-MOBL.ger.corp.intel.com [10.213.6.192])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 14PEKgAb015423;
-        Tue, 25 May 2021 15:20:42 +0100
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Saeed Mahameed <saeed@kernel.org>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "Raczynski, Piotr" <piotr.raczynski@intel.com>,
-        "Zhang, Jessica" <jessica.zhang@intel.com>,
-        "Kubiak, Marcin" <marcin.kubiak@intel.com>,
-        "Joseph, Jithu" <jithu.joseph@intel.com>,
-        "kurt@linutronix.de" <kurt@linutronix.de>,
-        "Maloor, Kishen" <kishen.maloor@intel.com>,
-        "Gomes, Vinicius" <vinicius.gomes@intel.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Swiatkowski, Michal" <michal.swiatkowski@intel.com>,
-        "Plantykow, Marta A" <marta.a.plantykow@intel.com>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
-        "Desouza, Ederson" <ederson.desouza@intel.com>,
-        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
-        "Czapnik, Lukasz" <lukasz.czapnik@intel.com>, bpf@vger.kernel.org
-Subject: Re: AF_XDP metadata/hints
-Date:   Tue, 25 May 2021 16:20:27 +0200
-Message-Id: <20210525142027.1432-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <87lf85zmuw.fsf@toke.dk>
-References: <dc2c38cdccfa5eca925cfc9d59b0674e208c9c9d.camel@intel.com> <DM6PR11MB2780A8C5410ECB3C9700EAB5CA579@DM6PR11MB2780.namprd11.prod.outlook.com> <PH0PR11MB487034313697F395BB5BA3C5E4579@PH0PR11MB4870.namprd11.prod.outlook.com> <DM4PR11MB5422733A87913EFF8904C17184579@DM4PR11MB5422.namprd11.prod.outlook.com> <20210507131034.5a62ce56@carbon> <DM4PR11MB5422FE9618B3692D48FCE4EA84549@DM4PR11MB5422.namprd11.prod.outlook.com> <20210510185029.1ca6f872@carbon> <DM4PR11MB54227C25DFD4E882CB03BD3884539@DM4PR11MB5422.namprd11.prod.outlook.com> <20210512102546.5c098483@carbon> <DM4PR11MB542273C9D8BF63505DC6E21784519@DM4PR11MB5422.namprd11.prod.outlook.com> <7b347a985e590e2a422f837971b30bd83f9c7ac3.camel@nvidia.com> <DM4PR11MB5422762E82C0531B92BDF09A842B9@DM4PR11MB5422.namprd11.prod.outlook.com> <DM4PR11MB5422269F6113268172B9E26A842A9@DM4PR11MB5422.namprd11.prod.outlook.com> <DM4PR11MB54224769926B06EE76635A6484299@DM4PR11MB5422.namprd11.prod.outlook.com> <20210521153110.207cb231@carbon> <1426bc91c6c6ee3aaf3d85c4291a12968634e521.camel@kernel.org> <87lf85zmuw.fsf@toke.dk>
+        id S233947AbhEYOaG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 May 2021 10:30:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22D4861417;
+        Tue, 25 May 2021 14:28:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621952916;
+        bh=yOFbOyeOH4Z8ERI4DE9qAGtun2OsQD4wk3ZwQA5/0IU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=t9swXW7m8mWa6CRB+0wVSwacFcw7sA4VD62Rj6HKhQCxCq/8VHbwwrf8ybEkJ/AY9
+         g/hwyXeOIMsgmaZst+NJfHISK766JarxaE8Ms+kWqO/F7YRbGIryshGd1MA6uW9YVD
+         7WKna8MLyOD6HdpuOvdSTegQ0wdFVVfVasn6Tdvn+de4yXt5R7543VzSIMPtOqNI4f
+         +AoKfNpxLeluLgPwmpYM4eJeU7PCFY0qJoOS0k9JnaD4dI823PBh5DW0n1VCFRila1
+         x+sczSgjQkZ8TjS7htUCTO3Bpz19QxJBxdSSSbIk4AaCXaO+Jox38t/d8leURr2y4X
+         u4Xd8+NBFYY6Q==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id DB6C55C02A7; Tue, 25 May 2021 07:28:35 -0700 (PDT)
+Date:   Tue, 25 May 2021 07:28:35 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Xu, Yanfei" <yanfei.xu@windriver.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>,
+        rcu@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, bpf <bpf@vger.kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in
+ check_all_holdout_tasks_trace
+Message-ID: <20210525142835.GO4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <000000000000f034fc05c2da6617@google.com>
+ <CACT4Y+ZGkye_MnNr92qQameXVEHNc1QkpmNrG3W8Yd1Xg_hfhw@mail.gmail.com>
+ <20210524041350.GJ4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210524224602.GA1963972@paulmck-ThinkPad-P17-Gen-1>
+ <24f352fc-c01e-daa8-5138-1f89f75c7c16@windriver.com>
+ <20210525033355.GN4441@paulmck-ThinkPad-P17-Gen-1>
+ <4b98d598-8044-0254-9ee2-0c9814b0245a@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <4b98d598-8044-0254-9ee2-0c9814b0245a@windriver.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
-Date: Sun, 23 May 2021 13:54:47 +0200
-
-> Saeed Mahameed <saeed@kernel.org> writes:
+On Tue, May 25, 2021 at 06:24:10PM +0800, Xu, Yanfei wrote:
 > 
-> > On Fri, 2021-05-21 at 15:31 +0200, Jesper Dangaard Brouer wrote:
-> >> On Fri, 21 May 2021 10:53:40 +0000
-> >> "Lobakin, Alexandr" <alexandr.lobakin@intel.com> wrote:
-> >>
-> >> > I've opened two discussions at https://github.com/alobakin/linux,
-> >> > feel free to join them and/or create new ones to share your thoughts
-> >> > and concerns.
-> >>
-> >> Thanks Alexandr for keeping the thread/subject alive.
-> >>
-> >> I guess this is a new GitHub features "Discussions".  I've never used
-> >> that in a project before, lets see how this goes.  The usual approach
-> >> is discussions over email on netdev (Cc. netdev@vger.kernel.org).
-> >
-> > I agree we need full visibility and transparency, i actually recommend:
-> > bpf@vger.kernel.org
 > 
-> +1, please keep this on the list :)
-
-Sure, let's keep it the classic way.
-I removed the netdev ML from the CCs and added bpf there.
-
-Regarding the comments from GitHub discussions:
-
-alobakin:
-
-> Since 5.11, it's now possible to obtain a BTF not only for vmlinux,
-> but also for modules.
-> This will eliminate a need for manually composing and registering a
-> BTF inside the driver code, which is 100+ locs for ice for example.
+> On 5/25/21 11:33 AM, Paul E. McKenney wrote:
+> > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > 
+> > On Tue, May 25, 2021 at 10:31:55AM +0800, Xu, Yanfei wrote:
+> > > 
+> > > 
+> > > On 5/25/21 6:46 AM, Paul E. McKenney wrote:
+> > > > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > > > 
+> > > > On Sun, May 23, 2021 at 09:13:50PM -0700, Paul E. McKenney wrote:
+> > > > > On Sun, May 23, 2021 at 08:51:56AM +0200, Dmitry Vyukov wrote:
+> > > > > > On Fri, May 21, 2021 at 7:29 PM syzbot
+> > > > > > <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com> wrote:
+> > > > > > > 
+> > > > > > > Hello,
+> > > > > > > 
+> > > > > > > syzbot found the following issue on:
+> > > > > > > 
+> > > > > > > HEAD commit:    f18ba26d libbpf: Add selftests for TC-BPF management API
+> > > > > > > git tree:       bpf-next
+> > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=17f50d1ed00000
+> > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=8ff54addde0afb5d
+> > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
+> > > > > > > 
+> > > > > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > > > > > 
+> > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > > > Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
+> > > > > > 
+> > > > > > This looks rcu-related. +rcu mailing list
+> > > > > 
+> > > > > I think I see a possible cause for this, and will say more after some
+> > > > > testing and after becoming more awake Monday morning, Pacific time.
+> > > > 
+> > > > No joy.  From what I can see, within RCU Tasks Trace, the calls to
+> > > > get_task_struct() are properly protected (either by RCU or by an earlier
+> > > > get_task_struct()), and the calls to put_task_struct() are balanced by
+> > > > those to get_task_struct().
+> > > > 
+> > > > I could of course have missed something, but at this point I am suspecting
+> > > > an unbalanced put_task_struct() has been added elsewhere.
+> > > > 
+> > > > As always, extra eyes on this code would be a good thing.
+> > > > 
+> > > > If it were reproducible, I would of course suggest bisection.  :-/
+> > > > 
+> > > >                                                           Thanx, Paul
+> > > > 
+> > > Hi Paul,
+> > > 
+> > > Could it be?
+> > > 
+> > >         CPU1                                        CPU2
+> > > trc_add_holdout(t, bhp)
+> > > //t->usage==2
+> > >                                        release_task
+> > >                                          put_task_struct_rcu_user
+> > >                                            delayed_put_task_struct
+> > >                                              ......
+> > >                                              put_task_struct(t)
+> > >                                              //t->usage==1
+> > > 
+> > > check_all_holdout_tasks_trace
+> > >    ->trc_wait_for_one_reader
+> > >      ->trc_del_holdout
+> > >        ->put_task_struct(t)
+> > >        //t->usage==0 and task_struct freed
+> > >    READ_ONCE(t->trc_reader_checked)
+> > >    //ops， t had been freed.
+> > > 
+> > > So, after excuting trc_wait_for_one_reader（）, task might had been removed
+> > > from holdout list and the corresponding task_struct was freed.
+> > > And we shouldn't do READ_ONCE(t->trc_reader_checked).
+> > 
+> > I was suspicious of that call to trc_del_holdout() from within
+> > trc_wait_for_one_reader(), but the only time it executes is in the
+> > context of the current running task, which means that CPU 2 had better
+> > not be invoking release_task() on it just yet.
+> > 
+> > Or am I missing your point?
 > 
-> That's obviously not the most straightforward and trivial way, but
-> could help a lot.
-
-saeedtx:
-
-> the point of registering BTF directly from the driver is to allow
-> "Flex metadata" meaning that meta data format can be constructed on
-> the fly according to user demand.
-> BTF for modules is constructed only at compilation time and
-> registered only on module load. so there is no way to implement flex
-> metadata with vmlinux BTF. we still need a dynamic registration API
-> for current and future HW where the HW will provide the BTF
-> dynamically.
+> Two times.
+> 1. the task is current.
 > 
-> I am sure we can find mutliple ways to reduce the 100+ LOC, but the
-> goal is to have the dynamic btf_register/unregister API
+>                trc_wait_for_one_reader
+>                  ->trc_del_holdout
 
-We initially planned to register just one (or several) predefined
-BTF(s) per module/netdevice that would provide a full list of
-supported fields. The flexibility of metadata then is in that BPF
-core calls for netdevice's ndo_bpf() on BPF program setup and
-provides a metadata layout requested by that BPF prog to the driver,
-so it could configure its hotpath (current NICs) or a hardware
-(future NICs) to build metadata accordingly.
-Driver can declare several BTFs (e.g. a "generic" one with things
-like hashes and csums one and a custom one) and it would work either
-through dynamic registering or through /sys approach.
+This one should be fine because the task cannot be freed until it
+actually exits, and the grace-period kthread never exits.  But it
+could also be removed without any problem that I see.
 
-This is all discussable anyways, we're happy to hear different
-opinions and thoughts to collectively choose the optimal way.
+> 2. task isn't current.
+> 
+>                trc_wait_for_one_reader
+>                  ->get_task_struct
+>                  ->try_invoke_on_locked_down_task（trc_inspect_reader）
+>                    ->trc_del_holdout
+>                  ->put_task_struct
 
-> -Toke
+Ah, this one is more interesting, thank you!
 
-Thanks,
-Al
+Yes, it is safe from the list's viewpoint to do the removal in the
+trc_inspect_reader() callback, but you are right that the grace-period
+kthread may touch the task structure after return, and there might not
+be anything else holding that task structure in place.
+
+> > Of course, if you can reproduce it, the following patch might be
+> 
+> Sorry...I can't reproduce it, just analyse syzbot's log. :(
+
+Well, if it could be reproduced, that would mean that it was too easy,
+wouldn't it?  ;-)
+
+How about the (untested) patch below, just to make sure that we are
+talking about the same thing?  I have started testing, but then
+again, I have not yet been able to reproduce this, either.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index efb8127f3a36..8b25551d10db 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -957,10 +957,9 @@ static bool trc_inspect_reader(struct task_struct *t, void *arg)
+ 		in_qs = likely(!t->trc_reader_nesting);
+ 	}
+ 
+-	// Mark as checked.  Because this is called from the grace-period
+-	// kthread, also remove the task from the holdout list.
++	// Mark as checked so that the grace-period kthread will
++	// remove it from the holdout list.
+ 	t->trc_reader_checked = true;
+-	trc_del_holdout(t);
+ 
+ 	if (in_qs)
+ 		return true;  // Already in quiescent state, done!!!
