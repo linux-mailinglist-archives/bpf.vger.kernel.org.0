@@ -2,122 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF4F391595
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 12:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA92439166F
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 13:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234224AbhEZLAh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 07:00:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46777 "EHLO
+        id S232982AbhEZLqt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 07:46:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30360 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234172AbhEZLAg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 May 2021 07:00:36 -0400
+        by vger.kernel.org with ESMTP id S232803AbhEZLqs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 26 May 2021 07:46:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622026745;
+        s=mimecast20190719; t=1622029516;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4v2hzBg7euOmc0soSmar23PhyokMA03jLVgIhXzkhb4=;
-        b=UTpCm67rCWAENL2jH37faEzqi+r/8GgD72Mp0V0TdpnySay7DGtjgG7XZ0cMC04dxNWBuU
-        sIVFjTePnCimxbbeEU5+/vxO83hDY0FqCudfHBH276LxKh/5+g5Tqj5F0mnFnv23rHMZAu
-        f1VM+SNhUjUuOMWs+t4kQBPEc3gv3VE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-501-0-9ao6CPN46cBSKm_zCkfA-1; Wed, 26 May 2021 06:59:02 -0400
-X-MC-Unique: 0-9ao6CPN46cBSKm_zCkfA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 783B280293C;
-        Wed, 26 May 2021 10:58:59 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3D6CD5D9D3;
-        Wed, 26 May 2021 10:58:50 +0000 (UTC)
-Date:   Wed, 26 May 2021 12:58:48 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     BPF-dev-list <bpf@vger.kernel.org>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     brouer@redhat.com, "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Saeed Mahameed <saeed@kernel.org>,
-        "kurt@linutronix.de" <kurt@linutronix.de>,
-        "Raczynski, Piotr" <piotr.raczynski@intel.com>,
-        "Zhang, Jessica" <jessica.zhang@intel.com>,
-        "Maloor, Kishen" <kishen.maloor@intel.com>,
-        "Gomes, Vinicius" <vinicius.gomes@intel.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Swiatkowski, Michal" <michal.swiatkowski@intel.com>,
-        "Plantykow, Marta A" <marta.a.plantykow@intel.com>,
-        "Desouza, Ederson" <ederson.desouza@intel.com>,
-        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
-        "Czapnik, Lukasz" <lukasz.czapnik@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "Joseph, Jithu" <jithu.joseph@intel.com>,
-        William Tu <u9012063@gmail.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Subject: XDP-hints: Howto support multiple BTF types per packet basis?
-Message-ID: <20210526125848.1c7adbb0@carbon>
+         in-reply-to:in-reply-to:references:references;
+        bh=5Uw+/IY4PFLhc9QD0XQTD8Vq22Bv9V1A42B8cw/tcfQ=;
+        b=KZW7SBXegZu/wpZtz8zD3v+c+Tfn24w8Eh3QahoBAYv0mpHdy6NN90Pi9eTOR4ih+SkyEC
+        Jf0bJbiqlXJ21kPasLIbijiQ9LPvSbiQI8LWQ2eukOZjfTtYzxlONsPX/yCSUf1N4nyABf
+        PSighAa3eR5ZZsVoX0qyYHzpK1vuiOQ=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-3PmD0NKLMjKfKZfjIC1eiw-1; Wed, 26 May 2021 07:45:15 -0400
+X-MC-Unique: 3PmD0NKLMjKfKZfjIC1eiw-1
+Received: by mail-yb1-f198.google.com with SMTP id u13-20020a25f80d0000b029051d7fee31cfso1300577ybd.22
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 04:45:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5Uw+/IY4PFLhc9QD0XQTD8Vq22Bv9V1A42B8cw/tcfQ=;
+        b=jd0VW0QV/KVboYKU0X8QuFg6eWxzrEGB4/DI7LA5D3UQadLNel5rgfoJY4s3PA/mCW
+         n5css5XQWle3x4EWCv1xjLshvPCgLCRy/Z23DFQS+otjl6dHmXj2ykQjufUoP1yfXfOY
+         GqUwlHwfHvkzMSk+oEO9+8+bn8zTmFrEpOLVFOyrNHwX6deep7Pa/azmLOVUrSMQlHBD
+         X/Vaz+IzDFVBCH3KJDxNMUiqLNd8CnMTKFJlVhJE2mHD7S7eDsJFhc71C+NRXpZPC7ji
+         rUxicn4Vm5W0KcCePeCfqdySMnvFa7poZ5I2eTtOwuTpY6oe9kg3d108VpB4z83bDLN4
+         +xDQ==
+X-Gm-Message-State: AOAM532XcptWFJxCM/+oVepIxfeD+6z7D9CvrAyXRlSgy5kZJzINwlv3
+        EJSCyh7N2uULZmZzq9ty8gSkkNGGRMdPEWXnYVel2GaEuARutDCRmNczaouRJ5CRhnlJqp2h671
+        jSWNiBTMB7nxAOaKUZPrrtQgUZzoV
+X-Received: by 2002:a25:f50e:: with SMTP id a14mr48352354ybe.172.1622029514558;
+        Wed, 26 May 2021 04:45:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw7JX0t9Q+MjZUdNuGYqNNwFWjv7mwlUzB5zjT5J9a7c3DzGoUhB3CdgL/OZI5wwTVrJZE9FoOnkmowu6kRXnk=
+X-Received: by 2002:a25:f50e:: with SMTP id a14mr48352333ybe.172.1622029514339;
+ Wed, 26 May 2021 04:45:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210517092006.803332-1-omosnace@redhat.com> <87o8d9k4ln.fsf@mpe.ellerman.id.au>
+In-Reply-To: <87o8d9k4ln.fsf@mpe.ellerman.id.au>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Wed, 26 May 2021 13:44:59 +0200
+Message-ID: <CAFqZXNtUvrGxT6UMy81WfMsfZsydGN5k-VGFBq8yjDWN5ARAWw@mail.gmail.com>
+Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
+ permission checks
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, network dev <netdev@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Paul Moore <paul@paul-moore.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi All,
+On Mon, May 17, 2021 at 1:00 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+> Ondrej Mosnacek <omosnace@redhat.com> writes:
+> > Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+> > lockdown") added an implementation of the locked_down LSM hook to
+> > SELinux, with the aim to restrict which domains are allowed to perform
+> > operations that would breach lockdown.
+> >
+> > However, in several places the security_locked_down() hook is called in
+> > situations where the current task isn't doing any action that would
+> > directly breach lockdown, leading to SELinux checks that are basically
+> > bogus.
+> >
+> > Since in most of these situations converting the callers such that
+> > security_locked_down() is called in a context where the current task
+> > would be meaningful for SELinux is impossible or very non-trivial (and
+> > could lead to TOCTOU issues for the classic Lockdown LSM
+> > implementation), fix this by modifying the hook to accept a struct cred
+> > pointer as argument, where NULL will be interpreted as a request for a
+> > "global", task-independent lockdown decision only. Then modify SELinux
+> > to ignore calls with cred == NULL.
+> >
+> > Since most callers will just want to pass current_cred() as the cred
+> > parameter, rename the hook to security_cred_locked_down() and provide
+> > the original security_locked_down() function as a simple wrapper around
+> > the new hook.
+> >
+> > The callers migrated to the new hook, passing NULL as cred:
+> > 1. arch/powerpc/xmon/xmon.c
+> >      Here the hook seems to be called from non-task context and is only
+> >      used for redacting some sensitive values from output sent to
+> >      userspace.
+>
+> It's hard to follow but it actually disables interactive use of xmon
+> entirely if lockdown is in confidentiality mode, and disables
+> modifications of the kernel in integrity mode.
+>
+> But that's not really that important, the patch looks fine.
+>
+> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 
-I see a need for a driver to use different XDP metadata layout on a per
-packet basis. E.g. PTP packets contains a hardware timestamp. E.g. VLAN
-offloading and associated metadata as only relevant for packets using
-VLANs. (Reserving room for every possible HW-hint is against the idea
-of BTF).
+Thanks, Michael!
 
-The question is how to support multiple BTF types on per packet basis?
-(I need input from BTF experts, to tell me if I'm going in the wrong
-direction with below ideas).
+James/Paul, is there anything blocking this patch from being merged?
+Especially the BPF case is causing real trouble for people and the
+only workaround is to broadly allow lockdown::confidentiality in the
+policy.
 
-Let me describe a possible/proposed packet flow (feel free to disagree):
-
- When driver RX e.g. a PTP packet it knows HW is configured for PTP-TS and
- when it sees a TS is available, then it chooses a code path that use the
- BTF layout that contains RX-TS. To communicate what BTF-type the
- XDP-metadata contains, it simply store the BTF-ID in xdp_buff->btf_id.
-
- When redirecting the xdp_buff is converted to xdp_frame, and also contains
- the btf_id member. When converting xdp_frame to SKB, then netcore-code
- checks if this BTF-ID have been registered, if so there is a (callback or
- BPF-hook) registered to handle this BTF-type that transfer the fields from
- XDP-metadata area into SKB fields.
-
- The XDP-prog also have access to this ctx->btf_id and can multiplex on
- this in the BPF-code itself. Or use other methods like parsing PTP packet
- and extract TS as expected BTF offset in XDP metadata (perhaps add a
- sanity check if metadata-size match).
-
-
-I talked to AF_XDP people (Magnus, Bj=C3=B8rn and William) about this idea,
-and they pointed out that AF_XDP also need to know what BTF-layout is
-used. As Magnus wrote in other thread; there is only 32-bit left in
-AF_XDP descriptor option. We could store the BTF-ID in this field, but
-it would block for other use-cases. Bj=C3=B8rn came up with the idea of
-storing the BTF-ID in the BTF-layout itself, but as the last-member (to
-have fixed offset to check in userspace AF_XDP program). Then we only
-need to use a single bit in AF_XDP descriptor option to say
-XDP-metadata is BTF described.
-
-In the AF_XDP userspace program, the programmers can have a similar
-callback system per known BTF-ID. This way they can compile efficient
-code per ID via requesting the BTF layout from the kernel. (Hint:
-`bpftool btf dump id 42 format c`).
-
-Please let me know if this it the right or wrong direction?
-
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+--
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
 
