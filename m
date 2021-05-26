@@ -2,139 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3878391E3F
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 19:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4AF391E46
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 19:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234290AbhEZRkJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 13:40:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55267 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232714AbhEZRkJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 May 2021 13:40:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622050717;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a/9PHlCIbYLHT5Bvg+Fmyn6xRX3OaRP0W0KpRzB/Qpg=;
-        b=OHdtYu+F08ZzLtZh8Tu1gHdMW2wosdotQvigE4sF+eB7kjyHPAyPSb77Rn8pb+B9nctTJz
-        GgjP/o+fdsClhDqd90w/MTJhlYbGGy6eD9f7czo452mo7fw5/gNJFOzRS0mK04Fd+R2h6g
-        va6t9Yf/7I1MxswZtuGoxmEgCRyZpiY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-gkoWIi7IODCwJorW7ooopw-1; Wed, 26 May 2021 13:38:33 -0400
-X-MC-Unique: gkoWIi7IODCwJorW7ooopw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 53186180FD6B;
-        Wed, 26 May 2021 17:38:31 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 450905D6D3;
-        Wed, 26 May 2021 17:38:20 +0000 (UTC)
-Date:   Wed, 26 May 2021 19:38:18 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        "Raczynski, Piotr" <piotr.raczynski@intel.com>,
-        "Zhang, Jessica" <jessica.zhang@intel.com>,
-        "Kubiak, Marcin" <marcin.kubiak@intel.com>,
-        "Joseph, Jithu" <jithu.joseph@intel.com>,
-        "kurt@linutronix.de" <kurt@linutronix.de>,
-        "Maloor, Kishen" <kishen.maloor@intel.com>,
-        "Gomes, Vinicius" <vinicius.gomes@intel.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Swiatkowski, Michal" <michal.swiatkowski@intel.com>,
-        "Plantykow, Marta A" <marta.a.plantykow@intel.com>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
-        "Desouza, Ederson" <ederson.desouza@intel.com>,
-        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
-        "Czapnik, Lukasz" <lukasz.czapnik@intel.com>, bpf@vger.kernel.org,
-        brouer@redhat.com
-Subject: Re: AF_XDP metadata/hints
-Message-ID: <20210526193818.2fda7dba@carbon>
-In-Reply-To: <60ae6ad5a2e04_18bf20819@john-XPS-13-9370.notmuch>
-References: <dc2c38cdccfa5eca925cfc9d59b0674e208c9c9d.camel@intel.com>
-        <20210510185029.1ca6f872@carbon>
-        <DM4PR11MB54227C25DFD4E882CB03BD3884539@DM4PR11MB5422.namprd11.prod.outlook.com>
-        <20210512102546.5c098483@carbon>
-        <DM4PR11MB542273C9D8BF63505DC6E21784519@DM4PR11MB5422.namprd11.prod.outlook.com>
-        <7b347a985e590e2a422f837971b30bd83f9c7ac3.camel@nvidia.com>
-        <DM4PR11MB5422762E82C0531B92BDF09A842B9@DM4PR11MB5422.namprd11.prod.outlook.com>
-        <DM4PR11MB5422269F6113268172B9E26A842A9@DM4PR11MB5422.namprd11.prod.outlook.com>
-        <DM4PR11MB54224769926B06EE76635A6484299@DM4PR11MB5422.namprd11.prod.outlook.com>
-        <20210521153110.207cb231@carbon>
-        <1426bc91c6c6ee3aaf3d85c4291a12968634e521.camel@kernel.org>
-        <87lf85zmuw.fsf@toke.dk>
-        <20210525142027.1432-1-alexandr.lobakin@intel.com>
-        <60add3cad4ef0_3b75f2086@john-XPS-13-9370.notmuch>
-        <20210526134910.1c06c5d8@carbon>
-        <87y2c1iqz4.fsf@toke.dk>
-        <60ae6ad5a2e04_18bf20819@john-XPS-13-9370.notmuch>
+        id S232388AbhEZRlm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 13:41:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhEZRll (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 May 2021 13:41:41 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F97C061574;
+        Wed, 26 May 2021 10:40:09 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id g38so3169247ybi.12;
+        Wed, 26 May 2021 10:40:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DJ9ACjlxnCUJLajZkvUg3JRAmdPpDh57UE8Z7+zKl2E=;
+        b=q14fR1x7ZC6FG7q+YFW4P6RUspWpjhXIvmW9USnA/SUNqRH1AUzv0WSzhYqRTohAz2
+         7irBwyQJFjA/i8GFWP8rx/cQwO6X5VHW3uQ4nvaXVtNHbSDiQY5SB2oDQ895viceF7P3
+         Fz1wQd6cmUcIc9W/QWS79G+z47BFExxBBKSlMv8thl79VEZJ/MRhnLZB+D+cqHCTzjXH
+         H39PDvxNpLrpYYaQaTRryNMAiAoc+3SfPpYsM28btzVdYJn0vba13w1/RTDgu2ulV1EH
+         ojkaLc4nwVpuiFi5aJtzofc1iU9DKu/HasrzoYs9EjIKw+VK/NIbWd+/+9Ucn47ddRyE
+         fhng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DJ9ACjlxnCUJLajZkvUg3JRAmdPpDh57UE8Z7+zKl2E=;
+        b=FWOC+7OIHve66YafO5DfIYPIN51ARKXW7BYGEZki2NDluiE8WrsfNBtfp1yQGGKq/G
+         mQTsE0jdoX1Tta9DX9XoajBlTIEM7vEdRSPxqBxar5ZzhUo2jOGqy9a9rvzrXVcLvZsS
+         kbi45shpQ7XDfzsDGLbMS9csvslQopCh81GoGrcEkga6GI5qRHHcSgCG3XCu3oecjn+3
+         VYUgE6Pem/+KP8gIFSlPJTXmkMBRjaX+iuEDEIscIvPolihK1ed2LdI/mTz3nyVyqOzm
+         p//2QgGFEcyoffjyo6SoIEYhKISQIKszVQigUPTKoacHhaOuJVKyuSIQY2M3Vh7uVxXz
+         Rl4Q==
+X-Gm-Message-State: AOAM5328VR3l35GLvnogt39RPsbqC1k7INBVtLhb926gk57uQ62+nPQn
+        mXPmHb8w1vJT1wKmsPokF2Ya+Q4qvM3U7UwyzVBahQVG
+X-Google-Smtp-Source: ABdhPJyHiz6p+6b1Nq2tExGkbdorYbnD1UY697xYQETPqevt15o2HZJjdTPsN4ZBFpMJFOsWxQsAmgFDAigeVojp2nQ=
+X-Received: by 2002:a5b:286:: with SMTP id x6mr54464936ybl.347.1622050808310;
+ Wed, 26 May 2021 10:40:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <162201612941.278331.5293566981784464165.stgit@devnote2>
+In-Reply-To: <162201612941.278331.5293566981784464165.stgit@devnote2>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 26 May 2021 10:39:57 -0700
+Message-ID: <CAEf4BzbTKwnuutnJG6ALYX_YgLPg0Tzm+BNRGYLfh62oZPNGpg@mail.gmail.com>
+Subject: Re: [PATCH -tip v6 00/13] kprobes: Fix stacktrace with kretprobes on x86
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 26 May 2021 08:35:49 -0700
-John Fastabend <john.fastabend@gmail.com> wrote:
+On Wed, May 26, 2021 at 1:02 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Hello,
+>
+> Here is the 6th version of the series to fix the stacktrace with kretprobe
+> on x86.
+>
+> The previous version is;
+>
+>  https://lore.kernel.org/bpf/161676170650.330141.6214727134265514123.stgit@devnote2/
+>
+> This version is rebased on the latest tip tree and add some patches for
+> improving stacktrace[13/13].
+>
+> Changes from v5:
+> [02/13]:
+>   - Use dereference_symbol_descriptor() instead of dereference_function_descriptor()
+> [04/13]:
+>   - Replace BUG_ON() with WARN_ON_ONCE() in __kretprobe_trampoline_handler().
+> [13/13]:
+>   - Add a new patch to fix return address in earlier stage.
+>
+>
+> With this series, unwinder can unwind stack correctly from ftrace as below;
+>
+>   # cd /sys/kernel/debug/tracing
+>   # echo > trace
+>   # echo 1 > options/sym-offset
+>   # echo r vfs_read >> kprobe_events
+>   # echo r full_proxy_read >> kprobe_events
+>   # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+>   # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+>   # echo 1 > events/kprobes/enable
+>   # cat /sys/kernel/debug/kprobes/list
+> ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
+> ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
+>   # echo 0 > events/kprobes/enable
+>   # cat trace
+> # tracer: nop
+> #
+> # entries-in-buffer/entries-written: 3/3   #P:8
+> #
+> #                                _-----=> irqs-off
+> #                               / _----=> need-resched
+> #                              | / _---=> hardirq/softirq
+> #                              || / _--=> preempt-depth
+> #                              ||| /     delay
+> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+> #              | |         |   ||||      |         |
+>            <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
+>            <...>-134     [007] ...1    16.185901: <stack trace>
+>  => kretprobe_trace_func+0x209/0x300
+>  => kretprobe_dispatcher+0x4a/0x70
+>  => __kretprobe_trampoline_handler+0xd4/0x170
+>  => trampoline_handler+0x43/0x60
+>  => kretprobe_trampoline+0x2a/0x50
+>  => vfs_read+0x98/0x180
+>  => ksys_read+0x5f/0xe0
+>  => do_syscall_64+0x37/0x90
+>  => entry_SYSCALL_64_after_hwframe+0x44/0xae
+>            <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
+>
+> This shows the double return probes (vfs_read and full_proxy_read) on the stack
+> correctly unwinded. (vfs_read will return to ksys_read+0x5f and full_proxy_read
+> will return to vfs_read+0x98)
+>
+> This actually changes the kretprobe behavisor a bit, now the instraction pointer in
+> the pt_regs passed to kretprobe user handler is correctly set the real return
+> address. So user handlers can get it via instruction_pointer() API.
+>
+> You can also get this series from
+>  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v6
+>
+>
+> Thank you,
+>
+> ---
+>
 
-> I'll still have a basic question though. I've never invested much time
-> into the hints because its still not clear to me what the use case is?
-> What would we put in the hints and do we have any data to show it would be
-> a performance win.
+Thanks for following up on this! I've applied this patch set on top of
+bpf-next and tested with my local BPF-based tool that uses stack
+traces in kretprobes heavily. It all works now and I'm getting
+meaningful and correctly looking stacktraces. Thanks a lot!
 
-I've documented and measured[1] the performance overhead of the missing
-checksum for UDP packets when XDP-redirecting into veth (that does
-XDP_PASS).  Full delivery into a socket we can save 8% (54.28 ns /
-+109Kpps).  Lorenzo is working patches outside XDP-hints for this, but
-it only handle CHECKSUM_UNNECESSARY, and if we need CHECKSUM_COMPLETE
-then we also need XDP-hints/metadata (for storing skb->csum).
+Tested-by: Andrii Nakryik <andrii@kernel.org>
 
-[1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp_frame01_checksum.org
- 
-> If its a simple hash of the headers then how would we use it?
 
-Even with a simple/smaller hash you can tune the RSS-hash on parts of
-the packet you like, see[2]. That would be valuable for doing lookups
-in BPF-maps.
-
-[2] https://github.com/stackpath/rxtxcpu/tree/master/Documentation/case-studies
-
-For cpumap redirect I would like to spread packets with this RX-hash,
-as I can avoid parsing packets headers on RX-CPU.
-
-The mlx5 NIC support 64-bit unique flow hash, that you could use as a
-lookup key in your (Cilium) conntrack table, or a container/sockmap
-redirect-tracking table.
-
-> The map_lookup/updates use IP addrs for keys in Cilium. So I think the
-> suggestion is to offload the jhash operation? But that requires some
-> program changes to work. Could someone convince me?
-
-Is my explanations enough, or are you still not convinced? 
- 
-> Maybe packet timestamp?
-
-I have a concrete use-case that needs packet timestamps for AF_XDP. It
-is the control system inside a wind-turbine that use a time-triggered
-Real-Time protocol.  I actually both need hardware RX-timestamps and
-TX-timestamps.  A lot it lacking on the TX-side to allow AF_XDP to send
-down a transmission timestamp, but I have a real-use-case that needs
-this (before end-of year).  I have hardware i210 and i225 chips in my
-testlab so I can get this working.
-
-Thanks you John for engaging and challenging us in our design of
-XDP-hints, I truly appreciate your feedback! :-)
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+> Josh Poimboeuf (1):
+>       x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
+>
+> Masami Hiramatsu (12):
+>       ia64: kprobes: Fix to pass correct trampoline address to the handler
+>       kprobes: treewide: Replace arch_deref_entry_point() with dereference_symbol_descriptor()
+>       kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
+>       kprobes: Add kretprobe_find_ret_addr() for searching return address
+>       ARC: Add instruction_pointer_set() API
+>       ia64: Add instruction_pointer_set() API
+>       arm: kprobes: Make a space for regs->ARM_pc at kretprobe_trampoline
+>       kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
+>       x86/kprobes: Push a fake return address at kretprobe_trampoline
+>       x86/unwind: Recover kretprobe trampoline entry
+>       tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
+>       x86/kprobes: Fixup return address in generic trampoline handler
+>
+>
+>  arch/arc/include/asm/ptrace.h       |    5 ++
+>  arch/arc/kernel/kprobes.c           |    2 -
+>  arch/arm/probes/kprobes/core.c      |    5 +-
+>  arch/arm64/kernel/probes/kprobes.c  |    3 -
+>  arch/csky/kernel/probes/kprobes.c   |    2 -
+>  arch/ia64/include/asm/ptrace.h      |    5 ++
+>  arch/ia64/kernel/kprobes.c          |   15 ++---
+>  arch/mips/kernel/kprobes.c          |    3 -
+>  arch/parisc/kernel/kprobes.c        |    4 +
+>  arch/powerpc/kernel/kprobes.c       |   13 ----
+>  arch/riscv/kernel/probes/kprobes.c  |    2 -
+>  arch/s390/kernel/kprobes.c          |    2 -
+>  arch/sh/kernel/kprobes.c            |    2 -
+>  arch/sparc/kernel/kprobes.c         |    2 -
+>  arch/x86/include/asm/kprobes.h      |    1
+>  arch/x86/include/asm/unwind.h       |   23 +++++++
+>  arch/x86/include/asm/unwind_hints.h |    5 ++
+>  arch/x86/kernel/kprobes/core.c      |   53 +++++++++++++++--
+>  arch/x86/kernel/unwind_frame.c      |    4 +
+>  arch/x86/kernel/unwind_guess.c      |    3 -
+>  arch/x86/kernel/unwind_orc.c        |   19 +++++-
+>  include/linux/kprobes.h             |   41 +++++++++++--
+>  kernel/kprobes.c                    |  108 +++++++++++++++++++++++++----------
+>  kernel/trace/trace_output.c         |   17 +-----
+>  lib/error-inject.c                  |    3 +
+>  25 files changed, 237 insertions(+), 105 deletions(-)
+>
+> --
+> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
