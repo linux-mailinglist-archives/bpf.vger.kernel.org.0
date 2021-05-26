@@ -2,38 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342003910C4
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 08:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9903910D2
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 08:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbhEZGiR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 02:38:17 -0400
-Received: from www62.your-server.de ([213.133.104.62]:43266 "EHLO
+        id S232528AbhEZGnw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 02:43:52 -0400
+Received: from www62.your-server.de ([213.133.104.62]:44712 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232336AbhEZGiN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 May 2021 02:38:13 -0400
+        with ESMTP id S232336AbhEZGnw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 May 2021 02:43:52 -0400
 Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1lln8S-0006Sp-Bn; Wed, 26 May 2021 08:35:20 +0200
+        id 1llnF7-00074V-5W; Wed, 26 May 2021 08:42:13 +0200
 Received: from [85.7.101.30] (helo=linux.home)
         by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1lln8S-000G7z-5Y; Wed, 26 May 2021 08:35:20 +0200
-Subject: Re: [PATCH bpf v2] libbpf: Move BPF_SEQ_PRINTF and BPF_SNPRINTF to
- bpf_helpers.h
-To:     Florent Revest <revest@chromium.org>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, andrii@kernel.org, kpsingh@kernel.org,
-        jackmanb@google.com, linux-kernel@vger.kernel.org
-References: <20210525201825.2729018-1-revest@chromium.org>
+        id 1llnF6-000Rf8-SY; Wed, 26 May 2021 08:42:12 +0200
+Subject: Re: [PATCH v7 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Cc:     Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ncardwell@google.com, ycheng@google.com
+References: <20210521182104.18273-1-kuniyu@amazon.co.jp>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f3e6c21e-8d6e-2665-770c-65f9b98ccf93@iogearbox.net>
-Date:   Wed, 26 May 2021 08:35:19 +0200
+Message-ID: <c423bd7b-03ab-91f2-60af-25c6dfa28b71@iogearbox.net>
+Date:   Wed, 26 May 2021 08:42:12 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20210525201825.2729018-1-revest@chromium.org>
+In-Reply-To: <20210521182104.18273-1-kuniyu@amazon.co.jp>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -43,19 +50,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/25/21 10:18 PM, Florent Revest wrote:
-> These macros are convenient wrappers around the bpf_seq_printf and
-> bpf_snprintf helpers. They are currently provided by bpf_tracing.h which
-> targets low level tracing primitives. bpf_helpers.h is a better fit.
+On 5/21/21 8:20 PM, Kuniyuki Iwashima wrote:
+> The SO_REUSEPORT option allows sockets to listen on the same port and to
+> accept connections evenly. However, there is a defect in the current
+> implementation [1]. When a SYN packet is received, the connection is tied
+> to a listening socket. Accordingly, when the listener is closed, in-flight
+> requests during the three-way handshake and child sockets in the accept
+> queue are dropped even if other listeners on the same port could accept
+> such connections.
 > 
-> The __bpf_narg and __bpf_apply macros are needed in both files so
-> provided twice and guarded by ifndefs.
+> This situation can happen when various server management tools restart
+> server (such as nginx) processes. For instance, when we change nginx
+> configurations and restart it, it spins up new workers that respect the new
+> configuration and closes all listeners on the old workers, resulting in the
+> in-flight ACK of 3WHS is responded by RST.
 > 
-> Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Florent Revest <revest@chromium.org>
+> To avoid such a situation, users have to know deeply how the kernel handles
+> SYN packets and implement connection draining by eBPF [2]:
+> 
+>    1. Stop routing SYN packets to the listener by eBPF.
+>    2. Wait for all timers to expire to complete requests
+>    3. Accept connections until EAGAIN, then close the listener.
+> 
+>    or
+> 
+>    1. Start counting SYN packets and accept syscalls using the eBPF map.
+>    2. Stop routing SYN packets.
+>    3. Accept connections up to the count, then close the listener.
+> 
+> In either way, we cannot close a listener immediately. However, ideally,
+> the application need not drain the not yet accepted sockets because 3WHS
+> and tying a connection to a listener are just the kernel behaviour. The
+> root cause is within the kernel, so the issue should be addressed in kernel
+> space and should not be visible to user space. This patchset fixes it so
+> that users need not take care of kernel implementation and connection
+> draining. With this patchset, the kernel redistributes requests and
+> connections from a listener to the others in the same reuseport group
+> at/after close or shutdown syscalls.
+> 
+> Although some software does connection draining, there are still merits in
+> migration. For some security reasons, such as replacing TLS certificates,
+> we may want to apply new settings as soon as possible and/or we may not be
+> able to wait for connection draining. The sockets in the accept queue have
+> not started application sessions yet. So, if we do not drain such sockets,
+> they can be handled by the newer listeners and could have a longer
+> lifetime. It is difficult to drain all connections in every case, but we
+> can decrease such aborted connections by migration. In that sense,
+> migration is always better than draining.
+> 
+> Moreover, auto-migration simplifies user space logic and also works well in
+> a case where we cannot modify and build a server program to implement the
+> workaround.
+> 
+> Note that the source and destination listeners MUST have the same settings
+> at the socket API level; otherwise, applications may face inconsistency and
+> cause errors. In such a case, we have to use the eBPF program to select a
+> specific listener or to cancel migration.
+> 
+> Special thanks to Martin KaFai Lau for bouncing ideas and exchanging code
+> snippets along the way.
+> 
+> 
+> Link:
+>   [1] The SO_REUSEPORT socket option
+>   https://lwn.net/Articles/542629/
+> 
+>   [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
+>   https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
 
-Given v1/v2 both target bpf tree in the subject, do you really mean bpf or
-rather bpf-next?
+This series needs review/ACKs from TCP maintainers. Eric/Neal/Yuchung please take
+a look again.
 
 Thanks,
 Daniel
