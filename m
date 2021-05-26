@@ -2,197 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B2A391C17
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 17:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56109391C25
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 17:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234310AbhEZPfj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 11:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
+        id S235441AbhEZPhd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 11:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232762AbhEZPfi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 May 2021 11:35:38 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667B6C061756
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 08:34:07 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id g8so1174697qtp.4
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 08:34:07 -0700 (PDT)
+        with ESMTP id S235427AbhEZPha (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 May 2021 11:37:30 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD6FC061760
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 08:35:58 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id z1so1310061ils.0
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 08:35:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NctmoWs8tLUvGWlpFwF5tdeAyBbyMzRUvFfUG7aqzEU=;
-        b=Txf7OUJcOzDUzoa1IPdnaAzZT/nz45uqHFWcn7jBbIdL8EhyLLFr9Sa/l7aRwMURyH
-         pZh3Azr9TIbBYgk+WX08xeweTbUb5OArr4dKkPDLPwiitXB1lS1+Ic3Qq1bRk60w/uX+
-         jnf0cK5BihddvDSaXUZEc5L8unCHf647TFHk32rhuxM2gd232UMaetwgJQuDUU0ki85p
-         WOizgS44T39EoAjUoYxTO177nN/GKh4ZKDnyHPUk4RJMBEw3bszmI9dUHDhGC/vAZl7t
-         rtxEUIDhuN1O/+DqvnyKwCwWXRqNxP4SOw+Q+eAWGM9MwB4T60wgXJunVaS8D7y/oS7i
-         ZDHg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=mlvPw7GyNm+tovjkMOhI3liByaQJ/g/TvKTIIgvxi94=;
+        b=nyvd6vYcs6fiifMwLU1IsI4zhdM5qNGwzNTs3ZRSv40qAvaTGbZPTSLTS9m3EBdT3O
+         HWjE56ybkyGg8tignkck+J+P1rbNIVsGVYaCqY+DAOv2B4FpvCSKCDv7OhtdaDvNdafX
+         QMnjWBYsoBNmHVVgdZMn6xK9x00TeJZ+n2jt4beVPi0eRBLUtPhtG4UT98KgsnXL24sJ
+         t6FshXkV2purrKjbWh6Sn6F6sFuDOJOzcorOGbPBmc8nUFQV1c0AFhWddYOrfYi1WsQ1
+         CxHvvANhA4WsOyPahYp3E1S7+j2QZdaZuc/TP/Du0q87sgKB6uZNq5qYhikSap3EA/N1
+         K2Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NctmoWs8tLUvGWlpFwF5tdeAyBbyMzRUvFfUG7aqzEU=;
-        b=Gra3x6DtyWXZ9JMhCfNCO4mzU6tCG+Sw6TRsLeqIUZbKc4nbewp1BwI2wqmviJZIa4
-         P9JpgYk4mhmPe9L2zf7aNYIj4hUpotZrHA5PUESl8q4eFnFpb/mieZYoc8b0iW6hWHOx
-         U1mrv5fCVIj02wwPFtFVP95upiIeCkXLKfH30aQYRnP8qxR/hjj+m+LGPM+6jteC7+FM
-         P11rgKMLy4EJLf7zcZS2UVnqc8UaOQOVHRR+MimAsInzjao+LPqVoLKE0Bhzmou9DPuq
-         gfDHbwxC9FzKFfkXxg9sWCsxxDKuKWsFsaBWuYSyiq7HteBxPvrpq6TQbstGC5r/RGXE
-         GrWA==
-X-Gm-Message-State: AOAM532CJTaGtVnr78ZkRusYhYXeq5njqXEiVbLU3tx7xAcU01DhhWCm
-        8W6V7VFukpdnQ4XatOejzHf2uA==
-X-Google-Smtp-Source: ABdhPJwpIhVTy2xUHL/jiUCnDO/QVUEneEXfVN/xPxO4/avILHpXWn4PqNR1l/BA63+vYKdQRN8eJQ==
-X-Received: by 2002:ac8:7194:: with SMTP id w20mr37767833qto.363.1622043246421;
-        Wed, 26 May 2021 08:34:06 -0700 (PDT)
-Received: from [192.168.1.79] (bras-base-kntaon1617w-grc-28-184-148-47-211.dsl.bell.ca. [184.148.47.211])
-        by smtp.googlemail.com with ESMTPSA id j15sm1659361qtv.11.2021.05.26.08.34.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 08:34:05 -0700 (PDT)
-Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
-        Pedro Tammela <pctammela@gmail.com>
-References: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
- <CAM_iQpWDgVTCnP3xC3=z7WCH05oDUuqxrw2OjjUC69rjSQG0qQ@mail.gmail.com>
- <CAADnVQ+V5o31-h-A+eNsHvHgOJrVfP4wVbyb+jL2J=-ionV0TA@mail.gmail.com>
- <CAM_iQpU-Cvpf-+9R0ZdZY+5Dv+stfodrH0MhvSgryv_tGiX7pA@mail.gmail.com>
- <CAM_iQpVYBNkjDeo+2CzD-qMnR4-2uW+QdMSf_7ohwr0NjgipaQ@mail.gmail.com>
- <CAADnVQJUHydpLwtj9hRWWNGx3bPbdk-+cQiSe3MDFQpwkKmkSw@mail.gmail.com>
- <bcbf76c3-34d4-d550-1648-02eda587ccd7@mojatatu.com>
- <CAADnVQLWj-=B2TfJp7HEsiUY3rqmd6-YMDAGdyL6RgZ=_b2CXg@mail.gmail.com>
- <27dae780-b66b-4ee9-cff1-a3257e42070e@mojatatu.com>
- <CAADnVQJq37Xi2bHBG5L+DmMq6dJvFUCE3tt+uC-oAKX3WxcCQg@mail.gmail.com>
-From:   Jamal Hadi Salim <jhs@mojatatu.com>
-Message-ID: <2dfc5180-40df-ae4c-7146-d64130be9ad4@mojatatu.com>
-Date:   Wed, 26 May 2021 11:34:04 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
-MIME-Version: 1.0
-In-Reply-To: <CAADnVQJq37Xi2bHBG5L+DmMq6dJvFUCE3tt+uC-oAKX3WxcCQg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=mlvPw7GyNm+tovjkMOhI3liByaQJ/g/TvKTIIgvxi94=;
+        b=iEZRxAvPdfv0Hp4J1U5QMy6ZHt40VH0Mc7+M7GUTrZEkOUwou+oB5xqqioU3PQvw98
+         9OicWT3Xnqx7ZVjAqh7hyqv3MzXl8eMJf/NvuK1O/8FFuI3/HK+7Xsb7OG/BIXZyevgr
+         AReEQ63TyojfvM8hQAMkV/jq5RjMYEK3ldVpAlQcoXc96d5PsIxKbnP1JY8i6vnoqx+V
+         Va52obTsHn8EcJSI95LPfkVuvXuUAKSOgqUFp4Y133mxJOm4ro6Xq1zyo87Hamtnbx7R
+         lGEQI8bcDjzzCxVcOpHxjn3+wFBpQAUBamDprxlwoTjULVEA7AfxY5JGhtmLXfmDMxRG
+         hwfg==
+X-Gm-Message-State: AOAM533AUHle0cu8dzagvJOoLDnR2nvWQLSML6iEmEgnlISjfbYQOT8v
+        Uhh3YZZ4Uh75G2/jSm3yR/k=
+X-Google-Smtp-Source: ABdhPJyfSbeyfb/Mdr4Pjxp+Zm6kDPRhmL32OcTfQqiZKCwsCzd8twcW4LdmquWOYxBQYMpCMRXWMQ==
+X-Received: by 2002:a05:6e02:1be8:: with SMTP id y8mr27110794ilv.52.1622043356770;
+        Wed, 26 May 2021 08:35:56 -0700 (PDT)
+Received: from localhost ([172.242.244.146])
+        by smtp.gmail.com with ESMTPSA id s14sm15753826iln.64.2021.05.26.08.35.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 08:35:56 -0700 (PDT)
+Date:   Wed, 26 May 2021 08:35:49 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "Raczynski, Piotr" <piotr.raczynski@intel.com>,
+        "Zhang, Jessica" <jessica.zhang@intel.com>,
+        "Kubiak, Marcin" <marcin.kubiak@intel.com>,
+        "Joseph, Jithu" <jithu.joseph@intel.com>,
+        "kurt@linutronix.de" <kurt@linutronix.de>,
+        "Maloor, Kishen" <kishen.maloor@intel.com>,
+        "Gomes, Vinicius" <vinicius.gomes@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Swiatkowski, Michal" <michal.swiatkowski@intel.com>,
+        "Plantykow, Marta A" <marta.a.plantykow@intel.com>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        "Desouza, Ederson" <ederson.desouza@intel.com>,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        "Czapnik, Lukasz" <lukasz.czapnik@intel.com>, bpf@vger.kernel.org,
+        brouer@redhat.com
+Message-ID: <60ae6ad5a2e04_18bf20819@john-XPS-13-9370.notmuch>
+In-Reply-To: <87y2c1iqz4.fsf@toke.dk>
+References: <dc2c38cdccfa5eca925cfc9d59b0674e208c9c9d.camel@intel.com>
+ <20210507131034.5a62ce56@carbon>
+ <DM4PR11MB5422FE9618B3692D48FCE4EA84549@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <20210510185029.1ca6f872@carbon>
+ <DM4PR11MB54227C25DFD4E882CB03BD3884539@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <20210512102546.5c098483@carbon>
+ <DM4PR11MB542273C9D8BF63505DC6E21784519@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <7b347a985e590e2a422f837971b30bd83f9c7ac3.camel@nvidia.com>
+ <DM4PR11MB5422762E82C0531B92BDF09A842B9@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <DM4PR11MB5422269F6113268172B9E26A842A9@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <DM4PR11MB54224769926B06EE76635A6484299@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <20210521153110.207cb231@carbon>
+ <1426bc91c6c6ee3aaf3d85c4291a12968634e521.camel@kernel.org>
+ <87lf85zmuw.fsf@toke.dk>
+ <20210525142027.1432-1-alexandr.lobakin@intel.com>
+ <60add3cad4ef0_3b75f2086@john-XPS-13-9370.notmuch>
+ <20210526134910.1c06c5d8@carbon>
+ <87y2c1iqz4.fsf@toke.dk>
+Subject: Re: AF_XDP metadata/hints
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021-05-25 6:08 p.m., Alexei Starovoitov wrote:
-> On Tue, May 25, 2021 at 2:09 PM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
->>
+Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> Jesper Dangaard Brouer <brouer@redhat.com> writes:
+> =
 
->> This is certainly a useful feature (for other reasons as well).
->> Does this include create/update/delete issued from user space?
-> 
-> Right. Any kind of update/delete and create is a subset of update.
-> The lookup is not included (yet or may be ever) since it doesn't
-> have deterministic start/end points.
-> The prog can do a lookup and update values in place while
-> holding on the element until prog execution ends.
-> 
-> While update/delete have precise points in hash/lru/lpm maps.
-> Array is a different story.
-> 
+> > On Tue, 25 May 2021 21:51:22 -0700
+> > John Fastabend <john.fastabend@gmail.com> wrote:
+> >
+> >> Separate the config of hardware from the BPF infrastructure these
+> >> are two separate things.
+> >
+> > I fully agree.
+> =
 
-Didnt follow why this wouldnt work in the same way for Array?
+> +1. Another reason why is the case of multiple XDP programs on a single=
 
-One interesting concept i see come out of this is emulating
-netlink-like event generation towards user space i.e a user
-space app listening to changes to a map.
+> interface: When attaching these (using freplace as libxdp does it), the=
 
->>
->> The challenge we have in this case is LRU makes the decision
->> which entry to victimize. We do have some entries we want to
->> keep longer - even if they are not seeing a lot of activity.
-> 
-> Right. That's certainly an argument to make LRU eviction
-> logic programmable.
-> John/Joe/Daniel proposed it as a concept long ago.
-> Design ideas are in demand to make further progress here :)
-> 
+> kernel can just check the dest interface when verifying the freplace
+> program and any rewriting of the bytecode from the BTF format can happe=
+n
+> at that point. Whereas if the BPF attach needs to have side effects,
+> suddenly we have to copy over all the features to the dispatcher progra=
+m
+> and do some kind of set union operation; and what happens if an freplac=
+e
+> program is attached after the fact (same thing with tail calls)?
+> =
 
-would like to hear what the proposed ideas are.
-I see this as a tricky problem to solve - you can make LRU
-programmable to allow the variety of LRU replacement algos out
-there but not all encompansing for custom or other types of algos.
-The problem remains that LRU is very specific to evicting
-entries that are least used. I can imagine that if i wanted to
-do a LIFO aging for example then it can be done with some acrobatics
-as an overlay on top of LRU with all sorts of tweaking.
-It is sort of fitting a square peg into a round hole - you can do
-it, but why the torture when you have a flexible architecture.
+> So in my mind there's no doubt this needs to be:
+> =
 
-We need to provide the mechanisms (I dont see a disagreement on
-need for timers at least).
+> driver is config'ed -> it changes its exposed BTF metadata -> program i=
+s
+> attached -> verifier rewrites program to access metadata correctly
 
->> You could just notify user space to re-add the entry but then
->> you have sync challenges.
->> The timers do provide us a way to implement custom GC.
-> 
-> My point is that time is always going to be a heuristic that will
-> break under certain traffic conditions.
-> I recommend to focus development effort on creating
-> building blocks that are truly great instead of reimplementing
-> old ideas in bpf with all of their shortcomings.
-> 
+Well likely libbpf would do the rewrite I think.
 
-There are some basic mechanisms i dont think that we can avoid.
-Agreed on the general sentiment of what you are saying.
+> =
 
->> So a question (which may have already been discussed),
->> assuming the following setup:
->> - 2 programs a) Ingress b) egress
->> - sharing a conntrack map which and said map pinned.
->> - a timer prog (with a map with just timers;
->>      even a single timer would be enough in some cases).
->>
->> ingress and egress do std stuff like create/update
->> timer prog does the deletes. For simplicity sake assume
->> we just have one timer that does a foreach and iterates
->> all entries.
->>
->> What happens when both ingress and egress are ejected?
-> 
-> What is 'ejected'? Like a CD? ;)
+> > How should we handle existing config interfaces?
+> >
+> > Let me give some concrete examples. Today there are multiple existing=
 
-I was going to use other verbs to describe this; but
-may have sounded obscene ;->
+> > interfaces to enable/disable NIC hardware features that change what i=
+s
+> > available to put in our BTF-layout.
+> >
+> > E.g. changing if VLAN is in descriptor:
+> >  # ethtool -K ixgbe1 rx-vlan-offload off
+> >  # ethtool -k ixgbe1 | grep vlan-offload
+> >  rx-vlan-offload: off
+> >  tx-vlan-offload: on
+> >
+> > The timestamping features can be listed by ethtool -T (see below
+> > signature), but it is a socket option that enable[1] these
+> > (see SO_TIMESTAMPNS or SOF_TIMESTAMPING_RX_HARDWARE).
+> >
+> > Or tuning RSS hash fields:
+> >  [2] https://github.com/stackpath/rxtxcpu/blob/master/Documentation/c=
+ase-studies/observing-rss-on-ixgbe-advanced-rss-configuration-rss-hash-fi=
+elds.md
+> >
+> > I assume we need to stay compatible and respect the existing config
+> > interfaces, right?
 
-> I think you mean 'detached' ?
+I'm not convinced its a strict requirement, rather its a nice to
+have. These are low level ethtool hooks into the hardware its
+fine IMO if the hardware just reports off and uses a more robust
+configuration channel. In general we should try to get away from
+this model where kernel devs are acting as the gate keepers for
+all hardware offloads and we explicit add checkboxs that driver
+writers can use. The result is the current state of things where
+we have very flexible hardware that are not usable from Linux.
 
-Yes.
+> >
+> > Should we simple leverage existing interfaces?
+> =
 
-> and then, I assume, the user space doesn't hold to prog FD?
+> Now that ethtool has moved to netlink it should be quite
+> straight-forward to add a separate subset of commands for configuring
+> metadata fields; and internally the kernel can map those to the existin=
+g
+> config knobs, no?
 
-Right. The pinning may still exist on the maps (therefore a ref
-count). Note, this may be design intent.
+Its unclear to me how you simple expose knobs to reconfigure hardware.
+It looks to me that you need to push a blob down to the hardware to
+reconfigure it for new parsers, new actions, etc. But, maybe the
+folks working on current hardware can speak up.
 
-> The kernel can choose to do different things with the timer here.
-> One option is to cancel the outstanding timers and unload
-> .text where the timer callback lives
- >
-> Another option is to let the timer stay armed and auto unload
-> .text of bpf function when it finishes executing.
- >
-> If timer callback decides to re-arm itself it can continue
-> executing indefinitely.
-> This patch is doing the latter.
-> There could be a combination of both options.
-> All options have their pros/cons.
+> =
 
-A reasonable approach is to let the policy be defined
-from user space. I may want the timer to keep polling
-a map that is not being updated until the next program
-restarts and starts updating it.
-I thought Cong's approach with timerids/maps was a good
-way to achieve control.
+> E.g., if you tell the kernel you'd like to have the VLAN field as a
+> metadata field that kinda implies that rx-vlan-offload should be turned=
 
-cheers,
-jamal
+> on; etc. Any reason this would break down?
+> =
 
+> -Toke
+> =
+
+
+Agree driver should be able to map these back onto 'legacy' feature
+sets.
+
+I'll still have a basic question though. I've never invested much time
+into the hints because its still not clear to me what the use case is?
+What would we put in the hints and do we have any data to show it would b=
+e
+a performance win.
+
+If its a simple hash of the headers then how would we use it? The
+map_lookup/updates use IP addrs for keys in Cilium. So I think the
+suggestion is to offload the jhash operation? But that requires some
+program changes to work. Could someone convince me?
+
+Maybe packet timestamp?
+
+Thanks,
+John=
