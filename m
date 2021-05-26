@@ -2,108 +2,232 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CCB390F4E
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 06:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE7F390FD0
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 06:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231423AbhEZEYT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 00:24:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
+        id S229690AbhEZExF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 00:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231136AbhEZEYS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 May 2021 00:24:18 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395DAC061574;
-        Tue, 25 May 2021 21:22:48 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id h15so27404638ilr.2;
-        Tue, 25 May 2021 21:22:48 -0700 (PDT)
+        with ESMTP id S229604AbhEZExF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 May 2021 00:53:05 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340F7C061574
+        for <bpf@vger.kernel.org>; Tue, 25 May 2021 21:51:33 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id o9so30254846ilh.6
+        for <bpf@vger.kernel.org>; Tue, 25 May 2021 21:51:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=lYjEjq2CeERrjfTH2MU7B9d6sbjc0bVXhNKk7CXEuuM=;
-        b=S40drgnAc5PJjkSjV7OpeZ9qKI2aBZr/Xwm948kcAfKEu6JrpyoLlO+uhB6E0WbRHI
-         ilggkvHZfRLmFQf4cH3OE2BATTIo6fvP8d0zo3idL4Yfc+UKvUAy/fA+Jp1QjJw8g/7q
-         rt4nFw7BIdMCtKyCw1s1d7vyMaqAO2eWSJDsOIsxJDk+F2kEO8PWgYGE5ISMsakPN9Wz
-         EWEng7NRn2PLVsVxSwGEDd6dbKwI/rO75aJWN/Ex+QLjaozd8OyW2RuirQIm0O//aHoh
-         jdXX/oZ1/35MbzLjZm1hd9SqAADOTlc23aHdNcSfeaF18EZfrO0z9GQtYBZ1JqEJm6jM
-         mEXA==
+        bh=JCuLQv8Odz3nBc9uNZ15g4jd4QuHS8/CACXRAnQEQC8=;
+        b=RZwBnsTlulhvF1zDt5DXfUVwR5fwvbFzT9DXoPhzA4uZBkCLhFmT59GIFlKysM+dxR
+         GYaiKyOvezr3t+5MSMTFHQ0aYqIukruQz7oJAwSVDdiQpwLe4efw/WfCkYx27GsB41D7
+         oxoKcVroyN4jJHXM73B7kAvTD0LXUIX2ajD4CipzK1WNyVlgbMuoFRMmaG2UfSAoFo1A
+         7rrZRvgEZitcDaBKgl++Mac0fTmM0esOvHOp8//yyQaur/tNsgVtKAhzfc2yudu8MnFA
+         ry0uCTbJw//kDTgM1Zx63GSrJllydv7AeUU9fe6bkeYDfFxTw+TdOih1hg/EMAP3aaGV
+         BzCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=lYjEjq2CeERrjfTH2MU7B9d6sbjc0bVXhNKk7CXEuuM=;
-        b=r5N2L5aYo0Ss66Hmdi/I1OfFPvJ3RyIdcxlj24tpVADXRZVgDh9cygst5eZ4H4erWI
-         KE3ZpBM4lRJa1MZGlIB2hicfuapbYj8Lcvb4dc4D3gpGtyYvAr1V5sETZUSIsQM8FTNn
-         W1AO36lXxlkXrYV6jTLDWAIv8D7iEeGaRSDG3YIp2o5H+JUSKdiYz7Vkokyvug2S64Ma
-         XdlowH9AHHbz04sKX+pXk8d+QlzYr40wJKDJOfS4qDkuDtglhE3ZxcA0dsE1N9wn26He
-         WFSbV90w8vPbogziPyW6G+XJgBjkIAcidTs3sdCP1KAfDiFheoUUToJlM4MHuGoEqrN0
-         e4rA==
-X-Gm-Message-State: AOAM532eCXR2PkGx/T0mXU2AlDKud/x0acvkL6LUiPx5knbbRufHcLX6
-        jqn/aXBXwd+BozxAkE6tAqg=
-X-Google-Smtp-Source: ABdhPJwukZ4u5y0BjeQYQaL1LNT8LqZn1WGbZn6FYj/IPQnuUEDFe3tQ3pWal+MEjyX4Lz1kee7RNw==
-X-Received: by 2002:a05:6e02:1204:: with SMTP id a4mr28264414ilq.158.1622002967434;
-        Tue, 25 May 2021 21:22:47 -0700 (PDT)
+        bh=JCuLQv8Odz3nBc9uNZ15g4jd4QuHS8/CACXRAnQEQC8=;
+        b=sKU5MY7nGMUGyLM3B2cTEkcj6Ab/ad4J7CZUJ/NEEHNO9Eyy/uYqy+oFAbo2esdrcV
+         qO1r6Di+1n6iJ/cYlIz4p4eRhcbl01miPs8rOCNqjxnQBshT8o6I62iGwZtuB303aS0M
+         llR4YFTNrEwWvmvyEoAh9P8yg9AgOHVUIJ9vQUEsmGUsDG5Dzm4Om8gLSY4H5YaIzk10
+         7ldakdww5Yg29Fwo2zAVwAcbEh6tq/ZtAX1NmsFhLN479S8HVCgZUgKpeA57x/+cSb8q
+         hRes1rFk23wZtiFKCYjBSA9S4e8myp27Ste2DtQK5jH3ZGYgpBAvZLDNx7f19jUcb02C
+         tM6Q==
+X-Gm-Message-State: AOAM530mOIRD14eC/WnwP2g03F05pnyNLsrDybLEUKLOPhaYe7pC4376
+        mGL83uAqzUjultlMoG2NRbg=
+X-Google-Smtp-Source: ABdhPJzdDPBqP6elOR5wML2Vdh5qNDBLJHnRJhaD/Tta7v5P1udDVtNgjTKXFvOAnO063ncAK7tXaw==
+X-Received: by 2002:a92:d38d:: with SMTP id o13mr21581082ilo.45.1622004692258;
+        Tue, 25 May 2021 21:51:32 -0700 (PDT)
 Received: from localhost ([172.242.244.146])
-        by smtp.gmail.com with ESMTPSA id p10sm13168893ios.2.2021.05.25.21.22.45
+        by smtp.gmail.com with ESMTPSA id y15sm14153609ila.3.2021.05.25.21.51.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 May 2021 21:22:46 -0700 (PDT)
-Date:   Tue, 25 May 2021 21:22:38 -0700
+        Tue, 25 May 2021 21:51:31 -0700 (PDT)
+Date:   Tue, 25 May 2021 21:51:22 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Message-ID: <60adcd0ec9aa_3b75f208f0@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210522191411.21446-8-xiyou.wangcong@gmail.com>
-References: <20210522191411.21446-1-xiyou.wangcong@gmail.com>
- <20210522191411.21446-8-xiyou.wangcong@gmail.com>
-Subject: RE: [Patch bpf v2 7/7] skmsg: increase sk->sk_drops when dropping
- packets
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Saeed Mahameed <saeed@kernel.org>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        "Raczynski, Piotr" <piotr.raczynski@intel.com>,
+        "Zhang, Jessica" <jessica.zhang@intel.com>,
+        "Kubiak, Marcin" <marcin.kubiak@intel.com>,
+        "Joseph, Jithu" <jithu.joseph@intel.com>,
+        "kurt@linutronix.de" <kurt@linutronix.de>,
+        "Maloor, Kishen" <kishen.maloor@intel.com>,
+        "Gomes, Vinicius" <vinicius.gomes@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Swiatkowski, Michal" <michal.swiatkowski@intel.com>,
+        "Plantykow, Marta A" <marta.a.plantykow@intel.com>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        "Desouza, Ederson" <ederson.desouza@intel.com>,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        "Czapnik, Lukasz" <lukasz.czapnik@intel.com>, bpf@vger.kernel.org
+Message-ID: <60add3cad4ef0_3b75f2086@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210525142027.1432-1-alexandr.lobakin@intel.com>
+References: <dc2c38cdccfa5eca925cfc9d59b0674e208c9c9d.camel@intel.com>
+ <DM6PR11MB2780A8C5410ECB3C9700EAB5CA579@DM6PR11MB2780.namprd11.prod.outlook.com>
+ <PH0PR11MB487034313697F395BB5BA3C5E4579@PH0PR11MB4870.namprd11.prod.outlook.com>
+ <DM4PR11MB5422733A87913EFF8904C17184579@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <20210507131034.5a62ce56@carbon>
+ <DM4PR11MB5422FE9618B3692D48FCE4EA84549@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <20210510185029.1ca6f872@carbon>
+ <DM4PR11MB54227C25DFD4E882CB03BD3884539@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <20210512102546.5c098483@carbon>
+ <DM4PR11MB542273C9D8BF63505DC6E21784519@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <7b347a985e590e2a422f837971b30bd83f9c7ac3.camel@nvidia.com>
+ <DM4PR11MB5422762E82C0531B92BDF09A842B9@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <DM4PR11MB5422269F6113268172B9E26A842A9@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <DM4PR11MB54224769926B06EE76635A6484299@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <20210521153110.207cb231@carbon>
+ <1426bc91c6c6ee3aaf3d85c4291a12968634e521.camel@kernel.org>
+ <87lf85zmuw.fsf@toke.dk>
+ <20210525142027.1432-1-alexandr.lobakin@intel.com>
+Subject: Re: AF_XDP metadata/hints
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
-> 
-> It is hard to observe packet drops without increase relevant
-> drop counters, here we should increase sk->sk_drops which is
-> a protocol-independent counter. Fortunately psock is always
-> assocaited with a struct sock, we can just use psock->sk.
-> 
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+Alexander Lobakin wrote:
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Date: Sun, 23 May 2021 13:54:47 +0200
+> =
 
-[...]
+> > Saeed Mahameed <saeed@kernel.org> writes:
+> > =
 
->  static void sk_psock_backlog(struct work_struct *work)
->  {
->  	struct sk_psock *psock = container_of(work, struct sk_psock, work);
-> @@ -617,7 +623,7 @@ static void sk_psock_backlog(struct work_struct *work)
->  				/* Hard errors break pipe and stop xmit. */
->  				sk_psock_report_error(psock, ret ? -ret : EPIPE);
->  				sk_psock_clear_state(psock, SK_PSOCK_TX_ENABLED);
-> -				kfree_skb(skb);
-> +				sock_drop(psock->sk, skb);
->  				goto end;
->  			}
->  			off += ret;
-> @@ -625,7 +631,7 @@ static void sk_psock_backlog(struct work_struct *work)
->  		} while (len);
->  
->  		if (!ingress)
-> -			kfree_skb(skb);
-> +			sock_drop(psock->sk, skb);
+> > > On Fri, 2021-05-21 at 15:31 +0200, Jesper Dangaard Brouer wrote:
+> > >> On Fri, 21 May 2021 10:53:40 +0000
+> > >> "Lobakin, Alexandr" <alexandr.lobakin@intel.com> wrote:
+> > >>
+> > >> > I've opened two discussions at https://github.com/alobakin/linux=
+,
+> > >> > feel free to join them and/or create new ones to share your thou=
+ghts
+> > >> > and concerns.
+> > >>
+> > >> Thanks Alexandr for keeping the thread/subject alive.
+> > >>
+> > >> I guess this is a new GitHub features "Discussions".  I've never u=
+sed
+> > >> that in a project before, lets see how this goes.  The usual appro=
+ach
+> > >> is discussions over email on netdev (Cc. netdev@vger.kernel.org).
+> > >
+> > > I agree we need full visibility and transparency, i actually recomm=
+end:
+> > > bpf@vger.kernel.org
+> > =
 
-This is not a dropped skb this was sent via skb_send_sock().
+> > +1, please keep this on the list :)
+> =
 
-The rest LGTM thanks.
+> Sure, let's keep it the classic way.
+> I removed the netdev ML from the CCs and added bpf there.
+> =
+
+> Regarding the comments from GitHub discussions:
+> =
+
+> alobakin:
+> =
+
+> > Since 5.11, it's now possible to obtain a BTF not only for vmlinux,
+> > but also for modules.
+> > This will eliminate a need for manually composing and registering a
+> > BTF inside the driver code, which is 100+ locs for ice for example.
+> > =
+
+> > That's obviously not the most straightforward and trivial way, but
+> > could help a lot.
+> =
+
+> saeedtx:
+> =
+
+> > the point of registering BTF directly from the driver is to allow
+
+There is no paticular reason the BTF has to come from the driver it
+could also be generated in userspace or elsewhere. The driver is
+handy because at least the driver should always have correct BTF so
+you avoid versioning to some extent.
+
+> > "Flex metadata" meaning that meta data format can be constructed on
+> > the fly according to user demand.
+
+How is flex metadata configured? I believe this is going to need
+some user tooling and a hard reset (ucode load?) in the driver to
+transition the hardware state.
+
+My original vision was use P4 (or whatever language) to build
+your necessary microcode/firmware/blob. Compile that to your
+specific hardware backend NIC. That process should give you
+two objects. The BTF and the blob to throw at the hardware.
+Letting the driver expose the BTF over /sys/fs/btf/driver.btf
+makes a lot of sense as well, but is not strictly necessary
+as long as you have some way to get the BTF.
+
+Anyways from a design side IMO hardware configuration should be
+done independent of any BPF/BTF operations.
+
+> > BTF for modules is constructed only at compilation time and
+> > registered only on module load. so there is no way to implement flex
+> > metadata with vmlinux BTF. we still need a dynamic registration API
+> > for current and future HW where the HW will provide the BTF
+> > dynamically.
+
++1 can we expose it in /sys/fs/btf/ seems like the reasonable
+thing to me.
+
+> > =
+
+> > I am sure we can find mutliple ways to reduce the 100+ LOC, but the
+> > goal is to have the dynamic btf_register/unregister API
+> =
+
+> We initially planned to register just one (or several) predefined
+> BTF(s) per module/netdevice that would provide a full list of
+> supported fields. The flexibility of metadata then is in that BPF
+> core calls for netdevice's ndo_bpf() on BPF program setup and
+> provides a metadata layout requested by that BPF prog to the driver,
+
+I don't think this is the right direction. The driver should be
+telling us whats supported or we should "just" know because we
+configured it. Overloading ndo_bpf with the config step
+seems unnecessarily complex. CO-RE is going to happen way before
+we even get to the ndo_bpf() so trying to decide layout this
+late is likely not going to work. How would you even know what
+to do with a load op?
+
+> so it could configure its hotpath (current NICs) or a hardware
+> (future NICs) to build metadata accordingly.
+> Driver can declare several BTFs (e.g. a "generic" one with things
+> like hashes and csums one and a custom one) and it would work either
+> through dynamic registering or through /sys approach.
+
+IMO driver needs to expose one single BTF image of what CO-RE ops
+need to be done on a object.
+
+Separate the config of hardware from the BPF infrastructure these
+are two separate things.
+
+> =
+
+> This is all discussable anyways, we're happy to hear different
+> opinions and thoughts to collectively choose the optimal way.
+> =
+
+> > -Toke
+> =
+
+> Thanks,
+> Al=
