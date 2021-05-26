@@ -2,203 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4AF391E46
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 19:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2E0391E5E
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 19:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232388AbhEZRlm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 13:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhEZRll (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 May 2021 13:41:41 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F97C061574;
-        Wed, 26 May 2021 10:40:09 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id g38so3169247ybi.12;
-        Wed, 26 May 2021 10:40:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DJ9ACjlxnCUJLajZkvUg3JRAmdPpDh57UE8Z7+zKl2E=;
-        b=q14fR1x7ZC6FG7q+YFW4P6RUspWpjhXIvmW9USnA/SUNqRH1AUzv0WSzhYqRTohAz2
-         7irBwyQJFjA/i8GFWP8rx/cQwO6X5VHW3uQ4nvaXVtNHbSDiQY5SB2oDQ895viceF7P3
-         Fz1wQd6cmUcIc9W/QWS79G+z47BFExxBBKSlMv8thl79VEZJ/MRhnLZB+D+cqHCTzjXH
-         H39PDvxNpLrpYYaQaTRryNMAiAoc+3SfPpYsM28btzVdYJn0vba13w1/RTDgu2ulV1EH
-         ojkaLc4nwVpuiFi5aJtzofc1iU9DKu/HasrzoYs9EjIKw+VK/NIbWd+/+9Ucn47ddRyE
-         fhng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DJ9ACjlxnCUJLajZkvUg3JRAmdPpDh57UE8Z7+zKl2E=;
-        b=FWOC+7OIHve66YafO5DfIYPIN51ARKXW7BYGEZki2NDluiE8WrsfNBtfp1yQGGKq/G
-         mQTsE0jdoX1Tta9DX9XoajBlTIEM7vEdRSPxqBxar5ZzhUo2jOGqy9a9rvzrXVcLvZsS
-         kbi45shpQ7XDfzsDGLbMS9csvslQopCh81GoGrcEkga6GI5qRHHcSgCG3XCu3oecjn+3
-         VYUgE6Pem/+KP8gIFSlPJTXmkMBRjaX+iuEDEIscIvPolihK1ed2LdI/mTz3nyVyqOzm
-         p//2QgGFEcyoffjyo6SoIEYhKISQIKszVQigUPTKoacHhaOuJVKyuSIQY2M3Vh7uVxXz
-         Rl4Q==
-X-Gm-Message-State: AOAM5328VR3l35GLvnogt39RPsbqC1k7INBVtLhb926gk57uQ62+nPQn
-        mXPmHb8w1vJT1wKmsPokF2Ya+Q4qvM3U7UwyzVBahQVG
-X-Google-Smtp-Source: ABdhPJyHiz6p+6b1Nq2tExGkbdorYbnD1UY697xYQETPqevt15o2HZJjdTPsN4ZBFpMJFOsWxQsAmgFDAigeVojp2nQ=
-X-Received: by 2002:a5b:286:: with SMTP id x6mr54464936ybl.347.1622050808310;
- Wed, 26 May 2021 10:40:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <162201612941.278331.5293566981784464165.stgit@devnote2>
-In-Reply-To: <162201612941.278331.5293566981784464165.stgit@devnote2>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 May 2021 10:39:57 -0700
-Message-ID: <CAEf4BzbTKwnuutnJG6ALYX_YgLPg0Tzm+BNRGYLfh62oZPNGpg@mail.gmail.com>
-Subject: Re: [PATCH -tip v6 00/13] kprobes: Fix stacktrace with kretprobes on x86
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        id S231377AbhEZRud (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 13:50:33 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51678 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229939AbhEZRuc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 May 2021 13:50:32 -0400
+X-Greylist: delayed 348 seconds by postgrey-1.27 at vger.kernel.org; Wed, 26 May 2021 13:50:31 EDT
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AB4191FD2E;
+        Wed, 26 May 2021 17:43:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622050991; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FhwLWgQA/H6r0Q6/NuTDJGX+fECggpPUHvnSVd8w/N8=;
+        b=qM2YF4S8iluCj3stLUkfbHkmbEFUUrWr3CglsS78PeoFOwT8Bq8CNAxavh0Ceg0ZTsWqiY
+        VEyn7N3f3LK1ItLgdHiJpb0kIqrp6ELFu092RmbDrZ/A5d0CBGJXQHABCiwrc5tgUWGjmF
+        7n3CjJ7dZo9E7Mz+2K/ZVw4gzTS+67w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622050991;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FhwLWgQA/H6r0Q6/NuTDJGX+fECggpPUHvnSVd8w/N8=;
+        b=bz56rcfOXvFGrxINSTVBEX+E5H+XYi9VDKyWbITpJ/MbfJFoo9losKPDUsaPT0ptGSgBvm
+        SxrLcNJlJTHgAQDA==
+Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
+        by imap.suse.de (Postfix) with ESMTPSA id 80C5411A98;
+        Wed, 26 May 2021 17:43:11 +0000 (UTC)
+Date:   Wed, 26 May 2021 19:43:10 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: (BTF) [PATCH] mm/page_alloc: Work around a pahole limitation
+ with zero-sized struct pagesets
+Message-ID: <20210526174310.GA8544@kitsune.suse.cz>
+References: <20210526080741.GW30378@techsingularity.net>
+ <20210526083342.GY8544@kitsune.suse.cz>
+ <CAEf4BzZBW5bNF61p3+n7akUs1qztNJ4FwY4yAYRdjmP4ShFQKQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZBW5bNF61p3+n7akUs1qztNJ4FwY4yAYRdjmP4ShFQKQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 26, 2021 at 1:02 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> Hello,
->
-> Here is the 6th version of the series to fix the stacktrace with kretprobe
-> on x86.
->
-> The previous version is;
->
->  https://lore.kernel.org/bpf/161676170650.330141.6214727134265514123.stgit@devnote2/
->
-> This version is rebased on the latest tip tree and add some patches for
-> improving stacktrace[13/13].
->
-> Changes from v5:
-> [02/13]:
->   - Use dereference_symbol_descriptor() instead of dereference_function_descriptor()
-> [04/13]:
->   - Replace BUG_ON() with WARN_ON_ONCE() in __kretprobe_trampoline_handler().
-> [13/13]:
->   - Add a new patch to fix return address in earlier stage.
->
->
-> With this series, unwinder can unwind stack correctly from ftrace as below;
->
->   # cd /sys/kernel/debug/tracing
->   # echo > trace
->   # echo 1 > options/sym-offset
->   # echo r vfs_read >> kprobe_events
->   # echo r full_proxy_read >> kprobe_events
->   # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
->   # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
->   # echo 1 > events/kprobes/enable
->   # cat /sys/kernel/debug/kprobes/list
-> ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
-> ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
->   # echo 0 > events/kprobes/enable
->   # cat trace
-> # tracer: nop
-> #
-> # entries-in-buffer/entries-written: 3/3   #P:8
-> #
-> #                                _-----=> irqs-off
-> #                               / _----=> need-resched
-> #                              | / _---=> hardirq/softirq
-> #                              || / _--=> preempt-depth
-> #                              ||| /     delay
-> #           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
-> #              | |         |   ||||      |         |
->            <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
->            <...>-134     [007] ...1    16.185901: <stack trace>
->  => kretprobe_trace_func+0x209/0x300
->  => kretprobe_dispatcher+0x4a/0x70
->  => __kretprobe_trampoline_handler+0xd4/0x170
->  => trampoline_handler+0x43/0x60
->  => kretprobe_trampoline+0x2a/0x50
->  => vfs_read+0x98/0x180
->  => ksys_read+0x5f/0xe0
->  => do_syscall_64+0x37/0x90
->  => entry_SYSCALL_64_after_hwframe+0x44/0xae
->            <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
->
-> This shows the double return probes (vfs_read and full_proxy_read) on the stack
-> correctly unwinded. (vfs_read will return to ksys_read+0x5f and full_proxy_read
-> will return to vfs_read+0x98)
->
-> This actually changes the kretprobe behavisor a bit, now the instraction pointer in
-> the pt_regs passed to kretprobe user handler is correctly set the real return
-> address. So user handlers can get it via instruction_pointer() API.
->
-> You can also get this series from
->  git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v6
->
->
-> Thank you,
->
-> ---
->
+On Wed, May 26, 2021 at 10:00:34AM -0700, Andrii Nakryiko wrote:
+> On Wed, May 26, 2021 at 1:33 AM Michal Suchánek <msuchanek@suse.de> wrote:
+> >
+> > On Wed, May 26, 2021 at 09:07:41AM +0100, Mel Gorman wrote:
+> > > Michal Suchanek reported the following problem with linux-next
+> > >
+> > >   [    0.000000] Linux version 5.13.0-rc2-next-20210519-1.g3455ff8-vanilla (geeko@buildhost) (gcc (SUSE Linux) 10.3.0, GNU ld (GNU Binutils; openSUSE Tumbleweed) 2.36.1.20210326-3) #1 SMP Wed May 19 10:05:10 UTC 2021 (3455ff8)
+> > >   [    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-5.13.0-rc2-next-20210519-1.g3455ff8-vanilla root=UUID=ec42c33e-a2c2-4c61-afcc-93e9527 8f687 plymouth.enable=0 resume=/dev/disk/by-uuid/f1fe4560-a801-4faf-a638-834c407027c7 mitigations=auto earlyprintk initcall_debug nomodeset earlycon ignore_loglevel console=ttyS0,115200
+> > > ...
+> > >   [   26.093364] calling  tracing_set_default_clock+0x0/0x62 @ 1
+> > >   [   26.098937] initcall tracing_set_default_clock+0x0/0x62 returned 0 after 0 usecs
+> > >   [   26.106330] calling  acpi_gpio_handle_deferred_request_irqs+0x0/0x7c @ 1
+> > >   [   26.113033] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0x7c returned 0 after 3 usecs
+> > >   [   26.121559] calling  clk_disable_unused+0x0/0x102 @ 1
+> > >   [   26.126620] initcall clk_disable_unused+0x0/0x102 returned 0 after 0 usecs
+> > >   [   26.133491] calling  regulator_init_complete+0x0/0x25 @ 1
+> > >   [   26.138890] initcall regulator_init_complete+0x0/0x25 returned 0 after 0 usecs
+> > >   [   26.147816] Freeing unused decrypted memory: 2036K
+> > >   [   26.153682] Freeing unused kernel image (initmem) memory: 2308K
+> > >   [   26.165776] Write protecting the kernel read-only data: 26624k
+> > >   [   26.173067] Freeing unused kernel image (text/rodata gap) memory: 2036K
+> > >   [   26.180416] Freeing unused kernel image (rodata/data gap) memory: 1184K
+> > >   [   26.187031] Run /init as init process
+> > >   [   26.190693]   with arguments:
+> > >   [   26.193661]     /init
+> > >   [   26.195933]   with environment:
+> > >   [   26.199079]     HOME=/
+> > >   [   26.201444]     TERM=linux
+> > >   [   26.204152]     BOOT_IMAGE=/boot/vmlinuz-5.13.0-rc2-next-20210519-1.g3455ff8-vanilla
+> > >   [   26.254154] BPF:      type_id=35503 offset=178440 size=4
+> > >   [   26.259125] BPF:
+> > >   [   26.261054] BPF:Invalid offset
+> > >   [   26.264119] BPF:
+> > >   [   26.264119]
+> > >   [   26.267437] failed to validate module [efivarfs] BTF: -22
+> > >
+> > > Andrii Nakryiko bisected the problem to the commit "mm/page_alloc: convert
+> > > per-cpu list protection to local_lock" currently staged in mmotm. In his
+> > > own words
+> > >
+> > >   The immediate problem is two different definitions of numa_node per-cpu
+> > >   variable. They both are at the same offset within .data..percpu ELF
+> > >   section, they both have the same name, but one of them is marked as
+> > >   static and another as global. And one is int variable, while another
+> > >   is struct pagesets. I'll look some more tomorrow, but adding Jiri and
+> > >   Arnaldo for visibility.
+> > >
+> > >   [110907] DATASEC '.data..percpu' size=178904 vlen=303
+> > >   ...
+> > >         type_id=27753 offset=163976 size=4 (VAR 'numa_node')
+> > >         type_id=27754 offset=163976 size=4 (VAR 'numa_node')
+> > >
+> > >   [27753] VAR 'numa_node' type_id=27556, linkage=static
+> > >   [27754] VAR 'numa_node' type_id=20, linkage=global
+> > >
+> > >   [20] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> > >
+> > >   [27556] STRUCT 'pagesets' size=0 vlen=1
+> > >         'lock' type_id=507 bits_offset=0
+> > >
+> > >   [506] STRUCT '(anon)' size=0 vlen=0
+> > >   [507] TYPEDEF 'local_lock_t' type_id=506
+> > >
+> > > The patch in question introduces a zero-sized per-cpu struct and while
+> > > this is not wrong, versions of pahole prior to 1.22 (unreleased) get
+> > > confused during BTF generation with two separate variables occupying the
+> > > same address.
+> > >
+> > > This patch checks for older versions of pahole and forces struct pagesets
+> > > to be non-zero sized as a workaround when CONFIG_DEBUG_INFO_BTF is set. A
+> > > warning is omitted so that distributions can update pahole when 1.22
+> > > is released.
+> > >
+> > > Reported-by: Michal Suchanek <msuchanek@suse.de>
+> > > Reported-by: Hritik Vijay <hritikxx8@gmail.com>
+> > > Debugged-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> > > ---
+> > >  lib/Kconfig.debug |  3 +++
+> > >  mm/page_alloc.c   | 11 +++++++++++
+> > >  2 files changed, 14 insertions(+)
+> > >
+> > > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > > index 678c13967580..f88a155b80a9 100644
+> > > --- a/lib/Kconfig.debug
+> > > +++ b/lib/Kconfig.debug
+> > > @@ -313,6 +313,9 @@ config DEBUG_INFO_BTF
+> > >  config PAHOLE_HAS_SPLIT_BTF
+> > >       def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
+> > >
+> > > +config PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT
+> > > +     def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "122")
+> > > +
+> >
+> > This does not seem workable with dummy-tools.
+> >
+> > Do we even have dummy pahole?
+> >
+> 
+> I don't know what dummy-tools is, so probably no. But if you don't
+> have pahole on the build host, you can't have DEBUG_INFO_BTF=y
+> anyways. As in, your build will fail because it will be impossible to
+> generate BTF information. So you'll have to disable DEBUG_INFO_BTF if
+> you can't get pahole onto your build host for some reason.
 
-Thanks for following up on this! I've applied this patch set on top of
-bpf-next and tested with my local BPF-based tool that uses stack
-traces in kretprobes heavily. It all works now and I'm getting
-meaningful and correctly looking stacktraces. Thanks a lot!
+dummy-tools is used to maintain configuration files outside of build
+the environment. It is not easy to have all tools with all bells and
+whistles for all architectures on one machine. That is you should be
+able to enable DEBUG_INFO_BTF without pahole, and then build the config
+on a build host that has a compiler and pohole for the target
+architecture.
 
-Tested-by: Andrii Nakryik <andrii@kernel.org>
+Thanks
 
-
-> Josh Poimboeuf (1):
->       x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
->
-> Masami Hiramatsu (12):
->       ia64: kprobes: Fix to pass correct trampoline address to the handler
->       kprobes: treewide: Replace arch_deref_entry_point() with dereference_symbol_descriptor()
->       kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
->       kprobes: Add kretprobe_find_ret_addr() for searching return address
->       ARC: Add instruction_pointer_set() API
->       ia64: Add instruction_pointer_set() API
->       arm: kprobes: Make a space for regs->ARM_pc at kretprobe_trampoline
->       kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
->       x86/kprobes: Push a fake return address at kretprobe_trampoline
->       x86/unwind: Recover kretprobe trampoline entry
->       tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
->       x86/kprobes: Fixup return address in generic trampoline handler
->
->
->  arch/arc/include/asm/ptrace.h       |    5 ++
->  arch/arc/kernel/kprobes.c           |    2 -
->  arch/arm/probes/kprobes/core.c      |    5 +-
->  arch/arm64/kernel/probes/kprobes.c  |    3 -
->  arch/csky/kernel/probes/kprobes.c   |    2 -
->  arch/ia64/include/asm/ptrace.h      |    5 ++
->  arch/ia64/kernel/kprobes.c          |   15 ++---
->  arch/mips/kernel/kprobes.c          |    3 -
->  arch/parisc/kernel/kprobes.c        |    4 +
->  arch/powerpc/kernel/kprobes.c       |   13 ----
->  arch/riscv/kernel/probes/kprobes.c  |    2 -
->  arch/s390/kernel/kprobes.c          |    2 -
->  arch/sh/kernel/kprobes.c            |    2 -
->  arch/sparc/kernel/kprobes.c         |    2 -
->  arch/x86/include/asm/kprobes.h      |    1
->  arch/x86/include/asm/unwind.h       |   23 +++++++
->  arch/x86/include/asm/unwind_hints.h |    5 ++
->  arch/x86/kernel/kprobes/core.c      |   53 +++++++++++++++--
->  arch/x86/kernel/unwind_frame.c      |    4 +
->  arch/x86/kernel/unwind_guess.c      |    3 -
->  arch/x86/kernel/unwind_orc.c        |   19 +++++-
->  include/linux/kprobes.h             |   41 +++++++++++--
->  kernel/kprobes.c                    |  108 +++++++++++++++++++++++++----------
->  kernel/trace/trace_output.c         |   17 +-----
->  lib/error-inject.c                  |    3 +
->  25 files changed, 237 insertions(+), 105 deletions(-)
->
-> --
-> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+Michal
