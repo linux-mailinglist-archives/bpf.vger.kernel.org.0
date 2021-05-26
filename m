@@ -2,371 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C99391F32
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 20:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE024391F53
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 20:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbhEZSfs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 14:35:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32884 "EHLO
+        id S235570AbhEZSn0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 14:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231189AbhEZSfs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 May 2021 14:35:48 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB0EAC061574
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 11:34:16 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id f9so3432679ybo.6
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 11:34:16 -0700 (PDT)
+        with ESMTP id S235564AbhEZSn0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 May 2021 14:43:26 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940E8C061574;
+        Wed, 26 May 2021 11:41:53 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id w1so3479939ybt.1;
+        Wed, 26 May 2021 11:41:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XxW+6T17RqZ/CFrr4FSx5L7JgbZC/z+ednR8UOTP/Ak=;
-        b=eZUhK6xcPr78Fr/nGcYxWcARskfTu0Z/Q8zawXoiJ4g1bgna7exeNftolkNIf61Ro7
-         L7v37L5r6ExUukImQ1iOG5FbprsIe1ra4i6Tgt2LuXd9cZ5G4h8SROE1RJUyF31Uf9/F
-         f85ISR/OLQr8Di4BYmKDsXqLfAz0TGT3MZig7EtVKSK2jPtJu6OeVv+rIna/S8/e0i7Y
-         kcBBqWWeiX+g6zf51eE1TuD8LoVa0k96MZyZxyjqJzG1V9Gs2K7TJwTp96VPvl/WRkag
-         C/zYCbvREOSNVHLVdh9TVzACYC+EMGKIAOjPEOZRY4RgE+cLN86GHxqXleKcESzkzgRg
-         +R3w==
+        bh=id6F4lgfjQNsJ+3S/VgOIlQEjaPpg+ReNaNL6KgFZYE=;
+        b=G9uWbmyGB9td6lW4+3dQWDxA8jE3yVCUGPZVKZ3BNl/ItZ9wkOEFuPvKCUDOkfZybL
+         pqcRcytG65avmCD6ISAc/snTplX8rQuy66SQntPnr2Q9xkSFIxZByus6UlojrPmt3HJ9
+         BVPGJlUu09DHIhxgiUvztft51RHE1wV5oGdlPQ0PIVMEpOmZ8r6oAh/oS076fGKS916c
+         1CynmiLCVu+TsfQbqSB2H0IlPRKNMXjYb1FMrxr0pFeajfHDGStgifmpcA7fxGx13q5J
+         h2hwNvlI4stoN+RCC49jEZ1X79Ux0OcmI4RNAC5NagNZtGwQlpDC/WmTP98oz9YvGark
+         IvyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XxW+6T17RqZ/CFrr4FSx5L7JgbZC/z+ednR8UOTP/Ak=;
-        b=O7l7PZozeXieImM3whv+X/qp69xBF5kb8WbutwjoBcUcDAwzD23zh+U6+cxq6y8V24
-         Fr1LWzvr22jonG/AP5QITweLdGKZ4O4+MkAMJ5b3v5R8133McMcHgsVS8qc+VSXBo6sH
-         UzdlzwIMILfwdP7547W2jnFxtqurgwunHIyZOyvXBjRKsBV+D5FarWtG5niey8Ogm8Gc
-         X/ewB42xYgbB663F0vjEC2z5JV1eZfVl8Lz1/RwgcMIc8hXOL/xbfwHH1qtwJXxIwVc7
-         +lLnBBUUDvy68pT0QH2L+DwNOZN/+1k3e51x2VXgChtvAXL1iY3PelOpWd9iIUSF9lCy
-         ukXA==
-X-Gm-Message-State: AOAM5304lqbQ+fuyXE75wsMMIMEQMdgJwSRiReRuQPkl7adg9EtfmcRc
-        +sgjJQq13avdTDSUMFIZ/5C6KZdBdpeEYk2FjeZltXO/j6M=
-X-Google-Smtp-Source: ABdhPJzP58xz4LkdLwWnTTl8W+noAX177HeKQLi1qQPV2s7ElgD15xUePVwgod0JqfCGzdrmzX8iru7r/ftml0T0UyQ=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr54181508ybo.230.1622054055914;
- Wed, 26 May 2021 11:34:15 -0700 (PDT)
+        bh=id6F4lgfjQNsJ+3S/VgOIlQEjaPpg+ReNaNL6KgFZYE=;
+        b=B230yREWRT8tz2VL6YeZoI9kEg2sMjG/yfFzVlF4LPysYtkBuygXEXG2TPenArs27V
+         hv4j8GkE8Q3l9UxVUP9Si2vziaPcubBc1EDllP8oziKmX1gmchqKpDkMLF6XkIZKhlzI
+         9p5kozA2atpWDYbQvNpLV8WgXGubiKRIPCEJjZYhon+qD3waFq3lSgJfRzQKJ9uxS+Bj
+         uveIvUu0aU/nnkxCNv/q1FLLKkFjDbcEd74vnee4z1FT3kFV0/J0/f0DOBQwC3P0ORDR
+         idEu2qMHetlAmKPWZtuIBDFRF1FkfyVWTo5Q7xoolLrs3adqIaFfVnB0x0wU2NHaVqcI
+         Dm/Q==
+X-Gm-Message-State: AOAM532Q/efuDyId/TYJ/0Kaip5LjBgnnXn+hNUSSvLM+6Yq3gynj5Sl
+        V102HDytkHttmyiN4YBA6V7m6k/xK7Pz2I5LEZM=
+X-Google-Smtp-Source: ABdhPJyY046+/p0uD+0FKN1t+G408mKyXLq4Kt2YkFXGHopZCRpbiqn4uVwu41LCkFbVhvWXJNTMcwoeFdR2Ozjag4g=
+X-Received: by 2002:a25:1455:: with SMTP id 82mr51691332ybu.403.1622054512897;
+ Wed, 26 May 2021 11:41:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <CACAyw9-GQasDdE9m_f3qXCO1UrR49YuF_6K1tjGxyk+ZZGhM-Q@mail.gmail.com>
- <CAEf4BzYd4GLOQTJOeK_=yAs7+DPC+R7cxynOmd7ZMvcRFG+8SQ@mail.gmail.com> <CACAyw99QydcWBeE3T_4g5QzuDyfb_MEpR1V0EzEwbY=R-s202w@mail.gmail.com>
-In-Reply-To: <CACAyw99QydcWBeE3T_4g5QzuDyfb_MEpR1V0EzEwbY=R-s202w@mail.gmail.com>
+References: <20210526080741.GW30378@techsingularity.net> <CAEf4BzZOQnBgYXSR71HgsqhYcaFk5M5mre+6do+hnuxgWx5aNg@mail.gmail.com>
+ <20210526181306.GZ30378@techsingularity.net>
+In-Reply-To: <20210526181306.GZ30378@techsingularity.net>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 May 2021 11:34:04 -0700
-Message-ID: <CAEf4BzZftL2q9qAoeXsO87-Wx9AbF8A1mLnBAtBrGo=XSx996g@mail.gmail.com>
-Subject: Re: Portability of bpf_tracing.h
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@chromium.org>
+Date:   Wed, 26 May 2021 11:41:41 -0700
+Message-ID: <CAEf4BzbbQfwUERObV4EQ4fTx3auKZm_CyoidWK7hWAK32wFZ3A@mail.gmail.com>
+Subject: Re: [PATCH] mm/page_alloc: Work around a pahole limitation with
+ zero-sized struct pagesets
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 26, 2021 at 2:13 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+On Wed, May 26, 2021 at 11:13 AM Mel Gorman <mgorman@techsingularity.net> wrote:
 >
-> On Mon, 24 May 2021 at 18:48, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> On Wed, May 26, 2021 at 09:57:31AM -0700, Andrii Nakryiko wrote:
+> > > This patch checks for older versions of pahole and forces struct pagesets
+> > > to be non-zero sized as a workaround when CONFIG_DEBUG_INFO_BTF is set. A
+> > > warning is omitted so that distributions can update pahole when 1.22
 > >
-> > If there are enums/types/fields that we can use to reliably detect the
-> > platform, then yes, we can have a new set of helpers that would do
-> > this with CO-RE. Someone will need to investigate how to do that for
-> > all the platforms we have. It's all about finding something that's
-> > already in the kernel and can server as a reliably indicator of a
-> > target architecture.
+> > s/omitted/emitted/ ?
+> >
 >
-> Can you explain a bit more how this would work? Seems like leg work I could do.
+> Yes.
 >
-
-So I did a bit of investigation and gathered struct pt_regs
-definitions from all the "supported" architectures in bpf_tracing.h.
-I'll leave it here for further reference.
-
-i386
-====
-
-struct pt_regs {
-        unsigned long bx;
-        unsigned long cx;
-        unsigned long dx;
-        unsigned long si;
-        unsigned long di;
-        unsigned long bp;
-        unsigned long ax;
-        unsigned short ds;
-        unsigned short __dsh;
-        unsigned short es;
-        unsigned short __esh;
-        unsigned short fs;
-        unsigned short __fsh;
-        unsigned short gs;
-        unsigned short __gsh;
-        unsigned long orig_ax;
-        unsigned long ip;
-        unsigned short cs;
-        unsigned short __csh;
-        unsigned long flags;
-        unsigned long sp;
-        unsigned short ss;
-        unsigned short __ssh;
-};
-
-x86-64
-======
-
-struct pt_regs {
-        unsigned long r15;
-        unsigned long r14;
-        unsigned long r13;
-        unsigned long r12;
-        unsigned long bp;
-        unsigned long bx;
-        unsigned long r11;
-        unsigned long r10;
-        unsigned long r9;
-        unsigned long r8;
-        unsigned long ax;
-        unsigned long cx;
-        unsigned long dx;
-        unsigned long si;
-        unsigned long di;
-        unsigned long orig_ax;
-        unsigned long ip;
-        unsigned long cs;
-        unsigned long flags;
-        unsigned long sp;
-        unsigned long ss;
-};
-
-s390
-====
-
-struct pt_regs
-{
-        union {
-                user_pt_regs user_regs;
-                struct {
-                        unsigned long args[1];
-                        psw_t psw;
-                        unsigned long gprs[NUM_GPRS];
-                };
-        };
-        unsigned long orig_gpr2;
-        unsigned int int_code;
-        unsigned int int_parm;
-        unsigned long int_parm_long;
-        unsigned long flags;
-        unsigned long cr1;
-};
-
-arm
-===
-
-struct pt_regs {
-        unsigned long uregs[18];
-};
-
-arm64
-=====
-
-struct pt_regs {
-        union {
-                struct user_pt_regs user_regs;
-                struct {
-                        u64 regs[31];
-                        u64 sp;
-                        u64 pc;
-                        u64 pstate;
-                };
-        };
-        u64 orig_x0;
-#ifdef __AARCH64EB__
-        u32 unused2;
-        s32 syscallno;
-#else
-        s32 syscallno;
-        u32 unused2;
-#endif
-        u64 sdei_ttbr1;
-        u64 pmr_save;
-        u64 stackframe[2];
-        u64 lockdep_hardirqs;
-        u64 exit_rcu;
-};
-
-mips
-====
-
-struct pt_regs {
-#ifdef CONFIG_32BIT
-        unsigned long pad0[8];
-#endif
-        unsigned long regs[32];
-        unsigned long cp0_status;
-        unsigned long hi;
-        unsigned long lo;
-#ifdef CONFIG_CPU_HAS_SMARTMIPS
-        unsigned long acx;
-#endif
-        unsigned long cp0_badvaddr;
-        unsigned long cp0_cause;
-        unsigned long cp0_epc;
-#ifdef CONFIG_CPU_CAVIUM_OCTEON
-        unsigned long long mpl[6];        /* MTM{0-5} */
-        unsigned long long mtp[6];        /* MTP{0-5} */
-#endif
-        unsigned long __last[0];
-} __aligned(8);
-
-
-powerpc
-=======
-
-struct pt_regs
-{
-        union {
-                struct user_pt_regs user_regs;
-                struct {
-                        unsigned long gpr[32];
-                        unsigned long nip;
-                        unsigned long msr;
-                        unsigned long orig_gpr3;
-                        unsigned long ctr;
-                        unsigned long link;
-                        unsigned long xer;
-                        unsigned long ccr;
-#ifdef CONFIG_PPC64
-                        unsigned long softe;
-#else
-                        unsigned long mq;
-#endif
-                        unsigned long trap;
-                        unsigned long dar;
-                        unsigned long dsisr;
-                        unsigned long result;
-                };
-        };
-        union {
-                struct {
-#ifdef CONFIG_PPC64
-                        unsigned long ppr;
-#endif
-                        union {
-#ifdef CONFIG_PPC_KUAP
-                                unsigned long kuap;
-#endif
-#ifdef CONFIG_PPC_PKEY
-                                unsigned long amr;
-#endif
-                        };
-#ifdef CONFIG_PPC_PKEY
-                        unsigned long iamr;
-#endif
-                };
-                unsigned long __pad[4]; /* Maintain 16 byte interrupt
-stack alignment */
-        };
-};
-
-
-sparc
-=====
-
-struct pt_regs {
-        unsigned long u_regs[16]; /* globals and ins */
-        unsigned long tstate;
-        unsigned long tpc;
-        unsigned long tnpc;
-        unsigned int y;
-
-        /* We encode a magic number, PT_REGS_MAGIC, along
-         * with the %tt (trap type) register value at trap
-         * entry time.  The magic number allows us to identify
-         * accurately a trap stack frame in the stack
-         * unwinder, and the %tt value allows us to test
-         * things like "in a system call" etc. for an arbitray
-         * process.
-         *
-         * The PT_REGS_MAGIC is chosen such that it can be
-         * loaded completely using just a sethi instruction.
-         */
-        unsigned int magic;
-};
-
-
-Now, note how each architecture has some uniquely named fields.
-Assuming we pick something that is not going to get renamed easily, we
-should be able to do something like this:
-
-struct pt_regs___x86 {
-    unsigned long di;
-} __attribute__((preserve_access_index));
-
-struct pt_regs___s390 {
-    unsigned long gprs[NUM_GPRS];
-} __attribute__((preserve_access_index));
-
-struct pt_regs___powerpc {
-    unsigned long gpr[32]
-} __attribute__((preserve_access_index));
-
-/* and so on for all arches */
-
-Then PT_REGS_PARM1 CO-RE equivalent would be implemented like this:
-
-#define ___arch_is_x86 (bpf_core_field_exists(((struct pt_regs___x86 *)0)->di))
-#define ___arch_is_s390 (bpf_core_field_exists(((struct pt_regs___s390
-*)0)->gprs))
-#define ___arch_is_powerpc (bpf_core_field_exists(((struct
-pt_regs___powerpc *)0)->gpr))
-
-static unsigned long bpf_pt_regs_parm1(const void *regs)
-{
-    if (___arch_is_x86)
-        return ((struct pt_regs___x86 *)regs)->di;
-    else if (___arch_is_s390)
-        return ((struct pt_regs___s390 *)regs)->gprs[2];
-    else if (___arch_is_powerpc)
-        return ((struct pt_regs___powerpc *)regs)->gpr[3];
-    else
-        while(1); /* need some better way to force BPF verification failure */
-}
-
-And so on for other architectures and other helpers, you should get
-the idea from the above.
-
-As a shameless plug, if you'd like to see some more examples of using
-CO-RE for detecting kernel features, see [0]
-
-  [0] https://nakryiko.com/posts/bpf-tips-printk/
-
-> > Well, obviously I'm not a fan of even more magic #defines. But I think
-> > we can achieve a similar effect with a more "lazy" approach. I.e., if
-> > user tries to use PT_REGS_xxx macros but doesn't specify the platform
-> > -- only then it gets compilation errors. There is stuff in
-> > bpf_tracing.h that doesn't need pt_regs, so we can't just outright do
-> > #error unconditinally. But we can do something like this:
+> > > is released.
+> > >
+> > > Reported-by: Michal Suchanek <msuchanek@suse.de>
+> > > Reported-by: Hritik Vijay <hritikxx8@gmail.com>
+> > > Debugged-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> > > ---
 > >
-> > #else /* !bpf_target_defined */
+> > Looks good! I verified that this does fix the issue on the latest
+> > linux-next tree, thanks!
 > >
-> > #define PT_REGS_PARM1(x) _Pragma("GCC error \"blah blah something
-> > user-facing\"")
-> >
-> > ... and so on for all macros
-> >
-> > #endif
-> >
-> > Thoughts?
 >
-> That would work for me, but it would change the behaviour for current
-> users of the header, no? That's why I added the magic define in the
-> first place.
+> Excellent
+>
+> > One question, should
+> >
+> > Fixes: 5716a627517d ("mm/page_alloc: convert per-cpu list protection
+> > to local_lock")
+> >
+> > be added to facilitate backporting?
+> >
+>
+> The git commit is not stable because the patch "mm/page_alloc: convert
+> per-cpu list protection to local_lock" is in Andrew's mmotm tree which is
 
-How so? If someone is using PT_REGS_PARM1 without setting target arch
-they should get compilation error about undefined macro. Here it will
-be the same thing, only if someone tries to use PT_REGS_PARM1() will
-they reach that _Pragma.
+Oh, I didn't know about this instability.
 
-Or am I missing something?
+> quilt based. I decided not to treat the patch as a fix because the patch is
+> not wrong as such, it's a limitation of an external tool.  However, I would
+> expect both the problematic patch and the BTF workaround to go in during
+> the same merge window so backports to -stable should not be required.
 
+Yep, makes sense.
+
+>
+> > Either way:
+> >
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > Tested-by: Andrii Nakryiko <andrii@kernel.org>
+> >
+>
+> Thanks!
 >
 > --
-> Lorenz Bauer  |  Systems Engineer
-> 6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
->
-> www.cloudflare.com
+> Mel Gorman
+> SUSE Labs
