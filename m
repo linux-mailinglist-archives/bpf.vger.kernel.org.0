@@ -2,174 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D2339219D
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 22:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C65C3921C0
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 23:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233410AbhEZUrn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 16:47:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34624 "EHLO
+        id S231968AbhEZVH0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 17:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232976AbhEZUri (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 May 2021 16:47:38 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA636C061574
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 13:46:04 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id g38so3936619ybi.12
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 13:46:04 -0700 (PDT)
+        with ESMTP id S232832AbhEZVHY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 May 2021 17:07:24 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E1CC061574
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 14:05:50 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id r8so4014064ybb.9
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 14:05:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YvbOHQ0flxMk/Bq6f8vEV5YQCmLV7EioOos/HZ59J8s=;
-        b=bSYvX3HTAOMbkCyWlySZesqguGFInZP1OBPvWUrdvzCbiK1aDT5sc6NJm3IZIsJI7T
-         S5yFcQRHjlXppWx9Dt32juZOpZszI0CtPLloNJ4FRiGf3hREHuj/dXmixd19cBAYl7mh
-         9fQ1W36gwmZTiMuEnBprYSgfdBJArhl9EORevwv1NrcrMAiN59GYklPcFh6mNTEkmiDm
-         ff0OJhYz3ZoeRnsG/I0k4/hT81qgjiqzhMx70YUHfnPh21+FPt9FiKtMdBveLHBzMoNF
-         4nPSsQjpVA3KuSCSXPaNetEYWQj2Agqonz+Vjz4rdEpogskSeeNQDelXqwHGA6HeZlhy
-         GVQA==
+        bh=yLtpXWWUXwiF+Y04RA6u/0Z4mcU07dXfmKf+q2aIElY=;
+        b=Jt4eEV5ZHUdr4PX8P3SMitj2SNlrEFgzveLoHgEXuSAnG9TXGxo1A8kGSgCFKO73Ft
+         wS4wwVjfRogPHnVDPeLthjqrQLejv0fhkrm1C38j54E+aAbYBSC5VV/iNV19R33/6Zdf
+         8Z/pTtLnXHxol2nO/CXgpgoav6cqQb9g1F5JovZk3JQ55kl69+da7/ADAAJfPavvWsGb
+         adOL+nc3Z7T46vSzABr20+z7St7MI0/ZJrLwmV8JC3AHcNjLEGZz6tvQM7dyPTEnrQpo
+         hxvxFy4GlyPUR18I7LsbjA5UHcXWR9STkXeO2g/3ebcXfq5fGKyFVfrrqaohpSRmF6T3
+         HWtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YvbOHQ0flxMk/Bq6f8vEV5YQCmLV7EioOos/HZ59J8s=;
-        b=L8nshdCQGhsMBNPXuN2JSfWpvgEkwK8HgTTC5CD6hL9cjY/sm2aEV5x8SYFE+mM3wn
-         qAGBZci0JEBWk0itpNnyqUttDluzrNz5sJjOu8h7mtZX64Vmh5G6xNYNbkkoEjusLRxZ
-         kFRYOnUeP5tVShCLJGUV1vBcc/gp0AK8spY/mEBhMWwbzHMJxNTOa5aZH279EM6criV9
-         lRjzRsDV2fz2NphT9OiZjfXAOoaYeGldjOOp74HgC6T59Qaz5AIkqjlHxhJsMMozfyPK
-         hYYUw6jQh9yGIFKK8iM7WPlciRs0wSarB09U5YkK3G8yUA3wgEzoZDHLuhwc5N9brwKl
-         SnxA==
-X-Gm-Message-State: AOAM532DEXDQXe3qaQurdv8bBvVC+Njfe8VhqFvGPQ2WTvZWoIGY4+aW
-        LyWI3sNWjdM1hOIw+585XVfWYW+jf0+mPi8K9y21U2BQMN4=
-X-Google-Smtp-Source: ABdhPJxWB2bJW9mEtLEEsukkjBYBCAoSyifL7GmGN0kJJCUfjQ+T9Zd/RLSTNHh3JC8o22MmwQpvApdxdp+756hYZfQ=
-X-Received: by 2002:a5b:f05:: with SMTP id x5mr51633094ybr.425.1622061964109;
- Wed, 26 May 2021 13:46:04 -0700 (PDT)
+        bh=yLtpXWWUXwiF+Y04RA6u/0Z4mcU07dXfmKf+q2aIElY=;
+        b=OvaL4Ds/YqHfHNBCfP5eFME/OXU4qOFncNHHGIB3ZyvyFMYcrKa+Y9UIpIUguJPb0y
+         a38mOJ6+TXGoYrigUuzoI65eimtTbx4br+GIxQZTEsq6yTRggCA9iZvhTVSTbFYn0vFR
+         RA/MOxXFP5BPk4J4khAsmiRaSTppv+CWTmeFwYekOWAO1cpStKdPWaMWAwaEYmyzskCE
+         uMAQhZqIWdZuDNwFztq2YIlGJaxLO9XAQUBGPEU0QBoT6kdradfkLzpsVjBitEzGV4Ju
+         gnTixmeG6k2c16pZ6QSIVDw5VheHsjaKsNUOJwyMz6JCu5EEep2/nIQBGbWKaPRKaPcd
+         Snwg==
+X-Gm-Message-State: AOAM532+Qh5tyo1KX+mrAUn+zOXTHLzUKAnq51cm7fBB434U169x5NzH
+        2pbuKHq0NNwadeUwhngfey72CHUyT8AdFbEAL0E=
+X-Google-Smtp-Source: ABdhPJwutJArJZ06f1gDxt1qxidDHwji+19r+C6Epk5mg0+rM70yaNpvfx87eHPdjHHk7frTcmGykqbhoiKj3O0cY7w=
+X-Received: by 2002:a5b:286:: with SMTP id x6mr55727759ybl.347.1622063150038;
+ Wed, 26 May 2021 14:05:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210429054734.53264-1-grantseltzer@gmail.com>
- <877dkkd7gp.fsf@meer.lwn.net> <CAO658oV2vJ0O=D3HWXyCUztsHD5GzDY_5p3jaAicEqqj+2-i+Q@mail.gmail.com>
- <87tunnc0oj.fsf@meer.lwn.net> <CAO658oUMkxR7VO1i3wCYHp7hMC3exP3ccHqeA-2BGnL4bPwfPA@mail.gmail.com>
- <CAEf4BzZJUtPiGn+8mkzNd2k+-3EEE85_xezab3RYy9ZW4zqANQ@mail.gmail.com>
- <CAO658oWPrEDBE8FUBuDUnrBVM91Mgu-svXfXgAXawAUp1MmWZA@mail.gmail.com>
- <CAEf4BzZJDqR7mRSKbOCWfZV-dqwin+PGYxBTTYMVVYwriD33JQ@mail.gmail.com> <CAO658oUAg02tN4Gr9r5PJvb93HhN_yj3BzpvC2oVc6oaSn0FUw@mail.gmail.com>
-In-Reply-To: <CAO658oUAg02tN4Gr9r5PJvb93HhN_yj3BzpvC2oVc6oaSn0FUw@mail.gmail.com>
+References: <20210524220555.251473-1-zeffron@riotgames.com> <20210524220555.251473-4-zeffron@riotgames.com>
+In-Reply-To: <20210524220555.251473-4-zeffron@riotgames.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 May 2021 13:45:53 -0700
-Message-ID: <CAEf4BzY=JQiHquwoUypU2fD4Xe5rr+DuQA2Xw=n6OXvH7hXbew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] Autogenerating API documentation
-To:     Grant Seltzer Richman <grantseltzer@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Wed, 26 May 2021 14:05:39 -0700
+Message-ID: <CAEf4BzZqi_PcYXKgXr=t62z2K05rMxB7vYtAkW68ucwu1mdHqg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Add test for xdp_md context
+ in BPF_PROG_TEST_RUN
+To:     Zvi Effron <zeffron@riotgames.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Cody Haas <chaas@riotgames.com>,
+        Lisa Watanabe <lwatanabe@riotgames.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, May 25, 2021 at 8:22 PM Grant Seltzer Richman
-<grantseltzer@gmail.com> wrote:
+On Mon, May 24, 2021 at 3:08 PM Zvi Effron <zeffron@riotgames.com> wrote:
 >
-> On Mon, May 10, 2021 at 1:48 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Mon, May 10, 2021 at 7:59 AM Grant Seltzer Richman
-> > <grantseltzer@gmail.com> wrote:
-> > >
-> > > On Fri, Apr 30, 2021 at 1:31 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Fri, Apr 30, 2021 at 7:27 AM Grant Seltzer Richman
-> > > > <grantseltzer@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Apr 30, 2021 at 10:22 AM Jonathan Corbet <corbet@lwn.net> wrote:
-> > > > > >
-> > > > > > Grant Seltzer Richman <grantseltzer@gmail.com> writes:
-> > > > > >
-> > > > > > > Hm, yes I do agree that it'd be nice to use existing tooling but I
-> > > > > > > just have a couple concerns for this but please point me in the right
-> > > > > > > direction because i'm sure i'm missing something. I was told to ask on
-> > > > > > > the linux-doc mailing list because you'd have valuable input anway.
-> > > > > > > This is based on reading
-> > > > > > > https://www.kernel.org/doc/html/v4.9/kernel-documentation.html#including-kernel-doc-comments
-> > > > > > >
-> > > > > > > 1. We'd want the ability to pull documentation from the code itself to
-> > > > > > > make it so documentation never falls out of date with code. Based on
-> > > > > > > the docs on kernel.org/doc it seems that we'd have to be explicit with
-> > > > > > > specifying which functions/types are included in an .rst file and
-> > > > > > > submit a patch to update the documentation everytime the libbpf api
-> > > > > > > changes. Perhaps if this isn't a thing already I can figure out how to
-> > > > > > > contribute it.
-> > > > > >
-> > > > > > No, you can tell it to pull out docs for all of the functions in a given
-> > > > > > file.  You only need to name things if you want to narrow things down.
-> > > > >
-> > > > > Alright, I will figure out how to do this and adjust the patch
-> > > > > accordingly. My biggest overall goal is making it as easy as possible
-> > > > > to contribute documentation. I think even adding just one doc string
-> > > > > above an API function is a great opportunity for new contributors to
-> > > > > familiarize themselves with the mailing list/patch process.
-> > > > >
-> > > > > >
-> > > > > > > 2. Would it be possible (or necessary) to separate libbpf
-> > > > > > > documentation from the kernel readthedocs page since libbpf isn't part
-> > > > > > > of the kernel?
-> > > > > >
-> > > > > > It could certainly be built as a separate "book", as are many of the
-> > > > > > kernel books now.  I could see it as something that gets pulled into the
-> > > > > > user-space API book, but there could also perhaps be an argument made
-> > > > > > for creating a new "libraries" book instead.
-> > > > >
-> > > > > Yea if I can figure this out for the libbpf API it'd be great to
-> > > > > replicate it for any API!
-> > > >
-> > > > It would be great if it was possible to have this libbpf
-> > > > auto-generated documentation as part of the kernel documentation, but
-> > > > also be able to generate and export it into our Github mirror to be
-> > > > pulled by readthedocs.io. If that can be done, it would be the best of
-> > > > both kernel and external worlds. We have a sync script that already
-> > > > auto-generates and checks in BPF helpers header, so we have a
-> > > > precedent of checking in auto-generated stuff into Github. So it's
-> > > > mostly about figuring out the mechanics of doc generation.
-> > >
-> > > Agreed, the mirror will have to bring in the documentation
-> > > subdirectory as well so the output could be seperate.
-> > >
-> > > Just want to update in this thread that i've been really preoccupied
-> > > with other obligations and will get back to this next week.
-> >
-> > No worries. Thanks for the update!
+> Add a test for using xdp_md as a context to BPF_PROG_TEST_RUN for XDP
+> programs.
 >
-> Finally catching up on this, thanks for all of your patience!
+> The test uses a BPF program that takes in a return value from XDP
+> metadata, then reduces the size of the XDP metadata by 4 bytes.
 >
-> I've discovered that it's actually very easy, even trivial, to add API
-> documentation for libbpf using the existing kernel sphinx
-> documentation system. Adding a couple files with directives under
-> `Documentaiton/bpf` is enough to pull in any comment-documented
-> functions/structs in libbpf code. I'm not sure who owns the CI/CD
-
-Hopefully Jonathan will know.
-
-> infrastructure that recompiles the documentation and hosts on
-> kernel.org/doc but I've been building them locally with `make
-> htmldocs` with no problem. That would require a single patch and we
-> can start adding comment documentation to libbpf.  I can submit a
-> patch for that if you'd like to test it yourself. In this system the
-> html output is not checked into git though.
+> Test cases validate the possible failure cases for passing in invalid
+> xdp_md contexts, that the return value is successfully passed
+> in, and that the adjusted metadata is successfully copied out.
 >
-> Andrii - what do you think of having libbpf API documentation hosted
-> on the kernel.org readthedocs? It would be nice to have it seperate
-> from the rest of kernel documentation for simplicity, though it is
-> nice to use/contribute-to existing infrastructure. If you'd like to
-> have it seperate we can have the libbpf mirror run `make htmldocs`,
-> take the output, and host our own readthedocs site.
-
-Yeah, sure, let's start with libbpf docs as part of the kernel docs,
-it doesn't hurt. But libbpf versioning is separate from kernel
-versioning and most libbpf users "consume" libbpf from Github repo, so
-we might need to do `make htmldocs` trick while syncing. But let's do
-one step at a time.
-
+> Co-developed-by: Cody Haas <chaas@riotgames.com>
+> Signed-off-by: Cody Haas <chaas@riotgames.com>
+> Co-developed-by: Lisa Watanabe <lwatanabe@riotgames.com>
+> Signed-off-by: Lisa Watanabe <lwatanabe@riotgames.com>
+> Signed-off-by: Zvi Effron <zeffron@riotgames.com>
+> ---
+>  .../bpf/prog_tests/xdp_context_test_run.c     | 117 ++++++++++++++++++
+>  .../bpf/progs/test_xdp_context_test_run.c     |  22 ++++
+>  2 files changed, 139 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c
 >
-> I'd love to have this all set up and have the full API documented by
-> the time you cut the libbpf 1.0 release!
+> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+> new file mode 100644
+> index 000000000000..92ce2e4a5c30
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+> @@ -0,0 +1,117 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include <network_helpers.h>
+> +
+> +void test_xdp_context_test_run(void)
+> +{
+> +       const char *file = "./test_xdp_context_test_run.o";
 
-Yep, I agree.
+please use BPF skeleton for new tests
+
+> +       struct bpf_object *obj;
+> +       char data[sizeof(pkt_v4) + sizeof(__u32)];
+> +       char buf[128];
+> +       char bad_ctx[sizeof(struct xdp_md)];
+> +       struct xdp_md ctx_in, ctx_out;
+> +       struct bpf_test_run_opts tattr = {
+> +               .sz = sizeof(struct bpf_test_run_opts),
+> +               .data_in = &data,
+> +               .data_out = buf,
+> +               .data_size_in = sizeof(data),
+> +               .data_size_out = sizeof(buf),
+> +               .ctx_out = &ctx_out,
+> +               .ctx_size_out = sizeof(ctx_out),
+> +               .repeat = 1,
+> +       };
+> +       int err, prog_fd;
+> +
+> +       err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
+> +       if (CHECK_FAIL(err))
+> +               return;
+> +
+> +       *(__u32 *)data = XDP_PASS;
+> +       *(struct ipv4_packet *)(data + sizeof(__u32)) = pkt_v4;
+> +
+> +       memset(&ctx_in, 0, sizeof(ctx_in));
+> +       tattr.ctx_in = &ctx_in;
+> +       tattr.ctx_size_in = sizeof(ctx_in);
+> +
+> +       tattr.ctx_in = &ctx_in;
+> +       tattr.ctx_size_in = sizeof(ctx_in);
+> +       ctx_in.data_meta = 0;
+> +       ctx_in.data = sizeof(__u32);
+> +       ctx_in.data_end = ctx_in.data + sizeof(pkt_v4);
+> +       err = bpf_prog_test_run_opts(prog_fd, &tattr);
+> +       CHECK_ATTR(err || tattr.retval != XDP_PASS ||
+
+please use ASSERT_xxx() macros instead of CHECK() variants
+
+> +                  tattr.data_size_out != sizeof(pkt_v4) ||
+> +                  tattr.ctx_size_out != tattr.ctx_size_in ||
+> +                  ctx_out.data_meta != 0 ||
+> +                  ctx_out.data != ctx_out.data_meta ||
+> +                  ctx_out.data_end != sizeof(pkt_v4), "xdp_md context",
+> +                  "err %d errno %d retval %d data size out %d context size out %d data_meta %d data %d data_end %d\n",
+> +                  err, errno, tattr.retval, tattr.data_size_out,
+> +                  tattr.ctx_size_out, ctx_out.data_meta, ctx_out.data,
+> +                  ctx_out.data_end);
+> +
+
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c b/tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c
+> new file mode 100644
+> index 000000000000..c66a756b238e
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c
+> @@ -0,0 +1,22 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +int _version SEC("version") = 1;
+
+this is obsolete, you can drop this variable completely
+
+> +
+> +SEC("xdp_context")
+
+SEC("xdp") is a standard way for XDP programs, please use that
+
+> +int _xdp_context(struct xdp_md *xdp)
+> +{
+> +       void *data = (void *)(unsigned long)xdp->data;
+> +       __u32 *metadata = (void *)(unsigned long)xdp->data_meta;
+> +       __u32 ret;
+> +
+> +       if (metadata + 1 > data)
+> +               return XDP_ABORTED;
+> +       ret = *metadata;
+> +       if (bpf_xdp_adjust_meta(xdp, 4))
+> +               return XDP_ABORTED;
+> +       return ret;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> --
+> 2.31.1
+>
