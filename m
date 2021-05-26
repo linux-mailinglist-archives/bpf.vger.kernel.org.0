@@ -2,209 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC595391222
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 10:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B5C39124F
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 10:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbhEZISa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 04:18:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27036 "EHLO
+        id S231410AbhEZIaP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 04:30:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50521 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231993AbhEZIS3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 May 2021 04:18:29 -0400
+        by vger.kernel.org with ESMTP id S232209AbhEZIaO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 26 May 2021 04:30:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622017018;
+        s=mimecast20190719; t=1622017723;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=eE2fP+TWlAmJ/gnP75aIg5o6IkLWt2hvDOXfzvWSdZk=;
-        b=FF77an7nb1OXGgdFjXcjT1rY3eQ6rDYgekTR6XA46g9STw4oDYLmaeJr22R7MhFB1BMxSn
-        9amasZRwyTqY1pSgQwUZnNqh9vBaC+i+MJwRJCVQt6uRTnwZhELuUebBFUwLHjVGVmxKq3
-        vvjYKJ1IG7fiCD5hEEKIrQ3sEESnv2E=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-253-pb6Cq5WlMW2Ly5DtDb_F6Q-1; Wed, 26 May 2021 04:16:56 -0400
-X-MC-Unique: pb6Cq5WlMW2Ly5DtDb_F6Q-1
-Received: by mail-wm1-f72.google.com with SMTP id n2-20020a05600c4f82b0290181c444b9f1so110775wmq.6
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 01:16:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=eE2fP+TWlAmJ/gnP75aIg5o6IkLWt2hvDOXfzvWSdZk=;
-        b=fJpcVeIUGmtxWK2acGYcbQ9BspZBy7dsjGdClNIyn4zxHe6m018iMtTEPjHtqv1Cd2
-         w5I6s2SKqtOtAtZH9LEyAgZs9DS8fDYQbEN5lGqBVu9PKno5O+2oV87aK7KVc3B/MAae
-         75J98HqSmrroZbzDEdFs7JKOU02Rip/GGP6L3xjlWhrJaZV6PCMX7pkQAY1XX3WWf1wf
-         qMQHYsiQBXLfXhB0cB4ZcMemlAslTvtWXu2r3TzSqCq7h6s9fLi+9Okrqn8D7YseJHvF
-         QA8JgwTDaM8HsIHdIsZPfwHQqeNIyPzccG+6VTAk9PnZV/jVwR8S528j44tPJolk7WPH
-         V2EA==
-X-Gm-Message-State: AOAM531BgI0576xOsr2lkh84RqPLdFRAPmyM8HULTVkeafBeMv1rcsDt
-        IJLgKKn10h9yIRwVVgEJCuDC3J6oP7tKZPCOFK6vGlw03XOL5w44b3cL92UEelVuxnq/S5wNxEm
-        6tSeDwkfMOHr8
-X-Received: by 2002:a1c:65c2:: with SMTP id z185mr2258131wmb.2.1622017014967;
-        Wed, 26 May 2021 01:16:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzDurN//AkVCUXWdJMKlfPy9+peeMSfkF9wTU1C0DbAfbotusb1FD6LmhriDoL80bxtSiHvqg==
-X-Received: by 2002:a1c:65c2:: with SMTP id z185mr2258108wmb.2.1622017014711;
-        Wed, 26 May 2021 01:16:54 -0700 (PDT)
-Received: from ?IPv6:2003:d8:2f38:2400:62f4:c5fa:ba13:ac32? (p200300d82f38240062f4c5faba13ac32.dip0.t-ipconnect.de. [2003:d8:2f38:2400:62f4:c5fa:ba13:ac32])
-        by smtp.gmail.com with ESMTPSA id 60sm1695777wrq.14.2021.05.26.01.16.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 May 2021 01:16:54 -0700 (PDT)
-Subject: Re: [PATCH] mm/page_alloc: Work around a pahole limitation with
- zero-sized struct pagesets
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bh=M8mP9hdU2vxJhlwm/QcZaWaywE5qhn2quEvO4fqYV7I=;
+        b=QZiSaMYV9VkB2TOwxZZpyWJBTWU0OPxMLNABU+3KIsMZX9iGmIthR7w7djL5q3xaFf9HBm
+        /QwSyBc1X/YYGiGAHioMqrpzFwPFtmfZvQVtnpxWgSaGhL5sHfcLVlSOTEVzfFaooXE45Q
+        BOVLwE/74tkRiB2R3FDM9gEuTcJcX0o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-45-khTQfVtuPqaTHH7lppubrQ-1; Wed, 26 May 2021 04:28:39 -0400
+X-MC-Unique: khTQfVtuPqaTHH7lppubrQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0657E180FD77;
+        Wed, 26 May 2021 08:28:37 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 209536A046;
+        Wed, 26 May 2021 08:28:20 +0000 (UTC)
+Date:   Wed, 26 May 2021 10:28:19 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Toke =?UTF-8?B?SMO4?= =?UTF-8?B?aWxhbmQtSsO4cmdlbnNlbg==?= 
+        <toke@redhat.com>, "David Ahern" <dsahern@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        brouer@redhat.com, BPF-dev-list <bpf@vger.kernel.org>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "Raczynski, Piotr" <piotr.raczynski@intel.com>,
+        "Zhang, Jessica" <jessica.zhang@intel.com>,
+        "Kubiak, Marcin" <marcin.kubiak@intel.com>,
+        "Joseph, Jithu" <jithu.joseph@intel.com>,
+        "kurt@linutronix.de" <kurt@linutronix.de>,
+        "Maloor, Kishen" <kishen.maloor@intel.com>,
+        "Gomes, Vinicius" <vinicius.gomes@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Swiatkowski, Michal" <michal.swiatkowski@intel.com>,
+        "Plantykow, Marta A" <marta.a.plantykow@intel.com>,
+        "Desouza, Ederson" <ederson.desouza@intel.com>,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        "Czapnik, Lukasz" <lukasz.czapnik@intel.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-References: <20210526080741.GW30378@techsingularity.net>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <1e0f727a-f9c4-4fc1-b4d2-c075df7a4600@redhat.com>
-Date:   Wed, 26 May 2021 10:16:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        William Tu <u9012063@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: XDP-hints: Storing some bits in XDP metadata and others in
+ xdp_frame/xdp-buff  (was: Checksum for xdp_frame)
+Message-ID: <20210526102819.04b99ae0@carbon>
+In-Reply-To: <DM6PR11MB4593177EE3BBA8E4E2C7CC2BF7259@DM6PR11MB4593.namprd11.prod.outlook.com>
+References: <20210525121637.46fcdebe@carbon>
+        <DM6PR11MB4593177EE3BBA8E4E2C7CC2BF7259@DM6PR11MB4593.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210526080741.GW30378@techsingularity.net>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 26.05.21 10:07, Mel Gorman wrote:
-> Michal Suchanek reported the following problem with linux-next
-> 
->    [    0.000000] Linux version 5.13.0-rc2-next-20210519-1.g3455ff8-vanilla (geeko@buildhost) (gcc (SUSE Linux) 10.3.0, GNU ld (GNU Binutils; openSUSE Tumbleweed) 2.36.1.20210326-3) #1 SMP Wed May 19 10:05:10 UTC 2021 (3455ff8)
->    [    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-5.13.0-rc2-next-20210519-1.g3455ff8-vanilla root=UUID=ec42c33e-a2c2-4c61-afcc-93e9527 8f687 plymouth.enable=0 resume=/dev/disk/by-uuid/f1fe4560-a801-4faf-a638-834c407027c7 mitigations=auto earlyprintk initcall_debug nomodeset earlycon ignore_loglevel console=ttyS0,115200
-> ...
->    [   26.093364] calling  tracing_set_default_clock+0x0/0x62 @ 1
->    [   26.098937] initcall tracing_set_default_clock+0x0/0x62 returned 0 after 0 usecs
->    [   26.106330] calling  acpi_gpio_handle_deferred_request_irqs+0x0/0x7c @ 1
->    [   26.113033] initcall acpi_gpio_handle_deferred_request_irqs+0x0/0x7c returned 0 after 3 usecs
->    [   26.121559] calling  clk_disable_unused+0x0/0x102 @ 1
->    [   26.126620] initcall clk_disable_unused+0x0/0x102 returned 0 after 0 usecs
->    [   26.133491] calling  regulator_init_complete+0x0/0x25 @ 1
->    [   26.138890] initcall regulator_init_complete+0x0/0x25 returned 0 after 0 usecs
->    [   26.147816] Freeing unused decrypted memory: 2036K
->    [   26.153682] Freeing unused kernel image (initmem) memory: 2308K
->    [   26.165776] Write protecting the kernel read-only data: 26624k
->    [   26.173067] Freeing unused kernel image (text/rodata gap) memory: 2036K
->    [   26.180416] Freeing unused kernel image (rodata/data gap) memory: 1184K
->    [   26.187031] Run /init as init process
->    [   26.190693]   with arguments:
->    [   26.193661]     /init
->    [   26.195933]   with environment:
->    [   26.199079]     HOME=/
->    [   26.201444]     TERM=linux
->    [   26.204152]     BOOT_IMAGE=/boot/vmlinuz-5.13.0-rc2-next-20210519-1.g3455ff8-vanilla
->    [   26.254154] BPF:      type_id=35503 offset=178440 size=4
->    [   26.259125] BPF:
->    [   26.261054] BPF:Invalid offset
->    [   26.264119] BPF:
->    [   26.264119]
->    [   26.267437] failed to validate module [efivarfs] BTF: -22
-> 
-> Andrii Nakryiko bisected the problem to the commit "mm/page_alloc: convert
-> per-cpu list protection to local_lock" currently staged in mmotm. In his
-> own words
-> 
->    The immediate problem is two different definitions of numa_node per-cpu
->    variable. They both are at the same offset within .data..percpu ELF
->    section, they both have the same name, but one of them is marked as
->    static and another as global. And one is int variable, while another
->    is struct pagesets. I'll look some more tomorrow, but adding Jiri and
->    Arnaldo for visibility.
-> 
->    [110907] DATASEC '.data..percpu' size=178904 vlen=303
->    ...
->          type_id=27753 offset=163976 size=4 (VAR 'numa_node')
->          type_id=27754 offset=163976 size=4 (VAR 'numa_node')
-> 
->    [27753] VAR 'numa_node' type_id=27556, linkage=static
->    [27754] VAR 'numa_node' type_id=20, linkage=global
-> 
->    [20] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> 
->    [27556] STRUCT 'pagesets' size=0 vlen=1
->          'lock' type_id=507 bits_offset=0
-> 
->    [506] STRUCT '(anon)' size=0 vlen=0
->    [507] TYPEDEF 'local_lock_t' type_id=506
-> 
-> The patch in question introduces a zero-sized per-cpu struct and while
-> this is not wrong, versions of pahole prior to 1.22 (unreleased) get
-> confused during BTF generation with two separate variables occupying the
-> same address.
-> 
-> This patch checks for older versions of pahole and forces struct pagesets
-> to be non-zero sized as a workaround when CONFIG_DEBUG_INFO_BTF is set. A
-> warning is omitted so that distributions can update pahole when 1.22
-> is released.
-> 
-> Reported-by: Michal Suchanek <msuchanek@suse.de>
-> Reported-by: Hritik Vijay <hritikxx8@gmail.com>
-> Debugged-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> ---
->   lib/Kconfig.debug |  3 +++
->   mm/page_alloc.c   | 11 +++++++++++
->   2 files changed, 14 insertions(+)
-> 
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 678c13967580..f88a155b80a9 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -313,6 +313,9 @@ config DEBUG_INFO_BTF
->   config PAHOLE_HAS_SPLIT_BTF
->   	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
->   
-> +config PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT
-> +	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "122")
-> +
->   config DEBUG_INFO_BTF_MODULES
->   	def_bool y
->   	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index ff8f706839ea..1d56d3de8e08 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -124,6 +124,17 @@ static DEFINE_MUTEX(pcp_batch_high_lock);
->   
->   struct pagesets {
->   	local_lock_t lock;
-> +#if defined(CONFIG_DEBUG_INFO_BTF) &&			\
-> +    !defined(CONFIG_DEBUG_LOCK_ALLOC) &&		\
-> +    !defined(CONFIG_PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT)
-> +	/*
-> +	 * pahole 1.21 and earlier gets confused by zero-sized per-CPU
-> +	 * variables and produces invalid BTF. Ensure that
-> +	 * sizeof(struct pagesets) != 0 for older versions of pahole.
-> +	 */
-> +	char __pahole_hack;
-> +	#warning "pahole too old to support zero-sized struct pagesets"
-> +#endif
->   };
->   static DEFINE_PER_CPU(struct pagesets, pagesets) = {
->   	.lock = INIT_LOCAL_LOCK(lock),
-> 
 
-Looks sane to me.
+(Cc. upstream bpf-list as Magnus brought up a good question and
+important AF_XDP view-point)
 
--- 
-Thanks,
+On Tue, 25 May 2021 12:40:03 +0000
+"Karlsson, Magnus" <magnus.karlsson@intel.com> wrote:
 
-David / dhildenb
+> > -----Original Message-----
+> > From: Jesper Dangaard Brouer <brouer@redhat.com>
+> > Subject: Fwd: Checksum for xdp_frame 
+> > 
+> > The important part is this commit by Ahern:
+> > [1] https://github.com/dsahern/linux/commit/b6b4d4ef9562383d8b407a873d30
+> > 
+> > The patch use bitfields, which we now know is a bad idea for performance,
+> > so that needs to change.
+
+We were discussing above patch [1].  That implement CHECKSUM_UNNECESSARY
+HW indication, by storing two-bits in xdp_buff, that is later
+transferred to xdp_frame, which use them to populate skb->ip_summed.
+(Plan is for Lorenzo to continue this work).
+
+Measurements[2] show a need for this.
+ [2] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp_frame01_checksum.org
+
+> [...]
+> 
+> Some initial thoughts from an AF_XDP point of view. For every one of
+> these "metadata" items being it IP checksumed, Rx/Tx timestamps,
+> packet continues in next buffer, VLAN id, RSS hash, etc. we can pick
+> one of these methods:
+> 
+> 1: Put it in the XDP metadata section before the packet. Good since
+> it requires no intervention to convert this to AF_XDP and it is
+> large. AF_XDP uses exactly the same metadata section as XDP. The
+> drawback here might be that we touch a new cache line unless we play
+> with headroom so that it is located on the same cache line as the
+> start of the packet (and use that too).
+> 
+> 2: We put it in the struct xdp_buff which is invisible to user space
+> and therefore must be copied out to either the XDP metadata section
+> or to the __u32 options field in the AF_XDP Rx descriptor. As we add
+> stuff to the xdp_buff, this will become a scalability problem and we
+> will create a mini skb. Moreover, we only have space for 32 bits of
+> information in the AF_XDP Rx options field and in contrast to the
+> xdp_buff, we can never increase this, so AF_XDP needs to put things
+> in the XDP metadata section sooner or later. The only advantage with
+> this approach is that if we put the item in the options field, this
+> will be fast since it will very likely be in the L1 cache. But since
+> it is only 32 bits, we have to pick what goes in the options field
+> very carefully.
+> 
+> One thing I think should go into the options field is the
+> multi-buffer flag in Lorenzos multi-buffer patch set since that has
+> to be checked all the time in multi-buffer mode and it has to do with
+> frames/descriptors composing a packet. (multi_buffer is a property on
+> each descriptor/frame, while ip_checksummed is a property on the
+> packet but not each descriptor.) But for all the rest, I think we
+> should use the XDP metadata field. I have not read David's mail, but
+> what is the argument for having ip_checksummed in the xdp_buff? Why
+> not any of the other metadata items that could be equally or more
+> important for my app? Putting it in the XDP metadata requires a lot
+> of plumbing before we can realize #1 so that is one good short-term
+> argument for #2. But I think we need to take the step towards XDP
+> metadata now. #2 is not a scalable approach, not even for the
+> xdp_buff. Opinions? What am I missing?
+
+Thanks for framing the issue/dilemma very accurately.
+
+My perspective is converting xdp_frame into SKB, where we *also* need
+some of these HW-hints.  This is very easy with method #2, where we
+simply extend the C-structs to contain more info, but these are fixed
+fields that add a small constant/fixed overhead.  One could argue that
+it is naturally limited by what the SKB have fields for, but AF_XDP
+also need visibility into these fields.  I'm all for going in method #1
+direction, but I don't fully know/understand how the kernel C-code can
+access fields in the BTF described XDP metadata area?
+
+In my opinion we could/can "allow" the HW-checksum "ok" indication to
+use method #2, as shown in Ahern's patch[1].  The argument is that
+almost all hardware provide this.
+
+The next natural field for method #2 seems to be "rxhash32" (32-bit
+RSS-hash).  This is also something we know almost all hardware provide,
+but IMHO is would be a mistake to use method #2.  First of all OVS
+AF_XDP (vmware Cc William) have RFC-patches[3] that AF_XDP need access
+to this.  Second, keeping this 32-bit is limiting hardware, as some NIC
+hardware (Mellanox and Napatech) support a 64-bit hash that is uniquely
+identify flows.  Mellanox also support using this RX-descriptor field
+for containing the skb->mark.  Thus, the flexibility of method #1 is
+preferred. (But how do I access this during xdp_frame to SKB creation?).
+
+As Magnus also said, I (also) think we need to take the step towards XDP
+metadata (method #1) with BTF... but we need some help from BTF experts.
+
+
+[3] http://patchwork.ozlabs.org/project/openvswitch/patch/1614882425-52800-1-git-send-email-u9012063@gmail.com/
+- - 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
+(Just to remind myself: Cache-line details about method #2 is that
+xdp_buff lives on call-stack and is cache-hot.  During redirect
+xdp_buff is converted to xdp_frame, which imply copying info into new
+memory area. The xdp_frame memory is located in top of data-frame.  The
+xdp_frame mem is prefetched in drivers to hide this cache-line miss).
 
