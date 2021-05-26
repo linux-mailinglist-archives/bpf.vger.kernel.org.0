@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C00863911EB
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 10:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 274C23911EE
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 10:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233270AbhEZIFu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 04:05:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40948 "EHLO mail.kernel.org"
+        id S232841AbhEZIGB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 04:06:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232873AbhEZIFu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 May 2021 04:05:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FE0E613E6;
-        Wed, 26 May 2021 08:04:15 +0000 (UTC)
+        id S233238AbhEZIGA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 May 2021 04:06:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B26BD613B4;
+        Wed, 26 May 2021 08:04:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622016259;
-        bh=3iDqN6IbfHW8PfeoC8K9td24ZOufoTiVRxV3XEeWOhk=;
+        s=k20201202; t=1622016269;
+        bh=zHgGf+J9R2KJWdm0E1kc2aXiEeqSmAci5E8/Yg36PtQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QwNmlrAEsmm+PPrntKATZVPVpsEnSHSWy+NV6ZvjoWZ72i4bwJZnxHh/57RbPxjQW
-         oDhtYPFIqA+Cr18GCU7FV5qSFkVL57Uy4WuZ6Ts0Fn524PY9wRlj/GeXAJFMW8juI2
-         xnkGZ7pFiULrOSsSKrknMXxuHRKcntveqiWDVQqm3Y0/hptWd/esu/WvZ1dKL0DIHE
-         ZQZ/IRPBvTX+PJBl5hlcLxU3TK6JGxU9cJPwn+hJfa637je2yjsXRT4uWCRXy39apP
-         kqrTEdHMSXe39qdROvbLD9jQh8dSkNH0VWBUSPu2vcV6fPZfqcrQnzDtxwolXQxGIi
-         jz4RRVDIvi7Xw==
+        b=KqdukoZpB3011YdRVNndQ6gJoV2vFJYfZ7gl92y1r060VFkXPolIMqX183z4HKkB7
+         VXRxarHbIcViaEGcKmKTzhtrmFrOOTvaN3ZM3XB/QTYqOHMURQYTxUIK7xSALytgSD
+         TDGDZXRhOeDcV6nNP2+HZBfoTunt7GsTDq6kHIx0sCCZ2QONbTpaJAWKpTqwDRvuj9
+         2gmz6vI05eYzCMJBA0DxLe92a9IT3JpBipLUNu+S6feI00v7zeL4OrTmAPeEZI3n3V
+         2tF7jO/UzhIo0tzpbU2gyFR67Nd5m/52ALb81X4CQRHk39hPZzDs6cxq7mWeg7jn6b
+         uHfT+x7NapRSw==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@kernel.org>
@@ -34,9 +34,9 @@ Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
         linux-ia64@vger.kernel.org,
         Abhishek Sagar <sagar.abhishek@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH -tip v6 12/13] tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
-Date:   Wed, 26 May 2021 17:04:14 +0900
-Message-Id: <162201625426.278331.16464105461089821909.stgit@devnote2>
+Subject: [PATCH -tip v6 13/13] x86/kprobes: Fixup return address in generic trampoline handler
+Date:   Wed, 26 May 2021 17:04:25 +0900
+Message-Id: <162201626487.278331.9722092310737938059.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <162201612941.278331.5293566981784464165.stgit@devnote2>
 References: <162201612941.278331.5293566981784464165.stgit@devnote2>
@@ -48,60 +48,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-ftrace shows "[unknown/kretprobe'd]" indicator all addresses in the
-kretprobe_trampoline, but the modified address by kretprobe should
-be only kretprobe_trampoline+0.
+In x86, kretprobe trampoline address on the stack frame will
+be replaced with the real return address after returning from
+trampoline_handler. Before fixing the return address, the real
+return address can be found in the current->kretprobe_instances.
+
+However, since there is a window between updating the
+current->kretprobe_instances and fixing the address on the stack,
+if an interrupt caused at that timing and the interrupt handler
+does stacktrace, it may fail to unwind because it can not get
+the correct return address from current->kretprobe_instances.
+
+This will minimize that window by fixing the return address
+right before updating current->kretprobe_instances.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_output.c |   17 ++++-------------
- 1 file changed, 4 insertions(+), 13 deletions(-)
+ arch/x86/kernel/kprobes/core.c |   15 +++++++++++++--
+ kernel/kprobes.c               |    8 ++++++++
+ 2 files changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-index d0368a569bfa..e46780670742 100644
---- a/kernel/trace/trace_output.c
-+++ b/kernel/trace/trace_output.c
-@@ -8,6 +8,7 @@
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/ftrace.h>
-+#include <linux/kprobes.h>
- #include <linux/sched/clock.h>
- #include <linux/sched/mm.h>
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 4f3567a9974f..3dec85ca5d9e 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -1032,6 +1032,7 @@ STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
+ #undef UNWIND_HINT_FUNC
+ #define UNWIND_HINT_FUNC
+ #endif
++
+ /*
+  * When a retprobed function returns, this code saves registers and
+  * calls trampoline_handler() runs, which calls the kretprobe's handler.
+@@ -1073,6 +1074,17 @@ asm(
+ );
+ NOKPROBE_SYMBOL(kretprobe_trampoline);
  
-@@ -346,22 +347,12 @@ int trace_output_call(struct trace_iterator *iter, char *name, char *fmt, ...)
++void arch_kretprobe_fixup_return(struct pt_regs *regs,
++				 unsigned long correct_ret_addr)
++{
++	unsigned long *frame_pointer;
++
++	frame_pointer = ((unsigned long *)&regs->sp) + 1;
++
++	/* Replace fake return address with real one. */
++	*frame_pointer = correct_ret_addr;
++}
++
+ /*
+  * Called from kretprobe_trampoline
+  */
+@@ -1090,8 +1102,7 @@ __used __visible void trampoline_handler(struct pt_regs *regs)
+ 	regs->sp += sizeof(long);
+ 	frame_pointer = ((unsigned long *)&regs->sp) + 1;
+ 
+-	/* Replace fake return address with real one. */
+-	*frame_pointer = kretprobe_trampoline_handler(regs, frame_pointer);
++	kretprobe_trampoline_handler(regs, frame_pointer);
+ 	/*
+ 	 * Move flags to sp so that kretprobe_trapmoline can return
+ 	 * right after popf.
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 1598aca375c9..d5869664bb61 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1899,6 +1899,12 @@ unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
  }
- EXPORT_SYMBOL_GPL(trace_output_call);
+ NOKPROBE_SYMBOL(kretprobe_find_ret_addr);
  
--#ifdef CONFIG_KRETPROBES
--static inline const char *kretprobed(const char *name)
-+static inline const char *kretprobed(const char *name, unsigned long addr)
++void __weak arch_kretprobe_fixup_return(struct pt_regs *regs,
++					unsigned long correct_ret_addr)
++{
++	/* Do nothing by default. */
++}
++
+ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+ 					     void *frame_pointer)
  {
--	static const char tramp_name[] = "kretprobe_trampoline";
--	int size = sizeof(tramp_name);
--
--	if (strncmp(tramp_name, name, size) == 0)
-+	if (is_kretprobe_trampoline(addr))
- 		return "[unknown/kretprobe'd]";
- 	return name;
- }
--#else
--static inline const char *kretprobed(const char *name)
--{
--	return name;
--}
--#endif /* CONFIG_KRETPROBES */
+@@ -1940,6 +1946,8 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+ 		first = first->next;
+ 	}
  
- void
- trace_seq_print_sym(struct trace_seq *s, unsigned long address, bool offset)
-@@ -374,7 +365,7 @@ trace_seq_print_sym(struct trace_seq *s, unsigned long address, bool offset)
- 		sprint_symbol(str, address);
- 	else
- 		kallsyms_lookup(address, NULL, NULL, NULL, str);
--	name = kretprobed(str);
-+	name = kretprobed(str, address);
- 
- 	if (name && strlen(name)) {
- 		trace_seq_puts(s, name);
++	arch_kretprobe_fixup_return(regs, (unsigned long)correct_ret_addr);
++
+ 	/* Unlink all nodes for this frame. */
+ 	first = current->kretprobe_instances.first;
+ 	current->kretprobe_instances.first = node->next;
 
