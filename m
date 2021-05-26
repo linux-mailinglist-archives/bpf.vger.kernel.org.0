@@ -2,192 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C65C3921C0
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 23:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93C839225D
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 23:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbhEZVH0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 17:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232832AbhEZVHY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 May 2021 17:07:24 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E1CC061574
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 14:05:50 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id r8so4014064ybb.9
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 14:05:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yLtpXWWUXwiF+Y04RA6u/0Z4mcU07dXfmKf+q2aIElY=;
-        b=Jt4eEV5ZHUdr4PX8P3SMitj2SNlrEFgzveLoHgEXuSAnG9TXGxo1A8kGSgCFKO73Ft
-         wS4wwVjfRogPHnVDPeLthjqrQLejv0fhkrm1C38j54E+aAbYBSC5VV/iNV19R33/6Zdf
-         8Z/pTtLnXHxol2nO/CXgpgoav6cqQb9g1F5JovZk3JQ55kl69+da7/ADAAJfPavvWsGb
-         adOL+nc3Z7T46vSzABr20+z7St7MI0/ZJrLwmV8JC3AHcNjLEGZz6tvQM7dyPTEnrQpo
-         hxvxFy4GlyPUR18I7LsbjA5UHcXWR9STkXeO2g/3ebcXfq5fGKyFVfrrqaohpSRmF6T3
-         HWtw==
+        id S234024AbhEZVyQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 17:54:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38695 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233839AbhEZVyP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 26 May 2021 17:54:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622065963;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2ooIrO6+PnLW9RdU2+GIho8vABniPqVAPdMUszZt5uE=;
+        b=cj1SZ5pWr8EzGGozjqMn0LwX7m6IMMK/ixyBZThsUvnADTXyfeRDbtr7dboRSWxEP1m0i3
+        2YIie27l2s71yvsfdYjCDvw2P3MitVTYSb08m0tjNSoH+rO79OMisy1Ja/16gy+Cc+iQwJ
+        WCx+p7/U1gdByU8hvvBTf1n2cOrMC04=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-296-kDXXuchJOd28yAMjCMo-Lg-1; Wed, 26 May 2021 17:52:41 -0400
+X-MC-Unique: kDXXuchJOd28yAMjCMo-Lg-1
+Received: by mail-wr1-f72.google.com with SMTP id a9-20020adfc4490000b0290112095ca785so934560wrg.14
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 14:52:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yLtpXWWUXwiF+Y04RA6u/0Z4mcU07dXfmKf+q2aIElY=;
-        b=OvaL4Ds/YqHfHNBCfP5eFME/OXU4qOFncNHHGIB3ZyvyFMYcrKa+Y9UIpIUguJPb0y
-         a38mOJ6+TXGoYrigUuzoI65eimtTbx4br+GIxQZTEsq6yTRggCA9iZvhTVSTbFYn0vFR
-         RA/MOxXFP5BPk4J4khAsmiRaSTppv+CWTmeFwYekOWAO1cpStKdPWaMWAwaEYmyzskCE
-         uMAQhZqIWdZuDNwFztq2YIlGJaxLO9XAQUBGPEU0QBoT6kdradfkLzpsVjBitEzGV4Ju
-         gnTixmeG6k2c16pZ6QSIVDw5VheHsjaKsNUOJwyMz6JCu5EEep2/nIQBGbWKaPRKaPcd
-         Snwg==
-X-Gm-Message-State: AOAM532+Qh5tyo1KX+mrAUn+zOXTHLzUKAnq51cm7fBB434U169x5NzH
-        2pbuKHq0NNwadeUwhngfey72CHUyT8AdFbEAL0E=
-X-Google-Smtp-Source: ABdhPJwutJArJZ06f1gDxt1qxidDHwji+19r+C6Epk5mg0+rM70yaNpvfx87eHPdjHHk7frTcmGykqbhoiKj3O0cY7w=
-X-Received: by 2002:a5b:286:: with SMTP id x6mr55727759ybl.347.1622063150038;
- Wed, 26 May 2021 14:05:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2ooIrO6+PnLW9RdU2+GIho8vABniPqVAPdMUszZt5uE=;
+        b=gks6+lGr3gC6Wzm1SAhb69ix2o3sZEqjY7vMOoiNGGF1kyza59LiLDMwPPino13pEE
+         HFu7ncpOcV4puMEU8xgvLYcE++Un9ya2jVss7tTJ6wXCbvJfs3AA5jeNQpREwLplOtQZ
+         h5u0JuY9RMxdXvHZ2NfCrrEXGApoceHDql/xyXVATc8wIPSZLJZA6mLd54f+BK4TigZX
+         ekPW5k96dpMjo72b5NtuUBYTtwck2CUBQEPj20GJjpDVzPY3OjSePhJpL1bW+IPEkr/W
+         3IZwylvloGMNxaQDoK9EcfmWsJ7SPVZBbfr8PuXUDoRAuLqAnR5b6JYxhDfhkZsAH3gM
+         4KAA==
+X-Gm-Message-State: AOAM532gQ21CqxTIgdm2ppEzW2IQrY3hQAwurjNe6DIBoZta2qKUlzly
+        qvIaO4M6+tPROvfUyDza6aG/ESvlOJCdVnRzFxfSDLP3/0Vx5X+lvFaEbzWnjTe/9zsIuEcIGMe
+        HU0YhK1jpRoNf
+X-Received: by 2002:a05:6000:11ce:: with SMTP id i14mr80397wrx.221.1622065960120;
+        Wed, 26 May 2021 14:52:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzpR2jhnqwvB6Ifd8antV8AzpNPZsvRhuhOfJO+5wlVtFi9SUKlsBy9gkyhhjnjvo1hBm188Q==
+X-Received: by 2002:a05:6000:11ce:: with SMTP id i14mr80383wrx.221.1622065959965;
+        Wed, 26 May 2021 14:52:39 -0700 (PDT)
+Received: from minerva.home ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id q5sm388996wmc.0.2021.05.26.14.52.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 May 2021 14:52:39 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>, bpf@vger.kernel.org,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org
+Subject: [PATCH v2] kbuild: quote OBJCOPY var to avoid a pahole call break the build
+Date:   Wed, 26 May 2021 23:52:28 +0200
+Message-Id: <20210526215228.3729875-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210524220555.251473-1-zeffron@riotgames.com> <20210524220555.251473-4-zeffron@riotgames.com>
-In-Reply-To: <20210524220555.251473-4-zeffron@riotgames.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 May 2021 14:05:39 -0700
-Message-ID: <CAEf4BzZqi_PcYXKgXr=t62z2K05rMxB7vYtAkW68ucwu1mdHqg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Add test for xdp_md context
- in BPF_PROG_TEST_RUN
-To:     Zvi Effron <zeffron@riotgames.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Cody Haas <chaas@riotgames.com>,
-        Lisa Watanabe <lwatanabe@riotgames.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 24, 2021 at 3:08 PM Zvi Effron <zeffron@riotgames.com> wrote:
->
-> Add a test for using xdp_md as a context to BPF_PROG_TEST_RUN for XDP
-> programs.
->
-> The test uses a BPF program that takes in a return value from XDP
-> metadata, then reduces the size of the XDP metadata by 4 bytes.
->
-> Test cases validate the possible failure cases for passing in invalid
-> xdp_md contexts, that the return value is successfully passed
-> in, and that the adjusted metadata is successfully copied out.
->
-> Co-developed-by: Cody Haas <chaas@riotgames.com>
-> Signed-off-by: Cody Haas <chaas@riotgames.com>
-> Co-developed-by: Lisa Watanabe <lwatanabe@riotgames.com>
-> Signed-off-by: Lisa Watanabe <lwatanabe@riotgames.com>
-> Signed-off-by: Zvi Effron <zeffron@riotgames.com>
-> ---
->  .../bpf/prog_tests/xdp_context_test_run.c     | 117 ++++++++++++++++++
->  .../bpf/progs/test_xdp_context_test_run.c     |  22 ++++
->  2 files changed, 139 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
-> new file mode 100644
-> index 000000000000..92ce2e4a5c30
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
-> @@ -0,0 +1,117 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +#include <network_helpers.h>
-> +
-> +void test_xdp_context_test_run(void)
-> +{
-> +       const char *file = "./test_xdp_context_test_run.o";
+The ccache tool can be used to speed up cross-compilation, by calling the
+compiler and binutils through ccache. For example, following should work:
 
-please use BPF skeleton for new tests
+    $ export ARCH=arm64 CROSS_COMPILE="ccache aarch64-linux-gnu-"
 
-> +       struct bpf_object *obj;
-> +       char data[sizeof(pkt_v4) + sizeof(__u32)];
-> +       char buf[128];
-> +       char bad_ctx[sizeof(struct xdp_md)];
-> +       struct xdp_md ctx_in, ctx_out;
-> +       struct bpf_test_run_opts tattr = {
-> +               .sz = sizeof(struct bpf_test_run_opts),
-> +               .data_in = &data,
-> +               .data_out = buf,
-> +               .data_size_in = sizeof(data),
-> +               .data_size_out = sizeof(buf),
-> +               .ctx_out = &ctx_out,
-> +               .ctx_size_out = sizeof(ctx_out),
-> +               .repeat = 1,
-> +       };
-> +       int err, prog_fd;
-> +
-> +       err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
-> +       if (CHECK_FAIL(err))
-> +               return;
-> +
-> +       *(__u32 *)data = XDP_PASS;
-> +       *(struct ipv4_packet *)(data + sizeof(__u32)) = pkt_v4;
-> +
-> +       memset(&ctx_in, 0, sizeof(ctx_in));
-> +       tattr.ctx_in = &ctx_in;
-> +       tattr.ctx_size_in = sizeof(ctx_in);
-> +
-> +       tattr.ctx_in = &ctx_in;
-> +       tattr.ctx_size_in = sizeof(ctx_in);
-> +       ctx_in.data_meta = 0;
-> +       ctx_in.data = sizeof(__u32);
-> +       ctx_in.data_end = ctx_in.data + sizeof(pkt_v4);
-> +       err = bpf_prog_test_run_opts(prog_fd, &tattr);
-> +       CHECK_ATTR(err || tattr.retval != XDP_PASS ||
+    $ make M=drivers/gpu/drm/rockchip/
 
-please use ASSERT_xxx() macros instead of CHECK() variants
+but pahole fails to extract the BTF info from DWARF, breaking the build:
 
-> +                  tattr.data_size_out != sizeof(pkt_v4) ||
-> +                  tattr.ctx_size_out != tattr.ctx_size_in ||
-> +                  ctx_out.data_meta != 0 ||
-> +                  ctx_out.data != ctx_out.data_meta ||
-> +                  ctx_out.data_end != sizeof(pkt_v4), "xdp_md context",
-> +                  "err %d errno %d retval %d data size out %d context size out %d data_meta %d data %d data_end %d\n",
-> +                  err, errno, tattr.retval, tattr.data_size_out,
-> +                  tattr.ctx_size_out, ctx_out.data_meta, ctx_out.data,
-> +                  ctx_out.data_end);
-> +
+      CC [M]  drivers/gpu/drm/rockchip//rockchipdrm.mod.o
+      LD [M]  drivers/gpu/drm/rockchip//rockchipdrm.ko
+      BTF [M] drivers/gpu/drm/rockchip//rockchipdrm.ko
+    aarch64-linux-gnu-objcopy: invalid option -- 'J'
+    Usage: aarch64-linux-gnu-objcopy [option(s)] in-file [out-file]
+     Copies a binary file, possibly transforming it in the process
+    ...
+    make[1]: *** [scripts/Makefile.modpost:156: __modpost] Error 2
+    make: *** [Makefile:1866: modules] Error 2
 
-[...]
+this fails because OBJCOPY is set to "ccache aarch64-linux-gnu-copy" and
+later pahole is executed with the following command line:
 
-> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c b/tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c
-> new file mode 100644
-> index 000000000000..c66a756b238e
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_xdp_context_test_run.c
-> @@ -0,0 +1,22 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +int _version SEC("version") = 1;
+    LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@
 
-this is obsolete, you can drop this variable completely
+which gets expanded to:
 
-> +
-> +SEC("xdp_context")
+    LLVM_OBJCOPY=ccache aarch64-linux-gnu-objcopy pahole -J ...
 
-SEC("xdp") is a standard way for XDP programs, please use that
+instead of:
 
-> +int _xdp_context(struct xdp_md *xdp)
-> +{
-> +       void *data = (void *)(unsigned long)xdp->data;
-> +       __u32 *metadata = (void *)(unsigned long)xdp->data_meta;
-> +       __u32 ret;
-> +
-> +       if (metadata + 1 > data)
-> +               return XDP_ABORTED;
-> +       ret = *metadata;
-> +       if (bpf_xdp_adjust_meta(xdp, 4))
-> +               return XDP_ABORTED;
-> +       return ret;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> --
-> 2.31.1
->
+    LLVM_OBJCOPY="ccache aarch64-linux-gnu-objcopy" pahole -J ...
+
+Fixes: 5f9ae91f7c0 ("kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it")
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+
+Changes in v2:
+- Add collected Acked-by tags.
+- Also quote on a similar assignment in scripts/link-vmlinux.sh (masahiroy)
+
+ scripts/Makefile.modfinal | 2 +-
+ scripts/link-vmlinux.sh   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+index dd87cea9fba..a7883e45529 100644
+--- a/scripts/Makefile.modfinal
++++ b/scripts/Makefile.modfinal
+@@ -59,7 +59,7 @@ quiet_cmd_ld_ko_o = LD [M]  $@
+ quiet_cmd_btf_ko = BTF [M] $@
+       cmd_btf_ko = 							\
+ 	if [ -f vmlinux ]; then						\
+-		LLVM_OBJCOPY=$(OBJCOPY) $(PAHOLE) -J --btf_base vmlinux $@; \
++		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J --btf_base vmlinux $@; \
+ 	else								\
+ 		printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
+ 	fi;
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index f4de4c97015..0e0f6466b18 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -240,7 +240,7 @@ gen_btf()
+ 	fi
+ 
+ 	info "BTF" ${2}
+-	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${extra_paholeopt} ${1}
++	LLVM_OBJCOPY="${OBJCOPY}" ${PAHOLE} -J ${extra_paholeopt} ${1}
+ 
+ 	# Create ${2} which contains just .BTF section but no symbols. Add
+ 	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
+-- 
+2.31.1
+
