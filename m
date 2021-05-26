@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4256B392182
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 22:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4796239218F
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 22:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbhEZUdK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 16:33:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59682 "EHLO
+        id S233414AbhEZUjE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 16:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233333AbhEZUdI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 May 2021 16:33:08 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63DEC06175F
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 13:31:34 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id d25so2456429ioe.1
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 13:31:34 -0700 (PDT)
+        with ESMTP id S233044AbhEZUjB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 May 2021 16:39:01 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA5FC061574
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 13:37:26 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id h11so2104646ili.9
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 13:37:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=Lodm93eQs22zJEFoDSwR2A3QCB8FPTQcJV64GGKPtZM=;
-        b=g8F25fDPtywtm7p4BcTiPH/9gGKFi0kxaYMTB/YYNTXUK0EZeQ7ZBCwKJ4rsueULz2
-         IFV4oKzLQe7eVGn5JyWWE3YxLWIJZ3Q2sjiucKWSS3mAyemUR5u8buVMyWwfHqJ24QkK
-         XOL9hUXEx3vBvV7Liwtgw13wn/53ZWp7W52IqsR6Q4HIEngyN7aMC6PZ5FGZhK4Tz2Br
-         NS/HYeI7taFlP7Wnr0jS1rUbEvsk3blaJOT0FcnwlZqaNiyyOlL6ZdhMukqHEJmmXA09
-         qppoAGgQwREGJwOqj07T1n79LNyvaROeNoxr9Bp5LndzZUIxuxs9o3dJ1FbO0AaWi0YV
-         ukXA==
+        bh=ly0K309wWBucFwzuHUOl/E2/4fdHzmSziVaE6a85y7M=;
+        b=SVOnrjBhD/1rMAlwDfYioEoF2YxPr0JZIjVGan2/2l9JFKtSYVCB7GX5Sj5mxSJvXN
+         0/CrPf0s2pDgr+e8xtMFWC/+9gF8quUVk4OE0+c6oKpUlW6dEqsYvGM8rFuQuGfkKuQp
+         tObmY3fTbrtzKJSrkHLCoNKdJisa7LCukQ3lbMbOYJvgc6LV1N2WO6sCNdMH0IoegXGV
+         YnSKbG/mhV1BbwOikhtfzq2G8Ts1CIwbls9EwkVj3LngwXpT8eTDffXfSb3se4CMzzu6
+         4aanWEPq20POiGEeciNZGcjXBvBJkcEn9QPJ5Yc8hud6Gq63uBBUkTJG0jpKSc0LvkO1
+         /KGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=Lodm93eQs22zJEFoDSwR2A3QCB8FPTQcJV64GGKPtZM=;
-        b=rFI6njIWXM/5MiIWPS1UBjizbxQCQWVy7XCbkOYMakitYtTP4dHHb4Tfj/u3RNHSps
-         gT3O9DXyJIw4rWz2pTcVPK4KEj0heKDmZJ03ZfkDHTzpHgG/PZZnwHJHK3RVczQHBRc3
-         jm3lPp1/tOTqZ66Mhjhr7UtSD/Lz+hC4QBqvew4LCn67S1uJxsTpw4d8Vevr0bBt1jVq
-         k3+D9Fygoj9D2eLUhDrZy4vlxaCUY8D6SArPpVQqXlDgnIHcccfHFAPhvXUGFtK26AV9
-         Q9t9ewCTdG/fJcwSHgpLjwt6+15SaDfdhVb82oS/YVASke+AQTgtDO3sHkLr3SAavL4o
-         Us9A==
-X-Gm-Message-State: AOAM533/W04jHZNJlaxlNlGmgrk0sn246PqUMhaGFvRb2GXugtFTqxOW
-        +FtTllmjSTSj7gcGKDcqdSY=
-X-Google-Smtp-Source: ABdhPJwGmyw3JMLJGdRbj+2piBabjTSblBGOiO7cU1Wy2DrxlVb9+sUl1kA+343cbbZW3LCfxXDWnQ==
-X-Received: by 2002:a6b:d80b:: with SMTP id y11mr66013iob.202.1622061093996;
-        Wed, 26 May 2021 13:31:33 -0700 (PDT)
+        bh=ly0K309wWBucFwzuHUOl/E2/4fdHzmSziVaE6a85y7M=;
+        b=dTDgfEe1NBsfoT8Rw05lwYnI2EWqJqbFKOTIaAEXppKJBaHle6aq/m/qY1VgvR8nYS
+         Jl+diXhG+/0nAdZ+xM4dEGkt+E0R/zZUUfXSs6NHYGgCwAFMmXKR6aUqnzrYDpMJ9qOy
+         te9qCONPyCSGsVXUXly7kbK/9e8P/R+Lgxw189rFr8qMUebdeu+O/BXx1Nw8YD1F7YYz
+         +PFNzflY7m3ExUGm78OpjsdqdYd3TlzAt16eYle2Yx1mx6IpN5DKazHPXK36ZlLtY2pV
+         ZKZfvOuepdPNaGD7JMqZifzp7pEu4JZ8gQw+ZzJMqZDv+VbzWW/0Hy4hgJt64bfGwq8m
+         zsMA==
+X-Gm-Message-State: AOAM531uOJsBxJEjEZeUxQtphMRFFosCtCf7fvfVGFVvpI1uXtXz6Ht2
+        dEvL/N4PtT/sVx6lzuDZztvqs2L/PJoV8g==
+X-Google-Smtp-Source: ABdhPJwWSQIWqi0bog75VcZ5aInu76K3JxfFuj9evcVhP+CSaMi7qUgXqiRxTHPoWArE0W304Vts4Q==
+X-Received: by 2002:a05:6e02:1046:: with SMTP id p6mr163713ilj.86.1622061445260;
+        Wed, 26 May 2021 13:37:25 -0700 (PDT)
 Received: from localhost ([172.242.244.146])
-        by smtp.gmail.com with ESMTPSA id a11sm195179ilp.75.2021.05.26.13.31.31
+        by smtp.gmail.com with ESMTPSA id r6sm51532ioc.5.2021.05.26.13.37.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 May 2021 13:31:33 -0700 (PDT)
-Date:   Wed, 26 May 2021 13:31:26 -0700
+        Wed, 26 May 2021 13:37:24 -0700 (PDT)
+Date:   Wed, 26 May 2021 13:37:17 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     BPF-dev-list <bpf@vger.kernel.org>,
         Alexander Lobakin <alexandr.lobakin@intel.com>,
         "Karlsson, Magnus" <magnus.karlsson@intel.com>,
@@ -72,11 +72,13 @@ Cc:     BPF-dev-list <bpf@vger.kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         "Joseph, Jithu" <jithu.joseph@intel.com>,
         William Tu <u9012063@gmail.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>
-Message-ID: <60aeb01ebcd10_fe49208b8@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4BzYXUDyQaBjZmb_Q5-z3jw1-Uvdgxm+cfcQjSwb9oRoXnQ@mail.gmail.com>
+        Ong Boon Leong <boon.leong.ong@intel.com>, brouer@redhat.com,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Message-ID: <60aeb17dd2887_11c0c2089c@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210526222023.44f9b3c6@carbon>
 References: <20210526125848.1c7adbb0@carbon>
  <CAEf4BzYXUDyQaBjZmb_Q5-z3jw1-Uvdgxm+cfcQjSwb9oRoXnQ@mail.gmail.com>
+ <20210526222023.44f9b3c6@carbon>
 Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -86,197 +88,206 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> On Wed, May 26, 2021 at 3:59 AM Jesper Dangaard Brouer
-> <brouer@redhat.com> wrote:
-> >
-> > Hi All,
-> >
-> > I see a need for a driver to use different XDP metadata layout on a p=
-er
-> > packet basis. E.g. PTP packets contains a hardware timestamp. E.g. VL=
-AN
-> > offloading and associated metadata as only relevant for packets using=
-
-> > VLANs. (Reserving room for every possible HW-hint is against the idea=
-
-> > of BTF).
-> >
-> > The question is how to support multiple BTF types on per packet basis=
-?
-> > (I need input from BTF experts, to tell me if I'm going in the wrong
-> > direction with below ideas).
+Jesper Dangaard Brouer wrote:
+> On Wed, 26 May 2021 12:12:09 -0700
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 > =
 
-> I'm trying to follow all three threads, but still, can someone dumb it
+> > On Wed, May 26, 2021 at 3:59 AM Jesper Dangaard Brouer
+> > <brouer@redhat.com> wrote:
+> > >
+> > > Hi All,
+> > >
+> > > I see a need for a driver to use different XDP metadata layout on a=
+ per
+> > > packet basis. E.g. PTP packets contains a hardware timestamp. E.g. =
+VLAN
+> > > offloading and associated metadata as only relevant for packets usi=
+ng
+> > > VLANs. (Reserving room for every possible HW-hint is against the id=
+ea
+> > > of BTF).
+> > >
+> > > The question is how to support multiple BTF types on per packet bas=
+is?
+> > > (I need input from BTF experts, to tell me if I'm going in the wron=
+g
+> > > direction with below ideas).  =
 
-Thanks ;)
+> > =
 
-> down for me and use few very specific examples to show how all this is
-> supposed to work end-to-end. I.e., how the C definition for those
-> custom BTF layouts might look like and how they are used in BPF
-> programs, etc. I'm struggling to put all the pieces together, even
-> ignoring all the netdev-specific configuration questions.
-
-Best to start with the simplest possible usable thing and get more
-complex over time.
-
-For a C definition I would expect drivers to do something like this,
-
- struct mynic_rx_descriptor {
-	__u64 len;
-        __u64 head;
-	__u64 tail;
-	__u64 foobar;
- }
-
- struct mynic_metadata {
-	__u64 timestamp;
-	__u64 hash;
-	__u64 pkt_type;
-	struct mynic_rx_descriptor *ptr_to_rx;
-	/* other things */
- }
-
-It doesn't really matter how the driver folks generate their metadata
-though. They might use some non-C thing that is more natural for
-writing parser/action/tcam codes.
-
-Anyways given some C block like above we generate BTF from above
-using normal method, quick hack just `pahole -J` the thing. Now we
-have a BTF file.
-
-Next up write some XDP program to do something with it,
-
- void myxdp_prog(struct xdp_md *ctx) {
-	struct mynic_metadata m =3D (struct mynic_metadata *)ctx->data_meta;	=
-
-
-	// now I can get data using normal CO-RE
-	// I usually have this _(&) to put CO-RE attributes in I
-        // believe that is standard? Or use the other macros
-	__u64 pkt_type =3D _(&m->pkt_type)
-
-        // we can even walk into structs if we have probe read
-        // around.
-        struct mynic_rx_descriptor *rxdesc =3D _(&m->ptr_to_rx)
-
-        // now do whatever I like with above metadata
- }
-
-Run above program through normal CO-RE pass and as long as it has
-access to the BTF from above it will work. I have some logic
-sitting around to stitch two BTF blocks together but we have
-that now done properly for linking.
-
-probe_read from XDP should be added regardless of above. I've
-found it super handy in skmsg programs to dig out kernel info
-inline. With probe_read we can also start to walk net_device
-struct for more detailed info as needed. Or into sock structs
-for process level conntrack (other thread). Even without
-probe_read above would be useful but fields would need to fit
-into the metadata where we know we can read/write data.
-
-Having drivers export their BTF over a /sys/fs/ interface
-so that BTF can change with fimware/parser updates is possible
-as well, but I would want to see above working in real world
-before committing to a /sys/fs interface. Anyways the
-interface is just a convienence.
-
-> =
-
-> As for BTF on a per-packet basis. This means that BTF itself is not
-> known at the BPF program verification time, so there will be some sort
-> of if/else if/else conditions to handle all recognized BTF IDs? Is
-> that right? Fake but specific code would help (at least me) to
-> actually join the discussion. Thanks.
-
-I don't think we actually want per-packet data that sounds a bit
-clumsy for me. Lets use a union and define it so that we have a
-single BTF.
-
- struct mynic_metadata {
-  __u64 pkt_type
-  union {
-      struct ipv6_meta meta; =
-
-      struct ipv4_meta meta;
-      struct arp_meta meta;
-  }
- };
-
-Then program has to swivel on pkt_type but that is most natural
-C thing to do IMO.
-
-Honestly we have about 90% of the necessary bits to do this now.
-Typed that up a bit fast hope its legible. Got a lot going on today.
-
-Andrii, make sense?
-
-Thanks,
-John
-> =
-
-> >
-> > Let me describe a possible/proposed packet flow (feel free to disagre=
-e):
-> >
-> >  When driver RX e.g. a PTP packet it knows HW is configured for PTP-T=
-S and
-> >  when it sees a TS is available, then it chooses a code path that use=
- the
-> >  BTF layout that contains RX-TS. To communicate what BTF-type the
-> >  XDP-metadata contains, it simply store the BTF-ID in xdp_buff->btf_i=
-d.
-> >
-> >  When redirecting the xdp_buff is converted to xdp_frame, and also co=
-ntains
-> >  the btf_id member. When converting xdp_frame to SKB, then netcore-co=
-de
-> >  checks if this BTF-ID have been registered, if so there is a (callba=
-ck or
-> >  BPF-hook) registered to handle this BTF-type that transfer the field=
-s from
-> >  XDP-metadata area into SKB fields.
-> >
-> >  The XDP-prog also have access to this ctx->btf_id and can multiplex =
-on
-> >  this in the BPF-code itself. Or use other methods like parsing PTP p=
-acket
-> >  and extract TS as expected BTF offset in XDP metadata (perhaps add a=
-
-> >  sanity check if metadata-size match).
-> >
-> >
-> > I talked to AF_XDP people (Magnus, Bj=C3=B8rn and William) about this=
- idea,
-> > and they pointed out that AF_XDP also need to know what BTF-layout is=
-
-> > used. As Magnus wrote in other thread; there is only 32-bit left in
-> > AF_XDP descriptor option. We could store the BTF-ID in this field, bu=
+> > I'm trying to follow all three threads, but still, can someone dumb i=
 t
-> > it would block for other use-cases. Bj=C3=B8rn came up with the idea =
-of
-> > storing the BTF-ID in the BTF-layout itself, but as the last-member (=
-to
-> > have fixed offset to check in userspace AF_XDP program). Then we only=
+> > down for me and use few very specific examples to show how all this i=
+s
+> > supposed to work end-to-end. I.e., how the C definition for those
+> > custom BTF layouts might look like and how they are used in BPF
+> > programs, etc. I'm struggling to put all the pieces together, even
+> > ignoring all the netdev-specific configuration questions.
+> =
 
-> > need to use a single bit in AF_XDP descriptor option to say
-> > XDP-metadata is BTF described.
-> >
-> > In the AF_XDP userspace program, the programmers can have a similar
-> > callback system per known BTF-ID. This way they can compile efficient=
+> I admit that this thread is pushing the boundaries and "ask" too much.
+> I think we need some steps in-between to get the ball rolling first.  I=
 
-> > code per ID via requesting the BTF layout from the kernel. (Hint:
-> > `bpftool btf dump id 42 format c`).
-> >
-> > Please let me know if this it the right or wrong direction?
-> >
-> > --
-> > Best regards,
-> >   Jesper Dangaard Brouer
-> >   MSc.CS, Principal Kernel Engineer at Red Hat
-> >   LinkedIn: http://www.linkedin.com/in/brouer
-> >
+> myself need to learn more of what is possible today with BTF, before I
+> ask for more features and multiple simultaneous BTF IDs.
+
+Dang, I replied to the original thread before I saw this.
+
+In short I don't think you are asking for much, most of it already exists=
+.
+
+> =
+
+> I will go read Andrii's excellent docs [1]+[2] *again*, and perhaps[3].=
+
+> Do you recommend other BTF docs?
+>  =
+
+>  [1] https://facebookmicrosites.github.io/bpf/blog/2020/02/19/bpf-porta=
+bility-and-co-re.html
+>  [2] https://nakryiko.com/posts/bpf-portability-and-co-re/
+>  [3] https://facebookmicrosites.github.io/bpf/blog/2018/11/14/btf-enhan=
+cement.html =
+
+
+Take a look over the selftests and libbpf BTF headers that should
+give you the gist.
+
+> =
+
+> > As for BTF on a per-packet basis. This means that BTF itself is not
+> > known at the BPF program verification time, so there will be some sor=
+t
+> > of if/else if/else conditions to handle all recognized BTF IDs? Is
+> > that right? =
+
+> =
+
+> I do want libbpf CO-RE and BPF program verification to work.  I'm
+> asking for a BPF-program that can supply multiple BTF struct layouts
+> and get all of them CO-RE offset adjusted.
+
+See other thread, In C we call this a union right?
+
+> =
+
+> The XDP/BPF-prog itself have if/else conditions on BPF-IDs to handle
+> all the BPF IDs it knows.  When loading the BPF-prog the offset
+> relocation are done for the code (as usual I presume).
+
+On kprobe side we have lots of code with
+
+ if (exists(...)) { } else { }
+
+Same should be doable from XDP side.
+
+> =
+
+> Maybe it is worth pointing out, that the reason for requiring the
+> BPF-prog to check the BPF-ID match, is to solve the netdev HW feature
+> update problem.  I'm basically evil and say we can update the netdev HW=
+
+> features anytime, because it is the BPF programmers responsibility to
+> check if BTF info changed (after prog was loaded). (The BPF programmer
+> can solve this via requesting all the possible BTF IDs the driver can
+> change between, or choose she is only interested in a single variant).
+
+I don't think this is evil, it should be expected over time. But,
+this is two or three steps ahead of where we are. As long as you
+can get updated BTF either out of band or through kernel interface
+this works as expected as far as I can tell.
+
+> =
+
+> By this, I'm trying to avoid loading an XDP-prog locks down what
+> hardware features can be enabled/disabled.  It would be sad running
+> tcpdump (-j adapter_unsynced) that request for HW RX-timestamp is
+> blocked due to XDP being loaded.
+
+Same as above
+
+ if (exists(...)) {do better version} else {do slow version}
+
+> =
+
+> =
+
+> > Fake but specific code would help (at least me) to actually join the
+> > discussion. Thanks.
+> =
+
+> I agree, I actually want to code-up a simple example that use BTF CO-RE=
+
+> and then try to follow the libbpf code that adjust the offsets.  I
+> admit I need to understand BTF better myself, before I ask for
+> new/advanced features ;-)
+> =
+
+> Thanks Andrii for giving us feedback, I do need to learn more about BTF=
+
+> myself to join the discussion myself.
+
+I suspect you will find with some minor user side changes this should
+already work.
+
+> =
+
+> =
+
+> > >
+> > > Let me describe a possible/proposed packet flow (feel free to
+> > > disagree):
+> > >
+> > >  When driver RX e.g. a PTP packet it knows HW is configured for
+> > > PTP-TS and when it sees a TS is available, then it chooses a code
+> > > path that use the BTF layout that contains RX-TS. To communicate
+> > > what BTF-type the XDP-metadata contains, it simply store the BTF-ID=
+
+> > > in xdp_buff->btf_id.
+> > >
+> > >  When redirecting the xdp_buff is converted to xdp_frame, and also
+> > > contains the btf_id member. When converting xdp_frame to SKB, then
+> > > netcore-code checks if this BTF-ID have been registered, if so
+> > > there is a (callback or BPF-hook) registered to handle this
+> > > BTF-type that transfer the fields from XDP-metadata area into SKB
+> > > fields.
+> > >
+> > >  The XDP-prog also have access to this ctx->btf_id and can
+> > > multiplex on this in the BPF-code itself. Or use other methods like=
+
+> > > parsing PTP packet and extract TS as expected BTF offset in XDP
+> > > metadata (perhaps add a sanity check if metadata-size match).
+> > >
+> > >
+> > > I talked to AF_XDP people (Magnus, Bj=C3=B8rn and William) about th=
+is
+> > > idea, and they pointed out that AF_XDP also need to know what
+> > > BTF-layout is used. As Magnus wrote in other thread; there is only
+> > > 32-bit left in AF_XDP descriptor option. We could store the BTF-ID
+> > > in this field, but it would block for other use-cases. Bj=C3=B8rn c=
+ame
+> > > up with the idea of storing the BTF-ID in the BTF-layout itself,
+> > > but as the last-member (to have fixed offset to check in userspace
+> > > AF_XDP program). Then we only need to use a single bit in AF_XDP
+> > > descriptor option to say XDP-metadata is BTF described.
+> > >
+> > > In the AF_XDP userspace program, the programmers can have a similar=
+
+> > > callback system per known BTF-ID. This way they can compile
+> > > efficient code per ID via requesting the BTF layout from the
+> > > kernel. (Hint: `bpftool btf dump id 42 format c`).
+> > >
+> > > Please let me know if this it the right or wrong direction?
+> =
+
+> -- =
+
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+> =
+
 
 
