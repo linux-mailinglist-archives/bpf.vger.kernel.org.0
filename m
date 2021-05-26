@@ -2,80 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5815639133B
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 11:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA18391374
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 11:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233315AbhEZJCk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 05:02:40 -0400
-Received: from outbound-smtp27.blacknight.com ([81.17.249.195]:52350 "EHLO
-        outbound-smtp27.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233463AbhEZJCh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 May 2021 05:02:37 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp27.blacknight.com (Postfix) with ESMTPS id 1E32ECADD5
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 10:00:42 +0100 (IST)
-Received: (qmail 24661 invoked from network); 26 May 2021 09:00:41 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 26 May 2021 09:00:41 -0000
-Date:   Wed, 26 May 2021 10:00:40 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Michal Such?nek <msuchanek@suse.de>
-Cc:     linux-kbuild@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: (BTF) [PATCH] mm/page_alloc: Work around a pahole limitation
- with zero-sized struct pagesets
-Message-ID: <20210526090040.GY30378@techsingularity.net>
-References: <20210526080741.GW30378@techsingularity.net>
- <20210526083342.GY8544@kitsune.suse.cz>
+        id S233283AbhEZJOw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 05:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233240AbhEZJOw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 May 2021 05:14:52 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E0CC061574
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 02:13:21 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id b12so714480ljp.1
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 02:13:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5RiBaLo8QXlyg99BwaibB32nsyM/aqFSZflQCs8lbDk=;
+        b=N/wIkoWwz1nCryBTHCwA8KB93EL8abG7Bv1nOsO0APplbZZOJy0kji3EYijiieWeHT
+         moxyIJGbrBt0qz7YIG5fp1jMP42MKGO9cDmiP22bvl/vivBGHHjh/HbHQgN+UnLoqkIU
+         k8JJNkq0O8zylZilFfFDP7epwXRsThRJ31C7Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5RiBaLo8QXlyg99BwaibB32nsyM/aqFSZflQCs8lbDk=;
+        b=ro0y919G0HdzJTfz5x5du4kryJAwBM/9Ai+PTBly/WtMf14g29mblML06lsLdkVy6/
+         +dCpNdBI3dsD1TQNmeUrZOStR66shkXtBayaEyczx80ZqxPxdIigS/kfY5trlfGCy4LV
+         wwDFv32f0pp5TPmms19Z0rfGA1pXbFTxjG6JFLTPEfVZu8OldR3kSefUOHUxBHvzU29D
+         sEDWQDYp2/8r+1FWgBvpWRU/8Wur+3CPi8TvQdSZQYwdw6vc87GyUVM+fZjXzdYThg2y
+         Dik+dObaB1nYEJhLd0muYpJpvTctEpQrYSwC0EZzKBzGUODZDRVu1bsgi/ecmT0cvwqs
+         Oi7A==
+X-Gm-Message-State: AOAM531eNmZKSwTIXpejb+6vJCEA0zYTL+SpCFOcv70Ge9DuA0pl0Nxx
+        wVJ3Sq76vCvfO/0j/kanuwwPTDJwG1DWFF64CP9RHg==
+X-Google-Smtp-Source: ABdhPJy9WKA7uJJ3CzBoGTDz2is3UZJsWKrLwdGAAe+6XSsi/8yP8U1a2YFwIydMoOC9PM9TVqxRUac+4HCOets3jz8=
+X-Received: by 2002:a2e:8512:: with SMTP id j18mr1530777lji.196.1622020399409;
+ Wed, 26 May 2021 02:13:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210526083342.GY8544@kitsune.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CACAyw9-GQasDdE9m_f3qXCO1UrR49YuF_6K1tjGxyk+ZZGhM-Q@mail.gmail.com>
+ <CAEf4BzYd4GLOQTJOeK_=yAs7+DPC+R7cxynOmd7ZMvcRFG+8SQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzYd4GLOQTJOeK_=yAs7+DPC+R7cxynOmd7ZMvcRFG+8SQ@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Wed, 26 May 2021 10:13:08 +0100
+Message-ID: <CACAyw99QydcWBeE3T_4g5QzuDyfb_MEpR1V0EzEwbY=R-s202w@mail.gmail.com>
+Subject: Re: Portability of bpf_tracing.h
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 26, 2021 at 10:33:42AM +0200, Michal Such?nek wrote:
-> >  lib/Kconfig.debug |  3 +++
-> >  mm/page_alloc.c   | 11 +++++++++++
-> >  2 files changed, 14 insertions(+)
-> > 
-> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > index 678c13967580..f88a155b80a9 100644
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -313,6 +313,9 @@ config DEBUG_INFO_BTF
-> >  config PAHOLE_HAS_SPLIT_BTF
-> >  	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
-> >  
-> > +config PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT
-> > +	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "122")
-> > +
-> 
-> This does not seem workable with dummy-tools.
-> 
-> Do we even have dummy pahole?
-> 
+On Mon, 24 May 2021 at 18:48, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> If there are enums/types/fields that we can use to reliably detect the
+> platform, then yes, we can have a new set of helpers that would do
+> this with CO-RE. Someone will need to investigate how to do that for
+> all the platforms we have. It's all about finding something that's
+> already in the kernel and can server as a reliably indicator of a
+> target architecture.
 
-I don't think so but if PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT is broken for
-you then the same problem should have happened for the PAHOLE_HAS_SPLIT_BTF
-check.
+Can you explain a bit more how this would work? Seems like leg work I could do.
+
+> Well, obviously I'm not a fan of even more magic #defines. But I think
+> we can achieve a similar effect with a more "lazy" approach. I.e., if
+> user tries to use PT_REGS_xxx macros but doesn't specify the platform
+> -- only then it gets compilation errors. There is stuff in
+> bpf_tracing.h that doesn't need pt_regs, so we can't just outright do
+> #error unconditinally. But we can do something like this:
+>
+> #else /* !bpf_target_defined */
+>
+> #define PT_REGS_PARM1(x) _Pragma("GCC error \"blah blah something
+> user-facing\"")
+>
+> ... and so on for all macros
+>
+> #endif
+>
+> Thoughts?
+
+That would work for me, but it would change the behaviour for current
+users of the header, no? That's why I added the magic define in the
+first place.
 
 -- 
-Mel Gorman
-SUSE Labs
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
