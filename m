@@ -2,172 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA907391F67
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 20:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B963920A8
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 21:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235612AbhEZSqQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 14:46:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23065 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235617AbhEZSqO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 May 2021 14:46:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622054682;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AlYH7p/eoCpk1qqpjbcMyREVG0HzvWbFtqQuQwpv8l4=;
-        b=Nr3xcs5pgUxEKLpYcO3LYZPupRFkkD7tJpABDwVEib6w3Ij2dw6wyQG6e106l1E1e5cfTM
-        XbLjnOTN6MRuyqu9a29j1BeI2pZtbr3KZatCz7+/5FjjGCEwaSC0ukr2SJlIeNuN6myc92
-        vUft0YrBiH0lxkqCAHRJL1Me0K8i5Rw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-148-ycZ3SiLTPnWsFWgRSqNewg-1; Wed, 26 May 2021 14:44:39 -0400
-X-MC-Unique: ycZ3SiLTPnWsFWgRSqNewg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BF35C107ACC7;
-        Wed, 26 May 2021 18:44:36 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DDB5C5C241;
-        Wed, 26 May 2021 18:44:19 +0000 (UTC)
-Date:   Wed, 26 May 2021 20:44:18 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        Toke =?UTF-8?B?SMO4?= =?UTF-8?B?aWxhbmQtSsO4cmdlbnNlbg==?= 
-        <toke@redhat.com>, Saeed Mahameed <saeed@kernel.org>,
+        id S233633AbhEZTNy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 15:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232133AbhEZTNy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 May 2021 15:13:54 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAD3C061574
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 12:12:21 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id o18so3573291ybc.8
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 12:12:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qfwceoorfDQckLQEjpSLtgrIG1ctNdi/PnmuDXclB3o=;
+        b=Im3rRQzIsRFgBODMZFgBphWw2jK4MV1A5AODB33/i2affoP/BIi1hawaBjgZ7ex5up
+         VI14dEZbnNWm7lEu4OYZ5ypbIXKBQAk/jA0WunS984CX2eRzQRiazit831m30vA/nLao
+         sreRv5Hxx/i2DhEvXbFsYwhPkELIUjOJBFiNImadOSu33yXNwa68/+cu1bv2Ec3HUQ90
+         qecsGWa0f/9xpEvCtaLJDbY7a/nd07Pwa7+IVHq73aqRmAJwKL9MvLKjQff7H/Ut0qjA
+         Mkkz5AXOUvYS493uaUMe6Mj4Wm+LqJWbeg3+5RJxeJa9BDeYvuqH83bYnLJqQslGm/TP
+         gs1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qfwceoorfDQckLQEjpSLtgrIG1ctNdi/PnmuDXclB3o=;
+        b=MpOjAh/oXQHRXhaxknZxso00GwpnOGJRzXqUbDRreaupvCYN5nSxS5M42KY7ryhC+e
+         oZvcS/xG9Xw59E99d3LT4zpdJt3s5LT1cMM1my4NQrZM1+mDFNLXIGL6pqYLgTCvC9YW
+         zyVf89ZhZzXb04KEnv7bnPd3mi/4TpBFK17rI5Z7nWSdYotJw0hl6QbRDhN0g++OqdQx
+         jeVlmXV/nLGYBIMtfXrgwTwXWUCzCXiiu2aBSy1XjZA1xU8fqkgGCd8z8XGFw1NnTW11
+         5/INHwHT061oqjxnzo9vlHET5QClATHa8BgXV5o9NpG6xWnhS0nGJmm+6JU2fnnJgPAF
+         ZiZQ==
+X-Gm-Message-State: AOAM531/wkG3x5RD/hMwBFJ6ZwnppbEn86etI2kghXruPR6oECHRUl3p
+        vDiWlLzdauJMTeSNEdSapBlQQCb06/WV6GBRNMw=
+X-Google-Smtp-Source: ABdhPJzj3Ji3Qib5dbLAhYKWIX5JbevTYsz15ima70qPCxJbQ1K0l7TbzyfB5RSIudJ6JJVF4qHmkVijhH+i5iFywEM=
+X-Received: by 2002:a5b:286:: with SMTP id x6mr55050547ybl.347.1622056340372;
+ Wed, 26 May 2021 12:12:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210526125848.1c7adbb0@carbon>
+In-Reply-To: <20210526125848.1c7adbb0@carbon>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 26 May 2021 12:12:09 -0700
+Message-ID: <CAEf4BzYXUDyQaBjZmb_Q5-z3jw1-Uvdgxm+cfcQjSwb9oRoXnQ@mail.gmail.com>
+Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     BPF-dev-list <bpf@vger.kernel.org>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "kurt@linutronix.de" <kurt@linutronix.de>,
         "Raczynski, Piotr" <piotr.raczynski@intel.com>,
         "Zhang, Jessica" <jessica.zhang@intel.com>,
-        "Kubiak, Marcin" <marcin.kubiak@intel.com>,
-        "Joseph, Jithu" <jithu.joseph@intel.com>,
-        "kurt@linutronix.de" <kurt@linutronix.de>,
         "Maloor, Kishen" <kishen.maloor@intel.com>,
         "Gomes, Vinicius" <vinicius.gomes@intel.com>,
         "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
         "Swiatkowski, Michal" <michal.swiatkowski@intel.com>,
         "Plantykow, Marta A" <marta.a.plantykow@intel.com>,
-        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
         "Desouza, Ederson" <ederson.desouza@intel.com>,
         "Song, Yoong Siang" <yoong.siang.song@intel.com>,
-        "Czapnik, Lukasz" <lukasz.czapnik@intel.com>, bpf@vger.kernel.org,
-        xdp-hints@xdp-project.net, brouer@redhat.com,
-        David Ahern <dsahern@gmail.com>
-Subject: Re: AF_XDP metadata/hints
-Message-ID: <20210526204418.532a0604@carbon>
-In-Reply-To: <60ae7847b066e_5ff320887@john-XPS-13-9370.notmuch>
-References: <dc2c38cdccfa5eca925cfc9d59b0674e208c9c9d.camel@intel.com>
-        <20210512102546.5c098483@carbon>
-        <DM4PR11MB542273C9D8BF63505DC6E21784519@DM4PR11MB5422.namprd11.prod.outlook.com>
-        <7b347a985e590e2a422f837971b30bd83f9c7ac3.camel@nvidia.com>
-        <DM4PR11MB5422762E82C0531B92BDF09A842B9@DM4PR11MB5422.namprd11.prod.outlook.com>
-        <DM4PR11MB5422269F6113268172B9E26A842A9@DM4PR11MB5422.namprd11.prod.outlook.com>
-        <DM4PR11MB54224769926B06EE76635A6484299@DM4PR11MB5422.namprd11.prod.outlook.com>
-        <20210521153110.207cb231@carbon>
-        <1426bc91c6c6ee3aaf3d85c4291a12968634e521.camel@kernel.org>
-        <87lf85zmuw.fsf@toke.dk>
-        <20210525142027.1432-1-alexandr.lobakin@intel.com>
-        <60add3cad4ef0_3b75f2086@john-XPS-13-9370.notmuch>
-        <20210526134910.1c06c5d8@carbon>
-        <87y2c1iqz4.fsf@toke.dk>
-        <60ae6ad5a2e04_18bf20819@john-XPS-13-9370.notmuch>
-        <20210526155402.172-1-alexandr.lobakin@intel.com>
-        <60ae7847b066e_5ff320887@john-XPS-13-9370.notmuch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        "Czapnik, Lukasz" <lukasz.czapnik@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        "Joseph, Jithu" <jithu.joseph@intel.com>,
+        William Tu <u9012063@gmail.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 26 May 2021 09:33:11 -0700
-John Fastabend <john.fastabend@gmail.com> wrote:
+On Wed, May 26, 2021 at 3:59 AM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
+>
+> Hi All,
+>
+> I see a need for a driver to use different XDP metadata layout on a per
+> packet basis. E.g. PTP packets contains a hardware timestamp. E.g. VLAN
+> offloading and associated metadata as only relevant for packets using
+> VLANs. (Reserving room for every possible HW-hint is against the idea
+> of BTF).
+>
+> The question is how to support multiple BTF types on per packet basis?
+> (I need input from BTF experts, to tell me if I'm going in the wrong
+> direction with below ideas).
 
-> Alexander Lobakin wrote:
-> > From: John Fastabend <john.fastabend@gmail.com>
-> > Date: Wed, 26 May 2021 08:35:49 -0700
-> > 
-[...]
-> > >> >
-> > >> > I assume we need to stay compatible and respect the existing config
-> > >> > interfaces, right?  
-> > 
-> > Again, XDP Hints won't change any netdev features and stuff, only
-> > compose provide the hardware provided fields that are currently
-> > inaccessible by the XDP prog and say cpumap code, but that are
-> > highly needed (cpumap builds skbs without csums -> GRO layer
-> > consumes CPU time to calculate it manually, without RSS hash ->
-> > Flow Dissector consumes CPU time to calculate it manually +
-> > possible NAPI bucket misses etc.).  
-> 
-> Thats a specific cpumap problem correct?
+I'm trying to follow all three threads, but still, can someone dumb it
+down for me and use few very specific examples to show how all this is
+supposed to work end-to-end. I.e., how the C definition for those
+custom BTF layouts might look like and how they are used in BPF
+programs, etc. I'm struggling to put all the pieces together, even
+ignoring all the netdev-specific configuration questions.
 
-No, it is not a specific cpumap problem.  It is actually a general
-XDP_REDIRECT problem.  The veth container use-case is also hit by this
-slowdown due to lacking HW-csum and RSS-hash, as describe by Alexander.
+As for BTF on a per-packet basis. This means that BTF itself is not
+known at the BPF program verification time, so there will be some sort
+of if/else if/else conditions to handle all recognized BTF IDs? Is
+that right? Fake but specific code would help (at least me) to
+actually join the discussion. Thanks.
 
-It also exists for redirect into Virtual Machines, which is David
-Ahern's use-case actually.
-
-> In general checksums work as expected?
-
-Nope, the checksums are non-existing for XDP_REDIRECT'ed packets.
- 
-> [...] 
-> I'm not convinced hashes and csum are so interesting but show me some
-> data. 
-
-Checksum overhead measurements for veth container use-case see here[1].
- [1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp_frame01_checksum.org
- 
-
-> Also my admittedly rough understanding of cpumap is that it helps
-> the case where hardware RSS is not sufficient. 
-
-I feel the need to explain what I'm using cpumap for, so bear with me.
-
-In xdp-cpumap-tc[2] the XDP cpumap redirect solves the TC Qdisc locking
-problem.  This runs in production at an ISP that uses MQ+HTB shaping.
-It makes sure customer assigned IP-addresses (can be multiple) are
-redirected to the same CPU. Thus, the customer specific HTB shaper
-works correctly. (Multiple HTB qdisc are attached under MQ [6]).
-
- [2] https://github.com/xdp-project/xdp-cpumap-tc
- [6] https://github.com/xdp-project/xdp-cpumap-tc/blob/master/bin/tc_mq_htb_setup_example.sh
-
-In traffic-pacing-edt[3] the cpumap code[4] maps VLAN tagged traffic to
-the same CPU.  This allows the TC-BPF code[5] to be "concurrency
-correct" as it updates the VLAN based EDT-rate-limit BPF-map without any
-atomic operations.  This runs in production at another ISP, that need
-to shape (traffic pace) 1Gbit/s customer on a 10Gbit/s link due to
-crappy 1G GPON switches closer to the end-customer.  It would be useful
-to get the offloaded VLAN info in XDP-metadata.
-
- [3] https://github.com/xdp-project/bpf-examples/tree/master/traffic-pacing-edt
- [4] https://github.com/xdp-project/bpf-examples/blob/master/traffic-pacing-edt/xdp_cpumap_qinq.c
- [5] https://github.com/xdp-project/bpf-examples/blob/master/traffic-pacing-edt/edt_pacer_vlan.c
-
-> Seeing your coming from the Intel hardware side why not fix the RSS
-> root problem instead of using cpumap at all? I think your hardware is
-> flexible enough.
-
-Yes, please fix i40e hardware/firmware to support Q-in-Q packets.  We
-are actaully hitting this at a customer site.  But my above cpumap
-use-cases were not due to bad RSS-hashing.
-
- 
-> I would really prefer to see example use cases that are more generic
-> than the cpumap case.
-
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
- 
-
+>
+> Let me describe a possible/proposed packet flow (feel free to disagree):
+>
+>  When driver RX e.g. a PTP packet it knows HW is configured for PTP-TS an=
+d
+>  when it sees a TS is available, then it chooses a code path that use the
+>  BTF layout that contains RX-TS. To communicate what BTF-type the
+>  XDP-metadata contains, it simply store the BTF-ID in xdp_buff->btf_id.
+>
+>  When redirecting the xdp_buff is converted to xdp_frame, and also contai=
+ns
+>  the btf_id member. When converting xdp_frame to SKB, then netcore-code
+>  checks if this BTF-ID have been registered, if so there is a (callback o=
+r
+>  BPF-hook) registered to handle this BTF-type that transfer the fields fr=
+om
+>  XDP-metadata area into SKB fields.
+>
+>  The XDP-prog also have access to this ctx->btf_id and can multiplex on
+>  this in the BPF-code itself. Or use other methods like parsing PTP packe=
+t
+>  and extract TS as expected BTF offset in XDP metadata (perhaps add a
+>  sanity check if metadata-size match).
+>
+>
+> I talked to AF_XDP people (Magnus, Bj=C3=B8rn and William) about this ide=
+a,
+> and they pointed out that AF_XDP also need to know what BTF-layout is
+> used. As Magnus wrote in other thread; there is only 32-bit left in
+> AF_XDP descriptor option. We could store the BTF-ID in this field, but
+> it would block for other use-cases. Bj=C3=B8rn came up with the idea of
+> storing the BTF-ID in the BTF-layout itself, but as the last-member (to
+> have fixed offset to check in userspace AF_XDP program). Then we only
+> need to use a single bit in AF_XDP descriptor option to say
+> XDP-metadata is BTF described.
+>
+> In the AF_XDP userspace program, the programmers can have a similar
+> callback system per known BTF-ID. This way they can compile efficient
+> code per ID via requesting the BTF layout from the kernel. (Hint:
+> `bpftool btf dump id 42 format c`).
+>
+> Please let me know if this it the right or wrong direction?
+>
+> --
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>
