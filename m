@@ -2,100 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23618391D2D
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 18:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618D1391D3C
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 18:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233594AbhEZQiz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 12:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
+        id S233731AbhEZQni (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 12:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234772AbhEZQix (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 May 2021 12:38:53 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D58C061574
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 09:37:20 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id g11so1466040ilq.3
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 09:37:20 -0700 (PDT)
+        with ESMTP id S231843AbhEZQni (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 May 2021 12:43:38 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BCBC061574
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 09:42:05 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id q7so3522312lfr.6
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 09:42:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qTd05BB9u83g9Rw1TR7BTuNQ98y93oaBclDpda30Nz4=;
-        b=G4yR6k+tl95mFcr1sMEmd3PD2OAkaWyNW+VPhShlhzmuhfgGbnr41IapWtGPOhk0Vo
-         +o4IGM7k3eKtoHuWeKlBw1oUp5P1DlBJXcKDkG2jIlK/ydAr4zfKmZD3CcLCbjAyudrE
-         MQWdV2jojDkeRnQeloln9JaLJwfWvTelca2rY=
+        bh=PEazQbJ9+L40/iRYOC5yf4niG3LvnPWU7irlkxhC4kA=;
+        b=usUm78HB8YEZuckNZYXNEyvjiB0Cr5deOcu+25uZx6PBpkua45UUKcWjeL10LCJ4a6
+         3BnvNbjqEwDcK9Vi+1Apa9aK8qUUCyiqMRhFhGLuC1sCx3vZtv/ihKVhidSVzjdG7Jt8
+         3mwKo3zwaCrfVuc+/jEBSjsIC3VK0XMLQh4sg7f1NMTSLi+mkdaS5Tv8qSfdJ19F9l8l
+         5QTmyJFxA90t6J41kqtWdmu4mKBaT2ds6rBOtCkc0E/e3wwpKLUJsrdE2jfKH0o7Pj5x
+         VXYLNHY6zGPy0tdZQCEQyoPAxDBEBSQg7znti84v6r6YxCR46w06azQSCuW1j3bzm2Vl
+         32Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qTd05BB9u83g9Rw1TR7BTuNQ98y93oaBclDpda30Nz4=;
-        b=htSplPx/QH7LgHwitLponNTG3LGDL90FnYPVDHmr72k8f9KlgFHcXTnokyw9M9usgH
-         SJstpU7qDUoEaZ245EiSdY0OJa/+PhCLZhNksUGGY8D5akUtOcNx3PsLFfugOC5zUINA
-         A6WtXdsX8F25ge8pm6XgV255UxyrJynuAfUuWprmfRYNMel393RQ8ak/dQFBIOAq+h4u
-         Do8I0TLaijWFO7hGOpXKcoPypWlmxN925eFX5H2LPx3vNoQKcYqhxgZ1p9Lzl99gIgEk
-         fHvzt+jk/ckW1YNoRh0KA99bwQBfjeVgJb7W0Y5ZWGfyX1mCRIH9ArOMpgYjMZQWNOKF
-         T1gw==
-X-Gm-Message-State: AOAM533Atz5H0m6vFpg0VYY0XTXzcJGab9A69/OS4PxaO4ze4exio7My
-        kkF7Pgnq5CZJGvjMuxYzPAclfXGbu5uZ3rDu6eIkyA==
-X-Google-Smtp-Source: ABdhPJwuosw3UvSM97y5j1YtMs2JtNqDj+RDTCQ/Xl3hdVes6AOPnF2xP6pRQDQUWm3oNhC/kwYdQbC0/6p/Wq++LpI=
-X-Received: by 2002:a05:6e02:1b05:: with SMTP id i5mr30226678ilv.204.1622047039981;
- Wed, 26 May 2021 09:37:19 -0700 (PDT)
+        bh=PEazQbJ9+L40/iRYOC5yf4niG3LvnPWU7irlkxhC4kA=;
+        b=FZalDTmb2qIPI8y80A0v8h4AUeWnoVrJX3f6IM7bVCjfmm1pknMGIWN6MgXHl526tN
+         TVXGZrY/+M6NAsIln15b8XZKVNz6uBpS2gLIGT41Fw/RsX+/kfoIheTCkCMMHyrfMda8
+         d7Vy4nQbxMlA/wkY3ZKpcsHWsk5wM42gFbC6ZWxEjz3VnnsY5Xu1/XwX25VUmVh1S5pm
+         L07Gw5S4L9RabORyH2WDDDf0AdfeD9j0EIJAfawMlQ4z4WqII6czwnQrAA37pKPcCOO5
+         Jq/cUoaszigNuUXpT/S8wzNQ/CmbzhLqcats4om+MswxMKsK6OSoncAkm2WqCm/GW+oh
+         yOpg==
+X-Gm-Message-State: AOAM533vKYHn/QhgclTC1rtyD+duQ90VmC8nW57QHnXynftMY5G5Sdk5
+        X4QP5LtJs82kTgygKu4IOaw6Hg16TtmmW4spIY6RIztlofo=
+X-Google-Smtp-Source: ABdhPJykyUrMdj5/61HjHxsUtsBdDX4hmfi0o0Hm/Ladyld7O/QWlZTutIyHM9a2klkhi2Qxm9ACNUjRbFdN3wX/N4Y=
+X-Received: by 2002:ac2:4838:: with SMTP id 24mr2818315lft.214.1622047323526;
+ Wed, 26 May 2021 09:42:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210525201825.2729018-1-revest@chromium.org> <f3e6c21e-8d6e-2665-770c-65f9b98ccf93@iogearbox.net>
- <CABRcYmKhmxUXgDa-Mr5_fNB7R-U11h4bGwFdj1pKx3hxB_mW2g@mail.gmail.com> <CAEf4BzZpRL-n0V_JaHrkrOyPgNx+_RR9cQ2fiOfVuQ=Qew11kQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZpRL-n0V_JaHrkrOyPgNx+_RR9cQ2fiOfVuQ=Qew11kQ@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Wed, 26 May 2021 18:37:09 +0200
-Message-ID: <CABRcYmL3t=KkSai4RYPp7vH3tmS+FoVqxGYZ3rh=BReRwFouGg@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] libbpf: Move BPF_SEQ_PRINTF and BPF_SNPRINTF to bpf_helpers.h
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        open list <linux-kernel@vger.kernel.org>
+References: <dc2c38cdccfa5eca925cfc9d59b0674e208c9c9d.camel@intel.com>
+ <20210507131034.5a62ce56@carbon> <DM4PR11MB5422FE9618B3692D48FCE4EA84549@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <20210510185029.1ca6f872@carbon> <DM4PR11MB54227C25DFD4E882CB03BD3884539@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <20210512102546.5c098483@carbon> <DM4PR11MB542273C9D8BF63505DC6E21784519@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <7b347a985e590e2a422f837971b30bd83f9c7ac3.camel@nvidia.com>
+ <DM4PR11MB5422762E82C0531B92BDF09A842B9@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <DM4PR11MB5422269F6113268172B9E26A842A9@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <DM4PR11MB54224769926B06EE76635A6484299@DM4PR11MB5422.namprd11.prod.outlook.com>
+ <20210521153110.207cb231@carbon> <1426bc91c6c6ee3aaf3d85c4291a12968634e521.camel@kernel.org>
+ <87lf85zmuw.fsf@toke.dk> <20210525142027.1432-1-alexandr.lobakin@intel.com>
+ <60add3cad4ef0_3b75f2086@john-XPS-13-9370.notmuch> <20210526134910.1c06c5d8@carbon>
+ <87y2c1iqz4.fsf@toke.dk> <60ae6ad5a2e04_18bf20819@john-XPS-13-9370.notmuch> <20210526155402.172-1-alexandr.lobakin@intel.com>
+In-Reply-To: <20210526155402.172-1-alexandr.lobakin@intel.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 26 May 2021 09:41:52 -0700
+Message-ID: <CAADnVQL3uuKY4kY3v60Wzjh1QPT+k4+jVnN+Y3a_SBF3DFbwWg@mail.gmail.com>
+Subject: Re: AF_XDP metadata/hints
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "Raczynski, Piotr" <piotr.raczynski@intel.com>,
+        "Zhang, Jessica" <jessica.zhang@intel.com>,
+        "Kubiak, Marcin" <marcin.kubiak@intel.com>,
+        "Joseph, Jithu" <jithu.joseph@intel.com>,
+        "kurt@linutronix.de" <kurt@linutronix.de>,
+        "Maloor, Kishen" <kishen.maloor@intel.com>,
+        "Gomes, Vinicius" <vinicius.gomes@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Swiatkowski, Michal" <michal.swiatkowski@intel.com>,
+        "Plantykow, Marta A" <marta.a.plantykow@intel.com>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        "Desouza, Ederson" <ederson.desouza@intel.com>,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        "Czapnik, Lukasz" <lukasz.czapnik@intel.com>,
+        bpf <bpf@vger.kernel.org>, xdp-hints@xdp-project.net
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 26, 2021 at 6:35 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Wed, May 26, 2021 at 8:57 AM Alexander Lobakin
+<alexandr.lobakin@intel.com> wrote:
+> >
+> >Well likely libbpf would do the rewrite I think.
 >
-> On Wed, May 26, 2021 at 8:01 AM Florent Revest <revest@chromium.org> wrote:
-> >
-> > On Wed, May 26, 2021 at 8:35 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > >
-> > > On 5/25/21 10:18 PM, Florent Revest wrote:
-> > > > These macros are convenient wrappers around the bpf_seq_printf and
-> > > > bpf_snprintf helpers. They are currently provided by bpf_tracing.h which
-> > > > targets low level tracing primitives. bpf_helpers.h is a better fit.
-> > > >
-> > > > The __bpf_narg and __bpf_apply macros are needed in both files so
-> > > > provided twice and guarded by ifndefs.
-> > > >
-> > > > Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > Signed-off-by: Florent Revest <revest@chromium.org>
-> > >
-> > > Given v1/v2 both target bpf tree in the subject, do you really mean bpf or
-> > > rather bpf-next?
-> >
-> > I don't have a preference, it's up to you :)
-> >
-> > On one hand, I see no urgency in fixing this: BPF_SEQ_PRINTF has been
-> > in bpf_tracing.h for a while already so it can wait for another kernel
-> > release. Applying this to bpf-next would do.
-> > On the other hand, BPF_SNPRINTF hasn't made it to a kernel release yet
-> > so we still have a chance to do it right before users start including
-> > bpf_tracing.h and we'd break them in the next release. That's why I
-> > tagged it as bpf.
-> >
-> > The patch applies cleanly on both trees so if you prefer landing it in
-> > bpf-next it's fine by me.
+> So your proposal is to not compose metadata according to the prog's
+> request, but rather reprogram the prog itself to access metadata
+> accordingly? Sounds very nice.
 >
-> I think it should go through bpf-next. It's not really a bug fix. And
-> we are not going to break anyone with this move. And libbpf 0.4 is
-> officially released without this change anyway. So, bpf-next.
+> If follow this path, is it something like this?
+>
+> 1. Driver exposes the fields layout (e.g. Rx/Tx descriptor fields)
+> via BTF to the BPF layer.
+> 2. When an XDP prog is attached, BPF reprograms it to look for the
+> required fields at the right offset.
 
-Sounds good, I'll send a v3 tagged with bpf-next ;)
+The driver doesn't need to expose it directly via ndo.
+There is already generic support for BTF in modules
+and support for encoding btf_id for further use inside verifier
+and other components.
+I think the driver can simply do:
+BTF_ID_LIST(known_packet_fields)
+and the bpf core will pick it from there.
+While libbpf will do a CO-RE style re-write when driver layout changes.
+Ideally bpf core doesn't need to be involved and it's done completely in libbpf.
