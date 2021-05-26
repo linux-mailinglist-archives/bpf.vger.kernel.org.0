@@ -2,125 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA92439166F
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 13:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E965139169E
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 13:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232982AbhEZLqt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 07:46:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30360 "EHLO
+        id S233328AbhEZLwp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 07:52:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20124 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232803AbhEZLqs (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 May 2021 07:46:48 -0400
+        by vger.kernel.org with ESMTP id S232944AbhEZLvG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 26 May 2021 07:51:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622029516;
+        s=mimecast20190719; t=1622029771;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5Uw+/IY4PFLhc9QD0XQTD8Vq22Bv9V1A42B8cw/tcfQ=;
-        b=KZW7SBXegZu/wpZtz8zD3v+c+Tfn24w8Eh3QahoBAYv0mpHdy6NN90Pi9eTOR4ih+SkyEC
-        Jf0bJbiqlXJ21kPasLIbijiQ9LPvSbiQI8LWQ2eukOZjfTtYzxlONsPX/yCSUf1N4nyABf
-        PSighAa3eR5ZZsVoX0qyYHzpK1vuiOQ=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-575-3PmD0NKLMjKfKZfjIC1eiw-1; Wed, 26 May 2021 07:45:15 -0400
-X-MC-Unique: 3PmD0NKLMjKfKZfjIC1eiw-1
-Received: by mail-yb1-f198.google.com with SMTP id u13-20020a25f80d0000b029051d7fee31cfso1300577ybd.22
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 04:45:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5Uw+/IY4PFLhc9QD0XQTD8Vq22Bv9V1A42B8cw/tcfQ=;
-        b=jd0VW0QV/KVboYKU0X8QuFg6eWxzrEGB4/DI7LA5D3UQadLNel5rgfoJY4s3PA/mCW
-         n5css5XQWle3x4EWCv1xjLshvPCgLCRy/Z23DFQS+otjl6dHmXj2ykQjufUoP1yfXfOY
-         GqUwlHwfHvkzMSk+oEO9+8+bn8zTmFrEpOLVFOyrNHwX6deep7Pa/azmLOVUrSMQlHBD
-         X/Vaz+IzDFVBCH3KJDxNMUiqLNd8CnMTKFJlVhJE2mHD7S7eDsJFhc71C+NRXpZPC7ji
-         rUxicn4Vm5W0KcCePeCfqdySMnvFa7poZ5I2eTtOwuTpY6oe9kg3d108VpB4z83bDLN4
-         +xDQ==
-X-Gm-Message-State: AOAM532XcptWFJxCM/+oVepIxfeD+6z7D9CvrAyXRlSgy5kZJzINwlv3
-        EJSCyh7N2uULZmZzq9ty8gSkkNGGRMdPEWXnYVel2GaEuARutDCRmNczaouRJ5CRhnlJqp2h671
-        jSWNiBTMB7nxAOaKUZPrrtQgUZzoV
-X-Received: by 2002:a25:f50e:: with SMTP id a14mr48352354ybe.172.1622029514558;
-        Wed, 26 May 2021 04:45:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7JX0t9Q+MjZUdNuGYqNNwFWjv7mwlUzB5zjT5J9a7c3DzGoUhB3CdgL/OZI5wwTVrJZE9FoOnkmowu6kRXnk=
-X-Received: by 2002:a25:f50e:: with SMTP id a14mr48352333ybe.172.1622029514339;
- Wed, 26 May 2021 04:45:14 -0700 (PDT)
+        bh=4n0qlKXB1bnPoNluf4mjZlVoqIwiQZkhDutOAoVJjSM=;
+        b=OAO69Nh6TwgMYOjNCGYDXn4VRTVKa771BtTj5CpSexvHH9qhLypHMGDJZKH6CdVieRVzKx
+        3U+dVLFbKhdB8dH4Y5DyPdVEi8yxUHCFctJXCj9FT4bViCuh9grghKmen5QWwII6yIQgdh
+        xG4Xaf5/G6TjBFRk5vCfB5X+XL62zHY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-511-4EOmWYC1MZGc--gEK8i0Fw-1; Wed, 26 May 2021 07:49:25 -0400
+X-MC-Unique: 4EOmWYC1MZGc--gEK8i0Fw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 96786189C446;
+        Wed, 26 May 2021 11:49:22 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.39])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 74B6210074E0;
+        Wed, 26 May 2021 11:49:11 +0000 (UTC)
+Date:   Wed, 26 May 2021 13:49:10 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Toke =?UTF-8?B?SMO4?= =?UTF-8?B?aWxhbmQtSsO4cmdlbnNlbg==?= 
+        <toke@redhat.com>, Saeed Mahameed <saeed@kernel.org>,
+        "Raczynski, Piotr" <piotr.raczynski@intel.com>,
+        "Zhang, Jessica" <jessica.zhang@intel.com>,
+        "Kubiak, Marcin" <marcin.kubiak@intel.com>,
+        "Joseph, Jithu" <jithu.joseph@intel.com>,
+        "kurt@linutronix.de" <kurt@linutronix.de>,
+        "Maloor, Kishen" <kishen.maloor@intel.com>,
+        "Gomes, Vinicius" <vinicius.gomes@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Swiatkowski, Michal" <michal.swiatkowski@intel.com>,
+        "Plantykow, Marta A" <marta.a.plantykow@intel.com>,
+        "Ong, Boon Leong" <boon.leong.ong@intel.com>,
+        "Desouza, Ederson" <ederson.desouza@intel.com>,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        "Czapnik, Lukasz" <lukasz.czapnik@intel.com>, bpf@vger.kernel.org,
+        brouer@redhat.com
+Subject: Re: AF_XDP metadata/hints
+Message-ID: <20210526134910.1c06c5d8@carbon>
+In-Reply-To: <60add3cad4ef0_3b75f2086@john-XPS-13-9370.notmuch>
+References: <dc2c38cdccfa5eca925cfc9d59b0674e208c9c9d.camel@intel.com>
+        <20210507131034.5a62ce56@carbon>
+        <DM4PR11MB5422FE9618B3692D48FCE4EA84549@DM4PR11MB5422.namprd11.prod.outlook.com>
+        <20210510185029.1ca6f872@carbon>
+        <DM4PR11MB54227C25DFD4E882CB03BD3884539@DM4PR11MB5422.namprd11.prod.outlook.com>
+        <20210512102546.5c098483@carbon>
+        <DM4PR11MB542273C9D8BF63505DC6E21784519@DM4PR11MB5422.namprd11.prod.outlook.com>
+        <7b347a985e590e2a422f837971b30bd83f9c7ac3.camel@nvidia.com>
+        <DM4PR11MB5422762E82C0531B92BDF09A842B9@DM4PR11MB5422.namprd11.prod.outlook.com>
+        <DM4PR11MB5422269F6113268172B9E26A842A9@DM4PR11MB5422.namprd11.prod.outlook.com>
+        <DM4PR11MB54224769926B06EE76635A6484299@DM4PR11MB5422.namprd11.prod.outlook.com>
+        <20210521153110.207cb231@carbon>
+        <1426bc91c6c6ee3aaf3d85c4291a12968634e521.camel@kernel.org>
+        <87lf85zmuw.fsf@toke.dk>
+        <20210525142027.1432-1-alexandr.lobakin@intel.com>
+        <60add3cad4ef0_3b75f2086@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-References: <20210517092006.803332-1-omosnace@redhat.com> <87o8d9k4ln.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87o8d9k4ln.fsf@mpe.ellerman.id.au>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Wed, 26 May 2021 13:44:59 +0200
-Message-ID: <CAFqZXNtUvrGxT6UMy81WfMsfZsydGN5k-VGFBq8yjDWN5ARAWw@mail.gmail.com>
-Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
- permission checks
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, network dev <netdev@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Paul Moore <paul@paul-moore.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 17, 2021 at 1:00 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> Ondrej Mosnacek <omosnace@redhat.com> writes:
-> > Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
-> > lockdown") added an implementation of the locked_down LSM hook to
-> > SELinux, with the aim to restrict which domains are allowed to perform
-> > operations that would breach lockdown.
-> >
-> > However, in several places the security_locked_down() hook is called in
-> > situations where the current task isn't doing any action that would
-> > directly breach lockdown, leading to SELinux checks that are basically
-> > bogus.
-> >
-> > Since in most of these situations converting the callers such that
-> > security_locked_down() is called in a context where the current task
-> > would be meaningful for SELinux is impossible or very non-trivial (and
-> > could lead to TOCTOU issues for the classic Lockdown LSM
-> > implementation), fix this by modifying the hook to accept a struct cred
-> > pointer as argument, where NULL will be interpreted as a request for a
-> > "global", task-independent lockdown decision only. Then modify SELinux
-> > to ignore calls with cred == NULL.
-> >
-> > Since most callers will just want to pass current_cred() as the cred
-> > parameter, rename the hook to security_cred_locked_down() and provide
-> > the original security_locked_down() function as a simple wrapper around
-> > the new hook.
-> >
-> > The callers migrated to the new hook, passing NULL as cred:
-> > 1. arch/powerpc/xmon/xmon.c
-> >      Here the hook seems to be called from non-task context and is only
-> >      used for redacting some sensitive values from output sent to
-> >      userspace.
->
-> It's hard to follow but it actually disables interactive use of xmon
-> entirely if lockdown is in confidentiality mode, and disables
-> modifications of the kernel in integrity mode.
->
-> But that's not really that important, the patch looks fine.
->
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+On Tue, 25 May 2021 21:51:22 -0700
+John Fastabend <john.fastabend@gmail.com> wrote:
 
-Thanks, Michael!
+> Separate the config of hardware from the BPF infrastructure these
+> are two separate things.
 
-James/Paul, is there anything blocking this patch from being merged?
-Especially the BPF case is causing real trouble for people and the
-only workaround is to broadly allow lockdown::confidentiality in the
-policy.
+I fully agree.
 
---
-Ondrej Mosnacek
-Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
+How should we handle existing config interfaces?
+
+Let me give some concrete examples. Today there are multiple existing
+interfaces to enable/disable NIC hardware features that change what is
+available to put in our BTF-layout.
+
+E.g. changing if VLAN is in descriptor:
+ # ethtool -K ixgbe1 rx-vlan-offload off
+ # ethtool -k ixgbe1 | grep vlan-offload
+ rx-vlan-offload: off
+ tx-vlan-offload: on
+
+The timestamping features can be listed by ethtool -T (see below
+signature), but it is a socket option that enable[1] these
+(see SO_TIMESTAMPNS or SOF_TIMESTAMPING_RX_HARDWARE).
+
+Or tuning RSS hash fields:
+ [2] https://github.com/stackpath/rxtxcpu/blob/master/Documentation/case-studies/observing-rss-on-ixgbe-advanced-rss-configuration-rss-hash-fields.md
+
+I assume we need to stay compatible and respect the existing config
+interfaces, right?
+
+Should we simple leverage existing interfaces?
+
+E.g. tcpdump --time-stamp-type=adapter_unsynced could simple enable the
+BTF-layout that contains the RX-timestamp.  This would make it avail to
+XDP/AF_XDP and the xdp_frame can also create a SKB with the timestamp.
+
+
+[1] https://www.kernel.org/doc/html/latest/networking/timestamping.html
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
+
+# ethtool -T ixgbe1
+Time stamping parameters for ixgbe1:
+Capabilities:
+	hardware-transmit
+	software-transmit
+	hardware-receive
+	software-receive
+	software-system-clock
+	hardware-raw-clock
+PTP Hardware Clock: 7
+Hardware Transmit Timestamp Modes:
+	off
+	on
+Hardware Receive Filter Modes:
+	none
+	ptpv1-l4-sync
+	ptpv1-l4-delay-req
+	ptpv2-event
+
+
+# ethtool -T igc1
+Time stamping parameters for igc1:
+Capabilities:
+	hardware-transmit
+	software-transmit
+	hardware-receive
+	software-receive
+	software-system-clock
+	hardware-raw-clock
+PTP Hardware Clock: 1
+Hardware Transmit Timestamp Modes:
+	off
+	on
+Hardware Receive Filter Modes:
+	none
+	all
 
