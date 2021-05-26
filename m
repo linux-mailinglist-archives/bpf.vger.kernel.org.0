@@ -2,158 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE9B390ECE
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 05:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A3A390F48
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 06:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbhEZDYJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 May 2021 23:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231548AbhEZDYI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 May 2021 23:24:08 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153BDC061574
-        for <bpf@vger.kernel.org>; Tue, 25 May 2021 20:22:37 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id f15so15864254vsq.12
-        for <bpf@vger.kernel.org>; Tue, 25 May 2021 20:22:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i6/846YAMk9RRWN/aZR9dpDogHYuOD2U8U0bltNEf84=;
-        b=Vi+sqrnQLnd4Z32zO3lpld3g9FqVMl1ixE6+gVF5MoC45bHRHYvmZHC8+Pjmhm1bRr
-         AuUCUfIdhSvq7BE4fdjjtrR1xciQdYcnhTHiV7n/gjLevZc2odRRq2ZfZ95Vw9g0tGjZ
-         Jla7E+WxCdb6YgmbINVZ+w9P1QTtJ6c/zVjDZHBsbz4p0IIPJ21X/xP5YyY8iERkh0cC
-         /ZkvjASnc8HMGc9k6IvMb5YuNeek6ceMoo5g+P75Q+B7GwPg6V9nS7muynhPj8UTkxZH
-         pRmzYJal3RA6C37RInWhsmQQuzQqOFbU6zdyUt6uFHtuHLG1uOEOFtKk1Vjh7iZhgCze
-         7LdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i6/846YAMk9RRWN/aZR9dpDogHYuOD2U8U0bltNEf84=;
-        b=NZMfoYm556J8b9j0QB0BA7+j2kIMo4s2+RsZ4nAof2yAlD1+87lgPidzWSVzlo/dQc
-         i5AKBYCorZfWqgmzxfdhfeKpnEaSsYIajhNV7gMqmLxT6zXvl/pTO8D/xplWA+DN85up
-         5W1Wcu4VpsmL0wPZMG1Fvao1R0fijsVAHjo+W5Rq2R8E/1+UMd2+xaKIV2fB3AL1MSCL
-         Gv9zhQLPhX+9GA1V9ShfJMn7EEjfokMzjfmhecUVG3hBpdEHHin5Sspv/bl9CD8DHkjL
-         QgAg5iMAjarpGs5DDMfqcxC3NtlL9xFoOkTPc1wCC1T3qeESNh6F9ugOBDJdWUvEHd6q
-         BLrg==
-X-Gm-Message-State: AOAM533YwqIQ33c+F8KSv/wGjUXLR69GwNoF6D/53/VaIB1ZdLHFU8yB
-        CK5huz+hooVUL7aAaL6sFm20Lokn/8uJlvQnB1RoG7fgqkIT4n8P
-X-Google-Smtp-Source: ABdhPJw5n+upawgyjZc6Mq6Lma/51EhPpXi/h5FTV79QoA+7XJqp2fWxboWxJk//SUbsyEHKEe5pamCGbgYr0u2aaas=
-X-Received: by 2002:a05:6102:c46:: with SMTP id y6mr29813692vss.22.1621999356196;
- Tue, 25 May 2021 20:22:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210429054734.53264-1-grantseltzer@gmail.com>
- <877dkkd7gp.fsf@meer.lwn.net> <CAO658oV2vJ0O=D3HWXyCUztsHD5GzDY_5p3jaAicEqqj+2-i+Q@mail.gmail.com>
- <87tunnc0oj.fsf@meer.lwn.net> <CAO658oUMkxR7VO1i3wCYHp7hMC3exP3ccHqeA-2BGnL4bPwfPA@mail.gmail.com>
- <CAEf4BzZJUtPiGn+8mkzNd2k+-3EEE85_xezab3RYy9ZW4zqANQ@mail.gmail.com>
- <CAO658oWPrEDBE8FUBuDUnrBVM91Mgu-svXfXgAXawAUp1MmWZA@mail.gmail.com> <CAEf4BzZJDqR7mRSKbOCWfZV-dqwin+PGYxBTTYMVVYwriD33JQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZJDqR7mRSKbOCWfZV-dqwin+PGYxBTTYMVVYwriD33JQ@mail.gmail.com>
-From:   Grant Seltzer Richman <grantseltzer@gmail.com>
-Date:   Tue, 25 May 2021 23:22:24 -0400
-Message-ID: <CAO658oUAg02tN4Gr9r5PJvb93HhN_yj3BzpvC2oVc6oaSn0FUw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] Autogenerating API documentation
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
+        id S231175AbhEZEWg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 00:22:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231136AbhEZEWg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 May 2021 00:22:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40B576142D;
+        Wed, 26 May 2021 04:21:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622002865;
+        bh=NZKWIN28iWuMtjx6BwvjImZPFZySO0UG0/he/MAoOis=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dTZCvWMWWIsvt8irM23V9io/StaXDR1Cdseku9Lxh04kO0vPna4PjGXjE6Bo+I2z8
+         mdv/xlk6MJ4QuPqVQa4GH5w+REaAbbmURy+JDEBapRHSTJ78aFEGDSjNbTxQ0EnIIF
+         8Ie2aJF9XvS/twNVN3GFMb8mBC58BspP4tQyCmVXn1apMM4zHtiK0X8+icgynZHb+M
+         8PDlQKJEMVHTgP/I7ks8ohUSxrGKTiOYpSRcXno5c/Nj2KRHJ7mU2EY2AsSB8r+ZU1
+         XADd/lLOeVNPwNZcuolGkrlfzb4VtDiUYEXODhGylUXB64gMwO/hlMd3+rtGjbSDg+
+         ahQM+ac+wo5Dg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 04DE85C0395; Tue, 25 May 2021 21:21:05 -0700 (PDT)
+Date:   Tue, 25 May 2021 21:21:04 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Xu, Yanfei" <yanfei.xu@windriver.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>,
+        rcu@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, bpf <bpf@vger.kernel.org>,
+        Christian Brauner <christian@brauner.io>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in
+ check_all_holdout_tasks_trace
+Message-ID: <20210526042104.GZ4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <000000000000f034fc05c2da6617@google.com>
+ <CACT4Y+ZGkye_MnNr92qQameXVEHNc1QkpmNrG3W8Yd1Xg_hfhw@mail.gmail.com>
+ <20210524041350.GJ4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210524224602.GA1963972@paulmck-ThinkPad-P17-Gen-1>
+ <24f352fc-c01e-daa8-5138-1f89f75c7c16@windriver.com>
+ <20210525033355.GN4441@paulmck-ThinkPad-P17-Gen-1>
+ <4b98d598-8044-0254-9ee2-0c9814b0245a@windriver.com>
+ <20210525142835.GO4441@paulmck-ThinkPad-P17-Gen-1>
+ <62d52830-e422-d08d-fbb8-9e0984672ffe@windriver.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <62d52830-e422-d08d-fbb8-9e0984672ffe@windriver.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 10, 2021 at 1:48 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, May 10, 2021 at 7:59 AM Grant Seltzer Richman
-> <grantseltzer@gmail.com> wrote:
-> >
-> > On Fri, Apr 30, 2021 at 1:31 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Fri, Apr 30, 2021 at 7:27 AM Grant Seltzer Richman
-> > > <grantseltzer@gmail.com> wrote:
-> > > >
-> > > > On Fri, Apr 30, 2021 at 10:22 AM Jonathan Corbet <corbet@lwn.net> wrote:
-> > > > >
-> > > > > Grant Seltzer Richman <grantseltzer@gmail.com> writes:
-> > > > >
-> > > > > > Hm, yes I do agree that it'd be nice to use existing tooling but I
-> > > > > > just have a couple concerns for this but please point me in the right
-> > > > > > direction because i'm sure i'm missing something. I was told to ask on
-> > > > > > the linux-doc mailing list because you'd have valuable input anway.
-> > > > > > This is based on reading
-> > > > > > https://www.kernel.org/doc/html/v4.9/kernel-documentation.html#including-kernel-doc-comments
-> > > > > >
-> > > > > > 1. We'd want the ability to pull documentation from the code itself to
-> > > > > > make it so documentation never falls out of date with code. Based on
-> > > > > > the docs on kernel.org/doc it seems that we'd have to be explicit with
-> > > > > > specifying which functions/types are included in an .rst file and
-> > > > > > submit a patch to update the documentation everytime the libbpf api
-> > > > > > changes. Perhaps if this isn't a thing already I can figure out how to
-> > > > > > contribute it.
-> > > > >
-> > > > > No, you can tell it to pull out docs for all of the functions in a given
-> > > > > file.  You only need to name things if you want to narrow things down.
-> > > >
-> > > > Alright, I will figure out how to do this and adjust the patch
-> > > > accordingly. My biggest overall goal is making it as easy as possible
-> > > > to contribute documentation. I think even adding just one doc string
-> > > > above an API function is a great opportunity for new contributors to
-> > > > familiarize themselves with the mailing list/patch process.
-> > > >
-> > > > >
-> > > > > > 2. Would it be possible (or necessary) to separate libbpf
-> > > > > > documentation from the kernel readthedocs page since libbpf isn't part
-> > > > > > of the kernel?
-> > > > >
-> > > > > It could certainly be built as a separate "book", as are many of the
-> > > > > kernel books now.  I could see it as something that gets pulled into the
-> > > > > user-space API book, but there could also perhaps be an argument made
-> > > > > for creating a new "libraries" book instead.
-> > > >
-> > > > Yea if I can figure this out for the libbpf API it'd be great to
-> > > > replicate it for any API!
-> > >
-> > > It would be great if it was possible to have this libbpf
-> > > auto-generated documentation as part of the kernel documentation, but
-> > > also be able to generate and export it into our Github mirror to be
-> > > pulled by readthedocs.io. If that can be done, it would be the best of
-> > > both kernel and external worlds. We have a sync script that already
-> > > auto-generates and checks in BPF helpers header, so we have a
-> > > precedent of checking in auto-generated stuff into Github. So it's
-> > > mostly about figuring out the mechanics of doc generation.
-> >
-> > Agreed, the mirror will have to bring in the documentation
-> > subdirectory as well so the output could be seperate.
-> >
-> > Just want to update in this thread that i've been really preoccupied
-> > with other obligations and will get back to this next week.
->
-> No worries. Thanks for the update!
+On Wed, May 26, 2021 at 10:22:59AM +0800, Xu, Yanfei wrote:
+> On 5/25/21 10:28 PM, Paul E. McKenney wrote:
+> > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > 
+> > On Tue, May 25, 2021 at 06:24:10PM +0800, Xu, Yanfei wrote:
+> > > 
+> > > 
+> > > On 5/25/21 11:33 AM, Paul E. McKenney wrote:
+> > > > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > > > 
+> > > > On Tue, May 25, 2021 at 10:31:55AM +0800, Xu, Yanfei wrote:
+> > > > > 
+> > > > > 
+> > > > > On 5/25/21 6:46 AM, Paul E. McKenney wrote:
+> > > > > > [Please note: This e-mail is from an EXTERNAL e-mail address]
+> > > > > > 
+> > > > > > On Sun, May 23, 2021 at 09:13:50PM -0700, Paul E. McKenney wrote:
+> > > > > > > On Sun, May 23, 2021 at 08:51:56AM +0200, Dmitry Vyukov wrote:
+> > > > > > > > On Fri, May 21, 2021 at 7:29 PM syzbot
+> > > > > > > > <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com> wrote:
+> > > > > > > > > 
+> > > > > > > > > Hello,
+> > > > > > > > > 
+> > > > > > > > > syzbot found the following issue on:
+> > > > > > > > > 
+> > > > > > > > > HEAD commit:    f18ba26d libbpf: Add selftests for TC-BPF management API
+> > > > > > > > > git tree:       bpf-next
+> > > > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=17f50d1ed00000
+> > > > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=8ff54addde0afb5d
+> > > > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
+> > > > > > > > > 
+> > > > > > > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > > > > > > > 
+> > > > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > > > > > Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
+> > > > > > > > 
+> > > > > > > > This looks rcu-related. +rcu mailing list
+> > > > > > > 
+> > > > > > > I think I see a possible cause for this, and will say more after some
+> > > > > > > testing and after becoming more awake Monday morning, Pacific time.
+> > > > > > 
+> > > > > > No joy.  From what I can see, within RCU Tasks Trace, the calls to
+> > > > > > get_task_struct() are properly protected (either by RCU or by an earlier
+> > > > > > get_task_struct()), and the calls to put_task_struct() are balanced by
+> > > > > > those to get_task_struct().
+> > > > > > 
+> > > > > > I could of course have missed something, but at this point I am suspecting
+> > > > > > an unbalanced put_task_struct() has been added elsewhere.
+> > > > > > 
+> > > > > > As always, extra eyes on this code would be a good thing.
+> > > > > > 
+> > > > > > If it were reproducible, I would of course suggest bisection.  :-/
+> > > > > > 
+> > > > > >                                                            Thanx, Paul
+> > > > > > 
+> > > > > Hi Paul,
+> > > > > 
+> > > > > Could it be?
+> > > > > 
+> > > > >          CPU1                                        CPU2
+> > > > > trc_add_holdout(t, bhp)
+> > > > > //t->usage==2
+> > > > >                                         release_task
+> > > > >                                           put_task_struct_rcu_user
+> > > > >                                             delayed_put_task_struct
+> > > > >                                               ......
+> > > > >                                               put_task_struct(t)
+> > > > >                                               //t->usage==1
+> > > > > 
+> > > > > check_all_holdout_tasks_trace
+> > > > >     ->trc_wait_for_one_reader
+> > > > >       ->trc_del_holdout
+> > > > >         ->put_task_struct(t)
+> > > > >         //t->usage==0 and task_struct freed
+> > > > >     READ_ONCE(t->trc_reader_checked)
+> > > > >     //ops， t had been freed.
+> > > > > 
+> > > > > So, after excuting trc_wait_for_one_reader（）, task might had been removed
+> > > > > from holdout list and the corresponding task_struct was freed.
+> > > > > And we shouldn't do READ_ONCE(t->trc_reader_checked).
+> > > > 
+> > > > I was suspicious of that call to trc_del_holdout() from within
+> > > > trc_wait_for_one_reader(), but the only time it executes is in the
+> > > > context of the current running task, which means that CPU 2 had better
+> > > > not be invoking release_task() on it just yet.
+> > > > 
+> > > > Or am I missing your point?
+> > > 
+> > > Two times.
+> > > 1. the task is current.
+> > > 
+> > >                 trc_wait_for_one_reader
+> > >                   ->trc_del_holdout
+> > 
+> > This one should be fine because the task cannot be freed until it
+> > actually exits, and the grace-period kthread never exits.  But it
+> > could also be removed without any problem that I see. >
+> 
+> Agree, current task's task_struct should be high probably safe.  If you
+> think it is safe to remove, I prefer to remove it. Because it can make
+> trc_wait_for_one_reader's behavior about deleting task from holdout more
+> unified. And there should be a very small racy that the task is checked as a
+> current and then turn into a exiting task before its task_struct is accessed
+> in trc_wait_for_one_reader or check_all_holdout_tasks_trace.（or I
+> misunderstand something about rcu tasks）
+> 
+> > > 2. task isn't current.
+> > > 
+> > >                 trc_wait_for_one_reader
+> > >                   ->get_task_struct
+> > >                   ->try_invoke_on_locked_down_task（trc_inspect_reader）
+> > >                     ->trc_del_holdout
+> > >                   ->put_task_struct
+> > 
+> > Ah, this one is more interesting, thank you!
+> > 
+> > Yes, it is safe from the list's viewpoint to do the removal in the
+> > trc_inspect_reader() callback, but you are right that the grace-period
+> > kthread may touch the task structure after return, and there might not
+> > be anything else holding that task structure in place.
+> > 
+> > > > Of course, if you can reproduce it, the following patch might be
+> > > 
+> > > Sorry...I can't reproduce it, just analyse syzbot's log. :(
+> > 
+> > Well, if it could be reproduced, that would mean that it was too easy,
+> > wouldn't it?  ;-)
+> 
+> Ha ;-)
 
-Finally catching up on this, thanks for all of your patience!
+But it should be possible to make this happen...  Is it possible to
+add lots of short-lived tasks to the test that failed?
 
-I've discovered that it's actually very easy, even trivial, to add API
-documentation for libbpf using the existing kernel sphinx
-documentation system. Adding a couple files with directives under
-`Documentaiton/bpf` is enough to pull in any comment-documented
-functions/structs in libbpf code. I'm not sure who owns the CI/CD
-infrastructure that recompiles the documentation and hosts on
-kernel.org/doc but I've been building them locally with `make
-htmldocs` with no problem. That would require a single patch and we
-can start adding comment documentation to libbpf.  I can submit a
-patch for that if you'd like to test it yourself. In this system the
-html output is not checked into git though.
+> > How about the (untested) patch below, just to make sure that we are
+> > talking about the same thing?  I have started testing, but then
+> > again, I have not yet been able to reproduce this, either.
+> > 
+> >                                                          Thanx, Paul
+> 
+> Yes! we are talking the same thing, Should I send a new patch?
 
-Andrii - what do you think of having libbpf API documentation hosted
-on the kernel.org readthedocs? It would be nice to have it seperate
-from the rest of kernel documentation for simplicity, though it is
-nice to use/contribute-to existing infrastructure. If you'd like to
-have it seperate we can have the libbpf mirror run `make htmldocs`,
-take the output, and host our own readthedocs site.
+Or look at these commits that I queued this past morning (Pacific Time)
+on the "dev" branch of the -rcu tree:
 
-I'd love to have this all set up and have the full API documented by
-the time you cut the libbpf 1.0 release!
+aac385ea2494 rcu-tasks: Don't delete holdouts within trc_inspect_reader()
+bf30dc63947c rcu-tasks: Don't delete holdouts within trc_wait_for_one_reader()
+
+They pass initial testing, but then again, such tests passed before
+these patches were queued.  :-/
+
+							Thanx, Paul
