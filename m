@@ -2,431 +2,197 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA41E391BEC
-	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 17:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09B2A391C17
+	for <lists+bpf@lfdr.de>; Wed, 26 May 2021 17:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235472AbhEZP0t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 May 2021 11:26:49 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34492 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235585AbhEZP0d (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 May 2021 11:26:33 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14QFE6Tl001125
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 08:25:01 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=WE9qxRb1C5c6u4fO1xUGaX5ky2UM6nMnWDXRymm3j7Y=;
- b=KOiIEeGPAwUjHHsNx3n8leEXTxvNrFr4yZt9PsblFzMgQRnwb5Lh4yseIdlPNkyiseYk
- RoKSLVtSkPCKWJpqf64quFk7AZaA/1yvprQ792jfjWgjyNpIjOvNGqrnoOgCpvXl+cug
- Htn29fTj1ZTtMpY9+Jy7gfDw33/JcGuhfb0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 38rpf9tmuq-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 26 May 2021 08:25:01 -0700
-Received: from intmgw001.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 26 May 2021 08:25:01 -0700
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 9C2C7311FEBA; Wed, 26 May 2021 08:24:57 -0700 (PDT)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        id S234310AbhEZPfj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 May 2021 11:35:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232762AbhEZPfi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 May 2021 11:35:38 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667B6C061756
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 08:34:07 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id g8so1174697qtp.4
+        for <bpf@vger.kernel.org>; Wed, 26 May 2021 08:34:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NctmoWs8tLUvGWlpFwF5tdeAyBbyMzRUvFfUG7aqzEU=;
+        b=Txf7OUJcOzDUzoa1IPdnaAzZT/nz45uqHFWcn7jBbIdL8EhyLLFr9Sa/l7aRwMURyH
+         pZh3Azr9TIbBYgk+WX08xeweTbUb5OArr4dKkPDLPwiitXB1lS1+Ic3Qq1bRk60w/uX+
+         jnf0cK5BihddvDSaXUZEc5L8unCHf647TFHk32rhuxM2gd232UMaetwgJQuDUU0ki85p
+         WOizgS44T39EoAjUoYxTO177nN/GKh4ZKDnyHPUk4RJMBEw3bszmI9dUHDhGC/vAZl7t
+         rtxEUIDhuN1O/+DqvnyKwCwWXRqNxP4SOw+Q+eAWGM9MwB4T60wgXJunVaS8D7y/oS7i
+         ZDHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NctmoWs8tLUvGWlpFwF5tdeAyBbyMzRUvFfUG7aqzEU=;
+        b=Gra3x6DtyWXZ9JMhCfNCO4mzU6tCG+Sw6TRsLeqIUZbKc4nbewp1BwI2wqmviJZIa4
+         P9JpgYk4mhmPe9L2zf7aNYIj4hUpotZrHA5PUESl8q4eFnFpb/mieZYoc8b0iW6hWHOx
+         U1mrv5fCVIj02wwPFtFVP95upiIeCkXLKfH30aQYRnP8qxR/hjj+m+LGPM+6jteC7+FM
+         P11rgKMLy4EJLf7zcZS2UVnqc8UaOQOVHRR+MimAsInzjao+LPqVoLKE0Bhzmou9DPuq
+         gfDHbwxC9FzKFfkXxg9sWCsxxDKuKWsFsaBWuYSyiq7HteBxPvrpq6TQbstGC5r/RGXE
+         GrWA==
+X-Gm-Message-State: AOAM532CJTaGtVnr78ZkRusYhYXeq5njqXEiVbLU3tx7xAcU01DhhWCm
+        8W6V7VFukpdnQ4XatOejzHf2uA==
+X-Google-Smtp-Source: ABdhPJwpIhVTy2xUHL/jiUCnDO/QVUEneEXfVN/xPxO4/avILHpXWn4PqNR1l/BA63+vYKdQRN8eJQ==
+X-Received: by 2002:ac8:7194:: with SMTP id w20mr37767833qto.363.1622043246421;
+        Wed, 26 May 2021 08:34:06 -0700 (PDT)
+Received: from [192.168.1.79] (bras-base-kntaon1617w-grc-28-184-148-47-211.dsl.bell.ca. [184.148.47.211])
+        by smtp.googlemail.com with ESMTPSA id j15sm1659361qtv.11.2021.05.26.08.34.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 May 2021 08:34:05 -0700 (PDT)
+Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
+        David Miller <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Fangrui Song <maskray@google.com>, <kernel-team@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: [PATCH bpf-next v3] docs/bpf: add llvm_reloc.rst to explain llvm bpf relocations
-Date:   Wed, 26 May 2021 08:24:57 -0700
-Message-ID: <20210526152457.335210-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: Zt_R0_yTZepX7tnu-CxVz4iwyy8Oydrb
-X-Proofpoint-ORIG-GUID: Zt_R0_yTZepX7tnu-CxVz4iwyy8Oydrb
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>,
+        Pedro Tammela <pctammela@gmail.com>
+References: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
+ <CAM_iQpWDgVTCnP3xC3=z7WCH05oDUuqxrw2OjjUC69rjSQG0qQ@mail.gmail.com>
+ <CAADnVQ+V5o31-h-A+eNsHvHgOJrVfP4wVbyb+jL2J=-ionV0TA@mail.gmail.com>
+ <CAM_iQpU-Cvpf-+9R0ZdZY+5Dv+stfodrH0MhvSgryv_tGiX7pA@mail.gmail.com>
+ <CAM_iQpVYBNkjDeo+2CzD-qMnR4-2uW+QdMSf_7ohwr0NjgipaQ@mail.gmail.com>
+ <CAADnVQJUHydpLwtj9hRWWNGx3bPbdk-+cQiSe3MDFQpwkKmkSw@mail.gmail.com>
+ <bcbf76c3-34d4-d550-1648-02eda587ccd7@mojatatu.com>
+ <CAADnVQLWj-=B2TfJp7HEsiUY3rqmd6-YMDAGdyL6RgZ=_b2CXg@mail.gmail.com>
+ <27dae780-b66b-4ee9-cff1-a3257e42070e@mojatatu.com>
+ <CAADnVQJq37Xi2bHBG5L+DmMq6dJvFUCE3tt+uC-oAKX3WxcCQg@mail.gmail.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <2dfc5180-40df-ae4c-7146-d64130be9ad4@mojatatu.com>
+Date:   Wed, 26 May 2021 11:34:04 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-26_09:2021-05-26,2021-05-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- adultscore=0 malwarescore=0 mlxlogscore=999 priorityscore=1501
- lowpriorityscore=0 clxscore=1015 bulkscore=0 impostorscore=0 mlxscore=0
- phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105260103
-X-FB-Internal: deliver
+In-Reply-To: <CAADnVQJq37Xi2bHBG5L+DmMq6dJvFUCE3tt+uC-oAKX3WxcCQg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-LLVM upstream commit https://reviews.llvm.org/D102712
-made some changes to bpf relocations to make them
-llvm linker lld friendly. The scope of
-existing relocations R_BPF_64_{64,32} is narrowed
-and new relocations R_BPF_64_{ABS32,ABS64,NODYLD32}
-are introduced.
+On 2021-05-25 6:08 p.m., Alexei Starovoitov wrote:
+> On Tue, May 25, 2021 at 2:09 PM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
+>>
 
-Let us add some documentation about llvm bpf
-relocations so people can understand how to resolve
-them properly in their respective tools.
+>> This is certainly a useful feature (for other reasons as well).
+>> Does this include create/update/delete issued from user space?
+> 
+> Right. Any kind of update/delete and create is a subset of update.
+> The lookup is not included (yet or may be ever) since it doesn't
+> have deterministic start/end points.
+> The prog can do a lookup and update values in place while
+> holding on the element until prog execution ends.
+> 
+> While update/delete have precise points in hash/lru/lpm maps.
+> Array is a different story.
+> 
 
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- Documentation/bpf/index.rst            |   1 +
- Documentation/bpf/llvm_reloc.rst       | 240 +++++++++++++++++++++++++
- tools/testing/selftests/bpf/README.rst |  19 ++
- 3 files changed, 260 insertions(+)
- create mode 100644 Documentation/bpf/llvm_reloc.rst
+Didnt follow why this wouldnt work in the same way for Array?
 
-Changelogs:
-  v2 -> v3:
-    - change "SECTION" to "STT_SECTION" (macro name in the elf.h header fil=
-e)
-      to describe corresponding symbol table type.
-    - change "IA" to "A" to represent "Addend".
-  v1 -> v2:
-    - add an example to illustrate how relocations related to base
-      section and symbol table and what is "Implicit Addend"
-    - clarify why we use 32bit read/write for R_BPF_64_64 (ld_imm64)
-      relocations.
+One interesting concept i see come out of this is emulating
+netlink-like event generation towards user space i.e a user
+space app listening to changes to a map.
 
-diff --git a/Documentation/bpf/index.rst b/Documentation/bpf/index.rst
-index a702f67dd45f..93e8cf12a6d4 100644
---- a/Documentation/bpf/index.rst
-+++ b/Documentation/bpf/index.rst
-@@ -84,6 +84,7 @@ Other
-    :maxdepth: 1
-=20
-    ringbuf
-+   llvm_reloc
-=20
- .. Links:
- .. _networking-filter: ../networking/filter.rst
-diff --git a/Documentation/bpf/llvm_reloc.rst b/Documentation/bpf/llvm_relo=
-c.rst
-new file mode 100644
-index 000000000000..ca8957d5b671
---- /dev/null
-+++ b/Documentation/bpf/llvm_reloc.rst
-@@ -0,0 +1,240 @@
-+.. SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-+
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+BPF LLVM Relocations
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+This document describes LLVM BPF backend relocation types.
-+
-+Relocation Record
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+LLVM BPF backend records each relocation with the following 16-byte
-+ELF structure::
-+
-+  typedef struct
-+  {
-+    Elf64_Addr    r_offset;  // Offset from the beginning of section.
-+    Elf64_Xword   r_info;    // Relocation type and symbol index.
-+  } Elf64_Rel;
-+
-+For example, for the following code::
-+
-+  int g1 __attribute__((section("sec")));
-+  int g2 __attribute__((section("sec")));
-+  static volatile int l1 __attribute__((section("sec")));
-+  static volatile int l2 __attribute__((section("sec")));
-+  int test() {
-+    return g1 + g2 + l1 + l2;
-+  }
-+
-+Compiled with ``clang -target bpf -O2 -c test.c``, the following is
-+the code with ``llvm-objdump -dr test.o``::
-+
-+       0:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 =3D 0 ll
-+                0000000000000000:  R_BPF_64_64  g1
-+       2:       61 11 00 00 00 00 00 00 r1 =3D *(u32 *)(r1 + 0)
-+       3:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r2 =3D 0 ll
-+                0000000000000018:  R_BPF_64_64  g2
-+       5:       61 20 00 00 00 00 00 00 r0 =3D *(u32 *)(r2 + 0)
-+       6:       0f 10 00 00 00 00 00 00 r0 +=3D r1
-+       7:       18 01 00 00 08 00 00 00 00 00 00 00 00 00 00 00 r1 =3D 8 ll
-+                0000000000000038:  R_BPF_64_64  sec
-+       9:       61 11 00 00 00 00 00 00 r1 =3D *(u32 *)(r1 + 0)
-+      10:       0f 10 00 00 00 00 00 00 r0 +=3D r1
-+      11:       18 01 00 00 0c 00 00 00 00 00 00 00 00 00 00 00 r1 =3D 12 =
-ll
-+                0000000000000058:  R_BPF_64_64  sec
-+      13:       61 11 00 00 00 00 00 00 r1 =3D *(u32 *)(r1 + 0)
-+      14:       0f 10 00 00 00 00 00 00 r0 +=3D r1
-+      15:       95 00 00 00 00 00 00 00 exit
-+
-+There are four relations in the above for four ``LD_imm64`` instructions.
-+The following ``llvm-readelf -r test.o`` shows the binary values of the fo=
-ur
-+relocations::
-+
-+  Relocation section '.rel.text' at offset 0x190 contains 4 entries:
-+      Offset             Info             Type               Symbol's Valu=
-e  Symbol's Name
-+  0000000000000000  0000000600000001 R_BPF_64_64            00000000000000=
-00 g1
-+  0000000000000018  0000000700000001 R_BPF_64_64            00000000000000=
-04 g2
-+  0000000000000038  0000000400000001 R_BPF_64_64            00000000000000=
-00 sec
-+  0000000000000058  0000000400000001 R_BPF_64_64            00000000000000=
-00 sec
-+
-+Each relocation is represented by ``Offset`` (8 bytes) and ``Info`` (8 byt=
-es).
-+For example, the first relocation corresponds to the first instruction
-+(Offset 0x0) and the corresponding ``Info`` indicates the relocation type
-+of ``R_BPF_64_64`` (type 1) and the entry in the symbol table (entry 6).
-+The following is the symbol table with ``llvm-readelf -s test.o``::
-+
-+  Symbol table '.symtab' contains 8 entries:
-+     Num:    Value          Size Type    Bind   Vis       Ndx Name
-+       0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT   UND
-+       1: 0000000000000000     0 FILE    LOCAL  DEFAULT   ABS test.c
-+       2: 0000000000000008     4 OBJECT  LOCAL  DEFAULT     4 l1
-+       3: 000000000000000c     4 OBJECT  LOCAL  DEFAULT     4 l2
-+       4: 0000000000000000     0 SECTION LOCAL  DEFAULT     4 sec
-+       5: 0000000000000000   128 FUNC    GLOBAL DEFAULT     2 test
-+       6: 0000000000000000     4 OBJECT  GLOBAL DEFAULT     4 g1
-+       7: 0000000000000004     4 OBJECT  GLOBAL DEFAULT     4 g2
-+
-+The 6th entry is global variable ``g1`` with value 0.
-+
-+Similarly, the second relocation is at ``.text`` offset ``0x18``, instruct=
-ion 3,
-+for global variable ``g2`` which has a symbol value 4, the offset
-+from the start of ``.data`` section.
-+
-+The third and fourth relocations refers to static variables ``l1``
-+and ``l2``. From ``.rel.text`` section above, it is not clear
-+which symbols they really refers to as they both refers to
-+symbol table entry 4, symbol ``sec``, which has ``STT_SECTION`` type
-+and represents a section. So for static variable or function,
-+the section offset is written to the original insn
-+buffer, which is called ``A`` (addend). Looking at
-+above insn ``7`` and ``11``, they have section offset ``8`` and ``12``.
-+From symbol table, we can find that they correspond to entries ``2``
-+and ``3`` for ``l1`` and ``l2``.
-+
-+In general, the ``A`` is 0 for global variables and functions,
-+and is the section offset or some computation result based on
-+section offset for static variables/functions. The non-section-offset
-+case refers to function calls. See below for more details.
-+
-+Different Relocation Types
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-+
-+Six relocation types are supported. The following is an overview and
-+``S`` represents the value of the symbol in the symbol table::
-+
-+  Enum  ELF Reloc Type     Description      BitSize  Offset        Calcula=
-tion
-+  0     R_BPF_NONE         None
-+  1     R_BPF_64_64        ld_imm64 insn    32       r_offset + 4  S + A
-+  2     R_BPF_64_ABS64     normal data      64       r_offset      S + A
-+  3     R_BPF_64_ABS32     normal data      32       r_offset      S + A
-+  4     R_BPF_64_NODYLD32  .BTF[.ext] data  32       r_offset      S + A
-+  10    R_BPF_64_32        call insn        32       r_offset + 4  (S + A)=
- / 8 - 1
-+
-+For example, ``R_BPF_64_64`` relocation type is used for ``ld_imm64`` inst=
-ruction.
-+The actual to-be-relocated data (0 or section offset)
-+is stored at ``r_offset + 4`` and the read/write
-+data bitsize is 32 (4 bytes). The relocation can be resolved with
-+the symbol value plus implicit addend. Note that the ``BitSize`` is 32 whi=
-ch
-+means the section offset must be less than or equal to ``UINT32_MAX`` and =
-this
-+is enforced by LLVM BPF backend.
-+
-+In another case, ``R_BPF_64_ABS64`` relocation type is used for normal 64-=
-bit data.
-+The actual to-be-relocated data is stored at ``r_offset`` and the read/wri=
-te data
-+bitsize is 64 (8 bytes). The relocation can be resolved with
-+the symbol value plus implicit addend.
-+
-+Both ``R_BPF_64_ABS32`` and ``R_BPF_64_NODYLD32`` types are for 32-bit dat=
-a.
-+But ``R_BPF_64_NODYLD32`` specifically refers to relocations in ``.BTF`` a=
-nd
-+``.BTF.ext`` sections. For cases like bcc where llvm ``ExecutionEngine Run=
-timeDyld``
-+is involved, ``R_BPF_64_NODYLD32`` types of relocations should not be reso=
-lved
-+to actual function/variable address. Otherwise, ``.BTF`` and ``.BTF.ext``
-+become unusable by bcc and kernel.
-+
-+Type ``R_BPF_64_32`` is used for call instruction. The call target section
-+offset is stored at ``r_offset + 4`` (32bit) and calculated as
-+``(S + A) / 8 - 1``.
-+
-+Examples
-+=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+Types ``R_BPF_64_64`` and ``R_BPF_64_32`` are used to resolve ``ld_imm64``
-+and ``call`` instructions. For example::
-+
-+  __attribute__((noinline)) __attribute__((section("sec1")))
-+  int gfunc(int a, int b) {
-+    return a * b;
-+  }
-+  static __attribute__((noinline)) __attribute__((section("sec1")))
-+  int lfunc(int a, int b) {
-+    return a + b;
-+  }
-+  int global __attribute__((section("sec2")));
-+  int test(int a, int b) {
-+    return gfunc(a, b) +  lfunc(a, b) + global;
-+  }
-+
-+Compiled with ``clang -target bpf -O2 -c test.c``, we will have
-+following code with `llvm-objdump -dr test.o``::
-+
-+  Disassembly of section .text:
-+
-+  0000000000000000 <test>:
-+         0:       bf 26 00 00 00 00 00 00 r6 =3D r2
-+         1:       bf 17 00 00 00 00 00 00 r7 =3D r1
-+         2:       85 10 00 00 ff ff ff ff call -1
-+                  0000000000000010:  R_BPF_64_32  gfunc
-+         3:       bf 08 00 00 00 00 00 00 r8 =3D r0
-+         4:       bf 71 00 00 00 00 00 00 r1 =3D r7
-+         5:       bf 62 00 00 00 00 00 00 r2 =3D r6
-+         6:       85 10 00 00 02 00 00 00 call 2
-+                  0000000000000030:  R_BPF_64_32  sec1
-+         7:       0f 80 00 00 00 00 00 00 r0 +=3D r8
-+         8:       18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 =3D 0=
- ll
-+                  0000000000000040:  R_BPF_64_64  global
-+        10:       61 11 00 00 00 00 00 00 r1 =3D *(u32 *)(r1 + 0)
-+        11:       0f 10 00 00 00 00 00 00 r0 +=3D r1
-+        12:       95 00 00 00 00 00 00 00 exit
-+
-+  Disassembly of section sec1:
-+
-+  0000000000000000 <gfunc>:
-+         0:       bf 20 00 00 00 00 00 00 r0 =3D r2
-+         1:       2f 10 00 00 00 00 00 00 r0 *=3D r1
-+         2:       95 00 00 00 00 00 00 00 exit
-+
-+  0000000000000018 <lfunc>:
-+         3:       bf 20 00 00 00 00 00 00 r0 =3D r2
-+         4:       0f 10 00 00 00 00 00 00 r0 +=3D r1
-+         5:       95 00 00 00 00 00 00 00 exit
-+
-+The first relocation corresponds to ``gfunc(a, b)`` where ``gfunc`` has a =
-value of 0,
-+so the ``call`` instruction offset is ``(0 + 0)/8 - 1 =3D -1``.
-+The second relocation corresponds to ``lfunc(a, b)`` where ``lfunc`` has a=
- section
-+offset ``0x18``, so the ``call`` instruction offset is ``(0 + 0x18)/8 - 1 =
-=3D 2``.
-+The third relocation corresponds to ld_imm64 of ``global``, which has a se=
-ction
-+offset ``0``.
-+
-+The following is an example to show how R_BPF_64_ABS64 could be generated::
-+
-+  int global() { return 0; }
-+  struct t { void *g; } gbl =3D { global };
-+
-+Compiled with ``clang -target bpf -O2 -g -c test.c``, we will see a
-+relocation below in ``.data`` section with command
-+``llvm-readelf -r test.o``::
-+
-+  Relocation section '.rel.data' at offset 0x458 contains 1 entries:
-+      Offset             Info             Type               Symbol's Valu=
-e  Symbol's Name
-+  0000000000000000  0000000700000002 R_BPF_64_ABS64         00000000000000=
-00 global
-+
-+The relocation says the first 8-byte of ``.data`` section should be
-+filled with address of ``global`` variable.
-+
-+With ``llvm-readelf`` output, we can see that dwarf sections have a bunch =
-of
-+``R_BPF_64_ABS32`` and ``R_BPF_64_ABS64`` relocations::
-+
-+  Relocation section '.rel.debug_info' at offset 0x468 contains 13 entries:
-+      Offset             Info             Type               Symbol's Valu=
-e  Symbol's Name
-+  0000000000000006  0000000300000003 R_BPF_64_ABS32         00000000000000=
-00 .debug_abbrev
-+  000000000000000c  0000000400000003 R_BPF_64_ABS32         00000000000000=
-00 .debug_str
-+  0000000000000012  0000000400000003 R_BPF_64_ABS32         00000000000000=
-00 .debug_str
-+  0000000000000016  0000000600000003 R_BPF_64_ABS32         00000000000000=
-00 .debug_line
-+  000000000000001a  0000000400000003 R_BPF_64_ABS32         00000000000000=
-00 .debug_str
-+  000000000000001e  0000000200000002 R_BPF_64_ABS64         00000000000000=
-00 .text
-+  000000000000002b  0000000400000003 R_BPF_64_ABS32         00000000000000=
-00 .debug_str
-+  0000000000000037  0000000800000002 R_BPF_64_ABS64         00000000000000=
-00 gbl
-+  0000000000000040  0000000400000003 R_BPF_64_ABS32         00000000000000=
-00 .debug_str
-+  ......
-+
-+The .BTF/.BTF.ext sections has R_BPF_64_NODYLD32 relocations::
-+
-+  Relocation section '.rel.BTF' at offset 0x538 contains 1 entries:
-+      Offset             Info             Type               Symbol's Valu=
-e  Symbol's Name
-+  0000000000000084  0000000800000004 R_BPF_64_NODYLD32      00000000000000=
-00 gbl
-+
-+  Relocation section '.rel.BTF.ext' at offset 0x548 contains 2 entries:
-+      Offset             Info             Type               Symbol's Valu=
-e  Symbol's Name
-+  000000000000002c  0000000200000004 R_BPF_64_NODYLD32      00000000000000=
-00 .text
-+  0000000000000040  0000000200000004 R_BPF_64_NODYLD32      00000000000000=
-00 .text
-diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftes=
-ts/bpf/README.rst
-index 3353778c30f8..8deec1ca9150 100644
---- a/tools/testing/selftests/bpf/README.rst
-+++ b/tools/testing/selftests/bpf/README.rst
-@@ -202,3 +202,22 @@ generate valid BTF information for weak variables. Ple=
-ase make sure you use
- Clang that contains the fix.
-=20
- __ https://reviews.llvm.org/D100362
-+
-+Clang relocation changes
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+Clang 13 patch `clang reloc patch`_  made some changes on relocations such
-+that existing relocation types are broken into more types and
-+each new type corresponds to only one way to resolve relocation.
-+See `kernel llvm reloc`_ for more explanation and some examples.
-+Using clang 13 to compile old libbpf which has static linker support,
-+there will be a compilation failure::
-+
-+  libbpf: ELF relo #0 in section #6 has unexpected type 2 in .../bpf_tcp_n=
-ogpl.o
-+
-+Here, ``type 2`` refers to new relocation type ``R_BPF_64_ABS64``.
-+To fix this issue, user newer libbpf.
-+
-+.. Links
-+.. _clang reloc patch: https://reviews.llvm.org/D102712
-+.. _kernel llvm reloc: /Documentation/bpf/llvm_reloc.rst
---=20
-2.30.2
+>>
+>> The challenge we have in this case is LRU makes the decision
+>> which entry to victimize. We do have some entries we want to
+>> keep longer - even if they are not seeing a lot of activity.
+> 
+> Right. That's certainly an argument to make LRU eviction
+> logic programmable.
+> John/Joe/Daniel proposed it as a concept long ago.
+> Design ideas are in demand to make further progress here :)
+> 
+
+would like to hear what the proposed ideas are.
+I see this as a tricky problem to solve - you can make LRU
+programmable to allow the variety of LRU replacement algos out
+there but not all encompansing for custom or other types of algos.
+The problem remains that LRU is very specific to evicting
+entries that are least used. I can imagine that if i wanted to
+do a LIFO aging for example then it can be done with some acrobatics
+as an overlay on top of LRU with all sorts of tweaking.
+It is sort of fitting a square peg into a round hole - you can do
+it, but why the torture when you have a flexible architecture.
+
+We need to provide the mechanisms (I dont see a disagreement on
+need for timers at least).
+
+>> You could just notify user space to re-add the entry but then
+>> you have sync challenges.
+>> The timers do provide us a way to implement custom GC.
+> 
+> My point is that time is always going to be a heuristic that will
+> break under certain traffic conditions.
+> I recommend to focus development effort on creating
+> building blocks that are truly great instead of reimplementing
+> old ideas in bpf with all of their shortcomings.
+> 
+
+There are some basic mechanisms i dont think that we can avoid.
+Agreed on the general sentiment of what you are saying.
+
+>> So a question (which may have already been discussed),
+>> assuming the following setup:
+>> - 2 programs a) Ingress b) egress
+>> - sharing a conntrack map which and said map pinned.
+>> - a timer prog (with a map with just timers;
+>>      even a single timer would be enough in some cases).
+>>
+>> ingress and egress do std stuff like create/update
+>> timer prog does the deletes. For simplicity sake assume
+>> we just have one timer that does a foreach and iterates
+>> all entries.
+>>
+>> What happens when both ingress and egress are ejected?
+> 
+> What is 'ejected'? Like a CD? ;)
+
+I was going to use other verbs to describe this; but
+may have sounded obscene ;->
+
+> I think you mean 'detached' ?
+
+Yes.
+
+> and then, I assume, the user space doesn't hold to prog FD?
+
+Right. The pinning may still exist on the maps (therefore a ref
+count). Note, this may be design intent.
+
+> The kernel can choose to do different things with the timer here.
+> One option is to cancel the outstanding timers and unload
+> .text where the timer callback lives
+ >
+> Another option is to let the timer stay armed and auto unload
+> .text of bpf function when it finishes executing.
+ >
+> If timer callback decides to re-arm itself it can continue
+> executing indefinitely.
+> This patch is doing the latter.
+> There could be a combination of both options.
+> All options have their pros/cons.
+
+A reasonable approach is to let the policy be defined
+from user space. I may want the timer to keep polling
+a map that is not being updated until the next program
+restarts and starts updating it.
+I thought Cong's approach with timerids/maps was a good
+way to achieve control.
+
+cheers,
+jamal
 
