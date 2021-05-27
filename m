@@ -2,81 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97AE2393731
-	for <lists+bpf@lfdr.de>; Thu, 27 May 2021 22:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 638AC393744
+	for <lists+bpf@lfdr.de>; Thu, 27 May 2021 22:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236052AbhE0Ucw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 May 2021 16:32:52 -0400
-Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:54120 "EHLO
-        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235539AbhE0Ucv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 May 2021 16:32:51 -0400
+        id S235968AbhE0UnJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 May 2021 16:43:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235871AbhE0UnD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 May 2021 16:43:03 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79905C061574;
+        Thu, 27 May 2021 13:41:25 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id z38so2519738ybh.5;
+        Thu, 27 May 2021 13:41:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1622147478; x=1653683478;
-  h=date:from:to:cc:message-id:references:mime-version:
-   in-reply-to:subject;
-  bh=K6dlUPbkaXkiIQCE8kFQ1SvWc0eC53wXP5Y3FFkH3J0=;
-  b=rTv7vlgcAstX+p4gAXWAetPv+ZA1e9VpLFixNkpN9hiatFw/NPS43F/W
-   j04xemI2atIyLx2w+4SshmholdzDzkC7t6JscQRPK6WS8hglE0PLMk0gn
-   Rqs7TDIZ7iDxCHzCgg6YBvsZD9aSOEZ8YKSxfrsum8cZ/CF5gbq+2bs+g
-   4=;
-X-IronPort-AV: E=Sophos;i="5.83,228,1616457600"; 
-   d="scan'208";a="935425854"
-Subject: Re: [PATCH 4.19 00/12] bpf: fix verifier selftests, add CVE-2021-29155 fixes
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 27 May 2021 20:31:17 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-2a-90c42d1d.us-west-2.amazon.com (Postfix) with ESMTPS id 58613A1D8A;
-        Thu, 27 May 2021 20:31:17 +0000 (UTC)
-Received: from EX13D01UWA002.ant.amazon.com (10.43.160.74) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Thu, 27 May 2021 20:31:17 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (10.43.61.77) by
- EX13d01UWA002.ant.amazon.com (10.43.160.74) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Thu, 27 May 2021 20:31:11 +0000
-Received: from dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com
- (172.19.206.175) by mail-relay.amazon.com (10.43.61.169) with Microsoft SMTP
- Server id 15.0.1497.18 via Frontend Transport; Thu, 27 May 2021 20:31:10
- +0000
-Received: by dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com (Postfix, from userid 6262777)
-        id A81BD1E; Thu, 27 May 2021 20:31:10 +0000 (UTC)
-Date:   Thu, 27 May 2021 20:31:10 +0000
-From:   Frank van der Linden <fllinden@amazon.com>
-To:     Ovidiu Panait <ovidiu.panait@windriver.com>
-CC:     <stable@vger.kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <yhs@fb.com>, <john.fastabend@gmail.com>,
-        <samjonas@amazon.com>
-Message-ID: <20210527203109.GA16000@dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com>
-References: <20210527173732.20860-1-ovidiu.panait@windriver.com>
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tkEtI6YOTA2WONcr1yd7qWLnvbieG6wKJihibGed1L0=;
+        b=Q+T45K99SioxovAruV5kTFQKM4hgG3/cUY9XMy9hhfq2r+IMaC9C9u/KDZvMoqewrE
+         DOOwdSJVLItVmNczJ5u0WYBhIyPeulfySF1Ty+K+QAzbtVVB+LH5mvRsjuSCe7xjXVeD
+         bzquGr/ht7pbOnKr7gyzhebPosPWYSUJsIwe57naupg8BIchiNQ+iQb4AyTTW2lIcXNy
+         XKKYQqMCdN7WSUeSWypDM14hbTfPdaL59yNkT398kjTgsl8DHPYIslcR0kMCpEyDtZuH
+         kW087hANGqmdy1ZsACbWrWlPGfA7g2yGpcXz7QClS+hzXHPhjEeR8tRJBt6DqK1DjdQA
+         9lmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tkEtI6YOTA2WONcr1yd7qWLnvbieG6wKJihibGed1L0=;
+        b=iAGmu5WSwqxRvy6fzbkzpstFF2vBwvpfGTWzGVoknRVXJhS3pkkF49XA5C0BRqXhmD
+         JEJPC5g/eVZsU/JYhxHVwIxu2rr37usFw0mGyddPRW4EW/tusHCqOggFMw6h2bsTLmeh
+         Bq5r5LqV4q7WB0YKq9BFLekKtrQhiZc593/BVtzG3LR3iXFimJ6ufjtcZXfsC+mR/Byf
+         r2M6jRO0iMMHVtWfpmm9c+z2HP4MdjRn5DQahWZATJLqr7OUwShI16AZlO2q6qnf2owA
+         C8l4lj35oclz868xhT7tUOW8MzsFQmlqgEjQu3D+8OoFK5sWk9z0mGwPscBWer5kzrn2
+         Zsbg==
+X-Gm-Message-State: AOAM532NwkOlf83ey5BnXg8SokdKEneHWWqTL7tE4LUE/HnF0cbY2EqD
+        kB3xR8OMV3b1+AgKw3FEBRBBdzKCf8KqZ3FndMCeGKbeJY8=
+X-Google-Smtp-Source: ABdhPJzY4NmTn+00ot/krOIV9qieX5mbliWUUm7Y9mMtyeKUenL5cxayspybgPnGn2YN1CVbB8iYmUsPsOgv1BWL5pA=
+X-Received: by 2002:a5b:286:: with SMTP id x6mr7992123ybl.347.1622148084588;
+ Thu, 27 May 2021 13:41:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210527173732.20860-1-ovidiu.panait@windriver.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <YK+41f972j25Z1QQ@kernel.org> <CAEf4BzaTP_jULKMN_hx6ZOqwESOmsR6_HxWW-LnrA5xwRNtSWg@mail.gmail.com>
+ <4615C288-2CFD-483E-AB98-B14A33631E2F@gmail.com> <CAEf4BzaQmv1+1bPF=1aO3dcmNu2Mx0EFhK+ZU6UFsMjv3v6EZA@mail.gmail.com>
+ <4901AF88-0354-428B-9305-2EDC6F75C073@gmail.com>
+In-Reply-To: <4901AF88-0354-428B-9305-2EDC6F75C073@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 27 May 2021 13:41:13 -0700
+Message-ID: <CAEf4BzZk8bcSZ9hmFAmgjbrQt0Yj1usCHmuQTfU-pwZkYQgztA@mail.gmail.com>
+Subject: Re: [RFT] Testing 1.22
+To:     Arnaldo <arnaldo.melo@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Michael Petlan <mpetlan@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 27, 2021 at 08:37:20PM +0300, Ovidiu Panait wrote:
-> This patchset is based on Frank van der Linden's backport of CVE-2021-29155
-> fixes to 5.4 and 4.14:
-> https://lore.kernel.org/stable/20210429220839.15667-1-fllinden@amazon.com/
-> https://lore.kernel.org/stable/20210501043014.33300-1-fllinden@amazon.com/
-> 
-> With this series, all verifier selftests but one (that has already been
-> failing, see [1] for more details) succeed.
+On Thu, May 27, 2021 at 12:57 PM Arnaldo <arnaldo.melo@gmail.com> wrote:
+>
+>
+>
+> On May 27, 2021 4:14:17 PM GMT-03:00, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >On Thu, May 27, 2021 at 12:06 PM Arnaldo <arnaldo.melo@gmail.com>
+> >wrote:
+> >>
+> >>
+> >>
+> >> On May 27, 2021 1:54:40 PM GMT-03:00, Andrii Nakryiko
+> ><andrii.nakryiko@gmail.com> wrote:
+> >> >On Thu, May 27, 2021 at 8:20 AM Arnaldo Carvalho de Melo
+> >> ><acme@kernel.org> wrote:
+> >> >>
+> >> >> Hi guys,
+> >> >>
+> >> >>         Its important to have 1.22 out of the door ASAP, so please
+> >> >clone
+> >> >> what is in tmp.master and report your results.
+> >> >>
+> >> >
+> >> >Hey Arnaldo,
+> >> >
+> >> >If we are going to make pahole 1.22 a new mandatory minimal version
+> >of
+> >> >pahole, I think we should take a little bit of time and fix another
+> >> >problematic issue and clean up Kbuild significantly.
+> >> >
+> >> >We discussed this before, it would be great to have an ability to
+> >dump
+> >> >generated BTF into a separate file instead of modifying vmlinux
+> >image
+> >> >in place. I'd say let's try to push for [0] to land as a temporary
+> >> >work around to buy us a bit of time to implement this feature. Then,
+> >> >when pahole 1.22 is released and packaged into major distros, we can
+> >> >follow up in kernel with Kbuild clean ups and making pahole 1.22
+> >> >mandatory.
+> >> >
+> >> >What do you think? If anyone agrees, please consider chiming in on
+> >the
+> >> >above thread ([0]).
+> >>
+> >> There's multiple fixes that affects lots of stakeholders, so I'm more
+> >inclined to release 1.22 sooner rather than later.
+> >>
+> >> If anyone has cycles right now to work on that detached BTF feature,
+> >releasing 1.23 as soon as that feature is complete and tested shouldn't
+> >be a problem.
+> >>
+> >> Then 1.23 the mandatory minimal version.
+> >>
+> >> Wdyt?
+> >
+> >If we make 1.22 mandatory there will be no good reason to make 1.23
+> >mandatory again. So I will have absolutely no inclination to work on
+> >this, for example. So we are just wasting a chance to clean up the
+> >Kbuild story w.r.t. pahole. And we are talking about just a few days
+> >at most, while we do have a reasonable work around on the kernel side.
+>
+> So there were patches for stop using objcopy, which we thought could uncover some can of worms, were there patches for the detached BTF  file?
 
-Thanks for doing this - when this gets queued up for 4.19, I can then
-resubmit my 4.14 series.
+No, there weren't, if I remember correctly. What's the concern,
+though? That detached BTF file isn't even an ELF, so it's
+btf__get_raw_data() and write it to the file. Done.
 
-Daniel mentioned the CVE-2021-33200 fixes that were just added. If you add
-them to this series, I'll add them to the 4.14 series as well. They should
-be clean cherry-picks on top of this.
-
-The failing selftest is a little odd - why would it need allowing bounded
-loops to succeed if it was written before those were allowed? In any case,
-it was already failing, so that shouldn't stop this series from being
-applied.
-
-- Frank
+>
+> - Arnaldo
+>
+> --
+> Sent from my Android device with K-9 Mail. Please excuse my brevity.
