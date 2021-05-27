@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A9D393109
-	for <lists+bpf@lfdr.de>; Thu, 27 May 2021 16:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81A0393124
+	for <lists+bpf@lfdr.de>; Thu, 27 May 2021 16:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbhE0OjN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 May 2021 10:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50722 "EHLO
+        id S232832AbhE0OnZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 May 2021 10:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236525AbhE0OjL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 May 2021 10:39:11 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D07DC061574;
-        Thu, 27 May 2021 07:37:35 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id e10so969016ybb.7;
-        Thu, 27 May 2021 07:37:35 -0700 (PDT)
+        with ESMTP id S229769AbhE0OnY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 May 2021 10:43:24 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE5AC061574;
+        Thu, 27 May 2021 07:41:49 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id b13so1009902ybk.4;
+        Thu, 27 May 2021 07:41:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HRnF4kAS3qhXpOKU/S5e/EyDvZ8VJSiLJYQXCB3/Htw=;
-        b=XNffNLozWKxhduxFmbqbzLGjdrxdvvI+Ap0UkIe1KEJ1/tPLDUz6/Wxpl+VYiE82hB
-         tBGq37HnDzHIZg2XNJ/FR+uKaCshHcyXU40xQSjEe9oRgpNbjxU0zhq3pmqrYR2qveWL
-         4soK6Y+FoW9KQqFaMWZIND95qM+akKPWekrJgoozuDlWRRkGiYdxECS7FaDzKRI2ytax
-         /2V8LbuQ+/c0GLNu8DcIkxnAc3iQuU71vlniIAwY2ly87GF0GN8jFxN/mlaygnZkOF56
-         e0fEmvY7MQ0gz+b6VEsMPGynntb0Yzo73CZ/l9PLP4357JiApwS91S5fF1K7FYG8EHtY
-         oYAg==
+        bh=b/Mn6m+0szuABGuNz4gdUEHH56ZKs2OQ3Dg8rDpxUzE=;
+        b=XSW/W9WafmbrRZlc24lBgVOfwJ3pmFDiHzO44/xGvx7QKma/0OZXuepoaClYwEoYQL
+         SUAr+kcAGGWYZ0fwQPpeTk358Rq/QVRXArqaLfrfbsG7rDfwAjtOCsQiwht90BVTbgGw
+         CmhIq5/fs0DkSoIGxAmaLQy/EGSjgSXbQkpC0sAkBanhFAtwwDG6qkCmzIc26Udl5raY
+         otShNCca77NEr/SI1VVhSU/+TKHLMlqrwbwd5zlesBlM34uqh5JpWhzZkNtCSRiYDsZE
+         k2LBbSttOkkJuPJESN2+guVZTdIGm9cezRKbXnbvdn+CCZWZatV9dRDqeWa9mx2F0Ut+
+         cDRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HRnF4kAS3qhXpOKU/S5e/EyDvZ8VJSiLJYQXCB3/Htw=;
-        b=c5AtwUxca4MLFve8UrmLdDviW2dZ3rEVht8MplI5hMBhkWs3AOT6FvBmkZuhNlcbFH
-         snIgIR5MJm1fp2KdgpLimfz/sFWKvcGU9OI+eWLONKU0wJlnoPv1r2/HO1zzgWBUmwym
-         X0+piyKsVZRnLC3jdnbhpyW3rVwxfdNKvDN77bSGxBPKBJj5+Cpg94aG0KUe9n7wuKy5
-         A50IAH5jSAI8JID2UEnPmBFRBp9lzMPMshyCMwbEGt71ZZTEk2x42Ejua5egkGkJTB+6
-         +LLLP6DLRF9Pm5ZUwP31r+GuKw7HMkA6CED8dyrL8jKsXzPQlsxzjmY/L7zCM3BueD/D
-         LP1w==
-X-Gm-Message-State: AOAM532KgdxgvVQME+Z6HbpgqqfdU3/Xmqh258eu/nupf0Ku4aIgETTX
-        c2T5b691GgTG6MRHPExnN5oRzHcy2g2J2ZFW2Jo=
-X-Google-Smtp-Source: ABdhPJxmgH1A3+I50+c5X37BMXbr/rnqwS7h/1bj7Un87/hBdSe+jucE/s3XZuuOjc5PO2/sW6LnyzzFmyePJDDgkYk=
-X-Received: by 2002:a5b:f05:: with SMTP id x5mr5170003ybr.425.1622126254450;
- Thu, 27 May 2021 07:37:34 -0700 (PDT)
+        bh=b/Mn6m+0szuABGuNz4gdUEHH56ZKs2OQ3Dg8rDpxUzE=;
+        b=ettNYMPOrKPJ7LCKGbnEyD9bePESWSbFx6fQ2E7+w6GQsxjQP3YUsdINTMzTMpj0i5
+         ay7DmE9bDYOxiko2uxjOQ75unhq4pkRfz9IJRqsAstfYH5rUwXx/umobDxBngqtNPx16
+         73TEDCxSGZeXYNv64aoI/KBBXvJnzZWWpjvSqHM0o8kBpD8CouK2OHDXOSUDgbY0Gh7K
+         G9Ox4aguqzh1g0Z3tINDeJMOOF70z0XVChG4rxVGlGoRsdbLUZhHNSKzQb4ThILEFbM7
+         FeUibajWzFRbj2bRPtP3x+coAL6TOgBdFaSnU3ZNBvZqgXkDlx1LyUR60CFcNL+jsCMV
+         V7ng==
+X-Gm-Message-State: AOAM533NusCSsrC9ZWoGLBNC1tFESVOfKuqmE3gftJtZASv5gHs9ueZj
+        ngBpu5Nsg1ujE6koqa6kzFJx6MJYQkvKkxNyxGo=
+X-Google-Smtp-Source: ABdhPJxzJi1mIJCB7dkcmXbe4qDmLn1jrkqvUTD5Pi1mP9hJzrJ8ltrWO/v6eOsEXIj4lRFJpqjsZt/HSHtfTfFtyqE=
+X-Received: by 2002:a25:1455:: with SMTP id 82mr5241773ybu.403.1622126508714;
+ Thu, 27 May 2021 07:41:48 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210526080741.GW30378@techsingularity.net> <YK9SiLX1E1KAZORb@infradead.org>
- <20210527090422.GA30378@techsingularity.net> <YK9j3YeMTZ+0I8NA@infradead.org>
-In-Reply-To: <YK9j3YeMTZ+0I8NA@infradead.org>
+ <20210527090422.GA30378@techsingularity.net> <YK9j3YeMTZ+0I8NA@infradead.org> <CAEf4BzZLy0s+t+Nj9QgUNM66Ma6HN=VkS+ocgT5h9UwanxHaZQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZLy0s+t+Nj9QgUNM66Ma6HN=VkS+ocgT5h9UwanxHaZQ@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 27 May 2021 07:37:23 -0700
-Message-ID: <CAEf4BzZLy0s+t+Nj9QgUNM66Ma6HN=VkS+ocgT5h9UwanxHaZQ@mail.gmail.com>
+Date:   Thu, 27 May 2021 07:41:37 -0700
+Message-ID: <CAEf4BzbzPK-3cyLFM8QKE5-o_dL7=UCcvRF+rEqyUcHhyY+FJg@mail.gmail.com>
 Subject: Re: [PATCH] mm/page_alloc: Work around a pahole limitation with
  zero-sized struct pagesets
 To:     Christoph Hellwig <hch@infradead.org>
@@ -72,21 +72,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 27, 2021 at 2:19 AM Christoph Hellwig <hch@infradead.org> wrote:
+On Thu, May 27, 2021 at 7:37 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Thu, May 27, 2021 at 10:04:22AM +0100, Mel Gorman wrote:
-> > What do you suggest as an alternative?
+> On Thu, May 27, 2021 at 2:19 AM Christoph Hellwig <hch@infradead.org> wrote:
 > >
-> > I added Arnaldo to the cc as he tagged the last released version of
-> > pahole (1.21) and may be able to tag a 1.22 with Andrii's fix for pahole
-> > included.
+> > On Thu, May 27, 2021 at 10:04:22AM +0100, Mel Gorman wrote:
+> > > What do you suggest as an alternative?
+> > >
+> > > I added Arnaldo to the cc as he tagged the last released version of
+> > > pahole (1.21) and may be able to tag a 1.22 with Andrii's fix for pahole
+> > > included.
+> > >
+> > > The most obvious alternative fix for this issue is to require pahole
+> > > 1.22 to set CONFIG_DEBUG_INFO_BTF but obviously a version 1.22 that works
+> > > needs to exist first and right now it does not. I'd be ok with this but
+> > > users of DEBUG_INFO_BTF may object given that it'll be impossible to set
+> > > the option until there is a release.
 > >
-> > The most obvious alternative fix for this issue is to require pahole
-> > 1.22 to set CONFIG_DEBUG_INFO_BTF but obviously a version 1.22 that works
-> > needs to exist first and right now it does not. I'd be ok with this but
-> > users of DEBUG_INFO_BTF may object given that it'll be impossible to set
-> > the option until there is a release.
->
-> Yes, disable BTF.  Empty structs are a very useful feature that we use
-> in various places in the kernel.  We can't just keep piling hacks over
-> hacks to make that work with a recent fringe feature.
+> > Yes, disable BTF.  Empty structs are a very useful feature that we use
+> > in various places in the kernel.  We can't just keep piling hacks over
+> > hacks to make that work with a recent fringe feature.
+
+Sorry, I accidentally send out empty response.
+
+CONFIG_DEBUG_INFO_BTF is a crucial piece of modern BPF ecosystem. It
+is enabled by default by most popular Linux distros. So it's hardly a
+fringe feature and is something that many people and applications
+depend on.
+
+I agree that empty structs are useful, but here we are talking about
+per-CPU variables only, which is the first use case so far, as far as
+I can see. If we had pahole 1.22 released and widely packaged it could
+have been a viable option to force it on everyone. But right now
+that's not the case. So while ugly, making sure pagesets is
+non-zero-sized is going to avoid a lot of pain for a lot of people. By
+the time we need another zero-sized per-CPU var, we might be able to
+force pahole to 1.22.
