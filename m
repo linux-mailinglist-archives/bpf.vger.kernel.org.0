@@ -2,152 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DA7393448
-	for <lists+bpf@lfdr.de>; Thu, 27 May 2021 18:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3A539345A
+	for <lists+bpf@lfdr.de>; Thu, 27 May 2021 18:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234972AbhE0QtS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 May 2021 12:49:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40696 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234169AbhE0QtS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 May 2021 12:49:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F3C4613B5;
-        Thu, 27 May 2021 16:47:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622134064;
-        bh=aAqcYS/g/f8vojlA4j8/avTCjl2lzLOXXy+EdIevm0Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Hzur2H9WIBg8v9hjXSjoWOE8cbzw0+2KRpBD2yoAhsaizs/JBKU1D/387pyqEsgNq
-         OZYlOoK1oYQmd4adcUuC3OtfJz0Z9ycJSXHwYwKNCdflS9upVqEVQM7QTsBj6v99Jc
-         TNOYK9JYgC9C6LIdQaZtIjCmz0O0nOyR5bUlPCsFlgkGxhCbh3ZBUTRgrUJUt8yyRX
-         mi5OfYG2cBv+I/BRS+eELyrQaNbA7FTAmYoZukYpBHZlytPz1KEVHFFo5lzgTAyRPc
-         QZ+9tFIB8XotBsIsDrrVmj5uQ5byx36CQ+AkdTyhP0YorfRhBa04H0GtR7LxkqPasE
-         Las61qTcuKUig==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id AB93A4011C; Thu, 27 May 2021 13:47:41 -0300 (-03)
-Date:   Thu, 27 May 2021 13:47:41 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        bpf@vger.kernel.org, jolsa@kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH dwarves] btf_encoder: fix and complete filtering out
- zero-sized per-CPU variables
-Message-ID: <YK/NLcM9ww2eXlmT@kernel.org>
-References: <20210524234222.278676-1-andrii@kernel.org>
- <YK+yzpPKVhNvm7/n@kernel.org>
- <YK+zkOOAUzFYsLBy@kernel.org>
- <20210527152758.GI8544@kitsune.suse.cz>
- <YK+8/lg7ZUJIH7Kv@kernel.org>
+        id S235180AbhE0Q40 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 May 2021 12:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234487AbhE0Q40 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 May 2021 12:56:26 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B98C061574;
+        Thu, 27 May 2021 09:54:52 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id r7so1568496ybs.10;
+        Thu, 27 May 2021 09:54:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/b+QDKRCvkdmEo44u5UFShewK4OXzLmQT14NjfQF8mM=;
+        b=Gx5kyyT2g7cjTWhrgI/v1xNiuhMCo4OJB/oGhDQVq2S+vEPpM7F0351zgRidXT07KL
+         SZTR9sx8AJuDssXMiojE/M56FPCEPqXyVcpzie6MbaZmU+TKIvtkGok+T2WQieO1oUZX
+         2BEDuv6qnwmKpFJ9kysoMuKeuGk74j7jlBi83q4Dq2yWXK7vLcb6dZtmUeFsYYWtBtkW
+         4wJ8yRETzTuqyQbSYZ+1Giq8TmEwlbRYkVdehFPZYngQ/SCnl8lmCjr37u4G5FaOTDGU
+         1/5OJJ7OBavXRI3bHj8LKjQRiLQ601tE+LjhiI+yuBZb4pOe3VESkJ2vAiX0fHS56tsL
+         vZRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/b+QDKRCvkdmEo44u5UFShewK4OXzLmQT14NjfQF8mM=;
+        b=H5KcJlfL16ubhb3Kf4oV1YddoMYnFmVyyYnXeaY6Ox7cIl5a9XR3lHIItg+pyOZ9fm
+         ZxXsVOIN6dq4tLglZYpybOuxQ2gizXt6HImes29a67SwSoISTvpBLRQbmA+Vn2WCnXle
+         wRQNF8JGsCuqwDfg4tA+maI8il6bz1RM3cQmXqYpYJOnPd7UB4ZJyh7V0T13wSFlrnmH
+         6DY9Q/wFY4GNMhdpeeRn9GmAp5RhGJpZfzebCKnwHAfONIp576mWU1eM4hUuhoZVHQ5K
+         a+dRgPay3AUQXREMg7AVXAv6p2nFcwDJCDPczNa4QOOQ/whI2U1WEl9HxWkDrrgZGWcw
+         CIiA==
+X-Gm-Message-State: AOAM531UP8PUYYWuJkFdfPxZkaP4q0RQbeZX33webReeUkwi0AwtZS2E
+        jDlyDp37th2TJQMwLEaIo5NhYC30KWsxz3amNl0=
+X-Google-Smtp-Source: ABdhPJwpFxDCvjoKBgQsSj1wJtHkhfT+dJlLc9Yc/yMBz3fQOR2R7y8/yjQ+v6UO+8zbFdlbjAOEsruLlqZ5l9SKFQE=
+X-Received: by 2002:a25:1455:: with SMTP id 82mr6152662ybu.403.1622134491327;
+ Thu, 27 May 2021 09:54:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YK+8/lg7ZUJIH7Kv@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <YK+41f972j25Z1QQ@kernel.org>
+In-Reply-To: <YK+41f972j25Z1QQ@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 27 May 2021 09:54:40 -0700
+Message-ID: <CAEf4BzaTP_jULKMN_hx6ZOqwESOmsR6_HxWW-LnrA5xwRNtSWg@mail.gmail.com>
+Subject: Re: [RFT] Testing 1.22
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Michael Petlan <mpetlan@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, May 27, 2021 at 12:38:38PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Thu, May 27, 2021 at 05:27:58PM +0200, Michal Suchánek escreveu:
-> > Hello,
-> > 
-> > On Thu, May 27, 2021 at 11:58:24AM -0300, Arnaldo Carvalho de Melo wrote:
-> > > Em Thu, May 27, 2021 at 11:55:10AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > > Em Mon, May 24, 2021 at 04:42:22PM -0700, Andrii Nakryiko escreveu:
-> > > > > btf_encoder is ignoring zero-sized per-CPU ELF symbols, but the same has to be
-> > > > > done for DWARF variables when matching them with ELF symbols. This is due to
-> > > > > zero-sized DWARF variables matching unrelated (non-zero-sized) variable that
-> > > > > happens to be allocated at the exact same address, leading to a lot of
-> > > > > confusion in BTF.
-> > > >  
-> > > > > See [0] for when this causes big problems.
-> > > >  
-> > > > >   [0] https://lore.kernel.org/bpf/CAEf4BzZ0-sihSL-UAm21JcaCCY92CqfNxycHRZYXcoj8OYb=wA@mail.gmail.com/
-> > > 
-> > > I also added this:
-> > > 
-> > > Reported-by: Michal Suchánek <msuchanek@suse.de>
-> > > 
-> > > Michal, so you tested this patch and verified it fixed the problem? If
-> > > so please let me know so that I also add:
-> > 
-> > This is the first time I see this patch.
-> > 
-> > Given that linux-next does not build for me at the moment
-> > I don't think I will test it soon.
-> 
-> Ok, I'm test building with torvalds/master, will try with linux-next
-> afterwards,
+On Thu, May 27, 2021 at 8:20 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Hi guys,
+>
+>         Its important to have 1.22 out of the door ASAP, so please clone
+> what is in tmp.master and report your results.
+>
 
-I build and booted torvalds/master, all seems to work, now moving to
-linux-next.
- 
-> Thanks,
-> 
+Hey Arnaldo,
+
+If we are going to make pahole 1.22 a new mandatory minimal version of
+pahole, I think we should take a little bit of time and fix another
+problematic issue and clean up Kbuild significantly.
+
+We discussed this before, it would be great to have an ability to dump
+generated BTF into a separate file instead of modifying vmlinux image
+in place. I'd say let's try to push for [0] to land as a temporary
+work around to buy us a bit of time to implement this feature. Then,
+when pahole 1.22 is released and packaged into major distros, we can
+follow up in kernel with Kbuild clean ups and making pahole 1.22
+mandatory.
+
+What do you think? If anyone agrees, please consider chiming in on the
+above thread ([0]).
+
+  [0] https://lore.kernel.org/bpf/20210526080741.GW30378@techsingularity.net/
+
+>         To make it super easy:
+>
+> [acme@quaco pahole]$ cd /tmp
+> [acme@quaco tmp]$ git clone git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+> Cloning into 'pahole'...
+> remote: Enumerating objects: 6510, done.
+> remote: Total 6510 (delta 0), reused 0 (delta 0), pack-reused 6510
+> Receiving objects: 100% (6510/6510), 1.63 MiB | 296.00 KiB/s, done.
+> Resolving deltas: 100% (4550/4550), done.
+> [acme@quaco tmp]$ cd pahole/
+> [acme@quaco pahole]$ git checkout origin/tmp.master
+> Note: switching to 'origin/tmp.master'.
+>
+> You are in 'detached HEAD' state. You can look around, make experimental
+> changes and commit them, and you can discard any commits you make in this
+> state without impacting any branches by switching back to a branch.
+>
+> If you want to create a new branch to retain commits you create, you may
+> do so (now or later) by using -c with the switch command. Example:
+>
+>   git switch -c <new-branch-name>
+>
+> Or undo this operation with:
+>
+>   git switch -
+>
+> Turn off this advice by setting config variable advice.detachedHead to false
+>
+> HEAD is now at 0d17503db0580a66 btf_encoder: fix and complete filtering out zero-sized per-CPU variables
+> [acme@quaco pahole]$ git log --oneline -5
+> 0d17503db0580a66 (HEAD, origin/tmp.master) btf_encoder: fix and complete filtering out zero-sized per-CPU variables
+> fb418f9d8384d3a9 dwarves: Make handling of NULL by destructos consistent
+> f049fe9ebf7aa9c2 dutil: Make handling of NULL by destructos consistent
+> 1512ab8ab6fe76a9 pahole: Make handling of NULL by destructos consistent
+> 1105b7dad2d0978b elf_symtab: Use zfree() where applicable
+> [acme@quaco pahole]$ mkdir build
+> [acme@quaco pahole]$ cd build
+> [acme@quaco build]$ cmake ..
+> <SNIP>
+> -- Build files have been written to: /tmp/pahole/build
+> [acme@quaco build]$ cd ..
+> [acme@quaco pahole]$ make -j8 -C build
+> make: Entering directory '/tmp/pahole/build'
+> <SNIP>
+> [100%] Built target pahole
+> make[1]: Leaving directory '/tmp/pahole/build'
+> make: Leaving directory '/tmp/pahole/build'
+> [acme@quaco pahole]$
+>
+> Then make sure build/pahole is in your path and try your workloads.
+>
+> Jiri, Michael, if you could run your tests with this, that would be awesome,
+>
+> Thanks in advance!
+>
 > - Arnaldo
->  
-> > Thanks
-> > 
-> > Michal
-> > 
-> > > 
-> > > Tested-by: Michal Suchánek <msuchanek@suse.de>
-> > > 
-> > > Thanks,
-> > > 
-> > > - Arnaldo
-> > >  
-> > > > > +++ b/btf_encoder.c
-> > > > > @@ -550,6 +551,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> > > > >  
-> > > > >  		/* addr has to be recorded before we follow spec */
-> > > > >  		addr = var->ip.addr;
-> > > > > +		dwarf_name = variable__name(var, cu);
-> > > > >  
-> > > > >  		/* DWARF takes into account .data..percpu section offset
-> > > > >  		 * within its segment, which for vmlinux is 0, but for kernel
-> > > > > @@ -582,11 +584,9 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> > > > >  		 *  modules per-CPU data section has non-zero offset so all
-> > > > >  		 *  per-CPU symbols have non-zero values.
-> > > > >  		 */
-> > > > > -		if (var->ip.addr == 0) {
-> > > > > -			dwarf_name = variable__name(var, cu);
-> > > > > +		if (var->ip.addr == 0)
-> > > > >  			if (!dwarf_name || strcmp(dwarf_name, name))
-> > > > >  				continue;
-> > > > > -		}
-> > > > >  
-> > > > >  		if (var->spec)
-> > > > >  			var = var->spec;
-> > > > > @@ -600,6 +600,13 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> > > > 
-> > > > I just changed the above hunk to be:
-> > > > 
-> > > > @@ -583,7 +585,6 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> > > >                  *  per-CPU symbols have non-zero values.
-> > > >                  */
-> > > >                 if (var->ip.addr == 0) {
-> > > > -                       dwarf_name = variable__name(var, cu);
-> > > >                         if (!dwarf_name || strcmp(dwarf_name, name))
-> > > >                                 continue;
-> > > >                 }
-> > > > 
-> > > > 
-> > > > Which is shorter and keeps the {} around a multi line if block, ok?
-> > > > 
-> > > > Thanks, applied!
-> > > > 
-> > > > - Arnaldo
-> > > 
-> > > -- 
-> > > 
-> > > - Arnaldo
-> 
-> -- 
-> 
-> - Arnaldo
-
--- 
-
-- Arnaldo
