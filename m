@@ -2,357 +2,328 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAA43934FF
-	for <lists+bpf@lfdr.de>; Thu, 27 May 2021 19:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6590393513
+	for <lists+bpf@lfdr.de>; Thu, 27 May 2021 19:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235382AbhE0Rkb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 May 2021 13:40:31 -0400
-Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:56562 "EHLO
-        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235205AbhE0Rkb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 27 May 2021 13:40:31 -0400
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14RHZk0c027371;
-        Thu, 27 May 2021 17:38:44 GMT
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2045.outbound.protection.outlook.com [104.47.51.45])
-        by mx0a-0064b401.pphosted.com with ESMTP id 38tfbh81c2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 27 May 2021 17:38:44 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gKRSeGndwmETLJreGjA4X3vEKi8WAwMJjI21EJVyeNO4VtcVoSnA+U+d/ijUK0Bim4A8CzhB2E3iHaKGUdHMjqpFwJrJrSSxuOUH4oa46XOj5a4ODv3LaRtYb0dPTwdK9Vo8aHblLmJXlNv65PmNEIqBcAKtzYDsgzGBkMXbhabM/xRDsAhJFdxB/s0hV7tvAHRFA8GTL7CLInm56dALU+AOGf0y0u3bfV8o9hd2SW8hdmoyxqloWkhjU5YaiuhBUUE6X9RN62lMboJH7OYuxxTZROlGd+1kICF2xfaT7R6/vfToKArWKBFedwXVJg/+df2eV1aGt+9N4cfUokQe4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JtaiXxOhCP9UCk/fdVIFV2RwWeMlRCPtTeBpaoQxgjE=;
- b=JcT/lDI3wnLAJi6jMV372Ux4WnNREEb659HrQlkQ7n9gyvU6TXttDM1DDwIuh28kV4SL8ubpQ3eiYYP3qRQb9gD1Gk+3/EhpYozejEetU/ZxXZ4rzjChzVZ8J2Z2zyl+vqgRJ/kthvnnowFx17I4V02fwmdjL2Vx13IC/A/tnbhMDivEFv14wFVopR2R0HFlJN5ma3jHB4io8/SX3+KQvhCvIlK+n8YInJHb/fLtk7upLdq/wN+U1mXLYnsqgZcNfh9pC6iGL81rFwi9zvx5BogVSElQ5EelGwCEl4a7TOhH1e7YKfapQSY/1VFzlQsLwbsUU9OQQ2TSMPRsbmE0DA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S229732AbhE0Rpr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 May 2021 13:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229609AbhE0Rpr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 May 2021 13:45:47 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE362C061574
+        for <bpf@vger.kernel.org>; Thu, 27 May 2021 10:44:12 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id b13so1824886ybk.4
+        for <bpf@vger.kernel.org>; Thu, 27 May 2021 10:44:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JtaiXxOhCP9UCk/fdVIFV2RwWeMlRCPtTeBpaoQxgjE=;
- b=TMj2b4UJT0u0tIPvxvLMZVF4aleJCmYXTmenH1EV0gFSTnSnhqOe64NOAmsjgBELWCr2+esCbannJ3MtnbhgytvVhltgaNhEqvhN66TstYUYUcBp6RFWiJEQJeCzVJTsvujC/ctSG7Ordjn1BpwdR74D8IHnVguKgIfZWrkAAXM=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from BN6PR11MB1956.namprd11.prod.outlook.com (2603:10b6:404:104::19)
- by BN6PR1101MB2162.namprd11.prod.outlook.com (2603:10b6:405:50::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27; Thu, 27 May
- 2021 17:38:43 +0000
-Received: from BN6PR11MB1956.namprd11.prod.outlook.com
- ([fe80::f100:256b:e0af:7d33]) by BN6PR11MB1956.namprd11.prod.outlook.com
- ([fe80::f100:256b:e0af:7d33%3]) with mapi id 15.20.4173.024; Thu, 27 May 2021
- 17:38:43 +0000
-From:   Ovidiu Panait <ovidiu.panait@windriver.com>
-To:     stable@vger.kernel.org
-Cc:     fllinden@amazon.com, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, yhs@fb.com, john.fastabend@gmail.com,
-        samjonas@amazon.com
-Subject: [PATCH 4.19 12/12] bpf: Update selftests to reflect new error states
-Date:   Thu, 27 May 2021 20:37:32 +0300
-Message-Id: <20210527173732.20860-13-ovidiu.panait@windriver.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210527173732.20860-1-ovidiu.panait@windriver.com>
-References: <20210527173732.20860-1-ovidiu.panait@windriver.com>
-Content-Type: text/plain
-X-Originating-IP: [46.97.150.20]
-X-ClientProxiedBy: VI1P189CA0013.EURP189.PROD.OUTLOOK.COM
- (2603:10a6:802:2a::26) To BN6PR11MB1956.namprd11.prod.outlook.com
- (2603:10b6:404:104::19)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RGQxDcEjjg+Fn2jV2zJJJtwy2BNmbQqLO01I8hjhsLs=;
+        b=pSuyJo6kOZC1h5ebYfG6bhkJFJFfzD6qYz+VHyGohV/EQoO8V9pwzHmPnYjqeGtgA2
+         WkhAqHvNEAYb3LBbGCLbZWzgPFI9DWz8lFu498YPvpFllyif6TBlw+IVXNBFO9ss791k
+         zCeg8KE5+sp39eDDa2KLW1shkkokM4k2vusXLFietf5K2VlOf5S3d6Htvdr+QgMpbfhk
+         mCvRv1fN7XHx1AGuV5JgZP33mfSPryEqPofQUk9MQRFJmqzbRhuzkxV99WO1zFPevDVk
+         iTIp+kaS4ddvZVFQRkx0dMoOau1p0U5SLQU1qJWs6ShDusXQcUbiHskiyUzNCkyUet5P
+         ++Kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RGQxDcEjjg+Fn2jV2zJJJtwy2BNmbQqLO01I8hjhsLs=;
+        b=TSXsL2ef4pzH0CiaUi/hwFm6u+C1LEBAI/aTUaaP+VO9C7y3McMgZOn29A9vZ1iaNI
+         LCRCaRL4egGI8o6w2k/d8KYtcxFiPpSy2iE+sPJxhvHGL/e8gTiaCj+fDNu0mt9ioeUA
+         i1dGz4EplRgpNuHNzUCcQnfjPdZU8UF9nP0YPc+7TkAAyNRvyQwfJaGoCH/p5btJL0aM
+         nh7czcZz2veCB0WD8ayp8hrP1bASLa+V6YmwhyQ17oVEI7Z1rrxltJ3E5JJYx7ZFH3ZJ
+         Nu/HXAA7U2BIeNUh97VTUXoOvGbp/dLNH7FD1sHAOy/e85RrZOQJlFzhNVJE35KsdtGp
+         /khg==
+X-Gm-Message-State: AOAM530iWRoEfMVQoSHfyDLggEvn0jn9znlTCt1HvlJ1ioCXui/MPqjk
+        F7ORuOhTmnl28SofzD2h9NYV3Gwuqax6AcErHt0=
+X-Google-Smtp-Source: ABdhPJwz7pAHBpniJO6Os8L3ts1VQq5YpxS6sGn8uPFsxm0u5Pm+vpE5mppuyYDLVm9lOHmYk7SQ0YDMdiq2zRJluOk=
+X-Received: by 2002:a25:7246:: with SMTP id n67mr6579177ybc.510.1622137452030;
+ Thu, 27 May 2021 10:44:12 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from otp-linux01.wrs.com (46.97.150.20) by VI1P189CA0013.EURP189.PROD.OUTLOOK.COM (2603:10a6:802:2a::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.20 via Frontend Transport; Thu, 27 May 2021 17:38:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 07a92cb5-0364-4540-c4d0-08d92136458f
-X-MS-TrafficTypeDiagnostic: BN6PR1101MB2162:
-X-Microsoft-Antispam-PRVS: <BN6PR1101MB2162E08399611E0CDC0BAA67FE239@BN6PR1101MB2162.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:785;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qlH+HHiElaogx7DI59zB1BdUrtfFhBHrxAKvOrgPHOrkrdYt7eZEjnSN9Ym+5hACP2h4N4fadRBnu7fSf0sD/orqoBB9OWyOluFKoHRBrZwWYT7NkYzeFL/Lq+W6Q70awpgjNWoSzmfOLhbhO3vTSUEufV2JVc3ugv7LTfMFqvGZz5y6Vm1Dn+AChUHWFJpSNp5R12Ou8/YHlqiz9liD9vrr9FxHkWcfXgcbA6/UIkJhllFx8spFVqApA+3jFPrKBsHO6h4KbV395EcUL88gnOUDXBAUwh1RQqIoaovEc/GG4fUqtvGG3JpJ0XaBVKJO4EVncFrZ8GxRHifjNwzRbimeIXLWZG0paD6kfjZwKtDJASY51lVvr4F2DnIS/AGXEiIq6Z+7h16mXEQiFnf94oYfespGS9gxuLEjJrrQnHiV3kOi+nOJGoTRuym5ZlnWcvC4eTZAJPpWdK6zFyqou3IqXwjRde9kKFekn4NvBpW9hPngHkSEL+HuDtf+TgpU5M+1jd6fmzqQXnNvDompOld7Ahrw4yQ3fTWjGA5KwZ1sUR812oAScibjhKN/yytcBCpYyyN7l7DdReWkUc0UfMqmdGcMfU6A4KRcESY8FAANE8gJFBE6oA+T3o0FiFhBwKPfHGtNiyJ+edrbL3OPEw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR11MB1956.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39850400004)(136003)(396003)(346002)(66556008)(86362001)(8676002)(36756003)(6916009)(26005)(83380400001)(4326008)(5660300002)(316002)(8936002)(6666004)(66476007)(52116002)(6506007)(6512007)(478600001)(956004)(15650500001)(38350700002)(2616005)(66946007)(6486002)(186003)(44832011)(1076003)(38100700002)(16526019)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?O0HI/vJhoEu1HhXjPwUyH4qwnX71tiqeTV+krOkZrjSJl4qySNN7Moz0tw0V?=
- =?us-ascii?Q?VEsbbpOViayk5XQZWsc8ox/HIoi6oI3LBa8EddLKf4keCnyrU+P9Vw0C+5QJ?=
- =?us-ascii?Q?A6XSvwJMfnPN9hiZ7bhhmwWXpwUZlP48/VQo/IBEDKKpQR5x9+6bm1j0RZGr?=
- =?us-ascii?Q?9TcmIdfNM+30V9uLNvZWoExTzqUdjrzO2v+cB7hQcYFEUpZnoYFdIxHkt3xb?=
- =?us-ascii?Q?OL/aaGPYuyEzDJkEnSa4TPUJqwwK1lLHHXQQz2Yq7WQ4lXctkhwvxv6saNHD?=
- =?us-ascii?Q?hUZLkvgjJ94JbwmDF1CDqGfSo5FkyecaASKYnBQrcfOAba/z2zJDA/mjGO5Y?=
- =?us-ascii?Q?+YFhhx6QhsksNH/G2ogILSofnLXRmOHry3sy7eb2oBkROGYY4nCmTY9nYAYU?=
- =?us-ascii?Q?etSfqrBGVrtkr+OU0c/ebP9iib85Er6L9G0e2aEXSKGs1gxAWt030ZCt9sjo?=
- =?us-ascii?Q?kJux4lYzUVR1XxGb7vv05tgDDNAA9xQgDm7OIFs/lnzMWMsL5R4rLB10P+4L?=
- =?us-ascii?Q?Y6Rg1Cgmp6g1RQ/eiHEGZwi94DBJ/W3HJWAOsGzkUfslny9K3w/D+SJq6V5c?=
- =?us-ascii?Q?gpp3UloTuMNjNff+NpMDL0eFltEt/U0VRstt7p9V6HTKz0ZXT9NhJQI05CRU?=
- =?us-ascii?Q?Nz4p8K4RDImsw/blJ+qO2yA6XoljDs2d0xGIiM0oJUntdv4ScanlbJZ0leV4?=
- =?us-ascii?Q?sDwThabl1DDIy66oiO5bpU6BhPIXj9ho7LdawkOO7wbnNIhz24RXUtlzSC6J?=
- =?us-ascii?Q?I/4w+hi6WBICFjyfulyv8Y1nyAsjPp8f1KLh/DwsczcZ6aF2FnP9U9/g/yjp?=
- =?us-ascii?Q?wyeaNUjM/59G8S+8kFegLqDc96as92TDTf/7OWunMSUwfmwvRxvD0d0jJM+W?=
- =?us-ascii?Q?p6dQM7LtoHrphR+8YwShlOjL1uEk+itF5xpIOws4C8UGa+H2qxiXRhwD+Dl6?=
- =?us-ascii?Q?997+7IBKKsUf1AE+JyEVFuQugfgjV0OZ0Fh3ngPf02xk+hzsA2RNgX/w3cCf?=
- =?us-ascii?Q?9CKmTYJLlFtZj8Ol2RZB4PSYlLpgcBQYcVIrzoH6luFm8uUb2ViHmQC3wSoM?=
- =?us-ascii?Q?3EzshvSjoYi/rEv1vMVo74/5Pn+l0WwE8mJUfwC6QWBndc26LaneutRLZV48?=
- =?us-ascii?Q?u+dEA1tWeojK04eyPCWnMujXrH/PmP2cJGCV8tUq7cg/3x18XX92ZzTvCDFF?=
- =?us-ascii?Q?iPATR8lMQK6OT/JvmO5cLpsy9Oqwfg2IQ/9ioIllzokeH8S8CCCEZhuIHFk+?=
- =?us-ascii?Q?gRZqTRC8hRbTJVyLlm1fP3VPic0HgLAYx3tZqKpuiSKsruljUxFq9RRAJYmT?=
- =?us-ascii?Q?Q50lkZqRLNCRRibhcZy34Hra?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07a92cb5-0364-4540-c4d0-08d92136458f
-X-MS-Exchange-CrossTenant-AuthSource: BN6PR11MB1956.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 May 2021 17:38:43.0335
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: t/rAqcUtqgfbLQHC7ju4MutUviXn5ptuLu7/u+U1lHJghnosESk09dlecEm7BiyUiCrc1SLp4fBbolq5M4q2FYHQOu73GuQ1hrmUSBDzyV4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1101MB2162
-X-Proofpoint-ORIG-GUID: tDLO8lLZYHVtbDe4UY0jW-lVGUaK-uks
-X-Proofpoint-GUID: tDLO8lLZYHVtbDe4UY0jW-lVGUaK-uks
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-27_09:2021-05-27,2021-05-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 spamscore=0
- clxscore=1015 mlxscore=0 suspectscore=0 impostorscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105270113
+References: <20210526125848.1c7adbb0@carbon> <CAEf4BzYXUDyQaBjZmb_Q5-z3jw1-Uvdgxm+cfcQjSwb9oRoXnQ@mail.gmail.com>
+ <60aeb01ebcd10_fe49208b8@john-XPS-13-9370.notmuch> <CAEf4Bza3m5dwZ_d0=zAWR+18f5RUjzv9=1NbhTKAO1uzWg_fzQ@mail.gmail.com>
+ <60aeeb5252147_19a622085a@john-XPS-13-9370.notmuch>
+In-Reply-To: <60aeeb5252147_19a622085a@john-XPS-13-9370.notmuch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 27 May 2021 10:44:00 -0700
+Message-ID: <CAEf4Bzb1OZHpHYagbVs7s9tMSk4wrbxzGeBCCBHQ-qCOgdu6EQ@mail.gmail.com>
+Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "kurt@linutronix.de" <kurt@linutronix.de>,
+        "Raczynski, Piotr" <piotr.raczynski@intel.com>,
+        "Zhang, Jessica" <jessica.zhang@intel.com>,
+        "Maloor, Kishen" <kishen.maloor@intel.com>,
+        "Gomes, Vinicius" <vinicius.gomes@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Swiatkowski, Michal" <michal.swiatkowski@intel.com>,
+        "Plantykow, Marta A" <marta.a.plantykow@intel.com>,
+        "Desouza, Ederson" <ederson.desouza@intel.com>,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        "Czapnik, Lukasz" <lukasz.czapnik@intel.com>,
+        "Joseph, Jithu" <jithu.joseph@intel.com>,
+        William Tu <u9012063@gmail.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+On Wed, May 26, 2021 at 5:44 PM John Fastabend <john.fastabend@gmail.com> wrote:
+>
+> [...]
+>
+> > > Best to start with the simplest possible usable thing and get more
+> > > complex over time.
+> > >
+> > > For a C definition I would expect drivers to do something like this,
+> > >
+> > >  struct mynic_rx_descriptor {
+> > >         __u64 len;
+> > >         __u64 head;
+> > >         __u64 tail;
+> > >         __u64 foobar;
+> > >  }
+> > >
+> > >  struct mynic_metadata {
+> > >         __u64 timestamp;
+> > >         __u64 hash;
+> > >         __u64 pkt_type;
+> > >         struct mynic_rx_descriptor *ptr_to_rx;
+> > >         /* other things */
+> > >  }
+> > >
+> > > It doesn't really matter how the driver folks generate their metadata
+> > > though. They might use some non-C thing that is more natural for
+> > > writing parser/action/tcam codes.
+> > >
+> > > Anyways given some C block like above we generate BTF from above
+> > > using normal method, quick hack just `pahole -J` the thing. Now we
+> > > have a BTF file.
+> > >
+> > > Next up write some XDP program to do something with it,
+> > >
+> > >  void myxdp_prog(struct xdp_md *ctx) {
+> > >         struct mynic_metadata m = (struct mynic_metadata *)ctx->data_meta;
+> > >
+> > >         // now I can get data using normal CO-RE
+> > >         // I usually have this _(&) to put CO-RE attributes in I
+> > >         // believe that is standard? Or use the other macros
+> > >         __u64 pkt_type = _(&m->pkt_type)
+> >
+> > add __attribute__((preserve_access_index)) to the struct
+> > mynic_metadata above (when compiling your BPF program) and you don't
+> > need _() ugliness:
+>
+> +1. Although sometimes I like the ugliness so I can keep track
+> of whats in CO-RE and not.
 
-commit d7a5091351756d0ae8e63134313c455624e36a13 upstream
+Oh, I'm just against using underscore as an identifier, I'd use
+something a bit more explicit.
 
-Update various selftest error messages:
+>
+> >
+> > __u64 pkt_type = m->pkt_type; /* it's CO-RE relocatable already */
+> >
+> > we have preserve_access_index as a code block (some selftests do this)
+> > for cases when you can't annotate types
+> >
+> > >
+> > >         // we can even walk into structs if we have probe read
+> > >         // around.
+> > >         struct mynic_rx_descriptor *rxdesc = _(&m->ptr_to_rx)
+> > >
+> > >         // now do whatever I like with above metadata
+> > >  }
+> > >
+> > > Run above program through normal CO-RE pass and as long as it has
+> > > access to the BTF from above it will work. I have some logic
+> > > sitting around to stitch two BTF blocks together but we have
+> > > that now done properly for linking.
+> >
+> > "stitching BTF blocks together" sort of jumped out of nowhere, what is
+> > this needed for? And not sure what "BTF block" means exactly, it's a
+> > new terminology.
+>
+> I didn't know what the correct terminology here would be.
 
- * The 'Rx tried to sub from different maps, paths, or prohibited types'
-   is reworked into more specific/differentiated error messages for better
-   guidance.
+I just wasn't sure if "BTF block" is a single BTF type or it's a
+collection of types built on top of vmlinux BTF (what we call split
+BTF). Seems like it's the latter.
 
- * The change into 'value -4294967168 makes map_value pointer be out of
-   bounds' is due to moving the mixed bounds check into the speculation
-   handling and thus occuring slightly later than above mentioned sanity
-   check.
+>
+> What I meant is I think what you have here,
+>
+> "
+>  BTW, not that I encourage such abuse, but for the experiment's sake,
+>  you can (ab)use module BTFs mechanism today to allow dynamically
+>  adding/removing split BTFs built on top of kernel (vmlinux) BTF
+> "
+>
+> So if vendor/driver writer has a BTF file for whatever the current
+> hardware is doing we can use the split BTF build mechanism to
+> include it. This can be used to get Jespers dynamic reprogram
+> hardware example. We just need someway to get the BTF of the
+> current running hardware. What I'm suggesting to get going we
+> can just take that out of band, libbpf/kernel don't have
+> to care where it comes from as long as libbpf can consume the
+> split BTFs before doing CO-RE.
+>
+> With this model I can have a single XDP program and it will
+> run on multiple hardware or the same hardware across updates
+> when I can use the normal CO-RE macros to access the metadata.
+> When I update my hardware I just need to get ahold of the
+> BTF when I do that update and my programs will continue to
+> work.
+>
+> Once we show the value of above we can talk about a driver
+> mechanism to expose the BTF over some interface, maybe in
+> /sys/fs. But that would still look like a split BTF from libbpf
+> side. The advantage is it should work today.
 
- * The change into 'math between map_value pointer and register with
-   unbounded min value' is similarly due to register sanity check coming
-   before the mixed bounds check.
+Right, except I don't think we have libbpf APIs to specify this, but
+that's solvable.
 
- * The case of 'map access: known scalar += value_ptr from different maps'
-   now loads fine given masks are the same from the different paths (despite
-   max map value size being different).
+>
+> I called the process of taking two BTF files, vmlinux BTF and
+> user provided NIC metadata BTF, and using those for CO-RE
+> logic "stitching BTF blocks together".
+>
+> >
+> > >
+> > > probe_read from XDP should be added regardless of above. I've
+> > > found it super handy in skmsg programs to dig out kernel info
+> > > inline. With probe_read we can also start to walk net_device
+> > > struct for more detailed info as needed. Or into sock structs
+> >
+> > yes, libbpf provides BPF_CORE_READ() macro that allows to walk across
+> > struct referenced by pointers, e.g.,:
+> >
+> > int my_data = BPF_CORE_READ(m, ptr_to_rx, rx_field);
+> >
+> > is logical equivalent of
+> >
+> > int my_data = m->ptr_to_rx->rx_field;
+>
+> The only complication here is ptr_to_rx is outside XDP data
+> so we need XDP program to support probe_read(). So depending
+> on current capabilities a BPF program might be limited to
+> just its own data block or with higher caps able to use
+> more of the features.
+>
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-[OP: 4.19 backport, account for split test_verifier and
-different / missing tests]
-Signed-off-by: Ovidiu Panait <ovidiu.panait@windriver.com>
----
- tools/testing/selftests/bpf/test_verifier.c | 35 +++++++--------------
- 1 file changed, 12 insertions(+), 23 deletions(-)
+Right.
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index a34552aadc12..770f4bcc965c 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -2873,7 +2873,7 @@ static struct bpf_test tests[] = {
- 			BPF_STX_MEM(BPF_DW, BPF_REG_1, BPF_REG_0, -8),
- 			BPF_EXIT_INSN(),
- 		},
--		.errstr_unpriv = "R1 tried to add from different maps, paths, or prohibited types",
-+		.errstr_unpriv = "R1 stack pointer arithmetic goes out of range",
- 		.result_unpriv = REJECT,
- 		.result = ACCEPT,
- 	},
-@@ -7501,7 +7501,6 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
--		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -7526,7 +7525,6 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
--		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -7553,7 +7551,6 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
--		.errstr_unpriv = "R8 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -7579,7 +7576,6 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
--		.errstr_unpriv = "R8 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -7628,7 +7624,6 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
--		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -7700,7 +7695,6 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
--		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -7752,7 +7746,6 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
--		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -7780,7 +7773,6 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
--		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -7807,7 +7799,6 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
--		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -7837,7 +7828,6 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
--		.errstr_unpriv = "R7 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -7868,7 +7858,6 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 4 },
- 		.errstr = "unbounded min value",
--		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 	},
- 	{
-@@ -7897,7 +7886,6 @@ static struct bpf_test tests[] = {
- 		},
- 		.fixup_map1 = { 3 },
- 		.errstr = "unbounded min value",
--		.errstr_unpriv = "R1 has unknown scalar with mixed signed bounds",
- 		.result = REJECT,
- 		.result_unpriv = REJECT,
- 	},
-@@ -9799,7 +9787,7 @@ static struct bpf_test tests[] = {
- 			BPF_ALU64_REG(BPF_SUB, BPF_REG_0, BPF_REG_1),
- 			BPF_EXIT_INSN(),
- 		},
--		.errstr_unpriv = "R0 tried to sub from different maps, paths, or prohibited types",
-+		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
- 		.errstr = "R0 tried to subtract pointer from scalar",
- 		.result = REJECT,
- 	},
-@@ -9814,7 +9802,7 @@ static struct bpf_test tests[] = {
- 			BPF_ALU64_REG(BPF_SUB, BPF_REG_1, BPF_REG_0),
- 			BPF_EXIT_INSN(),
- 		},
--		.errstr_unpriv = "R1 tried to sub from different maps, paths, or prohibited types",
-+		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
- 		.result_unpriv = REJECT,
- 		.result = ACCEPT,
- 		.retval = 1,
-@@ -9827,22 +9815,23 @@ static struct bpf_test tests[] = {
- 			BPF_ALU64_REG(BPF_SUB, BPF_REG_0, BPF_REG_1),
- 			BPF_EXIT_INSN(),
- 		},
--		.errstr_unpriv = "R0 tried to sub from different maps, paths, or prohibited types",
-+		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
- 		.errstr = "R0 tried to subtract pointer from scalar",
- 		.result = REJECT,
- 	},
- 	{
- 		"check deducing bounds from const, 4",
- 		.insns = {
-+			BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
- 			BPF_MOV64_IMM(BPF_REG_0, 0),
- 			BPF_JMP_IMM(BPF_JSLE, BPF_REG_0, 0, 1),
- 			BPF_EXIT_INSN(),
- 			BPF_JMP_IMM(BPF_JSGE, BPF_REG_0, 0, 1),
- 			BPF_EXIT_INSN(),
--			BPF_ALU64_REG(BPF_SUB, BPF_REG_1, BPF_REG_0),
-+			BPF_ALU64_REG(BPF_SUB, BPF_REG_6, BPF_REG_0),
- 			BPF_EXIT_INSN(),
- 		},
--		.errstr_unpriv = "R1 tried to sub from different maps, paths, or prohibited types",
-+		.errstr_unpriv = "R6 has pointer with unsupported alu operation",
- 		.result_unpriv = REJECT,
- 		.result = ACCEPT,
- 	},
-@@ -9854,7 +9843,7 @@ static struct bpf_test tests[] = {
- 			BPF_ALU64_REG(BPF_SUB, BPF_REG_0, BPF_REG_1),
- 			BPF_EXIT_INSN(),
- 		},
--		.errstr_unpriv = "R0 tried to sub from different maps, paths, or prohibited types",
-+		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
- 		.errstr = "R0 tried to subtract pointer from scalar",
- 		.result = REJECT,
- 	},
-@@ -9867,7 +9856,7 @@ static struct bpf_test tests[] = {
- 			BPF_ALU64_REG(BPF_SUB, BPF_REG_0, BPF_REG_1),
- 			BPF_EXIT_INSN(),
- 		},
--		.errstr_unpriv = "R0 tried to sub from different maps, paths, or prohibited types",
-+		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
- 		.errstr = "R0 tried to subtract pointer from scalar",
- 		.result = REJECT,
- 	},
-@@ -9881,7 +9870,7 @@ static struct bpf_test tests[] = {
- 				    offsetof(struct __sk_buff, mark)),
- 			BPF_EXIT_INSN(),
- 		},
--		.errstr_unpriv = "R1 tried to sub from different maps, paths, or prohibited types",
-+		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
- 		.errstr = "dereference of modified ctx ptr",
- 		.result = REJECT,
- 	},
-@@ -9895,7 +9884,7 @@ static struct bpf_test tests[] = {
- 				    offsetof(struct __sk_buff, mark)),
- 			BPF_EXIT_INSN(),
- 		},
--		.errstr_unpriv = "R1 tried to add from different maps, paths, or prohibited types",
-+		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
- 		.errstr = "dereference of modified ctx ptr",
- 		.result = REJECT,
- 	},
-@@ -9907,7 +9896,7 @@ static struct bpf_test tests[] = {
- 			BPF_ALU64_REG(BPF_SUB, BPF_REG_0, BPF_REG_1),
- 			BPF_EXIT_INSN(),
- 		},
--		.errstr_unpriv = "R0 tried to sub from different maps, paths, or prohibited types",
-+		.errstr_unpriv = "R1 has pointer with unsupported alu operation",
- 		.errstr = "R0 tried to subtract pointer from scalar",
- 		.result = REJECT,
- 	},
--- 
-2.17.1
+> >
+> > > for process level conntrack (other thread). Even without
+> > > probe_read above would be useful but fields would need to fit
+> > > into the metadata where we know we can read/write data.
+> > >
+> > > Having drivers export their BTF over a /sys/fs/ interface
+> > > so that BTF can change with fimware/parser updates is possible
+> > > as well, but I would want to see above working in real world
+> > > before committing to a /sys/fs interface. Anyways the
+> > > interface is just a convienence.
+> >
+> > it's important enough to discuss because libbpf has to get it somehow
+> > (or be directly provided as an extra option or something).
+>
+> I believe to start with directly providing it is the easiest
+> approach. Then as a second step we can pull it from a /sys/fs
+> interface.
+>
+> >
+> > >
+> > > >
+> > > > As for BTF on a per-packet basis. This means that BTF itself is not
+> > > > known at the BPF program verification time, so there will be some sort
+> > > > of if/else if/else conditions to handle all recognized BTF IDs? Is
+> > > > that right? Fake but specific code would help (at least me) to
+> > > > actually join the discussion. Thanks.
+> > >
+> > > I don't think we actually want per-packet data that sounds a bit
+> > > clumsy for me. Lets use a union and define it so that we have a
+> > > single BTF.
+> >
+> > union and independent set of BTFs are two different things, I'll let
+> > you guys figure out which one you need, but I replied how it could
+> > look like in CO-RE world
+>
+> I think a union is sufficient and more aligned with how the
+> hardware would actually work.
 
+Sure. And I think those are two orthogonal concerns. You can start
+with a single struct mynic_metadata with union inside it, and later
+add the ability to swap mynic_metadata with another
+mynic_metadata___v2 that will have a similar union but with a
+different layout.
+
+>
+> >
+> > >
+> > >  struct mynic_metadata {
+> > >   __u64 pkt_type
+> > >   union {
+> > >       struct ipv6_meta meta;
+> > >       struct ipv4_meta meta;
+> > >       struct arp_meta meta;
+> >
+> > obviously fields can't be named the same, so you'll have meta_ipv6,
+>
+> Sure just typing a quick example.
+>
+> > meta_ipv4, meta_arp fields, but I get the idea. This works if BTF
+> > layout is set in stone. What Jesper proposes would allow to adds new
+> > BTF layouts at runtime and still be able to handle that (as in detect
+> > and ignore) with already running BPF programs.
+>
+> Same answer as above. As long as the BTF can be split into two
+> files I don't think libbpf should care if its always the same
+> NIC.btf + vmlinux.btf or diffent correct?
+>
+> >
+> > CO-RE is sufficiently sophisticated to handle both today, so I don't care :)
+>
+> +1
+>
+> >
+> > >   }
+> > >  };
+> > >
+> > > Then program has to swivel on pkt_type but that is most natural
+> > > C thing to do IMO.
+> > >
+> > > Honestly we have about 90% of the necessary bits to do this now.
+> > > Typed that up a bit fast hope its legible. Got a lot going on today.
+> > >
+> > > Andrii, make sense?
+> >
+> > Yes, thanks! The logistics of getting that BTF to libbpf is the most
+> > fuzzy area and not worked out completely. The low-level details of
+> > relocations are already in place if libbpf can be pointed to the right
+> > set of BTF types.
+>
+> Per above, getting that BTF to libbpf should be a user problem for
+> a bit. Once how those programs look is worked out I think drivers
+> can push them out via /sys/kernel/btf/mynic
+>
+> >
+> > BTW, not that I encourage such abuse, but for the experiment's sake,
+> > you can (ab)use module BTFs mechanism today to allow dynamically
+> > adding/removing split BTFs built on top of kernel (vmlinux) BTF. I
+> > suggest looking into how module BTFs are handled both inside the
+> > kernel and in libbpf.
+> >
+>
+> Exactly the abuse I was thinking ;)
