@@ -2,223 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C073925CC
-	for <lists+bpf@lfdr.de>; Thu, 27 May 2021 06:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CCF939261D
+	for <lists+bpf@lfdr.de>; Thu, 27 May 2021 06:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbhE0EEm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 May 2021 00:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhE0EEm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 May 2021 00:04:42 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80F5C061760;
-        Wed, 26 May 2021 21:03:08 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id m124so2689164pgm.13;
-        Wed, 26 May 2021 21:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=e3iwbx2NsEKAeqynzSQnzu5zTU6telTHzk6HApof5DM=;
-        b=qm62CJkBGCq6DjIVtsuPHxPSOLltBM0lGqaRYsLiDCENYIYSOjvz6pXCcr13VBIA7P
-         Dls9nhNQXXtqijDsDY2460Wflxmf9A3Tj2CND7zSSabilF0tQ767tSJCkjgmHYYvwldt
-         ArFX7goAbPdkgby9dRvXkfdb+WTAWzt+prgd6d2cDsrksLrodUw65/QHN8s0xM7sMNRh
-         uiSrds14SyFMKzhP2x15vgfU+doK/yl0OAzZlYgqQAetIgmsmMVZqRzJGAK01HvhF7OZ
-         PCt/dr8EgX3z7n+f9+57eA8aOhrreC9TzMnbEznigi183RW3ZPCPKo6JSkX5mCfxFxw0
-         QdIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=e3iwbx2NsEKAeqynzSQnzu5zTU6telTHzk6HApof5DM=;
-        b=aZhgh/Xreg4vTM+g25z0bsQgxu4Blgo+fuPkZ/S3NnjpSHxCH8QCcBKCgJnOI6XuHu
-         CO/JkoZt9Tva7S1pqtxjYySgIx8VwFzg5k+5A+IwiupqD0W4qL+2Usj/AP0mpUrCEM8d
-         cRCihlAeWiAmFut0peOAp+Fu4rL1SN4F6+8icXooUaC6Oi1uHoCDitILO15IRD8ufbdJ
-         vfoZEnVm1RWEerebdUCq/HPw3bfSN6BbW1+tniKoPjU3oU+bq2ivOoOaQSZnyrJoKUu2
-         lGJJSDtF1rFY80ZfX+5YeBkad4iPFsjQ4OSxeXzuDwpnc+udgeCctmxF4gnbX6SxtgRh
-         Y5Qg==
-X-Gm-Message-State: AOAM5314/ivWZG750zSQf6GN4/0kPEQn4ZZl4XfwKe3Bc4R38rNT2gwz
-        moilKT5PbZX0JdIWm91K29o=
-X-Google-Smtp-Source: ABdhPJxVO57QuvW4R1WRqziz0ylVdHTJMJnrb8BJ/k0wJ/qxwaSlDpGuqgmby728Qol0KjFsGGd0Dg==
-X-Received: by 2002:a63:164f:: with SMTP id 15mr1824540pgw.175.1622088188332;
-        Wed, 26 May 2021 21:03:08 -0700 (PDT)
-Received: from ast-mbp.thefacebook.com ([2620:10d:c090:400::5:6b23])
-        by smtp.gmail.com with ESMTPSA id j22sm568281pfd.215.2021.05.26.21.03.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 26 May 2021 21:03:07 -0700 (PDT)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Add bpf_timer test.
-Date:   Wed, 26 May 2021 21:02:59 -0700
-Message-Id: <20210527040259.77823-4-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.13.5
-In-Reply-To: <20210527040259.77823-1-alexei.starovoitov@gmail.com>
-References: <20210527040259.77823-1-alexei.starovoitov@gmail.com>
+        id S229868AbhE0E0I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 May 2021 00:26:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229636AbhE0E0B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 May 2021 00:26:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AEF6613BC;
+        Thu, 27 May 2021 04:24:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622089469;
+        bh=m0xdiI8Z3/YxvpgkWozBm4urKGTLDgouvOWa8+kxkuw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QXzag4uWXLmTRMVf40CzQLAqk7dFh9p4OU//xOMo7H/5eV6Aj1WrCR401W38lmU+5
+         x9uIih3bLY9PvXODwyOAaDm63A3VeUzcAgQGtShbBesyo5o3UrVS1J/VP0cvWuOmHG
+         EAyVsbDvppMf2CyptGPXYaO/NM6UQEXUVy3DRWNU=
+Date:   Thu, 27 May 2021 06:24:26 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [QUESTION] BPF kernel selftests failed in the LTS stable kernel
+ 4.19.x
+Message-ID: <YK8e+iLPjkmuO793@kroah.com>
+References: <2988ff60-2d79-b066-6c02-16e5fe8b69db@loongson.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2988ff60-2d79-b066-6c02-16e5fe8b69db@loongson.cn>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+On Thu, May 27, 2021 at 10:27:51AM +0800, Tiezhu Yang wrote:
+> Hi all,
+> 
+> When update the following LTS stable kernel 4.19.x,
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/log/?h=linux-4.19.y
+> 
+> and then run BPF selftests according to
+> https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html#q-how-to-run-bpf-selftests
+> 
+> $ cd tools/testing/selftests/bpf/
+> $ make
+> $ sudo ./test_verifier
+> $ sudo make run_tests
+> 
+> there exists many failures include verifier tests and run_tests,
+> (1) is it necessary to make sure that there are no any failures in the LTS
+> stable kernel 4.19.x?
 
-Add bpf_timer test that creates two timers. One in hash map and another global
-timer in bss. It let global timer expire once and then re-arms it for 35
-seconds. Then arms and re-arms hash timer 10 times and at the last invocation
-cancels global timer.
+Yes, it would be nice if that did not happen.
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- .../testing/selftests/bpf/prog_tests/timer.c  | 47 ++++++++++
- tools/testing/selftests/bpf/progs/timer.c     | 85 +++++++++++++++++++
- 2 files changed, 132 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/timer.c
- create mode 100644 tools/testing/selftests/bpf/progs/timer.c
+> (2) if yes, how to fix these failures in the LTS stable kernel 4.19.x?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer.c b/tools/testing/selftests/bpf/prog_tests/timer.c
-new file mode 100644
-index 000000000000..7be2aeba2dad
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/timer.c
-@@ -0,0 +1,47 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#include <test_progs.h>
-+#include "timer.skel.h"
-+
-+static int timer(struct timer *timer_skel)
-+{
-+	int err, prog_fd;
-+	__u32 duration = 0, retval;
-+
-+	err = timer__attach(timer_skel);
-+	if (!ASSERT_OK(err, "timer_attach"))
-+		return err;
-+
-+	ASSERT_EQ(timer_skel->data->callback_check, 52, "callback_check1");
-+
-+	prog_fd = bpf_program__fd(timer_skel->progs.test1);
-+	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
-+				NULL, NULL, &retval, &duration);
-+	ASSERT_OK(err, "test_run");
-+	ASSERT_EQ(retval, 0, "test_run");
-+	timer__detach(timer_skel);
-+
-+	usleep(50 * 1000); /* 10 msecs should be enough, but give it extra */
-+	/* check that timer_cb1() was executed 10 times */
-+	ASSERT_EQ(timer_skel->data->callback_check, 42, "callback_check2");
-+
-+	/* check that timer_cb2() was executed once */
-+	ASSERT_EQ(timer_skel->bss->bss_data, 15, "bss_data");
-+
-+	return 0;
-+}
-+
-+void test_timer(void)
-+{
-+	struct timer *timer_skel = NULL;
-+	int err;
-+
-+	timer_skel = timer__open_and_load();
-+	if (!ASSERT_OK_PTR(timer_skel, "timer_skel_load"))
-+		goto cleanup;
-+
-+	err = timer(timer_skel);
-+	ASSERT_OK(err, "timer");
-+cleanup:
-+	timer__destroy(timer_skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/timer.c b/tools/testing/selftests/bpf/progs/timer.c
-new file mode 100644
-index 000000000000..d20672cf61d6
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/timer.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_tcp_helpers.h"
-+
-+char _license[] SEC("license") = "GPL";
-+struct map_elem {
-+	int counter;
-+	struct bpf_timer timer;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 1000);
-+	__type(key, int);
-+	__type(value, struct map_elem);
-+} hmap SEC(".maps");
-+
-+__u64 bss_data;
-+struct bpf_timer global_timer;
-+
-+__u64 callback_check = 52;
-+
-+static int timer_cb1(void *map, int *key, __u64 *data)
-+{
-+	/* increment the same bss variable twice */
-+	bss_data += 5;
-+	data[0] += 10; /* &data[1] == &bss_data */
-+	/* note data[1] access will be rejected by the verifier,
-+	 * since &data[1] points to the &global_timer.
-+	 */
-+
-+	/* rearm self to be called again in ~35 seconds */
-+	bpf_timer_start(&global_timer, 1ull << 35);
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(test1, int a)
-+{
-+	bpf_timer_init(&global_timer, timer_cb1, 0);
-+	bpf_timer_start(&global_timer, 0 /* call timer_cb1 asap */);
-+	return 0;
-+}
-+
-+static int timer_cb2(void *map, int *key, struct map_elem *val)
-+{
-+	callback_check--;
-+	if (--val->counter)
-+		/* re-arm the timer again to execute after 1 msec */
-+		bpf_timer_start(&val->timer, 1000);
-+	else {
-+		/* cancel global_timer otherwise bpf_fentry_test1 prog
-+		 * will stay alive forever.
-+		 */
-+		bpf_timer_cancel(&global_timer);
-+		bpf_timer_cancel(&val->timer);
-+	}
-+	return 0;
-+}
-+
-+int bpf_timer_test(void)
-+{
-+	struct map_elem *val;
-+	int key = 0;
-+
-+	val = bpf_map_lookup_elem(&hmap, &key);
-+	if (val) {
-+		bpf_timer_init(&val->timer, timer_cb2, 0);
-+		bpf_timer_start(&val->timer, 1000);
-+	}
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test2")
-+int BPF_PROG(test2, int a, int b)
-+{
-+	struct map_elem val = {};
-+	int key = 0;
-+
-+	val.counter = 10; /* number of times to trigger timer_cb1 */
-+	bpf_map_update_elem(&hmap, &key, &val, 0);
-+	return bpf_timer_test();
-+}
--- 
-2.30.2
+Can you find the offending commits by using `git bisect` and find the
+upstream commits that resolve this and let us know so we can backport
+them?
 
+thanks,
+
+greg k-h
