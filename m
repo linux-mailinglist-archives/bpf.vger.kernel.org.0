@@ -2,71 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEC4392931
-	for <lists+bpf@lfdr.de>; Thu, 27 May 2021 10:05:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF94392960
+	for <lists+bpf@lfdr.de>; Thu, 27 May 2021 10:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234588AbhE0IGn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 May 2021 04:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233657AbhE0IGn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 May 2021 04:06:43 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B55C061574;
-        Thu, 27 May 2021 01:05:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HZTJtPak0qESqpxtknOeWjbW9dY9rji7MIUgVM4VTb0=; b=mhlRpKNsUp7fwJVYOWwOqzxNZe
-        wX3ay94qV385dgr6it9qVXZErZFu+PTxCzihyL9Y0RsXOt7W+TwzeC+XHMxGZswJjheaTlCxf1pfB
-        ofWnnBj1FsjpHp99A2GTRg6t+f1POAMoUMqhYJrNkYGSgcTHJTwgrWP/ClzVQX1H5FsETL2NZWeZq
-        yJZd1xRRMJyWLSLpY+2q2x+i+3J28B/8PxX+7TMrItNzB9Uvm1d1dz7PukjGMqCppxZ4u021764xH
-        NKtgUbU1RwcIrwbBQUJM+6vZhDryX/edNK342WMHb5OV9lG7R5II65p7XXBl5pVCCeVw7hKBXSaN2
-        /MtDG6Og==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lmB0C-005JUT-22; Thu, 27 May 2021 08:04:28 +0000
-Date:   Thu, 27 May 2021 09:04:24 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S235350AbhE0IUB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 May 2021 04:20:01 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:59164 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235169AbhE0IUB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 May 2021 04:20:01 -0400
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Bx0OLHVa9gMycFAA--.3842S3;
+        Thu, 27 May 2021 16:18:17 +0800 (CST)
+Subject: Re: [QUESTION] BPF kernel selftests failed in the LTS stable kernel
+ 4.19.x
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <2988ff60-2d79-b066-6c02-16e5fe8b69db@loongson.cn>
+ <YK8e+iLPjkmuO793@kroah.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm/page_alloc: Work around a pahole limitation with
- zero-sized struct pagesets
-Message-ID: <YK9SiLX1E1KAZORb@infradead.org>
-References: <20210526080741.GW30378@techsingularity.net>
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Sasha Levin <sashal@kernel.org>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <9671b7f4-b827-3c81-f1e5-2836c701495b@loongson.cn>
+Date:   Thu, 27 May 2021 16:18:15 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210526080741.GW30378@techsingularity.net>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <YK8e+iLPjkmuO793@kroah.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Bx0OLHVa9gMycFAA--.3842S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tFyUtFWDtr17Jr17Cry3Jwb_yoW8Gryfpa
+        1fKa45Krs5Jw47Janrtr10vFyfZ395Jw43Ww1UtFy8Z3WDur10qr4F9a1avFsxKrn7ua1Y
+        yr4xWasIqw1xZa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9lb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7
+        Mxk0xIA0c2IEe2xFo4CEbIxvr21lc2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48JMxC20s
+        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
+        JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
+        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
+        j40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r
+        4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUx6wCDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, May 26, 2021 at 09:07:41AM +0100, Mel Gorman wrote:
-> +    !defined(CONFIG_DEBUG_LOCK_ALLOC) &&		\
-> +    !defined(CONFIG_PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT)
-> +	/*
-> +	 * pahole 1.21 and earlier gets confused by zero-sized per-CPU
-> +	 * variables and produces invalid BTF. Ensure that
-> +	 * sizeof(struct pagesets) != 0 for older versions of pahole.
-> +	 */
-> +	char __pahole_hack;
-> +	#warning "pahole too old to support zero-sized struct pagesets"
-> +#endif
+On 05/27/2021 12:24 PM, Greg Kroah-Hartman wrote:
+> On Thu, May 27, 2021 at 10:27:51AM +0800, Tiezhu Yang wrote:
+>> Hi all,
+>>
+>> When update the following LTS stable kernel 4.19.x,
+>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/log/?h=linux-4.19.y
+>>
+>> and then run BPF selftests according to
+>> https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html#q-how-to-run-bpf-selftests
+>>
+>> $ cd tools/testing/selftests/bpf/
+>> $ make
+>> $ sudo ./test_verifier
+>> $ sudo make run_tests
+>>
+>> there exists many failures include verifier tests and run_tests,
+>> (1) is it necessary to make sure that there are no any failures in the LTS
+>> stable kernel 4.19.x?
+> Yes, it would be nice if that did not happen.
+>
+>> (2) if yes, how to fix these failures in the LTS stable kernel 4.19.x?
+> Can you find the offending commits by using `git bisect` and find the
+> upstream commits that resolve this and let us know so we can backport
+> them?
+>
+> thanks,
+>
+> greg k-h
 
-Err, hell no.  We should not mess up the kernel for broken tools that
-are not relevant to the kernel build itself ever.
+I compared the related code in 4.19.y and upstream mainline, some failures
+disappeared after add ".flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,", but
+other failures still exist, and I didn't have enough in-depth knowledge to
+touch things elsewhere.
+
+The failures can be easily reproduced, I would greatly appreciate it if 
+anyone
+is interested to fix them.
+
