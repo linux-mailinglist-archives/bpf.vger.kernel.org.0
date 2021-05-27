@@ -2,155 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2503927EE
-	for <lists+bpf@lfdr.de>; Thu, 27 May 2021 08:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEC4392931
+	for <lists+bpf@lfdr.de>; Thu, 27 May 2021 10:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234363AbhE0Gmx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 May 2021 02:42:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60988 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234847AbhE0Gmo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 May 2021 02:42:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2737613C9;
-        Thu, 27 May 2021 06:41:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622097671;
-        bh=hj26nSOoODUiu3rJzJVWdOcXar3yN3dHhGcLJsFE3B8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u9220Bcbe0ayXcNvNqZk2wagUaRH3J9G15pXQCNySOY3y7gneSji02mUXeOkHAqiw
-         gHtKdxsSCjBo5fjxV6FIOQkHXdJ4BF0YtzreFNoXjnPOHlktj/r2jqmSx2u7QYrbIq
-         /B765rpo+Lde4bcXxsj8WK7fqaM3W7eXh45c2kAvPGbr2QaSCquMokAmkXq9DgvH/g
-         nTxLde60gYTlV5eloCuB1V2o2qEbB8/mG4fEI63LvjQGK8E9DCbfGGxRuxDCMvonjQ
-         r/QPa+2xdtBQOZ6Z4WEWtPEswYIymRERjzM3095UFwys5Us2mfOMjU0c+yG+260eIe
-         L91iVHfdlPlMQ==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH -tip v7 13/13] x86/kprobes: Fixup return address in generic trampoline handler
-Date:   Thu, 27 May 2021 15:41:07 +0900
-Message-Id: <162209766692.436794.8217254931414018689.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <162209754288.436794.3904335049560916855.stgit@devnote2>
-References: <162209754288.436794.3904335049560916855.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S234588AbhE0IGn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 May 2021 04:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233657AbhE0IGn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 May 2021 04:06:43 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B55C061574;
+        Thu, 27 May 2021 01:05:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HZTJtPak0qESqpxtknOeWjbW9dY9rji7MIUgVM4VTb0=; b=mhlRpKNsUp7fwJVYOWwOqzxNZe
+        wX3ay94qV385dgr6it9qVXZErZFu+PTxCzihyL9Y0RsXOt7W+TwzeC+XHMxGZswJjheaTlCxf1pfB
+        ofWnnBj1FsjpHp99A2GTRg6t+f1POAMoUMqhYJrNkYGSgcTHJTwgrWP/ClzVQX1H5FsETL2NZWeZq
+        yJZd1xRRMJyWLSLpY+2q2x+i+3J28B/8PxX+7TMrItNzB9Uvm1d1dz7PukjGMqCppxZ4u021764xH
+        NKtgUbU1RwcIrwbBQUJM+6vZhDryX/edNK342WMHb5OV9lG7R5II65p7XXBl5pVCCeVw7hKBXSaN2
+        /MtDG6Og==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lmB0C-005JUT-22; Thu, 27 May 2021 08:04:28 +0000
+Date:   Thu, 27 May 2021 09:04:24 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Michal Suchanek <msuchanek@suse.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH] mm/page_alloc: Work around a pahole limitation with
+ zero-sized struct pagesets
+Message-ID: <YK9SiLX1E1KAZORb@infradead.org>
+References: <20210526080741.GW30378@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210526080741.GW30378@techsingularity.net>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In x86, kretprobe trampoline address on the stack frame will
-be replaced with the real return address after returning from
-trampoline_handler. Before fixing the return address, the real
-return address can be found in the current->kretprobe_instances.
+On Wed, May 26, 2021 at 09:07:41AM +0100, Mel Gorman wrote:
+> +    !defined(CONFIG_DEBUG_LOCK_ALLOC) &&		\
+> +    !defined(CONFIG_PAHOLE_HAS_ZEROSIZE_PERCPU_SUPPORT)
+> +	/*
+> +	 * pahole 1.21 and earlier gets confused by zero-sized per-CPU
+> +	 * variables and produces invalid BTF. Ensure that
+> +	 * sizeof(struct pagesets) != 0 for older versions of pahole.
+> +	 */
+> +	char __pahole_hack;
+> +	#warning "pahole too old to support zero-sized struct pagesets"
+> +#endif
 
-However, since there is a window between updating the
-current->kretprobe_instances and fixing the address on the stack,
-if an interrupt caused at that timing and the interrupt handler
-does stacktrace, it may fail to unwind because it can not get
-the correct return address from current->kretprobe_instances.
-
-This will minimize that window by fixing the return address
-right before updating current->kretprobe_instances.
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Tested-by: Andrii Nakryik <andrii@kernel.org>
----
- Changes in v7:
-  - Add a prototype for arch_kretprobe_fixup_return()
----
- arch/x86/kernel/kprobes/core.c |   15 +++++++++++++--
- include/linux/kprobes.h        |    3 +++
- kernel/kprobes.c               |    8 ++++++++
- 3 files changed, 24 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 4f3567a9974f..3dec85ca5d9e 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -1032,6 +1032,7 @@ STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
- #undef UNWIND_HINT_FUNC
- #define UNWIND_HINT_FUNC
- #endif
-+
- /*
-  * When a retprobed function returns, this code saves registers and
-  * calls trampoline_handler() runs, which calls the kretprobe's handler.
-@@ -1073,6 +1074,17 @@ asm(
- );
- NOKPROBE_SYMBOL(kretprobe_trampoline);
- 
-+void arch_kretprobe_fixup_return(struct pt_regs *regs,
-+				 unsigned long correct_ret_addr)
-+{
-+	unsigned long *frame_pointer;
-+
-+	frame_pointer = ((unsigned long *)&regs->sp) + 1;
-+
-+	/* Replace fake return address with real one. */
-+	*frame_pointer = correct_ret_addr;
-+}
-+
- /*
-  * Called from kretprobe_trampoline
-  */
-@@ -1090,8 +1102,7 @@ __used __visible void trampoline_handler(struct pt_regs *regs)
- 	regs->sp += sizeof(long);
- 	frame_pointer = ((unsigned long *)&regs->sp) + 1;
- 
--	/* Replace fake return address with real one. */
--	*frame_pointer = kretprobe_trampoline_handler(regs, frame_pointer);
-+	kretprobe_trampoline_handler(regs, frame_pointer);
- 	/*
- 	 * Move flags to sp so that kretprobe_trapmoline can return
- 	 * right after popf.
-diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index f530f82a046d..c2017f1cdf81 100644
---- a/include/linux/kprobes.h
-+++ b/include/linux/kprobes.h
-@@ -205,6 +205,9 @@ extern void arch_prepare_kretprobe(struct kretprobe_instance *ri,
- 				   struct pt_regs *regs);
- extern int arch_trampoline_kprobe(struct kprobe *p);
- 
-+void arch_kretprobe_fixup_return(struct pt_regs *regs,
-+				 unsigned long correct_ret_addr);
-+
- void kretprobe_trampoline(void);
- /*
-  * Since some architecture uses structured function pointer,
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 1598aca375c9..d5869664bb61 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1899,6 +1899,12 @@ unsigned long kretprobe_find_ret_addr(struct task_struct *tsk, void *fp,
- }
- NOKPROBE_SYMBOL(kretprobe_find_ret_addr);
- 
-+void __weak arch_kretprobe_fixup_return(struct pt_regs *regs,
-+					unsigned long correct_ret_addr)
-+{
-+	/* Do nothing by default. */
-+}
-+
- unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
- 					     void *frame_pointer)
- {
-@@ -1940,6 +1946,8 @@ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
- 		first = first->next;
- 	}
- 
-+	arch_kretprobe_fixup_return(regs, (unsigned long)correct_ret_addr);
-+
- 	/* Unlink all nodes for this frame. */
- 	first = current->kretprobe_instances.first;
- 	current->kretprobe_instances.first = node->next;
-
+Err, hell no.  We should not mess up the kernel for broken tools that
+are not relevant to the kernel build itself ever.
