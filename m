@@ -2,86 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359B9393ECB
-	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 10:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6097D393F06
+	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 10:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233627AbhE1IgY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 May 2021 04:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbhE1IgX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 May 2021 04:36:23 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E9B8C061574;
-        Fri, 28 May 2021 01:34:48 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id o27so3336250qkj.9;
-        Fri, 28 May 2021 01:34:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=n3Y5rFOY8ng6rR4eh1BMeunvKaj0igaUH7MDrp3oilc=;
-        b=f/ZJsRF5hw88ZRTfvA1+FLom/3aGv09nXjj+qwvw1e6vplaVKiSmsGM1WhiUj0/4fD
-         +bpnAIWxbyiGYHsu+LxeAMGgYVuqtvkigo8rbYNAlesaBf3c5vB/1DudHnahX/e42j7v
-         oIxq+VElOF2bzN3BZKuHMmQF1axyS/Vxt7Np+vJL+WhS7WmkISq8QmO84pV5kxGnu168
-         C/vd6Hq2dQ8qpVJNt/IZjj7QS4v7iNm2Y+dkUmXN7LQqyDDOrTUkVLCW5DMVKkrMX65O
-         diE7pyj5omGcpHCcn6Bkv1+TMViWH8kW4fyuKEP8CC3XU9NvdKu77EURsba8aFTGXLJe
-         QE2A==
+        id S235854AbhE1I5j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 May 2021 04:57:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51369 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235798AbhE1I5i (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 28 May 2021 04:57:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622192164;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/ffXFvO9b+fZtZKt7yhkRD4j9J8oPOjrzlIRYwaydf4=;
+        b=XsU1YVFeVXBUl34viDfuz4guvKM7NW1I6GiHM8cwl+EQVI3k9j+m7WSwuFEJvItUvBlxel
+        ER0cowv0npbt54FkZdxyUZ5Hx4GxG2z/yZxyX9u7LFzWvt6kUQVtccZ+SUZjdnQoueDA67
+        KwQiuN6uHUmEA6nNkFQGLaLjmDyckxg=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-239-khax7seyOQmNG05yCSXjYA-1; Fri, 28 May 2021 04:56:02 -0400
+X-MC-Unique: khax7seyOQmNG05yCSXjYA-1
+Received: by mail-ej1-f70.google.com with SMTP id nd10-20020a170907628ab02903a324b229bfso907534ejc.7
+        for <bpf@vger.kernel.org>; Fri, 28 May 2021 01:56:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=n3Y5rFOY8ng6rR4eh1BMeunvKaj0igaUH7MDrp3oilc=;
-        b=L5ZB/7BPIqfES6tCYP285ENn60oAg5yCbC9cyG4l9SfA4SdJBs0VYRQJQtnJ99jq3c
-         aBsdwq29p7qrZgjJ6j7oOSrAmZ6leq/nqy72bCCHPw6QUAXcJrV/MawPQZtfQUPaLeVC
-         Fi8BqFUsXjAN47f0O5xyjghoKlKezF+WZo3pp+aNrGFydQ3xJNFolaCnWPDZRnfX0iC7
-         F8dw+5kzMxpu4bkIRY7pO/7h7MNGTXlYQRbRfXFX0R9Dy4miH/5ZAvkE3JnYZwt7sNv0
-         xeEvOP75qOaU90h1QTa6Nhgk8e5uAJnPY89ijpmLgT+uul99EkQpOMcmXgNPXiitDcJp
-         W4Xg==
-X-Gm-Message-State: AOAM531I3wPsZi2Dp/cf6CvZOyv6p0wMZzCGL5RkLNtlKNzFo+K91jmg
-        LfLKkpVX7vTyMYR37uJT+tKtMWyueI8fzD+IjTH4rOisxVLz
-X-Google-Smtp-Source: ABdhPJy1sgepE6y6npW74EZRB/c8OoUq10EoDRIx+J11VZOrYgj0HUAf9EnrDBE1VWiTedJwCYjWXohIIfD720bpVrQ=
-X-Received: by 2002:a05:620a:1126:: with SMTP id p6mr2894546qkk.120.1622190886995;
- Fri, 28 May 2021 01:34:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=/ffXFvO9b+fZtZKt7yhkRD4j9J8oPOjrzlIRYwaydf4=;
+        b=DTLU3SEC7MSd1vtGZR8SleCgsX7wapH+ot9YsevA7IbGOO9Hc9f38a7CElwYkB67TC
+         zEN8sS9/ge6tRSFIeRRNbw60RLSOzEO2vv0UWQHwPYv9p7TFD+EifhTEDPtTwiO6vGMS
+         yQ+jr+R1fj7CbR+URZj5kdlnNec23qpS0SZM33XjmPOlasaBwqwK/7T8sUzDWQl6uXgG
+         yJNYj/2sQpG1aVuRrwbwH3WifoavfY8E4j2Uto+GPMABrJ1PSpShG3kbZWvmXMCePbVX
+         fVb2HB9N7FtYh1zRQlyhrkJTmJosp6qsnJwi3sW1ixrfYN5oGasblWd063jw9/ufjZ92
+         45vg==
+X-Gm-Message-State: AOAM532l00fAxsIKXn9Yu+JMWBQhkNeGpb6aVrArI8eLk9dgOqkUd6T9
+        0cdrO6EleNayETI1Egus65sd4quyJVVF/Xj8DCUIpTJStqBgXeo+eVrRQrjvchuCYlQyJXE3W09
+        sOdY1Ffp6QOMM
+X-Received: by 2002:a17:906:c247:: with SMTP id bl7mr8248238ejb.288.1622192161252;
+        Fri, 28 May 2021 01:56:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzzRDw049Jj/ng8PmLhfCr8SgGWE9xbEuUQ3NadEoSAUi77+9chMO6qiEDt8zju1dsWSAmWCg==
+X-Received: by 2002:a17:906:c247:: with SMTP id bl7mr8248210ejb.288.1622192160903;
+        Fri, 28 May 2021 01:56:00 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id d17sm2056483ejp.90.2021.05.28.01.55.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 01:56:00 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 5E08818071B; Fri, 28 May 2021 10:55:58 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Xie He <xie.he.0141@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Wang Hai <wanghai38@huawei.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Tanner Love <tannerlove@google.com>,
+        Eyal Birger <eyal.birger@gmail.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: Re: [PATCH bpf-next] xsk: support AF_PACKET
+In-Reply-To: <20210528060813.49003-1-xuanzhuo@linux.alibaba.com>
+References: <20210528060813.49003-1-xuanzhuo@linux.alibaba.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 28 May 2021 10:55:58 +0200
+Message-ID: <87im33grtt.fsf@toke.dk>
 MIME-Version: 1.0
-From:   Jussi Maki <joamaki@gmail.com>
-Date:   Fri, 28 May 2021 10:34:36 +0200
-Message-ID: <CAHn8xckNXci+X_Eb2WMv4uVYjO2331UWB2JLtXr_58z0Av8+8A@mail.gmail.com>
-Subject: Regression 5.12.0-rc4 net: ice: significant throughput drop
-To:     netdev@vger.kernel.org, robin.murphy@arm.com, jroedel@suse.de
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        intel-wired-lan@lists.osuosl.org, davem@davemloft.net,
-        anthony.l.nguyen@intel.com, jesse.brandeburg@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi all,
+Xuan Zhuo <xuanzhuo@linux.alibaba.com> writes:
 
-While measuring the impact of a kernel patch on our lab machines I stumbled upon
-a performance regression affecting the 100Gbit ICE nic and bisected it
-from range v5.11.1..v5.13-rc3 to the commit:
-a250c23f15c2 iommu: remove DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE
+> In xsk mode, users cannot use AF_PACKET(tcpdump) to observe the current
+> rx/tx data packets. This feature is very important in many cases. So
+> this patch allows AF_PACKET to obtain xsk packages.
 
-Both recent bpf-next (d6a6a55518) and linux-stable (c4681547bc) are
-affected by the issue.
+You can use xdpdump to dump the packets from the XDP program before it
+gets redirected into the XSK:
+https://github.com/xdp-project/xdp-tools/tree/master/xdp-dump
 
-The regression shows as a significant drop in throughput as measured
-with "super_netperf" [0],
-with measured bandwidth of ~95Gbps before and ~35Gbps after:
+Doens't currently work on egress, but if/when we get a proper TX hook
+that should be doable as well.
 
-commit 3189713a1b84 (a250c23^):
-$ ./super_netperf 32 -H 172.18.0.2 -l 10
-97379.8
+Wiring up XSK to AF_PACKET sounds a bit nonsensical: XSK is already a
+transport to userspace, why would you need a second one?
 
-commit a250c23f15c2:
-$ ./super_netperf 32 -H 172.18.0.2 -l 10
-34097.5
+-Toke
 
-The pair of test machines have this hardware:
-CPU: AMD Ryzen 9 3950X 16-Core Processor
-MB: X570 AORUS MASTER
-0a:00.0 Ethernet controller [0200]: Intel Corporation Ethernet
-Controller E810-C for QSFP [8086:1592] (rev 02)
-Kernel config: https://gist.github.com/joamaki/9ee11294c78a8dd2776041f67e5620e7
-
-[0] https://github.com/borkmann/stuff/blob/master/super_netperf
