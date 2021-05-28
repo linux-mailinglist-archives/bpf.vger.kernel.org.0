@@ -2,203 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07253942AB
-	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 14:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 344B0394324
+	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 15:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbhE1Mi6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 May 2021 08:38:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38648 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235817AbhE1MhE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 28 May 2021 08:37:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622205329;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OR486GXdMFkK0x/NJNP7fu6e0GPOm2z2tDOoXyVsl+E=;
-        b=Gju5GZkAe0Y8MvYZcLdC39/oC/eoN8HAdFkumkElP1S4IFPcUIecEJIQEFhE7TsXB4VAQW
-        Hzwb8qqBrUfKNzVaLrkMyASlarfPU8MnSl4378uS71mKX+G6hx9pzvUCR5F8RDoBJFfckm
-        yn+rdVB8onbc0qhUDVd/L214U+jqa3U=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-549-61aO-MjRNduyIK0G63BkZg-1; Fri, 28 May 2021 08:35:28 -0400
-X-MC-Unique: 61aO-MjRNduyIK0G63BkZg-1
-Received: by mail-ed1-f71.google.com with SMTP id c15-20020a05640227cfb029038d710bf29cso2054034ede.16
-        for <bpf@vger.kernel.org>; Fri, 28 May 2021 05:35:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=OR486GXdMFkK0x/NJNP7fu6e0GPOm2z2tDOoXyVsl+E=;
-        b=KBy3121u46eqW7iZHmURx+2RiEwCiEfcn5DqUg4IZ8yQk9w0LtPRh1Hg9eSCwl/dzG
-         vOBMCHEOLNePADtZgh3qq0PmTsXNCyPC23+ajqV2fSVGpffCJ2wNEWK1mQjGED/xcJlK
-         AHX/r8QqRuAZPoBxaPv63KXiKnePWipeebFO4Zse3nuF8pUnChIXBFnip7v1a1i10452
-         IKlySDs9wybkSRgGhd9z9IF7FtckVJ18Cw0dNOf/17zhELlPxisGcVdMMC1FrwtJKIR6
-         HK6/ClsD2zlMMuU+VPD7/gam0QsqY52pyqAYwr67vHQBaZlFdMLiPiqdBNd6sZAEIzYg
-         bhYw==
-X-Gm-Message-State: AOAM532OC1wIr5kqOlHT2h7BbgUJQGuuDQl8kX8uHNNQcdZLMxPfbFRM
-        AGLEX/3MG+2FY9OvxDhwFjT8vfTDhCBlLhzs99/WIaRIt/SkRs1vfAk3dV4SDHi/VzMZFcC96XD
-        32DiIpQJNVX4w
-X-Received: by 2002:aa7:ca49:: with SMTP id j9mr7196979edt.294.1622205327155;
-        Fri, 28 May 2021 05:35:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzSVyoeKzjEkP+9tp7a5qWGGJJHZzh4b7BE4RWUW+BBN6FD9u+a6KS/hUJHaUDCF2OPzuqt+A==
-X-Received: by 2002:aa7:ca49:: with SMTP id j9mr7196942edt.294.1622205326882;
-        Fri, 28 May 2021 05:35:26 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id a6sm2312421ejv.4.2021.05.28.05.35.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 05:35:26 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 9B75A18071B; Fri, 28 May 2021 14:35:25 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Xie He <xie.he.0141@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Wang Hai <wanghai38@huawei.com>,
-        Tanner Love <tannerlove@google.com>,
-        Eyal Birger <eyal.birger@gmail.com>,
-        Menglong Dong <dong.menglong@zte.com.cn>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] xsk: support AF_PACKET
-In-Reply-To: <066a0c0a-ad48-517a-4bd0-8920bdbf0dd8@iogearbox.net>
-References: <87im33grtt.fsf@toke.dk>
- <1622192521.5931044-1-xuanzhuo@linux.alibaba.com>
- <20210528115003.37840424@carbon>
- <CAJ8uoz2bhfsk4XX--cNB-gKczx0jZENB5kdthoWkuyxcOHQfjg@mail.gmail.com>
- <f90b1066-a962-ba38-a5b5-ac59a13d4dd1@iogearbox.net>
- <87a6ofgmbq.fsf@toke.dk>
- <066a0c0a-ad48-517a-4bd0-8920bdbf0dd8@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 28 May 2021 14:35:25 +0200
-Message-ID: <8735u7gho2.fsf@toke.dk>
+        id S233967AbhE1ND2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 May 2021 09:03:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230080AbhE1ND0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 May 2021 09:03:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF09761001;
+        Fri, 28 May 2021 13:01:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622206912;
+        bh=FNx7PuKOW6IqJOgQcEMKBCcMzoBUxAFP70kRxG5nUgk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BtQCL3mEOsr3bzTNeYB0hmSZ2K2oOXmVgRFfj3P89ZhmG0J0Ww4/h9vBc6YKmgJYs
+         +YmcOhk7WRYTqH5UohfZCDH0lEMt+Ss+srVImaFJ82AFSmrokBCf6M8yv/Z7Y5hNpD
+         OSrA5Ac0MTrnZuVFr4QDKDl/EgyFSwwA4PiOnkBU0CMnlvXozG9Iki53DVywZixyAh
+         0b6Cx1GrCwSjAwfDvoxZt+5N7LcrynM0scJqlRzRaY0YEYHvc/bbphkWCZ5gMe/91V
+         KyfgebpBBJ7cq98WLpIMD4Gp2JfcQOssZxnt+Bj451M8YvA8x15qUCT4njZQL1A1Xq
+         gvBM9NcOCZtfQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id B47634011C; Fri, 28 May 2021 10:01:48 -0300 (-03)
+Date:   Fri, 28 May 2021 10:01:48 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Thomas Richter <tmricht@linux.ibm.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf@vger.kernel.org
+Cc:     "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: Re: perf test 40 Basic BPF llvm compile dumps core (x86 and s390)
+Message-ID: <YLDpvKCAJibAhU1S@kernel.org>
+References: <f2308775-2a07-ea63-c741-50ab98eafc2c@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f2308775-2a07-ea63-c741-50ab98eafc2c@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+Em Fri, May 28, 2021 at 12:48:56PM +0200, Thomas Richter escreveu:
+> I noticed perf test 40.1 dumps core on 5.13.0rc2 and rc3:
+> 
+> [root@f34 perf]# ./perf test -F 40
+> 40: LLVM search and compile                                         :
+> 40.1: Basic BPF llvm compile                                        :
+> libbpf: elf: skipping unrecognized data section(8) .eh_frame
+> libbpf: elf: skipping relo section(9) .rel.eh_frame for section(8) .eh_frame
+> Segmentation fault (core dumped)
+> [root@f34 perf]#
 
-> On 5/28/21 12:54 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> Daniel Borkmann <daniel@iogearbox.net> writes:
->>> On 5/28/21 12:00 PM, Magnus Karlsson wrote:
->>>> On Fri, May 28, 2021 at 11:52 AM Jesper Dangaard Brouer
->>>> <brouer@redhat.com> wrote:
->>>>> On Fri, 28 May 2021 17:02:01 +0800
->>>>> Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->>>>>> On Fri, 28 May 2021 10:55:58 +0200, Toke H=C3=B8iland-J=C3=B8rgensen=
- <toke@redhat.com> wrote:
->>>>>>> Xuan Zhuo <xuanzhuo@linux.alibaba.com> writes:
->>>>>>>
->>>>>>>> In xsk mode, users cannot use AF_PACKET(tcpdump) to observe the cu=
-rrent
->>>>>>>> rx/tx data packets. This feature is very important in many cases. =
-So
->>>>>>>> this patch allows AF_PACKET to obtain xsk packages.
->>>>>>>
->>>>>>> You can use xdpdump to dump the packets from the XDP program before=
- it
->>>>>>> gets redirected into the XSK:
->>>>>>> https://github.com/xdp-project/xdp-tools/tree/master/xdp-dump
->>>>>>
->>>>>> Wow, this is a good idea.
->>>>>
->>>>> Yes, it is rather cool (credit to Eelco).  Notice the extra info you
->>>>> can capture from 'exit', like XDP return codes, if_index, rx_queue.
->>>>>
->>>>> The tool uses the perf ring-buffer to send/copy data to userspace.
->>>>> This is actually surprisingly fast, but I still think AF_XDP will be
->>>>> faster (but it usually 'steals' the packet).
->>>>>
->>>>> Another (crazy?) idea is to extend this (and xdpdump), is to leverage
->>>>> Hangbin's recent XDP_REDIRECT extension e624d4ed4aa8 ("xdp: Extend
->>>>> xdp_redirect_map with broadcast support").  We now have a
->>>>> xdp_redirect_map flag BPF_F_BROADCAST, what if we create a
->>>>> BPF_F_CLONE_PASS flag?
->>>>>
->>>>> The semantic meaning of BPF_F_CLONE_PASS flag is to copy/clone the
->>>>> packet for the specified map target index (e.g AF_XDP map), but
->>>>> afterwards it does like veth/cpumap and creates an SKB from the
->>>>> xdp_frame (see __xdp_build_skb_from_frame()) and send to netstack.
->>>>> (Feel free to kick me if this doesn't make any sense)
->>>>
->>>> This would be a smooth way to implement clone support for AF_XDP. If
->>>> we had this and someone added AF_XDP support to libpcap, we could both
->>>> capture AF_XDP traffic with tcpdump (using this clone functionality in
->>>> the XDP program) and speed up tcpdump for dumping traffic destined for
->>>> regular sockets. Would that solve your use case Xuan? Note that I have
->>>> not looked into the BPF_F_CLONE_PASS code, so do not know at this
->>>> point what it would take to support this for XSKMAPs.
->>>
->>> Recently also ended up with something similar for our XDP LB to record =
-pcaps [0] ;)
->>> My question is.. tcpdump doesn't really care where the packet data come=
-s from,
->>> so why not extending libpcap's Linux-related internals to either captur=
-e from
->>> perf RB or BPF ringbuf rather than AF_PACKET sockets? Cloning is slow, =
-and if
->>> you need to end up creating an skb which is then cloned once again insi=
-de AF_PACKET
->>> it's even worse. Just relying and reading out, say, perf RB you don't n=
-eed any
->>> clones at all.
->>=20
->> We discussed this when creating xdpdump and decided to keep it as a
->> separate tool for the time being. I forget the details of the
->> discussion, maybe Eelco remembers.
->>=20
->> Anyway, xdpdump does have a "pipe pcap to stdout" feature so you can do
->> `xdpdump | tcpdump` and get the interactive output; and it will also
->> save pcap information to disk, of course (using pcap-ng so it can also
->> save metadata like XDP program name and return code).
->
-> Right, and this should yield a significantly better performance compared =
-to
-> cloning & pushing traffic into AF_PACKET. I presume not many folks are aw=
-are
-> of xdpdump (yet) which is probably why such patch was created here..
+> The root cause is a NULL pointer reference in function btf__get_nr_types()
+> as can be seen with gdb:
 
-What, are you implying we haven't achieved world domination yet?
-Inconceivable! ;)
+This looks like a bug in libbpf:
 
-> a native libpcap implementation could solve that aspect fwiw and
-> additionally hook at the same points as AF_PACKET via BPF but without
-> the hassle/overhead of things like dev_queue_xmit_nit() in fast path.
-> (Maybe another option could be to have a drop-in replacement
-> libpcap.so for tcpdump using it transparently.)
+static int bpf_object__collect_externs(struct bpf_object *obj)
+{
+        struct btf_type *sec, *kcfg_sec = NULL, *ksym_sec = NULL;
+        const struct btf_type *t;
+        struct extern_desc *ext;
+        int i, n, off, dummy_var_btf_id;
+        const char *ext_name, *sec_name;
+        Elf_Scn *scn;
+        GElf_Shdr sh;
 
-I do believe that Michael was open to adding something like this to
-tcpdump/libpcap when I last talked to him about it; and I'm certainly
-not opposed to it either! Hooking up tcpdump like this may be a bit of a
-firehose, though, so it would be nice to be able to carry over the
-kernel-side filtering as well. I suppose it should be possible to write
-an eBPF bytecode generator that does a bit of setup and then just
-translates the cBPF packet filtering ops, no? This would be cool to have
-in any case; IIRC Cloudflare did something like that but took a detour
-through C code generation?
+        if (!obj->efile.symbols)
+                return 0;
 
--Toke
+        scn = elf_sec_by_idx(obj, obj->efile.symbols_shndx);
+        if (elf_sec_hdr(obj, scn, &sh))
+                return -LIBBPF_ERRNO__FORMAT;
 
+        dummy_var_btf_id = add_dummy_ksym_var(obj->btf);
+        if (dummy_var_btf_id < 0)
+                return dummy_var_btf_id;
+
+
+obj->btf is NULL, so probably btf__find_by_name_kind() should check that
+and return an error, Andrii?
+
+- Arnaldo
+ 
+> Breakpoint 1, 0x000000000065f4b1 in btf__get_nr_types
+>      (btf=btf@entry=0x0) at btf.c:425
+> 425		return btf->start_id + btf->nr_types - 1;
+> 
+> This is the same function and reason why test case 42.1 Basic BPF filtering
+> fails and dumps core too.
+> 
+> The call chain is:
+> (gdb) where
+>  #0  0x000000000065f4b1 in btf__get_nr_types (btf=btf@entry=0x0) at btf.c:425
+>  #1  btf__find_by_name_kind (btf=btf@entry=0x0,
+> 		type_name=type_name@entry=0x928ab2 ".ksyms",
+> 		kind=kind@entry=15) at btf.c:696
+>  #2  0x00000000006527fe in add_dummy_ksym_var (btf=0x0) at libbpf.c:3219
+>  #3  bpf_object__collect_externs (obj=0xd0ea20) at libbpf.c:3266
+>  #4  __bpf_object__open (path=<optimized out>, path@entry=0x0,
+> 		obj_buf=obj_buf@entry=0xd12fa0,
+> 		obj_buf_sz=obj_buf_sz@entry=1520,
+>     		opts=opts@entry=0x7fffffffdb30) at libbpf.c:7372
+>  #5  0x0000000000655415 in __bpf_object__open (opts=0x7fffffffdb30,
+> 		obj_buf_sz=1520, obj_buf=0xd12fa0, path=0x0) at libbpf.c:7337
+>  #6  bpf_object__open_mem (opts=0x7fffffffdb30, obj_buf_sz=1520,
+> 		obj_buf=0xd12fa0) at libbpf.c:7454
+>  #7  bpf_object__open_mem (opts=0x7fffffffdb30, obj_buf_sz=1520,
+> 		obj_buf=0xd12fa0) at libbpf.c:7448
+>  #8  bpf_object__open_buffer (obj_buf=0xd12fa0, obj_buf_sz=1520,
+> 		name=<optimized out>) at libbpf.c:7471
+>  #9  0x00000000004c8c6e in test__bpf_parsing (obj_buf=0xd12fa0,
+> 		obj_buf_sz=1520) at tests/llvm.c:16
+>  #10 0x00000000004c8fe2 in test__llvm (test=0xac7d20 <generic_tests+2496>,
+> 		subtest=0) at tests/llvm.c:142
+> ...
+> 
+> I have no knowledge about BPF and why the core dump happens. Before
+> I start digging into this has anybody some hints on where to look?
+> 
+> Thanks a lot.
+> 
+> -- 
+> Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germany
+> --
+> Vorsitzender des Aufsichtsrats: Gregor Pillen
+> Geschäftsführung: Dirk Wittkopp
+> Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
+
+-- 
+
+- Arnaldo
