@@ -2,93 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5DA394836
-	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 23:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDE539483D
+	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 23:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbhE1VSC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 May 2021 17:18:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39290 "EHLO
+        id S229543AbhE1VUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 May 2021 17:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbhE1VSC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 May 2021 17:18:02 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 612F4C06174A;
-        Fri, 28 May 2021 14:16:27 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id h11so4464079ili.9;
-        Fri, 28 May 2021 14:16:27 -0700 (PDT)
+        with ESMTP id S229493AbhE1VUV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 May 2021 17:20:21 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB62C061574
+        for <bpf@vger.kernel.org>; Fri, 28 May 2021 14:18:46 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id l1so7306827ejb.6
+        for <bpf@vger.kernel.org>; Fri, 28 May 2021 14:18:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=v/OQV6XonkHYxsdEjj3UguFbh0a8sRENiwTRpA4hkmY=;
-        b=LPKXWLBCj+PtNIEMS/vwVHQV8trS5iMljsTji0LZki2tWnTUpvZGfkRvFo8y7/O/Qj
-         XTGvayeqLWmTnfQdj1vpI1NwDWmkGVYl/rhDbXNwp07LBC/Rzt6oHP8DBZXmKJWjhFRP
-         FbQHcVlFM3PXFpdyNgsM02aCAYRqgAgWaUDzy6LQYSkR7tNaDp/TNn/epvRY1UyL4sqx
-         6o73zZdVFOqlGjaqyxwNbyOs2CLxlqCJpNmsI7cv/pngv6iEZoMImldh9DM/plD2sCBU
-         W72pO6wngWtpdQu1Vs32GmTK+RbynO0y5+PmTw65tFBmWBlyy1kwClMbZsSIRtTHaozB
-         Etgw==
+        d=herbertland-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QrEKcucLG704d1McWx+SAa29jD3ltqkT7vXWjPkO/XM=;
+        b=SDeRpSqndcg0t8e7VqPoTKwPRQ1x5drB2RanooTZmmGVbM11lnJIVDPm+XIfzlrWCS
+         zF/vJ0cPsL/SifhYSAPRIVPDEAXzsL/E0EI8Qd9ZQ6+DggUuKNNBRPSaP1B6ySWJ8K49
+         NnCc7R/aNeKJ+5A/HYipyguyK8ZrzHdprJM8EKFUSAjxJe1WpBzoj1fLuLWWJHTXa7Ui
+         7lMnaff7NUWp/G3LlQ0fc7s2JtauVT6xb3mQAPPNqyF5CApgC3O8itVqLqv3453+mnPu
+         fR4VuVGAI7WiuDIdbPqF9Xqd3Dr6crN1nDItGgZ2BrOMEIN6hUrriAwsgiIwUjHHaQQE
+         wJ0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=v/OQV6XonkHYxsdEjj3UguFbh0a8sRENiwTRpA4hkmY=;
-        b=WIFLAKTS8vjHgCTvN6LYfrFziO4PrFhyn5PIavYvLqrvcK+E8BbuLNZ0F2SR2e5ybL
-         pNJrvbiuJ5d955KGF1/uWs6k2nVrX5RMyO715yn+S1AoChgN+IW1ELe7ug6G5Se3oHgJ
-         dd8yDDCGdcO9daU2pf92v9IfW/R9e5p3IE0vbuhhje8unHw3XbafIguj9UHOlBPgFgBi
-         l7zEImgHNzg1lzxnLRCAsSk3pU2p3FEsfjOGOPbK8RX95xHyf03n3++azYF25P1jsj72
-         HMMhpPBTi4TvjCkueIlsc7jgP4HiFYFbY+Y4v+ENir/xiJj/2eDgXxd0XmNxLKXfuXar
-         tEuw==
-X-Gm-Message-State: AOAM533xkYuuX95dE7m38F6ly7U259+sWJ7jgE/GAljOlGoIgTlBmZxm
-        hJlPApdQgVD/HFXQXAinezA=
-X-Google-Smtp-Source: ABdhPJym82mfd955XOx3cHS8rdtodR8EySkpespmxV/v9qxsVv7wv0qkHAYGtmHmJJzfemYZkUZioQ==
-X-Received: by 2002:a05:6e02:1b87:: with SMTP id h7mr8797964ili.185.1622236586782;
-        Fri, 28 May 2021 14:16:26 -0700 (PDT)
-Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id x13sm3561637ilo.11.2021.05.28.14.16.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 14:16:26 -0700 (PDT)
-Date:   Fri, 28 May 2021 14:16:17 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Yu Kuai <yukuai3@huawei.com>, shuah@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, yi.zhang@huawei.com
-Message-ID: <60b15da184eef_303a420848@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210528090758.1108464-1-yukuai3@huawei.com>
-References: <20210528090758.1108464-1-yukuai3@huawei.com>
-Subject: RE: [PATCH] selftests/bpf: Fix return value check in attach_bpf()
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QrEKcucLG704d1McWx+SAa29jD3ltqkT7vXWjPkO/XM=;
+        b=PNG/bevfS8uQy0CBSdDfToyU9N2OxtSPs7yx5Y/gjq6V2O7cfS7n5qUsmR2ljtEZBV
+         aEkDYEVgGQwDJ5yNfNgzh+ufkzzmbzcX4levO6GHN70YWxT0aqpSfk6fIrsM7hl19kj6
+         k6gGdjfZUOfTOXZSN4jzmdS2s3Z3iBTfvA5pqktDKbu5My2KsBWQI5z/Cw3TwOOyv0aW
+         iGi/TU0c3ZF1vGFHXQTdlwII23p5Y9r0ViMGo7x3BoAO9yTwbq5Wqdc9KJd5lYMqiqhh
+         jX/Btz9f/y0l29/TaBPvqmFFrY2WhslRufYUH1e3JLV1wxzpY04plvCSDRCKUt4Cl6t4
+         wGHQ==
+X-Gm-Message-State: AOAM533SYWlSZg9E5fA8hKVhKok0tPtwVmYcgP/PfaUeIRc1PLM8aoXH
+        JrQZ2PMLbXxxc3lue6s6ewvC1jUIj5Wao9R+ad8ySA==
+X-Google-Smtp-Source: ABdhPJyo64znoTV+xWd/LTnI9+odl4K24TGpHD5leM+piBFuiTuJBPXE1qYT2qfVlZavg45fu5gk4hg2MDrhQQLTA/M=
+X-Received: by 2002:a17:906:7696:: with SMTP id o22mr10560088ejm.298.1622236724822;
+ Fri, 28 May 2021 14:18:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1622222367.git.lorenzo@kernel.org> <b5b2f560006cf5f56d67d61d5837569a0949d0aa.1622222367.git.lorenzo@kernel.org>
+In-Reply-To: <b5b2f560006cf5f56d67d61d5837569a0949d0aa.1622222367.git.lorenzo@kernel.org>
+From:   Tom Herbert <tom@herbertland.com>
+Date:   Fri, 28 May 2021 14:18:33 -0700
+Message-ID: <CALx6S34cmsFX6QwUq0sRpHok1j6ecBBJ7WC2BwjEmxok+CHjqg@mail.gmail.com>
+Subject: Re: [RFC bpf-next 1/4] net: xdp: introduce flags field in xdp_buff
+ and xdp_frame
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        David Ahern <dsahern@gmail.com>, magnus.karlsson@intel.com,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>, bjorn@kernel.org,
+        =?UTF-8?Q?Maciej_Fija=C5=82kowski_=28Intel=29?= 
+        <maciej.fijalkowski@intel.com>,
+        john fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Yu Kuai wrote:
-> use libbpf_get_error() to check the return value of
-> bpf_program__attach().
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  tools/testing/selftests/bpf/benchs/bench_rename.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/benchs/bench_rename.c b/tools/testing/selftests/bpf/benchs/bench_rename.c
-> index c7ec114eca56..b7d4a1d74fca 100644
-> --- a/tools/testing/selftests/bpf/benchs/bench_rename.c
-> +++ b/tools/testing/selftests/bpf/benchs/bench_rename.c
-> @@ -65,7 +65,7 @@ static void attach_bpf(struct bpf_program *prog)
->  	struct bpf_link *link;
->  
->  	link = bpf_program__attach(prog);
-> -	if (!link) {
-> +	if (libbpf_get_error(link)) {
->  		fprintf(stderr, "failed to attach program!\n");
->  		exit(1);
->  	}
-> -- 
+On Fri, May 28, 2021 at 10:44 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>
+> Introduce flag field in xdp_buff and xdp_frame data structure in order
+> to report xdp_buffer metadata. For the moment just hw checksum hints
+> are defined but flags field will be reused for xdp multi-buffer
+> For the moment just CHECKSUM_UNNECESSARY is supported.
+> CHECKSUM_COMPLETE will need to set csum value in metada space.
+>
+Lorenzo,
 
-Probably should be IS_ERR(link) same as the other benchs/*.c progs.
+This isn't sufficient for the checksum-unnecessary interface, we'd
+also need ability to set csum_level for cases the device validated
+more than one checksum.
+
+IMO, we shouldn't support CHECKSUM_UNNECESSARY for new uses like this.
+For years now, the Linux community has been pleading with vendors to
+provide CHECKSUM_COMPLETE which is far more useful and robust than
+CHECSUM_UNNECESSARY, and yet some still haven't got with the program
+even though we see more and more instances where CHECKSUM_UNNECESSARY
+doesn't even work at all (e.g. cases with SRv6, new encaps device
+doesn't understand). I believe it's time to take a stand! :-)
+
+Tom
+
+> Signed-off-by: David Ahern <dsahern@kernel.org>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  include/net/xdp.h | 36 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 36 insertions(+)
+>
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index 5533f0ab2afc..e81ac505752b 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -66,6 +66,13 @@ struct xdp_txq_info {
+>         struct net_device *dev;
+>  };
+>
+> +/* xdp metadata bitmask */
+> +#define XDP_CSUM_MASK          GENMASK(1, 0)
+> +enum xdp_flags {
+> +       XDP_CSUM_UNNECESSARY    = BIT(0),
+> +       XDP_CSUM_COMPLETE       = BIT(1),
+> +};
+> +
+>  struct xdp_buff {
+>         void *data;
+>         void *data_end;
+> @@ -74,6 +81,7 @@ struct xdp_buff {
+>         struct xdp_rxq_info *rxq;
+>         struct xdp_txq_info *txq;
+>         u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom*/
+> +       u16 flags; /* xdp_flags */
+>  };
+>
+>  static __always_inline void
+> @@ -81,6 +89,7 @@ xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
+>  {
+>         xdp->frame_sz = frame_sz;
+>         xdp->rxq = rxq;
+> +       xdp->flags = 0;
+>  }
+>
+>  static __always_inline void
+> @@ -95,6 +104,18 @@ xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
+>         xdp->data_meta = meta_valid ? data : data + 1;
+>  }
+>
+> +static __always_inline void
+> +xdp_buff_get_csum(struct xdp_buff *xdp, struct sk_buff *skb)
+> +{
+> +       switch (xdp->flags & XDP_CSUM_MASK) {
+> +       case XDP_CSUM_UNNECESSARY:
+> +               skb->ip_summed = CHECKSUM_UNNECESSARY;
+> +               break;
+> +       default:
+> +               break;
+> +       }
+> +}
+> +
+>  /* Reserve memory area at end-of data area.
+>   *
+>   * This macro reserves tailroom in the XDP buffer by limiting the
+> @@ -122,8 +143,21 @@ struct xdp_frame {
+>          */
+>         struct xdp_mem_info mem;
+>         struct net_device *dev_rx; /* used by cpumap */
+> +       u16 flags; /* xdp_flags */
+>  };
+>
+> +static __always_inline void
+> +xdp_frame_get_csum(struct xdp_frame *xdpf, struct sk_buff *skb)
+> +{
+> +       switch (xdpf->flags & XDP_CSUM_MASK) {
+> +       case XDP_CSUM_UNNECESSARY:
+> +               skb->ip_summed = CHECKSUM_UNNECESSARY;
+> +               break;
+> +       default:
+> +               break;
+> +       }
+> +}
+> +
+>  #define XDP_BULK_QUEUE_SIZE    16
+>  struct xdp_frame_bulk {
+>         int count;
+> @@ -180,6 +214,7 @@ void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
+>         xdp->data_end = frame->data + frame->len;
+>         xdp->data_meta = frame->data - frame->metasize;
+>         xdp->frame_sz = frame->frame_sz;
+> +       xdp->flags = frame->flags;
+>  }
+>
+>  static inline
+> @@ -206,6 +241,7 @@ int xdp_update_frame_from_buff(struct xdp_buff *xdp,
+>         xdp_frame->headroom = headroom - sizeof(*xdp_frame);
+>         xdp_frame->metasize = metasize;
+>         xdp_frame->frame_sz = xdp->frame_sz;
+> +       xdp_frame->flags = xdp->flags;
+>
+>         return 0;
+>  }
+> --
+> 2.31.1
+>
