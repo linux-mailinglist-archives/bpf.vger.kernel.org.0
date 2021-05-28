@@ -2,145 +2,294 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF9F39425A
-	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 14:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741ED394223
+	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 13:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236654AbhE1MPs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 May 2021 08:15:48 -0400
-Received: from www62.your-server.de ([213.133.104.62]:44320 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236720AbhE1MPT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 May 2021 08:15:19 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lmagd-0009Zz-Ar; Fri, 28 May 2021 13:29:55 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lmagc-000Shu-S6; Fri, 28 May 2021 13:29:54 +0200
-Subject: Re: [PATCH bpf-next] xsk: support AF_PACKET
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Xie He <xie.he.0141@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Wang Hai <wanghai38@huawei.com>,
-        Tanner Love <tannerlove@google.com>,
-        Eyal Birger <eyal.birger@gmail.com>,
-        Menglong Dong <dong.menglong@zte.com.cn>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-References: <87im33grtt.fsf@toke.dk>
- <1622192521.5931044-1-xuanzhuo@linux.alibaba.com>
- <20210528115003.37840424@carbon>
- <CAJ8uoz2bhfsk4XX--cNB-gKczx0jZENB5kdthoWkuyxcOHQfjg@mail.gmail.com>
- <f90b1066-a962-ba38-a5b5-ac59a13d4dd1@iogearbox.net> <87a6ofgmbq.fsf@toke.dk>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <066a0c0a-ad48-517a-4bd0-8920bdbf0dd8@iogearbox.net>
-Date:   Fri, 28 May 2021 13:29:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S236249AbhE1Lt1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 May 2021 07:49:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59076 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236165AbhE1LtV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 28 May 2021 07:49:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622202466;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JdNPT60WeIlr9DU58kYYVhqhWBLJtqZ96yO8cbacEw8=;
+        b=azaOs3KSJEbY4Dw5pJg09810jzBZkUO14b3RvenBNtb/DrPF68JhJ2qSNPc5Ss9R+z5qm+
+        yxtWcbt/ln7nbmCua2/GuxNvL70gYBxWubEjqkeC2LAYtuZl+JUNhGH3wNFQLAxCH5//Eg
+        QFfYRiniEvkBUeGnXJOhid6mamofS7s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-J-MsoSSLN76i5GJLOqfRSg-1; Fri, 28 May 2021 07:47:42 -0400
+X-MC-Unique: J-MsoSSLN76i5GJLOqfRSg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37E4E802938;
+        Fri, 28 May 2021 11:47:41 +0000 (UTC)
+Received: from krava (unknown [10.40.192.177])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 291805D767;
+        Fri, 28 May 2021 11:47:35 +0000 (UTC)
+Date:   Fri, 28 May 2021 13:47:35 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        andrii.nakryiko@gmail.com
+Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
+ permission checks
+Message-ID: <YLDYV3ot7vroWW9o@krava>
+References: <20210517092006.803332-1-omosnace@redhat.com>
+ <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
+ <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net>
+ <4fee8c12-194f-3f85-e28b-f7f24ab03c91@iogearbox.net>
 MIME-Version: 1.0
-In-Reply-To: <87a6ofgmbq.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26183/Thu May 27 13:07:49 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4fee8c12-194f-3f85-e28b-f7f24ab03c91@iogearbox.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/28/21 12:54 PM, Toke Høiland-Jørgensen wrote:
-> Daniel Borkmann <daniel@iogearbox.net> writes:
->> On 5/28/21 12:00 PM, Magnus Karlsson wrote:
->>> On Fri, May 28, 2021 at 11:52 AM Jesper Dangaard Brouer
->>> <brouer@redhat.com> wrote:
->>>> On Fri, 28 May 2021 17:02:01 +0800
->>>> Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->>>>> On Fri, 28 May 2021 10:55:58 +0200, Toke Høiland-Jørgensen <toke@redhat.com> wrote:
->>>>>> Xuan Zhuo <xuanzhuo@linux.alibaba.com> writes:
->>>>>>
->>>>>>> In xsk mode, users cannot use AF_PACKET(tcpdump) to observe the current
->>>>>>> rx/tx data packets. This feature is very important in many cases. So
->>>>>>> this patch allows AF_PACKET to obtain xsk packages.
->>>>>>
->>>>>> You can use xdpdump to dump the packets from the XDP program before it
->>>>>> gets redirected into the XSK:
->>>>>> https://github.com/xdp-project/xdp-tools/tree/master/xdp-dump
->>>>>
->>>>> Wow, this is a good idea.
->>>>
->>>> Yes, it is rather cool (credit to Eelco).  Notice the extra info you
->>>> can capture from 'exit', like XDP return codes, if_index, rx_queue.
->>>>
->>>> The tool uses the perf ring-buffer to send/copy data to userspace.
->>>> This is actually surprisingly fast, but I still think AF_XDP will be
->>>> faster (but it usually 'steals' the packet).
->>>>
->>>> Another (crazy?) idea is to extend this (and xdpdump), is to leverage
->>>> Hangbin's recent XDP_REDIRECT extension e624d4ed4aa8 ("xdp: Extend
->>>> xdp_redirect_map with broadcast support").  We now have a
->>>> xdp_redirect_map flag BPF_F_BROADCAST, what if we create a
->>>> BPF_F_CLONE_PASS flag?
->>>>
->>>> The semantic meaning of BPF_F_CLONE_PASS flag is to copy/clone the
->>>> packet for the specified map target index (e.g AF_XDP map), but
->>>> afterwards it does like veth/cpumap and creates an SKB from the
->>>> xdp_frame (see __xdp_build_skb_from_frame()) and send to netstack.
->>>> (Feel free to kick me if this doesn't make any sense)
->>>
->>> This would be a smooth way to implement clone support for AF_XDP. If
->>> we had this and someone added AF_XDP support to libpcap, we could both
->>> capture AF_XDP traffic with tcpdump (using this clone functionality in
->>> the XDP program) and speed up tcpdump for dumping traffic destined for
->>> regular sockets. Would that solve your use case Xuan? Note that I have
->>> not looked into the BPF_F_CLONE_PASS code, so do not know at this
->>> point what it would take to support this for XSKMAPs.
->>
->> Recently also ended up with something similar for our XDP LB to record pcaps [0] ;)
->> My question is.. tcpdump doesn't really care where the packet data comes from,
->> so why not extending libpcap's Linux-related internals to either capture from
->> perf RB or BPF ringbuf rather than AF_PACKET sockets? Cloning is slow, and if
->> you need to end up creating an skb which is then cloned once again inside AF_PACKET
->> it's even worse. Just relying and reading out, say, perf RB you don't need any
->> clones at all.
-> 
-> We discussed this when creating xdpdump and decided to keep it as a
-> separate tool for the time being. I forget the details of the
-> discussion, maybe Eelco remembers.
-> 
-> Anyway, xdpdump does have a "pipe pcap to stdout" feature so you can do
-> `xdpdump | tcpdump` and get the interactive output; and it will also
-> save pcap information to disk, of course (using pcap-ng so it can also
-> save metadata like XDP program name and return code).
+On Fri, May 28, 2021 at 11:56:02AM +0200, Daniel Borkmann wrote:
 
-Right, and this should yield a significantly better performance compared to
-cloning & pushing traffic into AF_PACKET. I presume not many folks are aware
-of xdpdump (yet) which is probably why such patch was created here.. a native
-libpcap implementation could solve that aspect fwiw and additionally hook at
-the same points as AF_PACKET via BPF but without the hassle/overhead of things
-like dev_queue_xmit_nit() in fast path. (Maybe another option could be to have
-a drop-in replacement libpcap.so for tcpdump using it transparently.)
+SNIP
 
-Thanks,
-Daniel
+> Ondrej / Paul / Jiri: at least for the BPF tracing case specifically (I haven't looked
+> at the rest but it's also kind of independent), the attached fix should address both
+> reported issues, please take a look & test.
+> 
+> Thanks a lot,
+> Daniel
+
+> From 5893ad528dc0a0a68933b8f2a81b18d3f539660d Mon Sep 17 00:00:00 2001
+> From: Daniel Borkmann <daniel@iogearbox.net>
+> Date: Fri, 28 May 2021 09:16:31 +0000
+> Subject: [PATCH bpf] bpf, audit, lockdown: Fix bogus SELinux lockdown permission checks
+> 
+> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
+> added an implementation of the locked_down LSM hook to SELinux, with the aim
+> to restrict which domains are allowed to perform operations that would breach
+> lockdown. This is indirectly also getting audit subsystem involved to report
+> events. The latter is problematic, as reported by Ondrej and Serhei, since it
+> can bring down the whole system via audit:
+> 
+>   i) The audit events that are triggered due to calls to security_locked_down()
+>      can OOM kill a machine, see below details [0].
+> 
+>  ii) It seems to be causing a deadlock via slow_avc_audit() -> audit_log_end()
+>      when presumingly trying to wake up kauditd [1].
+> 
+> Fix both at the same time by taking a completely different approach, that is,
+> move the check into the program verification phase where we actually retrieve
+> the func proto. This also reliably gets the task (current) that is trying to
+> install the tracing program, e.g. bpftrace/bcc/perf/systemtap/etc, and it also
+> fixes the OOM since we're moving this out of the BPF helpers which can be called
+> millions of times per second.
+> 
+> [0] https://bugzilla.redhat.com/show_bug.cgi?id=1955585, Jakub Hrozek says:
+> 
+>   I starting seeing this with F-34. When I run a container that is traced with
+>   BPF to record the syscalls it is doing, auditd is flooded with messages like:
+> 
+>   type=AVC msg=audit(1619784520.593:282387): avc:  denied  { confidentiality }
+>     for pid=476 comm="auditd" lockdown_reason="use of bpf to read kernel RAM"
+>       scontext=system_u:system_r:auditd_t:s0 tcontext=system_u:system_r:auditd_t:s0
+>         tclass=lockdown permissive=0
+> 
+>   This seems to be leading to auditd running out of space in the backlog buffer
+>   and eventually OOMs the machine.
+> 
+>   [...]
+>   auditd running at 99% CPU presumably processing all the messages, eventually I get:
+>   Apr 30 12:20:42 fedora kernel: audit: backlog limit exceeded
+>   Apr 30 12:20:42 fedora kernel: audit: backlog limit exceeded
+>   Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152579 > audit_backlog_limit=64
+>   Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152626 > audit_backlog_limit=64
+>   Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152694 > audit_backlog_limit=64
+>   Apr 30 12:20:42 fedora kernel: audit: audit_lost=6878426 audit_rate_limit=0 audit_backlog_limit=64
+>   Apr 30 12:20:45 fedora kernel: oci-seccomp-bpf invoked oom-killer: gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=-1000
+>   Apr 30 12:20:45 fedora kernel: CPU: 0 PID: 13284 Comm: oci-seccomp-bpf Not tainted 5.11.12-300.fc34.x86_64 #1
+>   Apr 30 12:20:45 fedora kernel: Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32 04/01/2014
+>   [...]
+> 
+> [1] https://lore.kernel.org/linux-audit/CANYvDQN7H5tVp47fbYcRasv4XF07eUbsDwT_eDCHXJUj43J7jQ@mail.gmail.com/,
+>     Serhei Makarov says:
+> 
+>   Upstream kernel 5.11.0-rc7 and later was found to deadlock during a
+>   bpf_probe_read_compat() call within a sched_switch tracepoint. The problem
+>   is reproducible with the reg_alloc3 testcase from SystemTap's BPF backend
+>   testsuite on x86_64 as well as the runqlat,runqslower tools from bcc on
+>   ppc64le. Example stack trace:
+> 
+>   [...]
+>   [  730.868702] stack backtrace:
+>   [  730.869590] CPU: 1 PID: 701 Comm: in:imjournal Not tainted, 5.12.0-0.rc2.20210309git144c79ef3353.166.fc35.x86_64 #1
+>   [  730.871605] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+>   [  730.873278] Call Trace:
+>   [  730.873770]  dump_stack+0x7f/0xa1
+>   [  730.874433]  check_noncircular+0xdf/0x100
+>   [  730.875232]  __lock_acquire+0x1202/0x1e10
+>   [  730.876031]  ? __lock_acquire+0xfc0/0x1e10
+>   [  730.876844]  lock_acquire+0xc2/0x3a0
+>   [  730.877551]  ? __wake_up_common_lock+0x52/0x90
+>   [  730.878434]  ? lock_acquire+0xc2/0x3a0
+>   [  730.879186]  ? lock_is_held_type+0xa7/0x120
+>   [  730.880044]  ? skb_queue_tail+0x1b/0x50
+>   [  730.880800]  _raw_spin_lock_irqsave+0x4d/0x90
+>   [  730.881656]  ? __wake_up_common_lock+0x52/0x90
+>   [  730.882532]  __wake_up_common_lock+0x52/0x90
+>   [  730.883375]  audit_log_end+0x5b/0x100
+>   [  730.884104]  slow_avc_audit+0x69/0x90
+>   [  730.884836]  avc_has_perm+0x8b/0xb0
+>   [  730.885532]  selinux_lockdown+0xa5/0xd0
+>   [  730.886297]  security_locked_down+0x20/0x40
+>   [  730.887133]  bpf_probe_read_compat+0x66/0xd0
+>   [  730.887983]  bpf_prog_250599c5469ac7b5+0x10f/0x820
+>   [  730.888917]  trace_call_bpf+0xe9/0x240
+>   [  730.889672]  perf_trace_run_bpf_submit+0x4d/0xc0
+>   [  730.890579]  perf_trace_sched_switch+0x142/0x180
+>   [  730.891485]  ? __schedule+0x6d8/0xb20
+>   [  730.892209]  __schedule+0x6d8/0xb20
+>   [  730.892899]  schedule+0x5b/0xc0
+>   [  730.893522]  exit_to_user_mode_prepare+0x11d/0x240
+>   [  730.894457]  syscall_exit_to_user_mode+0x27/0x70
+>   [  730.895361]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>   [...]
+> 
+> Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
+> Reported-by: Ondrej Mosnacek <omosnace@redhat.com>
+> Reported-by: Jakub Hrozek <jhrozek@redhat.com>
+> Reported-by: Serhei Makarov <smakarov@redhat.com>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Stephen Smalley <sds@tycho.nsa.gov>
+> Cc: Jerome Marchand <jmarchan@redhat.com>
+> Cc: Frank Eigler <fche@redhat.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Paul Moore <paul@paul-moore.com>
+
+found the original server and reproduced.. this patch fixes it for me 
+
+Tested-by: Jiri Olsa <jolsa@redhat.com>
+
+thanks,
+jirka
+
+> ---
+>  kernel/bpf/helpers.c     |  6 ++++--
+>  kernel/trace/bpf_trace.c | 36 +++++++++++++-----------------------
+>  2 files changed, 17 insertions(+), 25 deletions(-)
+> 
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 73443498d88f..6f6e090c5310 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -1069,11 +1069,13 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+>  	case BPF_FUNC_probe_read_user:
+>  		return &bpf_probe_read_user_proto;
+>  	case BPF_FUNC_probe_read_kernel:
+> -		return &bpf_probe_read_kernel_proto;
+> +		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
+> +		       NULL : &bpf_probe_read_kernel_proto;
+>  	case BPF_FUNC_probe_read_user_str:
+>  		return &bpf_probe_read_user_str_proto;
+>  	case BPF_FUNC_probe_read_kernel_str:
+> -		return &bpf_probe_read_kernel_str_proto;
+> +		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
+> +		       NULL : &bpf_probe_read_kernel_str_proto;
+>  	case BPF_FUNC_snprintf_btf:
+>  		return &bpf_snprintf_btf_proto;
+>  	case BPF_FUNC_snprintf:
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index d2d7cf6cfe83..3df43d89d642 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -215,16 +215,10 @@ const struct bpf_func_proto bpf_probe_read_user_str_proto = {
+>  static __always_inline int
+>  bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr)
+>  {
+> -	int ret = security_locked_down(LOCKDOWN_BPF_READ);
+> +	int ret = copy_from_kernel_nofault(dst, unsafe_ptr, size);
+>  
+>  	if (unlikely(ret < 0))
+> -		goto fail;
+> -	ret = copy_from_kernel_nofault(dst, unsafe_ptr, size);
+> -	if (unlikely(ret < 0))
+> -		goto fail;
+> -	return ret;
+> -fail:
+> -	memset(dst, 0, size);
+> +		memset(dst, 0, size);
+>  	return ret;
+>  }
+>  
+> @@ -246,11 +240,6 @@ const struct bpf_func_proto bpf_probe_read_kernel_proto = {
+>  static __always_inline int
+>  bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr)
+>  {
+> -	int ret = security_locked_down(LOCKDOWN_BPF_READ);
+> -
+> -	if (unlikely(ret < 0))
+> -		goto fail;
+> -
+>  	/*
+>  	 * The strncpy_from_kernel_nofault() call will likely not fill the
+>  	 * entire buffer, but that's okay in this circumstance as we're probing
+> @@ -260,13 +249,10 @@ bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr)
+>  	 * code altogether don't copy garbage; otherwise length of string
+>  	 * is returned that can be used for bpf_perf_event_output() et al.
+>  	 */
+> -	ret = strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
+> -	if (unlikely(ret < 0))
+> -		goto fail;
+> +	int ret = strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
+>  
+> -	return ret;
+> -fail:
+> -	memset(dst, 0, size);
+> +	if (unlikely(ret < 0))
+> +		memset(dst, 0, size);
+>  	return ret;
+>  }
+>  
+> @@ -1011,16 +997,20 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>  	case BPF_FUNC_probe_read_user:
+>  		return &bpf_probe_read_user_proto;
+>  	case BPF_FUNC_probe_read_kernel:
+> -		return &bpf_probe_read_kernel_proto;
+> +		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
+> +		       NULL : &bpf_probe_read_kernel_proto;
+>  	case BPF_FUNC_probe_read_user_str:
+>  		return &bpf_probe_read_user_str_proto;
+>  	case BPF_FUNC_probe_read_kernel_str:
+> -		return &bpf_probe_read_kernel_str_proto;
+> +		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
+> +		       NULL : &bpf_probe_read_kernel_str_proto;
+>  #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+>  	case BPF_FUNC_probe_read:
+> -		return &bpf_probe_read_compat_proto;
+> +		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
+> +		       NULL : &bpf_probe_read_compat_proto;
+>  	case BPF_FUNC_probe_read_str:
+> -		return &bpf_probe_read_compat_str_proto;
+> +		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
+> +		       NULL : &bpf_probe_read_compat_str_proto;
+>  #endif
+>  #ifdef CONFIG_CGROUPS
+>  	case BPF_FUNC_get_current_cgroup_id:
+> -- 
+> 2.27.0
+> 
+
