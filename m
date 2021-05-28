@@ -2,329 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A60394062
-	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 11:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB3B39406E
+	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 11:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236093AbhE1J5n (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 May 2021 05:57:43 -0400
-Received: from www62.your-server.de ([213.133.104.62]:47184 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236076AbhE1J5m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 May 2021 05:57:42 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lmZDn-0001H5-SM; Fri, 28 May 2021 11:56:03 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lmZDn-000LEd-H8; Fri, 28 May 2021 11:56:03 +0200
-Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
- permission checks
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>, jolsa@redhat.com,
-        andrii.nakryiko@gmail.com
-References: <20210517092006.803332-1-omosnace@redhat.com>
- <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
- <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net>
-Message-ID: <4fee8c12-194f-3f85-e28b-f7f24ab03c91@iogearbox.net>
-Date:   Fri, 28 May 2021 11:56:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S236267AbhE1J6P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 May 2021 05:58:15 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:60344 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236229AbhE1J6P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 May 2021 05:58:15 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5C5EF218B3;
+        Fri, 28 May 2021 09:56:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1622195799; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dhdQKKFKjVq0AOYJ94M8zTULaqoglwzD51M65ba4TkU=;
+        b=bcrRKaP1GJLre/Zq5cnkwbRfyp/acLxsQqxEV73LpzpcavYCf/E8uconIrVnhvXWjSrGpA
+        IXKbl4+vgZiyCuNaQC4FSOiZUKQOZCq7DX+pYRuwf2bxUKC5fT4SmZZDssutyySovncCL/
+        yQ4pPvBsRVbg59hkE7UX+cBN/nBeF00=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1622195799;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dhdQKKFKjVq0AOYJ94M8zTULaqoglwzD51M65ba4TkU=;
+        b=2zyj6nHCR2O/JVjQiRV+RYfa3ndqrFN05rtEekrLqwYZQJ63TvusgWLRpPDQF4leVK7sU7
+        i8w6V+mes0b0otBw==
+Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
+        by imap.suse.de (Postfix) with ESMTPSA id 3542C11A98;
+        Fri, 28 May 2021 09:56:39 +0000 (UTC)
+Date:   Fri, 28 May 2021 11:56:38 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Mel Gorman' <mgorman@techsingularity.net>,
+        'Andrii Nakryiko' <andrii.nakryiko@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH] mm/page_alloc: Work around a pahole limitation with
+ zero-sized struct pagesets
+Message-ID: <20210528095637.GO8544@kitsune.suse.cz>
+References: <20210526080741.GW30378@techsingularity.net>
+ <YK9SiLX1E1KAZORb@infradead.org>
+ <20210527090422.GA30378@techsingularity.net>
+ <YK9j3YeMTZ+0I8NA@infradead.org>
+ <CAEf4BzZLy0s+t+Nj9QgUNM66Ma6HN=VkS+ocgT5h9UwanxHaZQ@mail.gmail.com>
+ <CAEf4BzbzPK-3cyLFM8QKE5-o_dL7=UCcvRF+rEqyUcHhyY+FJg@mail.gmail.com>
+ <8fe547e9e87f40aebce82021d76a2d08@AcuMS.aculab.com>
+ <20210528090421.GK30378@techsingularity.net>
+ <2755b39d723146168e875f3b4a851a0d@AcuMS.aculab.com>
 MIME-Version: 1.0
-In-Reply-To: <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net>
-Content-Type: multipart/mixed;
- boundary="------------629630DF919F6F51E0188473"
-Content-Language: en-US
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26183/Thu May 27 13:07:49 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2755b39d723146168e875f3b4a851a0d@AcuMS.aculab.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------629630DF919F6F51E0188473
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-
-On 5/28/21 9:09 AM, Daniel Borkmann wrote:
-> On 5/28/21 3:37 AM, Paul Moore wrote:
->> On Mon, May 17, 2021 at 5:22 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
->>>
->>> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
->>> lockdown") added an implementation of the locked_down LSM hook to
->>> SELinux, with the aim to restrict which domains are allowed to perform
->>> operations that would breach lockdown.
->>>
->>> However, in several places the security_locked_down() hook is called in
->>> situations where the current task isn't doing any action that would
->>> directly breach lockdown, leading to SELinux checks that are basically
->>> bogus.
->>>
->>> Since in most of these situations converting the callers such that
->>> security_locked_down() is called in a context where the current task
->>> would be meaningful for SELinux is impossible or very non-trivial (and
->>> could lead to TOCTOU issues for the classic Lockdown LSM
->>> implementation), fix this by modifying the hook to accept a struct cred
->>> pointer as argument, where NULL will be interpreted as a request for a
->>> "global", task-independent lockdown decision only. Then modify SELinux
->>> to ignore calls with cred == NULL.
->>
->> I'm not overly excited about skipping the access check when cred is
->> NULL.  Based on the description and the little bit that I've dug into
->> thus far it looks like using SECINITSID_KERNEL as the subject would be
->> much more appropriate.  *Something* (the kernel in most of the
->> relevant cases it looks like) is requesting that a potentially
->> sensitive disclosure be made, and ignoring it seems like the wrong
->> thing to do.  Leaving the access control intact also provides a nice
->> avenue to audit these requests should users want to do that.
+On Fri, May 28, 2021 at 09:49:28AM +0000, David Laight wrote:
+> From: Mel Gorman
+> > Sent: 28 May 2021 10:04
+> > 
+> > On Fri, May 28, 2021 at 08:09:39AM +0000, David Laight wrote:
+> > > From: Andrii Nakryiko
+> > > > Sent: 27 May 2021 15:42
+> > > ...
+> > > > I agree that empty structs are useful, but here we are talking about
+> > > > per-CPU variables only, which is the first use case so far, as far as
+> > > > I can see. If we had pahole 1.22 released and widely packaged it could
+> > > > have been a viable option to force it on everyone.
+> > > ...
+> > >
+> > > Would it be feasible to put the sources for pahole into the
+> > > kernel repository and build it at the same time as objtool?
+> > 
+> > We don't store other build dependencies like compilers, binutils etc in
+> > the kernel repository even though minimum versions are mandated.
+> > Obviously tools/ exists but for the most part, they are tools that do
+> > not exist in other repositories and are kernel-specific. I don't know if
+> > pahole would be accepted and it introduces the possibility that upstream
+> > pahole and the kernel fork of it would diverge.
 > 
-> I think the rationale/workaround for ignoring calls with cred == NULL (or the previous
-> patch with the unimplemented hook) from Ondrej was two-fold, at least speaking for his
-> seen tracing cases:
+> The other side of the coin is that is you want reproducible builds
+> the smaller the number of variables that need to match the better.
 > 
->    i) The audit events that are triggered due to calls to security_locked_down()
->       can OOM kill a machine, see below details [0].
-> 
->   ii) It seems to be causing a deadlock via slow_avc_audit() -> audit_log_end()
->       when presumingly trying to wake up kauditd [1].
+> I can see there might be similar issues with the version of libelf-devel
+> (needed by objtool).
+> If I compile anything with gcc 10 (I'm doing build-root builds)
+> I get object files that the hosts 2.30 binutils complain about.
+> I can easily see that updating gcc and binutils might leave a
+> broken objtool unless the required updated libelf-devel package
+> can be found.
+> Statically linking the required parts of libelf into objtool
+> would save any such problems.
 
-Ondrej / Paul / Jiri: at least for the BPF tracing case specifically (I haven't looked
-at the rest but it's also kind of independent), the attached fix should address both
-reported issues, please take a look & test.
+Static libraries are not always available. Especially for core toolchain
+libraries the developers often have some ideas about which of the static
+and dynamic libraris is the 'correct' one that they like to enforce.
 
-Thanks a lot,
-Daniel
+Thanks
 
---------------629630DF919F6F51E0188473
-Content-Type: text/x-patch;
- name="0001-bpf-audit-lockdown-Fix-bogus-SELinux-lockdown-permis.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-bpf-audit-lockdown-Fix-bogus-SELinux-lockdown-permis.pa";
- filename*1="tch"
-
-From 5893ad528dc0a0a68933b8f2a81b18d3f539660d Mon Sep 17 00:00:00 2001
-From: Daniel Borkmann <daniel@iogearbox.net>
-Date: Fri, 28 May 2021 09:16:31 +0000
-Subject: [PATCH bpf] bpf, audit, lockdown: Fix bogus SELinux lockdown permission checks
-
-Commit 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-added an implementation of the locked_down LSM hook to SELinux, with the aim
-to restrict which domains are allowed to perform operations that would breach
-lockdown. This is indirectly also getting audit subsystem involved to report
-events. The latter is problematic, as reported by Ondrej and Serhei, since it
-can bring down the whole system via audit:
-
-  i) The audit events that are triggered due to calls to security_locked_down()
-     can OOM kill a machine, see below details [0].
-
- ii) It seems to be causing a deadlock via slow_avc_audit() -> audit_log_end()
-     when presumingly trying to wake up kauditd [1].
-
-Fix both at the same time by taking a completely different approach, that is,
-move the check into the program verification phase where we actually retrieve
-the func proto. This also reliably gets the task (current) that is trying to
-install the tracing program, e.g. bpftrace/bcc/perf/systemtap/etc, and it also
-fixes the OOM since we're moving this out of the BPF helpers which can be called
-millions of times per second.
-
-[0] https://bugzilla.redhat.com/show_bug.cgi?id=1955585, Jakub Hrozek says:
-
-  I starting seeing this with F-34. When I run a container that is traced with
-  BPF to record the syscalls it is doing, auditd is flooded with messages like:
-
-  type=AVC msg=audit(1619784520.593:282387): avc:  denied  { confidentiality }
-    for pid=476 comm="auditd" lockdown_reason="use of bpf to read kernel RAM"
-      scontext=system_u:system_r:auditd_t:s0 tcontext=system_u:system_r:auditd_t:s0
-        tclass=lockdown permissive=0
-
-  This seems to be leading to auditd running out of space in the backlog buffer
-  and eventually OOMs the machine.
-
-  [...]
-  auditd running at 99% CPU presumably processing all the messages, eventually I get:
-  Apr 30 12:20:42 fedora kernel: audit: backlog limit exceeded
-  Apr 30 12:20:42 fedora kernel: audit: backlog limit exceeded
-  Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152579 > audit_backlog_limit=64
-  Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152626 > audit_backlog_limit=64
-  Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152694 > audit_backlog_limit=64
-  Apr 30 12:20:42 fedora kernel: audit: audit_lost=6878426 audit_rate_limit=0 audit_backlog_limit=64
-  Apr 30 12:20:45 fedora kernel: oci-seccomp-bpf invoked oom-killer: gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=-1000
-  Apr 30 12:20:45 fedora kernel: CPU: 0 PID: 13284 Comm: oci-seccomp-bpf Not tainted 5.11.12-300.fc34.x86_64 #1
-  Apr 30 12:20:45 fedora kernel: Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32 04/01/2014
-  [...]
-
-[1] https://lore.kernel.org/linux-audit/CANYvDQN7H5tVp47fbYcRasv4XF07eUbsDwT_eDCHXJUj43J7jQ@mail.gmail.com/,
-    Serhei Makarov says:
-
-  Upstream kernel 5.11.0-rc7 and later was found to deadlock during a
-  bpf_probe_read_compat() call within a sched_switch tracepoint. The problem
-  is reproducible with the reg_alloc3 testcase from SystemTap's BPF backend
-  testsuite on x86_64 as well as the runqlat,runqslower tools from bcc on
-  ppc64le. Example stack trace:
-
-  [...]
-  [  730.868702] stack backtrace:
-  [  730.869590] CPU: 1 PID: 701 Comm: in:imjournal Not tainted, 5.12.0-0.rc2.20210309git144c79ef3353.166.fc35.x86_64 #1
-  [  730.871605] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-  [  730.873278] Call Trace:
-  [  730.873770]  dump_stack+0x7f/0xa1
-  [  730.874433]  check_noncircular+0xdf/0x100
-  [  730.875232]  __lock_acquire+0x1202/0x1e10
-  [  730.876031]  ? __lock_acquire+0xfc0/0x1e10
-  [  730.876844]  lock_acquire+0xc2/0x3a0
-  [  730.877551]  ? __wake_up_common_lock+0x52/0x90
-  [  730.878434]  ? lock_acquire+0xc2/0x3a0
-  [  730.879186]  ? lock_is_held_type+0xa7/0x120
-  [  730.880044]  ? skb_queue_tail+0x1b/0x50
-  [  730.880800]  _raw_spin_lock_irqsave+0x4d/0x90
-  [  730.881656]  ? __wake_up_common_lock+0x52/0x90
-  [  730.882532]  __wake_up_common_lock+0x52/0x90
-  [  730.883375]  audit_log_end+0x5b/0x100
-  [  730.884104]  slow_avc_audit+0x69/0x90
-  [  730.884836]  avc_has_perm+0x8b/0xb0
-  [  730.885532]  selinux_lockdown+0xa5/0xd0
-  [  730.886297]  security_locked_down+0x20/0x40
-  [  730.887133]  bpf_probe_read_compat+0x66/0xd0
-  [  730.887983]  bpf_prog_250599c5469ac7b5+0x10f/0x820
-  [  730.888917]  trace_call_bpf+0xe9/0x240
-  [  730.889672]  perf_trace_run_bpf_submit+0x4d/0xc0
-  [  730.890579]  perf_trace_sched_switch+0x142/0x180
-  [  730.891485]  ? __schedule+0x6d8/0xb20
-  [  730.892209]  __schedule+0x6d8/0xb20
-  [  730.892899]  schedule+0x5b/0xc0
-  [  730.893522]  exit_to_user_mode_prepare+0x11d/0x240
-  [  730.894457]  syscall_exit_to_user_mode+0x27/0x70
-  [  730.895361]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-  [...]
-
-Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-Reported-by: Ondrej Mosnacek <omosnace@redhat.com>
-Reported-by: Jakub Hrozek <jhrozek@redhat.com>
-Reported-by: Serhei Makarov <smakarov@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: Jerome Marchand <jmarchan@redhat.com>
-Cc: Frank Eigler <fche@redhat.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Paul Moore <paul@paul-moore.com>
----
- kernel/bpf/helpers.c     |  6 ++++--
- kernel/trace/bpf_trace.c | 36 +++++++++++++-----------------------
- 2 files changed, 17 insertions(+), 25 deletions(-)
-
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 73443498d88f..6f6e090c5310 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1069,11 +1069,13 @@ bpf_base_func_proto(enum bpf_func_id func_id)
- 	case BPF_FUNC_probe_read_user:
- 		return &bpf_probe_read_user_proto;
- 	case BPF_FUNC_probe_read_kernel:
--		return &bpf_probe_read_kernel_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_kernel_proto;
- 	case BPF_FUNC_probe_read_user_str:
- 		return &bpf_probe_read_user_str_proto;
- 	case BPF_FUNC_probe_read_kernel_str:
--		return &bpf_probe_read_kernel_str_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_kernel_str_proto;
- 	case BPF_FUNC_snprintf_btf:
- 		return &bpf_snprintf_btf_proto;
- 	case BPF_FUNC_snprintf:
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index d2d7cf6cfe83..3df43d89d642 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -215,16 +215,10 @@ const struct bpf_func_proto bpf_probe_read_user_str_proto = {
- static __always_inline int
- bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr)
- {
--	int ret = security_locked_down(LOCKDOWN_BPF_READ);
-+	int ret = copy_from_kernel_nofault(dst, unsafe_ptr, size);
- 
- 	if (unlikely(ret < 0))
--		goto fail;
--	ret = copy_from_kernel_nofault(dst, unsafe_ptr, size);
--	if (unlikely(ret < 0))
--		goto fail;
--	return ret;
--fail:
--	memset(dst, 0, size);
-+		memset(dst, 0, size);
- 	return ret;
- }
- 
-@@ -246,11 +240,6 @@ const struct bpf_func_proto bpf_probe_read_kernel_proto = {
- static __always_inline int
- bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr)
- {
--	int ret = security_locked_down(LOCKDOWN_BPF_READ);
--
--	if (unlikely(ret < 0))
--		goto fail;
--
- 	/*
- 	 * The strncpy_from_kernel_nofault() call will likely not fill the
- 	 * entire buffer, but that's okay in this circumstance as we're probing
-@@ -260,13 +249,10 @@ bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr)
- 	 * code altogether don't copy garbage; otherwise length of string
- 	 * is returned that can be used for bpf_perf_event_output() et al.
- 	 */
--	ret = strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
--	if (unlikely(ret < 0))
--		goto fail;
-+	int ret = strncpy_from_kernel_nofault(dst, unsafe_ptr, size);
- 
--	return ret;
--fail:
--	memset(dst, 0, size);
-+	if (unlikely(ret < 0))
-+		memset(dst, 0, size);
- 	return ret;
- }
- 
-@@ -1011,16 +997,20 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	case BPF_FUNC_probe_read_user:
- 		return &bpf_probe_read_user_proto;
- 	case BPF_FUNC_probe_read_kernel:
--		return &bpf_probe_read_kernel_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_kernel_proto;
- 	case BPF_FUNC_probe_read_user_str:
- 		return &bpf_probe_read_user_str_proto;
- 	case BPF_FUNC_probe_read_kernel_str:
--		return &bpf_probe_read_kernel_str_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_kernel_str_proto;
- #ifdef CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
- 	case BPF_FUNC_probe_read:
--		return &bpf_probe_read_compat_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_compat_proto;
- 	case BPF_FUNC_probe_read_str:
--		return &bpf_probe_read_compat_str_proto;
-+		return security_locked_down(LOCKDOWN_BPF_READ) < 0 ?
-+		       NULL : &bpf_probe_read_compat_str_proto;
- #endif
- #ifdef CONFIG_CGROUPS
- 	case BPF_FUNC_get_current_cgroup_id:
--- 
-2.27.0
-
-
---------------629630DF919F6F51E0188473--
+Michal
