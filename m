@@ -2,192 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7EDA393D0F
-	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 08:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9140393D7D
+	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 09:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhE1G0S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 May 2021 02:26:18 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38708 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhE1G0R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 May 2021 02:26:17 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A03F91FD2E;
-        Fri, 28 May 2021 06:24:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1622183082; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7O16xmQehx80n7fVVBeuMQ81Au9qauhcCf9P3KVa6HM=;
-        b=dGed2PMDS6s5Tjfp2/y9GXu3gsBolu2eTmGGc1lndrnGRe/9lu9xconJyR/NWp+vFTyHia
-        ogcHIXMAiR/mnZBv7Z+x6U2SHwqKo8mXjsmntR9KL/ABoDbN3Ic0Nq80OTIoqsRafLvdhD
-        aP4owL9u2LALkxnsBpQ0pUzQjhF319Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1622183082;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7O16xmQehx80n7fVVBeuMQ81Au9qauhcCf9P3KVa6HM=;
-        b=djEs2zWPnsnI0YOR+Ds9bPwCWxyQOF1MFxYLghSYNHo0acdrwkzj7uJBsLeo0xP6RBe6aa
-        iAxG7WR/wwDO51AA==
-Received: from director2.suse.de (director2.suse-dmz.suse.de [192.168.254.72])
-        by imap.suse.de (Postfix) with ESMTPSA id 8570611A98;
-        Fri, 28 May 2021 06:24:42 +0000 (UTC)
-Date:   Fri, 28 May 2021 08:24:41 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        bpf@vger.kernel.org, jolsa@kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH dwarves] btf_encoder: fix and complete filtering out
- zero-sized per-CPU variables
-Message-ID: <20210528062441.GJ8544@kitsune.suse.cz>
-References: <20210524234222.278676-1-andrii@kernel.org>
- <YK+yzpPKVhNvm7/n@kernel.org>
- <YK+zkOOAUzFYsLBy@kernel.org>
- <20210527152758.GI8544@kitsune.suse.cz>
- <YK+8/lg7ZUJIH7Kv@kernel.org>
- <YK/NLcM9ww2eXlmT@kernel.org>
+        id S231673AbhE1HLh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 May 2021 03:11:37 -0400
+Received: from www62.your-server.de ([213.133.104.62]:43568 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhE1HLh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 May 2021 03:11:37 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lmWd4-0004Br-Bp; Fri, 28 May 2021 09:09:58 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lmWd4-000WOo-1p; Fri, 28 May 2021 09:09:58 +0200
+Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
+ permission checks
+To:     Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>, jolsa@redhat.com
+References: <20210517092006.803332-1-omosnace@redhat.com>
+ <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net>
+Date:   Fri, 28 May 2021 09:09:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YK/NLcM9ww2eXlmT@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26183/Thu May 27 13:07:49 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 27, 2021 at 01:47:41PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Thu, May 27, 2021 at 12:38:38PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Thu, May 27, 2021 at 05:27:58PM +0200, Michal Suchánek escreveu:
-> > > Hello,
-> > > 
-> > > On Thu, May 27, 2021 at 11:58:24AM -0300, Arnaldo Carvalho de Melo wrote:
-> > > > Em Thu, May 27, 2021 at 11:55:10AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > > > Em Mon, May 24, 2021 at 04:42:22PM -0700, Andrii Nakryiko escreveu:
-> > > > > > btf_encoder is ignoring zero-sized per-CPU ELF symbols, but the same has to be
-> > > > > > done for DWARF variables when matching them with ELF symbols. This is due to
-> > > > > > zero-sized DWARF variables matching unrelated (non-zero-sized) variable that
-> > > > > > happens to be allocated at the exact same address, leading to a lot of
-> > > > > > confusion in BTF.
-> > > > >  
-> > > > > > See [0] for when this causes big problems.
-> > > > >  
-> > > > > >   [0] https://lore.kernel.org/bpf/CAEf4BzZ0-sihSL-UAm21JcaCCY92CqfNxycHRZYXcoj8OYb=wA@mail.gmail.com/
-> > > > 
-> > > > I also added this:
-> > > > 
-> > > > Reported-by: Michal Suchánek <msuchanek@suse.de>
-> > > > 
-> > > > Michal, so you tested this patch and verified it fixed the problem? If
-> > > > so please let me know so that I also add:
-> > > 
-> > > This is the first time I see this patch.
-> > > 
-> > > Given that linux-next does not build for me at the moment
-> > > I don't think I will test it soon.
-> > 
-> > Ok, I'm test building with torvalds/master, will try with linux-next
-> > afterwards,
+On 5/28/21 3:37 AM, Paul Moore wrote:
+> On Mon, May 17, 2021 at 5:22 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+>>
+>> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+>> lockdown") added an implementation of the locked_down LSM hook to
+>> SELinux, with the aim to restrict which domains are allowed to perform
+>> operations that would breach lockdown.
+>>
+>> However, in several places the security_locked_down() hook is called in
+>> situations where the current task isn't doing any action that would
+>> directly breach lockdown, leading to SELinux checks that are basically
+>> bogus.
+>>
+>> Since in most of these situations converting the callers such that
+>> security_locked_down() is called in a context where the current task
+>> would be meaningful for SELinux is impossible or very non-trivial (and
+>> could lead to TOCTOU issues for the classic Lockdown LSM
+>> implementation), fix this by modifying the hook to accept a struct cred
+>> pointer as argument, where NULL will be interpreted as a request for a
+>> "global", task-independent lockdown decision only. Then modify SELinux
+>> to ignore calls with cred == NULL.
 > 
-> I build and booted torvalds/master, all seems to work, now moving to
-> linux-next.
+> I'm not overly excited about skipping the access check when cred is
+> NULL.  Based on the description and the little bit that I've dug into
+> thus far it looks like using SECINITSID_KERNEL as the subject would be
+> much more appropriate.  *Something* (the kernel in most of the
+> relevant cases it looks like) is requesting that a potentially
+> sensitive disclosure be made, and ignoring it seems like the wrong
+> thing to do.  Leaving the access control intact also provides a nice
+> avenue to audit these requests should users want to do that.
 
-[    9s] /usr/bin/qemu-kvm -nodefaults -no-reboot -nographic -vga none -cpu host -object rng-random,filename=/dev/random,id=rng0 -device virtio-rng-pci,rng=rng0 -runas qemu -net none -kernel /var/cache/obs/worker/root_2/.mount/boot/kernel -initrd /var/cache/obs/worker/root_2/.mount/boot/initrd -append root=/dev/disk/by-id/virtio-0 rootfstype=ext4 rootflags=noatime ext4.allow_unsupported=1 mitigations=off panic=1 quiet no-kvmclock elevator=noop nmi_watchdog=0 rw rd.driver.pre=binfmt_misc console=ttyS0 init=/.build/build -m 8192 -drive file=/var/cache/obs/worker/root_2/root,format=raw,if=none,id=disk,cache=unsafe -device virtio-blk-pci,drive=disk,serial=0 -drive file=/var/cache/obs/worker/root_2/swap,format=raw,if=none,id=swap,cache=unsafe -device virtio-blk-pci,drive=swap,serial=1 -serial stdio -chardev socket,id=monitor,server,nowait,path=/var/cache/obs/worker/root_2/root.qemu/monitor -mon chardev=monitor,mode=readline -smp 8
-[    9s] c[?7l[2J[0mSeaBIOS (version rel-1.14.0-0-g155821a-rebuilt.opensuse.org)
-[   15s] Booting from ROM..c[?7l[2J### VM INTERACTION END ###
-[   15s] 2nd stage started in virtual machine
-[   15s] machine type: x86_64
-[   15s] Linux version: 5.13.0-rc3-next-2[    5.210478] sysrq: Changing Loglevel
-[   15s] 0210526-2.g3bd43[    5.211566] sysrq: Loglevel set to 4
-[   15s] 9f-vanilla #1 SMP Thu May 27 18:27:17 UTC 2021 (3bd439f)
-[   15s] Increasing log level from now on...
-[   15s] Enable sysrq operations
-[   15s] Setting up swapspace version 1, size = 2 GiB (2097147904 bytes)
-[   15s] no label, UUID=6e22796c-6df5-4859-a291-24acde2e92e5
-[   15s] swapon: /dev/vdb: found signature [pagesize=4096, signature=swap]
-[   15s] swapon: /dev/vdb: pagesize=4096, swapsize=2097152000, devsize=2097152000
-[   15s] swapon /dev/vdb
-[   15s] WARNING: udev not running, creating extra device nodes
-[   15s] logging output to //.build.log...
+I think the rationale/workaround for ignoring calls with cred == NULL (or the previous
+patch with the unimplemented hook) from Ondrej was two-fold, at least speaking for his
+seen tracing cases:
 
-next-20210527 does not build becuase of missing symbol but next-20210526 built with the patched pahole boots.
+   i) The audit events that are triggered due to calls to security_locked_down()
+      can OOM kill a machine, see below details [0].
 
-Tested-by: Michal Suchánek <msuchanek@suse.de>
+  ii) It seems to be causing a deadlock via slow_avc_audit() -> audit_log_end()
+      when presumingly trying to wake up kauditd [1].
 
-Thanks
+How would your suggestion above solve both i) and ii)?
 
-Michal
->  
-> > Thanks,
-> > 
-> > - Arnaldo
-> >  
-> > > Thanks
-> > > 
-> > > Michal
-> > > 
-> > > > 
-> > > > Tested-by: Michal Suchánek <msuchanek@suse.de>
-> > > > 
-> > > > Thanks,
-> > > > 
-> > > > - Arnaldo
-> > > >  
-> > > > > > +++ b/btf_encoder.c
-> > > > > > @@ -550,6 +551,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> > > > > >  
-> > > > > >  		/* addr has to be recorded before we follow spec */
-> > > > > >  		addr = var->ip.addr;
-> > > > > > +		dwarf_name = variable__name(var, cu);
-> > > > > >  
-> > > > > >  		/* DWARF takes into account .data..percpu section offset
-> > > > > >  		 * within its segment, which for vmlinux is 0, but for kernel
-> > > > > > @@ -582,11 +584,9 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> > > > > >  		 *  modules per-CPU data section has non-zero offset so all
-> > > > > >  		 *  per-CPU symbols have non-zero values.
-> > > > > >  		 */
-> > > > > > -		if (var->ip.addr == 0) {
-> > > > > > -			dwarf_name = variable__name(var, cu);
-> > > > > > +		if (var->ip.addr == 0)
-> > > > > >  			if (!dwarf_name || strcmp(dwarf_name, name))
-> > > > > >  				continue;
-> > > > > > -		}
-> > > > > >  
-> > > > > >  		if (var->spec)
-> > > > > >  			var = var->spec;
-> > > > > > @@ -600,6 +600,13 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> > > > > 
-> > > > > I just changed the above hunk to be:
-> > > > > 
-> > > > > @@ -583,7 +585,6 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> > > > >                  *  per-CPU symbols have non-zero values.
-> > > > >                  */
-> > > > >                 if (var->ip.addr == 0) {
-> > > > > -                       dwarf_name = variable__name(var, cu);
-> > > > >                         if (!dwarf_name || strcmp(dwarf_name, name))
-> > > > >                                 continue;
-> > > > >                 }
-> > > > > 
-> > > > > 
-> > > > > Which is shorter and keeps the {} around a multi line if block, ok?
-> > > > > 
-> > > > > Thanks, applied!
-> > > > > 
-> > > > > - Arnaldo
-> > > > 
-> > > > -- 
-> > > > 
-> > > > - Arnaldo
-> > 
-> > -- 
-> > 
-> > - Arnaldo
+[0] https://bugzilla.redhat.com/show_bug.cgi?id=1955585 :
+
+   I starting seeing this with F-34. When I run a container that is traced with eBPF
+   to record the syscalls it is doing, auditd is flooded with messages like:
+
+   type=AVC msg=audit(1619784520.593:282387): avc:  denied  { confidentiality } for
+    pid=476 comm="auditd" lockdown_reason="use of bpf to read kernel RAM"
+     scontext=system_u:system_r:auditd_t:s0 tcontext=system_u:system_r:auditd_t:s0 tclass=lockdown permissive=0
+
+   This seems to be leading to auditd running out of space in the backlog buffer and
+   eventually OOMs the machine.
+
+   auditd running at 99% CPU presumably processing all the messages, eventually I get:
+   Apr 30 12:20:42 fedora kernel: audit: backlog limit exceeded
+   Apr 30 12:20:42 fedora kernel: audit: backlog limit exceeded
+   Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152579 > audit_backlog_limit=64
+   Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152626 > audit_backlog_limit=64
+   Apr 30 12:20:42 fedora kernel: audit: audit_backlog=2152694 > audit_backlog_limit=64
+   Apr 30 12:20:42 fedora kernel: audit: audit_lost=6878426 audit_rate_limit=0 audit_backlog_limit=64
+   Apr 30 12:20:45 fedora kernel: oci-seccomp-bpf invoked oom-killer: gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=-1000
+   Apr 30 12:20:45 fedora kernel: CPU: 0 PID: 13284 Comm: oci-seccomp-bpf Not tainted 5.11.12-300.fc34.x86_64 #1
+   Apr 30 12:20:45 fedora kernel: Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-2.fc32 04/01/2014
+
+[1] https://lore.kernel.org/linux-audit/CANYvDQN7H5tVp47fbYcRasv4XF07eUbsDwT_eDCHXJUj43J7jQ@mail.gmail.com/ :
+
+   Upstream kernel 5.11.0-rc7 and later was found to deadlock during a bpf_probe_read_compat()
+   call within a sched_switch tracepoint. The problem is reproducible with the reg_alloc3
+   testcase from SystemTap's BPF backend testsuite on x86_64 as well as the runqlat,runqslower
+   tools from bcc on ppc64le. Example stack trace from [1]:
+
+   [  730.868702] stack backtrace:
+   [  730.869590] CPU: 1 PID: 701 Comm: in:imjournal Not tainted, 5.12.0-0.rc2.20210309git144c79ef3353.166.fc35.x86_64 #1
+   [  730.871605] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
+   [  730.873278] Call Trace:
+   [  730.873770]  dump_stack+0x7f/0xa1
+   [  730.874433]  check_noncircular+0xdf/0x100
+   [  730.875232]  __lock_acquire+0x1202/0x1e10
+   [  730.876031]  ? __lock_acquire+0xfc0/0x1e10
+   [  730.876844]  lock_acquire+0xc2/0x3a0
+   [  730.877551]  ? __wake_up_common_lock+0x52/0x90
+   [  730.878434]  ? lock_acquire+0xc2/0x3a0
+   [  730.879186]  ? lock_is_held_type+0xa7/0x120
+   [  730.880044]  ? skb_queue_tail+0x1b/0x50
+   [  730.880800]  _raw_spin_lock_irqsave+0x4d/0x90
+   [  730.881656]  ? __wake_up_common_lock+0x52/0x90
+   [  730.882532]  __wake_up_common_lock+0x52/0x90
+   [  730.883375]  audit_log_end+0x5b/0x100
+   [  730.884104]  slow_avc_audit+0x69/0x90
+   [  730.884836]  avc_has_perm+0x8b/0xb0
+   [  730.885532]  selinux_lockdown+0xa5/0xd0
+   [  730.886297]  security_locked_down+0x20/0x40
+   [  730.887133]  bpf_probe_read_compat+0x66/0xd0
+   [  730.887983]  bpf_prog_250599c5469ac7b5+0x10f/0x820
+   [  730.888917]  trace_call_bpf+0xe9/0x240
+   [  730.889672]  perf_trace_run_bpf_submit+0x4d/0xc0
+   [  730.890579]  perf_trace_sched_switch+0x142/0x180
+   [  730.891485]  ? __schedule+0x6d8/0xb20
+   [  730.892209]  __schedule+0x6d8/0xb20
+   [  730.892899]  schedule+0x5b/0xc0
+   [  730.893522]  exit_to_user_mode_prepare+0x11d/0x240
+   [  730.894457]  syscall_exit_to_user_mode+0x27/0x70
+   [  730.895361]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+>> Since most callers will just want to pass current_cred() as the cred
+>> parameter, rename the hook to security_cred_locked_down() and provide
+>> the original security_locked_down() function as a simple wrapper around
+>> the new hook.
+[...]
 > 
-> -- 
+>> 3. kernel/trace/bpf_trace.c:bpf_probe_read_kernel{,_str}_common()
+>>       Called when a BPF program calls a helper that could leak kernel
+>>       memory. The task context is not relevant here, since the program
+>>       may very well be run in the context of a different task than the
+>>       consumer of the data.
+>>       See: https://bugzilla.redhat.com/show_bug.cgi?id=1955585
 > 
-> - Arnaldo
+> The access control check isn't so much who is consuming the data, but
+> who is requesting a potential violation of a "lockdown", yes?  For
+> example, the SELinux policy rule for the current lockdown check looks
+> something like this:
+> 
+>    allow <who> <who> : lockdown { <reason> };
+> 
+> It seems to me that the task context is relevant here and performing
+> the access control check based on the task's domain is correct.
+This doesn't make much sense to me, it's /not/ the task 'requesting a potential
+violation of a "lockdown"', but rather the running tracing program which is e.g.
+inspecting kernel data structures around the triggered event. If I understood
+you correctly, having an 'allow' check on, say, httpd would be rather odd since
+things like perf/bcc/bpftrace/systemtap/etc is installing the tracing probe instead.
+
+Meaning, if we would /not/ trace such events (like in the prior mentioned syscall
+example), then there is also no call to the security_locked_down() from that same/
+unmodified application.
+
+Thanks,
+Daniel
