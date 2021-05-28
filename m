@@ -2,141 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC4C394086
-	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 12:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E85273940BC
+	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 12:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236122AbhE1KCC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 May 2021 06:02:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236356AbhE1KBw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 May 2021 06:01:52 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA50EC061761;
-        Fri, 28 May 2021 03:00:16 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id g18so2859071pfr.2;
-        Fri, 28 May 2021 03:00:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=XkhajJbVENw05gdm0/64f1bFmGYssSVOr17T3Gt0/TA=;
-        b=OGyzp5KG7AHufFdzzq7prRUBmxGSWx5buDkbnOOI6Upr/hoTqaCW/YmXcoyWHFODK8
-         Qi5xl8fYevu5ZJ+AOL5VNsxnkKzOMsCPxKz4iJ/QtYhzruIilsr9f4Abc8n5r/S2Vwzn
-         rCGB0m80A8TH9VRD+DVB+fi/MleJ1qKTMvE7tkRPaM5H2JHBPDGdqlAsfhcgwjEbMoj8
-         NwaZpuy8mDWIpisgf5yuxVIdTLBjKP8rEpUWTR2WyT13iUzZVN9EMQ0sskhLM1IadNkb
-         +geO8JBC5s00S5TGVNudqVMsaAegJYgRrPWa33LhH3biQpBff9ooRuEp01lz/LoliRSe
-         H6pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=XkhajJbVENw05gdm0/64f1bFmGYssSVOr17T3Gt0/TA=;
-        b=da4Sb+IMH3T0LpLQrYYPExR48wOOmIzdD3NoJyTdM+T0rrrK0CkMGPDFhDQxvscUMd
-         /YDFJakvfTrOUuc8JfXUtmldBh5UclaF0o92TbY3qMFgCeeyyVPqPMqI9pPMOWZKKq0W
-         vjta9cPi2ekrQ9CU/9yBAv6rf1d7BoUnYFXKwkfyESUdBLNFbJuu+2CP5kUOlBZ//uf0
-         RVTN8SzcjSXt5NbG6DyYMT4GgNZ4dCiTe49W96r5hURQcuquQZCIK1EQ2s6kU/SYl+Qm
-         TDNJ83mKF5ivezeoNTjFFFvjRF7VYCqqWpUgeDFi2jZwzNvE4UTLeldRjwZYWS6Pd3/O
-         5QHA==
-X-Gm-Message-State: AOAM530ajyKIxio7xo5S63MpoXlXab1zI7557x1fGAVae0k6zH0f0pLC
-        yG9/EsGhapU+bV1zBSTs4QeDiZR6xJxq5mqr6J8=
-X-Google-Smtp-Source: ABdhPJzpHzych1ZR/lCf/I1GJFWkEX3bq9CrKC/JOR6cXsfHlRhWYM5vyYGtS7dzZujHidAOb/oBtymZ56fJZnqgl9E=
-X-Received: by 2002:a63:7056:: with SMTP id a22mr8258180pgn.292.1622196016295;
- Fri, 28 May 2021 03:00:16 -0700 (PDT)
+        id S236395AbhE1KOO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 May 2021 06:14:14 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:58024 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236551AbhE1KON (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 May 2021 06:14:13 -0400
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxL0MNwrBgJ8YFAA--.5536S3;
+        Fri, 28 May 2021 18:12:29 +0800 (CST)
+Subject: Re: [PATCH 4.19 00/12] bpf: fix verifier selftests, add
+ CVE-2021-29155 fixes
+To:     Ovidiu Panait <ovidiu.panait@windriver.com>, stable@vger.kernel.org
+References: <20210527173732.20860-1-ovidiu.panait@windriver.com>
+Cc:     fllinden@amazon.com, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, yhs@fb.com, john.fastabend@gmail.com,
+        samjonas@amazon.com
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <3d25a908-6d1a-482f-106b-5d894c3cab87@loongson.cn>
+Date:   Fri, 28 May 2021 18:12:29 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-References: <87im33grtt.fsf@toke.dk> <1622192521.5931044-1-xuanzhuo@linux.alibaba.com>
- <20210528115003.37840424@carbon>
-In-Reply-To: <20210528115003.37840424@carbon>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Fri, 28 May 2021 12:00:05 +0200
-Message-ID: <CAJ8uoz2bhfsk4XX--cNB-gKczx0jZENB5kdthoWkuyxcOHQfjg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] xsk: support AF_PACKET
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Xie He <xie.he.0141@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Wang Hai <wanghai38@huawei.com>,
-        Tanner Love <tannerlove@google.com>,
-        Eyal Birger <eyal.birger@gmail.com>,
-        Menglong Dong <dong.menglong@zte.com.cn>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210527173732.20860-1-ovidiu.panait@windriver.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxL0MNwrBgJ8YFAA--.5536S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7GrWUXFWUCr4xWrWkXFW8Zwb_yoWxZFXEkr
+        W3WFZ8Crn8Ar4UWay2yFyxurn8KrW3X3WSya40vwn5G3s5XFn5JFsaga4rAr93u3WfCrsr
+        JF13Gws5XFyY9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIAYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWxJVW8Jr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l
+        c2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+        0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+        tVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+        CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxU75l1DUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 28, 2021 at 11:52 AM Jesper Dangaard Brouer
-<brouer@redhat.com> wrote:
+On 05/28/2021 01:37 AM, Ovidiu Panait wrote:
+> This patchset is based on Frank van der Linden's backport of CVE-2021-29155
+> fixes to 5.4 and 4.14:
+> https://lore.kernel.org/stable/20210429220839.15667-1-fllinden@amazon.com/
+> https://lore.kernel.org/stable/20210501043014.33300-1-fllinden@amazon.com/
 >
-> On Fri, 28 May 2021 17:02:01 +0800
-> Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+> With this series, all verifier selftests but one (that has already been
+> failing, see [1] for more details) succeed.
 >
-> > On Fri, 28 May 2021 10:55:58 +0200, Toke H=C3=B8iland-J=C3=B8rgensen <t=
-oke@redhat.com> wrote:
-> > > Xuan Zhuo <xuanzhuo@linux.alibaba.com> writes:
-> > >
-> > > > In xsk mode, users cannot use AF_PACKET(tcpdump) to observe the cur=
-rent
-> > > > rx/tx data packets. This feature is very important in many cases. S=
-o
-> > > > this patch allows AF_PACKET to obtain xsk packages.
-> > >
-> > > You can use xdpdump to dump the packets from the XDP program before i=
-t
-> > > gets redirected into the XSK:
-> > > https://github.com/xdp-project/xdp-tools/tree/master/xdp-dump
-> >
-> > Wow, this is a good idea.
->
-> Yes, it is rather cool (credit to Eelco).  Notice the extra info you
-> can capture from 'exit', like XDP return codes, if_index, rx_queue.
->
-> The tool uses the perf ring-buffer to send/copy data to userspace.
-> This is actually surprisingly fast, but I still think AF_XDP will be
-> faster (but it usually 'steals' the packet).
->
-> Another (crazy?) idea is to extend this (and xdpdump), is to leverage
-> Hangbin's recent XDP_REDIRECT extension e624d4ed4aa8 ("xdp: Extend
-> xdp_redirect_map with broadcast support").  We now have a
-> xdp_redirect_map flag BPF_F_BROADCAST, what if we create a
-> BPF_F_CLONE_PASS flag?
->
-> The semantic meaning of BPF_F_CLONE_PASS flag is to copy/clone the
-> packet for the specified map target index (e.g AF_XDP map), but
-> afterwards it does like veth/cpumap and creates an SKB from the
-> xdp_frame (see __xdp_build_skb_from_frame()) and send to netstack.
-> (Feel free to kick me if this doesn't make any sense)
 
-This would be a smooth way to implement clone support for AF_XDP. If
-we had this and someone added AF_XDP support to libpcap, we could both
-capture AF_XDP traffic with tcpdump (using this clone functionality in
-the XDP program) and speed up tcpdump for dumping traffic destined for
-regular sockets. Would that solve your use case Xuan? Note that I have
-not looked into the BPF_F_CLONE_PASS code, so do not know at this
-point what it would take to support this for XSKMAPs.
+Hi,
 
-> --
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
->
+It seems that some patches about F_NEEDS_EFFICIENT_UNALIGNED_ACCESS
+are also needed?
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/?qt=grep&q=F_NEEDS_EFFICIENT_UNALIGNED_ACCESS
+
