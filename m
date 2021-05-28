@@ -2,105 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC0C3940C3
-	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 12:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BBA139414A
+	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 12:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236395AbhE1KR5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 May 2021 06:17:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49031 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235818AbhE1KR4 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 28 May 2021 06:17:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622196981;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/MeyHq86FYDiQmED7OBAcxclfCXwOV7n7cri6A9SGbY=;
-        b=X7BA7+z8QgdxdzcGc9AhmE6QzTJU/EN+quHxOYpPYwDucX8aTlNWrjQjGzmP+T+3IPtFw5
-        9oIRDIJLy41acRa7crFdl6pAoIGuFLOywesapKU6HHM+gVRXam5hcL9haUndNHEmPrl4C0
-        yPGSjI50jSQjzHEn+y2wgwBYrkluDU0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-539-jVuwpz2AP6aXM8xrP8ldEQ-1; Fri, 28 May 2021 06:16:19 -0400
-X-MC-Unique: jVuwpz2AP6aXM8xrP8ldEQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 72687801817;
-        Fri, 28 May 2021 10:16:17 +0000 (UTC)
-Received: from krava (unknown [10.40.192.177])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9709250450;
-        Fri, 28 May 2021 10:16:12 +0000 (UTC)
-Date:   Fri, 28 May 2021 12:16:11 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        andrii.nakryiko@gmail.com
-Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
- permission checks
-Message-ID: <YLDC6zQUtoITdX4s@krava>
-References: <20210517092006.803332-1-omosnace@redhat.com>
- <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
- <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net>
- <4fee8c12-194f-3f85-e28b-f7f24ab03c91@iogearbox.net>
+        id S236170AbhE1KpW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 May 2021 06:45:22 -0400
+Received: from www62.your-server.de ([213.133.104.62]:56136 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236445AbhE1KpV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 May 2021 06:45:21 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lmZda-000470-4j; Fri, 28 May 2021 12:22:42 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lmZdZ-000J69-Kk; Fri, 28 May 2021 12:22:41 +0200
+Subject: Re: [PATCH bpf-next] xsk: support AF_PACKET
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Xie He <xie.he.0141@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Wang Hai <wanghai38@huawei.com>,
+        Tanner Love <tannerlove@google.com>,
+        Eyal Birger <eyal.birger@gmail.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+References: <87im33grtt.fsf@toke.dk>
+ <1622192521.5931044-1-xuanzhuo@linux.alibaba.com>
+ <20210528115003.37840424@carbon>
+ <CAJ8uoz2bhfsk4XX--cNB-gKczx0jZENB5kdthoWkuyxcOHQfjg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f90b1066-a962-ba38-a5b5-ac59a13d4dd1@iogearbox.net>
+Date:   Fri, 28 May 2021 12:22:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4fee8c12-194f-3f85-e28b-f7f24ab03c91@iogearbox.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <CAJ8uoz2bhfsk4XX--cNB-gKczx0jZENB5kdthoWkuyxcOHQfjg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26183/Thu May 27 13:07:49 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 28, 2021 at 11:56:02AM +0200, Daniel Borkmann wrote:
-
-SNIP
-
+On 5/28/21 12:00 PM, Magnus Karlsson wrote:
+> On Fri, May 28, 2021 at 11:52 AM Jesper Dangaard Brouer
+> <brouer@redhat.com> wrote:
+>> On Fri, 28 May 2021 17:02:01 +0800
+>> Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+>>> On Fri, 28 May 2021 10:55:58 +0200, Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>>> Xuan Zhuo <xuanzhuo@linux.alibaba.com> writes:
+>>>>
+>>>>> In xsk mode, users cannot use AF_PACKET(tcpdump) to observe the current
+>>>>> rx/tx data packets. This feature is very important in many cases. So
+>>>>> this patch allows AF_PACKET to obtain xsk packages.
+>>>>
+>>>> You can use xdpdump to dump the packets from the XDP program before it
+>>>> gets redirected into the XSK:
+>>>> https://github.com/xdp-project/xdp-tools/tree/master/xdp-dump
+>>>
+>>> Wow, this is a good idea.
+>>
+>> Yes, it is rather cool (credit to Eelco).  Notice the extra info you
+>> can capture from 'exit', like XDP return codes, if_index, rx_queue.
+>>
+>> The tool uses the perf ring-buffer to send/copy data to userspace.
+>> This is actually surprisingly fast, but I still think AF_XDP will be
+>> faster (but it usually 'steals' the packet).
+>>
+>> Another (crazy?) idea is to extend this (and xdpdump), is to leverage
+>> Hangbin's recent XDP_REDIRECT extension e624d4ed4aa8 ("xdp: Extend
+>> xdp_redirect_map with broadcast support").  We now have a
+>> xdp_redirect_map flag BPF_F_BROADCAST, what if we create a
+>> BPF_F_CLONE_PASS flag?
+>>
+>> The semantic meaning of BPF_F_CLONE_PASS flag is to copy/clone the
+>> packet for the specified map target index (e.g AF_XDP map), but
+>> afterwards it does like veth/cpumap and creates an SKB from the
+>> xdp_frame (see __xdp_build_skb_from_frame()) and send to netstack.
+>> (Feel free to kick me if this doesn't make any sense)
 > 
-> Ondrej / Paul / Jiri: at least for the BPF tracing case specifically (I haven't looked
-> at the rest but it's also kind of independent), the attached fix should address both
-> reported issues, please take a look & test.
-> 
-> Thanks a lot,
-> Daniel
+> This would be a smooth way to implement clone support for AF_XDP. If
+> we had this and someone added AF_XDP support to libpcap, we could both
+> capture AF_XDP traffic with tcpdump (using this clone functionality in
+> the XDP program) and speed up tcpdump for dumping traffic destined for
+> regular sockets. Would that solve your use case Xuan? Note that I have
+> not looked into the BPF_F_CLONE_PASS code, so do not know at this
+> point what it would take to support this for XSKMAPs.
 
-> From 5893ad528dc0a0a68933b8f2a81b18d3f539660d Mon Sep 17 00:00:00 2001
-> From: Daniel Borkmann <daniel@iogearbox.net>
-> Date: Fri, 28 May 2021 09:16:31 +0000
-> Subject: [PATCH bpf] bpf, audit, lockdown: Fix bogus SELinux lockdown permission checks
-> 
-> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-> added an implementation of the locked_down LSM hook to SELinux, with the aim
-> to restrict which domains are allowed to perform operations that would breach
-> lockdown. This is indirectly also getting audit subsystem involved to report
-> events. The latter is problematic, as reported by Ondrej and Serhei, since it
-> can bring down the whole system via audit:
-> 
->   i) The audit events that are triggered due to calls to security_locked_down()
->      can OOM kill a machine, see below details [0].
-> 
->  ii) It seems to be causing a deadlock via slow_avc_audit() -> audit_log_end()
->      when presumingly trying to wake up kauditd [1].
-> 
-> Fix both at the same time by taking a completely different approach, that is,
-> move the check into the program verification phase where we actually retrieve
-> the func proto. This also reliably gets the task (current) that is trying to
-> install the tracing program, e.g. bpftrace/bcc/perf/systemtap/etc, and it also
-> fixes the OOM since we're moving this out of the BPF helpers which can be called
-> millions of times per second.
+Recently also ended up with something similar for our XDP LB to record pcaps [0] ;)
+My question is.. tcpdump doesn't really care where the packet data comes from,
+so why not extending libpcap's Linux-related internals to either capture from
+perf RB or BPF ringbuf rather than AF_PACKET sockets? Cloning is slow, and if
+you need to end up creating an skb which is then cloned once again inside AF_PACKET
+it's even worse. Just relying and reading out, say, perf RB you don't need any
+clones at all.
 
-nice idea.. I'll try to reproduce and test
+Thanks,
+Daniel
 
-jirka
-
+   [0] https://cilium.io/blog/2021/05/20/cilium-110#pcap
