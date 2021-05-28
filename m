@@ -2,205 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231C1393B16
-	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 03:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C9F393B52
+	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 04:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235378AbhE1BjV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 May 2021 21:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
+        id S235818AbhE1CMp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 May 2021 22:12:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234910AbhE1BjU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 May 2021 21:39:20 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838A7C06174A
-        for <bpf@vger.kernel.org>; Thu, 27 May 2021 18:37:45 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id z12so3076501ejw.0
-        for <bpf@vger.kernel.org>; Thu, 27 May 2021 18:37:45 -0700 (PDT)
+        with ESMTP id S234834AbhE1CMn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 May 2021 22:12:43 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE895C061574
+        for <bpf@vger.kernel.org>; Thu, 27 May 2021 19:11:08 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id i13so3042355edb.9
+        for <bpf@vger.kernel.org>; Thu, 27 May 2021 19:11:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=riotgames.com; s=riotgames;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OCl/OoNf08gbSAkv21GdMjWI/U5EK/VtpzFkOjaRXDc=;
-        b=POerS0Ux4ct2bWMhkrOhHCReDGmKwGq49OtylDhjF9lBGQePK0TFjOCijyW8C1Kp/o
-         Xh/madiE0TnJlXbz8A9quFOg+/RI5jAUOif+6JsRURl3t/ze4YQnI44921ViT1tdrrM4
-         HjuPpQdlOCOYZPPbHCLCzTx/HQU+AEBcGTknBjcNeZrWDZ8YoRD7/wVOL3h3fMalQU3w
-         RHKDeBAQIYl6E/bgA3OnVAijXoVpCgmqz+qBj1zfhN7HjvWBWklw9U4UDflAOFogdwNn
-         LQdislTgKFgkdjsNn26pf+B5s1Ifqow6EwLkeFnrksRVYEWkqLWG9JczSwAXar565r2c
-         BXqw==
+        bh=dhWqc7luBqopDDE1vxw6mdGkufVV95ZXdV0JPppZwnk=;
+        b=Gwg5a1zG/eR0L3v7/o+zaP/WtuRNlxJa3rlm1JSA/6YX1xyJNfS5urHcqCNdcpYMF3
+         AxbYMGqSA04CpMher0XD9WcwZSLMfBSDjiKdLmL9rLBwPi04BRJ9HFaRu9kXJimVWoX2
+         /Tjb8hzMH1kmF+1m7P+uAHYmmLr77FUGbloUo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OCl/OoNf08gbSAkv21GdMjWI/U5EK/VtpzFkOjaRXDc=;
-        b=dF7KL0RJ+x+kLL1vWjJIMqpeVRiSJNnX+Jf+ADQmbGgIVR+/YwcekyBb5FrfZYrcPa
-         aJqL8uhZCJ2sQ3/Fhxq7ORR8l57cWak3Iv41a6Aa4BWvxOkP86Si7KZVpRrELcXBsjwk
-         YeVbTTVvyCQE4diUiz6kpph3ORfsPj9JAmcjngurRh4tvt5hRWnIjmIRKyCg2pDe4N1F
-         dzUonFW9V5TDod9/SFyXyPSg9iomGBvGllecU+uuYHwkglNA2cRxaxPxxIksplfH11Zo
-         dcVrVhxUtEEOMsO8zZo5S8+60YBhUNP+j0N6gOCUk9VnMJus6BxXTwJ+CvzkwhD2Y9sc
-         5NnA==
-X-Gm-Message-State: AOAM530koIBEv9OTmxy/g+a67L1j++QFrpVAvJd2vQ7NKJsstwbnBNVh
-        qLUHyVnQOeTn1pQn4UvyrNP82KyZKKzz9J1ZDShD
-X-Google-Smtp-Source: ABdhPJxLOItL9vdGc/YxGb4zM3gCgphGyyxSx8AHRjJ/9K0sjs3QF6XIJzfJvXSrGS6ej4rkXclv/bfnao0YEc+kFow=
-X-Received: by 2002:a17:906:b2ce:: with SMTP id cf14mr6910759ejb.178.1622165863989;
- Thu, 27 May 2021 18:37:43 -0700 (PDT)
+        bh=dhWqc7luBqopDDE1vxw6mdGkufVV95ZXdV0JPppZwnk=;
+        b=rPV4pZMMxy9UGBr7FFtv5piWr3dOftaCyyJiD4ZEA6s3M4+5t1h6sJEJ3bo9vfMO3K
+         bLJGfKJpN28sSL0jtIHXo1LFgVowvUrlcFeuAAAtkHbz+LU+KaDX2q8+HDhllmA2GKLl
+         20VeoVf/FpUzaaQJOXdaRP3m6AKeDV2r5uaMidue1Pv54jzQZtxGPldsLlVEOj0m2vs0
+         sW6TFyv1Q6VrcL35ETp5XuZgKVApnk6ZmdwboTOLBZy/Ajg6fWp1kpuqUqe2vqaVvNH2
+         is9cG3wlqfOOZ2uSKb++87dCh/rmIuw4J5k1mdzObz47KNi2hsrO/UG9AMbD2EZdOg40
+         KfDw==
+X-Gm-Message-State: AOAM532LdHnBBKUfRHRS2sg0S3NaO4TrQfipEFd2keEJ0/EUxbBtTrKR
+        0nohpxB2FXhtVghONB2J2A9WP09rYPaTrTk17ZqhCg==
+X-Google-Smtp-Source: ABdhPJz4pJQ5QXKgcpzXmDdQ92DSXOhVJq83D6HQCvzpOtsFa0DBEyijkkibhDuEA2rt71FBLqFdYHSt4Y8c7VsANMA=
+X-Received: by 2002:aa7:da94:: with SMTP id q20mr6250785eds.316.1622167867327;
+ Thu, 27 May 2021 19:11:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210517092006.803332-1-omosnace@redhat.com>
-In-Reply-To: <20210517092006.803332-1-omosnace@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 27 May 2021 21:37:33 -0400
-Message-ID: <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
-Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
- permission checks
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>
+References: <20210527201341.7128-1-zeffron@riotgames.com> <20210527201341.7128-4-zeffron@riotgames.com>
+ <CAEf4Bzb=ECAtJAikaeSLomQCcwNC7JnwZxPc=j3=YnPjnfaycg@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb=ECAtJAikaeSLomQCcwNC7JnwZxPc=j3=YnPjnfaycg@mail.gmail.com>
+From:   Zvi Effron <zeffron@riotgames.com>
+Date:   Thu, 27 May 2021 19:10:56 -0700
+Message-ID: <CAC1LvL1JM4Wu43XU4aVHHheChtSQQmKRx7RaVBG5Kmkt-edbBA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/3] selftests/bpf: Add test for xdp_md
+ context in BPF_PROG_TEST_RUN
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Cody Haas <chaas@riotgames.com>,
+        Lisa Watanabe <lwatanabe@riotgames.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 17, 2021 at 5:22 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+On Thu, May 27, 2021 at 6:28 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
-> lockdown") added an implementation of the locked_down LSM hook to
-> SELinux, with the aim to restrict which domains are allowed to perform
-> operations that would breach lockdown.
+> On Thu, May 27, 2021 at 1:14 PM Zvi Effron <zeffron@riotgames.com> wrote:
+> >
+> > +
+> > +       /* Data past the end of the kernel's struct xdp_md must be 0 */
+> > +       bad_ctx[sizeof(bad_ctx) - 1] = 1;
+> > +       tattr.ctx_in = bad_ctx;
+> > +       tattr.ctx_size_in = sizeof(bad_ctx);
+> > +       err = bpf_prog_test_run_opts(prog_fd, &tattr);
+> > +       ASSERT_ERR(err, "bpf_prog_test_run(test2)");
+> > +       ASSERT_EQ(errno, 22, "test2-errno");
 >
-> However, in several places the security_locked_down() hook is called in
-> situations where the current task isn't doing any action that would
-> directly breach lockdown, leading to SELinux checks that are basically
-> bogus.
->
-> Since in most of these situations converting the callers such that
-> security_locked_down() is called in a context where the current task
-> would be meaningful for SELinux is impossible or very non-trivial (and
-> could lead to TOCTOU issues for the classic Lockdown LSM
-> implementation), fix this by modifying the hook to accept a struct cred
-> pointer as argument, where NULL will be interpreted as a request for a
-> "global", task-independent lockdown decision only. Then modify SELinux
-> to ignore calls with cred == NULL.
+> by the time you are checking errno it might get overwritten. If you
+> want to check errno, you have to remember it right after the function
+> returns
 
-I'm not overly excited about skipping the access check when cred is
-NULL.  Based on the description and the little bit that I've dug into
-thus far it looks like using SECINITSID_KERNEL as the subject would be
-much more appropriate.  *Something* (the kernel in most of the
-relevant cases it looks like) is requesting that a potentially
-sensitive disclosure be made, and ignoring it seems like the wrong
-thing to do.  Leaving the access control intact also provides a nice
-avenue to audit these requests should users want to do that.
-
-Those users that generally don't care can grant kernel_t all the
-necessary permissions without much policy.
-
-> Since most callers will just want to pass current_cred() as the cred
-> parameter, rename the hook to security_cred_locked_down() and provide
-> the original security_locked_down() function as a simple wrapper around
-> the new hook.
-
-I know you and Casey went back and forth on this in v1, but I agree
-with Casey that having two LSM hooks here is a mistake.  I know it
-makes backports hard, but spoiler alert: maintaining complex software
-over any non-trivial period of time is hard, reeeeally hard sometimes
-;)
-
-> The callers migrated to the new hook, passing NULL as cred:
-> 1. arch/powerpc/xmon/xmon.c
->      Here the hook seems to be called from non-task context and is only
->      used for redacting some sensitive values from output sent to
->      userspace.
-
-This definitely sounds like kernel_t based on the description above.
-
-> 2. fs/tracefs/inode.c:tracefs_create_file()
->      Here the call is used to prevent creating new tracefs entries when
->      the kernel is locked down. Assumes that locking down is one-way -
->      i.e. if the hook returns non-zero once, it will never return zero
->      again, thus no point in creating these files.
-
-More kernel_t.
-
-> 3. kernel/trace/bpf_trace.c:bpf_probe_read_kernel{,_str}_common()
->      Called when a BPF program calls a helper that could leak kernel
->      memory. The task context is not relevant here, since the program
->      may very well be run in the context of a different task than the
->      consumer of the data.
->      See: https://bugzilla.redhat.com/show_bug.cgi?id=1955585
-
-The access control check isn't so much who is consuming the data, but
-who is requesting a potential violation of a "lockdown", yes?  For
-example, the SELinux policy rule for the current lockdown check looks
-something like this:
-
-  allow <who> <who> : lockdown { <reason> };
-
-It seems to me that the task context is relevant here and performing
-the access control check based on the task's domain is correct.  If we
-are also concerned about who has access to this sensitive information
-once it has been determined that the task can cause it to be sent, we
-should have another check point for that, assuming the access isn't
-already covered by another check/hook.
-
-> 4. net/xfrm/xfrm_user.c:copy_to_user_*()
->      Here a cryptographic secret is redacted based on the value returned
->      from the hook. There are two possible actions that may lead here:
->      a) A netlink message XFRM_MSG_GETSA with NLM_F_DUMP set - here the
->         task context is relevant, since the dumped data is sent back to
->         the current task.
-
-If the task context is relevant we should use it.
-
->      b) When deleting an SA via XFRM_MSG_DELSA, the dumped SAs are
->         broadcasted to tasks subscribed to XFRM events - here the
->         SELinux check is not meningful as the current task's creds do
->         not represent the tasks that could potentially see the secret.
-
-This looks very similar to the BPF hook discussed above, I believe my
-comments above apply here as well.
-
->      It really doesn't seem worth it to try to preserve the check in the
->      a) case ...
-
-After you've read all of the above I hope you can understand why I
-disagree with this.
-
->      ... since the eventual leak can be circumvented anyway via b)
-
-I don't follow the statement above ... ?  However I'm not sure it
-matters much considering my other concerns.
-
->      plus there is no way for the task to indicate that it doesn't care
->      about the actual key value, so the check could generate a lot of
->      noise.
->
-> Improvements-suggested-by: Casey Schaufler <casey@schaufler-ca.com>
-> Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-> ---
->
-> v2:
-> - change to a single hook based on suggestions by Casey Schaufler
->
-> v1: https://lore.kernel.org/lkml/20210507114048.138933-1-omosnace@redhat.com/
->
->  arch/powerpc/xmon/xmon.c      |  4 ++--
->  fs/tracefs/inode.c            |  2 +-
->  include/linux/lsm_hook_defs.h |  3 ++-
->  include/linux/lsm_hooks.h     |  3 ++-
->  include/linux/security.h      | 11 ++++++++---
->  kernel/trace/bpf_trace.c      |  4 ++--
->  net/xfrm/xfrm_user.c          |  2 +-
->  security/lockdown/lockdown.c  |  5 +++--
->  security/security.c           |  6 +++---
->  security/selinux/hooks.c      | 12 +++++++++---
->  10 files changed, 33 insertions(+), 19 deletions(-)
-
--- 
-paul moore
-www.paul-moore.com
+Is it sufficient to simply make the errno ASSERT the first thing after
+the function returns? Or would we still need to preserve it into a
+local variable?
