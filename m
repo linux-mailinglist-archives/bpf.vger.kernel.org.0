@@ -2,150 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44AC6393FB0
-	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 11:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D895393FE1
+	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 11:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235842AbhE1JSZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 May 2021 05:18:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25737 "EHLO
+        id S235491AbhE1J1i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 May 2021 05:27:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37748 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234703AbhE1JSY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 28 May 2021 05:18:24 -0400
+        by vger.kernel.org with ESMTP id S235393AbhE1J1h (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 28 May 2021 05:27:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622193410;
+        s=mimecast20190719; t=1622193962;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UqGUmWxUI1aVI5m8Eebociw05Yq3S7eC/phq5U0Gnwg=;
-        b=Knomo7GU8ff6nKxUb5RY7ohiUaYcwC4kw7OX1wGlEsmGEWul7z2cCQ2Z91FMp+63agZcjM
-        qvvT7fD3yvbuenKZhXz/pLj9X2GJI8Uw4gLl5q+HjWne1SnwaWXJSXMbn/t2AcXAwNPtNI
-        RhvcxM58WXhNzTCIcVyLA5yu2+Nju+E=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-577-thsCj7aGPX-o02BdM-llhA-1; Fri, 28 May 2021 05:16:48 -0400
-X-MC-Unique: thsCj7aGPX-o02BdM-llhA-1
-Received: by mail-ed1-f72.google.com with SMTP id cn20-20020a0564020cb4b029038d0b0e183fso1801288edb.22
-        for <bpf@vger.kernel.org>; Fri, 28 May 2021 02:16:48 -0700 (PDT)
+        bh=rCZj0KeRsRDbORMk4xZQhbpJRGIsjZXeaT4F9o2C3zo=;
+        b=iJyRRJ8VCFkl7m8wlCkQTjri9SOjUSJ1bQ7kKvucD1pxS1itGI2sW4RW6yPpWowxAm8IqD
+        vuTWh8QDO+sTvc2M7AlPhwQqKd4H3RboyfZmW3paowBtHKZr7PSb0xxDx/gZ5Zgu3BfVyn
+        QWTn40QUroAjn+LjtJbdctvAY5Yvies=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-DDxOVsiVMLSv1zzm7BR7OA-1; Fri, 28 May 2021 05:25:59 -0400
+X-MC-Unique: DDxOVsiVMLSv1zzm7BR7OA-1
+Received: by mail-ej1-f69.google.com with SMTP id x20-20020a1709061354b02903cff4894505so916351ejb.14
+        for <bpf@vger.kernel.org>; Fri, 28 May 2021 02:25:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=UqGUmWxUI1aVI5m8Eebociw05Yq3S7eC/phq5U0Gnwg=;
-        b=OBvbBDntGcUEe9QBzgkKKOwfzD1aptN4nOoAIThj4wS9OftWMJH44gamUm9949tVwV
-         qUnueQY5rB9R5xRrU+s50Nwl3L+m9cHJ8MUz6WKqAI7N8NO9+0qhIbsdsa5IZTM3Ez1T
-         RfDu5Vlf+sIRFJUvvv8eNbUJHvSxtqK4MMhq9axW3/cWon67tb+Ep780OZH/CY+ev8no
-         kkAPYbLcrqCgORXzKse6pdgQzl1O42wrwEdolVw3edgexeoEij7phtUfbnvqCDnGrtig
-         UqP45zfN2k0FrwVj+YxhNswRYIxsz2LA/z7mxnMrv1PFff5vYj7UBiz4CdtxYU8ZkndS
-         mA+Q==
-X-Gm-Message-State: AOAM533QK75+cfMdHOd6XQQXLMcbcXUR5nvKlFQiQ0mAhr5mUZHz4oQ/
-        C9gDt3FZqkPgWvD5aP0Ffo7NsjvgOp4gIvpDzOYtWb1T3sAXdAXXSiKhVlWCesBh+ucJI7azkTG
-        gQCjYAYzY/RDt
-X-Received: by 2002:a05:6402:30a2:: with SMTP id df2mr8645696edb.176.1622193407286;
-        Fri, 28 May 2021 02:16:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwGlmB+oEv2RNwrXsHFQ9SdYfIMnO6kYtfXRBZGswyCoGcJyrcrmHh3eFfkFWx6o+d7W/M20w==
-X-Received: by 2002:a05:6402:30a2:: with SMTP id df2mr8645678edb.176.1622193407129;
-        Fri, 28 May 2021 02:16:47 -0700 (PDT)
+         :message-id:mime-version:content-transfer-encoding;
+        bh=rCZj0KeRsRDbORMk4xZQhbpJRGIsjZXeaT4F9o2C3zo=;
+        b=n/H/O66aO5mGgiAUmQx9uWVZCB8cvr9eRWuXLrLei4rUKD+gYE+dzr7jpfRGZyLP1e
+         q8QMSFNAGL/Y1Vnu0YB1jA6ho093hxmtBgetUXQNzOZZAQXZnmKHpcpYdz9ajFpheUAx
+         A0LPcPz0qDZ5sMvg8SLDoDEU4NR2Wo8gVjEXZAmNgdARpzNjer5RQk0guGjvwaEr/N2M
+         jT6XE1KeyDhrKQ71nXwMVFOYrg5XrgDiHzKpaaSh0R57RZuvtsPevEu+G576mZEhiHBh
+         zsiRhwIKy7qaztYru5WLRxcHhVUaMIxhz/66onEGTkEXdy2TvsKJ49vF4WWPtXAqd/pZ
+         ZCRw==
+X-Gm-Message-State: AOAM531eGR00qfQPT3Li3hdELrF4NtvmHlyy18iYEuiSLL2+hCaS20rF
+        q+9Ht4w4zpJq2bWrj4RJSgu4CI6Xw/h2CQjjmovD0IxEodC2hhhynkG8f/84hMRdtHJRaNdKJdJ
+        ZN2r9X/w5KKf0
+X-Received: by 2002:a17:906:6bd8:: with SMTP id t24mr716795ejs.501.1622193957958;
+        Fri, 28 May 2021 02:25:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwx1sRUoS9OH67HNclJ1NGntV7/GyBB2KWpub9RFUNqrM9RaNvZml+xjZQ5Ek7wAoqte+MmTw==
+X-Received: by 2002:a17:906:6bd8:: with SMTP id t24mr716773ejs.501.1622193957772;
+        Fri, 28 May 2021 02:25:57 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id j4sm2381592edq.13.2021.05.28.02.16.46
+        by smtp.gmail.com with ESMTPSA id u4sm2131950eje.81.2021.05.28.02.25.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 May 2021 02:16:46 -0700 (PDT)
+        Fri, 28 May 2021 02:25:57 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id B44AD18071B; Fri, 28 May 2021 11:16:44 +0200 (CEST)
+        id 8E34718071B; Fri, 28 May 2021 11:25:56 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Saeed Mahameed <saeed@kernel.org>,
-        "kurt@linutronix.de" <kurt@linutronix.de>,
-        "Raczynski, Piotr" <piotr.raczynski@intel.com>,
-        "Zhang, Jessica" <jessica.zhang@intel.com>,
-        "Maloor, Kishen" <kishen.maloor@intel.com>,
-        "Gomes, Vinicius" <vinicius.gomes@intel.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Swiatkowski, Michal" <michal.swiatkowski@intel.com>,
-        "Plantykow, Marta A" <marta.a.plantykow@intel.com>,
-        "Desouza, Ederson" <ederson.desouza@intel.com>,
-        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
-        "Czapnik, Lukasz" <lukasz.czapnik@intel.com>,
-        "Joseph, Jithu" <jithu.joseph@intel.com>,
-        William Tu <u9012063@gmail.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        xdp-hints@xdp-project.net
-Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
-In-Reply-To: <60b08442b18d5_1cf8208a0@john-XPS-13-9370.notmuch>
-References: <20210526125848.1c7adbb0@carbon>
- <CAEf4BzYXUDyQaBjZmb_Q5-z3jw1-Uvdgxm+cfcQjSwb9oRoXnQ@mail.gmail.com>
- <60aeb01ebcd10_fe49208b8@john-XPS-13-9370.notmuch>
- <CAEf4Bza3m5dwZ_d0=zAWR+18f5RUjzv9=1NbhTKAO1uzWg_fzQ@mail.gmail.com>
- <60aeeb5252147_19a622085a@john-XPS-13-9370.notmuch>
- <CAEf4Bzb1OZHpHYagbVs7s9tMSk4wrbxzGeBCCBHQ-qCOgdu6EQ@mail.gmail.com>
- <60b08442b18d5_1cf8208a0@john-XPS-13-9370.notmuch>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Xie He <xie.he.0141@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Wang Hai <wanghai38@huawei.com>,
+        Tanner Love <tannerlove@google.com>,
+        Eyal Birger <eyal.birger@gmail.com>,
+        Menglong Dong <dong.menglong@zte.com.cn>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next] xsk: support AF_PACKET
+In-Reply-To: <1622192521.5931044-1-xuanzhuo@linux.alibaba.com>
+References: <1622192521.5931044-1-xuanzhuo@linux.alibaba.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 28 May 2021 11:16:44 +0200
-Message-ID: <87fsy7gqv7.fsf@toke.dk>
+Date:   Fri, 28 May 2021 11:25:56 +0200
+Message-ID: <87cztbgqfv.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend <john.fastabend@gmail.com> writes:
+Xuan Zhuo <xuanzhuo@linux.alibaba.com> writes:
 
->> > > union and independent set of BTFs are two different things, I'll let
->> > > you guys figure out which one you need, but I replied how it could
->> > > look like in CO-RE world
->> >
->> > I think a union is sufficient and more aligned with how the
->> > hardware would actually work.
->> 
->> Sure. And I think those are two orthogonal concerns. You can start
->> with a single struct mynic_metadata with union inside it, and later
->> add the ability to swap mynic_metadata with another
->> mynic_metadata___v2 that will have a similar union but with a
->> different layout.
+> On Fri, 28 May 2021 10:55:58 +0200, Toke H=C3=B8iland-J=C3=B8rgensen <tok=
+e@redhat.com> wrote:
+>> Xuan Zhuo <xuanzhuo@linux.alibaba.com> writes:
+>>
+>> > In xsk mode, users cannot use AF_PACKET(tcpdump) to observe the current
+>> > rx/tx data packets. This feature is very important in many cases. So
+>> > this patch allows AF_PACKET to obtain xsk packages.
+>>
+>> You can use xdpdump to dump the packets from the XDP program before it
+>> gets redirected into the XSK:
+>> https://github.com/xdp-project/xdp-tools/tree/master/xdp-dump
 >
-> Right and then you just have normal upgrade/downgrade problems with
-> any struct.
+> Wow, this is a good idea.
 >
-> Seems like a workable path to me. But, need to circle back to the
-> what we want to do with it part that Jesper replied to.
+>>
+>> Doens't currently work on egress, but if/when we get a proper TX hook
+>> that should be doable as well.
+>>
+>> Wiring up XSK to AF_PACKET sounds a bit nonsensical: XSK is already a
+>> transport to userspace, why would you need a second one?
+>
+> I have some different ideas. In my opinion, just like AF_PACKET can monit=
+or
+> tcp/udp packets, AF_PACKET monitors xsk packets is the same.
 
-So while this seems to be a viable path for getting libbpf to do all the
-relocations (and thanks for hashing that out, I did not have a good grip
-of the details), doing it all in userspace means that there is no way
-for the XDP program to react to changes once it has been loaded. So this
-leaves us with a selection of non-very-attractive options, IMO. I.e.,
-we would have to:
+But you're adding code in the fast path to do this, in a code path where
+others have been working quite hard to squeeze out every drop of
+performance (literally chasing single nanoseconds). So I'm sorry, but
+this approach is just not going to fly.
 
-- have to block any modifications to the hardware config that would
-  change the metadata format; this will probably result in irate users
-
-- require XDP programs to deal with all possible metadata permutations
-  supported by that driver (by exporting them all via a BTF union or
-  similar); this means a potential for combinatorial explosion of config
-  options and as NICs become programmable themselves I'm not even sure
-  if it's possible for the driver to know ahead of time
-
-- throw up our hands and just let the user deal with it (i.e., to
-  nothing and so require XDP programs to be reloaded if the NIC config
-  changes); this is not very friendly and is likely to lead to subtle
-  bugs if an XDP program parses the metadata assuming it is in a
-  different format than it is
-
-Given that hardware config changes are not just done by ethtool, but
-also by things like running `tcpdump -j`, I really think we have to
-assume that they can be quite dynamic; which IMO means we have to solve
-this as part of the initial design. And I have a hard time seeing how
-this is possible without involving the kernel somehow.
-
-Unless I'm missing something? WDYT?
+What is your use case anyway? Yes, being able to run tcpdump and see the
+packets is nice and convenient, but what do you actually want to use
+this for? Just for debugging your application? System monitoring?
+Something else?
 
 -Toke
 
