@@ -2,108 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75497394041
-	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 11:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29EC539404D
+	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 11:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234456AbhE1Jqy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 May 2021 05:46:54 -0400
-Received: from mga03.intel.com ([134.134.136.65]:64277 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233627AbhE1Jqw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 May 2021 05:46:52 -0400
-IronPort-SDR: HBTuBQHQ/0t2y5zunYjqNRqYSXRHMjW8OMNMOz5trSJD+HwtWPZtcO45HZutHdik0DUfvipjVR
- gQhhFs8IoWHA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9997"; a="202964727"
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="202964727"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 May 2021 02:45:18 -0700
-IronPort-SDR: WE4PVVAbBZlVB5NlbLi6QHRXSH3Smvo5TU3dhnTl/PW347qWoMt8wZdrrO3tRKMmWUJtV+y6wq
- ttRWH4xJpHfA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,229,1616482800"; 
-   d="scan'208";a="548533848"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga001.fm.intel.com with ESMTP; 28 May 2021 02:45:13 -0700
-Date:   Fri, 28 May 2021 11:32:13 +0200
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S236042AbhE1JvK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 28 May 2021 05:51:10 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:28292 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229774AbhE1JvI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 28 May 2021 05:51:08 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-275-yccOMhXpN7i8SNWlKAUUQw-1; Fri, 28 May 2021 10:49:31 +0100
+X-MC-Unique: yccOMhXpN7i8SNWlKAUUQw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Fri, 28 May 2021 10:49:29 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Fri, 28 May 2021 10:49:29 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Mel Gorman' <mgorman@techsingularity.net>
+CC:     'Andrii Nakryiko' <andrii.nakryiko@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Arnaldo Carvalho de Melo" <acme@redhat.com>,
+        Michal Suchanek <msuchanek@suse.de>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>, "Yonghong Song" <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Xie He <xie.he.0141@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Wang Hai <wanghai38@huawei.com>,
-        Tanner Love <tannerlove@google.com>,
-        Eyal Birger <eyal.birger@gmail.com>,
-        Menglong Dong <dong.menglong@zte.com.cn>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next] xsk: support AF_PACKET
-Message-ID: <20210528093213.GB46923@ranger.igk.intel.com>
-References: <1622192521.5931044-1-xuanzhuo@linux.alibaba.com>
- <87cztbgqfv.fsf@toke.dk>
+        open list <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Hritik Vijay <hritikxx8@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>
+Subject: RE: [PATCH] mm/page_alloc: Work around a pahole limitation with
+ zero-sized struct pagesets
+Thread-Topic: [PATCH] mm/page_alloc: Work around a pahole limitation with
+ zero-sized struct pagesets
+Thread-Index: AQHXUwZwxICJrzVIrECdOMP8p5MLKKr4istw////SYCAABppAA==
+Date:   Fri, 28 May 2021 09:49:28 +0000
+Message-ID: <2755b39d723146168e875f3b4a851a0d@AcuMS.aculab.com>
+References: <20210526080741.GW30378@techsingularity.net>
+ <YK9SiLX1E1KAZORb@infradead.org> <20210527090422.GA30378@techsingularity.net>
+ <YK9j3YeMTZ+0I8NA@infradead.org>
+ <CAEf4BzZLy0s+t+Nj9QgUNM66Ma6HN=VkS+ocgT5h9UwanxHaZQ@mail.gmail.com>
+ <CAEf4BzbzPK-3cyLFM8QKE5-o_dL7=UCcvRF+rEqyUcHhyY+FJg@mail.gmail.com>
+ <8fe547e9e87f40aebce82021d76a2d08@AcuMS.aculab.com>
+ <20210528090421.GK30378@techsingularity.net>
+In-Reply-To: <20210528090421.GK30378@techsingularity.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87cztbgqfv.fsf@toke.dk>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 28, 2021 at 11:25:56AM +0200, Toke Høiland-Jørgensen wrote:
-> Xuan Zhuo <xuanzhuo@linux.alibaba.com> writes:
+From: Mel Gorman
+> Sent: 28 May 2021 10:04
 > 
-> > On Fri, 28 May 2021 10:55:58 +0200, Toke Høiland-Jørgensen <toke@redhat.com> wrote:
-> >> Xuan Zhuo <xuanzhuo@linux.alibaba.com> writes:
-> >>
-> >> > In xsk mode, users cannot use AF_PACKET(tcpdump) to observe the current
-> >> > rx/tx data packets. This feature is very important in many cases. So
-> >> > this patch allows AF_PACKET to obtain xsk packages.
-> >>
-> >> You can use xdpdump to dump the packets from the XDP program before it
-> >> gets redirected into the XSK:
-> >> https://github.com/xdp-project/xdp-tools/tree/master/xdp-dump
+> On Fri, May 28, 2021 at 08:09:39AM +0000, David Laight wrote:
+> > From: Andrii Nakryiko
+> > > Sent: 27 May 2021 15:42
+> > ...
+> > > I agree that empty structs are useful, but here we are talking about
+> > > per-CPU variables only, which is the first use case so far, as far as
+> > > I can see. If we had pahole 1.22 released and widely packaged it could
+> > > have been a viable option to force it on everyone.
+> > ...
 > >
-> > Wow, this is a good idea.
-> >
-> >>
-> >> Doens't currently work on egress, but if/when we get a proper TX hook
-> >> that should be doable as well.
-> >>
-> >> Wiring up XSK to AF_PACKET sounds a bit nonsensical: XSK is already a
-> >> transport to userspace, why would you need a second one?
-> >
-> > I have some different ideas. In my opinion, just like AF_PACKET can monitor
-> > tcp/udp packets, AF_PACKET monitors xsk packets is the same.
+> > Would it be feasible to put the sources for pahole into the
+> > kernel repository and build it at the same time as objtool?
 > 
-> But you're adding code in the fast path to do this, in a code path where
-> others have been working quite hard to squeeze out every drop of
-> performance (literally chasing single nanoseconds). So I'm sorry, but
-> this approach is just not going to fly.
+> We don't store other build dependencies like compilers, binutils etc in
+> the kernel repository even though minimum versions are mandated.
+> Obviously tools/ exists but for the most part, they are tools that do
+> not exist in other repositories and are kernel-specific. I don't know if
+> pahole would be accepted and it introduces the possibility that upstream
+> pahole and the kernel fork of it would diverge.
 
-+1. Probably would be better for everyone if Xuan started a thread on list
-what is his need.
+The other side of the coin is that is you want reproducible builds
+the smaller the number of variables that need to match the better.
 
-> 
-> What is your use case anyway? Yes, being able to run tcpdump and see the
-> packets is nice and convenient, but what do you actually want to use
-> this for? Just for debugging your application? System monitoring?
-> Something else?
-> 
-> -Toke
-> 
+I can see there might be similar issues with the version of libelf-devel
+(needed by objtool).
+If I compile anything with gcc 10 (I'm doing build-root builds)
+I get object files that the hosts 2.30 binutils complain about.
+I can easily see that updating gcc and binutils might leave a
+broken objtool unless the required updated libelf-devel package
+can be found.
+Statically linking the required parts of libelf into objtool
+would save any such problems.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
