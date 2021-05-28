@@ -2,69 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5333947DE
-	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 22:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B749D394809
+	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 22:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229528AbhE1UVj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 May 2021 16:21:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhE1UVi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 May 2021 16:21:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id A1996613B5;
-        Fri, 28 May 2021 20:20:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622233203;
-        bh=fG/auPjbxRSpUCaBJqRKU2KsDQjeG9JxJfi4TUhFCb4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=IaMwYhGxih4a2ul8AlVDWiqQZozyuIn0i7+8I41EZLFDUrRLkclgpPIHQOteieZkq
-         +NF4Xs6ADemfHOfENESyR2Az8s500Na0UfkPqYa+AiAMwrf0X3FhjVbPoec8g93sgU
-         r7RkIB8fvn95vuvpeLYjWOQ6YZbGPpy6F5BwvPgl82k6crNTpCW0YnyOJnpBItU6nK
-         pQlbcTM93m00y1KHyBEmsj7rErLMg5WObfPYbZBpUK8TAp9ckaGgzIPsy1xOUd98s0
-         3h5HYEbHIypcyEWyGGJEualRrv9i6uRe0y2+zAs7+UR0qOzJFVFFjkKI/ZRFeCbLck
-         EJrBDdkmPMlQw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 94CF8609EA;
-        Fri, 28 May 2021 20:20:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229492AbhE1UpU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 May 2021 16:45:20 -0400
+Received: from www62.your-server.de ([213.133.104.62]:37180 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhE1UpT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 May 2021 16:45:19 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lmizB-000G7u-UB; Fri, 28 May 2021 22:21:38 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lmizB-000WbL-Kt; Fri, 28 May 2021 22:21:37 +0200
+Subject: Re: [PATCH][next] bpf: devmap: remove redundant assignment of
+ variable drops
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Colin King <colin.king@canonical.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210527143637.795393-1-colin.king@canonical.com>
+ <20210527145549.GA7570@ranger.igk.intel.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <70c6e7d3-7faf-c4e7-3ae5-78f9a8e4c2b3@iogearbox.net>
+Date:   Fri, 28 May 2021 22:21:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3] docs/bpf: add llvm_reloc.rst to explain llvm bpf
- relocations
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162223320360.3755.9806905798325331756.git-patchwork-notify@kernel.org>
-Date:   Fri, 28 May 2021 20:20:03 +0000
-References: <20210526152457.335210-1-yhs@fb.com>
-In-Reply-To: <20210526152457.335210-1-yhs@fb.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, maskray@google.com, kernel-team@fb.com,
-        john.fastabend@gmail.com, lmb@cloudflare.com
+In-Reply-To: <20210527145549.GA7570@ranger.igk.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26184/Fri May 28 13:05:50 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Wed, 26 May 2021 08:24:57 -0700 you wrote:
-> LLVM upstream commit https://reviews.llvm.org/D102712
-> made some changes to bpf relocations to make them
-> llvm linker lld friendly. The scope of
-> existing relocations R_BPF_64_{64,32} is narrowed
-> and new relocations R_BPF_64_{ABS32,ABS64,NODYLD32}
-> are introduced.
+On 5/27/21 4:55 PM, Maciej Fijalkowski wrote:
+> On Thu, May 27, 2021 at 03:36:37PM +0100, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> The variable drops is being assigned a value that is never
+>> read, it is being updated later on. The assignment is redundant and
+>> can be removed.
 > 
-> [...]
+> Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> 
+> Would help if you would have CCed me given the fact that hour ago I
+> confirmed that it could be removed :p but no big deal.
 
-Here is the summary with links:
-  - [bpf-next,v3] docs/bpf: add llvm_reloc.rst to explain llvm bpf relocations
-    https://git.kernel.org/bpf/bpf-next/c/fc8c262e0eb5
+Thanks guys, fyi, took in this one for bpf-next [0], since more unneeded
+code removed.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+   [0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=e8e0f0f484780d7b90a63ea50020ac4bb027178d
 
+>> Addresses-Coverity: ("Unused value")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>   kernel/bpf/devmap.c | 2 --
+>>   1 file changed, 2 deletions(-)
+>>
+>> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+>> index f9148daab0e3..fe3873b5d13d 100644
+>> --- a/kernel/bpf/devmap.c
+>> +++ b/kernel/bpf/devmap.c
+>> @@ -388,8 +388,6 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
+>>   		to_send = dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt, dev);
+>>   		if (!to_send)
+>>   			goto out;
+>> -
+>> -		drops = cnt - to_send;
+>>   	}
+>>   
+>>   	sent = dev->netdev_ops->ndo_xdp_xmit(dev, to_send, bq->q, flags);
+>> -- 
+>> 2.31.1
+>>
 
