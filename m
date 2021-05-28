@@ -2,180 +2,234 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DCEB39445F
-	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 16:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0FC3394444
+	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 16:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236386AbhE1Opa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 May 2021 10:45:30 -0400
-Received: from www62.your-server.de ([213.133.104.62]:40950 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236309AbhE1OpX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 May 2021 10:45:23 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lmdLp-0006Az-6G; Fri, 28 May 2021 16:20:37 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lmdLo-000B6x-Rs; Fri, 28 May 2021 16:20:36 +0200
-Subject: Re: [PATCH v2] lockdown,selinux: avoid bogus SELinux lockdown
- permission checks
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        SElinux list <selinux@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, network dev <netdev@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jiri Olsa <jolsa@redhat.com>, andrii.nakryiko@gmail.com
-References: <20210517092006.803332-1-omosnace@redhat.com>
- <CAHC9VhTasra0tU=bKwVqAwLRYaC+hYakirRz0Mn5jbVMuDkwrA@mail.gmail.com>
- <01135120-8bf7-df2e-cff0-1d73f1f841c3@iogearbox.net>
- <4fee8c12-194f-3f85-e28b-f7f24ab03c91@iogearbox.net>
- <CAFqZXNsKf5wSGmspEVEDrm4Ywar-F4kJWbBPBE+_hd1CGQ3jhg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <17eaebd3-6389-8c80-38ed-dada9d087266@iogearbox.net>
-Date:   Fri, 28 May 2021 16:20:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <CAFqZXNsKf5wSGmspEVEDrm4Ywar-F4kJWbBPBE+_hd1CGQ3jhg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26184/Fri May 28 13:05:50 2021)
+        id S235542AbhE1OhT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 May 2021 10:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230080AbhE1OhT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 May 2021 10:37:19 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611BDC061574
+        for <bpf@vger.kernel.org>; Fri, 28 May 2021 07:35:43 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id d25so4402860ioe.1
+        for <bpf@vger.kernel.org>; Fri, 28 May 2021 07:35:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=RVCfLlR9AJCKIEVDjBMLTdJHnBEqO6hgbC9ask8w04o=;
+        b=haPUt9F0IJQtlaectEDAt87rd9moHP/0I5UPujwbgpFFzs73V9YQltxTkPvmWI9+na
+         QzSnGx/MqCqlZaUY5MdksUNjIsiRo22yVV7mFbc9Z9JKuHxWKp83SA9dMPkvKce77rYU
+         x8s709uJe/cKDCmyWwzmBDMGCq2Q4LUOFb183Ax2Vihb8DPwgERS8XrbAY2VfZSF2NEP
+         ykpdRQysPxUt2laK3Z75ZMwirlMVfsgAH0EMZeKyNAPk0AKRGgzzzbt+s+06TZbFxBMr
+         hzpFfs7efjWYmk3w+vWXHqZSTXScg7WH55liP5o+thBOWBQEsGYAf/P74TBBUJ671IC0
+         3ewQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=RVCfLlR9AJCKIEVDjBMLTdJHnBEqO6hgbC9ask8w04o=;
+        b=ucipqv72cArPB5Sz6OldquoCnM41txL4TPWroPiOTNvwxdggVpLKoOeoXUZ7Rh8cIl
+         sk8CokXPEgS/IM3ASD+W+pY6gnla6b4dIjqO/+vfdpw86Ca1vaCKcewB+k/KaSE3YRnd
+         BmJLXbmSb8Y4Ltolby5slBWeLs4jkBjWhSPWYHuCwbWBqf2ugTIHG6Dn0S4CGqFvgEEv
+         jwofFGwNxuW3g/LmM4qT6BgoiVr4yshJLvOvy6cDzRYloDIQjFUiw1Rmlm2h2716Jgs/
+         t6GUp8ybUlpD5l7TaRAkN8gFqL9uDt0d6IzJyc8LqzeUrx73G3cGG80ds10oy6hBmefC
+         dXMA==
+X-Gm-Message-State: AOAM5305Hi/ElXnzi28Jy72iRznfOrRzMT+44SM2bEjS9FzS8FsaifaT
+        7saQwrZB4sJZ2FlEdgs4uaM=
+X-Google-Smtp-Source: ABdhPJxxsIrq9pnmliYtoQ8+/sH4noV9GStOLToiyGq9KJPk9FzvHB6CgIMYxKfpkQUs547DSemiZA==
+X-Received: by 2002:a02:1989:: with SMTP id b131mr9110466jab.54.1622212542707;
+        Fri, 28 May 2021 07:35:42 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id k8sm2679562iov.53.2021.05.28.07.35.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 May 2021 07:35:42 -0700 (PDT)
+Date:   Fri, 28 May 2021 07:35:34 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "kurt@linutronix.de" <kurt@linutronix.de>,
+        "Raczynski, Piotr" <piotr.raczynski@intel.com>,
+        "Zhang, Jessica" <jessica.zhang@intel.com>,
+        "Maloor, Kishen" <kishen.maloor@intel.com>,
+        "Gomes, Vinicius" <vinicius.gomes@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Swiatkowski, Michal" <michal.swiatkowski@intel.com>,
+        "Plantykow, Marta A" <marta.a.plantykow@intel.com>,
+        "Desouza, Ederson" <ederson.desouza@intel.com>,
+        "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+        "Czapnik, Lukasz" <lukasz.czapnik@intel.com>,
+        "Joseph, Jithu" <jithu.joseph@intel.com>,
+        William Tu <u9012063@gmail.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        xdp-hints@xdp-project.net
+Message-ID: <60b0ffb63a21a_1cf82089e@john-XPS-13-9370.notmuch>
+In-Reply-To: <87fsy7gqv7.fsf@toke.dk>
+References: <20210526125848.1c7adbb0@carbon>
+ <CAEf4BzYXUDyQaBjZmb_Q5-z3jw1-Uvdgxm+cfcQjSwb9oRoXnQ@mail.gmail.com>
+ <60aeb01ebcd10_fe49208b8@john-XPS-13-9370.notmuch>
+ <CAEf4Bza3m5dwZ_d0=zAWR+18f5RUjzv9=1NbhTKAO1uzWg_fzQ@mail.gmail.com>
+ <60aeeb5252147_19a622085a@john-XPS-13-9370.notmuch>
+ <CAEf4Bzb1OZHpHYagbVs7s9tMSk4wrbxzGeBCCBHQ-qCOgdu6EQ@mail.gmail.com>
+ <60b08442b18d5_1cf8208a0@john-XPS-13-9370.notmuch>
+ <87fsy7gqv7.fsf@toke.dk>
+Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 5/28/21 3:42 PM, Ondrej Mosnacek wrote:
-> (I'm off work today and plan to reply also to Paul's comments next
-> week, but for now let me at least share a couple quick thoughts on
-> Daniel's patch.)
-> 
-> On Fri, May 28, 2021 at 11:56 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 5/28/21 9:09 AM, Daniel Borkmann wrote:
->>> On 5/28/21 3:37 AM, Paul Moore wrote:
->>>> On Mon, May 17, 2021 at 5:22 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
->>>>>
->>>>> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
->>>>> lockdown") added an implementation of the locked_down LSM hook to
->>>>> SELinux, with the aim to restrict which domains are allowed to perform
->>>>> operations that would breach lockdown.
->>>>>
->>>>> However, in several places the security_locked_down() hook is called in
->>>>> situations where the current task isn't doing any action that would
->>>>> directly breach lockdown, leading to SELinux checks that are basically
->>>>> bogus.
->>>>>
->>>>> Since in most of these situations converting the callers such that
->>>>> security_locked_down() is called in a context where the current task
->>>>> would be meaningful for SELinux is impossible or very non-trivial (and
->>>>> could lead to TOCTOU issues for the classic Lockdown LSM
->>>>> implementation), fix this by modifying the hook to accept a struct cred
->>>>> pointer as argument, where NULL will be interpreted as a request for a
->>>>> "global", task-independent lockdown decision only. Then modify SELinux
->>>>> to ignore calls with cred == NULL.
->>>>
->>>> I'm not overly excited about skipping the access check when cred is
->>>> NULL.  Based on the description and the little bit that I've dug into
->>>> thus far it looks like using SECINITSID_KERNEL as the subject would be
->>>> much more appropriate.  *Something* (the kernel in most of the
->>>> relevant cases it looks like) is requesting that a potentially
->>>> sensitive disclosure be made, and ignoring it seems like the wrong
->>>> thing to do.  Leaving the access control intact also provides a nice
->>>> avenue to audit these requests should users want to do that.
->>>
->>> I think the rationale/workaround for ignoring calls with cred == NULL (or the previous
->>> patch with the unimplemented hook) from Ondrej was two-fold, at least speaking for his
->>> seen tracing cases:
->>>
->>>     i) The audit events that are triggered due to calls to security_locked_down()
->>>        can OOM kill a machine, see below details [0].
->>>
->>>    ii) It seems to be causing a deadlock via slow_avc_audit() -> audit_log_end()
->>>        when presumingly trying to wake up kauditd [1].
-> 
-> Actually, I wasn't aware of the deadlock... But calling an LSM hook
-> [that is backed by a SELinux access check] from within a BPF helper is
-> calling for all kinds of trouble, so I'm not surprised :)
+Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> John Fastabend <john.fastabend@gmail.com> writes:
+> =
 
-Fully agree, it's just waiting to blow up in unpredictable ways.. :/
+> >> > > union and independent set of BTFs are two different things, I'll=
+ let
+> >> > > you guys figure out which one you need, but I replied how it cou=
+ld
+> >> > > look like in CO-RE world
+> >> >
+> >> > I think a union is sufficient and more aligned with how the
+> >> > hardware would actually work.
+> >> =
 
->> Ondrej / Paul / Jiri: at least for the BPF tracing case specifically (I haven't looked
->> at the rest but it's also kind of independent), the attached fix should address both
->> reported issues, please take a look & test.
-> 
-> Thanks, I like this solution, although there are a few gotchas:
-> 
-> 1. This patch creates a slight "regression" in that if someone flips
-> the Lockdown LSM into lockdown mode on runtime, existing (already
-> loaded) BPF programs will still be able to call the
-> confidentiality-breaching helpers, while before the lockdown would
-> apply also to them. Personally, I don't think it's a big deal (and I
-> bet there are other existing cases where some handle kept from before
-> lockdown could leak data), but I wanted to mention it in case someone
-> thinks the opposite.
+> >> Sure. And I think those are two orthogonal concerns. You can start
+> >> with a single struct mynic_metadata with union inside it, and later
+> >> add the ability to swap mynic_metadata with another
+> >> mynic_metadata___v2 that will have a similar union but with a
+> >> different layout.
+> >
+> > Right and then you just have normal upgrade/downgrade problems with
+> > any struct.
+> >
+> > Seems like a workable path to me. But, need to circle back to the
+> > what we want to do with it part that Jesper replied to.
+> =
 
-Yes, right, though this is nothing new either in the sense that there are
-plenty of other cases with security_locked_down() that operate this way
-e.g. take the open_kcore() for /proc/kcore access or the module_sig_check()
-for mod signatures just to pick some random ones, same approach where the
-enforcement is happen at open/load time.
+> So while this seems to be a viable path for getting libbpf to do all th=
+e
+> relocations (and thanks for hashing that out, I did not have a good gri=
+p
+> of the details), doing it all in userspace means that there is no way
+> for the XDP program to react to changes once it has been loaded. So thi=
+s
+> leaves us with a selection of non-very-attractive options, IMO. I.e.,
+> we would have to:
 
-> 2. IIUC. when a BPF program is rejected due to lockdown/SELinux, the
-> kernel will return -EINVAL to userspace (looking at
-> check_helper_call() in kernel/bpf/verifier.c; didn't have time to look
-> at other callers...). It would be nicer if the error code from the
-> security_locked_down() call would be passed through the call chain and
-> eventually returned to the caller. It should be relatively
-> straightforward to convert bpf_base_func_proto() to return a PTR_ERR()
-> instead of NULL on error, but it looks like this would result in quite
-> a big patch updating all the callers (and callers of callers, etc.)
-> with a not-so-small chance of missing some NULL check and introducing
-> a bug... I guess we could live with EINVAL-on-denied in stable kernels
-> and only have the error path refactoring in -next; I'm not sure...
+I don't really understand what this means 'having XDP program to
+react to changes once it has been loaded.' What would a program look
+like thats dynamic? You can always version your metadata and
+write programs like this,
 
-Right, it would return a verifier log entry with reporting to the user that
-the prog is attempting to use an unavailable/unknown helper function. We do
-have similar return NULL with bpf_capable() and perfmon_capable() checks.
-Potentially, we could do PTR_ERR() in future where we tell if it failed due
-to missing CAPs, due to lockdown or just due to helper not compiled in..
+  if (meta->version =3D=3D VERSION1) {do_foo}
+  else {do_bar}
 
-> 3. This is a bit of a shot-in-the-dark, but I suppose there might be
-> some BPF programs that would be able to do something useful also when
-> the read_kernel helpers return an error, yet the kernel will now
-> outright refuse to load them (when the lockdown hook returns nonzero).
-> I have no idea if such BPF programs realistically exist in practice,
-> but perhaps it would be worth returning some dummy
-> always-error-returning helper function instead of NULL from
-> bpf_base_func_proto() when security_locked_down() returns an error.
-> That would also resolve (2.), basically. (Then there is the question
-> of what error code to use (because Lockdown LSM uses -EPERM, while
-> SELinux -EACCESS), but I think always returning -EPERM from such stub
-> helpers would be a viable choice.)
+And then have a headeer,
 
-It would actually be harder to debug. Returning NULL at verification
-time, libbpf, for example, would have a chance to probe for this. See the
-feature_probes[] in libbpf's kernel_supports(), so it could provide a
-meaningful warning to the user that the tracing functionality is unavailable
-on the system. With returning an error from the helper, libbpf cannot check
-it.. theoretically, it could but significantly more cumbersome given it
-needs to attach the probe somewhere, trigger it, read out the helper result
-and pass it back to libbpf user space.. not really feasible. Overall,
-moving into func_proto and returning NULL is the much better approach
-(and in line with the CAP check enforcement).
+   struct meta {
+     int version;
+     union ...    // union of versions
+   }
 
-Thanks,
-Daniel
+I fail to see how a program could 'react' dynamically. An agent could
+load new programs dynamically into tail call maps of fentry with
+the need handlers, which would work as well and avoid unions.
+
+> =
+
+> - have to block any modifications to the hardware config that would
+>   change the metadata format; this will probably result in irate users
+
+I'll need a concrete example if I swap out my parser block, I should
+also swap out my BPF for my shiny new protocol. I don't see how a
+user might write programs for things they've not configured hardware
+for yet. Leaving aside knobs like VLAN on/off, VXLAN on/off, and
+such which brings the next point.
+
+> =
+
+> - require XDP programs to deal with all possible metadata permutations
+>   supported by that driver (by exporting them all via a BTF union or
+>   similar); this means a potential for combinatorial explosion of confi=
+g
+>   options and as NICs become programmable themselves I'm not even sure
+>   if it's possible for the driver to know ahead of time
+
+I don't see the problem sorry. For current things that exist I can't
+think up too many fields vlan, timestamp, checksum(?), pkt_type,
+hash maybe.
+
+For programmable pipelines (P4) then I don't see a problem with
+reloading your program or swapping out a program. I don't see the
+value of adding a new protocol for example dynamically. Surely
+the hardware is going to get hit with a big reset anyways.
+
+> =
+
+> - throw up our hands and just let the user deal with it (i.e., to
+>   nothing and so require XDP programs to be reloaded if the NIC config
+>   changes); this is not very friendly and is likely to lead to subtle
+>   bugs if an XDP program parses the metadata assuming it is in a
+>   different format than it is
+
+I'm not opposed to user error causing logic bugs.  If I give
+users power to reprogram their NICs they should be capabable
+of managing a few BPF programs. And if not then its a space
+where a distro/vendor should help them with tooling.
+
+> =
+
+> Given that hardware config changes are not just done by ethtool, but
+> also by things like running `tcpdump -j`, I really think we have to
+> assume that they can be quite dynamic; which IMO means we have to solve=
+
+> this as part of the initial design. And I have a hard time seeing how
+> this is possible without involving the kernel somehow.
+
+I guess here your talking about building an skb? Wouldn't it
+use whatever logic it uses today to include the timestamp.
+This is a bit of an aside from metadata in the BPF program.
+
+Building timestamps into
+skbs doesn't require BPF program to have the data. Or maybe
+the point is an XDP variant of tcpdump would like timestamps.
+But then it should be in the metadata IMO.
+
+> =
+
+> Unless I'm missing something? WDYT?
+
+Distilling above down. I think we disagree on how useful
+dynamic programs are because of two reasons. First I don't
+see a large list of common attributes that would make the
+union approach as painful as you fear. And two, I believe
+users who are touching core hardware firmware need to also
+be smart enough (or have smart tools) to swap out their
+BPF programs in the correct order so as to not create
+subtle races. I didn't do it here but if we agree walking
+through that program swap flow with firmware update would
+be useful.
+
+> =
+
+> -Toke
+> =
+
+
+
