@@ -2,65 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE977393C2E
-	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 06:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74786393CB2
+	for <lists+bpf@lfdr.de>; Fri, 28 May 2021 07:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbhE1EEF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 May 2021 00:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33896 "EHLO
+        id S233477AbhE1F3V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 May 2021 01:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhE1EEA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 May 2021 00:04:00 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E64C061574;
-        Thu, 27 May 2021 21:02:18 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id e17so2804725iol.7;
-        Thu, 27 May 2021 21:02:18 -0700 (PDT)
+        with ESMTP id S233583AbhE1F3V (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 May 2021 01:29:21 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6E8C061574;
+        Thu, 27 May 2021 22:27:46 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id h15so2338515ilr.2;
+        Thu, 27 May 2021 22:27:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=9pwhly6q5ZumRNpL3GxnmH4TutYYMNAzY7m8N5WWejA=;
-        b=ZaOt5+ok0g90boHGMn6mH1YmavKOJwsgHuwxLRizyv75Ix40KL+hOVYnKec36nK7Te
-         aKLbtw5RLxs+Sd21bQUxK8sffdNGG/k/eNr+mg+0ejbRv+QOZKwXwyQaJdGL0QEXJ+42
-         Z6zY4YB/IfK/Y+eLp3HMewl1D7hHvFdS1P5bmGlk/Io/oqIP2gTmbJbvDxiMxbg4EGbm
-         S3an9AE0rup9PJ2tHrpmD0HoG0vYOmzYjNW+sMKjJpqjVM7pIaG3Ban/pW4j4raMGL8H
-         2U46WBKwrZWWWYCt9+JXNYodzNHYtYiaRREZ/wJ+cCUvOPF15zvv3eXurEDh/deLNmh3
-         nIiA==
+        bh=C1HxIyaejSZRjsKBjpiaFzzVIRivGO1bL18j7u8f+t4=;
+        b=X/xnvkD6bHsohq3H5bH8UyMf2iw4flQi2XVulGJThYS9n/FywCwxl70splXl41aZIE
+         RnLuLfb3QhoM3fLt6BsvMyYZ8QSj7sYC3A8aAcOl0KpNGtnj2mmWuDVXY4vVeMw7x72I
+         rZgnbPmy7qjZgeFz6y9iwRLD7WwuOQ0TdhPKIkZkqY5Z6mgy3EgUzf75meZAWPCGE9Eu
+         n3+F/4gl6JrbpB24EQs45P6SfLR7oe1cls8tw39n1Hbnui1Xw3ljoBuSL84J4tLeyER3
+         MUvOEemqLT3+XzSCK2h9cavsVNNTzkmaQxmTlCEEMGBuA8yQnXkYNL8F9Q39yZ1OTsek
+         aYaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=9pwhly6q5ZumRNpL3GxnmH4TutYYMNAzY7m8N5WWejA=;
-        b=eZXtNxCrUkJ3PIxSZWeNacmv3/wsX2uIzj3zKyJphTRfGZXyxZU8kCS7vakrH4Ia5s
-         1Jda8eL6hILJJtjrrKOunpHwZhbMNIVLAa4VXiTk8BI1rex/cS9zfaUU23sb/zkgQ8Dr
-         x5vvJdBJ5gjSXfS6OEKXOKdAoVwYq1EMl0gPoPms6DckOkV/HXClJ82W5qag7egSWh4Q
-         XI6aKbpgAL4wWXJhj3LI7VX2y+K7zz4GDX5GRLhF3HAgNPDKP7Kam6YkycLZKu20opHD
-         g3Lv4ryM663JGbWHEehWPkkaYT3Qv+N3bPNz4Z1CPaLWAL+rIdYYoOzpyHyYgD8r0cKt
-         yzvw==
-X-Gm-Message-State: AOAM53324qQUAktqGgNVLdBRYfuJzzUoIJoZaWdY+wJf+ZfLEdblFMJV
-        fW9zNDmukTB09TfeAXZeP7k=
-X-Google-Smtp-Source: ABdhPJyxhCni0eONjL6jIZBvMHqVS0nNNua+Y/o3Uju3rEA/TfTiLthm+/+T6kHCDy6p+TVyv61faQ==
-X-Received: by 2002:a6b:ec0b:: with SMTP id c11mr5338053ioh.99.1622174537982;
-        Thu, 27 May 2021 21:02:17 -0700 (PDT)
+        bh=C1HxIyaejSZRjsKBjpiaFzzVIRivGO1bL18j7u8f+t4=;
+        b=GWTg5TOYdAUg62zdrxCA7na4wT37RDDnooxnl6TioL2w4szTayY+6n+y+WLhZuQWWe
+         g1VlPeZHusEt9QqQyq4U3tmRBM/4hdtOI1OeTnnRnLNZZ3CeagOvpuEKtI4K/rNNo6eP
+         fgcdL1OjfMQB4EAXjaxWqosVJmMUWVoeKXF4ueyICtACA6YUATLI3b5ur2D86tIOEZSo
+         o0i/lIYS0qRecBg22peSFgjgkrHwUp8w9x0WEyMb/1MqcU/MFrXGCok+XB8v2idMNTX6
+         OSelQab+fU7/dmh3XZJKlxqjZr4AsQrN468rdTy2CGoCqsTsMWB5Ge+jXXSvQT5/H47e
+         We8g==
+X-Gm-Message-State: AOAM531/4aDDkz8B0xz3dFcMDUeGUgj+VT8FgWWXhh0NgAxZKOdpNOF9
+        OkTWr+KxFctqUPJ9H8Xc/hY=
+X-Google-Smtp-Source: ABdhPJwjuXahO9RSHrB4acdFLUwAJbSBQ4SwnTaH+qOKicuyIOb3E/ZCmv7jVA8M6a+joNNZwFDYuQ==
+X-Received: by 2002:a05:6e02:1c2c:: with SMTP id m12mr5597930ilh.188.1622179665486;
+        Thu, 27 May 2021 22:27:45 -0700 (PDT)
 Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id u7sm2102714iof.41.2021.05.27.21.02.14
+        by smtp.gmail.com with ESMTPSA id l1sm912204ilc.66.2021.05.27.22.27.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 May 2021 21:02:17 -0700 (PDT)
-Date:   Thu, 27 May 2021 21:02:07 -0700
+        Thu, 27 May 2021 22:27:44 -0700 (PDT)
+Date:   Thu, 27 May 2021 22:27:37 -0700
 From:   John Fastabend <john.fastabend@gmail.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>
-Message-ID: <60b06b3f6176_1cf820868@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210528024356.24333-1-liuhangbin@gmail.com>
-References: <20210528024356.24333-1-liuhangbin@gmail.com>
-Subject: RE: [PATCH bpf-next] bpf/devmap: remove drops variable from
- bq_xmit_all()
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Message-ID: <60b07f49377b6_1cf82088d@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210527011155.10097-9-xiyou.wangcong@gmail.com>
+References: <20210527011155.10097-1-xiyou.wangcong@gmail.com>
+ <20210527011155.10097-9-xiyou.wangcong@gmail.com>
+Subject: RE: [Patch bpf v3 8/8] skmsg: increase sk->sk_drops when dropping
+ packets
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -69,22 +69,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hangbin Liu wrote:
-> As Colin pointed out, the first drops assignment after declaration will
-> be overwritten by the second drops assignment before using, which makes
-> it useless.
+Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
 > 
-> Since the drops variable will be used only once. Just remove it and
-> use "cnt - sent" in trace_xdp_devmap_xmit()
+> It is hard to observe packet drops without increasing relevant
+> drop counters, here we should increase sk->sk_drops which is
+> a protocol-independent counter. Fortunately psock is always
+> associated with a struct sock, we can just use psock->sk.
 > 
-> Reported-by: Colin Ian King <colin.king@canonical.com>
-> Fixes: cb261b594b41 ("bpf: Run devmap xdp_prog on flush instead of bulk enqueue")
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> Suggested-by: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 > ---
->  kernel/bpf/devmap.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
+>  net/core/skmsg.c | 22 ++++++++++++++--------
+>  1 file changed, 14 insertions(+), 8 deletions(-)
 > 
 
-Thanks
+[...]
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+> @@ -942,7 +948,7 @@ static int sk_psock_verdict_apply(struct sk_psock *psock, struct sk_buff *skb,
+>  	case __SK_DROP:
+>  	default:
+>  out_free:
+> -		kfree_skb(skb);
+> +		sock_drop(psock->sk, skb);
+
+I must have missed this on first review.
+
+Why should we mark a packet we intentionally drop as sk_drops? I think
+we should leave it as just kfree_skb() this way sk_drops is just
+the error cases and if users want this counter they can always add
+it to the bpf prog itself.
+
+>  	}
+>  
+>  	return err;
