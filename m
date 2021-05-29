@@ -2,132 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF24394DC3
-	for <lists+bpf@lfdr.de>; Sat, 29 May 2021 20:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2CE394DEE
+	for <lists+bpf@lfdr.de>; Sat, 29 May 2021 21:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhE2Su6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 May 2021 14:50:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229762AbhE2Su6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 29 May 2021 14:50:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0420601FC;
-        Sat, 29 May 2021 18:49:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622314161;
-        bh=UO9f9X1zD1LdxDjt5bxqXA/KKesiTsKKlLQIX0Nd88g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=p4euv65Erksx0Dcx7ynJzUssdAk3q2Z9iDq9yv74gmL7j1JZjqWqFYoPvOK79kA82
-         qdOmHtBSLQwAKIcy6zZRWhIE0K3v+oiqsDie2Ig4uYP3mfKp6fXRNERE46f8apwWZP
-         jTQdr4uec8HPEQITs+sAdoP4TNbGwc61tTqi4IiI/kztEaQA8UbRsautovFIS4cPiY
-         w29ewfj0FO0AlN1JaD9Hr2ExPc8EE/0FBTh9Ce+QzqhCkBtilX+lxa7od9ZCJivmGE
-         +sMf7YGtIJMNJvXQo7zV9H3ALbdhUmzon4LeNq7Dm/NAjrcJUM30JPumvt1pPbcBem
-         DbaP09V5HAB5Q==
-Date:   Sat, 29 May 2021 11:49:19 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
-        <weiwan@google.com>, <cong.wang@bytedance.com>,
-        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
-        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-Subject: Re: [PATCH net-next 2/3] net: sched: implement TCQ_F_CAN_BYPASS for
- lockless qdisc
-Message-ID: <20210529114919.4f8b1980@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <ee1a62da-9758-70db-abd3-c5ca2e8e0ce0@huawei.com>
-References: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
-        <1622170197-27370-3-git-send-email-linyunsheng@huawei.com>
-        <20210528180012.676797d6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <a6a965ee-7368-d37b-9c70-bba50c67eec9@huawei.com>
-        <20210528213218.2b90864c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <ee1a62da-9758-70db-abd3-c5ca2e8e0ce0@huawei.com>
+        id S229756AbhE2Tay (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 29 May 2021 15:30:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229718AbhE2Tay (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 29 May 2021 15:30:54 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF00CC061574;
+        Sat, 29 May 2021 12:29:16 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id p39so5856119pfw.8;
+        Sat, 29 May 2021 12:29:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G46zYfujT4zH04/0cQEfJ1A0ViI5Iwfsu6ecTXtSdCo=;
+        b=bFxRvq3tvmwy81Yfwj89IRa7IGHupYpQZlSGeD4L6D8SKb8eyPrKH8mHnUPemGNCcd
+         JesWXoZARtAthklPXTrfMN1vF08KbC0/oCIhSu9TuoiRpzA8Nj7XZujBxOxwmmxRp2t3
+         1n1iLoSpuz8JIplgWNTvn9HxomvChWLbGb7Jshh0q4n5LBDelbL/DTpplSuZJBcTknBJ
+         v/gVosWZew1DRWTag2m2reBWCPzrdDRpOiQTAtL760g1o/S52aOJ9KFG8OexGwvr994t
+         0q2dYyEHlyTUhUoF1oYyYQoXW3SZuiYqCDhaQYVvuitLT8w1AXDc3sWTUWIN3qCi1xFV
+         wIXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G46zYfujT4zH04/0cQEfJ1A0ViI5Iwfsu6ecTXtSdCo=;
+        b=L9HEwy/MQ4bmgqWYOT7CftoUbQ03zfcUjmool5/6HU95uy4PhWTtaQdFRPvveWyStG
+         GRZP0mGgXeYWyrsfeJbXI5cKQiJvlf2izyJWpeK5OPXPr9NWRAiJ076MmL13k/tgYek4
+         sD2titpckO6/6ovoobhzcjGT58hP7EU/MVDWGqekMGc2tlBrbCp+6TOEGxXGfuNZUs1/
+         I1ZAMyd0xSpor0ihMY4lwKgBZ3dtjLJIyh9/9wmAMjvp+03R0q/ZfsN8hxuDgOEKkwWZ
+         4GHcJLnJDf1M2+YlYfHeWGmyTMC2jkTrwmqOlgu3f1/I06OQeTQDOubwTQAfsFyeVdlp
+         EMlw==
+X-Gm-Message-State: AOAM533BTmYDm9Z4LVUEbru4vQ+OZY8h+gp2mpRW0hmBME6O5pxSium9
+        SnKlj7quGnEtNx82pBoskobX8W5JUoSOtyUWiLY=
+X-Google-Smtp-Source: ABdhPJzhu75o9eNKgOpv5NFFTDClS9vE7XceJcioj7CP/6AGcYu3no9n8Be9KedyIoCUZDwm0umeFzQ8vGVTcPZInQU=
+X-Received: by 2002:aa7:8f37:0:b029:2db:551f:ed8e with SMTP id
+ y23-20020aa78f370000b02902db551fed8emr9815884pfr.43.1622316556333; Sat, 29
+ May 2021 12:29:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210527011155.10097-1-xiyou.wangcong@gmail.com>
+ <20210527011155.10097-9-xiyou.wangcong@gmail.com> <60b07f49377b6_1cf82088d@john-XPS-13-9370.notmuch>
+In-Reply-To: <60b07f49377b6_1cf82088d@john-XPS-13-9370.notmuch>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Sat, 29 May 2021 12:29:05 -0700
+Message-ID: <CAM_iQpU0evVG6_M33ZAgirRsTAJzZcMMN-cYfxqHepbC0UN0iQ@mail.gmail.com>
+Subject: Re: [Patch bpf v3 8/8] skmsg: increase sk->sk_drops when dropping packets
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 29 May 2021 15:03:09 +0800 Yunsheng Lin wrote:
-> On 2021/5/29 12:32, Jakub Kicinski wrote:
-> > On Sat, 29 May 2021 09:44:57 +0800 Yunsheng Lin wrote:  
-> >> MISSED is only set when there is lock contention, which means it
-> >> is better not to do the qdisc bypass to avoid out of order packet
-> >> problem,   
-> > 
-> > Avoid as in make less likely? Nothing guarantees other thread is not
-> > interrupted after ->enqueue and before qdisc_run_begin().
-> > 
-> > TBH I'm not sure what out-of-order situation you're referring to,
-> > there is no ordering guarantee between separate threads trying to
-> > transmit AFAIU.  
-> A thread need to do the bypass checking before doing enqueuing, so
-> it means MISSED is set or the trylock fails for the bypass transmiting(
-> which will set the MISSED after the first trylock), so the MISSED will
-> always be set before a thread doing a enqueuing, and we ensure MISSED
-> only be cleared during the protection of q->seqlock, after clearing
-> MISSED, we do anther round of dequeuing within the protection of
-> q->seqlock.
-
-The fact that MISSED is only cleared under q->seqlock does not matter,
-because setting it and ->enqueue() are not under any lock. If the thread
-gets interrupted between:
-
-	if (q->flags & TCQ_F_CAN_BYPASS && nolock_qdisc_is_empty(q) &&
-	    qdisc_run_begin(q)) {
-
-and ->enqueue() we can't guarantee that something else won't come in,
-take q->seqlock and clear MISSED.
-
-thread1                thread2             thread3
-# holds seqlock
-                       qdisc_run_begin(q)
-                       set(MISSED)
-pfifo_fast_dequeue
-  clear(MISSED)
-  # recheck the queue
-qdisc_run_end()
-                       ->enqueue()
-                                            q->flags & TCQ_F_CAN_BYPASS..
-                                            qdisc_run_begin() # true
-                                            sch_direct_xmit()
-                       qdisc_run_begin()
-                       set(MISSED)
-
-Or am I missing something?
-
-Re-checking nolock_qdisc_is_empty() may or may not help.
-But it doesn't really matter because there is no ordering
-requirement between thread2 and thread3 here.
-
-> So if a thread has taken the q->seqlock and the MISSED is not set yet,
-> it is allowed to send the packet directly without going through the
-> qdisc enqueuing and dequeuing process.
-> 
-> > IOW this check is not required for correctness, right?  
-> 
-> if a thread has taken the q->seqlock and the MISSED is not set, it means
-> other thread has not set MISSED after the first trylock and before the
-> second trylock, which means the enqueuing is not done yet.
-> So I assume the this check is required for correctness if I understand
-> your question correctly.
+On Thu, May 27, 2021 at 10:27 PM John Fastabend
+<john.fastabend@gmail.com> wrote:
 >
-> >> another good thing is that we could also do the batch
-> >> dequeuing and transmiting of packets when there is lock contention.  
-> > 
-> > No doubt, but did you see the flag get set significantly often here 
-> > to warrant the double-checking?  
-> 
-> No, that is just my guess:)
+> Cong Wang wrote:
+> > From: Cong Wang <cong.wang@bytedance.com>
+> >
+> > It is hard to observe packet drops without increasing relevant
+> > drop counters, here we should increase sk->sk_drops which is
+> > a protocol-independent counter. Fortunately psock is always
+> > associated with a struct sock, we can just use psock->sk.
+> >
+> > Suggested-by: John Fastabend <john.fastabend@gmail.com>
+> > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> > Cc: Lorenz Bauer <lmb@cloudflare.com>
+> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > ---
+> >  net/core/skmsg.c | 22 ++++++++++++++--------
+> >  1 file changed, 14 insertions(+), 8 deletions(-)
+> >
+>
+> [...]
+>
+> > @@ -942,7 +948,7 @@ static int sk_psock_verdict_apply(struct sk_psock *psock, struct sk_buff *skb,
+> >       case __SK_DROP:
+> >       default:
+> >  out_free:
+> > -             kfree_skb(skb);
+> > +             sock_drop(psock->sk, skb);
+>
+> I must have missed this on first review.
+>
+> Why should we mark a packet we intentionally drop as sk_drops? I think
+> we should leave it as just kfree_skb() this way sk_drops is just
+> the error cases and if users want this counter they can always add
+> it to the bpf prog itself.
 
+This is actually a mixed case of error and non-error drops,
+because bpf_sk_redirect_map() could return SK_DROP
+in error cases. And of course users could want to drop packets
+in whatever cases.
+
+But if you look at packet filter cases, for example UDP one,
+it increases drop counters too when user-defined rules drop
+them:
+
+2182         if (sk_filter_trim_cap(sk, skb, sizeof(struct udphdr)))
+2183                 goto drop;
+2184
+...
+2192 drop:
+2193         __UDP_INC_STATS(sock_net(sk), UDP_MIB_INERRORS, is_udplite);
+2194         atomic_inc(&sk->sk_drops);
+2195         kfree_skb(skb);
+2196         return -1;
+
+
+Thanks.
