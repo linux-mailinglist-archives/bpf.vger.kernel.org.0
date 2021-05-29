@@ -2,77 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA648394A74
-	for <lists+bpf@lfdr.de>; Sat, 29 May 2021 06:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E27394ADC
+	for <lists+bpf@lfdr.de>; Sat, 29 May 2021 09:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbhE2E6c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 May 2021 00:58:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52202 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229456AbhE2E6b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 29 May 2021 00:58:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76152611C9;
-        Sat, 29 May 2021 04:56:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622264216;
-        bh=/7PiqVLDOulKmJBaXyeqfLBDC/PlPwQBWBL+bvkTkc0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hrtfvv1+5dKYicMfUBqNqxh5sEsWpzi3e5PEJPeidq38L781MOtju5+YY1q8g3ThX
-         OgXq6t0sHHLKykImvmHhemtI4rSmxdudOjIxJVwdxSkhU9decHQcqesD9otWutgTgb
-         OpHcik3hZVMIg7Qy8//x8KF88Lu2vHw5ADJdGHDsWKuH6MAeLtiN3N/41134+QFcd+
-         HyAyGQrWOgjH0vKE4MzvbgUlQdreJ78RmYRgSnFk+r7VNxL6P0j/V4oKuF3/YysHrn
-         Pksld3O9zcGd7XIEmCHTtDf+gIXf1b1VtPbE2zUKf9u++je1cZa94d2mFAoBUVcsSU
-         MKMfJUYmtzUBA==
-Date:   Fri, 28 May 2021 21:56:54 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Tom Herbert <tom@herbertland.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        David Ahern <dsahern@gmail.com>, magnus.karlsson@intel.com,
-        Toke =?UTF-8?B?SMO4?= =?UTF-8?B?aWxhbmQtSsO4cmdlbnNlbg==?= 
-        <toke@redhat.com>, Jesper Dangaard Brouer <brouer@redhat.com>,
-        bjorn@kernel.org,
-        "Maciej =?UTF-8?B?RmlqYcWC?= =?UTF-8?B?a293c2tp?= (Intel)" 
-        <maciej.fijalkowski@intel.com>,
-        john fastabend <john.fastabend@gmail.com>
-Subject: Re: [RFC bpf-next 1/4] net: xdp: introduce flags field in xdp_buff
- and xdp_frame
-Message-ID: <20210528215654.31619c97@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <CALx6S34cmsFX6QwUq0sRpHok1j6ecBBJ7WC2BwjEmxok+CHjqg@mail.gmail.com>
-References: <cover.1622222367.git.lorenzo@kernel.org>
-        <b5b2f560006cf5f56d67d61d5837569a0949d0aa.1622222367.git.lorenzo@kernel.org>
-        <CALx6S34cmsFX6QwUq0sRpHok1j6ecBBJ7WC2BwjEmxok+CHjqg@mail.gmail.com>
+        id S229560AbhE2HEu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 29 May 2021 03:04:50 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2403 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229559AbhE2HEu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 29 May 2021 03:04:50 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FsXVC420qz66Rp;
+        Sat, 29 May 2021 14:59:31 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 29 May 2021 15:03:11 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Sat, 29 May
+ 2021 15:03:10 +0800
+Subject: Re: [PATCH net-next 2/3] net: sched: implement TCQ_F_CAN_BYPASS for
+ lockless qdisc
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
+        <weiwan@google.com>, <cong.wang@bytedance.com>,
+        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
+        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
+        <alobakin@pm.me>
+References: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
+ <1622170197-27370-3-git-send-email-linyunsheng@huawei.com>
+ <20210528180012.676797d6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <a6a965ee-7368-d37b-9c70-bba50c67eec9@huawei.com>
+ <20210528213218.2b90864c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <ee1a62da-9758-70db-abd3-c5ca2e8e0ce0@huawei.com>
+Date:   Sat, 29 May 2021 15:03:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210528213218.2b90864c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme719-chm.china.huawei.com (10.1.199.115) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 28 May 2021 14:18:33 -0700 Tom Herbert wrote:
-> On Fri, May 28, 2021 at 10:44 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-> > Introduce flag field in xdp_buff and xdp_frame data structure in order
-> > to report xdp_buffer metadata. For the moment just hw checksum hints
-> > are defined but flags field will be reused for xdp multi-buffer
-> > For the moment just CHECKSUM_UNNECESSARY is supported.
-> > CHECKSUM_COMPLETE will need to set csum value in metada space.
-> >  
-> Lorenzo,
+On 2021/5/29 12:32, Jakub Kicinski wrote:
+> On Sat, 29 May 2021 09:44:57 +0800 Yunsheng Lin wrote:
+>>>> @@ -3852,10 +3852,32 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
+>>>>  	qdisc_calculate_pkt_len(skb, q);
+>>>>  
+>>>>  	if (q->flags & TCQ_F_NOLOCK) {
+>>>> +		if (q->flags & TCQ_F_CAN_BYPASS && nolock_qdisc_is_empty(q) &&
+>>>> +		    qdisc_run_begin(q)) {
+>>>> +			/* Retest nolock_qdisc_is_empty() within the protection
+>>>> +			 * of q->seqlock to ensure qdisc is indeed empty.
+>>>> +			 */
+>>>> +			if (unlikely(!nolock_qdisc_is_empty(q))) {  
+>>>
+>>> This is just for the DRAINING case right? 
+>>>
+>>> MISSED can be set at any moment, testing MISSED seems confusing.  
+>>
+>> MISSED is only set when there is lock contention, which means it
+>> is better not to do the qdisc bypass to avoid out of order packet
+>> problem, 
 > 
-> This isn't sufficient for the checksum-unnecessary interface, we'd
-> also need ability to set csum_level for cases the device validated
-> more than one checksum.
+> Avoid as in make less likely? Nothing guarantees other thread is not
+> interrupted after ->enqueue and before qdisc_run_begin().
 > 
-> IMO, we shouldn't support CHECKSUM_UNNECESSARY for new uses like this.
-> For years now, the Linux community has been pleading with vendors to
-> provide CHECKSUM_COMPLETE which is far more useful and robust than
-> CHECSUM_UNNECESSARY, and yet some still haven't got with the program
-> even though we see more and more instances where CHECKSUM_UNNECESSARY
-> doesn't even work at all (e.g. cases with SRv6, new encaps device
-> doesn't understand). I believe it's time to take a stand! :-)
+> TBH I'm not sure what out-of-order situation you're referring to,
+> there is no ordering guarantee between separate threads trying to
+> transmit AFAIU.
+A thread need to do the bypass checking before doing enqueuing, so
+it means MISSED is set or the trylock fails for the bypass transmiting(
+which will set the MISSED after the first trylock), so the MISSED will
+always be set before a thread doing a enqueuing, and we ensure MISSED
+only be cleared during the protection of q->seqlock, after clearing
+MISSED, we do anther round of dequeuing within the protection of
+q->seqlock.
 
-I must agree. Not supporting CHECKSUM_COMPLETE seems like a step back.
+So if a thread has taken the q->seqlock and the MISSED is not set yet,
+it is allowed to send the packet directly without going through the
+qdisc enqueuing and dequeuing process.
+
+
+> 
+> IOW this check is not required for correctness, right?
+
+if a thread has taken the q->seqlock and the MISSED is not set, it means
+other thread has not set MISSED after the first trylock and before the
+second trylock, which means the enqueuing is not done yet.
+So I assume the this check is required for correctness if I understand
+your question correctly.
+
+> 
+>> another good thing is that we could also do the batch
+>> dequeuing and transmiting of packets when there is lock contention.
+> 
+> No doubt, but did you see the flag get set significantly often here 
+> to warrant the double-checking?
+
+No, that is just my guess:)
+
+> 
+>>> Is it really worth the extra code?  
+>>
+>> Currently DRAINING is only set for the netdev queue stopped.
+>> We could only use DRAINING to indicate the non-empty of a qdisc,
+>> then we need to set the DRAINING evrywhere MISSED is set, that is
+>> why I use both DRAINING and MISSED to indicate a non-empty qdisc.
+
+
