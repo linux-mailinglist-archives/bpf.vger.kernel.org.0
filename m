@@ -2,208 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F7E394FC1
-	for <lists+bpf@lfdr.de>; Sun, 30 May 2021 08:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EB1394FDB
+	for <lists+bpf@lfdr.de>; Sun, 30 May 2021 08:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229550AbhE3GBF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 30 May 2021 02:01:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39970 "EHLO
+        id S229551AbhE3GiX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 May 2021 02:38:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhE3GBF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 30 May 2021 02:01:05 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DFDC061574
-        for <bpf@vger.kernel.org>; Sat, 29 May 2021 22:59:26 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id s107so8011534ybi.3
-        for <bpf@vger.kernel.org>; Sat, 29 May 2021 22:59:26 -0700 (PDT)
+        with ESMTP id S229550AbhE3GiU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 30 May 2021 02:38:20 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15824C061574;
+        Sat, 29 May 2021 23:36:20 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id ot16so4834674pjb.3;
+        Sat, 29 May 2021 23:36:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6k1iqnRHu0ZAozGTSa4AIg/hgHRDLMs4qR91UwP4VzU=;
-        b=foY7Qc7JHg6bGe9L9HpfpOzLdbukMIFVuQePRa87FZTnl4BMtMpdjr2M79PVPPvSQP
-         vizdIVRv2gBnuTap+WK29bkH8YBzNh3Yd4iWkdS/cuQ1bIsdIVl0S/8uwuqr4r8uW9cM
-         WMMV9UQdfBMLF/QF3d4IcYJMffJ7Ns0AWFyR2z0bcLWW3eyr46HFOf+d7oQBf6GRhyiI
-         /D5VCm4RIamkG8NKYJndDJoKBvF3qjEzzs8BJWlpPXlbfQ+a8kRWzszD8pDmPD7j7m2X
-         7lhhBXbJmmhksKAYOzRWqtkMsuAcQTDuJZJCCJFaxO1mIYlmuZ6Y/TIndjne0Xz7LZWd
-         0KZg==
+        bh=NNL+qDCrDIa0joZ0DYEBARugQVtjVC8kImQPhRJdgbI=;
+        b=HaN9suZnSjU8hSNClvCEjrrEvAk/otnDVjSyly67lUuRlxX0VAh0ZnubzbO1LBNBj3
+         KuT1lvamatl2uqzpwuz0CeEU+PHi81C4/4cCunvFigmhC9ahsWlONQJz4NVuzcQJpxdS
+         g43DGxZ8jC9eixBPmA7nL5NlnxXB1A7Pq8ZfwzVCxNqwmOeLv0dobfnquSpZsZPhdLs8
+         D6tR1XU4DWCiPxieEF01FLO/wBvyHB5JuCX/nGRlPJwZfNjPtbAVd5P0/pA/hRyznVqO
+         hXhzA+A3zz1GDDa5RQ0RfKa5tPLN4rBNFSUS8YkiyUY3AFTNYt25ea1wS3l4UGXpL0Kl
+         45pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6k1iqnRHu0ZAozGTSa4AIg/hgHRDLMs4qR91UwP4VzU=;
-        b=A8Bzu0MRcUXW39401S0t65/hSjy/uo10m1U/xHQSjKt2dTYhe7jb386L65dLIWPxWo
-         Nw+SsQ1y/KpAI9JYvjxWX/Baurivi89XSDvY6skoWLtRslKCoT/EDApQHZVDPXioI8YP
-         T0MY1Z79A924PwWBwZSq1ndHsrZelwqhjO2ApDRnz1thrJJKf+KQmR3CU1TNs+AIGBL0
-         f49jipYIoQG6MgI/nxoWAJl4Bwz5eUKo8YirAgAC6W2Tn9dhbJ8vZ5zPUC6JfaBdcsaG
-         TJKwvNOmuLDYqUzl/dslMfyeU3wPMXnhCfPKEEWuwE0X+fMhPSD4GhzW0FWuRqhk0F4m
-         2yHw==
-X-Gm-Message-State: AOAM533cXDR/aRkmd+mGQcILmom7hiGaQ58p6YH7pR2HMmh0pczXlOFv
-        f8K2rpV74wtMafa0MYprI0K3m+uFdnp5H8bqoEI=
-X-Google-Smtp-Source: ABdhPJyh4ntxpRjgytDNXBSp/GCx1wJN72I3vfYkHM1bEqs5ZkW/DRifi/iObHjnChuqWQE4tF2d2dEZ4AX2vQR8nPo=
-X-Received: by 2002:a25:7246:: with SMTP id n67mr23976787ybc.510.1622354365261;
- Sat, 29 May 2021 22:59:25 -0700 (PDT)
+        bh=NNL+qDCrDIa0joZ0DYEBARugQVtjVC8kImQPhRJdgbI=;
+        b=MFOpK6RC8mZmVJL2l2QeIlx0ynCjK7PDhT7zzDo5VD1+kCWp9EDjZBeIQyIP9EuVn0
+         JVZp43AvBs8kBDX6TrRpJXZJ4+Q69ESCs38KIjJ1YXOLpcvIkTIcc8cl6bQHiu9rET5L
+         6KpAYUrVNv/RpnJusfYNsxwTMbOuC/t7e93SizxV2kOs0aQ+gqSBN44eFL1w3b2DYVnO
+         oD+4SLQXZD4+RFJPlh0oJHce//+gbpZBNOrhXouQStPCxMZ6UVza8vxwTbuoJdemU8ml
+         10nwSNkay+FV82eXmDe3QFD8QfOnqv100l/e9wb+6ULrQUkb9cZ6G/+SeqJFNa/ODYIq
+         AXbg==
+X-Gm-Message-State: AOAM5314QUfvAYGi5bB6ewqQuqWVvbVAP0n6dER5stWhQ3FWD+7/bkes
+        qnUkBoXzzEUmkqL0L+3SEndvXVBJjunf/G4yRSg=
+X-Google-Smtp-Source: ABdhPJykxIw04QZzjECK6roH4Maji5aF2IBev6tmhiUr7sjs8xPdbsVYg+ZxFSf1Diz1jk+9DS/8tBItoXhqkyijRJU=
+X-Received: by 2002:a17:90b:190a:: with SMTP id mp10mr10395885pjb.145.1622356579541;
+ Sat, 29 May 2021 23:36:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210528035520.3445-1-harishankar.vishwanathan@rutgers.edu>
-In-Reply-To: <20210528035520.3445-1-harishankar.vishwanathan@rutgers.edu>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 29 May 2021 22:59:14 -0700
-Message-ID: <CAEf4BzYnTYdDnVuEuiHpg=LWT_JvwJim8kTEBpGKrH3wePez2Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: tnums: Provably sound, faster, and more
- precise algorithm for tnum_mul
-To:     hv90@scarletmail.rutgers.edu
-Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>,
-        Matan Shachnai <m.shachnai@rutgers.edu>,
-        Srinivas Narayana <srinivas.narayana@rutgers.edu>,
-        Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>,
-        Edward Cree <ecree@solarflare.com>
+References: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
+ <CAM_iQpWDgVTCnP3xC3=z7WCH05oDUuqxrw2OjjUC69rjSQG0qQ@mail.gmail.com>
+ <CAADnVQ+V5o31-h-A+eNsHvHgOJrVfP4wVbyb+jL2J=-ionV0TA@mail.gmail.com>
+ <CAM_iQpU-Cvpf-+9R0ZdZY+5Dv+stfodrH0MhvSgryv_tGiX7pA@mail.gmail.com>
+ <CAM_iQpVYBNkjDeo+2CzD-qMnR4-2uW+QdMSf_7ohwr0NjgipaQ@mail.gmail.com> <CAADnVQJUHydpLwtj9hRWWNGx3bPbdk-+cQiSe3MDFQpwkKmkSw@mail.gmail.com>
+In-Reply-To: <CAADnVQJUHydpLwtj9hRWWNGx3bPbdk-+cQiSe3MDFQpwkKmkSw@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Sat, 29 May 2021 23:36:08 -0700
+Message-ID: <CAM_iQpXUBuOirztj3kifdFpvygKb-aoqwuXKkLdG9VFte5nynA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, May 27, 2021 at 11:14 PM <hv90@scarletmail.rutgers.edu> wrote:
+On Tue, May 25, 2021 at 11:21 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> From: Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>
+> On Mon, May 24, 2021 at 9:59 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> >
+> > On Mon, May 24, 2021 at 8:16 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > >
+> > > On Sun, May 23, 2021 at 9:01 AM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Fri, May 21, 2021 at 2:37 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > > > >
+> > > > > Hi, Alexei
+> > > > >
+> > > > > On Thu, May 20, 2021 at 11:52 PM Alexei Starovoitov
+> > > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > >
+> > > > > > Introduce 'struct bpf_timer' that can be embedded in most BPF map types
+> > > > > > and helpers to operate on it:
+> > > > > > long bpf_timer_init(struct bpf_timer *timer, void *callback, int flags)
+> > > > > > long bpf_timer_mod(struct bpf_timer *timer, u64 msecs)
+> > > > > > long bpf_timer_del(struct bpf_timer *timer)
+> > > > >
+> > > > > Like we discussed, this approach would make the timer harder
+> > > > > to be independent of other eBPF programs, which is a must-have
+> > > > > for both of our use cases (mine and Jamal's). Like you explained,
+> > > > > this requires at least another program array, a tail call, a mandatory
+> > > > > prog pinning to work.
+> > > >
+> > > > That is simply not true.
+> > >
+> > > Which part is not true? The above is what I got from your explanation.
+> >
+> > I tried to write some code sketches to use your timer to implement
+> > our conntrack logic, below shows how difficult it is to use,
 >
-> This patch introduces a new algorithm for multiplication of tristate
-> numbers (tnums) that is provably sound. It is faster and more precise when
-> compared to the existing method.
->
-> Like the existing method, this new algorithm follows the long
-> multiplication algorithm. The idea is to generate partial products by
-> multiplying each bit in the multiplier (tnum a) with the multiplicand
-> (tnum b), and adding the partial products after appropriately bit-shifting
-> them. The new algorithm, however, uses just a single loop over the bits of
-> the multiplier (tnum a) and accumulates only the uncertain components of
-> the multiplicand (tnum b) into a mask-only tnum. The following paper
-> explains the algorithm in more detail: https://arxiv.org/abs/2105.05398.
+> Was it difficult because you've used tail_call and over complicated
+> the progs for no good reason?
 
-This is a nice paper, I appreciated tables with algorithms pseudo-code
-and specific examples with uncertain bits, thanks!
+Using tail call is what I got from you, here is the quote:
 
-I think your algorithm makes sense, but I've also CC'ed original
-author of tnum logic. Edward, please take a look as well.
+"Sure. That's trivially achieved with pinning.
+One can have an ingress prog that tailcalls into another prog
+that arms the timer with one of its subprogs.
+Egress prog can tailcall into the same prog as well.
+The ingress and egress progs can be replaced one by one
+or removed both together and middle prog can stay alive
+if it's pinned in bpffs or held alive by FD."
 
-See below mostly styling nits.
+Here is the link:
+https://lore.kernel.org/bpf/CAADnVQK9BgguVorziWgpMktLHuPCgEaKa4fz-KCfhcZtT46teQ@mail.gmail.com/
+
 
 >
-> A natural way to construct the tnum product is by performing a tnum
-> addition on all the partial products. This algorithm presents another
-> method of doing this: decompose each partial product into two tnums,
-> consisting of the values and the masks separately. The mask-sum is
-> accumulated within the loop in acc_m. The value-sum tnum is generated
-> using a.value * b.value. The tnum constructed by tnum addition of the
-> value-sum and the mask-sum contains all possible summations of concrete
-> values drawn from the partial product tnums pairwise. We prove this result
-> in the paper.
+> > SEC("ingress")
+> > void ingress(struct __sk_buff *skb)
+> > {
+> >         struct tuple tuple;
+> >         // extract tuple from skb
+> >
+> >         if (bpf_map_lookup_elem(&timers, &key) == NULL)
+> >                 bpf_tail_call(NULL, &jmp_table, 0);
+> >                 // here is not reachable unless failure
+> >         val = bpf_map_lookup_elem(&conntrack, &tuple);
+> >         if (val && val->expires < now) {
+> >                 bpf_tail_call(NULL, &jmp_table, 1);
+> >                 // here is not reachable unless failure
+> >         }
+> > }
+> >
+> > SEC("egress")
+> > void egress(struct __sk_buff *skb)
+> > {
+> >         struct tuple tuple;
+> >         // extract tuple from skb
+> >
+> >         if (bpf_map_lookup_elem(&timers, &key) == NULL)
+> >                 bpf_tail_call(NULL, &jmp_table, 0);
+> >                 // here is not reachable unless failure
+> >         val = bpf_map_lookup_elem(&conntrack, &tuple);
+> >         if (val && val->expires < now) {
+> >                 bpf_tail_call(NULL, &jmp_table, 1);
+> >                 // here is not reachable unless failure
 >
-> Our evaluations show that the new algorithm is overall more precise
-> (producing tnums with less uncertain components) than the existing method.
-> As an illustrative example, consider the input tnums A and B. The numbers
-> in the paranthesis correspond to (value;mask).
+> tail_calls are unnecessary. Just call the funcs directly.
+> All lookups and maps are unnecessary as well.
+> Looks like a single global timer will be enough for this use case.
+
+Hmm? With your design, a timer has to be embedded into a map
+value, you said this is to mimic bpf spinlock.
+
 >
-> A                = 000000x1 (1;2)
-> B                = 0010011x (38;1)
-> A * B (existing) = xxxxxxxx (0;255)
-> A * B (new)      = 0x1xxxxx (32;95)
->
-> Importantly, we present a proof of soundness of the new algorithm in the
-> aforementioned paper. Additionally, we show that this new algorithm is
-> empirically faster than the existing method.
->
-> Co-developed-by: Matan Shachnai <m.shachnai@rutgers.edu>
-> Signed-off-by: Matan Shachnai <m.shachnai@rutgers.edu>
-> Co-developed-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
-> Signed-off-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
-> Co-developed-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
-> Signed-off-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
-> Signed-off-by: Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>
-> ---
->  kernel/bpf/tnum.c | 38 +++++++++++++++++++-------------------
->  1 file changed, 19 insertions(+), 19 deletions(-)
->
-> diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
-> index ceac5281bd31..bb1fa1cc181d 100644
-> --- a/kernel/bpf/tnum.c
-> +++ b/kernel/bpf/tnum.c
-> @@ -111,30 +111,30 @@ struct tnum tnum_xor(struct tnum a, struct tnum b)
->         return TNUM(v & ~mu, mu);
->  }
->
-> -/* half-multiply add: acc += (unknown * mask * value).
-> - * An intermediate step in the multiply algorithm.
-> - */
-> -static struct tnum hma(struct tnum acc, u64 value, u64 mask)
-> +struct tnum tnum_mul(struct tnum a, struct tnum b)
+> In general the garbage collection in any form doesn't scale.
+> The conntrack logic doesn't need it. The cillium conntrack is a great
+> example of how to implement a conntrack without GC.
 
-It's probably a good idea to have a short description (from your
-commit description above) of the algorithm in the comment above this
-function, with a link to your paper.
+That is simply not a conntrack. We expire connections based on
+its time, not based on the size of the map where it residents.
 
->  {
-> -       while (mask) {
-> -               if (mask & 1)
-> -                       acc = tnum_add(acc, TNUM(0, value));
-> -               mask >>= 1;
-> -               value <<= 1;
-> -       }
-> -       return acc;
-> -}
-> +       u64 acc_v = a.value * b.value;
-> +       struct tnum acc_m = TNUM(0, 0);
->
-> -struct tnum tnum_mul(struct tnum a, struct tnum b)
-> -{
-> -       struct tnum acc;
-> -       u64 pi;
-> +       while (a.value > 0 || a.mask > 0) {
-
-`while (a.value || a.mask)` is shorter and doesn't imply that a.value
-or a.mask can be < 0 (otherwise you'd write != 0, right? ;)
-
-> +
-
-unnecessary empty line
-
-> +               // LSB of tnum a is a certain 1
-
-please use C-style comments /* */
-
-> +               if (((a.value & 1) == 1) && ((a.mask & 1) == 0))
-
-just if (a.value & 1) is enough. if a.value == 1, a.mask has to be 0,
-right? and (x & 1) == 1 is just a more verbose way of saying (x & 1)
-is non-zero, which in C is just if (x & 1).
-
-> +                       acc_m = tnum_add(acc_m, TNUM(0, b.mask));
->
-> -       pi = a.value * b.value;
-> -       acc = hma(TNUM(pi, 0), a.mask, b.mask | b.value);
-> -       return hma(acc, b.mask, a.value);
-> +               // LSB of tnum a is uncertain
-> +               else if ((a.mask & 1) == 1)
-
-same about comment style and simpler if statement; also another comment below
-
-> +                       acc_m = tnum_add(acc_m, TNUM(0, b.value | b.mask));
-> +
-> +               // Note: no case for LSB is certain 0
-> +               a = tnum_rshift(a, 1);
-> +               b = tnum_lshift(b, 1);
-> +       }
-> +
-> +       return tnum_add(TNUM(acc_v, 0), acc_m);
->  }
->
-> +
-
-another unnecessary empty line
-
->  /* Note that if a and b disagree - i.e. one has a 'known 1' where the other has
->   * a 'known 0' - this will return a 'known 1' for that bit.
->   */
-> --
-> 2.25.1
->
+Thanks.
