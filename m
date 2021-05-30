@@ -2,356 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14DCC394F11
-	for <lists+bpf@lfdr.de>; Sun, 30 May 2021 05:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F7E394FC1
+	for <lists+bpf@lfdr.de>; Sun, 30 May 2021 08:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbhE3D3H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 May 2021 23:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35520 "EHLO
+        id S229550AbhE3GBF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 May 2021 02:01:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhE3D3C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 29 May 2021 23:29:02 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EFFDC061574
-        for <bpf@vger.kernel.org>; Sat, 29 May 2021 20:27:12 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 207so1364749ybd.1
-        for <bpf@vger.kernel.org>; Sat, 29 May 2021 20:27:12 -0700 (PDT)
+        with ESMTP id S229495AbhE3GBF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 30 May 2021 02:01:05 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DFDC061574
+        for <bpf@vger.kernel.org>; Sat, 29 May 2021 22:59:26 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id s107so8011534ybi.3
+        for <bpf@vger.kernel.org>; Sat, 29 May 2021 22:59:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GQ80997LMVKYphwclb+AtTBx9tyRm00pto8wmJzvbyQ=;
-        b=NkWuJ2pbgYM6blZkHbbGWa1B+L4pGoeqoo2MAuetr7B2VAlwJotVDovUkrrXzKu/Se
-         iCFq7AZ4x/nG/UGxD7J+cLfrOhGSUCTK0OTDOnxHT4kKW3+VIJ2I9fyOwRh95zIWFfOX
-         PV4t17zqgXaEtwzOVLxoTzgUBQqdYIzMVpN53+9k78pmGv0UthTTsSF/JT2kfscCsFL3
-         EiCKExGg6mRG9PtEV1et1/BLwieDS+vlJMUZvCICk5NRt9U1505sLW4+ZHl6gJdecxUM
-         cwHzBEzEbl2LvBcjIYRrPO8QeiWgXxWeYHfISVwGRaAlaBTR04OkXhuAbYUnsTkyJEps
-         kK0Q==
+        bh=6k1iqnRHu0ZAozGTSa4AIg/hgHRDLMs4qR91UwP4VzU=;
+        b=foY7Qc7JHg6bGe9L9HpfpOzLdbukMIFVuQePRa87FZTnl4BMtMpdjr2M79PVPPvSQP
+         vizdIVRv2gBnuTap+WK29bkH8YBzNh3Yd4iWkdS/cuQ1bIsdIVl0S/8uwuqr4r8uW9cM
+         WMMV9UQdfBMLF/QF3d4IcYJMffJ7Ns0AWFyR2z0bcLWW3eyr46HFOf+d7oQBf6GRhyiI
+         /D5VCm4RIamkG8NKYJndDJoKBvF3qjEzzs8BJWlpPXlbfQ+a8kRWzszD8pDmPD7j7m2X
+         7lhhBXbJmmhksKAYOzRWqtkMsuAcQTDuJZJCCJFaxO1mIYlmuZ6Y/TIndjne0Xz7LZWd
+         0KZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GQ80997LMVKYphwclb+AtTBx9tyRm00pto8wmJzvbyQ=;
-        b=V7oOiQRtMl5ou59TgVS2o7zLwNOtpKG9BOStxaTA+PPsh8H/K6SNDGa3QzKS2CR584
-         +WvsrVKrIRWUa2YPrUXNQUBGKibKHpwOh6WzheWQWHpChuqn3JP2vRbBV2xzTVVTNXyG
-         qGJsWtyBBYFB6rxMtC371ZzCCKbkFcUBkNftE5gsEZ0D+ghUWIZcJxMICepV4LBn4gFE
-         WGoFDk16G6H362XhXGem3BuEctfwrgH09bNvtyFL1cqgi5Qi8l0r1UtRz7OERB6JaJSP
-         L2X7wHxef+lAX6mnZ+vfwKrbnCsUlDBaqpsuFIoPfp7HA41G+LVpFBlrGe3rJjdpc8Wy
-         GQdA==
-X-Gm-Message-State: AOAM530HHi9KkN2b32PG/eT+i3dVHzGuBkUte6ahjdduItGBzdM4n9BM
-        MdmlrYNgVgUSlAg1mBxRcH3FiRGvGqU8y73uHLGQvlar
-X-Google-Smtp-Source: ABdhPJw9Vzs86fAleLKKEj+u2qC0BV+cvgRg/PDEoRn+Vahr5m62Z1IQkUduZOL2re/RgJ0Hgq2UTK92WXoaYYg935I=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr23033382ybu.403.1622345231158;
- Sat, 29 May 2021 20:27:11 -0700 (PDT)
+        bh=6k1iqnRHu0ZAozGTSa4AIg/hgHRDLMs4qR91UwP4VzU=;
+        b=A8Bzu0MRcUXW39401S0t65/hSjy/uo10m1U/xHQSjKt2dTYhe7jb386L65dLIWPxWo
+         Nw+SsQ1y/KpAI9JYvjxWX/Baurivi89XSDvY6skoWLtRslKCoT/EDApQHZVDPXioI8YP
+         T0MY1Z79A924PwWBwZSq1ndHsrZelwqhjO2ApDRnz1thrJJKf+KQmR3CU1TNs+AIGBL0
+         f49jipYIoQG6MgI/nxoWAJl4Bwz5eUKo8YirAgAC6W2Tn9dhbJ8vZ5zPUC6JfaBdcsaG
+         TJKwvNOmuLDYqUzl/dslMfyeU3wPMXnhCfPKEEWuwE0X+fMhPSD4GhzW0FWuRqhk0F4m
+         2yHw==
+X-Gm-Message-State: AOAM533cXDR/aRkmd+mGQcILmom7hiGaQ58p6YH7pR2HMmh0pczXlOFv
+        f8K2rpV74wtMafa0MYprI0K3m+uFdnp5H8bqoEI=
+X-Google-Smtp-Source: ABdhPJyh4ntxpRjgytDNXBSp/GCx1wJN72I3vfYkHM1bEqs5ZkW/DRifi/iObHjnChuqWQE4tF2d2dEZ4AX2vQR8nPo=
+X-Received: by 2002:a25:7246:: with SMTP id n67mr23976787ybc.510.1622354365261;
+ Sat, 29 May 2021 22:59:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210526125848.1c7adbb0@carbon> <CAEf4BzYXUDyQaBjZmb_Q5-z3jw1-Uvdgxm+cfcQjSwb9oRoXnQ@mail.gmail.com>
- <60aeb01ebcd10_fe49208b8@john-XPS-13-9370.notmuch> <CAEf4Bza3m5dwZ_d0=zAWR+18f5RUjzv9=1NbhTKAO1uzWg_fzQ@mail.gmail.com>
- <60aeeb5252147_19a622085a@john-XPS-13-9370.notmuch> <CAEf4Bzb1OZHpHYagbVs7s9tMSk4wrbxzGeBCCBHQ-qCOgdu6EQ@mail.gmail.com>
- <60b08442b18d5_1cf8208a0@john-XPS-13-9370.notmuch> <87fsy7gqv7.fsf@toke.dk>
- <60b0ffb63a21a_1cf82089e@john-XPS-13-9370.notmuch> <20210528180214.3b427837@carbon>
- <60b12897d2e3f_1cf820896@john-XPS-13-9370.notmuch>
-In-Reply-To: <60b12897d2e3f_1cf820896@john-XPS-13-9370.notmuch>
+References: <20210528035520.3445-1-harishankar.vishwanathan@rutgers.edu>
+In-Reply-To: <20210528035520.3445-1-harishankar.vishwanathan@rutgers.edu>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 29 May 2021 20:27:00 -0700
-Message-ID: <CAEf4Bzaqb=1b4uhU8PaCTW1T+5CwrR4TQNHyLJLZXt=NYtzh8g@mail.gmail.com>
-Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        William Tu <u9012063@gmail.com>, xdp-hints@xdp-project.net
+Date:   Sat, 29 May 2021 22:59:14 -0700
+Message-ID: <CAEf4BzYnTYdDnVuEuiHpg=LWT_JvwJim8kTEBpGKrH3wePez2Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: tnums: Provably sound, faster, and more
+ precise algorithm for tnum_mul
+To:     hv90@scarletmail.rutgers.edu
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>,
+        Matan Shachnai <m.shachnai@rutgers.edu>,
+        Srinivas Narayana <srinivas.narayana@rutgers.edu>,
+        Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>,
+        Edward Cree <ecree@solarflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 28, 2021 at 10:30 AM John Fastabend
-<john.fastabend@gmail.com> wrote:
+On Thu, May 27, 2021 at 11:14 PM <hv90@scarletmail.rutgers.edu> wrote:
 >
-> Jesper Dangaard Brouer wrote:
+> From: Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>
 >
-> [...]
+> This patch introduces a new algorithm for multiplication of tristate
+> numbers (tnums) that is provably sound. It is faster and more precise when
+> compared to the existing method.
 >
-> I'll try to respond to both Toke and Jesper here and make it coherent so
-> we don't split this thread yet again.
+> Like the existing method, this new algorithm follows the long
+> multiplication algorithm. The idea is to generate partial products by
+> multiplying each bit in the multiplier (tnum a) with the multiplicand
+> (tnum b), and adding the partial products after appropriately bit-shifting
+> them. The new algorithm, however, uses just a single loop over the bits of
+> the multiplier (tnum a) and accumulates only the uncertain components of
+> the multiplicand (tnum b) into a mask-only tnum. The following paper
+> explains the algorithm in more detail: https://arxiv.org/abs/2105.05398.
+
+This is a nice paper, I appreciated tables with algorithms pseudo-code
+and specific examples with uncertain bits, thanks!
+
+I think your algorithm makes sense, but I've also CC'ed original
+author of tnum logic. Edward, please take a look as well.
+
+See below mostly styling nits.
+
 >
-> Wish me luck.
+> A natural way to construct the tnum product is by performing a tnum
+> addition on all the partial products. This algorithm presents another
+> method of doing this: decompose each partial product into two tnums,
+> consisting of the values and the masks separately. The mask-sum is
+> accumulated within the loop in acc_m. The value-sum tnum is generated
+> using a.value * b.value. The tnum constructed by tnum addition of the
+> value-sum and the mask-sum contains all possible summations of concrete
+> values drawn from the partial product tnums pairwise. We prove this result
+> in the paper.
 >
-> @Toke "react" -> "not break" hopefully gives you my opinion on this.
+> Our evaluations show that the new algorithm is overall more precise
+> (producing tnums with less uncertain components) than the existing method.
+> As an illustrative example, consider the input tnums A and B. The numbers
+> in the paranthesis correspond to (value;mask).
 >
-> @Toke "five fields gives 32 different metadata formats" OK let me take
-> five fields,
+> A                = 000000x1 (1;2)
+> B                = 0010011x (38;1)
+> A * B (existing) = xxxxxxxx (0;255)
+> A * B (new)      = 0x1xxxxx (32;95)
 >
->  struct meta {
->    __u32 f1;
->    __u32 f2;
->    __u32 f3;
->    __u32 f4;
->    __u32 f5;
+> Importantly, we present a proof of soundness of the new algorithm in the
+> aforementioned paper. Additionally, we show that this new algorithm is
+> empirically faster than the existing method.
+>
+> Co-developed-by: Matan Shachnai <m.shachnai@rutgers.edu>
+> Signed-off-by: Matan Shachnai <m.shachnai@rutgers.edu>
+> Co-developed-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
+> Signed-off-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
+> Co-developed-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
+> Signed-off-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
+> Signed-off-by: Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>
+> ---
+>  kernel/bpf/tnum.c | 38 +++++++++++++++++++-------------------
+>  1 file changed, 19 insertions(+), 19 deletions(-)
+>
+> diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
+> index ceac5281bd31..bb1fa1cc181d 100644
+> --- a/kernel/bpf/tnum.c
+> +++ b/kernel/bpf/tnum.c
+> @@ -111,30 +111,30 @@ struct tnum tnum_xor(struct tnum a, struct tnum b)
+>         return TNUM(v & ~mu, mu);
 >  }
 >
-> I'm still confused why the meta data would change just because the feature
-> is enabled or disabled. I've written drivers before and I don't want to
-> move around where I write f1 based on some combination of features f2,f3,f4,f5
-> state of enabled/disabled. If features are mutual exclusive I can build a
-> sensible union. If its possible for all fields to enabled then I just lay
-> them out like above.
->
->
-> @Toke "completely reprogramming the NIC" -> sounds like some basic agreement.
->
->
-> > > > >> > > union and independent set of BTFs are two different things, I'll let
-> > > > >> > > you guys figure out which one you need, but I replied how it could
-> > > > >> > > look like in CO-RE world
-> > > > >> >
-> > > > >> > I think a union is sufficient and more aligned with how the
-> > > > >> > hardware would actually work.
-> > > > >>
-> > > > >> Sure. And I think those are two orthogonal concerns. You can start
-> > > > >> with a single struct mynic_metadata with union inside it, and later
-> > > > >> add the ability to swap mynic_metadata with another
-> > > > >> mynic_metadata___v2 that will have a similar union but with a
-> > > > >> different layout.
-> > > > >
-> > > > > Right and then you just have normal upgrade/downgrade problems with
-> > > > > any struct.
-> > > > >
-> > > > > Seems like a workable path to me. But, need to circle back to the
-> > > > > what we want to do with it part that Jesper replied to.
-> > > >
-> > > > So while this seems to be a viable path for getting libbpf to do all the
-> > > > relocations (and thanks for hashing that out, I did not have a good grip
-> > > > of the details), doing it all in userspace means that there is no way
-> > > > for the XDP program to react to changes once it has been loaded. So this
-> > > > leaves us with a selection of non-very-attractive options, IMO. I.e.,
-> > > > we would have to:
->
->
-> > >
-> > > I don't really understand what this means 'having XDP program to
-> > > react to changes once it has been loaded.' What would a program look
-> > > like thats dynamic? You can always version your metadata and
-> > > write programs like this,
-> > >
-> > >   if (meta->version == VERSION1) {do_foo}
-> > >   else {do_bar}
-> > >
-> > > And then have a headeer,
-> > >
-> > >    struct meta {
-> > >      int version;
-> > >      union ...    // union of versions
-> > >    }
-> > >
-> > > I fail to see how a program could 'react' dynamically. An agent could
-> > > load new programs dynamically into tail call maps of fentry with
-> > > the need handlers, which would work as well and avoid unions.
-> > >
-> > > >
-> > > > - have to block any modifications to the hardware config that would
-> > > >   change the metadata format; this will probably result in irate users
-> > >
-> > > I'll need a concrete example if I swap out my parser block, I should
-> > > also swap out my BPF for my shiny new protocol. I don't see how a
-> > > user might write programs for things they've not configured hardware
-> > > for yet. Leaving aside knobs like VLAN on/off, VXLAN on/off, and
-> > > such which brings the next point.
-> > >
-> > > >
-> > > > - require XDP programs to deal with all possible metadata permutations
-> > > >   supported by that driver (by exporting them all via a BTF union or
-> > > >   similar); this means a potential for combinatorial explosion of config
-> > > >   options and as NICs become programmable themselves I'm not even sure
-> > > >   if it's possible for the driver to know ahead of time
-> > >
-> > > I don't see the problem sorry. For current things that exist I can't
-> > > think up too many fields vlan, timestamp, checksum(?), pkt_type,
-> > > hash maybe.
-> > >
-> > > For programmable pipelines (P4) then I don't see a problem with
-> > > reloading your program or swapping out a program. I don't see the
-> > > value of adding a new protocol for example dynamically. Surely
-> > > the hardware is going to get hit with a big reset anyways.
-> > >
-> > > >
-> > > > - throw up our hands and just let the user deal with it (i.e., to
-> > > >   nothing and so require XDP programs to be reloaded if the NIC config
-> > > >   changes); this is not very friendly and is likely to lead to subtle
-> > > >   bugs if an XDP program parses the metadata assuming it is in a
-> > > >   different format than it is
-> > >
-> > > I'm not opposed to user error causing logic bugs.  If I give
-> > > users power to reprogram their NICs they should be capabable
-> > > of managing a few BPF programs. And if not then its a space
-> > > where a distro/vendor should help them with tooling.
-> > >
-> > > >
-> > > > Given that hardware config changes are not just done by ethtool, but
-> > > > also by things like running `tcpdump -j`, I really think we have to
-> > > > assume that they can be quite dynamic; which IMO means we have to solve
-> > > > this as part of the initial design. And I have a hard time seeing how
-> > > > this is possible without involving the kernel somehow.
-> > >
-> > > I guess here your talking about building an skb? Wouldn't it
-> > > use whatever logic it uses today to include the timestamp.
-> > > This is a bit of an aside from metadata in the BPF program.
-> > >
-> > > Building timestamps into
-> > > skbs doesn't require BPF program to have the data. Or maybe
-> > > the point is an XDP variant of tcpdump would like timestamps.
-> > > But then it should be in the metadata IMO.
-> >
-> > It sounds like we are all agreeing that the HW RX timestamp should be
-> > stored in the XDP-metadata area right?
-> >
-> > As I understand, John don't like multiple structs, but want a single
-> > struct, so lets create below simple struct that the driver code fills
-> > out before calling our XDP-prog:
-> >
-> >  struct meta {
-> >       u32 timestamp_type;
-> >       u64 rx_timestamp;
-> >       u32 rxhash32;
-> >       u32 version;
-> >  };
->
-> From driver side I don't think you want to dynamically move around
-> fields too much. Meaning when feature X is enabled I write it in
-> some offset and then when X+Y is enabled I write into another offset.
-> This adds complexity on driver side and likely makes said driver
-> slower due to complexity.
->
-> Perhaps exception to above is on pkt_type where its natural to
-> have hardware engine write different fields, but that fits
-> naturally into a union around pkt_types.
->
-> >
-> > This NIC is configured for PTP, but hardware can only do rx_timestamp
-> > for PTP packets (like ixgbe).  (Assume both my XDP-prog and PTP
-> > userspace prog want to see this HW TS).
-> >
-> > What should I do as a driver developer to tell XDP-prog that the HW
-> > rx_timestamp is not valid for this packet ?
->
-> Driver developer should do nothing. When enable write it into rx_timestamp.
-> When disabled don't. Keep the drivers as simple as possible and don't
-> make the problem hard.
->
-> >
-> >  1. Always clear 'rx_timestamp' + 'timestamp_type' for non-PTP packets?
-> >  2. or, set version to something else ?
-> >
-> > I don't like option 1, because it will slowdown the normal none-PTP
-> > packets, that doesn't need this timestamp.
-> >
->
-> 1, no and 2, no. When timestamps are wanted just set a global variable
-> in the program. From XDP program,
->
->   if (rx_timestamp_enabled) {
->      meta->timestamp;  // do something
->   } else {
->      meta->timestamp = bpf_get_timestamp(); // software fallback if you want
->   }
->
-> then when userspace enables the timestamp through whatever means it
-> has to do this it also sets 'rx_timestamp_enabled = true' which can
-> be done today no problem.
->
-> Now its up to hardware and user to build something coherent. You
-> don't need me to agree with you that its useful to add timestamps you
-> have all the tools you need to do it. Presumably the user buys the
-> hardware so they can buy whats most useful for them.
->
-> >
-> >
-> > Now I want to redirect this packet into a veth.  The veth device could
-> > be running an XDP-prog, that also want to look at this timestamp info.
-> > How can the veth XDP-prog know howto interpret metadata area. What if I
-> > stored the bpf_id in the version fields in the struct?.
->
-> Well presumably someone is managing the system so with above XDP prog
-> on real nic could just populate the metadata with software if needed
-> and veth would not care if it came from hardware or software. Or
-> use same fallback trick with global variable.
->
-> >
-> > (Details: I also need this timestamp info transferred to xdp_frame,
-> > because when redirecting into a veth (container) then I want this
-> > timestamp set on the SKB to survive. I wonder how can I know what the
-> > BTF-layout, guess it would be useful to have btf_id at this point)
->
-> Why do you need to know the layout? Just copy the metadata. The core
-> infrastructure can not know the layout or we are back to being
-> gate-keepers of hardware features.
->
-> >
-> > > >
-> > > > Unless I'm missing something? WDYT?
-> > >
-> > > Distilling above down. I think we disagree on how useful
-> > > dynamic programs are because of two reasons. First I don't
-> > > see a large list of common attributes that would make the
-> > > union approach as painful as you fear. And two, I believe
-> > > users who are touching core hardware firmware need to also
-> > > be smart enough (or have smart tools) to swap out their
-> > > BPF programs in the correct order so as to not create
-> > > subtle races. I didn't do it here but if we agree walking
-> > > through that program swap flow with firmware update would
-> > > be useful.
-> >
-> > Hmm, I sense we are perhaps talking past each-other(?).  I am not
-> > talking about firmware upgrades.  I'm arguing that enable/disable of HW
-> > RX-timestamps will change the XDP-metadata usage dynamically runtime.
-> > This is simply a normal userspace program that cause this changes e.g.
-> > running 'tcpdump -j'.
->
-> I'm not sure why it would change the layout. The hardware is going
-> to start writing completely different metadata? If so just pivot
-> on a global value like above with two structs.
->
->   if (timestamp_enabled) {
->     struct timestamp_meta *meta = data->meta_data;
->     // do stuff
->   } else {
->     struct normal_meta *meta = data->meta_data;
->   }
->
-> The powerful part of above is you have all the pieces you need today
-> sans exporting a couple internal libbpf calls, but that should
-> be doable. Although Andrii would probably object to such a ugly
-> hack so a proper API would be nice. But, again not strictly needed
+> -/* half-multiply add: acc += (unknown * mask * value).
+> - * An intermediate step in the multiply algorithm.
+> - */
+> -static struct tnum hma(struct tnum acc, u64 value, u64 mask)
+> +struct tnum tnum_mul(struct tnum a, struct tnum b)
 
-Of course I would :) But I had the ability to specify custom vmlinux
-BTF in libbpf (through bpf_object__load_xattr) from the very beginning
-(at least for testing purposes), though it bit-rotted a bit with all
-the further BTF-enabled features. But I'm all for cleaning that up and
-formalizing the ability to specify alternative vmlinux BTF and/or
-additional external BTF.
+It's probably a good idea to have a short description (from your
+commit description above) of the algorithm in the comment above this
+function, with a link to your paper.
 
-> to get above working.
+>  {
+> -       while (mask) {
+> -               if (mask & 1)
+> -                       acc = tnum_add(acc, TNUM(0, value));
+> -               mask >>= 1;
+> -               value <<= 1;
+> -       }
+> -       return acc;
+> -}
+> +       u64 acc_v = a.value * b.value;
+> +       struct tnum acc_m = TNUM(0, 0);
 >
-> Addressing Tokes example which I think is the same, Instead of building
-> a metadata struct like this,
+> -struct tnum tnum_mul(struct tnum a, struct tnum b)
+> -{
+> -       struct tnum acc;
+> -       u64 pi;
+> +       while (a.value > 0 || a.mask > 0) {
+
+`while (a.value || a.mask)` is shorter and doesn't imply that a.value
+or a.mask can be < 0 (otherwise you'd write != 0, right? ;)
+
+> +
+
+unnecessary empty line
+
+> +               // LSB of tnum a is a certain 1
+
+please use C-style comments /* */
+
+> +               if (((a.value & 1) == 1) && ((a.mask & 1) == 0))
+
+just if (a.value & 1) is enough. if a.value == 1, a.mask has to be 0,
+right? and (x & 1) == 1 is just a more verbose way of saying (x & 1)
+is non-zero, which in C is just if (x & 1).
+
+> +                       acc_m = tnum_add(acc_m, TNUM(0, b.mask));
 >
->  struct meta {
->   u32 rxhash;
->   u8 vlan;
->  };
+> -       pi = a.value * b.value;
+> -       acc = hma(TNUM(pi, 0), a.mask, b.mask | b.value);
+> -       return hma(acc, b.mask, a.value);
+> +               // LSB of tnum a is uncertain
+> +               else if ((a.mask & 1) == 1)
+
+same about comment style and simpler if statement; also another comment below
+
+> +                       acc_m = tnum_add(acc_m, TNUM(0, b.value | b.mask));
+> +
+> +               // Note: no case for LSB is certain 0
+> +               a = tnum_rshift(a, 1);
+> +               b = tnum_lshift(b, 1);
+> +       }
+> +
+> +       return tnum_add(TNUM(acc_v, 0), acc_m);
+>  }
 >
-> Use the second example as your metadata always
+> +
+
+another unnecessary empty line
+
+>  /* Note that if a and b disagree - i.e. one has a 'known 1' where the other has
+>   * a 'known 0' - this will return a 'known 1' for that bit.
+>   */
+> --
+> 2.25.1
 >
->  struct meta {
->    u32 rxhash;
->    u32 timestamp;
->    u8 vlan;
->  };
->
-> Then pivot on what to do with that timestamp using a global variable or
-> map or any of the other ways we do features dynamically in kprobes and
-> other prog types.
->
-> Thanks,
-> John
