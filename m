@@ -2,204 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64C7B394EAE
-	for <lists+bpf@lfdr.de>; Sun, 30 May 2021 02:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944EA394EAF
+	for <lists+bpf@lfdr.de>; Sun, 30 May 2021 02:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhE3AmI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 May 2021 20:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
+        id S229555AbhE3Apn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 29 May 2021 20:45:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhE3AmH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 29 May 2021 20:42:07 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD5FC061574;
-        Sat, 29 May 2021 17:40:29 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id p184so11082695yba.11;
-        Sat, 29 May 2021 17:40:29 -0700 (PDT)
+        with ESMTP id S229546AbhE3Apn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 29 May 2021 20:45:43 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245C7C061574;
+        Sat, 29 May 2021 17:44:06 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id b9so3292522ybg.10;
+        Sat, 29 May 2021 17:44:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p+QLZNDdFIlxF7UzDUY6YTc7hx2a7m+YGBRUhRmiWLE=;
-        b=Dv81vMWt0sqzezDkVJcdxUSiwY8ViWsXCunQHqu/HOHMkXttb+3BN0xOo099nc90QG
-         E9aqLdAA9tI4wqgfg1Ap5q3LmOfHah5/oGmVGxH48KG/P544eCzuK3HinHdhpvKM0KJb
-         qY5wwIPtrIRw7+ucXw0vmvGd6dIsX0aNUBo/xoc9sNvZE6DTj85cw/Jqgn4a31sz1hJb
-         bd6ShSCpsaez4ZZqfOM4ceAqDohzxdsWjN6h+u0+Fon1iiK8qzVF5O0GojlbtnwwztNY
-         enoTv/Nfr+NqDvXhqEJbwwRXuFLSITjdqx7FUcxsahd8QMVAkQwchcqmHTXVQsRzwCTU
-         jc8A==
+         :cc:content-transfer-encoding;
+        bh=G/tsG7bSPifg8l0vxnMKIRn4DZczc9OXPGOZRBnB9Gg=;
+        b=J8djhMZUi5OPDVVE4uQLkTl/LnB2caKU6xB98d8RI8q0RdeUDLid4ruPgbd6Hw9hcd
+         2hnIeIikSy5KWm9k3PSQeLtncjpVLHlNa8xePBcfPXAbKZcBQrniFyZeyYVWWDsSb+UP
+         JIJhUFGW53q3lgTuhwTm39psLBJF+HcAzfsX/YPg1rE875KJ2Peso7t8q3eGuxGB2Dfx
+         6y8yOOQ5SCxhHeT4WblatvWaK8rIpb92+SUy5sSlQckf9I17U1BDUhKUFEj+CC5/d7lA
+         Lv1gi4xj6l1Rci1ekvzGGRxaNLzFzBbzCxD8SPq8SY2TKePWglPY3rRziwjEFJfeoM+N
+         X0CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p+QLZNDdFIlxF7UzDUY6YTc7hx2a7m+YGBRUhRmiWLE=;
-        b=s62UhHeY3xgQQ0oZeciCqVYsqJqjH1vy2b+A/MKmWL3euUKCsY60F+DHQ/0apFhjcn
-         pRwEnKi7Lbq3bpmY4XOBB6hbU2Q3z01PETssScgHGTIEFyk8Mn+gfNAGtF/uPrKMqojz
-         wxoTc235VSLuq2O/hQ37jsnoD5aFDZF0H63OTMbwLCecUB4oPj0OXmdX751DQDzGuLyv
-         gD3NuFTOPbKUOrfwe8jncEQPUjXnKkn5nZltYNJRA3MX6kjKJOr+pK4Jle6EJ4AsgCjf
-         whmUIAfaZwFFx7zGXmfBrF3ODm9whHAXSekQgNMh2rtNPyQNiXxB2mAZbxBg0bUL89Lt
-         Xiew==
-X-Gm-Message-State: AOAM532DbJ1KskM2nHaUOdpq6Jx6uFAnQRwLLGR63tRNxNxqq4/qYlvZ
-        l+KzQiT+BTObFBbXiu+WJX905jJK781lx0wchTg=
-X-Google-Smtp-Source: ABdhPJx6lqqfyTEsze5wehDuyxE1+npbADRpDrlXF7hY7JJ/93ImQDbZ8sMwC/Au7OcyCbWsAhHdjU7e3qyLNfGk8v8=
-X-Received: by 2002:a25:4182:: with SMTP id o124mr3363739yba.27.1622335228185;
- Sat, 29 May 2021 17:40:28 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=G/tsG7bSPifg8l0vxnMKIRn4DZczc9OXPGOZRBnB9Gg=;
+        b=qVZODVEDIoVVNwYUuJE4w84a2PoJtvbuWYnQVw1nQRhZBFSvBfG2Sf+WxwagwqfMhr
+         N2AvfscOCgIEoCIQywtSml6KH6fDnfF2UHsB1ZK/OnrlDXQdfZiulJeJfO/OPHprcFmp
+         6o7dqpM+Y4WEJyW4zKQ+iZY6GJws9P6KwigCArd80o5jccBvG2J677m068agc2GEmn8q
+         5acO7CDckoMSpR6FHqfVMAqangCOw/mmUMNqcRZXwF8Y6JtYYhYqSz+vido9lV8iV4MP
+         JiGoXXcaOf7sDWgvSi70cc9qRU9RZuk8isPcsogfgUw/Vjr7oHZlvteo2DmMYhxFnjP2
+         Mhog==
+X-Gm-Message-State: AOAM530B6CJ4A+BH6iWZD02FXbD/hduxuS7RmZOfYTpCxiMmp++BTYyk
+        HTOvrYi3JjxvC4tZncytn70Y04hanY8qnaK1s0s=
+X-Google-Smtp-Source: ABdhPJxALDTktYBwD25CxGGOCsDhchYDNOsKwZEgS9PBYXjPePemtUQ0brvZlZhtRsWzQofK3Zz4YrsVfTot2uX7Oik=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr23274093ybo.230.1622335445286;
+ Sat, 29 May 2021 17:44:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <YK+41f972j25Z1QQ@kernel.org> <CAEf4BzaTP_jULKMN_hx6ZOqwESOmsR6_HxWW-LnrA5xwRNtSWg@mail.gmail.com>
- <4615C288-2CFD-483E-AB98-B14A33631E2F@gmail.com> <CAEf4BzaQmv1+1bPF=1aO3dcmNu2Mx0EFhK+ZU6UFsMjv3v6EZA@mail.gmail.com>
- <4901AF88-0354-428B-9305-2EDC6F75C073@gmail.com> <CAEf4BzZk8bcSZ9hmFAmgjbrQt0Yj1usCHmuQTfU-pwZkYQgztA@mail.gmail.com>
- <YLFIW9fd9ZqbR3B9@kernel.org>
-In-Reply-To: <YLFIW9fd9ZqbR3B9@kernel.org>
+References: <f2308775-2a07-ea63-c741-50ab98eafc2c@linux.ibm.com> <YLDpvKCAJibAhU1S@kernel.org>
+In-Reply-To: <YLDpvKCAJibAhU1S@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 29 May 2021 17:40:17 -0700
-Message-ID: <CAEf4BzYCCWM0WBz0w+vL1rVBjGvLZ7wVtgJCUVr3D-NmVK0MEg@mail.gmail.com>
-Subject: Re: [RFT] Testing 1.22
+Date:   Sat, 29 May 2021 17:43:54 -0700
+Message-ID: <CAEf4BzZ0b3V9ivEOn5UC1xOG79aYPSA8o-yv63+pxykVb+EMWg@mail.gmail.com>
+Subject: Re: perf test 40 Basic BPF llvm compile dumps core (x86 and s390)
 To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Michael Petlan <mpetlan@redhat.com>
+Cc:     Thomas Richter <tmricht@linux.ibm.com>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, May 28, 2021 at 12:45 PM Arnaldo Carvalho de Melo
+On Fri, May 28, 2021 at 6:01 AM Arnaldo Carvalho de Melo
 <arnaldo.melo@gmail.com> wrote:
 >
-> Em Thu, May 27, 2021 at 01:41:13PM -0700, Andrii Nakryiko escreveu:
-> > On Thu, May 27, 2021 at 12:57 PM Arnaldo <arnaldo.melo@gmail.com> wrote:
-> > > On May 27, 2021 4:14:17 PM GMT-03:00, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > > >If we make 1.22 mandatory there will be no good reason to make 1.23
-> > > >mandatory again. So I will have absolutely no inclination to work on
-> > > >this, for example. So we are just wasting a chance to clean up the
-> > > >Kbuild story w.r.t. pahole. And we are talking about just a few days
-> > > >at most, while we do have a reasonable work around on the kernel side.
+> Em Fri, May 28, 2021 at 12:48:56PM +0200, Thomas Richter escreveu:
+> > I noticed perf test 40.1 dumps core on 5.13.0rc2 and rc3:
+> >
+> > [root@f34 perf]# ./perf test -F 40
+> > 40: LLVM search and compile                                         :
+> > 40.1: Basic BPF llvm compile                                        :
+> > libbpf: elf: skipping unrecognized data section(8) .eh_frame
+> > libbpf: elf: skipping relo section(9) .rel.eh_frame for section(8) .eh_=
+frame
+> > Segmentation fault (core dumped)
+> > [root@f34 perf]#
 >
-> > > So there were patches for stop using objcopy, which we thought could
-> > > uncover some can of worms, were there patches for the detached BTF
-> > > file?
+> > The root cause is a NULL pointer reference in function btf__get_nr_type=
+s()
+> > as can be seen with gdb:
 >
-> > No, there weren't, if I remember correctly. What's the concern,
-> > though? That detached BTF file isn't even an ELF, so it's
-> > btf__get_raw_data() and write it to the file. Done.
+> This looks like a bug in libbpf:
 >
-> See patch below, lightly tested, now working on making pahole accept raw
-> BTF files out of /sys/kernel/btf/
+> static int bpf_object__collect_externs(struct bpf_object *obj)
+> {
+>         struct btf_type *sec, *kcfg_sec =3D NULL, *ksym_sec =3D NULL;
+>         const struct btf_type *t;
+>         struct extern_desc *ext;
+>         int i, n, off, dummy_var_btf_id;
+>         const char *ext_name, *sec_name;
+>         Elf_Scn *scn;
+>         GElf_Shdr sh;
 >
-> Please test, and if works as expected, try to bolt this into the kbuild
-> process, as intended.
+>         if (!obj->efile.symbols)
+>                 return 0;
+>
+>         scn =3D elf_sec_by_idx(obj, obj->efile.symbols_shndx);
+>         if (elf_sec_hdr(obj, scn, &sh))
+>                 return -LIBBPF_ERRNO__FORMAT;
+>
+>         dummy_var_btf_id =3D add_dummy_ksym_var(obj->btf);
+>         if (dummy_var_btf_id < 0)
+>                 return dummy_var_btf_id;
+>
+>
+> obj->btf is NULL, so probably btf__find_by_name_kind() should check that
+> and return an error, Andrii?
+>
 
-So while looking through this I found --skip_encoding_btf_vars and I
-just sent a fix to disable per-CPU var BTF generation for versions
-1.18 through 1.21. I think that's a better solution than all the
-previously proposed ones. But it also means we have no good reason to
-force 1.22+ as minimal version.
+This is already fixed in libbpf v0.4 ([0]). Can you please update
+pahole's libbpf submodule sha?
 
-But in either case, this is good feature and will definitely be useful
-going forward. See my comments below.
+  [0] https://github.com/libbpf/libbpf/commit/a58b8ca93e39285a2852ca3d60e69=
+8598bf7265b
 
->
 > - Arnaldo
 >
-> commit b579a18a1ea0ee84b90b5302f597dda2edf2f61b
-> Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Date:   Fri May 28 16:41:30 2021 -0300
+> > Breakpoint 1, 0x000000000065f4b1 in btf__get_nr_types
+> >      (btf=3Dbtf@entry=3D0x0) at btf.c:425
+> > 425           return btf->start_id + btf->nr_types - 1;
+> >
+> > This is the same function and reason why test case 42.1 Basic BPF filte=
+ring
+> > fails and dumps core too.
+> >
+> > The call chain is:
+> > (gdb) where
+> >  #0  0x000000000065f4b1 in btf__get_nr_types (btf=3Dbtf@entry=3D0x0) at=
+ btf.c:425
+> >  #1  btf__find_by_name_kind (btf=3Dbtf@entry=3D0x0,
+> >               type_name=3Dtype_name@entry=3D0x928ab2 ".ksyms",
+> >               kind=3Dkind@entry=3D15) at btf.c:696
+> >  #2  0x00000000006527fe in add_dummy_ksym_var (btf=3D0x0) at libbpf.c:3=
+219
+> >  #3  bpf_object__collect_externs (obj=3D0xd0ea20) at libbpf.c:3266
+> >  #4  __bpf_object__open (path=3D<optimized out>, path@entry=3D0x0,
+> >               obj_buf=3Dobj_buf@entry=3D0xd12fa0,
+> >               obj_buf_sz=3Dobj_buf_sz@entry=3D1520,
+> >               opts=3Dopts@entry=3D0x7fffffffdb30) at libbpf.c:7372
+> >  #5  0x0000000000655415 in __bpf_object__open (opts=3D0x7fffffffdb30,
+> >               obj_buf_sz=3D1520, obj_buf=3D0xd12fa0, path=3D0x0) at lib=
+bpf.c:7337
+> >  #6  bpf_object__open_mem (opts=3D0x7fffffffdb30, obj_buf_sz=3D1520,
+> >               obj_buf=3D0xd12fa0) at libbpf.c:7454
+> >  #7  bpf_object__open_mem (opts=3D0x7fffffffdb30, obj_buf_sz=3D1520,
+> >               obj_buf=3D0xd12fa0) at libbpf.c:7448
+> >  #8  bpf_object__open_buffer (obj_buf=3D0xd12fa0, obj_buf_sz=3D1520,
+> >               name=3D<optimized out>) at libbpf.c:7471
+> >  #9  0x00000000004c8c6e in test__bpf_parsing (obj_buf=3D0xd12fa0,
+> >               obj_buf_sz=3D1520) at tests/llvm.c:16
+> >  #10 0x00000000004c8fe2 in test__llvm (test=3D0xac7d20 <generic_tests+2=
+496>,
+> >               subtest=3D0) at tests/llvm.c:142
+> > ...
+> >
+> > I have no knowledge about BPF and why the core dump happens. Before
+> > I start digging into this has anybody some hints on where to look?
+> >
+> > Thanks a lot.
+> >
+> > --
+> > Thomas Richter, Dept 3303, IBM s390 Linux Development, Boeblingen, Germ=
+any
+> > --
+> > Vorsitzender des Aufsichtsrats: Gregor Pillen
+> > Gesch=C3=A4ftsf=C3=BChrung: Dirk Wittkopp
+> > Sitz der Gesellschaft: B=C3=B6blingen / Registergericht: Amtsgericht St=
+uttgart, HRB 243294
 >
->     pahole: Allow encoding BTF into a detached file
+> --
 >
->     Previously the newly encoded BTF info was stored into a ELF section in
->     the file where the DWARF info was obtained, but it is useful to just
->     dump it into a separate file, do it.
->
->     Requested-by: Andrii Nakryiko <andrii@kernel.org>
->     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
->
-
-Looks good, see few minor comments below. At some point it probably
-would make sense to formalize "btf_encoder" as a struct with its own
-state instead of passing in multiple variables. It would probably also
-allow to parallelize BTF generation, where each CU would proceed in
-parallel generating local BTF, and then the final pass would merge and
-dedup BTFs. Currently reading and processing DWARF is the slowest part
-of the DWARF-to-BTF conversion, parallelization and maybe some other
-optimization seems like the only way to speed the process up.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 033c927b537dad1e..bc3ac72968cea826 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -21,6 +21,14 @@
->  #include <stdlib.h> /* for qsort() and bsearch() */
->  #include <inttypes.h>
->
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <fcntl.h>
-> +
-> +#include <unistd.h>
-> +
-> +#include <errno.h>
-> +
->  /*
->   * This corresponds to the same macro defined in
->   * include/linux/kallsyms.h
-> @@ -267,14 +275,62 @@ static struct btf_elf *btfe;
->  static uint32_t array_index_id;
->  static bool has_index_type;
->
-> -int btf_encoder__encode()
-> +static int btf_encoder__dump(struct btf *btf, const char *filename)
-> +{
-> +       uint32_t raw_btf_size;
-> +       const void *raw_btf_data;
-> +       int fd, err;
-> +
-> +       /* Empty file, nothing to do, so... done! */
-> +       if (btf__get_nr_types(btf) == 0)
-> +               return 0;
-> +
-> +       if (btf__dedup(btf, NULL, NULL)) {
-> +               fprintf(stderr, "%s: btf__dedup failed!\n", __func__);
-> +               return -1;
-> +       }
-> +
-> +       raw_btf_data = btf__get_raw_data(btf, &raw_btf_size);
-> +       if (raw_btf_data == NULL) {
-> +                fprintf(stderr, "%s: btf__get_raw_data failed!\n", __func__);
-
-indentation seems off here and in few places below
-
-> +               return -1;
-> +       }
-> +
-> +       fd = open(filename, O_WRONLY | O_CREAT);
-> +       if (fd < 0) {
-> +                fprintf(stderr, "%s: Couldn't open %s for writing the raw BTF info: %s\n", __func__, filename, strerror(errno));
-> +               return -1;
-> +       }
-> +       err = write(fd, raw_btf_data, raw_btf_size);
-> +       if (err < 0)
-> +                fprintf(stderr, "%s: Couldn't open %s for writing the raw BTF info: %s\n", __func__, filename, strerror(errno));
-
-nit: copy-pasted error message is wrong
-
-> +
-> +       close(fd);
-> +
-> +       if (err != raw_btf_size) {
-> +                fprintf(stderr, "%s: Could only write %d bytes to %s of raw BTF info out of %d, aborting\n", __func__, err, filename, raw_btf_size);
-> +               unlink(filename);
-> +               err = -1;
-> +       } else {
-> +               /* go from bytes written == raw_btf_size to an indication that all went fine */
-> +               err = 0;
-> +       }
-> +
-> +       return err;
-> +}
-> +
-
-[...]
+> - Arnaldo
