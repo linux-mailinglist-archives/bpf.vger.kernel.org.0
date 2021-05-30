@@ -2,139 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3AC3952D5
-	for <lists+bpf@lfdr.de>; Sun, 30 May 2021 22:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7208E395315
+	for <lists+bpf@lfdr.de>; Sun, 30 May 2021 23:45:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhE3UWw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 30 May 2021 16:22:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229756AbhE3UWw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 30 May 2021 16:22:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 861BB60FEF;
-        Sun, 30 May 2021 20:21:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622406073;
-        bh=a5s0B4kTibJT87biby4WJ9zqPOAuKMT+j3OvPglsW/4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ACU+a5n63+X+nCHb+gW3k1DBDtb5IT4z8C+Ui8bKAmCbxMh3/8q5xpNOM9t4aLGEO
-         c7IVgdzpoXuZHJp1Pn+gAtl5ekkeMxwBB4fcU4hjPguAqSA8XgbdeR5W0UBZARjNaL
-         UJTMc2D610vYK91fidA2i99kKLyVvhHSt22LLo8NFW15/kauWvEYbQFGyqZXrLnvh/
-         se5nxY96MR/clIH+31NhA9QT0zmrPT8Sw2rfoNyTgHLKJHJeHOhm6GUseLqv3CaltZ
-         LDedHbbZVQoL/n5fBg+seK7iZs43VRH75nSTtfM7odofWqES0VlZLB3rdfbvLtUNaL
-         O6Gmi1YIUjsWA==
-Date:   Sun, 30 May 2021 13:21:11 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <yunshenglin0825@gmail.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        olteanv@gmail.com, ast@kernel.org, daniel@iogearbox.net,
-        andriin@fb.com, edumazet@google.com, weiwan@google.com,
-        cong.wang@bytedance.com, ap420073@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@openeuler.org, mkl@pengutronix.de,
-        linux-can@vger.kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
-        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
-        a.fatoum@pengutronix.de, atenart@kernel.org,
-        alexander.duyck@gmail.com, hdanton@sina.com, jgross@suse.com,
-        JKosina@suse.com, mkubecek@suse.cz, bjorn@kernel.org,
-        alobakin@pm.me
-Subject: Re: [PATCH net-next 2/3] net: sched: implement TCQ_F_CAN_BYPASS for
- lockless qdisc
-Message-ID: <20210530132111.3a974275@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <9cc9f513-7655-07df-3c74-5abe07ae8321@gmail.com>
-References: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
-        <1622170197-27370-3-git-send-email-linyunsheng@huawei.com>
-        <20210528180012.676797d6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <a6a965ee-7368-d37b-9c70-bba50c67eec9@huawei.com>
-        <20210528213218.2b90864c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <ee1a62da-9758-70db-abd3-c5ca2e8e0ce0@huawei.com>
-        <20210529114919.4f8b1980@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <9cc9f513-7655-07df-3c74-5abe07ae8321@gmail.com>
+        id S229842AbhE3VrA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 May 2021 17:47:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26167 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229827AbhE3VrA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 30 May 2021 17:47:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622411121;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sEIuj6az0d2ykBNy5PZMlp8C52D/SiimBFUn3fLnAjQ=;
+        b=RC70+m1blRqdRUP5V5Av5tnqeG4AvLTUuyXbo3RytPq63HOLlqnK1LqC4xmOJS5qjznckP
+        +mj/kjSmTfqFfdZqcLjVIIvC9/qrBGOOq6llSFYQm81NmruVDFgfMAnEfJgjmBnsMrOqxc
+        f0BsRYizdzfjP0X+R5HGMxnB+S82ODs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-464-me5YDP8KNEixpmUUZVBC3g-1; Sun, 30 May 2021 17:45:19 -0400
+X-MC-Unique: me5YDP8KNEixpmUUZVBC3g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 267BF801B14;
+        Sun, 30 May 2021 21:45:18 +0000 (UTC)
+Received: from krava (unknown [10.40.192.48])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 40AEE5D6D7;
+        Sun, 30 May 2021 21:45:16 +0000 (UTC)
+Date:   Sun, 30 May 2021 23:45:15 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Michael Petlan <mpetlan@redhat.com>
+Subject: Re: [RFT] Testing 1.22
+Message-ID: <YLQHax7hZqfFS4Tf@krava>
+References: <YK+41f972j25Z1QQ@kernel.org>
+ <CAEf4BzaTP_jULKMN_hx6ZOqwESOmsR6_HxWW-LnrA5xwRNtSWg@mail.gmail.com>
+ <4615C288-2CFD-483E-AB98-B14A33631E2F@gmail.com>
+ <CAEf4BzaQmv1+1bPF=1aO3dcmNu2Mx0EFhK+ZU6UFsMjv3v6EZA@mail.gmail.com>
+ <4901AF88-0354-428B-9305-2EDC6F75C073@gmail.com>
+ <CAEf4BzZk8bcSZ9hmFAmgjbrQt0Yj1usCHmuQTfU-pwZkYQgztA@mail.gmail.com>
+ <YLFIW9fd9ZqbR3B9@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YLFIW9fd9ZqbR3B9@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 30 May 2021 09:37:09 +0800 Yunsheng Lin wrote:
-> On 2021/5/30 2:49, Jakub Kicinski wrote:
-> > The fact that MISSED is only cleared under q->seqlock does not matter,
-> > because setting it and ->enqueue() are not under any lock. If the thread
-> > gets interrupted between:
-> > 
-> > 	if (q->flags & TCQ_F_CAN_BYPASS && nolock_qdisc_is_empty(q) &&
-> > 	    qdisc_run_begin(q)) {
-> > 
-> > and ->enqueue() we can't guarantee that something else won't come in,
-> > take q->seqlock and clear MISSED.
-> > 
-> > thread1                thread2             thread3
-> > # holds seqlock
-> >                        qdisc_run_begin(q)
-> >                        set(MISSED)
-> > pfifo_fast_dequeue
-> >   clear(MISSED)
-> >   # recheck the queue
-> > qdisc_run_end()  
-> >                        ->enqueue()  
-> >                                             q->flags & TCQ_F_CAN_BYPASS..
-> >                                             qdisc_run_begin() # true
-> >                                             sch_direct_xmit()
-> >                        qdisc_run_begin()
-> >                        set(MISSED)
-> > 
-> > Or am I missing something?
-> > 
-> > Re-checking nolock_qdisc_is_empty() may or may not help.
-> > But it doesn't really matter because there is no ordering
-> > requirement between thread2 and thread3 here.  
+On Fri, May 28, 2021 at 04:45:31PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Thu, May 27, 2021 at 01:41:13PM -0700, Andrii Nakryiko escreveu:
+> > On Thu, May 27, 2021 at 12:57 PM Arnaldo <arnaldo.melo@gmail.com> wrote:
+> > > On May 27, 2021 4:14:17 PM GMT-03:00, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > > >If we make 1.22 mandatory there will be no good reason to make 1.23
+> > > >mandatory again. So I will have absolutely no inclination to work on
+> > > >this, for example. So we are just wasting a chance to clean up the
+> > > >Kbuild story w.r.t. pahole. And we are talking about just a few days
+> > > >at most, while we do have a reasonable work around on the kernel side.
 > 
-> I were more focued on explaining that using MISSED is reliable
-> as sch_may_need_requeuing() checking in RFCv3 [1] to indicate a
-> empty qdisc, and forgot to mention the data race described in
-> RFCv3, which is kind of like the one described above:
+> > > So there were patches for stop using objcopy, which we thought could
+> > > uncover some can of worms, were there patches for the detached BTF
+> > > file?
+>  
+> > No, there weren't, if I remember correctly. What's the concern,
+> > though? That detached BTF file isn't even an ELF, so it's
+> > btf__get_raw_data() and write it to the file. Done.
 > 
-> "There is a data race as below:
+> See patch below, lightly tested, now working on making pahole accept raw
+> BTF files out of /sys/kernel/btf/
 > 
->       CPU1                                   CPU2
-> qdisc_run_begin(q)                            .
->         .                                q->enqueue()
-> sch_may_need_requeuing()                      .
->     return true                               .
->         .                                     .
->         .                                     .
->     q->enqueue()                              .
+> Please test, and if works as expected, try to bolt this into the kbuild
+> process, as intended.
 > 
-> When above happen, the skb enqueued by CPU1 is dequeued after the
-> skb enqueued by CPU2 because sch_may_need_requeuing() return true.
-> If there is not qdisc bypass, the CPU1 has better chance to queue
-> the skb quicker than CPU2.
+> - Arnaldo
 > 
-> This patch does not take care of the above data race, because I
-> view this as similar as below:
+> commit b579a18a1ea0ee84b90b5302f597dda2edf2f61b
+> Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Date:   Fri May 28 16:41:30 2021 -0300
 > 
-> Even at the same time CPU1 and CPU2 write the skb to two socket
-> which both heading to the same qdisc, there is no guarantee that
-> which skb will hit the qdisc first, becuase there is a lot of
-> factor like interrupt/softirq/cache miss/scheduling afffecting
-> that."
+>     pahole: Allow encoding BTF into a detached file
+>     
+>     Previously the newly encoded BTF info was stored into a ELF section in
+>     the file where the DWARF info was obtained, but it is useful to just
+>     dump it into a separate file, do it.
+>     
+>     Requested-by: Andrii Nakryiko <andrii@kernel.org>
+>     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 > 
-> Does above make sense? Or any idea to avoid it?
-> 
-> 1. https://patchwork.kernel.org/project/netdevbpf/patch/1616404156-11772-1-git-send-email-linyunsheng@huawei.com/
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 033c927b537dad1e..bc3ac72968cea826 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -21,6 +21,14 @@
+>  #include <stdlib.h> /* for qsort() and bsearch() */
+>  #include <inttypes.h>
+>  
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <fcntl.h>
+> +
+> +#include <unistd.h>
+> +
+> +#include <errno.h>
+> +
+>  /*
+>   * This corresponds to the same macro defined in
+>   * include/linux/kallsyms.h
+> @@ -267,14 +275,62 @@ static struct btf_elf *btfe;
+>  static uint32_t array_index_id;
+>  static bool has_index_type;
+>  
+> -int btf_encoder__encode()
+> +static int btf_encoder__dump(struct btf *btf, const char *filename)
+> +{
+> +	uint32_t raw_btf_size;
+> +	const void *raw_btf_data;
+> +	int fd, err;
+> +
+> +	/* Empty file, nothing to do, so... done! */
+> +	if (btf__get_nr_types(btf) == 0)
+> +		return 0;
+> +
+> +	if (btf__dedup(btf, NULL, NULL)) {
+> +		fprintf(stderr, "%s: btf__dedup failed!\n", __func__);
+> +		return -1;
+> +	}
+> +
+> +	raw_btf_data = btf__get_raw_data(btf, &raw_btf_size);
+> +	if (raw_btf_data == NULL) {
+> +                fprintf(stderr, "%s: btf__get_raw_data failed!\n", __func__);
+> +		return -1;
+> +	}
+> +
+> +	fd = open(filename, O_WRONLY | O_CREAT);
 
-We agree on this one.
+I think you need to specify file mode as 3rd param:
 
-Could you draw a sequence diagram of different CPUs (like the one
-above) for the case where removing re-checking nolock_qdisc_is_empty()
-under q->seqlock leads to incorrect behavior? 
+	$ ./pahole -j krava vmlinux 
+	$ ~/linux/tools/bpf/bpftool/bpftool btf dump file ./krava 
+	Error: failed to load BTF from ./krava: Permission denied
+	$ ll krava 
+	--w-r-Sr-T. 1 jolsa jolsa 4525734 May 30 23:38 krava
 
-If there is no such case would you be willing to repeat the benchmark
-with and without this test?
+jirka
 
-Sorry for dragging the review out..
