@@ -2,149 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E0939582B
-	for <lists+bpf@lfdr.de>; Mon, 31 May 2021 11:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9971A395966
+	for <lists+bpf@lfdr.de>; Mon, 31 May 2021 13:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbhEaJhh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 May 2021 05:37:37 -0400
-Received: from outbound-smtp26.blacknight.com ([81.17.249.194]:41966 "EHLO
-        outbound-smtp26.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230479AbhEaJhg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 31 May 2021 05:37:36 -0400
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp26.blacknight.com (Postfix) with ESMTPS id 6A0C9CAD4D
-        for <bpf@vger.kernel.org>; Mon, 31 May 2021 10:35:56 +0100 (IST)
-Received: (qmail 12829 invoked from network); 31 May 2021 09:35:56 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.255])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 31 May 2021 09:35:56 -0000
-Date:   Mon, 31 May 2021 10:35:54 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Hritik Vijay <hritikxx8@gmail.com>,
-        Linux-BPF <bpf@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, clm@fb.com
-Subject: Re: [PATCH v3] mm/page_alloc: Require pahole v1.22 to cope with
- zero-sized struct pagesets
-Message-ID: <20210531093554.GT30378@techsingularity.net>
-References: <20210527171923.GG30378@techsingularity.net>
- <CAEf4BzZB7Z3fGyVH1+a9SvTtm1LBBG2T++pYiTjRVxbrodzzZA@mail.gmail.com>
- <20210528074248.GI30378@techsingularity.net>
- <CAEf4BzYrfKtecSEbf3yZs5v6aeSkNRJuHfed3kKz-6Vy1eeKuA@mail.gmail.com>
+        id S231124AbhEaLFB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 May 2021 07:05:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60468 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230521AbhEaLFA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 31 May 2021 07:05:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622459000;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NzhPc2/VJnV/S2AtxpaMAKHXur4j7tjmTtbLyErDxvQ=;
+        b=SRiCn6rXXXwuZj2EwHKrrLJ87HQyxfbe/Pxu3Xu+n0jRIztSpHLP/yE8zXzAVa+fsHPTsI
+        1Lk37VXlQkvBXC5Pg+HWoj0XPmVAn5hxfRh4QqDU/zHFTSQLqx3Z/8vu2bQhaNqWhRNpB7
+        543+uBFh8XjEc67jqXP+lb7DbROZZik=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-420-1SNnxSMWO7CZwCPICzVyPA-1; Mon, 31 May 2021 07:03:19 -0400
+X-MC-Unique: 1SNnxSMWO7CZwCPICzVyPA-1
+Received: by mail-ed1-f71.google.com with SMTP id h16-20020a0564020950b029038cbdae8cbaso6058500edz.6
+        for <bpf@vger.kernel.org>; Mon, 31 May 2021 04:03:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=NzhPc2/VJnV/S2AtxpaMAKHXur4j7tjmTtbLyErDxvQ=;
+        b=aMgD7pEdvM8pz3FQVKlk8cmk6PyEOnJsW3Sy+g3CqisVJPyE/HL82kovpBR92KR6+i
+         XzmSpUA/3JjZWKtIq6nM8puUNt63MTaZRKM7xLDfGF1BFwLgdmYRbrofIq+UavIBKpvK
+         Q6+V+AmrFkoW+bhgsU7g+joTHvwHq9AguUhsEY9wLp+EuWy/EOxxORPPru/Tco6t9aKd
+         XpK5fkjl8Y9/oD2XIXNCTtRZ3F2o90GekGujlNJpUcKQ8YYJ8Tv9IbbPYyCI+0ke9UEt
+         ULBjgKaeLdwdC+MkJEZIi8Y5GPL2Yku/B0AbcrkAuyaiezq8G6uamvv0MOrJhkpDdR3d
+         e80w==
+X-Gm-Message-State: AOAM531eLv6Z7x/paClBvm/wYPBgN8LLu8o6rcdknkP/TnbLeNs3yiPw
+        IqOqjv2UO+6xGmfwy23S3h7QemA3C3ehU8LTSqbv55DLLKZ+3p7doXLLSp2ZXVQ8FgIJfaeX8TA
+        YS4shWhIAlvZj
+X-Received: by 2002:a05:6402:3507:: with SMTP id b7mr24615597edd.101.1622458997822;
+        Mon, 31 May 2021 04:03:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwndPFlfmr8B8U3juxZhuNbPa3F3JaNZeBpn6GkzZhPvKRPhXlkNJGepQcV5s3zSaruPii5kQ==
+X-Received: by 2002:a05:6402:3507:: with SMTP id b7mr24615553edd.101.1622458997444;
+        Mon, 31 May 2021 04:03:17 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id bq1sm1414775ejb.66.2021.05.31.04.03.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 04:03:16 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 04C75180724; Mon, 31 May 2021 13:03:15 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@gmail.com>,
+        William Tu <u9012063@gmail.com>, xdp-hints@xdp-project.net
+Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
+In-Reply-To: <60b12897d2e3f_1cf820896@john-XPS-13-9370.notmuch>
+References: <20210526125848.1c7adbb0@carbon>
+ <CAEf4BzYXUDyQaBjZmb_Q5-z3jw1-Uvdgxm+cfcQjSwb9oRoXnQ@mail.gmail.com>
+ <60aeb01ebcd10_fe49208b8@john-XPS-13-9370.notmuch>
+ <CAEf4Bza3m5dwZ_d0=zAWR+18f5RUjzv9=1NbhTKAO1uzWg_fzQ@mail.gmail.com>
+ <60aeeb5252147_19a622085a@john-XPS-13-9370.notmuch>
+ <CAEf4Bzb1OZHpHYagbVs7s9tMSk4wrbxzGeBCCBHQ-qCOgdu6EQ@mail.gmail.com>
+ <60b08442b18d5_1cf8208a0@john-XPS-13-9370.notmuch>
+ <87fsy7gqv7.fsf@toke.dk>
+ <60b0ffb63a21a_1cf82089e@john-XPS-13-9370.notmuch>
+ <20210528180214.3b427837@carbon>
+ <60b12897d2e3f_1cf820896@john-XPS-13-9370.notmuch>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 31 May 2021 13:03:14 +0200
+Message-ID: <8735u3dv2l.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYrfKtecSEbf3yZs5v6aeSkNRJuHfed3kKz-6Vy1eeKuA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, May 29, 2021 at 08:10:36PM -0700, Andrii Nakryiko wrote:
-> On Fri, May 28, 2021 at 12:42 AM Mel Gorman <mgorman@techsingularity.net> wrote:
-> >
-> > On Thu, May 27, 2021 at 03:17:48PM -0700, Andrii Nakryiko wrote:
-> > > > Andrii Nakryiko bisected the problem to the commit "mm/page_alloc: convert
-> > > > per-cpu list protection to local_lock" currently staged in mmotm. In his
-> > > > own words
-> > > >
-> > > >   The immediate problem is two different definitions of numa_node per-cpu
-> > > >   variable. They both are at the same offset within .data..percpu ELF
-> > > >   section, they both have the same name, but one of them is marked as
-> > > >   static and another as global. And one is int variable, while another
-> > > >   is struct pagesets. I'll look some more tomorrow, but adding Jiri and
-> > > >   Arnaldo for visibility.
-> > > >
-> > > >   [110907] DATASEC '.data..percpu' size=178904 vlen=303
-> > > >   ...
-> > > >         type_id=27753 offset=163976 size=4 (VAR 'numa_node')
-> > > >         type_id=27754 offset=163976 size=4 (VAR 'numa_node')
-> > > >
-> > > >   [27753] VAR 'numa_node' type_id=27556, linkage=static
-> > > >   [27754] VAR 'numa_node' type_id=20, linkage=global
-> > > >
-> > > >   [20] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> > > >
-> > > >   [27556] STRUCT 'pagesets' size=0 vlen=1
-> > > >         'lock' type_id=507 bits_offset=0
-> > > >
-> > > >   [506] STRUCT '(anon)' size=0 vlen=0
-> > > >   [507] TYPEDEF 'local_lock_t' type_id=506
-> > > >
-> > > > The patch in question introduces a zero-sized per-cpu struct and while
-> > > > this is not wrong, versions of pahole prior to 1.22 get confused during
-> > > > BTF generation with two separate variables occupying the same address.
-> > > >
-> > > > This patch adds a requirement for pahole 1.22 before setting
-> > > > DEBUG_INFO_BTF.  While pahole 1.22 does not exist yet, a fix is in the
-> > > > pahole git tree as ("btf_encoder: fix and complete filtering out zero-sized
-> > > > per-CPU variables").
-> > > >
-> > > > Reported-by: Michal Suchanek <msuchanek@suse.de>
-> > > > Reported-by: Hritik Vijay <hritikxx8@gmail.com>
-> > > > Debugged-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> > > > ---
-> > >
-> > > I still think that v1 ([0]) is a more appropriate temporary solution
-> > > until pahole 1.22 is released and widely packaged. Suddenly raising
-> > > the minimum version to 1.22, which is not even released even, is a
-> > > pretty big compatibility concern for all the users that rely on
-> > > CONFIG_DEBUG_INFO_BTF.
-> >
-> > On the flip side, we have a situation where a build tool (pahole) has a
-> > problem whereby correct code does not result in a working kernel. It's
-> > not that dissimilar to preventing the kernel being built on an old
-> > compiler. While I accept it's unfortunate, Christoph had a point where
-> > introducing workarounds in the kernel could lead to a prolification of
-> > workarounds for pahole or other reasons that are potentially tricky to
-> > revert as long as distributions exist that do not ship with a sufficiently
-> > reason package.
-> >
-> > > Just a few days ago pahole 1.16 worked fine and
-> > > here we suddenly (and silently due to how Kconfig functions) raise
-> > > that to a version that doesn't exist. That's going to break workflows
-> > > for a lot of people.
-> > >
-> >
-> > People do have a workaround though. For the system building the kernel,
-> > they can patch pahole and revert the check so a bootable kernel can be
-> > built. It's not convenient but it is manageable and pahole has until
-> > 5.13 releases to release a v1.22. The downsides for the alternative --
-> > a non-booting kernel are much more severe.
-> >
-> > > I'm asking to have that ugly work-around to ensure sizeof(struct
-> > > pagesets) > 0 as a temporary solution only.
-> >
-> > Another temporary solution is to locally build pahole and either revert
-> > the check or fake the 1.22 release number with the self-built pahole.
-> >
-> 
-> Well, luckily it seems we anticipated issues like that and added
-> --skip_encoding_btf_vars argument, which I completely forgot about and
-> just accidentally came across reviewing Arnaldo's latest pahole patch.
-> I think that one is a much better solution, as then it will impact
-> only those that explicitly relies on availability of BTF for per-CPU
-> variables, which is a subset of all possible uses for kernel BTF. Sent
-> a patch ([0]), please take a look.
-> 
->   [0] https://lore.kernel.org/linux-mm/20210530002536.3193829-1-andrii@kernel.org/T/#u
+John Fastabend <john.fastabend@gmail.com> writes:
 
-I'm happy to have this patch used as an alternative to forcing 1.22 to
-be the minimum version of pahole required.
+> Jesper Dangaard Brouer wrote:
+>
+> [...]
+>
+> I'll try to respond to both Toke and Jesper here and make it coherent so
+> we don't split this thread yet again.
+>
+> Wish me luck.
+>
+> @Toke "react" -> "not break" hopefully gives you my opinion on this.
+>
+> @Toke "five fields gives 32 different metadata formats" OK let me take
+> five fields,
+>
+>  struct meta {
+>    __u32 f1;
+>    __u32 f2;
+>    __u32 f3;
+>    __u32 f4;
+>    __u32 f5;
+>  }
+>
+> I'm still confused why the meta data would change just because the feature
+> is enabled or disabled. I've written drivers before and I don't want to
+> move around where I write f1 based on some combination of features f2,f3,f4,f5
+> state of enabled/disabled. If features are mutual exclusive I can build a
+> sensible union. If its possible for all fields to enabled then I just lay
+> them out like above.
 
--- 
-Mel Gorman
-SUSE Labs
+The assumption that the layout would be changing as the features were
+enabled came from a discussion I had with Jesper where he pointed out
+that zeroing out the fields that were not active comes with a measurable
+performance impact. So changing the struct layout to only include the
+fields that are currently used is a way to make sure we don't hurt
+performance.
+
+If I'm understanding you correctly, what you propose instead is that we
+just keep the struct layout the same and only write the data that we
+have, leaving the other fields as uninitialised (so essentially
+garbage), right?
+
+If we do this, the BPF program obviously needs to know which fields are
+valid and which are not. AFAICT you're proposing that this should be
+done out-of-band (i.e., by the system administrator manually ensuring
+BPF program config fits system config)? I think there are a couple of
+problems with this:
+
+- It requires the system admin to coordinate device config with all of
+  their installed XDP applications. This is error-prone, especially as
+  the number of applications grows (say if different containers have
+  different XDP programs installed on their virtual devices).
+
+- It has synchronisation issues. Say I have an XDP program with optional
+  support for hardware timestamps and a software fallback. It gets
+  installed in software fallback mode; then the admin has to make sure
+  to enable the hardware timestamps before switching the application
+  into the mode where it will read that metadata field (and the opposite
+  order when disabling the hardware mode).
+
+Also, we need to be able to deal with different metadata layouts on
+different packets in the same program. Consider the XDP program running
+on a veth device inside a container above: if this gets packets
+redirected into it from different NICs with different layouts, it needs
+to be able to figure out which packet came from where.
+
+With this in mind I think we have to encode the metadata format into the
+packet metadata itself somehow. This could just be a matter of including
+the BTF ID as part of the struct itself, so that your example could
+essentially do:
+
+  if (data->meta_btf_id == timestamp_id) {
+    struct timestamp_meta *meta = data->meta_data;
+    // do stuff
+  } else {
+    struct normal_meta *meta = data->meta_data;
+  }
+
+
+and then, to avoid drivers having to define different layouts we could
+essentially have the two metadata structs be:
+
+ struct normal_meta {
+  u32 rxhash;
+  u32 padding;
+  u8 vlan;
+ };
+
+and
+
+ struct timestamp_meta {
+   u32 rxhash;
+   u32 timestamp;
+   u8 vlan;
+ };
+
+This still gets us exponential growth in the number of metadata structs,
+but at least we could create tooling to auto-generate the BTF for the
+variants so the complexity is reduced to just consuming a lot of BTF
+IDs.
+
+Alternatively we could have an explicit bitmap of valid fields, like:
+
+ struct all_meta {
+   u32 _valid_field_bitmap;
+   u32 rxhash;
+   u32 timestamp;
+   u8 vlan;
+ };
+
+and if a program reads all_meta->timestamp CO-RE could transparently
+insert a check of the relevant field in the bitmap first. My immediate
+feeling is that this last solution would be nicer: We'd still need to
+include the packet BTF ID in the packet data to deal with case where
+packets are coming from different interfaces, but we'd avoid having lots
+of different variants with separate BTF IDs. I'm not sure what it would
+take to teach CO-RE to support such a scheme, though...
+
+WDYT?
+
+-Toke
+
