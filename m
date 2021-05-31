@@ -2,253 +2,254 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4B4395B7C
-	for <lists+bpf@lfdr.de>; Mon, 31 May 2021 15:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42AB3967D2
+	for <lists+bpf@lfdr.de>; Mon, 31 May 2021 20:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232214AbhEaNVJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 May 2021 09:21:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47102 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232063AbhEaNTo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 31 May 2021 09:19:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622467084;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yz5X0LBA6H3vlwxwHbBOmjNCyN/rMI34oPLh1UP/mQU=;
-        b=WnfCE9RCo0FIyoSPglmkinynvVCm72welz6hE+khy3jRd6h1ql7E7N1E5HDjMCFclO1vgg
-        BVdsBPSyk6qRebMBFt3nfUIgWdiaZJXaocIt/y4YiXWXkWIgNx/8kuOj//lhlF8nJKDuwW
-        l2zCCsCO+nd03jCVPNBQFGqItDRo2bg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-552-RzioQuTDPAWTtu6WlyCq-g-1; Mon, 31 May 2021 09:18:02 -0400
-X-MC-Unique: RzioQuTDPAWTtu6WlyCq-g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 16898180FD6A;
-        Mon, 31 May 2021 13:18:01 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AEF7310023B5;
-        Mon, 31 May 2021 13:17:52 +0000 (UTC)
-Date:   Mon, 31 May 2021 15:17:48 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        William Tu <u9012063@gmail.com>,
-        XDP-hints working-group <xdp-hints@xdp-project.net>,
-        brouer@redhat.com
-Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
-Message-ID: <20210531151748.39fc5aa6@carbon>
-In-Reply-To: <8735u3dv2l.fsf@toke.dk>
-References: <20210526125848.1c7adbb0@carbon>
-        <CAEf4BzYXUDyQaBjZmb_Q5-z3jw1-Uvdgxm+cfcQjSwb9oRoXnQ@mail.gmail.com>
-        <60aeb01ebcd10_fe49208b8@john-XPS-13-9370.notmuch>
-        <CAEf4Bza3m5dwZ_d0=zAWR+18f5RUjzv9=1NbhTKAO1uzWg_fzQ@mail.gmail.com>
-        <60aeeb5252147_19a622085a@john-XPS-13-9370.notmuch>
-        <CAEf4Bzb1OZHpHYagbVs7s9tMSk4wrbxzGeBCCBHQ-qCOgdu6EQ@mail.gmail.com>
-        <60b08442b18d5_1cf8208a0@john-XPS-13-9370.notmuch>
-        <87fsy7gqv7.fsf@toke.dk>
-        <60b0ffb63a21a_1cf82089e@john-XPS-13-9370.notmuch>
-        <20210528180214.3b427837@carbon>
-        <60b12897d2e3f_1cf820896@john-XPS-13-9370.notmuch>
-        <8735u3dv2l.fsf@toke.dk>
+        id S232565AbhEaS1t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 May 2021 14:27:49 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:15273 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232023AbhEaS1j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 May 2021 14:27:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1622485560; x=1654021560;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=zgue9LdRFIrhSzSfpiimjBB+WSTbFvB1kk0jQ6j5iOs=;
+  b=jpD1wDFEUUShmgOTkBM1CeBuC/6Eqes9cTRMOucSJp1qfVbgdqWzIDBP
+   qApv1YDqbU9Lhx4HxFmflqMR19n6xSelQn0xkM3/q0UuKutgwEl1oJSlX
+   tNDr1yS2RbVYh2WFtK03npcMvrlzYo+9835vu747jfko6ZBBycBIKDuPj
+   w=;
+X-IronPort-AV: E=Sophos;i="5.83,238,1616457600"; 
+   d="scan'208";a="137675706"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2a-53356bf6.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 31 May 2021 18:25:59 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2a-53356bf6.us-west-2.amazon.com (Postfix) with ESMTPS id 05C81A06B0;
+        Mon, 31 May 2021 18:25:58 +0000 (UTC)
+Received: from EX13D04UEA002.ant.amazon.com (10.43.61.61) by
+ EX13MTAUEA001.ant.amazon.com (10.43.61.82) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Mon, 31 May 2021 18:25:58 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
+ EX13D04UEA002.ant.amazon.com (10.43.61.61) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Mon, 31 May 2021 18:25:57 +0000
+Received: from dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com
+ (172.19.206.175) by mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP
+ Server id 15.0.1497.18 via Frontend Transport; Mon, 31 May 2021 18:25:57
+ +0000
+Received: by dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com (Postfix, from userid 6262777)
+        id 873B4149E; Mon, 31 May 2021 18:25:56 +0000 (UTC)
+From:   Frank van der Linden <fllinden@amazon.com>
+To:     <stable@vger.kernel.org>
+CC:     <bpf@vger.kernel.org>, <daniel@iogearbox.net>
+Subject: [PATCH v2 4.14 00/16] CVE fixes and selftests cleanup
+Date:   Mon, 31 May 2021 18:25:39 +0000
+Message-ID: <20210531182556.25277-1-fllinden@amazon.com>
+X-Mailer: git-send-email 2.23.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 31 May 2021 13:03:14 +0200
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
+Now that these are being included in 4.19, I am resending this
+4.14 series. It was originally sent here:
 
-> John Fastabend <john.fastabend@gmail.com> writes:
->=20
-> > Jesper Dangaard Brouer wrote:
-> >
-> > [...]
-> >
-> > I'll try to respond to both Toke and Jesper here and make it coherent so
-> > we don't split this thread yet again.
-> >
-> > Wish me luck.
-> >
-> > @Toke "react" -> "not break" hopefully gives you my opinion on this.
-> >
-> > @Toke "five fields gives 32 different metadata formats" OK let me take
-> > five fields,
-> >
-> >  struct meta {
-> >    __u32 f1;
-> >    __u32 f2;
-> >    __u32 f3;
-> >    __u32 f4;
-> >    __u32 f5;
-> >  }
-> >
-> > I'm still confused why the meta data would change just because the feat=
-ure
-> > is enabled or disabled. I've written drivers before and I don't want to
-> > move around where I write f1 based on some combination of features f2,f=
-3,f4,f5
+https://lore.kernel.org/bpf/20210501043014.33300-5-fllinden@amazon.com/T/
 
-Just be be clear:  I'm not suggesting drivers need to dynamically write
-at different offsets.  Adding this BTF-flexibility make is possible,
-but in practice the driver need to be smart about this.  I think we all
-understand this would kill performance and create too complex drivers.
+v2:
+  * The backport repairs in that original series were already included in
+    4.14, so they are no longer needed.
 
-Drivers and hardware have a natural need to place info at fixed offsets.
-The hole exercise is to create a layer between drivers and BPF+netstack
-via BTF that can express flexibility.  That BTF can express this
-flexibility doesn't mean that the drivers/hardware all of a sudden need
-to be as flexible.
+  * Add additional commit for CVE-2021-31829.
 
-Drivers will continue to place info at fixed offsets (likely make sense
-to have a big struct with unions and everything). I'm suggesting that
-the driver will tell the "flex-layer" via BTF which-members-are-what by
-setting a BTF-ID that "describe" this.
-(Hint, drivers have knowledge like what HW features bits are enabled
-that can be translated into a given BTF-ID.  Potentially drivers can
-update this BTF-ID when setup events via ethtool occurs)
+  * Added cherry-picks for CVE-2021-33200.
 
-To avoid the combinations explode, the driver can choose to limit these
-via e.g. always include the vlan_id but set it to zero even when
-vlan-offloads are turned off.  Drivers can also *choose* to have a
-single and very advanced BTF-layout with bitfields and everything (as
-the BTF-side is superflexible and support this).  Again the drivers
-should be moderate and not implement a combination explosion of BTF-IDs
-just because BTF allowed this high level of flexibility.
+==
+
+This series contains backports for BPF commits for 4.14, fixing
+some CVEs and making the verifier selftests clean (666 passed,
+0 failures).
+
+What the series does is:
+
+* Fix selftests after recent bpf backports to 4.14 (but before the
+  fixes for CVE-2021-29155).
+* Backport fixes for CVE-2021-29155, including selftests changes.
+* Backport commits that disallow the mangling of valid pointers by root
+  (one commit that came in shortly after 4.14, one follow-up fix). This
+  also means that 5 verifier selftests that always failed on the 4.14
+  branch are OK again.
+* Backport selftest commits to adapt alignment selftests after the previous.
+* Cherry-pick commit for CVE-2021-31829
+* Cherry-pick commits for CVE-2021-33200
+
+Verifier/alignment selftests are now clean on the 4.14 branch.
+
+Listed by their mainline commit id, with comments on changes made
+for backporting:
+
+0a13e3537ea6 ("bpf, selftests: Fix up some test_verifier cases for unprivileged")
+	After some recent backports of bpf fixes to 4.14 (separate from this
+	series), there are some selftests that need to be modified. This
+	backported commit does that. No major conflicts/issues. For 4.14,
+	some tests do not exist yet, so they were skipped.
 
 
-> > state of enabled/disabled. If features are mutual exclusive I can build=
- a
-> > sensible union. If its possible for all fields to enabled then I just l=
-ay
-> > them out like above. =20
->=20
-> The assumption that the layout would be changing as the features were
-> enabled came from a discussion I had with Jesper where he pointed out
-> that zeroing out the fields that were not active comes with a measurable
-> performance impact. So changing the struct layout to only include the
-> fields that are currently used is a way to make sure we don't hurt
-> performance.
->=20
-> If I'm understanding you correctly, what you propose instead is that we
-> just keep the struct layout the same and only write the data that we
-> have, leaving the other fields as uninitialised (so essentially
-> garbage), right?
->=20
-> If we do this, the BPF program obviously needs to know which fields are
-> valid and which are not. AFAICT you're proposing that this should be
-> done out-of-band (i.e., by the system administrator manually ensuring
-> BPF program config fits system config)? I think there are a couple of
-> problems with this:
->=20
-> - It requires the system admin to coordinate device config with all of
->   their installed XDP applications. This is error-prone, especially as
->   the number of applications grows (say if different containers have
->   different XDP programs installed on their virtual devices).
->=20
-> - It has synchronisation issues. Say I have an XDP program with optional
->   support for hardware timestamps and a software fallback. It gets
->   installed in software fallback mode; then the admin has to make sure
->   to enable the hardware timestamps before switching the application
->   into the mode where it will read that metadata field (and the opposite
->   order when disabling the hardware mode).
 
-IMHO this synchronization issue is problematic.  E.g. when turning off
-HW-timestamping, userspace BPF-application have to be quick, as it need
-to disable BPF-prog global-variable BEFORE hardware stops setting
-HW-TS, else BPF-prog will think HW-TS is on and read garbage. (There is
-a similar issue for in-flight packets when turning this on).
+The next ones  are a backport of the BPF verifier fixes for CVE-2021-29155.
+Original series was part of the pull request here: https://lore.kernel.org/bpf/20210416223700.15611-1-daniel@iogearbox.net/T/
 
-Today enable/disable of HW-TS happens via a socket API. Do you imagine
-the BPF-prog need to catch these events (turning HW-TS off) and then
-update the BPF-prog global-variable?
-=20
-> Also, we need to be able to deal with different metadata layouts on
-> different packets in the same program. Consider the XDP program
-> running on a veth device inside a container above: if this gets
-> packets redirected into it from different NICs with different
-> layouts, it needs to be able to figure out which packet came from
-> where.
->=20
-> With this in mind I think we have to encode the metadata format into
-> the packet metadata itself somehow. This could just be a matter of
-> including the BTF ID as part of the struct itself, so that your
-> example could essentially do:
->=20
->   if (data->meta_btf_id =3D=3D timestamp_id) {
->     struct timestamp_meta *meta =3D data->meta_data;
->     // do stuff
->   } else {
->     struct normal_meta *meta =3D data->meta_data;
->   }
->=20
->=20
-> and then, to avoid drivers having to define different layouts we could
-> essentially have the two metadata structs be:
->=20
->  struct normal_meta {
->   u32 rxhash;
->   u32 padding;
->   u8 vlan;
->  };
->=20
-> and
->=20
->  struct timestamp_meta {
->    u32 rxhash;
->    u32 timestamp;
->    u8 vlan;
->  };
 
-This aligns well with my above suggestion to name a member differently
-like "padding" in above.
+960114839252 ("bpf: Use correct permission flag for mixed signed bounds arithmetic")
+	* Not applicable for 4.14, as it does not have
+	  2c78ee898d8f ("bpf: Implement CAP_BPF").
 
-Another way to "remove" members is the change the metadata size.
-This way the BPF program cannot access it.  Notice, that is why I had
-my timestamp info in the top of the struct in my example.  The driver
-code is of-cause simply written such that the offsets are not dynamic (I
-hope this is also clear to others, else feel free to poke me to explain
-better...).
+6f55b2f2a117 ("bpf: Move off_reg into sanitize_ptr_alu")
+	* Minor contextual conflict: verbose() does not have the env
+	  argument in 4.14.
 
-> This still gets us exponential growth in the number of metadata
-> structs, but at least we could create tooling to auto-generate the
-> BTF for the variants so the complexity is reduced to just consuming a
-> lot of BTF IDs.
->=20
-> Alternatively we could have an explicit bitmap of valid fields, like:
->=20
->  struct all_meta {
->    u32 _valid_field_bitmap;
->    u32 rxhash;
->    u32 timestamp;
->    u8 vlan;
->  };
->=20
-> and if a program reads all_meta->timestamp CO-RE could transparently
-> insert a check of the relevant field in the bitmap first. My immediate
-> feeling is that this last solution would be nicer: We'd still need to
-> include the packet BTF ID in the packet data to deal with case where
-> packets are coming from different interfaces, but we'd avoid having
-> lots of different variants with separate BTF IDs. I'm not sure what
-> it would take to teach CO-RE to support such a scheme, though...
->=20
-> WDYT?
+24c109bb1537 ("bpf: Ensure off_reg has no mixed signed bounds for all types")
+	* This deletes a switch() case in adjust_ptr_min_max_vals, since
+	  it moves the check in it to retrieve_ptr_limit. For 4.14, that
+	  switch() statement was still 2 if() statements, since it does not
+	  have aad2eeaf4697 ("bpf: Simplify ptr_min_max_vals adjustment").
 
-Keeping above intact, as I (also) want to hear what John thinks.
+	  The equivalent change for 4.14 is to delete the PTR_TO_MAP_VALUE
+	  if().
 
---=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+b658bbb844e2 ("bpf: Rework ptr_limit into alu_limit and add common error path")
+	* Clean cherry-pick.
 
+a6aaece00a57 ("bpf: Improve verifier error messages for users")
+	* Simple contextual conflict in adjust_scalar_min_max_vals().
+	  because of a var declaration that was added by this post-5.4 commit:
+	  3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking").
+	* Additional simple contextual conflict: verbose() does not have
+	  the env argument in 4.14.
+
+073815b756c5 ("bpf: Refactor and streamline bounds check into helper")
+	* This factors out the bounds check in adjust_ptr_min_max_vals
+	  in to a separate function. In 4.14, the bounds check block
+	  in question looks a little different, because:
+		* 4.14 still uses allow_ptr_leaks, not bypass_spec_v1.
+		* 01f810ace9ed ("bpf: Allow variable-offset stack access")
+		  changed the call to check_stack_access to a new function,
+		  check_stack_access_for_ptr_arithmetic(), and moved/changed
+		  an error message.
+	* Since this commit just factors out some code from
+	  adjust_ptr_min_max_vals() in to a new function, do the same
+  	  with the corresponding block in 4.14 that doesn't have the
+	  changes listed above from post-4.14 commits.
+	
+f528819334 ("bpf: Move sanitize_val_alu out of op switch")
+	* Resolved contextual conflict from post-4.14 commit
+	  3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking"),
+	  that added a comment on top of the switch referenced in the commit
+	  message.
+
+7fedb63a8307 ("bpf: Tighten speculative pointer arithmetic mask")
+	* Resolved contextual conflict post-4.14 commit:
+	  3f50f132d840 ("bpf: Verifier, do explicit ALU32 bounds tracking")
+	  added a call to a new function just above the switch statement in
+	  adjust_ptr_min_max_vals. This doesn't affect the lines that were
+	  actually changed.
+	* Resolved contextual conflict:
+	  01f810ace9ed ("bpf: Allow variable-offset stack access") added
+	  a comment to the PTR_TO_STACK case in retrieve_ptr_limit. This
+	  comment is not present in 4.14, but the code is the same.
+
+d7a509135175 ("bpf: Update selftests to reflect new error states")
+	* Post-4.14, the verifier tests were split in to different
+	  files, in 4.14 they are still all in test_verifier.c.
+	* The bounds.c tests have undergone several changes since 4.14,
+	  related to commits that were not backported (like e.g. the
+	  ALU32 changes). The error message will remain the same on 4.14.
+	* 4f7b3e82589e ("bpf: improve verifier branch analysis") changed
+	  the error message for the "bounds checks mixing signed and
+	  unsigned, variant 14" test. Since 4.14 does not have that commit,
+	  this test will still produce the original error message ("R0
+	  invalid mem access 'inv'").
+
+These next commits are to pull in a few commits that get the number
+of verifier/align selftest errors on the 4.14 branch down to 0. This is
+mainly about the first one:
+
+82abbf8d2fc4 ("bpf: do not allow root to mangle valid pointers")
+	* This commit has a follow-up that must be added as well,
+	  see the next commit.
+	* As the commit message states, this mostly disallows
+	  pointer mangling that was allowed by
+	  f1174f77b50c ("bpf/verifier: rework value tracking").
+	  Allowing root to mangle valid pointers also results
+	  in the unexpected successful loading of some selftests,
+	  so backporting this fixes that.
+	* Resolved contextual conflict: 4.14 does not have the
+	  env argument to verbose
+
+dd066823db2a ("bpf/verifier: disallow pointer subtraction")
+	* Fixes the above.
+	* Minor contextual conflict: mark_reg_unknown does not
+	  have an env argument on 4.14.
+
+2b36047e7889 ("selftests/bpf: fix test_align")
+	* Selftest follow-up to
+	  82abbf8d2fc4 ("bpf: do not allow root to mangle valid pointers")
+	* Clean cherry-pick.
+
+31e95b61e172 ("selftests/bpf: make 'dubious pointer arithmetic' test useful")
+	* Selftest follow-up to the above.
+	* Conflict: 4.14 does not have 'liveness' of registers in the
+	  output, so adjust the expected output to match.
+
+The next commit is to fix CVE-2021-31829. One of two commits that fixes
+this was already applied (b9b34ddbe207 ("bpf: Fix masking negation logic
+upon negative dst register"), but we still need this one.
+
+801c6058d14a ("bpf: Fix leakage of uninitialized bpf stack under
+speculation")
+	* Minor fixup: e6ac593372aa ("bpf: Rename fixup_bpf_calls and
+	  add some comments") renamed fixup_bpf_calls, which did not happen
+	  on the 4.14 branch.
+
+The last ones are for CVE-2021-33200, and were all clean cherry-picks.
+This also has a selftests change in mainline, but the test it changes
+isn't present in 4.14.
+
+3d0220f6861d ("bpf: Wrap aux data inside bpf_sanitize_info container")
+bb01a1bba579 ("bpf: Fix mask direction swap upon off reg sign change")
+a7036191277f ("bpf: No need to simulate speculative domain for
+immediates")
+
+====
+
+Alexei Starovoitov (4):
+  bpf: do not allow root to mangle valid pointers
+  bpf/verifier: disallow pointer subtraction
+  selftests/bpf: fix test_align
+  selftests/bpf: make 'dubious pointer arithmetic' test useful
+
+Daniel Borkmann (12):
+  bpf: Move off_reg into sanitize_ptr_alu
+  bpf: Ensure off_reg has no mixed signed bounds for all types
+  bpf: Rework ptr_limit into alu_limit and add common error path
+  bpf: Improve verifier error messages for users
+  bpf: Refactor and streamline bounds check into helper
+  bpf: Move sanitize_val_alu out of op switch
+  bpf: Tighten speculative pointer arithmetic mask
+  bpf: Update selftests to reflect new error states
+  bpf: Fix leakage of uninitialized bpf stack under speculation
+  bpf: Wrap aux data inside bpf_sanitize_info container
+  bpf: Fix mask direction swap upon off reg sign change
+  bpf: No need to simulate speculative domain for immediates
+
+Piotr Krysiuk (1):
+  bpf, selftests: Fix up some test_verifier cases for unprivileged
+
+ include/linux/bpf_verifier.h                |   5 +-
+ kernel/bpf/verifier.c                       | 369 ++++++++++++--------
+ tools/testing/selftests/bpf/test_align.c    |  26 +-
+ tools/testing/selftests/bpf/test_verifier.c | 114 +++---
+ 4 files changed, 299 insertions(+), 215 deletions(-)
