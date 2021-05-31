@@ -2,240 +2,313 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D50639596D
-	for <lists+bpf@lfdr.de>; Mon, 31 May 2021 13:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581CE395ABD
+	for <lists+bpf@lfdr.de>; Mon, 31 May 2021 14:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhEaLJQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 May 2021 07:09:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51404 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230521AbhEaLJJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 31 May 2021 07:09:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622459249;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IaDE8FBaVLPwZ3XaIcfWetPKdEKG+w4O7/4mL9L5gRk=;
-        b=iqBi6G/EQ9mXnx1cPVC46PsV4/83hokeJSrTr7kh80WkB8PTNPEJYFJMjAGi8uukFbcrvu
-        bGGAcSTd7srYKKoJ5SmUJnTGGWE+i1blt4kwN0F8qNCgm6yDILZhvVMlstYWxjI1TTkVVI
-        o1mslnxoAK4m2eoHRAFKio2JJ6cL4jo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-446-UuYgMJwoP-2cWvT9PK8bCA-1; Mon, 31 May 2021 07:07:25 -0400
-X-MC-Unique: UuYgMJwoP-2cWvT9PK8bCA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B1FC18766D0;
-        Mon, 31 May 2021 11:07:24 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AF70E101E24F;
-        Mon, 31 May 2021 11:07:13 +0000 (UTC)
-Date:   Mon, 31 May 2021 13:07:12 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     Tom Herbert <tom@herbertland.com>, bpf@vger.kernel.org,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        David Ahern <dsahern@gmail.com>, magnus.karlsson@intel.com,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        bjorn@kernel.org,
-        "Maciej =?UTF-8?B?RmlqYcWCa293c2tp?= (Intel)" 
-        <maciej.fijalkowski@intel.com>,
-        john fastabend <john.fastabend@gmail.com>, brouer@redhat.com,
-        XDP-hints working-group <xdp-hints@xdp-project.net>
-Subject: Re: [RFC bpf-next 1/4] net: xdp: introduce flags field in xdp_buff
- and xdp_frame
-Message-ID: <20210531130712.29232932@carbon>
-In-Reply-To: <YLJC2ox7HmAL8dnX@lore-desk>
-References: <cover.1622222367.git.lorenzo@kernel.org>
-        <b5b2f560006cf5f56d67d61d5837569a0949d0aa.1622222367.git.lorenzo@kernel.org>
-        <CALx6S34cmsFX6QwUq0sRpHok1j6ecBBJ7WC2BwjEmxok+CHjqg@mail.gmail.com>
-        <YLJC2ox7HmAL8dnX@lore-desk>
+        id S231397AbhEaMl6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 May 2021 08:41:58 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2418 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231327AbhEaMl6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 May 2021 08:41:58 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Ftvt91Mq0z67Q8;
+        Mon, 31 May 2021 20:36:33 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 31 May 2021 20:40:03 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 31 May
+ 2021 20:40:02 +0800
+Subject: Re: [Linuxarm] Re: [PATCH net-next 2/3] net: sched: implement
+ TCQ_F_CAN_BYPASS for lockless qdisc
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Yunsheng Lin <yunshenglin0825@gmail.com>
+CC:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
+        <weiwan@google.com>, <cong.wang@bytedance.com>,
+        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
+        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
+        <alobakin@pm.me>
+References: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
+ <1622170197-27370-3-git-send-email-linyunsheng@huawei.com>
+ <20210528180012.676797d6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <a6a965ee-7368-d37b-9c70-bba50c67eec9@huawei.com>
+ <20210528213218.2b90864c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <ee1a62da-9758-70db-abd3-c5ca2e8e0ce0@huawei.com>
+ <20210529114919.4f8b1980@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <9cc9f513-7655-07df-3c74-5abe07ae8321@gmail.com>
+ <20210530132111.3a974275@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <3c2fbc70-841f-d90b-ca13-1f058169be50@huawei.com>
+ <3a307707-9fb5-d73a-01f9-93aaf5c7a437@huawei.com>
+Message-ID: <428f92d8-f4a2-13cf-8dcc-b38d48a42965@huawei.com>
+Date:   Mon, 31 May 2021 20:40:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <3a307707-9fb5-d73a-01f9-93aaf5c7a437@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme710-chm.china.huawei.com (10.1.199.106) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 29 May 2021 15:34:18 +0200
-Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-
-> > On Fri, May 28, 2021 at 10:44 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:  
-> > >
-> > > Introduce flag field in xdp_buff and xdp_frame data structure in order
-> > > to report xdp_buffer metadata. For the moment just hw checksum hints
-> > > are defined but flags field will be reused for xdp multi-buffer
-> > > For the moment just CHECKSUM_UNNECESSARY is supported.
-> > > CHECKSUM_COMPLETE will need to set csum value in metada space.
-> > >  
-> > Lorenzo,  
+On 2021/5/31 9:10, Yunsheng Lin wrote:
+> On 2021/5/31 8:40, Yunsheng Lin wrote:
+>> On 2021/5/31 4:21, Jakub Kicinski wrote:
+>>> On Sun, 30 May 2021 09:37:09 +0800 Yunsheng Lin wrote:
+>>>> On 2021/5/30 2:49, Jakub Kicinski wrote:
+>>>>> The fact that MISSED is only cleared under q->seqlock does not matter,
+>>>>> because setting it and ->enqueue() are not under any lock. If the thread
+>>>>> gets interrupted between:
+>>>>>
+>>>>> 	if (q->flags & TCQ_F_CAN_BYPASS && nolock_qdisc_is_empty(q) &&
+>>>>> 	    qdisc_run_begin(q)) {
+>>>>>
+>>>>> and ->enqueue() we can't guarantee that something else won't come in,
+>>>>> take q->seqlock and clear MISSED.
+>>>>>
+>>>>> thread1                thread2             thread3
+>>>>> # holds seqlock
+>>>>>                        qdisc_run_begin(q)
+>>>>>                        set(MISSED)
+>>>>> pfifo_fast_dequeue
+>>>>>   clear(MISSED)
+>>>>>   # recheck the queue
+>>>>> qdisc_run_end()  
+>>>>>                        ->enqueue()  
+>>>>>                                             q->flags & TCQ_F_CAN_BYPASS..
+>>>>>                                             qdisc_run_begin() # true
+>>>>>                                             sch_direct_xmit()
+>>>>>                        qdisc_run_begin()
+>>>>>                        set(MISSED)
+>>>>>
+>>>>> Or am I missing something?
+>>>>>
+>>>>> Re-checking nolock_qdisc_is_empty() may or may not help.
+>>>>> But it doesn't really matter because there is no ordering
+>>>>> requirement between thread2 and thread3 here.  
+>>>>
+>>>> I were more focued on explaining that using MISSED is reliable
+>>>> as sch_may_need_requeuing() checking in RFCv3 [1] to indicate a
+>>>> empty qdisc, and forgot to mention the data race described in
+>>>> RFCv3, which is kind of like the one described above:
+>>>>
+>>>> "There is a data race as below:
+>>>>
+>>>>       CPU1                                   CPU2
+>>>> qdisc_run_begin(q)                            .
+>>>>         .                                q->enqueue()
+>>>> sch_may_need_requeuing()                      .
+>>>>     return true                               .
+>>>>         .                                     .
+>>>>         .                                     .
+>>>>     q->enqueue()                              .
+>>>>
+>>>> When above happen, the skb enqueued by CPU1 is dequeued after the
+>>>> skb enqueued by CPU2 because sch_may_need_requeuing() return true.
+>>>> If there is not qdisc bypass, the CPU1 has better chance to queue
+>>>> the skb quicker than CPU2.
+>>>>
+>>>> This patch does not take care of the above data race, because I
+>>>> view this as similar as below:
+>>>>
+>>>> Even at the same time CPU1 and CPU2 write the skb to two socket
+>>>> which both heading to the same qdisc, there is no guarantee that
+>>>> which skb will hit the qdisc first, becuase there is a lot of
+>>>> factor like interrupt/softirq/cache miss/scheduling afffecting
+>>>> that."
+>>>>
+>>>> Does above make sense? Or any idea to avoid it?
+>>>>
+>>>> 1. https://patchwork.kernel.org/project/netdevbpf/patch/1616404156-11772-1-git-send-email-linyunsheng@huawei.com/
+>>>
+>>> We agree on this one.
+>>>
+>>> Could you draw a sequence diagram of different CPUs (like the one
+>>> above) for the case where removing re-checking nolock_qdisc_is_empty()
+>>> under q->seqlock leads to incorrect behavior? 
+>>
+>> When nolock_qdisc_is_empty() is not re-checking under q->seqlock, we
+>> may have:
+>>
+>>
+>>         CPU1                                   CPU2
+>>   qdisc_run_begin(q)                            .
+>>           .                                enqueue skb1
+>> deuqueue skb1 and clear MISSED                  .
+>>           .                        nolock_qdisc_is_empty() return true
+>>     requeue skb                                 .
+>>    q->enqueue()                                 .
+>>     set MISSED                                  .
+>>         .                                       .
+>>  qdisc_run_end(q)                               .
+>>         .                              qdisc_run_begin(q)
+>>         .                             transmit skb2 directly
+>>         .                           transmit the requeued skb1
+>>
+>> The problem here is that skb1 and skb2  are from the same CPU, which
+>> means they are likely from the same flow, so we need to avoid this,
+>> right?
 > 
-> Hi Tom,
 > 
-> > 
-> > This isn't sufficient for the checksum-unnecessary interface, we'd
-> > also need ability to set csum_level for cases the device validated
-> > more than one checksum.  
+>          CPU1                                   CPU2
+>    qdisc_run_begin(q)                            .
+>            .                                enqueue skb1
+>      dequeue skb1                                .
+>            .                                     .
+> netdevice stopped and MISSED is clear            .
+>            .                        nolock_qdisc_is_empty() return true
+>      requeue skb                                 .
+>            .                                     .
+>            .                                     .
+>            .                                     .
+>   qdisc_run_end(q)                               .
+>            .                              qdisc_run_begin(q)
+>            .                             transmit skb2 directly
+>            .                           transmit the requeued skb1
 > 
-> ack, right. I guess we can put this info in xdp metadata or do you
-> think we can add it in xdp_buff/xdp_frame as well?
-
-This is an interesting question as where do we draw the line.  I
-definitely only don't want to add the same information in two places.
-
-As is clear by the XDP-hints discussion: Today we are lacking *kernel*
-infrastructure to interpret the XDP-metadata area when we create the
-SKB from xdp_frame.  I want to add this capability...
-
-(See XDP-hints discussion, as wisely pointed out by John, the BPF-prog
-infrastructure to interpret XDP-metadata via BTF-info is already
-available to userspace loading BPF-progs, but AFAIK the kernel is
-lacking this capability. Maybe we will end-up loading BPF-progs that
-populate SKB fields based on xdp_frame + XDP-metadata area... I'm
-keeping an open mind for the solutions in this space.).
-
-The question is really, should we wait for this infra (that can use
-csum value from metadata) or should be go ahead and expand
-xdp_buff/xdp_frame with an csum value (+ ip_summed) for the
-CHECKSUM_COMPLETE use-case?
-
- 
-> > 
-> > IMO, we shouldn't support CHECKSUM_UNNECESSARY for new uses like this.
-> > For years now, the Linux community has been pleading with vendors to
-> > provide CHECKSUM_COMPLETE which is far more useful and robust than
-> > CHECSUM_UNNECESSARY, and yet some still haven't got with the program
-> > even though we see more and more instances where CHECKSUM_UNNECESSARY
-> > doesn't even work at all (e.g. cases with SRv6, new encaps device
-> > doesn't understand). I believe it's time to take a stand! :-)  
+> The above sequence diagram seems more correct, it is basically about how to
+> avoid transmitting a packet directly bypassing the requeued packet.
 > 
-> I completely agree CHECKSUM_COMPLETE is more useful and robust than
-> CHECSUM_UNNECESSARY and I want to add support for it as soon as we
-> agree on the best way to do it. At the same time there are plenty of
-> XDP NICs where this feature is quite useful since they support just
-> CHECSUM_UNNECESSARY.
+>>
+>>>
+>>> If there is no such case would you be willing to repeat the benchmark
+>>> with and without this test?
+
+I had did some interesting testing to show how adjust a small number
+of code has some notiable performance degrade.
+
+1. I used below patch to remove the nolock_qdisc_is_empty() testing
+   under q->seqlock.
+
+@@ -3763,17 +3763,6 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
+        if (q->flags & TCQ_F_NOLOCK) {
+                if (q->flags & TCQ_F_CAN_BYPASS && nolock_qdisc_is_empty(q) &&
+                    qdisc_run_begin(q)) {
+-                       /* Retest nolock_qdisc_is_empty() within the protection
+-                        * of q->seqlock to ensure qdisc is indeed empty.
+-                        */
+-                       if (unlikely(!nolock_qdisc_is_empty(q))) {
+-                               rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
+-                               __qdisc_run(q);
+-                               qdisc_run_end(q);
+-
+-                               goto no_lock_out;
+-                       }
+-
+                        qdisc_bstats_cpu_update(q, skb);
+                        if (sch_direct_xmit(skb, q, dev, txq, NULL, true) &&
+                            !nolock_qdisc_is_empty(q))
+@@ -3786,7 +3775,6 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
+                rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
+                qdisc_run(q);
+
+-no_lock_out:
+                if (unlikely(to_free))
+                        kfree_skb_list(to_free);
+                return rc;
+
+which has the below performance improvement:
+
+ threads      v1             v1 + above patch          delta
+    1       3.21Mpps            3.20Mpps               -0.3%
+    2       5.56Mpps            5.94Mpps               +4.9%
+    4       5.58Mpps            5.60Mpps               +0.3%
+    8       2.76Mpps            2.77Mpps               +0.3%
+   16       2.23Mpps            2.23Mpps               +0.0%
+
+v1 = this patchset.
+
+
+2. After the above testing, it seems worthwhile to remove the
+   nolock_qdisc_is_empty() testing under q->seqlock, so I used below
+   patch to make sure nolock_qdisc_is_empty() always return false for
+   netdev queue stopped case。
+
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -38,6 +38,15 @@ EXPORT_SYMBOL(default_qdisc_ops);
+ static void qdisc_maybe_clear_missed(struct Qdisc *q,
+                                     const struct netdev_queue *txq)
+ {
++       set_bit(__QDISC_STATE_DRAINING, &q->state);
++
++       /* Make sure DRAINING is set before clearing MISSED
++        * to make sure nolock_qdisc_is_empty() always return
++        * false for aoviding transmitting a packet directly
++        * bypassing the requeued packet.
++        */
++       smp_mb__after_atomic();
++
+        clear_bit(__QDISC_STATE_MISSED, &q->state);
+
+        /* Make sure the below netif_xmit_frozen_or_stopped()
+@@ -52,8 +61,6 @@ static void qdisc_maybe_clear_missed(struct Qdisc *q,
+         */
+        if (!netif_xmit_frozen_or_stopped(txq))
+                set_bit(__QDISC_STATE_MISSED, &q->state);
+-       else
+-               set_bit(__QDISC_STATE_DRAINING, &q->state);
+ }
+
+which has the below performance data:
+
+ threads      v1          v1 + above two patch          delta
+    1       3.21Mpps            3.20Mpps               -0.3%
+    2       5.56Mpps            5.94Mpps               +4.9%
+    4       5.58Mpps            5.02Mpps                -10%
+    8       2.76Mpps            2.77Mpps               +0.3%
+   16       2.23Mpps            2.23Mpps               +0.0%
+
+So the adjustment in qdisc_maybe_clear_missed() seems to have
+caused about 10% performance degradation for 4 threads case.
+
+And the cpu topdown perf data suggested that icache missed and
+bad Speculation play the main factor to those performance difference.
+
+I tried to control the above factor by removing the inline function
+and add likely and unlikely tag for netif_xmit_frozen_or_stopped()
+in sch_generic.c.
+
+And after removing the inline mark for function in sch_generic.c
+and add likely/unlikely tag for netif_xmit_frozen_or_stopped()
+checking in in sch_generic.c, we got notiable performance improvement
+for 1/2 threads case(some performance improvement for ip forwarding
+test too), but not for 4 threads case.
+
+So it seems we need to ignore the performance degradation for 4
+threads case? or any idea?
+
+>>>
+>>> Sorry for dragging the review out..
+>>>
+>>> .
+>>>
+>> _______________________________________________
+>> Linuxarm mailing list -- linuxarm@openeuler.org
+>> To unsubscribe send an email to linuxarm-leave@openeuler.org
+>>
+> _______________________________________________
+> Linuxarm mailing list -- linuxarm@openeuler.org
+> To unsubscribe send an email to linuxarm-leave@openeuler.org
 > 
-> Regards,
-> Lorenzo
-> 
-> > 
-> > Tom
-> >   
-> > > Signed-off-by: David Ahern <dsahern@kernel.org>
-> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > > ---
-> > >  include/net/xdp.h | 36 ++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 36 insertions(+)
-> > >
-> > > diff --git a/include/net/xdp.h b/include/net/xdp.h
-> > > index 5533f0ab2afc..e81ac505752b 100644
-> > > --- a/include/net/xdp.h
-> > > +++ b/include/net/xdp.h
-> > > @@ -66,6 +66,13 @@ struct xdp_txq_info {
-> > >         struct net_device *dev;
-> > >  };
-> > >
-> > > +/* xdp metadata bitmask */
-> > > +#define XDP_CSUM_MASK          GENMASK(1, 0)
-> > > +enum xdp_flags {
-> > > +       XDP_CSUM_UNNECESSARY    = BIT(0),
-> > > +       XDP_CSUM_COMPLETE       = BIT(1),
-> > > +};
-> > > +
-> > >  struct xdp_buff {
-> > >         void *data;
-> > >         void *data_end;
-> > > @@ -74,6 +81,7 @@ struct xdp_buff {
-> > >         struct xdp_rxq_info *rxq;
-> > >         struct xdp_txq_info *txq;
-> > >         u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom*/
-> > > +       u16 flags; /* xdp_flags */
-> > >  };
-> > >
-> > >  static __always_inline void
-> > > @@ -81,6 +89,7 @@ xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
-> > >  {
-> > >         xdp->frame_sz = frame_sz;
-> > >         xdp->rxq = rxq;
-> > > +       xdp->flags = 0;
-> > >  }
-> > >
-> > >  static __always_inline void
-> > > @@ -95,6 +104,18 @@ xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
-> > >         xdp->data_meta = meta_valid ? data : data + 1;
-> > >  }
-> > >
-> > > +static __always_inline void
-> > > +xdp_buff_get_csum(struct xdp_buff *xdp, struct sk_buff *skb)
-> > > +{
-> > > +       switch (xdp->flags & XDP_CSUM_MASK) {
-> > > +       case XDP_CSUM_UNNECESSARY:
-> > > +               skb->ip_summed = CHECKSUM_UNNECESSARY;
-> > > +               break;
-> > > +       default:
-> > > +               break;
-> > > +       }
-> > > +}
-> > > +
-> > >  /* Reserve memory area at end-of data area.
-> > >   *
-> > >   * This macro reserves tailroom in the XDP buffer by limiting the
-> > > @@ -122,8 +143,21 @@ struct xdp_frame {
-> > >          */
-> > >         struct xdp_mem_info mem;
-> > >         struct net_device *dev_rx; /* used by cpumap */
-> > > +       u16 flags; /* xdp_flags */
-> > >  };
-> > >
-> > > +static __always_inline void
-> > > +xdp_frame_get_csum(struct xdp_frame *xdpf, struct sk_buff *skb)
-> > > +{
-> > > +       switch (xdpf->flags & XDP_CSUM_MASK) {
-> > > +       case XDP_CSUM_UNNECESSARY:
-> > > +               skb->ip_summed = CHECKSUM_UNNECESSARY;
-> > > +               break;
-> > > +       default:
-> > > +               break;
-> > > +       }
-> > > +}
-> > > +
-> > >  #define XDP_BULK_QUEUE_SIZE    16
-> > >  struct xdp_frame_bulk {
-> > >         int count;
-> > > @@ -180,6 +214,7 @@ void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
-> > >         xdp->data_end = frame->data + frame->len;
-> > >         xdp->data_meta = frame->data - frame->metasize;
-> > >         xdp->frame_sz = frame->frame_sz;
-> > > +       xdp->flags = frame->flags;
-> > >  }
-> > >
-> > >  static inline
-> > > @@ -206,6 +241,7 @@ int xdp_update_frame_from_buff(struct xdp_buff *xdp,
-> > >         xdp_frame->headroom = headroom - sizeof(*xdp_frame);
-> > >         xdp_frame->metasize = metasize;
-> > >         xdp_frame->frame_sz = xdp->frame_sz;
-> > > +       xdp_frame->flags = xdp->flags;
-> > >
-> > >         return 0;
-> > >  }
-> > > --
-> > > 2.31.1
-> > >  
-
-
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
 
