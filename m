@@ -2,202 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC41F395396
-	for <lists+bpf@lfdr.de>; Mon, 31 May 2021 03:10:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C65C73953D5
+	for <lists+bpf@lfdr.de>; Mon, 31 May 2021 04:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhEaBMG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 30 May 2021 21:12:06 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2413 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhEaBMC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 30 May 2021 21:12:02 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FtcZ73RDtz66wN;
-        Mon, 31 May 2021 09:06:39 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 09:10:20 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Mon, 31 May
- 2021 09:10:20 +0800
-Subject: Re: [Linuxarm] Re: [PATCH net-next 2/3] net: sched: implement
- TCQ_F_CAN_BYPASS for lockless qdisc
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Yunsheng Lin <yunshenglin0825@gmail.com>
-CC:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
-        <weiwan@google.com>, <cong.wang@bytedance.com>,
-        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
-        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-References: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
- <1622170197-27370-3-git-send-email-linyunsheng@huawei.com>
- <20210528180012.676797d6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <a6a965ee-7368-d37b-9c70-bba50c67eec9@huawei.com>
- <20210528213218.2b90864c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <ee1a62da-9758-70db-abd3-c5ca2e8e0ce0@huawei.com>
- <20210529114919.4f8b1980@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <9cc9f513-7655-07df-3c74-5abe07ae8321@gmail.com>
- <20210530132111.3a974275@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <3c2fbc70-841f-d90b-ca13-1f058169be50@huawei.com>
-Message-ID: <3a307707-9fb5-d73a-01f9-93aaf5c7a437@huawei.com>
-Date:   Mon, 31 May 2021 09:10:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S229897AbhEaCEd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 May 2021 22:04:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230002AbhEaCEc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 30 May 2021 22:04:32 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2FFC06174A
+        for <bpf@vger.kernel.org>; Sun, 30 May 2021 19:02:52 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id h20so9935899qko.11
+        for <bpf@vger.kernel.org>; Sun, 30 May 2021 19:02:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=scarletmail.rutgers.edu; s=google-20180529;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IcO+zll+a9QMDo+Zj5bTXrtZevlh7VblZTN8enNoy7k=;
+        b=QF+S3Svbs6TGFV4mDphU8aRoaLsBGDO6i9orle1SRClQ97aaqR/XblJ+RtMsi2Qzpu
+         hnEDR+Llw+rBozFMeqWJ4kOcFstlnx29o1y3sL5lzKkox1Xmm9P3zPCf4g/GU8WdqDu9
+         eD1CYUedeFJKGbCbpU6b41z+KpfxIzgdOlxTZvsh01RxmUoW6XIIC2py1HxvAeLWX7JE
+         nLXnnrsGHfp1NVV+O8fOE6GQ0wxZsaROX7gV+w/W69Ye8xGQUvENgB9bXO2+hOEMrskQ
+         fqgvA8+u/uitc9hbNDnovOXpCmflncawbgeZMd3Xjjw1zkQPgAWZdEDDmv7W+DW1hTOX
+         Fs3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IcO+zll+a9QMDo+Zj5bTXrtZevlh7VblZTN8enNoy7k=;
+        b=GsnC7nIlMgV5SNNRAd64R8CnhLqgm7xRl0GnTuYfjr8VGtH8lMut8PpQLjATgW6veo
+         j5T7s+F+3xjPnqqjecFaKs+Sw6B0rv3KTxoHs0E+mDm2U+qYR3SKRYOBUHSdYVSgmPOK
+         rdJS9dFkO0wvgTnrrWFFOo48ndD5u8G2jkC2PyTyDWq3WSOWO2WOUiM2GsYLJKT5carg
+         tWJqiAqz3B1KfeRZ3CxUzB5GcdfedIKxuxtenPMCLtLljBssqyMPOdOiaYcM8Z6Dk2aB
+         OtwnpXeXIY96kRCYqURF+T2QZ0boJv6KItYsPtlXHnwk4xXgAEIMryGOgO+H5Q43/aOL
+         TzNw==
+X-Gm-Message-State: AOAM532s6R/u9WGHR2RH6zS2pgdvr4rfcdQb5qD0PtNYXxAgLMVrQzh4
+        AhG/F77k2GfGywQ0oD9MPU5akQ==
+X-Google-Smtp-Source: ABdhPJwfqLRA4Dj9UbcT5Jyux343K1g8OtUoWQ9ZIVBfiL4ZaJlvjH1uEYqgEuxovFXM98qduIES2g==
+X-Received: by 2002:ae9:c30f:: with SMTP id n15mr4283130qkg.71.1622426571513;
+        Sun, 30 May 2021 19:02:51 -0700 (PDT)
+Received: from ubuntu-vbox.myfiosgateway.com (pool-108-50-174-202.nwrknj.fios.verizon.net. [108.50.174.202])
+        by smtp.gmail.com with ESMTPSA id a22sm51079qka.0.2021.05.30.19.02.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 May 2021 19:02:51 -0700 (PDT)
+From:   hv90@scarletmail.rutgers.edu
+X-Google-Original-From: harishankar.vishwanathan@rutgers.edu
+To:     ast@kernel.org
+Cc:     bpf@vger.kernel.org, ecree@solarflare.com,
+        Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>,
+        Matan Shachnai <m.shachnai@rutgers.edu>,
+        Srinivas Narayana <srinivas.narayana@rutgers.edu>,
+        Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
+Subject: [PATCH v2 bpf-next] bpf: tnums: Provably sound, faster, and more precise algorithm for tnum_mul
+Date:   Sun, 30 May 2021 22:01:57 -0400
+Message-Id: <20210531020157.7386-1-harishankar.vishwanathan@rutgers.edu>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <3c2fbc70-841f-d90b-ca13-1f058169be50@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/5/31 8:40, Yunsheng Lin wrote:
-> On 2021/5/31 4:21, Jakub Kicinski wrote:
->> On Sun, 30 May 2021 09:37:09 +0800 Yunsheng Lin wrote:
->>> On 2021/5/30 2:49, Jakub Kicinski wrote:
->>>> The fact that MISSED is only cleared under q->seqlock does not matter,
->>>> because setting it and ->enqueue() are not under any lock. If the thread
->>>> gets interrupted between:
->>>>
->>>> 	if (q->flags & TCQ_F_CAN_BYPASS && nolock_qdisc_is_empty(q) &&
->>>> 	    qdisc_run_begin(q)) {
->>>>
->>>> and ->enqueue() we can't guarantee that something else won't come in,
->>>> take q->seqlock and clear MISSED.
->>>>
->>>> thread1                thread2             thread3
->>>> # holds seqlock
->>>>                        qdisc_run_begin(q)
->>>>                        set(MISSED)
->>>> pfifo_fast_dequeue
->>>>   clear(MISSED)
->>>>   # recheck the queue
->>>> qdisc_run_end()  
->>>>                        ->enqueue()  
->>>>                                             q->flags & TCQ_F_CAN_BYPASS..
->>>>                                             qdisc_run_begin() # true
->>>>                                             sch_direct_xmit()
->>>>                        qdisc_run_begin()
->>>>                        set(MISSED)
->>>>
->>>> Or am I missing something?
->>>>
->>>> Re-checking nolock_qdisc_is_empty() may or may not help.
->>>> But it doesn't really matter because there is no ordering
->>>> requirement between thread2 and thread3 here.  
->>>
->>> I were more focued on explaining that using MISSED is reliable
->>> as sch_may_need_requeuing() checking in RFCv3 [1] to indicate a
->>> empty qdisc, and forgot to mention the data race described in
->>> RFCv3, which is kind of like the one described above:
->>>
->>> "There is a data race as below:
->>>
->>>       CPU1                                   CPU2
->>> qdisc_run_begin(q)                            .
->>>         .                                q->enqueue()
->>> sch_may_need_requeuing()                      .
->>>     return true                               .
->>>         .                                     .
->>>         .                                     .
->>>     q->enqueue()                              .
->>>
->>> When above happen, the skb enqueued by CPU1 is dequeued after the
->>> skb enqueued by CPU2 because sch_may_need_requeuing() return true.
->>> If there is not qdisc bypass, the CPU1 has better chance to queue
->>> the skb quicker than CPU2.
->>>
->>> This patch does not take care of the above data race, because I
->>> view this as similar as below:
->>>
->>> Even at the same time CPU1 and CPU2 write the skb to two socket
->>> which both heading to the same qdisc, there is no guarantee that
->>> which skb will hit the qdisc first, becuase there is a lot of
->>> factor like interrupt/softirq/cache miss/scheduling afffecting
->>> that."
->>>
->>> Does above make sense? Or any idea to avoid it?
->>>
->>> 1. https://patchwork.kernel.org/project/netdevbpf/patch/1616404156-11772-1-git-send-email-linyunsheng@huawei.com/
->>
->> We agree on this one.
->>
->> Could you draw a sequence diagram of different CPUs (like the one
->> above) for the case where removing re-checking nolock_qdisc_is_empty()
->> under q->seqlock leads to incorrect behavior? 
-> 
-> When nolock_qdisc_is_empty() is not re-checking under q->seqlock, we
-> may have:
-> 
-> 
->         CPU1                                   CPU2
->   qdisc_run_begin(q)                            .
->           .                                enqueue skb1
-> deuqueue skb1 and clear MISSED                  .
->           .                        nolock_qdisc_is_empty() return true
->     requeue skb                                 .
->    q->enqueue()                                 .
->     set MISSED                                  .
->         .                                       .
->  qdisc_run_end(q)                               .
->         .                              qdisc_run_begin(q)
->         .                             transmit skb2 directly
->         .                           transmit the requeued skb1
-> 
-> The problem here is that skb1 and skb2  are from the same CPU, which
-> means they are likely from the same flow, so we need to avoid this,
-> right?
+From: Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>
 
+This patch introduces a new algorithm for multiplication of tristate
+numbers (tnums) that is provably sound. It is faster and more precise when
+compared to the existing method.
 
-         CPU1                                   CPU2
-   qdisc_run_begin(q)                            .
-           .                                enqueue skb1
-     dequeue skb1                                .
-           .                                     .
-netdevice stopped and MISSED is clear            .
-           .                        nolock_qdisc_is_empty() return true
-     requeue skb                                 .
-           .                                     .
-           .                                     .
-           .                                     .
-  qdisc_run_end(q)                               .
-           .                              qdisc_run_begin(q)
-           .                             transmit skb2 directly
-           .                           transmit the requeued skb1
+Like the existing method, this new algorithm follows the long
+multiplication algorithm. The idea is to generate partial products by
+multiplying each bit in the multiplier (tnum a) with the multiplicand
+(tnum b), and adding the partial products after appropriately bit-shifting
+them. The new algorithm, however, uses just a single loop over the bits of
+the multiplier (tnum a) and accumulates only the uncertain components of
+the multiplicand (tnum b) into a mask-only tnum. The following paper
+explains the algorithm in more detail: https://arxiv.org/abs/2105.05398.
 
-The above sequence diagram seems more correct, it is basically about how to
-avoid transmitting a packet directly bypassing the requeued packet.
+A natural way to construct the tnum product is by performing a tnum
+addition on all the partial products. This algorithm presents another
+method of doing this: decompose each partial product into two tnums,
+consisting of the values and the masks separately. The mask-sum is
+accumulated within the loop in acc_m. The value-sum tnum is generated
+using a.value * b.value. The tnum constructed by tnum addition of the
+value-sum and the mask-sum contains all possible summations of concrete
+values drawn from the partial product tnums pairwise. We prove this result
+in the paper.
 
-> 
->>
->> If there is no such case would you be willing to repeat the benchmark
->> with and without this test?
->>
->> Sorry for dragging the review out..
->>
->> .
->>
-> _______________________________________________
-> Linuxarm mailing list -- linuxarm@openeuler.org
-> To unsubscribe send an email to linuxarm-leave@openeuler.org
-> 
+Our evaluations show that the new algorithm is overall more precise
+(producing tnums with less uncertain components) than the existing method.
+As an illustrative example, consider the input tnums A and B. The numbers
+in the paranthesis correspond to (value;mask).
+
+A                = 000000x1 (1;2)
+B                = 0010011x (38;1)
+A * B (existing) = xxxxxxxx (0;255)
+A * B (new)      = 0x1xxxxx (32;95)
+
+Importantly, we present a proof of soundness of the new algorithm in the
+aforementioned paper. Additionally, we show that this new algorithm is
+empirically faster than the existing method.
+
+Co-developed-by: Matan Shachnai <m.shachnai@rutgers.edu>
+Signed-off-by: Matan Shachnai <m.shachnai@rutgers.edu>
+Co-developed-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
+Signed-off-by: Srinivas Narayana <srinivas.narayana@rutgers.edu>
+Co-developed-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
+Signed-off-by: Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
+Signed-off-by: Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>
+---
+ kernel/bpf/tnum.c | 41 ++++++++++++++++++++++-------------------
+ 1 file changed, 22 insertions(+), 19 deletions(-)
+
+diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
+index ceac5281bd31..3d7127f439a1 100644
+--- a/kernel/bpf/tnum.c
++++ b/kernel/bpf/tnum.c
+@@ -111,28 +111,31 @@ struct tnum tnum_xor(struct tnum a, struct tnum b)
+ 	return TNUM(v & ~mu, mu);
+ }
+ 
+-/* half-multiply add: acc += (unknown * mask * value).
+- * An intermediate step in the multiply algorithm.
++/* Generate partial products by multiplying each bit in the multiplier (tnum a)
++ * with the multiplicand (tnum b), and add the partial products after
++ * appropriately bit-shifting them. Instead of directly performing tnum addition
++ * on the generated partial products, equivalenty, decompose each partial
++ * product into two tnums, consisting of the value-sum (acc_v) and the
++ * mask-sum (acc_m) and then perform tnum addition on them. The following paper
++ * explains the algorithm in more detail: https://arxiv.org/abs/2105.05398.
+  */
+-static struct tnum hma(struct tnum acc, u64 value, u64 mask)
+-{
+-	while (mask) {
+-		if (mask & 1)
+-			acc = tnum_add(acc, TNUM(0, value));
+-		mask >>= 1;
+-		value <<= 1;
+-	}
+-	return acc;
+-}
+-
+ struct tnum tnum_mul(struct tnum a, struct tnum b)
+ {
+-	struct tnum acc;
+-	u64 pi;
+-
+-	pi = a.value * b.value;
+-	acc = hma(TNUM(pi, 0), a.mask, b.mask | b.value);
+-	return hma(acc, b.mask, a.value);
++	u64 acc_v = a.value * b.value;
++	struct tnum acc_m = TNUM(0, 0);
++
++	while (a.value || a.mask) {
++		/* LSB of tnum a is a certain 1 */
++		if (a.value & 1)
++			acc_m = tnum_add(acc_m, TNUM(0, b.mask));
++		/* LSB of tnum a is uncertain */
++		else if (a.mask & 1)
++			acc_m = tnum_add(acc_m, TNUM(0, b.value | b.mask));
++		/* Note: no case for LSB is certain 0 */
++		a = tnum_rshift(a, 1);
++		b = tnum_lshift(b, 1);
++	}
++	return tnum_add(TNUM(acc_v, 0), acc_m);
+ }
+ 
+ /* Note that if a and b disagree - i.e. one has a 'known 1' where the other has
+-- 
+2.25.1
 
