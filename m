@@ -2,100 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6093967CE
-	for <lists+bpf@lfdr.de>; Mon, 31 May 2021 20:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78043396891
+	for <lists+bpf@lfdr.de>; Mon, 31 May 2021 21:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbhEaS1s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 May 2021 14:27:48 -0400
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:12136 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232018AbhEaS1j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 May 2021 14:27:39 -0400
+        id S231563AbhEaT5x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 May 2021 15:57:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhEaT5w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 May 2021 15:57:52 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE10C061574;
+        Mon, 31 May 2021 12:56:11 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id m13so8605916qtk.13;
+        Mon, 31 May 2021 12:56:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1622485560; x=1654021560;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=gnkO6HbxtWgpLLubZF5txt5lfMb6qkJdo86vYzWv6r8=;
-  b=OVy280LXJ4R1AkYRIoaRy8tk3N6d1TORyGMu/v/BjvOu0OISRohvxoK3
-   ZRHtNMco4qIqguSdmw+pI8yqAmxPMohCqEza3OHfAi0u+f+iOYyzEwPsJ
-   qFQvQVgY3c+PDzVvTJgtUvWJuGRdRh7PPuKQFsSq4OPlJoEu5ggAuXApR
-   4=;
-X-IronPort-AV: E=Sophos;i="5.83,238,1616457600"; 
-   d="scan'208";a="115653031"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-27fb8269.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 31 May 2021 18:25:59 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
-        by email-inbound-relay-1e-27fb8269.us-east-1.amazon.com (Postfix) with ESMTPS id 07DD1A18E6;
-        Mon, 31 May 2021 18:25:57 +0000 (UTC)
-Received: from EX13D07UWB004.ant.amazon.com (10.43.161.196) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Mon, 31 May 2021 18:25:57 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
- EX13D07UWB004.ant.amazon.com (10.43.161.196) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Mon, 31 May 2021 18:25:57 +0000
-Received: from dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com
- (172.19.206.175) by mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP
- Server id 15.0.1497.18 via Frontend Transport; Mon, 31 May 2021 18:25:57
- +0000
-Received: by dev-dsk-fllinden-2c-d7720709.us-west-2.amazon.com (Postfix, from userid 6262777)
-        id 899D079; Mon, 31 May 2021 18:25:57 +0000 (UTC)
-From:   Frank van der Linden <fllinden@amazon.com>
-To:     <stable@vger.kernel.org>
-CC:     <bpf@vger.kernel.org>, <daniel@iogearbox.net>
-Subject: [PATCH v2 4.14 17/17] bpf: No need to simulate speculative domain for immediates
-Date:   Mon, 31 May 2021 18:25:56 +0000
-Message-ID: <20210531182556.25277-18-fllinden@amazon.com>
-X-Mailer: git-send-email 2.23.4
-In-Reply-To: <20210531182556.25277-1-fllinden@amazon.com>
-References: <20210531182556.25277-1-fllinden@amazon.com>
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CgVBqkQLZmOYqPkge4g0jcqhV/Khxx+58SBmawGWouA=;
+        b=AaVt4mkEetpGQ/YDrne8rVrkdxgcLFaCcuqa2pUcjTewMqFwyyZeI3SY0T0RrYtmQP
+         1y2kNQ8bzSEPhTp1qjdbtjIgpETUH7hV4h6TM03iVwy+obHyh+SrAcD7YVGTOnfuvk62
+         FBdXLObEgGd5zZr9fT9/S3m6iLu/6ddkiknGcsvq0VMhfchzkEwhbBXdnu2akeMFf9V2
+         xezfBqo4E9/O6GWrK5Ys3xDY7v5O7BLR2uW7GdhQEhLGL1QjAfvgpdjr47FPD6FKEf35
+         o6In377vVYEC5nEysyzrFo9w7TYxa8r8Yk5Ka0fW9ZIrEB1pxu9O6GMnUFSovgSCEkZs
+         X8Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CgVBqkQLZmOYqPkge4g0jcqhV/Khxx+58SBmawGWouA=;
+        b=X83zDBRQPnx/5bT7ABZoE9gIlXfDQ5oES0ll0bXalakHRh4lyClBUZgviVoACI5esz
+         M6oMl6PYCPjgImQQrx2VTMeK8+I9uvVdlFkj6HZBGV3bpmAsEQTw97tbJmleVcMLzKn9
+         EVcIskLraiyGeRM+UndjD8TBIZpKHkDuWZZ1fwKocaTb5BzGgKxV4QoF9YFN+UHE1CX2
+         94Qj41IKuRQ5oBlX8LVELgE3dVXhReNFaSghufeinf9Ppf7u89XwlCyZ/fZ9UrPq9AqO
+         ZzNoIrklhClebJPBpJ5nJWwoJinLZPoIP9WU/13nmNlDCf59HmXwWCqKwTajGhxWAtpW
+         fOPQ==
+X-Gm-Message-State: AOAM532iIMAKQkTUXJRJLBayf174y3ZfQ3rDXCZgmfRsH5HXGzRgRBKP
+        FhSsJgd8PF6a/us6b6R+zwUmqDofsdUaiQxz
+X-Google-Smtp-Source: ABdhPJxnnTX9v6s/AghcsXuakbSWvaFzCo2NeHxn03hMexmFROnoVK+PRmrMFVhsN0Ct03xtXU3MEQ==
+X-Received: by 2002:ac8:4ccb:: with SMTP id l11mr11402701qtv.127.1622490970809;
+        Mon, 31 May 2021 12:56:10 -0700 (PDT)
+Received: from localhost.localdomain (pool-108-54-205-133.nycmny.fios.verizon.net. [108.54.205.133])
+        by smtp.gmail.com with ESMTPSA id d18sm9939549qkc.28.2021.05.31.12.56.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 May 2021 12:56:10 -0700 (PDT)
+From:   grantseltzer <grantseltzer@gmail.com>
+To:     andrii@kernel.org, daniel@iogearbox.net, corbet@lwn.net
+Cc:     linux-doc@vger.kernel.org, grantseltzer@gmail.com,
+        bpf@vger.kernel.org
+Subject: [PATCH bpf-next 0/2] Autogenerating libbpf API documentation
+Date:   Mon, 31 May 2021 19:55:51 +0000
+Message-Id: <20210531195553.168298-1-grantseltzer@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+This patch series is meant to start the initiative to document libbpf.
+It includes .rst files which are text documentation describing building, 
+API naming convention, as well as an index to generated API documentation.
 
-commit a7036191277f9fa68d92f2071ddc38c09b1e5ee5 upstream.
+In this approach the generated API documentation is enabled by the kernels
+existing kernel documentation system which uses sphinx. The resulting docs
+would then be synced to kernel.org/doc
 
-In 801c6058d14a ("bpf: Fix leakage of uninitialized bpf stack under
-speculation") we replaced masking logic with direct loads of immediates
-if the register is a known constant. Given in this case we do not apply
-any masking, there is also no reason for the operation to be truncated
-under the speculative domain.
+You can test this by running `make htmldocs` and serving the html in 
+Documentation/output. Since libbpf does not yet have comments in kernel
+doc format, see kernel.org/doc/html/latest/doc-guide/kernel-doc.html for
+an example so you can test this.
 
-Therefore, there is also zero reason for the verifier to branch-off and
-simulate this case, it only needs to do it for unknown but bounded scalars.
-As a side-effect, this also enables few test cases that were previously
-rejected due to simulation under zero truncation.
+The advantage of this approach is to use the existing sphinx
+infrastructure that the kernel has, and have libbpf docs in
+the same place as everything else.
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Piotr Krysiuk <piotras@gmail.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
----
- kernel/bpf/verifier.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+The perhaps large disadvantage of this approach is that libbpf versions
+independently from the kernel. If it's possible to version libbpf
+separately without having duplicates that would be the ideal scenario.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index f3f14519708d..4a3333039bf2 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2169,8 +2169,12 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- 	/* If we're in commit phase, we're done here given we already
- 	 * pushed the truncated dst_reg into the speculative verification
- 	 * stack.
-+	 *
-+	 * Also, when register is a known constant, we rewrite register-based
-+	 * operation to immediate-based, and thus do not need masking (and as
-+	 * a consequence, do not need to simulate the zero-truncation either).
- 	 */
--	if (commit_window)
-+	if (commit_window || off_is_imm)
- 		return 0;
- 
- 	/* Simulate and find potential out-of-bounds access under
+grantseltzer (2):
+  Add documentation for libbpf including API autogen
+  Remove duplicate README doc from libbpf
+
+ Documentation/bpf/index.rst                   | 13 +++++++
+ Documentation/bpf/libbpf.rst                  | 14 +++++++
+ Documentation/bpf/libbpf_api.rst              | 18 +++++++++
+ Documentation/bpf/libbpf_build.rst            | 37 +++++++++++++++++++
+ .../bpf/libbpf_naming_convention.rst          | 20 +++++-----
+ 5 files changed, 93 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/bpf/libbpf.rst
+ create mode 100644 Documentation/bpf/libbpf_api.rst
+ create mode 100644 Documentation/bpf/libbpf_build.rst
+ rename tools/lib/bpf/README.rst => Documentation/bpf/libbpf_naming_convention.rst (96%)
+
 -- 
-2.23.4
+2.29.2
 
