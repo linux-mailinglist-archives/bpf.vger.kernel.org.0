@@ -2,73 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1F03978F4
-	for <lists+bpf@lfdr.de>; Tue,  1 Jun 2021 19:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFC8D397952
+	for <lists+bpf@lfdr.de>; Tue,  1 Jun 2021 19:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233301AbhFARVz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Jun 2021 13:21:55 -0400
-Received: from www62.your-server.de ([213.133.104.62]:40888 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231918AbhFARVy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Jun 2021 13:21:54 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lo83g-000GKb-Tq; Tue, 01 Jun 2021 19:20:04 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lo83g-000LRJ-Ku; Tue, 01 Jun 2021 19:20:04 +0200
-Subject: Re: [PATCH 1/1] bpf: avoid unnecessary IPI in bpf_flush_icache
-To:     Yanfei Xu <yanfei.xu@windriver.com>, ast@kernel.org,
-        zlim.lnx@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        id S233301AbhFARnD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Jun 2021 13:43:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231331AbhFARnC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Jun 2021 13:43:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5027761042;
+        Tue,  1 Jun 2021 17:41:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622569280;
+        bh=2IFDrzvsvhbzI9SgMn3XalE8GIMt01IatSD60Qc5Gmo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j0b+3rm95SfAaBVuhPEnN6N/bHDGpbZlvxz2MUhN1Y8tQzui/fmCb3FS0lS+GWJsQ
+         o5SpVaWWiRcwHIMsgnYCMr1uyzecIfP0dNToJXvWZyviw0eAcBG6yr/PHYBXDPw5kI
+         9paSMIESAuJs6QhCY7lixIZoZCJBJAKF//LiCQaOVIhwqO0K3WzdKCm47f0+Lbenu5
+         cG1ACuHAogEa7+XnqlGLqgQ4LXIrv3D0Ogud3q1BT/+9UailhDuUfP5vXtYGj8zYOs
+         JgP4t2aIfOSDQ+TPBNX6fOuo9VmG1RaNDA58ch6RfILS4S+yPLhdfRj/fi3cN7BLka
+         Shwv9Yu7a6S2Q==
+Date:   Tue, 1 Jun 2021 18:41:15 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Yanfei Xu <yanfei.xu@windriver.com>, ast@kernel.org,
+        zlim.lnx@gmail.com, catalin.marinas@arm.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] bpf: avoid unnecessary IPI in bpf_flush_icache
+Message-ID: <20210601174114.GA29130@willie-the-truck>
 References: <20210601150625.37419-1-yanfei.xu@windriver.com>
  <20210601150625.37419-2-yanfei.xu@windriver.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <56cc1e25-25c3-a3da-64e3-8a1c539d685b@iogearbox.net>
-Date:   Tue, 1 Jun 2021 19:20:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+ <56cc1e25-25c3-a3da-64e3-8a1c539d685b@iogearbox.net>
 MIME-Version: 1.0
-In-Reply-To: <20210601150625.37419-2-yanfei.xu@windriver.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26188/Tue Jun  1 13:07:16 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56cc1e25-25c3-a3da-64e3-8a1c539d685b@iogearbox.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/1/21 5:06 PM, Yanfei Xu wrote:
-> It's no need to trigger IPI for keeping pipeline fresh in bpf case.
-
-This needs a more concrete explanation/analysis on "why it is safe" to do so
-rather than just saying that it is not needed.
-
-> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
-> ---
->   arch/arm64/net/bpf_jit_comp.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, Jun 01, 2021 at 07:20:04PM +0200, Daniel Borkmann wrote:
+> On 6/1/21 5:06 PM, Yanfei Xu wrote:
+> > It's no need to trigger IPI for keeping pipeline fresh in bpf case.
 > 
-> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> index f7b194878a99..5311f8be4ba4 100644
-> --- a/arch/arm64/net/bpf_jit_comp.c
-> +++ b/arch/arm64/net/bpf_jit_comp.c
-> @@ -974,7 +974,7 @@ static int validate_code(struct jit_ctx *ctx)
->   
->   static inline void bpf_flush_icache(void *start, void *end)
->   {
-> -	flush_icache_range((unsigned long)start, (unsigned long)end);
-> +	__flush_icache_range((unsigned long)start, (unsigned long)end);
->   }
->   
->   struct arm64_jit_data {
-> 
+> This needs a more concrete explanation/analysis on "why it is safe" to do so
+> rather than just saying that it is not needed.
 
+Agreed. You need to show how the executing thread ends up going through a
+context synchronizing operation before jumping to the generated code if
+the IPI here is removed.
+
+Will
