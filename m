@@ -2,57 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB79396F9D
-	for <lists+bpf@lfdr.de>; Tue,  1 Jun 2021 10:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32342396FA5
+	for <lists+bpf@lfdr.de>; Tue,  1 Jun 2021 10:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233479AbhFAIze (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Jun 2021 04:55:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50789 "EHLO
+        id S233374AbhFAI5g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Jun 2021 04:57:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45353 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233425AbhFAIze (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 1 Jun 2021 04:55:34 -0400
+        by vger.kernel.org with ESMTP id S233336AbhFAI5g (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 1 Jun 2021 04:57:36 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622537632;
+        s=mimecast20190719; t=1622537754;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8WAcJsQSiURJqUup6/vHXemO9q3LwnkDENXrRbvbWL8=;
-        b=OI/0Q7l7boKA3iDOU00R2nweF/MXseFrkrQLGqOP8N9+O5iOQKbAkfr027wWkiI3n/+jgW
-        45mqv7OHKCfopMstckS2X133lWjykIi07EVnoDVWMvfqOqbT2j37ePW9q4QJWfMTpCm0zE
-        ZDoMbqWOCDBFyH2h6lrqANCS5FH/iRo=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-306-nMrumbDnPGyJPt2Nud9b7g-1; Tue, 01 Jun 2021 04:53:51 -0400
-X-MC-Unique: nMrumbDnPGyJPt2Nud9b7g-1
-Received: by mail-pl1-f200.google.com with SMTP id k6-20020a1709027606b0290104f319bb01so2054903pll.13
-        for <bpf@vger.kernel.org>; Tue, 01 Jun 2021 01:53:51 -0700 (PDT)
+        bh=PY7QvG98jjhMnaQtt0qVDMLMnjgFKr3v5evHIzJFZPU=;
+        b=gJ3aoqGDA7aSMhZGffwJItHWkXshCl0FpcnQvf8PPPqQDck8B+xUqFPcfLOFbZzfK1bh8U
+        0MSSFH4M7F8Ek8/YX8YQnjuRfibJ3nD1AsW7oh31adbMSh6gUg0LefrnPziWcoSEPkuXK3
+        Bh1CcmbIWl2pBhmlqUbzMORfB2K3OQI=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-508-1jV1UtqVNWeMmlhGHxxBLg-1; Tue, 01 Jun 2021 04:55:53 -0400
+X-MC-Unique: 1jV1UtqVNWeMmlhGHxxBLg-1
+Received: by mail-pj1-f71.google.com with SMTP id k1-20020a17090a7f01b029015d0d4c2107so6598691pjl.0
+        for <bpf@vger.kernel.org>; Tue, 01 Jun 2021 01:55:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=8WAcJsQSiURJqUup6/vHXemO9q3LwnkDENXrRbvbWL8=;
-        b=DD/nnqh1jMtFLsg1ZgwmaN9PKvjO81olF3KkUaR2ISODMJGfqzwgwhlHbrHDROuHam
-         i37tsMtYlEMDKsaDrMwxQE7xDw8GrAoFaCQkgZmnTPrqjH64IGxS7cZwY8BJPfCjlNDZ
-         Rs+qdSqLkt/0gng7HTlZn1qyOiZTDNZvhoHK8ZdVVO+1F2pIWj4LWaBem0C4euOWmnHb
-         MEMQv557FonFEkABI306zpvAawTpYuXlClmitmQuzl9UW8/UCefM3RDH78xCbKPQKEWD
-         P9GY2nqtm4v2rax+PmjlhatbJVrlBZzF7wzKZpGzl/HphIOUAbQA6eCS2r3Mw1WmoZp8
-         cMkg==
-X-Gm-Message-State: AOAM533xxrQMpyJ6LaxXBS9wzERL/eYiask9Akda4bAUEnNl64uPcC/S
-        KkeuShpg0mMkkXsIJIadKxzGGQa9i3CkLzvETSO1SSxLI6Y13SQ/kkwF263Fo0JgbWFLrhHQKeo
-        uhLQYkJhwtbPOIz1/6fRT7OFXgLRsxFF+Bvbk70sLRRkq1QeZEKDeMfkQDFLHfk8S
-X-Received: by 2002:a17:90a:b28d:: with SMTP id c13mr3860063pjr.80.1622537629712;
-        Tue, 01 Jun 2021 01:53:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyVptUOSWsBZH9dICAaOjVBWfDa1kss0dK9yR27Sqmu8qKHzL6FHx0nXJZWYhsiYmSFNmpt0g==
-X-Received: by 2002:a17:90a:b28d:: with SMTP id c13mr3860024pjr.80.1622537629393;
-        Tue, 01 Jun 2021 01:53:49 -0700 (PDT)
+        bh=PY7QvG98jjhMnaQtt0qVDMLMnjgFKr3v5evHIzJFZPU=;
+        b=C3mJw5gc/YsR2uodU5OlTVOyQ6Q2+2LkVNEWR6fg5PCkLA7StbClpPh5AqdWfwtjQq
+         67V5fhzX9+ZE3ljLzw2Tmt8xB8JhA+Bqtkxp3GTRunlPVojKyi3dhuztqRbiUnbPsbeN
+         XBTyRobbuS0Ax2E2QJUbp2s7E1kXeC0o9fbOP9JG5IwqmhKK8Jv2HCTQpUO7UWLebN8H
+         IIDnRkQ1vMADW0gbPRSewUDYVToDPecaFtEC//g+H8Hm3PhdpxxhaN3kO+54s2Rb62OD
+         1fBVimFFe2pyF/6a2bWZ9nTurcY+Lu5QDTKXQ9YNwGxhhVk1nPue+mY/pY5bEFU2z3f7
+         KmFA==
+X-Gm-Message-State: AOAM531PlXIWNGRc9qvMtyPGeU52CGAJX9GMlIQGqD46dIETbjOjjmwT
+        OAoaSxnHwzna2YDEe8gBbc2HL1vy6xNJT6j1O4nedRVpQWmGNFd4hzOJ1qgCUUTvz9GHGeN5wdr
+        kO4iI3b7hZZC5rTQLzs4vH0H8NTe6JcSXw4n/k7fP8ghQAPlrAMlzQXJeNR0fPx6d
+X-Received: by 2002:a63:b507:: with SMTP id y7mr27012044pge.74.1622537752178;
+        Tue, 01 Jun 2021 01:55:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxKw7SvOWAkrqbo3g5ghE03u4CDleLTZxkw6OTAQFt0JQyWPfxEXSmv/ACbNht9ydqPWa3N+Q==
+X-Received: by 2002:a63:b507:: with SMTP id y7mr27012023pge.74.1622537751925;
+        Tue, 01 Jun 2021 01:55:51 -0700 (PDT)
 Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id 11sm12590666pfh.182.2021.06.01.01.53.45
+        by smtp.gmail.com with ESMTPSA id n17sm2261391pfv.125.2021.06.01.01.55.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Jun 2021 01:53:48 -0700 (PDT)
-Subject: Re: [PATCH net v2 1/2] virtio-net: fix for unable to handle page
- fault for address
+        Tue, 01 Jun 2021 01:55:51 -0700 (PDT)
+Subject: Re: [PATCH net v2 2/2] virtio_net: get build_skb() buf by data ptr
 To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
 Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -63,14 +62,14 @@ Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
         virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
 References: <20210601064000.66909-1-xuanzhuo@linux.alibaba.com>
- <20210601064000.66909-2-xuanzhuo@linux.alibaba.com>
+ <20210601064000.66909-3-xuanzhuo@linux.alibaba.com>
 From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <e7b3a4b8-9f5c-1f17-9e7d-ab38bb193919@redhat.com>
-Date:   Tue, 1 Jun 2021 16:53:43 +0800
+Message-ID: <3e0f4152-b41f-5cd4-ee38-95bae89ad1b2@redhat.com>
+Date:   Tue, 1 Jun 2021 16:55:46 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210601064000.66909-2-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20210601064000.66909-3-xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -79,94 +78,56 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
-在 2021/6/1 下午2:39, Xuan Zhuo 写道:
-> In merge mode, when xdp is enabled, if the headroom of buf is smaller
-> than virtnet_get_headroom(), xdp_linearize_page() will be called but the
-> variable of "headroom" is still 0, which leads to wrong logic after
-> entering page_to_skb().
+在 2021/6/1 下午2:40, Xuan Zhuo 写道:
+> In the case of merge, the page passed into page_to_skb() may be a head
+> page, not the page where the current data is located. So when trying to
+> get the buf where the data is located, we should get buf based on
+> headroom instead of offset.
 >
-> [   16.600944] BUG: unable to handle page fault for address: ffffecbfff7b43c8[   16.602175] #PF: supervisor read access in kernel mode
-> [   16.603350] #PF: error_code(0x0000) - not-present page
-> [   16.604200] PGD 0 P4D 0
-> [   16.604686] Oops: 0000 [#1] SMP PTI
-> [   16.605306] CPU: 4 PID: 715 Comm: sh Tainted: G    B             5.12.0+ #312
-> [   16.606429] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/04
-> [   16.608217] RIP: 0010:unmap_page_range+0x947/0xde0
-> [   16.609014] Code: 00 00 08 00 48 83 f8 01 45 19 e4 41 f7 d4 41 83 e4 03 e9 a4 fd ff ff e8 b7 63 ed ff 4c 89 e0 48 c1 e0 065
-> [   16.611863] RSP: 0018:ffffc90002503c58 EFLAGS: 00010286
-> [   16.612720] RAX: ffffecbfff7b43c0 RBX: 00007f19f7203000 RCX: ffffffff812ff359
-> [   16.613853] RDX: ffff888107778000 RSI: 0000000000000000 RDI: 0000000000000005
-> [   16.614976] RBP: ffffea000425e000 R08: 0000000000000000 R09: 3030303030303030
-> [   16.616124] R10: ffffffff82ed7d94 R11: 6637303030302052 R12: 7c00000afffded0f
-> [   16.617276] R13: 0000000000000001 R14: ffff888119ee7010 R15: 00007f19f7202000
-> [   16.618423] FS:  0000000000000000(0000) GS:ffff88842fd00000(0000) knlGS:0000000000000000
-> [   16.619738] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   16.620670] CR2: ffffecbfff7b43c8 CR3: 0000000103220005 CR4: 0000000000370ee0
-> [   16.621792] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   16.622920] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   16.624047] Call Trace:
-> [   16.624525]  ? release_pages+0x24d/0x730
-> [   16.625209]  unmap_single_vma+0xa9/0x130
-> [   16.625885]  unmap_vmas+0x76/0xf0
-> [   16.626480]  exit_mmap+0xa0/0x210
-> [   16.627129]  mmput+0x67/0x180
-> [   16.627673]  do_exit+0x3d1/0xf10
-> [   16.628259]  ? do_user_addr_fault+0x231/0x840
-> [   16.629000]  do_group_exit+0x53/0xd0
-> [   16.629631]  __x64_sys_exit_group+0x1d/0x20
-> [   16.630354]  do_syscall_64+0x3c/0x80
-> [   16.630988]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [   16.631828] RIP: 0033:0x7f1a043d0191
-> [   16.632464] Code: Unable to access opcode bytes at RIP 0x7f1a043d0167.
-> [   16.633502] RSP: 002b:00007ffe3d993308 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-> [   16.634737] RAX: ffffffffffffffda RBX: 00007f1a044c9490 RCX: 00007f1a043d0191
-> [   16.635857] RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-> [   16.636986] RBP: 0000000000000000 R08: ffffffffffffff88 R09: 0000000000000001
-> [   16.638120] R10: 0000000000000008 R11: 0000000000000246 R12: 00007f1a044c9490
-> [   16.639245] R13: 0000000000000001 R14: 00007f1a044c9968 R15: 0000000000000000
-> [   16.640408] Modules linked in:
-> [   16.640958] CR2: ffffecbfff7b43c8
-> [   16.641557] ---[ end trace bc4891c6ce46354c ]---
-> [   16.642335] RIP: 0010:unmap_page_range+0x947/0xde0
-> [   16.643135] Code: 00 00 08 00 48 83 f8 01 45 19 e4 41 f7 d4 41 83 e4 03 e9 a4 fd ff ff e8 b7 63 ed ff 4c 89 e0 48 c1 e0 065
-> [   16.645983] RSP: 0018:ffffc90002503c58 EFLAGS: 00010286
-> [   16.646845] RAX: ffffecbfff7b43c0 RBX: 00007f19f7203000 RCX: ffffffff812ff359
-> [   16.647970] RDX: ffff888107778000 RSI: 0000000000000000 RDI: 0000000000000005
-> [   16.649091] RBP: ffffea000425e000 R08: 0000000000000000 R09: 3030303030303030
-> [   16.650250] R10: ffffffff82ed7d94 R11: 6637303030302052 R12: 7c00000afffded0f
-> [   16.651394] R13: 0000000000000001 R14: ffff888119ee7010 R15: 00007f19f7202000
-> [   16.652529] FS:  0000000000000000(0000) GS:ffff88842fd00000(0000) knlGS:0000000000000000
-> [   16.653887] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   16.654841] CR2: ffffecbfff7b43c8 CR3: 0000000103220005 CR4: 0000000000370ee0
-> [   16.655992] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   16.657150] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   16.658290] Kernel panic - not syncing: Fatal exception
-> [   16.659613] Kernel Offset: disabled
-> [   16.660234] ---[ end Kernel panic - not syncing: Fatal exception ]---
+> This patch solves this problem. But if you don't use this patch, the
+> original code can also run, because if the page is not the page of the
+> current data, the calculated tailroom will be less than 0, and will not
+> enter the logic of build_skb() . The significance of this patch is to
+> modify this logical problem, allowing more situations to use
+> build_skb().
 >
-> Fixes: fb32856b16ad ("virtio-net: page_to_skb() use build_skb when there's sufficient tailroom")
 > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>   drivers/net/virtio_net.c | 17 ++++++-----------
+>   1 file changed, 6 insertions(+), 11 deletions(-)
 
 
 Acked-by: Jason Wang <jasowang@redhat.com>
 
 
-> ---
->   drivers/net/virtio_net.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
 >
 > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 9b6a4a875c55..6b929aca155a 100644
+> index 6b929aca155a..fa407eb8b457 100644
 > --- a/drivers/net/virtio_net.c
 > +++ b/drivers/net/virtio_net.c
-> @@ -958,7 +958,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
->   				put_page(page);
->   				head_skb = page_to_skb(vi, rq, xdp_page, offset,
->   						       len, PAGE_SIZE, false,
-> -						       metasize, headroom);
-> +						       metasize,
-> +						       VIRTIO_XDP_HEADROOM);
->   				return head_skb;
->   			}
->   			break;
+> @@ -401,18 +401,13 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+>   	/* If headroom is not 0, there is an offset between the beginning of the
+>   	 * data and the allocated space, otherwise the data and the allocated
+>   	 * space are aligned.
+> +	 *
+> +	 * Buffers with headroom use PAGE_SIZE as alloc size, see
+> +	 * add_recvbuf_mergeable() + get_mergeable_buf_len()
+>   	 */
+> -	if (headroom) {
+> -		/* Buffers with headroom use PAGE_SIZE as alloc size,
+> -		 * see add_recvbuf_mergeable() + get_mergeable_buf_len()
+> -		 */
+> -		truesize = PAGE_SIZE;
+> -		tailroom = truesize - len - offset;
+> -		buf = page_address(page);
+> -	} else {
+> -		tailroom = truesize - len;
+> -		buf = p;
+> -	}
+> +	truesize = headroom ? PAGE_SIZE : truesize;
+> +	tailroom = truesize - len - headroom;
+> +	buf = p - headroom;
+>   
+>   	len -= hdr_len;
+>   	offset += hdr_padded_len;
 
