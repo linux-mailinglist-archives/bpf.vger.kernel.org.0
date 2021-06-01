@@ -2,245 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0009E396EB2
-	for <lists+bpf@lfdr.de>; Tue,  1 Jun 2021 10:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB79396F9D
+	for <lists+bpf@lfdr.de>; Tue,  1 Jun 2021 10:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233354AbhFAIUj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Jun 2021 04:20:39 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:3316 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232963AbhFAIUi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Jun 2021 04:20:38 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FvQ121RVYz19S9G;
-        Tue,  1 Jun 2021 16:14:14 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 1 Jun 2021 16:18:55 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Tue, 1 Jun 2021
- 16:18:55 +0800
-Subject: Re: [Linuxarm] Re: [PATCH net-next 2/3] net: sched: implement
- TCQ_F_CAN_BYPASS for lockless qdisc
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     Yunsheng Lin <yunshenglin0825@gmail.com>, <davem@davemloft.net>,
-        <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-References: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
- <1622170197-27370-3-git-send-email-linyunsheng@huawei.com>
- <20210528180012.676797d6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <a6a965ee-7368-d37b-9c70-bba50c67eec9@huawei.com>
- <20210528213218.2b90864c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <ee1a62da-9758-70db-abd3-c5ca2e8e0ce0@huawei.com>
- <20210529114919.4f8b1980@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <9cc9f513-7655-07df-3c74-5abe07ae8321@gmail.com>
- <20210530132111.3a974275@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <3c2fbc70-841f-d90b-ca13-1f058169be50@huawei.com>
- <3a307707-9fb5-d73a-01f9-93aaf5c7a437@huawei.com>
- <428f92d8-f4a2-13cf-8dcc-b38d48a42965@huawei.com>
- <20210531215146.5ca802a5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <cf75e1f4-7972-8efa-7554-fc528c5da380@huawei.com>
-Date:   Tue, 1 Jun 2021 16:18:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S233479AbhFAIze (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Jun 2021 04:55:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50789 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233425AbhFAIze (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 1 Jun 2021 04:55:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1622537632;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8WAcJsQSiURJqUup6/vHXemO9q3LwnkDENXrRbvbWL8=;
+        b=OI/0Q7l7boKA3iDOU00R2nweF/MXseFrkrQLGqOP8N9+O5iOQKbAkfr027wWkiI3n/+jgW
+        45mqv7OHKCfopMstckS2X133lWjykIi07EVnoDVWMvfqOqbT2j37ePW9q4QJWfMTpCm0zE
+        ZDoMbqWOCDBFyH2h6lrqANCS5FH/iRo=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-306-nMrumbDnPGyJPt2Nud9b7g-1; Tue, 01 Jun 2021 04:53:51 -0400
+X-MC-Unique: nMrumbDnPGyJPt2Nud9b7g-1
+Received: by mail-pl1-f200.google.com with SMTP id k6-20020a1709027606b0290104f319bb01so2054903pll.13
+        for <bpf@vger.kernel.org>; Tue, 01 Jun 2021 01:53:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=8WAcJsQSiURJqUup6/vHXemO9q3LwnkDENXrRbvbWL8=;
+        b=DD/nnqh1jMtFLsg1ZgwmaN9PKvjO81olF3KkUaR2ISODMJGfqzwgwhlHbrHDROuHam
+         i37tsMtYlEMDKsaDrMwxQE7xDw8GrAoFaCQkgZmnTPrqjH64IGxS7cZwY8BJPfCjlNDZ
+         Rs+qdSqLkt/0gng7HTlZn1qyOiZTDNZvhoHK8ZdVVO+1F2pIWj4LWaBem0C4euOWmnHb
+         MEMQv557FonFEkABI306zpvAawTpYuXlClmitmQuzl9UW8/UCefM3RDH78xCbKPQKEWD
+         P9GY2nqtm4v2rax+PmjlhatbJVrlBZzF7wzKZpGzl/HphIOUAbQA6eCS2r3Mw1WmoZp8
+         cMkg==
+X-Gm-Message-State: AOAM533xxrQMpyJ6LaxXBS9wzERL/eYiask9Akda4bAUEnNl64uPcC/S
+        KkeuShpg0mMkkXsIJIadKxzGGQa9i3CkLzvETSO1SSxLI6Y13SQ/kkwF263Fo0JgbWFLrhHQKeo
+        uhLQYkJhwtbPOIz1/6fRT7OFXgLRsxFF+Bvbk70sLRRkq1QeZEKDeMfkQDFLHfk8S
+X-Received: by 2002:a17:90a:b28d:: with SMTP id c13mr3860063pjr.80.1622537629712;
+        Tue, 01 Jun 2021 01:53:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyVptUOSWsBZH9dICAaOjVBWfDa1kss0dK9yR27Sqmu8qKHzL6FHx0nXJZWYhsiYmSFNmpt0g==
+X-Received: by 2002:a17:90a:b28d:: with SMTP id c13mr3860024pjr.80.1622537629393;
+        Tue, 01 Jun 2021 01:53:49 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 11sm12590666pfh.182.2021.06.01.01.53.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 01:53:48 -0700 (PDT)
+Subject: Re: [PATCH net v2 1/2] virtio-net: fix for unable to handle page
+ fault for address
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+References: <20210601064000.66909-1-xuanzhuo@linux.alibaba.com>
+ <20210601064000.66909-2-xuanzhuo@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <e7b3a4b8-9f5c-1f17-9e7d-ab38bb193919@redhat.com>
+Date:   Tue, 1 Jun 2021 16:53:43 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210531215146.5ca802a5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <20210601064000.66909-2-xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Language: en-US
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/6/1 12:51, Jakub Kicinski wrote:
-> On Mon, 31 May 2021 20:40:01 +0800 Yunsheng Lin wrote:
->> On 2021/5/31 9:10, Yunsheng Lin wrote:
->>> On 2021/5/31 8:40, Yunsheng Lin wrote:  
->>>> On 2021/5/31 4:21, Jakub Kicinski wrote:  
->>  [...]  >>>
->>>
->>>          CPU1                                   CPU2
->>>    qdisc_run_begin(q)                            .
->>>            .                                enqueue skb1
->>>      dequeue skb1                                .
->>>            .                                     .
->>> netdevice stopped and MISSED is clear            .
->>>            .                        nolock_qdisc_is_empty() return true
->>>      requeue skb                                 .
->>>            .                                     .
->>>            .                                     .
->>>            .                                     .
->>>   qdisc_run_end(q)                               .
->>>            .                              qdisc_run_begin(q)
->>>            .                             transmit skb2 directly
->>>            .                           transmit the requeued skb1
->>>
->>> The above sequence diagram seems more correct, it is basically about how to
->>> avoid transmitting a packet directly bypassing the requeued packet.
-> 
-> I see, thanks! That explains the need. Perhaps we can rephrase the
-> comment? Maybe:
-> 
-> +			/* Retest nolock_qdisc_is_empty() within the protection
-> +			 * of q->seqlock to protect from racing with requeuing.
-> +			 */
 
-Yes if we still decide to preserve the nolock_qdisc_is_empty() rechecking
-under q->seqlock.
-
-> 
->> I had did some interesting testing to show how adjust a small number
->> of code has some notiable performance degrade.
->>
->> 1. I used below patch to remove the nolock_qdisc_is_empty() testing
->>    under q->seqlock.
->>
->> @@ -3763,17 +3763,6 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
->>         if (q->flags & TCQ_F_NOLOCK) {
->>                 if (q->flags & TCQ_F_CAN_BYPASS && nolock_qdisc_is_empty(q) &&
->>                     qdisc_run_begin(q)) {
->> -                       /* Retest nolock_qdisc_is_empty() within the protection
->> -                        * of q->seqlock to ensure qdisc is indeed empty.
->> -                        */
->> -                       if (unlikely(!nolock_qdisc_is_empty(q))) {
->> -                               rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
->> -                               __qdisc_run(q);
->> -                               qdisc_run_end(q);
->> -
->> -                               goto no_lock_out;
->> -                       }
->> -
->>                         qdisc_bstats_cpu_update(q, skb);
->>                         if (sch_direct_xmit(skb, q, dev, txq, NULL, true) &&
->>                             !nolock_qdisc_is_empty(q))
->> @@ -3786,7 +3775,6 @@ static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
->>                 rc = q->enqueue(skb, q, &to_free) & NET_XMIT_MASK;
->>                 qdisc_run(q);
->>
->> -no_lock_out:
->>                 if (unlikely(to_free))
->>                         kfree_skb_list(to_free);
->>                 return rc;
->>
->> which has the below performance improvement:
->>
->>  threads      v1             v1 + above patch          delta
->>     1       3.21Mpps            3.20Mpps               -0.3%
->>     2       5.56Mpps            5.94Mpps               +4.9%
->>     4       5.58Mpps            5.60Mpps               +0.3%
->>     8       2.76Mpps            2.77Mpps               +0.3%
->>    16       2.23Mpps            2.23Mpps               +0.0%
->>
->> v1 = this patchset.
->>
->>
->> 2. After the above testing, it seems worthwhile to remove the
->>    nolock_qdisc_is_empty() testing under q->seqlock, so I used below
->>    patch to make sure nolock_qdisc_is_empty() always return false for
->>    netdev queue stopped caseã€‚
->>
->> --- a/net/sched/sch_generic.c
->> +++ b/net/sched/sch_generic.c
->> @@ -38,6 +38,15 @@ EXPORT_SYMBOL(default_qdisc_ops);
->>  static void qdisc_maybe_clear_missed(struct Qdisc *q,
->>                                      const struct netdev_queue *txq)
->>  {
->> +       set_bit(__QDISC_STATE_DRAINING, &q->state);
->> +
->> +       /* Make sure DRAINING is set before clearing MISSED
->> +        * to make sure nolock_qdisc_is_empty() always return
->> +        * false for aoviding transmitting a packet directly
->> +        * bypassing the requeued packet.
->> +        */
->> +       smp_mb__after_atomic();
->> +
->>         clear_bit(__QDISC_STATE_MISSED, &q->state);
->>
->>         /* Make sure the below netif_xmit_frozen_or_stopped()
->> @@ -52,8 +61,6 @@ static void qdisc_maybe_clear_missed(struct Qdisc *q,
->>          */
->>         if (!netif_xmit_frozen_or_stopped(txq))
->>                 set_bit(__QDISC_STATE_MISSED, &q->state);
->> -       else
->> -               set_bit(__QDISC_STATE_DRAINING, &q->state);
->>  }
-> 
-> But this would not be enough because we may also clear MISSING 
-> in pfifo_fast_dequeue()?
-
-For the MISSING clearing in pfifo_fast_dequeue(), it seems it
-looks like the data race described in RFC v3 too?
-
-      CPU1                 CPU2               CPU3
-qdisc_run_begin(q)          .                  .
-        .              MISSED is set           .
-  MISSED is cleared         .                  .
-    q->dequeue()            .                  .
-        .              enqueue skb1     check MISSED # true
-qdisc_run_end(q)            .                  .
-        .                   .         qdisc_run_begin(q) # true
-        .            MISSED is set      send skb2 directly
+ÔÚ 2021/6/1 ÏÂÎç2:39, Xuan Zhuo Ð´µÀ:
+> In merge mode, when xdp is enabled, if the headroom of buf is smaller
+> than virtnet_get_headroom(), xdp_linearize_page() will be called but the
+> variable of "headroom" is still 0, which leads to wrong logic after
+> entering page_to_skb().
+>
+> [   16.600944] BUG: unable to handle page fault for address: ffffecbfff7b43c8[   16.602175] #PF: supervisor read access in kernel mode
+> [   16.603350] #PF: error_code(0x0000) - not-present page
+> [   16.604200] PGD 0 P4D 0
+> [   16.604686] Oops: 0000 [#1] SMP PTI
+> [   16.605306] CPU: 4 PID: 715 Comm: sh Tainted: G    B             5.12.0+ #312
+> [   16.606429] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/04
+> [   16.608217] RIP: 0010:unmap_page_range+0x947/0xde0
+> [   16.609014] Code: 00 00 08 00 48 83 f8 01 45 19 e4 41 f7 d4 41 83 e4 03 e9 a4 fd ff ff e8 b7 63 ed ff 4c 89 e0 48 c1 e0 065
+> [   16.611863] RSP: 0018:ffffc90002503c58 EFLAGS: 00010286
+> [   16.612720] RAX: ffffecbfff7b43c0 RBX: 00007f19f7203000 RCX: ffffffff812ff359
+> [   16.613853] RDX: ffff888107778000 RSI: 0000000000000000 RDI: 0000000000000005
+> [   16.614976] RBP: ffffea000425e000 R08: 0000000000000000 R09: 3030303030303030
+> [   16.616124] R10: ffffffff82ed7d94 R11: 6637303030302052 R12: 7c00000afffded0f
+> [   16.617276] R13: 0000000000000001 R14: ffff888119ee7010 R15: 00007f19f7202000
+> [   16.618423] FS:  0000000000000000(0000) GS:ffff88842fd00000(0000) knlGS:0000000000000000
+> [   16.619738] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   16.620670] CR2: ffffecbfff7b43c8 CR3: 0000000103220005 CR4: 0000000000370ee0
+> [   16.621792] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   16.622920] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   16.624047] Call Trace:
+> [   16.624525]  ? release_pages+0x24d/0x730
+> [   16.625209]  unmap_single_vma+0xa9/0x130
+> [   16.625885]  unmap_vmas+0x76/0xf0
+> [   16.626480]  exit_mmap+0xa0/0x210
+> [   16.627129]  mmput+0x67/0x180
+> [   16.627673]  do_exit+0x3d1/0xf10
+> [   16.628259]  ? do_user_addr_fault+0x231/0x840
+> [   16.629000]  do_group_exit+0x53/0xd0
+> [   16.629631]  __x64_sys_exit_group+0x1d/0x20
+> [   16.630354]  do_syscall_64+0x3c/0x80
+> [   16.630988]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [   16.631828] RIP: 0033:0x7f1a043d0191
+> [   16.632464] Code: Unable to access opcode bytes at RIP 0x7f1a043d0167.
+> [   16.633502] RSP: 002b:00007ffe3d993308 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+> [   16.634737] RAX: ffffffffffffffda RBX: 00007f1a044c9490 RCX: 00007f1a043d0191
+> [   16.635857] RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+> [   16.636986] RBP: 0000000000000000 R08: ffffffffffffff88 R09: 0000000000000001
+> [   16.638120] R10: 0000000000000008 R11: 0000000000000246 R12: 00007f1a044c9490
+> [   16.639245] R13: 0000000000000001 R14: 00007f1a044c9968 R15: 0000000000000000
+> [   16.640408] Modules linked in:
+> [   16.640958] CR2: ffffecbfff7b43c8
+> [   16.641557] ---[ end trace bc4891c6ce46354c ]---
+> [   16.642335] RIP: 0010:unmap_page_range+0x947/0xde0
+> [   16.643135] Code: 00 00 08 00 48 83 f8 01 45 19 e4 41 f7 d4 41 83 e4 03 e9 a4 fd ff ff e8 b7 63 ed ff 4c 89 e0 48 c1 e0 065
+> [   16.645983] RSP: 0018:ffffc90002503c58 EFLAGS: 00010286
+> [   16.646845] RAX: ffffecbfff7b43c0 RBX: 00007f19f7203000 RCX: ffffffff812ff359
+> [   16.647970] RDX: ffff888107778000 RSI: 0000000000000000 RDI: 0000000000000005
+> [   16.649091] RBP: ffffea000425e000 R08: 0000000000000000 R09: 3030303030303030
+> [   16.650250] R10: ffffffff82ed7d94 R11: 6637303030302052 R12: 7c00000afffded0f
+> [   16.651394] R13: 0000000000000001 R14: ffff888119ee7010 R15: 00007f19f7202000
+> [   16.652529] FS:  0000000000000000(0000) GS:ffff88842fd00000(0000) knlGS:0000000000000000
+> [   16.653887] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   16.654841] CR2: ffffecbfff7b43c8 CR3: 0000000103220005 CR4: 0000000000370ee0
+> [   16.655992] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [   16.657150] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [   16.658290] Kernel panic - not syncing: Fatal exception
+> [   16.659613] Kernel Offset: disabled
+> [   16.660234] ---[ end Kernel panic - not syncing: Fatal exception ]---
+>
+> Fixes: fb32856b16ad ("virtio-net: page_to_skb() use build_skb when there's sufficient tailroom")
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
 
-> 
->> which has the below performance data:
->>
->>  threads      v1          v1 + above two patch          delta
->>     1       3.21Mpps            3.20Mpps               -0.3%
->>     2       5.56Mpps            5.94Mpps               +4.9%
->>     4       5.58Mpps            5.02Mpps                -10%
->>     8       2.76Mpps            2.77Mpps               +0.3%
->>    16       2.23Mpps            2.23Mpps               +0.0%
->>
->> So the adjustment in qdisc_maybe_clear_missed() seems to have
->> caused about 10% performance degradation for 4 threads case.
->>
->> And the cpu topdown perf data suggested that icache missed and
->> bad Speculation play the main factor to those performance difference.
->>
->> I tried to control the above factor by removing the inline function
->> and add likely and unlikely tag for netif_xmit_frozen_or_stopped()
->> in sch_generic.c.
->>
->> And after removing the inline mark for function in sch_generic.c
->> and add likely/unlikely tag for netif_xmit_frozen_or_stopped()
->> checking in in sch_generic.c, we got notiable performance improvement
->> for 1/2 threads case(some performance improvement for ip forwarding
->> test too), but not for 4 threads case.
->>
->> So it seems we need to ignore the performance degradation for 4
->> threads case? or any idea?
-> 
-> No ideas, are the threads pinned to CPUs in some particular way?
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-The pktgen seems already runnig a thread for each CPU, so I do not
-need to do the pinning myself, for the 4 threads case, it runs on
-the 0~3 cpu.
 
-It seems more related to specific cpu implemantaion.
-
-> 
-> .
-> 
+> ---
+>   drivers/net/virtio_net.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 9b6a4a875c55..6b929aca155a 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -958,7 +958,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+>   				put_page(page);
+>   				head_skb = page_to_skb(vi, rq, xdp_page, offset,
+>   						       len, PAGE_SIZE, false,
+> -						       metasize, headroom);
+> +						       metasize,
+> +						       VIRTIO_XDP_HEADROOM);
+>   				return head_skb;
+>   			}
+>   			break;
 
