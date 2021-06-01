@@ -2,81 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C8E396DA0
-	for <lists+bpf@lfdr.de>; Tue,  1 Jun 2021 08:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EEF3396E98
+	for <lists+bpf@lfdr.de>; Tue,  1 Jun 2021 10:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhFAG7Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Jun 2021 02:59:24 -0400
-Received: from www62.your-server.de ([213.133.104.62]:49178 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230326AbhFAG7Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Jun 2021 02:59:24 -0400
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lnyLK-0008hf-AT; Tue, 01 Jun 2021 08:57:38 +0200
-Received: from [85.7.101.30] (helo=linux-2.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lnyLK-000OlJ-1v; Tue, 01 Jun 2021 08:57:38 +0200
-Subject: Re: Regression 5.12.0-rc4 net: ice: significant throughput drop
-To:     robin.murphy@arm.com, jroedel@suse.de
-Cc:     Jussi Maki <joamaki@gmail.com>, netdev@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, intel-wired-lan@lists.osuosl.org,
-        davem@davemloft.net, anthony.l.nguyen@intel.com,
-        jesse.brandeburg@intel.com, hch@lst.de,
-        iommu@lists.linux-foundation.org, suravee.suthikulpanit@amd.com
-References: <CAHn8xckNXci+X_Eb2WMv4uVYjO2331UWB2JLtXr_58z0Av8+8A@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <cc58c09e-bbb5-354a-2030-bf8ebb2adc86@iogearbox.net>
-Date:   Tue, 1 Jun 2021 08:57:37 +0200
+        id S233218AbhFAINh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Jun 2021 04:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233162AbhFAINh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Jun 2021 04:13:37 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D25C061574
+        for <bpf@vger.kernel.org>; Tue,  1 Jun 2021 01:11:56 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id v23so10922909wrd.10
+        for <bpf@vger.kernel.org>; Tue, 01 Jun 2021 01:11:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UxA3xbDhbZOB0OLDbSx73wTyxBOoUWuy5QnPRcZHvZE=;
+        b=RyOX5+cWNXC7pfISDXVcSR1F61G3x56s9sg6LPuZjp3xtZDCLtYnLPNtR0Uwzjo5kb
+         UsBnHlKQB1bH755cTkyjB+3uoU7WcEm4IJWQsqyjH8+dXr5Axvd/+G4JDlt6aA1T9uZs
+         2BzIZq7X1etE3otoDn+mfmvrptEq9jX+22fpbg5ebQFEFGVc3nOpm8TAgEcYdQQkbSkc
+         Ax5ClyP3xp7MMTW9YWOibMC0OjRwHPoH8SaFHiMlgVsbbxWiRX6zQgMvtDUsA44HCmay
+         9XDFfE0FsEdwEBTBaL4BXgGy5ZeVAzpVnc7zfwCeB0+BrHIeS1nRr3pw3RFdTqEIJzXB
+         eGiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UxA3xbDhbZOB0OLDbSx73wTyxBOoUWuy5QnPRcZHvZE=;
+        b=q4I1sF2Ap8gYbMGEXeOOKn2RnJmMATCxgikybafL+75BolstccyVyJPp2Ut2FzE+9x
+         3B8Zro6vpOKzKo6IIsVDoTd70BTSCwSw7MKQ5d2B1susAXx6cUaHTA2aSqQSJDWu2e5t
+         uHiPFg1ZvNu/fWb1TKFnrzP0e6cgIXwvwCdTXO+oRoOzpgdGJqYds0HPdHHOKFZ3YGYu
+         Qs6nHnJGAVtHiGvJuuBeE7Dbdhim/hA2Z55n8eKL/XZ9hnoBtGr+vJ0p8TdZ0Ppm4ho2
+         ZMqATBbeu/y45DK3U4CT0qZeZjIF/AeugdSKp7qsuagw5x486AEmECqTGgM5p6Z31NzZ
+         6baw==
+X-Gm-Message-State: AOAM530CN9NPY1CT+eI3/ZVG28Q+ttYWVuX8nkCy/EmJ/DLK0vSIs6o6
+        8FCR0A8KiuDvRhfSeyr4cyM=
+X-Google-Smtp-Source: ABdhPJwUD+KENoC9dRvqI35Q+FN4bn6V2Xj5V0MBE1ZFhxzmb9jLqsy8SM0ysxa4s5utbXLETjGi3Q==
+X-Received: by 2002:a5d:52ce:: with SMTP id r14mr26676460wrv.395.1622535114732;
+        Tue, 01 Jun 2021 01:11:54 -0700 (PDT)
+Received: from [10.108.8.69] ([149.199.80.129])
+        by smtp.gmail.com with ESMTPSA id l3sm17598406wmh.2.2021.06.01.01.11.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Jun 2021 01:11:54 -0700 (PDT)
+Subject: Re: [PATCH bpf-next] bpf: tnums: Provably sound, faster, and more
+ precise algorithm for tnum_mul
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        hv90@scarletmail.rutgers.edu
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>,
+        Matan Shachnai <m.shachnai@rutgers.edu>,
+        Srinivas Narayana <srinivas.narayana@rutgers.edu>,
+        Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>
+References: <20210528035520.3445-1-harishankar.vishwanathan@rutgers.edu>
+ <CAEf4BzYnTYdDnVuEuiHpg=LWT_JvwJim8kTEBpGKrH3wePez2Q@mail.gmail.com>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <a4da47de-daf8-e167-a796-83bd4167341b@gmail.com>
+Date:   Tue, 1 Jun 2021 09:11:52 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <CAHn8xckNXci+X_Eb2WMv4uVYjO2331UWB2JLtXr_58z0Av8+8A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <CAEf4BzYnTYdDnVuEuiHpg=LWT_JvwJim8kTEBpGKrH3wePez2Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26187/Mon May 31 13:15:33 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[ ping Robin / Joerg, +Cc Christoph ]
+On 30/05/2021 06:59, Andrii Nakryiko wrote:
+> I think your algorithm makes sense, but I've also CC'ed original
+> author of tnum logic. Edward, please take a look as well.Yep, I've been in discussions with them about the paper and their
+ algorithm appears fine to me.  As for the patch, nothing to add
+ beyond your observations.
 
-On 5/28/21 10:34 AM, Jussi Maki wrote:
-> Hi all,
-> 
-> While measuring the impact of a kernel patch on our lab machines I stumbled upon
-> a performance regression affecting the 100Gbit ICE nic and bisected it
-> from range v5.11.1..v5.13-rc3 to the commit:
-> a250c23f15c2 iommu: remove DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE
-> 
-> Both recent bpf-next (d6a6a55518) and linux-stable (c4681547bc) are
-> affected by the issue.
-> 
-> The regression shows as a significant drop in throughput as measured
-> with "super_netperf" [0],
-> with measured bandwidth of ~95Gbps before and ~35Gbps after:
-> 
-> commit 3189713a1b84 (a250c23^):
-> $ ./super_netperf 32 -H 172.18.0.2 -l 10
-> 97379.8
-> 
-> commit a250c23f15c2:
-> $ ./super_netperf 32 -H 172.18.0.2 -l 10
-> 34097.5
-> 
-> The pair of test machines have this hardware:
-> CPU: AMD Ryzen 9 3950X 16-Core Processor
-> MB: X570 AORUS MASTER
-> 0a:00.0 Ethernet controller [0200]: Intel Corporation Ethernet
-> Controller E810-C for QSFP [8086:1592] (rev 02)
-> Kernel config: https://gist.github.com/joamaki/9ee11294c78a8dd2776041f67e5620e7
-> 
-> [0] https://github.com/borkmann/stuff/blob/master/super_netperf
-> 
-
+-ed
