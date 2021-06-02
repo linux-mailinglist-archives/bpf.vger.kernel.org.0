@@ -2,124 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2EAC399606
-	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 00:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA504399609
+	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 00:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbhFBWnW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Jun 2021 18:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35420 "EHLO
+        id S229667AbhFBWnp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Jun 2021 18:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhFBWnW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Jun 2021 18:43:22 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 589ECC06174A;
-        Wed,  2 Jun 2021 15:41:22 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id t4-20020a1c77040000b029019d22d84ebdso4683857wmi.3;
-        Wed, 02 Jun 2021 15:41:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7SMLKgtfzFTtNrhbiL6cD20E7gNbNd4sAIT8l+acqgE=;
-        b=b6/s6tFIRIft9gCYchObMSOTJ02+08GMwVOVkZlGerz4Sj/HODJGkVnRhWfSh52dXx
-         hWdeUV9x0a22x8J+7BROrn9EjDO5MfavRFS0w/PvRbruokRotdXnMwIxvMeOye78vK2I
-         qyrPmQ0BKeZCMTjw0KYTxjKmRPVf0cq9MawSzrWVip8EoiKIsnXIZdV7MKHRPHfJJEPn
-         AcSEwLcXb9Ns8b6DueMJLuQoX2HyJ6+bBryvsyROM41mLqrl1sJEJ9xz8GXoA6bCcEbH
-         oVf0hDbnkpADv7cBTCBzLFowOi+qYb8QsnnFcjTNfQ55kuE4AdYuLZHO5HW8c/TGZYCb
-         jMcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7SMLKgtfzFTtNrhbiL6cD20E7gNbNd4sAIT8l+acqgE=;
-        b=exsomPgJl99ntlMPO1PB9qTsnOxBVa/NMzG1zWcsAPhG78JLaZ54gbl+qb6VP+PfCu
-         KABl+lAd/XKfnwOHkhIpgxATrTUwNaS7amDmlx+ETR9KvL8iXw4drJguluBOKQPbf5sK
-         j315xzobHGdc2q7SEWAgykiX0HMv2c2o5FqFdX+Q4C4bHj7oUjyqlTv+640mw8WFarME
-         SeWDOm2IpsUbmJB0GqTSPZ9zAMyGHwuo1bM7WoVwcIrFtR4aEu1pxYwmh0gZ+rAbN5DA
-         rKzJnKzkKCMwhepqJEINZGetO26vHbx6FYjkzEJ00PqaOGOKeJvPw4qC/lvDlbqNALWx
-         /pPw==
-X-Gm-Message-State: AOAM532S0H1bySRiuty8btXL07GUJoq41Azx0dFEvBezfNsVUbBrTBtp
-        SNKhDowY+97tEnWVmSo7Xxw=
-X-Google-Smtp-Source: ABdhPJx68oQrhXRFKI2BC5VsXcE66i95OnCh99GSXYS8dNm9F0OWAXIyaAozg1vda20ltNHMcAAUMA==
-X-Received: by 2002:a1c:1d14:: with SMTP id d20mr7160755wmd.177.1622673679238;
-        Wed, 02 Jun 2021 15:41:19 -0700 (PDT)
-Received: from honeypot.epfl.ch ([151.29.82.133])
-        by smtp.googlemail.com with ESMTPSA id 11sm957010wmo.24.2021.06.02.15.41.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 15:41:18 -0700 (PDT)
-From:   Riccardo Mancini <rickyman7@gmail.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>
-Cc:     Riccardo Mancini <rickyman7@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] perf env: fix memory leak: free bpf_prog_info_linear
-Date:   Thu,  3 Jun 2021 00:40:23 +0200
-Message-Id: <20210602224024.300485-1-rickyman7@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S229823AbhFBWno (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Jun 2021 18:43:44 -0400
+Received: from out2.mail.ruhr-uni-bochum.de (out2.mail.ruhr-uni-bochum.de [IPv6:2a05:3e00:c:1001::8693:2ae5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05089C06174A
+        for <bpf@vger.kernel.org>; Wed,  2 Jun 2021 15:42:01 -0700 (PDT)
+Received: from mx2.mail.ruhr-uni-bochum.de (localhost [127.0.0.1])
+        by out2.mail.ruhr-uni-bochum.de (Postfix mo-ext) with ESMTP id 4FwPCp6S1Sz8SVK;
+        Thu,  3 Jun 2021 00:41:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rub.de; s=mail-2017;
+        t=1622673718; bh=mTFKQrJYDpdDf/PTxmijfc9yhp61WKxuyBJBoEpauYo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Evw/yWdEvVQNpQigBk9TBnF35mJRlZi3bp3In7uMM1xd2jlFFcMfeM8UF+s2qFZs3
+         y5gBgCPNZIKtKzsQ4aVDjrvh9JdKc2hSKxNv4tkFmEzlJAUzn3/JxiEU/PDty1c+c5
+         ZnUGExTvB83Kcl7oOAWl6sBDIabf0mfdbexU0pJs=
+Received: from out2.mail.ruhr-uni-bochum.de (localhost [127.0.0.1])
+        by mx2.mail.ruhr-uni-bochum.de (Postfix idis) with ESMTP id 4FwPCp5llFz8SRW;
+        Thu,  3 Jun 2021 00:41:58 +0200 (CEST)
+X-RUB-Notes: Internal origin=IPv6:2a05:3e00:c:1001::8693:2aec
+X-Envelope-Sender: <Benedict.Schlueter@rub.de>
+Received: from mail2.mail.ruhr-uni-bochum.de (mail2.mail.ruhr-uni-bochum.de [IPv6:2a05:3e00:c:1001::8693:2aec])
+        by out2.mail.ruhr-uni-bochum.de (Postfix mi-int) with ESMTP id 4FwPCp46lTz8SQl;
+        Thu,  3 Jun 2021 00:41:58 +0200 (CEST)
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.1 at mx2.mail.ruhr-uni-bochum.de
+Received: from [IPv6:2003:de:73f:90c9:d250:99ff:fe8d:a1e1] (p200300de073f90c9d25099fffe8da1e1.dip0.t-ipconnect.de [IPv6:2003:de:73f:90c9:d250:99ff:fe8d:a1e1])
+        by mail2.mail.ruhr-uni-bochum.de (Postfix) with ESMTPSA id 4FwPCp0mS5zDgyl;
+        Thu,  3 Jun 2021 00:41:58 +0200 (CEST)
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.0 at mail2.mail.ruhr-uni-bochum.de
+Subject: Re: fix u32 printf specifier
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, benedict.schlueter@ruhr-uni-bochum.de
+References: <6662597c-13a2-5c6e-df6c-31d18ed34bfd@rub.de>
+ <20210602174127.55ny556mki3uv4tx@kafai-mbp>
+From:   Benedict Schlueter <Benedict.Schlueter@rub.de>
+Message-ID: <2d11fecc-4999-73d7-82e7-3a2c9d9826f3@rub.de>
+Date:   Thu, 3 Jun 2021 00:41:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <20210602174127.55ny556mki3uv4tx@kafai-mbp>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-ASan reported a memory leak caused by info_linear not being
-deallocated. The info_linear was allocated during
-perf_event__synthesize_one_bpf_prog.
-This patch adds the corresponding free() when bpf_prog_info_node
-is freed in perf_env__purge_bpf.
+On 02/06/2021 19:41, Martin KaFai Lau wrote:
 
-$ sudo ./perf record -- sleep 5
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 0.025 MB perf.data (8 samples) ]
+> On Wed, Jun 02, 2021 at 05:23:19PM +0200, Benedict Schlueter wrote:
+>> Hi,
+>>
+>> I assume its clear what this patch does.
+>>
+>>
+>>  From 9618e4475b812651c3fe481af885757675fc4ae2 Mon Sep 17 00:00:00 2001
+>> From: Benedict Schlueter <benedict.schlueter@rub.de>
+>> Date: Wed, 2 Jun 2021 17:16:13 +0200
+>> Subject: use correct format string specifier for unsigned 32 Bit
+>>   bounds print statements
+>>
+>> Signed-off-by: Benedict Schlueter <benedict.schlueter@rub.de>
+>> ---
+>>   kernel/bpf/verifier.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 1de4b8c6ee42..e107996c7220 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -690,11 +690,11 @@ static void print_verifier_state(struct
+>> bpf_verifier_env *env,
+>>                           (int)(reg->s32_max_value));
+>>                   if (reg->u32_min_value != reg->umin_value &&
+>>                       reg->u32_min_value != U32_MIN)
+>> -                    verbose(env, ",u32_min_value=%d",
+>> +                    verbose(env, ",u32_min_value=%u",
+>>                           (int)(reg->u32_min_value));
+> "%u" and (int) cast don't make sense.
+Yep, changed to unsigned int for consistency with the other cases. Is 
+this necessary? Since reg->u32_min_value is already a unsigned 32 bit 
+number.
+> It needs a proper commit message to explain why the change is needed
+> and also a Fixes tag.  Please refer to Documentation/bpf/bpf_devel_QA.rst.
 
-=================================================================
-==297735==ERROR: LeakSanitizer: detected memory leaks
+Sorry should have read this more carefully before. Everything should be 
+included right now.
 
-Direct leak of 7688 byte(s) in 19 object(s) allocated from:
-    #0 0x4f420f in malloc (/home/user/linux/tools/perf/perf+0x4f420f)
-    #1 0xc06a74 in bpf_program__get_prog_info_linear /home/user/linux/tools/lib/bpf/libbpf.c:11113:16
-    #2 0xb426fe in perf_event__synthesize_one_bpf_prog /home/user/linux/tools/perf/util/bpf-event.c:191:16
-    #3 0xb42008 in perf_event__synthesize_bpf_events /home/user/linux/tools/perf/util/bpf-event.c:410:9
-    #4 0x594596 in record__synthesize /home/user/linux/tools/perf/builtin-record.c:1490:8
-    #5 0x58c9ac in __cmd_record /home/user/linux/tools/perf/builtin-record.c:1798:8
-    #6 0x58990b in cmd_record /home/user/linux/tools/perf/builtin-record.c:2901:8
-    #7 0x7b2a20 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
-    #8 0x7b12ff in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
-    #9 0x7b2583 in run_argv /home/user/linux/tools/perf/perf.c:409:2
-    #10 0x7b0d79 in main /home/user/linux/tools/perf/perf.c:539:3
-    #11 0x7fa357ef6b74 in __libc_start_main /usr/src/debug/glibc-2.33-8.fc34.x86_64/csu/../csu/libc-start.c:332:16
+ From fd076dc5f2bd5ec4e9cb49530e77cf2d3e4f42c2 Mon Sep 17 00:00:00 2001
+From: Benedict Schlueter <benedict.schlueter@rub.de>
+Date: Wed, 2 Jun 2021 21:42:39 +0200
+Subject: [PATCH bpf-next]
+  use correct format string specifier for unsigned 32 bounds
 
-Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+when printing an unsigned value, it should be a positive number
+
+verifier log before the patch
+([...],s32_max_value=-2,u32_min_value=-16,u32_max_value=-2)
+
+verifier log after the patch
+([...],s32_max_value=-2,u32_min_value=4294967280,u32_max_value=4294967294)
+
+
+fixes 3f50f132d840 (bpf: Verifier, do explicit ALU32 bounds tracking)
+Signed-off-by: Benedict Schlueter <benedict.schlueter@rub.de>
 ---
- tools/perf/util/env.c | 1 +
- 1 file changed, 1 insertion(+)
+  kernel/bpf/verifier.c | 8 ++++----
+  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-index 9130f6fad8d54..bc5e4f294e9e9 100644
---- a/tools/perf/util/env.c
-+++ b/tools/perf/util/env.c
-@@ -144,6 +144,7 @@ static void perf_env__purge_bpf(struct perf_env *env)
- 		node = rb_entry(next, struct bpf_prog_info_node, rb_node);
- 		next = rb_next(&node->rb_node);
- 		rb_erase(&node->rb_node, root);
-+		free(node->info_linear);
- 		free(node);
- 	}
- 
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1de4b8c6ee42..ea482ebaeb26 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -690,12 +690,12 @@ static void print_verifier_state(struct 
+bpf_verifier_env *env,
+                          (int)(reg->s32_max_value));
+                  if (reg->u32_min_value != reg->umin_value &&
+                      reg->u32_min_value != U32_MIN)
+-                    verbose(env, ",u32_min_value=%d",
+-                        (int)(reg->u32_min_value));
++                    verbose(env, ",u32_min_value=%u",
++                        (unsigned int)(reg->u32_min_value));
+                  if (reg->u32_max_value != reg->umax_value &&
+                      reg->u32_max_value != U32_MAX)
+-                    verbose(env, ",u32_max_value=%d",
+-                        (int)(reg->u32_max_value));
++                    verbose(env, ",u32_max_value=%u",
++                        (unsigned int)(reg->u32_max_value));
+              }
+              verbose(env, ")");
+          }
 -- 
 2.31.1
+
 
