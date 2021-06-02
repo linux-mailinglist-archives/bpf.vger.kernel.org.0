@@ -2,52 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5883B398FC7
-	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 18:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867A4398FEF
+	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 18:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbhFBQUY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Jun 2021 12:20:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54888 "EHLO mail.kernel.org"
+        id S229583AbhFBQaO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Jun 2021 12:30:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229724AbhFBQUW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Jun 2021 12:20:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10B1761947;
-        Wed,  2 Jun 2021 16:18:39 +0000 (UTC)
+        id S229541AbhFBQaO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Jun 2021 12:30:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E1806197C;
+        Wed,  2 Jun 2021 16:28:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622650719;
-        bh=sWkOcXyNxln8ni5dnbEU7OELUj1tqJ+xyc/ErmXbC/k=;
+        s=k20201202; t=1622651310;
+        bh=ym3BhES639iZHefP/a/KoEYjxWioWEK1emlID8aS13o=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=r8L+a4Y61R0vbecDGRbpLPttsNygM/jWwWdpug9hNCB1Ctx5QgydLdvE6oIg31T/D
-         yQ++4k8iYAJvDC1NWesbSr87mPuKQncMkQvGt/bTCcx8XLNoAodkeGVB4MHePbiOkI
-         01+ZT4ieaJj3pEQyS0uLYEVzetI7V46ai5vp3Mmjvx0hxx0CWY9d34xLgazEh8e3SC
-         2CFBXyALBtgkCbFR5hCzmL610nFyKQA0OT+9YRDStu2sDo4TkV0//L8vwHA3lLGfwE
-         YvGjZ0SpWVhUyZl9J3TbiYvKy7xZlpNbatJL+sYJ6RtLh2yV3M+F/7hVpnormmp3EG
-         kE//BbQq5zmtw==
-Date:   Wed, 2 Jun 2021 09:18:37 -0700
+        b=bOsoN+tVW0saMH88vcIVp0E/Dvsx2otzQyMvCxf7gIlWFtRbavufvF1MfuSlpa/kG
+         B9pcBgUr1Xkl1akir38jE5sq5RFJ1PxTRCc8CK7J509YCWF9bGHtXXVrRFdNQYqKXQ
+         RauoG54tu3oD5Cd31Tk141tJIT8/4+08/P0UugxiqEqlZzPGAWUtPSfK9ngMBQUB6q
+         GhHvJCGIH7EZsq5EAvrZaV/HqDJt/wzRKFkGDT35sNbvuP7mb8Abd7vFWqty7CEQT9
+         FH7Od/yFs9b7o1PbshhFnkzgIePNnkeT8L7DnzbZrAmyQvn3FgpgynR6l4eYHBK00O
+         57hfSfTFUzGeA==
+Date:   Wed, 2 Jun 2021 09:28:28 -0700
 From:   Jakub Kicinski <kuba@kernel.org>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        William Tu <u9012063@gmail.com>, xdp-hints@xdp-project.net
-Subject: Re: XDP-hints: Howto support multiple BTF types per packet basis?
-Message-ID: <20210602091837.65ec197a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <60b6cf5b6505e_38d6d208d8@john-XPS-13-9370.notmuch>
-References: <20210526125848.1c7adbb0@carbon>
-        <CAEf4BzYXUDyQaBjZmb_Q5-z3jw1-Uvdgxm+cfcQjSwb9oRoXnQ@mail.gmail.com>
-        <60aeb01ebcd10_fe49208b8@john-XPS-13-9370.notmuch>
-        <CAEf4Bza3m5dwZ_d0=zAWR+18f5RUjzv9=1NbhTKAO1uzWg_fzQ@mail.gmail.com>
-        <60aeeb5252147_19a622085a@john-XPS-13-9370.notmuch>
-        <CAEf4Bzb1OZHpHYagbVs7s9tMSk4wrbxzGeBCCBHQ-qCOgdu6EQ@mail.gmail.com>
-        <60b08442b18d5_1cf8208a0@john-XPS-13-9370.notmuch>
-        <87fsy7gqv7.fsf@toke.dk>
-        <60b0ffb63a21a_1cf82089e@john-XPS-13-9370.notmuch>
-        <20210528180214.3b427837@carbon>
-        <60b12897d2e3f_1cf820896@john-XPS-13-9370.notmuch>
-        <8735u3dv2l.fsf@toke.dk>
-        <60b6cf5b6505e_38d6d208d8@john-XPS-13-9370.notmuch>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Yunsheng Lin <yunshenglin0825@gmail.com>, <davem@davemloft.net>,
+        <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
+        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
+        <alobakin@pm.me>
+Subject: Re: [Linuxarm] Re: [PATCH net-next 2/3] net: sched: implement
+ TCQ_F_CAN_BYPASS for lockless qdisc
+Message-ID: <20210602092828.21d30135@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20e9bf35-444c-8c35-97ec-de434fc80d73@huawei.com>
+References: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
+        <1622170197-27370-3-git-send-email-linyunsheng@huawei.com>
+        <20210528180012.676797d6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <a6a965ee-7368-d37b-9c70-bba50c67eec9@huawei.com>
+        <20210528213218.2b90864c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <ee1a62da-9758-70db-abd3-c5ca2e8e0ce0@huawei.com>
+        <20210529114919.4f8b1980@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <9cc9f513-7655-07df-3c74-5abe07ae8321@gmail.com>
+        <20210530132111.3a974275@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <3c2fbc70-841f-d90b-ca13-1f058169be50@huawei.com>
+        <3a307707-9fb5-d73a-01f9-93aaf5c7a437@huawei.com>
+        <428f92d8-f4a2-13cf-8dcc-b38d48a42965@huawei.com>
+        <20210531215146.5ca802a5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <cf75e1f4-7972-8efa-7554-fc528c5da380@huawei.com>
+        <20210601134856.12573333@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <20e9bf35-444c-8c35-97ec-de434fc80d73@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -55,37 +70,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 01 Jun 2021 17:22:51 -0700 John Fastabend wrote:
-> > If we do this, the BPF program obviously needs to know which fields are
-> > valid and which are not. AFAICT you're proposing that this should be
-> > done out-of-band (i.e., by the system administrator manually ensuring
-> > BPF program config fits system config)? I think there are a couple of
-> > problems with this:
+On Wed, 2 Jun 2021 09:21:01 +0800 Yunsheng Lin wrote:
+> >> For the MISSING clearing in pfifo_fast_dequeue(), it seems it
+> >> looks like the data race described in RFC v3 too?
+> >>
+> >>       CPU1                 CPU2               CPU3
+> >> qdisc_run_begin(q)          .                  .
+> >>         .              MISSED is set           .
+> >>   MISSED is cleared         .                  .
+> >>     q->dequeue()            .                  .
+> >>         .              enqueue skb1     check MISSED # true
+> >> qdisc_run_end(q)            .                  .
+> >>         .                   .         qdisc_run_begin(q) # true
+> >>         .            MISSED is set      send skb2 directly  
 > > 
-> > - It requires the system admin to coordinate device config with all of
-> >   their installed XDP applications. This is error-prone, especially as
-> >   the number of applications grows (say if different containers have
-> >   different XDP programs installed on their virtual devices).  
+> > Not sure what you mean.  
 > 
-> A complete "system" will need to be choerent. If I forward into a veth
-> device the orchestration component needs to ensure program sending
-> bits there is using the same format the program installed there expects.
+>        CPU1                 CPU2               CPU3
+>  qdisc_run_begin(q)          .                  .
+>          .              MISSED is set           .
+>    MISSED is cleared         .                  .
+>    another dequeuing         .                  .
+>          .                   .                  .
+>          .              enqueue skb1  nolock_qdisc_is_empty() # true
+>  qdisc_run_end(q)            .                  .
+>          .                   .         qdisc_run_begin(q) # true
+>          .                   .          send skb2 directly
+>          .               MISSED is set          .
 > 
-> If I tailcall/fentry into another program that program the callee and
-> caller need to agree on the metadata protocol.
-> 
-> I don't see any way around this. Someone has to manage the network.
+> As qdisc is indeed empty at the point when MISSED is clear and
+> another dequeue is retried by CPU1, MISSED setting is not under
+> q->seqlock, so it seems retesting MISSED under q->seqlock does not
+> seem to make any difference? and it seems like the case that does
+> not need handling as we agreed previously?
 
-FWIW I'd like to +1 Toke's concerns.
-
-In large deployments there won't be a single arbiter. Saying there 
-is seems to contradict BPF maintainers' previous stand which lead 
-to addition of bpf_links for XDP.
-
-In practical terms person rolling out an NTP config change may not 
-be aware that in some part of the network some BPF program expects
-descriptor not to contain time stamps. Besides features may depend 
-or conflict so the effects of feature changes may not be obvious 
-across multiple drivers in a heterogeneous environment.
-
-IMO guarding from obvious mis-configuration provides obvious value.
+Right, this case doesn't need the re-check under the lock, but pointed
+out that the re-queuing case requires the re-check.
