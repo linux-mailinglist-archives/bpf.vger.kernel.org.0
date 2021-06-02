@@ -2,230 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D4C39949F
-	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 22:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7073994A3
+	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 22:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbhFBUi6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Jun 2021 16:38:58 -0400
-Received: from mail-yb1-f182.google.com ([209.85.219.182]:41957 "EHLO
-        mail-yb1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbhFBUi4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:38:56 -0400
-Received: by mail-yb1-f182.google.com with SMTP id q21so5624417ybg.8;
-        Wed, 02 Jun 2021 13:37:13 -0700 (PDT)
+        id S229611AbhFBUjN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Jun 2021 16:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229552AbhFBUjM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Jun 2021 16:39:12 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905F0C06174A;
+        Wed,  2 Jun 2021 13:37:29 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id g38so5611263ybi.12;
+        Wed, 02 Jun 2021 13:37:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IXKYAhtG8uIiRBoK84NRuGO413Trav5iQLqM6rcpSwk=;
-        b=CALvgqB1uf9Ri3rMcQEkd8LPAvTC6wDFh8XamWCpVMXlSqlZWmG+jdT4qC45isDdSk
-         zMxhRNkHC04ZIH3sj8mUF0b9PD9K6kbGZgo7I7FB5sy+38vxG1B326PQpsDQzu3MyBf5
-         DsYAD4tg5ptIOukj+r80JYvXvmG8Ppd9YBW4TcQa0LkypbbNh9AiQlgOZDMS+nMgO/iz
-         RaoniKI7JNo+76cPF5RwBI1otjXGbnZ2r0PU6XGzL5xtfz6zXdPfjIPtJdxRMz8LsWxo
-         o6LtOo0+jRJiF4jfuouj26hLGc/tBbTUKKJqLJGLjiEuh6VCA7hMSxHFneQPaJX1whSK
-         FoAA==
+        bh=9aHYoO59eRyQ7Fly6N3dGAwZibkeW7kt/2A0ssudiV0=;
+        b=rgA35ImxzKGrqsJlHwMUs5sQ58usTZHWqCxcsN/JgtcW1SjRxNPHrK38lSxidpp+LR
+         FxR1256tznlCzgDcOXAdnnmyt5NSHJDKoMPo4P+U/Cde8QGN7zYyItsxd1jdMskuDu/4
+         ANwIV/WFzBU53G2L/gSqa/9GhXpakRCFLeboRt1zTVxA/9kZM+sGIQ0x4cO49q1lSa1p
+         pUw+YLyzATmxcsGYpXoTkLBjWLBzy22bZkD1TZetKoW6IV8hU6fnFXOQpiK09+7ibXVt
+         v01NZbziTCkRCSSf+r5JU7/jDdc6K4Ng3KQtLtb4Cqm9ItCct91iRbLmD2GXzg4SPCNp
+         +nBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IXKYAhtG8uIiRBoK84NRuGO413Trav5iQLqM6rcpSwk=;
-        b=RfDROICeFbAcvUAP5JwYgg7fbQANuMvbwUKzWIJ9XcYbpvGJqv2jk/SgVCMpr8DmLX
-         heqZZsBhSTY8Yfu4r4dQzKoyZ1wOTKaNTJPg21mfQURAyVbtA0us9ATQlpxCiFa84Drb
-         Z0xdUlf3pr0aY1D+SE7y2Y8drr1Jc+OrqpqYaomY0m957G97QxibB+NdT8cbHjd5koOm
-         kNgpkL6cjl8ikH1g2nRDU6Rdoh0pkRvi6H03PcI51QT2yAtSnEGJDmNSdl5Gm64b+vaJ
-         ntD+jJciOWeENm0QTdtf+XfLXQxJcJHmIeJV/+ntT8rfpRAZUOSYtU1dVvbuUaAvW3Di
-         sw1Q==
-X-Gm-Message-State: AOAM532F99BdwFvWg42TjGVkvShpufy+Yc4HhLsfQH8+QkofJ+de3K/Q
-        zcRFKh7hZt51xvzlKlNBcBU27b9imWliq4mLHd69Bu25dSo=
-X-Google-Smtp-Source: ABdhPJxN27bUQ9QcIdO4fdkKDuCx/YdI7pj0TIJiLgB3fEgCjSMMqokNzIgugrd1WeypeMzzkceOrFWtPJgZsb+YeBM=
-X-Received: by 2002:a25:6612:: with SMTP id a18mr14903078ybc.347.1622666172884;
- Wed, 02 Jun 2021 13:36:12 -0700 (PDT)
+        bh=9aHYoO59eRyQ7Fly6N3dGAwZibkeW7kt/2A0ssudiV0=;
+        b=KEZ5a9NMF+xaJNLVyTpEjgTiCqTd4mTzjcWOOLKkazXT99beILxV4bNh7sQU8Wzmkd
+         TVjU0LWws6cXFGQLgVDDOAKeqfD+r7o/NgoKYxftcK2K4IfTL7hSoMDXTa8lgSqzZZTB
+         yjciQ0Nh5wXDtkjcxGNrasPo8qvPCBT/ooKxtFCiXXQZuRVO49f0PhOhYv+UNqgrUl28
+         kBxM23F0PDINhOOwrixCPhsH5lif34UyuBGXp1FxTaKW1ylK8AMGxJvnw0rcCa2cZW1U
+         8a6LRBhTlazjLNzf+6mC6FgARutXMifZoVotwso9BmOpO1ul9qo/2fC/NZKBe+DmAuo5
+         vZsA==
+X-Gm-Message-State: AOAM532xllBt/tMif5kuwVX+epStv47p3bjd9LmOIiEA0bMxuF0G6jsL
+        d81cHIBPvm/EvnyNsAKdhYlC+ydZme7QnUi0Z+pZR72DXRA=
+X-Google-Smtp-Source: ABdhPJydig8/g4JqAhoPMag0TDq502migzV4TKzgVUBA/blZ2IlpaV0nc+OpHXoH7UJWBWJPwbsZM8HTftOGOn7eyPo=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr51468820ybo.230.1622666248889;
+ Wed, 02 Jun 2021 13:37:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210531195553.168298-1-grantseltzer@gmail.com> <20210531195553.168298-2-grantseltzer@gmail.com>
-In-Reply-To: <20210531195553.168298-2-grantseltzer@gmail.com>
+References: <20210531195553.168298-1-grantseltzer@gmail.com> <871r9lbef0.fsf@meer.lwn.net>
+In-Reply-To: <871r9lbef0.fsf@meer.lwn.net>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Jun 2021 13:36:01 -0700
-Message-ID: <CAEf4BzaKBHy16R4WQEgi0Cyy_6a3EVtBBo=0yRm7K4nF2X53qQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] Add documentation for libbpf including API autogen
-To:     grantseltzer <grantseltzer@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
+Date:   Wed, 2 Jun 2021 13:37:18 -0700
+Message-ID: <CAEf4BzahgzHg_Rzntxag-XQViVSG4H0XGLErq9agQ4qS0JL=7g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/2] Autogenerating libbpf API documentation
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     grantseltzer <grantseltzer@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>
+        linux-doc@vger.kernel.org, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, May 31, 2021 at 12:56 PM grantseltzer <grantseltzer@gmail.com> wrote:
+On Tue, Jun 1, 2021 at 11:58 AM Jonathan Corbet <corbet@lwn.net> wrote:
 >
-> This adds rst files containing documentation for libbpf. This includes
-> the addition of libbpf_api.rst which pulls comment documentation from
-> header files in libbpf under tools/lib/bpf/. The comment docs would be
-> of the standard kernel doc format.
+> grantseltzer <grantseltzer@gmail.com> writes:
 >
-> Signed-off-by: grantseltzer <grantseltzer@gmail.com>
-> ---
-
-Looks good, thanks! See few comments below. Let's figure out what to
-do with libbpf docs versioning and land it through bpf-next tree.
-
->  Documentation/bpf/index.rst                   |  13 ++
->  Documentation/bpf/libbpf.rst                  |  14 ++
->  Documentation/bpf/libbpf_api.rst              |  18 ++
->  Documentation/bpf/libbpf_build.rst            |  37 ++++
->  .../bpf/libbpf_naming_convention.rst          | 170 ++++++++++++++++++
->  5 files changed, 252 insertions(+)
->  create mode 100644 Documentation/bpf/libbpf.rst
->  create mode 100644 Documentation/bpf/libbpf_api.rst
->  create mode 100644 Documentation/bpf/libbpf_build.rst
->  create mode 100644 Documentation/bpf/libbpf_naming_convention.rst
+> > This patch series is meant to start the initiative to document libbpf.
+> > It includes .rst files which are text documentation describing building,
+> > API naming convention, as well as an index to generated API documentation.
+> >
+> > In this approach the generated API documentation is enabled by the kernels
+> > existing kernel documentation system which uses sphinx. The resulting docs
+> > would then be synced to kernel.org/doc
+> >
+> > You can test this by running `make htmldocs` and serving the html in
+> > Documentation/output. Since libbpf does not yet have comments in kernel
+> > doc format, see kernel.org/doc/html/latest/doc-guide/kernel-doc.html for
+> > an example so you can test this.
+> >
+> > The advantage of this approach is to use the existing sphinx
+> > infrastructure that the kernel has, and have libbpf docs in
+> > the same place as everything else.
+> >
+> > The perhaps large disadvantage of this approach is that libbpf versions
+> > independently from the kernel. If it's possible to version libbpf
+> > separately without having duplicates that would be the ideal scenario.
 >
+> I'm happy to see things going this direction; it looks like a good start
+> to me.
+>
+> Let me know if you'd like this to go through the docs tree, or feel free
+> to add:
+>
+>   Acked-by: Jonathan Corbet <corbet@lwn.net>
 
-[...]
+Thanks, Jonathan! I prefer to take this through bpf-next, which will
+make it easier to keep it in sync on Github (if we do that, of
+course).
 
-> +API
-> +===
-> +
-> +This documentation is autogenerated from header files in libbpf, tools/lib/bpf
-> +
-> +.. kernel-doc:: tools/lib/bpf/libbpf.h
-> +   :internal:
-> +
-> +.. kernel-doc:: tools/lib/bpf/bpf.h
-> +   :internal:
-> +
-> +.. kernel-doc:: tools/lib/bpf/btf.h
-> +   :internal:
-> +
-> +.. kernel-doc:: tools/lib/bpf/xsk.h
-> +   :internal:
-
-Libbpf API has a BPF side as well (bpf_helpers.h which pulls in
-auto-generated bpf_helper_defs.h with all BPF helper definitions,
-bpf_tracing.h, bpf_core_read.h, bpf_endian.h), we should probably
-expose them as well?
-
-> diff --git a/Documentation/bpf/libbpf_build.rst b/Documentation/bpf/libbpf_build.rst
-> new file mode 100644
-> index 000000000..b8240eaaa
-> --- /dev/null
-> +++ b/Documentation/bpf/libbpf_build.rst
-> @@ -0,0 +1,37 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +Building libbpf
-> +===============
-> +
-> +libelf is an internal dependency of libbpf and thus it is required to link
-
-zlib is another dependency, can you please mention it as well?
-
-> +against and must be installed on the system for applications to work.
-> +pkg-config is used by default to find libelf, and the program called
-> +can be overridden with PKG_CONFIG.
-> +
-
-[...]
-
-> +API naming convention
-> +=====================
-> +
-> +libbpf API provides access to a few logically separated groups of
-> +functions and types. Every group has its own naming convention
-> +described here. It's recommended to follow these conventions whenever a
-> +new function or type is added to keep libbpf API clean and consistent.
-> +
-> +All types and functions provided by libbpf API should have one of the
-> +following prefixes: ``bpf_``, ``btf_``, ``libbpf_``, ``xsk_``,
-> +``perf_buffer_``.
-
-ring_buffer_ and btf_dump_ are two others that we use. But I don't
-know how important it is to have an exhaustive list here.
-
-> +
-> +System call wrappers
-> +--------------------
-> +
-> +System call wrappers are simple wrappers for commands supported by
-> +sys_bpf system call. These wrappers should go to ``bpf.h`` header file
-> +and map one-on-one to corresponding commands.
-
-typo: one-to-one?
-
-> +
-> +For example ``bpf_map_lookup_elem`` wraps ``BPF_MAP_LOOKUP_ELEM``
-> +command of sys_bpf, ``bpf_prog_attach`` wraps ``BPF_PROG_ATTACH``, etc.
-> +
-> +Objects
-> +-------
-> +
-> +Another class of types and functions provided by libbpf API is "objects"
-> +and functions to work with them. Objects are high-level abstractions
-> +such as BPF program or BPF map. They're represented by corresponding
-> +structures such as ``struct bpf_object``, ``struct bpf_program``,
-> +``struct bpf_map``, etc.
-> +
-> +Structures are forward declared and access to their fields should be
-> +provided via corresponding getters and setters rather than directly.
-> +
-> +These objects are associated with corresponding parts of ELF object that
-> +contains compiled BPF programs.
-> +
-> +For example ``struct bpf_object`` represents ELF object itself created
-> +from an ELF file or from a buffer, ``struct bpf_program`` represents a
-> +program in ELF object and ``struct bpf_map`` is a map.
-> +
-> +Functions that work with an object have names built from object name,
-> +double underscore and part that describes function purpose.
-> +
-> +For example ``bpf_object__open`` consists of the name of corresponding
-> +object, ``bpf_object``, double underscore and ``open`` that defines the
-> +purpose of the function to open ELF file and create ``bpf_object`` from
-> +it.
-> +
-> +Another example: ``bpf_program__load`` is named for corresponding
-> +object, ``bpf_program``, that is separated from other part of the name
-> +by double underscore.
-
-let's drop this example, bpf_program__load is a bad example and is
-going to be deprecated.  We can use btf__parse() as an example here.
-
-> +
-> +All objects and corresponding functions other than BTF related should go
-> +to ``libbpf.h``. BTF types and functions should go to ``btf.h``.
-> +
-> +Auxiliary functions
-> +-------------------
-> +
-> +Auxiliary functions and types that don't fit well in any of categories
-> +described above should have ``libbpf_`` prefix, e.g.
-> +``libbpf_get_error`` or ``libbpf_prog_type_by_name``.
-> +
-> +AF_XDP functions
-> +-------------------
-> +
-> +AF_XDP functions should have an ``xsk_`` prefix, e.g.
-> +``xsk_umem__get_data`` or ``xsk_umem__create``. The interface consists
-> +of both low-level ring access functions and high-level configuration
-> +functions. These can be mixed and matched. Note that these functions
-> +are not reentrant for performance reasons.
-> +
-> +Please take a look at Documentation/networking/af_xdp.rst in the Linux
-> +kernel source tree on how to use XDP sockets and for some common
-> +mistakes in case you do not get any traffic up to user space.
-
-I'd probably drop this section, given we move xsk.{c,h} into libxdp.
-
-> +
-> +ABI
-> +==========
-> +
-> +libbpf can be both linked statically or used as DSO. To avoid possible
-> +conflicts with other libraries an application is linked with, all
-> +non-static libbpf symbols should have one of the prefixes mentioned in
-> +API documentation above. See API naming convention to choose the right
-> +name for a new symbol.
-> +
-
-[...]
+>
+> if you want to route it via some other path.
+>
+> Thanks,
+>
+> jon
