@@ -2,90 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE313983D9
-	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 10:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B34398425
+	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 10:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbhFBILW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Jun 2021 04:11:22 -0400
-Received: from www62.your-server.de ([213.133.104.62]:32908 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhFBILV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Jun 2021 04:11:21 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1loLwV-0002ok-8U; Wed, 02 Jun 2021 10:09:35 +0200
-Received: from [85.7.101.30] (helo=linux-2.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1loLwU-000CT0-Vm; Wed, 02 Jun 2021 10:09:35 +0200
-Subject: Re: Regression 5.12.0-rc4 net: ice: significant throughput drop
-To:     Jussi Maki <joamaki@gmail.com>, Robin Murphy <robin.murphy@arm.com>
-Cc:     jroedel@suse.de, netdev@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        intel-wired-lan@lists.osuosl.org, davem@davemloft.net,
-        anthony.l.nguyen@intel.com, jesse.brandeburg@intel.com, hch@lst.de,
-        iommu@lists.linux-foundation.org, suravee.suthikulpanit@amd.com,
-        gregkh@linuxfoundation.org
-References: <CAHn8xckNXci+X_Eb2WMv4uVYjO2331UWB2JLtXr_58z0Av8+8A@mail.gmail.com>
- <cc58c09e-bbb5-354a-2030-bf8ebb2adc86@iogearbox.net>
- <7f048c57-423b-68ba-eede-7e194c1fea4e@arm.com>
- <CAHn8xckNt3smeQPi3dgq5i_3vP7KwU45pnP5OCF8nOV_QEdyMA@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7c04eeea-22d3-c265-8e1e-b3f173f2179f@iogearbox.net>
-Date:   Wed, 2 Jun 2021 10:09:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S232638AbhFBIby (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Jun 2021 04:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232603AbhFBIbx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Jun 2021 04:31:53 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DD9C061574;
+        Wed,  2 Jun 2021 01:30:10 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id v12so720157plo.10;
+        Wed, 02 Jun 2021 01:30:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wf8QgPbc3KHLrXcx5xgLcKl+CLabL/UGbZXv0BcNs0U=;
+        b=Sx/iTsXozmbRZnGN9fq3bWKxG01X391EoJBxsaJx6W/MRow9PV6ZdKNdS2H/wt7ef0
+         M8AXoVDNR8cR15Cf/wyjZ1OrH1vCPpckNC7sZdY/UjA/6n47n8/zN2nfGPCAV3KFrtVY
+         8vwX1KFPLDm8kCxMhpo7/NiQwdwcFkbWfJGaB+3l/ED3YMZB0yVO4K0WY2wskG+u9pEn
+         5Eouy1/ZtYxPYodzF9Y9mqLi7FFZWpLqTy3NUtVQ/3wcA6XqxxzskpsR///y/1Wi03RI
+         XIuPPTUsXyZDa18vmGuwBhoppqi/3ukZi9Xzi7XYNwo5l9ohrbfk5SzJycfg/zMguC0f
+         DbmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wf8QgPbc3KHLrXcx5xgLcKl+CLabL/UGbZXv0BcNs0U=;
+        b=LhDxppqVENChFFuPL/4Xt+yrWxKyV30lvbJm7SLty1vYgp70jMbo6Aqfjg4ncEe6Qs
+         xQSuqy3gPvh2/0zgUeqk9jCzHETKPL1M2oAmh5/adBw9kOnd9Ij4F/jRpgVmjWSQS/UG
+         vkGLvGKkoz318boCLWTg+kazuxAGCEXZ400mxagOB8hX2avvwzLb2Rorsj5kOYKPkTaZ
+         wIjOpLLyvl4r/d2Ss1BbtkQT3eiXUclDV9Jr2gxuLG1QF8MJVsSJq8DHYN3duyMgtiEL
+         JV8zc2Iv8PZ47JfgrP22xsWu2AnopzLJRNBc5lJaP2pw25iDpMnR5ye1dadLoEW3X7W5
+         Guyg==
+X-Gm-Message-State: AOAM531alHd4399Dyle4wftSBPeZg/1/l6UqvggLCEua+SiKq7QhVwSA
+        l9Xee2z2pcmVMyLY5TcsXwjieK3Vi81SIj6aQTg=
+X-Google-Smtp-Source: ABdhPJztetfw4tnLZiYmY+RND/gJ1qyWU1FGffINOU45V4N9UjX3b/znrBnC7z55TyUjSUNbLWc7FjL4QU+P95aE/EU=
+X-Received: by 2002:a17:90a:9103:: with SMTP id k3mr4371526pjo.117.1622622609981;
+ Wed, 02 Jun 2021 01:30:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHn8xckNt3smeQPi3dgq5i_3vP7KwU45pnP5OCF8nOV_QEdyMA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26188/Tue Jun  1 13:07:16 2021)
+References: <20210602031001.18656-1-wanghai38@huawei.com>
+In-Reply-To: <20210602031001.18656-1-wanghai38@huawei.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 2 Jun 2021 10:29:58 +0200
+Message-ID: <CAJ8uoz2sT9iyqjWcsUDQZqZCVoCfpqgM7TseOTqeCzOuChAwww@mail.gmail.com>
+Subject: Re: [PATCH net-next] xsk: Return -EINVAL instead of -EBUSY after
+ xsk_get_pool_from_qid() fails
+To:     Wang Hai <wanghai38@huawei.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 6/1/21 7:42 PM, Jussi Maki wrote:
-> Hi Robin,
-> 
-> On Tue, Jun 1, 2021 at 2:39 PM Robin Murphy <robin.murphy@arm.com> wrote:
->>>> The regression shows as a significant drop in throughput as measured
->>>> with "super_netperf" [0],
->>>> with measured bandwidth of ~95Gbps before and ~35Gbps after:
->>
->> I guess that must be the difference between using the flush queue
->> vs. strict invalidation. On closer inspection, it seems to me that
->> there's a subtle pre-existing bug in the AMD IOMMU driver, in that
->> amd_iommu_init_dma_ops() actually runs *after* amd_iommu_init_api()
->> has called bus_set_iommu(). Does the patch below work?
-> 
-> Thanks for the quick response & patch. I tried it out and indeed it
-> does solve the issue:
-> 
-> # uname -a
-> Linux zh-lab-node-3 5.13.0-rc3-amd-iommu+ #31 SMP Tue Jun 1 17:12:57
-> UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
-> root@zh-lab-node-3:~# ./super_netperf 32 -H 172.18.0.2
-> 95341.2
-> 
-> root@zh-lab-node-3:~# uname -a
-> Linux zh-lab-node-3 5.13.0-rc3-amd-iommu-unpatched #32 SMP Tue Jun 1
-> 17:29:34 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
-> root@zh-lab-node-3:~# ./super_netperf 32 -H 172.18.0.2
-> 33989.5
+On Wed, Jun 2, 2021 at 6:02 AM Wang Hai <wanghai38@huawei.com> wrote:
+>
+> xsk_get_pool_from_qid() fails not because the device's queues are busy,
+> but because the queue_id exceeds the current number of queues.
+> So when it fails, it is better to return -EINVAL instead of -EBUSY.
+>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> ---
+>  net/xdp/xsk_buff_pool.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+> index 8de01aaac4a0..30ece117117a 100644
+> --- a/net/xdp/xsk_buff_pool.c
+> +++ b/net/xdp/xsk_buff_pool.c
+> @@ -135,7 +135,7 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
+>                 return -EINVAL;
+>
+>         if (xsk_get_pool_from_qid(netdev, queue_id))
+> -               return -EBUSY;
+> +               return -EINVAL;
 
-Robin, probably goes without saying, but please make sure to include ...
+I guess your intent here is to return -EINVAL only when the queue_id
+is larger than the number of active queues. But this patch also
+changes the return code when the queue id is already in use and in
+that case we should continue to return -EBUSY. As this function is
+used by a number of drivers, the easiest way to accomplish this is to
+introduce a test for queue_id out of bounds before this if-statement
+and return -EINVAL there.
 
-Fixes: a250c23f15c2 ("iommu: remove DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE")
-
-... to your fix in [0], maybe along with another Fixes tag pointing to the original
-commit adding this issue. But certainly a250c23f15c2 would be good given the regression
-was uncovered on that one first, so that Greg et al have a chance to pick this fix up
-for stable kernels.
-
-Thanks everyone!
-
-   [0] https://lore.kernel.org/bpf/7f048c57-423b-68ba-eede-7e194c1fea4e@arm.com/
+>         pool->netdev = netdev;
+>         pool->queue_id = queue_id;
+> --
+> 2.17.1
+>
