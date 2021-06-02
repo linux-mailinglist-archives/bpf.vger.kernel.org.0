@@ -2,215 +2,559 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D558F399596
-	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 23:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14793995BB
+	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 00:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbhFBVtL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Jun 2021 17:49:11 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:34787 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhFBVtK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Jun 2021 17:49:10 -0400
-Received: by mail-pg1-f193.google.com with SMTP id l1so3429719pgm.1;
-        Wed, 02 Jun 2021 14:47:14 -0700 (PDT)
+        id S229600AbhFBWKS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Jun 2021 18:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229541AbhFBWKP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Jun 2021 18:10:15 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10937C06174A;
+        Wed,  2 Jun 2021 15:08:21 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id n133so5961659ybf.6;
+        Wed, 02 Jun 2021 15:08:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Fn6qw930tde+l9x/cQnHrI5s9smpcn74KQHcm44/Eo8=;
-        b=QuF9wkt5ELIyxNGwE3Ck0XUlemd9hZQIg/cB6LJHx9QW2s91h9H/qB/rK84NeEeKvH
-         insV2JWwtIZMmCo8YKjeDzWzauouwxU+C5Fw9F1T3nJ9QpFN5K/rQKxklMQ/sasCPPgw
-         j4iGuffWcr4tA7WP1LZHFeT03Y7mwvgcb2AOYfogwKHUu0X+CjyQW8G6zKqgFoIAvezu
-         yizt88flKmxRGrq1Mc8wAik4wzUXRn3Om5UfYhR4Wp2AXGkOcdPVprADMjewJNCDTUDS
-         pTKYnij04s76KQXeiUGHHSZaVugqmnPVZxSusV3wqr6WoifuTJtukRuvMj1bsfz5jlqB
-         vxaQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aA4K2DPEL8o6L752PRLDTSxNxg6g9AGy9xUxgV+YCRM=;
+        b=Iknk9uWt/fpnDx4i61lV0+DHGSSGTDwqQWXZAFBnrMOHAhghsgSZ1QJq5tv01stH/B
+         0w7JB8zQaNf/6e1OxIpSr5bI/AGKtHlx3j8o/r22fMYE8BPj6BDx/+9CJOCcsssHZVQS
+         8xPRxt/AD7hJVnSm7k71B9JHLJBhUq+gxdX5OwfUpZ+VUYhmq4ARqgtU6LU0+RVWOk71
+         X32AlYaShKUup4NaJA1QOB21m8FEp7TMG75rGNlN7THvhe3TWaFOhoeuHC7eLXvt0Mzu
+         vMmTWISAFw1ar1/xQQVLzHvhJ9gJ9dfl/vw4Q0eUIzuyT5B83Gikx2x2toxkzRuLt+E+
+         lXJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Fn6qw930tde+l9x/cQnHrI5s9smpcn74KQHcm44/Eo8=;
-        b=tBAsU3TVKannQqwW+L43izpuu/8R6NLjpHGzE6Vex3DlTtrLBNBT3a22/+x9sSzniD
-         32c6Gx9TL5OyqzsgJi2nQpcUsGYYTxGRXQnh+jRHddV4p2wVn+WlYbinYm4L6mOi450n
-         YuXzv4dZIkDLcaIkeJUq52PkWu8EAusalsc3DebCp5ZqIB3aWmNlqB1Lyjcx44zjCXCf
-         fS/tE5QOk0wcMz82ygXnnmf78FbUc7hu4s9RxjQXAwgegt3Z7DpXVthocfEgwOMy3GKc
-         FMWR4Cdzg1gJSEDPWoHb7u1Ug7sA4X3NjhQWVbfcyECCR5pC8tqMp1bgobc6ePIxAVRS
-         +Y6g==
-X-Gm-Message-State: AOAM5301xL+enzXQdBdFV4XpDkIsKzUd+IvxzPo8QhpzdS8TpJrxLQfa
-        f31KWFC1wH/7nWqACM/Jo1g=
-X-Google-Smtp-Source: ABdhPJz25FGBaIHlcpZnPaMN1ZB8VMiaXeye1W042i8v4JjfhzbKqF3pMfaAAj0BRSvAq/vX21YWoA==
-X-Received: by 2002:a63:1450:: with SMTP id 16mr24632512pgu.392.1622670374227;
-        Wed, 02 Jun 2021 14:46:14 -0700 (PDT)
-Received: from localhost ([2402:3a80:11c3:4fec:2675:159a:a68d:e289])
-        by smtp.gmail.com with ESMTPSA id o27sm586068pgb.70.2021.06.02.14.46.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 14:46:13 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 03:15:13 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aA4K2DPEL8o6L752PRLDTSxNxg6g9AGy9xUxgV+YCRM=;
+        b=dTzlH4uxFM0VHQesgqh/bPqp8Ua2vR89uXsYx37HctzUjucHRUsrbqAJ/J6AOnMeWl
+         kstA02K7we0RNSv2U32D8Wt5dCmVga357Im15PbtDfgsYGi/6l4ltD+np0Po26giQlKV
+         81OPCoHzq/5TlRF33d5Ds8tjYkxGhapMzdFBiITTfRTmh7So+jPrPwq0AbZ8BT6dEGTm
+         fXLLw0x/ru3XZTCvHj+NWD9o5IE16MQaWdmys721230b4bJU7YWRxs7YpHQf/1q9Tf+e
+         OWoV7kq8eGIYMuEA38qa2LhngVZIqNOBQERC0p0h3/8kzOGFAWvOGy/I6YAsRx009Vte
+         ceSg==
+X-Gm-Message-State: AOAM531NIZrP9dMjCMk8esRLb6KMEOLvIWrag0fNjMKEozdDAgEoLNMR
+        WvXG5La8vZYEgrU833a2iu+8ElcRACeLMFjMaTEBeSjb8cU=
+X-Google-Smtp-Source: ABdhPJwo73qUOMhvbtfiwDfSy05GpxI1A1Y3hVON0/kjCC358VUTJiEAa2bBJcn/CI3JOaJXumyF35qxNtai26/OznA=
+X-Received: by 2002:a25:4182:: with SMTP id o124mr29519191yba.27.1622671700042;
+ Wed, 02 Jun 2021 15:08:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210527040259.77823-1-alexei.starovoitov@gmail.com> <20210527040259.77823-2-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210527040259.77823-2-alexei.starovoitov@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 2 Jun 2021 15:08:08 -0700
+Message-ID: <CAEf4BzbyikY1b4vAzb+t88odbqWOR7K4TpwjM1zGF4Nmqu6ysg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: Introduce bpf_timer
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Vlad Buslov <vladbu@nvidia.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Joe Stringer <joe@cilium.io>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH RFC bpf-next 0/7] Add bpf_link based TC-BPF API
-Message-ID: <20210602214513.eprgwxqgqruliqeu@apollo>
-References: <20210528195946.2375109-1-memxor@gmail.com>
- <CAEf4BzZt5nRsfCiqGkJxW2b-==AYEVCiz6jHC-FrXKkPF=Qj7w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZt5nRsfCiqGkJxW2b-==AYEVCiz6jHC-FrXKkPF=Qj7w@mail.gmail.com>
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 03, 2021 at 02:39:15AM IST, Andrii Nakryiko wrote:
-> On Fri, May 28, 2021 at 1:00 PM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > This is the first RFC version.
-> >
-> > This adds a bpf_link path to create TC filters tied to cls_bpf classifier, and
-> > introduces fd based ownership for such TC filters. Netlink cannot delete or
-> > replace such filters, but the bpf_link is severed on indirect destruction of the
-> > filter (backing qdisc being deleted, or chain being flushed, etc.). To ensure
-> > that filters remain attached beyond process lifetime, the usual bpf_link fd
-> > pinning approach can be used.
-> >
-> > The individual patches contain more details and comments, but the overall kernel
-> > API and libbpf helper mirrors the semantics of the netlink based TC-BPF API
-> > merged recently. This means that we start by always setting direct action mode,
-> > protocol to ETH_P_ALL, chain_index as 0, etc. If there is a need for more
-> > options in the future, they can be easily exposed through the bpf_link API in
-> > the future.
-> >
-> > Patch 1 refactors cls_bpf change function to extract two helpers that will be
-> > reused in bpf_link creation.
-> >
-> > Patch 2 exports some bpf_link management functions to modules. This is needed
-> > because our bpf_link object is tied to the cls_bpf_prog object. Tying it to
-> > tcf_proto would be weird, because the update path has to replace offloaded bpf
-> > prog, which happens using internal cls_bpf helpers, and would in general be more
-> > code to abstract over an operation that is unlikely to be implemented for other
-> > filter types.
-> >
-> > Patch 3 adds the main bpf_link API. A function in cls_api takes care of
-> > obtaining block reference, creating the filter object, and then calls the
-> > bpf_link_change tcf_proto op (only supported by cls_bpf) that returns a fd after
-> > setting up the internal structures. An optimization is made to not keep around
-> > resources for extended actions, which is explained in a code comment as it wasn't
-> > immediately obvious.
-> >
-> > Patch 4 adds an update path for bpf_link. Since bpf_link_update only supports
-> > replacing the bpf_prog, we can skip tc filter's change path by reusing the
-> > filter object but swapping its bpf_prog. This takes care of replacing the
-> > offloaded prog as well (if that fails, update is aborted). So far however,
-> > tcf_classify could do normal load (possibly torn) as the cls_bpf_prog->filter
-> > would never be modified concurrently. This is no longer true, and to not
-> > penalize the classify hot path, we also cannot impose serialization around
-> > its load. Hence the load is changed to READ_ONCE, so that the pointer value is
-> > always consistent. Due to invocation in a RCU critical section, the lifetime of
-> > the prog is guaranteed for the duration of the call.
-> >
-> > Patch 5, 6 take care of updating the userspace bits and add a bpf_link returning
-> > function to libbpf.
-> >
-> > Patch 7 adds a selftest that exercises all possible problematic interactions
-> > that I could think of.
-> >
-> > Design:
-> >
-> > This is where in the object hierarchy our bpf_link object is attached.
-> >
-> >                                                                             ┌─────┐
-> >                                                                             │     │
-> >                                                                             │ BPF │
-> >                                                                             program
-> >                                                                             │     │
-> >                                                                             └──▲──┘
-> >                                                       ┌───────┐                │
-> >                                                       │       │         ┌──────┴───────┐
-> >                                                       │  mod  ├─────────► cls_bpf_prog │
-> > ┌────────────────┐                                    │cls_bpf│         └────┬───▲─────┘
-> > │    tcf_block   │                                    │       │              │   │
-> > └────────┬───────┘                                    └───▲───┘              │   │
-> >          │          ┌─────────────┐                       │                ┌─▼───┴──┐
-> >          └──────────►  tcf_chain  │                       │                │bpf_link│
-> >                     └───────┬─────┘                       │                └────────┘
-> >                             │          ┌─────────────┐    │
-> >                             └──────────►  tcf_proto  ├────┘
-> >                                        └─────────────┘
-> >
-> > The bpf_link is detached on destruction of the cls_bpf_prog.  Doing it this way
-> > allows us to implement update in a lightweight manner without having to recreate
-> > a new filter, where we can just replace the BPF prog attached to cls_bpf_prog.
-> >
-> > The other way to do it would be to link the bpf_link to tcf_proto, there are
-> > numerous downsides to this:
-> >
-> > 1. All filters have to embed the pointer even though they won't be using it when
-> > cls_bpf is compiled in.
-> > 2. This probably won't make sense to be extended to other filter types anyway.
-> > 3. We aren't able to optimize the update case without adding another bpf_link
-> > specific update operation to tcf_proto ops.
-> >
-> > The downside with tying this to the module is having to export bpf_link
-> > management functions and introducing a tcf_proto op. Hopefully the cost of
-> > another operation func pointer is not big enough (as there is only one ops
-> > struct per module).
-> >
-> > This first version is to collect feedback on the approach and get ideas if there
-> > is a better way to do this.
+On Wed, May 26, 2021 at 9:03 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Bpf_link-based TC API is a long time coming, so it's great to see
-> someone finally working on this. Thanks!
+> From: Alexei Starovoitov <ast@kernel.org>
 >
-> I briefly skimmed through the patch set, noticed a few generic
-> bpf_link problems. But I think main feedback will come from Cilium
+> Introduce 'struct bpf_timer { __u64 :64; };' that can be embedded
+> in hash/array/lru maps as regular field and helpers to operate on it:
+> long bpf_timer_init(struct bpf_timer *timer, void *callback, int flags);
+> long bpf_timer_start(struct bpf_timer *timer, u64 nsecs);
+> long bpf_timer_cancel(struct bpf_timer *timer);
+>
+> Here is how BPF program might look like:
+> struct map_elem {
+>     int counter;
+>     struct bpf_timer timer;
+> };
+>
+> struct {
+>     __uint(type, BPF_MAP_TYPE_HASH);
+>     __uint(max_entries, 1000);
+>     __type(key, int);
+>     __type(value, struct map_elem);
+> } hmap SEC(".maps");
+>
+> struct bpf_timer global_timer;
 
-Thanks for the review. I'll fix both of these in the resend (also have a couple
-of private reports from the kernel test robot).
+Using bpf_timer as a global variable has at least two problems. We
+discussed one offline but I realized another one reading the code in
+this patch:
+  1. this memory can and is memory-mapped as read-write, so user-space
+can just write over this (intentionally or accidentally), so it's
+quite unsafe
+  2. with current restriction of having offset 0 for struct bpf_timer,
+you have to use global variable for it, because clang will reorder
+static variables after global variables.
 
-> folks and others that heavily rely on TC APIs. I wonder if there is an
-> opportunity to simplify the API further given we have a new
-> opportunity here. I don't think we are constrained to follow legacy TC
-> API exactly.
+I think it's better to disallow use of struct bpf_timer in
+memory-mapped maps. Keep in mind that user can create memory-mapped
+BPF_MAP_TYPE_ARRAY manually (without using global variables) and put
+struct bpf_timer in it, so that should be disallowed as well.
+
+>
+> static int timer_cb1(void *map, int *key, __u64 *data);
+> /* global_timer is in bss which is special bpf array of one element.
+>  * data points to beginning of bss.
+>  */
+>
+> static int timer_cb2(void *map, int *key, struct map_elem *val);
+> /* val points to particular map element that contains bpf_timer. */
+>
+> SEC("fentry/bpf_fentry_test1")
+> int BPF_PROG(test1, int a)
+> {
+>     struct map_elem *val;
+>     int key = 0;
+>     bpf_timer_init(&global_timer, timer_cb1, 0);
+>     bpf_timer_start(&global_timer, 0 /* call timer_cb1 asap */);
+>
+>     val = bpf_map_lookup_elem(&hmap, &key);
+>     if (val) {
+>         bpf_timer_init(&val->timer, timer_cb2, 0);
+>         bpf_timer_start(&val->timer, 1000 /* call timer_cb2 in 1 msec */);
+>     }
+> }
+>
+> This patch adds helper implementations that rely on hrtimers
+> to call bpf functions as timers expire.
+> The following patch adds necessary safety checks.
+>
+> Only programs with CAP_BPF are allowed to use bpf_timer.
+>
+> The amount of timers used by the program is constrained by
+> the memcg recorded at map creation time.
+>
+> The bpf_timer_init() helper is receiving hidden 'map' and 'prog' arguments
+> supplied by the verifier. The prog pointer is needed to do refcnting of bpf
+> program to make sure that program doesn't get freed while timer is armed.
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  include/linux/bpf.h            |   1 +
+>  include/uapi/linux/bpf.h       |  26 ++++++
+>  kernel/bpf/helpers.c           | 160 +++++++++++++++++++++++++++++++++
+>  kernel/bpf/verifier.c          | 110 +++++++++++++++++++++++
+>  kernel/trace/bpf_trace.c       |   2 +-
+>  scripts/bpf_doc.py             |   2 +
+>  tools/include/uapi/linux/bpf.h |  26 ++++++
+>  7 files changed, 326 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 1e9a0ff3217b..925b8416ea0a 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -314,6 +314,7 @@ enum bpf_arg_type {
+>         ARG_PTR_TO_FUNC,        /* pointer to a bpf program function */
+>         ARG_PTR_TO_STACK_OR_NULL,       /* pointer to stack or NULL */
+>         ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
+> +       ARG_PTR_TO_TIMER,       /* pointer to bpf_timer */
+>         __BPF_ARG_TYPE_MAX,
+>  };
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 562adeac1d67..3da901d5076b 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4774,6 +4774,25 @@ union bpf_attr {
+>   *             Execute close syscall for given FD.
+>   *     Return
+>   *             A syscall result.
+> + *
+> + * long bpf_timer_init(struct bpf_timer *timer, void *callback_fn, int flags)
+> + *     Description
+> + *             Initialize the timer to call given static function.
+> + *     Return
+> + *             zero
+
+-EBUSY is probably the most important to mention here, but generally
+the way it's described right now it seems like it can't fail, which is
+not true. Similar for bpf_timer_start() and bpf_timer_cancel().
+
+> + *
+> + * long bpf_timer_start(struct bpf_timer *timer, u64 nsecs)
+> + *     Description
+> + *             Start the timer and set its expiration N nanoseconds from
+> + *             the current time.
+
+The case of nsecs == 0 is a bit special and interesting, it's useful
+to explain what will happen in that case. I'm actually curious as
+well, in the code you say "call ASAP", but does it mean after the BPF
+program exits? Or can it start immediately on another CPU? Or will it
+interrupt the currently running BPF program to run the callback
+(unlikely, but that might be someone's expectation).
+
+> + *     Return
+> + *             zero
+> + *
+> + * long bpf_timer_cancel(struct bpf_timer *timer)
+> + *     Description
+> + *             Deactivate the timer.
+> + *     Return
+> + *             zero
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -4945,6 +4964,9 @@ union bpf_attr {
+>         FN(sys_bpf),                    \
+>         FN(btf_find_by_name_kind),      \
+>         FN(sys_close),                  \
+> +       FN(timer_init),                 \
+> +       FN(timer_start),                \
+> +       FN(timer_cancel),               \
+>         /* */
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> @@ -6051,6 +6073,10 @@ struct bpf_spin_lock {
+>         __u32   val;
+>  };
+>
+> +struct bpf_timer {
+> +       __u64 :64;
+> +};
+> +
+>  struct bpf_sysctl {
+>         __u32   write;          /* Sysctl is being read (= 0) or written (= 1).
+>                                  * Allows 1,2,4-byte read, but no write.
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 544773970dbc..6f9620cbe95d 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -985,6 +985,160 @@ const struct bpf_func_proto bpf_snprintf_proto = {
+>         .arg5_type      = ARG_CONST_SIZE_OR_ZERO,
+>  };
+>
+> +struct bpf_hrtimer {
+> +       struct hrtimer timer;
+> +       spinlock_t lock;
+> +       struct bpf_map *map;
+> +       struct bpf_prog *prog;
+> +       void *callback_fn;
+> +       void *key;
+> +       void *value;
+> +};
+> +
+> +/* the actual struct hidden inside uapi struct bpf_timer */
+> +struct bpf_timer_kern {
+> +       struct bpf_hrtimer *timer;
+> +};
+> +
+> +static DEFINE_PER_CPU(struct bpf_hrtimer *, hrtimer_running);
+> +
+> +static enum hrtimer_restart timer_cb(struct hrtimer *timer)
+
+nit: can you please call it bpf_timer_cb, so it might be possible to
+trace it a bit easier due to bpf_ prefix?
+
+> +{
+> +       struct bpf_hrtimer *t = container_of(timer, struct bpf_hrtimer, timer);
+> +       unsigned long flags;
+> +       int ret;
+> +
+> +       /* timer_cb() runs in hrtimer_run_softirq and doesn't migrate.
+> +        * Remember the timer this callback is servicing to prevent
+> +        * deadlock if callback_fn() calls bpf_timer_cancel() on the same timer.
+> +        */
+> +       this_cpu_write(hrtimer_running, t);
+> +       ret = BPF_CAST_CALL(t->callback_fn)((u64)(long)t->map,
+> +                                           (u64)(long)t->key,
+> +                                           (u64)(long)t->value, 0, 0);
+> +       WARN_ON(ret != 0); /* todo: define 0 vs 1 or disallow 1 in the verifier */
+
+if we define 0 vs 1, what would their meaning be?
+
+> +       spin_lock_irqsave(&t->lock, flags);
+> +       if (!hrtimer_is_queued(timer))
+> +               bpf_prog_put(t->prog);
+> +       spin_unlock_irqrestore(&t->lock, flags);
+> +       this_cpu_write(hrtimer_running, NULL);
+
+Don't know if it's a problem. Above you say that timer_cb doesn't
+migrate, but can it be preempted? If yes, and timer_cb is called in
+the meantime for another timer, setting hrtimer_running to NULL will
+clobber the previous value, right? So no nesting is possible. Is this
+a problem?
+
+Also is there a chance for timer callback to be a sleepable BPF (sub-)program?
+
+What if we add a field to struct bpf_hrtimer that will be inc/dec to
+show whether it's active or not? That should bypass per-CPU
+assumptions, but I haven't thought through races, worst case we might
+need to take t->lock.
+
+> +       return HRTIMER_NORESTART;
+> +}
+> +
+> +BPF_CALL_5(bpf_timer_init, struct bpf_timer_kern *, timer, void *, cb, int, flags,
+> +          struct bpf_map *, map, struct bpf_prog *, prog)
+> +{
+> +       struct bpf_hrtimer *t;
+> +
+> +       if (flags)
+> +               return -EINVAL;
+> +       if (READ_ONCE(timer->timer))
+> +               return -EBUSY;
+> +       /* allocate hrtimer via map_kmalloc to use memcg accounting */
+> +       t = bpf_map_kmalloc_node(map, sizeof(*t), GFP_ATOMIC, NUMA_NO_NODE);
+> +       if (!t)
+> +               return -ENOMEM;
+> +       t->callback_fn = cb;
+> +       t->value = (void *)timer /* - offset of bpf_timer inside elem */;
+> +       t->key = t->value - round_up(map->key_size, 8);
+> +       t->map = map;
+> +       t->prog = prog;
+> +       spin_lock_init(&t->lock);
+> +       hrtimer_init(&t->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
+> +       t->timer.function = timer_cb;
+> +       if (cmpxchg(&timer->timer, NULL, t)) {
+> +               /* Parallel bpf_timer_init() calls raced. */
+> +               kfree(t);
+> +               return -EBUSY;
+> +       }
+> +       return 0;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_timer_init_proto = {
+> +       .func           = bpf_timer_init,
+> +       .gpl_only       = false,
+> +       .ret_type       = RET_INTEGER,
+> +       .arg1_type      = ARG_PTR_TO_TIMER,
+> +       .arg2_type      = ARG_PTR_TO_FUNC,
+> +       .arg3_type      = ARG_ANYTHING,
+> +};
+> +
+> +BPF_CALL_2(bpf_timer_start, struct bpf_timer_kern *, timer, u64, nsecs)
+
+Not entirely sure, but it feels like adding flags would be good here as well?
+
+> +{
+> +       struct bpf_hrtimer *t;
+> +       unsigned long flags;
+> +
+> +       t = READ_ONCE(timer->timer);
+> +       if (!t)
+> +               return -EINVAL;
+> +       spin_lock_irqsave(&t->lock, flags);
+> +       /* Keep the prog alive until callback is invoked */
+> +       if (!hrtimer_active(&t->timer))
+> +               bpf_prog_inc(t->prog);
+> +       hrtimer_start(&t->timer, ns_to_ktime(nsecs), HRTIMER_MODE_REL_SOFT);
+> +       spin_unlock_irqrestore(&t->lock, flags);
+> +       return 0;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_timer_start_proto = {
+> +       .func           = bpf_timer_start,
+> +       .gpl_only       = false,
+> +       .ret_type       = RET_INTEGER,
+> +       .arg1_type      = ARG_PTR_TO_TIMER,
+> +       .arg2_type      = ARG_ANYTHING,
+> +};
+> +
+> +BPF_CALL_1(bpf_timer_cancel, struct bpf_timer_kern *, timer)
+> +{
+> +       struct bpf_hrtimer *t;
+> +       unsigned long flags;
+> +
+> +       t = READ_ONCE(timer->timer);
+> +       if (!t)
+> +               return -EINVAL;
+> +       if (this_cpu_read(hrtimer_running) == t)
+> +               /* If bpf callback_fn is trying to bpf_timer_cancel()
+> +                * its own timer the hrtimer_cancel() will deadlock
+> +                * since it waits for callback_fn to finish
+> +                */
+> +               return -EBUSY;
+> +       spin_lock_irqsave(&t->lock, flags);
+> +       /* Cancel the timer and wait for associated callback to finish
+> +        * if it was running.
+> +        */
+> +       if (hrtimer_cancel(&t->timer) == 1)
+> +               /* If the timer was active then drop the prog refcnt,
+> +                * since callback will not be invoked.
+> +                */
+
+So the fact whether the timer was cancelled or it's active/already
+fired seems useful to know in BPF program (sometimes). I can't recall
+an exact example, but in the past dealing with some timers (in
+user-space, but the point stands) I remember it was important to know
+this, so maybe we can communicate that as 0 or 1 returned from
+bpf_timer_cancel?
+
+
+> +               bpf_prog_put(t->prog);
+> +       spin_unlock_irqrestore(&t->lock, flags);
+> +       return 0;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_timer_cancel_proto = {
+> +       .func           = bpf_timer_cancel,
+> +       .gpl_only       = false,
+> +       .ret_type       = RET_INTEGER,
+> +       .arg1_type      = ARG_PTR_TO_TIMER,
+> +};
+> +
+> +void bpf_timer_cancel_and_free(void *val)
+> +{
+> +       struct bpf_timer_kern *timer = val;
+> +       struct bpf_hrtimer *t;
+> +
+> +       t = READ_ONCE(timer->timer);
+> +       if (!t)
+> +               return;
+> +       /* Cancel the timer and wait for callback to complete
+> +        * if it was running
+> +        */
+> +       if (hrtimer_cancel(&t->timer) == 1)
+> +               bpf_prog_put(t->prog);
+> +       kfree(t);
+> +       WRITE_ONCE(timer->timer, NULL);
+
+this seems to race with bpf_timer_start, no? Doing WRITE_ONCE and then
+kfree() timer would be a bit safer (we won't have dangling pointer at
+any point in time), but I think that still is racy, because
+bpf_start_timer can read timer->timer before WRITE_ONCE(NULL) here,
+then we kfree(t), and then bpf_timer_start() proceeds to take t->lock
+which might explode or might do whatever.
+
+If there is a non-obvious mechanism preventing this (I haven't read
+second patch thoroughly yet), it's probably a good idea to mention
+that here.
+
+A small nit, you added bpf_timer_cancel_and_free() prototype in the
+next patch, but it should probably be done in this patch to avoid
+unnecessary compiler warnings during bisecting.
+
+
+> +}
+> +
+>  const struct bpf_func_proto bpf_get_current_task_proto __weak;
+>  const struct bpf_func_proto bpf_probe_read_user_proto __weak;
+>  const struct bpf_func_proto bpf_probe_read_user_str_proto __weak;
+> @@ -1051,6 +1205,12 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+>                 return &bpf_per_cpu_ptr_proto;
+>         case BPF_FUNC_this_cpu_ptr:
+>                 return &bpf_this_cpu_ptr_proto;
+> +       case BPF_FUNC_timer_init:
+> +               return &bpf_timer_init_proto;
+> +       case BPF_FUNC_timer_start:
+> +               return &bpf_timer_start_proto;
+> +       case BPF_FUNC_timer_cancel:
+> +               return &bpf_timer_cancel_proto;
+>         default:
+>                 break;
+>         }
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 1de4b8c6ee42..f386f85aee5c 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -4656,6 +4656,35 @@ static int process_spin_lock(struct bpf_verifier_env *env, int regno,
+>         return 0;
+>  }
+>
+> +static int process_timer_func(struct bpf_verifier_env *env, int regno,
+> +                             struct bpf_call_arg_meta *meta)
+> +{
+> +       struct bpf_reg_state *regs = cur_regs(env), *reg = &regs[regno];
+> +       bool is_const = tnum_is_const(reg->var_off);
+> +       struct bpf_map *map = reg->map_ptr;
+> +       u64 val = reg->var_off.value;
+> +
+> +       if (!is_const) {
+> +               verbose(env,
+> +                       "R%d doesn't have constant offset. bpf_timer has to be at the constant offset\n",
+> +                       regno);
+> +               return -EINVAL;
+> +       }
+> +       if (!map->btf) {
+> +               verbose(env, "map '%s' has to have BTF in order to use bpf_timer\n",
+> +                       map->name);
+> +               return -EINVAL;
+> +       }
+> +       if (val) {
+> +               /* todo: relax this requirement */
+
+Yeah, that's quite a non-obvious requirement. How hard is it to get
+rid of it? If not, we should probably leave a comment new struct
+bpf_timer definition in UAPI header.
+
+> +               verbose(env, "bpf_timer field can only be first in the map value element\n");
+> +               return -EINVAL;
+> +       }
+> +       WARN_ON(meta->map_ptr);
+> +       meta->map_ptr = map;
+> +       return 0;
+> +}
+> +
+
+[...]
+
+>         if (func_id == BPF_FUNC_snprintf) {
+>                 err = check_bpf_snprintf_call(env, regs);
+>                 if (err < 0)
+> @@ -12526,6 +12605,37 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+>                         insn      = new_prog->insnsi + i + delta;
+>                         continue;
+>                 }
+> +               if (insn->imm == BPF_FUNC_timer_init) {
+> +
+
+nit: why empty line here?
+
+> +                       aux = &env->insn_aux_data[i + delta];
+> +                       if (bpf_map_ptr_poisoned(aux)) {
+> +                               verbose(env, "bpf_timer_init abusing map_ptr\n");
+> +                               return -EINVAL;
+> +                       }
+> +                       map_ptr = BPF_MAP_PTR(aux->map_ptr_state);
+> +                       {
+> +                               struct bpf_insn ld_addrs[4] = {
+> +                                       BPF_LD_IMM64(BPF_REG_4, (long)map_ptr),
+> +                                       BPF_LD_IMM64(BPF_REG_5, (long)prog),
+> +                               };
+> +
+> +                               insn_buf[0] = ld_addrs[0];
+> +                               insn_buf[1] = ld_addrs[1];
+> +                               insn_buf[2] = ld_addrs[2];
+> +                               insn_buf[3] = ld_addrs[3];
+> +                       }
+> +                       insn_buf[4] = *insn;
+> +                       cnt = 5;
+> +
+> +                       new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+> +                       if (!new_prog)
+> +                               return -ENOMEM;
+> +
+> +                       delta    += cnt - 1;
+> +                       env->prog = prog = new_prog;
+> +                       insn      = new_prog->insnsi + i + delta;
+> +                       goto patch_call_imm;
+> +               }
+>
+>                 /* BPF_EMIT_CALL() assumptions in some of the map_gen_lookup
+>                  * and other inlining handlers are currently limited to 64 bit
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index d2d7cf6cfe83..453a46c2d732 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1065,7 +1065,7 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>         case BPF_FUNC_snprintf:
+>                 return &bpf_snprintf_proto;
+>         default:
+> -               return NULL;
+> +               return bpf_base_func_proto(func_id);
+>         }
+>  }
 >
 
-I tried to keep it simple by going for the defaults we agreed upon for the new
-netlink based libbpf API, and always setting direct action mode, and it's still
-in a position to be extended in the future to allow full TC filter setup like
-netlink does, if someone ever happens to need that.
-
-As for the implementation, I did notice that there has been discussion around
-this (though I could only find [0]) but I think doing it the way this patch does
-is more flexible as you can attach the bpf filter to an aribitrary parent/class,
-not just ingress and egress, and it can coexist with a conventional TC setup.
-
-[0]: https://facebookmicrosites.github.io/bpf/blog/2018/08/31/object-lifetime.html
-     ("Note that there is ongoing work ...")
-
-> The problem is that your patch set was marked as spam by Google, so I
-> suspect a bunch of folks haven't gotten it. I suggest re-sending it
-> again but trimming down the CC list, leaving only bpf@vger,
-> netdev@vger, and BPF maintainers CC'ed directly.
->
-
-Thanks for the heads up, I'll resend tomorrow.
-
---
-Kartikeya
+[...]
