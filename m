@@ -2,157 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7329E397E02
-	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 03:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3E9397E35
+	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 03:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhFBBWr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Jun 2021 21:22:47 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2939 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229851AbhFBBWq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Jun 2021 21:22:46 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FvrkN66GSz68yG;
-        Wed,  2 Jun 2021 09:18:04 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 2 Jun 2021 09:21:02 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Wed, 2 Jun 2021
- 09:21:02 +0800
-Subject: Re: [Linuxarm] Re: [PATCH net-next 2/3] net: sched: implement
- TCQ_F_CAN_BYPASS for lockless qdisc
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     Yunsheng Lin <yunshenglin0825@gmail.com>, <davem@davemloft.net>,
-        <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-References: <1622170197-27370-1-git-send-email-linyunsheng@huawei.com>
- <1622170197-27370-3-git-send-email-linyunsheng@huawei.com>
- <20210528180012.676797d6@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <a6a965ee-7368-d37b-9c70-bba50c67eec9@huawei.com>
- <20210528213218.2b90864c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <ee1a62da-9758-70db-abd3-c5ca2e8e0ce0@huawei.com>
- <20210529114919.4f8b1980@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <9cc9f513-7655-07df-3c74-5abe07ae8321@gmail.com>
- <20210530132111.3a974275@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <3c2fbc70-841f-d90b-ca13-1f058169be50@huawei.com>
- <3a307707-9fb5-d73a-01f9-93aaf5c7a437@huawei.com>
- <428f92d8-f4a2-13cf-8dcc-b38d48a42965@huawei.com>
- <20210531215146.5ca802a5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <cf75e1f4-7972-8efa-7554-fc528c5da380@huawei.com>
- <20210601134856.12573333@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <20e9bf35-444c-8c35-97ec-de434fc80d73@huawei.com>
-Date:   Wed, 2 Jun 2021 09:21:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S230150AbhFBBr5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Jun 2021 21:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230143AbhFBBr5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Jun 2021 21:47:57 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6B9C061574;
+        Tue,  1 Jun 2021 18:46:14 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id jz2-20020a17090b14c2b0290162cf0b5a35so2495454pjb.5;
+        Tue, 01 Jun 2021 18:46:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=NQ/P7MmOfTgjLDrX8LPnbwkLUjHtdnmt9LzgvoXycJ8=;
+        b=i2oQvi+AxPV5aUIajMmP6uDrAMm0+iK3MAME114cvSQrseAOnqQgbBQQkVXGzRzjrB
+         IvGd7a0j7/U6ahzmXcEAdsz+3rTm09K1ZZ0FljGAjnhfjAmwdsMONc0jNiEyuQBKPn7E
+         kVUs+nsYaTqS5F+zaFeDZbXJVlzN3j8c8iT4bZnMEX0kG17UNlslkGZRHzdMNjTICFXn
+         NoMLHil1hw1neYgdTnJMZAsUSmOEky9hiJkSrJPPVotnM6G9JCMCzd1Qz9aazu+HH0Ok
+         mcqciFlwrTtC1XiyqQVyZ1Gmf+KvSsdKE6Z48Mkndtten9pBEsNDCHcB/bq3tVv8eeIG
+         0CLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=NQ/P7MmOfTgjLDrX8LPnbwkLUjHtdnmt9LzgvoXycJ8=;
+        b=R1rhYHaFDzSLzK/dkzO7sUNTKwZIAQlXRRYx+8TE0msbPD9tyTn8WXXA9KBvtFRnXM
+         vjzh4PzIGRHVQx3WCqbg/eqapQ7RN/zkfAhNRR/YIzaiasJR50yU074amf7n1yDjn32f
+         PemwJw6fc0hByYENOB8VoSvFgi8/f8tmxKvz4vIjdy9zhsfwEVG1yDqx4IUtyN4JUe+M
+         fKbOn6bMn3tRoQrI4JSteNUOdTT3JdLIHVJ4IV4w5gULi/CJ6c11Li2G/tApIxSiPSQq
+         27fY+OnhtWxk+vLEn9bG+8j8qBDM278DgEyo1amMO1o7CEIiOyOsteC781mW72cjrF6r
+         ipxA==
+X-Gm-Message-State: AOAM530kfNyYnMcAnEtVwxlHWVjElM/Bd9zNTWe4oIwujW4De8AkTela
+        jLpuOvy2FPCkr/1ERb7Sa7I=
+X-Google-Smtp-Source: ABdhPJyk1OcfKjs+iGcc+TSQtJPs6yx36Aw0cJMpkiLro0EUq96/JtKsl68U6EwOWmCr/qFM7CX2tw==
+X-Received: by 2002:a17:90b:38c4:: with SMTP id nn4mr14063131pjb.166.1622598373413;
+        Tue, 01 Jun 2021 18:46:13 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:bdb9])
+        by smtp.gmail.com with ESMTPSA id 65sm4963049pfu.159.2021.06.01.18.46.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Jun 2021 18:46:12 -0700 (PDT)
+Date:   Tue, 1 Jun 2021 18:46:08 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next 1/3] bpf: Introduce bpf_timer
+Message-ID: <20210602014608.wxzfsgzuq7rut4ra@ast-mbp.dhcp.thefacebook.com>
+References: <20210527040259.77823-1-alexei.starovoitov@gmail.com>
+ <20210527040259.77823-2-alexei.starovoitov@gmail.com>
+ <87r1hsgln6.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <20210601134856.12573333@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme710-chm.china.huawei.com (10.1.199.106) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87r1hsgln6.fsf@toke.dk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/6/2 4:48, Jakub Kicinski wrote:
-> On Tue, 1 Jun 2021 16:18:54 +0800 Yunsheng Lin wrote:
->>> I see, thanks! That explains the need. Perhaps we can rephrase the
->>> comment? Maybe:
->>>
->>> +			/* Retest nolock_qdisc_is_empty() within the protection
->>> +			 * of q->seqlock to protect from racing with requeuing.
->>> +			 */  
->>
->> Yes if we still decide to preserve the nolock_qdisc_is_empty() rechecking
->> under q->seqlock.
+On Thu, May 27, 2021 at 06:57:17PM +0200, Toke Høiland-Jørgensen wrote:
+> >     if (val) {
+> >         bpf_timer_init(&val->timer, timer_cb2, 0);
+> >         bpf_timer_start(&val->timer, 1000 /* call timer_cb2 in 1 msec */);
 > 
-> Sounds good.
+> nit: there are 1M nanoseconds in a millisecond :)
+
+oops :)
+
+> >     }
+> > }
+> >
+> > This patch adds helper implementations that rely on hrtimers
+> > to call bpf functions as timers expire.
+> > The following patch adds necessary safety checks.
+> >
+> > Only programs with CAP_BPF are allowed to use bpf_timer.
+> >
+> > The amount of timers used by the program is constrained by
+> > the memcg recorded at map creation time.
+> >
+> > The bpf_timer_init() helper is receiving hidden 'map' and 'prog' arguments
+> > supplied by the verifier. The prog pointer is needed to do refcnting of bpf
+> > program to make sure that program doesn't get freed while timer is armed.
+> >
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > 
->>>> --- a/net/sched/sch_generic.c
->>>> +++ b/net/sched/sch_generic.c
->>>> @@ -38,6 +38,15 @@ EXPORT_SYMBOL(default_qdisc_ops);
->>>>  static void qdisc_maybe_clear_missed(struct Qdisc *q,
->>>>                                      const struct netdev_queue *txq)
->>>>  {
->>>> +       set_bit(__QDISC_STATE_DRAINING, &q->state);
->>>> +
->>>> +       /* Make sure DRAINING is set before clearing MISSED
->>>> +        * to make sure nolock_qdisc_is_empty() always return
->>>> +        * false for aoviding transmitting a packet directly
->>>> +        * bypassing the requeued packet.
->>>> +        */
->>>> +       smp_mb__after_atomic();
->>>> +
->>>>         clear_bit(__QDISC_STATE_MISSED, &q->state);
->>>>
->>>>         /* Make sure the below netif_xmit_frozen_or_stopped()
->>>> @@ -52,8 +61,6 @@ static void qdisc_maybe_clear_missed(struct Qdisc *q,
->>>>          */
->>>>         if (!netif_xmit_frozen_or_stopped(txq))
->>>>                 set_bit(__QDISC_STATE_MISSED, &q->state);
->>>> -       else
->>>> -               set_bit(__QDISC_STATE_DRAINING, &q->state);
->>>>  }  
->>>
->>> But this would not be enough because we may also clear MISSING 
->>> in pfifo_fast_dequeue()?  
->>
->> For the MISSING clearing in pfifo_fast_dequeue(), it seems it
->> looks like the data race described in RFC v3 too?
->>
->>       CPU1                 CPU2               CPU3
->> qdisc_run_begin(q)          .                  .
->>         .              MISSED is set           .
->>   MISSED is cleared         .                  .
->>     q->dequeue()            .                  .
->>         .              enqueue skb1     check MISSED # true
->> qdisc_run_end(q)            .                  .
->>         .                   .         qdisc_run_begin(q) # true
->>         .            MISSED is set      send skb2 directly
+> Overall this LGTM, and I believe it will be usable for my intended use
+> case. One question:
 > 
-> Not sure what you mean.
+> With this, it will basically be possible to create a BPF daemon, won't
+> it? I.e., if a program includes a timer and the callback keeps re-arming
+> itself this will continue indefinitely even if userspace closes all refs
+> to maps and programs? Not saying this is a problem, just wanted to check
+> my understanding (i.e., that there's not some hidden requirement on
+> userspace keeping a ref open that I'm missing)...
 
-       CPU1                 CPU2               CPU3
- qdisc_run_begin(q)          .                  .
-         .              MISSED is set           .
-   MISSED is cleared         .                  .
-   another dequeuing         .                  .
-         .                   .                  .
-         .              enqueue skb1  nolock_qdisc_is_empty() # true
- qdisc_run_end(q)            .                  .
-         .                   .         qdisc_run_begin(q) # true
-         .                   .          send skb2 directly
-         .               MISSED is set          .
+That is correct.
+Another option would be to auto-cancel the timer when the last reference
+to the prog drops. That may feel safer, since forever
+running bpf daemon is a certainly new concept.
+The main benefits of doing prog_refcnt++ from bpf_timer_start are ease
+of use and no surprises.
+Disappearing timer callback when prog unloads is outside of bpf prog control.
+For example the tracing bpf prog might collect some data and periodically
+flush it to user space. The prog would arm the timer and when callback
+is invoked it would send the data via ring buffer and start another
+data collection cycle.
+When the user space part of the service exits it doesn't have
+an ability to enforce the flush of the last chunk of data.
+It could do prog_run cmd that will call the timer callback,
+but it's racy.
+The solution to this problem could be __init and __fini
+sections that will be invoked when the prog is loaded
+and when the last refcnt drops.
+It's a complementary feature though.
+The prog_refcnt++ from bpf_timer_start combined with a prog
+explicitly doing bpf_timer_cancel from __fini
+would be the most flexible combination.
+This way the prog can choose to be a daemon or it can choose
+to cancel its timers and do data flushing when the last prog
+reference drops.
+The prog refcnt would be split (similar to uref). The __fini callback
+will be invoked when refcnt reaches zero, but all increments
+done by bpf_timer_start will be counted separately.
+The user space wouldn't need to do the prog_run command.
+It would detach the prog and close(prog_fd).
+That will trigger __fini callback that will cancel the timers
+and the prog will be fully unloaded.
+That would make bpf progs resemble kernel modules even more.
 
-As qdisc is indeed empty at the point when MISSED is clear and
-another dequeue is retried by CPU1, MISSED setting is not under
-q->seqlock, so it seems retesting MISSED under q->seqlock does not
-seem to make any difference? and it seems like the case that does
-not need handling as we agreed previously?
-
-
+> > +BPF_CALL_5(bpf_timer_init, struct bpf_timer_kern *, timer, void *, cb, int, flags,
+> > +	   struct bpf_map *, map, struct bpf_prog *, prog)
+> > +{
+> > +	struct bpf_hrtimer *t;
+> > +
+> > +	if (flags)
+> > +		return -EINVAL;
+> > +	if (READ_ONCE(timer->timer))
+> > +		return -EBUSY;
+> > +	/* allocate hrtimer via map_kmalloc to use memcg accounting */
+> > +	t = bpf_map_kmalloc_node(map, sizeof(*t), GFP_ATOMIC, NUMA_NO_NODE);
+> > +	if (!t)
+> > +		return -ENOMEM;
+> > +	t->callback_fn = cb;
+> > +	t->value = (void *)timer /* - offset of bpf_timer inside elem */;
+> > +	t->key = t->value - round_up(map->key_size, 8);
 > 
-> .
-> 
+> For array-maps won't this just point to somewhere inside the previous value?
 
+Excellent catch. Thank you. Will fix.
+
+> > +	t->map = map;
+> > +	t->prog = prog;
+> > +	spin_lock_init(&t->lock);
+> > +	hrtimer_init(&t->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
+> > +	t->timer.function = timer_cb;
+> > +	if (cmpxchg(&timer->timer, NULL, t)) {
+> > +		/* Parallel bpf_timer_init() calls raced. */
+> > +		kfree(t);
+> > +		return -EBUSY;
+> > +	}
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct bpf_func_proto bpf_timer_init_proto = {
+> > +	.func		= bpf_timer_init,
+> > +	.gpl_only	= false,
+> 
+> hrtimer_init() is EXPORT_SYMBOL_GPL, should this be as well? Same with
+> the others below.
+
+Excellent catch as well! Will fix.
