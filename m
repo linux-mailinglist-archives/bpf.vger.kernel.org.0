@@ -2,86 +2,230 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ECA1399490
-	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 22:30:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D4C39949F
+	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 22:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbhFBUcE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 2 Jun 2021 16:32:04 -0400
-Received: from 136-58-83-85.googlefiber.net ([136.58.83.85]:34374 "EHLO
-        jpsamaroo.me" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S229568AbhFBUcE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:32:04 -0400
-Received: from localhost (unknown [192.168.1.1])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by jpsamaroo.me (Postfix) with ESMTPSA id 15C1E5E03BB;
-        Wed,  2 Jun 2021 16:43:45 -0500 (CDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-Subject: Re: LLVM bug when storing unpacked struct?
-From:   "Julian P Samaroo" <jpsamaroo@jpsamaroo.me>
-To:     "Yonghong Song" <yhs@fb.com>, <bpf@vger.kernel.org>
-Date:   Wed, 02 Jun 2021 15:30:12 -0500
-Message-Id: <CBTF0V5JX0ZH.2DX62NTDHAB74@ares>
-In-Reply-To: <75772f13-b366-d1f7-07a1-c43666e512d1@fb.com>
+        id S229558AbhFBUi6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Jun 2021 16:38:58 -0400
+Received: from mail-yb1-f182.google.com ([209.85.219.182]:41957 "EHLO
+        mail-yb1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229552AbhFBUi4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Jun 2021 16:38:56 -0400
+Received: by mail-yb1-f182.google.com with SMTP id q21so5624417ybg.8;
+        Wed, 02 Jun 2021 13:37:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IXKYAhtG8uIiRBoK84NRuGO413Trav5iQLqM6rcpSwk=;
+        b=CALvgqB1uf9Ri3rMcQEkd8LPAvTC6wDFh8XamWCpVMXlSqlZWmG+jdT4qC45isDdSk
+         zMxhRNkHC04ZIH3sj8mUF0b9PD9K6kbGZgo7I7FB5sy+38vxG1B326PQpsDQzu3MyBf5
+         DsYAD4tg5ptIOukj+r80JYvXvmG8Ppd9YBW4TcQa0LkypbbNh9AiQlgOZDMS+nMgO/iz
+         RaoniKI7JNo+76cPF5RwBI1otjXGbnZ2r0PU6XGzL5xtfz6zXdPfjIPtJdxRMz8LsWxo
+         o6LtOo0+jRJiF4jfuouj26hLGc/tBbTUKKJqLJGLjiEuh6VCA7hMSxHFneQPaJX1whSK
+         FoAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IXKYAhtG8uIiRBoK84NRuGO413Trav5iQLqM6rcpSwk=;
+        b=RfDROICeFbAcvUAP5JwYgg7fbQANuMvbwUKzWIJ9XcYbpvGJqv2jk/SgVCMpr8DmLX
+         heqZZsBhSTY8Yfu4r4dQzKoyZ1wOTKaNTJPg21mfQURAyVbtA0us9ATQlpxCiFa84Drb
+         Z0xdUlf3pr0aY1D+SE7y2Y8drr1Jc+OrqpqYaomY0m957G97QxibB+NdT8cbHjd5koOm
+         kNgpkL6cjl8ikH1g2nRDU6Rdoh0pkRvi6H03PcI51QT2yAtSnEGJDmNSdl5Gm64b+vaJ
+         ntD+jJciOWeENm0QTdtf+XfLXQxJcJHmIeJV/+ntT8rfpRAZUOSYtU1dVvbuUaAvW3Di
+         sw1Q==
+X-Gm-Message-State: AOAM532F99BdwFvWg42TjGVkvShpufy+Yc4HhLsfQH8+QkofJ+de3K/Q
+        zcRFKh7hZt51xvzlKlNBcBU27b9imWliq4mLHd69Bu25dSo=
+X-Google-Smtp-Source: ABdhPJxN27bUQ9QcIdO4fdkKDuCx/YdI7pj0TIJiLgB3fEgCjSMMqokNzIgugrd1WeypeMzzkceOrFWtPJgZsb+YeBM=
+X-Received: by 2002:a25:6612:: with SMTP id a18mr14903078ybc.347.1622666172884;
+ Wed, 02 Jun 2021 13:36:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210531195553.168298-1-grantseltzer@gmail.com> <20210531195553.168298-2-grantseltzer@gmail.com>
+In-Reply-To: <20210531195553.168298-2-grantseltzer@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 2 Jun 2021 13:36:01 -0700
+Message-ID: <CAEf4BzaKBHy16R4WQEgi0Cyy_6a3EVtBBo=0yRm7K4nF2X53qQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] Add documentation for libbpf including API autogen
+To:     grantseltzer <grantseltzer@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed Jun 2, 2021 at 12:19 PM CDT, Yonghong Song wrote:
+On Mon, May 31, 2021 at 12:56 PM grantseltzer <grantseltzer@gmail.com> wrote:
 >
+> This adds rst files containing documentation for libbpf. This includes
+> the addition of libbpf_api.rst which pulls comment documentation from
+> header files in libbpf under tools/lib/bpf/. The comment docs would be
+> of the standard kernel doc format.
 >
-> On 6/2/21 9:57 AM, Julian P Samaroo wrote:
-> > This is my first LKML email, so let me know if I'm doing something wrong! :)
-> > 
-> > I believe I've found a bug in LLVM's generation of BPF bytecode, and would like
-> > to get advice on whether this is truly a bug before considering writing a
-> > patch.
-> > 
-> > When storing an unpacked struct such as { i64, i32 } to the stack (as part of
-> > writing a struct-typed map key), LLVM 11.0.1 generates BPF bytecode like the
-> > following:
-> > 
-> > ...
-> > 2: (b7) r1 = 2
-> > 3: (63) *(u32 *)(r10 -24) = r1
-> > 4: (b7) r1 = 4
-> > 5: (7b) *(u64 *)(r10 -32) = r1
-> > ...
-> > 8: (bf) r3 = r10
-> > 9: (07) r3 += -32
-> > ...
-> > 13: (85) call bpf_map_update_elem#2
-> > invalid indirect read from stack off -32+12 size 16
-> > 
-> > The verifier understandably complains about this when verifying a call that
-> > uses these stack slots, such as bpf_map_update_elem, because the associated map
-> > definition has a key size of 16 bytes, not 12 bytes as this bytecode would
-> > suggest. In my particular case that generated this code, my frontend doesn't
-> > have the notion of packed structs, so I can't workaround this by making the
-> > struct packed.
-> > 
-> > My belief is that for unpacked structs, LLVM should emit these stores as 64-bit
-> > stores, which should be OK since the padding bytes are going to be zero (from
-> > my limited understanding of LLVM structs). Does this seem like a reasonable
->
-> Your assumption about padding bytes to be zero is not correct. Except
-> explicitly requesting to fill padding bytes with zero e.g., using
-> __builtin_memset(), the compiler doesn't need to write to padding bytes.
-> So this is not a compiler bug.
->
-> The best approach is to do manual padding or using __builtin_memset()
-> before assigning values to each individual field.
+> Signed-off-by: grantseltzer <grantseltzer@gmail.com>
+> ---
+
+Looks good, thanks! See few comments below. Let's figure out what to
+do with libbpf docs versioning and land it through bpf-next tree.
+
+>  Documentation/bpf/index.rst                   |  13 ++
+>  Documentation/bpf/libbpf.rst                  |  14 ++
+>  Documentation/bpf/libbpf_api.rst              |  18 ++
+>  Documentation/bpf/libbpf_build.rst            |  37 ++++
+>  .../bpf/libbpf_naming_convention.rst          | 170 ++++++++++++++++++
+>  5 files changed, 252 insertions(+)
+>  create mode 100644 Documentation/bpf/libbpf.rst
+>  create mode 100644 Documentation/bpf/libbpf_api.rst
+>  create mode 100644 Documentation/bpf/libbpf_build.rst
+>  create mode 100644 Documentation/bpf/libbpf_naming_convention.rst
 >
 
-Ok, that makes sense to me! Thanks for pointing that out :)
+[...]
 
-> > change to make? I'm also unable to test this on LLVM 12 (my language hasn't yet
-> > updated to support that version), so this could have possibly already been
-> > fixed; please let me know if so!
-> > 
-> > Julian
-> > 
+> +API
+> +===
+> +
+> +This documentation is autogenerated from header files in libbpf, tools/lib/bpf
+> +
+> +.. kernel-doc:: tools/lib/bpf/libbpf.h
+> +   :internal:
+> +
+> +.. kernel-doc:: tools/lib/bpf/bpf.h
+> +   :internal:
+> +
+> +.. kernel-doc:: tools/lib/bpf/btf.h
+> +   :internal:
+> +
+> +.. kernel-doc:: tools/lib/bpf/xsk.h
+> +   :internal:
 
+Libbpf API has a BPF side as well (bpf_helpers.h which pulls in
+auto-generated bpf_helper_defs.h with all BPF helper definitions,
+bpf_tracing.h, bpf_core_read.h, bpf_endian.h), we should probably
+expose them as well?
+
+> diff --git a/Documentation/bpf/libbpf_build.rst b/Documentation/bpf/libbpf_build.rst
+> new file mode 100644
+> index 000000000..b8240eaaa
+> --- /dev/null
+> +++ b/Documentation/bpf/libbpf_build.rst
+> @@ -0,0 +1,37 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +Building libbpf
+> +===============
+> +
+> +libelf is an internal dependency of libbpf and thus it is required to link
+
+zlib is another dependency, can you please mention it as well?
+
+> +against and must be installed on the system for applications to work.
+> +pkg-config is used by default to find libelf, and the program called
+> +can be overridden with PKG_CONFIG.
+> +
+
+[...]
+
+> +API naming convention
+> +=====================
+> +
+> +libbpf API provides access to a few logically separated groups of
+> +functions and types. Every group has its own naming convention
+> +described here. It's recommended to follow these conventions whenever a
+> +new function or type is added to keep libbpf API clean and consistent.
+> +
+> +All types and functions provided by libbpf API should have one of the
+> +following prefixes: ``bpf_``, ``btf_``, ``libbpf_``, ``xsk_``,
+> +``perf_buffer_``.
+
+ring_buffer_ and btf_dump_ are two others that we use. But I don't
+know how important it is to have an exhaustive list here.
+
+> +
+> +System call wrappers
+> +--------------------
+> +
+> +System call wrappers are simple wrappers for commands supported by
+> +sys_bpf system call. These wrappers should go to ``bpf.h`` header file
+> +and map one-on-one to corresponding commands.
+
+typo: one-to-one?
+
+> +
+> +For example ``bpf_map_lookup_elem`` wraps ``BPF_MAP_LOOKUP_ELEM``
+> +command of sys_bpf, ``bpf_prog_attach`` wraps ``BPF_PROG_ATTACH``, etc.
+> +
+> +Objects
+> +-------
+> +
+> +Another class of types and functions provided by libbpf API is "objects"
+> +and functions to work with them. Objects are high-level abstractions
+> +such as BPF program or BPF map. They're represented by corresponding
+> +structures such as ``struct bpf_object``, ``struct bpf_program``,
+> +``struct bpf_map``, etc.
+> +
+> +Structures are forward declared and access to their fields should be
+> +provided via corresponding getters and setters rather than directly.
+> +
+> +These objects are associated with corresponding parts of ELF object that
+> +contains compiled BPF programs.
+> +
+> +For example ``struct bpf_object`` represents ELF object itself created
+> +from an ELF file or from a buffer, ``struct bpf_program`` represents a
+> +program in ELF object and ``struct bpf_map`` is a map.
+> +
+> +Functions that work with an object have names built from object name,
+> +double underscore and part that describes function purpose.
+> +
+> +For example ``bpf_object__open`` consists of the name of corresponding
+> +object, ``bpf_object``, double underscore and ``open`` that defines the
+> +purpose of the function to open ELF file and create ``bpf_object`` from
+> +it.
+> +
+> +Another example: ``bpf_program__load`` is named for corresponding
+> +object, ``bpf_program``, that is separated from other part of the name
+> +by double underscore.
+
+let's drop this example, bpf_program__load is a bad example and is
+going to be deprecated.  We can use btf__parse() as an example here.
+
+> +
+> +All objects and corresponding functions other than BTF related should go
+> +to ``libbpf.h``. BTF types and functions should go to ``btf.h``.
+> +
+> +Auxiliary functions
+> +-------------------
+> +
+> +Auxiliary functions and types that don't fit well in any of categories
+> +described above should have ``libbpf_`` prefix, e.g.
+> +``libbpf_get_error`` or ``libbpf_prog_type_by_name``.
+> +
+> +AF_XDP functions
+> +-------------------
+> +
+> +AF_XDP functions should have an ``xsk_`` prefix, e.g.
+> +``xsk_umem__get_data`` or ``xsk_umem__create``. The interface consists
+> +of both low-level ring access functions and high-level configuration
+> +functions. These can be mixed and matched. Note that these functions
+> +are not reentrant for performance reasons.
+> +
+> +Please take a look at Documentation/networking/af_xdp.rst in the Linux
+> +kernel source tree on how to use XDP sockets and for some common
+> +mistakes in case you do not get any traffic up to user space.
+
+I'd probably drop this section, given we move xsk.{c,h} into libxdp.
+
+> +
+> +ABI
+> +==========
+> +
+> +libbpf can be both linked statically or used as DSO. To avoid possible
+> +conflicts with other libraries an application is linked with, all
+> +non-static libbpf symbols should have one of the prefixes mentioned in
+> +API documentation above. See API naming convention to choose the right
+> +name for a new symbol.
+> +
+
+[...]
