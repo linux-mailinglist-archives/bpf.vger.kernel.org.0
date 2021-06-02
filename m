@@ -2,104 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7073994A3
-	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 22:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C193994B4
+	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 22:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhFBUjN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Jun 2021 16:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbhFBUjM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Jun 2021 16:39:12 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905F0C06174A;
-        Wed,  2 Jun 2021 13:37:29 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id g38so5611263ybi.12;
-        Wed, 02 Jun 2021 13:37:29 -0700 (PDT)
+        id S229541AbhFBUlV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Jun 2021 16:41:21 -0400
+Received: from mail-yb1-f178.google.com ([209.85.219.178]:34509 "EHLO
+        mail-yb1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229799AbhFBUlV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Jun 2021 16:41:21 -0400
+Received: by mail-yb1-f178.google.com with SMTP id 207so5694602ybd.1;
+        Wed, 02 Jun 2021 13:39:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9aHYoO59eRyQ7Fly6N3dGAwZibkeW7kt/2A0ssudiV0=;
-        b=rgA35ImxzKGrqsJlHwMUs5sQ58usTZHWqCxcsN/JgtcW1SjRxNPHrK38lSxidpp+LR
-         FxR1256tznlCzgDcOXAdnnmyt5NSHJDKoMPo4P+U/Cde8QGN7zYyItsxd1jdMskuDu/4
-         ANwIV/WFzBU53G2L/gSqa/9GhXpakRCFLeboRt1zTVxA/9kZM+sGIQ0x4cO49q1lSa1p
-         pUw+YLyzATmxcsGYpXoTkLBjWLBzy22bZkD1TZetKoW6IV8hU6fnFXOQpiK09+7ibXVt
-         v01NZbziTCkRCSSf+r5JU7/jDdc6K4Ng3KQtLtb4Cqm9ItCct91iRbLmD2GXzg4SPCNp
-         +nBA==
+        bh=jH9Km0sW+e85jIkcVlCUV9nNpCoyqzLfRUfOX89o950=;
+        b=kA7YD/U6qqYY+oS6qeSA5xGolI9ulECh8h7zIOBm7R6ptQ0FJQNo8gx6Yi1gRFNRu6
+         zd0HiKgfW8sSht7L7e2RJ5eSjW0XwQVIPgLYkrk+ncLAEEy1pvrq/iMYi/rW74CKfopu
+         H8BncgD+EoR5462qisDIP8S77FOdkBL8hqiW07kAKE4Skidy9+vy3um6aQz/MQbV3mEO
+         crHvzSKXBHYjG/OFiSnnJEL9JNNHsI4kysXQNtBH3ISb2T6dZHY59RIjXMme/g1lYvHa
+         y7s6Td8kvw559Y5TNu9AlQcR9Qrm+wU9LTtz6rPklKU0BRhQDsCMFWouTEr1CzSd5k9h
+         n0Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9aHYoO59eRyQ7Fly6N3dGAwZibkeW7kt/2A0ssudiV0=;
-        b=KEZ5a9NMF+xaJNLVyTpEjgTiCqTd4mTzjcWOOLKkazXT99beILxV4bNh7sQU8Wzmkd
-         TVjU0LWws6cXFGQLgVDDOAKeqfD+r7o/NgoKYxftcK2K4IfTL7hSoMDXTa8lgSqzZZTB
-         yjciQ0Nh5wXDtkjcxGNrasPo8qvPCBT/ooKxtFCiXXQZuRVO49f0PhOhYv+UNqgrUl28
-         kBxM23F0PDINhOOwrixCPhsH5lif34UyuBGXp1FxTaKW1ylK8AMGxJvnw0rcCa2cZW1U
-         8a6LRBhTlazjLNzf+6mC6FgARutXMifZoVotwso9BmOpO1ul9qo/2fC/NZKBe+DmAuo5
-         vZsA==
-X-Gm-Message-State: AOAM532xllBt/tMif5kuwVX+epStv47p3bjd9LmOIiEA0bMxuF0G6jsL
-        d81cHIBPvm/EvnyNsAKdhYlC+ydZme7QnUi0Z+pZR72DXRA=
-X-Google-Smtp-Source: ABdhPJydig8/g4JqAhoPMag0TDq502migzV4TKzgVUBA/blZ2IlpaV0nc+OpHXoH7UJWBWJPwbsZM8HTftOGOn7eyPo=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr51468820ybo.230.1622666248889;
- Wed, 02 Jun 2021 13:37:28 -0700 (PDT)
+        bh=jH9Km0sW+e85jIkcVlCUV9nNpCoyqzLfRUfOX89o950=;
+        b=AqP8iaxKIzX452Mt5Axr1NDt+FFtVNWCqENQG89gdU2uxHGWGkSI2jevoDWkzsUzpW
+         3sqE/vXLv6RPvqf2SThv2THcM7WgTuJSP/vb1Gnw4HyAWpCwIpTVpY3w7AnmK90YvJpm
+         3Zhx1bgsfE3s4hEJkgthB05dL//Ru6WdI4sRLwkfP5BRBwoAMQwFZG5CwKDiU+IZ6R9/
+         ZqvKoAN8mGWkBgfhuDKkWEIqyCIuPp/6i+NRKOKWO2g6h7tCPoylt0y9kwQxD1rW3t50
+         vay+JZvD5U3bC0R8yL7mfUBSZPg88f3MWzFj9IrXnpXDijqXEEVe+CBVj7y5xgiEGLgx
+         x9CA==
+X-Gm-Message-State: AOAM532xrVy1wRJhTX8Fgd5dFek198vRg9qRdk1HZ8vzpxyeuris7/iw
+        HFXrUQv5faV1WEEYufHCU3R2Vz1wCl91ZzNvkRSw1oQTkwI=
+X-Google-Smtp-Source: ABdhPJxd7/KqsFsQRVJxGd9d6D5FF2i8zzcP9oxHtND3qNVgPq5hztTiqlMl4SjeJbu0brXJ7jgfcZxnH9kwNZYoKS4=
+X-Received: by 2002:a25:6612:: with SMTP id a18mr14916915ybc.347.1622666317263;
+ Wed, 02 Jun 2021 13:38:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210531195553.168298-1-grantseltzer@gmail.com> <871r9lbef0.fsf@meer.lwn.net>
-In-Reply-To: <871r9lbef0.fsf@meer.lwn.net>
+References: <20210531195553.168298-1-grantseltzer@gmail.com> <20210531195553.168298-3-grantseltzer@gmail.com>
+In-Reply-To: <20210531195553.168298-3-grantseltzer@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Jun 2021 13:37:18 -0700
-Message-ID: <CAEf4BzahgzHg_Rzntxag-XQViVSG4H0XGLErq9agQ4qS0JL=7g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/2] Autogenerating libbpf API documentation
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     grantseltzer <grantseltzer@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Wed, 2 Jun 2021 13:38:26 -0700
+Message-ID: <CAEf4BzbpgEVq0f=A4=qOYfOaP_L8z3044GVYQoFcyW-044q-vQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] Remove duplicate README doc from libbpf
+To:     grantseltzer <grantseltzer@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        linux-doc@vger.kernel.org, bpf <bpf@vger.kernel.org>
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jun 1, 2021 at 11:58 AM Jonathan Corbet <corbet@lwn.net> wrote:
+On Mon, May 31, 2021 at 12:56 PM grantseltzer <grantseltzer@gmail.com> wrote:
 >
-> grantseltzer <grantseltzer@gmail.com> writes:
+> This removes the README.rst file from libbpf code which is moved into
+> Documentation/bpf/libbpf in the previous commit
 >
-> > This patch series is meant to start the initiative to document libbpf.
-> > It includes .rst files which are text documentation describing building,
-> > API naming convention, as well as an index to generated API documentation.
-> >
-> > In this approach the generated API documentation is enabled by the kernels
-> > existing kernel documentation system which uses sphinx. The resulting docs
-> > would then be synced to kernel.org/doc
-> >
-> > You can test this by running `make htmldocs` and serving the html in
-> > Documentation/output. Since libbpf does not yet have comments in kernel
-> > doc format, see kernel.org/doc/html/latest/doc-guide/kernel-doc.html for
-> > an example so you can test this.
-> >
-> > The advantage of this approach is to use the existing sphinx
-> > infrastructure that the kernel has, and have libbpf docs in
-> > the same place as everything else.
-> >
-> > The perhaps large disadvantage of this approach is that libbpf versions
-> > independently from the kernel. If it's possible to version libbpf
-> > separately without having duplicates that would be the ideal scenario.
->
-> I'm happy to see things going this direction; it looks like a good start
-> to me.
->
-> Let me know if you'd like this to go through the docs tree, or feel free
-> to add:
->
->   Acked-by: Jonathan Corbet <corbet@lwn.net>
+> Signed-off-by: grantseltzer <grantseltzer@gmail.com>
+> ---
 
-Thanks, Jonathan! I prefer to take this through bpf-next, which will
-make it easier to keep it in sync on Github (if we do that, of
-course).
+Let's keep this removal together with the previous patch, that way git
+should be able to detect the file move and minimize the diff.
 
+>  tools/lib/bpf/README.rst | 168 ---------------------------------------
+>  1 file changed, 168 deletions(-)
+>  delete mode 100644 tools/lib/bpf/README.rst
 >
-> if you want to route it via some other path.
->
-> Thanks,
->
-> jon
+
+[...]
