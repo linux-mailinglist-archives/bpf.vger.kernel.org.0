@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77354399295
-	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 20:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74BA3992C9
+	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 20:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229692AbhFBSdU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Jun 2021 14:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37044 "EHLO
+        id S229468AbhFBSsW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Jun 2021 14:48:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbhFBSdU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Jun 2021 14:33:20 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00A8C06174A;
-        Wed,  2 Jun 2021 11:31:21 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id d5-20020a17090ab305b02901675357c371so3623693pjr.1;
-        Wed, 02 Jun 2021 11:31:21 -0700 (PDT)
+        with ESMTP id S229467AbhFBSsW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Jun 2021 14:48:22 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3059BC06174A;
+        Wed,  2 Jun 2021 11:46:25 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id o9so3106537ilh.6;
+        Wed, 02 Jun 2021 11:46:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=L4f38XOp1iIkfafLQQl9LPSFE+Zw4m/hbQ7kccs+PAQ=;
-        b=n0tqXUyAfQ7wsXMsu8XF4gukNfpV+K5xgOrxr/41gXK8+HoLVdRyvxjo2W05xema6j
-         FCHsQYrMUELskQoIlDHEZSyubvXHpTynVcduGbZEDXcbcU82QJPuU56AnYAKZEWqbCHp
-         j/FUc2ICqdXUEyvooM+R1Le0nVZUoOCVFi9sulseiwa01BofFI35Pu5SyyPaRB8xHT2E
-         2Iurkir3jNa9OLRmgV6MeONsYgXP/4WxNMbxJl03a0NLG39V3uQaAVXaDXXuP7iF2yro
-         fvYMMAz05H1zn3tvbgPlbIeYXgdv5hcEo3Xf5Ya7FySRUtglwcORbPIW95Vrs20wx1hy
-         HbHg==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=42lSeKIaV1CGNphmGC2qEO05eLA2cNyDNNBAKkeOzoI=;
+        b=nXFG0t/B4mMaFeGppWiVlZHLZBrXWg5M1e6Be801+km1/mw3+c6HukNhhHzaGZNJxG
+         wDHD0gNhq9DxSlEiAYWP94k9l43JE+XxIMAM5LeVVjggOsy8y/lGJAmosSenGwFk+Cgy
+         F4DD/rChJ9CjbQX+APjuqrUmHiQFWskBR4UqlHQpkucx1e9ikXHNaQ9zObOlP3QHV9r6
+         jDMpahGVameU5O6X3h+ePPxLCoRuXQF8BdslOrcHF2JapTMj5TElJRmyGJPAGua/aYA1
+         dGh32f5mD2Q/K9zZemcHCb5lho/Pu2F+cc7TC743KuXVPJImOXZRpDSRQT6K66mGDDu8
+         8XKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=L4f38XOp1iIkfafLQQl9LPSFE+Zw4m/hbQ7kccs+PAQ=;
-        b=TbjVPMDHuBt7PjbCIJ6uTR3SiSmVaMt5M88FMtTaMKLuaTvPDMvG4Tr0k1EyP6ig9g
-         XYYIDru09Fw5z5ccDeFFI4YTR59SWPfRKX8DaSnYVsjjjwYcgzKvCOtpxlX1LQhpiXVR
-         5ZXkD8/lPVsKOYfZ6V5Xdw2lqUpy2YPOz+maCHsbCvGqK5WdeYurTPDvoebjh+a88Wrt
-         iBAET1Zy7Rx5OGzLTUl0Mkime6asIPjHQRmSFKM3rcIpx8sNEH1PcrXzP687DMYNb0oY
-         fOFAbZHEDCdvSb62Ef2q72pZa38fpv1KmduhMFWus0T8YzA4Ma4C7jaKR/WILm6HdLWO
-         pq+g==
-X-Gm-Message-State: AOAM532BpOS3EuQFrCIdIze+nlwfXwAD8ULdg+yMcABN8Mpo2veYNKaG
-        v86i3hRGQymLEIqqhDdK/R8=
-X-Google-Smtp-Source: ABdhPJx6prsJXhq23n+R/DvTEgi91eh8H6NZYcvmoutX9bxMPeshsjuy+gn6EwD4bR1/aQHxuAWImg==
-X-Received: by 2002:a17:902:be0a:b029:104:4f7c:8140 with SMTP id r10-20020a170902be0ab02901044f7c8140mr18034117pls.70.1622658681459;
-        Wed, 02 Jun 2021 11:31:21 -0700 (PDT)
-Received: from localhost ([2402:3a80:11c3:3834:fb69:d961:ca12:b10d])
-        by smtp.gmail.com with ESMTPSA id md24sm205267pjb.43.2021.06.02.11.31.19
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=42lSeKIaV1CGNphmGC2qEO05eLA2cNyDNNBAKkeOzoI=;
+        b=DcD9uNakJdvXfv3ESf1KD4oiVT9s3rxLdIwlFs/TJ07aQ2hvCOzySey/sgB5vgqUig
+         JwQ1NiBU3WIljxf5tP9xmFBjgDnmff/7LfOTzMqqveNDdJRTfi3oz7HRurOek3ognFZX
+         nItaT1mDHXlmoKn/3rLu2edfxIFb6epjwUHXgsJ1r4PJ/vJ4TmzxJDbhS7ii55+J6Unk
+         XR01MBpgVV7qRZyIu6Hx9rveMFskngHcXnCz2arls/J1wixVDTp1y61DehjVsyzEYi4j
+         WQKGj0Puc5suh2x0f+WgA66nxxVAwOU/IcNd6FVOOkhdbgKblOZm0NS1QhiBzFLe4oxd
+         1y3Q==
+X-Gm-Message-State: AOAM533NO/lPyWpsDHT5s3Os+ZKEr1NLImTJ3wfcZOtvzYrcvWbGJ7oY
+        bYmSyaxvcA3p1NTEia/U38A=
+X-Google-Smtp-Source: ABdhPJxXmmwBPh+BoeL9Vpyd3HPwW6l0gQ/244uTe34OToaOLxt4JzZHN/Hd5v74L1WjLXZGPoRBTg==
+X-Received: by 2002:a05:6e02:1be8:: with SMTP id y8mr27283526ilv.52.1622659584454;
+        Wed, 02 Jun 2021 11:46:24 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id s10sm451225ilu.34.2021.06.02.11.46.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 11:31:21 -0700 (PDT)
-Date:   Thu, 3 Jun 2021 00:00:22 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Wed, 02 Jun 2021 11:46:24 -0700 (PDT)
+Date:   Wed, 02 Jun 2021 11:46:15 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Cong Wang <xiyou.wangcong@gmail.com>,
         David Miller <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -61,9 +61,11 @@ Cc:     Martin KaFai Lau <kafai@fb.com>,
         Lorenz Bauer <lmb@cloudflare.com>,
         Linux Kernel Network Developers <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>
-Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
-Message-ID: <20210602183022.pjk54unrwcg5gp65@apollo>
-References: <CAADnVQ+V5o31-h-A+eNsHvHgOJrVfP4wVbyb+jL2J=-ionV0TA@mail.gmail.com>
+Message-ID: <60b7d1f7e3640_5c74020841@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210602181333.3m4vz2xqd5klbvyf@apollo>
+References: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
+ <CAM_iQpWDgVTCnP3xC3=z7WCH05oDUuqxrw2OjjUC69rjSQG0qQ@mail.gmail.com>
+ <CAADnVQ+V5o31-h-A+eNsHvHgOJrVfP4wVbyb+jL2J=-ionV0TA@mail.gmail.com>
  <CAM_iQpU-Cvpf-+9R0ZdZY+5Dv+stfodrH0MhvSgryv_tGiX7pA@mail.gmail.com>
  <CAM_iQpVYBNkjDeo+2CzD-qMnR4-2uW+QdMSf_7ohwr0NjgipaQ@mail.gmail.com>
  <CAADnVQJUHydpLwtj9hRWWNGx3bPbdk-+cQiSe3MDFQpwkKmkSw@mail.gmail.com>
@@ -72,50 +74,74 @@ References: <CAADnVQ+V5o31-h-A+eNsHvHgOJrVfP4wVbyb+jL2J=-ionV0TA@mail.gmail.com>
  <874kegbqkd.fsf@toke.dk>
  <20210602175436.axeoauoxetqxzklp@kafai-mbp>
  <20210602181333.3m4vz2xqd5klbvyf@apollo>
- <CAADnVQJTJzxzig=1vvAUMXELUoOwm2vXq0ahP4mfhBWGsCm9QA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJTJzxzig=1vvAUMXELUoOwm2vXq0ahP4mfhBWGsCm9QA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 11:56:40PM IST, Alexei Starovoitov wrote:
-> On Wed, Jun 2, 2021 at 11:14 AM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > On Wed, Jun 02, 2021 at 11:24:36PM IST, Martin KaFai Lau wrote:
-> > > On Wed, Jun 02, 2021 at 10:48:02AM +0200, Toke Høiland-Jørgensen wrote:
-> > > > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+Kumar Kartikeya Dwivedi wrote:
+> On Wed, Jun 02, 2021 at 11:24:36PM IST, Martin KaFai Lau wrote:
+> > On Wed, Jun 02, 2021 at 10:48:02AM +0200, Toke H=C3=B8iland-J=C3=B8rg=
+ensen wrote:
+> > > Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> > >
+> > > >> > In general the garbage collection in any form doesn't scale.
+> > > >> > The conntrack logic doesn't need it. The cillium conntrack is =
+a great
+> > > >> > example of how to implement a conntrack without GC.
+> > > >>
+> > > >> That is simply not a conntrack. We expire connections based on
+> > > >> its time, not based on the size of the map where it residents.
 > > > >
-> > > > >> > In general the garbage collection in any form doesn't scale.
-> > > > >> > The conntrack logic doesn't need it. The cillium conntrack is a great
-> > > > >> > example of how to implement a conntrack without GC.
-> > > > >>
-> > > > >> That is simply not a conntrack. We expire connections based on
-> > > > >> its time, not based on the size of the map where it residents.
-> > > > >
-> > > > > Sounds like your goal is to replicate existing kernel conntrack
-> > > > > as bpf program by doing exactly the same algorithm and repeating
-> > > > > the same mistakes. Then add kernel conntrack functions to allow list
-> > > > > of kfuncs (unstable helpers) and call them from your bpf progs.
-> > > >
-> > > > FYI, we're working on exactly this (exposing kernel conntrack to BPF).
-> > > > Hoping to have something to show for our efforts before too long, but
-> > > > it's still in a bit of an early stage...
-> > > Just curious, what conntrack functions will be made callable to BPF?
-> >
-> > Initially we're planning to expose the equivalent of nf_conntrack_in and
-> > nf_conntrack_confirm to XDP and TC programs (so XDP one works without an skb,
-> > and TC one works with an skb), to map these to higher level lookup/insert.
->
-> To make sure we're on the same page...
-> I still strongly prefer to avoid exposing conntrack via stable helpers.
-> Pls use kfunc and unstable interface.
+> > > > Sounds like your goal is to replicate existing kernel conntrack
+> > > > as bpf program by doing exactly the same algorithm and repeating
+> > > > the same mistakes. Then add kernel conntrack functions to allow l=
+ist
+> > > > of kfuncs (unstable helpers) and call them from your bpf progs.
+> > >
+> > > FYI, we're working on exactly this (exposing kernel conntrack to BP=
+F).
+> > > Hoping to have something to show for our efforts before too long, b=
+ut
+> > > it's still in a bit of an early stage...
+> > Just curious, what conntrack functions will be made callable to BPF?
+> =
 
-Correct, that is the idea.
+> Initially we're planning to expose the equivalent of nf_conntrack_in an=
+d
+> nf_conntrack_confirm to XDP and TC programs (so XDP one works without a=
+n skb,
+> and TC one works with an skb), to map these to higher level lookup/inse=
+rt.
+> =
 
---
-Kartikeya
+> --
+> Kartikeya
+
+I think this is a missed opportunity. I can't see any advantage to
+tying a XDP datapath into nft. For local connections use a socket lookup
+no need for tables at all. For middle boxes you need some tables, but
+again really don't see why you want nft here. An entirely XDP based
+connection tracker is going to be faster, easier to debug, and
+more easy to tune to do what you want as your use cases changes.
+
+Other than architecture disagreements, the implementation of this
+gets ugly. You will need to export a set of nft hooks, teach nft
+about xdp_buffs and then on every packet poke nft. Just looking
+at nf_conntrack_in() tells me you likely need some serious surgery
+there to make this work and now you've forked a bunch of code that
+could be done generically in BPF into some C hard coded stuff you
+will have to maintain. Or you do an ugly hack to convert xdp into
+skb on every packet, but I'll NAK that because its really defeats
+the point of XDP. Maybe TC side is easier because you have skb,
+but then you miss the real win in XDP side. Sorry I don't see any
+upsides here and just more work to review, maintain code that is
+dubious to start with.
+
+Anyways original timers code above LGTM.
+
+.John=
