@@ -2,117 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A2F4398450
-	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 10:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1273398481
+	for <lists+bpf@lfdr.de>; Wed,  2 Jun 2021 10:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232719AbhFBIkf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Jun 2021 04:40:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21015 "EHLO
+        id S232833AbhFBIty (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Jun 2021 04:49:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49997 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232717AbhFBIkf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 2 Jun 2021 04:40:35 -0400
+        by vger.kernel.org with ESMTP id S232822AbhFBItt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 2 Jun 2021 04:49:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1622623132;
+        s=mimecast20190719; t=1622623686;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=sTZTtBNUa2GqpMgr3TsfApPZ9E5Jnhf92Yl0Bbd6O1k=;
-        b=N8NKZJLHztsTWaiI4i+o+1eRs3wBImf0FNCL46X8ETRW0WhO2D9zN9zq2m6jL2GEog/1iq
-        mB5y4S/tgCm3O2TiydeYjaCZJwfL1KhmqwCiHlejg16v942CBzFj/gTDgjEljN4aiivxde
-        l8J9IG2jj7BYxsAvqyFz0v1aV0P+g7I=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-450-xNPghQoYMvqkZ3aAXkFXjQ-1; Wed, 02 Jun 2021 04:38:51 -0400
-X-MC-Unique: xNPghQoYMvqkZ3aAXkFXjQ-1
-Received: by mail-ed1-f71.google.com with SMTP id j13-20020aa7de8d0000b029038fc8e57037so1010723edv.0
-        for <bpf@vger.kernel.org>; Wed, 02 Jun 2021 01:38:50 -0700 (PDT)
+        bh=QAqDQbuc2zHT+lmvkpkliupEQ5G+pBOcwfPuyVGkZ4M=;
+        b=e5U296M4a+m6Up0N6568RA9rPQfdLxacxq9IaJvKiLNsg/fNrMtHE0HyK4OKuTAbbmj+Ki
+        sjv6hrK6kwP/HVZEd+hp0zBfo6szo9eb1tdJrKg/X8P14yCT8P04lEnmj8fvOlljfHZL7t
+        VU7lLIopYAXR3PRNuAfZbxy6xfz91wM=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-wIjJW2JAM9GLCY5HmL13LA-1; Wed, 02 Jun 2021 04:48:05 -0400
+X-MC-Unique: wIjJW2JAM9GLCY5HmL13LA-1
+Received: by mail-ej1-f69.google.com with SMTP id j16-20020a1709062a10b02903ba544485d0so423392eje.3
+        for <bpf@vger.kernel.org>; Wed, 02 Jun 2021 01:48:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version;
-        bh=sTZTtBNUa2GqpMgr3TsfApPZ9E5Jnhf92Yl0Bbd6O1k=;
-        b=C8TXpcF3L2N+QJC7+aUKxmoMBqNi1rGDisvcg5BQNCH9IED3NwNbcplaP7MlezWf2U
-         on3Whx/pU5IAc4UAQ/xQ/sHViGX2SBrAbL+oLJAJC2FdUmjtAYuJ8JD65oeE6lon17X0
-         cIvjekdXGZymjwOa679uin6i/KBx9mHh0VH3cLMzR92kVYoNOrS/epOyovjXxog9q9WV
-         V3NuEQcxLErUfoleGRlOfq86aeGcGVT+Mab4T18N2ep/QmG9QdajShCvWTYTSOKbih0w
-         OOYIYHTbcLzL8HrrkGOXfGP9Ax2i1AJIxavS178+Zm35YfUcLJ9aA85QN/pWFpa4tUMi
-         sHGA==
-X-Gm-Message-State: AOAM5304Hhe1w3paB/MxOdpl4U1F04xe4g/W8+I0aWd6R462MmtFPn2/
-        QW1++/zVIwzH2Rvws92xSRUZuP7OX6cMAlEzTCIwHSofm72Ge/O8kqqGhBqT0YuPYIOQ674KNXd
-        UYplreoXQBBUv
-X-Received: by 2002:a50:cb85:: with SMTP id k5mr32554937edi.170.1622623129844;
-        Wed, 02 Jun 2021 01:38:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJznNx1BKF2wb6aAOnoMMX1IU04QbC3N7r29/JqfnA7jMn5hjgExL0f5PSdJyUQIWvBLHfs6/g==
-X-Received: by 2002:a50:cb85:: with SMTP id k5mr32554918edi.170.1622623129709;
-        Wed, 02 Jun 2021 01:38:49 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id cz14sm840407edb.84.2021.06.02.01.38.49
+        bh=QAqDQbuc2zHT+lmvkpkliupEQ5G+pBOcwfPuyVGkZ4M=;
+        b=LIxIsMaac35RFPKseVK3NJTaDvXchj8I30ENTbPOsvKKxi18/h1S8Fap8cDZe13klK
+         kXFRHWHa2mC7x/q6GEEOvbvGM0jRiwetEuvuTraU36cbbmyOsoGjNxH0fXdg3jTQwggf
+         Z4Rv6GZdMDK1uFdUmdkR/7T0VRqiZc7flCFyITWj+Ude23CR1PcZJ4zh2uW31nqoVLv2
+         juICLkRsxtVB+J1ZDrpOTuLo8R56ZgnqZ9En4kmlXO2W8craV9XGGKOu1S0nrlKNIiSj
+         jDk+ziLpF5RzSaHz7yR/rNgPjSl8jHVyXR3V20/RtB/2NkMKSzptXKOH9TiYJT/fId1G
+         JIKg==
+X-Gm-Message-State: AOAM531ZjYRgt3EajuL1JeymtkaTR7JXoXOJlM78eenJRFhawEBXCkoM
+        8haK5+W0LonFvpkBhnDq8c4+9HF+mlcTtZaIbzlfBE4HJ1YaGta21YkQcLK2sEI/KCWBjf9nGf/
+        IrcA3a5dr+iX2
+X-Received: by 2002:aa7:cb5a:: with SMTP id w26mr4404203edt.139.1622623684383;
+        Wed, 02 Jun 2021 01:48:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJywfTaE0hAprvL9p9WssZnPY02Ob4LEn6uB7GNvr1kyQ4a1zhsGY1pnoio1QZitdVpv/kIDLA==
+X-Received: by 2002:aa7:cb5a:: with SMTP id w26mr4404188edt.139.1622623684082;
+        Wed, 02 Jun 2021 01:48:04 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id n16sm893224edw.26.2021.06.02.01.48.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Jun 2021 01:38:49 -0700 (PDT)
+        Wed, 02 Jun 2021 01:48:03 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 878F5180726; Wed,  2 Jun 2021 10:38:47 +0200 (CEST)
+        id CF229180726; Wed,  2 Jun 2021 10:48:02 +0200 (CEST)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Wang Hai <wanghai38@huawei.com>
-Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     David Miller <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] xsk: Return -EINVAL instead of -EBUSY after
- xsk_get_pool_from_qid() fails
-In-Reply-To: <CAJ8uoz2sT9iyqjWcsUDQZqZCVoCfpqgM7TseOTqeCzOuChAwww@mail.gmail.com>
-References: <20210602031001.18656-1-wanghai38@huawei.com>
- <CAJ8uoz2sT9iyqjWcsUDQZqZCVoCfpqgM7TseOTqeCzOuChAwww@mail.gmail.com>
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@fb.com>
+Subject: Re: [RFC PATCH bpf-next] bpf: Introduce bpf_timer
+In-Reply-To: <20210602020030.igrx5jp45tocekvy@ast-mbp.dhcp.thefacebook.com>
+References: <20210520185550.13688-1-alexei.starovoitov@gmail.com>
+ <CAM_iQpWDgVTCnP3xC3=z7WCH05oDUuqxrw2OjjUC69rjSQG0qQ@mail.gmail.com>
+ <CAADnVQ+V5o31-h-A+eNsHvHgOJrVfP4wVbyb+jL2J=-ionV0TA@mail.gmail.com>
+ <CAM_iQpU-Cvpf-+9R0ZdZY+5Dv+stfodrH0MhvSgryv_tGiX7pA@mail.gmail.com>
+ <CAM_iQpVYBNkjDeo+2CzD-qMnR4-2uW+QdMSf_7ohwr0NjgipaQ@mail.gmail.com>
+ <CAADnVQJUHydpLwtj9hRWWNGx3bPbdk-+cQiSe3MDFQpwkKmkSw@mail.gmail.com>
+ <CAM_iQpXUBuOirztj3kifdFpvygKb-aoqwuXKkLdG9VFte5nynA@mail.gmail.com>
+ <20210602020030.igrx5jp45tocekvy@ast-mbp.dhcp.thefacebook.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 02 Jun 2021 10:38:47 +0200
-Message-ID: <87a6o8bqzs.fsf@toke.dk>
+Date:   Wed, 02 Jun 2021 10:48:02 +0200
+Message-ID: <874kegbqkd.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Magnus Karlsson <magnus.karlsson@gmail.com> writes:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-> On Wed, Jun 2, 2021 at 6:02 AM Wang Hai <wanghai38@huawei.com> wrote:
->>
->> xsk_get_pool_from_qid() fails not because the device's queues are busy,
->> but because the queue_id exceeds the current number of queues.
->> So when it fails, it is better to return -EINVAL instead of -EBUSY.
->>
->> Signed-off-by: Wang Hai <wanghai38@huawei.com>
->> ---
->>  net/xdp/xsk_buff_pool.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
->> index 8de01aaac4a0..30ece117117a 100644
->> --- a/net/xdp/xsk_buff_pool.c
->> +++ b/net/xdp/xsk_buff_pool.c
->> @@ -135,7 +135,7 @@ int xp_assign_dev(struct xsk_buff_pool *pool,
->>                 return -EINVAL;
->>
->>         if (xsk_get_pool_from_qid(netdev, queue_id))
->> -               return -EBUSY;
->> +               return -EINVAL;
+>> > In general the garbage collection in any form doesn't scale.
+>> > The conntrack logic doesn't need it. The cillium conntrack is a great
+>> > example of how to implement a conntrack without GC.
+>> 
+>> That is simply not a conntrack. We expire connections based on
+>> its time, not based on the size of the map where it residents.
 >
-> I guess your intent here is to return -EINVAL only when the queue_id
-> is larger than the number of active queues. But this patch also
-> changes the return code when the queue id is already in use and in
-> that case we should continue to return -EBUSY. As this function is
-> used by a number of drivers, the easiest way to accomplish this is to
-> introduce a test for queue_id out of bounds before this if-statement
-> and return -EINVAL there.
+> Sounds like your goal is to replicate existing kernel conntrack
+> as bpf program by doing exactly the same algorithm and repeating
+> the same mistakes. Then add kernel conntrack functions to allow list
+> of kfuncs (unstable helpers) and call them from your bpf progs.
 
-Isn't the return code ABI by now, though?
+FYI, we're working on exactly this (exposing kernel conntrack to BPF).
+Hoping to have something to show for our efforts before too long, but
+it's still in a bit of an early stage...
 
 -Toke
 
