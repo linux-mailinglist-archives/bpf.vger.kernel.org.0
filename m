@@ -2,99 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0CF39A6A9
-	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 19:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A965E39A6C2
+	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 19:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhFCRIF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Jun 2021 13:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhFCRIF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:08:05 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D55C06174A
-        for <bpf@vger.kernel.org>; Thu,  3 Jun 2021 10:06:20 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id og14so5006000ejc.5
-        for <bpf@vger.kernel.org>; Thu, 03 Jun 2021 10:06:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TDiaveGReuaoiNMHxszkQB0RlZZMsAokFGbSq8UB4Sg=;
-        b=ul0PzCbFupLkCpnVctCVIeN1BTPpbb4qaF2yEbAOkQwupeGm6ujM8tmniAir2+dS3H
-         srWjWRdlEG4ENPRoIMOyBEJzF0Qc07KRl++f8/VNzcSPtVw+sohbpC7itEDApvRYFKbQ
-         A8FM0Sjdlz24dXUKPyv24L230d2V1zQegUed6o6evvzlEQak5tI0LTis/qjN9EdtsgOR
-         amv95kzOSLdDp87234fekUmQgq8CZjhBHrD/IuisTDfPb4Me26pI9a5YRGV9RCKecC29
-         yhIK5ytSh83jYzUeECNph7QYizHn2BUW26u+7sWyoeNvID8PhVIEICVH527eJdH7ynnq
-         e2sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TDiaveGReuaoiNMHxszkQB0RlZZMsAokFGbSq8UB4Sg=;
-        b=K1q6YBjJN7/x8qPTvxOK/P1bxlJvkQ7J2kXpHGdfeCU2nzD+nh09leomMbdw7es1IK
-         RQokX5LxurqgZzSDPLV89RhOxEnNOUr7I7sRRJTtxJ5Krr1aKBS/x7Gj3nwrrrvn/58A
-         ihe+WNhKE+Lh3RpQlVOjfnt33Pm6o/kYu/nDDn9V9WJtsWBp6UcWxP32drU7iWzk1TQl
-         5yMRJVxTLbrdKKZ9SFCbY3P2ydNKlxIyWodReCCgzxHichtkdRbZCeoJMAO87tyDXwvc
-         jfQGK1k6ZpSn5ib/nXnR30E5pcRwES0l0PcE1I3CxT01KeBLr0suqWgCW3p4wGF9dkcp
-         W1Pw==
-X-Gm-Message-State: AOAM530cneTRMt8govLzO78x/UeS1WHuFHy4qrTJz51rkd5xB9CCg7kq
-        C76FxdcgJvCiKq1CskWNUy9ZDQ==
-X-Google-Smtp-Source: ABdhPJwBRx1J//3jL7Gw8fCqJDbMKaS7HfwCTl2U2QAOhq8iZGMybt/8ui52bVhSCPekoBE82i1k0Q==
-X-Received: by 2002:a17:906:2a41:: with SMTP id k1mr334826eje.177.1622739978667;
-        Thu, 03 Jun 2021 10:06:18 -0700 (PDT)
-Received: from localhost.localdomain (adsl-84-226-111-173.adslplus.ch. [84.226.111.173])
-        by smtp.gmail.com with ESMTPSA id t18sm2060199edw.47.2021.06.03.10.06.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Jun 2021 10:06:18 -0700 (PDT)
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: [PATCH bpf-next] tools/bpftool: Fix cross-build
-Date:   Thu,  3 Jun 2021 19:05:16 +0200
-Message-Id: <20210603170515.1854642-1-jean-philippe@linaro.org>
-X-Mailer: git-send-email 2.31.1
+        id S230339AbhFCRJ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Jun 2021 13:09:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230333AbhFCRJ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:09:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 809F2613DE;
+        Thu,  3 Jun 2021 17:07:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1622740061;
+        bh=27kYeqCQHC+7oB//+3h8Rl8uVvRD+9U76fLMbkQRlsM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=CqTVKze93Vgeq3OA+NL8bli3d2jPLOMNlfv2VC33pBPKxt/QzFdMElrrnPsfZfLtV
+         pLbMCmaruE3lYL8skMAgNlwQDfYwOo4bwf4dCILIJ6RcY7RggrFfByp2FJnRzyc7fU
+         a9wlCD1KGEwN6/GQVNkjIWuYuvXNE9cDjZQIupnpFMEqPQnyYYM8zSz/8DphLm5lWP
+         V7fX31HJDsPA+pSPDUboGHPk+LU9Xn68dYc+bUZG7FogIIjt5fDT6zNp5IJbiuxE2C
+         3Z4MIfIOc/dhuLfmIIR5NARxV7QP816+ahECz+EmhEZO2kgCZnQbJKKdO1+mvm6vff
+         VUuSeXzmfi/fw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.12 05/43] bpf: Forbid trampoline attach for functions with variable arguments
+Date:   Thu,  3 Jun 2021 13:06:55 -0400
+Message-Id: <20210603170734.3168284-5-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210603170734.3168284-1-sashal@kernel.org>
+References: <20210603170734.3168284-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When the bootstrap and final bpftool have different architectures, we
-need to build two distinct disasm.o objects. Add a recipe for the
-bootstrap disasm.o
+From: Jiri Olsa <jolsa@kernel.org>
 
-Fixes: d510296d331a ("bpftool: Use syscall/loader program in "prog load" and "gen skeleton" command.")
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+[ Upstream commit 31379397dcc364a59ce764fabb131b645c43e340 ]
+
+We can't currently allow to attach functions with variable arguments.
+The problem is that we should save all the registers for arguments,
+which is probably doable, but if caller uses more than 6 arguments,
+we need stack data, which will be wrong, because of the extra stack
+frame we do in bpf trampoline, so we could crash.
+
+Also currently there's malformed trampoline code generated for such
+functions at the moment as described in:
+
+  https://lore.kernel.org/bpf/20210429212834.82621-1-jolsa@kernel.org/
+
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210505132529.401047-1-jolsa@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/bpftool/Makefile | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ kernel/bpf/btf.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index d16d289ade7a..d73232be1e99 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -136,7 +136,7 @@ endif
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index b1a76fe046cb..6bd003568fa5 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -5126,6 +5126,12 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+ 	m->ret_size = ret;
  
- BPFTOOL_BOOTSTRAP := $(BOOTSTRAP_OUTPUT)bpftool
- 
--BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o xlated_dumper.o btf_dumper.o) $(OUTPUT)disasm.o
-+BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o xlated_dumper.o btf_dumper.o disasm.o)
- OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
- 
- VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
-@@ -180,6 +180,9 @@ endif
- 
- CFLAGS += $(if $(BUILD_BPF_SKELS),,-DBPFTOOL_WITHOUT_SKELETONS)
- 
-+$(BOOTSTRAP_OUTPUT)disasm.o: $(srctree)/kernel/bpf/disasm.c
-+	$(QUIET_CC)$(HOSTCC) $(CFLAGS) -c -MMD -o $@ $<
-+
- $(OUTPUT)disasm.o: $(srctree)/kernel/bpf/disasm.c
- 	$(QUIET_CC)$(CC) $(CFLAGS) -c -MMD -o $@ $<
- 
+ 	for (i = 0; i < nargs; i++) {
++		if (i == nargs - 1 && args[i].type == 0) {
++			bpf_log(log,
++				"The function %s with variable args is unsupported.\n",
++				tname);
++			return -EINVAL;
++		}
+ 		ret = __get_type_size(btf, args[i].type, &t);
+ 		if (ret < 0) {
+ 			bpf_log(log,
+@@ -5133,6 +5139,12 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+ 				tname, i, btf_kind_str[BTF_INFO_KIND(t->info)]);
+ 			return -EINVAL;
+ 		}
++		if (ret == 0) {
++			bpf_log(log,
++				"The function %s has malformed void argument.\n",
++				tname);
++			return -EINVAL;
++		}
+ 		m->arg_size[i] = ret;
+ 	}
+ 	m->nr_args = nargs;
 -- 
-2.31.1
+2.30.2
 
