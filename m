@@ -2,205 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3689039A911
-	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 19:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C026639A94C
+	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 19:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhFCRXd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Jun 2021 13:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhFCRXd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:23:33 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7853C06174A;
-        Thu,  3 Jun 2021 10:21:39 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id n133so9882819ybf.6;
-        Thu, 03 Jun 2021 10:21:39 -0700 (PDT)
+        id S230081AbhFCRh4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Jun 2021 13:37:56 -0400
+Received: from mail-yb1-f177.google.com ([209.85.219.177]:35808 "EHLO
+        mail-yb1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhFCRh4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Jun 2021 13:37:56 -0400
+Received: by mail-yb1-f177.google.com with SMTP id i4so9974032ybe.2;
+        Thu, 03 Jun 2021 10:36:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7PnhWU883KxevJCSzYlL17xLw6t03PdAUgdOsMONsd4=;
-        b=uRDY8Os4DcjWrNUA7xh+f+zXOFFT3Ara0PqWHJP0FQK3czX5ChvsPw3BlZDaF7YvJD
-         JbuChJNuxiQEOBql3m8lmkepS22ez1l2+1ec9BfgiOVIK1u9tRLczxaYk79Izxfx0fcs
-         ZnZrZxFl4RwGYWPcWvHu+HrWDZ6QWSPAQXmoOTsAbnLBG4F7EU0gjmDizORI0TDkurKA
-         u22KFqWsh+MzEjFwE9mi31+hdG+3mgVQp01ZEqRpk0sCGjd5IMNhVWYqgoIHxQ+YlkSL
-         JSPNkgVdASCbYCo1puBYy9DwBHwOK/jDdygyAgm7F2o2tk0SOMjm1e3HPj3mnKy+8pZc
-         Cx5A==
+         :cc;
+        bh=fhXTrmiEVYD8RNIr+33wie+6gXkAl42tkhV11H/Xek8=;
+        b=koOQMSH2ClflXWmOaQ1UuCknUIzGEUclH0xn/3jthccqoJ4gf8jS3YykpJLwpe1mIm
+         qApUJ33f57yAGAEYUUQlcRLh/Qxsd5++LiWtKyjps9odjtzE/mmsmIK7uKGWxSs+zGd4
+         CWVUj+xEW3srNkQYQ3pcxaVbw3P6GqNabic1ztNTOPZDKNIFXuQybbALcD011hp+uDdS
+         wZfOUuB3cHB+tZFrv/F/jk/9+nKru09uso5331AHjDYlr+pK3BvD4LXTnj2NhUgHjxE9
+         fxgLfic5snfpmsWoy6EGEEqhLeXVwiuGy2NJLMbhUu1sgKyN4Myy/Xa3+o1+DJSIcgCl
+         AiSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7PnhWU883KxevJCSzYlL17xLw6t03PdAUgdOsMONsd4=;
-        b=sZzLFjyu3cese/NNImGZTNys5czqbecLPYSHe08ZYrqJaP/IUGKwOllEhKgbMoLmXK
-         WgfXFALrNSkRNFoF/PZ1y7wbZBXvgXJW2JBsKT7qRhAgArvDgoW0z75T8R92NyIqASAM
-         1KDWPNoEBMJGiBxvr7bLuzam6FCtPFZtQo4tzEe7GpsGA+p3KBP38KKnDjbQ3zgeRkbg
-         2qTsilPUgMuyf58H09l0iYgAq6M1oKQnY+qlreN71O1vTVVq4t6P5ackIN/kx34zt7Cm
-         Xua3vkcyBZFWjROxqtJPFz9knH0MXQf+Nmtw62VwHEOS5zXDhjFJdegxtxxSyCALQCna
-         2Olw==
-X-Gm-Message-State: AOAM5322TxZnEydRop9YA1jqKDziFsaFTWiEAU05o0CHLL9wdhMdDpYs
-        2siRmIeAxu6YjW6H1Rb+GvFfytuYXF3M6CQTY9g=
-X-Google-Smtp-Source: ABdhPJybk7tvmPrXi1+U/N7ly+vf8AENbWi9Q/a8cte3HOIamxIzqfJ9Zf0SIJ5NObdxjlKGyON1sN5WNbHLWCNFftA=
-X-Received: by 2002:a25:1455:: with SMTP id 82mr210329ybu.403.1622740897497;
- Thu, 03 Jun 2021 10:21:37 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=fhXTrmiEVYD8RNIr+33wie+6gXkAl42tkhV11H/Xek8=;
+        b=uhPD5wks2zn5yjR7E5PUnLrk1xCitUnssapbk+cxHSfwdOl4jOpEcbdxOycPeiF5CP
+         aqUc793dVcpgCAYyb4eociCknWxdiJHP5vjjIiLOp6tpxhDldRk5sgOkp3T/8CNcPQlg
+         s8RgRvEc3AL1a+2mAipfIb/uWyMOm/OyTPsiN9L08kZy8qEwySC59siCxJcuh14LO8ZE
+         drTF7WBogw6a0cAqj41LH5UKYiUs1J/RC5TaAt2etI07rvTv6arWIcmTlTDQMmaesffY
+         R6bj3ZeUchBKMP8ZpUz3oZf+rmwSYg1kZx7xgBj2dUn0e/svtOQmhOEvx+htDPc3XeQ3
+         Ubwg==
+X-Gm-Message-State: AOAM5331Wv+MwlZjgG57ckrxzpP7HEZ6uftwIsBs+wkqe6Sj73+2nXen
+        G5Q/Yp5E+vQficneEULFHroTtW5iQw0I1pYN19Q=
+X-Google-Smtp-Source: ABdhPJwYsVOmvs9NcJW5ZezwjgY3yzsZ3IpI6Lj+Genk+l845YcdEHtRGopdbtmKi192mlUSACFZDGV1rjA6u70oZis=
+X-Received: by 2002:a5b:f05:: with SMTP id x5mr280086ybr.425.1622741711434;
+ Thu, 03 Jun 2021 10:35:11 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210527040259.77823-1-alexei.starovoitov@gmail.com>
- <20210527040259.77823-2-alexei.starovoitov@gmail.com> <87r1hsgln6.fsf@toke.dk>
- <20210602014608.wxzfsgzuq7rut4ra@ast-mbp.dhcp.thefacebook.com>
- <87a6o7aoxa.fsf@toke.dk> <20210603015809.l2dez754vzxjueew@ast-mbp.dhcp.thefacebook.com>
- <874kef9pth.fsf@toke.dk>
-In-Reply-To: <874kef9pth.fsf@toke.dk>
+ <20210527040259.77823-3-alexei.starovoitov@gmail.com> <CAEf4BzbPkUdsY8XD5n2yMB8CDvakz4jxshjF8xrzqHXQS0ct9g@mail.gmail.com>
+ <20210603020419.mhnueugljj5cs3ie@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210603020419.mhnueugljj5cs3ie@ast-mbp.dhcp.thefacebook.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Jun 2021 10:21:26 -0700
-Message-ID: <CAEf4BzZYd02+TZRE1rya=SmGL5Jf9Ff+VebivsjCYLVWyETRhw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: Introduce bpf_timer
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+Date:   Thu, 3 Jun 2021 10:35:00 -0700
+Message-ID: <CAEf4BzYgxR38405LoyVrwPAzdiax-Fbu+2hNrqPa_6xSnoGWiA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add verifier checks for bpf_timer.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 3:59 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
+On Wed, Jun 2, 2021 at 7:04 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->
-> > On Thu, Jun 03, 2021 at 12:21:05AM +0200, Toke H=C3=B8iland-J=C3=B8rgen=
-sen wrote:
-> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
-> >>
-> >> > On Thu, May 27, 2021 at 06:57:17PM +0200, Toke H=C3=B8iland-J=C3=B8r=
-gensen wrote:
-> >> >> >     if (val) {
-> >> >> >         bpf_timer_init(&val->timer, timer_cb2, 0);
-> >> >> >         bpf_timer_start(&val->timer, 1000 /* call timer_cb2 in 1 =
-msec */);
-> >> >>
-> >> >> nit: there are 1M nanoseconds in a millisecond :)
-> >> >
-> >> > oops :)
-> >> >
-> >> >> >     }
-> >> >> > }
-> >> >> >
-> >> >> > This patch adds helper implementations that rely on hrtimers
-> >> >> > to call bpf functions as timers expire.
-> >> >> > The following patch adds necessary safety checks.
-> >> >> >
-> >> >> > Only programs with CAP_BPF are allowed to use bpf_timer.
-> >> >> >
-> >> >> > The amount of timers used by the program is constrained by
-> >> >> > the memcg recorded at map creation time.
-> >> >> >
-> >> >> > The bpf_timer_init() helper is receiving hidden 'map' and 'prog' =
-arguments
-> >> >> > supplied by the verifier. The prog pointer is needed to do refcnt=
-ing of bpf
-> >> >> > program to make sure that program doesn't get freed while timer i=
-s armed.
-> >> >> >
-> >> >> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> >> >>
-> >> >> Overall this LGTM, and I believe it will be usable for my intended =
-use
-> >> >> case. One question:
-> >> >>
-> >> >> With this, it will basically be possible to create a BPF daemon, wo=
-n't
-> >> >> it? I.e., if a program includes a timer and the callback keeps re-a=
-rming
-> >> >> itself this will continue indefinitely even if userspace closes all=
- refs
-> >> >> to maps and programs? Not saying this is a problem, just wanted to =
-check
-> >> >> my understanding (i.e., that there's not some hidden requirement on
-> >> >> userspace keeping a ref open that I'm missing)...
-> >> >
-> >> > That is correct.
-> >> > Another option would be to auto-cancel the timer when the last refer=
-ence
-> >> > to the prog drops. That may feel safer, since forever
-> >> > running bpf daemon is a certainly new concept.
-> >> > The main benefits of doing prog_refcnt++ from bpf_timer_start are ea=
-se
-> >> > of use and no surprises.
-> >> > Disappearing timer callback when prog unloads is outside of bpf prog=
- control.
-> >> > For example the tracing bpf prog might collect some data and periodi=
-cally
-> >> > flush it to user space. The prog would arm the timer and when callba=
-ck
-> >> > is invoked it would send the data via ring buffer and start another
-> >> > data collection cycle.
-> >> > When the user space part of the service exits it doesn't have
-> >> > an ability to enforce the flush of the last chunk of data.
-> >> > It could do prog_run cmd that will call the timer callback,
-> >> > but it's racy.
-> >> > The solution to this problem could be __init and __fini
-> >> > sections that will be invoked when the prog is loaded
-> >> > and when the last refcnt drops.
-> >> > It's a complementary feature though.
-> >> > The prog_refcnt++ from bpf_timer_start combined with a prog
-> >> > explicitly doing bpf_timer_cancel from __fini
-> >> > would be the most flexible combination.
-> >> > This way the prog can choose to be a daemon or it can choose
-> >> > to cancel its timers and do data flushing when the last prog
-> >> > reference drops.
-> >> > The prog refcnt would be split (similar to uref). The __fini callbac=
-k
-> >> > will be invoked when refcnt reaches zero, but all increments
-> >> > done by bpf_timer_start will be counted separately.
-> >> > The user space wouldn't need to do the prog_run command.
-> >> > It would detach the prog and close(prog_fd).
-> >> > That will trigger __fini callback that will cancel the timers
-> >> > and the prog will be fully unloaded.
-> >> > That would make bpf progs resemble kernel modules even more.
-> >>
-> >> I like the idea of a "destructor" that will trigger on refcnt drop to
-> >> zero. And I do think a "bpf daemon" is potentially a useful, if novel,
-> >> concept.
+> On Wed, Jun 02, 2021 at 03:34:29PM -0700, Andrii Nakryiko wrote:
 > >
-> > I think so too. Long ago folks requested periodic bpf progs to
-> > do sampling in tracing. All these years attaching bpf prog
-> > to a perf_event was a workaround for such feature request.
-> > perf_event bpf prog can be pinned in perf_event array,
-> > so "bpf daemon" kinda exist today. Just more convoluted.
+> > >  /* copy everything but bpf_spin_lock */
+> > >  static inline void copy_map_value(struct bpf_map *map, void *dst, void *src)
+> > >  {
+> > > +       u32 off = 0, size = 0;
+> > > +
+> > >         if (unlikely(map_value_has_spin_lock(map))) {
+> > > -               u32 off = map->spin_lock_off;
+> > > +               off = map->spin_lock_off;
+> > > +               size = sizeof(struct bpf_spin_lock);
+> > > +       } else if (unlikely(map_value_has_timer(map))) {
+> > > +               off = map->timer_off;
+> > > +               size = sizeof(struct bpf_timer);
+> > > +       }
+> >
+> > so the need to handle 0, 1, or 2 gaps seems to be the only reason to
+> > disallow both bpf_spinlock and bpf_timer in one map element, right?
 >
-> Right, agreed - triggering periodic sampling directly from BPF does seem
-> like the right direction.
+> exactly.
+>
+> > Isn't it worth addressing it from the very beginning to lift the
+> > artificial restriction? E.g., for speed, you'd do:
+> >
+> > if (likely(neither spinlock nor timer)) {
+> >  /* fastest pass */
+> > } else if (only one of spinlock or timer) {
+> >   /* do what you do here */
+> > } else {
+> >   int off1, off2, sz1, sz2;
+> >
+> >   if (spinlock_off < timer_off) {
+> >     off1 = spinlock_off;
+> >     sz1 = spinlock_sz;
+> >     off2 = timer_off;
+> >     sz2 = timer_sz;
+> >   } else {
+> >     ... you get the idea
+>
+> Not really :)
 
-This is one of the cases where knowing (or being able to specify) the
-CPU to run on is very important, btw.
+hm, really? I meant that else will be:
 
-Which made me think about scheduling timeout on a specific CPU from
-another CPU. Is it possible with hrtimer? If yes, should it be done
-through bpf_timer_init() or bpf_timer_start()?
+     off1 = timer_off;
+     sz1 = timer_sz;
+     off2 = spinlock_off;
+     sz2 = spinlock_sz;
+
+Just making sure that off1 < off2 always and sz1 and sz2 are matching
+
+> Are you suggesting to support one bpf_spin_lock and one
+> bpf_timer inside single map element, but not two spin_locks
+> and/or not two bpf_timers?
+
+Yes, exactly. I see bpf_spinlock and bpf_timer as two independent
+orthogonal features and I don't understand why we restrict using just
+one of them in a given map element. I think those 20 lines of code
+that decouples them and removes artificial restriction that users need
+to remember (or discover with surprise) is totally worth it.
+
+> Two me it's either one or support any.
+
+I think it's fine to start with supporting one. But one of each. They
+are independent of each other.
+
+> Anything in-between doesn't seem worth extra code.
+
+Up to you, but I disagree, obviously. It's possible to work-around
+that limitation with extra maps/complexity, so if I ever need to both
+lock an element and schedule the timer with it, it's not going to stop
+me. :)
 
 >
-> >> The __fini thing kinda supposes a well-behaved program, though, right?
-> >> I.e., it would be fairly trivial to write a program that spins forever
-> >> by repeatedly scheduling the timer with a very short interval (whether
-> >> by malice or bugginess).
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index f386f85aee5c..0a828dc4968e 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -3241,6 +3241,15 @@ static int check_map_access(struct bpf_verifier_env *env, u32 regno,
+> > >                         return -EACCES;
+> > >                 }
+> > >         }
+> > > +       if (map_value_has_timer(map)) {
+> > > +               u32 t = map->timer_off;
+> > > +
+> > > +               if (reg->smin_value + off < t + sizeof(struct bpf_timer) &&
 > >
-> > It's already possible without bpf_timer.
+> > <= ? Otherwise we allow accessing the first byte, unless I'm mistaken.
 >
-> Hmm, fair point.
+> I don't think so. See the comment above in if (map_value_has_spin_lock(map))
+> I didn't copy-paste it, because it's the same logic.
+
+Oh, I didn't realize that this is the interval intersection check I
+suggested a long time ago :) yeah, that still looks correct
+
 >
-> >> So do we need a 'bpfkill' type utility to nuke
-> >> buggy programs, or how would resource constraints be enforced?
+> > > -       if (val) {
+> > > -               /* todo: relax this requirement */
+> > > -               verbose(env, "bpf_timer field can only be first in the map value element\n");
 > >
-> > That is possible without 'bpfkill'.
-> > bpftool can delete map element that contains bpf_timer and
-> > that will cancel it. I'll add tests to make sure it's the case.
+> > ok, this was confusing, but now I see why you did that...
 >
-> Ah, right, of course! Thanks, LGTM then :)
->
-> -Toke
->
+> I'll clarify the comment to say that the next patch fixes it.
+
+ok, thanks
