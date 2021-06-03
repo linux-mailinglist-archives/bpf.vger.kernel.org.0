@@ -2,73 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98D839AA21
-	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 20:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163C139AA5E
+	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 20:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbhFCShf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Jun 2021 14:37:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFCShf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Jun 2021 14:37:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11DE9613F3;
-        Thu,  3 Jun 2021 18:35:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622745350;
-        bh=ff8c2MjuINj4Z68DxBy172+R76+T6ILfVjdeXXZ2NaM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=t8J2VpCStOku7beQqJjqRzVTE8AevnBQGPNheec5ehM+Y0n/6juzl7mty2DeEFclm
-         LXJjpFIYVPkYSNY4nd1K2CvufA6ehDSHxdWZIBMsm7VfLnB/OlNYCOq00mnX2pjUMq
-         RjDPyJNqyAsbVXSSoq6jhcNH3QI1BYBI8Ea/lNPCUS4DCn+/F5CyuS62GoC4ufP7AE
-         uA0DdRMLafHql1E2iLZbPHi1F2LFLYOjIXuhLNajCH66vDtsf3Y9SAtNYqCGG/ufKL
-         fL9DzXsAq55rCTMcls+6AC+rhT2aGu1UwnS4DVI5iPAhpaZQLW0bVG47wiCSHiYiaq
-         59ar0AirWhTew==
-Date:   Thu, 3 Jun 2021 11:35:48 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
-        <weiwan@google.com>, <cong.wang@bytedance.com>,
-        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
-        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-Subject: Re: [PATCH net-next v2 0/3] Some optimization for lockless qdisc
-Message-ID: <20210603113548.2d71b4d3@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <1622684880-39895-1-git-send-email-linyunsheng@huawei.com>
-References: <1622684880-39895-1-git-send-email-linyunsheng@huawei.com>
+        id S229786AbhFCSrl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Jun 2021 14:47:41 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:44720 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhFCSrk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Jun 2021 14:47:40 -0400
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B32AA20B8008;
+        Thu,  3 Jun 2021 11:45:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B32AA20B8008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1622745955;
+        bh=lf8obqIyS2qhtxjR7Mi9MkEGyvvpajHXjSrq3w7AQBw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IqHYoY2eF51K4B1BRfEAgTvALDlLvh9m8WiqDYT7VaLO9gh/L/YLsH1C8E69nqCKD
+         SXIdkxTZ11PHMWxStuJVNllURVLpim1rPcwpjR0Alv9K8BrGhygXgcccEG6/4CjREM
+         /0dKw3pPaAMwpE5rQO6cgIgoojsVFwCfzI82Smds=
+Received: by mail-pl1-f173.google.com with SMTP id u9so3288044plr.1;
+        Thu, 03 Jun 2021 11:45:55 -0700 (PDT)
+X-Gm-Message-State: AOAM5308j+KEEJGQ/VfkAM5GiUWH2oNGP/3MmPyl36sdXpYtg3T6U4x6
+        io7E1NfugESON7BBot7pgNCAdAqfQ0a4sF8S8I0=
+X-Google-Smtp-Source: ABdhPJyNuPz1nMtiXXYpEZb8kLY8qBLhgAqPuG4EN+LJF+UkcLXA3R73bIhWeQhXNcV1yibM3RwAOyya9JHIqmypciY=
+X-Received: by 2002:a17:90a:7892:: with SMTP id x18mr643257pjk.39.1622745955243;
+ Thu, 03 Jun 2021 11:45:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210521161527.34607-1-mcroce@linux.microsoft.com> <20210521161527.34607-4-mcroce@linux.microsoft.com>
+In-Reply-To: <20210521161527.34607-4-mcroce@linux.microsoft.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Thu, 3 Jun 2021 20:45:19 +0200
+X-Gmail-Original-Message-ID: <CAFnufp2Qbq53rT17eZD97tm3o5OFJeHEDAyaW8VhVcy4u+KeNQ@mail.gmail.com>
+Message-ID: <CAFnufp2Qbq53rT17eZD97tm3o5OFJeHEDAyaW8VhVcy4u+KeNQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v6 3/5] page_pool: Allow drivers to hint on SKB recycling
+To:     netdev@vger.kernel.org, linux-mm@kvack.org
+Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>,
+        Sven Auhagen <sven.auhagen@voleatech.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 3 Jun 2021 09:47:57 +0800 Yunsheng Lin wrote:
-> Patch 1: remove unnecessary seqcount operation.
-> Patch 2: implement TCQ_F_CAN_BYPASS.
-> Patch 3: remove qdisc->empty.
-> 
-> Performance data for pktgen in queue_xmit mode + dummy netdev
-> with pfifo_fast:
-> 
->  threads    unpatched           patched             delta
->     1       2.60Mpps            3.21Mpps             +23%
->     2       3.84Mpps            5.56Mpps             +44%
->     4       5.52Mpps            5.58Mpps             +1%
->     8       2.77Mpps            2.76Mpps             -0.3%
->    16       2.24Mpps            2.23Mpps             +0.4%
-> 
-> Performance for IP forward testing: 1.05Mpps increases to
-> 1.16Mpps, about 10% improvement.
+On Fri, May 21, 2021 at 6:16 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> +bool page_pool_return_skb_page(void *data)
+> +{
+> +       struct page_pool *pp;
+> +       struct page *page;
+> +
+> +       page = virt_to_head_page(data);
+> +       if (unlikely(page->pp_magic != PP_SIGNATURE))
+> +               return false;
+> +
+> +       pp = (struct page_pool *)page->pp;
+> +
+> +       /* Driver set this to memory recycling info. Reset it on recycle.
+> +        * This will *not* work for NIC using a split-page memory model.
+> +        * The page will be returned to the pool here regardless of the
+> +        * 'flipped' fragment being in use or not.
+> +        */
+> +       page->pp = NULL;
+> +       page_pool_put_full_page(pp, virt_to_head_page(data), false);
 
-Acked-by: Jakub Kicinski <kuba@kernel.org>
+Here I could just use the cached "page" instead of calling
+virt_to_head_page() once again.
+
+-- 
+per aspera ad upstream
