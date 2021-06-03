@@ -2,109 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF3639A98E
-	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 19:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E24DA39A9AB
+	for <lists+bpf@lfdr.de>; Thu,  3 Jun 2021 20:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbhFCRxQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Jun 2021 13:53:16 -0400
-Received: from mail-yb1-f182.google.com ([209.85.219.182]:40836 "EHLO
-        mail-yb1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhFCRxQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Jun 2021 13:53:16 -0400
-Received: by mail-yb1-f182.google.com with SMTP id e10so10014746ybb.7
-        for <bpf@vger.kernel.org>; Thu, 03 Jun 2021 10:51:19 -0700 (PDT)
+        id S230080AbhFCSDx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Jun 2021 14:03:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230075AbhFCSDw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Jun 2021 14:03:52 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D3AC061756
+        for <bpf@vger.kernel.org>; Thu,  3 Jun 2021 11:01:26 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id m3so8208282lji.12
+        for <bpf@vger.kernel.org>; Thu, 03 Jun 2021 11:01:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cak9h6ceuUB+DR4AQXw0ZsMQ8v6Il/Kf7CNDtMUfk6I=;
-        b=kaZb2nKd2lWe3rt2h/r6Og0xgtzfJ/irctzskvusGTlbOyQ7tJaHFv+aqx91DBzvkI
-         7rloGSKfEyMvi49bbb3qyJN9oXHaq8eo/vN+uZRNlUUw9AYQ+rXaqMMLQQ+dr/LvfbyA
-         4L4WozrquQWdpZmAgOFQmX/LbWKl1HWtFTUcK34cRNWk5nq1CUbOHvQI/a37D12cPrDv
-         US1y73PFYruK6S3+GO5ol716aMj5IZ+Q17NxvxYFXIb9ZC/VfaxB3hO/MgF6+K0Bn8wT
-         g/TDxYIXeAfrYRdwHfQUyswgYBdCRKk8e49OQ0Eok4xohstksq82b2d5MTZ34XVTs/Bn
-         kQug==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=r9MzWZjKPqmlOjFqE3Qrd2asRPZ12yoFNhArngWxvS0=;
+        b=a2XVL0xjWzNmMVySfXwLhDZ042VdNWI/mlGbg22MHKi83/dz+Au4Lo1l0YBdZamgam
+         xuXSHqdF20ibK57qRQhiaHCMniecGwlNSrpAECIGIhuca36POi8dJrgfjnoDQsLcpnE8
+         WV8u/4nABeCFGdVQSoN5V50SiN67XfbEEbGfawVl7t+YsranSPk1XQvB4RDqnZA7TwP7
+         tnQQzMiJyCxDEx3mHkbWKd2WXejigs4BFYhvbIbzRGr2LrfqxNR2pTO6ZxJM55srCPUe
+         H3rM7iFJDXXB0thuv/XhdcJzXscGTE3sQep+UM6RHGwydrN84z67QddxUTYDXCQXJCaw
+         x5fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cak9h6ceuUB+DR4AQXw0ZsMQ8v6Il/Kf7CNDtMUfk6I=;
-        b=acVSDtYW+9v8vUMcln5hClsdZvM8jSrIJ4YfQmF0EGtXXKc8tyoU0s9LFr4SsmkHu8
-         pUbH6Tx3iTD/lsE8+kJfIWVVuOoil9Zps28q9VI+JHHJR8RtT5wWUH5pfcssixelnIOH
-         KGhi+CVEQfVscQv+L/nZo8vNy6ckn+z6g5ob01/2vsy2AzsW/CLo05mnLLQW1k0ayrev
-         4akGLucQwpAMsHfSOsSOz3ydiCfa1NJ3jfcalaJjw6S3VSKiQU98Pk9TmE72hfRmtSdY
-         uDZDk48aB5M5MtNMObtnLPcFvoOmkWHiERqGiRpZIJppPcRlJdu7CG7UAXx8nLbEyIMO
-         5OEQ==
-X-Gm-Message-State: AOAM532nNAOaKcro7v0McKOnrboQJVHUDqWdIpjw3/ADm1Vg7RBWf61C
-        rC1Mwg2Fr5y91BrglAtMEitjrqDLFsHFh9CKdlU=
-X-Google-Smtp-Source: ABdhPJyp12uQS+KzZIWDR3gtGq4qYehckeVTJ5TpvRzlYk+U8wwNbAqmD6gtpanEmyHHgoyMAbnP32LErHwNQBw9o2k=
-X-Received: by 2002:a25:6612:: with SMTP id a18mr392511ybc.347.1622742618958;
- Thu, 03 Jun 2021 10:50:18 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=r9MzWZjKPqmlOjFqE3Qrd2asRPZ12yoFNhArngWxvS0=;
+        b=sY2zXOOlDdaPZ9h2UpSy0O4vmn3zIkfhTgyW9jVvfvU/60V942me2DUnTEEa05A4iT
+         SRxE0b+azB6q3TLGRNOnAst8WKTVCjwAJQ0vjj9+irMwlEvY84GFTyl/laE7eIIGQoQI
+         VRJSazCEL2N/mEJ/HBI4SbnJq/y7T+QBty6eev6Yu37PXfE3kPbTuQUX1pOmDAz+GQwP
+         NI6GZEpak173FQFqZU8K57pLZI/9XD1abn1uXgm/ZcOASTf++vx821uioQema1gvGdCQ
+         SV/rro2eyXv1wpcdhSoZ/JiwhU+ZXbAtg5tbH6UHeWxcnUBG0NJYF3J+nd6XDDBSAvW7
+         Q+Qw==
+X-Gm-Message-State: AOAM530729FnNzin/CGBYdhTo89EYSrqDHhiqZFFvTbC8hsh7aSa/lzW
+        bl0Gz8PQmeWeIqO4vcEB0X7JVOhw1VaPdqfXmGBpZamFVRY7gZNcrrs=
+X-Google-Smtp-Source: ABdhPJw+zfRWfok6+YxbTE26DXE2GMveQA8aBor2Kow6ZPPB1PILI5yW453kZANSzHAWUDf8y8TLuDLDggV6LemRZwU=
+X-Received: by 2002:a05:651c:2001:: with SMTP id s1mr406240ljo.173.1622743284940;
+ Thu, 03 Jun 2021 11:01:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210603170515.1854642-1-jean-philippe@linaro.org>
-In-Reply-To: <20210603170515.1854642-1-jean-philippe@linaro.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Jun 2021 10:50:08 -0700
-Message-ID: <CAEf4BzZqNjBhMVk7T_XZt2NTtDsajECGmHX-n71GBRjK6TmSWA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] tools/bpftool: Fix cross-build
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Thu, 3 Jun 2021 14:01:13 -0400
+Message-ID: <CAOWid-drUQKifjPgzQ3MQiKUUrHp5eKOydgSToadW1fNkUME7g@mail.gmail.com>
+Subject: Headers for whitelisted kernel functions available to BPF programs
+To:     Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jun 3, 2021 at 10:06 AM Jean-Philippe Brucker
-<jean-philippe@linaro.org> wrote:
->
-> When the bootstrap and final bpftool have different architectures, we
-> need to build two distinct disasm.o objects. Add a recipe for the
-> bootstrap disasm.o
->
-> Fixes: d510296d331a ("bpftool: Use syscall/loader program in "prog load" and "gen skeleton" command.")
+Hi,
 
-Did this commit break something specifically?
+I understand that helper functions available to bpf programs are
+listed in include/uapi/linux/bpf.h and kernel headers can be made
+available at /sys/kernel/kheaders.tar.xz with CONFIG_IKHEADERS.  But
+with the support of calling kernel functions from bpf programs, how
+would one know which functions are whitelisted?  Are the headers for
+these whitelisted functions available via something like "bpftool btf
+dump file /sys/kernel/btf/vmlinux format c"?
 
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> ---
->  tools/bpf/bpftool/Makefile | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index d16d289ade7a..d73232be1e99 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -136,7 +136,7 @@ endif
->
->  BPFTOOL_BOOTSTRAP := $(BOOTSTRAP_OUTPUT)bpftool
->
-> -BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o xlated_dumper.o btf_dumper.o) $(OUTPUT)disasm.o
-> +BOOTSTRAP_OBJS = $(addprefix $(BOOTSTRAP_OUTPUT),main.o common.o json_writer.o gen.o btf.o xlated_dumper.o btf_dumper.o disasm.o)
->  OBJS = $(patsubst %.c,$(OUTPUT)%.o,$(SRCS)) $(OUTPUT)disasm.o
->
->  VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)                           \
-> @@ -180,6 +180,9 @@ endif
->
->  CFLAGS += $(if $(BUILD_BPF_SKELS),,-DBPFTOOL_WITHOUT_SKELETONS)
->
-> +$(BOOTSTRAP_OUTPUT)disasm.o: $(srctree)/kernel/bpf/disasm.c
-> +       $(QUIET_CC)$(HOSTCC) $(CFLAGS) -c -MMD -o $@ $<
-> +
->  $(OUTPUT)disasm.o: $(srctree)/kernel/bpf/disasm.c
-
-maybe just do
-
-$(BOOTSTRAP_OUTPUT)disasm.o $(OUTPUT)disasm.o: $(srctree)/kernel/bpf/disasm.c
-
-?
-
->         $(QUIET_CC)$(CC) $(CFLAGS) -c -MMD -o $@ $<
->
-> --
-> 2.31.1
->
+Regards,
+Kenny
